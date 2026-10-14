@@ -87,6 +87,12 @@ param(
 #   Strefy na ziemi    questlua_dungeon.cpp, char_battle.cpp (MT2009_PLUS_DUNGEON_ZONE_V1,
 #                      MT2009_PLUS_DUNGEON_RAGE_V1; server-patches/strefy)
 #   Wieza Sung Mahi    char_skill.cpp (MT2009_PLUS_SMH_TOWER_V1; server-patches/wiezasm)
+#   Transmutacja       common tables.h/CommonDefines.h, db ClientManager*.cpp/Cache.cpp/IkarusShopCache.cpp,
+#                      item.h/.cpp, item_manager.cpp, input_db.cpp, char.cpp, char_item.cpp, packet.h, safebox.cpp,
+#                      exchange.cpp, ikarus_shop_manager.cpp, MountSystem.cpp, cmd_general.cpp, questlua.cpp, cmd.cpp,
+#                      ENABLE_CHANGELOOK_SYSTEM (MT2009_PLUS_CHANGE_LOOK_V1; server-patches/transmutacja)
+#   Ukryj kostium      CommonDefines.h, char.cpp, input_login.cpp, cmd_general.cpp, cmd.cpp, ENABLE_HIDE_COSTUME_SYSTEM
+#                      (MT2009_PLUS_HIDE_COSTUME_V1; server-patches/ukryjkostium)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1322,6 +1328,36 @@ if ((Test-Path -LiteralPath $wiezaSmApply -PathType Leaf) -and
     if ($wiezaSmResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Sung Mahi tower edit(s).' -f $wiezaSmResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Transmutacja (server-patches/transmutacja, MT2009_PLUS_CHANGE_LOOK_V1): the look of an item - TPlayerItem /
+# player.item.transmutation (db and game from one header; transmutacja.sql before the db core), the item packets of
+# the 3.0 exe, the worn looks as the parts, the mount of a polymorphed seal, the equip check, Anulacja Transmutacji,
+# the window at Teowaden (/transmutacja, game.open_changelook) and the Ikarus shop's own ENABLE_CHANGELOOK_SYSTEM
+# lines (ENABLE_CHANGELOOK_SYSTEM last in CommonDefines.h). The work is the overlay's playerbot_changelook.cpp. After
+# playerqol ("Ukryj cudze" shows the looks) and the Yohara sets (safebox.cpp).
+$transmutacjaApply = Join-Path $repo 'server-patches/transmutacja/Apply-TransmutacjaPatch.ps1'
+if ((Test-Path -LiteralPath $transmutacjaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'MountSystem.cpp') -PathType Leaf)) {
+    $transmutacjaResult = & $transmutacjaApply -SourceDir $engineGameSource
+    if ($transmutacjaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Transmutation edit(s).' -f $transmutacjaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Ukryj kostium (server-patches/ukryjkostium, MT2009_PLUS_HIDE_COSTUME_V1): Owsap's hiding of the costume, hairstyle,
+# weapon skin and sash per character (quest flags costume_option.*) in the add/update packets' parts, /hide_costume_part,
+# the login's state and playerqol's old /kostiumy_ukryj taken once. The work is playerbot_hidecostume.cpp. After
+# Transmutacja (a hidden costume shows the armour's look).
+$ukryjKostiumApply = Join-Path $repo 'server-patches/ukryjkostium/Apply-UkryjkostiumPatch.ps1'
+if ((Test-Path -LiteralPath $ukryjKostiumApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_login.cpp') -PathType Leaf)) {
+    $ukryjKostiumResult = & $ukryjKostiumApply -SourceDir $engineGameSource
+    if ($ukryjKostiumResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} costume hiding edit(s).' -f $ukryjKostiumResult.Applied) -ForegroundColor DarkGray
     }
 }
 

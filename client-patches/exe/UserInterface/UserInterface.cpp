@@ -805,6 +805,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 	initguild();
 	initServerStateChecker();
 	initplayersettingsmodule();
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	{ void Mt2009ChangeLook_RegisterPython(); Mt2009ChangeLook_RegisterPython(); } // MT2009_PLUS_CHANGE_LOOK_V1 (after player, safebox, exchange)
+#endif
 #ifdef __USE_CYTHON__
 	// don't add this line if you're implementing cython via .pyd:
 #ifndef __CYTHON_PYD__

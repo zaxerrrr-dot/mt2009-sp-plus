@@ -352,6 +352,9 @@ void RestateCell(LPCHARACTER ch, WORD cell)
 #endif
 		thecore_memcpy(pack.alSockets, item->GetSockets(), sizeof(pack.alSockets));
 		thecore_memcpy(pack.aAttr, item->GetAttributes(), sizeof(pack.aAttr));
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+		pack.dwTransmutation = item->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 		desc->Packet(&pack, sizeof(pack));
 		return;
 	}

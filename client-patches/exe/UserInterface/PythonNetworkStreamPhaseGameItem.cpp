@@ -80,6 +80,9 @@ bool CPythonNetworkStream::RecvSafeBoxSetPacket()
 		kItemData.alSockets[isocket] = kItemSet.alSockets[isocket];
 	for (int iattr=0; iattr<ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++iattr)
 		kItemData.aAttr[iattr] = kItemSet.aAttr[iattr];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	kItemData.dwTransmutationVnum = kItemSet.dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 
 	CPythonSafeBox::Instance().SetItemData(kItemSet.Cell.cell, kItemData);
 
@@ -182,6 +185,9 @@ bool CPythonNetworkStream::RecvMallItemSetPacket()
 		kItemData.alSockets[isocket] = kItemSet.alSockets[isocket];
 	for (int iattr=0; iattr<ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++iattr)
 		kItemData.aAttr[iattr] = kItemSet.aAttr[iattr];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	kItemData.dwTransmutationVnum = kItemSet.dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 
 	CPythonSafeBox::Instance().SetMallItemData(kItemSet.Cell.cell, kItemData);
 
@@ -222,6 +228,9 @@ bool CPythonNetworkStream::RecvItemSetPacket()
 		kItemData.alSockets[i]=packet_item_set.alSockets[i];
 	for (int j=0; j<ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
 		kItemData.aAttr[j]=packet_item_set.aAttr[j];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	kItemData.dwTransmutationVnum = packet_item_set.dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 
 	IAbstractPlayer& rkPlayer=IAbstractPlayer::GetSingleton();
 
@@ -248,6 +257,9 @@ bool CPythonNetworkStream::RecvItemSetPacket2()
 		kItemData.alSockets[i]=packet_item_set.alSockets[i];
 	for (int j=0; j<ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
 		kItemData.aAttr[j]=packet_item_set.aAttr[j];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	kItemData.dwTransmutationVnum = packet_item_set.dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 
 	IAbstractPlayer& rkPlayer=IAbstractPlayer::GetSingleton();
 	rkPlayer.SetItemData(packet_item_set.Cell, kItemData);
@@ -283,6 +295,9 @@ bool CPythonNetworkStream::RecvItemUpdatePacket()
 		rkPlayer.SetItemMetinSocket(packet_item_update.Cell, i, packet_item_update.alSockets[i]);
 	for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
 		rkPlayer.SetItemAttribute(packet_item_update.Cell, j, packet_item_update.aAttr[j].bType, packet_item_update.aAttr[j].sValue);
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	{ void Mt2009ChangeLook_SetItemLook(const TItemPos& c_rCell, DWORD dwLook); Mt2009ChangeLook_SetItemLook(packet_item_update.Cell, packet_item_update.dwTransmutation); } // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 
 	__RefreshInventoryWindow();
 	return true;

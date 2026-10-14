@@ -224,6 +224,9 @@ TPlayerItem RecordOf(LPITEM item, DWORD account)
 	thecore_memcpy(r.alSockets, item->GetSockets(), sizeof(r.alSockets));
 	thecore_memcpy(r.aAttr, item->GetAttributes(), sizeof(r.aAttr));
 	r.owner = OwnerOf(account);
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	r.dwTransmutation = item->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1: the look goes into the bag with the item
+#endif
 	return r;
 }
 
@@ -457,6 +460,9 @@ LPITEM NewBagItem(LPCHARACTER ch, const TPlayerItem& r, DWORD n, int cell, DWORD
 	item->SetSkipSave(true);
 	item->SetSockets(r.alSockets);
 	item->SetAttributes(r.aAttr);
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	item->SetTransmutation(r.dwTransmutation); // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 	if (!item->AddToCharacter(ch, TItemPos(INVENTORY, cell))) {
 		M2_DESTROY_ITEM(item);
 		return NULL;
@@ -624,6 +630,9 @@ void LoadItems(DWORD pid, DWORD handle, DWORD nonce, DWORD account)
 					str_to_number(r.aAttr[i].bType, row[col++]);
 					str_to_number(r.aAttr[i].sValue, row[col++]);
 				}
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+				str_to_number(r.dwTransmutation, row[col++]); // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 				if (!r.id || !r.vnum || !r.count || !Proto(r.vnum))
 					continue;	// left in the database, never shown
 				r.window = SAFEBOX;
@@ -636,6 +645,9 @@ void LoadItems(DWORD pid, DWORD handle, DWORD nonce, DWORD account)
 	}, "SELECT id, count, vnum, socket0, socket1, socket2, "
 	   "attrtype0, attrvalue0, attrtype1, attrvalue1, attrtype2, attrvalue2, attrtype3, attrvalue3, "
 	   "attrtype4, attrvalue4, attrtype5, attrvalue5, attrtype6, attrvalue6 "
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	   ", transmutation " // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 	   "FROM player.item WHERE owner_id=%u AND `window`='SAFEBOX' ORDER BY id LIMIT %u", OwnerOf(account), LOAD_LIMIT);
 }
 

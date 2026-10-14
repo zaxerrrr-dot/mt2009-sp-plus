@@ -1,0 +1,266 @@
+[
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (define)",
+  "old": "#define ENABLE_CONQUEROR_LEVEL // MT2009_PLUS_CHAMPION_V1 (define): Poziom Czempiona + Sung Ma (server-patches/czempion)\n",
+  "new": "#define ENABLE_CONQUEROR_LEVEL // MT2009_PLUS_CHAMPION_V1 (define): Poziom Czempiona + Sung Ma (server-patches/czempion)\n// MT2009_PLUS_CHANGE_LOOK_V1 (define): Transmutacja (server-patches/transmutacja) - the look of an item (CItem::m_dwTransmutation,\n// player.item.transmutation); the Ikarus shop's own ENABLE_CHANGELOOK_SYSTEM lines carry it through its windows.\n#define ENABLE_CHANGELOOK_SYSTEM\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (player item)",
+  "old": "\tDWORD\towner;\n} TPlayerItem;",
+  "new": "\tDWORD\towner;\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t// MT2009_PLUS_CHANGE_LOOK_V1 (player item): the look (another item's vnum, 0 none) - player.item.transmutation; the db core\n\t// and the game core from one header. The Ikarus shop's items (TShopPlayerItem) inherit it, so the 3.0 exe's\n\t// ikashop::TPlayerItem has it too (client-patches/exe Packet.h).\n\tDWORD\tdwTransmutation;\n#endif\n} TPlayerItem;"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (load)",
+  "old": "\t\titem.owner\t\t= dwPID;\n",
+  "new": "\t\t// MT2009_PLUS_CHANGE_LOOK_V1 (load): the look, when the query names it (every item SELECT of this core does)\n\t\titem.dwTransmutation = 0;\n\t\tif (cur < (int) mysql_num_fields(res) && row[cur])\n\t\t\tstr_to_number(item.dwTransmutation, row[cur++]);\n\n\t\titem.owner\t\t= dwPID;\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (select 1)",
+  "old": "\t\t\t\t\t\"SELECT id,`window`+0,pos,count,vnum,socket0,socket1,socket2,attrtype0,attrvalue0,attrtype1,attrvalue1,attrtype2,attrvalue2,attrtype3,attrvalue3,attrtype4,attrvalue4,attrtype5,attrvalue5,attrtype6,attrvalue6 \"\n",
+  "new": "\t\t\t\t\t\"SELECT id,`window`+0,pos,count,vnum,socket0,socket1,socket2,attrtype0,attrvalue0,attrtype1,attrvalue1,attrtype2,attrvalue2,attrtype3,attrvalue3,attrtype4,attrvalue4,attrtype5,attrvalue5,attrtype6,attrvalue6,transmutation \" // MT2009_PLUS_CHANGE_LOOK_V1 (select 1)\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (select 2)",
+  "old": "\t\t\t\t\"SELECT id,`window`+0,pos,count,vnum,socket0,socket1,socket2,attrtype0,attrvalue0,attrtype1,attrvalue1,attrtype2,attrvalue2,attrtype3,attrvalue3,attrtype4,attrvalue4,attrtype5,attrvalue5,attrtype6,attrvalue6 \"\n",
+  "new": "\t\t\t\t\"SELECT id,`window`+0,pos,count,vnum,socket0,socket1,socket2,attrtype0,attrvalue0,attrtype1,attrvalue1,attrtype2,attrvalue2,attrtype3,attrvalue3,attrtype4,attrvalue4,attrtype5,attrvalue5,attrtype6,attrvalue6,transmutation \" // MT2009_PLUS_CHANGE_LOOK_V1 (select 2)\n"
+ },
+ {
+  "file": "../../db/src/ClientManager.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (safebox select)",
+  "old": "\t\t\t\t\"attrtype6, attrvalue6 \"\n\t\t\t\t\"FROM item%s WHERE owner_id=%d AND `window`='%s'\",",
+  "new": "\t\t\t\t\"attrtype6, attrvalue6, transmutation \" // MT2009_PLUS_CHANGE_LOOK_V1 (safebox select)\n\t\t\t\t\"FROM item%s WHERE owner_id=%d AND `window`='%s'\","
+ },
+ {
+  "file": "../../db/src/ClientManager.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (save)",
+  "old": "\"attrtype6={}, attrvalue6={} \")",
+  "new": "\"attrtype6={}, attrvalue6={}, transmutation={} \") // MT2009_PLUS_CHANGE_LOOK_V1 (save): the look"
+ },
+ {
+  "file": "../../db/src/ClientManager.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (save value)",
+  "old": "p->aAttr[6].bType, p->aAttr[6].sValue\n",
+  "new": "p->aAttr[6].bType, p->aAttr[6].sValue,\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tp->dwTransmutation // MT2009_PLUS_CHANGE_LOOK_V1 (save value)\n"
+ },
+ {
+  "file": "../../db/src/Cache.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (save)",
+  "old": "\"attrtype6={}, attrvalue6={} \")",
+  "new": "\"attrtype6={}, attrvalue6={}, transmutation={} \") // MT2009_PLUS_CHANGE_LOOK_V1 (save): the look"
+ },
+ {
+  "file": "../../db/src/Cache.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (save value)",
+  "old": "p->aAttr[6].bType, p->aAttr[6].sValue\n",
+  "new": "p->aAttr[6].bType, p->aAttr[6].sValue,\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tp->dwTransmutation // MT2009_PLUS_CHANGE_LOOK_V1 (save value)\n"
+ },
+ {
+  "file": "../../db/src/IkarusShopCache.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (ikashop safebox column)",
+  "old": "query += \" , `trans` \";",
+  "new": "query += \" , `transmutation` \"; // MT2009_PLUS_CHANGE_LOOK_V1 (ikashop safebox column)"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (ikashop auction column)",
+  "old": "query += \"i.`trans`, \";",
+  "new": "query += \"i.`transmutation`, \"; // MT2009_PLUS_CHANGE_LOOK_V1 (ikashop auction column)"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (item)",
+  "old": "\t\tvoid        SetChangingAttr(bool changing) { m_bIsChangingAttr = changing; }\n",
+  "new": "\t\tvoid        SetChangingAttr(bool changing) { m_bIsChangingAttr = changing; }\n\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t// MT2009_PLUS_CHANGE_LOOK_V1 (item): the look - another item's vnum (0: its own), drawn on the character (PART_MAIN /\n\t// PART_WEAPON, the mount) and shown in the tooltip; saved as player.item.transmutation (TPlayerItem).\n\tpublic:\n\t\tvoid\t\tSetTransmutation(DWORD dwVnum)\t{ m_dwTransmutation = dwVnum; }\n\t\tDWORD\t\tGetTransmutation() const\t\t{ return m_dwTransmutation; }\n\t\tDWORD\t\tGetLookVnum() const\t\t\t\t{ return m_dwTransmutation ? m_dwTransmutation : GetVnum(); }\n\tprotected:\n\t\tDWORD\t\tm_dwTransmutation = 0;\n\tpublic:\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (init)",
+  "old": "\tm_bSkipSave = false;\n\tm_dwLastOwnerPID = 0;\n",
+  "new": "\tm_bSkipSave = false;\n\tm_dwLastOwnerPID = 0;\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tm_dwTransmutation = 0; // MT2009_PLUS_CHANGE_LOOK_V1 (init)\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (update packet)",
+  "old": "\tthecore_memcpy(pack.aAttr, GetAttributes(), sizeof(pack.aAttr));\n",
+  "new": "\tthecore_memcpy(pack.aAttr, GetAttributes(), sizeof(pack.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (update packet)\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (parts)",
+  "old": "\t// MT2009_PLUS_COSTUME_HIDE_V1 (hook): with the costumes hidden, the armour\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t// MT2009_PLUS_CHANGE_LOOK_V1 (parts): a transmuted weapon, armour or costume worn or taken off - the body and the weapon\n\t// every player sees are the looks (playerbot_changelook.cpp; nothing changes without a look).\n\t{\n\t\tvoid Mt2009ChangeLookRefreshParts(LPCHARACTER ch, LPITEM self, LPITEM leaving);\n\t\tif (m_pOwner && (m_pProto->bType == ITEM_WEAPON || m_pProto->bType == ITEM_ARMOR || m_pProto->bType == ITEM_COSTUME))\n\t\t\tMt2009ChangeLookRefreshParts(m_pOwner, this, bAdd ? NULL : this);\n\t}\n#endif\n\n\t// MT2009_PLUS_COSTUME_HIDE_V1 (hook): with the costumes hidden, the armour\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (plain body)",
+  "old": "\t\tconst DWORD v = body ? body->GetVnum() : ch->GetOriginalPart(PART_MAIN);\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\tconst DWORD v = body ? body->GetLookVnum() : ch->GetOriginalPart(PART_MAIN); // MT2009_PLUS_CHANGE_LOOK_V1 (plain body)\n#else\n\t\tconst DWORD v = body ? body->GetVnum() : ch->GetOriginalPart(PART_MAIN);\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (plain weapon)",
+  "old": "\t\tconst DWORD v = weapon ? weapon->GetVnum() : 0;\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\tconst DWORD v = weapon ? weapon->GetLookVnum() : 0; // MT2009_PLUS_CHANGE_LOOK_V1 (plain weapon)\n#else\n\t\tconst DWORD v = weapon ? weapon->GetVnum() : 0;\n#endif\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (save)",
+  "old": "\tthecore_memcpy(t.aAttr, item->GetAttributes(), sizeof(t.aAttr));\n",
+  "new": "\tthecore_memcpy(t.aAttr, item->GetAttributes(), sizeof(t.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tt.dwTransmutation = item->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (save)\n#endif\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (load)",
+  "old": "\t\titem->SetSockets(p->alSockets);\n\t\titem->SetAttributes(p->aAttr);\n",
+  "new": "\t\titem->SetSockets(p->alSockets);\n\t\titem->SetAttributes(p->aAttr);\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\titem->SetTransmutation(p->dwTransmutation); // MT2009_PLUS_CHANGE_LOOK_V1 (load): before it is worn\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (load safebox)",
+  "old": "\t\t\titem->SetAttributes(pItems->aAttr);\n\n\t\t\tif (!m_pkSafebox->Add",
+  "new": "\t\t\titem->SetAttributes(pItems->aAttr);\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\titem->SetTransmutation(pItems->dwTransmutation); // MT2009_PLUS_CHANGE_LOOK_V1 (load safebox)\n#endif\n\n\t\t\tif (!m_pkSafebox->Add"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (load mall)",
+  "old": "\t\t\titem->SetAttributes(pItems->aAttr);\n\n\t\t\tif (!m_pkMall->Add",
+  "new": "\t\t\titem->SetAttributes(pItems->aAttr);\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\titem->SetTransmutation(pItems->dwTransmutation); // MT2009_PLUS_CHANGE_LOOK_V1 (load mall)\n#endif\n\n\t\t\tif (!m_pkMall->Add"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (packet TPacketGCItemSet)",
+  "old": "\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n} TPacketGCItemSet;",
+  "new": "\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tDWORD\tdwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1 (packet TPacketGCItemSet)\n#endif\n} TPacketGCItemSet;"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (packet TPacketGCItemUpdate)",
+  "old": "\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n} TPacketGCItemUpdate;",
+  "new": "\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tDWORD\tdwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1 (packet TPacketGCItemUpdate)\n#endif\n} TPacketGCItemUpdate;"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (packet exchange)",
+  "old": "\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n};\n\nenum EPacketTradeSubHeaders",
+  "new": "\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tDWORD\tdwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1 (packet exchange)\n#endif\n};\n\nenum EPacketTradeSubHeaders"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (item set)",
+  "old": "\t\t\tthecore_memcpy(pack.aAttr, pItem->GetAttributes(), sizeof(pack.aAttr));\n",
+  "new": "\t\t\tthecore_memcpy(pack.aAttr, pItem->GetAttributes(), sizeof(pack.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\tpack.dwTransmutation = pItem->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (item set)\n#endif\n"
+ },
+ {
+  "file": "safebox.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (safebox add)",
+  "old": "\tpack.anti_flags\t= pkItem->GetAntiFlag();\n",
+  "new": "\tpack.anti_flags\t= pkItem->GetAntiFlag();\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (safebox add)\n#endif\n"
+ },
+ {
+  "file": "safebox.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (safebox move)",
+  "old": "\tpack.anti_flags = pkItem->GetAntiFlag();\n",
+  "new": "\tpack.anti_flags = pkItem->GetAntiFlag();\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (safebox move)\n#endif\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (exchange add)",
+  "old": "\t\tthecore_memcpy(&pack_exchg.aAttr, ((LPITEM) pvData)->GetAttributes(), sizeof(pack_exchg.aAttr));\n",
+  "new": "\t\tthecore_memcpy(&pack_exchg.aAttr, ((LPITEM) pvData)->GetAttributes(), sizeof(pack_exchg.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\tpack_exchg.dwTransmutation = ((LPITEM) pvData)->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (exchange add)\n#endif\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (exchange other)",
+  "old": "\t\tmemset(&pack_exchg.aAttr, 0, sizeof(pack_exchg.aAttr));\n",
+  "new": "\t\tmemset(&pack_exchg.aAttr, 0, sizeof(pack_exchg.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\tpack_exchg.dwTransmutation = 0; // MT2009_PLUS_CHANGE_LOOK_V1 (exchange other)\n#endif\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (ikashop add)",
+  "old": "\t\tsitem.item.dwTransmutation = item->GetTransmutation();\n",
+  "new": "\t\tsitem.dwTransmutation = item->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (ikashop add)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (equip)",
+  "old": "\tif (FN_check_item_sex(this, item) == false)\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You are not able to use that item because you do not have the right gender.\"));\n\t\tif (bDSTrace) sys_err(\"[DS_EQUIP_TRACE] return false at FN_check_item_sex()\");\n\t\treturn false;\n\t}\n",
+  "new": "\tif (FN_check_item_sex(this, item) == false)\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You are not able to use that item because you do not have the right gender.\"));\n\t\tif (bDSTrace) sys_err(\"[DS_EQUIP_TRACE] return false at FN_check_item_sex()\");\n\t\treturn false;\n\t}\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t// MT2009_PLUS_CHANGE_LOOK_V1 (equip): the look must fit the wearer too (its class; a costume look its gender)\n\t{\n\t\tbool Mt2009ChangeLookCanEquip(LPCHARACTER ch, LPITEM item);\n\t\tif (!Mt2009ChangeLookCanEquip(this, item))\n\t\t\treturn false;\n\t}\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (use)",
+  "old": "\t\treturn Mt2009PlusUseSashSkin(this, item, DestCell);\n",
+  "new": "\t\treturn Mt2009PlusUseSashSkin(this, item, DestCell);\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t// MT2009_PLUS_CHANGE_LOOK_V1 (use): Anulacja Transmutacji / Polimorfii dragged onto an item; the tickets (the window's)\n\t{\n\t\tbool Mt2009ChangeLookUseItem(LPCHARACTER ch, LPITEM item, TItemPos DestCell, bool& bResult);\n\t\tbool bChangeLookResult = false;\n\t\tif (item->GetType() == ITEM_USE && Mt2009ChangeLookUseItem(this, item, DestCell, bChangeLookResult))\n\t\t\treturn bChangeLookResult;\n\t}\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount equip)",
+  "old": "\t\tconst DWORD mobVnum = item->GetValue(1);\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\tDWORD Mt2009MountMobVnum(LPITEM seal); // MT2009_PLUS_CHANGE_LOOK_V1 (mount equip): the look's mount (playerbot_changelook.cpp)\n\t\tconst DWORD mobVnum = Mt2009MountMobVnum(item);\n#else\n\t\tconst DWORD mobVnum = item->GetValue(1);\n#endif\n"
+ },
+ {
+  "file": "MountSystem.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount summon)",
+  "old": "\tDWORD mobVnum = mountItem->GetValue(1);\n\n\tif (0 == mobVnum)\n\t{\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tDWORD Mt2009MountMobVnum(LPITEM seal); // MT2009_PLUS_CHANGE_LOOK_V1 (mount summon): the look's mount (playerbot_changelook.cpp)\n\tDWORD mobVnum = Mt2009MountMobVnum(mountItem);\n#else\n\tDWORD mobVnum = mountItem->GetValue(1);\n#endif\n\n\tif (0 == mobVnum)\n\t{\n"
+ },
+ {
+  "file": "MountSystem.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount unsummon)",
+  "old": "\tDWORD mobVnum = mountItem->GetValue(1);\n\n\tif (0 == mobVnum)\n\t\treturn;\n\n\tif (GetMountVnum() == mobVnum)",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tDWORD Mt2009MountMobVnum(LPITEM seal); // MT2009_PLUS_CHANGE_LOOK_V1 (mount unsummon): the look's mount (playerbot_changelook.cpp)\n\tDWORD mobVnum = Mt2009MountMobVnum(mountItem);\n#else\n\tDWORD mobVnum = mountItem->GetValue(1);\n#endif\n\n\tif (0 == mobVnum)\n\t\treturn;\n\n\tif (GetMountVnum() == mobVnum)"
+ },
+ {
+  "file": "MountSystem.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount check)",
+  "old": "\tDWORD mobVnum = mountItem->GetValue(1);\n\n\tif (0 == mobVnum)\n\t\treturn;\n\n\tif (mountSystem->CountSummoned() == 0)",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tDWORD Mt2009MountMobVnum(LPITEM seal); // MT2009_PLUS_CHANGE_LOOK_V1 (mount check): the look's mount (playerbot_changelook.cpp)\n\tDWORD mobVnum = Mt2009MountMobVnum(mountItem);\n#else\n\tDWORD mobVnum = mountItem->GetValue(1);\n#endif\n\n\tif (0 == mobVnum)\n\t\treturn;\n\n\tif (mountSystem->CountSummoned() == 0)"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount ride)",
+  "old": "\t\t\tDWORD mobVnum = mountItem->GetValue(1);\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\tDWORD Mt2009MountMobVnum(LPITEM seal); // MT2009_PLUS_CHANGE_LOOK_V1 (mount ride): the look's mount (playerbot_changelook.cpp)\n\t\t\tDWORD mobVnum = Mt2009MountMobVnum(mountItem);\n#else\n\t\t\tDWORD mobVnum = mountItem->GetValue(1);\n#endif\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount ride same key)",
+  "old": "\t\t\t\t\tDWORD mobVnum = item->GetValue(1);\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\t\t\tDWORD Mt2009MountMobVnum(LPITEM seal); // MT2009_PLUS_CHANGE_LOOK_V1 (mount ride same key): the look's mount (playerbot_changelook.cpp)\n\t\t\t\t\tDWORD mobVnum = Mt2009MountMobVnum(item);\n#else\n\t\t\t\t\tDWORD mobVnum = item->GetValue(1);\n#endif\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount get off)",
+  "old": "(DWORD)pkWornSeal->GetValue(1) == ch->GetMountVnum() &&",
+  "new": "(DWORD)Mt2009MountMobVnum(pkWornSeal) == ch->GetMountVnum() && // MT2009_PLUS_CHANGE_LOOK_V1 (mount get off)"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (mount declare)",
+  "old": "ACMD(do_ride)\n",
+  "new": "#ifdef ENABLE_CHANGELOOK_SYSTEM\nDWORD Mt2009MountMobVnum(LPITEM seal); // MT2009_PLUS_CHANGE_LOOK_V1 (mount declare)\n#else\n#define Mt2009MountMobVnum(seal) ((seal)->GetValue(1))\n#endif\nACMD(do_ride)\n"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (lua)",
+  "old": "\t\t{ void RegisterChampionFunctions(); RegisterChampionFunctions(); }\n",
+  "new": "\t\t{ void RegisterChampionFunctions(); RegisterChampionFunctions(); }\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t// MT2009_PLUS_CHANGE_LOOK_V1 (lua): game.open_changelook, item.get_changelook_vnum (playerbot_changelook.cpp).\n\t\t{ void RegisterChangeLookFunctions(); RegisterChangeLookFunctions(); }\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (declare)",
+  "old": "ACMD(do_conqueror_stat);\nACMD(do_champion);\n",
+  "new": "ACMD(do_conqueror_stat);\nACMD(do_champion);\n// MT2009_PLUS_CHANGE_LOOK_V1 (declare): /transmutacja - the window at Teowaden (playerbot_changelook.cpp).\nACMD(do_changelook);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (table)",
+  "old": "\t{ \"champion\",\tdo_champion,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n",
+  "new": "\t{ \"champion\",\tdo_champion,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n\t// MT2009_PLUS_CHANGE_LOOK_V1 (table): the transmutation window (in / out / accept / cancel).\n\t{ \"transmutacja\",\tdo_changelook,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ }
+]

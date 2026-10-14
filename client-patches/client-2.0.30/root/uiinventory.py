@@ -30,6 +30,7 @@ import safebox
 import offlineShopManage
 import uiPotionRecharge
 import uiHorseInventory
+import uichangelook # MT2009_PLUS_CHANGE_LOOK_V1
 
 if app.ENABLE_CHEQUE_SYSTEM:
 	import uiToolTip
@@ -120,6 +121,11 @@ class CostumeWindow(ui.ScriptWindow):
 			for button in self.hideButtons:
 				uicostumehide.RemoveButton(button)
 			self.hideButtons = []
+		# MT2009_PLUS_HIDE_COSTUME_V1: the eyes over the slots
+		import uicostumehide
+		uicostumehide.RemoveWindow(self)
+		self.hideEyeButtons = {}
+		self.hideSlotImages = {}
 		self.ClearDictionary()
 		self.wndInventory = None
 
@@ -168,36 +174,85 @@ class CostumeWindow(ui.ScriptWindow):
 		self.wndEquip = wndEquip
 		self.__AddHideButton()
 
-	# Ukryj kostiumy (uicostumehide.py, MT2009_PLUS_COSTUME_HIDE_V2): three
-	# buttons under the slots - the costume, the hair, the weapon skin, each
-	# hidden on its own; the window and its board grow to hold them.
+	# MT2009_PLUS_HIDE_COSTUME_V1 (Owsap's __HIDE_COSTUME_SYSTEM__, uicostumehide.py): an eye over the
+	# costume, the hairstyle, the weapon skin and the sash slot - each part hidden on its own, kept by the
+	# server for this character; a hidden slot is shaded. Under the slots one button stays,
+	# MT2009_PLUS_COSTUME_VIEW_OTHERS_V1 "Ukryj cudze" (the others' looks hidden for this player only);
+	# the window and its board grow to hold it.
+	# part: (x, y, shade) - the slot's place in Costume_Base (uiscript/costumewindow.py) and its shade
+	HIDE_EYES = {
+		0: (62, 45, "d:/ymir work/ui/game/costume/hideslot_02.tga"),	# COSTUME_BODY, START+0
+		1: (62, 9, "d:/ymir work/ui/game/costume/hideslot_01.tga"),	# COSTUME_HAIR, START+1
+		3: (38, 125, "d:/ymir work/ui/game/costume/hideslot_01.tga"),	# COSTUME_ACCE, START+3
+		4: (13, 13, "d:/ymir work/ui/game/costume/hideslot_03.tga"),	# COSTUME_WEAPON
+	}
+
 	def __AddHideButton(self):
 		try:
 			import uicostumehide
 			board = self.GetChild("board")
 			width = self.GetWidth()
 			height = self.GetHeight()
-			# MT2009_PLUS_COSTUME_VIEW_OTHERS_V1: the fourth, "Ukryj cudze" - the others'
-			# looks hidden for this player only
-			bits = (uicostumehide.BODY, uicostumehide.HAIR, uicostumehide.WEAPON, uicostumehide.OTHERS)
-			self.SetSize(width, height + 26 * len(bits))
-			board.SetSize(width, height + 26 * len(bits))
+			self.SetSize(width, height + 26)
+			board.SetSize(width, height + 26)
 			self.hideButtons = []
-			for row, bit in enumerate(bits):
-				button = ui.Button()
-				button.SetParent(board)
-				button.SetUpVisual("d:/ymir work/ui/public/large_button_01.sub")
-				button.SetOverVisual("d:/ymir work/ui/public/large_button_02.sub")
-				button.SetDownVisual("d:/ymir work/ui/public/large_button_03.sub")
-				button.SetPosition((width - button.GetWidth()) / 2, height - 4 + 26 * row)
-				button.SetEvent(lambda b = bit: uicostumehide.Toggle(b))
-				if bit == uicostumehide.OTHERS:
-					button.SetToolTipText(uicostumehide.TOOLTIP_OTHERS)
-				button.Show()
-				uicostumehide.AddButton(button, bit)
-				self.hideButtons.append(button)
+			button = ui.Button()
+			button.SetParent(board)
+			button.SetUpVisual("d:/ymir work/ui/public/large_button_01.sub")
+			button.SetOverVisual("d:/ymir work/ui/public/large_button_02.sub")
+			button.SetDownVisual("d:/ymir work/ui/public/large_button_03.sub")
+			button.SetPosition((width - button.GetWidth()) / 2, height - 4)
+			button.SetEvent(uicostumehide.ToggleOthers)
+			button.SetToolTipText(uicostumehide.TOOLTIP_OTHERS)
+			button.Show()
+			uicostumehide.AddButton(button)
+			self.hideButtons.append(button)
 		except Exception, e:
 			dbg.TraceError("CostumeWindow.AddHideButton: %s" % str(e))
+
+		if not getattr(app, "ENABLE_HIDE_COSTUME_SYSTEM", 0):
+			return
+		try:
+			import uicostumehide
+			base = self.GetChild("Costume_Base")
+			self.hideEyeButtons = {}
+			self.hideSlotImages = {}
+			for part, (x, y, shade) in self.HIDE_EYES.items():
+				image = ui.ImageBox()
+				image.SetParent(base)
+				image.AddFlag("not_pick")
+				image.SetPosition(x + 4, y + 4)
+				image.LoadImage(shade)
+				image.Hide()
+				self.hideSlotImages[part] = image
+
+				eye = ui.Button()
+				eye.SetParent(base)
+				eye.SetPosition(x, y)
+				eye.SetEvent(lambda p = part: uicostumehide.TogglePart(p))
+				eye.Show()
+				self.hideEyeButtons[part] = eye
+			uicostumehide.AddWindow(self)
+		except Exception, e:
+			dbg.TraceError("CostumeWindow.AddHideEyes: %s" % str(e))
+
+	def SetHiddenCostumePart(self, part, hidden):
+		eyes = getattr(self, "hideEyeButtons", {})
+		if part not in eyes:
+			return
+		import uicostumehide
+		eye = eyes[part]
+		state = "closed" if hidden else "normal"
+		eye.SetUpVisual("d:/ymir work/ui/game/costume/eye_%s_01.tga" % state)
+		eye.SetOverVisual("d:/ymir work/ui/game/costume/eye_%s_02.tga" % state)
+		eye.SetDownVisual("d:/ymir work/ui/game/costume/eye_%s_01.tga" % state)
+		eye.SetToolTipText((uicostumehide.TOOLTIP_SHOW if hidden else uicostumehide.TOOLTIP_HIDE)[part])
+		image = self.hideSlotImages.get(part)
+		if image:
+			if hidden:
+				image.Show()
+			else:
+				image.Hide()
 
 	def RefreshCostumeSlot(self):
 		getItemVNum=player.GetItemIndex
@@ -208,6 +263,13 @@ class CostumeWindow(ui.ScriptWindow):
 
 		if app.ENABLE_WEAPON_COSTUME_SYSTEM:
 			self.wndEquip.SetItemSlot(item.COSTUME_SLOT_WEAPON, getItemVNum(item.COSTUME_SLOT_WEAPON), 0)
+
+		# MT2009_PLUS_CHANGE_LOOK_V1: the mark of a transmuted costume
+		import uichangelook
+		for i in xrange(item.COSTUME_SLOT_COUNT):
+			uichangelook.MarkSlot(self.wndEquip, item.COSTUME_SLOT_START + i, item.COSTUME_SLOT_START + i)
+		if app.ENABLE_WEAPON_COSTUME_SYSTEM:
+			uichangelook.MarkSlot(self.wndEquip, item.COSTUME_SLOT_WEAPON, item.COSTUME_SLOT_WEAPON)
 
 		self.wndEquip.RefreshSlot()
 
@@ -2114,6 +2176,7 @@ class InventoryWindow(ui.ScriptWindow):
 			socket = tuple(player.GetItemMetinSocket(slotNumber, j) for j in range(player.METIN_SOCKET_MAX_NUM))
 
 			setItemVNum(localSlot, itemVnum, itemCount, socket=socket)
+			uichangelook.MarkSlot(wndSlot, localSlot, slotNumber) # MT2009_PLUS_CHANGE_LOOK_V1: a transmuted item's mark
 			# if app.ENABLE_IKASHOP_RENEWAL:
 			# 	if app.EXTEND_IKASHOP_PRO:
 			# 		self.wndItem.EnableSlot(i)
@@ -2319,6 +2382,10 @@ class InventoryWindow(ui.ScriptWindow):
 			SetItemSlotVnum(EQUIPMENT_PENDANT_SLOT) # MT2009_PLUS_ELEMENTS_V1
 		if app.ENABLE_GLOVE_SYSTEM:
 			SetItemSlotVnum(item.EQUIPMENT_GLOVE)
+
+		# MT2009_PLUS_CHANGE_LOOK_V1: the mark of a transmuted weapon / armour
+		for i in xrange(player.EQUIPMENT_PAGE_COUNT):
+			uichangelook.MarkSlot(self.wndEquip, player.EQUIPMENT_SLOT_START + i, player.EQUIPMENT_SLOT_START + i)
 
 		self.wndEquip.RefreshSlot()
 

@@ -716,6 +716,7 @@ class ItemToolTip(ToolTip):
 		attrSlot = [player.GetItemAttribute(window_type, slotIndex, i) for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM)]
 
 		self.AddItemData(itemVnum, metinSlot, attrSlot, 0, 0, window_type, slotIndex)
+		__import__("uichangelook").AppendLookInfo(self, __import__("uichangelook").GetLook(window_type, slotIndex)) # MT2009_PLUS_CHANGE_LOOK_V1
 
 	def SetMyShopItem(self, itemVnum, count, metinSlot, attrSlot, price=0):
 		self.SetRawItem(itemVnum, metinSlot, attrSlot)
@@ -782,6 +783,7 @@ class ItemToolTip(ToolTip):
 		for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
 			attrSlot.append(exchange.GetItemAttributeFromSelf(slotIndex, i))
 		self.AddItemData(itemVnum, metinSlot, attrSlot)
+		__import__("uichangelook").AppendLookInfo(self, getattr(exchange, "GetChangeLookVnumFromSelf", lambda i: 0)(slotIndex)) # MT2009_PLUS_CHANGE_LOOK_V1
 
 	def SetExchangeTargetItem(self, slotIndex):
 		itemVnum = exchange.GetItemVnumFromTarget(slotIndex)
@@ -797,6 +799,7 @@ class ItemToolTip(ToolTip):
 		for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
 			attrSlot.append(exchange.GetItemAttributeFromTarget(slotIndex, i))
 		self.AddItemData(itemVnum, metinSlot, attrSlot)
+		__import__("uichangelook").AppendLookInfo(self, getattr(exchange, "GetChangeLookVnumFromTarget", lambda i: 0)(slotIndex)) # MT2009_PLUS_CHANGE_LOOK_V1
 
 	def SetPrivateShopBuilderItem(self, invenType, invenPos, privateShopSlotIndex):
 		itemVnum = player.GetItemIndex(invenType, invenPos)
@@ -837,6 +840,7 @@ class ItemToolTip(ToolTip):
 		self.ysetsSafeboxSlot = slotIndex # MT2009_PLUS_YOHARA_SETS_V1: the storehouse's set / random bonuses
 		self.AddItemData(itemVnum, metinSlot, attrSlot, safebox.GetItemFlags(slotIndex))
 		self.ysetsSafeboxSlot = -1
+		__import__("uichangelook").AppendLookInfo(self, getattr(safebox, "GetItemChangeLookVnum", lambda i: 0)(slotIndex)) # MT2009_PLUS_CHANGE_LOOK_V1
 
 	def SetMallItem(self, slotIndex):
 		itemVnum = safebox.GetMallItemID(slotIndex)
@@ -852,6 +856,7 @@ class ItemToolTip(ToolTip):
 			attrSlot.append(safebox.GetMallItemAttribute(slotIndex, i))
 
 		self.AddItemData(itemVnum, metinSlot, attrSlot)
+		__import__("uichangelook").AppendLookInfo(self, getattr(safebox, "GetMallItemChangeLookVnum", lambda i: 0)(slotIndex)) # MT2009_PLUS_CHANGE_LOOK_V1
 
 	def SetItemToolTip(self, itemVnum):
 		self.ClearToolTip()
