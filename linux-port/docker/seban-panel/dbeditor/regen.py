@@ -74,7 +74,7 @@ MAP_IMAGES = {21: "chunjo-m1", 23: "chunjo-m2", 24: "guild-map-02", 25: "easy-mo
               4: "shinsoo-guild", 44: "jinno-guild", 5: "easy-monkey", 45: "easy-monkey", 1: "shinsoo-m1",
               3: "shinsoo-m2", 41: "jinno-m1", 43: "jinno-m2", 67: "trent-forest", 68: "trent02-red-forest",
               66: "deviltower", 72: "grotto-v1", 73: "grotto-v2", 209: "ochao-temple",
-              360: "arezzo-cyclops-valley", 361: "arezzo-pharaoh-wastes", 362: "arezzo-enchanted-forest",
+              360: "arezzo-cyclops-valley", 361: "arezzo-pharaoh-wastes", 
               363: "arezzo-library", 364: "arezzo-wukong-hill", 365: "arezzo-scorpion-ruins",
               366: "arezzo-ancient-jungle"}
 # Names of the maps app.MAP_NAMES does not list (the panel's table wins).
