@@ -356,7 +356,9 @@ RUN set -eux; \
     # into Schronienie Polnocnego Wiatru.
     # jaskinie_gnolli is Jaskinie Gnolli 1-3 (Halabardnik in Dongan, the ticket, the stage portals, death -> Dongan) and
     # wieza_sung_mahi Wieza Sung Mahi's 50 floors (MT2009_PLUS_YOHARA_DUNG4_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi; do \
+    # ygaya is Kamienie Gaya and Statua Wojownika's other functions (MT2009_PLUS_GAYA_V1): Kamyki ground into Gaya
+    # (70%), Portowy Sklep Gaya (3 rows of 3, the third unlocked), the elemental pet chests' window.
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi ygaya; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1509,6 +1511,26 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ysets-add/
     done \
  && rm -rf /tmp/ysets-add \
  && echo "share: Yohara sets - 43 cube recipes (Statua Wezy, Statua Wojownika, the set blacksmiths), the blacksmiths in the port"
+# MT2009_PLUS_GAYA_V1 (share): Kamienie Gaya and Statua Wojownika (the owner, 14 October 2026; tools/ygaya/gen_ygaya.py
+# made ygaya/): the six elemental pet chests of Statua Wojownika (20433: 2 Kupony Zwierzaka Zywiolu, 100 000 Yang and
+# 10 Gaya - the cube's "gaya", server-patches/gaya) appended to cube.txt after the Yohara sets, and what each chest
+# holds (53581-53586 -> Maly Zywiolak 53290-53295) to special_item_group.txt; quest ygaya grinds Kamyki into Gaya and
+# keeps the Portowy Sklep Gaya.
+COPY ygaya/ /tmp/ygaya-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ygaya-add \
+ && ! grep -q -E '^reward[[:blank:]]+5358[1-6][[:blank:]]' "$C" \
+ && sed -i 's/\r$//; s/$/\r/' "$A/cube.ygaya.txt" \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A/cube.ygaya.txt" >> "$C" \
+ && test "$(grep -c -E '^reward[[:blank:]]+5358[1-6][[:blank:]]' "$C")" -eq 6 \
+ && test "$(grep -c -E '^gaya[[:blank:]]+[0-9]+' "$C")" -ge 6 \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+5358[1-6]([^0-9]|$)' "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.ygaya.txt" >> "$G" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+5358[1-6]([^0-9]|$)' "$G")" -eq 6 \
+ && rm -rf "$A" \
+ && echo "share: Gaya - 6 elemental pet chest recipes of Statua Wojownika, the chests' contents"
 # MT2009_PLUS_YOHARA_MAPS3_V1 (share): the third batch of Yohara places (the owner, 14 October 2026; cache/yohara/
 # decyzje.md, plan-mapy-yohary.md; pl-wiki first, TR wiki for what it lacks) - Zejscie Polnocnego Wiatru (394,
 # metin2_map_whitedragoncave_02), Glebie Polnocnego Wiatru (395, _boss; dungeon), 1. poziom Swiatyni Wezy (390,

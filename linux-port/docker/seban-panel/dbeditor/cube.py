@@ -69,6 +69,9 @@ HISTORY_KEEP = 300
 # game has not published cube_npcs.txt yet: Seon-Pyeong only (6 Oct 2026).
 DEFAULT_OPENERS = frozenset({20091})
 TOKENS = ("section", "npc", "item", "reward", "percent", "gold", "end")
+# lines of our engine's patches the page keeps as they are (written back after "gold"): set_value / set_part of the
+# Yohara set blacksmiths (MT2009_PLUS_YOHARA_SETS_V1) and gaya - the Gaya the recipe takes (MT2009_PLUS_GAYA_V1)
+ENGINE_TOKENS = ("set_value", "set_part", "gaya")
 _LINE_RE = re.compile(r"[^\n]*\n|[^\n]+$")
 _SPLIT_RE = re.compile(r"[ \t\r\n]+")
 
@@ -100,7 +103,7 @@ def _number(raw):
 
 def new_recipe():
     return {"lead": "", "raw": "", "npcs": [], "items": [], "rewards": [], "percent": 0, "gold": 0,
-            "has_gold": False, "has_percent": False, "unknown": [], "bad_numbers": [], "closed": True,
+            "has_gold": False, "has_percent": False, "unknown": [], "engine": [], "bad_numbers": [], "closed": True,
             "line": 0, "dirty": False}
 
 
@@ -158,6 +161,10 @@ def parse(data):
             cur["gold"], cur["has_gold"] = (a if a is not None else 0), True
             if a is None:
                 cur["bad_numbers"].append(n)
+        elif word in ENGINE_TOKENS:
+            cur["engine"].append((word, a if a is not None else 0))
+            if a is None:
+                cur["bad_numbers"].append(n)
         elif word == "end":
             close(cur, True)
             cur = None
@@ -177,6 +184,7 @@ def render_body(recipe, eol):
     lines.append(f"percent\t{recipe['percent']}")
     if recipe["gold"] or recipe.get("has_gold"):
         lines.append(f"gold\t{recipe['gold']}")
+    lines += [f"{w}\t{v}" for w, v in recipe.get("engine", ())]
     lines.append("end")
     return "".join(line + eol for line in lines)
 
