@@ -1,0 +1,468 @@
+-- MT2009_PLUS_YOHARA_ILUZJA_V1: Zaklêty Las (PB) i Erebu (PB) - loch Jotuna Thryma (PB) (371,
+-- metin2_map_boss_awaken_dawnmist - teren lochu Zaklêtego Lasu w oficjalnym miejscu; pl-wiki "Zaklêty Las (PB)",
+-- "Erebu (PB)", "Jotun Thrym (PB)", "Bagjanamu (PB)", "W³adca En-Tai (PB)" i siedem misji lasu; przebieg, pozycje i
+-- liczby jak Owsap v6.2.6 awaken_dawnmist_dungeon.quest i awaken_dawnmist_dungeon_access.quest). Wejœcie: Statua
+-- Przebudzenia na P³askowy¿u Iluzji (quest przebudzeni_bossowie).
+--   Siedem misji (ka¿dy gracz osobno, od nowa w ka¿dej wyprawie - jak Owsap; licznik zabójstw grupy siê liczy):
+--   1. Pierwszy rekonesans Przebudzenia - Stra¿nik Lasu (PB) (20539): zabij 20 Wojowników En-Tai (PB) (4340);
+--   2. ZnajdŸ apteczkê Przebudzenia - Druid En-Tai (PB) (4342) ma Apteczkê (PB) (31186, 1 na 25) - do Stra¿nika;
+--   3. Dostarcz apteczkê Przebudzenia - Apteczka (PB) od Stra¿nika do Zwiadowcy Lasu (PB) (20540);
+--   4. Drugi rekonesans Przebudzenia - Zwiadowca: zniszcz 2 Metiny Drzewnych Stworzeñ (PB) (8136);
+--   5. Zdob¹dŸ Rosy En-Tai (PB) - 5 Niszczycieli En-Tai (PB) (4344), ka¿dy daje Rosê (31183) - do Zwiadowcy;
+--   6. Zabij w³adcê En-Tai Przebudzenia - Badacz Lasu (PB) (20541): Szlachetne Drzewo (PB) (31182) z W³adcy En-Tai
+--      (PB) (4345);
+--   7. Zdob¹dŸ drzewny szmaragd Przebudzenia - Drzewny Szmaragd (PB) (31185) z W³adcy - Badacz daje Kamieñ Driad (PB)
+--      (31181) i 200 000 Yang.
+--   Przywódca Stra¿y Lasu (PB) (20542): "Pomieszczenie bossa" - przywódca grupy, ca³a grupa przy nim, ka¿dy ma Kamieñ
+--   Driad (PB) (zabierany) - Erebu: Bagjanamu (PB) (4352), minutê po nim Jotun Thrym (PB) (4413, wiatr, 135 poz.;
+--   przywo³uje Niszczycieli En-Tai (PB)).
+-- 60 minut od wejœcia; po zwyciêstwie (minuta) lub po czasie wszyscy wracaj¹ na P³askowy¿ Iluzji. Ksi¹¿ka
+-- Przebudzenia znika przy pierwszym wejœciu do nowej wyprawy. Panel lochów: jotun_pb. Boty nie wchodz¹.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest jotun_pb begin
+	state start begin
+		function cfg()
+			return {
+				map = 371, base_x = 3328, base_y = 19712,
+				entry = {478, 970}, boss_room = {99, 941}, boss = {69, 941},
+				path = "data/dungeon/jotun_pb/",
+				warriors = 20, kit_chance = 25, stones = 2, destroyers = 5,
+				exp = {776600, 776600, 5825000, 7766000, 7766000, 11650000, 11650000}, gold = 200000,
+				dryad = 31181, timber = 31182, dew = 31183, emerald = 31185, kit = 31186,
+				boss_delay = 60, limit = 3600, keep = 3600 + 300, ticket = 31146, end_sec = 60,
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 371 * 10000 and idx < 372 * 10000 and pc.in_dungeon()
+		end
+
+		function out()
+			local m, x, y = pc.getf("przebudzeni_bossowie", "ret_map"), pc.getf("przebudzeni_bossowie", "ret_x"),
+				pc.getf("przebudzeni_bossowie", "ret_y")
+			if m > 0 then
+				pc.warp(x * 100, y * 100, m)
+			else
+				warp_to_village()
+			end
+		end
+
+		function finish(text)
+			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
+			if text then
+				d.notice(text)
+			end
+			d.exit_all()
+		end
+
+		function init()
+			local c = jotun_pb.cfg()
+			d.setf("init", 1)
+			d.setf("start", get_global_time())
+			d.setf("mt2009_keep_until", get_global_time() + c.keep)
+			d.setf("level", 0)
+			d.set_regen_file(c.path.."npc.txt")
+			d.set_regen_file(c.path.."regen.txt")
+			d.set_regen_file(c.path.."boss.txt")
+			d.set_regen_file(c.path.."stone.txt")
+			d.notice("Zaklêty Las (PB): masz 60 minut. Stra¿nik Lasu (PB) czeka na ciebie.")
+			server_timer("jotun_pb_tick", 60, d.get_map_index())
+		end
+
+		-- a new expedition: the seven tasks from the beginning, the items of an old one gone
+		function reset()
+			local c = jotun_pb.cfg()
+			pc.setqf("st", 10)
+			pc.setqf("cnt", 0)
+			for i, v in ipairs({c.dryad, c.timber, c.dew, c.emerald, c.kit}) do
+				if pc.count_item(v) > 0 then
+					pc.remove_item(v, pc.count_item(v))
+				end
+			end
+		end
+
+		function reward(n, text)
+			local c = jotun_pb.cfg()
+			pc.give_exp2(c.exp[n])
+			say_reward("Nagroda: "..c.exp[n].." PD.")
+			if text then
+				say(text)
+			end
+		end
+
+		function count(n, total, text)
+			pc.setqf("cnt", n)
+			if n < total then
+				syschat(text..": "..n.." / "..total..".")
+			end
+		end
+
+		when login with jotun_pb.inside() begin
+			local c = jotun_pb.cfg()
+			local idx = pc.get_map_index()
+			if pc.is_playerbot() then
+				return
+			end
+			local m = pc.getf("przebudzeni_bossowie", "ret_map")
+			if m > 0 then
+				pc.set_warp_location(m, pc.getf("przebudzeni_bossowie", "ret_x"), pc.getf("przebudzeni_bossowie", "ret_y"))
+			end
+			if d.getf("closed") == 1 then
+				syschat("Zaklêty Las (PB): ta wyprawa ju¿ siê skoñczy³a.")
+				jotun_pb.out()
+				return
+			end
+			if pc.getf("przebudzeni_bossowie", "idx") ~= idx then
+				if not pc.is_gm() then
+					if pc.count_item(c.ticket) < 1 then
+						syschat("Zaklêty Las (PB): potrzebujesz Ksi¹¿ki Przebudzenia.")
+						jotun_pb.out()
+						return
+					end
+					pc.remove_item(c.ticket, 1)
+				end
+				pc.setf("przebudzeni_bossowie", "idx", idx)
+				pc.setf("przebudzeni_bossowie", "entry", get_global_time())
+				jotun_pb.reset()
+			end
+			d.setf("entered", 1)
+			if d.getf("init") == 0 then
+				jotun_pb.init()
+			end
+			if d.getf("level") == 2 and math.abs(pc.get_local_y() - c.boss_room[2]) > 80 then
+				pc.warp((c.base_x + c.boss_room[1]) * 100, (c.base_y + c.boss_room[2]) * 100, idx)
+			end
+		end
+
+		-- the time
+		when jotun_pb_tick.server_timer begin
+			local c = jotun_pb.cfg()
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local left = d.getf("start") + c.limit - get_global_time()
+			if left <= 0 then
+				jotun_pb.finish("Zaklêty Las (PB): czas min¹³ - wracacie na P³askowy¿ Iluzji.")
+				return
+			end
+			local m = math.floor((left + 30) / 60)
+			if m == 45 or m == 30 or m == 15 or m == 5 or m == 1 then
+				d.notice("Zaklêty Las (PB): zosta³o "..m.." min. Po czasie grupa wróci na P³askowy¿ Iluzji.")
+			end
+			server_timer("jotun_pb_tick", 60, get_server_timer_arg())
+		end
+
+		-- Stra¿nik Lasu (PB): tasks 1-3
+		when 20539.chat."Rekonesans Przebudzenia" with jotun_pb.inside() begin
+			local c = jotun_pb.cfg()
+			local st = pc.getqf("st")
+			say_title(mob_name(20539)..":")
+			if st == 10 then
+				say("Zaklêty Las Œwitu zmieni³ swe oblicze, a te zmiany")
+				say("s¹ bardzo niepokoj¹ce. Moi bracia zaginêli, a z nimi")
+				say("apteczka. Podejrzewam wojowników En-Tai, bo")
+				say("zachowuj¹ siê co najmniej dziwnie.")
+				say_reward("Zabij "..c.warriors.." Wojowników En-Tai (PB) i wróæ do mnie.")
+				pc.setqf("st", 11)
+				pc.setqf("cnt", 0)
+			elseif st == 11 then
+				say("Wojownicy En-Tai (PB) wci¹¿ kr¹¿¹ po lesie. Pokonaj")
+				say("ich: "..pc.getqf("cnt").." / "..c.warriors..".")
+			elseif st == 12 then
+				say("Pokona³eœ Wojowników En-Tai, ale apteczki nie mieli.")
+				say("To dziwna kreatura jest wszystkiemu winna - Druid")
+				say("En-Tai (PB). OdnajdŸ go i odbierz mu apteczkê.")
+				jotun_pb.reward(1)
+				pc.setqf("st", 21)
+			elseif st == 21 then
+				say("Druid En-Tai (PB) musi byæ gdzieœ w pobli¿u. Zabierz")
+				say("mu apteczkê.")
+			elseif st == 22 then
+				if pc.count_item(c.kit) < 1 then
+					say("Gdzie jest apteczka? Odbierz j¹ Druidowi En-Tai.")
+					pc.setqf("st", 21)
+					return
+				end
+				pc.remove_item(c.kit, 1)
+				say("Wszystko w niej jest. Odpocznij chwilê - zaraz")
+				say("zaniesiesz j¹ moim braciom.")
+				jotun_pb.reward(2)
+				pc.setqf("st", 30)
+			elseif st == 30 then
+				say("Nadszed³ czas, by dostarczyæ apteczkê Zwiadowcy")
+				say("Lasu (PB). Uwa¿aj, by po drodze niczego nie zgubiæ!")
+				if pc.count_item(c.kit) < 1 then
+					pc.give_item2(c.kit, 1)
+				end
+				pc.setqf("st", 31)
+			elseif st == 31 then
+				say("Zanieœ apteczkê (PB) Zwiadowcy Lasu (PB).")
+				if pc.count_item(c.kit) < 1 then
+					pc.give_item2(c.kit, 1)
+				end
+			else
+				say("Dziêkujê ci za pomoc, wojowniku. Las jest ci wdziêczny.")
+			end
+		end
+
+		-- Zwiadowca Lasu (PB): tasks 3-5
+		when 20540.chat."Rekonesans Przebudzenia" with jotun_pb.inside() begin
+			local c = jotun_pb.cfg()
+			local st = pc.getqf("st")
+			say_title(mob_name(20540)..":")
+			if st == 31 then
+				if pc.count_item(c.kit) < 1 then
+					say("Stra¿nik Lasu mia³ mi przys³aæ apteczkê - wróæ po ni¹.")
+					pc.setqf("st", 30)
+					return
+				end
+				pc.remove_item(c.kit, 1)
+				say("Apteczka! Podziwiam twoj¹ odwagê - jak ci siê uda³o")
+				say("tutaj dotrzeæ?")
+				jotun_pb.reward(3)
+				pc.setqf("st", 40)
+			elseif st == 40 then
+				say("Metiny Drzewnych Stworzeñ zatruwaj¹ ten las.")
+				say_reward("Zniszcz "..c.stones.." Metiny Drzewnych Stworzeñ (PB).")
+				pc.setqf("st", 41)
+				pc.setqf("cnt", 0)
+			elseif st == 41 then
+				say("Zniszczone Metiny: "..pc.getqf("cnt").." / "..c.stones..".")
+			elseif st == 42 then
+				say("Dobra robota. Las od razu oddycha l¿ej.")
+				jotun_pb.reward(4)
+				pc.setqf("st", 50)
+			elseif st == 50 then
+				say("Legenda g³osi, ¿e ros¹ En-Tai mo¿na przegnaæ z³e")
+				say("demony. Najlepiej zdobyæ j¹ od Niszczycieli En-Tai.")
+				say_reward("Zdob¹dŸ "..c.destroyers.." Ros En-Tai (PB).")
+				pc.setqf("st", 51)
+				pc.setqf("cnt", 0)
+			elseif st == 51 then
+				say("Rosy En-Tai (PB): "..pc.getqf("cnt").." / "..c.destroyers..".")
+			elseif st == 52 then
+				if pc.count_item(c.dew) < c.destroyers then
+					say("Brakuje ci Ros En-Tai (PB). Zdob¹dŸ je od")
+					say("Niszczycieli En-Tai.")
+					pc.setqf("st", 51)
+					pc.setqf("cnt", pc.count_item(c.dew))
+					return
+				end
+				pc.remove_item(c.dew, c.destroyers)
+				say("Wspaniale! Badacz Lasu (PB) czeka na ciebie - on")
+				say("wie, gdzie szukaæ W³adców En-Tai.")
+				jotun_pb.reward(5)
+				pc.setqf("st", 60)
+			elseif st < 31 then
+				say("Stra¿nik Lasu (PB) potrzebuje twojej pomocy.")
+			else
+				say("Dziêkujê ci za pomoc, wojowniku.")
+			end
+		end
+
+		-- Badacz Lasu (PB): tasks 6-7
+		when 20541.chat."Rekonesans Przebudzenia" with jotun_pb.inside() begin
+			local c = jotun_pb.cfg()
+			local st = pc.getqf("st")
+			say_title(mob_name(20541)..":")
+			if st == 60 then
+				say("Sam bym tego dokona³, ale mój miecz stêpi³ siê,")
+				say("wskutek licznych walk. OdnajdŸ W³adcê En-Tai (PB) i")
+				say("przynieœ mi jego szlachetne drewno.")
+				pc.setqf("st", 61)
+			elseif st == 61 then
+				say("W³adca En-Tai (PB) wci¹¿ ¿yje. Przynieœ mi jego")
+				say("szlachetne drewno.")
+			elseif st == 62 then
+				if pc.count_item(c.timber) < 1 then
+					say("Gdzie jest Szlachetne Drzewo (PB)? Pokonaj W³adcê.")
+					pc.setqf("st", 61)
+					return
+				end
+				pc.remove_item(c.timber, 1)
+				say("To nie jest przedmiot, którego potrzebujê... Wróæ,")
+				say("jeszcze raz do W³adców En-Tai i przynieœ mi Drzewny")
+				say("Szmaragd (PB).")
+				jotun_pb.reward(6)
+				pc.setqf("st", 71)
+			elseif st == 71 then
+				say("W³adcy En-Tai (PB) nie zdradz¹ nam ³atwo, gdzie")
+				say("przebywa ich król. Przynieœ mi Drzewny Szmaragd.")
+			elseif st == 72 then
+				if pc.count_item(c.emerald) < 1 then
+					say("Gdzie jest Drzewny Szmaragd (PB)? Pokonaj W³adcê.")
+					pc.setqf("st", 71)
+					return
+				end
+				pc.remove_item(c.emerald, 1)
+				say("Oto on! WeŸ ten Kamieñ Driad (PB) - driada zna")
+				say("zaklête s³owa, które otworz¹ ci drogê do Erebu.")
+				say("Przywódca Stra¿y Lasu (PB) ciê tam zaprowadzi.")
+				jotun_pb.reward(7)
+				pc.change_money(c.gold)
+				pc.give_item2(c.dryad, 1)
+				pc.setqf("st", 80)
+			elseif st < 60 then
+				say("Najpierw pomó¿ Stra¿nikowi i Zwiadowcy Lasu (PB).")
+			else
+				say("Przywódca Stra¿y Lasu (PB) zaprowadzi was do Erebu.")
+			end
+		end
+
+		-- the kills of the tasks (the killer and his group)
+		when 4340.kill or 4340.party_kill with jotun_pb.inside() and pc.getqf("st") == 11 begin
+			local c = jotun_pb.cfg()
+			local n = pc.getqf("cnt") + 1
+			jotun_pb.count(n, c.warriors, "Wojownicy En-Tai (PB)")
+			if n >= c.warriors then
+				pc.setqf("st", 12)
+				syschat("Uda³o ci siê pokonaæ Wojowników En-Tai (PB). Wróæ do Stra¿nika Lasu (PB).")
+			end
+		end
+
+		when 4342.kill or 4342.party_kill with jotun_pb.inside() and pc.getqf("st") == 21 begin
+			local c = jotun_pb.cfg()
+			if number(1, c.kit_chance) == 1 and pc.enough_inventory(c.kit) then
+				pc.give_item2(c.kit, 1)
+				pc.setqf("st", 22)
+				syschat("Druid En-Tai mia³ przy sobie apteczkê (PB). Zanieœ j¹ Stra¿nikowi Lasu (PB).")
+			end
+		end
+
+		when 8136.kill or 8136.party_kill with jotun_pb.inside() and pc.getqf("st") == 41 begin
+			local c = jotun_pb.cfg()
+			local n = pc.getqf("cnt") + 1
+			jotun_pb.count(n, c.stones, "Metiny Drzewnych Stworzeñ (PB)")
+			if n >= c.stones then
+				pc.setqf("st", 42)
+				syschat("Metiny zniszczone. Wróæ do Zwiadowcy Lasu (PB).")
+			end
+		end
+
+		when 4344.kill or 4344.party_kill with jotun_pb.inside() and pc.getqf("st") == 51 begin
+			local c = jotun_pb.cfg()
+			if not pc.enough_inventory(c.dew) then
+				return
+			end
+			pc.give_item2(c.dew, 1)
+			local n = pc.getqf("cnt") + 1
+			jotun_pb.count(n, c.destroyers, "Rosy En-Tai (PB)")
+			if n >= c.destroyers then
+				pc.setqf("st", 52)
+				syschat("Uda³o ci siê zdobyæ Rosy En-Tai (PB). Zanieœ je Zwiadowcy Lasu (PB).")
+			end
+		end
+
+		when 4345.kill or 4345.party_kill with jotun_pb.inside() and (pc.getqf("st") == 61 or pc.getqf("st") == 71) begin
+			local c = jotun_pb.cfg()
+			local st = pc.getqf("st")
+			local v = st == 61 and c.timber or c.emerald
+			if not pc.enough_inventory(v) then
+				return
+			end
+			pc.give_item2(v, 1)
+			pc.setqf("st", st + 1)
+			syschat("W³adca En-Tai (PB) pokonany. Wróæ do Badacza Lasu (PB).")
+		end
+
+		-- Przywódca Stra¿y Lasu (PB): Erebu
+		when 20542.chat."Pomieszczenie bossa" with jotun_pb.inside() and d.getf("closed") == 0 and d.getf("level") == 0 and npc.lock() begin
+			local c = jotun_pb.cfg()
+			say_title(mob_name(20542)..":")
+			if not pc.is_gm() and not party.is_party() then
+				say("Do Erebu wchodzi siê tylko w grupie.")
+				npc.unlock()
+				return
+			end
+			if party.is_party() and not party.is_leader() and not pc.is_gm() then
+				say("Tylko przywódca grupy mo¿e poprowadziæ was dalej.")
+				npc.unlock()
+				return
+			end
+			if party.is_party() and not d.all_near_to(pc.get_x(), pc.get_y()) then
+				say("Cz³onek grupy jest za daleko. Zbierzcie siê przy mnie.")
+				npc.unlock()
+				return
+			end
+			say("Za t¹ bram¹ le¿y Erebu - kraina Jotuna Thryma. Ka¿dy")
+			say("z was potrzebuje Kamienia Driad (PB) od Badacza Lasu.")
+			say_item_vnum(c.dryad)
+			if select("WejdŸ do Erebu", "Nie teraz") ~= 1 then
+				npc.unlock()
+				return
+			end
+			local pids = {pc.get_player_id()}
+			if party.is_party() then
+				pids = {party.get_member_pids()}
+			end
+			local missing = {}
+			local members = {}
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == d.get_map_index() then
+					table.insert(members, pid)
+					if pc.count_item(c.dryad) < 1 and not pc.is_gm() then
+						table.insert(missing, pc.get_name())
+					end
+				end
+				q.end_other_pc_block()
+			end
+			if table.getn(missing) > 0 then
+				say_title(mob_name(20542)..":")
+				say("Cz³onek grupy nie posiada przedmiotu potrzebnego,")
+				say("by wejœæ:")
+				say_item_vnum(c.dryad)
+				for i, n in next, missing, nil do say(color(1, 1, 0).."    "..n) end
+				npc.unlock()
+				return
+			end
+			for i, pid in next, members, nil do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid and not pc.is_gm() then
+					pc.remove_item(c.dryad, 1)
+				end
+				q.end_other_pc_block()
+			end
+			npc.unlock()
+			d.setf("level", 2)
+			d.clear_regen()
+			d.kill_all()
+			d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
+			d.spawn_mob(4352, c.boss[1], c.boss[2])
+			d.notice("Erebu (PB): Bagjanamu (PB) strze¿e drogi do Jotuna Thryma!")
+		end
+
+		when 4352.kill with jotun_pb.inside() and d.getf("level") == 2 and d.getf("closed") == 0 begin
+			local c = jotun_pb.cfg()
+			d.notice("Bagjanamu (PB) pokonany. Ziemia dr¿y - Jotun Thrym (PB) nadchodzi!")
+			server_timer("jotun_pb_spawn", c.boss_delay, d.get_map_index())
+		end
+
+		when jotun_pb_spawn.server_timer begin
+			local c = jotun_pb.cfg()
+			if d.select(get_server_timer_arg()) and d.getf("closed") == 0 then
+				d.spawn_mob(4413, c.boss[1], c.boss[2])
+				d.notice("Jotun Thrym (PB) przyby³ do Erebu!")
+			end
+		end
+
+		when 4413.kill with jotun_pb.inside() and d.getf("level") == 2 and d.getf("closed") == 0 begin
+			local c = jotun_pb.cfg()
+			d.setf("closed", 1)
+			d.update_ranking("jotun_pb", get_global_time() - d.getf("start"))
+			d.clear_regen()
+			d.notice("Pokonaliœcie Jotuna Thryma (PB)!")
+			d.notice("Wszyscy wojownicy wróc¹ na P³askowy¿ Iluzji za minutê.")
+			server_timer("jotun_pb_end", c.end_sec, d.get_map_index())
+		end
+
+		when jotun_pb_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				d.setf("mt2009_keep_until", 0)
+				d.exit_all()
+			end
+		end
+	end
+end

@@ -1,0 +1,250 @@
+-- MT2009_PLUS_YOHARA_ILUZJA_V1: Grota Wygnañców 2 (PB) i Œwi¹tynia Smoka (PB) - loch Berana-Setaou (PB) (398,
+-- metin2_map_boss_awaken_skipia - teren Groty Wygnañców 2 w oficjalnym miejscu, ze œwi¹tyni¹ otwart¹; pl-wiki "Grota
+-- Wygnañców 2 (PB)", "Œwi¹tynia Smoka (PB)", "Beran-Setaou (PB)", "Duch Sura (PB)", "Krêty Klucz (PB)"; przebieg,
+-- pozycje i liczby jak Owsap v6.2.6 awaken_skipia_dungeon.quest). Wejœcie: Statua Przebudzenia na P³askowy¿u Iluzji
+-- (quest przebudzeni_bossowie).
+--   * w grocie: Kapitanowie i Genera³owie Yonghan (PB) (4287-4290) zostawiaj¹ po œmierci Krêty Klucz (PB) (31180);
+--   * Duch Sura (PB) (20530): przywódca, ca³a grupa przy nim, ka¿dy cz³onek ma 3 Krête Klucze (PB) - klucze znikaj¹,
+--     grupa trafia do Œwi¹tyni Smoka (PB);
+--   * w œwi¹tyni: Beran-Setaou (PB) (4410, b³yskawica, 122 poz.; przywo³uje Wojowników Setaou (PB)) z obstaw¹ i
+--     cztery Metiny - Góry, Zemsty, Samotnoœci, Pychy (8130-8133). Dopóki stoi którykolwiek z nich, Berana nie da siê
+--     zraniæ (wiki: "Wszystkie metiny musz¹ zostaæ zniszczone, by pokonanie bossa by³o mo¿liwe") - d.set_damage_from_race
+--     (NEW_ICEDAMAGE_SYSTEM silnika) dla ka¿dej rasy gracza, zdjête po ostatnim Metinie; zniszczony Metin raz na trzy
+--     przywo³uje oddzia³ Yonghan (Owsap).
+-- 60 minut od wejœcia; po zwyciêstwie (minuta) lub po czasie wszyscy wracaj¹ na P³askowy¿ Iluzji. Ksi¹¿ka
+-- Przebudzenia znika przy pierwszym wejœciu do nowej wyprawy. Panel lochów: beran_pb. Boty nie wchodz¹.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest beran_pb begin
+	state start begin
+		function cfg()
+			return {
+				map = 398, base_x = 0, base_y = 19712,
+				entry = {877, 722}, ghost = {263, 180}, boss_room = {225, 173}, boss = {181, 173},
+				stones = {{8130, 170, 160}, {8131, 190, 180}, {8132, 170, 182}, {8133, 192, 160}},
+				path = "data/dungeon/beran_pb/",
+				key = 31180, keys = 3, races = 9,
+				limit = 3600, keep = 3600 + 300, ticket = 31146, end_sec = 60,
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 398 * 10000 and idx < 399 * 10000 and pc.in_dungeon()
+		end
+
+		function out()
+			local m, x, y = pc.getf("przebudzeni_bossowie", "ret_map"), pc.getf("przebudzeni_bossowie", "ret_x"),
+				pc.getf("przebudzeni_bossowie", "ret_y")
+			if m > 0 then
+				pc.warp(x * 100, y * 100, m)
+			else
+				warp_to_village()
+			end
+		end
+
+		function finish(text)
+			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
+			if text then
+				d.notice(text)
+			end
+			d.exit_all()
+		end
+
+		function init()
+			local c = beran_pb.cfg()
+			d.setf("init", 1)
+			d.setf("start", get_global_time())
+			d.setf("mt2009_keep_until", get_global_time() + c.keep)
+			d.setf("level", 0)
+			d.regen_file(c.path.."npc.txt")
+			d.set_regen_file(c.path.."regen.txt")
+			d.notice("Grota Wygnañców 2 (PB): masz 60 minut. Zdob¹dŸcie Krête Klucze (PB) i odszukajcie Ducha Sura.")
+			server_timer("beran_pb_tick", 60, d.get_map_index())
+		end
+
+		-- the temple: Beran-Setaou (PB) with his guard (group 4292 - its leader's VID) and the four stones
+		function temple()
+			local c = beran_pb.cfg()
+			d.setf("level", 2)
+			d.clear_regen()
+			d.kill_all()
+			d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
+			d.set_regen_file(c.path.."boss.txt")
+			for i, s in ipairs(c.stones) do
+				d.set_unique("stone"..i, d.spawn_mob(s[1], s[2], s[3]))
+			end
+			local vid = d.spawn_group(4292, c.boss[1], c.boss[2], 5, true, 1)
+			d.set_unique("beran", vid)
+			if vid > 0 then
+				for r = 0, c.races - 1 do
+					d.set_damage_from_race(r, vid)
+				end
+			end
+			d.notice("Œwi¹tynia Smoka (PB): Beran-Setaou (PB) czerpie moc z czterech Metinów.")
+			d.notice("Dopóki stoi choæ jeden z nich, smoka nie da siê zraniæ.")
+		end
+
+		when login with beran_pb.inside() begin
+			local c = beran_pb.cfg()
+			local idx = pc.get_map_index()
+			if pc.is_playerbot() then
+				return
+			end
+			local m = pc.getf("przebudzeni_bossowie", "ret_map")
+			if m > 0 then
+				pc.set_warp_location(m, pc.getf("przebudzeni_bossowie", "ret_x"), pc.getf("przebudzeni_bossowie", "ret_y"))
+			end
+			if d.getf("closed") == 1 then
+				syschat("Grota Wygnañców 2 (PB): ta wyprawa ju¿ siê skoñczy³a.")
+				beran_pb.out()
+				return
+			end
+			if pc.getf("przebudzeni_bossowie", "idx") ~= idx then
+				if not pc.is_gm() then
+					if pc.count_item(c.ticket) < 1 then
+						syschat("Grota Wygnañców 2 (PB): potrzebujesz Ksi¹¿ki Przebudzenia.")
+						beran_pb.out()
+						return
+					end
+					pc.remove_item(c.ticket, 1)
+				end
+				pc.setf("przebudzeni_bossowie", "idx", idx)
+				pc.setf("przebudzeni_bossowie", "entry", get_global_time())
+			end
+			d.setf("entered", 1)
+			if d.getf("init") == 0 then
+				beran_pb.init()
+			end
+			if d.getf("level") == 2 and math.abs(pc.get_local_x() - c.boss_room[1]) > 80 then
+				pc.warp((c.base_x + c.boss_room[1]) * 100, (c.base_y + c.boss_room[2]) * 100, idx)
+			end
+		end
+
+		-- the time
+		when beran_pb_tick.server_timer begin
+			local c = beran_pb.cfg()
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local left = d.getf("start") + c.limit - get_global_time()
+			if left <= 0 then
+				beran_pb.finish("Grota Wygnañców 2 (PB): czas min¹³ - wracacie na P³askowy¿ Iluzji.")
+				return
+			end
+			local m = math.floor((left + 30) / 60)
+			if m == 45 or m == 30 or m == 15 or m == 5 or m == 1 then
+				d.notice("Grota Wygnañców 2 (PB): zosta³o "..m.." min. Po czasie grupa wróci na P³askowy¿ Iluzji.")
+			end
+			server_timer("beran_pb_tick", 60, get_server_timer_arg())
+		end
+
+		-- the keys: every Captain / General Yonghan (PB) leaves one (Owsap)
+		when 4287.kill or 4288.kill or 4289.kill or 4290.kill with beran_pb.inside() and d.getf("level") == 0 begin
+			game.drop_item(beran_pb.cfg().key, 1)
+		end
+
+		-- Duch Sura (PB): the way into Œwi¹tynia Smoka (PB)
+		when 20530.chat."Chcê zabiæ tego smoka!" with beran_pb.inside() and d.getf("closed") == 0 and d.getf("level") == 0 and npc.lock() begin
+			local c = beran_pb.cfg()
+			say_title(mob_name(20530)..":")
+			if not pc.is_gm() and not party.is_party() then
+				say("Do Œwi¹tyni Smoka wchodzi siê tylko w grupie.")
+				npc.unlock()
+				return
+			end
+			if party.is_party() and not party.is_leader() and not pc.is_gm() then
+				say("Tylko przywódca grupy mo¿e otworzyæ portal.")
+				npc.unlock()
+				return
+			end
+			if party.is_party() and not d.all_near_to(pc.get_x(), pc.get_y()) then
+				say("Cz³onek grupy jest za daleko. Zbierzcie siê przy mnie.")
+				npc.unlock()
+				return
+			end
+			say("Portal do Œwi¹tyni Smoka otworz¹ trzy Krête Klucze")
+			say("(PB) od ka¿dego z was.")
+			say_item_vnum(c.key)
+			if select("Tak, tak uczyñ.", "Nie, zostanê tutaj.") ~= 1 then
+				npc.unlock()
+				return
+			end
+			local pids = {pc.get_player_id()}
+			if party.is_party() then
+				pids = {party.get_member_pids()}
+			end
+			local missing = {}
+			local members = {}
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == d.get_map_index() then
+					table.insert(members, pid)
+					if pc.count_item(c.key) < c.keys and not pc.is_gm() then
+						table.insert(missing, pc.get_name())
+					end
+				end
+				q.end_other_pc_block()
+			end
+			if table.getn(missing) > 0 then
+				say_title(mob_name(20530)..":")
+				say("Nie posiadasz wystarczaj¹cej iloœci kluczy! Aby")
+				say("uaktywniæ portal, potrzebujê 3x")
+				say_item_vnum(c.key)
+				for i, n in next, missing, nil do say(color(1, 1, 0).."    "..n) end
+				npc.unlock()
+				return
+			end
+			for i, pid in next, members, nil do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid and not pc.is_gm() then
+					pc.remove_item(c.key, c.keys)
+				end
+				q.end_other_pc_block()
+			end
+			npc.unlock()
+			beran_pb.temple()
+		end
+
+		-- the temple's stones: one time in three a Yonghan troop where it fell (Owsap); the last one takes the dragon's
+		-- shield away
+		when 8130.kill or 8131.kill or 8132.kill or 8133.kill with beran_pb.inside() and d.getf("level") == 2 begin
+			if number(1, 3) == 1 then
+				local g = {4288, 4288, 4289, 4289, 4290}
+				d.spawn_group(g[number(1, table.getn(g))], pc.get_local_x(), pc.get_local_y(), 1, true, 1)
+			end
+			local left = 0
+			for i = 1, 4 do
+				if not d.is_unique_dead("stone"..i) then
+					left = left + 1
+				end
+			end
+			if left > 0 then
+				d.notice("Metin pad³. Beran-Setaou (PB) czerpie jeszcze moc z "..left..".")
+				return
+			end
+			local vid = d.get_unique_vid("beran")
+			if vid > 0 then
+				d.reset_damage_from_race(vid)
+			end
+			d.notice("Ostatni Metin pad³ - Beran-Setaou (PB) straci³ swoj¹ tarczê!")
+		end
+
+		when 4410.kill with beran_pb.inside() and d.getf("level") == 2 and d.getf("closed") == 0 begin
+			local c = beran_pb.cfg()
+			d.setf("closed", 1)
+			d.update_ranking("beran_pb", get_global_time() - d.getf("start"))
+			d.clear_regen()
+			d.notice("Beran-Setaou (PB) zosta³ pokonany!")
+			d.notice("Wszyscy wojownicy wróc¹ na P³askowy¿ Iluzji za minutê.")
+			server_timer("beran_pb_end", c.end_sec, d.get_map_index())
+		end
+
+		when beran_pb_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				d.setf("mt2009_keep_until", 0)
+				d.exit_all()
+			end
+		end
+	end
+end

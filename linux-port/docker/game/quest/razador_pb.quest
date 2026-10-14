@@ -1,20 +1,20 @@
 -- MT2009_PLUS_YOHARA_PB_V1: Twierdza Czerwonego Smoka (PB) - loch Razadora (PB) (369, metin2_map_boss_awaken_flame -
 -- teren naszej 351 w oficjalnym miejscu; pl-wiki "Twierdza Czerwonego Smoka (PB)", "Razador (PB)"; przebieg, pozycje i
--- szanse jak Owsap v6.2.6 awaken_flame_dungeon.quest). WejÅ›cie: Statua Przebudzenia (quest przebudzeni_bossowie).
--- Siedem platform; Gardziel Am-heha (PB) (20531) wyznacza zadania szeÅ›ciu z nich w losowej kolejnoÅ›ci, kaÅ¼de otwiera
--- swÃ³j Zamek Losu (20534) i SmoczÄ… BramÄ™ (20535):
+-- szanse jak Owsap v6.2.6 awaken_flame_dungeon.quest). Wejœcie: Statua Przebudzenia na P³askowy¿u Iluzji (quest przebudzeni_bossowie).
+-- Siedem platform; Gardziel Am-heha (PB) (20531) wyznacza zadania szeœciu z nich w losowej kolejnoœci, ka¿de otwiera
+-- swój Zamek Losu (20534) i Smocz¹ Bramê (20535):
 --   * zabij wszystkie potwory na platformie (dwie platformy);
---   * zdobÄ…dÅº ZÅ‚otÄ… ZÄ™batkÄ™ (PB) (31187, 5% z potwora) i przeciÄ…gnij jÄ… na StelÄ™ Isfet (PB) (20533) - zÄ™batka bywa
---     zepsuta (30% to prawdziwa), wtedy trzeba zdobyÄ‡ nastÄ™pnÄ…;
+--   * zdob¹dŸ Z³ot¹ Zêbatkê (PB) (31187, 5% z potwora) i przeci¹gnij j¹ na Stelê Isfet (PB) (20533) - zêbatka bywa
+--     zepsuta (30% to prawdziwa), wtedy trzeba zdobyæ nastêpn¹;
 --   * zabij Ignatora (PB) (4309) - najlepiej najpierw wszystkie potwory;
---   * odblokuj siedem Stel Isfet (PB) Kamieniami Maat (PB) (31188, 5% z potwora) w ukrytej kolejnoÅ›ci - zÅ‚y wybÃ³r
---     niszczy kamieÅ„;
---   * zniszcz Metin Purgatorium (PB) (8134) - zabite potwory siÄ™ odradzajÄ…;
---   * po szeÅ›ciu zadaniach przywÃ³dca rozmawia z GardzielÄ… - siÃ³dma platforma: Razador (PB) (4411; przywoÅ‚uje
---     Ognistych GeneraÅ‚Ã³w Å»aru (PB), maks. 3 - jego "summon" w mob_proto).
--- 60 minut od wejÅ›cia; po zwyciÄ™stwie lub po czasie wszyscy wracajÄ… pod statuÄ™ (kaÅ¼dy pod swojÄ…, przy ktÃ³rej wszedÅ‚).
--- KsiÄ…Å¼ka Przebudzenia znika przy pierwszym wejÅ›ciu do nowej wyprawy. Panel lochÃ³w: razador_pb.
--- cp1250; Å¼aden napis nie koÅ„czy siÄ™ polskÄ… literÄ… (qc).
+--   * odblokuj siedem Stel Isfet (PB) Kamieniami Maat (PB) (31188, 5% z potwora) w ukrytej kolejnoœci - z³y wybór
+--     niszczy kamieñ;
+--   * zniszcz Metin Purgatorium (PB) (8134) - zabite potwory siê odradzaj¹;
+--   * po szeœciu zadaniach przywódca rozmawia z Gardziel¹ - siódma platforma: Razador (PB) (4411; przywo³uje
+--     Ognistych Genera³ów ¯aru (PB), maks. 3 - jego "summon" w mob_proto).
+-- 60 minut od wejœcia; po zwyciêstwie lub po czasie wszyscy wracaj¹ na P³askowy¿ Iluzji (MT2009_PLUS_YOHARA_ILUZJA_V1).
+-- Ksi¹¿ka Przebudzenia znika przy pierwszym wejœciu do nowej wyprawy. Panel lochów: razador_pb.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest razador_pb begin
 	state start begin
 		function cfg()
@@ -85,7 +85,7 @@ quest razador_pb begin
 				d.set_unique("door"..i, d.spawn_mob_ac_dir(20534, c.doors[i][1], c.doors[i][2], c.doors_dir[i]))
 				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20535, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))
 			end
-			d.notice("Twierdza Czerwonego Smoka (PB): masz 60 minut. Porozmawiaj z GardzielÄ… Am-heha.")
+			d.notice("Twierdza Czerwonego Smoka (PB): masz 60 minut. Porozmawiaj z Gardziel¹ Am-heha.")
 			server_timer("razador_pb_tick", 60, d.get_map_index())
 		end
 
@@ -100,23 +100,23 @@ quest razador_pb begin
 				d.regen_file(c.path..(lv == 1 and "fd_a.txt" or "fd_c.txt"))
 				server_timer("razador_pb_kills", 12, d.get_map_index())
 			elseif lv == 2 then
-				say("Zadanie: zdobÄ…dÅº ZÅ‚otÄ… ZÄ™batkÄ™ (PB) i uruchom")
-				say("niÄ… ukryty mechanizm Steli Isfet (PB). ZÄ™batkÄ™ noszÄ… demony.")
-				d.notice("Zadanie: zdobÄ…dÅº ZÅ‚otÄ… ZÄ™batkÄ™ (PB) i przeciÄ…gnij jÄ… na StelÄ™ Isfet (PB).")
+				say("Zadanie: zdob¹dŸ Z³ot¹ Zêbatkê (PB) i uruchom")
+				say("ni¹ ukryty mechanizm Steli Isfet (PB). Zêbatkê nosz¹ demony.")
+				d.notice("Zadanie: zdob¹dŸ Z³ot¹ Zêbatkê (PB) i przeci¹gnij j¹ na Stelê Isfet (PB).")
 				d.setf("level", 12)
 				d.spawn_mob(20533, c.stone2[1], c.stone2[2])
 				d.set_regen_file(c.path.."fd_b.txt")
 			elseif lv == 4 then
-				say("Zadanie: pokonaj Ignatora (PB), straÅ¼nika Å¼aru.")
-				d.notice("Zadanie: znajdÅº i zabij Ignatora (PB).")
+				say("Zadanie: pokonaj Ignatora (PB), stra¿nika ¿aru.")
+				d.notice("Zadanie: znajdŸ i zabij Ignatora (PB).")
 				d.setf("level", 14)
 				d.spawn_mob(4309, c.ignator[1], c.ignator[2])
 				d.set_regen_file(c.path.."fd_d.txt")
 			elseif lv == 5 then
-				say("Zadanie: zdobÄ…dÅº Kamienie Maat (PB) i umieÅ›Ä‡ je na")
-				say("siedmiu Stelach Isfet (PB) we wÅ‚aÅ›ciwej kolejnoÅ›ci.")
-				say("KamieÅ„ uÅ¼yty na zÅ‚ej steli siÄ™ rozpadnie.")
-				d.notice("Zadanie: Kamienie Maat (PB) na siedem Stel Isfet (PB), we wÅ‚aÅ›ciwej kolejnoÅ›ci.")
+				say("Zadanie: zdob¹dŸ Kamienie Maat (PB) i umieœæ je na")
+				say("siedmiu Stelach Isfet (PB) we w³aœciwej kolejnoœci.")
+				say("Kamieñ u¿yty na z³ej steli siê rozpadnie.")
+				d.notice("Zadanie: Kamienie Maat (PB) na siedem Stel Isfet (PB), we w³aœciwej kolejnoœci.")
 				d.setf("level", 15)
 				d.setf("maat_next", 1)
 				d.set_regen_file(c.path.."fd_e.txt")
@@ -131,8 +131,8 @@ quest razador_pb begin
 					d.set_unique("stone5_"..k, d.spawn_mob(20533, p[1], p[2]))
 				end
 			elseif lv == 6 then
-				say("Zadanie: tylko ci, ktÃ³rzy nie bojÄ… siÄ™ Å¼aru,")
-				say("zniszczÄ… Metin Purgatorium (PB).")
+				say("Zadanie: tylko ci, którzy nie boj¹ siê ¿aru,")
+				say("zniszcz¹ Metin Purgatorium (PB).")
 				d.notice("Zadanie: zniszcz Metin Purgatorium (PB).")
 				d.setf("level", 16)
 				d.set_regen_file(c.path.."fd_f.txt")
@@ -144,7 +144,7 @@ quest razador_pb begin
 			if text then
 				d.notice(text)
 			end
-			d.notice("OdwiedÅº Gardziel Am-heha (PB), by otworzyÄ‡ kolejny Zamek Losu.")
+			d.notice("OdwiedŸ Gardziel Am-heha (PB), by otworzyæ kolejny Zamek Losu.")
 			razador_pb.clear_level()
 		end
 
@@ -159,14 +159,14 @@ quest razador_pb begin
 				pc.set_warp_location(m, pc.getf("przebudzeni_bossowie", "ret_x"), pc.getf("przebudzeni_bossowie", "ret_y"))
 			end
 			if d.getf("closed") == 1 then
-				syschat("Twierdza Czerwonego Smoka (PB): ta wyprawa juÅ¼ siÄ™ skoÅ„czyÅ‚a.")
+				syschat("Twierdza Czerwonego Smoka (PB): ta wyprawa ju¿ siê skoñczy³a.")
 				razador_pb.out()
 				return
 			end
 			if pc.getf("przebudzeni_bossowie", "idx") ~= idx then
 				if not pc.is_gm() then
 					if pc.count_item(c.ticket) < 1 then
-						syschat("Twierdza Czerwonego Smoka (PB): potrzebujesz KsiÄ…Å¼ki Przebudzenia.")
+						syschat("Twierdza Czerwonego Smoka (PB): potrzebujesz Ksi¹¿ki Przebudzenia.")
 						razador_pb.out()
 						return
 					end
@@ -192,12 +192,12 @@ quest razador_pb begin
 			end
 			local left = d.getf("start") + c.limit - get_global_time()
 			if left <= 0 then
-				razador_pb.finish("Twierdza Czerwonego Smoka (PB): czas minÄ…Å‚ - wracacie pod statuÄ™.")
+				razador_pb.finish("Twierdza Czerwonego Smoka (PB): czas min¹³ - wracacie na P³askowy¿ Iluzji.")
 				return
 			end
 			local m = math.floor((left + 30) / 60)
 			if m == 45 or m == 30 or m == 15 or m == 5 or m == 1 then
-				d.notice("Twierdza Czerwonego Smoka (PB): zostaÅ‚o "..m.." min. Po czasie grupa wrÃ³ci pod statuÄ™.")
+				d.notice("Twierdza Czerwonego Smoka (PB): zosta³o "..m.." min. Po czasie grupa wróci na P³askowy¿ Iluzji.")
 			end
 			server_timer("razador_pb_tick", 60, get_server_timer_arg())
 		end
@@ -207,7 +207,7 @@ quest razador_pb begin
 			local c = razador_pb.cfg()
 			say_title(mob_name(20531)..":")
 			if party.is_party() and not party.is_leader() and not pc.is_gm() then
-				say("Tylko przywÃ³dca grupy moÅ¼e przyjÄ…Ä‡ zadanie.")
+				say("Tylko przywódca grupy mo¿e przyj¹æ zadanie.")
 				npc.unlock()
 				return
 			end
@@ -233,29 +233,29 @@ quest razador_pb begin
 				end
 			end
 			if lv == 11 or lv == 13 then
-				say("Nie wszystkie demony zostaÅ‚y pokonane.")
-				say_reward("PozostaÅ‚o: "..d.count_monster())
+				say("Nie wszystkie demony zosta³y pokonane.")
+				say_reward("Pozosta³o: "..d.count_monster())
 			elseif lv == 12 then
-				say("Mechanizm Steli Isfet uruchomi tylko ZÅ‚ota ZÄ™batka")
-				say("(PB). WrÃ³Ä‡, gdy zadanie zostanie wykonane.")
+				say("Mechanizm Steli Isfet uruchomi tylko Z³ota Zêbatka")
+				say("(PB). Wróæ, gdy zadanie zostanie wykonane.")
 			elseif lv == 14 then
-				say("Ignator (PB) jeszcze Å¼yje. Walcz dalej albo czeka")
-				say("ciÄ™ wieczne potÄ™pienie.")
+				say("Ignator (PB) jeszcze ¿yje. Walcz dalej albo czeka")
+				say("ciê wieczne potêpienie.")
 			elseif lv == 15 then
-				say("BÅ‚Ä…dziÄ‡ jest rzeczÄ… ludzkÄ… - wybieraj rozwaÅ¼nie.")
-				say("WrÃ³Ä‡, gdy wszystkie Stele Isfet zostanÄ… odblokowane.")
+				say("B³¹dziæ jest rzecz¹ ludzk¹ - wybieraj rozwa¿nie.")
+				say("Wróæ, gdy wszystkie Stele Isfet zostan¹ odblokowane.")
 			elseif lv == 16 then
-				say("Metin Purgatorium (PB) wciÄ…Å¼ stoi - demony wracajÄ…!")
-				say("ObrÃ³Ä‡ go w popiÃ³Å‚ i wrÃ³Ä‡.")
+				say("Metin Purgatorium (PB) wci¹¿ stoi - demony wracaj¹!")
+				say("Obróæ go w popió³ i wróæ.")
 			elseif lv == 7 then
-				say("Czy chcesz przejÅ›Ä‡ przez Gardziel Am-heha i")
-				say("stanÄ…Ä‡ twarzÄ… w twarz ze swoim przeznaczeniem?")
-				if select("WejdÅº do sali", "MoÅ¼e pÃ³Åºniej") == 1 then
+				say("Czy chcesz przejœæ przez Gardziel Am-heha i")
+				say("stan¹æ twarz¹ w twarz ze swoim przeznaczeniem?")
+				if select("WejdŸ do sali", "Mo¿e póŸniej") == 1 then
 					d.setf("level", 17)
 					d.jump_all(c.base_x + c.boss_room[1], c.base_y + c.boss_room[2])
 					d.set_regen_file(c.path.."fd_fild_boss.txt")
 					d.set_unique("boss", d.spawn_mob(4411, c.boss[1], c.boss[2]))
-					d.notice("Twierdza Czerwonego Smoka (PB): piekielny wÅ‚adca Razador (PB) czeka!")
+					d.notice("Twierdza Czerwonego Smoka (PB): piekielny w³adca Razador (PB) czeka!")
 				end
 			end
 			npc.unlock()
@@ -270,8 +270,8 @@ quest razador_pb begin
 				return
 			end
 			if d.count_monster() <= 0 then
-				d.notice("Wszystkie demony zostaÅ‚y pokonane.")
-				d.notice("OdwiedÅº Gardziel Am-heha (PB), by otworzyÄ‡ kolejny Zamek Losu.")
+				d.notice("Wszystkie demony zosta³y pokonane.")
+				d.notice("OdwiedŸ Gardziel Am-heha (PB), by otworzyæ kolejny Zamek Losu.")
 				d.setf("level", 0)
 				return
 			end
@@ -298,11 +298,11 @@ quest razador_pb begin
 			item.remove()
 			if number(1, 100) <= c.cog_real_pct then
 				npc.purge()
-				razador_pb.task_done("Stela Isfet (PB) zostaÅ‚a zniszczona.")
+				razador_pb.task_done("Stela Isfet (PB) zosta³a zniszczona.")
 			else
 				say_title(mob_name(20533)..":")
-				say("Ta ZÅ‚ota ZÄ™batka (PB) byÅ‚a zepsuta i rozpadÅ‚a siÄ™.")
-				say("ZnajdÅº prawdziwÄ….")
+				say("Ta Z³ota Zêbatka (PB) by³a zepsuta i rozpad³a siê.")
+				say("ZnajdŸ prawdziw¹.")
 			end
 		end
 
@@ -319,20 +319,20 @@ quest razador_pb begin
 			item.remove()
 			say_title(mob_name(20533)..":")
 			if which == 0 or which ~= want then
-				say("ZÅ‚a kolejnoÅ›Ä‡. KamieÅ„ Maat (PB) rozpadÅ‚ siÄ™.")
+				say("Z³a kolejnoœæ. Kamieñ Maat (PB) rozpad³ siê.")
 				return
 			end
 			npc.purge()
 			if want == 7 then
-				razador_pb.task_done("Maat zwyciÄ™Å¼yÅ‚a nad Isfet - ostatnia Stela Isfet (PB) zniszczona.")
+				razador_pb.task_done("Maat zwyciê¿y³a nad Isfet - ostatnia Stela Isfet (PB) zniszczona.")
 				return
 			end
 			d.setf("maat_next", want + 1)
 			if want == 6 then
-				say("MÄ…dry wybÃ³r. Teraz zniszcz ostatniÄ… stelÄ™, a Maat")
-				say("zwyciÄ™Å¼y nad Isfet.")
+				say("M¹dry wybór. Teraz zniszcz ostatni¹ stelê, a Maat")
+				say("zwyciê¿y nad Isfet.")
 			else
-				say("MÄ…dry wybÃ³r. Teraz zniszcz nastÄ™pnÄ… stelÄ™.")
+				say("M¹dry wybór. Teraz zniszcz nastêpn¹ stelê.")
 			end
 			if d.count_monster() < c.gen_limit then
 				d.regen_file(c.path.."fd_e.txt")
@@ -340,11 +340,11 @@ quest razador_pb begin
 		end
 
 		when 4309.kill with razador_pb.inside() and d.getf("level") == 14 begin
-			razador_pb.task_done("Ignator (PB), straÅ¼nik Å¼aru, zostaÅ‚ pokonany.")
+			razador_pb.task_done("Ignator (PB), stra¿nik ¿aru, zosta³ pokonany.")
 		end
 
 		when 8134.kill with razador_pb.inside() and d.getf("level") == 16 begin
-			razador_pb.task_done("Metin Purgatorium (PB) zostaÅ‚ zniszczony.")
+			razador_pb.task_done("Metin Purgatorium (PB) zosta³ zniszczony.")
 		end
 
 		when 4411.kill with razador_pb.inside() and d.getf("level") == 17 and d.getf("closed") == 0 begin
@@ -352,8 +352,8 @@ quest razador_pb begin
 			d.setf("closed", 1)
 			d.update_ranking("razador_pb", get_global_time() - d.getf("start"))
 			d.clear_regen()
-			d.notice("Razador (PB) zostaÅ‚ pokonany!")
-			d.notice("Wszyscy wojownicy wrÃ³cÄ… pod statuÄ™ za minutÄ™.")
+			d.notice("Razador (PB) zosta³ pokonany!")
+			d.notice("Wszyscy wojownicy wróc¹ na P³askowy¿ Iluzji za minutê.")
 			server_timer("razador_pb_end", c.end_sec, d.get_map_index())
 		end
 

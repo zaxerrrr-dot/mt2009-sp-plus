@@ -3718,6 +3718,22 @@ for ypb_sql in yohara_pb.sql yohara_items_pb.sql yohara_pb_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_YOHARA_ILUZJA_V1: Plaskowyz Iluzji and the two remaining awakened bosses - Beran-Setaou (PB), Jotun Thrym
+# (PB) (the owner, 14 October 2026). After the PB files (the PB bosses' drops name the plans this one adds):
+# yohara_iluzja.sql (tools/yohara_iluzja/gen_yiluzja.py) - the two dungeons' monsters, bosses, stones and NPCs, the
+# plateau's statues and Handlarka Iluzji with her shop; yohara_items_iluzja.sql - Oznaka Slawy, the Dark Dragon gear's
+# plans, the two chests, the quest items, the dragon helmets and their refine rows; yohara_iluzja_zywioly.sql - the
+# pl-wiki's elements (lightning / wind). All idempotent (INSERT IGNORE / UPDATE). The drop file, the chests and the
+# statues' cube recipes (game/yohara_iluzja) name these vnums: a world without them stops the cores at boot.
+for yil_sql in yohara_iluzja.sql yohara_items_iluzja.sql yohara_iluzja_zywioly.sql; do
+    [ -s "/opt/playerbot/$yil_sql" ] || continue
+    if db < "/opt/playerbot/$yil_sql"; then
+        echo "[playerbot-migrate] Plaskowyz Iluzji: $yil_sql applied"
+    else
+        fail_step "Plaskowyz Iluzji: $yil_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read
