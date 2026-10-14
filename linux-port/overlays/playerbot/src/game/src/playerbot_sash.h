@@ -5,8 +5,8 @@
 //
 // Until now a sash was only counter goods for a bot (GetPlayerBotRareGoodsKind):
 // dropped by a boss, carried to a stall, sold. Here a share of the bots keeps
-// them and does what a player does with them at Uriel (NPC 20011, in each
-// first village, acce_costume_uriel.quest):
+// them and does what a player does with them at Theowahdan (NPC 60003, in each
+// first village, acce_costume_uriel.quest; Uriel's until MT2009_PLUS_TEOWADEN_V1):
 //
 //   * combine two sashes of the same grade (any kind: a Szarfa Mistrza goes
 //     with a Krolewska Szarfa, the engine asks only the grade) - 1+1 -> 2 (5%),
@@ -18,7 +18,7 @@
 //     absorption, class restrictions stay behind with the piece;
 //   * wear it (WEAR_COSTUME_ACCE).
 //
-// Uriel's window is a client's, so the pass calls the engine's own functions
+// Theowahdan's window is a client's, so the pass calls the engine's own functions
 // the window's packets call (OpenAcce, AddAcceMaterial, RefineAcceMaterials,
 // CloseAcce): every check and roll is the engine's. A bot's DESC is a bot
 // desc, and the packets these send go nowhere.
@@ -43,7 +43,7 @@ namespace
 	// MT2009_PLUS_BOT_SASH_CLEAR_V1 (the owner, 13 October: "niech je lacza albo
 	// sprzedaja na ladzie ... niech nie trzymaja ich w EQ"): three - the pair
 	// of the lowest grade its purse combines and one of the grade it makes -
-	// where ten let a keeper sit on five pairs between two Uriel visits.
+	// where ten let a keeper sit on five pairs between two Theowahdan visits.
 	const int PLAYERBOT_SASH_KEEP = 3;
 	const DWORD PLAYERBOT_SASH_CHECK_MIN_MS = 3 * 60 * 1000;
 	const DWORD PLAYERBOT_SASH_CHECK_MAX_MS = 6 * 60 * 1000;
@@ -102,9 +102,11 @@ namespace
 	const DWORD PLAYERBOT_SASH_MARKET_PLENTY_UNITS = 40;
 	const int PLAYERBOT_SASH_PLENTY_PURSE_PERCENT = 60;
 	const long long PLAYERBOT_SASH_PLENTY_MIN_SPARE = 1000000LL;
-	// Uriel: npc.txt cells (713,605), (655,553) and (425,716) on each first
+	// MT2009_PLUS_TEOWADEN_V1 (the owner, 14 October 2026): the sash options
+	// moved from Uriel (20011) to Theowahdan - npc.txt cells (732,480),
+	// (681,717) and (413,539) (the pl-wiki's; game/Dockerfile) on each first
 	// village's BasePosition (409600,896000), (0,102400), (921600,204800).
-	const DWORD PLAYERBOT_URIEL_VNUM = 20011;
+	const DWORD PLAYERBOT_THEOWAHDAN_VNUM = 60003;
 
 	struct TPlayerBotSashTarget
 	{
@@ -151,13 +153,13 @@ namespace
 		return GetPlayerBotSashMarketSupply() >= PLAYERBOT_SASH_MARKET_PLENTY_UNITS;
 	}
 
-	bool GetPlayerBotUriel(long mapIndex, playerbot_empire_rules::TPoint& out)
+	bool GetPlayerBotTheowahdan(long mapIndex, playerbot_empire_rules::TPoint& out)
 	{
 		switch (mapIndex)
 		{
-			case 1:  out.x = 480900; out.y = 956500; return true;
-			case 21: out.x = 65500;  out.y = 157700; return true;
-			case 41: out.x = 964100; out.y = 276400; return true;
+			case 1:  out.x = 482800; out.y = 944000; return true;
+			case 21: out.x = 68100;  out.y = 174100; return true;
+			case 41: out.x = 962900; out.y = 258700; return true;
 			default: return false;
 		}
 	}
@@ -664,7 +666,7 @@ namespace
 	// whether it could combine them or not: 210 keepers sat on two to ten of
 	// mixed grades with no pair, or a pair and not the fee, and the Arezzo
 	// dungeon cohort - never in a town - filled whole bags with them (FuBu2:
-	// 148 of the 180 cells). What a keeper keeps is now its plan for Uriel:
+	// 148 of the 180 cells). What a keeper keeps is now its plan for Theowahdan:
 	//   - a sash at its target waiting for a piece, and nothing under it;
 	//   - else the pairs of each grade it still combines that its spare purse
 	//     pays the fee for, lowest grade first, and one sash of each grade
@@ -675,7 +677,7 @@ namespace
 	// up to PLAYERBOT_SASH_FLOW_COUNTER_LINES lines while the bag holds two or
 	// more and whatever the counters' share; a bag under pressure keeps that
 	// many of them for the counter and the merchant takes the plain +0 ones
-	// past it, the cheapest first. A bot that cannot reach a counter or Uriel
+	// past it, the cheapest first. A bot that cannot reach a counter or Theowahdan
 	// (the Arezzo dungeon cohort) combines its pairs in place, a few a look,
 	// and sells the rest at the merchant's price in place, the way it buys
 	// its potions; one the Arezzo test holds on its map does that only under
@@ -690,7 +692,7 @@ namespace
 
 	enum EPlayerBotSashFlowMode
 	{
-		PLAYERBOT_SASH_FLOW_TOWN = 0,		// counters, Uriel and the merchant as ever
+		PLAYERBOT_SASH_FLOW_TOWN = 0,		// counters, Theowahdan and the merchant as ever
 		PLAYERBOT_SASH_FLOW_HELD = 1,		// held on an Arezzo map: in place under pressure
 		PLAYERBOT_SASH_FLOW_IN_PLACE = 2	// the dungeon cohort: in place always
 	};
@@ -930,8 +932,8 @@ namespace
 
 	bool IsPlayerBotKeptSash(LPCHARACTER ch, LPITEM item)
 	{
-		// The piece chosen for the sash to fill waits for the Uriel visit, and
-		// the grail for the blacksmith and then Uriel.
+		// The piece chosen for the sash to fill waits for the Theowahdan visit, and
+		// the grail for the blacksmith and then Theowahdan.
 		if (ch && IsPlayerBotSashPieceKind(item) && !item->IsEquipped() && IsPlayerBotSashKeeper(ch))
 			return IsPlayerBotSashGrailProject(ch, item) || GetPlayerBotChosenSashPieceID(ch) == item->GetID();
 		if (!ch || !IsPlayerBotSashItem(item))
@@ -1011,7 +1013,7 @@ namespace
 	// PLAYERBOT_SASH_PRICE_MARGIN_PERCENT - the way the Dragon Stones are
 	// priced ("tak jak cory, ze 25% drozej niz koszt wyrobienia", operator,
 	// 26 September 2026). A grade-1 sash, the boss's drop, stands at
-	// PLAYERBOT_SASH_PRICE; each grade above is made at Uriel from two of the
+	// PLAYERBOT_SASH_PRICE; each grade above is made at Theowahdan from two of the
 	// grade under it: on a failure the second one and the fee are gone and the
 	// first stays, so one of grade g+1 costs
 	//   cost(g) + (cost(g) + fee(g)) / chance(g)
@@ -1134,7 +1136,7 @@ namespace
 	// MT2009_PLUS_SASH_CLOTH_V1: Delikatne Sukno (80019), what Metins and bosses
 	// drop instead of the +0 sash since 6 October (server-patches/raremobrules:
 	// the sash's chance, 2 / 5 / 10 by the killer's level). A player takes ten
-	// and 80 000 yang to Uriel's "Wytwarzanie" window (crafting window 111) for
+	// and 80 000 yang to Theowahdan's "Wytwarzanie" window (crafting window 111) for
 	// the plain sash (85001, 100%); a bot "wymienia automatycznie 10 sukien +
 	// 80k na szarfe" (the owner) - a keeper that still wants sashes does it here,
 	// without the window or the walk, and keeps its cloth for it. Every other bot
@@ -1172,7 +1174,7 @@ namespace
 	}
 
 	// Ten pieces and the fee for a plain sash, a few at a look.
-	// MT2009_PLUS_SASH_CLOTH_V2: Uriel's recipe chance, read from world.crafting_proto 85001 once
+	// MT2009_PLUS_SASH_CLOTH_V2: the recipe's chance (Theowahdan's window), read from world.crafting_proto 85001 once
 	// a minute (the panel may change it); 80 when the row is missing.
 	int GetPlayerBotSashClothChance()
 	{
@@ -1643,7 +1645,7 @@ namespace
 		return true;
 	}
 
-	void EndPlayerBotUrielVisit(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	void EndPlayerBotTheowahdanVisit(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		state.bVisitingUriel = false;
 		state.dwNextSashActionTime = 0;
@@ -1658,7 +1660,7 @@ namespace
 		}
 	}
 
-	// The tick: now and then, look at the sashes; with work for Uriel, go to
+	// The tick: now and then, look at the sashes; with work for Theowahdan, go to
 	// him (a first village of its kingdom, by the road the medal stand takes)
 	// and do it there, a step every few seconds.
 	bool ManagePlayerBotSash(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
@@ -1674,7 +1676,7 @@ namespace
 				IsPlayerBotHeldForCompany(ch) || ch->GetMyShop() != NULL)
 		{
 			if (state.bVisitingUriel)
-				EndPlayerBotUrielVisit(ch, state, dwNow);
+				EndPlayerBotTheowahdanVisit(ch, state, dwNow);
 			state.dwNextSashCheckTime = dwNow + number(PLAYERBOT_SASH_CHECK_MIN_MS, PLAYERBOT_SASH_CHECK_MAX_MS);
 			return false;
 		}
@@ -1691,11 +1693,11 @@ namespace
 				return false;
 
 			playerbot_empire_rules::TPoint uriel;
-			if (!GetPlayerBotUriel(ch->GetMapIndex(), uriel))
+			if (!GetPlayerBotTheowahdan(ch->GetMapIndex(), uriel))
 			{
 				long homeMap = 0, homeX = 0, homeY = 0;
 				if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1, homeMap, homeX, homeY) ||
-						!IsPlayerBotMapHostedHere(homeMap) || !GetPlayerBotUriel(homeMap, uriel))
+						!IsPlayerBotMapHostedHere(homeMap) || !GetPlayerBotTheowahdan(homeMap, uriel))
 					return false;
 				// Not from a fight: the next look, then.
 				if (ch->GetVictim() != NULL || state.dwTargetVID != 0)
@@ -1707,7 +1709,7 @@ namespace
 				if (!TransitionPlayerBotMap(ch, state, homeMap, homeX, homeY, dwNow, "sash_to_uriel"))
 					return false;
 				++s_kPlayerBotSashStats.trips;
-				// Straight to Uriel once it stands in the village.
+				// Straight to Theowahdan once it stands in the village.
 				state.dwNextSashCheckTime = 0;
 				return true;
 			}
@@ -1717,15 +1719,15 @@ namespace
 			ch->SetVictim(NULL);
 			ch->Stop();
 			ClearPlayerBotRoute(state, true);
-			sys_log(0, "PLAYERBOT_SASH: going to Uriel pid=%u name=%s lv=%d target=%d/%d gold=%lld",
+			sys_log(0, "PLAYERBOT_SASH: going to Theowahdan pid=%u name=%s lv=%d target=%d/%d gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), t.grade, t.absorption,
 					(long long)ch->GetGold());
 		}
 
 		playerbot_empire_rules::TPoint uriel;
-		if (!GetPlayerBotUriel(ch->GetMapIndex(), uriel))
+		if (!GetPlayerBotTheowahdan(ch->GetMapIndex(), uriel))
 		{
-			EndPlayerBotUrielVisit(ch, state, dwNow);
+			EndPlayerBotTheowahdanVisit(ch, state, dwNow);
 			return false;
 		}
 		SetPlayerBotAction(state, BOT_ACTION_SHOP, dwNow);
@@ -1739,9 +1741,9 @@ namespace
 			if (!MovePlayerBot(ch, approachX, approachY, dwNow, 20, true, true, false, true) &&
 					state.bStuckCounter >= 6)
 			{
-				sys_err("PLAYERBOT_SASH: route to Uriel failed pid=%u name=%s map=%ld from=(%ld,%ld)",
+				sys_err("PLAYERBOT_SASH: route to Theowahdan failed pid=%u name=%s map=%ld from=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY());
-				EndPlayerBotUrielVisit(ch, state, dwNow);
+				EndPlayerBotTheowahdanVisit(ch, state, dwNow);
 				return false;
 			}
 			return true;
@@ -1788,7 +1790,7 @@ namespace
 				GetPlayerBotSashGrade(ch->GetWear(WEAR_COSTUME_ACCE)),
 				GetPlayerBotSashAbsorption(ch->GetWear(WEAR_COSTUME_ACCE)),
 				IsPlayerBotSashAbsorbed(ch->GetWear(WEAR_COSTUME_ACCE)) ? 1 : 0, (long long)ch->GetGold());
-		EndPlayerBotUrielVisit(ch, state, dwNow);
+		EndPlayerBotTheowahdanVisit(ch, state, dwNow);
 		return false;
 	}
 
@@ -1849,7 +1851,7 @@ namespace
 
 	// MT2009_PLUS_BOT_SASH_FLOW_V1: the bot's look at its sashes, on its own
 	// clock. A bot of the towns (PLAYERBOT_SASH_FLOW_TOWN) is only looked at:
-	// its plan already makes the counters, Uriel and the merchant do the
+	// its plan already makes the counters, Theowahdan and the merchant do the
 	// rest. One the Arezzo test holds on its map sells the merchant's share in
 	// place under pressure; the dungeon cohort combines its pairs in place,
 	// PLAYERBOT_SASH_FLOW_INPLACE_COMBINES a look, and sells every sash of the

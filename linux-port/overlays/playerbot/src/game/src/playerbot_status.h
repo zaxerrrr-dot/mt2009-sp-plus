@@ -755,8 +755,8 @@ namespace
 					snprintf(status, statusSize, PBT(en, "%sPrzerabiam ulepszacze u Dozorcy",
 							"%sExchanging refine goods at the Keeper"), prefix);
 				else if (state.bVisitingUriel)
-					snprintf(status, statusSize, PBT(en, "%sIde do Uriela z szarfami",
-							"%sTaking my sashes to Uriel"), prefix);
+					snprintf(status, statusSize, PBT(en, "%sIde do Theowahdana z szarfami",
+							"%sTaking my sashes to Theowahdan"), prefix);
 				else
 					snprintf(status, statusSize, PBT(en, "%sHandluje", "%sTrading"), prefix);
 				break;
