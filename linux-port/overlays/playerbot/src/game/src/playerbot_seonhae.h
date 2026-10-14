@@ -516,10 +516,12 @@ void SeonHaeCommand(LPCHARACTER ch, const char* argument)
 // 5 s at most); no file, or a kind of line missing from it, means the
 // defaults below. One rule a line, tab- or space-separated, '#' a comment:
 //   additive_chance <percent>                         (default 60)
-//   additive_map <map index> <additive vnum> <count>  (72, 73: 1 x 72065; 362: 1 x 72066)
+//   additive_map <map index> <additive vnum> <count>  (72, 73: 1 x 72065; 353: 1 x 72066)
 //   mob <mob vnum> <additive vnum> <count>            (2493 Beran-Setaou, 9714 Krolowa Dzungli: 2 x 72066)
 //   shard_chance <percent, e.g. 0.5>                  (default 0.5)
-//   shard_map <map index>                             (73, 209, 362)
+//   shard_map <map index>                             (73, 209, 353)
+// MT2009_PLUS_YOHARA_ZAKLETY_V1: the Arezzo forest's (362) rules are Zaklety Las's (353) now - the forest past the
+// Temple of Ochao, on the Yohara core.
 //   shard <shard vnum> <weight>                       (39070-39077, 39081: 1 each)
 #include <sys/stat.h>
 #include <fstream>
@@ -564,7 +566,7 @@ namespace mt2009_seonhae
 		r.additiveMaps.clear();
 		r.additiveMaps[72] = VnumCount{ 72065, 1 };
 		r.additiveMaps[73] = VnumCount{ 72065, 1 };
-		r.additiveMaps[362] = VnumCount{ 72066, 1 };
+		r.additiveMaps[353] = VnumCount{ 72066, 1 };
 		r.mobs.clear();
 		r.mobs[2493] = VnumCount{ 72066, 2 };
 		r.mobs[9714] = VnumCount{ 72066, 2 };
@@ -572,7 +574,7 @@ namespace mt2009_seonhae
 		r.shardMaps.clear();
 		r.shardMaps.insert(73);
 		r.shardMaps.insert(209);
-		r.shardMaps.insert(362);
+		r.shardMaps.insert(353);
 		r.shards.clear();
 		for (DWORD v = 39070; v <= 39077; ++v)
 			r.shards.push_back(WeightedVnum{ v, 1 });

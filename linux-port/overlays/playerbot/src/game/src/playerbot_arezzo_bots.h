@@ -1,7 +1,7 @@
 #ifndef __INC_METIN2_PLAYERBOT_AREZZO_BOTS_H__
 #define __INC_METIN2_PLAYERBOT_AREZZO_BOTS_H__
 
-// MT2009_PLUS_AREZZO_BOTS_V1 - the bots on the Arezzo module's three open maps
+// MT2009_PLUS_AREZZO_BOTS_V1 - the bots on the Arezzo module's open maps
 // (playerbot_arezzo.h is the module's switch, flag mt2009_arezzo_closed):
 //
 //   * Dolina Cyklopow (360, metin2_map_exp): cyclopes 9601-9605 of 43-49,
@@ -10,10 +10,10 @@
 //   * Pustkowie Faraona (361, metin2_map_pustynia): the pyramid's 9671-9680
 //     of 53-58, Bastet (9675, three points, 50-70 min) and Anubis (9681, two
 //     points, 2-3 h); fourteen desert Metins (9677, 9678);
-//   * Zaczarowany Las (362, natural_map): lemurs 9611-9615 of 97-101, Lemur
-//     Hrabia (3390, three points, 50-70 min) and Straz Przyboczna Lemur (3391,
-//     two points, 2-3 h); Metins 8052, 8053. Straznik Dzungli (20425) stands
-//     at its gate - the Jungle dungeon's guard, which no bot ever talks to.
+//   * (MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaczarowany Las, 362, natural_map, is
+//     gone - the Temple of Ochao's portal leads to Zaklety Las (353) on the
+//     Yohara core, where no bot goes; the forest's expedition rules - the kit,
+//     the two-hour stay, the road through the temple - went with it.)
 //
 // For now only the operator's test cohorts go there (the owner, 30
 // September); every other bot keeps its frontier, and TransitionPlayerBotMap
@@ -25,10 +25,7 @@
 //
 //   * the way in: 360 and 361 from the village Teleporter's first page (the
 //     frontier's own road, GetPlayerBotFrontierMapForLevel), landing on the
-//     map's Town.txt; 362 only through the Temple of Ochao - Orc Valley,
-//     Straznik Swiatyni (20426), the labyrinth (playerbot_ochao_bots.h) to
-//     Straznik En-Tai (6400), his fall, and his Portal (20415) for the minute
-//     it stands, whose first choice is the Las (temple_of_the_ochao.quest);
+//     map's Town.txt;
 //   * where to hunt: PLAYERBOT_AREZZO_HUBS_<map>, the regen's spawn lines
 //     clustered (24/23/24 spots), each on open ground of the map's one
 //     walkable piece, with the walk between every two of them;
@@ -45,7 +42,7 @@
 //     already on the map, walked there by the routes.
 //
 // The test hook, for the operator: a file "playerbot_arezzo_test" in the
-// core's directory (the core that hosts 360-362 and the temple):
+// core's directory (the core that hosts 360 and 361):
 //     send <map> <N> [level-min level-max [any]]
 //                                           N online bots of those levels go
 //                                           to the map and stay while sent -
@@ -91,11 +88,6 @@ namespace
 	// Arezzo dungeon test cohort onto its own dungeon's map (the lobby or an
 	// instance of it), on the core that hosts it.
 	bool IsPlayerBotArezzoDungeonCohortMove(LPCHARACTER ch, long targetMap);
-	// MT2009_PLUS_AREZZO_MAPS_FIX_V1: a dungeon cohort bot idle in its lobby
-	// that a send to the Las may borrow (its dungeon, or -1), and how many
-	// more of that dungeon's cohort may be lent.
-	int GetPlayerBotArezzoDungeonCohortLendable(LPCHARACTER ch);
-	int GetPlayerBotArezzoDungeonCohortLendRoom(int dg);
 	// From playerbot_survival.h, which comes later (the arrival's watch).
 	LPCHARACTER FindPlayerBotHoldingMonster(LPCHARACTER ch);
 	void StartPlayerBotTacticalRetreat(LPCHARACTER ch, TPlayerBotAIState& state, LPCHARACTER threat, DWORD dwNow);
@@ -290,103 +282,6 @@ namespace
 		{ 47100, 104340, 68780, 28939, 42640, 69200, 54420, 56760, 100180, 72960, 54479, 10420, 72660, 80540, 52620, 48660, 51920, 29900, 32400, 20000, 17600, 0, 16200 },
 		{ 63160, 120400, 84980, 45140, 27080, 85260, 70480, 72820, 116240, 89160, 42340, 6680, 87200, 96120, 68520, 64860, 68120, 46100, 40200, 27000, 33740, 16200, 0 },
 	};
-	// tools/arezzo_bot_map.py gen natural_map 362 (walkable 47.2 %, one piece
-	// holding all of it; walk/straight 1.53 median, 2.34 p90 - a forest of
-	// ridges, where the straight line lies most).
-	// map 362: arrival (378750, 394650), Teleporter (379150, 394950); 24 spots, 149 corners.
-	const TPlayerBotHuntingHub PLAYERBOT_AREZZO_HUBS_362[] = {
-		{ 418550, 406950, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 11 spawn lines
-		{ 388150, 458450, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 10 spawn lines
-		{ 354050, 397450, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
-		{ 350850, 416950, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
-		{ 417550, 456550, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
-		{ 395650, 455550, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
-		{ 381950, 459050, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
-		{ 347150, 467150, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
-		{ 368050, 417750, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 423050, 399850, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 408750, 420950, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 400850, 399550, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 422950, 426050, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 420450, 473550, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 375950, 402050, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 367950, 410450, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 359650, 412550, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 396350, 421450, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 414850, 444550, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 423650, 445250, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 363950, 451550, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 355550, 464450, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 347150, 397150, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 4 spawn lines
-		{ 385150, 408450, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, 255, false, 0 },	// 4 spawn lines
-	};
-	const TPlayerBotArezzoNode PLAYERBOT_AREZZO_TREE_362[] = {
-		{ 379150, 394950, -1 }, { 378750, 394650, 0 }, { 371150, 410750, 0 }, { 375650, 413850, 2 },
-		{ 379150, 422450, 3 }, { 375450, 434250, 4 }, { 374750, 437250, 5 }, { 375450, 438350, 6 },
-		{ 388750, 439250, 7 }, { 418550, 406950, 8 }, { 394750, 443950, 8 }, { 398750, 444150, 10 },
-		{ 400650, 445050, 11 }, { 400650, 450250, 12 }, { 403450, 456150, 13 }, { 401450, 459550, 14 },
-		{ 388750, 464150, 15 }, { 386150, 464550, 16 }, { 385050, 463650, 17 }, { 388150, 458450, 18 },
-		{ 377450, 396650, 0 }, { 370450, 401450, 20 }, { 361350, 406050, 21 }, { 360050, 406250, 22 },
-		{ 354050, 397450, 23 }, { 367250, 403150, 21 }, { 364450, 403350, 25 }, { 350850, 416950, 26 },
-		{ 400650, 450650, 13 }, { 400850, 450850, 28 }, { 411050, 456050, 29 }, { 417550, 456550, 30 },
-		{ 385050, 463250, 18 }, { 395650, 455550, 32 }, { 379150, 396050, 0 }, { 361150, 414050, 34 },
-		{ 344750, 429150, 35 }, { 342550, 431950, 36 }, { 342350, 442150, 37 }, { 358950, 463950, 38 },
-		{ 362650, 466650, 39 }, { 366250, 468250, 40 }, { 374350, 467950, 41 }, { 381950, 459050, 42 },
-		{ 348150, 452450, 38 }, { 348550, 453550, 44 }, { 345150, 457450, 45 }, { 343950, 459350, 46 },
-		{ 343650, 463650, 47 }, { 347150, 467150, 48 }, { 368050, 417750, 2 }, { 391550, 436150, 8 },
-		{ 392450, 434350, 51 }, { 392850, 432650, 52 }, { 423050, 399850, 53 }, { 388950, 439250, 8 },
-		{ 401950, 426250, 55 }, { 408750, 420950, 56 }, { 371550, 411150, 2 }, { 373350, 411550, 58 },
-		{ 395150, 406150, 59 }, { 400850, 399550, 60 }, { 401150, 451150, 29 }, { 406350, 451350, 62 },
-		{ 415250, 443150, 63 }, { 422950, 426050, 64 }, { 404950, 451350, 62 }, { 418650, 465050, 66 },
-		{ 420350, 468450, 67 }, { 420450, 473550, 68 }, { 378150, 397150, 34 }, { 377950, 400050, 70 },
-		{ 375950, 402050, 71 }, { 377950, 400450, 71 }, { 367950, 410450, 73 }, { 376750, 397350, 20 },
-		{ 374550, 397650, 75 }, { 359650, 412550, 76 }, { 392950, 430150, 53 }, { 396350, 421450, 78 },
-		{ 411950, 446450, 63 }, { 414850, 444550, 80 }, { 413150, 446250, 80 }, { 421250, 446950, 82 },
-		{ 423650, 445250, 83 }, { 342350, 444150, 38 }, { 350150, 451950, 85 }, { 351850, 452750, 86 },
-		{ 363950, 451550, 87 }, { 348550, 454050, 45 }, { 355550, 464450, 89 }, { 360150, 406350, 22 },
-		{ 355050, 401550, 91 }, { 347150, 397150, 92 }, { 383150, 410450, 59 }, { 385150, 408450, 94 },
-		{ 379150, 426050, 4 }, { 370250, 434950, 96 }, { 365450, 438250, 97 }, { 355250, 440750, 98 },
-		{ 403450, 457550, 14 }, { 409650, 467050, 100 }, { 403950, 472250, 101 }, { 394450, 475450, 102 },
-		{ 415450, 442950, 64 }, { 418650, 430350, 104 }, { 423850, 425050, 105 }, { 343650, 463850, 48 },
-		{ 348550, 474450, 107 }, { 388450, 439250, 7 }, { 390450, 441250, 109 }, { 353550, 400550, 92 },
-		{ 351150, 400250, 111 }, { 347550, 396650, 112 }, { 371150, 414650, 2 }, { 354950, 433050, 114 },
-		{ 377950, 401350, 73 }, { 361350, 417950, 116 }, { 375350, 397650, 75 }, { 369250, 403750, 118 },
-		{ 376450, 415350, 3 }, { 376750, 418050, 120 }, { 380950, 422250, 121 }, { 410650, 412250, 78 },
-		{ 408950, 407750, 123 }, { 404850, 451350, 62 }, { 406850, 449350, 125 }, { 408650, 445050, 126 },
-		{ 408850, 442250, 127 }, { 404250, 433350, 128 }, { 411350, 428550, 129 }, { 342350, 442950, 38 },
-		{ 345050, 445650, 131 }, { 359150, 464150, 39 }, { 361650, 465850, 133 }, { 364850, 469050, 134 },
-		{ 379350, 438550, 7 }, { 381450, 440650, 136 }, { 401350, 459650, 15 }, { 395250, 460750, 138 },
-		{ 387150, 468850, 139 }, { 399750, 444150, 11 }, { 402350, 445450, 141 }, { 418850, 465250, 67 },
-		{ 419150, 467050, 143 }, { 417750, 468450, 144 }, { 417850, 473750, 145 }, { 417950, 446150, 82 },
-		{ 420350, 448550, 147 },
-	};
-	const int PLAYERBOT_AREZZO_WALK_362[24][24] = {
-		{ 0, 95660, 115659, 112259, 78840, 103300, 95060, 147280, 95380, 8900, 17920, 112440, 97920, 92640, 102180, 94880, 102340, 28000, 76780, 85940, 133060, 121380, 121000, 92640 },
-		{ 95660, 0, 115220, 91960, 42560, 8660, 6440, 64020, 105180, 104559, 78640, 124280, 67480, 50520, 114020, 106720, 100660, 72280, 46340, 53179, 49800, 38120, 120380, 104480 },
-		{ 115659, 115220, 0, 23260, 110680, 123880, 109559, 82820, 25900, 124559, 98760, 59460, 129759, 124480, 28860, 20780, 17340, 92280, 108620, 117780, 79460, 79440, 7020, 39660 },
-		{ 112259, 91960, 23260, 0, 107280, 100620, 86300, 59560, 17520, 121159, 95360, 57500, 126359, 121080, 31060, 19700, 10560, 88880, 105220, 114380, 56200, 56179, 28420, 37700 },
-		{ 78840, 42560, 110680, 107280, 0, 50200, 41960, 94180, 90400, 87740, 61820, 107459, 32660, 18240, 97200, 89900, 97360, 55460, 13080, 13740, 79960, 68280, 116020, 87660 },
-		{ 103300, 8660, 123880, 100620, 50200, 0, 15100, 72680, 113840, 112200, 86280, 131920, 75120, 58160, 121659, 114359, 109320, 79920, 53979, 60820, 58460, 46780, 129040, 112120 },
-		{ 95060, 6440, 109559, 86300, 41960, 15100, 0, 58360, 99520, 103959, 78040, 123680, 66880, 49920, 113420, 102340, 95000, 71680, 45740, 52579, 44140, 32460, 114720, 103880 },
-		{ 147280, 64020, 82820, 59560, 94180, 72680, 58360, 0, 72780, 156180, 130259, 113400, 119100, 101420, 86960, 75600, 68260, 123900, 97960, 104800, 32980, 25900, 87980, 93600 },
-		{ 95380, 105180, 25900, 17520, 90400, 113840, 99520, 72780, 0, 104280, 78480, 40620, 109480, 104200, 18860, 7340, 10480, 72000, 88340, 97500, 69420, 69400, 31060, 20820 },
-		{ 8900, 104559, 124559, 121159, 87740, 112200, 103959, 156180, 104280, 0, 26820, 121340, 106820, 101540, 111080, 103780, 111240, 35460, 85680, 94840, 141960, 130280, 129900, 101540 },
-		{ 17920, 78640, 98760, 95360, 61820, 86280, 78040, 130259, 78480, 26820, 0, 95540, 80900, 75620, 85280, 77980, 85440, 12600, 59760, 68920, 116040, 104359, 104100, 75740 },
-		{ 112440, 124280, 59460, 57500, 107459, 131920, 123680, 113400, 40620, 121340, 95540, 0, 126540, 121259, 45980, 38680, 46940, 89060, 105400, 114559, 110040, 110020, 64800, 19800 },
-		{ 97920, 67480, 129759, 126359, 32660, 75120, 66880, 119100, 109480, 106820, 80900, 126540, 0, 50260, 116280, 108980, 116440, 74540, 21740, 20760, 104880, 93200, 135100, 106740 },
-		{ 92640, 50520, 124480, 121080, 18240, 58160, 49920, 101420, 104200, 101540, 75620, 121259, 50260, 0, 111000, 103700, 111159, 69260, 31320, 31100, 87200, 75520, 129820, 101460 },
-		{ 102180, 114020, 28860, 31060, 97200, 121659, 113420, 86960, 18860, 111080, 85280, 45980, 116280, 111000, 0, 11600, 20500, 78800, 95140, 104300, 83600, 83580, 34200, 26180 },
-		{ 94880, 106720, 20780, 19700, 89900, 114359, 102340, 75600, 7340, 103780, 77980, 38680, 108980, 103700, 11600, 0, 9140, 71500, 87840, 97000, 72240, 72220, 26120, 18880 },
-		{ 102340, 100660, 17340, 10560, 97360, 109320, 95000, 68260, 10480, 111240, 85440, 46940, 116440, 111159, 20500, 9140, 0, 78960, 95300, 104459, 64900, 64879, 22500, 27139 },
-		{ 28000, 72280, 92280, 88880, 55460, 79920, 71680, 123900, 72000, 35460, 12600, 89060, 74540, 69260, 78800, 71500, 78960, 0, 53400, 62560, 109680, 98000, 97620, 69260 },
-		{ 76780, 46340, 108620, 105220, 13080, 53979, 45740, 97960, 88340, 85680, 59760, 105400, 21740, 31320, 95140, 87840, 95300, 53400, 0, 10440, 83740, 72060, 113959, 85600 },
-		{ 85940, 53179, 117780, 114380, 13740, 60820, 52579, 104800, 97500, 94840, 68920, 114559, 20760, 31100, 104300, 97000, 104459, 62560, 10440, 0, 90580, 78900, 123120, 94760 },
-		{ 133060, 49800, 79460, 56200, 79960, 58460, 44140, 32980, 69420, 141960, 116040, 110040, 104880, 87200, 83600, 72240, 64900, 109680, 83740, 90580, 0, 16260, 84620, 90240 },
-		{ 121380, 38120, 79440, 56179, 68280, 46780, 32460, 25900, 69400, 130280, 104359, 110020, 93200, 75520, 83580, 72220, 64879, 98000, 72060, 78900, 16260, 0, 84600, 90220 },
-		{ 121000, 120380, 7020, 28420, 116020, 129040, 114720, 87980, 31060, 129900, 104100, 64800, 135100, 129820, 34200, 26120, 22500, 97620, 113959, 123120, 84620, 84600, 0, 45000 },
-		{ 92640, 104480, 39660, 37700, 87660, 112120, 103880, 93600, 20820, 101540, 75740, 19800, 106740, 101460, 26180, 18880, 27139, 69260, 85600, 94760, 90240, 90220, 45000, 0 },
-	};
-
 	struct TPlayerBotArezzoMap
 	{
 		long lMap;
@@ -409,7 +304,6 @@ namespace
 	const TPlayerBotArezzoMap PLAYERBOT_AREZZO_MAPS[] = {
 		PLAYERBOT_AREZZO_ROW(360, "Dolina Cyklopow", PLAYERBOT_AREZZO_CYCLOPS_MIN_LEVEL, PLAYERBOT_AREZZO_CYCLOPS),
 		PLAYERBOT_AREZZO_ROW(361, "Pustkowie Faraona", PLAYERBOT_AREZZO_PHARAOH_MIN_LEVEL, PLAYERBOT_AREZZO_PHARAOH),
-		PLAYERBOT_AREZZO_ROW(362, "Zaczarowany Las", PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, PLAYERBOT_AREZZO_FOREST),
 	};
 #undef PLAYERBOT_AREZZO_ROW
 	const int PLAYERBOT_AREZZO_MAP_COUNT = (int)(sizeof(PLAYERBOT_AREZZO_MAPS) / sizeof(PLAYERBOT_AREZZO_MAPS[0]));
@@ -422,7 +316,7 @@ namespace
 		return NULL;
 	}
 
-	// The bosses of the three maps, with the first boss.txt point of each (the
+	// The bosses of the two maps, with the first boss.txt point of each (the
 	// test hook's "spawn").
 	struct TPlayerBotArezzoBoss { DWORD dwRace; long lMap; long lCellX; long lCellY; };
 	const TPlayerBotArezzoBoss PLAYERBOT_AREZZO_BOSSES[] = {
@@ -430,8 +324,6 @@ namespace
 		{ 9607, 360, 486, 787 },	// Polifem
 		{ 9675, 361, 113, 432 },	// Bastet
 		{ 9681, 361, 452, 672 },	// Anubis
-		{ 3390, 362, 224, 567 },	// Lemur Hrabia
-		{ 3391, 362, 157, 904 },	// Straz Przyboczna Lemur
 	};
 	bool IsPlayerBotArezzoBossRace(DWORD race)
 	{
@@ -462,9 +354,6 @@ namespace
 	// that has not got there in this long lets the warp through.
 	const int PLAYERBOT_AREZZO_WARP_REACH = 450;
 	const DWORD PLAYERBOT_AREZZO_PENDING_MAX_MS = 15 * 60 * 1000;
-	// The Las is a long way in (the temple, its Guardian, his Portal): only
-	// what stops the fight takes a bot out of it sooner than this.
-	const DWORD PLAYERBOT_AREZZO_FOREST_MIN_VISIT_TIME = 12 * 60 * 1000;
 	// Deaths: two within this long and the next revival is at the arrival
 	// (the map's Town.txt, "restart in town"); this many in one visit and the
 	// bot goes home.
@@ -478,30 +367,14 @@ namespace
 	// arrival under this much health steps back from it, drinking.
 	const int PLAYERBOT_AREZZO_ARRIVAL_ZONE = 1500;
 	const int PLAYERBOT_AREZZO_ARRIVAL_RETREAT_HP = 50;
-	// The Las is an expedition (the owner, 1.10): a bot packs for it before
-	// the road (this many reds, a caster this many blues, in stacks of 200)
-	// and once in stays - deaths, an empty belt and the errands wait this
-	// long from its arrival; only a lost weapon or armour takes it out sooner.
-	const size_t PLAYERBOT_AREZZO_LAS_KIT_RED = 600;
-	const size_t PLAYERBOT_AREZZO_LAS_KIT_BLUE = 400;
-	const DWORD PLAYERBOT_AREZZO_LAS_STAY_MS = 2 * 60 * 60 * 1000;
 	// The boss raids: a recruit is a bot on the map within this walk of the
 	// boss; the gathering waits this long; a member further from him than
 	// this walks the corners.
 	const int PLAYERBOT_AREZZO_RAID_WALK_MAX = 70000;
 	const DWORD PLAYERBOT_AREZZO_RAID_GATHER_MS = 5 * 60 * 1000;
-	// The Las (round 3: no raid formed, "nobody to call ... free=0/0/0" 14
-	// times): a dozen to forty bots over 24 spots on ground where the walk is
-	// 1.5 times the straight line - the whole map's walk, and longer to gather.
-	const int PLAYERBOT_AREZZO_FOREST_RAID_WALK_MAX = 160000;
-	const DWORD PLAYERBOT_AREZZO_FOREST_RAID_GATHER_MS = 8 * 60 * 1000;
 	const int PLAYERBOT_AREZZO_RAID_FIGHT_WALK = 3000;
-	// The way into the Las from the temple: the Portal is taken when the walk
-	// to it (by the labyrinth's corners) is no longer than this - it stands a
-	// minute; the Guardian is walked to by the corners and fought from this near.
-	const int PLAYERBOT_AREZZO_LAS_PORTAL_WALK_MAX = 12000;
-	const int PLAYERBOT_AREZZO_LAS_PORTAL_NEAR = 2500;
-	const int PLAYERBOT_AREZZO_LAS_GUARDIAN_NEAR = 1500;
+	// The walk out: within this of the Teleporter the portal walk takes over.
+	const int PLAYERBOT_AREZZO_TELEPORTER_NEAR = 2500;
 	// The watch.
 	const int PLAYERBOT_AREZZO_STUCK_DISTANCE = 200;
 	const DWORD PLAYERBOT_AREZZO_STUCK_MS = 60000;
@@ -544,20 +417,6 @@ namespace
 	// A bot on its way out (the frontier's own decision).
 	struct TPlayerBotArezzoExit { DWORD dwStarted; char szReason[40]; };
 	std::map<DWORD, TPlayerBotArezzoExit> s_mapPlayerBotArezzoExit;
-	// A bot on its way into the Las: since when, and what it was last seen doing.
-	struct TPlayerBotArezzoLas
-	{
-		DWORD dwSince; BYTE bPhase; DWORD dwPhaseSince;
-		DWORD dwPortalVID;	// the Portal this bot has set out for
-		DWORD dwLastLog;
-		TPlayerBotArezzoLas() : dwSince(0), bPhase(0), dwPhaseSince(0), dwPortalVID(0), dwLastLog(0) {}
-	};
-	// A Portal within this is used (the quest's choice "Zaczarowany Las"),
-	// without the portal walk's stall-and-wait: the NPC stands on the cell the
-	// walk aims at, and the minute it stands is too short to wait out a stall.
-	const int PLAYERBOT_AREZZO_LAS_PORTAL_USE = 700;
-	enum { AREZZO_LAS_ROAD = 0, AREZZO_LAS_TEMPLE, AREZZO_LAS_GUARDIAN, AREZZO_LAS_PORTAL };
-	std::map<DWORD, TPlayerBotArezzoLas> s_mapPlayerBotArezzoLas;
 
 	struct TPlayerBotArezzoTrack
 	{
@@ -625,7 +484,7 @@ namespace
 	}
 
 	// The map the operator sent this bot to, or 0: the module open, the map on
-	// this core, and the Las only from the temple's level.
+	// this core.
 	long GetPlayerBotArezzoForcedMap(LPCHARACTER ch)
 	{
 		if (!ch || s_mapPlayerBotArezzoForced.empty())
@@ -636,10 +495,6 @@ namespace
 		// MT2009_PLUS_PROGRESSION_V2: not past the map's upper limit.
 		if (ch->GetLevel() > GetPlayerBotArezzoMaxLevel(it->second))
 			return 0;
-		if (it->second == PLAYERBOT_MAP_AREZZO_FOREST &&
-				(ch->GetLevel() < PLAYERBOT_AREZZO_FOREST_MIN_LEVEL || !IsPlayerBotArezzoHosted(PLAYERBOT_MAP_OCHAO) ||
-				 !IsPlayerBotArezzoHosted(PLAYERBOT_MAP_ORC_VALLEY)))
-			return 0;
 		return it->second;
 	}
 
@@ -649,28 +504,9 @@ namespace
 		return GetPlayerBotArezzoForcedMap(ch) != 0;
 	}
 
-	// Sent to the Las and not told to leave: the temple's crossing in Orc
-	// Valley takes it on to Straznik Swiatyni (playerbot_ochao_bots.h).
-	bool IsPlayerBotArezzoBoundForLas(LPCHARACTER ch)
-	{
-		return ch && s_setPlayerBotArezzoLeave.count(ch->GetPlayerID()) == 0 &&
-				GetPlayerBotArezzoForcedMap(ch) == PLAYERBOT_MAP_AREZZO_FOREST;
-	}
-
 	bool IsPlayerBotArezzoCohortPID(DWORD pid)
 	{
 		return s_mapPlayerBotArezzoCohort.find(pid) != s_mapPlayerBotArezzoCohort.end();
-	}
-
-	// In the Las and not yet PLAYERBOT_AREZZO_LAS_STAY_MS there.
-	bool IsPlayerBotArezzoLasStaying(LPCHARACTER ch)
-	{
-		if (!ch || ch->GetMapIndex() != PLAYERBOT_MAP_AREZZO_FOREST)
-			return false;
-		std::map<DWORD, TPlayerBotArezzoTrack>::const_iterator t = s_mapPlayerBotArezzoTrack.find(ch->GetPlayerID());
-		return t != s_mapPlayerBotArezzoTrack.end() && t->second.dwEntered != 0 &&
-				t->second.lMap == PLAYERBOT_MAP_AREZZO_FOREST &&
-				get_dword_time() - t->second.dwEntered < PLAYERBOT_AREZZO_LAS_STAY_MS;
 	}
 
 	bool IsPlayerBotArezzoLeaveOrdered(LPCHARACTER ch)
@@ -681,11 +517,11 @@ namespace
 			return true;
 		std::map<DWORD, TPlayerBotArezzoTrack>::const_iterator t = s_mapPlayerBotArezzoTrack.find(ch->GetPlayerID());
 		return t != s_mapPlayerBotArezzoTrack.end() && t->second.dwVisitDeaths >= PLAYERBOT_AREZZO_VISIT_DEATHS_LEAVE &&
-				IsPlayerBotArezzoMap(ch->GetMapIndex()) && !IsPlayerBotArezzoLasStaying(ch);
+				IsPlayerBotArezzoMap(ch->GetMapIndex());
 	}
 
-	// Sent by the test and not told to leave: the bot stays on its map (and
-	// on its road into the Las) whatever errand another pass has for it - a
+	// Sent by the test and not told to leave: the bot stays on its map
+	// whatever errand another pass has for it - a
 	// shop's upkeep, the alchemist, Uriel, a horse, the river. Only what stops
 	// the fight (no weapon, no armour, no potions, no arrows) takes it to town,
 	// and it comes back by itself: the order stands.
@@ -694,33 +530,26 @@ namespace
 		return GetPlayerBotArezzoForcedMap(ch) != 0 && !IsPlayerBotArezzoLeaveOrdered(ch);
 	}
 
-	// Held and standing on the ground the order is about: its map, or for the
-	// Las the temple and Orc Valley on the way.
+	// Held and standing on the ground the order is about: its map.
 	bool IsPlayerBotArezzoHeldHere(LPCHARACTER ch)
 	{
 		if (!IsPlayerBotArezzoHeld(ch))
 			return false;
-		const long forced = GetPlayerBotArezzoForcedMap(ch);
-		const long map = ch->GetMapIndex();
-		return map == forced || (forced == PLAYERBOT_MAP_AREZZO_FOREST &&
-				(map == PLAYERBOT_MAP_OCHAO || map == PLAYERBOT_MAP_ORC_VALLEY));
+		return ch->GetMapIndex() == GetPlayerBotArezzoForcedMap(ch);
 	}
 
 	// What really stops a held bot: no weapon, no armour, no arrows for a bow,
 	// or the red potions gone (under three). Not a full bag (it fights on
-	// without picking up) and not a thin belt: round 3 sent 130 Las bots home
-	// on "frontier_services" (BlocksPlayerBotTravel: fewer than ten reds, or no
-	// free three-cell column) and each paid 18-60 minutes of temple to come
-	// back. The belt is kept full on the map instead (RestockPlayerBotArezzo).
+	// without picking up) and not a thin belt: round 3 sent 130 bots home on
+	// "frontier_services" (BlocksPlayerBotTravel: fewer than ten reds, or no
+	// free three-cell column). The belt is kept full on the map instead
+	// (RestockPlayerBotArezzo).
 	bool IsPlayerBotArezzoTrulyBlocked(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return false;
 		if (ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL)
 			return true;
-		// The Las: the belt and the arrows wait for the stay to run out.
-		if (IsPlayerBotArezzoLasStaying(ch))
-			return false;
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
 		return NeedsPlayerBotArrows(ch) || red < 3;
@@ -1032,7 +861,7 @@ namespace
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);
 		const int distance = DISTANCE_APPROX(ch->GetX() - info->lExitX, ch->GetY() - info->lExitY);
-		if (distance > PLAYERBOT_AREZZO_LAS_PORTAL_NEAR)
+		if (distance > PLAYERBOT_AREZZO_TELEPORTER_NEAR)
 			return WalkPlayerBotInArezzo(ch, state, info->lExitX, info->lExitY, dwNow);
 		return MovePlayerBotToWorldPortal(ch, state, info->lExitX, info->lExitY, destMap, destX, destY, dwNow, reason);
 	}
@@ -1073,8 +902,7 @@ namespace
 	{
 		const DWORD pid = ch->GetPlayerID();
 		TPlayerBotArezzoTrack& t = s_mapPlayerBotArezzoTrack[pid];
-		std::map<DWORD, TPlayerBotArezzoLas>::const_iterator las = s_mapPlayerBotArezzoLas.find(pid);
-		const DWORD since = las != s_mapPlayerBotArezzoLas.end() ? las->second.dwSince : t.dwSent;
+		const DWORD since = t.dwSent;
 		sys_log(0, "ARZ_BOT: entered pid=%u name=%s map=%ld level=%u job=%u empire=%u reason=%s travel_s=%u",
 				pid, ch->GetName(), targetMap, (unsigned int)ch->GetLevel(), (unsigned int)(ch->GetJob() % 4),
 				(unsigned int)ch->GetEmpire(), reason ? reason : "?", since ? (dwNow - since) / 1000 : 0);
@@ -1087,7 +915,6 @@ namespace
 		t.adwDeathAt[0] = t.adwDeathAt[1] = 0;
 		t.dwAnchorSince = dwNow;
 		t.bStuck = false;
-		s_mapPlayerBotArezzoLas.erase(pid);
 	}
 
 	// Called at the top of TransitionPlayerBotMap, before the temple's own
@@ -1102,7 +929,7 @@ namespace
 		const long targetBase = targetMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? targetMap / 10000 : targetMap;
 		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: a bot with a person of its party
 		// goes where the person goes - into the Blue Dragon's lair and the
-		// Arezzo dungeons, across the Las to the Jungle's guard - and out of a
+		// Arezzo dungeons, through the Temple of Ochao to the Jungle's guard - and out of a
 		// party dungeon's instance whatever brought it there. On its own it
 		// is held to the rules below as ever.
 		if (IsPlayerBotDungeonPartyMove(ch, targetMap, reason))
@@ -1198,22 +1025,6 @@ namespace
 			}
 			// On to the gate below when the target is another place of the list.
 		}
-		// The Las-bound bot in the temple or in Orc Valley: the same, except
-		// for the road itself (the temple's gate, its Portal, the valley).
-		if ((fromMap == PLAYERBOT_MAP_OCHAO || fromMap == PLAYERBOT_MAP_ORC_VALLEY) && targetMap != fromMap &&
-				targetMap != PLAYERBOT_MAP_OCHAO && targetMap != PLAYERBOT_MAP_AREZZO_FOREST &&
-				targetMap != PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotArezzoOpen() &&
-				IsPlayerBotArezzoHeldHere(ch) && !IsPlayerBotArezzoTrulyBlocked(ch) &&
-				!(reason && (strncmp(reason, "arezzo_", 7) == 0 || strncmp(reason, "ochao_", 6) == 0)))
-		{
-			char tag[48];
-			snprintf(tag, sizeof(tag), "arezzo_errand:%s", reason ? reason : "?");
-			PlayerBotLogThrottled(tag, dwNow,
-					"ARZ_BOT: errand refused pid=%u name=%s map=%ld to=%ld reason=%s (on the road to the Las)",
-					pid, ch->GetName(), fromMap, targetMap, reason ? reason : "?");
-			s_szPlayerBotTransitionRefusal = "arezzo_las_road";
-			return 0;
-		}
 		if (!IsPlayerBotOffLimitsMap(targetMap) || targetBase == fromMap ||
 				(fromMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && fromMap / 10000 == targetBase))
 			return -1;
@@ -1240,143 +1051,13 @@ namespace
 					(unsigned int)ch->GetLevel(), s_uPlayerBotArezzoRefused);
 			return 0;
 		}
-		if (targetBase == PLAYERBOT_MAP_AREZZO_FOREST)
-		{
-			// Only by the Guardian's Portal, from the temple.
-			if (fromMap == PLAYERBOT_MAP_OCHAO && reason && strcmp(reason, "arezzo_las_portal") == 0)
-			{
-				NotePlayerBotArezzoEntered(ch, targetBase, dwNow, reason);
-				return -1;
-			}
-			std::map<DWORD, TPlayerBotArezzoLas>::iterator las = s_mapPlayerBotArezzoLas.find(pid);
-			if (las == s_mapPlayerBotArezzoLas.end())
-			{
-				TPlayerBotArezzoLas& l = s_mapPlayerBotArezzoLas[pid];
-				l.dwSince = dwNow;
-				l.bPhase = fromMap == PLAYERBOT_MAP_OCHAO ? AREZZO_LAS_TEMPLE : AREZZO_LAS_ROAD;
-				l.dwPhaseSince = dwNow;
-				sys_log(0, "ARZ_BOT: las crossing begins pid=%u name=%s level=%u from=%ld reason=%s",
-						pid, ch->GetName(), (unsigned int)ch->GetLevel(), fromMap, reason ? reason : "?");
-			}
-			// In the temple the walk to the Guardian is the travel pass's.
-			if (fromMap == PLAYERBOT_MAP_OCHAO)
-				return 1;
-			return TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_OCHAO, PLAYERBOT_OCHAO_ARRIVAL_X,
-					PLAYERBOT_OCHAO_ARRIVAL_Y, dwNow, "arezzo_las_via_ochao") ? 1 : 0;
-		}
 		NotePlayerBotArezzoEntered(ch, targetBase, dwNow, reason);
 		return -1;
 	}
 
-	// ------------------------------------------------------------ the way into the Las
-
-	// In the Temple of Ochao, from the travel pass, for a bot sent to the Las:
-	// the Portal while it stands within reach, else the Guardian - walked to
-	// by the labyrinth's corners and fought - else the temple's own hunting
-	// while he is away (the travel pass does nothing more: 0).
-	int ManagePlayerBotArezzoLasInTemple(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
-	{
-		const DWORD pid = ch->GetPlayerID();
-		TPlayerBotArezzoLas& las = s_mapPlayerBotArezzoLas[pid];
-		if (las.dwSince == 0)
-		{
-			las.dwSince = dwNow;
-			sys_log(0, "ARZ_BOT: las crossing begins pid=%u name=%s level=%u from=%ld reason=in_temple",
-					pid, ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex());
-		}
-		if (ch->IsDead() || state.bRecoveringAfterDeath)
-			return 0;
-		BYTE phase = AREZZO_LAS_TEMPLE;
-		int result = 0;
-		LPCHARACTER portal = FindPlayerBotOchaoPortal();
-		LPCHARACTER guardian = mt2009_ochao::FindOnMap(mt2009_ochao::s_dwGuardianVID);
-		// Set out for a Portal once, while it is within the walk, and keep to
-		// it until it closes: the walk's estimate moves as the bot turns the
-		// labyrinth's corners, and choosing again every tick turned it round.
-		if (!portal)
-			las.dwPortalVID = 0;
-		// MT2009_PLUS_AREZZO_LAS_PORTAL_NEAR_V1: or while it stands right by
-		// the bot. 7 October 20:52: En-Tai fell, his Portal opened at
-		// (888870,1459701) and the two bots standing on that very spot logged
-		// "las waits in the temple" until it closed - the walk's estimate goes
-		// by the labyrinth's spots, and there the bot's nearest spot and the
-		// Portal's were two different branches (over 12 000 apart). Three of
-		// the day's four kills of the Guardian took nobody into the Las.
-		else if (las.dwPortalVID != (DWORD)portal->GetVID() &&
-				(DISTANCE_APPROX(ch->GetX() - portal->GetX(), ch->GetY() - portal->GetY()) <= PLAYERBOT_AREZZO_LAS_PORTAL_NEAR ||
-				GetPlayerBotOchaoWalk(ch, portal->GetX(), portal->GetY()) <= PLAYERBOT_AREZZO_LAS_PORTAL_WALK_MAX))
-		{
-			las.dwPortalVID = (DWORD)portal->GetVID();
-			sys_log(0, "ARZ_BOT: las takes the portal pid=%u name=%s pos=(%ld,%ld) portal=(%ld,%ld) distance=%d after_s=%u",
-					pid, ch->GetName(), ch->GetX(), ch->GetY(), portal->GetX(), portal->GetY(),
-					DISTANCE_APPROX(ch->GetX() - portal->GetX(), ch->GetY() - portal->GetY()), (dwNow - las.dwSince) / 1000);
-			las.dwLastLog = dwNow;
-		}
-		if (portal && las.dwPortalVID == (DWORD)portal->GetVID())
-		{
-			phase = AREZZO_LAS_PORTAL;
-			CPlayerBotNavigation& nav = CPlayerBotNavigation::instance(PLAYERBOT_MAP_OCHAO);
-			const int d = DISTANCE_APPROX(ch->GetX() - portal->GetX(), ch->GetY() - portal->GetY());
-			state.dwTargetVID = 0;
-			ch->SetVictim(NULL);
-			if (d <= PLAYERBOT_AREZZO_LAS_PORTAL_USE)
-			{
-				// Beside it: the quest's first choice, "Zaczarowany Las".
-				ch->Stop();
-				if (TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_AREZZO_FOREST, PLAYERBOT_AREZZO_FOREST_ARRIVAL_X,
-						PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y, dwNow, "arezzo_las_portal"))
-					return 1;
-				PlayerBotLogThrottled("arezzo_las_portal_failed", dwNow,
-						"ARZ_BOT: las portal refused pid=%u name=%s pos=(%ld,%ld) portal=(%ld,%ld) distance=%d",
-						pid, ch->GetName(), ch->GetX(), ch->GetY(), portal->GetX(), portal->GetY(), d);
-				result = 1;
-			}
-			else if (d <= PLAYERBOT_AREZZO_LAS_PORTAL_NEAR && nav.Init(PLAYERBOT_MAP_OCHAO) &&
-					nav.SegmentClearWorld(ch->GetX(), ch->GetY(), portal->GetX(), portal->GetY()))
-			{
-				MovePlayerBot(ch, portal->GetX(), portal->GetY(), dwNow, 8, true, false, false, false);
-				result = 1;
-			}
-			else
-				result = WalkPlayerBotInOchao(ch, state, portal->GetX(), portal->GetY(), dwNow) ? 1 : 0;
-		}
-		else if (guardian && !guardian->IsDead())
-		{
-			phase = AREZZO_LAS_GUARDIAN;
-			const int d = DISTANCE_APPROX(ch->GetX() - guardian->GetX(), ch->GetY() - guardian->GetY());
-			if (d > PLAYERBOT_AREZZO_LAS_GUARDIAN_NEAR)
-			{
-				// What attacks it on the way is fought where it comes.
-				LPCHARACTER victim = ch->GetVictim();
-				if (victim && !victim->IsDead() && victim->GetVictim() == ch &&
-						DISTANCE_APPROX(ch->GetX() - victim->GetX(), ch->GetY() - victim->GetY()) < 800)
-					result = 0;
-				else
-					result = WalkPlayerBotInOchao(ch, state, guardian->GetX(), guardian->GetY(), dwNow) ? 1 : 0;
-			}
-			else
-				result = FightPlayerBotTowerObjective(ch, state, guardian, dwNow) ? 1 : 0;
-		}
-		// The other phases once a minute at most for a bot (the portal's own
-		// line is above, once a Portal).
-		if (phase != las.bPhase)
-		{
-			if (phase != AREZZO_LAS_PORTAL && (las.dwLastLog == 0 || dwNow - las.dwLastLog >= 60000))
-			{
-				sys_log(0, "ARZ_BOT: las %s pid=%u name=%s pos=(%ld,%ld) after_s=%u",
-						phase == AREZZO_LAS_GUARDIAN ? "goes for the guardian" : "waits in the temple",
-						pid, ch->GetName(), ch->GetX(), ch->GetY(), (dwNow - las.dwSince) / 1000);
-				las.dwLastLog = dwNow;
-			}
-			las.bPhase = phase;
-			las.dwPhaseSince = dwNow;
-		}
-		return result;
-	}
-
 	// From ManagePlayerBotWorldTravel, before the temple's own crossing: the
-	// module closing under a bot on one of the maps, and the Las-bound bot in
-	// the temple. -1: nothing to do here; 0/1: the travel pass's answer.
+	// module closing under a bot on one of the maps. -1: nothing to do here;
+	// 0/1: the travel pass's answer.
 	int ManagePlayerBotArezzoTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch)
@@ -1389,20 +1070,14 @@ namespace
 				return TransitionPlayerBotMap(ch, state, destMap, destX, destY, dwNow, "arezzo_closed") ? 1 : 0;
 			return -1;
 		}
-		// Out of potions or a weapon: the frontier's own exit takes it out of
-		// the temple (to town and back later), not on to the Guardian.
-		if (mapIndex == PLAYERBOT_MAP_OCHAO && GetPlayerBotArezzoForcedMap(ch) == PLAYERBOT_MAP_AREZZO_FOREST &&
-				s_setPlayerBotArezzoLeave.count(ch->GetPlayerID()) == 0 && !IsPlayerBotOchaoLeaving(ch) &&
-				!IsPlayerBotArezzoTrulyBlocked(ch))
-			return ManagePlayerBotArezzoLasInTemple(ch, state, dwNow);
 		return -1;
 	}
 
 	// ------------------------------------------------------------ keeping alive
 
-	// The Las (97-105) against bots of 95-97 took 57 of round 2's 93 deaths:
-	// there, and on the road through the temple, a bot drinks from 85 % (the
-	// Demon Tower's rule) and steps back from 50 %.
+	// The Arezzo forest (97-105, removed since) against bots of 95-97 took 57 of
+	// round 2's 93 deaths: there a bot drank from 85 % (the Demon Tower's rule)
+	// and stepped back from 50 %.
 	// MT2009_PLUS_AREZZO_NATURAL_V1: and the two other maps - 7 October, 882
 	// deaths on Pustkowie Faraona and 435 on Dolina Cyklopow, 776 of the
 	// first with a hundred reds or more in the bag (bots of 55 among the
@@ -1411,9 +1086,7 @@ namespace
 	{
 		if (!ch)
 			return false;
-		const long map = ch->GetMapIndex();
-		return IsPlayerBotArezzoMap(map) ||
-				(map == PLAYERBOT_MAP_OCHAO && s_mapPlayerBotArezzoLas.count(ch->GetPlayerID()) != 0);
+		return IsPlayerBotArezzoMap(ch->GetMapIndex());
 	}
 	int GetPlayerBotArezzoPotionPercent(LPCHARACTER ch)
 	{
@@ -1450,7 +1123,7 @@ namespace
 
 	// The online bots a "send" may take: alive, not a person's company, not in
 	// a dungeon, of the levels asked; the cohort file's bots for this map
-	// first, then (for the Las) the ones already in the temple.
+	// first.
 	std::vector<DWORD> CollectPlayerBotArezzoCandidates(long map, int levelMin, int levelMax, bool any)
 	{
 		// With test characters named for this map, only they are sent (unless
@@ -1460,7 +1133,6 @@ namespace
 				!any && c != s_mapPlayerBotArezzoCohort.end() && !cohortOnly; ++c)
 			cohortOnly = c->second == map;
 		std::vector<std::pair<int, DWORD> > ranked;
-		std::map<int, int> lendRoom;	// a dungeon cohort's bots still to lend
 		for (TPlayerBotAIStateMap::iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
@@ -1469,25 +1141,6 @@ namespace
 			const long m = ch->GetMapIndex();
 			if ((int)ch->GetLevel() < levelMin || (int)ch->GetLevel() > levelMax)
 				continue;
-			// MT2009_PLUS_AREZZO_MAPS_FIX_V1: the Las may borrow the dungeon
-			// cohort's bots idle in their lobby (playerbot_arezzo_dungeon_bots.h),
-			// up to half of each dungeon's cohort - the only bots of 95+ on the
-			// test server (night test 6/7 October: "send 362" found none).
-			const int lendDg = map == PLAYERBOT_MAP_AREZZO_FOREST ? GetPlayerBotArezzoDungeonCohortLendable(ch) : -1;
-			if (lendDg >= 0)
-			{
-				std::map<DWORD, long>::const_iterator f = s_mapPlayerBotArezzoForced.find(it->first);
-				if ((f != s_mapPlayerBotArezzoForced.end() && f->second == map) || cohortOnly)
-					continue;
-				std::map<int, int>::iterator room = lendRoom.find(lendDg);
-				if (room == lendRoom.end())
-					room = lendRoom.insert(std::make_pair(lendDg, GetPlayerBotArezzoDungeonCohortLendRoom(lendDg))).first;
-				if (room->second <= 0)
-					continue;
-				--room->second;
-				ranked.push_back(std::make_pair(5, it->first));
-				continue;
-			}
 			if (m >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN || (IsPlayerBotOffLimitsMap(m) && m != map) ||
 					(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) ||
 					IsPlayerBotSidekickPID(it->first) || IsPlayerBotHeldForCompany(ch) ||
@@ -1500,8 +1153,6 @@ namespace
 			std::map<DWORD, long>::const_iterator c = s_mapPlayerBotArezzoCohort.find(it->first);
 			if (c != s_mapPlayerBotArezzoCohort.end() && c->second == map)
 				rank = 0;
-			else if (map == PLAYERBOT_MAP_AREZZO_FOREST && m == PLAYERBOT_MAP_OCHAO)
-				rank = 1;
 			else if (c != s_mapPlayerBotArezzoCohort.end())
 				continue;	// another map's test character
 			if (cohortOnly && rank != 0)
@@ -1565,7 +1216,7 @@ namespace
 			return;
 		char line[128];
 		std::vector<DWORD> pids;
-		int perMap[3] = { 0, 0, 0 };
+		int perMap[2] = { 0, 0 };
 		while (fgets(line, sizeof(line), fp))
 		{
 			long map = 0;
@@ -1578,8 +1229,8 @@ namespace
 		}
 		fclose(fp);
 		const size_t scheduled = CPlayerBotManager::instance().ScheduleExtraBots(pids);
-		sys_log(0, "ARZ_BOT: cohort file pids=%u m360=%d m361=%d m362=%d scheduled_now=%u",
-				(unsigned int)pids.size(), perMap[0], perMap[1], perMap[2], (unsigned int)scheduled);
+		sys_log(0, "ARZ_BOT: cohort file pids=%u m360=%d m361=%d scheduled_now=%u",
+				(unsigned int)pids.size(), perMap[0], perMap[1], (unsigned int)scheduled);
 	}
 
 	void RunPlayerBotArezzoTestFile(DWORD dwNow)
@@ -1620,11 +1271,9 @@ namespace
 				if (got < 5)
 				{
 					lmin = info->bMinLevel;
-					lmax = a == PLAYERBOT_MAP_AREZZO_FOREST ? 255 : (int)info->bMinLevel + 30;
+					lmax = (int)info->bMinLevel + 30;
 				}
 				lmax = std::min(lmax, (int)GetPlayerBotArezzoMaxLevel(a));
-				if (a == PLAYERBOT_MAP_AREZZO_FOREST && lmin < (int)PLAYERBOT_AREZZO_FOREST_MIN_LEVEL)
-					lmin = PLAYERBOT_AREZZO_FOREST_MIN_LEVEL;
 				std::vector<DWORD> pids = CollectPlayerBotArezzoCandidates(a, lmin, lmax, !strcmp(opt, "any"));
 				int sent = 0, failed = 0, already = 0, reserved = 0;
 				for (size_t i = 0; i < pids.size() && sent + already + reserved < b; ++i)
@@ -1638,18 +1287,8 @@ namespace
 					s_setPlayerBotOchaoForced.erase(pids[i]);
 					s_setPlayerBotOchaoLeave.erase(pids[i]);
 					s_mapPlayerBotArezzoTrack[pids[i]].dwSent = dwNow;
-					if (ch->GetMapIndex() == a || (a == PLAYERBOT_MAP_AREZZO_FOREST && ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO))
+					if (ch->GetMapIndex() == a)
 					{
-						if (ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO)
-						{
-							TPlayerBotArezzoLas& las = s_mapPlayerBotArezzoLas[pids[i]];
-							las = TPlayerBotArezzoLas();
-							las.dwSince = dwNow;
-							las.bPhase = AREZZO_LAS_TEMPLE;
-							las.dwPhaseSince = dwNow;
-							sys_log(0, "ARZ_BOT: las crossing begins pid=%u name=%s level=%u from=%ld reason=test_send",
-									pids[i], ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex());
-						}
 						++already;
 						continue;
 					}
@@ -1695,7 +1334,6 @@ namespace
 					}
 					else
 						++released;	// still on its way: it simply is no longer sent
-					s_mapPlayerBotArezzoLas.erase(f->first);
 					s_mapPlayerBotArezzoForced.erase(f++);
 				}
 				sys_log(0, "ARZ_BOT: test %s map=%ld ordered=%d released=%d forced_left=%u",
@@ -1723,7 +1361,6 @@ namespace
 			{
 				s_mapPlayerBotArezzoForced.clear();
 				s_setPlayerBotArezzoLeave.clear();
-				s_mapPlayerBotArezzoLas.clear();
 				SavePlayerBotArezzoOrders();
 				sys_log(0, "ARZ_BOT: test reset");
 			}
@@ -1752,7 +1389,6 @@ namespace
 			return;
 		t.dwNextResend = dwNow + PLAYERBOT_AREZZO_RESEND_RETRY_MS;
 		if (ch->IsDead() || state.bRecoveringAfterDeath || here >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
-				(map == PLAYERBOT_MAP_AREZZO_FOREST && (here == PLAYERBOT_MAP_OCHAO || here == PLAYERBOT_MAP_ORC_VALLEY)) ||
 				(ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotHeldForCompany(ch) ||
 				state.bTownVisitPhase != BOT_TOWN_PHASE_NONE || ch->GetMyShop() != NULL ||
 				state.wBossRaidRace != 0 || BlocksPlayerBotTravel(ch) ||
@@ -1766,25 +1402,21 @@ namespace
 	}
 
 	// A held bot's belt, kept on its map at the merchant's price out of its own
-	// gold (the owner's "simply have them carry enough potions", round 3): the
-	// trip home for a belt would cost a Las bot the whole temple again. Under
+	// gold (the owner's "simply have them carry enough potions", round 3). Under
 	// 60 reds it buys a stack of 200 (the big ones from level 40, 40 yang each),
 	// a caster under 40 blues a stack of 200; only with a free cell, never more
 	// than half its gold.
 	void RestockPlayerBotArezzo(LPCHARACTER ch, TPlayerBotArezzoTrack& t, DWORD dwNow)
 	{
-		// Bound for the Las and not in it yet (town, Orc Valley, the temple):
-		// it packs the expedition's kit before and on the road.
-		const bool packing = IsPlayerBotArezzoBoundForLas(ch) && ch->GetMapIndex() != PLAYERBOT_MAP_AREZZO_FOREST;
-		if (dwNow < t.dwNextRestock || ch->IsDead() || !ch->IsItemLoaded() || !(packing || IsPlayerBotArezzoHeldHere(ch)))
+		if (dwNow < t.dwNextRestock || ch->IsDead() || !ch->IsItemLoaded() || !IsPlayerBotArezzoHeldHere(ch))
 			return;
 		t.dwNextRestock = dwNow + 10000;
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
 		const bool big = ch->GetLevel() >= PLAYERBOT_BIG_POTION_MIN_LEVEL;
 		const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
-		const size_t wantRed = packing ? PLAYERBOT_AREZZO_LAS_KIT_RED : 60;
-		const size_t wantBlue = packing ? PLAYERBOT_AREZZO_LAS_KIT_BLUE : 40;
+		const size_t wantRed = 60;
+		const size_t wantBlue = 40;
 		int boughtRed = 0, boughtBlue = 0;
 		for (int i = 0; i < 4 && red + boughtRed < wantRed && ch->GetEmptyInventory(1) >= 0; ++i)
 		{
@@ -1805,9 +1437,9 @@ namespace
 			boughtBlue += 200;
 		}
 		if (boughtRed || boughtBlue)
-			sys_log(0, "ARZ_BOT: restock pid=%u name=%s map=%ld red=%u blue=%u bought_red=%d bought_blue=%d gold=%lld kit=%d",
+			sys_log(0, "ARZ_BOT: restock pid=%u name=%s map=%ld red=%u blue=%u bought_red=%d bought_blue=%d gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)red, (unsigned int)blue,
-					boughtRed, boughtBlue, (long long)ch->GetGold(), packing ? 1 : 0);
+					boughtRed, boughtBlue, (long long)ch->GetGold());
 		else if (red < 10)
 			PlayerBotLogThrottled("arezzo_restock_failed", dwNow,
 					"ARZ_BOT: restock impossible pid=%u name=%s map=%ld red=%u free_cell=%d gold=%lld",
@@ -1820,9 +1452,9 @@ namespace
 	// MT2009_PLUS_AREZZO_NATURAL_V1 - the bots go to the Arezzo maps by
 	// themselves. The owner, 7 October (the night's request): the bots are to
 	// "korzystac z nowych map arezzo" - over the rule of 30 September (only the
-	// operator's test cohorts there). His rules of 1 October stay: the
-	// kingdoms fight each other on those maps, and the Las is an expedition
-	// (the 600 reds / 400 blues kit, a stay of at least two hours).
+	// operator's test cohorts there). His rule of 1 October stays: the
+	// kingdoms fight each other on those maps (the Las - an expedition - is
+	// gone with the Arezzo forest, MT2009_PLUS_YOHARA_ZAKLETY_V1).
 	//
 	// Every PLAYERBOT_AREZZO_NATURAL_TICK_MS, on the core that hosts a map and
 	// with the module open, the map's visitors of the world's own are counted
@@ -1831,11 +1463,11 @@ namespace
 	// (the dungeon finder's refusal: no person's company, no cohort, no raid,
 	// no war, no shop...) of the map's band - the levels at which its monsters
 	// are no stronger than the bot (Dolina Cyklopow's 43-49 from 45, the
-	// pyramid's 53-58 from 57, the Las from the temple's level) up to the
+	// pyramid's 53-58 from 57) up to the
 	// map's own upper limit - whose experience is not held, and one of the
 	// share of bots that like new ground (by pid). It goes the way the
 	// operator's send takes it (the order: the routes, the held stay, the belt
-	// kept full, the Las's road and kit), and after its visit
+	// kept full), and after its visit
 	// (PLAYERBOT_AREZZO_NATURAL_STAY_*) it is told to leave by the Teleporter
 	// and rests from the maps for PLAYERBOT_AREZZO_NATURAL_REST_MS. A level past
 	// the map's limit, the operator's "leave"/"reset" and a logout end a visit
@@ -1856,9 +1488,6 @@ namespace
 	const TPlayerBotArezzoNaturalRule PLAYERBOT_AREZZO_NATURAL_RULES[] = {
 		{ 360, 18, 44, 45 * 60 * 1000, 45 * 60 * 1000 },
 		{ 361, 18, 57, 45 * 60 * 1000, 45 * 60 * 1000 },
-		// Five at a core: the 95+ are few (the twenty let go from the Jungle's
-		// cohort, 8 October) and Nemere, the Dragon and the Jungle want them too.
-		{ 362, 5, PLAYERBOT_AREZZO_FOREST_MIN_LEVEL, PLAYERBOT_AREZZO_LAS_STAY_MS, 60 * 60 * 1000 },
 	};
 
 	// The bot's own taste for new ground.
@@ -1880,7 +1509,6 @@ namespace
 			if (ch && IsPlayerBotArezzoMap(ch->GetMapIndex()))
 				s_setPlayerBotArezzoLeave.insert(pid);
 			s_mapPlayerBotArezzoForced.erase(f);
-			s_mapPlayerBotArezzoLas.erase(pid);
 		}
 		sys_log(0, "ARZ_BOT: natural visit over pid=%u name=%s map=%ld why=%s stay_s=%u here=%ld",
 				pid, ch ? ch->GetName() : "?", n->second.lMap, why, (dwNow - n->second.dwSentAt) / 1000,
@@ -1897,7 +1525,7 @@ namespace
 			return;
 		s_dwNext = dwNow + PLAYERBOT_AREZZO_NATURAL_TICK_MS;
 		// The visits under way: over, or gone.
-		int count[3] = { 0, 0, 0 };
+		int count[2] = { 0, 0 };
 		std::vector<std::pair<DWORD, const char*> > ended;
 		for (std::map<DWORD, TPlayerBotArezzoNatural>::const_iterator n = s_mapPlayerBotArezzoNatural.begin();
 				n != s_mapPlayerBotArezzoNatural.end(); ++n)
@@ -1912,7 +1540,7 @@ namespace
 				ended.push_back(std::make_pair(n->first, "level"));
 			else if (dwNow - n->second.dwSentAt >= n->second.dwStayMs)
 				ended.push_back(std::make_pair(n->first, "stay_over"));
-			else if (n->second.lMap >= PLAYERBOT_MAP_AREZZO_CYCLOPS && n->second.lMap <= PLAYERBOT_MAP_AREZZO_FOREST)
+			else if (n->second.lMap >= PLAYERBOT_MAP_AREZZO_CYCLOPS && n->second.lMap <= PLAYERBOT_MAP_AREZZO_PHARAOH)
 				++count[n->second.lMap - PLAYERBOT_MAP_AREZZO_CYCLOPS];
 		}
 		for (size_t i = 0; i < ended.size(); ++i)
@@ -1924,9 +1552,7 @@ namespace
 		{
 			const TPlayerBotArezzoNaturalRule& rule = PLAYERBOT_AREZZO_NATURAL_RULES[r];
 			const TPlayerBotArezzoMap* info = GetPlayerBotArezzoMapInfo(rule.lMap);
-			if (!info || !IsPlayerBotArezzoHosted(rule.lMap) ||
-					(rule.lMap == PLAYERBOT_MAP_AREZZO_FOREST &&
-					 (!IsPlayerBotArezzoHosted(PLAYERBOT_MAP_OCHAO) || !IsPlayerBotArezzoHosted(PLAYERBOT_MAP_ORC_VALLEY))))
+			if (!info || !IsPlayerBotArezzoHosted(rule.lMap))
 				continue;
 			const int want = std::min(PLAYERBOT_AREZZO_NATURAL_PER_TICK, rule.iTarget - count[rule.lMap - PLAYERBOT_MAP_AREZZO_CYCLOPS]);
 			if (want <= 0)
@@ -2020,7 +1646,7 @@ namespace
 			out = fopen(PLAYERBOT_AREZZO_TRACK_FILE, "a");
 		}
 		const time_t wall = time(0);
-		int onMap[3] = { 0, 0, 0 }, lasTemple = 0, lasRoad = 0, sentAway = 0, cohortOnline = 0, restingNow = 0;
+		int onMap[2] = { 0, 0 }, sentAway = 0, cohortOnline = 0, restingNow = 0;
 		for (TPlayerBotAIStateMap::iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			const DWORD pid = it->first;
@@ -2032,12 +1658,11 @@ namespace
 			const long map = ch->GetMapIndex();
 			const bool here = IsPlayerBotArezzoMap(map);
 			std::map<DWORD, long>::const_iterator forced = s_mapPlayerBotArezzoForced.find(pid);
-			const bool las = s_mapPlayerBotArezzoLas.count(pid) != 0;
-			if (!here && forced == s_mapPlayerBotArezzoForced.end() && !las)
+			if (!here && forced == s_mapPlayerBotArezzoForced.end())
 				continue;
 			TPlayerBotAIState& state = it->second;
 			TPlayerBotArezzoTrack& t = s_mapPlayerBotArezzoTrack[pid];
-			int mode = 0;	// 0 hunting, 1 leaving, 2 on the way in (road), 3 in the temple for the Las
+			int mode = 0;	// 0 hunting, 1 leaving, 2 on the way in
 			RestockPlayerBotArezzo(ch, t, dwNow);
 			if (here)
 			{
@@ -2218,21 +1843,13 @@ namespace
 				if (IsPlayerBotArezzoLeaving(ch))
 					mode = 1;
 			}
-			else if (las)
-			{
-				mode = map == PLAYERBOT_MAP_OCHAO ? 3 : 2;
-				if (mode == 3)
-					++lasTemple;
-				else
-					++lasRoad;
-			}
 			else
 			{
 				mode = 2;
 				++sentAway;
 				ResendPlayerBotArezzo(ch, state, t, forced != s_mapPlayerBotArezzoForced.end() ? forced->second : 0, dwNow);
 			}
-			if (here || las)
+			if (here)
 				t.dwAwaySince = 0;
 			if (out)
 			{
@@ -2249,8 +1866,8 @@ namespace
 		}
 		if (out)
 		{
-			fprintf(out, "#\t%ld\tm360=%d\tm361=%d\tm362=%d\tlas_temple=%d\tlas_road=%d\tsent_away=%d\tforced=%u\tcohort_online=%d\tportal=%u\tguardian=%u\twalks=%u\twalks_nav=%u\trefused=%u\topen=%d\tresting=%d\n",
-					(long)wall, onMap[0], onMap[1], onMap[2], lasTemple, lasRoad, sentAway,
+			fprintf(out, "#\t%ld\tm360=%d\tm361=%d\tsent_away=%d\tforced=%u\tcohort_online=%d\tportal=%u\tguardian=%u\twalks=%u\twalks_nav=%u\trefused=%u\topen=%d\tresting=%d\n",
+					(long)wall, onMap[0], onMap[1], sentAway,
 					(unsigned int)s_mapPlayerBotArezzoForced.size(), cohortOnline,
 					(unsigned int)mt2009_ochao::s_dwPortalVID, (unsigned int)mt2009_ochao::s_dwGuardianVID,
 					s_uPlayerBotArezzoWalksPlanned, s_uPlayerBotArezzoWalksNavOnly, s_uPlayerBotArezzoRefused,
@@ -2291,7 +1908,7 @@ namespace
 	}
 
 	// From CPlayerBotManager::StartWorldClock, on the core that hosts any of
-	// the three maps.
+	// the two maps.
 	void StartPlayerBotArezzoWatch()
 	{
 		if (s_pkPlayerBotArezzoWatch)
