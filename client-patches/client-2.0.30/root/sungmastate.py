@@ -128,4 +128,7 @@ def Refresh(affectBar):
 
 
 def Clear():
+	"""A new game window (warp, login): its affect bar has none of the icons; the server sends sungma_map again."""
 	_shown.clear()
+	for i in xrange(len(MAP)):
+		MAP[i] = 0

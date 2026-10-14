@@ -187,6 +187,7 @@ class GameWindow(ui.ScriptWindow):
 
 		self.mapNameShower = uiMapNameShower.MapNameShower()
 		self.affectBar = uiAffectBar.AffectShower()
+		__import__("sungmastate").Clear() # MT2009_PLUS_YOHARA_EXE2_V1: a new affect bar - no Sung Ma icon on it yet
 
 		self.playerGauge = uiPlayerGauge.PlayerGauge(self)
 		self.playerGauge.Hide()
