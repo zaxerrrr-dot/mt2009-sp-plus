@@ -125,7 +125,9 @@ SETFX = 'the set effects (Kowale Zestawu 20475-20479 in the port) - none here ye
 for v in list(range(39085, 39109)) + [39110, 39111, 39112]:
     add(v, status=need(SETFX))
 add(39113, **QUEST)                                               # Medal Sily Natury: 10 min on the plateau (quest)
-add(39114, **QUEST)                                               # Pierscien Sily Natury: to the plateau (quest)
+# MT2009_PLUS_YOHARA_REALM_V2 (fix 3.0 #13b): Pierscien Sily Natury does not stack (pl-wiki item page: Laczenie - Nie;
+# trade with an NPC only, no storehouse / mail, as GF's antiflags already are)
+add(39114, nostack=True, **QUEST)                                 # Pierscien Sily Natury: to the plateau (quest)
 add(39116, name='Pierścień Siły Natury (100%)', **QUEST)
 # MT2009_PLUS_YOHARA_REALM_V2 (fix 3.0 #13b): the rings' descriptions say how the plateau is reached here (the chance,
 # where they work, where they drop) - the official text alone left the owner looking for the way in
@@ -218,6 +220,8 @@ def main():
         if it['status'] != ST:
             anti &= ~Y.ANTI_TRADE
         flag = Y.flags(o['Flags'], Y.FLAGS, 'flag')
+        if ov.get('nostack'):
+            flag &= ~Y.FLAGS['ITEM_STACKABLE']
         if typ == 18:
             flag |= Y.FLAGS['ITEM_QUEST_USE']
         wear = Y.flags(ov.get('wear', o['WearFlags']), Y.WEAR, 'wearflag')
@@ -283,8 +287,15 @@ def write_sql(items):
     for v, r in sorted(RETYPE.items()):
         L.append('UPDATE world.item_proto SET type=%d, subtype=%d, flag=flag|%d WHERE vnum=%d AND (type<>%d OR '
                  'flag&%d=0);' % (r['type'], r['subtype'], r['flag_or'], v, r['type'], r['flag_or']))
+    for i in items:                     # a non-stacking item of an earlier start (INSERT IGNORE keeps the old row)
+        if i['stack'] == 1 and not i['flag'] & Y.FLAGS['ITEM_STACKABLE'] and i['vnum'] in NOSTACK_UPDATE:
+            L.append('UPDATE world.item_proto SET flag=flag&~%d, stack=1 WHERE vnum=%d AND (flag&%d<>0 OR stack<>1);'
+                     % (Y.FLAGS['ITEM_STACKABLE'], i['vnum'], Y.FLAGS['ITEM_STACKABLE']))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
+
+
+NOSTACK_UPDATE = (39114,)
 
 
 def write_json(items):
