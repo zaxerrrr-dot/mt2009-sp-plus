@@ -15,7 +15,7 @@ przedmioty `yohara_items2.sql` – Zamarznięty Klucz, Pył Wężowy, perły, sk
 | 390 | 1. poziom Świątyni Węży | metin2_map_snake_temple_01 (3×3) | mapa | nasze (punkty GF), bossowie wg TR |
 | 391 | Świątynia Węży | metin2_map_snake_temple_02 (3×3) | loch (`swiatynia_wezy`, 7 poziomów) | quest |
 | 396 | Tajemnicza Instancja | metin2_map_anglar_dungeon_01 (6×6) | mapa (Tajemniczy Bilet) | Owsap |
-| 378–380 | Królestwo Żywiołów (9 obszarów wiki) | metin2_map_elemental_01..03 (5×5) | mapy (z portu, 90 lvl, 5 mln) | Owsap |
+| 378–380 | Królestwo Żywiołów (9 obszarów wiki) | metin2_map_elemental_01..03 (5×5) | mapy (z portu: portal 3998 albo Staruszek 20009 – każdy z 9 obszarów, 90 lvl, 50 mln) | Owsap |
 | 381 | Płaskowyż Sił Natury | metin2_map_elemental_04 (1×2) | mapa (Pierścień Siły Natury) | Owsap |
 
 `metin2_map_elemental_04_rework` to własna kopia Amerii (te same pliki terenu co `_04`, inna baza, śnieżny
@@ -26,7 +26,16 @@ Szczytobłysk, Lodogóry), `_02` (Ognioturnia, Ognioszczyt, Wyspowiatr), `_03` (
 Połączenia (krok Dockerfile „Yohara maps 3: links”, punkty GF): Schronienie (393) 10202 → Zejście, Zejście 10203 →
 Schronienie; Przełęcz Yilad (385) Strażnik Węży 20804 → 1. poziom Świątyni, Wyjście 10138 / Statua Węży → Yilad;
 Namgan (377) Tajemniczy Ołtarz 20850 → Instancja (bilet 70408, 1. Poziom Czempiona), Wyjście 10204 → Namgan; Port
-(368) portal 3998 → Królestwo, Wyjście 3999 → port.
+(368) portal 3998 i Staruszek 20009 (233,581) → wybrany z 9 obszarów Królestwa, Wyjście 3999 → port.
+
+Obszary Królestwa (MT2009_PLUS_YOHARA_REALM_V2, błąd 3.0 #13): wszystkie 9 istnieją – trzy na każdej z map 378–380,
+każdy z własnym Metinem i potworami swojego żywiołu. Punkty teleportu (globalne m) = cele portali Owsapa między
+obszarami: Turniobłysk 451,9492, Szczytobłysk 830,9454, Lodogóry 690,10169 (378); Ognioturnia 1430,9616, Ognioszczyt
+2117,9447, Wyspowiatr 1973,10159 (379); Turniomrok 2710,9616, Szczytomrok 3393,9454, Ziemiopust 3069,10174 (380).
+Współrzędne z listy wiki (831,221 …) to miejsca portali prowadzących do danego obszaru. Wstęp 50 000 000 Yang za
+teleport (właściciel), drużyna niewymagana (wiki: „żadna grupa nie jest wymagana”). Pierścień Siły Natury (39114,
+10%; 39116 – 100%, jest w danych GF) działa tylko na 378–380, wypada ze wszystkich potworów (0,1%) i Metinów (10%)
+Królestwa; flagi wg wiki: sprzedaż NPC tak, handel z graczem / sklep / upuszczanie / magazyn nie.
 
 Strefy na ziemi (`server-patches/strefy`, MT2009_PLUS_DUNGEON_ZONE_V1, `d.zone_attack`): lodowe kolce Głębi (co 15 s
 pod każdym, 50% PŻ), Śmiertelny Chłód (stałe białe kręgi, 15 000 / 20 000 PŻ + osłabienie) i atak z powierzchni

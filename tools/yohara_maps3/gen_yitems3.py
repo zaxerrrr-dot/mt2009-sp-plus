@@ -127,6 +127,15 @@ for v in list(range(39085, 39109)) + [39110, 39111, 39112]:
 add(39113, **QUEST)                                               # Medal Sily Natury: 10 min on the plateau (quest)
 add(39114, **QUEST)                                               # Pierscien Sily Natury: to the plateau (quest)
 add(39116, name='Pierścień Siły Natury (100%)', **QUEST)
+# MT2009_PLUS_YOHARA_REALM_V2 (fix 3.0 #13b): the rings' descriptions say how the plateau is reached here (the chance,
+# where they work, where they drop) - the official text alone left the owner looking for the way in
+DESC = {
+    39114: 'Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) '
+           'teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich '
+           'potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).',
+    39116: 'Użyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się '
+           'na Płaskowyż Siły Natury. Pierścień znika po użyciu.',
+}
 
 # items we have (official vnums or ours - see the notes): their names in the drop file
 EXISTING = {
@@ -241,7 +250,7 @@ def main():
             limittype0=lim[0][0], limitvalue0=lim[0][1], limittype1=lim[1][0], limitvalue1=lim[1][1],
             applytype0=0, applyvalue0=0, applytype1=0, applyvalue1=0, applytype2=0, applyvalue2=0,
             **dict(('value%d' % i, values[i]) for i in range(6)),
-            icon='icon/item/' + icon_file, icon_src=icon, desc=text,
+            icon='icon/item/' + icon_file, icon_src=icon, desc=DESC.get(it['vnum'], text),
             list_type='ARMOR' if typ == 2 else 'ETC'))
     byv = dict((i['vnum'], i) for i in items)
     assert len(byv) == len(items)

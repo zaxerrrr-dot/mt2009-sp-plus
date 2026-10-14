@@ -1550,7 +1550,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ysets-add/
 # 9180-9189), drops (mob_drop_item.yohara_maps3.txt; 6797's Zamarzniety Klucz a "limit" group of its own - one a
 # kill, the owner 14 October) and chests (special_item_group.yohara_maps3.txt, made with the
 # items of mariadb/playerbot/yohara_items3.sql by tools/yohara_maps3/gen_yitems3.py) are appended; none may exist
-# before. The port gets Owsap's elemental portal (3998, 229,585); sungma_table.txt the two dungeons (the wiki's first
+# before. The port gets Owsap's elemental portal (3998, 229,585) and Staruszek (20009, 233,581: both teleport to the
+# wiki's nine areas, quest yohara_mapy3, MT2009_PLUS_YOHARA_REALM_V2); sungma_table.txt the two dungeons (the wiki's first
 # levels: Glebie slaby 60/50/60/65, the temple's 2nd level 35/25/35/40 - one requirement a map name here); the dungeon
 # panel its three dungeons (Glebie from 1 person - the owner, 14 October; quest flag ymaps3_glebie_party); /goto
 # zejscie, swiatynia, instancja, zywioly, plaskowyz. The monsters' rows: mariadb/playerbot/yohara_maps3.sql. The
@@ -1603,6 +1604,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
  && P="$L/map/metin2_map_defensewave_port/npc.txt" \
  && { grep -q -E '[[:blank:]]3998[[:space:]]*$' "$P" || { { [ -z "$(tail -c 1 "$P")" ] || printf '\r\n' >> "$P"; }; printf 'm\t229\t585\t0\t0\t0\t4\t60s\t100\t1\t3998\r\n' >> "$P"; }; } \
  && test "$(grep -c -E '[[:blank:]]3998[[:space:]]*$' "$P")" = 1 \
+ && { grep -q -E '[[:blank:]]20009[[:space:]]*$' "$P" || printf 'm\t233\t581\t0\t0\t0\t4\t60s\t100\t1\t20009\r\n' >> "$P"; } \
+ && test "$(grep -c -E '[[:blank:]]20009[[:space:]]*$' "$P")" = 1 \
  && T="$L/sungma_table.txt" \
  && { grep -q '^metin2_map_whitedragoncave_boss[[:blank:]]' "$T" || printf 'metin2_map_whitedragoncave_boss\t60\t50\t60\t65\n' >> "$T"; } \
  && { grep -q '^metin2_map_snake_temple_02[[:blank:]]' "$T" || printf 'metin2_map_snake_temple_02\t35\t25\t35\t40\n' >> "$T"; } \

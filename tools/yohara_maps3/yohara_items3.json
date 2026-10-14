@@ -2624,8 +2624,8 @@
 "39111": "39111\tProjekt Zestawu Zbroi\tMateriał potrzebny, by u kowala zestawów móc dodać do zbroi efekt zestawu. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)",
 "39112": "39112\tProjekt Zestawu Broni\tMateriał potrzebny, by u kowala zestawów móc dodać do broni efekt zestawu. (Na razie bez zastosowania - przyjdzie z kolejną aktualizacją Yohary.)",
 "39113": "39113\tMedal Siły Natury\tObdarza cię na Płaskowyżu Siły Natury przez 10 minut odpornością na klątwę żywiołu. Pierścień ten możesz tylko przez określony czas zachować w ekwipunku.",
-"39114": "39114\tPierścień Siły Natury\tUżyj pierścienia w Królestwie Żywiołów, by zyskać szansę teleportowania się na Płaskowyż Siły Natury.",
-"39116": "39116\tPierścień Siły Natury (100%)\tUżyj pierścienia w Królestwie Żywiołów, by zagwarantować sobie teleportowanie na Płaskowyż Siły Natury."
+"39114": "39114\tPierścień Siły Natury\tUżyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zyskać szansę (10%) teleportowania się na Płaskowyż Siły Natury. Pierścień znika przy każdym użyciu. Wypada ze wszystkich potworów i Metinów Królestwa Żywiołów (wejście: portal i Staruszek w Porcie Nowego Kontynentu).",
+"39116": "39116\tPierścień Siły Natury (100%)\tUżyj pierścienia w Królestwie Żywiołów (na jednym z dziewięciu obszarów), by zawsze teleportować się na Płaskowyż Siły Natury. Pierścień znika po użyciu."
 },
 "itemdesc_replace": {
 "70408": "70408\tTajemniczy Bilet\tPokaż go Tajemniczemu Ołtarzowi w Namgan, aby wejść do Tajemniczej Instancji.",

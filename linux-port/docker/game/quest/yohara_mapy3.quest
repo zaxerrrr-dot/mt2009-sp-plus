@@ -9,9 +9,13 @@
 --     Bilet (70408) za ka¿de wejœcie; Wyjœcie (10204) wraca do o³tarza; o³tarz wytwarza te¿ Esencjê Talizmanu
 --     (4 Talizmany Woli: SI£A, WIT, ODP, INT + 5 000 000 Yang, 90%) i Tajemniczy Talizman (Esencja + 200 Tajemniczych
 --     Kamieni + 10 000 000 Yang) - i Gaya (100 / 200; przedmiot 95927, MT2009_PLUS_GAYA_V1);
---   * Królestwo ¯ywio³ów (378-380) i P³askowy¿ Si³ Natury (381): portal Królestwo ¯ywio³ów (3998) w Porcie Nowego
---     Kontynentu (368) - od poziomu 90 za 5 000 000 Yang; Wyjœcie (3999) wraca do portu; po œmierci - do portu
---     (wiki, Wersja 20.0); Pierœcieñ Si³y Natury (39114: 10% szansy, 39116: zawsze) przenosi na P³askowy¿;
+--   * Królestwo ¯ywio³ów (378-380) i P³askowy¿ Si³ Natury (381): portal Królestwo ¯ywio³ów (3998) i Staruszek (20009,
+--     MT2009_PLUS_YOHARA_REALM_V2, b³¹d 3.0 #13) w Porcie Nowego Kontynentu (368) - od poziomu 90 za 50 000 000 Yang
+--     (w³aœciciel 14.10; wiki: "5000,0000"), bez wymogu dru¿yny (wiki: "¿adna grupa nie jest wymagana"); teleport do
+--     ka¿dego z 9 obszarów wiki (punkty = cele portali Owsapa 10110-10125 miêdzy obszarami): _01 Turniob³ysk,
+--     Szczytob³ysk, Lodogóry; _02 Ognioturnia, Ognioszczyt, Wyspowiatr; _03 Turniomrok, Szczytomrok, Ziemiopust;
+--     Wyjœcie (3999) wraca do portu; po œmierci - do portu (wiki, Wersja 20.0); Pierœcieñ Si³y Natury (39114: 10%
+--     szansy, 39116: zawsze; wypada ze wszystkich potworów i Metinów obszarów 378-380) przenosi na P³askowy¿;
 --     na P³askowy¿u P¯ stale spadaj¹ (5% co 10 s, nigdy do zera), Medal Si³y Natury (39113) chroni przez 10 minut;
 --   * stra¿nicy poziomu: Zejœcie, 1. poziom Œwi¹tyni, Instancja od 120 (Instancja: te¿ 1. Poziom Czempiona),
 --     Królestwo od 90 - kto nie spe³nia (np. przeniesiony przez GM-a), wraca.
@@ -22,13 +26,24 @@ quest yohara_mapy3 begin
 			return {
 				min_level = 120,
 				realm_level = 90,
-				realm_fee = 5000000, realm_fee_text = "5 000 000",
+				realm_fee = 50000000, realm_fee_text = "50 000 000",   -- MT2009_PLUS_YOHARA_REALM_V2
 				port = {1280 + 405, 5632 + 480},             -- Town.txt portu (368)
 				yilad = {0 + 633, 14080 + 490},              -- Prze³êcz Yilad (385), przy Stra¿niku Wê¿y 637,494
 				swiatynia1 = {0 + 669, 16384 + 658},         -- Town.txt 1. poziomu Œwi¹tyni Wê¿y (390)
 				namgan = {12288 + 956, 4352 + 238},          -- Namgan (377), przy Tajemniczym O³tarzu 960,242
 				instancja = {1536 + 73, 10496 + 119},        -- Town.txt Tajemniczej Instancji (396)
 				realm = {0 + 149, 9216 + 404},               -- Town.txt elemental_01 (378)
+				-- MT2009_PLUS_YOHARA_REALM_V2: the wiki's nine areas - where Owsap's portals between them land
+				-- (their names in yohara_maps3.sql: "Szczytoblysk 830 9454" ...); each checked walkable in server_attr
+				-- with its own Metin and monsters within 150 m (14.10)
+				areas = {
+					{"Turniob³ysk", 451, 9492, "b³yskawic"}, {"Szczytob³ysk", 830, 9454, "b³yskawic"},
+					{"Lodogóry", 690, 10169, "lodu"},
+					{"Ognioturnia", 1430, 9616, "ognia"}, {"Ognioszczyt", 2117, 9447, "ognia"},
+					{"Wyspowiatr", 1973, 10159, "wiatru"},
+					{"Turniomrok", 2710, 9616, "mroku"}, {"Szczytomrok", 3393, 9454, "mroku"},
+					{"Ziemiopust", 3069, 10174, "ziemi"},
+				},
 				plateau = {3840 + 126, 9216 + 310},          -- Town.txt P³askowy¿u (381)
 				ticket = 70408,
 				talismans = {81000, 81300, 81250, 81550},    -- Talizman Woli SI£A, WIT, ODP, INT (+0)
@@ -175,26 +190,50 @@ quest yohara_mapy3 begin
 			end
 		end
 
-		-- Port Nowego Kontynentu: portal do Królestwa ¯ywio³ów
-		when 3998.chat."Królestwo ¯ywio³ów" with pc.get_map_index() == 368 begin
+		-- Port Nowego Kontynentu: portal Królestwo ¯ywio³ów (3998) i Staruszek (20009) - teleport do ka¿dego z dziewiêciu
+		-- obszarów (MT2009_PLUS_YOHARA_REALM_V2, b³¹d 3.0 #13)
+		function realm_menu(npc)
 			local c = yohara_mapy3.cfg()
-			say_title(mob_name(3998)..":")
-			say("Za tym portalem le¿y Królestwo ¯ywio³ów, gdzie")
+			say_title(mob_name(npc)..":")
+			say("Królestwo ¯ywio³ów to dziewiêæ obszarów, gdzie")
 			say("duchy szeœciu ¿ywio³ów strzeg¹ swoich ziem.")
+			say("Mogê ciê zabraæ do ka¿dego z nich; miêdzy")
+			say("obszarami prowadz¹ te¿ portale na miejscu.")
 			say("Nie dzia³aj¹ tam zwoje ani pierœcienie powrotu,")
 			say("a kto polegnie, wraca do portu.")
 			say("")
+			say("P³askowy¿ Si³ Natury: u¿yj Pierœcienia Si³y")
+			say("Natury W Królestwie - daje szansê na przeniesienie.")
+			say("Pierœcieñ wypada ze wszystkich potworów i Metinów")
+			say("Królestwa ¯ywio³ów.")
+			say("")
 			say_reward("Od poziomu "..c.realm_level..". Wstêp: "..c.realm_fee_text.." Yang.")
-			if select("WejdŸ do Królestwa", "Zostañ w porcie") ~= 1 then
+			say_reward("Dru¿yna nie jest wymagana.")
+			local g = select("B³yskawica i lód (mapa 1)", "Ogieñ i wiatr (mapa 2)", "Mrok i ziemia (mapa 3)", "Zostañ w porcie")
+			if g < 1 or g > 3 then
 				return
 			end
+			local opts = {}
+			for i = 1, 3 do
+				local a = c.areas[(g - 1) * 3 + i]
+				table.insert(opts, a[1].." (¿ywio³ "..a[4]..")")
+			end
+			table.insert(opts, "Zostañ w porcie")
+			say_title(mob_name(npc)..":")
+			say("Do którego obszaru chcesz siê udaæ?")
+			say_reward("Wstêp: "..c.realm_fee_text.." Yang.")
+			local k = select_table(opts)
+			if k < 1 or k > 3 then
+				return
+			end
+			local a = c.areas[(g - 1) * 3 + k]
 			if pc.get_level() < c.realm_level then
-				say_title(mob_name(3998)..":")
+				say_title(mob_name(npc)..":")
 				say("Wróæ, gdy osi¹gniesz poziom "..c.realm_level..".")
 				return
 			end
 			if pc.get_money() < c.realm_fee then
-				say_title(mob_name(3998)..":")
+				say_title(mob_name(npc)..":")
 				say("Wstêp kosztuje "..c.realm_fee_text.." Yang.")
 				return
 			end
@@ -203,7 +242,15 @@ quest yohara_mapy3 begin
 				return
 			end
 			pc.change_money(-c.realm_fee)
-			pc.warp(c.realm[1] * 100, c.realm[2] * 100)
+			pc.warp(a[2] * 100, a[3] * 100)
+		end
+
+		when 3998.chat."Królestwo ¯ywio³ów" with pc.get_map_index() == 368 begin
+			yohara_mapy3.realm_menu(3998)
+		end
+
+		when 20009.chat."Królestwo ¯ywio³ów" with pc.get_map_index() == 368 begin
+			yohara_mapy3.realm_menu(20009)
 		end
 
 		when 3999.chat."Wróæ do portu" with yohara_mapy3.in_realm() begin
