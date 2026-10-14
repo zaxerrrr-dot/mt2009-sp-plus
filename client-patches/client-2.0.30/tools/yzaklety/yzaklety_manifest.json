@@ -1,0 +1,147 @@
+{
+ "maps": {
+  "353": {
+   "atlas_image": "metin2_map_dawnmist_dungeon_01.dds",
+   "folder": "metin2_map_dawnmist_dungeon_01",
+   "gf_parent": null,
+   "parent": "metin2_map_boss_awaken_dawnmist"
+  }
+ },
+ "new_packs": [
+  "yzaklety_maps"
+ ],
+ "packs": {
+  "yzaklety_maps": [
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_dawnmist_dungeon_01/atlas.sub",
+    "sha1": "fc1b6ea4627ead40677fcac35821690892de5c0b",
+    "size": 111,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/mapproperty.txt",
+    "sha1": "9986eb507acb9533e5e5bd0b6a6f4ce28fbc1d5c",
+    "size": 96,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/setting.txt",
+    "sha1": "e1ac40fa380ecf4a549477699e879090a3b2d320",
+    "size": 221,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "20160": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m.msm",
+   "race": "redguild_guard_m",
+   "status": "ours"
+  },
+  "20161": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m_2.msm",
+   "race": "redguild_guard_m_2",
+   "status": "ours"
+  },
+  "20162": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m_3.msm",
+   "race": "redguild_guard_m_3",
+   "status": "ours"
+  },
+  "20412": {
+   "msm": "d:/ymir work/npc/jinno_patrol_spear/jinno_patrol_spear.msm",
+   "race": "jinno_patrol_spear",
+   "status": "ours"
+  },
+  "6192": {
+   "msm": "d:/ymir work/monster2/thunder_boss/thunder_boss.msm",
+   "race": "thunder_boss",
+   "status": "earlier builder"
+  },
+  "6401": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier.msm",
+   "race": "trent_soldier",
+   "status": "earlier builder"
+  },
+  "6402": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier2.msm",
+   "race": "trent_soldier2",
+   "status": "earlier builder"
+  },
+  "6403": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic.msm",
+   "race": "trent_magic",
+   "status": "earlier builder"
+  },
+  "6404": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic2.msm",
+   "race": "trent_magic2",
+   "status": "earlier builder"
+  },
+  "6406": {
+   "msm": "d:/ymir work/monster2/trent_general/trent_general.msm",
+   "race": "trent_general",
+   "status": "earlier builder"
+  },
+  "6407": {
+   "msm": "d:/ymir work/monster2/trent_boss/trent_boss.msm",
+   "race": "trent_boss",
+   "status": "earlier builder"
+  },
+  "6408": {
+   "msm": "d:/ymir work/monster2/trent_boss2/trent_boss2.msm",
+   "race": "trent_boss2",
+   "status": "earlier builder"
+  },
+  "6409": {
+   "msm": "d:/ymir work/monster2/lemures_magic/lemures_magic_2.msm",
+   "race": "lemures_magic_2",
+   "status": "ours"
+  },
+  "6410": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier.msm",
+   "race": "trent_soldier",
+   "status": "earlier builder"
+  },
+  "6411": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier2.msm",
+   "race": "trent_soldier2",
+   "status": "earlier builder"
+  },
+  "6412": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic.msm",
+   "race": "trent_magic",
+   "status": "earlier builder"
+  },
+  "6413": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic2.msm",
+   "race": "trent_magic2",
+   "status": "earlier builder"
+  },
+  "6414": {
+   "msm": "d:/ymir work/monster2/trent_general/trent_general.msm",
+   "race": "trent_general",
+   "status": "earlier builder"
+  },
+  "8059": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_16.msm",
+   "race": "metinstone_16",
+   "status": "earlier builder"
+  },
+  "8061": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_16.msm",
+   "race": "metinstone_16",
+   "status": "earlier builder"
+  },
+  "9012": {
+   "msm": "d:/ymir work/npc/oldster/oldster.msm",
+   "race": "oldster",
+   "status": "earlier builder"
+  }
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "races": {}
+ }
+}
