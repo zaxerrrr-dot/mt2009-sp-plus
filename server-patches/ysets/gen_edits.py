@@ -108,7 +108,11 @@ int Mt2009YSetsPart(LPITEM item)
 	if (!item || !item->GetProto())
 		return 0;
 	int iPart = 0;
-	if (item->GetType() == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW && item->GetSubType() != WEAPON_QUIVER)
+	if (item->GetType() == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW
+#ifdef ENABLE_QUIVER_SYSTEM
+			&& item->GetSubType() != WEAPON_QUIVER
+#endif
+			)
 		iPart = 1;
 	else if (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY)
 		iPart = 2;
@@ -387,6 +391,9 @@ static bool Mt2009YSetsCubeMake(LPCHARACTER ch, CUBE_DATA* cube_proto, LPITEM* i
 		ch->ChangeGold(-(cube_proto->gold));
 	if (number(1, 100) <= cube_proto->percent)
 	{
+		for (int i = 0; i < CUBE_MAX_NUM; ++i)    // the client empties its window after a success (a failure keeps it)
+			if (items[i] == gear)
+				items[i] = NULL;
 		Mt2009YSetsSetValue(ch, gear, (BYTE)cube_proto->set_value);
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "cube success %u %d", gear->GetVnum(), 1);
 		ch->ChatPacket(CHAT_TYPE_INFO, @SUCCESS@, gear->GetName());
