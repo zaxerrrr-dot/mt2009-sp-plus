@@ -36,6 +36,12 @@ obrazy z `d:/`, nie tylko atlasy.
 | Paczka | Wpis | Status | Rozmiar | Obraz | Po co |
 |---|---|---|---|---|---|
 | root | `d:/ymir work/ui/pattern/gauge_green.tga` | nowy | 556 | 16×8 | zielony pasek życia otrutego celu (`uitarget.py`, MT2009_PLUS_TARGET_POISON_GAUGE_V1) |
+| root | `d:/ymir work/ui/gemshop_001.dds` | nowy | 44800 | 140×236 DXT5 (tło 3×3, ikona Gaya, przycisk odświeżania) | okno Sklepu Gaya (`uiygaya.py`, MT2009_PLUS_GAYA_SHOP_WINDOW_V1) – plik GF 26.1.11 bajt w bajt |
+| root | `d:/ymir work/ui/gemshop/gemshop_backimg.sub` | nowy | 92 | – | okno Sklepu Gaya (`uiygaya.py`, MT2009_PLUS_GAYA_SHOP_WINDOW_V1) – plik GF 26.1.11 bajt w bajt |
+| root | `d:/ymir work/ui/gemshop/gemshop_gemicon.sub` | nowy | 96 | – | okno Sklepu Gaya (`uiygaya.py`, MT2009_PLUS_GAYA_SHOP_WINDOW_V1) – plik GF 26.1.11 bajt w bajt |
+| root | `d:/ymir work/ui/gemshop/gemshop_refreshbutton_up.sub` | nowy | 94 | – | okno Sklepu Gaya (`uiygaya.py`, MT2009_PLUS_GAYA_SHOP_WINDOW_V1) – plik GF 26.1.11 bajt w bajt |
+| root | `d:/ymir work/ui/gemshop/gemshop_refreshbutton_over.sub` | nowy | 94 | – | okno Sklepu Gaya (`uiygaya.py`, MT2009_PLUS_GAYA_SHOP_WINDOW_V1) – plik GF 26.1.11 bajt w bajt |
+| root | `d:/ymir work/ui/gemshop/gemshop_refreshbutton_down.sub` | nowy | 95 | – | okno Sklepu Gaya (`uiygaya.py`, MT2009_PLUS_GAYA_SHOP_WINDOW_V1) – plik GF 26.1.11 bajt w bajt |
 
 `gauge_green.tga` (pomysł: Kiciamol) ma ten sam format co `gauge_red.tga` z paczki bazowej (TGA 32 bit bez RLE,
 typ 2). Klient bez tego pliku zostawia czerwony pasek (`app.IsExistFile`).

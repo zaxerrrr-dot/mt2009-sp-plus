@@ -9,7 +9,9 @@
 --   * Portowy Sklep Gaya: 3 rzêdy po 3 sloty, oferta ka¿dego gracza losowana z puli rzêdu (wiki "Asortyment
 --     Sklepu", nasze przedmioty) co 5 godzin od pierwszego otwarcia; z ka¿dego slotu jeden zakup na ofertê;
 --     rz¹d I i - w porcie - rz¹d III odblokowane, sloty 4/5/6 odblokowuje na sta³e 1/2/4 Rozszerzenia Sklepu Gaya
---     (39064); Reset Sklepu Gaya (39063) - nowa oferta od razu;
+--     (39064); Reset Sklepu Gaya (39063) - nowa oferta od razu; sklep to okno klienta (root/uiygaya.py, uk³ad GF
+--     gemshopwindow: 3x3 sloty z ikonami, ceny w Gaya, licznik, saldo, Rozszerzenie/Reset) -
+--     MT2009_PLUS_GAYA_SHOP_WINDOW_V1;
 --   * bez Skrzyñ ¯ywio³aków i Kuponów Zwierzaka ¯ywio³u (decyzja w³aœciciela 14.10.2026: pet tylko w ItemShopie);
 --     uszlachetnianie od³amków zestawu przy statui to quest ysets (okno wytwarzania).
 -- Bez Handlarza Gaya i Sklepu Gaya w wioskach (nie ma ich modeli w naszym kliencie) - tylko port.
@@ -103,134 +105,115 @@ quest ygaya begin
 			pc.setqf("t", now + c.rotate)
 		end
 
+		-- MT2009_PLUS_GAYA_SHOP_WINDOW_V1: the shop is a window of the client (root/uiygaya.py, GF's gemshopwindow
+		-- layout): the quest sends its state as "YGAYA" lines and gets the clicks through its "button" event and
+		-- input() - a number: 1-9 buy, 11-19 unlock the slot, 20 reset the offer, 21 the state again
 		function label(slot)
 			local o = ygaya.offer(slot)
 			local s = item_name(o[1])
 			if o[2] > 1 then
 				s = s.." x"..o[2]
 			end
-			return s.." - "..o[3].." Gaya"
+			return s.." ("..o[3].." Gaya)"
 		end
 
-		function slot_text(slot)
+		function send_state()
 			local c = ygaya.cfg()
-			if not ygaya.open_slot(slot) then
-				return slot..". zablokowany (Rozszerzenie Sklepu Gaya x"..c.ext_need[slot - 3]..")"
-			end
-			if pc.getqf("b"..slot) == 1 then
-				return slot..". kupione"
-			end
-			return slot..". "..ygaya.label(slot)
-		end
-
-		function time_text()
+			ygaya.refresh(false)
 			local left = pc.getqf("t") - get_time()
-			if left < 60 then
-				return "mniej ni¿ minuta"
+			if left < 0 then
+				left = 0
 			end
-			return math.floor(left / 3600).." godz. "..math.floor((left - math.floor(left / 3600) * 3600) / 60).." min"
+			cmdchat("YGAYA open "..q.getcurrentquestindex().." "..pc.count_item(c.gaya).." "..left.." "..pc.getqf("u").." "..pc.count_item(c.ext).." "..pc.count_item(c.reset))
+			for slot = 1, 9 do
+				local o = ygaya.offer(slot)
+				local st = 0
+				local need = 0
+				if not ygaya.open_slot(slot) then
+					st = 2
+					need = c.ext_need[slot - 3]
+				elseif pc.getqf("b"..slot) == 1 then
+					st = 1
+				end
+				cmdchat("YGAYA slot "..slot.." "..st.." "..o[1].." "..o[2].." "..o[3].." "..need)
+			end
+			cmdchat("YGAYA show")
 		end
 
 		function buy(slot)
 			local c = ygaya.cfg()
 			local o = ygaya.offer(slot)
-			say_title("Portowy Sklep Gaya")
+			if not ygaya.open_slot(slot) then
+				return
+			end
 			if pc.getqf("b"..slot) == 1 then
-				say("Ten slot ju¿ kupiono - poczekaj na now¹ ofertê.")
+				syschat("Ten slot ju¿ kupiono - poczekaj na now¹ ofertê.")
 				return
 			end
 			if pc.count_item(c.gaya) < o[3] then
-				say("Masz za ma³o Gaya (potrzeba "..o[3]..").")
+				syschat("Masz za ma³o Gaya (potrzeba "..o[3]..").")
 				return
 			end
 			if not pc.enough_inventory(o[1]) then
-				say("Zrób miejsce w ekwipunku.")
+				syschat("Zrób miejsce w ekwipunku.")
 				return
 			end
 			pc.remove_item(c.gaya, o[3])
 			pc.setqf("b"..slot, 1)
 			pc.give_item2(o[1], o[2])
-			say("Kupiono: "..ygaya.label(slot)..".")
+			syschat("Portowy Sklep Gaya - kupiono: "..ygaya.label(slot)..".")
 		end
 
 		function unlock(slot)
 			local c = ygaya.cfg()
-			local need = c.ext_need[slot - 3]
-			say_title("Portowy Sklep Gaya")
-			if pc.getqf("u") ~= slot - 4 then
-				say("Sloty odblokowuje siê po kolei: najpierw slot "..(pc.getqf("u") + 4)..".")
+			if slot < 4 or slot > 6 or ygaya.open_slot(slot) then
 				return
 			end
-			say("Odblokowanie slotu "..slot.." na sta³e kosztuje")
-			say(need.." Rozszerzenie Sklepu Gaya (masz "..pc.count_item(c.ext)..").")
-			if select("Odblokuj", "Nie teraz") ~= 1 then
+			local need = c.ext_need[slot - 3]
+			if pc.getqf("u") ~= slot - 4 then
+				syschat("Sloty odblokowuje siê po kolei: najpierw slot "..(pc.getqf("u") + 4)..".")
 				return
 			end
 			if pc.count_item(c.ext) < need then
-				say_title("Portowy Sklep Gaya")
-				say("Masz za ma³o Rozszerzeñ Sklepu Gaya.")
+				syschat("Masz za ma³o Rozszerzeñ Sklepu Gaya (potrzeba "..need..").")
 				return
 			end
 			pc.remove_item(c.ext, need)
 			pc.setqf("u", slot - 3)
-			say_title("Portowy Sklep Gaya")
-			say("Slot "..slot.." jest odblokowany.")
+			syschat("Portowy Sklep Gaya: slot "..slot.." jest odblokowany na sta³e.")
+		end
+
+		function reset_offer()
+			local c = ygaya.cfg()
+			if pc.count_item(c.reset) < 1 then
+				syschat("Potrzebujesz przedmiotu: "..item_name(c.reset)..".")
+				return
+			end
+			pc.remove_item(c.reset, 1)
+			ygaya.refresh(true)
+			syschat("Portowy Sklep Gaya: nowa oferta jest gotowa.")
 		end
 
 		function shop()
-			local c = ygaya.cfg()
-			ygaya.refresh(false)
-			while true do
-				say_title("Portowy Sklep Gaya")
-				say("Masz "..pc.count_item(c.gaya).." Gaya. Nowa oferta za: "..ygaya.time_text()..".")
-				say("Z ka¿dego slotu kupisz jedn¹ rzecz na ofertê.")
-				for slot = 1, 9 do
-					if slot == 1 or slot == 4 or slot == 7 then
-						say_reward("Rz¹d "..ygaya.row_of(slot)..":")
-					end
-					say(ygaya.slot_text(slot))
-				end
-				local s = select("Rz¹d I (sloty 1-3)", "Rz¹d II (sloty 4-6)", "Rz¹d III (sloty 7-9)",
-					"Reset oferty (Reset Sklepu Gaya)", "Zamknij")
-				if s == 4 then
-					say_title("Portowy Sklep Gaya")
-					if pc.count_item(c.reset) < 1 then
-						say("Potrzebujesz przedmiotu: "..item_name(c.reset)..".")
-						return
-					end
-					say("Zu¿yæ Reset Sklepu Gaya i wylosowaæ now¹ ofertê?")
-					if select("Tak", "Nie") == 1 then
-						pc.remove_item(c.reset, 1)
-						ygaya.refresh(true)
-					end
-				elseif s >= 1 and s <= 3 then
-					local names = {}
-					for k = 1, 3 do
-						local slot = (s - 1) * 3 + k
-						if not ygaya.open_slot(slot) then
-							names[k] = slot..". Odblokuj slot"
-						elseif pc.getqf("b"..slot) == 1 then
-							names[k] = slot..". kupione"
-						else
-							names[k] = slot..". "..ygaya.label(slot)
-						end
-					end
-					say_title("Portowy Sklep Gaya")
-					say("Rz¹d "..s..": wybierz slot.")
-					local k = select(names[1], names[2], names[3], "Wróæ do listy")
-					if k >= 1 and k <= 3 then
-						local slot = (s - 1) * 3 + k
-						if ygaya.open_slot(slot) then
-							ygaya.buy(slot)
-						else
-							ygaya.unlock(slot)
-						end
-						wait()
-					end
-				else
-					return
-				end
+			pc.setqf("w", get_time())
+			ygaya.send_state()
+		end
+
+		-- a click of the window: only in the port, within an hour of opening the shop at the statue
+		function act(a)
+			if pc.get_map_index() ~= 368 or get_time() - pc.getqf("w") > 3600 then
+				cmdchat("YGAYA close")
+				syschat("Sklep Gaya otworzysz przy Statui Wojownika w Porcie Nowego Kontynentu.")
+				return
 			end
+			if a >= 1 and a <= 9 then
+				ygaya.buy(a)
+			elseif a >= 11 and a <= 19 then
+				ygaya.unlock(a - 10)
+			elseif a == 20 then
+				ygaya.reset_offer()
+			end
+			ygaya.send_state()
 		end
 
 		function is_spirit_stone(v)
@@ -309,6 +292,13 @@ quest ygaya begin
 
 		when 20433.chat."Portowy Sklep Gaya" with pc.get_map_index() == 368 begin
 			ygaya.shop()
+		end
+
+		when button begin
+			local a = tonumber(input())
+			if a ~= nil then
+				ygaya.act(a)
+			end
 		end
 
 		when 39063.use or 39064.use begin

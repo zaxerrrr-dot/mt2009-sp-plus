@@ -488,6 +488,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiweeklyrank").DestroyWindow()
 		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
 		__import__("uiusunmisje").DestroyWindow()
+		# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: Portowy Sklep Gaya (uiygaya.py).
+		__import__("uiygaya").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
 		__import__("uiflowerevent").DestroyWindow()
 		# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey) window (uiminigamerumi.py).
@@ -1325,6 +1327,9 @@ class GameWindow(ui.ScriptWindow):
 		self.interface.OnBlockMode(mode)
 
 	def OpenQuestWindow(self, skin, idx):
+		# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: the quest input of a Sklep Gaya click is answered there, not shown
+		if __import__("uiygaya").ConsumeQuestWindow(skin, idx):
+			return
 		self.interface.OpenQuestWindow(skin, idx)
 
 	def AskGuildName(self):
@@ -3364,6 +3369,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["sungma_map"] = self.__SungmaMap
 		serverCommandList["RANGA"] = self.__RankPoints # MT2009_PLUS_RANK_POINTS_V1
 		serverCommandList["MISJE"] = self.__ClearMissions # MT2009_PLUS_CLEAR_MISSIONS_V1
+		serverCommandList["YGAYA"] = self.__YGayaShop # MT2009_PLUS_GAYA_SHOP_WINDOW_V1
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
 		serverCommandList["IGE"] = self.__InGameEvent
@@ -4073,6 +4079,12 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiCharacter").SetSungmaMap(*args)
 		if self.interface:
 			self.interface.RefreshChampionPage()
+
+	# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: Portowy Sklep Gaya's lines from the quest ygaya (uiygaya.py).
+	def __YGayaShop(self, *args):
+		import uiygaya
+		uiygaya.SetInterface(self.interface)
+		uiygaya.OnCommand(*args)
 
 	# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window's lines (uiusunmisje.py).
 	def __ClearMissions(self, *args):
