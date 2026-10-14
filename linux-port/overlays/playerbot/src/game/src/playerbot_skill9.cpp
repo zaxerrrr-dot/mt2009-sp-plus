@@ -53,7 +53,8 @@ namespace skill9
 
 	unsigned int BookCost(unsigned int bSkillLevel)
 	{
-		return bSkillLevel < 20 ? BOOK_CHAMPION_EXP_NORMAL : BOOK_CHAMPION_EXP_MASTER;
+		(void) bSkillLevel;
+		return BOOK_CHAMPION_EXP;
 	}
 
 	int CheonunProtectSeconds(int iChance)

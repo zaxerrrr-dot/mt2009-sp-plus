@@ -7,11 +7,10 @@
 //   180 Fala Smierci    Sura (cz. magia)   magic shot, splash
 //   181 Meteor          Szaman (smok)      at the target at once (Owsap: computed on use), splash, fire
 //   182 Tarcza Eteru    Szaman (leczenie)  party buff: every 12 s a chance of a few seconds' protection
-// (Burza Szponow 183 is the Lycan's - we have no Lycan.) Books: Champion level 1+, 2 000 Champion experience a
-// read below M1 and 5 000 from M1 to G1 (the books' item_proto value1/value2 of the GF client, the en/tr/de wikis;
-// the pl wiki's older text says 20 000), from 0 a level per successful read (no skill points; at 17-19 the classic
-// roll for M), M1 -> G1 as every skill's books, G1 -> P
-// with Soul Stones (the quest training_grandmaster_skill offers the 9th skill too, game/quest/skill9.lua).
+// (Burza Szponow 183 is the Lycan's - we have no Lycan.) Books: Champion level 1+, 20 000 Champion experience a
+// read up to G1 (the pl wiki - the owner, 14 October; the GF client's book values say 2 000 / 5 000), from 0 a level
+// per successful read (no skill points; at 17-19 the classic roll for M), M1 -> G1 as every skill's books, G1 -> P
+// with Mikstura Talentu (50527, quest mikstura_talentu - MT2009_PLUS_SKILL9_TALENT_V1; no Soul Stones).
 // New file outside the engine's own; the engine's hooks are server-patches/skill9 (edits.json) and call the
 // free functions below (declared again at each hook, as the other patches do).
 #ifndef MT2009_PLAYERBOT_SKILL9_H
@@ -24,10 +23,9 @@ namespace skill9
 {
 	// The protection of Tarcza Eteru (Owsap's AFFECT_CHEONUN_INVINCIBILITY): blocks every blow while it lasts.
 	const unsigned int AFFECT_CHEONUN_INVINCIBILITY = 608;
-	// What a read of a 9th skill's book costs in Champion experience: below M1 / from M1 (the books' value1 and
-	// value2 in the GF item_proto, 2000 / 5000; the en and tr wikis say the same).
-	const unsigned int BOOK_CHAMPION_EXP_NORMAL = 2000;
-	const unsigned int BOOK_CHAMPION_EXP_MASTER = 5000;
+	// What a read of a 9th skill's book costs in Champion experience, every read up to G1: 20 000 as the pl wiki
+	// (MT2009_PLUS_SKILL9_TALENT_V1, the owner 14 October; GF's book values 2000 below M1 / 5000 from M1 not used).
+	const unsigned int BOOK_CHAMPION_EXP = 20000;
 	unsigned int BookCost(unsigned int bSkillLevel);
 	// Tarcza Eteru rolls its chance every 12 seconds (the wiki: "Chroni co 12 sekund").
 	const int CHEONUN_PERIOD_SEC = 12;

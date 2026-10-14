@@ -33,7 +33,7 @@
     "file": "char_skill.cpp",
     "marker": "MT2009_PLUS_SKILL9_V1 (book pay)",
     "old": "\t\tPointChange(POINT_EXP, -need_exp);\n",
-    "new": "\t\tPointChange(POINT_EXP, -need_exp);\n\t\t// MT2009_PLUS_SKILL9_V1 (book pay): a 9th skill's read costs 2 000 / 5 000 Champion experience (won or not).\n\t\t{ void Skill9BookPay(CHARACTER*, unsigned int); Skill9BookPay(this, dwSkillVnum); }\n"
+    "new": "\t\tPointChange(POINT_EXP, -need_exp);\n\t\t// MT2009_PLUS_SKILL9_V1 (book pay): a 9th skill's read costs 20 000 Champion experience (won or not).\n\t\t{ void Skill9BookPay(CHARACTER*, unsigned int); Skill9BookPay(this, dwSkillVnum); }\n"
   },
   {
     "file": "char_skill.cpp",

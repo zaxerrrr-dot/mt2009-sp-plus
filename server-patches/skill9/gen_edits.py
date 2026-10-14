@@ -46,7 +46,7 @@ edit(CS, 'learnable',
      '\t\t\treturn r != 0;\n'
      '\t}\n')
 
-# ---- LearnSkillByBook: a Champion only, with 2 000 (below M1) / 5 000 Champion experience a read
+# ---- LearnSkillByBook: a Champion only, with 20 000 Champion experience a read (MT2009_PLUS_SKILL9_TALENT_V1)
 edit(CS, 'book check',
      '\tif (!IsLearnableSkill(dwSkillVnum))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot train this skill."));\n'
      '\t\treturn false;\n\t}\n\n\tDWORD need_exp = 0;',
@@ -79,7 +79,7 @@ edit(CS, 'book index',
 edit(CS, 'book pay',
      '\t\tPointChange(POINT_EXP, -need_exp);\n',
      '\t\tPointChange(POINT_EXP, -need_exp);\n'
-     '\t\t// MT2009_PLUS_SKILL9_V1 (book pay): a 9th skill\'s read costs 2 000 / 5 000 Champion experience (won or not).\n'
+     '\t\t// MT2009_PLUS_SKILL9_V1 (book pay): a 9th skill\'s read costs 20 000 Champion experience (won or not).\n'
      '\t\t{ void Skill9BookPay(CHARACTER*, unsigned int); Skill9BookPay(this, dwSkillVnum); }\n')
 
 # ---- SkillLevelDown: no skill point back from a 9th skill (none went into it)
