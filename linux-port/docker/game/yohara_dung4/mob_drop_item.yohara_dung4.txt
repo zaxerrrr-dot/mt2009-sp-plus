@@ -260,6 +260,7 @@ Group	MT2009_ydung4_6804
 	Type	drop
 	1	31245	1	10	-- Twarda Skora
 	2	50513	1	15	-- Kamien Duchowy
+	3	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ydung4_6805
@@ -275,6 +276,7 @@ Group	MT2009_ydung4_6805
 	7	31246	1	10	-- Wzor Rekawicy
 	8	70401	1	5	-- Sztandar Czaszki
 	9	70434	1	5	-- Zwoj Skarbu (Stopien A)
+	10	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ydung4_6814
@@ -284,6 +286,7 @@ Group	MT2009_ydung4_6814
 	1	31254	1	100	-- Skrzynia Mistrza Ahtrina
 	2	31245	1	10	-- Twarda Skora
 	3	50513	1	15	-- Kamien Duchowy
+	4	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ydung4_6815
@@ -298,6 +301,7 @@ Group	MT2009_ydung4_6815
 	6	31245	1	10	-- Twarda Skora
 	7	31246	1	10	-- Wzor Rekawicy
 	8	70401	1	8	-- Sztandar Czaszki
+	9	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ydung4_6819
@@ -309,6 +313,7 @@ Group	MT2009_ydung4_6819
 	3	31246	1	15	-- Wzor Rekawicy
 	4	50513	1	20	-- Kamien Duchowy
 	5	70434	1	8	-- Zwoj Skarbu (Stopien A)
+	6	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ydung4_6820
@@ -329,4 +334,5 @@ Group	MT2009_ydung4_6820
 	12	31246	1	15	-- Wzor Rekawicy
 	13	70401	1	10	-- Sztandar Czaszki
 	14	70434	1	10	-- Zwoj Skarbu (Stopien A)
+	15	50527	1	3	-- Mikstura Talentu
 }

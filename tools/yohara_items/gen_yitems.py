@@ -106,7 +106,7 @@ add(50324)                                                            # Skrzynia
 add(39068)                                                            # Zdobna Skrz. z Odlamkiem
 NINTH = 'the 9th skills (skill_proto 176-183) - none here yet'
 for v in range(50569, 50576):                                         # 9th skill books (50576 = Lycan's: no Lycan)
-    add(v, status=need(NINTH))
+    add(v)                                    # MT2009_PLUS_SKILL9_V1 (server-patches/skill9): they work now
 WARD = 'the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet'
 for v in list(range(50516, 50524)) + list(range(50560, 50568)):       # their books (the Lycan's 50524 / 50568 out)
     add(v, status=need(WARD))
@@ -537,7 +537,9 @@ def write_drops(byv):
          '// "Yohara: Opuszczona Twierdza, Dongan" stops the build if any of these monsters has a group already.',
          '// Left out: Odlamki 39070-39077 (wiki: every monster) stay with the Seon-Hae event, which drops them by level;',
          '// the Lycan\'s Szpon Gryfa / Szpon Skarabeusza (no Lycan here); Lekarstwo (Dongan) of the quest Metin.', '']
-    for v, nm, rows in drops():
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'yskill9'))
+    import talent  # noqa: E402  (MT2009_PLUS_SKILL9_TALENT_V1: Mikstura Talentu's rows)
+    for v, nm, rows in talent.with_talent(drops(), named=True):
         L.append('Group\tMT2009_ymaps_%d' % v)
         L.append('{')
         L.append('\tMob\t%d\t-- %s' % (v, nm))

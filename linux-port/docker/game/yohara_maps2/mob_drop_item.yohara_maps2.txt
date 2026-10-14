@@ -146,6 +146,7 @@ Group	MT2009_ymaps2_6723
 	42	50338	1	3	-- Charyzma Nowicjusza
 	43	50339	1	1.5	-- Charyzma Adepta
 	44	50340	1	0.75	-- Charyzma Eksperta
+	45	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6724
@@ -198,6 +199,7 @@ Group	MT2009_ymaps2_6724
 	44	50340	1	0.75	-- Charyzma Eksperta
 	45	70434	1	2	-- Zwoj Skarbu (Stopien A)
 	46	50737	1	10	-- Ziemne Pnacze
+	47	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6725
@@ -333,6 +335,7 @@ Group	MT2009_ymaps2_6730
 	42	50338	1	3	-- Charyzma Nowicjusza
 	43	50339	1	1.5	-- Charyzma Adepta
 	44	50340	1	0.75	-- Charyzma Eksperta
+	45	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6731
@@ -385,6 +388,7 @@ Group	MT2009_ymaps2_6731
 	44	50340	1	0.75	-- Charyzma Eksperta
 	45	70434	1	2	-- Zwoj Skarbu (Stopien A)
 	46	95736	1	10	-- Kwiat Polnocnego Wiatru
+	47	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6758
@@ -404,6 +408,7 @@ Group	MT2009_ymaps2_6758
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
 	13	72354	1	0.05	-- Przenosna Zyla Jadeitu
+	14	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6759
@@ -423,6 +428,7 @@ Group	MT2009_ymaps2_6759
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
 	13	72354	1	0.05	-- Przenosna Zyla Jadeitu
+	14	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6760
@@ -441,6 +447,7 @@ Group	MT2009_ymaps2_6760
 	10	95601	1	0.25	-- Stabilne Sznury
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	13	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6761
@@ -460,6 +467,7 @@ Group	MT2009_ymaps2_6761
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
 	13	72354	1	0.05	-- Przenosna Zyla Jadeitu
+	14	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6762
@@ -484,6 +492,7 @@ Group	MT2009_ymaps2_6762
 	16	39080	1	0.05	-- Zolty Lsniacy Odlamek
 	17	50529	1	0.03	-- Skrzynia Ksiag (9.skill)
 	18	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
+	19	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6763
@@ -526,6 +535,7 @@ Group	MT2009_ymaps2_6763
 	34	50338	1	3	-- Charyzma Nowicjusza
 	35	50339	1	1.5	-- Charyzma Adepta
 	36	50340	1	0.75	-- Charyzma Eksperta
+	37	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6764
@@ -558,6 +568,7 @@ Group	MT2009_ymaps2_6764
 	24	70408	1	2	-- Tajemniczy Bilet
 	25	70434	1	2	-- Zwoj Skarbu (Stopien A)
 	26	95737	1	2	-- Przeb. Ksiega Zwierza
+	27	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6875
@@ -577,6 +588,7 @@ Group	MT2009_ymaps2_6875
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
 	13	72354	1	0.05	-- Przenosna Zyla Jadeitu
+	14	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6876
@@ -596,6 +608,7 @@ Group	MT2009_ymaps2_6876
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
 	13	72354	1	0.05	-- Przenosna Zyla Jadeitu
+	14	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6877
@@ -614,6 +627,7 @@ Group	MT2009_ymaps2_6877
 	10	95601	1	0.25	-- Stabilne Sznury
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	13	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6878
@@ -633,6 +647,7 @@ Group	MT2009_ymaps2_6878
 	11	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
 	13	72354	1	0.05	-- Przenosna Zyla Jadeitu
+	14	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6879
@@ -657,6 +672,7 @@ Group	MT2009_ymaps2_6879
 	16	39080	1	0.05	-- Zolty Lsniacy Odlamek
 	17	50529	1	0.03	-- Skrzynia Ksiag (9.skill)
 	18	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
+	19	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6880
@@ -699,6 +715,7 @@ Group	MT2009_ymaps2_6880
 	34	50338	1	3	-- Charyzma Nowicjusza
 	35	50339	1	1.5	-- Charyzma Adepta
 	36	50340	1	0.75	-- Charyzma Eksperta
+	37	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6881
@@ -731,6 +748,7 @@ Group	MT2009_ymaps2_6881
 	24	70408	1	2	-- Tajemniczy Bilet
 	25	70434	1	2	-- Zwoj Skarbu (Stopien A)
 	26	95737	1	2	-- Przeb. Ksiega Zwierza
+	27	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6770
@@ -760,6 +778,7 @@ Group	MT2009_ymaps2_6770
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6771
@@ -789,6 +808,7 @@ Group	MT2009_ymaps2_6771
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6772
@@ -818,6 +838,7 @@ Group	MT2009_ymaps2_6772
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6773
@@ -847,6 +868,7 @@ Group	MT2009_ymaps2_6773
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6774
@@ -876,6 +898,7 @@ Group	MT2009_ymaps2_6774
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6775
@@ -1002,6 +1025,7 @@ Group	MT2009_ymaps2_6882
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6883
@@ -1031,6 +1055,7 @@ Group	MT2009_ymaps2_6883
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6884
@@ -1060,6 +1085,7 @@ Group	MT2009_ymaps2_6884
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6885
@@ -1089,6 +1115,7 @@ Group	MT2009_ymaps2_6885
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6886
@@ -1118,6 +1145,7 @@ Group	MT2009_ymaps2_6886
 	21	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	22	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	23	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	24	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_6887
@@ -1546,6 +1574,7 @@ Group	MT2009_ymaps2_8065
 	22	70037	1	2	-- Ksiega Zapomnienia
 	23	55003	1	1	-- Ksiega Mlodego Zwierza
 	24	70408	1	1	-- Tajemniczy Bilet
+	25	50527	1	2	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps2_8066

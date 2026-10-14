@@ -29,7 +29,6 @@
 --   50739 Pusty Eliksir Mocy - herbalism (the elixirs of Yohara) - none here yet
 --   50740 Pusty Eliksir Odp. - herbalism (the elixirs of Yohara) - none here yet
 --   70410 Zamarzniety Klucz - Glebie Polnocnego Wiatru (the dungeon it opens) - not here yet
---   50527 Mikstura Talentu - the 9th skills (skill_proto 176-183) - none here yet (their G1..P levels)
 --   50336 Ksiega Misji (W.Pln.W.) - the mission books of Wawoz Polnocnego Wiatru - none here yet
 --   72740 Licencja Najemnika - the mercenaries (Licencja Najemnika) - none here yet
 --   49991 Ognista Runa Aury (10) - the aura costume (Runy Aury) - none here yet

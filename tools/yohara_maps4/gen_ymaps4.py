@@ -174,7 +174,9 @@ def write_drops(rep):
          '// owner 14 October: nothing raised for the test server\'s drop event). Left out: the Odlamki 39070-39077 (the',
          '// Seon-Hae event), Eliksir: W. SungMa x4 (not in our world), Kamien Demonow +4 (+0',
          '// here). The Metins (Shiho 8066, Gumar 8077) keep the second batch\'s groups.', '']
-    for v, n, rows in drops():
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'yskill9'))
+    import talent  # noqa: E402  (MT2009_PLUS_SKILL9_TALENT_V1: Mikstura Talentu's rows)
+    for v, n, rows in talent.with_talent(drops()):
         L += ['Group\tMT2009_ymaps4_%d' % v, '{', '\tMob\t%d\t-- %s' % (v, n), '\tType\tdrop']
         seen = set()
         k = 0

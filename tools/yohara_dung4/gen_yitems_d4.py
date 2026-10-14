@@ -81,7 +81,7 @@ EXISTING = {
     81550: 'Talizman Woli INT+0', 31217: 'Rog Trolla', 31245: 'Twarda Skora', 31246: 'Wzor Rekawicy',
     31247: 'Czerwona Runa SungMa', 31248: 'Liliowa Runa SungMa', 31249: 'Niebieska Runa SungMa',
     31250: 'Zielona Runa SungMa', 31251: 'Utwardzacz Skory', 31252: 'Utwardzacz Skory+', 50737: 'Ziemne Pnacze',
-    39080: 'Zolty Lsniacy Odlamek', 50513: 'Kamien Duchowy', 70401: 'Sztandar Czaszki',
+    39080: 'Zolty Lsniacy Odlamek', 50513: 'Kamien Duchowy', 50527: 'Mikstura Talentu', 70401: 'Sztandar Czaszki',
     70434: 'Zwoj Skarbu (Stopien A)', 27003: 'Czerwona Mikstura(D)', 27002: 'Czerwona Mikstura(S)',
     27006: 'Niebieska Mikstura(D)', 27005: 'Niebieska Mikstura(S)', 27007: 'Czerwona Mikstura (XXL)',
     27008: 'Niebieska Mikstura (XXL)', 50338: 'Charyzma Nowicjusza', 50339: 'Charyzma Adepta',
@@ -324,7 +324,9 @@ def write_drops(byv):
          '// gnolls), Zolty Lsniacy Odlamek 0.04; a boss its chest always (Skrzynia Zdobiona Zlotem x3), the rest 5-30.',
          '// Left out: Odlamki 39070-39077 (the Seon-Hae event\'s), Bohat. Ksiega Zwierza (no vnum). Wieza Sung Mahi\'s',
          '// monsters drop nothing on the wiki - its keys, seal stones and antidotes are the quest\'s (wieza_sung_mahi).', '']
-    for v, n, rows in drops():
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'yskill9'))
+    import talent  # noqa: E402  (MT2009_PLUS_SKILL9_TALENT_V1: Mikstura Talentu's rows)
+    for v, n, rows in talent.with_talent(drops()):
         assert v in D.MOBS, v
         L.append('Group\tMT2009_ydung4_%d' % v)
         L.append('{')

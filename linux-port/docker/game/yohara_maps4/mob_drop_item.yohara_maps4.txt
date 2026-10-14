@@ -31,6 +31,7 @@ Group	MT2009_ymaps4_6777
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6778
@@ -59,6 +60,7 @@ Group	MT2009_ymaps4_6778
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6779
@@ -87,6 +89,7 @@ Group	MT2009_ymaps4_6779
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6780
@@ -115,6 +118,7 @@ Group	MT2009_ymaps4_6780
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6781
@@ -143,6 +147,7 @@ Group	MT2009_ymaps4_6781
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6782
@@ -270,6 +275,7 @@ Group	MT2009_ymaps4_6889
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6890
@@ -298,6 +304,7 @@ Group	MT2009_ymaps4_6890
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6891
@@ -326,6 +333,7 @@ Group	MT2009_ymaps4_6891
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6892
@@ -354,6 +362,7 @@ Group	MT2009_ymaps4_6892
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6893
@@ -382,6 +391,7 @@ Group	MT2009_ymaps4_6893
 	20	39068	1	0.05	-- Zdobna Skrz. z Odlamkiem
 	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
 	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	23	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps4_6894

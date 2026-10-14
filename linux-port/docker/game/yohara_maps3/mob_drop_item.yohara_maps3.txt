@@ -218,6 +218,7 @@ Group	MT2009_ymaps3_6790
 	Type	drop
 	1	50513	1	30	-- Kamien Duchowy
 	2	90006	1	20	-- Kamien Duszy
+	3	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps3_6791
@@ -226,6 +227,7 @@ Group	MT2009_ymaps3_6791
 	Type	drop
 	1	50513	2	40	-- Kamien Duchowy x2
 	2	90006	1	30	-- Kamien Duszy
+	3	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps3_6748
@@ -328,6 +330,7 @@ Group	MT2009_ymaps3_6745
 	10	72354	1	0.04	-- Przenosna Zyla Jadeitu
 	11	83065	1	0.03	-- Losowa Skrzynia Skarbow
 	12	83066	1	0.03	-- Los. Klucz do Skrz. Sk.
+	13	50527	1	0.02	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps3_6744
@@ -444,6 +447,7 @@ Group	MT2009_ymaps3_6756
 	Type	drop
 	1	50513	2	50	-- Kamien Duchowy x2
 	2	90006	1	30	-- Kamien Duszy
+	3	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps3_6860
@@ -836,6 +840,7 @@ Group	MT2009_ymaps3_6870
 	4	70434	1	5	-- Zwoj Skarbu (Stopien A)
 	5	31261	5	30	-- Tajemniczy Kamien x5
 	6	95737	1	2	-- Przeb. Ksiega Zwierza
+	7	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps3_6871
@@ -848,6 +853,7 @@ Group	MT2009_ymaps3_6871
 	4	70434	1	5	-- Zwoj Skarbu (Stopien A)
 	5	31261	5	30	-- Tajemniczy Kamien x5
 	6	95737	1	2	-- Przeb. Ksiega Zwierza
+	7	50527	1	3	-- Mikstura Talentu
 }
 
 Group	MT2009_ymaps3_3980

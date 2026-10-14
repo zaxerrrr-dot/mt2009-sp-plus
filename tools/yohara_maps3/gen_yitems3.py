@@ -510,7 +510,9 @@ def write_drops(byv):
          '// a Metin\'s 1-50. Left out: Odlamki 39070-39077 (with the Seon-Hae event, as tools/yohara_items), the',
          '// Lycan\'s claws (Kolczasty / Jastrzebi Szpon), Mnisi Len and Odlamek Miecza Kao (no',
          '// vnum anywhere), Dumny Smok Pln. Wiatru (a mount), the eggs\' and Glebie\'s other drops (none on the wiki).', '']
-    for v, n, rows in drops():
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'yskill9'))
+    import talent  # noqa: E402  (MT2009_PLUS_SKILL9_TALENT_V1: Mikstura Talentu's rows)
+    for v, n, rows in talent.with_talent(drops()):
         assert v in D.MOBS, v
         L.append('Group\tMT2009_ymaps3_%d' % v)
         L.append('{')

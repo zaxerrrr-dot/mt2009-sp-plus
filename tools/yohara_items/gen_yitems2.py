@@ -86,7 +86,10 @@ add(83067)                                              # Skrzynia z Bransoletka
 add(83054)                                              # Idealny Klucz (TREASURE_KEY 4)
 add(70410, status=need('Glebie Polnocnego Wiatru (the dungeon it opens) - not here yet'))   # Zamarzniety Klucz
 # the rest
-add(50527, status=need(y1.NINTH + ' (their G1..P levels)'))   # Mikstura Talentu
+# Mikstura Talentu: the 9th skills' G1 -> P (MT2009_PLUS_SKILL9_TALENT_V1, quest mikstura_talentu, the pl-wiki)
+add(50527, desc='Potrzebna, by udoskonalić 9. umiejętność od G1 do P - każdy stopień wymaga jednej udanej próby '
+    '(szansa ok. 30%, Rada Pustelnika ją zwiększa). Zużywa punkty rangi (nieudana próba mniej), nie działa przy randze '
+    '-19 000 i niższej. Można jej używać co 8-12 godzin (Zwój Egzorcyzmu skraca czas oczekiwania).')
 add(50336, status=need('the mission books of Wawoz Polnocnego Wiatru - none here yet'))
 add(72740, status=need('the mercenaries (Licencja Najemnika) - none here yet'), **MAT)
 for v in (49991, 49992, 49993):                         # Ognista Runa Aury (10/50/100)
@@ -155,6 +158,7 @@ def build(a):
         o = proto[it['src']]
         ov = it['over']
         pl, text = desc.get(it['src'], ('', ''))
+        text = ov.get('desc', text)
         name = it['name'] or pl
         assert name and len(name.encode('cp1250')) <= 32, (it['vnum'], name)
         typ = TYPES[ov.get('type', o['Type'])]
@@ -478,7 +482,9 @@ def write_drops(byv):
          '// owner, 14 October). The war chiefs\' Przeb. Ksiega Zwierza (95737) and the chests\' bracelets, Kamien Metin',
          '// z Yohara, Plat. Skrzynia / Klucz: MT2009_PLUS_YOHARA_ITEMS4_V1 (yohara_items4.sql).', '']
     n = 0
-    for v, nm, rows in drops():
+    sys.path.insert(0, os.path.join(REPO, 'tools', 'yskill9'))
+    import talent  # noqa: E402  (MT2009_PLUS_SKILL9_TALENT_V1: Mikstura Talentu's rows)
+    for v, nm, rows in talent.with_talent(drops()):
         L += ['Group\tMT2009_ymaps2_%d' % v, '{', '\tMob\t%d\t-- %s' % (v, nm), '\tType\tdrop']
         seen = set()
         for k, r in enumerate(rows, 1):
