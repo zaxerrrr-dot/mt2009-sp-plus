@@ -1,0 +1,80 @@
+[
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_GLOVES_V1 (define)",
+  "old": "//#define ENABLE_GLOVE_SYSTEM\n",
+  "new": "#define ENABLE_GLOVE_SYSTEM // MT2009_PLUS_GLOVES_V1 (define): Rekawice Sung Ma - WEAR_GLOVE 26, ATTRIBUTE_SET_GLOVE (item_attr.glove; server-patches/rekawice)\n"
+ },
+ {
+  "file": "../../common/item_length.h",
+  "marker": "MT2009_PLUS_GLOVES_V1 (metin)",
+  "old": "enum EMetinSubTypes\n{\n\tMETIN_NORMAL,\n\tMETIN_GOLD,\n};\n",
+  "new": "enum EMetinSubTypes\n{\n\tMETIN_NORMAL,\n\tMETIN_GOLD,\n\tMETIN_SUNGMA, // MT2009_PLUS_GLOVES_V1 (metin): Kamien (Mocy) Demonow - a glove's stone (the exe's number too)\n};\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (declare)",
+  "old": "void CItem::ModifyPoints(bool bAdd)\n{\n",
+  "new": "bool Mt2009GearSocketPoints(LPCHARACTER owner, long lSocket, bool bAdd); // MT2009_PLUS_GLOVES_V1 (declare): playerbot_yohara_gear.cpp\n\nvoid CItem::ModifyPoints(bool bAdd)\n{\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (socket points)",
+  "old": "\t\t\t\tif ((dwVnum = GetSocket(i)) <= 2)\n\t\t\t\t\tcontinue;\n\t\t\t\t// MT2009_PLUS_QUIVER_V1 (sockets)",
+  "new": "\t\t\t\tif ((dwVnum = GetSocket(i)) <= 2)\n\t\t\t\t\tcontinue;\n\t\t\t\tif (Mt2009GearSocketPoints(m_pOwner, (long) dwVnum, bAdd)) // MT2009_PLUS_GLOVES_V1 (socket points): a Kamien Demonow's Will\n\t\t\t\t\tcontinue;\n\t\t\t\t// MT2009_PLUS_QUIVER_V1 (sockets)"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (declare)",
+  "old": "void Mt2009WillTalismanCreate(LPITEM item); // MT2009_PLUS_WILL_TALISMAN_V1 (declare): item_attribute.cpp\n",
+  "new": "void Mt2009WillTalismanCreate(LPITEM item); // MT2009_PLUS_WILL_TALISMAN_V1 (declare): item_attribute.cpp\nvoid Mt2009GloveCreate(LPITEM item); // MT2009_PLUS_GLOVES_V1 (declare): playerbot_yohara_gear.cpp\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (new)",
+  "old": "\t\tMt2009WillTalismanCreate(item); // MT2009_PLUS_WILL_TALISMAN_V1 (new): a Talizman Woli's standard lines\n",
+  "new": "\t\tMt2009WillTalismanCreate(item); // MT2009_PLUS_WILL_TALISMAN_V1 (new): a Talizman Woli's standard lines\n\t\tMt2009GloveCreate(item); // MT2009_PLUS_GLOVES_V1 (new): a Sung Ma glove's Will line\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (declare)",
+  "old": "void CItem::CopyAttributeTo(LPITEM pItem)\n{\n",
+  "new": "bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType); // MT2009_PLUS_GLOVES_V1 (declare): playerbot_yohara_gear.cpp\nvoid Mt2009GloveRefine(LPITEM pOld, LPITEM pNew);\n\nvoid CItem::CopyAttributeTo(LPITEM pItem)\n{\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (refine)",
+  "old": "\tMt2009WillTalismanRefine(this, pItem); // MT2009_PLUS_WILL_TALISMAN_V1 (refine)\n",
+  "new": "\tMt2009WillTalismanRefine(this, pItem); // MT2009_PLUS_WILL_TALISMAN_V1 (refine)\n\tMt2009GloveRefine(this, pItem); // MT2009_PLUS_GLOVES_V1 (refine)\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (change rare)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare): its Will line\n\t\treturn false;\n",
+  "new": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare): its Will line\n\t\treturn false;\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (change rare): the glove's Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (change rare 2)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare 2): its Will line\n\t\treturn false;\n",
+  "new": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare 2): its Will line\n\t\treturn false;\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (change rare 2): the glove's Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (add rare)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare): its Will line\n\t\treturn false;\n",
+  "new": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare): its Will line\n\t\treturn false;\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (add rare): the glove's Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (add rare 2)",
+  "old": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare 2): its Will line\n\t\treturn false;\n",
+  "new": "\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare 2): its Will line\n\t\treturn false;\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (add rare 2): the glove's Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GLOVES_V1 (stone)",
+  "old": "\t\tcase ITEM_METIN:\n\t\t\t{\n\t\t\t\tLPITEM item2;\n\n\t\t\t\tif (!IsValidItemPosition(DestCell) || !(item2 = GetItem(DestCell)))\n\t\t\t\t\treturn false;\n",
+  "new": "\t\tcase ITEM_METIN:\n\t\t\t{\n\t\t\t\tLPITEM item2;\n\n\t\t\t\tif (!IsValidItemPosition(DestCell) || !(item2 = GetItem(DestCell)))\n\t\t\t\t\treturn false;\n\n\t\t\t\t// MT2009_PLUS_GLOVES_V1 (stone): a Kamien (Mocy) Demonow goes into a glove only, a glove takes nothing else\n\t\t\t\tif (item->GetSubType() == METIN_SUNGMA || (item2->GetType() == ITEM_ARMOR && item2->GetSubType() == ARMOR_GLOVE))\n\t\t\t\t{\n\t\t\t\t\tbool Mt2009GloveUseStone(LPCHARACTER, LPITEM, LPITEM);\n\t\t\t\t\treturn Mt2009GloveUseStone(this, item, item2);\n\t\t\t\t}\n"
+ }
+]

@@ -98,6 +98,11 @@ param(
 #   Umiejetnosci 9.    common skill_length.h, char_skill.cpp, char_battle.cpp, char_affect.cpp,
 #                      constants.cpp, battle.cpp (MT2009_PLUS_SKILL9_V1; server-patches/skill9)
 #   Szczelina Czasu    char_battle.cpp (MT2009_PLUS_YOHARA_CRACK_V1; server-patches/szczelina, after skill9)
+#   Precyzja           common length.h, char.cpp (MT2009_PLUS_PRECISION_V1; server-patches/precyzja, after szczelina)
+#   Rekawice Sung Ma   common CommonDefines.h/item_length.h, item.cpp, item_manager.cpp, item_attribute.cpp,
+#                      char_item.cpp, ENABLE_GLOVE_SYSTEM (MT2009_PLUS_GLOVES_V1; server-patches/rekawice, after precyzja)
+#   Obrecze Jadeitu V2 item.cpp, item_manager.cpp, item_attribute.cpp (MT2009_PLUS_JADE_BRACELET_V2;
+#                      server-patches/obreczjadeitu2, after obreczjadeitu and rekawice)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1416,6 +1421,43 @@ if ((Test-Path -LiteralPath $szczelinaApply -PathType Leaf) -and
     if ($szczelinaResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Time Rift edit(s).' -f $szczelinaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Precyzja i procentowe bonusy Sung Ma (server-patches/precyzja, MT2009_PLUS_PRECISION_V1): points 193-197 after
+# POINT_PACKET_NUM (POINT_SUNGMA_PER_*, POINT_HIT_PCT - the points packet keeps 193), their point change to the
+# client, FLY_CONQUEROR_EXP. The logic is playerbot_champion.cpp / playerbot_yohara_gear.cpp.
+$precyzjaApply = Join-Path $repo 'server-patches/precyzja/Apply-PrecyzjaPatch.ps1'
+if ((Test-Path -LiteralPath $precyzjaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.cpp') -PathType Leaf)) {
+    $precyzjaResult = & $precyzjaApply -SourceDir $engineGameSource
+    if ($precyzjaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Precision edit(s).' -f $precyzjaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Rekawice Sung Ma (server-patches/rekawice, MT2009_PLUS_GLOVES_V1): the glove slot (ENABLE_GLOVE_SYSTEM), the
+# glove's Will line, Kamienie Demonow (METIN_SUNGMA) in its sockets. After precyzja.
+$rekawiceApply = Join-Path $repo 'server-patches/rekawice/Apply-RekawicePatch.ps1'
+if ((Test-Path -LiteralPath $rekawiceApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $rekawiceResult = & $rekawiceApply -SourceDir $engineGameSource
+    if ($rekawiceResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} glove edit(s).' -f $rekawiceResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Obrecze Jadeitu V2 (server-patches/obreczjadeitu2, MT2009_PLUS_JADE_BRACELET_V2): two random base lines
+# (Precyzja, Wola) with the wiki's ranges, the jade in the Diamond's sockets. After obreczjadeitu, precyzja, rekawice.
+$obreczJadeitu2Apply = Join-Path $repo 'server-patches/obreczjadeitu2/Apply-ObreczJadeitu2Patch.ps1'
+if ((Test-Path -LiteralPath $obreczJadeitu2Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $obreczJadeitu2Result = & $obreczJadeitu2Apply -SourceDir $engineGameSource
+    if ($obreczJadeitu2Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} jade bracelet V2 edit(s).' -f $obreczJadeitu2Result.Applied) -ForegroundColor DarkGray
     }
 }
 
