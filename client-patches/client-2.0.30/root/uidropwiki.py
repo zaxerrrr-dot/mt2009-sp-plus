@@ -155,7 +155,7 @@ MAP_NAMES = {
 	208: 'Le\xbfe Smoka', 209: '\x8cwi\xb9tynia Ochao', 216: 'Katakumby Diab\xb3a', 217: 'Loch Paj\xb9k\xf3w (3)',
 	301: 'Przyl\xb9dek Smoczego Ognia', 302: 'Zbocze Gautama', 303: 'Nefrytowa Zatoka', 304: 'Gromiste G\xf3ry',
 	351: 'Czy\x9cciec Ognia', 352: 'Lodowa Kraina', 358: '\x8cwi\xb9tynia Zodiaku',
-	360: 'Dolina Cyklop\xf3w', 361: 'Pustkowie Faraona', 362: 'Zaczarowany Las', 363: 'Biblioteka Wiedzy',
+	360: 'Dolina Cyklop\xf3w', 361: 'Pustkowie Faraona', 353: 'Zakl\xeaty Las', 363: 'Biblioteka Wiedzy',
 	364: 'Wzg\xf3rze Wukonga', 365: 'Ruiny Skorpiona', 366: 'Staro\xbfytna D\xbfungla', 158: 'Ruiny Atlantydy',
 	419: 'Poszukiwanie Skarb\xf3w',
 }

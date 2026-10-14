@@ -46,7 +46,7 @@ MAP_NAMES = {
 	104: "Kuahklo Dong", 209: "\x8cwi\xb9tynia Ochao",
 	301: "Przyl\xb9dek Smoczego Ognia", 302: "Zbocze Gautama",
 	303: "Nefrytowa Zatoka", 304: "Gromiste G\xf3ry",
-	360: "Dolina Cyklop\xf3w", 361: "Pustkowie Faraona", 362: "Zaczarowany Las",
+	360: "Dolina Cyklop\xf3w", 361: "Pustkowie Faraona", 353: "Zakl\xeaty Las",
 }
 
 # the name's letters the server keeps: ASCII letters and digits, "_", "-", "."

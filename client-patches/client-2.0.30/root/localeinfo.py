@@ -523,6 +523,8 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_boss_awaken_dawnmist" : "Zaklêty Las (PB)",
 	# MT2009_PLUS_YOHARA_CRACK_V1 (client): Zaklêty Las (SZC) (404) - the first Time Rift dungeon
 	"metin2_map_boss_crack_dawnmist" : "Zaklêty Las (SZC)",
+	# MT2009_PLUS_YOHARA_ZAKLETY_V1 (client): Zaklêty Las (353) - the forest past the Temple of Ochao
+	"metin2_map_dawnmist_dungeon_01" : "Zaklêty Las",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,
@@ -554,7 +556,6 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_n_snow_dungeon_01" : "Lodowa Kraina",
 	# MT2009_PLUS_AREZZO_V1 (client): Arezzo maps 360/362/363 on the minimap
 	"metin2_map_exp" : "Dolina Cyklop\xf3w",
-	"natural_map" : "Zaczarowany Las",
 	"plechito_chamber_of_wisdom" : "Biblioteka Wiedzy",
 	"metin2_map_pustynia" : "Pustkowie Faraona",
 	"plechito_wukong_dungeon" : "Wzg\xf3rze Wukonga",
