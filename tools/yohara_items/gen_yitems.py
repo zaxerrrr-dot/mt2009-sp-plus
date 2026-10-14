@@ -94,8 +94,19 @@ add(95734, src=50734, status=need(HERBS + '; 50734 is our Perlowe Wiechy, so 957
 # MT2009_PLUS_GAYA_V1: Kamyki work now (Statua Wojownika grinds them into Gaya, quest ygaya, tools/ygaya)
 add(95926, src=50926, desc='Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w drogocenne '
     'Gaya (30 Kamyków, Kamień Duszy +0 do +3 i 15 000 Yang - szansa 70%, 3 Gaya).')  # 50926 is our recipe, so 95926
+# MT2009_PLUS_SEONHAE_LUCENT_V1 (fix 3.0 #9): the lucent shards are Seon-Hae's material of the item levels 30, 75 and
+# 105 (pl-wiki "6. i 7. bonus" table; playerbot_seonhae.h MaterialVnum, client uiseonhae.py) - the wiki's own lines
+LUCENT_DESC = {
+    39078: 'Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów '
+           'na 30. poziom. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).',
+    39079: 'Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów '
+           'na 75. poziom. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).',
+    39080: 'Materiał umożliwiający z pewnym prawdopodobieństwem dodanie 6. lub 7. bonusu u Seon-Hae - do przedmiotów '
+           'na 105. poziom (Zodiaku, biżuteria 105, Talizmany Woli), broni, zbroi i hełmów na 96. poziom (Smoka Mroku) '
+           'oraz talizmanów. Jeden odłamek daje 2% szansy, najwyżej 10 naraz (20%).',
+}
 for v in (39078, 39079, 39080):                                       # Lsniace Odlamki
-    add(v, status=need('Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet'))
+    add(v, desc=LUCENT_DESC[v], tradeable=True)            # pl-wiki: Handlowanie z Graczem - Tak
 for v in (50661, 50662, 50664):                                       # Jadeit Slonca, Nocy, Mgly
     add(v, status=need(JADE))
 # chests - their contents: special_item_group.yohara_items.txt
@@ -194,7 +205,7 @@ def main():
         typ = TYPES[ov.get('type', o['Type'])]
         sub = SUBTYPES[ov.get('subtype', o['SubType'])]
         anti = flags(o['AntiFlags'], ANTI, 'antiflag')
-        if it['status'] != ST:
+        if it['status'] != ST or ov.get('tradeable'):
             anti &= ~ANTI_TRADE        # an item without its system: at least tradeable (the owner's rule)
         flag = flags(o['Flags'], FLAGS, 'flag')
         wear = flags(ov.get('wear', o['WearFlags']), WEAR, 'wearflag')

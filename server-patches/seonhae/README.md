@@ -59,7 +59,7 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
 | 39081 | Święty Odłamek | 120+ |
 | 72064–72067 | Mały / Średni / Duży / Silny Suplement | +5 / 10 / 20 / 50 |
 
-Lśniące odłamki Owsapa (39078–39080) należą do jego specjalnych zestawów – pominięte.
+Lśniące Odłamki (`MT2009_PLUS_SEONHAE_LUCENT_V1`, poprawka 3.0 #9 – tabela pl-wiki „6. i 7. bonus”): poziom przedmiotu dokładnie 30 – Szary Lśniący (39078), 75 – Zielony Lśniący (39079), 105 – Żółty Lśniący (39080: Zodiak, biżuteria 105, Talizmany Woli); Żółty Lśniący także do broni, zbroi i hełmów na 96. poziom (Smoka Mroku) oraz do talizmanów. Wypadają z potworów Yohary (`tools/yohara_items`, `tools/yohara_maps3`).
 
 ## Drop (decyzja właściciela, 1 października, poprawiona)
 

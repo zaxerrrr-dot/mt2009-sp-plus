@@ -113,14 +113,27 @@ namespace mt2009_seonhae
 
 	// Owsap's 67AttrMaterial by the item's level (its item_proto, weapons and
 	// armours): Grey 0-29, White 30-39, Green 40-49, Yellow 50-59, Blue 60-74,
-	// Purple 75-89, Red 90-104, Rainbow 105-119, Holy 120+. The Lucent shards
-	// (39078-39080) belong to Owsap's special sets, which this world has not.
+	// Purple 75-89, Red 90-104, Rainbow 105-119, Holy 120+.
+	// MT2009_PLUS_SEONHAE_LUCENT_V1 (fix 3.0 #9): the Lucent shards as the
+	// pl-wiki's "6. i 7. bonus" table has them - Grey Lucent (39078) for the
+	// level-30 items, Green Lucent (39079) for 75, Yellow Lucent (39080) for 105
+	// (Zodiac, the 105 jewellery, Talizmany Woli), the level-96 weapons, armours
+	// and helmets (Smoka Mroku) and the talismans. The client (uiseonhae.py) has
+	// the same table.
 	DWORD MaterialVnum(LPITEM item)
 	{
 		int level = 0;
 		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
 			if (item->GetLimitType(i) == LIMIT_LEVEL)
 				level = item->GetLimitValue(i);
+		if (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_PENDANT)
+			return 39080;
+		if (level == 96 && (item->GetType() == ITEM_WEAPON || (item->GetType() == ITEM_ARMOR &&
+				(item->GetSubType() == ARMOR_BODY || item->GetSubType() == ARMOR_HEAD))))
+			return 39080;
+		if (level == 30) return 39078;
+		if (level == 75) return 39079;
+		if (level == 105) return 39080;
 		if (level < 30) return 39070;
 		if (level < 40) return 39071;
 		if (level < 50) return 39072;
@@ -555,7 +568,7 @@ namespace mt2009_seonhae
 
 	bool IsShardVnum(DWORD vnum)
 	{
-		return (vnum >= 39070 && vnum <= 39077) || vnum == 39081;
+		return (vnum >= 39070 && vnum <= 39081); // MT2009_PLUS_SEONHAE_LUCENT_V1: the Lucent shards 39078-39080 too
 	}
 
 	void DefaultDropRules(DropRules& r)

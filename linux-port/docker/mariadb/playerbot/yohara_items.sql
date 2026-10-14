@@ -23,9 +23,6 @@
 --   50738 Mroczny Ciern - herbalism (the elixirs of Yohara) - none here yet
 --   95733 Ognisty Lisc - herbalism (the elixirs of Yohara) - none here yet; 50733 is our Bursztynowy Platek, so 95733
 --   95734 Mrozny Korzonek - herbalism (the elixirs of Yohara) - none here yet; 50734 is our Perlowe Wiechy, so 95734
---   39078 Szary Lsniacy Odlamek - Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet
---   39079 Zielony Lsniacy Odlamek - Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet
---   39080 Zolty Lsniacy Odlamek - Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet
 --   50661 Jadeit Slonca - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   50662 Jadeit Nocy - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   50664 Jadeit Mgly - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet

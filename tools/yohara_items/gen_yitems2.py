@@ -84,7 +84,7 @@ add(83065, type='ITEM_GIFTBOX', subtype='0')            # Losowa Skrzynia Skarbo
 add(83066, type='ITEM_GIFTBOX', subtype='0')            # Los. Klucz do Skrz. Sk.
 add(83067)                                              # Skrzynia z Bransoletka (TREASURE_BOX 4)
 add(83054)                                              # Idealny Klucz (TREASURE_KEY 4)
-add(70410, status=need('Glebie Polnocnego Wiatru (the dungeon it opens) - not here yet'))   # Zamarzniety Klucz
+add(70410)   # Zamarzniety Klucz - Glebie Polnocnego Wiatru (quest ymaps3_glebie: 3 a person; fix 3.0 #9 - no 'bez zastosowania')
 # the rest
 # Mikstura Talentu: the 9th skills' G1 -> P (MT2009_PLUS_SKILL9_TALENT_V1, quest mikstura_talentu, the pl-wiki)
 add(50527, desc='Potrzebna, by udoskonalić 9. umiejętność od G1 do P - każdy stopień wymaga jednej udanej próby '

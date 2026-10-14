@@ -7,11 +7,12 @@
 // 3-10%, Topaz Woli x2 25%; a Metin - the potions always, a 9th-skill book 0.5% each. Nothing is raised for the
 // test server's drop event. Left out, as in the first batch: the Odlamki 39070-39077 (the Seon-Hae event drops
 // them by level) and the Lycan's Szpon Gryfa / Szpon Skarabeusza / Jastrzebi / Kolczasty Szpon (no Lycan);
-// not in our world nor in Owsap's Polish data: Symbol Krola Przepowiedni, Przeb. Ksiega Zwierza. The first
+// not in our world nor in Owsap's Polish data: Symbol Krola Przepowiedni (the owner: not added). The first
 // batch's monsters on Namgan (trolls, hounds, Dreczony Duch, Natanan) and Metin Swiadomosc keep their drops
 // (mob_drop_item.yohara_maps.txt). The Dockerfile step stops the build if any of these has a group already.
 // Wodz Wojenny Schronienia (6789) gives exactly one Zamarzniety Klucz a kill (a "limit" group at 100 - the
-// owner, 14 October).
+// owner, 14 October). The war chiefs' Przeb. Ksiega Zwierza (95737) and the chests' bracelets, Kamien Metin
+// z Yohara, Plat. Skrzynia / Klucz: MT2009_PLUS_YOHARA_ITEMS4_V1 (yohara_items4.sql).
 
 Group	MT2009_ymaps2_6718
 {

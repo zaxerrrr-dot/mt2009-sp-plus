@@ -44,6 +44,7 @@ OWN_ITEM_NAME = {
 	39070: "Szary Od\xb3amek", 39071: "Bia\xb3y Od\xb3amek", 39072: "Zielony Od\xb3amek", 39073: "\xaf\xf3\xb3ty Od\xb3amek",
 	39074: "Niebieski Od\xb3amek", 39075: "Fioletowy Od\xb3amek", 39076: "Czerwony Od\xb3amek", 39077: "T\xeaczowy Od\xb3amek",
 	39081: "\x8cwi\xeaty Od\xb3amek",
+	39078: "Szary L\x9cni\xb9cy Od\xb3amek", 39079: "Zielony L\x9cni\xb9cy Od\xb3amek", 39080: "\xaf\xf3\xb3ty L\x9cni\xb9cy Od\xb3amek",
 	72064: "Ma\xb3y Suplement", 72065: "\x8credni Suplement", 72066: "Du\xbfy Suplement", 72067: "Silny Suplement",
 }
 
@@ -182,6 +183,21 @@ def MaterialVnum(itemVnum):
 				level = limitValue
 	except Exception:
 		level = 0
+	# MT2009_PLUS_SEONHAE_LUCENT_V1 (fix 3.0 #9): the Lucent shards of the pl-wiki's table (the server has the same)
+	try:
+		itemType, itemSubType = item.GetItemType(), item.GetItemSubType()
+	except Exception:
+		itemType, itemSubType = -1, -1
+	if itemType == item.ITEM_TYPE_ARMOR and itemSubType == getattr(item, "ARMOR_PENDANT", 7):
+		return 39080
+	if level == 96 and (itemType == item.ITEM_TYPE_WEAPON or (itemType == item.ITEM_TYPE_ARMOR and itemSubType in (item.ARMOR_BODY, item.ARMOR_HEAD))):
+		return 39080
+	if level == 30:
+		return 39078
+	if level == 75:
+		return 39079
+	if level == 105:
+		return 39080
 	if level < 30:
 		return 39070
 	if level < 40:
