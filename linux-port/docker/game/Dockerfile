@@ -354,7 +354,9 @@ RUN set -eux; \
     # Polnocnego Wiatru (Alastor, slaby/silny, at Upiorny Straznik); swiatynia_wezy is the temple's 7 levels.
     # yohara_mapy4 is Rozpadlina Dusz (389, MT2009_PLUS_YOHARA_MAPS4_V1): its level guard and General Kohan's way
     # into Schronienie Polnocnego Wiatru.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets; do \
+    # jaskinie_gnolli is Jaskinie Gnolli 1-3 (Halabardnik in Dongan, the ticket, the stage portals, death -> Dongan) and
+    # wieza_sung_mahi Wieza Sung Mahi's 50 floors (MT2009_PLUS_YOHARA_DUNG4_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1598,6 +1600,83 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
  && { LC_ALL=C grep -a -q 'add_goto_info("plaskowyz"' "$S" || printf 'add_goto_info("plaskowyz", 0, 381, 3966, 9526)\r\n' >> "$S"; } \
  && rm -rf "$A" \
  && echo "share: Yohara maps 3 - Zejscie/Glebie Polnocnego Wiatru, Swiatynia Wezy, Tajemnicza Instancja, Krolestwo Zywiolow: maps, groups, drops, chests, the port's portal, Sung Ma, the dungeon panel"
+# MT2009_PLUS_YOHARA_DUNG4_V1 (share): Jaskinie Gnolli and Wieza Sung Mahi (the owner, 14 October 2026; cache/yohara/
+# decyzje.md; pl-wiki first, TR wiki for what it lacks) - Jaskinie Gnolli 1/2/3 (382-384, metin2_map_maze_dungeon1..3,
+# open maps: the official maze of GOTO portals, the bosses every 1/2/3 hours), Wieza Sung Mahi's hall (386,
+# metin2_map_smhdungeon_01) and the tower (387, metin2_map_smhdungeon_02 - a dungeon, quest wieza_sung_mahi; its base
+# is ours, 998400 614400: GF's is Komnata Wiedzy's), Owsap's indexes, on the Yohara core (bin/m2-render-config).
+# tools/yohara_dung4/gen_ydung4_maps.py made the folders (server_attr from GF's attr.atr, GF's NPC/portal points,
+# Owsap's spawn points with the wiki's monsters), groups (9230-9244 the caves, 9250-9268 the tower's waves),
+# gen_yitems_d4.py the drops and the four chests (items: mariadb/playerbot/yohara_items_d4.sql); none may exist
+# before. sungma_table.txt gets the tower (its first floors, 35/25/35/55 - the quest sets each floor's, d.set_sungma)
+# and the hall (0/0/0/0: a Sung Ma map - no bot goes there); the tower's monsters give no champion experience (the
+# pl-wiki: "Champion-EXP 0" on every one of them - their lines leave sungma_mob_exp.txt); the dungeon panel gets
+# gnolle and wieza_smh; /goto gnolle, wieza. The monsters' rows: mariadb/playerbot/yohara_dung4.sql. The way in from
+# Seoganland (4019): the late step "Yohara dung4: links".
+COPY yohara_dung4/ /tmp/yohara-dung4-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-dung4-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "382 metin2_map_maze_dungeon1 0c0000000c000000 768000 1203200 map 26" \
+             "383 metin2_map_maze_dungeon2 0c0000000c000000 844800 1203200 map 25" \
+             "384 metin2_map_maze_dungeon3 0c0000000c000000 921600 1203200 map 25" \
+             "386 metin2_map_smhdungeon_01 0400000004000000 921600 614400 hall 3" \
+             "387 metin2_map_smhdungeon_02 0800000008000000 998400 614400 dungeon 0"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" \
+        && { [ "$6" != map ] || test -s "$L/map/$2/regen.txt"; } \
+        && { [ "$7" = 0 ] || test "$(grep -c . "$L/map/$2/npc.txt")" = "$7"; } \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Yohara map $1 $2"; exit 1; }; \
+    done \
+ && GV='(92(3[0-9]|4[0-4]|5[0-9]|6[0-8]))' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_dung4.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 34 \
+ && MV='(68(0[0-9]|1[0-9]|20))' \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_dung4.txt" >> "$F" \
+ && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 21 \
+ && SV='(3125[3-6])' \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_dung4.txt" >> "$G" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G")" = 4 \
+ && T="$L/sungma_table.txt" \
+ && { grep -q '^metin2_map_smhdungeon_02[[:blank:]]' "$T" || printf 'metin2_map_smhdungeon_02\t35\t25\t35\t55\n' >> "$T"; } \
+ && { grep -q '^metin2_map_smhdungeon_01[[:blank:]]' "$T" || printf 'metin2_map_smhdungeon_01\t0\t0\t0\t0\n' >> "$T"; } \
+ && test "$(grep -c -E '^metin2_map_(maze_dungeon[123]|smhdungeon_0[12])[[:blank:]]' "$T")" = 5 \
+ && X="$L/sungma_mob_exp.txt" \
+ && sed -i -E '/^(75(5[0-9]|[6-9][0-9])|76(0[0-9]|1[0-9]|20))[[:blank:]]/d' "$X" \
+ && ! grep -q -E '^(75(5[0-9]|[6-9][0-9])|76(0[0-9]|1[0-9]|20))[[:blank:]]' "$X" \
+ && test "$(grep -c -E '^68(0[0-9]|1[0-9]|20)[[:blank:]]' "$X")" = 21 \
+ && I="$L/dungeon_info.txt" \
+ && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+wieza_smh[[:blank:]]' "$I" \
+      || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
+           printf 'dungeon\tgnolle\t382\t0\txy\t373\t11486\t5325\t120\t0\t1\t8\t6820\t-\t0\t71095\t1\tJaskinie_Gnolli\tDongan\ndrop\tgnolle\t31256\t1\t100\ndrop\tgnolle\t31255\t3\t100\n' >> "$I"; \
+           printf 'dungeon\twieza_smh\t387\t1\txy\t376\t11596\t5811\t120\t0\t1\t8\t7556\t-\t0\t70401\t1\tWie\277a_Sung_Mahi\tSeoganland\n' >> "$I"; }; } \
+ && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+(gnolle|wieza_smh)[[:blank:]]' "$I")" = 2 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[382\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_DUNG4_V1\r\ntranslate.general.map_names[382] = "Jaskinie Gnolli (pierwszy poziom)"\r\ntranslate.general.map_names[383] = "Jaskinie Gnolli (drugi poziom)"\r\ntranslate.general.map_names[384] = "Jaskinie Gnolli (trzeci poziom)"\r\ntranslate.general.map_names[386] = "Wie\277a Sung Mahi"\r\ntranslate.general.map_names[387] = "Wie\277a Sung Mahi"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("gnolle"' "$S" || printf 'add_goto_info("gnolle", 0, 382, 7893, 12142)\r\n' >> "$S"; } \
+ && { LC_ALL=C grep -a -q 'add_goto_info("wieza"' "$S" || printf 'add_goto_info("wieza", 0, 386, 9338, 6317)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Yohara - Jaskinie Gnolli (382-384), Wieza Sung Mahi (386, 387): maps, groups, drops, chests, Sung Ma, the dungeon panel"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
@@ -1978,6 +2057,24 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
       test "$(grep -c -E "[[:blank:]]$6[[:space:]]*\$" "$N")" -ge 1 || { echo "FATAL: link $6 on $2"; exit 1; }; \
     done \
  && echo "links: Yohara maps 3 (Schronienie -> Zejscie, Yilad -> Swiatynia Wezy, Namgan -> Tajemnicza Instancja)"
+# MT2009_PLUS_YOHARA_DUNG4_V1 (links): the way into Wieza Sung Mahi from Seoganland (376, claude/yohara-maps2) - after
+# every share step, as the third batch's links. Wejscie Piekielnej Wiezy (4019) on GF's point (76,1459) -> the hall
+# (quest wieza_sung_mahi); Halabardnik (20836, Dongan's own npc.txt) leads to Jaskinie Gnolli (quest jaskinie_gnolli).
+# A map not in map/index yet is only reported.
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && for p in "376 metin2_map_eastplain_02 76 1459 1 4019" "373 metin2_map_eastplain_01 990 973 7 20836"; do \
+      set -- $p; \
+      if ! grep -q -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index"; then \
+        echo "links: map $1 $2 is not in map/index - its point ($6) waits for that batch"; continue; \
+      fi; \
+      N="$L/map/$2/npc.txt"; test -f "$N" || : > "$N"; \
+      if ! grep -q -E "[[:blank:]]$6[[:space:]]*\$" "$N"; then \
+        { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; }; \
+        printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t%s\r\n' "$3" "$4" "$5" "$6" >> "$N"; \
+      fi; \
+      test "$(grep -c -E "[[:blank:]]$6[[:space:]]*\$" "$N")" -ge 1 || { echo "FATAL: link $6 on $2"; exit 1; }; \
+    done \
+ && echo "links: Yohara dung4 (Seoganland -> Wieza Sung Mahi, Dongan -> Jaskinie Gnolli)"
 COPY --from=quests /out-quest/ /opt/metin2/share/locale/
 
 # Seed for a core's mark/ directory (guild symbols): copied into the state

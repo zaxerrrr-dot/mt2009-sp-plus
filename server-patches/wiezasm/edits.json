@@ -1,0 +1,8 @@
+[
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_SMH_TOWER_V1 (skills)",
+  "old": "\tif (IsPolymorphed())\n\t\treturn false;\n\n\t// MT2009_PLUS_DRAGON_ROAR_TARGET_V1",
+  "new": "\tif (IsPolymorphed())\n\t\treturn false;\n\n\t// MT2009_PLUS_SMH_TOWER_V1 (skills): Wieza Sung Mahi's curse \"Umiejetnosci sa zablokowane\" (pl-wiki) - the\n\t// affect 1849 the quest wieza_sung_mahi lays on a room (d.affect_all) blocks every skill until the room ends.\n\tif (FindAffect(1849))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, \"Klatwa Sunga Mahi blokuje twoje umiejetnosci.\");\n\t\treturn false;\n\t}\n\n\t// MT2009_PLUS_DRAGON_ROAR_TARGET_V1"
+ }
+]

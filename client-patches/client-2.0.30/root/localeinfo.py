@@ -508,6 +508,12 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_elemental_02" : "Królestwo ¯ywio³ów",
 	"metin2_map_elemental_03" : "Królestwo ¯ywio³ów",
 	"metin2_map_elemental_04" : "P³askowy¿ Si³ Natury",
+	# MT2009_PLUS_YOHARA_DUNG4_V1 (client): Jaskinie Gnolli (382-384) and Wieza Sung Mahi (386, 387) on the minimap
+	"metin2_map_maze_dungeon1" : "Jaskinie Gnolli (pierwszy poziom)",
+	"metin2_map_maze_dungeon2" : "Jaskinie Gnolli (drugi poziom)",
+	"metin2_map_maze_dungeon3" : "Jaskinie Gnolli (trzeci poziom)",
+	"metin2_map_smhdungeon_01" : "Wie¿a Sung Mahi",
+	"metin2_map_smhdungeon_02" : "Wie¿a Sung Mahi",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,
