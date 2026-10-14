@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "skill9_common.dds"
+left 192
+top 448
+right 224
+bottom 480

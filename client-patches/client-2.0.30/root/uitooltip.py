@@ -22,6 +22,7 @@ import ui
 import mouseModule
 import constInfo
 from constInfo import Emoji
+import yoharagear # MT2009_PLUS_YOHARA_EXE2_V1
 import colorinfo
 import uiItemShop
 
@@ -564,6 +565,9 @@ class ItemToolTip(ToolTip):
 	# has the talisman after the arrow - its name, so a talisman says where it is worn.
 	if app.ENABLE_PENDANT_SYSTEM:
 		WEAR_NAMES += ("Talizman",)
+	# MT2009_PLUS_GLOVES_V1: and the glove after it (AppendMetinWearInformation's flag list)
+	if app.ENABLE_GLOVE_SYSTEM:
+		WEAR_NAMES += ("R\xeakawice",)
 	WEAR_COUNT = len(WEAR_NAMES)
 
 	ATTRIBUTE_NEED_WIDTH = {
@@ -1314,8 +1318,16 @@ class ItemToolTip(ToolTip):
 
 			self.AppendWearableInformation()
 
-			if itemSubType in (item.ARMOR_WRIST, item.ARMOR_NECK, item.ARMOR_EAR):
+			if yoharagear.IsJadeBracelet(itemVnum):
+				# MT2009_PLUS_JADE_BRACELET_V2: the jade in the Diamond's sockets adds to the two lines
+				self.__AppendJadeSocketInfo(itemVnum, metinSlot, attrSlot)
+			elif itemSubType in (item.ARMOR_WRIST, item.ARMOR_NECK, item.ARMOR_EAR):
 				self.__AppendAccessoryMetinSlotInfo(metinSlot, constInfo.GET_ACCESSORY_MATERIAL_VNUM(itemVnum, itemSubType))
+			elif yoharagear.IsGlove(itemVnum) and metinSlot:
+				# MT2009_PLUS_GLOVES_V1: the Kamienie Demonow (their Will) in a glove's sockets
+				for i in xrange(player.METIN_SOCKET_MAX_NUM):
+					(stoneVnum, stoneLine) = yoharagear.GloveSocketData(metinSlot[i])
+					self.__AppendMetinSlotInfo_AppendMetinSocketData(i, stoneVnum, stoneLine)
 			elif self.__IsRealTimeSocketItem():
 				# MT2009_PLUS_QUIVER_TOOLTIP_V1: socket0 = expiry timestamp.
 				self.AppendLastTimeInformation(metinSlot)
@@ -1472,6 +1484,15 @@ class ItemToolTip(ToolTip):
 		### Metin ###
 		elif item.ITEM_TYPE_METIN == itemType:
 			self.AppendMetinInformation()
+			# MT2009_PLUS_GLOVES_V1: a Kamien (Mocy) Demonow - the random Sung Ma Will it gives (server-patches/rekawice)
+			if itemSubType == getattr(item, "METIN_SUNGMA", 2):
+				stoneLevel = min(4, max(0, item.GetValue(0)))
+				stoneValue = (1, 3, 6, 9, 15)[stoneLevel]
+				self.AppendSpace(5)
+				if item.GetValue(5) == 2:
+					self.AppendTextLine("Losowa Wola Sung Ma +%d (czasem +%d)" % (stoneValue, stoneValue * 2), self.POSITIVE_COLOR)
+				else:
+					self.AppendTextLine("Losowa Wola Sung Ma +%d" % stoneValue, self.POSITIVE_COLOR)
 			self.AppendMetinWearInformation()
 
 		### Fish ###
@@ -2261,10 +2282,14 @@ class ItemToolTip(ToolTip):
 			return player.METIN_SOCKET_TYPE_SILVER
 		elif player.METIN_SOCKET_TYPE_GOLD == number:
 			return player.METIN_SOCKET_TYPE_GOLD
+		elif number >= yoharagear.SUNGMA_SOCKET_MIN: # MT2009_PLUS_GLOVES_V1: a Sung Ma stone's number (not a vnum)
+			return player.METIN_SOCKET_TYPE_SILVER
 		else:
 			item.SelectItem(number)
 			if item.METIN_NORMAL == item.GetItemSubType():
 				return player.METIN_SOCKET_TYPE_SILVER
+			elif item.ITEM_TYPE_METIN == item.GetItemType() and getattr(item, "METIN_SUNGMA", 2) == item.GetItemSubType():
+				return player.METIN_SOCKET_TYPE_SILVER # MT2009_PLUS_GLOVES_V1: Kamien (Mocy) Demonow
 			elif item.METIN_GOLD == item.GetItemSubType():
 				return player.METIN_SOCKET_TYPE_GOLD
 			elif "USE_PUT_INTO_ACCESSORY_SOCKET" == item.GetUseType(number):
@@ -2283,6 +2308,22 @@ class ItemToolTip(ToolTip):
 			return 0
 
 		return number
+
+	# MT2009_PLUS_JADE_BRACELET_V2: an Obrecz Jadeitu's sockets (made with a Diamond, at most 3): each jade adds the
+	# wiki's values to the lines the bracelet has (yoharagear.py; the server: playerbot_yohara_gear.cpp)
+	def __AppendJadeSocketInfo(self, itemVnum, metinSlot, attrSlot):
+		if not metinSlot:
+			return
+		cur = min(metinSlot[0], 3)
+		end = min(metinSlot[1], 3)
+		jewel = yoharagear.JadeJewel(itemVnum)
+		for pos in xrange(end):
+			if pos < cur:
+				(line1, line2) = yoharagear.JadeSocketLines(itemVnum, pos, attrSlot)
+				leftTime = metinSlot[2] if cur == pos + 1 else 0
+				self.__AppendMetinSlotInfo_AppendMetinSocketData(pos, jewel, line1, line2, "", leftTime)
+			else:
+				self.__AppendMetinSlotInfo_AppendMetinSocketData(pos, player.METIN_SOCKET_TYPE_SILVER)
 
 	def __AppendAccessoryMetinSlotInfo(self, metinSlot, mtrlVnum):
 		ACCESSORY_SOCKET_MAX_SIZE = 3
