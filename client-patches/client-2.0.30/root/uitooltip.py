@@ -1309,11 +1309,18 @@ class ItemToolTip(ToolTip):
 				self.AppendTextLine(localeInfo.TOOLTIP_ITEM_DEF_GRADE % (defGrade+defBonus), self.GetChangeTextLineColor(defGrade))
 
 			self.__AppendMagicDefenceInfo()
-			self.__AppendAffectInformation()
+			# MT2009_PLUS_YOHARA_TOOLTIP_ORDER_V1 (the owner, 14 October): a jade bracelet's / glove's own lines
+			# (slots 6-7: Precyzja, Wola SungMa) are drawn as the item's fixed lines - white, under the limits, like
+			# Max PZ / Sila of the Ebonitowe Kolczyki - and only the five added bonuses below as bonuses.
+			yoharaOwn = yoharagear.IsJadeBracelet(itemVnum) or yoharagear.IsGlove(itemVnum)
+			if yoharaOwn:
+				self.__AppendAffectInformation(attrSlot)
+			else:
+				self.__AppendAffectInformation()
 			self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
 			# MT2009_PLUS_SEONHAE_V1: armour and jewellery showed only the five
 			# bonuses - the 6th and 7th were never drawn.
-			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
+			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_RARE_START if yoharaOwn else player.ATTRIBUTE_SLOT_MAX_NUM)
 			self.__AppendSeonHaeHint(itemVnum, attrSlot)
 
 			self.AppendWearableInformation()
