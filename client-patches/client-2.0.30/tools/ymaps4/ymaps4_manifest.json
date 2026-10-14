@@ -1,0 +1,2062 @@
+{
+ "maps": {
+  "389": {
+   "atlas_image": "d:/ymir work/ui/metin2_map_whitdragonvalley.dds",
+   "environment": "metin2_map_whitdragonvalley.msenv",
+   "folder": "metin2_map_whitdragonvalley",
+   "generated": [],
+   "objects": {
+    "crc_used": 53,
+    "dropped": 0,
+    "ours": 47,
+    "staged": 6
+   },
+   "pack": "rozpadlina_map",
+   "removed_objects": {},
+   "textureset": "textureset/metin2_map_whitdragonvalley.txt"
+  }
+ },
+ "new_packs": [
+  "rozpadlina_map",
+  "ymaps4_obj",
+  "ymaps4_mobs"
+ ],
+ "packs": {
+  "property": [
+   {
+    "name": "property/n/icemount/whitdragonvalley_bridge02.prb",
+    "sha1": "995b96dd59cf8a6df3f3e378f307523e1b5c26e0",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "property/n/obj/snow.m/icebon/ice_dragonbone_01.prb",
+    "sha1": "9f2b687d1cf9e494f493345d32c0b1b723361b61",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/n/obj/snow.m/icebon/ice_dragonbone_02.prb",
+    "sha1": "161c1c3830f803629079f15b5d1336651d30797e",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/n/obj/snow.m/icebon/ice_dragonbone_03.prb",
+    "sha1": "130a7df7e88a3a18e4306f2d9d1be607698d48c8",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/n/obj/snow.m/icebon/ice_dragonbone_04.prb",
+    "sha1": "2e502dc64e0f47e1f80addb4adbc8b8e87aa14a6",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/n/obj/snow.m/icemount/whitdragonvalley_gate.prb",
+    "sha1": "76b052bf0e0abf1d45eeccb81dbc30f3c6aa7c8b",
+    "size": 194,
+    "source": "gf"
+   }
+  ],
+  "rozpadlina_map": [
+   {
+    "name": "d:/ymir work/environment/metin2_map_whitdragonvalley.msenv",
+    "sha1": "82b3cd0c43de6caf28ad6d3b993f1d07b971c33d",
+    "size": 2675,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_whitdragonvalley/atlas.sub",
+    "sha1": "01cc4a6b69b6f03e3cec3b8cee1eae001a9ed635",
+    "size": 108,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/metin2_map_whitdragonvalley.dds",
+    "sha1": "de1effb3b47acf166ced282f216d7af87536b919",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/areadata.txt",
+    "sha1": "118e12cb8ce6aa25ef891f6d74fce7aea9d4b88a",
+    "size": 4432,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/attr.atr",
+    "sha1": "58c77a9d3c464e5d18da42219bffee82fc400273",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/height.raw",
+    "sha1": "4de2bf5433b2857ead0e94e65ab4608f94bc8b7b",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/minimap.dds",
+    "sha1": "b638bd37134529a42c5d8ce2c5723764f5a60dea",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/minimap_left.dds",
+    "sha1": "57e842c35b97b402932e94567f176d80e50066e7",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/minimap_lefttop.dds",
+    "sha1": "33555b6937eb3a1b0beac8110c420154517e61c7",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/minimap_top.dds",
+    "sha1": "6c9daab0f215f5173cffe44c188ff32b4d706661",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/shadowmap.dds",
+    "sha1": "4cfaf63850cec6cb8197902101cce112ef1c82e5",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/shadowmap.raw",
+    "sha1": "89d64e11fa4c2806e6c7ba540adb098433d096fe",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/tile.raw",
+    "sha1": "40fda1157685eb4b41650f4cfc3e49a17fde4e55",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/areadata.txt",
+    "sha1": "d81d3a5a6639e32062d6851878dbde7a16e5ac4c",
+    "size": 11059,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/attr.atr",
+    "sha1": "810863a53a9519590cfec1a8a414cb4c3d579902",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/height.raw",
+    "sha1": "d3338f60b0c38e35faca8272ed5fc30a0c1566a5",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/minimap.dds",
+    "sha1": "f0ad870e29d4496353d27b5c3102c7cca0ca393d",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/minimap_left.dds",
+    "sha1": "7e77973122f4a33d4cbe68329e87ebe57826ddcd",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/shadowmap.dds",
+    "sha1": "3061b87475c019eb39d9371c3d511660c0a5439c",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/shadowmap.raw",
+    "sha1": "2c8d67fb61d06303e00d20e472c4bf72aeb35146",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/tile.raw",
+    "sha1": "fde166987fc12d605cb0976b58b455c13499125f",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/areadata.txt",
+    "sha1": "aa41d7d1b5d19f3bb431c635a104868b67364090",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/attr.atr",
+    "sha1": "b61a7820d2f628eb417a525992af674ca60dd159",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/height.raw",
+    "sha1": "645ef956297e0bc3037c9b7fff4eb94230306e3d",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/minimap.dds",
+    "sha1": "054f87496e633586d9cb82f1ee2b975195e0f8eb",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/minimap_left.dds",
+    "sha1": "87dbbde180f047a8087c1e8fbf6aa8e6ef7f6034",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/shadowmap.dds",
+    "sha1": "83718d7b4a71dc740eeb5e50e7552c3e1e440ed5",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/shadowmap.raw",
+    "sha1": "d940605965166c2096ab08296cd3bfafe7fcb666",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/tile.raw",
+    "sha1": "8277fa57c6870e3b2abdd3d8fccd16682e59dcbc",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/000002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/areadata.txt",
+    "sha1": "a247a51fc462a1d9e3e60a96bed6d219fdcfcc81",
+    "size": 19225,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/attr.atr",
+    "sha1": "6b18172b631300f92f33191e939d7784766122dd",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/height.raw",
+    "sha1": "de3a2f45d187f28e922cb04bcb034d86e8181805",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/minimap.dds",
+    "sha1": "5c354e7a63a063281472b2fe977d85eaa71c76bc",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/minimap_top.dds",
+    "sha1": "54b0920fe452037bb95c2166f09d82f16b5c6375",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/shadowmap.dds",
+    "sha1": "e6068cf2685e40fb850c098a22dd870d57ebb38e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/shadowmap.raw",
+    "sha1": "f42628c01a3f0a43820a060f73db2871eab77db8",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/tile.raw",
+    "sha1": "6e23f92e33299b758291034510e1403773428d23",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/areadata.txt",
+    "sha1": "e8ef25ca77134e2617796ca9390c332de5ec1140",
+    "size": 13296,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/attr.atr",
+    "sha1": "448a85cf9c72b0139159bfec5034e39281222c73",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/height.raw",
+    "sha1": "991ac5b8493003536f7cdf4c0ebc5a5c853ada8d",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/minimap.dds",
+    "sha1": "f8550f78e67b659e64aa04c49e38c557ec7ab0d8",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/shadowmap.dds",
+    "sha1": "99652b7cab8b06e1d10490e10c0021e19e3788a5",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/shadowmap.raw",
+    "sha1": "cf2092b46e643f3d8e71171358ab22beef4afd62",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/tile.raw",
+    "sha1": "09aa0853893f13872e8d26205c29ea65bc2dbd45",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/areadata.txt",
+    "sha1": "c362177f23d1543a1d4d8f446874cabc7ef502dd",
+    "size": 863,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/attr.atr",
+    "sha1": "18073767b62d9a575ff84be4e26fc702e5c396d6",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/height.raw",
+    "sha1": "be01219773c820ae8c401ad5bd65fa7cd0036aa0",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/minimap.dds",
+    "sha1": "02f7346e9ee168ca75fa2ba7fc486e0117dbb1b9",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/minimap_bottom.dds",
+    "sha1": "6ec7f8abadbfb881ed93164c75b210f404819538",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/shadowmap.dds",
+    "sha1": "a5ad200b28d2459cb8edf8c45d7328b6ae7fea96",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/shadowmap.raw",
+    "sha1": "adc48d0af990eba5d285246c92664664c02b8893",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/tile.raw",
+    "sha1": "d76f39ff3aaa1817133f717101920ed5fd31f06a",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/001002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/areadata.txt",
+    "sha1": "c9df36837808e1862d9477fe623f3770db7ae4cc",
+    "size": 10415,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/attr.atr",
+    "sha1": "32e7aab959b23f08d2e1abbc0a4a7f399beb9048",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/height.raw",
+    "sha1": "d08afdcc6c52161bea199d268a069dc5b64959d5",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/minimap.dds",
+    "sha1": "2bba61ba2945550b41d291978eac3cd31739e700",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/minimap_right.dds",
+    "sha1": "3ac438735e7984c04008d3d251656f4b1ddf1c77",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/minimap_righttop.dds",
+    "sha1": "f4e32fd88d5838e02f03a46237fbecc0dc0a1324",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/minimap_top.dds",
+    "sha1": "92bbdba9a8dbb4087d3d2835e8d1206d8740cb19",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/shadowmap.dds",
+    "sha1": "549bff3ffe493b5668512244b9966221efcc80c4",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/shadowmap.raw",
+    "sha1": "95554480042d0ec837a095fd49cdc242853577f2",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/tile.raw",
+    "sha1": "2a95213bc1722403267ba9e0f030143ccb4bc888",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/areadata.txt",
+    "sha1": "b3824752b2533a9a2d5810a5783344f8f2e37204",
+    "size": 2931,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/attr.atr",
+    "sha1": "08fb8d6c55c6515c5e57750d61311701c13a9413",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/height.raw",
+    "sha1": "89d6268bfe9ed88590e81705a875837bba05942c",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/minimap.dds",
+    "sha1": "9f00400854c7d5a1007391f5e3855f493a1cdcdd",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/minimap_right.dds",
+    "sha1": "557dfd54aa1cfdc2bc856681638698e86431690d",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/shadowmap.dds",
+    "sha1": "d8d2e66dfbd2a04763743d54e4737eda1886f544",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/shadowmap.raw",
+    "sha1": "4cb42566f91375b1ffe5f532abe192ab935bba5a",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/tile.raw",
+    "sha1": "a2d5d8fa1dd36abb19072b1202892d39d7577a58",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/areadata.txt",
+    "sha1": "ef37bdb35fa8d858f20b9a62bf59c5f25a45dbda",
+    "size": 860,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/attr.atr",
+    "sha1": "604d2a3ec2d03da614a9fe4920c23cf5a8db2bd6",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/height.raw",
+    "sha1": "3cbb8557aaadc4bc259035f7961a2b76b2a7e4c7",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/minimap.dds",
+    "sha1": "f00a22772ab07846fa2d2c095bbbda2500af441d",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/minimap_bottom.dds",
+    "sha1": "714fe3ba5ccbfea0eed3cdecf57e4171fbaf2461",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/minimap_right.dds",
+    "sha1": "f1e118a36ee105c1b2d2a51edb9fc1415975c4c9",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/minimap_rightbottom.dds",
+    "sha1": "69190eb723c190a20e3bb06b0a7f9b6d934dac3e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/shadowmap.dds",
+    "sha1": "976f7a6c2b6d745bf9be680328c7930dafbaf61d",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/shadowmap.raw",
+    "sha1": "e11fa99cc2cf197ca0dcc39796f12c960a8cc208",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/tile.raw",
+    "sha1": "428796f6ac9faee17caa95254f544f4dbb4c79bb",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/002002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/metin2_map_whitdragonvalley.msenv",
+    "sha1": "82b3cd0c43de6caf28ad6d3b993f1d07b971c33d",
+    "size": 2675,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/setting.txt",
+    "sha1": "2f271631069a29c165e09be02c939eb364d771b9",
+    "size": 228,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_whitdragonvalley/sungma_attr.txt",
+    "sha1": "8f1ab75df07e1675cd880062ff0f39746d6517bf",
+    "size": 61,
+    "source": "gf"
+   }
+  ],
+  "ymaps4_mobs": [
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragonvalley_boss_s1_blow.mse",
+    "sha1": "bbeefc62abed030de4bafec79f2d3b5395e35591",
+    "size": 29905,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragonvalley_boss_s2.mde",
+    "sha1": "7b3146ca6c6f0aee071bd6e94de2ed034272ff7b",
+    "size": 58887,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragonvalley_boss_s2_blow.mse",
+    "sha1": "a8722fc2f0f6e35390dcf331b1076395204923a9",
+    "size": 19284,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragonvalley_boss_s2_impact.mse",
+    "sha1": "3f7ec405b57a7a68c5c4976e366781435b3aef97",
+    "size": 2048,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/front_damage.gr2",
+    "sha1": "ca18ce058f0a8c36855ecc789c96e2fdf605e29d",
+    "size": 19062,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/front_damage.msa",
+    "sha1": "d99518a42da919e23fffc6049868002cca82f43c",
+    "size": 207,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/front_dead.gr2",
+    "sha1": "c4105011c8031a7e46541bd878fa09e0c2310e8b",
+    "size": 210412,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/front_dead.msa",
+    "sha1": "94b2e45162c0eb58326eeb37f027d194e1676bed",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/motlist.txt",
+    "sha1": "a83bc9880a089fe405c02de6fde235330413fa40",
+    "size": 259,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/normal_attack1.gr2",
+    "sha1": "1454ed57dacefaa54aa4b1e03d6c81dce7bba285",
+    "size": 22570,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/normal_attack1.msa",
+    "sha1": "c058e739b023d9fffeacfdc86e7d16caeb288cee",
+    "size": 893,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/run.gr2",
+    "sha1": "f8680438999f217fe922ee9966a7be527b35e161",
+    "size": 21984,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/run.msa",
+    "sha1": "1ef76e5af78ce057591802829fce8cd996526ce0",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/special_attack1.gr2",
+    "sha1": "e3b8ae99bc1349f67ff4d99e09091cadfa2c86d1",
+    "size": 33720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/special_attack1.msa",
+    "sha1": "60d68294941cfefef7925beeeb58a879f48efec1",
+    "size": 1302,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/special_attack2.gr2",
+    "sha1": "245c59749ce5a5f2a2f9b0d29f7f2d206f008689",
+    "size": 33278,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/special_attack2.msa",
+    "sha1": "193ced4bcbd4014011653056cf0ab02a241ef1c6",
+    "size": 1715,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/wait.gr2",
+    "sha1": "b54913479e60e3398b3617b9924bd46c05e18908",
+    "size": 30174,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/wait.msa",
+    "sha1": "49432273075965a5e3800810ed50969235826904",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/whitedragonvalley_boss.gr2",
+    "sha1": "11c849dc0f1329dcf948062789d7c00fc8ff61db",
+    "size": 172880,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/whitedragonvalley_boss.msm",
+    "sha1": "bb41d7aeb53b4b66b69e20877c94cd33e339a6a7",
+    "size": 1120,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/whitedragonvalley_boss_01.dds",
+    "sha1": "d6b8175b18edf6c9a9386a76c3503abcd7b075ad",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/whitedragonvalley_boss_02.dds",
+    "sha1": "3f2910a7d2ddca848c46ab333590b9be7799a354",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_boss/whitedragonvalley_boss_02.msm",
+    "sha1": "c3cedbb2c6b304a837b74080c6d7c2d922aaae64",
+    "size": 1421,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_damage.gr2",
+    "sha1": "f2af7aaa8777c74e1a7686870772274f19bb9110",
+    "size": 39640,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_damage.msa",
+    "sha1": "571281fb5e133fbcb6ca36b866e813aabdd7ac5e",
+    "size": 211,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_dead.gr2",
+    "sha1": "41d2ef76658ff3d5970c39b91a49e94544a43b25",
+    "size": 87140,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_dead.msa",
+    "sha1": "1315512ebdb2b7d182c4bb5653a5ac8eeb40af3b",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_knockdown.gr2",
+    "sha1": "41afd7289983707ee2292cc4342298b74810d64a",
+    "size": 52696,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_knockdown.msa",
+    "sha1": "c80c4b972ac2264235630886cd7ff4b8f55b3df2",
+    "size": 214,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_standup.gr2",
+    "sha1": "ce2387971764c19c647a455416784bc8c51bd96a",
+    "size": 55632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/front_standup.msa",
+    "sha1": "c5a0545bf79699eed973df6b684597a5fd05c090",
+    "size": 212,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/motlist.txt",
+    "sha1": "770d274ea110cc2b123722d5ac9ef4845d641b8f",
+    "size": 358,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/normal_attack1.gr2",
+    "sha1": "fc52edbebd97e4b7e3ba4d257736d5cc1c45824b",
+    "size": 56512,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/normal_attack1.msa",
+    "sha1": "3b0e008146517ca2f77224f38d5378cb3cf139c4",
+    "size": 897,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/normal_attack2.gr2",
+    "sha1": "98fe9911a2b88b3678a66b1a743e7ea437f3e254",
+    "size": 55932,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/normal_attack2.msa",
+    "sha1": "0183b147ad2370ef2ec7a24dfc334ddcd7e2584b",
+    "size": 897,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/run.gr2",
+    "sha1": "7170a61e3d7419b1449343430fd7b4d8a684d02d",
+    "size": 38044,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/run.msa",
+    "sha1": "030c35ab6612a76ee81a36493e94ce7cbc31e53d",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/special_attack1.gr2",
+    "sha1": "dc99fa378482cd1e7ff7111019ce20fee3c19f1f",
+    "size": 55508,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/special_attack1.msa",
+    "sha1": "f3608e12ac4b9d458f667fdb16bbcd183a0a77e3",
+    "size": 1342,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/wait.gr2",
+    "sha1": "619bee8ff87255ff97a6f86ccafa6810fbbb87a5",
+    "size": 56584,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/wait.msa",
+    "sha1": "e0669c447ae47a329cb86f9a70d292b87845d1e8",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01.gr2",
+    "sha1": "7956b7062d857076d1c97d3b51398a73a9855cce",
+    "size": 129036,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01.msm",
+    "sha1": "f351f9d19d098f62fef7de1bd97ced54555a3b9a",
+    "size": 1126,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01_1.dds",
+    "sha1": "0b2658dd57b07d26d8ce1309acc7c7428c393950",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01_2.dds",
+    "sha1": "e14708df3a7390354042c7e1b9172b23bae618ac",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01_2.msm",
+    "sha1": "6eedcf774c4e109dd4128bace546a1ea4f72073e",
+    "size": 1655,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01_ice_1.dds",
+    "sha1": "cd39e652e48eb8e2835c7f37696bc9f89dd745b6",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01_ice_2.dds",
+    "sha1": "b07a0db491d4dfe27d76f7933220d837dc48a545",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_damage.gr2",
+    "sha1": "d9cfc4543070b63d2a3c2a95d426a04d70225847",
+    "size": 29752,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_damage.msa",
+    "sha1": "6d68dc030b4d897c5418bda4f1ec26daf6ba52f8",
+    "size": 211,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_dead.gr2",
+    "sha1": "4fd8c12402512346c3c4c2b3ff3a9626e1cbb648",
+    "size": 58996,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_dead.msa",
+    "sha1": "5f0014cf4261d8970e73fd0944eca7d70dbac172",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_knockdown.gr2",
+    "sha1": "0720516e63eb3fed75cc78d99e6e8a97be431e25",
+    "size": 41544,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_knockdown.msa",
+    "sha1": "287e5dba13b627146cf0ee06681ba074dda27e3c",
+    "size": 214,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_standup.gr2",
+    "sha1": "b5c1329c1c332c086f7c2f423593010d602ffdbc",
+    "size": 38788,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/front_standup.msa",
+    "sha1": "3c84c14ca32ddbbc0bfc9949909769575c0770c4",
+    "size": 212,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/motlist.txt",
+    "sha1": "770d274ea110cc2b123722d5ac9ef4845d641b8f",
+    "size": 358,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/normal_attack1.gr2",
+    "sha1": "8dadf989fbeb30e4a3f58ea676d0c802cd3c188c",
+    "size": 42084,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/normal_attack1.msa",
+    "sha1": "ef7d7cd3b9ba8cbc70d16d78fd541834155c20de",
+    "size": 896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/normal_attack2.gr2",
+    "sha1": "4e58294469cc43bc27358d45df869b681d24f3ab",
+    "size": 40284,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/normal_attack2.msa",
+    "sha1": "5b54dc9c9351bc47e03848ed06709670ffcb73a0",
+    "size": 896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/run.gr2",
+    "sha1": "0f1a9534f2c2a0bd10abe6e47befabca5b43fcc9",
+    "size": 38852,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/run.msa",
+    "sha1": "5974bd8d1439f3941c7584328ee727b3eb01deac",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/special_attack1.gr2",
+    "sha1": "dc21433d26677eb7bc34c31cd539b1158d4a21b0",
+    "size": 42076,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/special_attack1.msa",
+    "sha1": "dd9427234bc22397ed42116f118564767e079322",
+    "size": 1348,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/wait.gr2",
+    "sha1": "38a5851abbdff420ffdbe7cd0c1ee58d17b35172",
+    "size": 36144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/wait.msa",
+    "sha1": "a77b60ad597e40d6a985815c5ff7f9fe85701779",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/whitedragonvalley_knight02.gr2",
+    "sha1": "42dd847e46090c2913a6b5d9709a03024842528c",
+    "size": 113276,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/whitedragonvalley_knight02.msm",
+    "sha1": "20a6c5464079255d151ea318e69f7a728851def4",
+    "size": 1122,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/whitedragonvalley_knight02_1.dds",
+    "sha1": "80a0daf60ea4c15b5c8a2ccfde204d8157bff047",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/whitedragonvalley_knight02_2.dds",
+    "sha1": "34d07ee4624c6d982b82d90ee9714e15d3c652d7",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_knight02/whitedragonvalley_knight02_2.msm",
+    "sha1": "4b137827a6a25e25780b081063a109340fd1f326",
+    "size": 1445,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_damage.gr2",
+    "sha1": "5397563e0c08e170234192bbb4ee0dbae8281988",
+    "size": 24012,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_damage.msa",
+    "sha1": "6934a81ec6c0847ec4d152fd1e113e89ad1bf121",
+    "size": 207,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_dead.gr2",
+    "sha1": "75effbe1f5c8ae22d774372bc85cc3b6b8805622",
+    "size": 45620,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_dead.msa",
+    "sha1": "114005dda1441ce62fd9f3410e893a5f63d776b9",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_knockdown.gr2",
+    "sha1": "72c0ba88d0ed2356227b48409365832125183b2d",
+    "size": 30168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_knockdown.msa",
+    "sha1": "3d3a9740e4ed58716535fc67e0f0982d1009a79e",
+    "size": 210,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_standup.gr2",
+    "sha1": "8735f1043eb13f7b9d297e15a00b77499e544ce3",
+    "size": 30148,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/front_standup.msa",
+    "sha1": "d272ace8f88336ba9c8d3787288ee780b1d792ba",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/motlist.txt",
+    "sha1": "e9206904babeab6ae136c43acdb44460d1de8e40",
+    "size": 317,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/normal_attack1.gr2",
+    "sha1": "921e2ea8f9d7beab9e4700015a920763af506108",
+    "size": 31484,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/normal_attack1.msa",
+    "sha1": "64dd409e2eb296c08d241c7b06f3f242dfebeb0f",
+    "size": 892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/normal_attack2.gr2",
+    "sha1": "308ed28a6efbd44b25e4d384bf9fb5d4773968ae",
+    "size": 31496,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/normal_attack2.msa",
+    "sha1": "ccf2ad7354dd4d227aadcd2e58f11ff566f2fff1",
+    "size": 892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/run.gr2",
+    "sha1": "98c82d79f869fed5cce04ed5f7aa0dc9b639efb6",
+    "size": 22896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/run.msa",
+    "sha1": "b820a7a808e9fb42443e6e8ffba182e3098698ff",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/wait.gr2",
+    "sha1": "5178b88ca44743c016943ccc4b9f15c203e65a98",
+    "size": 28032,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/wait.msa",
+    "sha1": "2b8237d4f8035d4573180ae8b461034ee9de5705",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/whitedragonvalley_pawn.gr2",
+    "sha1": "61aa7cf060324914ed8b30c10a309d27a85acb94",
+    "size": 79412,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/whitedragonvalley_pawn.msm",
+    "sha1": "dfd27081f6550df16641b4613ee92a3c489bbe41",
+    "size": 1972,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/whitedragonvalley_pawn_1.dds",
+    "sha1": "6b5102341ba353fc72fddca304a9021acb896d3b",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/whitedragonvalley_pawn_2.dds",
+    "sha1": "eaa81ba1f5865012169181e7d57daebf14b2f7eb",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_pawn/whitedragonvalley_pawn_2.msm",
+    "sha1": "ddd4bc979b16fea3b25d5402117efb82ba4aed95",
+    "size": 2271,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_damage.gr2",
+    "sha1": "ce0eb60d548a98b62ae13d2272e4ad90431ea2d1",
+    "size": 31848,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_damage.msa",
+    "sha1": "86c8ef747304119f65488d17ab62b2674ff81353",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_dead.gr2",
+    "sha1": "d45630471e6d81e2a12477ef1d54f51d4de5e259",
+    "size": 74276,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_dead.msa",
+    "sha1": "0c2e32d31ae54b4e4b74c0880c29def7d96e9a59",
+    "size": 168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_knockdown.gr2",
+    "sha1": "e86c6dbd35f4b134eed7403704b743af84c28941",
+    "size": 42208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_knockdown.msa",
+    "sha1": "6fde8c803275bfebf1280711fafe1a2adb2e6f5d",
+    "size": 173,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_standup.gr2",
+    "sha1": "cf411e5e0ea1107b73900e62b222b3f4b1e239a4",
+    "size": 45284,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/front_standup.msa",
+    "sha1": "b1a6131a7ffeb8771a69aac37406ef99e07fd3dd",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/motlist.txt",
+    "sha1": "770d274ea110cc2b123722d5ac9ef4845d641b8f",
+    "size": 358,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/normal_attack1.gr2",
+    "sha1": "c806367d3e8ac3ff390fa7a5d231eb273bdfc29c",
+    "size": 48820,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/normal_attack1.msa",
+    "sha1": "94892660ea6957888e3c68d8faf77ae40c598bc0",
+    "size": 897,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/normal_attack2.gr2",
+    "sha1": "b75b56e16a0832fbeedb765b720ada3fffbe2d8f",
+    "size": 46204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/normal_attack2.msa",
+    "sha1": "35808907df1ae75e93bfcd7c7f87d21ed6093770",
+    "size": 897,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/run.gr2",
+    "sha1": "6c5f355f194e69cdcf8b95fefd170b822813e0f4",
+    "size": 28480,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/run.msa",
+    "sha1": "d3797ab7a8d2f8c7d40594e00e141c4f5f80c30b",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/special_attack1.gr2",
+    "sha1": "b748f1b42ea3103c6b4e26a47f9a94cbdcf57f53",
+    "size": 49416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/special_attack1.msa",
+    "sha1": "ab7a37a2005b4a55e7586d3787c44176b272318b",
+    "size": 1317,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/wait.gr2",
+    "sha1": "f7bf0f91b62f1e8912cbcb06ead9ab30203eef3a",
+    "size": 38656,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/wait.msa",
+    "sha1": "00b30d39d0a78dcf2fceb8cd236014ed36697291",
+    "size": 162,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/whitedragonvalley_s_knight.gr2",
+    "sha1": "486b30657515cb1c4aa336e049ccd08d4011d0c6",
+    "size": 90988,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/whitedragonvalley_s_knight.msm",
+    "sha1": "2fe3c20281c037a16491bb9d557010dc89ba33b3",
+    "size": 1126,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/whitedragonvalley_s_knight_1.dds",
+    "sha1": "4c6b6c69709222b9a5b4af0775ad94214403d1fe",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/whitedragonvalley_s_knight_2.dds",
+    "sha1": "f1a549734fc42441f0161b880dd5e1194947a87c",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_knight/whitedragonvalley_s_knight_2.msm",
+    "sha1": "93ad162a43b5cad3d874f05f14c1ae141ab2462f",
+    "size": 1449,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_damage.gr2",
+    "sha1": "ed55392e74139f0854ae68885f71a0ca7e7af3fe",
+    "size": 24364,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_damage.msa",
+    "sha1": "f472680934bbf93374ad4b19f1695a6915b78e57",
+    "size": 168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_dead.gr2",
+    "sha1": "a2ac2671398563768f0a8da0bbb26b8a25abc1ab",
+    "size": 51976,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_dead.msa",
+    "sha1": "cab5386f2fc6382cc7f72d8af6ad761ee6da16e2",
+    "size": 166,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_knockdown.gr2",
+    "sha1": "3a8a49045108ec5bea55fb88ce9eff3593f17211",
+    "size": 34620,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_knockdown.msa",
+    "sha1": "ba1d4f44c49f9c5762547678b518af0778ed750e",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_standup.gr2",
+    "sha1": "1119c3ec544f9150813e919240f2731d489f2539",
+    "size": 34520,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/front_standup.msa",
+    "sha1": "0286b6154f89183e4e4c610a6eb5a47b3d63c04f",
+    "size": 169,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/motlist.txt",
+    "sha1": "e9206904babeab6ae136c43acdb44460d1de8e40",
+    "size": 317,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/normal_attack1.gr2",
+    "sha1": "1167dc6eca891bb6639f3f51e798f9b68766e715",
+    "size": 34892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/normal_attack1.msa",
+    "sha1": "630059f5dd07b122a46ab27c3b1b9febe30c21f2",
+    "size": 856,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/normal_attack2.gr2",
+    "sha1": "0e2aec9fa6e1c66d9c7eda7be0cd73d465543b34",
+    "size": 35100,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/normal_attack2.msa",
+    "sha1": "a706a25bf8ab2103a05612abd6bad8c6ef65e291",
+    "size": 856,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/run.gr2",
+    "sha1": "2d3b8bc5aba0707bf3e626673a99f184a38ddcf5",
+    "size": 25124,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/run.msa",
+    "sha1": "a460bb451460ef1f1988f923fabe23332902445b",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/wait.gr2",
+    "sha1": "56d544f469625afcc5bf8e2eeaee1ed2f16fda4b",
+    "size": 30552,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/wait.msa",
+    "sha1": "0955fac4a33b88d4d9665029e4c01fe10b8c8af3",
+    "size": 160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/whitedragonvalley_s_pawn.gr2",
+    "sha1": "8967a56b516cec2768de7199ad44d449806a3146",
+    "size": 81860,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/whitedragonvalley_s_pawn.msm",
+    "sha1": "7a280166bf9d5193ac0c1a3782ef78e3d59d7480",
+    "size": 1134,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/whitedragonvalley_s_pawn_1.dds",
+    "sha1": "7425b56042f9aa4aedb278b7d5ffcc77cc045d78",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/whitedragonvalley_s_pawn_2.dds",
+    "sha1": "f3bca2a001ee0f8c37be008a1acac434e81b9c51",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/whitedragonvalley_s_pawn/whitedragonvalley_s_pawn_2.msm",
+    "sha1": "ade60f15695ad3c70ac2ea4e9a2007e4cd94c709",
+    "size": 1445,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/fire_tiger/walk_act_1.wav",
+    "sha1": "3189647b330532d47cae7e95d1103e0d3ae2ac69",
+    "size": 42038,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/gnoll_minotaur/minotaur_attack.wav",
+    "sha1": "46debb04125b48631ca595011ec629b4577cee42",
+    "size": 41994,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/gnoll_minotaur/minotaur_damage.wav",
+    "sha1": "f58e488b422b9caa8d1ea9ad01540e6395123079",
+    "size": 26992,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/gnoll_minotaur/minotaur_die.wav",
+    "sha1": "7950d253d9d501d95c94e9d8151c34c5aeb9b2d3",
+    "size": 93368,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/gnoll_minotaur/minotaur_swish.wav",
+    "sha1": "6eef09f3c48fa36f54a4f6a2ed4eb4b861debfe8",
+    "size": 49062,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_boss/front_damage.mss",
+    "sha1": "165da00475720027edf3d5e252d27bd7e3311f29",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_boss/front_dead.mss",
+    "sha1": "8b47908c44d1bd9181b4dacfe79d5f096cd06249",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_boss/normal_attack1.mss",
+    "sha1": "01b0a5709875994e5aeb780a7915b83bd2f615b2",
+    "size": 130,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_boss/run.mss",
+    "sha1": "965772de7f7e34d4c4067e8d2ca4b2e885928ef9",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_boss/special_attack1.mss",
+    "sha1": "bccb91e8c7751f6e36aabc6cc18a776c44c6fed0",
+    "size": 254,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_boss/special_attack2.mss",
+    "sha1": "1079c4e4c8beaf655295262f9ae99c40dd9a6026",
+    "size": 272,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight01/front_damage.mss",
+    "sha1": "fd9de1d7acff6fe69b4e5706a45ac94b1ff5c663",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight01/front_dead.mss",
+    "sha1": "54cb36753219e8eb1d7ae076128473f68b25c646",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight01/normal_attack1.mss",
+    "sha1": "59d38165de9b88053d35964471be9877ed372614",
+    "size": 132,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight01/normal_attack2.mss",
+    "sha1": "59de15b8f86d790e80c61ac4f6b2f87b38e05fad",
+    "size": 132,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight01/run.mss",
+    "sha1": "b34cc0f7558d9b6acc79b2f36ed1242a07b13211",
+    "size": 222,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight01/special_attack1.mss",
+    "sha1": "4ca0a921d5f23a4108a497bf5fffe51f4417e4a2",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight02/front_damage.mss",
+    "sha1": "bfd7f58b00c47c93d23513901a57c8d122a42ae4",
+    "size": 140,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight02/front_dead.mss",
+    "sha1": "d7a25b893c92a33a8000aa70595b73efb081d358",
+    "size": 138,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight02/normal_attack1.mss",
+    "sha1": "4214b57af430d35f76abe7493476ec0793b6f09b",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight02/normal_attack2.mss",
+    "sha1": "7b619e6577c1be2a2713843baaf95bfc31e62feb",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight02/run.mss",
+    "sha1": "9d25ade5c3071a5f26990a24dc4d19037afacbfc",
+    "size": 138,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_knight02/special_attack1.mss",
+    "sha1": "4327726b74722863f2ecaf61a7b15c5976b2a936",
+    "size": 226,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_pawn/front_damage.mss",
+    "sha1": "7ad51ba74e17a2e065d12baca3494ed3efea97b8",
+    "size": 148,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_pawn/front_dead.mss",
+    "sha1": "febe93e4721c6a146f910730d092340bf7f38986",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_pawn/normal_attack1.mss",
+    "sha1": "9f856df2ef66a9b4edc8e39feccac635344ac926",
+    "size": 227,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_pawn/normal_attack2.mss",
+    "sha1": "b9048536313a61e2f6201c7f1bdfe7e1f8e347d8",
+    "size": 227,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_pawn/run.mss",
+    "sha1": "d38852f4065395c9b5b5622e8564283f87f41382",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_knight/front_damage.mss",
+    "sha1": "fd9de1d7acff6fe69b4e5706a45ac94b1ff5c663",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_knight/front_dead.mss",
+    "sha1": "54cb36753219e8eb1d7ae076128473f68b25c646",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_knight/normal_attack1.mss",
+    "sha1": "2715383b34d80031d4163a56aeab37e19f1da271",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_knight/normal_attack2.mss",
+    "sha1": "cbb82df5e38259fbcaa3a0925a6d21e6630f2bf1",
+    "size": 132,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_knight/run.mss",
+    "sha1": "a63d7230d51e3f0df46d010726e18f953f8b363a",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_knight/special_attack1.mss",
+    "sha1": "9f56f15ff8bd1d0430509713f03c7fbd7e220752",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_pawn/front_damage.mss",
+    "sha1": "c44d81a273bc19e4673bf1e742c16d8273c2b6b5",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_pawn/front_dead.mss",
+    "sha1": "3438caa453767d9d3060265ab0baa0958011fe00",
+    "size": 140,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_pawn/normal_attack1.mss",
+    "sha1": "08c7bea1e6007555a527897403907aebb161ca08",
+    "size": 142,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_pawn/normal_attack2.mss",
+    "sha1": "f78e99d7e20da11e0eacfbbdd5f826e405587c06",
+    "size": 214,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/whitedragonvalley_s_pawn/run.mss",
+    "sha1": "25b7034119642b3fac7db1686de9088ea882ad45",
+    "size": 139,
+    "source": "gf"
+   },
+   {
+    "name": "sound/npc/fire_tiger/fire_tiger.wav",
+    "sha1": "0757351dc8057750011ba282729b7da067bdc37c",
+    "size": 18220,
+    "source": "gf"
+   }
+  ],
+  "ymaps4_obj": [
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_31.gr2",
+    "sha1": "dddfc9078bdc4c3e85f6d46ef7bb311df47fa39b",
+    "size": 13296,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_31.mdatr",
+    "sha1": "df8e9518c270b467c23a1f977aadaca387aff56f",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone.dds",
+    "sha1": "87bebcf534b640d632342313dd38135ee322ba4d",
+    "size": 699192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_01.gr2",
+    "sha1": "8b8d005511e4a6d23c851dc6867e37da995fe985",
+    "size": 20968,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_01.mdatr",
+    "sha1": "b58610476da66a9009d686f2651ff8fd34bb1ae3",
+    "size": 598,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_02.gr2",
+    "sha1": "c2b9c2365d427b27e9192f5bed01185891083977",
+    "size": 33312,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_02.mdatr",
+    "sha1": "5f8e13220fcc777507613fa4acde659b12cbaaf4",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_03.gr2",
+    "sha1": "95e7d8a6f3b069e9678dfded3bf4d2a2f22c63f3",
+    "size": 33048,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_03.mdatr",
+    "sha1": "1543048d77c0deea0869bccd5fe09f74fcb4ce61",
+    "size": 598,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_04.gr2",
+    "sha1": "731bca3a9f7139db4940aba4830e7ce8dce9b84e",
+    "size": 28712,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/icebon/ice_dragonbone_04.mdatr",
+    "sha1": "382f97e20682b758c2154bee9c7032e7ea8704a0",
+    "size": 1822,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_bridge/whitdragonvalley_bridge02.dds",
+    "sha1": "b9705b655b3ea5ba299359f08ce4d23053f4d220",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_bridge/whitdragonvalley_bridge02.gr2",
+    "sha1": "ebb52e92239f951600378bd8a0a17a0ba011d115",
+    "size": 76188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_bridge/whitdragonvalley_bridge02.mdatr",
+    "sha1": "f9c0cb8a82a917d214e6b12c60778c3900bcd449",
+    "size": 7690,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_gate/whitdragonvalley_gate.gr2",
+    "sha1": "c5c5d3db497ad99cc6b7bbb9f77775e23b8c8851",
+    "size": 29204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_gate/whitdragonvalley_gate.mdatr",
+    "sha1": "499436764514ae478d0024c6ed806bda3a57b1d3",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_gate/whitdragonvalley_gate_00.dds",
+    "sha1": "b8130d25c136cffee0773c76489ef3b3907b9ddf",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_gate/whitdragonvalley_gate_01.dds",
+    "sha1": "bfe33496406c055a6097f700ca4803d2b9fbe753",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/icemount/whitdragonvalley_gate/whitdragonvalley_gate_02.dds",
+    "sha1": "85e560774c212a5ee70de92c0301147f59ff73e7",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/obj/snow.m/nsm-general_obj_07.gr2",
+    "sha1": "60432ce0e0aa708b394258ddc2c3b1cbf6053bdc",
+    "size": 9944,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/obj/snow.m/nsm-general_obj_07.mdatr",
+    "sha1": "be531c02967a7b8654eb8ddb21e06e180ae67439",
+    "size": 310,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "10143": {
+   "msm": "d:/ymir work/npc/warp/warp.msm",
+   "race": "warp",
+   "status": "ours"
+  },
+  "20806": {
+   "msm": "d:/ymir work/npc/jinno_guard_bow/jinno_guard_bow.msm",
+   "race": "jinno_guard_bow",
+   "status": "earlier builder"
+  },
+  "20808": {
+   "msm": "d:/ymir work/npc/gangyo_patrol_spear/gangyo_patrol_spear_01.msm",
+   "race": "gangyo_patrol_spear_01",
+   "status": "earlier builder"
+  },
+  "20846": {
+   "msm": "d:/ymir work/npc/hunter/hunter.msm",
+   "race": "hunter",
+   "status": "earlier builder"
+  },
+  "6777": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_pawn/whitedragonvalley_pawn.msm",
+   "race": "whitedragonvalley_pawn",
+   "status": "staged"
+  },
+  "6778": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_s_pawn/whitedragonvalley_s_pawn.msm",
+   "race": "whitedragonvalley_s_pawn",
+   "status": "staged"
+  },
+  "6779": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01.msm",
+   "race": "whitedragonvalley_knight01",
+   "status": "staged"
+  },
+  "6780": {
+   "msm": "d:/ymir work/monster2/defensewave_watersoul/defensewave_watersoul.msm",
+   "race": "defensewave_watersoul",
+   "status": "earlier builder"
+  },
+  "6781": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_knight02/whitedragonvalley_knight02.msm",
+   "race": "whitedragonvalley_knight02",
+   "status": "staged"
+  },
+  "6782": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_s_knight/whitedragonvalley_s_knight.msm",
+   "race": "whitedragonvalley_s_knight",
+   "status": "staged"
+  },
+  "6783": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_boss/whitedragonvalley_boss.msm",
+   "race": "whitedragonvalley_boss",
+   "status": "staged"
+  },
+  "6889": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_pawn/whitedragonvalley_pawn_2.msm",
+   "race": "whitedragonvalley_pawn_2",
+   "status": "staged"
+  },
+  "6890": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_s_pawn/whitedragonvalley_s_pawn_2.msm",
+   "race": "whitedragonvalley_s_pawn_2",
+   "status": "staged"
+  },
+  "6891": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_knight01/whitedragonvalley_knight01_2.msm",
+   "race": "whitedragonvalley_knight01_2",
+   "status": "staged"
+  },
+  "6892": {
+   "msm": "d:/ymir work/monster2/elemental_soul_2/elemental_soul_2.msm",
+   "race": "elemental_soul_2",
+   "status": "earlier builder"
+  },
+  "6893": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_knight02/whitedragonvalley_knight02_2.msm",
+   "race": "whitedragonvalley_knight02_2",
+   "status": "staged"
+  },
+  "6894": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_s_knight/whitedragonvalley_s_knight_2.msm",
+   "race": "whitedragonvalley_s_knight_2",
+   "status": "staged"
+  },
+  "6895": {
+   "msm": "d:/ymir work/monster2/whitedragonvalley_boss/whitedragonvalley_boss_02.msm",
+   "race": "whitedragonvalley_boss_02",
+   "status": "staged"
+  },
+  "8066": {
+   "msm": "d:/ymir work/monster/metinstone_east/metinstone_east_05.msm",
+   "race": "metinstone_east_05",
+   "status": "earlier builder"
+  },
+  "8077": {
+   "msm": "d:/ymir work/monster/metinstone_east/metinstone_east_05.msm",
+   "race": "metinstone_east_05",
+   "status": "earlier builder"
+  }
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "map": [],
+  "races": {}
+ }
+}
