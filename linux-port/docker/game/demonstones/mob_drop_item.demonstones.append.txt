@@ -1,0 +1,159 @@
+// MT2009_PLUS_DEMON_STONES_V1 (the Dockerfile step of that name; the owner, 14 October 2026; pl-wiki "Kamien Mocy":
+// Kamien Demonow +0 to +2 drops from the Yohara Metins): the higher grades beside the +0 the batches already drop -
+// Metins +1 at half and +2 at a quarter of their +0 chance, the bosses and chiefs also +3 at a tenth. Own groups
+// (a mob may have several), so the batches' generated files stay as they are.
+
+Group	MT2009_demonstones_8063
+{
+	Mob	8063	-- Metin Szacunku
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+}
+
+Group	MT2009_demonstones_8064
+{
+	Mob	8064	-- Metin Uwaznosci
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+}
+
+Group	MT2009_demonstones_8065
+{
+	Mob	8065	-- Metin Jin
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+}
+
+Group	MT2009_demonstones_8066
+{
+	Mob	8066	-- Metin Shiho
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+}
+
+Group	MT2009_demonstones_8077
+{
+	Mob	8077	-- Metin z Gumar
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+}
+
+Group	MT2009_demonstones_8076
+{
+	Mob	8076	-- Metin Wezowy Przestrzeni
+	Type	drop
+	1	28146	1	2.5	-- Kamien Demonow+1
+	2	28246	1	1.25	-- Kamien Demonow+2
+}
+
+Group	MT2009_demonstones_8067
+{
+	Mob	8067	-- Metin Swiadomosc
+	Type	drop
+	1	28146	1	5	-- Kamien Demonow+1
+	2	28246	1	2.5	-- Kamien Demonow+2
+}
+
+Group	MT2009_demonstones_6776
+{
+	Mob	6776	-- Zamarzniety Wodz Wojenny (lod)
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+	3	28346	1	0.2	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6888
+{
+	Mob	6888	-- Zamarzniety Wodz Wojenny (blyskawica)
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+	3	28346	1	0.2	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6789
+{
+	Mob	6789	-- Wodz Wojenny Schronienia (lod)
+	Type	drop
+	1	28146	1	1.5	-- Kamien Demonow+1
+	2	28246	1	0.75	-- Kamien Demonow+2
+	3	28346	1	0.3	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6797
+{
+	Mob	6797	-- Wodz Wojenny Schronienia (lod, blyskawice)
+	Type	drop
+	1	28146	1	5	-- Kamien Demonow+1
+	2	28246	1	2.5	-- Kamien Demonow+2
+	3	28346	1	1	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6749
+{
+	Mob	6749	-- Potezny Kappa
+	Type	drop
+	1	28146	1	2.5	-- Kamien Demonow+1
+	2	28246	1	1.25	-- Kamien Demonow+2
+	3	28346	1	0.5	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6870
+{
+	Mob	6870	-- Tajemniczy Mnich (lod)
+	Type	drop
+	1	28146	1	5	-- Kamien Demonow+1
+	2	28246	1	2.5	-- Kamien Demonow+2
+	3	28346	1	1	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6871
+{
+	Mob	6871	-- Tajemniczy Mnich (mrok)
+	Type	drop
+	1	28146	1	5	-- Kamien Demonow+1
+	2	28246	1	2.5	-- Kamien Demonow+2
+	3	28346	1	1	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6782
+{
+	Mob	6782	-- Wielka Stopa (lod)
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+	3	28346	1	0.2	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6783
+{
+	Mob	6783	-- Wodz Wojenny Pln. Wiatru (lod)
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+	3	28346	1	0.2	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6894
+{
+	Mob	6894	-- Wielka Stopa (blyskawice)
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+	3	28346	1	0.2	-- Kamien Demonow+3
+}
+
+Group	MT2009_demonstones_6895
+{
+	Mob	6895	-- Wodz Wojenny Pln. Wiatru (blyskawice)
+	Type	drop
+	1	28146	1	1	-- Kamien Demonow+1
+	2	28246	1	0.5	-- Kamien Demonow+2
+	3	28346	1	0.2	-- Kamien Demonow+3
+}

@@ -2359,6 +2359,26 @@ RUN set -eu; S=/opt/metin2/share/locale/poland/special_spawns.txt; A=/tmp/spawn-
  && test "$(grep -c -E '^[[:blank:]]*spawn_vnum[[:blank:]]+2092[[:space:]]*$' "$S")" -eq 1 \
  && echo "share: the Spider Baroness spawns in the second Spider Dungeon"
 
+# MT2009_PLUS_DEMON_STONES_V1 (the owner, 14 October 2026; pl-wiki "Kamien Demonow", "Kamien Mocy", "Kamien Mocy
+# Demonow"): Kamien Demonow +1 to +4 had no source. After every share append (the Yohara batches' groups and chests
+# are in): demonstones/mob_drop_item.demonstones.append.txt - the Yohara Metins +1/+2, the chiefs +1 to +3 (own groups,
+# 18 mobs); demonstones/special_item_group.demonstones.awk - the wiki's chests (70411, 70412, 70429, Skrzynia Hydry
+# 54705) the grades past +0 and Kamien Mocy Demonow. Mistrz Chi makes Kamien Mocy Demonow +0..+4 (quest rekawice).
+COPY demonstones/ /tmp/demonstones/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/demonstones; F="$L/mob_drop_item.txt"; G="$L/special_item_group.txt" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_demonstones_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A/mob_drop_item.demonstones.append.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.demonstones.append.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_demonstones_' "$F")" = 18 \
+ && awk -v report="$A/report" -f "$A/special_item_group.demonstones.awk" "$G" > "$G.new" \
+ && mv "$G.new" "$G" \
+ && cat "$A/report" \
+ && test "$(sed -n 's/^chests //p' "$A/report")" = 4 \
+ && test "$(grep -c 'MT2009_PLUS_DEMON_STONES_V1' "$G")" = 16 \
+ && rm -rf "$A" \
+ && echo "share: Kamien Demonow +1..+4 - Metins, chiefs, chests (MT2009_PLUS_DEMON_STONES_V1)"
+
 # The cores run unprivileged and read this tree by path; a directory only root
 # can enter costs every quest below it, silently. Repair, then assert.
 RUN set -eu; \

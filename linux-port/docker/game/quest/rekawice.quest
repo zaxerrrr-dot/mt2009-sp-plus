@@ -7,6 +7,9 @@
 --   * Wola SungMa rêkawicy (6. bonus), gniazda na Kamienie Demonów i ulepszanie: silnik (server-patches/rekawice),
 --     przedmioty: yohara_gloves.sql (tools/ygloves/gen_ygloves.py);
 --   * Licencji na Rêkawice (misja "Aresztowanie") nie ma - rêkawice zak³ada ka¿dy od 105. poziomu.
+--   * MT2009_PLUS_DEMON_STONES_V1 (w³aœciciel 14.10.2026; wiki "Wytwarzanie Kamieni Mocy Demonów"): Mistrz Chi
+--     wytwarza Kamieñ Mocy Demonów +N (28047 + 100N) z Kamienia Demonów +N (28046 + 100N) i N+1 Jadeitu S³oñca
+--     (50661) za 300 000 / 500 000 / 700 000 / 900 000 / 1 200 000 Yang - szansa zawsze 30%.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest rekawice begin
 	state start begin
@@ -25,6 +28,60 @@ quest rekawice begin
 					{vnum = 23030, rune = 31250},              -- Ochronne Rêkawice (INT)
 				},
 			}
+		end
+
+		function stones()
+			return {
+				jade = 50661, pct = 30,
+				fee = {300000, 500000, 700000, 900000, 1200000},
+				fee_text = {"300 000", "500 000", "700 000", "900 000", "1 200 000"},
+			}
+		end
+
+		when 20823.chat."Kamienie Mocy Demonów" with pc.get_map_index() == 373 begin
+			local c = rekawice.stones()
+			say_title(mob_name(20823)..":")
+			say("Z Kamienia Demonów i Jadeitu S³oñca zrobiê ci")
+			say("Kamieñ Mocy Demonów tego samego poziomu.")
+			say("Osadzony w rêkawicy mo¿e daæ podwójn¹ wolê SungMa.")
+			say("")
+			say_reward("Kamieñ Demonów +N, (N+1)x "..item_name(c.jade)..", Yang wg poziomu,")
+			say_reward("szansa zawsze "..c.pct.."%. Gdy siê nie uda, materia³y przepadaj¹.")
+			local s = select("+0 ("..c.fee_text[1].." Yang)", "+1 ("..c.fee_text[2].." Yang)", "+2 ("..c.fee_text[3].." Yang)",
+				"+3 ("..c.fee_text[4].." Yang)", "+4 ("..c.fee_text[5].." Yang)", "Nie teraz")
+			if s < 1 or s > 5 then
+				return
+			end
+			local lvl = s - 1
+			local src = 28046 + 100 * lvl
+			local dst = 28047 + 100 * lvl
+			local jade_n = lvl + 1
+			say_title(mob_name(20823)..":")
+			if pc.count_item(src) < 1 then
+				say("Brakuje ci: "..item_name(src)..".")
+				return
+			end
+			if pc.count_item(c.jade) < jade_n then
+				say("Potrzebujesz "..jade_n.."x "..item_name(c.jade)..".")
+				return
+			end
+			if pc.get_money() < c.fee[s] then
+				say("Masz za ma³o Yang.")
+				return
+			end
+			if not pc.enough_inventory(dst) then
+				say("Zrób miejsce w ekwipunku.")
+				return
+			end
+			pc.remove_item(src, 1)
+			pc.remove_item(c.jade, jade_n)
+			pc.change_money(-c.fee[s])
+			if number(1, 100) <= c.pct then
+				pc.give_item2(dst, 1)
+				say("Uda³o siê! Oto "..item_name(dst)..".")
+			else
+				say("Nie uda³o siê. Materia³y przepad³y.")
+			end
 		end
 
 		when 20823.chat."Rêkawice SungMa" with pc.get_map_index() == 373 begin
