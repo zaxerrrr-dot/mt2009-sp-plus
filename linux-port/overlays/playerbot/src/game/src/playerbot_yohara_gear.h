@@ -4,8 +4,9 @@
 //     (6th bonus slot, the wiki's range of the level, carried by a refine), Kamienie (Mocy) Demonow (METIN_SUNGMA) in
 //     its three sockets - a random Will of the stone's value, kept in the socket as Owsap's number
 //     apply * 10000 + stone level * 1000 + stone kind * 100 + value;
-//   * Obrecze Jadeitu (14580-14619): two random base lines (Precyzja, the Will of the jade) with the wiki's ranges,
-//     carried by a refine; the jade in the Diamond's sockets (up to 3) adds the wiki's per-socket values to them;
+//   * Obrecze Jadeitu (14580-14619), Kolie Jadeitu (16580-16619) and Klipsy Jadeitu (17570-17609,
+//     MT2009_PLUS_JADE_JEWELLERY_V1): two random base lines (Precyzja, the Will of the jade) with the wiki's ranges of
+//     each kind, carried by a refine; the jade in the Diamond's sockets (up to 3) adds the wiki's per-socket values;
 //   * Precyzja (POINT_HIT_PCT, 197) and the Sung Ma per cent bonuses (POINT_SUNGMA_PER_*, 193-196): the effective
 //     Sung Ma stat a map's requirement is checked against.
 // The engine's hooks declare what they call (the edits of the three patches); this header is for the overlay itself.
