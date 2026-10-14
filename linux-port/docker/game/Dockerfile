@@ -1791,7 +1791,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps2-add \
 # npc.txt (after the second batch's step), General Kohan -> Schronienie (quest yohara_mapy4). sungma_table.txt has
 # the map (35/25/35/40 - the wiki's): a Sung Ma map, no bot enters. sungma_mob_exp.txt gets Owsap's 38 for 6889
 # (Opetany Mrozny Jelen, blyskawice - missing from Owsap's SungMaExp list). /goto rozpadlina. Rows:
-# mariadb/playerbot/yohara_maps4.sql (+ yohara_maps4_zywioly.sql).
+# mariadb/playerbot/yohara_maps4.sql (+ yohara_maps4_zywioly.sql). MT2009_PLUS_YOHARA_ITEMS4_V1 (the owner's items
+# of 14 October, tools/yohara_maps4/gen_yitems4.py, yohara_items4.sql): the chests special_item_group.yohara_items4.txt
+# - Plat. Skrzynia Skarbow (83055) and Przeb. Ksiega Zwierza (95737, one of our pet skill books); the jade bracelets,
+# Kamien Metin z Yohara and Mistrz Chi's crafting are quest yohara_mapy4 / server-patches/obreczjadeitu.
 COPY yohara_maps4/ /tmp/yohara-maps4-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps4-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -1832,6 +1835,11 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps4-add \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A/mob_drop_item.yohara_maps4.txt" >> "$F" \
  && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 14 \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(83055|95737)([^0-9]|$)' "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_items4.txt" >> "$G" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(83055|95737)([^0-9]|$)' "$G")" = 2 \
  && E="$L/sungma_mob_exp.txt" \
  && { grep -q -E '^6889[[:blank:]]' "$E" || { { [ -z "$(tail -c 1 "$E")" ] || printf '\n' >> "$E"; }; printf '6889\t38\n' >> "$E"; }; } \
  && test "$(grep -c -E '^(677[7-9]|678[0-3]|689[0-5])[[:blank:]]+[0-9]+[[:space:]]*$' "$E")" = 14 \

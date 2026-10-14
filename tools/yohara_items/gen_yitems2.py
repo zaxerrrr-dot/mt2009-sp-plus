@@ -120,6 +120,11 @@ EXISTING = {
 }
 for _v in range(50569, 50576):
     EXISTING[_v] = 'Ksiega 9. umiejetnosci (%d)' % _v
+# the items of MT2009_PLUS_YOHARA_ITEMS4_V1 (tools/yohara_maps4/gen_yitems4.py, yohara_items4.sql): the chests and
+# the war chiefs below name them
+EXISTING.update({72339: 'Kamien Metin z Yohara', 83055: 'Plat. Skrzynia Skarbow', 83056: 'Plat. Klucz do Skrz. Sk.',
+                 95737: 'Przeb. Ksiega Zwierza', 14580: 'Obrecz Jadeitu Mgly+0', 14590: 'Obrecz Jadeitu Slonca+0',
+                 14600: 'Obrecz Jadeitu Nocy+0', 14610: 'Obrecz Jadeitu Dymu+0'})
 for _v, _n in ((39013, 'Blogoslawienstwo Smoka'), (71004, 'Medal Smoka'), (71017, 'Medal Szczescia'),
                (39031, 'Mikstura Pospiechu'), (72010, 'Pioro Ptaka Milosci'), (72013, 'Rybie Wnetrznosci'),
                (50037, 'Heksagonalna Szkatulka'), (50249, 'Skrzynia Triumfu'), (50007, 'Srebrna Szkatulka'),
@@ -244,13 +249,15 @@ def chests():
     return [
         (31238, 'Polyskujaca Muszla - "the pearls much rarer than the stone" (wiki)',
          [(27990, 1, 85), (31239, 1, 5), (31240, 1, 5), (31241, 1, 5)]),
-        (83065, 'Losowa Skrzynia Skarbow - another chest inside (Plat. Skrzynia Skarbow 83055: not here)',
-         [(50007, 1, 40), (50006, 1, 35), (50037, 1, 15), (50249, 1, 10)]),
-        (83066, 'Los. Klucz do Skrz. Sk. - a key or Yang (Plat. Klucz 83056: not here)',
-         [(50009, 1, 45), (50008, 1, 40), ('gold', 300000, 15)]),
-        (83067, 'Skrzynia z Bransoletka (Idealny Klucz 83054) - the jade bracelets and Kamien Metin z Yohara: not here',
+        (83065, 'Losowa Skrzynia Skarbow - another chest inside (Plat. Skrzynia Skarbow 83055: tools/yohara_maps4)',
+         [(50007, 1, 40), (50006, 1, 35), (50037, 1, 15), (50249, 1, 10), (83055, 1, 5)]),
+        (83066, 'Los. Klucz do Skrz. Sk. - a key or Yang (Plat. Klucz 83056: tools/yohara_maps4)',
+         [(50009, 1, 45), (50008, 1, 40), ('gold', 300000, 15), (83056, 1, 5)]),
+        (83067, 'Skrzynia z Bransoletka (Idealny Klucz 83054) - the jade bracelets +0 and Kamien Metin z Yohara: '
+                'tools/yohara_maps4',
          [(39013, 1, 8), (71004, 1, 8), (71017, 1, 8), (39031, 1, 10), (39002, 1, 8), (72010, 1, 8), (31238, 1, 15),
-          (72006, 1, 8), (72013, 1, 12), (50124, 1, 15)]),
+          (72006, 1, 8), (72013, 1, 12), (50124, 1, 15), (14580, 1, 3), (14590, 1, 3), (14600, 1, 3), (14610, 1, 3),
+          (72339, 1, 5)]),
     ]
 
 
@@ -344,7 +351,7 @@ def tainted_boss(war):
                                                            (50528, 1, 8), (50529, 1, 3)]
     if war:
         r += [(31216, 2, 8), (31218, 2, 8), (31224, 2, 8), (50663, 1, 3), (70428, 1, 3), (31238, 1, 8),
-              (70408, 1, 2), (70434, 1, 2)]
+              (70408, 1, 2), (70434, 1, 2), (95737, 1, 2)]
     else:
         r += [(72006, 1, 5), (39002, 1, 5)] + CHARISMA
     return r
@@ -361,7 +368,7 @@ def frozen_boss(element, war):
         r += [(39081, 1, 3), (49991, 3, 10, 'Ognista Runa Aury (10) x3'), (31217, 2, 8), (31246, 1, 4),
               (25040, 1, 5), (50300, 1, 10), (50325, 1, 3), (95926, 50, 10, 'Kamyki x50'), (28046, 1, 2),
               (50338, 1, 3), (50663, 1, 3), (70014, 1, 10), (70048, 1, 8), (70038, 20, 10, 'Peleryna Mestwa x20'),
-              (70434, 1, 2)]
+              (70434, 1, 2), (95737, 1, 2)]
         if element == 'lod':
             r.append((31259, 1, 3))
     else:
@@ -438,7 +445,7 @@ def drops():
          (31244, 1, 5), (31263, 1, 3), (50527, 1, 3), (95734, 5, 10, 'Mrozny Korzonek x5'), (49992, 1, 2),
          (49993, 1, 1), (39002, 1, 5), (31239, 1, 2), (31240, 1, 2), (31241, 1, 2), (31238, 1, 8), (72006, 1, 5),
          (55009, 1, 3), (83067, 1, 5), (70401, 1, 2), (39081, 1, 3), (72353, 2, 25, 'Topaz Woli x2'),
-         (83065, 1, 5), (83066, 1, 5), (70434, 1, 2)] + [(v, 1, 0.3) for v in range(55050, 55068)]
+         (83065, 1, 5), (83066, 1, 5), (70434, 1, 2), (95737, 1, 2)] + [(v, 1, 0.3) for v in range(55050, 55068)]
     d.append((6789, 'Wodz Wojenny Schronienia (lod)', shelter_boss))
     # Metins
     d.append((8063, 'Metin Szacunku', metin('szacunek')))
@@ -464,11 +471,12 @@ def write_drops(byv):
          '// 3-10%, Topaz Woli x2 25%; a Metin - the potions always, a 9th-skill book 0.5% each. Nothing is raised for the',
          '// test server\'s drop event. Left out, as in the first batch: the Odlamki 39070-39077 (the Seon-Hae event drops',
          '// them by level) and the Lycan\'s Szpon Gryfa / Szpon Skarabeusza / Jastrzebi / Kolczasty Szpon (no Lycan);',
-         '// not in our world nor in Owsap\'s Polish data: Symbol Krola Przepowiedni, Przeb. Ksiega Zwierza. The first',
+         '// not in our world nor in Owsap\'s Polish data: Symbol Krola Przepowiedni (the owner: not added). The first',
          '// batch\'s monsters on Namgan (trolls, hounds, Dreczony Duch, Natanan) and Metin Swiadomosc keep their drops',
          '// (mob_drop_item.yohara_maps.txt). The Dockerfile step stops the build if any of these has a group already.',
          '// Wodz Wojenny Schronienia (6789) gives exactly one Zamarzniety Klucz a kill (a "limit" group at 100 - the',
-         '// owner, 14 October).', '']
+         '// owner, 14 October). The war chiefs\' Przeb. Ksiega Zwierza (95737) and the chests\' bracelets, Kamien Metin',
+         '// z Yohara, Plat. Skrzynia / Klucz: MT2009_PLUS_YOHARA_ITEMS4_V1 (yohara_items4.sql).', '']
     n = 0
     for v, nm, rows in drops():
         L += ['Group\tMT2009_ymaps2_%d' % v, '{', '\tMob\t%d\t-- %s' % (v, nm), '\tType\tdrop']

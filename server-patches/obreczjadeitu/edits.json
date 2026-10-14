@@ -1,0 +1,50 @@
+[
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (server-patches/obreczjadeitu)",
+  "old": "void CItem::CopyAttributeTo(LPITEM pItem)\n{\n",
+  "new": "// MT2009_PLUS_JADE_BRACELET_V1 (server-patches/obreczjadeitu): Obrecze Jadeitu (14580-14589 Mgly, 14590-14599\n// Slonca, 14600-14609 Nocy, 14610-14619 Dymu; the pl-wiki \"Obrecz Jadeitu ...\", Owsap's APPLY_RANDOM 5 + 6..9 and\n// apply_random_table ApplyRandomValue6): the bracelet's Sung Ma Will (Mgly ODP, Slonca INT, Nocy WIT, Dymu SILA),\n// common or rare, in the 6th bonus slot (ITEM_ATTRIBUTE_RARE_START) - a new bracelet gets it or not (\"istnieje\n// prawdopodobienstwo, ze nie bedzie zadnego\"), a refine carries it at the new level's value of the same row and adds\n// a missing one, no 6/7 changer touches it. The wiki's second line, Precyzja (APPLY_HIT_PCT), has no point in this\n// engine. The chances are the Will talismans' panel flags (will_tal_line_pct 80, will_tal_rare_pct 10).\nstatic const short s_aiJadeBraceletWill[2][10] = { { 1, 3, 5, 7, 9, 11, 13, 15, 18, 21 }, { 2, 4, 6, 8, 10, 12, 14, 17, 20, 24 } };\n\nbool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType)\n{\n\tswitch (dwVnum - dwVnum % 10)\n\t{\n\t\tcase 14580: bWillType = POINT_SUNGMA_MOVE; return true;\n\t\tcase 14590: bWillType = POINT_SUNGMA_IMMUNE; return true;\n\t\tcase 14600: bWillType = POINT_SUNGMA_HP; return true;\n\t\tcase 14610: bWillType = POINT_SUNGMA_STR; return true;\n\t}\n\treturn false;\n}\n\nstatic void Mt2009JadeBraceletWrite(LPITEM item, int iWillRow)\n{\n\tBYTE bWillType;\n\tif (!Mt2009JadeBraceletType(item->GetVnum(), bWillType))\n\t\treturn;\n\tint iSlot = ITEM_ATTRIBUTE_RARE_START;\n\tif (iWillRow >= 0)\n\t\titem->SetForceAttribute(iSlot++, bWillType, s_aiJadeBraceletWill[iWillRow][item->GetVnum() % 10]);\n\tfor (; iSlot < ITEM_ATTRIBUTE_RARE_END; ++iSlot)\n\t\tif (item->GetAttributeType(iSlot))\n\t\t\titem->SetForceAttribute(iSlot, 0, 0);\n}\n\n// a new bracelet (ITEM_MANAGER::CreateItem): the line at will_tal_line_pct (80)\nvoid Mt2009JadeBraceletCreate(LPITEM item)\n{\n\tBYTE bWillType;\n\tif (!item || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))\n\t\treturn;\n\tMt2009JadeBraceletWrite(item, number(1, 100) <= Mt2009WillTalismanPct(\"will_tal_line_pct\", 80) ?\n\t\tMt2009WillTalismanRollRow() : -1);\n}\n\n// a refine (CopyAttributeTo, after the attributes are copied): the old bracelet's line at the new level, its row\n// (its value against the old level's rare value), a missing line added\nstatic void Mt2009JadeBraceletRefine(LPITEM pOld, LPITEM pNew)\n{\n\tBYTE bWillType, bNewWillType;\n\tif (!pOld || !pNew || !Mt2009JadeBraceletType(pOld->GetVnum(), bWillType) ||\n\t\t\t!Mt2009JadeBraceletType(pNew->GetVnum(), bNewWillType) || bWillType != bNewWillType)\n\t\treturn;\n\tint iWillRow = -1;\n\tfor (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END && iWillRow < 0; ++i)\n\t\tif (pOld->GetAttributeType(i) == bWillType)\n\t\t\tiWillRow = pOld->GetAttributeValue(i) >= s_aiJadeBraceletWill[1][pOld->GetVnum() % 10] ? 1 : 0;\n\tif (iWillRow < 0)\n\t\tiWillRow = Mt2009WillTalismanRollRow();\n\tMt2009JadeBraceletWrite(pNew, iWillRow);\n}\n\nvoid CItem::CopyAttributeTo(LPITEM pItem)\n{\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (refine)",
+  "old": "\tMt2009WillTalismanRefine(this, pItem); // MT2009_PLUS_WILL_TALISMAN_V1 (refine)\n",
+  "new": "\tMt2009WillTalismanRefine(this, pItem); // MT2009_PLUS_WILL_TALISMAN_V1 (refine)\n\tMt2009JadeBraceletRefine(this, pItem); // MT2009_PLUS_JADE_BRACELET_V1 (refine)\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (change rare)",
+  "old": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (change rare): its standard lines\n\t\treturn false;\n",
+  "new": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (change rare): its standard lines\n\t\treturn false;\n\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare): its Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (change rare 2)",
+  "old": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (change rare 2): its standard lines\n\t\treturn false;\n",
+  "new": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (change rare 2): its standard lines\n\t\treturn false;\n\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (change rare 2): its Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (add rare)",
+  "old": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (add rare): its standard lines\n\t\treturn false;\n",
+  "new": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (add rare): its standard lines\n\t\treturn false;\n\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare): its Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (add rare 2)",
+  "old": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (add rare 2): its standard lines\n\t\treturn false;\n",
+  "new": "\tif (Mt2009WillTalismanType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_WILL_TALISMAN_V1 (add rare 2): its standard lines\n\t\treturn false;\n\tif (Mt2009JadeBraceletType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_JADE_BRACELET_V1 (add rare 2): its Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (declare)",
+  "old": "void Mt2009WillTalismanCreate(LPITEM item); // MT2009_PLUS_WILL_TALISMAN_V1 (declare): item_attribute.cpp\n",
+  "new": "void Mt2009WillTalismanCreate(LPITEM item); // MT2009_PLUS_WILL_TALISMAN_V1 (declare): item_attribute.cpp\nvoid Mt2009JadeBraceletCreate(LPITEM item); // MT2009_PLUS_JADE_BRACELET_V1 (declare): item_attribute.cpp\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V1 (new)",
+  "old": "\t\tMt2009WillTalismanCreate(item); // MT2009_PLUS_WILL_TALISMAN_V1 (new): a Talizman Woli's standard lines\n",
+  "new": "\t\tMt2009WillTalismanCreate(item); // MT2009_PLUS_WILL_TALISMAN_V1 (new): a Talizman Woli's standard lines\n\t\tMt2009JadeBraceletCreate(item); // MT2009_PLUS_JADE_BRACELET_V1 (new): an Obrecz Jadeitu's Will line\n"
+ }
+]

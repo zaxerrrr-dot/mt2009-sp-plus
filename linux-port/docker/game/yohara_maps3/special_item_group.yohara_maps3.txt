@@ -138,7 +138,7 @@ Group	MT2009_yitems3_70429
 
 Group	MT2009_yitems3_83053
 {
-	Vnum	83053 -- Id. Skrzynia Kolczykow (Idealny Klucz) - left out: the jade earrings, Luska Argosa, Kamien Metin z Yohara
+	Vnum	83053 -- Id. Skrzynia Kolczykow (Idealny Klucz) - left out: the jade earrings, Luska Argosa
 	1	31226	1	10 -- Skazony Rdzen
 	2	31227	1	10 -- Kiel Argosa
 	3	31216	1	10 -- Plyta z Surowego Metalu
@@ -157,11 +157,12 @@ Group	MT2009_yitems3_83053
 	16	31238	1	10 -- Polyskujaca Muszla
 	17	71018	1	10 -- Blogoslawienstwo Zycia
 	18	71019	1	10 -- Blogoslawienstwo Magii
+	19	72339	1	10 -- Kamien Metin z Yohara
 }
 
 Group	MT2009_yitems3_83052
 {
-	Vnum	83052 -- Id. Skrzynia Naszyjniku (Idealny Klucz) - left out: the jade necklaces, Luska Argosa, Kamien Metin z Yohara
+	Vnum	83052 -- Id. Skrzynia Naszyjniku (Idealny Klucz) - left out: the jade necklaces, Luska Argosa
 	1	31226	1	10 -- Skazony Rdzen
 	2	31227	1	10 -- Kiel Argosa
 	3	31216	1	10 -- Plyta z Surowego Metalu
@@ -180,6 +181,7 @@ Group	MT2009_yitems3_83052
 	16	31238	1	10 -- Polyskujaca Muszla
 	17	71018	1	10 -- Blogoslawienstwo Zycia
 	18	71019	1	10 -- Blogoslawienstwo Magii
+	19	72339	1	10 -- Kamien Metin z Yohara
 }
 
 Group	MT2009_yitems3_83051

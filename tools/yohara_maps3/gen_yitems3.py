@@ -163,6 +163,8 @@ EXISTING = {
     30252: 'Klejnot Madrosci', 30053: 'Niedzwiedzia Skora', 30031: 'Ornament', 30194: 'Orkowa Maczuga',
     30195: 'Piasek Kwarcowy', 30061: 'Zabie Udka', 30058: 'Worek Z Pajeczymi Jajami', 30010: 'Zolc Niedzwiedzia',
     27987: 'Malz', 'gold': 'Yang',
+    # MT2009_PLUS_YOHARA_ITEMS4_V1 (tools/yohara_maps4/gen_yitems4.py, yohara_items4.sql)
+    72339: 'Kamien Metin z Yohara', 95737: 'Przeb. Ksiega Zwierza',
 }
 EXISTING.update(MAPS2_ITEMS)
 # items of the second batch this one gives their use: Pyl Wezowy (70428) adds a minute in Swiatynia Wezy (quest
@@ -344,11 +346,10 @@ def chests(byv):
                      'Blogoslawienstwo, Torba Emocji (no system)', treasure))
     perfect = [(31226, 1, 10), (31227, 1, 10), (31216, 1, 10), (31217, 1, 10), (50664, 1, 10), (50662, 1, 10),
                (50661, 1, 10), (25040, 1, 10), (70024, 1, 10), (71004, 1, 10), (71015, 1, 10), (70043, 1, 10),
-               (71017, 1, 10), (71008, 1, 10), (71068, 1, 10), (31238, 1, 10), (71018, 1, 10), (71019, 1, 10)]
-    g.append((83053, 'Id. Skrzynia Kolczykow (Idealny Klucz) - left out: the jade earrings, Luska Argosa, Kamien '
-                     'Metin z Yohara', perfect))
-    g.append((83052, 'Id. Skrzynia Naszyjniku (Idealny Klucz) - left out: the jade necklaces, Luska Argosa, Kamien '
-                     'Metin z Yohara', perfect))
+               (71017, 1, 10), (71008, 1, 10), (71068, 1, 10), (31238, 1, 10), (71018, 1, 10), (71019, 1, 10),
+               (72339, 1, 10)]
+    g.append((83053, 'Id. Skrzynia Kolczykow (Idealny Klucz) - left out: the jade earrings, Luska Argosa', perfect))
+    g.append((83052, 'Id. Skrzynia Naszyjniku (Idealny Klucz) - left out: the jade necklaces, Luska Argosa', perfect))
     tal = [(81000, 1, 10), (81300, 1, 10), (81250, 1, 10), (81550, 1, 10), (72353, 1, 20), (71044, 1, 10),
            (71004, 1, 10), (71015, 1, 10), (70043, 1, 10), (71017, 1, 10), (71008, 1, 10), (71068, 1, 10),
            (31238, 1, 10), (71018, 1, 10), (71019, 1, 10)]
@@ -423,7 +424,7 @@ def drops():
                (31237, 1, 8), (31263, 1, 8), (30618, 1, 8), (49992, 1, 3), (49993, 1, 1), (31239, 1, 8),
                (31240, 1, 8), (31241, 1, 8), (39081, 1, 5), (72353, 1, 15), (72740, 1, 3), (50513, 1, 15),
                (90006, 1, 10), (28046, 1, 10), (50527, 1, 5), (71015, 1, 10), (95735, 1, 10), (72006, 1, 10),
-               (50529, 1, 5), (83067, 1, 5), (70401, 1, 3), (70434, 1, 3)] +
+               (50529, 1, 5), (83067, 1, 5), (70401, 1, 3), (70434, 1, 3), (95737, 1, 2)] +
               [(v, 1, 1) for v in range(55050, 55068) if v != 55061]))
     # Glebie: Alastor (TR wiki: Kamien Duchowy), the eggs (TR: Dumny Smok Pln. Wiatru - a mount, none here)
     d.append((6790, 'Alastor (slaby)', [(50513, 1, 30), (90006, 1, 20)]))
@@ -467,7 +468,7 @@ def drops():
         d.append((v, 'Mistrz Miecza Kao' + (' (mrok)' if v < 6865 else ' (lod)'), [(31261, 1, 12)] + d12))
     for v in (6870, 6871):
         d.append((v, 'Tajemniczy Mnich' + (' (lod)' if v == 6870 else ' (mrok)'),
-                  [(90006, 1, 20), (28046, 1, 10), (70408, 1, 10), (70434, 1, 5), (31261, 5, 30)]))
+                  [(90006, 1, 20), (28046, 1, 10), (70408, 1, 10), (70434, 1, 5), (31261, 5, 30), (95737, 1, 2)]))
     # Krolestwo Zywiolow: the areas' monsters (D16), the Metins (D15), the plateau's lords (D17)
     d16 = [(27007, 5, 2)] + SET1 + NATURE + PROJECT
     for v in (3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 3988, 3989, 3990, 3991, 4006):
@@ -495,7 +496,7 @@ def write_drops(byv):
          '// rare thing 0.03-0.1, Tajemniczy Kamien 8 (200 a Tajemniczy Talizman); a boss (hourly) 1-25; Zamarzniety',
          '// Klucz: exactly one a kill of Wodz Wojenny Schronienia (a "limit" group at 100 - the owner, 14 October);',
          '// a Metin\'s 1-50. Left out: Odlamki 39070-39077 (with the Seon-Hae event, as tools/yohara_items), the',
-         '// Lycan\'s claws (Kolczasty / Jastrzebi Szpon, Przeb. Ksiega Zwierza), Mnisi Len and Odlamek Miecza Kao (no',
+         '// Lycan\'s claws (Kolczasty / Jastrzebi Szpon), Mnisi Len and Odlamek Miecza Kao (no',
          '// vnum anywhere), Dumny Smok Pln. Wiatru (a mount), the eggs\' and Glebie\'s other drops (none on the wiki).', '']
     for v, n, rows in drops():
         assert v in D.MOBS, v

@@ -6,7 +6,7 @@
 // rare thing 0.03-0.1, Tajemniczy Kamien 8 (200 a Tajemniczy Talizman); a boss (hourly) 1-25; Zamarzniety
 // Klucz: exactly one a kill of Wodz Wojenny Schronienia (a "limit" group at 100 - the owner, 14 October);
 // a Metin's 1-50. Left out: Odlamki 39070-39077 (with the Seon-Hae event, as tools/yohara_items), the
-// Lycan's claws (Kolczasty / Jastrzebi Szpon, Przeb. Ksiega Zwierza), Mnisi Len and Odlamek Miecza Kao (no
+// Lycan's claws (Kolczasty / Jastrzebi Szpon), Mnisi Len and Odlamek Miecza Kao (no
 // vnum anywhere), Dumny Smok Pln. Wiatru (a mount), the eggs' and Glebie's other drops (none on the wiki).
 
 Group	MT2009_ymaps3_6792
@@ -192,23 +192,24 @@ Group	MT2009_ymaps3_6797
 	31	83067	1	5	-- Skrzynia z Bransoletka
 	32	70401	1	3	-- Sztandar Czaszki
 	33	70434	1	3	-- Zwoj Skarbu (Stopien A)
-	34	55050	1	1	-- Jazda (Zwinne Kopyta)
-	35	55051	1	1	-- Jazda Konna (PD)
-	36	55052	1	1	-- Jazda (Gwalt. Wichura)
-	37	55053	1	1	-- Jazda (Bezszelest. Chod)
-	38	55054	1	1	-- Jazda (Niesmiertelnosc)
-	39	55055	1	1	-- Jazda (Brak Odrzutu)
-	40	55056	1	1	-- Jazda Konna (losowo)
-	41	55057	1	1	-- Jazda Konna (Wojownik)
-	42	55058	1	1	-- Jazda Konna (Ninja)
-	43	55059	1	1	-- Jazda Konna (Sura)
-	44	55060	1	1	-- Jazda Konna (Szaman)
-	45	55062	1	1	-- Jazda (umiej. konne)
-	46	55063	1	1	-- Jazda (W. SungMa. SILA)
-	47	55064	1	1	-- Jazda (W. SungMa. WIT)
-	48	55065	1	1	-- Jazda (W. SungMa. ODP)
-	49	55066	1	1	-- Jazda (W. SungMa. INT)
-	50	55067	1	1	-- Jazda Konna (Precyzja)
+	34	95737	1	2	-- Przeb. Ksiega Zwierza
+	35	55050	1	1	-- Jazda (Zwinne Kopyta)
+	36	55051	1	1	-- Jazda Konna (PD)
+	37	55052	1	1	-- Jazda (Gwalt. Wichura)
+	38	55053	1	1	-- Jazda (Bezszelest. Chod)
+	39	55054	1	1	-- Jazda (Niesmiertelnosc)
+	40	55055	1	1	-- Jazda (Brak Odrzutu)
+	41	55056	1	1	-- Jazda Konna (losowo)
+	42	55057	1	1	-- Jazda Konna (Wojownik)
+	43	55058	1	1	-- Jazda Konna (Ninja)
+	44	55059	1	1	-- Jazda Konna (Sura)
+	45	55060	1	1	-- Jazda Konna (Szaman)
+	46	55062	1	1	-- Jazda (umiej. konne)
+	47	55063	1	1	-- Jazda (W. SungMa. SILA)
+	48	55064	1	1	-- Jazda (W. SungMa. WIT)
+	49	55065	1	1	-- Jazda (W. SungMa. ODP)
+	50	55066	1	1	-- Jazda (W. SungMa. INT)
+	51	55067	1	1	-- Jazda Konna (Precyzja)
 }
 
 Group	MT2009_ymaps3_6790
@@ -834,6 +835,7 @@ Group	MT2009_ymaps3_6870
 	3	70408	1	10	-- Tajemniczy Bilet
 	4	70434	1	5	-- Zwoj Skarbu (Stopien A)
 	5	31261	5	30	-- Tajemniczy Kamien x5
+	6	95737	1	2	-- Przeb. Ksiega Zwierza
 }
 
 Group	MT2009_ymaps3_6871
@@ -845,6 +847,7 @@ Group	MT2009_ymaps3_6871
 	3	70408	1	10	-- Tajemniczy Bilet
 	4	70434	1	5	-- Zwoj Skarbu (Stopien A)
 	5	31261	5	30	-- Tajemniczy Kamien x5
+	6	95737	1	2	-- Przeb. Ksiega Zwierza
 }
 
 Group	MT2009_ymaps3_3980

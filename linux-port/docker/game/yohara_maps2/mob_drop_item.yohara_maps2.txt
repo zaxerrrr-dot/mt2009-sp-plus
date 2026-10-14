@@ -557,6 +557,7 @@ Group	MT2009_ymaps2_6764
 	23	31238	1	8	-- Polyskujaca Muszla
 	24	70408	1	2	-- Tajemniczy Bilet
 	25	70434	1	2	-- Zwoj Skarbu (Stopien A)
+	26	95737	1	2	-- Przeb. Ksiega Zwierza
 }
 
 Group	MT2009_ymaps2_6875
@@ -729,6 +730,7 @@ Group	MT2009_ymaps2_6881
 	23	31238	1	8	-- Polyskujaca Muszla
 	24	70408	1	2	-- Tajemniczy Bilet
 	25	70434	1	2	-- Zwoj Skarbu (Stopien A)
+	26	95737	1	2	-- Przeb. Ksiega Zwierza
 }
 
 Group	MT2009_ymaps2_6770
@@ -969,7 +971,8 @@ Group	MT2009_ymaps2_6776
 	39	70048	1	8	-- Peleryna Maskujaca
 	40	70038	20	10	-- Peleryna Mestwa x20
 	41	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	42	31259	1	3	-- Kowadlo Pln. Wiatru
+	42	95737	1	2	-- Przeb. Ksiega Zwierza
+	43	31259	1	3	-- Kowadlo Pln. Wiatru
 }
 
 Group	MT2009_ymaps2_6882
@@ -1210,6 +1213,7 @@ Group	MT2009_ymaps2_6888
 	39	70048	1	8	-- Peleryna Maskujaca
 	40	70038	20	10	-- Peleryna Mestwa x20
 	41	70434	1	2	-- Zwoj Skarbu (Stopien A)
+	42	95737	1	2	-- Przeb. Ksiega Zwierza
 }
 
 Group	MT2009_ymaps2_6784
@@ -1429,24 +1433,25 @@ Group	MT2009_ymaps2_6789
 	37	83065	1	5	-- Losowa Skrzynia Skarbow
 	38	83066	1	5	-- Los. Klucz do Skrz. Sk.
 	39	70434	1	2	-- Zwoj Skarbu (Stopien A)
-	40	55050	1	0.3	-- Jazda (Zwinne Kopyta)
-	41	55051	1	0.3	-- Jazda Konna (PD)
-	42	55052	1	0.3	-- Jazda (Gwalt. Wichura)
-	43	55053	1	0.3	-- Jazda (Bezszelest. Chod)
-	44	55054	1	0.3	-- Jazda (Niesmiertelnosc)
-	45	55055	1	0.3	-- Jazda (Brak Odrzutu)
-	46	55056	1	0.3	-- Jazda Konna (losowo)
-	47	55057	1	0.3	-- Jazda Konna (Wojownik)
-	48	55058	1	0.3	-- Jazda Konna (Ninja)
-	49	55059	1	0.3	-- Jazda Konna (Sura)
-	50	55060	1	0.3	-- Jazda Konna (Szaman)
-	51	55061	1	0.3	-- Jazda Konna (Likan)
-	52	55062	1	0.3	-- Jazda (umiej. konne)
-	53	55063	1	0.3	-- Jazda (W. SungMa. SILA)
-	54	55064	1	0.3	-- Jazda (W. SungMa. WIT)
-	55	55065	1	0.3	-- Jazda (W. SungMa. ODP)
-	56	55066	1	0.3	-- Jazda (W. SungMa. INT)
-	57	55067	1	0.3	-- Jazda Konna (Precyzja)
+	40	95737	1	2	-- Przeb. Ksiega Zwierza
+	41	55050	1	0.3	-- Jazda (Zwinne Kopyta)
+	42	55051	1	0.3	-- Jazda Konna (PD)
+	43	55052	1	0.3	-- Jazda (Gwalt. Wichura)
+	44	55053	1	0.3	-- Jazda (Bezszelest. Chod)
+	45	55054	1	0.3	-- Jazda (Niesmiertelnosc)
+	46	55055	1	0.3	-- Jazda (Brak Odrzutu)
+	47	55056	1	0.3	-- Jazda Konna (losowo)
+	48	55057	1	0.3	-- Jazda Konna (Wojownik)
+	49	55058	1	0.3	-- Jazda Konna (Ninja)
+	50	55059	1	0.3	-- Jazda Konna (Sura)
+	51	55060	1	0.3	-- Jazda Konna (Szaman)
+	52	55061	1	0.3	-- Jazda Konna (Likan)
+	53	55062	1	0.3	-- Jazda (umiej. konne)
+	54	55063	1	0.3	-- Jazda (W. SungMa. SILA)
+	55	55064	1	0.3	-- Jazda (W. SungMa. WIT)
+	56	55065	1	0.3	-- Jazda (W. SungMa. ODP)
+	57	55066	1	0.3	-- Jazda (W. SungMa. INT)
+	58	55067	1	0.3	-- Jazda Konna (Precyzja)
 }
 
 Group	MT2009_ymaps2_8063

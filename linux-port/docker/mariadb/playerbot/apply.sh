@@ -3609,13 +3609,16 @@ for ym3_sql in yohara_maps3.sql yohara_items3.sql yohara_maps3_zywioly.sql; do
     fi
 done
 
-# MT2009_PLUS_YOHARA_MAPS4_V1: Rozpadlina Dusz (389, the owner, 14 October 2026) - after the third batch and the
+# MT2009_PLUS_YOHARA_MAPS4_V1 / MT2009_PLUS_YOHARA_ITEMS4_V1: yohara_items4.sql (tools/yohara_maps4/gen_yitems4.py) -
+# the jade bracelets 14580-14619 (+ refine_proto 22701-22709), Kamien Metin z Yohara, Plat. Skrzynia / Klucz, Przeb.
+# Ksiega Zwierza (the owner's items of 14 October; the drop files and chests of game/yohara_maps2-4 name them).
+# Rozpadlina Dusz (389, the owner, 14 October 2026) - after the third batch and the
 # elements' files (zywioly_moby.sql clears bits 11-16 of every mob it does not list): yohara_maps4.sql
 # (tools/yohara_maps4/gen_ymaps4.py) - its 14 monsters and bosses, 3 NPCs and 3 portals (Wawoz -> here, here ->
 # Wawoz, Schronienie -> here; it also drops the second batch's stand-in portals 10145/10146, which no map spawns
 # now); yohara_maps4_zywioly.sql - their elements (lod / blyskawice, the pl-wiki's). Idempotent (INSERT IGNORE /
 # UPDATE / DELETE). The map's drop file (game/yohara_maps4) names these vnums: a world without them stops the cores.
-for ym4_sql in yohara_maps4.sql yohara_maps4_zywioly.sql; do
+for ym4_sql in yohara_items4.sql yohara_maps4.sql yohara_maps4_zywioly.sql; do
     [ -s "/opt/playerbot/$ym4_sql" ] || continue
     if db < "/opt/playerbot/$ym4_sql"; then
         echo "[playerbot-migrate] yohara maps 4: $ym4_sql applied"

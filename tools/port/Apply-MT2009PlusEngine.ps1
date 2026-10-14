@@ -79,6 +79,8 @@ param(
 #   Talizmany Woli     item_attribute.cpp, item_manager.cpp (MT2009_PLUS_WILL_TALISMAN_V1;
 #                      server-patches/talizmanwoli)
 #   Zyly Jadeitu       mining.cpp (MT2009_PLUS_JADE_VEINS_V1; server-patches/jadeit)
+#   Obrecze Jadeitu    item_attribute.cpp, item_manager.cpp (MT2009_PLUS_JADE_BRACELET_V1;
+#                      server-patches/obreczjadeitu, after talizmanwoli)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1249,6 +1251,19 @@ if ((Test-Path -LiteralPath $talizmanWoliApply -PathType Leaf) -and
     if ($talizmanWoliResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Will talisman edit(s).' -f $talizmanWoliResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Obrecze Jadeitu (server-patches/obreczjadeitu, MT2009_PLUS_JADE_BRACELET_V1): the Sung Ma Will line of the jade
+# bracelets 14580-14619 in the 6th bonus slot - rolled when one is made, carried and completed by a refine, never
+# touched by a 6/7 changer. After the Will talismans: its edits sit next to theirs and use their chance flags.
+$obreczJadeituApply = Join-Path $repo 'server-patches/obreczjadeitu/Apply-ObreczJadeituPatch.ps1'
+if ((Test-Path -LiteralPath $obreczJadeituApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $obreczJadeituResult = & $obreczJadeituApply -SourceDir $engineGameSource
+    if ($obreczJadeituResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} jade bracelet edit(s).' -f $obreczJadeituResult.Applied) -ForegroundColor DarkGray
     }
 }
 

@@ -8,6 +8,12 @@
 --     mo¿e byæ w Rozpadlinie;
 --   * stra¿nik poziomu: od 120 (jak reszta Yohary, bez wymogu czempiona) - kto nie ma, wraca do portu; boty nie
 --     wchodz¹ (mapa Sung Ma - sungma_table.txt), rdzeñ Yohary botów nie ma.
+-- MT2009_PLUS_YOHARA_ITEMS4_V1 (decyzja z 14.10: przedmioty z wiki):
+--   * Kamieñ Metin z Yohara (72339): przywo³uje obok gracza Metina z Yohary (poziom 120+) - tylko na mapach Yohary
+--     z Wol¹ SungMa i od 1. Poziomu Czempiona (wiki); Metin - jeden z tych, które stoj¹ na tej mapie;
+--   * Mistrz Chi (20823, Dongan): wytwarza Obrêcze Jadeitu +0 (wiki "Wytwarzanie Bransolet": 10 Jadeitu, 25/30 P³yt
+--     z Surowego Metalu, Mg³y nic wiêcej / S³oñca 2 Ska¿one Rdzenie / Nocy 5 K³ów Argosa / Dymu 10 £usek Argosa,
+--     1 000 000 Yang, szansa 30%, przy pora¿ce przedmioty przepadaj¹) - Gaya pominiêta (nie mamy jej).
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest yohara_mapy4 begin
 	state start begin
@@ -16,6 +22,21 @@ quest yohara_mapy4 begin
 				min_level = 120,
 				port = {1280 + 405, 5632 + 480},              -- Town.txt portu (368)
 				shelter = {9984 + 80, 12032 + 640},           -- Town.txt Schronienia Pó³nocnego Wiatru (393)
+				stone = 72339,
+				-- Metiny map Yohary z Wol¹ SungMa (ich stone.txt); bez w³asnych - Metiny Yohary
+				metins = {
+					[373] = {8067, 8625}, [374] = {8067}, [376] = {8063, 8067, 8626},
+					[377] = {8063, 8064, 8065, 8067, 8627}, [385] = {8064, 8065, 8066}, [388] = {8066, 8077},
+					[389] = {8066, 8077}, [390] = {8076}, [393] = {8066, 8077}, [394] = {8066, 8077},
+					[396] = {8063, 8064, 8065, 8066, 8067},
+				},
+				craft_fee = 1000000, craft_fee_text = "1 000 000", craft_pct = 30, plates = 31216,
+				bracelets = {
+					{vnum = 14580, jade = 50664, plates = 25},
+					{vnum = 14590, jade = 50661, plates = 30, extra = 31226, extra_n = 2},
+					{vnum = 14600, jade = 50662, plates = 25, extra = 31227, extra_n = 5},
+					{vnum = 14610, jade = 50663, plates = 30, extra = 31228, extra_n = 10},
+				},
 			}
 		end
 
@@ -48,6 +69,84 @@ quest yohara_mapy4 begin
 				return
 			end
 			pc.warp(c.shelter[1] * 100, c.shelter[2] * 100)
+		end
+
+		when 72339.use begin
+			local c = yohara_mapy4.cfg()
+			local list = c.metins[pc.get_map_index()]
+			if list == nil or pc.in_dungeon() then
+				syschat("Kamieñ Metin z Yohara dzia³a tylko na mapach Yohary z Wol¹ SungMa.")
+				return
+			end
+			if pc.get_conqueror_level() < 1 then
+				syschat("Kamieñ Metin z Yohara wymaga 1. Poziomu Czempiona.")
+				return
+			end
+			if pc.count_item(c.stone) < 1 then
+				return
+			end
+			local vid = spawn_mob(list[number(1, table.getn(list))], pc.get_x() * 100 + 300, pc.get_y() * 100, 0, false)
+			if vid == nil or vid == 0 then
+				syschat("Tutaj nie da siê przywo³aæ Metina. Spróbuj w innym miejscu.")
+				return
+			end
+			pc.remove_item(c.stone, 1)
+			syschat("Obok ciebie pojawi³ siê Metin z Yohary.")
+		end
+
+		when 20823.chat."Obrêcze Jadeitu" with pc.get_map_index() == 373 begin
+			local c = yohara_mapy4.cfg()
+			say_title(mob_name(20823)..":")
+			say("Z jadeitu i p³yt z surowego metalu wykujê ci")
+			say("obrêcz przepe³nion¹ wol¹ SungMa.")
+			say("")
+			for i = 1, table.getn(c.bracelets) do
+				local b = c.bracelets[i]
+				local need = "10x "..item_name(b.jade)..", "..b.plates.."x "..item_name(c.plates)
+				if b.extra then
+					need = need..", "..b.extra_n.."x "..item_name(b.extra)
+				end
+				say_reward(item_name(b.vnum)..": "..need)
+			end
+			say_reward("Ka¿da: "..c.craft_fee_text.." Yang, szansa "..c.craft_pct.."%. Gdy siê nie uda, przedmioty przepadaj¹.")
+			local s = select(item_name(14580), item_name(14590), item_name(14600), item_name(14610), "Nie teraz")
+			if s < 1 or s > table.getn(c.bracelets) then
+				return
+			end
+			local b = c.bracelets[s]
+			local miss = nil
+			if pc.count_item(b.jade) < 10 then
+				miss = item_name(b.jade)
+			elseif pc.count_item(c.plates) < b.plates then
+				miss = item_name(c.plates)
+			elseif b.extra and pc.count_item(b.extra) < b.extra_n then
+				miss = item_name(b.extra)
+			end
+			say_title(mob_name(20823)..":")
+			if miss then
+				say("Brakuje ci: "..miss..".")
+				return
+			end
+			if pc.get_money() < c.craft_fee then
+				say("Masz za ma³o Yang.")
+				return
+			end
+			if not pc.enough_inventory(b.vnum) then
+				say("Zrób miejsce w ekwipunku.")
+				return
+			end
+			pc.remove_item(b.jade, 10)
+			pc.remove_item(c.plates, b.plates)
+			if b.extra then
+				pc.remove_item(b.extra, b.extra_n)
+			end
+			pc.change_money(-c.craft_fee)
+			if number(1, 100) <= c.craft_pct then
+				pc.give_item2(b.vnum, 1)
+				say("Uda³o siê! Oto "..item_name(b.vnum)..".")
+			else
+				say("Nie uda³o siê. Materia³y przepad³y.")
+			end
 		end
 	end
 end

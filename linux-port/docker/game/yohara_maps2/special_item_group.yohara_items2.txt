@@ -14,24 +14,26 @@ Group	MT2009_yitems2_31238
 
 Group	MT2009_yitems2_83065
 {
-	Vnum	83065 -- Losowa Skrzynia Skarbow - another chest inside (Plat. Skrzynia Skarbow 83055: not here)
+	Vnum	83065 -- Losowa Skrzynia Skarbow - another chest inside (Plat. Skrzynia Skarbow 83055: tools/yohara_maps4)
 	1	50007	1	40 -- Srebrna Szkatulka
 	2	50006	1	35 -- Zlota Szkatulka
 	3	50037	1	15 -- Heksagonalna Szkatulka
 	4	50249	1	10 -- Skrzynia Triumfu
+	5	83055	1	5 -- Plat. Skrzynia Skarbow
 }
 
 Group	MT2009_yitems2_83066
 {
-	Vnum	83066 -- Los. Klucz do Skrz. Sk. - a key or Yang (Plat. Klucz 83056: not here)
+	Vnum	83066 -- Los. Klucz do Skrz. Sk. - a key or Yang (Plat. Klucz 83056: tools/yohara_maps4)
 	1	50009	1	45 -- Srebrny Klucz
 	2	50008	1	40 -- Zloty Klucz
 	3	gold	300000	15 -- Yang 300000
+	4	83056	1	5 -- Plat. Klucz do Skrz. Sk.
 }
 
 Group	MT2009_yitems2_83067
 {
-	Vnum	83067 -- Skrzynia z Bransoletka (Idealny Klucz 83054) - the jade bracelets and Kamien Metin z Yohara: not here
+	Vnum	83067 -- Skrzynia z Bransoletka (Idealny Klucz 83054) - the jade bracelets +0 and Kamien Metin z Yohara: tools/yohara_maps4
 	1	39013	1	8 -- Blogoslawienstwo Smoka
 	2	71004	1	8 -- Medal Smoka
 	3	71017	1	8 -- Medal Szczescia
@@ -42,4 +44,9 @@ Group	MT2009_yitems2_83067
 	8	72006	1	8 -- Rekawica Zlodzieja
 	9	72013	1	12 -- Rybie Wnetrznosci
 	10	50124	1	15 -- Sprochniala Skrzynia
+	11	14580	1	3 -- Obrecz Jadeitu Mgly+0
+	12	14590	1	3 -- Obrecz Jadeitu Slonca+0
+	13	14600	1	3 -- Obrecz Jadeitu Nocy+0
+	14	14610	1	3 -- Obrecz Jadeitu Dymu+0
+	15	72339	1	5 -- Kamien Metin z Yohara
 }
