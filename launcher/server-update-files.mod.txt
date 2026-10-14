@@ -65,6 +65,7 @@ linux-port/docker/mariadb/playerbot/zywioly_moby.sql
 linux-port/docker/mariadb/playerbot/zodiak.sql
 linux-port/docker/mariadb/playerbot/shipdefense.sql
 linux-port/docker/mariadb/playerbot/czempion.sql
+linux-port/docker/mariadb/playerbot/transmutacja.sql
 linux-port/docker/mariadb/playerbot/wiki_nowe.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
 linux-port/docker/game/Dockerfile
@@ -314,6 +315,9 @@ linux-port/docker/game/src/server/game/src/questlua_pc.cpp
 linux-port/docker/game/src/server/game/src/main.cpp
 # MT2009_PLUS_JADE_VEINS_V1 (server-patches/jadeit): the jade veins of Yohara in the mining table
 linux-port/docker/game/src/server/game/src/mining.cpp
+# MT2009_PLUS_CHANGE_LOOK_V1 (server-patches/transmutacja): db files only the item look (player.item.transmutation) changes.
+linux-port/docker/game/src/server/db/src/Cache.cpp
+linux-port/docker/game/src/server/db/src/IkarusShopCache.cpp
 # Not ours to change, and shipped for that reason: a fork's companion system
 # rewrote it to call CPlayerBotManager::GetCompanionOwner, which this manager
 # never had, and an update replaces the manager and leaves this file - so
