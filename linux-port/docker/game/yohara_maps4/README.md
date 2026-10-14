@@ -39,8 +39,8 @@ leopardy, yeti, duchy, golemy 6777–6783 / 6889–6895). Wąwóz to `metin2_map
   bossowie – broń +5/+6 (Miecz Żądło, Demoniczne Ostrze, Nóż Siamese), Święty Fragment (120), materiały, Runy
   SungMa, Charyzmy, księgi i reszta listy wiki (Wodzowie: + Kowadło Płn. Wiatru, Zwój Skarbu (A)). Pominięte:
   Odłamki 39070–39077 (event Seon-Hae), Eliksiry W. SungMa (nie ma ich u nas); Kamień Demonów +4 → +0.
-- **Żywioły**: lód 6777–6783, błyskawice 6889–6895 (wiki; zgodne z Att* Owsapa). 6889 nie ma na liście SungMaExp
-  Owsapa – krok Dockerfile dopisuje mu 38 (jak jego bliźniak 6777).
+- **Żywioły**: lód 6777–6783, błyskawice 6889–6895 (wiki; zgodne z Att* Owsapa). Doświadczenie czempiona – wszystkie
+  14 w `sungma_mob_exp.txt` (krok Dockerfile to sprawdza).
 - **Połączenia** (wiki: „Dostępne teleporty: Wąwóz Północnego Wiatru, Schronienie Północnego Wiatru”), w miejsce
   tymczasowych 10145/10146 drugiej partii (usunięte; `yohara_maps4.sql` kasuje ich wiersze):
   - Wąwóz (388): portal 10142 „Rozpadlina Dusz” w punkcie GF 235,267 → Rozpadlina 550,690 (Town, obok Strażnika
