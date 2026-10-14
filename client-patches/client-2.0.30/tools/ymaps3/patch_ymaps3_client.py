@@ -2,12 +2,13 @@
 # MT2009_PLUS_YOHARA_MAPS3_V1 (client data) - the third batch of Yohara places in the client's data (the method of
 # ../ymaps2/patch_ymaps2_client.py):
 #
-#   gamedata/mob_proto      the 131 rows of linux-port/docker/mariadb/playerbot/yohara_maps3.sql (monsters, bosses,
+#   gamedata/mob_proto      the 132 rows of linux-port/docker/mariadb/playerbot/yohara_maps3.sql (monsters, bosses,
 #                           Metins, NPCs, portals) on the record of 101 (monsters, stones) or 9012 (NPC, portal, GOTO),
 #                           each with its element - race flag bits 11-16 (offset 83) from tools/yohara_maps3/
 #                           ymaps3_mobs.json (= the server's yohara_maps3_zywioly.sql);
 #   gamedata/atlasinfo.txt  the nine maps' rows (= the server's Setting.txt; they overlap none of ours);
-#   gamedata/npclist.txt    10125 (Turnioblysk's portal - Owsap's 10109, which is our Przelecz) drawn as "warp";
+#   gamedata/npclist.txt    10125 (Turnioblysk's portal - Owsap's 10109, which is our Przelecz) and 3975 (the ground
+#                           zones' marker, server-patches/strefy) drawn as "warp";
 #   gamedata/item_list.txt, gamedata/item_proto, locale/pl/itemdesc.txt
 #                           the 69 items of tools/yohara_maps3/yohara_items3.json (= the server's yohara_items3.sql,
 #                           tools/yohara_maps3/gen_yitems3.py): a full record each over a template (Talizman Ognia+0
@@ -51,7 +52,7 @@ ATLAS = ['metin2_map_whitedragoncave_02\t1152000\t1203200\t3\t3',  # = linux-por
          'metin2_map_elemental_02\t128000\t921600\t5\t5',
          'metin2_map_elemental_03\t256000\t921600\t5\t5',
          'metin2_map_elemental_04\t384000\t921600\t1\t2']
-ROWS = 131
+ROWS = 132      # 131 + the ground zones' marker 3975 (server-patches/strefy)
 ITEMS = 69
 RACE_FLAG = 83                 # the record's dwRaceFlag (= ../zywioly/patch_zywioly_client.py)
 ELEMENT_MASK = 0x1F800         # bits 11-16

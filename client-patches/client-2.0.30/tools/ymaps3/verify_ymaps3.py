@@ -7,8 +7,8 @@
 #   textureset and its textures, the msenv (fog as exe 2.0.25 reads it) and its skybox, the atlas (the two dungeons
 #   have none), every object of every sector (areadata CRC -> a property of pack property -> its model/effect/tree
 #   and, for a Building, the .mdatr), every race of the maps (npclist -> .msm) and every name the staged text files
-#   give; the new packs under the 29 MB limit and in Index; gamedata/dbdata: the 131 mob_proto rows of
-#   yohara_maps3.sql, the nine atlasinfo rows, npclist 10125, the 69 items (item_proto, item_list, itemdesc).
+#   give; the new packs under the 29 MB limit and in Index; gamedata/dbdata: the 132 mob_proto rows of
+#   yohara_maps3.sql, the nine atlasinfo rows, npclist 10125 and 3975, the 69 items (item_proto, item_list, itemdesc).
 # Run in the m2pack-lzo image, on the OUT the whole chain (cape301, maps302, shipdefense, port368, ymaps, ymaps2,
 # ymaps3) was built into:
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/ymaps3/verify_ymaps3.py \
@@ -214,6 +214,13 @@ for k in staged:
         if not (r.startswith('d:/') or r.startswith(('sound/', 'textureset/', 'property/'))):
             r = 'd:/' + r if r.startswith('ymir work/') else d + r
         need(r, k)
+
+# 6b) the ground zones' effects d.zone_attack draws (MT2009_PLUS_DUNGEON_ZONE_V1, server-patches/strefy; quests
+# ymaps3_glebie, swiatynia_wezy) - their textures and meshes are checked with every staged .mse above
+for k in ('d:/ymir work/effect/monster2/whitedragon_ground_ice.mse', 'd:/ymir work/effect/monster2/whitedragon_circle_ice.mse',
+          'd:/ymir work/effect/monster2/whitedragon_boss2_s1_blow.mse', 'd:/ymir work/effect/monster2/snake_circle_snake.mse'):
+    if k not in NAMES:
+        fail.append('ground zone effect %s: in no pack' % k)
 
 # 7) gamedata/dbdata: every row and item of this batch (a second patch must change nothing)
 for n, fn in (('gamedata/mob_proto', pc.mob_proto), ('gamedata/atlasinfo.txt', pc.atlasinfo),

@@ -5,8 +5,9 @@
 -- jej). Mapa ma szeœæ sal: 1.-2. poziom (127,127), 3. (383,127), 4. (639,127), 5. (383,383), 6. (639,383),
 -- 7. okr¹g³a sala (127,642).
 --   1: Portal Œwi¹tyni Wê¿y (4022) - "Rozpocznij walkê!": losowy czas od 10 do 60 minut (Py³ Wê¿owy 70428: +1 min,
---      najwy¿ej 60 minut); co 20 s atak powierzchniowy na losowego gracza (kto po 3 s stoi w tym samym miejscu,
---      traci 20% P¯ - nigdy do zera - i czasem zwalnia); najwy¿ej 10 o¿ywieñ, roz³¹czenie ponad minutê - koniec;
+--      najwy¿ej 60 minut); co 20 s atak powierzchniowy na losowego ¿ywego gracza (kr¹g na ziemi, po 1,8 s w¹¿ z
+--      ziemi: 20% maks. P¯, mo¿e zabiæ, i czasem spowolnienie - d.zone_attack, MT2009_PLUS_DUNGEON_ZONE_V1,
+--      server-patches/strefy); najwy¿ej 10 o¿ywieñ, roz³¹czenie ponad minutê - koniec;
 --   2: przez 6 minut nadci¹gaj¹ grupy - pierwsze cztery to cztery ¿ywio³y w losowej kolejnoœci (zapamiêtaj!);
 --      zabij wszystkie;
 --   3: cztery Metiny Wê¿owe ¿ywio³ów w rogach - zniszcz je w kolejnoœci ¿ywio³ów z 2. poziomu; z³y Metin
@@ -47,6 +48,9 @@ quest swiatynia_wezy begin
 				any = {6750, 6751, 6752, 6753, 6754, 6850, 6851, 6852, 6853, 6854, 6745, 6747},
 				rewards = 70429, reward_count = 8,
 				armour = {[0] = 21326, [1] = 21346, [2] = 21366, [3] = 21386},
+				-- the surface attack (wiki: every 20 s a random player, 20% of max HP, a debuff by chance; GF effect)
+				atk = {every = 20, radius = 3, pct = 20, delay = 1800, tag = "za", slow_pct = 30,
+					   fx = "d:/ymir work/effect/monster2/snake_circle_snake.mse"},
 			}
 		end
 
@@ -100,20 +104,6 @@ quest swiatynia_wezy begin
 					d.setf("p"..i, me)
 					return
 				end
-			end
-		end
-
-		function hurt(pct)
-			if pc.is_dead() then
-				return
-			end
-			local hp = pc.get_hp()
-			local loss = math.floor(pc.get_max_hp() * pct / 100)
-			if loss >= hp then
-				loss = hp - 1
-			end
-			if loss > 0 then
-				pc.point_change(5, -loss, false, true)
 			end
 		end
 
@@ -416,28 +406,31 @@ quest swiatynia_wezy begin
 			if math.mod(left, 300) < 5 then
 				d.notice("Œwi¹tynia Wê¿y: zosta³o "..math.floor(left / 60).." min.")
 			end
-			-- the surface attack, every 20 s, on a random player
-			if now - d.getf("atk") >= 20 then
+			-- the surface attack, every 20 s: a circle under a random living player, the snake in 1.8 s
+			local a = c.atk
+			if now - d.getf("atk") >= a.every then
 				d.setf("atk", now)
-				local i = number(1, 8)
-				for t = 1, 8 do
-					if d.getf("p"..i) > 0 then
-						break
+				local who = {}
+				for i = 1, 8 do
+					local pid = d.getf("p"..i)
+					if pid > 0 then
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and swiatynia_wezy.inside() and not pc.is_dead() then
+							table.insert(who, {pid, pc.get_local_x(), pc.get_local_y()})
+						end
+						q.end_other_pc_block()
 					end
-					i = math.mod(i, 8) + 1
 				end
-				local pid = d.getf("p"..i)
-				if pid > 0 then
-					q.begin_other_pc_block(pid)
-					if pc.get_player_id() == pid and swiatynia_wezy.inside() and not pc.is_dead() then
-						d.setf("ax", pc.get_local_x())
-						d.setf("ay", pc.get_local_y())
-						d.setf("apid", pid)
-						syschat("Atak powierzchniowy celuje w ciebie - odsuñ siê!")
-					else
-						d.setf("apid", 0)
+				if table.getn(who) > 0 then
+					local w = who[number(1, table.getn(who))]
+					d.zone_attack(w[2], w[3], a.radius, a.pct, 0, a.delay, a.fx, "", 0, a.tag)
+					-- who was hit is known from the zone's flag (za<pid>): the slow is given 3 s later
+					d.setf("ahits", 0)
+					for t, v in next, who, nil do
+						d.setf("aseen"..t, d.getf(a.tag..v[1]))
+						d.setf("apid"..t, v[1])
+						d.setf("ahits", t)
 					end
-					q.end_other_pc_block()
 					server_timer("swiatynia_atk", 3, get_server_timer_arg())
 				end
 			end
@@ -448,22 +441,20 @@ quest swiatynia_wezy begin
 			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
 				return
 			end
-			local pid = d.getf("apid")
-			if pid == 0 then
-				return
-			end
-			q.begin_other_pc_block(pid)
-			if pc.get_player_id() == pid and swiatynia_wezy.inside() then
-				local dx, dy = pc.get_local_x() - d.getf("ax"), pc.get_local_y() - d.getf("ay")
-				if dx * dx + dy * dy <= 9 then
-					swiatynia_wezy.hurt(20)
-					if number(1, 100) <= 30 then
-						affect.add(19, -30, 10)
+			local a = swiatynia_wezy.cfg().atk
+			for t = 1, d.getf("ahits") do
+				local pid = d.getf("apid"..t)
+				if pid > 0 and d.getf(a.tag..pid) > d.getf("aseen"..t) then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and swiatynia_wezy.inside() and not pc.is_dead() then
+						if number(1, 100) <= a.slow_pct then
+							affect.add(19, -30, 10)
+						end
+						syschat("Atak powierzchniowy ciê dosiêgn¹³.")
 					end
-					syschat("Atak powierzchniowy ciê dosiêgn¹³.")
+					q.end_other_pc_block()
 				end
 			end
-			q.end_other_pc_block()
 		end
 
 		function level_tick(now)

@@ -28,7 +28,8 @@ Schronienie; Przełęcz Yilad (385) Strażnik Węży 20804 → 1. poziom Świąt
 Namgan (377) Tajemniczy Ołtarz 20850 → Instancja (bilet 70408, 1. Poziom Czempiona), Wyjście 10204 → Namgan; Port
 (368) portal 3998 → Królestwo, Wyjście 3999 → port.
 
-Uproszczenia wobec gry (silnik nie ma stref na ziemi ani zmiany obrażeń potwora z questa): kolce i atak
-powierzchniowy – „stoisz po 3 s w tym samym miejscu = trafienie”, nigdy do zera PŻ; Śmiertelny Chłód Alastora trafia
-wszystkich naraz; szał Alastora leczy, nie podnosi obrażeń; brak: ciągu misji wejściowych Głębi, misji „Ważne
+Strefy na ziemi (`server-patches/strefy`, MT2009_PLUS_DUNGEON_ZONE_V1, `d.zone_attack`): lodowe kolce Głębi (co 15 s
+pod każdym, 50% PŻ), Śmiertelny Chłód (stałe białe kręgi, 15 000 / 20 000 PŻ + osłabienie) i atak z powierzchni
+Świątyni (co 20 s, 20% PŻ) – z efektem ostrzeżenia, prawdziwe obrażenia, mogą zabić. Szał Alastora leczy i
+podnosi jego obrażenia (+10/15/20%, silny +20/30/40%), martwy 3 min (silny 2 min) wypada z Głębi. Brak: ciągu misji wejściowych Głębi, misji „Ważne
 przygotowania”, zakazu zwojów/pierścieni teleportu na tych mapach, efektów zestawu, rękawic Sung Ma.

@@ -403,6 +403,22 @@ for v in sorted(set(v for M in MAPS for v in M['vnums'])):
     if u:
         unres_races[name] = sorted(u)
 
+# ---------------------------------------------------------------- the ground zones' effects
+# MT2009_PLUS_DUNGEON_ZONE_V1 (server-patches/strefy): d.zone_attack draws these on its invisible marker (3975, drawn as
+# "warp") - Glebie's ice spikes (a red circle, the ice at 1.76 s) and Deadly Cold (a lasting white circle; its hit,
+# whitedragon_boss2_s1_blow, is Alastor's own), Swiatynia Wezy's surface attack (a circle, the snake at 1.75 s)
+ZONE_EFFECTS = ['d:/ymir work/effect/monster2/whitedragon_ground_ice.mse',
+                'd:/ymir work/effect/monster2/whitedragon_circle_ice.mse',
+                'd:/ymir work/effect/monster2/whitedragon_boss2_s1_blow.mse',
+                'd:/ymir work/effect/monster2/snake_circle_snake.mse']
+f, u, o = gfres.closure(ZONE_EFFECTS, OURS)
+for k, s in f.items():
+    if k in OURS or any(k in add[p] for p in add):
+        continue
+    add['mobs'][k] = s
+if u:
+    unres_races['(ground zones)'] = sorted(u)
+
 # the textures an effect mesh (.mde) or script (.mse) names with a full path (the closure does not read them)
 extra_missing = set()
 for _ in range(2):

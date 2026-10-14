@@ -7,17 +7,19 @@
 --     120 i 1. Poziomu Czempiona (TR), ka¿da postaæ oddaje 3 Zamarzniête Klucze (70410) przy wejœciu; silny - po
 --     trzech ukoñczonych s³abych (wiki); ci¹g misji wejœciowych pominiêty (nie mamy go); bez czekania (TR);
 --   * 30 minut na pokonanie Alastora; przywódca dotyka Bia³ego Jaja Smoka (4030) - Alastor (6790 s³aby, 6791 silny)
---     siê budzi; od tej chwili: co 15 s lodowe kolce pod ka¿dym graczem (kto po 3 s stoi w tym samym miejscu, traci
---     50% P¯ - nigdy do zera), fale potworów co minutê, Œmiertelny Ch³ód (12 razy: 15 000 / 20 000 P¯ i os³abienie
---     5% / 7% maks. P¯ co 10 s, do 5 / 7 razy), Gniew Alastora (27:30, 25:00, 22:30 / 28:30, 27:00, 25:30 - wiele
+--     siê budzi; od tej chwili: co 15 s lodowe kolce pod ka¿dym ¿ywym graczem (czerwony kr¹g, po 1,8 s lód: 50%
+--     maks. P¯, krêgi siê sumuj¹, mog¹ zabiæ), fale potworów co minutê, Œmiertelny Ch³ód (12 razy: sta³y bia³y kr¹g
+--     pod losowym ¿ywym graczem - po 3 s ka¿dy, kto w nim stoi lub wejdzie, traci 15 000 / 20 000 P¯ i dostaje
+--     os³abienie 5% / 7% maks. P¯ co 10 s, do 5 / 7 razy; gdy nikt nie ¿yje, Ch³ód czeka), Gniew Alastora (27:30, 25:00, 22:30 / 28:30, 27:00, 25:30 - wiele
 --     potworów i leczenie 25%); Kryszta³ P³n. Wiatru (3971) zamyka Komnatê Kryszta³u - po jego zniszczeniu portal
 --     3972 prowadzi do niej; tam stale pojawiaj¹ siê Bia³e Jaja Smoka (8635 / 8636): ka¿de zniszczone opóŸnia
 --     Œmiertelny Ch³ód o 20 s, a gdy jaj jest za du¿o (6/12/18, silny 5/10/15) Alastor wpada w sza³ (leczy siê
 --     10/20/30%, silny 30/40/50%; przy trzecim - 4 dodatkowe fale);
 --   * po zabiciu Alastora po 10 s wszyscy wracaj¹ do Upiornego Stra¿nika, u którego ka¿dy odbiera 8 Bia³ych Smoczych
 --     Skrzyñ (lekka 70411 / ciê¿ka 70412).
--- Uproszczenia (silnik nie ma stref na ziemi ani zmiany obra¿eñ potwora z questa): Œmiertelny Ch³ód trafia wszystkich
--- naraz zamiast sta³ych stref; sza³ leczy Alastora, nie podnosi jego obra¿eñ.
+-- Strefy na ziemi: d.zone_attack / d.zone_hurt (MT2009_PLUS_DUNGEON_ZONE_V1, server-patches/strefy) - prawdziwe
+-- obra¿enia, œmieræ jak od potwora. Sza³: leczenie i +10/15/20% (silny +20/30/40%) obra¿eñ Alastora
+-- (d.unique_damage_pct); kto le¿y martwy 3 min (silny 2 min), wylatuje z G³êbi (d.kick_dead) - wiki TR.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest ymaps3_glebie begin
 	state start begin
@@ -38,13 +40,20 @@ quest ymaps3_glebie begin
 				groups = {9160, 9161, 9162, 9163, 9164},
 				k = {
 					[1] = {boss = 6790, egg = 8635, hp = 67751800, cold_hp = 15000, cold_pct = 5, cold_max = 5,
-						   wrath = {150, 300, 450}, berserk = {6, 12, 18}, heal = {10, 20, 30}, reward = 70411,
+						   wrath = {150, 300, 450}, berserk = {6, 12, 18}, heal = {10, 20, 30}, rage = {10, 15, 20}, dead_kick = 180, reward = 70411,
 						   rank = "glebie_slaby", name = "G³êbie Pó³nocnego Wiatru (s³aby)"},
 					[2] = {boss = 6791, egg = 8636, hp = 48751800, cold_hp = 20000, cold_pct = 7, cold_max = 7,
-						   wrath = {90, 180, 270}, berserk = {5, 10, 15}, heal = {30, 40, 50}, reward = 70412,
+						   wrath = {90, 180, 270}, berserk = {5, 10, 15}, heal = {30, 40, 50}, rage = {20, 30, 40}, dead_kick = 120, reward = 70412,
 						   rank = "glebie_silny", name = "G³êbie Pó³nocnego Wiatru (silny)"},
 				},
 				reward_count = 8, weak_needed = 3,
+				-- the ground zones (wiki TR "Alastor (Kolay)" / "(Zor)", GF effects): the spikes under everyone every
+				-- 15 s, 50% of max HP; the Deadly Cold a lasting white circle, its frost every 10 s
+				spike = {every = 15, radius = 3, pct = 50, delay = 1800,
+						 fx = "d:/ymir work/effect/monster2/whitedragon_ground_ice.mse"},
+				cold = {every = 100, radius = 5, delay = 3000, again = 2000, frost = 10, tag = "zc",
+						fx = "d:/ymir work/effect/monster2/whitedragon_circle_ice.mse",
+						hit = "d:/ymir work/effect/monster2/whitedragon_boss2_s1_blow.mse"},
 			}
 		end
 
@@ -90,17 +99,44 @@ quest ymaps3_glebie begin
 			end
 		end
 
-		function hurt(pct_of_max, flat)
-			if pc.is_dead() then
+		-- where the living players of the instance stand: {{pid, x, y}, ...} (local cells)
+		function alive()
+			local out = {}
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and ymaps3_glebie.inside() and not pc.is_dead() then
+						table.insert(out, {pid, pc.get_local_x(), pc.get_local_y()})
+					end
+					q.end_other_pc_block()
+				end
+			end
+			return out
+		end
+
+		-- the frost of the Deadly Cold ends with a death; whoever lies dead too long is thrown out (wiki TR: 3 min,
+		-- strong 2 min)
+		when die with ymaps3_glebie.inside() begin
+			d.setf(ymaps3_glebie.cfg().cold.tag..pc.get_player_id(), 0)
+			pc.setf("ymaps3_glebie", "dead_at", get_global_time())
+			loop_timer("ymaps3_glebie_dead", 10)
+		end
+
+		when ymaps3_glebie_dead.timer begin
+			local c = ymaps3_glebie.cfg()
+			if not ymaps3_glebie.inside() or not pc.is_dead() then
+				cleartimer("ymaps3_glebie_dead")
 				return
 			end
-			local hp = pc.get_hp()
-			local loss = math.floor(pc.get_max_hp() * pct_of_max / 100) + flat
-			if loss >= hp then
-				loss = hp - 1
+			local kind = d.getf("kind")
+			if kind ~= 2 then
+				kind = 1
 			end
-			if loss > 0 then
-				pc.point_change(5, -loss, false, true)
+			if get_global_time() - pc.getf("ymaps3_glebie", "dead_at") >= c.k[kind].dead_kick then
+				cleartimer("ymaps3_glebie_dead")
+				syschat("G³êbie: zbyt d³ugo le¿a³eœ martwy - wypadasz z wyprawy.")
+				d.kick_dead(pc.get_player_id(), c.exit_x * 100, c.exit_y * 100)
 			end
 		end
 
@@ -364,24 +400,14 @@ quest ymaps3_glebie begin
 				return
 			end
 			local awake = now - d.getf("woke")
-			-- the spikes, every 15 s: where you stand now hurts in 3 s
-			if now - d.getf("spike") >= 15 then
+			-- the spikes, every 15 s: a red circle under every living player, the ice in 1.8 s (50% of max HP)
+			local sp = c.spike
+			if now - d.getf("spike") >= sp.every then
 				d.setf("spike", now)
-				d.notice("Lodowe kolce wyrastaj¹ pod waszymi stopami - uciekajcie!")
-				for i = 1, 8 do
-					local pid = d.getf("p"..i)
-					if pid > 0 then
-						q.begin_other_pc_block(pid)
-						if pc.get_player_id() == pid and ymaps3_glebie.inside() then
-							d.setf("sx"..i, pc.get_local_x())
-							d.setf("sy"..i, pc.get_local_y())
-						else
-							d.setf("sx"..i, -1)
-						end
-						q.end_other_pc_block()
-					end
+				local who = ymaps3_glebie.alive()
+				for i, w in next, who, nil do
+					d.zone_attack(w[2], w[3], sp.radius, sp.pct, 0, sp.delay, sp.fx)
 				end
-				server_timer("ymaps3_glebie_spike", 3, get_server_timer_arg())
 			end
 			-- a wave every minute, running at the players
 			if now - d.getf("wave") >= 60 then
@@ -404,6 +430,7 @@ quest ymaps3_glebie begin
 					b = b + 1
 					d.setf("berserk", b)
 					ymaps3_glebie.heal(k.heal[b], k.hp)
+					d.unique_damage_pct("alastor", k.rage[b])
 					d.notice("Alastor wpada w sza³ ("..b.."/3) - zniszczcie Bia³e Jaja Smoka!")
 					if b == 3 then
 						for j = 1, 4 do
@@ -422,38 +449,35 @@ quest ymaps3_glebie begin
 				end
 				ymaps3_glebie.heal(25, k.hp)
 			end
-			-- the deadly cold (12 times) and its frost, every 10 s
+			-- the deadly cold (12 times): a lasting white circle under a random living player - in 3 s and for
+			-- the rest of the instance whoever stands in it loses cold_hp and gains a frost stack; nobody alive -
+			-- the cold waits
+			local co = c.cold
 			if d.getf("colds") < 12 and now >= d.getf("next_cold") then
-				d.setf("colds", d.getf("colds") + 1)
-				d.setf("next_cold", now + 100)
-				d.notice("Œmiertelny Ch³ód Alastora ogarnia G³êbie ("..d.getf("colds").."/12)!")
-				for i = 1, 8 do
-					local pid = d.getf("p"..i)
-					if pid > 0 then
-						q.begin_other_pc_block(pid)
-						if pc.get_player_id() == pid and ymaps3_glebie.inside() and not pc.is_dead() then
-							ymaps3_glebie.hurt(0, k.cold_hp)
-							local st = d.getf("st"..i) + 1
-							if st > k.cold_max then
-								st = k.cold_max
-							end
-							d.setf("st"..i, st)
-						end
-						q.end_other_pc_block()
-					end
+				local who = ymaps3_glebie.alive()
+				if table.getn(who) == 0 then
+					d.setf("next_cold", now + 5)
+				else
+					local w = who[number(1, table.getn(who))]
+					d.setf("colds", d.getf("colds") + 1)
+					d.setf("next_cold", now + co.every)
+					d.zone_attack(w[2], w[3], co.radius, 0, k.cold_hp, co.delay, co.fx, co.hit, co.again, co.tag)
+					d.notice("Œmiertelny Ch³ód Alastora skuwa ziemiê ("..d.getf("colds").."/12) - omijajcie bia³e krêgi!")
 				end
 			end
-			if now - d.getf("frost") >= 10 then
+			-- the frost: every 10 s cold_pct% of max HP per stack (at most cold_max stacks); it can kill
+			if now - d.getf("frost") >= co.frost then
 				d.setf("frost", now)
 				for i = 1, 8 do
 					local pid = d.getf("p"..i)
-					local st = d.getf("st"..i)
-					if pid > 0 and st > 0 then
-						q.begin_other_pc_block(pid)
-						if pc.get_player_id() == pid and ymaps3_glebie.inside() then
-							ymaps3_glebie.hurt(st * k.cold_pct, 0)
+					if pid > 0 then
+						local st = d.getf(co.tag..pid)
+						if st > k.cold_max then
+							st = k.cold_max
 						end
-						q.end_other_pc_block()
+						if st > 0 then
+							d.zone_hurt(pid, st * k.cold_pct, 0)
+						end
 					end
 				end
 			end
@@ -467,27 +491,6 @@ quest ymaps3_glebie begin
 			end
 			if cur > 0 then
 				d.unique_set_hp("alastor", hp)
-			end
-		end
-
-		when ymaps3_glebie_spike.server_timer begin
-			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
-				return
-			end
-			for i = 1, 8 do
-				local pid = d.getf("p"..i)
-				local sx, sy = d.getf("sx"..i), d.getf("sy"..i)
-				if pid > 0 and sx >= 0 then
-					q.begin_other_pc_block(pid)
-					if pc.get_player_id() == pid and ymaps3_glebie.inside() then
-						local dx, dy = pc.get_local_x() - sx, pc.get_local_y() - sy
-						if dx * dx + dy * dy <= 9 then
-							ymaps3_glebie.hurt(50, 0)
-							syschat("Lodowe kolce przebijaj¹ ciê - nie uciek³eœ na czas.")
-						end
-					end
-					q.end_other_pc_block()
-				end
 			end
 		end
 	end
