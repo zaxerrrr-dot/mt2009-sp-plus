@@ -1,0 +1,44 @@
+[
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_HIDE_COSTUME_V1 (define)",
+  "old": "#define ENABLE_CONQUEROR_LEVEL // MT2009_PLUS_CHAMPION_V1 (define): Poziom Czempiona + Sung Ma (server-patches/czempion)\n",
+  "new": "#define ENABLE_CONQUEROR_LEVEL // MT2009_PLUS_CHAMPION_V1 (define): Poziom Czempiona + Sung Ma (server-patches/czempion)\n// MT2009_PLUS_HIDE_COSTUME_V1 (define): Owsap's costume / hair / weapon skin / sash hiding (server-patches/ukryjkostium).\n#define ENABLE_HIDE_COSTUME_SYSTEM\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_HIDE_COSTUME_V1 (insert)",
+  "old": "\t\taddPacket.awPart[CHR_EQUIPPART_ACCE] = GetPart(PART_ACCE);\n#endif\n",
+  "new": "\t\taddPacket.awPart[CHR_EQUIPPART_ACCE] = GetPart(PART_ACCE);\n#endif\n#ifdef ENABLE_HIDE_COSTUME_SYSTEM\n\t\t// MT2009_PLUS_HIDE_COSTUME_V1 (insert): the hidden costume parts out (playerbot_hidecostume.cpp), before \"Ukryj cudze\".\n\t\t{ void Mt2009HideCostumeParts(LPCHARACTER ch, DWORD* awPart); Mt2009HideCostumeParts(this, addPacket.awPart); }\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_HIDE_COSTUME_V1 (update)",
+  "old": "\tpack.awPart[CHR_EQUIPPART_ACCE] = GetPart(PART_ACCE);\n#endif\n",
+  "new": "\tpack.awPart[CHR_EQUIPPART_ACCE] = GetPart(PART_ACCE);\n#endif\n#ifdef ENABLE_HIDE_COSTUME_SYSTEM\n\t// MT2009_PLUS_HIDE_COSTUME_V1 (update): the hidden costume parts out (playerbot_hidecostume.cpp), before \"Ukryj cudze\".\n\t{ void Mt2009HideCostumeParts(LPCHARACTER ch, DWORD* awPart); Mt2009HideCostumeParts(this, pack.awPart); }\n#endif\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_HIDE_COSTUME_V1 (login)",
+  "old": "\td->SetPhase(PHASE_GAME);\n",
+  "new": "\td->SetPhase(PHASE_GAME);\n#ifdef ENABLE_HIDE_COSTUME_SYSTEM\n\t// MT2009_PLUS_HIDE_COSTUME_V1 (login): the character's hidden parts from its quest flags, to the client and around.\n\t{ void Mt2009HideCostumeOnLogin(LPCHARACTER ch); Mt2009HideCostumeOnLogin(ch); }\n#endif\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_HIDE_COSTUME_V1 (legacy)",
+  "old": "\tconst BYTE mask = byMask ? (BYTE)(value & 7) : (value ? 7 : 0);\n",
+  "new": "\tconst BYTE mask = byMask ? (BYTE)(value & 7) : (value ? 7 : 0);\n#ifdef ENABLE_HIDE_COSTUME_SYSTEM\n\t// MT2009_PLUS_HIDE_COSTUME_V1 (legacy): the old client setting (kostiumy.cfg) is taken once per character as Owsap's quest flags;\n\t// the old mask (MT2009_PLUS_COSTUME_HIDE_V1/V2) stays empty, so its parts code never runs again.\n\t{ void Mt2009HideCostumeLegacy(LPCHARACTER ch, BYTE bMask); Mt2009HideCostumeLegacy(ch, mask); return; }\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_HIDE_COSTUME_V1 (declare)",
+  "old": "ACMD(do_conqueror_stat);\nACMD(do_champion);\n",
+  "new": "ACMD(do_conqueror_stat);\nACMD(do_champion);\n#ifdef ENABLE_HIDE_COSTUME_SYSTEM\n// MT2009_PLUS_HIDE_COSTUME_V1 (declare): /hide_costume_part (playerbot_hidecostume.cpp).\nACMD(do_hide_costume_part);\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_HIDE_COSTUME_V1 (table)",
+  "old": "\t{ \"champion\",\tdo_champion,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n",
+  "new": "\t{ \"champion\",\tdo_champion,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n#ifdef ENABLE_HIDE_COSTUME_SYSTEM\n\t// MT2009_PLUS_HIDE_COSTUME_V1 (table): Owsap's eye buttons of the costume window.\n\t{ \"hide_costume_part\",\tdo_hide_costume_part,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n#endif\n"
+ }
+]
