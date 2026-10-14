@@ -1,0 +1,1006 @@
+{
+ "new_packs": [
+  "ysets_eq"
+ ],
+ "packs": {
+  "ysets_eq": [
+   {
+    "name": "d:/ymir work/item/weapon/weapon_7th_01.dds",
+    "size": 349680,
+    "sha1": "06651ba6132e710c054238041183dda019e708fc",
+    "source": "gf:d:/ymir work/item/weapon/weapon_7th_01.dds"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/weapon_8th_01.dds",
+    "size": 349680,
+    "sha1": "42bd9355d0558a872c6c85ff18e21896dee4ae5c",
+    "source": "gf:d:/ymir work/item/weapon/weapon_8th_01.dds"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_00320.gr2",
+    "size": 28151,
+    "sha1": "1775b3ce25ea494b6aae9b74abc6a1514bcff18a",
+    "source": "gf:d:/ymir work/item/weapon/00320.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_00340.gr2",
+    "size": 33150,
+    "sha1": "e2f0fb9bf02a0d22700524142546fc0777b6e84d",
+    "source": "gf:d:/ymir work/item/weapon/00340.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_00360.gr2",
+    "size": 51344,
+    "sha1": "47903fee8faa8887b9d6b9bd31b13a6615eb680f",
+    "source": "gf:d:/ymir work/item/weapon/00360.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_00380.gr2",
+    "size": 37868,
+    "sha1": "89088792e646ab9b2290ecb1010fb4387cfcde55",
+    "source": "gf:d:/ymir work/item/weapon/00380.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_01190.gr2",
+    "size": 37272,
+    "sha1": "b68c0165229b6aa4b80c9608e06c6c10ae2dd4e0",
+    "source": "gf:d:/ymir work/item/weapon/01190.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_01210.gr2",
+    "size": 39300,
+    "sha1": "3a0c09137d8c0142dd26a60e14d5f46257609d6d",
+    "source": "gf:d:/ymir work/item/weapon/01210.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_02210.gr2",
+    "size": 43936,
+    "sha1": "45370e07ce66a3244e378bf3dd7d309a2ebec74c",
+    "source": "gf:d:/ymir work/item/weapon/02210.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_02230.gr2",
+    "size": 56112,
+    "sha1": "6c4959d7c18223749c7d9604b24fcc2b43ee19b9",
+    "source": "gf:d:/ymir work/item/weapon/02230.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_03230.gr2",
+    "size": 30481,
+    "sha1": "8bbf50eed2e40dc01e7cbea0d707e514fd19a1b6",
+    "source": "gf:d:/ymir work/item/weapon/03230.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_03250.gr2",
+    "size": 48100,
+    "sha1": "8e9fcb73911ee60a26a3b178e2d0d52aa9b1c5c3",
+    "source": "gf:d:/ymir work/item/weapon/03250.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_05170.gr2",
+    "size": 38656,
+    "sha1": "19a02460076af4fa8dc778a0d594b364b77b9b68",
+    "source": "gf:d:/ymir work/item/weapon/05170.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_05200.gr2",
+    "size": 48452,
+    "sha1": "8740ac361532a5b704b696b0b744684658fc293b",
+    "source": "gf:d:/ymir work/item/weapon/05200.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_07310.gr2",
+    "size": 39964,
+    "sha1": "4aaf641f0d129cf5c6383e07c8d08b517341cd75",
+    "source": "gf:d:/ymir work/item/weapon/07310.gr2"
+   },
+   {
+    "name": "d:/ymir work/item/weapon/ysets_07330.gr2",
+    "size": 81416,
+    "sha1": "6f2a4d94a57a2801aa3540b381da247dba0e2dae",
+    "source": "gf:d:/ymir work/item/weapon/07330.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/assassin_7_1.dds",
+    "size": 344192,
+    "sha1": "1b4b70df7e90b687c245f40153e94cf97ec25127",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/assassin_8_1.dds",
+    "size": 349680,
+    "sha1": "7afbeaf05fb58a258fb42f6b4d0d8f07024c9945",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_7_1.gr2",
+    "size": 122604,
+    "sha1": "32390eec9d362823ca8ef93d471d0522b31310e4",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_7_1_lod_01.gr2",
+    "size": 120000,
+    "sha1": "c22427261d7b2645cb02d58164b8bf556b94e370",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_7_1_lod_02.gr2",
+    "size": 113500,
+    "sha1": "cfc3b36912cfdad2ae9002b02d7e2e31040eab84",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_7_1_lod_03.gr2",
+    "size": 100580,
+    "sha1": "6b38187b4127fe9108c0ef0c653006730e63b51d",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_8_1.gr2",
+    "size": 174160,
+    "sha1": "1a87c299dc394a6fc54b4dbc612702e17b27e922",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_8_1_lod_01.gr2",
+    "size": 167324,
+    "sha1": "bf65f275b58b306cd33d25bf2f588c80edcdb8c1",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_8_1_lod_02.gr2",
+    "size": 156504,
+    "sha1": "6aa1811d2169eefb953bb63a03ee54dd5b4b97ab",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/ysets_assassin_8_1_lod_03.gr2",
+    "size": 146136,
+    "sha1": "4e27c8d336f48b7ab245db4dfba274dadbafdfa0",
+    "source": "gf:d:/ymir work/pc/assassin/assassin_8_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/shaman_7_1.dds",
+    "size": 344192,
+    "sha1": "bed5cea5844e1a2ff1747401858e837877ed1197",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/shaman_8_1.dds",
+    "size": 349680,
+    "sha1": "f1b6bf6958ad5429c2c86d7dcfaa27a8777125d8",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_7_1.gr2",
+    "size": 135176,
+    "sha1": "6b6d3cc1f3feef58af074fe916a3ff771661e25f",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_7_1_lod_01.gr2",
+    "size": 122308,
+    "sha1": "e29243747a75b82fcb9c1872b5a2673e1f27893e",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_7_1_lod_02.gr2",
+    "size": 118516,
+    "sha1": "118fb2b25f0396332a04a7adacb405a476d22444",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_7_1_lod_03.gr2",
+    "size": 110688,
+    "sha1": "f083c999cc7f21fba8f1d5aa2c911880fb73e0e2",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_8_1.gr2",
+    "size": 188964,
+    "sha1": "1aa5f2c5b04db3e63124082b7e2606b6cc00b3c3",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_8_1_lod_01.gr2",
+    "size": 180672,
+    "sha1": "4ba65214a6793db472ef1d69074b37c7ca121058",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_8_1_lod_02.gr2",
+    "size": 168084,
+    "sha1": "1076f4229001be50c3ceafa0e9b15562615d02ce",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/ysets_shaman_8_1_lod_03.gr2",
+    "size": 158860,
+    "sha1": "f5b50aedb86c0b0d2d94d8ddb125d540fb27363f",
+    "source": "gf:d:/ymir work/pc/shaman/shaman_8_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/sura_7_1.dds",
+    "size": 344192,
+    "sha1": "9ab6861c049094cde73ecb54aebfec3cfe4522b5",
+    "source": "gf:d:/ymir work/pc/sura/sura_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/sura_8_1.dds",
+    "size": 349680,
+    "sha1": "623e283d08e9e844b3eb790bfd230ee1eb7f6c61",
+    "source": "gf:d:/ymir work/pc/sura/sura_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_7_1.gr2",
+    "size": 138170,
+    "sha1": "6811737be0bc9446b13a9d5937a11e43aedee747",
+    "source": "gf:d:/ymir work/pc/sura/sura_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_7_1_lod_01.gr2",
+    "size": 134256,
+    "sha1": "8c680ca432fa2c6a3e7a6e840ba0f550f1f59a6e",
+    "source": "gf:d:/ymir work/pc/sura/sura_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_7_1_lod_02.gr2",
+    "size": 119875,
+    "sha1": "154fd210f74771ff8ea8c14b8af7d84b8245cdd8",
+    "source": "gf:d:/ymir work/pc/sura/sura_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_7_1_lod_03.gr2",
+    "size": 110577,
+    "sha1": "942f50f08d9730deadc4db49a7a180d9bf801239",
+    "source": "gf:d:/ymir work/pc/sura/sura_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_8_1.gr2",
+    "size": 177388,
+    "sha1": "47796bbddc251399fb6d85ccbb096af7369a7e76",
+    "source": "gf:d:/ymir work/pc/sura/sura_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_8_1_lod_01.gr2",
+    "size": 169052,
+    "sha1": "ee6c0663cccee110c86a8f7edd833f6e4977aa4c",
+    "source": "gf:d:/ymir work/pc/sura/sura_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_8_1_lod_02.gr2",
+    "size": 160144,
+    "sha1": "a6e56fd559a796e5ea68e3bf9b028299d556c56c",
+    "source": "gf:d:/ymir work/pc/sura/sura_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/ysets_sura_8_1_lod_03.gr2",
+    "size": 150880,
+    "sha1": "39aebe96919ba88e17bafefa5a4b98f7d95211ea",
+    "source": "gf:d:/ymir work/pc/sura/sura_8_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/warrior_7_1.dds",
+    "size": 344192,
+    "sha1": "bbd46247ab6a3f1dff2341198a3a0cab6e0a15e9",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/warrior_8_1.dds",
+    "size": 349680,
+    "sha1": "d34ac79f0137447d662eb90b5a8da06853295921",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_7_1.gr2",
+    "size": 123001,
+    "sha1": "221ba3df6026cff9195f5b23366da53dedee9dee",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_7_1_lod_01.gr2",
+    "size": 118911,
+    "sha1": "3895ef105c3f881d98290d1b7e97f28c19839bf2",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_7_1_lod_02.gr2",
+    "size": 110907,
+    "sha1": "163f275d2464047edbd65086e3ad9f753f75899f",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_7_1_lod_03.gr2",
+    "size": 98026,
+    "sha1": "7c27684f1d49f5451a1175fcff5cc3272c5b3c5c",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_8_1.gr2",
+    "size": 160268,
+    "sha1": "c5e2738f38e4bdd2612427738892e7afa38f411d",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_8_1_lod_01.gr2",
+    "size": 154612,
+    "sha1": "90aefeaa6d9bd46d93465ebf93193e28d2ec71ae",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_8_1_lod_02.gr2",
+    "size": 147796,
+    "sha1": "5ea2b97df2f70242b836f7e617295b010d68ecb3",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/ysets_warrior_8_1_lod_03.gr2",
+    "size": 140172,
+    "sha1": "69f697e2197f3f140401eaab28befe8ebcb67816",
+    "source": "gf:d:/ymir work/pc/warrior/warrior_8_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/assassin_7_1.dds",
+    "size": 344192,
+    "sha1": "5d1c2323603047257a13c36cd86b2ce90dd57f2c",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/assassin_8_1.dds",
+    "size": 349680,
+    "sha1": "e455d580b1f94561c105a387b27faa0f094b8236",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_7_1.gr2",
+    "size": 126588,
+    "sha1": "411a05b289a32392c6862a6e0b320533d13ca815",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_7_1_lod_01.gr2",
+    "size": 123200,
+    "sha1": "d556ef58597716820643e2de92dc1926d5dafd8c",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_7_1_lod_02.gr2",
+    "size": 113744,
+    "sha1": "7b8dbb3b0d10657ed8f19a43c88b8d955b0b2bb7",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_7_1_lod_03.gr2",
+    "size": 100236,
+    "sha1": "0f5d10731a77757227ad96dd0eba9adc45e931e8",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_8_1.gr2",
+    "size": 184884,
+    "sha1": "f798def5280fb0c8b6c26f6be1a46e0ec4e1c47e",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_8_1_lod_01.gr2",
+    "size": 154516,
+    "sha1": "dbc39cf6189e2622c6a13ec59577a73a0e61b836",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_8_1_lod_02.gr2",
+    "size": 145188,
+    "sha1": "1489c3096d84838d5e3cc441baac048d4a21b547",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/ysets_assassin_8_1_lod_03.gr2",
+    "size": 135588,
+    "sha1": "f4ba0a885a200090cbfbe1a4d46b696248144cc3",
+    "source": "gf:d:/ymir work/pc2/assassin/assassin_8_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/shaman_7_1.dds",
+    "size": 349680,
+    "sha1": "e95124b175c5d2f02db981f269867c941d4f86dc",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/shaman_8_1.dds",
+    "size": 349680,
+    "sha1": "3df1c793f36180d2eb7b00d181c8d4f27f0eb9c9",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_7_1.gr2",
+    "size": 143640,
+    "sha1": "c27c171d003b126c30766ca48400d6937dbcd421",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_7_1_lod_01.gr2",
+    "size": 137772,
+    "sha1": "1aef7ae5bd71fce59bef4ea558ee70244b873f4c",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_7_1_lod_02.gr2",
+    "size": 128476,
+    "sha1": "ed7acc08864018727b44bcae191edc51b3c8726c",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_7_1_lod_03.gr2",
+    "size": 119368,
+    "sha1": "8f2a3b2db1a422c4687e2e3fbbb2bb2a79e5de4e",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_8_1.gr2",
+    "size": 163556,
+    "sha1": "b3d40934ccefe240aeaaf9e51ea4f3bf95523e30",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_8_1_lod_01.gr2",
+    "size": 155552,
+    "sha1": "642d4a115449b6e1372755834eacbd0127c96de6",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_8_1_lod_02.gr2",
+    "size": 143212,
+    "sha1": "7af9ed9a1dc4c70deba697293493b14b929cc279",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/ysets_shaman_8_1_lod_03.gr2",
+    "size": 131700,
+    "sha1": "de3a98a4c681bcc3412de11af383a8bff980ec90",
+    "source": "gf:d:/ymir work/pc2/shaman/shaman_8_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/sura_7_1.dds",
+    "size": 344192,
+    "sha1": "bed3ef3c4c494d241fc5921ee2604197db543645",
+    "source": "gf:d:/ymir work/pc2/sura/sura_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/sura_8_1.dds",
+    "size": 349680,
+    "sha1": "d69c596164d4586bc0e6f7d7e74c2ef0e0cb7624",
+    "source": "gf:d:/ymir work/pc2/sura/sura_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_7_1.gr2",
+    "size": 141560,
+    "sha1": "4a0a2a2d457e4052e918da69ca6ea798df1249bb",
+    "source": "gf:d:/ymir work/pc2/sura/sura_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_7_1_lod_01.gr2",
+    "size": 137772,
+    "sha1": "27157d754dbe7551b123589d138af9fd82fc81e9",
+    "source": "gf:d:/ymir work/pc2/sura/sura_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_7_1_lod_02.gr2",
+    "size": 124172,
+    "sha1": "1f20b067cbb5dc76d7c0166729fbb45755fc1a81",
+    "source": "gf:d:/ymir work/pc2/sura/sura_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_7_1_lod_03.gr2",
+    "size": 115013,
+    "sha1": "0683ac2c4dffc07839f09e2083cf9d4406a8d1a9",
+    "source": "gf:d:/ymir work/pc2/sura/sura_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_8_1.gr2",
+    "size": 189072,
+    "sha1": "47dad02de77a3190a2db0cc02d495779cbeaef71",
+    "source": "gf:d:/ymir work/pc2/sura/sura_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_8_1_lod_01.gr2",
+    "size": 169692,
+    "sha1": "abf74690f98c6909f490aff4db20726082cb44a4",
+    "source": "gf:d:/ymir work/pc2/sura/sura_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_8_1_lod_02.gr2",
+    "size": 156284,
+    "sha1": "7f493e50880ffecf93cef06188b5cb657a23cba2",
+    "source": "gf:d:/ymir work/pc2/sura/sura_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/ysets_sura_8_1_lod_03.gr2",
+    "size": 142784,
+    "sha1": "c8be545e4d5e4cf236230ab0b06d65de0e8c7389",
+    "source": "gf:d:/ymir work/pc2/sura/sura_8_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/warrior_7_1.dds",
+    "size": 344192,
+    "sha1": "740ceb16304f9301925513624679a0e0f4e3f6cf",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_7_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/warrior_8_1.dds",
+    "size": 349680,
+    "sha1": "558a68ae1f26616cb28725bb93196ea4c1f8323b",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_8_1.dds"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_7_1.gr2",
+    "size": 138911,
+    "sha1": "b9c6284daafd2b8ec3540df372ae09d4d9729dfb",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_7_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_7_1_lod_01.gr2",
+    "size": 135428,
+    "sha1": "c03ea90c291b98d51894258e863a91467bfd2281",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_7_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_7_1_lod_02.gr2",
+    "size": 124384,
+    "sha1": "308a32ee31275f96e71a3d7f2cbbfd98a6da94aa",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_7_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_7_1_lod_03.gr2",
+    "size": 110183,
+    "sha1": "1560a6f4569a5b65d3f2b1a332282042d1f2c7ef",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_7_1_lod_03.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_8_1.gr2",
+    "size": 151524,
+    "sha1": "9116b7544ca30dd21683aff5cd7d06930eed9143",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_8_1.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_8_1_lod_01.gr2",
+    "size": 140864,
+    "sha1": "92fd18d53e26dbcf99b472be49a1c37c30bcd50d",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_8_1_lod_01.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_8_1_lod_02.gr2",
+    "size": 129400,
+    "sha1": "12bd280ba10eacf2ecbb7e51077df829b248a6af",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_8_1_lod_02.gr2"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/ysets_warrior_8_1_lod_03.gr2",
+    "size": 119416,
+    "sha1": "3fe591c9b226ceddb511c893439882cccf38c0e9",
+    "source": "gf:d:/ymir work/pc2/warrior/warrior_8_1_lod_03.gr2"
+   },
+   {
+    "name": "icon/item/00320.tga",
+    "size": 8236,
+    "sha1": "ba08a546cd47fa9f0cd1fcdd79f4a1ca6e212bcb",
+    "source": "gf:icon/item/00320.tga"
+   },
+   {
+    "name": "icon/item/00340.tga",
+    "size": 8236,
+    "sha1": "34106c28b75cdf4d67ad5dbb3b426457c4a95ad2",
+    "source": "gf:icon/item/00340.tga"
+   },
+   {
+    "name": "icon/item/00360.tga",
+    "size": 8236,
+    "sha1": "964965f0b73197ace0bf6a76fee8bd61505aec0e",
+    "source": "gf:icon/item/00360.tga"
+   },
+   {
+    "name": "icon/item/00380.tga",
+    "size": 8236,
+    "sha1": "2f4cf02f1acec10fbbd46e08cd8cc759d650539c",
+    "source": "gf:icon/item/00380.tga"
+   },
+   {
+    "name": "icon/item/01190.tga",
+    "size": 4140,
+    "sha1": "5eca84c8c084fb9e29a7af948e2a1b42c89799e2",
+    "source": "gf:icon/item/01190.tga"
+   },
+   {
+    "name": "icon/item/01210.tga",
+    "size": 4140,
+    "sha1": "65f6e2f1496f92470a0600216e168bc59078873c",
+    "source": "gf:icon/item/01210.tga"
+   },
+   {
+    "name": "icon/item/02210.tga",
+    "size": 8236,
+    "sha1": "10902118744e9b11eb290102809586fc7b58d0b7",
+    "source": "gf:icon/item/02210.tga"
+   },
+   {
+    "name": "icon/item/02230.tga",
+    "size": 8236,
+    "sha1": "aa9aeb9674aedb4ac5e2d3257737cc236e2b608d",
+    "source": "gf:icon/item/02230.tga"
+   },
+   {
+    "name": "icon/item/03230.tga",
+    "size": 12332,
+    "sha1": "00045297259a5bbfd7d4d8bd49e9502d4a2b4d64",
+    "source": "gf:icon/item/03230.tga"
+   },
+   {
+    "name": "icon/item/03250.tga",
+    "size": 12332,
+    "sha1": "90c1991d7fa49fa49478584458219f4ed8669850",
+    "source": "gf:icon/item/03250.tga"
+   },
+   {
+    "name": "icon/item/05170.tga",
+    "size": 4140,
+    "sha1": "b007c0e96d7a665d850a4ee56cc7aa8312e82496",
+    "source": "gf:icon/item/05170.tga"
+   },
+   {
+    "name": "icon/item/05200.tga",
+    "size": 4140,
+    "sha1": "5850c6898f73d15e1abc35c3ec8a200e1092deb8",
+    "source": "gf:icon/item/05200.tga"
+   },
+   {
+    "name": "icon/item/07310.tga",
+    "size": 4140,
+    "sha1": "1f0d8536cb778a1da24d6a28bf2125adb6adf944",
+    "source": "gf:icon/item/07310.tga"
+   },
+   {
+    "name": "icon/item/07330.tga",
+    "size": 4140,
+    "sha1": "179eb82518216f40bce87dffb244ea2430c53359",
+    "source": "gf:icon/item/07330.tga"
+   },
+   {
+    "name": "icon/item/21210.tga",
+    "size": 8236,
+    "sha1": "ab9054f15d94220a08c71c1059a7e668b1c3bce1",
+    "source": "gf:icon/item/21210.tga"
+   },
+   {
+    "name": "icon/item/21230.tga",
+    "size": 8236,
+    "sha1": "e7ececa162811f8d61ebc97f60d7a1a442681656",
+    "source": "gf:icon/item/21230.tga"
+   },
+   {
+    "name": "icon/item/21250.tga",
+    "size": 8236,
+    "sha1": "7e38bd89dd6aba37d360de00cf6742a4ba23c42e",
+    "source": "gf:icon/item/21250.tga"
+   },
+   {
+    "name": "icon/item/21270.tga",
+    "size": 8236,
+    "sha1": "0a9bce8bab34aca94a6ea4baf4e2159db8423a46",
+    "source": "gf:icon/item/21270.tga"
+   },
+   {
+    "name": "icon/item/21310.tga",
+    "size": 8236,
+    "sha1": "14e8399901bbbefa6a4f2bba0a2ac88b86720b97",
+    "source": "gf:icon/item/21310.tga"
+   },
+   {
+    "name": "icon/item/21330.tga",
+    "size": 8236,
+    "sha1": "c748166f1c42270e1df77dc46fcb72e0605af277",
+    "source": "gf:icon/item/21330.tga"
+   },
+   {
+    "name": "icon/item/21350.tga",
+    "size": 8236,
+    "sha1": "5bc9894c731ca2948b392c4b53b16a7e3ace3408",
+    "source": "gf:icon/item/21350.tga"
+   },
+   {
+    "name": "icon/item/21370.tga",
+    "size": 8236,
+    "sha1": "073f1274fc046c82b27c090ea4a0d777285e0e23",
+    "source": "gf:icon/item/21370.tga"
+   },
+   {
+    "name": "icon/item/31122.tga",
+    "size": 4140,
+    "sha1": "6e059e77de5929882d78ab74932a72162cce51cb",
+    "source": "gf:icon/item/31122.tga"
+   },
+   {
+    "name": "icon/item/31123.tga",
+    "size": 4140,
+    "sha1": "fa6d5d48f53dd76fc219fc09a47fbfc91260ca35",
+    "source": "gf:icon/item/31123.tga"
+   },
+   {
+    "name": "icon/item/31124.tga",
+    "size": 4140,
+    "sha1": "18a2aaefe2d5f2f2fbf6790d43e35311ed03cb35",
+    "source": "gf:icon/item/31124.tga"
+   },
+   {
+    "name": "icon/item/31125.tga",
+    "size": 4140,
+    "sha1": "ea3b2f8b1d736df78210e3a0e860b7f1eaee4224",
+    "source": "gf:icon/item/31125.tga"
+   },
+   {
+    "name": "icon/item/31126.tga",
+    "size": 4140,
+    "sha1": "938f049d686bdabb725b5db6b8c5df44bc57e12b",
+    "source": "gf:icon/item/31126.tga"
+   },
+   {
+    "name": "icon/item/31127.tga",
+    "size": 4140,
+    "sha1": "066c4297e729ec27de5a5c84030a97791c39c8a0",
+    "source": "gf:icon/item/31127.tga"
+   },
+   {
+    "name": "icon/item/31128.tga",
+    "size": 4140,
+    "sha1": "7cbde46252b26eba2e7c3346f63dbf3127c7f480",
+    "source": "gf:icon/item/31128.tga"
+   },
+   {
+    "name": "icon/item/31129.tga",
+    "size": 4140,
+    "sha1": "d3bc3c9e0babd994ff95f226ac9c7a904f4a4769",
+    "source": "gf:icon/item/31129.tga"
+   },
+   {
+    "name": "icon/item/31130.tga",
+    "size": 4140,
+    "sha1": "8abadc612e450819ccdc2222dbec5dbd59268b5f",
+    "source": "gf:icon/item/31130.tga"
+   },
+   {
+    "name": "icon/item/31131.tga",
+    "size": 4140,
+    "sha1": "2dd4c0926abcaaa7ce07721e0a8860c651070471",
+    "source": "gf:icon/item/31131.tga"
+   },
+   {
+    "name": "icon/item/31132.tga",
+    "size": 4140,
+    "sha1": "d213a5e05da56d50c0d5ce47829330bd372ca81f",
+    "source": "gf:icon/item/31132.tga"
+   },
+   {
+    "name": "icon/item/31133.tga",
+    "size": 4140,
+    "sha1": "c52d43526c1c4029cf6950448f73bbbe4fa92cb8",
+    "source": "gf:icon/item/31133.tga"
+   },
+   {
+    "name": "icon/item/31134.tga",
+    "size": 4140,
+    "sha1": "9a0793790f39bd9e247d427abe13eb4df8fef183",
+    "source": "gf:icon/item/31134.tga"
+   },
+   {
+    "name": "icon/item/31135.tga",
+    "size": 4140,
+    "sha1": "98ed7f7cd1295fd9ec4d2743d961610127e4f486",
+    "source": "gf:icon/item/31135.tga"
+   },
+   {
+    "name": "icon/item/31136.tga",
+    "size": 4140,
+    "sha1": "2a2d5a28fd06a9931db5bf99fe1d33c63a5f379f",
+    "source": "gf:icon/item/31136.tga"
+   },
+   {
+    "name": "icon/item/31137.tga",
+    "size": 4140,
+    "sha1": "386a41151ffe7130d891c134d308bda44d158c65",
+    "source": "gf:icon/item/31137.tga"
+   },
+   {
+    "name": "icon/item/31138.tga",
+    "size": 4140,
+    "sha1": "7809ec7117cddd4b80c7d42de6c8033c96504454",
+    "source": "gf:icon/item/31138.tga"
+   }
+  ]
+ },
+ "weapon_models": {
+  "320": "d:/ymir work/item/weapon/ysets_00320.gr2",
+  "340": "d:/ymir work/item/weapon/ysets_00340.gr2",
+  "360": "d:/ymir work/item/weapon/ysets_00360.gr2",
+  "380": "d:/ymir work/item/weapon/ysets_00380.gr2",
+  "1190": "d:/ymir work/item/weapon/ysets_01190.gr2",
+  "1210": "d:/ymir work/item/weapon/ysets_01210.gr2",
+  "2210": "d:/ymir work/item/weapon/ysets_02210.gr2",
+  "2230": "d:/ymir work/item/weapon/ysets_02230.gr2",
+  "3230": "d:/ymir work/item/weapon/ysets_03230.gr2",
+  "3250": "d:/ymir work/item/weapon/ysets_03250.gr2",
+  "5170": "d:/ymir work/item/weapon/ysets_05170.gr2",
+  "5200": "d:/ymir work/item/weapon/ysets_05200.gr2",
+  "7310": "d:/ymir work/item/weapon/ysets_07310.gr2",
+  "7330": "d:/ymir work/item/weapon/ysets_07330.gr2"
+ },
+ "msm": {
+  "warrior_m": [
+   {
+    "index": 21210,
+    "SpecialPath": "d:/ymir work/pc/warrior/",
+    "Model": "ysets_warrior_7_1.gr2",
+    "SourceSkin": "warrior_7_1.dds",
+    "TargetSkin": "warrior_7_1.dds"
+   },
+   {
+    "index": 21310,
+    "SpecialPath": "d:/ymir work/pc/warrior/",
+    "Model": "ysets_warrior_8_1.gr2",
+    "SourceSkin": "warrior_8_1.dds",
+    "TargetSkin": "warrior_8_1.dds"
+   }
+  ],
+  "warrior_w": [
+   {
+    "index": 21210,
+    "SpecialPath": "d:/ymir work/pc2/warrior/",
+    "Model": "ysets_warrior_7_1.gr2",
+    "SourceSkin": "warrior_7_1.dds",
+    "TargetSkin": "warrior_7_1.dds"
+   },
+   {
+    "index": 21310,
+    "SpecialPath": "d:/ymir work/pc2/warrior/",
+    "Model": "ysets_warrior_8_1.gr2",
+    "SourceSkin": "warrior_8_1.dds",
+    "TargetSkin": "warrior_8_1.dds"
+   }
+  ],
+  "assassin_m": [
+   {
+    "index": 21230,
+    "SpecialPath": "d:/ymir work/pc2/assassin/",
+    "Model": "ysets_assassin_7_1.gr2",
+    "SourceSkin": "assassin_7_1.dds",
+    "TargetSkin": "assassin_7_1.dds"
+   },
+   {
+    "index": 21330,
+    "SpecialPath": "d:/ymir work/pc2/assassin/",
+    "Model": "ysets_assassin_8_1.gr2",
+    "SourceSkin": "assassin_8_1.dds",
+    "TargetSkin": "assassin_8_1.dds"
+   }
+  ],
+  "assassin_w": [
+   {
+    "index": 21230,
+    "SpecialPath": "d:/ymir work/pc/assassin/",
+    "Model": "ysets_assassin_7_1.gr2",
+    "SourceSkin": "assassin_7_1.dds",
+    "TargetSkin": "assassin_7_1.dds"
+   },
+   {
+    "index": 21330,
+    "SpecialPath": "d:/ymir work/pc/assassin/",
+    "Model": "ysets_assassin_8_1.gr2",
+    "SourceSkin": "assassin_8_1.dds",
+    "TargetSkin": "assassin_8_1.dds"
+   }
+  ],
+  "sura_m": [
+   {
+    "index": 21250,
+    "SpecialPath": "d:/ymir work/pc/sura/",
+    "Model": "ysets_sura_7_1.gr2",
+    "SourceSkin": "sura_7_1.dds",
+    "TargetSkin": "sura_7_1.dds"
+   },
+   {
+    "index": 21350,
+    "SpecialPath": "d:/ymir work/pc/sura/",
+    "Model": "ysets_sura_8_1.gr2",
+    "SourceSkin": "sura_8_1.dds",
+    "TargetSkin": "sura_8_1.dds"
+   }
+  ],
+  "sura_w": [
+   {
+    "index": 21250,
+    "SpecialPath": "d:/ymir work/pc2/sura/",
+    "Model": "ysets_sura_7_1.gr2",
+    "SourceSkin": "sura_7_1.dds",
+    "TargetSkin": "sura_7_1.dds"
+   },
+   {
+    "index": 21350,
+    "SpecialPath": "d:/ymir work/pc2/sura/",
+    "Model": "ysets_sura_8_1.gr2",
+    "SourceSkin": "sura_8_1.dds",
+    "TargetSkin": "sura_8_1.dds"
+   }
+  ],
+  "shaman_m": [
+   {
+    "index": 21270,
+    "SpecialPath": "d:/ymir work/pc2/shaman/",
+    "Model": "ysets_shaman_7_1.gr2",
+    "SourceSkin": "shaman_7_1.dds",
+    "TargetSkin": "shaman_7_1.dds"
+   },
+   {
+    "index": 21370,
+    "SpecialPath": "d:/ymir work/pc2/shaman/",
+    "Model": "ysets_shaman_8_1.gr2",
+    "SourceSkin": "shaman_8_1.dds",
+    "TargetSkin": "shaman_8_1.dds"
+   }
+  ],
+  "shaman_w": [
+   {
+    "index": 21270,
+    "SpecialPath": "d:/ymir work/pc/shaman/",
+    "Model": "ysets_shaman_7_1.gr2",
+    "SourceSkin": "shaman_7_1.dds",
+    "TargetSkin": "shaman_7_1.dds"
+   },
+   {
+    "index": 21370,
+    "SpecialPath": "d:/ymir work/pc/shaman/",
+    "Model": "ysets_shaman_8_1.gr2",
+    "SourceSkin": "shaman_8_1.dds",
+    "TargetSkin": "shaman_8_1.dds"
+   }
+  ]
+ },
+ "icons": [
+  "icon/item/00320.tga",
+  "icon/item/00340.tga",
+  "icon/item/00360.tga",
+  "icon/item/00380.tga",
+  "icon/item/01190.tga",
+  "icon/item/01210.tga",
+  "icon/item/02210.tga",
+  "icon/item/02230.tga",
+  "icon/item/03230.tga",
+  "icon/item/03250.tga",
+  "icon/item/05170.tga",
+  "icon/item/05200.tga",
+  "icon/item/07310.tga",
+  "icon/item/07330.tga",
+  "icon/item/21210.tga",
+  "icon/item/21230.tga",
+  "icon/item/21250.tga",
+  "icon/item/21270.tga",
+  "icon/item/21310.tga",
+  "icon/item/21330.tga",
+  "icon/item/21350.tga",
+  "icon/item/21370.tga",
+  "icon/item/31122.tga",
+  "icon/item/31123.tga",
+  "icon/item/31124.tga",
+  "icon/item/31125.tga",
+  "icon/item/31126.tga",
+  "icon/item/31127.tga",
+  "icon/item/31128.tga",
+  "icon/item/31129.tga",
+  "icon/item/31130.tga",
+  "icon/item/31131.tga",
+  "icon/item/31132.tga",
+  "icon/item/31133.tga",
+  "icon/item/31134.tga",
+  "icon/item/31135.tga",
+  "icon/item/31136.tga",
+  "icon/item/31137.tga",
+  "icon/item/31138.tga"
+ ]
+}
