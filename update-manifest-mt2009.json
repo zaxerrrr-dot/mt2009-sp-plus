@@ -6,8 +6,8 @@
   "server": {
     "version": "2.33.0",
     "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.33.0/metin2-server-update-2.33.0.zip",
-    "sha256": "D7B9A32B3E34DA1413D2F75B457FDB592EAB8D908F29D8AFC21E9460D78F2B2E",
-    "size": 113691459
+    "sha256": "B95C216300788BB259511EECDA0B3C960368280839FEC134072382EE447AABD1",
+    "size": 113793359
   },
   "client": {
     "version": "2.0.64",

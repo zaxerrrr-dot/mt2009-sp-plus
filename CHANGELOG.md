@@ -23,6 +23,7 @@ every version here.
 - **Kanał nie pada już po zabiciu bossa w drużynie.** Zapis wyniku lochu do rankingu przełączał skrypt bossa na innego członka drużyny, przez co serwer potrafił się wyłączyć (m.in. przy Razadorze). W pojedynkę błąd nie występował.
 - **Nagroda rankingu tygodniowego liczy się tylko raz.** Przy logowaniu postać mogła dostać nagrodę dwukrotnie (np. 23% + 18% zamiast 18%, atak 75 + 75). Teraz zawsze jest jedna, aktualna – podwójne kopie znikną same przy pierwszym zalogowaniu.
 - **Nagrody top 10 minigier (Yut Nori, Rumi)** trafiają do każdej postaci tylko raz na sezon – wcześniej boty po każdym ponownym zalogowaniu odbierały je od nowa.
+- **Handel kamieniami Smoczej Alchemii działa.** Dodanie kamienia do okna handlu kończyło się komunikatem o jukach konnych („Przywołaj konia…”) – serwer brał każdy przedmiot z dużym numerem pola za przedmiot z juków.
 
 ### Wojna gildii
 - **Koniec wojny nie zabiera rangi.** Ostatnie ciosy wojny (ofiara pada chwilę po jej zakończeniu) były liczone jak zwykłe zabójstwo – zabójca tracił 2000 punktów rangi, a ofiara mogła zgubić przedmioty. Teraz śmierć na arenie i tuż po końcu wojny jest zawsze wojenna.

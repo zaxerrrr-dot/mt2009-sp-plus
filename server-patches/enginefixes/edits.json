@@ -376,5 +376,17 @@
   "marker": "MT2009_PLUS_RAZADOR_GATE_V1 (move)",
   "old": "\t\t// end mt2009 cheatwarden\n",
   "new": "\t\t// end mt2009 cheatwarden\n\n\t\t// MT2009_PLUS_RAZADOR_GATE_V1 (move): a closed gate of Razador's dungeon\n\t\t// (RazadorGateBlocks above) - the move is refused like a too long one.\n\t\tif (ch->IsPC() && RazadorGateBlocks(ch, pinfo->lX, pinfo->lY))\n\t\t{\n\t\t\tch->ChatDebug(\"MOVE: a closed gate of Razador's dungeon\");\n\t\t\tch->Show(ch->GetMapIndex(), ch->GetX(), ch->GetY(), ch->GetZ());\n\t\t\tch->Stop();\n\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_EXCHANGE_DS_V1 (add)",
+  "old": "\tif (item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t{\n\t\tm_pOwner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\treturn false;\n\t}\n",
+  "new": "\t// MT2009_PLUS_EXCHANGE_DS_V1 (add) (server-patches/enginefixes): only an INVENTORY cell past the bag is the horse's\n\t// saddlebag - a Dragon Soul stone (its own window, cells far above the bag's) was refused with the saddlebag text.\n\tif (m_pOwner->IsHorseInventory(item->GetItemPos()) && item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t{\n\t\tm_pOwner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\treturn false;\n\t}\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_EXCHANGE_DS_V1 (check)",
+  "old": "\t\tif (item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t\t{\n\t\t\tGetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\t\treturn false;\n\t\t}\n",
+  "new": "\t\t// MT2009_PLUS_EXCHANGE_DS_V1 (check) (server-patches/enginefixes): only an INVENTORY cell past the bag is the horse's\n\t\t// saddlebag - a Dragon Soul stone (its own window, cells far above the bag's) was refused with the saddlebag text.\n\t\tif (m_pOwner->IsHorseInventory(item->GetItemPos()) && item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t\t{\n\t\t\tGetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\t\treturn false;\n\t\t}\n"
  }
 ]
