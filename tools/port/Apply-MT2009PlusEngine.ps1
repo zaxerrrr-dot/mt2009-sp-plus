@@ -79,6 +79,7 @@ param(
 #   Talizmany Woli     item_attribute.cpp, item_manager.cpp (MT2009_PLUS_WILL_TALISMAN_V1;
 #                      server-patches/talizmanwoli)
 #   Zyly Jadeitu       mining.cpp (MT2009_PLUS_JADE_VEINS_V1; server-patches/jadeit)
+#   Strefy na ziemi    questlua_dungeon.cpp (MT2009_PLUS_DUNGEON_ZONE_V1; server-patches/strefy)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1261,6 +1262,19 @@ if ((Test-Path -LiteralPath $jadeitApply -PathType Leaf) -and
     if ($jadeitResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} jade vein edit(s).' -f $jadeitResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Strefy na ziemi (server-patches/strefy, MT2009_PLUS_DUNGEON_ZONE_V1): d.zone_attack / d.zone_hurt - telegraphed ground
+# zones of a dungeon (an invisible marker 3975 with the warning effect, then real damage to the players inside; a kill
+# is a real death) for Glebie Polnocnego Wiatru (ice spikes, Deadly Cold) and Swiatynia Wezy (surface attack).
+$strefyApply = Join-Path $repo 'server-patches/strefy/Apply-StrefyPatch.ps1'
+if ((Test-Path -LiteralPath $strefyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questlua_dungeon.cpp') -PathType Leaf)) {
+    $strefyResult = & $strefyApply -SourceDir $engineGameSource
+    if ($strefyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} ground zone edit(s).' -f $strefyResult.Applied) -ForegroundColor DarkGray
     }
 }
 
