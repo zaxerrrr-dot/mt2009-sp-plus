@@ -246,21 +246,32 @@ quest ygaya begin
 				say("Masz ju¿ najwiêcej Gaya, ile mo¿na mieæ (999 999).")
 				return
 			end
-			say("Wska¿ Kamieñ Duszy (+0 do +3) w ekwipunku.")
-			local cell = select_item()
-			if cell == 0 then
+			-- MT2009_PLUS_GAYA_GRIND_V2 (w³aœciciel 14.10): lista Kamieni Duszy z ekwipunku zamiast select_item() -
+			-- okno "Wska¿ przedmiot" zostawia³o w rogu ekranu napis "Wska¿ Kamieñ Duszy" na sta³e.
+			local stones = {}
+			local names = {}
+			for v = 28000, 28343 do
+				if table.getn(stones) < 8 and ygaya.is_spirit_stone(v) and pc.count_item(v) > 0 then
+					table.insert(stones, v)
+					table.insert(names, item_name(v).." ("..pc.count_item(v)..")")
+				end
+			end
+			if table.getn(stones) == 0 then
+				say("Nie masz Kamienia Duszy +0, +1, +2 ani +3.")
 				return
 			end
-			if not item.select_cell(cell) or not ygaya.is_spirit_stone(item.get_vnum()) then
-				say_title(mob_name(20433)..":")
-				say("To nie jest Kamieñ Duszy +0, +1, +2 ani +3.")
+			say("Który Kamieñ Duszy oddajesz?")
+			table.insert(names, "Nie teraz")
+			local s = select_table(names)
+			if s < 1 or s > table.getn(stones) then
 				return
 			end
-			-- checked again: the window gave the player time
-			if pc.count_item(c.kamyki) < c.kamyki_n or pc.get_money() < c.fee then
+			local stone = stones[s]
+			-- checked again: the choice gave the player time
+			if pc.count_item(stone) < 1 or pc.count_item(c.kamyki) < c.kamyki_n or pc.get_money() < c.fee then
 				return
 			end
-			item.remove(1)
+			pc.remove_item(stone, 1)
 			pc.remove_item(c.kamyki, c.kamyki_n)
 			pc.change_money(-c.fee)
 			say_title(mob_name(20433)..":")
