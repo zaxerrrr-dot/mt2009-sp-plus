@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.63",
+  "version": "2.0.64",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -194,8 +194,8 @@
     },
     {
       "path": "pack/gf_razador.index",
-      "size": 25028,
-      "sha256": "7B62A4D86D53C49A8CEDE64594CE80581F212D5943F43FE8CB49FD24EC329AE8"
+      "size": 25036,
+      "sha256": "6422924DF4585FF8ECA410226264C95F4C07758D323212B53F5C1BEFC1B8950D"
     },
     {
       "path": "pack/goblin.index",
@@ -245,7 +245,7 @@
     {
       "path": "pack/root.index",
       "size": 32940,
-      "sha256": "C276D2B91E61A06D98FDE9DBC0A91728B50CE4CB6E689CEA2B5B43E95472633D"
+      "sha256": "3BCA637B24F2D873619DF52FBFA00BE03C9E99B825F728742EB86EF3566135FB"
     },
     {
       "path": "pack/wiki_nowe.index",
