@@ -1,0 +1,733 @@
+{
+ "maps": {
+  "404": {
+   "atlas_image": "metin2_map_dawnmist_dungeon_01.dds",
+   "folder": "metin2_map_boss_crack_dawnmist",
+   "gf_parent": "metin2_map_dawnmist_dungeon_01",
+   "parent": "metin2_map_boss_awaken_dawnmist"
+  }
+ },
+ "new_packs": [
+  "ycrack_maps",
+  "ycrack_mobs"
+ ],
+ "packs": {
+  "ycrack_maps": [
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_boss_crack_dawnmist/atlas.sub",
+    "sha1": "fc1b6ea4627ead40677fcac35821690892de5c0b",
+    "size": 111,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_boss_crack_dawnmist/mapproperty.txt",
+    "sha1": "de57f9a02bca0546508306dbd602eb26aa147f6d",
+    "size": 94,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_boss_crack_dawnmist/setting.txt",
+    "sha1": "bac1eda6f79d139ee9e89e1f9919d8e6106afb16",
+    "size": 221,
+    "source": "gf"
+   }
+  ],
+  "ycrack_mobs": [
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_damage.msa",
+    "sha1": "b97d476afff32792d371e699a2a6f5e69727be82",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_dead.msa",
+    "sha1": "d65154d157d8ea8ad0221d99ee390f2060c9ed5c",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_knockdown.msa",
+    "sha1": "87e61487697def53f976b021ee912062065a1bd3",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_damage.msa",
+    "sha1": "1bce4c23a0e4dd787d6fe12bb8a31b4ca8d74c30",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_dead.msa",
+    "sha1": "377076dc634ae55a3dc801cd380861dd2e57f3a4",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_knockdown.msa",
+    "sha1": "28fd99ced068a74223f795890e24a1a63888df50",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_standup.msa",
+    "sha1": "8264a96b05d0536a00476a4fc288771fac191853",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/motlist.txt",
+    "sha1": "0708d2c437f5a98dd5a751309bf1430482f38831",
+    "size": 688,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/normal_attack.msa",
+    "sha1": "e0925ad160719388eb9531a68f0f07f72a169912",
+    "size": 880,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/normal_attack1.msa",
+    "sha1": "dd4891e0fbea52063b5ede7de40a43d8c5e3434e",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/run.msa",
+    "sha1": "4692688139adb83eeb2ce1bcdf863ac8a4514fe1",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack.msa",
+    "sha1": "0b7e3f065ae6a1806495d29e65784906ef3bffee",
+    "size": 3303,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack1.msa",
+    "sha1": "4dc9f5b18617771b5ddfff9f6f9c362aacf3ea57",
+    "size": 7269,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack2.msa",
+    "sha1": "1e34b7daefee23b74a1cfe2e8cc5cbb13b68b7eb",
+    "size": 6020,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss.gr2",
+    "sha1": "6872e6c4089f8bfe430555ec85d699e621e3c016",
+    "size": 117013,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss.msm",
+    "sha1": "eeb9df5c5c428e57e2653da21aead96c03dfba3e",
+    "size": 1092,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss_1.dds",
+    "sha1": "b45db3d08b464ac2fcb4e2207bff317ce67dfc9c",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss_lod_01.gr2",
+    "sha1": "713ccce30b72276e5c5c5624e6c3a1f1198ae9f7",
+    "size": 98055,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss_weapon_1.dds",
+    "sha1": "baef36344faa92c586dd73646ad5683845bacb9c",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait.msa",
+    "sha1": "d9d1514c6c76ca600a9fd88136a5457549e72525",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait1.msa",
+    "sha1": "ff998674a0b47b1dc26427effd54ee6ad37c949c",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait2.msa",
+    "sha1": "d56f2e8c0b903f628ed3af6ebae050a890f32639",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/walk.msa",
+    "sha1": "0d987d4af0e7808c4b6a2e40d7e19ec048392c3b",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_damage.msa",
+    "sha1": "df16051487aa5c8c23f903bcf1cfbd38b759ffa1",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_damage1.msa",
+    "sha1": "7ff3de6a2b5eb1e2e3d808b9859ecd3354260af5",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_knockdown.msa",
+    "sha1": "d45a7e767415e68a74760e9cedfe2c5c92218e0e",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_damage.msa",
+    "sha1": "9a9ad5bd4cd833d27c6995b99d102b22fec17712",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_damage1.msa",
+    "sha1": "849074de9275046fdc32d013d275c98a8af971fc",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_dead.msa",
+    "sha1": "47ccc74aca634ca33eb1fe48a70501c0f065ed39",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_knockdown.msa",
+    "sha1": "2f2281c6112bdf8d9c42c0590e68779731e8775a",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_standup.msa",
+    "sha1": "1f196e730f2efac5b33f10c12b8abbff3b0013e4",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/motlist.txt",
+    "sha1": "38c937fa961436ece68e61db40f1827de57da3a7",
+    "size": 720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/normal_attack.msa",
+    "sha1": "2e5faf102b8fcab0d73c04f9144c84883088af62",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/normal_attack1.msa",
+    "sha1": "0d8ce431d4f1ae2d97768a729115d791d681e056",
+    "size": 882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/run.msa",
+    "sha1": "47d3dbb049a1539657dd1e3e256e3f1cf758de82",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/special_attack.msa",
+    "sha1": "eb8197c43404fdaecf4b2d7f5f4c44a20d624702",
+    "size": 2638,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss.dds",
+    "sha1": "cc7f9228b2cb04246deaec813921f77f1a25c03a",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss.gr2",
+    "sha1": "d8e218f0b3903ef62ee645c45c31ba7b001473be",
+    "size": 98592,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss.msm",
+    "sha1": "ed47e7b13ba2319eddffa63bbdd4c5e5f218daad",
+    "size": 1094,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss_lod_01.gr2",
+    "sha1": "73230c20976a3565f2768ca21b5a070a796504f3",
+    "size": 75008,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait.msa",
+    "sha1": "035bb45d8c649991e55584d121ad2130721778a6",
+    "size": 187,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait1.msa",
+    "sha1": "c8920f085aa77486fba75c01ef94a064d029dfdf",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait2.msa",
+    "sha1": "107f975a639bc799d51c4d9bd189075630864cee",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait3.msa",
+    "sha1": "ae8b7e2dcca7f377319afab77ce2afeeaaef2168",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/walk.msa",
+    "sha1": "a2ef62a49bc343528a94b32f3209933640efcb6e",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/back_damage.msa",
+    "sha1": "df16051487aa5c8c23f903bcf1cfbd38b759ffa1",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/back_damage1.msa",
+    "sha1": "7ff3de6a2b5eb1e2e3d808b9859ecd3354260af5",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/back_knockdown.msa",
+    "sha1": "d45a7e767415e68a74760e9cedfe2c5c92218e0e",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_damage.msa",
+    "sha1": "9a9ad5bd4cd833d27c6995b99d102b22fec17712",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_damage1.msa",
+    "sha1": "849074de9275046fdc32d013d275c98a8af971fc",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_dead.msa",
+    "sha1": "47ccc74aca634ca33eb1fe48a70501c0f065ed39",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_knockdown.msa",
+    "sha1": "2f2281c6112bdf8d9c42c0590e68779731e8775a",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_standup.msa",
+    "sha1": "1f196e730f2efac5b33f10c12b8abbff3b0013e4",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/motlist.txt",
+    "sha1": "38c937fa961436ece68e61db40f1827de57da3a7",
+    "size": 720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/normal_attack.msa",
+    "sha1": "2e5faf102b8fcab0d73c04f9144c84883088af62",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/normal_attack1.msa",
+    "sha1": "0d8ce431d4f1ae2d97768a729115d791d681e056",
+    "size": 882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/run.msa",
+    "sha1": "b7b56f5fc1df7ee9a291da7200e51bfc5c5ddc08",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/special_attack.msa",
+    "sha1": "352bdd83ddc2e0ec459013048764b18581aba6e7",
+    "size": 2647,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2.dds",
+    "sha1": "d2b8595d0fcc47992609b37b0b050337634e2725",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2.gr2",
+    "sha1": "dd40b395ed53c515cb665e74c73fe98aaeac3d07",
+    "size": 115012,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2.msm",
+    "sha1": "c3488a21b2676d64b3386c58da22f019443c3898",
+    "size": 1499,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2_lod_01.gr2",
+    "sha1": "4f321f7d8926abd7167d46eae8372364ac59cc65",
+    "size": 85140,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait.msa",
+    "sha1": "035bb45d8c649991e55584d121ad2130721778a6",
+    "size": 187,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait1.msa",
+    "sha1": "c8920f085aa77486fba75c01ef94a064d029dfdf",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait2.msa",
+    "sha1": "107f975a639bc799d51c4d9bd189075630864cee",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait3.msa",
+    "sha1": "ae8b7e2dcca7f377319afab77ce2afeeaaef2168",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/walk.msa",
+    "sha1": "a2ef62a49bc343528a94b32f3209933640efcb6e",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_damage.msa",
+    "sha1": "c08bdf26dc698d34a51e9b8dbf8709522f9df7b7",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_damage1.msa",
+    "sha1": "8b328477a6438202cd3e28f7d1b7a11ad43c3482",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_knockdown.msa",
+    "sha1": "f2c06946352b64bd0edd85e92706bba7a74456ae",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_damage.msa",
+    "sha1": "52f7e2b3d539ccf4730fdcfabe82b502e84a5416",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_damage1.msa",
+    "sha1": "86c0229f2792e659bd73c6eb3852a0338c4e8b40",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_dead.msa",
+    "sha1": "11c34a728d22f11a64602b7c9f0cadd1078c795d",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_knockdown.msa",
+    "sha1": "d00254cc3ddf628501c30b7949c3c68772b6ee99",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_standup.msa",
+    "sha1": "538faf189043aaf69a3dfa6f2aa4da9a1253c0ed",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/motlist.txt",
+    "sha1": "38c937fa961436ece68e61db40f1827de57da3a7",
+    "size": 720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/normal_attack.msa",
+    "sha1": "ee47e7ceb1b66d8585aba19d8289794ebe924e53",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/normal_attack1.msa",
+    "sha1": "a12195b63824fdf4749fb443cc9676d2afd25e05",
+    "size": 882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/run.msa",
+    "sha1": "6bc501aa135d67de63459e798ce4e46c76cd5f14",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/special_attack.msa",
+    "sha1": "f00fd4b85d7254e8d6719859e45f9247fae5a0a0",
+    "size": 1894,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general.dds",
+    "sha1": "f0e5b9e30fd8765b8a9d9a77dbd672f0345d6647",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general.gr2",
+    "sha1": "0e571ae8e26040b28fe078c5d9b459ff1d0a9ddb",
+    "size": 96165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general.msm",
+    "sha1": "ef363df2cf01318cf3fd3df557f23a4dd068a85b",
+    "size": 1098,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general_lod_01.gr2",
+    "sha1": "b5ef5bedabaad1409c8ecdf6bebe7c40e758520c",
+    "size": 77363,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait.msa",
+    "sha1": "c63a078fba071a592b4afe61a6ef71c808d8468b",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait1.msa",
+    "sha1": "b3331ada3447176339017bc07a5b4d11622be5ab",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait2.msa",
+    "sha1": "4e0a5a15d276936a96649f1e93f3ef24832ad392",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait3.msa",
+    "sha1": "962a03591017e211a0bc4e1324290c8b234d37dd",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/walk.msa",
+    "sha1": "53d684f8619fbe0b52800a9a5f3e2cab8070ab9b",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/back_damage.mss",
+    "sha1": "e6e6669b596fe0ca3187852b4a1858cef9f73df9",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/back_knockdown.mss",
+    "sha1": "f9b8b0bfc51baa7f7e9a9ad30cc4dc568a1f2989",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/front_damage.mss",
+    "sha1": "e6e6669b596fe0ca3187852b4a1858cef9f73df9",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/front_dead.mss",
+    "sha1": "f7ac940f719c88e7f8b078d018495555ac297f7d",
+    "size": 260,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/front_knockdown.mss",
+    "sha1": "2c693c3f6a184912343e4f488548af0566aa645c",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/normal_attack.mss",
+    "sha1": "69a949194ff5794827e66e7679bbf7d459c6877a",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/normal_attack1.mss",
+    "sha1": "f90cf5a8b1aa95e2e255b44f3dca68cef16a4a59",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/run.mss",
+    "sha1": "ccaee01fb5d99bc5199bc41cc16bda749354c406",
+    "size": 369,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/special_attack.mss",
+    "sha1": "10f996ed5264c66669236a8d99523afb6d189200",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/walk.mss",
+    "sha1": "0c433239ae0b8fd652c50d38f549e1edba7cf29d",
+    "size": 219,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "20472": {
+   "msm": "d:/ymir work/npc2/npc_turtlestone_awake/npc_turtlestone_awake_01.msm",
+   "race": "npc_turtlestone_awake_01",
+   "status": "earlier builder"
+  },
+  "20519": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m.msm",
+   "race": "redguild_guard_m",
+   "status": "ours"
+  },
+  "20520": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m_2.msm",
+   "race": "redguild_guard_m_2",
+   "status": "ours"
+  },
+  "20521": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m_3.msm",
+   "race": "redguild_guard_m_3",
+   "status": "ours"
+  },
+  "20522": {
+   "msm": "d:/ymir work/npc/jinno_patrol_spear/jinno_patrol_spear.msm",
+   "race": "jinno_patrol_spear",
+   "status": "ours"
+  },
+  "4260": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier.msm",
+   "race": "trent_soldier",
+   "status": "earlier builder"
+  },
+  "4261": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier2.msm",
+   "race": "trent_soldier2",
+   "status": "earlier builder"
+  },
+  "4262": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic.msm",
+   "race": "trent_magic",
+   "status": "earlier builder"
+  },
+  "4263": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic2.msm",
+   "race": "trent_magic2",
+   "status": "earlier builder"
+  },
+  "4264": {
+   "msm": "d:/ymir work/monster2/trent_general/trent_general.msm",
+   "race": "trent_general",
+   "status": "staged"
+  },
+  "4265": {
+   "msm": "d:/ymir work/monster2/trent_boss/trent_boss.msm",
+   "race": "trent_boss",
+   "status": "staged"
+  },
+  "4267": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier.msm",
+   "race": "trent_soldier",
+   "status": "earlier builder"
+  },
+  "4270": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic2.msm",
+   "race": "trent_magic2",
+   "status": "earlier builder"
+  },
+  "4271": {
+   "msm": "d:/ymir work/monster2/trent_general/trent_general.msm",
+   "race": "trent_general",
+   "status": "staged"
+  },
+  "4272": {
+   "msm": "d:/ymir work/monster2/trent_boss2/trent_boss2.msm",
+   "race": "trent_boss2",
+   "status": "staged"
+  },
+  "4403": {
+   "msm": "d:/ymir work/monster2/thunder_boss/thunder_boss.msm",
+   "race": "thunder_boss",
+   "status": "staged"
+  },
+  "8126": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_16.msm",
+   "race": "metinstone_16",
+   "status": "earlier builder"
+  },
+  "8127": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_16.msm",
+   "race": "metinstone_16",
+   "status": "earlier builder"
+  }
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "races": {
+   "thunder_boss": [
+    "d:/ymir work/effect/monster2/impact10_red.mde"
+   ]
+  }
+ }
+}

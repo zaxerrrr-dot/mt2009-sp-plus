@@ -521,6 +521,8 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_labyrinth" : "P³askowy¿ Iluzji",
 	"metin2_map_boss_awaken_skipia" : "Grota Wygnañców 2 (PB)",
 	"metin2_map_boss_awaken_dawnmist" : "Zaklêty Las (PB)",
+	# MT2009_PLUS_YOHARA_CRACK_V1 (client): Zaklêty Las (SZC) (404) - the first Time Rift dungeon
+	"metin2_map_boss_crack_dawnmist" : "Zaklêty Las (SZC)",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,
