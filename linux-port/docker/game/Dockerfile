@@ -2246,7 +2246,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps4-add \
       && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
       && test -s "$L/map/$2/Town.txt" && test -s "$L/map/$2/npc.txt" && test -s "$L/map/$2/regen.txt" \
       && test -s "$L/map/$2/boss.txt" && test -s "$L/map/$2/stone.txt" \
-      && grep -q -E "^$2[[:blank:]]+35[[:blank:]]+25[[:blank:]]+35[[:blank:]]+40[[:space:]]*\$" "$L/sungma_table.txt" \
+      && grep -q -E "^$2[[:blank:]]+35[[:blank:]]+25[[:blank:]]+35[[:blank:]]+40([[:blank:]]+[0-9]+)?[[:space:]]*\$" "$L/sungma_table.txt" \
       && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
       && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
       && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
