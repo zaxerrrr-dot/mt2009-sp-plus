@@ -1311,8 +1311,9 @@ class ItemToolTip(ToolTip):
 			self.__AppendMagicDefenceInfo()
 			# MT2009_PLUS_YOHARA_TOOLTIP_ORDER_V1 (the owner, 14 October): a jade bracelet's / glove's own lines
 			# (slots 6-7: Precyzja, Wola SungMa) are drawn as the item's fixed lines - white, under the limits, like
-			# Max PZ / Sila of the Ebonitowe Kolczyki - and only the five added bonuses below as bonuses.
-			yoharaOwn = yoharagear.IsJadeBracelet(itemVnum) or yoharagear.IsGlove(itemVnum)
+			# Max PZ / Sila of the Ebonitowe Kolczyki - and only the five added bonuses below as bonuses
+			# (MT2009_PLUS_JADE_JEWELLERY_V1: a jade necklace's / earrings' too).
+			yoharaOwn = yoharagear.IsJadeJewellery(itemVnum) or yoharagear.IsGlove(itemVnum)
 			if yoharaOwn:
 				self.__AppendAffectInformation(attrSlot)
 			else:
@@ -1325,8 +1326,9 @@ class ItemToolTip(ToolTip):
 
 			self.AppendWearableInformation()
 
-			if yoharagear.IsJadeBracelet(itemVnum):
-				# MT2009_PLUS_JADE_BRACELET_V2: the jade in the Diamond's sockets adds to the two lines
+			if yoharagear.IsJadeJewellery(itemVnum):
+				# MT2009_PLUS_JADE_BRACELET_V2 / MT2009_PLUS_JADE_JEWELLERY_V1: the jade in the Diamond's sockets adds
+				# to the two lines (bracelets, necklaces, earrings)
 				self.__AppendJadeSocketInfo(itemVnum, metinSlot, attrSlot)
 			elif itemSubType in (item.ARMOR_WRIST, item.ARMOR_NECK, item.ARMOR_EAR):
 				self.__AppendAccessoryMetinSlotInfo(metinSlot, constInfo.GET_ACCESSORY_MATERIAL_VNUM(itemVnum, itemSubType))
@@ -2316,7 +2318,8 @@ class ItemToolTip(ToolTip):
 
 		return number
 
-	# MT2009_PLUS_JADE_BRACELET_V2: an Obrecz Jadeitu's sockets (made with a Diamond, at most 3): each jade adds the
+	# MT2009_PLUS_JADE_BRACELET_V2: an Obrecz (/ Kolia / Klipsy, MT2009_PLUS_JADE_JEWELLERY_V1) Jadeitu's sockets
+	# (made with a Diamond, at most 3): each jade adds the
 	# wiki's values to the lines the bracelet has (yoharagear.py; the server: playerbot_yohara_gear.cpp)
 	def __AppendJadeSocketInfo(self, itemVnum, metinSlot, attrSlot):
 		if not metinSlot:
