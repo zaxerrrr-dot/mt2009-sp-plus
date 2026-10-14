@@ -22,13 +22,14 @@
 
 #ifdef ENABLE_CHANGELOOK_SYSTEM
 
-// the server's sizes (game -m32, pack(1)): the look is one DWORD at the end of each
-static_assert(sizeof(TPacketGCItemSet2) == 1 + sizeof(TItemPos) + 4 + 4 + 4 + 4 + 1 + 4 * ITEM_SOCKET_SLOT_MAX_NUM + 3 * ITEM_ATTRIBUTE_SLOT_MAX_NUM + 4,
-	"GC item set (21) differs from the server's TPacketGCItemSet");
-static_assert(sizeof(TPacketGCItemUpdate) == 1 + sizeof(TItemPos) + 4 + 4 * ITEM_SOCKET_SLOT_MAX_NUM + 3 * ITEM_ATTRIBUTE_SLOT_MAX_NUM + 4,
-	"GC item update (25) differs from the server's TPacketGCItemUpdate");
-static_assert(sizeof(TPacketGCExchange) == 1 + 1 + 1 + 8 + 2 * sizeof(TItemPos) + 4 + 4 * ITEM_SOCKET_SLOT_MAX_NUM + 3 * ITEM_ATTRIBUTE_SLOT_MAX_NUM + 4,
-	"GC exchange differs from the server's packet_exchange");
+// the server's sizes (game -m32, pack(1); measured on the engine with server-patches/transmutacja, 14 October 2026):
+// the look is one DWORD at the end of each
+static_assert(sizeof(TPacketGCItemSet2) == 58, "GC item set (21) is 58 B on the server (TPacketGCItemSet)");
+static_assert(sizeof(TPacketGCItemUpdate) == 45, "GC item update (25) is 45 B on the server");
+static_assert(sizeof(TPacketGCExchange) == 58, "GC exchange is 58 B on the server (packet_exchange)");
+#ifdef ENABLE_IKASHOP_RENEWAL
+static_assert(sizeof(ikashop::TPlayerItem) == 56, "the server's TPlayerItem (common/tables.h) is 56 B");
+#endif
 
 namespace
 {
