@@ -123,7 +123,9 @@ WARD = 'the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - non
 for v in list(range(50516, 50524)) + list(range(50560, 50568)):       # their books (the Lycan's 50524 / 50568 out)
     add(v, status=need(WARD))
 add(50525, status=need(WARD + ' (their master levels)'))              # Kamien Duchowy+
-add(50325, status=need('the skill Precyzja (142) - not in our skill_proto'))   # Ksiega Precyzji
+# Ksiega Precyzji: the passive skill Precyzja (skill_proto 246, MT2009_PLUS_PRECISION_SKILL_V1, server-patches/precyzja)
+add(50325, desc=u'Przeczytanie księgi umożliwi ci zwiększenie precyzji. Znika po przeczytaniu. '
+                u'Wymaga co najmniej 1. Poziomu Czempiona.')
 for v in range(50338, 50344):                                         # Charyzma / Inspiracja x3
     add(v, status=need('the leadership books Charyzma / Inspiracja - none here yet'))
 # MT2009_PLUS_GLOVES_V1: Kamien Demonow - this first row stays as it was; yohara_gloves.sql (tools/ygloves) makes it

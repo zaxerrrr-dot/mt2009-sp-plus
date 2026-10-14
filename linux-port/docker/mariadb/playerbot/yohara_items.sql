@@ -35,7 +35,6 @@
 --   50566 Dopalacz: Mroczne Uderz. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
 --   50567 Dopalacz: Przyw. Blysk. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
 --   50525 Kamien Duchowy+ - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet (their master levels)
---   50325 Ksiega Precyzji - the skill Precyzja (142) - not in our skill_proto
 --   50338 Charyzma Nowicjusza - the leadership books Charyzma / Inspiracja - none here yet
 --   50339 Charyzma Adepta - the leadership books Charyzma / Inspiracja - none here yet
 --   50340 Charyzma Eksperta - the leadership books Charyzma / Inspiracja - none here yet
