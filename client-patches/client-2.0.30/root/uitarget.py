@@ -92,6 +92,7 @@ if app.ENABLE_ELEMENTAL_TARGET:
 			return ""
 
 		dwRaceFlag = nonplayer.GetMonsterRaceFlag(mobVnum)
+		dwRaceFlag = GetGlobalElementFlag(mobVnum, dwRaceFlag)
 		for k,v in SUB_RACE_FLAG_TO_FILENAME.iteritems():
 			curFlag = k
 			if HAS_FLAG(dwRaceFlag, curFlag):
@@ -100,6 +101,33 @@ if app.ENABLE_ELEMENTAL_TARGET:
 
 	def HAS_FLAG(value, flag):
 		return (value & flag) == flag
+
+	# MT2009_PLUS_GLOBAL_BONUS_V1: this client's mob_proto carries the elements of the server's mt2009 mode; while the
+	# server said "BonusMode 1" (M2_BONUS_MODE=global, localeinfo_point.BONUS_GLOBAL) the monsters of
+	# zywioly_global.py have the element of the original data instead (the server's bits 11-16, as the server).
+	GLOBAL_ELEMENT_BITS = (
+		(1 << 11, nonplayer.RACE_FLAG_ATT_ELEC), (1 << 12, nonplayer.RACE_FLAG_ATT_FIRE),
+		(1 << 13, nonplayer.RACE_FLAG_ATT_ICE), (1 << 14, nonplayer.RACE_FLAG_ATT_WIND),
+		(1 << 15, nonplayer.RACE_FLAG_ATT_EARTH), (1 << 16, nonplayer.RACE_FLAG_ATT_DARK),
+	)
+
+	def GetGlobalElementFlag(mobVnum, dwRaceFlag):
+		try:
+			import localeinfo_point
+			if not localeinfo_point.BONUS_GLOBAL:
+				return dwRaceFlag
+			import zywioly_global
+			bits = zywioly_global.ELEMENTS.get(int(mobVnum))
+		except Exception:
+			return dwRaceFlag
+		if bits is None:
+			return dwRaceFlag
+		for serverBit, clientFlag in GLOBAL_ELEMENT_BITS:
+			dwRaceFlag &= ~clientFlag
+		for serverBit, clientFlag in GLOBAL_ELEMENT_BITS:
+			if bits & serverBit:
+				dwRaceFlag |= clientFlag
+		return dwRaceFlag
 
 # MT2009_PLUS_TARGET_POISON_GAUGE_V1: whether a character in view is poisoned,
 # for its gauge (Kiciamol, 9 October). chrmgr.HasAffectByVID and chr.AFF_POISON
