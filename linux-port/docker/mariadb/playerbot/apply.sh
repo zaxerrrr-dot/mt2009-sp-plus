@@ -3555,6 +3555,19 @@ if [ -s /opt/playerbot/transmutacja.sql ]; then
     else
         fail_step "transmutation: transmutacja.sql failed" >&2
     fi
+# MT2009_PLUS_CHANGE_LOOK_V1 (shop, the owner 14 October 2026): Bilet Transmutacji (72326) and Bilet Polimorfii
+# Wierzchowca (72344) for 100 SM - the in-game ItemShop (once per install, category 0 like the scrolls) and the web shop.
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (72326, 72344);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once transmutacja_tickets "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
+(950, 72326, 1, 100, 'DRAGON_COIN', 0),
+(951, 72344, 1, 100, 'DRAGON_COIN', 0);" "could not add the transmutation tickets to the ItemShop"
+db -e "INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1072326, 10, 'Bilet Transmutacji', 'Transmutacja u Theowahdana bez opłaty 50 mln Yang.', 100, 'cash', 72326, 1, 0, 0, 0, '72326', NOW()
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 72326);
+INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1072344, 10, 'Bilet Polimorfii Wierzchowca', 'Zmiana wyglądu wierzchowca u Theowahdana bez opłaty 30 mln Yang.', 100, 'cash', 72344, 1, 0, 0, 0, '72344', NOW()
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 72344);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the transmutation tickets" >&2
+fi
 fi
 
 # MT2009_PLUS_PLAY_COUNT_V1 (Autor: Vekirion): the Wheel of Fortune's "spin N times" keeps all n
