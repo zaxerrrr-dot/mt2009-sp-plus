@@ -659,6 +659,21 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/quest/libs/other/_otherModuleLoad
  && test -s /opt/metin2/share/locale/poland/quest/libs/other/m2_difficulty.lua \
  && echo "share: difficulty hooked into the quest libraries"
 
+# MT2009_PLUS_SKILL9_V1: the 9th skills and the Soul Stones (server-patches/skill9/README.md). The package's
+# training_grandmaster_skill (Kamien Duchowy, G1 -> P) lists special.active_skill_list for the class and
+# specialisation; its compiled object asks quest/skill9.lua's mt2009_skill9.grandmaster_list instead - the same
+# skills plus the 9th one (active_skill_list itself stays: reset_scroll gives skill points back from it).
+COPY quest/skill9.lua /opt/metin2/share/locale/poland/quest/libs/other/skill9.lua
+RUN set -eu; Q=/opt/metin2/share/locale/poland/quest; L=$Q/libs/other/_otherModuleLoader.lua; \
+    S=$Q/object/state/training_grandmaster_skill; \
+    LC_ALL=C grep -q 'other/m2_difficulty.lua' "$L"; \
+    LC_ALL=C grep -q 'other/skill9.lua' "$L" || printf 'dofile( LIBDIR .. "other/skill9.lua")\n' >> "$L"; \
+    LC_ALL=C sed -i 's/special \. active_skill_list \[ job + 1 \] \[ group \] /mt2009_skill9 . grandmaster_list ( job , group ) /' "$S"; \
+    LC_ALL=C grep -q 'mt2009_skill9 \. grandmaster_list ( job , group )' "$S"; \
+    if LC_ALL=C grep -q 'active_skill_list' "$S"; then echo "FATAL: training_grandmaster_skill still reads active_skill_list"; exit 1; fi; \
+    test -s $Q/libs/other/skill9.lua; \
+    echo "share: 9th skills and the Soul Stones"
+
 # MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances follow the
 # world's difficulty - soul stones to Magiczny Pyl, skill books to Pergamin,
 # upgrade items to Materialy Rzemieslnicze. The
