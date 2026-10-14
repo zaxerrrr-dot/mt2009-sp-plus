@@ -69,6 +69,22 @@ for v in sorted(set(srv) | set(cli)):
         fails.append('mob_proto %d: element %#x on the server, no client row' % (v, s))
     elif s != c:
         fails.append('mob_proto %d: client element %#x, server %#x' % (v, c, s))
+# 3) the Metins' looks: the new pack's files (as the GF client has them), its Index line, the npclist lines
+np = yd.NEW_PACK
+want_files = yd.new_pack_files()
+if not os.path.exists(os.path.join(OUT, np + '.index')):
+    fails.append('%s: no pack' % np)
+else:
+    f, v, e2 = m2pack.read_index(os.path.join(OUT, np + '.index'))
+    d2 = packlib.rd(os.path.join(OUT, np + '.data'))
+    if dict((e['name'], m2pack.read_entry(d2, e)) for e in e2) != want_files:
+        fails.append('%s: not the GF files' % np)
+ix = packlib.rd(os.path.join(OUT, 'Index') if os.path.exists(os.path.join(OUT, 'Index')) else os.path.join(BASE, 'Index'))
+if np.encode() not in [l.strip() for l in ix.replace(b'\r\n', b'\n').split(b'\n')]:
+    fails.append('Index: no %s' % np)
+npc = entry('gamedata', 'gamedata/npclist.txt')
+if yd.npclist(npc)[1]:
+    fails.append('npclist: the tree Metins not on %s' % yd.RACE_TREE)
 print('yfinal: %d atlas rows, %d server maps of the repo, %d monsters with an element; %d problem(s)' % (
     len(rows), nmaps, len(srv), len(fails)))
 for f in fails:

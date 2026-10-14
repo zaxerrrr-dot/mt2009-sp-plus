@@ -17,6 +17,15 @@
 #    apply.sh runs zywioly_moby.sql (clears bits 11-16 of every mob it does not list) and then the batches' own
 #    *_zywioly.sql files in this order (ELEMENT_SQL). Every builder of the chain wrote its own rows' bits (or none);
 #    this step makes the whole table equal to the server, so the target window's element icon shows on every map.
+# 3) the new pack yfinal_mobs + gamedata/npclist.txt - two Metins' looks (the list's items 4 and 15):
+#    * Metin Szacunku (8063) and the other metinstone_east_02..05 races (Seoganland/Namgan/Wawoz): their .msm swap the
+#      skin to "D:/Ymir Work/monster2/metinstone_east/metinstone_east_0N.dds" (ShapeData PathName), the staging put
+#      those textures under monster/ only - a white model. The four textures, GF's own files, at that path.
+#    * Metin Drzewnych Stworzen / Metin Lasu (PB 8136/8137, SZC 8126/8127; GF's race metinstone_16): the base client
+#      already has a race file monster/metinstone/metinstone_16.msm of its own (2.0.28's npclist names the race), and
+#      the exe takes a name from the pack registered first - the base one: a grey stone with its red glow instead of
+#      the green Metin wrapped in vines. GF's metinstone_16.msm/.dds under a name no client has (RACE_TREE), the four
+#      vnums' npclist lines pointed at it.
 import os
 import re
 
@@ -169,3 +178,63 @@ def client_elements(b):
         off = i * MOB_RECORD
         out[struct.unpack_from('<I', raw, off)[0]] = struct.unpack_from('<I', raw, off + MOB_RACE_FLAG)[0] & ELEMENT_MASK
     return out
+
+
+# -- 3) the Metins' looks ------------------------------------------------------------------------------------------
+GF = '/opt/metin2/cache/gf/Gameforge_26.1.11/_client/d_/'
+NEW_PACK = 'yfinal_mobs'
+RACE_TREE = 'mt2009_metin_tree'
+TREE_VNUMS = (8126, 8127, 8136, 8137)
+TREE_DIR = 'd:/ymir work/monster/metinstone/'
+
+
+def _gf(name):
+    return open(GF + name[len('d:/'):], 'rb').read()
+
+
+def new_pack_files():
+    """{in-pack name: bytes} of yfinal_mobs."""
+    out = {}
+    for n in range(2, 6):
+        k = 'd:/ymir work/monster2/metinstone_east/metinstone_east_%02d.dds' % n
+        out[k] = _gf(k)
+    msm = _gf(TREE_DIR + 'metinstone_16.msm').decode('latin-1')
+    assert msm.count('"metinstone_16.dds"') == 1, 'GF metinstone_16.msm changed'
+    out[TREE_DIR + RACE_TREE + '.msm'] = msm.replace('"metinstone_16.dds"', '"%s.dds"' % RACE_TREE).encode('latin-1')
+    out[TREE_DIR + RACE_TREE + '.dds'] = _gf(TREE_DIR + 'metinstone_16.dds')
+    return out
+
+
+def npclist(b):
+    """The tree Metins' vnum lines -> RACE_TREE, its race line (source folder metinstone) added; line ends kept."""
+    text = b.decode('cp1250')
+    nl = '\r\n' if '\r\n' in text else '\n'
+    lines = text.split(nl)
+    tail = lines and lines[-1] == ''
+    if tail:
+        lines.pop()
+    want = dict(('%d' % v, '%d\t%s' % (v, RACE_TREE)) for v in TREE_VNUMS)
+    race = '0\t%s\tmetinstone' % RACE_TREE
+    changed = 0
+    seen = set()
+    for i, l in enumerate(lines):
+        t = l.split('\t')
+        k = t[0].strip()
+        if k in want:
+            seen.add(k)
+            if l != want[k]:
+                lines[i] = want[k]
+                changed += 1
+        elif k == '0' and len(t) > 1 and t[1].strip() == RACE_TREE:
+            seen.add(RACE_TREE)
+    if RACE_TREE not in seen:
+        # with the other race lines (the vnum-0 block at the top of the file)
+        last0 = max([i for i, l in enumerate(lines) if l.split('\t')[0].strip() == '0'] or [-1])
+        lines.insert(last0 + 1, race)
+        changed += 1
+    for k in sorted(set(want) - seen):
+        lines.append(want[k])
+        changed += 1
+    if tail:
+        lines.append('')
+    return nl.join(lines).encode('cp1250'), changed
