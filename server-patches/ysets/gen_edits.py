@@ -238,6 +238,7 @@ void Mt2009YSetsSendAll(LPCHARACTER ch)
 {
 	if (!ch)
 		return;
+	Mt2009YSetsNotify(ch, 0, 0, 0);            // the client forgets what it heard before (a warp is a new login)
 	for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
 	{
 		LPITEM item = ch->GetInventoryItem(i);
