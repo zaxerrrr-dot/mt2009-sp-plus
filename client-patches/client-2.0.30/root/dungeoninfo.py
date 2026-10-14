@@ -238,6 +238,24 @@ def _int(v):
 
 
 # "DungeonInfo <sub> ..." from the server (game.py).
+# MT2009_PLUS_RANKING_STATUE_V1: the ranking board the statue asked for, once the panel has its list.
+_pendingRank = [0]
+RANK_SHIP_MAP = 367
+
+
+def _ShowPendingRank(wnd):
+	if not _pendingRank[0] or GetCount() <= 0:
+		return
+	_pendingRank[0] = 0
+	key = 0
+	for i in xrange(len(getattr(wnd, "toggleButtonObjList", []))):
+		if GetMapIndex(i) == RANK_SHIP_MAP:
+			key = i
+			break
+	wnd._DungeonInfoWindow__OnClickListButton(key)
+	wnd._DungeonInfoWindow__OnClickRankingButton(1)
+
+
 def OnCommand(game, *args):
 	if not args:
 		return
@@ -264,15 +282,21 @@ def OnCommand(game, *args):
 				d["drops"].append((_int(a[1]), _int(a[2]), _int(a[3])))
 		elif sub == "show":
 			# MT2009_PLUS_YOHARA_PORT_V1: the Statua Wojownika's "Ranking lochow" (quest port_yohary) opens the panel.
+			# MT2009_PLUS_RANKING_STATUE_V1 (the owner, 14 October): and its ranking board at once - Obrona Statku's
+			# (map 367) when it is on the panel's list, else the first dungeon's - when the list has come ("open").
 			import uidungeoninfo
 			wnd = uidungeoninfo.GetWindow()
+			_pendingRank[0] = 1
 			if not wnd.IsShow():
 				wnd.Open()
+			else:
+				_ShowPendingRank(wnd)
 		elif sub == "open":
 			import uidungeoninfo
 			wnd = uidungeoninfo.GetWindow()
 			if wnd.IsShow():
 				wnd.Initialize()
+				_ShowPendingRank(wnd)
 		elif sub == "rank" and len(a) >= 5:
 			_rank.append((a[2], _int(a[3]), _int(a[4])))
 		elif sub == "rankme" and len(a) >= 2:
