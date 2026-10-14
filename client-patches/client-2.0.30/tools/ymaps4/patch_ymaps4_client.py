@@ -14,7 +14,7 @@
 #   gamedata/atlasinfo.txt  the map's row (= the server's Setting.txt; it overlaps none of ours);
 #   gamedata/npclist.txt    nothing to add (client 2.0.61 has every race of the map) - kept for the build's jobs;
 #   gamedata/item_list.txt, gamedata/item_proto, locale/pl/itemdesc.txt
-#                           the 44 items of tools/yohara_maps4/yohara_items4.json (= the server's yohara_items4.sql,
+#                           the 124 items of tools/yohara_maps4/yohara_items4.json (= the server's yohara_items4.sql,
 #                           tools/yohara_maps4/gen_yitems4.py): a full record each over a template (Rubinowa Bransoleta+0
 #                           14500 for the bracelets, Zelazna Szkatulka 50120 for the rest - ../yohara/patch_yohara_client.py
 #                           yitem_record), its item_list line (the GF icons: client-2.0.30/root/icon/item) and its
@@ -47,8 +47,8 @@ ITEMS_JSON = os.path.join(REPO, 'tools', 'yohara_maps4', 'yohara_items4.json')
 MOBS3_JSON = os.path.join(REPO, 'tools', 'yohara_maps3', 'ymaps3_mobs.json')
 ATLAS = ['metin2_map_whitdragonvalley\t128000\t1510400\t3\t3']   # = linux-port/docker/game/yohara_maps4/map/*/Setting.txt
 ROWS = 20
-ITEMS = 44
-ITEM_TEMPLATE = {2: 14500}     # by type: Rubinowa Bransoleta+0 for the bracelets, else py.TEMPLATE (50120)
+ITEMS = 124                    # 44 + the jade necklaces / earrings (MT2009_PLUS_JADE_JEWELLERY_V1)
+ITEM_TEMPLATE = {2: 14500}     # by type: Rubinowa Bransoleta+0 for the jade jewellery, else py.TEMPLATE (50120)
 REMOVE = {10145: b'SchronPlnW ', 10146: b'WawozPlnW '}
 RACE_FLAG = 83                 # the record's dwRaceFlag (= ../zywioly/patch_zywioly_client.py)
 ELEMENT_MASK = 0x1F800         # bits 11-16

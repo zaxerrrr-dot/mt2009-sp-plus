@@ -19,6 +19,15 @@ client - the method of tools/yohara_items/gen_yitems.py:
                                            yohara_mapy4: the wiki's "Wytwarzanie Bransolet" - 10 jade, 25/30 plates,
                                            2 Skazony Rdzen / 5 Kiel Argosa / 10 Luska Argosa, 1 000 000 Yang, 30%;
                                            Gaya we do not have);
+  16580-16619 Kolia Jadeitu Mgly / Slonca / Nocy / Dymu+0..+9     MT2009_PLUS_JADE_JEWELLERY_V1 (the owner, 14 October:
+  17570-17609 Klipsy Jadeitu Mgly / Slonca / Nocy / Dymu+0..+9    "naszyjniki i kolczyki jadeitowe wg wiki"): the
+                                           necklaces and earrings of the same jade - level 105, Owsap's same two
+                                           APPLY_RANDOM lines (server-patches/obreczjadeitu2: Precyzja + the Will of
+                                           the jade, the wiki's ranges of each kind), the same refine rows 22701-22709
+                                           (the wiki: 250 000 .. 650 000 Yang, the same plates and pearls) and the same
+                                           recipes at Mistrz Chi (pl-wiki "Wytwarzanie Naszyjnikow" / "Wytwarzanie
+                                           Kolczykow", quest yohara_mapy4); the chests the wiki names: the Dockerfile
+                                           step MT2009_PLUS_JADE_JEWELLERY_V1 (linux-port/docker/game/jadejewel);
   72339 Kamien Metin z Yohara             a quest-use item (quest yohara_mapy4): a Yohara Metin (level 120+) next
                                            to the user, on a Yohara Sung Ma map, from the 1st Champion Level; from
                                            Skrzynia z Bransoletka and the Id. Skrzynie Kolczykow / Naszyjniku;
@@ -60,11 +69,16 @@ ICON_OUT = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'root', 'icon',
 
 ST = Y.ST
 TYPES = dict(Y.TYPES, ITEM_TREASURE_BOX=20, ITEM_TREASURE_KEY=21)
-SUBTYPES = dict(Y.SUBTYPES, ARMOR_WRIST=3)
-WEAR = dict(Y.WEAR, WEAR_WRIST=8)
+SUBTYPES = dict(Y.SUBTYPES, ARMOR_WRIST=3, ARMOR_NECK=5, ARMOR_EAR=6)
+WEAR = dict(Y.WEAR, WEAR_WRIST=8, WEAR_NECK=32, WEAR_EAR=64)
 REFINE_ID0 = 22701          # ours (Owsap's 810-818 are other rows here; the set system's are 22600-22659)
 
 BRACELETS = [(14580, 'Mgły'), (14590, 'Słońca'), (14600, 'Nocy'), (14610, 'Dymu')]
+# MT2009_PLUS_JADE_JEWELLERY_V1: the jade jewellery of each kind - (its armour subtype, its Polish name, the +0 of
+# Mgly / Slonca / Nocy / Dymu - Owsap's vnums, free in our world on 14 October 2026)
+JEWELLERY = [('ARMOR_WRIST', 'Obręcz', BRACELETS),
+             ('ARMOR_NECK', 'Kolia', [(16580, 'Mgły'), (16590, 'Słońca'), (16600, 'Nocy'), (16610, 'Dymu')]),
+             ('ARMOR_EAR', 'Klipsy', [(17570, 'Mgły'), (17580, 'Słońca'), (17590, 'Nocy'), (17600, 'Dymu')])]
 # the Polish names the drops of the earlier batches use (ascii)
 ITEMS4 = {72339: 'Kamien Metin z Yohara', 83055: 'Plat. Skrzynia Skarbow', 83056: 'Plat. Klucz do Skrz. Sk.',
           95737: 'Przeb. Ksiega Zwierza', 14580: 'Obrecz Jadeitu Mgly+0', 14590: 'Obrecz Jadeitu Slonca+0',
@@ -123,22 +137,24 @@ def main():
         assert len(d['locale_name'].encode('cp1250')) <= 32, d['locale_name']
         return d
 
-    # the bracelets (+0..+9 of each): no item_proto apply - the Will line is the item's (engine patch)
-    for b0, kind in BRACELETS:
-        for lv in range(10):
-            v = b0 + lv
-            o = proto[v]
-            assert o['Type'] == 'ITEM_ARMOR' and o['SubType'] == 'ARMOR_WRIST', v
-            assert o['ApplyType0'] == 'APPLY_RANDOM' and o['ApplyType1'] == 'APPLY_RANDOM', v
-            pl, text = desc[v]
-            assert pl == 'Obręcz Jadeitu %s+%d' % (kind, lv), (v, pl)
-            rs = 0
-            if lv < 9:
-                assert int(o['RefinedVnum']) == v + 1 and int(o['RefineSet']) == 810 + lv, (v, o['RefineSet'])
-                rs = REFINE_ID0 + lv
-            items.append(base(v, o, pl, text, refined_vnum=v + 1 if lv < 9 else 0, refine_set=rs,
-                              icon='icon/item/%d.tga' % b0, list_type='ARMOR'))
-            icons['%d.tga' % b0] = '%d.tga' % b0
+    # the bracelets, necklaces and earrings (+0..+9 of each): no item_proto apply - the two lines are the item's
+    # (engine patch obreczjadeitu2)
+    for subtype, noun, firsts in JEWELLERY:
+        for b0, kind in firsts:
+            for lv in range(10):
+                v = b0 + lv
+                o = proto[v]
+                assert o['Type'] == 'ITEM_ARMOR' and o['SubType'] == subtype, v
+                assert o['ApplyType0'] == 'APPLY_RANDOM' and o['ApplyType1'] == 'APPLY_RANDOM', v
+                pl, text = desc[v]
+                assert pl == '%s Jadeitu %s+%d' % (noun, kind, lv), (v, pl)
+                rs = 0
+                if lv < 9:
+                    assert int(o['RefinedVnum']) == v + 1 and int(o['RefineSet']) == 810 + lv, (v, o['RefineSet'])
+                    rs = REFINE_ID0 + lv
+                items.append(base(v, o, pl, text, refined_vnum=v + 1 if lv < 9 else 0, refine_set=rs,
+                                  icon='icon/item/%d.tga' % b0, list_type='ARMOR'))
+                icons['%d.tga' % b0] = '%d.tga' % b0
     for lv in range(9):
         r = refine[810 + lv]
         # id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src, result, prob
@@ -168,17 +184,18 @@ def main():
                       icon='icon/item/95737.tga', list_type='ETC'))
     icons['95737.tga'] = '55007.tga'
     byv = dict((i['vnum'], i) for i in items)
-    assert len(byv) == len(items) == 44
+    assert len(byv) == len(items) == 124
     write_sql(items, refines)
     write_json(items)
     copy_icons(icons, a.gf)
     write_sig()
-    print('items %d (bracelets 40, Kamien Metin z Yohara, Plat. Skrzynia / Klucz, Przeb. Ksiega Zwierza), refine '
+    print('items %d (bracelets 40, necklaces 40, earrings 40, Kamien Metin z Yohara, Plat. Skrzynia / Klucz, Przeb. Ksiega Zwierza), refine '
           'rows %d (%d-%d)' % (len(items), len(refines), refines[0]['id'], refines[-1]['id']))
 
 
 def write_sql(items, refines):
-    L = ['-- MT2009_PLUS_YOHARA_ITEMS4_V1: Obrecze Jadeitu (14580-14619), Kamien Metin z Yohara (72339), Plat. Skrzynia',
+    L = ['-- MT2009_PLUS_YOHARA_ITEMS4_V1: Obrecze Jadeitu (14580-14619), Kolie Jadeitu (16580-16619) and Klipsy Jadeitu',
+         '-- (17570-17609, MT2009_PLUS_JADE_JEWELLERY_V1), Kamien Metin z Yohara (72339), Plat. Skrzynia',
          '-- Skarbow / Plat. Klucz do Skrz. Sk. (83055/83056), Przeb. Ksiega Zwierza (95737) - the owner, 14 October 2026.',
          '-- GENERATED by tools/yohara_maps4/gen_yitems4.py - do not edit, rerun it. Every start (apply.sh), idempotent:',
          '-- INSERT IGNORE - a row the operator changed is kept. Source: Owsap v6.2.6 db/item_proto.txt (the official',
