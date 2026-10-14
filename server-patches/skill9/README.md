@@ -20,15 +20,25 @@ dokładnie tabele wiki. Burza Szponów (183) jest Likana – u nas nie ma Likana
 
 ## Nauka
 
-- Księga 9. umiejętności: tylko od **1. Poziomu Czempiona**; każda próba czytania kosztuje **PD Czempiona: 2 000**
-  poniżej M1 i **5 000** od M1 do G1 (`value1`/`value2` ksiąg w item_proto GF; wiki en/tr – pl wiki ma jeszcze stare
-  „20 000”). Brak PD – nie czyta.
+- Księga 9. umiejętności: tylko od **1. Poziomu Czempiona**; każda próba czytania (aż do G1) kosztuje **20 000 PD
+  Czempiona** – jak pl wiki (decyzja właściciela 14.10; `value1`/`value2` ksiąg w item_proto GF mówią 2 000 / 5 000 –
+  nieużywane). Brak PD – nie czyta.
 - Od 0 do M1 **księgami** (punktów umiejętności nie da się użyć: `DISABLE_BY_POINT_UP`, w kliencie `CANNOT_LEVEL_UP`):
   udana próba = +1 poziom, od 17 do 19 klasyczny los na M (de wiki), 20 = M1. M1 → G1 jak każda umiejętność
   (nasza reguła ksiąg: liczba udanych odczytów rośnie z poziomem). Szansa i czas klątwy jak przy innych księgach
   (`m2_book_wait`, Zwój Egzorcyzmu, Rada Pustelnika = 100 %).
-- G1 → P: **Kamienie Duchowe** (quest `training_grandmaster_skill` pokazuje 9. umiejętność obok innych –
-  `linux-port/docker/game/quest/skill9.lua` + krok Dockerfile „share: 9th skills and the Soul Stones”).
+- G1 → P: **Mikstura Talentu** (50527, `MT2009_PLUS_SKILL9_TALENT_V1`, quest `linux-port/docker/game/quest/mikstura_talentu.quest`,
+  kompilowany osobnym krokiem etapu `quests` Dockerfile'a) – wg pl wiki (Mikstura_Talentu): jedna udana mikstura na
+  stopień (G1→G2 … G10→P), szansa 30 % (z Radą Pustelnika ×2,5 = 75 %, jak przy Kamieniu Duchowym na wiki; Rada znika
+  przy próbie), punkty rangi jak Kamień Duchowy: 1000 + 500 za stopień ponad G1 (przy randze ujemnej podwójnie),
+  nieudana próba zabiera 1/2–2/3 tego („od 1/2 do 1/3 mniej”); przy randze −19 000 i niższej nie działa; następna próba
+  po losowych 8–12 h (`mikstura_talentu.next_time`), Zwój Egzorcyzmu pozwala od razu (zdejmowany przy próbie).
+  **Kamienie Duchowe nie uczą 9. umiejętności** (quest `training_grandmaster_skill` pakietu bez zmian).
+  Przedmiot: `yohara_items2.sql` (typ QUEST, stos 200, handel/magazyn/sklep/NPC – tak), ikona GF `yohara_50527.tga`.
+  Drop (wiki): Metiny Świadomości/Szacunku/Uważności/Jin (2), wszyscy bossowie Nowego Kontynentu (3), potwory 1. poziomu
+  Świątyni Węży, Tajemniczej Instancji, Wąwozu Północnego Wiatru i Rozpadliny Dusz (0,02) – lista `tools/yskill9/talent.py`,
+  dopisywana przez generatory dropu Yohary (`with_talent`); B. Smocze Skrzynie, Skarb Węży i nagrody Wieży Sung Mahi
+  miały ją już. Nagroda Dongan / Nagroda Świątyni Węży (83110/83113) – nie ma ich u nas (łańcuchy misji GF).
 - Księga uczy tylko umiejętności **własnej** klasy i specjalizacji (ninja sztyletowy nie przeczyta Strzału Wichury).
 - Reset umiejętności (zwoje, zmiana drogi) **nie kasuje** 9. umiejętności (to księgi, nie punkty); Księga Zapomnienia
   jej nie obniża (nie było punktów do oddania).
@@ -42,14 +52,14 @@ dokładnie tabele wiki. Burza Szponów (183) jest Likana – u nas nie ma Likana
 | Logika | `linux-port/overlays/playerbot/src/game/src/playerbot_skill9.h/.cpp` |
 | Haki silnika | `edits.json` (24 zmiany w 6 plikach: `common/skill_length.h`, `char_skill.cpp`, `char_battle.cpp`, `char_affect.cpp`, `constants.cpp`, `battle.cpp`); generator `gen_edits.py`; `apply_skill9.py <game/src>` (Linux) i `Apply-Skill9Patch.ps1` (Windows, krok `tools/port/Apply-MT2009PlusEngine.ps1` po Żyłach Jadeitu) |
 | Baza | `linux-port/docker/mariadb/playerbot/yskill9.sql` (`tools/yskill9/gen_yskill9_sql.py`, dane `tools/yskill9/yskill9_data.py`; `apply.sh`): wiersze 176–182 i nowe członki `setFlag` (`ATTACK_BLEEDING`, `PARTY` = bit 28) |
-| Quest | `linux-port/docker/game/quest/skill9.lua` (Kamienie Duchowe) |
+| Quest | `linux-port/docker/game/quest/mikstura_talentu.quest` (Mikstura Talentu, G1 → P) |
 | Klient | `client-patches/client-2.0.30/tools/yskill9` (paczka `yskill9`, skilldesc/skilltable), `root/playersettingmodule.py` (miejsce 7 okna umiejętności), `root/uiaffectbar.py` (ikony Tarczy Eteru), exe `client-patches/exe` (`ENABLE_NINTH_SKILL`) |
 
 ## Haki (edits.json)
 
 - `skill_length.h`: `SKILL_FINISH` … `SKILL_CHEONUN` (176–182) i `SKILL_ILIPUNGU` (183).
 - `IsLearnableSkill`, `CanUseSkill`: 9. umiejętność tylko klasy i specjalizacji postaci.
-- `LearnSkillByBook`: Czempion i PD Czempiona (sprawdzenie przed, opłata przy próbie), czytanie od 0, indeks tabeli
+- `LearnSkillByBook`: Czempion i 20 000 PD Czempiona (sprawdzenie przed, opłata przy próbie), czytanie od 0, indeks tabeli
   w logu nigdy ujemny. `SkillLevelUp`: księgą od 0, bez blokady 17–19, klasyczny los M. `SkillLevelDown`: nie.
   `ResetSkill`: zachowuje 176–182.
 - `IsUsableSkillMotion`: ruchy 9 i 24 (+25 na stopień) – bez tego klient dostawał `SKILL_HACK` i rozłączenie.

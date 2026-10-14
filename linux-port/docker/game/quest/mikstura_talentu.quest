@@ -1,0 +1,132 @@
+-- MT2009_PLUS_SKILL9_TALENT_V1: Mikstura Talentu (50527) - 9. umiejêtnoœæ od G1 do P (server-patches/skill9/README.md).
+-- Wg pl-wiki (Mikstura_Talentu): jeden udany odczyt na stopieñ G1 -> G2 ... -> P, szansa ok. 30%, Rada
+-- Pustelnika (afekt 512) mno¿y j¹ jak przy Kamieniu Duchowym (x2,5 = 75%) i znika przy próbie; zu¿ywa punkty
+-- rangi jak Kamieñ Duchowy (1000 + 500 za stopieñ ponad G1, przy randze ujemnej podwójnie), nieudana próba
+-- zabiera 1/2 do 2/3 tego ("od 1/2 do 1/3 mniej"); nie dzia³a przy randze -19 000 i ni¿szej; nastêpna
+-- próba po 8-12 h (losowo), Zwój Egzorcyzmu (afekt 513) pozwala od razu. Kamienie Duchowe nie ucz¹ 9. umiejêtnoœci.
+-- Poziom: pc.set_skill_level (jak klasyczne SkillLevelUp od 30 do 40: sam poziom, 9. umiejêtnoœci nie maj¹ punktów).
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest mikstura_talentu begin
+	state start begin
+		function skill()
+			local by_job = {
+				[0] = { 176, 176 },	-- Wojownik: Trzêsienie
+				[1] = { 177, 178 },	-- Ninja: Œwiat³o Gwiazd / Strza³ Wichury
+				[2] = { 179, 180 },	-- Sura: Piekielny Cios / Fala Œmierci
+				[3] = { 181, 182 },	-- Szaman: Meteor / Tarcza Eteru
+			}
+			local row = by_job[pc.get_job()]
+			local group = pc.get_skill_group()
+			if row == nil or row[group] == nil then
+				return 0
+			end
+			return row[group]
+		end
+
+		function skill_name(vnum)
+			local names = {
+				[176] = "Trzêsienie", [177] = "Œwiat³o Gwiazd", [178] = "Strza³ Wichury", [179] = "Piekielny Cios",
+				[180] = "Fala Œmierci", [181] = "Meteor", [182] = "Tarcza Eteru",
+			}
+			return names[vnum] or ("umiejêtnoœæ " .. vnum)
+		end
+
+		function grade(level)
+			if level >= 40 then
+				return "P"
+			end
+			return "G" .. (level - 29)
+		end
+
+		when 50527.use begin
+			local TALENT, ADVICE = 50527, 512	-- Rada Pustelnika: AFFECT_SKILL_BOOK_BONUS
+			say_title("Mikstura Talentu")
+			local vnum = mikstura_talentu.skill()
+			if vnum == 0 then
+				say("Najpierw wybierz drogê umiejêtnoœci.")
+				return
+			end
+			local name = mikstura_talentu.skill_name(vnum)
+			local level = pc.get_skill_level(vnum)
+			if level < 30 then
+				say(string.format("Mikstura Talentu udoskonala 9. umiejêtnoœæ od G1 do P. %s", name))
+				say("musi najpierw osi¹gn¹æ stopieñ G1 (ksiêgami).")
+				return
+			end
+			if level >= 40 then
+				say(string.format("%s jest ju¿ na stopniu P.", name))
+				return
+			end
+			local now = get_time()
+			local next_time = pc.getqf("next_time")
+			if now < next_time and not pc.is_skill_book_no_delay() then
+				say("Mikstura jeszcze nie zadzia³a - organizm musi odpocz¹æ.")
+				say_reward(string.format("Nastêpna próba za: %s.", second_to_smart_time(next_time - now)))
+				say("Zwój Egzorcyzmu pozwala spróbowaæ od razu.")
+				return
+			end
+			local alignment = pc.get_real_alignment()
+			if alignment <= -19000 then
+				say("Twoja ranga jest zbyt niska (-19 000 lub mniej),")
+				say("by Mikstura Talentu zadzia³a³a.")
+				return
+			end
+			local need = 1000 + 500 * (level - 30)
+			if alignment < 0 then
+				need = need * 2
+			end
+			local chance = 30
+			if pc.has_affect(ADVICE) then
+				chance = 75
+			end
+			say(string.format("%s: %s -> %s.", name, mikstura_talentu.grade(level), mikstura_talentu.grade(level + 1)))
+			say_reward(string.format("Szansa: %d%%. Udana próba: -%d punktów rangi,", chance, need))
+			say_reward(string.format("nieudana: od -%d do -%d punktów rangi.", math.floor(need / 2), math.floor(need * 2 / 3)))
+			if alignment < 0 then
+				say("Przy ujemnej randze koszt jest podwójny.")
+			end
+			say("Nastêpna próba mo¿liwa po 8-12 godzinach.")
+			if select("Wypij", "Anuluj") != 1 then
+				return
+			end
+			-- again after the dialog: the bag, the wait, the skill (the window stays open while anything changes)
+			if pc.count_item(TALENT) < 1 or pc.get_skill_level(vnum) != level then
+				return
+			end
+			now = get_time()
+			if now < pc.getqf("next_time") then
+				if not pc.is_skill_book_no_delay() then
+					return
+				end
+				pc.remove_skill_book_no_delay()
+			end
+			chance = 30
+			if pc.has_affect(ADVICE) then
+				chance = 75
+				affect.remove_new(ADVICE)
+			end
+			pc.remove_item(TALENT, 1)
+			pc.setqf("next_time", now + number(8 * 3600, 12 * 3600))
+			say_title("Mikstura Talentu")
+			if number(1, 100) <= chance then
+				pc.set_skill_level(vnum, level + 1)
+				pc.change_alignment(-need)
+				char_log(vnum, "TALENT_SUCCESS", string.format("%d -> %d", level, level + 1))
+				say_reward("Uda³o siê!")
+				if level + 1 >= 40 then
+					say(string.format("%s: osi¹gniêto stopieñ P - najwy¿szy.", name))
+				else
+					say(string.format("%s: teraz %s.", name, mikstura_talentu.grade(level + 1)))
+				end
+				say_reward(string.format("Zu¿yto %d punktów rangi.", need))
+			else
+				local lost = number(math.floor(need / 2), math.floor(need * 2 / 3))
+				pc.change_alignment(-lost)
+				char_log(vnum, "TALENT_FAIL", string.format("%d", level))
+				say_reward("Nie uda³o siê...")
+				say("Mikstura nie zadzia³a³a tym razem. Spróbuj ponownie póŸniej.")
+				say_reward(string.format("Zu¿yto %d punktów rangi.", lost))
+			end
+		end
+	end
+end

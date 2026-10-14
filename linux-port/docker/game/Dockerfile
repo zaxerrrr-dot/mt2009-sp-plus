@@ -378,6 +378,22 @@ RUN set -eux; \
     chmod -R a+rX "$out"; \
     echo "quest objects:"; find "$out/object" -type f | wc -l
 
+# MT2009_PLUS_SKILL9_TALENT_V1: Mikstura Talentu (50527) trains the 9th skill G1 -> P (server-patches/skill9/README.md;
+# the Soul Stones' training_grandmaster_skill stays the package's - it never offers a 9th skill). Compiled on its own
+# into the objects above (qc-work still holds the stage's quest_functions with the engine's additions).
+RUN set -eux; out=/out-quest/poland/quest; q=mikstura_talentu; \
+    if [ ! -d /tmp/qc-work/object ] || [ ! -f "/quest-add/$q.quest" ]; then echo "note: no $q"; exit 0; fi; \
+    sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
+    ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
+    test -s "/tmp/qc-work/object/state/$q"; \
+    test -s "/tmp/qc-work/object/50527/use/$q.start"; \
+    cp -a "/tmp/qc-work/$q.quest" "$out/$q.quest"; \
+    mkdir -p "$out/object/state" "$out/object/50527/use"; \
+    cp -a "/tmp/qc-work/object/state/$q" "$out/object/state/$q"; \
+    cp -a "/tmp/qc-work/object/50527/use/$q.start" "$out/object/50527/use/$q.start"; \
+    chmod -R a+rX "$out"; \
+    echo "quest: $q (Mikstura Talentu)"
+
 # -----------------------------------------------------------------------------
 FROM ${BASE_IMAGE} AS runtime
 
@@ -672,21 +688,6 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/quest/libs/other/_otherModuleLoad
  && LC_ALL=C grep -q 'other/m2_difficulty.lua' "$L" \
  && test -s /opt/metin2/share/locale/poland/quest/libs/other/m2_difficulty.lua \
  && echo "share: difficulty hooked into the quest libraries"
-
-# MT2009_PLUS_SKILL9_V1: the 9th skills and the Soul Stones (server-patches/skill9/README.md). The package's
-# training_grandmaster_skill (Kamien Duchowy, G1 -> P) lists special.active_skill_list for the class and
-# specialisation; its compiled object asks quest/skill9.lua's mt2009_skill9.grandmaster_list instead - the same
-# skills plus the 9th one (active_skill_list itself stays: reset_scroll gives skill points back from it).
-COPY quest/skill9.lua /opt/metin2/share/locale/poland/quest/libs/other/skill9.lua
-RUN set -eu; Q=/opt/metin2/share/locale/poland/quest; L=$Q/libs/other/_otherModuleLoader.lua; \
-    S=$Q/object/state/training_grandmaster_skill; \
-    LC_ALL=C grep -q 'other/m2_difficulty.lua' "$L"; \
-    LC_ALL=C grep -q 'other/skill9.lua' "$L" || printf 'dofile( LIBDIR .. "other/skill9.lua")\n' >> "$L"; \
-    LC_ALL=C sed -i 's/special \. active_skill_list \[ job + 1 \] \[ group \] /mt2009_skill9 . grandmaster_list ( job , group ) /' "$S"; \
-    LC_ALL=C grep -q 'mt2009_skill9 \. grandmaster_list ( job , group )' "$S"; \
-    if LC_ALL=C grep -q 'active_skill_list' "$S"; then echo "FATAL: training_grandmaster_skill still reads active_skill_list"; exit 1; fi; \
-    test -s $Q/libs/other/skill9.lua; \
-    echo "share: 9th skills and the Soul Stones"
 
 # MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances follow the
 # world's difficulty - soul stones to Magiczny Pyl, skill books to Pergamin,
