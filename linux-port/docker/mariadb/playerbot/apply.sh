@@ -3546,6 +3546,17 @@ if [ -s /opt/playerbot/czempion.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_CHANGE_LOOK_V1: Transmutacja (server-patches/transmutacja/README.md). transmutacja.sql is idempotent
+# (ADD COLUMN IF NOT EXISTS, INSERT IGNORE): player.item.transmutation, which every item query of a db core with the
+# patch names - must run before that core starts - and the tickets / reversals 72325, 72326, 72341, 72343, 72344.
+if [ -s /opt/playerbot/transmutacja.sql ]; then
+    if db < /opt/playerbot/transmutacja.sql; then
+        echo "[playerbot-migrate] transmutation: transmutacja.sql applied"
+    else
+        fail_step "transmutation: transmutacja.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_PLAY_COUNT_V1 (Autor: Vekirion): the Wheel of Fortune's "spin N times" keeps all n
 # rewards of one spin in player.wheel_spin.rewards ("vnum|count|rare#...") and n in spins
 # (playerbot_wheel.h). The core adds them itself on its first wheel start, but only if its

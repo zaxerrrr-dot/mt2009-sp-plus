@@ -1,0 +1,29 @@
+-- MT2009_PLUS_CHANGE_LOOK_V1: Transmutacja u Teowadena (Theowahdan, 60003) - server-patches/transmutacja/README.md.
+-- A quest of its own, so the sash options of acce_costume_uriel.quest (the same NPC) stay untouched. The window
+-- (root/uichangelook.py) and its rules are the engine's (playerbot_changelook.cpp): game.open_changelook(0) items,
+-- game.open_changelook(1) mounts. The rules as on the pl-wiki "Transmutacja".
+quest transmutacja begin
+	state start begin
+		when 60003.chat."Transmutacja" begin
+			say_title(mob_name(60003))
+			say("Mogê przenieœæ wygl¹d jednego przedmiotu na drugi.")
+			say("Broñ przyjmie wygl¹d broni tego samego rodzaju albo")
+			say("wizerunku broni, zbroja i kostium - wygl¹d zbroi albo")
+			say("kostiumu, wierzchowiec - wygl¹d innego wierzchowca.")
+			say("Przenoszê tylko wygl¹d: statystyki i bonusy zostaj¹.")
+			say("")
+			say_reward("Przedmiot, którego wygl¹d weŸmiesz, zniknie.")
+			say_reward("Ulepszenie przedmiotu usuwa transmutacjê.")
+			say("Koszt: 50 000 000 Yang albo Bilet Transmutacji,")
+			say("wierzchowiec: 30 000 000 Yang albo Bilet Polimorfii.")
+			local s = select("Transmutacja przedmiotu", "Polimorfia wierzchowca", "Anuluj")
+			if s == 1 then
+				setskin(NOWINDOW)
+				game.open_changelook(0)
+			elseif s == 2 then
+				setskin(NOWINDOW)
+				game.open_changelook(1)
+			end
+		end
+	end
+end

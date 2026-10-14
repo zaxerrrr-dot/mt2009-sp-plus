@@ -158,14 +158,14 @@
  {
   "file": "safebox.cpp",
   "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (safebox add)",
-  "old": "\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n\n\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n\tsys_log(1, \"SAFEBOX: ADD",
-  "new": "\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (safebox add)\n#endif\n\n\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n\tsys_log(1, \"SAFEBOX: ADD"
+  "old": "\tpack.anti_flags\t= pkItem->GetAntiFlag();\n",
+  "new": "\tpack.anti_flags\t= pkItem->GetAntiFlag();\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (safebox add)\n#endif\n"
  },
  {
   "file": "safebox.cpp",
   "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (safebox move)",
-  "old": "\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n\n\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n}",
-  "new": "\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (safebox move)\n#endif\n\n\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n}"
+  "old": "\tpack.anti_flags = pkItem->GetAntiFlag();\n",
+  "new": "\tpack.anti_flags = pkItem->GetAntiFlag();\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // MT2009_PLUS_CHANGE_LOOK_V1 (safebox move)\n#endif\n"
  },
  {
   "file": "exchange.cpp",

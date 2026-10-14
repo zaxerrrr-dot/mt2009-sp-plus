@@ -146,16 +146,12 @@ edit('packet.h', 'packet exchange',
 after('char_item.cpp', 'item set',
       '\t\t\tthecore_memcpy(pack.aAttr, pItem->GetAttributes(), sizeof(pack.aAttr));\n',
       '#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\tpack.dwTransmutation = pItem->GetTransmutation(); // %s (item set)\n#endif\n' % M)
-edit('safebox.cpp', 'safebox add',
-     '\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n\n\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n\tsys_log(1, "SAFEBOX: ADD',
-     '\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n'
-     '#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // %s (safebox add)\n#endif\n\n'
-     '\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n\tsys_log(1, "SAFEBOX: ADD' % M)
-edit('safebox.cpp', 'safebox move',
-     '\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n\n\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n}',
-     '\tthecore_memcpy(pack.aAttr, pkItem->GetAttributes(), sizeof(pack.aAttr));\n'
-     '#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // %s (safebox move)\n#endif\n\n'
-     '\tm_pkChrOwner->GetDesc()->Packet(&pack, sizeof(pack));\n}' % M)
+after('safebox.cpp', 'safebox add',
+      '\tpack.anti_flags\t= pkItem->GetAntiFlag();\n',
+      '#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // %s (safebox add)\n#endif\n' % M)
+after('safebox.cpp', 'safebox move',
+      '\tpack.anti_flags = pkItem->GetAntiFlag();\n',
+      '#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tpack.dwTransmutation = pkItem->GetTransmutation(); // %s (safebox move)\n#endif\n' % M)
 after('exchange.cpp', 'exchange add',
       '\t\tthecore_memcpy(&pack_exchg.aAttr, ((LPITEM) pvData)->GetAttributes(), sizeof(pack_exchg.aAttr));\n',
       '#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\tpack_exchg.dwTransmutation = ((LPITEM) pvData)->GetTransmutation(); // %s (exchange add)\n#endif\n' % M)
