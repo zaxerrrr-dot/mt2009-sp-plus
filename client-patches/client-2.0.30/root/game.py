@@ -949,6 +949,10 @@ class GameWindow(ui.ScriptWindow):
 	def __MonsterCardSystem(self, *args):
 		__import__("monstercard").OnServer(*args)
 
+	# MT2009_PLUS_YOHARA_SETS_V1: "YITEM <window> <cell> <yextra>" - an item's set effect / random base bonuses (ysets.py)
+	def __YSetsItem(self, *args):
+		__import__("ysets").OnServer(*args)
+
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
 		# VID again, because a warp is a new login on the server.
@@ -3318,6 +3322,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["SidekickVid"] = self.__SidekickVid
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
+		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
