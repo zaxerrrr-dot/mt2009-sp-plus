@@ -1,0 +1,20 @@
+[
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_GLOBAL_BONUS_V1 (drop)",
+  "old": "\tint priv_item_bonus = CPrivManager::instance().GetPriv(pkKiller, PRIV_ITEM_DROP);\n\tif (priv_item_bonus > 0)\n\t\tAddToBonusItemDrop(item_drop_bonus, priv_item_bonus);\n",
+  "new": "\tint priv_item_bonus = CPrivManager::instance().GetPriv(pkKiller, PRIV_ITEM_DROP);\n\tif (priv_item_bonus > 0)\n\t\tAddToBonusItemDrop(item_drop_bonus, priv_item_bonus);\n\n\t// MT2009_PLUS_GLOBAL_BONUS_V1 (drop): M2_BONUS_MODE=global - the double-item chance line of a bracelet or\n\t// earrings (POINT_ITEM_DROP_BONUS) raises the chance as the lines above do (Tieru's 2.2.31;\n\t// playerbot_bonus_mode.cpp - 0 in mt2009).\n\t{\n\t\tint BonusModeItemDropBonus(LPCHARACTER killer);\n\t\tconst int item_drop_line = BonusModeItemDropBonus(pkKiller);\n\t\tif (item_drop_line > 0)\n\t\t\tAddToBonusItemDrop(item_drop_bonus, item_drop_line);\n\t}\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOBAL_BONUS_V1 (attr declare)",
+  "old": "void CItem::AddAttr(BYTE bApply, BYTE bLevel)\n{\n",
+  "new": "// MT2009_PLUS_GLOBAL_BONUS_V1 (attr declare): a talisman's own fire/lightning/wind resistance values under\n// M2_BONUS_MODE=global (playerbot_bonus_mode.cpp).\nlong BonusModeAttrValue(CItem* item, BYTE apply, BYTE level, long value);\n\nvoid CItem::AddAttr(BYTE bApply, BYTE bLevel)\n{\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_GLOBAL_BONUS_V1 (attr value)",
+  "old": "\t\tconst TItemAttrTable & r = g_map_itemAttr[bApply];\n\t\tlong lVal = r.lValues[MIN(4, bLevel - 1)];\n\n\t\tif (lVal)\n\t\t\tSetAttribute(i, bApply, lVal);\n",
+  "new": "\t\tconst TItemAttrTable & r = g_map_itemAttr[bApply];\n\t\tlong lVal = BonusModeAttrValue(this, bApply, bLevel, r.lValues[MIN(4, bLevel - 1)]); // MT2009_PLUS_GLOBAL_BONUS_V1 (attr value)\n\n\t\tif (lVal)\n\t\t\tSetAttribute(i, bApply, lVal);\n"
+ }
+]
