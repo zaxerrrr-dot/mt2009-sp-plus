@@ -226,7 +226,9 @@ quest przebudzeni_bossowie begin
 			local back = 0
 			local now = get_global_time()
 			local idx = pc.getf("przebudzeni_bossowie", "idx")
-			if idx > 0 and now - pc.getf("przebudzeni_bossowie", "entry") < c.keep and d.find(idx) then
+			-- an expedition still running (the instance lives on the Yohara core): d.find asks that core, which warps
+			-- the player back if the instance is still there
+			if idx > 0 and now - pc.getf("przebudzeni_bossowie", "entry") < c.keep then
 				table.insert(opts, "Wróć do lochu")
 				back = table.getn(opts)
 			end
@@ -241,6 +243,9 @@ quest przebudzeni_bossowie begin
 				end
 				if dg and d.find(idx, dg.entry[1] * 100, dg.entry[2] * 100, pc.get_player_id()) then
 					pc.warp(dg.entry[1] * 100, dg.entry[2] * 100, idx)
+				else
+					say_title(mob_name(20471)..":")
+					say("Jeśli wyprawa wciąż trwa, moc statui zaraz cię zabierze.")
 				end
 				return
 			end

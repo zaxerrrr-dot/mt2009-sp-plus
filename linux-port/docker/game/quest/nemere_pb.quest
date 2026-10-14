@@ -110,8 +110,8 @@ quest nemere_pb begin
 				d.regen_file(c.path.."sd_5.txt")
 				local s = nemere_pb.shuffle(5)
 				for k = 1, 5 do
-					local q = c.cubes[s[k]]
-					d.set_unique("cube_"..k, d.spawn_mob(20537, q[1], q[2]))
+					local pt = c.cubes[s[k]]
+					d.set_unique("cube_"..k, d.spawn_mob(20537, pt[1], pt[2]))
 				end
 				d.setf("cube_next", 1)
 				d.notice("Otwórz pieczęcie Arktycznych Kostek (PB) we właściwej kolejności Gwiazdami Północy (PB) z potworów.")
@@ -122,8 +122,8 @@ quest nemere_pb begin
 				d.regen_file(c.path.."sd_7.txt")
 				local s = nemere_pb.shuffle(4)
 				for k = 1, 4 do
-					local q = c.szel7[s[k]]
-					d.set_unique("szel_"..k, d.spawn_mob(4329, q[1], q[2]))
+					local pt = c.szel7[s[k]]
+					d.set_unique("szel_"..k, d.spawn_mob(4329, pt[1], pt[2]))
 				end
 				d.notice("Znajdź i pokonaj Szela (PB), władcę lodu i zimna - trzy z czterech to sobowtóry.")
 			elseif lv == 8 then
