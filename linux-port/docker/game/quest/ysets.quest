@@ -2,11 +2,12 @@
 -- The cube windows (cube.ysets.txt, appended to the share's cube.txt by the Dockerfile):
 --   Statua Wê¿y (20807, 1. poziom Œwi¹tyni Wê¿y): the serpent weapons and armours from their "(wykon.)" piece
 --     (pl-wiki "Miecz Wê¿owy" ... "Wytwarzanie": 10 Wzór Wê¿owy, 5 Kowad³o P³n. Wiatru / Jedwab Wê¿owy,
---     10 Jadeit Nocy, 5 Kamieñ Szlif. P³n. W. / Politura Wê¿owa, 10 000 000 Yang, 50%) and Py³ Wê¿owy;
+--     10 Jadeit Nocy, 5 Kamieñ Szlif. P³n. W. / Politura Wê¿owa, 10 000 000 Yang, 100 Gaya, 50%) and Py³ Wê¿owy;
 --   Statua Wojownika (20433, the port): the set shards II (200 shards I / 10 shards II, 70%);
 --   the five set blacksmiths (20475-20479, the port): a set on a weapon, armour or helmet of level 75+ at +7 or
 --     more (pl-wiki "Zestaw Ekwipunku": 50/40/30/20/15%; de-wiki: 10/30/50/30/30 shards II, a project, the
---     majestic one a Kamieñ Ksiê¿ycowy, 100 000 000 Yang). A failure takes the materials, never the piece.
+--     majestic one a Kamieñ Ksiê¿ycowy, 100 000 000 Yang, 500 Gaya). A failure takes the materials, never the piece.
+-- Gaya (95927): the cube's "gaya" line takes it from the inventory (MT2009_PLUS_GAYA_V1, server-patches/gaya).
 -- cp1250; no literal ends with a Polish letter (qc).
 quest ysets begin
 	state start begin
@@ -32,7 +33,7 @@ quest ysets begin
 			say("Po³ó¿ przedmiot w oknie razem z materia³ami:")
 			say(shards[set].." od³amków II tej samej czêœci, Projekt")
 			say("Zestawu tej czêœci"..(set == 5 and " i Kamieñ Ksiê¿ycowy" or "")..",")
-			say("oraz 100 000 000 Yang. Szansa: "..chance[set].."%.")
+			say("100 000 000 Yang i 500 Gaya. Szansa: "..chance[set].."%.")
 			say("Nieudana próba zabiera materia³y, nie przedmiot.")
 			say("")
 			if select("Otwórz okno kowala", "Anuluj") == 1 then
@@ -77,7 +78,8 @@ quest ysets begin
 			say("Potrzebne: czêœæ (wykon.), 10 Wzorów Wê¿owych,")
 			say("10 Jadeitów Nocy oraz do broni 5 Kowade³ P³n. Wiatru")
 			say("i 5 Kamieni Szlif. P³n. W., do zbroi 5 Jedwabi Wê¿owych")
-			say("i 5 Politur Wê¿owych. Koszt: 10 000 000 Yang, szansa 50%.")
+			say("i 5 Politur Wê¿owych. Koszt: 10 000 000 Yang i 100 Gaya,")
+			say("szansa 50%.")
 			say("Nieudana próba zabiera wszystkie materia³y.")
 			say("")
 			say("Z 30 Wzorów albo 30 Jedwabi Wê¿owych zrobiê Py³ Wê¿owy.")
