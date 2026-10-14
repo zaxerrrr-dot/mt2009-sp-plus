@@ -1842,7 +1842,7 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 
 # MT2009_PLUS_AREZZO_V1: the first three places from the Arezzo files (the owner has the rights to
 # them), players only - bots later: Dolina Cyklopow (map 360, level 45, the Teleporter), Zaczarowany
-# Las (362, level 95+, the Temple of Ochao's portal) and the Biblioteka Wiedzy dungeon (363, level 30,
+# Las (362 - removed by MT2009_PLUS_YOHARA_ZAKLETY_V1, rows kept) and the Biblioteka Wiedzy dungeon (363, level 30,
 # quest/biblioteka_wiedzy.quest; game/arezzo/). Arezzo's own numbers (level 200 world) are not taken:
 # the cyclopes are level-45 copies of 3101-3105/3190/3191 (9601-9607), the forest's lemures are the
 # official 3301-3305 with 30% more HP and 25% more damage (9611-9615, the Temple and the Goblin waves
@@ -3758,6 +3758,45 @@ for ycr_sql in yohara_crack.sql yohara_items_crack.sql yohara_crack_zywioly.sql;
         fail_step "Szczelina Czasu: $ycr_sql failed" >&2
     fi
 done
+
+# MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaklety Las (353) and Erebu - the official Enchanted Forest past the Temple of Ochao
+# (the owner, 14 October 2026; it replaces the Arezzo forest, Zaczarowany Las 362). yohara_zaklety.sql
+# (tools/yohara_zaklety/gen_yzaklety.py) - the forest's monsters, bosses, Metins and guards; yohara_items_zaklety.sql -
+# Kamien Driad, the missions' items, Erebu's two chests; yohara_zaklety_zywioly.sql - the elements (after
+# zywioly_moby.sql). All idempotent (INSERT IGNORE / UPDATE). The groups, drops and chests name these vnums.
+for yzl_sql in yohara_zaklety.sql yohara_items_zaklety.sql yohara_zaklety_zywioly.sql; do
+    [ -s "/opt/playerbot/$yzl_sql" ] || continue
+    if db < "/opt/playerbot/$yzl_sql"; then
+        echo "[playerbot-migrate] Zaklety Las: $yzl_sql applied"
+    else
+        fail_step "Zaklety Las: $yzl_sql failed" >&2
+    fi
+done
+# Once: the Arezzo forest (362, natural_map) is in no map index and on no core any more. Every character saved there
+# or in an instance of it, or whose way out leads there - people and bots (all of level 95 and more) - stands at the
+# Temple of Ochao's gate (209, 853725 1416425, the temple's arrival; its En-Tai Guardian's portal leads to Zaklety Las
+# now). Before the game container starts, as the grotto's rescue above.
+forest_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'arezzo_forest_362_removed';" 2>/dev/null || echo x)
+if [ "$forest_done" = "0" ]; then
+    if forest_out=$(db -e "
+        START TRANSACTION;
+        UPDATE player.player
+           SET map_index = 209, x = 853725, y = 1416425, exit_map_index = 209, exit_x = 853725, exit_y = 1416425
+         WHERE map_index = 362 OR map_index BETWEEN 3620000 AND 3629999;
+        SELECT ROW_COUNT();
+        UPDATE player.player SET exit_map_index = 209, exit_x = 853725, exit_y = 1416425
+         WHERE exit_map_index = 362 OR exit_map_index BETWEEN 3620000 AND 3629999;
+        SELECT ROW_COUNT();
+        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('arezzo_forest_362_removed', NOW());
+        COMMIT;
+    "); then
+        forest_chars=$(printf '%s\n' "$forest_out" | awk 'NR == 1')
+        forest_exits=$(printf '%s\n' "$forest_out" | awk 'NR == 2')
+        echo "[playerbot-migrate] the Arezzo forest (362) removed: ${forest_chars:-0} character(s) and ${forest_exits:-0} way(s) out moved to the Temple of Ochao"
+    else
+        fail_step "could not move the characters out of the removed Arezzo forest (362)" >&2
+    fi
+fi
 
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own

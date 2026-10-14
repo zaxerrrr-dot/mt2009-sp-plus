@@ -367,7 +367,9 @@ RUN set -eux; \
     # Czerwonego Smoka (PB), nemere_pb Straznica Nemere (PB) (MT2009_PLUS_YOHARA_PB_V1), beran_pb Grota Wygnancow 2 (PB),
     # jotun_pb Zaklety Las (PB) (MT2009_PLUS_YOHARA_ILUZJA_V1). szczelina_czasu is Statua Szczeliny Czasu on the plateau
     # (the Time Rift dungeons' entrance, Zegarek Kieszonkowy), jotun_szc Zaklety Las (SZC) (MT2009_PLUS_YOHARA_CRACK_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc; do \
+    # zaklety_las is Zaklety Las's seven missions (Kamien Driad), erebu Erebu - Jotun Thrym's dungeon and the forest's
+    # map rules (MT2009_PLUS_YOHARA_ZAKLETY_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1073,8 +1075,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/bluedragon-add; M="$L/map
 # rights to them), for players - the bots come later:
 #  * Dolina Cyklopow: metin2_map_exp, index 360, 4x4 at 230400 281600, level 45, on game1
 #    (m2-render-config), entered by the Teleporter (quest/map_warp.quest, first page);
-#  * Zaczarowany Las: natural_map, 362, 4x4 at 332800 384000, level 95+, game1, entered by the
-#    portal the En-Tai Guardian leaves in the Temple of Ochao (quest/temple_of_the_ochao.quest);
+#  * (MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaczarowany Las - natural_map, 362 - is gone; the En-Tai Guardian's portal in
+#    the Temple of Ochao leads to Zaklety Las (353, the "share: Zaklety Las" step) - and 362 is in no index);
 #  * Biblioteka Wiedzy: plechito_chamber_of_wisdom, 363, 2x2 at 947200 614400, the level-30 spider
 #    dungeon on game2 (quest/biblioteka_wiedzy.quest, rooms in data/dungeon/biblioteka_wiedzy); its
 #    guard, Straznik Biblioteki (20430), stands in Orc Valley beside the Temple guard (a cell measured
@@ -1084,7 +1086,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/bluedragon-add; M="$L/map
 # and removes them while it is off; these steps only make sure no npc.txt line is left behind.
 # Arezzo's server_attr (cell for cell the client's attr.atr, checked) and Setting.txt; the regen is
 # every other of Arezzo's spawn points with our monsters (the level-45 cyclopes 9601-9605, the
-# stronger lemures 9611-9615) in groups 36001-36203 (group.arezzo.txt); Arezzo's C++ timed bosses and
+# lemures 9611-9615 spawned only in the removed forest - their rows stay) in groups 36001-36003 (group.arezzo.txt); Arezzo's C++ timed bosses and
 # stones are boss.txt / stone.txt (Arges 9606, Polifem 9607, Metin Cienia 8009; Lemur Hrabia 3390,
 # the Bodyguard 3391, 8052, 8053); a Teleporter (9012) at each open map's landing point. The drops
 # (mob_drop_item.arezzo.txt), the library's chest 30773 (special_item_group.arezzo.txt), the names
@@ -1092,11 +1094,13 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/bluedragon-add; M="$L/map
 COPY arezzo/ /tmp/arezzo-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
- && for m in metin2_map_exp natural_map plechito_chamber_of_wisdom; do rm -rf "$L/map/$m"; cp -a "$A/map/$m" "$L/map/"; done \
+ && for m in metin2_map_exp plechito_chamber_of_wisdom; do rm -rf "$L/map/$m"; cp -a "$A/map/$m" "$L/map/"; done \
+ && rm -rf "$L/map/natural_map" \
  && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
  && sed -i -E '/^36[0-6][[:blank:]]/d' "$L/map/index" \
- && printf '360 metin2_map_exp\n362 natural_map\n363 plechito_chamber_of_wisdom\n' >> "$L/map/index" \
- && test "$(grep -c -E '^(360[[:blank:]]+metin2_map_exp|362[[:blank:]]+natural_map|363[[:blank:]]+plechito_chamber_of_wisdom)[[:space:]]*$' "$L/map/index")" = 3 \
+ && printf '360 metin2_map_exp\n363 plechito_chamber_of_wisdom\n' >> "$L/map/index" \
+ && test "$(grep -c -E '^(360[[:blank:]]+metin2_map_exp|363[[:blank:]]+plechito_chamber_of_wisdom)[[:space:]]*$' "$L/map/index")" = 2 \
+ && ! grep -q -E '^362[[:blank:]]' "$L/map/index" \
  && cp "$A/dungeon_info.txt" "$L/dungeon_info.txt" \
  && test "$(grep -c -E '^dungeon[[:blank:]]' "$L/dungeon_info.txt")" -ge 8 \
     # MT2009_PLUS_DUNGEON_PANEL_V1 (share): the dungeon panel's list, locale/poland/dungeon_info.txt.
@@ -1105,7 +1109,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_arezzo_' "$L/group.txt" \
  && { [ -z "$(tail -c 1 "$L/group.txt")" ] || printf '\n' >> "$L/group.txt"; } \
  && sed 's/\r$//' "$A/group.arezzo.txt" >> "$L/group.txt" \
- && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+36(00[123]|20[123])[[:space:]]*$' "$L/group.txt")" = 6 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+3600[123][[:space:]]*$' "$L/group.txt")" = 3 \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_arezzo_' "$L/mob_drop_item.txt" \
  && { [ -z "$(tail -c 1 "$L/mob_drop_item.txt")" ] || printf '\r\n' >> "$L/mob_drop_item.txt"; } \
  && cat "$A/mob_drop_item.arezzo.txt" >> "$L/mob_drop_item.txt" \
@@ -1122,17 +1126,15 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
       [ -f "$f" ] || continue; \
       LC_ALL=C grep -a -q 'map_names\[360\]' "$f" && continue; \
       { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
-      printf '\r\n-- MT2009_PLUS_AREZZO_V1: the Arezzo places (the Teleporter lists 360)\r\ntranslate.general.map_names[360] = "Dolina Cyklop\363w"\r\ntranslate.general.map_names[362] = "Zaczarowany Las"\r\ntranslate.general.map_names[363] = "Biblioteka Wiedzy"\r\n' >> "$f"; \
+      printf '\r\n-- MT2009_PLUS_AREZZO_V1: the Arezzo places (the Teleporter lists 360)\r\ntranslate.general.map_names[360] = "Dolina Cyklop\363w"\r\ntranslate.general.map_names[363] = "Biblioteka Wiedzy"\r\n' >> "$f"; \
     done \
  && LC_ALL=C grep -a -q 'map_names\[360\]' "$L/quest/libs/translate/translate.lua" \
  && S="$L/settings.lua" \
  && { LC_ALL=C grep -a -q 'add_goto_info("cyklopy"' "$S" || printf 'add_goto_info("cyklopy", 0, 360, 2650, 3051)\r\n' >> "$S"; } \
- && { LC_ALL=C grep -a -q 'add_goto_info("las"' "$S" || printf 'add_goto_info("las", 0, 362, 3787, 3946)\r\n' >> "$S"; } \
  && test "$(od -An -tx1 -N8 "$L/map/metin2_map_exp/server_attr" | tr -d ' ')" = 1000000010000000 \
- && test "$(od -An -tx1 -N8 "$L/map/natural_map/server_attr" | tr -d ' ')" = 1000000010000000 \
  && test "$(od -An -tx1 -N8 "$L/map/plechito_chamber_of_wisdom/server_attr" | tr -d ' ')" = 0800000008000000 \
  && rm -rf "$A" \
- && echo "share: Arezzo places - Dolina Cyklopow (360), Zaczarowany Las (362), Biblioteka Wiedzy (363)"
+ && echo "share: Arezzo places - Dolina Cyklopow (360), Biblioteka Wiedzy (363)"
 
 # MT2009_PLUS_AREZZO_V1 (share, phases 5-8): the three Arezzo dungeons and the fourth map, players only:
 #  * Wzgorze Wukonga - plechito_wukong_dungeon, 364, 2x2 at 844800 537600, level 45, game2
@@ -1140,7 +1142,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-add \
 #  * Ruiny Skorpiona - plechito_scorpion_dungeon, 365, 2x2 at 844800 588800, level 65 - harder than Razador
 #    (quest/ruiny_skorpiona.quest; Straznik Ruin, 20424, on the Fire Land beside Razador's guard, 101,910);
 #  * Starozytna Dzungla - plechito_easter2023_dungeon, 366, 3x3 at 768000 537600, level 95, the hardest
-#    (quest/starozytna_dzungla.quest; Straznik Dzungli, 20425, in the Enchanted Forest - arezzo/map/natural_map);
+#    (quest/starozytna_dzungla.quest; Straznik Dzungli, 20425, in the Temple of Ochao beside its gate - spawned by
+#    playerbot_arezzo.h while the module is on, MT2009_PLUS_YOHARA_ZAKLETY_V1: the Arezzo forest it stood in is gone);
 #  * Pustkowie Faraona - metin2_map_pustynia, 361, 4x4 at 230400 384000, level 55, game1, by the Teleporter.
 # The dungeons' public copies are the fallback lobbies (their guard only); their rooms are
 # data/dungeon/<quest>. The Plechito monsters' motions (share/data/monster/<folder>, the .msa/.msm/motlist
@@ -1178,7 +1181,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
       sed -i -E "/[[:blank:]]$2[[:space:]]*\$/d" "$F"; \
       ! grep -q -E "[[:blank:]]$2[[:space:]]*\$" "$F" || exit 1; \
     done \
- && grep -q -E '[[:blank:]]20425[[:space:]]*$' "$L/map/natural_map/npc.txt" \
+ && ! grep -q -E '[[:blank:]]20425[[:space:]]*$' "$L/map/metin2_map_mt_th_dungeon_01/npc.txt" \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
       [ -f "$f" ] || continue; \
       LC_ALL=C grep -a -q 'map_names\[361\]' "$f" && continue; \
@@ -1918,6 +1921,74 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack-add \
     done \
  && rm -rf "$A" \
  && echo "share: Szczelina Czasu - Statua Szczeliny Czasu on Plaskowyz Iluzji, Zaklety Las (SZC) (404): map, rooms, groups, the dungeon panel"
+# MT2009_PLUS_YOHARA_ZAKLETY_V1 (share): Zaklety Las and Erebu - the official Enchanted Forest past the Temple of Ochao
+# (the owner, 14 October 2026: it replaces the Arezzo forest, natural_map 362, gone from the Arezzo step above; pl-wiki
+# "Zaklety Las", "Erebu", the seven missions; Owsap v6.2.6 metin2_map_dawnmist_dungeon_01 for the spawns) - Zaklety Las
+# (353, metin2_map_dawnmist_dungeon_01, the official base 768000 1408000 - no map of ours overlaps it; GF's terrain, the
+# same as the PB / SZC forests') on the Yohara core (bin/m2-render-config): the Temple of Ochao's portal leads there
+# (quest temple_of_the_ochao), the guards' missions (quest zaklety_las), Erebu at Przywodca Strazy Lasu (quest erebu,
+# a private copy of the map's boss corner). tools/yohara_zaklety/gen_yzaklety.py made everything here: the folder
+# (Owsap's regen / boss / stone, the guards at the wiki's cells), Owsap's motions of the forest's races (data/monster:
+# trent_*, thunder_boss - every run.msa with its Accumulation), groups 6311-6318 and 6330-6333 - none may exist before -,
+# the wiki's drops (11 groups) and the two chests of Erebu (50266, 54701). Monsters and NPCs:
+# yohara_zaklety.sql; items: yohara_items_zaklety.sql. The dungeon panel gets erebu (Kamien Driad, party 5-8, level 95,
+# 2 h after the end: the flag erebu.end); /goto las for game masters.
+COPY yohara_zaklety/ /tmp/yohara-zaklety-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-zaklety-add; D=/opt/metin2/share/data/monster \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "353 metin2_map_dawnmist_dungeon_01 0c00000010000000 768000 1408000"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" && test -s "$L/map/$2/regen.txt" && test -s "$L/map/$2/npc.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Zaklety Las map $1 $2"; exit 1; }; \
+    done \
+ && ! grep -q -E '^362[[:blank:]]' "$L/map/index" \
+ && mkdir -p "$D" \
+ && for m in "$A"/data/monster/*; do rm -rf "$D/$(basename "$m")"; cp -a "$m" "$D/"; done \
+ && test -s "$D/thunder_boss/motlist.txt" && test -s "$D/trent_boss2/motlist.txt" \
+ && test -z "$(for m in "$A"/data/monster/*/run.msa; do grep -q -E '^Accumulation[[:blank:]]+[-0-9.]+[[:blank:]]+-[0-9]' "$m" || echo "$m"; done)" \
+ && GV='(631[1-8]|633[0-3])' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_zaklety.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 12 \
+ && MV='(640[1-4]|640[6-8]|6414|6192|8059|8061)' \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_zaklety.txt" >> "$F" \
+ && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 11 \
+ && SV='(50266|54701)' \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_zaklety.txt" >> "$G" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G")" = 2 \
+ && I="$L/dungeon_info.txt" \
+ && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+erebu[[:blank:]]' "$I" \
+      || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
+           printf 'dungeon\terebu\t353\t1\txy\t353\t8291\t14187\t95\t0\t5\t8\t6192\terebu.end\t7200\t30613\t1\tErebu_(Jotun_Thrym)\tZakl\352ty_Las\n' >> "$I"; }; } \
+ && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+erebu[[:blank:]]' "$I")" = 1 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[353\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_ZAKLETY_V1\r\ntranslate.general.map_names[353] = "Zakl\352ty Las"\r\n' >> "$f"; \
+    done \
+ && LC_ALL=C grep -a -q 'map_names\[353\]' "$L/quest/libs/translate/translate.lua" \
+ && ! LC_ALL=C grep -a -q 'map_names\[362\]' "$L/quest/libs/translate/translate.lua" \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("las"' "$S" || printf 'add_goto_info("las", 0, 353, 8158, 15050)\r\n' >> "$S"; } \
+ && LC_ALL=C grep -a -q 'add_goto_info("las", 0, 353,' "$S" \
+ && rm -rf "$A" \
+ && echo "share: Zaklety Las (353) and Erebu - map, motions, groups, drops, chests, the dungeon panel"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only
