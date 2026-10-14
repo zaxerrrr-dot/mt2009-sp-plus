@@ -17,7 +17,8 @@
 --   * po zabiciu Alastora po 10 s wszyscy wracaj¹ do Upiornego Stra¿nika, u którego ka¿dy odbiera 8 Bia³ych Smoczych
 --     Skrzyñ (lekka 70411 / ciê¿ka 70412).
 -- Strefy na ziemi: d.zone_attack / d.zone_hurt (MT2009_PLUS_DUNGEON_ZONE_V1, server-patches/strefy) - prawdziwe
--- obra¿enia, œmieræ jak od potwora. Uproszczenie: sza³ leczy Alastora, nie podnosi jego obra¿eñ (wiki TR: +20/30/40%).
+-- obra¿enia, œmieræ jak od potwora. Sza³: leczenie i +10/15/20% (silny +20/30/40%) obra¿eñ Alastora
+-- (d.unique_damage_pct); kto le¿y martwy 3 min (silny 2 min), wylatuje z G³êbi (d.kick_dead) - wiki TR.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest ymaps3_glebie begin
 	state start begin
@@ -38,10 +39,10 @@ quest ymaps3_glebie begin
 				groups = {9160, 9161, 9162, 9163, 9164},
 				k = {
 					[1] = {boss = 6790, egg = 8635, hp = 67751800, cold_hp = 15000, cold_pct = 5, cold_max = 5,
-						   wrath = {150, 300, 450}, berserk = {6, 12, 18}, heal = {10, 20, 30}, reward = 70411,
+						   wrath = {150, 300, 450}, berserk = {6, 12, 18}, heal = {10, 20, 30}, rage = {10, 15, 20}, dead_kick = 180, reward = 70411,
 						   rank = "glebie_slaby", name = "G³êbie Pó³nocnego Wiatru (s³aby)"},
 					[2] = {boss = 6791, egg = 8636, hp = 48751800, cold_hp = 20000, cold_pct = 7, cold_max = 7,
-						   wrath = {90, 180, 270}, berserk = {5, 10, 15}, heal = {30, 40, 50}, reward = 70412,
+						   wrath = {90, 180, 270}, berserk = {5, 10, 15}, heal = {30, 40, 50}, rage = {20, 30, 40}, dead_kick = 120, reward = 70412,
 						   rank = "glebie_silny", name = "G³êbie Pó³nocnego Wiatru (silny)"},
 				},
 				reward_count = 8, weak_needed = 3,
@@ -113,9 +114,29 @@ quest ymaps3_glebie begin
 			return out
 		end
 
-		-- the frost of the Deadly Cold ends with a death
+		-- the frost of the Deadly Cold ends with a death; whoever lies dead too long is thrown out (wiki TR: 3 min,
+		-- strong 2 min)
 		when die with ymaps3_glebie.inside() begin
 			d.setf(ymaps3_glebie.cfg().cold.tag..pc.get_player_id(), 0)
+			pc.setf("ymaps3_glebie", "dead_at", get_global_time())
+			loop_timer("ymaps3_glebie_dead", 10)
+		end
+
+		when ymaps3_glebie_dead.timer begin
+			local c = ymaps3_glebie.cfg()
+			if not ymaps3_glebie.inside() or not pc.is_dead() then
+				cleartimer("ymaps3_glebie_dead")
+				return
+			end
+			local kind = d.getf("kind")
+			if kind ~= 2 then
+				kind = 1
+			end
+			if get_global_time() - pc.getf("ymaps3_glebie", "dead_at") >= c.k[kind].dead_kick then
+				cleartimer("ymaps3_glebie_dead")
+				syschat("G³êbie: zbyt d³ugo le¿a³eœ martwy - wypadasz z wyprawy.")
+				d.kick_dead(pc.get_player_id(), c.exit_x * 100, c.exit_y * 100)
+			end
 		end
 
 		-- Upiorny Stra¿nik
@@ -408,6 +429,7 @@ quest ymaps3_glebie begin
 					b = b + 1
 					d.setf("berserk", b)
 					ymaps3_glebie.heal(k.heal[b], k.hp)
+					d.unique_damage_pct("alastor", k.rage[b])
 					d.notice("Alastor wpada w sza³ ("..b.."/3) - zniszczcie Bia³e Jaja Smoka!")
 					if b == 3 then
 						for j = 1, 4 do
