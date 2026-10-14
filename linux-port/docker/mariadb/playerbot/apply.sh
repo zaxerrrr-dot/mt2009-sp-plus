@@ -3755,6 +3755,16 @@ if [ -s /opt/playerbot/yskill9.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_PRECISION_SKILL_V1: the passive skill Precyzja - skill_proto 246 (server-patches/precyzja/README.md);
+# its book Ksiega Precyzji (50325) is yohara_items.sql's. precyzja_skill.sql is idempotent.
+if [ -s /opt/playerbot/precyzja_skill.sql ]; then
+    if db < /opt/playerbot/precyzja_skill.sql; then
+        echo "[playerbot-migrate] Precyzja skill: precyzja_skill.sql applied"
+    else
+        fail_step "Precyzja skill: precyzja_skill.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_YOHARA_ILUZJA_V1: Plaskowyz Iluzji and the two remaining awakened bosses - Beran-Setaou (PB), Jotun Thrym
 # (PB) (the owner, 14 October 2026). After the PB files (the PB bosses' drops name the plans this one adds):
 # yohara_iluzja.sql (tools/yohara_iluzja/gen_yiluzja.py) - the two dungeons' monsters, bosses, stones and NPCs, the

@@ -67,6 +67,7 @@ linux-port/docker/mariadb/playerbot/shipdefense.sql
 linux-port/docker/mariadb/playerbot/czempion.sql
 linux-port/docker/mariadb/playerbot/transmutacja.sql
 linux-port/docker/mariadb/playerbot/yskill9.sql
+linux-port/docker/mariadb/playerbot/precyzja_skill.sql
 linux-port/docker/mariadb/playerbot/wiki_nowe.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
 linux-port/docker/game/Dockerfile

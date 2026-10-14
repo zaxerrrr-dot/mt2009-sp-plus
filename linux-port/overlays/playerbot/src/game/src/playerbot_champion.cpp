@@ -623,6 +623,81 @@ void ChampionOnLogin(LPCHARACTER ch)
 	champion::SendMap(ch);
 }
 
+// ---- MT2009_PLUS_PRECISION_SKILL_V1: the passive skill Precyzja ---------------------------------------------------
+// pl-wiki "Precyzja" / "Ksiega Precyzji": a passive skill of every character, read from Ksiega Precyzji (50325) from
+// Champion level 1, 0 -> P (40); a successful read is a level (1 -> M1 20 books, M1 -> G1 10, G1 -> P 10 - de wiki:
+// "erfolgreiche"). SKILL_PRECISION is GF's vnum 246 (its client's skilltable row, icon hit_attribute). The read is
+// LearnSkillByBook's passive one (the books' wait m2_book_wait, Zwoj Egzorcyzmu, the learn-chance potions);
+// Rada Pustelnika makes it sure, as with the class books. Its bonus is the wiki's table (GF's 0.4*k+16*k on the skill
+// power, but the wiki's +4 at level 11), part of POINT_HIT_PCT (char.cpp ComputePoints, server-patches/precyzja).
+// Bots: no Champion level, so no book (as the 9th skills).
+static const int PRECISION_BOOK_PCT = 35;	// a read's chance - the class books' base (LearnSkillByBook)
+static const int s_aPrecisionBonus[SKILL_MAX_LEVEL + 1] =
+{
+	0,
+	0, 0, 1, 1, 1, 2, 2, 2, 3, 3,			// 1-10
+	4, 4, 4, 4, 5, 5, 5, 6, 6,				// 11-19
+	8, 8, 8, 9, 9, 9, 10, 10, 11, 11,		// M1-M10
+	13, 13, 14, 14, 15, 16, 16, 17, 18, 18,	// G1-G10
+	20,										// P
+};
+static_assert(sizeof(s_aPrecisionBonus) / sizeof(s_aPrecisionBonus[0]) == 41, "levels 0-40");
+static_assert(SKILL_PRECISION < SKILL_MAX_NUM, "SKILL_PRECISION in the skill table (the exe's SKILL_MAX_NUM too)");
+
+int PrecisionSkillBonus(const CHARACTER* ch)
+{
+	if (!ch || !ch->IsPC())
+		return 0;
+	return s_aPrecisionBonus[MINMAX(0, ch->GetSkillLevel(SKILL_PRECISION), (int) SKILL_MAX_LEVEL)];
+}
+
+static void PrecisionLevelName(int iLevel, char* szBuf, size_t size)
+{
+	if (iLevel >= 40)
+		snprintf(szBuf, size, "P");
+	else if (iLevel >= 30)
+		snprintf(szBuf, size, "G%d", iLevel - 29);
+	else if (iLevel >= 20)
+		snprintf(szBuf, size, "M%d", iLevel - 19);
+	else
+		snprintf(szBuf, size, "%d", iLevel);
+}
+
+// char_item.cpp (book): 1 - the book was read (used up), 0 - not read.
+int PrecisionReadBook(CHARACTER* ch)
+{
+	if (!ch || !ch->IsPC())
+		return 0;
+	if (ch->IsPolymorphed())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
+		return 0;
+	}
+	if (ch->GetConquerorLevel() < 1 || champion::IsBotCharacter(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.");
+		return 0;
+	}
+	const int iBefore = ch->GetSkillLevel(SKILL_PRECISION);
+	if (iBefore >= SKILL_MAX_LEVEL)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Twoja Precyzja ma juz najwyzszy poziom (P).");
+		return 0;
+	}
+	const DWORD dwPct = ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) ? 100 : PRECISION_BOOK_PCT;
+	if (!ch->LearnSkillByBook(SKILL_PRECISION, dwPct))
+		return 0;
+	const int iAfter = ch->GetSkillLevel(SKILL_PRECISION);
+	if (iAfter != iBefore)
+	{
+		char szLevel[8];
+		PrecisionLevelName(iAfter, szLevel, sizeof(szLevel));
+		ch->ChatPacket(CHAT_TYPE_INFO, "Precyzja: poziom %s, bonus Precyzji +%d.", szLevel, PrecisionSkillBonus(ch));
+		champion::SendInfo(ch);
+	}
+	return 1;
+}
+
 DWORD CHARACTER::GetConquerorNextExp() const
 {
 	return champion::NextExp(GetConquerorLevel());
