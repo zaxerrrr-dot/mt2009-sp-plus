@@ -220,9 +220,10 @@ def main():
                 regen.append(line('g', x, y, 6, 6, '60s', 100, 1, grp))
             files['regen.txt'] = regen
             if idx == 394:
-                # Wodz Wojenny Schronienia (lod, blyskawice): Ameria's two points of the map, every hour
-                files['boss.txt'] = [line('m', 354, 148, 10, 10, '3600s', 100, 1, 6797, d=1),
-                                     line('m', 475, 58, 10, 10, '3600s', 100, 1, 6797, d=1)]
+                # Wodz Wojenny Schronienia (lod, blyskawice): Ameria's two points of the map, every 30 minutes (the
+                # owner, 14 October: "Zejscie: Wodz Wojenny co 30 min"; was every hour)
+                files['boss.txt'] = [line('m', 354, 148, 10, 10, '1800s', 100, 1, 6797, d=1),
+                                     line('m', 475, 58, 10, 10, '1800s', 100, 1, 6797, d=1)]
                 files['stone.txt'] = []
             else:
                 # TR wiki "Yilan Tapinagi (Giris Kat)": Kappa Zolnierz (124) every hour, Potezny Kappa every 2 hours,
