@@ -384,3 +384,8 @@ sam (nie Python), więc bez tej zmiany klient nie zagra Trzęsienia itd. Indeks 
 |---|---|
 | `UserInterface/Locale_inc.h` | `ENABLE_NINTH_SKILL` |
 | `UserInterface/PythonPlayerSettingsModule.cpp` | wojownik `{9, "finish"}`; ninja `{9, "ilgangpyo"}`, `{24, "pungraepo"}`; sura `{9, "akgi"}`, `{24, "akgi_dark"}`; szaman `{9, "meteo"}`, `{24, "chunwoon"}` (+ ich `.msa` 1. stopnia na liście ręcznej) |
+
+Zbudowane 14.10.2026 (`build.sh msvc --smoke`, MSVC 14.44; źródła: client-build + cały ten katalog = exe 3.0 + ta zmiana,
+`/opt/metin2/cache/yohara/yskill9-exe/Source`): `metin2client.exe` 13 700 608 B, sha256
+`f3679ead1079e00f4b02d20f68c6466d3d90d9ae2a91b335dd5a9273f273aebf` (`/opt/metin2/cache/yohara/yskill9-exe/out/`); smoke
+test dochodzi do okna logowania.

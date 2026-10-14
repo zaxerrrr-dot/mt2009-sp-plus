@@ -70,6 +70,6 @@ dokładnie tabele wiki. Burza Szponów (183) jest Likana – u nas nie ma Likana
 
 ## Sprawdzone (14.10.2026)
 
-Pełna kompilacja i linkowanie game + db na kopii drzewa testowego ze wszystkimi łatkami (enginefixes … shipdefense,
-czempion, talizmanwoli, jadeit) + skill9 (`m2-libs:check`); `yskill9.sql` dwa razy w czystym MariaDB 11.8 (zrzut
+Pełna kompilacja i linkowanie game + db na kopii drzewa testowego ze wszystkimi łatkami claude/yohara-3 (enginefixes … shipdefense,
+czempion, talizmanwoli, obreczjadeitu, jadeit, ysets, strefy) + skill9 (`m2-libs:check`); exe msvc + smoke; paczka `yskill9` (4,2 MB) – weryfikator 1031 sprawdzeń, 0 błędów; `yskill9.sql` dwa razy w czystym MariaDB 11.8 (zrzut
 `world.skill_proto`); `apply_skill9.py` dwa razy (drugi raz 0 zmian).
