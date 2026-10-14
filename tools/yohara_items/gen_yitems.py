@@ -83,9 +83,10 @@ add(31224, status=need(JADE))   # wiki drop lists: "Plyta ze Stali Obronnej" - i
 add(31217, status=need(JADE))                                         # Rog Trolla
 add(31227, status=need(JADE))                                         # Kiel Argosa
 add(31226, status=need('the Skazony Rdzen\'s quest/crafting (Seoganland) - none here yet'))
+# MT2009_PLUS_GLOVES_V1: the Sung Ma gloves work now (tools/ygloves, quest rekawice, server-patches/rekawice)
 for v in (31245, 31246, 31247, 31248, 31249, 31251, 31252):           # Twarda Skora .. Utwardzacz Skory+
-    add(v, status=need(GLOVES))
-add(31250, name='Zielona Runa SungMa', status=need(GLOVES))           # wiki's name (Owsap's PL: Zolta)
+    add(v)
+add(31250, name='Zielona Runa SungMa')                                # wiki's name (Owsap's PL: Zolta)
 HERBS = 'herbalism (the elixirs of Yohara) - none here yet'
 add(50738, status=need(HERBS))                                        # Mroczny Ciern
 # our 50733 / 50734 / 50926 are other items (Bursztynowy Platek, Perlowe Wiechy, a recipe): 957xx / 95926 here
@@ -114,7 +115,9 @@ add(50525, status=need(WARD + ' (their master levels)'))              # Kamien D
 add(50325, status=need('the skill Precyzja (142) - not in our skill_proto'))   # Ksiega Precyzji
 for v in range(50338, 50344):                                         # Charyzma / Inspiracja x3
     add(v, status=need('the leadership books Charyzma / Inspiracja - none here yet'))
-add(28046, name='Kamień Demonów+0', status=need(GLOVES + ' (a Sung Ma stone; our engine has no METIN_SUNGMA)'),
+# MT2009_PLUS_GLOVES_V1: Kamien Demonow - this first row stays as it was; yohara_gloves.sql (tools/ygloves) makes it
+# the Sung Ma stone (ITEM_METIN / METIN_SUNGMA) and adds +1..+4
+add(28046, name='Kamień Demonów+0',
     type='ITEM_MATERIAL', subtype='MATERIAL_LEATHER', wear='NONE', refined=0, refine_set=0)
 add(72354, status=need('the jade veins (Zyly Jadeitu, mining) - none here yet'),
     type='ITEM_MATERIAL', subtype='MATERIAL_LEATHER')                # Przenosna Zyla Jadeitu (Owsap: a summon box)

@@ -63,7 +63,7 @@ for v in (50641, 50642, 50643, 50644):                  # Ruda Jadeitu Slonca / 
     add(v, type='ITEM_SPECIAL', subtype='0')            # as our ores 50601-50619 (type 6)
 add(50663, status=need(JADE))                           # Jadeit Dymu (50661/50662/50664: the first batch)
 # materials of the Serpent / Northwind sets and their refining
-add(31228, status=need(y1.GLOVES))                      # Luska Argosa
+add(31228, tradeable=1)                                              # Luska Argosa - Obrecz Jadeitu Dymu (quest yohara_mapy4)
 for v in (31233, 31234, 31257, 31258):                  # Kamien Wezowy(+), Wzor Wezowy, Jedwab Wezowy
     add(v, status=need(SERPENT))
 add(70428, status=need(SERPENT), **MAT)                 # Pyl Wezowy (Owsap: USE_SPECIAL, a quest use)
@@ -164,7 +164,7 @@ def build(a):
         typ = TYPES[ov.get('type', o['Type'])]
         sub = SUBTYPES[ov.get('subtype', o['SubType'])]
         anti = y1.flags(o['AntiFlags'], y1.ANTI, 'antiflag')
-        if it['status'] != ST:
+        if it['status'] != ST or ov.get('tradeable'):   # tradeable: kept as the world's row has it
             anti &= ~y1.ANTI_TRADE
         flag = y1.flags(o['Flags'], y1.FLAGS, 'flag')
         if 'type' in ov and ov['type'] == 'ITEM_MATERIAL':
