@@ -1,4 +1,3 @@
-# -*- coding: cp1250 -*-
 # MT2009_PLUS_YOHARA_EXE2_V1: the Sung Ma state of the player for the root (server-patches/czempion, precyzja):
 #   * the map's requirements - "sungma_map <str> <hp> <move> <immune> [<hit>]" (game.py; all 0 off a Sung Ma map),
 #     the 5th number the map's Precyzja (MT2009_PLUS_PRECISION_V1);

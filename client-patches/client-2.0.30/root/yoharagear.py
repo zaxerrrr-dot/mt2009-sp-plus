@@ -1,4 +1,3 @@
-# -*- coding: cp1250 -*-
 # MT2009_PLUS_YOHARA_EXE2_V1: the root's side of the Yohara gear of the second exe round (server-patches/rekawice,
 # obreczjadeitu2 - the same numbers as the server's playerbot_yohara_gear.cpp):
 #   * Rekawice Sung Ma (23000-23039): a Kamien (Mocy) Demonow in a socket is Owsap's number
