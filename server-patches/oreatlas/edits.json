@@ -1,0 +1,14 @@
+[
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_ORE_ATLAS_V1 (atlas)",
+  "old": "\t\t\t\t\tbool isHiddenNpc = p->m_table.dwVnum == 20403;\n",
+  "new": "\t\t\t\t\t// MT2009_PLUS_ORE_ATLAS_V1 (atlas): an ore vein (mining.cpp's table - the jade veins of Yohara 30310-30313 and\n\t\t\t\t\t// every other) is an NPC by type but no mark on the world map, as in the official game\n\t\t\t\t\t// (server-patches/oreatlas).\n\t\t\t\t\tbool isHiddenNpc = p->m_table.dwVnum == 20403 || mining::IsVeinOfOre(p->m_table.dwVnum);\n"
+ },
+ {
+  "file": "regen.cpp",
+  "marker": "MT2009_PLUS_ORE_ATLAS_V1 (declaration)",
+  "old": "#include \"regen.h\"\n",
+  "new": "#include \"regen.h\"\n// MT2009_PLUS_ORE_ATLAS_V1 (declaration): mining.h's, without its LPEVENT/LPITEM needs\nnamespace mining { bool IsVeinOfOre(DWORD vnum); }\n"
+ }
+]

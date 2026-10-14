@@ -98,6 +98,7 @@ param(
 #   Umiejetnosci 9.    common skill_length.h, char_skill.cpp, char_battle.cpp, char_affect.cpp,
 #                      constants.cpp, battle.cpp (MT2009_PLUS_SKILL9_V1; server-patches/skill9)
 #   Szczelina Czasu    char_battle.cpp (MT2009_PLUS_YOHARA_CRACK_V1; server-patches/szczelina, after skill9)
+#   Rudy poza mapa     regen.cpp (MT2009_PLUS_ORE_ATLAS_V1; server-patches/oreatlas, after szczelina)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1416,6 +1417,19 @@ if ((Test-Path -LiteralPath $szczelinaApply -PathType Leaf) -and
     if ($szczelinaResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Time Rift edit(s).' -f $szczelinaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Rudy poza mapa swiata (server-patches/oreatlas, MT2009_PLUS_ORE_ATLAS_V1): an ore vein (mining.cpp's table - the
+# jade veins of Yohara 30310-30313 and every other) is an NPC by type, but gets no mark on the world map (regen.cpp,
+# beside the hidden NPC 20403) - as in the official game.
+$oreAtlasApply = Join-Path $repo 'server-patches/oreatlas/Apply-OreAtlasPatch.ps1'
+if ((Test-Path -LiteralPath $oreAtlasApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'regen.cpp') -PathType Leaf)) {
+    $oreAtlasResult = & $oreAtlasApply -SourceDir $engineGameSource
+    if ($oreAtlasResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} ore-vein atlas edit(s).' -f $oreAtlasResult.Applied) -ForegroundColor DarkGray
     }
 }
 
