@@ -420,3 +420,12 @@ Też w tej rundzie (błąd 1 z testów – znikająca 9. umiejętność): `UserI
 `RecvSkillLevelNew` – pod `ENABLE_NINTH_SKILL` exe nie czyści już miejsca 7 okna umiejętności (`SetSkill(7, 0)`) ani nie
 oddaje go umiejętnościom języków 112–115; miejsce 7 to 9. umiejętność (root). Miejsce 8 bez zmian. Obejście w pythonie
 (`RestoreNinthSkillSlot`) może zostać – nic nie psuje.
+
+Zbudowane 14.10.2026 (`build.sh msvc --smoke`, MSVC 14.44; źródła: client-build + cały ten katalog,
+`/opt/metin2/cache/yohara/exe-src4/Source`): `metin2client.exe` 13 703 680 B, sha256
+`eb9ed5e31d63798b3b5062ace297c5c17da22e3b42bc4f49a0615d62d59ce8e4` (`/opt/metin2/cache/yohara/exe-out4/`); smoke test
+dochodzi do okna logowania. Drugi smoke z rootem tej rundy (tylko do testu: hak w `intrologin.py`, `exe-out4/smoke2`):
+okno ekwipunku z miejscem rękawic (`EQUIPMENT_GLOVE` 251, `HIT_PCT` 197, `app.MT2009_YOHARA_EXE2` 1) i ikony Sung Ma
+na pasku afektów rysują się bez błędów (`exe-out4/smoke-inventory-affects.png`, `smoke-equipment-zoom.png`); dymków
+rękawic klient testowy nie pokazał – jego paczki nie wczytały nowych rekordów `item_proto` (`dbdata`), więc dymki
+sprawdzone tylko kompilacją i testem funkcji `yoharagear.py`.
