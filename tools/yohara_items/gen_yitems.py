@@ -91,7 +91,9 @@ add(50738, status=need(HERBS))                                        # Mroczny 
 # our 50733 / 50734 / 50926 are other items (Bursztynowy Platek, Perlowe Wiechy, a recipe): 957xx / 95926 here
 add(95733, src=50733, status=need(HERBS + '; 50733 is our Bursztynowy Platek, so 95733'))
 add(95734, src=50734, status=need(HERBS + '; 50734 is our Perlowe Wiechy, so 95734'))
-add(95926, src=50926, status=need('Gaya (Handlarz Gaya) - none here; 50926 is our recipe, so 95926'))
+# MT2009_PLUS_GAYA_V1: Kamyki work now (Statua Wojownika grinds them into Gaya, quest ygaya, tools/ygaya)
+add(95926, src=50926, desc='Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w drogocenne '
+    'Gaya (30 Kamyków, Kamień Duszy +0 do +3 i 15 000 Yang - szansa 70%, 3 Gaya).')  # 50926 is our recipe, so 95926
 for v in (39078, 39079, 39080):                                       # Lsniace Odlamki
     add(v, status=need('Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet'))
 for v in (50661, 50662, 50664):                                       # Jadeit Slonca, Nocy, Mgly
@@ -186,6 +188,7 @@ def main():
         o = proto[it['src']]
         ov = it['over']
         pl, text = desc.get(it['src'], ('', ''))
+        text = ov.get('desc', text)
         name = it['name'] or pl
         assert name and len(name.encode('cp1250')) <= 32, (it['vnum'], name)
         typ = TYPES[ov.get('type', o['Type'])]
