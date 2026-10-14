@@ -4,7 +4,8 @@
 #      effects and sounds, the icons and their atlases - staged by stage_yskill9.py under <staging>/add/<pack>/...);
 #   2) their lines at the end of pack/Index;
 #   3) the existing pack "dbdata" (patch_yskill9_client.py): locale/pl/skilldesc.txt and gamedata/skilltable.txt -
-#      the rows 176-182.
+#      the rows 176-182 and the passive skill Precyzja's 246, and its icon d:/ymir work/ui/skill/common/support/
+#      hit_attribute.sub (a new dbdata entry; MT2009_PLUS_PRECISION_SKILL_V1).
 # The exe must register the motions (client-patches/exe, MT2009_PLUS_SKILL9_V1 in PythonPlayerSettingsModule.cpp) and
 # root/playersettingmodule.py puts the skill in the skill window (place 7).
 #
@@ -145,7 +146,7 @@ def main():
             open(os.path.join(out, 'Index'), 'wb').write(ix)
             report['Index'] = 'written'
 
-    # 3) dbdata: skilldesc and skilltable rows 176-182
+    # 3) dbdata: skilldesc and skilltable rows 176-182 and 246, Precyzja's icon
     pack = 'dbdata'
     src = src_of(pack)
     f, v, ents = m2pack.read_index(os.path.join(src, pack + '.index'))
@@ -157,13 +158,26 @@ def main():
         nb, changed = fn(b)
         if changed:
             rep[n] = nb
-    if not rep:
+    # MT2009_PLUS_PRECISION_SKILL_V1: the support tab's icon of Precyzja (246) - a new dbdata entry (its atlas is the
+    # yskill9 pack's skill9_common.dds); kept where another pack has it with the same bytes
+    add = {}
+    icon = pc.PRECISION_ICON
+    if icon in have:
+        if m2pack.read_entry(dat, have[icon]) != pc.PRECISION_ICON_SUB:
+            rep[icon] = pc.PRECISION_ICON_SUB
+    elif icon in where:
+        if entry_bytes(*where[icon]) != pc.PRECISION_ICON_SUB:
+            raise SystemExit('%s is in %s/%s with other bytes' % (icon, where[icon][0], where[icon][1]))
+    else:
+        add[icon] = (pc.PRECISION_ICON_SUB, ctype(icon))
+    if not rep and not add:
         report[pack] = 'unchanged'
     elif check:
-        report[pack] = dict(replace=sorted(rep))
+        report[pack] = dict(replace=sorted(rep), add=sorted(add))
     else:
-        report[pack] = write(pack, src, rep, {}, ents, dat)
+        report[pack] = write(pack, src, rep, add, ents, dat)
         report[pack]['replaced_names'] = sorted(rep)
+        report[pack]['added_names'] = sorted(add)
 
     print(json.dumps(report, indent=1))
 

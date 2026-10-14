@@ -23,7 +23,7 @@ import utils
 import sungmastate # MT2009_PLUS_YOHARA_EXE2_V1
 
 SHOW_ONLY_ACTIVE_SKILL = False
-SHOW_LIMIT_SUPPORT_SKILL_LIST = [121, 122, 123, 124, 126, 127, 129, 128, 131, 132, 137, 138, 139, 140]
+SHOW_LIMIT_SUPPORT_SKILL_LIST = [121, 122, 123, 124, 126, 127, 129, 128, 131, 132, 137, 138, 139, 140, 246] # 246: MT2009_PLUS_PRECISION_SKILL_V1 (Precyzja)
 HIDE_SUPPORT_SKILL_POINT = True
 
 # MT2009_PLUS_CHAMPION_V2: Poziom Czempiona and the Sung Ma stats on the status tab's second page (the GF/official

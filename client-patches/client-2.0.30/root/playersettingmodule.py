@@ -38,25 +38,26 @@ def DefineSkillIndexDict():
 		# MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara (176-182) in the 7th place (slot 7, the left column's
 		# 4th row of the skill page): Trzesienie, Swiatlo Gwiazd / Strzal Wichury, Piekielny Cios / Fala Smierci,
 		# Meteor / Tarcza Eteru. Its grades M/G/P are slots 27/47 like the others'.
+		# MT2009_PLUS_PRECISION_SKILL_V1: "SUPPORT" 11th = slot 111 - the passive skill Precyzja (246, precisionskill.py).
 		JOB_WARRIOR: {
 			1: (1, 2, 3, 4, 5, 0, 176, 0, 137, 0, 138, 0, 139, 0,),
 			2: (16, 17, 18, 19, 20, 0, 176, 0, 137, 0, 138, 0, 139, 0,),
-			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131,),
+			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131, 246,),
 		},
 		JOB_ASSASSIN: {
 			1: (31, 32, 33, 34, 35, 0, 177, 0, 137, 0, 138, 0, 139, 0, 140,),
 			2: (46, 47, 48, 49, 50, 0, 178, 0, 137, 0, 138, 0, 139, 0, 140,),
-			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131,),
+			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131, 246,),
 		},
 		JOB_SURA: {
 			1: (61, 62, 63, 64, 65, 66, 179, 0, 137, 0, 138, 0, 139, 0,),
 			2: (76, 77, 78, 79, 80, 81, 180, 0, 137, 0, 138, 0, 139, 0,),
-			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131,),
+			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131, 246,),
 		},
 		JOB_SHAMAN: {
 			1: (91, 92, 93, 94, 95, 96, 181, 0, 137, 0, 138, 0, 139, 0,),
 			2: (106, 107, 108, 109, 110, 111, 182, 0, 137, 0, 138, 0, 139, 0,),
-			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131,),
+			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131, 246,),
 		},
 	}
 
