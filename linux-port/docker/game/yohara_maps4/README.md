@@ -32,7 +32,7 @@ leopardy, yeti, duchy, golemy 6777–6783 / 6889–6895). Wąwóz to `metin2_map
   4043 błyskawice) po całym osiągalnym terenie, w liczbie = gęstość Owsapa na Seoganland × teren Rozpadliny
   (161 738 m²) → 249 grup co ~24 m; żywioł grupy wg najbliższego punktu GF potwora danego żywiołu (139 lód /
   110 błyskawice); 30 m wolnego miejsca przy NPC, portalu i miejscach przybycia.
-- **Drop** (wiki, każdy potwór i boss; procenty nasze, oficjalnie rzadkie – skala drugiej partii; nic nie
+- **Drop** (wiki, każdy potwór i boss; procenty nasze, rzadkie jak w grze – skala drugiej partii; nic nie
   wyrównuje eventu 500% na serwerze testowym): potwory – Talizmany Woli 0,05%, Topaz Woli 0,4%, Kamień Wężowy(+),
   Małż, Ognista Runa Aury (10), płyta, Róg Trolla, Utwardzacze, Wzór Wężowy, zioło żywiołu (Mroźny Korzonek /
   Piorunowe Zioło), Puste Eliksiry, Skrzynia Ksiąg (9.skill), Zdobna Skrz. z Odłamkiem, losowe skrzynia/klucz;
