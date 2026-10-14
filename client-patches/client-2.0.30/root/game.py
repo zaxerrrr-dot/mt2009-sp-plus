@@ -342,6 +342,7 @@ class GameWindow(ui.ScriptWindow):
 		self.Hide()
 		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 		__import__("uidropwiki").DestroyWindow()
+		__import__("uichangelook").DestroyWindow() # MT2009_PLUS_CHANGE_LOOK_V1
 
 		self.oneSecondTimer = 0
 
@@ -3155,6 +3156,13 @@ class GameWindow(ui.ScriptWindow):
 			"GDUpdate": self.__GuildDutyUpdate,
 			"CostumeHiddenAck": self.__CostumeHiddenAck,
 			"CostumeOthersAck": self.__CostumeOthersAck, # MT2009_PLUS_COSTUME_VIEW_OTHERS_V1
+			# MT2009_PLUS_HIDE_COSTUME_V1 / MT2009_PLUS_CHANGE_LOOK_V1 (uicostumehide.py, uichangelook.py)
+			"SetHiddenCostumePart": self.__SetHiddenCostumePart,
+			"ChangeLookOpen": self.__ChangeLookOpen,
+			"ChangeLookSet": self.__ChangeLookSet,
+			"ChangeLookDel": self.__ChangeLookDel,
+			"ChangeLookClose": self.__ChangeLookClose,
+			"ChangeLookDone": self.__ChangeLookDone,
 			"ConsoleEnable"			: self.__Console_Enable,
 			"GameMaster"			: self.__GameMaster,
 			"DayMode"				: self.__DayMode_Update,
@@ -4217,6 +4225,35 @@ class GameWindow(ui.ScriptWindow):
 	def __CostumeOthersAck(self, *rest):
 		import uicostumehide
 		uicostumehide.OnOthersAck(*rest)
+
+	# MT2009_PLUS_HIDE_COSTUME_V1: "SetHiddenCostumePart <subtype> <0|1>" (uicostumehide.py)
+	def __SetHiddenCostumePart(self, part, hidden):
+		import uicostumehide
+		uicostumehide.OnSetHidden(part, hidden)
+
+	# MT2009_PLUS_CHANGE_LOOK_V1: Teowaden's change-look window (uichangelook.py)
+	def __ChangeLookOpen(self, type):
+		import uichangelook
+		toolTip = None
+		if self.interface:
+			toolTip = getattr(self.interface, "tooltipItem", None)
+		uichangelook.OnOpen(toolTip, type)
+
+	def __ChangeLookSet(self, slot, cell, vnum):
+		import uichangelook
+		uichangelook.OnSet(slot, cell, vnum)
+
+	def __ChangeLookDel(self, slot):
+		import uichangelook
+		uichangelook.OnDel(slot)
+
+	def __ChangeLookClose(self):
+		import uichangelook
+		uichangelook.OnClose()
+
+	def __ChangeLookDone(self):
+		import uichangelook
+		uichangelook.OnDone()
 
 	def __TargetHP(self, vid, hp, maxHp):
 		try:
