@@ -372,3 +372,15 @@ Zbudowane 13.10.2026 (`build.sh msvc --smoke`, MSVC 14.44; źródła: kopia clie
 `/opt/metin2/cache/yohara/exe-out/`); smoke test dochodzi do okna logowania. Drugi smoke z root 3.0 (tylko do testu: hak w
 `intrologin.py` otwiera dwa okna postaci przy logowaniu) – strona zwykła i Sung Ma rysują się bez błędów
 (`exe-out/smoke-character-window.png`; liczby to śmieci, bo nie ma postaci).
+
+## Umiejętności 9. (Yohara) – `MT2009_PLUS_SKILL9_V1` (`ENABLE_NINTH_SKILL`)
+
+Ruchy 9. umiejętności na wszystkich 8 rasach (`server-patches/skill9/README.md`). Exe 2.0.25 rejestruje ruchy umiejętności
+sam (nie Python), więc bez tej zmiany klient nie zagra Trzęsienia itd. Indeks ruchu = kolumna „motion” skilldesc:
+9 (pierwsza droga), 24 (druga), +25 na stopień (`SKILL_GRADEGAP`); pliki z klienta GF (paczka `yskill9`,
+`client-2.0.30/tools/yskill9`). Protokół bez zmian – bramka wersji 3.0 zostaje jak jest.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_NINTH_SKILL` |
+| `UserInterface/PythonPlayerSettingsModule.cpp` | wojownik `{9, "finish"}`; ninja `{9, "ilgangpyo"}`, `{24, "pungraepo"}`; sura `{9, "akgi"}`, `{24, "akgi_dark"}`; szaman `{9, "meteo"}`, `{24, "chunwoon"}` (+ ich `.msa` 1. stopnia na liście ręcznej) |
