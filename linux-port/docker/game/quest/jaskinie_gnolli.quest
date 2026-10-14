@@ -62,7 +62,7 @@ quest jaskinie_gnolli begin
 			say("wejœæ do œrodka?")
 			say("")
 			say_reward("Wejœcie od 1. Poziomu Czempiona, za Przepustkê.")
-			say_red("Nie giñ tam. Kto padnie, wraca do Dongan.")
+			say_orange("Nie giñ tam. Kto padnie, wraca do Dongan.")
 			if select("Oczywiœcie", "Raczej nie") ~= 1 then
 				return
 			end
@@ -145,7 +145,7 @@ quest jaskinie_gnolli begin
 		when 20838.chat."Jaskinie Gnolli" with pc.get_map_index() == 382 begin
 			say_title(mob_name(20838)..":")
 			say("Czy chcesz zejœæ g³êbiej do jaskiñ?")
-			say_red("Z 2. poziomu nie ma ju¿ powrotu na 1. poziom.")
+			say_orange("Z 2. poziomu nie ma ju¿ powrotu na 1. poziom.")
 			if select("Tak", "Nie") == 1 then
 				jaskinie_gnolli.go(jaskinie_gnolli.cfg().levels[2])
 			end
@@ -154,7 +154,7 @@ quest jaskinie_gnolli begin
 		when 20839.chat."Jaskinie Gnolli" with pc.get_map_index() == 383 begin
 			say_title(mob_name(20839)..":")
 			say("Czy chcesz zejœæ g³êbiej do jaskiñ?")
-			say_red("Z 3. poziomu nie ma ju¿ powrotu na 2. poziom.")
+			say_orange("Z 3. poziomu nie ma ju¿ powrotu na 2. poziom.")
 			if select("Tak", "Nie") == 1 then
 				jaskinie_gnolli.go(jaskinie_gnolli.cfg().levels[3])
 			end

@@ -284,7 +284,7 @@ quest przebudzeni_bossowie begin
 			say("wyjœcia nie ma.")
 			say_reward("Od poziomu "..c.min_level..", tylko w grupie. Ka¿dy musi")
 			say_reward("mieæ Ksi¹¿kê Przebudzenia (zabieran¹ przy wejœciu).")
-			say_red("Do Stra¿nicy Nemere (PB): Ninja i Szaman w grupie.")
+			say_orange("Do Stra¿nicy Nemere (PB): Ninja i Szaman w grupie.")
 			local opts = {}
 			for i, dg in ipairs(c.dungeons) do
 				table.insert(opts, dg.name)
@@ -377,7 +377,7 @@ quest przebudzeni_bossowie begin
 			say_item_vnum(c.medicine)
 			local n = math.floor(pc.count_item(c.leaves) / c.leaves_count)
 			if n < 1 then
-				say_red("Potrzebujê 20 Liœci ¯ycia (masz "..pc.count_item(c.leaves)..").")
+				say_orange("Potrzebujê 20 Liœci ¯ycia (masz "..pc.count_item(c.leaves)..").")
 				return
 			end
 			if select("Przygotuj (20 Liœci ¯ycia)", "Nie teraz") ~= 1 then
