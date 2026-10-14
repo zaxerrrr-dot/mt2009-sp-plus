@@ -291,6 +291,9 @@ quest ygaya begin
 		end
 
 		when 20433.chat."Portowy Sklep Gaya" with pc.get_map_index() == 368 begin
+			-- MT2009_PLUS_GAYA_SHOP_V2 (w³aœciciel 14.10): bez okna rozmowy - inaczej klient zostawa³ w trybie
+			-- rozmowy z NPC i chowa³ ca³e GUI (mapa, czat, pasek, EQ) a¿ do pierwszego zakupu.
+			setskin(NOWINDOW)
 			ygaya.shop()
 		end
 
