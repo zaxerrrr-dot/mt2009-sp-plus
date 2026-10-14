@@ -1,0 +1,32 @@
+[
+ {
+  "file": "cube.h",
+  "marker": "MT2009_PLUS_GAYA_V1 (cube data)",
+  "old": "\tYANG\t\t\t\t\tgold;\n",
+  "new": "\tYANG\t\t\t\t\tgold;\n\tint\t\t\t\t\t\tgaya = 0; // MT2009_PLUS_GAYA_V1 (cube data): the Gaya (item 95927) the recipe takes from the inventory\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_GAYA_V1 (cube helpers)",
+  "old": "static std::vector<CUBE_DATA*>\ts_cube_proto;\n",
+  "new": "static std::vector<CUBE_DATA*>\ts_cube_proto;\n// MT2009_PLUS_GAYA_V1 (cube helpers): a recipe's \"gaya N\" line - N Gaya (the item 95927, quest ygaya) from the\n// inventory, checked before anything is taken and taken with the materials (a failed attempt takes it, as the Yang)\nstatic const DWORD MT2009_GAYA_VNUM = 95927;\nstatic bool Mt2009GayaCubeCheck(LPCHARACTER ch, const CUBE_DATA* cube)\n{\n\tif (cube->gaya <= 0 || ch->CountSpecifyItem(MT2009_GAYA_VNUM) >= (ITEM_COUNT)cube->gaya)\n\t\treturn true;\n\tch->ChatPacket(CHAT_TYPE_INFO, \"Masz za ma\\263o Gaya (potrzeba %d).\", cube->gaya);\n\treturn false;\n}\nstatic void Mt2009GayaCubeTake(LPCHARACTER ch, const CUBE_DATA* cube)\n{\n\tif (cube->gaya > 0)\n\t\tch->RemoveSpecifyItem(MT2009_GAYA_VNUM, (ITEM_COUNT)cube->gaya);\n}\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_GAYA_V1 (cube load)",
+  "old": "\t\telse TOKEN(\"gold\")\n\t\t{\n\t\t\tcube_data->gold = value1;\n\t\t}\n",
+  "new": "\t\telse TOKEN(\"gold\")\n\t\t{\n\t\t\tcube_data->gold = value1;\n\t\t}\n\t\telse TOKEN(\"gaya\") // MT2009_PLUS_GAYA_V1 (cube load)\n\t\t{\n\t\t\tcube_data->gaya = value1;\n\t\t}\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_GAYA_V1 (cube set)",
+  "old": "\tcube_proto->remove_material(ch);\n",
+  "new": "\tif (!Mt2009GayaCubeCheck(ch, cube_proto)) // MT2009_PLUS_GAYA_V1 (cube set): a set blacksmith's Gaya\n\t\treturn false;\n\tcube_proto->remove_material(ch);\n\tMt2009GayaCubeTake(ch, cube_proto);\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_GAYA_V1 (cube make)",
+  "old": "\tcube_proto->remove_material (ch);\n",
+  "new": "\tif (!Mt2009GayaCubeCheck(ch, cube_proto)) // MT2009_PLUS_GAYA_V1 (cube make): the recipe's Gaya\n\t\treturn false;\n\tcube_proto->remove_material (ch);\n\tMt2009GayaCubeTake(ch, cube_proto);\n"
+ }
+]

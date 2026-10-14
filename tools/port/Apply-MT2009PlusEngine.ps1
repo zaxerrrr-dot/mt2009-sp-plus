@@ -87,6 +87,7 @@ param(
 #   Strefy na ziemi    questlua_dungeon.cpp, char_battle.cpp (MT2009_PLUS_DUNGEON_ZONE_V1,
 #                      MT2009_PLUS_DUNGEON_RAGE_V1; server-patches/strefy)
 #   Wieza Sung Mahi    char_skill.cpp (MT2009_PLUS_SMH_TOWER_V1; server-patches/wiezasm)
+#   Gaya               cube.h, cube.cpp (MT2009_PLUS_GAYA_V1; server-patches/gaya, after ysets)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1322,6 +1323,19 @@ if ((Test-Path -LiteralPath $wiezaSmApply -PathType Leaf) -and
     if ($wiezaSmResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Sung Mahi tower edit(s).' -f $wiezaSmResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Gaya (server-patches/gaya, MT2009_PLUS_GAYA_V1): a cube recipe's "gaya N" - N of the Gaya item (95927, quest ygaya)
+# from the inventory, checked first and taken with the materials (the set blacksmiths, Statua Wezy, the elemental pet
+# chests of Statua Wojownika). After Zestawy Yohary (one edit is in its Mt2009YSetsCubeMake).
+$gayaApply = Join-Path $repo 'server-patches/gaya/Apply-GayaPatch.ps1'
+if ((Test-Path -LiteralPath $gayaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cube.cpp') -PathType Leaf)) {
+    $gayaResult = & $gayaApply -SourceDir $engineGameSource
+    if ($gayaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Gaya edit(s).' -f $gayaResult.Applied) -ForegroundColor DarkGray
     }
 }
 
