@@ -1513,7 +1513,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps-add \
 COPY champion/ /tmp/champion-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
  && for f in sungma_table.txt sungma_mob_exp.txt; do sed 's/\r$//' "$A/$f" > "$L/$f"; done \
- && test "$(grep -c -E '^metin2_map_[a-z0-9_]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_table.txt")" = 19 \
+ && test "$(grep -c -E '^metin2_map_[a-z0-9_]+([[:blank:]]+[0-9]+){5}$' "$L/sungma_table.txt")" = 19 \
  && test "$(grep -c -E '^[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_mob_exp.txt")" -gt 300 \
  && rm -rf "$A" \
  && echo "share: Poziom Czempiona (sungma_table.txt, sungma_mob_exp.txt)"
