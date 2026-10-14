@@ -143,6 +143,9 @@ BOOT_ONCE = {
                                "note": "zestawy Ognistego Rycerza i Krwawej Zemsty wracają do sklepu"},
     "arezzo_costume_sets_v4": {"adds": (), "remove_vnums": AREZZO_COSTUME_V4_REMOVED,
                                "note": "nakładki na szarfę Krwawej Zemsty, Nieb./Złotego Smoka i Jokera znikają ze sklepu"},
+    "transmutacja_tickets": {"adds": (950, 951), "note": "Bilet Transmutacji i Bilet Polimorfii Wierzchowca"},
+    "yohara_scrolls_622": {"adds": (622, 623, 624, 625, 626),
+                           "note": "Nowa Wola (4 rodzaje) i Wejście do Świątyni Węży"},
 }
 
 

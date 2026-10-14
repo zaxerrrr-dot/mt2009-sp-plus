@@ -3647,6 +3647,18 @@ for ym3_sql in yohara_maps3.sql yohara_items3.sql yohara_maps3_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_YOHARA_SHOP_SCROLLS_V1 (the owner, 14 October 2026): Nowa Wola (72068-72071, czempion.sql) and Wejscie
+# do Swiatyni Wezy (70430, yohara_items3.sql) had no source - the in-game ItemShop's "Zwoje i ksiegi" page (601-699),
+# 50 SM each. Once per install (the Seban panel's BOOT_ONCE: yohara_scrolls_622).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (72068, 72069, 72070, 72071, 70430);" 2>/dev/null || echo x)" = "5" ]; then
+ishop_once yohara_scrolls_622 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
+(622, 72068, 1, 50, 'DRAGON_COIN', 0),
+(623, 72069, 1, 50, 'DRAGON_COIN', 0),
+(624, 72070, 1, 50, 'DRAGON_COIN', 0),
+(625, 72071, 1, 50, 'DRAGON_COIN', 0),
+(626, 70430, 1, 50, 'DRAGON_COIN', 0);" "could not add Nowa Wola / Wejscie do Swiatyni Wezy to the ItemShop"
+fi
+
 # MT2009_PLUS_YOHARA_MAPS4_V1 / MT2009_PLUS_YOHARA_ITEMS4_V1: yohara_items4.sql (tools/yohara_maps4/gen_yitems4.py) -
 # the jade bracelets 14580-14619 (+ refine_proto 22701-22709), Kamien Metin z Yohara, Plat. Skrzynia / Klucz, Przeb.
 # Ksiega Zwierza (the owner's items of 14 October; the drop files and chests of game/yohara_maps2-4 name them).
