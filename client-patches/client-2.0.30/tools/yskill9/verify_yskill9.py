@@ -5,8 +5,8 @@
 #     .msa) is in a pack, and so is every file an .msa / .mse / .msf / .sub of the new packs names (effects, models,
 #     textures, the icons' atlases) - in the new packs or anywhere else in the client (BASE + OUT, or the base packs'
 #     listing ourpacks_pre.txt for the packs not on this host);
-#   - dbdata: locale/pl/skilldesc.txt and gamedata/skilltable.txt carry the rows 176-182 exactly as
-#     patch_yskill9_client.py writes them.
+#   - dbdata: locale/pl/skilldesc.txt and gamedata/skilltable.txt carry the rows 176-182 (and Precyzja's 246) exactly
+#     as patch_yskill9_client.py writes them; Precyzja's support icon hit_attribute.sub is there, its atlas too.
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/yskill9/verify_yskill9.py \
 #     <OUT pack dir> [<BASE pack dir>]
 # The last line: "yskill9 verify: N checks, 0 failures".
@@ -101,10 +101,14 @@ def main():
         ok(n in names, 'dbdata: no %s' % n)
         if n in names:
             b = entry(n)
-            ok(fn(b)[1] is False, '%s: the rows 176-182 are not the patch\'s' % n)
+            ok(fn(b)[1] is False, '%s: the rows 176-182/246 are not the patch\'s' % n)
             rows = [l.split('\t')[0] for l in b.decode('cp1250').split('\r\n')]
-            for v in pc.VNUMS:
+            for v in pc.ALL_VNUMS:
                 ok(rows.count(str(v)) == 1, '%s: row %d x%d' % (n, v, rows.count(str(v))))
+    # MT2009_PLUS_PRECISION_SKILL_V1: Precyzja's support icon and its atlas
+    icon = pc.PRECISION_ICON
+    ok(icon in names and entry(icon) == pc.PRECISION_ICON_SUB, '%s missing or not the patch\'s' % icon)
+    ok('d:/ymir work/ui/skill9_common.dds' in have, '%s: atlas skill9_common.dds missing' % icon)
     for f in fails:
         print('FAIL', f)
     print('yskill9 verify: %d checks, %d failures' % (checks[0], len(fails)))

@@ -48,6 +48,63 @@ EDITS = [
              '\tif (GetDesc() && (type < POINT_PACKET_NUM || (type >= POINT_SUNGMA_PER_STR && type < POINT_MAX_NUM))) // MT2009_PLUS_ELEMENTS_V1 (no point packet): the element powers stay on the server\n'),
 ]
 
+# MT2009_PLUS_PRECISION_SKILL_V1: the passive skill Precyzja (pl-wiki "Precyzja", "Ksiega Precyzji") - SKILL_PRECISION
+# 246 (GF's vnum: its client's skilltable row 246, icon hit_attribute), read from Ksiega Precyzji (50325) from champion
+# level 1, 0 -> P; its bonus (the wiki's table) is part of POINT_HIT_PCT. Logic: playerbot_champion.cpp
+# (PrecisionReadBook, PrecisionSkillBonus); data: linux-port/docker/mariadb/playerbot/precyzja_skill.sql.
+S = 'MT2009_PLUS_PRECISION_SKILL_V1'
+EDITS += [
+    dict(file='../../common/skill_length.h', marker=S + ' (vnum)',
+         old='\tSKILL_ILIPUNGU = 183,\t\t// Burza Szponow (Likan - no Lycan here)\n',
+         new='\tSKILL_ILIPUNGU = 183,\t\t// Burza Szponow (Likan - no Lycan here)\n'
+             '\t// ' + S + ' (vnum): the passive skill Precyzja of every character (GF\'s 246; server-patches/precyzja)\n'
+             '\tSKILL_PRECISION = 246,\n'),
+    # the book: its own case before the old polymorph-like one (that one sent 50325 to SKILL_RESIST_PENETRATE 142 with
+    # the item's value0 1 as the lowest level - the book could never be read)
+    dict(file='char_item.cpp', marker=S + ' (book)',
+         old='\t\t\t\t\t\t\tcase 50314: case 50315: case 50316:\n'
+             '\t\t\t\t\t\t\tcase 50323: case 50324:\n'
+             '\t\t\t\t\t\t\tcase 50325: case 50326:\n',
+         new='\t\t\t\t\t\t\tcase 50325: // ' + S + ' (book): Ksiega Precyzji - the passive skill Precyzja (playerbot_champion.cpp)\n'
+             '\t\t\t\t\t\t\t\t{\n'
+             '\t\t\t\t\t\t\t\t\tint PrecisionReadBook(CHARACTER*);\n'
+             '\t\t\t\t\t\t\t\t\tif (PrecisionReadBook(this))\n'
+             '\t\t\t\t\t\t\t\t\t{\n'
+             '#ifdef ENABLE_BOOKS_STACKFIX\n'
+             '\t\t\t\t\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n'
+             '#else\n'
+             '\t\t\t\t\t\t\t\t\t\tITEM_MANAGER::instance().RemoveItem(item);\n'
+             '#endif\n'
+             '\t\t\t\t\t\t\t\t\t}\n'
+             '\t\t\t\t\t\t\t\t}\n'
+             '\t\t\t\t\t\t\t\tbreak;\n'
+             '\n'
+             '\t\t\t\t\t\t\tcase 50314: case 50315: case 50316:\n'
+             '\t\t\t\t\t\t\tcase 50323: case 50324:\n'
+             '\t\t\t\t\t\t\tcase 50326:\n'),
+    # a skill reset (scrolls, a new road) keeps it - books, not skill points
+    dict(file='char_skill.cpp', marker=S + ' (reset)',
+         old='\tfor (DWORD dwNinth = SKILL_FINISH; dwNinth <= SKILL_CHEONUN; ++dwNinth)\n'
+             '\t\tvec.emplace_back(dwNinth, m_pSkillLevels[dwNinth]);\n',
+         new='\tfor (DWORD dwNinth = SKILL_FINISH; dwNinth <= SKILL_CHEONUN; ++dwNinth)\n'
+             '\t\tvec.emplace_back(dwNinth, m_pSkillLevels[dwNinth]);\n'
+             '\t// ' + S + ' (reset): Precyzja is kept as well (Ksiega Precyzji only)\n'
+             '\tvec.emplace_back(SKILL_PRECISION, m_pSkillLevels[SKILL_PRECISION]);\n'),
+    # the bonus: on the cleared points before the items' and affects' Precyzja come on top (a point change - the
+    # client gets POINT_HIT_PCT, which is not in the points packet)
+    dict(file='char.cpp', marker=S + ' (compute)',
+         old='\tSetPoint(POINT_SUNGMA_IMMUNE, GetRealPoint(POINT_SUNGMA_IMMUNE));\n',
+         new='\tSetPoint(POINT_SUNGMA_IMMUNE, GetRealPoint(POINT_SUNGMA_IMMUNE));\n'
+             '\t// ' + S + ' (compute): the passive skill Precyzja\'s bonus (playerbot_champion.cpp); items add below\n'
+             '\tif (IsPC())\n'
+             '\t{\n'
+             '\t\tint PrecisionSkillBonus(const CHARACTER*);\n'
+             '\t\tconst int iPrecisionSkill = PrecisionSkillBonus(this);\n'
+             '\t\tif (iPrecisionSkill)\n'
+             '\t\t\tPointChange(POINT_HIT_PCT, iPrecisionSkill);\n'
+             '\t}\n'),
+]
+
 
 def main():
     here = os.path.dirname(os.path.abspath(__file__))

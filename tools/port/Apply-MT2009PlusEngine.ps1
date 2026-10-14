@@ -100,7 +100,8 @@ param(
 #   Szczelina Czasu    char_battle.cpp (MT2009_PLUS_YOHARA_CRACK_V1; server-patches/szczelina, after skill9)
 #   M2_BONUS_MODE      item_manager.cpp, item_attribute.cpp (MT2009_PLUS_GLOBAL_BONUS_V1; server-patches/bonusyglobal)
 #   Rudy poza mapa     regen.cpp (MT2009_PLUS_ORE_ATLAS_V1; server-patches/oreatlas, after szczelina)
-#   Precyzja           common length.h, char.cpp (MT2009_PLUS_PRECISION_V1; server-patches/precyzja, after szczelina)
+#   Precyzja           common length.h/skill_length.h, char.cpp, char_item.cpp, char_skill.cpp (MT2009_PLUS_PRECISION_V1,
+#                      the passive skill Precyzja MT2009_PLUS_PRECISION_SKILL_V1; server-patches/precyzja, after szczelina)
 #   Rekawice Sung Ma   common CommonDefines.h/item_length.h, item.cpp, item_manager.cpp, item_attribute.cpp,
 #                      char_item.cpp, ENABLE_GLOVE_SYSTEM (MT2009_PLUS_GLOVES_V1; server-patches/rekawice, after precyzja)
 #   Obrecze Jadeitu V2 item.cpp, item_manager.cpp, item_attribute.cpp (MT2009_PLUS_JADE_BRACELET_V2;
@@ -1454,7 +1455,8 @@ if ((Test-Path -LiteralPath $oreAtlasApply -PathType Leaf) -and
 
 # Precyzja i procentowe bonusy Sung Ma (server-patches/precyzja, MT2009_PLUS_PRECISION_V1): points 193-197 after
 # POINT_PACKET_NUM (POINT_SUNGMA_PER_*, POINT_HIT_PCT - the points packet keeps 193), their point change to the
-# client, FLY_CONQUEROR_EXP. The logic is playerbot_champion.cpp / playerbot_yohara_gear.cpp.
+# client, FLY_CONQUEROR_EXP; the passive skill Precyzja (246, Ksiega Precyzji 50325 - MT2009_PLUS_PRECISION_SKILL_V1).
+# The logic is playerbot_champion.cpp / playerbot_yohara_gear.cpp.
 $precyzjaApply = Join-Path $repo 'server-patches/precyzja/Apply-PrecyzjaPatch.ps1'
 if ((Test-Path -LiteralPath $precyzjaApply -PathType Leaf) -and
     (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.cpp') -PathType Leaf)) {

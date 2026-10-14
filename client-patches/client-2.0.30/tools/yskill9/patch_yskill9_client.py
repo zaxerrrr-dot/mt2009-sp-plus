@@ -10,7 +10,8 @@
 #                              No "Bonus precyzji" line: our engine has no precision (the server keeps no HIT_PCT).
 #   gamedata/skilltable.txt  - the client's copy of skill_proto (SP cost, cooldown, target range ...), the server's
 #                              rows (yskill9_data.py) in its 27 columns.
-# Both CP1250 with CRLF; rows of 176-182 are replaced if there, appended if not - a second run changes nothing.
+# Also the row 246 of the passive skill Precyzja in both (MT2009_PLUS_PRECISION_SKILL_V1, PRECISION_* below).
+# Both CP1250 with CRLF; rows of 176-182 and 246 are replaced if there, appended if not - a second run changes nothing.
 #
 #   python3 patch_yskill9_client.py <skilldesc.txt> [<skilltable.txt>]         (files rewritten in place if changed)
 # build_yskill9_packs.py calls skilldesc() / skilltable() on the pack's entries.
@@ -68,6 +69,26 @@ DESC = [
 VNUMS = [d[0] for d in DESC]
 assert VNUMS == [r[0] for r in ROWS], (VNUMS, [r[0] for r in ROWS])
 
+# MT2009_PLUS_PRECISION_SKILL_V1: the passive skill Precyzja (skill 246, server-patches/precyzja/README.md) rides on
+# this builder - a support skill row like Dowodzenie's (121) in both files: the support tab's icon
+# d:/ymir work/ui/skill/common/support/hit_attribute.sub (build_yskill9_packs.py puts it in dbdata, on this pack's
+# atlas skill9_common.dds - GF's newskillcommon.dds, the hit_attribute square the pl-wiki shows), no tooltip lines (root
+# precisionskill.py writes the level and the wiki's bonus); skilltable = world.skill_proto 246 (precyzja_skill.sql).
+PRECISION_VNUM = 246
+PRECISION_DESC = u'\t'.join([u'246', u'SUPPORT', u'Precyzja', u'', u'',
+                              u'Każdy potwór na mapach Nowego Kontynentu ma ukrytą wartość precyzji. '
+                              u'Im wyższa Twoja Precyzja, tym rzadziej chybiasz.',
+                              u'', u'', u'', u'', u'PASSIVE', u'', u'hit_attribute', u' '] + [u''] * 14)
+PRECISION_TABLE = u'\t'.join([u'246', u'PRECISION', u'0', u'1', u'40', u'0', u'NONE'] + [u''] * 7 +
+                              [u'DISABLE_BY_POINT_UP', u'NONE', u'NONE', u'', u'', u'NONE', u'0', u'0', u'NORMAL', u'0',
+                               u'1', u'0', u'0'])
+assert len(PRECISION_DESC.split(u'\t')) == 28 and len(PRECISION_TABLE.split(u'\t')) == 27
+PRECISION_ICON = 'd:/ymir work/ui/skill/common/support/hit_attribute.sub'
+# GF's hit_attribute.sub with its atlas renamed (as stage_yskill9.py does for the 9th skills' icons)
+PRECISION_ICON_SUB = (b'title subImage\r\nversion 1.0\r\nimage "skill9_common.dds"\r\n'
+                      b'left 160\r\ntop 384\r\nright 192\r\nbottom 416\r\n')
+ALL_VNUMS = VNUMS + [PRECISION_VNUM]
+
 
 def desc_line(d):
     vnum, job, n0, n1, n2, text, cond, flags, weap, icon, motion, lines = d
@@ -119,11 +140,11 @@ def _replace_rows(b, lines):
 
 
 def skilldesc(b):
-    return _replace_rows(b, [desc_line(d) for d in DESC])
+    return _replace_rows(b, [desc_line(d) for d in DESC] + [PRECISION_DESC])
 
 
 def skilltable(b):
-    return _replace_rows(b, [table_line(r) for r in ROWS])
+    return _replace_rows(b, [table_line(r) for r in ROWS] + [PRECISION_TABLE])
 
 
 def main():
