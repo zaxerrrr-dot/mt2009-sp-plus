@@ -2364,6 +2364,7 @@ RUN set -eu; S=/opt/metin2/share/locale/poland/special_spawns.txt; A=/tmp/spawn-
 # are in): demonstones/mob_drop_item.demonstones.append.txt - the Yohara Metins +1/+2, the chiefs +1 to +3 (own groups,
 # 18 mobs); demonstones/special_item_group.demonstones.awk - the wiki's chests (70411, 70412, 70429, Skrzynia Hydry
 # 54705) the grades past +0 and Kamien Mocy Demonow. Mistrz Chi makes Kamien Mocy Demonow +0..+4 (quest rekawice).
+# The same file gives Krol Bao (6699) the wiki's Ksiega Precyzji (MT2009_PLUS_PRECISION_BOOK_DROP_V1).
 COPY demonstones/ /tmp/demonstones/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/demonstones; F="$L/mob_drop_item.txt"; G="$L/special_item_group.txt" \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_demonstones_' "$F" \
@@ -2371,6 +2372,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/demonstones; F="$L/mob_dr
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A/mob_drop_item.demonstones.append.txt" >> "$F" \
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_demonstones_' "$F")" = 18 \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_precyzja_6699' "$F")" = 1 \
  && awk -v report="$A/report" -f "$A/special_item_group.demonstones.awk" "$G" > "$G.new" \
  && mv "$G.new" "$G" \
  && cat "$A/report" \

@@ -157,3 +157,13 @@ Group	MT2009_demonstones_6895
 	2	28246	1	0.5	-- Kamien Demonow+2
 	3	28346	1	0.2	-- Kamien Demonow+3
 }
+
+// MT2009_PLUS_PRECISION_BOOK_DROP_V1 (the owner, 14 October 2026; pl-wiki "Ksiega Precyzji"): the wiki's sources
+// are in the batches' files already (the five Metins, Potezny Kappa, the chiefs of Wawoz and Rozpadlina Dusz, the
+// chests) except Krol Bao (6699).
+Group	MT2009_precyzja_6699
+{
+	Mob	6699	-- Krol Bao
+	Type	drop
+	1	50325	1	5	-- Ksiega Precyzji
+}
