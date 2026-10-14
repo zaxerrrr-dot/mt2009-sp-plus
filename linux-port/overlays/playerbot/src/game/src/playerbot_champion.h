@@ -43,6 +43,9 @@ namespace champion
 	// The table (share/locale/<locale>/sungma_table.txt) names maps, map/index gives their numbers (any core's);
 	// a name our world does not have never matches - the system stays dormant until a Yohara map comes.
 	const SungmaRequirement* MapRequirement(long lMapIndex);
+	// MT2009_PLUS_YOHARA_DUNG4_V1 (sungma): a dungeon instance's own requirement in place of its map's (NULL: the
+	// map's again) - d.set_sungma / d.clear_sungma (Wieza Sung Mahi's floors).
+	void SetInstanceRequirement(long lMapIndex, const SungmaRequirement* pReq);
 	bool IsSungmaMap(long lMapIndex);
 	// Champion experience of a monster (sungma_mob_exp.txt, from Owsap's mob_proto SungMaExp); 0 if none.
 	unsigned int MobExp(unsigned int dwRaceVnum);

@@ -20,6 +20,8 @@
 #include "cmd.h"
 #include "affect.h"
 #include "packet.h"
+#include "dungeon.h"
+#include "sectree_manager.h"
 
 #include <cctype>
 #include <cstdio>
@@ -159,11 +161,37 @@ namespace champion
 		Load();
 	}
 
+	// MT2009_PLUS_YOHARA_DUNG4_V1 (sungma): a dungeon instance's own requirement, set by its quest (d.set_sungma) -
+	// Wieza Sung Mahi's floors ask more every five floors (pl-wiki "Wieza Sung Mahi": 35/25/35/55 .. 70/58/70/90)
+	// than the map's one line in sungma_table.txt. Keyed by the instance's map index (base*10000+n); the quest sets
+	// it when an instance starts (an index comes back with a new instance of the same map only) and clears it.
+	static std::map<long, SungmaRequirement>& InstanceTable()
+	{
+		static std::map<long, SungmaRequirement> s;
+		return s;
+	}
+
+	void SetInstanceRequirement(long lMapIndex, const SungmaRequirement* pReq)
+	{
+		if (lMapIndex < 10000)
+			return;
+		if (pReq)
+			InstanceTable()[lMapIndex] = *pReq;
+		else
+			InstanceTable().erase(lMapIndex);
+	}
+
 	const SungmaRequirement* MapRequirement(long lMapIndex)
 	{
 		TState& st = State();
 		if (!st.loaded)
 			Load();
+		if (lMapIndex >= 10000)
+		{
+			std::map<long, SungmaRequirement>::const_iterator o = InstanceTable().find(lMapIndex);
+			if (o != InstanceTable().end())
+				return &o->second;
+		}
 		if (st.byIndex.empty() || lMapIndex <= 0)
 			return NULL;
 		const long lBase = lMapIndex >= 10000 ? lMapIndex / 10000 : lMapIndex;
@@ -772,6 +800,57 @@ namespace quest
 		return 1;
 	}
 
+	// MT2009_PLUS_YOHARA_DUNG4_V1 (sungma): d.set_sungma(str, hp, move, immune) - the current dungeon instance's Sung Ma
+	// requirement in place of its map's (Wieza Sung Mahi: every floor's), told to everyone inside at once (the
+	// character window's "sungma_map" and the penalty notice); d.clear_sungma() - the map's own again.
+	struct FChampionSendMap
+	{
+		void operator()(LPENTITY ent)
+		{
+			if (ent && ent->IsType(ENTITY_CHARACTER))
+			{
+				LPCHARACTER ch = (LPCHARACTER) ent;
+				if (ch->IsPC())
+					champion::SendMap(ch);
+			}
+		}
+	};
+
+	static void ChampionTellDungeon(long lMapIndex)
+	{
+		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(lMapIndex);
+		if (pMap)
+		{
+			FChampionSendMap f;
+			pMap->for_each(f);
+		}
+	}
+
+	static int d_set_sungma(lua_State* L)
+	{
+		LPDUNGEON pDungeon = CQuestManager::instance().GetCurrentDungeon();
+		if (!pDungeon || !lua_isnumber(L, 1) || !lua_isnumber(L, 2) || !lua_isnumber(L, 3) || !lua_isnumber(L, 4))
+			return 0;
+		champion::SungmaRequirement r;
+		r.str = MINMAX(0, (int) lua_tonumber(L, 1), champion::STAT_MAX);
+		r.hp = MINMAX(0, (int) lua_tonumber(L, 2), champion::STAT_MAX);
+		r.move = MINMAX(0, (int) lua_tonumber(L, 3), champion::STAT_MAX);
+		r.immune = MINMAX(0, (int) lua_tonumber(L, 4), champion::STAT_MAX);
+		champion::SetInstanceRequirement(pDungeon->GetMapIndex(), &r);
+		ChampionTellDungeon(pDungeon->GetMapIndex());
+		return 0;
+	}
+
+	static int d_clear_sungma(lua_State* L)
+	{
+		LPDUNGEON pDungeon = CQuestManager::instance().GetCurrentDungeon();
+		if (!pDungeon)
+			return 0;
+		champion::SetInstanceRequirement(pDungeon->GetMapIndex(), NULL);
+		ChampionTellDungeon(pDungeon->GetMapIndex());
+		return 0;
+	}
+
 	static void ChampionAddToTable(lua_State* L, const char* table, const luaL_reg* reg)
 	{
 		lua_getglobal(L, table);
@@ -817,9 +896,17 @@ void RegisterChampionFunctions()
 		{ "get_sungma_exp",				npc_get_sungma_exp },
 		{ NULL, NULL }
 	};
+	// MT2009_PLUS_YOHARA_DUNG4_V1 (sungma): the "d" table is made before (RegisterDungeonFunctionTable)
+	static const luaL_reg d_add[] =
+	{
+		{ "set_sungma",					d_set_sungma },
+		{ "clear_sungma",				d_clear_sungma },
+		{ NULL, NULL }
+	};
 	lua_State* L = CQuestManager::instance().GetLuaState();
 	ChampionAddToTable(L, "pc", pc_add);
 	ChampionAddToTable(L, "npc", npc_add);
+	ChampionAddToTable(L, "d", d_add);
 }
 
 #endif // ENABLE_CONQUEROR_LEVEL

@@ -79,6 +79,7 @@ param(
 #   Talizmany Woli     item_attribute.cpp, item_manager.cpp (MT2009_PLUS_WILL_TALISMAN_V1;
 #                      server-patches/talizmanwoli)
 #   Zyly Jadeitu       mining.cpp (MT2009_PLUS_JADE_VEINS_V1; server-patches/jadeit)
+#   Wieza Sung Mahi    char_skill.cpp (MT2009_PLUS_SMH_TOWER_V1; server-patches/wiezasm)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1261,6 +1262,19 @@ if ((Test-Path -LiteralPath $jadeitApply -PathType Leaf) -and
     if ($jadeitResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} jade vein edit(s).' -f $jadeitResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Wieza Sung Mahi (server-patches/wiezasm, MT2009_PLUS_SMH_TOWER_V1): the tower's curse "Umiejetnosci sa zablokowane"
+# (affect 1849, quest wieza_sung_mahi) refuses every skill in char_skill.cpp's UseSkill. The floors' Sung Ma
+# requirements are the overlay's (playerbot_champion.cpp, d.set_sungma).
+$wiezaSmApply = Join-Path $repo 'server-patches/wiezasm/Apply-WiezaSmPatch.ps1'
+if ((Test-Path -LiteralPath $wiezaSmApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_skill.cpp') -PathType Leaf)) {
+    $wiezaSmResult = & $wiezaSmApply -SourceDir $engineGameSource
+    if ($wiezaSmResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Sung Mahi tower edit(s).' -f $wiezaSmResult.Applied) -ForegroundColor DarkGray
     }
 }
 

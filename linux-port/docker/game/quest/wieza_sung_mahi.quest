@@ -111,7 +111,7 @@ quest wieza_sung_mahi begin
 			return {
 				{"Wartoœæ Ataku +200", {{95, 200}}},
 				{"Odpornoœæ na Omdlenia i Spowolnienia", {{88, 1}, {89, 1}}},
-				{"Max P¯ +2000", {{7, 2000}}},
+				{"Max P¯ +2000", {{6, 2000}}},
 				{"Szybkoœæ Ruchu +20%", {{19, 20}}},
 				{"Obrona +100", {{96, 100}}},
 				{"Szybkoœæ Zaklêcia +20%", {{21, 20}}},
@@ -1130,6 +1130,38 @@ quest wieza_sung_mahi begin
 			pc.remove_item(70405, 1)
 			d.setf("cs"..i, 0)
 			syschat("Kl¹twa Sunga Mahi zdjêta.")
+		end
+
+		-- œmieræ: po wstaniu - z powrotem do sali, w której walczy dru¿yna (punkt odrodzenia mapy le¿y w innej sali)
+		when die with wieza_sung_mahi.inside() begin
+			pc.setqf("dead", 1)
+			loop_timer("wsm_dead", 2)
+		end
+
+		when wsm_dead.timer begin
+			local c = wieza_sung_mahi.cfg()
+			if pc.is_dead() then
+				return
+			end
+			cleartimer("wsm_dead")
+			if pc.getqf("dead") ~= 1 then
+				return
+			end
+			pc.setqf("dead", 0)
+			if not wieza_sung_mahi.inside() or d.getf("closed") == 1 then
+				return
+			end
+			local room = d.getf("room")
+			local p = c.room_a
+			if room == 4 then
+				p = c.stairs
+			elseif room == 2 then
+				p = c.room_b
+				if d.getf("task") == 4 then
+					p = c.room_c
+				end
+			end
+			pc.warp((c.base_x + p[1]) * 100, (c.base_y + p[2]) * 100, pc.get_map_index())
 		end
 
 		when wsm_wait.server_timer begin
