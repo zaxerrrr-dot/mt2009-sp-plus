@@ -14055,14 +14055,14 @@
 "20475": {
 "name": "Święty Kowal Zestawu",
 "folder": "blacksmith",
-"x": 258,
-"y": 568
+"x": 260,
+"y": 566
 },
 "20476": {
 "name": "Okazały Kowal Zestawu",
 "folder": "blacksmith",
-"x": 257,
-"y": 569
+"x": 258,
+"y": 568
 },
 "20477": {
 "name": "Rycerski Kowal Zestawu",
@@ -14073,14 +14073,14 @@
 "20478": {
 "name": "Książęcy Kowal Zestawu",
 "folder": "blacksmith",
-"x": 255,
-"y": 571
+"x": 254,
+"y": 572
 },
 "20479": {
 "name": "Majest. Kowal Zestawu",
 "folder": "blacksmith",
-"x": 254,
-"y": 572
+"x": 252,
+"y": 574
 }
 },
 "now_used": [

@@ -1517,7 +1517,9 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
 # "(wykon.)" piece and Pyl Wezowy, Statua Wojownika (20433) refines the set shards, the five set blacksmiths
 # (20475-20479) put a set on a weapon / armour / helmet of level 75+ at +7 or more (set_value / set_part:
 # server-patches/ysets) - appended to cube.txt, none of their recipes may exist before; quest ysets opens the windows.
-# The blacksmiths stand in the port (Owsap's points 258 568 .. 254 572) beside Statua Wojownika.
+# The blacksmiths stand in the port beside Statua Wojownika in a row along the wall, as on the pl-wiki picture "Kowale z
+# Portu Nowego Kontynentu" (fix 3.0 #14: Owsap's/GF's points 258 568 .. 254 572 are one metre apart - the five models
+# stood in one another): the same diagonal, two cells apart (260 566 .. 252 574, all walkable on the port's server_attr).
 COPY ysets/ /tmp/ysets-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ysets-add/cube.ysets.txt \
  && P=$L/map/metin2_map_defensewave_port/npc.txt \
@@ -1529,7 +1531,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ysets-add/
  && test "$(grep -c -E '^npc[[:blank:]]+20807[[:space:]]*$' "$C")" -eq 13 \
  && test "$(grep -c -E '^npc[[:blank:]]+20433[[:space:]]*$' "$C")" -eq 15 \
  && { [ -z "$(tail -c 1 "$P")" ] || printf '\r\n' >> "$P"; } \
- && for p in "258 568 20475" "257 569 20476" "256 570 20477" "255 571 20478" "254 572 20479"; do \
+ && for p in "260 566 20475" "258 568 20476" "256 570 20477" "254 572 20478" "252 574 20479"; do \
       set -- $p; \
       grep -q -E "[[:blank:]]$3[[:space:]]*\$" "$P" || printf 'm\t%s\t%s\t0\t0\t0\t5\t60s\t100\t1\t%s\r\n' "$1" "$2" "$3" >> "$P"; \
       test "$(grep -c -E "[[:blank:]]$3[[:space:]]*\$" "$P")" = 1 || exit 1; \

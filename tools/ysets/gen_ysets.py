@@ -430,8 +430,8 @@ def write_json(items, groups):
            'itemdesc': dict((str(i['vnum']), '%d\t%s\t%s' % (i['vnum'], i['locale_name'], i['desc'].replace('\t', ' ')))
                             for i in items),
            'mobs': dict((str(npc), dict(name=nm, folder='blacksmith', x=x, y=y))
-                        for (sv, _p, _b, npc, nm, *_r), (x, y) in zip(SETS, ((258, 568), (257, 569), (256, 570),
-                                                                             (255, 571), (254, 572)))),
+                        for (sv, _p, _b, npc, nm, *_r), (x, y) in zip(SETS, ((260, 566), (258, 568), (256, 570),
+                                                                             (254, 572), (252, 574)))),  # fix 3.0 #14
            # the materials the yohara_items* batches added "without a use yet" that have one now: their client
            # description loses "(Na razie bez zastosowania ...)" (tools/ysets client patch)
            'now_used': sorted(set([31233, 31234, 31235, 31236, 31237, 31239, 31240, 31241, 31242, 31243, 31257, 31258,
