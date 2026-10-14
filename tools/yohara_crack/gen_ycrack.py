@@ -88,7 +88,8 @@ def owsap_groups(a):
 
 def gen_map(a, report):
     m = D.MAP
-    shutil.rmtree(OUT, ignore_errors=True)
+    shutil.rmtree(os.path.join(OUT, 'map'), ignore_errors=True)       # README.md (by hand) stays
+    shutil.rmtree(os.path.join(OUT, 'data'), ignore_errors=True)
     dst = os.path.join(OUT, 'map', m['folder'])
     os.makedirs(dst)
     st = open(os.path.join(a.owsap, 'share/locale/uk/map', m['owsap'], 'Setting.txt'), encoding='latin-1').read()

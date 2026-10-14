@@ -28,8 +28,8 @@ ma żaden nasz klient).
 - Bez potworów; poniżej 110 poziomu (nie GM) – do wioski. NPC na komórkach z wiki: **Statua Przebudzenia** 153,89
   (cztery lochy), **Statua Fabryki Broni** 141,181, **Statua Kowala Zbroi** 113,179, **Teleporter** 127,190 (zwykły
   quest `map_warp`), **Handlarka Iluzji** 128,98 (u nas 20469 – nasz 9013 to Pomocnik Zdarzeń; sklep 9551:
-  Czerwona / Niebieska Mikstura (XXL) po 20 i 200, Transformuj / Zaczaruj Kostium). **Statuy Szczeliny Czasu nie ma**
-  (właściciel: lochów Szczeliny Czasu na razie nie dodajemy; wiersz 20472 w bazie tylko na przyszłość).
+  Czerwona / Niebieska Mikstura (XXL) po 20 i 200, Transformuj / Zaczaruj Kostium). **Statua Szczeliny Czasu** 103,90 – od
+  MT2009_PLUS_YOHARA_CRACK_V1 (`../yohara_crack`: Zaklęty Las (SZC), quest `szczelina_czasu`).
 - **Statua Przebudzenia**: Grota Wygnańców 2 (PB), Twierdza Czerwonego Smoka (PB), Strażnica Nemere (PB), Zaklęty Las
   (PB) – od 110, tylko w grupie (min. 2 ludzi, GM sam), otwiera przywódca, każdy ma Książkę Przebudzenia (zabierana
   przy wejściu do nowej wyprawy), do Strażnicy Nemere Ninja i Szaman. 60 minut; po zwycięstwie (minuta) lub po czasie
@@ -80,10 +80,6 @@ ma Kamień Driad (zabierany) → **Erebu (PB)**: Bagjanamu (PB) (4352), minutę 
 - Baza: `yohara_iluzja.sql` (40 wierszy mob_proto + sklep), `yohara_items_iluzja.sql` (89 przedmiotów + 15 refine),
   `yohara_iluzja_zywioly.sql` (błyskawica / wiatr).
 
-## Szczelina Czasu (tylko rozpoznanie – nie dodane)
-Wiki: Statua Szczeliny Czasu (103,90) wpuszcza grupę z Zegarkiem Kieszonkowym (31147, Handlarka Iluzji: 25 000 Yang)
-do „(SZC)” tych samych czterech lochów (60 minut, od 110; potwory nie dropią, dają więcej PD). Owsap ma pełne dane:
-mapy 364–367 `metin2_map_boss_crack_*` (GF: kopie tych samych terenów, bazy y = 1817600), questy
-`boss_crack/crack_*_dungeon.quest` (+ `crack_dawnmist_dungeon_access.quest`), potwory „TR:” (4260… – En-Tai TR itd.),
-przedmioty misji 31160–31171; `daily_quest/crack_daily_boss.quest` – codzienna misja u Statuy Szczeliny Czasu (od 110,
-co 24 h) z Książką Przebudzenia w nagrodę. Do dodania tą samą drogą co PB (inne indeksy – 364–367 są u nas zajęte).
+## Szczelina Czasu
+Dodana osobno (MT2009_PLUS_YOHARA_CRACK_V1, właściciel 14.10.2026 – na razie jeden loch): `../yohara_crack/README.md`
+– Statua Szczeliny Czasu (103,90), Zegarek Kieszonkowy u Handlarki Iluzji, Zaklęty Las (SZC) (404, quest `jotun_szc`).

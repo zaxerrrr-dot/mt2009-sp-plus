@@ -70,7 +70,7 @@ MOBS = {
 # Handlarka Iluzji is Owsap's 9013 - ours is Pomocnik Zdarzeń: 20469 (free), GF's "goods" look (client npclist)
 NPCS = {
     20469: ('Illusions Merchant', 'Handlarka Iluzji'),
-    20472: ('Time Rift Statue', 'Statua Szczeliny Czasu'),   # the row only (the crack dungeons are not added)
+    20472: ('Time Rift Statue', 'Statua Szczeliny Czasu'),   # its plateau line and dungeon: tools/yohara_crack
     20473: ('Weaponsmith Statue', 'Statua Fabryki Broni'),
     20474: ('Armoursmith Statue', 'Statua Kowala Zbroi'),
     20530: ('RX: Ghost of a Sura', 'PB: Duch Sura'),
@@ -83,7 +83,7 @@ NPCLIST_ADD = {20469: 'goods'}          # the client's npclist (GF 9013's race)
 MERCHANT = 20469
 MERCHANT_SHOP = 9551                    # world.shop (9550 is Mistrz's)
 # the pl-wiki "Handlarka Iluzji" rows we have (item, count): Czerwona / Niebieska Mikstura (XXL) by 20 and 200,
-# Transformuj / Zaczaruj Kostium; left out: Zegarek Kieszonkowy (the crack dungeons - not added), Sfera Losu
+# Transformuj / Zaczaruj Kostium; Zegarek Kieszonkowy: tools/yohara_crack (yohara_crack.sql); left out: Sfera Losu
 # Zwierzaka, Kołczan, Pergamin Więzi / Przerwania (not ours)
 MERCHANT_ITEMS = [(27007, 20), (27007, 200), (27008, 20), (27008, 200), (70063, 1), (70064, 1)]
 
@@ -99,8 +99,8 @@ MAPS = [
          owsap='metin2_map_boss_awaken_dawnmist'),
 ]
 
-# -- the plateau's NPCs (pl-wiki cells = Owsap's npc.txt; Statua Szczeliny Czasu left out - the owner: the crack
-#    dungeons are not added) --------------------------------------------------------------------------------------------
+# -- the plateau's NPCs (pl-wiki cells = Owsap's npc.txt; Statua Szczeliny Czasu 103,90 is appended by the Dockerfile's
+#    Szczelina Czasu step - tools/yohara_crack) -------------------------------------------------------------------------
 PLATEAU_NPCS = [(20471, 153, 89, 8), (20473, 141, 181, 7), (20474, 113, 179, 3), (9012, 127, 190, 5),
                 (MERCHANT, 128, 98, 1)]
 
