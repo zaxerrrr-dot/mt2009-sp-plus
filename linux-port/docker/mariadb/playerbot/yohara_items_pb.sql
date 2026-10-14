@@ -6,20 +6,8 @@
 -- numbers), the Polish names of its Polish client (the chests "(PB)" as on the pl-wiki - the normal ones are
 -- ours already); every vnum free in our world and every earlier Yohara batch (14 October 2026). An item whose
 -- system we do not have is an inert, tradeable material and does nothing yet - its row says what it waits for:
---   31108 Maly Kamien Przebudzenia - the crafting of the awakened gear and of the Dark Dragon gear +0 (Statua Iluzji) - none here yet
---   31109 Drobny Kam. Przebudzenia - the crafting of the awakened gear and of the Dark Dragon gear +0 (Statua Iluzji) - none here yet
---   31110 Ladny Kam. Przebudzenia - the crafting of the awakened gear and of the Dark Dragon gear +0 (Statua Iluzji) - none here yet
---   31111 Zacny Kam. Przebudzenia - the crafting of the awakened gear and of the Dark Dragon gear +0 (Statua Iluzji) - none here yet
---   31112 Silny Kam. Przebudzenia - the crafting of the awakened gear and of the Dark Dragon gear +0 (Statua Iluzji) - none here yet
---   31113 Dusza Przebudzenia - the awakening stones' upgrading (Statua Iluzji) - none here yet
---   31114 Zwykla Skora - the awakened gear crafting (Statua Iluzji / Statua Fabryki Broni / Kowala Zbroi) - none here yet
---   31115 Kowadlo - the awakened gear crafting (Statua Iluzji / Statua Fabryki Broni / Kowala Zbroi) - none here yet
---   31117 Cienka Przedza - the awakened gear crafting (Statua Iluzji / Statua Fabryki Broni / Kowala Zbroi) - none here yet
---   31120 Srodek Scierny - the awakened gear crafting (Statua Iluzji / Statua Fabryki Broni / Kowala Zbroi) - none here yet
---   31121 Stal - the dragon helmets (Helm Smoka Mroku ...) - none here yet
---   31149 Mocny Sznur - the dragon helmets (Helm Smoka Mroku ...) - none here yet
--- Left out: the awakened gear's plans (PB: Plan Helmu / Ostrza / Wachlarza ... 31196-31213 - no awakened gear
--- here), Torba Emocji (the emotion packs, as every Yohara batch).
+-- Left out: Torba Emocji (the emotion packs, as every Yohara batch). The plans of the Dark Dragon gear (PB: Plan
+-- ... 31196-31212) are yohara_items_iluzja.sql's (MT2009_PLUS_YOHARA_ILUZJA_V1, Plaskowyz Iluzji's statues).
 SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES
 (31108,'Maly Kamien Przebudzenia',_cp1250 X'4D61B379204B616D6965F12050727A656275647A656E6961',5,0,200,0,1,0,4,0,'',1000,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),

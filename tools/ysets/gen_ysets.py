@@ -84,9 +84,10 @@ CRAFT = {376: 360, 396: 380, 1226: 1210, 2246: 2230, 3266: 3250, 5216: 5200, 734
 # awakening materials the dark dragon / dragon refine needs (Owsap refine_proto 551-585 = the pl-wiki refine tables)
 AWAKENING = tuple(range(31122, 31139))
 # MT2009_PLUS_YOHARA_PB_V1: Razador (PB) and Nemere (PB) drop and give (their chests) every one of them but these three -
-# only the awakened Beran-Setaou / Jotun Thrym have them (the pl-wiki), and they are not here yet
-AWAKENING_LATER = (31126, 31127, 31130)       # Czaszka Smoka, Smoczy Zab, Ostre Kolce
-AWAKENING_NOT_YET = ' (Przebudzony Beran-Setaou / Jotun Thrym - nie ma ich jeszcze na serwerze.)'
+# only the awakened Beran-Setaou / Jotun Thrym have them (the pl-wiki): MT2009_PLUS_YOHARA_ILUZJA_V1 added both
+# (tools/yohara_iluzja), so their descriptions no longer say "not on the server yet"
+AWAKENING_LATER = (31126, 31127, 31130)       # Czaszka Smoka, Smoczy Zab (Beran-Setaou (PB)), Ostre Kolce (Jotun Thrym (PB))
+AWAKENING_NOT_YET = ''
 REFINE_SRC = {'sw': 720, 'sa': 735, 'dw': 571, 'da': 551}
 REFINE_ID0 = 22600          # our refine_proto ids (22536 the highest one on 14 October 2026)
 
@@ -335,7 +336,7 @@ def write_sql(items, refines):
          '--   dark dragon weapons 320/340/1190/2210/3230/5170/7310 +0..+15, level 96 (Owsap 571-585)',
          '--   dragon armours 21210/21230/21250/21270 +0..+15, level 96 (Owsap 551-565)',
          '--   31122-31138 the awakening materials of the last two refines (Plotno ... Wspanialy Kamien Chaosu): Razador',
-         '--     (PB) and Nemere (PB) give them (MT2009_PLUS_YOHARA_PB_V1) - but 31126, 31127, 31130: only Beran / Jotun (PB) - not here',
+         '--     (PB) and Nemere (PB) give them (MT2009_PLUS_YOHARA_PB_V1) - 31126, 31127, 31130 only Beran / Jotun (PB) (ILUZJA_V1)',
          '-- The armours\' value3 is the family\'s own body shape (the client\'s msm group, tools/ysets).',
          '-- refine_proto %d-%d. The Lycan\'s pieces are left out (no Lycan).' % (refines[0]['id'], refines[-1]['id']),
          'SET NAMES utf8mb4;',

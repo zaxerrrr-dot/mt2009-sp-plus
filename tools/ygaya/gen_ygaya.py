@@ -16,15 +16,14 @@ GF 26.1.11 client's icons - the method of tools/yohara_maps4/gen_yitems4.py:
                                    the cube ("gaya N", server-patches/gaya) and by the quests (Portowy Sklep Gaya,
                                    Tajemniczy Oltarz, Mistrz Chi); the icon is GF's icon/item/gem.tga;
   39063 Reset Sklepu Gaya          a new offer of the Gaya shop before the 5 hours (quest ygaya);
-  39064 Rozszerzenie Sklepu Gaya   unlocks the shop's slots 4/5/6 (1/2/4 of them, for good - quest ygaya);
-  39117 Kupon Zwierzaka Zywiolu    2 of them + 10 Gaya + 100 000 Yang = an elemental pet chest (cube 20433);
-  53581-53586 Skrzynka Zywiolaka ... the chests (wiki: no stack, no trade); each opens to our Maly Zywiolak
-                                   53290-53295 (the wiki's "(pieczec)": 15 days from the opening, as ours).
+  39064 Rozszerzenie Sklepu Gaya   unlocks the shop's slots 4/5/6 (1/2/4 of them, for good - quest ygaya).
+
+The elemental pet chests (53581-53586) and Kupon Zwierzaka Zywiolu (39117) are gone (the owner, 14 October 2026,
+decyzje.md: "usunac Skrzynie Zywiolakow ze Statui Wojownika (pet tylko w ItemShopie)") - no recipe, no chest, no
+coupon; the elemental pet is sold in the ItemShop only, as before.
 
 Writes (all GENERATED - edit this file, run it again):
   linux-port/docker/mariadb/playerbot/yohara_gaya.sql             world.item_proto (INSERT IGNORE) + Kamyki's flags
-  linux-port/docker/game/ygaya/special_item_group.ygaya.txt       the six chests' contents
-  linux-port/docker/game/ygaya/cube.ygaya.txt                     Statua Wojownika's six chest recipes
   tools/ygaya/ygaya_items.json                                    the client's records, item_list, itemdesc
   client-patches/client-2.0.30/root/icon/item/<vnum>.tga          the GF icons
 
@@ -42,8 +41,6 @@ sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_items'))
 import gen_yitems as Y  # noqa: E402  (the engine's numbers, the row writer)
 
 SQL_OUT = os.path.join(REPO, 'linux-port', 'docker', 'mariadb', 'playerbot', 'yohara_gaya.sql')
-SIG_OUT = os.path.join(REPO, 'linux-port', 'docker', 'game', 'ygaya', 'special_item_group.ygaya.txt')
-CUBE_OUT = os.path.join(REPO, 'linux-port', 'docker', 'game', 'ygaya', 'cube.ygaya.txt')
 JSON_OUT = os.path.join(HERE, 'ygaya_items.json')
 ICON_OUT = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'root', 'icon', 'item')
 
@@ -55,12 +52,7 @@ F = Y.FLAGS
 NO_TRADE = A['ANTI_DROP'] | A['ANTI_SELL'] | A['ANTI_GIVE'] | A['ANTI_PKDROP'] | A['ANTI_MYSHOP']
 # Kamyki (wiki: player trade yes, NPC no, shop no, drop yes) - Owsap's ANTI_PKDROP | ANTI_MYSHOP now that it works
 KAMYKI_ANTI = A['ANTI_PKDROP'] | A['ANTI_MYSHOP']
-PET_CHESTS = [(53581, 53290, u'Mały Żywiołak Ognia'), (53582, 53291, u'Mały Żywiołak Lodu'),
-              (53583, 53292, u'Mały Żywiołak Błyskawicy'), (53584, 53293, u'Mały Żywiołak Wiatru'),
-              (53585, 53294, u'Mały Żywiołak Ziemi'), (53586, 53295, u'Mały Żywiołak Mroku')]
-COUPON = 39117
-# Owsap cube.txt npc 20433 (= pl-wiki "Wytwarzanie Skrzyn Zwierzakow"): 2 coupons, 100 000 Yang, 10 Gaya, 100%
-CHEST_COUPONS, CHEST_GOLD, CHEST_GAYA = 2, 100000, 10
+# no pet chests / coupon any more (the owner, 14 October 2026): 39117 and 53581-53586 stay free
 
 
 def main():
@@ -102,32 +94,17 @@ def main():
         item(v, pl, text + u' Użyj w Portowym Sklepie Gaya (Statua Wojownika w Porcie Nowego Kontynentu).',
              Y.TYPES['ITEM_QUEST'], 0, 200, Y.flags(o['AntiFlags'], A, 'antiflag'),
              F['ITEM_STACKABLE'] | F['ITEM_QUEST_USE'], '%d.tga' % v)
-    o = proto[COUPON]
-    pl, text = desc[COUPON]
-    item(COUPON, pl, u'Generuje przy Statui Wojownika w porcie zwierzaka żywiołu twojego wyboru (2 kupony, '
-         u'10 Gaya i 100 000 Yang za skrzynkę).', Y.TYPES['ITEM_MATERIAL'], 0, 200,
-         Y.flags(o['AntiFlags'], A, 'antiflag'), F['ITEM_STACKABLE'], '%d.tga' % COUPON)
-    for chest, pet, petname in PET_CHESTS:
-        o = proto[chest]
-        assert o['Type'] == 'ITEM_GIFTBOX', chest
-        pl, text = desc[chest]
-        # wiki "Skrzynka Zywiolaka Ognia": no stack (Owsap's ITEM_STACKABLE left out), no trade, storage yes
-        item(chest, pl, text + u' Otwórz ją, aby otrzymać pieczęć: ' + petname + u' (15 dni).',
-             Y.TYPES['ITEM_GIFTBOX'], 0, 1, Y.flags(o['AntiFlags'], A, 'antiflag'), 0, '%d.tga' % chest)
-    assert len(items) == 10
+    assert len(items) == 3
     write_sql(items)
     write_json(items)
     copy_icons(icons, a.gf)
-    write_sig()
-    write_cube()
-    print('items %d (Gaya %d, the shop\'s Reset / Rozszerzenie, Kupon Zwierzaka Zywiolu, 6 chests), cube %d, '
-          'chests %d' % (len(items), GAYA, len(PET_CHESTS), len(PET_CHESTS)))
+    print('items %d (Gaya %d, the shop\'s Reset / Rozszerzenie)' % (len(items), GAYA))
 
 
 def write_sql(items):
-    L = ['-- MT2009_PLUS_GAYA_V1: Gaya (95927, the currency as an item), Reset / Rozszerzenie Sklepu Gaya (39063/39064),',
-         '-- Kupon Zwierzaka Zywiolu (39117) and the elemental pet chests (53581-53586) - the owner, 14 October 2026',
-         '-- (cache/yohara/decyzje.md "14.10 ok. 8:10": Kamienie Gaya, Statua Wojownika). GENERATED by',
+    L = ['-- MT2009_PLUS_GAYA_V1: Gaya (95927, the currency as an item), Reset / Rozszerzenie Sklepu Gaya (39063/39064)',
+         '-- - the owner, 14 October 2026 (cache/yohara/decyzje.md "14.10 ok. 8:10": Kamienie Gaya, Statua Wojownika;',
+         '-- later that day: no elemental pet chests / Kupon Zwierzaka Zywiolu - the pet is in the ItemShop only). GENERATED by',
          '-- tools/ygaya/gen_ygaya.py - do not edit, rerun it. Every start (apply.sh), idempotent: INSERT IGNORE - a row',
          '-- the operator changed is kept. Source: the pl-wiki ("Gaya", "System Gaya", "Kamyki", "Wytwarzanie Skrzyn',
          '-- Zwierzakow") and Owsap v6.2.6 db/item_proto.txt (the official vnums and flags), the Polish names of its',
@@ -164,31 +141,6 @@ def copy_icons(icons, gf):
         s = os.path.join(gf, 'icon', 'item', src)
         assert os.path.isfile(s), s
         shutil.copyfile(s, os.path.join(ICON_OUT, dst))
-
-
-def write_sig():
-    L = ['# MT2009_PLUS_GAYA_V1: the elemental pet chests of Statua Wojownika (53581-53586) - each opens to its Maly',
-         '# Zywiolak (our 53290-53295 = the wiki\'s "(pieczec)", 15 days). GENERATED by tools/ygaya/gen_ygaya.py.',
-         '# Appended to special_item_group.txt by the Dockerfile (share: Gaya).', '']
-    for chest, pet, petname in PET_CHESTS:
-        L += ['Group\tMT2009_ygaya_%d' % chest, '{', '\tVnum\t%d' % chest,
-              '\t1\t%d\t1\t100 -- %s' % (pet, Y.ascii_name(petname)), '}', '']
-    os.makedirs(os.path.dirname(SIG_OUT), exist_ok=True)
-    with open(SIG_OUT, 'w', encoding='utf-8', newline='\n') as f:
-        f.write('\n'.join(L))
-
-
-def write_cube():
-    L = ['# MT2009_PLUS_GAYA_V1: GENERATED by tools/ygaya/gen_ygaya.py - do not edit. Appended to the share\'s cube.txt',
-         '# by the Dockerfile after the Yohara sets (quest ygaya opens the window). Source: Owsap cube.txt npc 20433',
-         '# "category PET" = pl-wiki "Wytwarzanie Skrzyn Zwierzakow" - Statua Wojownika: 2 Kupony Zwierzaka Zywiolu,',
-         '# 100 000 Yang and 10 Gaya ("gaya", server-patches/gaya) = the chest of the player\'s choice, 100%.', '']
-    for chest, pet, petname in PET_CHESTS:
-        L += ['section', 'npc\t20433', 'item\t%d\t%d' % (COUPON, CHEST_COUPONS), 'reward\t%d\t1' % chest,
-              'gold\t%d' % CHEST_GOLD, 'gaya\t%d' % CHEST_GAYA, 'percent\t100', 'end', '']
-    os.makedirs(os.path.dirname(CUBE_OUT), exist_ok=True)
-    with open(CUBE_OUT, 'w', encoding='utf-8', newline='\n') as f:
-        f.write('\n'.join(L))
 
 
 if __name__ == '__main__':

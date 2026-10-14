@@ -16,14 +16,16 @@ Obie mapy to **kopie** terenu zwykłych lochów (351/352 zostają bez zmian): w 
 `server_attr` z `attr.atr` GF mapy-rodzica – identyczny komórka w komórkę z naszym 351/352.
 
 ## Wejście (quest `przebudzeni_bossowie`)
-- **Statua Iluzji** (20470) w Yongan 540,500, Joan 688,748, Pyungmoo 342,800 (komórki z wiki) – **Codzienna misja:
-  Świat Iluzji** od 110 poziomu: zabij Razadora i Nemere (zwykłe lochy; Jotuna Thryma u nas nie ma) i wróć – nagroda
-  **Książka Przebudzenia** (31146); powtórka 24 h po ukończeniu.
-- **Statua Przebudzenia** (20471) 4 komórki na wschód od Statui Iluzji (wiki stawia ją na Płaskowyżu Iluzji – tej
-  mapy tu nie ma): oba lochy, od 110 poziomu, **tylko w grupie** (min. 2 osoby; GM może sam), otwiera przywódca,
-  wszyscy blisko statui; każdy musi mieć Książkę Przebudzenia – zabierana przy pierwszym wejściu do nowej wyprawy.
-  Do Strażnicy Nemere (PB) w grupie musi być **Ninja i Szaman**. „Wróć do lochu” – do trwającej wyprawy.
-- **60 minut**; po zwycięstwie (minuta) lub po czasie każdy wraca pod statuę swojej wioski. Boty nie wchodzą
+- **Statua Iluzji** (20470) w Yongan 540,500, Joan 688,748, Pyungmoo 342,800 (komórki z wiki) – przenosi na
+  **Płaskowyż Iluzji** (397, `game/yohara_iluzja`, MT2009_PLUS_YOHARA_ILUZJA_V1); **Codzienna misja: Świat Iluzji** od
+  110 poziomu: zabij Razadora i Nemere (zwykłe lochy; zwykłego Jotuna Thryma u nas nie ma) i wróć – nagroda **Książka
+  Przebudzenia** (31146); powtórka 24 h po ukończeniu; okno kamieni przebudzenia.
+- **Statua Przebudzenia** (20471) stoi na Płaskowyżu Iluzji (153,89 – wiki), już nie w wioskach: cztery lochy (te dwa
+  oraz Grota Wygnańców 2 (PB) i Zaklęty Las (PB)), od 110 poziomu, **tylko w grupie** (min. 2 osoby; GM może sam),
+  otwiera przywódca, wszyscy blisko statui; każdy musi mieć Książkę Przebudzenia – zabierana przy pierwszym wejściu do
+  nowej wyprawy. Do Strażnicy Nemere (PB) w grupie musi być **Ninja i Szaman**. „Wróć do lochu” – do trwającej
+  wyprawy.
+- **60 minut**; po zwycięstwie (minuta) lub po czasie każdy wraca na Płaskowyż Iluzji (obok Statui Przebudzenia). Boty nie wchodzą
   (rdzeń Yohary). Panel lochów: `razador_pb`, `nemere_pb` (najlepszy czas).
 - **Baek-Go** (20018): Lekarstwo Iluzji (31144: 500 PŻ i 500 PE od razu) za 20 Liści Życia (31145).
 
@@ -50,11 +52,15 @@ albo Szaman); 9 Kolumna Smoka Północy (PB) (20538) – **rani ją tylko Ninja 
   przebudzenia, Odłamki, Liście Życia, Środek Ścierny, Kamień Duchowy, Peleryna Maskująca (nasz Płaszcz Uciekiniera),
   Pierścień Doświadczenia, Spróchniała Skrzynia. Metin Chłodu (PB), Kolumna (PB): Kamień Duchowy.
 - **Materiały Mrocznego Smoka** (31122–31138, `ysets`): ze skrzyń PB są wszystkie poza Czaszką Smoka, Smoczym Zębem
-  (tylko Skrzynia Berana-Setaou (PB)) i Ostrymi Kolcami (tylko Skrzynia Jotuna Thryma (PB)) – tych bossów jeszcze
-  nie ma; ich opis w kliencie to mówi. Odłamki – z Nemere (PB).
-- Pominięte: plany przebudzonego ekwipunku (PB: Plan …), Torba Emocji, Miedziane / Złote Płyty, Ciężkie Pasy i
-  Księga Umiejętności Metinu Chłodu (nie mamy). Kamienie przebudzenia, Dusza Przebudzenia, Zwykła Skóra, Kowadło,
-  Cienka Przędza, Środek Ścierny, Stal, Mocny Sznur – na razie bez zastosowania (przebudzony ekwipunek, hełmy smoka).
+  (tylko Skrzynia Berana-Setaou (PB)) i Ostrymi Kolcami (tylko Skrzynia Jotuna Thryma (PB)) – obu bossów dodaje
+  `game/yohara_iluzja`. Odłamki – z Nemere (PB).
+- **Plany ekwipunku Smoka Mroku** (PB: Plan …, `yohara_items_iluzja.sql`): Razador (PB) – Hełm Wojownika / Sura,
+  Ostrze, Wachlarz (pl-wiki); Nemere (PB) – Miecz, Brzeszczot, Łuk, Hełm Sura (de-wiki); Szel (PB), Mroźni Golem /
+  Troll / Generał / Broda / Książę (PB), Og. Generał / Ognisty Książę Żaru (PB) – po planie wg de-wiki („EW: …”).
+- Kamienie przebudzenia, Dusza Przebudzenia, Zwykła Skóra, Kowadło, Cienka Przędza, Środek Ścierny, Stal, Mocny Sznur
+  mają już zastosowanie: statuy na Płaskowyżu Iluzji (kamienie, wytwarzanie ekwipunku Smoka Mroku, hełmy smoka).
+- Pominięte: Torba Emocji, Miedziane / Złote Płyty, Ciężkie Pasy i Księga Umiejętności Metinu Chłodu (nie mamy), plany
+  Likana.
 
 ## Pliki
 - `map/metin2_map_boss_awaken_{flame,snow}/` – Setting.txt (Owsap), Town.txt (wejście), server_attr.

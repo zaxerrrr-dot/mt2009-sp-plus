@@ -1,30 +1,40 @@
--- MT2009_PLUS_YOHARA_PB_V1: Przebudzeni bossowie - wejÅ›cie do lochÃ³w Przebudzenia (wÅ‚aÅ›ciciel, 14.10.2026: "Razador (PB)
--- i Nemere (PB) - dodaÄ‡ wg wiki"; pl-wiki "Statua Przebudzenia", "Statua Iluzji", "PÅ‚askowyÅ¼ Iluzji", "KsiÄ…Å¼ka
--- Przebudzenia", "Codzienna misja: Åšwiat Iluzji", "Lekarstwo Iluzji"; Owsap v6.2.6 labyrinth_dungeon.quest):
---   * Statua Iluzji (20470) w Yongan (540,500), Joan (688,748) i Pyungmoo (342,800) - komÃ³rki z wiki. Codzienna misja
---     "Åšwiat Iluzji" (od poziomu 110): zabij Razadora i Nemere (zwykÅ‚e lochy; Jotuna Thryma tu nie ma) i wrÃ³Ä‡ -
---     nagroda: KsiÄ…Å¼ka Przebudzenia (31146); znowu 24 godziny po ukoÅ„czeniu. Okno wytwarzania kamieni przebudzenia -
---     nie (nie mamy ich receptur ani przebudzonego ekwipunku).
---   * Statua Przebudzenia (20471) obok kaÅ¼dej Statui Iluzji (wiki: na PÅ‚askowyÅ¼u Iluzji - tej mapy tu nie ma): lochy
---     Twierdza Czerwonego Smoka (PB) (369, quest razador_pb) i StraÅ¼nica Nemere (PB) (370, quest nemere_pb) - od
---     poziomu 110, tylko w grupie, otwiera przywÃ³dca, kaÅ¼dy czÅ‚onek musi mieÄ‡ KsiÄ…Å¼kÄ™ Przebudzenia (zabierana przy
---     wejÅ›ciu do nowej wyprawy); do StraÅ¼nicy Nemere (PB) w grupie musi byÄ‡ Ninja i Szaman. 60 minut; po ukoÅ„czeniu
---     lub po czasie kaÅ¼dy wraca pod statuÄ™, przy ktÃ³rej wszedÅ‚. "WrÃ³Ä‡ do lochu" - do trwajÄ…cej wyprawy.
---   * Baek-Go (20018): Lekarstwo Iluzji (31144) za 20 LiÅ›ci Å»ycia (31145) - wiki.
--- Mapy 369/370 sÄ… na rdzeniu Yohary (game3): boty tam nie wchodzÄ… - liczÄ… siÄ™ ludzie z grupy (GM moÅ¼e wejÅ›Ä‡ sam).
--- cp1250; Å¼aden napis nie koÅ„czy siÄ™ polskÄ… literÄ… (qc).
+-- MT2009_PLUS_YOHARA_PB_V1 / MT2009_PLUS_YOHARA_ILUZJA_V1: Przebudzeni bossowie - P³askowy¿ Iluzji i wejœcie do lochów
+-- Przebudzenia (w³aœciciel, 14.10.2026: "Razador (PB) i Nemere (PB) - dodaæ wg wiki"; "dodaæ P³askowy¿ Iluzji jako hub
+-- lochów PB, dodaæ Beran PB i Jotun PB"; pl-wiki "P³askowy¿ Iluzji", "Statua Przebudzenia", "Statua Iluzji", "Handlarka
+-- Iluzji", "Ksi¹¿ka Przebudzenia", "Codzienna misja: Œwiat Iluzji", "Lekarstwo Iluzji"; Owsap v6.2.6
+-- labyrinth_dungeon.quest):
+--   * Statua Iluzji (20470) w Yongan (540,500), Joan (688,748) i Pyungmoo (342,800) - komórki z wiki: przenosi na
+--     P³askowy¿ Iluzji (397, od poziomu 110); Codzienna misja "Œwiat Iluzji" (od poziomu 110): zabij Razadora i
+--     Nemere (zwyk³e lochy; zwyk³ego Jotuna Thryma tu nie ma) i wróæ - nagroda: Ksi¹¿ka Przebudzenia (31146); znowu
+--     24 godziny po ukoñczeniu; okno wytwarzania kamieni przebudzenia (cube.yohara_iluzja.txt: kamieñ + Dusza
+--     Przebudzenia = nastêpny kamieñ).
+--   * P³askowy¿ Iluzji (397, metin2_map_labyrinth): bez potworów, od poziomu 110 (ni¿ej - do wioski). Statua
+--     Przebudzenia (20471, 153,89): cztery lochy - Grota Wygnañców 2 (PB) (398, quest beran_pb), Twierdza Czerwonego
+--     Smoka (PB) (369, razador_pb), Stra¿nica Nemere (PB) (370, nemere_pb), Zaklêty Las (PB) (371, jotun_pb) - od
+--     poziomu 110, tylko w grupie, otwiera przywódca, ka¿dy cz³onek musi mieæ Ksi¹¿kê Przebudzenia (zabierana przy
+--     wejœciu do nowej wyprawy); do Stra¿nicy Nemere (PB) w grupie musi byæ Ninja i Szaman. 60 minut; po ukoñczeniu lub
+--     po czasie ka¿dy wraca na P³askowy¿ Iluzji. "Wróæ do lochu" - do trwaj¹cej wyprawy. Statua Fabryki Broni (20473)
+--     i Statua Kowala Zbroi (20474): okna wytwarzania ekwipunku Smoka Mroku; Handlarka Iluzji (20469): sklep;
+--     Teleporter (9012): quest map_warp. Statuy Szczeliny Czasu nie ma (lochów Szczeliny Czasu nie dodajemy).
+--   * Baek-Go (20018): Lekarstwo Iluzji (31144) za 20 Liœci ¯ycia (31145) - wiki.
+-- Mapy lochów s¹ na rdzeniu Yohary (game3): boty tam nie wchodz¹ - licz¹ siê ludzie z grupy (GM mo¿e wejœæ sam).
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest przebudzeni_bossowie begin
 	state start begin
 		function cfg()
 			return {
 				min_level = 110, ticket = 31146, near = 30, keep = 3600 + 300,
-				-- the villages: map, Statua Przebudzenia's landing cell in world units / 100 (the statue + 3 cells south)
-				villages = {[1] = {4640, 9463}, [21] = {692, 1775}, [41] = {9562, 2851}},
+				villages = {[1] = true, [21] = true, [41] = true},
+				-- P³askowy¿ Iluzji: the map, the entry (world units / 100: base 3072, 17920 + local 125,125) and the
+				-- landing beside Statua Przebudzenia (local 150,95) - the way back from every dungeon
+				plateau = 397, entry = {3072 + 125, 17920 + 125}, landing = {3072 + 150, 17920 + 95},
 				dungeons = {
+					{map = 398, name = "Grota Wygnañców 2 (PB)", boss = 4410, entry = {0 + 877, 19712 + 722}},
 					{map = 369, name = "Twierdza Czerwonego Smoka (PB)", boss = 4411,
 					 entry = {1536 + 342, 19712 + 584}},
-					{map = 370, name = "StraÅ¼nica Nemere (PB)", boss = 4412,
+					{map = 370, name = "Stra¿nica Nemere (PB)", boss = 4412,
 					 entry = {2304 + 171, 19712 + 270}, need_jobs = true},
+					{map = 371, name = "Zaklêty Las (PB)", boss = 4413, entry = {3328 + 478, 19712 + 970}},
 				},
 				mission_cd = 24 * 3600, leaves = 31145, leaves_count = 20, medicine = 31144,
 			}
@@ -32,6 +42,10 @@ quest przebudzeni_bossowie begin
 
 		function in_village()
 			return przebudzeni_bossowie.cfg().villages[pc.get_map_index()] ~= nil
+		end
+
+		function on_plateau()
+			return pc.get_map_index() == przebudzeni_bossowie.cfg().plateau
 		end
 
 		function bot_leads()
@@ -55,19 +69,19 @@ quest przebudzeni_bossowie begin
 			local c = przebudzeni_bossowie.cfg()
 			say_title(mob_name(20471)..":")
 			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
-				say("Lochy sÄ… dziÅ› zamkniÄ™te. WrÃ³Ä‡ pÃ³Åºniej.")
+				say("Lochy s¹ dziœ zamkniête. Wróæ póŸniej.")
 				return
 			end
 			if not pc.is_gm() and not party.is_party() then
-				say("Do LochÃ³w Przebudzenia wchodzi siÄ™ tylko w grupie.")
+				say("Do Lochów Przebudzenia wchodzi siê tylko w grupie.")
 				return
 			end
 			if party.is_party() and not party.is_leader() and not przebudzeni_bossowie.bot_leads() then
-				say("Tylko przywÃ³dca grupy moÅ¼e otworzyÄ‡ loch.")
+				say("Tylko przywódca grupy mo¿e otworzyæ loch.")
 				return
 			end
 			if not pc.can_warp() or pc.is_busy() then
-				say("Poczekaj chwilÄ™ po handlu lub rozmowie.")
+				say("Poczekaj chwilê po handlu lub rozmowie.")
 				return
 			end
 			local me = pc.get_player_id()
@@ -78,7 +92,7 @@ quest przebudzeni_bossowie begin
 				if pc.get_level() < c.min_level then
 					table.insert(bad, name.." (poziom)")
 				elseif pc.count_item(c.ticket) < 1 then
-					table.insert(bad, name.." (KsiÄ…Å¼ka Przebudzenia)")
+					table.insert(bad, name.." (Ksi¹¿ka Przebudzenia)")
 				end
 			end
 			if not pc.is_gm() then
@@ -109,11 +123,11 @@ quest przebudzeni_bossowie begin
 				end
 			end
 			if far > 0 then
-				say("CzÅ‚onek grupy jest za daleko. Zbierzcie siÄ™ przy mnie.")
+				say("Cz³onek grupy jest za daleko. Zbierzcie siê przy mnie.")
 				return
 			end
 			if table.getn(bad) > 0 then
-				say("Nie speÅ‚niajÄ… warunkÃ³w:")
+				say("Nie spe³niaj¹ warunków:")
 				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
 				return
 			end
@@ -123,37 +137,89 @@ quest przebudzeni_bossowie begin
 				return
 			end
 			if dg.need_jobs and not pc.is_gm() and not (ninja and shaman) then
-				say("W grupie musi byÄ‡ co najmniej jeden Ninja i jeden")
-				say("Szaman - bez nich nie przejdziecie StraÅ¼nicy Nemere.")
+				say("W grupie musi byæ co najmniej jeden Ninja i jeden")
+				say("Szaman - bez nich nie przejdziecie Stra¿nicy Nemere.")
 				return
 			end
 			if table.getn(humans) > 8 then
-				say("Do lochu wchodzi najwyÅ¼ej 8 osÃ³b.")
+				say("Do lochu wchodzi najwy¿ej 8 osób.")
 				return
 			end
-			-- each one's way back: the village and the statue he entered at
-			local v = c.villages[pc.get_map_index()]
+			-- each one's way back: P³askowy¿ Iluzji beside Statua Przebudzenia (pl-wiki: "ca³a grupa zostaje
+			-- teleportowana z powrotem na P³askowy¿ Iluzji")
 			for i, pid in ipairs(humans) do
 				q.begin_other_pc_block(pid)
 				if pc.get_player_id() == pid then
-					pc.setf("przebudzeni_bossowie", "ret_map", pc.get_map_index())
-					pc.setf("przebudzeni_bossowie", "ret_x", v[1])
-					pc.setf("przebudzeni_bossowie", "ret_y", v[2])
+					pc.setf("przebudzeni_bossowie", "ret_map", c.plateau)
+					pc.setf("przebudzeni_bossowie", "ret_x", c.landing[1])
+					pc.setf("przebudzeni_bossowie", "ret_y", c.landing[2])
 				end
 				q.end_other_pc_block()
 			end
 			if d.new_jump_pids(dg.map, dg.entry[1] * 100, dg.entry[2] * 100, humans) < 0 then
-				say("Loch nie przyjmie was teraz. SprÃ³buj za chwilÄ™.")
+				say("Loch nie przyjmie was teraz. Spróbuj za chwilê.")
 			end
 		end
 
-		-- Statua Iluzji: Codzienna misja "Åšwiat Iluzji"
-		when 20470.chat."Codzienna misja: Åšwiat Iluzji" with przebudzeni_bossowie.in_village() begin
+		-- P³askowy¿ Iluzji: level 110 (wiki: "Wejœcie mo¿liwe od poziomu 110")
+		when login with przebudzeni_bossowie.on_plateau() begin
+			local c = przebudzeni_bossowie.cfg()
+			if pc.is_playerbot() then
+				warp_to_village()
+				return
+			end
+			if pc.get_level() < c.min_level and not pc.is_gm() then
+				syschat("P³askowy¿ Iluzji przyjmuje wojowników od poziomu "..c.min_level..".")
+				warp_to_village()
+			end
+		end
+
+		-- Statua Iluzji: the way to P³askowy¿ Iluzji
+		when 20470.chat."P³askowy¿ Iluzji" with przebudzeni_bossowie.in_village() begin
+			local c = przebudzeni_bossowie.cfg()
+			say_title(mob_name(20470)..":")
+			if pc.get_level() < c.min_level then
+				say("P³askowy¿ Iluzji otwiera siê przed wojownikami od")
+				say("poziomu "..c.min_level..".")
+				return
+			end
+			say("Moja moc przeniesie ciê na P³askowy¿ Iluzji. Tam")
+			say("Statua Przebudzenia otworzy przed twoj¹ grup¹,")
+			say("Lochy Przebudzenia, a statuy kowali wykuj¹ dla")
+			say("ciebie ekwipunek Smoka Mroku.")
+			if select("Przenieœ mnie", "Nie teraz") ~= 1 then
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(20470)..":")
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			pc.warp(c.entry[1] * 100, c.entry[2] * 100, c.plateau)
+		end
+
+		-- Statua Iluzji: the awakening stones (the cube window - the wiki: only here)
+		when 20470.chat."Kamienie Przebudzenia" with przebudzeni_bossowie.in_village() begin
+			say_title(mob_name(20470)..":")
+			say("Po³¹cz kamienie przebudzenia z Dusz¹ Przebudzenia,")
+			say("a otrzymasz lepszy kamieñ:")
+			say("    5 Ma³ych + Dusza = Drobny (45%)")
+			say("    3 Drobne + Dusza = £adny (35%)")
+			say("    2 £adne + Dusza = Zacny (30%)")
+			say("    Zacny + Dusza = Silny (25%)")
+			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+
+		-- Statua Iluzji: Codzienna misja "Œwiat Iluzji"
+		when 20470.chat."Codzienna misja: Œwiat Iluzji" with przebudzeni_bossowie.in_village() begin
 			local c = przebudzeni_bossowie.cfg()
 			local now = get_global_time()
 			say_title(mob_name(20470)..":")
 			if pc.get_level() < c.min_level then
-				say("Åšwiat Iluzji otwiera siÄ™ przed wojownikami od")
+				say("Œwiat Iluzji otwiera siê przed wojownikami od")
 				say("poziomu "..c.min_level..".")
 				return
 			end
@@ -161,7 +227,7 @@ quest przebudzeni_bossowie begin
 			if st > 0 then
 				local r, n = pc.getqf("m_razador"), pc.getqf("m_nemere")
 				if r == 1 and n == 1 then
-					say("PokonaÅ‚eÅ› Razadora i Nemere. Oto twoja nagroda:")
+					say("Pokona³eœ Razadora i Nemere. Oto twoja nagroda:")
 					say_item_vnum(c.ticket)
 					pc.setqf("m_start", 0)
 					pc.setqf("m_razador", 0)
@@ -170,10 +236,10 @@ quest przebudzeni_bossowie begin
 					pc.give_item2(c.ticket, 1)
 					return
 				end
-				say("Misja trwa. Pokonaj obu bossÃ³w i wrÃ³Ä‡ do mnie:")
-				say((r == 1 and "    [x] " or "    [ ] ")..mob_name(6091).." (CzyÅ›ciec Ognia)")
+				say("Misja trwa. Pokonaj obu bossów i wróæ do mnie:")
+				say((r == 1 and "    [x] " or "    [ ] ")..mob_name(6091).." (Czyœciec Ognia)")
 				say((n == 1 and "    [x] " or "    [ ] ")..mob_name(6191).." (Lodowa Kraina)")
-				if select("Dobrze", "PorzuÄ‡ misjÄ™ teraz") == 2 then
+				if select("Dobrze", "Porzuæ misjê teraz") == 2 then
 					pc.setqf("m_start", 0)
 					pc.setqf("m_razador", 0)
 					pc.setqf("m_nemere", 0)
@@ -182,16 +248,16 @@ quest przebudzeni_bossowie begin
 			end
 			local left = pc.getqf("m_done") + c.mission_cd - now
 			if left > 0 then
-				say("MisjÄ™ moÅ¼esz powtÃ³rzyÄ‡ za "..math.floor(left / 3600).." h "..math.floor(math.mod(left, 3600) / 60).." min.")
+				say("Misjê mo¿esz powtórzyæ za "..math.floor(left / 3600).." h "..math.floor(math.mod(left, 3600) / 60).." min.")
 				return
 			end
-			say("Lochy Przebudzenia wpuszczajÄ… tylko tych, ktÃ³rzy")
-			say("niosÄ… KsiÄ…Å¼kÄ™ Przebudzenia. Udowodnij swojÄ… siÅ‚Ä™:")
-			say("pokonaj Razadora w CzyÅ›Ä‡cu Ognia i Nemere w Lodowej")
-			say("Krainie, a dostaniesz KsiÄ…Å¼kÄ™.")
-			say_reward("Nagroda: KsiÄ…Å¼ka Przebudzenia. MisjÄ™ moÅ¼na")
-			say_reward("powtarzaÄ‡ co 24 godziny.")
-			if select("Przyjmij misjÄ™ teraz", "Nie teraz") == 1 then
+			say("Lochy Przebudzenia wpuszczaj¹ tylko tych, którzy")
+			say("nios¹ Ksi¹¿kê Przebudzenia. Udowodnij swoj¹ si³ê:")
+			say("pokonaj Razadora w Czyœæcu Ognia i Nemere w Lodowej")
+			say("Krainie, a dostaniesz Ksi¹¿kê.")
+			say_reward("Nagroda: Ksi¹¿ka Przebudzenia. Misjê mo¿na")
+			say_reward("powtarzaæ co 24 godziny.")
+			if select("Przyjmij misjê teraz", "Nie teraz") == 1 then
 				pc.setqf("m_start", now)
 				pc.setqf("m_razador", 0)
 				pc.setqf("m_nemere", 0)
@@ -200,25 +266,25 @@ quest przebudzeni_bossowie begin
 
 		when 6091.kill or 6091.party_kill with pc.getqf("m_start") > 0 and pc.getqf("m_razador") == 0 begin
 			pc.setqf("m_razador", 1)
-			syschat("Codzienna misja Åšwiat Iluzji: Razador pokonany.")
+			syschat("Codzienna misja Œwiat Iluzji: Razador pokonany.")
 		end
 
 		when 6191.kill or 6191.party_kill with pc.getqf("m_start") > 0 and pc.getqf("m_nemere") == 0 begin
 			pc.setqf("m_nemere", 1)
-			syschat("Codzienna misja Åšwiat Iluzji: Nemere pokonany.")
+			syschat("Codzienna misja Œwiat Iluzji: Nemere pokonany.")
 		end
 
-		-- Statua Przebudzenia: the two dungeons
-		when 20471.chat."Lochy Przebudzenia" with przebudzeni_bossowie.in_village() begin
+		-- Statua Przebudzenia (P³askowy¿ Iluzji): the four dungeons
+		when 20471.chat."Lochy Przebudzenia" with przebudzeni_bossowie.on_plateau() begin
 			local c = przebudzeni_bossowie.cfg()
 			say_title(mob_name(20471)..":")
-			say("DziÄ™ki mojej mocy wejdziesz do LochÃ³w Przebudzenia.")
-			say("Masz 60 minut, by je ukoÅ„czyÄ‡. Po ukoÅ„czeniu lub po")
-			say("upÅ‚ywie czasu wrÃ³cisz tutaj - innego wyjÅ›cia nie ma.")
-			say("")
-			say_reward("Od poziomu "..c.min_level..", tylko w grupie. KaÅ¼dy musi")
-			say_reward("mieÄ‡ KsiÄ…Å¼kÄ™ Przebudzenia (zabieranÄ… przy wejÅ›ciu).")
-			say_red("Do StraÅ¼nicy Nemere (PB): Ninja i Szaman w grupie.")
+			say("Dziêki mojej mocy wejdziesz do Lochów Przebudzenia.")
+			say("Masz 60 minut, by je ukoñczyæ. Po ukoñczeniu lub po")
+			say("up³ywie czasu wrócisz na P³askowy¿ Iluzji - innego")
+			say("wyjœcia nie ma.")
+			say_reward("Od poziomu "..c.min_level..", tylko w grupie. Ka¿dy musi")
+			say_reward("mieæ Ksi¹¿kê Przebudzenia (zabieran¹ przy wejœciu).")
+			say_red("Do Stra¿nicy Nemere (PB): Ninja i Szaman w grupie.")
 			local opts = {}
 			for i, dg in ipairs(c.dungeons) do
 				table.insert(opts, dg.name)
@@ -229,7 +295,7 @@ quest przebudzeni_bossowie begin
 			-- an expedition still running (the instance lives on the Yohara core): d.find asks that core, which warps
 			-- the player back if the instance is still there
 			if idx > 0 and now - pc.getf("przebudzeni_bossowie", "entry") < c.keep then
-				table.insert(opts, "WrÃ³Ä‡ do lochu")
+				table.insert(opts, "Wróæ do lochu")
 				back = table.getn(opts)
 			end
 			table.insert(opts, "Nie teraz")
@@ -245,7 +311,7 @@ quest przebudzeni_bossowie begin
 					pc.warp(dg.entry[1] * 100, dg.entry[2] * 100, idx)
 				else
 					say_title(mob_name(20471)..":")
-					say("JeÅ›li wyprawa wciÄ…Å¼ trwa, moc statui zaraz ciÄ™ zabierze.")
+					say("Jeœli wyprawa wci¹¿ trwa, moc statui zaraz ciê zabierze.")
 				end
 				return
 			end
@@ -256,19 +322,65 @@ quest przebudzeni_bossowie begin
 			przebudzeni_bossowie.enter(dg)
 		end
 
+		-- Statua Fabryki Broni / Statua Kowala Zbroi (P³askowy¿ Iluzji): the Dark Dragon gear (the cube window;
+		-- the wiki: drag an item onto the statue or talk)
+		when 20473.chat."Wytwarzanie broni" with przebudzeni_bossowie.on_plateau() begin
+			say_title(mob_name(20473)..":")
+			say("Wykujê dla ciebie broñ Smoka Mroku (od 96 poziomu):")
+			say("10 Kowade³, 5 planów broni, 5 Œrodków Œciernych,")
+			say("5 Stali, kamieñ przebudzenia i 2 500 000 Yang.")
+			say("Kamieñ decyduje o szansie: Ma³y 2%, Drobny 5%,")
+			say("£adny 10%, Zacny 15%, Silny 25%.")
+			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+
+		when 20474.chat."Wytwarzanie zbroi i he³mów" with przebudzeni_bossowie.on_plateau() begin
+			say_title(mob_name(20474)..":")
+			say("Wykujê dla ciebie zbrojê albo he³m smoka (od 96")
+			say("poziomu): 10 Zwyk³ych Skór, 5 planów, 5 Cienkich")
+			say("Przêdz, 5 Oznak S³awy (zbroja) albo 5 Stali (he³m),")
+			say("kamieñ przebudzenia i 2 500 000 Yang. Kamieñ decyduje")
+			say("o szansie: Ma³y 2%, Drobny 5%, £adny 10%, Zacny 15%,")
+			say("Silny 25%.")
+			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+
+		when 20470.take or 20473.take or 20474.take begin
+			if npc.get_race() == 20470 and not przebudzeni_bossowie.in_village() then
+				return
+			end
+			if npc.get_race() ~= 20470 and not przebudzeni_bossowie.on_plateau() then
+				return
+			end
+			setskin(NOWINDOW)
+			command("cube open")
+		end
+
+		-- Handlarka Iluzji (P³askowy¿ Iluzji): her shop (world.shop 9551)
+		when 20469.chat."Sklep" with przebudzeni_bossowie.on_plateau() begin
+			setskin(NOWINDOW)
+			npc.open_shop()
+		end
+
 		-- Baek-Go: Lekarstwo Iluzji
 		when 20018.chat."Lekarstwo Iluzji" with pc.count_item(31145) > 0 begin
 			local c = przebudzeni_bossowie.cfg()
 			say_title(mob_name(20018)..":")
-			say("Z 20 LiÅ›ci Å»ycia przygotujÄ™ ci Lekarstwo Iluzji -")
-			say("od razu przywraca 500 PÅ» i 500 PE.")
+			say("Z 20 Liœci ¯ycia przygotujê ci Lekarstwo Iluzji -")
+			say("od razu przywraca 500 P¯ i 500 PE.")
 			say_item_vnum(c.medicine)
 			local n = math.floor(pc.count_item(c.leaves) / c.leaves_count)
 			if n < 1 then
-				say_red("PotrzebujÄ™ 20 LiÅ›ci Å»ycia (masz "..pc.count_item(c.leaves)..").")
+				say_red("Potrzebujê 20 Liœci ¯ycia (masz "..pc.count_item(c.leaves)..").")
 				return
 			end
-			if select("Przygotuj (20 LiÅ›ci Å»ycia)", "Nie teraz") ~= 1 then
+			if select("Przygotuj (20 Liœci ¯ycia)", "Nie teraz") ~= 1 then
 				return
 			end
 			if pc.count_item(c.leaves) < c.leaves_count then

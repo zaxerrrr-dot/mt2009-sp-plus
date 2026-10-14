@@ -64,7 +64,7 @@ JOB_ONLY = {8135: 'SHAMAN', 20538: 'SHAMAN,ASSASSIN'}
 # -- NPCs (our NPC numbers - gen_ymaps_sql.npc_row; Owsap's folder) ---------------------------------------------------
 NPCS = {
     20470: 'Statua Iluzji',                 # Yongan / Joan / Pyungmoo (the wiki's cells): Codzienna misja Swiat Iluzji
-    20471: 'Statua Przebudzenia',           # beside each Statua Iluzji (no Plaskowyz Iluzji here): the two dungeons
+    20471: 'Statua Przebudzenia',           # on Plaskowyz Iluzji (MT2009_PLUS_YOHARA_ILUZJA_V1): the four dungeons
     20531: 'PB: Gardziel Am-heha',          # the fortress' task giver
     20532: 'PB: Nagrobek Taramora',         # the fortress' boss room (scenery, as Owsap's npc.txt)
     20533: 'PB: Stela Isfet',               # the 2nd and the 5th zone
@@ -82,9 +82,10 @@ MAPS = [
          name='Strażnica Nemere (PB)', size=(4, 3), base=(230400, 1971200), town=(171, 270)),
 ]
 
-# -- the entrance: Statua Iluzji (the pl-wiki's cells in the three first villages) and Statua Przebudzenia beside it
-#    (the wiki puts her on Plaskowyz Iluzji, a map we do not have). map index, folder, Statua Iluzji x, y, Statua
-#    Przebudzenia x, y (local cells; every one measured walkable on our server_attr, gen_ypb.py) -----------------------
+# -- the entrance: Statua Iluzji (the pl-wiki's cells in the three first villages) - the daily mission and the way to
+#    Plaskowyz Iluzji, where Statua Przebudzenia stands (MT2009_PLUS_YOHARA_ILUZJA_V1, tools/yohara_iluzja; the
+#    second cells below are where she stood beside the village statue before). map index, folder, Statua Iluzji x, y,
+#    the old Statua Przebudzenia x, y (local cells; measured walkable on our server_attr, gen_ypb.py) ------------------
 STATUES = [
     (1, 'metin2_map_a1', 'Yongan', (540, 500), (544, 500)),
     (21, 'metin2_map_b1', 'Joan', (688, 748), (692, 748)),

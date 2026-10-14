@@ -10,8 +10,8 @@
 --     Sklepu", nasze przedmioty) co 5 godzin od pierwszego otwarcia; z ka¿dego slotu jeden zakup na ofertê;
 --     rz¹d I i - w porcie - rz¹d III odblokowane, sloty 4/5/6 odblokowuje na sta³e 1/2/4 Rozszerzenia Sklepu Gaya
 --     (39064); Reset Sklepu Gaya (39063) - nowa oferta od razu;
---   * Skrzynie ¯ywio³aków: okno wytwarzania statuy (cube.ygaya.txt: 2 Kupony Zwierzaka ¯ywio³u, 100 000 Yang,
---     10 Gaya); uszlachetnianie od³amków zestawu to quest ysets (to samo okno).
+--   * bez Skrzyñ ¯ywio³aków i Kuponów Zwierzaka ¯ywio³u (decyzja w³aœciciela 14.10.2026: pet tylko w ItemShopie);
+--     uszlachetnianie od³amków zestawu przy statui to quest ysets (okno wytwarzania).
 -- Bez Handlarza Gaya i Sklepu Gaya w wioskach (nie ma ich modeli w naszym kliencie) - tylko port.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest ygaya begin
@@ -309,19 +309,6 @@ quest ygaya begin
 
 		when 20433.chat."Portowy Sklep Gaya" with pc.get_map_index() == 368 begin
 			ygaya.shop()
-		end
-
-		when 20433.chat."Skrzynie ¯ywio³aków" with pc.get_map_index() == 368 begin
-			say_title(mob_name(20433)..":")
-			say("Z 2 Kuponów Zwierzaka ¯ywio³u, 100 000 Yang")
-			say("i 10 Gaya zrobiê skrzynkê z ma³ym ¿ywio³akiem")
-			say("twojego wyboru: Ognia, Lodu, B³yskawicy, Wiatru,")
-			say("Ziemi albo Mroku (zwierzak na 15 dni od otwarcia).")
-			say("Po³ó¿ kupony w oknie i wybierz skrzynkê z listy.")
-			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
-				setskin(NOWINDOW)
-				command("cube open")
-			end
 		end
 
 		when 39063.use or 39064.use begin

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_GAYA_V1 - checks the packs build_ygaya_packs.py wrote (on the OUT of the whole Yohara chain):
-#   * the 10 items of tools/ygaya/ygaya_items.json: an item_proto record (dbdata) equal to the server's row
+#   * the 3 items of tools/ygaya/ygaya_items.json: an item_proto record (dbdata) equal to the server's row
 #     (yitem_record), an item_list line whose icon is in the repo's root/icon/item or a pack, an itemdesc line;
 #   * Kamyki (95926): the record's antiflag = yohara_gaya.sql's, its itemdesc line without "(Na razie bez zastosowania".
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/ygaya/verify_ygaya.py \

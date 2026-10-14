@@ -517,6 +517,10 @@ MINIMAP_ZONE_NAME_DICT = {
 	# MT2009_PLUS_YOHARA_PB_V1 (client): the awakened bosses' dungeons (369, 370) on the minimap
 	"metin2_map_boss_awaken_flame" : "Twierdza Czerwonego Smoka (PB)",
 	"metin2_map_boss_awaken_snow" : "Stra¿nica Nemere (PB)",
+	# MT2009_PLUS_YOHARA_ILUZJA_V1 (client): P³askowy¿ Iluzji (397) and the two awakened dungeons (398, 371)
+	"metin2_map_labyrinth" : "P³askowy¿ Iluzji",
+	"metin2_map_boss_awaken_skipia" : "Grota Wygnañców 2 (PB)",
+	"metin2_map_boss_awaken_dawnmist" : "Zaklêty Las (PB)",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,

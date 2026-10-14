@@ -1,22 +1,22 @@
--- MT2009_PLUS_YOHARA_PB_V1: StraÅ¼nica Nemere (PB) - loch Nemere (PB) (370, metin2_map_boss_awaken_snow - teren naszej
--- 352 w oficjalnym miejscu; pl-wiki "StraÅ¼nica Nemere (PB)", "Nemere (PB)", "Lodowy Lew (NPC-PB)", "Arktyczna Kostka
--- (PB)", "Metin ChÅ‚odu (PB)", "Kolumna Smoka PÃ³Å‚nocy (PB)"; przebieg, pozycje i szanse jak Owsap v6.2.6
--- awaken_snow_dungeon.quest). WejÅ›cie: Statua Przebudzenia (quest przebudzeni_bossowie) - w grupie Ninja i Szaman.
--- DziesiÄ™Ä‡ piÄ™ter; przywÃ³dca zaczyna u Lodowego Lwa (PB) (20536), kaÅ¼de piÄ™tro przenosi grupÄ™ dalej po 5 s:
+-- MT2009_PLUS_YOHARA_PB_V1: Stra¿nica Nemere (PB) - loch Nemere (PB) (370, metin2_map_boss_awaken_snow - teren naszej
+-- 352 w oficjalnym miejscu; pl-wiki "Stra¿nica Nemere (PB)", "Nemere (PB)", "Lodowy Lew (NPC-PB)", "Arktyczna Kostka
+-- (PB)", "Metin Ch³odu (PB)", "Kolumna Smoka Pó³nocy (PB)"; przebieg, pozycje i szanse jak Owsap v6.2.6
+-- awaken_snow_dungeon.quest). Wejœcie: Statua Przebudzenia (quest przebudzeni_bossowie) - w grupie Ninja i Szaman.
+-- Dziesiêæ piêter; przywódca zaczyna u Lodowego Lwa (PB) (20536), ka¿de piêtro przenosi grupê dalej po 5 s:
 --   1, 3: zabij wszystkie potwory;
---   2: potwory upuszczajÄ… MroÅºny Klucz (PB) (31189, 30%) - uÅ¼yÄ‡ go moÅ¼e tylko Szaman, 30% kluczy jest prawdziwych;
+--   2: potwory upuszczaj¹ MroŸny Klucz (PB) (31189, 30%) - u¿yæ go mo¿e tylko Szaman, 30% kluczy jest prawdziwych;
 --   4: zabij wszystkie potwory - druga fala i Szel (PB) (4329);
---   5: piÄ™Ä‡ Arktycznych Kostek (PB) (20537) - Gwiazdy PÃ³Å‚nocy (PB) (31190, 30% z potworÃ³w) przeciÄ…gnij na kostki we
---      wÅ‚aÅ›ciwej (ukrytej) kolejnoÅ›ci;
---   6: zabij wszystkie potwory - pojawi siÄ™ Metin ChÅ‚odu (PB) (8135), zraniÄ‡ go moÅ¼e tylko Szaman
+--   5: piêæ Arktycznych Kostek (PB) (20537) - Gwiazdy Pó³nocy (PB) (31190, 30% z potworów) przeci¹gnij na kostki we
+--      w³aœciwej (ukrytej) kolejnoœci;
+--   6: zabij wszystkie potwory - pojawi siê Metin Ch³odu (PB) (8135), zraniæ go mo¿e tylko Szaman
 --      (server-patches/przebudzeni);
---   7: czterech SzelÃ³w (PB) - trzy to sobowtÃ³ry, ktÃ³re znikajÄ… poniÅ¼ej poÅ‚owy PÅ»; zabij prawdziwego;
---   8: Klucz Lod. Kwiatu (PB) (31191) wypada tylko, gdy potwora zabije Ninja (3%); uÅ¼yÄ‡ go moÅ¼e Ninja albo Szaman;
---   9: zniszcz KolumnÄ™ Smoka PÃ³Å‚nocy (PB) (20538) - zraniÄ‡ jÄ… moÅ¼e tylko Ninja albo Szaman; potem przywÃ³dca rozmawia z
+--   7: czterech Szelów (PB) - trzy to sobowtóry, które znikaj¹ poni¿ej po³owy P¯; zabij prawdziwego;
+--   8: Klucz Lod. Kwiatu (PB) (31191) wypada tylko, gdy potwora zabije Ninja (3%); u¿yæ go mo¿e Ninja albo Szaman;
+--   9: zniszcz Kolumnê Smoka Pó³nocy (PB) (20538) - zraniæ j¹ mo¿e tylko Ninja albo Szaman; potem przywódca rozmawia z
 --      Lodowym Lwem (PB);
---  10: Nemere (PB) (4412; przywoÅ‚uje MroÅºnych GeneraÅ‚Ã³w (PB), maks. 3).
--- 60 minut od wejÅ›cia; po zwyciÄ™stwie lub po czasie wszyscy wracajÄ… pod statuÄ™. Panel lochÃ³w: nemere_pb.
--- cp1250; Å¼aden napis nie koÅ„czy siÄ™ polskÄ… literÄ… (qc).
+--  10: Nemere (PB) (4412; przywo³uje MroŸnych Genera³ów (PB), maks. 3).
+-- 60 minut od wejœcia; po zwyciêstwie lub po czasie wszyscy wracaj¹ na P³askowy¿ Iluzji (MT2009_PLUS_YOHARA_ILUZJA_V1). Panel lochów: nemere_pb.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest nemere_pb begin
 	state start begin
 		function cfg()
@@ -102,10 +102,10 @@ quest nemere_pb begin
 			d.jump_all(c.base_x + p[1], c.base_y + p[2])
 			if lv == 2 then
 				d.set_regen_file(c.path.."sd_2.txt")
-				d.notice("NiektÃ³re mroÅºne potwory niosÄ… MroÅºne Klucze (PB) - znajdÅº prawdziwy. UÅ¼yÄ‡ go moÅ¼e tylko Szaman.")
+				d.notice("Niektóre mroŸne potwory nios¹ MroŸne Klucze (PB) - znajdŸ prawdziwy. U¿yæ go mo¿e tylko Szaman.")
 			elseif lv == 3 or lv == 4 then
 				d.regen_file(c.path.."sd_"..lv..".txt")
-				d.notice("Pokonaj wszystkich wrogÃ³w!")
+				d.notice("Pokonaj wszystkich wrogów!")
 			elseif lv == 5 then
 				d.regen_file(c.path.."sd_5.txt")
 				local s = nemere_pb.shuffle(5)
@@ -114,10 +114,10 @@ quest nemere_pb begin
 					d.set_unique("cube_"..k, d.spawn_mob(20537, pt[1], pt[2]))
 				end
 				d.setf("cube_next", 1)
-				d.notice("OtwÃ³rz pieczÄ™cie Arktycznych Kostek (PB) we wÅ‚aÅ›ciwej kolejnoÅ›ci Gwiazdami PÃ³Å‚nocy (PB) z potworÃ³w.")
+				d.notice("Otwórz pieczêcie Arktycznych Kostek (PB) we w³aœciwej kolejnoœci Gwiazdami Pó³nocy (PB) z potworów.")
 			elseif lv == 6 then
 				d.regen_file(c.path.."sd_6.txt")
-				d.notice("Pokonaj wszystkie mroÅºne potwory, a potem zniszcz Metin ChÅ‚odu (PB) - zraniÄ‡ go moÅ¼e tylko Szaman.")
+				d.notice("Pokonaj wszystkie mroŸne potwory, a potem zniszcz Metin Ch³odu (PB) - zraniæ go mo¿e tylko Szaman.")
 			elseif lv == 7 then
 				d.regen_file(c.path.."sd_7.txt")
 				local s = nemere_pb.shuffle(4)
@@ -125,17 +125,17 @@ quest nemere_pb begin
 					local pt = c.szel7[s[k]]
 					d.set_unique("szel_"..k, d.spawn_mob(4329, pt[1], pt[2]))
 				end
-				d.notice("ZnajdÅº i pokonaj Szela (PB), wÅ‚adcÄ™ lodu i zimna - trzy z czterech to sobowtÃ³ry.")
+				d.notice("ZnajdŸ i pokonaj Szela (PB), w³adcê lodu i zimna - trzy z czterech to sobowtóry.")
 			elseif lv == 8 then
 				d.set_regen_file(c.path.."sd_8.txt")
-				d.notice("Pokonuj mroÅºne potwory i zdobÄ…dÅº Klucz Lod. Kwiatu (PB) - wypada tylko, gdy zabija Ninja.")
+				d.notice("Pokonuj mroŸne potwory i zdob¹dŸ Klucz Lod. Kwiatu (PB) - wypada tylko, gdy zabija Ninja.")
 			elseif lv == 9 then
 				d.regen_file(c.path.."sd_9.txt")
 				d.spawn_mob(20538, c.pillar[1], c.pillar[2])
-				d.notice("Zniszcz KolumnÄ™ Smoka PÃ³Å‚nocy (PB) - zraniÄ‡ jÄ… moÅ¼e tylko Ninja albo Szaman.")
+				d.notice("Zniszcz Kolumnê Smoka Pó³nocy (PB) - zraniæ j¹ mo¿e tylko Ninja albo Szaman.")
 			elseif lv == 10 then
 				d.regen_file(c.path.."sd_10.txt")
-				d.notice("Pokonaj Nemere (PB), krÃ³la mrozu i lodu!")
+				d.notice("Pokonaj Nemere (PB), króla mrozu i lodu!")
 			end
 			if lv == 3 or lv == 4 or lv == 6 or lv == 7 then
 				server_timer("nemere_pb_check", c.check_sec, d.get_map_index())
@@ -149,7 +149,7 @@ quest nemere_pb begin
 			d.setf("mt2009_keep_until", get_global_time() + c.keep)
 			d.setf("level", 0)
 			d.spawn_mob(20536, c.lion[1], c.lion[2])
-			d.notice("StraÅ¼nica Nemere (PB): masz 60 minut. PrzywÃ³dca grupy zaczyna u Lodowego Lwa (PB).")
+			d.notice("Stra¿nica Nemere (PB): masz 60 minut. Przywódca grupy zaczyna u Lodowego Lwa (PB).")
 			server_timer("nemere_pb_tick", 60, d.get_map_index())
 		end
 
@@ -164,14 +164,14 @@ quest nemere_pb begin
 				pc.set_warp_location(m, pc.getf("przebudzeni_bossowie", "ret_x"), pc.getf("przebudzeni_bossowie", "ret_y"))
 			end
 			if d.getf("closed") == 1 then
-				syschat("StraÅ¼nica Nemere (PB): ta wyprawa juÅ¼ siÄ™ skoÅ„czyÅ‚a.")
+				syschat("Stra¿nica Nemere (PB): ta wyprawa ju¿ siê skoñczy³a.")
 				nemere_pb.out()
 				return
 			end
 			if pc.getf("przebudzeni_bossowie", "idx") ~= idx then
 				if not pc.is_gm() then
 					if pc.count_item(c.ticket) < 1 then
-						syschat("StraÅ¼nica Nemere (PB): potrzebujesz KsiÄ…Å¼ki Przebudzenia.")
+						syschat("Stra¿nica Nemere (PB): potrzebujesz Ksi¹¿ki Przebudzenia.")
 						nemere_pb.out()
 						return
 					end
@@ -201,12 +201,12 @@ quest nemere_pb begin
 			end
 			local left = d.getf("start") + c.limit - get_global_time()
 			if left <= 0 then
-				nemere_pb.finish("StraÅ¼nica Nemere (PB): czas minÄ…Å‚ - wracacie pod statuÄ™.")
+				nemere_pb.finish("Stra¿nica Nemere (PB): czas min¹³ - wracacie na P³askowy¿ Iluzji.")
 				return
 			end
 			local m = math.floor((left + 30) / 60)
 			if m == 45 or m == 30 or m == 15 or m == 5 or m == 1 then
-				d.notice("StraÅ¼nica Nemere (PB): zostaÅ‚o "..m.." min. Po czasie grupa wrÃ³ci pod statuÄ™.")
+				d.notice("Stra¿nica Nemere (PB): zosta³o "..m.." min. Po czasie grupa wróci na P³askowy¿ Iluzji.")
 			end
 			server_timer("nemere_pb_tick", 60, get_server_timer_arg())
 		end
@@ -218,16 +218,16 @@ quest nemere_pb begin
 		end
 
 		-- Lodowy Lew: the start (floor 1) and the way to Nemere (floor 9)
-		when 20536.chat."StraÅ¼nica Nemere (PB)" with nemere_pb.inside() and d.getf("level") == 0 begin
+		when 20536.chat."Stra¿nica Nemere (PB)" with nemere_pb.inside() and d.getf("level") == 0 begin
 			local c = nemere_pb.cfg()
 			say_title(mob_name(20536)..":")
 			if party.is_party() and not party.is_leader() and not pc.is_gm() then
-				say("Tylko przywÃ³dca grupy moÅ¼e zaczÄ…Ä‡ wyprawÄ™.")
+				say("Tylko przywódca grupy mo¿e zacz¹æ wyprawê.")
 				return
 			end
-			say("StraÅ¼nica Nemere (PB) ma limit czasu - godzinÄ™.")
-			say("Pokonaj wszystkich wrogÃ³w, a bÅ‚ogosÅ‚awieÅ„stwo doda ci")
-			say("siÅ‚ na kolejne fale.")
+			say("Stra¿nica Nemere (PB) ma limit czasu - godzinê.")
+			say("Pokonaj wszystkich wrogów, a b³ogos³awieñstwo doda ci")
+			say("si³ na kolejne fale.")
 			if select("Zaczynamy", "Jeszcze nie") ~= 1 then
 				return
 			end
@@ -236,23 +236,23 @@ quest nemere_pb begin
 			end
 			d.setf("level", 1)
 			d.regen_file(c.path.."sd_1.txt")
-			d.notice("Pokonaj wszystkich wrogÃ³w!")
+			d.notice("Pokonaj wszystkich wrogów!")
 			server_timer("nemere_pb_check", c.check_sec, d.get_map_index())
 		end
 
 		when 20536.chat."Sala tronowa Nemere" with nemere_pb.inside() and d.getf("level") == 9 and d.getf("pillar") == 1 begin
 			say_title(mob_name(20536)..":")
 			if party.is_party() and not party.is_leader() and not pc.is_gm() then
-				say("Tylko przywÃ³dca grupy moÅ¼e poprowadziÄ‡ was dalej.")
+				say("Tylko przywódca grupy mo¿e poprowadziæ was dalej.")
 				return
 			end
-			say("Czy jesteÅ›cie gotowi stanÄ…Ä‡ przed Nemere (PB),")
-			say("krÃ³lem mrozu i lodu?")
-			if select("WejdÅº do sali", "Jeszcze nie") ~= 1 or d.getf("jumping") == 1 then
+			say("Czy jesteœcie gotowi stan¹æ przed Nemere (PB),")
+			say("królem mrozu i lodu?")
+			if select("WejdŸ do sali", "Jeszcze nie") ~= 1 or d.getf("jumping") == 1 then
 				return
 			end
 			npc.purge()
-			nemere_pb.next_floor("Za chwilÄ™ zostaniecie przeniesieni do sali tronowej Nemere.")
+			nemere_pb.next_floor("Za chwilê zostaniecie przeniesieni do sali tronowej Nemere.")
 		end
 
 		-- the check of the floors whose task is "kill them all"
@@ -266,13 +266,13 @@ quest nemere_pb begin
 			if lv == 1 or lv == 3 then
 				if d.count_monster() <= 0 then
 					again = false
-					nemere_pb.next_floor("Za chwilÄ™ zostaniecie przeniesieni na "..(lv + 1)..". piÄ™tro.")
+					nemere_pb.next_floor("Za chwilê zostaniecie przeniesieni na "..(lv + 1)..". piêtro.")
 				end
 			elseif lv == 4 then
 				if d.count_monster() <= 0 then
 					if d.getf("wave4") == 1 then
 						again = false
-						nemere_pb.next_floor("Za chwilÄ™ zostaniecie przeniesieni na 5. piÄ™tro.")
+						nemere_pb.next_floor("Za chwilê zostaniecie przeniesieni na 5. piêtro.")
 					else
 						d.setf("wave4", 1)
 						d.regen_file(c.path.."sd_4.txt")
@@ -285,19 +285,19 @@ quest nemere_pb begin
 				if d.getf("metin6") == 0 and d.count_monster() <= 0 then
 					d.setf("metin6", 1)
 					d.spawn_mob(8135, c.metin6[1], c.metin6[2])
-					d.notice("PojawiÅ‚ siÄ™ Metin ChÅ‚odu (PB)! ZraniÄ‡ go moÅ¼e tylko Szaman.")
+					d.notice("Pojawi³ siê Metin Ch³odu (PB)! Zraniæ go mo¿e tylko Szaman.")
 				end
 				again = d.getf("metin6") == 0
 			elseif lv == 7 then
 				for k = 1, 3 do
 					if not d.is_unique_dead("szel_"..k) and d.unique_get_hp_perc("szel_"..k) < 50 then
 						d.purge_unique("szel_"..k)
-						d.notice("SobowtÃ³r Szela (PB) rozpÅ‚ywa siÄ™ w mroÅºnym powietrzu.")
+						d.notice("Sobowtór Szela (PB) rozp³ywa siê w mroŸnym powietrzu.")
 					end
 				end
 				if d.is_unique_dead("szel_4") then
 					again = false
-					nemere_pb.next_floor("Szel (PB) pokonany. Za chwilÄ™ zostaniecie przeniesieni na 8. piÄ™tro.")
+					nemere_pb.next_floor("Szel (PB) pokonany. Za chwilê zostaniecie przeniesieni na 8. piêtro.")
 				end
 			else
 				again = false
@@ -329,15 +329,15 @@ quest nemere_pb begin
 		when 31189.use with nemere_pb.inside() and d.getf("level") == 2 and d.getf("key2_used") == 0 and d.getf("jumping") == 0 begin
 			local c = nemere_pb.cfg()
 			if pc.get_job() ~= c.shaman then
-				syschat("MroÅºnego Klucza (PB) moÅ¼e uÅ¼yÄ‡ tylko Szaman.")
+				syschat("MroŸnego Klucza (PB) mo¿e u¿yæ tylko Szaman.")
 				return
 			end
 			item.remove()
 			if number(1, 100) <= c.key2_real_pct then
 				d.setf("key2_used", 1)
-				nemere_pb.next_floor("WÅ‚aÅ›ciwy klucz! Za chwilÄ™ zostaniecie przeniesieni na 3. piÄ™tro.")
+				nemere_pb.next_floor("W³aœciwy klucz! Za chwilê zostaniecie przeniesieni na 3. piêtro.")
 			else
-				syschat("To byÅ‚ zÅ‚y klucz. ZnajdÅº wÅ‚aÅ›ciwy!")
+				syschat("To by³ z³y klucz. ZnajdŸ w³aœciwy!")
 			end
 		end
 
@@ -354,34 +354,34 @@ quest nemere_pb begin
 			item.remove()
 			say_title(mob_name(20537)..":")
 			if which == 0 or which ~= want then
-				say("UwaÅ¼aj na kolejnoÅ›Ä‡! SprÃ³buj innej kostki.")
+				say("Uwa¿aj na kolejnoœæ! Spróbuj innej kostki.")
 				return
 			end
 			npc.purge()
 			if want == 5 then
-				nemere_pb.next_floor("Wszystkie pieczÄ™cie otwarte. Za chwilÄ™ zostaniecie przeniesieni na 6. piÄ™tro.")
+				nemere_pb.next_floor("Wszystkie pieczêcie otwarte. Za chwilê zostaniecie przeniesieni na 6. piêtro.")
 				return
 			end
 			d.setf("cube_next", want + 1)
-			say("Gotowe! Teraz otwÃ³rz pieczÄ™Ä‡ numer "..(want + 1)..".")
+			say("Gotowe! Teraz otwórz pieczêæ numer "..(want + 1)..".")
 			if d.count_monster() < c.gen_limit then
 				d.regen_file(c.path.."sd_5.txt")
 			end
 		end
 
 		when 8135.kill with nemere_pb.inside() and d.getf("level") == 6 and d.getf("jumping") == 0 begin
-			nemere_pb.next_floor("Metin ChÅ‚odu (PB) zniszczony. Za chwilÄ™ zostaniecie przeniesieni na 7. piÄ™tro.")
+			nemere_pb.next_floor("Metin Ch³odu (PB) zniszczony. Za chwilê zostaniecie przeniesieni na 7. piêtro.")
 		end
 
 		when 31191.use with nemere_pb.inside() and d.getf("level") == 8 and d.getf("key8_used") == 0 and d.getf("jumping") == 0 begin
 			local c = nemere_pb.cfg()
 			if pc.get_job() ~= c.ninja and pc.get_job() ~= c.shaman then
-				syschat("Klucza Lod. Kwiatu (PB) moÅ¼e uÅ¼yÄ‡ tylko Ninja albo Szaman.")
+				syschat("Klucza Lod. Kwiatu (PB) mo¿e u¿yæ tylko Ninja albo Szaman.")
 				return
 			end
 			item.remove()
 			d.setf("key8_used", 1)
-			nemere_pb.next_floor("Za chwilÄ™ zostaniecie przeniesieni na 9. piÄ™tro.")
+			nemere_pb.next_floor("Za chwilê zostaniecie przeniesieni na 9. piêtro.")
 		end
 
 		when 20538.kill with nemere_pb.inside() and d.getf("level") == 9 and d.getf("pillar") == 0 begin
@@ -389,7 +389,7 @@ quest nemere_pb begin
 			d.setf("pillar", 1)
 			nemere_pb.clear_level()
 			d.spawn_mob(20536, c.lion10[1], c.lion10[2])
-			d.notice("Kolumna Smoka PÃ³Å‚nocy (PB) zniszczona. PrzywÃ³dca grupy moÅ¼e porozmawiaÄ‡ z Lodowym Lwem (PB).")
+			d.notice("Kolumna Smoka Pó³nocy (PB) zniszczona. Przywódca grupy mo¿e porozmawiaæ z Lodowym Lwem (PB).")
 		end
 
 		when 4412.kill with nemere_pb.inside() and d.getf("level") == 10 and d.getf("closed") == 0 begin
@@ -397,8 +397,8 @@ quest nemere_pb begin
 			d.setf("closed", 1)
 			d.update_ranking("nemere_pb", get_global_time() - d.getf("start"))
 			d.clear_regen()
-			d.notice("Nemere (PB) zostaÅ‚ pokonany!")
-			d.notice("Wszyscy wojownicy wrÃ³cÄ… pod statuÄ™ za minutÄ™.")
+			d.notice("Nemere (PB) zosta³ pokonany!")
+			d.notice("Wszyscy wojownicy wróc¹ na P³askowy¿ Iluzji za minutê.")
 			server_timer("nemere_pb_end", c.end_sec, d.get_map_index())
 		end
 

@@ -252,7 +252,7 @@ def write_spawned():
         vs |= {4307} if idx == 369 else {4327}
         lines += ['%d %d' % (idx, v) for v in sorted(vs)]
     for idx, folder, name, s1, s2 in D.STATUES:
-        lines += ['%d 20470' % idx, '%d 20471' % idx]
+        lines += ['%d 20470' % idx]           # Statua Przebudzenia: on Plaskowyz Iluzji (tools/yohara_iluzja)
     open(os.path.join(OUT, 'spawned.txt'), 'w', newline='\n').write('\n'.join(lines) + '\n')
 
 
@@ -329,9 +329,10 @@ SET NAMES utf8mb4;"""
 
 # ------------------------------------------------------------------------------------------------ the items
 SUBTYPES = dict(Y.SUBTYPES, USE_POTION_NODELAY=11)
-CRAFT = 'needs: the awakened gear crafting (Statua Iluzji / Statua Fabryki Broni / Kowala Zbroi) - none here yet'
-STONES = 'needs: the crafting of the awakened gear and of the Dark Dragon gear +0 (Statua Iluzji) - none here yet'
-HELM = 'needs: the dragon helmets (Helm Smoka Mroku ...) - none here yet'
+# MT2009_PLUS_YOHARA_ILUZJA_V1: every material below has its use now - the plateau's statues (tools/yohara_iluzja,
+# cube.yohara_iluzja.txt): Statua Iluzji turns the awakening stones (+ Dusza Przebudzenia) into the next one, Statua
+# Fabryki Broni / Kowala Zbroi craft the Dark Dragon gear (Zwykla Skora, Kowadlo, Cienka Przedza, Srodek Scierny, Stal),
+# Mocny Sznur / Stal refine the dragon helmets - none says "(Na razie bez zastosowania ...)" any more
 ITEMS = []
 
 
@@ -340,12 +341,12 @@ def add(vnum, name=None, status=Y.ST, **over):
 
 
 for _v in (31108, 31109, 31110, 31111, 31112):  # Maly / Drobny / Ladny / Zacny / Silny Kam. Przebudzenia
-    add(_v, status=STONES)
-add(31113, status='needs: the awakening stones\' upgrading (Statua Iluzji) - none here yet')   # Dusza Przebudzenia
+    add(_v)
+add(31113)                                          # Dusza Przebudzenia
 for _v in (31114, 31115, 31117, 31120):             # Zwykla Skora, Kowadlo, Cienka Przedza, Srodek Scierny
-    add(_v, status=CRAFT)
-add(31121, status=HELM)                             # Stal
-add(31149, status=HELM)                             # Mocny Sznur
+    add(_v)
+add(31121)                                          # Stal
+add(31149)                                          # Mocny Sznur
 add(31141, name='Skrzynia Razadora (PB)')           # the chests (special_item_group)
 add(31142, name='Skrzynia Nemere (PB)')
 add(31143)                                          # Skrzynia Przebudzenia
@@ -366,6 +367,11 @@ EXISTING = {
     27003: 'Czerwona Mikstura(D)', 71095: 'Przepustka', 70048: 'Peleryna Maskujaca (our Plaszcz Uciekiniera)',
     70012: 'Lza Bogini', 71015: 'Pierscien Doswiadczenia', 39002: 'Pierscien Doswiadczenia (1 h)',
     70038: 'Peleryna Mestwa', 50120: 'Zelazna Szkatulka', 50124: 'Sprochniala Skrzynia', 'gold': 'Yang', 'exp': 'EXP',
+    # the plans of the Dark Dragon gear - yohara_items_iluzja.sql (tools/yohara_iluzja, MT2009_PLUS_YOHARA_ILUZJA_V1)
+    31196: 'PB: Plan Miecza', 31197: 'PB: Plan Brzeszczota', 31199: 'PB: Plan Luku', 31200: 'PB: Plan Ostrza',
+    31201: 'PB: Plan Dzwonu', 31203: 'PB: Plan Wachlarza', 31204: 'PB: Plan Zbroi Wojownika',
+    31205: 'PB: Plan Zbroi Ninja', 31206: 'PB: Plan Zbroi Sura', 31209: 'PB: Plan Helmu Wojownika',
+    31210: 'PB: Plan Helmu Ninja', 31211: 'PB: Plan Helmu Sura',
 }
 
 
@@ -438,8 +444,8 @@ def gen_items(a, report):
     for i in items:
         if i['status'] != Y.ST:
             L.append('--   %d %s - %s' % (i['vnum'], i['name'], i['status'][len('needs: '):]))
-    L += ['-- Left out: the awakened gear\'s plans (PB: Plan Helmu / Ostrza / Wachlarza ... 31196-31213 - no awakened gear',
-          '-- here), Torba Emocji (the emotion packs, as every Yohara batch).',
+    L += ['-- Left out: Torba Emocji (the emotion packs, as every Yohara batch). The plans of the Dark Dragon gear (PB: Plan',
+          '-- ... 31196-31212) are yohara_items_iluzja.sql\'s (MT2009_PLUS_YOHARA_ILUZJA_V1, Plaskowyz Iluzji\'s statues).',
           'SET NAMES utf8mb4;',
           'INSERT IGNORE INTO world.item_proto (%s) VALUES' % ','.join('`%s`' % c for c in Y.COLS),
           ',\n'.join(Y.sqlrow(i) for i in items) + ';']
@@ -510,10 +516,21 @@ def drops():
     return [
         (4411, 'PB: Razador', [(31141, 4, 100), (31143, 3, 100), (31124, 2, 30), (31117, 2, 30), (31109, 1, 20),
                                (31125, 2, 30), (31145, 5, 50), (31108, 3, 40), (50513, 1, 15), (70012, 1, 10),
-                               (39002, 1, 10), (50124, 1, 20)]),
+                               (39002, 1, 10), (50124, 1, 20), (31209, 1, 12), (31211, 1, 12), (31200, 1, 12),
+                               (31203, 1, 12)]),
         (4412, 'PB: Nemere', [(31142, 4, 100), (31143, 3, 100), (31124, 2, 30), (31109, 1, 20), (31108, 3, 40),
                               (31132, 2, 25), (31145, 5, 50), (31120, 2, 30), (50513, 1, 15), (70048, 1, 10),
-                              (71015, 1, 10), (50124, 1, 20)]),
+                              (71015, 1, 10), (50124, 1, 20), (31196, 1, 12), (31197, 1, 12), (31199, 1, 12),
+                              (31211, 1, 12)]),
+        # the de-wiki's plan sources among the PB monsters (MT2009_PLUS_YOHARA_ILUZJA_V1)
+        (4329, 'PB: Szel', [(31210, 1, 5)]),
+        (4325, 'PB: Mrozny Troll', [(31201, 1, 0.3)]),
+        (4327, 'PB: Mrozny General', [(31203, 1, 0.5)]),
+        (4324, 'PB: Mrozny Golem', [(31203, 1, 0.3), (31206, 1, 0.3)]),
+        (4326, 'PB: Mrozna Broda', [(31204, 1, 0.3)]),
+        (4328, 'PB: Mrozny Ksiaze', [(31205, 1, 0.5)]),
+        (4307, 'PB: Og. General Zaru', [(31211, 1, 0.5)]),
+        (4308, 'PB: Ognisty Ksiaze Zaru', [(31206, 1, 0.5)]),
         (8135, 'PB: Metin Chlodu', [(50513, 1, 30)]),
         (20538, 'PB: Kolumna Smoka Pln.', [(50513, 1, 30)]),
     ]
@@ -522,10 +539,12 @@ def drops():
 def write_drops(byv):
     L = ['// MT2009_PLUS_YOHARA_PB_V1: drops of the awakened bosses - the pl-wiki lists ("Razador (PB)", "Nemere (PB)",',
          '// "Metin Chlodu (PB)", "Kolumna Smoka Polnocy (PB)"). GENERATED by tools/yohara_pb/gen_ypb.py - do not edit.',
-         '// The percents are ours, official-like. Left out: the awakened gear\'s plans (PB: Plan ... - no awakened gear',
-         '// here), Ciezkie Pasy / Ksiega Umiejetnosci of Metin Chlodu (no such items here). The monsters drop nothing',
-         '// on the wiki - their Zlota Zebatka / Kamien Maat / Mrozny Klucz / Gwiazda Polnocy / Klucz Lod. Kwiatu (PB)',
-         '// are the quests\' (razador_pb, nemere_pb).', '']
+         '// The percents are ours, official-like. Left out: Ciezkie Pasy / Ksiega Umiejetnosci of Metin Chlodu (no such',
+         '// items here), the Lycan\'s plans. The plans of the Dark Dragon gear (PB: Plan ..., yohara_items_iluzja.sql -',
+         '// MT2009_PLUS_YOHARA_ILUZJA_V1): the pl-wiki\'s (Razador (PB)) and, where the pl-wiki gives no source, the',
+         '// de-wiki\'s ("EW: ...entwurf": Nemere, Szel, the Frost / Glut monsters). The monsters drop nothing else on',
+         '// the wiki - their Zlota Zebatka / Kamien Maat / Mrozny Klucz / Gwiazda Polnocy / Klucz Lod. Kwiatu (PB) are the',
+         '// quests\' (razador_pb, nemere_pb).', '']
     for v, n, rows in drops():
         assert v in D.MOBS, v
         L += ['Group\tMT2009_ypb_%d' % v, '{', '\tMob\t%d\t-- %s' % (v, ascii_pl(n)), '\tType\tdrop']
