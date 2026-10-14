@@ -8,10 +8,11 @@
 --  * the Portal (20415) opens for a minute where the En-Tai Guardian (6400)
 --    fell (playerbot_ochao.h). The package sent it to the Enchanted Forest
 --    (map 210), which this world does not have yet: here it is the way out;
---    MT2009_PLUS_AREZZO_V1: the portal leads to the forest again - Zaczarowany Las
---    (natural_map, 362, from the Arezzo files) - and, as the second choice, back to
---    Zbocze Gautama beside the guard (cell 1003 704 = 1177600 + 100300, 1664000 + 70400;
---    MT2009_PLUS_OCHAO_GAUTAMA_V1 - it was Orc Valley);
+--    MT2009_PLUS_YOHARA_ZAKLETY_V1: the portal leads to the Enchanted Forest - Zaklety Las
+--    (353, metin2_map_dawnmist_dungeon_01, quests zaklety_las / erebu; the Arezzo forest it led
+--    to before is gone) - and, as the second choice, back to Zbocze Gautama beside the guard
+--    (cell 1003 704 = 1177600 + 100300, 1664000 + 70400; MT2009_PLUS_OCHAO_GAUTAMA_V1 - it was
+--    Orc Valley);
 --  * the Ochao Bodyguard (6311) gives the package's reward list, with the
 --    Arboreal materials and the Lycan armour mapped to this world's items:
 --    30609 -> 30015 Pamiatka Po Demonie, 30612 -> 30082 Ogon Weza+,
@@ -51,23 +52,19 @@ quest temple_of_the_ochao begin
 			end
 		end
 
-		-- MT2009_PLUS_AREZZO_V1 (ochao portal): Zaczarowany Las (362, level 95+), landing where
-		-- Arezzo's portal does (cell 459, 106 of natural_map = 378700, 394600).
+		-- MT2009_PLUS_YOHARA_ZAKLETY_V1 (ochao portal): Zaklety Las (353, level 95+) on the Yohara core,
+		-- landing on its Town.txt cell (478, 970 = 768000 + 47800, 1408000 + 97000) - pl-wiki "Straznik
+		-- En-Tai": the portal leads to Zaklety Las.
 		-- MT2009_PLUS_OCHAO_GAUTAMA_V1: the second choice is Zbocze Gautama beside the guard
 		-- (cell 1003 704 of 302 = 1277900, 1734400), where Orc Valley was.
 		when 20415.chat."Opusc Swiatynie" with pc.get_map_index() == 209 begin
 			say_title(mob_name(20415))
 			say("Portal pozostawiony przez Straznika En-Tai drga")
-			say("jeszcze przez chwile. Prowadzi do Zaczarowanego")
-			say("Lasu, najgrozniejszej krainy za Swiatynia, albo")
-			say("z powrotem na Zbocze Gautama.")
+			say("jeszcze przez chwile. Prowadzi do Zakletego Lasu,")
+			say("krainy Jotuna Thryma za Swiatynia, albo z powrotem")
+			say("na Zbocze Gautama.")
 			say("")
-			local s
-			if game.get_event_flag("mt2009_arezzo_closed") > 0 then
-				s = select("Zbocze Gautama", "Zostan w Swiatyni") + 1
-			else
-				s = select("Zaczarowany Las", "Zbocze Gautama", "Zostan w Swiatyni")
-			end
+			local s = select("Zaklety Las", "Zbocze Gautama", "Zostan w Swiatyni")
 			if s == 3 then
 				return
 			end
@@ -77,7 +74,7 @@ quest temple_of_the_ochao begin
 				return
 			end
 			if s == 1 then
-				pc.warp(378700, 394600)
+				pc.warp(815800, 1505000)
 			else
 				pc.warp(1277900, 1734400)
 			end

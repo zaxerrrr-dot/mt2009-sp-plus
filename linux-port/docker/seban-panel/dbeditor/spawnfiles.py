@@ -75,7 +75,7 @@ MAP_PICTURES = {
     64: "orc-valley.png", 65: "hwang-temple.png", 67: "trent-forest.png", 68: "trent02-red-forest.png",
     104: "spider-dungeon-v1.png", 71: "spider-dungeon-v1.png", 72: "grotto-v1.png", 73: "grotto-v2.png",
     108: "medium-monkey.webp", 109: "hard-monkey.webp", 209: "ochao-temple.png",
-    360: "arezzo-cyclops-valley.png", 361: "arezzo-pharaoh-wastes.png", 362: "arezzo-enchanted-forest.png",
+    360: "arezzo-cyclops-valley.png", 361: "arezzo-pharaoh-wastes.png",
 }
 
 

@@ -160,12 +160,13 @@ fi
 # used on another core sends the player there first.
 MAPS_game2="$MAPS_game2 419"
 # MT2009_PLUS_AREZZO_V1 (maps): the Arezzo places (game/arezzo/, the Dockerfile step "share: Arezzo
-# places") under either layout - Dolina Cyklopow (360) and Zaczarowany Las (362) on game1 beside Orc
-# Valley and the Temple of Ochao (the bots will hunt them, and a bot cannot cross cores; game1 of the
-# unified layout then hosts 35 maps of MAP_ALLOW_LIMIT 48), the Biblioteka Wiedzy dungeon (363) on
-# game2 with Razador and Nemere (d.new_jump_pids from its guard in Orc Valley).
+# places") under either layout - Dolina Cyklopow (360) on game1 beside Orc Valley and the Temple of Ochao
+# (the bots hunt it, and a bot cannot cross cores), the Biblioteka Wiedzy dungeon (363) on game2 with
+# Razador and Nemere (d.new_jump_pids from its guard in Orc Valley).
 # MT2009_PLUS_BOT_DUNGEONS_ALL_V1: 363 on game1 with Razador and Nemere since.
-MAPS_game1="$MAPS_game1 360 362 363"
+# MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaczarowany Las (362) is gone - no core hosts it, no index names it; the
+# Temple of Ochao's portal leads to Zaklety Las (353) on the Yohara core below.
+MAPS_game1="$MAPS_game1 360 363"
 # MT2009_PLUS_AREZZO_V1 (maps, phases 5-8): Pustkowie Faraona (361) on game1 with the other open Arezzo
 # maps (game1 of the unified layout: 36 maps of 48); the dungeons 364-366 on game2 with 363.
 # MT2009_PLUS_BOT_DUNGEONS_ALL_V1: 364-366 on game1 with 363 since (the Arezzo dungeon test
@@ -210,7 +211,10 @@ MAPS_game1="$MAPS_game1 358"
 # 49 sectors more.
 # MT2009_PLUS_YOHARA_CRACK_V1: Zaklety Las (SZC) (404, 3x4 - the first Time Rift dungeon, entered from Statua Szczeliny
 # Czasu on Plaskowyz Iluzji; its instances 4040000+) - 12 sectors more (the PB forest's terrain).
-MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387 369 370 397 398 371 404"
+# MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaklety Las (353, 3x4 - the open Enchanted Forest past the Temple of Ochao, whose
+# portal on game1 warps there; Erebu's instances 3530000+) - 12 sectors more (the same terrain). Not a Yohara or Sung Ma
+# map, but here beside the PB / SZC forests: no bot goes there.
+MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387 369 370 397 398 371 404 353"
 yohara_maps_present() {
   local idx="$SHARE_DIR/locale/poland/map/index" m out=""
   for m in $MAPS_game3_all; do

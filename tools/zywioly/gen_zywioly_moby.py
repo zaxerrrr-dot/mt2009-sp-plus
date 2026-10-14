@@ -10,7 +10,10 @@ Rules:
      stone files spawn, groups and group-groups unfolded, the summons of those monsters; never a
      Metin stone or an NPC):
        Grota Wygnancow 1 (72) and 2 (73)            -> lightning
-       Swiatynia Ochao (209), Zaczarowany Las (362) -> wind
+       Swiatynia Ochao (209)                         -> wind
+     (MT2009_PLUS_YOHARA_ZAKLETY_V1: the Arezzo forest, Zaczarowany Las (362), is gone - its lemurs 9611-9615
+     spawn nowhere now and keep the wind it gave them (FORMER_FOREST_WIND: the generated file unchanged); Zaklety Las
+     (353) and Erebu are mariadb/playerbot/yohara_zaklety_zywioly.sql's, after this file)
      a boss there keeps its wiki element; one not on the wiki list takes the map's;
   c. dungeons - every monster and boss of the dungeon (its map files, its quest's regen files in
      data/dungeon/<dir>, the monster vnums >= 1000 its quest spawns itself, their summons), the
@@ -74,8 +77,10 @@ RANK_BOSS = 4
 # (label, map indexes, element)
 MAP_RULES = (
     ('Grota Wygnancow 1/2', (72, 73), ELEC),
-    ('Swiatynia Ochao + Zaczarowany Las', (209, 362), WIND),
+    ('Swiatynia Ochao', (209,), WIND),
 )
+# the lemurs of the removed Arezzo forest (362) - the wind its map rule gave them (MT2009_PLUS_YOHARA_ZAKLETY_V1)
+FORMER_FOREST_WIND = (9611, 9612, 9613, 9614, 9615)
 # (label, map index, data/dungeon dirs, quest, extra lua (enemy = vnum lines), element)
 DUNGEON_RULES = (
     ('Nemere', 352, ('nemere_mt',), 'nemere_dungeon.quest', None, ICE),
@@ -357,6 +362,11 @@ def main():
                                                                        NAMES[elem], label))
                 result[v], why[v] = elem, 'map ' + label
 
+        # b2. the removed Arezzo forest's lemurs (as rule b gave them before)
+        for v in FORMER_FOREST_WIND:
+            if v in mobs and v not in result:
+                result[v], why[v] = WIND, 'map Zaczarowany Las (removed)'
+
         # c. the dungeons (win over everything above)
         dun_sets = {}
         for label, idx, dirs, quest, lua, elem in DUNGEON_RULES:
@@ -461,7 +471,7 @@ def main():
                '-- ice, wind, earth, dark; in the column\'s SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,',
                '-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner\'s rules of',
                '-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia',
-               '-- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374 and 376-393). GENERATED - do not',
+               '-- Ochao, the lemurs of the former Arezzo forest, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374 and 376-393). GENERATED - do not',
                '-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other',
                '-- mob, set on these.']
         for line in out[1:7]:

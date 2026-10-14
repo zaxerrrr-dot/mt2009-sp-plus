@@ -80,7 +80,7 @@
 //     PLAYERBOT_DGRUN_STALL_MS without progress, PLAYERBOT_DGRUN_MAX_WIPES
 //     wipes or the time limit and a margin, is warped out here - no bot is
 //     ever left in an instance. Out on an Arezzo map or in the Temple of Ochao
-//     (the Jungle's way out is the Las) a bot is sent back to where it stood
+//     (the Jungle's way out is the temple) a bot is sent back to where it stood
 //     before the call. The leader may say how it went ("gg, zaliczylismy
 //     razadora"), the party goes, and every member rests.
 //
@@ -1697,7 +1697,7 @@ namespace
 					LeavePlayerBotParty(ch);
 			}
 			// Off an Arezzo map or out of the temple (the Jungle's way out is
-			// the Las): home, while the run still lets the move through.
+			// the temple): home, while the run still lets the move through.
 			const long map = ch->GetMapIndex();
 			if (state && !ch->IsDead() && (IsPlayerBotArezzoMap(map) || map == PLAYERBOT_MAP_OCHAO ||
 					IsPlayerBotOffLimitsMap(map)))

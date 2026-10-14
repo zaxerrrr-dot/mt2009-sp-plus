@@ -38,7 +38,7 @@
 //
 // Off its map: on game1 the dungeons' neighbours are hosted too, so what game2
 // could never do now happens - the quests' login sends a bot found on the
-// lobby map to the dungeon's exit (the Fire Land, Hwang; the Las is refused),
+// lobby map to the dungeon's exit (the Fire Land, Hwang, the Temple of Ochao),
 // the Arezzo module's send-off (M2_AREZZO=0, the test server's setting) to
 // its town, a stranded recovery to M2. Such a bot is warped home to its
 // lobby (the route lets the cohort onto its own dungeon's map alone,
@@ -283,6 +283,8 @@ namespace
 		return ch && IsPlayerBotArezzoDungeonCohortMove(ch, ch->GetMapIndex());
 	}
 
+	// MT2009_PLUS_YOHARA_ZAKLETY_V1: the lending below fed the Arezzo forest (362), gone since - no send borrows
+	// a cohort bot any more; a cohort bot an operator's order still names is left to it as before.
 	// MT2009_PLUS_AREZZO_MAPS_FIX_V1 (lending to the Las): the Las wants level 95
 	// and the only such bots of the test server are this cohort's Jungle squad
 	// (night test 6/7 October: "send 362" found 0 candidates twice - the
@@ -300,35 +302,6 @@ namespace
 	{
 		std::map<DWORD, long>::const_iterator f = s_mapPlayerBotArezzoForced.find(pid);
 		return f != s_mapPlayerBotArezzoForced.end() && s_setPlayerBotArezzoLeave.count(pid) == 0;
-	}
-
-	// The cohort's dungeon (an index of PLAYERBOT_ARZDG) of a bot a send may
-	// borrow (online on its dungeon's map: the lobby or a run), or -1.
-	int GetPlayerBotArezzoDungeonCohortLendable(LPCHARACTER ch)
-	{
-		if (!ch || !s_bPlayerBotArzDgHosting)
-			return -1;
-		std::map<DWORD, int>::const_iterator it = s_mapPlayerBotArzDgCohort.find(ch->GetPlayerID());
-		if (it == s_mapPlayerBotArzDgCohort.end() || GetPlayerBotArzDgIndex(ch->GetMapIndex()) != it->second)
-			return -1;
-		return it->second;
-	}
-
-	// How many more of a dungeon's cohort a send may borrow: half of it, less
-	// those already lent.
-	int GetPlayerBotArezzoDungeonCohortLendRoom(int dg)
-	{
-		int members = 0, lent = 0;
-		for (std::map<DWORD, int>::const_iterator it = s_mapPlayerBotArzDgCohort.begin();
-				it != s_mapPlayerBotArzDgCohort.end(); ++it)
-		{
-			if (it->second != dg)
-				continue;
-			++members;
-			if (IsPlayerBotArzDgLent(it->first))
-				++lent;
-		}
-		return std::max(0, members / 2 - lent);
 	}
 
 	// The lobby's (and the jump's) point in world units, and in cells for a

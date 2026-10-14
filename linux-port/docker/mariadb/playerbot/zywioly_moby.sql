@@ -2,7 +2,7 @@
 -- ice, wind, earth, dark; in the column's SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,
 -- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner's rules of
 -- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia
--- Ochao, Zaczarowany Las, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374 and 376-393). GENERATED - do not
+-- Ochao, the lemurs of the former Arezzo forest, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374 and 376-393). GENERATED - do not
 -- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other
 -- mob, set on these.
 -- Blyskawica   54  (wiki bosses 6)

@@ -4,15 +4,17 @@
 // mariadb/playerbot/apply.sh from M2_AREZZO and live by web_admin.quest (AREZZO).
 //
 // What reads it:
-//   * the quests: the Teleporter and the Teleportation Ring (360, 361), the Ochao portal's
-//     choice (362) and the four dungeon guards (363-366) - as before;
+//   * the quests: the Teleporter and the Teleportation Ring (360, 361) and the four dungeon
+//     guards (363-366) - as before (MT2009_PLUS_YOHARA_ZAKLETY_V1: the Ochao portal's choice
+//     of the Arezzo forest, 362, is gone - the portal leads to Zaklety Las, not a module map);
 //   * the dungeon panel (playerbot_dungeon_panel.h, IsArezzo): no Arezzo line, no warp;
 //   * the Arezzo costume sets (MT2009_PLUS_AREZZO_COSTUME_SETS_V2, playerbot_arezzo_costumes.h): the
 //     engine's ItemShop neither lists nor sells them, the bots leave them out of their catalogue;
 //     the web shop reads the same flag (itemshop/arezzo_costumes.php);
 //   * this file, on every core, every TICK_SECONDS:
-//       - the three entrance guards that stand on the old maps (Straznik Biblioteki in every
-//         empire's M2, Straznik Wzgorza in the Hwang Temple, Straznik Ruin on the Fire Land) are
+//       - the four entrance guards that stand on the old maps (Straznik Biblioteki in every
+//         empire's M2, Straznik Wzgorza in the Hwang Temple, Straznik Ruin on the Fire Land,
+//         Straznik Dzungli in the Temple of Ochao - his Arezzo forest is gone) are
 //         spawned here instead of npc.txt: on while the module is on, gone while it is off;
 //       - a player (not a GM) on an Arezzo map or in one of its dungeons while the module is
 //         off is sent to his empire's town - but the operator's dungeon test cohort on its
@@ -58,6 +60,11 @@ namespace mt2009_arezzo
 		{ 20430, 43, 476,  351, 180, 0 },	// metin2_map_c3 (Jinno M2)
 		{ 20423, 65, 165,  941, 180, 0 },	// Straznik Wzgorza - Swiatynia Hwang (metin2_map_milgyo)
 		{ 20424, 62, 101,  910, 180, 0 },	// Straznik Ruin - Ognista Ziemia (metin2_map_n_flame_01)
+		// MT2009_PLUS_YOHARA_ZAKLETY_V1: Straznik Dzungli - Swiatynia Ochao (metin2_map_mt_th_dungeon_01)
+		// beside its gate (the arrival 89,84; this cell open three cells all round on the server_attr);
+		// the Arezzo forest (natural_map, 362) he stood in is gone. starozytna_dzungla.quest's way out
+		// is beside him (92,80).
+		{ 20425, 209, 94,   84, 180, 0 },
 	};
 	const int GUARDS = sizeof(s_guards) / sizeof(s_guards[0]);
 

@@ -3,7 +3,7 @@
 // Type limit: a plain percent a kill (outside them, a group of its own - the Seban panel's saved drop groups
 // do not hide it).
 //  * Stabilne Sznury (95601) - Mag Ochao (6303) 1% (the wiki's source), and with Ciezkie Pasy (95603) 0.5% each
-//    from every regular monster of Swiatynia Ochao (209: 6301-6305) and Zaczarowany Las (362: lemurs 9611-9615).
+//    from every regular monster of Swiatynia Ochao (209: 6301-6305) and the lemurs 9611-9615 (Zaczarowany Las 362 - removed, MT2009_PLUS_YOHARA_ZAKLETY_V1).
 //  * Dwutlenek Tytanu (30616) 3% and Agat (30617) 2% from the twenty level 103-107 bosses (3090-3891) - lines in
 //    their limit groups in mob_drop_item.beltmats.append.txt (a mob has one limit group); both also from Skrzynia
 //    Dzungli (special_item_group.arezzo2.txt line 10, 20%).

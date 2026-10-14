@@ -233,8 +233,7 @@ with open(os.path.join(a.outdir, 'playerbot_arezzo_cohort.txt'), 'w') as f:
     f.write('# MT2009_PLUS_AREZZO_BOTS_V1: "<map> <pid>" - logged in on top of the population, never rested\n')
     for p in sorted(pick, key=lambda x: (x['map'], x['pid'])):
         f.write('%d %d\n' % (p['map'], p['pid']))
-    for pid in ochao:
-        f.write('362 %d\n' % pid)
+    # MT2009_PLUS_YOHARA_ZAKLETY_V1: the Ochao test bots went on to the Arezzo forest (362) here - it is gone
 open(os.path.join(a.outdir, 'cohort_revert_note.txt'), 'w').write(
     'Undo: restore the backup taken before cohort_apply.sql (backup_before.sql: player.player and\n'
     'player.item rows of the picked pids), with the game stopped:\n'
