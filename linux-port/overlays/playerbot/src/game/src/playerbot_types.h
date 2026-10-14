@@ -7707,7 +7707,7 @@ namespace
 	DWORD GetPlayerBotSashPrice(LPITEM item);
 	// MT2009_PLUS_SASH_CLOTH_V1 (playerbot_sash.h): Delikatne Sukno, what Metins
 	// and bosses drop instead of the +0 sash (server-patches/raremobrules). Ten
-	// and PLAYERBOT_SASH_CLOTH_FEE yang make the plain sash at Uriel (crafting
+	// and PLAYERBOT_SASH_CLOTH_FEE yang make the plain sash at Theowahdan (crafting
 	// window 111); a keeper that wants sashes trades its cloth in by itself
 	// (ExchangePlayerBotSashCloth) and keeps it for that, every other bot puts it
 	// on its counter at a tenth of the plain sash (GetPlayerBotSashClothPrice).
@@ -8960,7 +8960,7 @@ namespace
 		// again: soul stones of a banned grade for Magiczny Pyl.
 		DWORD dwNextAlchemistCheckTime;
 		DWORD dwNextAlchemistActionTime;
-		// Uriel's sash work (ManagePlayerBotSash), the same shape again.
+		// Theowahdan's sash work (ManagePlayerBotSash; bVisitingUriel keeps its name), the same shape again.
 		DWORD dwNextSashCheckTime;
 		DWORD dwNextSashActionTime;
 		// The saddlebags' errands and the page's move-back (playerbot_saddlebag.h).

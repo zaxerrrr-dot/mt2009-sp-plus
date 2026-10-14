@@ -19,7 +19,7 @@ a GM mógł aktywować alchemię bez problemu.
 - jej dwie opcje testowe (`o` – okno ulepszania alchemii z dowolnego miejsca,
   `c` – okno zmiany bonusów) zostają tylko dla GM.
 
-Łączenie szarf (NPC 20011, `pc.open_acce`) oraz ulepszanie i zmiana bonusów
+Łączenie szarf (NPC 60003 Theowahdan, `pc.open_acce`) oraz ulepszanie i zmiana bonusów
 alchemii (NPC 20001, `ds.open_refine_window` / `ds.open_changeattr_window`)
 nie mają blokady dla GM; wymagają tylko kwalifikacji alchemii, którą każdy
 gracz dostaje przy wejściu do gry (`server-patches/dsqualification`).

@@ -17,7 +17,7 @@ Dwie flagi świata (`player.quest`, `dwPID` 0):
 - `m2_sash_off` = 1 – żaden boss ani skrzynia bossa nie daje szarfy.
 
 To, co gracze już mają, zostaje: kamienie w plecaku alchemii działają,
-szarfy się nosi i łączy u Uriela, handel działa.
+szarfy się nosi i łączy u Theowahdana, handel działa.
 
 ## Skąd flagi
 

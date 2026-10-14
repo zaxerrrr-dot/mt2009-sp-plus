@@ -21,7 +21,7 @@ What a switch holds back - only the game's own (built-in) sources:
   * sash: the +0 sash roll (boss 80%, Metin 15%, WuKong 15%, the per-mob rules
     of raremobrules) - since MT2009_PLUS_SASH_CLOTH_V1 (6 October) it gives
     Delikatne Sukno (80019, 2 / 5 / 10 by the killer's level 1-49 / 50-74 / 75+;
-    ten make the plain sash at Uriel) instead of the sash - and, under "z bossów", the
+    ten make the plain sash at Theowahdan) instead of the sash - and, under "z bossów", the
     unique +3 sash (85004/85008/85014/85018/85024, 6-10%) of a boss chest
     opened with its key;
   * Cor Draconis (Rough), vnum 50255: the engine's roll (boss 80%, Metin 20%,
@@ -59,7 +59,7 @@ LABELS = {s[0]: s[3] for s in SWITCHES}
 
 KINDS = {
     "sm": {"icon": "🎟️", "title": "Kupony SM", "items": "Kupon SM (50), vnum 80017 – wymienia się na Smocze Monety w ItemShopie"},
-    "sash": {"icon": "🧣", "title": "Delikatne Sukno (szarfy)", "items": "Delikatne Sukno, vnum 80019 (×2 do 49 poz. zabójcy, ×5 od 50, ×10 od 75; 10 sztuk + 80 000 Yang = szarfa u Uriela) zamiast szarfy +0; przy bossach także szarfa unikatowa +3 ze skrzyń bossów"},
+    "sash": {"icon": "🧣", "title": "Delikatne Sukno (szarfy)", "items": "Delikatne Sukno, vnum 80019 (×2 do 49 poz. zabójcy, ×5 od 50, ×10 od 75; 10 sztuk + 80 000 Yang = szarfa u Theowahdana) zamiast szarfy +0; przy bossach także szarfa unikatowa +3 ze skrzyń bossów"},
     "cor": {"icon": "🐉", "title": "Cor Draconis", "items": "Cor Draconis (surowy), vnum 50255 – kamień do alchemii"},
 }
 

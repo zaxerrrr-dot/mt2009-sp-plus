@@ -1341,6 +1341,24 @@ RUN set -eu; M=/opt/metin2/share/locale/poland/map/Metin2_map_CapeDragonHead; A=
  && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]1010[13][[:blank:]]*$' "$M/npc.txt")" = 2 \
  && rm -rf /tmp/cape301-add \
  && echo "share: Przyladek Smoczego Ognia (301: server_attr of the GF terrain, npc.txt with the 303/304 portals)"
+# MT2009_PLUS_TEOWADEN_V1 (share; the owner, 14 October 2026: "dodaj w koncu Teowadena w miejscach z wiki, ze WSZYSTKIMI
+# opcjami szarf przeniesionymi z Uriela"): Theowahdan (60003, scholar_beige_M1 - the row is mariadb/playerbot/
+# yohara_maps.sql, the model is in the client's Yohara pack, tools/ymaps) where the pl-wiki's "Theowahdan" puts him:
+# Yongan 732,480, Joan 681,717, Pyungmoo 413,539 and Przyladek Smoczego Ognia 563,1167 (after the cape's npc.txt above);
+# Dongan's 588,761 is in its npc.txt (yohara_maps). Every cell measured walkable on the server_attr, away from the other
+# NPCs. Every sash option is his now (quest/acce_costume_uriel.quest: Wytwarzanie, Polacz Szarfy, Przechwyc bonus) and
+# the bots' sash errand walks to these cells (playerbot_sash.h GetPlayerBotTheowahdan). One line on each map.
+RUN set -eu; L=/opt/metin2/share/locale/poland/map \
+ && for p in "metin2_map_a1 732 480 5" "metin2_map_b1 681 717 5" "metin2_map_c1 413 539 5" "Metin2_map_CapeDragonHead 563 1167 5"; do \
+      set -- $p; F="$L/$1/npc.txt"; \
+      test -f "$F" || { echo "FATAL: Theowahdan: no $F"; exit 1; }; \
+      { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; }; \
+      grep -q -E '^m[[:blank:]].*[[:blank:]]60003[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t60003\r\n' "$2" "$3" "$4" >> "$F"; \
+      { test "$(grep -c -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]60003[[:space:]]*\$" "$F")" = 1 \
+        && test "$(grep -c -E '[[:blank:]]60003[[:space:]]*$' "$F")" = 1; } \
+        || { echo "FATAL: Theowahdan on $1"; exit 1; }; \
+    done \
+ && echo "share: Theowahdan (60003) in Yongan, Joan, Pyungmoo and on Przyladek Smoczego Ognia - the sash NPC"
 # MT2009_PLUS_YOHARA_MAPS302_V1 (share): Zbocze Gautama (302, metin2_map_dawnmistwood), Nefrytowa Zatoka (303,
 # metin2_map_BayBlackSand) and Gromiste Gory (304, metin2_map_Mt_Thunder) - the client gets the three maps from the
 # GF 26.1.11 client (client-patches/client-2.0.30/tools/maps302), so each server_attr becomes Owsap's, which matches
@@ -1692,7 +1710,7 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua 
 
 # Uriel's "Wytwarzanie" window (MT2009_PLUS_SASH_CLOTH_V1, the owner, 6 October):
 # Metins and bosses drop Delikatne Sukno (80019) in place of the +0 sash
-# (server-patches/raremobrules) and Uriel (20011) turns ten of them and 80 000
+# (server-patches/raremobrules) and Theowahdan (60003; Uriel 20011 until MT2009_PLUS_TEOWADEN_V1) turns ten of them and 80 000
 # yang into the plain sash, 85001 at 100% - crafting window 111 (CRAFTING_URIEL),
 # which quest/acce_costume_uriel.quest opens, listing recipe 85001 of
 # world.crafting_proto (mariadb/playerbot/apply.sh). Inside the crafting_data
