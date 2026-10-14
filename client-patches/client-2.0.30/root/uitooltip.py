@@ -1004,10 +1004,15 @@ class ItemToolTip(ToolTip):
 
 		return "\n".join(formatted_lines)
 
-	def __AppendAttributeInformation(self, attrSlot, itemAbsChance = 0, slotCount = player.ATTRIBUTE_SLOT_MAX_NUM): # MT2009_PLUS_SOULSTONE9_V1: all 7 bonuses (Digi Rasta)
+	def __AppendAttributeInformation(self, attrSlot, itemAbsChance = 0, slotCount = player.ATTRIBUTE_SLOT_MAX_NUM, rareFirst = False): # MT2009_PLUS_SOULSTONE9_V1: all 7 bonuses (Digi Rasta)
 		if 0 != attrSlot:
 			# MT2009_PLUS_SEONHAE_V1: never past the list a caller gave
-			for i in xrange(min(slotCount, len(attrSlot))):
+			order = range(min(slotCount, len(attrSlot)))
+			if rareFirst:
+				# MT2009_PLUS_YOHARA_TOOLTIP_ORDER_V1 (the owner, 14 October): a Yohara item's own lines (slots 6-7:
+				# Precyzja / Wola SungMa of a jade bracelet, a glove's Will) before the five added bonuses.
+				order = [i for i in order if i >= player.ATTRIBUTE_SLOT_RARE_START] + [i for i in order if i < player.ATTRIBUTE_SLOT_RARE_START]
+			for i in order:
 				type = RareAttrType(i, attrSlot[i][0])
 				value = attrSlot[i][1]
 
@@ -1285,7 +1290,8 @@ class ItemToolTip(ToolTip):
 			# the five (they were merged into the item's base values here).
 			self.__AppendAffectInformation()
 			self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
-			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
+			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM,
+					yoharagear.IsJadeBracelet(itemVnum) or yoharagear.IsGlove(itemVnum))
 			self.__AppendSeonHaeHint(itemVnum, attrSlot)
 
 			self.AppendWearableInformation()
@@ -1313,7 +1319,8 @@ class ItemToolTip(ToolTip):
 			self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
 			# MT2009_PLUS_SEONHAE_V1: armour and jewellery showed only the five
 			# bonuses - the 6th and 7th were never drawn.
-			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
+			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM,
+					yoharagear.IsJadeBracelet(itemVnum) or yoharagear.IsGlove(itemVnum))
 			self.__AppendSeonHaeHint(itemVnum, attrSlot)
 
 			self.AppendWearableInformation()
