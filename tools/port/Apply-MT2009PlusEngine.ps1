@@ -97,6 +97,7 @@ param(
 #   Przebudzeni bossowie char_battle.cpp (MT2009_PLUS_YOHARA_PB_V1; server-patches/przebudzeni)
 #   Umiejetnosci 9.    common skill_length.h, char_skill.cpp, char_battle.cpp, char_affect.cpp,
 #                      constants.cpp, battle.cpp (MT2009_PLUS_SKILL9_V1; server-patches/skill9)
+#   Szczelina Czasu    char_battle.cpp (MT2009_PLUS_YOHARA_CRACK_V1; server-patches/szczelina, after skill9)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1402,6 +1403,19 @@ if ((Test-Path -LiteralPath $skill9Apply -PathType Leaf) -and
     if ($skill9Result.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} 9th skill edit(s).' -f $skill9Result.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Szczelina Czasu (server-patches/szczelina, MT2009_PLUS_YOHARA_CRACK_V1): nothing drops in the Time Rift dungeons (map
+# 404, the pl-wiki: "potwory nie daja dropu") but the yang of a mob_proto row that has it (Jotun Thrym (SZC)) -
+# CHARACTER::Reward in char_battle.cpp. The dungeon itself is quests (szczelina_czasu, jotun_szc).
+$szczelinaApply = Join-Path $repo 'server-patches/szczelina/Apply-SzczelinaPatch.ps1'
+if ((Test-Path -LiteralPath $szczelinaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $szczelinaResult = & $szczelinaApply -SourceDir $engineGameSource
+    if ($szczelinaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Time Rift edit(s).' -f $szczelinaResult.Applied) -ForegroundColor DarkGray
     }
 }
 

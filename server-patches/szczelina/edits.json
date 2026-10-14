@@ -1,0 +1,20 @@
+[
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_YOHARA_CRACK_V1 (no drop)",
+  "old": "void CHARACTER::Reward(bool bItemDrop)\n",
+  "new": "// MT2009_PLUS_YOHARA_CRACK_V1 (no drop): Zaklety Las (SZC) - the Time Rift dungeons (map 404 and its instances\n// 4040000+; server-patches/szczelina). The pl-wiki: \"W tej lokacji potwory nie daja dropu ... ale w zamian daja\n// wiecej Doswiadczenia\" - whatever dies there drops no item (its tables, the world's extras, the awakening stone,\n// the talisman, the rank fruits, the quest drops) and no yang but its own: Jotun Thrym (SZC) has gold_min/gold_max\n// in mob_proto (the tr-wiki's 10-27 million), the other monsters none. The experience, the quests' kills, the cards'\n// missions and the Battle Pass stay.\nstatic bool Mt2009PlusTimeRiftNoDrop(LPCHARACTER victim)\n{\n\tif (!victim || victim->IsPC())\n\t\treturn false;\n\tconst long mapIndex = victim->GetMapIndex();\n\tconst long base = mapIndex >= 10000 ? mapIndex / 10000 : mapIndex;\n\treturn base == 404;\n}\n\nvoid CHARACTER::Reward(bool bItemDrop)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_YOHARA_CRACK_V1 (rank fruits)",
+  "old": "\t\t{ void RankPointsOnKill(LPCHARACTER, LPCHARACTER); RankPointsOnKill(pkQuestKiller, this); }\n",
+  "new": "\t\t// MT2009_PLUS_YOHARA_CRACK_V1 (rank fruits): none from the Time Rift dungeons (Mt2009PlusTimeRiftNoDrop).\n\t\tif (!Mt2009PlusTimeRiftNoDrop(this))\n\t\t{ void RankPointsOnKill(LPCHARACTER, LPCHARACTER); RankPointsOnKill(pkQuestKiller, this); }\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_YOHARA_CRACK_V1 (items)",
+  "old": "\t\tsys_log(0, \"Drop money : Attacker %s\", pkAttacker->GetName());\n\tRewardGold(pkAttacker);\n",
+  "new": "\t\tsys_log(0, \"Drop money : Attacker %s\", pkAttacker->GetName());\n\tRewardGold(pkAttacker);\n\n\t// MT2009_PLUS_YOHARA_CRACK_V1 (items): nothing more in the Time Rift dungeons - the yang above is the\n\t// mob_proto's own (Jotun Thrym (SZC) only).\n\tif (Mt2009PlusTimeRiftNoDrop(this))\n\t\treturn;\n"
+ }
+]
