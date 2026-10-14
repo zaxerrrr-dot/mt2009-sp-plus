@@ -4,9 +4,9 @@
 // The migrator (mariadb/playerbot/apply.sh) switches world.item_attr and the monsters' elements and writes the
 // world event flag m2_bonus_global (1 = global) at every start; the cores read it here:
 //   * BonusModeElementResist - a player's element resistance against a monster of that element
-//     (playerbot_elements.cpp): mt2009 takes its full percent off (cap 80%, Digi Rasta's rule); global, as the
-//     original game's code (battle.cpp's commented apply_elemental_resistances, which Tieru switched on): 30% of
-//     it - 15% resistance = 4.5% less damage;
+//     (playerbot_elements.cpp): in BOTH modes (the owner, 14 October 2026) as the original game's code
+//     (battle.cpp's commented apply_elemental_resistances, which Tieru and Ameria switched on): 30% of it -
+//     15% resistance = 4.5% less damage (was the full percent, cap 80%, in mt2009);
 //   * BonusModeItemDropBonus - the double-item chance line (POINT_ITEM_DROP_BONUS of a bracelet or earrings) adds
 //     to the drop chance as the thief's gloves and the premium do (item_manager.cpp, Tieru's 2.2.31); 0 in mt2009;
 //   * BonusModeAttrValue - one item_attr row holds one set of values for every item: global gives the armour's
@@ -28,7 +28,7 @@ int BonusModeElementResist(int resist)
 {
 	if (resist <= 0)
 		return 0;
-	return BonusModeGlobal() ? resist * 30 / 100 : resist;
+	return resist * 30 / 100;	// MT2009_PLUS_ELEMENT_RESIST_30_V1: both modes
 }
 
 int BonusModeItemDropBonus(LPCHARACTER killer)
