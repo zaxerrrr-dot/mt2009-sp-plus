@@ -2653,6 +2653,9 @@ bool CPythonNetworkStream::RecvExchangePacket()
 					CPythonExchange::Instance().SetItemMetinSocketToSelf(iSlotIndex, i, exchange_packet.alValues[i]);
 				for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
 					CPythonExchange::Instance().SetItemAttributeToSelf(iSlotIndex, j, exchange_packet.aAttr[j].bType, exchange_packet.aAttr[j].sValue);
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+				{ void Mt2009ChangeLook_SetExchangeItem(bool bSelf, int iPos, DWORD dwLook); Mt2009ChangeLook_SetExchangeItem(true, iSlotIndex, exchange_packet.dwTransmutation); } // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 
 				PyObject* args = PyTuple_New(3);
 				PyTuple_SetItem(args, 0, PyInt_FromLong(exchange_packet.arg4.window_type));
@@ -2668,6 +2671,9 @@ bool CPythonNetworkStream::RecvExchangePacket()
 					CPythonExchange::Instance().SetItemMetinSocketToTarget(iSlotIndex, i, exchange_packet.alValues[i]);
 				for (int j = 0; j < ITEM_ATTRIBUTE_SLOT_MAX_NUM; ++j)
 					CPythonExchange::Instance().SetItemAttributeToTarget(iSlotIndex, j, exchange_packet.aAttr[j].bType, exchange_packet.aAttr[j].sValue);
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+				{ void Mt2009ChangeLook_SetExchangeItem(bool bSelf, int iPos, DWORD dwLook); Mt2009ChangeLook_SetExchangeItem(false, iSlotIndex, exchange_packet.dwTransmutation); } // MT2009_PLUS_CHANGE_LOOK_V1
+#endif
 			}
 
 			__RefreshExchangeWindow();

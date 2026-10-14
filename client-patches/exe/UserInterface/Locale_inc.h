@@ -231,5 +231,13 @@
 // the blow, the text tail higher, skill range -200 like the other huge races) and on metin2_defensewave a targeted
 // skill on a huge race (or with IGNORE_BLOCK) skips the 'target stands in a block' check - the Hydra is in the sea.
 #define ENABLE_MT2009_SHIP_DEFENSE_CLIENT
+// MT2009_PLUS_CHANGE_LOOK_V1 (Transmutacja, Owsap __CHANGE_LOOK_SYSTEM__): the look of an item (dwTransmutation at the
+// end of the item set / update / safebox / exchange packets and of ikashop::TPlayerItem, the server's
+// server-patches/transmutacja), TItemData::dwTransmutationVnum, player.GetChangeLookVnum and the safebox /
+// exchange getters (UserInterface/Mt2009ChangeLook.cpp). The Ikarus shop's own lines of this name come with it.
+#define ENABLE_CHANGELOOK_SYSTEM
+// MT2009_PLUS_HIDE_COSTUME_V1 (Owsap __HIDE_COSTUME_SYSTEM__): app.ENABLE_HIDE_COSTUME_SYSTEM for root's costume
+// window (the server hides the parts, server-patches/ukryjkostium).
+#define ENABLE_HIDE_COSTUME_SYSTEM
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

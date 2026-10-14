@@ -1604,6 +1604,9 @@ typedef struct packet_set_item
 	ITEM_COUNT		count;
 	long		alSockets[ITEM_SOCKET_SLOT_MAX_NUM];
     TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	DWORD		dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1: the server's last field
+#endif
 } TPacketGCItemSet;
 
 typedef struct packet_set_item2
@@ -1617,6 +1620,9 @@ typedef struct packet_set_item2
 	bool		highlight;
 	long		alSockets[ITEM_SOCKET_SLOT_MAX_NUM];
     TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	DWORD		dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1: the server's last field
+#endif
 } TPacketGCItemSet2;
 
 typedef struct packet_item_del
@@ -1642,6 +1648,9 @@ typedef struct packet_update_item
 	ITEM_COUNT		count;
 	long		alSockets[ITEM_SOCKET_SLOT_MAX_NUM];
     TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	DWORD		dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1: the server's last field
+#endif
 } TPacketGCItemUpdate;
 
 typedef struct packet_ground_add_item
@@ -1842,6 +1851,9 @@ typedef struct packet_exchange
 	TItemPos	arg4;
 	long		alValues[ITEM_SOCKET_SLOT_MAX_NUM];
     TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+	DWORD		dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1: the server's last field
+#endif
 } TPacketGCExchange;
 
 enum
@@ -2816,6 +2828,9 @@ namespace ikashop
 		long alSockets[ITEM_SOCKET_SLOT_MAX_NUM];
 		TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
 		DWORD owner;
+#ifdef ENABLE_CHANGELOOK_SYSTEM
+		DWORD dwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1: the server's TPlayerItem (common/tables.h) ends with the look
+#endif
 	} TPlayerItem;
 
 	//patch 08-03-2020
