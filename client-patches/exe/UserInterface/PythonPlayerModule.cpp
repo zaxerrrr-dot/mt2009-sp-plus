@@ -1707,7 +1707,13 @@ PyObject * playerCanAttachMetin(PyObject* poSelf, PyObject* poArgs)
 	for (int i = 0; i < ITEM_SOCKET_SLOT_MAX_NUM; ++i)
 	{
 		DWORD dwSocketType = CPythonPlayer::Instance().GetItemMetinSocket(TargetSlotIndex, i);
+#ifdef ENABLE_MT2009_YOHARA_EXE2
+		// MT2009_PLUS_YOHARA_EXE2_V1: a Kamien (Mocy) Demonow takes an empty socket of a glove like a spirit stone (the wear flags above:
+		// WEARABLE_GLOVE on both; the server rolls its Will - server-patches/rekawice)
+		if (METIN_NORMAL == iSubType || METIN_SUNGMA == iSubType)
+#else
 		if (METIN_NORMAL == iSubType)
+#endif
 		{
 			if (CPythonPlayer::METIN_SOCKET_TYPE_SILVER == dwSocketType ||
 				CPythonPlayer::METIN_SOCKET_TYPE_GOLD == dwSocketType)

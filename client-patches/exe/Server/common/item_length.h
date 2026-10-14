@@ -102,6 +102,7 @@ enum EMetinSubTypes
 {
 	METIN_NORMAL,
 	METIN_GOLD,
+	METIN_SUNGMA, // MT2009_PLUS_YOHARA_EXE2_V1 (metin): Kamien (Mocy) Demonow - a glove's stone (the server's number, server-patches/rekawice)
 };
 
 enum EWeaponSubTypes

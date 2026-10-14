@@ -305,6 +305,11 @@ const bool CPlayerSettingsModule::LoadGameEffect()
         {FLY_CHAIN_LIGHTNING, pkFly.INDEX_FLY_TYPE_NORMAL, "d:/ymir work/pc/shaman/effect/pokroe.msf"},
         {FLY_HP_SMALL, pkFly.INDEX_FLY_TYPE_NORMAL, "d:/ymir work/effect/etc/gathering/ga_piece_red_smallest.msf"},
         {FLY_SKILL_FLAME_SPIRIT, pkFly.INDEX_FLY_TYPE_AUTO_FIRE, "d:/ymir work/pc/sura/effect/muyeong_fly.msf"},
+#ifdef ENABLE_MT2009_YOHARA_EXE2
+        // MT2009_PLUS_YOHARA_EXE2_V1: champion experience - GF's orange ga_piece_orange_small.msf with its two .mse, under its own folder
+        // (client-2.0.30/atlas/d_/ymir work/effect/etc/conqueror_exp, root pack)
+        {FLY_CONQUEROR_EXP, pkFly.INDEX_FLY_TYPE_NORMAL, "d:/ymir work/effect/etc/conqueror_exp/ga_piece_orange_small.msf"},
+#endif
     };
 
     std::vector<const char*> v_vecEmoticonString = {

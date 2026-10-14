@@ -389,3 +389,29 @@ Zbudowane 14.10.2026 (`build.sh msvc --smoke`, MSVC 14.44; źródła: client-bui
 `/opt/metin2/cache/yohara/yskill9-exe/Source`): `metin2client.exe` 13 700 608 B, sha256
 `f3679ead1079e00f4b02d20f68c6466d3d90d9ae2a91b335dd5a9273f273aebf` (`/opt/metin2/cache/yohara/yskill9-exe/out/`); smoke
 test dochodzi do okna logowania.
+
+## Druga runda exe Yohary – Rękawice Sung Ma, Precyzja, procent Woli, exp Czempiona (`MT2009_PLUS_YOHARA_EXE2_V1`, `ENABLE_MT2009_YOHARA_EXE2`)
+
+Serwer: `server-patches/rekawice`, `precyzja`, `obreczjadeitu2` (+ `playerbot_yohara_gear.cpp`). **Protokół bez zmian**
+– pakiet punktów dalej 193 punkty, bramka wersji 3.0 (1010300) zostaje: stary exe 3.0 pomija nowe zmiany punktu
+(typ ≥ 193), nowe miejsce rękawic dostaje dopiero z tym exe (root sprawdza `app.ENABLE_GLOVE_SYSTEM`/`item.EQUIPMENT_GLOVE`).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_GLOVE_SYSTEM` (było wyłączone: `item.EQUIPMENT_GLOVE` = `c_Equipment_Start + WEAR_GLOVE` 26, `item.ARMOR_GLOVE`, `item.WEARABLE_GLOVE`, `app.ENABLE_GLOVE_SYSTEM` = 1), `#define ENABLE_MT2009_YOHARA_EXE2` |
+| `Server/common/length.h` | `POINT_PACKET_NUM` (193) za punktami Czempiona, potem `POINT_SUNGMA_PER_STR/HP/MOVE/IMMUNE` 193–196 i `POINT_HIT_PCT` 197 – `POINT_MAX_NUM` 198 (serwer tak samo); `FLY_CONQUEROR_EXP = 30` |
+| `Server/common/item_length.h` | `METIN_SUNGMA` (2) – Kamień (Mocy) Demonów |
+| `UserInterface/Packet.h` | `TPacketGCPoints::points[POINT_PACKET_NUM]` (773 B jak dotąd) |
+| `UserInterface/PythonNetworkStreamPhaseLoading.cpp` (**nowy w nakładce**, z client-build) | `__RecvPlayerPoints` czyta 193 punkty pakietu |
+| `UserInterface/PythonPlayerModule.cpp` | `player.CanAttachMetin`: `METIN_SUNGMA` jak zwykły kamień (puste gniazdo; pasujące flagi `WEARABLE_GLOVE`) |
+| `UserInterface/PythonPlayerSettingsModule.cpp` | `FLY_CONQUEROR_EXP` → `d:/ymir work/effect/etc/conqueror_exp/ga_piece_orange_small.msf` (GF, root `client-2.0.30/atlas/d_`) |
+| `UserInterface/Mt2009Champion.cpp` | `static_assert` nowych numerów (193/196/197/198, `METIN_SUNGMA` 2, `FLY_CONQUEROR_EXP` 30, `WEAR_GLOVE` 26, `ARMOR_GLOVE` 8, `WEARABLE_GLOVE`); `player.SUNGMA_PER_STR/HP/MOVE/IMMUNE`, `player.HIT_PCT` (+ `player.POINT_*`), `item.APPLY_SUNGMA_PER_*`, `item.APPLY_HIT_PCT`, `item.METIN_SUNGMA`, `effect.FLY_CONQUEROR_EXP`, `app.MT2009_YOHARA_EXE2` |
+
+Root (`client-2.0.30/root`): miejsce rękawic w `uiscript/inventorywindow.py` (prawa kolumna pod naszyjnikiem; przycisk
+Smoczych Kamieni pomniejszony `wndMgr.SetButtonScale` między strzałą a kolczykami – tylko z tym exe), `uiinventory.py`;
+`uitooltip.py` + `yoharagear.py` (kamienie w rękawicach, kamień Demonów, gniazda Obręczy Jadeitu, nazwa „Rękawice”);
+`uitaskbar.py` (nowy w tym katalogu, z paczki root: exp Czempiona w tych samych czterech kulach, niebieskich –
+`mt2009_conqueror_exp_point.tga` wycięty z `taskbar.tga` GF); `sungmastate.py` + `game.py` (ikony Sung Ma na pasku
+afektów: buff na mapie Sung Ma, debuff każdej statystyki poniżej wymagań i za małej Precyzji – `.sub` GF z
+`skill9_common.dds` paczki `yskill9`, bez niej ikony okna postaci); `uicharacter.py` (statystyki z procentem Woli);
+`localeinfo_point.py` (nazwy 193–197); `constinfo.py` (jadeit → Obręcz Jadeitu).
