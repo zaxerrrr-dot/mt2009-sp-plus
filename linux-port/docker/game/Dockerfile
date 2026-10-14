@@ -2293,6 +2293,24 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps4-add \
  && rm -rf "$A" \
  && echo "share: Yohara - Rozpadlina Dusz (389): GF terrain, Ameria's bosses / Metins / NPCs, our monsters, groups, drops, the portals 10142 (Wawoz) / 10201 (Schronienie)"
 
+# MT2009_PLUS_YOHARA_MOTIONS_V1 (share): the server's motions of the Yohara monsters (the owner's test list of
+# 14 October, item 7 - "GetMoveMotionSpeed: cannot find motion" for Myr, Troll Zolnierz and the rest): the core
+# times moves and attacks by data/monster/<mob_proto folder>/motlist.txt and its .msa files. 105 folders the image
+# had none of (Seoganland, Namgan, Yilad, Wawoz, Schronienie, Rozpadlina, Swiatynia Wezy, Krolestwo Zywiolow,
+# Jaskinie Gnolli, Wieza Sung Mahi, the awakened bosses' / Iluzja / Szczelina monsters ...), Owsap's official files
+# (tools/yohara_motions/gen_ymotions.py writes ymotions/: motlist.txt with two official slips fixed, the .msa).
+# After every Yohara step; a folder there already is replaced by this one. The NPC historian walks in place (no
+# Accumulation in its run.msa, as official).
+COPY ymotions/ /tmp/ymotions-add/
+RUN set -eu; A=/tmp/ymotions-add; D=/opt/metin2/share/data/monster \
+ && mkdir -p "$D" \
+ && n=0 && for m in "$A"/data/monster/*; do rm -rf "$D/$(basename "$m")"; cp -a "$m" "$D/"; n=$((n + 1)); done \
+ && test "$n" = 105 \
+ && for f in east_earth_knight east_earth_soldier2 east_earth_magic east_gnoll_soldier snakevalley_pawn smhtower_boss trent_soldier; do test -s "$D/$f/motlist.txt"; test -s "$D/$f/run.msa"; done \
+ && test -z "$(for m in "$A"/data/monster/*/run.msa; do case "$m" in */historian/*) continue;; esac; grep -q -E '^Accumulation[[:blank:]]+[-0-9.]+[[:blank:]]+-[0-9]' "$m" || echo "$m"; done)" \
+ && rm -rf "$A" \
+ && echo "share: Yohara monster motions - $n folders (MT2009_PLUS_YOHARA_MOTIONS_V1)"
+
 # MT2009_PLUS_BELT_MATS_V1 (the owner, 7 October): the belt materials drop. After every other
 # mob_drop_item.txt append (dungeons, Arezzo, the drop edit), so it sees all of their groups:
 #  * mob_drop_item.beltmats.append.txt - Beran-Setaou's gems (special group 951103, a drop group
