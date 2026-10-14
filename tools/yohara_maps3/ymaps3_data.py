@@ -92,8 +92,7 @@ MOBS = {
     3987: ('Duch Mrozu', ICE, 'zywioly'),
     3988: ('Duch Elektro', ELEC, 'zywioly'),
     3989: ('Duch Powietrza', WIND, 'zywioly'),
-    3990: ('Duch Kamienia', EARTH, 'zywioly'),     # wiki: Wiatr (an obvious copy slip - every other spirit is its
-                                                   # area's element); Owsap Earth 55 kept
+    3990: ('Duch Kamienia', WIND, 'zywioly'),      # wiki: Wiatr - the owner (14 October): as the wiki (Owsap: Earth 55)
     3991: ('Duch Półmroku', DARK, 'zywioly'),
     3992: ('Władca Płomieni', FIRE, 'zywioly'),
     3993: ('Władca Lodowca', ICE, 'zywioly'),
