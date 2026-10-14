@@ -86,6 +86,11 @@ MOBS.update({
     7600: ('Kamień Duchowy P. Wieży', 0, 'wieza'),           # "Zniszcz prawidlowy kamien metin"
 })
 
+# AI flags of ours (the quest drives these pieces): the chess board's pieces stand on their squares and wait to be
+# attacked (Owsap: AGGR,BERSERK - they would all charge at once); the Demon Stone's archers stand on the walls and
+# wake when their stone is hit (the wiki) - the quest swaps them for aggressive ones then (group 9268)
+AI_OVERRIDE = dict([(v, 'NOMOVE') for v in range(7615, 7621)] + [(7595, 'NOMOVE')])
+
 # -- NPCs (our NPC numbers, Owsap's folder; Owsap's NPC rows lack a column - gen_ymaps_sql.npc_row) ---------------
 NPCS = {
     20837: 'Wyjście',                       # Jaskinie Gnolli 1 (205,109) - back to Dongan (quest)

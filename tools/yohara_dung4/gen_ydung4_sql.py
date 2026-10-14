@@ -70,6 +70,8 @@ def main():
         r = rows[v]
         assert r['Type'] in ('MONSTER', 'STONE'), (v, r['Type'])
         t = row_of(r, en.get(v) or ascii_pl(pl), pl)
+        if v in D.AI_OVERRIDE:
+            t = t[:8] + (q(D.AI_OVERRIDE[v]),) + t[9:]
         lines.append(t)
     for v in sorted(D.NPCS):
         pl = D.NPCS[v]

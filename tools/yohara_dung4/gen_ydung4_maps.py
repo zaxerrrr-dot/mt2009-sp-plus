@@ -67,6 +67,8 @@ for _k, (_first, _el, _n) in enumerate(D.TOWER_ELEMENTS):
     GROUPS[9250 + 3 * _k] = ('Wieza_%s_Fala' % _n, [_first + 2, _first, _first, _first + 1, _first + 1])
     GROUPS[9251 + 3 * _k] = ('Wieza_%s_Magowie' % _n, [_first + 3, _first + 3, _first, _first + 1])
     GROUPS[9252 + 3 * _k] = ('Wieza_%s_Rzeznik' % _n, [_first + 4, _first + 2, _first + 1, _first])
+# the Demon Stone's archers, woken (wieza_sung_mahi: the stone was hit - aggressive in their place)
+GROUPS[9268] = ('Wieza_Lucznik', [7595])
 # the level of each cave's groups (Owsap's points keep their level's groups); the share of each (weights)
 LEVEL_GROUPS = {382: [(9230, 4), (9231, 3), (9232, 2), (9233, 1)],
                 383: [(9234, 3), (9235, 2), (9236, 2), (9237, 1), (9238, 3), (9239, 2), (9240, 1)],

@@ -1,0 +1,1147 @@
+-- MT2009_PLUS_YOHARA_DUNG4_V1: Wie¿a Sung Mahi (386 hala wejœciowa metin2_map_smhdungeon_01, 387 wie¿a
+-- metin2_map_smhdungeon_02) - wiki "Wie¿a Sung Mahi" (PL), "Sung Mahi'nin Cehennem Kulesi" (TR); przebieg piêter
+-- przeniesiony z questów Amerii (sungMahi_zone / sungMahi_manager, sale i punkty mapy), liczby z wiki.
+--   * wejœcie: Wejœcie Piekielnej Wie¿y (4019) w Seoganland (76,1459) prowadzi do hali (od 120 poziomu i 1. Poziomu
+--     Czempiona); w hali portal Piek. Wie¿a Sunga Mahi (4020): wybór odblokowanego piêtra (po kolei, 1-50),
+--     Sztandar Czaszki (70401) za ka¿d¹ wspinaczkê, sam albo z dru¿yn¹ (bez wymogu dru¿yny); Wyjœcie (10126) wraca
+--     do Seoganland; Handlarka (9014) stoi w hali (jej towary - mikstury wie¿y - przyjd¹ z kolejn¹ aktualizacj¹);
+--   * piêtro = trzy etapy: 1. fale potworów (losowo 2-4) - zabij wszystkie, 4 min; 2. jedna z siedmiu misji
+--     (losowo): kamieñ demonów z ³ucznikami, prawid³owy kamieñ metin, unikanie ataków (Niszczyciele wybuchaj¹:
+--     pierwszy wybuch zostawia 1% P¯, drugi zabija), szachy potworów, zagadkowy klucz, pieczêcie, kl¹twa z
+--     antidotum; 3. fale (4 + piêtro/10) i boss piêtra - 8 min, co 20 s ga³êzie z ziemi (pêtaj¹; na 10., 20. ...
+--     50. piêtrze podwójne obra¿enia); po bossie schody i portal na nastêpne piêtro - wspinaczka trwa, póki
+--     zd¹¿acie; po czasie etapu - powrót do hali;
+--   * ¿ywio³ piêtra: ogieñ, lód, b³yskawice, wiatr, ziemia, mrok po kolei, co 10. piêtro wszystkie; bossowie:
+--     Wó¿bit (¿ywio³), co 5. piêtro Wielki Mistrz, co 10. jeden z Ksi¹¿¹t / Czarnoksiê¿ników;
+--   * ka¿dy etap: losowy bonus albo kl¹twa wiki (afekt 1847; "Umiejêtnoœci s¹ zablokowane" - afekt 1849, ³atka
+--     server-patches/wiezasm); wymagana Wola SungMa piêtra co piêæ piêter (35/25/35/55 ... 70/58/70/90) -
+--     d.set_sungma (nak³adka playerbot_champion.cpp);
+--   * nagrody piêter z tabeli wiki - raz na sezon (sezon = miesi¹c; nowy miesi¹c zeruje odblokowane piêtra,
+--     nagrody i czasy); najlepszy czas piêtra widaæ przy portalu; panel lochów (wieza_smh).
+-- Pominiête (brak systemu): mikstury wie¿y i zakaz innych przedmiotów, Skrzynka Pocztowa, ranking sezonu ze
+-- Skrzyniami Rankingu Wie¿y, z nagród: Ma³e B³ogos³awieñstwo, B³ogos³awieñstwo, Spirala Czasu, Akcja Piekielnej
+-- Wie¿y; ³ucznicy budz¹ siê, gdy kamieñ demonów straci P¯ (nie od pierwszego ciosu); Niszczyciele wybuchaj¹, gdy
+-- padn¹. Ga³êzie i kl¹twa rani¹ przez d.zone_attack / d.zone_hurt (server-patches/strefy), gdy silnik je ma -
+-- inaczej "stoisz po 3 s w tym samym miejscu = trafienie" i nigdy do zera P¯.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest wieza_sung_mahi begin
+	state start begin
+		function cfg()
+			return {
+				hall_map = 386, hall_x = 9216, hall_y = 6144, hall_town = {122, 173},
+				map = 387, base_x = 9984, base_y = 6144,
+				seogan = {11520 + 102, 4352 + 1457},          -- obok Wejœcia Piekielnej Wie¿y (76,1459)
+				min_level = 120, near = 30, banner = 70401, max_floor = 50,
+				-- sale (punkty Amerii na tej samej mapie)
+				room_a = {402, 463}, spawn_a = {{407, 434}, {422, 411}}, portal_a = {447, 388},
+				room_b = {448, 162}, spawn_b = {{447, 135}, {439, 122}, {455, 120}}, portal_b = {447, 93},
+				room_c = {91, 454}, portal_c = {92, 384},
+				stairs = {320, 348}, portal_s = {343, 293},
+				-- ¿ywio³y: pierwszy potwór zestawu (wilk) i nazwa
+				el = {{7550, "Ognia"}, {7557, "Lodu"}, {7564, "B³yskawicy"}, {7571, "Wiatru"}, {7578, "Ziemi"}, {7585, "Mroku"}},
+				-- Wola SungMa co piêæ piêter: SI£A, WIT, ODP, INT
+				sungma = {{35, 25, 35, 55}, {38, 27, 38, 60}, {42, 30, 42, 64}, {45, 33, 45, 67}, {48, 36, 48, 70},
+					{52, 40, 52, 73}, {56, 44, 56, 77}, {60, 48, 60, 81}, {65, 53, 65, 85}, {70, 58, 70, 90}},
+				fx_thorn = "d:/ymir work/effect/monster2/smh_circle_thorn.mse",
+				key = 70403, seal_stone = 70404, antidote = 70405,
+				affect_room = 1847, affect_root = 1848, affect_noskill = 1849,
+			}
+		end
+
+		-- nagrody piêter (wiki): {vnum, iloœæ}
+		function rewards(f)
+			local wzor, nieb, lil, czer, ziel = 31246, 31249, 31248, 31247, 31250
+			local r = {
+				[1] = {{70401, 1}},
+				[2] = {{wzor, 1}},
+				[3] = {{wzor, 2}},
+				[4] = {{72354, 1}, {wzor, 2}, {nieb, 1}},
+				[5] = {{50527, 1}, {50528, 3}, {50529, 3}},
+				[6] = {{72353, 1}, {31245, 2}, {wzor, 2}, {czer, 2}},
+				[7] = {{ziel, 1}, {wzor, 3}, {nieb, 3}, {lil, 3}},
+				[8] = {{wzor, 4}, {nieb, 4}, {lil, 4}},
+				[9] = {{72353, 2}, {50325, 1}, {wzor, 5}, {czer, 5}},
+				[10] = {{50527, 1}, {50528, 4}, {50529, 4}},
+				[11] = {{50325, 1}, {70401, 3}},
+				[12] = {{wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[13] = {{wzor, 10}, {ziel, 10}, {lil, 10}, {czer, 10}},
+				[14] = {{72354, 1}, {wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[15] = {{50527, 1}, {50528, 3}, {50529, 3}},
+				[16] = {{72353, 3}, {50325, 1}, {76029, 1}, {100700, 1}, {50255, 1}},
+				[17] = {{wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[18] = {{wzor, 10}, {ziel, 10}, {lil, 10}, {czer, 10}},
+				[19] = {{72354, 2}, {wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[20] = {{50527, 1}, {50528, 5}, {50529, 5}},
+				[21] = {{50325, 1}, {70401, 5}},
+				[22] = {{31251, 2}, {31252, 2}},
+				[23] = {{31251, 2}, {31252, 2}},
+				[24] = {{72354, 1}, {31251, 3}, {31252, 3}},
+				[25] = {{50527, 1}, {50528, 5}, {50529, 5}},
+				[26] = {{72353, 3}, {50325, 1}, {76029, 1}, {100700, 1}, {50255, 2}},
+				[27] = {{wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[28] = {{wzor, 10}, {ziel, 10}, {lil, 10}, {czer, 10}},
+				[29] = {{72354, 3}, {wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[30] = {{50527, 1}, {50528, 6}, {50529, 6}},
+				[31] = {{50325, 1}, {70401, 10}},
+				[32] = {{31251, 3}, {31252, 3}},
+				[33] = {{31251, 3}, {31252, 3}},
+				[34] = {{72354, 1}, {31251, 3}, {31252, 3}},
+				[35] = {{50527, 1}, {50528, 8}, {50529, 8}},
+				[36] = {{72353, 3}, {50325, 1}, {76029, 2}, {100700, 1}, {50255, 3}},
+				[37] = {{wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[38] = {{wzor, 10}, {ziel, 10}, {lil, 10}, {czer, 10}},
+				[39] = {{72354, 4}, {wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[40] = {{50527, 1}, {50528, 9}, {50529, 9}},
+				[41] = {{50325, 1}, {70401, 15}},
+				[42] = {{31251, 5}, {31252, 5}},
+				[43] = {{31251, 5}, {31252, 5}},
+				[44] = {{72354, 4}, {31251, 5}, {31252, 5}},
+				[45] = {{50527, 2}, {50528, 10}, {50529, 10}, {30618, 1}},
+				[46] = {{72353, 3}, {50325, 1}, {76029, 3}, {100700, 1}, {50255, 5}},
+				[47] = {{wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[48] = {{wzor, 10}, {ziel, 10}, {lil, 10}, {czer, 10}},
+				[49] = {{72354, 5}, {wzor, 10}, {nieb, 10}, {lil, 10}, {czer, 10}},
+				[50] = {{50527, 3}, {50528, 10}, {50529, 10}, {31225, 1}},
+			}
+			return r[f] or {}
+		end
+
+		-- bonusy i kl¹twy etapu (wiki): {tekst, {{punkt, wartoœæ}, ...}} - punkt 0: blokada umiejêtnoœci
+		function buffs()
+			return {
+				{"Wartoœæ Ataku +200", {{95, 200}}},
+				{"Odpornoœæ na Omdlenia i Spowolnienia", {{88, 1}, {89, 1}}},
+				{"Max P¯ +2000", {{7, 2000}}},
+				{"Szybkoœæ Ruchu +20%", {{19, 20}}},
+				{"Obrona +100", {{96, 100}}},
+				{"Szybkoœæ Zaklêcia +20%", {{21, 20}}},
+				{"Regeneracja PE +30%", {{33, 30}}},
+				{"Regeneracja P¯ +30%", {{32, 30}}},
+				{"Szybkoœæ Ataku +20%", {{17, 20}}},
+				{"Odpornoœæ na Trucizny i Krwawienie", {{81, 100}}},
+			}
+		end
+
+		function curses()
+			return {
+				{"Wartoœæ Ataku -1600", {{95, -1600}}},
+				{"Umiejêtnoœci s¹ zablokowane", {{0, 0}}},
+				{"Wola SungMa (SI£A) -10", {{184, -10}}},
+				{"Wola SungMa (ODP) -20", {{186, -20}}},
+				{"Obrona -100", {{96, -100}}},
+				{"Szybkoœæ Zaklêcia -20%", {{21, -20}}},
+				{"Regeneracja PE -30%", {{33, -30}}},
+				{"Regeneracja P¯ -30%", {{32, -30}}},
+				{"Szybkoœæ Ataku -20%", {{17, -20}}},
+				{"Precyzja -10", {{175, -10}}},
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 387 * 10000 and idx < 388 * 10000 and pc.in_dungeon()
+		end
+
+		-- sezon = miesi¹c kalendarza (czas polski): rok * 12 + miesi¹c
+		function season()
+			local days = math.floor((get_global_time() + 7200) / 86400)
+			local z = days + 719468
+			local era = math.floor(z / 146097)
+			local doe = z - era * 146097
+			local yoe = math.floor((doe - math.floor(doe / 1460) + math.floor(doe / 36524) - math.floor(doe / 146096)) / 365)
+			local y = yoe + era * 400
+			local doy = doe - (365 * yoe + math.floor(yoe / 4) - math.floor(yoe / 100))
+			local mp = math.floor((5 * doy + 2) / 153)
+			local m = mp + 3
+			if mp >= 10 then
+				m = mp - 9
+			end
+			if m <= 2 then
+				y = y + 1
+			end
+			return y * 12 + m
+		end
+
+		-- najwy¿sze ukoñczone piêtro w tym sezonie (nowy sezon zeruje)
+		function best_floor()
+			if pc.getqf("season") ~= wieza_sung_mahi.season() then
+				return 0
+			end
+			return pc.getqf("best")
+		end
+
+		function element(f)
+			if math.mod(f, 10) == 0 then
+				return 0
+			end
+			local n = f - math.floor(f / 10)
+			return math.mod(n - 1, 6) + 1
+		end
+
+		function el_name(f)
+			local e = wieza_sung_mahi.element(f)
+			if e == 0 then
+				return "wszystkie ¿ywio³y"
+			end
+			return "¿ywio³ "..wieza_sung_mahi.cfg().el[e][2]
+		end
+
+		function fmt_time(s)
+			local m = math.floor(s / 60)
+			local r = s - m * 60
+			if r < 10 then
+				return m..":0"..r
+			end
+			return m..":"..r
+		end
+
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
+		end
+
+		function register()
+			local me = pc.get_player_id()
+			for i = 1, 8 do
+				local p = d.getf("p"..i)
+				if p == me then
+					return
+				end
+				if p == 0 then
+					d.setf("p"..i, me)
+					return
+				end
+			end
+		end
+
+		function my_slot()
+			local me = pc.get_player_id()
+			for i = 1, 8 do
+				if d.getf("p"..i) == me then
+					return i
+				end
+			end
+			return 0
+		end
+
+		-- prawdziwe obra¿enia (mog¹ zabiæ) przez d.zone_hurt, bez niego - nigdy do zera
+		function hurt(pid, pct)
+			if d.zone_hurt then
+				d.zone_hurt(pid, pct, 0)
+				return
+			end
+			q.begin_other_pc_block(pid)
+			if pc.get_player_id() == pid and not pc.is_dead() then
+				local hp = pc.get_hp()
+				local loss = math.floor(pc.get_max_hp() * pct / 100)
+				if loss >= hp then
+					loss = hp - 1
+				end
+				if loss > 0 then
+					pc.point_change(5, -loss, false, true)
+				end
+			end
+			q.end_other_pc_block()
+		end
+
+		function xy(p)
+			local c = wieza_sung_mahi.cfg()
+			return c.base_x + p[1], c.base_y + p[2]
+		end
+
+		function group(k)
+			local c = wieza_sung_mahi.cfg()
+			local e = wieza_sung_mahi.element(d.getf("floor"))
+			if e == 0 then
+				e = number(1, 6)
+			end
+			return 9250 + 3 * (e - 1) + k
+		end
+
+		function wave(points, heavy)
+			local p = points[number(1, table.getn(points))]
+			local k = number(0, 1)
+			if heavy and number(1, 3) == 1 then
+				k = 2
+			end
+			d.spawn_group(wieza_sung_mahi.group(k), p[1], p[2], 3, true, 1)
+		end
+
+		-- bonus albo kl¹twa etapu
+		function room_effect()
+			local c = wieza_sung_mahi.cfg()
+			wieza_sung_mahi.clear_effects()
+			local list = wieza_sung_mahi.buffs()
+			local what = "Bonus"
+			if number(1, 10) <= 5 then
+				list = wieza_sung_mahi.curses()
+				what = "Kl¹twa"
+			end
+			local b = list[number(1, table.getn(list))]
+			for i = 1, table.getn(b[2]) do
+				local pt = b[2][i]
+				if pt[1] == 0 then
+					d.affect_all(c.affect_noskill, 0, 0, 1200)
+				else
+					d.affect_all(c.affect_room, pt[1], pt[2], 1200)
+				end
+			end
+			d.notice("Wie¿a Sung Mahi - "..what..": "..b[1])
+		end
+
+		function clear_effects()
+			local c = wieza_sung_mahi.cfg()
+			for i = 1, 3 do
+				d.remove_affect_all(c.affect_room)
+			end
+			d.remove_affect_all(c.affect_noskill)
+			for i = 1, 8 do
+				d.setf("cs"..i, 0)
+			end
+		end
+
+		-- wejœcie do etapu: room 1-3 (etap), 4 (schody)
+		function start_room(room)
+			local c = wieza_sung_mahi.cfg()
+			local now = get_global_time()
+			local f = d.getf("floor")
+			d.purge()
+			wieza_sung_mahi.clear_effects()
+			d.setf("room", room)
+			d.setf("phase", 0)
+			d.setf("boss_vid", 0)
+			d.setf("wrong", 0)
+			d.setf("woken", 0)
+			d.setf("task_ok", 0)
+			d.setf("odd_dead", 0)
+			d.setf("boss_dead", 0)
+			d.setf("br_at", now + 20)
+			d.setf("br_pid", 0)
+			if room == 4 then
+				local x, y = wieza_sung_mahi.xy(c.stairs)
+				d.jump_all(x, y)
+				d.setf("phase", 1)
+				d.setf("limit_at", now + 600)
+				d.spawn_mob(4020, c.portal_s[1], c.portal_s[2])
+				return
+			end
+			wieza_sung_mahi.room_effect()
+			if room == 1 then
+				local x, y = wieza_sung_mahi.xy(c.room_a)
+				d.jump_all(x, y)
+				d.setf("limit_at", now + 240)
+				d.setf("waves", number(2, 4))
+				d.setf("wave_at", now + 3)
+				d.setf("wave_every", 10)
+				d.notice("Piêtro "..f.." ("..wieza_sung_mahi.el_name(f).."), etap 1: pokonaj wszystkie potwory w limicie czasu!")
+			elseif room == 3 then
+				local x, y = wieza_sung_mahi.xy(c.room_a)
+				d.jump_all(x, y)
+				d.setf("limit_at", now + 480)
+				d.setf("waves", math.min(4 + math.floor(f / 10), 9))
+				d.setf("waves_all", d.getf("waves"))
+				d.setf("wave_at", now + 3)
+				d.setf("wave_every", 15)
+				d.notice("Piêtro "..f..", etap 3: pokonaj fale potworów, a¿ pojawi siê boss!")
+			else
+				wieza_sung_mahi.start_task(number(1, 7))
+			end
+		end
+
+		-- 2. etap: siedem misji (wiki)
+		function start_task(t)
+			local c = wieza_sung_mahi.cfg()
+			local now = get_global_time()
+			d.setf("task", t)
+			d.setf("waves", 0)
+			d.setf("wave_at", 0)
+			if t == 4 then
+				local x, y = wieza_sung_mahi.xy(c.room_c)
+				d.jump_all(x, y)
+			else
+				local x, y = wieza_sung_mahi.xy(c.room_b)
+				d.jump_all(x, y)
+			end
+			if t == 1 then
+				-- Pokonaj wszystkie potwory i demoniczne kamienie: kamieñ w œrodku, ³ucznicy na murach
+				d.setf("limit_at", now + number(420, 480))
+				d.set_unique("dstone", d.spawn_mob(7594, 448, 129))
+				local ar = {{454, 131}, {452, 129}, {453, 125}, {451, 122}, {447, 123}, {450, 111}, {437, 111}, {437, 114},
+					{435, 121}, {431, 122}, {429, 125}, {426, 129}, {429, 131}, {431, 137}, {435, 134}, {423, 133}}
+				for i = 1, table.getn(ar) do
+					d.set_unique("ar"..i, d.spawn_mob(7595, ar[i][1], ar[i][2]))
+				end
+				wieza_sung_mahi.wave(c.spawn_b, false)
+				wieza_sung_mahi.wave(c.spawn_b, false)
+				d.notice("Etap 2: pokonaj Demoniczny Kamieñ i wszystkie potwory! £ucznicy budz¹ siê, gdy kamieñ oberwie.")
+			elseif t == 2 then
+				-- Zniszcz prawid³owy kamieñ metin: jedna szansa
+				d.setf("limit_at", now + 300)
+				local pos = {{432, 128}, {464, 129}, {448, 112}, {447, 145}}
+				d.setf("good", number(1, 4))
+				for i = 1, 4 do
+					d.set_unique("ms"..i, d.spawn_mob(7600, pos[i][1], pos[i][2]))
+				end
+				d.notice("Etap 2: zniszcz prawid³owy kamieñ metin! Masz jedn¹ szansê.")
+			elseif t == 3 then
+				-- Unikaj wszystkich ataków: Niszczyciele wybuchaj¹ przy tobie
+				d.setf("limit_at", now + 300)
+				d.setf("waves", 2)
+				d.setf("wave_at", now + 3)
+				d.setf("wave_every", 30)
+				d.notice("Etap 2: unikaj wszystkich ataków! Niszczyciel wybucha, gdy padnie - pierwszy wybuch zostawia 1% P¯, drugi zabija.")
+			elseif t == 4 then
+				-- Szachy: jedna para nie pasuje
+				d.setf("limit_at", now + 240)
+				wieza_sung_mahi.spawn_chess()
+				d.notice("Etap 2: znajdŸ parê potworów, które do siebie nie pasuj¹, i pokonaj j¹!")
+			elseif t == 5 then
+				-- ZnajdŸ odpowiedni klucz
+				d.setf("limit_at", now + 300)
+				d.setf("waves", 30)
+				d.setf("wave_at", now + 1)
+				d.setf("wave_every", 10)
+				d.notice("Etap 2: znajdŸ odpowiedni klucz, aby uciec! Zagadkowy Klucz wypada z potworów.")
+			elseif t == 6 then
+				-- Pieczêcie: Kam. Pieczêci Sunga Mahi, w ukrytej kolejnoœci
+				d.setf("limit_at", now + number(420, 480))
+				local sp = {{448, 151}, {464, 143}, {470, 124}, {458, 109}, {439, 109}, {426, 123}, {430, 142}}
+				for i = 1, 7 do
+					d.set_unique("seal"..i, d.spawn_mob(4021, sp[i][1], sp[i][2]))
+					d.setf("so"..i, i)
+				end
+				for i = 7, 2, -1 do
+					local j = number(1, i)
+					local a, b = d.getf("so"..i), d.getf("so"..j)
+					d.setf("so"..i, b)
+					d.setf("so"..j, a)
+				end
+				d.setf("seal_n", 1)
+				d.setf("waves", 30)
+				d.setf("wave_at", now + 1)
+				d.setf("wave_every", 15)
+				d.notice("Etap 2: znajdŸ kamieñ, by usun¹æ pieczêæ! Pieczêcie otwieraj¹ siê tylko w odpowiedniej kolejnoœci.")
+			else
+				-- Kl¹twa do zdjêcia: Antidotum SungMa
+				d.setf("limit_at", now + number(360, 420))
+				d.setf("waves", 10)
+				d.setf("wave_at", now + 1)
+				d.setf("wave_every", 15)
+				d.setf("curse_at", now + 10)
+				d.notice("Etap 2: pokonaj potwory w limicie czasu! Kl¹twa Sunga Mahi odbiera P¯ - Antidotum SungMa j¹ zdejmuje.")
+			end
+		end
+
+		function spawn_chess()
+			local pairs = {{{118, 395, 7}, {65, 395, 3}}, {{110, 395, 7}, {72, 395, 3}}, {{118, 402, 7}, {65, 402, 3}},
+				{{110, 410, 7}, {72, 410, 3}}, {{103, 410, 7}, {80, 410, 3}}, {{118, 418, 7}, {65, 418, 3}},
+				{{110, 425, 7}, {72, 425, 3}}, {{103, 433, 7}, {80, 433, 3}}, {{118, 433, 7}, {65, 433, 3}},
+				{{110, 440, 7}, {72, 440, 3}}, {{118, 448, 7}, {65, 448, 3}}, {{110, 448, 7}, {72, 448, 3}}}
+			local odd = number(1, 12)
+			d.setf("odd", odd)
+			for i = 1, 12 do
+				local a = 7615 + number(0, 5)
+				local b = a
+				if i == odd then
+					b = 7615 + math.mod(a - 7615 + number(1, 5), 6)
+				end
+				d.set_unique("ca"..i, d.spawn_mob_dir(a, pairs[i][1][1], pairs[i][1][2], pairs[i][1][3]))
+				d.set_unique("cb"..i, d.spawn_mob_dir(b, pairs[i][2][1], pairs[i][2][2], pairs[i][2][3]))
+			end
+		end
+
+		function room_cleared()
+			local c = wieza_sung_mahi.cfg()
+			if d.getf("phase") ~= 0 then
+				return
+			end
+			d.setf("phase", 1)
+			wieza_sung_mahi.clear_effects()
+			local room = d.getf("room")
+			local p = c.portal_a
+			if room == 2 then
+				p = c.portal_b
+				if d.getf("task") == 4 then
+					p = c.portal_c
+				end
+			end
+			d.spawn_mob(4020, p[1], p[2])
+			d.notice("Misja wykonana! Portal do nastêpnego etapu jest otwarty.")
+		end
+
+		function floor_done()
+			local c = wieza_sung_mahi.cfg()
+			local f = d.getf("floor")
+			local secs = get_global_time() - d.getf("fl_start")
+			local season = wieza_sung_mahi.season()
+			d.setf("phase", 1)
+			wieza_sung_mahi.clear_effects()
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and wieza_sung_mahi.inside() then
+						if pc.getqf("season") ~= season then
+							pc.setqf("season", season)
+							pc.setqf("best", 0)
+						end
+						if f > pc.getqf("best") then
+							pc.setqf("best", f)
+						end
+						if pc.getqf("ts"..f) ~= season or pc.getqf("t"..f) == 0 or secs < pc.getqf("t"..f) then
+							pc.setqf("ts"..f, season)
+							pc.setqf("t"..f, secs)
+						end
+						if pc.getqf("r"..f) ~= season then
+							pc.setqf("r"..f, season)
+							local r = wieza_sung_mahi.rewards(f)
+							for k = 1, table.getn(r) do
+								pc.give_item2(r[k][1], r[k][2])
+							end
+							syschat("Wie¿a Sung Mahi: nagroda za "..f..". piêtro w tym sezonie odebrana.")
+						end
+						syschat("Wie¿a Sung Mahi: "..f..". piêtro ukoñczone w "..wieza_sung_mahi.fmt_time(secs).." (min:s).")
+					end
+					q.end_other_pc_block()
+				end
+			end
+			if f >= c.max_floor then
+				d.notice("Wszystkie 50 piêter Wie¿y Sung Mahi zdobyte! Za 20 s wracacie do hali.")
+				d.setf("closed", 1)
+				server_timer("wsm_end", 20, d.get_map_index())
+				return
+			end
+			d.notice(f..". piêtro zdobyte w "..wieza_sung_mahi.fmt_time(secs).."! Schody prowadz¹ na nastêpne piêtro.")
+			wieza_sung_mahi.start_room(4)
+		end
+
+		function next_floor()
+			local c = wieza_sung_mahi.cfg()
+			local f = d.getf("floor") + 1
+			d.setf("floor", f)
+			d.setf("fl_start", get_global_time())
+			local s = c.sungma[math.floor((f - 1) / 5) + 1]
+			if d.set_sungma then
+				d.set_sungma(s[1], s[2], s[3], s[4])
+			end
+			wieza_sung_mahi.start_room(1)
+		end
+
+		function finish(text)
+			local c = wieza_sung_mahi.cfg()
+			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
+			wieza_sung_mahi.clear_effects()
+			if text then
+				d.notice(text)
+			end
+			d.set_warp_location(c.hall_map, c.hall_x + c.hall_town[1], c.hall_y + c.hall_town[2])
+			d.exit_all()
+		end
+
+		function to_hall()
+			local c = wieza_sung_mahi.cfg()
+			pc.warp((c.hall_x + c.hall_town[1]) * 100, (c.hall_y + c.hall_town[2]) * 100)
+		end
+
+		-- Seoganland: Wejœcie Piekielnej Wie¿y
+		when 4019.chat."Wie¿a Sung Mahi" with pc.get_map_index() == 376 begin
+			local c = wieza_sung_mahi.cfg()
+			say_title(mob_name(4019)..":")
+			say("Za tym przejœciem stoi Piekielna Wie¿a Sunga Mahi -")
+			say("piêædziesi¹t piêter jego najlepszych wojowników.")
+			say("")
+			say_reward("Od poziomu "..c.min_level.." i 1. Poziomu Czempiona.")
+			if select("WejdŸ do hali wie¿y", "Nie teraz") ~= 1 then
+				return
+			end
+			if not pc.is_gm() and (pc.get_level() < c.min_level or pc.get_conqueror_level() < 1) then
+				say_title(mob_name(4019)..":")
+				say("Wie¿a przyjmuje od 1. Poziomu Czempiona.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			wieza_sung_mahi.to_hall()
+		end
+
+		-- hala: stra¿nik poziomu
+		when login with pc.get_map_index() == 386 begin
+			local c = wieza_sung_mahi.cfg()
+			pc.set_warp_location(376, c.seogan[1], c.seogan[2])
+			wieza_sung_mahi.drop_effects()
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.min_level or pc.get_conqueror_level() < 1 then
+				syschat("Wie¿a Sung Mahi przyjmuje od 1. Poziomu Czempiona. Wracasz do Seoganland.")
+				pc.warp(c.seogan[1] * 100, c.seogan[2] * 100)
+			end
+		end
+
+		-- hala: portal wie¿y - wybór piêtra
+		when 4020.chat."Wie¿a Sung Mahi" with pc.get_map_index() == 386 begin
+			local c = wieza_sung_mahi.cfg()
+			local best = wieza_sung_mahi.best_floor()
+			local top = math.min(best + 1, c.max_floor)
+			say_title(mob_name(4020)..":")
+			say("Piêædziesi¹t piêter, ka¿de z trzech etapów.")
+			say("Piêtra odblokowujesz po kolei; nowy miesi¹c to")
+			say("nowy sezon - piêtra, nagrody i czasy od nowa.")
+			say("")
+			say_reward("Ukoñczone w tym sezonie: "..best.." / "..c.max_floor..".")
+			say_reward("Wspinaczka: 1 Sztandar Czaszki (masz: "..pc.count_item(c.banner)..").")
+			local s = select("Piêtro "..top, "Wybierz piêtro", "Moje czasy", "Nie teraz")
+			if s == 4 then
+				return
+			end
+			if s == 3 then
+				say_title(mob_name(4020)..":")
+				local any = false
+				for f = 1, best do
+					if pc.getqf("ts"..f) == wieza_sung_mahi.season() and pc.getqf("t"..f) > 0 then
+						say("Piêtro "..f..": "..wieza_sung_mahi.fmt_time(pc.getqf("t"..f)))
+						any = true
+					end
+				end
+				if not any then
+					say("W tym sezonie nie ukoñczy³eœ jeszcze piêtra.")
+				end
+				return
+			end
+			local f = top
+			if s == 2 then
+				say_title(mob_name(4020)..":")
+				say("Podaj piêtro (1-"..top..").")
+				local n = tonumber(input(""))
+				if n == nil or n < 1 or n > top then
+					say_title(mob_name(4020)..":")
+					say("To piêtro nie jest dla ciebie otwarte.")
+					return
+				end
+				f = math.floor(n)
+			end
+			if party.is_party() and not party.is_leader() and not wieza_sung_mahi.bot_leads() then
+				say_title(mob_name(4020)..":")
+				say("Wspinaczkê zaczyna przywódca dru¿yny.")
+				return
+			end
+			if pc.count_item(c.banner) < 1 and not pc.is_gm() then
+				say_title(mob_name(4020)..":")
+				say("Potrzebujesz Sztandaru Czaszki.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			local me = pc.get_player_id()
+			local humans = {me}
+			local bad = {}
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+							table.insert(humans, pid)
+							if not pc.is_gm() and (pc.get_level() < c.min_level or pc.get_conqueror_level() < 1) then
+								table.insert(bad, pc.get_name())
+							end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if table.getn(bad) > 0 then
+				say_title(mob_name(4020)..":")
+				say("Bez 1. Poziomu Czempiona:")
+				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(humans) > 8 then
+				say_title(mob_name(4020)..":")
+				say("Na wie¿ê wchodzi najwy¿ej 8 osób.")
+				return
+			end
+			pc.setqf("start_floor", f)
+			local x, y = (c.base_x + c.room_a[1]) * 100, (c.base_y + c.room_a[2]) * 100
+			if d.new_jump_pids(c.map, x, y, humans) < 0 then
+				say_title(mob_name(4020)..":")
+				say("Wie¿a nie przyjmie was teraz. Spróbuj za chwilê.")
+				return
+			end
+			if not pc.is_gm() then
+				pc.remove_item(c.banner, 1)
+			end
+		end
+
+		-- wie¿a: logowanie
+		when login with wieza_sung_mahi.inside() begin
+			local c = wieza_sung_mahi.cfg()
+			local now = get_global_time()
+			pc.set_warp_location(c.hall_map, c.hall_x + c.hall_town[1], c.hall_y + c.hall_town[2])
+			d.set_warp_location(c.hall_map, c.hall_x + c.hall_town[1], c.hall_y + c.hall_town[2])
+			if pc.is_playerbot() then
+				return
+			end
+			if d.getf("closed") == 1 then
+				syschat("Wie¿a Sung Mahi: ta wspinaczka ju¿ siê skoñczy³a.")
+				wieza_sung_mahi.to_hall()
+				return
+			end
+			wieza_sung_mahi.register()
+			if d.getf("init") == 0 and (d.getf("leader") == 0 or d.getf("leader") == pc.get_player_id()) then
+				local f = pc.getqf("start_floor")
+				if f < 1 or f > c.max_floor then
+					f = 1
+				end
+				d.setf("init", 1)
+				d.setf("start", now)
+				d.setf("floor", f - 1)
+				d.setf("mt2009_keep_until", now + 3 * 3600)
+				d.setf("countdown", now + 10)
+				d.notice("Wie¿a Sung Mahi: walka na "..f..". piêtrze zaczyna siê za 10 sekund.")
+				server_timer("wsm_tick", 2, d.get_map_index())
+			elseif d.getf("init") == 0 then
+				syschat("Wie¿a Sung Mahi: czekamy na przywódcê dru¿yny.")
+				if d.getf("wait") == 0 then
+					d.setf("wait", 1)
+					server_timer("wsm_wait", 30, d.get_map_index())
+				end
+			end
+		end
+
+		-- efekty etapu nie wychodz¹ z wie¿y
+		when logout with wieza_sung_mahi.inside() begin
+			wieza_sung_mahi.drop_effects()
+		end
+
+		function drop_effects()
+			local c = wieza_sung_mahi.cfg()
+			affect.remove(c.affect_room)
+			affect.remove(c.affect_noskill)
+			affect.remove(c.affect_root)
+		end
+
+		-- wie¿a: zegar (co 2 s)
+		when wsm_tick.server_timer begin
+			local c = wieza_sung_mahi.cfg()
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			server_timer("wsm_tick", 2, get_server_timer_arg())
+			local now = get_global_time()
+			if d.getf("countdown") > 0 then
+				if now < d.getf("countdown") then
+					return
+				end
+				d.setf("countdown", 0)
+				wieza_sung_mahi.next_floor()
+				return
+			end
+			local room = d.getf("room")
+			local phase = d.getf("phase")
+			if phase == 0 and now >= d.getf("limit_at") then
+				wieza_sung_mahi.finish("Czas min¹³! Sung Mahi wyrzuca was z wie¿y.")
+				return
+			end
+			if phase ~= 0 or room == 4 then
+				return
+			end
+			-- fale
+			local w = d.getf("waves")
+			if w > 0 and now >= d.getf("wave_at") then
+				d.setf("waves", w - 1)
+				d.setf("wave_at", now + d.getf("wave_every"))
+				if room == 1 then
+					wieza_sung_mahi.wave(c.spawn_a, false)
+				elseif room == 3 then
+					wieza_sung_mahi.wave(c.spawn_a, true)
+					if w - 1 == math.floor(d.getf("waves_all") / 2) then
+						d.setf("wave_every", 8)
+						d.notice("Potwory nadci¹gaj¹ szybciej!")
+					end
+				else
+					local t = d.getf("task")
+					if t == 3 then
+						for i = 1, 6 do
+							local p = c.spawn_b[number(1, 3)]
+							d.spawn_mob(7592 + number(0, 1), p[1], p[2], 6)
+						end
+					elseif t == 5 or t == 6 or t == 7 or (t == 2 and d.getf("wrong") == 1) then
+						wieza_sung_mahi.wave(c.spawn_b, false)
+					end
+				end
+			end
+			if room == 1 then
+				if d.getf("waves") == 0 and d.count_monster() == 0 then
+					wieza_sung_mahi.room_cleared()
+				end
+			elseif room == 3 and d.getf("boss_dead") == 1 then
+				wieza_sung_mahi.floor_done()
+			elseif room == 3 then
+				if d.getf("waves") == 0 and d.getf("boss_vid") == 0 and d.count_monster() == 0 then
+					local f = d.getf("floor")
+					local e = wieza_sung_mahi.element(f)
+					local v
+					if e == 0 then
+						v = 7609 + number(0, 5)
+					elseif math.mod(f, 10) == 5 then
+						v = c.el[e][1] + 6
+					else
+						v = c.el[e][1] + 5
+					end
+					d.setf("boss_vid", d.spawn_mob(v, 407, 434))
+					d.notice("Pojawia siê "..mob_name(v).."! Pokonaj go, by zdobyæ piêtro.")
+				end
+				wieza_sung_mahi.branches(now)
+			else
+				wieza_sung_mahi.task_tick(now)
+			end
+		end
+
+		function task_tick(now)
+			local c = wieza_sung_mahi.cfg()
+			local t = d.getf("task")
+			if d.getf("task_ok") == 1 then
+				-- the right Metin / the odd chess pair: the room is done, the rest goes
+				d.purge()
+				wieza_sung_mahi.room_cleared()
+				return
+			end
+			if t == 1 then
+				if d.getf("woken") == 0 and not d.is_unique_dead("dstone") and d.unique_get_hp_perc("dstone") < 100 then
+					d.setf("woken", 1)
+					local ar = {{454, 131}, {452, 129}, {453, 125}, {451, 122}, {447, 123}, {450, 111}, {437, 111}, {437, 114},
+						{435, 121}, {431, 122}, {429, 125}, {426, 129}, {429, 131}, {431, 137}, {435, 134}, {423, 133}}
+					for i = 1, table.getn(ar) do
+						if not d.is_unique_dead("ar"..i) then
+							d.purge_unique("ar"..i)
+							d.spawn_group(9268, ar[i][1], ar[i][2], 0, true, 1)
+						end
+					end
+					d.notice("Kamieñ demonów oberwa³ - ³ucznicy atakuj¹!")
+				end
+				if d.count_monster() == 0 then
+					wieza_sung_mahi.room_cleared()
+				end
+			elseif t == 2 then
+				if d.getf("wrong") == 1 and d.getf("waves") == 0 and d.count_monster() == 0 then
+					wieza_sung_mahi.room_cleared()
+				end
+			elseif t == 3 then
+				if d.getf("waves") == 0 and d.count_monster() == 0 then
+					wieza_sung_mahi.room_cleared()
+				end
+			elseif t == 4 then
+				if d.getf("wrong") == 1 and d.count_monster() == 0 then
+					wieza_sung_mahi.room_cleared()
+				end
+			elseif t == 7 then
+				if now >= d.getf("curse_at") then
+					d.setf("curse_at", now + 10)
+					d.setf("curse_n", d.getf("curse_n") + 1)
+					wieza_sung_mahi.curse_tick()
+				end
+				if d.getf("waves") == 0 and d.count_monster() == 0 then
+					wieza_sung_mahi.room_cleared()
+				end
+			end
+		end
+
+		-- kl¹twa (misja 7): co 20 s +1 stopieñ (najwy¿ej 10), co 10 s 10% P¯ za ka¿dy stopieñ
+		function curse_tick()
+			local grow = math.mod(d.getf("curse_n"), 2) == 0
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					local s = d.getf("cs"..i)
+					if s > 0 then
+						wieza_sung_mahi.hurt(pid, 10 * s)
+					end
+					if grow and s < 10 then
+						d.setf("cs"..i, s + 1)
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and wieza_sung_mahi.inside() then
+							syschat("Kl¹twa Sunga Mahi: stopieñ "..(s + 1)..". Antidotum SungMa j¹ zdejmuje.")
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+		end
+
+		-- ga³êzie z ziemi (3. etap): co 20 s pod losowym graczem
+		function branches(now)
+			local c = wieza_sung_mahi.cfg()
+			local f = d.getf("floor")
+			local pct = 15
+			if math.mod(f, 10) == 0 then
+				pct = 30
+			end
+			-- skutki poprzedniego uderzenia
+			local bp = d.getf("br_pid")
+			if bp > 0 and now >= d.getf("br_hit") then
+				d.setf("br_pid", 0)
+				for i = 1, 8 do
+					local pid = d.getf("p"..i)
+					if pid > 0 then
+						local hit = false
+						if d.zone_attack then
+							hit = d.getf("wb"..pid) > d.getf("wbs"..i)
+						elseif pid == bp then
+							q.begin_other_pc_block(pid)
+							if pc.get_player_id() == pid and wieza_sung_mahi.inside() and not pc.is_dead() then
+								local dx, dy = pc.get_local_x() - d.getf("br_x"), pc.get_local_y() - d.getf("br_y")
+								hit = dx * dx + dy * dy <= 9
+							end
+							q.end_other_pc_block()
+							if hit then
+								wieza_sung_mahi.hurt(pid, pct)
+							end
+						end
+						if hit then
+							q.begin_other_pc_block(pid)
+							if pc.get_player_id() == pid and wieza_sung_mahi.inside() and not pc.is_dead() then
+								affect.add_new(c.affect_root, 19, -80, 3)
+								syschat("Ga³êzie Sunga Mahi oplataj¹ ci nogi!")
+							end
+							q.end_other_pc_block()
+						end
+					end
+				end
+			end
+			if now < d.getf("br_at") then
+				return
+			end
+			d.setf("br_at", now + 20)
+			local who = {}
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and wieza_sung_mahi.inside() and not pc.is_dead() then
+						table.insert(who, {pid, pc.get_local_x(), pc.get_local_y()})
+					end
+					q.end_other_pc_block()
+				end
+			end
+			if table.getn(who) == 0 then
+				return
+			end
+			local w = who[number(1, table.getn(who))]
+			d.setf("br_pid", w[1])
+			d.setf("br_x", w[2])
+			d.setf("br_y", w[3])
+			d.setf("br_hit", now + 3)
+			if d.zone_attack then
+				for i = 1, 8 do
+					local pid = d.getf("p"..i)
+					if pid > 0 then
+						d.setf("wbs"..i, d.getf("wb"..pid))
+					end
+				end
+				d.zone_attack(w[2], w[3], 3, pct, 0, 1800, c.fx_thorn, "", 0, "wb")
+			else
+				q.begin_other_pc_block(w[1])
+				if pc.get_player_id() == w[1] then
+					syschat("Ziemia pod tob¹ pêka - uciekaj!")
+				end
+				q.end_other_pc_block()
+			end
+		end
+
+		-- portal w wie¿y: dalej
+		when 4020.chat."Dalej" with wieza_sung_mahi.inside() and d.getf("phase") == 1 and d.getf("closed") == 0 begin
+			local room = d.getf("room")
+			say_title(mob_name(4020)..":")
+			if room == 4 then
+				say("Schody prowadz¹ na "..(d.getf("floor") + 1)..". piêtro.")
+			else
+				say("Portal prowadzi do nastêpnego etapu.")
+			end
+			if select("IdŸ dalej", "Jeszcze nie") ~= 1 then
+				return
+			end
+			if d.getf("phase") ~= 1 or d.getf("room") ~= room then
+				return
+			end
+			if room == 4 then
+				wieza_sung_mahi.next_floor()
+			elseif room == 1 then
+				wieza_sung_mahi.start_room(2)
+			elseif room == 2 then
+				wieza_sung_mahi.start_room(3)
+			end
+		end
+
+		when 4020.chat."WyjdŸ z wie¿y" with wieza_sung_mahi.inside() begin
+			say_title(mob_name(4020)..":")
+			say("Czy chcesz opuœciæ wie¿ê? Wspinaczka siê skoñczy.")
+			if select("WyjdŸ z wie¿y", "Zostañ tutaj") ~= 1 then
+				return
+			end
+			if party.is_party() and not party.is_leader() then
+				syschat("Wie¿a Sung Mahi: wychodzisz sam - dru¿yna wspina siê dalej.")
+				wieza_sung_mahi.to_hall()
+				return
+			end
+			wieza_sung_mahi.finish("Wspinaczka zakoñczona.")
+		end
+
+		-- zabójstwa: boss piêtra, misje
+		when kill with wieza_sung_mahi.inside() and d.getf("phase") == 0 begin
+			local c = wieza_sung_mahi.cfg()
+			local room = d.getf("room")
+			local vid = npc.get_vid()
+			if room == 3 then
+				if d.getf("boss_vid") > 0 and vid == d.getf("boss_vid") and d.getf("boss_dead") == 0 then
+					d.setf("boss_dead", 1)
+					d.update_ranking("wieza_smh", get_global_time() - d.getf("fl_start"))
+				end
+				return
+			end
+			if room ~= 2 then
+				return
+			end
+			local t = d.getf("task")
+			local race = npc.get_race()
+			if t == 2 and race == 7600 then
+				if d.getf("wrong") == 0 and vid == d.get_unique_vid("ms"..d.getf("good")) then
+					d.setf("task_ok", 1)
+				elseif d.getf("wrong") == 0 then
+					d.setf("wrong", 1)
+					d.setf("waves", 6)
+					d.setf("wave_at", get_global_time() + 1)
+					d.setf("wave_every", 8)
+					d.notice("Z³y kamieñ! Pokonaj wszystkie kamienie i potwory.")
+				end
+			elseif t == 3 and (race == 7592 or race == 7593) then
+				wieza_sung_mahi.explode(npc.get_x() - c.base_x, npc.get_y() - c.base_y)
+			elseif t == 4 and race >= 7615 and race <= 7620 then
+				if d.getf("wrong") == 0 then
+					local odd = d.getf("odd")
+					if vid == d.get_unique_vid("ca"..odd) or vid == d.get_unique_vid("cb"..odd) then
+						d.setf("odd_dead", d.getf("odd_dead") + 1)
+						if d.getf("odd_dead") >= 2 then
+							d.setf("task_ok", 1)
+						end
+					else
+						d.setf("wrong", 1)
+						d.notice("Ta para pasowa³a! Teraz pokonaj wszystkie potwory na szachownicy.")
+					end
+				end
+			elseif t == 5 then
+				if number(1, 100) <= 5 then
+					game.drop_item(c.key, 1)
+				end
+			elseif t == 6 then
+				if number(1, 100) <= 25 then
+					game.drop_item(c.seal_stone, 1)
+				end
+			elseif t == 7 then
+				if number(1, 100) <= 5 then
+					game.drop_item(c.antidote, 1)
+				end
+			end
+		end
+
+		-- Niszczyciel wybucha: kto stoi obok - 1% P¯, kto ma ju¿ 1% - ginie
+		function explode(x, y)
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					local lethal = false
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and wieza_sung_mahi.inside() and not pc.is_dead() then
+						local dx, dy = pc.get_local_x() - x, pc.get_local_y() - y
+						if dx * dx + dy * dy <= 25 then
+							local one = math.max(1, math.floor(pc.get_max_hp() / 100))
+							if pc.get_hp() > one then
+								pc.point_change(5, one - pc.get_hp(), false, true)
+								syschat("Wybuch Niszczyciela! Zostaje ci 1% P¯ - drugi ciê zabije.")
+							else
+								lethal = true
+							end
+						end
+					end
+					q.end_other_pc_block()
+					if lethal then
+						wieza_sung_mahi.hurt(pid, 100)
+					end
+				end
+			end
+		end
+
+		-- przedmioty misji
+		when 70403.use with wieza_sung_mahi.inside() and d.getf("room") == 2 and d.getf("task") == 5 and d.getf("phase") == 0 begin
+			pc.remove_item(70403, 1)
+			if number(1, 100) <= 30 then
+				d.notice(pc.get_name().." znalaz³ odpowiedni klucz!")
+				wieza_sung_mahi.room_cleared()
+			else
+				syschat("Wie¿a Sung Mahi: klucz nie pasuje. ZnajdŸ inny i spróbuj jeszcze raz.")
+			end
+		end
+
+		when 70403.use with not wieza_sung_mahi.inside() begin
+			syschat("Zagadkowego Klucza mo¿na u¿yæ tylko w Wie¿y Sung Mahi.")
+		end
+
+		when 4021.take with wieza_sung_mahi.inside() and d.getf("room") == 2 and d.getf("task") == 6 and item.get_vnum() == 70404 begin
+			pc.remove_item(70404, 1)
+			local n = d.getf("seal_n")
+			if npc.get_vid() ~= d.get_unique_vid("seal"..d.getf("so"..n)) then
+				syschat("Wie¿a Sung Mahi: ta pieczêæ jeszcze siê nie poddaje - najpierw inna.")
+				return
+			end
+			npc.purge()
+			d.setf("seal_n", n + 1)
+			if n >= 7 then
+				wieza_sung_mahi.room_cleared()
+			else
+				d.notice("Pieczêæ zdjêta ("..n.."/7).")
+			end
+		end
+
+		when 70405.use with wieza_sung_mahi.inside() begin
+			local i = wieza_sung_mahi.my_slot()
+			if i == 0 or d.getf("cs"..i) == 0 then
+				syschat("Nie ci¹¿y na tobie kl¹twa.")
+				return
+			end
+			pc.remove_item(70405, 1)
+			d.setf("cs"..i, 0)
+			syschat("Kl¹twa Sunga Mahi zdjêta.")
+		end
+
+		when wsm_wait.server_timer begin
+			if d.select(get_server_timer_arg()) and d.getf("init") == 0 then
+				wieza_sung_mahi.finish("Przywódca nie dotar³ do wie¿y - wracacie do hali.")
+			end
+		end
+
+		when wsm_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				wieza_sung_mahi.finish(nil)
+			end
+		end
+	end
+end

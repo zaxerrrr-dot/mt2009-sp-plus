@@ -3609,6 +3609,22 @@ for ym3_sql in yohara_maps3.sql yohara_items3.sql yohara_maps3_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_YOHARA_DUNG4_V1: Jaskinie Gnolli (382-384) and Wieza Sung Mahi (386/387) - the owner, 14 October 2026.
+# After the third batch and the elements' files (zywioly_moby.sql clears the element bits of every mob it does not
+# list): yohara_dung4.sql (tools/yohara_dung4/gen_ydung4_sql.py) - their monsters, bosses, the tower's stones, NPCs,
+# the hall's exit and the caves' maze portals; yohara_items_d4.sql (tools/yohara_dung4/gen_yitems_d4.py) - the chests,
+# the tower's task items, the caves' drops; yohara_dung4_zywioly.sql - the pl-wiki's elements. All idempotent
+# (INSERT IGNORE / UPDATE). The maps' drop file and chests (game/yohara_dung4) name these vnums: a world without them
+# stops the cores at boot.
+for yd4_sql in yohara_dung4.sql yohara_items_d4.sql yohara_dung4_zywioly.sql; do
+    [ -s "/opt/playerbot/$yd4_sql" ] || continue
+    if db < "/opt/playerbot/$yd4_sql"; then
+        echo "[playerbot-migrate] yohara dung4: $yd4_sql applied"
+    else
+        fail_step "yohara dung4: $yd4_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read

@@ -200,7 +200,9 @@ MAPS_game1="$MAPS_game1 358"
 # one-channel world publishes BASE..BASE+3 (update.sh, the launcher, the installers widen the range); its P2P
 # port is 14003+ the same way. Memory: game2 hosted 301/303/368/373/374 in ~0.27 GB (13 October, the test
 # server); this core's maps are ~170 sectors of terrain in all - well under 1 GB of the 32-bit core's 4 GB.
-MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396"
+# MT2009_PLUS_YOHARA_DUNG4_V1: Jaskinie Gnolli (382-384, 3x3 each) and Wieza Sung Mahi (386 the hall 1x1, 387 the
+# tower 2x2 - its instances 3870000+) - 31 sectors more.
+MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 382 383 384 386 387"
 yohara_maps_present() {
   local idx="$SHARE_DIR/locale/poland/map/index" m out=""
   for m in $MAPS_game3_all; do

@@ -293,3 +293,9 @@ Group	MT2009_ydung4_Wieza_mrok_Rzeznik
 	2	"Zbir Piekielnej Wiezy"	7586
 	3	"Wilk Piekielnej Wiezy"	7585
 }
+
+Group	MT2009_ydung4_Wieza_Lucznik
+{
+	Vnum	9268
+	Leader	"Lucznik P. Wiezy"	7595
+}

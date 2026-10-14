@@ -1,0 +1,168 @@
+-- MT2009_PLUS_YOHARA_DUNG4_V1: Jaskinie Gnolli (382-384, metin2_map_maze_dungeon1/2/3) - trzypoziomowy labirynt
+-- Yohary (wiki "Jaskinie Gnolli (pierwszy/drugi/trzeci poziom)", "Halabardnik", "Przepustka"; TR "Gnoll Magaralari";
+-- Owsap v6.2.6 quest maze_dungeon):
+--   * wejœcie: Halabardnik (20836) w Dongan (990,973) - od 1. Poziomu Czempiona, jedna Przepustka (71095 albo
+--     zdatna do handlu 71130) za ka¿de wejœcie; na 1. poziom (213,110);
+--   * labirynt portali (GOTO, punkty klienta GF) prowadzi do sali bossa; Odcinek 2 (20838) przenosi na 2. poziom,
+--     Odcinek 3 (20839) na 3. - bez powrotu na ni¿szy; Wyjœcie (20837, 1. poziom) i Dongan (20840, 3. poziom)
+--     wracaj¹ do Halabardnika;
+--   * œmieræ w jaskiniach: po wstaniu - do Dongan (wiki); wylogowanie w jaskiniach - logowanie w Dongan;
+--   * stra¿nik: poni¿ej 120 poziomu albo bez Poziomu Czempiona (np. przeniesiony przez GM-a) - do Dongan;
+--   * bossowie (boss.txt): 1. poziom co godzinê, 2. co 2 godziny, 3. co 3 godziny (TR); Ahtrin Wielki Mistrz
+--     (mrok, 6820) zapisuje wynik w panelu lochów (gnolle).
+-- Pominiête (silnik): zakaz zwojów powrotu, pierœcienia ma³¿eñskiego i pierœcienia teleportacji na tych mapach.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest jaskinie_gnolli begin
+	state start begin
+		function cfg()
+			return {
+				min_level = 120,
+				dongan = {11476, 5327},                      -- Owsap: obok Halabardnika (98,975 w Dongan)
+				levels = {{7893, 12142}, {8661, 12142}, {9429, 12142}},   -- 1., 2., 3. poziom (213,110)
+				tickets = {71095, 71130},
+			}
+		end
+
+		function level_of(m)
+			if m == 382 then
+				return 1
+			elseif m == 383 then
+				return 2
+			elseif m == 384 then
+				return 3
+			end
+			return 0
+		end
+
+		function inside()
+			return jaskinie_gnolli.level_of(pc.get_map_index()) > 0
+		end
+
+		function go(xy)
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return false
+			end
+			pc.warp(xy[1] * 100, xy[2] * 100)
+			return true
+		end
+
+		function to_dongan()
+			local c = jaskinie_gnolli.cfg()
+			pc.warp(c.dongan[1] * 100, c.dongan[2] * 100)
+		end
+
+		-- Halabardnik w Dongan
+		when 20836.chat."Jaskinie Gnolli" with pc.get_map_index() == 373 begin
+			local c = jaskinie_gnolli.cfg()
+			say_title(mob_name(20836)..":")
+			say("Trzymam mieszkañców z dala od jaskiñ - tam jest")
+			say("niebezpiecznie. Ale jeœli masz Przepustkê, pewnie")
+			say("jesteœ doœæ silny, by przetrwaæ. Naprawdê chcesz")
+			say("wejœæ do œrodka?")
+			say("")
+			say_reward("Wejœcie od 1. Poziomu Czempiona, za Przepustkê.")
+			say_red("Nie giñ tam. Kto padnie, wraca do Dongan.")
+			if select("Oczywiœcie", "Raczej nie") ~= 1 then
+				return
+			end
+			if pc.get_level() < c.min_level or pc.get_conqueror_level() < 1 then
+				say_title(mob_name(20836)..":")
+				say("Do jaskiñ wpuszczam od 1. Poziomu Czempiona.")
+				return
+			end
+			local ticket = 0
+			for i = 1, table.getn(c.tickets) do
+				if ticket == 0 and pc.count_item(c.tickets[i]) > 0 then
+					ticket = c.tickets[i]
+				end
+			end
+			if ticket == 0 and not pc.is_gm() then
+				say_title(mob_name(20836)..":")
+				say("Potrzebujesz Przepustki.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			if ticket > 0 then
+				pc.remove_item(ticket, 1)
+			end
+			pc.warp(c.levels[1][1] * 100, c.levels[1][2] * 100)
+		end
+
+		-- wewn¹trz: stra¿nik, powrót do Dongan po wylogowaniu
+		when login with jaskinie_gnolli.inside() begin
+			local c = jaskinie_gnolli.cfg()
+			pc.set_warp_location(373, c.dongan[1], c.dongan[2])
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.min_level or pc.get_conqueror_level() < 1 then
+				syschat("Jaskinie Gnolli s¹ dostêpne od 1. Poziomu Czempiona. Wracasz do Dongan.")
+				jaskinie_gnolli.to_dongan()
+			end
+		end
+
+		-- œmieræ: po wstaniu - do Dongan
+		when die with jaskinie_gnolli.inside() and not pc.is_gm() begin
+			pc.setqf("dead", 1)
+			loop_timer("gnolle_dead_out", 2)
+		end
+
+		when gnolle_dead_out.timer begin
+			if pc.is_dead() then
+				return
+			end
+			cleartimer("gnolle_dead_out")
+			if pc.getqf("dead") == 1 then
+				pc.setqf("dead", 0)
+				if jaskinie_gnolli.inside() then
+					syschat("Potêga Sung Mahi wyrzuca pokonanych z jaskiñ. Wracasz do Dongan.")
+					jaskinie_gnolli.to_dongan()
+				end
+			end
+		end
+
+		-- portale: wyjœcia i przejœcia na ni¿sze poziomy
+		when 20837.chat."Jaskinie Gnolli" with pc.get_map_index() == 382 begin
+			say_title(mob_name(20837)..":")
+			say("Czy chcesz opuœciæ jaskinie i wróciæ do Dongan?")
+			if select("Tak", "Nie") == 1 then
+				jaskinie_gnolli.go(jaskinie_gnolli.cfg().dongan)
+			end
+		end
+
+		when 20840.chat."Jaskinie Gnolli" with pc.get_map_index() == 384 begin
+			say_title(mob_name(20840)..":")
+			say("Czy chcesz opuœciæ jaskinie i wróciæ do Dongan?")
+			if select("Tak", "Nie") == 1 then
+				jaskinie_gnolli.go(jaskinie_gnolli.cfg().dongan)
+			end
+		end
+
+		when 20838.chat."Jaskinie Gnolli" with pc.get_map_index() == 382 begin
+			say_title(mob_name(20838)..":")
+			say("Czy chcesz zejœæ g³êbiej do jaskiñ?")
+			say_red("Z 2. poziomu nie ma ju¿ powrotu na 1. poziom.")
+			if select("Tak", "Nie") == 1 then
+				jaskinie_gnolli.go(jaskinie_gnolli.cfg().levels[2])
+			end
+		end
+
+		when 20839.chat."Jaskinie Gnolli" with pc.get_map_index() == 383 begin
+			say_title(mob_name(20839)..":")
+			say("Czy chcesz zejœæ g³êbiej do jaskiñ?")
+			say_red("Z 3. poziomu nie ma ju¿ powrotu na 2. poziom.")
+			if select("Tak", "Nie") == 1 then
+				jaskinie_gnolli.go(jaskinie_gnolli.cfg().levels[3])
+			end
+		end
+
+		-- panel lochów: Ahtrin Wielki Mistrz (mrok) na 3. poziomie
+		when 6820.kill with pc.get_map_index() == 384 begin
+			d.update_ranking("gnolle")
+		end
+	end
+end
