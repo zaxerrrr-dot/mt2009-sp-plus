@@ -53,7 +53,12 @@ def mob_proto(b):
     R = sd.MOB_RECORD
     recs = dict((struct.unpack_from('<I', raw, i * R)[0], raw[i * R:(i + 1) * R]) for i in range(cnt))
     want = dict((w['vnum'], sd.mob_record(w, recs[101] if w['type'] in (0, 2) else recs[9012])) for w in sql_mobs())
-    clash = [v for v, r in sorted(want.items()) if v in recs and recs[v] != r]
+    # the element bits (dwRaceFlag bits 11-16, offset 83) aside: the chain's last step (../yfinal) sets every
+    # monster's to the server's (MT2009_PLUS_YOHARA_FINAL_V1)
+    def noelem(r):
+        f = struct.unpack_from('<I', r, 83)[0] & ~0x1F800
+        return r[:83] + struct.pack('<I', f) + r[87:]
+    clash = [v for v, r in sorted(want.items()) if v in recs and noelem(recs[v]) != noelem(r)]
     if clash:
         raise Collision('mob_proto: %d vnum(s) already in the client with other content: %s' % (len(clash), clash))
     new = dict((v, r) for v, r in want.items() if v not in recs)

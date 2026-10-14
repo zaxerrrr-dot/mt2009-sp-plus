@@ -85,6 +85,33 @@ if np.encode() not in [l.strip() for l in ix.replace(b'\r\n', b'\n').split(b'\n'
 npc = entry('gamedata', 'gamedata/npclist.txt')
 if yd.npclist(npc)[1]:
     fails.append('npclist: the tree Metins not on %s' % yd.RACE_TREE)
+# 4) every motlist of the packs this chain built (OUT): each file it names is in a pack (or the base client's
+#    listing); the GF slips answered by MOTION_STANDINS
+pre = set()
+for l in open('/opt/metin2/cache/tcm/gf28/ourpacks_pre.txt', encoding='latin-1'):
+    t = l.rstrip('\n').split(' ', 3)
+    if len(t) == 4:
+        pre.add(t[3].lower())
+allnames = set(pre)
+outmot = {}
+for d in (BASE, OUT):
+    for fn in sorted(os.listdir(d)):
+        if not fn.endswith('.index'):
+            continue
+        es = m2pack.read_index(os.path.join(d, fn))[2]
+        allnames.update(e['name'].lower() for e in es)
+        if d == OUT and fn[:-6] != np:
+            mots = [e for e in es if e['name'].lower().endswith('/motlist.txt')]
+            if mots:
+                dd = packlib.rd(os.path.join(d, fn[:-6] + '.data'))
+                for e in mots:
+                    outmot[e['name'].lower()] = m2pack.read_entry(dd, e).decode('latin-1')
+nmot = 0
+for name, text in sorted(outmot.items()):
+    nmot += 1
+    for line, f in yd.motlist_missing(text, name.rsplit('/', 1)[0] + '/', lambda n: n in allnames):
+        fails.append('%s: "%s" - no %s' % (name, line, f))
+print('yfinal: %d motlists of OUT checked' % nmot)
 print('yfinal: %d atlas rows, %d server maps of the repo, %d monsters with an element; %d problem(s)' % (
     len(rows), nmaps, len(srv), len(fails)))
 for f in fails:

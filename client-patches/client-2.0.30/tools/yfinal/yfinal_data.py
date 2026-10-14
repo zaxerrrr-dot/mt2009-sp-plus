@@ -26,6 +26,14 @@
 #      the exe takes a name from the pack registered first - the base one: a grey stone with its red glow instead of
 #      the green Metin wrapped in vines. GF's metinstone_16.msm/.dds under a name no client has (RACE_TREE), the four
 #      vnums' npclist lines pointed at it.
+# 4) the same pack - motions the official motlists name but no client has (the list's items 11 and 6b; syserr
+#    "cannot find motion file"): GF's motlist slips kept as they are (the staged packs stay GF's), the named file
+#    added as a copy of the motion meant (MOTION_STANDINS): empire_caocao_boss / smhtower_knight / smhtower_soldier /
+#    smhtower_soldier2 "normal_attack2msa" (no dot) = their normal_attack2.msa; snakevalley_pawn / snaketemple_pawn
+#    FRONT_DAMAGE "back_damage.msa" = their front_damage.msa (they had no hit motion); the Christmas cloud mount's
+#    WAIT1/WAIT2 (0 %) wait1.msa/wait2.msa = its wait.msa; maze_keingnoll_boss SPECIAL5 special_attack3_1.msa = its
+#    special_attack3.msa; the ice dragon NPC's SPAWN drop.msa = its loop.msa (its WAIT). Not fixable here (no client has them): GF's encrypted
+#    pet_fenfire_01/02.mse, npc_yut_result_02.mse; lion.psd is a developer path inside a base-client file.
 import os
 import re
 
@@ -192,9 +200,33 @@ def _gf(name):
     return open(GF + name[len('d:/'):], 'rb').read()
 
 
+MOTION_STANDINS = dict(
+    [('d:/ymir work/monster2/%s/normal_attack2msa' % r, 'd:/ymir work/monster2/%s/normal_attack2.msa' % r)
+     for r in ('empire_caocao_boss', 'smhtower_knight', 'smhtower_soldier', 'smhtower_soldier2')] +
+    [('d:/ymir work/monster2/%s/back_damage.msa' % r, 'd:/ymir work/monster2/%s/front_damage.msa' % r)
+     for r in ('snakevalley_pawn', 'snaketemple_pawn')] +
+    [('d:/ymir work/npc_mount/christmas_2024_cloud/wait%d.msa' % n, 'd:/ymir work/npc_mount/christmas_2024_cloud/wait.msa')
+     for n in (1, 2)] +
+    [('d:/ymir work/monster2/maze_keingnoll_boss/special_attack3_1.msa',
+      'd:/ymir work/monster2/maze_keingnoll_boss/special_attack3.msa'),
+     ('d:/ymir work/npc2/whitedragon_npc_ice/drop.msa', 'd:/ymir work/npc2/whitedragon_npc_ice/loop.msa')])
+
+
+def motlist_missing(text, folder, exists):
+    """[(line, file)] of a motlist whose file is in no pack (exists(name) -> bool)."""
+    out = []
+    for l in text.replace('\r', '').split('\n'):
+        t = l.split()
+        if len(t) >= 3 and not exists(folder + t[2].lower()):
+            out.append((l.strip(), t[2]))
+    return out
+
+
 def new_pack_files():
     """{in-pack name: bytes} of yfinal_mobs."""
     out = {}
+    for k, src in MOTION_STANDINS.items():
+        out[k] = _gf(src)
     for n in range(2, 6):
         k = 'd:/ymir work/monster2/metinstone_east/metinstone_east_%02d.dds' % n
         out[k] = _gf(k)
