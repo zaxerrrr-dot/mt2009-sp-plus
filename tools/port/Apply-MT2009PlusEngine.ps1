@@ -79,7 +79,8 @@ param(
 #   Talizmany Woli     item_attribute.cpp, item_manager.cpp (MT2009_PLUS_WILL_TALISMAN_V1;
 #                      server-patches/talizmanwoli)
 #   Zyly Jadeitu       mining.cpp (MT2009_PLUS_JADE_VEINS_V1; server-patches/jadeit)
-#   Strefy na ziemi    questlua_dungeon.cpp (MT2009_PLUS_DUNGEON_ZONE_V1; server-patches/strefy)
+#   Strefy na ziemi    questlua_dungeon.cpp, char_battle.cpp (MT2009_PLUS_DUNGEON_ZONE_V1,
+#                      MT2009_PLUS_DUNGEON_RAGE_V1; server-patches/strefy)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 

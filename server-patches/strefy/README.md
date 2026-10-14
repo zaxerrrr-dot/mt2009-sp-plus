@@ -25,6 +25,15 @@ d.zone_hurt(pid, proc, stała)
 - `znacznik` – każde trafienie dodaje 1 do flagi lochu `<znacznik><id postaci>` (quest liczy z niej np. osłabienie).
 - `d.zone_hurt` – te same prawdziwe obrażenia jednemu graczowi lochu (tyk osłabienia), też z wydarzenia.
 
+Dalsze dwie funkcje (`MT2009_PLUS_DUNGEON_RAGE_V1`, wiki TR „Alastor (Kolay)” / „(Zor)”):
+
+- `d.unique_damage_pct(klucz, proc)` – unikalny potwór lochu (`d.set_unique`) zadaje o `proc`% większe obrażenia
+  (0 = znowu zwykłe); `CHARACTER::Damage` (`char_battle.cpp`) pyta o to przy każdym ciosie potwora. Szał Alastora:
+  +10/15/20% (słaby), +20/30/40% (silny) – obok leczenia 10/20/30% / 30/40/50%.
+- `d.kick_dead(pid, x, y)` – gracz lochu, który wciąż leży martwy, wstaje z 50 PŻ (jak odrodzenie w mieście) i zostaje
+  przeniesiony na x, y (jednostki świata). Głębie: po 3 min (słaby) / 2 min (silny) na ziemi – wypada z wyprawy.
+  Świątynia Węży takiej zasady nie ma (wiki: limit 10 ożywień i rozłączenie ponad minutę – to już było).
+
 Lekkie dla 32-bitowego rdzenia: jedno wydarzenie na strefę, przy uderzeniu przegląd tylko graczy lochu (≤ 8).
 Bez wiersza 3975 w `mob_proto` strefy działają bez efektów (sam znacznik się nie pojawia).
 
@@ -44,9 +53,9 @@ i opóźnienia – z plików efektów (cząsteczka 625 = krąg ~3 m, lód/wąż 
 
 ## Pliki
 
-- Silnik: `questlua_dungeon.cpp` (lista `launcher/server-update-files.mod.txt`).
+- Silnik: `questlua_dungeon.cpp`, `char_battle.cpp` (lista `launcher/server-update-files.mod.txt`).
 - Questy: `linux-port/docker/game/quest/ymaps3_glebie.quest`, `swiatynia_wezy.quest`; nazwy `d.zone_attack`,
-  `d.zone_hurt` dopisane do `quest_functions` w Dockerfile.
+  `d.zone_hurt`, `d.unique_damage_pct`, `d.kick_dead` dopisane do `quest_functions` w Dockerfile.
 - Znacznik 3975: `tools/yohara_maps3/ymaps3_data.py` (`ZONE_MARKS`, `NPCLIST_ADD`) → `yohara_maps3.sql`,
   `ymaps3_mobs.json` (klient: mob_proto + npclist „warp”).
 - Efekty w kliencie: `client-patches/client-2.0.30/tools/ymaps3/stage_ymaps3.py` (`ZONE_EFFECTS` → paczka
