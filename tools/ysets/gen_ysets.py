@@ -102,7 +102,7 @@ SETS = (
      {3: [(P['MAX_HP'], 3500), (P['MELEE_MAGIC_ATT_BONUS_PER'], 15), (P['MOV_SPEED'], 7)]}),
 )
 SET_PROJECTS = (39112, 39111, 39110)          # Projekt Zestawu Broni, Zbroi, Helmu
-SET_PARTS = ('WEAPON', 'BODY', 'HEAD')
+SET_PARTS = (1, 2, 3)                         # set_part: 1 weapon, 2 armour, 3 helmet (server-patches/ysets)
 SET_GOLD = 100000000                          # de-wiki / Owsap: 100 000 000 Yang (+ 500 Gaya: no Gaya here)
 MOONSTONE = 30618                             # Kamien Ksiezycowy (the majestic set)
 # Statua Wojownika: shard II from 200 shards I (500k / 1 mln / 3 mln), princely/majestic II from 10 of the one
@@ -398,7 +398,7 @@ def write_cube():
             if moon:
                 L.append('item\t%d\t1' % MOONSTONE)
             L += ['reward\t%d\t1' % proj, 'gold\t%d' % SET_GOLD, 'percent\t%d' % pct, 'set_value\t%d' % sv,
-                  'set_part\t%s' % part, 'end', '']
+                  'set_part\t%d' % part, 'end', '']
     os.makedirs(os.path.dirname(CUBE_OUT), exist_ok=True)
     with open(CUBE_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L))

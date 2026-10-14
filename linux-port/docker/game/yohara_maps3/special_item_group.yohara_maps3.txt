@@ -47,7 +47,7 @@ Group	MT2009_yitems3_70411
 
 Group	MT2009_yitems3_70412
 {
-	Vnum	70412 -- B. Smocza Skrz. (ciezka) - left out: the Dark Dragon / serpent weapons and the dragon armours (none here yet), Biale Jajo Smoka (pet), Dumny Smok Pln. Wiatru (mount), Szklo Handlu, Male Blogoslawienstwo, Osobisty Sklepik Premium
+	Vnum	70412 -- B. Smocza Skrz. (ciezka) - left out: the Lycan's Szpon Wezowy / Pazur Smoka Mroku / Zbroja Smoka Nieba, Biale Jajo Smoka (pet), Dumny Smok Pln. Wiatru (mount), Szklo Handlu, Male Blogoslawienstwo, Osobisty Sklepik Premium
 	1	30617	1	20 -- Agat
 	2	31235	1	20 -- Biala Glowa Smoka
 	3	31236	1	20 -- Biala Smocza Luska
@@ -90,6 +90,24 @@ Group	MT2009_yitems3_70412
 	40	5216	1	10 -- Dzwon Wezowy (wykon.)
 	41	6166	1	10 -- Szpon Wezowy (wykon.)
 	42	7346	1	10 -- Wachlarz Wezowy (wykon.)
+	43	5200	1	5 -- Dzwon Wezowy+0
+	44	7330	1	5 -- Wachlarz Wezowy+0
+	45	1210	1	5 -- Sztylet Wezowy+0
+	46	2230	1	5 -- Luk Wezowy+0
+	47	360	1	5 -- Miecz Wezowy+0
+	48	380	1	5 -- Ostrze Wezowe+0
+	49	3250	1	5 -- Wielki Miecz Wezowy+0
+	50	5170	1	5 -- Dzwon Smoka Mroku+0
+	51	7310	1	5 -- Wachlarz Smoka Mroku+0
+	52	1190	1	5 -- Sztylet Smoka Mroku+0
+	53	2210	1	5 -- Luk Smoka Mroku+0
+	54	320	1	5 -- Miecz Smoka Mroku+0
+	55	340	1	5 -- Brzeszczot Smoka Mrok+0
+	56	3230	1	5 -- Ostrze Smoka Mroku+0
+	57	21230	1	5 -- Zbroja Smoka Wiatru+0
+	58	21250	1	5 -- Zbroja Smoka Magii+0
+	59	21270	1	5 -- Zbroja Boskiego Smoka+0
+	60	21210	1	5 -- Zbroja Smoka Mroku+0
 }
 
 Group	MT2009_yitems3_70429

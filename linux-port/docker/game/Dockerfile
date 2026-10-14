@@ -350,7 +350,7 @@ RUN set -eux; \
     # (Tajemniczy Oltarz on Namgan: the ticket, the talisman crafting), Krolestwo Zywiolow and Plaskowyz Sil Natury
     # (the port's portal, the rings, the medal, the plateau's HP drain, death -> the port); ymaps3_glebie is Glebie
     # Polnocnego Wiatru (Alastor, slaby/silny, at Upiorny Straznik); swiatynia_wezy is the temple's 7 levels.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy ysets; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1461,6 +1461,30 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
  && test "$(grep -c -E '^[0-9]+[[:blank:]]+[0-9]+$' "$L/sungma_mob_exp.txt")" -gt 300 \
  && rm -rf "$A" \
  && echo "share: Poziom Czempiona (sungma_table.txt, sungma_mob_exp.txt)"
+# MT2009_PLUS_YOHARA_SETS_V1 (share): the Yohara gear and the set effects (the owner, 14 October 2026; tools/ysets/
+# gen_ysets.py made ysets/cube.ysets.txt): Statua Wezy (20807) crafts the serpent weapons and armours from their
+# "(wykon.)" piece and Pyl Wezowy, Statua Wojownika (20433) refines the set shards, the five set blacksmiths
+# (20475-20479) put a set on a weapon / armour / helmet of level 75+ at +7 or more (set_value / set_part:
+# server-patches/ysets) - appended to cube.txt, none of their recipes may exist before; quest ysets opens the windows.
+# The blacksmiths stand in the port (Owsap's points 258 568 .. 254 572) beside Statua Wojownika.
+COPY ysets/ /tmp/ysets-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/ysets-add/cube.ysets.txt \
+ && P=$L/map/metin2_map_defensewave_port/npc.txt \
+ && ! grep -q -E '^npc[[:blank:]]+(20433|20807|2047[5-9])[[:space:]]*$' "$C" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$(grep -c -E '^npc[[:blank:]]+2047[5-9][[:space:]]*$' "$C")" -eq 15 \
+ && test "$(grep -c -E '^npc[[:blank:]]+20807[[:space:]]*$' "$C")" -eq 13 \
+ && test "$(grep -c -E '^npc[[:blank:]]+20433[[:space:]]*$' "$C")" -eq 15 \
+ && { [ -z "$(tail -c 1 "$P")" ] || printf '\r\n' >> "$P"; } \
+ && for p in "258 568 20475" "257 569 20476" "256 570 20477" "255 571 20478" "254 572 20479"; do \
+      set -- $p; \
+      grep -q -E "[[:blank:]]$3[[:space:]]*\$" "$P" || printf 'm\t%s\t%s\t0\t0\t0\t5\t60s\t100\t1\t%s\r\n' "$1" "$2" "$3" >> "$P"; \
+      test "$(grep -c -E "[[:blank:]]$3[[:space:]]*\$" "$P")" = 1 || exit 1; \
+    done \
+ && rm -rf /tmp/ysets-add \
+ && echo "share: Yohara sets - 43 cube recipes (Statua Wezy, Statua Wojownika, the set blacksmiths), the blacksmiths in the port"
 # MT2009_PLUS_YOHARA_MAPS3_V1 (share): the third batch of Yohara places (the owner, 14 October 2026; cache/yohara/
 # decyzje.md, plan-mapy-yohary.md; pl-wiki first, TR wiki for what it lacks) - Zejscie Polnocnego Wiatru (394,
 # metin2_map_whitedragoncave_02), Glebie Polnocnego Wiatru (395, _boss; dungeon), 1. poziom Swiatyni Wezy (390,

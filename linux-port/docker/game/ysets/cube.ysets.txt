@@ -285,7 +285,7 @@ reward	39112	1
 gold	100000000
 percent	50
 set_value	1
-set_part	WEAPON
+set_part	1
 end
 
 section
@@ -296,7 +296,7 @@ reward	39111	1
 gold	100000000
 percent	50
 set_value	1
-set_part	BODY
+set_part	2
 end
 
 section
@@ -307,7 +307,7 @@ reward	39110	1
 gold	100000000
 percent	50
 set_value	1
-set_part	HEAD
+set_part	3
 end
 
 section
@@ -318,7 +318,7 @@ reward	39112	1
 gold	100000000
 percent	40
 set_value	2
-set_part	WEAPON
+set_part	1
 end
 
 section
@@ -329,7 +329,7 @@ reward	39111	1
 gold	100000000
 percent	40
 set_value	2
-set_part	BODY
+set_part	2
 end
 
 section
@@ -340,7 +340,7 @@ reward	39110	1
 gold	100000000
 percent	40
 set_value	2
-set_part	HEAD
+set_part	3
 end
 
 section
@@ -351,7 +351,7 @@ reward	39112	1
 gold	100000000
 percent	30
 set_value	3
-set_part	WEAPON
+set_part	1
 end
 
 section
@@ -362,7 +362,7 @@ reward	39111	1
 gold	100000000
 percent	30
 set_value	3
-set_part	BODY
+set_part	2
 end
 
 section
@@ -373,7 +373,7 @@ reward	39110	1
 gold	100000000
 percent	30
 set_value	3
-set_part	HEAD
+set_part	3
 end
 
 section
@@ -384,7 +384,7 @@ reward	39112	1
 gold	100000000
 percent	20
 set_value	4
-set_part	WEAPON
+set_part	1
 end
 
 section
@@ -395,7 +395,7 @@ reward	39111	1
 gold	100000000
 percent	20
 set_value	4
-set_part	BODY
+set_part	2
 end
 
 section
@@ -406,7 +406,7 @@ reward	39110	1
 gold	100000000
 percent	20
 set_value	4
-set_part	HEAD
+set_part	3
 end
 
 section
@@ -418,7 +418,7 @@ reward	39112	1
 gold	100000000
 percent	15
 set_value	5
-set_part	WEAPON
+set_part	1
 end
 
 section
@@ -430,7 +430,7 @@ reward	39111	1
 gold	100000000
 percent	15
 set_value	5
-set_part	BODY
+set_part	2
 end
 
 section
@@ -442,5 +442,5 @@ reward	39110	1
 gold	100000000
 percent	15
 set_value	5
-set_part	HEAD
+set_part	3
 end
