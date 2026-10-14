@@ -38,9 +38,31 @@ wiki). Każdy jadeit dodaje do linii, które obręcz ma (wiki, „Verb” obręc
 
 Tworzenie obręczy (Mistrz Chi, quest `yohara_mapy4`) bez zmian.
 
+## Naszyjniki i kolczyki z jadeitu (`MT2009_PLUS_JADE_JEWELLERY_V1`)
+
+14.10.2026, właściciel: „Kolia Jadeitu …” (16580–16619) i „Klipsy Jadeitu …” (17570–17609) – Mgły ODP, Słońca INT,
+Nocy WIT, Dymu SIŁA; te same dwie linie, gniazda Diamentu i jadeit co obręcze, wartości wg stron wiki każdego rodzaju:
+
+| | +0 | +1 | +2 | +3 | +4 | +5 | +6 | +7 | +8 | +9 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Precyzja (wszystkie) | 1–2 | 2–3 | 3–4 | 4–5 | 5–6 | 6–7 | 7–8 | 8–10 | 9–11 | 10–14 |
+| Wola: obręcze, kolie | 1–2 | 3–4 | 5–6 | 7–8 | 9–10 | 11–12 | 13–14 | 15–17 | 18–20 | 21–24 |
+| Wola: klipsy | 1–2 | 2–4 | 3–6 | 5–8 | 7–10 | 9–12 | 13–14 | 15–17 | 18–20 | 21–24 |
+
+(Strona „Kolia Jadeitu Dymu” jako jedyna kolia podaje zakresy klipsów – przyjęte jak u trzech pozostałych kolii i u
+Owsapa, gdzie wszystkie trzy rodzaje mają jedną tabelę `ApplyRandomValue6`.)
+
+Jadeit w gniazdach kolii / klipsów: Precyzja +1 (3. gniazdo +2 na +9); Wola jak w obręczy, tylko 1. gniazdo klipsów
+zawsze +1. Silnik: przełącznik typów V1 (`item_attribute.cpp`, edycja `(types)`), tabela `CanPutInto` (`(jewel)`;
+wiersz kolczyków Turmalinu 17570 – to Klipsy Jadeitu Mgły, takich kolczyków nie mamy – wyzerowany jak u Owsapa,
+`(turmalin)`), tabele rodzajów w `playerbot_yohara_gear.cpp` (`JadeKindOf` – podtyp pancerza). Klient:
+`root/constinfo.py`, `yoharagear.py`. Tworzenie u Mistrza Chi (quest `yohara_mapy4`) i skrzynie wiki (krok Dockerfile
+`MT2009_PLUS_JADE_JEWELLERY_V1`, `linux-port/docker/game/jadejewel`).
+
 ## Silnik
 
-`item_manager.cpp` `(new)`, `item_attribute.cpp` `(refine)`, `item.cpp` `(socket points)`, `(jewel)` – 4 edycje, każda
+`item_manager.cpp` `(new)`, `item_attribute.cpp` `(refine)`, `(types)`, `item.cpp` `(socket points)`, `(jewel)`,
+`(turmalin)`, `(jewel)` naszyjników – 7 edycji, każda
 ze swoim znacznikiem (`gen_edits.py [<game/src>]`); logika: `playerbot_yohara_gear.cpp` (nakładka). Po
 `obreczjadeitu` (wywołania V1 są zastępowane), `precyzja` (`POINT_HIT_PCT`) i `rekawice`.
 

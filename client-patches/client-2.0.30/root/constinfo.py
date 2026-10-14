@@ -384,13 +384,14 @@ JewelAccessoryInfos = [
 		[ 50636,	14520,	16520,	17520 ],
 		[ 50637,	14540,	16540,	17540 ],
 		[ 50638,	14560,	16560,	17560 ],
-		[ 50639,	14570,	16570,	17570 ],
-		# MT2009_PLUS_JADE_BRACELET_V2: Jadeit Mgly / Slonca / Nocy / Dymu into their Obrecz Jadeitu only (the server's
-		# CItem::CanPutInto - server-patches/obreczjadeitu2); 0 = no necklace / earrings of jade here
-		[ 50664,	14580,	0,	0 ],
-		[ 50661,	14590,	0,	0 ],
-		[ 50662,	14600,	0,	0 ],
-		[ 50663,	14610,	0,	0 ],
+		# MT2009_PLUS_JADE_JEWELLERY_V1: Turmalin's earrings 17570 are Klipsy Jadeitu Mgly here (no such earrings)
+		[ 50639,	14570,	16570,	0 ],
+		# MT2009_PLUS_JADE_BRACELET_V2 / MT2009_PLUS_JADE_JEWELLERY_V1: Jadeit Mgly / Slonca / Nocy / Dymu into their
+		# Obrecz / Kolia / Klipsy Jadeitu only (the server's CItem::CanPutInto - server-patches/obreczjadeitu2)
+		[ 50664,	14580,	16580,	17570 ],
+		[ 50661,	14590,	16590,	17580 ],
+		[ 50662,	14600,	16600,	17590 ],
+		[ 50663,	14610,	16610,	17600 ],
 	]
 def GET_ACCESSORY_MATERIAL_VNUM(vnum, subType):
 	ret = vnum

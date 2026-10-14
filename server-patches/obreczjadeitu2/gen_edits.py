@@ -8,6 +8,7 @@ import os
 import sys
 
 M = 'MT2009_PLUS_JADE_BRACELET_V2'
+J = 'MT2009_PLUS_JADE_JEWELLERY_V1'
 V1 = 'MT2009_PLUS_JADE_BRACELET_V1'
 
 EDITS = [
@@ -43,6 +44,28 @@ EDITS = [
              '\t\t{ 50662, 14600, 0, 0 },\n'
              '\t\t{ 50663, 14610, 0, 0 },\n'
              '\t};\n'),
+    # MT2009_PLUS_JADE_JEWELLERY_V1 (the owner, 14 October: the necklaces and earrings of jade, pl-wiki "Kolia Jadeitu
+    # ...", "Klipsy Jadeitu ..."): the same two lines and sockets - V1's type switch (its guards against the 6/7
+    # changers, V2's create / refine / socket points all ask it) knows them; the ranges of each kind are the overlay's
+    dict(file='item_attribute.cpp', marker=J + ' (types)',
+         old='\t\tcase 14610: bWillType = POINT_SUNGMA_STR; return true;\n',
+         new='\t\tcase 14610: bWillType = POINT_SUNGMA_STR; return true;\n'
+             '\t\t// ' + J + ' (types): Kolia Jadeitu 16580-16619 and Klipsy Jadeitu 17570-17609 - the same Wills\n'
+             '\t\tcase 16580: case 17570: bWillType = POINT_SUNGMA_MOVE; return true;\n'
+             '\t\tcase 16590: case 17580: bWillType = POINT_SUNGMA_IMMUNE; return true;\n'
+             '\t\tcase 16600: case 17590: bWillType = POINT_SUNGMA_HP; return true;\n'
+             '\t\tcase 16610: case 17600: bWillType = POINT_SUNGMA_STR; return true;\n'),
+    # the jade into its necklace / earrings too (Owsap's table); Turmalin's earrings row (17570, no such item here) is
+    # Klipsy Jadeitu Mgly - out, as in Owsap's (the first row of a vnum decides)
+    dict(file='item.cpp', marker=J + ' (turmalin)',
+         old='\t\t{ 50639, 14570, 16570, 17570 },\n',
+         new='\t\t{ 50639, 14570, 16570, 0 }, // ' + J + ' (turmalin): 17570 is Klipsy Jadeitu Mgly\n'),
+    dict(file='item.cpp', marker=J + ' (jewel)',
+         old='\t\t{ 50664, 14580, 0, 0 },\n\t\t{ 50661, 14590, 0, 0 },\n\t\t{ 50662, 14600, 0, 0 },\n'
+             '\t\t{ 50663, 14610, 0, 0 },\n',
+         new='\t\t// ' + J + ' (jewel): and into their Kolia / Klipsy Jadeitu\n'
+             '\t\t{ 50664, 14580, 16580, 17570 },\n\t\t{ 50661, 14590, 16590, 17580 },\n'
+             '\t\t{ 50662, 14600, 16600, 17590 },\n\t\t{ 50663, 14610, 16610, 17600 },\n'),
 ]
 
 
@@ -50,6 +73,7 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     for e in EDITS:
         assert e['marker'] in e['new'], e['marker']
+    assert len(set(e['marker'] for e in EDITS)) == len(EDITS)
     if len(sys.argv) > 1:
         for e in EDITS:
             text = open(os.path.join(sys.argv[1], e['file']), 'rb').read().decode('latin-1')

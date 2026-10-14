@@ -59,17 +59,52 @@ namespace
 	// Demonow (value5 2) may give twice as much.
 	const int s_aiStoneWill[5] = { 1, 3, 6, 9, 15 };
 
-	// ---- Obrecze Jadeitu ----------------------------------------------------------------------------------------
-	// pl-wiki "Obrecz Jadeitu Mgly" (and Slonca, Nocy, Dymu): Precyzja and the Will of the jade, +0 .. +9.
+	// ---- Obrecze / Kolie / Klipsy Jadeitu --------------------------------------------------------------------------
+	// pl-wiki "Obrecz Jadeitu Mgly" (and Slonca, Nocy, Dymu), "Kolia Jadeitu ...", "Klipsy Jadeitu ...": Precyzja and
+	// the Will of the jade, +0 .. +9. MT2009_PLUS_JADE_JEWELLERY_V1: the earrings' pages give their own Will ranges
+	// at +1 .. +5 (the necklaces' the bracelets'; Kolia Jadeitu Dymu's page alone the earrings' - taken as its
+	// three sisters' and Owsap's one table, ApplyRandomValue6).
 	const short s_aJadePrecision[10][2] = { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 8 }, { 8, 10 },
 			{ 9, 11 }, { 10, 14 } };
 	const short s_aJadeWill[10][2] = { { 1, 2 }, { 3, 4 }, { 5, 6 }, { 7, 8 }, { 9, 10 }, { 11, 12 }, { 13, 14 }, { 15, 17 },
 			{ 18, 20 }, { 21, 24 } };
-	// the jade in the k-th socket (the wiki's "Verb<bonus>-<socket>-<level>"): what it adds to a line the bracelet has
+	const short s_aJadeEarWill[10][2] = { { 1, 2 }, { 2, 4 }, { 3, 6 }, { 5, 8 }, { 7, 10 }, { 9, 12 }, { 13, 14 },
+			{ 15, 17 }, { 18, 20 }, { 21, 24 } };
+	// the jade in the k-th socket (the wiki's "Verb<bonus>-<socket>-<level>"): what it adds to a line the item has
 	const short s_aJadeSocketPrecision[3][10] = { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 },
 			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 } };
 	const short s_aJadeSocketWill[3][10] = { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 }, { 1, 1, 1, 1, 1, 1, 1, 2, 2, 2 },
 			{ 1, 1, 1, 1, 1, 2, 3, 3, 4, 4 } };
+	// the necklaces and earrings: Precyzja +2 only in the 3rd socket at +9; the earrings' Will +1 in the 1st at +9
+	const short s_aJadeNeckEarSocketPrecision[3][10] = { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 } };
+	const short s_aJadeEarSocketWill[3][10] = { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 1, 1, 1, 1, 1, 1, 1, 2, 2, 2 },
+			{ 1, 1, 1, 1, 1, 2, 3, 3, 4, 4 } };
+
+	// the tables of each kind of jade jewellery (Mt2009JadeBraceletType - server-patches/obreczjadeitu - tells the
+	// vnums and the Will; the kind is the armour subtype)
+	struct JadeKind
+	{
+		BYTE bSubType;
+		const short (*pWill)[2];
+		const short (*pSocketPrecision)[10];
+		const short (*pSocketWill)[10];
+	};
+	const JadeKind s_aJadeKinds[] = {
+		{ ARMOR_WRIST, s_aJadeWill, s_aJadeSocketPrecision, s_aJadeSocketWill },
+		{ ARMOR_NECK, s_aJadeWill, s_aJadeNeckEarSocketPrecision, s_aJadeSocketWill },
+		{ ARMOR_EAR, s_aJadeEarWill, s_aJadeNeckEarSocketPrecision, s_aJadeEarSocketWill },
+	};
+
+	const JadeKind* JadeKindOf(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_ARMOR)
+			return NULL;
+		for (size_t i = 0; i < sizeof(s_aJadeKinds) / sizeof(s_aJadeKinds[0]); ++i)
+			if (s_aJadeKinds[i].bSubType == item->GetSubType())
+				return &s_aJadeKinds[i];
+		return NULL;
+	}
 }
 
 namespace yohara_gear
@@ -237,7 +272,7 @@ bool Mt2009GearSocketPoints(LPCHARACTER owner, long lSocket, bool bAdd)
 	return true;
 }
 
-// ==== the jade bracelets (V2) =======================================================================================
+// ==== the jade bracelets (V2), necklaces and earrings (MT2009_PLUS_JADE_JEWELLERY_V1) ===============================
 
 bool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType);	// server-patches/obreczjadeitu (item_attribute.cpp)
 
@@ -261,12 +296,13 @@ static void Mt2009JadeBraceletV2Write(LPITEM item, int iPrecision, int iWill)
 void Mt2009JadeBraceletV2Create(LPITEM item)
 {
 	BYTE bWillType;
-	if (!item || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
+	const JadeKind* pKind = JadeKindOf(item);
+	if (!pKind || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
 		return;
 	const int iLevel = item->GetVnum() % 10;
 	const int iLinePct = EventPct("will_tal_line_pct", 80);
 	const int iPrecision = number(1, 100) <= iLinePct ? RandomIn(s_aJadePrecision[iLevel]) : 0;
-	const int iWill = number(1, 100) <= iLinePct ? RandomIn(s_aJadeWill[iLevel]) : 0;
+	const int iWill = number(1, 100) <= iLinePct ? RandomIn(pKind->pWill[iLevel]) : 0;
 	Mt2009JadeBraceletV2Write(item, iPrecision, iWill);
 }
 
@@ -275,8 +311,10 @@ void Mt2009JadeBraceletV2Create(LPITEM item)
 void Mt2009JadeBraceletV2Refine(LPITEM pOld, LPITEM pNew)
 {
 	BYTE bWillType, bNewWillType;
-	if (!pOld || !pNew || !Mt2009JadeBraceletType(pOld->GetVnum(), bWillType) ||
-			!Mt2009JadeBraceletType(pNew->GetVnum(), bNewWillType) || bWillType != bNewWillType)
+	const JadeKind* pKind = JadeKindOf(pOld);
+	if (!pKind || !pNew || !Mt2009JadeBraceletType(pOld->GetVnum(), bWillType) ||
+			!Mt2009JadeBraceletType(pNew->GetVnum(), bNewWillType) || bWillType != bNewWillType ||
+			JadeKindOf(pNew) != pKind)
 		return;
 	const int iOld = pOld->GetVnum() % 10, iNew = pNew->GetVnum() % 10;
 	int iPrecision = 0, iWill = 0;
@@ -287,21 +325,22 @@ void Mt2009JadeBraceletV2Refine(LPITEM pOld, LPITEM pNew)
 		if (bType == POINT_HIT_PCT && !iPrecision)
 			iPrecision = Carry(iValue, s_aJadePrecision[iOld], s_aJadePrecision[iNew]);
 		else if (bType == bWillType && !iWill)
-			iWill = Carry(iValue, s_aJadeWill[iOld], s_aJadeWill[iNew]);
+			iWill = Carry(iValue, pKind->pWill[iOld], pKind->pWill[iNew]);
 	}
 	if (!iPrecision)
 		iPrecision = RandomIn(s_aJadePrecision[iNew]);
 	if (!iWill)
-		iWill = RandomIn(s_aJadeWill[iNew]);
+		iWill = RandomIn(pKind->pWill[iNew]);
 	Mt2009JadeBraceletV2Write(pNew, iPrecision, iWill);
 }
 
 // CItem::ModifyPoints: the jade in the Diamond's sockets (the engine's accessory sockets, socket 0 = how many are
-// filled) adds the wiki's values to the lines the bracelet has - they add up.
+// filled) adds the wiki's values (of the item's kind) to the lines the bracelet / necklace / earrings have - they add up.
 void Mt2009JadeBraceletSocketPoints(LPITEM item, LPCHARACTER owner, bool bAdd)
 {
 	BYTE bWillType;
-	if (!item || !owner || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
+	const JadeKind* pKind = JadeKindOf(item);
+	if (!pKind || !owner || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
 		return;
 	const int iLevel = item->GetVnum() % 10;
 	const int iFilled = MINMAX(0, item->GetAccessorySocketGrade(), (int) yohara_gear::JADE_SOCKET_MAX);
@@ -316,8 +355,8 @@ void Mt2009JadeBraceletSocketPoints(LPITEM item, LPCHARACTER owner, bool bAdd)
 	int iPrecision = 0, iWill = 0;
 	for (int k = 0; k < iFilled; ++k)
 	{
-		iPrecision += s_aJadeSocketPrecision[k][iLevel];
-		iWill += s_aJadeSocketWill[k][iLevel];
+		iPrecision += pKind->pSocketPrecision[k][iLevel];
+		iWill += pKind->pSocketWill[k][iLevel];
 	}
 	if (bPrecision && iPrecision)
 		owner->PointChange(POINT_HIT_PCT, bAdd ? iPrecision : -iPrecision);

@@ -15,6 +15,10 @@
 --     z Surowego Metalu, Mg³y nic wiêcej / S³oñca 2 Ska¿one Rdzenie / Nocy 5 K³ów Argosa / Dymu 10 £usek Argosa,
 --     1 000 000 Yang, 100 / 200 / 300 / 400 Gaya - przedmiot 95927, MT2009_PLUS_GAYA_V1 - szansa 30%, przy
 --     pora¿ce przedmioty przepadaj¹).
+-- MT2009_PLUS_JADE_JEWELLERY_V1 (w³aœciciel, 14.10: naszyjniki i kolczyki jadeitowe wg wiki): Mistrz Chi wytwarza te¿
+--   Kolie Jadeitu (16580-16619) i Klipsy Jadeitu (17570-17609) +0 - wiki "Wytwarzanie Naszyjników" / "Wytwarzanie
+--   Kolczyków", sekcja Mistrz Chi: te same przepisy co obrêcze (jadeit, p³yty, dodatek, Gaya, 1 000 000 Yang, 30%);
+--   jedna pozycja w menu NPC: "Bi¿uteria z jadeitu" -> rodzaj -> przedmiot.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest yohara_mapy4 begin
 	state start begin
@@ -33,11 +37,18 @@ quest yohara_mapy4 begin
 				},
 				craft_fee = 1000000, craft_fee_text = "1 000 000", craft_pct = 30, plates = 31216,
 				gaya = 95927,                                 -- wiki "Wytwarzanie Bransolet": KosztGaya
-				bracelets = {
-					{vnum = 14580, jade = 50664, plates = 25, gaya = 100},
-					{vnum = 14590, jade = 50661, plates = 30, extra = 31226, extra_n = 2, gaya = 200},
-					{vnum = 14600, jade = 50662, plates = 25, extra = 31227, extra_n = 5, gaya = 300},
-					{vnum = 14610, jade = 50663, plates = 30, extra = 31228, extra_n = 10, gaya = 400},
+				-- Mg³y, S³oñca, Nocy, Dymu (wiki: ten sam przepis dla obrêczy, kolii i klipsów)
+				recipes = {
+					{jade = 50664, plates = 25, gaya = 100},
+					{jade = 50661, plates = 30, extra = 31226, extra_n = 2, gaya = 200},
+					{jade = 50662, plates = 25, extra = 31227, extra_n = 5, gaya = 300},
+					{jade = 50663, plates = 30, extra = 31228, extra_n = 10, gaya = 400},
+				},
+				-- rodzaje: +0 kolejnych przepisów (Owsap: co 10)
+				kinds = {
+					{name = "Obrêcze Jadeitu", first = 14580},
+					{name = "Kolie Jadeitu", first = 16580},
+					{name = "Klipsy Jadeitu", first = 17570},
 				},
 			}
 		end
@@ -96,27 +107,37 @@ quest yohara_mapy4 begin
 			syschat("Obok ciebie pojawi³ siê Metin z Yohary.")
 		end
 
-		when 20823.chat."Obrêcze Jadeitu" with pc.get_map_index() == 373 begin
+		when 20823.chat."Bi¿uteria z jadeitu" with pc.get_map_index() == 373 begin
 			local c = yohara_mapy4.cfg()
 			say_title(mob_name(20823)..":")
 			say("Z jadeitu i p³yt z surowego metalu wykujê ci")
-			say("obrêcz przepe³nion¹ wol¹ SungMa.")
-			say("")
-			for i = 1, table.getn(c.bracelets) do
-				local b = c.bracelets[i]
-				local need = "10x "..item_name(b.jade)..", "..b.plates.."x "..item_name(c.plates)
-				if b.extra then
-					need = need..", "..b.extra_n.."x "..item_name(b.extra)
-				end
-				need = need..", "..b.gaya.." Gaya"
-				say_reward(item_name(b.vnum)..": "..need)
-			end
-			say_reward("Ka¿da: "..c.craft_fee_text.." Yang, szansa "..c.craft_pct.."%. Gdy siê nie uda, przedmioty przepadaj¹.")
-			local s = select(item_name(14580), item_name(14590), item_name(14600), item_name(14610), "Nie teraz")
-			if s < 1 or s > table.getn(c.bracelets) then
+			say("obrêcz, koliê albo klipsy przepe³nione wol¹ SungMa.")
+			say("Któr¹ bi¿uteriê mam wykuæ?")
+			local k = select(c.kinds[1].name, c.kinds[2].name, c.kinds[3].name, "Nie teraz")
+			if k < 1 or k > table.getn(c.kinds) then
 				return
 			end
-			local b = c.bracelets[s]
+			local kind = c.kinds[k]
+			say_title(mob_name(20823)..":")
+			say("Przepisy - "..kind.name..":")
+			say("")
+			for i = 1, table.getn(c.recipes) do
+				local r = c.recipes[i]
+				local need = "10x "..item_name(r.jade)..", "..r.plates.."x "..item_name(c.plates)
+				if r.extra then
+					need = need..", "..r.extra_n.."x "..item_name(r.extra)
+				end
+				need = need..", "..r.gaya.." Gaya"
+				say_reward(item_name(kind.first + (i - 1) * 10)..": "..need)
+			end
+			say_reward("Za ka¿dy przedmiot: "..c.craft_fee_text.." Yang, szansa "..c.craft_pct.."%. Gdy siê nie uda, przedmioty przepadaj¹.")
+			local s = select(item_name(kind.first), item_name(kind.first + 10), item_name(kind.first + 20),
+				item_name(kind.first + 30), "Nie teraz")
+			if s < 1 or s > table.getn(c.recipes) then
+				return
+			end
+			local b = c.recipes[s]
+			local vnum = kind.first + (s - 1) * 10
 			local miss = nil
 			if pc.count_item(b.jade) < 10 then
 				miss = item_name(b.jade)
@@ -136,7 +157,7 @@ quest yohara_mapy4 begin
 				say("Masz za ma³o Yang.")
 				return
 			end
-			if not pc.enough_inventory(b.vnum) then
+			if not pc.enough_inventory(vnum) then
 				say("Zrób miejsce w ekwipunku.")
 				return
 			end
@@ -148,8 +169,8 @@ quest yohara_mapy4 begin
 			pc.remove_item(c.gaya, b.gaya)
 			pc.change_money(-c.craft_fee)
 			if number(1, 100) <= c.craft_pct then
-				pc.give_item2(b.vnum, 1)
-				say("Uda³o siê! Oto "..item_name(b.vnum)..".")
+				pc.give_item2(vnum, 1)
+				say("Uda³o siê! Oto "..item_name(vnum)..".")
 			else
 				say("Nie uda³o siê. Materia³y przepad³y.")
 			end

@@ -3660,8 +3660,10 @@ ishop_once yohara_scrolls_622 "INSERT IGNORE INTO common.itemshop_items (\`index
 fi
 
 # MT2009_PLUS_YOHARA_MAPS4_V1 / MT2009_PLUS_YOHARA_ITEMS4_V1: yohara_items4.sql (tools/yohara_maps4/gen_yitems4.py) -
-# the jade bracelets 14580-14619 (+ refine_proto 22701-22709), Kamien Metin z Yohara, Plat. Skrzynia / Klucz, Przeb.
-# Ksiega Zwierza (the owner's items of 14 October; the drop files and chests of game/yohara_maps2-4 name them).
+# the jade bracelets 14580-14619 (+ refine_proto 22701-22709), necklaces 16580-16619 and earrings 17570-17609
+# (MT2009_PLUS_JADE_JEWELLERY_V1, the same refine rows), Kamien Metin z Yohara, Plat. Skrzynia / Klucz, Przeb.
+# Ksiega Zwierza (the owner's items of 14 October; the drop files and chests of game/yohara_maps2-4 and the
+# Dockerfile step MT2009_PLUS_JADE_JEWELLERY_V1 name them).
 # Rozpadlina Dusz (389, the owner, 14 October 2026) - after the third batch and the
 # elements' files (zywioly_moby.sql clears bits 11-16 of every mob it does not list): yohara_maps4.sql
 # (tools/yohara_maps4/gen_ymaps4.py) - its 14 monsters and bosses, 3 NPCs and 3 portals (Wawoz -> here, here ->

@@ -22,5 +22,23 @@
   "marker": "MT2009_PLUS_JADE_BRACELET_V2 (jewel)",
   "old": "\t\t{ 50639, 14570, 16570, 17570 },\n\t};\n",
   "new": "\t\t{ 50639, 14570, 16570, 17570 },\n\t\t// MT2009_PLUS_JADE_BRACELET_V2 (jewel): Jadeit Mgly / Slonca / Nocy / Dymu into their Obrecz Jadeitu only (pl-wiki\n\t\t// \"Jadeit Mgly\": into a pocket a Diamond made, at most 3; the jewellery of jade has no necklace or earrings here)\n\t\t{ 50664, 14580, 0, 0 },\n\t\t{ 50661, 14590, 0, 0 },\n\t\t{ 50662, 14600, 0, 0 },\n\t\t{ 50663, 14610, 0, 0 },\n\t};\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_JEWELLERY_V1 (types)",
+  "old": "\t\tcase 14610: bWillType = POINT_SUNGMA_STR; return true;\n",
+  "new": "\t\tcase 14610: bWillType = POINT_SUNGMA_STR; return true;\n\t\t// MT2009_PLUS_JADE_JEWELLERY_V1 (types): Kolia Jadeitu 16580-16619 and Klipsy Jadeitu 17570-17609 - the same Wills\n\t\tcase 16580: case 17570: bWillType = POINT_SUNGMA_MOVE; return true;\n\t\tcase 16590: case 17580: bWillType = POINT_SUNGMA_IMMUNE; return true;\n\t\tcase 16600: case 17590: bWillType = POINT_SUNGMA_HP; return true;\n\t\tcase 16610: case 17600: bWillType = POINT_SUNGMA_STR; return true;\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_JADE_JEWELLERY_V1 (turmalin)",
+  "old": "\t\t{ 50639, 14570, 16570, 17570 },\n",
+  "new": "\t\t{ 50639, 14570, 16570, 0 }, // MT2009_PLUS_JADE_JEWELLERY_V1 (turmalin): 17570 is Klipsy Jadeitu Mgly\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_JADE_JEWELLERY_V1 (jewel)",
+  "old": "\t\t{ 50664, 14580, 0, 0 },\n\t\t{ 50661, 14590, 0, 0 },\n\t\t{ 50662, 14600, 0, 0 },\n\t\t{ 50663, 14610, 0, 0 },\n",
+  "new": "\t\t// MT2009_PLUS_JADE_JEWELLERY_V1 (jewel): and into their Kolia / Klipsy Jadeitu\n\t\t{ 50664, 14580, 16580, 17570 },\n\t\t{ 50661, 14590, 16590, 17580 },\n\t\t{ 50662, 14600, 16600, 17590 },\n\t\t{ 50663, 14610, 16610, 17600 },\n"
  }
 ]

@@ -8,7 +8,7 @@
 #   3) their lines at the end of pack/Index;
 #   4) the existing packs "gamedata" and "dbdata" (patch_ymaps4_client.py): gamedata/mob_proto - the 20 rows of
 #      yohara_maps4.sql with their elements (the stand-in portals 10145/10146 out); gamedata/atlasinfo.txt - the map's
-#      row; gamedata/item_list.txt, gamedata/item_proto (dbdata) and locale/pl/itemdesc.txt (dbdata) - the 44 items of
+#      row; gamedata/item_list.txt, gamedata/item_proto (dbdata) and locale/pl/itemdesc.txt (dbdata) - the 124 items of
 #      yohara_items4.sql (tools/yohara_maps4/yohara_items4.json).
 # The map's name on the minimap (localeinfo.py MINIMAP_ZONE_NAME_DICT) and the items' icons (root/icon/item) travel in
 # client-2.0.30/root like every root change.
