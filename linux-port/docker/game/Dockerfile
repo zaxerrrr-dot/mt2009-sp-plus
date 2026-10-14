@@ -2381,6 +2381,23 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/demonstones; F="$L/mob_dr
  && rm -rf "$A" \
  && echo "share: Kamien Demonow +1..+4 - Metins, chiefs, chests (MT2009_PLUS_DEMON_STONES_V1)"
 
+# MT2009_PLUS_JADE_JEWELLERY_V1 (the owner, 14 October 2026; pl-wiki "Kolia Jadeitu ...", "Klipsy Jadeitu ...",
+# "Obrecz Jadeitu ...": Pochodzenie): after every share append (the Yohara batches' chests are in) -
+# jadejewel/special_item_group.jadejewel.awk gives the chests the wiki names the jade jewellery +0: Id. Skrzynia
+# Naszyjniku 83052 (Kolia Mgly / Nocy / Slonca + Luska Argosa), Id. Skrzynia Kolczykow 83053 (Klipsy Mgly / Nocy /
+# Slonca + Luska Argosa), Skrzynia Labiryntowa 31256 (Kolia / Obrecz / Klipsy Slonca and Mgly), Szkatulka Yohara 50528
+# (Klipsy / Kolia / Obrecz Mgly) - 4 chests, 17 rows. Mistrz Chi makes all twelve (quest yohara_mapy4).
+COPY jadejewel/ /tmp/jadejewel/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/jadejewel; G="$L/special_item_group.txt" \
+ && ! grep -q 'MT2009_PLUS_JADE_JEWELLERY_V1' "$G" \
+ && awk -v report="$A/report" -f "$A/special_item_group.jadejewel.awk" "$G" > "$G.new" \
+ && mv "$G.new" "$G" \
+ && cat "$A/report" \
+ && test "$(sed -n 's/^chests //p' "$A/report")" = 4 \
+ && test "$(grep -c 'MT2009_PLUS_JADE_JEWELLERY_V1' "$G")" = 17 \
+ && rm -rf "$A" \
+ && echo "share: the jade necklaces / earrings / bracelets in the wiki's chests (MT2009_PLUS_JADE_JEWELLERY_V1)"
+
 # The cores run unprivileged and read this tree by path; a directory only root
 # can enter costs every quest below it, silently. Repair, then assert.
 RUN set -eu; \
