@@ -594,11 +594,13 @@ static bool Mt2009YSetsCubeResultList(LPCHARACTER ch, DWORD npcVNUM)
 	std::vector<std::pair<DWORD, CUBE_DATA*> >& rList = s_mapMt2009YSetsCubeList[ch->GetPlayerID()];
 	rList.clear();
 	std::string strText;
+	bool bPlaceholder = false;
 	for (int iPart = 1; iPart <= 3; ++iPart)
 	{
 		CUBE_DATA* pRecipe = apRecipe[iPart - 1];
 		if (!pRecipe)
 			continue;
+		bool bPart = false;
 		for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
 		{
 			LPITEM item = ch->GetInventoryItem(i);
@@ -618,6 +620,21 @@ static bool Mt2009YSetsCubeResultList(LPCHARACTER ch, DWORD npcVNUM)
 				break;
 			strText += szEntry;
 			rList.push_back(std::make_pair(item->GetVnum(), pRecipe));
+			bPart = true;
+		}
+		// MT2009_PLUS_YOHARA_SETS_V3 (the owner, 14 October): every part is always listed - with no piece of it in the
+		// inventory, its recipe's Projekt Zestawu (the reward) stands for it: the materials and the Yang are shown, and
+		// making it asks for the piece in the window (Mt2009YSetsCubeMake).
+		if (!bPart && pRecipe->reward.size() > 0)
+		{
+			char szEntry[32];
+			snprintf(szEntry, sizeof(szEntry), "%u,1/", pRecipe->reward[0].vnum);
+			if (strText.size() + strlen(szEntry) + 48 < CHAT_MAX_LEN)
+			{
+				strText += szEntry;
+				rList.push_back(std::make_pair(pRecipe->reward[0].vnum, pRecipe));
+				bPlaceholder = true;
+			}
 		}
 	}
 	if (rList.empty())
@@ -625,6 +642,8 @@ static bool Mt2009YSetsCubeResultList(LPCHARACTER ch, DWORD npcVNUM)
 		ch->ChatPacket(CHAT_TYPE_INFO, @NOPIECE@);
 		return true;
 	}
+	if (bPlaceholder)
+		ch->ChatPacket(CHAT_TYPE_INFO, @NOPIECE@);
 	strText.erase(strText.size() - 1);
 	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube r_list %u %u %s", npcVNUM, (unsigned int)rList.size(), strText.c_str());
 	return true;
@@ -643,11 +662,16 @@ static bool Mt2009YSetsCubeMaterialInfo(LPCHARACTER ch, DWORD npcVNUM, int iStar
 	{
 		const CUBE_DATA* pRecipe = it->second[i].second;
 		char szPart[64];
-		snprintf(szPart, sizeof(szPart), "%u,1", it->second[i].first);
-		std::string strOne = szPart;
+		std::string strOne;
+		// MT2009_PLUS_YOHARA_SETS_V3: a part's stand-in (its Projekt, no piece in the inventory) lists the recipe alone
+		if (!(pRecipe->reward.size() > 0 && it->second[i].first == pRecipe->reward[0].vnum))
+		{
+			snprintf(szPart, sizeof(szPart), "%u,1", it->second[i].first);
+			strOne = szPart;
+		}
 		for (size_t j = 0; j < pRecipe->item.size(); ++j)
 		{
-			snprintf(szPart, sizeof(szPart), "&%u,%d", pRecipe->item[j].vnum, pRecipe->item[j].count);
+			snprintf(szPart, sizeof(szPart), "%s%u,%d", strOne.empty() ? "" : "&", pRecipe->item[j].vnum, pRecipe->item[j].count);
 			strOne += szPart;
 		}
 		if (pRecipe->gold > 0)

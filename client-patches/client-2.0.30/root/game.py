@@ -2853,6 +2853,10 @@ class GameWindow(ui.ScriptWindow):
 		self.interface.CloseCubeWindow()
 
 	def BINARY_Cube_UpdateInfo(self, gold, itemVnum, count):
+		# MT2009_PLUS_YOHARA_SETS_V3 (the owner, 14 October): at a set blacksmith (20475-20479) the window shows the
+		# recipes' Yang (from "cube m_info") until the pieces in it match one - the server's "cube info 0" said "0 Yang".
+		if 0 == int(gold) and getattr(self, "cubeSmithGold", 0) and getattr(self, "currentCubeNPC", 0) in (20475, 20476, 20477, 20478, 20479):
+			gold = self.cubeSmithGold
 		self.interface.UpdateCubeInfo(gold, itemVnum, count)
 
 	def BINARY_Cube_Succeed(self, itemVnum, count):
@@ -2922,6 +2926,9 @@ class GameWindow(ui.ScriptWindow):
 				splitResult = eachResultText.split("/")
 				if 1 < len(splitResult):
 					gold = int(splitResult[1])
+					if self.currentCubeNPC in (20475, 20476, 20477, 20478, 20479) and gold > 0: # MT2009_PLUS_YOHARA_SETS_V3
+						self.cubeSmithGold = gold
+						self.interface.UpdateCubeInfo(gold, 0, 0)
 
 				#print "splitResult : ", splitResult
 				eachMaterialList = splitResult[0].split("&")
