@@ -22,7 +22,20 @@ EVENT_ARRANGE_AFFECT_LIST = "EVENT_ARRANGE_AFFECT_LIST" # args | width: number, 
 # MT2009_PLUS_AUTOHUNT_TIME_ICON_V1: the server's affect of Auto Lowy's time.
 AFFECT_AUTOHUNT_TIME = 560
 
+# MT2009_PLUS_SKILL9_V1: Tarcza Eteru (the Shaman's 9th skill, 182) and the protection it gives every 12 s
+# (the server's affect 608, playerbot_skill9.h AFFECT_CHEONUN_INVINCIBILITY).
+AFFECT_SKILL9_CHEONUN = 182
+AFFECT_SKILL9_CHEONUN_PROTECT = 608
+
 AFFECT_SHOW_DATA = {
+	AFFECT_SKILL9_CHEONUN : {
+		"description" : "Tarcza Eteru: szansa na ochronê co 12 s: %d%%",
+		"icon" : "d:/ymir work/ui/skill/shaman/cheonun_03.sub",
+	},
+	AFFECT_SKILL9_CHEONUN_PROTECT : {
+		"description" : "Tarcza Eteru: ochrona przed obra¿eniami",
+		"icon" : "d:/ymir work/ui/skill/common/affect/cheonun.sub",
+	},
 	chr.NEW_AFFECT_DS_SET : {
 		"description" : "Bonus zestawu Smoczych Kamieni",
 		"icon" : "icon/item/110000.tga",

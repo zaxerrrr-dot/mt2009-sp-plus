@@ -231,5 +231,9 @@
 // the blow, the text tail higher, skill range -200 like the other huge races) and on metin2_defensewave a targeted
 // skill on a huge race (or with IGNORE_BLOCK) skips the 'target stands in a block' check - the Hydra is in the sea.
 #define ENABLE_MT2009_SHIP_DEFENSE_CLIENT
+// MT2009_PLUS_SKILL9_V1 (the 9th skills of Yohara, server-patches/skill9): the motions of Trzesienie, Swiatlo Gwiazd,
+// Strzal Wichury, Piekielny Cios, Fala Smierci, Meteor and Tarcza Eteru on all 8 races - skilldesc's motion 9 (first
+// group) / 24 (second group), the grades +25 (PythonPlayerSettingsModule.cpp; the files: client pack yskill9).
+#define ENABLE_NINTH_SKILL
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
