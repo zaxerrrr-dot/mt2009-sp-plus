@@ -467,18 +467,20 @@ def main():
         x, y = check_free(g, int(t[1]), int(t[2]), 'Yilad boss', rep)
         boss.append(spawn_line('m', x, y, 10, '3600s', order[j % len(order)]))
     rep('  bosses: %d (Skazony Wodz / Wodz Wojenny, mrok and ziemia) on Ameria\'s spots, 1 h' % len(boss))
-    # Metins: Ameria's three rings of 11 (10 s, a farm) - every second spot, 30 min; the wiki's three Metins by GF's
-    # positions: the east ring Shiho (8066 at 1120,470), the middle Jin (8065 at 920,300), the west Uwaznosci
+    # Metins: Ameria's three rings of 11 (10 s, a farm) - two spots of each ring (its first and the one farthest from
+    # it), six in all, every 30 min (the owner, 14 October: "Yilad: 6 Metinow co 30 min"); the wiki's three Metins by
+    # GF's positions: the east ring Shiho (8066 at 1120,470), the middle Jin (8065 at 920,300), the west Uwaznosci
     stone = []
     rings = collections.defaultdict(list)
     for t in read_lines(os.path.join(am, 'stone.txt')):
         x = int(t[1])
         rings[8066 if x > 1050 else 8064 if x < 400 else 8065].append((x, int(t[2])))
     for v, pts in sorted(rings.items()):
-        for x, y in pts[::2]:
+        far = max(pts, key=lambda p: (p[0] - pts[0][0]) ** 2 + (p[1] - pts[0][1]) ** 2)
+        for x, y in (pts[0], far):
             x, y = check_free(g, x, y, 'Yilad Metin', rep)
             stone.append(spawn_line('m', x, y, 10, '1800s', v))
-    rep('  Metins: %d (of Ameria\'s %d spots: every second one), 30 min' % (
+    rep('  Metins: %d (of Ameria\'s %d spots: two a ring), 30 min' % (
         len(stone), sum(len(p) for p in rings.values())))
     npc = []
     for t in read_lines(os.path.join(am, 'npc.txt')):

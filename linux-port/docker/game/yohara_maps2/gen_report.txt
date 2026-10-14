@@ -48,7 +48,7 @@
   regen: 513 monsters (Ameria 483 + Skazony Wojownik 30)
   Yilad boss: 1312,550 is blocked -> 1301,541
   bosses: 11 (Skazony Wodz / Wodz Wojenny, mrok and ziemia) on Ameria's spots, 1 h
-  Metins: 17 (of Ameria's 33 spots: every second one), 30 min
+  Metins: 6 (of Ameria's 33 spots: two a ring), 30 min
   veins: 6 (Żyła Jadeitu Nocy, Żyła Jadeitu Mgły), range 30, 600 s
 388 Wawoz Polnocnego Wiatru (metin2_map_icecrystalcave) - placed here
   portal 10140 (to Yilad): 1140,915 is blocked -> 1125,902

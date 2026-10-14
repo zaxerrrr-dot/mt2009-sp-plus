@@ -49,9 +49,9 @@ nie pasują do terenu Wąwozu – bossowie, Metiny i NPC Wąwozu stoją tu w mie
 - **Przełęcz Yilad**: Ameria (`home.tar.gz`: regen 483 pojedyncze potwory co 30 s, boss 11 miejsc, stone 33 miejsca,
   npc 3) przełożona na wiki: żywioł potworów na przemian (mrok 6758–6764 / ziemia 6875–6881), Skażony Wojownik
   6760/6877 (Ameria go nie ma) ×6 w każdym z 5 punktów GF; bossowie Skażony Wódz / Wódz Wojenny (oba żywioły) na 11
-  miejscach Amerii, co godzinę; Metiny: Ameria ma 33× Metin Szacunku co 10 s w trzech pierścieniach (farma) – tu co
-  drugie miejsce (17), co 30 min, wg wiki i punktów GF: wschodni pierścień Metin Shiho 8066, środkowy Metin Jin 8065,
-  zachodni Metin Uważności 8064; NPC: Łowca Głów 20841, Statua Węży 20844, Strażnik Węży 20804; portale Owsapa 10137
+  miejscach Amerii, co godzinę; Metiny: Ameria ma 33× Metin Szacunku co 10 s w trzech pierścieniach (farma) – tu
+  po dwa miejsca z pierścienia (6; właściciel 14.10: „Yilad: 6 Metinów co 30 min”), co 30 min, wg wiki i punktów
+  GF: wschodni pierścień Metin Shiho 8066, środkowy Metin Jin 8065, zachodni Metin Uważności 8064; NPC: Łowca Głów 20841, Statua Węży 20844, Strażnik Węży 20804; portale Owsapa 10137
   (do Namgan) i 10139 (do Wąwozu, u Owsapa wykomentowany NPC misji – tu portal).
 - **Wąwóz Północnego Wiatru** – rozstawione tutaj: zwykłe potwory jako grupy po 4 (nasze grupy 9170–9175, gg 4040 lód /
   4041 błyskawice) w punktach rozrzuconych po całym osiągalnym terenie (wypełnienie od miejsca przybycia z Yilad,
