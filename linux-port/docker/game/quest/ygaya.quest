@@ -128,7 +128,7 @@ quest ygaya begin
 			if left < 60 then
 				return "mniej ni¿ minuta"
 			end
-			return math.floor(left / 3600).." godz. "..math.floor(math.mod(left, 3600) / 60).." min"
+			return math.floor(left / 3600).." godz. "..math.floor((left - math.floor(left / 3600) * 3600) / 60).." min"
 		end
 
 		function buy(slot)
@@ -185,7 +185,7 @@ quest ygaya begin
 				say("Masz "..pc.count_item(c.gaya).." Gaya. Nowa oferta za: "..ygaya.time_text()..".")
 				say("Z ka¿dego slotu kupisz jedn¹ rzecz na ofertê.")
 				for slot = 1, 9 do
-					if math.mod(slot, 3) == 1 then
+					if slot == 1 or slot == 4 or slot == 7 then
 						say_reward("Rz¹d "..ygaya.row_of(slot)..":")
 					end
 					say(ygaya.slot_text(slot))
@@ -237,7 +237,7 @@ quest ygaya begin
 			if v < 28000 or v > 28343 then
 				return false
 			end
-			return math.mod(v, 100) <= 43
+			return v - math.floor(v / 100) * 100 <= 43
 		end
 
 		function grind()
