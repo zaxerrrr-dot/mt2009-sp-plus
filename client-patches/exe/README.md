@@ -415,3 +415,8 @@ Smoczych Kamieni pomniejszony `wndMgr.SetButtonScale` między strzałą a kolczy
 afektów: buff na mapie Sung Ma, debuff każdej statystyki poniżej wymagań i za małej Precyzji – `.sub` GF z
 `skill9_common.dds` paczki `yskill9`, bez niej ikony okna postaci); `uicharacter.py` (statystyki z procentem Woli);
 `localeinfo_point.py` (nazwy 193–197); `constinfo.py` (jadeit → Obręcz Jadeitu).
+
+Też w tej rundzie (błąd 1 z testów – znikająca 9. umiejętność): `UserInterface/PythonNetworkStreamPhaseGame.cpp`
+`RecvSkillLevelNew` – pod `ENABLE_NINTH_SKILL` exe nie czyści już miejsca 7 okna umiejętności (`SetSkill(7, 0)`) ani nie
+oddaje go umiejętnościom języków 112–115; miejsce 7 to 9. umiejętność (root). Miejsce 8 bez zmian. Obejście w pythonie
+(`RestoreNinthSkillSlot`) może zostać – nic nie psuje.

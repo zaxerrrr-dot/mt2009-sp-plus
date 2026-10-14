@@ -3259,15 +3259,23 @@ bool CPythonNetworkStream::RecvSkillLevelNew()
 
 	CPythonPlayer& rkPlayer=CPythonPlayer::Instance();
 
+#ifdef ENABLE_NINTH_SKILL
+	// MT2009_PLUS_YOHARA_EXE2_V1 (ninth skill slot): slot 7 holds the 9th skill (root uiCharacter); the old exe emptied it
+	// on every skill packet and gave it to the language skills 112-115 - the 9th skill vanished from the window.
+	rkPlayer.SetSkill(8, 0);
+#else
 	rkPlayer.SetSkill(7, 0);
 	rkPlayer.SetSkill(8, 0);
+#endif
 
 	for (int i = 0; i < SKILL_MAX_NUM; ++i)
 	{
 		TPlayerSkill & rPlayerSkill = packet.skills[i];
 
+#ifndef ENABLE_NINTH_SKILL
 		if (i >= 112 && i <= 115 && rPlayerSkill.bLevel)
 			rkPlayer.SetSkill(7, i);
+#endif
 
 		if (i >= 116 && i <= 119 && rPlayerSkill.bLevel)
 			rkPlayer.SetSkill(8, i);
