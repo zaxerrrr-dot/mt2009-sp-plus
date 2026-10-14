@@ -189,9 +189,9 @@ MAPS_game1="$MAPS_game1 358"
 # Nowego Kontynentu (368), Dongan (373), Opuszczona Twierdza (374), Seoganland (376), Namgan (377), Przelecz Yilad
 # (385), Wawoz Polnocnego Wiatru (388), Schronienie Polnocnego Wiatru (393) and, reserved for the next batch, the
 # Krolestwo Zywiolow's fourth land (381), the Swiatynia Wezy (390/391), Zejscie / Glebie Polnocnego Wiatru
-# (394/395) and the Tajemnicza Instancja (396). An index is announced only once share/locale/poland/map/index names
-# it (yohara_maps_present below), so a reserved map no image carries yet is never offered to the db core. Before:
-# 367 on game1 (a person's party bots followed onto the ship - they cannot now: a bot cannot cross cores, and the
+# (394/395), the Tajemnicza Instancja (396) and Rozpadlina Dusz (389, MT2009_PLUS_YOHARA_MAPS4_V1). An index is
+# announced only once share/locale/poland/map/index names it (yohara_maps_present below), so a reserved map no image
+# carries yet is never offered to the db core. Before: 367 on game1 (a person's party bots followed onto the ship - they cannot now: a bot cannot cross cores, and the
 # owner moved the ship with the rest of Yohara), 368/373/374 on game2. 301-304 are not Yohara and stay. People
 # cross to and from Yohara by warp (the Fisherman 9009 on 301 -> 367, the Hydra's portal / Pierscien Hydry -> 368,
 # the guards' d.new_jump_pids over P2P as before). Sung Ma maps: no bot may enter one (sungma_table.txt), so the
@@ -200,7 +200,7 @@ MAPS_game1="$MAPS_game1 358"
 # one-channel world publishes BASE..BASE+3 (update.sh, the launcher, the installers widen the range); its P2P
 # port is 14003+ the same way. Memory: game2 hosted 301/303/368/373/374 in ~0.27 GB (13 October, the test
 # server); this core's maps are ~170 sectors of terrain in all - well under 1 GB of the 32-bit core's 4 GB.
-MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396"
+MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389"
 yohara_maps_present() {
   local idx="$SHARE_DIR/locale/poland/map/index" m out=""
   for m in $MAPS_game3_all; do

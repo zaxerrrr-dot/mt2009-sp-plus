@@ -8,7 +8,7 @@
 #      <staging>/add/<pack>/<in-pack path> ("d_/" = "d:/");
 #   2) the existing pack "property": the maps' object properties added (none of ours replaced);
 #   3) their lines at the end of pack/Index;
-#   4) the existing pack "gamedata" (patch_ymaps2_client.py, append only): gamedata/mob_proto - the 79 rows of
+#   4) the existing pack "gamedata" (patch_ymaps2_client.py, append only): gamedata/mob_proto - the 77 rows of
 #      yohara_maps2.sql; gamedata/atlasinfo.txt - the five maps' rows.
 # The maps' names on the minimap (localeinfo.py MINIMAP_ZONE_NAME_DICT) travel in client-2.0.30/root like every root
 # change.

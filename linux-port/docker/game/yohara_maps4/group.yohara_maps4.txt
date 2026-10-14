@@ -1,0 +1,55 @@
+// MT2009_PLUS_YOHARA_MAPS4_V1: Rozpadlina Dusz (389) - ours, four a group (Owsap has no group of these
+// monsters; tools/yohara_maps4/gen_ymaps4.py, GENERATED)
+Group	MT2009_ymaps4_Rozpadlina_lod_01
+{
+	Vnum	9190
+	Leader	"Opetany Mrozny Jelen"	6777
+	1	"Opetany Mrozny Jelen"	6777
+	2	"Opetany Sniezny Leopard"	6778
+	3	"Opetany Sniezny Leopard"	6778
+}
+
+Group	MT2009_ymaps4_Rozpadlina_lod_02
+{
+	Vnum	9191
+	Leader	"Yeti Pln. Wiatru"	6779
+	1	"Yeti Pln. Wiatru"	6779
+	2	"Duch Pln. Wiatru"	6780
+	3	"Opetany Sniezny Leopard"	6778
+}
+
+Group	MT2009_ymaps4_Rozpadlina_lod_03
+{
+	Vnum	9192
+	Leader	"Golem Pln. Wiatru"	6781
+	1	"Duch Pln. Wiatru"	6780
+	2	"Yeti Pln. Wiatru"	6779
+	3	"Opetany Mrozny Jelen"	6777
+}
+
+Group	MT2009_ymaps4_Rozpadlina_blysk_01
+{
+	Vnum	9193
+	Leader	"Opetany Mrozny Jelen"	6889
+	1	"Opetany Mrozny Jelen"	6889
+	2	"Opetany Sniezny Leopard"	6890
+	3	"Opetany Sniezny Leopard"	6890
+}
+
+Group	MT2009_ymaps4_Rozpadlina_blysk_02
+{
+	Vnum	9194
+	Leader	"Yeti Pln. Wiatru"	6891
+	1	"Yeti Pln. Wiatru"	6891
+	2	"Duch Pln. Wiatru"	6892
+	3	"Opetany Sniezny Leopard"	6890
+}
+
+Group	MT2009_ymaps4_Rozpadlina_blysk_03
+{
+	Vnum	9195
+	Leader	"Golem Pln. Wiatru"	6893
+	1	"Duch Pln. Wiatru"	6892
+	2	"Yeti Pln. Wiatru"	6891
+	3	"Opetany Mrozny Jelen"	6889
+}

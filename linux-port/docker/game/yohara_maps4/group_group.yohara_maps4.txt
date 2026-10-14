@@ -1,0 +1,17 @@
+// MT2009_PLUS_YOHARA_MAPS4_V1: Rozpadlina Dusz (389) - the "r" lines of its regen.txt: 4042 lod, 4043
+// blyskawice (tools/yohara_maps4/gen_ymaps4.py, GENERATED)
+Group	MT2009_ymaps4_rozpadlina_lod
+{
+	Vnum	4042
+	1	9190	1
+	2	9191	1
+	3	9192	1
+}
+
+Group	MT2009_ymaps4_rozpadlina_blysk
+{
+	Vnum	4043
+	1	9193	1
+	2	9194	1
+	3	9195	1
+}

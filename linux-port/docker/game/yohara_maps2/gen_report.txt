@@ -58,11 +58,10 @@
   veins: 6 (Żyła Jadeitu Dymu, Żyła Jadeitu Nocy, Żyła Jadeitu Słońca), range 30, 600 s
 393 Schronienie Polnocnego Wiatru (metin2_map_whitedragoncave_01)
   regen: 39 of Owsap's 1051 centres on blocked GF ground moved to the nearest free metre
-  portal 10146 (to Wawoz): 62,622 is blocked -> 64,626
 376 metin2_map_eastplain_02: 0 spawn centre(s) on blocked ground
 377 metin2_map_eastplain_03: 0 spawn centre(s) on blocked ground
 385 metin2_map_snakevalley: 0 spawn centre(s) on blocked ground
 388 metin2_map_icecrystalcave: 0 spawn centre(s) on blocked ground
 393 metin2_map_whitedragoncave_01: 0 spawn centre(s) on blocked ground
-spawned vnums of this batch: 79 new ([6718, 6719, 6720, 6721, 6722, 6723] ...), 2 of the first batch: [6705, 8067]
-yohara_maps2.sql: 79 rows
+spawned vnums of this batch: 77 new ([6718, 6719, 6720, 6721, 6722, 6723] ...), 2 of the first batch: [6705, 8067]
+yohara_maps2.sql: 77 rows

@@ -7,7 +7,7 @@
 #   textureset and its textures, the msenv (fog as exe 2.0.25 reads it) and its skybox, the atlas, every object of
 #   every sector (areadata CRC -> a property of pack property -> its model/effect/tree and, for a Building, the
 #   .mdatr), every race of the maps (npclist -> .msm) and every name the staged text files give; the new packs
-#   under the 29 MB limit and in Index; gamedata: the 79 mob_proto rows of yohara_maps2.sql and the five atlasinfo rows.
+#   under the 29 MB limit and in Index; gamedata: the 77 mob_proto rows of yohara_maps2.sql and the five atlasinfo rows.
 # Run in the m2pack-lzo image, on the OUT the whole chain (cape301, maps302, shipdefense, port368, ymaps, ymaps2) was built into:
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/ymaps2/verify_ymaps2.py \
 #     <OUT pack dir> [<work dir with c58.lst>] [<npclist.txt>]

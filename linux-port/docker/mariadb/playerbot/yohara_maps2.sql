@@ -9,8 +9,8 @@
 -- "ziemia", "wiatr", "lod", "blyskawice") is set by zywioly_moby.sql (tools/zywioly rule h, YOHARA_ELEMENTS2).
 -- NPCs (Lowca Glow x5, Straznik Wezy, Statua Wezy, Straznik Pln. Wiatru, Zagubiony Zwiadowca, Tajemniczy Oltarz) on
 -- our NPC numbers - they stand where the official ones stand, no quests yet. The jade veins 30310-30313 likewise
--- (mining.cpp: server-patches/jadeit). Portals 10127-10140 with Owsap's targets (10139 is a quest NPC there),
--- 10145/10146 ours: Wawoz <-> Schronienie in place of the way through Rozpadlina Dusz (not here yet).
+-- (mining.cpp: server-patches/jadeit). Portals 10127-10140 with Owsap's targets (10139 is a quest NPC there);
+-- Wawoz <-> Schronienie go through Rozpadlina Dusz (yohara_maps4.sql).
 SET NAMES utf8mb4;
 
 INSERT IGNORE INTO world.mob_proto (`vnum`,`name`,`locale_name`,`rank`,`type`,`battle_type`,`level`,`size`,`ai_flag`,`mount_capacity`,`setRaceFlag`,`setImmuneFlag`,`empire`,`folder`,`on_click`,`st`,`dx`,`ht`,`iq`,`damage_min`,`damage_max`,`max_hp`,`regen_cycle`,`regen_percent`,`gold_min`,`gold_max`,`exp`,`def`,`attack_speed`,`move_speed`,`aggressive_hp_pct`,`aggressive_sight`,`attack_range`,`drop_item`,`resurrection_vnum`,`enchant_curse`,`enchant_slow`,`enchant_poison`,`enchant_stun`,`enchant_critical`,`enchant_penetrate`,`enchant_fire`,`enchant_root`,`resist_sword`,`resist_twohand`,`resist_dagger`,`resist_bell`,`resist_fan`,`resist_bow`,`resist_fire`,`resist_elect`,`resist_magic`,`resist_wind`,`resist_poison`,`dam_multiply`,`summon`,`drain_sp`,`mob_color`,`polymorph_item`,`skill_level0`,`skill_vnum0`,`skill_level1`,`skill_vnum1`,`skill_level2`,`skill_vnum2`,`skill_level3`,`skill_vnum3`,`skill_level4`,`skill_vnum4`,`sp_berserk`,`sp_stoneskin`,`sp_godspeed`,`sp_deathblow`,`sp_revive`) VALUES
@@ -77,8 +77,6 @@ INSERT IGNORE INTO world.mob_proto (`vnum`,`name`,`locale_name`,`rank`,`type`,`b
 (10137,'Namgan 13184 4735','Namgan 13184 4735',0,3,3,70,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',0,0,0,0,0,0,0,3954,3,1,0,0,562,79,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (10139,'WawozPlnW 1106 15997','WawozPlnW 1106 15997',0,3,3,70,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',0,0,0,0,0,0,0,3954,3,1,0,0,562,79,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (10140,'PrzeleczYilad 83 14763','PrzeleczYilad 83 14763',0,3,3,70,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',0,0,0,0,0,0,0,3954,3,1,0,0,562,79,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-(10145,'SchronPlnW 10064 12672','SchronPlnW 10064 12672',0,3,3,70,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',0,0,0,0,0,0,0,3954,3,1,0,0,562,79,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-(10146,'WawozPlnW 262 15404','WawozPlnW 262 15404',0,3,3,70,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',0,0,0,0,0,0,0,3954,3,1,0,0,562,79,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (20804,'Serpent Guardian','Strażnik Węży',5,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,175,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (20805,'Northwind Guardian','Strażnik Płn. Wiatru',5,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,175,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (20814,'Lost Scout','Zagubiony Zwiadowca',5,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,CURSE,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,175,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),

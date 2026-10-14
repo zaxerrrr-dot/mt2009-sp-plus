@@ -17,7 +17,10 @@ Korean name of Owsap's portal 10139 "WawozPlnW." (whose target, 1106 15997, lies
 map_mob_list.txt puts the wiki's Wawoz monsters (Zamarzniety Lis .. Wodz Wojenny 6770-6776/6882-6888, Metin Shiho
 8066, Metin z Gumar 8077) on 388 at positions up to 1077,905 - outside a 3x3 map - and whitdragonvalley carries the
 NPCs of the wiki's Rozpadlina Dusz (Straznik Rozpad. Dusz 20806, General Kohan 20808, Lowca Glow (Roz.Pln.W.) 20846)
-and its monsters (389: the deer, leopards, yetis 6777-6783). Rozpadlina Dusz is not part of this batch (the owner).
+and its monsters (389: the deer, leopards, yetis 6777-6783). Rozpadlina Dusz is the fourth batch's
+(tools/yohara_maps4/gen_ymaps4.py): its portal 10142 on Wawoz (GF 235,267) and Schronienie's 10201 (GF 19,640) are
+put there by that batch's Dockerfile step - none here (10145/10146, this batch's stand-in Wawoz <-> Schronienie, are
+gone: the owner, 14 October).
 
 Writes (all GENERATED - edit this file, run it again):
   linux-port/docker/game/yohara_maps2/map/<folder>/{Setting,Town,regen,boss,stone,npc}.txt (+ server_attr from --attr)
@@ -121,9 +124,8 @@ NPCS = {
 VEINS = (30310, 30311, 30312, 30313)
 
 # the portals (type WARP: "<name> <x> <y>", x/y = the global position / 100). Owsap's 10127-10140 with their
-# official targets; 10139 is an NPC in Owsap (a quest gate) - a portal here; 10145/10146 are ours: Wawoz <->
-# Schronienie stand in for the way through Rozpadlina Dusz (not here yet) - the wiki: Wawoz -> Rozpadlina ->
-# Schronienie. Every name ASCII (the engine reads the target from the name).
+# official targets; 10139 is an NPC in Owsap (a quest gate) - a portal here. Wawoz <-> Schronienie go through
+# Rozpadlina Dusz (the wiki; the fourth batch). Every name ASCII (the engine reads the target from the name).
 WARPS = collections.OrderedDict([
     (10127, 'Dongan 10551 4881'),           # Seoganland -> Dongan (55,529)
     (10128, 'Seoganland 12218 4895'),       # Dongan -> Seoganland (698,543)
@@ -133,8 +135,6 @@ WARPS = collections.OrderedDict([
     (10137, 'Namgan 13184 4735'),           # Przelecz Yilad -> Namgan (896,383)
     (10139, 'WawozPlnW 1106 15997'),        # Przelecz Yilad -> Wawoz (1106,893)
     (10140, 'PrzeleczYilad 83 14763'),      # Wawoz -> Przelecz Yilad (83,683)
-    (10145, None),                          # Wawoz -> Schronienie (filled in main: its Town)
-    (10146, None),                          # Schronienie -> Wawoz (filled in main)
 ])
 
 # -- groups ---------------------------------------------------------------------------------------------------
@@ -505,8 +505,10 @@ def main():
     h = hints[388]
     arrive_yilad = (1106, 893)          # 10139's target
     p_back = check_free(g, 1140, 915, 'portal 10140 (to Yilad)', rep)
-    p_shelter = check_free(g, 235, 270, 'portal 10145 (to Schronienie)', rep)
-    arrive_shelter = check_free(g, 262, 300, 'arrival from Schronienie', rep)
+    # kept clear for Rozpadlina Dusz (the fourth batch puts its portal 10142 at GF's 235,267; 10143 brings people to
+    # 247,288): the spots this batch's stand-in portal 10145 and its arrival had - the spawns stay as they were
+    p_shelter = check_free(g, 235, 270, 'the portal to Rozpadlina Dusz', rep)
+    arrive_shelter = check_free(g, 262, 300, 'the arrival from Rozpadlina Dusz', rep)
     npcs = [(20805, check_free(g, 503, 456, 'Straznik Pln. Wiatru', rep)),
             (20845, check_free(g, 1117, 871, 'Lowca Glow (Waw.Pln.W.)', rep))]
     reach = g.reach([arrive_yilad])
@@ -564,13 +566,11 @@ def main():
     rep('  Metins: %d (Shiho / z Gumar), 30 min' % len(stone))
     npc = [spawn_line('m', p[0], p[1], 0, '1m', v, direction=1) for v, p in npcs]
     npc.append(spawn_line('m', p_back[0], p_back[1], 0, '10s', 10140))
-    npc.append(spawn_line('m', p_shelter[0], p_shelter[1], 0, '10s', 10145))
     regen += veins(g, reach, rng, (30312, 30311, 30310), 6, avoid, rep)
     put(f, 'regen.txt', regen)
     put(f, 'boss.txt', boss)
     put(f, 'stone.txt', stone)
     put(f, 'npc.txt', npc)
-    waw_back = arrive_shelter
 
     # ---------------------------------------------------------------- Schronienie Polnocnego Wiatru (393)
     M = MAPS[393]
@@ -583,18 +583,12 @@ def main():
     for t in read_lines(os.path.join(o, 'npc.txt')):
         x, y = check_free(g, int(t[1]), int(t[2]), 'NPC %s' % t[10], rep)
         npc.append(spawn_line('m', x, y, 0, '1m', int(t[10]), direction=int(t[6])))
-    town = (80, 640)
-    p_wawoz = check_free(g, 62, 622, 'portal 10146 (to Wawoz)', rep)
     p_hunter = check_free(g, 98, 628, 'Lowca Glow (Schron.)', rep)
     npc.append(spawn_line('m', p_hunter[0], p_hunter[1], 0, '1m', 20847, direction=1))
-    npc.append(spawn_line('m', p_wawoz[0], p_wawoz[1], 0, '10s', 10146))
     put(f, 'regen.txt', regen)
     put(f, 'boss.txt', boss)
     put(f, 'stone.txt', [])
     put(f, 'npc.txt', npc)
-    WARPS[10145] = 'SchronPlnW %d %d' % (M['base'][0] // 100 + town[0], M['base'][1] // 100 + town[1])
-    WARPS[10146] = 'WawozPlnW %d %d' % (MAPS[388]['base'][0] // 100 + waw_back[0],
-                                         MAPS[388]['base'][1] // 100 + waw_back[1])
     for v, n in WARPS.items():
         assert len(n) <= 24, n
 
@@ -796,8 +790,8 @@ SQL_HEADER = """-- MT2009_PLUS_YOHARA_MAPS2_V1: the second batch of Yohara maps 
 -- "ziemia", "wiatr", "lod", "blyskawice") is set by zywioly_moby.sql (tools/zywioly rule h, YOHARA_ELEMENTS2).
 -- NPCs (Lowca Glow x5, Straznik Wezy, Statua Wezy, Straznik Pln. Wiatru, Zagubiony Zwiadowca, Tajemniczy Oltarz) on
 -- our NPC numbers - they stand where the official ones stand, no quests yet. The jade veins 30310-30313 likewise
--- (mining.cpp: server-patches/jadeit). Portals 10127-10140 with Owsap's targets (10139 is a quest NPC there),
--- 10145/10146 ours: Wawoz <-> Schronienie in place of the way through Rozpadlina Dusz (not here yet).
+-- (mining.cpp: server-patches/jadeit). Portals 10127-10140 with Owsap's targets (10139 is a quest NPC there);
+-- Wawoz <-> Schronienie go through Rozpadlina Dusz (yohara_maps4.sql).
 SET NAMES utf8mb4;
 
 """

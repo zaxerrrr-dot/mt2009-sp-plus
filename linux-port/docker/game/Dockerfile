@@ -350,7 +350,9 @@ RUN set -eux; \
     # (Tajemniczy Oltarz on Namgan: the ticket, the talisman crafting), Krolestwo Zywiolow and Plaskowyz Sil Natury
     # (the port's portal, the rings, the medal, the plateau's HP drain, death -> the port); ymaps3_glebie is Glebie
     # Polnocnego Wiatru (Alastor, slaby/silny, at Upiorny Straznik); swiatynia_wezy is the temple's 7 levels.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy; do \
+    # yohara_mapy4 is Rozpadlina Dusz (389, MT2009_PLUS_YOHARA_MAPS4_V1): its level guard and General Kohan's way
+    # into Schronienie Polnocnego Wiatru.
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1478,7 +1480,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
 # before. The port gets Owsap's elemental portal (3998, 229,585); sungma_table.txt the two dungeons (the wiki's first
 # levels: Glebie slaby 60/50/60/65, the temple's 2nd level 35/25/35/40 - one requirement a map name here); the dungeon
 # panel its three dungeons (Glebie from 1 person - the owner, 14 October; quest flag ymaps3_glebie_party); /goto
-# zejscie, swiatynia, instancja, zywioly, plaskowyz. The monsters' rows: mariadb/playerbot/yohara_maps3.sql. The connections into other batches' maps: the late step "Yohara maps 3: links".
+# zejscie, swiatynia, instancja, zywioly, plaskowyz. The monsters' rows: mariadb/playerbot/yohara_maps3.sql. The
+# connections into other batches' maps: the late step "Yohara maps 3: links".
 COPY yohara_maps3/ /tmp/yohara-maps3-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -1706,14 +1709,15 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting_data
 # Spawns: Owsap's (376, 377, 393) with the wiki's missing monsters / bosses / Metins at GF's positions, Ameria's (385)
 # with the wiki's monsters and Metins, ours on Wawoz (Owsap's density, GF's positions decide lod / blyskawice). Jade
 # veins (server-patches/jadeit) as the wiki names them. Portals: Dongan's to Seoganland (10128, appended to Dongan's
-# npc.txt), Seoganland <-> Namgan <-> Przelecz Yilad <-> Wawoz <-> Schronienie (Owsap's 10127-10140, ours 10145/10146
-# in place of Rozpadlina Dusz). Groups: Owsap's group 6185-6192, 6711-6715, 9150-9157 / group_group 6706-6710,
-# 6715-6719, 4030-4033, ours 9170-9175 / 4040-4041; drops mob_drop_item.yohara_maps2.txt (55 mobs; Wodz Wojenny
-# Schronienia's Zamarzniety Klucz a "limit" group of its own - one a kill, the owner 14 October) and the new chests
-# special_item_group.yohara_items2.txt (tools/yohara_items/gen_yitems2.py) - none may exist before. The jade ores
-# are smelted by the guild alchemists (after MT2009_PLUS_JEWELS75_V1's step: the same lists). After the champion step
-# (sungma_table.txt names all five: Sung Ma maps, no bot may enter) and before the belt materials' (which reads every
-# drop group). Rows: mariadb/playerbot/yohara_maps2.sql, yohara_items2.sql.
+# npc.txt), Seoganland <-> Namgan <-> Przelecz Yilad <-> Wawoz (Owsap's 10127-10140); Wawoz <-> Schronienie go
+# through Rozpadlina Dusz (the next step, MT2009_PLUS_YOHARA_MAPS4_V1). Groups: Owsap's group 6185-6192, 6711-6715,
+# 9150-9157 / group_group 6706-6710, 6715-6719, 4030-4033, ours 9170-9175 / 4040-4041; drops
+# mob_drop_item.yohara_maps2.txt (55 mobs; Wodz Wojenny Schronienia's Zamarzniety Klucz a "limit" group of its own -
+# one a kill, the owner 14 October) and the new chests special_item_group.yohara_items2.txt
+# (tools/yohara_items/gen_yitems2.py) - none may exist before. The jade ores are smelted by the guild alchemists
+# (after MT2009_PLUS_JEWELS75_V1's step: the same lists). After the champion step (sungma_table.txt names all five:
+# Sung Ma maps, no bot may enter) and before the belt materials' (which reads every drop group). Rows:
+# mariadb/playerbot/yohara_maps2.sql, yohara_items2.sql.
 COPY yohara_maps2/ /tmp/yohara-maps2-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps2-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -1775,6 +1779,72 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps2-add \
  && { LC_ALL=C grep -a -q 'add_goto_info("schronienie"' "$S" || printf 'add_goto_info("schronienie", 0, 393, 10064, 12672)\r\n' >> "$S"; } \
  && rm -rf "$A" \
  && echo "share: Yohara - Seoganland (376), Namgan (377), Przelecz Yilad (385), Wawoz (388), Schronienie (393): GF terrain, spawns, groups, drops, chests, jade"
+# MT2009_PLUS_YOHARA_MAPS4_V1 (share): Rozpadlina Dusz (389, metin2_map_whitdragonvalley, 3x3 at 128000 1510400 -
+# Owsap's index; the owner, 14 October 2026, cache/yohara/decyzje.md "14.10 rano"; the pl-wiki) on the Yohara core
+# (bin/m2-render-config MAPS_game3_all). Every file made by tools/yohara_maps4/gen_ymaps4.py (yohara_maps4/README.md):
+# server_attr from GF 26.1.11's attr.atr, Ameria's bosses (8 spots, the wiki's four bosses, 1 h), Metins (two spots
+# of each of its three rings, Shiho / Gumar, 30 min) and NPCs (= Owsap's = GF's points: Straznik Rozpad. Dusz,
+# General Kohan, Lowca Glow, the portal 10143 to Wawoz), ours the regular monsters (Wawoz's method; groups 9190-9195,
+# group_group 4042 lod / 4043 blyskawice), drops mob_drop_item.yohara_maps4.txt - none may exist before. The way as
+# in the game, in place of the second batch's stand-in Wawoz <-> Schronienie (10145/10146, gone): Wawoz's portal
+# 10142 (GF's point 235,267) and Schronienie's 10201 (GF's 19,640) from links.yohara_maps4.txt into those maps'
+# npc.txt (after the second batch's step), General Kohan -> Schronienie (quest yohara_mapy4). sungma_table.txt has
+# the map (35/25/35/40 - the wiki's): a Sung Ma map, no bot enters. sungma_mob_exp.txt gets Owsap's 38 for 6889
+# (Opetany Mrozny Jelen, blyskawice - missing from Owsap's SungMaExp list). /goto rozpadlina. Rows:
+# mariadb/playerbot/yohara_maps4.sql (+ yohara_maps4_zywioly.sql).
+COPY yohara_maps4/ /tmp/yohara-maps4-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps4-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && set -- 389 metin2_map_whitdragonvalley 0c0000000c000000 128000 1510400 \
+ && { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+      && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+      && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+      && test -s "$L/map/$2/Town.txt" && test -s "$L/map/$2/npc.txt" && test -s "$L/map/$2/regen.txt" \
+      && test -s "$L/map/$2/boss.txt" && test -s "$L/map/$2/stone.txt" \
+      && grep -q -E "^$2[[:blank:]]+35[[:blank:]]+25[[:blank:]]+35[[:blank:]]+40[[:space:]]*\$" "$L/sungma_table.txt" \
+      && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+      && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+      && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+      && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+      || { echo "FATAL: Yohara map $1 $2"; exit 1; } \
+ && for p in "388 metin2_map_icecrystalcave 10142 10145" "393 metin2_map_whitedragoncave_01 10201 10146"; do \
+      set -- $p; N="$L/map/$2/npc.txt"; \
+      { grep -q -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index" \
+        && ! grep -q -E "[[:blank:]]($3|$4)[[:space:]]*\$" "$N" \
+        && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+        && grep -E "^$1[[:blank:]]" "$A/links.yohara_maps4.txt" | cut -f2- >> "$N" \
+        && test "$(grep -c -E "^m[[:blank:]].*[[:blank:]]$3[[:space:]]*\$" "$N")" = 1; } \
+        || { echo "FATAL: Rozpadlina Dusz link $3 on $2"; exit 1; }; \
+    done \
+ && f="$L/group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+919[0-5][[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_maps4.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+919[0-5][[:space:]]*$' "$f")" = 6 \
+ && f="$L/group_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+404[23][[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group_group.yohara_maps4.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+404[23][[:space:]]*$' "$f")" = 2 \
+ && F="$L/mob_drop_item.txt" \
+ && MV='(677[7-9]|678[0-3]|689[0-5])' \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_maps4.txt" >> "$F" \
+ && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 14 \
+ && E="$L/sungma_mob_exp.txt" \
+ && { grep -q -E '^6889[[:blank:]]' "$E" || { { [ -z "$(tail -c 1 "$E")" ] || printf '\n' >> "$E"; }; printf '6889\t38\n' >> "$E"; }; } \
+ && test "$(grep -c -E '^(677[7-9]|678[0-3]|689[0-5])[[:blank:]]+[0-9]+[[:space:]]*$' "$E")" = 14 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[389\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_MAPS4_V1\r\ntranslate.general.map_names[389] = "Rozpadlina Dusz"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("rozpadlina"' "$S" || printf 'add_goto_info("rozpadlina", 0, 389, 1830, 15794)\r\n' >> "$S"; } \
+ && rm -rf "$A" \
+ && echo "share: Yohara - Rozpadlina Dusz (389): GF terrain, Ameria's bosses / Metins / NPCs, our monsters, groups, drops, the portals 10142 (Wawoz) / 10201 (Schronienie)"
 
 # MT2009_PLUS_BELT_MATS_V1 (the owner, 7 October): the belt materials drop. After every other
 # mob_drop_item.txt append (dungeons, Arezzo, the drop edit), so it sees all of their groups:

@@ -2,7 +2,7 @@
 # MT2009_PLUS_YOHARA_MAPS2_V1 (client data) - Seoganland (376), Namgan (377), Przelecz Yilad (385), Wawoz Polnocnego
 # Wiatru (388) and Schronienie Polnocnego Wiatru (393) in the client's gamedata (the method of ../ymaps):
 #
-#   mob_proto     the 79 rows of linux-port/docker/mariadb/playerbot/yohara_maps2.sql (monsters, Metins, NPCs, jade
+#   mob_proto     the 77 rows of linux-port/docker/mariadb/playerbot/yohara_maps2.sql (monsters, Metins, NPCs, jade
 #                 veins, portals) on the record of 101 (monsters, stones) or 9012 (NPC, portal);
 #   atlasinfo.txt the five maps' rows (= the server's Setting.txt; they overlap none of ours).
 # npclist.txt has every race already (client 2.0.61). APPEND ONLY: a vnum/map already there with other content is a
@@ -28,7 +28,7 @@ ATLAS = ['metin2_map_eastplain_02\t1152000\t435200\t3\t6',    # = linux-port/doc
          'metin2_map_snakevalley\t0\t1408000\t6\t3',
          'metin2_map_icecrystalcave\t0\t1510400\t5\t4',
          'metin2_map_whitedragoncave_01\t998400\t1203200\t6\t6']
-ROWS = 79
+ROWS = 77
 Collision = sd.Collision
 
 

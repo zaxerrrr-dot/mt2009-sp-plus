@@ -3520,7 +3520,7 @@ fi
 # MT2009_PLUS_YOHARA_MAPS2_V1 / MT2009_PLUS_YOHARA_ITEMS2_V1: the second batch of Yohara maps - Seoganland (376),
 # Namgan (377), Przelecz Yilad (385), Wawoz Polnocnego Wiatru (388), Schronienie Polnocnego Wiatru (393).
 # yohara_maps2.sql (tools/yohara_maps/gen_ymaps2.py): their 48 monsters and bosses, 7 Metins, 10 NPCs, 4 jade veins and
-# 10 portals (Owsap's numbers in our columns); yohara_items2.sql (tools/yohara_items/gen_yitems2.py): the 58 items the
+# 8 portals (Owsap's numbers in our columns); yohara_items2.sql (tools/yohara_items/gen_yitems2.py): the 58 items the
 # wiki drops there that the world lacked, and the jade smelting (crafting_proto 50661-50664). Both idempotent
 # (INSERT IGNORE), before the elements' files (their rule h2 holds for these monsters). The maps' drop file and chests
 # (game/yohara_maps2) name these vnums: a world without them stops the cores at boot.
@@ -3606,6 +3606,21 @@ for ym3_sql in yohara_maps3.sql yohara_items3.sql yohara_maps3_zywioly.sql; do
         echo "[playerbot-migrate] yohara maps 3: $ym3_sql applied"
     else
         fail_step "yohara maps 3: $ym3_sql failed" >&2
+    fi
+done
+
+# MT2009_PLUS_YOHARA_MAPS4_V1: Rozpadlina Dusz (389, the owner, 14 October 2026) - after the third batch and the
+# elements' files (zywioly_moby.sql clears bits 11-16 of every mob it does not list): yohara_maps4.sql
+# (tools/yohara_maps4/gen_ymaps4.py) - its 14 monsters and bosses, 3 NPCs and 3 portals (Wawoz -> here, here ->
+# Wawoz, Schronienie -> here; it also drops the second batch's stand-in portals 10145/10146, which no map spawns
+# now); yohara_maps4_zywioly.sql - their elements (lod / blyskawice, the pl-wiki's). Idempotent (INSERT IGNORE /
+# UPDATE / DELETE). The map's drop file (game/yohara_maps4) names these vnums: a world without them stops the cores.
+for ym4_sql in yohara_maps4.sql yohara_maps4_zywioly.sql; do
+    [ -s "/opt/playerbot/$ym4_sql" ] || continue
+    if db < "/opt/playerbot/$ym4_sql"; then
+        echo "[playerbot-migrate] yohara maps 4: $ym4_sql applied"
+    else
+        fail_step "yohara maps 4: $ym4_sql failed" >&2
     fi
 done
 

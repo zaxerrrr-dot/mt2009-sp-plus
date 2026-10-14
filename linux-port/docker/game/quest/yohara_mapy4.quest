@@ -1,0 +1,53 @@
+-- MT2009_PLUS_YOHARA_MAPS4_V1: Rozpadlina Dusz (389, metin2_map_whitdragonvalley; decyzja w³aœciciela 14.10.2026,
+-- cache/yohara/decyzje.md; wiki: "Rozpadlina Dusz", "Genera³ Kohan", "Stra¿nik Rozpad. Dusz"):
+--   * droga jak w grze: W¹wóz Pó³nocnego Wiatru (388) -> portal Rozpadlina Dusz (10142) -> Rozpadlina obok Stra¿nika
+--     Rozpad. Dusz; portal 10143 wraca do W¹wozu; Genera³ Kohan (20808) prowadzi do Schronienia Pó³nocnego Wiatru
+--     (393), a jego Wyjœcie (10201) wraca obok Kohana - portale to silnik (mob_proto WARP), Kohan - ten quest;
+--     zastêpuje tymczasowy portal W¹wóz <-> Schronienie (10145/10146) drugiej partii;
+--   * wiki: Kohan wpuszcza do Schronienia po okazaniu Przepustki - jej misji nie mamy, wiêc wpuszcza ka¿dego, kto
+--     mo¿e byæ w Rozpadlinie;
+--   * stra¿nik poziomu: od 120 (jak reszta Yohary, bez wymogu czempiona) - kto nie ma, wraca do portu; boty nie
+--     wchodz¹ (mapa Sung Ma - sungma_table.txt), rdzeñ Yohary botów nie ma.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest yohara_mapy4 begin
+	state start begin
+		function cfg()
+			return {
+				min_level = 120,
+				port = {1280 + 405, 5632 + 480},              -- Town.txt portu (368)
+				shelter = {9984 + 80, 12032 + 640},           -- Town.txt Schronienia Pó³nocnego Wiatru (393)
+			}
+		end
+
+		when login with pc.get_map_index() == 389 begin
+			local c = yohara_mapy4.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return
+			end
+			if pc.get_level() < c.min_level then
+				syschat("Ziemie Yohary s¹ dostêpne od poziomu "..c.min_level..". Wracasz do Portu Nowego Kontynentu.")
+				pc.warp(c.port[1] * 100, c.port[2] * 100)
+			end
+		end
+
+		when 20808.chat."Schronienie Pó³nocnego Wiatru" with pc.get_map_index() == 389 begin
+			local c = yohara_mapy4.cfg()
+			say_title(mob_name(20808)..":")
+			say("Pilnujê wejœcia do Schronienia Pó³nocnego Wiatru.")
+			say("Nikogo nie wpuszczam lekkomyœlnie - tam jest")
+			say("niebezpiecznie. Jeœli jesteœ gotów, przeprowadzê ciê.")
+			if select("WejdŸ do Schronienia", "Nie teraz") ~= 1 then
+				return
+			end
+			if pc.get_level() < c.min_level and not pc.is_gm() then
+				say("Wróæ, gdy osi¹gniesz poziom "..c.min_level..".")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			pc.warp(c.shelter[1] * 100, c.shelter[2] * 100)
+		end
+	end
+end

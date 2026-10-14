@@ -2,7 +2,7 @@
 
 Decyzja właściciela 14.10.2026 (`cache/yohara/decyzje.md`, „14.10”): Seoganland, Namgan, Schronienie Północnego
 Wiatru (dane Owsapa), Przełęcz Yilad (Ameria), Wąwóz Północnego Wiatru (zwykłe potwory wg wiki). Wszystko wg pl-wiki:
-potwory, bossowie, Metiny, NPC, rudy, drop, połączenia, żywioły. Rozpadlina Dusz – na razie nie.
+potwory, bossowie, Metiny, NPC, rudy, drop, połączenia, żywioły. Rozpadlina Dusz – na razie nie (potem czwarta partia, `yohara_maps4`).
 
 Wszystkie pliki tego katalogu robi `tools/yohara_maps/gen_ymaps2.py` (drop i skrzynie – `tools/yohara_items/gen_yitems2.py`);
 `gen_report.txt` – raport ostatniego przebiegu, `spawned.txt` – vnumy każdej mapy (czyta je budowniczy klienta
@@ -60,16 +60,18 @@ nie pasują do terenu Wąwozu – bossowie, Metiny i NPC Wąwozu stoją tu w mie
   wolnego miejsca przy NPC i portalach; bossowie: Zamarznięty Wódz / Wódz Wojenny obu żywiołów w punktach GF
   (580,750 / 850,850) i dwa Wodze w najdalszych miejscach (6 bossów, 1 h); Metiny: Shiho w 3 i z Gumar w 1 punkcie GF
   + kolejne miejsca do udziału Seoganland (19, 30 min); NPC: Strażnik Płn. Wiatru 20805 (503,456 – wiki), Łowca Głów
-  (Wąw.Płn.W.) 20845 (1117,871 – wiki); portal 10140 do Yilad (Owsap) przy miejscu przybycia, 10145 do Schronienia.
+  (Wąw.Płn.W.) 20845 (1117,871 – wiki); portal 10140 do Yilad (Owsap) przy miejscu przybycia; wolne miejsce przy
+  235,270 / 262,300 – tam czwarta partia stawia portal 10142 do Rozpadliny Dusz (punkt GF 235,267).
 - **Schronienie Północnego Wiatru**: regen/boss/npc Owsapa (grupy 9150–9157, gg 4030–4033; 6784–6788, Wódz Wojenny
-  Schronienia 6789), Zagubiony Zwiadowca 20814 (Owsap), + Łowca Głów (Schron.) 20847 (wiki) i portal 10146 do Wąwozu
-  przy wejściu (Town 80,640). Wiki: Schronienie łączy się z Rozpadliną Dusz i Zejściem – obu jeszcze nie ma, więc
-  10145/10146 (nasze numery) łączą je z Wąwozem w zastępstwie Rozpadliny.
+  Schronienia 6789), Zagubiony Zwiadowca 20814 (Owsap), + Łowca Głów (Schron.) 20847 (wiki). Wiki: Schronienie łączy
+  się z Rozpadliną Dusz i Zejściem – Rozpadlina to czwarta partia (`yohara_maps4`: portal 10201 przy wejściu, punkt
+  GF 19,640), Zejście – trzecia (10202). Tymczasowe 10145/10146 (Wąwóz ↔ Schronienie) usunięte (właściciel 14.10).
 - **Żyły Jadeitu** (wiki: „losowo”): Seoganland i Namgan – wszystkie cztery (8 żył), Yilad – Nocy i Mgły (6),
   Wąwóz – Dymu, Nocy, Słońca (6), Schronienie – brak; losowe miejsca osiągalnego terenu 60 m od siebie, zasięg 30,
   odnowienie 600 s (żyła sama znika po 7–15 min wydobycia). Kilof: quest `yohara_mapy2`, silnik: `server-patches/jadeit`.
 - **Portale** (mob_proto WARP, cel w nazwie): Dongan 10128 (40,531) → Seoganland; Seoganland 10127 → Dongan, 10129 →
-  Namgan; Namgan 10130 → Seoganland, 10136 → Przełęcz Yilad; Yilad 10137 → Namgan, 10139 → Wąwóz; Wąwóz 10140 → Yilad,
-  10145 → Schronienie; Schronienie 10146 → Wąwóz. Cele Owsapa; każdy cel wolny i ≥ 15 m od portalu powrotnego.
+  Namgan; Namgan 10130 → Seoganland, 10136 → Przełęcz Yilad; Yilad 10137 → Namgan, 10139 → Wąwóz; Wąwóz 10140 → Yilad
+  (Wąwóz ↔ Rozpadlina Dusz ↔ Schronienie – czwarta partia). Cele Owsapa; każdy cel wolny i ≥ 15 m od portalu
+  powrotnego.
 - **Wejście**: od 120 poziomu, bez Poziomu Czempiona (jak 373/374) – quest `yohara_mapy2` odsyła niższych do portu.
   Boty: mapy Sung Ma (`sungma_table.txt`) są dla botów zamknięte, a rdzeń Yohary botów nie ma.
