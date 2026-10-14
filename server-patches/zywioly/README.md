@@ -85,3 +85,10 @@ jako nasz kod, z **zasadami właściciela z 7.10.2026** w miejscu części decyz
 
 Odporności w bonusach zwykłego sprzętu (zasada właściciela), Talizmany Woli/Zaświatów, Kamień Żywiołów, Zaczarowanie
 Żywiołu Broni, żywioły w PvP, ikona żywiołu przy postaci, rękawice.
+
+## Tryb `M2_BONUS_MODE=global` (14.10.2026)
+
+Przełącznik w `.env` (`server-patches/bonusyglobal/README.md`, `MT2009_PLUS_GLOBAL_BONUS_V1`): `mt2009` (domyślnie) – ten
+system bez zmian; `global` – bonusy jak na serwerze globalnym (Tieru 2.2.31), żywioł każdego potwora z oryginalnych
+danych (`tools/zywioly/gen_zywioly_moby_global.py` → `zywioly_moby_global.sql`, po tym pliku i po plikach Yohary) i
+odporność na żywioł działająca w 30% swojej wartości. Talizmany losują swoje 5–25% odporności w obu trybach.
