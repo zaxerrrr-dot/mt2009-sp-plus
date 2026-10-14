@@ -315,6 +315,18 @@ def nm(byv, v, c=1):
     return n + (' x%d' % c if c > 1 else '')
 
 
+# MT2009_PLUS_YOHARA_SETS_V1: the serpent and Dark Dragon weapons and the dragon armours +0 of B. Smocza Skrz. (ciezka)
+# (pl-wiki), linux-port/docker/mariadb/playerbot/yohara_sets.sql (tools/ysets/gen_ysets.py) - the Lycan's left out
+YSETS_GEAR = [(v, 1, 5) for v in (5200, 7330, 1210, 2230, 360, 380, 3250, 5170, 7310, 1190, 2210, 320, 340, 3230,
+                                  21230, 21250, 21270, 21210)]
+EXISTING.update({5200: 'Dzwon Wezowy+0', 7330: 'Wachlarz Wezowy+0', 1210: 'Sztylet Wezowy+0', 2230: 'Luk Wezowy+0',
+                 360: 'Miecz Wezowy+0', 380: 'Ostrze Wezowe+0', 3250: 'Wielki Miecz Wezowy+0',
+                 5170: 'Dzwon Smoka Mroku+0', 7310: 'Wachlarz Smoka Mroku+0', 1190: 'Sztylet Smoka Mroku+0',
+                 2210: 'Luk Smoka Mroku+0', 320: 'Miecz Smoka Mroku+0', 340: 'Brzeszczot Smoka Mrok+0',
+                 3230: 'Ostrze Smoka Mroku+0', 21230: 'Zbroja Smoka Wiatru+0', 21250: 'Zbroja Smoka Magii+0',
+                 21270: 'Zbroja Boskiego Smoka+0', 21210: 'Zbroja Smoka Mroku+0'})
+
+
 # -- the chests (special_item_group): one thing an opening, by weight; what our world lacks is left out ------------
 def chests(byv):
     g = []
@@ -331,9 +343,9 @@ def chests(byv):
              (31237, 1, 20), (71025, 1, 15), (30618, 1, 20), (31244, 7, 20), (31263, 5, 20), (95926, 200, 30),
              (39004, 1, 15), (50325, 1, 15), (72740, 1, 10), (50527, 1, 10), (55001, 1, 10), (49993, 1, 5),
              (31239, 1, 15), (31240, 1, 15), (31241, 1, 15), (31238, 1, 15), (71130, 1, 15), (72353, 6, 30),
-             (100700, 1, 5), (39081, 1, 10), (71085, 1, 15), (71084, 1, 15)] + serp
-    g.append((70412, 'B. Smocza Skrz. (ciezka) - left out: the Dark Dragon / serpent weapons and the dragon armours '
-                     '(none here yet), Biale Jajo Smoka (pet), Dumny Smok Pln. Wiatru (mount), Szklo Handlu, Male '
+             (100700, 1, 5), (39081, 1, 10), (71085, 1, 15), (71084, 1, 15)] + serp + YSETS_GEAR
+    g.append((70412, 'B. Smocza Skrz. (ciezka) - left out: the Lycan\'s Szpon Wezowy / Pazur Smoka Mroku / Zbroja Smoka '
+                     'Nieba, Biale Jajo Smoka (pet), Dumny Smok Pln. Wiatru (mount), Szklo Handlu, Male '
                      'Blogoslawienstwo, Osobisty Sklepik Premium', heavy))
     treasure = [(50662, 1, 20), (31258, 2, 20), (21346, 1, 10), (28046, 1, 20), (28047, 1, 10), (31233, 10, 20),
                 (31234, 10, 15), (95926, 200, 30), (71083, 1, 15), (50325, 1, 15), (39004, 1, 15), (72740, 1, 10),

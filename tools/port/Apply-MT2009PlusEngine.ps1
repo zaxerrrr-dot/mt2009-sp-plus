@@ -81,6 +81,9 @@ param(
 #   Zyly Jadeitu       mining.cpp (MT2009_PLUS_JADE_VEINS_V1; server-patches/jadeit)
 #   Obrecze Jadeitu    item_attribute.cpp, item_manager.cpp (MT2009_PLUS_JADE_BRACELET_V1;
 #                      server-patches/obreczjadeitu, after talizmanwoli)
+#   Zestawy Yohary     item.h, item.cpp, item_manager.cpp, item_attribute.cpp, char.h, char.cpp,
+#                      char_item.cpp, input_login.cpp, safebox.cpp, cube.h, cube.cpp
+#                      (MT2009_PLUS_YOHARA_SETS_V1; server-patches/ysets)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1276,6 +1279,20 @@ if ((Test-Path -LiteralPath $jadeitApply -PathType Leaf) -and
     if ($jadeitResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} jade vein edit(s).' -f $jadeitResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Zestawy Yohary (server-patches/ysets, MT2009_PLUS_YOHARA_SETS_V1): the set effects of the set blacksmiths (cube
+# set_value / set_part), the set bonus of the worn weapon / armour / helmet, the serpent gear's three random base
+# bonuses - each item's "yextra" in player.item_yextra (mariadb/playerbot/yohara_sets.sql), the client's tooltip
+# hears it by "YITEM". After Talizmany Woli (its anchors in item_manager.cpp / item_attribute.cpp come first).
+$ysetsApply = Join-Path $repo 'server-patches/ysets/Apply-YSetsPatch.ps1'
+if ((Test-Path -LiteralPath $ysetsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cube.cpp') -PathType Leaf)) {
+    $ysetsResult = & $ysetsApply -SourceDir $engineGameSource
+    if ($ysetsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Yohara set edit(s).' -f $ysetsResult.Applied) -ForegroundColor DarkGray
     }
 }
 

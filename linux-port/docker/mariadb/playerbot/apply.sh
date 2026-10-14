@@ -3592,6 +3592,20 @@ for zyw_sql in zywioly_talizmany.sql zywioly_moby.sql; do
     fi
 done
 
+# MT2009_PLUS_YOHARA_SETS_V1: the Yohara gear and the set effects (the owner, 14 October 2026) - yohara_sets.sql
+# (tools/ysets/gen_ysets.py): the serpent and Dark Dragon weapons / armours +0..+15, their refine_proto rows
+# 22600-22659, the awakening refine materials, the five set blacksmiths (20475-20479), and player.item_yextra - each
+# item's set and random base bonuses (server-patches/ysets reads and writes it). Idempotent (INSERT IGNORE / IF NOT
+# EXISTS). The chest of Glebie Polnocnego Wiatru (game/yohara_maps3, 70412) and the cube (game/ysets) name these
+# vnums: a world without them stops the cores at boot.
+if [ -s /opt/playerbot/yohara_sets.sql ]; then
+    if db < /opt/playerbot/yohara_sets.sql; then
+        echo "[playerbot-migrate] yohara sets: yohara_sets.sql applied"
+    else
+        fail_step "yohara sets: yohara_sets.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_YOHARA_MAPS3_V1: the third batch of Yohara places (the owner, 14 October 2026) - Zejscie (394) and
 # Glebie (395) Polnocnego Wiatru, 1. poziom Swiatyni Wezy (390), Swiatynia Wezy (391), Tajemnicza Instancja (396),
 # Krolestwo Zywiolow (378-381). After every step above (the second batch's items included - yohara_items3.sql gives

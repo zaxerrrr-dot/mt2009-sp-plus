@@ -834,7 +834,9 @@ class ItemToolTip(ToolTip):
 		for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
 			attrSlot.append(safebox.GetItemAttribute(slotIndex, i))
 
+		self.ysetsSafeboxSlot = slotIndex # MT2009_PLUS_YOHARA_SETS_V1: the storehouse's set / random bonuses
 		self.AddItemData(itemVnum, metinSlot, attrSlot, safebox.GetItemFlags(slotIndex))
+		self.ysetsSafeboxSlot = -1
 
 	def SetMallItem(self, slotIndex):
 		itemVnum = safebox.GetMallItemID(slotIndex)
@@ -1081,10 +1083,18 @@ class ItemToolTip(ToolTip):
 		self.SetTitle(itemName)
 
 	def __SetNormalItemTitle(self):
-		self.SetTitle(item.GetItemName())
+		self.SetTitle(self.__YSetsTitle(item.GetItemName()))
 
 	def __SetSpecialItemTitle(self):
-		self.AppendTextLine(item.GetItemName(), self.SPECIAL_TITLE_COLOR)
+		self.AppendTextLine(self.__YSetsTitle(item.GetItemName()), self.SPECIAL_TITLE_COLOR)
+
+	# MT2009_PLUS_YOHARA_SETS_V1: an item with a set effect carries its name ("Swiety Miecz Wezowy+7"); ysets.py
+	def __YSetsTitle(self, name):
+		return __import__("ysets").Title(name, getattr(self, "ysetsExtra", 0))
+
+	# MT2009_PLUS_YOHARA_SETS_V1: a serpent piece's random base bonuses and the set effect with its tiers (the worn ones lit)
+	def __AppendYSetsInformation(self, itemVnum):
+		__import__("ysets").AppendInfo(self, itemVnum, getattr(self, "ysetsExtra", 0))
 
 	def __SetItemTitle(self, itemVnum, metinSlot, attrSlot):
 		if self.__IsPolymorphItem(itemVnum):
@@ -1128,6 +1138,7 @@ class ItemToolTip(ToolTip):
 
 	def AddItemData(self, itemVnum, metinSlot, attrSlot = 0, flags = 0, unbindTime = 0, window_type = player.INVENTORY, slotIndex = -1, **kwargs):
 		self.itemVnum = itemVnum
+		self.ysetsExtra = __import__("ysets").GetFor(window_type, slotIndex, getattr(self, "ysetsSafeboxSlot", -1)) # MT2009_PLUS_YOHARA_SETS_V1
 		item.SelectItem(itemVnum)
 		itemType = item.GetItemType()
 		itemSubType = item.GetItemSubType()
@@ -1264,6 +1275,7 @@ class ItemToolTip(ToolTip):
 			# MT2009_PLUS_SEONHAE_V1: the 6th and 7th bonus in their own colour after
 			# the five (they were merged into the item's base values here).
 			self.__AppendAffectInformation()
+			self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
 			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
 			self.__AppendSeonHaeHint(itemVnum, attrSlot)
 
@@ -1289,6 +1301,7 @@ class ItemToolTip(ToolTip):
 
 			self.__AppendMagicDefenceInfo()
 			self.__AppendAffectInformation()
+			self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
 			# MT2009_PLUS_SEONHAE_V1: armour and jewellery showed only the five
 			# bonuses - the 6th and 7th were never drawn.
 			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
