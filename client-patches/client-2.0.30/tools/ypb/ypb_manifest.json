@@ -1,0 +1,1518 @@
+{
+ "maps": {
+  "369": {
+   "atlas_image": "atlas_resize/metin2_map_n_flame_dungeon_01_atlas.dds",
+   "folder": "metin2_map_boss_awaken_flame",
+   "parent": "metin2_map_n_flame_dungeon_01"
+  },
+  "370": {
+   "atlas_image": null,
+   "folder": "metin2_map_boss_awaken_snow",
+   "parent": "metin2_map_n_snow_dungeon_01"
+  }
+ },
+ "new_packs": [
+  "ypb_maps",
+  "ypb_mobs"
+ ],
+ "packs": {
+  "ypb_maps": [
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_boss_awaken_flame/atlas.sub",
+    "sha1": "63cb99bdac29622c81fcdb88888f2d1e8d8c65f9",
+    "size": 129,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_boss_awaken_flame/mapproperty.txt",
+    "sha1": "0590b7c8760ad126b7581f027e57ae5c9c5ebdb9",
+    "size": 96,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_boss_awaken_flame/setting.txt",
+    "sha1": "04da4b1d922e7e9f74ab153dbea544bdd079a759",
+    "size": 232,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_boss_awaken_snow/mapproperty.txt",
+    "sha1": "64d8f37005b474aba0225c99de6db01c3db44750",
+    "size": 91,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_boss_awaken_snow/setting.txt",
+    "sha1": "93cd23728b34e3a76d781df66b6b28a70ab9a8d9",
+    "size": 230,
+    "source": "gf"
+   }
+  ],
+  "ypb_mobs": [
+   {
+    "name": "d:/ymir work/effect/monster/ls1_1 copy.dds",
+    "sha1": "8501b765e5d7ffbd7e1566458b15e6fd78afef12",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/npc_turtle_01.mse",
+    "sha1": "d40af51ce40b5237898be9ab8a4d9b02402f5dff",
+    "size": 9615,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/npc_turtle_awake.mse",
+    "sha1": "2ec374bb5ab07b14d9fa6ce88b98229b1049ac87",
+    "size": 9832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/back_damage.msa",
+    "sha1": "3045de93a40fab11d9c92be40c2176b836262511",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/back_damage1.msa",
+    "sha1": "83f299719e9c4b1055962d208c7accac72ea07b4",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/back_knockdown.msa",
+    "sha1": "5011a784b6ed8c0331aa1910f89ce5c5d16b0faa",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/firegolem_boss_awake.dds",
+    "sha1": "8fe24f253e07ac929c01fd61d1b7c77d9cfef509",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/firegolem_boss_awake.gr2",
+    "sha1": "5775e8151b353050c77fa92ce9ab9c8d2905cefd",
+    "size": 54142,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/firegolem_boss_awake.msm",
+    "sha1": "a20b7a36cef187744960bd3adc8d5fcaea4a00bd",
+    "size": 1949,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/firegolem_boss_awake_lod_01.gr2",
+    "sha1": "6efe5d02656d8711a188a4ef44e33d88f8cd90ab",
+    "size": 50360,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/front_damage.msa",
+    "sha1": "6741753f452ac4539dba0238ee13486dec9a13be",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/front_damage1.msa",
+    "sha1": "2ddac7798ba7e81a2ce32071d68f8d66f0a1292d",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/front_dead.msa",
+    "sha1": "240c5574d64c2f75de2ef7fcfbc4fb9c0888a683",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/front_knockdown.msa",
+    "sha1": "1a0f619b8805c462b8bab46ba4de10b22085874a",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/front_standup.msa",
+    "sha1": "314f4e4ea40a8ab3475b4fd2036fd7c818a316d8",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/motlist.txt",
+    "sha1": "6550fcc010caa637069eaf03404e791e00bfca60",
+    "size": 732,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/normal_attack.msa",
+    "sha1": "79476bd51c4047d87f0466d2d55f3b030359f902",
+    "size": 1512,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/normal_attack1.msa",
+    "sha1": "6eb31ff5bc5803b824397615ee83eb17a8252684",
+    "size": 1270,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/run.msa",
+    "sha1": "17674af5b962689bbb866d0a148b5d086b4d666f",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/special_attack.msa",
+    "sha1": "3924991c722911cec5918c95612a9b338801989a",
+    "size": 2264,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/special_attack1.msa",
+    "sha1": "06009502382a48f09e14f39f644e8aa8cc694847",
+    "size": 4287,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/wait.msa",
+    "sha1": "f21c340ee6f07e7bc7b564dd8bc726c286d93272",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/wait1.msa",
+    "sha1": "e34e14b9c9566499009e0dc82057afb5815068e1",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/wait2.msa",
+    "sha1": "25cd559568decd8e3c15eddc4d9883e2c4a35723",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_boss_awake/walk.msa",
+    "sha1": "6e17d98d729a24d36790613b04518d2c6b76439a",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/back_damage.msa",
+    "sha1": "75d8e22b0e1b32ff15b2763e9107b3e2ef4523df",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/back_knockdown.msa",
+    "sha1": "6933f274682e704a1fdbdb3f275144439ed05e35",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/firegolem_general_awake.dds",
+    "sha1": "0409697afc293fdf6183317e34e76349e6a4b74b",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/firegolem_general_awake.gr2",
+    "sha1": "96f702de914d0000075cc7a51bfa3e27c6cddc24",
+    "size": 66112,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/firegolem_general_awake.msm",
+    "sha1": "9982b7bb7ac924438560c7bca17c724f2f23b812",
+    "size": 1148,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/firegolem_general_awake_lod_01.gr2",
+    "sha1": "6fc1fc8e06c0c4deaad4e8e357957dca4c8fddaf",
+    "size": 61295,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/firegolem_general_awake_weapon.dds",
+    "sha1": "8c0ad573d6560fda0d5392a5fd1133c51dc59efd",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/front_damage.msa",
+    "sha1": "9970e586e4a1a689088698bb32eb005df064d052",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/front_dead.msa",
+    "sha1": "ec9603b40f0614f99013caa388d68ebc2f5069e2",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/front_knockdown.msa",
+    "sha1": "4d519c33196afcbf6077983a625f8377c41a244a",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/front_standup.msa",
+    "sha1": "42a9d3f5e0f613cd79dd42ec21895eaca1131509",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/motlist.txt",
+    "sha1": "0d86feb87184e0bd383dbc69d181886748531798",
+    "size": 539,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/normal_attack.msa",
+    "sha1": "9a420857e3bf7d085f4f03030ad43fa0553056a0",
+    "size": 1273,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/normal_attack1.msa",
+    "sha1": "e22bd410af7e01f7c6ff142983ccae061c189070",
+    "size": 1280,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/run.msa",
+    "sha1": "34107ce890fcb9d33fa7bf64a1bc197e07980972",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/wait.msa",
+    "sha1": "84a76779c25e02071ea0cd899dfbf2813956ffa0",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/wait1.msa",
+    "sha1": "e18f0c25183085c539ef106f3aa985fdba90a4e2",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_general_awake/walk.msa",
+    "sha1": "2ab7db5012f86426bbbf6f21bfd935e8eb6ade1c",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/back_damage.msa",
+    "sha1": "9769bc3362ac751096dc17e10d0c7c39f697350e",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/back_knockdown.msa",
+    "sha1": "885870314698267a72e9544aabc77aacdecea73f",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/back_standup.msa",
+    "sha1": "1877fdb3f495e736a725eb9e33b999c381120d50",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/firegolem_magician_awake.dds",
+    "sha1": "7dfe1df5161691a7e46a15cd5d60ecad7d5013d8",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/firegolem_magician_awake.gr2",
+    "sha1": "a36ac2d399c1b4afa1905c8b598d910107c5e85b",
+    "size": 56790,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/firegolem_magician_awake.msm",
+    "sha1": "8e683648761d9b69f16be847ba43f60525da9c26",
+    "size": 1147,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/firegolem_magician_awake_lod_01.gr2",
+    "sha1": "9f1a57491d823b6b8c7342cd61f6baef8e810164",
+    "size": 53253,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/front_damage.msa",
+    "sha1": "1e424556dde34c51055ce3649338a1925f65dcdd",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/front_dead.msa",
+    "sha1": "ed159cbfada7e3610fb86d7a6022b58879b88ce8",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/front_knockdown.msa",
+    "sha1": "96080fb1af1321a4c98e32e9696c4a2be097642c",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/front_standup.msa",
+    "sha1": "eb5513d2fbb590dadc6d96f1d7504016cc9fec28",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/motlist.txt",
+    "sha1": "6276d4f509e7b02ded7536ea441324726d0daa58",
+    "size": 538,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/normal_attack.msa",
+    "sha1": "e6ed5e09cf2f2da29885036f6da50f178c655c6a",
+    "size": 1281,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/normal_attack1.msa",
+    "sha1": "8b365d21cdbd417efb9a7a3796bb981bb354b7d9",
+    "size": 1276,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/run.msa",
+    "sha1": "f1de2216c9c573ad553b1dd52020cfe393162dc5",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/wait.msa",
+    "sha1": "944b480c9e57cc69947c83c66f4bef71f9c5691e",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/wait1.msa",
+    "sha1": "9926fe6948e207946f0db336c7f8adb8780ded10",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_magician_awake/walk.msa",
+    "sha1": "9987257a86dcc3e5091fd373f3ebe17834ac481f",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/back_damage.msa",
+    "sha1": "83c5f2a4ae64b7f3cdb31dd8648466990900133d",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/back_knockdown.msa",
+    "sha1": "8fd91b8b2846231d1e5fe850e17aec5dc8bff7f3",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/firegolem_soldier_awake.dds",
+    "sha1": "fd7cda5885e3b2640325ab549366199551bd4712",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/firegolem_soldier_awake.gr2",
+    "sha1": "e85d2b7efbf41c77c4056320551b9991cc1ae872",
+    "size": 49292,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/firegolem_soldier_awake.msm",
+    "sha1": "2109a409eea407aab0420d85d587e6f8a3fc4f3a",
+    "size": 1148,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/firegolem_soldier_awake_lod_01.gr2",
+    "sha1": "0d8ee290a510f26825b359f08036ac654738b041",
+    "size": 45746,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/front_damage.msa",
+    "sha1": "884b7c228e750afa84ba8325438d6df4c9760ce2",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/front_dead.msa",
+    "sha1": "6ffa7b1d68b70f41ef5b30aedda93e9396d52f2c",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/front_knockdown.msa",
+    "sha1": "413272c006a9b4bebbb758107dd09a2eaf16af9a",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/front_standup.msa",
+    "sha1": "5c2cb222e024aedc064c753e76a9e8747c56efd3",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/motlist.txt",
+    "sha1": "0d86feb87184e0bd383dbc69d181886748531798",
+    "size": 539,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/normal_attack.msa",
+    "sha1": "cd407d1aea5f57abc4ce15e36b8dabcc40abcc41",
+    "size": 885,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/normal_attack1.msa",
+    "sha1": "bec67bb3a84f3d2d10898be7b1c2e43cee310e91",
+    "size": 886,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/run.msa",
+    "sha1": "fd9a44fd1b4ced3c2e2b194b5f9d95fa55a9c5a5",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/wait.msa",
+    "sha1": "bc1ec57b455808ac380914bbb1a4c41cae345744",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/wait1.msa",
+    "sha1": "b75ea2effeafa86ece3c365e235717e3e3ba5442",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/firegolem_soldier_awake/walk.msa",
+    "sha1": "639fff1a290dcbe119553fe6020fe2b6c72e91c8",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/back_damage.msa",
+    "sha1": "fc044b944046b4265638e3ca01b2079b632553a9",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/back_damage1.msa",
+    "sha1": "91c56d5a2a03d3d919a55937c462ebdb0a2c8899",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/back_knockdown.msa",
+    "sha1": "ed41b320de7c2f09c07f57e8a86cad523221202b",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/back_standup.msa",
+    "sha1": "b30d885fb7ad0a56ab943e11c2dc8c6feef8ddc4",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/front_damage.msa",
+    "sha1": "da7ca12ff3745c3808699ad4dc2c66f32f807716",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/front_damage1.msa",
+    "sha1": "89313a523c43a4862e0cb79df2ddac681f07e476",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/front_dead.msa",
+    "sha1": "aee5243a3f609597dabf4dacc66f6d021008c448",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/front_knockdown.msa",
+    "sha1": "95cccfdcf78c4db94face84f79e25a26a668ee07",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/front_standup.msa",
+    "sha1": "91230bce21c0c4a1e2f602ca44b17209c80a833d",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/hanma_boss_awake.dds",
+    "sha1": "a4b25738f04c188a85f31bdda21254f8c7c8b78a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/hanma_boss_awake.gr2",
+    "sha1": "89b33e9bdd7f9a915988b80ee09b91991b69d9ca",
+    "size": 154113,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/hanma_boss_awake.msm",
+    "sha1": "0b26d72eaaeb527797ac1d42f8858adb8a55a767",
+    "size": 3163,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/hanma_boss_awake_lod_01.gr2",
+    "sha1": "348a2da2aabfae311e3ebaefddcfbb20b6f51290",
+    "size": 154084,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/hanma_boss_awake_weapon.dds",
+    "sha1": "e897661d6a5dfed4c59cfdeb4ec922ffebc34632",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/motlist.txt",
+    "sha1": "d0e071431c43bb181d668f5350f8b5e5600929ec",
+    "size": 731,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/normal_attack.msa",
+    "sha1": "8a1953b084fa0cf01d005bd4044a9baa15dc6ec6",
+    "size": 1273,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/normal_attack1.msa",
+    "sha1": "4a2e93fc95fa4b88f5cb1b3dbb6b3968e560f834",
+    "size": 1891,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/run.msa",
+    "sha1": "336a2ee42d20cfe319adb08ce4f7145c246698d7",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/special_attack.msa",
+    "sha1": "cd74cda7ccd784689e643d9e1eb73f92ed276d38",
+    "size": 1890,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/special_attack1.msa",
+    "sha1": "da6e90830eb8a73fb08fd00c170154013b91483a",
+    "size": 3305,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/wait.msa",
+    "sha1": "c47f89deaee2c97747f583a5bea6d0e59f43d507",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/wait1.msa",
+    "sha1": "a05afb1889a1af7e6ef67e617334428a648d114b",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/wait2.msa",
+    "sha1": "ef2d401f9b42e69c807dfa06e41015902669ed64",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/hanma_boss_awake/walk.msa",
+    "sha1": "2694c87558556d6d54b18035e5eb186ea6e2c600",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/back_damage.msa",
+    "sha1": "3045de93a40fab11d9c92be40c2176b836262511",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/back_damage1.msa",
+    "sha1": "83f299719e9c4b1055962d208c7accac72ea07b4",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/back_knockdown.msa",
+    "sha1": "5011a784b6ed8c0331aa1910f89ce5c5d16b0faa",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/front_damage.msa",
+    "sha1": "6741753f452ac4539dba0238ee13486dec9a13be",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/front_damage1.msa",
+    "sha1": "2ddac7798ba7e81a2ce32071d68f8d66f0a1292d",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/front_dead.msa",
+    "sha1": "240c5574d64c2f75de2ef7fcfbc4fb9c0888a683",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/front_knockdown.msa",
+    "sha1": "1a0f619b8805c462b8bab46ba4de10b22085874a",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/front_standup.msa",
+    "sha1": "314f4e4ea40a8ab3475b4fd2036fd7c818a316d8",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/icegolem_boss_awake.dds",
+    "sha1": "aac52490171c5a833efee35244f784e3c661debc",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/icegolem_boss_awake.gr2",
+    "sha1": "fc2b487e0669c931b19cec3858254809dff7ca7f",
+    "size": 54276,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/icegolem_boss_awake.msm",
+    "sha1": "7529d374841f052a062b5fb202d59dc78c30ed5a",
+    "size": 1947,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/icegolem_boss_awake_lod_01.gr2",
+    "sha1": "eb6d6e71d624547a4bdc1f7f7e32b0998b3fb616",
+    "size": 50820,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/motlist.txt",
+    "sha1": "eafb87edb1e23c31d7e36c1dcede5e029c46cd67",
+    "size": 734,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/normal_attack.msa",
+    "sha1": "56d9d417316f9177c64e052e5261d49b58852c24",
+    "size": 1508,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/normal_attack1.msa",
+    "sha1": "53f30ceddc4be7cd572f27a83319525c654dc513",
+    "size": 1276,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/run.msa",
+    "sha1": "17674af5b962689bbb866d0a148b5d086b4d666f",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/special_attack.msa",
+    "sha1": "01aa23933e6092fd7b123bbda679baa1c7f0418d",
+    "size": 2281,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/special_attack1.msa",
+    "sha1": "d96743231d1102cd7b02279150ddb39e5df2bac6",
+    "size": 4307,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/wait.msa",
+    "sha1": "f21c340ee6f07e7bc7b564dd8bc726c286d93272",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/wait1.msa",
+    "sha1": "e34e14b9c9566499009e0dc82057afb5815068e1",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/wait2.msa",
+    "sha1": "25cd559568decd8e3c15eddc4d9883e2c4a35723",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_boss_awake/walk.msa",
+    "sha1": "6e17d98d729a24d36790613b04518d2c6b76439a",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/back_damage.msa",
+    "sha1": "75d8e22b0e1b32ff15b2763e9107b3e2ef4523df",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/back_knockdown.msa",
+    "sha1": "6933f274682e704a1fdbdb3f275144439ed05e35",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/front_damage.msa",
+    "sha1": "9970e586e4a1a689088698bb32eb005df064d052",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/front_dead.msa",
+    "sha1": "ec9603b40f0614f99013caa388d68ebc2f5069e2",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/front_knockdown.msa",
+    "sha1": "4d519c33196afcbf6077983a625f8377c41a244a",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/front_standup.msa",
+    "sha1": "42a9d3f5e0f613cd79dd42ec21895eaca1131509",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/icegolem_general_awake.dds",
+    "sha1": "1f3d4db7fbc96748fa686e20d88090f170bc9ff2",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/icegolem_general_awake.gr2",
+    "sha1": "b69e5f66ab4e4d6dc0aa80b7ed727f07b2037c7e",
+    "size": 66286,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/icegolem_general_awake.msm",
+    "sha1": "b9d7bdeebac49e6eeeda1ec05f0ec6a136ff3b8f",
+    "size": 1111,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/icegolem_general_awake_lod_01.gr2",
+    "sha1": "b4b2e8ef8592e6e4b8ec37cc31fc7ab7a1746784",
+    "size": 61509,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/icegolem_general_awake_weapon.dds",
+    "sha1": "da5a429d5920ec645c56ad7da073987522e70211",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/motlist.txt",
+    "sha1": "0d86feb87184e0bd383dbc69d181886748531798",
+    "size": 539,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/normal_attack.msa",
+    "sha1": "0bb42648d6bc4c94c7803de04248e89993df0a16",
+    "size": 1274,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/normal_attack1.msa",
+    "sha1": "8deed875d429e8c692341aa7b62f6d6b14b47bde",
+    "size": 1285,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/run.msa",
+    "sha1": "34107ce890fcb9d33fa7bf64a1bc197e07980972",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/wait.msa",
+    "sha1": "84a76779c25e02071ea0cd899dfbf2813956ffa0",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/wait1.msa",
+    "sha1": "e18f0c25183085c539ef106f3aa985fdba90a4e2",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_general_awake/walk.msa",
+    "sha1": "2ab7db5012f86426bbbf6f21bfd935e8eb6ade1c",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/back_damage.msa",
+    "sha1": "9769bc3362ac751096dc17e10d0c7c39f697350e",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/back_knockdown.msa",
+    "sha1": "885870314698267a72e9544aabc77aacdecea73f",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/back_standup.msa",
+    "sha1": "1877fdb3f495e736a725eb9e33b999c381120d50",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/front_damage.msa",
+    "sha1": "1e424556dde34c51055ce3649338a1925f65dcdd",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/front_dead.msa",
+    "sha1": "ed159cbfada7e3610fb86d7a6022b58879b88ce8",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/front_knockdown.msa",
+    "sha1": "96080fb1af1321a4c98e32e9696c4a2be097642c",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/front_standup.msa",
+    "sha1": "eb5513d2fbb590dadc6d96f1d7504016cc9fec28",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/icegolem_magician_awake.dds",
+    "sha1": "b5a788f0f7861e81777619e158ff6a5959abeaae",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/icegolem_magician_awake.gr2",
+    "sha1": "7895d553aefbcfae934b7e1e9ecd678a528f8eb0",
+    "size": 57136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/icegolem_magician_awake.msm",
+    "sha1": "f8e90b7d54ec214192d757bce01416fa16c2e19b",
+    "size": 1114,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/icegolem_magician_awake_lod_01.gr2",
+    "sha1": "8ae283243332fda8c3ddeeb3a9348c488ceb6226",
+    "size": 53725,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/motlist.txt",
+    "sha1": "6276d4f509e7b02ded7536ea441324726d0daa58",
+    "size": 538,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/normal_attack.msa",
+    "sha1": "2def5f28772f2a5f174344a48882ae359408145a",
+    "size": 1286,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/normal_attack1.msa",
+    "sha1": "7a3d5e1e6a25cc9db8bc38f4056ce761155d0269",
+    "size": 1281,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/run.msa",
+    "sha1": "0ae73462f1ca1976ede1aa6d7b1299064f623399",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/wait.msa",
+    "sha1": "944b480c9e57cc69947c83c66f4bef71f9c5691e",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/wait1.msa",
+    "sha1": "9926fe6948e207946f0db336c7f8adb8780ded10",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_magician_awake/walk.msa",
+    "sha1": "9987257a86dcc3e5091fd373f3ebe17834ac481f",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/back_damage.msa",
+    "sha1": "83c5f2a4ae64b7f3cdb31dd8648466990900133d",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/back_knockdown.msa",
+    "sha1": "8fd91b8b2846231d1e5fe850e17aec5dc8bff7f3",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/front_damage.msa",
+    "sha1": "884b7c228e750afa84ba8325438d6df4c9760ce2",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/front_dead.msa",
+    "sha1": "6ffa7b1d68b70f41ef5b30aedda93e9396d52f2c",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/front_knockdown.msa",
+    "sha1": "413272c006a9b4bebbb758107dd09a2eaf16af9a",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/front_standup.msa",
+    "sha1": "5c2cb222e024aedc064c753e76a9e8747c56efd3",
+    "size": 203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/icegolem_soldier_awake.dds",
+    "sha1": "62c996b90b6ba192b08bb79a1b49248fae92d053",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/icegolem_soldier_awake.gr2",
+    "sha1": "a1fa3297afce8d4055fbb069ce15a84d4380efc0",
+    "size": 49187,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/icegolem_soldier_awake.msm",
+    "sha1": "1dd0d689d0c2677aafe856ea9a13cdc089ba1568",
+    "size": 1111,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/icegolem_soldier_awake_lod_01.gr2",
+    "sha1": "81628d7280dae1b2fa3392d32469eea01621e06d",
+    "size": 45702,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/motlist.txt",
+    "sha1": "0d86feb87184e0bd383dbc69d181886748531798",
+    "size": 539,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/normal_attack.msa",
+    "sha1": "cd407d1aea5f57abc4ce15e36b8dabcc40abcc41",
+    "size": 885,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/normal_attack1.msa",
+    "sha1": "6a77dc859631bc90c11ceffcb5394f35d6bbb82e",
+    "size": 886,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/run.msa",
+    "sha1": "fd9a44fd1b4ced3c2e2b194b5f9d95fa55a9c5a5",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/wait.msa",
+    "sha1": "bc1ec57b455808ac380914bbb1a4c41cae345744",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/wait1.msa",
+    "sha1": "b75ea2effeafa86ece3c365e235717e3e3ba5442",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/icegolem_soldier_awake/walk.msa",
+    "sha1": "639fff1a290dcbe119553fe6020fe2b6c72e91c8",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/back_damage.msa",
+    "sha1": "fc044b944046b4265638e3ca01b2079b632553a9",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/back_damage1.msa",
+    "sha1": "91c56d5a2a03d3d919a55937c462ebdb0a2c8899",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/back_knockdown.msa",
+    "sha1": "ed41b320de7c2f09c07f57e8a86cad523221202b",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/back_standup.msa",
+    "sha1": "b30d885fb7ad0a56ab943e11c2dc8c6feef8ddc4",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/front_damage.msa",
+    "sha1": "da7ca12ff3745c3808699ad4dc2c66f32f807716",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/front_damage1.msa",
+    "sha1": "89313a523c43a4862e0cb79df2ddac681f07e476",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/front_dead.msa",
+    "sha1": "bdc730dd9e935f7cbfb1a93f0dc6d9af85a15f9a",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/front_knockdown.msa",
+    "sha1": "95cccfdcf78c4db94face84f79e25a26a668ee07",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/front_standup.msa",
+    "sha1": "91230bce21c0c4a1e2f602ca44b17209c80a833d",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/motlist.txt",
+    "sha1": "cb93498d6fe536e1b7a4f1387b897403a5b85609",
+    "size": 733,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/normal_attack.msa",
+    "sha1": "8a1953b084fa0cf01d005bd4044a9baa15dc6ec6",
+    "size": 1273,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/normal_attack1.msa",
+    "sha1": "4a2e93fc95fa4b88f5cb1b3dbb6b3968e560f834",
+    "size": 1891,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/run.msa",
+    "sha1": "336a2ee42d20cfe319adb08ce4f7145c246698d7",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/special_attack.msa",
+    "sha1": "71fef7bf5977224676909ef7ede6dadafa780692",
+    "size": 4153,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/special_attack1.msa",
+    "sha1": "76b0c47be980827fce834b035b62f0492c4f43da",
+    "size": 3677,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/wait.msa",
+    "sha1": "c47f89deaee2c97747f583a5bea6d0e59f43d507",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/wait1.msa",
+    "sha1": "a05afb1889a1af7e6ef67e617334428a648d114b",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/wait2.msa",
+    "sha1": "dd60e38d8a9763ad05ddd83f2e0bfc97f5b5f5b9",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/walk.msa",
+    "sha1": "2694c87558556d6d54b18035e5eb186ea6e2c600",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/yamachun_awake.dds",
+    "sha1": "aa84dadf62c586c8cca0960ef3d75f974926ef5d",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/yamachun_awake_weapon.dds",
+    "sha1": "38f4919e080be65eae58da3db2826fec7d7cf37a",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/yamachun_boss_awake.gr2",
+    "sha1": "4b1ecd5ee735ee1fe447a439e2a06bdc043d5646",
+    "size": 142650,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/yamachun_boss_awake/yamachun_boss_awake.msm",
+    "sha1": "61f4cdcb8f6175199714a49036beea9d58a2ebeb",
+    "size": 3571,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/keyholestone/keyholestone.dds",
+    "sha1": "e910f5b734fefed978f78e0de4d41f380150b374",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/keyholestone/keyholestone.gr2",
+    "sha1": "64e88b144c12a8558f64c8ee32178200d67ac18f",
+    "size": 17954,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/keyholestone/keyholestone.msm",
+    "sha1": "8d1f9cb77818cf43e28c4794a2954422c39d5028",
+    "size": 1096,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone/npc_turtlestone_01.dds",
+    "sha1": "db99daa41cfd7060aede5ec43b22f180d15b647d",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone/npc_turtlestone_01.gr2",
+    "sha1": "3742e29c66b5dece1a80110f1e3b6104863d4d8d",
+    "size": 77870,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone/npc_turtlestone_01.msm",
+    "sha1": "3da2293f1f2df47f41384d3a40bc88bb536a078d",
+    "size": 1502,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone/wait.msa",
+    "sha1": "76c2af0cff34534d390750bd0bba003a3c3a3818",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone_awake/npc_turtlestone_awake_01.dds",
+    "sha1": "957b415f18dcd9181ccc598ceb8049f563327cc5",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone_awake/npc_turtlestone_awake_01.gr2",
+    "sha1": "1af6fb30336e268d9cc839855e3bd29555e463cc",
+    "size": 67838,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone_awake/npc_turtlestone_awake_01.msm",
+    "sha1": "34b6784468840468020d56d7f0aef3862345e3e3",
+    "size": 1523,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc2/npc_turtlestone_awake/wait.msa",
+    "sha1": "76c2af0cff34534d390750bd0bba003a3c3a3818",
+    "size": 188,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "20470": {
+   "msm": "d:/ymir work/npc2/npc_turtlestone/npc_turtlestone_01.msm",
+   "race": "npc_turtlestone_01",
+   "status": "staged"
+  },
+  "20471": {
+   "msm": "d:/ymir work/npc2/npc_turtlestone_awake/npc_turtlestone_awake_01.msm",
+   "race": "npc_turtlestone_awake_01",
+   "status": "staged"
+  },
+  "20531": {
+   "msm": "d:/ymir work/npc2/flame_dungeon_npc/flame_npc.msm",
+   "race": "flame_npc",
+   "status": "ours"
+  },
+  "20532": {
+   "msm": "d:/ymir work/npc2/keyholestone/keyholestone.msm",
+   "race": "keyholestone",
+   "status": "staged"
+  },
+  "20533": {
+   "msm": "d:/ymir work/npc/seal_stone/seal_stone.msm",
+   "race": "seal_stone",
+   "status": "earlier builder"
+  },
+  "20534": {
+   "msm": "d:/ymir work/npc2/flame_bridge_block_chain/bridge_block_chain.msm",
+   "race": "bridge_block_chain",
+   "status": "ours"
+  },
+  "20535": {
+   "msm": "d:/ymir work/npc2/flame_door_npc/flame_door_npc.msm",
+   "race": "flame_door_npc",
+   "status": "ours"
+  },
+  "20536": {
+   "msm": "d:/ymir work/npc2/ice_lionstone/ice_lionstone.msm",
+   "race": "ice_lionstone",
+   "status": "ours"
+  },
+  "20537": {
+   "msm": "d:/ymir work/npc2/ice_keybox/ice_keybox.msm",
+   "race": "ice_keybox",
+   "status": "ours"
+  },
+  "20538": {
+   "msm": "d:/ymir work/npc2/ice_stonepillar/ice_stonepillar.msm",
+   "race": "ice_stonepillar",
+   "status": "ours"
+  },
+  "4300": {
+   "msm": "d:/ymir work/monster2/fire_ghost/fire_ghost1.msm",
+   "race": "fire_ghost1",
+   "status": "ours"
+  },
+  "4301": {
+   "msm": "d:/ymir work/monster2/fire_tiger_boss/fire_tiger_boss1.msm",
+   "race": "fire_tiger_boss1",
+   "status": "ours"
+  },
+  "4302": {
+   "msm": "d:/ymir work/monster2/fire_man/fire_man1.msm",
+   "race": "fire_man1",
+   "status": "ours"
+  },
+  "4303": {
+   "msm": "d:/ymir work/monster2/fire_knight/fire_knight1.msm",
+   "race": "fire_knight1",
+   "status": "ours"
+  },
+  "4304": {
+   "msm": "d:/ymir work/monster2/fire_king/fire_king1.msm",
+   "race": "fire_king1",
+   "status": "ours"
+  },
+  "4305": {
+   "msm": "d:/ymir work/monster2/firegolem_soldier_awake/firegolem_soldier_awake.msm",
+   "race": "firegolem_soldier_awake",
+   "status": "staged"
+  },
+  "4306": {
+   "msm": "d:/ymir work/monster2/firegolem_magician_awake/firegolem_magician_awake.msm",
+   "race": "firegolem_magician_awake",
+   "status": "staged"
+  },
+  "4307": {
+   "msm": "d:/ymir work/monster2/firegolem_general_awake/firegolem_general_awake.msm",
+   "race": "firegolem_general_awake",
+   "status": "staged"
+  },
+  "4308": {
+   "msm": "d:/ymir work/monster2/firegolem_boss_awake/firegolem_boss_awake.msm",
+   "race": "firegolem_boss_awake",
+   "status": "staged"
+  },
+  "4309": {
+   "msm": "d:/ymir work/monster2/firegolem_boss_awake/firegolem_boss_awake.msm",
+   "race": "firegolem_boss_awake",
+   "status": "staged"
+  },
+  "4320": {
+   "msm": "d:/ymir work/monster/ice_snow_monster/ice_snow_monster1.msm",
+   "race": "ice_snow_monster1",
+   "status": "ours"
+  },
+  "4321": {
+   "msm": "d:/ymir work/monster/ice_snow_insect/ice_snow_insect1.msm",
+   "race": "ice_snow_insect1",
+   "status": "ours"
+  },
+  "4322": {
+   "msm": "d:/ymir work/monster/ice_snow_man/ice_snow_man1.msm",
+   "race": "ice_snow_man1",
+   "status": "ours"
+  },
+  "4323": {
+   "msm": "d:/ymir work/monster/ice_snow_giant_man/ice_snow_giant_man1.msm",
+   "race": "ice_snow_giant_man1",
+   "status": "ours"
+  },
+  "4324": {
+   "msm": "d:/ymir work/monster/ice_snow_golem/ice_snow_golem1.msm",
+   "race": "ice_snow_golem1",
+   "status": "ours"
+  },
+  "4325": {
+   "msm": "d:/ymir work/monster2/icegolem_soldier_awake/icegolem_soldier_awake.msm",
+   "race": "icegolem_soldier_awake",
+   "status": "staged"
+  },
+  "4326": {
+   "msm": "d:/ymir work/monster2/icegolem_magician_awake/icegolem_magician_awake.msm",
+   "race": "icegolem_magician_awake",
+   "status": "staged"
+  },
+  "4327": {
+   "msm": "d:/ymir work/monster2/icegolem_general_awake/icegolem_general_awake.msm",
+   "race": "icegolem_general_awake",
+   "status": "staged"
+  },
+  "4328": {
+   "msm": "d:/ymir work/monster2/icegolem_boss_awake/icegolem_boss_awake.msm",
+   "race": "icegolem_boss_awake",
+   "status": "staged"
+  },
+  "4329": {
+   "msm": "d:/ymir work/monster2/icegolem_boss_awake/icegolem_boss_awake.msm",
+   "race": "icegolem_boss_awake",
+   "status": "staged"
+  },
+  "4411": {
+   "msm": "d:/ymir work/monster2/yamachun_boss_awake/yamachun_boss_awake.msm",
+   "race": "yamachun_boss_awake",
+   "status": "staged"
+  },
+  "4412": {
+   "msm": "d:/ymir work/monster2/hanma_boss_awake/hanma_boss_awake.msm",
+   "race": "hanma_boss_awake",
+   "status": "staged"
+  },
+  "8134": {
+   "msm": "d:/ymir work/monster/metinstone_02/metinstone_12.msm",
+   "race": "metinstone_12",
+   "status": "ours"
+  },
+  "8135": {
+   "msm": "d:/ymir work/monster/metinstone_02/metinstone_13.msm",
+   "race": "metinstone_13",
+   "status": "ours"
+  }
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "races": {
+   "firegolem_boss_awake": [
+    "d:/ymir work/effect/monster2/impact7.mde"
+   ],
+   "firegolem_general_awake": [
+    "d:/ymir work/effect/monster2/impact9.mde"
+   ],
+   "hanma_boss_awake": [
+    "d:/ymir work/effect/monster2/mash_spell1.mde"
+   ],
+   "icegolem_boss_awake": [
+    "d:/ymir work/effect/monster2/impact7.mde",
+    "d:/ymir work/monster2/icegolem_boss_awake/_04_~1.dds",
+    "d:/ymir work/monster2/icegolem_boss_awake/_07_~1.dds"
+   ],
+   "icegolem_general_awake": [
+    "d:/ymir work/effect/monster2/impact9.mde"
+   ],
+   "yamachun_boss_awake": [
+    "d:/ymir work/effect/monster2/impact10_red.mde"
+   ]
+  }
+ }
+}
