@@ -2,7 +2,8 @@
 -- i silny (wiki: "G³êbie Pó³nocnego Wiatru (s³aby)" / "(silny)", "Upiorny Stra¿nik", "Zamarzniêty Klucz"; TR wiki
 -- "Alastor (Kolay)" / "Alastor (Zor)" - przebieg walki). Wzorzec: obrona_statku.quest / blue_dragon_lair.quest.
 -- Upiorny Stra¿nik (20815) w Zejœciu Pó³nocnego Wiatru (394, 383,614) tworzy instancjê (d.new_jump_pids):
---   * minimum 4 osoby w dru¿ynie, najwy¿ej 8 (wiki; flaga zdarzeñ ymaps3_glebie_party zmienia minimum), od poziomu
+--   * od 1 osoby (decyzja w³aœciciela 14.10: kto woli, wchodzi sam; wiki: 4), najwy¿ej 8 - flaga zdarzeñ
+--     ymaps3_glebie_party zmienia minimum (0 = domyœlne 1), od poziomu
 --     120 i 1. Poziomu Czempiona (TR), ka¿da postaæ oddaje 3 Zamarzniête Klucze (70410) przy wejœciu; silny - po
 --     trzech ukoñczonych s³abych (wiki); ci¹g misji wejœciowych pominiêty (nie mamy go); bez czekania (TR);
 --   * 30 minut na pokonanie Alastora; przywódca dotyka Bia³ego Jaja Smoka (4030) - Alastor (6790 s³aby, 6791 silny)
@@ -23,7 +24,7 @@ quest ymaps3_glebie begin
 		function cfg()
 			local party = game.get_event_flag("ymaps3_glebie_party")
 			if party <= 0 then
-				party = 4
+				party = 1
 			end
 			return {
 				map = 395, base_x = 12288, base_y = 12032, size = 512,

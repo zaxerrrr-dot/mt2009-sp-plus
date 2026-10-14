@@ -1476,8 +1476,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/champion-add \
 # items of mariadb/playerbot/yohara_items3.sql by tools/yohara_maps3/gen_yitems3.py) are appended; none may exist
 # before. The port gets Owsap's elemental portal (3998, 229,585); sungma_table.txt the two dungeons (the wiki's first
 # levels: Glebie slaby 60/50/60/65, the temple's 2nd level 35/25/35/40 - one requirement a map name here); the dungeon
-# panel its three dungeons; /goto zejscie, swiatynia, instancja, zywioly, plaskowyz. The monsters' rows:
-# mariadb/playerbot/yohara_maps3.sql. The connections into other batches' maps: the late step "Yohara maps 3: links".
+# panel its three dungeons (Glebie from 1 person - the owner, 14 October; quest flag ymaps3_glebie_party); /goto
+# zejscie, swiatynia, instancja, zywioly, plaskowyz. The monsters' rows: mariadb/playerbot/yohara_maps3.sql. The connections into other batches' maps: the late step "Yohara maps 3: links".
 COPY yohara_maps3/ /tmp/yohara-maps3-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -1532,8 +1532,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
  && I="$L/dungeon_info.txt" \
  && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+swiatynia[[:blank:]]' "$I" \
       || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
-           printf 'dungeon\tglebie_slaby\t395\t1\txy\t394\t11903\t12646\t120\t0\t4\t8\t6790\tymaps3_glebie.entry\t0\t70410\t3\tG\263\352bie_P\363\263nocnego_Wiatru_(s\263aby)\tZej\234cie_P\363\263nocnego_Wiatru\ndrop\tglebie_slaby\t70411\t8\t100\n' >> "$I"; \
-           printf 'dungeon\tglebie_silny\t395\t1\txy\t394\t11903\t12646\t120\t0\t4\t8\t6791\tymaps3_glebie.entry\t0\t70410\t3\tG\263\352bie_P\363\263nocnego_Wiatru_(silny)\tZej\234cie_P\363\263nocnego_Wiatru\ndrop\tglebie_silny\t70412\t8\t100\n' >> "$I"; \
+           printf 'dungeon\tglebie_slaby\t395\t1\txy\t394\t11903\t12646\t120\t0\t1\t8\t6790\tymaps3_glebie.entry\t0\t70410\t3\tG\263\352bie_P\363\263nocnego_Wiatru_(s\263aby)\tZej\234cie_P\363\263nocnego_Wiatru\ndrop\tglebie_slaby\t70411\t8\t100\n' >> "$I"; \
+           printf 'dungeon\tglebie_silny\t395\t1\txy\t394\t11903\t12646\t120\t0\t1\t8\t6791\tymaps3_glebie.entry\t0\t70410\t3\tG\263\352bie_P\363\263nocnego_Wiatru_(silny)\tZej\234cie_P\363\263nocnego_Wiatru\ndrop\tglebie_silny\t70412\t8\t100\n' >> "$I"; \
            printf 'dungeon\tswiatynia\t391\t1\txy\t390\t404\t16748\t120\t0\t1\t8\t6756\tswiatynia_wezy.entry\t0\t0\t0\t\214wi\271tynia_W\352\277y\t1._poziom_\214wi\271tyni_W\352\277y\ndrop\tswiatynia\t70429\t8\t100\n' >> "$I"; }; } \
  && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+(glebie_slaby|glebie_silny|swiatynia)[[:blank:]]' "$I")" = 3 \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
