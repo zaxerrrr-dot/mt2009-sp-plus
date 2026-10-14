@@ -6,6 +6,12 @@
 -- cp1250; no literal ends with a Polish letter (qc).
 quest zywioly begin
 	state start begin
+		-- MT2009_PLUS_GLOBAL_BONUS_V1: the world's M2_BONUS_MODE for the client (game.py "BonusMode"): 1 = global -
+		-- the tooltip's bonus maxima and the element icons of every monster (root zywioly_global.py).
+		when login begin
+			cmdchat("BonusMode " .. game.get_event_flag("m2_bonus_global"))
+		end
+
 		when 20082.chat."Kwiaty ¯ywio³u" begin
 			npc.open_shop()
 			setskin(NOWINDOW)
@@ -16,11 +22,21 @@ quest zywioly begin
 			say("Niektóre potwory maj¹ ¿ywio³: ogieñ,")
 			say("b³yskawicê, lód, wiatr, ziemiê albo mrok.")
 			say("Znak ¿ywio³u widaæ przy pasku ¿ycia celu.")
-			say("¯ywio³ maj¹ bossowie, potwory Groty")
-			say("Wygnañców (b³yskawica), Œwi¹tyni Ochao")
-			say("i Zaczarowanego Lasu (wiatr) oraz lochy:")
-			say("Nemere (lód), Le¿e Smoka (b³yskawica)")
-			say("i Staro¿ytna D¿ungla (wiatr).")
+			if game.get_event_flag("m2_bonus_global") == 1 then
+				say("W tym œwiecie potwory maj¹ ¿ywio³y")
+				say("takie jak w oryginalnej grze.")
+				say("Odpornoœæ na ¿ywio³ zmniejsza obra¿enia")
+				say("od jego potworów o 30% swojej wartoœci")
+				say("(15% odpornoœci = 4,5% mniej obra¿eñ).")
+			else
+				say("¯ywio³ maj¹ bossowie, potwory Groty")
+				say("Wygnañców (b³yskawica), Œwi¹tyni Ochao")
+				say("i Zaczarowanego Lasu (wiatr) oraz lochy:")
+				say("Nemere (lód), Le¿e Smoka (b³yskawica)")
+				say("i Staro¿ytna D¿ungla (wiatr). Odpornoœæ")
+				say("na ¿ywio³ odejmuje ca³y swój procent")
+				say("obra¿eñ od jego potworów (do 80%).")
+			end
 			wait()
 			say_title(mob_name(20082)..":")
 			say("Talizman ¿ywio³u daje Si³ê tego ¿ywio³u:")

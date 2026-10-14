@@ -204,6 +204,16 @@ SCHEMA = [
        "Panel klasyczny zmienia to od razu; ta wartość obowiązuje, gdy ją zmienisz.",
        "swiat", "string", "default", GAME, pattern=r"default|easy|[1-9]\d|[12]\d\d|300",
        hint="default, easy albo liczba od 10 do 300", suggestions=["default", "easy", "50", "150", "200"]),
+    _e("M2_BONUS_MODE", "Bonusy przedmiotów i żywioły",
+       "mt2009 = jak dotąd: Maks. PŻ do 1500, Maks. PE do 250, regeneracja do 12%, żywioły mają bossowie i wybrane mapy oraz lochy, "
+       "odporność na żywioł odejmuje cały swój procent. global = bonusy jak na serwerze globalnym: Maks. PŻ do 2000, Maks. PE do 80 "
+       "(200 na naszyjniku), regeneracja do 30%, odporność na ogień, błyskawice i wiatr (zbroja, bransoleta, hełm), szansa na bonus "
+       "doświadczenia i na podwójną ilość przedmiotów, bez wytrzymałości, czasu trwania umiejętności, odbicia strzał i stałego "
+       "doświadczenia; każdy potwór ma swój żywioł, a odporność działa w 30% (15% = 4,5% mniej obrażeń). "
+       "Przedmioty zachowują wszystkie bonusy, które już mają; można przełączać w obie strony.",
+       "swiat", "enum", "mt2009", GAME,
+       options=[["mt2009", "mt2009 – bonusy i żywioły MT2009 PLUS"], ["global", "global – jak na serwerze globalnym"]],
+       note="Działa po restarcie serwera gry (migrator przełącza tabelę bonusów i żywioły potworów)."),
     _e("M2_MOONLIGHT_CHEST_PERMILLE", "Szkatułka Blasku Księżyca z potworów (‰)",
        "Szansa w promilach (10 = 1%), że zabity potwór upuści Szkatułkę Blasku Księżyca. Działa w trakcie wydarzenia ustawionego w panelu. 0 wyłącza.",
        "swiat", "int", "10", ["game"], min=0, max=1000),

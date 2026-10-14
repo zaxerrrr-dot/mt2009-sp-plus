@@ -98,6 +98,7 @@ param(
 #   Umiejetnosci 9.    common skill_length.h, char_skill.cpp, char_battle.cpp, char_affect.cpp,
 #                      constants.cpp, battle.cpp (MT2009_PLUS_SKILL9_V1; server-patches/skill9)
 #   Szczelina Czasu    char_battle.cpp (MT2009_PLUS_YOHARA_CRACK_V1; server-patches/szczelina, after skill9)
+#   M2_BONUS_MODE      item_manager.cpp, item_attribute.cpp (MT2009_PLUS_GLOBAL_BONUS_V1; server-patches/bonusyglobal)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1416,6 +1417,19 @@ if ((Test-Path -LiteralPath $szczelinaApply -PathType Leaf) -and
     if ($szczelinaResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Time Rift edit(s).' -f $szczelinaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# M2_BONUS_MODE (server-patches/bonusyglobal, MT2009_PLUS_GLOBAL_BONUS_V1): mt2009 or the global server's bonuses
+# (Tieru's 2.2.31) - the double-item chance line in the drop (item_manager.cpp) and a talisman's own resistance
+# values (item_attribute.cpp, CItem::AddAttr); the work is the overlay's playerbot_bonus_mode.cpp (event flag
+# m2_bonus_global), the element resistance at 30% is playerbot_elements.cpp. After zywioly and szczelina.
+$bonusyGlobalApply = Join-Path $repo 'server-patches/bonusyglobal/Apply-BonusyGlobalPatch.ps1'
+if ((Test-Path -LiteralPath $bonusyGlobalApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_manager.cpp') -PathType Leaf)) {
+    $bonusyGlobalResult = & $bonusyGlobalApply -SourceDir $engineGameSource
+    if ($bonusyGlobalResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} bonus mode edit(s).' -f $bonusyGlobalResult.Applied) -ForegroundColor DarkGray
     }
 }
 
