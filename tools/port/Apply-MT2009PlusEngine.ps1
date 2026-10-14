@@ -95,6 +95,8 @@ param(
 #                      (MT2009_PLUS_HIDE_COSTUME_V1; server-patches/ukryjkostium)
 #   Gaya               cube.h, cube.cpp (MT2009_PLUS_GAYA_V1; server-patches/gaya, after ysets)
 #   Przebudzeni bossowie char_battle.cpp (MT2009_PLUS_YOHARA_PB_V1; server-patches/przebudzeni)
+#   Umiejetnosci 9.    common skill_length.h, char_skill.cpp, char_battle.cpp, char_affect.cpp,
+#                      constants.cpp, battle.cpp (MT2009_PLUS_SKILL9_V1; server-patches/skill9)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1386,6 +1388,20 @@ if ((Test-Path -LiteralPath $przebudzeniApply -PathType Leaf) -and
     if ($przebudzeniResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} awakened bosses edit(s).' -f $przebudzeniResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Umiejetnosci 9. (server-patches/skill9, MT2009_PLUS_SKILL9_V1): the 9th skills of Yohara (skill_proto 176-182,
+# yskill9.sql) - their vnums, the books from level 0 for a Champion (Champion experience a read), the motions 9/24,
+# the shots, Meteor on cast and Tarcza Eteru's protection (affect 608). The logic is playerbot_skill9.cpp. After
+# Poziom Czempiona: the books ask the champion level and experience.
+$skill9Apply = Join-Path $repo 'server-patches/skill9/Apply-Skill9Patch.ps1'
+if ((Test-Path -LiteralPath $skill9Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_skill.cpp') -PathType Leaf)) {
+    $skill9Result = & $skill9Apply -SourceDir $engineGameSource
+    if ($skill9Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} 9th skill edit(s).' -f $skill9Result.Applied) -ForegroundColor DarkGray
     }
 }
 

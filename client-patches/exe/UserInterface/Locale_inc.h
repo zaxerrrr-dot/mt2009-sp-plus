@@ -239,5 +239,9 @@
 // MT2009_PLUS_HIDE_COSTUME_V1 (Owsap __HIDE_COSTUME_SYSTEM__): app.ENABLE_HIDE_COSTUME_SYSTEM for root's costume
 // window (the server hides the parts, server-patches/ukryjkostium).
 #define ENABLE_HIDE_COSTUME_SYSTEM
+// MT2009_PLUS_SKILL9_V1 (the 9th skills of Yohara, server-patches/skill9): the motions of Trzesienie, Swiatlo Gwiazd,
+// Strzal Wichury, Piekielny Cios, Fala Smierci, Meteor and Tarcza Eteru on all 8 races - skilldesc's motion 9 (first
+// group) / 24 (second group), the grades +25 (PythonPlayerSettingsModule.cpp; the files: client pack yskill9).
+#define ENABLE_NINTH_SKILL
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

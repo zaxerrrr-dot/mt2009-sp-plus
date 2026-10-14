@@ -1,0 +1,1732 @@
+{
+ "already_ours": [
+  "d:/ymir work/effect/monster/round.dds",
+  "d:/ymir work/effect/monster/small_stone.dds",
+  "d:/ymir work/effect/monster2/12_a05_burn_01.dds",
+  "d:/ymir work/effect/monster2/12_rotation_2.dds",
+  "d:/ymir work/effect/monster2/12_tex_crack_02_1.dds",
+  "d:/ymir work/effect/monster2/12_tex_crack_03_1.dds",
+  "d:/ymir work/effect/monster2/12_tex_spin_02.dds",
+  "d:/ymir work/effect/monster2/12zi_002_stone2.dds",
+  "d:/ymir work/effect/monster2/boom1.dds",
+  "d:/ymir work/effect/monster2/boom2.dds",
+  "d:/ymir work/effect/monster2/impact3.dds",
+  "d:/ymir work/effect/monster2/redd_human_laser_end.dds",
+  "d:/ymir work/effect/monster2/smoke01.dds",
+  "d:/ymir work/effect/monster2/smoke_14.dds",
+  "d:/ymir work/effect/monster2/smoke_dirt1.dds",
+  "d:/ymir work/effect/monster2/smoke_dust.dds",
+  "d:/ymir work/pc/assassin/effect/14.dds",
+  "d:/ymir work/pc/assassin/effect/2-star.dds",
+  "d:/ymir work/pc/assassin/effect/6.dds",
+  "d:/ymir work/pc/assassin/effect/7-2.dds",
+  "d:/ymir work/pc/assassin/effect/9 copy.dds",
+  "d:/ymir work/pc/assassin/effect/9-1 copy.dds",
+  "d:/ymir work/pc/assassin/effect/amseup.dds",
+  "d:/ymir work/pc/assassin/effect/cure.dds",
+  "d:/ymir work/pc/assassin/effect/guard2.dds",
+  "d:/ymir work/pc/assassin/effect/half_ring_rainbow_line.dds",
+  "d:/ymir work/pc/assassin/effect/hwarin_3.dds",
+  "d:/ymir work/pc/assassin/effect/orange_cure copy.dds",
+  "d:/ymir work/pc/assassin/effect/wind.dds",
+  "d:/ymir work/pc/assassin/effect/yeonsa_2_blow.mse",
+  "d:/ymir work/pc/assassin/effect/yeonsa_3_blow.mse",
+  "d:/ymir work/pc/assassin/effect/yeonsa_4_blow.mse",
+  "d:/ymir work/pc/assassin/effect/yeonsa_blow.mse",
+  "d:/ymir work/pc/shaman/effect/empty_eye_round copy.dds",
+  "d:/ymir work/pc/shaman/effect/gyeokgong_triple_loop_2.dds",
+  "d:/ymir work/pc/shaman/effect/line_ring_copy.dds",
+  "d:/ymir work/pc/shaman/effect/white_sphere.dds",
+  "d:/ymir work/pc/shaman/effect/yeongi.dds",
+  "d:/ymir work/pc/sura/effect/black_mine_edge.dds",
+  "d:/ymir work/pc/sura/effect/fear.dds",
+  "d:/ymir work/pc/sura/effect/feared.dds",
+  "d:/ymir work/pc/sura/effect/jumagap_spark.dds",
+  "d:/ymir work/pc/sura/effect/white_energy copy.dds",
+  "d:/ymir work/pc/warrior/effect/taesanapji.dds"
+ ],
+ "motions": {
+  "176": [
+   "d:/ymir work/pc/warrior/skill/finish.gr2",
+   "d:/ymir work/pc/warrior/skill/finish.msa",
+   "d:/ymir work/pc/warrior/skill/finish_2.msa",
+   "d:/ymir work/pc/warrior/skill/finish_3.msa",
+   "d:/ymir work/pc/warrior/skill/finish_4.msa",
+   "d:/ymir work/pc2/warrior/skill/finish.gr2",
+   "d:/ymir work/pc2/warrior/skill/finish.msa",
+   "d:/ymir work/pc2/warrior/skill/finish_2.msa",
+   "d:/ymir work/pc2/warrior/skill/finish_3.msa",
+   "d:/ymir work/pc2/warrior/skill/finish_4.msa"
+  ],
+  "177": [
+   "d:/ymir work/pc/assassin/skill/ilgangpyo.gr2",
+   "d:/ymir work/pc/assassin/skill/ilgangpyo.msa",
+   "d:/ymir work/pc/assassin/skill/ilgangpyo_2.msa",
+   "d:/ymir work/pc/assassin/skill/ilgangpyo_3.msa",
+   "d:/ymir work/pc/assassin/skill/ilgangpyo_4.msa",
+   "d:/ymir work/pc2/assassin/skill/ilgangpyo.gr2",
+   "d:/ymir work/pc2/assassin/skill/ilgangpyo.msa",
+   "d:/ymir work/pc2/assassin/skill/ilgangpyo_2.msa",
+   "d:/ymir work/pc2/assassin/skill/ilgangpyo_3.msa",
+   "d:/ymir work/pc2/assassin/skill/ilgangpyo_4.msa"
+  ],
+  "178": [
+   "d:/ymir work/pc/assassin/skill/pungraepo.gr2",
+   "d:/ymir work/pc/assassin/skill/pungraepo.msa",
+   "d:/ymir work/pc/assassin/skill/pungraepo_2.msa",
+   "d:/ymir work/pc/assassin/skill/pungraepo_3.msa",
+   "d:/ymir work/pc/assassin/skill/pungraepo_4.msa",
+   "d:/ymir work/pc2/assassin/skill/pungraepo.gr2",
+   "d:/ymir work/pc2/assassin/skill/pungraepo.msa",
+   "d:/ymir work/pc2/assassin/skill/pungraepo_2.msa",
+   "d:/ymir work/pc2/assassin/skill/pungraepo_3.msa",
+   "d:/ymir work/pc2/assassin/skill/pungraepo_4.msa"
+  ],
+  "179": [
+   "d:/ymir work/pc/sura/skill/akgi.gr2",
+   "d:/ymir work/pc/sura/skill/akgi.msa",
+   "d:/ymir work/pc/sura/skill/akgi_2.msa",
+   "d:/ymir work/pc/sura/skill/akgi_3.msa",
+   "d:/ymir work/pc/sura/skill/akgi_4.msa",
+   "d:/ymir work/pc2/sura/skill/akgi.gr2",
+   "d:/ymir work/pc2/sura/skill/akgi.msa",
+   "d:/ymir work/pc2/sura/skill/akgi_2.msa",
+   "d:/ymir work/pc2/sura/skill/akgi_3.msa",
+   "d:/ymir work/pc2/sura/skill/akgi_4.msa"
+  ],
+  "180": [
+   "d:/ymir work/pc/sura/skill/akgi_dark.gr2",
+   "d:/ymir work/pc/sura/skill/akgi_dark.msa",
+   "d:/ymir work/pc/sura/skill/akgi_dark_2.msa",
+   "d:/ymir work/pc/sura/skill/akgi_dark_3.msa",
+   "d:/ymir work/pc/sura/skill/akgi_dark_4.msa",
+   "d:/ymir work/pc2/sura/skill/akgi_dark.gr2",
+   "d:/ymir work/pc2/sura/skill/akgi_dark.msa",
+   "d:/ymir work/pc2/sura/skill/akgi_dark_2.msa",
+   "d:/ymir work/pc2/sura/skill/akgi_dark_3.msa",
+   "d:/ymir work/pc2/sura/skill/akgi_dark_4.msa"
+  ],
+  "181": [
+   "d:/ymir work/pc/shaman/skill/meteo.gr2",
+   "d:/ymir work/pc/shaman/skill/meteo.msa",
+   "d:/ymir work/pc/shaman/skill/meteo_2.msa",
+   "d:/ymir work/pc/shaman/skill/meteo_3.msa",
+   "d:/ymir work/pc/shaman/skill/meteo_4.msa",
+   "d:/ymir work/pc2/shaman/skill/meteo.gr2",
+   "d:/ymir work/pc2/shaman/skill/meteo.msa",
+   "d:/ymir work/pc2/shaman/skill/meteo_2.msa",
+   "d:/ymir work/pc2/shaman/skill/meteo_3.msa",
+   "d:/ymir work/pc2/shaman/skill/meteo_4.msa"
+  ],
+  "182": [
+   "d:/ymir work/pc/shaman/skill/chunwoon.gr2",
+   "d:/ymir work/pc/shaman/skill/chunwoon.msa",
+   "d:/ymir work/pc/shaman/skill/chunwoon_2.msa",
+   "d:/ymir work/pc/shaman/skill/chunwoon_3.msa",
+   "d:/ymir work/pc/shaman/skill/chunwoon_4.msa",
+   "d:/ymir work/pc2/shaman/skill/chunwoon.gr2",
+   "d:/ymir work/pc2/shaman/skill/chunwoon.msa",
+   "d:/ymir work/pc2/shaman/skill/chunwoon_2.msa",
+   "d:/ymir work/pc2/shaman/skill/chunwoon_3.msa",
+   "d:/ymir work/pc2/shaman/skill/chunwoon_4.msa"
+  ]
+ },
+ "new_packs": [
+  "yskill9"
+ ],
+ "packs": {
+  "yskill9": [
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo.mde",
+    "sha1": "e922877dc3e688eb10d55576baccb010dbaf7fae",
+    "size": 115191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_1.mse",
+    "sha1": "986df448048e8aebd29cf2b693047609526181b2",
+    "size": 4121,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_1.msf",
+    "sha1": "3730f7053adae906ab6c7880f8e7279b2065684f",
+    "size": 890,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_1_1.msf",
+    "sha1": "491eb9ca359ae7f1a331c024d786d9306baffa5c",
+    "size": 890,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_2.mse",
+    "sha1": "c5d410a2c0f86f72b2a3fd1061fcdc90d511429d",
+    "size": 4121,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_2.msf",
+    "sha1": "8ae25e21bf83701531151a65d62ce67ee16bed8b",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_2_1.msf",
+    "sha1": "6613182bf0e804eb3e86894753b0cbea49a684bf",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_3.mse",
+    "sha1": "338572e987b106dd0840007499dc4aedaff7c1ef",
+    "size": 4121,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_3.msf",
+    "sha1": "acc8157727f3b6b2e996515eccaa77c5ccfca7c4",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_3_1.msf",
+    "sha1": "29c3ffd697c4560f737e78934f077fdf3ee76a41",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_4.mse",
+    "sha1": "181a218c43e36e1e0e00748055f56fbf714dff74",
+    "size": 4121,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_4.msf",
+    "sha1": "bfb0d0f75be93d31e949bae913e3c5554ec654c9",
+    "size": 1347,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_4_1.msf",
+    "sha1": "f60375782aeea6388cfa62a314f85b095d478d70",
+    "size": 1347,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_end.mse",
+    "sha1": "b79a7cf6f02b73b9f2b4447d546d3e3412cce9e6",
+    "size": 9448,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_end_1.mse",
+    "sha1": "c535b6ae682c73c010dd6c999946554a06e0f2a6",
+    "size": 6342,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_end_2.mse",
+    "sha1": "23f33fbbd3721fde17e0d47f1a57fffc1dc8b9b0",
+    "size": 6342,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/ilgangpyo_end_3.mse",
+    "sha1": "4bf703be36a5891bfac3cbf4328b300884fe1165",
+    "size": 9447,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo.mde",
+    "sha1": "74f9f7b5b8e68eaf63cbe77d5cf82efa45cf72cf",
+    "size": 411871,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_1.mse",
+    "sha1": "10ab08800e34bc2c26327787698f889f7ae8159d",
+    "size": 15985,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_1.msf",
+    "sha1": "1e1f261de54fc4fd16e0c402f661aecfc72d2462",
+    "size": 961,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_1_making.mse",
+    "sha1": "c42e500c34eee9a6d0012ee680f0ea3c3bf91692",
+    "size": 15668,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_2.mse",
+    "sha1": "ad17074094744f7ed29e67a8008e1cda61610d66",
+    "size": 28515,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_2.msf",
+    "sha1": "88f286ddd7a6381c21e3b9befb51aa6f63a88952",
+    "size": 963,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_2_making.mse",
+    "sha1": "326d5b8f54c5d7f583c9617c907492b8745772ce",
+    "size": 18733,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_3.mse",
+    "sha1": "ed44da3396854e9f1d6fbcb45f2d4ada71dccca5",
+    "size": 37629,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_3.msf",
+    "sha1": "25afe23709ff49509a025bfe8d20dbbf6e9e1571",
+    "size": 963,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_3_making.mse",
+    "sha1": "b5aefc603a736f13d731186ea8b3848070401008",
+    "size": 18733,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_4.mse",
+    "sha1": "fb9546686775443c22f1aaa3f5fd94478338be0a",
+    "size": 43902,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_4.msf",
+    "sha1": "1412c4ed414f0e17b922909d4a1a29cf463b6f9d",
+    "size": 963,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/effect/pungraepo_4_making.mse",
+    "sha1": "603e3ff5c3ce66b82772ae2437e8bfc16e697424",
+    "size": 25185,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/ilgangpyo.gr2",
+    "sha1": "57d8bd56a097164a0935997aac1b0dbec807c4b6",
+    "size": 27152,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/ilgangpyo.msa",
+    "sha1": "4382157dd5b518224a58de865406d2095bfe125c",
+    "size": 1260,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/ilgangpyo_2.msa",
+    "sha1": "a41e0a8c920a169f996c96418cd925f20b80fb77",
+    "size": 1922,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/ilgangpyo_3.msa",
+    "sha1": "767ed6fa41ae297bdfd21f7bdac2f4dc069ab38e",
+    "size": 2581,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/ilgangpyo_4.msa",
+    "sha1": "4e6e12bc0c7ef67c0bd44a84d433ba1c27a9d21e",
+    "size": 2579,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/pungraepo.gr2",
+    "sha1": "849c6e4300cddb7ac9dd3e0ea4d3850263c1c1a7",
+    "size": 38660,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/pungraepo.msa",
+    "sha1": "68ef48e56452a752e3171234c8f8a881f0cc6b87",
+    "size": 932,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/pungraepo_2.msa",
+    "sha1": "3314e5acbb1b3cc3b4aa7694b905d2095416771c",
+    "size": 932,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/pungraepo_3.msa",
+    "sha1": "6232e2ccf28bf659d578da624268316cb819826a",
+    "size": 932,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/assassin/skill/pungraepo_4.msa",
+    "sha1": "970886cc4649a266fbf2c0e9edb6f25b789534ea",
+    "size": 932,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_1_blow.mse",
+    "sha1": "b8815ed9cd64833c1c31ca9c6aa195a8b0c80c8b",
+    "size": 19279,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_1_making.mse",
+    "sha1": "78dd1c33fc392151ce20131fda585f7b92d61586",
+    "size": 9869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_2_blow.mse",
+    "sha1": "b8815ed9cd64833c1c31ca9c6aa195a8b0c80c8b",
+    "size": 19279,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_2_making.mse",
+    "sha1": "2cd2773c46301b4ce2a8c84e8f3fe7111a0919d3",
+    "size": 9869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_3_blow.mse",
+    "sha1": "edf4804096d668495753dc60e83e1becdb722e69",
+    "size": 25723,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_3_making.mse",
+    "sha1": "84965d49398e5c54f6f40e5132e60985ed9937dc",
+    "size": 13305,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_4_blow.mse",
+    "sha1": "0b9d7729a8db6da6d950d586d1707adb68d13c00",
+    "size": 35566,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_4_making.mse",
+    "sha1": "650a69649a7629cd7b568db8038d6689647f5099",
+    "size": 26276,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_moojuk.dds",
+    "sha1": "fb53c9235fb0554703c9bf0d115a346a31dbd43c",
+    "size": 21632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/chunwoon_moojuk.mse",
+    "sha1": "a3f163cb3b9804b935cabd1e60a05cb29612c67a",
+    "size": 15167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_1.msf",
+    "sha1": "77832b04d5d180066b8406e97a84f31dd915cf66",
+    "size": 915,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_1_drop.mse",
+    "sha1": "03981024d280c8ed18b96845e2793f05142044b3",
+    "size": 33597,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_2.msf",
+    "sha1": "56c5f0485ad62e14ed42f3fbf5fa65c131cbe322",
+    "size": 915,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_2_drop.mse",
+    "sha1": "f60dc531d5293134dc52ef63ddf9763ac9351321",
+    "size": 40099,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_2_making.mse",
+    "sha1": "5413752df91a26794aa619ad451880e89259faff",
+    "size": 18741,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_3.msf",
+    "sha1": "a9efed7f0703353e159ee5f9025aee72e9b163aa",
+    "size": 915,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_3_drop.mse",
+    "sha1": "ba6477676f38e67543f3b7df2ea25a9a0950c95f",
+    "size": 43117,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_3_making.mse",
+    "sha1": "75a7d1afe73dc687e90dc15b479fd06fa673c756",
+    "size": 21944,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_4.msf",
+    "sha1": "ab5108a1110058407fa2fe7b2ef4c18ee2418da5",
+    "size": 915,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_4_drop.mse",
+    "sha1": "0528fe493c68754a66b52832828347e8d697ee3c",
+    "size": 56204,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_4_making.mse",
+    "sha1": "a990d84bab75459408106e9b0e531c396adca8a0",
+    "size": 24992,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/meteo_stone.mde",
+    "sha1": "09ae672c3954d3847b2546bc11ca378e9d7eecb5",
+    "size": 1073479,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/effect/shoot_unvisible.mse",
+    "sha1": "f7b737044581f8f5b85a620fee32531ab6ef1e8c",
+    "size": 2984,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/chunwoon.gr2",
+    "sha1": "dd47a937c760de637569a9e7b9bd716b6f6a2213",
+    "size": 77411,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/chunwoon.msa",
+    "sha1": "bcb56c066b0f9552d388a844009e6af9caf96431",
+    "size": 999,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/chunwoon_2.msa",
+    "sha1": "487c35c5d6e6ec5e317b0eda0a820906d8d76218",
+    "size": 999,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/chunwoon_3.msa",
+    "sha1": "b8e5b512bdacb88b0535d57670abb612647c06ce",
+    "size": 999,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/chunwoon_4.msa",
+    "sha1": "322d58e9075344e8fe31d6b5a22aaae9a09143ad",
+    "size": 999,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/meteo.gr2",
+    "sha1": "a23b3a7b498d278e496e18452755a6ea1aa8e22a",
+    "size": 47775,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/meteo.msa",
+    "sha1": "837ec9092e7a37dca0dd81fd393342b7e65dcb49",
+    "size": 955,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/meteo_2.msa",
+    "sha1": "5f696fc7fa1fcb7a891b9a493dfe4d6126a48a5e",
+    "size": 955,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/meteo_3.msa",
+    "sha1": "6b61feabeaaea54d7d5e91d6d05b5795a70abd60",
+    "size": 955,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/shaman/skill/meteo_4.msa",
+    "sha1": "fed008ba79b2337b5ca067cc0214fc54c3ab196b",
+    "size": 957,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_1_blow.mse",
+    "sha1": "a6b505205b974cf42760230b75d4e17445d780e1",
+    "size": 11032,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_1_making.mse",
+    "sha1": "a4b4568a96f3a203d713b6d126b470240be061cd",
+    "size": 12815,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_2_blow.mse",
+    "sha1": "407172c1e2686af1c26dcc98122d07d76db9b4bb",
+    "size": 17319,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_2_making.mse",
+    "sha1": "64c1f83e9808e788121a44a48fac17ce08e49a8a",
+    "size": 15881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_3_blow.mse",
+    "sha1": "e444357b202b0058c0dac14331e8572c122de6d2",
+    "size": 24470,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_3_making.mse",
+    "sha1": "8e9b74e46bfaa8eb4885e11ddcd5fdc6c53e8d1b",
+    "size": 19065,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_4_blow.mse",
+    "sha1": "bc0079679edc85a89c3d05f445057b08f0e4dd84",
+    "size": 28629,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_4_making.mse",
+    "sha1": "2d7b2a9f5360bcc7ed2abf75d6d073a5f6b4e843",
+    "size": 19234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_1_fear.mse",
+    "sha1": "a6b505205b974cf42760230b75d4e17445d780e1",
+    "size": 11032,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_1_making.mse",
+    "sha1": "f163b752ed77d9510e7e17c5f19839c711aae29a",
+    "size": 15807,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_1_throw.mse",
+    "sha1": "ef0eee1b4a0e842e0cff14fcd06827a98668525b",
+    "size": 11234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_1_throw.msf",
+    "sha1": "1ea3850eb958da54f5adca2edd3c6839a5802106",
+    "size": 1372,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_2_fear.mse",
+    "sha1": "11b3deb84127ec7861ec33c1249a50bbd1a3fe02",
+    "size": 14080,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_2_making.mse",
+    "sha1": "c58b0ba2527f1bee8935cd2425bde5631068ad20",
+    "size": 18873,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_2_throw.mse",
+    "sha1": "c2ed9d091f38c370db42e3edb71b7482379beca8",
+    "size": 11234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_2_throw.msf",
+    "sha1": "128403f1acd97bd785b9785b9aeb56c1e89ff717",
+    "size": 1704,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_3_fear.mse",
+    "sha1": "296b2ad9bbc12a198e494ee193d95b5be675ede9",
+    "size": 17992,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_3_making.mse",
+    "sha1": "3c7235dd773734688d56032bfe810e5f2288de82",
+    "size": 21772,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_3_throw.mse",
+    "sha1": "2a459069c7ca047e8c932daefb6e78fc2a31c2c3",
+    "size": 11234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_3_throw.msf",
+    "sha1": "6ece5bf719d8da7052bed3389dea32b88d459bef",
+    "size": 2719,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_4_fear.mse",
+    "sha1": "1dd7ef473c7c731227c20df55786f66ad8e2e5e5",
+    "size": 18937,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_4_making.mse",
+    "sha1": "b8f4b4f9370d8c6b671a91e9e18a5e3ede48eb86",
+    "size": 28315,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_4_throw.mse",
+    "sha1": "de3eeb3408c187bdaf8fa6c505a50687a0ca0c06",
+    "size": 11234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_4_throw.msf",
+    "sha1": "7a32508ccd78f8c2bb6c497dfc4dc5cf602fcf16",
+    "size": 4067,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_skeleton.mde",
+    "sha1": "9bd0a5e747dcb6c4d67ce9d6454eab8eb5713129",
+    "size": 425231,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/effect/akgi_dark_skeleton_throw.mde",
+    "sha1": "06160f8cc0d4ebbc826b586a7dd64cdf161b66ce",
+    "size": 398107,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi.gr2",
+    "sha1": "228b3682c683cf7b12057b7bf3cad28916c7ae43",
+    "size": 43415,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi.msa",
+    "sha1": "acc7aabfe809c4148f12c1a2fada6b3851ad5f58",
+    "size": 1872,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_2.msa",
+    "sha1": "88fbdc8feca97506178ebf3b8f03b6f37f926d20",
+    "size": 1872,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_3.msa",
+    "sha1": "a427746f995f76ed5afb1eefa8aef6fb4b953949",
+    "size": 1872,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_4.msa",
+    "sha1": "35ae709ec483b02eeeb1d2fbd1c27a86ca757e2d",
+    "size": 1872,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_dark.gr2",
+    "sha1": "411940dfa351ce9d8037852afe3ad40495d66d7a",
+    "size": 41027,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_dark.msa",
+    "sha1": "5210b6927818cf4b808894376a801dbf73b92821",
+    "size": 1363,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_dark_2.msa",
+    "sha1": "31cddaf03ea1fd03ab24b8a3ef604b47bc3ade99",
+    "size": 1363,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_dark_3.msa",
+    "sha1": "37f7994d90f4da866e4391720e07446dbcff0419",
+    "size": 1363,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/sura/skill/akgi_dark_4.msa",
+    "sha1": "a93ce4a3a4ad036ef13fdfb854bf4f15f644d843",
+    "size": 1365,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish.mde",
+    "sha1": "b9081bf2c6c4df371600fd23416c70ac82d0b34e",
+    "size": 999371,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_1.mse",
+    "sha1": "6cd2c66cf324082aa0c36098103938edae8e93e3",
+    "size": 22259,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_1_blow.mse",
+    "sha1": "922435df325f8ef78ad039c6ea0b31c501d1427e",
+    "size": 13168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_2.mse",
+    "sha1": "dc985b7677d6eed88f5709f6984c970e516213fb",
+    "size": 23312,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_2_blow.mse",
+    "sha1": "d2fcb0f5cc50b50ca2db22f87b6f4bd8c81ecf0e",
+    "size": 21366,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_3.mse",
+    "sha1": "cd8fee9f59924437397a8223192ac869cc521c0d",
+    "size": 26719,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_3_blow.mse",
+    "sha1": "7341d99c4c2f5ea3a4991791f73509e115fbb41e",
+    "size": 27578,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_4.mse",
+    "sha1": "41d1817f0841ad3f3c11a7589a98cd3f088cc79c",
+    "size": 33347,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_4_blow.mse",
+    "sha1": "74b0d5430eec5381f11a21bc8f723d909efd6f12",
+    "size": 33750,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/effect/finish_sword_m.mde",
+    "sha1": "79aaf27722ff7bdda9e9da4be9b08949fb232a12",
+    "size": 20651,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/skill/finish.gr2",
+    "sha1": "f602eb0629af6be7c337e43f73e1943d14884abd",
+    "size": 31803,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/skill/finish.msa",
+    "sha1": "ff42ed652688e52ea6350ce5d40f52f41bc1d3f1",
+    "size": 3762,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/skill/finish_2.msa",
+    "sha1": "47692de454811963a9ded7abca7ad965d4dd1d4e",
+    "size": 3762,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/skill/finish_3.msa",
+    "sha1": "3a12b39a2d81fd4e5d0e47a7a418ca4fbe02ed42",
+    "size": 3760,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc/warrior/skill/finish_4.msa",
+    "sha1": "375a6131738627d31bf78d6101caef8635171000",
+    "size": 3760,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/ilgangpyo.gr2",
+    "sha1": "4710bfb4584af0321da04e408a252f74dff358cd",
+    "size": 29565,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/ilgangpyo.msa",
+    "sha1": "c951ec5fdc5768ae6aeb9f716458f2f6c3daf34a",
+    "size": 1261,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/ilgangpyo_2.msa",
+    "sha1": "0a4f5c73bb87f8ffd7a3b3e39e87bc775f17987c",
+    "size": 1923,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/ilgangpyo_3.msa",
+    "sha1": "8ca5b1b2ad1eb479ad8d2da8436171265fba51ca",
+    "size": 2582,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/ilgangpyo_4.msa",
+    "sha1": "9afa7d5afe5a3270b2ca6e286041b3adfa819465",
+    "size": 2580,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/pungraepo.gr2",
+    "sha1": "f7533ecbed6875fa94dc5db098d233d73a07b804",
+    "size": 40500,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/pungraepo.msa",
+    "sha1": "fdcd3eebf65dda55bec0b42f02a509ae9ca4100b",
+    "size": 933,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/pungraepo_2.msa",
+    "sha1": "cf0d40ecaaa3ebe13135d99df3a8577b4c9ea0aa",
+    "size": 933,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/pungraepo_3.msa",
+    "sha1": "6a6963271bd84799f086a52afdec7ee706ebaeee",
+    "size": 933,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/assassin/skill/pungraepo_4.msa",
+    "sha1": "732b302a48aaca61145dbba29e4d27fafdd0b87f",
+    "size": 933,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/chunwoon.gr2",
+    "sha1": "5b6414874cf845a4d2a7865e9f47c38d44b4a314",
+    "size": 63981,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/chunwoon.msa",
+    "sha1": "bb383ac099a51c67dd40f667d4b9d45def3b1013",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/chunwoon_2.msa",
+    "sha1": "eda1302157943d8ec936b0e251afa2339e9d49b5",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/chunwoon_3.msa",
+    "sha1": "15e02e61791f7faf1f53bc90fd86e568315882f5",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/chunwoon_4.msa",
+    "sha1": "e071ce5303deb89d1f5b3f6f366d999ce2156c1e",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/meteo.gr2",
+    "sha1": "d53edab14ca9e7cad3b1e62c8bca8198007bb575",
+    "size": 42140,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/meteo.msa",
+    "sha1": "b2a162a1c72d4e0f069fc82d7bcf5bcca77a2eb9",
+    "size": 956,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/meteo_2.msa",
+    "sha1": "2eca780ce86a06dda84c9d5545dcc22c35c399ec",
+    "size": 958,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/meteo_3.msa",
+    "sha1": "f3b9cfc973deb30a1de1601c20716c682d6e94c8",
+    "size": 958,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/shaman/skill/meteo_4.msa",
+    "sha1": "9c077afedc628ca061e86181cbf2005fea2e74ec",
+    "size": 956,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi.gr2",
+    "sha1": "fe3bf949842e6c7caad61569ac117785372dbb60",
+    "size": 52336,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi.msa",
+    "sha1": "21baf9b7d17e2738b22d8d8a709e5f665f8fd9fa",
+    "size": 1873,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_2.msa",
+    "sha1": "a1e29d336d12feaef49cc3b6adfdd83e3efc7051",
+    "size": 1873,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_3.msa",
+    "sha1": "d3b8aa7b086bb8f1bb08a35fcddc238fb910796b",
+    "size": 1873,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_4.msa",
+    "sha1": "a26a8ca77c83b6e78ebc312b61eadb588c1f59a2",
+    "size": 1873,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_dark.gr2",
+    "sha1": "aec535b137f1cc53cc7464652facf1c762ce8951",
+    "size": 48317,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_dark.msa",
+    "sha1": "1e0d2ae9f388b7567e230e2aff51252e466b8488",
+    "size": 1364,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_dark_2.msa",
+    "sha1": "1cb023d05d5584ec66cb0b4da36610f00e8af95c",
+    "size": 1364,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_dark_3.msa",
+    "sha1": "86f6f60e85bcdb4a637ee3901ebb80d767acc6bb",
+    "size": 1364,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/sura/skill/akgi_dark_4.msa",
+    "sha1": "3155c54c861bf95fe165eeb3e2845ff5fa0f931d",
+    "size": 1366,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/skill/finish.gr2",
+    "sha1": "5583cfde7ec93e1944e4a4239978ac47cfd15b10",
+    "size": 42187,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/skill/finish.msa",
+    "sha1": "25c8e0b4d688d117d2512f52f3e6ee5aab1bb950",
+    "size": 3763,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/skill/finish_2.msa",
+    "sha1": "578dc0a269df5a21154110f826c14d692cd958cd",
+    "size": 3763,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/skill/finish_3.msa",
+    "sha1": "efba0a083644f994091e2dc04c35b9dc81f1d77d",
+    "size": 3763,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/pc2/warrior/skill/finish_4.msa",
+    "sha1": "3c023ab510a16fb934e2b13b2216605d9fc3aa70",
+    "size": 3763,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/assassin/ilgwangpyo_01.sub",
+    "sha1": "bf76992228cef60501ae4d8a47674177e6a208fe",
+    "size": 100,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/assassin/ilgwangpyo_02.sub",
+    "sha1": "213d16551a527c7f76c95414cf8e3fadc5e48bad",
+    "size": 97,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/assassin/ilgwangpyo_03.sub",
+    "sha1": "9a8b051d07c79028fc0845e69d926e5ad50fd876",
+    "size": 98,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/assassin/pungloepo_01.sub",
+    "sha1": "1888e04e0a631921d1a6ec009cf9624d0af6c9da",
+    "size": 98,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/assassin/pungloepo_02.sub",
+    "sha1": "b68fa0d7bf6de9f8ea34e1366168d2847984d3de",
+    "size": 99,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/assassin/pungloepo_03.sub",
+    "sha1": "9928caa6f0a07c34a2f544d4e0c592b263e955b4",
+    "size": 100,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/common/affect/cheonun.sub",
+    "sha1": "cc6f903b380cdbfb00f9c5b907184d1c1e79b309",
+    "size": 96,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/shaman/cheonun_01.sub",
+    "sha1": "d0d0ad44f056f353c9726581581643fcd6a2c193",
+    "size": 96,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/shaman/cheonun_02.sub",
+    "sha1": "8b2f07d0ce03b66a8a7a5d28ace08bdd760e8cd6",
+    "size": 97,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/shaman/cheonun_03.sub",
+    "sha1": "7bf53fea914fbe079b73170e13bea60033ec6092",
+    "size": 98,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/shaman/meteo_01.sub",
+    "sha1": "9732c194863399fb457aa7b9405e2995351546d6",
+    "size": 98,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/shaman/meteo_02.sub",
+    "sha1": "200d3901ec3836d3561e22804c33f6c51c1d0c19",
+    "size": 95,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/shaman/meteo_03.sub",
+    "sha1": "7ff27ad13ad508e6ad7cdfdf5727d69e4bf83d97",
+    "size": 96,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/sura/geomaggwi_01.sub",
+    "sha1": "06a33da7c575b90441b34ac6766e7d9f2c929913",
+    "size": 96,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/sura/geomaggwi_02.sub",
+    "sha1": "53689be0d47c0957741a807260850798bbbe6046",
+    "size": 93,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/sura/geomaggwi_03.sub",
+    "sha1": "ac34165ce0772443c08d8d47ddbb08d6edb0f113",
+    "size": 94,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/sura/mabeobaggwi_01.sub",
+    "sha1": "36cf829d691c0c2b99c2ce186646acc04a842d35",
+    "size": 94,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/sura/mabeobaggwi_02.sub",
+    "sha1": "f835412633b39ab0e6dcf8df5b69af43f2d33665",
+    "size": 95,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/sura/mabeobaggwi_03.sub",
+    "sha1": "78034df1eb17f50728ae1d0fd112854f07b01d57",
+    "size": 96,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/warrior/finish_01.sub",
+    "sha1": "490537f0a8e8e01af0f789b136d61aa025d24609",
+    "size": 99,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/warrior/finish_02.sub",
+    "sha1": "28b85ec95d85af05b5386b7b068ae34f0b2206f2",
+    "size": 96,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill/warrior/finish_03.sub",
+    "sha1": "c7709c7e985e60d8282f0dff5ce85270a29a6f1d",
+    "size": 97,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/ui/skill9_assassin.dds",
+    "sha1": "804f1deb5887f61f1774ea6fad421aec063536d7",
+    "size": 98512,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/ui/skill9_common.dds",
+    "sha1": "b36264442dc36c28a4cbfab4037475a179222174",
+    "size": 218640,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/ui/skill9_shaman.dds",
+    "sha1": "4a4d1d91883589184c58112f3827cfe14f9242cd",
+    "size": 98512,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/ui/skill9_sura.dds",
+    "sha1": "b0a0526619790939f1063c7f9cdab8a1b1e02576",
+    "size": 98512,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/ui/skill9_warrior.dds",
+    "sha1": "d50785d0992a4002590dee9b7c46b68047885134",
+    "size": 98512,
+    "source": "ameria"
+   },
+   {
+    "name": "sound/pc/assassin/bow/bow_ready.wav",
+    "sha1": "c345ce0dc5175b8fc448fcac3b52ed2039920bb6",
+    "size": 15338,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/amseup_v.wav",
+    "sha1": "f76771c8bf611b7aa594584730f60326476e679f",
+    "size": 26082,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/gungsin.wav",
+    "sha1": "f8f559fc4e26567955d5bd65f3d6fafe4949775d",
+    "size": 53390,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/ilgangpyo.mss",
+    "sha1": "26540f2fc40efb65b0f24b661b4bb1969549f29d",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/ilgangpyo_2.mss",
+    "sha1": "42058be42637a4247930746c1b44618505646743",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/ilgangpyo_3.mss",
+    "sha1": "42058be42637a4247930746c1b44618505646743",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/ilgangpyo_4.mss",
+    "sha1": "42058be42637a4247930746c1b44618505646743",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/pungraepo.mss",
+    "sha1": "ea77b484dc03ba42d13c43695490c9ac972ac964",
+    "size": 271,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/pungraepo_2.mss",
+    "sha1": "db6a21a058ad0a446cf7f4a6d8d2ad714e11b104",
+    "size": 269,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/pungraepo_3.mss",
+    "sha1": "db6a21a058ad0a446cf7f4a6d8d2ad714e11b104",
+    "size": 269,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/pungraepo_4.mss",
+    "sha1": "db6a21a058ad0a446cf7f4a6d8d2ad714e11b104",
+    "size": 269,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/skill/yeonsa_shot.wav",
+    "sha1": "dbc5153f7f8fc13c1f72691dd044bdbb42e7fa56",
+    "size": 16290,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/assassin/voice/2_heavy.wav",
+    "sha1": "83c1df0052d3f60ff7c87b95e2e62dec0f890f61",
+    "size": 25122,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/bipa_v.wav",
+    "sha1": "2d38966e86ec9531d1e918867cc8fa3e11392adc",
+    "size": 90924,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/chunwoon.mss",
+    "sha1": "3bd84d6d9c048785fd3a7ef555ee5671a429bb91",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/chunwoon_2.mss",
+    "sha1": "3bd84d6d9c048785fd3a7ef555ee5671a429bb91",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/chunwoon_3.mss",
+    "sha1": "3bd84d6d9c048785fd3a7ef555ee5671a429bb91",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/chunwoon_4.mss",
+    "sha1": "3bd84d6d9c048785fd3a7ef555ee5671a429bb91",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/jeongeop_s_me.wav",
+    "sha1": "4bc1e3dcb13ff158cd975127055a165b39a3eab6",
+    "size": 162942,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/jeongeop_v_me.wav",
+    "sha1": "bb15addcab415072885e5b55f26f9c39cacc700f",
+    "size": 85548,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/meteo.mss",
+    "sha1": "7d76d259c605b6cfa6baced00cb8241d7c7607b9",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/meteo_2.mss",
+    "sha1": "7d76d259c605b6cfa6baced00cb8241d7c7607b9",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/meteo_3.mss",
+    "sha1": "7d76d259c605b6cfa6baced00cb8241d7c7607b9",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/shaman/skill/meteo_4.mss",
+    "sha1": "7d76d259c605b6cfa6baced00cb8241d7c7607b9",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi.mss",
+    "sha1": "381d3145c3c0404a74bc49bf468612ecbbccb3eb",
+    "size": 262,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi_2.mss",
+    "sha1": "9dd954d0313163bfd3d59d7c250abe0f739e3970",
+    "size": 260,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi_3.mss",
+    "sha1": "dc8037926223e6010bd68dcbf6d4faf7adbf66a6",
+    "size": 264,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi_4.mss",
+    "sha1": "381d3145c3c0404a74bc49bf468612ecbbccb3eb",
+    "size": 262,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi_dark.mss",
+    "sha1": "a90a2e7d026b25ea22422bbf5c48185f9473b225",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi_dark_2.mss",
+    "sha1": "1b3e7474a4fba3e3f2a03d9eb2d1c5e6d6acb7b7",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi_dark_3.mss",
+    "sha1": "a90a2e7d026b25ea22422bbf5c48185f9473b225",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/akgi_dark_4.mss",
+    "sha1": "a90a2e7d026b25ea22422bbf5c48185f9473b225",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/geomhwan_explo.wav",
+    "sha1": "1be6aa78df869635bd047c003ca5b567ad00822e",
+    "size": 34812,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/geongon_v.wav",
+    "sha1": "40a142b2d257a0b0cbe5c1c4d6547378e8ed8f0e",
+    "size": 61058,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/gongpo.wav",
+    "sha1": "bb6f62da96d7cde62648b4958fe52ef369fb3e84",
+    "size": 91088,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/gwigeom_v.wav",
+    "sha1": "35be605763e0d64918abfc283f508344ae133848",
+    "size": 90244,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/hwayeom.wav",
+    "sha1": "42ab55b5c7652d5ff7cc29d7320c42ca7737c1bd",
+    "size": 93412,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/pabub_explo.wav",
+    "sha1": "9c7ccc6354912c43402f93c672df8c55b5bceb22",
+    "size": 63284,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/sura/skill/swaeryeong_explo.wav",
+    "sha1": "68a1a890ed30484685fe9f305b787202a760b9cb",
+    "size": 48556,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/warrior/skill/daejin.wav",
+    "sha1": "6870893cf2ecb51ee7e5268bd9e132d353b18cac",
+    "size": 86920,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/warrior/skill/finish.mss",
+    "sha1": "b3868f4378c1a5c71b6b7f6d29a12d4bba0fb7f6",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/warrior/skill/finish_2.mss",
+    "sha1": "ae22351b21aa2c49345e8818799c6bdc6d10b6bf",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/warrior/skill/finish_3.mss",
+    "sha1": "b3868f4378c1a5c71b6b7f6d29a12d4bba0fb7f6",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/warrior/skill/finish_4.mss",
+    "sha1": "b3868f4378c1a5c71b6b7f6d29a12d4bba0fb7f6",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc/warrior/skill/jipjung_v.wav",
+    "sha1": "777b47dee9c3eaa9ab0236caeee673ab86ccf43b",
+    "size": 79090,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/ilgangpyo.mss",
+    "sha1": "1b38989ed1ff6dc56b640dc1bf78459157f68f5e",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/ilgangpyo_2.mss",
+    "sha1": "1b38989ed1ff6dc56b640dc1bf78459157f68f5e",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/ilgangpyo_3.mss",
+    "sha1": "1b38989ed1ff6dc56b640dc1bf78459157f68f5e",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/ilgangpyo_4.mss",
+    "sha1": "1b38989ed1ff6dc56b640dc1bf78459157f68f5e",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/pungraepo.mss",
+    "sha1": "bc9c01804a99e549be2c1740f5bd7bf3bf55fadd",
+    "size": 270,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/pungraepo_2.mss",
+    "sha1": "0bec10d5c6429f28f31f8af76224e90b62274302",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/pungraepo_3.mss",
+    "sha1": "0bec10d5c6429f28f31f8af76224e90b62274302",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/pungraepo_4.mss",
+    "sha1": "0bec10d5c6429f28f31f8af76224e90b62274302",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/sumjingum.wav",
+    "sha1": "4043e0b799d615effbe078fff754d183459aa565",
+    "size": 132176,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/assassin/skill/yernsa.wav",
+    "sha1": "55530c1584d8a6643fdd23fe6b3e0cf94c23967d",
+    "size": 164044,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/bipabu.wav",
+    "sha1": "90494d21501a39d30f01aedc49ed288073612dd8",
+    "size": 241320,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/chunwoon.mss",
+    "sha1": "a14940d778af2b3ec7e169517db0080869cbac5b",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/chunwoon_2.mss",
+    "sha1": "a14940d778af2b3ec7e169517db0080869cbac5b",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/chunwoon_3.mss",
+    "sha1": "a14940d778af2b3ec7e169517db0080869cbac5b",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/chunwoon_4.mss",
+    "sha1": "a14940d778af2b3ec7e169517db0080869cbac5b",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/meteo.mss",
+    "sha1": "4e5a4db6a636f5ee8ae756d7c9edd1d1fb78c87e",
+    "size": 269,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/meteo_2.mss",
+    "sha1": "e4355a2dfe8386c057a77dee4fe44af9f2d33318",
+    "size": 267,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/meteo_3.mss",
+    "sha1": "e4355a2dfe8386c057a77dee4fe44af9f2d33318",
+    "size": 267,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/shaman/skill/meteo_4.mss",
+    "sha1": "e4355a2dfe8386c057a77dee4fe44af9f2d33318",
+    "size": 267,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi.mss",
+    "sha1": "6fc69b8746e638bfb291a120942b903a257febda",
+    "size": 266,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi_2.mss",
+    "sha1": "037b2ce7d7771f459889607a044914a012c7046b",
+    "size": 264,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi_3.mss",
+    "sha1": "037b2ce7d7771f459889607a044914a012c7046b",
+    "size": 264,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi_4.mss",
+    "sha1": "037b2ce7d7771f459889607a044914a012c7046b",
+    "size": 264,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi_dark.mss",
+    "sha1": "d4b2ddeb5efdb0e9453945c2031d49f9c887926e",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi_dark_2.mss",
+    "sha1": "98224405c9daccc4b9f5144108f815598eed032a",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi_dark_3.mss",
+    "sha1": "98224405c9daccc4b9f5144108f815598eed032a",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/akgi_dark_4.mss",
+    "sha1": "98224405c9daccc4b9f5144108f815598eed032a",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/majugum.wav",
+    "sha1": "426924de4d3374b96361fe435d49d5cdba84e3a7",
+    "size": 147942,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/sura/skill/sueeryoungji.wav",
+    "sha1": "16bc873c716af0304722dee8038d13d0c8571fc7",
+    "size": 87492,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/warrior/skill/finish.mss",
+    "sha1": "d98bf02da249af6371bebf2c466ccef3214797a7",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/warrior/skill/finish_2.mss",
+    "sha1": "d98bf02da249af6371bebf2c466ccef3214797a7",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/warrior/skill/finish_3.mss",
+    "sha1": "d98bf02da249af6371bebf2c466ccef3214797a7",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/warrior/skill/finish_4.mss",
+    "sha1": "d98bf02da249af6371bebf2c466ccef3214797a7",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/pc2/warrior/skill/gumpung.wav",
+    "sha1": "bafaf6f233a95fafeb821756b6fe99221d49203b",
+    "size": 255804,
+    "source": "gf"
+   }
+  ]
+ },
+ "unresolved": []
+}

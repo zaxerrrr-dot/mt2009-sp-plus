@@ -506,6 +506,9 @@ bool CPlayerSettingsModule::LoadGameWarrior(DWORD dwRace, const char* stFolder)
         {19, "cheongeun"},
         {20, "geompung"},
         //{21, "noegeom"},
+#ifdef ENABLE_NINTH_SKILL // MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara - Trzesienie (176), both groups (skilldesc motion 9)
+        {9, "finish"},
+#endif
     };
 
     char szSkillName[FILE_MAX_NUM]{};
@@ -779,6 +782,10 @@ bool CPlayerSettingsModule::LoadGameAssassin(DWORD dwRace, const char* stFolder)
         {19, "gyeonggong"},
         {20, "dokgigung"},
         {21, "gwangyeok"},
+#ifdef ENABLE_NINTH_SKILL // MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara - Swiatlo Gwiazd (177, motion 9), Strzal Wichury (178, motion 24)
+        {9, "ilgangpyo"},
+        {24, "pungraepo"},
+#endif
     };
 
     char szSkillName[FILE_MAX_NUM]{};
@@ -1095,6 +1102,10 @@ bool CPlayerSettingsModule::LoadGameSura(DWORD dwRace, const char* stFolder)
         {19, "heuksin"},
         {20, "tusok"},
         {21, "mahwan"},
+#ifdef ENABLE_NINTH_SKILL // MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara - Piekielny Cios (179, motion 9), Fala Smierci (180, motion 24)
+        {9, "akgi"},
+        {24, "akgi_dark"},
+#endif
     };
 
     char szSkillName[FILE_MAX_NUM]{};
@@ -1286,6 +1297,10 @@ bool CPlayerSettingsModule::LoadGameShaman(DWORD dwRace, const char* stFolder)
         {pkMotionManager.NAME_SKILL + 19, "jeongeop_target.msa"},
         {pkMotionManager.NAME_SKILL + 20, "kwaesok_target.msa"},
         {pkMotionManager.NAME_SKILL + 21, "jeungryeok_target.msa"},
+#ifdef ENABLE_NINTH_SKILL // MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara - the Shaman's grade 1 motions are listed by hand
+        {pkMotionManager.NAME_SKILL + 9, "meteo.msa"},
+        {pkMotionManager.NAME_SKILL + 24, "chunwoon.msa"},
+#endif
         {GUILD_SKILL_DRAGONBLOOD, "guild_yongsinuipi.msa", 0},
         {GUILD_SKILL_DRAGONBLESS, "guild_yongsinuichukbok.msa", 0},
         {GUILD_SKILL_BLESSARMOR, "guild_seonghwigap.msa", 0},
@@ -1307,6 +1322,10 @@ bool CPlayerSettingsModule::LoadGameShaman(DWORD dwRace, const char* stFolder)
         {19, "jeongeop"},
         {20, "kwaesok"},
         {21, "jeungryeok"},
+#ifdef ENABLE_NINTH_SKILL // MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara - Meteor (181, motion 9), Tarcza Eteru (182, motion 24); grades 2-4 here
+        {9, "meteo"},
+        {24, "chunwoon"},
+#endif
     };
 
     char szSkillName[FILE_MAX_NUM]{};

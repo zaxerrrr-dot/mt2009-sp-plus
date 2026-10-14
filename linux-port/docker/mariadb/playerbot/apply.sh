@@ -3716,6 +3716,17 @@ for ypb_sql in yohara_pb.sql yohara_items_pb.sql yohara_pb_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_SKILL9_V1: the 9th skills of Yohara (server-patches/skill9/README.md) - skill_proto 176-182 (Owsap's GF
+# rows in our columns) and the setFlag member PARTY (bit 28, Tarcza Eteru's party buff). yskill9.sql
+# (tools/yskill9/gen_yskill9_sql.py) is idempotent; their books 50569-50575 are yohara_items.sql's.
+if [ -s /opt/playerbot/yskill9.sql ]; then
+    if db < /opt/playerbot/yskill9.sql; then
+        echo "[playerbot-migrate] 9th skills: yskill9.sql applied"
+    else
+        fail_step "9th skills: yskill9.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read
