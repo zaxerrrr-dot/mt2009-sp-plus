@@ -97,12 +97,17 @@ for idx, MAP, PARENT, size, basepos in MAPS:
     if (w, h) != size or not re.search(r'BasePosition\s+%d\s+%d' % basepos, st):
         fail.append('%s setting.txt: size/base %s' % (MAP, st[:80]))
     prop = text(mp + 'mapproperty.txt') or ''
-    if not re.search(r'ParentMapName\s+"%s"' % PARENT, prop):
-        fail.append('%s mapproperty.txt: no ParentMapName "%s"' % (MAP, PARENT))
-    # the parent: the exe reads Setting.txt, the sectors and the environment from its folder
-    pp = 'maps/%s/' % PARENT
-    need(pp + 'setting.txt', 'parent of %s' % MAP)
-    need(pp + 'mapproperty.txt', 'parent of %s' % MAP)
+    # MT2009_PLUS_COPIED_MAPS_V1 (../ycopymaps): the parent's sectors and environment are in the map's own folder
+    # now (our exe reads a ParentMapName without "maps/"); before that step the parent's folder is checked.
+    if re.search(r'ParentMapName\s+"%s"' % PARENT, prop):
+        pp = 'maps/%s/' % PARENT
+        need(pp + 'setting.txt', 'parent of %s' % MAP)
+        need(pp + 'mapproperty.txt', 'parent of %s' % MAP)
+    elif 'ParentMapName' in prop:
+        fail.append('%s mapproperty.txt: a ParentMapName other than "%s"' % (MAP, PARENT))
+        pp = mp
+    else:
+        pp = mp
     for x in range(w):
         for y in range(h):
             for f in ('areadata.txt', 'areaproperty.txt', 'attr.atr', 'height.raw', 'tile.raw', 'water.wtr',
