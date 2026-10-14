@@ -1,0 +1,185 @@
+-- MT2009_PLUS_YOHARA_CRACK_V1: Statua Szczeliny Czasu (20472) na P³askowy¿u Iluzji (397) - wejœcie do lochów Szczeliny
+-- Czasu (w³aœciciel, 14.10.2026: "Statua Szczeliny Czasu na P³askowy¿u Iluzji, na razie tylko jeden loch: Zaklêty
+-- Las"; pl-wiki "Statua Szczeliny Czasu" (komórka 103,90), "P³askowy¿ Iluzji" (rozdzia³ "Statua Szczeliny Czasu"),
+-- "Zaklêty Las (SZC)", "Zegarek Kieszonkowy", "Handlarka Iluzji"; tr-wiki "Zaman Catlagi Heykeli"):
+--   * od poziomu 110, tylko w grupie (co najmniej 2 osoby, GM sam), otwiera przywódca, ka¿dy cz³onek grupy musi mieæ
+--     Zegarek Kieszonkowy (31147 - u Handlarki Iluzji po 1, 10 i 100 sztuk; znika przy wejœciu do nowej wyprawy);
+--     najwy¿ej 8 osób; ca³a grupa przy statui;
+--   * 60 minut; po ukoñczeniu lub po up³ywie czasu ca³a grupa wraca na P³askowy¿ Iluzji (obok tej statui) - innego
+--     wyjœcia nie ma; "Wróæ do lochu" - do trwaj¹cej wyprawy;
+--   * potwory nie daj¹ dropu, ale daj¹ wiêcej PD (server-patches/szczelina, rzêdy "TR:" w bazie);
+--   * na razie jeden loch: Zaklêty Las (SZC) (404, quest jotun_szc); Grota Wygnañców 2, Twierdza Czerwonego Smoka i
+--     Stra¿nica Nemere (SZC) przyjd¹ póŸniej. Codziennej misji przy statui wiki nie podaje (pl i tr: brak misji).
+-- Mapa lochu jest na rdzeniu Yohary (game3): boty tam nie wchodz¹ - licz¹ siê ludzie z grupy.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest szczelina_czasu begin
+	state start begin
+		function cfg()
+			return {
+				min_level = 110, ticket = 31147, near = 30, keep = 3600 + 300, statue = 20472,
+				-- P³askowy¿ Iluzji: the way back from every Time Rift dungeon - beside the statue (local 106,96)
+				plateau = 397, landing = {3072 + 106, 17920 + 96},
+				dungeons = {
+					{map = 404, name = "Zaklêty Las (SZC)", boss = 4403, entry = {3328 + 478, 18176 + 970}},
+				},
+			}
+		end
+
+		function on_plateau()
+			return pc.get_map_index() == szczelina_czasu.cfg().plateau
+		end
+
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
+		end
+
+		function enter(dg)
+			local c = szczelina_czasu.cfg()
+			say_title(mob_name(c.statue)..":")
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
+				say("Szczelina Czasu jest dziœ zamkniêta. Wróæ póŸniej.")
+				return
+			end
+			if not pc.is_gm() and not party.is_party() then
+				say("Do Szczeliny Czasu wchodzi siê tylko w grupie.")
+				return
+			end
+			if party.is_party() and not party.is_leader() and not szczelina_czasu.bot_leads() then
+				say("Tylko przywódca grupy mo¿e otworzyæ Szczelinê Czasu.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			local me = pc.get_player_id()
+			local humans = {me}
+			local bad = {}
+			local function check(name)
+				if pc.get_level() < c.min_level then
+					table.insert(bad, name.." (poziom)")
+				elseif pc.count_item(c.ticket) < 1 then
+					table.insert(bad, name.." (Zegarek Kieszonkowy)")
+				end
+			end
+			if not pc.is_gm() then
+				check(pc.get_name())
+			end
+			local far = 0
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and not pc.is_playerbot() then
+							local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+							if pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+								table.insert(humans, pid)
+								if not pc.is_gm() then
+									check(pc.get_name())
+								end
+							else
+								far = far + 1
+							end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if far > 0 then
+				say("Cz³onek grupy jest za daleko. Zbierzcie siê przy mnie.")
+				return
+			end
+			if table.getn(bad) > 0 then
+				say("Nie spe³niaj¹ warunków:")
+				for i, n in next, bad, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if not pc.is_gm() and table.getn(humans) < 2 then
+				say("Sam nie przetrwasz w Szczelinie Czasu - potrzebujesz")
+				say("co najmniej jednego towarzysza z grupy.")
+				return
+			end
+			if table.getn(humans) > 8 then
+				say("Do Szczeliny Czasu wchodzi najwy¿ej 8 osób.")
+				return
+			end
+			-- each one's way back: P³askowy¿ Iluzji beside Statua Szczeliny Czasu (pl-wiki: "ca³a grupa zostanie
+			-- teleportowana z powrotem na P³askowy¿ Iluzji")
+			for i, pid in ipairs(humans) do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid then
+					pc.setf("szczelina_czasu", "ret_map", c.plateau)
+					pc.setf("szczelina_czasu", "ret_x", c.landing[1])
+					pc.setf("szczelina_czasu", "ret_y", c.landing[2])
+				end
+				q.end_other_pc_block()
+			end
+			if d.new_jump_pids(dg.map, dg.entry[1] * 100, dg.entry[2] * 100, humans) < 0 then
+				say("Szczelina Czasu nie przyjmie was teraz. Spróbuj za chwilê.")
+			end
+		end
+
+		-- Statua Szczeliny Czasu (P³askowy¿ Iluzji): the Time Rift dungeons
+		when 20472.chat."Szczelina Czasu" with szczelina_czasu.on_plateau() begin
+			local c = szczelina_czasu.cfg()
+			say_title(mob_name(c.statue)..":")
+			say("Za pomoc¹ mojej mocy dostaniecie siê do instancji")
+			say("Szczeliny Czasu. Musicie byæ w grupie, a ka¿dy z was")
+			say("potrzebuje Zegarka Kieszonkowego od Handlarki Iluzji.")
+			say("Na ukoñczenie instancji macie 60 minut. Potwory nie")
+			say("dropuj¹, ale daj¹ wiêcej PD ni¿ zazwyczaj.")
+			say_reward("Od poziomu "..c.min_level..", tylko w grupie. Po ukoñczeniu lub")
+			say_reward("po czasie wrócicie na P³askowy¿ Iluzji.")
+			say_item_vnum(c.ticket)
+			local opts = {}
+			for i, dg in ipairs(c.dungeons) do
+				table.insert(opts, dg.name)
+			end
+			local back = 0
+			local now = get_global_time()
+			local idx = pc.getf("szczelina_czasu", "idx")
+			-- an expedition still running (the instance lives on the Yohara core): d.find asks that core
+			if idx > 0 and now - pc.getf("szczelina_czasu", "entry") < c.keep then
+				table.insert(opts, "Wróæ do lochu")
+				back = table.getn(opts)
+			end
+			table.insert(opts, "Nie teraz")
+			local s = select_table(opts)
+			if s == back then
+				local dg = nil
+				for i, x in ipairs(c.dungeons) do
+					if math.floor(idx / 10000) == x.map then
+						dg = x
+					end
+				end
+				if dg and d.find(idx, dg.entry[1] * 100, dg.entry[2] * 100, pc.get_player_id()) then
+					pc.warp(dg.entry[1] * 100, dg.entry[2] * 100, idx)
+				else
+					say_title(mob_name(c.statue)..":")
+					say("Jeœli wyprawa wci¹¿ trwa, moc statui zaraz ciê zabierze.")
+				end
+				return
+			end
+			local dg = c.dungeons[s]
+			if not dg then
+				return
+			end
+			szczelina_czasu.enter(dg)
+		end
+	end
+end
