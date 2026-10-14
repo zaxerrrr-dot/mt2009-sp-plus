@@ -1559,7 +1559,7 @@ typedef struct packet_main_character4_bgm_vol
 typedef struct packet_points
 {
     BYTE        header;
-    long        points[POINT_MAX_NUM];
+    long        points[POINT_PACKET_NUM]; // MT2009_PLUS_YOHARA_EXE2_V1: 193 points (the server's POINT_PACKET_NUM); POINT_MAX_NUM is 198
 } TPacketGCPoints;
 
 typedef struct packet_point_change

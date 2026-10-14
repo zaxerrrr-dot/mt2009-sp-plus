@@ -24,7 +24,6 @@
 --   21366 Zly Pl. Wezowy (wykon.) - the serpent weapons and armour (Zbroje / Bronie Wezowe, the crafting at Statua Wezy) - none here yet
 --   21386 Zacny P. Wezowy (wykon.) - the serpent weapons and armour (Zbroje / Bronie Wezowe, the crafting at Statua Wezy) - none here yet
 --   21406 N. Plaszcz Wez. (wykon.) - the serpent weapons and armour (Zbroje / Bronie Wezowe, the crafting at Statua Wezy) - none here yet
---   28047 Kamien Mocy Demonow+0 - the Sung Ma gloves (Chaegirab's crafting, Owsap's Sung-Ma Power Gloves) - none here yet (a Sung Ma stone; our engine has no METIN_SUNGMA)
 --   81560 Tajemniczy Talizman+0 - its random bonus table (Owsap's apply_random 28) and the refine to +1..; a level-120 talisman without bonus here
 --   90015 Kamien do Fundamentu+ - the guild buildings' "+" materials - none here yet
 --   90016 Pien+ - the guild buildings' "+" materials - none here yet

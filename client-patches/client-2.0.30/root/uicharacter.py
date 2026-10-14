@@ -20,6 +20,7 @@ import uiCommon
 import eventManager
 import uiAttributeList
 import utils
+import sungmastate # MT2009_PLUS_YOHARA_EXE2_V1
 
 SHOW_ONLY_ACTIVE_SKILL = False
 SHOW_LIMIT_SUPPORT_SKILL_LIST = [121, 122, 123, 124, 126, 127, 129, 128, 131, 132, 137, 138, 139, 140]
@@ -49,6 +50,7 @@ TEXT_NOT_CHAMPION_3 = "(najwy\xbfszy poziom, Obrona Statku, pe\xb3na kula do\x9c
 TEXT_MAP_REQUIRED = "Ta mapa wymaga: %d"
 TEXT_MAP_SHORT = "Za ma\xb3o - na tej mapie: %s"
 TEXT_PLUS_HINT = "Dodaj punkt Sung Ma"
+TEXT_SUNGMA_PER = "%d i premia z przedmiot\xf3w %d procent: razem %d"
 COLOR_SUNGMA_SHORT = 0xffff6a5a
 COLOR_SUNGMA_OK = 0xffffffff
 COLOR_CHAMPION_LEVEL = 0xff55b9ff
@@ -719,11 +721,16 @@ class CharacterWindow(ui.ScriptWindow):
 				self.toolTip.AppendTextLine(TEXT_NOT_CHAMPION_2)
 				self.toolTip.AppendTextLine(TEXT_NOT_CHAMPION_3)
 			elif _SUNGMA_MAP[i] > 0:
-				if player.GetStatus(getattr(player, pointName)) < _SUNGMA_MAP[i]:
+				if sungmastate.Effective(i) < _SUNGMA_MAP[i]: # MT2009_PLUS_YOHARA_EXE2_V1: with the per cent bonus
 					self.toolTip.AppendTextLine(TEXT_MAP_REQUIRED % _SUNGMA_MAP[i], COLOR_SUNGMA_SHORT)
 					self.toolTip.AppendTextLine(TEXT_MAP_SHORT % shortage, COLOR_SUNGMA_SHORT)
 				else:
 					self.toolTip.AppendTextLine(TEXT_MAP_REQUIRED % _SUNGMA_MAP[i])
+			# MT2009_PLUS_YOHARA_EXE2_V1: the per cent bonus of items ("Wola SungMa +x%")
+			if self.__IsChampion() and hasattr(player, sungmastate.STAT_PER_NAMES[i]):
+				pct = player.GetStatus(getattr(player, sungmastate.STAT_PER_NAMES[i]))
+				if pct:
+					self.toolTip.AppendTextLine(TEXT_SUNGMA_PER % (player.GetStatus(getattr(player, pointName)), pct, sungmastate.Effective(i)))
 			if isPlusButton:
 				self.toolTip.AppendTextLine(TEXT_PLUS_HINT)
 			break
@@ -741,7 +748,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 		for i in xrange(len(SUNGMA_STATS)):
 			(key, part, pointName, command, name, shortage) = SUNGMA_STATS[i]
-			value = player.GetStatus(getattr(player, pointName))
+			value = sungmastate.Effective(i) # MT2009_PLUS_YOHARA_EXE2_V1: with the per cent bonus (= the server's check)
 			valueText = self.sungmaValueDict[key]
 			valueText.SetText(str(value))
 			if _SUNGMA_MAP[i] > 0 and value < _SUNGMA_MAP[i]:

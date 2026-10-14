@@ -250,6 +250,13 @@ for _zywPoint, _zywName in (
 		(getattr(player, "POINT_SUNGMA_HP", 185), "Witalno\x9c\xe6 Sung Ma +%d"),
 		(getattr(player, "POINT_SUNGMA_MOVE", 186), "Odporno\x9c\xe6 Sung Ma +%d"),
 		(getattr(player, "POINT_SUNGMA_IMMUNE", 187), "Inteligencja Sung Ma +%d"),
+		# MT2009_PLUS_YOHARA_EXE2_V1: the Sung Ma per cent bonuses (GF's APPLY_SUNGMA_PER_*, points 193-196) and Precyzja
+		# (GF's APPLY_HIT_PCT, point 197) - server-patches/precyzja
+		(getattr(player, "POINT_SUNGMA_PER_STR", 193), "Si\xb3a Sung Ma +%d%%"),
+		(getattr(player, "POINT_SUNGMA_PER_HP", 194), "Witalno\x9c\xe6 Sung Ma +%d%%"),
+		(getattr(player, "POINT_SUNGMA_PER_MOVE", 195), "Odporno\x9c\xe6 Sung Ma +%d%%"),
+		(getattr(player, "POINT_SUNGMA_PER_IMMUNE", 196), "Inteligencja Sung Ma +%d%%"),
+		(getattr(player, "POINT_HIT_PCT", 197), "Precyzja +%d"),
 	):
 	AFFECT_DICT.setdefault(_zywPoint, _zywName)
 

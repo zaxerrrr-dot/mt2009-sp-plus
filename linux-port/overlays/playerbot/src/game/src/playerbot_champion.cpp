@@ -22,6 +22,7 @@
 #include "packet.h"
 #include "dungeon.h"
 #include "sectree_manager.h"
+#include "playerbot_yohara_gear.h"
 
 #include <cctype>
 #include <cstdio>
@@ -113,15 +114,18 @@ namespace champion
 
 		const std::string base = LocaleService_GetBasePath();
 		{
-			// sungma_table.txt: <map name> <str> <hp> <move> <immune>
+			// sungma_table.txt: <map name> <str> <hp> <move> <immune> [<hit_pct>] (MT2009_PLUS_PRECISION_V1: the 6th
+			// column, the map's Precyzja; a line without it asks none)
 			std::ifstream in((base + "/sungma_table.txt").c_str());
 			std::istringstream line;
 			while (in && NextDataLine(in, line))
 			{
 				std::string name;
-				SungmaRequirement r = { 0, 0, 0, 0 };
+				SungmaRequirement r = { 0, 0, 0, 0, 0 };
 				if (!(line >> name >> r.str >> r.hp >> r.move >> r.immune))
 					continue;
+				if (!(line >> r.hit))
+					r.hit = 0;
 				st.byName[Lower(name)] = r;
 			}
 		}
@@ -221,7 +225,9 @@ namespace champion
 static_assert(POINT_ENCHANT_ELECT == 178, "the element powers must stay 178-183 (the talismans' item_proto applytypes)");
 static_assert(POINT_SUNGMA_STR == 184 && POINT_SUNGMA_IMMUNE == 187, "POINT_SUNGMA_* = APPLY_SUNGMA_* 184-187 (exe)");
 static_assert(POINT_CONQUEROR_LEVEL == 188 && POINT_CONQUEROR_POINT == 192, "POINT_CONQUEROR_* 188-192 (exe)");
-static_assert(POINT_PACKET_NUM == 193 && POINT_MAX_NUM == POINT_PACKET_NUM, "the exe's POINT_MAX_NUM is 193");
+static_assert(POINT_PACKET_NUM == 193, "the points packet carries 193 points (the exe's POINT_PACKET_NUM)");
+// MT2009_PLUS_PRECISION_V1: POINT_SUNGMA_PER_* 193-196 and POINT_HIT_PCT 197 follow it (POINT_MAX_NUM 198) - sent as
+// point changes (SendInfo, PointChange), asserted in playerbot_yohara_gear.cpp.
 static_assert(LIMIT_CONQUEROR_LEVEL == 10, "LIMIT_CONQUEROR_LEVEL is 10 in the exe");
 static_assert(sizeof(TPacketGCPoints) == 1 + 4 * 193, "the points packet the exe reads (773 B)");
 static_assert(sizeof(TPacketGCCharacterAdditionalInfo) == 70, "GC additional info as the exe reads it (70 B)");
@@ -273,6 +279,9 @@ namespace champion
 			SendPoint(ch, (BYTE)i, aiPoints[i]);
 		for (int i = 0; i < 4; ++i)
 			SendPoint(ch, s_aStatPoint[i], ch->GetPoint(s_aStatPoint[i]));
+		// MT2009_PLUS_PRECISION_V1: the Sung Ma per cent bonuses and Precyzja (not in the points packet)
+		for (int i = POINT_SUNGMA_PER_STR; i <= POINT_HIT_PCT; ++i)
+			SendPoint(ch, (BYTE)i, ch->GetPoint((BYTE)i));
 	}
 
 	void SendMap(LPCHARACTER ch)
@@ -282,14 +291,18 @@ namespace champion
 		const SungmaRequirement* pReq = MapRequirement(ch->GetMapIndex());
 		if (!pReq)
 		{
-			ch->ChatPacket(CHAT_TYPE_COMMAND, "sungma_map 0 0 0 0");
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "sungma_map 0 0 0 0 0");
 			return;
 		}
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "sungma_map %d %d %d %d", pReq->str, pReq->hp, pReq->move, pReq->immune);
+		// MT2009_PLUS_PRECISION_V1: the 5th number is the map's Precyzja (root: the Sung Ma page, the affect bar)
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "sungma_map %d %d %d %d %d", pReq->str, pReq->hp, pReq->move, pReq->immune,
+				pReq->hit);
 		if (ch->GetConquerorLevel() < 1)
 			ch->ChatPacket(CHAT_TYPE_INFO, "To ziemia Sung Ma: bez Poziomu Czempiona nie zranisz tutejszych potworow.");
-		else if (ch->GetPoint(POINT_SUNGMA_STR) < pReq->str || ch->GetPoint(POINT_SUNGMA_HP) < pReq->hp ||
-				ch->GetPoint(POINT_SUNGMA_MOVE) < pReq->move || ch->GetPoint(POINT_SUNGMA_IMMUNE) < pReq->immune)
+		else if (yohara_gear::SungmaEffective(ch, POINT_SUNGMA_STR) < pReq->str ||
+				yohara_gear::SungmaEffective(ch, POINT_SUNGMA_HP) < pReq->hp ||
+				yohara_gear::SungmaEffective(ch, POINT_SUNGMA_MOVE) < pReq->move ||
+				yohara_gear::SungmaEffective(ch, POINT_SUNGMA_IMMUNE) < pReq->immune)
 			ch->ChatPacket(CHAT_TYPE_INFO, "Ziemia Sung Ma wymaga: Sila %d, Witalnosc %d, Odpornosc %d, Inteligencja %d - "
 					"przy brakach Twoja sila slabnie o polowe.", pReq->str, pReq->hp, pReq->move, pReq->immune);
 	}
@@ -452,7 +465,7 @@ namespace champion
 			exp = 1;
 		GainExp(to, (unsigned int)exp);
 		if (pkVictim)
-			pkVictim->CreateFly(FLY_EXP, to);
+			pkVictim->CreateFly(FLY_CONQUEROR_EXP, to);	// MT2009_PLUS_PRECISION_V1: the champion's own (orange) fly
 	}
 
 	struct FPartyChampions
@@ -532,7 +545,7 @@ int ChampionMaxHP(const CHARACTER* ch, int iMaxHP)
 	if (!ch || !ch->IsPC())
 		return iMaxHP;
 	const champion::SungmaRequirement* pReq = champion::MapRequirement(ch->GetMapIndex());
-	if (pReq && ch->GetPoint(POINT_SUNGMA_HP) < pReq->hp)
+	if (pReq && yohara_gear::SungmaEffective(ch, POINT_SUNGMA_HP) < pReq->hp)
 		return iMaxHP / 2;
 	return iMaxHP;
 }
@@ -543,7 +556,7 @@ int ChampionMoveSpeed(const CHARACTER* ch, int iSpeed)
 	if (!ch || !ch->IsPC())
 		return iSpeed;
 	const champion::SungmaRequirement* pReq = champion::MapRequirement(ch->GetMapIndex());
-	if (pReq && ch->GetPoint(POINT_SUNGMA_MOVE) < pReq->move)
+	if (pReq && yohara_gear::SungmaEffective(ch, POINT_SUNGMA_MOVE) < pReq->move)
 		return iSpeed / 2;
 	return iSpeed;
 }
@@ -569,7 +582,16 @@ int ChampionDamage(LPCHARACTER pkVictim, LPCHARACTER pAttacker, int iDam)
 		return iDam;
 	if (pAttacker->GetConquerorLevel() < 1)
 		return -1;
-	if (pAttacker->GetPoint(POINT_SUNGMA_STR) < pReq->str)
+	// MT2009_PLUS_PRECISION_V1: the map's Precyzja (pl-wiki "Precyzja": "Proboja go trafic, postac zacznie chybiac" -
+	// blows, arrows and skills alike; Owsap: (hit_pct - precision) * 100 / hit_pct per cent of them) - a stone
+	// (a Metin) is never missed.
+	if (pReq->hit > 0 && !pkVictim->IsStone())
+	{
+		const int iPrecision = MAX(0, (int) pAttacker->GetPoint(POINT_HIT_PCT));
+		if (iPrecision < pReq->hit && number(1, 100) <= (pReq->hit - iPrecision) * 100 / pReq->hit)
+			return -1;
+	}
+	if (yohara_gear::SungmaEffective(pAttacker, POINT_SUNGMA_STR) < pReq->str)
 		return iDam / 2;
 	return iDam;
 }
@@ -582,7 +604,7 @@ bool ChampionImmuneBlocks(LPCHARACTER pkAttacker, LPCHARACTER pkVictim)
 	if (!pkAttacker || !pkVictim || !pkAttacker->IsPC() || pkVictim->IsPC())
 		return false;
 	const champion::SungmaRequirement* pReq = champion::MapRequirement(pkAttacker->GetMapIndex());
-	if (!pReq || pkAttacker->GetPoint(POINT_SUNGMA_IMMUNE) >= pReq->immune)
+	if (!pReq || yohara_gear::SungmaEffective(pkAttacker, POINT_SUNGMA_IMMUNE) >= pReq->immune)
 		return false;
 	return number(1, 2) == 1;
 }
@@ -703,13 +725,15 @@ ACMD(do_champion)
 	ch->UpdatePacket();
 	const champion::SungmaRequirement* pReq = champion::MapRequirement(ch->GetMapIndex());
 	ch->ChatPacket(CHAT_TYPE_INFO, "champion: lv %d step %d exp %u/%u points %d | sungma real %d %d %d %d, now %d %d %d %d | "
-			"map %ld %s (%d %d %d %d) | unlock state %d | rate %d%%",
+			"map %ld %s (%d %d %d %d hit %d) | precyzja %d, per %d %d %d %d | unlock state %d | rate %d%%",
 			(int)ch->GetConquerorLevel(), (int)ch->GetConquerorLevelStep(), ch->GetConquerorExp(), ch->GetConquerorNextExp(),
 			ch->GetConquerorPoint(), ch->GetRealPoint(POINT_SUNGMA_STR), ch->GetRealPoint(POINT_SUNGMA_HP),
 			ch->GetRealPoint(POINT_SUNGMA_MOVE), ch->GetRealPoint(POINT_SUNGMA_IMMUNE), ch->GetPoint(POINT_SUNGMA_STR),
 			ch->GetPoint(POINT_SUNGMA_HP), ch->GetPoint(POINT_SUNGMA_MOVE), ch->GetPoint(POINT_SUNGMA_IMMUNE),
 			ch->GetMapIndex(), pReq ? "sungma" : "-", pReq ? pReq->str : 0, pReq ? pReq->hp : 0, pReq ? pReq->move : 0,
-			pReq ? pReq->immune : 0, champion::UnlockState(ch), champion::ExpRatePct());
+			pReq ? pReq->immune : 0, pReq ? pReq->hit : 0, ch->GetPoint(POINT_HIT_PCT), ch->GetPoint(POINT_SUNGMA_PER_STR),
+			ch->GetPoint(POINT_SUNGMA_PER_HP), ch->GetPoint(POINT_SUNGMA_PER_MOVE), ch->GetPoint(POINT_SUNGMA_PER_IMMUNE),
+			champion::UnlockState(ch), champion::ExpRatePct());
 	champion::SendInfo(ch);
 	champion::SendMap(ch);
 }
@@ -836,6 +860,8 @@ namespace quest
 		r.hp = MINMAX(0, (int) lua_tonumber(L, 2), champion::STAT_MAX);
 		r.move = MINMAX(0, (int) lua_tonumber(L, 3), champion::STAT_MAX);
 		r.immune = MINMAX(0, (int) lua_tonumber(L, 4), champion::STAT_MAX);
+		// MT2009_PLUS_PRECISION_V1: d.set_sungma(str, hp, move, immune[, hit_pct])
+		r.hit = lua_isnumber(L, 5) ? MINMAX(0, (int) lua_tonumber(L, 5), 100) : 0;
 		champion::SetInstanceRequirement(pDungeon->GetMapIndex(), &r);
 		ChampionTellDungeon(pDungeon->GetMapIndex());
 		return 0;

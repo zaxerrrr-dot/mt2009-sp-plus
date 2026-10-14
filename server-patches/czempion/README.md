@@ -97,3 +97,11 @@ wyświetla (wartość na czerwono + dymek), a komenda nie wymaga zmiany protoko�
 Decyzja właściciela z 13.10.2026: każdy poziom Czempiona dodaje tyle, co zwykły awans – PŻ i PE klasy na
 poziom (`JobInitialPoints`: 40 PŻ i 20 PE dla każdej klasy), czyli do +1200 PŻ i +600 PE na 30 poziomie.
 Liczone w `ComputePoints` (`char.cpp`), więc działa od razu po awansie i po zalogowaniu.
+
+## Druga runda exe (`MT2009_PLUS_PRECISION_V1`, 14.10.2026)
+
+Zrobione z listy „bez zmian” Etapu B (`server-patches/precyzja`): `APPLY_SUNGMA_PER_*` (punkty 193–196 – procent Woli,
+liczony we wszystkich karach: `yohara_gear::SungmaEffective`), Precyzja `POINT_HIT_PCT` (197) z `hit_pct` mapy
+(6. kolumna `sungma_table.txt`, Owsap `new_world.txt`), `FLY_CONQUEROR_EXP` przy exp Czempiona, `sungma_map` z 5.
+liczbą. Root: pasek exp Czempiona na pasku zadań, ikony buffa/debuffów Sung Ma na pasku afektów (`sungmastate.py`).
+`HIT_BUFF_SUNGMA_*` i pakiet `HEADER_GC_SUNGMA_ATTR_UPDATE` – dalej nie (żadnych przedmiotów z nimi; komenda wystarcza).

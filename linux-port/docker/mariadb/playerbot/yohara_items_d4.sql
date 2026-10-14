@@ -7,7 +7,6 @@
 -- inert, tradeable material and does nothing yet - its row says what it waits for:
 --   30606 Srebrne Plyty - the armour crafting of the En-Tai / Ochao (Srebrne Plyty) - none here yet
 --   30608 Stalowe Plyty - the armour crafting of the En-Tai / Ochao (Stalowe Plyty) - none here yet
---   31225 Kamien Runiczny - the Sung Ma gloves (Wytwarzanie Rekawic) - none here yet
 SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES
 (30606,'Srebrne Plyty',_cp1250 X'53726562726E652050B3797479',5,0,200,0,1,0,4,0,'',1000,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),

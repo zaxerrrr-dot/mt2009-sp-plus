@@ -7,7 +7,6 @@
 -- other items, so Piorunowe Ziolo / Kwiat Polnocnego Wiatru are 95735 / 95736 here. An item whose system we
 -- do not have is tradeable and does nothing yet - its row says what it waits for:
 --   50663 Jadeit Dymu - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   31228 Luska Argosa - the Sung Ma gloves (Chaegirab's crafting, Owsap's Sung-Ma Power Gloves) - none here yet
 --   31233 Kamien Wezowy - the Serpent equipment of Yohara (Bron/Zbroja Wezowa) and its refining - none here yet
 --   31234 Kamien Wezowy+ - the Serpent equipment of Yohara (Bron/Zbroja Wezowa) and its refining - none here yet
 --   31257 Wzor Wezowy - the Serpent equipment of Yohara (Bron/Zbroja Wezowa) and its refining - none here yet

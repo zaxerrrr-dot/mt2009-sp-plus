@@ -381,3 +381,9 @@ linux-port/docker/mariadb/playerbot/yohara_gaya.sql
 # playerbot_skill9.{h,cpp} (the playerbot_* lines), the quest helper game/quest/skill9.lua (quest/*).
 linux-port/docker/game/src/server/common/skill_length.h
 linux-port/docker/panel/app/register_assets/*
+# MT2009_PLUS_PRECISION_V1 / MT2009_PLUS_GLOVES_V1 / MT2009_PLUS_JADE_BRACELET_V2 (server-patches/precyzja, rekawice,
+# obreczjadeitu2 - the exe of the second Yohara round): the engine files they change are above (CommonDefines.h,
+# length.h, item_length.h, char.cpp, char_item.cpp, item.cpp, item_attribute.cpp, item_manager.cpp); the logic is
+# playerbot_yohara_gear.{h,cpp} (the playerbot_* lines), the gloves, the stones and item_attr yohara_gloves.sql, quest
+# rekawice (quest/*), the maps' Precyzja champion/sungma_table.txt (champion/*).
+linux-port/docker/mariadb/playerbot/yohara_gloves.sql

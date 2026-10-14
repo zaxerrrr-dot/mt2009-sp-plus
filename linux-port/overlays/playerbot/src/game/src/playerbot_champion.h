@@ -37,6 +37,9 @@ namespace champion
 	struct SungmaRequirement
 	{
 		int str, hp, move, immune;
+		// MT2009_PLUS_PRECISION_V1: the map's Precyzja (hit_pct, Owsap's new_world.txt) - a blow of a person whose
+		// Precyzja (POINT_HIT_PCT) is lower misses a monster now and then ((hit - precision) / hit of the blows).
+		int hit;
 	};
 
 	// A map's requirement (lMapIndex may be a private instance, base*10000+n), NULL off a Sung Ma map.

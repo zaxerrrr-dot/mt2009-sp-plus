@@ -110,7 +110,7 @@ for v in (70422, 70423, 70424, 70425, 70426, 70427):              # Klucz Wezowy
     add(v, **QUEST)
 add(70429)                                                        # Skarb Wezy - chest
 add(70430, **QUEST)                                               # Wejscie Do Swiatyni Wezy: today's entries again
-add(28047, status=need(Y.GLOVES + ' (a Sung Ma stone; our engine has no METIN_SUNGMA)'), **INERT)
+add(28047, **INERT)      # MT2009_PLUS_GLOVES_V1: yohara_gloves.sql (tools/ygloves) makes it the Sung Ma stone
 # -- Tajemnicza Instancja ---------------------------------------------------------------------------------------
 add(31261)                                                        # Tajemniczy Kamien - Tajemniczy Oltarz (quest)
 add(31270)                                                        # Esencja Talizmanu - Tajemniczy Oltarz (quest)

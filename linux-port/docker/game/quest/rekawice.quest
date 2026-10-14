@@ -1,0 +1,83 @@
+-- MT2009_PLUS_GLOVES_V1: Rêkawice SungMa (decyzja w³aœciciela 14.10.2026, cache/yohara/decyzje.md; wiki: "Rêkawice",
+-- "Rêkawice Mocy", "Zwinne Rêkawice", "Pancerne Rêkawice", "Ochronne Rêkawice"):
+--   * Mistrz Chi (20823, Dongan) wytwarza rêkawice +0 (wiki "Uszlachetnianie/NPC"): 10 Run SungMa danego koloru
+--     (Mocy - Czerwona 31247, Zwinne - Liliowa 31248, Pancerne - Niebieska 31249, Ochronne - Zielona 31250),
+--     25 Twardej Skóry (31245), 5 Wzorów Rêkawicy (31246), 1 Kamieñ Runiczny (31225), 100 Gaya (95927,
+--     MT2009_PLUS_GAYA_V1) i 10 000 000 Yang - szansa 75%, przy pora¿ce przedmioty przepadaj¹;
+--   * Wola SungMa rêkawicy (6. bonus), gniazda na Kamienie Demonów i ulepszanie: silnik (server-patches/rekawice),
+--     przedmioty: yohara_gloves.sql (tools/ygloves/gen_ygloves.py);
+--   * Licencji na Rêkawice (misja "Aresztowanie") nie ma - rêkawice zak³ada ka¿dy od 105. poziomu.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest rekawice begin
+	state start begin
+		function cfg()
+			return {
+				fee = 10000000, fee_text = "10 000 000", pct = 75,
+				leather = 31245, leather_n = 25,               -- Twarda Skóra
+				pattern = 31246, pattern_n = 5,                -- Wzór Rêkawicy
+				runestone = 31225, runestone_n = 1,            -- Kamieñ Runiczny
+				gaya = 95927, gaya_n = 100,                    -- wiki: KosztGaya
+				rune_n = 10,
+				gloves = {
+					{vnum = 23000, rune = 31247},              -- Rêkawice Mocy (Wola SungMa SI£A)
+					{vnum = 23010, rune = 31248},              -- Zwinne Rêkawice (ODP)
+					{vnum = 23020, rune = 31249},              -- Pancerne Rêkawice (WIT)
+					{vnum = 23030, rune = 31250},              -- Ochronne Rêkawice (INT)
+				},
+			}
+		end
+
+		when 20823.chat."Rêkawice SungMa" with pc.get_map_index() == 373 begin
+			local c = rekawice.cfg()
+			say_title(mob_name(20823)..":")
+			say("Ze skóry, run i wzorów uszyjê ci rêkawice")
+			say("przepe³nione wol¹ SungMa. Za³ó¿ je od 105. poziomu.")
+			say("")
+			say_reward("Ka¿da para: "..c.rune_n.."x Runa SungMa jej koloru, "..c.leather_n.."x "..item_name(c.leather)..",")
+			say_reward(c.pattern_n.."x "..item_name(c.pattern)..", "..c.runestone_n.."x "..item_name(c.runestone)..", "..c.gaya_n.." Gaya,")
+			say_reward(c.fee_text.." Yang, szansa "..c.pct.."%. Gdy siê nie uda, przedmioty przepadaj¹.")
+			local s = select(item_name(23000), item_name(23010), item_name(23020), item_name(23030), "Nie teraz")
+			if s < 1 or s > table.getn(c.gloves) then
+				return
+			end
+			local g = c.gloves[s]
+			local miss = nil
+			if pc.count_item(g.rune) < c.rune_n then
+				miss = item_name(g.rune)
+			elseif pc.count_item(c.leather) < c.leather_n then
+				miss = item_name(c.leather)
+			elseif pc.count_item(c.pattern) < c.pattern_n then
+				miss = item_name(c.pattern)
+			elseif pc.count_item(c.runestone) < c.runestone_n then
+				miss = item_name(c.runestone)
+			elseif pc.count_item(c.gaya) < c.gaya_n then
+				miss = c.gaya_n.." Gaya"
+			end
+			say_title(mob_name(20823)..":")
+			if miss then
+				say("Brakuje ci: "..miss..".")
+				return
+			end
+			if pc.get_money() < c.fee then
+				say("Masz za ma³o Yang.")
+				return
+			end
+			if not pc.enough_inventory(g.vnum) then
+				say("Zrób miejsce w ekwipunku.")
+				return
+			end
+			pc.remove_item(g.rune, c.rune_n)
+			pc.remove_item(c.leather, c.leather_n)
+			pc.remove_item(c.pattern, c.pattern_n)
+			pc.remove_item(c.runestone, c.runestone_n)
+			pc.remove_item(c.gaya, c.gaya_n)
+			pc.change_money(-c.fee)
+			if number(1, 100) <= c.pct then
+				pc.give_item2(g.vnum, 1)
+				say("Uda³o siê! Oto "..item_name(g.vnum)..".")
+			else
+				say("Nie uda³o siê. Materia³y przepad³y.")
+			end
+		end
+	end
+end

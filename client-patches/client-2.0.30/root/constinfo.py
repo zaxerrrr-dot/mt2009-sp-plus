@@ -385,6 +385,12 @@ JewelAccessoryInfos = [
 		[ 50637,	14540,	16540,	17540 ],
 		[ 50638,	14560,	16560,	17560 ],
 		[ 50639,	14570,	16570,	17570 ],
+		# MT2009_PLUS_JADE_BRACELET_V2: Jadeit Mgly / Slonca / Nocy / Dymu into their Obrecz Jadeitu only (the server's
+		# CItem::CanPutInto - server-patches/obreczjadeitu2); 0 = no necklace / earrings of jade here
+		[ 50664,	14580,	0,	0 ],
+		[ 50661,	14590,	0,	0 ],
+		[ 50662,	14600,	0,	0 ],
+		[ 50663,	14610,	0,	0 ],
 	]
 def GET_ACCESSORY_MATERIAL_VNUM(vnum, subType):
 	ret = vnum

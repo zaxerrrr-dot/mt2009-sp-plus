@@ -68,7 +68,7 @@ QUEST = dict(type='ITEM_QUEST', subtype='QUEST_NONE')
 GLOVES = 'the Sung Ma gloves (Wytwarzanie Rekawic) - none here yet'
 add(30606, status=need('the armour crafting of the En-Tai / Ochao (Srebrne Plyty) - none here yet'))
 add(30608, status=need('the armour crafting of the En-Tai / Ochao (Stalowe Plyty) - none here yet'))
-add(31225, status=need(GLOVES))                               # Kamien Runiczny - the 50th floor's reward
+add(31225, tradeable=1)                                                    # Kamien Runiczny - the 50th floor's reward; quest rekawice
 for v in (31253, 31254, 31255, 31256):                        # Skrzynia Mistrza Gnolli / Ahtrina, Zdobiona Zlotem,
     add(v)                                                    # Labiryntowa - chests (special_item_group)
 add(70403, **QUEST)                                           # Zagadkowy Klucz - the tower's task (quest)
@@ -127,7 +127,7 @@ def main():
         if typ == 23 and o['SubType'] not in ('UNK23_1', '0'):
             raise SystemExit('%d: giftbox subtype %s' % (it['vnum'], o['SubType']))
         anti = Y.flags(o['AntiFlags'], Y.ANTI, 'antiflag')
-        if it['status'] != ST:
+        if it['status'] != ST or it['over'].get('tradeable'):   # tradeable: kept as the world's row has it
             anti &= ~Y.ANTI_TRADE
         flag = Y.flags(o['Flags'], Y.FLAGS, 'flag')
         if typ == 18:

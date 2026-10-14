@@ -187,6 +187,7 @@ class GameWindow(ui.ScriptWindow):
 
 		self.mapNameShower = uiMapNameShower.MapNameShower()
 		self.affectBar = uiAffectBar.AffectShower()
+		__import__("sungmastate").Clear() # MT2009_PLUS_YOHARA_EXE2_V1: a new affect bar - no Sung Ma icon on it yet
 
 		self.playerGauge = uiPlayerGauge.PlayerGauge(self)
 		self.playerGauge.Hide()
@@ -1286,6 +1287,11 @@ class GameWindow(ui.ScriptWindow):
 
 		if self.interface:
 			self.interface.RefreshStatus()
+
+		# MT2009_PLUS_YOHARA_EXE2_V1: the Sung Ma icons follow the stats (items, points) on a Sung Ma map
+		import sungmastate
+		if sungmastate.IsSungmaMap():
+			sungmastate.Refresh(self.affectBar)
 
 		if self.playerGauge:
 			self.playerGauge.RefreshGauge()
@@ -4089,6 +4095,10 @@ class GameWindow(ui.ScriptWindow):
 
 	def __SungmaMap(self, *args):
 		__import__("uiCharacter").SetSungmaMap(*args)
+		# MT2009_PLUS_YOHARA_EXE2_V1: the 5th number (the map's Precyzja) and the affect bar's Sung Ma icons
+		import sungmastate
+		sungmastate.SetMap(*args)
+		sungmastate.Refresh(self.affectBar)
 		if self.interface:
 			self.interface.RefreshChampionPage()
 

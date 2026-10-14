@@ -1,0 +1,48 @@
+# obreczjadeitu2 – Obręcze Jadeitu: dwa losowe bonusy i gniazda na jadeit (V2)
+
+`MT2009_PLUS_JADE_BRACELET_V2` (14.10.2026, błąd 17 z `cache/yohara/bledy-3.0.md`: „Obręcze Jadeitu nie mają
+żadnych bonusów … Precyzja i Wola SungMa … wartości wg poziomu … do 3 gniazd tworzonych Diamentem, w gniazda Jadeit –
+bonusy się sumują”). Zastępuje jedną linię Woli z V1 (`server-patches/obreczjadeitu` – zostaje: jej typ obręczy i
+blokady przedmiotów 6/7 bonusu działają dalej).
+
+## Bonusy podstawowe (pl-wiki „Obręcz Jadeitu Mgły” i pozostałe)
+
+Dwie linie w 6. i 7. bonusie przedmiotu, każda z szansą `will_tal_line_pct` (80% – „istnieje prawdopodobieństwo, że nie
+będzie żadnego z nich”), wartość losowa z zakresu poziomu:
+
+| | +0 | +1 | +2 | +3 | +4 | +5 | +6 | +7 | +8 | +9 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Precyzja (`POINT_HIT_PCT`) | 1–2 | 2–3 | 3–4 | 4–5 | 5–6 | 6–7 | 7–8 | 8–10 | 9–11 | 10–14 |
+| Wola SungMa obręczy | 1–2 | 3–4 | 5–6 | 7–8 | 9–10 | 11–12 | 13–14 | 15–17 | 18–20 | 21–24 |
+
+Wola: Mgły ODP, Słońca INT, Nocy WIT, Dymu SIŁA. Ulepszenie przenosi obie linie w to samo miejsce zakresu nowego
+poziomu (także jedną linię Woli obręczy z V1), brakującą dodaje (jak Talizmany Woli). Przedmioty 6/7 bonusu ich nie
+zmieniają (blokady V1). Precyzja działa na mapach Sung Ma (`server-patches/precyzja`).
+
+## Gniazda i jadeit
+
+Diament (50621, `USE_ADD_ACCESSORY_SOCKET`) robi gniazdo (do 3, silnik: szansa 50%), Jadeit obręczy (Mgły 50664,
+Słońca 50661, Nocy 50662, Dymu 50663; `USE_PUT_INTO_ACCESSORY_SOCKET`) wchodzi tylko do swojej obręczy (tabela
+`CItem::CanPutInto`, edycja `(jewel)`; klient: `root/constinfo.py`). Wkładanie, szanse i znikanie po 24 / 12 / 6 h
+to zwykłe gniazda biżuterii silnika (`aiAccessorySocketPutPct`, `aiAccessorySocketDegradeTime` – te same czasy co
+wiki). Każdy jadeit dodaje do linii, które obręcz ma (wiki, „Verb” obręczy):
+
+| gniazdo | Precyzja | Wola |
+|---|---|---|
+| 1. | +1 | +1 (+2 na +9) |
+| 2. | +1 (+2 na +9) | +1 (+2 od +7) |
+| 3. | +1 (+2 na +9) | +1, +1, +1, +1, +1, +2, +3, +3, +4, +4 (+0…+9) |
+
+– `Mt2009JadeBraceletSocketPoints` w `CItem::ModifyPoints`; dymek pokazuje to przy każdym gnieździe
+(`root/uitooltip.py`, `yoharagear.py`).
+
+Tworzenie obręczy (Mistrz Chi, quest `yohara_mapy4`) bez zmian.
+
+## Silnik
+
+`item_manager.cpp` `(new)`, `item_attribute.cpp` `(refine)`, `item.cpp` `(socket points)`, `(jewel)` – 4 edycje, każda
+ze swoim znacznikiem (`gen_edits.py [<game/src>]`); logika: `playerbot_yohara_gear.cpp` (nakładka). Po
+`obreczjadeitu` (wywołania V1 są zastępowane), `precyzja` (`POINT_HIT_PCT`) i `rekawice`.
+
+- Linux/VPS: `python3 apply_obreczjadeitu2.py <game/src>`; Windows: `Apply-ObreczJadeitu2Patch.ps1 -SourceDir <game/src>`
+  (`tools/port/Apply-MT2009PlusEngine.ps1`).

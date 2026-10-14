@@ -1074,6 +1074,8 @@ enum
 #ifdef ENABLE_QUIVER_SYSTEM
 	FLY_QUIVER_ATTACK_NORMAL,
 #endif
+	// MT2009_PLUS_YOHARA_EXE2_V1 (fly): champion experience (the server's FLY_CONQUEROR_EXP; PythonPlayerSettingsModule.cpp registers it)
+	FLY_CONQUEROR_EXP = 30,
 };
 enum EPointTypes
 {
@@ -1288,6 +1290,16 @@ enum EPointTypes
 	POINT_CONQUEROR_EXP,
 	POINT_CONQUEROR_NEXT_EXP,
 	POINT_CONQUEROR_POINT,
+
+	// MT2009_PLUS_YOHARA_EXE2_V1 (points): the points packet keeps the 193 points above (the server's POINT_PACKET_NUM, Packet.h) - the
+	// protocol is the 3.0 one; the Sung Ma per cent bonuses (193-196, GF's APPLY_SUNGMA_PER_*) and Precyzja (197, GF's
+	// APPLY_HIT_PCT) come as point changes (server-patches/precyzja). An apply is a point in this engine.
+	POINT_PACKET_NUM,
+	POINT_SUNGMA_PER_STR = POINT_PACKET_NUM,
+	POINT_SUNGMA_PER_HP,
+	POINT_SUNGMA_PER_MOVE,
+	POINT_SUNGMA_PER_IMMUNE,
+	POINT_HIT_PCT,
 
 	POINT_MAX_NUM,
 };

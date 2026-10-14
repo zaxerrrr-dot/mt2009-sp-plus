@@ -24,6 +24,28 @@ EQUIPMENT_PENDANT_SLOT = getattr(item, "EQUIPMENT_PENDANT", player.EQUIPMENT_SLO
 PENDANT_SLOT_X = 2
 PENDANT_SLOT_Y = 147
 
+# MT2009_PLUS_GLOVES_V1: the Sung Ma glove slot (WEAR_GLOVE = 26; server-patches/rekawice) - only with the exe of
+# the second Yohara round (ENABLE_GLOVE_SYSTEM: item.EQUIPMENT_GLOVE). Right column, under the necklace (the
+# arrow, the earrings, the necklace, the gloves); the Dragon Soul button, which stood there, goes small into the gap
+# between the arrow and the earrings (uiinventory.py scales it).
+EQUIPMENT_GLOVE_SLOT = getattr(item, "EQUIPMENT_GLOVE", 0) if getattr(app, "ENABLE_GLOVE_SYSTEM", 0) else 0
+GLOVE_SLOT_X = 114
+GLOVE_SLOT_Y = 117
+if EQUIPMENT_GLOVE_SLOT:
+	DSS_BUTTON_X, DSS_BUTTON_Y = 124, 37
+	GLOVE_SLOT_TUPLE = ({"index":EQUIPMENT_GLOVE_SLOT, "x":GLOVE_SLOT_X, "y":GLOVE_SLOT_Y, "width":32, "height":32},)
+	GLOVE_BASE_TUPLE = ({
+		"name" : "GloveSlotBase",
+		"type" : "image",
+		"x" : 3 + GLOVE_SLOT_X,
+		"y" : 3 + GLOVE_SLOT_Y,
+		"image" : "d:/ymir work/ui/public/slot_base.sub",
+	},)
+else:
+	DSS_BUTTON_X, DSS_BUTTON_Y = 114, 120
+	GLOVE_SLOT_TUPLE = ()
+	GLOVE_BASE_TUPLE = ()
+
 window = {
 	"name" : "InventoryWindow",
 
@@ -117,6 +139,7 @@ window = {
 
 							"image" : "d:/ymir work/ui/public/slot_base.sub",
 						},
+					) + GLOVE_BASE_TUPLE + (
 
 						{
 							"name" : "EquipmentSlot",
@@ -144,7 +167,7 @@ window = {
 										{"index":EQUIPMENT_BELT_SLOT, "x":BELT_SLOT_X, "y":BELT_SLOT_Y, "width":32, "height":32},
 										## MT2009_PLUS_ELEMENTS_V1
 										{"index":EQUIPMENT_PENDANT_SLOT, "x":PENDANT_SLOT_X, "y":PENDANT_SLOT_Y, "width":32, "height":32},
-									),
+									) + GLOVE_SLOT_TUPLE,
 						},
 
 						{
@@ -202,8 +225,8 @@ window = {
 						{
 							"name" : "DSSButton",
 							"type" : "button",
-							"x" : 114,
-							"y" : 120,
+							"x" : DSS_BUTTON_X, # MT2009_PLUS_GLOVES_V1: 114, 120 without the glove slot
+							"y" : DSS_BUTTON_Y,
 							"tooltip_text" : uiScriptLocale.TASKBAR_DRAGON_SOUL,
 							"default_image" : "d:/ymir work/ui/dragonsoul/dss_inventory_button_01.tga",
 							"over_image" : "d:/ymir work/ui/dragonsoul/dss_inventory_button_02.tga",

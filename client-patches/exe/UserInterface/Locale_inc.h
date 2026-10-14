@@ -29,7 +29,7 @@
 #define ENABLE_NO_DSS_QUALIFICATION
 //#define ENABLE_NO_SELL_PRICE_DIVIDED_BY_5
 #define ENABLE_PENDANT_SYSTEM // MT2009_PLUS_ELEMENTS_V1: the talisman slot (Autor: Digi Rasta, Zywioly i talizmany, nowy-system 0.28.0)
-//#define ENABLE_GLOVE_SYSTEM
+#define ENABLE_GLOVE_SYSTEM // MT2009_PLUS_YOHARA_EXE2_V1: Rekawice Sung Ma - item.EQUIPMENT_GLOVE (c_Equipment_Start + WEAR_GLOVE 26), ARMOR_GLOVE, WEARABLE_GLOVE (server-patches/rekawice)
 #define ENABLE_MOVE_CHANNEL
 //#define ENABLE_QUIVER_SYSTEM
 #define ENABLE_RACE_HEIGHT
@@ -243,5 +243,10 @@
 // Strzal Wichury, Piekielny Cios, Fala Smierci, Meteor and Tarcza Eteru on all 8 races - skilldesc's motion 9 (first
 // group) / 24 (second group), the grades +25 (PythonPlayerSettingsModule.cpp; the files: client pack yskill9).
 #define ENABLE_NINTH_SKILL
+// MT2009_PLUS_YOHARA_EXE2_V1 (the second exe round of Yohara 3.x): the glove slot (ENABLE_GLOVE_SYSTEM above), Kamien Demonow
+// (METIN_SUNGMA) in a glove (PythonPlayerModule.cpp CanAttachMetin), the Sung Ma per cent bonuses and Precyzja
+// (points 193-197 - the points packet keeps 193, Packet.h / PythonNetworkStreamPhaseLoading.cpp), the champion's
+// experience fly (FLY_CONQUEROR_EXP, PythonPlayerSettingsModule.cpp); Mt2009Champion.cpp: the python names and asserts.
+#define ENABLE_MT2009_YOHARA_EXE2
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

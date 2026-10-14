@@ -3681,6 +3681,20 @@ for yd4_sql in yohara_dung4.sql yohara_items_d4.sql yohara_dung4_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_GLOVES_V1: Rekawice Sung Ma (the owner, 14 October 2026) - yohara_gloves.sql (tools/ygloves/gen_ygloves.py):
+# the gloves 23000-23039 (+ refine_proto 22720-22728), Kamienie Demonow / Mocy Demonow +0..+4 (28046-28447; 28046/28047
+# were inert materials of yohara_items.sql / yohara_items3.sql - after those files they become the Sung Ma stones), and
+# world.item_attr for the glove slot: the apply ENUM up to POINT_HIT_PCT (197, Precyzja), the gloves' bonus set (once)
+# and the Precyzja row. After every Yohara item file above. Idempotent (INSERT IGNORE / guarded UPDATE / ALTER).
+for ygl_sql in yohara_gloves.sql; do
+    [ -s "/opt/playerbot/$ygl_sql" ] || continue
+    if db < "/opt/playerbot/$ygl_sql"; then
+        echo "[playerbot-migrate] gloves: $ygl_sql applied"
+    else
+        fail_step "gloves: $ygl_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_GAYA_V1: Kamienie Gaya and Statua Wojownika (the owner, 14 October 2026): yohara_gaya.sql
 # (tools/ygaya/gen_ygaya.py) - Gaya (95927, the currency as an item), Reset / Rozszerzenie Sklepu Gaya (39063/39064),
 # and Kamyki's flags. Idempotent (INSERT IGNORE / UPDATE). The elemental pet chests (53581-53586) and Kupon Zwierzaka

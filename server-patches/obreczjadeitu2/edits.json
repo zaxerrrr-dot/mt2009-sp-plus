@@ -1,0 +1,26 @@
+[
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V2 (new)",
+  "old": "\t\tMt2009JadeBraceletCreate(item); // MT2009_PLUS_JADE_BRACELET_V1 (new): an Obrecz Jadeitu's Will line\n",
+  "new": "\t\t{ // MT2009_PLUS_JADE_BRACELET_V2 (new): an Obrecz Jadeitu's two base lines (playerbot_yohara_gear.cpp; V1's one line no more)\n\t\t\tvoid Mt2009JadeBraceletV2Create(LPITEM);\n\t\t\tMt2009JadeBraceletV2Create(item);\n\t\t}\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V2 (refine)",
+  "old": "\tMt2009JadeBraceletRefine(this, pItem); // MT2009_PLUS_JADE_BRACELET_V1 (refine)\n",
+  "new": "\t{ // MT2009_PLUS_JADE_BRACELET_V2 (refine): both lines carried to the new level (V1's Will line too)\n\t\tvoid Mt2009JadeBraceletV2Refine(LPITEM, LPITEM);\n\t\tMt2009JadeBraceletV2Refine(this, pItem);\n\t}\n\t(void) Mt2009JadeBraceletRefine; // MT2009_PLUS_JADE_BRACELET_V1 (refine): replaced by V2\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V2 (socket points)",
+  "old": "\tMt2009YSetsItemPoints(this, m_pOwner, bAdd); // MT2009_PLUS_YOHARA_SETS_V1 (points): a serpent piece's random base bonuses\n",
+  "new": "\tMt2009YSetsItemPoints(this, m_pOwner, bAdd); // MT2009_PLUS_YOHARA_SETS_V1 (points): a serpent piece's random base bonuses\n\t{ // MT2009_PLUS_JADE_BRACELET_V2 (socket points): the jade in an Obrecz Jadeitu's sockets adds to its lines\n\t\tvoid Mt2009JadeBraceletSocketPoints(LPITEM, LPCHARACTER, bool);\n\t\tMt2009JadeBraceletSocketPoints(this, m_pOwner, bAdd);\n\t}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_JADE_BRACELET_V2 (jewel)",
+  "old": "\t\t{ 50639, 14570, 16570, 17570 },\n\t};\n",
+  "new": "\t\t{ 50639, 14570, 16570, 17570 },\n\t\t// MT2009_PLUS_JADE_BRACELET_V2 (jewel): Jadeit Mgly / Slonca / Nocy / Dymu into their Obrecz Jadeitu only (pl-wiki\n\t\t// \"Jadeit Mgly\": into a pocket a Diamond made, at most 3; the jewellery of jade has no necklace or earrings here)\n\t\t{ 50664, 14580, 0, 0 },\n\t\t{ 50661, 14590, 0, 0 },\n\t\t{ 50662, 14600, 0, 0 },\n\t\t{ 50663, 14610, 0, 0 },\n\t};\n"
+ }
+]
