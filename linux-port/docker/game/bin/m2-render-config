@@ -208,7 +208,9 @@ MAPS_game1="$MAPS_game1 358"
 # MT2009_PLUS_YOHARA_ILUZJA_V1: Plaskowyz Iluzji (397, 1x1 - the hub, the villages' Statua Iluzji warps there over
 # P2P), Grota Wygnancow 2 (PB) (398, 6x6) and Zaklety Las (PB) (371, 3x4) - their instances 3980000+ / 3710000+ -
 # 49 sectors more.
-MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387 369 370 397 398 371"
+# MT2009_PLUS_YOHARA_CRACK_V1: Zaklety Las (SZC) (404, 3x4 - the first Time Rift dungeon, entered from Statua Szczeliny
+# Czasu on Plaskowyz Iluzji; its instances 4040000+) - 12 sectors more (the PB forest's terrain).
+MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387 369 370 397 398 371 404"
 yohara_maps_present() {
   local idx="$SHARE_DIR/locale/poland/map/index" m out=""
   for m in $MAPS_game3_all; do

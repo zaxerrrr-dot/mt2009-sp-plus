@@ -365,8 +365,9 @@ RUN set -eux; \
     # przebudzeni_bossowie is the awakened bosses' entrance (Statua Iluzji's daily mission and way to Plaskowyz Iluzji,
     # Statua Przebudzenia, the plateau's statues and Handlarka Iluzji, Baek-Go's Lekarstwo Iluzji), razador_pb Twierdza
     # Czerwonego Smoka (PB), nemere_pb Straznica Nemere (PB) (MT2009_PLUS_YOHARA_PB_V1), beran_pb Grota Wygnancow 2 (PB),
-    # jotun_pb Zaklety Las (PB) (MT2009_PLUS_YOHARA_ILUZJA_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb; do \
+    # jotun_pb Zaklety Las (PB) (MT2009_PLUS_YOHARA_ILUZJA_V1). szczelina_czasu is Statua Szczeliny Czasu on the plateau
+    # (the Time Rift dungeons' entrance, Zegarek Kieszonkowy), jotun_szc Zaklety Las (SZC) (MT2009_PLUS_YOHARA_CRACK_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1861,6 +1862,62 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-iluzja-add \
     done \
  && rm -rf "$A" \
  && echo "share: Plaskowyz Iluzji (397), Grota Wygnancow 2 (PB) (398), Zaklety Las (PB) (371): maps, rooms, groups, drops, chests, the statues' recipes, the dungeon panel"
+# MT2009_PLUS_YOHARA_CRACK_V1 (share): Statua Szczeliny Czasu and the first Time Rift dungeon (the owner, 14 October
+# 2026: only Zaklety Las for now; pl-wiki "Statua Szczeliny Czasu", "Zaklety Las (SZC)", "Erebu (SZC)", the six SZC
+# missions; Owsap v6.2.6 crack_dawnmist_dungeon for the spawns and the stages) - Zaklety Las (SZC) (404,
+# metin2_map_boss_crack_dawnmist, the official base 332800 1817600 - no map of ours overlaps it; the terrain of Zaklety
+# Las (PB), quest jotun_szc) on the Yohara core (bin/m2-render-config); Statua Szczeliny Czasu (20472) on Plaskowyz
+# Iluzji at the wiki's cell 103,90 (quest szczelina_czasu). tools/yohara_crack/gen_ycrack.py made everything here: the
+# folder, the rooms' spawn files (data/dungeon/jotun_szc: Owsap's points), groups 6178-6184 and 6193 (Owsap's
+# 6401-6408) - none may exist before -, the statue's npc line. No drop file and no chest: the monsters drop nothing
+# there (server-patches/szczelina). Monsters, NPCs, Handlarka Iluzji's Zegarek Kieszonkowy rows: yohara_crack.sql;
+# items: yohara_items_crack.sql. The dungeon panel gets jotun_szc (the ticket Zegarek Kieszonkowy, party 2-8, level 110,
+# the entrance on the plateau beside the statue).
+COPY yohara_crack/ /tmp/yohara-crack-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "404 metin2_map_boss_crack_dawnmist 0c00000010000000 332800 1817600"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Szczelina Czasu map $1 $2"; exit 1; }; \
+    done \
+ && N="$L/map/metin2_map_labyrinth/npc.txt" \
+ && test -f "$N" \
+ && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+ && { grep -q -E '[[:blank:]]20472[[:space:]]*$' "$N" || cat "$A/plateau_npc.txt" >> "$N"; } \
+ && test "$(grep -c -E '^m[[:blank:]]+103[[:blank:]]+90[[:blank:]].*[[:blank:]]20472[[:space:]]*$' "$N")" = 1 \
+ && test "$(grep -c -E '[[:blank:]]20472[[:space:]]*$' "$N")" = 1 \
+ && mkdir -p /opt/metin2/share/data/dungeon && rm -rf /opt/metin2/share/data/dungeon/jotun_szc \
+ && cp -a "$A/data/dungeon/jotun_szc" /opt/metin2/share/data/dungeon/ \
+ && test "$(ls /opt/metin2/share/data/dungeon/jotun_szc | wc -l)" = 4 \
+ && GV='(617[89]|618[0-4]|6193)' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_crack.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 8 \
+ && MV='(426[0-9]|427[0-2]|4403|812[67])' \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$L/mob_drop_item.txt" \
+ && I="$L/dungeon_info.txt" \
+ && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+jotun_szc[[:blank:]]' "$I" \
+      || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
+           printf 'dungeon\tjotun_szc\t404\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4403\t-\t0\t31147\t1\tZakl\352ty_Las_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; }; } \
+ && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+jotun_szc[[:blank:]]' "$I")" = 1 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[404\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_CRACK_V1\r\ntranslate.general.map_names[404] = "Zakl\352ty Las (SZC)"\r\n' >> "$f"; \
+    done \
+ && rm -rf "$A" \
+ && echo "share: Szczelina Czasu - Statua Szczeliny Czasu on Plaskowyz Iluzji, Zaklety Las (SZC) (404): map, rooms, groups, the dungeon panel"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only

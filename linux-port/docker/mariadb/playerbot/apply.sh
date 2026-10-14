@@ -3745,6 +3745,20 @@ for yil_sql in yohara_iluzja.sql yohara_items_iluzja.sql yohara_iluzja_zywioly.s
     fi
 done
 
+# MT2009_PLUS_YOHARA_CRACK_V1: Statua Szczeliny Czasu and Zaklety Las (SZC) - the first Time Rift dungeon (the owner,
+# 14 October 2026). After the Iluzja files (Handlarka Iluzji's shop 9551, the statue's row 20472): yohara_crack.sql
+# (tools/yohara_crack/gen_ycrack.py) - the SZC monsters, bosses, Metins and NPCs, the shop's Zegarek Kieszonkowy rows;
+# yohara_items_crack.sql - Zegarek Kieszonkowy and the dungeon's quest items; yohara_crack_zywioly.sql - the wind.
+# All idempotent (INSERT IGNORE / UPDATE). The groups and the shop name these vnums: without them the cores stop.
+for ycr_sql in yohara_crack.sql yohara_items_crack.sql yohara_crack_zywioly.sql; do
+    [ -s "/opt/playerbot/$ycr_sql" ] || continue
+    if db < "/opt/playerbot/$ycr_sql"; then
+        echo "[playerbot-migrate] Szczelina Czasu: $ycr_sql applied"
+    else
+        fail_step "Szczelina Czasu: $ycr_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read
