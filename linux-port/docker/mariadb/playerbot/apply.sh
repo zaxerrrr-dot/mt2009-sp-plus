@@ -3681,6 +3681,25 @@ for yd4_sql in yohara_dung4.sql yohara_items_d4.sql yohara_dung4_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_GAYA_V1: Kamienie Gaya and Statua Wojownika (the owner, 14 October 2026): yohara_gaya.sql
+# (tools/ygaya/gen_ygaya.py) - Gaya (95927, the currency as an item), Reset / Rozszerzenie Sklepu Gaya (39063/39064),
+# Kupon Zwierzaka Zywiolu (39117), the elemental pet chests (53581-53586) and Kamyki's flags. Idempotent (INSERT
+# IGNORE / UPDATE). The share's cube.txt and special_item_group.txt (game/ygaya) name these vnums.
+for yg_sql in yohara_gaya.sql; do
+    [ -s "/opt/playerbot/$yg_sql" ] || continue
+    if db < "/opt/playerbot/$yg_sql"; then
+        echo "[playerbot-migrate] gaya: $yg_sql applied"
+    else
+        fail_step "gaya: $yg_sql failed" >&2
+    fi
+done
+# The wiki's sources of the Gaya shop's Reset (5 SM) and Rozszerzenie (19 SM) and of Kupon Zwierzaka Zywiolu (in the
+# official Losowa Skrzynia Krolestwa Zywiolow, 59 SM, of whose other contents we lack most) are the ItemShop: the
+# coupon at 50 (two of them = the price of our 15-day elemental pet in the shop). Once per install (ishop_once,
+# MT2009_PLUS_DB_EDITOR_ITEMSHOP_V1).
+ishop_once yohara_gaya_620 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (620, 39063, 1, 5, 'DRAGON_COIN', 0), (621, 39064, 1, 19, 'DRAGON_COIN', 0), (622, 39117, 1, 50, 'DRAGON_COIN', 0);" \
+    "could not add the Gaya shop's Reset / Rozszerzenie and Kupon Zwierzaka Zywiolu to the ItemShop"
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read

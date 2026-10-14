@@ -1,0 +1,331 @@
+-- MT2009_PLUS_GAYA_V1: Kamienie Gaya i pozosta³e funkcje Statuy Wojownika (decyzja w³aœciciela 14.10.2026,
+-- cache/yohara/decyzje.md "14.10 ok. 8:10": Kamienie Gaya - dodaæ; Statua Wojownika - pozosta³e funkcje BEZ Tarczy
+-- Potêpienia i BEZ peta Feniks Ocalenia). Wiki: "Gaya", "System Gaya", "Kamyki", "Statua Wojownika", "Portowy Sklep
+-- Gaya", "Wytwarzanie Skrzyñ Zwierzaków"; liczby: Owsap gem_system.quest / gem_shop_table.txt / cube.txt.
+--   * Gaya to przedmiot 95927 (nie do wymiany - wiki), tools/ygaya/gen_ygaya.py;
+--   * szlifowanie Kamyków (95926) u Statuy Wojownika (20433) w Porcie Nowego Kontynentu (368): przeci¹gnij Kamyki
+--     na statuê (albo rozmowa "Szlifowanie Kamyków") - 30 Kamyków, wybrany Kamieñ Duszy +0..+3 (okno wyboru
+--     przedmiotu), 15 000 Yang; szansa 70%, sukces = 3 Gaya; gracz ma najwy¿ej 999 999 Gaya;
+--   * Portowy Sklep Gaya: 3 rzêdy po 3 sloty, oferta ka¿dego gracza losowana z puli rzêdu (wiki "Asortyment
+--     Sklepu", nasze przedmioty) co 5 godzin od pierwszego otwarcia; z ka¿dego slotu jeden zakup na ofertê;
+--     rz¹d I i - w porcie - rz¹d III odblokowane, sloty 4/5/6 odblokowuje na sta³e 1/2/4 Rozszerzenia Sklepu Gaya
+--     (39064); Reset Sklepu Gaya (39063) - nowa oferta od razu;
+--   * Skrzynie ¯ywio³aków: okno wytwarzania statuy (cube.ygaya.txt: 2 Kupony Zwierzaka ¯ywio³u, 100 000 Yang,
+--     10 Gaya); uszlachetnianie od³amków zestawu to quest ysets (to samo okno).
+-- Bez Handlarza Gaya i Sklepu Gaya w wioskach (nie ma ich modeli w naszym kliencie) - tylko port.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest ygaya begin
+	state start begin
+		function cfg()
+			return {
+				port = 368, gaya = 95927, kamyki = 95926, kamyki_n = 30, fee = 15000, fee_text = "15 000",
+				pct = 70, give = 3, max = 999999,
+				reset = 39063, ext = 39064, ext_need = {1, 2, 4},   -- sloty 4, 5, 6 (wiki "System Gaya")
+				rotate = 18000,                                     -- 5 godzin
+			}
+		end
+
+		-- the wiki's three columns ("Sloty 1-3", "4-6", "7-9") as {vnum, count, price}: Owsap's official vnums where
+		-- we have the same item, else ours of the wiki's name; left out (not in our world): B³êkitna Mikstura,
+		-- Rozszerzenie Ekwipunku, Karta Resetu, Szpula Kaszmiru, Skrzyd³a Smoka, Œwiadectwo Zmiany, Torba Emocji,
+		-- Zroszony M³ot, Modlitwa Egzorcyzmu, Skrzyneczki Losu, Szk³o Handlu, Buty Wiatru (1d), Lizak Potêgi,
+		-- Karta Przetasowania, Anulacja Transmutacji, Zaczarowanie Przedmiotu+, Smoczy P³omieñ, Runy Wykuwania,
+		-- Zaczaruj zwierzaka, Zielona Smocza Fasola
+		function pool(row)
+			if row == 1 then
+				return {
+					{76012, 3, 183}, {76012, 5, 305}, {71014, 3, 234}, {76018, 5, 390}, {71005, 1, 236},
+					{76019, 1, 137}, {55001, 1, 229}, {71113, 1, 16}, {85001, 1, 1097}, {76007, 20, 284},
+					{22010, 1, 34}, {71108, 3, 267}, {71001, 1, 392}, {71110, 1, 270}, {38100, 1, 519},
+					{71151, 1, 644}, {76024, 1, 1067}, {76005, 1, 167}, {39038, 1, 237}, {76011, 1, 464},
+				}
+			elseif row == 2 then
+				return {
+					{76012, 5, 305}, {76018, 5, 390}, {76019, 1, 137}, {71113, 1, 16}, {76005, 1, 167},
+					{39038, 1, 237}, {76011, 1, 464}, {55008, 1, 749}, {70058, 1, 817}, {70056, 3, 445},
+					{71094, 1, 346}, {71001, 1, 392}, {71083, 1, 475}, {71103, 1, 539}, {71104, 1, 539},
+					{71105, 1, 574}, {71106, 1, 604}, {71003, 1, 806}, {71033, 1, 410}, {85001, 1, 1097},
+					{38101, 1, 1050}, {76010, 1, 171}, {76014, 1, 1263}, {76013, 1, 1963}, {72064, 1, 34},
+					{22010, 1, 34},
+				}
+			end
+			return {
+				{76005, 1, 167}, {39038, 1, 237}, {76018, 5, 390}, {71001, 1, 329}, {71113, 1, 16},
+				{71107, 1, 520}, {55009, 1, 2167}, {55002, 1, 1297}, {76001, 1, 1154}, {71048, 1, 715},
+				{71011, 1, 787}, {38102, 1, 1893}, {76006, 1, 347}, {76015, 1, 996}, {71151, 1, 644},
+				{76024, 1, 1067}, {71108, 10, 890}, {76019, 1, 137}, {39015, 1, 1721}, {85001, 1, 1097},
+				{76013, 1, 1963}, {76014, 1, 1263}, {76010, 1, 171}, {39068, 1, 172},
+			}
+		end
+
+		function row_of(slot)
+			return math.floor((slot - 1) / 3) + 1
+		end
+
+		function offer(slot)
+			local p = ygaya.pool(ygaya.row_of(slot))
+			local i = pc.getqf("s"..slot)
+			if i < 1 or i > table.getn(p) then
+				i = 1
+			end
+			return p[i]
+		end
+
+		function open_slot(slot)
+			local row = ygaya.row_of(slot)
+			if row ~= 2 then
+				return true
+			end
+			return pc.getqf("u") >= slot - 3
+		end
+
+		-- a new offer when the 5 hours are over (the first opening starts the timer); three different things a row
+		function refresh(force)
+			local c = ygaya.cfg()
+			local now = get_time()
+			if not force and pc.getqf("t") > now then
+				return
+			end
+			for row = 1, 3 do
+				local n = table.getn(ygaya.pool(row))
+				local taken = {}
+				for k = 1, 3 do
+					local i = number(1, n)
+					while taken[i] do
+						i = number(1, n)
+					end
+					taken[i] = true
+					local slot = (row - 1) * 3 + k
+					pc.setqf("s"..slot, i)
+					pc.setqf("b"..slot, 0)
+				end
+			end
+			pc.setqf("t", now + c.rotate)
+		end
+
+		function label(slot)
+			local o = ygaya.offer(slot)
+			local s = item_name(o[1])
+			if o[2] > 1 then
+				s = s.." x"..o[2]
+			end
+			return s.." - "..o[3].." Gaya"
+		end
+
+		function slot_text(slot)
+			local c = ygaya.cfg()
+			if not ygaya.open_slot(slot) then
+				return slot..". zablokowany (Rozszerzenie Sklepu Gaya x"..c.ext_need[slot - 3]..")"
+			end
+			if pc.getqf("b"..slot) == 1 then
+				return slot..". kupione"
+			end
+			return slot..". "..ygaya.label(slot)
+		end
+
+		function time_text()
+			local left = pc.getqf("t") - get_time()
+			if left < 60 then
+				return "mniej ni¿ minuta"
+			end
+			return math.floor(left / 3600).." godz. "..math.floor((left - math.floor(left / 3600) * 3600) / 60).." min"
+		end
+
+		function buy(slot)
+			local c = ygaya.cfg()
+			local o = ygaya.offer(slot)
+			say_title("Portowy Sklep Gaya")
+			if pc.getqf("b"..slot) == 1 then
+				say("Ten slot ju¿ kupiono - poczekaj na now¹ ofertê.")
+				return
+			end
+			if pc.count_item(c.gaya) < o[3] then
+				say("Masz za ma³o Gaya (potrzeba "..o[3]..").")
+				return
+			end
+			if not pc.enough_inventory(o[1]) then
+				say("Zrób miejsce w ekwipunku.")
+				return
+			end
+			pc.remove_item(c.gaya, o[3])
+			pc.setqf("b"..slot, 1)
+			pc.give_item2(o[1], o[2])
+			say("Kupiono: "..ygaya.label(slot)..".")
+		end
+
+		function unlock(slot)
+			local c = ygaya.cfg()
+			local need = c.ext_need[slot - 3]
+			say_title("Portowy Sklep Gaya")
+			if pc.getqf("u") ~= slot - 4 then
+				say("Sloty odblokowuje siê po kolei: najpierw slot "..(pc.getqf("u") + 4)..".")
+				return
+			end
+			say("Odblokowanie slotu "..slot.." na sta³e kosztuje")
+			say(need.." Rozszerzenie Sklepu Gaya (masz "..pc.count_item(c.ext)..").")
+			if select("Odblokuj", "Nie teraz") ~= 1 then
+				return
+			end
+			if pc.count_item(c.ext) < need then
+				say_title("Portowy Sklep Gaya")
+				say("Masz za ma³o Rozszerzeñ Sklepu Gaya.")
+				return
+			end
+			pc.remove_item(c.ext, need)
+			pc.setqf("u", slot - 3)
+			say_title("Portowy Sklep Gaya")
+			say("Slot "..slot.." jest odblokowany.")
+		end
+
+		function shop()
+			local c = ygaya.cfg()
+			ygaya.refresh(false)
+			while true do
+				say_title("Portowy Sklep Gaya")
+				say("Masz "..pc.count_item(c.gaya).." Gaya. Nowa oferta za: "..ygaya.time_text()..".")
+				say("Z ka¿dego slotu kupisz jedn¹ rzecz na ofertê.")
+				for slot = 1, 9 do
+					if slot == 1 or slot == 4 or slot == 7 then
+						say_reward("Rz¹d "..ygaya.row_of(slot)..":")
+					end
+					say(ygaya.slot_text(slot))
+				end
+				local s = select("Rz¹d I (sloty 1-3)", "Rz¹d II (sloty 4-6)", "Rz¹d III (sloty 7-9)",
+					"Reset oferty (Reset Sklepu Gaya)", "Zamknij")
+				if s == 4 then
+					say_title("Portowy Sklep Gaya")
+					if pc.count_item(c.reset) < 1 then
+						say("Potrzebujesz przedmiotu: "..item_name(c.reset)..".")
+						return
+					end
+					say("Zu¿yæ Reset Sklepu Gaya i wylosowaæ now¹ ofertê?")
+					if select("Tak", "Nie") == 1 then
+						pc.remove_item(c.reset, 1)
+						ygaya.refresh(true)
+					end
+				elseif s >= 1 and s <= 3 then
+					local names = {}
+					for k = 1, 3 do
+						local slot = (s - 1) * 3 + k
+						if not ygaya.open_slot(slot) then
+							names[k] = slot..". Odblokuj slot"
+						elseif pc.getqf("b"..slot) == 1 then
+							names[k] = slot..". kupione"
+						else
+							names[k] = slot..". "..ygaya.label(slot)
+						end
+					end
+					say_title("Portowy Sklep Gaya")
+					say("Rz¹d "..s..": wybierz slot.")
+					local k = select(names[1], names[2], names[3], "Wróæ do listy")
+					if k >= 1 and k <= 3 then
+						local slot = (s - 1) * 3 + k
+						if ygaya.open_slot(slot) then
+							ygaya.buy(slot)
+						else
+							ygaya.unlock(slot)
+						end
+						wait()
+					end
+				else
+					return
+				end
+			end
+		end
+
+		function is_spirit_stone(v)
+			if v < 28000 or v > 28343 then
+				return false
+			end
+			return v - math.floor(v / 100) * 100 <= 43
+		end
+
+		function grind()
+			local c = ygaya.cfg()
+			say_title(mob_name(20433)..":")
+			say("Potrzebujê "..c.kamyki_n.." Kamyków, "..c.fee_text.." Yang oraz")
+			say("Kamienia Duszy +0, +1, +2 albo +3. Oszlifujê z nich")
+			say(c.give.." drogocenne Gaya.")
+			say("Szansa powodzenia: "..c.pct.."%. Kontynuowaæ?")
+			if select("Tak", "Nie") ~= 1 then
+				return
+			end
+			say_title(mob_name(20433)..":")
+			if pc.count_item(c.kamyki) < c.kamyki_n then
+				say("Zbierz wiêcej Kamyków - potrzebujê "..c.kamyki_n..".")
+				return
+			end
+			if pc.get_money() < c.fee then
+				say("Masz za ma³o Yang.")
+				return
+			end
+			if pc.count_item(c.gaya) + c.give > c.max then
+				say("Masz ju¿ najwiêcej Gaya, ile mo¿na mieæ (999 999).")
+				return
+			end
+			say("Wska¿ Kamieñ Duszy (+0 do +3) w ekwipunku.")
+			local cell = select_item()
+			if cell == 0 then
+				return
+			end
+			if not item.select_cell(cell) or not ygaya.is_spirit_stone(item.get_vnum()) then
+				say_title(mob_name(20433)..":")
+				say("To nie jest Kamieñ Duszy +0, +1, +2 ani +3.")
+				return
+			end
+			-- checked again: the window gave the player time
+			if pc.count_item(c.kamyki) < c.kamyki_n or pc.get_money() < c.fee then
+				return
+			end
+			item.remove(1)
+			pc.remove_item(c.kamyki, c.kamyki_n)
+			pc.change_money(-c.fee)
+			say_title(mob_name(20433)..":")
+			if number(1, 100) <= c.pct then
+				pc.give_item2(c.gaya, c.give)
+				say("Uda³o siê! Otrzymujesz "..c.give.." Gaya.")
+			else
+				say("Szlifowanie siê nie uda³o. Kamyki i Kamieñ Duszy")
+				say("przepad³y.")
+			end
+		end
+
+		when 20433.take with pc.get_map_index() == 368 and item.get_vnum() == 95926 begin
+			ygaya.grind()
+		end
+
+		when 20433.chat."Szlifowanie Kamyków" with pc.get_map_index() == 368 begin
+			local c = ygaya.cfg()
+			say_title(mob_name(20433)..":")
+			say("Z "..c.kamyki_n.." Kamyków, Kamienia Duszy (+0 do +3)")
+			say("i "..c.fee_text.." Yang oszlifujê "..c.give.." drogocenne Gaya.")
+			say("Szansa: "..c.pct.."%. Mo¿esz te¿ przeci¹gn¹æ Kamyki na mnie.")
+			say("Masz "..pc.count_item(c.kamyki).." Kamyków i "..pc.count_item(c.gaya).." Gaya.")
+			if select("Szlifuj", "Nie teraz") ~= 1 then
+				return
+			end
+			ygaya.grind()
+		end
+
+		when 20433.chat."Portowy Sklep Gaya" with pc.get_map_index() == 368 begin
+			ygaya.shop()
+		end
+
+		when 20433.chat."Skrzynie ¯ywio³aków" with pc.get_map_index() == 368 begin
+			say_title(mob_name(20433)..":")
+			say("Z 2 Kuponów Zwierzaka ¯ywio³u, 100 000 Yang")
+			say("i 10 Gaya zrobiê skrzynkê z ma³ym ¿ywio³akiem")
+			say("twojego wyboru: Ognia, Lodu, B³yskawicy, Wiatru,")
+			say("Ziemi albo Mroku (zwierzak na 15 dni od otwarcia).")
+			say("Po³ó¿ kupony w oknie i wybierz skrzynkê z listy.")
+			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+
+		when 39063.use or 39064.use begin
+			syschat("U¿yj go w Portowym Sklepie Gaya - Statua Wojownika w Porcie Nowego Kontynentu.")
+		end
+	end
+end

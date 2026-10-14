@@ -372,4 +372,9 @@ linux-port/docker/game/src/server/game/src/char_resist.cpp
 # MT2009_PLUS_CHAMPION_V2 (server-patches/czempion, exe 3.0): LIMIT_CONQUEROR_LEVEL and its txt-proto name.
 linux-port/docker/game/src/server/common/item_length.h
 linux-port/docker/game/src/server/db/src/ProtoReader.cpp
+# MT2009_PLUS_GAYA_V1 (server-patches/gaya; ysets edits cube.h too): the cube's Gaya cost, Kamienie Gaya's items,
+# the elemental pet chests' recipes and contents (Dockerfile step "share: Gaya"), quest ygaya (quest/*).
+linux-port/docker/game/src/server/game/src/cube.h
+linux-port/docker/game/ygaya/*
+linux-port/docker/mariadb/playerbot/yohara_gaya.sql
 linux-port/docker/panel/app/register_assets/*

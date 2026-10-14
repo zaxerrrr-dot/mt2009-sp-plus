@@ -13,7 +13,8 @@
 --     z Wol¹ SungMa i od 1. Poziomu Czempiona (wiki); Metin - jeden z tych, które stoj¹ na tej mapie;
 --   * Mistrz Chi (20823, Dongan): wytwarza Obrêcze Jadeitu +0 (wiki "Wytwarzanie Bransolet": 10 Jadeitu, 25/30 P³yt
 --     z Surowego Metalu, Mg³y nic wiêcej / S³oñca 2 Ska¿one Rdzenie / Nocy 5 K³ów Argosa / Dymu 10 £usek Argosa,
---     1 000 000 Yang, szansa 30%, przy pora¿ce przedmioty przepadaj¹) - Gaya pominiêta (nie mamy jej).
+--     1 000 000 Yang, 100 / 200 / 300 / 400 Gaya - przedmiot 95927, MT2009_PLUS_GAYA_V1 - szansa 30%, przy
+--     pora¿ce przedmioty przepadaj¹).
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest yohara_mapy4 begin
 	state start begin
@@ -31,11 +32,12 @@ quest yohara_mapy4 begin
 					[396] = {8063, 8064, 8065, 8066, 8067},
 				},
 				craft_fee = 1000000, craft_fee_text = "1 000 000", craft_pct = 30, plates = 31216,
+				gaya = 95927,                                 -- wiki "Wytwarzanie Bransolet": KosztGaya
 				bracelets = {
-					{vnum = 14580, jade = 50664, plates = 25},
-					{vnum = 14590, jade = 50661, plates = 30, extra = 31226, extra_n = 2},
-					{vnum = 14600, jade = 50662, plates = 25, extra = 31227, extra_n = 5},
-					{vnum = 14610, jade = 50663, plates = 30, extra = 31228, extra_n = 10},
+					{vnum = 14580, jade = 50664, plates = 25, gaya = 100},
+					{vnum = 14590, jade = 50661, plates = 30, extra = 31226, extra_n = 2, gaya = 200},
+					{vnum = 14600, jade = 50662, plates = 25, extra = 31227, extra_n = 5, gaya = 300},
+					{vnum = 14610, jade = 50663, plates = 30, extra = 31228, extra_n = 10, gaya = 400},
 				},
 			}
 		end
@@ -106,6 +108,7 @@ quest yohara_mapy4 begin
 				if b.extra then
 					need = need..", "..b.extra_n.."x "..item_name(b.extra)
 				end
+				need = need..", "..b.gaya.." Gaya"
 				say_reward(item_name(b.vnum)..": "..need)
 			end
 			say_reward("Ka¿da: "..c.craft_fee_text.." Yang, szansa "..c.craft_pct.."%. Gdy siê nie uda, przedmioty przepadaj¹.")
@@ -121,6 +124,8 @@ quest yohara_mapy4 begin
 				miss = item_name(c.plates)
 			elseif b.extra and pc.count_item(b.extra) < b.extra_n then
 				miss = item_name(b.extra)
+			elseif pc.count_item(c.gaya) < b.gaya then
+				miss = b.gaya.." Gaya"
 			end
 			say_title(mob_name(20823)..":")
 			if miss then
@@ -140,6 +145,7 @@ quest yohara_mapy4 begin
 			if b.extra then
 				pc.remove_item(b.extra, b.extra_n)
 			end
+			pc.remove_item(c.gaya, b.gaya)
 			pc.change_money(-c.craft_fee)
 			if number(1, 100) <= c.craft_pct then
 				pc.give_item2(b.vnum, 1)

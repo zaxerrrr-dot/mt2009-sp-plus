@@ -23,7 +23,6 @@
 --   50738 Mroczny Ciern - herbalism (the elixirs of Yohara) - none here yet
 --   95733 Ognisty Lisc - herbalism (the elixirs of Yohara) - none here yet; 50733 is our Bursztynowy Platek, so 95733
 --   95734 Mrozny Korzonek - herbalism (the elixirs of Yohara) - none here yet; 50734 is our Perlowe Wiechy, so 95734
---   95926 Kamyki - Gaya (Handlarz Gaya) - none here; 50926 is our recipe, so 95926
 --   39078 Szary Lsniacy Odlamek - Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet
 --   39079 Zielony Lsniacy Odlamek - Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet
 --   39080 Zolty Lsniacy Odlamek - Seon-Hae (6./7. bonus) takes only 39070-39077/39081 - the lucent shards not yet
@@ -91,7 +90,7 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (50738,'Mroczny Ciern',_cp1250 X'4D726F637A6E792043696572F1',5,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (95733,'Ognisty Lisc',_cp1250 X'4F676E69737479204C699CE6',5,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (95734,'Mrozny Korzonek',_cp1250 X'4D726F9F6E79204B6F727A6F6E656B',5,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
-(95926,'Kamyki',_cp1250 X'4B616D796B69',5,0,200,0,1,16384,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
+(95926,'Kamyki',_cp1250 X'4B616D796B69',5,0,200,0,1,81920,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (39078,'Szary Lsniacy Odlamek',_cp1250 X'537A617279204C9C6E69B96379204F64B3616D656B',5,0,200,0,1,16384,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (39079,'Zielony Lsniacy Odlamek',_cp1250 X'5A69656C6F6E79204C9C6E69B96379204F64B3616D656B',5,0,200,0,1,16384,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (39080,'Zolty Lsniacy Odlamek',_cp1250 X'AFF3B37479204C9C6E69B96379204F64B3616D656B',5,0,200,0,1,16384,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),

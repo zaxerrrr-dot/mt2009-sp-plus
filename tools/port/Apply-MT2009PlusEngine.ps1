@@ -93,6 +93,7 @@ param(
 #                      ENABLE_CHANGELOOK_SYSTEM (MT2009_PLUS_CHANGE_LOOK_V1; server-patches/transmutacja)
 #   Ukryj kostium      CommonDefines.h, char.cpp, input_login.cpp, cmd_general.cpp, cmd.cpp, ENABLE_HIDE_COSTUME_SYSTEM
 #                      (MT2009_PLUS_HIDE_COSTUME_V1; server-patches/ukryjkostium)
+#   Gaya               cube.h, cube.cpp (MT2009_PLUS_GAYA_V1; server-patches/gaya, after ysets)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1358,6 +1359,19 @@ if ((Test-Path -LiteralPath $ukryjKostiumApply -PathType Leaf) -and
     if ($ukryjKostiumResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} costume hiding edit(s).' -f $ukryjKostiumResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Gaya (server-patches/gaya, MT2009_PLUS_GAYA_V1): a cube recipe's "gaya N" - N of the Gaya item (95927, quest ygaya)
+# from the inventory, checked first and taken with the materials (the set blacksmiths, Statua Wezy, the elemental pet
+# chests of Statua Wojownika). After Zestawy Yohary (one edit is in its Mt2009YSetsCubeMake).
+$gayaApply = Join-Path $repo 'server-patches/gaya/Apply-GayaPatch.ps1'
+if ((Test-Path -LiteralPath $gayaApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cube.cpp') -PathType Leaf)) {
+    $gayaResult = & $gayaApply -SourceDir $engineGameSource
+    if ($gayaResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Gaya edit(s).' -f $gayaResult.Applied) -ForegroundColor DarkGray
     }
 }
 
