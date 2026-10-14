@@ -1,0 +1,295 @@
+// MT2009_PLUS_YOHARA_DUNG4_V1: the spawn groups of Jaskinie Gnolli and Wieza Sung Mahi (tools/yohara_dung4/
+// gen_ydung4_maps.py; GENERATED). The caves 9230-9244 (each level's monsters as the pl-wiki lists them),
+// the tower's waves 9250-9267 (three an element: 0 ogien, 1 lod, 2 blyskawice, 3 wiatr, 4 ziemia, 5 mrok).
+Group	MT2009_ydung4_Gnolle1_Wojownik
+{
+	Vnum	9230
+	Leader	"Gnoll Wojownik"	6800
+	1	"Gnoll Wojownik"	6800
+	2	"Gnoll Wojownik"	6800
+}
+
+Group	MT2009_ydung4_Gnolle1_Zwiadowca
+{
+	Vnum	9231
+	Leader	"Gnoll Zwiadowca"	6801
+	1	"Gnoll Wojownik"	6800
+	2	"Gnoll Wojownik"	6800
+}
+
+Group	MT2009_ydung4_Gnolle1_Czarodziej
+{
+	Vnum	9232
+	Leader	"Czarodziej Gnoll"	6802
+	1	"Czarodziej Gnoll"	6802
+	2	"Gnoll Wojownik"	6800
+	3	"Gnoll Wojownik"	6800
+}
+
+Group	MT2009_ydung4_Gnolle1_Marszalek
+{
+	Vnum	9233
+	Leader	"Gnoll Marszalek"	6803
+	1	"Czarodziej Gnoll"	6802
+	2	"Gnoll Zwiadowca"	6801
+	3	"Gnoll Wojownik"	6800
+}
+
+Group	MT2009_ydung4_Gnolle2_Zolnierz
+{
+	Vnum	9234
+	Leader	"Gnoll Zolnierz"	6806
+	1	"Gnoll Zolnierz"	6806
+	2	"Gnoll Zolnierz"	6806
+}
+
+Group	MT2009_ydung4_Gnolle2_Szpieg
+{
+	Vnum	9235
+	Leader	"Gnoll Szpieg"	6807
+	1	"Gnoll Zolnierz"	6806
+	2	"Gnoll Zolnierz"	6806
+}
+
+Group	MT2009_ydung4_Gnolle2_Mag
+{
+	Vnum	9236
+	Leader	"Gnoll Mag"	6808
+	1	"Gnoll Szpieg"	6807
+	2	"Gnoll Zolnierz"	6806
+}
+
+Group	MT2009_ydung4_Gnolle2_Komendant
+{
+	Vnum	9237
+	Leader	"Komendant Gnoll"	6809
+	1	"Gnoll Mag"	6808
+	2	"Gnoll Zolnierz"	6806
+	3	"Gnoll Zolnierz"	6806
+}
+
+Group	MT2009_ydung4_Gnolle2_Ahtrin_Wojownik
+{
+	Vnum	9238
+	Leader	"Ahtrin Wojownik"	6810
+	1	"Ahtrin Wojownik"	6810
+	2	"Ahtrin Zwiadowca"	6811
+}
+
+Group	MT2009_ydung4_Gnolle2_Ahtrin_Czarodziej
+{
+	Vnum	9239
+	Leader	"Ahtrin Czarodziej"	6812
+	1	"Ahtrin Zwiadowca"	6811
+	2	"Ahtrin Wojownik"	6810
+}
+
+Group	MT2009_ydung4_Gnolle2_Ahtrin_Komendant
+{
+	Vnum	9240
+	Leader	"Ahtrin Komendant"	6813
+	1	"Ahtrin Czarodziej"	6812
+	2	"Ahtrin Zwiadowca"	6811
+	3	"Ahtrin Wojownik"	6810
+}
+
+Group	MT2009_ydung4_Gnolle3_Ahtrin_Wojownik
+{
+	Vnum	9241
+	Leader	"Ahtrin Wojownik"	6810
+	1	"Ahtrin Wojownik"	6810
+	2	"Ahtrin Szpieg"	6816
+}
+
+Group	MT2009_ydung4_Gnolle3_Ahtrin_Szpieg
+{
+	Vnum	9242
+	Leader	"Ahtrin Szpieg"	6816
+	1	"Ahtrin Szpieg"	6816
+	2	"Ahtrin Wojownik"	6810
+}
+
+Group	MT2009_ydung4_Gnolle3_Ahtrin_Wiedzmin
+{
+	Vnum	9243
+	Leader	"Ahtrin Wiedzmin"	6817
+	1	"Ahtrin Wiedzmin"	6817
+	2	"Ahtrin Szpieg"	6816
+}
+
+Group	MT2009_ydung4_Gnolle3_Ahtrin_Komendant
+{
+	Vnum	9244
+	Leader	"Ahtrin Komendant"	6818
+	1	"Ahtrin Wiedzmin"	6817
+	2	"Ahtrin Szpieg"	6816
+	3	"Ahtrin Wojownik"	6810
+}
+
+Group	MT2009_ydung4_Wieza_ogien_Fala
+{
+	Vnum	9250
+	Leader	"Berserk Piekielnej Wiezy"	7552
+	1	"Wilk Piekielnej Wiezy"	7550
+	2	"Wilk Piekielnej Wiezy"	7550
+	3	"Zbir Piekielnej Wiezy"	7551
+	4	"Zbir Piekielnej Wiezy"	7551
+}
+
+Group	MT2009_ydung4_Wieza_ogien_Magowie
+{
+	Vnum	9251
+	Leader	"Wiedzmin Piek. Wiezy"	7553
+	1	"Wiedzmin Piek. Wiezy"	7553
+	2	"Wilk Piekielnej Wiezy"	7550
+	3	"Zbir Piekielnej Wiezy"	7551
+}
+
+Group	MT2009_ydung4_Wieza_ogien_Rzeznik
+{
+	Vnum	9252
+	Leader	"Rzeznik Piekielnej Wiezy"	7554
+	1	"Berserk Piekielnej Wiezy"	7552
+	2	"Zbir Piekielnej Wiezy"	7551
+	3	"Wilk Piekielnej Wiezy"	7550
+}
+
+Group	MT2009_ydung4_Wieza_lod_Fala
+{
+	Vnum	9253
+	Leader	"Berserk Piekielnej Wiezy"	7559
+	1	"Wilk Piekielnej Wiezy"	7557
+	2	"Wilk Piekielnej Wiezy"	7557
+	3	"Zbir Piekielnej Wiezy"	7558
+	4	"Zbir Piekielnej Wiezy"	7558
+}
+
+Group	MT2009_ydung4_Wieza_lod_Magowie
+{
+	Vnum	9254
+	Leader	"Wiedzmin Piek. Wiezy"	7560
+	1	"Wiedzmin Piek. Wiezy"	7560
+	2	"Wilk Piekielnej Wiezy"	7557
+	3	"Zbir Piekielnej Wiezy"	7558
+}
+
+Group	MT2009_ydung4_Wieza_lod_Rzeznik
+{
+	Vnum	9255
+	Leader	"Rzeznik Piekielnej Wiezy"	7561
+	1	"Berserk Piekielnej Wiezy"	7559
+	2	"Zbir Piekielnej Wiezy"	7558
+	3	"Wilk Piekielnej Wiezy"	7557
+}
+
+Group	MT2009_ydung4_Wieza_blyskawice_Fala
+{
+	Vnum	9256
+	Leader	"Berserk Piekielnej Wiezy"	7566
+	1	"Wilk Piekielnej Wiezy"	7564
+	2	"Wilk Piekielnej Wiezy"	7564
+	3	"Zbir Piekielnej Wiezy"	7565
+	4	"Zbir Piekielnej Wiezy"	7565
+}
+
+Group	MT2009_ydung4_Wieza_blyskawice_Magowie
+{
+	Vnum	9257
+	Leader	"Wiedzmin Piek. Wiezy"	7567
+	1	"Wiedzmin Piek. Wiezy"	7567
+	2	"Wilk Piekielnej Wiezy"	7564
+	3	"Zbir Piekielnej Wiezy"	7565
+}
+
+Group	MT2009_ydung4_Wieza_blyskawice_Rzeznik
+{
+	Vnum	9258
+	Leader	"Rzeznik Piekielnej Wiezy"	7568
+	1	"Berserk Piekielnej Wiezy"	7566
+	2	"Zbir Piekielnej Wiezy"	7565
+	3	"Wilk Piekielnej Wiezy"	7564
+}
+
+Group	MT2009_ydung4_Wieza_wiatr_Fala
+{
+	Vnum	9259
+	Leader	"Berserk Piekielnej Wiezy"	7573
+	1	"Wilk Piekielnej Wiezy"	7571
+	2	"Wilk Piekielnej Wiezy"	7571
+	3	"Zbir Piekielnej Wiezy"	7572
+	4	"Zbir Piekielnej Wiezy"	7572
+}
+
+Group	MT2009_ydung4_Wieza_wiatr_Magowie
+{
+	Vnum	9260
+	Leader	"Wiedzmin Piek. Wiezy"	7574
+	1	"Wiedzmin Piek. Wiezy"	7574
+	2	"Wilk Piekielnej Wiezy"	7571
+	3	"Zbir Piekielnej Wiezy"	7572
+}
+
+Group	MT2009_ydung4_Wieza_wiatr_Rzeznik
+{
+	Vnum	9261
+	Leader	"Rzeznik Piekielnej Wiezy"	7575
+	1	"Berserk Piekielnej Wiezy"	7573
+	2	"Zbir Piekielnej Wiezy"	7572
+	3	"Wilk Piekielnej Wiezy"	7571
+}
+
+Group	MT2009_ydung4_Wieza_ziemia_Fala
+{
+	Vnum	9262
+	Leader	"Berserk Piekielnej Wiezy"	7580
+	1	"Wilk Piekielnej Wiezy"	7578
+	2	"Wilk Piekielnej Wiezy"	7578
+	3	"Zbir Piekielnej Wiezy"	7579
+	4	"Zbir Piekielnej Wiezy"	7579
+}
+
+Group	MT2009_ydung4_Wieza_ziemia_Magowie
+{
+	Vnum	9263
+	Leader	"Wiedzmin Piek. Wiezy"	7581
+	1	"Wiedzmin Piek. Wiezy"	7581
+	2	"Wilk Piekielnej Wiezy"	7578
+	3	"Zbir Piekielnej Wiezy"	7579
+}
+
+Group	MT2009_ydung4_Wieza_ziemia_Rzeznik
+{
+	Vnum	9264
+	Leader	"Rzeznik Piekielnej Wiezy"	7582
+	1	"Berserk Piekielnej Wiezy"	7580
+	2	"Zbir Piekielnej Wiezy"	7579
+	3	"Wilk Piekielnej Wiezy"	7578
+}
+
+Group	MT2009_ydung4_Wieza_mrok_Fala
+{
+	Vnum	9265
+	Leader	"Berserk Piekielnej Wiezy"	7587
+	1	"Wilk Piekielnej Wiezy"	7585
+	2	"Wilk Piekielnej Wiezy"	7585
+	3	"Zbir Piekielnej Wiezy"	7586
+	4	"Zbir Piekielnej Wiezy"	7586
+}
+
+Group	MT2009_ydung4_Wieza_mrok_Magowie
+{
+	Vnum	9266
+	Leader	"Wiedzmin Piek. Wiezy"	7588
+	1	"Wiedzmin Piek. Wiezy"	7588
+	2	"Wilk Piekielnej Wiezy"	7585
+	3	"Zbir Piekielnej Wiezy"	7586
+}
+
+Group	MT2009_ydung4_Wieza_mrok_Rzeznik
+{
+	Vnum	9267
+	Leader	"Rzeznik Piekielnej Wiezy"	7589
+	1	"Berserk Piekielnej Wiezy"	7587
+	2	"Zbir Piekielnej Wiezy"	7586
+	3	"Wilk Piekielnej Wiezy"	7585
+}
