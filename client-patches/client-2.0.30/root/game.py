@@ -2815,6 +2815,10 @@ class GameWindow(ui.ScriptWindow):
 
 		self.interface.OpenCubeWindow()
 
+		# MT2009_PLUS_YOHARA_SETS_V2 (fix 3.0 #3): a set blacksmith lists the player's own pieces (+7 and more) -
+		# asked again at every opening, never kept
+		if 20475 <= int(npcVNUM) <= 20479:
+			self.cubeInformation.pop(npcVNUM, None)
 
 		if npcVNUM not in self.cubeInformation:
 			net.SendChatPacket("/cube r_info")

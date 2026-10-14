@@ -52,3 +52,18 @@ Pliki: `item.h`, `item.cpp`, `item_manager.cpp`, `item_attribute.cpp`, `char.h`,
 - Linux/VPS: `python3 apply_ysets.py <game/src>`; Windows: `Apply-YSetsPatch.ps1 -SourceDir <game/src>`
   (wołane przez `tools/port/Apply-MT2009PlusEngine.ps1`). `gen_edits.py [<game/src>]` tworzy `edits.json` (z tabel
   `tools/ysets/ysets_random.json`) i sprawdza kotwice.
+
+## Poprawki po teście 3.0 (`MT2009_PLUS_YOHARA_SETS_V2`, `cache/yohara/bledy-3.0.md` #3, #14, #16)
+
+- **Okno kowala zestawów** (#3): lista wyników nie pokazuje już „Projektu” z tym samym Projektem w materiałach.
+  Jak w oficjalnym oknie (zrzuty wiki „Zestaw Ekwipunku”) wynikiem jest sam przedmiot: serwer buduje listę z
+  ekwipunku gracza przy każdym otwarciu (`cube r_list` / `cube m_info` w `cube.cpp`: każda broń / zbroja / hełm od
+  75. poziomu, +7 i wyżej, bez efektu tego kowala), materiały = przedmiot + odłamki II + Projekt (+ Kamień Księżycowy),
+  Yang z receptury. `Cube_make` bez zmian (receptura części + przedmiot obok). Klient (`game.py`) nie trzyma listy
+  kowali 20475–20479 w pamięci – pyta przy każdym otwarciu. Projekty i odłamki I – drop Królestwa Żywiołów, odłamki
+  II – Płaskowyż Sił Natury albo Statua Wojownika (`tools/yohara_maps3`, `cube.ysets.txt`).
+- **Kowale w porcie** (#14): w rzędzie wzdłuż muru co dwie komórki (260,566 … 252,574) – punkty Owsapa/GF są co metr
+  i modele stały jeden w drugim (krok Dockerfile'a, `gen_ysets.py`).
+- **Bonusy wężowe od razu** (#16): `YITEM` jeszcze raz po `CItem::AddToCharacter` (GM `/item`, podniesienie, skrzynia,
+  kostka, handel, magazyn) i po `Mt2009YSetsCopy` na przedmiocie gracza; komenda `/yitem` (najwyżej raz na sekundę)
+  wysyła wszystko ponownie – klient (`ysets.py`) pyta, gdy dymek pokazuje wężowy przedmiot gracza bez znanych bonusów.

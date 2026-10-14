@@ -136,5 +136,53 @@
   "marker": "MT2009_PLUS_YOHARA_SETS_V1 (cube make)",
   "old": "\tYANG cube_gold = cube_proto->gold;\n",
   "new": "\tif (cube_proto->set_value) // MT2009_PLUS_YOHARA_SETS_V1 (cube make): a set blacksmith\n\t\treturn Mt2009YSetsCubeMake(ch, cube_proto, items);\n\n\tYANG cube_gold = cube_proto->gold;\n"
+ },
+ {
+  "file": "item.h",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (declare)",
+  "old": "void Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet);\n",
+  "new": "void Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet);\nvoid Mt2009YSetsResend(LPCHARACTER ch); // MT2009_PLUS_YOHARA_SETS_V2 (declare): \"/yitem\"\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (resend)",
+  "old": "void Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet)\n{\n",
+  "new": "// MT2009_PLUS_YOHARA_SETS_V2 (resend): fix 3.0 #16 - \"/yitem\": the client asks when a tooltip shows a serpent piece whose\n// random bonuses it has not heard (they were rolled, only the client's copy was missing) - everything again\n// (Mt2009YSetsSendAll), at most once a second a character\nvoid Mt2009YSetsResend(LPCHARACTER ch)\n{\n\tstatic std::map<DWORD, DWORD> s_mapLast;\n\tif (!ch || !ch->IsPC() || !ch->GetDesc())\n\t\treturn;\n\tconst DWORD dwNow = get_dword_time();\n\tDWORD& rdwLast = s_mapLast[ch->GetPlayerID()];\n\tif (rdwLast && dwNow - rdwLast < 1000)\n\t\treturn;\n\trdwLast = dwNow;\n\tMt2009YSetsSendAll(ch);\n}\n\nvoid Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet)\n{\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (copy notify)",
+  "old": "\tpTo->SetYExtra(dwExtra);\n\tMt2009YSetsSave(pTo);\n}\n",
+  "new": "\tpTo->SetYExtra(dwExtra);\n\tMt2009YSetsSave(pTo);\n\tif (pTo->GetOwner() && (pTo->GetWindow() == INVENTORY || pTo->GetWindow() == EQUIPMENT)) // MT2009_PLUS_YOHARA_SETS_V2 (copy notify)\n\t\tMt2009YSetsNotify(pTo->GetOwner(), 1, pTo->GetCell(), dwExtra);\n}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (add)",
+  "old": "\tm_pOwner = ch;\n\n#ifdef USE_PET_SEAL_ON_LOGIN\n",
+  "new": "\tm_pOwner = ch;\n\tif ((window_type == INVENTORY || window_type == EQUIPMENT) && GetYExtra()) // MT2009_PLUS_YOHARA_SETS_V2 (add)\n\t\tMt2009YSetsNotify(ch, 1, pos, GetYExtra());\n\n#ifdef USE_PET_SEAL_ON_LOGIN\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (command declare)",
+  "old": "struct command_info cmd_info[] =\n",
+  "new": "// MT2009_PLUS_YOHARA_SETS_V2 (command declare): \"/yitem\" - the client asks for its items' set / random bonuses again\nvoid Mt2009YSetsResend(LPCHARACTER ch);\nACMD(do_yitem)\n{\n\tMt2009YSetsResend(ch);\n}\nstruct command_info cmd_info[] =\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (command table)",
+  "old": "\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};\n",
+  "new": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (cube set list)",
+  "old": "void Cube_request_result_list(LPCHARACTER ch)\n{\n\tRETURN_IF_CUBE_IS_NOT_OPENED(ch);\n\n\tLPCHARACTER\tnpc = ch->GetQuestNPC();\n\tif (NULL == npc)\n\t\treturn;\n\n\tDWORD npcVNUM = npc->GetRaceNum();\n",
+  "new": "// MT2009_PLUS_YOHARA_SETS_V2 (cube set list): fix 3.0 #3 - a set blacksmith's window lists, as the official one (pl-wiki\n// \"Zestaw Ekwipunku\", the blacksmiths' pictures), the pieces it can work on - here the player's own: every weapon /\n// armour / helmet of level 75+ at +7 or more in the inventory without this set yet. A result is the piece itself, its\n// materials the piece + the recipe's (the shards, the Projekt, the moon stone), its Yang the recipe's. (The static\n// list showed the recipes' \"reward\" - the Projekt, with the same Projekt among its materials.) Cube_make is unchanged:\n// the recipe of the part matches the shards and the Projekt, the piece lies beside them (Mt2009YSetsCubeMake).\nstatic std::map<DWORD, std::vector<std::pair<DWORD, CUBE_DATA*> > > s_mapMt2009YSetsCubeList;\n\nstatic bool Mt2009YSetsSmithRecipes(DWORD npcVNUM, CUBE_DATA** apRecipe)\n{\n\tbool bSmith = false;\n\tfor (size_t i = 0; i < s_cube_proto.size(); ++i)\n\t{\n\t\tCUBE_DATA* pCube = s_cube_proto[i];\n\t\tif (!pCube->set_value || pCube->set_part < 1 || pCube->set_part > 3)\n\t\t\tcontinue;\n\t\tbool bNpc = false;\n\t\tfor (size_t j = 0; j < pCube->npc_vnum.size(); ++j)\n\t\t\tif (pCube->npc_vnum[j] == npcVNUM)\n\t\t\t\tbNpc = true;\n\t\tif (!bNpc)\n\t\t\tcontinue;\n\t\tif (!apRecipe[pCube->set_part - 1])\n\t\t\tapRecipe[pCube->set_part - 1] = pCube;\n\t\tbSmith = true;\n\t}\n\treturn bSmith;\n}\n\nstatic bool Mt2009YSetsCubeResultList(LPCHARACTER ch, DWORD npcVNUM)\n{\n\tCUBE_DATA* apRecipe[3] = { NULL, NULL, NULL };\n\tif (!Mt2009YSetsSmithRecipes(npcVNUM, apRecipe))\n\t\treturn false;\n\tstd::vector<std::pair<DWORD, CUBE_DATA*> >& rList = s_mapMt2009YSetsCubeList[ch->GetPlayerID()];\n\trList.clear();\n\tstd::string strText;\n\tfor (int iPart = 1; iPart <= 3; ++iPart)\n\t{\n\t\tCUBE_DATA* pRecipe = apRecipe[iPart - 1];\n\t\tif (!pRecipe)\n\t\t\tcontinue;\n\t\tfor (int i = 0; i < INVENTORY_MAX_NUM; ++i)\n\t\t{\n\t\t\tLPITEM item = ch->GetInventoryItem(i);\n\t\t\tif (!item || item->GetCell() != i || item->IsEquipped() || Mt2009YSetsPart(item) != iPart || item->GetRefineLevel() < 7)\n\t\t\t\tcontinue;\n\t\t\tif ((item->GetYExtra() & 0x0F) == (DWORD)pRecipe->set_value)\n\t\t\t\tcontinue;\n\t\t\tbool bHave = false;\n\t\t\tfor (size_t j = 0; j < rList.size(); ++j)\n\t\t\t\tif (rList[j].first == item->GetVnum())\n\t\t\t\t\tbHave = true;\n\t\t\tif (bHave)\n\t\t\t\tcontinue;\n\t\t\tchar szEntry[32];\n\t\t\tsnprintf(szEntry, sizeof(szEntry), \"%u,1/\", item->GetVnum());\n\t\t\tif (strText.size() + strlen(szEntry) + 48 >= CHAT_MAX_LEN)\n\t\t\t\tbreak;\n\t\t\tstrText += szEntry;\n\t\t\trList.push_back(std::make_pair(item->GetVnum(), pRecipe));\n\t\t}\n\t}\n\tif (rList.empty())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Nie masz w ekwipunku broni, zbroi ani he\\263mu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu zestawu tego kowala). Po\\263\\363\\277 przedmiot w oknie razem z od\\263amkami i Projektem Zestawu.\");\n\t\treturn true;\n\t}\n\tstrText.erase(strText.size() - 1);\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"cube r_list %u %u %s\", npcVNUM, (unsigned int)rList.size(), strText.c_str());\n\treturn true;\n}\n\nstatic bool Mt2009YSetsCubeMaterialInfo(LPCHARACTER ch, DWORD npcVNUM, int iStart, int iCount)\n{\n\tCUBE_DATA* apRecipe[3] = { NULL, NULL, NULL };\n\tif (!Mt2009YSetsSmithRecipes(npcVNUM, apRecipe))\n\t\treturn false;\n\tstd::map<DWORD, std::vector<std::pair<DWORD, CUBE_DATA*> > >::const_iterator it = s_mapMt2009YSetsCubeList.find(ch->GetPlayerID());\n\tif (it == s_mapMt2009YSetsCubeList.end() || iStart < 0 || iCount <= 0)\n\t\treturn true;\n\tstd::string strText;\n\tfor (int i = iStart; i < iStart + iCount && i < (int)it->second.size(); ++i)\n\t{\n\t\tconst CUBE_DATA* pRecipe = it->second[i].second;\n\t\tchar szPart[64];\n\t\tsnprintf(szPart, sizeof(szPart), \"%u,1\", it->second[i].first);\n\t\tstd::string strOne = szPart;\n\t\tfor (size_t j = 0; j < pRecipe->item.size(); ++j)\n\t\t{\n\t\t\tsnprintf(szPart, sizeof(szPart), \"&%u,%d\", pRecipe->item[j].vnum, pRecipe->item[j].count);\n\t\t\tstrOne += szPart;\n\t\t}\n\t\tif (pRecipe->gold > 0)\n\t\t{\n\t\t\tsnprintf(szPart, sizeof(szPart), \"/%lld\", (long long)pRecipe->gold);\n\t\t\tstrOne += szPart;\n\t\t}\n\t\tstrText += strOne + \"@\";\n\t}\n\tif (strText.empty())\n\t\treturn true;\n\tstrText.erase(strText.size() - 1);\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"cube m_info %d %d %s\", iStart, iCount, strText.c_str());\n\treturn true;\n}\n\nvoid Cube_request_result_list(LPCHARACTER ch)\n{\n\tRETURN_IF_CUBE_IS_NOT_OPENED(ch);\n\n\tLPCHARACTER\tnpc = ch->GetQuestNPC();\n\tif (NULL == npc)\n\t\treturn;\n\n\tDWORD npcVNUM = npc->GetRaceNum();\n\tif (Mt2009YSetsCubeResultList(ch, npcVNUM)) // MT2009_PLUS_YOHARA_SETS_V2 (cube set list)\n\t\treturn;\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_YOHARA_SETS_V2 (cube set materials)",
+  "old": "void Cube_request_material_info(LPCHARACTER ch, int requestStartIndex, int requestCount)\n{\n\tRETURN_IF_CUBE_IS_NOT_OPENED(ch);\n\n\tLPCHARACTER\tnpc = ch->GetQuestNPC();\n\tif (NULL == npc)\n\t\treturn;\n\n\tDWORD npcVNUM = npc->GetRaceNum();\n",
+  "new": "void Cube_request_material_info(LPCHARACTER ch, int requestStartIndex, int requestCount)\n{\n\tRETURN_IF_CUBE_IS_NOT_OPENED(ch);\n\n\tLPCHARACTER\tnpc = ch->GetQuestNPC();\n\tif (NULL == npc)\n\t\treturn;\n\n\tDWORD npcVNUM = npc->GetRaceNum();\n\tif (Mt2009YSetsCubeMaterialInfo(ch, npcVNUM, requestStartIndex, requestCount)) // MT2009_PLUS_YOHARA_SETS_V2 (cube set materials)\n\t\treturn;\n"
  }
 ]

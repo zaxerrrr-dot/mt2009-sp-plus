@@ -534,6 +534,199 @@ EDITS = [
 ]
 
 
+# -- MT2009_PLUS_YOHARA_SETS_V2: fixes of the 3.0 test (cache/yohara/bledy-3.0.md #3, #16) - edits on top of V1 --
+M2 = 'MT2009_PLUS_YOHARA_SETS_V2'
+
+RESEND = '// ' + M2 + r''' (resend): fix 3.0 #16 - "/yitem": the client asks when a tooltip shows a serpent piece whose
+// random bonuses it has not heard (they were rolled, only the client's copy was missing) - everything again
+// (Mt2009YSetsSendAll), at most once a second a character
+void Mt2009YSetsResend(LPCHARACTER ch)
+{
+	static std::map<DWORD, DWORD> s_mapLast;
+	if (!ch || !ch->IsPC() || !ch->GetDesc())
+		return;
+	const DWORD dwNow = get_dword_time();
+	DWORD& rdwLast = s_mapLast[ch->GetPlayerID()];
+	if (rdwLast && dwNow - rdwLast < 1000)
+		return;
+	rdwLast = dwNow;
+	Mt2009YSetsSendAll(ch);
+}
+
+void Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet)
+{
+'''
+
+CUBE_LIST = '// ' + M2 + r''' (cube set list): fix 3.0 #3 - a set blacksmith's window lists, as the official one (pl-wiki
+// "Zestaw Ekwipunku", the blacksmiths' pictures), the pieces it can work on - here the player's own: every weapon /
+// armour / helmet of level 75+ at +7 or more in the inventory without this set yet. A result is the piece itself, its
+// materials the piece + the recipe's (the shards, the Projekt, the moon stone), its Yang the recipe's. (The static
+// list showed the recipes' "reward" - the Projekt, with the same Projekt among its materials.) Cube_make is unchanged:
+// the recipe of the part matches the shards and the Projekt, the piece lies beside them (Mt2009YSetsCubeMake).
+static std::map<DWORD, std::vector<std::pair<DWORD, CUBE_DATA*> > > s_mapMt2009YSetsCubeList;
+
+static bool Mt2009YSetsSmithRecipes(DWORD npcVNUM, CUBE_DATA** apRecipe)
+{
+	bool bSmith = false;
+	for (size_t i = 0; i < s_cube_proto.size(); ++i)
+	{
+		CUBE_DATA* pCube = s_cube_proto[i];
+		if (!pCube->set_value || pCube->set_part < 1 || pCube->set_part > 3)
+			continue;
+		bool bNpc = false;
+		for (size_t j = 0; j < pCube->npc_vnum.size(); ++j)
+			if (pCube->npc_vnum[j] == npcVNUM)
+				bNpc = true;
+		if (!bNpc)
+			continue;
+		if (!apRecipe[pCube->set_part - 1])
+			apRecipe[pCube->set_part - 1] = pCube;
+		bSmith = true;
+	}
+	return bSmith;
+}
+
+static bool Mt2009YSetsCubeResultList(LPCHARACTER ch, DWORD npcVNUM)
+{
+	CUBE_DATA* apRecipe[3] = { NULL, NULL, NULL };
+	if (!Mt2009YSetsSmithRecipes(npcVNUM, apRecipe))
+		return false;
+	std::vector<std::pair<DWORD, CUBE_DATA*> >& rList = s_mapMt2009YSetsCubeList[ch->GetPlayerID()];
+	rList.clear();
+	std::string strText;
+	for (int iPart = 1; iPart <= 3; ++iPart)
+	{
+		CUBE_DATA* pRecipe = apRecipe[iPart - 1];
+		if (!pRecipe)
+			continue;
+		for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
+		{
+			LPITEM item = ch->GetInventoryItem(i);
+			if (!item || item->GetCell() != i || item->IsEquipped() || Mt2009YSetsPart(item) != iPart || item->GetRefineLevel() < 7)
+				continue;
+			if ((item->GetYExtra() & 0x0F) == (DWORD)pRecipe->set_value)
+				continue;
+			bool bHave = false;
+			for (size_t j = 0; j < rList.size(); ++j)
+				if (rList[j].first == item->GetVnum())
+					bHave = true;
+			if (bHave)
+				continue;
+			char szEntry[32];
+			snprintf(szEntry, sizeof(szEntry), "%u,1/", item->GetVnum());
+			if (strText.size() + strlen(szEntry) + 48 >= CHAT_MAX_LEN)
+				break;
+			strText += szEntry;
+			rList.push_back(std::make_pair(item->GetVnum(), pRecipe));
+		}
+	}
+	if (rList.empty())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, @NOPIECE@);
+		return true;
+	}
+	strText.erase(strText.size() - 1);
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube r_list %u %u %s", npcVNUM, (unsigned int)rList.size(), strText.c_str());
+	return true;
+}
+
+static bool Mt2009YSetsCubeMaterialInfo(LPCHARACTER ch, DWORD npcVNUM, int iStart, int iCount)
+{
+	CUBE_DATA* apRecipe[3] = { NULL, NULL, NULL };
+	if (!Mt2009YSetsSmithRecipes(npcVNUM, apRecipe))
+		return false;
+	std::map<DWORD, std::vector<std::pair<DWORD, CUBE_DATA*> > >::const_iterator it = s_mapMt2009YSetsCubeList.find(ch->GetPlayerID());
+	if (it == s_mapMt2009YSetsCubeList.end() || iStart < 0 || iCount <= 0)
+		return true;
+	std::string strText;
+	for (int i = iStart; i < iStart + iCount && i < (int)it->second.size(); ++i)
+	{
+		const CUBE_DATA* pRecipe = it->second[i].second;
+		char szPart[64];
+		snprintf(szPart, sizeof(szPart), "%u,1", it->second[i].first);
+		std::string strOne = szPart;
+		for (size_t j = 0; j < pRecipe->item.size(); ++j)
+		{
+			snprintf(szPart, sizeof(szPart), "&%u,%d", pRecipe->item[j].vnum, pRecipe->item[j].count);
+			strOne += szPart;
+		}
+		if (pRecipe->gold > 0)
+		{
+			snprintf(szPart, sizeof(szPart), "/%lld", (long long)pRecipe->gold);
+			strOne += szPart;
+		}
+		strText += strOne + "@";
+	}
+	if (strText.empty())
+		return true;
+	strText.erase(strText.size() - 1);
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube m_info %d %d %s", iStart, iCount, strText.c_str());
+	return true;
+}
+
+void Cube_request_result_list(LPCHARACTER ch)
+{
+	RETURN_IF_CUBE_IS_NOT_OPENED(ch);
+
+	LPCHARACTER	npc = ch->GetQuestNPC();
+	if (NULL == npc)
+		return;
+
+	DWORD npcVNUM = npc->GetRaceNum();
+	if (Mt2009YSetsCubeResultList(ch, npcVNUM)) // ''' + M2 + ''' (cube set list)
+		return;
+'''
+
+NOPIECE = cstr(u'Nie masz w ekwipunku broni, zbroi ani hełmu od 75. poziomu ulepszonych co najmniej do +7 (bez efektu '
+               u'zestawu tego kowala). Połóż przedmiot w oknie razem z odłamkami i Projektem Zestawu.')
+
+EDITS += [
+    dict(file='item.h', marker=M2 + ' (declare)',
+         old='void Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet);\n',
+         new='void Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet);\n'
+             'void Mt2009YSetsResend(LPCHARACTER ch); // ' + M2 + ' (declare): "/yitem"\n'),
+    dict(file='item.cpp', marker=M2 + ' (resend)',
+         old='void Mt2009YSetsSetValue(LPCHARACTER ch, LPITEM item, BYTE bSet)\n{\n',
+         new=RESEND),
+    # a copy onto a piece the player holds already: the client hears the new yextra
+    dict(file='item.cpp', marker=M2 + ' (copy notify)',
+         old='\tpTo->SetYExtra(dwExtra);\n\tMt2009YSetsSave(pTo);\n}\n',
+         new='\tpTo->SetYExtra(dwExtra);\n\tMt2009YSetsSave(pTo);\n'
+             '\tif (pTo->GetOwner() && (pTo->GetWindow() == INVENTORY || pTo->GetWindow() == EQUIPMENT)) // ' + M2 + ' (copy notify)\n'
+             '\t\tMt2009YSetsNotify(pTo->GetOwner(), 1, pTo->GetCell(), dwExtra);\n}\n'),
+    # an item put into the inventory / equipment (GM /item, a pick-up, a chest, the cube, a trade, the storehouse):
+    # its yextra once more when the item is the character's (SetItem told it already; this one is after the owner)
+    dict(file='item.cpp', marker=M2 + ' (add)',
+         old='\tm_pOwner = ch;\n\n#ifdef USE_PET_SEAL_ON_LOGIN\n',
+         new='\tm_pOwner = ch;\n'
+             '\tif ((window_type == INVENTORY || window_type == EQUIPMENT) && GetYExtra()) // ' + M2 + ' (add)\n'
+             '\t\tMt2009YSetsNotify(ch, 1, pos, GetYExtra());\n\n#ifdef USE_PET_SEAL_ON_LOGIN\n'),
+    dict(file='cmd.cpp', marker=M2 + ' (command declare)',
+         old='struct command_info cmd_info[] =\n',
+         new='// ' + M2 + ' (command declare): "/yitem" - the client asks for its items\' set / random bonuses again\n'
+             'void Mt2009YSetsResend(LPCHARACTER ch);\n'
+             'ACMD(do_yitem)\n{\n\tMt2009YSetsResend(ch);\n}\n'
+             'struct command_info cmd_info[] =\n'),
+    dict(file='cmd.cpp', marker=M2 + ' (command table)',
+         old='\t{ "\\n",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};\n',
+         new='\t{ "yitem",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // ' + M2 + ' (command table)\n'
+             '\t{ "\\n",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};\n'),
+    dict(file='cube.cpp', marker=M2 + ' (cube set list)',
+         old='void Cube_request_result_list(LPCHARACTER ch)\n{\n\tRETURN_IF_CUBE_IS_NOT_OPENED(ch);\n\n'
+             '\tLPCHARACTER\tnpc = ch->GetQuestNPC();\n\tif (NULL == npc)\n\t\treturn;\n\n\tDWORD npcVNUM = npc->GetRaceNum();\n',
+         new=CUBE_LIST.replace('@NOPIECE@', NOPIECE)),
+    dict(file='cube.cpp', marker=M2 + ' (cube set materials)',
+         old='void Cube_request_material_info(LPCHARACTER ch, int requestStartIndex, int requestCount)\n{\n'
+             '\tRETURN_IF_CUBE_IS_NOT_OPENED(ch);\n\n\tLPCHARACTER\tnpc = ch->GetQuestNPC();\n\tif (NULL == npc)\n\t\treturn;\n\n'
+             '\tDWORD npcVNUM = npc->GetRaceNum();\n',
+         new='void Cube_request_material_info(LPCHARACTER ch, int requestStartIndex, int requestCount)\n{\n'
+             '\tRETURN_IF_CUBE_IS_NOT_OPENED(ch);\n\n\tLPCHARACTER\tnpc = ch->GetQuestNPC();\n\tif (NULL == npc)\n\t\treturn;\n\n'
+             '\tDWORD npcVNUM = npc->GetRaceNum();\n'
+             '\tif (Mt2009YSetsCubeMaterialInfo(ch, npcVNUM, requestStartIndex, requestCount)) // ' + M2 + ' (cube set materials)\n'
+             '\t\treturn;\n'),
+]
+
+
 def check(src):
     ok = True
     texts = {}

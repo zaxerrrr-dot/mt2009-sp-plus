@@ -34,14 +34,36 @@ def OnServer(window="0", cell="0", value="0", *rest):
 		_items.pop((w, c), None)
 
 
+_asked = [0.0]
+_lastOwn = [False]
+
+
 def GetFor(window_type, slotIndex, safeboxSlot=-1):
+	_lastOwn[0] = False
 	if safeboxSlot is not None and safeboxSlot >= 0:
 		return _items.get((3, safeboxSlot), 0)
 	if slotIndex is None or slotIndex < 0:
 		return 0
 	if window_type in (player.INVENTORY, getattr(player, "EQUIPMENT", -99)):
+		_lastOwn[0] = True
 		return _items.get((1, slotIndex), 0)
 	return 0
+
+
+# MT2009_PLUS_YOHARA_SETS_V2 (fix 3.0 #16): a serpent piece of the player's own whose random bonuses the client has
+# not heard (they show after a relog only) - "/yitem" asks the server for all of them again (at most every 2 s; the
+# server answers with YITEM lines and the next look at the tooltip has them)
+def _AskServer():
+	try:
+		import app
+		import net
+		now = app.GetTime()
+		if now - _asked[0] < 2.0 and _asked[0] > 0.0:
+			return
+		_asked[0] = now
+		net.SendChatPacket("/yitem")
+	except:
+		pass
 
 
 def Title(name, extra):
@@ -106,6 +128,8 @@ def AppendInfo(tooltip, itemVnum, extra):
 					tooltip.AppendTextLine(text, RANDOM_COLOR)
 		else:
 			tooltip.AppendTextLine("3 losowe bonusy podstawowe", INACTIVE_COLOR)
+			if _lastOwn[0]:
+				_AskServer()
 	s = extra & 0x0F
 	if s not in D.SETS:
 		return
