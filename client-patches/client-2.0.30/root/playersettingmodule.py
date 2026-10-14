@@ -102,6 +102,27 @@ def RegisterSkill(race, group, empire=0):
 		player.SetSkill(210 + i, ACTIVE_GUILD_SKILL_INDEX_LIST[i])
 
 
+def RestoreNinthSkillSlot():
+	# MT2009_PLUS_SKILL9_V1 (fix 3.0 #1/#1b): the exe's RecvSkillLevelNew (every skill packet - a book read, a level up)
+	# starts with player.SetSkill(7, 0) and SetSkill(8, 0) (the old 6th/7th skill places 112-119), so place 7 - our 9th
+	# skill's - lost its skill index until the skill window re-registered it: the window and the quickslot bar showed it
+	# empty. The level itself is kept (SetSkillLevel_ finds 176-182 -> 7 in the slot dict), so putting the index back
+	# before the refresh is enough. Called by game.RefreshSkill (the exe's __RefreshSkillWindow) before the window/taskbar.
+	try:
+		group = net.GetMainActorSkillGroup()
+		if not group:
+			return
+		if not SKILL_INDEX_DICT:
+			DefineSkillIndexDict()
+		skillList = SKILL_INDEX_DICT.get(chr.RaceToJob(net.GetMainActorRace()), {}).get(group)
+		if not skillList or len(skillList) < 7 or not skillList[6]:
+			return
+		if player.GetSkillIndex(7) != skillList[6]:
+			player.SetSkill(7, skillList[6])
+	except:
+		pass
+
+
 def RegisterSkillAt(race, group, pos, num):
 	DefineSkillIndexDict()
 

@@ -1293,6 +1293,7 @@ class GameWindow(ui.ScriptWindow):
 
 	def RefreshSkill(self):
 		self.CheckGameButton()
+		playerSettingModule.RestoreNinthSkillSlot() # MT2009_PLUS_SKILL9_V1: the exe clears place 7 on every skill packet
 		if self.interface:
 			self.interface.RefreshSkill()
 
