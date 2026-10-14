@@ -87,6 +87,7 @@ param(
 #   Strefy na ziemi    questlua_dungeon.cpp, char_battle.cpp (MT2009_PLUS_DUNGEON_ZONE_V1,
 #                      MT2009_PLUS_DUNGEON_RAGE_V1; server-patches/strefy)
 #   Wieza Sung Mahi    char_skill.cpp (MT2009_PLUS_SMH_TOWER_V1; server-patches/wiezasm)
+#   Przebudzeni bossowie char_battle.cpp (MT2009_PLUS_YOHARA_PB_V1; server-patches/przebudzeni)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1322,6 +1323,19 @@ if ((Test-Path -LiteralPath $wiezaSmApply -PathType Leaf) -and
     if ($wiezaSmResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Sung Mahi tower edit(s).' -f $wiezaSmResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Przebudzeni bossowie (server-patches/przebudzeni, MT2009_PLUS_YOHARA_PB_V1): Metin Chlodu (PB) (8135) takes damage only
+# from a Shaman, Kolumna Smoka Polnocy (PB) (20538) only from a Shaman or a Ninja (the pl-wiki) - CHARACTER::Damage in
+# char_battle.cpp. The dungeons themselves are quests (razador_pb, nemere_pb, przebudzeni_bossowie).
+$przebudzeniApply = Join-Path $repo 'server-patches/przebudzeni/Apply-PrzebudzeniPatch.ps1'
+if ((Test-Path -LiteralPath $przebudzeniApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $przebudzeniResult = & $przebudzeniApply -SourceDir $engineGameSource
+    if ($przebudzeniResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} awakened bosses edit(s).' -f $przebudzeniResult.Applied) -ForegroundColor DarkGray
     }
 }
 
