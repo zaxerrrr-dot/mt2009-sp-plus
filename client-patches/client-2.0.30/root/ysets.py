@@ -1,4 +1,3 @@
-# -*- coding: cp1250 -*-
 # MT2009_PLUS_YOHARA_SETS_V1: the client's side of the Yohara gear and the set effects (server-patches/ysets).
 # The server tells every item's "yextra" by "YITEM <window> <cell> <yextra>" (game.py -> OnServer): window 1 = the
 # inventory and the equipment (the cell as player.GetItemIndex takes it), 3 = the storehouse, 0 = forget everything

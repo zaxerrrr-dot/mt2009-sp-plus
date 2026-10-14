@@ -262,5 +262,17 @@
   "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (table)",
   "old": "\t{ \"champion\",\tdo_champion,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n",
   "new": "\t{ \"champion\",\tdo_champion,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n\t// MT2009_PLUS_CHANGE_LOOK_V1 (table): the transmutation window (in / out / accept / cancel).\n\t{ \"transmutacja\",\tdo_changelook,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (item del)",
+  "old": "struct TPacketGCItemDelDeprecated\n{\n\tBYTE\theader;\n\tTItemPos Cell;\n\tDWORD\tvnum;\n\tITEM_COUNT\tcount;\n\tlong\talSockets[ITEM_SOCKET_MAX_NUM];\n\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n};\n",
+  "new": "struct TPacketGCItemDelDeprecated\n{\n\tBYTE\theader;\n\tTItemPos Cell;\n\tDWORD\tvnum;\n\tITEM_COUNT\tcount;\n\tlong\talSockets[ITEM_SOCKET_MAX_NUM];\n\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\tDWORD\tdwTransmutation; // MT2009_PLUS_CHANGE_LOOK_V1 (item del): header 20 is the exe's TPacketGCItemSet, which ends with the look - the same size, or the client reads 4 bytes into the next packet\n#endif\n};\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHANGE_LOOK_V1 (item del init)",
+  "old": "\t\t\tpack.count = 0;\n\t\t\tpack.vnum = 0;\n\t\t\tmemset(pack.alSockets, 0, sizeof(pack.alSockets));\n\t\t\tmemset(pack.aAttr, 0, sizeof(pack.aAttr));\n\n\t\t\tGetDesc()->Packet(&pack, sizeof(TPacketGCItemDelDeprecated));\n",
+  "new": "\t\t\tpack.count = 0;\n\t\t\tpack.vnum = 0;\n\t\t\tmemset(pack.alSockets, 0, sizeof(pack.alSockets));\n\t\t\tmemset(pack.aAttr, 0, sizeof(pack.aAttr));\n#ifdef ENABLE_CHANGELOOK_SYSTEM\n\t\t\tpack.dwTransmutation = 0; // MT2009_PLUS_CHANGE_LOOK_V1 (item del init)\n#endif\n\n\t\t\tGetDesc()->Packet(&pack, sizeof(TPacketGCItemDelDeprecated));\n"
  }
 ]
