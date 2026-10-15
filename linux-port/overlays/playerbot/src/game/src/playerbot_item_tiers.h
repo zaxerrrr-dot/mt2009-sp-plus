@@ -42,16 +42,6 @@ namespace
 		{ 160, 2, 3, 0, 0 }, // Miecz Nimfy
 		{ 170, 2, 2, 0, 0 }, // Miecz Zadlowy
 		{ 180, 6, 5, 0, 0 }, // Zatruty miecz
-		// MT2009_PLUS_AWAKENING_V1 (Digi Rasta's Ritual of Awakening): the seven
-		// awakened families +0..+9, the best hunting weapons and no PvP ones (their
-		// "strong against people" is -15..-50%).
-		{ 210, 6, 1, 0, 0 }, // Smiercionosne Ostrze
-		{ 220, 6, 1, 0, 0 }, // Ksiezycowy Miecz
-		{ 1160, 6, 1, 0, 0 }, // Noz Strumienia
-		{ 2190, 6, 1, 0, 0 }, // Upiorna Kusza
-		{ 3170, 6, 1, 0, 0 }, // Zabojca Zolt. Smoka
-		{ 5150, 6, 1, 0, 0 }, // Hibiskusowy Dzwon
-		{ 7170, 6, 1, 0, 0 }, // Wachlarz Lezac. Smoka
 		{ 190, 5, 4, 0, 0 }, // Lwi Miecz
 		{ 200, 4, 6, 0, 0 }, // Brzegowe Ostrze
 		{ 240, 2, 5, 0, 0 }, // Miecz Egzorcysty

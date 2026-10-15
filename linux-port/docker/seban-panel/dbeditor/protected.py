@@ -17,10 +17,6 @@ vnums and columns are listed here. mod/*.sql (REPLACE of the costume pack)
 runs once per install, not at every start, and is not listed.
 """
 
-AWAKENED_COLS = ("type", "subtype", "antiflag", "flag", "wearflag", "gold", "shop_buy_price", "limittype0",
-                 "limitvalue0", "limittype1", "limitvalue1", "applytype0", "applyvalue0", "applytype1",
-                 "applyvalue1", "applytype2", "applyvalue2", "value0", "value1", "value2", "value3", "value4",
-                 "value5", "refined_vnum", "refine_set", "magic_pct", "specular", "socket_pct", "addon_type")
 SOULSTONE_COLS = ("type", "subtype", "wearflag", "applytype0", "applyvalue0", "applytype1", "applyvalue1",
                   "value0", "value5", "refined_vnum", "refine_set")
 ITEM_ROW_COLS = ("name", "locale_name", "type", "subtype", "stack", "size", "antiflag", "flag", "wearflag", "gold",
@@ -47,8 +43,6 @@ def _r(lo, hi=None):
 
 # (vnum ranges, item types, kind, columns, what apply.sh does)
 RULES = [
-    ([_r(210, 219), _r(220, 229), _r(1160, 1169), _r(2190, 2199), _r(3170, 3179), _r(5150, 5159), _r(7170, 7179)],
-     (), "always", AWAKENED_COLS, "broń przebudzona +0..+9 (Digi Rasta)"),
     ([_r(28530 + k) for k in range(14)] + [_r(28000 + g * 100 + k) for g in range(6, 10) for k in range(14)],
      (), "always", SOULSTONE_COLS, "kamienie duszy +5..+9"),
     ([_r(71056)], (), "always", ("type", "subtype", "stack", "antiflag", "flag", "wearflag", "value0", "value1", "value2"),
@@ -63,8 +57,7 @@ RULES = [
     ([_r(v) for v in STACK200], (10, 23), "always", ("stack",), "stos 200 (kamienie duszy, szkatułki, skrzynie)"),
     ([_r(v) for v in STACK200], (10, 23), "partial", ("flag", "antiflag"),
      "zawsze łączy się w stos (flag | 4, bez ANTI_STACK)"),
-    ([_r(30670)], (), "always", ("stack",), "Kamień Przebudzenia: stos 200"),
-    ([_r(30670), _r(30202), _r(70031)], (), "partial", ("flag",), "zawsze łączy się w stos (flag | 4)"),
+    ([_r(30202), _r(70031)], (), "partial", ("flag",), "zawsze łączy się w stos (flag | 4)"),
     ([_r(70058)], (), "partial", ("flag",), "bit 8192 flagi jest zawsze zdejmowany"),
     ([_r(v) for v in TRADE_SASHES] + [_r(85001, 85024), _r(85101, 85104), _r(86061, 86064), _r(110000, 175499)],
      (), "partial", ("antiflag",), "można handlować i wystawić w sklepie (bity GIVE i MYSHOP antiflag są zdejmowane)"),

@@ -19,18 +19,18 @@ What the game reads, once at boot (PROTO_FROM_DB):
     use the same refine_set). Editing it changes all of them; "only this
     family" clones it into a new refine_proto id (CLONE_FIRST_ID and up)
     and points the family's items at the clone.
-  * Not in item_proto, so not on a family page: the Ritual of Awakening
-    (weapon 75 +9 -> awakened +0, recipe 7110) and the soul stones +4..+8
+  * Not in item_proto, so not on a family page: the soul stones +4..+8
     (7204-7208) - char_item.cpp AwakeningSpecialRefineSet; their recipe
-    page (/db/refine/set/<id>) edits them.
+    page (/db/refine/set/<id>) edits them. (The Ritual of Awakening, 7110,
+    and the awakened weapons are gone - MT2009_PLUS_NO_AWAKENING_V1.)
 
 Bots (playerbot_economy.h, playerbot_gear.h, playerbot_demon_tower.h) refine
 by the very same recipes (CRefineManager::GetRefineRecipe) - they collect
 and keep the materials a recipe names, pay its yang and take its chance.
 
 apply.sh rewrites some recipes at every start (BOOT_RULES, checked by
-test_dbeditor_shops.py) and the refine_set of the awakened weapons and soul
-stones (dbeditor/protected.py).
+test_dbeditor_shops.py) and the refine_set of the soul stones
+(dbeditor/protected.py).
 """
 import re
 from collections import OrderedDict
@@ -46,7 +46,7 @@ PROTO = "world.item_proto"
 SLOTS = 5                                   # REFINE_MATERIAL_MAX_NUM
 VALUE_COLS = tuple(f"{p}{k}" for k in range(SLOTS) for p in ("vnum", "count")) + ("cost", "prob")
 ROW_COLS = ("id",) + VALUE_COLS + ("src_vnum", "result_vnum")
-CLONE_FIRST_ID = 30000                      # clones never meet the package's ids (apply.sh: 7100-7208)
+CLONE_FIRST_ID = 30000                      # clones never meet the package's ids (apply.sh: 7204-7208)
 REFINE_SET_MAX = 65535                      # item_proto.refine_set smallint unsigned
 COST_MAX = 2000000000                       # what a character may carry
 GUILD_SAFE_COST = 178956970                 # x4 (guild smith) x3 (other kingdom) still fits an int
@@ -54,13 +54,10 @@ COUNT_MAX = 32767                           # refine_proto.countN smallint
 
 # apply.sh at every start (INSERT ... ON DUPLICATE KEY UPDATE / DELETE).
 BOOT_RULES = [
-    (7100, 7108, "always", VALUE_COLS, "Rytuał Przebudzenia: broń przebudzona +0…+9 (Digi Rasta)"),
-    (7110, 7110, "always", VALUE_COLS, "Rytuał Przebudzenia: broń 75 +9 → broń przebudzona"),
     (7204, 7208, "always", ("vnum0", "count0", "vnum1", "count1", "cost", "prob"), "kamienie duszy +4…+8 → +5…+9"),
     (7200, 7203, "deleted", (), "stare przepisy kamieni duszy – usuwane"),
 ]
-SPECIAL_RECIPES = {7110: "Rytuał Przebudzenia (broń 75 +9 → przebudzona +0)",
-                   7204: "Kamień duszy +4 → +5", 7205: "Kamień duszy +5 → +6", 7206: "Kamień duszy +6 → +7",
+SPECIAL_RECIPES = {7204: "Kamień duszy +4 → +5", 7205: "Kamień duszy +5 → +6", 7206: "Kamień duszy +6 → +7",
                    7207: "Kamień duszy +7 → +8", 7208: "Kamień duszy +8 → +9"}
 LEVEL = re.compile(r"\+\s*(\d+)\s*$")
 FAMILY_SEARCHES = ("Miecz", "Ostrze", "Łuk", "Dzwon", "Wachlarz", "Zbroja", "Hełm", "Tarcza", "Bransoleta", "Buty",

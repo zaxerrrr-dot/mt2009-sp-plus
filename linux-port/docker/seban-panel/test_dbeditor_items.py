@@ -796,8 +796,8 @@ class DbEditorItemsTests(unittest.TestCase):
         self.assertIn("Dodatkowe bonusy (ponad 3): 4 linii na 1 przedmiotach", page)
 
     def test_item_overwritten_at_start_is_flagged(self):
-        self.fake.tables["world.item_proto"][215] = dict(self.fake.tables["world.item_proto"][149], vnum=215)
-        page = self.client.get("/db/items/215").get_data(as_text=True)
+        self.fake.tables["world.item_proto"][28530] = dict(self.fake.tables["world.item_proto"][149], vnum=28530)
+        page = self.client.get("/db/items/28530").get_data(as_text=True)
         self.assertIn("ustawiany przy każdym starcie serwera", page)
         page = self.client.get("/db/items/149").get_data(as_text=True)
         self.assertNotIn("ustawiany przy każdym starcie serwera", page)

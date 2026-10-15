@@ -2565,7 +2565,7 @@ namespace
 	// and a markdown). A weapon or a piece of armour of level
 	// PLAYERBOT_UNPRICED_GEAR_MIN_LEVEL and up with no row of its own is priced
 	// by the sheet's rows of its type and subtype (a helmet by the shields'; not
-	// the awakened weapons, which cost hundreds of millions): read straight
+	// a row over PLAYERBOT_UNPRICED_GEAR_REF_MAX at +0): read straight
 	// through between the levels round it, the one beyond the last outside
 	// them, and never under a piece of the kind of a lower level. Said once a
 	// family in the syslog (PLAYERBOT_PRICE: unpriced), so a missing row is

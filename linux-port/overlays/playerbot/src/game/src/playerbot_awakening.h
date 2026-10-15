@@ -1,7 +1,19 @@
 #ifndef __INC_METIN2_PLAYERBOT_AWAKENING_H__
 #define __INC_METIN2_PLAYERBOT_AWAKENING_H__
 
-// Rytual Przebudzenia (the Ritual of Awakening) and the soul stones +0..+9.
+// The soul stones +0..+9 and Olejek Niebios - what is left of Digi Rasta's
+// Rytual Przebudzenia (the Ritual of Awakening) and soul stones.
+//
+// MT2009_PLUS_NO_AWAKENING_V1 (the owner, 15 October 2026, Yohara 3.0): the
+// ritual and the awakened weapons are gone. The engine's hooks stay (the test
+// engine tree keeps server-patches/digirasta's edits; a fresh tree gets them
+// too): AwakeningSpecialRefineResult / AwakeningSpecialRefineSet answer for the
+// soul stones only, AwakeningIsAwakenedWeapon is always false (no "never
+// burns", no forced sockets), AwakeningCreateBossDrop rolls Olejek Niebios
+// only - Kamien Przebudzenia (30670) drops from no boss. The bots neither
+// perform the ritual nor price, keep or list awakened goods. The seven
+// families are official rows again and the awakened pieces the level-87
+// weapons (mariadb/playerbot/noawaken.sql). What the history said:
 //
 // Autor systemow: Digi Rasta (nowy-system v0.16, "Nowy system - Etap 1"),
 // ported into MT2009 PLUS as our own code: MT2009_PLUS_AWAKENING_V1 and
@@ -10,19 +22,19 @@
 // the item and recipe rows are mariadb/playerbot/apply.sh, the client rows are
 // client-patches/client-2.0.30/tools/digirasta.
 //
-//   * A weapon 75 +9 and Kamien Przebudzenia (30670) at the plain Blacksmith
+//   * (gone) A weapon 75 +9 and Kamien Przebudzenia (30670) at the plain Blacksmith
 //     make the awakened weapon +0 through the ordinary refine window: recipe
 //     7110 (the stone and 200 000 000 yang, 100%), the bonuses and stones go
 //     over as in every refine (CopyAllAttrTo). In item_proto the +9 keeps
 //     refined_vnum 0, so nothing else reads it as "can be refined" - only the
 //     engine's refine path asks AwakeningSpecialRefineResult below.
-//   * The awakened weapons refine +0..+9 by the owner's recipes 7100-7108; a
+//   * (gone) The awakened weapons refine +0..+9 by the owner's recipes 7100-7108; a
 //     failed refine never destroys nor lowers one, with a scroll neither. The
 //     ritual and the awakened weapons never go through a guild smith (its fee
 //     multiplier would overflow int at these prices) nor the Demon Tower.
 //   * A soul stone +4..+8 is refined at the Blacksmith by recipe 7200 + grade
 //     (Magiczny Pyl and yang); a failure destroys the stone, as before.
-//   * Kamien Przebudzenia drops from the bosses of AWAKENING_BOSS_DROPS (his
+//   * (gone) Kamien Przebudzenia dropped from the bosses of AWAKENING_BOSS_DROPS (his
 //     table, plus Krolowa Dzungli); Razador and Nemere give none (the owner,
 //     3 October - it was their dungeon quests' boss_drop at 15%).
 //   * MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, nowy-system v0.17):
@@ -34,12 +46,10 @@
 //     (ManagePlayerBotSoulStoneStep) - never without the oil, the dust and
 //     the fee, and never twice in PLAYERBOT_STONE_STEP_RETRY_MS.
 //
-// The bots' half: the stone, the awakened weapons and the stones +5..+9 are
-// never the merchant's (IsPlayerBotAwakeningGoods, playerbot_economy.h), their
-// prices are in playerbot_price_tables.h, the stones' kind and tier in
-// playerbot_gear.h / playerbot_item_tiers.h, and a bot of level 90 with a worn
-// weapon 75 +9, the stone and the fee spares performs the ritual itself at the
-// Blacksmith (ManagePlayerBotAwakeningRitual).
+// The bots' half: the stones +5..+9 and the oil are never the merchant's
+// (IsPlayerBotAwakeningGoods, playerbot_economy.h), their prices are in
+// playerbot_price_tables.h, the stones' kind and tier in playerbot_gear.h /
+// playerbot_item_tiers.h.
 //
 // An implementation fragment in the sense playerbot_types.h describes: include
 // it exactly once, after playerbot_economy.h and playerbot_battle_horse.h
@@ -48,47 +58,11 @@
 
 namespace mt2009_awakening
 {
-	struct TAwakening
-	{
-		DWORD dwBaseVnum;       // the weapon 75 +9
-		DWORD dwAwakenedVnum;   // its awakened weapon +0
-	};
-
-	const TAwakening AWAKENING_TABLE[] = {
-		{  189,  210 },	// Zatruty Miecz+9          -> Smiercionosne Ostrze+0
-		{  199,  220 },	// Lwi Miecz+9              -> Ksiezycowy Miecz+0
-		{ 1139, 1160 },	// Skrzydla Demona Chakr.+9 -> Noz Strumienia+0
-		{ 2179, 2190 },	// Stalowy Luk Kruka+9      -> Upiorna Kusza+0
-		{ 3169, 3170 },	// Miecz Zalu+9             -> Zabojca Zolt. Smoka+0
-		{ 5129, 5150 },	// Bambusowy Dzwon+9        -> Hibiskusowy Dzwon+0
-		{ 7189, 7170 },	// Wachlarz 8 Trigramow+9   -> Wachlarz Lezac. Smoka+0
-	};
-
-	// world.refine_proto rows (apply.sh): 7110 the ritual, 7100-7108 the
-	// awakened weapons' steps, 7204-7208 the soul stones' steps.
-	const DWORD AWAKENING_REFINE_SET = 7110;
-	const DWORD AWAKENING_STONE_VNUM = 30670;
-	const YANG AWAKENING_RITUAL_FEE = 200000000;
+	// world.refine_proto rows (apply.sh): 7204-7208 the soul stones' steps.
 	const DWORD STONE_REFINE_SET_BASE = 7200;
 	const int STONE_KINDS = 14;
 	// A soul stone is refined from +4 (+0..+3 go to the Alchemist's dust).
 	const int STONE_REFINE_MIN_GRADE = 4;
-
-	inline DWORD AwakeningResult(DWORD dwVnum)
-	{
-		for (size_t i = 0; i < sizeof(AWAKENING_TABLE) / sizeof(AWAKENING_TABLE[0]); ++i)
-			if (AWAKENING_TABLE[i].dwBaseVnum == dwVnum)
-				return AWAKENING_TABLE[i].dwAwakenedVnum;
-		return 0;
-	}
-
-	inline bool IsAwakenedWeapon(DWORD dwVnum)
-	{
-		for (size_t i = 0; i < sizeof(AWAKENING_TABLE) / sizeof(AWAKENING_TABLE[0]); ++i)
-			if (dwVnum >= AWAKENING_TABLE[i].dwAwakenedVnum && dwVnum <= AWAKENING_TABLE[i].dwAwakenedVnum + 9)
-				return true;
-		return false;
-	}
 
 	// Soul stones: 14 kinds (k = 0..13, Penetracji .. Przyspieszenia); +0..+4 =
 	// 28g30+k, +5 = 28530+k, +6..+9 = 28g00+k (g = the grade).
@@ -120,41 +94,16 @@ namespace mt2009_awakening
 		return StoneGradeKind(dwVnum, grade, kind) && grade >= 5;
 	}
 
-	// The boss drop of Kamien Przebudzenia: per 10 000 kills, whatever
-	// mob_drop_item.txt says. Digi Rasta's table (chapters III-IV) without
-	// Razador (6091) and Nemere (6191), which give none (the owner, 3 October),
-	// and with the Ancient Jungle's last boss.
+	// A boss drop: per 10 000 kills, whatever mob_drop_item.txt says.
 	struct TBossDrop
 	{
 		DWORD dwMobVnum;
 		WORD wChance;
 	};
 
-	const TBossDrop AWAKENING_BOSS_DROPS[] = {
-		{ 1093,  300 },	// Umarly Rozpruwacz
-		{ 2092,  300 },	// Baronowna Pajakow
-		{ 2291,  300 },	// Czerwony Smok
-		{ 1192,  300 },	// Silna Lodowa Wiedzma
-		{ 2495,  300 },	// General Huashin
-		{ 2492,  400 },	// General Yonghan
-		{ 2591,  300 },	// Tartar
-		{ 2597,  400 },	// Charon
-		{ 2493, 1000 },	// Beran-Setaou - Leze Smoka (the Blue Dragon lair, map 208)
-		{ 2598, 1000 },	// Azrael
-		{ 3690,  500 },	// General Lobster
-		{ 3590,  500 },	// Trupia Twarz
-		{ 3790,  500 },	// Rzygacz
-		{ 3890,  500 },	// Kapitan Shrack
-		{ 3591,  700 },	// Czerwony Wodz
-		{ 3691,  700 },	// Krol Krabbs
-		{ 3191,  700 },	// Polifem
-		{ 9714, 1200 },	// Krolowa Dzungli - Starozytna Dzungla's last boss
-	};
-
 	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, nowy-system v0.17):
 	// Olejek Niebios, the soul stone steps' second ingredient (refine_proto
-	// 7204-7208 vnum1, 1/1/2/2/3 - apply.sh). The same per-10 000 units as the
-	// stone's table: his row (Silna Lodowa Wiedzma 3%) and the owner's two -
+	// 7204-7208 vnum1, 1/1/2/2/3 - apply.sh). Per 10 000 kills: his row (Silna Lodowa Wiedzma 3%) and the owner's two -
 	// the dragon of Leze Smoka 3% and the last boss of the hardest Arezzo
 	// dungeon (Starozytna Dzungla, from level 95) 10%.
 	const DWORD HEAVEN_OIL_VNUM = 71056;
@@ -168,14 +117,12 @@ namespace mt2009_awakening
 
 // ---------------------------------------------------------------- the engine's hooks
 // char_item.cpp (server-patches/digirasta, MT2009_PLUS_AWAKENING_V1 /
-// MT2009_PLUS_SOULSTONE9_V1): the refine past item_proto - the ritual and the
-// soul stones - and the awakened weapon's refine that never burns it.
+// MT2009_PLUS_SOULSTONE9_V1): the refine past item_proto - the soul stones'
+// steps (MT2009_PLUS_NO_AWAKENING_V1: no ritual, no awakened weapon).
 
 // The result of a refine item_proto does not carry, or 0.
 DWORD AwakeningSpecialRefineResult(DWORD dwVnum)
 {
-	if (DWORD dwAwaken = mt2009_awakening::AwakeningResult(dwVnum))
-		return dwAwaken;
 	int grade = 0, kind = 0;
 	if (mt2009_awakening::IsRefinableStone(dwVnum, grade, kind))
 		return mt2009_awakening::StoneVnum(grade + 1, kind);
@@ -185,17 +132,19 @@ DWORD AwakeningSpecialRefineResult(DWORD dwVnum)
 // Its refine_proto recipe, or 0.
 DWORD AwakeningSpecialRefineSet(DWORD dwVnum)
 {
-	if (mt2009_awakening::AwakeningResult(dwVnum))
-		return mt2009_awakening::AWAKENING_REFINE_SET;
 	int grade = 0, kind = 0;
 	if (mt2009_awakening::IsRefinableStone(dwVnum, grade, kind))
 		return mt2009_awakening::STONE_REFINE_SET_BASE + grade;
 	return 0;
 }
 
+// MT2009_PLUS_NO_AWAKENING_V1: no weapon is an awakened one - every refine of
+// a weapon burns and lowers as item_proto and the scroll say, and no forced
+// sockets (the engine's "no burn", "scroll no burn" and "sockets" edits ask it).
 bool AwakeningIsAwakenedWeapon(DWORD dwVnum)
 {
-	return mt2009_awakening::IsAwakenedWeapon(dwVnum);
+	(void)dwVnum;
+	return false;
 }
 
 // One boss table rolled for one kill: dwItemVnum into the loot for every row
@@ -223,118 +172,30 @@ static bool AwakeningRollBossTable(const mt2009_awakening::TBossDrop* table, siz
 	return bDropped;
 }
 
-// char_battle.cpp, CHARACTER::Reward: the stone (and, MT2009_PLUS_HEAVEN_OIL_V1,
-// Olejek Niebios) into the kill's loot beside ITEM_MANAGER::CreateDropItem.
-// true = something dropped.
+// char_battle.cpp, CHARACTER::Reward: MT2009_PLUS_HEAVEN_OIL_V1, Olejek Niebios
+// into the kill's loot beside ITEM_MANAGER::CreateDropItem (Kamien Przebudzenia
+// no more - MT2009_PLUS_NO_AWAKENING_V1). true = something dropped.
 bool AwakeningCreateBossDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item)
 {
 	if (!victim || !killer || victim->IsPC())
 		return false;
 
-	bool bDropped = AwakeningRollBossTable(mt2009_awakening::AWAKENING_BOSS_DROPS,
-			sizeof(mt2009_awakening::AWAKENING_BOSS_DROPS) / sizeof(mt2009_awakening::AWAKENING_BOSS_DROPS[0]),
-			mt2009_awakening::AWAKENING_STONE_VNUM, victim, killer, vec_item);
-	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): the oil, rolled on its own.
-	if (AwakeningRollBossTable(mt2009_awakening::HEAVEN_OIL_BOSS_DROPS,
+	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): the oil.
+	return AwakeningRollBossTable(mt2009_awakening::HEAVEN_OIL_BOSS_DROPS,
 			sizeof(mt2009_awakening::HEAVEN_OIL_BOSS_DROPS) / sizeof(mt2009_awakening::HEAVEN_OIL_BOSS_DROPS[0]),
-			mt2009_awakening::HEAVEN_OIL_VNUM, victim, killer, vec_item))
-		bDropped = true;
-	return bDropped;
+			mt2009_awakening::HEAVEN_OIL_VNUM, victim, killer, vec_item);
 }
 
 // ---------------------------------------------------------------- the bots
 namespace
 {
-	const int PLAYERBOT_AWAKENING_MIN_LEVEL = 90;	// the awakened weapon +0's level
-	// What the ritual must leave in the purse over the fee and the reserve.
-	const long long PLAYERBOT_AWAKENING_SPARE_GOLD = 20000000LL;
-	const DWORD PLAYERBOT_AWAKENING_RETRY_MS = 10 * 60 * 1000;
-
-	bool IsPlayerBotAwakenedWeaponVnum(DWORD vnum)
-	{
-		return mt2009_awakening::IsAwakenedWeapon(vnum);
-	}
-
-	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): Olejek Niebios too - a counter's or the
-	// bot's own stone step's, never the merchant's.
+	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): a soul stone +5..+9 and Olejek
+	// Niebios - a counter's or the bot's own stone step's, never the merchant's
+	// (MT2009_PLUS_NO_AWAKENING_V1: Kamien Przebudzenia and the awakened weapons
+	// are no such goods any more).
 	bool IsPlayerBotAwakeningGoods(DWORD vnum)
 	{
-		return vnum == mt2009_awakening::AWAKENING_STONE_VNUM || mt2009_awakening::IsAwakenedWeapon(vnum) ||
-				mt2009_awakening::IsHighSoulStone(vnum) || vnum == mt2009_awakening::HEAVEN_OIL_VNUM;
-	}
-
-	std::map<DWORD, DWORD> s_mapPlayerBotAwakeningRetry;
-
-	// A bot of level ninety wearing a weapon 75 +9 of the ritual, with the
-	// stone in the bag and the fee over what it already owes elsewhere. Only
-	// the worn weapon: it is the one its class and its tiers chose. Never a
-	// companion's (its owner decides) nor a piece the owner pinned.
-	LPITEM GetPlayerBotAwakeningWeapon(LPCHARACTER ch)
-	{
-		if (!ch || !ch->IsItemLoaded() || (int)ch->GetLevel() < PLAYERBOT_AWAKENING_MIN_LEVEL ||
-				IsPlayerBotSidekickPID(ch->GetPlayerID()))
-			return NULL;
-		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
-		if (!weapon || !mt2009_awakening::AwakeningResult(weapon->GetVnum()) || IsPlayerBotSidekickPinned(ch, weapon))
-			return NULL;
-		if (ch->CountSpecifyItem(mt2009_awakening::AWAKENING_STONE_VNUM) < 1)
-			return NULL;
-		if ((long long)ch->GetGold() < (long long)mt2009_awakening::AWAKENING_RITUAL_FEE +
-				(long long)GetPlayerBotReservedGold(ch) + PLAYERBOT_AWAKENING_SPARE_GOLD)
-			return NULL;
-		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotAwakeningRetry.find(ch->GetPlayerID());
-		if (it != s_mapPlayerBotAwakeningRetry.end() && (long)(get_dword_time() - it->second) < 0)
-			return NULL;
-		return weapon;
-	}
-
-	bool HasPlayerBotAwakeningRitual(LPCHARACTER ch)
-	{
-		return GetPlayerBotAwakeningWeapon(ch) != NULL;
-	}
-
-	// At the Blacksmith: the weapon comes off into the bag (the anvil takes
-	// only a bag piece), DoRefine reads recipe 7110 through the engine hook
-	// and hands back the awakened weapon +0 in the same cell, with the old
-	// one's bonuses and stones; it goes straight back on.
-	bool ManagePlayerBotAwakeningRitual(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
-	{
-		LPITEM weapon = GetPlayerBotAwakeningWeapon(ch);
-		if (!weapon)
-			return false;
-		// Whatever happens below, not again for a while.
-		s_mapPlayerBotAwakeningRetry[ch->GetPlayerID()] = dwNow + PLAYERBOT_AWAKENING_RETRY_MS;
-
-		const DWORD oldVnum = weapon->GetVnum();
-		const DWORD result = mt2009_awakening::AwakeningResult(oldVnum);
-		if (ch->GetEmptyInventory(weapon->GetSize()) < 0)
-			return false;
-		if (!ch->UnequipItem(weapon) || weapon->IsEquipped())
-			return false;
-		const WORD cell = weapon->GetCell();
-		const YANG goldBefore = ch->GetGold();
-		// A guild smith's VID would make it a guild refine, which the engine
-		// refuses for the ritual.
-		ch->SetRefineNPC(NULL);
-		const bool attempted = ch->DoRefine(weapon, false, REFINE_TYPE_NORMAL);
-		LPITEM awakened = ch->GetInventoryItem(cell);
-		if (attempted && awakened && awakened->GetVnum() == result)
-		{
-			ch->EquipItem(awakened);
-			sys_log(0, "PLAYERBOT_AWAKENING: ritual pid=%u name=%s level=%u from=%u to=%u gold=%lld->%lld equipped=%d",
-					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), oldVnum, result,
-					(long long)goldBefore, (long long)ch->GetGold(), awakened->IsEquipped() ? 1 : 0);
-			SetPlayerBotAction(state, BOT_ACTION_REFINE, dwNow);
-			return true;
-		}
-		// Refused (the engine said why in its log): the weapon goes back on.
-		LPITEM back = ch->GetInventoryItem(cell);
-		if (back && back->GetVnum() == oldVnum && !back->IsEquipped())
-			ch->EquipItem(back);
-		sys_err("PLAYERBOT_AWAKENING: ritual refused pid=%u name=%s vnum=%u attempted=%d stones=%d gold=%lld",
-				ch->GetPlayerID(), ch->GetName(), oldVnum, attempted ? 1 : 0,
-				(int)ch->CountSpecifyItem(mt2009_awakening::AWAKENING_STONE_VNUM), (long long)ch->GetGold());
-		return false;
+		return mt2009_awakening::IsHighSoulStone(vnum) || vnum == mt2009_awakening::HEAVEN_OIL_VNUM;
 	}
 
 	// ------------------------------------------------------------ the soul stone step
@@ -461,7 +322,7 @@ namespace
 				FindPlayerBotSoulStoneStep(ch, PLAYERBOT_STONE_STEP_DO, NULL) != NULL;
 	}
 
-	// At the Blacksmith (ManagePlayerBotRefining, after the ritual): one step.
+	// At the Blacksmith (ManagePlayerBotRefining): one step.
 	// DoRefine reads recipe 7200 + grade through the engine hook, takes the
 	// dust, the oil and the fee, and puts the stone +1 in the same cell - or
 	// destroys the stone.

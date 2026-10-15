@@ -394,6 +394,17 @@ Znaczniki `MT2009_PLUS_AWAKENING_V1`, `MT2009_PLUS_SOULSTONE9_V1`, `MT2009_PLUS_
   wszystkie 7 bonusów), `uihorseinventory.py` (rzędy juków do 30 poziomu konia – tabela questu
   `horse_inventory`), `uiattributelist.py` („Silny przeciwko potworom” w spisie bonusów – bonus konia od 21).
 
+## Bez broni przebudzonych (Yohara 3.0) – bez zmian exe
+
+Znacznik `MT2009_PLUS_NO_AWAKENING_V1` (właściciel, 15 października 2026): Rytuału Przebudzenia i broni
+przebudzonych już nie ma. Serwer: `noawaken.sql` (raz na świat), `playerbot_awakening.h`.
+
+- `tools/noawaken/patch_noawaken_client.py <item_proto> <itemdesc.txt> [<out dir>]` (obraz `m2pack-lzo`,
+  idempotentne, po `tools/digirasta`) – `gamedata/item_proto`: siedem rodzin 210, 220, 1160, 2190, 3170, 5150,
+  7170 +0…+9 wracają do rekordów oficjalnych (`tools/noawaken/noawaken_client.json` z `gen_noawaken.py`, te same
+  wiersze co serwer; sprawdzone bajt w bajt z bazowym `gamedata/item_proto` 2.0.30); `locale/pl/itemdesc.txt` –
+  Kamień Przebudzenia (30670) zostaje dla starych sztuk, opis mówi, że nie ma już zastosowania.
+
 ## Olejek Niebios i poprawki klienta Digi Rasty (v0.17 / 0.17.2) – bez zmian exe
 
 **Autor: Digi Rasta** (paczka „nowy-system” v0.17 i v0.17.2: `66_olejek.sql`, `OLEJEK_NIEBIOS`,
