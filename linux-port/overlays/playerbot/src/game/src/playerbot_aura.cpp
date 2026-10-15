@@ -56,6 +56,8 @@
 static_assert(WEAR_COSTUME_AURA == 27, "WEAR_COSTUME_AURA must stay 27 (root/uiaura.py: EQUIPMENT_SLOT_START + 27)");
 static_assert(COSTUME_AURA == 5, "COSTUME_AURA must stay 5 (the item_proto rows, root/uiaura.py)");
 
+bool Mt2009HideCostumeIsHidden(LPCHARACTER ch, BYTE bSubType); // playerbot_hidecostume.cpp (global)
+
 namespace aura
 {
 	enum { TYPE_ABSORB = 0, TYPE_GROWTH = 1, TYPE_EVOLVE = 2, TYPE_MAX = 3 };
@@ -168,8 +170,7 @@ namespace aura
 		if (!item || !IsAura(item))
 			return 0;
 #ifdef ENABLE_HIDE_COSTUME_SYSTEM
-		bool Mt2009HideCostumeIsHidden(LPCHARACTER ch, BYTE bSubType);
-		if (Mt2009HideCostumeIsHidden(ch, COSTUME_AURA))
+		if (::Mt2009HideCostumeIsHidden(ch, COSTUME_AURA))
 			return 0;
 #endif
 		return item->GetVnum();
