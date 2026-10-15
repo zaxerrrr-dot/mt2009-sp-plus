@@ -1,5 +1,6 @@
 # Seon-Pyeong (20091) by the Grotto of Exile: a +9 piece of level 65-66 into
-# its level-80 successor (NerrVoVy; rendered by
+# its level-80 successor, and (at the end) a level-80 +9 weapon into its level-87
+# successor as the pl-wiki makes it (NerrVoVy; rendered by
 # linux-port-mt2009/port/shareify.py and appended to cube.txt).
 
 # Miecz Bojowy+9 (65) -> Miecz Trytona+0 (80)
@@ -156,4 +157,107 @@ item	27994	2
 reward	12040	1
 percent	100
 gold	2000000
+end
+
+# MT2009_PLUS_NO_AWAKENING_V1 (the owner, 15 October 2026, Yohara 3.0): the level-87
+# weapons as the pl-wiki makes them at Seon-Pyeong (each weapon page's "Wytwarzanie",
+# e.g. Wachlarz Lezac. Smoka): the level-80 +9 one, 3x Broszura Szermierki, 2x Zwoj
+# Blogoslawienstwa, 100x Odlamek Energii and 5 000 000 Yang, 100%; the wiki: bonuses
+# and stones stay (a cube recipe here gives a new piece - they do not). The Blacksmith's
+# refine of the same +9 (refine_set 610) and Jae-Seon Kim's recipes stay as they are.
+
+# Miecz Trytona+9 (80) -> Runiczny Miecz+0 (87)
+section
+npc	20091
+item	279	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	460	1
+percent	100
+gold	5000000
+end
+
+# Brzegowe Ostrze+9 (80) -> Klinga Smoczego Kla+0 (87)
+section
+npc	20091
+item	209	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	470	1
+percent	100
+gold	5000000
+end
+
+# Swiety Miecz+9 (80) -> Klinga Smoczego Kla+0 (87)
+section
+npc	20091
+item	289	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	470	1
+percent	100
+gold	5000000
+end
+
+# Bezduszny Noz+9 (80) -> Kolec Pieciu Elementow+0 (87)
+section
+npc	20091
+item	4049	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	1340	1
+percent	100
+gold	5000000
+end
+
+# Olbrz. Luk Diabla+9 (80) -> Luk Feniksa+0 (87)
+section
+npc	20091
+item	2169	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	2370	1
+percent	100
+gold	5000000
+end
+
+# Zlodziej Dusz+9 (80) -> Ostrze Slonca+0 (87)
+section
+npc	20091
+item	3159	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	3190	1
+percent	100
+gold	5000000
+end
+
+# Dzwon Szczeki Smoka+9 (80) -> Dzwon Smoczego Ducha+0 (87)
+section
+npc	20091
+item	5339	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	5340	1
+percent	100
+gold	5000000
+end
+
+# Wachlarz Demona+9 (80) -> Wachlarz Lezac. Smoka+0 (87)
+section
+npc	20091
+item	7199	1
+item	70031	3
+item	25040	2
+item	51001	100
+reward	7370	1
+percent	100
+gold	5000000
 end
