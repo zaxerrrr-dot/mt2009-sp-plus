@@ -389,3 +389,6 @@ linux-port/docker/panel/app/register_assets/*
 # playerbot_yohara_gear.{h,cpp} (the playerbot_* lines), the gloves, the stones and item_attr yohara_gloves.sql, quest
 # rekawice (quest/*), the maps' Precyzja champion/sungma_table.txt (champion/*).
 linux-port/docker/mariadb/playerbot/yohara_gloves.sql
+# MT2009_PLUS_HELM100_V1: the level-100 helmets, their materials and Straznik Smokow Jaharr (tools/yhelm100); quest
+# helm100 (quest/*), Jaharr's places in the towns (game/Dockerfile).
+linux-port/docker/mariadb/playerbot/yohara_helm100.sql
