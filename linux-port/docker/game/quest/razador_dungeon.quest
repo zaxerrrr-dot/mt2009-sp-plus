@@ -14,7 +14,7 @@
 --   5: potwory upuszczaj¹ Kamieñ Maat (30330, 4%), oddaj po jednym siedmiu stelom,
 --   6: zniszcz Metin Czyœæca (8057),
 --   7: Razador (sam daje tylko yang); po jego œmierci ka¿dy gracz w lochu dostaje
---      2-5 Skrzyñ Razadora, a wszyscy wychodz¹ po 60 sekundach.
+--      8-10 Skrzyñ Razadora (MT2009_PLUS_RZNM_BOSS_DROP_V1; by³o 2-5, ka¿d¹ otwiera siê 3 razy), a wszyscy wychodz¹ po 60 sekundach.
 -- Ka¿de zadanie otwiera swoje drzwi (20387 + 20388). Limit 60 minut, ponowne
 -- wejœcie po godzinie od wejœcia (archiwum: 1 h). Mapy 351/352 s¹ na rdzeniu
 -- game2 (game1 ma ju¿ 32 mapy, MAP_ALLOW_LIMIT): d.new_jump_pids prosi game2 (P2P)
@@ -76,7 +76,9 @@ quest razador_dungeon begin
 				-- (the official: a cog 1 in 100 kills of which 1 in 5 fits, a Maat stone 1 in 30 - ~8 a room).
 				cog_permille = 20,
 				maat_permille = 40,
-				chests_min = 2, chests_max = 5,
+				-- MT2009_PLUS_RZNM_BOSS_DROP_V1 (the owner, 15 October; pl-wiki, 17.3: 8-10 chests, each opened 3 times -
+				-- ShipDefense_ChestKeep, ANTI_STACK in apply.sh): every person of the party rolls his own 8-10 (was 2-5).
+				chests_min = 8, chests_max = 10,
 			}
 		end
 
@@ -168,7 +170,8 @@ quest razador_dungeon begin
 		-- for every player of the killer's party inside this instance (get_member_pids gives
 		-- only the members on the killer's map index), or for the killer alone; a full bag
 		-- drops them at the player's feet (give_item2). A bot of the party inside gets none.
-		-- MT2009_PLUS_DUNGEON_DROP_V1: each player rolls his own 2-5 (the owner, 29 September);
+		-- MT2009_PLUS_DUNGEON_DROP_V1: each player rolls his own 2-5 (the owner, 29 September; 8-10 since
+		-- MT2009_PLUS_RZNM_BOSS_DROP_V1);
 		-- Razador himself drops only yang (item_manager.cpp).
 		-- MT2009_PLUS_DROP_EDIT_V1: the boss's own drop the owner added in the drop workbook
 		-- (1 October). The boss gives no items (item_manager.cpp), so the quest rolls it once
@@ -203,9 +206,26 @@ quest razador_dungeon begin
 			-- MT2009_PLUS_BELT_MATS_V1: Kamien Plomienia (30524) x2 at 30% (the owner, 7 October: the flame stone
 			-- has a drop of its own, beside the chests' belt materials, group 951101).
 			local t = { {27987, 5, 10}, {50513, 1, 5}, {25040, 3, 10}, {71084, 1, 5}, {30524, 2, 30} }
+			-- MT2009_PLUS_RZNM_BOSS_DROP_V1 (the owner, 15 October, the pl-wiki's Razador page since 17.3: "do 12
+			-- dodatkowych dropow" beside the chests): the wiki's own drop list after the owner's lines - one line
+			-- each, a herb one of the eight (rolled), quest items (Kamien Liderow, Notatka Przywodcy) left out.
+			-- The wiki gives no chances: ours are 50% for consumables, 20-30% for materials, 10% for the rare.
+			-- At most 12 items a kill, the owner's lines first.
+			local wiki = { {14204, 1, 10}, {16164, 1, 10}, {0, 1, 50}, {30610, 1, 30}, {39076, 1, 30}, {39075, 1, 30},
+				{39077, 1, 20}, {39080, 1, 20}, {70043, 1, 10}, {50324, 1, 10}, {51001, 50, 50} }
+			for i, e in next, wiki, nil do
+				table.insert(t, e)
+			end
+			local herbs = {50721, 50722, 50723, 50724, 50725, 50726, 50727, 50728}
+			local given = 0
 			for i, e in next, t, nil do
-				if number(1, 100) <= e[3] then
-					pc.give_item2(e[1], e[2])
+				if given < 12 and number(1, 100) <= e[3] then
+					local v = e[1]
+					if v == 0 then
+						v = herbs[number(1, table.getn(herbs))]
+					end
+					pc.give_item2(v, e[2])
+					given = given + 1
 				end
 			end
 		end

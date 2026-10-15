@@ -1854,6 +1854,13 @@ DROP TEMPORARY TABLE world.dg_item;" || fail_step "could not set up the Razador 
 db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
 (50270, 'Skrzynia Razadora', 'Skrzynia Razadora', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1),
 (50271, 'Skrzynia Nemere', 'Skrzynia Nemere', 23, 0, 200, 0, 1, 0, 4, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add the Razador and Nemere boss chests" >&2
+# MT2009_PLUS_RZNM_BOSS_DROP_V1 (the owner, 15 October; pl-wiki 17.3: each chest opens 3 times): the two
+# chests no longer stack (ANTI_STACK, not STACKABLE) - an opening is counted in the chest's socket 0
+# (ShipDefense_ChestKeep, the Hydra chest's way), so a stack would share one count. Skrzynia Hydry
+# (54705) too: its row came before shipdefense.sql had ANTI_STACK and INSERT IGNORE kept it stackable.
+# Written every start (the Arezzo chests 30773-30776, copies of 50270/50271, set their own flags).
+db -e "UPDATE world.item_proto SET antiflag = antiflag | 32768, flag = flag & ~4 WHERE vnum IN (50270, 50271, 54705);" \
+  || fail_step "could not make the boss chests single (MT2009_PLUS_RZNM_BOSS_DROP_V1)" >&2
 
 # MT2009_PLUS_AREZZO_V1: the first three places from the Arezzo files (the owner has the rights to
 # them), players only - bots later: Dolina Cyklopow (map 360, level 45, the Teleporter), Zaczarowany

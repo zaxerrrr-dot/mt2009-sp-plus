@@ -66,6 +66,9 @@ RULES = [
     ([_r(30670)], (), "always", ("stack",), "Kamień Przebudzenia: stos 200"),
     ([_r(30670), _r(30202), _r(70031)], (), "partial", ("flag",), "zawsze łączy się w stos (flag | 4)"),
     ([_r(70058)], (), "partial", ("flag",), "bit 8192 flagi jest zawsze zdejmowany"),
+    # MT2009_PLUS_RZNM_BOSS_DROP_V1: the boss chests open 3 times, one chest at a time
+    ([_r(50270, 50271), _r(54705)], (), "partial", ("flag", "antiflag"),
+     "skrzynia otwierana 3 razy: nie łączy się w stos (antiflag | ANTI_STACK, flag bez STACKABLE)"),
     ([_r(v) for v in TRADE_SASHES] + [_r(85001, 85024), _r(85101, 85104), _r(86061, 86064), _r(110000, 175499)],
      (), "partial", ("antiflag",), "można handlować i wystawić w sklepie (bity GIVE i MYSHOP antiflag są zdejmowane)"),
     ([_r(v) for v in POTION_PRICES], (), "partial", ("gold",), "cena w sklepie NPC nie niższa niż cena odkupu"),
