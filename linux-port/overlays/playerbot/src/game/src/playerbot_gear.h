@@ -4312,30 +4312,21 @@ namespace
 				GetPlayerBotSoulStoneKind(vnum) >= 30 && GetPlayerBotSoulStoneKind(vnum) <= 43;
 	}
 
-	// The fifteen in a hundred of the banned grades that stay goods for a
-	// counter (PLAYERBOT_SOUL_STONE_MARKET_PERCENT), by item id: the same
-	// stone gets the same answer in the bag, on the counter and at the
-	// Alchemist, and a line taken off a counter keeps its id.
-	bool IsPlayerBotSoulStoneForMarket(DWORD itemId)
-	{
-		return PlayerBotNavHash(itemId ^ 0x4b44504dU) % 100U < (DWORD)PLAYERBOT_SOUL_STONE_MARKET_PERCENT;
-	}
-
-	// A stone the Alchemist turns into dust: a soul stone of a grade Iwakura
-	// bans from sockets, not one of the fifteen kept for the market, and not
-	// one the operator's weak piece would take now. Asked of an offline
-	// counter's line by its id and vnum, before it is an item in the bag.
-	bool IsPlayerBotSoulStoneForDustOf(LPCHARACTER ch, DWORD vnum, DWORD itemId, DWORD stoneValue5)
+	// A stone of the Alchemist's rule: a soul stone of a grade Iwakura bans
+	// from sockets, and not one the operator's weak piece would take now.
+	// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: no per-id 85/15 draw any more
+	// (it was once per stack, see PLAYERBOT_SOUL_STONE_STALL_KEEP) - the bag
+	// keeps three of each such stone for its counter and the Alchemist takes
+	// the rest (CollectPlayerBotDustStones).
+	bool IsPlayerBotSoulStoneForDustOf(LPCHARACTER ch, DWORD vnum, DWORD stoneValue5)
 	{
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		if (!IsPlayerBotSoulStoneVnum(vnum) ||
 				GetPlayerBotSoulStoneGrade(vnum) > PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE)
 			return false;
-		if (IsPlayerBotSoulStoneForMarket(itemId))
-			return false;
 		return !ch || !CanPlayerBotSeatSoulStone(ch, vnum, stoneValue5);
 #else
-		(void)ch; (void)vnum; (void)itemId; (void)stoneValue5;
+		(void)ch; (void)vnum; (void)stoneValue5;
 		return false;
 #endif
 	}
@@ -4351,7 +4342,7 @@ namespace
 			return false;
 		return item && item->GetType() == ITEM_METIN &&
 				GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_NONE &&
-				IsPlayerBotSoulStoneForDustOf(ch, item->GetVnum(), item->GetID(),
+				IsPlayerBotSoulStoneForDustOf(ch, item->GetVnum(),
 						(DWORD)item->GetValue(5));
 	}
 
