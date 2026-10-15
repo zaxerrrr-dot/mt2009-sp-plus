@@ -1371,6 +1371,11 @@ class ItemToolTip(ToolTip):
 			self.AppendWearableInformation()
 			self.AppendLastTimeInformation(metinSlot)
 
+		# MT2009_PLUS_AURA_V1: an aura outfit - its level, absorption and the absorbed bonuses at its rate (uiaura.py)
+		elif isCostumeItem and __import__("uiaura").IsAuraVnum(itemVnum):
+			__import__("uiaura").AppendToolTip(self, itemVnum, metinSlot, attrSlot)
+			self.AppendWearableInformation()
+
 		elif isCostumeItem:
 			self.__AppendLimitInformation()
 			self.__AppendAffectInformation()

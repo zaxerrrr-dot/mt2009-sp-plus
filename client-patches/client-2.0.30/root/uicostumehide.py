@@ -34,7 +34,8 @@ COSTUME_BODY = 0
 COSTUME_HAIR = 1
 COSTUME_ACCE = 3
 COSTUME_WEAPON = 4
-PARTS = (COSTUME_BODY, COSTUME_HAIR, COSTUME_ACCE, COSTUME_WEAPON)
+COSTUME_AURA = 5	# MT2009_PLUS_AURA_V1: the aura outfit's effect (Owsap's costume_option.hide_aura; uiaura.py)
+PARTS = (COSTUME_BODY, COSTUME_HAIR, COSTUME_ACCE, COSTUME_WEAPON, COSTUME_AURA)
 
 # the old kostiumy.cfg mask (MT2009_PLUS_COSTUME_HIDE_V2)
 BODY = 1
@@ -47,12 +48,14 @@ TOOLTIP_HIDE = {
 	COSTUME_HAIR: 'Ukryj fryzur\xea',
 	COSTUME_ACCE: 'Ukryj szarf\xea',
 	COSTUME_WEAPON: 'Ukryj wizerunek broni',
+	COSTUME_AURA: 'Ukryj szat\xea aury',
 }
 TOOLTIP_SHOW = {
 	COSTUME_BODY: 'Poka\xbf kostium',
 	COSTUME_HAIR: 'Poka\xbf fryzur\xea',
 	COSTUME_ACCE: 'Poka\xbf szarf\xea',
 	COSTUME_WEAPON: 'Poka\xbf wizerunek broni',
+	COSTUME_AURA: 'Poka\xbf szat\xea aury',
 }
 TEXTS_OTHERS = ('Ukryj cudze', 'Poka\xbf cudze',
 	'Kostiumy innych postaci ukryte (widzisz ich zbroje, bronie, fryzury i zwyk\xb3e szarfy)',
