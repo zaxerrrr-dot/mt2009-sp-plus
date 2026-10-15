@@ -11262,6 +11262,12 @@ namespace
 		// nearly every tick.
 		if (it == s_mapPlayerBotSidekickPolymorph.end() && (!owner || !owner->IsPolymorphed()))
 			return;
+		// MT2009_PLUS_ZODIAC_PETRIFY_END_V1: the owner turned to stone by a
+		// temple boss is no transformation to keep company with - no marble for
+		// it, and the companion's own statue shape is not adopted as one
+		// (ManagePlayerBotZodiacPetrify ends that, playerbot_zodiac_bots.h).
+		if (it == s_mapPlayerBotSidekickPolymorph.end() && IsPlayerBotZodiacPetrified(owner))
+			return;
 		// A warp, or the owner gone: nothing changes until the owner is back.
 		if (!owner || !owner->GetSectree())
 			return;

@@ -74,6 +74,70 @@ namespace
 #endif
 	}
 
+	// MT2009_PLUS_ZODIAC_PETRIFY_END_V1: the temple's petrification - a boss's
+	// skill turns a character in its reach into its statue (20452-20463) or
+	// the dog (101) by SetPolymorph(race, false) (playerbot_zodiac_battle.cpp,
+	// FPolyMonster in playerbot_zodiac_temple.cpp). There is no affect and no
+	// timer behind it: a person is freed by another person's click on the
+	// floor (char.cpp OnClick, MT2009_PLUS_ZODIAC_V1 (17)) or by the warp out,
+	// which loads the person anew. A bot is never loaded anew and nobody
+	// clicks it, so a bot hit once stayed the statue for good: the supporters'
+	// server, 15 October, V3rt1's Towarzysz (pid 1498) petrified by the Wei
+	// boss on 3580000 at 10:14:26 walked after its owner as the Wei statue on
+	// every map, for everybody to see ("polymorph ended with the owner's ...
+	// still=1": RemoveAffect(AFFECT_POLYMORPH) has nothing to remove). Now a
+	// bot's petrification ends off the temple's floors at once, and on a
+	// floor after PLAYERBOT_ZODIAC_PETRIFY_MS.
+	const DWORD PLAYERBOT_ZODIAC_PETRIFY_MS = 10000;
+	std::map<DWORD, DWORD> s_mapPlayerBotZodiacPetrified;
+
+	// The temple's shape: a statue or the dog, with no polymorph affect of a
+	// marble or a quest under it.
+	bool IsPlayerBotZodiacPetrified(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsPolymorphed())
+			return false;
+		const DWORD race = ch->GetPolymorphVnum();
+		if (!((race >= 20452 && race <= 20463) || race == 101))
+			return false;
+		return ch->FindAffect(AFFECT_POLYMORPH) == NULL;
+	}
+
+	void EndPlayerBotZodiacPetrify(LPCHARACTER ch, long mapIndex, const char* why)
+	{
+		const DWORD race = ch->GetPolymorphVnum();
+		s_mapPlayerBotZodiacPetrified.erase(ch->GetPlayerID());
+		ch->SetPolymorph(0);
+		sys_log(0, "PLAYERBOT_ZODIAC: petrification ended pid=%u name=%s race=%u map=%ld why=%s still=%d",
+				ch->GetPlayerID(), ch->GetName(), race, mapIndex, why, ch->IsPolymorphed() ? 1 : 0);
+	}
+
+	// Every tick of a bot in the game.
+	void ManagePlayerBotZodiacPetrify(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch)
+			return;
+		if (!IsPlayerBotZodiacPetrified(ch))
+		{
+			if (!s_mapPlayerBotZodiacPetrified.empty())
+				s_mapPlayerBotZodiacPetrified.erase(ch->GetPlayerID());
+			return;
+		}
+		if (!IsPlayerBotZodiacInstance(ch->GetMapIndex()))
+		{
+			EndPlayerBotZodiacPetrify(ch, ch->GetMapIndex(), "outside");
+			return;
+		}
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotZodiacPetrified.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotZodiacPetrified.end())
+		{
+			s_mapPlayerBotZodiacPetrified[ch->GetPlayerID()] = dwNow;
+			return;
+		}
+		if (!ch->IsDead() && dwNow - it->second >= PLAYERBOT_ZODIAC_PETRIFY_MS)
+			EndPlayerBotZodiacPetrify(ch, ch->GetMapIndex(), "time");
+	}
+
 	// After a map change the bot's temple is the one of the floor it stands
 	// on; out of the temple its death count and flags go.
 	void SyncPlayerBotZodiac(LPCHARACTER bot, long mapIndex)
@@ -81,6 +145,9 @@ namespace
 #ifdef ENABLE_12ZI
 		if (!bot)
 			return;
+		// MT2009_PLUS_ZODIAC_PETRIFY_END_V1: off the temple's floors as itself.
+		if (!IsPlayerBotZodiacInstance(mapIndex) && IsPlayerBotZodiacPetrified(bot))
+			EndPlayerBotZodiacPetrify(bot, mapIndex, "warp");
 		LPZODIAC want = IsPlayerBotZodiacInstance(mapIndex) ? CZodiacManager::instance().FindByMapIndex(mapIndex) : NULL;
 		LPZODIAC had = bot->GetZodiac();
 		if (had != want)
