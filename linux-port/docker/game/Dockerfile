@@ -930,7 +930,8 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-add/cube.se
 #    weapons from the level-87 +9 one, the Turmalin bracelet and necklace (the 10 Ogniste Buty / Buty
 #    Oceanu recipes are cube.buty.txt since MT2009_PLUS_BOOTS_V1);
 #  * special_item_group.wiki_nowe.txt - groups 951201 / 951202, the materials the Razador and Nemere
-#    chests give at 70% (their "s951201" / "s951202" lines are in special_item_group.dungeons.txt).
+#    chests gave at 70% - since 15 October no chest names them (the owner: Razador / Nemere give only the sheet's
+#    table, MT2009_PLUS_CHEST_DROPS_V1), the groups stay defined and unused.
 # MT2009_PLUS_NS_WIKI_RECIPES_OFF (the owner, 9 October): the 18 recipes are NOT appended for now - the items
 # stay in the world (wiki_nowe.sql) and the client, crafting them comes in a later update; cube.wiki_nowe.txt
 # is kept as it is (to switch it on: the four cube.txt lines before this change back in place of "n=0").
@@ -945,7 +946,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; G=$L/special_item
  && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
  && cat "$A/special_item_group.wiki_nowe.txt" >> "$G" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+95120[12]([^0-9]|$)' "$G")" -eq 2 \
- && test "$(grep -c -E '^[[:blank:]]*[0-9]+[[:blank:]]+s95120[12][[:blank:]]' "$G")" -eq 2 \
+ && test "$(grep -c -E '^[[:blank:]]*[0-9]+[[:blank:]]+s95120[12][[:blank:]]' "$G")" -eq 0 \
  && rm -rf "$A" \
  && echo "share: wiki items - $n recipes at Seon-Pyeong, chest groups 951201 / 951202 (MT2009_PLUS_NS_WIKI_ITEMS_V1)"
 
