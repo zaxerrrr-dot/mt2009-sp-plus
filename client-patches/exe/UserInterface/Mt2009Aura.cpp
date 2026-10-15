@@ -73,6 +73,15 @@ void CInstanceBase::SetAura(DWORD dwVnum)
 	__AttachAuraEffect();
 }
 
+// MT2009_PLUS_AURA_V1: the base declares CNetworkActorManager::__FindActorData but never defines it.
+SNetworkActorData* CNetworkActorManager::__FindActorData(DWORD dwVID)
+{
+	std::map<DWORD, SNetworkActorData>::iterator f = m_kNetActorDict.find(dwVID);
+	if (m_kNetActorDict.end() == f)
+		return NULL;
+	return &f->second;
+}
+
 bool CNetworkActorManager::SetActorAura(DWORD dwVID, DWORD dwVnum)
 {
 	SNetworkActorData* pkData = __FindActorData(dwVID);
