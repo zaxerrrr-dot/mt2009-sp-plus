@@ -130,6 +130,26 @@ namespace {
     // the counters of the bot's first village hold every unit of it - the
     // ledger's count, asked again at the counter. The trip is how a bot that
     // lives on the frontier meets those counters at all.
+    // MT2009_PLUS_M1_LOOP_FIX_V1 (market): units on a counter are a reason to
+    // travel to it only for a bot that could pay for them - at the price the
+    // counters last asked (or the sales' median), out of
+    // PLAYERBOT_MARKET_TRIP_AFFORD_PERCENT of what it can spare. The Orc Tooth
+    // stood at 1.2-1.5 million a unit against purses of 1.8-2.5 million, the
+    // bots bought none, and its mere supply doubled the trips' places: 78
+    // trips, 8 arrivals, the rest ten minutes held in M1 (loop report, 15
+    // October). A price nobody has seen yet does not stop the trip; the
+    // counter decides then, as before.
+    const int PLAYERBOT_MARKET_TRIP_AFFORD_PERCENT = 80;
+    bool CanPlayerBotAffordMarketUnits(LPCHARACTER ch, DWORD vnum, int units) {
+        if (!ch || units <= 0) return true;
+        const DWORD now = get_dword_time();
+        DWORD unit = GetPlayerBotLastAsk(vnum, 0, now);
+        if (unit == 0) unit = GetPlayerBotSaleUnitPrice(vnum, 0, now, NULL);
+        if (unit == 0) return true;
+        const long long spare = (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch) -
+            (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
+        return spare > 0 && (long long)unit * units <= spare * PLAYERBOT_MARKET_TRIP_AFFORD_PERCENT / 100;
+    }
     bool PlayerBotScrollRuleSupplyExists(LPCHARACTER ch) {
         std::map<DWORD, int> missing;
         CollectPlayerBotScrollRuleMissing(ch, missing);
@@ -137,7 +157,8 @@ namespace {
         const long firstVillage = playerbot_empire_rules::GetHomeMap(ch->GetEmpire(),
             playerbot_empire_rules::MAP_ROLE_M1);
         for (std::map<DWORD, int>::const_iterator it = missing.begin(); it != missing.end(); ++it)
-            if ((int)GetPlayerBotMarketLocalSupply(firstVillage, it->first) < it->second) return false;
+            if ((int)GetPlayerBotMarketLocalSupply(firstVillage, it->first) < it->second ||
+                    !CanPlayerBotAffordMarketUnits(ch, it->first, it->second)) return false;   // MT2009_PLUS_M1_LOOP_FIX_V1
         return true;
     }
     bool PlayerBotNeedsProgressionShopping(LPCHARACTER ch) {
@@ -190,7 +211,8 @@ namespace {
         for (size_t i = 0; i < PLAYERBOT_BIOLOGIST_MISSION_COUNT; ++i) {
             const DWORD vnum = PLAYERBOT_BIOLOGIST_MISSIONS[i].itemVnum;
             const TPlayerBotMarketLedgerEntry* supply = GetPlayerBotMarketLedgerEntry(vnum);
-            if (supply && supply->dwSupplyUnits > 0 && GetPlayerBotBiologistPurchaseNeed(ch, vnum) > 0) return true;
+            if (supply && supply->dwSupplyUnits > 0 && GetPlayerBotBiologistPurchaseNeed(ch, vnum) > 0 &&
+                    CanPlayerBotAffordMarketUnits(ch, vnum, 1)) return true;   // MT2009_PLUS_M1_LOOP_FIX_V1
         }
         return PlayerBotScrollRuleSupplyExists(ch) || PlayerBotStalkiSupplyExists(ch) ||
             PlayerBotWantsWeaponUpgradeFromMarket(ch) ||   // MT2009_PLUS_BOT_GEAR_UPGRADE_V1
@@ -260,7 +282,8 @@ namespace {
         for (size_t i = 0; i < PLAYERBOT_BIOLOGIST_MISSION_COUNT && !biologistSupply; ++i) {
             const DWORD vnum = PLAYERBOT_BIOLOGIST_MISSIONS[i].itemVnum;
             const TPlayerBotMarketLedgerEntry* supply = GetPlayerBotMarketLedgerEntry(vnum);
-            biologistSupply = supply && supply->dwSupplyUnits > 0 && GetPlayerBotBiologistPurchaseNeed(ch, vnum) > 0;
+            biologistSupply = supply && supply->dwSupplyUnits > 0 && GetPlayerBotBiologistPurchaseNeed(ch, vnum) > 0 &&
+                CanPlayerBotAffordMarketUnits(ch, vnum, 1);   // MT2009_PLUS_M1_LOOP_FIX_V1
         }
         const size_t cap = std::max<size_t>(1,
             (size_t)GetPlayerBotsAlive() * PLAYERBOT_PROGRESSION_TRIP_PER_MILLE / 1000) * (biologistSupply ? 2 : 1);
