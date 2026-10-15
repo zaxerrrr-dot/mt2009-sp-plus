@@ -5,6 +5,16 @@ MT2009 PLUS jako nasz kod – bez haków `zastosuj.py`: zmiany silnika są tutaj
 w naszych zwykłych miejscach (niżej). Znaczniki: `MT2009_PLUS_AWAKENING_V1`, `MT2009_PLUS_SOULSTONE9_V1`,
 `MT2009_PLUS_HORSE30_V1`.
 
+> **Yohara 3.0 – bez broni przebudzonych** (`MT2009_PLUS_NO_AWAKENING_V1`, właściciel, 15 października 2026):
+> Rytuału Przebudzenia i broni przebudzonych już nie ma. `edits.json` zostaje bez zmian (silnik testowy ma te
+> zmiany, a znaczniki nie są nakładane ponownie) – haki w `playerbot_awakening.h` odpowiadają tylko za kamienie
+> duchowe: `AwakeningSpecialRefineResult`/`Set` nie znają rytuału, `AwakeningIsAwakenedWeapon` zawsze zwraca
+> `false` (zmiany „do refine no burn”, „scroll no burn”, „sockets” nic nie robią), `AwakeningCreateBossDrop`
+> daje tylko Olejek Niebios. Siedem rodzin wraca do wierszy oficjalnych, a przebudzone sztuki graczy stają się
+> broniami 87. poziomu tego samego rodzaju i plusa (`mariadb/playerbot/noawaken.sql`, raz na świat); klient:
+> `client-patches/client-2.0.30/tools/noawaken`. Kamienie duchowe +5…+9, Olejek Niebios, koń do 30 i juki
+> działają jak dotąd. Opis rytuału niżej to historia.
+
 ## Zmiany silnika (`edits.json`)
 
 | Znacznik | Plik | Co robi |
