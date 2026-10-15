@@ -37,6 +37,10 @@
 // the bots' band for these two starts at 70 and 85 (the players' entry stays
 // the dungeon's own), a call wants six and goes in with five, and never
 // without a Shaman that can heal.
+//
+// MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1 (the owner, 15 October): both dungeons are
+// the official level-100 ones again (players from 100, the official monsters);
+// the bots' bands follow - Razador 100-115, Nemere 105-120.
 
 #include <algorithm>
 #include <cstring>
@@ -122,15 +126,23 @@ namespace playerbot_dgrun
 	const TRunRule RUN_RULES[] = {
 		// Razador's rooms (map 351): 6001-6009 of 56-64 (5 500-15 500 HP,
 		// 150-250 a blow, fire), the Ignitor 65, Razador 68.
-		{ "razador", 70, 6, 6, 5, true },
+		// MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1 (the owner, 15 October): the dungeon
+		// is entered from 100 again and its monsters are the official ones -
+		// 6001-6009 of 97-107 (13 700-597 000 HP, 354-487 a blow), the Ignitor
+		// 107, Razador 108 (1.8 million HP). The band is the panel's 100-115.
+		{ "razador", 100, 6, 6, 5, true },
 		// Nemere's (352): 6101-6109 of 78-88 (9 000-26 000 HP, 240-390 a
 		// blow, ice), the four Szels 88, Nemere 95.
+		// MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1: from 100 too, 6101-6109 of 97-107,
+		// the four Szels 107 (the owner's +100% damage on top), Nemere 108 -
+		// the harder of the two (ten floors, four Szels at once), so its band
+		// starts five above the panel's: 105-120.
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: a call wants five and goes in with
 		// four - six free bots of 85+ with a Shaman in one kingdom of one core
 		// were never there (7 October: one call all day, Nemere never run).
 		// 8 October: four that went in against the four Szels died 116 times -
 		// five at the entrance.
-		{ "nemere", 85, 5, 5, 5, true },
+		{ "nemere", 105, 5, 5, 5, true },
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V3: the Ruins (365): waves of 9697-9700
 		// and Red Scorpions, the King 9694 - the bots of 65-80 in fours and
 		// fives finished 20 of 71 runs on 7 October (58 deaths a won run, the
