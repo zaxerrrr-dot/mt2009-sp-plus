@@ -223,6 +223,22 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1: inside a dungeon a bot whose
+	// four pages are full does not fill the saddlebag page with loot. The
+	// quest gives its seal or key (give_item2) to the first free cell, which is
+	// the saddlebag's once the four pages are full; the page left with room
+	// keeps one for it (SUCHAR in Wzgorze Wukonga, 15 October: every cell of
+	// the four pages and the saddlebag taken by the dungeon's drops).
+	// Defined in playerbot_party_dungeon.h: the seals, keys, cog, stones and
+	// crystals the party dungeons' bots use or hand in.
+	bool IsPlayerBotPdgItemVnum(DWORD vnum);
+
+	bool IsPlayerBotDungeonLootMap(long mapIndex)
+	{
+		return mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN || IsPlayerBotPartyDungeonMap(mapIndex) ||
+				IsPlayerBotDemonTowerInstance(mapIndex) || IsPlayerBotCatacombInstance(mapIndex);
+	}
+
 	// Whether the engine's pickup would find this drop a place: a stack of the
 	// same thing to pour it into, or room of its own size - GetEmptyInventoryEx
 	// on mt2009, which also knows the pages a material or a book goes to, and
@@ -234,7 +250,14 @@ namespace
 		if (IsPlayerBotMoneyDrop(item) || PlayerBotLootMergesIntoStack(ch, item))
 			return true;
 #if defined(PLAYERBOT_ENGINE_MT2009)
-		return ch->GetEmptyInventoryEx(item) != -1;
+		const int cell = ch->GetEmptyInventoryEx(item);
+		// The dungeon's own items (a seal, a key) take the saddlebag cell.
+		if (cell >= INVENTORY_DEFAULT_MAX_NUM && !item->IsDragonSoul() &&
+				!IsPlayerBotPdgItemVnum(item->GetVnum()) && !IsPlayerBotDemonTowerKey(item->GetVnum()) &&
+				!IsPlayerBotCatacombKey(item->GetVnum()) &&
+				ch->GetDesc() && ch->GetDesc()->IsBot() && IsPlayerBotDungeonLootMap(ch->GetMapIndex()))
+			return false;
+		return cell != -1;
 #else
 		return ch->GetEmptyInventory(item->GetSize()) != -1;
 #endif

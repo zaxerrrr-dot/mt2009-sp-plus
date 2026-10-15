@@ -242,17 +242,22 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return;
-		for (size_t i = 0; i < sizeof(PLAYERBOT_PDG_USE_ITEMS) / sizeof(PLAYERBOT_PDG_USE_ITEMS[0]); ++i)
+		// MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1: every cell, the saddlebag
+		// page's as well - CountSpecifyItem reads only the cells open now, and
+		// a seal on a shut page stayed in the bag.
+		for (int cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
-			const ITEM_COUNT n = ch->CountSpecifyItem(PLAYERBOT_PDG_USE_ITEMS[i]);
-			if (n > 0)
-				ch->RemoveSpecifyItem(PLAYERBOT_PDG_USE_ITEMS[i], n);
-		}
-		for (size_t i = 0; i < sizeof(PLAYERBOT_PDG_GIVE_ITEMS) / sizeof(PLAYERBOT_PDG_GIVE_ITEMS[0]); ++i)
-		{
-			const ITEM_COUNT n = ch->CountSpecifyItem(PLAYERBOT_PDG_GIVE_ITEMS[i].dwVnum);
-			if (n > 0)
-				ch->RemoveSpecifyItem(PLAYERBOT_PDG_GIVE_ITEMS[i].dwVnum, n);
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || (int)item->GetCell() != cell)
+				continue;
+			const DWORD vnum = item->GetVnum();
+			bool run = false;
+			for (size_t i = 0; !run && i < sizeof(PLAYERBOT_PDG_USE_ITEMS) / sizeof(PLAYERBOT_PDG_USE_ITEMS[0]); ++i)
+				run = PLAYERBOT_PDG_USE_ITEMS[i] == vnum;
+			for (size_t i = 0; !run && i < sizeof(PLAYERBOT_PDG_GIVE_ITEMS) / sizeof(PLAYERBOT_PDG_GIVE_ITEMS[0]); ++i)
+				run = PLAYERBOT_PDG_GIVE_ITEMS[i].dwVnum == vnum;
+			if (run)
+				ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_PDG_LEFT");
 		}
 	}
 
