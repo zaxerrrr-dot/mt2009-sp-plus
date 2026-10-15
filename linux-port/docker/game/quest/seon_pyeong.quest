@@ -16,6 +16,10 @@ quest seon_pyeong begin
 			say("")
 			say("Bonusy i kamienie oddanego przedmiotu przepadaja.")
 			say("")
+			-- MT2009_PLUS_KAWUCO_V1: Ogniste Buty / Buty Oceanu are Kawuco's (cube.buty.txt)
+			say("Ogniste Buty i Buty Oceanu szyje Kawuco")
+			say("na Przyladku Smoczego Ognia.")
+			say("")
 			local s = select("Otworz okno ulepszania", "Anuluj")
 			if s == 1 then
 				setskin(NOWINDOW)
