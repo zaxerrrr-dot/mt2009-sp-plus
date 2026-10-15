@@ -481,6 +481,9 @@ namespace
 	// for WIDTH * HEIGHT, forty-five - was rejected outright and the page the
 	// bot had just paid for never registered in memory. The window the
 	// storekeeper opens has two tabs, which is the real capacity: ninety cells.
+	// MT2009_PLUS_BOT_SAFEBOX_PAGES_V1: what the bot asks for itself, on an
+	// engine without server-patches/safeboxmerge's bot pages; with them the
+	// engine opens a bot's box at SAFEBOX_BOT_PAGE_COUNT (four) whatever this says.
 	const int PLAYERBOT_SAFEBOX_PAGES = 2;
 	// How much one visit may take back out. A withdrawal that filled the bag
 	// would only be deposited again on the next trip, so the door opens a

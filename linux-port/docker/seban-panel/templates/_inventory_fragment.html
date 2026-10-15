@@ -12,7 +12,7 @@
 </div>
 <div id="safebox-storage" class="alternate-storage" hidden>
   <button type="button" class="storage-close alternate-storage-close" data-storage="inventory" aria-label="Wróć do ekwipunku" title="Wróć do ekwipunku">×</button>
-  <div class="safebox-tabs"><button class="active" data-page="0">Strona I</button><button data-page="1">Strona II</button><button data-page="2">Strona III</button></div>
+  <div class="safebox-tabs"><button class="active" data-page="0">Strona I</button><button data-page="1">Strona II</button><button data-page="2">Strona III</button>{% if safebox and (safebox|map(attribute='pos')|max) >= 135 %}<button data-page="3">Strona IV</button>{% endif %}</div>
   <div class="safebox-inventory"><div class="safebox-layer">{% for item in safebox %}{% set page=item.pos // 45 %}{% set local=item.pos % 45 %}{% set col=local % 5 %}<div class="safebox-slot{% if col == 0 %} tip-left{% elif col == 4 %} tip-right{% endif %}" data-page="{{page}}" {% if page != 0 %}hidden{% endif %} style="--col:{{col}};--row:{{local // 5}};--size:{{item.item_size}}">{% if item_icon(item.vnum) %}<img src="{{item_icon(item.vnum)}}" alt="{{item.item_name}}">{% else %}<span>{{item.vnum}}</span>{% endif %}{% if item.count > 1 %}<b>{{item.count}}</b>{% endif %}{{ tooltip(item) }}</div>{% endfor %}</div></div>
   <p id="safebox-empty" class="muted" hidden>Ta strona magazynu jest pusta.</p>
 </div>

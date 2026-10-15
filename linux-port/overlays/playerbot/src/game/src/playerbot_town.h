@@ -7405,6 +7405,16 @@ namespace
 					sys_log(0, "PLAYERBOT_TOWN: safebox paid pid=%u name=%s account=%u fee=%d gold_left=%lld",
 							ch->GetPlayerID(), ch->GetName(), page.dwID, PLAYERBOT_SAFEBOX_FEE, (long long)ch->GetGold());
 				}
+				// MT2009_PLUS_BOT_SAFEBOX_PAGES_V1: the size was only ever set on the
+				// paid visit, in memory, and the DB core has no safebox row for a bot
+				// (the page packet is an UPDATE of a row nothing inserted), so after
+				// the next restart every bot's box opened at one page: 2 156 boxes on
+				// the test world, 168 with anything past the first 45 cells - the
+				// "safebox full" of the M1 loop report (15 October). The engine gives
+				// a bot SAFEBOX_BOT_PAGE_COUNT pages itself (CInputDB::SafeboxLoad,
+				// server-patches/safeboxmerge); on an engine without that patch the
+				// two pages are at least set again on every visit.
+				ch->SetSafeboxSize(PLAYERBOT_SAFEBOX_PAGES);
 				ch->CancelSafeboxLoad();
 				ch->SetSafeboxOpenPosition();
 				ch->ReqSafeboxLoad(PLAYERBOT_SAFEBOX_PASSWORD);
