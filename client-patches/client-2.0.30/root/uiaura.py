@@ -297,11 +297,8 @@ class AuraWindow(ui.ScriptWindow):
 		self.loadedType = -1
 
 	def __Load(self, type):
-		if self.loadedType == type:
-			return True
 		if self.loadedType >= 0:
-			self.ClearDictionary()
-			self.loadedType = -1
+			return SCRIPT[self.loadedType] == SCRIPT[type]	# another layout: OnCommand makes a new window
 		try:
 			ui.PythonScriptLoader().LoadScriptFile(self, SCRIPT[type])
 			self.wndItem = self.GetChild('AuraSlot')
@@ -309,9 +306,6 @@ class AuraWindow(ui.ScriptWindow):
 			self.GetChild('TitleBar').SetCloseEvent(ui.__mem_func__(self.Close))
 			self.GetChild('AcceptButton').SetEvent(ui.__mem_func__(self.__Accept))
 			self.GetChild('CancelButton').SetEvent(ui.__mem_func__(self.Close))
-			self.texts = []
-			if type != TYPE_ABSORB:
-				self.texts = [self.GetChild('AuraToolTip%d' % i) for i in xrange(1, 7)]
 		except Exception, e:
 			import dbg
 			dbg.TraceError('AuraWindow.Load: %s' % str(e))
@@ -337,6 +331,9 @@ class AuraWindow(ui.ScriptWindow):
 		if not self.__Load(type):
 			return
 		self.type = type
+		self.texts = []
+		if type != TYPE_ABSORB:
+			self.texts = [self.GetChild('AuraToolTip%d' % i) for i in xrange(1, 7)]
 		self.items = {}
 		self.titleName.SetText(TITLE[type])
 		(x, y, z) = player.GetMainCharacterPosition()
@@ -560,7 +557,13 @@ def OnCommand(toolTip, *args):
 	if what == 'view' and len(rest) >= 2:
 		OnView(rest[0], rest[1])
 	elif what == 'open':
-		GetWindow(toolTip).Open(_Int(rest[0] if rest else 0))
+		type = _Int(rest[0] if rest else 0)
+		if type not in SCRIPT:
+			type = TYPE_ABSORB
+		wnd = _window['wnd']
+		if wnd and wnd.loadedType >= 0 and SCRIPT[wnd.loadedType] != SCRIPT[type]:
+			DestroyWindow()	# the absorb and the level-up windows are two layouts
+		GetWindow(toolTip).Open(type)
 	elif what == 'set' and len(rest) >= 3:
 		wnd = _window['wnd']
 		if wnd:
