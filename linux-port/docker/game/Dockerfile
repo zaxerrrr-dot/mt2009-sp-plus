@@ -382,7 +382,9 @@ RUN set -eux; \
     # Euforii +5..+9 (cube.buty.txt, 5-50% by plus; MT2009_PLUS_KAWUCO_V1).
     # meley_dungeon is Schronienie Meley - Straznik Smokow Dolnarr on Doyyumhwaji, the Dragon Queen's lair (356)
     # (MT2009_PLUS_YOHARA_MELEY_V1).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco meley_dungeon; do \
+    # labirynth and black_steel_crafting are the package's, with Min-Sun (20402) on Pustynia Yongbi since Przelecz (69)
+    # is gone (MT2009_PLUS_PASS69_OFF_V1) - their objects replace the stock ones.
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco meley_dungeon labirynth black_steel_crafting; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -2456,7 +2458,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps4-add \
 # (mob_drop_item.maps_wz.txt, "drop" groups the reader merges with the mobs' own - Orkowa Maczuga 30194, Piasek
 # Kwarcowy 30195 ...). The way in (the wiki): the desert's bottom-right portal - the base share's 10108 to Przelecz
 # at 1477,1357 - becomes 10029 to Wezowe Pole (links.maps_wz.txt); Wezowe Pole's 10030 / 10032 lead to the desert /
-# Kraina, Kraina's 10031 back. Przelecz stays hosted (a GM's /goto). /goto sneak (it named 69), wezowe, giant (its
+# Kraina, Kraina's 10031 back. Przelecz is gone since (MT2009_PLUS_PASS69_OFF_V1 below). /goto sneak (it named 69), wezowe, giant (its
 # map corner -> the arrival), gigantow. The monsters' levels: mariadb/playerbot/maps_wz.sql.
 COPY maps_wz/ /tmp/maps-wz-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/maps-wz-add \
@@ -2497,7 +2499,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/maps-wz-add \
       [ -f "$f" ] || continue; \
       LC_ALL=C grep -a -q 'map_names\[80\]' "$f" && continue; \
       { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
-      printf '\r\n-- MT2009_PLUS_MAPS_WZ_V1\r\ntranslate.general.map_names[80] = "W\352\277owe Pole"\r\ntranslate.general.map_names[69] = "Prze\263\352cz"\r\n' >> "$f"; \
+      printf '\r\n-- MT2009_PLUS_MAPS_WZ_V1\r\ntranslate.general.map_names[80] = "W\352\277owe Pole"\r\n' >> "$f"; \
     done \
  && S="$L/settings.lua" \
  && sed -i -E 's/^add_goto_info\("sneak", 0, 69, /add_goto_info("sneak", 0, 80, /; s/^add_goto_info\("giant", 0, 70, 8192, 7168\)/add_goto_info("giant", 0, 70, 8283, 7635)/' "$S" \
@@ -2505,6 +2507,29 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/maps-wz-add \
  && ! LC_ALL=C grep -a -q -E '^add_goto_info\("sneak", 0, 69,' "$S" \
  && rm -rf "$A" \
  && echo "share: Wezowe Pole (80) and Kraina Gigantow (70): the official terrain / spawns / NPCs / Metins, the wiki's drops, the desert's portal 10029"
+# MT2009_PLUS_PASS69_OFF_V1 (share): Przelecz (69, metin2_map_wl_pass) removed (the owner, 15 October 2026: "Przelecz 69
+# usun"). No portal led there any more (the desert's 10108 became 10029 above; 10109 stood on the base share's
+# metin2_map_nusluck01, which no index names since Kraina Gigantow is metin2_map_giantland). Out: its map/index line,
+# its folder, its music line in settings.lua (its /goto sneak names 80 above), the map name (the step above no
+# longer writes one) - bin/m2-render-config hosts it on no core, apply.sh moves whoever was saved there to Wezowe
+# Pole's arrival once. Min-Sun (20402) lived only there - Labirynt (79), the Black Steel crafting and his shop: he
+# stands on Pustynia Yongbi (63, game1 as Labirynt) at 1467,1365 now, 6 m south-west of where 10030 puts a player
+# down and 12 m from the portal 10029 (GF's attr.atr: free 2 m round, walkable from the town - the old way to
+# Przelecz); quest labirynth / black_steel_crafting (quest/, compiled above) return and warp to 1465,1360 beside him.
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && sed -i -E '/^69[[:blank:]]/d' "$L/map/index" \
+ && ! grep -q -E '^69[[:blank:]]' "$L/map/index" \
+ && ! grep -q -E 'wl_pass' "$L/map/index" \
+ && rm -rf "$L/map/metin2_map_wl_pass" \
+ && S="$L/settings.lua" \
+ && sed -i -E '/^add_bgm_info\(69,/d' "$S" \
+ && ! LC_ALL=C grep -a -q -E '^add_bgm_info\(69,|^add_goto_info\("[^"]*", *0, *69,' "$S" \
+ && N="$L/map/metin2_map_n_desert_01/npc.txt" \
+ && ! grep -q -E '^m[[:blank:]].*[[:blank:]]20402[[:space:]]*$' "$N" \
+ && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+ && printf 'm\t1467\t1365\t0\t0\t0\t4\t1m\t100\t1\t20402\r\n' >> "$N" \
+ && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]20402[[:space:]]*$' "$N")" = 1 \
+ && echo "share: Przelecz (69) removed - Min-Sun (20402) on Pustynia Yongbi (63) at 1467,1365"
 
 # MT2009_PLUS_YOHARA_MOTIONS_V1 (share): the server's motions of the Yohara monsters (the owner's test list of
 # 14 October, item 7 - "GetMoveMotionSpeed: cannot find motion" for Myr, Troll Zolnierz and the rest): the core
