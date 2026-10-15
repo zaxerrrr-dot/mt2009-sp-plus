@@ -174,6 +174,49 @@ def __LoadGameSkill():
 	appPlayerSettingsModule.LoadGameSkill()
 
 
+# MT2009_PLUS_MOUNT_NAME_HEIGHT_V1 (Autor: Vekirion): the name over a rider stands at the rider's
+# height + 10 + the mount's "base height" (exe, CInstanceBase::GetBaseHeight).
+# The exe gives the plain horses (20101-20109, 20029, 20030) 100; any other
+# mount gets its race height, and with no race height the exe measures the
+# whole model once (wings, tails and effects included) and keeps that - a
+# phoenix or a dragon put the name far above the rider. Every mount in
+# npclist.txt (MOUNT_VNUM_RANGES) gets its race height here, before the exe
+# measures anything; the exe never overwrites a race height once set.
+# MOUNT_HEIGHTS sets one mount by its vnum when its class does not fit.
+MOUNT_VNUM_RANGES = ((20110, 20125), (20149, 20151), (20201, 20299), (36000, 36999), (40000, 40999))
+MOUNT_HEIGHT = 100.0		# as the plain horses
+MOUNT_HEIGHT_LARGE = 140.0	# models whose saddle sits higher
+MOUNT_LARGE_MODELS = ("mammoth", "dragon", "phoenix", "eagle", "drakkar", "camel", "sphinx",
+	"volcano_beast", "cerberos", "dinosaur", "wagon", "ninetail")
+MOUNT_HEIGHTS = {}	# vnum: height
+
+def __SetMountHeights(lines):
+	if not hasattr(chrmgr, "SetRaceHeight"):
+		return
+	for line in lines:
+		tokens = line.strip().split("\t")
+		if len(tokens) < 2:
+			continue
+		try:
+			vnum = int(tokens[0])
+		except ValueError:
+			continue
+		if vnum in MOUNT_HEIGHTS:
+			height = MOUNT_HEIGHTS[vnum]
+		elif [1 for low, high in MOUNT_VNUM_RANGES if low <= vnum <= high]:
+			model = tokens[1].lower()
+			if [1 for key in MOUNT_LARGE_MODELS if key in model]:
+				height = MOUNT_HEIGHT_LARGE
+			else:
+				height = MOUNT_HEIGHT
+		else:
+			continue
+		try:
+			chrmgr.SetRaceHeight(vnum, float(height))
+		except Exception:
+			pass
+
+
 def __LoadGameNPC():
 	try:
 		lines = open("gamedata/npclist.txt", "r").readlines()
@@ -208,6 +251,7 @@ def __LoadGameNPC():
 
 	appPlayerSettingsModule.LoadNpcScale()
 	appPlayerSettingsModule.LoadRaceHeight()
+	__SetMountHeights(lines)  # MT2009_PLUS_MOUNT_NAME_HEIGHT_V1
 
 def __PreloadGame():
 	print "__PreloadGame"
