@@ -50,7 +50,7 @@ class ProtectedTests(unittest.TestCase):
         self.assertGreater(seen, 100)
 
     def test_lookup(self):
-        self.assertIn('applyvalue0', protected.overwritten_cols(215))
+        self.assertIn('applyvalue0', protected.overwritten_cols(28530))
         self.assertIn('locale_name', protected.overwritten_cols(8010))
         self.assertEqual(protected.overwritten_cols(19), [])
         self.assertTrue(protected.rules_for(120000))           # dragon stone: antiflag bits, partial
