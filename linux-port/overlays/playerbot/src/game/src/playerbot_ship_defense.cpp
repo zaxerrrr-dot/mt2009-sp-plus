@@ -1283,11 +1283,20 @@ ACMD(do_ship_defense)
 // 13 October 2026). Called by the giftbox's use after a successful opening (char_item.cpp, edits.json):
 // true keeps the chest with one more opening counted in socket 0 (the client's tooltip shows the
 // rest), false lets the engine take it (the last opening, or any other box).
+// MT2009_PLUS_RZNM_BOSS_DROP_V1: Skrzynia Razadora (50270) and Skrzynia Nemere (50271) open 3 times the
+// same way (the owner, 15 October; pl-wiki 17.3: "kazda z nich mozna otworzyc 3 razy"). All three are
+// ANTI_STACK (apply.sh), so socket 0 is one chest's count, never a stack's.
 bool ShipDefense_ChestKeep(LPITEM item)
 {
-	if (!item || item->GetVnum() != VNUM_HYDRA_CHEST)
+	if (!item)
 		return false;
-	const int iUses = MAX(1, Cfg("chest_uses"));
+	int iUses;
+	if (item->GetVnum() == VNUM_HYDRA_CHEST)
+		iUses = MAX(1, Cfg("chest_uses"));
+	else if (item->GetVnum() == 50270 || item->GetVnum() == 50271)
+		iUses = 3;
+	else
+		return false;
 	const long lUsed = MAX(0L, item->GetSocket(0)) + 1;
 	if (lUsed >= iUses)
 		return false;

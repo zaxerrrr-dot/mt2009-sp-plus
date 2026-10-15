@@ -986,6 +986,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/ochao-add \
 #  * the regen files of the two dungeons (data/dungeon/razador_mt: every fourth line of the
 #    package's flame_dungeon files, a party of level 55 and not the 100+ the package planned;
 #    data/dungeon/nemere_mt: the ice rooms, the package's ice_dungeon groups of groups);
+#    MT2009_PLUS_RZNM_OFFICIAL_V2: both now every line of Owsap's flame_dungeon / snow_dungeon
+#    (the official density, zone_1..zone_10 for Nemere's ten floors), tools/rznm/gen_rznm_regen.py;
 #  * the public copies of 351 and 352 are the lobbies (both maps on game2, see
 #    m2-render-config): nothing spawns there but the NPC that opens the instance - the
 #    Am-heh statue (20385) on 351, the stone lion (20397) on 352; the package's own
