@@ -49,10 +49,18 @@ namespace ikashop_qol
 		return (long long) get_global_time();
 	}
 
+	// MT2009_PLUS_SHOP_QOL_AUTH_GUARD_V1: the auth core runs UpdateShopsDuration too
+	// (g_bChannel is 1 there) but holds no shops and talks to the account
+	// database - no table, no clocks, no cleanup there.
+	inline bool SkipCore()
+	{
+		return g_bAuthServer != 0;
+	}
+
 	inline void EnsureTable()
 	{
 		static bool done = false;
-		if (done)
+		if (done || SkipCore())
 			return;
 		done = true;
 		DBManager::instance().Query(
@@ -210,6 +218,8 @@ namespace ikashop_qol
 	// core's that stands it (its entity is here), so they happen once.
 	inline void Process(ikashop::CShopManager& manager, const std::map<DWORD, std::shared_ptr<ikashop::CShop>>& shops)
 	{
+		if (SkipCore()) // MT2009_PLUS_SHOP_QOL_AUTH_GUARD_V1
+			return;
 		bool anyLocal = false;
 		for (const auto& [owner, shop] : shops)
 			if (shop && shop->GetEntity() && shop->GetDuration() > 0)
@@ -276,7 +286,7 @@ namespace ikashop_qol
 		if (now < next)
 			return;
 		next = now + 3600;
-		if (g_bChannel != 1)
+		if (g_bChannel != 1 || SkipCore()) // MT2009_PLUS_SHOP_QOL_AUTH_GUARD_V1
 			return;
 		EnsureTable();
 		DBManager::instance().Query(
