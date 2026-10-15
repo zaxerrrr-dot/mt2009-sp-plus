@@ -4003,6 +4003,35 @@ namespace
 	const long PLAYERBOT_OCHAO_EXIT_X = 884825;
 	const long PLAYERBOT_OCHAO_EXIT_Y = 1446525;
 	const BYTE PLAYERBOT_OCHAO_MIN_LEVEL = 95;
+	// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80, metin2_map_snakefield) and
+	// Kraina Gigantow (70, metin2_map_giantland) - MT2009_PLUS_MAPS_WZ_V1. Both
+	// stand on game2 (bin/m2-render-config: game1 is at the 32-bit core's limit)
+	// and a bot cannot cross cores, so no bot goes there today: every road onto
+	// them below asks IsPlayerBotMapHostedHere first, and the day a layout puts
+	// them on the bots' core they are a frontier like Doyyumhwaji. The points are
+	// cell centres with open ground all round, measured on each map's own
+	// server_attr by tools/arezzo_bot_map.py (15 October): Wezowe Pole's arrival
+	// by its Teleporter (9012, 245,580) in the second part, where the Giants, the
+	// ogres and the golems are (66-76; the first part's cursed animals are 8-29),
+	// and the Teleporter's cell the exit; Kraina's arrival its Town.txt (91,467),
+	// the exit five cells from its portal back.
+	const long PLAYERBOT_MAP_SNAKEFIELD = 80;
+	const long PLAYERBOT_MAP_GIANTLAND = 70;
+	const long PLAYERBOT_SNAKEFIELD_ARRIVAL_X = 1074650;
+	const long PLAYERBOT_SNAKEFIELD_ARRIVAL_Y = 775350;
+	const long PLAYERBOT_SNAKEFIELD_EXIT_X = 1074150;
+	const long PLAYERBOT_SNAKEFIELD_EXIT_Y = 774850;
+	const long PLAYERBOT_GIANTLAND_ARRIVAL_X = 828350;
+	const long PLAYERBOT_GIANTLAND_ARRIVAL_Y = 763550;
+	const long PLAYERBOT_GIANTLAND_EXIT_X = 828850;
+	const long PLAYERBOT_GIANTLAND_EXIT_Y = 763850;
+	// Three under the weakest monster of each (Niszczyciel, 66 - the pl-wiki's
+	// levels, maps_wz.sql); the top where Doyyumhwaji's band ends and the
+	// Grotto's begins.
+	const BYTE PLAYERBOT_SNAKEFIELD_MIN_LEVEL = 63;
+	const BYTE PLAYERBOT_SNAKEFIELD_MAX_LEVEL = 78;
+	const BYTE PLAYERBOT_GIANTLAND_MIN_LEVEL = 63;
+	const BYTE PLAYERBOT_GIANTLAND_MAX_LEVEL = 80;
 	// MT2009_PLUS_AREZZO_BOTS_V1 (maps): the Arezzo module's three open maps
 	// (flag mt2009_arezzo_closed, playerbot_arezzo.h). Only the operator's test
 	// cohorts go there for now (playerbot_arezzo_bots.h, the test hook
@@ -4140,6 +4169,8 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_ARRIVAL_X; outY = PLAYERBOT_OCHAO_ARRIVAL_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X; outY = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_X; outY = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: outX = PLAYERBOT_SNAKEFIELD_ARRIVAL_X; outY = PLAYERBOT_SNAKEFIELD_ARRIVAL_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: outX = PLAYERBOT_GIANTLAND_ARRIVAL_X; outY = PLAYERBOT_GIANTLAND_ARRIVAL_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return false;
 		}
 	}
@@ -4163,6 +4194,8 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_EXIT_X; outY = PLAYERBOT_OCHAO_EXIT_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_EXIT_X; outY = PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_EXIT_X; outY = PLAYERBOT_AREZZO_PHARAOH_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: outX = PLAYERBOT_SNAKEFIELD_EXIT_X; outY = PLAYERBOT_SNAKEFIELD_EXIT_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: outX = PLAYERBOT_GIANTLAND_EXIT_X; outY = PLAYERBOT_GIANTLAND_EXIT_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return false;
 		}
 	}
@@ -4187,6 +4220,7 @@ namespace
 				mapIndex == PLAYERBOT_MAP_FIRE_LAND ||
 				mapIndex == PLAYERBOT_MAP_GROTTO_V1 || mapIndex == PLAYERBOT_MAP_GROTTO_V2 ||
 				mapIndex == PLAYERBOT_MAP_OCHAO || // MT2009_PLUS_OCHAO_BOTS_V1
+				mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND || // MT2009_PLUS_MAPS_WZ_BOTS_V1
 				IsPlayerBotArezzoMap(mapIndex); // MT2009_PLUS_AREZZO_BOTS_V1 (only the test cohorts are sent)
 	}
 
@@ -4216,6 +4250,8 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "arezzo_cyclops"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "arezzo_pharaoh"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: return "snakefield"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: return "giantland"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return "frontier";
 		}
 	}
@@ -6229,10 +6265,11 @@ namespace
 				30224, 2301, POINT_MOV_SPEED, 11, 50113, "Kamien Duszy Gyimok", POINT_DEF_BONUS, 10, 1 },
 		// Certyfikat Tugyisa (30166): the hook on the Giants 1401-1403 and the
 		// Ogres 1601-1603, five in a hundred and one at a time, and they stand
-		// only on metin2_map_nusluck01 (70) - a map no bot travels to, so 1401
-		// has no row in PLAYERBOT_HUNTING_MOB_HOMES and this row is stepped
-		// over (GetActivePlayerBotBiologistMission) the way the Demon Souvenir
-		// once was. It is here so that it starts by itself the day the bots go
+		// only on Kraina Gigantow (70) and Wezowe Pole (80) - maps on game2
+		// (MT2009_PLUS_MAPS_WZ_V1), where no bot travels, so 1401's row in
+		// PLAYERBOT_HUNTING_MOB_HOMES counts only on a core that hosts them and
+		// this row is stepped over (GetActivePlayerBotBiologistMission) the way
+		// the Demon Souvenir once was. It starts by itself the day the bots go
 		// there. lv85 and lv90 follow it in the chain and have no rows: a bot
 		// can never open them while this one stands.
 		{ 80, "collect_quest_lv80", 30166, 1401, 30, 60, 0, 0, "Certyfikat Tugyisa",
@@ -6624,8 +6661,21 @@ namespace
 		// family on Sohan, and Konar Zelkova's trees in the Ghost Wood and the
 		// Red Forest (read off the maps' regen and group files). No row for
 		// the Giants' 1401: their map (70) is not one the bots go to.
-		{ 1107, 61, 72 }, { 1102, 61, 0 }, { 2301, 67, 68 }
+		{ 1107, 61, 72 }, { 1102, 61, 0 }, { 2301, 67, 68 },
+		// MT2009_PLUS_MAPS_WZ_BOTS_V1: the Giants' and ogres' maps, Kraina
+		// Gigantow (70, all six) and Wezowe Pole (80, 1401/1601/1602) - the
+		// Biologist's level-80 row (Certyfikat Tugyisa, named by 1401). They
+		// count only while this core hosts the map (IsPlayerBotHuntingMobHosted):
+		// on game2 no bot reaches them and the row is stepped over as before.
+		{ 1401, 70, 80 }
 	};
+
+	// MT2009_PLUS_MAPS_WZ_BOTS_V1: defined in playerbot_travel.h.
+	bool IsPlayerBotMapHostedHere(long mapIndex);
+	bool IsPlayerBotWzMap(long mapIndex)
+	{
+		return mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND;
+	}
 
 	// The map a listed monster stands on (its first home), or zero for a
 	// village monster and for one the table does not know.
@@ -6651,6 +6701,11 @@ namespace
 			const TPlayerBotMobHome& home = PLAYERBOT_HUNTING_MOB_HOMES[i];
 			if (home.vnum != vnum)
 				continue;
+			// MT2009_PLUS_MAPS_WZ_BOTS_V1: a home on a map no bot here can reach
+			// (Kraina Gigantow / Wezowe Pole on game2) is no home.
+			if (lMapIndex == 0 && IsPlayerBotWzMap(home.map1) && !IsPlayerBotMapHostedHere(home.map1) &&
+					!IsPlayerBotMapHostedHere(home.map2))
+				return false;
 			return lMapIndex == 0 || home.map1 == lMapIndex || home.map2 == lMapIndex;
 		}
 		return false;
@@ -9513,7 +9568,8 @@ namespace
 				mapIndex != PLAYERBOT_MAP_FOREST && mapIndex != PLAYERBOT_MAP_RED_FOREST &&
 				mapIndex != PLAYERBOT_MAP_DEMON_TOWER &&
 				mapIndex != PLAYERBOT_MAP_GROTTO_V1 && mapIndex != PLAYERBOT_MAP_GROTTO_V2 &&
-				mapIndex != PLAYERBOT_MAP_OCHAO; // MT2009_PLUS_OCHAO_BOTS_V1: its stone.txt is empty
+				mapIndex != PLAYERBOT_MAP_OCHAO && // MT2009_PLUS_OCHAO_BOTS_V1: its stone.txt is empty
+				mapIndex != PLAYERBOT_MAP_SNAKEFIELD; // MT2009_PLUS_MAPS_WZ_BOTS_V1: no stone.txt (Kraina has Pung-Ma / Ma-An)
 				// MT2009_PLUS_AREZZO_BOTS_V1: the Arezzo maps keep their stones (stone.txt).
 	}
 

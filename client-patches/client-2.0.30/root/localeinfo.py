@@ -496,6 +496,9 @@ GUILDWAR_WARP_DESCLIST = [GUILD_WAR_USE_BATTLE_MAP, GUILD_WAR_WIN_WIPE_OUT_GUILD
 GUILDWAR_CTF_DESCLIST = [GUILD_WAR_USE_BATTLE_MAP, GUILD_WAR_WIN_TAKE_AWAY_FLAG1, GUILD_WAR_WIN_TAKE_AWAY_FLAG2]
 
 MINIMAP_ZONE_NAME_DICT = {
+	# MT2009_PLUS_MAPS_WZ_V1 (client): Wê¿owe Pole (80) and Kraina Gigantów (70) - their own folders
+	"metin2_map_snakefield" : "Wê¿owe Pole",
+	"metin2_map_giantland" : "Kraina Gigantów",
 	# MT2009_PLUS_YOHARA_MAPS4_V1 (client): Rozpadlina Dusz (389) on the minimap
 	"metin2_map_whitdragonvalley" : "Rozpadlina Dusz",
 	# MT2009_PLUS_YOHARA_MAPS3_V1 (client): the third batch of Yohara (378-381, 390, 391, 394-396) on the minimap

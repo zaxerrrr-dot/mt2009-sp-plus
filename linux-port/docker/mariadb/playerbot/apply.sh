@@ -3671,6 +3671,18 @@ for ym4_sql in yohara_items4.sql yohara_maps4.sql yohara_maps4_zywioly.sql; do
     fi
 done
 
+# MT2009_PLUS_MAPS_WZ_V1: Wezowe Pole (80) and Kraina Gigantow (70) - the owner, 15 October 2026. maps_wz.sql
+# (tools/maps_wz/gen_maps_wz.py): the pl-wiki's levels of the Giants and ogres (1401-1403, 1601-1603; only the level
+# column). Every vnum the maps spawn and drop is ours already. Idempotent (guarded UPDATE).
+for wz_sql in maps_wz.sql; do
+    [ -s "/opt/playerbot/$wz_sql" ] || continue
+    if db < "/opt/playerbot/$wz_sql"; then
+        echo "[playerbot-migrate] maps wz: $wz_sql applied"
+    else
+        fail_step "maps wz: $wz_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_YOHARA_DUNG4_V1: Jaskinie Gnolli (382-384) and Wieza Sung Mahi (386/387) - the owner, 14 October 2026.
 # After the third batch and the elements' files (zywioly_moby.sql clears the element bits of every mob it does not
 # list): yohara_dung4.sql (tools/yohara_dung4/gen_ydung4_sql.py) - their monsters, bosses, the tower's stones, NPCs,
