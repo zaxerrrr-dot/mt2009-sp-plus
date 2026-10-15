@@ -7043,6 +7043,10 @@ WritePlayerBotGuildStatus(dwNow);
 		// before every errand that ends the tick early.
 		if (d->IsPhase(PHASE_GAME))
 			ManagePlayerBotDsDeckTick(ch, state, dwNow);
+		// MT2009_PLUS_ZODIAC_PETRIFY_END_V1: the temple's statue shape ends off
+		// its floors, and on a floor after a while (playerbot_zodiac_bots.h).
+		if (d->IsPhase(PHASE_GAME))
+			ManagePlayerBotZodiacPetrify(ch, dwNow);
 
 		// Keep expensive decisions staggered over two ticks, but let an already
 		// engaged bot continue its basic combo on the intervening tick.  This makes
