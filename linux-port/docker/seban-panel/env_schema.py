@@ -232,6 +232,12 @@ SCHEMA = [
        "TAB otwiera mapę świata z 18 punktami, kliknięcie teleportuje za darmo (bez pierścienia). Wymaga klienta z mapą (uiteleportmap.py). "
        "Wyłączone: TAB działa jak dawniej (Slot 6), a serwer ignoruje mapę. Przełącza się od razu, bez restartu.",
        "moduly", "bool", "0", GAME),
+    # MT2009_PLUS_SHOP_QOL_V2: the players' offline shops as big as the bots'
+    _e("M2_SHOP_BIG", "Większe sklepy offline graczy",
+       "Włączone: okno sklepu offline gracza ma dwie strony obok siebie (160 miejsc, jak sklepy botów); druga strona bez blokad i miejsc premium. "
+       "Wyłączone: tylko pierwsza strona – przedmioty, które już stoją na drugiej, zostają w sprzedaży. "
+       "Wymaga klienta i serwera z wydania 2.34.0 lub nowszego. Przełącza się od razu, bez restartu; gracz widzi zmianę przy następnym otwarciu okna sklepu.",
+       "moduly", "bool", "0", GAME),
     _e("M2_ALCHEMY", "Alchemia (Cor Draconis)",
        "Wyłączone: nie powstają nowe Cor Draconis (Metiny, bossowie, odłamki i wymiana u Alchemika). To, co gracze mają, zostaje. "
        "Panel przełącza to od razu; ta wartość działa przy starcie, gdy się zmieniła.",
@@ -605,6 +611,7 @@ LIVE_KEYS = {
     "M2_AREZZO": "AREZZO",
     "M2_SEONHAE": "SEONHAE",
     "M2_TELEPORT_MAP": "TPMAP",
+    "M2_SHOP_BIG": "SHOPBIG",  # MT2009_PLUS_SHOP_QOL_V2
     "M2_ALCHEMY": "RARE",
     "M2_SASHES": "RARE",
 }

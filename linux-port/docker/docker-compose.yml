@@ -136,6 +136,9 @@ services:
       # The teleport map under TAB (MT2009_PLUS_TELEPORT_MAP_V1, Autor: Mur4s): 1 on,
       # 0 off (apply.sh writes m2_teleport_map_on when .env changed; the panels switch it live).
       M2_TELEPORT_MAP: "${M2_TELEPORT_MAP:-0}"
+      # The players' offline shops as big as the bots' (MT2009_PLUS_SHOP_QOL_V2):
+      # 1 on, 0 off (apply.sh writes m2_shop_big_on when .env changed; both panels switch it live).
+      M2_SHOP_BIG: "${M2_SHOP_BIG:-0}"
       # Karty Potworow, the Monster Card System (MT2009_PLUS_MONSTER_CARDS_V1,
       # Autor: Digi Rasta): 1 on, 0 off. The game core reads it at start
       # (playerbot_monster_card.h) - off, the cards do nothing and the set

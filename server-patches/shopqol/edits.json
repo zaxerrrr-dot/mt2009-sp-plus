@@ -1,0 +1,236 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (move in shop)",
+  "old": "\t// of having both windows open (blasty, 19 September). Every other busy\n\t// state still refuses.\n\tif (!CanHandleItem(false, false, BUSY_CAN_HANDLE_ITEM_EXCLUDE | BUSY_SAFEBOX))\n\t{\n\t\tif (bDSMoveTrace)",
+  "new": "\t// of having both windows open (blasty, 19 September). Every other busy\n\t// state still refuses.\n\t// MT2009_PLUS_SHOP_QOL_V2 (move in shop): nor is the offline shop's own window (its owner\n\t// splits a stack with Shift + click, or tidies the bag, before putting it\n\t// up) - a move that stays in the bag (and the dragon soul bag) only.\n\tDWORD moveBusyExclude = BUSY_CAN_HANDLE_ITEM_EXCLUDE | BUSY_SAFEBOX;\n\tif ((Cell.window_type == INVENTORY || Cell.window_type == DRAGON_SOUL_INVENTORY) &&\n\t\tCell.window_type == DestCell.window_type &&\n\t\t!Cell.IsEquipPosition() && !DestCell.IsEquipPosition() &&\n\t\t!Cell.IsDragonSoulEquipPosition() && !DestCell.IsDragonSoulEquipPosition())\n\t\tmoveBusyExclude |= BUSY_SHOP_MANAGE;\n\tif (!CanHandleItem(false, false, moveBusyExclude))\n\t{\n\t\tif (bDSMoveTrace)"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (cmd declare)",
+  "old": "ACMD(do_ah_bonus);\nACMD(do_ah_buy);\nACMD(do_ah_cart_add);\nACMD(do_ah_cart_buy);",
+  "new": "ACMD(do_ah_bonus);\nACMD(do_ah_buy);\nACMD(do_ikashop_autoprice);\t// MT2009_PLUS_SHOP_QOL_V2 (cmd declare)\nACMD(do_ikashop_extend);\nACMD(do_ikashop_buy_part);\nACMD(do_ah_cart_add);\nACMD(do_ah_cart_buy);"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (cmd table)",
+  "old": "\t{ \"ah_bonus\",\tdo_ah_bonus,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_buy\",\tdo_ah_buy,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_cart_add\",\tdo_ah_cart_add,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_cart_buy\",\tdo_ah_cart_buy,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},",
+  "new": "\t{ \"ah_bonus\",\tdo_ah_bonus,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_buy\",\tdo_ah_buy,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ikashop_autoprice\",\tdo_ikashop_autoprice,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SHOP_QOL_V2 (cmd table)\n\t{ \"ikashop_extend\",\tdo_ikashop_extend,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ikashop_buy_part\",\tdo_ikashop_buy_part,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_cart_add\",\tdo_ah_cart_add,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"ah_cart_buy\",\tdo_ah_cart_buy,\t0,\t\t\t\tPOS_DEAD,\tGM_PLAYER\t},"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (gd extend)",
+  "old": "\t\tSUBHEADER_GD_LOAD_EXPIRED_SHOP,\n#endif\n\t};\n",
+  "new": "\t\tSUBHEADER_GD_LOAD_EXPIRED_SHOP,\n#endif\n\t\tSUBHEADER_GD_SHOP_EXTEND_DURATION, // MT2009_PLUS_SHOP_QOL_V2 (gd extend)\n\t};\n\n\t// MT2009_PLUS_SHOP_QOL_V2: a running shop bought more time\n\tstruct TSubPacketGDShopExtendDuration {\n\t\tDWORD owner;\n\t\tDWORD minutes;\n\t};\n\n\tstruct TSubPacketDGShopSetDuration {\n\t\tDWORD owner;\n\t\tDWORD duration;\n\t};\n"
+ },
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (dg set duration)",
+  "old": "\n\t\tSUBHEADER_DG_LOAD_EXPIRED_SHOP,\n\t};\n",
+  "new": "\n\t\tSUBHEADER_DG_LOAD_EXPIRED_SHOP,\n\t\tSUBHEADER_DG_SHOP_SET_DURATION, // MT2009_PLUS_SHOP_QOL_V2 (dg set duration)\n\t};\n"
+ },
+ {
+  "file": "../../db/src/ClientManager.h",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (db decl)",
+  "old": "\tbool RecvIkarusShopNotificationSeen(const char* data);\n\tbool RecvIkarusShopRestoreDuration(const char* data);\n#ifdef ENABLE_IKASHOP_ENTITIES\n\tbool RecvIkarusShopMoveShopEntity(const char* data);",
+  "new": "\tbool RecvIkarusShopNotificationSeen(const char* data);\n\tbool RecvIkarusShopRestoreDuration(const char* data);\n\tbool RecvIkarusShopExtendDuration(const char* data); // MT2009_PLUS_SHOP_QOL_V2 (db decl)\n#ifdef ENABLE_IKASHOP_ENTITIES\n\tbool RecvIkarusShopMoveShopEntity(const char* data);"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (db recv)",
+  "old": "\t\tsuccess=RecvIkarusShopRestoreDuration(data);\n\t\tbreak;\n#ifdef ENABLE_IKASHOP_ENTITIES\n\tcase ikashop::SUBHEADER_GD_MOVE_SHOP_ENTITY:",
+  "new": "\t\tsuccess=RecvIkarusShopRestoreDuration(data);\n\t\tbreak;\n\tcase ikashop::SUBHEADER_GD_SHOP_EXTEND_DURATION: // MT2009_PLUS_SHOP_QOL_V2 (db recv)\n\t\tsuccess=RecvIkarusShopExtendDuration(data);\n\t\tbreak;\n#ifdef ENABLE_IKASHOP_ENTITIES\n\tcase ikashop::SUBHEADER_GD_MOVE_SHOP_ENTITY:"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (who)",
+  "old": "\tif(!success)\n\t\tsys_err(\"maybe some error during recv offline shop subheader %d \",pack.bSubHeader);\n}\n",
+  "new": "\tif(!success)\n\t\tsys_err(\"maybe some error during recv offline shop subheader %d \",pack.bSubHeader);\n}\n\n// MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (the owner, 15 October; Autor: Vekirion): a skill book or a\n// book of forgetting is one vnum for every skill - the skill is its socket 0 - so the\n// shop's history and notifications (stored here, without sockets) said only \"Ksiega\n// Umiejetnosci\". The skill rides along in the notification's \"who\" as \"#S<skill>\"\n// (empty for most notifications, a buyer's name for the rest); the client\n// (offlineshophistory.py, uiikashop.py) takes it off and names the book\n// \"<skill> - <book>\". No table or packet changes; an old client would show the\n// marker after a buyer's name only on auction notifications of a book.\nstatic std::string Mt2009PlusBookWho(const std::map<DWORD, TItemTable*>& protos, DWORD vnum, long socket0, const std::string& who)\n{\n\tif (socket0 <= 0 || socket0 > 999)\n\t\treturn who;\n\tconst auto it = protos.find(vnum);\n\tif (it == protos.end() || !it->second)\n\t\treturn who;\n\tif (it->second->bType != ITEM_SKILLBOOK && it->second->bType != ITEM_SKILLFORGET)\n\t\treturn who;\n\tstd::string marked = who + fmt::format(\"#S{}\", socket0);\n\tif (marked.size() > CHARACTER_NAME_MAX_LEN)\t// the \"who\" fields hold a character name\n\t\treturn who;\n\treturn marked; // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (who)\n}\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (sold)",
+  "old": "#endif\n\t\tAppendIkarusShopNotification(\n\t\t\tikashop::ENotificationType::SELLER_SOLD_ITEM, subpack.ownerid, item->vnum, \"\", itemPrice);\n#endif\n\t}",
+  "new": "#endif\n\t\tAppendIkarusShopNotification(\n\t\t\tikashop::ENotificationType::SELLER_SOLD_ITEM, subpack.ownerid, item->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, item->vnum, item->alSockets[0], \"\"), itemPrice); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (sold)\n#endif\n\t}"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (new offer)",
+  "old": "\t\tif(auto item = m_offlineshopShopCache.GetItem(subpack.offer.ownerid, subpack.offer.itemid))\n\t\t\tAppendIkarusShopNotification(\n\t\t\t\tikashop::ENotificationType::SELLER_NEW_OFFER_ON_ITEM, subpack.offer.ownerid, item->vnum, info.buyername, fmt::format(\"{}\", subpack.offer.price.yang));\n#endif\n",
+  "new": "\t\tif(auto item = m_offlineshopShopCache.GetItem(subpack.offer.ownerid, subpack.offer.itemid))\n\t\t\tAppendIkarusShopNotification(\n\t\t\t\tikashop::ENotificationType::SELLER_NEW_OFFER_ON_ITEM, subpack.offer.ownerid, item->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, item->vnum, item->alSockets[0], info.buyername), fmt::format(\"{}\", subpack.offer.price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (new offer)\n#endif\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer accepted)",
+  "old": "#ifdef EXTEND_IKASHOP_PRO\n\tAppendIkarusShopNotification(\n\t\tikashop::ENotificationType::BUYER_OFFER_ACCEPTED, offerCache->buyerid, item->vnum, \"\", fmt::format(\"{}\", offerCache->price.yang));\n#endif\n",
+  "new": "#ifdef EXTEND_IKASHOP_PRO\n\tAppendIkarusShopNotification(\n\t\tikashop::ENotificationType::BUYER_OFFER_ACCEPTED, offerCache->buyerid, item->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, item->vnum, item->alSockets[0], \"\"), fmt::format(\"{}\", offerCache->price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer accepted)\n#endif\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer cancel)",
+  "old": "\t\t\tconst auto type = subpack.requester == offer->buyerid ? ikashop::ENotificationType::SELLER_OFFER_CANCELLED : ikashop::ENotificationType::BUYER_OFFER_DENIED;\n\t\t\tconst auto pid = subpack.requester == offer->buyerid ? subpack.ownerid : offer->buyerid;\n\t\t\tAppendIkarusShopNotification(type, pid, item->vnum, \"\", fmt::format(\"{}\", offer->price.yang));\n\t\t}\n#endif",
+  "new": "\t\t\tconst auto type = subpack.requester == offer->buyerid ? ikashop::ENotificationType::SELLER_OFFER_CANCELLED : ikashop::ENotificationType::BUYER_OFFER_DENIED;\n\t\t\tconst auto pid = subpack.requester == offer->buyerid ? subpack.ownerid : offer->buyerid;\n\t\t\tAppendIkarusShopNotification(type, pid, item->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, item->vnum, item->alSockets[0], \"\"), fmt::format(\"{}\", offer->price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer cancel)\n\t\t}\n#endif"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction offer)",
+  "old": "\t\t\tAppendIkarusShopNotification(\n\t\t\t\tikashop::ENotificationType::BUYER_AUCTION_RAISE, \n\t\t\t\t\tbestoffer->buyerid, auction->vnum, \"\", fmt::format(\"{}\", bestoffer->price.yang));\n#endif\n\t}",
+  "new": "\t\t\tAppendIkarusShopNotification(\n\t\t\t\tikashop::ENotificationType::BUYER_AUCTION_RAISE, \n\t\t\t\t\tbestoffer->buyerid, auction->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, auction->vnum, auction->alSockets[0], \"\"), fmt::format(\"{}\", bestoffer->price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction offer)\n#endif\n\t}"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction offer owner)",
+  "old": "\t\t\tAppendIkarusShopNotification(\n\t\t\t\tikashop::ENotificationType::SELLER_AUCTION_NEW_OFFER, \n\t\t\t\t\tsubpack.offer.ownerid, auction->vnum, subpack.offer.buyername, fmt::format(\"{}\", subpack.offer.price.yang));\n#endif\n#ifdef ENABLE_IKASHOP_LOGS",
+  "new": "\t\t\tAppendIkarusShopNotification(\n\t\t\t\tikashop::ENotificationType::SELLER_AUCTION_NEW_OFFER, \n\t\t\t\t\tsubpack.offer.ownerid, auction->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, auction->vnum, auction->alSockets[0], subpack.offer.buyername), fmt::format(\"{}\", subpack.offer.price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction offer owner)\n#endif\n#ifdef ENABLE_IKASHOP_LOGS"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (db extend)",
+  "old": "\tauto query = fmt::format(\"DELETE FROM `ikashop_notification` WHERE `id` = {}\", subpack.id);\n\tCDBManager::instance().AsyncQuery(query.c_str());\n\treturn true;\n}",
+  "new": "\tauto query = fmt::format(\"DELETE FROM `ikashop_notification` WHERE `id` = {}\", subpack.id);\n\tCDBManager::instance().AsyncQuery(query.c_str());\n\treturn true;\n}\n\n// MT2009_PLUS_SHOP_QOL_V2 (db extend) (Autor: Vekirion): \"Przedluz\" - a running shop's minutes added, up\n// to OFFLINESHOP_DURATION_MAX_MINUTES, and the new duration sent to every core.\nbool CClientManager::RecvIkarusShopExtendDuration(const char* data)\n{\n\tconst auto& subpack = Decode<ikashop::TSubPacketGDShopExtendDuration>(data);\n\tauto shop = m_offlineshopShopCache.Get(subpack.owner);\n\tif (!shop || shop->duration == 0)\n\t\treturn false;\n\n\tconst DWORD duration = std::min<DWORD>(OFFLINESHOP_DURATION_MAX_MINUTES, shop->duration + subpack.minutes);\n\tshop->duration = duration;\n\n\tauto query = fmt::format(\"UPDATE `ikashop_offlineshop` SET `duration` = {} WHERE `owner` = {}\", duration, subpack.owner);\n\tCDBManager::instance().AsyncQuery(query.c_str());\n\n#ifdef ENABLE_IKASHOP_LOGS\n\tIkarusShopLog(subpack.owner, 0, \"SHOP_EXTEND_DURATION\", subpack.owner, \"\");\n#endif\n\n\tTPacketDGNewIkarusShop pack{};\n\tpack.bSubHeader = ikashop::SUBHEADER_DG_SHOP_SET_DURATION;\n\n\tikashop::TSubPacketDGShopSetDuration out{};\n\tout.owner = subpack.owner;\n\tout.duration = duration;\n\n\tfor (auto& peer : m_peerList)\n\t{\n\t\tif (peer->GetChannel() != 0)\n\t\t{\n\t\t\tpeer->EncodeHeader(HEADER_DG_NEW_OFFLINESHOP, 0, sizeof(pack) + sizeof(out));\n\t\t\tpeer->Encode(pack);\n\t\t\tpeer->Encode(out);\n\t\t}\n\t}\n\treturn true;\n}"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction end)",
+  "old": "\n#ifdef EXTEND_IKASHOP_PRO\n\t\tAppendIkarusShopNotification(ikashop::ENotificationType::SELLER_AUCTION_SOLD, ownerid, auction->vnum, winoffer->buyername, fmt::format(\"{}\", winoffer->price.yang));\n\t\t\n\t\tstd::set<DWORD> notifiedIds;\n\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_AUCTION_BUY, winoffer->buyerid, auction->vnum, \"\", fmt::format(\"{}\", winoffer->price.yang));\n\t\tnotifiedIds.emplace(winoffer->buyerid);\n",
+  "new": "\n#ifdef EXTEND_IKASHOP_PRO\n\t\tAppendIkarusShopNotification(ikashop::ENotificationType::SELLER_AUCTION_SOLD, ownerid, auction->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, auction->vnum, auction->alSockets[0], winoffer->buyername), fmt::format(\"{}\", winoffer->price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction end)\n\t\t\n\t\tstd::set<DWORD> notifiedIds;\n\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_AUCTION_BUY, winoffer->buyerid, auction->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, auction->vnum, auction->alSockets[0], \"\"), fmt::format(\"{}\", winoffer->price.yang));\n\t\tnotifiedIds.emplace(winoffer->buyerid);\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (notification 1)",
+  "old": "\t\t\t{\n\t\t\t\tnotifiedIds.emplace(offer->buyerid);\n\t\t\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_AUCTION_LOST, offer->buyerid, auction->vnum, winoffer->buyername, fmt::format(\"{}\", winoffer->price.yang));\n\t\t\t}\n\t\t}",
+  "new": "\t\t\t{\n\t\t\t\tnotifiedIds.emplace(offer->buyerid);\n\t\t\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_AUCTION_LOST, offer->buyerid, auction->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, auction->vnum, auction->alSockets[0], winoffer->buyername), fmt::format(\"{}\", winoffer->price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (notification 1)\n\t\t\t}\n\t\t}"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction expired)",
+  "old": "#ifdef EXTEND_IKASHOP_PRO\n\tif(!winoffer)\n\t\tAppendIkarusShopNotification(ikashop::ENotificationType::SELLER_AUCTION_EXPIRED, ownerid, auction->vnum, \"\", \"\");\n#endif\n",
+  "new": "#ifdef EXTEND_IKASHOP_PRO\n\tif(!winoffer)\n\t\tAppendIkarusShopNotification(ikashop::ENotificationType::SELLER_AUCTION_EXPIRED, ownerid, auction->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, auction->vnum, auction->alSockets[0], \"\"), \"\"); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (auction expired)\n#endif\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer expired 1)",
+  "old": "\t\t// getting the item\n\t\tif (auto item = m_offlineshopShopCache.GetItem(offer->ownerid, offer->itemid))\n\t\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_OFFER_EXPIRED, offer->buyerid, item->vnum, \"\", fmt::format(\"{}\", offer->price.yang));\n#endif\n",
+  "new": "\t\t// getting the item\n\t\tif (auto item = m_offlineshopShopCache.GetItem(offer->ownerid, offer->itemid))\n\t\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_OFFER_EXPIRED, offer->buyerid, item->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, item->vnum, item->alSockets[0], \"\"), fmt::format(\"{}\", offer->price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer expired 1)\n#endif\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerIkarusShop.cpp",
+  "marker": "MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer expired 2)",
+  "old": "#ifdef EXTEND_IKASHOP_PRO\n\t\tif (auto item = m_offlineshopShopCache.GetItem(offer->ownerid, offer->itemid))\n\t\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_OFFER_EXPIRED, offer->buyerid, item->vnum, \"\", fmt::format(\"{}\", offer->price.yang));\n#endif\n",
+  "new": "#ifdef EXTEND_IKASHOP_PRO\n\t\tif (auto item = m_offlineshopShopCache.GetItem(offer->ownerid, offer->itemid))\n\t\t\tAppendIkarusShopNotification(ikashop::ENotificationType::BUYER_OFFER_EXPIRED, offer->buyerid, item->vnum, Mt2009PlusBookWho(m_map_itemTableByVnum, item->vnum, item->alSockets[0], \"\"), fmt::format(\"{}\", offer->price.yang)); // MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1 (offer expired 2)\n#endif\n"
+ },
+ {
+  "file": "ikarus_shop_manager.h",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (decl)",
+  "old": "\t\tvoid LoadShopLimits(const TOfflineShopLimit* limits, WORD size);\n\n\t\tvoid NotifyOwnerItemSold(LPCHARACTER ch, DWORD item_vnum, ITEM_COUNT item_count, YANG price);\n\t\t \n",
+  "new": "\t\tvoid LoadShopLimits(const TOfflineShopLimit* limits, WORD size);\n\n\t\t// MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1: socket0 - a book's skill (game.py names it)\n\t\tvoid NotifyOwnerItemSold(LPCHARACTER ch, DWORD item_vnum, ITEM_COUNT item_count, YANG price, long socket0 = 0);\n\n\t\t// MT2009_PLUS_SHOP_QOL_V2 (decl): a running shop's time extended\n\t\tbool ExtendShopClient(LPCHARACTER ch, BYTE bTimeIndex);\n\t\tvoid SendShopExtendDurationDBPacket(DWORD owner, DWORD minutes);\n\t\tvoid RecvShopSetDurationDBPacket(DWORD owner, DWORD duration);\n\t\t \n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (set duration)",
+  "old": "}\n\nvoid IkarusShopRestoreDuration(const char* data)\n{",
+  "new": "}\n\n// MT2009_PLUS_SHOP_QOL_V2 (set duration): the db core's new duration of an extended shop\nvoid IkarusShopSetDuration(const char* data)\n{\n\tconst auto& subpack = Decode<ikashop::TSubPacketDGShopSetDuration>(data);\n\tikashop::GetManager().RecvShopSetDurationDBPacket(subpack.owner, subpack.duration);\n}\n\nvoid IkarusShopRestoreDuration(const char* data)\n{"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (case)",
+  "old": "\tcase ikashop::SUBHEADER_DG_SHOP_LOCKED_SLOT_STATE:\n\t\tIkarusShopLockedSlotState(data);\n\t\treturn;\n",
+  "new": "\tcase ikashop::SUBHEADER_DG_SHOP_LOCKED_SLOT_STATE:\n\t\tIkarusShopLockedSlotState(data);\n\t\treturn;\n\n\tcase ikashop::SUBHEADER_DG_SHOP_SET_DURATION: // MT2009_PLUS_SHOP_QOL_V2 (case)\n\t\tIkarusShopSetDuration(data);\n\t\treturn;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (include)",
+  "old": "#include \"playerbot_sale_tax.h\"\n#include \"shop.h\"\n\n// AH_V1 [Autor: Vekirion] (decl) (server-patches/auctionhouse, Dom Aukcyjny, auction_house.cpp): zlecenie zakupu czeka na wynik kupna.",
+  "new": "#include \"playerbot_sale_tax.h\"\n#include \"shop.h\"\n#include \"ikashop_qol.h\" // MT2009_PLUS_SHOP_QOL_V2 (include) - Autor: Vekirion (server-patches/shopqol)\n#include \"cmd.h\"\n\n// AH_V1 [Autor: Vekirion] (decl) (server-patches/auctionhouse, Dom Aukcyjny, auction_house.cpp): zlecenie zakupu czeka na wynik kupna."
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (part sold)",
+  "old": "\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"FleaMarketStackUpdate %u %u %u %lld 0\",\n\t\t\t\t\townerid, itemid, remainingCount, remainingYang);\n\t\t\t}\n",
+  "new": "\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"FleaMarketStackUpdate %u %u %u %lld 0\",\n\t\t\t\t\townerid, itemid, remainingCount, remainingYang);\n\t\t\t\tikashop_qol::OnPartSold(itemid); // MT2009_PLUS_SHOP_QOL_V2 (part sold)\n\t\t\t}\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (part)",
+  "old": "\t\t\tauto partOwnerCh = CHARACTER_MANAGER::instance().FindByPID(ownerid);\n\t\t\tif (partOwnerCh)\n\t\t\t\tNotifyOwnerItemSold(partOwnerCh, partVnum, quantity, partPaid);\n\t\t\t// A bot's line sold in part stays on its counter (playerbot_offline::NoteSold).\n\t\t\tplayerbot_offline::NoteSold(partOwnerCh ? ownerid : 0, itemid, partVnum, quantity, partPaid, true);",
+  "new": "\t\t\tauto partOwnerCh = CHARACTER_MANAGER::instance().FindByPID(ownerid);\n\t\t\tif (partOwnerCh)\n\t\t\t\tNotifyOwnerItemSold(partOwnerCh, partVnum, quantity, partPaid, partInfo.alSockets[0]); // MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (part)\n\t\t\t// A bot's line sold in part stays on its counter (playerbot_offline::NoteSold).\n\t\t\tplayerbot_offline::NoteSold(partOwnerCh ? ownerid : 0, itemid, partVnum, quantity, partPaid, true);"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (removed 1)",
+  "old": "\t\t\tshop->BuyItem(shopItem->GetID());\n\t\t\tSendSearchResultDeleteClientPacket(ch, itemid);\n\t\t}\n",
+  "new": "\t\t\tshop->BuyItem(shopItem->GetID());\n\t\t\tSendSearchResultDeleteClientPacket(ch, itemid);\n\t\t\tikashop_qol::OnRemoved(itemid); // MT2009_PLUS_SHOP_QOL_V2 (removed 1)\n\t\t}\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (whole)",
+  "old": "\t\tif (ownerCh)\n\t\t{\n\t\t\tNotifyOwnerItemSold(ownerCh, shopItem->GetVnum(), shopItem->GetInfo().count, shopItem->GetPrice().GetTotalYangAmount());\n\t\t}\n",
+  "new": "\t\tif (ownerCh)\n\t\t{\n\t\t\tNotifyOwnerItemSold(ownerCh, shopItem->GetVnum(), shopItem->GetInfo().count, shopItem->GetPrice().GetTotalYangAmount(), shopItem->GetInfo().alSockets[0]); // MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (whole)\n\t\t}\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (price edited)",
+  "old": "\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Item price edited successfully.\"));\n\t\tSendShopEditItemDBPacket(shop->GetOwnerPID(), itemid, price);\n\t\treturn true;\n\t}",
+  "new": "\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Item price edited successfully.\"));\n\t\tSendShopEditItemDBPacket(shop->GetOwnerPID(), itemid, price);\n\t\tikashop_qol::OnPriceEdited(itemid); // MT2009_PLUS_SHOP_QOL_V2 (price edited)\n\t\treturn true;\n\t}"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (listed)",
+  "old": "\t\t\n\t\tSendShopCreateNewDBPacket(shopinfo, items);\n\t\treturn true;\n\t}",
+  "new": "\t\t\n\t\tSendShopCreateNewDBPacket(shopinfo, items);\n\t\tfor (size_t i = 0; i < bItemCount; ++i)\n\t\t\tikashop_qol::OnListed(ch->GetPlayerID(), items[i].id); // MT2009_PLUS_SHOP_QOL_V2 (listed)\n\t\treturn true;\n\t}"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (owner meta)",
+  "old": "\t\t\tSendShopOpenMyShopClientPacket(ch);\n\n\t\treturn true;\n\t}",
+  "new": "\t\t\tSendShopOpenMyShopClientPacket(ch);\n\n\t\t// MT2009_PLUS_SHOP_QOL_V2 (owner meta): the pages and the lines' clocks and drops\n\t\tikashop_qol::SendOwnerMeta(ch);\n\t\treturn true;\n\t}"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (buy part)",
+  "old": "\t\tDWORD mt2009PartQuantity = 0;\n\t\tlong long mt2009PartYang = 0;\n\t\tif (fleaRemote && g_fleaBuyQuantity != 0 && g_fleaBuyQuantity != pitem->GetInfo().count)\n\t\t{\n\t\t\tif (g_fleaBuyQuantity > pitem->GetInfo().count)",
+  "new": "\t\tDWORD mt2009PartQuantity = 0;\n\t\tlong long mt2009PartYang = 0;\n\t\t// MT2009_PLUS_SHOP_QOL_V2 (buy part): and from the shop's own window (/ikashop_buy_part)\n\t\tif (g_fleaBuyQuantity != 0 && g_fleaBuyQuantity != pitem->GetInfo().count)\n\t\t{\n\t\t\tif (g_fleaBuyQuantity > pitem->GetInfo().count)"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (big shop)",
+  "old": "\t\t// and on one page, never across two (playerbot_offline_policy.h).\n\t\tconst bool secondPage = destPos >= SHOP_PLAYER_WIDTH * SHOP_PLAYER_HEIGHT;\n\t\tif (secondPage && !(ch->GetDesc() && ch->GetDesc()->IsBot()))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"SHOP_ITEM_WRONG_POS\"));",
+  "new": "\t\t// and on one page, never across two (playerbot_offline_policy.h).\n\t\tconst bool secondPage = destPos >= SHOP_PLAYER_WIDTH * SHOP_PLAYER_HEIGHT;\n\t\t// MT2009_PLUS_SHOP_QOL_V2 (big shop): and a person's too, while the panel's \"bigger\n\t\t// shops\" switch (event flag m2_shop_big_on) is on\n\t\tif (secondPage && !(ch->GetDesc() && ch->GetDesc()->IsBot()) && !ikashop_qol::BigShopsOn())\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"SHOP_ITEM_WRONG_POS\"));"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (listed one)",
+  "old": "\t\tProcessAddItemToShop(sitem, ch, item, destPos, price);\n\t\tSendShopAddItemDBPacket(ch->GetPlayerID(), sitem);\n\t\treturn true;\n\t}",
+  "new": "\t\tProcessAddItemToShop(sitem, ch, item, destPos, price);\n\t\tSendShopAddItemDBPacket(ch->GetPlayerID(), sitem);\n\t\t// MT2009_PLUS_SHOP_QOL_V2 (listed one): the line's clock starts\n\t\tikashop_qol::OnListed(ch->GetPlayerID(), sitem.id);\n\t\tikashop_qol::SendMetaLine(ch, sitem.id, ikashop_qol::Now(), 0, 0, 0);\n\t\treturn true;\n\t}"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (removed 2)",
+  "old": "\t\tch->SetIkarusShopUseTime();\n\t\tSendShopRemoveItemDBPacket(shop->GetOwnerPID(), itemid);\n\t\treturn true;\n\t}",
+  "new": "\t\tch->SetIkarusShopUseTime();\n\t\tSendShopRemoveItemDBPacket(shop->GetOwnerPID(), itemid);\n\t\tikashop_qol::OnRemoved(itemid); // MT2009_PLUS_SHOP_QOL_V2 (removed 2)\n\t\treturn true;\n\t}"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (notify)",
+  "old": "\t}\n\n\tvoid ikashop::CShopManager::NotifyOwnerItemSold(LPCHARACTER ch, DWORD item_vnum, ITEM_COUNT item_count, YANG price)\n\t{\n\t\tif (!ch || !ch->GetDesc())\n\t\t\treturn;\n\n\t\tTSubPacketGCShopNotifyItemSold subpack{};",
+  "new": "\t}\n\n\tvoid ikashop::CShopManager::NotifyOwnerItemSold(LPCHARACTER ch, DWORD item_vnum, ITEM_COUNT item_count, YANG price, long socket0) // MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (notify)\n\t{\n\t\tif (!ch || !ch->GetDesc())\n\t\t\treturn;\n\n\t\t// MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (the owner, 13 October; Autor: Vekirion): a skill\n\t\t// book or a book of forgetting is one vnum for every skill - the\n\t\t// skill is its socket 0 - so the \"sold\" notice said only \"Ksiega\n\t\t// Umiejetnosci\". The skill goes first, as a command (game.py,\n\t\t// IkaShopSoldBook), and the client's notice (OnMyShopBuy, from the\n\t\t// packet below) names the book \"<skill> - <book>\".\n\t\tif (socket0 > 0)\n\t\t{\n\t\t\tconst TItemTable* proto = ITEM_MANAGER::instance().GetTable(item_vnum);\n\t\t\tif (proto && (proto->bType == ITEM_SKILLBOOK || proto->bType == ITEM_SKILLFORGET))\n\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"IkaShopSoldBook %u %ld\", (unsigned int) item_vnum, socket0);\n\t\t}\n\n\t\tTSubPacketGCShopNotifyItemSold subpack{};"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (extend)",
+  "old": "\t}\n\n\n\tvoid CShopManager::SendPopupMessage(LPCHARACTER ch, const std::string& message)",
+  "new": "\t}\n\n\n\t// MT2009_PLUS_SHOP_QOL_V2 (extend): \"Przedluz\" in the owner's window - a running\n\t// shop bought more time with the time options of opening one (price,\n\t// premium), up to OFFLINESHOP_DURATION_MAX_MINUTES. The db core owns the\n\t// clock: it adds the minutes and tells every core the new duration.\n\tbool CShopManager::ExtendShopClient(LPCHARACTER ch, BYTE bTimeIndex)\n\t{\n\t\tif (!ch || !ch->GetDesc())\n\t\t\treturn false;\n\n\t\tif (!ch->IsLookingShopOwner())\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"OFFLINE_SHOP_MANAGE_MUST_BE_OPEN\"));\n\t\t\treturn false;\n\t\t}\n\n\t\tif (!CheckGMLevel(ch))\n\t\t\treturn false;\n\n\t\tif (!ch->IkarusShopFloodCheck(SHOP_ACTION_WEIGHT_CREATE_NEW))\n\t\t\treturn false;\n\n\t\tauto shop = ch->GetIkarusShop();\n\t\tif (!shop || shop->GetDuration() == 0)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Sklep jest zamkniety - otworz go ponownie zamiast przedluzac.\");\n\t\t\treturn false;\n\t\t}\n\n\t\tif (bTimeIndex < 1 || bTimeIndex >= OFFLINESHOP_TIME_OPTION_MAX)\n\t\t\treturn false;\n\n\t\tconst auto& shopTime = aOfflineShopTime[bTimeIndex];\n\t\tif (shopTime.duration == 0)\n\t\t\treturn false;\n\n\t\tif (shop->GetDuration() >= OFFLINESHOP_DURATION_MAX_MINUTES)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Sklep ma juz maksymalny czas (%d dni).\", OFFLINESHOP_DURATION_MAX_MINUTES / (24 * 60));\n\t\t\treturn false;\n\t\t}\n\n\t\tif (shopTime.isPremium && ch->GetPremiumRemainSeconds(PREMIUM_SHOP) <= 0)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"SHOP_NO_PREMIUM\"));\n\t\t\treturn false;\n\t\t}\n\n\t\tif (ch->GetGold() < shopTime.price)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You do not have enough Yang.\"));\n\t\t\treturn false;\n\t\t}\n\n\t\tif (!PulseManager::Instance().IncreaseClock(ch->GetPlayerID(), ePulse::IkaShopEditMode, std::chrono::milliseconds(1000)))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"NEXT_ACTION_WAIT_NO_FORMAT\"));\n\t\t\treturn false;\n\t\t}\n\n\t\tch->ChangeGold(-shopTime.price);\n\t\tSendShopExtendDurationDBPacket(ch->GetPlayerID(), shopTime.duration);\n\n\t\tconst DWORD after = std::min<DWORD>(OFFLINESHOP_DURATION_MAX_MINUTES, shop->GetDuration() + shopTime.duration);\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Sklep przedluzony o %u h (zostalo ok. %u h %u min).\",\n\t\t\tshopTime.duration / 60, after / 60, after % 60);\n\t\treturn true;\n\t}\n\n\tvoid CShopManager::SendShopExtendDurationDBPacket(DWORD owner, DWORD minutes)\n\t{\n\t\tTPacketGDNewIkarusShop pack{};\n\t\tpack.bSubHeader = ikashop::SUBHEADER_GD_SHOP_EXTEND_DURATION;\n\n\t\tikashop::TSubPacketGDShopExtendDuration subpack{};\n\t\tsubpack.owner = owner;\n\t\tsubpack.minutes = minutes;\n\n\t\tTEMP_BUFFER buffer;\n\t\tbuffer.write(&pack, sizeof(pack));\n\t\tbuffer.write(&subpack, sizeof(subpack));\n\n\t\tdb_clientdesc->DBPacket(HEADER_GD_NEW_OFFLINESHOP, 0, buffer.read_peek(), buffer.size());\n\t}\n\n\tvoid CShopManager::RecvShopSetDurationDBPacket(DWORD owner, DWORD duration)\n\t{\n\t\tif (auto shop = GetShopByOwnerID(owner))\n\t\t{\n\t\t\tshop->SetDuration(duration);\n\t\t\tshop->RefreshToOwner();\n\t\t}\n\t}\n\n\tvoid CShopManager::SendPopupMessage(LPCHARACTER ch, const std::string& message)"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (process)",
+  "old": "\t\t\tif(shop->GetDuration() > 1)\n\t\t\t\tshop->DecreaseDuration();\n\t}\n",
+  "new": "\t\t\tif(shop->GetDuration() > 1)\n\t\t\t\tshop->DecreaseDuration();\n\n\t\t// MT2009_PLUS_SHOP_QOL_V2 (process): the automatic price drops (the core that stands\n\t\t// the shop) and the stale rows of the lines' clocks\n\t\tikashop_qol::Process(*this, m_mapShops);\n\t\tikashop_qol::Cleanup();\n\t}\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SHOP_QOL_V2 (commands)",
+  "old": "\tikashop::g_fleaFilter[ch->GetPlayerID()] = filter;\n}\n#endif\n",
+  "new": "\tikashop::g_fleaFilter[ch->GetPlayerID()] = filter;\n}\n// MT2009_PLUS_SHOP_QOL_V2 (commands) ------------------------------------------------------\n// /ikashop_autoprice <item> <pct> <hours> <minYang> - the owner's automatic drop\nACMD(do_ikashop_autoprice)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tchar a1[32], a2[32], a3[32], a4[64];\n\targument = one_argument(argument, a1, sizeof(a1));\n\targument = one_argument(argument, a2, sizeof(a2));\n\targument = one_argument(argument, a3, sizeof(a3));\n\tone_argument(argument, a4, sizeof(a4));\n\tif (!*a1 || !*a2 || !*a3 || !*a4)\n\t\treturn;\n\t// no shop action clock here: the client paces these itself (offlineshopqol.py),\n\t// and the fast add's lines must not wait for them\n\tikashop_qol::SetAutoPrice(ch, (DWORD) strtoul(a1, nullptr, 10), atoi(a2), atoi(a3), atoll(a4));\n}\n\n// /ikashop_extend <timeIndex> - a running shop's time extended\nACMD(do_ikashop_extend)\n{\n\tif (!ch)\n\t\treturn;\n\tchar a1[32];\n\tone_argument(argument, a1, sizeof(a1));\n\tif (!*a1)\n\t\treturn;\n\tikashop::GetManager().ExtendShopClient(ch, (BYTE) std::clamp(atoi(a1), 0, 255));\n}\n\n// /ikashop_buy_part <owner> <item> <quantity> <seenLinePrice> - a part of a\n// stack from the shop's own window (the Dom Towarowy's part purchase).\nACMD(do_ikashop_buy_part)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tchar a1[32], a2[32], a3[32], a4[64];\n\targument = one_argument(argument, a1, sizeof(a1));\n\targument = one_argument(argument, a2, sizeof(a2));\n\targument = one_argument(argument, a3, sizeof(a3));\n\tone_argument(argument, a4, sizeof(a4));\n\tif (!*a1 || !*a2 || !*a3 || !*a4)\n\t\treturn;\n\tconst DWORD owner = (DWORD) strtoul(a1, nullptr, 10);\n\tconst DWORD item = (DWORD) strtoul(a2, nullptr, 10);\n\tconst DWORD quantity = (DWORD) strtoul(a3, nullptr, 10);\n\tconst long long seen = atoll(a4);\n\tif (!owner || !item || !quantity || seen <= 0)\n\t\treturn;\n\tikashop::g_fleaBuyQuantity = quantity;\n\tikashop::GetManager().RecvShopBuyItemClientPacket(ch, owner, item, false, seen);\n\tikashop::g_fleaBuyQuantity = 0;\n}\n\n#endif\n"
+ }
+]

@@ -9759,7 +9759,7 @@ def manage():
     bot_channels = sorted(per_channel.items()) if len(per_channel) > 1 else []
     updater = update_status()
     updater["protected"] = current_settings.get("auth_enabled") == "1" and bool(session.get("seban_admin"))
-    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers())
+    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers(), shop_big=read_shop_big())
 
 
 @app.post("/manage/difficulty")
@@ -10122,6 +10122,40 @@ def read_vouchers():
     except Exception:
         pass
     return state
+
+
+# MT2009_PLUS_SHOP_QOL_V2: the players' offline shops as big as the bots' (two
+# pages) - the event flag m2_shop_big_on, switched live the way the .env page
+# switches M2_SHOP_BIG (env_editor.apply_live: the flag, and a SHOPBIG row for
+# web_admin.quest), and handed to the updater for .env (env.pending).
+def read_shop_big():
+    try:
+        row = one("SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_shop_big_on' AND szState = ''")
+        return bool(row and int(row.get("lValue") or 0) == 1)
+    except Exception:
+        return False
+
+
+@app.post("/manage/shop-big")
+@login_required
+def manage_shop_big():
+    enabled = "1" in request.form.getlist("shop_big_enabled")
+    changes = {"M2_SHOP_BIG": "1" if enabled else "0"}
+    try:
+        result = env_editor.apply_live(lambda: db(), changes)
+    except Exception:
+        flash("Nie udało się zapisać przełącznika większych sklepów offline.", "error")
+        return redirect(url_for("manage", _anchor="wieksze-sklepy"))
+    try:
+        env_editor.write_pending(UPDATE_SPOOL, changes)
+    except Exception:
+        pass
+    live = result.get("SHOPBIG") == "done"
+    flash(("Większe sklepy offline włączone (2 strony, jak u botów)." if enabled else
+           "Większe sklepy offline wyłączone (1 strona; to, co stoi na drugiej, zostaje w sprzedaży).")
+          + (" Działa od razu – gracz zobaczy zmianę przy następnym otwarciu okna sklepu." if live else
+             " Gra nie odpowiedziała (serwer wyłączony albo startuje) – zadziała przy następnym starcie."))
+    return redirect(url_for("manage", _anchor="wieksze-sklepy"))
 
 
 @app.post("/manage/vouchers")

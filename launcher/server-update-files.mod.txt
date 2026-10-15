@@ -43,6 +43,8 @@ linux-port/docker/updater/bin/*
 linux-port/overlays/playerbot/src/game/src/playerbot_*
 # AH_V1 (Autor: Vekirion): the Auction House, a new engine file kept in the overlay.
 linux-port/overlays/playerbot/src/game/src/auction_house.cpp
+# MT2009_PLUS_SHOP_QOL_V2 (Autor: Vekirion): the offline shops' second round, a new engine header in the overlay.
+linux-port/overlays/playerbot/src/game/src/ikashop_qol.h
 
 # ---- the mt2009 tree ---------------------------------------------------------
 linux-port/docker/docker-compose.yml
@@ -306,6 +308,7 @@ linux-port/docker/game/src/server/game/src/p2p.h
 # (playerbot_offline_policy.h, 2.0.26) failed the packager's pairing check.
 linux-port/docker/game/src/server/game/src/playerbot_*
 linux-port/docker/game/src/server/game/src/auction_house.cpp
+linux-port/docker/game/src/server/game/src/ikashop_qol.h
 linux-port/docker/game/src/server/game/src/pvp.cpp
 linux-port/docker/game/src/server/game/src/questlua_affect.cpp
 linux-port/docker/game/src/server/game/src/questlua_quest.cpp

@@ -1153,6 +1153,32 @@ if ((Test-Path -LiteralPath $auctionHouseApply -PathType Leaf) -and
         Write-Host ('Applied {0} auction house edit(s).' -f $auctionHouseResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The pick-up filter's detailed rules (MT2009_PLUS_PICKUP_RULES_V1, MT2009_PLUS_PICKUP_SYNC_V1),
+# Autor: Vekirion (server-patches/pickuprules): /pickup_rules and /pickup_items in
+# char_item.cpp, cmd_general.cpp and cmd.cpp, after playerqol's pick-up filter.
+$pickupRulesApply = Join-Path $repo 'server-patches/pickuprules/Apply-PickupRulesPatch.ps1'
+if ((Test-Path -LiteralPath $pickupRulesApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $pickupRulesResult = & $pickupRulesApply -SourceDir $engineGameSource
+    if ($pickupRulesResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} pick-up rules edit(s).' -f $pickupRulesResult.Applied) -ForegroundColor DarkGray
+    }
+}
+# The offline shops' second round (MT2009_PLUS_SHOP_QOL_V2) and the skill book's name in the
+# shop's notices (MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1, MT2009_PLUS_SHOP_BOOK_NOTIFICATION_V1),
+# Autor: Vekirion (server-patches/shopqol): new GD/DG subheaders in common/tables.h, so the
+# game and db cores are built together; ikashop_qol.h comes from the overlay. After the
+# auction house: its include line is the anchor in ikarus_shop_manager.cpp.
+$shopQolApply = Join-Path $repo 'server-patches/shopqol/Apply-ShopQolPatch.ps1'
+if ((Test-Path -LiteralPath $shopQolApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'ikarus_shop_manager.cpp') -PathType Leaf)) {
+    $shopQolResult = & $shopQolApply -SourceDir $engineGameSource
+    if ($shopQolResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} offline shop QoL edit(s).' -f $shopQolResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade

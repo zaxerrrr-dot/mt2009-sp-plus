@@ -3627,6 +3627,14 @@ T = {
                   "de":"Das höchste Level dieses Servers ist {max}, es wurde nichts geändert. Für mehr M2_MAX_LEVEL in der .env erhöhen und neu starten — das Spiel selbst endet bei 120.",
                   "tr":"Bu sunucunun en yüksek seviyesi {max}, bu yüzden hiçbir şey değiştirilmedi. Daha yükseği için .env dosyasındaki M2_MAX_LEVEL değerini artırıp yeniden başlat — oyunun kendisi 120'de biter."},
  "change_level": {"pl":"⭐ Zmień poziom","en":"⭐ Change level","de":"⭐ Level ändern","tr":"⭐ Seviyeyi değiştir"},
+ # MT2009_PLUS_SHOP_SLOTS_PANEL_V1: the offline shop's unlocked rows (special flag shop_unlock_slot)
+ "shop_slots":   {"pl":"🏪 Powiększenie sklepu offline","en":"🏪 Offline shop size","de":"🏪 Offline-Shop-Größe","tr":"🏪 Çevrimdışı dükkan boyutu"},
+ "shop_slots_now": {"pl":"Teraz: {n}/4 odblokowanych rzędów","en":"Now: {n}/4 rows unlocked","de":"Jetzt: {n}/4 Reihen freigeschaltet","tr":"Şu an: {n}/4 sıra açık"},
+ "shop_slots_opt": {"pl":"{n}/4 rzędów ({cells} miejsc)","en":"{n}/4 rows ({cells} slots)","de":"{n}/4 Reihen ({cells} Plätze)","tr":"{n}/4 sıra ({cells} yuva)"},
+ "shop_slots_set": {"pl":"🏪 Ustaw","en":"🏪 Set","de":"🏪 Setzen","tr":"🏪 Ayarla"},
+ "tip_shop_slots": {"pl":"Prawa połowa sklepu offline ma 4 zablokowane rzędy po 5 miejsc (te same, które odblokowuje przedmiot 30376). Ustawia, ile z nich jest otwartych: 0 = żaden, 4 = wszystkie. Dolne 4 rzędy prawej połowy to nadal miejsca premium. Działa w grze i offline (wtedy zapisuje się w bazie).",
+                  "en":"The right half of the offline shop has 4 locked rows of 5 slots (the ones item 30376 unlocks). Sets how many of them are open: 0 = none, 4 = all. The lower 4 rows of the right half stay premium slots. Works in game and offline (then written to the database)."},
+ "shop_slots_range": {"pl":"Powiększenie sklepu: dozwolone 0-4.","en":"Shop size: 0-4 allowed."},
  "teleport":     {"pl":"🗺️ Teleportuj","en":"🗺️ Teleport","de":"🗺️ Teleportieren","tr":"🗺️ Işınla"},
  "ingame_only":  {"pl":"(działa, gdy gracz jest w grze)","en":"(works while the player is in game)","de":"(nur wenn der Spieler online ist)","tr":"(oyuncu oyundayken çalışır)"},
  "speed":        {"pl":"🏃 Szybkość biegu","en":"🏃 Running speed","de":"🏃 Laufgeschwindigkeit","tr":"🏃 Koşma hızı"},
@@ -3855,6 +3863,14 @@ T = {
  "rare_ds_day":  {"pl":"Cor Draconis z odłamków dziennie (1–20, domyślnie 5):","en":"Cor Draconis from shards a day (1-20, default 5):"},
  "rare_ds_range":{"pl":"Szansa na odłamek 1–100%, Cor dziennie 1–20. Nic nie zmieniono.","en":"Shard chance 1-100%, Cors a day 1-20. Nothing was changed."},
  "az_nav":       {"pl":"🗺️ Moduł Arezzo","en":"🗺️ Arezzo module"},
+ # MT2009_PLUS_SHOP_QOL_V2: the bigger offline shops (event flag m2_shop_big_on)
+ "shopbig_nav":  {"pl":"🏪 Większe sklepy offline","en":"🏪 Bigger offline shops"},
+ "shopbig_open": {"pl":"🏪 Ustaw rozmiar sklepów","en":"🏪 Set the shops' size"},
+ "shopbig_dash_hint": {"pl":"Sklepy graczy: domyślne (1 strona) albo duże jak u botów (2 strony obok siebie).","en":"Players' shops: the default (1 page) or as big as the bots' (2 pages side by side)."},
+ "tip_shopbig":  {"pl":"Włącza graczom drugą stronę sklepu offline, taką jak mają boty. Działa od razu, bez restartu.","en":"Gives players the second offline shop page the bots have. Takes effect immediately, no restart."},
+ "shopbig_intro":{"pl":"Włączone: okno sklepu offline gracza ma dwie strony obok siebie (160 miejsc, jak sklepy botów); druga strona nie ma blokad ani miejsc premium. Wyłączone: tylko pierwsza strona. Przedmioty, które już stoją na drugiej stronie, zostają w sprzedaży i nadal je widać — po wyłączeniu nie da się tam tylko dokładać nowych. Gracz zobaczy zmianę przy następnym otwarciu okna sklepu.","en":"On: a player's offline shop window has two pages side by side (160 slots, like the bots' shops); the second page has no locked or premium slots. Off: the first page only. Items already on the second page stay for sale and visible - once off, only new ones cannot go there. The player sees the change the next time the shop window opens."},
+ "shopbig_enable": {"pl":"Większe sklepy offline graczy (2 strony)","en":"Bigger player offline shops (2 pages)"},
+ "shopbig_saved_live": {"pl":"Zapisano i przełączono na żywo. 🏪","en":"Saved and switched live. 🏪"},
  "az_open":      {"pl":"🗺️ Otwórz moduł Arezzo","en":"🗺️ Open the Arezzo module"},
  "tip_az":       {"pl":"Włącz albo wyłącz nowe mapy i lochy z Arezzo. Działa od razu, bez restartu serwera.","en":"Switch the new Arezzo maps and dungeons on or off. Takes effect immediately, no server restart."},
  "az_dash_hint": {"pl":"Czy na tym świecie są dostępne mapy i lochy z Arezzo (moduł dobrowolny).","en":"Whether the Arezzo maps and dungeons are open in this world (an optional module)."},
@@ -7264,6 +7280,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <a class="btn" href="{{url_for('arezzo')}}" title="{{t('tip_az')}}">{{t('az_open')}}</a>
 </div>
 <div class="card">
+<h3 class="help" title="{{t('tip_shopbig')}}">{{t('shopbig_nav')}}</h3>
+<p class="muted">{{t('shopbig_dash_hint')}}</p>
+<a class="btn" href="{{url_for('shop_big')}}" title="{{t('tip_shopbig')}}">{{t('shopbig_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help" title="{{t('tip_seon')}}">{{t('seon_nav')}}</h3>
 <p class="muted">{{t('seon_dash_hint')}}</p>
 <a class="btn" href="{{url_for('seonhae')}}" title="{{t('tip_seon')}}">{{t('seon_open')}}</a>
@@ -7543,6 +7564,16 @@ TPL_PLAYER = BASE.replace("__BODY__", """
 <input type="hidden" name="pid" value="{{p.id}}"><input type="hidden" name="cmd" value="LEVEL">
 <input name="arg1" type="number" min="1" max="{{max_level}}" placeholder="{{t('new_level').format(max=max_level)}}" title="{{t('tip_level')}}" required>
 <button class="big" title="{{t('tip_level')}}">{{t('change_level')}}</button></form></div>
+
+<div class="card"><h3 class="help" title="{{t('tip_shop_slots')}}">{{t('shop_slots')}}</h3>
+<form method="post" action="{{url_for('action')}}">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<input type="hidden" name="pid" value="{{p.id}}"><input type="hidden" name="cmd" value="SHOP_SLOTS">
+<div class="muted">{{t('shop_slots_now').format(n=shop_slots)}}</div>
+<select name="arg1" title="{{t('tip_shop_slots')}}">
+{% for n in range(0, 5) %}<option value="{{n}}"{% if n == (shop_slots + 1 if shop_slots < 4 else 4) %} selected{% endif %}>{{t('shop_slots_opt').format(n=n, cells=20 + n*5)}}</option>{% endfor %}
+</select>
+<button class="big" title="{{t('tip_shop_slots')}}">{{t('shop_slots_set')}}</button></form></div>
 
 <div class="card"><h3 class="help" title="{{t('tip_teleport')}}">{{t('teleport')}} <span class="muted">{{t('ingame_only')}}</span></h3>
 <form method="post" action="{{url_for('action')}}">
@@ -7855,6 +7886,22 @@ TPL_TELEPORT_MAP = BASE.replace("__BODY__", """
 <input type="hidden" name="_csrf" value="{{csrf_token}}">
 <p class="muted">{{t('tpm_help')}}</p>
 <label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('tpm_enable')}}</label>
+<button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
+</form></div>""")
+
+# MT2009_PLUS_SHOP_QOL_V2: the bigger offline shops' switch, the Arezzo page's shape.
+TPL_SHOPBIG = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('shopbig_nav')}}</h3>
+<p class="muted">{{t('shopbig_intro')}}</p>
+<p><span class="badge">🏪 {{t('shopbig_nav')}}: {{t('easter_on') if cur['on'] else t('easter_off')}}</span></p>
+</div>
+
+<div class="card">
+<form method="post">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('shopbig_enable')}}</label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
 
@@ -19128,6 +19175,49 @@ def flower_event():
     return render_template_string(TPL_FLOWER, cur=cur)
 
 # MT2009_PLUS_AREZZO_MODULE_V1: the Arezzo module on or off. Live immediately, no restart.
+# MT2009_PLUS_SHOP_QOL_V2: the bigger offline shops, live through web_admin.quest
+# (SHOPBIG -> event flag m2_shop_big_on), kept in player.quest for the next start.
+@app.route("/offline_shops", methods=["GET", "POST"])
+@login_required
+def shop_big():
+    if request.method == "POST":
+        on = 1 if request.form.get("on") else 0
+        try:
+            with db() as c, c.cursor() as cur:
+                cur.execute("REPLACE INTO player.quest (dwPID, szName, szState, lValue) "
+                            "VALUES (0, 'm2_shop_big_on', '', %s)", (on,))
+        except Exception:
+            flash(t("db_down"), "error")
+            return redirect(url_for("shop_big"))
+        try:
+            status, qid = queue_and_wait("", "SHOPBIG", str(on), "", wait=RARE_LIVE_WAIT)
+        except Exception:
+            status, qid = "failed", 0
+        if status == "done":
+            flash(t("shopbig_saved_live"))
+        else:
+            if status == "timeout":
+                try:
+                    with db() as c, c.cursor() as cur:
+                        cur.execute("UPDATE player.web_admin_queue SET status='cancelled' "
+                                    "WHERE id=%s AND status='pending'", (qid,))
+                except Exception:
+                    pass
+            flash(t("easter_saved_persisted"))
+        return redirect(url_for("shop_big"))
+
+    cur_sb = {"on": 0}
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("SELECT lValue FROM player.quest WHERE dwPID=0 AND szState='' "
+                        "AND szName='m2_shop_big_on' LIMIT 1")
+            row = cur.fetchone()
+        if row:
+            cur_sb["on"] = 1 if int(row["lValue"] or 0) == 1 else 0
+    except Exception:
+        flash(t("db_down"), "error")
+    return render_template_string(TPL_SHOPBIG, cur=cur_sb)
+
 @app.route("/arezzo", methods=["GET", "POST"])
 @login_required
 def arezzo():
@@ -22146,7 +22236,19 @@ def player(pid):
             legend["colour"] = LEGEND_TIER_COLOURS.get(int(legend["tier"] or 0), "#aaa")
     except Exception:
         legend = None
+    # MT2009_PLUS_SHOP_SLOTS_PANEL_V1: the offline shop's unlocked rows, 0-4
+    shop_slots = 0
+    try:
+        with db() as c, c.cursor() as cur:
+            cur.execute("SELECT value FROM player.player_special_flag "
+                        "WHERE pid=%s AND flag='shop_unlock_slot' LIMIT 1", (pid,))
+            srow = cur.fetchone()
+        if srow:
+            shop_slots = max(0, min(4, int(srow["value"] or 0)))
+    except Exception:
+        shop_slots = 0
     return render_template_string(TPL_PLAYER, p=p, inv=inv, sessions=sessions, legend=legend,
+                                  shop_slots=shop_slots,
                                   emoji=lambda j: JOB_EMOJI.get(j, "🧑"),
                                   WINDOW_KEYS=ITEM_WINDOW_KEYS,
                                   cats=CATS,
@@ -22242,6 +22344,16 @@ def offline_apply(cur, pid, cmd, arg1, arg2, reason="timeout", name=""):
         cur.execute("UPDATE player.player SET gold=LEAST(100000000000,GREATEST(0,gold+%s)) WHERE id=%s", (int(arg1), pid))
     elif cmd == "LEVEL":
         cur.execute("UPDATE player.player SET level=%s WHERE id=%s", (int(arg1), pid))
+    elif cmd == "SHOP_SLOTS":
+        # MT2009_PLUS_SHOP_SLOTS_PANEL_V1: the row the game core's
+        # QUERY_SPECIAL_FLAG_SAVE writes (a player's flag: aid 0; 0 = no row),
+        # read at the next login.
+        rows_open = max(0, min(4, int(arg1)))
+        if rows_open == 0:
+            cur.execute("DELETE FROM player.player_special_flag WHERE pid=%s AND flag='shop_unlock_slot'", (pid,))
+        else:
+            cur.execute("REPLACE INTO player.player_special_flag (pid, aid, flag, value) "
+                        "VALUES (%s, 0, 'shop_unlock_slot', %s)", (pid, rows_open))
     elif cmd == "ITEM":
         qty = item_qty(arg2)
         if qty is None:
@@ -22312,6 +22424,16 @@ def action():
             flash(t("level_range").format(max=MAX_LEVEL), "error")
             return redirect(url_for("player", pid=pid))
         arg1 = str(_lv)
+    elif cmd == "SHOP_SLOTS":
+        # MT2009_PLUS_SHOP_SLOTS_PANEL_V1: 0-4 rows (shop_unlock_slots.quest's MAX_UNLOCK_LEVEL)
+        try:
+            _rows = int(str(arg1).strip())
+        except (TypeError, ValueError):
+            _rows = None
+        if _rows is None or not (0 <= _rows <= 4):
+            flash(t("shop_slots_range"), "error")
+            return redirect(url_for("player", pid=pid))
+        arg1 = str(_rows)
 
     if not arg1:
         flash(t("act_novalue"), "error")

@@ -453,6 +453,21 @@ quest web_admin begin
 									else
 										pc.setf("playerbot", "exp_unlocked", 0)
 									end
+								elseif cmd == "SHOP_SLOTS" then
+									-- MT2009_PLUS_SHOP_SLOTS_PANEL_V1: the classic panel's
+									-- "Powiekszenie sklepu offline" on a character's page. arg1 =
+									-- the rows of the offline shop's right half unlocked, 0-4 -
+									-- the special flag shop_unlock_slot the item 30376 raises
+									-- (shop_unlock_slots.quest). The shop itself takes the new
+									-- count at the owner's next line (ikarus_shop_manager.cpp,
+									-- SendShopLockedSlotStateDBPacket); the client's curtain at once.
+									local lv = tonumber(arg1)
+									if lv == nil or lv < 0 or lv > 4 or lv ~= math.floor(lv) then
+										result = "bad_args"
+									else
+										pc.set_special_flag("shop_unlock_slot", lv)
+										syschat("Administrator ustawi\179 powi\234kszenie Twojego sklepu offline: " .. lv .. "/4.")
+									end
 								else
 									result = "unknown_cmd"
 								end
@@ -966,6 +981,36 @@ quest web_admin begin
 								game.set_event_flag("m2_teleport_map_on", ton)
 							end
 							wa_query("UPDATE player.web_admin_queue SET status='" .. tres .. "' WHERE id=" .. tqid .. " AND status='pending' LIMIT 1")
+						end
+					end
+				end
+			end
+
+			-- MT2009_PLUS_SHOP_QOL_V2: the classic panel's "Wieksze sklepy offline"
+			-- switch, same shape as TPMAP. arg1 = "1" on, "0" off; written as
+			-- m2_shop_big_on, which the cores read (ikashop_qol.h): on, a person's
+			-- offline shop has the bots' second page beside the first.
+			local brows = wa_query("SELECT id, arg1 FROM player.web_admin_queue WHERE status='pending' AND cmd='SHOPBIG' ORDER BY id ASC LIMIT 3")
+			if type(brows) == "table" then
+				local bi
+				for bi = 1, table.getn(brows) do
+					local br = brows[bi]
+					if type(br) == "table" then
+						local bqid = tonumber(br.id)
+						local bon = nil
+						if type(br.arg1) == "string" then
+							bon = tonumber(br.arg1)
+						end
+						if bqid ~= nil then
+							local bres = "done"
+							if bon == nil or bon < 0 or bon > 1 then
+								bres = "bad_args"
+							elseif game.set_event_flag == nil then
+								bres = "failed"
+							else
+								game.set_event_flag("m2_shop_big_on", bon)
+							end
+							wa_query("UPDATE player.web_admin_queue SET status='" .. bres .. "' WHERE id=" .. bqid .. " AND status='pending' LIMIT 1")
 						end
 					end
 				end
