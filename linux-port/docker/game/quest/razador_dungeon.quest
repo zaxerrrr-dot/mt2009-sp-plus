@@ -7,9 +7,9 @@
 -- wchodz¹ za nim), pos¹g Am-heh (20385) w œrodku wydaje szeœæ zadañ w
 -- losowej kolejnoœci (przesuniêcie cykliczne 1..6 jak DungeonStepSort), a po
 -- nich otwiera salê Razadora (6091):
---   1: zabij 20 potworów,
+--   1: zabij wszystkie potwory komnaty (MT2009_PLUS_RZNM_OFFICIAL_V2; by³o: 20),
 --   2: potwory upuszczaj¹ Z³ot¹ Zêbatkê (30329, 2%), oddaj j¹ Steli Isfet (20386),
---   3: zabij 20 potworów,
+--   3: zabij wszystkie potwory komnaty,
 --   4: zabij Ignitora (6051),
 --   5: potwory upuszczaj¹ Kamieñ Maat (30330, 4%), oddaj po jednym siedmiu stelom,
 --   6: zniszcz Metin Czyœæca (8057),
@@ -70,6 +70,10 @@ quest razador_dungeon begin
 				-- owner, 29 September: 9% poured them out). A room holds about 48
 				-- monsters (16 groups of 3, back after 60 s): the cog (one) ~50 kills,
 				-- the seven Maat stones ~175 kills, three to four rooms.
+				-- MT2009_PLUS_RZNM_OFFICIAL_V2: the rooms are the official ones again (fd_b 63 groups of groups,
+				-- ~250 monsters; fd_e ~250). The rates were never raised for the small rooms (the owner cut
+				-- them from 9% / 49%), so a kill gives the same: ~5 cogs and ~10 Maat stones a room
+				-- (the official: a cog 1 in 100 kills of which 1 in 5 fits, a Maat stone 1 in 30 - ~8 a room).
 				cog_permille = 20,
 				maat_permille = 40,
 				chests_min = 2, chests_max = 5,
@@ -234,10 +238,38 @@ quest razador_dungeon begin
 			d.purge_area(c.base_x * 100, c.base_y * 100, (c.base_x + c.size) * 100, (c.base_y + c.size) * 100)
 		end
 
+		-- MT2009_PLUS_RZNM_OFFICIAL_V2 (the owner, 15 October: the official density): a "clear the room" step
+		-- spawns its room once and counts what came - the room's total is the kills it takes (the
+		-- official "pokonajcie wszystkich wrogow"), 20 only if the count failed. d.count_monster() counts the
+		-- instance's living monsters and stones; what stood before the room (doors, stones) is left out.
+		function spawn_room(file)
+			local before = d.count_monster()
+			d.regen_file(file)
+			local n = d.count_monster() - before
+			if n <= 0 then
+				n = 20
+			end
+			d.setf("room", n)
+			d.setf("room_base", before)
+		end
+
+		-- MT2009_PLUS_RZNM_OFFICIAL_V2: the minute's check of a "clear the room" step - a monster that died
+		-- without a kill counted (no killer) must not hold the room open: none of the room's left alive
+		-- (only what stood before it) closes the step as its last kill would.
+		function room_check()
+			if d.getf("active") ~= 1 or (d.getf("step") ~= 1 and d.getf("step") ~= 3) then
+				return
+			end
+			if d.getf("room") > 0 and d.count_monster() <= d.getf("room_base") then
+				d.setf("kills", d.getf("room"))
+				razador_dungeon.step_done()
+			end
+		end
+
 		function step_text(step)
-			if step == 1 then return "Zabij 20 potworów w otwartej komnacie."
+			if step == 1 then return "Pokonaj wszystkie potwory w otwartej komnacie."
 			elseif step == 2 then return "Zdob¹dŸ Z³ot¹ Zêbatkê z potworów i oddaj j¹ Steli Isfet."
-			elseif step == 3 then return "Zabij 20 potworów w otwartej komnacie."
+			elseif step == 3 then return "Pokonaj wszystkie potwory w otwartej komnacie."
 			elseif step == 4 then return "Wœród potworów czeka Ignitor. Pokonaj go."
 			elseif step == 5 then return "Zbierz Kamienie Maat z potworów i oddaj po jednym ka¿dej z siedmiu stel."
 			elseif step == 6 then return "Zniszcz Metin Czyœæca."
@@ -268,12 +300,12 @@ quest razador_dungeon begin
 			d.kill_unique("idoor"..step)
 			d.notice("Razador: "..razador_dungeon.step_text(step))
 			if step == 1 then
-				d.regen_file(c.path.."fd_a.txt")
+				razador_dungeon.spawn_room(c.path.."fd_a.txt")
 			elseif step == 2 then
 				d.set_regen_file(c.path.."fd_b.txt")
 				d.set_unique("stone2", d.spawn_mob(20386, c.stone2[1], c.stone2[2]))
 			elseif step == 3 then
-				d.regen_file(c.path.."fd_c.txt")
+				razador_dungeon.spawn_room(c.path.."fd_c.txt")
 			elseif step == 4 then
 				d.set_regen_file(c.path.."fd_d.txt")
 				d.spawn_mob(6051, c.ignitor[1], c.ignitor[2])
@@ -725,7 +757,7 @@ quest razador_dungeon begin
 				say("Zadanie wci¹¿ trwa:")
 				say(razador_dungeon.step_text(d.getf("step")))
 				if d.getf("step") == 1 or d.getf("step") == 3 then
-					say_reward("Pokonane: "..d.getf("kills").." / 20")
+					say_reward("Pokonane: "..d.getf("kills").." / "..d.getf("room"))
 				elseif d.getf("step") == 5 then
 					say_reward("Pozosta³e stele: "..d.getf("stones"))
 				end
@@ -762,6 +794,7 @@ quest razador_dungeon begin
 				end
 				local left = d.getf("left") - 1
 				d.setf("left", left)
+				razador_dungeon.room_check()
 				if left <= 0 then
 					d.notice("Razador: Czas min¹³. Portal wyrzuca was z Czyœæca Ognia.")
 					razador_dungeon.finish()
@@ -826,7 +859,7 @@ quest razador_dungeon begin
 			end
 			if step == 1 or step == 3 then
 				d.setf("kills", d.getf("kills") + 1)
-				if d.getf("kills") >= 20 then
+				if d.getf("kills") >= d.getf("room") then
 					razador_dungeon.step_done()
 				end
 			elseif step == 2 then

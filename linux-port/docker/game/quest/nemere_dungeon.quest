@@ -6,10 +6,10 @@
 -- przenosi do niej gracza albo przywódcê z ludŸmi jego dru¿yny stoj¹cymi obok
 -- (jedno ³adowanie, bez poczekalni; boty z dru¿yny wchodz¹ za nim). Kamienny lew (20397)
 -- przy wejœciu zaczyna wyprawê:
---   1: zabij 20 potworów,
+--   1: zabij wszystkie potwory piêtra (MT2009_PLUS_RZNM_OFFICIAL_V2; by³o: 20),
 --   2: potwory upuszczaj¹ Lodowy Klucz (30760, 2%), u¿yj go,
---   3: zabij 20 potworów,
---   4: zabij 20 potworów,
+--   3: zabij wszystkie potwory piêtra,
+--   4: zabij wszystkie potwory piêtra,
 --   5: potwory upuszczaj¹ Kryszta³ Lodu (30761, 4%), oddaj po jednym piêciu pieczêciom (20398),
 --   6: zniszcz Metin Mrozu (8058),
 --   7: pokonaj czterech Szelów (6151),
@@ -71,6 +71,10 @@ quest nemere_dungeon begin
 				-- owner, 29 September: at 49% one group gave ten crystals). A room holds
 				-- 50-60 monsters (10-12 groups of 4-5, back after 60 s): a key ~50 kills,
 				-- the five crystals ~125 kills, two to three rooms.
+				-- MT2009_PLUS_RZNM_OFFICIAL_V2: the floors are the official ones again (zone_2 ~200 monsters,
+				-- zone_5 ~270, zone_8 ~210); a kill gives the same as before (the rates were the owner's cut,
+				-- not raised for the small rooms): ~4 keys and ~11 crystals a floor (the official: 3% a kill
+				-- each, a key fits in 30% - ~2 good keys and ~8 crystals a floor).
 				key_permille = 20,
 				crystal_permille = 40,
 				chests_min = 2, chests_max = 5,
@@ -235,8 +239,36 @@ quest nemere_dungeon begin
 			d.purge_area(c.base_x * 100, c.base_y * 100, (c.base_x + c.size_x) * 100, (c.base_y + c.size_y) * 100)
 		end
 
+		-- MT2009_PLUS_RZNM_OFFICIAL_V2 (the owner, 15 October: the official density): a "clear the room" step
+		-- spawns its room once and counts what came - the room's total is the kills it takes (the
+		-- official "pokonajcie wszystkich wrogow"), 20 only if the count failed. d.count_monster() counts the
+		-- instance's living monsters and stones; what stood before the room (doors, stones) is left out.
+		function spawn_room(file)
+			local before = d.count_monster()
+			d.regen_file(file)
+			local n = d.count_monster() - before
+			if n <= 0 then
+				n = 20
+			end
+			d.setf("room", n)
+			d.setf("room_base", before)
+		end
+
+		-- MT2009_PLUS_RZNM_OFFICIAL_V2: the minute's check of a "clear the room" step - a monster that died
+		-- without a kill counted (no killer) must not hold the room open: none of the room's left alive
+		-- (only what stood before it) closes the step as its last kill would.
+		function room_check()
+			if d.getf("ready") ~= 1 or (d.getf("step") ~= 1 and d.getf("step") ~= 3 and d.getf("step") ~= 4) then
+				return
+			end
+			if d.getf("room") > 0 and d.count_monster() <= d.getf("room_base") then
+				d.setf("kills", d.getf("room"))
+				nemere_dungeon.go(d.getf("step") + 1)
+			end
+		end
+
 		function step_text(step)
-			if step == 1 or step == 3 or step == 4 then return "Zabij 20 potworów."
+			if step == 1 or step == 3 or step == 4 then return "Pokonaj wszystkie potwory na tym piêtrze."
 			elseif step == 2 then return "Zdob¹dŸ Lodowy Klucz z potworów i u¿yj go."
 			elseif step == 5 then return "Zdob¹dŸ Kryszta³y Lodu z potworów i oddaj po jednym ka¿dej z piêciu pieczêci."
 			elseif step == 6 then return "Zniszcz Metin Mrozu."
@@ -678,7 +710,7 @@ quest nemere_dungeon begin
 			d.setf("step", 1)
 			d.setf("kills", 0)
 			d.setf("ready", 1)
-			d.regen_file(c.path.."zone_1.txt")
+			nemere_dungeon.spawn_room(c.path.."zone_1.txt")
 			d.notice("Nemere: "..nemere_dungeon.step_text(1))
 		end
 
@@ -693,9 +725,9 @@ quest nemere_dungeon begin
 				if step == 2 then
 					d.set_regen_file(c.path.."zone_2.txt")
 				elseif step == 3 then
-					d.regen_file(c.path.."zone_3.txt")
+					nemere_dungeon.spawn_room(c.path.."zone_3.txt")
 				elseif step == 4 then
-					d.regen_file(c.path.."zone_4.txt")
+					nemere_dungeon.spawn_room(c.path.."zone_4.txt")
 				elseif step == 5 then
 					for i = 1, table.getn(c.seals) do
 						d.spawn_mob(20398, c.seals[i][1], c.seals[i][2])
@@ -704,7 +736,11 @@ quest nemere_dungeon begin
 					d.set_regen_file(c.path.."zone_5.txt")
 				elseif step == 6 then
 					d.spawn_mob(8058, c.metin6[1], c.metin6[2])
+					-- MT2009_PLUS_RZNM_OFFICIAL_V2: the official floors 6, 7, 9 and 10 have their monsters too
+					-- (Owsap's sd_6/7/9/10, once); the step's goal is still its Metin / Szels / Pillar / Nemere.
+					d.regen_file(c.path.."zone_6.txt")
 				elseif step == 7 then
+					d.regen_file(c.path.."zone_7.txt")
 					for i = 1, table.getn(c.szel) do
 						d.spawn_mob(6151, c.szel[i][1], c.szel[i][2])
 					end
@@ -712,8 +748,10 @@ quest nemere_dungeon begin
 					d.set_regen_file(c.path.."zone_8.txt")
 				elseif step == 9 then
 					d.spawn_mob(20399, c.pillar[1], c.pillar[2])
+					d.regen_file(c.path.."zone_9.txt")
 				elseif step == 10 then
 					d.spawn_mob(6191, c.boss[1], c.boss[2])
+					d.regen_file(c.path.."zone_10.txt")
 				end
 				d.setf("ready", 1)
 				d.notice("Nemere: "..nemere_dungeon.step_text(step))
@@ -727,6 +765,7 @@ quest nemere_dungeon begin
 				end
 				local left = d.getf("left") - 1
 				d.setf("left", left)
+				nemere_dungeon.room_check()
 				if left <= 0 then
 					d.notice("Nemere: Czas min¹³. Mróz wyrzuca was z Lodowej Krainy.")
 					nemere_dungeon.finish()
@@ -763,7 +802,7 @@ quest nemere_dungeon begin
 				d.setf("step", 1)
 				d.setf("kills", 0)
 				d.setf("ready", 1)
-				d.regen_file(c.path.."zone_1.txt")
+				nemere_dungeon.spawn_room(c.path.."zone_1.txt")
 				d.notice("Nemere: "..nemere_dungeon.step_text(1))
 			end
 		end
@@ -787,7 +826,7 @@ quest nemere_dungeon begin
 			end
 			if step == 1 or step == 3 or step == 4 then
 				d.setf("kills", d.getf("kills") + 1)
-				if d.getf("kills") >= 20 then
+				if d.getf("kills") >= d.getf("room") then
 					nemere_dungeon.go(step + 1)
 				end
 			elseif step == 2 then
