@@ -3098,12 +3098,11 @@ class GameWindow(ui.ScriptWindow):
 	# skull over its head (the server's "BossMark <vid>", char.cpp), the
 	# emoticon slot 120 with a looping effect (mt2009/boss_skull.mse), so it
 	# moves with the monster and goes with it.
+	# MT2009_PLUS_BOSS_SKULL_TOGGLE_V1: the skull can be switched off in
+	# Opcje Gry > Dodatkowe ("Ukryj czaszke nad bossami", uiopcjedodatkowe.py).
 	def __BossMark(self, vid="0", *args):
 		try:
-			if not getattr(GameWindow, "_bossSkullRegistered", False):
-				chrmgr.RegisterEffect(chrmgr.EFFECT_EMOTICON + 120, "", "d:/ymir work/effect/etc/mt2009/boss_skull.mse")
-				GameWindow._bossSkullRegistered = True
-			chrmgr.SetEmoticon(int(vid), 120)
+			__import__("uiopcjedodatkowe").BossMark(int(vid))
 		except Exception:
 			pass
 
@@ -3129,6 +3128,15 @@ class GameWindow(ui.ScriptWindow):
 			"GarbageBinResultMany": self.interface.GarbageBinResultMany,
 			"OpenPickupFilter": self.__OpenPickupFilter,
 			"PickupFilterAck": self.__PickupFilterAck,
+			# MT2009_PLUS_PICKUP_RULES_V1: the bonus rules the server keeps (uipickupfilter.py).
+			"PickupRulesAck": self.__PickupRulesAck,
+			# MT2009_PLUS_SHOP_QOL_V2 (offlineshopqol.py)
+			"IkaShopMeta": self.__IkaShopMeta,
+			"IkaShopPages": self.__IkaShopPages,
+			"IkaShopAutoPrice": self.__IkaShopAutoPrice,
+			# MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1: the skill of a sold book (OnMyShopBuy)
+			"IkaShopSoldBook": self.__IkaShopSoldBook,
+			"PickupItemsList": self.__PickupItemsList,
 			# The event calendar's schedule (uieventcalendar.py).
 			"EventCalBegin": self.__EventCalBegin,
 			"EventCal": self.__EventCal,
@@ -3721,10 +3729,64 @@ class GameWindow(ui.ScriptWindow):
 		if vid == self.targetBoard.GetTargetVID():
 			self.CloseTargetBoard()
 
+	# MT2009_PLUS_SHOP_SOLD_BOOK_NAME_V1 (the owner, 13 October): a skill book
+	# and a book of forgetting are one vnum for every skill (socket 0), so the
+	# notice said only "Ksiega Umiejetnosci". The server sends the skill just
+	# before the sale ("IkaShopSoldBook <vnum> <skill>"); OnMyShopBuy takes it
+	# for the same vnum and says "<skill> - <book>".
+	def __IkaShopSoldBook(self, vnum="0", skillVnum="0", *rest):
+		try:
+			entry = (int(vnum), int(skillVnum))
+		except ValueError:
+			return
+		pending = getattr(self, "soldBookSkills", None)
+		if pending is None:
+			pending = self.soldBookSkills = []
+		pending.append(entry)
+		del pending[:-20]
+
+	def __SoldItemName(self, vnum):
+		name = item.GetItemName()
+		pending = getattr(self, "soldBookSkills", None) or []
+		for index, (bookVnum, skillVnum) in enumerate(pending):
+			if bookVnum != vnum:
+				continue
+			del pending[index]
+			try:
+				import uiauctionhouse
+				if skillVnum not in uiauctionhouse.SKILL_IDS:
+					return name		# skill.GetSkillName of an unknown number breaks the interpreter
+			except Exception:
+				return name
+			try:
+				skillName = skill.GetSkillName(skillVnum)
+			except Exception:
+				skillName = ""
+			if skillName:
+				return "%s - %s" % (skillName, name)
+			return name
+		return name
+
 	def OnMyShopBuy(self, vnum, count, price):
 		if vnum > 1:
 			item.SelectItem(vnum)
-			message = localeInfo.MYSHOP_BUY % (count, item.GetItemName(), localeInfo.NumberToMoneyString(price))
+			message = localeInfo.MYSHOP_BUY % (count, self.__SoldItemName(vnum), localeInfo.NumberToMoneyString(price))
+			# MT2009_PLUS_SHOP_SOLD_NOTICE_V1: "Opcje Gry" -> "Dodatkowe" -> "Sklep offline"
+			# (uiopcjedodatkowe.py) - the sale as a whisper (default), as one line
+			# on the chat, or not at all. The sale stays in the shop's history
+			# either way (the server's notifications, offlineshophistory.py).
+			mode = "whisper"
+			try:
+				import uiopcjedodatkowe
+				mode = uiopcjedodatkowe.ShopSoldNoticeMode()
+			except Exception:
+				pass
+			if mode == "off":
+				return
+			if mode == "chat":
+				formatted_time = time.strftime("%H:%M:%S", time.localtime(time.time()))
+				chat.AppendChat(chat.CHAT_TYPE_INFO, "[%s] [Sklep] %s" % (formatted_time, message))
+				return
 			self.OnRecvWhisper(chat.WHISPER_TYPE_MYSHOP, "[Sklep]", message)
 
 	## PrivateShop
@@ -3939,6 +4001,27 @@ class GameWindow(ui.ScriptWindow):
 	def __PickupFilterAck(self, *rest):
 		import uipickupfilter
 		uipickupfilter.OnAck(*rest)
+
+	# MT2009_PLUS_SHOP_QOL_V2: the offline shop's lines' clocks, its pages, a price drop
+	def __IkaShopMeta(self, *rest):
+		if len(rest) >= 5:
+			__import__("offlineshopqol").OnMeta(*rest[:5])
+
+	def __IkaShopPages(self, *rest):
+		if rest:
+			__import__("offlineshopqol").OnPages(rest[0])
+
+	def __IkaShopAutoPrice(self, *rest):
+		if len(rest) >= 2:
+			__import__("offlineshopqol").OnAutoPrice(rest[0], rest[1])
+
+	def __PickupRulesAck(self, *rest):
+		import uipickupfilter
+		uipickupfilter.OnRulesAck(*rest)
+
+	def __PickupItemsList(self, *rest):
+		import uipickupfilter
+		uipickupfilter.OnItemsList(*rest)
 
 	def __EventCalBegin(self, *args):
 		import uieventcalendar

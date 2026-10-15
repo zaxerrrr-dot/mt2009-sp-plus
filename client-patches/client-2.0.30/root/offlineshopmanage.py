@@ -27,6 +27,19 @@ import mouseModule
 import offlineShopSearch
 import flamewindPath
 import clientclock
+import warpsafe
+import offlineshopqol # MT2009_PLUS_SHOP_QOL_V2
+
+# MT2009_PLUS_SHOP_FAST_ADD_V1: a line put on the counter shows at once, dimmed,
+# in the cell it was put in, and the next one can be put on straight away - the
+# client sends them one by one, a third of a second apart (the server takes one
+# shop action per 200 ms, IkaShopTouchItem), and the dimmed picture turns into
+# the real line when the shop comes back from the db core. Before, the cell
+# stayed empty until then, so every next item had to wait for the last one.
+FAST_ADD_TICK = 0.35          # between two lines sent (200 ms on the server + the net's jitter)
+FAST_ADD_RETRIES = 1          # a line refused is sent once more (a "wait" from a jittery net)
+FAST_ADD_REJECT_CHECK = 2.0   # the item still in the bag this long after = refused
+FAST_ADD_CONFIRM_TIMEOUT = 30.0  # gone from the bag but never shown: picture dropped
 
 EVENT_OPEN_MYSHOP_SHOP_MANAGE = "EVENT_OPEN_MYSHOP_SHOP_MANAGE" # args |
 EVENT_CLOSE_MYSHOP_SHOP_MANAGE = "EVENT_CLOSE_MYSHOP_SHOP_MANAGE" # args |
@@ -182,10 +195,10 @@ class OfflineShopManage(ui.ScriptWindow):
 			owner.itemSlot.Show()
 			owner.signBar.Show()
 			owner.withdrawItemsButton.Hide()
-			owner.SetSize(owner.WINDOW_WIDTH, owner.WINDOW_HEIGHT)
-			owner.board.SetSize(owner.WINDOW_WIDTH, owner.WINDOW_HEIGHT)
+			owner.SetSize(owner.GetBoardWidth(), owner.WINDOW_HEIGHT)
+			owner.board.SetSize(owner.GetBoardWidth(), owner.WINDOW_HEIGHT)
 			owner.board.RefreshPosition()
-			owner.titlebar.SetWidth(owner.WINDOW_WIDTH - 15)
+			owner.titlebar.SetWidth(owner.GetBoardWidth() - 15)
 			owner.RefreshPosition()
 			owner.findShopButton.Enable()
 			owner.findShopButton.SetUp()
@@ -194,6 +207,9 @@ class OfflineShopManage(ui.ScriptWindow):
 			owner.editShopButton.Show()
 			owner.reopenButton.Hide()
 			owner.logsButton.SetPosition(190, 35)
+			if owner.extendButton:
+				owner.extendButton.Show()  # MT2009_PLUS_SHOP_QOL_V2
+			owner.PlaceGrids()
 
 		def OnSelectItemSlot(self, owner, slotIndex, click):
 			if click == "left":
@@ -213,7 +229,7 @@ class OfflineShopManage(ui.ScriptWindow):
 				item.SelectItem(itemVnum)
 				(itemWidth, itemHeight) = item.GetItemSize()
 
-				freeSlot = owner.itemSlot.FindEmptySlot(itemHeight)
+				freeSlot = owner.FindFreeCell(itemHeight)  # MT2009_PLUS_SHOP_QOL_V2: both pages
 				if freeSlot >= 0:
 					itemVnum = player.GetItemIndex(slotNumber)
 					itemCount = player.GetItemCount(slotNumber)
@@ -234,10 +250,12 @@ class OfflineShopManage(ui.ScriptWindow):
 			owner.findShopButton.Down()
 			owner.findShopButton.Disable()
 			owner.editShopButton.Disable()
+			if owner.extendButton:
+				owner.extendButton.Hide()  # MT2009_PLUS_SHOP_QOL_V2
 			self.Refresh(owner)
 
 		def Refresh(self, owner):
-			destWidth = owner.WINDOW_WIDTH
+			destWidth = owner.GetBoardWidth()
 			destHeight = owner.WINDOW_HEIGHT - owner.SIGN_BAR_HEIGHT
 			if owner.IsDepositEmpty():
 				owner.itemSlot.Hide()
@@ -261,11 +279,13 @@ class OfflineShopManage(ui.ScriptWindow):
 			owner.board.SetSize(destWidth, destHeight)
 			owner.titlebar.SetWidth(destWidth - 15)
 			owner.RefreshPosition()
+			owner.PlaceGrids()
 			if not owner.CanOpen():
 				owner.Close()
 
 		def OnExit(self, owner):
 			owner.itemSlot.MovePosition(0, 26)
+			owner.PlaceGrids()
 
 		def OnSelectItemSlot(self, owner, slotIndex, click):
 			if click == "left":
@@ -334,6 +354,19 @@ class OfflineShopManage(ui.ScriptWindow):
 		self.clockAnimation = 0
 		self.isEditMode = False
 		self.hoveredShopSlot = None
+		# MT2009_PLUS_SHOP_QOL_V2: the second page, the extend button and
+		# dialog, the auto price window, the lines lit up as stale
+		self.shopPages = 1
+		self.wideSlot = None
+		self.extendButton = None
+		self.extendDialog = None
+		self.autoPriceWindow = None
+		self.editActiveCells = set()
+		self.nextGlowAt = 0.0
+		# MT2009_PLUS_SHOP_FAST_ADD_V1: shop cell -> the line on its way
+		self.pendingAdds = {}
+		self.pendingOrder = []
+		self.pendingNextSend = 0.0
 
 	def SetToolTip(self, tooltip, item_tooltip):
 		# self.tooltipItem = item_tooltip
@@ -354,6 +387,12 @@ class OfflineShopManage(ui.ScriptWindow):
 		if self.addItemDialog:
 			self.addItemDialog.Close()
 		self.__CloseBulkQuestion()
+		# MT2009_PLUS_SHOP_QOL_V2
+		if self.autoPriceWindow:
+			self.autoPriceWindow.Destroy()
+		if self.extendDialog:
+			self.extendDialog.Close()
+		offlineshopqol.SetManageWindow(None)
 
 		if self.questionDialog:
 			self.questionDialog.Close()
@@ -456,6 +495,12 @@ class OfflineShopManage(ui.ScriptWindow):
 		except:
 			import exception
 			exception.Abort("OfflineShopManage.LoadDialog.BindObject")
+
+		# MT2009_PLUS_SHOP_QOL_V2: made after the stock script's try - a failure
+		# here costs the second page or the button, never the window.
+		self.__CreateWideSlot()
+		self.__CreateExtendButton()
+		offlineshopqol.SetManageWindow(self)
 
 	def __CanPlaceOnShopSlot(self, destSlotPos, itemHeight):
 		return offlineshopui.CanPlaceItemOnShopSlot(destSlotPos, itemHeight,
@@ -606,6 +651,10 @@ class OfflineShopManage(ui.ScriptWindow):
 			self.addItemDialog = dialog
 			self.ActivateItems(itemSlotList)
 			dialog.SetValue(itemData["price"])
+			# MT2009_PLUS_SHOP_QOL_V2: the auto price window edits these lines
+			dialog.autoPriceCells = list(itemSlotList)
+			meta = offlineshopqol.GetMeta(itemData["id"])
+			dialog.autoPriceCurrent = (meta["pct"], meta["hours"], meta["min"]) if meta else None
 			self.__RequestFleaMarketPrice(FLEA_PRICE_OWN_SHOP_WINDOW, itemData["id"])
 			self.__SetFleaMarketPriceHint(dialog, shopautoprice.FormatPriceLines(None, None, None))
 
@@ -633,18 +682,35 @@ class OfflineShopManage(ui.ScriptWindow):
 			button.Show()
 			dialog.fleaPricesButton = button
 
+		# MT2009_PLUS_SHOP_QOL_V2: "Auto-obnizka" under "Ceny"
+		if not hasattr(dialog, "autoPriceButton"):
+			button = ui.Button()
+			button.SetParent(dialog.board)
+			# the wide button: "Auto-obnizka: -5%/12h" did not fit the large one
+			button.SetUpVisual("d:/ymir work/ui/public/xlarge_button_01.sub")
+			button.SetOverVisual("d:/ymir work/ui/public/xlarge_button_02.sub")
+			button.SetDownVisual("d:/ymir work/ui/public/xlarge_button_03.sub")
+			button.SetWindowHorizontalAlignCenter()
+			button.SetEvent(ui.__mem_func__(self.__OnAutoPriceButtonClick))
+			button.Show()
+			dialog.autoPriceButton = button
+			if not hasattr(dialog, "autoPrice"):
+				dialog.autoPrice = None
+		self.__RefreshAutoPriceButton(dialog)
+
 		if app.ENABLE_CHEQUE_SYSTEM:
 			pricesY = 115
-			buttonY = 140
-			height = 174
+			buttonY = 140 + 25
+			height = 174 + 25
 		else:
 			pricesY = 75
-			buttonY = 100
-			height = 134
+			buttonY = 100 + 25
+			height = 134 + 25
 			# The price line two pixels up, halfway between the input over it
 			# and the button under it (Piciu713, 29 September).
 			dialog.moneyText.SetPosition(0, 57)
 		dialog.fleaPricesButton.SetPosition(0, pricesY)
+		dialog.autoPriceButton.SetPosition(0, pricesY + 25)
 		dialog.SetSize(200, height)
 		dialog.board.SetSize(200, height)
 		dialog.acceptButton.SetPosition(-36, buttonY)
@@ -1123,6 +1189,16 @@ class OfflineShopManage(ui.ScriptWindow):
 		dialog.fleaOpenText = dialog.GetText()
 
 	def ShowAddItemDialog(self, inventorySlotIndex, shopSlotIndex, inventoryWindowType, itemVnum, itemCount):
+		# MT2009_PLUS_SHOP_FAST_ADD_V1: an item already on its way, or a cell a
+		# line on its way covers
+		if self.__IsInventorySlotPending(inventoryWindowType, inventorySlotIndex):
+			chat.AppendChat(chat.CHAT_TYPE_INFO, playerbot_lang.T(
+				"Ten przedmiot juz jest wystawiany.", "This item is already being listed."))
+			return
+		item.SelectItem(itemVnum)
+		if self.__IsCellRangeBusy(shopSlotIndex, item.GetItemSize()[1]):
+			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.OFFLINE_SHOP_CANNOT_PLACE_ITEM_ON_ITEM)
+			return
 		if not constInfo.myshop_data["items"].has_key(shopSlotIndex):
 			if self.addItemDialog:
 				self.addItemDialog.Close()
@@ -1178,7 +1254,9 @@ class OfflineShopManage(ui.ScriptWindow):
 		itemCount = player.GetItemCount(inventoryWindowType, inventorySlotIndex)
 		sockets = tuple(player.GetItemMetinSocket(inventoryWindowType, inventorySlotIndex, i) for i in xrange(player.METIN_SOCKET_MAX_NUM))
 		offlineShopBuilder.SetPrivateShopItemPrice(itemVnum, itemCount, inputPrice, sockets)
+		self.pendingAutoPrice = getattr(self.addItemDialog, "autoPrice", None)  # MT2009_PLUS_SHOP_QOL_V2
 		self.AddItem(inventorySlotIndex, shopSlotIndex, inventoryWindowType, inputPrice)
+		self.pendingAutoPrice = None
 
 		# MT2009_PLUS_VEKIRION_V1: Enter handled - a falsy return here lets the key reach the game, which opens the chat
 		return True
@@ -1204,8 +1282,15 @@ class OfflineShopManage(ui.ScriptWindow):
 			shop_total_value += v["price"]
 
 		self.__CloseFleaPriceWindow()
+		autoPrice = getattr(self.addItemDialog, "autoPrice", None)  # MT2009_PLUS_SHOP_QOL_V2
+		autoPriceCells = getattr(self.addItemDialog, "autoPriceCells", [shopSlotIndex])
 		self.addItemDialog.Close()
 		data = constInfo.myshop_data["items"]
+		if data.has_key(shopSlotIndex) and autoPrice is not None:
+			for editedCell in autoPriceCells:
+				editedLine = data.get(editedCell)
+				if editedLine and editedLine.get("id"):
+					offlineshopqol.SendAutoPrice(editedLine["id"], autoPrice[0], autoPrice[1], autoPrice[2])
 		if data.has_key(shopSlotIndex):
 			itemData = data[shopSlotIndex]
 			if massEdit:
@@ -1271,14 +1356,21 @@ class OfflineShopManage(ui.ScriptWindow):
 	def ActivateItems(self, itemSlots):
 		for slot in itemSlots:
 			if constInfo.myshop_data["items"].has_key(slot):
-				self.itemSlot.ActivateSlot(slot)
-		self.itemSlot.RefreshSlot()
+				(grid, local) = self.GridOf(slot)
+				if grid:
+					grid.ActivateSlot(local)
+					self.editActiveCells.add(slot)
+		self.RefreshGrids()
 
 	def DeactivateItems(self, itemSlots):
 		for slot in itemSlots:
+			self.editActiveCells.discard(slot)
 			if constInfo.myshop_data["items"].has_key(slot):
-				self.itemSlot.DeactivateSlot(slot)
-		self.itemSlot.RefreshSlot()
+				(grid, local) = self.GridOf(slot)
+				if grid:
+					grid.DeactivateSlot(local)
+		self.__ApplyStaleGlow()  # MT2009_PLUS_SHOP_QOL_V2: a stale line lights up again
+		self.RefreshGrids()
 
 	def RefreshItemDeposit(self):
 		self.ClearItemStock()
@@ -1288,15 +1380,24 @@ class OfflineShopManage(ui.ScriptWindow):
 				count = 0
 
 			socket = tuple(data["sockets"])
-			self.itemSlot.SetItemSlot(slotIdx, data["vnum"], count, socket=socket)
+			(grid, local) = self.GridOf(slotIdx)  # MT2009_PLUS_SHOP_QOL_V2: either page
+			if grid:
+				grid.SetItemSlot(local, data["vnum"], count, socket=socket)
 
+		self.__DrawPendingAdds()  # MT2009_PLUS_SHOP_FAST_ADD_V1
+		self.__ApplyStaleGlow()  # MT2009_PLUS_SHOP_QOL_V2
 		self.visualState.Refresh(self)
-		self.itemSlot.RefreshSlot()
+		self.RefreshGrids()
 
 	def ClearItemStock(self):
 		for x in range(shop.SHOP_PLAYER_WIDTH):
 			for y in range(shop.SHOP_PLAYER_HEIGHT):
-				self.itemSlot.ClearSlot(x + shop.SHOP_PLAYER_WIDTH * y)
+				cell = x + shop.SHOP_PLAYER_WIDTH * y
+				for grid in (self.itemSlot, self.wideSlot):  # MT2009_PLUS_SHOP_QOL_V2: both pages
+					if grid:
+						grid.ClearSlot(cell)
+						grid.EnableSlot(cell)  # MT2009_PLUS_SHOP_FAST_ADD_V1: a dimmed line's cell
+						grid.DeactivateSlot(cell)
 
 	def IsDepositEmpty(self):
 		if not constInfo.myshop_data.has_key("items"):
@@ -1345,7 +1446,18 @@ class OfflineShopManage(ui.ScriptWindow):
 		self.clockIcon.Show()
 		self.clockAnimation.Hide()
 
+	# MT2009_PLUS_SHOP_FAST_ADD_V1: every frame while the counter is open
+	def OnUpdate(self):
+		if self.pendingAdds:
+			self.__UpdatePendingAdds()
+		offlineshopqol.Pump()  # MT2009_PLUS_SHOP_QOL_V2: the auto price commands, paced
+
 	def OnFixedUpdate(self):
+		# MT2009_PLUS_SHOP_QOL_V2: a line turns stale while the window is open
+		if self.IsShow() and offlineshopqol.GetStaleGlowHours() > 0 and clientclock.Now() >= self.nextGlowAt:
+			self.nextGlowAt = clientclock.Now() + 30.0
+			self.__ApplyStaleGlow()
+			self.RefreshGrids()
 		self.__UpdateFleaPriceBatch()
 		self.__CheckFleaPriceAnswer()
 		self.visualState.OnFixedUpdate(self)
@@ -1402,7 +1514,397 @@ class OfflineShopManage(ui.ScriptWindow):
 
 		# print "/update_shop_item add|%d|%d|%d|%ld" % (shopSlotIndex, inventorySlotIndex, inventoryWindowType, inputPrice)
 		# net.SendChatPacket("/update_shop_item add|%d|%d|%d|%ld" % (shopSlotIndex, inventorySlotIndex, inventoryWindowType, inputPrice))
-		ikashop.SendAddItem(inventoryWindowType, inventorySlotIndex, shopSlotIndex, inputPrice)
+		# MT2009_PLUS_SHOP_FAST_ADD_V1: queued and drawn at once, sent by OnUpdate
+		self.__QueueAdd(inventorySlotIndex, shopSlotIndex, inventoryWindowType, inputPrice)
+
+	#### MT2009_PLUS_SHOP_QOL_V2 ####
+	# The second page (the panel's "bigger shops"), beside the first, as the
+	# guest window shows a bot's: cells 80-159 in a grid of their own.
+	def __CreateWideSlot(self):
+		self.wideSlot = None
+		try:
+			slot = ui.GridSlotWindow()
+			slot.SetParent(self.board)
+			slot.ArrangeSlot(0, shop.SHOP_PLAYER_WIDTH, shop.SHOP_PLAYER_HEIGHT, 32, 32, 0, 0)
+			slot.SetSlotBaseImage("d:/ymir work/ui/public/Slot_Base.sub")
+			slot.SetSelectEmptySlotEvent(ui.__mem_func__(self.__OnWideEmptySlot))
+			slot.SAFE_SetButtonEvent("LEFT", "EXIST", self.__OnWideLeftClick)
+			slot.SAFE_SetButtonEvent("RIGHT", "EXIST", self.__OnWideRightClick)
+			slot.SetOverInItemEvent(ui.__mem_func__(self.__OnWideOverIn))
+			slot.SetOverOutItemEvent(ui.__mem_func__(self.__OnMyShopItemOverOut))
+			slot.Hide()
+			self.wideSlot = slot
+		except Exception as e:
+			import dbg
+			dbg.TraceError("offlineshopmanage: no second page: %s" % e)
+			self.wideSlot = None
+
+	def __CreateExtendButton(self):
+		self.extendButton = None
+		try:
+			button = ui.Button()
+			button.SetParent(self.titlebar)
+			# the title bar's own style, beside "Szukaj" and "Znajdz sklep"
+			# (PrivateShopManage.py: x 46 and 70, y -1, right / center)
+			button.SetUpVisual(flamewindPath.GetPublic("refresh_button_01"))
+			button.SetOverVisual(flamewindPath.GetPublic("refresh_button_02"))
+			button.SetDownVisual(flamewindPath.GetPublic("refresh_button_03"))
+			button.SetWindowHorizontalAlignRight()
+			button.SetWindowVerticalAlignCenter()
+			button.SetPosition(46 + 24 * 2, -1)
+			button.SetToolTipText(playerbot_lang.T("Przedluz sklep", "Extend the shop"))
+			button.SetEvent(ui.__mem_func__(self.ShowExtendDialog))
+			button.Hide()
+			self.extendButton = button
+		except Exception as e:
+			import dbg
+			dbg.TraceError("offlineshopmanage: no extend button: %s" % e)
+			self.extendButton = None
+
+	def GetBoardWidth(self):
+		if self.shopPages > 1 and self.wideSlot:
+			return self.WINDOW_WIDTH + shop.SHOP_PLAYER_WIDTH * 32
+		return self.WINDOW_WIDTH
+
+	def GridOf(self, cell):
+		pageCells = shop.SHOP_PLAYER_WIDTH * shop.SHOP_PLAYER_HEIGHT
+		if cell < pageCells:
+			return (self.itemSlot, cell)
+		if self.wideSlot and self.shopPages > 1 and cell < pageCells * 2:
+			return (self.wideSlot, cell - pageCells)
+		return (None, -1)
+
+	def RefreshGrids(self):
+		self.itemSlot.RefreshSlot()
+		if self.wideSlot:
+			self.wideSlot.RefreshSlot()
+
+	def PlaceGrids(self):
+		if not self.itemSlot:
+			return
+		# the shop's name bar as wide as the window (PrivateShopManage.py: x 14, width - 27)
+		if self.signBar:
+			self.signBar.SetSize(self.GetBoardWidth() - 27, self.signBar.GetHeight())
+			self.signBar.UpdateRect()
+		(x, y) = self.itemSlot.GetLocalPosition()
+		if self.shopPages > 1 and self.wideSlot and self.itemSlot.IsShow():
+			gridWidth = shop.SHOP_PLAYER_WIDTH * 32
+			left = (self.WINDOW_WIDTH - gridWidth) // 2
+			self.itemSlot.SetWindowHorizontalAlignLeft()
+			self.itemSlot.SetPosition(left, y)
+			self.wideSlot.SetPosition(left + gridWidth, y)
+			self.wideSlot.Show()
+		else:
+			if self.wideSlot:
+				self.wideSlot.Hide()
+			self.itemSlot.SetWindowHorizontalAlignCenter()
+			self.itemSlot.SetPosition(0, y)
+
+	def SetShopPages(self, pages):
+		pages = 2 if pages > 1 else 1
+		if pages == self.shopPages:
+			return
+		self.shopPages = pages
+		if self.visualState is self.STATE_OPEN:
+			self.STATE_OPEN.OnEnter(self)
+		elif self.visualState is self.STATE_CLOSED:
+			self.STATE_CLOSED.Refresh(self)
+		self.RefreshItemDeposit()
+		(x, y) = self.GetGlobalPosition()
+		self.SetPosition(max(0, min(x, wndMgr.GetScreenWidth() - self.GetWidth())), y)
+
+	def FindFreeCell(self, itemHeight):
+		cell = self.itemSlot.FindEmptySlot(itemHeight)
+		if cell >= 0:
+			return cell
+		if self.shopPages > 1 and self.wideSlot:
+			cell = self.wideSlot.FindEmptySlot(itemHeight)
+			if cell >= 0:
+				return cell + shop.SHOP_PLAYER_WIDTH * shop.SHOP_PLAYER_HEIGHT
+		return -1
+
+	def __WideCell(self, slot):
+		return slot + shop.SHOP_PLAYER_WIDTH * shop.SHOP_PLAYER_HEIGHT
+
+	def __OnWideEmptySlot(self, slot):
+		# offlineShopUi.MyShopSlots.OnSelectEmptySlot for the second page: no
+		# locked or premium cells there.
+		cell = self.__WideCell(slot)
+		if constInfo.myshop_data["items"].has_key(cell):
+			return
+		if not mouseModule.mouseController.isAttached():
+			return
+		attachedSlotType = mouseModule.mouseController.GetAttachedType()
+		attachedSlotPos = mouseModule.mouseController.GetAttachedSlotNumber()
+		mouseModule.mouseController.DeattachObject()
+		if player.SLOT_TYPE_INVENTORY != attachedSlotType and player.SLOT_TYPE_DRAGON_SOUL_INVENTORY != attachedSlotType:
+			return
+		attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
+		count = player.GetItemCount(attachedInvenType, attachedSlotPos)
+		itemVNum = player.GetItemIndex(attachedInvenType, attachedSlotPos)
+		item.SelectItem(itemVNum)
+		if item.IsAntiFlag(item.ANTIFLAG_GIVE) or item.IsAntiFlag(item.ANTIFLAG_MYSHOP):
+			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.PRIVATE_SHOP_CANNOT_SELL_ITEM)
+			return
+		# a line stands on one page, never across the bottom of it
+		if slot // shop.SHOP_PLAYER_WIDTH + item.GetItemSize()[1] > shop.SHOP_PLAYER_HEIGHT:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.OFFLINE_SHOP_CANNOT_PLACE_ITEM_ON_ITEM)
+			return
+		self.OnSelectEmptySlot(attachedSlotPos, cell, attachedSlotType, itemVNum, count)
+
+	def __OnWideLeftClick(self, slot):
+		self.OnSelectItemSlotLeftClick(self.__WideCell(slot))
+
+	def __OnWideRightClick(self, slot):
+		self.OnSelectItemSlotRightClick(self.__WideCell(slot))
+
+	def __OnWideOverIn(self, slot):
+		self.__OnMyShopItemOverIn(self.__WideCell(slot))
+
+	# The lines unsold for the client's Y hours, lit up (offlineshopqol.py).
+	def __ApplyStaleGlow(self):
+		items = constInfo.myshop_data.get("items", {})
+		(r, g, b, a) = offlineshopqol.STALE_GLOW_COLOR
+		for cell, data in items.items():
+			(grid, local) = self.GridOf(cell)
+			if not grid:
+				continue
+			if cell in self.editActiveCells:
+				grid.ActivateSlot(local)
+			elif offlineshopqol.IsStale(data.get("id", 0)):
+				grid.ActivateSlot(local, r, g, b, a)
+			else:
+				grid.DeactivateSlot(local)
+
+	def OnShopMetaUpdate(self):
+		if self.IsShow():
+			self.__ApplyStaleGlow()
+			self.RefreshGrids()
+
+	def __RefreshAutoPriceButton(self, dialog):
+		button = getattr(dialog, "autoPriceButton", None)
+		if not button:
+			return
+		autoPrice = getattr(dialog, "autoPrice", None)
+		if autoPrice is None:
+			autoPrice = getattr(dialog, "autoPriceCurrent", None)
+		if autoPrice and autoPrice[0] > 0:
+			button.SetText(playerbot_lang.T("Auto-obnizka: -%d%%/%dh", "Auto drop: -%d%%/%dh") % (autoPrice[0], autoPrice[1]))
+		else:
+			button.SetText(playerbot_lang.T("Auto-obnizka: wyl.", "Auto drop: off"))
+
+	def __OnAutoPriceButtonClick(self):
+		dialog = self.addItemDialog
+		if not dialog or not dialog.IsShow():
+			return
+		if not self.autoPriceWindow:
+			self.autoPriceWindow = offlineshopqol.AutoPriceWindow()
+		current = getattr(dialog, "autoPrice", None)
+		if current is None:
+			current = getattr(dialog, "autoPriceCurrent", None)
+		price = 0
+		try:
+			price = localeInfo.MoneyStringToNumber(dialog.GetText())
+		except Exception:
+			price = 0
+		self.autoPriceWindow.Open(current, price, ui.__mem_func__(self.__OnAutoPriceChosen))
+
+	def __OnAutoPriceChosen(self, autoPrice):
+		dialog = self.addItemDialog
+		if not dialog:
+			return
+		dialog.autoPrice = autoPrice
+		self.__RefreshAutoPriceButton(dialog)
+		if dialog.IsShow():
+			dialog.SetTop()
+			dialog.SetFocus()
+
+	# "Przedluz" (the + in the title bar): a running shop bought more time with
+	# the time options of opening one; the server adds them up to its maximum.
+	def ShowExtendDialog(self):
+		if self.extendDialog:
+			self.extendDialog.Close()
+		dialog = uiCommon.InputDialog()
+		dialog.SetTitle(playerbot_lang.T("Przedluz sklep", "Extend the shop"))
+		dialog.inputSlot.Hide()
+		dialog.inputValue.Hide()
+		dialog.acceptButton.SAFE_SetEvent(self.__AcceptExtendDialog)
+		dialog.cancelButton.SAFE_SetEvent(dialog.Close)
+		dialog.Open()
+		dialog.inputValue.KillFocus()
+		self.extendDialog = dialog
+
+		combo = ui.ComboBox()
+		combo.SetParent(dialog.board)
+		combo.SetWindowHorizontalAlignCenter()
+		combo.SetSize(162, 19)
+		combo.SetPosition(0, 35)
+		combo.SetCurrentItem(uiScriptLocale.SHOP_CREATE_SELECT_DEFAULT)
+		combo.SAFE_SetEvent(self.__OnExtendTimeSelect)
+		combo.Show()
+		offlineShopBuilder.PrepareComboBox(combo, (0,))
+		dialog.ElementDictionary["TimeSelect"] = combo
+
+	def __OnExtendTimeSelect(self, index):
+		if not self.extendDialog:
+			return
+		data = offlineShopBuilder.SHOP_TIME_OPTIONS[index]
+		isPremiumOption = data.has_key("isSpecial") and data["isSpecial"]
+		combo = self.extendDialog.ElementDictionary["TimeSelect"]
+		combo.SetCurrentItem(offlineShopBuilder.GetTimeSelectString(index), offlineShopBuilder.SPECIAL_ITEM_COLOR if isPremiumOption else None)
+		combo.SetIndex(index)
+		self.extendDialog.SetTop()
+
+	def __AcceptExtendDialog(self):
+		if not self.extendDialog:
+			return
+		index = self.extendDialog.ElementDictionary["TimeSelect"].index
+		if index < 1:
+			return
+		net.SendChatPacket("/ikashop_extend %d" % index)
+		self.extendDialog.Close()
+		self.extendDialog = None
+
+	#### MT2009_PLUS_SHOP_FAST_ADD_V1 ####
+	def __ItemHeight(self, vnum):
+		if vnum <= 0:
+			return 1
+		item.SelectItem(vnum)
+		return max(1, item.GetItemSize()[1])
+
+	def __BusyCells(self):
+		# every cell a line on the counter or a line on its way covers
+		busy = set()
+		width = shop.SHOP_PLAYER_WIDTH
+		for cell, data in constInfo.myshop_data.get("items", {}).items():
+			for i in range(self.__ItemHeight(data["vnum"])):
+				busy.add(cell + i * width)
+		for cell, entry in self.pendingAdds.items():
+			for i in range(entry["height"]):
+				busy.add(cell + i * width)
+		return busy
+
+	def __IsCellRangeBusy(self, cell, height):
+		busy = self.__BusyCells()
+		for i in range(max(1, height)):
+			if cell + i * shop.SHOP_PLAYER_WIDTH in busy:
+				return True
+		return False
+
+	def __IsInventorySlotPending(self, window, slot):
+		for entry in self.pendingAdds.values():
+			if entry["window"] == window and entry["slot"] == slot:
+				return True
+		return False
+
+	def __QueueAdd(self, inventorySlotIndex, shopSlotIndex, inventoryWindowType, inputPrice):
+		vnum = player.GetItemIndex(inventoryWindowType, inventorySlotIndex)
+		if vnum <= 0:
+			return
+		height = self.__ItemHeight(vnum)
+		if self.__IsInventorySlotPending(inventoryWindowType, inventorySlotIndex) or \
+				self.__IsCellRangeBusy(shopSlotIndex, height):
+			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.OFFLINE_SHOP_CANNOT_PLACE_ITEM_ON_ITEM)
+			return
+		self.pendingAdds[shopSlotIndex] = {
+			"window": inventoryWindowType,
+			"slot": inventorySlotIndex,
+			"vnum": vnum,
+			"count": player.GetItemCount(inventoryWindowType, inventorySlotIndex),
+			"sockets": tuple(player.GetItemMetinSocket(inventoryWindowType, inventorySlotIndex, i) for i in xrange(player.METIN_SOCKET_MAX_NUM)),
+			"price": inputPrice,
+			"height": height,
+			"sent": False,
+			"sentAt": 0.0,
+			"retries": FAST_ADD_RETRIES,
+			"autoPrice": getattr(self, "pendingAutoPrice", None),  # MT2009_PLUS_SHOP_QOL_V2
+		}
+		self.pendingAutoPrice = None
+		self.pendingOrder.append(shopSlotIndex)
+		self.__DrawPendingAdds()
+		self.RefreshGrids()
+
+	def __DrawPendingAdds(self):
+		items = constInfo.myshop_data.get("items", {})
+		for cell, entry in self.pendingAdds.items():
+			if items.has_key(cell):
+				continue
+			count = entry["count"]
+			if count < 2:
+				count = 0
+			(grid, local) = self.GridOf(cell)  # MT2009_PLUS_SHOP_QOL_V2
+			if grid:
+				grid.SetItemSlot(local, entry["vnum"], count, socket=entry["sockets"])
+				grid.DisableSlot(local)
+
+	def __DropPendingAdd(self, cell):
+		if self.pendingAdds.has_key(cell):
+			del self.pendingAdds[cell]
+		if cell in self.pendingOrder:
+			self.pendingOrder.remove(cell)
+
+	def __ClearPendingAdds(self, tell=False):
+		unsent = len([e for e in self.pendingAdds.values() if not e["sent"]])
+		self.pendingAdds = {}
+		self.pendingOrder = []
+		if tell and unsent:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, playerbot_lang.T(
+				"Nie wystawiono %d przedmiotow - sklep zostal zamkniety.",
+				"%d items were not listed - the shop window was closed.") % unsent)
+
+	def __StillInBag(self, entry):
+		return player.GetItemIndex(entry["window"], entry["slot"]) == entry["vnum"] and \
+			player.GetItemCount(entry["window"], entry["slot"]) == entry["count"]
+
+	def __UpdatePendingAdds(self):
+		now = clientclock.Now()
+		items = constInfo.myshop_data.get("items", {})
+		redraw = False
+
+		# lines that came back, or that the server refused
+		for cell, entry in self.pendingAdds.items():
+			if not entry["sent"]:
+				continue
+			shown = items.get(cell)
+			if shown and shown.get("vnum") == entry["vnum"]:
+				# MT2009_PLUS_SHOP_QOL_V2: the line has its id now - its price drop
+				autoPrice = entry.get("autoPrice")
+				if autoPrice and autoPrice[0] > 0 and shown.get("id"):
+					offlineshopqol.SendAutoPrice(shown["id"], autoPrice[0], autoPrice[1], autoPrice[2])
+				self.__DropPendingAdd(cell)
+				continue
+			waited = now - entry["sentAt"]
+			if waited >= FAST_ADD_REJECT_CHECK and self.__StillInBag(entry):
+				if entry["retries"] > 0:
+					# once more, at the end of the queue
+					entry["retries"] -= 1
+					entry["sent"] = False
+					self.pendingOrder.append(cell)
+					continue
+				# the server said why on the chat (edit mode, distance, price...)
+				self.__DropPendingAdd(cell)
+				redraw = True
+			elif waited >= FAST_ADD_CONFIRM_TIMEOUT:
+				self.__DropPendingAdd(cell)
+				redraw = True
+
+		# the next one out
+		if self.pendingOrder and now >= self.pendingNextSend and warpsafe.InGame():
+			cell = self.pendingOrder.pop(0)
+			entry = self.pendingAdds.get(cell)
+			if entry:
+				if not self.__StillInBag(entry):
+					# moved, split or used while it waited
+					self.__DropPendingAdd(cell)
+					redraw = True
+				else:
+					ikashop.SendAddItem(entry["window"], entry["slot"], cell, entry["price"])
+					entry["sent"] = True
+					entry["sentAt"] = now
+					self.pendingNextSend = now + FAST_ADD_TICK
+
+		if redraw:
+			self.RefreshItemDeposit()
 
 	def WithdrawGold(self):
 		ikashop.SendSafeboxGetValutes()
@@ -1478,6 +1980,12 @@ class OfflineShopManage(ui.ScriptWindow):
 		if not self.IsShow():
 			return
 		self.Hide()
+		self.__ClearPendingAdds(True)  # MT2009_PLUS_SHOP_FAST_ADD_V1
+		if self.autoPriceWindow:
+			self.autoPriceWindow.Close()  # MT2009_PLUS_SHOP_QOL_V2
+		if self.extendDialog:
+			self.extendDialog.Close()
+			self.extendDialog = None
 		ikashop.SendCloseMyShopBoard()
 		ikashop.SendSafeboxClose()
 
@@ -1545,6 +2053,15 @@ class OfflineShopManage(ui.ScriptWindow):
 		self.hoveredShopSlot = slotIndex
 		if self.myShopSlotRenderer:
 			self.myShopSlotRenderer.OnOverInItem(slotIndex)
+			# MT2009_PLUS_SHOP_QOL_V2: how long it stands unsold, its price drop
+			tooltip = self.myShopSlotRenderer.tooltipItem
+			data = constInfo.myshop_data.get("items", {}).get(slotIndex)
+			if tooltip and data:
+				lines = offlineshopqol.TooltipLines(data.get("id", 0))
+				if lines:
+					tooltip.AppendSpace(5)
+					for line in lines:
+						tooltip.AppendTextLine(line, 0xFFFFC56A)
 
 	def __OnMyShopItemOverOut(self):
 		self.hoveredShopSlot = None

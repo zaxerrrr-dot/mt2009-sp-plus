@@ -6,6 +6,7 @@
 #   - player shops                  exe: chrmgr.SetShopsVisible (ikashop entities + shop characters)
 #   - trees / objects / clouds / water   background.SetVisiblePart (every exe)
 #   - chat and whispers to logs/czat_YYYY-MM-DD.txt   exe: app.SetChatLog
+#   - the skull over bosses (MT2009_PLUS_BOSS_SKULL_TOGGLE_V1, game.py BossMark)
 # A row whose exe call is missing is not shown (and its setting is never applied).
 # Settings for the whole client (every character): opcje_dodatkowe.cfg, key=0/1.
 # Apply() is called by game.py every frame and acts once a second, so a new map, a warp
@@ -13,6 +14,7 @@
 # Python 2.7 as the client has it; texts CP1250 as escapes.
 import app
 import background
+import chr
 import chrmgr
 import ui
 from _weakref import proxy
@@ -57,6 +59,9 @@ OPTIONS = (
 	("killsound", "D\x9fwi\xeaki zab\xf3jstw (boss, metin, gracz)", lambda: True),
 	# MT2009_PLUS_SHOP_CHEAP_MARK_V1: the cheap offers' mark in the offline shops (offlineshopguest.py).
 	("shopcheap_off", "Nie pod\x9cwietlaj tanich ofert w sklepikach", lambda: True),
+	# MT2009_PLUS_BOSS_SKULL_TOGGLE_V1 (Autor: Vekirion): the skull over a boss's / miniboss's head
+	# (MT2009_PLUS_BOSS_SKULL_V1, game.py "BossMark") - shown unless ticked.
+	("bossskull_off", "Ukryj czaszk\xea nad bossami", lambda: True),
 	# AH_V1 [Autor: Vekirion]: Dom Aukcyjny (uiauctionhouse.py) - podpowiedzi nazw: wylaczone = tylko przedmioty
 	# aktualnie wystawione (serwer, z filtrami), wlaczone = wszystkie nazwy z klienta.
 	("ah_allnames", "Podpowiadaj wszystkie nazwy przedmiot\xf3w", lambda: True),
@@ -64,11 +69,30 @@ OPTIONS = (
 	("ah_white", "Bia\xb3e napisy", lambda: True),
 	# wylaczone = od najnizszej ceny za sztuke, wlaczone = od najnizszej ceny calej oferty
 	("ah_sorttotal", "Sortuj po cenie ca\xb3ej oferty", lambda: True),
+	# MT2009_PLUS_SHOP_SOLD_NOTICE_V1: the "sold" notice of the player's own offline shop
+	# (game.py, OnMyShopBuy). Neither ticked = a whisper, as before; the two exclude
+	# each other (EXCLUSIVE below).
+	("shopsold_chat", "Sprzeda\xbf: tylko linijka na czacie (bez szeptu)", lambda: True),
+	("shopsold_off", "Sprzeda\xbf: bez powiadomienia", lambda: True),
+	# MT2009_PLUS_PICKUP_RULES_V1 (the owner, 13 October): the pick-up filter's
+	# detailed filter (right click in Ctrl+Z, uipickupfilter.py) on or off. Off,
+	# the filter is the simple one - a kind is picked up or not - and its rules
+	# stay saved for when it is on again. On by default (DEFAULT_ON).
+	("pickup_advanced", "Zaawansowany filtr podnoszenia (PPM w Ctrl+Z)", lambda: True),
 )
+# Options ticked until the player unticks them.
+DEFAULT_ON = ("pickup_advanced",)
 # AH_V1 [Autor: Vekirion]: opcje zebrane pod rozwijanym naglowkiem (nazwa, klucze opcji). Zwiniete,
 # dopoki gracz nie kliknie naglowka; stan trzyma sie do zamkniecia klienta.
 GROUPS = (
 	("Dom Aukcyjny", ("ah_allnames", "ah_white", "ah_sorttotal")),
+	("Sklep offline", ("shopsold_chat", "shopsold_off")),  # MT2009_PLUS_SHOP_SOLD_NOTICE_V1
+	("Filtr podnoszenia", ("pickup_advanced",)),  # MT2009_PLUS_PICKUP_RULES_V1
+)
+# MT2009_PLUS_SHOP_SOLD_NOTICE_V1: options of which at most one is on - ticking one
+# unticks the others.
+EXCLUSIVE = (
+	("shopsold_chat", "shopsold_off"),
 )
 _groupOpen = {}
 
@@ -93,7 +117,7 @@ def _Open(name, mode):
 def Settings():
 	global _settings
 	if _settings is None:
-		_settings = dict((key, False) for key, text, available in OPTIONS)
+		_settings = dict((key, key in DEFAULT_ON) for key, text, available in OPTIONS)
 		try:
 			f = _Open(CONFIG_FILE, "r")
 			try:
@@ -122,8 +146,79 @@ def Save():
 
 def Set(key, value):
 	Settings()[key] = value
+	# MT2009_PLUS_SHOP_SOLD_NOTICE_V1: one of a set ticked unticks the rest of it
+	if value:
+		for keys in EXCLUSIVE:
+			if key in keys:
+				for other in keys:
+					if other != key:
+						Settings()[other] = False
 	Save()
 	Apply(True)
+	if key == "bossskull_off" and not value:
+		_ShowBossSkulls()
+	# MT2009_PLUS_PICKUP_RULES_V1: the filter's rules to the server, or off it.
+	if key == "pickup_advanced":
+		try:
+			__import__("uipickupfilter").OnAdvancedChanged()
+		except Exception:
+			pass
+
+
+def PickupAdvanced():
+	"""MT2009_PLUS_PICKUP_RULES_V1: the pick-up filter's detailed filter on."""
+	return bool(Settings().get("pickup_advanced", True))
+
+
+# MT2009_PLUS_BOSS_SKULL_TOGGLE_V1: the server's "BossMark <vid>" (game.py) comes
+# once, when the boss comes into view. Its skull is a looping emoticon the exe
+# cannot take back, so ticking the option hides the skulls of bosses that come
+# into view from then on; unticking it puts the skull back on the bosses still
+# in view (remembered with their names, so a VID given to another monster
+# after the boss died gets none).
+BOSS_SKULL_SLOT = 120
+BOSS_SKULL_EFFECT = "d:/ymir work/effect/etc/mt2009/boss_skull.mse"
+_bossMarks = []
+_bossSkull = {"registered": False}
+
+
+def _BossName(vid):
+	try:
+		return chr.GetNameByVID(vid)
+	except Exception:
+		return None
+
+
+def _ShowBossSkull(vid):
+	try:
+		if not _bossSkull["registered"]:
+			chrmgr.RegisterEffect(chrmgr.EFFECT_EMOTICON + BOSS_SKULL_SLOT, "", BOSS_SKULL_EFFECT)
+			_bossSkull["registered"] = True
+		chrmgr.SetEmoticon(vid, BOSS_SKULL_SLOT)
+	except Exception:
+		pass
+
+
+def BossMark(vid):
+	name = _BossName(vid)
+	for mark in [m for m in _bossMarks if m[0] == vid]:
+		_bossMarks.remove(mark)
+	_bossMarks.append((vid, name))
+	del _bossMarks[:-64]
+	if not Settings().get("bossskull_off", False):
+		_ShowBossSkull(vid)
+
+
+def _ShowBossSkulls():
+	for vid, name in list(_bossMarks):
+		try:
+			present = chr.HasInstance(vid)
+		except Exception:
+			present = False
+		if not present or _BossName(vid) != name:
+			_bossMarks.remove((vid, name))
+			continue
+		_ShowBossSkull(vid)
 
 
 def Apply(force=False):
@@ -167,6 +262,16 @@ def Apply(force=False):
 			elif _state["partsHidden"].get(key):
 				background.SetVisiblePart(part, 1)
 				_state["partsHidden"][key] = False
+
+
+def ShopSoldNoticeMode():
+	"""MT2009_PLUS_SHOP_SOLD_NOTICE_V1: "whisper" (default), "chat" or "off"."""
+	s = Settings()
+	if s.get("shopsold_off", False):
+		return "off"
+	if s.get("shopsold_chat", False):
+		return "chat"
+	return "whisper"
 
 
 class OptionRow(ui.Window):

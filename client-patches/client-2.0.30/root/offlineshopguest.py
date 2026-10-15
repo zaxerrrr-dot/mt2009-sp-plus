@@ -12,12 +12,25 @@ import player
 import net
 import chr
 import constInfo
+import playerbot_lang
 
 # A bot's offline shop is a person's grid twice over, side by side: one
 # grid twenty columns wide, cells 80-159 its right half row for row
 # (playerbot_offline::BOT_SHOP_PAGES on the server). A person's shop is the
 # stock grid.
 SHOP_BLOCKS_MAX = 2
+
+# MT2009_PLUS_SHOP_QOL_V2: a part of a stack costs its share of the line's
+# price, rounded up - the server's (and the Dom Aukcyjny's) PartPrice.
+PART_BOARD_WIDTH = 300
+PART_SLOT_WIDTH = 50
+PART_STEP_WIDTH = 32	# xsmall_button
+PART_STEP_Y = 32
+
+def PartPrice(price, count, quantity):
+	count = max(1, count)
+	quantity = max(1, min(quantity, count))
+	return (price * quantity + count - 1) // count
 
 def IsPressingCTRL():
 	return app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(app.DIK_RCONTROL)
@@ -61,6 +74,7 @@ class OfflineShopGuest(ui.ScriptWindow):
 		self.activeCells = []
 		self.wideSlot = None
 		self.shopWide = False
+		self.partDialog = None  # MT2009_PLUS_SHOP_QOL_V2
 
 	@ui.WindowDestroy
 	def Destroy(self):
@@ -256,6 +270,13 @@ class OfflineShopGuest(ui.ScriptWindow):
 		if data is None:
 			return
 
+		# MT2009_PLUS_SHOP_QOL_V2: a stack asks how many, as the Dom Aukcyjny
+		# does - the whole stack is the default, fewer is a part of it at its
+		# share of the price (rounded up), a person's shop or a bot's alike.
+		if not self.isNormalShop and data.get("count", 1) > 1 and data.get("id"):
+			self.__AskBuyPart(slot)
+			return
+
 		if self.questionDialog:
 			self.questionDialog.Close()
 
@@ -269,6 +290,158 @@ class OfflineShopGuest(ui.ScriptWindow):
 		dialog.Open()
 		self.questionDialog = dialog
 		self.ActivateItems([slot])
+
+	#### MT2009_PLUS_SHOP_QOL_V2: a part of a stack ####
+	def __AskBuyPart(self, slot):
+		data = self.__GetItemData(slot)
+		if data is None:
+			return
+		if self.questionDialog:
+			self.questionDialog.Close()
+		if self.partDialog:
+			self.partDialog.Close()
+
+		item.SelectItem(data["vnum"])
+		dialog = uiCommon.InputDialog()
+		dialog.SetTitle(playerbot_lang.T("Ile sztuk kupic?", "How many to buy?"))
+		dialog.inputValue.SetNumberMode()
+		dialog.SetMaxLength(5)
+		# room for -10 -5 -1 on the left of the input and +1 +5 +10 on its right
+		dialog.SetBoardWidth(PART_BOARD_WIDTH - 50)
+		dialog.SetSlotWidth(PART_SLOT_WIDTH)
+		dialog.board.SetSize(dialog.board.GetWidth(), dialog.board.GetHeight() + 36)
+		dialog.SetSize(dialog.GetWidth(), dialog.GetHeight() + 36)
+		dialog.UpdateRect()
+		dialog.partButtons = []
+		center = PART_BOARD_WIDTH // 2
+		for i, step in enumerate((-1, -5, -10)):
+			x = center - PART_SLOT_WIDTH // 2 - 4 - (i + 1) * PART_STEP_WIDTH - i * 2
+			dialog.partButtons.append(self.__MakeStepButton(dialog.board, x, step))
+		for i, step in enumerate((1, 5, 10)):
+			x = center + PART_SLOT_WIDTH // 2 + 4 + i * (PART_STEP_WIDTH + 2)
+			dialog.partButtons.append(self.__MakeStepButton(dialog.board, x, step))
+		dialog.acceptButton.MovePosition(0, 36)
+		dialog.cancelButton.MovePosition(0, 36)
+
+		nameLine = ui.TextLine()
+		nameLine.SetParent(dialog.board)
+		nameLine.SetWindowHorizontalAlignCenter()
+		nameLine.SetHorizontalAlignCenter()
+		nameLine.SetPosition(0, 58)
+		nameLine.SetText("%s (%d szt.)" % (item.GetItemName(), data["count"]))
+		nameLine.Show()
+		totalLine = ui.TextLine()
+		totalLine.SetParent(dialog.board)
+		totalLine.SetWindowHorizontalAlignCenter()
+		totalLine.SetHorizontalAlignCenter()
+		totalLine.SetPosition(0, 74)
+		totalLine.SetPackedFontColor(0xFFFFD56A)
+		totalLine.Show()
+		dialog.partLines = (nameLine, totalLine)
+
+		dialog.SetAcceptEvent(ui.__mem_func__(self.__AcceptBuyPartEnter))
+		dialog.SetCancelEvent(ui.__mem_func__(self.__ClosePartDialog))
+		dialog.partSlot = slot
+		dialog.closeEvent = lambda arg1=[slot]: self.DeactivateItems(arg1)
+		dialog.Open()
+		# empty: the player types (or clicks) how many
+		dialog.inputValue.SetText("")
+		# not active at first: the player clicks the input to type (then its
+		# cursor shows), or uses the -10..+10 buttons
+		dialog.inputValue.KillFocus()
+		self.partDialog = dialog
+		self.ActivateItems([slot])
+		self.__RefreshPartTotal()
+
+	def __MakeStepButton(self, parent, x, step):
+		button = ui.Button()
+		button.SetParent(parent)
+		button.SetPosition(x, PART_STEP_Y)
+		button.SetUpVisual("d:/ymir work/ui/public/xsmall_button_01.sub")
+		button.SetOverVisual("d:/ymir work/ui/public/xsmall_button_02.sub")
+		button.SetDownVisual("d:/ymir work/ui/public/xsmall_button_03.sub")
+		button.SetText(("+%d" if step > 0 else "%d") % step)
+		button.SetEvent(ui.__mem_func__(self.__OnPartStep), step)
+		button.Show()
+		return button
+
+	def __OnPartStep(self, step):
+		dialog = self.partDialog
+		if not dialog or not dialog.IsShow():
+			return
+		data = self.__GetItemData(dialog.partSlot)
+		if data is None:
+			return
+		edit = dialog.inputValue
+		typing = edit.IsFocus()
+		if typing:
+			edit.KillFocus()  # takes what was typed into the line first
+		try:
+			current = int(edit.GetText().strip() or "0")
+		except ValueError:
+			current = 0
+		value = max(0, min(int(data["count"]), current + step))
+		edit.SetText(str(value) if value > 0 else "")
+		if typing:
+			edit.SetFocus()  # still typing: on, after the new number
+			edit.SetEndPosition()
+		self.__RefreshPartTotal()
+
+	def __PartQuantity(self, data):
+		try:
+			quantity = int(self.partDialog.inputValue.GetText().strip() or "0")
+		except ValueError:
+			quantity = 0
+		return max(0, min(quantity, int(data["count"])))
+
+	def __RefreshPartTotal(self):
+		dialog = self.partDialog
+		if not dialog or not dialog.IsShow():
+			return
+		data = self.__GetItemData(dialog.partSlot)
+		if data is None:
+			return
+		quantity = self.__PartQuantity(data)
+		if quantity <= 0:
+			dialog.partLines[1].SetText(playerbot_lang.T("Wpisz ilosc (1-%d)", "Type a number (1-%d)") % data["count"])
+			return
+		price = PartPrice(long(data["price"]), int(data["count"]), quantity)
+		dialog.partLines[1].SetText(playerbot_lang.T("Do zaplaty za %d szt.: %s", "To pay for %d: %s") % (
+			quantity, localeInfo.NumberToMoneyString(price)))
+
+	def __UpdatePartDialog(self):
+		if self.partDialog and self.partDialog.IsShow():
+			text = self.partDialog.inputValue.GetText()
+			if text != getattr(self.partDialog, "lastText", None):
+				self.partDialog.lastText = text
+				self.__RefreshPartTotal()
+
+	def __ClosePartDialog(self):
+		if self.partDialog:
+			self.partDialog.Close()
+			self.partDialog = None
+		return True
+
+	def __AcceptBuyPartEnter(self):
+		if self.partDialog:
+			self.__AcceptBuyPart(self.partDialog.partSlot)
+		return True
+
+	def __AcceptBuyPart(self, slot):
+		data = self.__GetItemData(slot)
+		dialog = self.partDialog
+		if data is None or not dialog:
+			self.__ClosePartDialog()
+			return
+		quantity = self.__PartQuantity(data)
+		if quantity <= 0:
+			return
+		self.__ClosePartDialog()
+		if quantity >= int(data["count"]):
+			ikashop.SendBuyItem(self.shopInfo['id'], data["id"], data["price"])
+		else:
+			net.SendChatPacket("/ikashop_buy_part %d %d %d %d" % (
+				int(self.shopInfo['id']), int(data["id"]), quantity, long(data["price"])))
 
 	def __AskBuyAllItem(self, slot):
 		data = self.__GetItemData(slot)
@@ -439,6 +612,7 @@ class OfflineShopGuest(ui.ScriptWindow):
 		self.shopInfo = None
 		self.Hide()
 		self.isNormalShop = False
+		self.__ClosePartDialog()  # MT2009_PLUS_SHOP_QOL_V2
 
 		if self.questionDialog:
 			self.questionDialog.Close()
@@ -531,6 +705,7 @@ class OfflineShopGuest(ui.ScriptWindow):
 		eventManager.EventManager().send_event(eventManager.EVENT_MARK_SHOP_CURRENT, self.shopInfo["vid"], False)
 
 	def OnUpdate(self):
+		self.__UpdatePartDialog()  # MT2009_PLUS_SHOP_QOL_V2
 		USE_SHOP_LIMIT_RANGE = 1000
 		(x, y, z) = player.GetMainCharacterPosition()
 		if abs(x - self.xShopStart) > USE_SHOP_LIMIT_RANGE or abs(y - self.yShopStart) > USE_SHOP_LIMIT_RANGE:
