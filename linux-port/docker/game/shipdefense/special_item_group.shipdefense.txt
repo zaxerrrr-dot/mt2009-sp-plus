@@ -1,134 +1,125 @@
 # MT2009_PLUS_SHIP_DEFENSE_V1: Skrzynia Hydry (54705) - three of them or more from Skarb Hydry
 # (mob_drop_item.shipdefense.txt). The owner, 13 October 2026 (cache/yohara/decyzje.md): a chest opens
 # three times (right click; the engine keeps it for chest_uses = 3 openings, socket 0 counts them -
-# playerbot_ship_defense.cpp ShipDefense_ChestKeep), each opening gives exactly ONE item of the official
-# list (pl-wiki "Skrzynia Hydry") by weight (of 1000): Magiczny Kamien exactly 4% (40), the rest
-# spread over 960 - Pakiet Kamieni Duszy x3 60, the common scrolls and materials 50-80, the elixirs and
-# the snack 50, the pearls 50/30/20, the rare ones (Smoczy Plomien, Jajo Nessie, the sash, the mount)
-# 10-20. (13 October, the owner: Pakiet Kamieni Duszy x3 added - its 60 taken 10 each from Zwoj
-# Blogoslawienstwa 90->80, Zaczarowanie / Wzmocnienie Przedmiotu and Przepustka 70->60, Klejnot
-# Madrosci / Zawisci 60->50; the total stays 1000.)
-# MT2009_PLUS_YOHARA_PORT_V1 (the owner, 13 October 2026, evening): Pierscien Hydry (70303) is one of the
-# picks again - 30 (3%), taken 10 each from Zwoj Blogoslawienstwa 80->70, Notatka Przywodcy x5 and Czerw.
-# Konar Duchodrzewa x5 60->50; Magiczny Kamien stays exactly 40 (4%), the total stays 1000.
-# Spirala Czasu (72347) stays out (not a Hydra reward).
-# Not in our world.item_proto, left out: Kamyki x200 (50926 is a recipe here),
-# Tajemnicze Pudelko, Torba Emocji (38060), Zwoj Przywolania GY / SLW (72052 / 72051). Our names: Odzywka
-# is Proteinowa Przekaska (55001), Szarfa Wladcy (zacna) is Szarfa Wladcy +2 (85003), Smoczy Plomien (B)
-# is "Flame of the Dragon (B)" (100700), Tygrys Bengalski (bialy) is the mount itself (71142, 20 days),
-# not the official seal.
+# playerbot_ship_defense.cpp ShipDefense_ChestKeep), each opening gives exactly ONE item by weight.
+# MT2009_PLUS_CHEST_DROPS_V1 (the owner, 15 October 2026): the rows and chances of the owner's sheet (the
+# chances of one opening; tools/yohara_chestdrops), Magiczny Kamien (25042) kept at exactly 4% (the owner,
+# 13 October), Pierscien Hydry (70303) one of the sheet's rows. Our names: Odzywka is Proteinowa Przekaska
+# (55001), Szarfa Wladcy (zacna) is Szarfa Wladcy +2 (85003), Smoczy Plomien (B) is "Flame of the Dragon (B)"
+# (100700), Tygrys Bengalski (bialy) is the mount itself (71142, 20 days).
 # Appended to special_item_group.txt by the Dockerfile (share: Obrona Statku).
 
+# MT2009_PLUS_CHEST_DROPS_V1: 54705 - 24 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# weights of 100000 (/ 1000 = %), one row an opening.
+# The owner's own chance kept: vnum 25042 weight 4000 (the rest scaled to what is left).
+# Left out (renormalised): Losowa Skrzynka 6.448% - no system; Torba Emocji 1.488% - no system;
+#   Zwoj Przywolania SLW 0.992% - no system; Zwoj Przywolania GY 0.992% - no system
 Group	MT2009_shipdef_chest_54705
 {
 	Vnum	54705 -- Skrzynia Hydry
-	1	25042	1	40 -- Magiczny Kamien (4%)
-	2	25040	1	70 -- Zwoj Blogoslawienstwa
-	3	71084	1	60 -- Zaczarowanie Przedmiotu
-	4	71085	1	60 -- Wzmocnienie Przedmiotu
-	5	30252	5	50 -- Klejnot Madrosci x5
-	6	30251	5	50 -- Klejnot Zawisci x5
-	7	30168	5	50 -- Notatka Przywodcy x5
-	8	30167	5	50 -- Czerw. Konar Duchodrzewa x5
-	9	71001	2	60 -- Zwoj Egzorcyzmu x2
-	10	71083	2	60 -- Ksiega Obrobki Kamienia x2
-	11	71130	1	60 -- Przepustka
-	12	72727	1	50 -- Eliksir Ksiezyca (M)
-	13	72723	1	50 -- Eliksir Slonca (M)
-	14	55001	1	50 -- Proteinowa Przekaska (Odzywka)
-	15	27992	1	50 -- Biala Perla
-	16	27993	1	30 -- Niebieska Perla
-	17	27994	1	20 -- Krwawa Perla
-	18	100700	1	20 -- Smoczy Plomien (B)
-	19	55410	1	10 -- Jajo Nessie
-	20	85003	1	10 -- Szarfa Wladcy (zacna) = Szarfa Wladcy +2
-	21	71142	1	10 -- Tygrys Bengalski (bialy)
-	22	72058	3	60 -- Pakiet Kamieni Duszy x3
-	23	70303	1	30 -- Pierscien Hydry
+	1	95926	200	10690 -- Kamyki x200 - ours 95926 (50926 is a recipe here)
+	2	72058	3	9621 -- Pakiet Kamieni Duszy x3
+	3	55001	1	8018 -- Odzywka
+	4	25040	1	6949 -- Zwoj Blogoslawienstwa
+	5	30167	5	6949 -- Cz. Konar Drzewa Duchow x5
+	6	71001	2	6414 -- Zwoj Egzorcyzmu x2
+	7	30168	5	6414 -- Notatka Przywodcy x5
+	8	30251	5	6414 -- Klejnot Zawisci x5
+	9	30252	5	6414 -- Klejnot Madrosci x5
+	10	71083	2	5345 -- Ksiega Obrobki Kamienia x2
+	11	71095	1	5345 -- Przepustka
+	12	27994	1	3207 -- Krwawa Perla
+	13	70303	1	3207 -- Pierscien Hydry
+	14	27993	1	2673 -- Niebieska Perla
+	15	27992	1	1604 -- Biala Perla
+	16	76021	1	1604 -- Eliksir Slonca (M)
+	17	85003	1	1604 -- Szarfa Wladcy (zacna)
+	18	76004	1	1604 -- Eliksir Ksiezyca (M)
+	19	25042	1	4000 -- Magiczny Kamien
+	20	71142	1	1069 -- Tygrys Bengalski (bialy) (20d)
+	21	55410	1	535 -- Jajo Nessie (7d)
+	22	71085	1	107 -- Wzmocnienie Przedmiotu
+	23	100700	1	107 -- Smoczy Plomien (B)
+	24	71084	1	107 -- Zaczarowanie Przedmiotu
 }
 
 # MT2009_PLUS_SHIP_DEFENSE_V1: Pakiet Kamieni Duszy (72058, the official vnum and icon icon/item/27999.tga;
-# shipdefense.sql) - opened (right click, a giftbox like the Zelazna Szkatulka) it gives ONE spirit stone,
-# drawn as a Metin's own stone (CHARACTER::DetermineDropMetinStone, char.cpp): the kind one of the 14 the
-# engine draws from (c_adwMetin: 28030-28043 - 28012 Likanow and 28044/28045 only with the wolfman / magic
-# reduction defines, both off in CommonDefines.h), all equally likely; the grade +0..+4 by the Metins'
-# aStoneDrop table (constants.cpp, 8005-8014: {+0,+1,+2,+3,+4} percents per Metin). A package has no
-# Metin, so its grade weights are the average over the ten rows (their sums, of 1000):
-#   +0 169 (16.9%)  +1 273 (27.3%)  +2 346 (34.6%)  +3 190 (19.0%)  +4 22 (2.2%)
-# One line per kind and grade, weight = the grade's (the kind is 1/14 then): 70 lines, total 14000.
-# The DB editor / drop wiki read it as any special group. Appended by the Dockerfile with the chest's.
+# shipdefense.sql) - opened (right click, a giftbox like the Zelazna Szkatulka) it gives ONE spirit stone by
+# weight. MT2009_PLUS_CHEST_DROPS_V1 (the owner, 15 October 2026): the rows and chances of the owner's sheet
+# (tools/yohara_chestdrops) - it was drawn as a Metin's own stone before. The DB editor / drop wiki read it as
+# any special group. Appended by the Dockerfile with the chest's.
 
+# MT2009_PLUS_CHEST_DROPS_V1: 72058 - 56 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# weights of 100000 (/ 1000 = %), one row an opening.
+# Left out (renormalised): Kamien Antymagii+0 2.941% - the engine draws no such stone;
+#   Kamien Antymagii+0 2.941% - the engine draws no such stone;
+#   Kamien Duszy Likanow+0 2.941% - the Lycan's (no such class here);
+#   Kamien Antymagii+2 0.980% - the engine draws no such stone;
+#   Kamien Antymagii+3 0.980% - the engine draws no such stone;
+#   Kamien Duszy Likanow+1 0.980% - the Lycan's (no such class here);
+#   Kamien Antymagii+1 0.980% - the engine draws no such stone;
+#   Kamien Antymagii+1 0.980% - the engine draws no such stone;
+#   Kamien Duszy Likanow+2 0.980% - the Lycan's (no such class here);
+#   Kamien Antymagii+2 0.980% - the engine draws no such stone;
+#   Kamien Duszy Likanow+3 0.980% - the Lycan's (no such class here);
+#   Kamien Antymagii+3 0.980% - the engine draws no such stone
 Group	MT2009_shipdef_soulstone_pack_72058
 {
 	Vnum	72058 -- Pakiet Kamieni Duszy
-	1	28030	1	169 -- Kamien Duszy Penetr.+0
-	2	28031	1	169 -- Kamien Duszy Smierci+0
-	3	28032	1	169 -- Kamien Duszy Powtorki+0
-	4	28033	1	169 -- Kamien Duszy Wojownika+0
-	5	28034	1	169 -- Kamien Duszy Ninja+0
-	6	28035	1	169 -- Kamien Duszy Sury+0
-	7	28036	1	169 -- Kamien Duszy Szamana+0
-	8	28037	1	169 -- Kamien Duszy Potwora+0
-	9	28038	1	169 -- Kamien Duszy Uchylenia+0
-	10	28039	1	169 -- Kamien Duszy Uniku+0
-	11	28040	1	169 -- Kamien Duszy Magii+0
-	12	28041	1	169 -- Kamien Witalnosci+0
-	13	28042	1	169 -- Kamien Duszy Obrony+0
-	14	28043	1	169 -- Kamien Duszy Przysp.+0
-	15	28130	1	273 -- Kamien Duszy Penetr.+1
-	16	28131	1	273 -- Kamien Duszy Smierci+1
-	17	28132	1	273 -- Kamien Duszy Powtorki+1
-	18	28133	1	273 -- Kamien Duszy Wojownika+1
-	19	28134	1	273 -- Kamien Duszy Ninja+1
-	20	28135	1	273 -- Kamien Duszy Sury+1
-	21	28136	1	273 -- Kamien Duszy Szamana+1
-	22	28137	1	273 -- Kamien Duszy Potwora+1
-	23	28138	1	273 -- Kamien Duszy Uchylenia+1
-	24	28139	1	273 -- Kamien Duszy Uniku+1
-	25	28140	1	273 -- Kamien Duszy Magii+1
-	26	28141	1	273 -- Kamien Witalnosci+1
-	27	28142	1	273 -- Kamien Duszy Obrony+1
-	28	28143	1	273 -- Kamien Duszy Przysp.+1
-	29	28230	1	346 -- Kamien Duszy Penetr.+2
-	30	28231	1	346 -- Kamien Duszy Smierci+2
-	31	28232	1	346 -- Kamien Duszy Powtorki+2
-	32	28233	1	346 -- Kamien Duszy Wojownika+2
-	33	28234	1	346 -- Kamien Duszy Ninja+2
-	34	28235	1	346 -- Kamien Duszy Sury+2
-	35	28236	1	346 -- Kamien Duszy Szamana+2
-	36	28237	1	346 -- Kamien Duszy Potwora+2
-	37	28238	1	346 -- Kamien Duszy Uchylenia+2
-	38	28239	1	346 -- Kamien Duszy Uniku+2
-	39	28240	1	346 -- Kamien Duszy Magii+2
-	40	28241	1	346 -- Kamien Witalnosci+2
-	41	28242	1	346 -- Kamien Duszy Obrony+2
-	42	28243	1	346 -- Kamien Duszy Przysp.+2
-	43	28330	1	190 -- Kamien Duszy Penetr.+3
-	44	28331	1	190 -- Kamien Duszy Smierci+3
-	45	28332	1	190 -- Kamien Duszy Powtorki+3
-	46	28333	1	190 -- Kamien Duszy Wojownika+3
-	47	28334	1	190 -- Kamien Duszy Ninja+3
-	48	28335	1	190 -- Kamien Duszy Sury+3
-	49	28336	1	190 -- Kamien Duszy Szamana+3
-	50	28337	1	190 -- Kamien Duszy Potwora+3
-	51	28338	1	190 -- Kamien Duszy Uchylenia+3
-	52	28339	1	190 -- Kamien Duszy Uniku+3
-	53	28340	1	190 -- Kamien Duszy Magii+3
-	54	28341	1	190 -- Kamien Witalnosci+3
-	55	28342	1	190 -- Kamien Duszy Obrony+3
-	56	28343	1	190 -- Kamien Duszy Przysp.+3
-	57	28430	1	22 -- Kamien Duszy Penetr.+4
-	58	28431	1	22 -- Kamien Duszy Smierci+4
-	59	28432	1	22 -- Kamien Duszy Powtorki+4
-	60	28433	1	22 -- Kamien Duszy Wojownika+4
-	61	28434	1	22 -- Kamien Duszy Ninja+4
-	62	28435	1	22 -- Kamien Duszy Sury+4
-	63	28436	1	22 -- Kamien Duszy Szamana+4
-	64	28437	1	22 -- Kamien Duszy Potwora+4
-	65	28438	1	22 -- Kamien Duszy Uchylenia+4
-	66	28439	1	22 -- Kamien Duszy Uniku+4
-	67	28440	1	22 -- Kamien Duszy Magii+4
-	68	28441	1	22 -- Kamien Witalnosci+4
-	69	28442	1	22 -- Kamien Duszy Obrony+4
-	70	28443	1	22 -- Kamien Duszy Przysp.+4
+	1	28030	1	3571 -- Kamien Duszy Penetr.+0
+	2	28032	1	3571 -- Kamien Duszy Powtorki+0
+	3	28033	1	3571 -- Kamien Duszy Wojownika+0
+	4	28035	1	3571 -- Kamien Duszy Sury+0
+	5	28036	1	3571 -- Kamien Duszy Szamana+0
+	6	28038	1	3571 -- Kamien Duszy Uchylenia+0
+	7	28039	1	3571 -- Kamien Duszy Uniku+0
+	8	28041	1	3571 -- Kamien Witalnosci+0
+	9	28042	1	3571 -- Kamien Duszy Obrony+0
+	10	28031	1	3571 -- Kamien Duszy Smierci+0
+	11	28034	1	3571 -- Kamien Duszy Ninja+0
+	12	28037	1	3571 -- Kamien Duszy Potwora+0
+	13	28040	1	3571 -- Kamien Duszy Magii+0
+	14	28043	1	3571 -- Kamien Duszy Przysp.+0
+	15	28133	1	1190 -- Kamien Duszy Wojownika+1
+	16	28138	1	1190 -- Kamien Duszy Uchylenia+1
+	17	28142	1	1190 -- Kamien Duszy Obrony+1
+	18	28230	1	1190 -- Kamien Duszy Penetr.+2
+	19	28235	1	1190 -- Kamien Duszy Sury+2
+	20	28239	1	1190 -- Kamien Duszy Uniku+2
+	21	28332	1	1190 -- Kamien Duszy Powtorki+3
+	22	28336	1	1190 -- Kamien Duszy Szamana+3
+	23	28341	1	1190 -- Kamien Witalnosci+3
+	24	28130	1	1190 -- Kamien Duszy Penetr.+1
+	25	28131	1	1190 -- Kamien Duszy Smierci+1
+	26	28132	1	1190 -- Kamien Duszy Powtorki+1
+	27	28134	1	1190 -- Kamien Duszy Ninja+1
+	28	28135	1	1190 -- Kamien Duszy Sury+1
+	29	28136	1	1190 -- Kamien Duszy Szamana+1
+	30	28137	1	1190 -- Kamien Duszy Potwora+1
+	31	28139	1	1190 -- Kamien Duszy Uniku+1
+	32	28140	1	1190 -- Kamien Duszy Magii+1
+	33	28141	1	1190 -- Kamien Witalnosci+1
+	34	28143	1	1190 -- Kamien Duszy Przysp.+1
+	35	28231	1	1190 -- Kamien Duszy Smierci+2
+	36	28232	1	1190 -- Kamien Duszy Powtorki+2
+	37	28233	1	1190 -- Kamien Duszy Wojownika+2
+	38	28234	1	1190 -- Kamien Duszy Ninja+2
+	39	28236	1	1190 -- Kamien Duszy Szamana+2
+	40	28237	1	1190 -- Kamien Duszy Potwora+2
+	41	28238	1	1190 -- Kamien Duszy Uchylenia+2
+	42	28240	1	1190 -- Kamien Duszy Magii+2
+	43	28241	1	1190 -- Kamien Witalnosci+2
+	44	28242	1	1190 -- Kamien Duszy Obrony+2
+	45	28243	1	1190 -- Kamien Duszy Przysp.+2
+	46	28330	1	1190 -- Kamien Duszy Penetr.+3
+	47	28331	1	1190 -- Kamien Duszy Smierci+3
+	48	28333	1	1190 -- Kamien Duszy Wojownika+3
+	49	28334	1	1190 -- Kamien Duszy Ninja+3
+	50	28335	1	1190 -- Kamien Duszy Sury+3
+	51	28337	1	1190 -- Kamien Duszy Potwora+3
+	52	28338	1	1190 -- Kamien Duszy Uchylenia+3
+	53	28339	1	1190 -- Kamien Duszy Uniku+3
+	54	28340	1	1190 -- Kamien Duszy Magii+3
+	55	28342	1	1190 -- Kamien Duszy Obrony+3
+	56	28343	1	1190 -- Kamien Duszy Przysp.+3
 }
