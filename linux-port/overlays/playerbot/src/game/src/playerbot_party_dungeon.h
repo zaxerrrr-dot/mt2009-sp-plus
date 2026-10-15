@@ -91,7 +91,9 @@ namespace
 	// The items a bot uses as soon as it holds one inside: the seals of the
 	// Biblioteka and the three Arezzo dungeons' waves (given to the last
 	// killer) and Nemere's two keys (dropped for the killer).
-	const DWORD PLAYERBOT_PDG_USE_ITEMS[] = { 30765, 30766, 30767, 30768, 30760, 30762 };
+	// MT2009_PLUS_YOHARA_MELEY_V1: Pierscien Smoczego Ognia (30340) - the quest puts a bot's ring on a statue
+	// that has none in the lair's fourth stage and keeps it before (meley_dungeon.quest, 30340.use).
+	const DWORD PLAYERBOT_PDG_USE_ITEMS[] = { 30765, 30766, 30767, 30768, 30760, 30762, 30340 };
 	// The items a bot hands to a dungeon's NPC: Razador's Golden Cog and Maat
 	// stones to the Steles of Isfet, Nemere's Ice Crystals to the seals.
 	struct TPlayerBotPdgGive
@@ -126,6 +128,7 @@ namespace
 		{ 158, 64, 2848, 8096 },		// ruiny_atlantydy (MT2009_PLUS_ATLANTYDA_V1: Orc Valley, Mag Atlantydy)
 		{ 358, 358, 3332, 14310 },		// zodiac_temples (MT2009_PLUS_ZODIAC_BOTS_V1: the temple's courtyard, its own way out)
 		{ 367, 301, 10240 + 840, 16640 + 1190 },	// obrona_statku (MT2009_PLUS_SHIP_DEFENSE_V1: the Fisherman on Przyladek Smoczego Ognia)
+		{ 356, 62, 5888 + 84, 6144 + 853 },	// meley_dungeon (MT2009_PLUS_YOHARA_MELEY_V1: Straznik Smokow Dolnarr on Doyyumhwaji)
 	};
 
 	struct TPlayerBotPdgBot
@@ -645,10 +648,25 @@ namespace
 
 	// ------------------------------------------------------------ the fight
 
+	// MT2009_PLUS_YOHARA_MELEY_V1: a target the dungeon made untouchable for the bot's class (d.set_damage_from_race -
+	// battle_is_icedamage): Meley herself, a statue of her lair at its stage's threshold or under the eggs' shield.
+	// A blow at it does nothing, so it is no foe - the bot takes the next.
+	bool IsPlayerBotPdgShielded(LPCHARACTER ch, LPCHARACTER c)
+	{
+#ifdef NEW_ICEDAMAGE_SYSTEM
+		const DWORD flag = c->GetNoDamageRaceFlag();
+		const DWORD race = ch->GetRaceNum();
+		if (flag && race < MAIN_RACE_MAX_NUM && IS_SET(flag, 1 << race))
+			return true;
+#endif
+		return false;
+	}
+
 	bool IsPlayerBotPdgFoe(LPCHARACTER ch, LPCHARACTER c)
 	{
 		return c && !c->IsPC() && !c->IsDead() && (c->IsMonster() || c->IsStone()) &&
-				c->GetMapIndex() == ch->GetMapIndex() && !IsPlayerBotEventStone(c->GetRaceNum());
+				c->GetMapIndex() == ch->GetMapIndex() && !IsPlayerBotEventStone(c->GetRaceNum()) &&
+				!IsPlayerBotPdgShielded(ch, c);
 	}
 
 	// What attacks the bot or the person, what the person hits, the stones,

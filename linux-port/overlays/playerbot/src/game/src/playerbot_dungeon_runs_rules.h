@@ -156,6 +156,10 @@ namespace playerbot_dgrun
 		// +150% damage, the Guardian and the Elite +70% HP and damage, denser waves): from 80, five
 		// called and five at the entrance, never without a Shaman that can heal.
 		{ "atlantyda", 80, 5, 5, 5, true },
+		// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (356) - players from 90; the guild lair's official monsters
+		// of 97-123 (the statues 7 million HP, the eggs 1.3 million, four Idalls of 113 with three men each): the
+		// band from 95, six called and five to go in, a Shaman always.
+		{ "meley", 95, 6, 6, 5, true },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)
