@@ -235,9 +235,13 @@ namespace
 	bool IsPlayerBotHerbRowTooLow(LPCHARACTER ch, size_t missionIndex)
 	{
 		const TPlayerBotBiologistMission& mission = PLAYERBOT_BIOLOGIST_MISSIONS[missionIndex];
+		// MT2009_PLUS_BIOLOGIST_NO_HERB_ROWS_V1 (the owner, 15 October: "wywalmy te ziolowe biologi dla botow -
+		// pierwszy biolog, ktory robia, to biolog z zebami orka"): bots take no first-village herb row at all; their
+		// first Biologist row is the Orc Tooth one (collect_quest_lv30). PLAYERBOT_BIOLOGIST_HERB_ROW_MAX_ABOVE stays
+		// unused for a later margin.
+		(void)PLAYERBOT_BIOLOGIST_HERB_ROW_MAX_ABOVE;
 		return ch && mission.mobVnum < 500 &&
-				mission.requiredLevel < PLAYERBOT_BIOLOGIST_COLLECT_QUEST_LEVEL &&
-				(int)ch->GetLevel() > mission.requiredLevel + PLAYERBOT_BIOLOGIST_HERB_ROW_MAX_ABOVE;
+				mission.requiredLevel < PLAYERBOT_BIOLOGIST_COLLECT_QUEST_LEVEL;
 	}
 
 	bool PlayerBotHerbErrandOutgrown(LPCHARACTER ch, size_t missionIndex)
