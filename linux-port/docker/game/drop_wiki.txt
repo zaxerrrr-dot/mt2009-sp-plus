@@ -26,8 +26,9 @@ place	208	data/dungeon/bluedragon_mt
 # Swiatynia Zodiaku: its monsters come from the engine (playerbot_zodiac_regen.inc, group.zodiak.txt)
 place	358	2600-2869	Œwi¹tynia_Zodiaku
 
-# The dungeon bosses' chests (their quests' give_chests, chests_min..chests_max a kill: one pool for the whole run,
-# split among the party's people - MT2009_PLUS_DUNGEON_LOOT_POOL_V1 / MT2009_PLUS_DUNGEON_CHEST_SPLIT_V1, give_item2)
+# The dungeon bosses' chests (their quests' give_chests, chests_min..chests_max a kill: Razador's and Nemere's lie on
+# the ground round the boss, owned in turn by the party's people - MT2009_PLUS_DUNGEON_GROUND_LOOT_V1, game.drop_item_at;
+# the others one pool for the whole run, split among the party's people - MT2009_PLUS_DUNGEON_CHEST_SPLIT_V1, give_item2)
 drop	6091	50270	8	10	100
 drop	6191	50271	8	10	100
 drop	9682	30774	2	4	100
@@ -35,9 +36,9 @@ drop	9706	30773	1	3	100
 drop	9694	30775	2	4	100
 drop	9714	30776	2	5	100
 drop	4559	30921	2	4	100
-# Beran-Setaou (blue_dragon_lair.quest give_rewards: one pool a kill, split among the party's people)
-drop	2493	71123	1	1	100
-drop	2493	71129	1	1	100
+# Beran-Setaou (blue_dragon_lair.quest give_rewards: one set a kill on the ground round him, owned in turn by the party's
+# people - MT2009_PLUS_DUNGEON_GROUND_LOOT_V1). Smocza Luska (71123) and Smoczy Szpon (71129) are no longer sure: the
+# wiki reads them from his own drop (mob_drop_item.txt, Water_Dragon) and from his chest's group.
 drop	2493	54700	8	10	100
 # Swiatynia Ochao's boss (temple_of_the_ochao.quest, a killer of level 95 or more)
 drop	6311	2145	1	1	60
