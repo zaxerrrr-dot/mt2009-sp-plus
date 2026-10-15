@@ -96,3 +96,6 @@ UPDATE player.item SET vnum = vnum - 5150 + 5340 WHERE vnum BETWEEN 5150 AND 515
 UPDATE player.item_award SET vnum = vnum - 5150 + 5340 WHERE vnum BETWEEN 5150 AND 5159;
 UPDATE player.item SET vnum = vnum - 7170 + 7370 WHERE vnum BETWEEN 7170 AND 7179;
 UPDATE player.item_award SET vnum = vnum - 7170 + 7370 WHERE vnum BETWEEN 7170 AND 7179;
+-- Kamien Przebudzenia (30670): every piece removed (the owner, 15 October 2026).
+DELETE FROM player.item WHERE vnum = 30670;
+DELETE FROM player.item_award WHERE vnum = 30670;

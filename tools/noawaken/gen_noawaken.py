@@ -121,6 +121,10 @@ def main():
         for table in ('player.item', 'player.item_award'):
             lines.append('UPDATE %s SET vnum = vnum - %d + %d WHERE vnum BETWEEN %d AND %d;'
                          % (table, awakened, official, awakened, awakened + 9))
+    # The owner, 15 October: the Kamien Przebudzenia (30670) pieces go too - bags, storage, offline shops, awards
+    lines.append('-- Kamien Przebudzenia (30670): every piece removed (the owner, 15 October 2026).')
+    lines.append('DELETE FROM player.item WHERE vnum = 30670;')
+    lines.append('DELETE FROM player.item_award WHERE vnum = 30670;')
     lines.append('')
     open(OUT_SQL, 'w', encoding='utf-8', newline='\n').write('\n'.join(lines))
 
