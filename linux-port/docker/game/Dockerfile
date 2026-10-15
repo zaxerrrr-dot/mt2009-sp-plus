@@ -371,7 +371,9 @@ RUN set -eux; \
     # map rules (MT2009_PLUS_YOHARA_ZAKLETY_V1).
     # rekawice is Mistrz Chi's (20823, Dongan) "Rekawice SungMa": the four Sung Ma gloves +0 from runes, leather, patterns,
     # Kamien Runiczny, Gaya and Yang (75%; MT2009_PLUS_GLOVES_V1, tools/ygloves, server-patches/rekawice).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice; do \
+    # meley_dungeon is Schronienie Meley - Straznik Smokow Dolnarr on Doyyumhwaji, the Dragon Queen's lair (356)
+    # (MT2009_PLUS_YOHARA_MELEY_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice meley_dungeon; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1998,6 +2000,76 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-zaklety-add; D=/op
  && LC_ALL=C grep -a -q 'add_goto_info("las", 0, 353,' "$S" \
  && rm -rf "$A" \
  && echo "share: Zaklety Las (353) and Erebu - map, motions, groups, drops, chests, the dungeon panel"
+# MT2009_PLUS_YOHARA_MELEY_V1 (share): Schronienie Meley - the Dragon Queen Meley's lair (the owner, 15 October 2026:
+# "dodaj loch Meley, drop zgodnie z wiki"; pl-wiki "Schronienie Meley (dla gildii)", its monsters, items and chests;
+# Owsap v6.2.6 GuildDragonLair.lua / guild_dragonlair.cpp for the stages) - 356 metin2_map_n_flame_dragon (Owsap's
+# index; GF's base 307200 1510400 is our Swiatynia Zodiaku's ground, so 281600 1510400 - no map of ours overlaps it)
+# on game1 with the bots (bin/m2-render-config), quest meley_dungeon; Straznik Smokow Dolnarr (20419) on Doyyumhwaji
+# (62) at the wiki's 83,851. tools/yohara_meley/gen_ymeley.py made everything here: the folder (GF's attr.atr, Meley's
+# cells opened), the stages' spawn files (data/dungeon/meley), Owsap's motions of six races our share lacks
+# (data/monster), groups 6337-6339 - none may exist before -, the wiki's drops (6 groups, TEMP rates - PROCENTY.md) and
+# the two chests (54706, 54707 - the official 50270 / 50271 are our Razador / Nemere chests). Monsters and NPCs:
+# yohara_meley.sql; items: yohara_items_meley.sql. The dungeon panel gets meley (party 1-8, level 90, the bots' 3 h
+# rest: the flag meley_dungeon.entry).
+COPY yohara_meley/ /tmp/yohara-meley-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-meley-add; D=/opt/metin2/share/data/monster \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "356 metin2_map_n_flame_dragon 0400000004000000 281600 1510400"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Schronienie Meley map $1 $2"; exit 1; }; \
+    done \
+ && N="$L/map/metin2_map_n_flame_01/npc.txt" \
+ && test -f "$N" \
+ && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+ && { grep -q -E '[[:blank:]]20419[[:space:]]*$' "$N" || cat "$A/flame_npc.txt" >> "$N"; } \
+ && test "$(grep -c -E '^m[[:blank:]]+83[[:blank:]]+851[[:blank:]].*[[:blank:]]20419[[:space:]]*$' "$N")" = 1 \
+ && test "$(grep -c -E '[[:blank:]]20419[[:space:]]*$' "$N")" = 1 \
+ && mkdir -p /opt/metin2/share/data/dungeon && rm -rf /opt/metin2/share/data/dungeon/meley \
+ && cp -a "$A/data/dungeon/meley" /opt/metin2/share/data/dungeon/ \
+ && test "$(ls /opt/metin2/share/data/dungeon/meley | wc -l)" = 3 \
+ && mkdir -p "$D" \
+ && for m in "$A"/data/monster/*; do rm -rf "$D/$(basename "$m")"; cp -a "$m" "$D/"; done \
+ && test -s "$D/reddragon_room_boss2/motlist.txt" && test -s "$D/metinstone_reddragon_statue/motlist.txt" \
+ && test -s "$D/metinstone_egg/motlist.txt" && test -s "$D/reddragon_room_human_boss/motlist.txt" \
+ && GV='(633[7-9])' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_meley.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 3 \
+ && MV='(611[0134-5]|20422)' \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_meley.txt" >> "$F" \
+ && test "$(grep -c -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$F")" = 6 \
+ && SV='(54706|54707|954706|954707)' \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.yohara_meley.txt" >> "$G" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G")" = 4 \
+ && I="$L/dungeon_info.txt" \
+ && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+meley[[:blank:]]' "$I" \
+      || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
+           printf 'dungeon\tmeley\t356\t1\txy\t62\t5972\t6997\t90\t0\t1\t8\t6193\tmeley_dungeon.entry\t10800\t0\t0\tSchronienie_Meley\tDoyyumhwaji\ncost\tmeley\t7500000\ndrop\tmeley\t54706\t1\t100\ndrop\tmeley\t54707\t1\t100\n' >> "$I"; }; } \
+ && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+meley[[:blank:]]' "$I")" = 1 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[356\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_MELEY_V1\r\ntranslate.general.map_names[356] = "Schronienie Meley"\r\n' >> "$f"; \
+    done \
+ && rm -rf "$A" \
+ && echo "share: Schronienie Meley (356) - map, Dolnarr on Doyyumhwaji, stages, motions, groups, drops, chests, the dungeon panel"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only

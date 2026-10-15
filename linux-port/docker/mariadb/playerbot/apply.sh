@@ -3763,6 +3763,21 @@ for yzl_sql in yohara_zaklety.sql yohara_items_zaklety.sql yohara_zaklety_zywiol
         fail_step "Zaklety Las: $yzl_sql failed" >&2
     fi
 done
+
+# MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (356) - the Dragon Queen Meley's lair (the owner, 15 October 2026).
+# yohara_meley.sql (tools/yohara_meley/gen_ymeley.py) - the lair's monsters, Meley, the statues, the eggs, Straznik
+# Smokow Dolnarr and Zlota Smocza Skrzynia; yohara_items_meley.sql - Pierscien Smoczego Ognia (30340) and the two
+# chests (54706, 54707); yohara_meley_zywioly.sql - fire (after zywioly_moby.sql). All idempotent (INSERT IGNORE /
+# UPDATE). The groups, drops, chests and the quest name these vnums; the drops and chests name the dragon materials
+# 30620-30622 too - yohara_helm100.sql's rows (claude/yohara-helm100).
+for yml_sql in yohara_meley.sql yohara_items_meley.sql yohara_meley_zywioly.sql; do
+    [ -s "/opt/playerbot/$yml_sql" ] || continue
+    if db < "/opt/playerbot/$yml_sql"; then
+        echo "[playerbot-migrate] Schronienie Meley: $yml_sql applied"
+    else
+        fail_step "Schronienie Meley: $yml_sql failed" >&2
+    fi
+done
 # Once: the Arezzo forest (362, natural_map) is in no map index and on no core any more. Every character saved there
 # or in an instance of it, or whose way out leads there - people and bots (all of level 95 and more) - stands at the
 # Temple of Ochao's gate (209, 853725 1416425, the temple's arrival; its En-Tai Guardian's portal leads to Zaklety Las
