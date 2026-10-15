@@ -325,8 +325,8 @@ def gen_mobs(a, rows, report):
 # ------------------------------------------------------------------------------------------------ the items
 ITEM_TEXT = {
     D.RING: 'Otacza cię aura przepełniona energią. Pierścień wykuty ze smoczego ognia zniszczy w mgnieniu oka statuy '
-            'w Schronieniu Meley - przeciągnij go na Smoczą Statuę, gdy zaświeci na niebiesko. Znika po wyjściu ze '
-            'Schronienia.',
+            'w Schronieniu Meley - gdy statuy zaświecą na niebiesko, stań przy statui i kliknij pierścień prawym '
+            'przyciskiem myszy. Znika po wyjściu ze Schronienia.',
 }
 
 
@@ -350,11 +350,12 @@ def gen_items(a, report):
         name, text = desc[src]
         assert name and len(name.encode('cp1250')) <= 24, (v, name)
         if v == D.RING:
-            # the pl-wiki: NPC trade, players, shop, storage no; dropping yes; stacking yes. A quest item (the
-            # statues take it - meley_dungeon), gone when its owner leaves the lair
+            # the pl-wiki: NPC trade, players, shop, storage no; dropping yes; stacking yes. A quest item (used
+            # beside a statue - meley_dungeon; the client drags an item onto an NPC only, the statue is a stone),
+            # gone when its owner leaves the lair
             typ, sub = 18, 0
             anti = Y.ANTI['ANTI_SELL'] | Y.ANTI['ANTI_GIVE'] | Y.ANTI['ANTI_MYSHOP'] | Y.ANTI['ANTI_SAFEBOX']
-            flag = Y.FLAGS['ITEM_STACKABLE']
+            flag = Y.FLAGS['ITEM_STACKABLE'] | Y.FLAGS['ITEM_QUEST_USE']      # the quest's "use" beside a statue
             icon, model = 'icon/item/%d.tga' % v, ''
             gf_icon = gf_list[src]
         else:

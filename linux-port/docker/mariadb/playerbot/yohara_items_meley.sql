@@ -7,6 +7,6 @@
 -- Smocza Luska (30621) and Plan Zbroi: Helm (30622) are yohara_helm100.sql's rows.
 SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES
-(30340,'Pierscien Smoczego Ognia',_cp1250 X'506965729C636965F120536D6F637A65676F204F676E6961',18,0,200,0,1,205056,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
+(30340,'Pierscien Smoczego Ognia',_cp1250 X'506965729C636965F120536D6F637A65676F204F676E6961',18,0,200,0,1,205056,1028,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (54706,'Skrzynia Krolowej Meley',_cp1250 X'536B727A796E6961204B72F36C6F77656A204D656C6579',23,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (54707,'Skrzynia Sm. Straznikow',_cp1250 X'536B727A796E696120536D2E2053747261BF6E696BF377',23,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1);

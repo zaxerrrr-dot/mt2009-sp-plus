@@ -1100,7 +1100,7 @@
 "weight": 0,
 "size": 1,
 "antiflag": 205056,
-"flag": 4,
+"flag": 1028,
 "wearflag": 0,
 "gold": 0,
 "shop_buy_price": 0,
@@ -1205,7 +1205,7 @@
 "54707": "54707\tETC\ticon/item/50271.tga\td:/ymir work/item/etc/boss_box.gr2"
 },
 "itemdesc": {
-"30340": "30340\tPierścień Smoczego Ognia\tOtacza cię aura przepełniona energią. Pierścień wykuty ze smoczego ognia zniszczy w mgnieniu oka statuy w Schronieniu Meley - przeciągnij go na Smoczą Statuę, gdy zaświeci na niebiesko. Znika po wyjściu ze Schronienia.",
+"30340": "30340\tPierścień Smoczego Ognia\tOtacza cię aura przepełniona energią. Pierścień wykuty ze smoczego ognia zniszczy w mgnieniu oka statuy w Schronieniu Meley - gdy statuy zaświecą na niebiesko, stań przy statui i kliknij pierścień prawym przyciskiem myszy. Znika po wyjściu ze Schronienia.",
 "54706": "54706\tSkrzynia Królowej Meley\tTa skrzynia została wydobyta ze Schronienia Królowej Smoków Meley. Znajduje się w niej prawdziwy królewski skarb. Przedmiot ten jest zdatny do handlu.",
 "54707": "54707\tSkrzynia Sm. Strażników\tSkrzynia ta zawiera kilka rzadkich, zaginionych od wieków skarbów licznych smoczych strażników. Przedmiot ten jest zdatny do handlu."
 },
