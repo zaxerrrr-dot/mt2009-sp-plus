@@ -397,6 +397,8 @@ namespace
 		{ 30091,   126997 },	// Symbol Wojownika
 		{ 30092,    53278 },	// Zdobycz Dzikusa
 		{ 30116,    91837 },	// Zabie Udka
+		{ 30192,    91837 },	// Mleczny Sok (MT2009_PLUS_BOOTS_V1: a refine material of the level-65 boots, Zabie Udka's price)
+		{ 30194,    91837 },	// Orkowa Maczuga (MT2009_PLUS_BOOTS_V1: the same)
 		{ 30271,    48749 },	// Ozdobna Spinka Do Wlosow
 		{ 30343,   110500 },	// Mieso demona
 		{ 30344,   127500 },	// Wysuszone Oczy
@@ -743,6 +745,7 @@ namespace
 		{ 50968,  2520000 },	// Zloty Lup Krolewski (operator)
 		{ 50969,  1488888 },	// Srebrny Lup Krolewski (operator)
 		{ 50970,  1355000 },	// Brazowy Lup Krolewski (operator)
+		{ 54700,   450000 },	// Skrzynia Berana-Setaou (MT2009_PLUS_BERAN_CHEST_V1: 8-10 a run, 2 openings - Skrzynia Razadora's 450k)
 		// MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1: the brews of Baek-Go's board
 		// that no sheet priced (the green and purple ones above are his). What
 		// one potion costs to brew on this sheet - its herbs at his herb
