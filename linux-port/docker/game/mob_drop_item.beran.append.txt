@@ -1,0 +1,20 @@
+// MT2009_PLUS_BERAN_DROP_V1: Beran-Setaou (2493) drops what the pl-wiki lists for him (the owner, 15 October 2026).
+// His stock group (Water_Dragon) already has the helmets Helm Mistrza Wojny, Pajeczy Kaptur, Magiczny Helm and
+// Kapelusz Duszy +4, the four boots +4 (Buty Euforii, Kozaki Glorii, Buty Qilina, Buty Zimorodka), Krwisty Kamien,
+// Malz, Zelazne Pudelko, Smocza Luska, Smoczy Szpon, Ksiega Obrobki Kamienia and (MT2009_panel_2493_limit) Zaczarowanie /
+// Wzmocnienie Przedmiotu - left as they are; MT2009_beltmats_2493 (belt gems, Kamien Duszy +5, Blogoslawienstwo
+// Przedmiotu) and MT2009_zodiak_matboss_2493 (Kamien Ksiezycowy) stay too. Added here what the wiki has and he did not:
+// the other four helmets +4 at the stock helmets' 5% each, and Zielony Lsniacy Odlamek at 10% (the wiki gives no rates).
+// Kamien Dusz Beran-Setaou (30228, the wiki's quest item) is left out: no quest of ours takes it.
+// Type drop: pct / 4 percent at the server's 100% drop. The engine merges this group with his others.
+
+Group	MT2009_beran_2493
+{
+	Mob	2493	-- Beran-Setaou
+	Type	drop
+	1	12264	1	20	-- Maska Strachu+4, 5%
+	2	12394	1	20	-- Orkowy Kaptur+4, 5%
+	3	12534	1	20	-- Rogowy Helm+4, 5%
+	4	12674	1	20	-- Kapelusz Kardynala+4, 5%
+	5	39079	1	40	-- Zielony Lsniacy Odlamek, 10%
+}

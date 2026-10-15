@@ -540,6 +540,17 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; G=/opt/metin2/
  && mv "$G.new" "$G" \
  && rm -f "$A" \
  && echo "share: drop edit - 9 groups, Beran, shared groups 10743 / 10755"
+# MT2009_PLUS_BERAN_DROP_V1: Beran-Setaou's (2493) drop as the pl-wiki lists it (the owner, 15 October) - the helmets
+# +4 and the shard his stock group lacked, one drop group merged by the engine with his others (the file says which).
+COPY mob_drop_item.beran.append.txt /tmp/mob_drop_item.beran.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.beran.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_beran_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && rm -f "$A" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_beran_2493' "$F")" = 1 \
+ && echo "share: Beran-Setaou's wiki drop appended"
 # MT2009_PLUS_METIN_BEANS_V1: Green Dragon Bean (100300) at 2.5% from every Metin of level 70+
 # (the owner, 3 October) - one small drop group per Metin, merged by the engine with any group
 # the Metin already has.
