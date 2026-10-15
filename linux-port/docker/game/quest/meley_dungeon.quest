@@ -1,6 +1,6 @@
 -- MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley - le¿e Królowej Smoków Meley (w³aœciciel, 15 paŸdziernika 2026:
 -- "dodaj loch Meley, drop zgodnie z wiki"). Dane: tools/yohara_meley (ymeley_data.py - sk¹d co jest), mapa 356
--- (metin2_map_n_flame_dragon, baza przesuniêta na 281600 1510400 - oficjalna to nasza Œwi¹tynia Zodiaku).
+-- (metin2_map_n_flame_dragon, baza przesuniêta na 281600 1510400 - ta z GF to nasza Œwi¹tynia Zodiaku).
 -- Przebieg jak w pl-wiki "Schronienie Meley (dla gildii)" i w GuildDragonLair.lua / guild_dragonlair.cpp Owsapa
 -- (tamten loch to osobny modu³ C++; tu napisany na lochach silnika - d.*):
 --   ETAP 1: cztery Smocze Statuy (6118) do 75% ¿ycia; broni¹ ich Magmowe Insekty (12, wracaj¹ po 5 s);

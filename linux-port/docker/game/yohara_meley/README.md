@@ -29,7 +29,7 @@ Wzór: pl-wiki „Schronienie Meley (dla gildii)” (etapy, potwory, skrzynie) i
 - Póki stoi choć jedno jajo (w etapie 3 – także Idall), statuy są nietykalne. Jaja wracają co 120 s.
 - Po pierwszym etapie zamyka się brama wejściowa (Smocza Brama 20388). Kto zginie, wstaje w środku.
 - Statuy przy trafieniu przywołują grupy 6337 (Golem Lawy, Magmowy Yeti, Magmowy Kryształ) i 6339 (Magmowy Wiwern,
-  Magmowy Golem) – jak w oficjalnych danych.
+  Magmowy Golem) – jak w danych Owsapa.
 - **Pierścień** (30340): wypada z magmowych potworów (Owsap: 5% w etapach 1–2, 1% w 3–4), zawsze człowiekowi
   z drużyny. W etapie 4 stań przy statui i kliknij pierścień prawym przyciskiem myszy (klient przeciąga przedmioty
   tylko na NPC, a statua to kamień). Bot z drużyny kładzie swój pierścień sam. Pierścienie znikają po wyjściu.
@@ -42,7 +42,7 @@ Po zwycięstwie pojawia się **Złota Smocza Skrzynia** (20420). Każdy człowie
 - **Skrzynia Królowej Meley** (54706),
 - **Skrzynia Sm. Strażników** (54707).
 
-Kto nie wybierze w ciągu minuty, dostaje Skrzynię Królowej Meley po wyjściu. Boty nic. Oficjalne numery skrzyń
+Kto nie wybierze w ciągu minuty, dostaje Skrzynię Królowej Meley po wyjściu. Boty nic. Numery skrzyń z GF / Owsapa
 (50270 / 50271) to u nas Skrzynia Razadora / Nemere, a pierścienia (30341) – Zupa Grzybowa, stąd nowe numery.
 
 Skrzynie: lista z wiki, **3 losowania na otwarcie**, każda pozycja wiki – równy udział (warianty +4/+5/+6, x5/x10,
@@ -58,7 +58,7 @@ wiersze z gałęzi hełmów 100 (`yohara_helm100.sql`).
 
 ## Mapa i rdzeń
 
-- Indeks **356** (`metin2_map_n_flame_dragon`, 1x1) – jak u Owsapa. Oficjalna baza 307200 1510400 to u nas Świątynia
+- Indeks **356** (`metin2_map_n_flame_dragon`, 1x1) – jak u Owsapa. Baza z GF 307200 1510400 to u nas Świątynia
   Zodiaku, więc **281600 1510400** (bez nakładania w atlasinfo, w bazach serwera i w atlasinfo GF).
 - `server_attr` = attr.atr klienta GF; pola pod Meley (130,77) otwarte, żeby dało się ją postawić – z areny nie da
   się tam dojść.
