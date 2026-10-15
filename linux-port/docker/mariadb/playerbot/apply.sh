@@ -3557,6 +3557,26 @@ if [ -s /opt/playerbot/wiki_nowe.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_BOOTS_V1 (the owner, 15 October 2026): the level-65 boots - Buty Euforii (15370), Kozaki Glorii (15390),
+# Buty Qilina (15410), Buty Zimorodka (15430) - refine as on the pl-wiki (all four pages the same): Yang 1 200 / 2 500 /
+# 5 000 / 10 000 / 20 000 / 30 000 / 45 000 / 90 000 / 150 000 for +1..+9, from +5 2x Mleczny Sok (30192), 2x Orkowa
+# Maczuga (30194), 2x Zabie Udka (30061) + Biala Perla, 2x Futro Yeti (30014) + Niebieska Perla, 2x Pazur Tygrysa
+# (30042) + Krwawa Perla. The wiki gives no chances: the ones they had (refine_proto 208-216 / 400 / 401, shared with
+# other boots, so the four get their own steps 22350-22358). Every start (ON DUPLICATE KEY / UPDATE).
+db -e "INSERT INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src_vnum, result_vnum, prob) VALUES
+(22350, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1200, 0, 0, 100),
+(22351, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2500, 0, 0, 100),
+(22352, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5000, 0, 0, 100),
+(22353, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10000, 0, 0, 90),
+(22354, 30192, 2, 0, 0, 0, 0, 0, 0, 0, 0, 20000, 0, 0, 80),
+(22355, 30194, 2, 0, 0, 0, 0, 0, 0, 0, 0, 30000, 0, 0, 70),
+(22356, 30061, 2, 27992, 1, 0, 0, 0, 0, 0, 0, 45000, 0, 0, 60),
+(22357, 30014, 2, 27993, 1, 0, 0, 0, 0, 0, 0, 90000, 0, 0, 50),
+(22358, 30042, 2, 27994, 1, 0, 0, 0, 0, 0, 0, 150000, 0, 0, 40)
+ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = VALUES(vnum1), count1 = VALUES(count1), vnum2 = VALUES(vnum2), count2 = VALUES(count2), vnum3 = VALUES(vnum3), count3 = VALUES(count3), vnum4 = VALUES(vnum4), count4 = VALUES(count4), cost = VALUES(cost), src_vnum = VALUES(src_vnum), result_vnum = VALUES(result_vnum), prob = VALUES(prob);
+UPDATE world.item_proto SET refine_set = 22350 + vnum % 10 WHERE (vnum BETWEEN 15370 AND 15378 OR vnum BETWEEN 15390 AND 15398 OR vnum BETWEEN 15410 AND 15418 OR vnum BETWEEN 15430 AND 15438) AND refined_vnum = vnum + 1;" \
+  || fail_step "could not set the level-65 boots' refine steps (MT2009_PLUS_BOOTS_V1)" >&2
+
 # MT2009_PLUS_ELEMENTS_V1: Elements and talismans (Autor: Digi Rasta, "Zywioly i talizmany",
 # nowy-system 0.28.0; server-patches/zywioly/README.md). Both files are generated
 # (tools/zywioly/) and idempotent, and run last, after every step above that writes
