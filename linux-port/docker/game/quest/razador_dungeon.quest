@@ -13,8 +13,10 @@
 --   4: zabij Ignitora (6051),
 --   5: potwory upuszczaj¹ Kamieñ Maat (30330, 4%), oddaj po jednym siedmiu stelom,
 --   6: zniszcz Metin Czyœæca (8057),
---   7: Razador (sam daje tylko yang); po jego œmierci ka¿dy gracz w lochu dostaje
---      8-10 Skrzyñ Razadora (MT2009_PLUS_RZNM_BOSS_DROP_V1; by³o 2-5, ka¿d¹ otwiera siê 3 razy), a wszyscy wychodz¹ po 60 sekundach.
+--   7: Razador (sam daje tylko yang); po jego œmierci loch daje 8-10 Skrzyñ Razadora
+--      (MT2009_PLUS_RZNM_BOSS_DROP_V1; by³o 2-5, ka¿d¹ otwiera siê 3 razy) i dodatkowy ³up - jedn¹ pulê na ca³¹
+--      wyprawê, dzielon¹ po kolei miêdzy ludzi z dru¿yny w lochu (MT2009_PLUS_DUNGEON_LOOT_POOL_V1; wczeœniej
+--      ka¿dy gracz dostawa³ swoje 8-10), a wszyscy wychodz¹ po 10 sekundach.
 -- Ka¿de zadanie otwiera swoje drzwi (20387 + 20388). Limit 60 minut, ponowne
 -- wejœcie po godzinie od wejœcia (archiwum: 1 h). Mapy 351/352 s¹ na rdzeniu
 -- game2 (game1 ma ju¿ 32 mapy, MAP_ALLOW_LIMIT): d.new_jump_pids prosi game2 (P2P)
@@ -77,7 +79,8 @@ quest razador_dungeon begin
 				cog_permille = 20,
 				maat_permille = 40,
 				-- MT2009_PLUS_RZNM_BOSS_DROP_V1 (the owner, 15 October; pl-wiki, 17.3: 8-10 chests, each opened 3 times -
-				-- ShipDefense_ChestKeep, ANTI_STACK in apply.sh): every person of the party rolls his own 8-10 (was 2-5).
+				-- ShipDefense_ChestKeep, ANTI_STACK in apply.sh): 8-10 (was 2-5) - one pool a kill for the whole run, split among the
+				-- party's people (MT2009_PLUS_DUNGEON_LOOT_POOL_V1, give_chests).
 				chests_min = 8, chests_max = 10,
 			}
 		end
@@ -166,42 +169,43 @@ quest razador_dungeon begin
 			return idx >= 351 * 10000 and idx < 352 * 10000
 		end
 
-		-- MT2009_PLUS_BOSS_CHESTS_V1: the boss's chests (50270, special_item_group.dungeons.txt)
-		-- for every player of the killer's party inside this instance (get_member_pids gives
-		-- only the members on the killer's map index), or for the killer alone; a full bag
-		-- drops them at the player's feet (give_item2). A bot of the party inside gets none.
-		-- MT2009_PLUS_DUNGEON_DROP_V1: each player rolls his own 2-5 (the owner, 29 September; 8-10 since
-		-- MT2009_PLUS_RZNM_BOSS_DROP_V1);
+		-- MT2009_PLUS_DUNGEON_LOOT_POOL_V1 (the owner, 15 October: "wszystkie dropy wypadaja na caly loch" - the
+		-- chests are per dungeon, not per person): what the boss leaves is ONE pool per kill, as the Wukong's
+		-- chests (wzgorze_wukonga.quest reward()): chests_min..chests_max (8-10) of Skrzynia Razadora (50270, special_item_group.dungeons.txt)
+		-- plus the extra drop rolled once (boss_drop), handed out one by one, round-robin from a random person,
+		-- among the people (not bots) of the killer's party inside this instance (get_member_pids gives the
+		-- members on the killer's map index), or the killer alone. The extras go on from where the chests
+		-- stopped, so the split stays even. A person alone with bots takes the whole pool; a bot never takes
+		-- anything, so the bots' own runs (no person inside) give none, as before. Each person is told what he
+		-- got; a full bag drops it at the player's feet (give_item2, one chest at a time - they never stack).
+		-- Was: every person rolled his own chests (MT2009_PLUS_BOSS_CHESTS_V1 / MT2009_PLUS_RZNM_BOSS_DROP_V1)
+		-- and the killer alone got the extra drop.
 		-- Razador himself drops only yang (item_manager.cpp).
+		function loot_people()
+			local here = pc.get_map_index()
+			local pids = {}
+			if party.is_party() then
+				pids = {party.get_member_pids()}
+			end
+			if table.getn(pids) == 0 then
+				pids = {pc.get_player_id()}
+			end
+			local people = {}
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				if not pc.is_playerbot() and pc.get_map_index() == here then
+					table.insert(people, pid)
+				end
+				q.end_other_pc_block()
+			end
+			return people
+		end
+
 		-- MT2009_PLUS_DROP_EDIT_V1: the boss's own drop the owner added in the drop workbook
 		-- (1 October). The boss gives no items (item_manager.cpp), so the quest rolls it once
-		-- per kill for the killer: {vnum, count, percent}, each line on its own.
+		-- per kill: {vnum, count, percent}, each line on its own. Only rolled here - give_chests
+		-- splits it with the chests (MT2009_PLUS_DUNGEON_LOOT_POOL_V1).
 		function boss_drop()
-			-- MT2009_PLUS_BOT_DUNGEONS_ALL_V1: a bot of the party took the last blow - the roll is a
-			-- person's of the party in this instance (the first found), never the bot's.
-			if pc.is_playerbot() then
-				local here = pc.get_map_index()
-				local pids = {}
-				if party.is_party() then
-					pids = {party.get_member_pids()}
-				end
-				local person = 0
-				for i, pid in next, pids, nil do
-					if person == 0 then
-						q.begin_other_pc_block(pid)
-						if not pc.is_playerbot() and pc.get_map_index() == here then
-							person = pid
-						end
-						q.end_other_pc_block()
-					end
-				end
-				if person ~= 0 then
-					q.begin_other_pc_block(person)
-					razador_dungeon.boss_drop()
-					q.end_other_pc_block()
-				end
-				return
-			end
 			-- MT2009_PLUS_AWAKENING_V1: no Kamien Przebudzenia here (the owner, 3 October).
 			-- MT2009_PLUS_BELT_MATS_V1: Kamien Plomienia (30524) x2 at 30% (the owner, 7 October: the flame stone
 			-- has a drop of its own, beside the chests' belt materials, group 951101).
@@ -217,38 +221,54 @@ quest razador_dungeon begin
 				table.insert(t, e)
 			end
 			local herbs = {50721, 50722, 50723, 50724, 50725, 50726, 50727, 50728}
-			local given = 0
+			local out = {}
 			for i, e in next, t, nil do
-				if given < 12 and number(1, 100) <= e[3] then
+				if table.getn(out) < 12 and number(1, 100) <= e[3] then
 					local v = e[1]
 					if v == 0 then
 						v = herbs[number(1, table.getn(herbs))]
 					end
-					pc.give_item2(v, e[2])
-					given = given + 1
+					table.insert(out, {v, e[2]})
 				end
 			end
+			return out
 		end
 
 		function give_chests()
 			local c = razador_dungeon.cfg()
-			razador_dungeon.boss_drop()
-			local pids = {}
-			if party.is_party() then
-				pids = {party.get_member_pids()}
+			local people = razador_dungeon.loot_people()
+			local n = table.getn(people)
+			if n == 0 then
+				return
 			end
-			if table.getn(pids) == 0 then
-				pids = {pc.get_player_id()}
-			end
-			for i, pid in next, pids, nil do
-				q.begin_other_pc_block(pid)
-				if not pc.is_playerbot() then
-					local n = number(c.chests_min, c.chests_max)
-					for k = 1, n do
-						pc.give_item2(50270, 1)
+			local pool = number(c.chests_min, c.chests_max)
+			local extra = razador_dungeon.boss_drop()
+			local m = table.getn(extra)
+			local chests = {}
+			local items = {}
+			local first = number(1, n)
+			for k = 0, pool + m - 1 do
+				local who = math.mod(first - 1 + k, n) + 1
+				if k < pool then
+					chests[who] = (chests[who] or 0) + 1
+				else
+					if items[who] == nil then
+						items[who] = {}
 					end
-					syschat("Razador: otrzymujesz Skrzynie Razadora: "..n..".")
+					table.insert(items[who], extra[k - pool + 1])
 				end
+			end
+			for who = 1, n do
+				q.begin_other_pc_block(people[who])
+				local g = chests[who] or 0
+				for k = 1, g do
+					pc.give_item2(50270, 1)
+				end
+				local mine = items[who] or {}
+				for k, e in next, mine, nil do
+					pc.give_item2(e[1], e[2])
+				end
+				syschat("Razador: Otrzymujesz: Skrzynia Razadora x"..g..", inne przedmioty: "..table.getn(mine).." (podzia³ ³upu: "..pool.." skrzyñ i "..m.." przedm. na "..n..").")
 				q.end_other_pc_block()
 			end
 		end
