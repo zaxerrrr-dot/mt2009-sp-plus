@@ -820,6 +820,13 @@ PyObject * chrmgrSetRaceHeight(PyObject* poSelf, PyObject* poArgs)
 }
 #endif
 
+#ifdef ENABLE_MT2009_AURA
+// MT2009_PLUS_AURA_V1: the aura outfit's effect (Mt2009Aura.cpp)
+PyObject * chrmgrRegisterAuraEffect(PyObject* poSelf, PyObject* poArgs);
+PyObject * chrmgrSetAura(PyObject* poSelf, PyObject* poArgs);
+PyObject * chrmgrGetAura(PyObject* poSelf, PyObject* poArgs);
+#endif
+
 void initchrmgr()
 {
 	static PyMethodDef s_methods[] =
@@ -878,6 +885,11 @@ void initchrmgr()
 
 #ifdef ENABLE_RACE_HEIGHT
 		{ "SetRaceHeight",				chrmgrSetRaceHeight,					METH_VARARGS },
+#endif
+#ifdef ENABLE_MT2009_AURA
+		{ "RegisterAuraEffect",			chrmgrRegisterAuraEffect,				METH_VARARGS },	// MT2009_PLUS_AURA_V1
+		{ "SetAura",					chrmgrSetAura,							METH_VARARGS },	// MT2009_PLUS_AURA_V1
+		{ "GetAura",					chrmgrGetAura,							METH_VARARGS },	// MT2009_PLUS_AURA_V1
 #endif
 
 		{ NULL,							NULL,									NULL },

@@ -429,3 +429,26 @@ okno ekwipunku z miejscem rękawic (`EQUIPMENT_GLOVE` 251, `HIT_PCT` 197, `app.M
 na pasku afektów rysują się bez błędów (`exe-out4/smoke-inventory-affects.png`, `smoke-equipment-zoom.png`); dymków
 rękawic klient testowy nie pokazał – jego paczki nie wczytały nowych rekordów `item_proto` (`dbdata`), więc dymki
 sprawdzone tylko kompilacją i testem funkcji `yoharagear.py`.
+
+## Szata Aury – efekt szaty na postaciach (`MT2009_PLUS_AURA_V1`, `ENABLE_MT2009_AURA`)
+
+Serwer: `server-patches/aura` (+ `playerbot_aura.cpp`). **Protokół bez zmian** – zamiast `PART_AURA` Owsapa w pakietach
+postaci serwer wysyła komendę czatu `AURA view <vid> <vnum>` (gdy postać wchodzi w pole widzenia i gdy jej szata się
+zmienia); root (`uiaura.py`) woła `chrmgr.SetAura`. Stary exe nie ma tej funkcji – root nic nie rysuje, reszta działa
+(miejsce szaty, okna u Theowahdana, dymki to sam python). Nowych nagłówków ani pól pakietów nie ma.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_AURA` |
+| `UserInterface/Mt2009Aura.cpp` (**nowy**) | `CInstanceBase::SetAura/RegisterAuraEffect/__AttachAuraEffect` (efekt `.mse` na kości `Bip01 Spine2` jak u Owsapa; nie na polimorfii ani „zwierzęcym” stroju), `CNetworkActorManager::SetActorAura`, `chrmgr.RegisterAuraEffect(vnum, plik)`, `chrmgr.SetAura(vid, vnum)`, `chrmgr.GetAura(vid)` |
+| `UserInterface/InstanceBase.h/.cpp` | `m_dwAuraVnum`, `m_dwAuraEffect` (zerowane w `__Initialize`); `ChangeArmor` przypina efekt znowu po `SetRace` (który czyści wszystkie efekty) |
+| `UserInterface/NetworkActorManager.h/.cpp` | `SNetworkActorData::m_dwAura` (kopiowane, zerowane) – nowa instancja aktora (wejście w zasięg wzroku, wierzchowiec) dostaje szatę z danych; `ms_pkAuraInstance` (menedżer strumienia sieci, dla pythona) |
+| `UserInterface/PythonCharacterManagerModule.cpp` | rejestracja trzech funkcji `chrmgr` |
+| `UserInterface/UserInterface.vcxproj(.filters)` | `Mt2009Aura.cpp` |
+
+Pliki efektów (GF 26.1.11, `d:/ymir work/pc/common/effect/aura/aura_01_49_001.mse` … `aura_250_006.mse` + tekstury i
+skrzydełka `wing_lv06.mde`) są w paczce root (`client-2.0.30/atlas/d_`); `uiaura.EFFECTS` rejestruje je dla 49101–49106.
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, źródła: client-build + cały
+ten katalog, casefix) – `Mt2009Aura.cpp`, `InstanceBase.cpp`, `NetworkActorManager.cpp`, `PythonCharacterManagerModule.cpp`
+bez błędów. Exe nie budowane (wspólna budowa później: `build.sh msvc --smoke`).

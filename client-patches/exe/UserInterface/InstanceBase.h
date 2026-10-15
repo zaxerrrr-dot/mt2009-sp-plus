@@ -470,6 +470,12 @@ class CInstanceBase
 #ifdef ENABLE_QUIVER_SYSTEM
 		bool					SetArrow(DWORD eArrow);
 #endif
+#ifdef ENABLE_MT2009_AURA
+		// MT2009_PLUS_AURA_V1: the aura outfit's effect (Mt2009Aura.cpp); 0 takes it off
+		void					SetAura(DWORD dwVnum);
+		DWORD					GetAura() const { return m_dwAuraVnum; }
+		static bool				RegisterAuraEffect(DWORD dwVnum, const char* c_szFileName);
+#endif
 		void					AttachBox(bool isVisible);
 		void					SetBack(DWORD dwItem);
 		bool					SetWeapon(DWORD eWeapon);
@@ -922,6 +928,11 @@ class CInstanceBase
 #endif
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 		void	ClearAcceEffect();
+#endif
+#ifdef ENABLE_MT2009_AURA
+		void	__AttachAuraEffect();	// MT2009_PLUS_AURA_V1: m_dwAuraVnum's effect (again after SetRace)
+		DWORD	m_dwAuraVnum;
+		DWORD	m_dwAuraEffect;
 #endif
 
 	protected:

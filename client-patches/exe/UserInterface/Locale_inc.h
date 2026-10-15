@@ -248,5 +248,11 @@
 // (points 193-197 - the points packet keeps 193, Packet.h / PythonNetworkStreamPhaseLoading.cpp), the champion's
 // experience fly (FLY_CONQUEROR_EXP, PythonPlayerSettingsModule.cpp); Mt2009Champion.cpp: the python names and asserts.
 #define ENABLE_MT2009_YOHARA_EXE2
+// MT2009_PLUS_AURA_V1 (Szata Aury, server-patches/aura): the aura outfit's effect on the characters - the server says
+// "AURA view <vid> <vnum>" (a chat command, no packet), root's uiaura.py calls chrmgr.SetAura(vid, vnum) after
+// chrmgr.RegisterAuraEffect(vnum, file); the effect stays with the actor's data (NetworkActorManager) so a re-created
+// instance (mount, armour shape) gets it back (UserInterface/Mt2009Aura.cpp). An old exe has no chrmgr.SetAura -
+// root then draws nothing and nothing else changes.
+#define ENABLE_MT2009_AURA
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
