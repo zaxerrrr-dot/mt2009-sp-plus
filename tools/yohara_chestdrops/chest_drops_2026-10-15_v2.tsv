@@ -1,0 +1,1161 @@
+# The owner's sheet of 15 October 2026 (cache/yohara/metin2alerts_drop_2026-10-15_v2.csv, community data,
+# estimated): one row an item of a chest - chest, chest name, item name, count, chance of one opening (0..1),
+# the official item vnum (ours may differ: chestdrops.py maps it), time limit (d/h/m, empty = none).
+chest	chest_name	item	count	chance	vnum	time
+54705	Skrzynia Hydry	Kamyki	200	0.0992064	50926	
+54705	Skrzynia Hydry	Pakiet Kamieni Duszy	3	0.0892857	72058	
+54705	Skrzynia Hydry	Odżywka	1	0.0744047	55001	
+54705	Skrzynia Hydry	Losowa Skrzynka	1	0.0644841	55400	
+54705	Skrzynia Hydry	Zwój Błogosławieństwa	1	0.0644841	72301	
+54705	Skrzynia Hydry	Cz. Konar Drzewa Duchów	5	0.0644841	30167	
+54705	Skrzynia Hydry	Zwój Egzorcyzmu	2	0.0595238	72310	
+54705	Skrzynia Hydry	Notatka Przywódcy	5	0.0595238	30168	
+54705	Skrzynia Hydry	Klejnot Zawiści	5	0.0595238	30251	
+54705	Skrzynia Hydry	Klejnot Mądrości	5	0.0595238	30252	
+54705	Skrzynia Hydry	Księga Obróbki Kamienia	2	0.0496032	71083	
+54705	Skrzynia Hydry	Przepustka	1	0.0496032	71095	
+54705	Skrzynia Hydry	Krwawa Perła	1	0.0297619	27994	
+54705	Skrzynia Hydry	Pierścień Hydry	1	0.0297619	70303	
+54705	Skrzynia Hydry	Niebieska Perła	1	0.0248016	27993	
+54705	Skrzynia Hydry	Biała Perła	1	0.014881	27992	
+54705	Skrzynia Hydry	Eliksir Słońca (M)	1	0.014881	76021	
+54705	Skrzynia Hydry	Szarfa Władcy (zacna)	1	0.014881	85003	
+54705	Skrzynia Hydry	Torba Emocji	1	0.014881	38060	
+54705	Skrzynia Hydry	Eliksir Księżyca (M)	1	0.0148809	76004	
+54705	Skrzynia Hydry	Zwój Przywołania SLW	1	0.0099207	72051	
+54705	Skrzynia Hydry	Magiczny Kamień	1	0.0099206	39001	
+54705	Skrzynia Hydry	Tygrys Bengalski (biały)	1	0.0099206	71142	20d
+54705	Skrzynia Hydry	Zwój Przywołania GY	1	0.0099206	72052	
+54705	Skrzynia Hydry	Jajo Nessie	1	0.0049603	55410	7d
+54705	Skrzynia Hydry	Wzmocnienie Przedmiotu	1	0.0009921	71085	
+54705	Skrzynia Hydry	Smoczy Płomień (B)	1	0.0009921	100700	
+54705	Skrzynia Hydry	Zaczarowanie Przedmiotu	1	0.000992	71084	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Penetr.+0	1	0.0294118	28030	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Powtórki+0	1	0.0294118	28032	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Wojownika+0	1	0.0294118	28033	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Sury+0	1	0.0294118	28035	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Szamana+0	1	0.0294118	28036	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uchylenia+0	1	0.0294118	28038	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uniku+0	1	0.0294118	28039	
+72058	Pakiet Kamieni Duszy	Kamień Witalności+0	1	0.0294118	28041	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Obrony+0	1	0.0294118	28042	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+0	1	0.0294118	28045	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+0	1	0.0294118	28045	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Likanów+0	1	0.0294117	28012	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Śmierci+0	1	0.0294117	28031	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Ninja+0	1	0.0294117	28034	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Potwora+0	1	0.0294117	28037	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Magii+0	1	0.0294117	28040	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Przysp.+0	1	0.0294117	28043	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Wojownika+1	1	0.009804	28133	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uchylenia+1	1	0.009804	28138	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Obrony+1	1	0.009804	28142	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Penetr.+2	1	0.009804	28230	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Sury+2	1	0.009804	28235	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uniku+2	1	0.009804	28239	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+2	1	0.009804	28245	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Powtórki+3	1	0.009804	28332	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Szamana+3	1	0.009804	28336	
+72058	Pakiet Kamieni Duszy	Kamień Witalności+3	1	0.009804	28341	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+3	1	0.009804	28345	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Likanów+1	1	0.0098039	28112	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Penetr.+1	1	0.0098039	28130	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Śmierci+1	1	0.0098039	28131	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Powtórki+1	1	0.0098039	28132	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Ninja+1	1	0.0098039	28134	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Sury+1	1	0.0098039	28135	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Szamana+1	1	0.0098039	28136	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Potwora+1	1	0.0098039	28137	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uniku+1	1	0.0098039	28139	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Magii+1	1	0.0098039	28140	
+72058	Pakiet Kamieni Duszy	Kamień Witalności+1	1	0.0098039	28141	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Przysp.+1	1	0.0098039	28143	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+1	1	0.0098039	28145	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+1	1	0.0098039	28145	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Likanów+2	1	0.0098039	28212	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Śmierci+2	1	0.0098039	28231	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Powtórki+2	1	0.0098039	28232	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Wojownika+2	1	0.0098039	28233	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Ninja+2	1	0.0098039	28234	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Szamana+2	1	0.0098039	28236	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Potwora+2	1	0.0098039	28237	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uchylenia+2	1	0.0098039	28238	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Magii+2	1	0.0098039	28240	
+72058	Pakiet Kamieni Duszy	Kamień Witalności+2	1	0.0098039	28241	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Obrony+2	1	0.0098039	28242	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Przysp.+2	1	0.0098039	28243	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+2	1	0.0098039	28245	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Likanów+3	1	0.0098039	28312	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Penetr.+3	1	0.0098039	28330	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Śmierci+3	1	0.0098039	28331	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Wojownika+3	1	0.0098039	28333	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Ninja+3	1	0.0098039	28334	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Sury+3	1	0.0098039	28335	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Potwora+3	1	0.0098039	28337	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uchylenia+3	1	0.0098039	28338	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Uniku+3	1	0.0098039	28339	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Magii+3	1	0.0098039	28340	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Obrony+3	1	0.0098039	28342	
+72058	Pakiet Kamieni Duszy	Kamień Duszy Przysp.+3	1	0.0098039	28343	
+72058	Pakiet Kamieni Duszy	Kamień Antymagii+3	1	0.0098039	28345	
+50528	Szkatułka Yohara	Księga Precyzji	1	0.1283697	50325	
+50528	Szkatułka Yohara	Niebieska Mikstura (XXL)	30	0.0641849	27008	
+50528	Szkatułka Yohara	Talizman Woli WIT+0	1	0.0641849	81300	
+50528	Szkatułka Yohara	Czerwona Mikstura (XXL)	50	0.0641848	27007	
+50528	Szkatułka Yohara	Talizman Woli ODP+0	1	0.0641848	81250	
+50528	Szkatułka Yohara	Talizman Woli INT+0	1	0.0641848	81550	
+50528	Szkatułka Yohara	Płyta ze Stali Ozdobnej	1	0.0417201	31224	
+50528	Szkatułka Yohara	Kolia Jadeitu Mgły+0	1	0.038511	16580	
+50528	Szkatułka Yohara	Płyta z Surowego Metalu	1	0.0385109	31216	
+50528	Szkatułka Yohara	Klipsy Jadeitu Mgły+0	1	0.0385109	17570	
+50528	Szkatułka Yohara	Obręcz Jadeitu Mgły+0	1	0.0385109	14580	
+50528	Szkatułka Yohara	Kolczyki Z Niebiań.Łez+7	1	0.0320924	17207	
+50528	Szkatułka Yohara	Płyta ze Stali Kuźniczej	1	0.025674	31218	
+50528	Szkatułka Yohara	Yang	500000	0.025674	1	
+50528	Szkatułka Yohara	Róg Trolla	1	0.0256739	31217	
+50528	Szkatułka Yohara	Talizman Woli SIŁA+0	1	0.0224647	81000	
+50528	Szkatułka Yohara	Naszyj. Z Niebiań.Łez+7	1	0.0064185	16207	
+50528	Szkatułka Yohara	Bransol. Z Niebiań.Łez+5	1	0.0064185	14205	
+50528	Szkatułka Yohara	Bransol. Z Niebiań.Łez+6	1	0.0064185	14206	
+50528	Szkatułka Yohara	Bransol. Z Niebiań.Łez+7	1	0.0064185	14207	
+50528	Szkatułka Yohara	Delikatne Sukno	1	0.0064185	80019	
+50528	Szkatułka Yohara	Smoczy Nóż+5	1	0.004493	1105	
+50528	Szkatułka Yohara	Olbrz. Łuk Żółt. Smoka+5	1	0.004493	2145	
+50528	Szkatułka Yohara	Wachlarz Zbawienia+5	1	0.004493	7145	
+50528	Szkatułka Yohara	Zbr. Płyt. Czar. Magii+5	1	0.004493	11695	
+50528	Szkatułka Yohara	Miecz Szponu Ducha+5	1	0.0044929	155	
+50528	Szkatułka Yohara	Magnetyczne Ostrze+5	1	0.0044929	3145	
+50528	Szkatułka Yohara	Dzwon Nieba I Ziemi+5	1	0.0044929	5105	
+50528	Szkatułka Yohara	Szpon Gryfa+5	1	0.0044929	6045	
+50528	Szkatułka Yohara	Zbroja Z Czarnej Stali+5	1	0.0044929	11295	
+50528	Szkatułka Yohara	Ubranie Czarn. Wiatru+5	1	0.0044929	11495	
+50528	Szkatułka Yohara	Czarna Szata+5	1	0.0044929	11895	
+50528	Szkatułka Yohara	Zbroja Nocnego Cienia+5	1	0.0044929	21075	
+50528	Szkatułka Yohara	Miecz Szponu Ducha+6	1	0.0038511	156	
+50528	Szkatułka Yohara	Smoczy Nóż+6	1	0.0038511	1106	
+50528	Szkatułka Yohara	Magnetyczne Ostrze+6	1	0.0038511	3146	
+50528	Szkatułka Yohara	Dzwon Nieba I Ziemi+6	1	0.0038511	5106	
+50528	Szkatułka Yohara	Wachlarz Zbawienia+6	1	0.0038511	7146	
+50528	Szkatułka Yohara	Szpon Gryfa+6	1	0.0038511	6046	
+50528	Szkatułka Yohara	Zbroja Z Czarnej Stali+6	1	0.0038511	11296	
+50528	Szkatułka Yohara	Ubranie Czarn. Wiatru+6	1	0.0038511	11496	
+50528	Szkatułka Yohara	Zbr. Płyt. Czar. Magii+6	1	0.0038511	11696	
+50528	Szkatułka Yohara	Czarna Szata+6	1	0.0038511	11896	
+50528	Szkatułka Yohara	Zbroja Nocnego Cienia+6	1	0.0038511	21076	
+50528	Szkatułka Yohara	Mikstura Talentu	1	0.0038511	50527	
+50528	Szkatułka Yohara	Olbrz. Łuk Żółt. Smoka+6	1	0.003851	2146	
+50528	Szkatułka Yohara	Olbrz. Łuk Żółt. Smoka+7	1	0.0032093	2147	
+50528	Szkatułka Yohara	Magnetyczne Ostrze+7	1	0.0032093	3147	
+50528	Szkatułka Yohara	Szpon Gryfa+7	1	0.0032093	6047	
+50528	Szkatułka Yohara	Zbroja Z Czarnej Stali+7	1	0.0032093	11297	
+50528	Szkatułka Yohara	Czarna Szata+7	1	0.0032093	11897	
+50528	Szkatułka Yohara	Szkło Detekcji	1	0.0032093	60004	1h
+50528	Szkatułka Yohara	Miecz Szponu Ducha+7	1	0.0032092	157	
+50528	Szkatułka Yohara	Smoczy Nóż+7	1	0.0032092	1107	
+50528	Szkatułka Yohara	Dzwon Nieba I Ziemi+7	1	0.0032092	5107	
+50528	Szkatułka Yohara	Wachlarz Zbawienia+7	1	0.0032092	7147	
+50528	Szkatułka Yohara	Ubranie Czarn. Wiatru+7	1	0.0032092	11497	
+50528	Szkatułka Yohara	Zbr. Płyt. Czar. Magii+7	1	0.0032092	11697	
+50528	Szkatułka Yohara	Zbroja Nocnego Cienia+7	1	0.0032092	21077	
+50528	Szkatułka Yohara	Kula Błogosławieństwa	1	0.0032092	76015	
+50528	Szkatułka Yohara	Przepustka	1	0.0032092	71095	
+50528	Szkatułka Yohara	Topaz Woli	9	0.0032092	72353	
+50528	Szkatułka Yohara	Granatowa Bransoleta+3	1	0.0019256	14523	
+50528	Szkatułka Yohara	Szafirowa Bransoleta+3	1	0.0019256	14563	
+50528	Szkatułka Yohara	Granatowy Naszyjnik+3	1	0.0019256	16523	
+50528	Szkatułka Yohara	Szafirowy Naszyjnik+3	1	0.0019256	16563	
+50528	Szkatułka Yohara	Rubinowe Kolczyki+3	1	0.0019256	17503	
+50528	Szkatułka Yohara	Szmaragdowe Kolczyki+3	1	0.0019256	17543	
+50528	Szkatułka Yohara	Rubinowa Bransoleta+3	1	0.0019255	14503	
+50528	Szkatułka Yohara	Szmaragdowa Bransoleta+3	1	0.0019255	14543	
+50528	Szkatułka Yohara	Bransoleta z Turmalinu+3	1	0.0019255	14573	
+50528	Szkatułka Yohara	Rubinowy Naszyjnik+3	1	0.0019255	16503	
+50528	Szkatułka Yohara	Szmaragdowy Naszyjnik+3	1	0.0019255	16543	
+50528	Szkatułka Yohara	Naszyjnik z Turmalinu+3	1	0.0019255	16573	
+50528	Szkatułka Yohara	Granatowe Kolczyki+3	1	0.0019255	17523	
+50528	Szkatułka Yohara	Szafirowe Kolczyki+3	1	0.0019255	17563	
+50528	Szkatułka Yohara	Klinga Smoczego Kła+3	1	0.0006419	473	
+50528	Szkatułka Yohara	Łuk Feniksa+3	1	0.0006419	2373	
+50528	Szkatułka Yohara	Ostrze Słońca+3	1	0.0006419	3193	
+50528	Szkatułka Yohara	Wachlarz Leżąc. Smoka+3	1	0.0006419	7373	
+50528	Szkatułka Yohara	Pancerz Diabel. Rogu+3	1	0.0006419	20003	
+50528	Szkatułka Yohara	Pancerz Kościopłytowy+3	1	0.0006419	20503	
+50528	Szkatułka Yohara	Zbroja Dowódcy+3	1	0.0006419	21093	
+50528	Szkatułka Yohara	Małe Błogosławieństwo	1	0.0006419	72351	
+50528	Szkatułka Yohara	Kolec Pięciu Elementów+3	1	0.0006418	1343	
+50528	Szkatułka Yohara	Runiczny Miecz+3	1	0.0006418	463	
+50528	Szkatułka Yohara	Dzwon Szczęki Smoka+3	1	0.0006418	5333	
+50528	Szkatułka Yohara	Władca Smoków+3	1	0.0006418	6093	
+50528	Szkatułka Yohara	Szata Smoczego Jeźdźca+3	1	0.0006418	20253	
+50528	Szkatułka Yohara	Złote Ubranie+3	1	0.0006418	20753	
+39068	Zdobna Skrz. z Odłamkiem	Szary Odłamek	1	0.3118503	39070	
+39068	Zdobna Skrz. z Odłamkiem	Księga Umiejętności	1	0.2598752	50300	
+39068	Zdobna Skrz. z Odłamkiem	Biały Odłamek	1	0.1663202	39071	
+39068	Zdobna Skrz. z Odłamkiem	Zielony Odłamek	1	0.1351351	39072	
+39068	Zdobna Skrz. z Odłamkiem	Żółty Odłamek	1	0.0311851	39073	
+39068	Zdobna Skrz. z Odłamkiem	Niebieski Odłamek	1	0.02079	39074	
+39068	Zdobna Skrz. z Odłamkiem	Fioletowy Odłamek	1	0.018711	39075	
+39068	Zdobna Skrz. z Odłamkiem	Czerwony Odłamek	1	0.016632	39076	
+39068	Zdobna Skrz. z Odłamkiem	Tęczowy Odłamek	1	0.014553	39077	
+39068	Zdobna Skrz. z Odłamkiem	Szary Lśniący Odłamek	1	0.012474	39078	
+39068	Zdobna Skrz. z Odłamkiem	Zielony Lśniący Odłamek	1	0.010395	39079	
+39068	Zdobna Skrz. z Odłamkiem	Żółty Lśniący Odłamek	1	0.0020791	39080	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Wilczy Dech	1	0.1111112	50524	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Wir Miecza	1	0.1111111	50516	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Zasadzka	1	0.1111111	50517	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Uderz. Palcem	1	0.1111111	50518	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Strzel. Smok	1	0.1111111	50519	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Duchowe Uderz.	1	0.1111111	50520	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Ognista Strzała	1	0.1111111	50521	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Mroczne Uderz.	1	0.1111111	50522	
+50323	Skrzynia Ksiąg: Riposta	Riposta: Przyw. Błysk.	1	0.1111111	50523	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Wilczy Dech	1	0.1111112	50568	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Wir Miecza	1	0.1111111	50560	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Zasadzka	1	0.1111111	50561	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Uderz. Palcem	1	0.1111111	50562	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Strzel. Smok	1	0.1111111	50563	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Duchowe Uderz.	1	0.1111111	50564	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Ogni. Strzała	1	0.1111111	50565	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Mroczne Uderz.	1	0.1111111	50566	
+50324	Skrzynia Ksiąg: Dopalacz	Dopalacz: Przyw. Błysk.	1	0.1111111	50567	
+50529	Skrzynia Ksiąg (9.skill)	Czerwona Mikstura (XXL)	50	0.3846154	27007	
+50529	Skrzynia Ksiąg (9.skill)	Niebieska Mikstura (XXL)	30	0.3846154	27008	
+50529	Skrzynia Ksiąg (9.skill)	Yang	500000	0.0769231	1	
+50529	Skrzynia Ksiąg (9.skill)	Światło Gwiazd (9.skill)	1	0.0192308	50570	
+50529	Skrzynia Ksiąg (9.skill)	Strzał Wichury (9.skill)	1	0.0192308	50571	
+50529	Skrzynia Ksiąg (9.skill)	Fala Śmierci (9.skill)	1	0.0192308	50573	
+50529	Skrzynia Ksiąg (9.skill)	Meteor (9.skill)	1	0.0192308	50574	
+50529	Skrzynia Ksiąg (9.skill)	Burza Szponów (9.skill)	1	0.0192308	50576	
+50529	Skrzynia Ksiąg (9.skill)	Trzęsienie (9.skill)	1	0.0192307	50569	
+50529	Skrzynia Ksiąg (9.skill)	Piekielny Cios (9.skill)	1	0.0192307	50572	
+50529	Skrzynia Ksiąg (9.skill)	Tarcza Eteru (9.skill)	1	0.0192307	50575	
+31238	Połyskująca Muszla	Kawałek Kamienia	1	0.95	27990	
+31238	Połyskująca Muszla	Połyskująca Nieb. Perła	1	0.02	31240	
+31238	Połyskująca Muszla	Połyskująca Krwawa Perła	1	0.02	31241	
+31238	Połyskująca Muszla	Połyskująca Biała Perła	1	0.01	31239	
+83065	Losowa Skrzynia Skarbów	Srebrna Szkatułka	1	0.35	50007	
+83065	Losowa Skrzynia Skarbów	Złota Szkatułka	1	0.3	50006	
+83065	Losowa Skrzynia Skarbów	Heksagonalna Szkatułka	1	0.15	50037	
+83065	Losowa Skrzynia Skarbów	Skrzynia Triumfu	1	0.15	50249	
+83065	Losowa Skrzynia Skarbów	Plat. Skrzynia Skarbów	1	0.05	83055	
+83066	Los. Klucz do Skrz. Sk.	Srebrny Klucz	1	0.45	50009	
+83066	Los. Klucz do Skrz. Sk.	Złoty Klucz	1	0.4	50008	
+83066	Los. Klucz do Skrz. Sk.	Yang	300000	0.1	1	
+83066	Los. Klucz do Skrz. Sk.	Plat. Klucz do Skrz. Sk.	1	0.05	83056	
+83067	Skrzynia z Bransoletką	Połyskująca Muszla	1	0.1298701	31238	
+83067	Skrzynia z Bransoletką	Pierścień Doświad. (3h)	1	0.0779221	72003	3h
+83067	Skrzynia z Bransoletką	Medal Szczęścia	1	0.0779221	76038	30m
+83067	Skrzynia z Bransoletką	Rękawica Złodzieja	1	0.077922	76037	30m
+83067	Skrzynia z Bransoletką	Rybie Wnętrzności	1	0.0649351	72015	3h
+83067	Skrzynia z Bransoletką	Pióro Ptaka Miłości	1	0.0649351	72012	
+83067	Skrzynia z Bransoletką	Kamień Metin z Yohara	1	0.0649351	72339	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Słońca+0	1	0.0519481	14590	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Nocy+0	1	0.0519481	14600	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Dymu+0	1	0.0519481	14610	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Mgły+0	1	0.051948	14580	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Mgły+1	1	0.038961	14581	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Słońca+1	1	0.038961	14591	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Nocy+1	1	0.038961	14601	
+83067	Skrzynia z Bransoletką	Błogosławieństwo Smoka	1	0.0259741	71020	
+83067	Skrzynia z Bransoletką	Obręcz Jadeitu Dymu+1	1	0.025974	14611	
+83067	Skrzynia z Bransoletką	Mikstura Pośpiechu	1	0.025974	76003	30m
+83067	Skrzynia z Bransoletką	Medal Smoka	1	0.025974	76008	
+83067	Skrzynia z Bransoletką	Spróchniała Skrzynia	1	0.012987	50124	
+83051	Id. Skrzynia Talizmanu	Talizman Woli SIŁA+0	1	0.1060606	81000	
+83051	Id. Skrzynia Talizmanu	Topaz Woli	1	0.1060606	72353	
+83051	Id. Skrzynia Talizmanu	Talizman Woli ODP+0	1	0.1060606	81250	
+83051	Id. Skrzynia Talizmanu	Talizman Woli WIT+0	1	0.1060606	81300	
+83051	Id. Skrzynia Talizmanu	Talizman Woli INT+0	1	0.1060606	81550	
+83051	Id. Skrzynia Talizmanu	Topaz Woli	2	0.0909091	72353	
+83051	Id. Skrzynia Talizmanu	Topaz Woli	3	0.0757575	72353	
+83051	Id. Skrzynia Talizmanu	Topaz Woli	4	0.0454546	72353	
+83051	Id. Skrzynia Talizmanu	Błogosławieństwo Magii	1	0.0454546	71019	
+83051	Id. Skrzynia Talizmanu	Dłoń Krytyka	1	0.0454545	72048	10m
+83051	Id. Skrzynia Talizmanu	Błogosławieństwo Życia	1	0.0454545	71018	
+83051	Id. Skrzynia Talizmanu	Medal Smoka	1	0.0303031	76008	
+83051	Id. Skrzynia Talizmanu	Połyskująca Muszla	1	0.0151516	31238	
+83051	Id. Skrzynia Talizmanu	Pierścień Doświad. (3h)	1	0.0151515	72003	3h
+83051	Id. Skrzynia Talizmanu	Rękawica Złodzieja	1	0.0151515	76037	3h
+83051	Id. Skrzynia Talizmanu	Medal Szczęścia	1	0.0151515	76038	30m
+83051	Id. Skrzynia Talizmanu	Rybie Wnętrzności	1	0.0151515	72015	3h
+83051	Id. Skrzynia Talizmanu	Pióro Ptaka Miłości	1	0.0151515	72012	
+83052	Id. Skrzynia Naszyjniku	Róg Trolla	5	0.1355933	31217	
+83052	Id. Skrzynia Naszyjniku	Płyta z Surowego Metalu	5	0.1355932	31216	
+83052	Id. Skrzynia Naszyjniku	Płyta ze Stali Kuźniczej	5	0.1355932	31218	
+83052	Id. Skrzynia Naszyjniku	Skażony Rdzeń	1	0.0677966	31226	
+83052	Id. Skrzynia Naszyjniku	Kieł Argosa	1	0.0677966	31227	
+83052	Id. Skrzynia Naszyjniku	Jadeit Słońca	1	0.0508475	50661	
+83052	Id. Skrzynia Naszyjniku	Jadeit Nocy	1	0.0508475	50662	
+83052	Id. Skrzynia Naszyjniku	Połyskująca Muszla	1	0.0508475	31238	
+83052	Id. Skrzynia Naszyjniku	Jadeit Mgły	1	0.0508474	50664	
+83052	Id. Skrzynia Naszyjniku	Medal Smoka	1	0.0508474	76008	
+83052	Id. Skrzynia Naszyjniku	Pióro Ptaka Miłości	1	0.0338983	72012	
+83052	Id. Skrzynia Naszyjniku	Kolia Jadeitu Słońca+0	1	0.0169492	16590	
+83052	Id. Skrzynia Naszyjniku	Kula Błogosławieństwa	1	0.0169492	76015	
+83052	Id. Skrzynia Naszyjniku	Pierścień Doświad. (3h)	1	0.0169492	72003	3h
+83052	Id. Skrzynia Naszyjniku	Medal Szczęścia	1	0.0169492	76038	30m
+83052	Id. Skrzynia Naszyjniku	Kamień Metin z Yohara	1	0.0169492	72339	
+83052	Id. Skrzynia Naszyjniku	Kolia Jadeitu Mgły+0	1	0.0169491	16580	
+83052	Id. Skrzynia Naszyjniku	Kolia Jadeitu Nocy+0	1	0.0169491	16600	
+83052	Id. Skrzynia Naszyjniku	Zwój Błogosławieństwa	1	0.0169491	72301	
+83052	Id. Skrzynia Naszyjniku	Rękawica Złodzieja	1	0.0169491	76037	30m
+83052	Id. Skrzynia Naszyjniku	Rybie Wnętrzności	1	0.0169491	72015	3h
+83053	Id. Skrzynia Kolczyków	Jadeit Słońca	1	0.1311476	50661	
+83053	Id. Skrzynia Kolczyków	Jadeit Mgły	1	0.1311475	50664	
+83053	Id. Skrzynia Kolczyków	Jadeit Nocy	1	0.1311475	50662	
+83053	Id. Skrzynia Kolczyków	Kieł Argosa	1	0.0655738	31227	
+83053	Id. Skrzynia Kolczyków	Skażony Rdzeń	1	0.0655737	31226	
+83053	Id. Skrzynia Kolczyków	Róg Trolla	5	0.0491804	31217	
+83053	Id. Skrzynia Kolczyków	Mikstura Pośpiechu	1	0.0491804	76003	30m
+83053	Id. Skrzynia Kolczyków	Płyta z Surowego Metalu	5	0.0491803	31216	
+83053	Id. Skrzynia Kolczyków	Płyta ze Stali Kuźniczej	5	0.0491803	31218	
+83053	Id. Skrzynia Kolczyków	Połyskująca Muszla	1	0.0491803	31238	
+83053	Id. Skrzynia Kolczyków	Medal Smoka	1	0.0327869	76008	
+83053	Id. Skrzynia Kolczyków	Błogosławieństwo Smoka	1	0.0327868	71020	
+83053	Id. Skrzynia Kolczyków	Klipsy Jadeitu Nocy+0	1	0.0163935	17590	
+83053	Id. Skrzynia Kolczyków	Spróchniała Skrzynia	1	0.0163935	50124	
+83053	Id. Skrzynia Kolczyków	Rękawica Złodzieja	1	0.0163935	76037	30m
+83053	Id. Skrzynia Kolczyków	Pióro Ptaka Miłości	1	0.0163935	72012	
+83053	Id. Skrzynia Kolczyków	Kamień Metin z Yohara	1	0.0163935	72339	
+83053	Id. Skrzynia Kolczyków	Klipsy Jadeitu Mgły+0	1	0.0163934	17570	
+83053	Id. Skrzynia Kolczyków	Klipsy Jadeitu Słońca+0	1	0.0163934	17580	
+83053	Id. Skrzynia Kolczyków	Pierścień Doświad. (3h)	1	0.0163934	72003	3h
+83053	Id. Skrzynia Kolczyków	Medal Szczęścia	1	0.0163934	76038	30m
+83053	Id. Skrzynia Kolczyków	Rybie Wnętrzności	1	0.0163934	72015	3h
+83055	Plat. Skrzynia Skarbów	Małe Błogosławieństwo	1	0.0545852	72351	
+83055	Plat. Skrzynia Skarbów	Żółć Niedźwiedzia+	1	0.0436682	30071	
+83055	Plat. Skrzynia Skarbów	Język Żaby	1	0.0436681	30060	
+83055	Plat. Skrzynia Skarbów	Żabie Udka	1	0.0436681	30061	
+83055	Plat. Skrzynia Skarbów	Worek Z Pajęcz. Jajami	1	0.0436681	30058	
+83055	Plat. Skrzynia Skarbów	Niedźwiedzia Skóra+	1	0.0436681	30072	
+83055	Plat. Skrzynia Skarbów	Małż	1	0.0327511	27987	
+83055	Plat. Skrzynia Skarbów	Eliksir: W. SungMa (WIT)	1	0.0327511	27214	30m
+83055	Plat. Skrzynia Skarbów	Eliksir: W. SungMa (ODP)	1	0.0327511	27215	30m
+83055	Plat. Skrzynia Skarbów	Eliksir: W. SungMa (INT)	1	0.0327511	27216	30m
+83055	Plat. Skrzynia Skarbów	Ornament	1	0.0327511	30031	
+83055	Plat. Skrzynia Skarbów	Eliksir: W. SungMa(SIŁA)	1	0.032751	27213	30m
+83055	Plat. Skrzynia Skarbów	Orkowa Maczuga	1	0.0262009	30194	
+83055	Plat. Skrzynia Skarbów	Magiczne Nasiona	1	0.0262009	30197	
+83055	Plat. Skrzynia Skarbów	Kość Palca	1	0.0262009	30193	
+83055	Plat. Skrzynia Skarbów	Połyskująca Muszla	1	0.0262009	31238	
+83055	Plat. Skrzynia Skarbów	Ząb Orka	1	0.0262009	30006	
+83055	Plat. Skrzynia Skarbów	Pamiątka Po Demonie	1	0.0262009	30015	
+83055	Plat. Skrzynia Skarbów	Lodowa Kulka	1	0.0262009	30050	
+83055	Plat. Skrzynia Skarbów	Konar Zelkova	1	0.0262009	30165	
+83055	Plat. Skrzynia Skarbów	Cz. Konar Drzewa Duchów	1	0.0262009	30167	
+83055	Plat. Skrzynia Skarbów	Notatka Przywódcy	1	0.0262009	30168	
+83055	Plat. Skrzynia Skarbów	Klejnot Mądrości	1	0.0262009	30252	
+83055	Plat. Skrzynia Skarbów	Piasek Kwarcowy	1	0.0262008	30195	
+83055	Plat. Skrzynia Skarbów	Księga Klątw	1	0.0262008	30047	
+83055	Plat. Skrzynia Skarbów	Certyfikat Tugyisa	1	0.0262008	30166	
+83055	Plat. Skrzynia Skarbów	Klejnot Zawiści	1	0.0262008	30251	
+83055	Plat. Skrzynia Skarbów	Odłamek Energii	50	0.0218341	51001	
+83055	Plat. Skrzynia Skarbów	Oczyszczony Rdzeń	1	0.0218341	31230	
+83055	Plat. Skrzynia Skarbów	Mroczna Paproć	1	0.0218341	31232	
+83055	Plat. Skrzynia Skarbów	Skrzynia z Odłamkiem	1	0.021834	39067	
+83055	Plat. Skrzynia Skarbów	Kryształ Metin	1	0.021834	31231	
+83055	Plat. Skrzynia Skarbów	Zwój Badacza	1	0.0174673	72350	
+83055	Plat. Skrzynia Skarbów	Ognista Runa Aury (10)	1	0.010917	49991	
+70411	B. Smocza Skrz. (lekka)	Licencja Najemnika	1	0.0559846	72740	
+70411	B. Smocza Skrz. (lekka)	Małe Błogosławieństwo	3	0.0559845	72351	
+70411	B. Smocza Skrz. (lekka)	Kamień Broni Płn. Wiatru	10	0.0482626	31242	
+70411	B. Smocza Skrz. (lekka)	Połyskująca Muszla	1	0.0482626	31238	
+70411	B. Smocza Skrz. (lekka)	Kamień Rękawic Płn. W.	5	0.0482626	31244	
+70411	B. Smocza Skrz. (lekka)	Kamień Broni Płn. W+	10	0.0482625	31243	
+70411	B. Smocza Skrz. (lekka)	Ostrze Wężowe (wykon.)	1	0.0366796	396	
+70411	B. Smocza Skrz. (lekka)	Wielki Miecz Węż. (wyk.)	1	0.0366796	3266	
+70411	B. Smocza Skrz. (lekka)	Szpon Wężowy (wykon.)	1	0.0366796	6166	
+70411	B. Smocza Skrz. (lekka)	Kamień Duchowy Płn. W.	1	0.0366796	31237	
+70411	B. Smocza Skrz. (lekka)	Miecz Wężowy (wykon.)	1	0.0366795	376	
+70411	B. Smocza Skrz. (lekka)	Sztylet Wężowy (wykon.)	1	0.0366795	1226	
+70411	B. Smocza Skrz. (lekka)	Łuk Wężowy (wykon.)	1	0.0366795	2246	
+70411	B. Smocza Skrz. (lekka)	Dzwon Wężowy (wykon.)	1	0.0366795	5216	
+70411	B. Smocza Skrz. (lekka)	Wachlarz Wężowy (wykon.)	1	0.0366795	7346	
+70411	B. Smocza Skrz. (lekka)	Biała Smocza Łuska	1	0.0366795	31236	
+70411	B. Smocza Skrz. (lekka)	Błogosławieństwo Magii	3	0.023166	71019	
+70411	B. Smocza Skrz. (lekka)	Przepustka	1	0.023166	71095	
+70411	B. Smocza Skrz. (lekka)	Błogosławieństwo Życia	3	0.019305	71018	
+70411	B. Smocza Skrz. (lekka)	Topaz Woli	6	0.0173745	72353	
+70411	B. Smocza Skrz. (lekka)	Odżywka	1	0.0125483	55001	
+70411	B. Smocza Skrz. (lekka)	Biała Głowa Smoka	1	0.0125483	31235	
+70411	B. Smocza Skrz. (lekka)	Księga Precyzji	1	0.0125483	50325	
+70411	B. Smocza Skrz. (lekka)	Losowa Skrzynka	1	0.0125482	55400	
+70411	B. Smocza Skrz. (lekka)	Święty Fragment (120)	1	0.0125482	39081	
+70411	B. Smocza Skrz. (lekka)	Kamień Szlif. Płn. W.	3	0.0125482	31263	
+70411	B. Smocza Skrz. (lekka)	Błogosławieństwo Smoka	3	0.011583	71020	
+70411	B. Smocza Skrz. (lekka)	Wzmocnienie Przedmiotu	1	0.011583	71085	
+70411	B. Smocza Skrz. (lekka)	Zaczarowanie Przedmiotu	1	0.011583	71084	
+70411	B. Smocza Skrz. (lekka)	Kamień Demonów+4	1	0.0106177	28446	
+70411	B. Smocza Skrz. (lekka)	Kula Błogosławieństwa	1	0.0096526	76015	
+70411	B. Smocza Skrz. (lekka)	Torba Emocji	1	0.0096525	38060	
+70411	B. Smocza Skrz. (lekka)	Mikstura Talentu	1	0.0096525	50527	
+70411	B. Smocza Skrz. (lekka)	Jadeit Nocy	1	0.0086873	50662	
+70411	B. Smocza Skrz. (lekka)	Kamyki	200	0.0086873	50926	
+70411	B. Smocza Skrz. (lekka)	Osobisty Sklepik Premium	1	0.0086873	72356	1d
+70411	B. Smocza Skrz. (lekka)	Jadeit Dymu	1	0.0086872	50663	
+70411	B. Smocza Skrz. (lekka)	Szkło Handlu	1	0.0086872	60005	7d
+70411	B. Smocza Skrz. (lekka)	Księga Obróbki Kamienia	1	0.0067568	71083	
+70411	B. Smocza Skrz. (lekka)	Zwój Egzorcyzmu	1	0.0067568	72310	
+70411	B. Smocza Skrz. (lekka)	Zwój Błogosławieństwa	1	0.0067567	72301	
+70411	B. Smocza Skrz. (lekka)	Ognista Runa Aury (100)	1	0.0048263	49993	
+70411	B. Smocza Skrz. (lekka)	Dwutlenek Tytanu	1	0.0048263	30616	
+70411	B. Smocza Skrz. (lekka)	Agat	1	0.0048262	30617	
+70411	B. Smocza Skrz. (lekka)	Smoczy Płomień (B)	1	0.003861	100700	
+70411	B. Smocza Skrz. (lekka)	Połyskująca Krwawa Perła	1	0.003861	31241	
+70411	B. Smocza Skrz. (lekka)	Kamień Księżycowy	1	0.0028958	30618	
+70411	B. Smocza Skrz. (lekka)	Połyskująca Nieb. Perła	1	0.0028957	31240	
+70411	B. Smocza Skrz. (lekka)	Kamień Mocy Demonów+4	1	0.0019305	28447	
+70411	B. Smocza Skrz. (lekka)	Połyskująca Biała Perła	1	0.0019305	31239	
+70412	B. Smocza Skrz. (ciężka)	Licencja Najemnika	1	0.0456622	72740	
+70412	B. Smocza Skrz. (ciężka)	Kamień Rękawic Płn. W.	7	0.0456621	31244	
+70412	B. Smocza Skrz. (ciężka)	Małe Błogosławieństwo	1	0.0456621	72351	
+70412	B. Smocza Skrz. (ciężka)	Kamień Broni Płn. Wiatru	15	0.0401827	31242	
+70412	B. Smocza Skrz. (ciężka)	Połyskująca Muszla	1	0.0401827	31238	
+70412	B. Smocza Skrz. (ciężka)	Kamień Broni Płn. W+	15	0.0401826	31243	
+70412	B. Smocza Skrz. (ciężka)	Kamień Duchowy Płn. W.	1	0.0383562	31237	
+70412	B. Smocza Skrz. (ciężka)	Biała Smocza Łuska	1	0.0383561	31236	
+70412	B. Smocza Skrz. (ciężka)	Miecz Wężowy (wykon.)	1	0.0347032	376	
+70412	B. Smocza Skrz. (ciężka)	Ostrze Wężowe (wykon.)	1	0.0347032	396	
+70412	B. Smocza Skrz. (ciężka)	Sztylet Wężowy (wykon.)	1	0.0347032	1226	
+70412	B. Smocza Skrz. (ciężka)	Łuk Wężowy (wykon.)	1	0.0347032	2246	
+70412	B. Smocza Skrz. (ciężka)	Wielki Miecz Węż. (wyk.)	1	0.0347032	3266	
+70412	B. Smocza Skrz. (ciężka)	Dzwon Wężowy (wykon.)	1	0.0347032	5216	
+70412	B. Smocza Skrz. (ciężka)	Wachlarz Wężowy (wykon.)	1	0.0347032	7346	
+70412	B. Smocza Skrz. (ciężka)	Szpon Wężowy (wykon.)	1	0.0347032	6166	
+70412	B. Smocza Skrz. (ciężka)	Błogosławieństwo Magii	6	0.0219178	71019	
+70412	B. Smocza Skrz. (ciężka)	Przepustka	1	0.0219178	71095	
+70412	B. Smocza Skrz. (ciężka)	Kamień Szlif. Płn. W.	5	0.0191781	31263	
+70412	B. Smocza Skrz. (ciężka)	Błogosławieństwo Życia	6	0.0182648	71018	
+70412	B. Smocza Skrz. (ciężka)	Topaz Woli	6	0.0164383	72353	
+70412	B. Smocza Skrz. (ciężka)	Połyskująca Krwawa Perła	1	0.0127854	31241	
+70412	B. Smocza Skrz. (ciężka)	Biała Głowa Smoka	1	0.0118722	31235	
+70412	B. Smocza Skrz. (ciężka)	Święty Fragment (120)	1	0.0118722	39081	
+70412	B. Smocza Skrz. (ciężka)	Odżywka	1	0.0118721	55001	
+70412	B. Smocza Skrz. (ciężka)	Księga Precyzji	1	0.0118721	50325	
+70412	B. Smocza Skrz. (ciężka)	Błogosławieństwo Smoka	6	0.0109589	71020	
+70412	B. Smocza Skrz. (ciężka)	Wzmocnienie Przedmiotu	1	0.0109589	71085	
+70412	B. Smocza Skrz. (ciężka)	Zaczarowanie Przedmiotu	1	0.0109589	71084	
+70412	B. Smocza Skrz. (ciężka)	Połyskująca Nieb. Perła	1	0.0109589	31240	
+70412	B. Smocza Skrz. (ciężka)	Dumny Smok Płn. Wiatru	1	0.0109589	71257	7d
+70412	B. Smocza Skrz. (ciężka)	Białe Jajo Smoka	1	0.0100457	55412	7d
+70412	B. Smocza Skrz. (ciężka)	Kamień Demonów+4	1	0.0100456	28446	
+70412	B. Smocza Skrz. (ciężka)	Mikstura Talentu	1	0.0091325	50527	
+70412	B. Smocza Skrz. (ciężka)	Kula Błogosławieństwa	1	0.0091324	76015	
+70412	B. Smocza Skrz. (ciężka)	Jadeit Nocy	1	0.0082192	50662	
+70412	B. Smocza Skrz. (ciężka)	Jadeit Dymu	1	0.0082192	50663	
+70412	B. Smocza Skrz. (ciężka)	Kamyki	200	0.0082192	50926	
+70412	B. Smocza Skrz. (ciężka)	Szkło Handlu	1	0.0082192	60005	7d
+70412	B. Smocza Skrz. (ciężka)	Połyskująca Biała Perła	1	0.0073059	31239	
+70412	B. Smocza Skrz. (ciężka)	Osobisty Sklepik Premium	1	0.0063927	72355	7d
+70412	B. Smocza Skrz. (ciężka)	Ognista Runa Aury (100)	1	0.0063927	49993	
+70412	B. Smocza Skrz. (ciężka)	Kamień Kowala	1	0.0045662	71025	
+70412	B. Smocza Skrz. (ciężka)	Miecz Wężowy+0	1	0.0045662	360	
+70412	B. Smocza Skrz. (ciężka)	Ostrze Wężowe+0	1	0.0045662	380	
+70412	B. Smocza Skrz. (ciężka)	Sztylet Wężowy+0	1	0.0045662	1210	
+70412	B. Smocza Skrz. (ciężka)	Łuk Wężowy+0	1	0.0045662	2230	
+70412	B. Smocza Skrz. (ciężka)	Wielki Miecz Wężowy+0	1	0.0045662	3250	
+70412	B. Smocza Skrz. (ciężka)	Dzwon Wężowy+0	1	0.0045662	5200	
+70412	B. Smocza Skrz. (ciężka)	Wachlarz Wężowy+0	1	0.0045662	7330	
+70412	B. Smocza Skrz. (ciężka)	Szpon Wężowy+0	1	0.0045662	6150	
+70412	B. Smocza Skrz. (ciężka)	Dwutlenek Tytanu	1	0.0045662	30616	
+70412	B. Smocza Skrz. (ciężka)	Agat	1	0.0045662	30617	
+70412	B. Smocza Skrz. (ciężka)	Kamień Księżycowy	1	0.0045662	30618	
+70412	B. Smocza Skrz. (ciężka)	Smoczy Płomień (B)	1	0.0036529	100700	
+70412	B. Smocza Skrz. (ciężka)	Kamień Mocy Demonów+4	1	0.0018265	28447	
+70412	B. Smocza Skrz. (ciężka)	Miecz Smoka Mroku+0	1	0.0018265	320	
+70412	B. Smocza Skrz. (ciężka)	Brzeszczot Smoka Mrok+0	1	0.0018265	340	
+70412	B. Smocza Skrz. (ciężka)	Sztylet Smoka Mroku+0	1	0.0018265	1190	
+70412	B. Smocza Skrz. (ciężka)	Łuk Smoka Mroku+0	1	0.0018265	2210	
+70412	B. Smocza Skrz. (ciężka)	Dzwon Smoka Mroku+0	1	0.0018265	5170	
+70412	B. Smocza Skrz. (ciężka)	Wachlarz Smoka Mroku+0	1	0.0018265	7310	
+70412	B. Smocza Skrz. (ciężka)	Pazur Smoka Mroku+0	1	0.0018265	6130	
+70412	B. Smocza Skrz. (ciężka)	Zbroja Smoka Mroku+0	1	0.0018265	21210	
+70412	B. Smocza Skrz. (ciężka)	Zbroja Smoka Wiatru+0	1	0.0018265	21230	
+70412	B. Smocza Skrz. (ciężka)	Zbroja Boskiego Smoka+0	1	0.0018265	21270	
+70412	B. Smocza Skrz. (ciężka)	Zbroja Smoka Nieba+0	1	0.0018265	21290	
+70412	B. Smocza Skrz. (ciężka)	Ostrze Smoka Mroku+0	1	0.0018264	3230	
+70412	B. Smocza Skrz. (ciężka)	Zbroja Smoka Magii+0	1	0.0018264	21250	
+70429	Skarb Węży	Jedwab Wężowy	2	0.0642792	31258	
+70429	Skarb Węży	Przenośna Żyła Jadeitu	1	0.0642792	72354	
+70429	Skarb Węży	Politura Wężowa	5	0.0642792	31262	
+70429	Skarb Węży	Licencja Najemnika	1	0.0642792	72740	
+70429	Skarb Węży	Wzór Wężowy	5	0.0642791	31257	
+70429	Skarb Węży	Małe Błogosławieństwo	1	0.0532599	72351	
+70429	Skarb Węży	Połyskująca Muszla	1	0.0514233	31238	
+70429	Skarb Węży	Kamień Wężowy	10	0.0459137	31233	
+70429	Skarb Węży	Kamień Wężowy+	10	0.0459137	31234	
+70429	Skarb Węży	Płaszcz Wężowy (wykon.)	1	0.0348944	21326	
+70429	Skarb Węży	Kaftan Wężowy (wykon.)	1	0.0348944	21346	
+70429	Skarb Węży	Zły Pł. Wężowy (wykon.)	1	0.0348944	21366	
+70429	Skarb Węży	Zacny P. Wężowy (wykon.)	1	0.0348944	21386	
+70429	Skarb Węży	N. Płaszcz Węż. (wykon.)	1	0.0348944	21406	
+70429	Skarb Węży	Płyta z Surowego Metalu	3	0.0220386	31216	
+70429	Skarb Węży	Przepustka	1	0.0220386	71095	
+70429	Skarb Węży	Jadeit Nocy	1	0.0220385	50662	
+70429	Skarb Węży	Róg Trolla	3	0.0183655	31217	
+70429	Skarb Węży	Płyta ze Stali Ozdobnej	3	0.0183654	31224	
+70429	Skarb Węży	Topaz Woli	6	0.0165289	72353	
+70429	Skarb Węży	Losowa Skrzynka	1	0.0119376	55400	
+70429	Skarb Węży	Pakiet Kamieni Duszy	1	0.0119376	72058	
+70429	Skarb Węży	Odżywka	1	0.0119375	55001	
+70429	Skarb Węży	Księga Precyzji	1	0.0119375	50325	
+70429	Skarb Węży	Szarfa Władcy (zacna)	1	0.0110193	85003	
+70429	Skarb Węży	Wzmocnienie Przedmiotu	1	0.0110193	71085	
+70429	Skarb Węży	Zaczarowanie Przedmiotu	1	0.0110192	71084	
+70429	Skarb Węży	Święty Fragment (120)	1	0.010101	39081	
+70429	Skarb Węży	Torba Emocji	1	0.0091828	38060	
+70429	Skarb Węży	Mikstura Talentu	1	0.0091828	50527	
+70429	Skarb Węży	Kula Błogosławieństwa	1	0.0091827	76015	
+70429	Skarb Węży	Kamyki	200	0.0082645	50926	
+70429	Skarb Węży	Osobisty Sklepik Premium	1	0.0082645	72356	1d
+70429	Skarb Węży	Płyta ze Stali Kuźniczej	3	0.0082644	31218	
+70429	Skarb Węży	Szkło Handlu	1	0.0082644	60005	7d
+70429	Skarb Węży	Księga Obróbki Kamienia	1	0.0064279	71083	
+70429	Skarb Węży	Zwój Egzorcyzmu	1	0.0064279	72310	
+70429	Skarb Węży	Zwój Błogosławieństwa	1	0.0064279	72301	
+70429	Skarb Węży	Smoczy Płomień (B)	1	0.0036731	100700	
+70429	Skarb Węży	Kamień Demonów+4	1	0.0036731	28446	
+70429	Skarb Węży	Połyskująca Krwawa Perła	1	0.0036731	31241	
+70429	Skarb Węży	Połyskująca Nieb. Perła	1	0.0027548	31240	
+70429	Skarb Węży	Połyskująca Biała Perła	1	0.0018366	31239	
+70429	Skarb Węży	Kamień Mocy Demonów+4	1	0.0018365	28447	
+31253	Skrzynia Mistrza Gnolli	Czerwona Mikstura(D)	20	0.1243781	27003	
+31253	Skrzynia Mistrza Gnolli	Niebieska Mikstura(D)	20	0.1243781	27006	
+31253	Skrzynia Mistrza Gnolli	Twarda Skóra	1	0.0746269	31245	
+31253	Skrzynia Mistrza Gnolli	Wzór Rękawicy	1	0.0746269	31246	
+31253	Skrzynia Mistrza Gnolli	Zielona Mikstura(D)	1	0.0746268	27112	10m
+31253	Skrzynia Mistrza Gnolli	Liliowa Runa SungMa	1	0.0746268	31248	
+31253	Skrzynia Mistrza Gnolli	Wzór Rękawicy	2	0.0497513	31246	
+31253	Skrzynia Mistrza Gnolli	Żółta Runa SungMa	1	0.0497512	31250	
+31253	Skrzynia Mistrza Gnolli	Twarda Skóra	2	0.0497512	31245	
+31253	Skrzynia Mistrza Gnolli	Niebieska Runa SungMa	1	0.0248757	31249	
+31253	Skrzynia Mistrza Gnolli	Torba Emocji	1	0.0248757	38060	
+31253	Skrzynia Mistrza Gnolli	Czerwona Runa SungMa	1	0.0248756	31247	
+31253	Skrzynia Mistrza Gnolli	Utwardzacz Skóry	1	0.0248756	31251	
+31253	Skrzynia Mistrza Gnolli	Kamyki	1	0.0248756	50926	
+31253	Skrzynia Mistrza Gnolli	Przepustka	1	0.0199005	71095	
+31253	Skrzynia Mistrza Gnolli	Kamień Duchowy	1	0.0199004	50513	
+31253	Skrzynia Mistrza Gnolli	Szkło Detekcji	1	0.0124379	60004	1h
+31253	Skrzynia Mistrza Gnolli	EXP	100	0.0124379	9999998	
+31253	Skrzynia Mistrza Gnolli	Skrzynia Ksiąg (9.skill)	1	0.0124378	50529	
+31253	Skrzynia Mistrza Gnolli	Inspiracja Nowicjusza	1	0.0124378	50341	
+31253	Skrzynia Mistrza Gnolli	Charyzma Nowicjusza	1	0.0124378	50338	
+31253	Skrzynia Mistrza Gnolli	Utwardzacz Skóry+	1	0.0124378	31252	
+31253	Skrzynia Mistrza Gnolli	EXP	200	0.0124378	9999998	
+31253	Skrzynia Mistrza Gnolli	Yang	200000	0.0124378	1	
+31253	Skrzynia Mistrza Gnolli	Inspiracja Adepta	1	0.0074627	50342	
+31253	Skrzynia Mistrza Gnolli	Charyzma Adepta	1	0.0074627	50339	
+31253	Skrzynia Mistrza Gnolli	EXP	400	0.0074627	9999998	
+31253	Skrzynia Mistrza Gnolli	Yang	400000	0.0074627	1	
+31253	Skrzynia Mistrza Gnolli	Sztandar Czaszki	1	0.0074626	70401	
+31253	Skrzynia Mistrza Gnolli	Żelazne Pudełko	1	0.0024876	50121	
+31254	Skrzynia Mistrza Ahtrina	Czerwona Mikstura(D)	20	0.1184834	27003	
+31254	Skrzynia Mistrza Ahtrina	Niebieska Mikstura(D)	20	0.1184834	27006	
+31254	Skrzynia Mistrza Ahtrina	Utwardzacz Skóry+	1	0.1184834	31252	
+31254	Skrzynia Mistrza Ahtrina	Wzór Rękawicy	1	0.0710901	31246	
+31254	Skrzynia Mistrza Ahtrina	Twarda Skóra	1	0.07109	31245	
+31254	Skrzynia Mistrza Ahtrina	Liliowa Runa SungMa	1	0.07109	31248	
+31254	Skrzynia Mistrza Ahtrina	Niebieska Runa SungMa	1	0.0473934	31249	
+31254	Skrzynia Mistrza Ahtrina	Utwardzacz Skóry	1	0.0473934	31251	
+31254	Skrzynia Mistrza Ahtrina	Twarda Skóra	2	0.0473933	31245	
+31254	Skrzynia Mistrza Ahtrina	Wzór Rękawicy	2	0.0355451	31246	
+31254	Skrzynia Mistrza Ahtrina	Zielona Mikstura(D)	1	0.0236967	27112	10m
+31254	Skrzynia Mistrza Ahtrina	Żółta Runa SungMa	1	0.0236967	31250	
+31254	Skrzynia Mistrza Ahtrina	Torba Emocji	1	0.0236967	38060	
+31254	Skrzynia Mistrza Ahtrina	Czerwona Runa SungMa	1	0.0236966	31247	
+31254	Skrzynia Mistrza Ahtrina	Przepustka	1	0.0189574	71095	
+31254	Skrzynia Mistrza Ahtrina	Kamień Duchowy	1	0.0189573	50513	
+31254	Skrzynia Mistrza Ahtrina	Inspiracja Nowicjusza	1	0.0118484	50341	
+31254	Skrzynia Mistrza Ahtrina	EXP	100	0.0118484	9999998	
+31254	Skrzynia Mistrza Ahtrina	Szkło Detekcji	1	0.0118483	60004	1h
+31254	Skrzynia Mistrza Ahtrina	Skrzynia Ksiąg (9.skill)	1	0.0118483	50529	
+31254	Skrzynia Mistrza Ahtrina	Charyzma Nowicjusza	1	0.0118483	50338	
+31254	Skrzynia Mistrza Ahtrina	EXP	300	0.0118483	9999998	
+31254	Skrzynia Mistrza Ahtrina	Yang	200000	0.0118483	1	
+31254	Skrzynia Mistrza Ahtrina	Yang	400000	0.0071091	1	
+31254	Skrzynia Mistrza Ahtrina	Inspiracja Adepta	1	0.007109	50342	
+31254	Skrzynia Mistrza Ahtrina	Charyzma Adepta	1	0.007109	50339	
+31254	Skrzynia Mistrza Ahtrina	Sztandar Czaszki	1	0.007109	70401	
+31254	Skrzynia Mistrza Ahtrina	EXP	600	0.007109	9999998	
+31254	Skrzynia Mistrza Ahtrina	Żelazne Pudełko	1	0.0023697	50121	
+31255	Skrzynia Zdobiona Złotem	Niebieska Mikstura(D)	50	0.0851789	27006	
+31255	Skrzynia Zdobiona Złotem	Twarda Skóra	1	0.0851789	31245	
+31255	Skrzynia Zdobiona Złotem	Wzór Rękawicy	1	0.0851789	31246	
+31255	Skrzynia Zdobiona Złotem	Czerwona Mikstura(D)	50	0.0851788	27003	
+31255	Skrzynia Zdobiona Złotem	Czerwona Runa SungMa	1	0.0851788	31247	
+31255	Skrzynia Zdobiona Złotem	Liliowa Runa SungMa	1	0.0511074	31248	
+31255	Skrzynia Zdobiona Złotem	Utwardzacz Skóry	1	0.0511073	31251	
+31255	Skrzynia Zdobiona Złotem	Żółta Runa SungMa	1	0.0340716	31250	
+31255	Skrzynia Zdobiona Złotem	Niebieska Runa SungMa	1	0.0340715	31249	
+31255	Skrzynia Zdobiona Złotem	Twarda Skóra	2	0.0340715	31245	
+31255	Skrzynia Zdobiona Złotem	Skrzynia Ksiąg (9.skill)	1	0.0340715	50529	
+31255	Skrzynia Zdobiona Złotem	Wzór Rękawicy	2	0.0255537	31246	
+31255	Skrzynia Zdobiona Złotem	Biała Perła	1	0.0255536	27992	
+31255	Skrzynia Zdobiona Złotem	Torba Emocji	1	0.0170358	38060	
+31255	Skrzynia Zdobiona Złotem	Niebieska Perła	1	0.0170358	27993	
+31255	Skrzynia Zdobiona Złotem	Krwawa Perła	1	0.0170358	27994	
+31255	Skrzynia Zdobiona Złotem	Inspiracja Adepta	1	0.0170358	50342	
+31255	Skrzynia Zdobiona Złotem	Charyzma Nowicjusza	1	0.0170358	50338	
+31255	Skrzynia Zdobiona Złotem	Charyzma Adepta	1	0.0170358	50339	
+31255	Skrzynia Zdobiona Złotem	Pigułka Krwi	1	0.0170358	70014	
+31255	Skrzynia Zdobiona Złotem	Inspiracja Nowicjusza	1	0.0170357	50341	
+31255	Skrzynia Zdobiona Złotem	Smoczy Płomień (B)	1	0.0136287	100700	
+31255	Skrzynia Zdobiona Złotem	Kamień Duchowy	1	0.0136286	50513	
+31255	Skrzynia Zdobiona Złotem	Przepustka	1	0.0136286	71095	
+31255	Skrzynia Zdobiona Złotem	Kamień Duchowy+	1	0.0136286	50525	
+31255	Skrzynia Zdobiona Złotem	Zwój Błogosławieństwa	1	0.0136286	72301	
+31255	Skrzynia Zdobiona Złotem	Utwardzacz Skóry+	1	0.0085179	31252	
+31255	Skrzynia Zdobiona Złotem	Pierścień Doświad. (1h)	1	0.0085179	70005	1h
+31255	Skrzynia Zdobiona Złotem	Rękawica Złodzieja	1	0.0085179	76037	3h
+31255	Skrzynia Zdobiona Złotem	EXP	300	0.0085179	9999998	
+31255	Skrzynia Zdobiona Złotem	EXP	600	0.0085179	9999998	
+31255	Skrzynia Zdobiona Złotem	Yang	200000	0.0085179	1	
+31255	Skrzynia Zdobiona Złotem	Yang	400000	0.0051108	1	
+31255	Skrzynia Zdobiona Złotem	Inspiracja Eksperta	1	0.0051107	50343	
+31255	Skrzynia Zdobiona Złotem	Charyzma Eksperta	1	0.0051107	50340	
+31255	Skrzynia Zdobiona Złotem	Żelazna Szkatułka	1	0.0051107	50120	
+31255	Skrzynia Zdobiona Złotem	EXP	1000	0.0051107	9999998	
+31255	Skrzynia Zdobiona Złotem	Kamyki	50	0.0017036	50926	
+31255	Skrzynia Zdobiona Złotem	Małe Błogosławieństwo	1	0.0017036	72351	
+31256	Skrzynia Labiryntowa	Księga Precyzji	1	0.1020409	50325	
+31256	Skrzynia Labiryntowa	Czerwona Mikstura (XXL)	50	0.0510204	27007	
+31256	Skrzynia Labiryntowa	Niebieska Mikstura (XXL)	30	0.0510204	27008	
+31256	Skrzynia Labiryntowa	Talizman Woli ODP+0	1	0.0510204	81250	
+31256	Skrzynia Labiryntowa	Talizman Woli WIT+0	1	0.0510204	81300	
+31256	Skrzynia Labiryntowa	Talizman Woli INT+0	1	0.0510204	81550	
+31256	Skrzynia Labiryntowa	Klipsy Jadeitu Mgły+0	1	0.0408164	17570	
+31256	Skrzynia Labiryntowa	Żółta Runa SungMa	1	0.0408164	31250	
+31256	Skrzynia Labiryntowa	Obręcz Jadeitu Mgły+0	1	0.0408163	14580	
+31256	Skrzynia Labiryntowa	Kolia Jadeitu Mgły+0	1	0.0408163	16580	
+31256	Skrzynia Labiryntowa	Czerwona Runa SungMa	1	0.0408163	31247	
+31256	Skrzynia Labiryntowa	Liliowa Runa SungMa	1	0.0408163	31248	
+31256	Skrzynia Labiryntowa	Niebieska Runa SungMa	1	0.0408163	31249	
+31256	Skrzynia Labiryntowa	Utwardzacz Skóry	1	0.0408163	31251	
+31256	Skrzynia Labiryntowa	Płyta ze Stali Ozdobnej	1	0.0331632	31224	
+31256	Skrzynia Labiryntowa	Płyta z Surowego Metalu	1	0.0306123	31216	
+31256	Skrzynia Labiryntowa	Klipsy Jadeitu Słońca+0	1	0.0306123	17580	
+31256	Skrzynia Labiryntowa	Kolia Jadeitu Słońca+0	1	0.0306123	16590	
+31256	Skrzynia Labiryntowa	Obręcz Jadeitu Słońca+0	1	0.0306122	14590	
+31256	Skrzynia Labiryntowa	Topaz Woli	9	0.0255102	72353	
+31256	Skrzynia Labiryntowa	Róg Trolla	1	0.0204082	31217	
+31256	Skrzynia Labiryntowa	Płyta ze Stali Kuźniczej	1	0.0204081	31218	
+31256	Skrzynia Labiryntowa	Yang	500000	0.0204081	1	
+31256	Skrzynia Labiryntowa	Talizman Woli SIŁA+0	1	0.0178571	81000	
+31256	Skrzynia Labiryntowa	Topaz Woli	1	0.0178571	72353	
+31256	Skrzynia Labiryntowa	Delikatne Sukno	1	0.005102	80019	
+31256	Skrzynia Labiryntowa	Mikstura Talentu	1	0.0030612	50527	
+31256	Skrzynia Labiryntowa	Kula Błogosławieństwa	1	0.0025511	76015	
+31256	Skrzynia Labiryntowa	Przepustka	1	0.002551	71095	
+31256	Skrzynia Labiryntowa	Szkło Detekcji	1	0.002551	60004	1h
+31256	Skrzynia Labiryntowa	Rubinowy Naszyjnik+3	1	0.0015307	16503	
+31256	Skrzynia Labiryntowa	Szafirowe Kolczyki+3	1	0.0015307	17563	
+31256	Skrzynia Labiryntowa	Rubinowa Bransoleta+3	1	0.0015306	14503	
+31256	Skrzynia Labiryntowa	Granatowa Bransoleta+3	1	0.0015306	14523	
+31256	Skrzynia Labiryntowa	Szmaragdowa Bransoleta+3	1	0.0015306	14543	
+31256	Skrzynia Labiryntowa	Szafirowa Bransoleta+3	1	0.0015306	14563	
+31256	Skrzynia Labiryntowa	Bransoleta z Turmalinu+3	1	0.0015306	14573	
+31256	Skrzynia Labiryntowa	Granatowy Naszyjnik+3	1	0.0015306	16523	
+31256	Skrzynia Labiryntowa	Szmaragdowy Naszyjnik+3	1	0.0015306	16543	
+31256	Skrzynia Labiryntowa	Szafirowy Naszyjnik+3	1	0.0015306	16563	
+31256	Skrzynia Labiryntowa	Naszyjnik z Turmalinu+3	1	0.0015306	16573	
+31256	Skrzynia Labiryntowa	Rubinowe Kolczyki+3	1	0.0015306	17503	
+31256	Skrzynia Labiryntowa	Granatowe Kolczyki+3	1	0.0015306	17523	
+31256	Skrzynia Labiryntowa	Szmaragdowe Kolczyki+3	1	0.0015306	17543	
+31256	Skrzynia Labiryntowa	Utwardzacz Skóry	1	0.0010205	31251	
+31141	PB: Skrzynia Razadora	Dusza Przebudzenia	2	0.0705883	31113	
+31141	PB: Skrzynia Razadora	Mocny Sznur	2	0.0705883	31149	
+31141	PB: Skrzynia Razadora	Mały Kamień Przebudzenia	5	0.0705882	31108	
+31141	PB: Skrzynia Razadora	Zwykła Skóra	2	0.0705882	31114	
+31141	PB: Skrzynia Razadora	Płótno	2	0.0705882	31122	
+31141	PB: Skrzynia Razadora	Cienka Skóra	2	0.0705882	31123	
+31141	PB: Skrzynia Razadora	Torba Emocji	1	0.0470589	38060	
+31141	PB: Skrzynia Razadora	Stal	2	0.0470588	31121	
+31141	PB: Skrzynia Razadora	Gruba Nić	2	0.0470588	31125	
+31141	PB: Skrzynia Razadora	Cienka Nić	2	0.0470588	31124	
+31141	PB: Skrzynia Razadora	Drobny Kam. Przebudzenia	1	0.0470588	31109	
+31141	PB: Skrzynia Razadora	Cienka Przędza	2	0.0352941	31117	
+31141	PB: Skrzynia Razadora	Biała Perła	1	0.0352941	27992	
+31141	PB: Skrzynia Razadora	Lekarstwo Iluzji	5	0.0235295	31144	
+31141	PB: Skrzynia Razadora	Niebieska Perła	1	0.0235294	27993	
+31141	PB: Skrzynia Razadora	Krwawa Perła	1	0.0235294	27994	
+31141	PB: Skrzynia Razadora	Drobny Kam. Przebudzenia	2	0.0235294	31109	
+31141	PB: Skrzynia Razadora	Kamień Duchowy	1	0.0235294	50513	
+31141	PB: Skrzynia Razadora	Prosty Kamień Chaosu	1	0.0188236	31136	
+31141	PB: Skrzynia Razadora	Inspiracja Adepta	1	0.0188236	50342	
+31141	PB: Skrzynia Razadora	Róg Razadora	1	0.0188235	31128	
+31141	PB: Skrzynia Razadora	Zwykły Barwnik	1	0.0188235	31133	
+31141	PB: Skrzynia Razadora	Przepustka	1	0.0188235	71095	
+31141	PB: Skrzynia Razadora	Ulepszony Barwnik	2	0.0117647	31134	
+31141	PB: Skrzynia Razadora	Ładny Kamień Chaosu	1	0.0117647	31137	
+31141	PB: Skrzynia Razadora	Jedwab	2	0.0117647	31131	
+31141	PB: Skrzynia Razadora	Kamień Duchowy+	1	0.0070588	50525	
+31141	PB: Skrzynia Razadora	Wyjątkowy Barwnik	1	0.0047059	31135	
+31141	PB: Skrzynia Razadora	Wspaniały Kamień Chaosu	1	0.0047059	31138	
+31141	PB: Skrzynia Razadora	Zwój Błogosławieństwa	1	0.0047059	72301	
+31141	PB: Skrzynia Razadora	Smoczy Płomień (B)	1	0.0023529	100700	
+31142	PB: Skrzynia Nemere	Dusza Przebudzenia	2	0.0704226	31113	
+31142	PB: Skrzynia Nemere	Mocny Sznur	2	0.0704226	31149	
+31142	PB: Skrzynia Nemere	Mały Kamień Przebudzenia	5	0.0704225	31108	
+31142	PB: Skrzynia Nemere	Kowadło	2	0.0704225	31115	
+31142	PB: Skrzynia Nemere	Płótno	2	0.0704225	31122	
+31142	PB: Skrzynia Nemere	Cienka Skóra	2	0.0704225	31123	
+31142	PB: Skrzynia Nemere	Gruba Nić	2	0.0469484	31125	
+31142	PB: Skrzynia Nemere	Torba Emocji	1	0.0469484	38060	
+31142	PB: Skrzynia Nemere	Stal	2	0.0469483	31121	
+31142	PB: Skrzynia Nemere	Cienka Nić	2	0.0469483	31124	
+31142	PB: Skrzynia Nemere	Drobny Kam. Przebudzenia	1	0.0469483	31109	
+31142	PB: Skrzynia Nemere	Cienka Przędza	2	0.0352113	31117	
+31142	PB: Skrzynia Nemere	Biała Perła	1	0.0352113	27992	
+31142	PB: Skrzynia Nemere	Niebieska Perła	1	0.0234742	27993	
+31142	PB: Skrzynia Nemere	Lekarstwo Iluzji	5	0.0234742	31144	
+31142	PB: Skrzynia Nemere	Drobny Kam. Przebudzenia	3	0.0234742	31109	
+31142	PB: Skrzynia Nemere	Kamień Duchowy	1	0.0234742	50513	
+31142	PB: Skrzynia Nemere	Krwawa Perła	1	0.0234741	27994	
+31142	PB: Skrzynia Nemere	Zwykły Barwnik	1	0.0187794	31133	
+31142	PB: Skrzynia Nemere	Inspiracja Adepta	1	0.0187794	50342	
+31142	PB: Skrzynia Nemere	Róg Nemere	1	0.0187793	31129	
+31142	PB: Skrzynia Nemere	Prosty Kamień Chaosu	1	0.0187793	31136	
+31142	PB: Skrzynia Nemere	Przepustka	1	0.0187793	71095	
+31142	PB: Skrzynia Nemere	Ulepszony Barwnik	2	0.0117371	31134	
+31142	PB: Skrzynia Nemere	Ładny Kamień Chaosu	1	0.0117371	31137	
+31142	PB: Skrzynia Nemere	Odłamki	2	0.0117371	31132	
+31142	PB: Skrzynia Nemere	Kamień Duchowy+	1	0.0070423	50525	
+31142	PB: Skrzynia Nemere	Wyjątkowy Barwnik	1	0.0070422	31135	
+31142	PB: Skrzynia Nemere	Wspaniały Kamień Chaosu	1	0.0046949	31138	
+31142	PB: Skrzynia Nemere	Zwój Błogosławieństwa	1	0.0046948	72301	
+31142	PB: Skrzynia Nemere	Smoczy Płomień (B)	1	0.0023474	100700	
+31139	PB: Skrz. Beran-Setaou	Dusza Przebudzenia	2	0.0694445	31113	
+31139	PB: Skrz. Beran-Setaou	Cienka Skóra	2	0.0694445	31123	
+31139	PB: Skrz. Beran-Setaou	Mały Kamień Przebudzenia	5	0.0694444	31108	
+31139	PB: Skrz. Beran-Setaou	Zwykła Skóra	2	0.0694444	31114	
+31139	PB: Skrz. Beran-Setaou	Płótno	2	0.0694444	31122	
+31139	PB: Skrz. Beran-Setaou	Mocny Sznur	2	0.0694444	31149	
+31139	PB: Skrz. Beran-Setaou	Stal	2	0.0462963	31121	
+31139	PB: Skrz. Beran-Setaou	Gruba Nić	2	0.0462963	31125	
+31139	PB: Skrz. Beran-Setaou	Cienka Nić	2	0.0462963	31124	
+31139	PB: Skrz. Beran-Setaou	Torba Emocji	1	0.0462963	38060	
+31139	PB: Skrz. Beran-Setaou	Drobny Kam. Przebudzenia	1	0.0462963	31109	
+31139	PB: Skrz. Beran-Setaou	Biała Perła	1	0.0347223	27992	
+31139	PB: Skrz. Beran-Setaou	Smoczy Ząb	1	0.0347222	31127	
+31139	PB: Skrz. Beran-Setaou	Czaszka Smoka	1	0.0347222	31126	
+31139	PB: Skrz. Beran-Setaou	Krwawa Perła	1	0.0231482	27994	
+31139	PB: Skrz. Beran-Setaou	Cienka Przędza	2	0.0231482	31117	
+31139	PB: Skrz. Beran-Setaou	Niebieska Perła	1	0.0231481	27993	
+31139	PB: Skrz. Beran-Setaou	Lekarstwo Iluzji	5	0.0231481	31144	
+31139	PB: Skrz. Beran-Setaou	Kamień Duchowy	1	0.0231481	50513	
+31139	PB: Skrz. Beran-Setaou	Przepustka	1	0.0185186	71095	
+31139	PB: Skrz. Beran-Setaou	Charyzma Adepta	1	0.0185186	50339	
+31139	PB: Skrz. Beran-Setaou	Zwykły Barwnik	2	0.0185185	31133	
+31139	PB: Skrz. Beran-Setaou	Prosty Kamień Chaosu	1	0.0185185	31136	
+31139	PB: Skrz. Beran-Setaou	Ładny Kamień Chaosu	1	0.0115741	31137	
+31139	PB: Skrz. Beran-Setaou	Jedwab	1	0.0115741	31131	
+31139	PB: Skrz. Beran-Setaou	Ulepszony Barwnik	2	0.011574	31134	
+31139	PB: Skrz. Beran-Setaou	Kamień Duchowy+	1	0.0069444	50525	
+31139	PB: Skrz. Beran-Setaou	Wyjątkowy Barwnik	1	0.0046297	31135	
+31139	PB: Skrz. Beran-Setaou	Wspaniały Kamień Chaosu	1	0.0046296	31138	
+31139	PB: Skrz. Beran-Setaou	Zwój Błogosławieństwa	1	0.0046296	72301	
+31139	PB: Skrz. Beran-Setaou	Smoczy Płomień (B)	1	0.0023148	100700	
+31140	PB: Skrz. Jotun Thryma	Dusza Przebudzenia	2	0.0704226	31113	
+31140	PB: Skrz. Jotun Thryma	Mocny Sznur	2	0.0704226	31149	
+31140	PB: Skrz. Jotun Thryma	Mały Kamień Przebudzenia	5	0.0704225	31108	
+31140	PB: Skrz. Jotun Thryma	Kowadło	2	0.0704225	31115	
+31140	PB: Skrz. Jotun Thryma	Płótno	2	0.0704225	31122	
+31140	PB: Skrz. Jotun Thryma	Cienka Skóra	2	0.0704225	31123	
+31140	PB: Skrz. Jotun Thryma	Gruba Nić	2	0.0469484	31125	
+31140	PB: Skrz. Jotun Thryma	Torba Emocji	1	0.0469484	38060	
+31140	PB: Skrz. Jotun Thryma	Stal	2	0.0469483	31121	
+31140	PB: Skrz. Jotun Thryma	Cienka Nić	2	0.0469483	31124	
+31140	PB: Skrz. Jotun Thryma	Drobny Kam. Przebudzenia	1	0.0469483	31109	
+31140	PB: Skrz. Jotun Thryma	Cienka Przędza	2	0.0352113	31117	
+31140	PB: Skrz. Jotun Thryma	Biała Perła	1	0.0352113	27992	
+31140	PB: Skrz. Jotun Thryma	Niebieska Perła	1	0.0234742	27993	
+31140	PB: Skrz. Jotun Thryma	Lekarstwo Iluzji	5	0.0234742	31144	
+31140	PB: Skrz. Jotun Thryma	Drobny Kam. Przebudzenia	3	0.0234742	31109	
+31140	PB: Skrz. Jotun Thryma	Kamień Duchowy	1	0.0234742	50513	
+31140	PB: Skrz. Jotun Thryma	Krwawa Perła	1	0.0234741	27994	
+31140	PB: Skrz. Jotun Thryma	Zwykły Barwnik	1	0.0187794	31133	
+31140	PB: Skrz. Jotun Thryma	Charyzma Adepta	1	0.0187794	50339	
+31140	PB: Skrz. Jotun Thryma	Ostre Kolce	1	0.0187793	31130	
+31140	PB: Skrz. Jotun Thryma	Prosty Kamień Chaosu	2	0.0187793	31136	
+31140	PB: Skrz. Jotun Thryma	Przepustka	1	0.0187793	71095	
+31140	PB: Skrz. Jotun Thryma	Ulepszony Barwnik	1	0.0117371	31134	
+31140	PB: Skrz. Jotun Thryma	Ładny Kamień Chaosu	1	0.0117371	31137	
+31140	PB: Skrz. Jotun Thryma	Odłamki	1	0.0117371	31132	
+31140	PB: Skrz. Jotun Thryma	Kamień Duchowy+	1	0.0070423	50525	
+31140	PB: Skrz. Jotun Thryma	Wspaniały Kamień Chaosu	1	0.0070423	31138	
+31140	PB: Skrz. Jotun Thryma	Wyjątkowy Barwnik	2	0.0046948	31135	
+31140	PB: Skrz. Jotun Thryma	Zwój Błogosławieństwa	1	0.0046948	72301	
+31140	PB: Skrz. Jotun Thryma	Smoczy Płomień (B)	1	0.0023474	100700	
+31143	Skrzynia Przebudzenia	Mały Kamień Przebudzenia	2	0.0895523	31108	
+31143	Skrzynia Przebudzenia	Czerwona Mikstura(D)	50	0.0895522	27003	
+31143	Skrzynia Przebudzenia	Niebieska Mikstura(D)	50	0.0895522	27006	
+31143	Skrzynia Przebudzenia	Zwykła Skóra	2	0.0597015	31114	
+31143	Skrzynia Przebudzenia	Płótno	2	0.0597015	31122	
+31143	Skrzynia Przebudzenia	Mocny Sznur	2	0.0597015	31149	
+31143	Skrzynia Przebudzenia	Cienka Skóra	2	0.0597014	31123	
+31143	Skrzynia Przebudzenia	Stal	2	0.0447762	31121	
+31143	Skrzynia Przebudzenia	Gruba Nić	2	0.0447761	31125	
+31143	Skrzynia Przebudzenia	Cienka Nić	2	0.0447761	31124	
+31143	Skrzynia Przebudzenia	Mały Kamień Przebudzenia	2	0.0298508	31108	
+31143	Skrzynia Przebudzenia	Torba Emocji	1	0.0298507	38060	
+31143	Skrzynia Przebudzenia	Kamień Duchowy	1	0.0298507	50513	
+31143	Skrzynia Przebudzenia	Biała Perła	1	0.0238806	27992	
+31143	Skrzynia Przebudzenia	Lekarstwo Iluzji	5	0.0238806	31144	
+31143	Skrzynia Przebudzenia	Peleryna Maskująca	1	0.0238806	70048	4h
+31143	Skrzynia Przebudzenia	Pigułka Krwi	1	0.0238806	70014	
+31143	Skrzynia Przebudzenia	Niebieska Perła	1	0.0149254	27993	
+31143	Skrzynia Przebudzenia	Krwawa Perła	1	0.0149254	27994	
+31143	Skrzynia Przebudzenia	EXP	300000	0.0149254	9999999	
+31143	Skrzynia Przebudzenia	Peleryna Męstwa	1	0.0149253	76007	
+31143	Skrzynia Przebudzenia	EXP	500000	0.0149253	9999999	
+31143	Skrzynia Przebudzenia	Yang	200000	0.0149253	1	
+31143	Skrzynia Przebudzenia	Żelazna Szkatułka	1	0.0089553	50120	
+31143	Skrzynia Przebudzenia	Żelazne Pudełko	1	0.0089553	50121	
+31143	Skrzynia Przebudzenia	EXP	800000	0.0089553	9999999	
+31143	Skrzynia Przebudzenia	Yang	400000	0.0089553	1	
+31143	Skrzynia Przebudzenia	Przepustka	1	0.0089552	71095	
+31143	Skrzynia Przebudzenia	Księga Umiejętności	1	0.0089552	50300	
+31143	Skrzynia Przebudzenia	Żelazna Skrzynia	1	0.0089552	50122	
+31143	Skrzynia Przebudzenia	Pierścień Doświad. (1h)	1	0.0059702	70005	1h
+31143	Skrzynia Przebudzenia	Kamień Duchowy+	1	0.0059701	50525	
+31143	Skrzynia Przebudzenia	Zwój Błogosławieństwa	1	0.0029851	72301	
+31143	Skrzynia Przebudzenia	Smoczy Płomień (B)	1	0.0029851	100700	
+31143	Skrzynia Przebudzenia	Księga Zapomnienia	1	0.002985	70037	
+50266	Skrzynia Jotuna Thryma	EXP	500000	0.0961539	9999999	
+50266	Skrzynia Jotuna Thryma	Yang	400000	0.0576924	1	
+50266	Skrzynia Jotuna Thryma	EXP	700000	0.0576923	9999999	
+50266	Skrzynia Jotuna Thryma	Podręcznik: Dopalacz	1	0.0480769	50514	
+50266	Skrzynia Jotuna Thryma	Podręcznik: Riposta	1	0.0480769	50515	
+50266	Skrzynia Jotuna Thryma	Skrzynia Ksiąg: Dopalacz	1	0.0480769	50324	
+50266	Skrzynia Jotuna Thryma	EXP	1000000	0.0480769	9999999	
+50266	Skrzynia Jotuna Thryma	Yang	250000	0.0480769	1	
+50266	Skrzynia Jotuna Thryma	Buty Euforii+3	1	0.0384615	15373	
+50266	Skrzynia Jotuna Thryma	Buty Zimorodka+3	1	0.0384615	15433	
+50266	Skrzynia Jotuna Thryma	Mithril	1	0.0288462	30610	
+50266	Skrzynia Jotuna Thryma	Buty Euforii+4	1	0.0288462	15374	
+50266	Skrzynia Jotuna Thryma	Buty Zimorodka+4	1	0.0288462	15434	
+50266	Skrzynia Jotuna Thryma	Mleczny Sok	1	0.0288461	30192	
+50266	Skrzynia Jotuna Thryma	Krwawa Perła	1	0.0192308	27994	
+50266	Skrzynia Jotuna Thryma	Niebieska Perła	1	0.0192308	27993	
+50266	Skrzynia Jotuna Thryma	Pancerz Diabel. Rogu+0	1	0.0192308	20000	
+50266	Skrzynia Jotuna Thryma	Pancerz Kościopłytowy+0	1	0.0192308	20500	
+50266	Skrzynia Jotuna Thryma	Złote Ubranie+0	1	0.0192308	20750	
+50266	Skrzynia Jotuna Thryma	Zbroja Dowódcy+0	1	0.0192308	21090	
+50266	Skrzynia Jotuna Thryma	Niebieski Barwnik	1	0.0192308	30602	
+50266	Skrzynia Jotuna Thryma	Czerwony Barwnik	1	0.0192308	30603	
+50266	Skrzynia Jotuna Thryma	Biały Barwnik	1	0.0192308	30615	
+50266	Skrzynia Jotuna Thryma	Ciężkie Pasy	1	0.0192308	30611	
+50266	Skrzynia Jotuna Thryma	Księga Młodego Zwierza	1	0.0192308	55003	
+50266	Skrzynia Jotuna Thryma	Biała Perła	1	0.0192307	27992	
+50266	Skrzynia Jotuna Thryma	Szata Smoczego Jeźdźca+0	1	0.0192307	20250	
+50266	Skrzynia Jotuna Thryma	Czarny Barwnik	1	0.0192307	30614	
+50266	Skrzynia Jotuna Thryma	Zwój Błogosławieństwa	1	0.0096154	72301	
+50266	Skrzynia Jotuna Thryma	Kula Błogosławieństwa	1	0.0096154	76015	
+50266	Skrzynia Jotuna Thryma	Dwutlenek Tytanu	1	0.0096154	30616	
+50266	Skrzynia Jotuna Thryma	Kamień Księżycowy	1	0.0096154	30618	
+50266	Skrzynia Jotuna Thryma	Księga Dzikiego Zwierza	1	0.0096154	55004	
+50266	Skrzynia Jotuna Thryma	Księga Dzielnego Zwierza	1	0.0096154	55005	
+50266	Skrzynia Jotuna Thryma	Kamień Duchowy+	1	0.0096153	50525	
+50266	Skrzynia Jotuna Thryma	Agat	1	0.0096153	30617	
+50266	Skrzynia Jotuna Thryma	Barwnik złoty metalik	1	0.0096153	30619	
+54701	Skrzynia Bagjanamu	Morwa	1	0.0292057	50728	
+54701	Skrzynia Bagjanamu	Bez	1	0.0292056	50725	
+54701	Skrzynia Bagjanamu	EXP	300000	0.0292056	9999999	
+54701	Skrzynia Bagjanamu	EXP	500000	0.0292056	9999999	
+54701	Skrzynia Bagjanamu	Yang	300000	0.0292056	1	
+54701	Skrzynia Bagjanamu	Peleryna Męstwa	10	0.0233645	76007	
+54701	Skrzynia Bagjanamu	EXP	800000	0.0233645	9999999	
+54701	Skrzynia Bagjanamu	Złota Przędza	1	0.0175234	30518	
+54701	Skrzynia Bagjanamu	Złoty Hak	1	0.0175234	30519	
+54701	Skrzynia Bagjanamu	Element Pierścienia	1	0.0175234	30521	
+54701	Skrzynia Bagjanamu	Element Ozdoby	1	0.0175234	30523	
+54701	Skrzynia Bagjanamu	Torba Emocji	1	0.0175234	38060	
+54701	Skrzynia Bagjanamu	Złota Spinka	1	0.0175233	30520	
+54701	Skrzynia Bagjanamu	Ogniwa Łańcucha	1	0.0175233	30522	
+54701	Skrzynia Bagjanamu	Yang	700000	0.0175233	1	
+54701	Skrzynia Bagjanamu	Rubinowy Ozdobny Nóż	1	0.015187	30500	
+54701	Skrzynia Bagjanamu	Szafirowy Ozdobny Nóż	1	0.015187	30506	
+54701	Skrzynia Bagjanamu	Szlachetny Naramiennik	1	0.015187	30513	
+54701	Skrzynia Bagjanamu	Złota Spinka	1	0.0151869	30520	
+54701	Skrzynia Bagjanamu	Rubinowa Ozdoba	1	0.0151869	30502	
+54701	Skrzynia Bagjanamu	Ametystowy Ozdobny Nóż	1	0.0151869	30503	
+54701	Skrzynia Bagjanamu	Srebrny Zacisk	1	0.0151869	30504	
+54701	Skrzynia Bagjanamu	Szmaragdowa Ozdoba	1	0.0151869	30505	
+54701	Skrzynia Bagjanamu	Brązowy Zacisk	1	0.0151869	30507	
+54701	Skrzynia Bagjanamu	Szafirowa Ozdoba	1	0.0151869	30508	
+54701	Skrzynia Bagjanamu	Niebieska Smocza Stal	1	0.0151869	30509	
+54701	Skrzynia Bagjanamu	Wytworny Naramiennik	1	0.0151869	30510	
+54701	Skrzynia Bagjanamu	Czerwony Materiał	1	0.0151869	30511	
+54701	Skrzynia Bagjanamu	Czerwona Smocza Stal	1	0.0151869	30512	
+54701	Skrzynia Bagjanamu	Fioletowy Materiał	1	0.0151869	30514	
+54701	Skrzynia Bagjanamu	Purpurowa Smocza Stal	1	0.0151869	30515	
+54701	Skrzynia Bagjanamu	Antyczny Naramiennik	1	0.0151869	30516	
+54701	Skrzynia Bagjanamu	Złoty Materiał	1	0.0151869	30517	
+54701	Skrzynia Bagjanamu	Zwój Błogosławieństwa	1	0.0140187	72301	
+54701	Skrzynia Bagjanamu	Złote Płyty	1	0.0140187	30605	
+54701	Skrzynia Bagjanamu	Srebrne Płyty	1	0.0140187	30606	
+54701	Skrzynia Bagjanamu	Miedziane Płyty	1	0.0140187	30607	
+54701	Skrzynia Bagjanamu	Stalowe Płyty	1	0.0140187	30608	
+54701	Skrzynia Bagjanamu	Brązowe Płyty	1	0.0140186	30609	
+54701	Skrzynia Bagjanamu	Plan Zbroi	1	0.0116823	30601	
+54701	Skrzynia Bagjanamu	Mithril	1	0.0116823	30610	
+54701	Skrzynia Bagjanamu	Wzór Kroju	1	0.0116822	30600	
+54701	Skrzynia Bagjanamu	Pigułka Krwi	1	0.0093458	70014	
+54701	Skrzynia Bagjanamu	Księga Dzielnego Zwierza	1	0.0093458	55005	
+54701	Skrzynia Bagjanamu	Księga Młodego Zwierza	1	0.0093458	55003	
+54701	Skrzynia Bagjanamu	Dwutlenek Tytanu	1	0.0093458	30616	
+54701	Skrzynia Bagjanamu	Smoczy Płomień (B)	1	0.0093458	100700	
+54701	Skrzynia Bagjanamu	Fasolka Zen	1	0.0081776	70102	
+54701	Skrzynia Bagjanamu	Skrzynia Ksiąg: Riposta	1	0.0081776	50323	
+54701	Skrzynia Bagjanamu	Niebieski Barwnik	1	0.0081776	30602	
+54701	Skrzynia Bagjanamu	Czerwony Barwnik	1	0.0081776	30603	
+54701	Skrzynia Bagjanamu	Czarny Barwnik	1	0.0081776	30614	
+54701	Skrzynia Bagjanamu	Podręcznik: Riposta	1	0.0081775	50515	
+54701	Skrzynia Bagjanamu	Ciężkie Pasy	1	0.0081775	30611	
+54701	Skrzynia Bagjanamu	Biały Barwnik	1	0.0081775	30615	
+54701	Skrzynia Bagjanamu	Miecz Bojowy+5	1	0.0070094	145	
+54701	Skrzynia Bagjanamu	Miecz Szponu Ducha+5	1	0.0070094	155	
+54701	Skrzynia Bagjanamu	Olbrz. Łuk Żółt. Smoka+5	1	0.0070094	2145	
+54701	Skrzynia Bagjanamu	Magnetyczne Ostrze+5	1	0.0070094	3145	
+54701	Skrzynia Bagjanamu	Wachlarz Zbawienia+5	1	0.0070094	7145	
+54701	Skrzynia Bagjanamu	Smoczy Nóż+5	1	0.0070093	1105	
+54701	Skrzynia Bagjanamu	Dzwon Nieba I Ziemi+5	1	0.0070093	5105	
+54701	Skrzynia Bagjanamu	Podręcznik: Dopalacz	1	0.0058412	50514	
+54701	Skrzynia Bagjanamu	Księga Prawdy	1	0.0058412	30623	
+54701	Skrzynia Bagjanamu	Pierścień Doświad. (1h)	1	0.0058411	70005	1h
+54701	Skrzynia Bagjanamu	Peleryna Maskująca	1	0.0058411	70048	4h
+54701	Skrzynia Bagjanamu	Skrzynia Ksiąg: Dopalacz	1	0.0058411	50324	
+54701	Skrzynia Bagjanamu	Mleczny Sok	1	0.0058411	30192	
+54701	Skrzynia Bagjanamu	Miecz Bojowy+6	1	0.0058411	146	
+54701	Skrzynia Bagjanamu	Miecz Szponu Ducha+6	1	0.0058411	156	
+54701	Skrzynia Bagjanamu	Smoczy Nóż+6	1	0.0058411	1106	
+54701	Skrzynia Bagjanamu	Olbrz. Łuk Żółt. Smoka+6	1	0.0058411	2146	
+54701	Skrzynia Bagjanamu	Magnetyczne Ostrze+6	1	0.0058411	3146	
+54701	Skrzynia Bagjanamu	Dzwon Nieba I Ziemi+6	1	0.0058411	5106	
+54701	Skrzynia Bagjanamu	Wachlarz Zbawienia+6	1	0.0058411	7146	
+54701	Skrzynia Bagjanamu	Agat	1	0.0058411	30617	
+54701	Skrzynia Bagjanamu	Barwnik złoty metalik	1	0.0058411	30619	
+54701	Skrzynia Bagjanamu	Dusza Prawdy	1	0.0058411	30624	
+54701	Skrzynia Bagjanamu	Eliksir Bogów	1	0.0058411	30629	
+54701	Skrzynia Bagjanamu	Rękawica Złodzieja	1	0.0035047	76037	2h
+54701	Skrzynia Bagjanamu	Buty Euforii+3	1	0.0035046	15373	
+54701	Skrzynia Bagjanamu	Buty Euforii+4	1	0.0023365	15374	
+54701	Skrzynia Bagjanamu	Buty Zimorodka+3	1	0.0023364	15433	
+54701	Skrzynia Bagjanamu	Buty Zimorodka+4	1	0.0011682	15434	
+54701	Skrzynia Bagjanamu	Broszura Szermierki	1	0.0011682	70031	
+54702	Skrzynia Razadora	EXP	600000	0.0282486	9999999	
+54702	Skrzynia Razadora	Yang	800000	0.0282486	1	
+54702	Skrzynia Razadora	EXP	800000	0.0282485	9999999	
+54702	Skrzynia Razadora	EXP	1000000	0.0225989	9999999	
+54702	Skrzynia Razadora	Yang	1000000	0.0169492	1	
+54702	Skrzynia Razadora	Torba Emocji	1	0.0169492	38060	
+54702	Skrzynia Razadora	Czerwona Mikstura(D)	1	0.0112995	27003	
+54702	Skrzynia Razadora	Skrzynia Mroku	1	0.0112995	50254	
+54702	Skrzynia Razadora	Rubinowa Ozdoba	1	0.0112995	30502	
+54702	Skrzynia Razadora	Szmaragdowa Ozdoba	1	0.0112995	30505	
+54702	Skrzynia Razadora	Szafirowa Ozdoba	1	0.0112995	30508	
+54702	Skrzynia Razadora	Czerwony Materiał	1	0.0112995	30511	
+54702	Skrzynia Razadora	Szlachetny Naramiennik	1	0.0112995	30513	
+54702	Skrzynia Razadora	Antyczny Naramiennik	1	0.0112995	30516	
+54702	Skrzynia Razadora	Złoty Hak	1	0.0112995	30519	
+54702	Skrzynia Razadora	Pierścień Doświad. (1h)	1	0.0112994	70005	1h
+54702	Skrzynia Razadora	Czerwona Mikstura(Ś)	1	0.0112994	27002	
+54702	Skrzynia Razadora	Niebieska Mikstura(Ś)	1	0.0112994	27005	
+54702	Skrzynia Razadora	Księga Umiejętności	1	0.0112994	50300	
+54702	Skrzynia Razadora	Rubinowy Ozdobny Nóż	1	0.0112994	30500	
+54702	Skrzynia Razadora	Złota Spinka	1	0.0112994	30520	
+54702	Skrzynia Razadora	Ametystowy Ozdobny Nóż	1	0.0112994	30503	
+54702	Skrzynia Razadora	Srebrny Zacisk	1	0.0112994	30504	
+54702	Skrzynia Razadora	Szafirowy Ozdobny Nóż	1	0.0112994	30506	
+54702	Skrzynia Razadora	Brązowy Zacisk	1	0.0112994	30507	
+54702	Skrzynia Razadora	Niebieska Smocza Stal	1	0.0112994	30509	
+54702	Skrzynia Razadora	Wytworny Naramiennik	1	0.0112994	30510	
+54702	Skrzynia Razadora	Czerwona Smocza Stal	1	0.0112994	30512	
+54702	Skrzynia Razadora	Fioletowy Materiał	1	0.0112994	30514	
+54702	Skrzynia Razadora	Purpurowa Smocza Stal	1	0.0112994	30515	
+54702	Skrzynia Razadora	Złoty Materiał	1	0.0112994	30517	
+54702	Skrzynia Razadora	Złota Przędza	1	0.0112994	30518	
+54702	Skrzynia Razadora	Pas Skórzany+0	1	0.0090396	18010	
+54702	Skrzynia Razadora	Pas Mądrości+0	1	0.0090396	18030	
+54702	Skrzynia Razadora	Kryształowa Bransoleta+3	1	0.0090396	14163	
+54702	Skrzynia Razadora	Bransol. Z Niebiań.Łez+1	1	0.0090396	14201	
+54702	Skrzynia Razadora	Ametystowy Naszyjnik+2	1	0.0090396	16182	
+54702	Skrzynia Razadora	Kryształowe Kolczyki+3	1	0.0090396	17163	
+54702	Skrzynia Razadora	Kolczyki Z Niebiań.Łez+1	1	0.0090396	17201	
+54702	Skrzynia Razadora	Tarcza Tytanów+0	1	0.0090396	13140	
+54702	Skrzynia Razadora	Zatruty miecz+3	1	0.0090396	183	
+54702	Skrzynia Razadora	Lwi Miecz+3	1	0.0090396	193	
+54702	Skrzynia Razadora	Miecz Żalu+3	1	0.0090396	3163	
+54702	Skrzynia Razadora	Stalowy Łuk Kruka+3	1	0.0090396	2173	
+54702	Skrzynia Razadora	Skrzydła Demona Chakr.+3	1	0.0090396	1133	
+54702	Skrzynia Razadora	Ekstazyjny Wachlarz+3	1	0.0090396	7153	
+54702	Skrzynia Razadora	Bambusowy Dzwon+3	1	0.0090396	5123	
+54702	Skrzynia Razadora	Zbroja Z Czarnej Stali+3	1	0.0090396	11293	
+54702	Skrzynia Razadora	Ubranie Czarn. Wiatru+3	1	0.0090396	11493	
+54702	Skrzynia Razadora	Zbr. Płyt. Czar. Magii+3	1	0.0090396	11693	
+54702	Skrzynia Razadora	Czarna Szata+3	1	0.0090396	11893	
+54702	Skrzynia Razadora	Kamień Płomienia	1	0.0090396	30524	
+54702	Skrzynia Razadora	Pas Przepychu+0	1	0.0090395	18020	
+54702	Skrzynia Razadora	Pas Dusz+0	1	0.0090395	18080	
+54702	Skrzynia Razadora	Ametystowa Bransoleta+2	1	0.0090395	14182	
+54702	Skrzynia Razadora	Kryształowy Naszyjnik+3	1	0.0090395	16163	
+54702	Skrzynia Razadora	Naszyj. Z Niebiań.Łez+1	1	0.0090395	16201	
+54702	Skrzynia Razadora	Ametystowe Kolczyki+2	1	0.0090395	17182	
+54702	Skrzynia Razadora	Sokola Tarcza+2	1	0.0090395	13062	
+54702	Skrzynia Razadora	Tarcza Smoka+2	1	0.0090395	13122	
+54702	Skrzynia Razadora	Pierścień Teleportacji	1	0.0090395	70058	
+54702	Skrzynia Razadora	Przepustka	1	0.0090395	71095	
+54702	Skrzynia Razadora	Zatruty miecz+4	1	0.0090395	184	
+54702	Skrzynia Razadora	Lwi Miecz+4	1	0.0090395	194	
+54702	Skrzynia Razadora	Miecz Żalu+4	1	0.0090395	3164	
+54702	Skrzynia Razadora	Stalowy Łuk Kruka+4	1	0.0090395	2174	
+54702	Skrzynia Razadora	Skrzydła Demona Chakr.+4	1	0.0090395	1134	
+54702	Skrzynia Razadora	Ekstazyjny Wachlarz+4	1	0.0090395	7154	
+54702	Skrzynia Razadora	Bambusowy Dzwon+4	1	0.0090395	5124	
+54702	Skrzynia Razadora	Zbroja Z Czarnej Stali+4	1	0.0090395	11294	
+54702	Skrzynia Razadora	Ubranie Czarn. Wiatru+4	1	0.0090395	11494	
+54702	Skrzynia Razadora	Zbr. Płyt. Czar. Magii+4	1	0.0090395	11694	
+54702	Skrzynia Razadora	Czarna Szata+4	1	0.0090395	11894	
+54702	Skrzynia Razadora	Zbroja Nocnego Cienia+3	1	0.0090395	21073	
+54702	Skrzynia Razadora	Padparadża	1	0.0090395	30625	
+54702	Skrzynia Razadora	Agat	1	0.0090395	30617	
+54702	Skrzynia Razadora	Księga Dzikiego Zwierza	1	0.0079096	55004	
+54702	Skrzynia Razadora	Księga Dzielnego Zwierza	1	0.0079096	55005	
+54702	Skrzynia Razadora	Skrzynia Ksiąg Zwierza	1	0.0079096	76044	
+54702	Skrzynia Razadora	Lwia Tarcza+2	1	0.0056498	13102	
+54702	Skrzynia Razadora	Kolczasty Szpon+4	1	0.0056498	6074	
+54702	Skrzynia Razadora	Czerwony Barwnik	1	0.0056498	30603	
+54702	Skrzynia Razadora	Mithril	1	0.0056498	30610	
+54702	Skrzynia Razadora	Boski Kwiat	1	0.0056498	30628	
+54702	Skrzynia Razadora	Złota Spinka	1	0.0056497	30520	
+54702	Skrzynia Razadora	Element Pierścienia	1	0.0056497	30521	
+54702	Skrzynia Razadora	Ogniwa Łańcucha	1	0.0056497	30522	
+54702	Skrzynia Razadora	Element Ozdoby	1	0.0056497	30523	
+54702	Skrzynia Razadora	Pas Lniany+0	1	0.0056497	18000	
+54702	Skrzynia Razadora	Tarcza Tygrysa+2	1	0.0056497	13082	
+54702	Skrzynia Razadora	Zbroja Nocnego Cienia+4	1	0.0056497	21074	
+54702	Skrzynia Razadora	Kolczasty Szpon+3	1	0.0056497	6073	
+54702	Skrzynia Razadora	Tarcza Trzech Władców+2	1	0.0056497	13162	
+54702	Skrzynia Razadora	Księga Młodego Zwierza	1	0.0056497	55003	
+54702	Skrzynia Razadora	Skrzynia Ksiąg: Dopalacz	1	0.0056497	50324	
+54702	Skrzynia Razadora	Czarny Barwnik	1	0.0056497	30614	
+54702	Skrzynia Razadora	Wzór Kroju	1	0.0056497	30600	
+54702	Skrzynia Razadora	Szary Barwnik	1	0.0056497	30604	
+54702	Skrzynia Razadora	Stabilne Sznury	1	0.0056497	30612	
+54702	Skrzynia Razadora	Kamień Duchowy+	1	0.0056497	50525	
+54702	Skrzynia Razadora	Księga Prawdy	1	0.0056497	30623	
+54702	Skrzynia Razadora	Dusza Prawdy	1	0.0056497	30624	
+54702	Skrzynia Razadora	Eliksir Bogów	1	0.0056497	30629	
+54702	Skrzynia Razadora	Smoczy Płomień (B)	1	0.0045198	100700	
+54702	Skrzynia Razadora	Jajo Razadora	1	0.0033898	55403	7d
+54703	Skrzynia Nemere	EXP	600000	0.0279642	9999999	
+54703	Skrzynia Nemere	EXP	800000	0.0279642	9999999	
+54703	Skrzynia Nemere	Yang	800000	0.0279642	1	
+54703	Skrzynia Nemere	EXP	1000000	0.0223714	9999999	
+54703	Skrzynia Nemere	Księga Umiejętności	1	0.0167785	50300	
+54703	Skrzynia Nemere	Skrzynia Mroku	1	0.0167785	50254	
+54703	Skrzynia Nemere	Yang	1000000	0.0167785	1	
+54703	Skrzynia Nemere	Torba Emocji	1	0.0167785	38060	
+54703	Skrzynia Nemere	Rubinowy Ozdobny Nóż	1	0.0111857	30500	
+54703	Skrzynia Nemere	Złota Spinka	1	0.0111857	30520	
+54703	Skrzynia Nemere	Ametystowy Ozdobny Nóż	1	0.0111857	30503	
+54703	Skrzynia Nemere	Srebrny Zacisk	1	0.0111857	30504	
+54703	Skrzynia Nemere	Szmaragdowa Ozdoba	1	0.0111857	30505	
+54703	Skrzynia Nemere	Szafirowy Ozdobny Nóż	1	0.0111857	30506	
+54703	Skrzynia Nemere	Brązowy Zacisk	1	0.0111857	30507	
+54703	Skrzynia Nemere	Niebieska Smocza Stal	1	0.0111857	30509	
+54703	Skrzynia Nemere	Wytworny Naramiennik	1	0.0111857	30510	
+54703	Skrzynia Nemere	Czerwony Materiał	1	0.0111857	30511	
+54703	Skrzynia Nemere	Czerwona Smocza Stal	1	0.0111857	30512	
+54703	Skrzynia Nemere	Fioletowy Materiał	1	0.0111857	30514	
+54703	Skrzynia Nemere	Purpurowa Smocza Stal	1	0.0111857	30515	
+54703	Skrzynia Nemere	Antyczny Naramiennik	1	0.0111857	30516	
+54703	Skrzynia Nemere	Złoty Materiał	1	0.0111857	30517	
+54703	Skrzynia Nemere	Złota Przędza	1	0.0111857	30518	
+54703	Skrzynia Nemere	Złota Spinka	1	0.0111857	30520	
+54703	Skrzynia Nemere	Element Pierścienia	1	0.0111857	30521	
+54703	Skrzynia Nemere	Ogniwa Łańcucha	1	0.0111857	30522	
+54703	Skrzynia Nemere	Element Ozdoby	1	0.0111857	30523	
+54703	Skrzynia Nemere	Przepustka	1	0.0111857	71095	
+54703	Skrzynia Nemere	Rubinowa Ozdoba	1	0.0111856	30502	
+54703	Skrzynia Nemere	Szafirowa Ozdoba	1	0.0111856	30508	
+54703	Skrzynia Nemere	Szlachetny Naramiennik	1	0.0111856	30513	
+54703	Skrzynia Nemere	Złoty Hak	1	0.0111856	30519	
+54703	Skrzynia Nemere	Pierścień Teleportacji	1	0.0111856	70058	
+54703	Skrzynia Nemere	Zatruty miecz+3	1	0.0089486	183	
+54703	Skrzynia Nemere	Lwi Miecz+3	1	0.0089486	193	
+54703	Skrzynia Nemere	Miecz Żalu+3	1	0.0089486	3163	
+54703	Skrzynia Nemere	Stalowy Łuk Kruka+3	1	0.0089486	2173	
+54703	Skrzynia Nemere	Skrzydła Demona Chakr.+4	1	0.0089486	1134	
+54703	Skrzynia Nemere	Ekstazyjny Wachlarz+4	1	0.0089486	7154	
+54703	Skrzynia Nemere	Bambusowy Dzwon+4	1	0.0089486	5124	
+54703	Skrzynia Nemere	Zbroja Z Czarnej Stali+4	1	0.0089486	11294	
+54703	Skrzynia Nemere	Ubranie Czarn. Wiatru+4	1	0.0089486	11494	
+54703	Skrzynia Nemere	Czarna Szata+3	1	0.0089486	11893	
+54703	Skrzynia Nemere	Kamień Lodowe. Płomienia	1	0.0089486	30525	
+54703	Skrzynia Nemere	Zbroja Nocnego Cienia+4	1	0.0089486	21074	
+54703	Skrzynia Nemere	Kolczasty Szpon+4	1	0.0089486	6074	
+54703	Skrzynia Nemere	Dwutlenek Tytanu	1	0.0089486	30616	
+54703	Skrzynia Nemere	Inspiracja Adepta	1	0.0089486	50342	
+54703	Skrzynia Nemere	Zatruty miecz+4	1	0.0089485	184	
+54703	Skrzynia Nemere	Lwi Miecz+4	1	0.0089485	194	
+54703	Skrzynia Nemere	Miecz Żalu+4	1	0.0089485	3164	
+54703	Skrzynia Nemere	Stalowy Łuk Kruka+4	1	0.0089485	2174	
+54703	Skrzynia Nemere	Skrzydła Demona Chakr.+3	1	0.0089485	1133	
+54703	Skrzynia Nemere	Ekstazyjny Wachlarz+3	1	0.0089485	7153	
+54703	Skrzynia Nemere	Bambusowy Dzwon+3	1	0.0089485	5123	
+54703	Skrzynia Nemere	Zbroja Z Czarnej Stali+3	1	0.0089485	11293	
+54703	Skrzynia Nemere	Ubranie Czarn. Wiatru+3	1	0.0089485	11493	
+54703	Skrzynia Nemere	Zbr. Płyt. Czar. Magii+3	1	0.0089485	11693	
+54703	Skrzynia Nemere	Zbr. Płyt. Czar. Magii+4	1	0.0089485	11694	
+54703	Skrzynia Nemere	Czarna Szata+4	1	0.0089485	11894	
+54703	Skrzynia Nemere	Zbroja Nocnego Cienia+3	1	0.0089485	21073	
+54703	Skrzynia Nemere	Kolczasty Szpon+3	1	0.0089485	6073	
+54703	Skrzynia Nemere	Tarcza Trzech Władców+2	1	0.0089485	13162	
+54703	Skrzynia Nemere	Dwutlenek Tytanu	1	0.0089485	30616	
+54703	Skrzynia Nemere	Cyjanit	1	0.0089485	30626	
+54703	Skrzynia Nemere	Charyzma Adepta	1	0.0089485	50339	
+54703	Skrzynia Nemere	Kryształowa Bransoleta+3	1	0.00783	14163	
+54703	Skrzynia Nemere	Bransol. Z Niebiań.Łez+1	1	0.00783	14201	
+54703	Skrzynia Nemere	Kryształowy Naszyjnik+3	1	0.00783	16163	
+54703	Skrzynia Nemere	Ametystowy Naszyjnik+2	1	0.00783	16182	
+54703	Skrzynia Nemere	Kryształowe Kolczyki+3	1	0.00783	17163	
+54703	Skrzynia Nemere	Ametystowe Kolczyki+2	1	0.00783	17182	
+54703	Skrzynia Nemere	Kolczyki Z Niebiań.Łez+1	1	0.00783	17201	
+54703	Skrzynia Nemere	Sokola Tarcza+2	1	0.00783	13062	
+54703	Skrzynia Nemere	Lwia Tarcza+2	1	0.00783	13102	
+54703	Skrzynia Nemere	Tarcza Smoka+2	1	0.00783	13122	
+54703	Skrzynia Nemere	Tarcza Tytanów+0	1	0.00783	13140	
+54703	Skrzynia Nemere	Ametystowa Bransoleta+2	1	0.0078299	14182	
+54703	Skrzynia Nemere	Naszyj. Z Niebiań.Łez+1	1	0.0078299	16201	
+54703	Skrzynia Nemere	Tarcza Tygrysa+2	1	0.0078299	13082	
+54703	Skrzynia Nemere	Pas Skórzany+0	1	0.0055929	18010	
+54703	Skrzynia Nemere	Pas Dusz+0	1	0.0055929	18080	
+54703	Skrzynia Nemere	Księga Młodego Zwierza	1	0.0055929	55003	
+54703	Skrzynia Nemere	Kamień Duchowy+	1	0.0055929	50525	
+54703	Skrzynia Nemere	Peleryna Męstwa	1	0.0055929	76007	
+54703	Skrzynia Nemere	Księga Prawdy	1	0.0055929	30623	
+54703	Skrzynia Nemere	Owoc Bogów	1	0.0055929	30627	
+54703	Skrzynia Nemere	Pas Lniany+0	1	0.0055928	18000	
+54703	Skrzynia Nemere	Pas Przepychu+0	1	0.0055928	18020	
+54703	Skrzynia Nemere	Pas Mądrości+0	1	0.0055928	18030	
+54703	Skrzynia Nemere	Księga Dzikiego Zwierza	1	0.0055928	55004	
+54703	Skrzynia Nemere	Wzór Kroju	1	0.0055928	30600	
+54703	Skrzynia Nemere	Łza Bogini	1	0.0055928	70012	3h
+54703	Skrzynia Nemere	Dusza Prawdy	1	0.0055928	30624	
+54703	Skrzynia Nemere	Smoczy Płomień (B)	1	0.0044743	100700	
+54703	Skrzynia Nemere	Jajo Nemere	1	0.0033557	55404	7d
+54703	Skrzynia Nemere	Księga Dzielnego Zwierza	1	0.0033557	55005	
+54703	Skrzynia Nemere	Skrzynia Ksiąg: Dopalacz	1	0.0033557	50324	
+54703	Skrzynia Nemere	Niebieski Barwnik	1	0.0033557	30602	
+54703	Skrzynia Nemere	Biały Barwnik	1	0.0033557	30615	
+54703	Skrzynia Nemere	Szary Barwnik	1	0.0033557	30604	
+54703	Skrzynia Nemere	Stabilne Sznury	1	0.0033557	30612	
+54703	Skrzynia Nemere	Mithril	1	0.0033557	30610	
+54703	Skrzynia Nemere	Zwój Błogosławieństwa	1	0.0033557	72301	
+54703	Skrzynia Nemere	Peleryna Maskująca	1	0.0033557	70048	4h
+54703	Skrzynia Nemere	Księga Zapomnienia	1	0.0033557	70037	
+54703	Skrzynia Nemere	Pigułka Krwi	1	0.0033557	70014	
+54703	Skrzynia Nemere	Rękawica Złodzieja	1	0.0033557	76037	2h
+54703	Skrzynia Nemere	Pierścień Doświad. (1h)	1	0.0033557	70005	1h
+54703	Skrzynia Nemere	Skrzynia Ksiąg Zwierza	1	0.0011186	76044	
