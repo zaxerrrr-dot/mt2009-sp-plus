@@ -1,0 +1,856 @@
+-- MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley - le¿e Królowej Smoków Meley (w³aœciciel, 15 paŸdziernika 2026:
+-- "dodaj loch Meley, drop zgodnie z wiki"). Dane: tools/yohara_meley (ymeley_data.py - sk¹d co jest), mapa 356
+-- (metin2_map_n_flame_dragon, baza przesuniêta na 281600 1510400 - ta z GF to nasza Œwi¹tynia Zodiaku).
+-- Przebieg jak w pl-wiki "Schronienie Meley (dla gildii)" i w GuildDragonLair.lua / guild_dragonlair.cpp Owsapa
+-- (tamten loch to osobny modu³ C++; tu napisany na lochach silnika - d.*):
+--   ETAP 1: cztery Smocze Statuy (6118) do 75% ¿ycia; broni¹ ich Magmowe Insekty (12, wracaj¹ po 5 s);
+--   ETAP 2: statuy do 50%; cztery Smocze Jaja (20422) - póki któreœ stoi, statuy s¹ nietykalne; Magmowe Golemy;
+--   ETAP 3: statuy do koñca (1%); jaja i czterech Smoczych Stra¿ników Idallów (6116, ka¿dy z trzema S³ugusami);
+--           Magmowe Wiwerny;
+--   ETAP 4: statuy œwiec¹ - Pierœcieñ Smoczego Ognia (30340) u¿yty przy ka¿dej z nich (prawy przycisk myszy przy
+--           statui) koñczy walkê; jaja wracaj¹ co 120 s i znów chroni¹ statuy;
+--   potem Królowa Meley (6193, nie da siê jej zabiæ bezpoœrednio) pada, a ka¿dy cz³owiek wybiera u Z³otej Smoczej
+--   Skrzyni (20420) Skrzyniê Królowej Meley (54706) albo Skrzyniê Sm. Stra¿ników (54707).
+-- Pierœcienie wypadaj¹ z magmowych potworów (Owsap: 5% w etapach 1-2, 1% w 3-4) - zawsze cz³owiekowi z dru¿yny.
+-- Wejœcie (dostosowane do œwiata jednego gracza z botami - wersja gildyjna chce 4-16 cz³onków gildii przy NPC i 600
+-- pkt. rankingu): Stra¿nik Smoków Dolnarr (20419) na Doyyumhwaji (62) przy 83,851; poziom 90 (jak wersja gildyjna),
+-- sam albo z dru¿yn¹ do 8 (boty z dru¿yny wchodz¹ za cz³owiekiem), op³ata 7 500 000 Yang i 5 wypraw dziennie
+-- (MT2009_PLUS_DUNGEON_FEE_V1), bez czekania dla ludzi (MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1), boty - 3 h z wiki.
+-- Limit 60 minut. Mapa jest na rdzeniu game1, z botami (bin/m2-render-config).
+quest meley_dungeon begin
+	state start begin
+		function cfg()
+			return {
+				map = 356,
+				base_x = 2816, base_y = 15104,
+				entry = {127, 167},
+				center = {130, 130},
+				king = {130, 77},
+				stones = {{123, 137}, {123, 124}, {136, 123}, {137, 137}},
+				gate = {129, 175}, gate_dir = 180,
+				watcher = {134, 168},
+				exit_map = 62, exit_x = 5888 + 84, exit_y = 6144 + 853,
+				min_level = 90,
+				near = 30, -- MT2009_PLUS_DUNGEON_ONE_WARP_V1: ludzie dru¿yny w promieniu 30 pól od przywódcy
+				cooldown = 3 * 60 * 60, -- pl-wiki: co 3 h (tylko boty)
+				limit_min = 60,
+				fee = 7500000, fee_text = "7 500 000",
+				daily = 5,
+				stone_hp = 7000000, -- 6118 (Owsap)
+				thresholds = {75, 50, 1},
+				egg_respawn = 120,
+				tick = 2,
+				ring = 30340,
+				ring_pct = {5, 5, 1, 1}, -- Owsap GuildDragonLair.Guild.Stage[n].DropPct
+				ring_range = 6, -- pierœcieñ dzia³a w promieniu 6 pól od statui
+				chest_queen = 54706, chest_guard = 54707,
+				all_races = 1023, -- d.set_damage_from_race: ¿adna klasa nie zadaje obra¿eñ
+				path = "data/dungeon/meley/",
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 356 * 10000 and idx < 357 * 10000
+		end
+
+		function entry_xy()
+			local c = meley_dungeon.cfg()
+			return (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100
+		end
+
+		-- MT2009_PLUS_DUNGEON_NO_PLAYER_COOLDOWN_V1: czekaj¹ tylko boty.
+		function must_rest(now)
+			if not pc.is_playerbot() then
+				return false
+			end
+			return now - pc.getf("meley_dungeon", "entry") < meley_dungeon.cfg().cooldown
+		end
+
+		-- MT2009_PLUS_DUNGEON_FEE_V1: op³ata i limit dzienny (polska pó³noc).
+		function today()
+			return math.floor((get_global_time() + 7200) / 86400)
+		end
+
+		function runs_today()
+			if pc.getf("meley_dungeon", "day") ~= meley_dungeon.today() then
+				return 0
+			end
+			return pc.getf("meley_dungeon", "runs")
+		end
+
+		function over_limit()
+			return not pc.is_gm() and meley_dungeon.runs_today() >= meley_dungeon.cfg().daily
+		end
+
+		function too_poor()
+			return not pc.is_gm() and pc.get_money() < meley_dungeon.cfg().fee
+		end
+
+		-- MT2009_PLUS_DUNGEON_FEE_LEADER_V1: cz³owiek p³aci za siebie, raz, przy pierwszym wejœciu do nowej
+		-- instancji; boty z dru¿yny i towarzysz nic.
+		function pay_entry()
+			local c = meley_dungeon.cfg()
+			if pc.is_gm() or pc.is_playerbot() then
+				return true
+			end
+			if meley_dungeon.over_limit() then
+				syschat("Wykorzysta³eœ ju¿ dzisiejsze wyprawy do Schronienia Meley ("..c.daily.."). Wróæ jutro.")
+				return false
+			end
+			if pc.get_money() < c.fee then
+				syschat("Wejœcie kosztuje "..c.fee_text.." Yang - nie masz tyle przy sobie.")
+				return false
+			end
+			pc.change_money(-c.fee)
+			local day = meley_dungeon.today()
+			if pc.getf("meley_dungeon", "day") ~= day then
+				pc.setf("meley_dungeon", "day", day)
+				pc.setf("meley_dungeon", "runs", 0)
+			end
+			pc.setf("meley_dungeon", "runs", pc.getf("meley_dungeon", "runs") + 1)
+			syschat("Op³ata za wejœcie: "..c.fee_text.." Yang. Dzisiejsza wyprawa "..pc.getf("meley_dungeon", "runs").."/"..c.daily..".")
+			return true
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEONS_ALL_V1: dru¿ynê prowadzon¹ przez bota otwiera cz³owiek.
+		function bot_leads()
+			local lp = party.get_leader_pid()
+			if lp == nil or lp == 0 or lp == pc.get_player_id() then
+				return false
+			end
+			local bot = false
+			local pids = {party.get_member_pids()}
+			for i, pid in next, pids, nil do
+				if pid == lp then
+					q.begin_other_pc_block(pid)
+					bot = pc.get_player_id() == pid and pc.is_playerbot()
+					q.end_other_pc_block()
+				end
+			end
+			return bot
+		end
+
+		-- Cz³owiek z dru¿yny w tej instancji (pierwszy znaleziony) albo 0.
+		function person_here()
+			local here = pc.get_map_index()
+			if not pc.is_playerbot() then
+				return pc.get_player_id()
+			end
+			local pids = {}
+			if party.is_party() then
+				pids = {party.get_member_pids()}
+			end
+			local person = 0
+			for i, pid in next, pids, nil do
+				if person == 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == here then
+						person = pid
+					end
+					q.end_other_pc_block()
+				end
+			end
+			return person
+		end
+
+		-- ---------------------------------------------------------------- statuy, jaja, tarcze
+
+		function stone_vid(i)
+			if d.is_unique_dead("stone"..i) then
+				return 0
+			end
+			return d.get_unique_vid("stone"..i)
+		end
+
+		function spawn_stone(i)
+			local c = meley_dungeon.cfg()
+			local vid = d.spawn_mob(6118, c.stones[i][1], c.stones[i][2])
+			d.set_unique("stone"..i, vid)
+			d.setf("bv"..i, 0)
+			return vid
+		end
+
+		function eggs_alive()
+			if d.getf("eggs_on") ~= 1 then
+				return false
+			end
+			for i = 1, 4 do
+				if not d.is_unique_dead("egg"..i) then
+					return true
+				end
+			end
+			return false
+		end
+
+		function bosses_alive()
+			if d.getf("bosses_on") ~= 1 then
+				return false
+			end
+			for i = 1, 4 do
+				if not d.is_unique_dead("boss"..i) then
+					return true
+				end
+			end
+			return false
+		end
+
+		-- Jaja przy statuach (Owsap: komórka statui, y + 3..10), brakuj¹ce - co 120 s.
+		function spawn_eggs()
+			local c = meley_dungeon.cfg()
+			local n = 0
+			for i = 1, 4 do
+				if d.getf("eggs_on") ~= 1 or d.is_unique_dead("egg"..i) then
+					d.set_unique("egg"..i, d.spawn_mob(20422, c.stones[i][1], c.stones[i][2] + number(3, 10)))
+					n = n + 1
+				end
+			end
+			d.setf("eggs_on", 1)
+			d.setf("egg_at", get_global_time() + c.egg_respawn)
+			if n > 0 then
+				d.notice("Królowa Meley: Smocze Jaja ("..n..") chroni¹ statuy. Zniszczcie je.")
+			end
+		end
+
+		function spawn_bosses()
+			local c = meley_dungeon.cfg()
+			for i = 1, 4 do
+				local x, y = c.stones[i][1], c.stones[i][2] + number(3, 10)
+				d.set_unique("boss"..i, d.spawn_mob(6116, x, y))
+				for k = 1, 3 do
+					d.spawn_mob(6117, x, y)
+				end
+			end
+			d.setf("bosses_on", 1)
+		end
+
+		-- Tarcze: statua nietykalna, gdy osi¹gnê³a próg etapu, gdy stoi jajo (albo w etapie 3 Idall), w etapie 4
+		-- zawsze (czeka na pierœcieñ) i przed startem; Meley - zawsze. Silnik: NEW_ICEDAMAGE_SYSTEM (battle.cpp).
+		function refresh_shields()
+			local c = meley_dungeon.cfg()
+			local s = d.getf("stage")
+			local shield = meley_dungeon.eggs_alive() or (s == 3 and meley_dungeon.bosses_alive())
+			for i = 1, 4 do
+				local vid = meley_dungeon.stone_vid(i)
+				if vid > 0 then
+					local blocked = 0
+					if s < 1 or s > 3 or shield or d.getf("lock"..i) == 1 then
+						blocked = 1
+					end
+					if d.getf("bv"..i) ~= vid or d.getf("bs"..i) ~= blocked then
+						if blocked == 1 then
+							d.set_damage_from_race(c.all_races, vid)
+						else
+							d.reset_damage_from_race(vid)
+						end
+						d.setf("bv"..i, vid)
+						d.setf("bs"..i, blocked)
+					end
+				end
+			end
+			local shown = 0
+			if shield then
+				shown = 1
+			end
+			if s >= 2 and s <= 4 and d.getf("shield_told") ~= shown then
+				d.setf("shield_told", shown)
+				if shown == 0 then
+					if s == 4 then
+						d.notice("Królowa Meley: Statuy œwiec¹ na niebiesko - u¿yjcie Pierœcieni Smoczego Ognia przy statuach!")
+					else
+						d.notice("Królowa Meley: Tarcza statui zgas³a - atakujcie!")
+					end
+				end
+			end
+		end
+
+		-- Próg etapu: statua, która do niego dosz³a, zostaje na nim i jest nietykalna (Owsap: Damage()).
+		function check_stones()
+			local c = meley_dungeon.cfg()
+			local s = d.getf("stage")
+			if s < 1 or s > 3 then
+				return
+			end
+			local thr = c.thresholds[s]
+			local locked = 0
+			for i = 1, 4 do
+				if d.getf("lock"..i) ~= 1 and meley_dungeon.stone_vid(i) > 0 and d.unique_get_hp_perc("stone"..i) <= thr then
+					d.setf("lock"..i, 1)
+					d.unique_set_hp("stone"..i, math.max(1, math.floor(c.stone_hp * thr / 100)))
+					local n = 0
+					for k = 1, 4 do
+						if d.getf("lock"..k) == 1 then
+							n = n + 1
+						end
+					end
+					if n < 4 then
+						d.notice("Królowa Meley: Statua zmienia kolor ("..n.."/4).")
+					end
+				end
+				if d.getf("lock"..i) == 1 then
+					locked = locked + 1
+				end
+			end
+			if locked >= 4 then
+				meley_dungeon.stage_done(s)
+			end
+		end
+
+		-- ---------------------------------------------------------------- etapy
+
+		function stage_text(s)
+			if s == 1 then
+				return "Zbijcie wszystkie cztery Smocze Statuy do 75% ¿ycia."
+			elseif s == 2 then
+				return "Zniszczcie Smocze Jaja i zbijcie statuy do 50% ¿ycia."
+			elseif s == 3 then
+				return "Zniszczcie jaja i czterech Smoczych Stra¿ników Idallów, potem zbijcie statuy do koñca."
+			end
+			return "U¿yjcie Pierœcienia Smoczego Ognia przy ka¿dej z czterech statui."
+		end
+
+		function start_stage(s)
+			local c = meley_dungeon.cfg()
+			d.setf("stage", s)
+			d.setf("stage_at", get_global_time())
+			for i = 1, 4 do
+				d.setf("lock"..i, 0)
+				d.setf("ring"..i, 0)
+			end
+			d.set_regen_file(c.path.."stage"..s..".txt")
+			if s >= 2 then
+				meley_dungeon.spawn_eggs()
+			end
+			if s == 3 then
+				meley_dungeon.spawn_bosses()
+			end
+			d.notice("Królowa Meley: ETAP "..s.." - "..meley_dungeon.stage_text(s))
+			meley_dungeon.refresh_shields()
+		end
+
+		function stage_done(s)
+			local c = meley_dungeon.cfg()
+			if s == 3 then
+				-- etap 4: potwory zostaj¹ (Owsap: te same Wiwerny), statuy czekaj¹ na pierœcienie
+				d.setf("stage", 4)
+				d.setf("stage_at", get_global_time())
+				d.setf("shield_told", -1)
+				d.notice("Królowa Meley: ETAP 4 - "..meley_dungeon.stage_text(4))
+				d.notice("Kliknij prawym przyciskiem Pierœcieñ Smoczego Ognia, stoj¹c przy statui. Jaja wracaj¹ co 2 minuty.")
+				meley_dungeon.refresh_shields()
+				return
+			end
+			d.clear_regen()
+			d.setf("stage", 10 + s)
+			if s == 1 then
+				-- pl-wiki: po pierwszym etapie zamyka siê brama wejœciowa (Smocza Brama, 20388)
+				d.set_unique("gate", d.spawn_mob_ac_dir(20388, c.gate[1], c.gate[2], c.gate_dir))
+				d.notice("Królowa Meley: Brama Schronienia zamknê³a siê za wami.")
+			end
+			d.notice("Królowa Meley: Kolumny zadaj¹ cios Królowej Meley! Nastêpny etap za 5 sekund.")
+			meley_dungeon.refresh_shields()
+			server_timer("meley_next", 5, d.get_map_index())
+		end
+
+		-- Pierœcieñ na statui (etap 4, ¿adne jajo nie stoi): czwarty koñczy walkê.
+		function ring_on(i)
+			d.setf("ring"..i, 1)
+			local n = 0
+			for k = 1, 4 do
+				if d.getf("ring"..k) == 1 then
+					n = n + 1
+				end
+			end
+			if n >= 4 then
+				meley_dungeon.win()
+			else
+				d.notice("Królowa Meley: Pierœcieñ Smoczego Ognia p³onie na statui ("..n.."/4).")
+			end
+		end
+
+		-- Zwyciêstwo: Meley pada, Z³ota Smocza Skrzynia czeka na ludzi; minuta na wybór nagrody.
+		function win()
+			local c = meley_dungeon.cfg()
+			d.setf("stage", 5)
+			d.setf("closed_fight", 1)
+			d.clear_regen()
+			d.kill_all()
+			d.spawn_mob(20420, c.center[1], c.center[2])
+			d.spawn_mob(20419, c.watcher[1], c.watcher[2])
+			d.setf("won", 1)
+			d.notice("Królowa Smoków Meley zosta³a pokonana!")
+			d.notice("Ka¿dy wojownik mo¿e wybraæ nagrodê u Z³otej Smoczej Skrzyni - macie na to minutê.")
+			meley_dungeon.end_count(60)
+		end
+
+		function finish()
+			local c = meley_dungeon.cfg()
+			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
+			d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+			d.exit_all()
+		end
+
+		function end_text(n)
+			if n == 1 then
+				return "Za 1 sekundê zostaniesz przeniesiony na Doyyumhwaji."
+			elseif n >= 2 and n <= 4 then
+				return "Za "..n.." sekundy zostaniesz przeniesiony na Doyyumhwaji."
+			end
+			return "Za "..n.." sekund zostaniesz przeniesiony na Doyyumhwaji."
+		end
+
+		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: odliczanie co sekundê, potem wszyscy wychodz¹ (tu 60 s po
+		-- zwyciêstwie - wybór skrzyni; 10 s po koñcu czasu).
+		function end_count(n)
+			if n <= 0 then
+				meley_dungeon.finish()
+				return
+			end
+			if n <= 5 or math.mod(n, 10) == 0 then
+				d.notice("Królowa Meley: "..meley_dungeon.end_text(n))
+			end
+			d.setf("end_in", n - 1)
+			server_timer("meley_end", 1, d.get_map_index())
+		end
+
+		-- Nagroda: ka¿dy cz³owiek dru¿yny w instancji mo¿e raz wybraæ skrzyniê (flagi postaci won_idx / taken_idx;
+		-- kto nie wybierze, dostaje Skrzyniê Królowej Meley po wyjœciu). Boty nic.
+		function mark_winners()
+			local idx = pc.get_map_index()
+			local pids = {}
+			if party.is_party() then
+				pids = {party.get_member_pids()}
+			end
+			if table.getn(pids) == 0 then
+				pids = {pc.get_player_id()}
+			end
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == idx then
+					pc.setf("meley_dungeon", "won_idx", idx)
+				end
+				q.end_other_pc_block()
+			end
+		end
+
+		function init()
+			local c = meley_dungeon.cfg()
+			d.setf("init", 1)
+			d.setf("start", get_global_time())
+			-- MT2009_PLUS_DUNGEON_RETURN_V1: instancja prze¿ywa swoich graczy do koñca limitu ("Wróæ do lochu")
+			d.setf("mt2009_keep_until", get_global_time() + c.limit_min * 60 + 60)
+			d.setf("stage", 0)
+			d.setf("min_told", c.limit_min)
+			for i = 1, 4 do
+				meley_dungeon.spawn_stone(i)
+			end
+			local king = d.spawn_mob(6193, c.king[1], c.king[2])
+			d.set_unique("king", king)
+			if king > 0 then
+				d.set_damage_from_race(c.all_races, king)
+			end
+			d.spawn_mob(20419, c.watcher[1], c.watcher[2])
+			meley_dungeon.refresh_shields()
+			d.notice("Królowa Meley: Walka zacznie siê za 10 sekund. Macie godzinê na zniszczenie czterech statui.")
+			server_timer("meley_next", 10, d.get_map_index())
+			server_timer("meley_tick", c.tick, d.get_map_index())
+		end
+
+		-- ---------------------------------------------------------------- wejœcie (Doyyumhwaji)
+
+		when 20419.chat."Schronienie Meley" with pc.get_map_index() == 62 begin
+			local c = meley_dungeon.cfg()
+			say_title(mob_name(20419))
+			if pc.is_playerbot() then
+				return
+			end
+			say("Za t¹ bram¹ œpi Królowa Smoków Meley. Cztery")
+			say("Smocze Statuy chroni¹ jej le¿e - zniszczcie je")
+			say("w ci¹gu godziny, a jej skarb bêdzie wasz.")
+			say("")
+			say_reward("Wymagany poziom: "..c.min_level..". Bez czekania miêdzy wyprawami.")
+			say_reward("Sam albo z dru¿yn¹ (do 8). Boty z dru¿yny wejd¹ razem z Tob¹.")
+			say_reward("Wejœcie: "..c.fee_text.." Yang. Najwy¿ej "..c.daily.." wypraw dziennie (dziœ: "..meley_dungeon.runs_today().."/"..c.daily..").")
+			say_reward("P³acisz tylko za siebie - boty z dru¿yny i towarzysz wchodz¹ bez op³aty.")
+			if select("WejdŸ do Schronienia Meley", "Nie teraz") ~= 1 then
+				return
+			end
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
+				say_title(mob_name(20419))
+				say("Schronienie jest jeszcze zamkniête. Wróæ póŸniej.")
+				return
+			end
+			local now = get_global_time()
+			local x, y = meley_dungeon.entry_xy()
+			local idx = pc.getf("meley_dungeon", "idx")
+			if idx > 0 and now - pc.getf("meley_dungeon", "entry") < c.limit_min * 60 then
+				say_title(mob_name(20419))
+				say("Twoja wyprawa wci¹¿ trwa. Czy chcesz do niej wróciæ?")
+				local s = select("Wróæ do lochu", "Nowa wyprawa", "Nie teraz")
+				if s == 3 then
+					return
+				elseif s == 1 then
+					if d.find(idx, x, y, pc.get_player_id()) then
+						pc.warp(x, y, idx)
+					else
+						say_title(mob_name(20419))
+						say("Jeœli wyprawa wci¹¿ trwa, brama zaraz ciê zabierze.")
+					end
+					return
+				end
+			end
+			if party.is_party() and not party.is_leader() and not meley_dungeon.bot_leads() then
+				say_title(mob_name(20419))
+				say("Tylko przywódca dru¿yny mo¿e otworzyæ bramê.")
+				say("Stañ przy mnie - przywódca zabierze dru¿ynê stoj¹c¹ obok.")
+				return
+			end
+			if pc.get_level() < c.min_level then
+				say_title(mob_name(20419))
+				say("Jesteœ za s³aby. Wróæ, gdy osi¹gniesz poziom "..c.min_level..".")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say_title(mob_name(20419))
+				say("Poczekaj chwilê po handlu lub rozmowie i spróbuj ponownie.")
+				return
+			end
+			if now - pc.getf("meley_dungeon", "pending") < 10 then
+				say_title(mob_name(20419))
+				say("Brama ju¿ siê otwiera. Poczekaj chwilê.")
+				return
+			end
+			local me = pc.get_player_id()
+			local humans = {me}
+			local low = {}
+			local wait = {}
+			local full = {}
+			local poor = {}
+			if meley_dungeon.must_rest(now) then table.insert(wait, pc.get_name()) end
+			if meley_dungeon.over_limit() then table.insert(full, pc.get_name()) end
+			if meley_dungeon.too_poor() then table.insert(poor, pc.get_name()) end
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+						if pc.get_player_id() == pid and not pc.is_playerbot() and pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+							table.insert(humans, pid)
+							if pc.get_level() < c.min_level then table.insert(low, pc.get_name()) end
+							if meley_dungeon.must_rest(now) then table.insert(wait, pc.get_name()) end
+							if meley_dungeon.over_limit() then table.insert(full, pc.get_name()) end
+							if meley_dungeon.too_poor() then table.insert(poor, pc.get_name()) end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if table.getn(low) > 0 then
+				say_title(mob_name(20419))
+				say("Za s³abi, by wejœæ (poziom "..c.min_level.."+):")
+				for i, n in next, low, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(full) > 0 then
+				say_title(mob_name(20419))
+				say("Dzisiejsze wyprawy do Schronienia ju¿ wykorzystane ("..c.daily.." dziennie):")
+				for i, n in next, full, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(poor) > 0 then
+				say_title(mob_name(20419))
+				say("Wejœcie kosztuje "..c.fee_text.." Yang - za ma³o przy sobie:")
+				for i, n in next, poor, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			if table.getn(wait) > 0 then
+				say_title(mob_name(20419))
+				say("Jeszcze nie odpoczêli po poprzedniej wyprawie:")
+				for i, n in next, wait, nil do say(color(1,1,0).."    "..n) end
+				return
+			end
+			local r = d.new_jump_pids(c.map, x, y, humans)
+			if r < 0 then
+				say_title(mob_name(20419))
+				say("Brama nie chce siê dziœ otworzyæ. Spróbuj ponownie")
+				say("za chwilê.")
+				return
+			end
+			pc.setf("meley_dungeon", "pending", now)
+			if r == 0 then
+				timer("meley_lost", 5)
+			end
+		end
+
+		when meley_lost.timer begin
+			if pc.get_map_index() ~= 62 or pc.getf("meley_dungeon", "pending") == 0 then
+				return
+			end
+			pc.setf("meley_dungeon", "pending", 0)
+			syschat("Schronienie Meley: brama siê nie otworzy³a - porozmawiaj ze Stra¿nikiem Smoków ponownie.")
+		end
+
+		when login begin
+			local c = meley_dungeon.cfg()
+			if meley_dungeon.inside() then
+				if pc.is_playerbot() then
+					-- boty dru¿yny wchodz¹ przez playerbot_party_dungeon.h, boty wypraw przez meley_dgrun
+					return
+				end
+				local idx = pc.get_map_index()
+				pc.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				d.set_warp_location(c.exit_map, c.exit_x, c.exit_y)
+				pc.setf("meley_dungeon", "inside", 1)
+				pc.setf("meley_dungeon", "pending", 0)
+				if d.getf("closed") == 1 then
+					pc.warp(c.exit_x * 100, c.exit_y * 100)
+					return
+				end
+				if pc.getf("meley_dungeon", "idx") ~= idx then
+					if not meley_dungeon.pay_entry() then
+						pc.warp(c.exit_x * 100, c.exit_y * 100)
+						return
+					end
+					pc.setf("meley_dungeon", "idx", idx)
+					pc.setf("meley_dungeon", "entry", get_global_time())
+				end
+				if d.getf("init") == 0 then
+					meley_dungeon.init()
+				elseif d.getf("stage") >= 1 and d.getf("stage") <= 4 then
+					syschat("Schronienie Meley: "..meley_dungeon.stage_text(d.getf("stage")))
+				end
+				return
+			end
+			if pc.getf("meley_dungeon", "inside") == 1 then
+				pc.setf("meley_dungeon", "inside", 0)
+				if pc.count_item(c.ring) > 0 then
+					pc.remove_item(c.ring, pc.count_item(c.ring))
+				end
+			end
+			-- nagroda nieodebrana u Z³otej Smoczej Skrzyni
+			local won = pc.getf("meley_dungeon", "won_idx")
+			if won > 0 and pc.getf("meley_dungeon", "taken_idx") ~= won then
+				pc.setf("meley_dungeon", "taken_idx", won)
+				pc.give_item2(c.chest_queen, 1)
+				syschat("Schronienie Meley: nie wybra³eœ nagrody - otrzymujesz Skrzyniê Królowej Meley.")
+			end
+		end
+
+		-- ---------------------------------------------------------------- w Schronieniu
+
+		when 20419.chat."Opuœæ Schronienie" with meley_dungeon.inside() begin
+			local c = meley_dungeon.cfg()
+			say_title(mob_name(20419))
+			say("Czy chcesz opuœciæ Schronienie Meley? Walka trwa")
+			say("dalej bez ciebie - mo¿esz do niej wróciæ u mnie")
+			say("na Doyyumhwaji, póki nie minie godzina.")
+			if select("WyjdŸ z lochu", "Zostañ tutaj") == 1 then
+				pc.warp(c.exit_x * 100, c.exit_y * 100)
+			end
+		end
+
+		when 20420.chat."Nagroda za Meley" with meley_dungeon.inside() begin
+			local c = meley_dungeon.cfg()
+			local idx = pc.get_map_index()
+			say_title(mob_name(20420))
+			if pc.is_playerbot() then
+				return
+			end
+			if pc.getf("meley_dungeon", "won_idx") ~= idx then
+				say("Skarb Królowej Meley nale¿y do tych, którzy")
+				say("j¹ pokonali.")
+				return
+			end
+			if pc.getf("meley_dungeon", "taken_idx") == idx then
+				say("Swoj¹ nagrodê ju¿ wybra³eœ.")
+				return
+			end
+			say("Królowa Smoków Meley pokonana!")
+			say("Wybierz jedn¹ z dwóch skrzyñ:")
+			say_item_vnum(c.chest_queen)
+			say_item_vnum(c.chest_guard)
+			local s = select("Skrzynia Królowej Meley", "Skrzynia Sm. Stra¿ników", "Jeszcze nie")
+			if s == 3 then
+				return
+			end
+			if pc.getf("meley_dungeon", "taken_idx") == idx then
+				return
+			end
+			pc.setf("meley_dungeon", "taken_idx", idx)
+			if s == 1 then
+				pc.give_item2(c.chest_queen, 1)
+			else
+				pc.give_item2(c.chest_guard, 1)
+			end
+		end
+
+		-- Pierœcieñ Smoczego Ognia: przy statui (6 pól) w etapie 4, gdy ¿adne jajo nie stoi. Bot (wyprawa botów
+		-- albo bot z dru¿yny, playerbot_party_dungeon.h PLAYERBOT_PDG_USE_ITEMS) - na pierwsz¹ statuê bez pierœcienia.
+		when 30340.use with meley_dungeon.inside() begin
+			local c = meley_dungeon.cfg()
+			if d.getf("stage") ~= 4 then
+				if not pc.is_playerbot() then
+					syschat("Pierœcieñ zadzia³a dopiero wtedy, gdy statuy zaœwiec¹ na niebiesko (etap 4).")
+				end
+				return
+			end
+			if meley_dungeon.eggs_alive() then
+				if not pc.is_playerbot() then
+					syschat("Smocze Jaja wci¹¿ chroni¹ statuy - najpierw je zniszczcie.")
+				end
+				return
+			end
+			local best, bd = 0, 0
+			local lx, ly = pc.get_local_x(), pc.get_local_y()
+			for i = 1, 4 do
+				if d.getf("ring"..i) ~= 1 then
+					local dx, dy = lx - c.stones[i][1], ly - c.stones[i][2]
+					local dd = dx * dx + dy * dy
+					if best == 0 or dd < bd then
+						best, bd = i, dd
+					end
+				end
+			end
+			if best == 0 then
+				return
+			end
+			if not pc.is_playerbot() and bd > c.ring_range * c.ring_range then
+				syschat("PodejdŸ bli¿ej do Smoczej Statui, która jeszcze nie p³onie.")
+				return
+			end
+			pc.remove_item(c.ring, 1)
+			meley_dungeon.ring_on(best)
+			if d.getf("stage") == 5 then
+				if d.getf("mt2009_dgrun") ~= 1 then
+					d.update_ranking("meley", get_global_time() - d.getf("start")) -- MT2009_PLUS_DUNGEON_PANEL_V1
+				end
+				meley_dungeon.mark_winners()
+			end
+		end
+
+		-- Pierœcienie z magmowych potworów (Owsap: DropPct etapu) - zawsze cz³owiekowi z dru¿yny, u jego stóp.
+		when 6110.kill or 6111.kill or 6112.kill or 6113.kill or 6114.kill or 6115.kill with meley_dungeon.inside() begin
+			local c = meley_dungeon.cfg()
+			local s = d.getf("stage")
+			if s >= 11 then
+				s = s - 10
+			end
+			if s < 1 or s > 4 or number(1, 100) > c.ring_pct[s] then
+				return
+			end
+			local person = meley_dungeon.person_here()
+			if person == 0 or d.getf("mt2009_dgrun") == 1 then
+				game.drop_item_with_ownership(c.ring, 1, 60)
+				return
+			end
+			q.begin_other_pc_block(person)
+			game.drop_item_with_ownership(c.ring, 1, 60)
+			q.end_other_pc_block()
+		end
+
+		-- Statua zbita do zera mimo progu (cios miêdzy dwoma sprawdzeniami): wraca na swoje miejsce z progiem.
+		when 6118.kill with meley_dungeon.inside() begin
+			local c = meley_dungeon.cfg()
+			if d.getf("stage") == 5 or d.getf("closed") == 1 then
+				return
+			end
+			local vid = npc.get_vid()
+			for i = 1, 4 do
+				if d.get_unique_vid("stone"..i) == vid then
+					local s = d.getf("stage")
+					local thr = 1
+					if s >= 1 and s <= 3 then
+						thr = c.thresholds[s]
+					end
+					meley_dungeon.spawn_stone(i)
+					d.unique_set_hp("stone"..i, math.max(1, math.floor(c.stone_hp * thr / 100)))
+					if s >= 1 and s <= 3 then
+						d.setf("lock"..i, 1)
+					end
+					meley_dungeon.refresh_shields()
+				end
+			end
+		end
+
+		-- ---------------------------------------------------------------- zegary
+
+		when meley_next.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("closed") == 1 or d.getf("stage") == 5 then
+					return
+				end
+				local s = d.getf("stage")
+				if s == 0 then
+					meley_dungeon.start_stage(1)
+				elseif s >= 11 and s <= 12 then
+					meley_dungeon.start_stage(s - 9)
+				end
+			end
+		end
+
+		when meley_tick.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				local c = meley_dungeon.cfg()
+				if d.getf("closed") == 1 or d.getf("stage") == 5 then
+					return
+				end
+				local now = get_global_time()
+				local left = c.limit_min * 60 - (now - d.getf("start"))
+				if left <= 0 then
+					d.setf("stage", 5)
+					d.clear_regen()
+					d.notice("Królowa Meley: Czas min¹³. Brama Schronienia wyrzuca was na zewn¹trz.")
+					meley_dungeon.end_count(10)
+					return
+				end
+				local m = math.ceil(left / 60)
+				if m < d.getf("min_told") then
+					d.setf("min_told", m)
+					if m == 30 or m == 15 or m == 10 or m == 5 or m == 1 then
+						d.notice("Królowa Meley: Pozosta³o "..m.." min.")
+					end
+				end
+				local s = d.getf("stage")
+				meley_dungeon.check_stones()
+				s = d.getf("stage")
+				if s >= 2 and s <= 4 and now >= d.getf("egg_at") then
+					meley_dungeon.spawn_eggs()
+				end
+				-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: wyprawa botów - pierœcienie, których nie zdoby³y, po minucie
+				if s == 4 and d.getf("mt2009_dgrun") == 1 and now - d.getf("stage_at") >= 60 and not meley_dungeon.eggs_alive() then
+					for i = 1, 4 do
+						if d.getf("ring"..i) ~= 1 and d.getf("stage") == 4 then
+							meley_dungeon.ring_on(i)
+						end
+					end
+				end
+				meley_dungeon.refresh_shields()
+				if d.getf("stage") ~= 5 then
+					server_timer("meley_tick", c.tick, get_server_timer_arg())
+				end
+			end
+		end
+
+		when meley_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("closed") == 1 then
+					return
+				end
+				meley_dungeon.end_count(d.getf("end_in"))
+			end
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEON_RUNS_V1: start wyprawy botów (playerbot_dungeon_runs.h): rdzeñ tworzy instancjê,
+		-- oznacza j¹ flag¹ mt2009_dgrun i prosi o init.
+		when meley_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					meley_dungeon.init()
+				end
+			end
+		end
+	end
+end

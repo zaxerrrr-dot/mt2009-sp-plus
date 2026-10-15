@@ -92,7 +92,7 @@
 // The operator's hook: a file "playerbot_dungeon_runs_test" in the core's
 // directory, read every few seconds and renamed to .done:
 //     now <key|any>           a call now (biblioteka, wieza, wukong, razador,
-//                             skorpion, nemere, smok, dzungla, atlantyda), off the clock;
+//                             skorpion, nemere, smok, dzungla, atlantyda, meley), off the clock;
 //     abort <key|all>         those runs out now;
 //     status                  one BOT_DGRUN status line per dungeon;
 //     flag <name> <value>     a game event flag set (the test server's switches,
@@ -186,7 +186,8 @@ namespace
 		DGRUN_KIND_NEMERE,	// ten rooms, then Nemere
 		DGRUN_KIND_SMOK,	// four stones, then the Blue Dragon
 		DGRUN_KIND_TOWER,	// the Demon Tower: the stone, then the tower's floors
-		DGRUN_KIND_ATLANTYDA	// MT2009_PLUS_ATLANTYDA_V1: stage flag; two floors (d.jump_all), the key to the pillars
+		DGRUN_KIND_ATLANTYDA,	// MT2009_PLUS_ATLANTYDA_V1: stage flag; two floors (d.jump_all), the key to the pillars
+		DGRUN_KIND_MELEY	// MT2009_PLUS_YOHARA_MELEY_V1: stage flag; the four statues, the eggs, Idall, the rings
 	};
 
 	struct TPlayerBotDgRunDef
@@ -230,6 +231,10 @@ namespace
 		// what a bot's run pays in yang here; 45 minutes (40 before the owner's 8 October tuning), 5 a day.
 		{ "atlantyda", DGRUN_KIND_ATLANTYDA, 158, "ruiny_atlantydy", "atlantyda_dgrun", NULL, 199, 241,
 			6000000LL, 5, 45, 60000, 2 },
+		// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (356) - 7 500 000, 5 a day, 60 minutes; the quest's minute
+		// at Zlota Smocza Skrzynia after the win (no chest for a bot) and a margin; one run at a time (one sector).
+		{ "meley", DGRUN_KIND_MELEY, 356, "meley_dungeon", "meley_dgrun", NULL, 127, 167,
+			7500000LL, 5, 60, 90000, 1 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's second floor, where d.jump_all puts the party (cells).
@@ -724,6 +729,12 @@ namespace
 				if (d->GetFlag("boss") >= 2)
 					return 6;
 				return d->GetFlag("init") == 1 ? 1 + std::max(0, 4 - d->GetFlag("stones")) : 0;
+			case DGRUN_KIND_MELEY:
+			{
+				// MT2009_PLUS_YOHARA_MELEY_V1: 1-4 while a stage runs, 11/12 between stages, 5 at the end.
+				const int s = d->GetFlag("stage");
+				return s >= 10 ? previous : s;
+			}
 			default:
 				return previous;
 		}
@@ -810,6 +821,8 @@ namespace
 				return d->GetFlag("step") >= 11;
 			case DGRUN_KIND_ATLANTYDA:
 				return d->GetFlag("stage") == 7;
+			case DGRUN_KIND_MELEY:
+				return d->GetFlag("won") == 1;
 			default:
 				return false;
 		}
@@ -839,6 +852,13 @@ namespace
 				break;
 			case DGRUN_KIND_SMOK:
 				sig = (long long)d->GetFlag("stones") * 1009LL + d->GetFlag("boss");
+				break;
+			case DGRUN_KIND_MELEY:
+				// MT2009_PLUS_YOHARA_MELEY_V1: the stage, the statues held at its threshold, the rings on them (the
+				// statues' and the eggs' health count below as the bosses' do)
+				sig = (long long)d->GetFlag("stage") * 1000003LL +
+						(long long)(d->GetFlag("lock1") + d->GetFlag("lock2") + d->GetFlag("lock3") + d->GetFlag("lock4")) * 1009LL +
+						(long long)(d->GetFlag("ring1") + d->GetFlag("ring2") + d->GetFlag("ring3") + d->GetFlag("ring4")) * 101LL;
 				break;
 			case DGRUN_KIND_ATLANTYDA:
 				// The pillars opened (left, next), the key out, the Guardians and Morkhot up, the penalty points.
@@ -932,6 +952,28 @@ namespace
 					default: break;
 				}
 				break;
+			// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (meley_dungeon.quest) - the eggs (and Idall in stage 3)
+			// while one stands, then the statues; a statue at its threshold or shielded is no foe
+			// (IsPlayerBotPdgShielded), so the leader takes the next. In stage 4 the rings are the items' pass.
+			case DGRUN_KIND_MELEY:
+			{
+				const int s = d->GetFlag("stage");
+				if (s < 1 || s > 4)
+					break;
+				bool eggs = false, idall = false;
+				for (size_t i = 0; i < scan.foes.size(); ++i)
+				{
+					eggs = eggs || scan.foes[i].dwRace == 20422;
+					idall = idall || scan.foes[i].dwRace == 6116;
+				}
+				if (eggs)
+					out.push_back(20422);
+				if (s == 3 && idall)
+					out.push_back(6116);
+				if (!eggs && !(s == 3 && idall) && s <= 3)
+					out.push_back(6118);
+				break;
+			}
 			case DGRUN_KIND_SMOK:
 			{
 				bool stones = false;

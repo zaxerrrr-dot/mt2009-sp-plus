@@ -526,6 +526,8 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_boss_awaken_dawnmist" : "Zaklêty Las (PB)",
 	# MT2009_PLUS_YOHARA_CRACK_V1 (client): Zaklêty Las (SZC) (404) - the first Time Rift dungeon
 	"metin2_map_boss_crack_dawnmist" : "Zaklêty Las (SZC)",
+	# MT2009_PLUS_YOHARA_MELEY_V1 (client): Schronienie Meley (356) - the Dragon Queen's lair
+	"metin2_map_n_flame_dragon" : "Schronienie Meley",
 	# MT2009_PLUS_YOHARA_ZAKLETY_V1 (client): Zaklêty Las (353) - the forest past the Temple of Ochao
 	"metin2_map_dawnmist_dungeon_01" : "Zaklêty Las",
 	"metin2_map_a1"  : MAP_A1,

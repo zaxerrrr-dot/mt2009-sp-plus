@@ -47,6 +47,7 @@ namespace mt2009_dgreset
 		{ "smok", "blue_dragon_lair", true, "entry", "Niebieski Smok" },
 		{ "dzungla", "starozytna_dzungla", true, "entry", "Staro\xbfytna D\xbfungla" },
 		{ "atlantyda", "ruiny_atlantydy", true, "entry", "Ruiny Atlantydy" },	// MT2009_PLUS_ATLANTYDA_V1
+		{ "meley", "meley_dungeon", true, "entry", "Schronienie Meley" },	// MT2009_PLUS_YOHARA_MELEY_V1
 		{ "katakumby", "devilcatacomb_zone", false, "last_exit_time", "Katakumby Diab\xb3" "a" },
 	};
 	const size_t DEF_COUNT = sizeof(DEFS) / sizeof(DEFS[0]);

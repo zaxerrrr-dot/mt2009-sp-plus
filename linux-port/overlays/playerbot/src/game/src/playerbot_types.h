@@ -4084,7 +4084,8 @@ namespace
 	bool IsPlayerBotOffLimitsMap(long mapIndex)
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
-		return base == 208 || (base >= 360 && base <= 366) || base == 158;	// MT2009_PLUS_ATLANTYDA_V1 (158)
+		return base == 208 || (base >= 360 && base <= 366) || base == 158 ||	// MT2009_PLUS_ATLANTYDA_V1 (158)
+				base == 356;	// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley
 	}
 	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: the dungeons whose guard jumps the
 	// people of a party into a new instance (d.new_jump_pids) and leaves the
@@ -4109,7 +4110,8 @@ namespace
 		return base == 208 || base == 351 || base == 352 || (base >= 363 && base <= 366) ||
 				base == 158 ||	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy
 				base == 358 ||	// MT2009_PLUS_ZODIAC_BOTS_V1: Swiatynia Zodiaku (its floors, playerbot_zodiac_bots.h)
-				base == 367;	// MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku (obrona_statku.quest, d.new_jump_pids)
+				base == 367 ||	// MT2009_PLUS_SHIP_DEFENSE_V1: Obrona Statku (obrona_statku.quest, d.new_jump_pids)
+				base == 356;	// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (meley_dungeon.quest, d.new_jump_pids)
 	}
 	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: both defined in playerbot_party_dungeon.h.
 	// A person (not a bot) of the bot's party online on this core - standing on

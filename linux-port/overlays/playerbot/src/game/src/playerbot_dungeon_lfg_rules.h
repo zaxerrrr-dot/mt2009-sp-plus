@@ -144,6 +144,8 @@ namespace playerbot_lfg
 			{ "dzungla", { "d`zungl`e", "staro`zytn`a d`zungl`e", "d`zungl`e" }, { "d`zungli", "d`zungli" } },
 			// MT2009_PLUS_ATLANTYDA_V1
 			{ "atlantyda", { "atlantyd`e", "ruiny atlantydy", "atlantyd`e" }, { "ruin atlantydy", "atlantydy" } },
+			// MT2009_PLUS_YOHARA_MELEY_V1
+			{ "meley", { "meley", "schronienie meley", "meley" }, { "schronienia meley", "meley" } },
 			{ "malpy1", { "ma`lpy", "`latwe ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy2", { "`srednie ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy3", { "trudne ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
@@ -295,6 +297,8 @@ namespace playerbot_lfg
 			return "dzungla";
 		if (StartsWith(x, "atlant") || NearStem(x, "atlantyda"))	// MT2009_PLUS_ATLANTYDA_V1
 			return "atlantyda";
+		if (StartsWith(x, "meley") || (StartsWith(x, "schronien") && StartsWith(next, "meley")))	// MT2009_PLUS_YOHARA_MELEY_V1
+			return "meley";
 		if (StartsWith(x, "malp") || StartsWith(x, "monkey"))
 		{
 			const int d1 = DifficultyWord(prev);

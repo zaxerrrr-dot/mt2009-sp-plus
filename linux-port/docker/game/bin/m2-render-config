@@ -195,6 +195,13 @@ MAPS_game1="$MAPS_game1 110"
 # floors are private copies (3580000+) made on the core of the map, a person's party bots follow into them and the
 # bots' own temple runs go there (a bot cannot cross cores).
 MAPS_game1="$MAPS_game1 358"
+# MT2009_PLUS_YOHARA_MELEY_V1 (maps): Schronienie Meley (356, metin2_map_n_flame_dragon, 1x1 - its instances
+# 3560000+) on game1 under either layout, beside Doyyumhwaji (62) where Straznik Smokow Dolnarr stands: a person's
+# party bots follow into the lair and the bots' own runs go there (a bot cannot cross cores). One sector of terrain -
+# the smallest map there is; game1 of the unified layout: 45 maps of MAP_ALLOW_LIMIT 48. Memory: game1 is the core
+# near the 32-bit 4 GB line (the test server, 15 October: ~3.9 GB virtual, the bots); a 1x1 map and its instances are
+# a few MB. The Yohara core (game3) would cost nothing there but take the bots' way in.
+MAPS_game1="$MAPS_game1 356"
 # MT2009_PLUS_YOHARA_CORE_V1 (maps): the whole of Yohara on a core of its own in every channel (the owner,
 # 14 October 2026) - game3, "Yohara": Obrona Statku (367, the ship's private copies 3670000+ are made here), Port
 # Nowego Kontynentu (368), Dongan (373), Opuszczona Twierdza (374), Seoganland (376), Namgan (377), Przelecz Yilad
