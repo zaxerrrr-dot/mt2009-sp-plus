@@ -8878,7 +8878,7 @@ namespace
 			if (!ent || !ent->IsType(ENTITY_ITEM))
 				return;
 			LPITEM item = (LPITEM)ent;
-			if (!item->GetSectree() || item->GetOwner())
+			if (!item->GetSectree() || item->GetOwner() || IsPlayerBotPeopleOnlyLoot(item))	// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1
 				return;
 			const int d = DISTANCE_APPROX(item->GetX() - self->GetX(), item->GetY() - self->GetY());
 			if (d >= bestDist)

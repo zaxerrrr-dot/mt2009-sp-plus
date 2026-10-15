@@ -205,7 +205,10 @@ namespace
 		DWORD dwEndWaitMs;		// the quest's countdown after the last boss, and a margin
 						// (MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: every quest's countdown is
 						// 10 s now - Razador's and Nemere's were 60 s, the dragon's 180 s -
-						// so a minute is the fallback pull for all; d.exit_all comes first)
+						// so a minute is the fallback pull for all; d.exit_all comes first.
+						// MT2009_PLUS_DUNGEON_BOSS_EXIT_60S_V1: Razador, Nemere and the dragon wait
+						// 60 s for the loot on the ground when people are inside - a bot run,
+						// with none, keeps its 10 s)
 		int iCap;			// runs of it at once on this core
 	};
 

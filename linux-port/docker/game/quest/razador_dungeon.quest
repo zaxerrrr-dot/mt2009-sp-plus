@@ -13,10 +13,11 @@
 --   4: zabij Ignitora (6051),
 --   5: potwory upuszczaj¹ Kamieñ Maat (30330, 4%), oddaj po jednym siedmiu stelom,
 --   6: zniszcz Metin Czyœæca (8057),
---   7: Razador (sam daje tylko yang); po jego œmierci loch daje 8-10 Skrzyñ Razadora
---      (MT2009_PLUS_RZNM_BOSS_DROP_V1; by³o 2-5, ka¿d¹ otwiera siê 3 razy) i dodatkowy ³up - jedn¹ pulê na ca³¹
---      wyprawê, dzielon¹ po kolei miêdzy ludzi z dru¿yny w lochu (MT2009_PLUS_DUNGEON_LOOT_POOL_V1; wczeœniej
---      ka¿dy gracz dostawa³ swoje 8-10), a wszyscy wychodz¹ po 10 sekundach.
+--   7: Razador (sam daje tylko yang); po jego œmierci wokó³ niego na ziemiê wypada 8-10 Skrzyñ Razadora
+--      (MT2009_PLUS_RZNM_BOSS_DROP_V1; by³o 2-5, ka¿d¹ otwiera siê 3 razy) i dodatkowy ³up - raz na wyprawê,
+--      po kolei na ludzi z dru¿yny w lochu, jak drop bossa w dru¿ynie; boty go nie podnosz¹
+--      (MT2009_PLUS_DUNGEON_GROUND_LOOT_V1; wczeœniej trafia³ do toreb), a wszyscy wychodz¹ po 60 sekundach
+--      (MT2009_PLUS_DUNGEON_BOSS_EXIT_60S_V1).
 -- Ka¿de zadanie otwiera swoje drzwi (20387 + 20388). Limit 60 minut, ponowne
 -- wejœcie po godzinie od wejœcia (archiwum: 1 h). Mapy 351/352 s¹ na rdzeniu
 -- game2 (game1 ma ju¿ 32 mapy, MAP_ALLOW_LIMIT): d.new_jump_pids prosi game2 (P2P)
@@ -79,8 +80,8 @@ quest razador_dungeon begin
 				cog_permille = 20,
 				maat_permille = 40,
 				-- MT2009_PLUS_RZNM_BOSS_DROP_V1 (the owner, 15 October; pl-wiki, 17.3: 8-10 chests, each opened 3 times -
-				-- ShipDefense_ChestKeep, ANTI_STACK in apply.sh): 8-10 (was 2-5) - one pool a kill for the whole run, split among the
-				-- party's people (MT2009_PLUS_DUNGEON_LOOT_POOL_V1, give_chests).
+				-- ShipDefense_ChestKeep, ANTI_STACK in apply.sh): 8-10 (was 2-5) - one set a kill on the ground round the boss,
+				-- owned in turn by the party's people (MT2009_PLUS_DUNGEON_GROUND_LOOT_V1, give_chests).
 				chests_min = 8, chests_max = 10,
 			}
 		end
@@ -169,17 +170,16 @@ quest razador_dungeon begin
 			return idx >= 351 * 10000 and idx < 352 * 10000
 		end
 
-		-- MT2009_PLUS_DUNGEON_LOOT_POOL_V1 (the owner, 15 October: "wszystkie dropy wypadaja na caly loch" - the
-		-- chests are per dungeon, not per person): what the boss leaves is ONE pool per kill, as the Wukong's
-		-- chests (wzgorze_wukonga.quest reward()): chests_min..chests_max (8-10) of Skrzynia Razadora (50270, special_item_group.dungeons.txt)
-		-- plus the extra drop rolled once (boss_drop), handed out one by one, round-robin from a random person,
-		-- among the people (not bots) of the killer's party inside this instance (get_member_pids gives the
-		-- members on the killer's map index), or the killer alone. The extras go on from where the chests
-		-- stopped, so the split stays even. A person alone with bots takes the whole pool; a bot never takes
-		-- anything, so the bots' own runs (no person inside) give none, as before. Each person is told what he
-		-- got; a full bag drops it at the player's feet (give_item2, one chest at a time - they never stack).
-		-- Was: every person rolled his own chests (MT2009_PLUS_BOSS_CHESTS_V1 / MT2009_PLUS_RZNM_BOSS_DROP_V1)
-		-- and the killer alone got the extra drop.
+		-- MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (the owner, 15 October: the boss's loot falls on the ground round him like
+		-- any boss's drop, not into the bags): one set a kill - chests_min..chests_max (8-10) of Skrzynia Razadora (50270,
+		-- special_item_group.dungeons.txt, never stacked: ANTI_STACK in apply.sh, each opened 3 times) plus the extra
+		-- drop rolled once (boss_drop, up to 12) - on free spots round the boss (loot_spots, game.drop_item_at),
+		-- each owned in turn by the people (not bots) of the killer's party inside this instance from a random one
+		-- (get_member_pids gives the members on the killer's map index), or by the killer alone: the party share of a
+		-- boss's many-item drop, the engine's 30 s ownership, a member may pick the others' share up for them
+		-- (CHARACTER::PickupItem). No bot picks any of it up (people 1: char_item.cpp, playerbot_loot.h), so the bots'
+		-- own runs (no person inside) drop none, as before. Was: one pool split round-robin into the bags with a chat
+		-- line (MT2009_PLUS_DUNGEON_LOOT_POOL_V1), before that every person's own chests (MT2009_PLUS_BOSS_CHESTS_V1).
 		-- Razador himself drops only yang (item_manager.cpp).
 		function loot_people()
 			local here = pc.get_map_index()
@@ -204,7 +204,7 @@ quest razador_dungeon begin
 		-- MT2009_PLUS_DROP_EDIT_V1: the boss's own drop the owner added in the drop workbook
 		-- (1 October). The boss gives no items (item_manager.cpp), so the quest rolls it once
 		-- per kill: {vnum, count, percent}, each line on its own. Only rolled here - give_chests
-		-- splits it with the chests (MT2009_PLUS_DUNGEON_LOOT_POOL_V1).
+		-- drops it on the ground with the chests (MT2009_PLUS_DUNGEON_GROUND_LOOT_V1).
 		function boss_drop()
 			-- MT2009_PLUS_AWAKENING_V1: no Kamien Przebudzenia here (the owner, 3 October).
 			-- MT2009_PLUS_BELT_MATS_V1: Kamien Plomienia (30524) x2 at 30% (the owner, 7 October: the flame stone
@@ -234,43 +234,78 @@ quest razador_dungeon begin
 			return out
 		end
 
-		function give_chests()
-			local c = razador_dungeon.cfg()
-			local people = razador_dungeon.loot_people()
+		-- MT2009_PLUS_DUNGEON_GROUND_LOOT_V1: the spots round the boss, n of them, in pixels from him - the eight
+		-- around him 1.5 m away, then the sixteen of the next ring, each ring in a random order, so nothing
+		-- lies on another item (game.drop_item_at moves a blocked spot to the nearest free one).
+		function loot_spots(n)
+			local out = {}
+			local r = 1
+			while table.getn(out) < n do
+				local ring = {}
+				for dx = -r, r do
+					for dy = -r, r do
+						if math.max(math.abs(dx), math.abs(dy)) == r then
+							table.insert(ring, {dx * 150, dy * 150})
+						end
+					end
+				end
+				for i = table.getn(ring), 2, -1 do
+					local j = number(1, i)
+					local e = ring[i]
+					ring[i] = ring[j]
+					ring[j] = e
+				end
+				for i = 1, table.getn(ring) do
+					table.insert(out, ring[i])
+				end
+				r = r + 1
+			end
+			return out
+		end
+
+		-- MT2009_PLUS_DUNGEON_GROUND_LOOT_V1: loot = {{vnum, count}, ...} on the ground round the boss (bx, by in
+		-- pixels), one item a spot, owned in turn by the people of the run from a random one - the party share of a
+		-- boss's many-item drop (char_battle.cpp, GetNextOwnership), bots left out. people 1: no bot picks them up.
+		function drop_loot(people, loot, bx, by)
 			local n = table.getn(people)
-			if n == 0 then
+			local m = table.getn(loot)
+			if n == 0 or m == 0 then
 				return
 			end
-			local pool = number(c.chests_min, c.chests_max)
-			local extra = razador_dungeon.boss_drop()
-			local m = table.getn(extra)
-			local chests = {}
-			local items = {}
+			local spots = razador_dungeon.loot_spots(m)
 			local first = number(1, n)
-			for k = 0, pool + m - 1 do
-				local who = math.mod(first - 1 + k, n) + 1
-				if k < pool then
-					chests[who] = (chests[who] or 0) + 1
-				else
-					if items[who] == nil then
-						items[who] = {}
-					end
-					table.insert(items[who], extra[k - pool + 1])
-				end
-			end
-			for who = 1, n do
-				q.begin_other_pc_block(people[who])
-				local g = chests[who] or 0
-				for k = 1, g do
-					pc.give_item2(50270, 1)
-				end
-				local mine = items[who] or {}
-				for k, e in next, mine, nil do
-					pc.give_item2(e[1], e[2])
-				end
-				syschat("Razador: Otrzymujesz: Skrzynia Razadora x"..g..", inne przedmioty: "..table.getn(mine).." (podzia³ ³upu: "..pool.." skrzyñ i "..m.." przedm. na "..n..").")
+			for k = 1, m do
+				q.begin_other_pc_block(people[math.mod(first - 1 + k - 1, n) + 1])
+				game.drop_item_at(loot[k][1], loot[k][2], bx + spots[k][1], by + spots[k][2], 0, 1)
 				q.end_other_pc_block()
 			end
+		end
+
+		-- MT2009_PLUS_DUNGEON_GROUND_LOOT_V1: one set a kill on the ground round the boss (drop_loot) - the chests
+		-- and the boss's extra drop (boss_drop); nothing in a bot-only run (no people inside). Returns how many people.
+		function give_chests()
+			local c = razador_dungeon.cfg()
+			-- The boss's spot, read before another player's block takes the quest's npc away.
+			local nx = npc.get_x()
+			local ny = npc.get_y()
+			if nx < 0 or ny < 0 then
+				nx = pc.get_x()
+				ny = pc.get_y()
+			end
+			local people = razador_dungeon.loot_people()
+			if table.getn(people) == 0 then
+				return 0
+			end
+			local loot = {}
+			for k = 1, number(c.chests_min, c.chests_max) do
+				table.insert(loot, {50270, 1})
+			end
+			local extra = razador_dungeon.boss_drop()
+			for k = 1, table.getn(extra) do
+				table.insert(loot, extra[k])
+			end
+			razador_dungeon.drop_loot(people, loot, nx * 100, ny * 100)
+			return table.getn(people)
 		end
 
 		function purge_mobs()
@@ -369,10 +404,10 @@ quest razador_dungeon begin
 			d.exit_all()
 		end
 
-		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: after the last boss a countdown, a second at a time, then everyone out
-		-- (finish) - the owner, 5 October: "Po zabiciu bossa dunga daj jednak 10 s odliczania i wylogowanie
-		-- z dunga". Told at 10 and at 5, 4, 3, 2, 1. The chests are given into the bag at the kill (a full
-		-- bag drops them at the player's feet); the boss's own drop lies on the floor for these 10 seconds.
+		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_60S_V1: after the last boss a countdown, a second at a time, then everyone out
+		-- (finish) - the owner, 15 October: a minute to pick the loot up off the ground (MT2009_PLUS_DUNGEON_GROUND_LOOT_V1),
+		-- told at 60 and 30 seconds and then every second from 10 to 1 (was 10 s: MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1,
+		-- the owner, 5 October). The boss's dungeon stays ended (closed at the end, the boss flag at the kill).
 		function end_text(n)
 			if n == 1 then
 				return "Za 1 sekundê zostaniesz teleportowany na Ognist¹ Ziemiê."
@@ -387,7 +422,7 @@ quest razador_dungeon begin
 				razador_dungeon.finish()
 				return
 			end
-			if n <= 5 or math.mod(n, 10) == 0 then
+			if n <= 10 or n == 30 or n == 60 then
 				d.notice("Razador: "..razador_dungeon.end_text(n))
 			end
 			d.setf("end_in", n - 1)
@@ -944,12 +979,18 @@ quest razador_dungeon begin
 
 		when 6091.kill with razador_dungeon.inside() and d.getf("boss") == 1 begin
 			d.setf("boss", 2)
-			razador_dungeon.give_chests()
+			local people = razador_dungeon.give_chests()
 			d.update_ranking("razador") -- MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel's results
 			d.clear_regen()
 			razador_dungeon.purge_mobs()
 			d.notice("Razador zosta³ pokonany!")
-			razador_dungeon.end_count(10) -- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1 (was 60 seconds)
+			-- MT2009_PLUS_DUNGEON_BOSS_EXIT_60S_V1: a minute to pick the loot up (was 10 seconds:
+			-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1); a bot-only run has no loot and keeps its 10 seconds.
+			if people > 0 then
+				razador_dungeon.end_count(60)
+			else
+				razador_dungeon.end_count(10)
+			end
 		end
 	end
 end

@@ -505,7 +505,8 @@ namespace
 			LPITEM item = (LPITEM)ent;
 			if (!item->GetSectree() || !item->GetProto() || !item->IsOwnership(m_me) ||
 					(m_person && item->IsOwnership(m_person)) || item->GetVnum() == 50255 ||
-					IsPlayerBotMoneyDrop(item) || IsPlayerBotLeftOnGroundItem(item->GetVnum()))
+					IsPlayerBotMoneyDrop(item) || IsPlayerBotLeftOnGroundItem(item->GetVnum()) ||
+					IsPlayerBotPeopleOnlyLoot(item))	// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1
 				return;
 			std::map<DWORD, DWORD>::const_iterator failed = m_failed.find(item->GetVID());
 			if (failed != m_failed.end() && (int)(m_dwNow - failed->second) < 0)
