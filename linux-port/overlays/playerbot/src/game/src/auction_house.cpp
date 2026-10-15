@@ -26,7 +26,7 @@
 //
 //   FILTR = <kategoria> <kolumnaSort> <malejaco 0|1> <plusOd|-1> <plusDo|-1>
 //           <cenaOd> <cenaDo> <vnum> <socket0|-1> <trybBonusow> <liczbaBonusow>
-//           <klasa> <bonusy|-> [nazwa[|skill,skill,...]]
+//           <klasa> <bonusy|-> [nazwa[|skill,skill,...][|!vnum,vnum,...]]
 //     klasa       : 0 dowolna, 1 wojownik, 2 ninja, 3 sura, 4 szaman - tylko
 //                   przedmioty, ktore ta klasa moze zalozyc
 //                   MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: albo
@@ -436,6 +436,9 @@ namespace
 		std::vector<TAhBonus> bonuses;
 		std::string query;				// male litery
 		std::vector<long> skills;		// ksiegi: umiejetnosci pasujace do nazwy (zna je tylko klient)
+		// MT2009_PLUS_AH_EXACT_CLIENT_NAME_V1 [Autor: Vekirion]: vnumy, ktore w kliencie nosza
+		// dokladnie wpisana nazwe ("|!v,v"); puste - dokladna nazwa wg item_proto serwera, jak dotad
+		std::vector<DWORD> exactVnums;
 		std::string key;				// caly filtr jako tekst, do porownania z cache
 	};
 
@@ -528,8 +531,28 @@ namespace
 			}
 		}
 
-		// nazwa[|skill,skill,...]
+		// nazwa[|skill,skill,...][|!vnum,vnum,...]
 		std::string query = argument ? argument : "";
+		// MT2009_PLUS_AH_EXACT_CLIENT_NAME_V1 [Autor: Vekirion] (parse): the vnums the client
+		// shows under the typed full name (at most 16), cut off before the skills
+		const size_t exactBar = query.find("|!");
+		if (exactBar != std::string::npos)
+		{
+			const std::string exactPart = query.substr(exactBar + 2);
+			query.erase(exactBar);
+			size_t pos = 0;
+			while (pos < exactPart.size() && filter.exactVnums.size() < 16)
+			{
+				const size_t comma = exactPart.find(',', pos);
+				const std::string token = exactPart.substr(pos, comma == std::string::npos ? std::string::npos : comma - pos);
+				const DWORD exactVnum = static_cast<DWORD>(strtoul(token.c_str(), nullptr, 10));
+				if (exactVnum > 0)
+					filter.exactVnums.push_back(exactVnum);
+				if (comma == std::string::npos)
+					break;
+				pos = comma + 1;
+			}
+		}
 		const size_t bar = query.find('|');
 		if (bar != std::string::npos)
 		{
@@ -656,7 +679,11 @@ namespace
 				return false;
 		}
 
-		if (!filter.query.empty() && info.lowerName.find(filter.query) == std::string::npos)
+		// MT2009_PLUS_AH_EXACT_CLIENT_NAME_V1 [Autor: Vekirion] (match): an item the client shows
+		// under the typed name matches it, whatever the server's item_proto calls it
+		const bool clientExact = !filter.exactVnums.empty() &&
+			std::find(filter.exactVnums.begin(), filter.exactVnums.end(), static_cast<DWORD>(item.vnum)) != filter.exactVnums.end();
+		if (!filter.query.empty() && !clientExact && info.lowerName.find(filter.query) == std::string::npos)
 		{
 			// MT2009_PLUS_AUCTION_HOUSE_FILTERS_V1: marmur polimorfii po nazwie potwora
 			if (info.type == ITEM_POLYMORPH && item.alSockets[0] > 0)
@@ -795,6 +822,19 @@ namespace
 	{
 		if (filter.query.empty() || filter.vnum != 0)
 			return;
+
+		// MT2009_PLUS_AH_EXACT_CLIENT_NAME_V1 [Autor: Vekirion] (exact): the client knows which
+		// listed items it shows under this name - only those. Before, "Cor Draconis" (the
+		// client's name) was not the server item_proto name of the listed Cor Draconis but
+		// the name of another vnum, so every offer was dropped. Without the list (an older
+		// client) the server's item_proto name decides, as before.
+		if (!filter.exactVnums.empty())
+		{
+			std::erase_if(offers, [&](const TAhOffer& offer) {
+				return std::find(filter.exactVnums.begin(), filter.exactVnums.end(), offer.vnum) == filter.exactVnums.end();
+			});
+			return;
+		}
 
 		auto isExact = [&](const TAhOffer& offer) {
 			return GetVnumInfo(offer.vnum).lowerName == filter.query;

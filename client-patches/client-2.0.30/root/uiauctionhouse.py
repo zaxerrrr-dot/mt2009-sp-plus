@@ -2598,6 +2598,10 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 		self.namesAt = None
 		self.namesRequestId = 0
 		self.itemNames = None			# nazwy z klienta, posortowane (tryb "wszystkie nazwy")
+		# MT2009_PLUS_AH_EXACT_CLIENT_NAME_V1 [Autor: Vekirion]: nazwa z klienta (male litery) -> vnumy, ktore
+		# ja nosza (z podpowiedzi serwera i z wierszy wynikow). Serwer zna nazwy z item_proto
+		# serwera, ktore nie zawsze sa takie same jak w kliencie ("Cor Draconis").
+		self.nameVnums = {}
 		self.suggestionNames = []
 		self.suggestionBox = None
 		self.suggestionCatcher = None
@@ -2998,7 +3002,12 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 				except:
 					pass
 			data["_ah_name"] = name
+			self.__NoteNameVnum(data["vnum"], ItemNameOf(data["vnum"]))
 		return name
+
+	def __NoteNameVnum(self, vnum, name):
+		if vnum > 0 and name:
+			self.nameVnums.setdefault(PolishLower(name), set()).add(vnum)
 
 	def GetBonusLines(self, data):
 		# bonusy oferty jako napisy, tak jak w dymku przedmiotu
@@ -3111,6 +3120,7 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 				name = ItemNameOf(vnum)		# AH_V1: przedmiotu nieznanego klientowi nie podpowiadamy
 				if not name:
 					continue
+				self.__NoteNameVnum(vnum, name)		# MT2009_PLUS_AH_EXACT_CLIENT_NAME_V1
 				key = PolishLower(name)
 				if not name or key == query or key in seen:
 					continue
@@ -3277,6 +3287,14 @@ class AuctionHouseWindow(ui.BoardWithTitleBar):
 			ids.append(skillVnum)
 		if ids:
 			text += "|" + ",".join([str(i) for i in ids])
+		# MT2009_PLUS_AH_EXACT_CLIENT_NAME_V1: pelna nazwa, jaka klient pokazuje przy
+		# wystawionych przedmiotach -> ich vnumy ("|!v,v"); serwer pokazuje wtedy dokladnie
+		# te przedmioty, nawet gdy w jego item_proto nazywaja sie inaczej
+		exact = sorted(self.nameVnums.get(PolishLower(query), ()))
+		if exact:
+			exactText = "|!" + ",".join([str(v) for v in exact[:16]])
+			if reserve + len(text) + len(exactText) <= COMMAND_MAX:
+				text += exactText
 		return text
 
 	def Search(self):
