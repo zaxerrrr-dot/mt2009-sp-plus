@@ -1015,7 +1015,24 @@ namespace
 	// for it (PLAYERBOT_SOUL_STONE_WEAK_*). mt2009 only: r40250 has no
 	// Alchemist to take one.
 	const int PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE = 2;
-	const int PLAYERBOT_SOUL_STONE_MARKET_PERCENT = 15;
+	// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: the 85/15 above was drawn by
+	// item id, so once per stack: a new drop merges into a stack and takes its
+	// fate, the "dust" stacks went to the Alchemist and the "market" ones grew
+	// for good - the counter shows three of a vnum, the rest never left the
+	// bag (the owner, 15 October: 9 804 "market" stacks of 40 261 stones in
+	// the bags, 96% instead of 15%, against 1 048 stacks of 1 723 "dust";
+	// 69 exchanges in 450 walks to the Alchemist in 18-19 h; 414 bots at 140+
+	// of 180 cells). Now every bot keeps this many of each stone (vnum: the
+	// grade and the kind, what PLAYERBOT_SHOP_SAME_VNUM_LINES caps a counter
+	// at) for its counter, and the rest goes to the Alchemist, a stack cut if
+	// it has to be. What stands on a counter already stays there.
+	const int PLAYERBOT_SOUL_STONE_STALL_KEEP = 3;
+	// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: Magiczny Pyl over this many in
+	// the bag is counter goods at PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE, not
+	// the 400 that lost every counter's space to everything else (222 bots
+	// with 200+ each, 66k together, 48 on counters).
+	const int PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT = 200;
+	const int PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE = 800;
 	const DWORD PLAYERBOT_MAGIC_DUST_VNUM = 30360;
 	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): Olejek Niebios, the soul
 	// stone steps' second ingredient (= mt2009_awakening::HEAVEN_OIL_VNUM).

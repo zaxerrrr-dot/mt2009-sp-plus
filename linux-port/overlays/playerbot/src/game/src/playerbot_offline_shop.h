@@ -887,19 +887,11 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
-            // A soul stone of a grade Iwakura bans from sockets, one of the
-            // eighty-five in a hundred the Alchemist turns into dust
-            // (IsPlayerBotSoulStoneForDust), comes home a stone a visit: 2 720
-            // lines of +0 to +2 stood on m2zip's counters the morning the rule
-            // came in, against 783 stones in the bags. The line's id is the
-            // stone's, so the fifteen in a hundred kept for the market stay.
-            if (preview->GetType() == ITEM_METIN &&
-                    GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
-                    IsPlayerBotSoulStoneForDustOf(ch, preview->GetVnum(), id, (DWORD)preview->GetValue(5))) {
-                if (!unwanted) { unwanted = id; reason = "soul_stone_dust"; }
-                M2_DELETE(preview);
-                continue;
-            }
+            // MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: a soul stone of a grade
+            // Iwakura bans from sockets came home a stone a visit when its id
+            // drew "dust"; now a counter's +0 to +2 stays where it is - the
+            // bag keeps three of each for it and only the rest goes to the
+            // Alchemist (PLAYERBOT_SOUL_STONE_STALL_KEEP).
             // Refine goods the Dozorca takes (playerbot_saddlebag.h), unsold
             // for PLAYERBOT_CRAFT_UNSOLD_RECALL_MS: home, one a visit, for his
             // exchange - Materialy Rzemieslnicze sell where these did not.

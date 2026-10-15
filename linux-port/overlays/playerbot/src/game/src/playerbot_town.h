@@ -1554,13 +1554,18 @@ namespace
 	// The stones the Alchemist takes, and what they cost: the fee is 500 yang
 	// a dust and a stone of grade g is g + 1 dust (item_exchange.lua). Only
 	// what the purse pays for and leaves GetPlayerBotReservedGold behind.
-	int CollectPlayerBotDustStones(LPCHARACTER ch, std::vector<LPITEM>* out, int* dust, long long* fee)
+	// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: of each stone (vnum) the bag
+	// keeps PLAYERBOT_SOUL_STONE_STALL_KEEP for its counter, in its largest
+	// stack, and every unit over that is the Alchemist's - the other stacks
+	// whole and the kept one cut (out: the item and the units it gives).
+	int CollectPlayerBotDustStones(LPCHARACTER ch, std::vector<std::pair<LPITEM, int> >* out, int* dust, long long* fee)
 	{
 		int stones = 0, dustSum = 0;
 		long long feeSum = 0;
 		if (ch && ch->IsItemLoaded())
 		{
 			const long long spendable = (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch);
+			std::map<DWORD, std::vector<LPITEM> > byVnum;
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem(cell);
@@ -1568,16 +1573,36 @@ namespace
 						!IsPlayerBotSoulStoneForDust(ch, item) ||
 						IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 					continue;
-				const int count = std::max<int>(1, (int)item->GetCount());
-				const int gain = (GetPlayerBotSoulStoneGrade(item->GetVnum()) + 1) * count;
-				const long long cost = (long long)gain * PLAYERBOT_MAGIC_DUST_FEE;
-				if (feeSum + cost > spendable)
-					continue;
-				feeSum += cost;
-				dustSum += gain;
-				stones += count;
-				if (out)
-					out->push_back(item);
+				byVnum[item->GetVnum()].push_back(item);
+			}
+			for (std::map<DWORD, std::vector<LPITEM> >::iterator it = byVnum.begin(); it != byVnum.end(); ++it)
+			{
+				std::vector<LPITEM>& stacks = it->second;
+				std::stable_sort(stacks.begin(), stacks.end(), [](LPITEM a, LPITEM b) {
+					return a->GetCount() > b->GetCount();
+				});
+				const int perStone = GetPlayerBotSoulStoneGrade(it->first) + 1;
+				const long long unitCost = (long long)perStone * PLAYERBOT_MAGIC_DUST_FEE;
+				int keep = PLAYERBOT_SOUL_STONE_STALL_KEEP;
+				for (size_t i = 0; i < stacks.size(); ++i)
+				{
+					const int count = std::max<int>(1, (int)stacks[i]->GetCount());
+					const int keepHere = std::min(keep, count);
+					keep -= keepHere;
+					int take = count - keepHere;
+					if (take <= 0)
+						continue;
+					const long long affordable = unitCost > 0 ? (spendable - feeSum) / unitCost : 0;
+					if (affordable < take)
+						take = (int)std::max<long long>(0, affordable);
+					if (take <= 0)
+						continue;
+					feeSum += unitCost * take;
+					dustSum += perStone * take;
+					stones += take;
+					if (out)
+						out->push_back(std::make_pair(stacks[i], take));
+				}
 			}
 		}
 		if (dust)
@@ -1592,8 +1617,9 @@ namespace
 	// the herbalist above is - the NPC stands at the end of the walk, a few
 	// seconds pass, and the exchange is the package's own item_exchange.lua
 	// done server-side: its window is a client's, and a bot has no hands for
-	// it. The stones are the grades Iwakura bans from sockets, eighty-five in
-	// a hundred of them (IsPlayerBotSoulStoneForDust); the dust is counter
+	// it. The stones are the grades Iwakura bans from sockets, all but three
+	// of each kept for the counter (IsPlayerBotSoulStoneForDust,
+	// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1); the dust is counter
 	// goods. Above the travel pass in the tick: the bots that carry these
 	// stones are the Metin hunters of the frontier, in the first village for
 	// their stand, and the travel pass walked them straight back out.
@@ -1684,12 +1710,24 @@ namespace
 		// At the counter. The quest takes every stone first, then the fee,
 		// then hands the dust over in stacks; so does this, with the stones
 		// counted again - the bag may have changed on the walk.
-		std::vector<LPITEM> taken;
+		std::vector<std::pair<LPITEM, int> > taken;
 		const int count = CollectPlayerBotDustStones(ch, &taken, &dust, &fee);
 		if (count > 0 && CountPlayerBotFreeInventoryCells(ch) >= (dust + 199) / 200 + 1)
 		{
+			// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: a stack the counter's
+			// three stay in gives only what is over them.
+			int split = 0;
 			for (size_t i = 0; i < taken.size(); ++i)
-				ITEM_MANAGER::instance().RemoveItem(taken[i], "PLAYERBOT_ALCHEMIST");
+			{
+				LPITEM stone = taken[i].first;
+				if (taken[i].second >= (int)stone->GetCount())
+					ITEM_MANAGER::instance().RemoveItem(stone, "PLAYERBOT_ALCHEMIST");
+				else
+				{
+					stone->SetCount(stone->GetCount() - taken[i].second);
+					++split;
+				}
+			}
 			PlayerBotChangeGold(ch, -fee);
 			// MT2009_PLUS_EXCHANGE_CHANCE_V1: a roll a dust, at the chance the
 			// players get (the world's difficulty); the fee is paid for every
@@ -1705,8 +1743,8 @@ namespace
 				ch->AutoGiveItem(PLAYERBOT_MAGIC_DUST_VNUM, chunk, -1, false);
 				left -= chunk;
 			}
-			sys_log(0, "PLAYERBOT_ALCHEMIST: exchanged pid=%u name=%s stones=%d dust=%d/%d chance=%d fee=%lld gold=%lld",
-					ch->GetPlayerID(), ch->GetName(), count, made, dust, chance, fee, (long long)ch->GetGold());
+			sys_log(0, "PLAYERBOT_ALCHEMIST: exchanged pid=%u name=%s stones=%d dust=%d/%d chance=%d fee=%lld gold=%lld split=%d",
+					ch->GetPlayerID(), ch->GetName(), count, made, dust, chance, fee, (long long)ch->GetGold(), split);
 		}
 		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: and the held scrap, into Odlamki
 		// Energii the quest's way (playerbot_energy_shards.h).
@@ -4931,10 +4969,17 @@ namespace
 		// the smelting rows and Zaczarowany Klejnot consume it and no bot
 		// does, so all of it is goods. Ahead of the rule below, which would
 		// call a material no refine recipe names scenery.
+		// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: over
+		// PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT it scores
+		// PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE and wins a counter's space.
 		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
-			return (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) > GetPlayerBotStallBaseKeep(ch, item)
-					? PlayerBotGoods(PLAYERBOT_SHOP_LOW_SOUL_STONE_SCORE + 20, per::GOODS_MAGIC_DUST,
-						(long long)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM), GetPlayerBotStallBaseKeep(ch, item)) : -1;
+		{
+			const int dustHeld = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM);
+			return dustHeld > GetPlayerBotStallBaseKeep(ch, item)
+					? PlayerBotGoods(dustHeld > PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT
+							? PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE : PLAYERBOT_SHOP_LOW_SOUL_STONE_SCORE + 20,
+						per::GOODS_MAGIC_DUST, (long long)dustHeld, GetPlayerBotStallBaseKeep(ch, item)) : -1;
+		}
 		// An ITEM_MATERIAL no recipe consumes is scenery, not goods: it was put
 		// up for its type, and its type is not a reason anybody would buy it -
 		// unless Iwakura's sheet prices it, which is exactly that reason (the
@@ -4944,15 +4989,16 @@ namespace
 			return -1;
 		// A soul stone the bot cannot seat - one Iwakura's list keeps out of the
 		// hunting set, no socket open, the wrong grade for the piece it keeps -
-		// is somebody else's set. One of the grades his list bans goes to the
-		// Alchemist for dust, eighty-five in a hundred of them, and the rest
-		// are the counter's cheapest goods (PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE):
+		// is somebody else's set. One of the grades his list bans is the
+		// counter's cheapest goods (PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE):
 		// scored 700 to 900 like any stone, a +2 went up level with the horse
 		// medal and first onto every counter.
+		// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: every such stone is goods
+		// now - the bag keeps three of each for the counter and the Alchemist
+		// takes the rest (CollectPlayerBotDustStones).
 		if (item->GetType() == ITEM_METIN)
 		{
-			if (CanPlayerBotSeatSoulStone(ch, item->GetVnum(), (DWORD)item->GetValue(5)) ||
-					IsPlayerBotSoulStoneForDust(ch, item))
+			if (CanPlayerBotSeatSoulStone(ch, item->GetVnum(), (DWORD)item->GetValue(5)))
 				return -1;
 #if defined(PLAYERBOT_ENGINE_MT2009)
 			if (IsPlayerBotSoulStoneVnum(item->GetVnum()) &&
