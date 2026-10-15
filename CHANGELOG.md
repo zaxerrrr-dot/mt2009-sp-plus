@@ -17,6 +17,56 @@ every version here.
 
 ---
 
+## 2.34.0 — 2026-10-15 — Boty nie krążą po pierwszej wiosce, sklepy offline i filtr podnoszenia
+
+### Boty
+- **Koniec pętli po pierwszej wiosce.** Około trzystu botów krążyło w kółko między expowiskiem, drugą i pierwszą wioską: wracały po usługę, której nie mogły dostać, i stały w wiosce po 10 minut. Naprawiłem przyczyny:
+  - wizyta u zielarza Baek-Go działa także przy pełniejszym plecaku, więc boty z gotową recepturą naprawdę warzą mikstury;
+  - gdy pobyt w pierwszej wiosce nic nie da, bot przez godzinę nie wraca tam po to samo, a takie wyjście liczy się do limitu wyjść po usługi;
+  - po wizycie w mieście bot nie blokuje sobie zajęć rzeczami, które i tak celowo trzyma w plecaku;
+  - boty nie jeżdżą na targ po Zęby Orka, na które ich nie stać;
+  - boty nie robią już ziołowych zadań Biologa – ich pierwsze zadanie u Biologa to Zęby Orka.
+- **Cztery strony magazynu u Magazyniera dla każdego bota**, bez misji. Do tej pory po każdym restarcie serwera magazyn bota otwierał się z jedną stroną i szybko się zapełniał. Gracze bez zmian (rozszerzenie jak dotąd).
+- **Napis nad botem pokazuje, co bot naprawdę robi**, np. „Poluję na materiał: …” albo „Idę przez portal do …”, zamiast „Zbieram dla Biologa”.
+- **Świątynia Zodiaku:** bot lub Towarzysz zamieniony przez bossa w posąg wraca do swojej postaci po wyjściu z pięter (na piętrze po 10 sekundach). Towarzysz nie przejmuje już tego kształtu od właściciela – wcześniej mógł chodzić za graczem jako posąg na każdej mapie.
+
+### Sklepy offline, filtr podnoszenia i Dom Aukcyjny
+- **Zaawansowany filtr podnoszenia** (Autor: Vekirion). W oknie Ctrl+Z lewy klik na rodzaju przełącza „podnoś / nie podnoś”, a prawy otwiera dokładny filtr: wybrane przedmioty z wyszukiwarką, zakres ulepszenia i poziomu, liczba bonusów oraz warunki bonusów z wartościami. Reguły działają dla Z, peta, Auto Łowów i Towarzysza. Filtr można wyłączyć w Opcjach Gry → Dodatkowe → „Zaawansowany filtr podnoszenia”; reguły zostają zapisane.
+- **Sklepy offline – runda 2** (Autor: Vekirion):
+  - przełącznik „Większe sklepy offline” w obu panelach (`M2_SHOP_BIG` w .env) – sklep gracza ma wtedy dwie strony, jak sklepy botów;
+  - ramka przy przedmiotach, które długo się nie sprzedają;
+  - automatyczna obniżka ceny o X% co Y godzin, do ustalonego minimum;
+  - przycisk „+” do przedłużenia otwartego sklepu;
+  - Shift + LPM w plecaku przy otwartym sklepie;
+  - kupujący może wziąć część stosu wprost z okna sklepu;
+  - powiadomienie o sprzedaży jako szept, linijka na czacie albo wyłączone;
+  - w panelu klasycznym można ustawić postaci liczbę odblokowanych rzędów sklepu (0–4).
+- **Nazwa księgi w sklepie** (Autor: Vekirion). Sprzedana, licytowana albo objęta ofertą księga umiejętności lub zapomnienia ma w powiadomieniu i historii sklepu nazwę umiejętności, np. „Cios Miecza – Księga Umiejętności”.
+- **Dom Aukcyjny – wyszukiwanie po pełnej nazwie** (Autor: Vekirion). „Cor Draconis” wpisane w całości albo wybrane z podpowiedzi pokazuje teraz wystawione Cor Draconis (wcześniej lista była pusta).
+
+### Wygląd
+- **Czaszkę nad bossami można wyłączyć** (Autor: Vekirion) – Opcje Gry → Dodatkowe → „Ukryj czaszkę nad bossami”.
+- **Nicki nad wierzchowcami na właściwej wysokości** (Autor: Vekirion) – nazwa jeźdźca nie wisi już wysoko nad skrzydłami i ogonami feniksa czy smoka.
+
+### Lochy
+- **Wzgórze Wukonga:** Obrońca Chmur, który zniknął z mapy bez śmierci, wraca na swoje miejsce przy następnym sprawdzeniu (co minutę) – etap nie stoi już na „Pozostało: 2”.
+
+### Dla administratora
+- Logi botów podają dokładny powód zatrzymania bota w pierwszej wiosce (`m1_why=…`).
+
+
+## Klient 2.0.65 — 2026-10-15 — Sklepy offline, filtr podnoszenia, czaszka i nicki
+- Zaawansowany filtr podnoszenia: prawy klik na rodzaju w oknie Ctrl+Z otwiera dokładne reguły, a w Opcjach Gry → Dodatkowe jest przełącznik „Zaawansowany filtr podnoszenia” (Autor: Vekirion).
+- Okna sklepów offline: dwie strony sklepu, ramka przy długo niesprzedanych przedmiotach, automatyczna obniżka ceny, przycisk „+” do przedłużenia, Shift + LPM w plecaku, kupno części stosu i wybór powiadomienia o sprzedaży (Autor: Vekirion).
+- Nazwa umiejętności przy sprzedanej księdze w powiadomieniu i historii sklepu (Autor: Vekirion).
+- Dom Aukcyjny: wyszukiwanie po pełnej nazwie, np. „Cor Draconis” (Autor: Vekirion).
+- Opcja „Ukryj czaszkę nad bossami” w Opcjach Gry → Dodatkowe (Autor: Vekirion).
+- Nicki nad wierzchowcami na właściwej wysokości (Autor: Vekirion).
+- Opis Magicznego Kamienia i Zwoju Wojny nie pokazuje już linii zwoju ulepszeń (typ przedmiotu, poziomy).
+- Dane przedmiotów się nie zmieniły – nie trzeba ponownie pobierać zipa edytora bazy danych.
+
+---
+
 ## 2.33.0 — 2026-10-14 — Stabilniejsze lochy, porządki u botów i Towarzysza, uczciwe rankingi
 
 ### Poprawki krytyczne
