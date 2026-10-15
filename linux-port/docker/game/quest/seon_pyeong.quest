@@ -10,7 +10,7 @@ quest seon_pyeong begin
 		when 20091.chat."Wytwarzanie Ekwipunku" begin
 			say_title(mob_name(20091)..":")
 			say("Witaj! Potrafie przekuc na wyzsze poziomy bron")
-			say("oraz zbroje w legendarny, potezniejszy ekwipunek.")
+			say("oraz zbroje i buty w legendarny, potezniejszy ekwipunek.") -- MT2009_PLUS_BOOTS_V1: the boots (cube.buty.txt)
 			say("Czy przyniosles ze soba odpowiednie przedmioty,")
 			say("ulepszacze oraz wystarczajaca ilosc Yang?")
 			say("")
