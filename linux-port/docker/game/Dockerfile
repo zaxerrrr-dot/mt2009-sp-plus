@@ -376,7 +376,9 @@ RUN set -eux; \
     # dragged on him, dragon horns, scales, plans (and wings) and 1 000 000 Yang (MT2009_PLUS_HELM100_V1, tools/yhelm100).
     # szata_aury is Szata Aury (MT2009_PLUS_AURA_V1, server-patches/aura): Theowahdan's (60003) three windows - bonuses
     # absorbed, runes for the level, the evolution - and Baek-Go's (20018) Zwyczajna Szata Aury (20%, the pl-wiki).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury; do \
+    # kawuco opens Kawuco's (20413, Przyladek Smoczego Ognia) cube window: Ogniste Buty / Buty Oceanu from Buty Zimorodka /
+    # Euforii +5..+9 (cube.buty.txt, 80%; MT2009_PLUS_KAWUCO_V1).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -941,9 +943,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; G=$L/special_item
  && rm -rf "$A" \
  && echo "share: wiki items - $n recipes at Seon-Pyeong, chest groups 951201 / 951202 (MT2009_PLUS_NS_WIKI_ITEMS_V1)"
 
-# MT2009_PLUS_BOOTS_V1 (share): the boots' crafting of the pl-wiki at Seon-Pyeong (20091; the owner, 15 October) -
-# cube.buty.txt: Buty Zimorodka / Euforii / Qilina / Kozaki Glorii +0 from the level-47..59 boots +9, Ogniste Buty /
-# Buty Oceanu from Buty Zimorodka / Euforii +5..+9 (14 recipes), after his own above.
+# MT2009_PLUS_BOOTS_V1 (share): the boots' crafting of the pl-wiki (the owner, 15 October) - cube.buty.txt: Buty
+# Zimorodka / Euforii / Qilina / Kozaki Glorii +0 from the level-47..59 boots +9 at Seon-Pyeong (20091), after his own
+# above; Ogniste Buty / Buty Oceanu from Buty Zimorodka / Euforii +5..+9 at Kawuco (20413, 80%; MT2009_PLUS_KAWUCO_V1)
+# - 14 recipes.
 COPY cube.buty.txt /tmp/cube-buty/
 RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-buty/cube.buty.txt \
  && ! grep -q 'MT2009_PLUS_BOOTS_V1 (the owner, 15 October 2026)' "$C" \
@@ -952,8 +955,9 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-buty/cube.b
  && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
  && cat "$A" >> "$C" \
  && test "$n" -eq 14 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+20413' "$A")" -eq 10 \
  && rm -rf /tmp/cube-buty \
- && echo "share: boots recipes at Seon-Pyeong ($n, MT2009_PLUS_BOOTS_V1)"
+ && echo "share: boots recipes at Seon-Pyeong and Kawuco ($n, MT2009_PLUS_BOOTS_V1 / MT2009_PLUS_KAWUCO_V1)"
 
 # MT2009_PLUS_BELTS_V1 (share): the belt system (Pasy; Autor: Digi Rasta, nowy-system v0.27.0).
 # cube.pasy.txt - the nine belt recipes of the package's cube.txt (at Yu-Hwan and Jae-Seon Kim,
@@ -1456,6 +1460,17 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map \
         || { echo "FATAL: Jaharr on $1"; exit 1; }; \
     done \
  && echo "share: Straznik Smokow Jaharr (20421) in Yongan, Joan and Pyungmoo - the level-100 helmets"
+
+# MT2009_PLUS_KAWUCO_V1 (share; the owner, 15 October 2026): Kawuco (20413, the boots NPC - mariadb/playerbot/kawuco.sql,
+# quest/kawuco.quest, cube.buty.txt) where the pl-wiki's "Kawuco" and Owsap's npc.txt put him: Przyladek Smoczego Ognia
+# 662,1224, facing 5 (the cell is free on the cape's server_attr, inside the safe zone). One line.
+RUN set -eu; F=/opt/metin2/share/locale/poland/map/Metin2_map_CapeDragonHead/npc.txt \
+ && test -f "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && { grep -q -E '^m[[:blank:]].*[[:blank:]]20413[[:space:]]*$' "$F" || printf 'm\t662\t1224\t0\t0\t0\t5\t1m\t100\t1\t20413\r\n' >> "$F"; } \
+ && test "$(grep -c -E '^m[[:blank:]]+662[[:blank:]]+1224[[:blank:]].*[[:blank:]]20413[[:space:]]*$' "$F")" = 1 \
+ && test "$(grep -c -E '[[:blank:]]20413[[:space:]]*$' "$F")" = 1 \
+ && echo "share: Kawuco (20413) on Przyladek Smoczego Ognia 662,1224 - the boots NPC"
 # MT2009_PLUS_YOHARA_MAPS302_V1 (share): Zbocze Gautama (302, metin2_map_dawnmistwood), Nefrytowa Zatoka (303,
 # metin2_map_BayBlackSand) and Gromiste Gory (304, metin2_map_Mt_Thunder) - the client gets the three maps from the
 # GF 26.1.11 client (client-patches/client-2.0.30/tools/maps302), so each server_attr becomes Owsap's, which matches

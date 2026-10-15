@@ -1,0 +1,30 @@
+-- MT2009_PLUS_KAWUCO_V1 (the owner, 15 October 2026): Kawuco (20413) on Przyladek Smoczego Ognia (301, 662,1224 as on
+-- the pl-wiki's "Kawuco": "NPC do ulepszania zbroi i butow"). His cube window makes Ogniste Buty from Buty Zimorodka
+-- +5..+9 and Buty Oceanu from Buty Euforii +5..+9 (cube.buty.txt, 80%) - the wiki's "Produkcja butow". Its other gallery,
+-- "Produkcja zbroi" (Owsap's cube.txt: the armours 20760-20950 from 20005-21099 +5..+9), is not in this world - the
+-- armours 20760-20950 and most of their materials (30601, 30605, 30607, 30609, 30614, 30615) do not exist here: not
+-- added (the owner: no new item families). Cube_open refuses an NPC that has no recipe in cube.txt. The text without
+-- diacritics, as Seon-Pyeong's.
+quest kawuco begin
+	state start begin
+		when 20413.chat."Wytwarzanie Butow" begin
+			say_title(mob_name(20413)..":")
+			say("Witaj, wedrowcze! Z dobrych butow potrafie uszyc")
+			say("jeszcze lepsze. Przynies mi:")
+			say("")
+			say("- Buty Zimorodka +5..+9 - zrobie z nich Ogniste Buty,")
+			say("- Buty Euforii +5..+9 - zrobie z nich Buty Oceanu.")
+			say("")
+			say("Do tego Wzor Kroju, Niebieski Barwnik (Ogniste Buty)")
+			say("albo Czerwony Barwnik (Buty Oceanu), 5 Ciezkich Pasow")
+			say("i 400 000 Yang. Nie zawsze sie udaje - szansa to 80%.")
+			say("Bonusy i kamienie oddanych butow przepadaja.")
+			say("")
+			local s = select("Otworz okno ulepszania", "Anuluj")
+			if s == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+	end
+end
