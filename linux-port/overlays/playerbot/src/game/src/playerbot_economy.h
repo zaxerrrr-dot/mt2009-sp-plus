@@ -36,14 +36,9 @@ namespace
 	bool NeedsPlayerBotBackupArmour(LPCHARACTER ch);
 	bool NeedsPlayerBotBackupWeapon(LPCHARACTER ch);
 	// MT2009_PLUS_AWAKENING_V1: defined in playerbot_awakening.h (Digi Rasta's
-	// awakening and soul stones +5..+9), which is included later.
+	// soul stones +5..+9 and Olejek Niebios), which is included later
+	// (MT2009_PLUS_NO_AWAKENING_V1: no ritual, no awakened weapons any more).
 	bool IsPlayerBotAwakeningGoods(DWORD vnum);
-	bool IsPlayerBotAwakenedWeaponVnum(DWORD vnum);
-	// The Ritual of Awakening at the blacksmith, for a bot that qualifies
-	// (playerbot_awakening.h): the refining pass asks it first, and the
-	// question of a blacksmith trip counts it as a reason.
-	bool HasPlayerBotAwakeningRitual(LPCHARACTER ch);
-	bool ManagePlayerBotAwakeningRitual(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): a bag soul stone
 	// +4..+8 raised at the blacksmith with the dust and Olejek Niebios, and
 	// the oil kept and wanted for that step (playerbot_awakening.h).
@@ -1249,10 +1244,6 @@ namespace
 			for (size_t i = 0; i < protos.size(); ++i)
 				if (protos[i].wRefineSet != 0)
 					recipeIds.insert(protos[i].wRefineSet);
-			// MT2009_PLUS_AWAKENING_V1: and the Ritual of Awakening's recipe, which
-			// no item names (the engine reads it, playerbot_awakening.h) - its
-			// Kamien Przebudzenia is a counter's goods, never the merchant's.
-			recipeIds.insert(7110); // mt2009_awakening::AWAKENING_REFINE_SET, included later
 			// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): Olejek Niebios, which only the soul stone
 			// steps 7204-7208 consume - a counter's goods. The steps' dust stays
 			// out: it has rules of its own (the marble's keep, the Alchemist).
@@ -2004,7 +1995,7 @@ namespace
 	// IsPlayerBotWearableUpgrade - the equipment pass's own score), nor the
 	// backup kept for the day the worn one burns, the weapon kept for its
 	// lines or an Archer's stone dagger. Not the kinds with rules of their
-	// own: a level-30 weapon, a Stalki, Digi Rasta's awakening goods, the
+	// own: a level-30 weapon, a Stalki, Digi Rasta's soul stone goods, the
 	// pickup goods a player crafts further, Iwakura's list (kept or surplus),
 	// a gambler's piece, a sash's grail, nor what an owner gave a companion.
 	bool IsPlayerBotUnwantedGear(LPCHARACTER ch, LPITEM item)
@@ -2384,10 +2375,9 @@ namespace
 		if (item->GetVnum() == PLAYERBOT_SASH_CLOTH_VNUM)
 			return !IsPlayerBotKeptSashCloth(ch, item) && IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch);
 
-		// MT2009_PLUS_AWAKENING_V1 / MT2009_PLUS_SOULSTONE9_V1 (Digi Rasta's
-		// systems): the Awakening Stone, an awakened weapon and a soul stone
-		// +5..+9 are never the merchant's - a counter's or the bot's own
-		// (playerbot_awakening.h).
+		// MT2009_PLUS_SOULSTONE9_V1 (Digi Rasta's systems): a soul stone +5..+9
+		// and Olejek Niebios are never the merchant's - a counter's or the bot's
+		// own (playerbot_awakening.h).
 		if (IsPlayerBotAwakeningGoods(item->GetVnum()))
 			return false;
 
@@ -3586,8 +3576,7 @@ namespace
 	}
 
 	// Whether the next step of this piece may not go to the plain anvil: it
-	// can fail (a step under a hundred percent; an awakened weapon never
-	// burns), and the piece has four lines or more, or the bot fights in it
+	// can fail (a step under a hundred percent), and the piece has four lines or more, or the bot fights in it
 	// and the bag holds no spare for its slot. A young bot (and gear no scroll
 	// goes on) takes the plain steps to +4 all the same.
 	bool IsPlayerBotPlainAnvilBarred(LPCHARACTER ch, LPITEM item)
@@ -3595,7 +3584,7 @@ namespace
 		if (!ch || !item || item->GetRefinedVnum() == 0)
 			return false;
 		const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
-		if (!recipe || recipe->prob >= 100 || IsPlayerBotAwakenedWeaponVnum(item->GetVnum()))
+		if (!recipe || recipe->prob >= 100)
 			return false;
 		if (IsPlayerBotFourLinePiece(item))
 			return true;
@@ -4145,11 +4134,7 @@ namespace
 
 		state.dwNextRefineCheckTime = dwNow + PLAYERBOT_REFINE_INTERVAL;
 
-		// MT2009_PLUS_AWAKENING_V1: a worn weapon 75 +9, the Awakening Stone and
-		// the fee make the ritual this visit's first step (playerbot_awakening.h).
-		if (ManagePlayerBotAwakeningRitual(ch, state, dwNow))
-			return true;
-		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): then one soul stone step, when the bag holds
+		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): first one soul stone step, when the bag holds
 		// a stone +4..+8, the dust, the oil and the fee (playerbot_awakening.h).
 		if (ManagePlayerBotSoulStoneStep(ch, state, dwNow))
 			return true;
@@ -4504,11 +4489,8 @@ namespace
 			// the bag keeps the +6 rule: its burn is the price of not spending a
 			// scarce scroll on it.
 			const TRefineTable* stepRecipe = CRefineManager::instance().GetRefineRecipe(item->GetRefineSet());
-			// MT2009_PLUS_AWAKENING_V1: an awakened weapon's step never burns it
-			// (server-patches/digirasta), so it asks no scroll for that.
 			const bool wornStepCanBurn = wearCell != 255 && stepRecipe &&
-					stepRecipe->prob <= PLAYERBOT_WORN_SCROLL_MAX_PROB &&
-					!IsPlayerBotAwakenedWeaponVnum(item->GetVnum());
+					stepRecipe->prob <= PLAYERBOT_WORN_SCROLL_MAX_PROB;
 			// Every rule above gives way to the operator's floor: under
 			// SCROLL_FROM no scroll goes on the step, whatever the piece.
 			const bool scrollStepAllowed = IsPlayerBotScrollStepAllowed(plusLevel);
@@ -5666,10 +5648,7 @@ namespace
 				PLAYERBOT_WEIGHT_GATE_SALT_REFINE, get_dword_time()))
 			return false;
 
-		// MT2009_PLUS_AWAKENING_V1: the ritual is a reason for the anvil too.
-		if (HasPlayerBotAwakeningRitual(ch))
-			return true;
-		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): and a soul stone step with everything in the
+		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta): a soul stone step with everything in the
 		// bag (resting after any attempt, so a refusal is no loop).
 		if (HasPlayerBotSoulStoneStep(ch))
 			return true;

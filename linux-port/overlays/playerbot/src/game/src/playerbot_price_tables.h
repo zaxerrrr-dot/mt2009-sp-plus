@@ -151,13 +151,6 @@ namespace
 		{  7150, 0x000, { 368000, 368000, 368000, 368000, 710400, 1448000, 2951000, 6015000, 12261000, 24990000 } },	// Ekstazyjny Wachlarz
 		{  7160, 0x000, { 444000, 444000, 444000, 444000, 677100, 1320000, 2571000, 5011000, 9766000, 19031000 } },	// Wachlarz Jes. Wiatru
 		{  7180, 0x000, { 3046400, 3046400, 3046400, 3046400, 4352000, 8085000, 15019000, 27901000, 51832000, 96288000 } },	// Wachlarz 8 Trigramow
-		{   210, 0x000, { 381600000, 387274000, 396952000, 426883000, 459602000, 500784000, 596303000, 702303000, 1012303000, 1828970000 } },	// Smiercionosne Ostrze (MT2009_PLUS_AWAKENING_V1: Zatruty miecz+9 + 200 000 000 ritual + the stone, then each step's yang and materials over its chance; capped under GOLD_MAX)
-		{   220, 0x000, { 340240000, 345914000, 355592000, 385523000, 418242000, 459424000, 554943000, 660943000, 970943000, 1787610000 } },	// Ksiezycowy Miecz (MT2009_PLUS_AWAKENING_V1: Lwi Miecz+9 + 200 000 000 ritual + the stone, then each step's yang and materials over its chance; capped under GOLD_MAX)
-		{  1160, 0x000, { 346200000, 351874000, 361552000, 391483000, 424202000, 465384000, 560903000, 666903000, 976903000, 1793570000 } },	// Noz Strumienia (MT2009_PLUS_AWAKENING_V1: Skrzydla Demona Chakr.+9 + 200 000 000 ritual + the stone, then each step's yang and materials over its chance; capped under GOLD_MAX)
-		{  2190, 0x000, { 354369000, 360043000, 369721000, 399652000, 432371000, 473553000, 569072000, 675072000, 985072000, 1801739000 } },	// Upiorna Kusza (MT2009_PLUS_AWAKENING_V1: Stalowy Luk Kruka+9 + 200 000 000 ritual + the stone, then each step's yang and materials over its chance; capped under GOLD_MAX)
-		{  3170, 0x000, { 371688000, 377362000, 387040000, 416971000, 449690000, 490872000, 586391000, 692391000, 1002391000, 1819058000 } },	// Zabojca Zolt. Smoka (MT2009_PLUS_AWAKENING_V1: Miecz Zalu+9 + 200 000 000 ritual + the stone, then each step's yang and materials over its chance; capped under GOLD_MAX)
-		{  5150, 0x000, { 339120000, 344794000, 354472000, 384403000, 417122000, 458304000, 553823000, 659823000, 969823000, 1786490000 } },	// Hibiskusowy Dzwon (MT2009_PLUS_AWAKENING_V1: Bambusowy Dzwon+9 + 200 000 000 ritual + the stone, then each step's yang and materials over its chance; capped under GOLD_MAX)
-		{  7170, 0x000, { 336288000, 341962000, 351640000, 381571000, 414290000, 455472000, 550991000, 656991000, 966991000, 1783658000 } },	// Wachlarz Lezac. Smoka (MT2009_PLUS_AWAKENING_V1: Wachlarz 8 Trigramow+9 + 200 000 000 ritual + the stone, then each step's yang and materials over its chance; capped under GOLD_MAX)
 		{ 11200, 0x000, { 32000, 32000, 32000, 32000, 89600, 166000, 307000, 569000, 1054000, 1952000 } },	// Mnisia Zbr. Plytowa
 		{ 11210, 0x000, { 48000, 48000, 48000, 48000, 176000, 322000, 589000, 1076000, 1969000, 3600000 } },	// Zelazna Zbr. Plytowa
 		{ 11220, 0x000, { 70400, 70400, 70400, 70400, 224000, 473000, 999000, 2109000, 4452000, 9400000 } },	// Zbr. Plyt. Tygrysa
@@ -266,8 +259,8 @@ namespace
 		// monster or a chest gives (mob_drop_item, special_item_group) that had no row -
 		// Tarcza Tytanow+0 (lv 81) went for 622 yang on the supporters' world, its
 		// merchant's price marked down. Each is interpolated by level from the rows of
-		// its type and subtype (a helmet from the shields; the awakened weapons left
-		// out), never under a lower level's piece of the kind.
+		// its type and subtype (a helmet from the shields; rows over 50 kk at +0
+		// left out), never under a lower level's piece of the kind.
 		{   200, 0x000, { 4480000, 4480000, 4480000, 4480000, 6400000, 11889000, 22087000, 41031000, 76223000, 141600000 } },	// Brzegowe Ostrze (lv 80, MT2009_PLUS_UNPRICED_GEAR_V1: interpolated)
 		{   240, 0x000, { 1073000, 1073000, 1073000, 1073000, 1554000, 2810000, 5080000, 9628000, 19722000, 40400000 } },	// Miecz Egzorcysty (lv 65, MT2009_PLUS_UNPRICED_GEAR_V1: interpolated)
 		{   250, 0x000, { 1073000, 1073000, 1073000, 1073000, 1554000, 2810000, 5080000, 9628000, 19722000, 40400000 } },	// Demoniczne Ostrze (lv 70, MT2009_PLUS_UNPRICED_GEAR_V1: interpolated)
@@ -452,13 +445,12 @@ namespace
 	const DWORD PLAYERBOT_SPIRIT_STONE_PRICE = 750000;
 	const TPlayerBotMaterialPrice PLAYERBOT_EXTRA_MATERIAL_PRICES[] = {
 		{ 25040,   1375000 },	// Zwoj Blogoslawienstwa
-		{ 30670,  40000000 },	// Kamien Przebudzenia (MT2009_PLUS_AWAKENING_V1, Digi Rasta's 40 kk)
 		// MT2009_PLUS_HEAVEN_OIL_V1 (Autor: Digi Rasta, v0.17): Olejek Niebios, the soul
 		// stone steps' oil (1/1/2/2/3 for +4..+8). 5 kk: the first step's own fee, a third
 		// of a +5 stone (15 kk base), over a Biala Perla (4 kk) and the dragon's scale and
-		// claw (1.5 kk) - three bosses at 3/3/10% drop it - and well under the Awakening
-		// Stone (40 kk, eighteen bosses but one ritual of 200 kk). A full +4 -> +9 chain
-		// takes nine of them (45 kk) beside 155 kk of fees.
+		// claw (1.5 kk) - three bosses at 3/3/10% drop it. A full +4 -> +9 chain takes
+		// nine of them (45 kk) beside 155 kk of fees. (MT2009_PLUS_NO_AWAKENING_V1: the
+		// Awakening Stone's row, 30670 at 40 kk, is gone with the ritual.)
 		{ 71056,   5000000 },	// Olejek Niebios (MT2009_PLUS_HEAVEN_OIL_V1)
 		{ 25043,  6500000 },	// Podrecznik Kowala
 		{ 25044,   1400000 },	// Zwoj Wojny
