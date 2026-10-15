@@ -371,7 +371,9 @@ RUN set -eux; \
     # map rules (MT2009_PLUS_YOHARA_ZAKLETY_V1).
     # rekawice is Mistrz Chi's (20823, Dongan) "Rekawice SungMa": the four Sung Ma gloves +0 from runes, leather, patterns,
     # Kamien Runiczny, Gaya and Yang (75%; MT2009_PLUS_GLOVES_V1, tools/ygloves, server-patches/rekawice).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice; do \
+    # helm100 is Straznik Smokow Jaharr's (20421, Yongan / Joan / Pyungmoo) level-100 helmets: a level-80 helmet +5..+9
+    # dragged on him, dragon horns, scales, plans (and wings) and 1 000 000 Yang (MT2009_PLUS_HELM100_V1, tools/yhelm100).
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1435,6 +1437,22 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map \
         || { echo "FATAL: Theowahdan on $1"; exit 1; }; \
     done \
  && echo "share: Theowahdan (60003) in Yongan, Joan, Pyungmoo and on Przyladek Smoczego Ognia - the sash NPC"
+# MT2009_PLUS_HELM100_V1 (share; the owner, 15 October 2026: the level-100 helmets as on the pl-wiki): Straznik Smokow
+# Jaharr (20421, old_magic_M2 - the row is mariadb/playerbot/yohara_helm100.sql, the model the client's yhelm100 pack)
+# where the official data puts him (Owsap's minimap points = the wikis'): Yongan 555,533, Joan 658,683, Pyungmoo
+# 322,734. Every cell and its 5x5 neighbourhood measured walkable on the server_attr (15 October 2026), 18+ cells from
+# the other NPCs. He makes the helmets (quest helm100). One line on each map.
+RUN set -eu; L=/opt/metin2/share/locale/poland/map \
+ && for p in "metin2_map_a1 555 533 5" "metin2_map_b1 658 683 5" "metin2_map_c1 322 734 5"; do \
+      set -- $p; F="$L/$1/npc.txt"; \
+      test -f "$F" || { echo "FATAL: Jaharr: no $F"; exit 1; }; \
+      { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; }; \
+      grep -q -E '^m[[:blank:]].*[[:blank:]]20421[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t20421\r\n' "$2" "$3" "$4" >> "$F"; \
+      { test "$(grep -c -E "^m[[:blank:]]+$2[[:blank:]]+$3[[:blank:]].*[[:blank:]]20421[[:space:]]*\$" "$F")" = 1 \
+        && test "$(grep -c -E '[[:blank:]]20421[[:space:]]*$' "$F")" = 1; } \
+        || { echo "FATAL: Jaharr on $1"; exit 1; }; \
+    done \
+ && echo "share: Straznik Smokow Jaharr (20421) in Yongan, Joan and Pyungmoo - the level-100 helmets"
 # MT2009_PLUS_YOHARA_MAPS302_V1 (share): Zbocze Gautama (302, metin2_map_dawnmistwood), Nefrytowa Zatoka (303,
 # metin2_map_BayBlackSand) and Gromiste Gory (304, metin2_map_Mt_Thunder) - the client gets the three maps from the
 # GF 26.1.11 client (client-patches/client-2.0.30/tools/maps302), so each server_attr becomes Owsap's, which matches

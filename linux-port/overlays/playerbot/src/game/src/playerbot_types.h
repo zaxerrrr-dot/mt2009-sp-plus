@@ -3171,7 +3171,8 @@ namespace
 	// 27: Yohara 3.0 (15 October) - Skrzynia Razadora 450k / Nemere 900k (the owner), the awakened families and
 	// Kamien Przebudzenia gone (MT2009_PLUS_NO_AWAKENING_V1).
 	// 28: Skrzynia Berana-Setaou 450k (MT2009_PLUS_BERAN_CHEST_V1), Mleczny Sok / Orkowa Maczuga (MT2009_PLUS_BOOTS_V1).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 28;
+	// 29: MT2009_PLUS_HELM100_V1 - the level-100 helmets (Smokow / Dragona) and their four materials.
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 29;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in

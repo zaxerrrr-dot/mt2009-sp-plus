@@ -3791,6 +3791,18 @@ for yzl_sql in yohara_zaklety.sql yohara_items_zaklety.sql yohara_zaklety_zywiol
         fail_step "Zaklety Las: $yzl_sql failed" >&2
     fi
 done
+# MT2009_PLUS_HELM100_V1: the level-100 helmets (the owner, 15 October 2026) - yohara_helm100.sql
+# (tools/yhelm100/gen_yhelm100.py): Stalowy Helm / Pancerny Helm Smokow, Smoczy Kaptur / Kapelusz (12690-12729) and
+# Stalowy Helm / Kaptur / Pancerny Helm / Kapelusz Dragona (12730-12769) +0..+9, their materials 30620/30621/30622/30630
+# and Straznik Smokow Jaharr (20421, quest helm100). Idempotent (INSERT IGNORE).
+for yh_sql in yohara_helm100.sql; do
+    [ -s "/opt/playerbot/$yh_sql" ] || continue
+    if db < "/opt/playerbot/$yh_sql"; then
+        echo "[playerbot-migrate] level-100 helmets: $yh_sql applied"
+    else
+        fail_step "level-100 helmets: $yh_sql failed" >&2
+    fi
+done
 # Once: the Arezzo forest (362, natural_map) is in no map index and on no core any more. Every character saved there
 # or in an instance of it, or whose way out leads there - people and bots (all of level 95 and more) - stands at the
 # Temple of Ochao's gate (209, 853725 1416425, the temple's arrival; its En-Tai Guardian's portal leads to Zaklety Las

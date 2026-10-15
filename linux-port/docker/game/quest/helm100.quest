@@ -1,0 +1,130 @@
+-- MT2009_PLUS_HELM100_V1: he³my na 100 poziom (decyzja w³aœciciela 15.10.2026; wiki: "He³my na 100 poziom",
+-- "Stra¿nik Smoków Jaharr", strony he³mów; szanse: angielska wiki "Item Refinement", sekcja Jaharra):
+--   * Stra¿nik Smoków Jaharr (20421) w Yongan, Joan i Pyungmoo (game/Dockerfile) - przeci¹gnij na niego he³m
+--     poziomu 80 +5..+9 (He³m Mistrza Wojny, Pajêczy Kaptur, Magiczny He³m, Kapelusz Duszy) i wybierz rodzaj:
+--       - he³m Smoków (atak; Stalowy He³m Smoków, Smoczy Kaptur, Pancerny He³m Smoków, Smoczy Kapelusz):
+--         5x Czerwony Smoczy Róg, 5x Czerwona Smocza £uska, 10x Plan Zbroi: He³m, 1 000 000 Yang;
+--         szansa 30/40/50/60/70% dla +5..+9, przy pora¿ce he³m i materia³y przepadaj¹;
+--       - he³m Dragona (obrona; Stalowy He³m / Kaptur / Pancerny He³m / Kapelusz Dragona):
+--         5x Róg, 5x £uska, 5x Plan Zbroi: He³m, 3x Skrzyd³a Smoka, 1 000 000 Yang;
+--         szansa 10/20/30/40/50% dla +5..+9, przy pora¿ce przepadaj¹ materia³y i Yang, he³m zostaje;
+--     nowy he³m jest +0, bez bonusów i kamieni starego (wiki: "Inserted bonuses are not being kept");
+--   * przedmioty: yohara_helm100.sql (tools/yhelm100/gen_yhelm100.py); bez he³mów Likana (u nas go nie ma).
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest helm100 begin
+	state start begin
+		function cfg()
+			return {
+				fee = 1000000, fee_text = "1 000 000",
+				horn = 30620, scale = 30621, plan = 30622, wings = 30630,
+				-- the level-80 helmet's +0 -> the two level-100 helmets' +0
+				helmets = {
+					{src = 12280, smokow = 12690, dragona = 12730},     -- He³m Mistrza Wojny (Wojownik)
+					{src = 12400, smokow = 12700, dragona = 12740},     -- Pajêczy Kaptur (Ninja)
+					{src = 12540, smokow = 12710, dragona = 12750},     -- Magiczny He³m (Sura)
+					{src = 12680, smokow = 12720, dragona = 12760},     -- Kapelusz Duszy (Szaman)
+				},
+				-- [plus - 4]: +5 .. +9
+				pct_smokow = {30, 40, 50, 60, 70},
+				pct_dragona = {10, 20, 30, 40, 50},
+			}
+		end
+
+		-- the recipe of the dragged helmet: its row of cfg().helmets and its plus, or nil
+		function find(vnum)
+			local c = helm100.cfg()
+			for i = 1, table.getn(c.helmets) do
+				local h = c.helmets[i]
+				if vnum >= h.src + 5 and vnum <= h.src + 9 then
+					return h, vnum - h.src
+				end
+			end
+			return nil, 0
+		end
+
+		function needs(kind)
+			local c = helm100.cfg()
+			if kind == 1 then
+				return {{c.horn, 5}, {c.scale, 5}, {c.plan, 10}}
+			end
+			return {{c.horn, 5}, {c.scale, 5}, {c.plan, 5}, {c.wings, 3}}
+		end
+
+		when 20421.chat."He³my na 100 poziom" begin
+			local c = helm100.cfg()
+			say_title(mob_name(20421)..":")
+			say("Ze smoczych ³usek i rogów przekujê twój he³m")
+			say("w he³m godny 100. poziomu. Przeci¹gnij na mnie he³m")
+			say("80. poziomu ulepszony na +5 do +9: "..item_name(12285)..",")
+			say(item_name(12405)..", "..item_name(12545).." albo "..item_name(12685)..".")
+			say("")
+			say_reward("He³m Smoków (atak): 5x "..item_name(c.horn)..", 5x "..item_name(c.scale)..",")
+			say_reward("10x "..item_name(c.plan)..", "..c.fee_text.." Yang. Szansa 30% (+5) do 70% (+9),")
+			say_reward("gdy siê nie uda, he³m i materia³y przepadaj¹.")
+			say_reward("He³m Dragona (obrona): 5x "..item_name(c.horn)..", 5x "..item_name(c.scale)..",")
+			say_reward("5x "..item_name(c.plan)..", 3x "..item_name(c.wings)..", "..c.fee_text.." Yang.")
+			say_reward("Szansa 10% (+5) do 50% (+9), gdy siê nie uda, he³m zostaje.")
+			say("")
+			say("Nowy he³m jest +0, bonusy i kamienie starego przepadaj¹.")
+		end
+
+		when 20421.take begin
+			local c = helm100.cfg()
+			local vnum = item.get_vnum()
+			local h, plus = helm100.find(vnum)
+			say_title(mob_name(20421)..":")
+			if h == nil then
+				say("Z tego nie zrobiê he³mu. Przynieœ mi he³m 80. poziomu")
+				say("ulepszony na +5 do +9: "..item_name(12285)..", "..item_name(12405)..",")
+				say(item_name(12545).." albo "..item_name(12685)..".")
+				return
+			end
+			say("Z "..item_name(vnum).." mogê zrobiæ:")
+			say_reward(item_name(h.smokow).." - szansa "..c.pct_smokow[plus - 4].."%,")
+			say_reward("   gdy siê nie uda, he³m przepada;")
+			say_reward(item_name(h.dragona).." - szansa "..c.pct_dragona[plus - 4].."%,")
+			say_reward("   gdy siê nie uda, he³m zostaje.")
+			say("Nowy he³m jest +0, bonusy i kamienie starego przepadaj¹.")
+			local s = select(item_name(h.smokow), item_name(h.dragona), "Nie teraz")
+			if s ~= 1 and s ~= 2 then
+				return
+			end
+			local dst = h.smokow
+			local pct = c.pct_smokow[plus - 4]
+			if s == 2 then
+				dst = h.dragona
+				pct = c.pct_dragona[plus - 4]
+			end
+			local need = helm100.needs(s)
+			say_title(mob_name(20421)..":")
+			if item.get_vnum() ~= vnum then
+				say("Gdzie jest twój he³m? Przeci¹gnij go na mnie jeszcze raz.")
+				return
+			end
+			for i = 1, table.getn(need) do
+				if pc.count_item(need[i][1]) < need[i][2] then
+					say("Potrzebujesz "..need[i][2].."x "..item_name(need[i][1])..".")
+					return
+				end
+			end
+			if pc.get_money() < c.fee then
+				say("Potrzebujesz "..c.fee_text.." Yang.")
+				return
+			end
+			for i = 1, table.getn(need) do
+				pc.remove_item(need[i][1], need[i][2])
+			end
+			pc.change_money(-c.fee)
+			if number(1, 100) <= pct then
+				item.remove()
+				pc.give_item2(dst, 1)
+				say("Uda³o siê! Oto "..item_name(dst)..".")
+			elseif s == 1 then
+				item.remove()
+				say("Nie uda³o siê. He³m i materia³y przepad³y.")
+			else
+				say("Nie uda³o siê. Materia³y przepad³y, he³m zostaje u ciebie.")
+			end
+		end
+	end
+end
