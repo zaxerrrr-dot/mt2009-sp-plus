@@ -224,6 +224,22 @@ namespace
 				dwNow - it->second < PLAYERBOT_BIOLOGIST_ERRAND_COOLDOWN_MS;
 	}
 
+	// MT2009_PLUS_M1_LOOP_FIX_V1 (herb rows): a first-village herb row (levels
+	// 4-25) is not given to a bot more than PLAYERBOT_BIOLOGIST_HERB_ROW_MAX_ABOVE
+	// levels over it - a bot of 48 held in Joan 37 minutes for the Peach
+	// Blossom of level 4 (Puocio, loop report of 15 October). The herb rows
+	// are quests of their own and open nothing behind them (the collect chain
+	// starts at 30 whatever they say), so stepping over them blocks no row.
+	// Specimens already in the bag are still handed in.
+	const int PLAYERBOT_BIOLOGIST_HERB_ROW_MAX_ABOVE = 20;
+	bool IsPlayerBotHerbRowTooLow(LPCHARACTER ch, size_t missionIndex)
+	{
+		const TPlayerBotBiologistMission& mission = PLAYERBOT_BIOLOGIST_MISSIONS[missionIndex];
+		return ch && mission.mobVnum < 500 &&
+				mission.requiredLevel < PLAYERBOT_BIOLOGIST_COLLECT_QUEST_LEVEL &&
+				(int)ch->GetLevel() > mission.requiredLevel + PLAYERBOT_BIOLOGIST_HERB_ROW_MAX_ABOVE;
+	}
+
 	bool PlayerBotHerbErrandOutgrown(LPCHARACTER ch, size_t missionIndex)
 	{
 		const TPlayerBotBiologistMission& mission = PLAYERBOT_BIOLOGIST_MISSIONS[missionIndex];
@@ -481,6 +497,9 @@ namespace
 					ch->CountSpecifyItem(heldWanted) > 0;
 			if (!holdsSpecimens && PlayerBotHerbErrandOutgrown(ch, i) && !herbHere &&
 					!PlayerBotMayTakeHerbErrand(ch, i, dwNowHerb))
+				continue;
+			// MT2009_PLUS_M1_LOOP_FIX_V1 (herb rows): far too low, even in Joan.
+			if (!holdsSpecimens && IsPlayerBotHerbRowTooLow(ch, i))
 				continue;
 			// And an outgrown collect row is a stay in the valley or the tower,
 			// PLAYERBOT_BIOLOGIST_COLLECT_TRIP_PER_MILLE of the world at a time.
