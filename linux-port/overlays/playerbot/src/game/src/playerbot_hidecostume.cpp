@@ -9,7 +9,8 @@
 // character's own parts, so nothing else in the engine notices. Hidden costume -> the armour under it (its
 // transmuted look, MT2009_PLUS_CHANGE_LOOK_V1) or the character's own body; hidden hairstyle -> the own hair;
 // hidden weapon skin -> the weapon; hidden sash -> no sash.
-//   client -> "/hide_costume_part <subtype> <0|1>" (Owsap's; COSTUME_BODY 0, HAIR 1, ACCE 3, WEAPON 4)
+//   client -> "/hide_costume_part <subtype> <0|1>" (Owsap's; COSTUME_BODY 0, HAIR 1, ACCE 3, WEAPON 4; AURA 5 -
+//             MT2009_PLUS_AURA_V1, Owsap's costume_option.hide_aura: the outfit's effect, playerbot_aura.cpp)
 //   server -> "SetHiddenCostumePart <subtype> <0|1>" (after the login and after every change)
 // Our "Ukryj cudze" (MT2009_PLUS_COSTUME_VIEW_OTHERS_V1, playerqol) stays as it was: it rewrites the parts for one
 // viewer after these.
@@ -36,6 +37,7 @@ namespace hidecostume
 		HIDE_HAIR = 1 << 1,
 		HIDE_WEAPON = 1 << 2,	// the same bits as the old kostiumy.cfg mask (1 costume, 2 hair, 4 weapon)
 		HIDE_ACCE = 1 << 3,
+		HIDE_AURA = 1 << 4,	// MT2009_PLUS_AURA_V1
 	};
 
 	struct TPart
@@ -54,6 +56,9 @@ namespace hidecostume
 #endif
 #ifdef ENABLE_WEAPON_COSTUME_SYSTEM
 		{ COSTUME_WEAPON,	HIDE_WEAPON,	"costume_option.hide_weapon" },
+#endif
+#ifdef ENABLE_AURA_COSTUME_SYSTEM
+		{ COSTUME_AURA,		HIDE_AURA,		"costume_option.hide_aura" },	// MT2009_PLUS_AURA_V1
 #endif
 	};
 	const char* const MIGRATED_FLAG = "costume_option.migrated";
@@ -153,6 +158,16 @@ void Mt2009HideCostumeParts(LPCHARACTER ch, DWORD* awPart)
 	if ((bMask & hidecostume::HIDE_ACCE) && ch->GetWear(WEAR_COSTUME_ACCE))
 		awPart[CHR_EQUIPPART_ACCE] = 0;
 #endif
+}
+
+// MT2009_PLUS_AURA_V1: whether the character hides a costume part (playerbot_aura.cpp asks for COSTUME_AURA: its
+// outfit is no part of the add / update packets, it goes as "AURA view").
+bool Mt2009HideCostumeIsHidden(LPCHARACTER ch, BYTE bSubType)
+{
+	if (!ch)
+		return false;
+	const hidecostume::TPart* pPart = hidecostume::Part(bSubType);
+	return pPart && (hidecostume::Mask(ch) & pPart->bBit) != 0;
 }
 
 // playerqol's "/kostiumy_ukryj m <mask>" (the old client setting): taken once, by a character that never chose.

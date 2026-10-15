@@ -3302,6 +3302,9 @@ bool CInstanceBase::ChangeArmor(DWORD dwArmor)
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 	DWORD dwAcce = GetPart(CRaceData::EQUIP_PART_ACCE);
 #endif
+#ifdef ENABLE_MT2009_AURA
+	const DWORD dwAura = m_dwAuraVnum;	// MT2009_PLUS_AURA_V1: SetRace clears every attached effect
+#endif
 	float fRot = GetRotation();
 	float fAdvRot = GetAdvancingRotation();
 
@@ -3323,6 +3326,10 @@ bool CInstanceBase::ChangeArmor(DWORD dwArmor)
 	SetWeapon(eWeapon);
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 	SetAcce(dwAcce);
+#endif
+#ifdef ENABLE_MT2009_AURA
+	m_dwAuraEffect = 0;	// gone with SetRace
+	SetAura(dwAura);
 #endif
 	SetRotation(fRot);
 	SetAdvancingRotation(fAdvRot);
@@ -3612,6 +3619,10 @@ void CInstanceBase::__Initialize()
 #endif
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 	m_dwAcceEffect = 0;
+#endif
+#ifdef ENABLE_MT2009_AURA
+	m_dwAuraVnum = 0;	// MT2009_PLUS_AURA_V1 (the effect goes with the actor)
+	m_dwAuraEffect = 0;
 #endif
 
 	m_sAlignment = 0;

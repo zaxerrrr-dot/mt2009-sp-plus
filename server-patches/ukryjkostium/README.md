@@ -22,3 +22,6 @@ szarfą. Znacznik: `MT2009_PLUS_HIDE_COSTUME_V1 (…)`, makro `ENABLE_HIDE_COSTU
   ją tylko dla postaci, która jeszcze nic nie wybrała oczkami (`costume_option.migrated`). Stary kod maski już nie działa.
 - „Ukryj cudze” (`MT2009_PLUS_COSTUME_VIEW_OTHERS_V1`, przycisk pod oknem kostiumów) zostaje bez zmian i działa po
   ukrywaniu (podmienia części dla jednego widza).
+- **Szata aury** (`MT2009_PLUS_AURA_V1`, server-patches/aura): piąte oczko (podtyp 5, flaga `costume_option.hide_aura`)
+  nad miejscem szaty aury; szata nie jest częścią pakietów postaci, więc ukryta szata to brak `AURA view` (efekt
+  znika u wszystkich, `Mt2009HideCostumeIsHidden`).

@@ -185,6 +185,7 @@ class CostumeWindow(ui.ScriptWindow):
 		1: (62, 9, "d:/ymir work/ui/game/costume/hideslot_01.tga"),	# COSTUME_HAIR, START+1
 		3: (38, 125, "d:/ymir work/ui/game/costume/hideslot_01.tga"),	# COSTUME_ACCE, START+3
 		4: (13, 13, "d:/ymir work/ui/game/costume/hideslot_03.tga"),	# COSTUME_WEAPON
+		5: (70, 125, "d:/ymir work/ui/game/costume/hideslot_01.tga"),	# COSTUME_AURA (MT2009_PLUS_AURA_V1, uiaura.SLOT)
 	}
 
 	def __AddHideButton(self):
@@ -263,6 +264,10 @@ class CostumeWindow(ui.ScriptWindow):
 
 		if app.ENABLE_WEAPON_COSTUME_SYSTEM:
 			self.wndEquip.SetItemSlot(item.COSTUME_SLOT_WEAPON, getItemVNum(item.COSTUME_SLOT_WEAPON), 0)
+
+		# MT2009_PLUS_AURA_V1: the aura outfit's slot (the server's WEAR_COSTUME_AURA, uiaura.py)
+		auraSlot = __import__("uiaura").SLOT()
+		self.wndEquip.SetItemSlot(auraSlot, getItemVNum(auraSlot), 0)
 
 		# MT2009_PLUS_CHANGE_LOOK_V1: the mark of a transmuted costume
 		import uichangelook

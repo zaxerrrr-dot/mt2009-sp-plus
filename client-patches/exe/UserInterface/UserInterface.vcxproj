@@ -306,6 +306,7 @@
     <ClCompile Include="Mt2009Zodiak.cpp" />
     <ClCompile Include="Mt2009Champion.cpp" />
     <ClCompile Include="Mt2009ChangeLook.cpp" />
+    <ClCompile Include="Mt2009Aura.cpp" />
     <ClCompile Include="PythonBackground.cpp" />
     <ClCompile Include="PythonBackgroundModule.cpp" />
     <ClCompile Include="PythonCaptcha.cpp" />

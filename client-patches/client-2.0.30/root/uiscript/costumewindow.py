@@ -1,8 +1,11 @@
 import uiScriptLocale
 import item
 import app
+import player
 
 COSTUME_START_INDEX = item.COSTUME_SLOT_START
+# MT2009_PLUS_AURA_V1: the aura outfit (the server's WEAR_COSTUME_AURA 27, uiaura.py) - the bottom row's third frame.
+AURA_SLOT_INDEX = player.EQUIPMENT_SLOT_START + 27
 
 if app.ENABLE_WEAPON_COSTUME_SYSTEM:
 	window = {
@@ -79,6 +82,7 @@ if app.ENABLE_WEAPON_COSTUME_SYSTEM:
 											{"index":COSTUME_START_INDEX+2, "x":6, "y":125, "width":32, "height":32},
 											{"index":COSTUME_START_INDEX+3, "x":38, "y":125, "width":32, "height":32},
 											{"index":item.COSTUME_SLOT_WEAPON, "x":13, "y":13, "width":32, "height":96},
+											{"index":AURA_SLOT_INDEX, "x":70, "y":125, "width":32, "height":32},
 										),
 							},
 						),

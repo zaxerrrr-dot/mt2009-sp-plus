@@ -84,6 +84,9 @@ void SNetworkActorData::__copy__(const SNetworkActorData& src)
 #ifdef ENABLE_QUIVER_SYSTEM
 	m_dwArrow = src.m_dwArrow;
 #endif
+#ifdef ENABLE_MT2009_AURA
+	m_dwAura = src.m_dwAura;	// MT2009_PLUS_AURA_V1
+#endif
 
 	m_dwOwnerVID = src.m_dwOwnerVID;
 
@@ -120,6 +123,9 @@ SNetworkActorData::SNetworkActorData()
 #ifdef ENABLE_QUIVER_SYSTEM
 	m_dwArrow=0;
 #endif
+#ifdef ENABLE_MT2009_AURA
+	m_dwAura = 0;	// MT2009_PLUS_AURA_V1
+#endif
 
 	m_dwEmpireID=0;
 	m_dwOwnerVID=0;
@@ -145,10 +151,17 @@ SNetworkActorData::SNetworkActorData()
 CNetworkActorManager::CNetworkActorManager()
 {
 	m_dwMainVID=0;
+#ifdef ENABLE_MT2009_AURA
+	ms_pkAuraInstance = this;	// MT2009_PLUS_AURA_V1
+#endif
 }
 
 CNetworkActorManager::~CNetworkActorManager()
 {
+#ifdef ENABLE_MT2009_AURA
+	if (ms_pkAuraInstance == this)
+		ms_pkAuraInstance = NULL;
+#endif
 }
 
 void CNetworkActorManager::Destroy()
@@ -411,6 +424,11 @@ CInstanceBase* CNetworkActorManager::__AppendCharacterManagerActor(SNetworkActor
 #ifdef ENABLE_CONQUEROR_LEVEL
 	// MT2009_PLUS_CHAMPION_V2: Poziom Czempiona after the instance (SCreateData has more makers than this one).
 	pNewInstance->SetConquerorLevel(rkNetActorData.m_dwConquerorLevel);
+#endif
+#ifdef ENABLE_MT2009_AURA
+	// MT2009_PLUS_AURA_V1: the aura outfit the actor wore (the instance is new: an appearance, a mount, a change)
+	if (rkNetActorData.m_dwAura)
+		pNewInstance->SetAura(rkNetActorData.m_dwAura);
 #endif
 
 	if (kCreateData.m_isMain)

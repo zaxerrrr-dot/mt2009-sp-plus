@@ -36,6 +36,9 @@ struct SNetworkActorData
 #ifdef ENABLE_QUIVER_SYSTEM
 	DWORD	m_dwArrow;
 #endif
+#ifdef ENABLE_MT2009_AURA
+	DWORD	m_dwAura;	// MT2009_PLUS_AURA_V1: the outfit's vnum ("AURA view", chrmgr.SetAura), 0 none
+#endif
 
 	DWORD	m_dwOwnerVID;
 
@@ -157,6 +160,11 @@ class CNetworkActorManager : public CReferenceObject
 
 		void SyncActor(DWORD dwVID, LONG lPosX, LONG lPosY);
 		void SetActorOwner(DWORD dwOwnerVID, DWORD dwVictimVID);
+#ifdef ENABLE_MT2009_AURA
+		// MT2009_PLUS_AURA_V1: the aura outfit of an actor (kept for its instance's re-creation), Mt2009Aura.cpp
+		bool SetActorAura(DWORD dwVID, DWORD dwVnum);
+		static CNetworkActorManager* ms_pkAuraInstance;	// the one the network stream owns (python's way in)
+#endif
 
 		void Update();
 

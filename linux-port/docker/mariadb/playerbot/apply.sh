@@ -3829,6 +3829,32 @@ if [ "$forest_done" = "0" ]; then
     fi
 fi
 
+# MT2009_PLUS_AURA_V1: Szata Aury (server-patches/aura/README.md; the owner, 15 October 2026) - szata_aury.sql
+# (tools/aura/gen_aura_sql.py): the outfits 49101-49106 (the official 49001-49006 are our Death Ruler skins), Lodowa
+# Runa Aury 49990, Ognista Runa Aury (250/500) 49994/49995, Swiadectwo Aury+ 89999, and the exp (value0) of the
+# Ognista Runy 49991-49993 of yohara_items2.sql (after it). Idempotent (INSERT IGNORE / guarded UPDATE).
+if [ -s /opt/playerbot/szata_aury.sql ]; then
+    if db < /opt/playerbot/szata_aury.sql; then
+        echo "[playerbot-migrate] aura: szata_aury.sql applied"
+    else
+        fail_step "aura: szata_aury.sql failed" >&2
+    fi
+# The pl-wiki's ItemShop sources: Zwyczajna Szata Aury for 650 SM ("bezposrednio za 650 SM") and Swiadectwo Aury+
+# (the wiki: Aukcja Blyskawiczna, no price - 50 SM here). Once per install, in-game (after the transmutation tickets)
+# and the web shop.
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (49101, 89999);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once aura_952 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
+(952, 49101, 1, 650, 'DRAGON_COIN', 0),
+(953, 89999, 1, 50, 'DRAGON_COIN', 0);" "could not add the aura outfit and certificate to the ItemShop"
+db -e "INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1049101, 10, 'Zwyczajna Szata Aury', 'Szata aury - przenieś na nią parametry biżuterii i ulepszaj ją u Theowahdana.', 650, 'cash', 49101, 1, 0, 0, 0, '49101', NOW()
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 49101);
+INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1089999, 10, 'Świadectwo Aury+', 'Usuwa parametry przeniesione na szatę aury (poziom zostaje).', 50, 'cash', 89999, 1, 0, 0, 0, '89999', NOW()
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 89999);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the aura items" >&2
+fi
+fi
+
 # MT2009_PLUS_REGEN_METIN_SPLIT_V1 (server-patches/regenmetin): Metins apart from bosses in the
 # respawn settings. The panels' "Metiny i bossowie" time (fastBossSpawn, a map's own
 # fastBossSpawn<map>) and count (m2_boss_count) are the bosses' alone now; the Metin stones read

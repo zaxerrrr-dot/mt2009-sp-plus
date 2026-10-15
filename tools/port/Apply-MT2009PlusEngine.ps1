@@ -106,6 +106,9 @@ param(
 #                      char_item.cpp, ENABLE_GLOVE_SYSTEM (MT2009_PLUS_GLOVES_V1; server-patches/rekawice, after precyzja)
 #   Obrecze Jadeitu V2 item.cpp, item_manager.cpp, item_attribute.cpp (MT2009_PLUS_JADE_BRACELET_V2;
 #                      server-patches/obreczjadeitu2, after obreczjadeitu and rekawice)
+#   Szata Aury         common CommonDefines.h/length.h/item_length.h, item.cpp, char.cpp, char_item.cpp,
+#                      char_battle.cpp, questlua.cpp, cmd.cpp, ENABLE_AURA_COSTUME_SYSTEM (MT2009_PLUS_AURA_V1;
+#                      server-patches/aura, after transmutacja, ukryjkostium, rankpoints and rekawice)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1488,6 +1491,21 @@ if ((Test-Path -LiteralPath $obreczJadeitu2Apply -PathType Leaf) -and
     if ($obreczJadeitu2Result.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} jade bracelet V2 edit(s).' -f $obreczJadeitu2Result.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Szata Aury (server-patches/aura, MT2009_PLUS_AURA_V1): the aura outfit's costume slot (WEAR_COSTUME_AURA 27,
+# COSTUME_AURA 5), its points (the absorbed jewel's / shield's bonuses at level / 10 %), Theowahdan's windows (/aura,
+# game.open_aura), Swiadectwo Aury+, the outfit the others see ("AURA view", the 3.0 exe) and Lodowa Runa Aury from the
+# monsters. The work is the overlay's playerbot_aura.cpp. After transmutacja and ukryjkostium (its anchors and the
+# aura's eye), rankpoints and rekawice.
+$auraApply = Join-Path $repo 'server-patches/aura/Apply-AuraPatch.ps1'
+if ((Test-Path -LiteralPath $auraApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $auraResult = & $auraApply -SourceDir $engineGameSource
+    if ($auraResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} aura outfit edit(s).' -f $auraResult.Applied) -ForegroundColor DarkGray
     }
 }
 

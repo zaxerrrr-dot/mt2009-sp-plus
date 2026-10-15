@@ -1,0 +1,80 @@
+[
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_AURA_V1 (define)",
+  "old": "#define ENABLE_HIDE_COSTUME_SYSTEM\n",
+  "new": "#define ENABLE_HIDE_COSTUME_SYSTEM\n// MT2009_PLUS_AURA_V1 (define): Szata Aury (server-patches/aura) - WEAR_COSTUME_AURA 27, COSTUME_AURA 5, the outfit's points,\n// Theowahdan's windows, the effect the others see (playerbot_aura.cpp). After ukryjkostium (the aura's eye).\n#define ENABLE_AURA_COSTUME_SYSTEM\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_AURA_V1 (wear)",
+  "old": "\tWEAR_GLOVE,\t\t\t// 26\n",
+  "new": "\tWEAR_GLOVE,\t\t\t// 26\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\tWEAR_COSTUME_AURA,\t// 27 - MT2009_PLUS_AURA_V1 (wear): the aura outfit (root/uiaura.py: EQUIPMENT_SLOT_START + 27)\n#endif\n"
+ },
+ {
+  "file": "../../common/item_length.h",
+  "marker": "MT2009_PLUS_AURA_V1 (subtype)",
+  "old": "#ifdef ENABLE_WEAPON_COSTUME_SYSTEM\n\tCOSTUME_WEAPON\t= 4,\n#endif\n",
+  "new": "#ifdef ENABLE_WEAPON_COSTUME_SYSTEM\n\tCOSTUME_WEAPON\t= 4,\n#endif\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\tCOSTUME_AURA\t= 5,\t// MT2009_PLUS_AURA_V1 (subtype): Szata Aury (49101-49106), the official number\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (wear position)",
+  "old": "\t\telse if (GetSubType() == COSTUME_WEAPON)\n\t\t\treturn WEAR_COSTUME_WEAPON;\n#endif\n",
+  "new": "\t\telse if (GetSubType() == COSTUME_WEAPON)\n\t\t\treturn WEAR_COSTUME_WEAPON;\n#endif\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t\telse if (GetSubType() == COSTUME_AURA)\n\t\t\treturn WEAR_COSTUME_AURA; // MT2009_PLUS_AURA_V1 (wear position)\n#endif\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (points)",
+  "old": "void CItem::ModifyPoints(bool bAdd)\n{\n",
+  "new": "void CItem::ModifyPoints(bool bAdd)\n{\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t// MT2009_PLUS_AURA_V1 (points): an aura outfit gives its rate of the absorbed item's bonuses and nothing else\n\t// (playerbot_aura.cpp) - its attributes are that item's, never worn at their full value.\n\t{\n\t\tbool Mt2009AuraModifyPoints(LPITEM item, LPCHARACTER owner, bool bAdd);\n\t\tif (Mt2009AuraModifyPoints(this, m_pOwner, bAdd))\n\t\t\treturn;\n\t}\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (equip subtype)",
+  "old": "\t\t|| item->GetSubType() == COSTUME_WEAPON\n#endif\n",
+  "new": "\t\t|| item->GetSubType() == COSTUME_WEAPON\n#endif\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t\t|| item->GetSubType() == COSTUME_AURA // MT2009_PLUS_AURA_V1 (equip subtype): its own slot, no part of the body\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (use)",
+  "old": "\t// MT2009_PLUS_GOBLIN_V1 (use): the Treasure Ticket, the Goblin Key and its\n",
+  "new": "#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t// MT2009_PLUS_AURA_V1 (use): Swiadectwo Aury+ (89999) dragged onto an aura outfit clears its bonuses (playerbot_aura.cpp)\n\t{\n\t\tbool Mt2009AuraUseItem(LPCHARACTER ch, LPITEM item, TItemPos DestCell, bool& bResult);\n\t\tbool bAuraResult = false;\n\t\tif (Mt2009AuraUseItem(this, item, DestCell, bAuraResult))\n\t\t\treturn bAuraResult;\n\t}\n#endif\n\t// MT2009_PLUS_GOBLIN_V1 (use): the Treasure Ticket, the Goblin Key and its\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (insert)",
+  "old": "\t\tRankPointsOnInsert(this, ch);\n\t}\n",
+  "new": "\t\tRankPointsOnInsert(this, ch);\n\t}\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t// MT2009_PLUS_AURA_V1 (insert): a character wearing an aura outfit comes into a player's view with \"AURA view <vid> <vnum>\"\n\t// - the 3.0 exe draws the outfit's effect (playerbot_aura.cpp, root/uiaura.py).\n\tif (IsPC() && ch && ch->IsPC() && !d->IsBot())\n\t{\n\t\tvoid Mt2009AuraOnInsert(LPCHARACTER, LPCHARACTER);\n\t\tMt2009AuraOnInsert(this, ch);\n\t}\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (update)",
+  "old": "void CHARACTER::UpdatePacket()\n{\n\tif (GetSectree() == NULL) return;\n",
+  "new": "void CHARACTER::UpdatePacket()\n{\n\tif (GetSectree() == NULL) return;\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t// MT2009_PLUS_AURA_V1 (update): the aura outfit the others see, sent around once per change (playerbot_aura.cpp)\n\t{ void Mt2009AuraOnUpdatePacket(LPCHARACTER); Mt2009AuraOnUpdatePacket(this); }\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (kill)",
+  "old": "\t\t{ void RankPointsOnKill(LPCHARACTER, LPCHARACTER); RankPointsOnKill(pkQuestKiller, this); }\n",
+  "new": "\t\t{ void RankPointsOnKill(LPCHARACTER, LPCHARACTER); RankPointsOnKill(pkQuestKiller, this); }\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t\t// MT2009_PLUS_AURA_V1 (kill): Lodowa Runa Aury from every monster (pl-wiki \"Drop alternatywny\", playerbot_aura.cpp)\n\t\t{ void Mt2009AuraOnKill(LPCHARACTER, LPCHARACTER); Mt2009AuraOnKill(pkQuestKiller, this); }\n#endif\n"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (lua)",
+  "old": "\t\t{ void RegisterChangeLookFunctions(); RegisterChangeLookFunctions(); }\n#endif\n",
+  "new": "\t\t{ void RegisterChangeLookFunctions(); RegisterChangeLookFunctions(); }\n#endif\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t\t// MT2009_PLUS_AURA_V1 (lua): game.open_aura - Theowahdan's aura windows (playerbot_aura.cpp).\n\t\t{ void RegisterAuraFunctions(); RegisterAuraFunctions(); }\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (declare)",
+  "old": "ACMD(do_changelook);\n",
+  "new": "ACMD(do_changelook);\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n// MT2009_PLUS_AURA_V1 (declare): /aura - Theowahdan's aura windows (playerbot_aura.cpp).\nACMD(do_aura);\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AURA_V1 (table)",
+  "old": "\t{ \"transmutacja\",\tdo_changelook,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"transmutacja\",\tdo_changelook,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n#ifdef ENABLE_AURA_COSTUME_SYSTEM\n\t// MT2009_PLUS_AURA_V1 (table): the aura windows (in / out / accept / cancel).\n\t{ \"aura\",\tdo_aura,\t0,\tPOS_DEAD,\tGM_PLAYER\t},\n#endif\n"
+ }
+]

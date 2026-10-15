@@ -344,6 +344,7 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 		__import__("uidropwiki").DestroyWindow()
 		__import__("uichangelook").DestroyWindow() # MT2009_PLUS_CHANGE_LOOK_V1
+		__import__("uiaura").DestroyWindow() # MT2009_PLUS_AURA_V1
 
 		self.oneSecondTimer = 0
 
@@ -3190,6 +3191,7 @@ class GameWindow(ui.ScriptWindow):
 			"ChangeLookDel": self.__ChangeLookDel,
 			"ChangeLookClose": self.__ChangeLookClose,
 			"ChangeLookDone": self.__ChangeLookDone,
+			"AURA": self.__Aura, # MT2009_PLUS_AURA_V1 (uiaura.py)
 			"ConsoleEnable"			: self.__Console_Enable,
 			"GameMaster"			: self.__GameMaster,
 			"DayMode"				: self.__DayMode_Update,
@@ -4301,6 +4303,15 @@ class GameWindow(ui.ScriptWindow):
 	def __ChangeLookDone(self):
 		import uichangelook
 		uichangelook.OnDone()
+
+	# MT2009_PLUS_AURA_V1: Szata Aury - Theowahdan's windows and the outfits of the characters in view (uiaura.py):
+	# "AURA open|set|del|close|done ..." and "AURA view <vid> <vnum>"
+	def __Aura(self, *args):
+		import uiaura
+		toolTip = None
+		if self.interface:
+			toolTip = getattr(self.interface, "tooltipItem", None)
+		uiaura.OnCommand(toolTip, *args)
 
 	def __TargetHP(self, vid, hp, maxHp):
 		try:
