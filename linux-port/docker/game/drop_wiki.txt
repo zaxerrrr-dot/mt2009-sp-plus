@@ -27,8 +27,8 @@ place	208	data/dungeon/bluedragon_mt
 place	358	2600-2869	Œwi¹tynia_Zodiaku
 
 # The dungeon bosses' chests (their quests' give_chests, chests_min..chests_max for the party, give_item2)
-drop	6091	50270	2	5	100
-drop	6191	50271	2	5	100
+drop	6091	50270	8	10	100
+drop	6191	50271	8	10	100
 drop	9682	30774	2	4	100
 drop	9706	30773	1	3	100
 drop	9694	30775	2	4	100
@@ -37,6 +37,7 @@ drop	4559	30921	2	4	100
 # Beran-Setaou (blue_dragon_lair.quest give_rewards)
 drop	2493	71123	1	1	100
 drop	2493	71129	1	1	100
+drop	2493	54700	8	10	100
 # Swiatynia Ochao's boss (temple_of_the_ochao.quest, a killer of level 95 or more)
 drop	6311	2145	1	1	60
 drop	6311	11295	1	1	55

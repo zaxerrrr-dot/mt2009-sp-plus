@@ -14,6 +14,7 @@
 --      go os³ania;
 --   3: po jego œmierci ka¿dy gracz w lochu dostaje Smocz¹ £uskê (71123) i Smoczy Szpon
 --      (71129), a wszyscy wychodz¹ po 3 minutach.
+--      MT2009_PLUS_BERAN_CHEST_V1: do tego 8-10 Skrzyñ Berana-Setaou (54700; ka¿d¹ otwiera siê 2 razy).
 -- Potwory lochu: data/dungeon/bluedragon_mt/regen.txt (Setaou z Groty V2). Limit 60 minut,
 -- ponowne wejœcie po godzinie od wejœcia, op³ata i 5 wypraw dziennie jak w innych lochach
 -- (MT2009_PLUS_DUNGEON_FEE_V1). Publiczna mapa 208 to poczekalnia (awaryjna droga, jak 351
@@ -62,6 +63,10 @@ quest blue_dragon_lair begin
 				stone_back = 0, -- a stone returns this many seconds after the last one fell (0 = never)
 				end_sec = 10, -- the countdown after the dragon (MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1; was 180)
 				rewards = {{71123, 1}, {71129, 1}},
+				-- MT2009_PLUS_BERAN_CHEST_V1 (the owner, 15 October; pl-wiki 17.3): every person of the party rolls his own
+				-- 8-10 Skrzynie Berana-Setaou (54700, special_item_group.dungeons.txt), each opened 2 times
+				-- (ShipDefense_ChestKeep, ANTI_STACK in apply.sh). Bots get none.
+				chest = 54700, chests_min = 8, chests_max = 10,
 			}
 		end
 
@@ -178,7 +183,12 @@ quest blue_dragon_lair begin
 					for k = 1, table.getn(c.rewards) do
 						pc.give_item2(c.rewards[k][1], c.rewards[k][2])
 					end
-					syschat("Beran-Setaou: otrzymujesz Smocz¹ £uskê i Smoczy Szpon.")
+					-- MT2009_PLUS_BERAN_CHEST_V1: one chest a give_item2 (they never stack)
+					local n = number(c.chests_min, c.chests_max)
+					for k = 1, n do
+						pc.give_item2(c.chest, 1)
+					end
+					syschat("Beran-Setaou: otrzymujesz Smocz¹ £uskê, Smoczy Szpon i Skrzynie Berana-Setaou: "..n..".")
 				end
 				q.end_other_pc_block()
 			end

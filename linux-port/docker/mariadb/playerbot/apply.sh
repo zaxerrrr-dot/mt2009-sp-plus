@@ -1861,6 +1861,14 @@ db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subty
 # Written every start (the Arezzo chests 30773-30776, copies of 50270/50271, set their own flags).
 db -e "UPDATE world.item_proto SET antiflag = antiflag | 32768, flag = flag & ~4 WHERE vnum IN (50270, 50271, 54705);" \
   || fail_step "could not make the boss chests single (MT2009_PLUS_RZNM_BOSS_DROP_V1)" >&2
+# MT2009_PLUS_BERAN_CHEST_V1 (the owner, 15 October; pl-wiki 17.3): Skrzynia Berana-Setaou (54700, the official
+# vnum) - blue_dragon_lair.quest gives every person 8-10 when Beran-Setaou dies, each opens 2 times
+# (ShipDefense_ChestKeep counts them in socket 0), so it never stacks: ANTI_STACK, not STACKABLE, every start. Its
+# contents: special_item_group.dungeons.txt (tools/yohara_chestdrops). A giftbox like 50270.
+db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES
+(54700, 'Skrzynia Berana-Setaou', 'Skrzynia Berana-Setaou', 23, 0, 1, 0, 1, 32768, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);
+UPDATE world.item_proto SET antiflag = antiflag | 32768, flag = flag & ~4 WHERE vnum = 54700;" \
+  || fail_step "could not add Skrzynia Berana-Setaou (MT2009_PLUS_BERAN_CHEST_V1)" >&2
 
 # MT2009_PLUS_AREZZO_V1: the first three places from the Arezzo files (the owner has the rights to
 # them), players only - bots later: Dolina Cyklopow (map 360, level 45, the Teleporter), Zaczarowany

@@ -62,6 +62,9 @@ RULES = [
     # MT2009_PLUS_RZNM_BOSS_DROP_V1: the boss chests open 3 times, one chest at a time
     ([_r(50270, 50271), _r(54705)], (), "partial", ("flag", "antiflag"),
      "skrzynia otwierana 3 razy: nie łączy się w stos (antiflag | ANTI_STACK, flag bez STACKABLE)"),
+    # MT2009_PLUS_BERAN_CHEST_V1: Skrzynia Berana-Setaou opens 2 times, one chest at a time
+    ([_r(54700)], (), "partial", ("flag", "antiflag"),
+     "skrzynia otwierana 2 razy: nie łączy się w stos (antiflag | ANTI_STACK, flag bez STACKABLE)"),
     ([_r(v) for v in TRADE_SASHES] + [_r(85001, 85024), _r(85101, 85104), _r(86061, 86064), _r(110000, 175499)],
      (), "partial", ("antiflag",), "można handlować i wystawić w sklepie (bity GIVE i MYSHOP antiflag są zdejmowane)"),
     ([_r(v) for v in POTION_PRICES], (), "partial", ("gold",), "cena w sklepie NPC nie niższa niż cena odkupu"),
