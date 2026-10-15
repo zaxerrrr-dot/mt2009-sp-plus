@@ -276,7 +276,7 @@ quest razador_dungeon begin
 			local first = number(1, n)
 			for k = 1, m do
 				q.begin_other_pc_block(people[math.mod(first - 1 + k - 1, n) + 1])
-				game.drop_item_at(loot[k][1], loot[k][2], bx + spots[k][1], by + spots[k][2], 0, 1)
+				game.drop_item_at(loot[k][1], loot[k][2], bx + spots[k][1], by + spots[k][2], 0, 0) -- the owner, 15 October: bots and the companion pick it up as any party drop
 				q.end_other_pc_block()
 			end
 		end
