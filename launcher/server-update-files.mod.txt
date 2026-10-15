@@ -70,6 +70,7 @@ linux-port/docker/mariadb/playerbot/yskill9.sql
 linux-port/docker/mariadb/playerbot/precyzja_skill.sql
 linux-port/docker/mariadb/playerbot/wiki_nowe.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
+linux-port/docker/mariadb/playerbot/noawaken.sql
 linux-port/docker/game/Dockerfile
 linux-port/docker/game/.dockerignore
 linux-port/docker/game/build-deps-mt2009.sh
