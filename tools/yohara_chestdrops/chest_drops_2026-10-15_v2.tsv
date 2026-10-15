@@ -1159,3 +1159,16 @@ chest	chest_name	item	count	chance	vnum	time
 54703	Skrzynia Nemere	Rękawica Złodzieja	1	0.0033557	76037	2h
 54703	Skrzynia Nemere	Pierścień Doświad. (1h)	1	0.0033557	70005	1h
 54703	Skrzynia Nemere	Skrzynia Ksiąg Zwierza	1	0.0011186	76044	
+# Skrzynia Berana-Setaou (54700): the owner's sheet of 15 October 2026 (cache/yohara/beran_54700_sheet1.csv, metin2alerts, one opening).
+54700	Skrzynia Berana-Setaou	Żelazne Pudełko	1	0.1492538	50121	
+54700	Skrzynia Berana-Setaou	Spróchniała Skrzynia	1	0.1492537	50124	
+54700	Skrzynia Berana-Setaou	Kamień Duchowy	1	0.1492537	50513	
+54700	Skrzynia Berana-Setaou	Biała Perła	1	0.1119403	27992	
+54700	Skrzynia Berana-Setaou	Niebieska Perła	1	0.1119403	27993	
+54700	Skrzynia Berana-Setaou	Krwawa Perła	1	0.1119403	27994	
+54700	Skrzynia Berana-Setaou	Torba Emocji	1	0.1119403	38060	
+54700	Skrzynia Berana-Setaou	Krwisty Kamień	4	0.0746268	76010	
+54700	Skrzynia Berana-Setaou	Kula Błogosławieństwa	1	0.0074627	76015	
+54700	Skrzynia Berana-Setaou	Wzmocnienie Przedmiotu	3	0.0074627	71085	
+54700	Skrzynia Berana-Setaou	Zaczarowanie Przedmiotu	3	0.0074627	71084	
+54700	Skrzynia Berana-Setaou	Smoczy Płomień (B)	1	0.0074627	100700	

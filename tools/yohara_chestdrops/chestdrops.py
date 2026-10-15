@@ -7,7 +7,7 @@ from the owner's sheet of 15 October 2026 (chest_drops_2026-10-15_v2.tsv, a copy
 metin2alerts_drop_2026-10-15_v2.csv: community data, estimated chances of ONE opening). The chest generators
 (tools/yohara_items, yohara_maps3, yohara_maps4, yohara_dung4, yohara_pb, yohara_iluzja, yohara_zaklety) take their
 groups from table(); the hand-made groups (game/shipdefense: 54705, 72058; game/special_item_group.dungeons.txt:
-50270, 50271 - the sheet's 54702 / 54703) were written from it too, verify_chestdrops.py keeps them all equal.
+50270, 50271 - the sheet's 54702 / 54703 - and 54700, Skrzynia Berana-Setaou) were written from it too, verify_chestdrops.py keeps them all equal.
 
 Each sheet row: the official vnum -> ours. The same vnum when our world has it (world.item_proto, checked by
 verify_chestdrops.py --db), else SUBST (our number of the same item) or SKIP (a system we lack - left out). The
@@ -15,6 +15,8 @@ chances of the rows left are scaled to weights summing to SCALE (one opening = o
 group: CSpecialItemGroup::GetOneIndex), so a weight / 1000 is the percent. Exact duplicates (the same item, the same
 count) are one row with their chances summed; the same item with other counts stays separate rows. FIXED keeps a
 row at the owner's own chance (Skrzynia Hydry: Magiczny Kamien 4%, 13 October), the rest scaled to what is left.
+EXTRA adds rows the sheet lacks at a chance of their own (Skrzynia Berana-Setaou 54700: the pl-wiki's items without a
+rate, MT2009_PLUS_BERAN_CHEST_V1), the sheet's rows scaled to what is left.
 
 Example: python3 tools/yohara_chestdrops/chestdrops.py 54705     (prints the group's rows and what is left out)
 """
@@ -95,6 +97,28 @@ for _v in (6045, 6046, 6047, 6073, 6074, 6093, 6130, 6150, 21073, 21074, 21075, 
 # our chest -> {our vnum: the owner's own weight of SCALE}
 FIXED = {54705: {25042: 4000}}      # Skrzynia Hydry: Magiczny Kamien exactly 4% (the owner, 13 October 2026)
 
+# MT2009_PLUS_BERAN_CHEST_V1: our chest -> rows the sheet lacks, at a chance of their own: (our vnum, count, chance of one
+# opening, name). Skrzynia Berana-Setaou (54700, the owner 15 October 2026): the pl-wiki's "Zawartosc" items with no
+# rate in the sheet, each at the sheet's rare rows' 0.74627% (Wzmocnienie Przedmiotu's); the sheet's rows are scaled
+# down to what is left. The boots +4 as Beran-Setaou drops them (pl-wiki: "max ulepszone +4").
+_BERAN_RARE = 0.0074627
+_WIKI = 'wiki, no rate - owner 15.10'
+EXTRA = {54700: [
+    (15374, 1, _BERAN_RARE, 'Buty Euforii+4 - ' + _WIKI),
+    (15414, 1, _BERAN_RARE, 'Buty Qilina+4 - ' + _WIKI),
+    (15434, 1, _BERAN_RARE, 'Buty Zimorodka+4 - ' + _WIKI),
+    (15394, 1, _BERAN_RARE, 'Kozaki Glorii+4 - ' + _WIKI),
+    (27003, 100, _BERAN_RARE, 'Czerwona Mikstura(D) x100 - ' + _WIKI),
+    (27002, 100, _BERAN_RARE, 'Czerwona Mikstura(S) x100 - ' + _WIKI),
+    (27002, 200, _BERAN_RARE, 'Czerwona Mikstura(S) x200 - ' + _WIKI),
+    (27006, 100, _BERAN_RARE, 'Niebieska Mikstura(D) x100 - ' + _WIKI),
+    (27005, 100, _BERAN_RARE, 'Niebieska Mikstura(S) x100 - ' + _WIKI),
+    (27005, 200, _BERAN_RARE, 'Niebieska Mikstura(S) x200 - ' + _WIKI),
+    (71083, 1, _BERAN_RARE, 'Ksiega Obrobki Kamienia - ' + _WIKI),
+    (71123, 1, _BERAN_RARE, 'Smocza Luska - ' + _WIKI),
+    (71129, 1, _BERAN_RARE, 'Smoczy Szpon - ' + _WIKI),
+]}
+
 
 def ascii_pl(s):
     s = s.replace('ł', 'l').replace('Ł', 'L')
@@ -147,7 +171,9 @@ def table(chest):
         at[key] = len(rows)
         rows.append([str(o), count, chance, nm])
     fixed = FIXED.get(chest, {})
-    free = SCALE - sum(fixed.values())
+    extra = [(str(v), c, max(1, int(round(p * SCALE))), nm) for v, c, p, nm in EXTRA.get(chest, [])]
+    assert not set((v, c) for v, c, _, _ in extra) & set(at), (chest, 'an extra row is in the sheet')
+    free = SCALE - sum(fixed.values()) - sum(w for _, _, w, _ in extra)
     total = sum(r[2] for r in rows if not (r[1] == 1 and r[0] in map(str, fixed)))
     out = []
     for vn, count, chance, nm in rows:
@@ -156,6 +182,7 @@ def table(chest):
         else:
             w = max(1, int(round(chance * free / total)))
         out.append((vn, count, w, nm))
+    out += extra
     assert all(int(v) in [int(r[0]) for r in out if r[1] == 1] for v in fixed), (chest, 'a fixed row is missing')
     return out, skipped
 
@@ -164,10 +191,14 @@ def comment(chest):
     """the comment lines before a chest's group: the source and the sheet's rows left out"""
     rows, skipped = table(chest)
     L = ['# MT2009_PLUS_CHEST_DROPS_V1: %d - %d rows from the owner\'s sheet of 15 October 2026 (tools/yohara_chestdrops),'
-         % (chest, len(rows)), '# weights of %d (/ 1000 = %%), one row an opening.' % SCALE]
+         % (chest, len(rows) - len(EXTRA.get(chest, []))), '# weights of %d (/ 1000 = %%), one row an opening.' % SCALE]
     if chest in FIXED:
         L.append('# The owner\'s own chance kept: ' + ', '.join('vnum %d weight %d' % kv for kv in sorted(FIXED[chest].items())) +
                  ' (the rest scaled to what is left).')
+    if chest in EXTRA:
+        L.append('# Not in the sheet, added at a chance of their own (MT2009_PLUS_BERAN_CHEST_V1): %d rows, %.3f%% each'
+                 % (len(EXTRA[chest]), EXTRA[chest][0][2] * 100))
+        L.append('#   (the pl-wiki\'s list, no rate - the owner, 15 October 2026); the sheet\'s rows scaled to what is left.')
     if skipped:
         s = '# Left out (renormalised): ' + '; '.join('%s%s %.3f%% - %s' % (n, ' x%d' % c if c > 1 else '', p * 100, w)
                                                      for n, c, p, w in skipped)

@@ -473,6 +473,7 @@ COPY src/serverfiles/share/package /opt/metin2/share/package
 #    1 000 000 - 10 000 000 yang instead of the stock 10 000 - 50 000.
 #  * special_item_group.dungeons.txt - the Razador (50270) and Nemere (50271)
 #    boss chests the two dungeons' quests hand out (MT2009_PLUS_BOSS_CHESTS_V1).
+#    And Skrzynia Berana-Setaou (54700), the Blue Dragon lair's (MT2009_PLUS_BERAN_CHEST_V1).
 #  * special_item_group.rumi.txt - the Okey chests of Owsap's Rumi (50267-50269,
 #    50275-50277) and their pools 950401-950403 (MT2009_PLUS_RUMI_V1).
 #  * special_item_group.catchking.txt - Catch the King's three King's Loots
@@ -488,6 +489,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && cat "$m" /tmp/share-add/special_item_group.starter.txt /tmp/share-add/special_item_group.cors.txt /tmp/share-add/special_item_group.dungeons.txt /tmp/share-add/special_item_group.goblin.txt /tmp/share-add/special_item_group.rumi.txt /tmp/share-add/special_item_group.catchking.txt /tmp/share-add/special_item_group.unique_attr.txt >> "$f.new" \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50968|50969|50970)([^0-9]|$)' "$f.new")" = 3 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(50270|50271)([^0-9]|$)' "$f.new")" = 2 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+54700([^0-9]|$)' "$f.new")" = 1 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(515[0-9][0-9]|516[0-4][0-9])([^0-9]|$)' "$f.new")" = 146 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+50023([^0-9]|$)' "$f.new")" = 1 \
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(5026[789]|5027[567]|95040[123])([^0-9]|$)' "$f.new")" = 9 \

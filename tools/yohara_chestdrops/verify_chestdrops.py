@@ -5,7 +5,8 @@
 MT2009_PLUS_CHEST_DROPS_V1: checks that every chest of the owner's sheet (chestdrops.py) has exactly one group in
 linux-port/docker/game (any special_item_group*.txt below it) and that its rows are chestdrops.py's - the generated
 files and the hand-made ones (shipdefense: 54705, 72058; special_item_group.dungeons.txt: the official Razador /
-Nemere chests, nested groups 950270 / 950275 of 50270 / 50271); that every group of those files is numbered 1..N;
+Nemere chests, nested groups 950270 / 950275 of 50270 / 50271, and Skrzynia Berana-Setaou 54700 with its pl-wiki
+rows - MT2009_PLUS_BERAN_CHEST_V1); that every group of those files is numbered 1..N;
 that no awk of the Dockerfile still adds rows to a sheet chest; and, with --db, that every vnum written is in
 world.item_proto (docker exec CONTAINER mariadb ...).
 

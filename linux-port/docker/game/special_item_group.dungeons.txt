@@ -312,3 +312,39 @@ Group	MT2009_jewels75
 	11	16520	1	10 -- Granatowy Naszyjnik+0
 	12	17520	1	5 -- Granatowe Kolczyki+0 (the dearest piece: half the weight, MT2009_PLUS_JEWELS75_V2)
 }
+# MT2009_PLUS_BERAN_CHEST_V1: Skrzynia Berana-Setaou (54700, the official vnum; the owner, 15 October 2026) - the
+# Blue Dragon lair's chest: blue_dragon_lair.quest gives every person of the party 8-10 (pl-wiki, 17.3), each opens
+# 2 times (ShipDefense_ChestKeep, ANTI_STACK in apply.sh). A normal group: one row an opening, by weight.
+# MT2009_PLUS_CHEST_DROPS_V1: 54700 - 11 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# weights of 100000 (/ 1000 = %), one row an opening.
+# Not in the sheet, added at a chance of their own (MT2009_PLUS_BERAN_CHEST_V1): 13 rows, 0.746% each
+#   (the pl-wiki's list, no rate - the owner, 15 October 2026); the sheet's rows scaled to what is left.
+# Left out (renormalised): Torba Emocji 11.194% - no system
+Group	MT2009_chest_54700
+{
+	Vnum	54700 -- Skrzynia Berana-Setaou
+	1	50121	1	15177 -- Zelazne Pudelko
+	2	50124	1	15177 -- Sprochniala Skrzynia
+	3	50513	1	15177 -- Kamien Duchowy
+	4	27992	1	11383 -- Biala Perla
+	5	27993	1	11383 -- Niebieska Perla
+	6	27994	1	11383 -- Krwawa Perla
+	7	76010	4	7588 -- Krwisty Kamien x4
+	8	76015	1	759 -- Kula Blogoslawienstwa
+	9	71085	3	759 -- Wzmocnienie Przedmiotu x3
+	10	71084	3	759 -- Zaczarowanie Przedmiotu x3
+	11	100700	1	759 -- Smoczy Plomien (B)
+	12	15374	1	746 -- Buty Euforii+4 - wiki, no rate - owner 15.10
+	13	15414	1	746 -- Buty Qilina+4 - wiki, no rate - owner 15.10
+	14	15434	1	746 -- Buty Zimorodka+4 - wiki, no rate - owner 15.10
+	15	15394	1	746 -- Kozaki Glorii+4 - wiki, no rate - owner 15.10
+	16	27003	100	746 -- Czerwona Mikstura(D) x100 - wiki, no rate - owner 15.10
+	17	27002	100	746 -- Czerwona Mikstura(S) x100 - wiki, no rate - owner 15.10
+	18	27002	200	746 -- Czerwona Mikstura(S) x200 - wiki, no rate - owner 15.10
+	19	27006	100	746 -- Niebieska Mikstura(D) x100 - wiki, no rate - owner 15.10
+	20	27005	100	746 -- Niebieska Mikstura(S) x100 - wiki, no rate - owner 15.10
+	21	27005	200	746 -- Niebieska Mikstura(S) x200 - wiki, no rate - owner 15.10
+	22	71083	1	746 -- Ksiega Obrobki Kamienia - wiki, no rate - owner 15.10
+	23	71123	1	746 -- Smocza Luska - wiki, no rate - owner 15.10
+	24	71129	1	746 -- Smoczy Szpon - wiki, no rate - owner 15.10
+}
