@@ -1318,13 +1318,74 @@ namespace
 
 	// ------------------------------------------------------------- the keys
 
+	// MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1 (the owner, 15 October,
+	// SUCHAR in Wzgorze Wukonga: the Pieczec Wzgorza never broken). A dungeon's
+	// own item - a seal, a key, Nemere's crystals, Razador's cog and Maat
+	// stones, the Atlantyda key, the tower's and the Catacomb's keys - is
+	// looked for in the whole bag, the saddlebag page (cells
+	// INVENTORY_DEFAULT_MAX_NUM..INVENTORY_MAX_NUM) as well: with the four
+	// pages full and the horse out the quest's give_item2 puts it there, and a
+	// lookup of the four pages only left it unused for good. Every caller of
+	// this one is such an item; the passes that sell or store read the four
+	// pages themselves.
+	//
+	// UseItem takes an item off the saddlebag page while the page is open
+	// (cell < GetInventoryMaxCount: the horse out or ridden) and refuses it
+	// otherwise ("Summon your horse"), and MoveItem refuses to move it then,
+	// so an item on a shut page is put down here, server-side: into a free cell
+	// of the four pages, or - with none free - swapped with a one-cell piece of
+	// the four pages, which goes up to the saddlebag in its place (nothing
+	// destroyed). GiveItem (a cog to a stele) asks nothing of the page.
+	int BringPlayerBotDungeonItemDown(LPCHARACTER ch, LPITEM item)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		const int from = (int)item->GetCell();
+		if (from < INVENTORY_DEFAULT_MAX_NUM || from < (int)ch->GetInventoryMaxCount())
+			return from;
+		if (item->isLocked() || item->IsExchanging() || ch->GetExchange() || ch->GetMyShop())
+			return -1;
+		const DWORD vnum = item->GetVnum();
+		for (int d = 0; d < PLAYERBOT_BAG_CELLS; ++d)
+			if (ch->IsEmptyItemGrid(TItemPos(INVENTORY, d), item->GetSize()))
+			{
+				ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, (WORD)from, 255);
+				item->RemoveFromCharacter();
+				item->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)d));
+				sys_log(0, "PLAYERBOT_DUNGEON: item off the shut saddlebag pid=%u name=%s vnum=%u %d->%d map=%ld",
+						ch->GetPlayerID(), ch->GetName(), vnum, from, d, ch->GetMapIndex());
+				return d;
+			}
+		if (item->GetSize() != 1)
+			return -1;
+		for (int d = PLAYERBOT_BAG_CELLS - 1; d >= 0; --d)
+		{
+			LPITEM other = ch->GetInventoryItem(d);
+			if (!other || other == item || other->GetCell() != d || other->GetSize() != 1 ||
+					other->isLocked() || other->IsExchanging() || other->IsEquipped())
+				continue;
+			ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, (WORD)from, 255);
+			ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, (WORD)d, 255);
+			item->RemoveFromCharacter();
+			other->RemoveFromCharacter();
+			item->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)d));
+			other->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)from));
+			sys_log(0, "PLAYERBOT_DUNGEON: item swapped off the shut saddlebag pid=%u name=%s vnum=%u %d<->%d other=%u map=%ld",
+					ch->GetPlayerID(), ch->GetName(), vnum, from, d, other->GetVnum(), ch->GetMapIndex());
+			return d;
+		}
+		return -1;
+#else
+		return (int)item->GetCell();
+#endif
+	}
+
 	int FindPlayerBotTowerItemCell(LPCHARACTER ch, DWORD vnum)
 	{
-		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		for (int cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && item->GetVnum() == vnum)
-				return cell;
+			if (item && item->GetVnum() == vnum && (int)item->GetCell() == cell)
+				return BringPlayerBotDungeonItemDown(ch, item);
 		}
 		return -1;
 	}
@@ -1407,7 +1468,8 @@ namespace
 	// on a player's logout.
 	void DropPlayerBotTowerKeys(LPCHARACTER ch)
 	{
-		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		// MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1: the saddlebag page too.
+		for (int cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (item && (IsPlayerBotDemonTowerKey(item->GetVnum()) ||

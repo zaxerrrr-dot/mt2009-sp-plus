@@ -801,9 +801,24 @@ quest ruiny_skorpiona begin
 				ruiny_skorpiona.purge_mobs()
 				d.setf("seal_time", get_global_time())
 				pc.give_item2(30767, 1)
+				-- MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1: a bot's seal breaks by itself after about 30 s, not 180.
+				if pc.is_bot() then
+					server_timer("skorpion_seal", 30, d.get_map_index())
+				end
 				d.notice("Ruiny Skorpiona: "..pc.get_name().." zdobywa Pieczêæ Ruin. U¿yj jej, aby przyzwaæ nastêpn¹ falê.")
 			elseif math.mod(k, 20) == 0 then
 				d.notice("Ruiny Skorpiona: Pokonane potwory: "..k.." / "..c.wave_kills)
+			end
+		end
+
+		-- MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1: the seal a bot got and has not broken in about 30 s
+		-- breaks by itself (the 180 s of skorpion_tick stay for a player's seal).
+		when skorpion_seal.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("closed") ~= 1 and d.getf("stage") == 1 and d.getf("seal_out") == 1 and get_global_time() - d.getf("seal_time") >= 25 then
+					d.notice("Ruiny Skorpiona: Pieczêæ Ruin zadzia³a³a sama.")
+					ruiny_skorpiona.seal_used()
+				end
 			end
 		end
 
