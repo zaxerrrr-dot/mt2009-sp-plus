@@ -18,6 +18,8 @@
 #if defined(PLAYERBOT_ENGINE_MT2009)
 // MT2009_PLUS_PICKUP_FILTER_V1 (char_item.cpp): the player's pick-up filter.
 bool Mt2009PlusPickupFilterAllows(LPCHARACTER ch, LPITEM item);
+// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (char_item.cpp): the people's boss loot a quest dropped (game.drop_item_at).
+bool Mt2009PlusIsPeopleLoot(LPITEM item);
 #endif
 
 namespace
@@ -151,9 +153,23 @@ namespace
 	bool IsPlayerBotSidekickLootOff(LPCHARACTER ch);
 	bool IsPlayerBotSidekickOwnLootOff(LPCHARACTER ch);	// MT2009_PLUS_SIDEKICK_NO_LOOT_V1
 
+	// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1: the boss loot of Razador, Nemere and Beran-Setaou a quest left on
+	// the ground for the people of the party (game.drop_item_at, people 1) - the
+	// engine's pickup refuses it to a bot, so no bot walks to it either.
+	bool IsPlayerBotPeopleOnlyLoot(LPITEM item)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return Mt2009PlusIsPeopleLoot(item);
+#else
+		return false;
+#endif
+	}
+
 	bool IsPlayerBotPartyLoot(LPCHARACTER owner, LPITEM item)
 	{
 		if (!owner || !item)
+			return false;
+		if (IsPlayerBotPeopleOnlyLoot(item))	// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1
 			return false;
 		// MT2009_PLUS_PICKUP_FILTER_V1 (bots): a player's companion takes
 		// nothing its owner has filtered out, not even its own drop.

@@ -388,5 +388,35 @@
   "marker": "MT2009_PLUS_EXCHANGE_DS_V1 (check)",
   "old": "\t\tif (item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t\t{\n\t\t\tGetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\t\treturn false;\n\t\t}\n",
   "new": "\t\t// MT2009_PLUS_EXCHANGE_DS_V1 (check) (server-patches/enginefixes): only an INVENTORY cell past the bag is the horse's\n\t\t// saddlebag - a Dragon Soul stone (its own window, cells far above the bag's) was refused with the saddlebag text.\n\t\tif (m_pOwner->IsHorseInventory(item->GetItemPos()) && item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t\t{\n\t\t\tGetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\t\treturn false;\n\t\t}\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (declare)",
+  "old": "extern ACMD(do_in_game_mall);\n",
+  "new": "extern ACMD(do_in_game_mall);\n\n// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (declare) (server-patches/enginefixes): game.drop_item_at's ground spot and its people-only mark (char_item.cpp).\n#include \"sectree_manager.h\"\nvoid Mt2009PlusMarkPeopleLoot(LPITEM item);\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (drop_item_at)",
+  "old": "\tALUA(game_web_mall)\n",
+  "new": "\t// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (drop_item_at) (server-patches/enginefixes): game.drop_item_at(vnum, count, x, y [, sec [, people]]) -\n\t// the boss loot of Razador, Nemere and Beran-Setaou lies on the ground round the boss like a mob's drop (the owner,\n\t// 15 October: not into the bags). x, y in pixels on the current player's map; a spot the map blocks moves to the\n\t// nearest free one (GetMovablePosition), none - the player's own. Owned by the current player for sec seconds\n\t// (0: CItem::SetOwnership's standard 30), so his party may pick it up for him (CHARACTER::PickupItem, as any\n\t// party drop); people 1: no bot ever picks it up (Mt2009PlusMarkPeopleLoot). Gone after the standard ground time.\n\t// Returns true when it lies on the ground.\n\tALUA(game_drop_item_at)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tif (!ch || !lua_isnumber(L, 1) || !lua_isnumber(L, 3) || !lua_isnumber(L, 4))\n\t\t{\n\t\t\tlua_pushboolean(L, 0);\n\t\t\treturn 1;\n\t\t}\n\t\tconst DWORD vnum = (DWORD) lua_tonumber(L, 1);\n\t\tint count = lua_isnumber(L, 2) ? (int) lua_tonumber(L, 2) : 1;\n\t\tif (count < 1)\n\t\t\tcount = 1;\n\t\tconst long x = (long) lua_tonumber(L, 3);\n\t\tconst long y = (long) lua_tonumber(L, 4);\n\t\tconst int sec = lua_isnumber(L, 5) ? (int) lua_tonumber(L, 5) : 0;\n\t\tconst bool people = lua_isnumber(L, 6) && (int) lua_tonumber(L, 6) != 0;\n\n\t\tLPITEM item = ITEM_MANAGER::instance().CreateItem(vnum, count);\n\t\tif (!item)\n\t\t{\n\t\t\tsys_err(\"cannot create item vnum %u count %d\", vnum, count);\n\t\t\tlua_pushboolean(L, 0);\n\t\t\treturn 1;\n\t\t}\n\n\t\tPIXEL_POSITION pos;\n\t\tpos.z = 0;\n\t\tif (!SECTREE_MANAGER::instance().GetMovablePosition(ch->GetMapIndex(), x, y, pos))\n\t\t{\n\t\t\tpos.x = ch->GetX();\n\t\t\tpos.y = ch->GetY();\n\t\t}\n\n\t\tif (people)\n\t\t\tMt2009PlusMarkPeopleLoot(item);\n\t\tif (!item->AddToGround(ch->GetMapIndex(), pos))\n\t\t{\n\t\t\tM2_DESTROY_ITEM(item);\n\t\t\tlua_pushboolean(L, 0);\n\t\t\treturn 1;\n\t\t}\n\t\tif (sec > 0)\n\t\t\titem->SetOwnership(ch, sec);\n\t\telse\n\t\t\titem->SetOwnership(ch);\n\t\titem->StartDestroyEvent();\n\t\tsys_log(0, \"DROP_ITEM_AT: %s x%d %ld %ld owner %s people %d\", item->GetName(), count, pos.x, pos.y, ch->GetName(), people ? 1 : 0);\n\n\t\tlua_pushboolean(L, 1);\n\t\treturn 1;\n\t}\n\n\tALUA(game_web_mall)\n"
+ },
+ {
+  "file": "questlua_game.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (register)",
+  "old": "\t\t\t{ \"drop_item_with_ownership\",\tgame_drop_item_with_ownership\t},\n",
+  "new": "\t\t\t{ \"drop_item_with_ownership\",\tgame_drop_item_with_ownership\t},\n\t\t\t{ \"drop_item_at\",\t\t\t\tgame_drop_item_at\t\t\t\t},\t// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (register)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (people)",
+  "old": "bool CHARACTER::PickupItem(DWORD dwVID)\n{\n",
+  "new": "// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (people) (server-patches/enginefixes): what a quest dropped for the people of a party only\n// (game.drop_item_at with people 1 - the boss loot of Razador, Nemere and Beran-Setaou on the ground, the owner,\n// 15 October: the bots must leave it to the people). Kept by item id for ten minutes (the dungeons close a minute\n// after the boss); no bot picks such an item up (PickupItem below), whoever owns it.\nstatic std::map<DWORD, DWORD> s_mapMt2009PlusPeopleLoot;\n\nvoid Mt2009PlusMarkPeopleLoot(LPITEM item)\n{\n\tif (!item)\n\t\treturn;\n\tconst DWORD now = get_global_time();\n\tif (s_mapMt2009PlusPeopleLoot.size() > 256)\n\t{\n\t\tfor (std::map<DWORD, DWORD>::iterator it = s_mapMt2009PlusPeopleLoot.begin(); it != s_mapMt2009PlusPeopleLoot.end(); )\n\t\t{\n\t\t\tif (it->second <= now)\n\t\t\t\ts_mapMt2009PlusPeopleLoot.erase(it++);\n\t\t\telse\n\t\t\t\t++it;\n\t\t}\n\t}\n\ts_mapMt2009PlusPeopleLoot[item->GetID()] = now + 600;\n}\n\nbool Mt2009PlusIsPeopleLoot(LPITEM item)\n{\n\tif (!item || s_mapMt2009PlusPeopleLoot.empty())\n\t\treturn false;\n\tstd::map<DWORD, DWORD>::iterator it = s_mapMt2009PlusPeopleLoot.find(item->GetID());\n\tif (it == s_mapMt2009PlusPeopleLoot.end())\n\t\treturn false;\n\tif (it->second <= (DWORD) get_global_time())\n\t{\n\t\ts_mapMt2009PlusPeopleLoot.erase(it);\n\t\treturn false;\n\t}\n\treturn true;\n}\n\nbool CHARACTER::PickupItem(DWORD dwVID)\n{\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (pickup)",
+  "old": "\tif (!item->DistanceValid(this))\n\t\treturn false;\n\n",
+  "new": "\tif (!item->DistanceValid(this))\n\t\treturn false;\n\n\t// MT2009_PLUS_DUNGEON_GROUND_LOOT_V1 (pickup): the people's boss loot is never a bot's - not its own, not for a member of its party.\n\tif (GetDesc() && GetDesc()->IsBot() && Mt2009PlusIsPeopleLoot(item))\n\t\treturn false;\n\n"
  }
 ]
