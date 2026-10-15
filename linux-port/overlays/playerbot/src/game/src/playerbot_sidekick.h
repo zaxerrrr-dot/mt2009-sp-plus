@@ -5446,6 +5446,105 @@ namespace
 				rt.lHoldMap, rt.lHoldX, rt.lHoldY);
 	}
 
+	// MT2009_PLUS_SIDEKICK_SELL_GIFTS_TOLD_V1 ("zeby towarzysz sprzedawal po
+	// kliknieciu sprzedaj zlom - przedmioty ktore dal mu wlasciciel. U mnie
+	// dziala, ale u tego typa nie dziala", the owner, 15 October, with a
+	// player's diagnostic package of 2.33.0: "errand ... sell_only=1 scrap=0"
+	// and gifts=7 in the bag). The "sprzedaj" order sells the owner's gear
+	// under +8 whoever put it in the bag (IsPlayerBotSidekickSellAllGear), but
+	// keeps - by design - what the equipment lock ("Zablokuj ekwipunek")
+	// keeps, what the owner put on it, +8 and over, and everything that is
+	// not weapon or armour (materials, potions, scrolls ...). The answer was
+	// only "Nie mam w plecaku zlomu do sprzedania" and the owner never learnt
+	// why the handover stayed. Now the companion says what of the owner's
+	// (handed over, or held for a full bag) it kept and why, and the log has it.
+	struct TPlayerBotSidekickKeptGifts
+	{
+		unsigned int locked;	// gear under +8 the equipment lock keeps
+		unsigned int pinned;	// gear the owner put on it, waiting for its slot
+		unsigned int high;	// gear +8 and over
+		unsigned int kind;	// not gear, fish or a tool: never the order's
+		unsigned int other;	// no sale at the merchant, the operator's keep, arrows
+	};
+
+	unsigned int CountPlayerBotSidekickKeptGifts(LPCHARACTER ch, TPlayerBotSidekickKeptGifts& kept)
+	{
+		kept.locked = kept.pinned = kept.high = kept.kind = kept.other = 0;
+		if (!ch || !ch->IsItemLoaded())
+			return 0;
+		const bool lock = IsPlayerBotSidekickEquipLocked(ch->GetPlayerID());
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->IsEquipped() || !item->GetProto() ||
+					!IsPlayerBotSidekickGift(ch, item))
+				continue;
+			const BYTE type = item->GetType();
+			const bool arrow = type == ITEM_WEAPON && (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item));
+			if ((type == ITEM_WEAPON && !arrow) || type == ITEM_ARMOR)
+			{
+				const int pin = GetPlayerBotSidekickPinOf(ch, item);
+				if (item->GetRefineLevel() >= PLAYERBOT_SIDEKICK_SELL_ALL_BELOW_REFINE)
+					++kept.high;
+				else if (pin >= 0 && pin != PLAYERBOT_SIDEKICK_PIN_UNWANTED)
+					++kept.pinned;
+				else if (lock)
+					++kept.locked;
+				else
+					++kept.other;
+			}
+			else if (arrow || type == ITEM_FISH || type == ITEM_ROD || type == ITEM_PICK ||
+					IsPlayerBotFishingJunkVnum(item->GetVnum()))
+				++kept.other;
+			else
+				++kept.kind;
+		}
+		return kept.locked + kept.pinned + kept.high + kept.kind + kept.other;
+	}
+
+	// The one line about them, "" for none.
+	std::string DescribePlayerBotSidekickKeptGifts(const TPlayerBotSidekickKeptGifts& kept, unsigned int total)
+	{
+		if (total == 0)
+			return std::string();
+		char part[160];
+		snprintf(part, sizeof(part), "Od ciebie zostawiam %u rzeczy:", total);
+		std::string text = part;
+		const char* sep = " ";
+		if (kept.locked)
+		{
+			snprintf(part, sizeof(part), "%s%u - masz wlaczone 'Zablokuj ekwipunek' (wylacz, a sprzedam)", sep,
+					kept.locked);
+			text += part;
+			sep = "; ";
+		}
+		if (kept.kind)
+		{
+			snprintf(part, sizeof(part), "%s%u - to nie bron ani zbroja, tego nie sprzedaje", sep, kept.kind);
+			text += part;
+			sep = "; ";
+		}
+		if (kept.pinned)
+		{
+			snprintf(part, sizeof(part), "%s%u - zalozone przez ciebie", sep, kept.pinned);
+			text += part;
+			sep = "; ";
+		}
+		if (kept.high)
+		{
+			snprintf(part, sizeof(part), "%s%u - +8 i wyzej", sep, kept.high);
+			text += part;
+			sep = "; ";
+		}
+		if (kept.other)
+		{
+			snprintf(part, sizeof(part), "%s%u - nie do sprzedania u handlarza", sep, kept.other);
+			text += part;
+		}
+		text += ".";
+		return text;
+	}
+
 	// Back from town - done, called off, or with nothing to do - beside the
 	// owner, with what it spent and what it carries.
 	void EndPlayerBotSidekickErrand(LPCHARACTER sk, TPlayerBotAIState& state, TPlayerBotSidekick& rec,
@@ -5482,12 +5581,22 @@ namespace
 		else
 			snprintf(text, sizeof(text), "Wracam z zakupow: wydalem %lld yang, mam %u czerwonych i %u niebieskich mikstur.",
 					spent > 0 ? spent : 0LL, (unsigned int)red, (unsigned int)blue);
+		// MT2009_PLUS_SIDEKICK_SELL_GIFTS_TOLD_V1: what of the owner's stayed, and why.
+		TPlayerBotSidekickKeptGifts keptGifts;
+		const unsigned int keptTotal = sellOnly ? CountPlayerBotSidekickKeptGifts(sk, keptGifts) : 0;
+		if (sellOnly)
+			sys_log(0, "PLAYERBOT_SIDEKICK: sell kept gifts pid=%u owner=%u lock=%d total=%u locked=%u kind=%u "
+					"pinned=%u high=%u other=%u", rec.dwSidekickPID, rec.dwOwnerPID,
+					IsPlayerBotSidekickEquipLocked(rec.dwSidekickPID) ? 1 : 0, keptTotal, keptGifts.locked,
+					keptGifts.kind, keptGifts.pinned, keptGifts.high, keptGifts.other);
 		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
 		if (owner)
 		{
 			if (!sellOnly && sold[0])
 				SayPlayerBotSidekick(owner, sold);
 			SayPlayerBotSidekick(owner, text);
+			if (keptTotal > 0)
+				SayPlayerBotSidekick(owner, DescribePlayerBotSidekickKeptGifts(keptGifts, keptTotal).c_str());
 			if (owner->GetSectree() && !sk->IsDead())
 			{
 				PlacePlayerBotSidekick(sk, state, owner, dwNow, "sidekick_errand_back");
