@@ -2848,8 +2848,8 @@
 70618	Klucz Goblina	Tym kluczem zdobêdziesz wiêcej nagród w Poszukiwaniu skarbów.
 70619	Szkatu³ka z Kluczami Goblina	Zawiera 8 Kluczy Goblina.
 80030	Bilet Ko³a Fortuny	Bilet na jeden obrót Ko³em Fortuny (F12). Kupisz go w ItemShopie za Smocze Monety.
-50270	Skrzynia Razadora	Ta skrzynia zosta³a wydobyta z Czyœæca Ognia, legowiska Razadora. Znajduje siê w niej prawdziwy królewski skarb.
-50271	Skrzynia Nemere	Ta skrzynia zosta³a wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje siê w niej prawdziwy królewski skarb.
+50270	Skrzynia Razadora	Ta skrzynia zosta³a wydobyta z Czyœæca Ognia, legowiska Razadora. Znajduje siê w niej prawdziwy królewski skarb. Mo¿na j¹ otworzyæ 3 razy - za ka¿dym razem coœ daje.
+50271	Skrzynia Nemere	Ta skrzynia zosta³a wydobyta z Lodowej Krainy, legowiska Nemere. Znajduje siê w niej prawdziwy królewski skarb. Mo¿na j¹ otworzyæ 3 razy - za ka¿dym razem coœ daje.
 30765	Pieczêæ Biblioteki	Pieczêæ stra¿nika Biblioteki Wiedzy. U¿yj jej w lochu, aby przyzwaæ kolejn¹ falê paj¹ków.
 30773	Skrzynia Biblioteki	Nagroda za pokonanie Baronówny Paj¹ków w Bibliotece Wiedzy. Kliknij prawym przyciskiem, aby otworzyæ.
 30766	Pieczêæ Wzgórza	Pieczêæ stra¿nika Wzgórza Wukonga. U¿yj jej w lochu, aby przyzwaæ kolejn¹ falê ma³p.
