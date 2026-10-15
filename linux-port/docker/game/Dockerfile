@@ -2296,6 +2296,65 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps4-add \
  && { LC_ALL=C grep -a -q 'add_goto_info("rozpadlina"' "$S" || printf 'add_goto_info("rozpadlina", 0, 389, 1830, 15794)\r\n' >> "$S"; } \
  && rm -rf "$A" \
  && echo "share: Yohara - Rozpadlina Dusz (389): GF terrain, Ameria's bosses / Metins / NPCs, our monsters, groups, drops, the portals 10142 (Wawoz) / 10201 (Schronienie)"
+# MT2009_PLUS_MAPS_WZ_V1 (share): Wezowe Pole (80, metin2_map_snakefield = the official metin2_map_WL_01, 4x4 at
+# 1049600 716800 - the official index 69 is our Przelecz, metin2_map_wl_pass) and Kraina Gigantow (70,
+# metin2_map_giantland = the official metin2_map_nusluck01, 2x2 at 819200 716800 - in place of the base share's
+# "70 metin2_map_nusluck01" line) as the pl-wiki has them (the owner, 15 October 2026), on game2
+# (bin/m2-render-config). Every file made by tools/maps_wz/gen_maps_wz.py (maps_wz/README.md): the official
+# server_attr, spawns (group_group 1101-1104 / 1401 / 1402 / 1501-1504 and 1451-1453 of the base share, checked
+# here), NPCs and Metins, Town = where a player comes in; the wiki's drops our groups lacked
+# (mob_drop_item.maps_wz.txt, "drop" groups the reader merges with the mobs' own - Orkowa Maczuga 30194, Piasek
+# Kwarcowy 30195 ...). The way in (the wiki): the desert's bottom-right portal - the base share's 10108 to Przelecz
+# at 1477,1357 - becomes 10029 to Wezowe Pole (links.maps_wz.txt); Wezowe Pole's 10030 / 10032 lead to the desert /
+# Kraina, Kraina's 10031 back. Przelecz stays hosted (a GM's /goto). /goto sneak (it named 69), wezowe, giant (its
+# map corner -> the arrival), gigantow. The monsters' levels: mariadb/playerbot/maps_wz.sql.
+COPY maps_wz/ /tmp/maps-wz-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/maps-wz-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for v in 1101 1102 1103 1104 1401 1402 1451 1452 1453 1501 1502 1503 1504 20611; do \
+      grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$v[[:space:]]*\$" "$L/group_group.txt" \
+        || { echo "FATAL: group_group $v (Wezowe Pole / Kraina Gigantow) is not in group_group.txt"; exit 1; }; \
+    done \
+ && for m in "80 metin2_map_snakefield 1000000010000000 1049600 716800" "70 metin2_map_giantland 0800000008000000 819200 716800"; do \
+      set -- $m; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" && test -s "$L/map/$2/npc.txt" && test -s "$L/map/$2/regen.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: map $1 $2"; exit 1; }; \
+    done \
+ && test -s "$L/map/metin2_map_giantland/stone.txt" \
+ && N="$L/map/metin2_map_n_desert_01/npc.txt" \
+ && W=$(grep -E '^63[[:blank:]]+metin2_map_n_desert_01[[:blank:]]' "$A/links.maps_wz.txt" | tr -d '\r') \
+ && NEW=$(printf '%s\n' "$W" | cut -f3-13) && OLD=$(printf '%s\n' "$W" | cut -f14) \
+ && test "$OLD" = 10108 && test "$(printf '%s\n' "$NEW" | cut -f11)" = 10029 \
+ && test "$(grep -c -E "^m[[:blank:]].*[[:blank:]]$OLD[[:space:]]*\$" "$N")" = 1 \
+ && ! grep -q -E "^m[[:blank:]].*[[:blank:]]10029[[:space:]]*\$" "$N" \
+ && sed -i -E "/^m[[:blank:]].*[[:blank:]]$OLD[[:space:]]*\$/d" "$N" \
+ && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+ && printf '%s\r\n' "$NEW" >> "$N" \
+ && test "$(grep -c -E "^m[[:blank:]].*[[:blank:]]10029[[:space:]]*\$" "$N")" = 1 \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_maps_wz_' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.maps_wz.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_maps_wz_' "$F")" = 9 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[80\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_MAPS_WZ_V1\r\ntranslate.general.map_names[80] = "W\352\277owe Pole"\r\ntranslate.general.map_names[69] = "Prze\263\352cz"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && sed -i -E 's/^add_goto_info\("sneak", 0, 69, /add_goto_info("sneak", 0, 80, /; s/^add_goto_info\("giant", 0, 70, 8192, 7168\)/add_goto_info("giant", 0, 70, 8283, 7635)/' "$S" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("wezowe"' "$S" || printf 'add_goto_info("wezowe", 0, 80, 10590, 7262)\r\nadd_goto_info("gigantow", 0, 70, 8283, 7635)\r\n' >> "$S"; } \
+ && ! LC_ALL=C grep -a -q -E '^add_goto_info\("sneak", 0, 69,' "$S" \
+ && rm -rf "$A" \
+ && echo "share: Wezowe Pole (80) and Kraina Gigantow (70): the official terrain / spawns / NPCs / Metins, the wiki's drops, the desert's portal 10029"
 
 # MT2009_PLUS_YOHARA_MOTIONS_V1 (share): the server's motions of the Yohara monsters (the owner's test list of
 # 14 October, item 7 - "GetMoveMotionSpeed: cannot find motion" for Myr, Troll Zolnierz and the rest): the core
