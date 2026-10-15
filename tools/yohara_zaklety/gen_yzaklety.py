@@ -18,8 +18,8 @@ GENERATED here, never edited by hand:
                                          (Metin Lasu's: the wiki's "Silny" En-Tai)
     mob_drop_item.yohara_zaklety.txt     the pl-wiki's drop lists, our odds (official-like; the test server's drop
                                          event is not compensated for)
-    special_item_group.yohara_zaklety.txt  Skrzynia Jotuna Thryma (50266), Skrzynia Bagjanamu (54701) - the wiki's
-                                         contents, one thing an opening by weight
+    special_item_group.yohara_zaklety.txt  Skrzynia Jotuna Thryma (50266), Skrzynia Bagjanamu (54701) - the owner's
+                                         sheet (tools/yohara_chestdrops), one thing an opening by weight
     spawned.txt                          every vnum the map shows (the client builder yzaklety reads it)
   linux-port/docker/mariadb/playerbot/
     yohara_zaklety.sql                   world.mob_proto (INSERT IGNORE) - the forest's monsters, bosses, Metins, NPCs
@@ -40,6 +40,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
+sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_chestdrops'))
+import chestdrops as CD  # noqa: E402  (MT2009_PLUS_CHEST_DROPS_V1: the chests' rows)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_maps'))
 sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_items'))
@@ -405,30 +407,15 @@ HAVE = {
     13120: 'Tarcza Smoka', 13140: 'Tarcza Tytanow', 13160: 'Tarcza Trzech Wladcow',
     18000: 'Pas Lniany', 18010: 'Pas Skorzany', 18020: 'Pas Przepychu', 18030: 'Pas Madrosci', 18080: 'Pas Dusz',
 }
-POTIONS = [(27005, 100, 8), (27005, 200, 4), (27006, 100, 8), (27002, 100, 8), (27002, 200, 4), (27003, 100, 8)]
 
 
-# -- the chests: one thing an opening, by weight (ours - the wiki lists the contents, not the odds). Left out what our
-#    world has not: Boski Kwiat, Kula Blogoslawienstwa, Bialy / Czarny Barwnik, Zlote / Brazowe / Miedziane Plyty, the
-#    Riposta / Dopalacz books (no such skills here), Ksiega Dzikiego Zwierza, Torba Emocji, Smoczy Plomien (B), Zbroja
-#    Dowodcy, Opatrunek, Plan Zbroi, Peleryna Maskujaca, Kamien Duchowy Liderow, Wzor Kroju's twin Zloty Material kept
+# -- the chests: one thing an opening, by weight -----------------------------------------------------------------
 def chests():
-    jotun = POTIONS + [
-        (30629, 1, 3), (30627, 1, 3), (30624, 1, 4), (30623, 1, 3), (30610, 1, 8), (30192, 1, 8), (27994, 1, 3),
-        (27992, 1, 4), (27993, 1, 4), (25040, 1, 6), (50525, 1, 4), (30602, 1, 5), (30603, 1, 5), (30604, 1, 5),
-        (95603, 1, 6), (30616, 1, 6), (30617, 1, 6), (30618, 1, 6), (95601, 1, 6), (30507, 1, 5), (30504, 1, 5),
-        (30501, 1, 5), (70031, 1, 4), (30503, 1, 4), (30506, 1, 4), (30500, 1, 4), (30515, 1, 4), (30509, 1, 4),
-        (30512, 1, 4), (30606, 1, 6), (30608, 1, 6), (71095, 1, 3), (20750, 1, 2), (20000, 1, 2), (20500, 1, 2),
-        (20250, 1, 2), (7140, 1, 2), (180, 1, 2), (15430, 1, 2), (15370, 1, 2), (13140, 1, 2), (13100, 1, 2),
-        (13060, 1, 2), (13080, 1, 2), (13160, 1, 2), (13120, 1, 2), (18000, 1, 2), (18010, 1, 2), (18020, 1, 1),
-        (18030, 1, 1), (18080, 1, 1)]
-    bagjanamu = POTIONS + [
-        (30616, 1, 6), (30617, 1, 6), (70031, 1, 4), (30503, 1, 4), (30603, 1, 5), (30602, 1, 5), (30604, 1, 5),
-        (95603, 1, 6), (30512, 1, 4), (72006, 1, 3), (30606, 1, 6), (30506, 1, 4), (30508, 1, 4), (95602, 1, 6),
-        (27102, 10, 6), (30520, 1, 4), (30501, 1, 4), (30519, 1, 4), (30517, 1, 4), (140, 1, 2), (5100, 1, 2),
-        (2140, 1, 2), (3140, 1, 2), (150, 1, 2), (1100, 1, 2), (7140, 1, 2), (30624, 1, 3)]
-    return [(D.CHEST_JOTUN, 'Skrzynia Jotuna Thryma - Jotun Thrym (Erebu); the pl-wiki\'s list', jotun),
-            (D.CHEST_BAGJANAMU, 'Skrzynia Bagjanamu - Bagjanamu (Erebu); the pl-wiki\'s list', bagjanamu)]
+    # MT2009_PLUS_CHEST_DROPS_V1: the rows and their chances - the owner's sheet of 15 October 2026
+    # (tools/yohara_chestdrops: the official vnums mapped to ours, what we lack left out and the rest renormalised)
+    return [(vnum, title, CD.table(vnum)[0]) for vnum, title in (
+        (D.CHEST_JOTUN, 'Skrzynia Jotuna Thryma - Jotun Thrym (Erebu)'),
+        (D.CHEST_BAGJANAMU, 'Skrzynia Bagjanamu - Bagjanamu (Erebu)'))]
 
 
 # -- the drops (mob_drop_item, Type drop: vnum, count, percent): the pl-wiki's list of each monster, boss and Metin;
@@ -491,14 +478,15 @@ def write_drops(byv):
 
 def write_sig(byv):
     L = ['# %s: the chests of Erebu - Skrzynia Jotuna Thryma (50266) and Skrzynia Bagjanamu (54701), their' % M,
-         '# contents as on their pl-wiki pages, one thing an opening, by weight (ours: the wiki gives no odds). GENERATED',
-         '# by tools/yohara_zaklety/gen_yzaklety.py - do not edit. Appended to special_item_group.txt by the Dockerfile.', '']
+         '# contents as on their pl-wiki pages, one thing an opening, by weight (the owner\'s sheet of 15 October 2026).',
+         '# GENERATED by tools/yohara_zaklety/gen_yzaklety.py - do not edit. Appended to special_item_group.txt by the',
+         '# Dockerfile.', '']
     for vnum, title, rows in chests():
         assert vnum in byv
+        L += CD.comment(vnum)
         L += ['Group\tMT2009_yzl_%d' % vnum, '{', '\tVnum\t%d -- %s' % (vnum, title)]
-        for k, (v, c, w) in enumerate(rows, 1):
-            assert v in byv or v in HAVE, (vnum, v)
-            L.append('\t%d\t%s\t%d\t%d -- %s' % (k, v, c, w, nm(byv, v, c)))
+        for k, (v, c, w, n) in enumerate(rows, 1):
+            L.append('\t%d\t%s\t%d\t%d -- %s' % (k, v, c, w, n))
         L += ['}', '']
     with open(os.path.join(OUT, 'special_item_group.yohara_zaklety.txt'), 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L))

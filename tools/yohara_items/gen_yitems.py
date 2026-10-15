@@ -7,8 +7,8 @@ Twierdza (374) and Dongan (373) that our world did not have (the owner, 13 Octob
 "dodajemy WSZYSTKIE przedmioty, ktore dropia na dodawanych mapach"), with the official vnums and numbers of Owsap
 v6.2.6 (Server/Server/db/item_proto.txt, refine_proto of db/data/player.sql) and the Polish names and descriptions of
 its Polish client (Client/Client/pack/locale/locale/pl/itemdesc.txt = the official translation), the icons of the GF
-26.1.11 client. The wiki pages (cache/yohara/wiki/*.raw, wiki/items/*.raw) give the drop lists and the chests'
-contents; the percents are ours (the wiki gives none).
+26.1.11 client. The wiki pages (cache/yohara/wiki/*.raw, wiki/items/*.raw) give the drop lists; the percents are ours
+(the wiki gives none). The chests' contents and chances: the owner's sheet of 15 October 2026 (tools/yohara_chestdrops).
 
 Writes (all GENERATED - edit this file, run it again):
   linux-port/docker/mariadb/playerbot/yohara_items.sql            world.item_proto / refine_proto (INSERT IGNORE)
@@ -30,6 +30,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
+sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_chestdrops'))
+import chestdrops as CD  # noqa: E402  (MT2009_PLUS_CHEST_DROPS_V1: the chests' rows)
 SQL_OUT = os.path.join(REPO, 'linux-port', 'docker', 'mariadb', 'playerbot', 'yohara_items.sql')
 DROP_OUT = os.path.join(REPO, 'linux-port', 'docker', 'game', 'yohara_maps', 'mob_drop_item.yohara_maps.txt')
 SIG_OUT = os.path.join(REPO, 'linux-port', 'docker', 'game', 'yohara_maps', 'special_item_group.yohara_items.txt')
@@ -375,74 +377,28 @@ def copy_icons(items, gf):
         done.add(dst)
 
 
-# -- the chests (special_item_group): one thing an opening, by weight --------------------------------------------
-JEWEL3 = ((17543, 'Szmaragdowe Kolczyki+3'), (14543, 'Szmaragdowa Bransoleta+3'), (16543, 'Szmaragdowy Naszyjnik+3'),
-          (17523, 'Granatowe Kolczyki+3'), (14523, 'Granatowa Bransoleta+3'), (16523, 'Granatowy Naszyjnik+3'),
-          (17503, 'Rubinowe Kolczyki+3'), (14503, 'Rubinowa Bransoleta+3'), (16503, 'Rubinowy Naszyjnik+3'),
-          (17563, 'Szafirowe Kolczyki+3'), (14563, 'Szafirowa Bransoleta+3'), (16563, 'Szafirowy Naszyjnik+3'),
-          (14573, 'Bransoleta z Turmalinu+3'), (16573, 'Naszyjnik z Turmalinu+3'))
-TEAR = ((17200, 'Kolczyki Z Niebian.Lez'), (14200, 'Bransol. Z Niebian.Lez'), (16200, 'Naszyj. Z Niebian.Lez'))
-ARMOR567 = ((11690, 'Zbr. Plyt. Czar. Magii'), (11290, 'Zbroja Z Czarnej Stali'), (11490, 'Ubranie Czarn. Wiatru'),
-            (11890, 'Czarna Szata'))
-ARMOR3 = ((20003, 'Pancerz Diabel. Rogu+3'), (20503, 'Pancerz Koscioplytowy+3'), (20253, 'Szata Smoczego Jezdzca+3'),
-          (20753, 'Zlote Ubranie+3'))
+# the weapons of BOSS_WEAPONS (the drops below)
 WEAPON567 = ((3140, 'Magnetyczne Ostrze'), (2140, 'Olbrz. Luk Zolt. Smoka'), (1100, 'Smoczy Noz'),
              (5100, 'Dzwon Nieba I Ziemi'), (7140, 'Wachlarz Zbawienia'), (150, 'Miecz Szponu Ducha'),
              (140, 'Miecz Bojowy'))
-WEAPON3 = ((7173, 'Wachlarz Lezac. Smoka+3'), (463, 'Runiczny Miecz+3'), (3193, 'Ostrze Slonca+3'),
-           (2373, 'Luk Feniksa+3'), (5343, 'Dzwon Smoczego Ducha+3'), (1343, 'Kolec Pieciu Elementow+3'),
-           (473, 'Klinga Smoczego Kla+3'))
 
 
+# -- the chests (special_item_group): one thing an opening, by weight --------------------------------------------
 def chests(byv):
-    def n(v):
-        return byv[v]['name'] if v in byv else ''
-    g = []
-    # Szkatulka Yohara (pl-wiki "Szkatulka Yohara"): left out - Szklo Detekcji (60004), Male Blogoslawienstwo (72351),
-    # the Jade Mist jewels (14580/16580/17570; no jade jewellery here), the Lycan's Szpon Gryfa, Zbroja Nocnego Cienia,
-    # Zbroja Dowodcy, Wladca Smokow (no Lycan here)
-    s = [(31216, 1, 60), (31224, 1, 60), (31218, 1, 60), (72353, 1, 60), (31217, 1, 60), (31245, 1, 60),
-         (50325, 1, 30), (50529, 1, 30), (71130, 1, 30, 'Przepustka (zdatna do handlu)'), (80019, 1, 30, 'Delikatne Sukno'),
-         (39004, 1, 20, 'Kula Blogoslawienstwa (zdatna do handlu)'),
-         (27007, 50, 60, 'Czerwona Mikstura (XXL) x50'), (27008, 30, 60, 'Niebieska Mikstura (XXL) x30')]
-    s += [(v, 1, 15) for v in (81000, 81550, 81250, 81300)]
-    s += [(v, 1, 8, nm) for v, nm in JEWEL3]
-    for base, nm in TEAR + ARMOR567 + WEAPON567:
-        s += [(base + lv, 1, w, '%s+%d' % (nm, lv)) for lv, w in ((5, 5), (6, 3), (7, 2))]
-    s += [(v, 1, 8, nm) for v, nm in ARMOR3 + WEAPON3]
-    g.append((50528, 'Szkatulka Yohara', s))
-    s = [(v, 1, 8) for v in range(50569, 50576)]
-    s += [('gold', 500000, 30, 'Yang 500 000'), (27007, 50, 30, 'Czerwona Mikstura (XXL) x50'),
-          (27008, 30, 30, 'Niebieska Mikstura (XXL) x30')]
-    g.append((50529, 'Skrzynia Ksiag (9.skill) - the Lycan\'s Burza Szponow (50576) out', s))
-    g.append((50323, 'Skrzynia Ksiag: Riposta - the Lycan\'s Wilczy Dech (50524) out',
-              [(v, 1, 10) for v in range(50516, 50524)]))
-    g.append((50324, 'Skrzynia Ksiag: Dopalacz - the Lycan\'s Wilczy Dech (50568) out',
-              [(v, 1, 10) for v in range(50560, 50568)]))
-    s = [(v, 1, 8, nm) for v, nm in ((39070, 'Szary Odlamek'), (39071, 'Bialy Odlamek'), (39072, 'Zielony Odlamek'),
-                                     (39073, 'Zolty Odlamek'), (39074, 'Niebieski Odlamek'),
-                                     (39075, 'Fioletowy Odlamek'), (39076, 'Czerwony Odlamek'),
-                                     (39077, 'Teczowy Odlamek'))]
-    s += [(v, 1, 4) for v in (39078, 39079, 39080)] + [(50300, 1, 40, 'Ksiega Umiejetnosci')]
-    g.append((39068, 'Zdobna Skrz. z Odlamkiem', s))
-    out = []
-    for vnum, title, rows in g:
-        rr = []
-        for r in rows:
-            v, c, w = r[:3]
-            nm = r[3] if len(r) > 3 else n(v)
-            assert nm, (vnum, v)
-            rr.append((v, c, w, nm))
-        out.append((vnum, title, rr))
-    return out
+    # MT2009_PLUS_CHEST_DROPS_V1: the rows and their chances - the owner's sheet of 15 October 2026
+    # (tools/yohara_chestdrops: the official vnums mapped to ours, what we lack left out and the rest renormalised)
+    return [(vnum, title, CD.table(vnum)[0]) for vnum, title in (
+        (50528, 'Szkatulka Yohara'), (50529, 'Skrzynia Ksiag (9.skill)'), (50323, 'Skrzynia Ksiag: Riposta'),
+        (50324, 'Skrzynia Ksiag: Dopalacz'), (39068, 'Zdobna Skrz. z Odlamkiem'))]
 
 
 def write_sig(byv):
     L = ['# MT2009_PLUS_YOHARA_ITEMS1_V1: the chests among the drops of Opuszczona Twierdza and Dongan - their contents',
-         '# as on their pl-wiki pages (cache/yohara/wiki/items), one thing an opening, by weight (ours: the wiki gives no',
-         '# odds; Owsap has no group for them). GENERATED by tools/yohara_items/gen_yitems.py - do not edit.',
+         '# and chances from the owner\'s sheet of 15 October 2026 (tools/yohara_chestdrops), one thing an opening, by weight.',
+         '# GENERATED by tools/yohara_items/gen_yitems.py - do not edit.',
          '# Appended to special_item_group.txt by the Dockerfile (share: Yohara - Opuszczona Twierdza, Dongan).', '']
     for vnum, title, rows in chests(byv):
+        L += CD.comment(vnum)
         L.append('Group\tMT2009_yitems_%d' % vnum)
         L.append('{')
         L.append('\tVnum\t%d -- %s' % (vnum, title))

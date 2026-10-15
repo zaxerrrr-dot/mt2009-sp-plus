@@ -19,8 +19,9 @@ Writes (all GENERATED - edit this file, run it again):
 Left out (no system / no item here - the owner's rule: nothing invented): Odlamki 39070-39077 (the Seon-Hae event's,
 as every Yohara batch), Bohat. Ksiega Zwierza (no vnum in any source), Torba Emocji and Akcja Piekielnej Wiezy (the
 emotion packs), Szklo Detekcji, Male Blogoslawienstwo / Blogoslawienstwo (a 6th/7th bonus changer - our
-USE_CHANGE_ATTRIBUTE2 is an ordinary changer), Spirala Czasu (the biologist's waiting time), Mikstura Ataku +20, the
-jade necklaces / earrings / bracelets of Skrzynia Labiryntowa, EXP Czempiona from a chest.
+USE_CHANGE_ATTRIBUTE2 is an ordinary changer), Spirala Czasu (the biologist's waiting time), Mikstura Ataku +20, EXP
+Czempiona from a chest. The four chests' rows and chances: the owner's sheet of 15 October 2026
+(tools/yohara_chestdrops, MT2009_PLUS_CHEST_DROPS_V1 - each group's comment lists the sheet's rows left out).
 
 Example: python3 tools/yohara_dung4/gen_yitems_d4.py
 """
@@ -32,6 +33,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
+sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_chestdrops'))
+import chestdrops as CD  # noqa: E402  (MT2009_PLUS_CHEST_DROPS_V1: the chests' rows)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_items'))
 import gen_yitems as Y  # noqa: E402  (the engine's numbers, the row writer)
@@ -225,53 +228,25 @@ def nm(byv, v, c=1):
     return n + (' x%d' % c if c > 1 else '')
 
 
-# -- the chests (special_item_group): one thing an opening, by weight (ours: the wiki gives no odds); what our world
-#    lacks is left out (the head of this file) ---------------------------------------------------------------------
-RUNES = [(31247, 1, 10), (31248, 1, 10), (31249, 1, 10), (31250, 1, 10)]
-LEATHER = [(31251, 1, 10), (31252, 1, 6), (31245, 1, 12), (31245, 2, 6), (31246, 1, 12), (31246, 2, 6)]
-CHARISMA = [(50338, 1, 6), (50339, 1, 4), (50340, 1, 2), (50341, 1, 6), (50342, 1, 4), (50343, 1, 2)]
-
-
+# -- the chests (special_item_group): one thing an opening, by weight ---------------------------------------------
 def chests(byv):
-    g = []
-    g.append((31253, 'Skrzynia Mistrza Gnolli (Gnoll Kapitan) - left out: Torba Emocji, Mikstura Ataku +20, EXP '
-                     'Czempiona',
-              LEATHER + RUNES + [(70401, 1, 6), (50513, 1, 8), (27006, 20, 10), (27003, 20, 10), (50529, 1, 3),
-                                 ('gold', 200000, 10), ('gold', 400000, 6)] + CHARISMA))
-    g.append((31254, 'Skrzynia Mistrza Ahtrina (Ahtrin Kapitan) - left out: Torba Emocji, Szklo Detekcji, EXP '
-                     'Czempiona',
-              LEATHER + RUNES + [(70401, 1, 6), (50513, 1, 8), (95926, 50, 8), (71095, 1, 6), (50529, 1, 3),
-                                 (50338, 1, 6), (50340, 1, 2), (50341, 1, 6), (50343, 1, 2), (27006, 50, 10),
-                                 (27003, 50, 10), ('gold', 200000, 10), ('gold', 400000, 6)]))
-    g.append((31255, 'Skrzynia Zdobiona Zlotem (Ahtrin Wielki Mistrz (mrok)) - left out: Male Blogoslawienstwo, '
-                     'Torba Emocji, EXP Czempiona',
-              [(27992, 1, 6), (27993, 1, 6), (27994, 1, 4), (27003, 50, 10), (27006, 50, 10), (50513, 1, 8),
-               (71015, 1, 6), (70014, 1, 6), (70043, 1, 6), (50529, 1, 3), (100700, 1, 2), ('gold', 200000, 10),
-               ('gold', 400000, 6)] + LEATHER + RUNES + CHARISMA))
-    g.append((31256, 'Skrzynia Labiryntowa (Ahtrin Wielki Mistrz) - left out: the jade necklaces, bracelets and '
-                     'earrings (Kolia / Obrecz / Klipsy Jadeitu Slonca, Mgly)',
-              [(80019, 1, 8), (31251, 1, 10), (31224, 1, 8), (31218, 1, 8), (31216, 1, 8), (50325, 1, 4),
-               (72353, 1, 8), (27007, 50, 10), (27008, 50, 10), (81000, 1, 3), (81300, 1, 3), (81550, 1, 3),
-               (81250, 1, 3), (71130, 1, 6), ('gold', 500000, 10)] + RUNES))
-    out = []
-    for vnum, title, rows in g:
-        assert vnum in byv, vnum
-        rr = []
-        for v, c, w in rows:
-            if v != 'gold':
-                assert v in byv or v in EXISTING, (vnum, v)
-            rr.append((v, c, w, (EXISTING['gold'] + ' %d' % c) if v == 'gold' else nm(byv, v, c)))
-        out.append((vnum, title, rr))
-    return out
+    # MT2009_PLUS_CHEST_DROPS_V1: the rows and their chances - the owner's sheet of 15 October 2026
+    # (tools/yohara_chestdrops: the official vnums mapped to ours, what we lack left out and the rest renormalised)
+    return [(vnum, title, CD.table(vnum)[0]) for vnum, title in (
+        (31253, 'Skrzynia Mistrza Gnolli (Gnoll Kapitan)'),
+        (31254, 'Skrzynia Mistrza Ahtrina (Ahtrin Kapitan)'),
+        (31255, 'Skrzynia Zdobiona Zlotem (Ahtrin Wielki Mistrz (mrok))'),
+        (31256, 'Skrzynia Labiryntowa (Ahtrin Wielki Mistrz)'))]
 
 
 def write_sig(byv):
     L = ['# MT2009_PLUS_YOHARA_DUNG4_V1: the chests of Jaskinie Gnolli - their contents as on their pl-wiki pages',
          '# (Skrzynia Mistrza Gnolli, Skrzynia Mistrza Ahtrina, Skrzynia Zdobiona Zlotem, Skrzynia Labiryntowa), one',
-         '# thing an opening, by weight (ours: the wiki gives no odds). GENERATED by tools/yohara_dung4/gen_yitems_d4.py',
-         '# - do not edit. Appended to special_item_group.txt by the Dockerfile (share: Yohara - Jaskinie Gnolli, Wieza',
-         '# Sung Mahi).', '']
+         '# thing an opening, by weight (the owner\'s sheet of 15 October 2026). GENERATED by',
+         '# tools/yohara_dung4/gen_yitems_d4.py - do not edit. Appended to special_item_group.txt by the Dockerfile',
+         '# (share: Yohara - Jaskinie Gnolli, Wieza Sung Mahi).', '']
     for vnum, title, rows in chests(byv):
+        L += CD.comment(vnum)
         L.append('Group\tMT2009_ydung4_%d' % vnum)
         L.append('{')
         L.append('\tVnum\t%d -- %s' % (vnum, title))
