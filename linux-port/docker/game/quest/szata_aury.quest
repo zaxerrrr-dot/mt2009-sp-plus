@@ -1,0 +1,110 @@
+-- MT2009_PLUS_AURA_V1: Szata Aury (w³aœciciel 15.10.2026: "Dodajemy ca³y system szaty aury"; pl-wiki "System Szat Aury",
+-- "Theowahdan", "Zwyczajna Szata Aury") - server-patches/aura/README.md.
+--   * Theowahdan (60003): "Szata aury: przenieœ parametry" (okno 0 - bonusy bransolety, naszyjnika, kolczyków albo
+--     tarczy na szatê; przedmiot znika), "Szata aury: ulepszanie" (okno 1 - Lodowe i Ogniste Runy Aury daj¹
+--     doœwiadczenie), "Szata aury: rozwój" (okno 2 - na poziomie 49 / 99 / 149 / 199 / 249 z pe³nym doœwiadczeniem:
+--     materia³ i Yang, zawsze siê udaje). Okna i zasady: silnik (playerbot_aura.cpp, game.open_aura), klient
+--     root/uiaura.py. Osobny quest - opcje szarf (acce_costume_uriel) i Transmutacja (transmutacja) zostaj¹.
+--   * Baek-Go (20018): Zwyczajna Szata Aury z £adnego Kamienia Chaosu, 200 Od³amków Energii i Wyj¹tkowego Barwnika
+--     za 25 000 000 Yang, szansa 20% (wiki) - przy pora¿ce materia³y przepadaj¹.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest szata_aury begin
+	state start begin
+		function craft()
+			return {
+				result = 49101, fee = 25000000, fee_text = "25 000 000", pct = 20,
+				items = { {31137, 1}, {51001, 200}, {31135, 1} },   -- £adny Kamieñ Chaosu, Od³amek Energii, Wyj¹tkowy Barwnik
+			}
+		end
+
+		when 60003.chat."Szata aury: przenieœ parametry" begin
+			say_title(mob_name(60003)..":")
+			say("Mogê przenieœæ na szatê aury parametry bransolety,")
+			say("naszyjnika, kolczyków albo tarczy - te podstawowe")
+			say("i te dodane. Im wy¿szy poziom szaty, tym wiêksza")
+			say("jest czêœæ parametrów, któr¹ da (poziom 250 - 25%).")
+			say("")
+			say_reward("Przedmiot, z którego przeniesiesz parametry, zniknie.")
+			say_reward("Szata nie mo¿e mieæ ju¿ przeniesionych parametrów -")
+			say_reward("usuwa je Œwiadectwo Aury+.")
+			if select("Otwórz okno", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				game.open_aura(0)
+			end
+		end
+
+		when 60003.chat."Szata aury: ulepszanie" begin
+			say_title(mob_name(60003)..":")
+			say("Runy aury podnosz¹ poziom szaty: Lodowa Runa Aury")
+			say("daje 1 punkt doœwiadczenia, Ogniste - 10, 50, 100,")
+			say("250 albo 500. Poziom szaty to 1000, 2000, 4000,")
+			say("8000 albo 16000 punktów - zale¿nie od jej rodzaju.")
+			say("")
+			say_reward("Na poziomie 49, 99, 149, 199 i 249 z pe³nym")
+			say_reward("doœwiadczeniem szata czeka na rozwój.")
+			say_reward("Biorê tylko tyle run, ile trzeba.")
+			if select("Otwórz okno", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				game.open_aura(1)
+			end
+		end
+
+		when 60003.chat."Szata aury: rozwój" begin
+			say_title(mob_name(60003)..":")
+			say("Szatê ze szczytu jej rodzaju rozwinê w nastêpn¹:")
+			say("Prosta - 10x Agat i 5 000 000 Yang,")
+			say("Szlachetna - 10x Prosty Kamieñ Chaosu i 5 000 000 Yang,")
+			say("B³yszcz¹ca - 10x £adny Kamieñ Chaosu i 5 000 000 Yang,")
+			say("Wytworna - 10x Wspania³y Kamieñ Chaosu i 8 000 000 Yang,")
+			say("Promienista - 20x Wspania³y Kamieñ Chaosu i 10 000 000 Yang.")
+			say("")
+			say_reward("Rozwój zawsze siê udaje i daje +1 poziom,")
+			say_reward("przeniesione parametry zostaj¹.")
+			if select("Otwórz okno", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				game.open_aura(2)
+			end
+		end
+
+		when 20018.chat."Szata Aury" begin
+			local c = szata_aury.craft()
+			say_title(mob_name(20018)..":")
+			say("Mogê wytworzyæ dla ciebie "..item_name(c.result)..".")
+			say("Przenosi ona parametry bi¿uterii, a u Theowahdana")
+			say("ulepszysz j¹ a¿ do poziomu 250.")
+			say("")
+			say_reward("Potrzebujê: 1x "..item_name(31137)..", 200x "..item_name(51001)..",")
+			say_reward("1x "..item_name(31135).." i "..c.fee_text.." Yang.")
+			say_reward("Szansa "..c.pct.."%. Gdy siê nie uda, materia³y przepadaj¹.")
+			if select("Wytwórz", "Nie teraz") ~= 1 then
+				return
+			end
+			say_title(mob_name(20018)..":")
+			for i = 1, table.getn(c.items) do
+				local need = c.items[i]
+				if pc.count_item(need[1]) < need[2] then
+					say("Brakuje ci: "..item_name(need[1]).." (potrzeba "..need[2]..").")
+					return
+				end
+			end
+			if pc.get_money() < c.fee then
+				say("Masz za ma³o Yang.")
+				return
+			end
+			if not pc.enough_inventory(c.result) then
+				say("Zrób miejsce w ekwipunku.")
+				return
+			end
+			for i = 1, table.getn(c.items) do
+				pc.remove_item(c.items[i][1], c.items[i][2])
+			end
+			pc.change_money(-c.fee)
+			if number(1, 100) <= c.pct then
+				pc.give_item2(c.result, 1)
+				say("Uda³o siê! Oto "..item_name(c.result)..".")
+			else
+				say("Nie uda³o siê. Materia³y przepad³y.")
+			end
+		end
+	end
+end

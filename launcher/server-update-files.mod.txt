@@ -389,3 +389,7 @@ linux-port/docker/panel/app/register_assets/*
 # playerbot_yohara_gear.{h,cpp} (the playerbot_* lines), the gloves, the stones and item_attr yohara_gloves.sql, quest
 # rekawice (quest/*), the maps' Precyzja champion/sungma_table.txt (champion/*).
 linux-port/docker/mariadb/playerbot/yohara_gloves.sql
+# MT2009_PLUS_AURA_V1 (server-patches/aura): Szata Aury - the engine files it changes are above (CommonDefines.h,
+# length.h, item_length.h, item.cpp, char.cpp, char_item.cpp, char_battle.cpp, questlua.cpp, cmd.cpp); the logic is
+# playerbot_aura.cpp (the playerbot_* lines), quest szata_aury (quest/*), the items szata_aury.sql.
+linux-port/docker/mariadb/playerbot/szata_aury.sql
