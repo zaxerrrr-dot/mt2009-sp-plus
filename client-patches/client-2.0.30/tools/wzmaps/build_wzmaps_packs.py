@@ -65,6 +65,20 @@ def main():
             for e in m2pack.read_index(os.path.join(d, p + '.index'))[2]:
                 allnames.setdefault(e['name'], p)
     tmpl = m2pack.read_index(os.path.join(base, 'az_mobs.index'))[2][-1]['raw']
+    _packcache = {}
+
+    def existing_entry(pack, name):
+        for d in (out, base):
+            ip = os.path.join(d, pack + '.index')
+            if not os.path.exists(ip):
+                continue
+            if (d, pack) not in _packcache:
+                ents = m2pack.read_index(ip)[2]
+                _packcache[(d, pack)] = (dict((e['name'], e) for e in ents), rd(os.path.join(d, pack + '.data')))
+            idx, dat = _packcache[(d, pack)]
+            if name in idx:
+                return m2pack.read_entry(dat, idx[name])
+        return None
     replace_ok = set(man.get('replace', []))
 
     def staged(pack, k):
@@ -106,6 +120,18 @@ def main():
     for pack in new_packs:
         keys = [e['name'] for e in man['packs'].get(pack, [])]
         items = dict((k, staged(pack, k)) for k in keys)
+        # A file another new pack of this build already carries with the same bytes (e.g. the golem sounds,
+        # in ymeley_mobs too) is left out here; a different file under the same name still stops the build.
+        shared = []
+        for k in list(keys):
+            if k in allnames:
+                other = existing_entry(allnames[k], k)
+                if other is not None and other == items[k]:
+                    shared.append(k)
+                    del items[k]
+        keys = [k for k in keys if k in items]
+        if shared:
+            report.setdefault('shared_left_out', {})[pack] = len(shared)
         done = [d for d in (base, out) if os.path.exists(os.path.join(d, pack + '.index'))]
         if done:
             f, v, ents = m2pack.read_index(os.path.join(done[0], pack + '.index'))
