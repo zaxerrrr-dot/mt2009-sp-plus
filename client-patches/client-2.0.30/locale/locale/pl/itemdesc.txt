@@ -2883,3 +2883,4 @@
 83032	Z³oty Pakiet Yutnori	Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.
 83033	Srebrny Pakiet Yutnori	Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.
 83034	Br¹zowy Pakiet Yutnori	Nagroda za udzia³ w Yutnori. Otwórz pakiet i sprawdŸ, co uda³o ci siê wygraæ.
+54700	Skrzynia Berana-Setaou	Ta skrzynia zosta³a wydobyta z Groty Wygnañców. Znajduje siê w niej prawdziwy królewski skarb. Mo¿na j¹ otworzyæ 2 razy - za ka¿dym razem coœ daje.
