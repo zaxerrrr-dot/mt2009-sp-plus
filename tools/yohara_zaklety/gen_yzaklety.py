@@ -119,7 +119,7 @@ def gen_map(a, report):
     pbst = open(os.path.join(ILUZJA, 'map', m['pb_folder'], 'Setting.txt'), encoding='latin-1', newline='').read()
     assert re.sub(r'BasePosition[^\r\n]*', '', pbst) == re.sub(r'BasePosition[^\r\n]*', '',
                                                              st.replace('\r\n', '\n').replace('\n', '\r\n'))
-    bad = atlas_overlaps(m['base'], m['size'])
+    bad = [f for f in atlas_overlaps(m['base'], m['size']) if f != m['folder']]     # its own row once added
     assert not bad, ('the base overlaps', bad)
     open(os.path.join(dst, 'Setting.txt'), 'w', newline='').write(st.replace('\r\n', '\n').replace('\n', '\r\n'))
     open(os.path.join(dst, 'Town.txt'), 'w', newline='').write('%d\t%d\r\n' % m['town'])
