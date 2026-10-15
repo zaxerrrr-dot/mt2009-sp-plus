@@ -1,0 +1,172 @@
+# MT2009_PLUS_BOOTS_V1 (the owner, 15 October 2026): the boots' crafting as on the pl-wiki, at Seon-Pyeong (20091,
+# quest/seon_pyeong.quest opens his window). Appended to cube.txt by the Dockerfile.
+#  * Buty Zimorodka / Buty Euforii (and their siblings Buty Qilina / Kozaki Glorii, the same wiki recipe) +0 from the
+#    level-47..59 boots +9, 3x Smocza Luska, 4x Smoczy Szpon and 200 000 Yang - "Ulepszenie zawsze sie powiedzie": 100%.
+#  * Ogniste Buty from Buty Zimorodka +5..+9, Buty Oceanu from Buty Euforii +5..+9 (Wzor Kroju, Niebieski / Czerwony
+#    Barwnik, 5x Ciezkie Pasy, 400 000 Yang). The wiki makes them at Kawuco (Przyladek Smoczego Ognia - no such
+#    NPC here), so Seon-Pyeong as Digi Rasta's cube.wiki_nowe.txt had them (moved from there, MT2009_PLUS_NS_WIKI_ITEMS_V1).
+#    The wiki says it may fail ("Ulepszanie moze sie nie udac") but gives no chance: 100% kept.
+
+# Buty Zimorodka+0 <- Buty Ognistego Ptaka+9, 3x Smocza Luska, 4x Smoczy Szpon
+section
+npc	20091
+item	15229	1
+item	71123	3
+item	71129	4
+reward	15430	1
+gold	200000
+percent	100
+end
+
+# Buty Euforii+0 <- Ekstazyjne Buty+9, 3x Smocza Luska, 4x Smoczy Szpon
+section
+npc	20091
+item	15169	1
+item	71123	3
+item	71129	4
+reward	15370	1
+gold	200000
+percent	100
+end
+
+# Buty Qilina+0 <- Buty Feniksa+9, 3x Smocza Luska, 4x Smoczy Szpon
+section
+npc	20091
+item	15209	1
+item	71123	3
+item	71129	4
+reward	15410	1
+gold	200000
+percent	100
+end
+
+# Kozaki Glorii+0 <- Deszczowe Buty+9, 3x Smocza Luska, 4x Smoczy Szpon
+section
+npc	20091
+item	15189	1
+item	71123	3
+item	71129	4
+reward	15390	1
+gold	200000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+5, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15435	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+6, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15436	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+7, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15437	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+8, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15438	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Ogniste Buty+0 <- Buty Zimorodka+9, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15439	1
+item	95602	1
+item	30602	1
+item	95603	5
+reward	15440	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+5, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15375	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+6, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15376	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+7, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15377	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+8, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15378	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end
+
+# Buty Oceanu+0 <- Buty Euforii+9, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
+section
+npc	20091
+item	15379	1
+item	95602	1
+item	30603	1
+item	95603	5
+reward	15450	1
+gold	400000
+percent	100
+end

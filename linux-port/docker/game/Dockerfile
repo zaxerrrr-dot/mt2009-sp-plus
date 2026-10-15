@@ -551,6 +551,17 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_dro
  && rm -f "$A" \
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_beran_2493' "$F")" = 1 \
  && echo "share: Beran-Setaou's wiki drop appended"
+# MT2009_PLUS_BOOTS_V1: Mleczny Sok (30192), a refine material of the level-65 boots, from Las Duchow's Driada, Duch
+# Wierzby, Zle Drzewo and Duch Pniaka as on the pl-wiki (the owner, 15 October) - one drop group each.
+COPY mob_drop_item.buty.append.txt /tmp/mob_drop_item.buty.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.buty.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_buty_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && rm -f "$A" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_buty_' "$F")" = 4 \
+ && echo "share: boots material Mleczny Sok - 4 groups"
 # MT2009_PLUS_METIN_BEANS_V1: Green Dragon Bean (100300) at 2.5% from every Metin of level 70+
 # (the owner, 3 October) - one small drop group per Metin, merged by the engine with any group
 # the Metin already has.
@@ -902,14 +913,16 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-add/cube.se
 
 # MT2009_PLUS_NS_WIKI_ITEMS_V1 (share): the official PL wiki's item families and materials the world
 # did not have (Autor: Digi Rasta, nowy-system 0.33.0; the items are mariadb/playerbot/wiki_nowe.sql):
-#  * cube.wiki_nowe.txt - 18 recipes at Seon-Pyeong (20091), after his own above: the six Cyjanitowe
-#    weapons from the level-87 +9 one, the Turmalin bracelet and necklace, Ogniste Buty / Buty Oceanu
-#    from Buty Zimorodka / Euforii +5..+9;
+#  * cube.wiki_nowe.txt - 8 recipes at Seon-Pyeong (20091), after his own above: the six Cyjanitowe
+#    weapons from the level-87 +9 one, the Turmalin bracelet and necklace (the 10 Ogniste Buty / Buty
+#    Oceanu recipes are cube.buty.txt since MT2009_PLUS_BOOTS_V1);
 #  * special_item_group.wiki_nowe.txt - groups 951201 / 951202, the materials the Razador and Nemere
 #    chests give at 70% (their "s951201" / "s951202" lines are in special_item_group.dungeons.txt).
 # MT2009_PLUS_NS_WIKI_RECIPES_OFF (the owner, 9 October): the 18 recipes are NOT appended for now - the items
 # stay in the world (wiki_nowe.sql) and the client, crafting them comes in a later update; cube.wiki_nowe.txt
 # is kept as it is (to switch it on: the four cube.txt lines before this change back in place of "n=0").
+# MT2009_PLUS_BOOTS_V1 (the owner, 15 October): the 10 boots recipes left cube.wiki_nowe.txt for cube.buty.txt
+# (below, switched on) - 8 recipes (weapons, Turmalin) stay here and off (switching them on: "test $n -eq 8").
 COPY cube.wiki_nowe.txt special_item_group.wiki_nowe.txt /tmp/wikinowe-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; G=$L/special_item_group.txt; A=/tmp/wikinowe-add \
  && for f in "$A"/*.txt; do sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$f"; done \
@@ -922,6 +935,20 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; G=$L/special_item
  && test "$(grep -c -E '^[[:blank:]]*[0-9]+[[:blank:]]+s95120[12][[:blank:]]' "$G")" -eq 2 \
  && rm -rf "$A" \
  && echo "share: wiki items - $n recipes at Seon-Pyeong, chest groups 951201 / 951202 (MT2009_PLUS_NS_WIKI_ITEMS_V1)"
+
+# MT2009_PLUS_BOOTS_V1 (share): the boots' crafting of the pl-wiki at Seon-Pyeong (20091; the owner, 15 October) -
+# cube.buty.txt: Buty Zimorodka / Euforii / Qilina / Kozaki Glorii +0 from the level-47..59 boots +9, Ogniste Buty /
+# Buty Oceanu from Buty Zimorodka / Euforii +5..+9 (14 recipes), after his own above.
+COPY cube.buty.txt /tmp/cube-buty/
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-buty/cube.buty.txt \
+ && ! grep -q 'MT2009_PLUS_BOOTS_V1 (the owner, 15 October 2026)' "$C" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
+ && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$n" -eq 14 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && rm -rf /tmp/cube-buty \
+ && echo "share: boots recipes at Seon-Pyeong ($n, MT2009_PLUS_BOOTS_V1)"
 
 # MT2009_PLUS_BELTS_V1 (share): the belt system (Pasy; Autor: Digi Rasta, nowy-system v0.27.0).
 # cube.pasy.txt - the nine belt recipes of the package's cube.txt (at Yu-Hwan and Jae-Seon Kim,

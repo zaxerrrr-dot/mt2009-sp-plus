@@ -1,0 +1,36 @@
+// MT2009_PLUS_BOOTS_V1: Mleczny Sok (30192), the level-65 boots' +4 -> +5 material, from the monsters the pl-wiki names
+// for it in Las Duchow (map 67; the owner, 15 October 2026): Driada (2303), Duch Wierzby (2304), Zle Drzewo (2305) and
+// Duch Pniaka (2302, the wiki's "Pniak Drzewa Duchow"). Jotun Thrym and Niszczyciel En-Tai drop it already. 1% a kill
+// (the wiki gives no rate; the boots' other materials come from their monsters at about that). Type drop: pct / 4
+// percent at the server's 100% drop. The engine merges these groups with the mobs' others.
+// Orkowa Maczuga (30194, the +5 -> +6 material) is the Ogres' of Kraina Gigantow (Ogr Wojownik 1601, Ogr Rzeznik
+// 1602) - that map's own drop file. Zabie Udka (30061), Futro Yeti (30014) and Pazur Tygrysa (30042) come from their
+// monsters' drop_item (etc_drop_item.txt) as before.
+
+Group	MT2009_buty_2302
+{
+	Mob	2302	-- Duch Pniaka
+	Type	drop
+	1	30192	1	4	-- Mleczny Sok, 1%
+}
+
+Group	MT2009_buty_2303
+{
+	Mob	2303	-- Driada
+	Type	drop
+	1	30192	1	4	-- Mleczny Sok, 1%
+}
+
+Group	MT2009_buty_2304
+{
+	Mob	2304	-- Duch Wierzby
+	Type	drop
+	1	30192	1	4	-- Mleczny Sok, 1%
+}
+
+Group	MT2009_buty_2305
+{
+	Mob	2305	-- Zle Drzewo
+	Type	drop
+	1	30192	1	4	-- Mleczny Sok, 1%
+}
