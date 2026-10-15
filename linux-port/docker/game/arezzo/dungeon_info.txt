@@ -10,6 +10,7 @@
 # drop <key> <vnum> <count> <percent>
 # MT2009_PLUS_DUNGEON_FEE_V1: cost <key> <yang> - the teleport's price (after the dungeon line);
 #   entry <key> <x y Shinsoo> <x y Chunjo> <x y Jinno> - an entrance per empire (xy mode).
+# MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1: razador and nemere from level 100, the official entry (were 55 and 75).
 dungeon	biblioteka	363	1	xy	3/23/43	3568	8772	30	0	1	8	9706	biblioteka_wiedzy.entry	1800	0	0	Biblioteka_Wiedzy	M2
 entry	biblioteka	3568	8772	1369	2396	8668	2396
 cost	biblioteka	1000000
@@ -33,7 +34,7 @@ drop	wieza	5124	1	5
 dungeon	wukong	364	1	xy	65	5537	1450	45	0	1	8	9682	wzgorze_wukonga.entry	1800	0	0	Wzgórze_Wukonga	Œwi¹tynia_Hwang
 cost	wukong	2500000
 drop	wukong	30774	4	100
-dungeon	razador	351	1	xy	62	5979	7060	55	0	1	8	6091	razador_dungeon.entry	3600	0	0	Czyœciec_Ognia_(Razador)	Doyyumhwaji
+dungeon	razador	351	1	xy	62	5979	7060	100	0	1	8	6091	razador_dungeon.entry	3600	0	0	Czyœciec_Ognia_(Razador)	Doyyumhwaji
 cost	razador	3500000
 drop	razador	50270	5	100
 dungeon	skorpion	365	1	xy	62	5989	7058	65	0	1	8	9694	ruiny_skorpiona.entry	3600	0	0	Ruiny_Skorpiona	Doyyumhwaji
@@ -57,7 +58,7 @@ drop	katakumby	7183	1	20
 drop	katakumby	7184	1	10
 drop	katakumby	5123	1	20
 drop	katakumby	5124	1	10
-dungeon	nemere	352	1	xy	61	4322	1655	75	0	1	8	6191	nemere_dungeon.entry	3600	0	0	Lodowa_Kraina_(Nemere)	Góra_Sohan
+dungeon	nemere	352	1	xy	61	4322	1655	100	0	1	8	6191	nemere_dungeon.entry	3600	0	0	Lodowa_Kraina_(Nemere)	Góra_Sohan
 cost	nemere	7500000
 drop	nemere	50271	5	100
 # MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy (158), entered at Mag Atlantydy beside the Grotto of Exile in Orc Valley

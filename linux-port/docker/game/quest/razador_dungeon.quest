@@ -1,4 +1,4 @@
--- MT2009_PLUS_DUNGEONS_V1 (razador): Czyœciec Ognia - loch Razadora, od poziomu 55,
+-- MT2009_PLUS_DUNGEONS_V1 (razador): Czyœciec Ognia - loch Razadora, od poziomu 100 (MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1, by³o 55),
 -- tylko dla graczy. Przebieg jak w archiwum "Flame-and-Nemere-dungeon" (R4kan,
 -- Arrador.cpp), napisany na lochach silnika (d.*) zamiast osobnego kodu C++:
 -- stra¿nik Ognistej Ziemi (20394, mapa 62) tworzy instancjê mapy 351
@@ -47,7 +47,9 @@ quest razador_dungeon begin
 				boss_room = {685, 710},
 				boss = {686, 637},
 				exit_map = 62, exit_x = 5888 + 91, exit_y = 6144 + 916,
-				min_level = 55,
+				-- MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1 (the owner, 15 October): the official entry level again - pl-wiki
+				-- "Wejscie od Lv 100", Owsap's LEVEL_CUT 100; the monsters are the official ones too (apply.sh). Was 55.
+				min_level = 100,
 				near = 30, -- MT2009_PLUS_DUNGEON_ONE_WARP_V1: party members within 30 cells of the leader go with him
 				cooldown = 60 * 60,
 				limit_min = 60,
