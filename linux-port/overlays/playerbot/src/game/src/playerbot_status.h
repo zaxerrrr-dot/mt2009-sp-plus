@@ -949,6 +949,15 @@ namespace
 				// status that describes an action without its purpose. Say
 				// where the bot is going, and when the errand is not experience,
 				// say the errand instead.
+				// MT2009_PLUS_M1_LOOP_FIX_V1 (status): the material errand says what
+				// it hunts for, whatever the planner's goal - while no other action
+				// has begun since it set off.
+				else if (const TItemTable* huntProto = GetPlayerBotMaterialErrandProto(ch, state, get_dword_time()))
+				{
+					snprintf(itemName, sizeof(itemName), "{i%u}", (unsigned int)huntProto->dwVnum);
+					snprintf(status, statusSize, PBT(en, "%sPoluje na material: %s", "%sHunting for a material: %s"), prefix,
+							en ? itemName : huntProto->szLocaleName);
+				}
 				else if (state.bLongTermGoal == BOT_GOAL_RESTOCK)
 					snprintf(status, statusSize, PBT(en, "%sIde do miasta po zapasy", "%sGoing to town for supplies"), prefix);
 				else if (state.bLongTermGoal == BOT_GOAL_REFINE)
@@ -965,7 +974,19 @@ namespace
 					bool key = false;
 					const char* wanted = GetPlayerBotBiologistStatusItem(ch, mission, missionIndex, en,
 							itemName, sizeof(itemName), &key);
-					if (mission && !state.bVisitingBiologist &&
+					// MT2009_PLUS_M1_LOOP_FIX_V1 (status): on its way through a gate
+					// or to the Teleporter it says where it is going.
+					const TPlayerBotWalkNote* portal = GetPlayerBotWalkNote(s_mapPlayerBotPortalWalkNote,
+							ch->GetPlayerID(), get_dword_time(), PLAYERBOT_STATUS_PORTAL_NOTE_MS);
+					const char* portalTo = portal && portal->lMap != ch->GetMapIndex()
+							? PlayerBotStatusMapDestination(portal->lMap, en) : "";
+					if (portalTo[0] && portal->bTeleporter)
+						snprintf(status, statusSize, PBT(en, "%sIde do Teleportera, potem %s", "%sGoing to the Teleporter, then %s"),
+								prefix, portalTo);
+					else if (portalTo[0])
+						snprintf(status, statusSize, PBT(en, "%sIde przez portal %s", "%sGoing through the portal %s"),
+								prefix, portalTo);
+					else if (mission && !state.bVisitingBiologist &&
 							!PlayerBotBiologistHoldsHandIn(ch, mission, missionIndex))
 						snprintf(status, statusSize, key
 								? PBT(en, "%sProbuje wydropic dla Biologa: %s", "%sTrying to drop for the Biologist: %s")

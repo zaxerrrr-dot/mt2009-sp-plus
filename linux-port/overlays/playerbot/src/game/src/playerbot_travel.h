@@ -2081,6 +2081,65 @@ namespace
 	const DWORD PLAYERBOT_PORTAL_STALL_WAIT_MS = 30000;
 	std::map<DWORD, DWORD> s_mapPlayerBotPortalStallUntil;
 
+	// MT2009_PLUS_M1_LOOP_FIX_V1 (status): what the bot is walking for, by pid,
+	// for the line over its head. A walk to a gate or the Teleporter and the
+	// material errand (StartPlayerBotMaterialHunt) both run under
+	// BOT_ACTION_TRAVEL, and with the Biologist as the planner's goal both
+	// read "Zbieram dla Biologa: Zab Orka" - 53 bots in the first villages,
+	// against 24 in the valley where the teeth drop (loop report, 15 October).
+	struct TPlayerBotWalkNote { DWORD dwAt; long lMap; DWORD dwVnum; bool bTeleporter; };
+	std::map<DWORD, TPlayerBotWalkNote> s_mapPlayerBotPortalWalkNote;
+	std::map<DWORD, TPlayerBotWalkNote> s_mapPlayerBotMaterialErrandNote;
+	const DWORD PLAYERBOT_STATUS_PORTAL_NOTE_MS = 5000;
+	const DWORD PLAYERBOT_STATUS_MATERIAL_NOTE_MS = 30000;
+
+	void NotePlayerBotWalk(std::map<DWORD, TPlayerBotWalkNote>& notes, LPCHARACTER ch, DWORD dwNow,
+			long lMap, DWORD dwVnum, bool bTeleporter)
+	{
+		if (!ch)
+			return;
+		TPlayerBotWalkNote& note = notes[ch->GetPlayerID()];
+		note.dwAt = dwNow;
+		note.lMap = lMap;
+		note.dwVnum = dwVnum;
+		note.bTeleporter = bTeleporter;
+	}
+
+	// The note if it is younger than maxAgeMs, else NULL (and dropped).
+	const TPlayerBotWalkNote* GetPlayerBotWalkNote(std::map<DWORD, TPlayerBotWalkNote>& notes,
+			DWORD pid, DWORD dwNow, DWORD maxAgeMs)
+	{
+		std::map<DWORD, TPlayerBotWalkNote>::iterator it = notes.find(pid);
+		if (it == notes.end())
+			return NULL;
+		if (dwNow - it->second.dwAt > maxAgeMs)
+		{
+			notes.erase(it);
+			return NULL;
+		}
+		return &it->second;
+	}
+
+	// The material the errand set off after, while it is still what the bot
+	// does: younger than PLAYERBOT_STATUS_MATERIAL_NOTE_MS, on this map, and
+	// no other action begun since.
+	const TItemTable* GetPlayerBotMaterialErrandProto(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || state.bCurrentAction != BOT_ACTION_TRAVEL)
+			return NULL;
+		const TPlayerBotWalkNote* hunt = GetPlayerBotWalkNote(s_mapPlayerBotMaterialErrandNote,
+				ch->GetPlayerID(), dwNow, PLAYERBOT_STATUS_MATERIAL_NOTE_MS);
+		if (!hunt || hunt->dwVnum == 0 || hunt->lMap != ch->GetMapIndex() ||
+				(int)(state.dwActionChangedTime - hunt->dwAt) > 0)
+			return NULL;
+		// Nor once it has turned for a gate since.
+		const TPlayerBotWalkNote* portal = GetPlayerBotWalkNote(s_mapPlayerBotPortalWalkNote,
+				ch->GetPlayerID(), dwNow, PLAYERBOT_STATUS_PORTAL_NOTE_MS);
+		if (portal && (int)(portal->dwAt - hunt->dwAt) > 0)
+			return NULL;
+		return ITEM_MANAGER::instance().GetTable(hunt->dwVnum);
+	}
+
 	bool MovePlayerBotToWorldPortal(LPCHARACTER ch, TPlayerBotAIState& state,
 			long portalX, long portalY, long targetMap, long targetX, long targetY,
 			DWORD dwNow, const char* reason)
@@ -2158,6 +2217,8 @@ namespace
 				portalY = gateY;
 			}
 		}
+		// MT2009_PLUS_M1_LOOP_FIX_V1 (status): "Ide przez portal do Joan".
+		NotePlayerBotWalk(s_mapPlayerBotPortalWalkNote, ch, dwNow, targetMap, 0, viaTeleporter);
 
 		// Warp NPCs trigger at 300 units and hand the client to whichever core
 		// hosts the target map, which is not a conversation a bot descriptor can

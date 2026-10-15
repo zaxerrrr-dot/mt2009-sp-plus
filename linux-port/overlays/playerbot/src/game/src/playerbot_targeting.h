@@ -1944,6 +1944,8 @@ namespace
 
 		state.dwMaterialHuntVnum = finder.m_dropVnum;
 		SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+		// MT2009_PLUS_M1_LOOP_FIX_V1 (status): "Poluje na material: ...".
+		NotePlayerBotWalk(s_mapPlayerBotMaterialErrandNote, ch, dwNow, ch->GetMapIndex(), finder.m_dropVnum, false);
 		sys_log(0, "PLAYERBOT_HUNT: material errand pid=%u name=%s map=%ld wants=%u mob=%s distance=%d pos=(%ld,%ld)",
 				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), finder.m_dropVnum,
 				finder.m_best->GetName(), finder.m_bestDistance,
