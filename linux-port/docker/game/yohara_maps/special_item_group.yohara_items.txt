@@ -83,7 +83,7 @@ Group	MT2009_yitems_50528
 	75	20503	1	8 -- Pancerz Koscioplytowy+3
 	76	20253	1	8 -- Szata Smoczego Jezdzca+3
 	77	20753	1	8 -- Zlote Ubranie+3
-	78	7173	1	8 -- Wachlarz Lezac. Smoka+3
+	78	7373	1	8 -- Wachlarz Lezac. Smoka+3
 	79	463	1	8 -- Runiczny Miecz+3
 	80	3193	1	8 -- Ostrze Slonca+3
 	81	2373	1	8 -- Luk Feniksa+3

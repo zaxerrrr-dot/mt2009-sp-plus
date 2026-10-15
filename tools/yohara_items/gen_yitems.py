@@ -389,7 +389,7 @@ ARMOR3 = ((20003, 'Pancerz Diabel. Rogu+3'), (20503, 'Pancerz Koscioplytowy+3'),
 WEAPON567 = ((3140, 'Magnetyczne Ostrze'), (2140, 'Olbrz. Luk Zolt. Smoka'), (1100, 'Smoczy Noz'),
              (5100, 'Dzwon Nieba I Ziemi'), (7140, 'Wachlarz Zbawienia'), (150, 'Miecz Szponu Ducha'),
              (140, 'Miecz Bojowy'))
-WEAPON3 = ((7173, 'Wachlarz Lezac. Smoka+3'), (463, 'Runiczny Miecz+3'), (3193, 'Ostrze Slonca+3'),
+WEAPON3 = ((7373, 'Wachlarz Lezac. Smoka+3'), (463, 'Runiczny Miecz+3'), (3193, 'Ostrze Slonca+3'),
            (2373, 'Luk Feniksa+3'), (5343, 'Dzwon Smoczego Ducha+3'), (1343, 'Kolec Pieciu Elementow+3'),
            (473, 'Klinga Smoczego Kla+3'))
 
