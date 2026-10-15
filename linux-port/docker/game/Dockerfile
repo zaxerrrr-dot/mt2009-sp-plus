@@ -1439,6 +1439,16 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map \
         || { echo "FATAL: Theowahdan on $1"; exit 1; }; \
     done \
  && echo "share: Theowahdan (60003) in Yongan, Joan, Pyungmoo and on Przyladek Smoczego Ognia - the sash NPC"
+# MT2009_PLUS_KAWUCO_V1 (share; the owner, 15 October 2026): Kawuco (20413, the boots NPC - mariadb/playerbot/kawuco.sql,
+# quest/kawuco.quest, cube.buty.txt) where the pl-wiki's "Kawuco" and Owsap's npc.txt put him: Przyladek Smoczego Ognia
+# 662,1224, facing 5 (the cell is free on the cape's server_attr, inside the safe zone). One line.
+RUN set -eu; F=/opt/metin2/share/locale/poland/map/Metin2_map_CapeDragonHead/npc.txt \
+ && test -f "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && { grep -q -E '^m[[:blank:]].*[[:blank:]]20413[[:space:]]*$' "$F" || printf 'm\t662\t1224\t0\t0\t0\t5\t1m\t100\t1\t20413\r\n' >> "$F"; } \
+ && test "$(grep -c -E '^m[[:blank:]]+662[[:blank:]]+1224[[:blank:]].*[[:blank:]]20413[[:space:]]*$' "$F")" = 1 \
+ && test "$(grep -c -E '[[:blank:]]20413[[:space:]]*$' "$F")" = 1 \
+ && echo "share: Kawuco (20413) on Przyladek Smoczego Ognia 662,1224 - the boots NPC"
 # MT2009_PLUS_YOHARA_MAPS302_V1 (share): Zbocze Gautama (302, metin2_map_dawnmistwood), Nefrytowa Zatoka (303,
 # metin2_map_BayBlackSand) and Gromiste Gory (304, metin2_map_Mt_Thunder) - the client gets the three maps from the
 # GF 26.1.11 client (client-patches/client-2.0.30/tools/maps302), so each server_attr becomes Owsap's, which matches
