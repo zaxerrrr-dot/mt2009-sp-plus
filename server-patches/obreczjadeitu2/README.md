@@ -56,8 +56,8 @@ Jadeit w gniazdach kolii / klipsów: Precyzja +1 (3. gniazdo +2 na +9); Wola jak
 zawsze +1. Silnik: przełącznik typów V1 (`item_attribute.cpp`, edycja `(types)`), tabela `CanPutInto` (`(jewel)`;
 wiersz kolczyków Turmalinu 17570 – to Klipsy Jadeitu Mgły, takich kolczyków nie mamy – wyzerowany jak u Owsapa,
 `(turmalin)`), tabele rodzajów w `playerbot_yohara_gear.cpp` (`JadeKindOf` – podtyp pancerza). Klient:
-`root/constinfo.py`, `yoharagear.py`. Tworzenie u Mistrza Chi (quest `yohara_mapy4`) i skrzynie wiki (krok Dockerfile
-`MT2009_PLUS_JADE_JEWELLERY_V1`, `linux-port/docker/game/jadejewel`).
+`root/constinfo.py`, `yoharagear.py`. Tworzenie u Mistrza Chi (quest `yohara_mapy4`) i skrzynie (od 15.10.2026 wiersze
+grup samych skrzyń wg arkusza właściciela – `tools/yohara_chestdrops`, `MT2009_PLUS_CHEST_DROPS_V1`).
 
 ## Silnik
 
