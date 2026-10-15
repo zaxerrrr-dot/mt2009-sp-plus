@@ -4,5 +4,23 @@
   "marker": "MT2009_PLUS_SAFEBOX_MERGE_V1",
   "old": "\tif (*arg1)\n\t\tresult.code = playerbot_arrange::RESULT_BAD_REQUEST;\n\telse\n\t\tresult = playerbot_arrange::ArrangeSafebox(ch, true);\n",
   "new": "\t// MT2009_PLUS_SAFEBOX_MERGE_V1 (server-patches/safeboxmerge): \"merge\"\n\t// pours the safebox's stacks together and moves nothing else - the\n\t// safebox's \"Tylko scal stosy\" button, as \"/inventory_arrange merge\" is\n\t// the bag's (playerbot_arrange::MergeSafeboxStacks).\n\tif (!strcmp(arg1, \"merge\"))\n\t\tresult = playerbot_arrange::MergeSafeboxStacks(ch, true);\n\telse if (*arg1)\n\t\tresult.code = playerbot_arrange::RESULT_BAD_REQUEST;\n\telse\n\t\tresult = playerbot_arrange::ArrangeSafebox(ch, true);\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_BOT_SAFEBOX_PAGES_V1 (length)",
+  "old": "\tSAFEBOX_PAGE_COUNT = 3,\n\tSAFEBOX_PREMIUM_PAGE_COUNT = 1,\n\tSAFEBOX_MAX_NUM = SAFEBOX_PAGE_WIDTH * SAFEBOX_PAGE_HEIGHT * SAFEBOX_PAGE_COUNT,\n",
+  "new": "\tSAFEBOX_PAGE_COUNT = 3,\n\tSAFEBOX_PREMIUM_PAGE_COUNT = 1,\n\t// MT2009_PLUS_BOT_SAFEBOX_PAGES_V1 (length) (server-patches/safeboxmerge): a playerbot's storeroom has\n\t// this many pages from the start, with no quest (CInputDB::SafeboxLoad); a\n\t// person's stays at SAFEBOX_PAGE_COUNT. The array of a CSafebox is sized for\n\t// the larger of the two; the grid of an open box is what limits a person.\n\t// Never below SAFEBOX_PAGE_COUNT.\n\tSAFEBOX_BOT_PAGE_COUNT = 4,\n\tSAFEBOX_MAX_NUM = SAFEBOX_PAGE_WIDTH * SAFEBOX_PAGE_HEIGHT * SAFEBOX_BOT_PAGE_COUNT,\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_BOT_SAFEBOX_PAGES_V1 (load)",
+  "old": "\t// END_OF_ADD_PREMIUM\n\n\td->GetCharacter()->LoadSafebox(iSize, p->dwGold",
+  "new": "\t// END_OF_ADD_PREMIUM\n\n\t// MT2009_PLUS_BOT_SAFEBOX_PAGES_V1 (load) (server-patches/safeboxmerge): a playerbot's storeroom has\n\t// SAFEBOX_BOT_PAGE_COUNT pages without the storekeeper's quest - its size\n\t// is no safebox row of the account (the bots never had one) but this rule.\n\tif (ch->GetPlayerID() != 0 && CPlayerBotManager::instance().IsRegisteredBotPID(ch->GetPlayerID()))\n\t\tiSize = SAFEBOX_BOT_PAGE_COUNT;\n\n\td->GetCharacter()->LoadSafebox(iSize, p->dwGold"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BOT_SAFEBOX_PAGES_V1 (clamp)",
+  "old": "\tiSize = MIN(iSize, SAFEBOX_PAGE_COUNT); // safe check\n",
+  "new": "\t// MT2009_PLUS_BOT_SAFEBOX_PAGES_V1 (clamp) (server-patches/safeboxmerge): up to a playerbot's pages;\n\t// a person never gets past SAFEBOX_PAGE_COUNT in CInputDB::SafeboxLoad.\n\tiSize = MIN(iSize, SAFEBOX_BOT_PAGE_COUNT); // safe check\n"
  }
 ]

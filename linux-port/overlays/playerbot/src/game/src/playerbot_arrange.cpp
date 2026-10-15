@@ -826,10 +826,13 @@ int TransferCodeOf(int hands)
 
 // The pages the box has: whole pages its grid holds, never past SAFEBOX_MAX_NUM,
 // which is all the cells CSafebox keeps pointers for.
+// MT2009_PLUS_BOT_SAFEBOX_PAGES_V1: by SAFEBOX_MAX_NUM, not SAFEBOX_PAGE_COUNT - a
+// playerbot's box has SAFEBOX_BOT_PAGE_COUNT pages (server-patches/safeboxmerge).
 int SafeboxPages(CSafebox* box)
 {
 	int pages = 0;
-	while (pages < SAFEBOX_PAGE_COUNT && box->IsValidPosition((DWORD)((pages + 1) * SAFEBOX_PAGE_CELLS - 1)))
+	while (pages < (int)(SAFEBOX_MAX_NUM / SAFEBOX_PAGE_CELLS) &&
+			box->IsValidPosition((DWORD)((pages + 1) * SAFEBOX_PAGE_CELLS - 1)))
 		++pages;
 	return pages;
 }
