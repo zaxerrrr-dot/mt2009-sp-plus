@@ -134,9 +134,15 @@ MASS_OPS = {"mul": "pomnóż przez", "add": "dodaj (lub odejmij)", "set": "ustaw
 BOOT_RULES = [
     ((6001, 6002, 6003, 6004, 6005, 6006, 6007, 6008, 6009, 6051, 6091, 6101, 6102, 6103, 6104, 6105, 6106,
       6107, 6108, 6109, 6151, 6191),
-     ("level", "max_hp", "damage_min", "damage_max", "def", "exp"), "Ognista i Lodowa Kraina (Razador, Nemere)"),
+     ("level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max", "resist_sword",
+      "resist_twohand", "resist_dagger", "resist_bell", "resist_fan", "resist_bow", "resist_fire", "resist_elect",
+      "resist_magic", "resist_wind", "resist_poison"), "Ognista i Lodowa Kraina (Razador, Nemere)"),
     ((2493, 8057, 9677, 9678, 9696, 9701, 9702, 9710, 9711), ("level", "max_hp", "def", "exp"),
      "potwory i Metiny dodatków MT2009 Plus"),
+    # MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1: the two dungeons' monsters on Owsap's (the official) numbers - gold and
+    # resists too; their Metins as well (a Metin's attack_speed / move_speed are the groups it calls).
+    ((8057, 8058, 20399), ("level", "max_hp", "def", "exp", "gold_min", "gold_max", "attack_speed", "move_speed"),
+     "Ognista i Lodowa Kraina (Razador, Nemere)"),
     ((8031, 8032, 8033, 8034), ("level", "max_hp", "def"), "Metiny dodatków MT2009 Plus"),
     ((9601, 9602, 9603, 9604, 9605, 9606, 9607, 9671, 9672, 9673, 9674, 9675, 9676, 9679, 9680, 9681, 9682,
       9683, 9684, 9690, 9691, 9692, 9693, 9694, 9695, 9697, 9698, 9699, 9700, 9707, 9708, 9709, 9712, 9713,
