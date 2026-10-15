@@ -3168,7 +3168,9 @@ namespace
 	// priced by level and kind, and the estimate for any other unpriced piece of 30+.
 	// 26: MT2009_PLUS_NS_WIKI_ITEMS_V1 - the wiki families (Cyjanitowe weapons, Turmalin jewellery,
 	// Ogniste Buty, Buty Oceanu) and their 16 materials (wiki_nowe.sql; Autor: Digi Rasta).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 26;
+	// 27: Yohara 3.0 (15 October) - Skrzynia Razadora 450k / Nemere 900k (the owner), the awakened families and
+	// Kamien Przebudzenia gone (MT2009_PLUS_NO_AWAKENING_V1).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 27;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
