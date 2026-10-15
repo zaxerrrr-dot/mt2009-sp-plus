@@ -146,6 +146,8 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "do Swiatyni Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "do Doliny Cyklopow"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "na Pustkowie Faraona"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: return "na Wezowe Pole"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: return "do Krainy Gigantow"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return "";
 		}
 	}
@@ -184,6 +186,8 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "to the Temple of Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "to the Cyclops Valley"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "to the Pharaoh's Wasteland"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: return "to the Snakefield"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: return "to the Land of Giants"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return "";
 		}
 	}

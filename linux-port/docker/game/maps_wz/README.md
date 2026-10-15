@@ -45,4 +45,9 @@ paczce (`wzmaps_map`) pod nazwą, której żaden klient nie ma – wtedy rysuje 
 - **GM**: `/goto sneak` (poprawione: był indeks 69), `/goto wezowe`, `/goto giant` (poprawione: róg mapy → miejsce
   przybycia), `/goto gigantow`.
 - **Boty**: mapy stoją na game2 (pamięć game1 – patrz `bin/m2-render-config`), a bot nie przechodzi między rdzeniami –
-  boty tam nie polują, dopóki mapy są na game2.
+  boty tam nie polują, dopóki mapy są na game2. Kod botów je zna (MT2009_PLUS_MAPS_WZ_BOTS_V1, `playerbot_types.h`,
+  `_travel.h`, `_wandering.h`, `_navigation.h`): przedziały 63–78 (Wężowe Pole, bez Metinów – nie dla łowców Metinów)
+  i 63–80 (Kraina), po ćwiartce losowania w tych przedziałach, 24 / 17 miejsc polowania (`tools/arezzo_bot_map.py`
+  na `server_attr` i spawnach map; na Wężowym Polu tylko część 2), przybycie przy Teleporterze / w Town, siatka
+  nawigacji – wszystko tylko na rdzeniu, który mapy hostuje. Wiersz Biologa 80 (Certyfikat Tugyisa, 1401) liczy się
+  tylko tam. Przeniesienie „70 80” do MAPS_game1 (gdy game1 będzie miał pamięć) włącza boty bez zmian w kodzie.

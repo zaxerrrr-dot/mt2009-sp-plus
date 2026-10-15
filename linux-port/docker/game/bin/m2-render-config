@@ -165,7 +165,9 @@ MAPS_game2="$MAPS_game2 419"
 # could not give the bots' 1M-cell navigation grids of 363/364 any more (syserr 14 October: "grid allocation failed"),
 # game2 0.16 GB; the two maps are 20 sectors of terrain and some 1 000 monsters, their bots' grids 71 + 18 MB). People
 # walk in from the desert (63, game1) through its portal 10029 - a warp to another core like the Fisherman's to Yohara. No
-# bot goes there: a bot cannot cross cores. Przelecz (69) stays on game1.
+# bot goes there: a bot cannot cross cores (the bots know the maps - MT2009_PLUS_MAPS_WZ_BOTS_V1: hubs, arrival,
+# bands 63-78 / 63-80 - and draw them only on a core that hosts them: move "70 80" to MAPS_game1 the day game1 has the
+# room, and they hunt there). Przelecz (69) stays on game1.
 MAPS_game2="$MAPS_game2 70 80"
 # MT2009_PLUS_AREZZO_V1 (maps): the Arezzo places (game/arezzo/, the Dockerfile step "share: Arezzo
 # places") under either layout - Dolina Cyklopow (360) on game1 beside Orc Valley and the Temple of Ochao
