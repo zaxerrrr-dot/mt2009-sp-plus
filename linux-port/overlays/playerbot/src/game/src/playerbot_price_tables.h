@@ -310,6 +310,18 @@ namespace
 		{ 15440, 0x000, { 5000000, 6458000, 8341000, 10772000, 13913000, 17969000, 23208000, 29974000, 38713000, 50000000 } },	// Ogniste Buty (lv 80; +0 = its recipe on Buty Zimorodka+5, +9 = 10 x +0)
 		{ 15450, 0x000, { 5000000, 6458000, 8341000, 10772000, 13913000, 17969000, 23208000, 29974000, 38713000, 50000000 } },	// Buty Oceanu (lv 90; +0 = its recipe on Buty Euforii+5, +9 = 10 x +0)
 		{ 16570, 0x000, { 10000000, 11665000, 13608000, 15874000, 18517000, 21601000, 25198000, 29395000, 34290000, 40000000 } },	// Naszyjnik z Turmalinu (lv 95; as the bracelet)
+		// MT2009_PLUS_HELM100_V1 (15 October 2026): the level-100 helmets of Straznik Smokow Jaharr (quest helm100) - +0 =
+		// what one made from a level-80 helmet +5 costs on average: the helmet (2 061 600), 1 000 000 Yang and the
+		// materials below (Smokow 8 kk, Dragona 6.75 kk a try) over the chance (Smokow 30%, the helmet lost on a
+		// failure; Dragona 10%, the helmet kept - the materials of ten tries); +9 = 3 x +0, a geometric climb.
+		{ 12690, 0x000, { 36870000, 41657000, 47065000, 53176000, 60080000, 67880000, 76693000, 86650000, 97900000, 110610000 } },	// Stalowy Helm Smokow (lv 100, MT2009_PLUS_HELM100_V1)
+		{ 12700, 0x000, { 36870000, 41657000, 47065000, 53176000, 60080000, 67880000, 76693000, 86650000, 97900000, 110610000 } },	// Smoczy Kaptur (lv 100, MT2009_PLUS_HELM100_V1)
+		{ 12710, 0x000, { 36870000, 41657000, 47065000, 53176000, 60080000, 67880000, 76693000, 86650000, 97900000, 110610000 } },	// Pancerny Helm Smokow (lv 100, MT2009_PLUS_HELM100_V1)
+		{ 12720, 0x000, { 36870000, 41657000, 47065000, 53176000, 60080000, 67880000, 76693000, 86650000, 97900000, 110610000 } },	// Smoczy Kapelusz (lv 100, MT2009_PLUS_HELM100_V1)
+		{ 12730, 0x000, { 84560000, 95539000, 107942000, 121957000, 137790000, 155680000, 175892000, 198728000, 224529000, 253680000 } },	// Stalowy Helm Dragona (lv 100, MT2009_PLUS_HELM100_V1)
+		{ 12740, 0x000, { 84560000, 95539000, 107942000, 121957000, 137790000, 155680000, 175892000, 198728000, 224529000, 253680000 } },	// Kaptur Dragona (lv 100, MT2009_PLUS_HELM100_V1)
+		{ 12750, 0x000, { 84560000, 95539000, 107942000, 121957000, 137790000, 155680000, 175892000, 198728000, 224529000, 253680000 } },	// Pancerny Helm Dragona (lv 100, MT2009_PLUS_HELM100_V1)
+		{ 12760, 0x000, { 84560000, 95539000, 107942000, 121957000, 137790000, 155680000, 175892000, 198728000, 224529000, 253680000 } },	// Kapelusz Dragona (lv 100, MT2009_PLUS_HELM100_V1)
 	};
 
 	// Upgrade materials ("ULEPSZACZE"), and then everything else he prices by
@@ -439,6 +451,12 @@ namespace
 		// 22401-22418; 10 Insygnia at Mnich Milbon each) - suggested.
 		{ 33029,   200000 },	// Czerwone Pudlo Zodiaku (suggested)
 		{ 33030,   200000 },	// Niebieskie Pudlo Zodiaku (suggested)
+		// MT2009_PLUS_HELM100_V1: the level-100 helmets' materials (Jaharr) - suggested; no monster of ours drops
+		// the horn, the scale or the plan yet (the wiki's Meley lair), the wings are 26 Gaya in the port's shop.
+		{ 30620,   500000 },	// Czerwony Smoczy Rog (suggested)
+		{ 30621,   500000 },	// Czerwona Smocza Luska (suggested)
+		{ 30622,   300000 },	// Plan Zbroi: Helm (suggested)
+		{ 30630,   250000 },	// Skrzydla Smoka (suggested)
 	};
 	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: a Fasolka Zen is a third of a
 	// Kamien Duchowy (owner, 5 October), so the two rows move together.
