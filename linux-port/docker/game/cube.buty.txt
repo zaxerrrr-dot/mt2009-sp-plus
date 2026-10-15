@@ -7,8 +7,8 @@
 #    Barwnik, 5x Ciezkie Pasy, 400 000 Yang). MT2009_PLUS_KAWUCO_V1 (the owner, 15 October): at Kawuco (20413,
 #    Przyladek Smoczego Ognia 662,1224 as on the pl-wiki; quest/kawuco.quest opens his window), was Seon-Pyeong as
 #    Digi Rasta's cube.wiki_nowe.txt had them (moved from there, MT2009_PLUS_NS_WIKI_ITEMS_V1). The wiki says it may
-#    fail ("Ulepszanie moze sie nie udac") but gives no chance: 80% (the owner, 15 October; was 100%). Owsap's
-#    official data has 5/10/30/40/50% by the input's plus - not taken.
+#    fail ("Ulepszanie moze sie nie udac") but gives no chance: the official chances by the input's plus, Owsap's
+#    data - +5 5%, +6 10%, +7 30%, +8 40%, +9 50% (the owner, 15 October; was 80%, before that 100%).
 
 # Buty Zimorodka+0 <- Buty Ognistego Ptaka+9, 3x Smocza Luska, 4x Smoczy Szpon
 section
@@ -63,7 +63,7 @@ item	30602	1
 item	95603	5
 reward	15440	1
 gold	400000
-percent	80
+percent	5
 end
 
 # Ogniste Buty+0 <- Buty Zimorodka+6, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
@@ -75,7 +75,7 @@ item	30602	1
 item	95603	5
 reward	15440	1
 gold	400000
-percent	80
+percent	10
 end
 
 # Ogniste Buty+0 <- Buty Zimorodka+7, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
@@ -87,7 +87,7 @@ item	30602	1
 item	95603	5
 reward	15440	1
 gold	400000
-percent	80
+percent	30
 end
 
 # Ogniste Buty+0 <- Buty Zimorodka+8, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
@@ -99,7 +99,7 @@ item	30602	1
 item	95603	5
 reward	15440	1
 gold	400000
-percent	80
+percent	40
 end
 
 # Ogniste Buty+0 <- Buty Zimorodka+9, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
@@ -111,7 +111,7 @@ item	30602	1
 item	95603	5
 reward	15440	1
 gold	400000
-percent	80
+percent	50
 end
 
 # Buty Oceanu+0 <- Buty Euforii+5, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
@@ -123,7 +123,7 @@ item	30603	1
 item	95603	5
 reward	15450	1
 gold	400000
-percent	80
+percent	5
 end
 
 # Buty Oceanu+0 <- Buty Euforii+6, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
@@ -135,7 +135,7 @@ item	30603	1
 item	95603	5
 reward	15450	1
 gold	400000
-percent	80
+percent	10
 end
 
 # Buty Oceanu+0 <- Buty Euforii+7, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
@@ -147,7 +147,7 @@ item	30603	1
 item	95603	5
 reward	15450	1
 gold	400000
-percent	80
+percent	30
 end
 
 # Buty Oceanu+0 <- Buty Euforii+8, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
@@ -159,7 +159,7 @@ item	30603	1
 item	95603	5
 reward	15450	1
 gold	400000
-percent	80
+percent	40
 end
 
 # Buty Oceanu+0 <- Buty Euforii+9, Wzor Kroju, Czerwony Barwnik, 5x Ciezkie Pasy
@@ -171,5 +171,5 @@ item	30603	1
 item	95603	5
 reward	15450	1
 gold	400000
-percent	80
+percent	50
 end
