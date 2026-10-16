@@ -793,7 +793,9 @@ migrate_env_from_release() {
     _new="$ROOT/linux-port/tools/update.sh"
     if [ -f "$_new" ]; then
         note "   .env: the new version's settings (update.sh env)"
-        if M2_UPDATE_STACK_DIR="$ROOT" M2_UPDATE_WATCHING="$WATCHING" sh "$_new" env; then
+        # MT2009_PLUS_UPDATER_REFRESH_V1: this script recreates the updater
+        # itself after the build, so the new one's `env' need not.
+        if M2_UPDATE_STACK_DIR="$ROOT" M2_UPDATE_WATCHING="$WATCHING" M2_UPDATE_PARENT_REFRESHES=1 sh "$_new" env; then
             return 0
         fi
         note "   .env: the new update.sh env did not finish -- this script does it instead"
@@ -824,7 +826,14 @@ build_and_start() {
         ( cd "$COMPOSE_DIR" && docker compose up -d --build )
     fi || { fail "the new version was not built or not started -- the log says where it stopped; run this again to retry the build"; return 1; }
     rm -f "$BUILD_PENDING" 2>/dev/null || true
-    [ "$WATCHING" = 1 ] || start_updater
+    # MT2009_PLUS_UPDATER_REFRESH_V1: after every update the updater is
+    # recreated - from the host at once, from inside it once this update has
+    # finished (a helper container does it, never this process).
+    if [ "$WATCHING" = 1 ]; then
+        schedule_updater_recreate
+    else
+        start_updater 1
+    fi
     note "the server is now running version $(installed_version)"
     set_status ok "the server is running version $(installed_version)"
     rm -rf "$WORK"
@@ -841,10 +850,21 @@ kv() { sed -n "s/^$2=//p" "$1" 2>/dev/null | head -n 1; }
 # switch for the panel's update button) or M2_UPDATE_WATCH_UPDATES=1 was set
 # by hand AND the container was started by hand; started from here it gets
 # M2_UPDATE_WATCH_UPDATES = M2_UPDATE_APPLY, so by default it answers the .env
-# editor alone. M2_UPDATE_AUTOSTART=0 in .env turns this off. An updater that
-# is already running is left exactly as it is. Never from inside a container
-# (the updater itself restarts by its own restart policy).
+# editor alone. M2_UPDATE_AUTOSTART=0 in .env turns this off. Never from
+# inside a container (the updater itself: schedule_updater_recreate).
+#
+# MT2009_PLUS_UPDATER_REFRESH_V1: an updater already running used to be left
+# exactly as it was. Its bind mount and M2_UPDATE_STACK_DIR are fixed when the
+# container is created, so after the server folder moved (or was installed
+# again elsewhere, or M2_UPDATE_STACK_DIR in .env was corrected) it went on
+# reading the old folder - its env_schema.py among them - and the panel's
+# .env page refused the new keys as "nieznana zmienna" (M2_SHOP_BIG, the
+# owner, 15 October). Now a running updater is recreated when it serves
+# another folder (`start_updater'), and always with `start_updater 1' - after
+# an update, an install and `update.sh updater'. Its M2_UPDATE_WATCH_UPDATES
+# is kept as it was.
 start_updater() {
+    _refresh=${1:-0}
     [ -f /.dockerenv ] && return 0
     have docker || return 0
     _env="$COMPOSE_DIR/.env"
@@ -854,9 +874,26 @@ start_updater() {
     fi
     _prefix=$(kv "$_env" M2_CONTAINER_PREFIX | tr -d '\r ')
     _name="${_prefix:-metin2}-updater"
+    _apply=$(kv "$_env" M2_UPDATE_APPLY | tr -d '\r ')
+    [ "$_apply" = 1 ] || _apply=0
+    _recreate=""
     if [ "$(docker inspect -f '{{.State.Running}}' "$_name" 2>/dev/null)" = true ]; then
-        say "updater: $_name is already running - left as it is"
-        return 0
+        _other=$(updater_serves_other_folder "$_name")
+        if [ -n "$_other" ]; then
+            say "updater: $_name serves another folder ($_other), not $ROOT - recreating it"
+            # Possibly another compose project's container under the same
+            # name: compose would refuse it, so it goes first.
+            docker rm -f "$_name" >/dev/null 2>&1 || true
+            _recreate=foreign
+        elif [ "$_refresh" = 1 ]; then
+            _recreate=refresh
+        else
+            say "updater: $_name is already running - left as it is"
+            return 0
+        fi
+        # The switch it was started with stays (a hand-started installer too).
+        _was=$(updater_env_value "$_name" M2_UPDATE_WATCH_UPDATES)
+        case "$_was" in 0|1) _apply=$_was ;; esac
     fi
     # .env written from the example says /opt/metin2 wherever the server is.
     if [ -f "$_env" ] && [ "$(kv "$_env" M2_UPDATE_STACK_DIR | tr -d '\r')" != "$ROOT" ]; then
@@ -867,15 +904,87 @@ start_updater() {
             printf 'M2_UPDATE_STACK_DIR=%s\n' "$ROOT" >> "$_env"
         fi
     fi
-    _apply=$(kv "$_env" M2_UPDATE_APPLY | tr -d '\r ')
-    [ "$_apply" = 1 ] || _apply=0
-    say "updater: starting it (settings page of the advanced panel; installs updates: $([ "$_apply" = 1 ] && echo yes || echo no))"
+    if [ "$_recreate" = refresh ]; then
+        say "updater: recreating $_name with this version's files and image (installs updates: $([ "$_apply" = 1 ] && echo yes || echo no))"
+    else
+        say "updater: starting it (settings page of the advanced panel; installs updates: $([ "$_apply" = 1 ] && echo yes || echo no))"
+    fi
+    _force=""
+    [ "$_recreate" = refresh ] && _force=--force-recreate
     if ( cd "$COMPOSE_DIR" && M2_UPDATE_STACK_DIR="$ROOT" M2_UPDATE_WATCH_UPDATES="$_apply" \
-            docker compose --profile update up -d --build --no-deps updater ); then
+            docker compose --profile update up -d --build --no-deps $_force updater ); then
         say "updater: running"
     else
-        say "updater: could not be started - the server works without it; by hand: cd $COMPOSE_DIR && docker compose --profile update up -d updater"
+        say "updater: could not be started - the server works without it; by hand: cd $COMPOSE_DIR && docker compose --profile update up -d --force-recreate updater"
     fi
+    return 0
+}
+
+# updater_env_value CONTAINER KEY: KEY from the container's environment.
+updater_env_value() {
+    docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$1" 2>/dev/null |
+        sed -n "s/^$2=//p" | head -n 1 | tr -d '\r'
+}
+
+# updater_serves_other_folder CONTAINER: prints the folder a running updater
+# serves when it is not this one ($ROOT) - by its M2_UPDATE_STACK_DIR, or by
+# the source of the bind mount at that path. Nothing when it is this folder or
+# cannot be told.
+updater_serves_other_folder() {
+    _stack=$(updater_env_value "$1" M2_UPDATE_STACK_DIR)
+    [ -n "$_stack" ] || return 0
+    _real=$(cd "$ROOT" 2>/dev/null && pwd -P)
+    if [ "$_stack" != "$ROOT" ] && [ "$_stack" != "$_real" ]; then
+        printf '%s' "$_stack"
+        return 0
+    fi
+    _src=$(docker inspect -f '{{range .Mounts}}{{.Destination}}|{{.Source}}{{println}}{{end}}' "$1" 2>/dev/null |
+        sed -n "s#^$_stack|##p" | head -n 1 | tr -d '\r')
+    if [ -n "$_src" ] && [ "$_src" != "$ROOT" ] && [ "$_src" != "$_real" ]; then
+        printf '%s' "$_src"
+    fi
+    return 0
+}
+
+# MT2009_PLUS_UPDATER_REFRESH_V1: inside the updater (an update the panel
+# asked for) it cannot recreate itself - compose would stop the container
+# running that very command halfway. A one-shot helper container with the
+# updater's own mounts (--volumes-from) waits for this update to finish (the
+# spool's update.status not "running", no build pending) and then runs
+# `docker compose --profile update up -d --build --no-deps --force-recreate
+# updater' in this folder, with the updater's own M2_UPDATE_* settings. Its
+# output goes to .updater-refresh.log in the server folder.
+schedule_updater_recreate() {
+    [ "$WATCHING" = 1 ] && [ -f /.dockerenv ] || return 0
+    have docker || return 0
+    _prefix=$(kv "$COMPOSE_DIR/.env" M2_CONTAINER_PREFIX | tr -d '\r ')
+    _name="${_prefix:-metin2}-updater"
+    docker inspect "$_name" >/dev/null 2>&1 || return 0
+    _image=$(docker inspect -f '{{.Config.Image}}' "$_name" 2>/dev/null)
+    docker rm -f "$_name-refresh" >/dev/null 2>&1 || true
+    if docker run -d --rm --name "$_name-refresh" --volumes-from "$_name" \
+            -e M2_UPDATE_STACK_DIR="$ROOT" \
+            -e M2_UPDATE_WATCH_UPDATES="${M2_UPDATE_WATCH_UPDATES:-0}" \
+            -e M2_UPDATE_CACHE_DIR="${M2_UPDATE_CACHE_DIR:-/var/cache/m2src}" \
+            -e M2_UPDATE_REPO_DIR="${M2_UPDATE_REPO_DIR:-/var/cache/m2src/repo}" \
+            --entrypoint sh "${_image:-metin2/updater:latest}" -c '
+                exec >>"$4/.updater-refresh.log" 2>&1
+                sleep 10; i=0
+                while [ "$i" -lt 2160 ]; do
+                    st=$(sed -n "s/^state=//p" "$1" 2>/dev/null | head -n 1)
+                    if [ "$st" = running ] || { [ -f "$2" ] && [ "$st" != failed ]; }; then
+                        sleep 5; i=$((i + 1)); continue
+                    fi
+                    break
+                done
+                echo "$(date "+%Y-%m-%d %H:%M:%S") recreating the updater"
+                cd "$3" && docker compose --profile update up -d --build --no-deps --force-recreate updater
+            ' sh "$STATUS" "$BUILD_PENDING" "$COMPOSE_DIR" "$ROOT" >/dev/null 2>"$WORK.refresh.err"; then
+        note "   the updater is recreated with this version's files once this update has finished (log: .updater-refresh.log)"
+    else
+        note "   the updater could not schedule its own refresh ($(head -c 200 "$WORK.refresh.err" 2>/dev/null)) - restart it by hand: docker compose --profile update up -d --force-recreate updater"
+    fi
+    rm -f "$WORK.refresh.err" 2>/dev/null
     return 0
 }
 
@@ -884,15 +993,18 @@ start_updater() {
 # updater, so this waits in the background for that build to finish
 # (BUILD_PENDING gone) and starts it then. This is how a server updated by
 # an update.sh older than this gets the updater on that very update.
+# MT2009_PLUS_UPDATER_REFRESH_V1: and recreates one that runs (the old
+# script left it as it was), unless the old script does that itself.
 start_updater_after_build() {
     [ -f /.dockerenv ] && return 0
     [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && return 0
+    [ "${M2_UPDATE_PARENT_REFRESHES:-0}" = 1 ] && return 0
     have docker || return 0
     ( trap '' HUP
       _i=0
       sleep 20
       while [ -f "$BUILD_PENDING" ] && [ "$_i" -lt 2160 ]; do sleep 5; _i=$((_i + 1)); done
-      [ -f "$BUILD_PENDING" ] || start_updater ) </dev/null >>"$ROOT/.updater-autostart.log" 2>&1 &
+      [ -f "$BUILD_PENDING" ] || start_updater 1 ) </dev/null >>"$ROOT/.updater-autostart.log" 2>&1 &
     return 0
 }
 
@@ -1015,9 +1127,14 @@ case "${1:-run}" in
     # go to the spool's log as well.
     env)   [ "${M2_UPDATE_WATCHING:-0}" = 1 ] && WATCHING=1; check_tree; migrate_env; schedule_watcher_restart
            # MT2009_PLUS_UPDATER_AUTOSTART_V1: only right after an unpack (a build is pending).
-           [ -f "$BUILD_PENDING" ] && start_updater_after_build ;;
+           [ -f "$BUILD_PENDING" ] && start_updater_after_build
+           # MT2009_PLUS_UPDATER_REFRESH_V1: the old watcher that unpacked
+           # this one does not recreate itself; this schedules it.
+           [ -f "$BUILD_PENDING" ] && [ "${M2_UPDATE_PARENT_REFRESHES:-0}" != 1 ] && schedule_updater_recreate
+           true ;;
     # MT2009_PLUS_UPDATER_AUTOSTART_V1: start the updater container now.
-    updater) check_tree; start_updater ;;
+    # MT2009_PLUS_UPDATER_REFRESH_V1: and recreate a running one.
+    updater) check_tree; start_updater 1 ;;
     # MT2009_PLUS_ENV_EDITOR_V1: the channels' ports alone, after the panel's
     # .env editor changed the second channel or the channel count.
     ports) check_tree; sync_channel_ports ;;

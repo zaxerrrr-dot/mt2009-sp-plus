@@ -9,8 +9,15 @@
 {% if not state.ready %}
 {#- MT2009_PLUS_UPDATER_AUTOSTART_V1: what to do when the updater is not running. -#}
 <section class="panel env-banner env-banner-warn env-updater-guide" id="env-not-ready">
+{% if state.reason == 'stale-schema' %}
+<h2>⚠ Aktualizator działa na starej wersji – uruchom go ponownie</h2>
+{#- MT2009_PLUS_UPDATER_REFRESH_V1 -#}
+<p><b>Aktualizator czyta starsze ustawienia niż ten panel</b> (np. kontener został uruchomiony z innego folderu serwera albo przed aktualizacją), więc nowych zmiennych{% if state.stale_keys %} ({% for k in state.stale_keys %}<code>{{ k }}</code>{% if not loop.last %}, {% endif %}{% endfor %}){% endif %} nie zna i odrzuciłby je jako „nieznana zmienna”. Uruchom go ponownie (polecenia poniżej – „uruchom ponownie”; na Windowsie <code>start-server.ps1 -UpdaterOnly</code>).</p>
+{% else %}
 <h2>⚠ Aktualizator nie działa – ustawienia są tylko do odczytu</h2>
-{% if state.reason == 'old-watcher' %}
+{% endif %}
+{% if state.reason == 'stale-schema' %}
+{% elif state.reason == 'old-watcher' %}
 <p><b>Aktualizator działa, ale w starszej wersji</b> i nie obsługuje jeszcze tej strony. Uruchom go ponownie (polecenia poniżej – „uruchom ponownie”).</p>
 {% else %}
 <p>Zmiany na tej stronie zapisuje do pliku <code>.env</code> usługa <b>aktualizator</b> (kontener <code>updater</code>) – jedyny element serwera z dostępem do Dockera. Panel celowo go nie ma, więc bez aktualizatora może tylko pokazać ustawienia.</p>

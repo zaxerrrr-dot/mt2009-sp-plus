@@ -14,6 +14,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import app as panel
+import env_schema
 
 panel.app.config["TESTING"] = True
 
@@ -40,11 +41,43 @@ class EnvEditorRoutes(unittest.TestCase):
     def ready(self, values=None):
         (self.spool / "watcher").touch()
         (self.spool / "watcher.features").write_text("features=env-editor-v1\nscript=1\nupdates=0\n")
-        current = {"features": ["env-editor-v1"], "time": int(time.time()),
+        current = {"features": ["env-editor-v1"], "time": int(time.time()), "schema_version": env_schema.SCHEMA_VERSION,
                    "values": values or {"PLAYERBOT_AUTOSPAWN_COUNT": "350", "M2_AREZZO": "0", "M2_TZ": "UTC"},
                    "secrets": {"M2_DB_PASSWORD": "set", "M2_ADMINPAGE_PASSWORD": "set", "M2_PANEL_PASSWORD": "unset"},
                    "present": ["PLAYERBOT_AUTOSPAWN_COUNT", "M2_AREZZO", "M2_TZ"], "overridden": ["M2_TZ"]}
         (self.spool / "env.current").write_text(json.dumps(current))
+
+    # MT2009_PLUS_UPDATER_REFRESH_V1: an updater on an older env_schema.py.
+    def test_stale_updater_schema(self):
+        self.ready()
+        current = json.loads((self.spool / "env.current").read_text())
+        current["schema_version"] = env_schema.SCHEMA_VERSION - 1
+        (self.spool / "env.current").write_text(json.dumps(current))
+        html = self.client.get("/advanced/server-env").get_data(as_text=True)
+        self.assertIn("Aktualizator działa na starej wersji", html)
+        response = self.save({"PLAYERBOT_AUTOSPAWN_COUNT": "400"})
+        self.assertEqual(response.status_code, 409)
+        self.assertIn("starej wersji", response.get_json()["message"])
+        self.assertFalse((self.spool / "env.request").exists())
+
+    def test_stale_updater_unknown_key(self):
+        self.ready()
+        current = json.loads((self.spool / "env.current").read_text())
+        current["unknown_keys"] = ["M2_SHOP_BIG", "M2_SOMETHING_ELSE"]
+        (self.spool / "env.current").write_text(json.dumps(current))
+        state = self.client.get("/advanced/server-env/status").get_json()
+        self.assertFalse(state["ready"])
+        self.assertEqual(state["reason"], "stale-schema")
+
+    def test_unknown_variable_reworded(self):
+        self.ready()
+        (self.spool / "env.status").write_text(json.dumps({
+            "id": "env-x", "state": "rejected", "time": int(time.time()), "message": "Odrzucono zlecenie",
+            "results": {"M2_SHOP_BIG": {"ok": False, "message": "nieznana zmienna", "secret": False},
+                        "M2_NOT_A_KEY": {"ok": False, "message": "nieznana zmienna", "secret": False}}}))
+        status = self.client.get("/advanced/server-env/status").get_json()["status"]
+        self.assertIn("starej wersji", status["results"]["M2_SHOP_BIG"]["message"])
+        self.assertEqual(status["results"]["M2_NOT_A_KEY"]["message"], "nieznana zmienna")
 
     def save(self, changes, confirm="", csrf=None):
         return self.client.post("/advanced/server-env", data={"env_csrf": self.csrf if csrf is None else csrf,
