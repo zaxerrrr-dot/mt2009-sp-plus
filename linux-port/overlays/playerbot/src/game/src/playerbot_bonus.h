@@ -1004,17 +1004,26 @@ namespace
 		return GetPlayerBotGoodsBonusClass(item) == PLAYERBOT_GOODS_BONUS_GOODS;
 	}
 
-	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: a weapon or an armour piece +0..+6 of
-	// exactly one counted line that is not valuable (GetPlayerBotGoodsBonusClass)
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: a weapon or an armour piece +0..+6
+	// (+0..+4 over level 41, GetPlayerBotGoodsScrapMaxPlus) of exactly one counted line that is not valuable (GetPlayerBotGoodsBonusClass)
 	// - scrap, the merchant's or the Alchemist's at 35+, whether or not the
 	// bot's counter has room. Never a level-30 weapon, a Stalki, a prize piece
 	// or one its lines price as a +7: those keep their own rules. What the
 	// junk rule keeps of it for the bot itself is IsPlayerBotOneWeakBonusScrap
 	// (playerbot_economy.h).
+	// The highest plus the merchant may have such a piece at: +6 up to level
+	// 41, +4 over it (PLAYERBOT_GOODS_SCRAP_HIGH_LEVEL) - for the bag's scrap,
+	// the counter's weak-bonus take-off and the unsold take-off alike.
+	int GetPlayerBotGoodsScrapMaxPlus(LPITEM item)
+	{
+		return item && (int)item->GetLevelLimit() > PLAYERBOT_GOODS_SCRAP_HIGH_LEVEL
+				? PLAYERBOT_GOODS_SCRAP_HIGH_MAX_PLUS : PLAYERBOT_GOODS_SCRAP_MAX_PLUS;
+	}
+
 	bool IsPlayerBotOneWeakBonusPiece(LPITEM item)
 	{
 		if (!item || !IsPlayerBotGoodsGearPiece(item) ||
-				(int)item->GetRefineLevel() > PLAYERBOT_GOODS_SCRAP_MAX_PLUS ||
+				(int)item->GetRefineLevel() > GetPlayerBotGoodsScrapMaxPlus(item) ||
 				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) || IsPlayerBotPrizeItem(item))
 			return false;
 		if (GetPlayerBotGoodsBonusClass(item) != PLAYERBOT_GOODS_BONUS_ONE_WEAK)
@@ -1026,14 +1035,14 @@ namespace
 	// po czasie sie nie sprzedadza - niech ida do sprzedania u handlarki"):
 	// the bonus goods a bot's counter takes home unsold after
 	// PLAYERBOT_GOODS_UNSOLD_HOURS (BotOfflineStaleBonusGoodsLine) for the
-	// merchant: a weapon or an armour piece +0..+6 that is goods by the rule
+	// merchant: a weapon or an armour piece +0..+6 (+0..+4 over level 41) that is goods by the rule
 	// above, and not a +7 by its lines or its average, a prize piece, a
 	// level-30 weapon or a Stalki - those are the market's high goods and keep
 	// their counter. Books, materials and stones are no gear and never asked.
 	bool IsPlayerBotUnsoldBonusGoodsKind(LPITEM item)
 	{
 		if (!item || !IsPlayerBotGoodsGearPiece(item) ||
-				(int)item->GetRefineLevel() > PLAYERBOT_GOODS_SCRAP_MAX_PLUS ||
+				(int)item->GetRefineLevel() > GetPlayerBotGoodsScrapMaxPlus(item) ||
 				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) || IsPlayerBotPrizeItem(item) ||
 				GetPlayerBotPricedPlus(item) >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS)
 			return false;

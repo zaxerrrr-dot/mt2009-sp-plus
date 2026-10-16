@@ -1345,6 +1345,61 @@ namespace {
         NotePlayerBotUnsoldBonusGoods(stale, now);
         return true;
     }
+    // The first line on this counter that is scrap by
+    // MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1 - a weapon or armour piece +0..+6 of
+    // one weak counted line (IsPlayerBotOneWeakBonusPiece: never a +7 by its
+    // lines, a prize, a level-30 weapon or a Stalki) - not on the operator's
+    // "stall", not a gambler's piece, and one the bag has a cell for with
+    // PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP more to spare. A weapon whose
+    // lines are all ignored is plain gear now, which the counter lists at
+    // any plus (MT2009_PLUS_BOT_LIST_ALL_GEAR_V1): it stays.
+    DWORD BotOfflineWeakScrapLine(LPCHARACTER ch, NativeShop shop) {
+        if (!ch || !shop) return 0;
+        const int bagFree = CountPlayerBotFreeInventoryCells(ch);
+        for (const auto& [id, line] : shop->GetItems()) {
+            if (!line || !line->GetTable()) continue;
+            const BYTE type = line->GetTable()->bType;
+            if (type != ITEM_WEAPON && type != ITEM_ARMOR) continue;
+            if (bagFree < (int)line->GetTable()->bSize + PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP) continue;
+            LPITEM preview = BotOfflinePreview(*line);
+            if (!preview) continue;
+            const bool scrap = IsPlayerBotOneWeakBonusPiece(preview) &&
+                    GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
+                    !IsPlayerBotGambleForSale(ch, preview) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            M2_DELETE(preview);
+            if (scrap) return id;
+        }
+        return 0;
+    }
+    // Takes one such line home (reason weak_bonus_scrap); the junk rule sells
+    // it at the merchant's, or the Alchemist's at 35+ (IsPlayerBotOneWeakBonusScrap).
+    // While the counter is nearly full the visit goes on in
+    // PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS for the next, up to
+    // PLAYERBOT_STALL_WEAK_TAKEOFF_BURST lines (`chained` says so); with room,
+    // one line a visit. The journal holds one request a bot at a time, so
+    // "several" is several steps of the same visit.
+    bool BotOfflineTakeOffWeakScrap(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now,
+            bool& chained) {
+        chained = false;
+        auto& o = state.offlineShop;
+        const DWORD weak = BotOfflineWeakScrapLine(ch, shop);
+        if (!weak) {
+            o.weakTakeoffBurst = 0;
+            return false;
+        }
+        const bool full = BotOfflineFreeCells(shop) < PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS;
+        if (!full) o.weakTakeoffBurst = 0;
+        else if (o.weakTakeoffBurst >= (uint32_t)PLAYERBOT_STALL_WEAK_TAKEOFF_BURST) {
+            o.weakTakeoffBurst = 0;   // the burst is spent: the next visit starts another
+            return false;
+        }
+        if (!BotOfflineTakeOff(ch, state, weak, 0, now, "weak_bonus_scrap")) return false;
+        if (full) {
+            ++o.weakTakeoffBurst;
+            chained = o.weakTakeoffBurst < (uint32_t)PLAYERBOT_STALL_WEAK_TAKEOFF_BURST;
+        }
+        return true;
+    }
     // How many lines of this item's kind kept by count - the books of its
     // skill, the soul stone (GetPlayerBotStallKindKey) - the counter carries.
     int BotOfflineKindLinesOf(NativeShop shop, LPITEM item) {
@@ -2464,6 +2519,15 @@ namespace {
                 BotOfflineFinishVisit(ch, state, now);
                 return false;
             }
+            // MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1: and weak-bonus scrap.
+            {
+                bool chained = false;
+                if (BotOfflineTakeOffWeakScrap(ch, state, shop, now, chained)) {
+                    BotOfflineFinishVisit(ch, state, now);
+                    if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                    return false;
+                }
+            }
             // So does a piece the owner should be wearing.
             {
                 long long gain = 0;
@@ -2639,6 +2703,17 @@ namespace {
         if (BotOfflineTakeOffStaleBonusGoods(ch, state, shop, now)) {
             BotOfflineFinishVisit(ch, state, now);
             return false;
+        }
+        // MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1: a line of one weak counted
+        // bonus comes home for the merchant - several in chained steps while
+        // the counter is nearly full, one a visit while it has room.
+        {
+            bool chained = false;
+            if (BotOfflineTakeOffWeakScrap(ch, state, shop, now, chained)) {
+                BotOfflineFinishVisit(ch, state, now);
+                if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                return false;
+            }
         }
         // And a piece the owner should be wearing comes home before anything
         // goes on (BotOfflineReclaimLine).
