@@ -611,6 +611,7 @@ namespace
 		{ 50733,    19000 },	// Bursztynowy Platek
 		{ 50734,    19000 },	// Perlowe Wiechy
 		{ 50735,    19000 },	// Korzen Weza
+		{ 50736,    19000 },	// Jaskiniowy Grzyb (MT2009_PLUS_BOT_HERB_SURPLUS_V1: the one herb of 50721-50736 without a price; as its four siblings)
 		{ 50909,   450000 },	// WSZYSTKIE RECEPTURY np. Zielony Wywar, Platynowy Wywar, Szary wywar itd.
 		{ 50910,   450000 },	// WSZYSTKIE RECEPTURY np. Zielony Wywar, Platynowy Wywar, Szary wywar itd.
 		{ 50911,   450000 },	// WSZYSTKIE RECEPTURY np. Zielony Wywar, Platynowy Wywar, Szary wywar itd.

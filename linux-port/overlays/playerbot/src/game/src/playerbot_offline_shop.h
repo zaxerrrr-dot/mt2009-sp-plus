@@ -1716,8 +1716,9 @@ namespace {
         // the stack it came from. The next line's size depends on the lines of
         // it the counter already shows: a holding of fifty shows five twos,
         // then fives.
+        // MT2009_PLUS_BOT_HERB_SURPLUS_V1: and every herb, the dear ones too.
         if (IsPlayerBotBulkGoods(item) || IsPlayerBotSafeRefineScroll(item->GetVnum()) ||
-                IsPlayerBotTradeableMaterial(item)) {
+                IsPlayerBotTradeableMaterial(item) || IsPlayerBotHerbalismHerb(item->GetVnum())) {
             const int keep = GetPlayerBotStallBaseKeep(ch, item);
             const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - keep;
             const int avail = std::min((int)item->GetCount(), spare);

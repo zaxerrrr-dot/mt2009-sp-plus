@@ -134,6 +134,9 @@ namespace
 	bool MakePlayerBotBagColumnRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	// MT2009_PLUS_BOT_FULL_CLEAROUT_V1 (playerbot_market_life.h).
 	bool RunPlayerBotFullClearout(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	// MT2009_PLUS_BOT_HERB_SURPLUS_V1: how many more lines of two hundred of a
+	// herb the bot's counter takes now (playerbot_market_life.h).
+	int GetPlayerBotHerbStallLineRoom(LPCHARACTER ch, DWORD vnum);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 	bool HurryPlayerBotStallForBagRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 #else
@@ -344,6 +347,89 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_HERB_SURPLUS_V1: the herbs the storekeeper's box takes,
+	// by vnum in units - everything over the bot's keep (GetPlayerBotHerbKeep)
+	// but the full stacks of two hundred its counter has a line for now, at
+	// most PLAYERBOT_HERB_SURPLUS_BAG_LINES of them in all - and the bag cells
+	// that frees, the bag's stacks poured together as the merge pass does.
+	// Nothing of a companion's (its box is its owner's), nothing the
+	// operator's policy names, locked or gifted.
+	bool IsPlayerBotSafeboxHerbStack(LPCHARACTER ch, LPITEM item, WORD cell)
+	{
+		return ch && item && item->GetCell() == cell && !item->IsEquipped() && !item->isLocked() &&
+				IsPlayerBotHerbalismHerb(item->GetVnum()) &&
+				GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_NONE &&
+				!IsPlayerBotSidekickLockedItem(ch, item) && !IsPlayerBotSidekickGift(ch, item);
+	}
+
+	int CollectPlayerBotSafeboxHerbs(LPCHARACTER ch, std::map<DWORD, int>& units)
+	{
+		units.clear();
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotSidekickServing(ch))
+			return 0;
+		std::map<DWORD, std::pair<int, int> > held;   // vnum -> units, stacks
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!IsPlayerBotSafeboxHerbStack(ch, item, cell))
+				continue;
+			held[item->GetVnum()].first += (int)item->GetCount();
+			++held[item->GetVnum()].second;
+		}
+		int freed = 0;
+		int bagLines = PLAYERBOT_HERB_SURPLUS_BAG_LINES;
+		for (std::map<DWORD, std::pair<int, int> >::const_iterator it = held.begin(); it != held.end(); ++it)
+		{
+			const int spare = it->second.first - GetPlayerBotHerbKeep(ch, it->first);
+			if (spare <= 0)
+				continue;
+			int lines = std::min(spare / PLAYERBOT_HERB_SURPLUS_LINE_UNITS, bagLines);
+			if (lines > 0)
+				lines = std::min(lines, GetPlayerBotHerbStallLineRoom(ch, it->first));
+			lines = std::max(0, lines);
+			bagLines -= lines;
+			const int deposit = spare - lines * PLAYERBOT_HERB_SURPLUS_LINE_UNITS;
+			if (deposit <= 0)
+				continue;
+			units[it->first] = deposit;
+			const int left = it->second.first - deposit;
+			freed += std::max(0, it->second.second -
+					(left + PLAYERBOT_HERB_SURPLUS_LINE_UNITS - 1) / PLAYERBOT_HERB_SURPLUS_LINE_UNITS);
+		}
+		return freed;
+	}
+
+	// The full stacks of two hundred over the keep the bag holds of all its
+	// herbs together - what waits for the counter (PLAYERBOT_HERB_SURPLUS_BAG_LINES).
+	int CountPlayerBotHerbSpareLines(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		std::map<DWORD, int> held;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (IsPlayerBotSafeboxHerbStack(ch, item, cell))
+				held[item->GetVnum()] += (int)item->GetCount();
+		}
+		int lines = 0;
+		for (std::map<DWORD, int>::const_iterator it = held.begin(); it != held.end(); ++it)
+			lines += std::max(0, it->second - GetPlayerBotHerbKeep(ch, it->first)) / PLAYERBOT_HERB_SURPLUS_LINE_UNITS;
+		return lines;
+	}
+
+	// And whether they are worth a visit of their own: PLAYERBOT_HERB_SURPLUS_DEPOSIT_CELLS
+	// cells freed, or any at all from a bag under pressure.
+	bool PlayerBotWantsHerbDeposit(LPCHARACTER ch)
+	{
+		std::map<DWORD, int> units;
+		const int freed = CollectPlayerBotSafeboxHerbs(ch, units);
+		if (freed >= PLAYERBOT_HERB_SURPLUS_DEPOSIT_CELLS)
+			return true;
+		return freed > 0 && (IsPlayerBotBagFull(ch) ||
+				CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS);
+	}
+
 	bool HasPlayerBotSafeboxDeposit(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion puts nothing in
@@ -367,6 +453,9 @@ namespace
 			return true;
 		CollectPlayerBotSafeboxMissionBooks(ch, cells);
 		if (!cells.empty())
+			return true;
+		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: the herbs nobody brews or lists.
+		if (PlayerBotWantsHerbDeposit(ch))
 			return true;
 		CollectPlayerBotSafeboxLpp(ch, state, cells);
 		return !cells.empty();
@@ -642,6 +731,33 @@ namespace
 				wanted = CanPlayerBotSeatSoulStone(ch, item->GetVnum(), (DWORD)item->GetValue(5));
 				why = "lpp_stone";
 			}
+			else if (IsPlayerBotHerbalismHerb(item->GetVnum()))
+			{
+				// MT2009_PLUS_BOT_HERB_SURPLUS_V1: the box keeps the herbs the
+				// deposit put down (CollectPlayerBotSafeboxHerbs). One comes out
+				// for a brewer whose bag is short of its keep, or as a full stack
+				// of two hundred for a line the counter has free - never a kind
+				// the bag already holds a full spare stack of, into a bag that
+				// stays clear of pressure. Anything else would be the deposit's
+				// next round trip.
+				const int inBag = (int)ch->CountSpecifyItem(item->GetVnum());
+				const int keep = GetPlayerBotHerbKeep(ch, item->GetVnum());
+				const int freeAfter = CountPlayerBotFreeInventoryCells(ch) - (int)item->GetSize();
+				const bool clear = freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS &&
+						(PLAYERBOT_BAG_CELLS - freeAfter) * 100 < PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
+				if (inBag < keep)
+				{
+					wanted = freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
+					why = "herb_brew";
+				}
+				else if ((int)item->GetCount() >= PLAYERBOT_HERB_SURPLUS_LINE_UNITS &&
+						inBag - keep < PLAYERBOT_HERB_SURPLUS_LINE_UNITS)
+				{
+					wanted = clear && GetPlayerBotHerbStallLineRoom(ch, item->GetVnum()) > 0 &&
+							CountPlayerBotHerbSpareLines(ch) < PLAYERBOT_HERB_SURPLUS_BAG_LINES;
+					why = "herb_counter";
+				}
+			}
 			else if (item->GetType() == ITEM_MATERIAL && IsPlayerBotNonGearMaterial(item->GetVnum()))
 			{
 				// The herbs an older version put down as materials: out, and to
@@ -670,6 +786,27 @@ namespace
 			}
 			if (!wanted)
 				continue;
+
+			// MT2009_PLUS_BOT_HERB_SURPLUS_V1: a brewer short of its keep takes
+			// only what it is short of; the box's stack keeps the rest, poured
+			// off the way the deposit tops a stack up.
+			if (!strcmp(why, "herb_brew"))
+			{
+				const int need = GetPlayerBotHerbKeep(ch, item->GetVnum()) - (int)ch->CountSpecifyItem(item->GetVnum());
+				if (need > 0 && need < (int)item->GetCount())
+				{
+					if (ch->GetEmptyInventory(1) < 0)
+						break;
+					const DWORD vnum = item->GetVnum();
+					item->SetCount(item->GetCount() - need);
+					ITEM_MANAGER::instance().FlushDelayedSave(item);
+					ch->AutoGiveItem(vnum, need, -1, false);
+					sys_log(0, "PLAYERBOT_TOWN: safebox withdraw pid=%u name=%s vnum=%u count=%d reason=herb_brew left=%u",
+							ch->GetPlayerID(), ch->GetName(), vnum, need, (unsigned int)item->GetCount());
+					++taken;
+					continue;
+				}
+			}
 
 			// Room for this exact piece or it stays where it is; a bag filled
 			// by the withdrawal would be emptied into the box on the next trip.
@@ -826,6 +963,27 @@ namespace
 		std::vector<WORD> missionBooks;
 		CollectPlayerBotSafeboxMissionBooks(ch, missionBooks);
 		cells.insert(cells.end(), missionBooks.begin(), missionBooks.end());
+		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: the herbs over the keep and the
+		// counter's full stacks (CollectPlayerBotSafeboxHerbs), the smallest
+		// stacks of a kind first - the full ones are the counter's lines.
+		const size_t herbFrom = cells.size();
+		std::map<DWORD, int> herbLeft;
+		CollectPlayerBotSafeboxHerbs(ch, herbLeft);
+		if (!herbLeft.empty())
+		{
+			std::vector<std::pair<std::pair<DWORD, int>, WORD> > herbCells;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (IsPlayerBotSafeboxHerbStack(ch, item, cell) && herbLeft.count(item->GetVnum()))
+					herbCells.push_back(std::make_pair(std::make_pair(item->GetVnum(), (int)item->GetCount()), cell));
+			}
+			std::sort(herbCells.begin(), herbCells.end());
+			for (size_t h = 0; h < herbCells.size(); ++h)
+				cells.push_back(herbCells[h].second);
+		}
+		const size_t herbTo = cells.size();
+		int herbUnits = 0;
 		// And what Iwakura's list keeps for later (playerbot_lpp.h).
 		const size_t lppFrom = cells.size();
 		std::vector<WORD> lpp;
@@ -844,7 +1002,29 @@ namespace
 			// material the deposit had just stored and took it straight back:
 			// that round trip was three quarters of all safebox traffic on
 			// m2zip and the source of the ITEM_ID_DUP lines in syserr.
-			if (IsPlayerBotTradeableMaterial(item) && !IsPlayerBotSafeRefineScroll(item->GetVnum()))
+			// MT2009_PLUS_BOT_HERB_SURPLUS_V1: a herb gives what is left of its
+			// kind's deposit, the stack cut the same way when it holds more.
+			if (i >= herbFrom && i < herbTo)
+			{
+				if (!IsPlayerBotHerbalismHerb(item->GetVnum()))
+					continue;
+				int& left = herbLeft[item->GetVnum()];
+				if (left <= 0)
+					continue;
+				if (left < (int)item->GetCount())
+				{
+					const int to = ch->GetEmptyInventory(item->GetSize());
+					if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cells[i]),
+							TItemPos(INVENTORY, (WORD)to), left))
+						continue;
+					item = ch->GetInventoryItem(to);
+					if (!item)
+						continue;
+				}
+				left -= (int)item->GetCount();
+				herbUnits += (int)item->GetCount();
+			}
+			else if (IsPlayerBotTradeableMaterial(item) && !IsPlayerBotSafeRefineScroll(item->GetVnum()))
 			{
 				const int keep = GetPlayerBotRefineMaterialReserve(ch, item->GetVnum());
 				const int spare = (int)ch->CountSpecifyItem(item->GetVnum()) - keep;
@@ -885,7 +1065,11 @@ namespace
 				char szHint[128];
 				snprintf(szHint, sizeof(szHint), "%s %u", item->GetName(), (unsigned int)item->GetCount());
 				LogManager::instance().ItemLog(ch, item, "SAFEBOX PUT", szHint);
-				if (i >= lppFrom)
+				if (i >= herbFrom && i < herbTo)
+				{
+					// MT2009_PLUS_BOT_HERB_SURPLUS_V1: logged once a visit below.
+				}
+				else if (i >= lppFrom)
 				{
 					sys_log(0, "PLAYERBOT_LPP: to safebox pid=%u name=%s vnum=%u+%u count=%u level=%u",
 							ch->GetPlayerID(), ch->GetName(), item->GetVnum(),
@@ -920,6 +1104,10 @@ namespace
 				break;
 			}
 		}
+		if (herbUnits > 0)
+			sys_log(0, "PLAYERBOT_HERB: surplus to safebox pid=%u name=%s units=%d kinds=%u spare_lines=%d",
+					ch->GetPlayerID(), ch->GetName(), herbUnits, (unsigned int)herbLeft.size(),
+					CountPlayerBotHerbSpareLines(ch));
 		return deposited;
 	}
 
@@ -4918,11 +5106,13 @@ namespace
 		// A herb is Baek-Go's material now, so a few stay home. Without this a
 		// keeper listed the lot and then stood at the board with nothing to
 		// craft - the counters already held 12 506 Tue Mushrooms on 17 September.
-		// MT2009_PLUS_BOT_HERBALIST_FIX_V1: a gatherer (ACTIVITY_V1) keeps
-		// three times as many - a visit brews up to six rows of ten.
+		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: the keep is what the bot's own rows
+		// brew from (GetPlayerBotHerbKeep, a flat 20 / 60 before), and a herb
+		// is goods only by the full stack of two hundred over it - a smaller
+		// spare goes to the storekeeper's box (CollectPlayerBotSafeboxHerbs).
 		if (IsPlayerBotHerbalismHerb(item->GetVnum()) &&
-				(int) ch->CountSpecifyItem(item->GetVnum()) <=
-					PLAYERBOT_HERBALISM_HERB_KEEP * (IsPlayerBotHerbGatherer(ch) ? 3 : 1))   // MT2009_PLUS_BOT_HERBALIST_ACTIVITY_V1
+				(int) ch->CountSpecifyItem(item->GetVnum()) - GetPlayerBotHerbKeep(ch, item->GetVnum()) <
+					PLAYERBOT_HERB_SURPLUS_LINE_UNITS)
 			return -1;
 		// No mission book while its village's counters hold thirty (Iwakura's
 		// Patch 4, point 13): the junk rule and the storekeeper take them.
@@ -5761,7 +5951,8 @@ namespace
 			if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
 				continue;
 			if (IsPlayerBotSafeRefineScroll(item->GetVnum()) || IsPlayerBotBulkGoods(item) ||
-					IsPlayerBotTradeableMaterial(item))
+					IsPlayerBotTradeableMaterial(item) ||
+					IsPlayerBotHerbalismHerb(item->GetVnum()))   // MT2009_PLUS_BOT_HERB_SURPLUS_V1
 			{
 				int lines = 0, small = 0;
 				CountPlayerBotCutLines(ch, item, lines, small);

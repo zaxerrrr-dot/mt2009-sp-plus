@@ -641,6 +641,60 @@ namespace
 		return keep;
 	}
 
+	// MT2009_PLUS_BOT_HERB_SURPLUS_V1: what a bot keeps of a herb in its bag
+	// (PLAYERBOT_HERB_SURPLUS_KEEP_BREWS says why): the largest count a row of
+	// Baek-Go's board it knows asks of the herb, times the brews it keeps for -
+	// none for a bot that does not brew, and the onboarding's ten Peach
+	// Blossoms for one of fifteen that has not been through it. Cached a
+	// minute a bot: the stall's scan asks it of every herb cell.
+	int GetPlayerBotHerbKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		if (!ch || !IsPlayerBotHerbalismHerb(vnum))
+			return 0;
+		const size_t herbs = PLAYERBOT_HERB_VNUM_LAST - PLAYERBOT_HERB_VNUM_FIRST + 1;
+		struct THerbKeep
+		{
+			DWORD dwAt;
+			int aiKeep[PLAYERBOT_HERB_VNUM_LAST - PLAYERBOT_HERB_VNUM_FIRST + 1];
+		};
+		static std::map<DWORD, THerbKeep> s_mapKeep;
+		const DWORD dwNow = get_dword_time();
+		THerbKeep& entry = s_mapKeep[ch->GetPlayerID()];
+		if (entry.dwAt == 0 || dwNow - entry.dwAt >= PLAYERBOT_HERB_SURPLUS_KEEP_CACHE_MS)
+		{
+			entry.dwAt = dwNow ? dwNow : 1;
+			for (size_t i = 0; i < herbs; ++i)
+				entry.aiKeep[i] = 0;
+			if (ch->GetLevel() >= PLAYERBOT_HERBALISM_MIN_LEVEL)
+			{
+				if (!IsPlayerBotHerbalismUnlocked(ch))
+					entry.aiKeep[PLAYERBOT_HERBALISM_ONBOARD_FLOWER - PLAYERBOT_HERB_VNUM_FIRST] =
+							PLAYERBOT_HERBALISM_ONBOARD_COUNT;
+				else if (IsPlayerBotZielarz(ch))
+				{
+					const int brews = IsPlayerBotHerbGatherer(ch)
+							? PLAYERBOT_HERB_SURPLUS_GATHERER_BREWS : PLAYERBOT_HERB_SURPLUS_KEEP_BREWS;
+					for (size_t r = 0; r < PLAYERBOT_HERBALISM_ROW_COUNT; ++r)
+					{
+						const TCraftingItem* row =
+								CCraftingManager::instance().GetCraftingRecipe(PLAYERBOT_HERBALISM_ROWS[r]);
+						if (!row || row->itemVnum == 0 || !PlayerBotKnowsCraftRow(ch, row))
+							continue;
+						for (int m = 0; m < CRAFTING_MATERIAL_MAX_NUM; ++m)
+						{
+							const DWORD mat = row->materials[m].vnum;
+							if (!IsPlayerBotHerbalismHerb(mat) || row->materials[m].count <= 0)
+								continue;
+							int& keep = entry.aiKeep[mat - PLAYERBOT_HERB_VNUM_FIRST];
+							keep = std::max(keep, (int)row->materials[m].count * brews);
+						}
+					}
+				}
+			}
+		}
+		return entry.aiKeep[vnum - PLAYERBOT_HERB_VNUM_FIRST];
+	}
+
 	// The rest is what a counter can carry, because until now no player could
 	// buy one anywhere.
 	bool IsPlayerBotSurplusPotion(LPCHARACTER ch, LPITEM item)
@@ -1482,6 +1536,7 @@ namespace
 	bool DrinkPlayerBotCraftedPotion(LPCHARACTER, LPCHARACTER, DWORD, bool = false) { return false; }
 	bool IsPlayerBotHerbGatherer(LPCHARACTER) { return false; }
 	int GetPlayerBotCraftedPotionKeep(LPCHARACTER, DWORD) { return 0; }
+	int GetPlayerBotHerbKeep(LPCHARACTER, DWORD) { return 0; }   // MT2009_PLUS_BOT_HERB_SURPLUS_V1
 	bool IsPlayerBotHerbBoardOpen(LPCHARACTER, DWORD) { return false; }
 	bool IsPlayerBotHerbSessionNow(DWORD, DWORD) { return false; }
 	bool IsPlayerBotHerbPickingNow(LPCHARACTER, DWORD) { return false; }

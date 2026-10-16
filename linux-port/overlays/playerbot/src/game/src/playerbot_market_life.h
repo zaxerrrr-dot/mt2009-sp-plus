@@ -536,6 +536,26 @@ namespace
 #endif
 	}
 
+	// MT2009_PLUS_BOT_HERB_SURPLUS_V1 (declared in playerbot_town.h): the lines
+	// of two hundred of a herb the bot's counter takes now - none without a
+	// counter, with fewer than PLAYERBOT_HERB_SURPLUS_STALL_FREE_CELLS free
+	// cells, or with the kind's PLAYERBOT_HERB_SURPLUS_STALL_LINES up already.
+	// What it will not take goes to the storekeeper's box.
+	int GetPlayerBotHerbStallLineRoom(LPCHARACTER ch, DWORD vnum)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		if (!ch || !PlayerBotHasCounter(ch))
+			return 0;
+		auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+		if (!shop || BotOfflineFreeCells(shop) < PLAYERBOT_HERB_SURPLUS_STALL_FREE_CELLS)
+			return 0;
+		return std::max(0, PLAYERBOT_HERB_SURPLUS_STALL_LINES - BotOfflineLinesOf(shop, vnum));
+#else
+		(void)ch; (void)vnum;
+		return 0;
+#endif
+	}
+
 	bool RunPlayerBotFullClearout(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotVillageMap(ch->GetMapIndex()) ||

@@ -898,6 +898,10 @@ namespace
 			return 1;
 		if (item->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			return PLAYERBOT_CHEST_LINE_UNITS;
+		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: a herb by its whole stack of two
+		// hundred, the cheap and the dear ones alike.
+		if (IsPlayerBotHerbalismHerb(item->GetVnum()))
+			return PLAYERBOT_HERB_SURPLUS_LINE_UNITS;
 		// A root worth pennies is sold by the heap (IsPlayerBotBulkGoods).
 		if (IsPlayerBotBulkGoods(item))
 			return PLAYERBOT_SHOP_BULK_PACK_UNITS;
@@ -1420,6 +1424,10 @@ namespace
 		if (IsPlayerBotSafeRefineScroll(vnum))
 			return playerbot_stall_rules::FitSmallGoodsLine(
 					playerbot_stall_rules::ScrollLineUnits(seed), avail);
+		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: a herb goes up a full stack of two
+		// hundred over the keep or not at all (the box takes a smaller spare).
+		if (IsPlayerBotHerbalismHerb(vnum))
+			return avail >= PLAYERBOT_HERB_SURPLUS_LINE_UNITS ? PLAYERBOT_HERB_SURPLUS_LINE_UNITS : 0;
 		if (IsPlayerBotBulkGoods(item))
 			return playerbot_stall_rules::HeapLineFromStack((int)item->GetCount(), spare, seed);
 		if (IsPlayerBotTradeableMaterial(item))
@@ -1472,6 +1480,10 @@ namespace
 	{
 		if (!item)
 			return 1;
+		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: a herb keeps what the bot's own
+		// rows of Baek-Go's board brew from (GetPlayerBotHerbKeep).
+		if (IsPlayerBotHerbalismHerb(item->GetVnum()))
+			return GetPlayerBotHerbKeep(ch, item->GetVnum());
 		// Asked before the materials: the Blessing Scroll is what recipe 501
 		// consumes, so it is a tradeable material too, and the anvil's reserve
 		// of it - twice the recipe count of every piece under scroll work - is
@@ -1727,6 +1739,9 @@ namespace
 	{
 		if (!item)
 			return 0;
+		// MT2009_PLUS_BOT_HERB_SURPLUS_V1: lines of two hundred of a herb.
+		if (IsPlayerBotHerbalismHerb(item->GetVnum()))
+			return PLAYERBOT_HERB_SURPLUS_STALL_LINES;
 		if (IsPlayerBotBulkGoods(item))
 			return PLAYERBOT_SHOP_BULK_LINES;
 		if (IsPlayerBotSafeRefineScroll(item->GetVnum()))

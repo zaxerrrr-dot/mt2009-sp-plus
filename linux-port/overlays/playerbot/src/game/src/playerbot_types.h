@@ -3188,7 +3188,9 @@ namespace
 	// priced by level and kind, and the estimate for any other unpriced piece of 30+.
 	// 26: MT2009_PLUS_NS_WIKI_ITEMS_V1 - the wiki families (Cyjanitowe weapons, Turmalin jewellery,
 	// Ogniste Buty, Buty Oceanu) and their 16 materials (wiki_nowe.sql; Autor: Digi Rasta).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 26;
+	// 27: MT2009_PLUS_BOT_HERB_SURPLUS_V1 - Jaskiniowy Grzyb (50736) at 19 000 like the other four
+	// late herbs; herbs go up in lines of 200.
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 27;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
@@ -6432,11 +6434,9 @@ namespace
 	// His shop, bought the way the fishing pass and the Forgetting Scroll are:
 	// the counter is a quest window a bot cannot open, so the bottle is created
 	// for the price the shop asks (world.shop_special, shop 14).
-	// What a bot keeps of each herb for its own board before the rest goes on a
-	// counter. A row takes five to fifteen of one herb, so this is a few
-	// crafts' worth and no more: the bags hold tens of thousands of the two
-	// common ones and the counters are where a player buys the rest.
-	const int PLAYERBOT_HERBALISM_HERB_KEEP = 20;
+	// What a bot keeps of each herb for its own board: GetPlayerBotHerbKeep
+	// (MT2009_PLUS_BOT_HERB_SURPLUS_V1, below) - it was a flat twenty, sixty
+	// for a gatherer, for the counter alone.
 	const DWORD PLAYERBOT_HERBALISM_BOTTLE_M = 50901;
 	const DWORD PLAYERBOT_HERBALISM_BOTTLE_S = 50902;
 	const DWORD PLAYERBOT_HERBALISM_BOTTLE_D = 50903;
@@ -6454,6 +6454,42 @@ namespace
 	const DWORD PLAYERBOT_HERBALISM_VISIT_MIN_MS = 20 * 60 * 1000;
 	const DWORD PLAYERBOT_HERBALISM_VISIT_MAX_MS = 35 * 60 * 1000;
 	const DWORD PLAYERBOT_HERBALISM_CRAFTS_PER_VISIT = 3;
+	// MT2009_PLUS_BOT_HERB_SURPLUS_V1: the herbs a bot does not need leave the
+	// bag ("boty trzymaja w eq bardzo duzo ziol. Jesli ich nie potrzebuja -
+	// niech odloza do dozorcy albo niech wystawia na sprzedaz po 200 sztuk w
+	// stosie", the owner, 16 October). The supporters' world that day: 20 011
+	// herb stacks of 1 299 326 herbs in 2 106 bot bags (9.5 cells a bag that
+	// holds any, up to 27; 1 681 of the bags a gatherer's with 17 531 of the
+	// cells), 985 stacks in the boxes, 5 613 counter lines (64 of them 200).
+	// The counter took two lines of a heap a kind, mostly of fifty, and every
+	// bush picked since stayed in the bag as pickup goods.
+	//   * The keep (GetPlayerBotHerbKeep): what the rows of Baek-Go's board the
+	//     bot knows ask of the herb - the largest row's count, times
+	//     PLAYERBOT_HERB_SURPLUS_KEEP_BREWS brews (a gatherer, who brews six a
+	//     visit, PLAYERBOT_HERB_SURPLUS_GATHERER_BREWS); a row takes five to
+	//     fifteen of a herb, so 10..30 (15..45) of a herb its rows use, one
+	//     cell, and nothing of one they do not. A bot that does not brew
+	//     (not a Zielarz) keeps none; one of fifteen that has not been through
+	//     the onboarding keeps its ten Peach Blossoms.
+	//   * Over the keep the counter takes lines of exactly
+	//     PLAYERBOT_HERB_SURPLUS_LINE_UNITS (the stack's own two hundred),
+	//     PLAYERBOT_HERB_SURPLUS_STALL_LINES a kind, at the price list's unit
+	//     price times the count, as every heap.
+	//   * The rest - under two hundred, or with no line free on the counter,
+	//     or no counter - goes to the storekeeper's box on the next visit, the
+	//     box's own stacks topped up first; a visit is asked for once it frees
+	//     PLAYERBOT_HERB_SURPLUS_DEPOSIT_CELLS bag cells (one under pressure).
+	//     The bag holds at most PLAYERBOT_HERB_SURPLUS_BAG_LINES full stacks
+	//     waiting for the counter, and the box gives a full stack back for a
+	//     free line, or what the keep is short of to a brewer.
+	const int PLAYERBOT_HERB_SURPLUS_KEEP_BREWS = 2;
+	const int PLAYERBOT_HERB_SURPLUS_GATHERER_BREWS = 3;
+	const int PLAYERBOT_HERB_SURPLUS_LINE_UNITS = 200;
+	const int PLAYERBOT_HERB_SURPLUS_STALL_LINES = 2;
+	const int PLAYERBOT_HERB_SURPLUS_STALL_FREE_CELLS = 4;
+	const int PLAYERBOT_HERB_SURPLUS_BAG_LINES = 4;
+	const int PLAYERBOT_HERB_SURPLUS_DEPOSIT_CELLS = 3;
+	const DWORD PLAYERBOT_HERB_SURPLUS_KEEP_CACHE_MS = 60 * 1000;
 	// What a bot keeps for itself before a line goes on the counter. A buff
 	// lasts ten minutes and a boss is rarer than that, so a few of each is
 	// plenty and the rest is what players have never been able to buy.
