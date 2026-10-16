@@ -849,6 +849,40 @@ namespace
 		return GetPlayerBotBonusCountAddon(item) > 0;
 	}
 
+	// MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1 (a report from another MT2009 PLUS
+	// server, checked here 16 October): the add-on above makes every piece of
+	// one weak line counter goods, and the junk rule never let the merchant
+	// have such a piece from a bot with a counter - full counter or not (the
+	// supporters' world: 39 377 weapons and armours +0..+3 of one or two lines
+	// in the bots' bags, 855 of 2 006 bot counters with all 160 cells taken).
+	// This is such a piece: a weapon or an armour +0..+6 of one or two lines,
+	// none of them a top roll, no prize lines, not priced as a +7 by its
+	// lines, not a level-30 weapon, not a Stalki. What the junk rule makes of
+	// it is IsPlayerBotWeakBonusScrapSurplus (playerbot_economy.h).
+	bool IsPlayerBotWeakBonusScrapPiece(LPITEM item)
+	{
+		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR) ||
+				(item->GetType() == ITEM_WEAPON && item->GetSubType() == WEAPON_ARROW) ||
+				(int)item->GetRefineLevel() > PLAYERBOT_WEAK_BONUS_SCRAP_MAX_PLUS ||
+				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) || IsPlayerBotPrizeItem(item))
+			return false;
+		int lines = 0;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+		{
+			const BYTE type = item->GetAttributeType(i);
+			const long value = item->GetAttributeValue(i);
+			if (type == APPLY_NONE || value <= 0)
+				continue;
+			if (IsPlayerBotTopBonusLine(type, value))
+				return false;
+			++lines;
+		}
+		if (lines < 1 || lines > PLAYERBOT_WEAK_BONUS_SCRAP_MAX_LINES)
+			return false;
+		const int plus = GetPlayerBotBonusPlusLevel(item);
+		return !(plus >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS && plus > (int)item->GetRefineLevel());
+	}
+
 	int ScorePlayerBotItemBonuses(LPCHARACTER ch, LPITEM item, BYTE wearCell)
 	{
 		if (!ch || !item)

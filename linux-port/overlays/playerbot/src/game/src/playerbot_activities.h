@@ -593,6 +593,44 @@ namespace
 		return rods;
 	}
 
+	// MT2009_PLUS_BOT_FISH_BAG_ROOM_V1 (a report from another MT2009 PLUS
+	// server, checked here 16 October: 391 sessions of 171 bots ended
+	// "rod_not_equippable" on the supporters' world on 15 October, each after
+	// the walk to the water and the pass): the rod goes on only once the
+	// weapon has come off into the bag (EquipPlayerBotRod), and with a weapon
+	// skin worn the engine takes the skin off first (CHARACTER::UnequipItem,
+	// ENABLE_WEAPON_COSTUME_SYSTEM) - each needs its own free cells, and a
+	// rod bought at the Rybak one more. A bot whose bag cannot take them does
+	// not set out nor buy a pass. Asked of the bag's real free cells, whatever
+	// rule decides the bag is "full" for the trip (the bag floor of
+	// IsPlayerBotBagFirst included), so the two never disagree about room.
+	bool PlayerBotHasRodRoom(LPCHARACTER ch)
+	{
+		if (!ch || IsPlayerBotHoldingRod(ch))
+			return true;
+		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+		int need = 0;
+		if (weapon)
+		{
+			if (ch->GetEmptyInventory(weapon->GetSize()) < 0)
+				return false;
+			need += weapon->GetSize();
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+			if (LPITEM skin = ch->GetWear(WEAR_COSTUME_WEAPON))
+				need += skin->GetSize();
+#endif
+		}
+		if (CountPlayerBotRods(ch) <= 0)
+		{
+			const TItemTable* rod = ITEM_MANAGER::instance().GetTable(PLAYERBOT_FISHING_ROD_VNUM);
+			need += rod ? std::max<int>(1, rod->bSize) : 1;
+		}
+		return need <= 0 || CountPlayerBotFreeInventoryCells(ch) >= need;
+	}
+
+	// How long a bot without that room waits before it asks again.
+	const DWORD PLAYERBOT_FISHING_NO_ROOM_WAIT_MS = 60 * 60 * 1000;
+
 	// A rod or a pickaxe (ITEM_ROD, ITEM_PICK) of the bot's own standing on its
 	// offline counter - the 2.x line, where a line leaves the bag for the shop
 	// entity, so CountPlayerBotRods never sees it - on a stand this core serves
@@ -1572,6 +1610,16 @@ namespace
 			// so this gate and the engine can never disagree.
 			if (ch->GetLevel() < PLAYERBOT_FISHING_MIN_LEVEL)
 				return false;
+			// MT2009_PLUS_BOT_FISH_BAG_ROOM_V1: no room for the weapon (and its
+			// skin, and a rod to buy) - no pass, no walk, an hour's wait. A
+			// companion its owner sent fishing goes as before.
+			if (!IsPlayerBotSidekickFishing(ch->GetPlayerID()) && !PlayerBotHasRodRoom(ch))
+			{
+				state.dwNextFishingCheckTime = dwNow + PLAYERBOT_FISHING_NO_ROOM_WAIT_MS;
+				sys_log(0, "PLAYERBOT_FISHING: no bag room for the rod pid=%u name=%s free=%d",
+						ch->GetPlayerID(), ch->GetName(), CountPlayerBotFreeInventoryCells(ch));
+				return false;
+			}
 			if (!EnsurePlayerBotFishingPass(ch, dwNow))
 			{
 				state.dwNextFishingCheckTime = dwNow + 60 * 60 * 1000;
@@ -1761,7 +1809,16 @@ namespace
 			return true;
 		}
 		if (!EquipPlayerBotRod(ch))
-			return EndPlayerBotFishingSession(ch, state, dwNow, "rod_not_equippable");
+		{
+			// MT2009_PLUS_BOT_FISH_BAG_ROOM_V1: and not back for an hour at
+			// least - the ordinary rest is minutes, and the bag that refused
+			// the weapon is the same bag then.
+			EndPlayerBotFishingSession(ch, state, dwNow, "rod_not_equippable");
+			if (!IsPlayerBotSidekickFishing(ch->GetPlayerID()) &&
+					(int)(state.dwNextFishingCheckTime - (dwNow + PLAYERBOT_FISHING_NO_ROOM_WAIT_MS)) < 0)
+				state.dwNextFishingCheckTime = dwNow + PLAYERBOT_FISHING_NO_ROOM_WAIT_MS;
+			return false;
+		}
 
 		if (dwNow < state.dwNextFishingActionTime)
 			return true;
