@@ -5791,6 +5791,11 @@ namespace
 	// MT2009_PLUS_BOT_NAV_RYBAK_REACH_V1: how far round the Rybak the bot's own
 	// ground is looked for when its approach lane is off the ground.
 	const int PLAYERBOT_FISHING_TACKLE_REACH_CELLS = 16;
+	// MT2009_PLUS_BOT_NAV_CHASE_SHORE_V1: how far from a foe standing off the
+	// bot's ground its own ground is looked for (cells of 50), and how close
+	// to that point is close enough to wait there.
+	const int PLAYERBOT_NAV_CHASE_SHORE_CELLS = 24;
+	const int PLAYERBOT_NAV_CHASE_SHORE_ARRIVE = 100;
 	// Independently planned route failures before the bank is written off. Six
 	// matches the town-service rescue; anything larger is indistinguishable from
 	// never giving up at all.
