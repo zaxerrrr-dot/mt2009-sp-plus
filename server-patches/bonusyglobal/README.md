@@ -16,6 +16,7 @@ global żywioły na wszystkich potworach. Jedna zmienna, **`M2_BONUS_MODE`** (`l
 | Szybkość ruchu | buty, kolczyki | buty, kolczyki (bez zmian) |
 | Żywioły potworów | zasady właściciela z 7.10 (`zywioly_moby.sql` + pliki Yohary) | to samo **plus** żywioł każdego potwora z oryginalnych danych |
 | Odporność na żywioł gracza wobec potwora tego żywiołu | odejmuje cały swój procent (strop 80%) – Digi Rasta | 30% swojej wartości (15% = 4,5% mniej obrażeń), jak w oryginalnym kodzie gry |
+| Alchemia (Smocze Kamienie) | nasz balans z 24.09 (`dragon_soul_applys.mt2009plus.txt`) | domyślna tabela (Owsap = paczka = klient GF 26.1.11, bez 2 linii Wilkołaka): `MT2009_PLUS_DS_GLOBAL_TABLE_V1` |
 
 Przedmioty **zachowują wszystkie bonusy**, które mają – w obu kierunkach zmienia się tylko pula losowania
 (`player.item` nie jest ruszane). Przełączać można dowolnie często; działa po restarcie (migrator).
@@ -54,6 +55,36 @@ Nie przeniesione (u nas własne): launcher, boty, Seon-Pyeong (jest), towarzysz,
 4. **Klient** (bez zmian w exe): `mob_proto` klienta ma żywioły trybu mt2009 (krok `yfinal`). Ikona żywiołu celu w trybie
    global bierze żywioł z `root/zywioly_global.py` (generowany razem z SQL), gdy serwer przy logowaniu wyśle
    `BonusMode 1` (quest `zywioly`, `game.py`, `uitarget.py`).
+
+
+## Alchemia w trybie global – `MT2009_PLUS_DS_GLOBAL_TABLE_V1`
+
+Właściciel, 15.10.2026 (lista poprawek, pkt 5): przy `M2_BONUS_MODE=global` Smocze Kamienie mają **domyślne** bonusy
+(Owsap `share/locale/uk/dragon_soul_table.txt` = tabela paczki = klient GF 26.1.11, `shared/common`). Różnią się tylko grupy
+`BasicApplys`/`AdditionalApplys` (wagi, ilości bonusów i ulepszanie – wspólne). Przykłady (wartość bazowa; Mityczny,
+najwyższy stopień, +6 = ×160%):
+
+| Kamień | mt2009 | global |
+|---|---|---|
+| Diament | INT 8, Silny przeciwko Milgyo 9 | INT 10, odp. na lód 10, siła lodu 10 (3. bonus od Mitycznego) |
+| Rubin | STR 8, Silny przeciwko Diabłom 9; dod.: wartość ataku 200, obrona 150, 10% | STR 10, odp. na ogień 10, siła ognia 10; dod.: 300, 200, 15% |
+| Jadeit | PE 500, Zwierzęta 9; dod.: PŻ 2000, kradzież PŻ 6, Maks. PŻ 12% | PE 500, odp. na wiatr, siła wiatru; dod.: PŻ 3000, 10, 20% |
+| Szafir | DEX 8, Orki 9; dod.: silny/odporny na klasy 10 | DEX 10, odp. na ziemię, siła ziemi; dod.: 15 |
+| Granat | PŻ 1000, Silny przeciwko Ludziom 6 | PŻ 1500, odp. na błyskawice, siła błyskawic |
+| Onyks | CON 8, Nieumarli 9; dod.: blok/unik 8, odbicie 6 | CON 10, odp. na mrok, siła mroku; dod.: 10 |
+| Ametyst | Potwory 6, Metiny 6; dod.: kryt. 5, przeszywające 5, wartość ataku 100 | Diabły 10, Precyzja 10, Witalność Sung Ma 10; dod.: Siła/Odporność/Inteligencja Sung Ma 10, Metiny 5 |
+
+- `linux-port/docker/game/dragon_soul_applys.global.txt` – grupy domyślne; `game/Dockerfile` robi z nich
+  `dragon_soul_table.global.txt` i zostawia tabelę mt2009 jako `dragon_soul_table.mt2009.txt`.
+- `edits.json` (`DragonSoul.cpp` load/refresh, `dragon_soul_table.cpp` apply names): rdzeń czyta `M2_BONUS_MODE` ze
+  środowiska (flaga zdarzenia przychodzi po wczytaniu tabel) i w trybie global ładuje tabelę global zamiast
+  `dragon_soul_table.txt`; siła żywiołów, Sung Ma i Precyzja z tabeli to prawdziwe punkty (Yohara 3.0).
+- **Kamienie zachowują swoje bonusy**: atrybuty kamienia są w `player.item` i nikt ich nie przelicza. Ulepszenie siły
+  (+1 / spadek) przelicza wartości – z tabeli, do której pasują bonusy kamienia (pozostałe tabele są wczytane), więc
+  kamień z trybu mt2009 rośnie dalej ze swoimi bonusami w trybie global i odwrotnie; bonus, którego nie ma żadna tabela,
+  zostaje (wcześniej spadał do 0). Nowy kamień, ulepszenie klasy/stopnia i zmiana bonusów Mitycznego – z tabeli bieżącej.
+- Strona panelu „Alchemia” edytuje tabelę trybu mt2009; w trybie global jej status mówi, że rdzenie używają tabeli global.
+- Klient nie czyta `dragon_soul_table` (opisy z atrybutów przedmiotu; nazwy punktów 178–187 i 197 ma `localeinfo_point.py`).
 
 ## Pliki
 
