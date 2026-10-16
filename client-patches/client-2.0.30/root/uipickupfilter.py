@@ -61,7 +61,8 @@
 # "/pickup_rules add ..." each (char_item.cpp), "/pickup_rules end" - the
 # server swaps the set in whole. The engine takes 10 commands a half second
 # and 256 characters a command, so everything goes through a queue
-# (SEND_BATCH commands every SEND_GAP seconds, flushed by PickupFilterSync).
+# (SEND_BATCH commands every SEND_GAP seconds, flushed by PickupFilterSync;
+# MT2009_PLUS_PICKUP_SYNC_FAST_V1: the server no longer limits them).
 # The detailed filter is an option of "Opcje Gry" -> "Dodatkowe" -> "Filtr
 # podnoszenia" (uiopcjedodatkowe.py, pickup_advanced, on by default). Off, the
 # filter is the simple one: no rules go to the server ("/pickup_rules clear"),
@@ -73,6 +74,7 @@
 
 import app
 import chat
+import clientclock  # MT2009_PLUS_PICKUP_SYNC_CLOCK_V1
 import net
 import os
 import player
@@ -153,17 +155,38 @@ def CondToken(cond):
 # answer ACK_WAIT seconds after the last command the whole filter goes again,
 # up to ACK_RETRIES times. The server lets these commands through its limit and,
 # until a kind's rules are there, leaves its items on the ground.
-SEND_GAP = 0.5
-SEND_BATCH = 3
-ACK_WAIT = 4.0
-ACK_RETRIES = 3
+# MT2009_PLUS_PICKUP_SYNC_FAST_V1 (the owner, 16 October: "a channel change with a
+# few filters set makes the login much longer"): the server lets these commands
+# through its limit (cmd.cpp, s_apszUnthrottled), so the slow pace only made the
+# filter wait - 40 rules with item lists took 10+ seconds after every login and
+# channel change, and the kinds with rules were left on the ground meanwhile.
+# Now 20 commands every 0.05 s (the whole filter in a frame or two), and no
+# answer in 1.5 s sends it again.
+SEND_GAP = 0.05
+SEND_BATCH = 20
+ACK_WAIT = 1.5
+# MT2009_PLUS_PICKUP_SYNC_V2 (the owner, 16 October: "a long time after the login
+# before the rules reach the server - on mine they never do"): a server whose
+# command limit still counts these commands (10 a half second for everything the
+# client sends - the login's other windows send too) dropped some of a fast send,
+# often "/pickup_rules begin": the adds went nowhere and "end" answered 0, which
+# was taken as the answer. Now the answer is checked - the number of rules the
+# server keeps must be the number sent, and the filter's own command must have
+# been answered (PickupFilterAck) - and a wrong or missing answer sends the whole
+# filter again, the retries at the slow pace (SLOW_BATCH commands every
+# SLOW_GAP seconds) that such a limit lets through.
+SLOW_GAP = 0.5
+SLOW_BATCH = 4
+SLOW_ACK_WAIT = 3.0
+ACK_RETRIES = 4
 COMMAND_MAX = 250
 PRESETS_PATH = os.path.join(uiautohunt.CONFIG_BASE_DIR, 'filtr_presety.cfg')
 
 _state = {'loaded': False, 'file': False, 'on': 0, 'kinds': ALL_KINDS,
     'bonus': 0, 'bonus_min': 1, 'window': None, 'name': None,
     'rules': [], 'rules_ack': None, 'kind_window': None,
-    'items_req': 0, 'items_event': None, 'ack_wait': 0.0, 'retries': 0}
+    'items_req': 0, 'items_event': None, 'ack_wait': 0.0, 'retries': 0,
+    'expected': 0, 'filter_ack': False}  # MT2009_PLUS_PICKUP_SYNC_V2
 
 # Commands waiting for their turn (Send, Flush).
 _queue = []
@@ -478,6 +501,8 @@ def Send(retry=False):
     ruleKinds = 0
     for rule in rules:
         ruleKinds |= rule['kinds']
+    _state['expected'] = len(rules)  # MT2009_PLUS_PICKUP_SYNC_V2: what "PickupRulesAck" must say
+    _state['filter_ack'] = False
     _queue.append('/pickup_filter %d %d 0 %d %d' % (_state['on'], _state['kinds'], _state['bonus_min'],
         ruleKinds & _state['kinds'] & ALL_KINDS))
     if rules:
@@ -496,15 +521,21 @@ def Flush():
     """SEND_BATCH queued commands every SEND_GAP seconds."""
     if not _queue:
         return
-    now = app.GetTime()
+    # MT2009_PLUS_PICKUP_SYNC_CLOCK_V1: app.GetTime() starts again from zero at every
+    # connection (a channel change, a teleport) - a deadline taken on the map before
+    # held the filter back for as long as the character had played there.
+    # clientclock.Now() never runs backwards.
+    now = clientclock.Now()
     if now < _sendTime[0]:
         return
-    _sendTime[0] = now + SEND_GAP
-    for i in xrange(min(SEND_BATCH, len(_queue))):
+    # MT2009_PLUS_PICKUP_SYNC_V2: the first send fast, every retry at the slow pace
+    slow = _state['retries'] > 0
+    _sendTime[0] = now + (SLOW_GAP if slow else SEND_GAP)
+    for i in xrange(min(SLOW_BATCH if slow else SEND_BATCH, len(_queue))):
         net.SendChatPacket(_queue.pop(0))
     if not _queue:
         # MT2009_PLUS_PICKUP_SYNC_V1: all gone - now the answer is awaited
-        _state['ack_wait'] = now + ACK_WAIT
+        _state['ack_wait'] = now + (SLOW_ACK_WAIT if slow else ACK_WAIT)
         RefreshWindows()
 
 
@@ -516,7 +547,7 @@ def WaitingAck():
 
 def CheckAck():
     """MT2009_PLUS_PICKUP_SYNC_V1: no answer in time - the whole filter again."""
-    if not WaitingAck() or app.GetTime() < _state['ack_wait']:
+    if not WaitingAck() or clientclock.Now() < _state['ack_wait']:  # MT2009_PLUS_PICKUP_SYNC_CLOCK_V1
         return
     _state['retries'] += 1
     Send(True)
@@ -553,9 +584,20 @@ def RulesAckText():
 
 def OnRulesAck(count='0', *rest):
     try:
-        _state['rules_ack'] = int(count)
+        count = int(count)
     except ValueError:
-        _state['rules_ack'] = 0
+        count = 0
+    # MT2009_PLUS_PICKUP_SYNC_V2: an answer while the filter is still being sent
+    # belongs to an older send; a wrong one (a command of the send was dropped)
+    # sends it all again, at the slow pace.
+    if _queue:
+        return
+    if (count != _state['expected'] or not _state['filter_ack']) and _state['retries'] < ACK_RETRIES:
+        _state['retries'] += 1
+        Send(True)
+        RefreshWindows()
+        return
+    _state['rules_ack'] = count
     _state['retries'] = 0
     RefreshWindows()
 
@@ -809,7 +851,11 @@ def RefreshWindows():
 
 
 def OnAck(on='0', kinds='0', *rest):
-    pass
+    # MT2009_PLUS_PICKUP_SYNC_V2: the filter's own command reached the server
+    try:
+        _state['filter_ack'] = int(on) == (1 if _state['on'] else 0) and int(kinds) == _state['kinds']
+    except ValueError:
+        _state['filter_ack'] = False
 
 
 class PickupFilterSync(object):
@@ -819,6 +865,10 @@ class PickupFilterSync(object):
 
     def __init__(self):
         self.sent = False
+        # MT2009_PLUS_PICKUP_SYNC_CLOCK_V1: a new game window is a new connection -
+        # nothing of the last one's queue or pace is left to wait for.
+        del _queue[:]
+        _sendTime[0] = 0.0
 
     def CanUpdate(self):
         return not self.sent or HasQueued() or WaitingAck()
