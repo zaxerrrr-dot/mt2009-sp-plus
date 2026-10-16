@@ -1457,6 +1457,42 @@ namespace
 		return bestDistance >= 0;
 	}
 
+	// MT2009_PLUS_BOT_NAV_SNAP_V1: a point on the bot's own ground for a goal
+	// that may not be on it. PLAYERBOT_NAV_GOAL_ON_GROUND: the goal itself is
+	// reachable (walkX/walkY = the goal); PLAYERBOT_NAV_GOAL_SNAPPED: it is not,
+	// and walkX/walkY is the nearest cell of the bot's component within
+	// maxCells of it; PLAYERBOT_NAV_GOAL_NONE: no such cell (or no grid).
+	// FindPlayerBotReachableGoal above searches the arrival radius only (five
+	// cells for the Rybak); a monster in the middle of a river or a boss walking
+	// along a cliff is further in than that, and every second's plan was another
+	// "unreachable" line.
+	enum EPlayerBotGoalGround
+	{
+		PLAYERBOT_NAV_GOAL_NONE = 0,
+		PLAYERBOT_NAV_GOAL_ON_GROUND = 1,
+		PLAYERBOT_NAV_GOAL_SNAPPED = 2
+	};
+	EPlayerBotGoalGround FindPlayerBotOwnGroundNear(LPCHARACTER ch, long goalX, long goalY,
+			int maxCells, long& walkX, long& walkY)
+	{
+		walkX = goalX;
+		walkY = goalY;
+		if (!ch)
+			return PLAYERBOT_NAV_GOAL_NONE;
+		CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(ch->GetMapIndex());
+		if (!navigation.Init(ch->GetMapIndex()))
+			return PLAYERBOT_NAV_GOAL_ON_GROUND;	// no grid: the walk decides, as before
+		if (navigation.CanReach(ch->GetX(), ch->GetY(), goalX, goalY))
+			return PLAYERBOT_NAV_GOAL_ON_GROUND;
+		const DWORD own = navigation.GetComponentAtWorld(ch->GetX(), ch->GetY());
+		PIXEL_POSITION near;
+		if (own == 0 || !navigation.FindNearestComponentWorld(goalX, goalY, maxCells, own, near))
+			return PLAYERBOT_NAV_GOAL_NONE;
+		walkX = near.x;
+		walkY = near.y;
+		return PLAYERBOT_NAV_GOAL_SNAPPED;
+	}
+
 	// MT2009_PLUS_SIDEKICK_NAV_GIVEUP_V1 (the owner, 13 October: from 07:13 to
 	// 07:17 the companion planned the same unreachable walk
 	// (1075908,50491) -> (1080793,51160) again and again; the watchdog reset

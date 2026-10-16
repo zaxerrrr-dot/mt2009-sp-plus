@@ -1714,6 +1714,30 @@ namespace
 		{
 			GetPlayerBotNpcApproach(ch->GetPlayerID(), bank->fisherman.x,
 					bank->fisherman.y, 0x46495348U, destX, destY);
+			// MT2009_PLUS_BOT_NAV_RYBAK_REACH_V1: the approach lanes east of the
+			// Rybak of map 1 (x 482970-483150, three of the eleven) lie on the
+			// river bank's blocked ground; the farthest lane is six cells from
+			// the square, past FindPlayerBotReachableGoal's five, so the plan
+			// was "unreachable" three times and the session ended route_failed
+			// before a step - 698 of the supporters' 2 511 "unreachable" lines
+			// in 18 hours after 2.34, the same (483150, 961260-961500) in a
+			// player's log, the same bots session after session. The mirrored
+			// lane west of him first, then the bot's own ground nearest to him.
+			long walkX = destX, walkY = destY;
+			if (FindPlayerBotOwnGroundNear(ch, destX, destY, 0, walkX, walkY) != PLAYERBOT_NAV_GOAL_ON_GROUND)
+			{
+				const long mirrorX = 2 * bank->fisherman.x - destX;
+				if (FindPlayerBotOwnGroundNear(ch, mirrorX, destY, 0, walkX, walkY) == PLAYERBOT_NAV_GOAL_ON_GROUND ||
+						FindPlayerBotOwnGroundNear(ch, bank->fisherman.x, bank->fisherman.y,
+							PLAYERBOT_FISHING_TACKLE_REACH_CELLS, walkX, walkY) != PLAYERBOT_NAV_GOAL_NONE)
+				{
+					PlayerBotLogThrottled("fishing_tackle_lane", dwNow,
+							"PLAYERBOT_NAV: Rybak approach off the ground, moved pid=%u name=%s map=%ld lane=(%ld,%ld) walk=(%ld,%ld)",
+							ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), destX, destY, walkX, walkY);
+					destX = walkX;
+					destY = walkY;
+				}
+			}
 		}
 		else
 		{
