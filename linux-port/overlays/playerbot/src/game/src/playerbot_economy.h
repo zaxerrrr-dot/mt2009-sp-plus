@@ -1575,61 +1575,12 @@ namespace
 		return occupied * 100 >= PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
 	}
 
-	// MT2009_PLUS_M1_LOOP_FIX_V1 (bag floor): what a finished town visit left
-	// in a bag it could not take under PLAYERBOT_BAG_FULL_PERCENT is what the
-	// bot keeps on purpose - refine reserves, soul stones, its books, a belt of
-	// potions - and the loop report (15 October) found the bags of the bots of
-	// 35-46 at 160 of 180 cells after every visit. "Bag first" then stood for
-	// good and stood down every leisure errand, Baek-Go's board among them,
-	// for a need no town could meet. For PLAYERBOT_BAG_FLOOR_MS after such a
-	// visit the bag counts as full for that rule only once it holds
-	// PLAYERBOT_BAG_FLOOR_SLACK_CELLS more than the visit left; what stops a
-	// pickup (no free three-cell column) is never excused.
-	const DWORD PLAYERBOT_BAG_FLOOR_MS = 60 * 60 * 1000;
-	const int PLAYERBOT_BAG_FLOOR_SLACK_CELLS = 9;
-	struct TPlayerBotBagFloor { DWORD dwAt; int iOccupied; };
-	std::map<DWORD, TPlayerBotBagFloor> s_mapPlayerBotBagFloor;
-
-	int CountPlayerBotBagOccupiedCells(LPCHARACTER ch)
-	{
-		if (!ch || !ch->IsItemLoaded())
-			return 0;
-		return PLAYERBOT_BAG_CELLS - CountPlayerBotFreeInventoryCells(ch) -
-				CountPlayerBotSaddlebagFreeCells(ch);
-	}
-
-	// At the end of a finished town visit.
-	void NotePlayerBotBagFloor(LPCHARACTER ch, DWORD dwNow)
-	{
-		if (!ch || !ch->IsItemLoaded())
-			return;
-		if (!IsPlayerBotBagFull(ch))
-		{
-			s_mapPlayerBotBagFloor.erase(ch->GetPlayerID());
-			return;
-		}
-		TPlayerBotBagFloor& floor = s_mapPlayerBotBagFloor[ch->GetPlayerID()];
-		floor.dwAt = dwNow;
-		floor.iOccupied = CountPlayerBotBagOccupiedCells(ch);
-		sys_log(0, "PLAYERBOT_TOWN: bag floor pid=%u name=%s level=%u occupied=%d free_cells=%d",
-				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), floor.iOccupied,
-				CountPlayerBotFreeInventoryCells(ch));
-	}
-
-	bool IsPlayerBotBagAtTownFloor(LPCHARACTER ch, DWORD dwNow)
-	{
-		if (!ch)
-			return false;
-		std::map<DWORD, TPlayerBotBagFloor>::iterator it = s_mapPlayerBotBagFloor.find(ch->GetPlayerID());
-		if (it == s_mapPlayerBotBagFloor.end())
-			return false;
-		if (dwNow - it->second.dwAt >= PLAYERBOT_BAG_FLOOR_MS)
-		{
-			s_mapPlayerBotBagFloor.erase(it);
-			return false;
-		}
-		return CountPlayerBotBagOccupiedCells(ch) <= it->second.iOccupied + PLAYERBOT_BAG_FLOOR_SLACK_CELLS;
-	}
+	// MT2009_PLUS_BOT_BAG_FLOOR_OFF_V1: the 2.34 "bag floor" (a bag the last
+	// town visit left over PLAYERBOT_BAG_FULL_PERCENT did not count as full for
+	// an hour) is gone. It reopened the rod, the pickaxe, the bushes and the
+	// stay in town to every full bag, and the anglers at the first villages'
+	// banks went from ~45 to ~130-210 at once (supporters' world, 15 October).
+	// Baek-Go's board never needed it: it is off the full-bag gate by itself.
 
 	// Defined with the stall's keeps in playerbot_town.h.
 	int CountPlayerBotVnumUnitsAhead(LPCHARACTER ch, LPITEM item);

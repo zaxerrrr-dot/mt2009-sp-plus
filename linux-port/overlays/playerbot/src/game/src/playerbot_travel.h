@@ -2524,6 +2524,27 @@ namespace
 		s_mapPlayerBotM1HoldWhy.erase(pid);
 	}
 
+	// MT2009_PLUS_BOT_BAG_FLOOR_OFF_V1: a fishing session owns the tick, so
+	// the hold's clock ran on under it and every angler's hold ended at the
+	// session's end with held_s ~2300-2480 (~41 min; 15 October), counted as
+	// a hold nothing lifted (the M1 services ignored for an hour, a services
+	// exit). The session ends the hold where it starts instead: the clock is
+	// dropped, and a need still there after the session holds the bot afresh.
+	void EndPlayerBotM1HoldForFishing(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch)
+			return;
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotM1HeldSince.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotM1HeldSince.end() || it->second <= 1)
+			return;
+		const int why = GetPlayerBotM1HoldWhy(ch->GetPlayerID(), dwNow);
+		sys_log(0, "PLAYERBOT_WORLD: m1 hold ended by fishing pid=%u name=%s level=%u held_s=%u m1_why=%s",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), (dwNow - it->second) / 1000U,
+				why >= 0 ? PLAYERBOT_M1_HOLD_WHY_KEY[why] : "-");
+		s_mapPlayerBotM1HeldSince.erase(it);
+		s_mapPlayerBotM1HoldWhy.erase(ch->GetPlayerID());
+	}
+
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 	// MT2009_PLUS_BOT_HAGGLE_V2: defined in playerbot_haggle.h.
 	bool IsPlayerBotHaggleHoldingMap(LPCHARACTER ch);
