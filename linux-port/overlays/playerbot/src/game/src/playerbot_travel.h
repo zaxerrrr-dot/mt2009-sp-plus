@@ -1204,7 +1204,10 @@ namespace
 		// here so a bot under it never walks to the water; the pass is bought
 		// and worn on the spot (EnsurePlayerBotFishingPass), because nothing
 		// sells one and refusing without it meant no bot ever fished here.
+		// MT2009_PLUS_BOT_FISH_BAG_ROOM_V1: and the bag's room for the weapon
+		// the rod replaces is asked before the pass is bought.
 		if (ch->GetLevel() < PLAYERBOT_FISHING_MIN_LEVEL ||
+				(!IsPlayerBotSidekickFishing(ch->GetPlayerID()) && !PlayerBotHasRodRoom(ch)) ||
 				!EnsurePlayerBotFishingPass(ch, dwNow))
 			return false;
 #endif

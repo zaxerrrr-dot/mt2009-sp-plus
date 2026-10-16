@@ -2379,6 +2379,78 @@ namespace
 		return ahead;
 	}
 
+	// MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1 (playerbot_bonus.h): a weapon or an
+	// armour +0..+6 of one or two weak lines.
+	bool IsPlayerBotWeakBonusScrapPiece(LPITEM item);
+	bool IsPlayerBotBonusGoodsSeller(LPCHARACTER ch);
+	bool CanPlayerBotRerollItem(LPITEM item);
+
+	// Whether the bot's own offline counter is open and has no room for gear:
+	// fewer than PLAYERBOT_WEAK_BONUS_COUNTER_FULL_CELLS free cells (a weapon
+	// is a column of two or three on one page) or fewer than the piece takes.
+	// No counter open now is no full counter: the piece waits for it.
+	bool IsPlayerBotOwnCounterFullFor(LPCHARACTER ch, LPITEM item)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		if (!ch || !item)
+			return false;
+		auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+		if (!shop)
+			return false;
+		int used = 0;
+		for (const auto& [id, line] : shop->GetItems())
+			if (line && line->GetTable())
+				used += line->GetTable()->bSize;
+		const int freeCells = SHOP_PLAYER_WIDTH * SHOP_PLAYER_HEIGHT * playerbot_offline::BOT_SHOP_PAGES - used;
+		return freeCells < std::max<int>(PLAYERBOT_WEAK_BONUS_COUNTER_FULL_CELLS, (int)item->GetSize());
+#else
+		(void)ch; (void)item;
+		return false;
+#endif
+	}
+
+	// Such pieces in the bag's cells before this one.
+	int CountPlayerBotWeakBonusScrapAhead(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetWindow() != INVENTORY)
+			return 0;
+		int ahead = 0;
+		for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM held = ch->GetInventoryItem(cell);
+			if (held && held != item && held->GetCell() == cell && !held->IsEquipped() &&
+					IsPlayerBotWeakBonusScrapPiece(held))
+				++ahead;
+		}
+		return ahead;
+	}
+
+	// The surplus of them the merchant may have from a bot with a counter: its
+	// own counter has no cell for one (IsPlayerBotOwnCounterFullFor), the bag
+	// keeps the first PLAYERBOT_WEAK_BONUS_BAG_KEEP for the cell that frees,
+	// and the piece is nothing the bot keeps for itself - not its next piece,
+	// the higher tier its anvil works, the backup of what it wears, the Demon
+	// Tower smith's piece, nor a bonus maker's goods (a piece it puts stones
+	// on to sell). Iwakura's list, a gambler's piece, a Stalki and what a
+	// companion's owner gave are kept before the junk rule asks this. Only
+	// the bot's own counter is asked, never what the world's counters hold:
+	// this is no market cap - a bot with room lists the piece as before.
+	bool IsPlayerBotWeakBonusScrapSurplus(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->IsEquipped() || !IsPlayerBotWeakBonusScrapPiece(item) ||
+				!PlayerBotHasCounter(ch) || !IsPlayerBotOwnCounterFullFor(ch, item))
+			return false;
+		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
+				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) || IsPlayerBotTowerSmithReserve(ch, item) ||
+				(item->GetType() == ITEM_WEAPON ? IsPlayerBotKeptBackupWeapon(ch, item)
+					: IsPlayerBotKeptBackupArmour(ch, item)))
+			return false;
+		if (IsPlayerBotBonusGoodsSeller(ch) && (int)item->GetRefineLevel() >= PLAYERBOT_BONUS_GOODS_MIN_PLUS &&
+				CanPlayerBotRerollItem(item))
+			return false;
+		return CountPlayerBotWeakBonusScrapAhead(ch, item) >= PLAYERBOT_WEAK_BONUS_BAG_KEEP;
+	}
+
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
@@ -2478,6 +2550,12 @@ namespace
 		// counter's, and the merchant's only from a bag under pressure that
 		// has no counter, the rule a polymorph marble keeps. The merchant paid
 		// a few thousand for a bracelet a player pays millions for.
+		// MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1: but a piece of one or two weak
+		// lines is the merchant's once the bot's own counter has no room for
+		// it (IsPlayerBotWeakBonusScrapSurplus) - before, a bot with a counter
+		// kept every such piece for it, full counter or not.
+		if (IsPlayerBotWeakBonusScrapSurplus(ch, item))
+			return true;
 		if ((item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR) && IsPlayerBotBonusGoodsPiece(item) &&
 				!(IsPlayerBotBagUnderPressure(ch) && !PlayerBotHasCounter(ch)))
 			return false;

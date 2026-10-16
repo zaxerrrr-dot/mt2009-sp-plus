@@ -3422,6 +3422,18 @@ namespace
 	const int PLAYERBOT_BONUS_GOODS_SELLER_PERCENT = 20;
 	const int PLAYERBOT_BONUS_GOODS_MIN_LEVEL = 30;
 	const int PLAYERBOT_BONUS_GOODS_MIN_PLUS = 6;
+	// MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1: a weapon or an armour up to this
+	// plus with one or two weak lines (IsPlayerBotWeakBonusScrapPiece) is the
+	// merchant's from a bot whose own counter has fewer than
+	// PLAYERBOT_WEAK_BONUS_COUNTER_FULL_CELLS free cells for it, past the
+	// first PLAYERBOT_WEAK_BONUS_BAG_KEEP such pieces in the bag, which wait
+	// for a cell to free on that counter. No world cap: what the other
+	// counters hold is not asked (the owner, 16 October: "Nie limituj rynku
+	// na razie").
+	const int PLAYERBOT_WEAK_BONUS_SCRAP_MAX_PLUS = 6;
+	const int PLAYERBOT_WEAK_BONUS_SCRAP_MAX_LINES = 2;
+	const int PLAYERBOT_WEAK_BONUS_COUNTER_FULL_CELLS = 4;
+	const int PLAYERBOT_WEAK_BONUS_BAG_KEEP = 2;
 	const int PLAYERBOT_BONUS_GOODS_PIECES = 2;
 	const int PLAYERBOT_BONUS_GOODS_STONE_RESERVE = 10;
 	// Point 10: a line worth keeping for itself is never mixed off by an
