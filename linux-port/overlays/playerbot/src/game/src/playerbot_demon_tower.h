@@ -1117,6 +1117,39 @@ namespace
 					goalX += (long)((long long)(ch->GetX() - foe->GetX()) * stand / distance);
 					goalY += (long)((long long)(ch->GetY() - foe->GetY()) * stand / distance);
 				}
+				// MT2009_PLUS_BOT_NAV_CHASE_SHORE_V1: a world boss walks where
+				// no bot walks - over a cliff, along a river - and the raid
+				// chased the point he stood on every second, each one a fresh
+				// "unreachable" plan (Waldek004 and Nowy on map 3, 16 October
+				// 04:06-04:07: 22 lines in 30 s, the boss's track a line of
+				// blocked cells; four bots on map 64 of a player's ch3 the
+				// same way). Outside the tower, whose floors give an
+				// objective out of reach up (NotePlayerBotTowerUnreachable),
+				// the bot walks to its own ground nearest to him and waits
+				// there for him to come back within reach.
+				if (!IsPlayerBotDemonTowerInstance(mapIndex))
+				{
+					long shoreX = goalX, shoreY = goalY;
+					const EPlayerBotGoalGround ground = FindPlayerBotOwnGroundNear(ch, goalX, goalY,
+							PLAYERBOT_NAV_CHASE_SHORE_CELLS, shoreX, shoreY);
+					if (ground != PLAYERBOT_NAV_GOAL_ON_GROUND)
+					{
+						PlayerBotLogThrottled("nav_chase_shore", dwNow,
+								"PLAYERBOT_NAV: foe off the ground, %s pid=%u name=%s map=%ld foe=%u at=(%ld,%ld) from=(%ld,%ld) shore=(%ld,%ld)",
+								ground == PLAYERBOT_NAV_GOAL_SNAPPED ? "to the shore" : "waiting",
+								ch->GetPlayerID(), ch->GetName(), mapIndex, (unsigned int)foe->GetRaceNum(),
+								foe->GetX(), foe->GetY(), ch->GetX(), ch->GetY(), shoreX, shoreY);
+						if (ground == PLAYERBOT_NAV_GOAL_NONE ||
+								DISTANCE_APPROX(ch->GetX() - shoreX, ch->GetY() - shoreY) <= PLAYERBOT_NAV_CHASE_SHORE_ARRIVE)
+						{
+							if (ch->IsStateMove())
+								ch->Stop();
+							return true;
+						}
+						goalX = shoreX;
+						goalY = shoreY;
+					}
+				}
 				// This call's outcome and no earlier one: a few of its early
 				// returns leave the field as it was.
 				state.bLastNavOutcome = PLAYERBOT_NAV_OUT_NONE;
