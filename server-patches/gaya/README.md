@@ -16,10 +16,14 @@ wytwarzania (cube) – i tylko to ostatnie wymaga silnika:
 
 Receptury z Gaya (wiki / Owsap `cube.txt` „gem”): kowale zestawów 20475–20479 – 500, Statua Węży 20807 (wężowe bronie
 i zbroje) – 100 (`tools/ysets/gen_ysets.py`). Skrzynek Żywiołaków u Statui Wojownika nie ma (decyzja właściciela
-14.10.2026 – pet tylko w ItemShopie). Okno wytwarzania klienta nie pokazuje
-Gaya (exe bez zmian) – koszt podają rozmowy z NPC.
+14.10.2026 – pet tylko w ItemShopie). Okno wytwarzania klienta pokazuje Gaya tylko u kowali zestawów (niżej, V2);
+u innych NPC (Statua Węży ma już 5 materiałów – więcej okno nie mieści) koszt podają rozmowy z NPC.
 
-Pięć edycji, każda ze swoim znacznikiem. Po `ysets` (edycja „cube set” stoi w jego funkcji `Mt2009YSetsCubeMake`).
+`MT2009_PLUS_GAYA_V2` (runda 15.10 nr 10): wiersz kowala zestawów (`ysets` V4) pokazuje Gaya jako materiał
+(95927 × N), a `Cube_add_item` nie przyjmuje Gaya do okna (komunikat) – zabierana jest z ekwipunku, a stos opróżniony
+tam, gdy leżał w oknie, zostawiłby w oknie wskaźnik na usunięty przedmiot.
+
+Siedem edycji, każda ze swoim znacznikiem. Po `ysets` (edycja „cube set” stoi w jego funkcji `Mt2009YSetsCubeMake`).
 
 Linux/VPS: `python3 apply_gaya.py <game/src>`; Windows: `Apply-GayaPatch.ps1 -SourceDir <game/src>` (wołane przez
 `tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `cube.h`, `cube.cpp`.

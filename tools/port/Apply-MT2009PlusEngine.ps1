@@ -94,6 +94,7 @@ param(
 #   Ukryj kostium      CommonDefines.h, char.cpp, input_login.cpp, cmd_general.cpp, cmd.cpp, ENABLE_HIDE_COSTUME_SYSTEM
 #                      (MT2009_PLUS_HIDE_COSTUME_V1; server-patches/ukryjkostium)
 #   Gaya               cube.h, cube.cpp (MT2009_PLUS_GAYA_V1; server-patches/gaya, after ysets)
+#   Helmy 100 poz.     cube.h, cube.cpp - cube "fail_keep" (MT2009_PLUS_HELM100_CUBE_V1; server-patches/yhelm100, after gaya)
 #   Przebudzeni bossowie char_battle.cpp (MT2009_PLUS_YOHARA_PB_V1; server-patches/przebudzeni)
 #   Umiejetnosci 9.    common skill_length.h, char_skill.cpp, char_battle.cpp, char_affect.cpp,
 #                      constants.cpp, battle.cpp (MT2009_PLUS_SKILL9_V1; server-patches/skill9)
@@ -1413,6 +1414,19 @@ if ((Test-Path -LiteralPath $gayaApply -PathType Leaf) -and
     if ($gayaResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Gaya edit(s).' -f $gayaResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Helmy na 100 poziom (server-patches/yhelm100, MT2009_PLUS_HELM100_CUBE_V1): a cube recipe's "fail_keep <vnum>" - that
+# item of the recipe stays on a failure (Straznik Smokow Jaharr's Dragona helmets, cube.helm100.txt). After Gaya (it
+# calls its helpers).
+$yhelm100Apply = Join-Path $repo 'server-patches/yhelm100/Apply-YHelm100Patch.ps1'
+if ((Test-Path -LiteralPath $yhelm100Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cube.cpp') -PathType Leaf)) {
+    $yhelm100Result = & $yhelm100Apply -SourceDir $engineGameSource
+    if ($yhelm100Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} level-100 helmet cube edit(s).' -f $yhelm100Result.Applied) -ForegroundColor DarkGray
     }
 }
 

@@ -1484,6 +1484,22 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map \
         || { echo "FATAL: Jaharr on $1"; exit 1; }; \
     done \
  && echo "share: Straznik Smokow Jaharr (20421) in Yongan, Joan and Pyungmoo - the level-100 helmets"
+# MT2009_PLUS_HELM100_CUBE_V1 (share; round 15.10 #3, the owner: "tak jak u innych NPC, np. Mistrz -> Wytwarzanie
+# pasow"): Jaharr's helmets are made in his cube window - cube.helm100.txt (tools/yhelm100/gen_yhelm100.py), 40 recipes
+# (4 helmets x +5..+9 x Smokow / Dragona; the window shows 8 rows), the Dragona ones with "fail_keep" (the helmet stays
+# on a failure; server-patches/yhelm100). Quest helm100 opens the window.
+COPY cube.helm100.txt /tmp/cube-helm100/
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-helm100/cube.helm100.txt \
+ && ! grep -q -E '^npc[[:blank:]]+20421[[:space:]]*$' "$C" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
+ && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$n" -eq 40 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+20421[[:space:]]*$' "$C")" -eq 40 \
+ && test "$(grep -c -E '^fail_keep[[:blank:]]' "$C")" -eq 20 \
+ && rm -rf /tmp/cube-helm100 \
+ && echo "share: Jaharr's cube window - $n level-100 helmet recipes (MT2009_PLUS_HELM100_CUBE_V1)"
 
 # MT2009_PLUS_KAWUCO_V1 (share; the owner, 15 October 2026): Kawuco (20413, the boots NPC - mariadb/playerbot/kawuco.sql,
 # quest/kawuco.quest, cube.buty.txt) where the pl-wiki's "Kawuco" and Owsap's npc.txt put him: Przyladek Smoczego Ognia

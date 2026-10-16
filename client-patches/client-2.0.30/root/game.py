@@ -2886,7 +2886,9 @@ class GameWindow(ui.ScriptWindow):
 				self.interface.wndCube.AddCubeResultItem(itemVnum, itemCount)
 
 			resultCount = len(self.cubeInformation[npcVNUM])
-			requestCount = 7
+			# MT2009_PLUS_YOHARA_SETS_V4: 4 rows a request (was 7) - a row of alternatives (Jaharr's "helmet +5 or ... +9",
+			# MT2009_PLUS_HELM100_CUBE_V1) is ~90 characters and 7 of them passed the server's 512-character chat line
+			requestCount = 4
 			modCount = resultCount % requestCount
 			splitCount = resultCount / requestCount
 			for i in xrange(splitCount):
@@ -2917,6 +2919,7 @@ class GameWindow(ui.ScriptWindow):
 			eachResultList = listText.split("@")
 
 			cubeInfo = self.cubeInformation[self.currentCubeNPC]
+			smithGold = 0 # MT2009_PLUS_YOHARA_SETS_V4: a set blacksmith's Yang, shown once every row has its materials
 
 			itemIndex = 0
 			for eachResultText in eachResultList:
@@ -2927,9 +2930,10 @@ class GameWindow(ui.ScriptWindow):
 				splitResult = eachResultText.split("/")
 				if 1 < len(splitResult):
 					gold = int(splitResult[1])
-					if self.currentCubeNPC in (20475, 20476, 20477, 20478, 20479) and gold > 0: # MT2009_PLUS_YOHARA_SETS_V3
-						self.cubeSmithGold = gold
-						self.interface.UpdateCubeInfo(gold, 0, 0)
+					# MT2009_PLUS_YOHARA_SETS_V4 (round 15.10 #10): V3 called UpdateCubeInfo here - its Refresh ran before
+					# the next rows had materials (KeyError in uicube's Refresh) and left rows 2-3 empty; shown after the loop
+					if self.currentCubeNPC in (20475, 20476, 20477, 20478, 20479) and gold > 0:
+						smithGold = gold
 
 				#print "splitResult : ", splitResult
 				eachMaterialList = splitResult[0].split("&")
@@ -2961,6 +2965,9 @@ class GameWindow(ui.ScriptWindow):
 
 				itemIndex = itemIndex + 1
 
+			if smithGold: # MT2009_PLUS_YOHARA_SETS_V4
+				self.cubeSmithGold = smithGold
+				self.interface.UpdateCubeInfo(smithGold, 0, 0)
 			self.interface.wndCube.Refresh()
 
 
