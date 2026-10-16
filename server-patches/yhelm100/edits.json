@@ -1,0 +1,26 @@
+[
+ {
+  "file": "cube.h",
+  "marker": "MT2009_PLUS_HELM100_CUBE_V1 (cube data)",
+  "old": "\tint\t\t\t\t\t\tset_part = 0; // 1 weapon, 2 armour, 3 helmet\n",
+  "new": "\tint\t\t\t\t\t\tset_part = 0; // 1 weapon, 2 armour, 3 helmet\n\tint\t\t\t\t\t\tfail_keep = 0; // MT2009_PLUS_HELM100_CUBE_V1 (cube data): this item of the recipe stays on a failure\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_HELM100_CUBE_V1 (cube load)",
+  "old": "\t\telse TOKEN(\"set_part\")\n\t\t{\n\t\t\tcube_data->set_part = value1;\n\t\t}\n",
+  "new": "\t\telse TOKEN(\"set_part\")\n\t\t{\n\t\t\tcube_data->set_part = value1;\n\t\t}\n\t\telse TOKEN(\"fail_keep\") // MT2009_PLUS_HELM100_CUBE_V1 (cube load)\n\t\t{\n\t\t\tcube_data->fail_keep = value1;\n\t\t}\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_HELM100_CUBE_V1 (cube fail keep)",
+  "old": "// return new item\nbool Cube_make (LPCHARACTER ch)\n",
+  "new": "// MT2009_PLUS_HELM100_CUBE_V1 (cube fail keep): round 15.10 #3 - a recipe with \"fail_keep <vnum>\" (Straznik Smokow\n// Jaharr's Dragona helmets, cube.helm100.txt): the Yang, the Gaya and the other materials go either way, the recipe's\n// item <vnum> (the helmet) only on a success - a failure leaves it in the inventory and in the window (wiki: the\n// Dragona helmet stays when the refinement fails; the Smokow helmets are plain recipes - all is lost).\nstatic bool Mt2009CubeMakeFailKeep(LPCHARACTER ch, CUBE_DATA* cube_proto, CUBE_VALUE* reward_value)\n{\n\tLPITEM* items = ch->GetCubeItem();\n\tif (!Mt2009GayaCubeCheck(ch, cube_proto))\n\t\treturn false;\n\tif (number(1, 100) <= cube_proto->percent)\n\t{\n\t\tcube_proto->remove_material(ch);\n\t\tMt2009GayaCubeTake(ch, cube_proto);\n\t\tif (0 < cube_proto->gold)\n\t\t\tch->ChangeGold(-(cube_proto->gold));\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"cube success %d %d\", reward_value->vnum, reward_value->count);\n\t\tLPITEM new_item = ch->AutoGiveItem(reward_value->vnum, reward_value->count);\n\t\tLogManager::instance().CubeLog(ch->GetPlayerID(), ch->GetX(), ch->GetY(),\n\t\t\t\treward_value->vnum, new_item ? new_item->GetID() : 0, reward_value->count, 1);\n\t\treturn true;\n\t}\n\tfor (size_t i = 0; i < cube_proto->item.size(); ++i)\n\t\tif (cube_proto->item[i].vnum != (DWORD)cube_proto->fail_keep)\n\t\t\tFN_remove_material(items, cube_proto->item[i].vnum, cube_proto->item[i].count);\n\tMt2009GayaCubeTake(ch, cube_proto);\n\tif (0 < cube_proto->gold)\n\t\tch->ChangeGold(-(cube_proto->gold));\n\tch->ChatPacket(CHAT_TYPE_INFO, \"Nie uda\\263o si\\352. Materia\\263y i Yang przepad\\263y, przedmiot zosta\\263 w oknie.\");\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"cube fail\");\n\tLogManager::instance().CubeLog(ch->GetPlayerID(), ch->GetX(), ch->GetY(), reward_value->vnum, 0, 0, 0);\n\treturn false;\n}\n\n// return new item\nbool Cube_make (LPCHARACTER ch)\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_HELM100_CUBE_V1 (cube make)",
+  "old": "\tCUBE_VALUE\t*reward_value = cube_proto->reward_value();\n",
+  "new": "\tCUBE_VALUE\t*reward_value = cube_proto->reward_value();\n\tif (cube_proto->fail_keep) // MT2009_PLUS_HELM100_CUBE_V1 (cube make): Jaharr's Dragona helmets - the helmet stays on a failure\n\t\treturn Mt2009CubeMakeFailKeep(ch, cube_proto, reward_value);\n"
+ }
+]

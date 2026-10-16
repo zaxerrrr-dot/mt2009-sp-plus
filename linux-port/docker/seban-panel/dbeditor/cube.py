@@ -70,8 +70,9 @@ HISTORY_KEEP = 300
 DEFAULT_OPENERS = frozenset({20091})
 TOKENS = ("section", "npc", "item", "reward", "percent", "gold", "end")
 # lines of our engine's patches the page keeps as they are (written back after "gold"): set_value / set_part of the
-# Yohara set blacksmiths (MT2009_PLUS_YOHARA_SETS_V1) and gaya - the Gaya the recipe takes (MT2009_PLUS_GAYA_V1)
-ENGINE_TOKENS = ("set_value", "set_part", "gaya")
+# Yohara set blacksmiths (MT2009_PLUS_YOHARA_SETS_V1), gaya - the Gaya the recipe takes (MT2009_PLUS_GAYA_V1) and
+# fail_keep - the item a failure leaves (Jaharr's Dragona helmets, MT2009_PLUS_HELM100_CUBE_V1)
+ENGINE_TOKENS = ("set_value", "set_part", "gaya", "fail_keep")
 _LINE_RE = re.compile(r"[^\n]*\n|[^\n]+$")
 _SPLIT_RE = re.compile(r"[ \t\r\n]+")
 

@@ -28,5 +28,17 @@
   "marker": "MT2009_PLUS_GAYA_V1 (cube make)",
   "old": "\tcube_proto->remove_material (ch);\n",
   "new": "\tif (!Mt2009GayaCubeCheck(ch, cube_proto)) // MT2009_PLUS_GAYA_V1 (cube make): the recipe's Gaya\n\t\treturn false;\n\tcube_proto->remove_material (ch);\n\tMt2009GayaCubeTake(ch, cube_proto);\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_GAYA_V2 (cube set list)",
+  "old": "\t\t// the recipe's Gaya as a material (server-patches/gaya)\n",
+  "new": "\t\t// the recipe's Gaya as a material (server-patches/gaya)\n\t\tif (pRecipe->gaya > 0) // MT2009_PLUS_GAYA_V2 (cube set list): round 15.10 #10 - the blacksmith's row shows the Gaya it takes\n\t\t{\n\t\t\tsnprintf(szPart, sizeof(szPart), \"&%u,%d\", MT2009_GAYA_VNUM, pRecipe->gaya);\n\t\t\tstrOne += szPart;\n\t\t}\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_GAYA_V2 (cube add)",
+  "old": "\titem = ch->GetInventoryItem(inven_index);\n\n\tif (NULL==item)\treturn;\n",
+  "new": "\titem = ch->GetInventoryItem(inven_index);\n\n\tif (NULL==item)\treturn;\n\t// MT2009_PLUS_GAYA_V2 (cube add): the Gaya is never a cube item - the recipe's \"gaya\" takes it from the inventory\n\t// (Mt2009GayaCubeTake), and a stack emptied there while still in the window would leave a dangling cube item\n\tif (item->GetVnum() == MT2009_GAYA_VNUM)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Gaya nie k\\263adzie si\\352 w oknie - kowal bierze j\\271 sam z ekwipunku.\");\n\t\treturn;\n\t}\n"
  }
 ]

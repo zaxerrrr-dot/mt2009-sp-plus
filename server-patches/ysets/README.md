@@ -67,3 +67,18 @@ Pliki: `item.h`, `item.cpp`, `item_manager.cpp`, `item_attribute.cpp`, `char.h`,
 - **Bonusy wężowe od razu** (#16): `YITEM` jeszcze raz po `CItem::AddToCharacter` (GM `/item`, podniesienie, skrzynia,
   kostka, handel, magazyn) i po `Mt2009YSetsCopy` na przedmiocie gracza; komenda `/yitem` (najwyżej raz na sekundę)
   wysyła wszystko ponownie – klient (`ysets.py`) pyta, gdy dymek pokazuje wężowy przedmiot gracza bez znanych bonusów.
+
+## Okno kowala zawsze ze wszystkimi przepisami (`MT2009_PLUS_YOHARA_SETS_V4`, runda 15.10 nr 10, `bledy-3.0.md` #18/18a)
+
+- Dlaczego V3 nie wystarczyło: V3 zmieniło kod edycji V2 pod tym samym znacznikiem (do drzewa testowego trafiło ręcznie),
+  a klient (`game.py`, V3) w trakcie czytania materiałów wołał `UpdateCubeInfo` → `uicube.Refresh`, który sięga po
+  materiały wierszy 2–3, jeszcze nieprzeczytanych – `KeyError` przerywał czytanie, więc wiersze 2–3 zostawały bez
+  materiałów (zrzut 15.10). Lista też zależała od ekwipunku (przedmioty +7 gracza albo Projekt jako zastępstwo).
+- Teraz okno jest stałe, jak u innych NPC z kostką: wszystkie przepisy kowala z `cube.txt` (wiersz na część: broń,
+  zbroja, hełm), niezależnie od ekwipunku. Wynik wiersza = przykładowy przedmiot tej części dla klasy gracza (+7, od
+  75. poziomu: Miecz Żalu / Skrzydła Demona / Zatruty Miecz / Wachlarz 8 Trigramów, zbroje 12017–12047, hełmy
+  12287–12687); materiały = ten przedmiot + odłamki II + Projekt (+ Kamień Księżycowy) + Gaya (edycja `gaya`
+  `MT2009_PLUS_GAYA_V2`), Yang z receptury. Robienie bez zmian – pasuje każda część od 75. poziomu +7 (`Mt2009YSetsCubeMake`).
+- Edycja V4 zastępuje funkcje listy V2/V3 (od mapy do końca `Mt2009YSetsCubeMaterialInfo`); komentarz V2 zostaje, więc
+  V2 liczy się jako nałożone w każdym drzewie. Klient (`game.py`, V4): Yang kowala po przeczytaniu wszystkich wierszy,
+  pytanie o materiały po 4 wiersze (było 7 – wiersze z alternatywami, np. hełmy Jaharra, przekraczały 512 znaków).

@@ -750,6 +750,110 @@ EDITS += [
              '\t\treturn;\n'),
 ]
 
+# -- MT2009_PLUS_YOHARA_SETS_V4: the blacksmith's window is static (round 15.10 #10, bledy-3.0.md #18/18a) --
+# V3 changed the code of the V2 edit (same marker), so its "new" is what every patched tree has (the test tree got it
+# by hand); V4 replaces the V2/V3 list functions (from the map to the end of Mt2009YSetsCubeMaterialInfo). The V2
+# comment above them stays, so the V2 edit counts as applied.
+M4 = 'MT2009_PLUS_YOHARA_SETS_V4'
+_V3 = CUBE_LIST.replace('@NOPIECE@', NOPIECE)
+_V3_FROM = _V3.index('static std::map<DWORD, std::vector<std::pair<DWORD, CUBE_DATA*> > > s_mapMt2009YSetsCubeList;\n')
+_V3_TO = _V3.index('void Cube_request_result_list(LPCHARACTER ch)\n')
+
+CUBE_LIST_V4 = '// ' + M4 + r''' (cube set list): round 15.10 #10 (bledy-3.0.md #18/18a) - a set blacksmith's window is
+// static, as every other cube NPC's: ALL its recipes (one row a part - weapon, armour, helmet - in cube.txt order),
+// whatever the inventory holds. A row's result is a piece of that part for the player's class (+7, level 75+; any
+// weapon / armour / helmet of level 75+ at +7 or more works), its materials that piece + the recipe's items (the
+// shards II, the Projekt, the moon stone) + the Gaya the recipe takes (server-patches/gaya, MT2009_PLUS_GAYA_V2), its
+// Yang the recipe's. V2/V3 built the rows from the inventory; the client refreshed the window in the middle of V3's
+// materials (a KeyError in uicube's Refresh) and left rows 2-3 empty - game.py, MT2009_PLUS_YOHARA_SETS_V4.
+static const DWORD s_adwMt2009YSetsShowPiece[3][4] =
+{
+	{ 3167, 1137, 187, 7187 },		// weapon +7: Miecz Zalu, Skrzydla Demona Chakr., Zatruty Miecz, Wachlarz 8 Trigramow
+	{ 12017, 12027, 12037, 12047 },	// armour +7 (warrior, ninja, sura, shaman)
+	{ 12287, 12407, 12547, 12687 },	// helmet +7: Helm Mistrza Wojny, Pajeczy Kaptur, Magiczny Helm, Kapelusz Duszy
+};
+
+static void Mt2009YSetsSmithList(DWORD npcVNUM, std::vector<CUBE_DATA*>& rvecList)
+{
+	for (size_t i = 0; i < s_cube_proto.size(); ++i)
+	{
+		CUBE_DATA* pCube = s_cube_proto[i];
+		if (!pCube->set_value || pCube->set_part < 1 || pCube->set_part > 3)
+			continue;
+		if (std::find(pCube->npc_vnum.begin(), pCube->npc_vnum.end(), (WORD)npcVNUM) != pCube->npc_vnum.end())
+			rvecList.push_back(pCube);
+	}
+}
+
+static DWORD Mt2009YSetsShowPiece(LPCHARACTER ch, int iPart)
+{
+	int iJob = ch->GetJob();
+	if (iJob < 0 || iJob > 3)
+		iJob = 0;
+	return s_adwMt2009YSetsShowPiece[iPart - 1][iJob];
+}
+
+static bool Mt2009YSetsCubeResultList(LPCHARACTER ch, DWORD npcVNUM)
+{
+	std::vector<CUBE_DATA*> vecList;
+	Mt2009YSetsSmithList(npcVNUM, vecList);
+	if (vecList.empty())
+		return false;
+	std::string strText;
+	for (size_t i = 0; i < vecList.size(); ++i)
+	{
+		char szEntry[32];
+		snprintf(szEntry, sizeof(szEntry), "%u,1/", Mt2009YSetsShowPiece(ch, vecList[i]->set_part));
+		strText += szEntry;
+	}
+	strText.erase(strText.size() - 1);
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube r_list %u %u %s", npcVNUM, (unsigned int)vecList.size(), strText.c_str());
+	return true;
+}
+
+static bool Mt2009YSetsCubeMaterialInfo(LPCHARACTER ch, DWORD npcVNUM, int iStart, int iCount)
+{
+	std::vector<CUBE_DATA*> vecList;
+	Mt2009YSetsSmithList(npcVNUM, vecList);
+	if (vecList.empty())
+		return false;
+	if (iStart < 0 || iCount <= 0)
+		return true;
+	std::string strText;
+	for (int i = iStart; i < iStart + iCount && i < (int)vecList.size(); ++i)
+	{
+		const CUBE_DATA* pRecipe = vecList[i];
+		char szPart[64];
+		snprintf(szPart, sizeof(szPart), "%u,1", Mt2009YSetsShowPiece(ch, pRecipe->set_part));
+		std::string strOne = szPart;
+		for (size_t j = 0; j < pRecipe->item.size(); ++j)
+		{
+			snprintf(szPart, sizeof(szPart), "&%u,%d", pRecipe->item[j].vnum, pRecipe->item[j].count);
+			strOne += szPart;
+		}
+		// the recipe's Gaya as a material (server-patches/gaya)
+		if (pRecipe->gold > 0)
+		{
+			snprintf(szPart, sizeof(szPart), "/%lld", (long long)pRecipe->gold);
+			strOne += szPart;
+		}
+		strText += strOne + "@";
+	}
+	if (strText.empty())
+		return true;
+	strText.erase(strText.size() - 1);
+	ch->ChatPacket(CHAT_TYPE_COMMAND, "cube m_info %d %d %s", iStart, iCount, strText.c_str());
+	return true;
+}
+
+'''
+
+EDITS += [
+    dict(file='cube.cpp', marker=M4 + ' (cube set list)',
+         old=_V3[_V3_FROM:_V3_TO],
+         new=CUBE_LIST_V4),
+]
+
 
 def check(src):
     ok = True
