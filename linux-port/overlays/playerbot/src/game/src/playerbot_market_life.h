@@ -496,6 +496,143 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_FULL_CLEAROUT_V1 (the owner, 16 October: "Jesli bot nie
+	// ma miejsca na straganie, w EQ i u dozorcy - sprzedaje do handlarki
+	// powiedzmy 10-15 najslabszych (najtanszych) przedmiotow, lub daje je innym
+	// botom jesli im sie przydadza"). At the end of a town visit, at most once
+	// in PLAYERBOT_FULL_CLEAROUT_GAP_MS a bot, when all three are full at once:
+	// the stall (fewer than PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS free cells,
+	// or no stall at all), the bag (IsPlayerBotBagFull or under pressure) and
+	// the safebox (a deposit it turned away within PLAYERBOT_BAG_ROOM_SAFEBOX_FULL_MS,
+	// or no box the bot could open). Its cheapest pieces go, up to
+	// PLAYERBOT_FULL_CLEAROUT_MAX - the bag room rule's own choice of what may
+	// go (GetPlayerBotBagRoomSaleKind: nothing worn, locked, quest or ItemShop,
+	// no operator's policy, no refine material or potion, no piece the bot
+	// could wear (its next piece, backups and anvil work among them), no book
+	// it keeps, Stalki, level-30 weapon, Awakening goods, Useful Items List,
+	// gambler's piece, guild material, stone under its keep, nothing of
+	// PLAYERBOT_BAG_ROOM_SELL_VALUE_MAX), and besides it never a +7 or higher,
+	// a prize piece or a companion owner's gift, ranked by that rule's value
+	// (the merchant's price or the counter's asking price, the higher). A
+	// piece another bot of the village within PLAYERBOT_BARTER_RANGE would put
+	// on (IsPlayerBotUpgradeForSelf) is handed to it, as the barter moves a
+	// piece (MovePlayerBotBarterPiece's way); the rest is sold at the
+	// merchant's price, as the bag room rule sells. Only the bag: the box is
+	// open only at the Storekeeper's and the stall's lines need bag room to
+	// come home - what the bag sells makes that room, and the stall's weak
+	// lines come off by MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1.
+	const int PLAYERBOT_FULL_CLEAROUT_MIN = 10;
+	const int PLAYERBOT_FULL_CLEAROUT_MAX = 15;
+	const DWORD PLAYERBOT_FULL_CLEAROUT_GAP_MS = 60 * 60 * 1000;
+	std::map<DWORD, DWORD> s_mapPlayerBotFullClearoutAt;
+
+	bool IsPlayerBotStallFullForClearout(LPCHARACTER ch)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		auto shop = ch ? ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID()) : nullptr;
+		return !shop || BotOfflineFreeCells(shop) < PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS;
+#else
+		return true;
+#endif
+	}
+
+	bool RunPlayerBotFullClearout(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded() || !IsPlayerBotVillageMap(ch->GetMapIndex()) ||
+				IsPlayerBotSidekickServing(ch) || ch->GetExchange())
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		std::map<DWORD, DWORD>::const_iterator last = s_mapPlayerBotFullClearoutAt.find(pid);
+		if (last != s_mapPlayerBotFullClearoutAt.end() && dwNow - last->second < PLAYERBOT_FULL_CLEAROUT_GAP_MS)
+			return false;
+		if (!IsPlayerBotBagFull(ch) && !IsPlayerBotBagUnderPressure(ch))
+			return false;
+		std::map<DWORD, DWORD>::const_iterator full = s_mapPlayerBotSafeboxFullAt.find(pid);
+		const bool boxFull = (full != s_mapPlayerBotSafeboxFullAt.end() &&
+				dwNow - full->second < PLAYERBOT_BAG_ROOM_SAFEBOX_FULL_MS) ||
+				(ch->GetQuestFlag(PLAYERBOT_SAFEBOX_PAID_FLAG) <= 0 && ch->GetGold() < PLAYERBOT_SAFEBOX_FEE);
+		if (!boxFull || !IsPlayerBotStallFullForClearout(ch))
+			return false;
+		s_mapPlayerBotFullClearoutAt[pid] = dwNow ? dwNow : 1;
+
+		std::vector<std::pair<long long, LPITEM> > pieces;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell)
+				continue;
+			if ((int)item->GetRefineLevel() >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS &&
+					(item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR))
+				continue;
+			if (IsPlayerBotPrizeItem(item) || IsPlayerBotSidekickGift(ch, item))
+				continue;
+			long long value = 0;
+			if (GetPlayerBotBagRoomSaleKind(ch, item, value) == 0)
+				continue;
+			pieces.push_back(std::make_pair(value, item));
+		}
+		if (pieces.empty())
+		{
+			sys_log(0, "PLAYERBOT_ECONOMY: full clearout pid=%u name=%s sold=0 given=0 value=0 nothing_to_part_with=1",
+					pid, ch->GetName());
+			return false;
+		}
+		std::sort(pieces.begin(), pieces.end(),
+				[](const std::pair<long long, LPITEM>& a, const std::pair<long long, LPITEM>& b) { return a.first < b.first; });
+		// The village's other bots within reach, once.
+		std::vector<LPCHARACTER> takers;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin();
+				it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			if (it->first == pid)
+				continue;
+			LPCHARACTER other = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!other || other->GetMapIndex() != ch->GetMapIndex() || !other->IsItemLoaded() || other->IsDead() ||
+					other->GetExchange() || other->GetMyShop() || IsPlayerBotSidekickPID(other->GetPlayerID()) ||
+					DISTANCE_APPROX(other->GetX() - ch->GetX(), other->GetY() - ch->GetY()) > PLAYERBOT_BARTER_RANGE)
+				continue;
+			takers.push_back(other);
+		}
+		int sold = 0, given = 0;
+		long long value = 0, gold = 0;
+		const int target = std::min<int>(PLAYERBOT_FULL_CLEAROUT_MAX, (int)pieces.size());
+		for (int i = 0; i < target; ++i)
+		{
+			LPITEM item = pieces[i].second;
+			value += pieces[i].first;
+			LPCHARACTER taker = NULL;
+			if (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR)
+				for (size_t k = 0; k < takers.size() && !taker; ++k)
+					if (IsPlayerBotUpgradeForSelf(takers[k], item) && takers[k]->GetEmptyInventory(item->GetSize()) >= 0)
+						taker = takers[k];
+			const DWORD vnum = item->GetVnum();
+			state.mapStallUnsold.erase(item->GetID());
+			state.mapStockFirstListed.erase(item->GetID());
+			if (taker)
+			{
+				const int cell = taker->GetEmptyInventory(item->GetSize());
+				ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);
+				item->RemoveFromCharacter();
+				item->AddToCharacter(taker, TItemPos(INVENTORY, (WORD)cell));
+				FlushPlayerBotItemRow(item);
+				LogManager::instance().ItemLog(taker, item, "PLAYERBOT_FULL_CLEAROUT_GIFT", ch->GetName());
+				sys_log(0, "PLAYERBOT_ECONOMY: full clearout gives pid=%u name=%s to=%u(%s) vnum=%u worth=%lld",
+						pid, ch->GetName(), taker->GetPlayerID(), taker->GetName(), vnum, pieces[i].first);
+				++given;
+				continue;
+			}
+			const long long sale = GetPlayerBotJunkSalePrice(item);
+			PlayerBotChangeGold(ch, sale);
+			gold += sale;
+			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_FULL_CLEAROUT_SELL");
+			++sold;
+		}
+		sys_log(0, "PLAYERBOT_ECONOMY: full clearout pid=%u name=%s sold=%d given=%d value=%lld gold=%lld short_of_min=%d free_cells=%d map=%ld",
+				pid, ch->GetName(), sold, given, value, gold, sold + given < PLAYERBOT_FULL_CLEAROUT_MIN ? 1 : 0,
+				CountPlayerBotFreeInventoryCells(ch), ch->GetMapIndex());
+		return sold + given > 0;
+	}
+
 	bool TryPlayerBotBarter(TPlayerBotBarterSide& a, TPlayerBotBarterSide& b, DWORD now)
 	{
 		for (size_t i = 0; i < a.goods.size(); ++i)
