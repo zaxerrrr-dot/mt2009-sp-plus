@@ -7867,6 +7867,9 @@ namespace
 	const int PLAYERBOT_CLEAR_STOCK_BOOKS = 12;
 	const int PLAYERBOT_CLEAR_STOCK_SASHES = 2;
 	const DWORD PLAYERBOT_CLEAR_STOCK_SERVICE_MS = 15 * 60 * 1000;
+	// MT2009_PLUS_BOT_NAV_SHOP_LOOP_V1: no clear-stock call for this long after
+	// a visit it called put none of that stock up.
+	const DWORD PLAYERBOT_OFFLINE_CLEAR_STOCK_HOLD_MS = 3 * 60 * 60 * 1000;
 	// Lines of one skill another build's books take on a counter with
 	// PLAYERBOT_SHOP_BOOK_FREE_CELLS free cells or fewer (three before: 36
 	// skills of other builds, ten and more books of each in a dropper's bag).

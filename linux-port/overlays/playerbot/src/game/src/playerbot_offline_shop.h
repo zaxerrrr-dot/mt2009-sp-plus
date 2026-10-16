@@ -1101,9 +1101,41 @@ namespace {
     // One line back into the owner's bag, through the journal like every other
     // mutation. A bag with no room refuses it synchronously and the next visit
     // asks again. True when the request reached the DB core.
+    // MT2009_PLUS_BOT_NAV_SHOP_LOOP_V1: a take-off the counter does not let go
+    // of. The request reaches the DB core, the line stays up (the core refuses
+    // it), and the next step of the visit asked for the same line again: the
+    // whole chain of steps went on it, nothing else was ever put up, and the
+    // keeper came back for it - item 106466027 of eurogabka2 "took off" 14
+    // times in three hours on the supporters' ch1 (16 October 06-09), twelve
+    // lines ten times or more, 491 "low_gear" take-offs in those three hours,
+    // most of them repeats. Asked a second time while it still stands there
+    // within PLAYERBOT_OFFLINE_TAKEOFF_STUCK_WINDOW_MS, the line is left up
+    // for PLAYERBOT_OFFLINE_TAKEOFF_STUCK_HOLD_MS and the visit goes on to its
+    // next step. Never a line promised to a person (a deal).
+    const uint32_t PLAYERBOT_OFFLINE_TAKEOFF_STUCK_WINDOW_MS = 60 * 60 * 1000;
+    const uint32_t PLAYERBOT_OFFLINE_TAKEOFF_STUCK_HOLD_MS = 6 * 60 * 60 * 1000;
+    bool BotOfflineTakeOffStuck(LPCHARACTER ch, TPlayerBotAIState& state, DWORD itemid, DWORD now) {
+        auto& o = state.offlineShop;
+        if (!ch || !itemid) return false;
+        if (o.stuckTakeOffItem == itemid && !playerbot_offline::Due(now, o.stuckTakeOffUntil)) return true;
+        if (o.takeOffItem != itemid || o.takeOffAt == 0 || now - o.takeOffAt >= PLAYERBOT_OFFLINE_TAKEOFF_STUCK_WINDOW_MS)
+            return false;
+        auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+        if (!shop || shop->GetItems().find(itemid) == shop->GetItems().end()) return false;
+        o.stuckTakeOffItem = itemid;
+        o.stuckTakeOffUntil = now + PLAYERBOT_OFFLINE_TAKEOFF_STUCK_HOLD_MS;
+        if (o.stuckTakeOffUntil == 0) o.stuckTakeOffUntil = 1;
+        o.takeOffItem = o.takeOffAt = 0;
+        PlayerBotLogThrottled("offline_takeoff_stuck", now,
+            "PLAYERBOT_OFFLINE: take-off did not land, line left up pid=%u name=%s item=%u for_h=%u",
+            ch->GetPlayerID(), ch->GetName(), itemid, PLAYERBOT_OFFLINE_TAKEOFF_STUCK_HOLD_MS / 3600000U);
+        return true;
+    }
     bool BotOfflineTakeOff(LPCHARACTER ch, TPlayerBotAIState& state, DWORD itemid, int lowGear, DWORD now,
             const char* why = "") {
         using namespace playerbot_offline;
+        const bool deal = why && strcmp(why, "deal") == 0;
+        if (!deal && BotOfflineTakeOffStuck(ch, state, itemid, now)) return false;
         // What the line was and where it stood, for the ledger once it is off.
         DWORD lineVnum = 0;
         WORD lineCount = 0;
@@ -1121,8 +1153,11 @@ namespace {
         if (!Begin(ch->GetPlayerID(), Remove, itemid, now)) return false;
         ikashop::GetManager().RecvShopRemoveItemClientPacket(ch, itemid);
         if (!EndCall(ch->GetPlayerID())) return false;
+        // MT2009_PLUS_BOT_NAV_SHOP_LOOP_V1: what was asked off, for the next ask.
+        state.offlineShop.takeOffItem = itemid;
+        state.offlineShop.takeOffAt = now ? now : 1;
         // MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the promised line is off.
-        if (why && strcmp(why, "deal") == 0)
+        if (deal)
             state.offlineShop.dealPulled = true;
         RemovePlayerBotMarketSupply(lineVnum, lineCount, lineMap);
         NotePlayerBotMissionBooksOnCounter(lineMap, lineVnum, -(int)lineCount);
@@ -2259,9 +2294,35 @@ namespace {
         // sash goods (IsPlayerBotClearStockReady) and a free cell on its
         // counter - at most every PLAYERBOT_CLEAR_STOCK_SERVICE_MS, so a stock
         // the counter refuses does not call it round in circles.
+        // MT2009_PLUS_BOT_NAV_SHOP_LOOP_V1: a clear-stock call whose visit put
+        // none of the stock up is not made again for PLAYERBOT_OFFLINE_CLEAR_STOCK_HOLD_MS.
+        // The ornament farmers of the second villages (level 33, forty-odd
+        // books of every build in the bag, five lines on the counter) were
+        // called every quarter of an hour, M2 -> M1 -> M2, and stood at the
+        // counter while its steps went on a take-off that did not land:
+        // MordercaKox 141 map changes in 20 hours, forty bots so, 1 850 of
+        // the supporters' "offline_shop_service" trips after 2.34.0.
+        if (o.clearStockAskedAt != 0 && !o.visiting && o.lastServedAt != 0 &&
+                int32_t(o.lastServedAt - o.clearStockAskedAt) >= 0) {
+            const int left = GetPlayerBotSashGoodsInBag(ch) + CountPlayerBotOtherClassBooks(ch);
+            if (o.clearStockBefore >= 0 && left >= o.clearStockBefore) {
+                o.clearStockHoldUntil = now + PLAYERBOT_OFFLINE_CLEAR_STOCK_HOLD_MS;
+                if (o.clearStockHoldUntil == 0) o.clearStockHoldUntil = 1;
+                PlayerBotLogThrottled("offline_clear_stock_hold", now,
+                    "PLAYERBOT_OFFLINE: clear stock not put up, no call for %u h pid=%u name=%s stock=%d",
+                    PLAYERBOT_OFFLINE_CLEAR_STOCK_HOLD_MS / 3600000U, ch->GetPlayerID(), ch->GetName(), left);
+            }
+            o.clearStockAskedAt = 0;
+            o.clearStockBefore = -1;
+        }
         const bool clearLines = !o.visiting && !medalLines && shop && o.lastServedAt != 0 &&
                 Due(now, o.lastServedAt + PLAYERBOT_CLEAR_STOCK_SERVICE_MS) &&
+                Due(now, o.clearStockHoldUntil) &&
                 BotOfflineFreeCells(shop) > 0 && IsPlayerBotClearStockReady(ch, state);
+        if (clearLines && o.clearStockAskedAt == 0) {
+            o.clearStockAskedAt = now ? now : 1;
+            o.clearStockBefore = GetPlayerBotSashGoodsInBag(ch) + CountPlayerBotOtherClassBooks(ch);
+        }
         if (clearLines && o.nextService > now + 40000)
             o.nextService = now + 30000 + PlayerBotNavHash(ch->GetPlayerID() ^ 0x434c5253U) % 10000;
         const char* busy = BotOfflineBusyReason(ch, state);
