@@ -654,6 +654,23 @@ RUN set -eu; f=/opt/metin2/share/locale/poland/dragon_soul_table.txt \
  && mv "$f.new" "$f" && rm -f /tmp/dragon_soul_applys.txt \
  && echo "share: MT2009 Plus alchemy bonuses"
 
+# MT2009_PLUS_DS_GLOBAL_TABLE_V1 (server-patches/bonusyglobal): the alchemy of
+# M2_BONUS_MODE=global - the default bonus groups (Owsap/GF, without Szafir's
+# two Wolfman lines) in the same table, as dragon_soul_table.global.txt; the
+# mt2009 table kept as dragon_soul_table.mt2009.txt. A core loads the global
+# one in place of dragon_soul_table.txt when the mode is global and keeps the
+# other two for a stone made under the other mode (DragonSoul.cpp).
+COPY dragon_soul_applys.global.txt /tmp/dragon_soul_applys.global.txt
+RUN set -eu; L=/opt/metin2/share/locale/poland; f=$L/dragon_soul_table.txt; g=$L/dragon_soul_table.global.txt \
+ && cp -p "$f" "$L/dragon_soul_table.mt2009.txt" \
+ && sed -i 's/\r$//; s/$/\r/' /tmp/dragon_soul_applys.global.txt \
+ && awk -v add=/tmp/dragon_soul_applys.global.txt 'BEGIN{skip=0} /^Group[ \t]+BasicApplys/{ while ((getline l < add) > 0) print l; skip=1; next } skip && /^Group[ \t]+ApplyNumSettings/{ skip=0 } !skip{ print }' "$f" > "$g" \
+ && grep -q 'ENCHANT_ICE' "$g" && grep -q 'SUNGMA_HP' "$g" && grep -q '^Group[[:blank:]]*ApplyNumSettings' "$g" \
+ && ! grep -q 'WOLFMAN' "$g" && ! grep -q 'ATTBONUS_MILGYO' "$g" \
+ && test "$(sed -n '/^Group[[:blank:]]*ApplyNumSettings/,$p' "$g" | md5sum)" = "$(sed -n '/^Group[[:blank:]]*ApplyNumSettings/,$p' "$f" | md5sum)" \
+ && rm -f /tmp/dragon_soul_applys.global.txt \
+ && echo "share: alchemy table of M2_BONUS_MODE=global"
+
 # Maska Sabaha goes with the Hwang curse (playerbotify apply_hwang_curse_removed,
 # port/shareify.py renders this step): its drop lines and the Hwang loot box roll
 # it at nothing - a group stops reading at the first index it lacks, so a line is

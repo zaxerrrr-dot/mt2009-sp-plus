@@ -214,6 +214,7 @@ SCHEMA = [
        "(200 na naszyjniku), regeneracja do 30%, odporność na ogień, błyskawice i wiatr (zbroja, bransoleta, hełm), szansa na bonus "
        "doświadczenia i na podwójną ilość przedmiotów, bez wytrzymałości, czasu trwania umiejętności, odbicia strzał i stałego "
        "doświadczenia; każdy potwór ma swój żywioł, a odporność działa w 30% (15% = 4,5% mniej obrażeń). "
+       "Alchemia (Smocze Kamienie) w trybie global ma domyślne bonusy (np. Diament: inteligencja, odporność na lód, siła lodu). "
        "Przedmioty zachowują wszystkie bonusy, które już mają; można przełączać w obie strony.",
        "swiat", "enum", "mt2009", GAME,
        options=[["mt2009", "mt2009 – bonusy i żywioły MT2009 PLUS"], ["global", "global – jak na serwerze globalnym"]],

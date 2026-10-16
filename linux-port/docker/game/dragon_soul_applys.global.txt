@@ -1,0 +1,142 @@
+# MT2009 Plus: the Dragon Soul (alchemy) bonuses of M2_BONUS_MODE=global -
+# the default table (Owsap's share/locale/uk/dragon_soul_table.txt = the
+# package's, the same groups as the GF 26.1.11 client's), owner 15 Oct 2026,
+# MT2009_PLUS_DS_GLOBAL_TABLE_V1 (server-patches/bonusyglobal). Put in place
+# of the package's BasicApplys/AdditionalApplys at image build as
+# dragon_soul_table.global.txt (game/Dockerfile); the cores load it instead of
+# dragon_soul_table.txt when M2_BONUS_MODE=global (DragonSoul.cpp). Only change
+# from the default: Szafir's two Wolfman lines are left out (no Wolfman class
+# here - they would roll an empty bonus). EUC-KR: the group names are the
+# package's own Korean stone names.
+Group BasicApplys
+{
+	# Diament
+	Group ¹é·æ¼®
+	{
+		#--#	Apply_Type	Apply_value
+		1	INT	10
+		2	RESIST_ICE	10
+		3	ENCHANT_ICE	10
+	}
+	# Rubin
+	Group È­·æ¼®
+	{
+		#--#	Apply_Type	Apply_value
+		1	STR	10
+		2	RESIST_FIRE	10
+		3	ENCHANT_FIRE	10
+	}
+	# Jadeit
+	Group Ç³·æ¼®
+	{
+		#--#	Apply_Type	Apply_value
+		1	MAX_SP	500
+		2	RESIST_WIND	10
+		3	ENCHANT_WIND	10
+	}
+	# Szafir
+	Group Ã¶·æ¼®
+	{
+		#--#	Apply_Type	Apply_value
+		1	DEX	10
+		2	RESIST_EARTH	10
+		3	ENCHANT_EARTH	10
+	}
+	# Granat
+	Group ³ú·æ¼®
+	{
+		#--#	Apply_Type	Apply_value
+		1	MAX_HP	1500
+		2	RESIST_ELEC	10
+		3	ENCHANT_ELECT	10
+	}
+	# Onyks
+	Group Èæ·æ¼®
+	{
+		#--#	Apply_Type	Apply_value
+		1	CON	10
+		2	RESIST_DARK	10
+		3	ENCHANT_DARK	10
+	}
+	# Ametyst
+	Group ¼ºÈ¥¼®
+	{
+		#--#	Apply_Type	Apply_value
+		1	ATTBONUS_DEVIL	10
+		2	HIT_PCT	10
+		3	SUNGMA_HP	10
+	}
+}
+Group AdditionalApplys
+{
+	# Diament
+	Group ¹é·æ¼®
+	{
+		#--#	Apply_Type	Apply_value	Prob
+		1	MAGIC_ATT_GRADE	15	10
+		2	MAGIC_DEF_GRADE	15	10
+		3	SKILL_DAMAGE_BONUS	15	10
+		4	SKILL_DEFEND_BONUS	15	10
+	}
+	# Rubin
+	Group È­·æ¼®
+	{
+		#--#	Apply_Type	Apply_value	Prob
+		1	ATT_BONUS	300	10
+		2	DEF_BONUS	200	10
+		3	NORMAL_HIT_DAMAGE_BONUS	15	10
+		4	NORMAL_HIT_DEFEND_BONUS	15	10
+	}
+	# Jadeit
+	Group Ç³·æ¼®
+	{
+		#--#	Apply_Type	Apply_value	Prob
+		1	MAX_HP	3000	10
+		2	HP_REGEN	10	10
+		3	STEAL_HP	10	10
+		4	KILL_HP_RECOVER	5	10
+		5	MAX_HP_PCT	20	10
+	}
+	# Szafir
+	Group Ã¶·æ¼®
+	{
+		#--#	Apply_Type	Apply_value	Prob
+		1	ATT_BONUS_TO_WARRIOR	15	10
+		2	ATT_BONUS_TO_ASSASSIN	15	10
+		3	ATT_BONUS_TO_SURA	15	10
+		4	ATT_BONUS_TO_SHAMAN	15	10
+		5	RESIST_WARRIOR	15	10
+		6	RESIST_ASSASSIN	15	10
+		7	RESIST_SURA	15	10
+		8	RESIST_SHAMAN	15	10
+	}
+	# Granat
+	Group ³ú·æ¼®
+	{
+		#--#	Apply_Type	Apply_value	Prob
+		1	MAX_SP	1500	10
+		2	SP_REGEN	10	10
+		3	STEAL_SP	10	10
+		4	KILL_SP_RECOVER	5	10
+		5	MAX_SP_PCT	20	10
+	}
+	# Onyks
+	Group Èæ·æ¼®
+	{
+		#--#	Apply_Type	Apply_value	Prob
+		1	BLOCK	10	10
+		2	DODGE	10	10
+		3	REFLECT_MELEE	10	10
+		4	RESIST_CRITICAL	10	10
+		5	RESIST_PENETRATE	10	10
+	}
+	# Ametyst
+	Group ¼ºÈ¥¼®
+	{
+		#--#	Apply_Type	Apply_value	Prob
+		1	SUNGMA_STR	10	10
+		2	SUNGMA_MOVE	10	10
+		3	SUNGMA_IMMUNE	10	10
+		4	ATTBONUS_STONE	5	10
+	}
+}
