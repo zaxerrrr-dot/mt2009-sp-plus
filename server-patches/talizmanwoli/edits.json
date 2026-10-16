@@ -46,5 +46,11 @@
   "marker": "MT2009_PLUS_WILL_TALISMAN_V1 (new)",
   "old": "\t\t\t\titem->SetForceAttribute(5, randomPoint, apply.lValue); // ustawiamy jako 6 bonus\n\t\t}\n",
   "new": "\t\t\t\titem->SetForceAttribute(5, randomPoint, apply.lValue); // ustawiamy jako 6 bonus\n\t\t}\n\n\t\tMt2009WillTalismanCreate(item); // MT2009_PLUS_WILL_TALISMAN_V1 (new): a Talizman Woli's standard lines\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WILL_TALISMAN_V2 (will always)",
+  "old": "\tconst int iWillRow = number(1, 100) <= iLinePct ? Mt2009WillTalismanRollRow() : -1;\n",
+  "new": "\tconst int iWillRow = Mt2009WillTalismanRollRow(); // MT2009_PLUS_WILL_TALISMAN_V2 (will always): the base bonus, every talisman\n"
  }
 ]

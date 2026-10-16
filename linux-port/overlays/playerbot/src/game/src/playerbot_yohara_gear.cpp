@@ -291,8 +291,10 @@ static void Mt2009JadeBraceletV2Write(LPITEM item, int iPrecision, int iWill)
 			item->SetForceAttribute(iSlot, 0, 0);
 }
 
-// ITEM_MANAGER::CreateItem: each line at will_tal_line_pct (80) - "istnieje prawdopodobienstwo, ze nie bedzie
-// zadnego z nich" - with a random value of the level's range.
+// ITEM_MANAGER::CreateItem: Precyzja at will_tal_line_pct (80), with a random value of the level's range.
+// MT2009_PLUS_JADE_BRACELET_V3 (bug list 15.10 #9): the Will of the jade is the item's base bonus and is always there
+// (like the gloves' and - MT2009_PLUS_WILL_TALISMAN_V2 - the Will talismans'); before, it too was at 80% and a new
+// bracelet / necklace / earrings could come out of a chest, a drop or a shop with no Will.
 void Mt2009JadeBraceletV2Create(LPITEM item)
 {
 	BYTE bWillType;
@@ -302,7 +304,7 @@ void Mt2009JadeBraceletV2Create(LPITEM item)
 	const int iLevel = item->GetVnum() % 10;
 	const int iLinePct = EventPct("will_tal_line_pct", 80);
 	const int iPrecision = number(1, 100) <= iLinePct ? RandomIn(s_aJadePrecision[iLevel]) : 0;
-	const int iWill = number(1, 100) <= iLinePct ? RandomIn(pKind->pWill[iLevel]) : 0;
+	const int iWill = RandomIn(pKind->pWill[iLevel]);
 	Mt2009JadeBraceletV2Write(item, iPrecision, iWill);
 }
 

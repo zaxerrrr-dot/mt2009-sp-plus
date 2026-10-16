@@ -5,6 +5,7 @@ import json
 import os
 
 M = 'MT2009_PLUS_WILL_TALISMAN_V1'
+M2 = 'MT2009_PLUS_WILL_TALISMAN_V2'
 
 FUNCS = r'''// MT2009_PLUS_WILL_TALISMAN_V1 (server-patches/talizmanwoli): Talizmany Woli (81000-81009 SILA, 81250-81259 ODP,
 // 81300-81309 WIT, 81550-81559 INT) with the two standard bonus lines of the wiki (pl/de "Talizman Woli SILA",
@@ -138,6 +139,12 @@ EDITS = [
          old='\t\t\t\titem->SetForceAttribute(5, randomPoint, apply.lValue); // ustawiamy jako 6 bonus\n\t\t}\n',
          new='\t\t\t\titem->SetForceAttribute(5, randomPoint, apply.lValue); // ustawiamy jako 6 bonus\n\t\t}\n\n'
              '\t\tMt2009WillTalismanCreate(item); // ' + M + ' (new): a Talizman Woli\'s standard lines\n'),
+    # MT2009_PLUS_WILL_TALISMAN_V2 (bug list 15.10 #9): the Will line is the talisman's base bonus and is always
+    # there (owner: a Talizman Woli INT from Skrzynia Labiryntowa had only "Sila Mroku +1%"); the element line keeps
+    # will_tal_line_pct, the Will's row keeps will_tal_rare_pct. A new edit - V1's marker is on the trees already.
+    dict(file='item_attribute.cpp', marker=M2 + ' (will always)',
+         old='\tconst int iWillRow = number(1, 100) <= iLinePct ? Mt2009WillTalismanRollRow() : -1;\n',
+         new='\tconst int iWillRow = Mt2009WillTalismanRollRow(); // ' + M2 + ' (will always): the base bonus, every talisman\n'),
 ]
 
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'edits.json'), 'w', encoding='utf-8', newline='\n') as f:

@@ -7,8 +7,9 @@ blokady przedmiotów 6/7 bonusu działają dalej).
 
 ## Bonusy podstawowe (pl-wiki „Obręcz Jadeitu Mgły” i pozostałe)
 
-Dwie linie w 6. i 7. bonusie przedmiotu, każda z szansą `will_tal_line_pct` (80% – „istnieje prawdopodobieństwo, że nie
-będzie żadnego z nich”), wartość losowa z zakresu poziomu:
+Dwie linie w 6. i 7. bonusie przedmiotu, wartość losowa z zakresu poziomu: Wola zawsze (`MT2009_PLUS_JADE_BRACELET_V3`,
+lista poprawek 15.10 nr 9 – bonus podstawowy, jak w rękawicach i Talizmanach Woli; dotyczy też kolii i klipsów),
+Precyzja z szansą `will_tal_line_pct` (80%):
 
 | | +0 | +1 | +2 | +3 | +4 | +5 | +6 | +7 | +8 | +9 |
 |---|---|---|---|---|---|---|---|---|---|---|

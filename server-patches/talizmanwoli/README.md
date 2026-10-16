@@ -18,9 +18,11 @@ INT = `POINT_SUNGMA_IMMUNE` (187). Żywioł: 178–183 (Błyskawica, Ogień, Ló
 - Linie są bonusami 6. i 7. przedmiotu (`ITEM_ATTRIBUTE_RARE_START`) – klient pokazuje je w dymku jak każdy bonus
   (nazwy 178–187 w `localeinfo_point.py`). Item_proto talizmanów nie ma już stałego bonusu (`yohara_items.sql`
   zeruje `applytype0` starych wierszy).
-- Nowy talizman (drop, skrzynia, sklep, GM `/item`): każda linia jest z szansą 80% („z podstawowym bonusem lub bez
-  niego”), wartość rzadka z szansą 10% („w rzadkich przypadkach do +2 Woli / do 2% mocy żywiołu w +0”), żywioł losowy.
-  Flagi panelu: `will_tal_line_pct`, `will_tal_rare_pct` (0 = domyślne).
+- Nowy talizman (drop, skrzynia, sklep, GM `/item`): linia Woli jest zawsze (`MT2009_PLUS_WILL_TALISMAN_V2`, lista
+  poprawek 15.10 nr 9 – to bonus podstawowy talizmanu; wcześniej też 80% i talizman ze skrzyni bywał bez Woli), linia
+  żywiołu z szansą 80%, wartość rzadka z szansą 10% („w rzadkich przypadkach do +2 Woli / do 2% mocy żywiołu w +0”),
+  żywioł losowy. Flagi panelu: `will_tal_line_pct` (tylko żywioł), `will_tal_rare_pct` (0 = domyślne). Talizmany
+  zrobione wcześniej bez Woli dostają ją przy ulepszeniu.
 - Ulepszenie (`CopyAttributeTo`): linie przechodzą na nowy poziom w tym samym wierszu (zwykła/rzadka), a brakująca
   linia jest dodawana („talizman z mniej niż 2 bonusami otrzymuje brakujące przy ulepszaniu”). 5 zwykłych bonusów
   zostaje bez zmian.
