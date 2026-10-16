@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-15T15:31:45Z",
-  "statusMessage": "MT2009 PLUS 2.34.0: boty nie kraza po pierwszej wiosce, wiekszy magazyn botow, sklepy offline i filtr podnoszenia. Klient 2.0.65.",
+  "publishedAt": "2026-10-16T13:08:20Z",
+  "statusMessage": "MT2009 PLUS 2.35.0: porzadek w plecakach i na straganach botow, mniej krazenia miedzy wioskami. Klient 2.0.66.",
   "server": {
-    "version": "2.34.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.34.0/metin2-server-update-2.34.0.zip",
-    "sha256": "37962C86CE6A6353DCE98E264D421623015A462A2145FFDBD9069DDD3C170CF1",
-    "size": 113726519
+    "version": "2.35.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.35.0/metin2-server-update-2.35.0.zip",
+    "sha256": "B89FF5288F39946414C02496F51267CA8A895E0616544D02D6A29D7F60445F71",
+    "size": 113783643
   },
   "client": {
-    "version": "2.0.65",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.65/metin2-client-update-2.0.65.zip",
-    "sha256": "A2CB42359A83A469880454AD991253F965B15DDB95544F3EA0AC21881AAE630F",
-    "size": 617468965
+    "version": "2.0.66",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.66/metin2-client-update-2.0.66.zip",
+    "sha256": "01B2C0F8A70684F0F2DF81796A24344DCBF9002F571EA6DA6627E1C4DBB3A7DD",
+    "size": 617469877
   }
 }
