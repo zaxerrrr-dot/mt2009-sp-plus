@@ -256,7 +256,14 @@ quest ygaya begin
 			for v = 28000, 28343 do
 				if table.getn(stones) < 8 and ygaya.is_spirit_stone(v) and pc.count_item(v) > 0 then
 					table.insert(stones, v)
-					table.insert(names, item_name(v).." ("..pc.count_item(v)..")")
+					-- MT2009_PLUS_GAYA_GRIND_V3 (bug list 15.10 #12): item_name() is the client tag "[ITEM value;N]" - its
+				-- "]" closed the select's "[QUESTION ...]" early and the window showed the raw list; a choice
+				-- takes plain text, so the name comes from item_proto (get_item_name, like minigame_rumi)
+				local nm = get_item_name(v)
+				if nm == nil or nm == "" then
+					nm = "Kamieñ Duszy "..v
+				end
+				table.insert(names, nm.." ("..pc.count_item(v)..")")
 				end
 			end
 			if table.getn(stones) == 0 then
