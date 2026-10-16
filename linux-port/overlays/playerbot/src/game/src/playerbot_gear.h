@@ -49,6 +49,9 @@ namespace
 	// it when UseItem says no, or a box that cannot open is asked for again on
 	// every one of their passes.
 	bool IsPlayerBotChestRefused(DWORD dwPlayerID, DWORD dwVnum, DWORD dwNow);
+	// MT2009_PLUS_BOT_NAV_WEAPON_IDLE_V1: room for the merchant's weapon
+	// (playerbot_town.h).
+	bool MakePlayerBotBagColumnRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	void NotePlayerBotChestRefused(DWORD dwPlayerID, DWORD dwVnum, DWORD dwNow);
 	// And the free column of three a giftbox opens into, made the same way
 	// (FreePlayerBotGiftboxColumn, playerbot_consumables.h).
@@ -5084,8 +5087,80 @@ namespace
 		if (dwNow >= state.dwNextGearLogTime)
 		{
 			state.dwNextGearLogTime = dwNow + PLAYERBOT_GEAR_LOG_INTERVAL;
-			sys_err("PLAYERBOT_AI: idle without weapon pid=%u name=%s expected_chest=%u",
-					ch->GetPlayerID(), ch->GetName(), dwStarterChestVnum);
+			// MT2009_PLUS_BOT_NAV_WEAPON_IDLE_V1: "expected_chest=50187" read as
+			// a bot waiting for a chest, every ten seconds for twenty minutes
+			// (ProSekToRium on the supporters' ch1, 16 October 00:26-00:46,
+			// with swords of its level in the bag and its own +7 on the
+			// counter; azbestking in a player's first village). The number is
+			// only the class's apprentice chest (GetStarterChestVnum: 50187 a
+			// warrior's and a sura's), named whether or not one is in the bag;
+			// nothing ever waits for it. What the line needed to say is why the
+			// weapons in the bag do not go on - and a window the engine counts
+			// as "busy" (CHARACTER::IsBusy: the counter's board or box, the
+			// safebox) refuses every one of them in CanEquipNow. Such a window
+			// left open outside the visit that opened it is closed here, and
+			// a bag with no room for the merchant's weapon is made room in.
+			int bagWeapons = 0, banned = 0, refused = 0;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (!IsPlayerBotWeapon(ch, item) || item->GetCell() != cell)
+					continue;
+				++bagWeapons;
+				if (IsPlayerBotBannedLowWeapon(ch, item))
+					++banned;
+				else if (!PlayerBotCanEquipNow(ch, item, TItemPos(INVENTORY, cell)))
+					++refused;
+			}
+			char busy[16];
+			size_t b = 0;
+			if (ch->GetExchange()) busy[b++] = 'x';
+			if (ch->IsOpenSafebox()) busy[b++] = 's';
+			if (ch->IsCubeOpen()) busy[b++] = 'c';
+			if (ch->GetMyShop()) busy[b++] = 'm';
+			if (ch->GetShopOwner()) busy[b++] = 'o';
+			if (ch->IsWarping()) busy[b++] = 'w';
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			if (ch->GetIkarusShopGuest() || ch->GetIkarusAuctionGuest()) busy[b++] = 'g';
+			if (ch->IsLookingShopOwner() || ch->IsLookingAuctionOwner() || ch->IsLookingIkarusShopOfferList()) busy[b++] = 'l';
+#endif
+			if (b == 0 && ch->IsBusy()) busy[b++] = '?';
+			busy[b] = '\0';
+			const char* fix = "";
+			if (refused > 0 && b > 0)
+			{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+				if (!state.offlineShop.visiting && (ch->IsLookingShopOwner() || ch->IsLookingAuctionOwner() ||
+						ch->IsLookingIkarusShopOfferList()))
+				{
+					ch->SetLookingShopOwner(false);
+					ch->SetLookingAuctionOwner(false);
+					ch->SetLookingIkarusShopOfferList(false);
+					fix = "closed_counter_board";
+				}
+#endif
+				if (ch->IsOpenSafebox() && state.bTownVisitPhase != BOT_TOWN_PHASE_SAFEBOX &&
+						state.bTownVisitPhase != BOT_TOWN_PHASE_SAFEBOX_WAIT)
+				{
+					ch->CloseSafebox();
+					fix = "closed_safebox";
+				}
+				if (*fix && EquipFirstAvailablePlayerBotWeapon(ch))
+				{
+					sys_log(0, "PLAYERBOT_AI: weapon on after a stale window pid=%u name=%s fix=%s busy=%s",
+							ch->GetPlayerID(), ch->GetName(), fix, busy);
+					state.dwEmergencyScavengeUntil = 0;
+					LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+					return weapon && (weapon->GetSubType() != WEAPON_BOW ||
+							EnsurePlayerBotArrowsEquipped(ch));
+				}
+			}
+			else if (bagWeapons == 0 && ch->GetEmptyInventory(3) < 0 &&
+					MakePlayerBotBagColumnRoom(ch, state, dwNow))
+				fix = "bag_room";
+			sys_err("PLAYERBOT_AI: idle without weapon pid=%u name=%s bag_weapons=%d banned=%d refused=%d busy=%s fix=%s starter_chest=%u",
+					ch->GetPlayerID(), ch->GetName(), bagWeapons, banned, refused, b ? busy : "-",
+					*fix ? fix : "-", dwStarterChestVnum);
 		}
 
 		return false;
