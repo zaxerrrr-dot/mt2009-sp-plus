@@ -60,6 +60,102 @@ namespace {
         o.hagglePrice = 0;
     }
 
+    // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1 (the owner, 16 October: "Niech boty jak
+    // skupuja z rynku przedmioty niech preferuja przedmioty z bonusami (takie
+    // jak im sa obecnie potrzebne). Jesli maja wybor przedmiot 0 bonusow i 2
+    // bonusy i maja odpowiednia ilosc pieniedzy, wybieraja ten z 2 bonusami
+    // aby w przyszlosci go dodac bonusy lub zacząć zmieniac bonusy aby wbic
+    // lepszy eq"). The lines of a weapon or an armour piece the bot would
+    // wear that are of use to it now: the bonus planner's own measure
+    // (ScorePlayerBotBonusLine for the slot the piece goes in) of a line
+    // Iwakura's PvE table does not rate under neutral for its class
+    // (GetPlayerBotBonusTier: unrated, or PLAYERBOT_BUY_BONUS_USEFUL_TIER and
+    // up) - a bad or a very bad line is no reason to pay more. Zero for
+    // anything the bot does not wear (resale, materials, whims).
+    const int PLAYERBOT_BUY_BONUS_USEFUL_TIER = 4;
+    // The dearer, more useful line wins only while what it costs over the
+    // cheaper one is at most this share of what the bot may spend now
+    // (Affordable: the wallet less the gold it keeps for its other plans,
+    // GetPlayerBotReservedGold) - the rest stays for those plans.
+    const int PLAYERBOT_BUY_BONUS_PREF_BUDGET_PERCENT = 50;
+
+    int CountPlayerBotUsefulBuyLines(LPCHARACTER ch, LPITEM item, int* cellOut = NULL) {
+        if (cellOut) *cellOut = -1;
+        if (!ch || !item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR) ||
+                (item->GetType() == ITEM_WEAPON && item->GetSubType() == WEAPON_ARROW) ||
+                !IsPlayerBotEquipmentCandidate(ch, item))
+            return 0;
+        const int cell = item->FindEquipCell(ch);
+        if (cell < 0 || cell >= WEAR_MAX_NUM) return 0;
+        if (cellOut) *cellOut = cell;
+        int useful = 0;
+        for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i) {
+            const BYTE type = item->GetAttributeType(i);
+            const long value = item->GetAttributeValue(i);
+            if (type == APPLY_NONE || value <= 0) continue;
+            const int tier = GetPlayerBotBonusTier(type, (int)ch->GetJob(), false);
+            if (tier != 0 && tier < PLAYERBOT_BUY_BONUS_USEFUL_TIER) continue;
+            if (ScorePlayerBotBonusLine(ch, (BYTE)cell, type, (short)std::min<long>(value, 32767)) > 0) ++useful;
+        }
+        return useful;
+    }
+
+    // Between two lines for the same need (the same slot, the same rank of
+    // the search that found them): the one of more useful lines while its
+    // extra cost fits PLAYERBOT_BUY_BONUS_PREF_BUDGET_PERCENT of `budget`,
+    // else the cheaper - the old rule, which also decides an equal count.
+    bool PlayerBotBuyPrefers(int useful, long long price, int bestUseful, long long bestPrice, long long budget) {
+        const long long allowance = std::max<long long>(0, budget) * PLAYERBOT_BUY_BONUS_PREF_BUDGET_PERCENT / 100;
+        if (useful > bestUseful) return price <= bestPrice || price - bestPrice <= allowance;
+        if (useful < bestUseful) return price < bestPrice && bestPrice - price > allowance;
+        return price < bestPrice;
+    }
+
+    // A search's best line so far, with what the preference did to it, for
+    // the log line once the pick is made.
+    struct TPlayerBotBuyBest {
+        int priority = -1, cell = -1, useful = 0;
+        long long price = 0;
+        long long plainPrice = 0;   // the cheaper line of fewer useful lines it won over
+        int plainUseful = 0;
+        // Whether a line rated `priority` (-1: not bought) takes the place.
+        bool Take(int newPriority, long long newPrice, int newCell, int newUseful, long long budget) {
+            if (newPriority < 0 || newPriority < priority) return false;
+            bool wins;
+            bool sameNeed = newPriority == priority && newCell >= 0 && newCell == cell;
+            if (newPriority > priority) wins = true;
+            else if (sameNeed) wins = PlayerBotBuyPrefers(newUseful, newPrice, useful, price, budget);
+            else wins = newPrice < price;
+            if (!wins) {
+                // A cheaper line of fewer useful lines the best stays over.
+                if (sameNeed && useful > newUseful && newPrice < price &&
+                        (plainPrice == 0 || newPrice < plainPrice)) {
+                    plainPrice = newPrice;
+                    plainUseful = newUseful;
+                }
+                return false;
+            }
+            if (sameNeed && newUseful > useful && newPrice > price) {
+                plainPrice = price;
+                plainUseful = useful;
+            } else if (!sameNeed || newUseful <= plainUseful) {
+                plainPrice = 0;
+                plainUseful = 0;
+            }
+            priority = newPriority;
+            price = newPrice;
+            cell = newCell;
+            useful = newUseful;
+            return true;
+        }
+        void Log(LPCHARACTER ch, const char* where, DWORD owner, DWORD item) const {
+            if (!ch || plainPrice <= 0 || useful <= plainUseful || price <= plainPrice) return;
+            sys_log(0, "PLAYERBOT_MARKET: preferred bonused listing pid=%u name=%s search=%s owner=%u item=%u useful=%d price=%lld over plain useful=%d price=%lld gold=%lld",
+                ch->GetPlayerID(), ch->GetName(), where, owner, item, useful, price, plainUseful, plainPrice,
+                (long long)ch->GetGold());
+        }
+    };
+
     // One line of one stand as this bot would rate it: -1 for a line it would
     // not buy, else the priority a browse ranks by. The browse of the stands
     // in reach and the look at the first village's from a second village
@@ -67,7 +163,9 @@ namespace {
     // made for exactly what the buyer would take on arrival.
     template<class Shop, class Line>
     int RatePlayerBotOfflineLine(LPCHARACTER ch, const Shop& shop, const Line& line,
-            long long budget, bool personFirst, long long& outPrice) {
+            long long budget, bool personFirst, long long& outPrice, int* cellOut = NULL, int* usefulOut = NULL) {
+        if (cellOut) *cellOut = -1;
+        if (usefulOut) *usefulOut = 0;
         if (!line) return -1;
         const long long price = (long long)line->GetPrice().GetTotalYangAmount();
         if (price <= 0 || price > budget) return -1;
@@ -97,6 +195,14 @@ namespace {
             const long long fair = GetPlayerBotShopAskingPrice(preview);
             if (fair > 0 && price <= fair * PLAYERBOT_MARKET_PERSON_PRICE_PERCENT / 100)
                 priority += 100;
+        }
+        // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1: a piece the bot wants for itself
+        // says its slot and its useful lines, for the browse's tie-break.
+        if (want && own && (cellOut || usefulOut)) {
+            int cell = -1;
+            const int useful = CountPlayerBotUsefulBuyLines(ch, preview, &cell);
+            if (cellOut) *cellOut = cell;
+            if (usefulOut) *usefulOut = useful;
         }
         M2_DELETE(preview);
         outPrice = price;
@@ -503,17 +609,17 @@ namespace {
             }
             std::sort(shops.begin(), shops.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
             // Resume within the shop too: a full counter must not hide item 65.
-            int bestPriority = -1;
-            long long bestPrice = 0;
+            // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1: of two lines for the same slot
+            // at the same priority, the one of more useful lines while the
+            // purse allows (TPlayerBotBuyBest), else the cheaper as before.
+            TPlayerBotBuyBest best;
             const bool personFirst = number(1, 100) <= PLAYERBOT_MARKET_PERSON_FIRST_PERCENT;
             auto rate = [&](auto shop, auto id, const auto& line) {
                 if (IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now)) return;
                 long long price = 0;
-                const int priority = RatePlayerBotOfflineLine(ch, shop, line, budget, personFirst, price);
-                if (priority < 0 || priority < bestPriority ||
-                        (priority == bestPriority && price >= bestPrice)) return;
-                bestPriority = priority;
-                bestPrice = price;
+                int cell = -1, useful = 0;
+                const int priority = RatePlayerBotOfflineLine(ch, shop, line, budget, personFirst, price, &cell, &useful);
+                if (!best.Take(priority, price, cell, useful, budget)) return;
                 o.buyOwner = shop->GetOwnerPID();
                 o.buyItem = id;
                 o.buyUntil = now + 45000;
@@ -522,6 +628,8 @@ namespace {
                 BrowsePlayerBotPersonLines(shops, rate);
             if (!o.buyOwner)
                 BrowseLines(shops, o, 64, rate);
+            if (o.buyOwner)
+                best.Log(ch, "browse", o.buyOwner, o.buyItem);
             // A first village's stands with nothing on them this bot came for:
             // it asks on the trade channel, as a trip that found the market
             // empty always did. The classic trip was that trip's only caller,
@@ -592,18 +700,16 @@ namespace {
             o.farBrowseOwner = shops[ch->GetPlayerID() % shops.size()].second->GetOwnerPID();
             o.farBrowseItem = 0;
         }
-        int bestPriority = -1;
-        long long bestPrice = 0;
+        // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1: the browse's own tie-break.
+        TPlayerBotBuyBest best;
         const bool personFirst = number(1, 100) <= PLAYERBOT_MARKET_PERSON_FIRST_PERCENT;
         const DWORD now = get_dword_time();
         auto rate = [&](auto shop, auto id, const auto& line) {
             if (IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now)) return;
             long long price = 0;
-            const int priority = RatePlayerBotOfflineLine(ch, shop, line, budget, personFirst, price);
-            if (priority < 0 || priority < bestPriority ||
-                    (priority == bestPriority && price >= bestPrice)) return;
-            bestPriority = priority;
-            bestPrice = price;
+            int cell = -1, useful = 0;
+            const int priority = RatePlayerBotOfflineLine(ch, shop, line, budget, personFirst, price, &cell, &useful);
+            if (!best.Take(priority, price, cell, useful, budget)) return;
             o.farPickOwner = shop->GetOwnerPID();
             o.farPickItem = id;
         };
@@ -616,6 +722,8 @@ namespace {
             std::swap(o.browseOwner, o.farBrowseOwner);
             std::swap(o.browseItem, o.farBrowseItem);
         }
+        if (o.farPickOwner)
+            best.Log(ch, "far", o.farPickOwner, o.farPickItem);
         return o.farPickOwner != 0;
     }
 
@@ -652,6 +760,8 @@ namespace {
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
                 ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
         const DWORD now = get_dword_time();
+        TPlayerBotBuyBest best;
+        DWORD bestOwner = 0, bestItem = 0;
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
             if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0) continue;
             const auto spawn = shop->GetSpawn();
@@ -671,17 +781,26 @@ namespace {
                 const bool buyable = preview->FindEquipCell(ch) == wearCell &&
                         IsPlayerBotReadyGearOffer(ch, preview) && WantsPlayerBotStallItem(ch, preview) &&
                         CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID());
+                const int useful = buyable ? CountPlayerBotUsefulBuyLines(ch, preview) : 0;
                 M2_DELETE(preview);
                 if (!buyable) continue;
-                auto& o = state.offlineShop;
-                o.readyPickOwner = shop->GetOwnerPID();
-                o.readyPickItem = id;
-                o.readyPickUntil = now + PLAYERBOT_READY_GEAR_WAIT_MS;
-                ClaimPlayerBotLineUntil(id, ch->GetPlayerID(), now, now + PLAYERBOT_READY_GEAR_WAIT_MS);
-                return true;
+                // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1: every finished piece for
+                // the slot is weighed now, not the first one found - the one
+                // of more useful lines while the purse allows, else the cheaper.
+                if (best.Take(0, price, wearCell, useful, budget)) {
+                    bestOwner = shop->GetOwnerPID();
+                    bestItem = id;
+                }
             }
         }
-        return false;
+        if (!bestOwner) return false;
+        auto& o = state.offlineShop;
+        o.readyPickOwner = bestOwner;
+        o.readyPickItem = bestItem;
+        o.readyPickUntil = now + PLAYERBOT_READY_GEAR_WAIT_MS;
+        ClaimPlayerBotLineUntil(bestItem, ch->GetPlayerID(), now, now + PLAYERBOT_READY_GEAR_WAIT_MS);
+        best.Log(ch, "ready_gear", bestOwner, bestItem);
+        return true;
     }
 
     // MT2009_PLUS_BOSS_RAID_V2 (2.2.52, burn): the replacement for a weapon,
@@ -984,6 +1103,7 @@ namespace {
         const bool haveNav = navigation.Init(ch->GetMapIndex());
         DWORD bestOwner = 0, bestItem = 0;
         long long bestRank = -1, bestPrice = 0;
+        TPlayerBotBuyBest best;   // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1, within one rank
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
             if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
             const auto spawn = shop->GetSpawn();
@@ -1004,7 +1124,9 @@ namespace {
                 if (price <= 0 || price > cap) continue;
                 const int plus = (int)(line->GetInfo().vnum % 10);
                 const long long rank = (plus >= 6 ? 1000000LL : 0LL) + (long long)level * 100 + plus;
-                if (rank < bestRank || (rank == bestRank && price >= bestPrice)) continue;
+                // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1: a dearer line of the same
+                // rank is looked at too - its useful lines may win it.
+                if (rank < bestRank) continue;
                 if (reach < 0)
                     reach = !haveNav || navigation.CanReach(ch->GetX(), ch->GetY(), spawn.x, spawn.y) ? 1 : 0;
                 if (reach == 0) break;
@@ -1012,8 +1134,16 @@ namespace {
                 if (!preview) continue;
                 const bool buyable = IsPlayerBotOutdatedGearOffer(ch, preview) && WantsPlayerBotStallItem(ch, preview) &&
                         CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+                const int useful = buyable ? CountPlayerBotUsefulBuyLines(ch, preview) : 0;
                 M2_DELETE(preview);
                 if (!buyable) continue;
+                // The rank first (the old order), then the slot's useful lines
+                // within the purse, then the price.
+                if (!best.Take(rank > bestRank ? 1 : 0, price, slot, useful, cap) && rank == bestRank) continue;
+                if (rank > bestRank) {
+                    best = TPlayerBotBuyBest();
+                    best.Take(0, price, slot, useful, cap);
+                }
                 bestOwner = shop->GetOwnerPID();
                 bestItem = id;
                 bestRank = rank;
@@ -1027,6 +1157,7 @@ namespace {
         o.buyUntil = now + PLAYERBOT_MARKET_FAR_PICK_WALK_MS;
         o.farBuy = false;
         ClaimPlayerBotLineUntil(bestItem, ch->GetPlayerID(), now, o.buyUntil);
+        best.Log(ch, "outdated_gear", bestOwner, bestItem);
         return true;
     }
 
@@ -1086,6 +1217,7 @@ namespace {
         DWORD bestOwner = 0, bestItem = 0;
         long long bestBlow = 0, bestPrice = 0, bestGain = 0;
         int previewed = 0;
+        TPlayerBotBuyBest best;   // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1, within one blow
         for (const TCandidate& c : candidates) {
             if (previewed >= PLAYERBOT_WEAPON_UPGRADE_PREVIEW_LINES) break;
             if (haveNav && !navigation.CanReach(ch->GetX(), ch->GetY(), c.x, c.y)) continue;
@@ -1100,8 +1232,16 @@ namespace {
                     CanPlayerBotPayForOffer(ch, preview, c.price, c.owner) &&
                     ch->GetEmptyInventory(preview->GetSize()) >= 0;
             const long long blow = buyable ? GetPlayerBotWeaponHitDamage(preview, ch) : 0;
+            const int useful = buyable ? CountPlayerBotUsefulBuyLines(ch, preview) : 0;
             M2_DELETE(preview);
-            if (!buyable || blow < bestBlow || (blow == bestBlow && c.price >= bestPrice)) continue;
+            if (!buyable || blow <= 0 || blow < bestBlow) continue;
+            // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1: at an equal blow, the weapon
+            // of more useful lines within the upgrade's purse, else the cheaper.
+            if (blow == bestBlow && !best.Take(0, c.price, WEAR_WEAPON, useful, cap)) continue;
+            if (blow > bestBlow) {
+                best = TPlayerBotBuyBest();
+                best.Take(0, c.price, WEAR_WEAPON, useful, cap);
+            }
             bestOwner = c.owner;
             bestItem = c.item;
             bestBlow = blow;
@@ -1116,6 +1256,7 @@ namespace {
         o.farBuy = false;
         ClaimPlayerBotLineUntil(bestItem, ch->GetPlayerID(), now, o.buyUntil);
         ++s_dwPlayerBotWeaponUpgradePicks;
+        best.Log(ch, "weapon_upgrade", bestOwner, bestItem);
         sys_log(0, "PLAYERBOT_GEAR_UPGRADE: goes for a weapon pid=%u name=%s level=%u owned=%u blow=%lld line=%u owner=%u blow=%lld gain=%lld%% price=%lld gold=%lld",
             ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), owned.item ? owned.item->GetVnum() : 0,
             owned.blow, bestItem, bestOwner, bestBlow, bestGain, bestPrice, (long long)ch->GetGold());
