@@ -1770,8 +1770,40 @@ namespace
 					int maxDistance, DWORD huntMob = 0)
 				: m_seeker(seeker), m_wanted(wanted), m_maxDistance(maxDistance),
 				  m_best(NULL), m_bestDistance(INT_MAX), m_dropVnum(0),
-				  m_huntMob(huntMob), m_bestHunt(NULL), m_bestHuntDistance(INT_MAX)
+				  m_huntMob(huntMob), m_bestHunt(NULL), m_bestHuntDistance(INT_MAX),
+				  m_pNavigation(NULL), m_dwOwnGround(0), m_iOffGround(0)
 			{
+				// MT2009_PLUS_BOT_NAV_HUNT_REACH_V1: the seeker's own ground, so a
+				// monster standing where no walk goes is not the errand's target.
+				if (seeker)
+				{
+					CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(seeker->GetMapIndex());
+					if (navigation.Init(seeker->GetMapIndex()))
+					{
+						m_dwOwnGround = navigation.GetComponentAtWorld(seeker->GetX(), seeker->GetY());
+						if (m_dwOwnGround != 0)
+							m_pNavigation = &navigation;
+					}
+				}
+			}
+
+			// MT2009_PLUS_BOT_NAV_HUNT_REACH_V1: the Orc Valley's Czarne Orki
+			// (the Orc Tooth row, hunt=601) stand in its rivers and on its
+			// islands: 532 biologist errands and 71 material errands to a point
+			// on blocked ground in 18 hours on the supporters' world after
+			// 2.34.0 (Sohan 136 more), 10 832 "unreachable" lines on map 64
+			// since 5 October to a target in a blocked cell - (303786,727087)
+			// alone 2 057 - and the same (303861,725469) for five bots of a
+			// player's channel. The scan picked the same monster every round.
+			// Asked only of a monster that would become the best one.
+			bool OnOwnGround(LPCHARACTER mob)
+			{
+				if (!m_pNavigation || !mob)
+					return true;
+				if (m_pNavigation->GetComponentAtWorld(mob->GetX(), mob->GetY(), 2) == m_dwOwnGround)
+					return true;
+				++m_iOffGround;
+				return false;
 			}
 
 			void operator()(LPENTITY entity)
@@ -1791,7 +1823,8 @@ namespace
 				{
 					const int huntDistance = DISTANCE_APPROX(m_seeker->GetX() - mob->GetX(),
 							m_seeker->GetY() - mob->GetY());
-					if (huntDistance <= m_maxDistance && huntDistance < m_bestHuntDistance)
+					if (huntDistance <= m_maxDistance && huntDistance < m_bestHuntDistance &&
+							OnOwnGround(mob))
 					{
 						m_bestHunt = mob;
 						m_bestHuntDistance = huntDistance;
@@ -1820,7 +1853,7 @@ namespace
 					return;
 				const int distance = DISTANCE_APPROX(m_seeker->GetX() - mob->GetX(),
 						m_seeker->GetY() - mob->GetY());
-				if (distance > m_maxDistance || distance >= m_bestDistance)
+				if (distance > m_maxDistance || distance >= m_bestDistance || !OnOwnGround(mob))
 					return;
 				m_best = mob;
 				m_bestDistance = distance;
@@ -1836,6 +1869,9 @@ namespace
 			DWORD m_huntMob;
 			LPCHARACTER m_bestHunt;
 			int m_bestHuntDistance;
+			CPlayerBotNavigation* m_pNavigation;
+			DWORD m_dwOwnGround;
+			int m_iOffGround;
 	};
 
 	// The material errand's second half. Preferring the right monster among the
@@ -1923,11 +1959,11 @@ namespace
 			// or, on the battle trial, the travel whose status is the trial's.
 			const bool trial = IsPlayerBotBattleHorseTrialMob(huntMob);
 			SetPlayerBotAction(state, trial ? BOT_ACTION_TRAVEL : BOT_ACTION_BIOLOGIST, dwNow);
-			sys_log(0, "PLAYERBOT_HUNT: %s errand pid=%u name=%s map=%ld hunt=%u mob=%s distance=%d pos=(%ld,%ld)",
+			sys_log(0, "PLAYERBOT_HUNT: %s errand pid=%u name=%s map=%ld hunt=%u mob=%s distance=%d pos=(%ld,%ld) off_ground=%d",
 					trial ? "horse trial" : "biologist",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), huntMob,
 					finder.m_bestHunt->GetName(), finder.m_bestHuntDistance,
-					finder.m_bestHunt->GetX(), finder.m_bestHunt->GetY());
+					finder.m_bestHunt->GetX(), finder.m_bestHunt->GetY(), finder.m_iOffGround);
 			MovePlayerBot(ch, finder.m_bestHunt->GetX(), finder.m_bestHunt->GetY(), dwNow, 24, true, true);
 			state.dwNextWanderTime = dwNow + 8000;
 			// Kept past the next fight on the way (ManagePlayerBotWandering).
@@ -1946,10 +1982,10 @@ namespace
 		SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
 		// MT2009_PLUS_M1_LOOP_FIX_V1 (status): "Poluje na material: ...".
 		NotePlayerBotWalk(s_mapPlayerBotMaterialErrandNote, ch, dwNow, ch->GetMapIndex(), finder.m_dropVnum, false);
-		sys_log(0, "PLAYERBOT_HUNT: material errand pid=%u name=%s map=%ld wants=%u mob=%s distance=%d pos=(%ld,%ld)",
+		sys_log(0, "PLAYERBOT_HUNT: material errand pid=%u name=%s map=%ld wants=%u mob=%s distance=%d pos=(%ld,%ld) off_ground=%d",
 				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), finder.m_dropVnum,
 				finder.m_best->GetName(), finder.m_bestDistance,
-				finder.m_best->GetX(), finder.m_best->GetY());
+				finder.m_best->GetX(), finder.m_best->GetY(), finder.m_iOffGround);
 		MovePlayerBot(ch, finder.m_best->GetX(), finder.m_best->GetY(), dwNow, 24, true, true);
 		state.dwNextWanderTime = dwNow + 8000;
 		return true;
