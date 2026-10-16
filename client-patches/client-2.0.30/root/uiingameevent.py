@@ -292,6 +292,7 @@ class InGameEventDialog(ui.BoardWithTitleBar):
 		self.keys = []
 		self.first = 0
 		self.nextTime = 0.0
+		self.inLayout = False
 
 		scroll = ui.ScrollBar()
 		scroll.SetParent(self)
@@ -335,26 +336,54 @@ class InGameEventDialog(ui.BoardWithTitleBar):
 				row.SetParent(self)
 				self.rows.append(row)
 			self.keys = keys
-			self.first = 0
+			# MT2009_PLUS_EVENT_WINDOW_SCROLL_V1: the first row shown stays
+			# (clamped in __Layout) when an event joins or leaves the list.
 		else:
 			for row in self.rows:
 				row.Refresh()
 		self.__Layout()
 
+	# MT2009_PLUS_EVENT_WINDOW_SCROLL_V1: with more than ROWS_SHOWN events the
+	# list crashed the client - __OnScroll called __Layout, whose scroll bar
+	# setup (SetScrollBarSize puts the middle bar back to the top) fires the
+	# bar's OnMove, which called __OnScroll again ("maximum recursion depth
+	# exceeded", 15 October). The board and the bar are set up only here, from
+	# Refresh, with the bar's callback locked and a re-entry guard; a scroll
+	# only places the rows (__PlaceRows). The first row shown is kept across
+	# a refresh of the same list.
 	def __Layout(self):
-		count = len(self.rows)
-		shown = min(max(count, 1), ROWS_SHOWN)
-		height = 34 + shown * ROW_HEIGHT + 36
-		self.SetSize(BOARD_WIDTH, height)
-		if count > ROWS_SHOWN:
-			self.scroll.SetPosition(BOARD_WIDTH - 28, 34)
-			self.scroll.SetScrollBarSize(shown * ROW_HEIGHT - 4)
-			self.scroll.SetMiddleBarSize(float(ROWS_SHOWN) / count)
-			self.scroll.SetScrollStep(1.0 / (count - ROWS_SHOWN))
-			self.scroll.Show()
-		else:
-			self.first = 0
-			self.scroll.Hide()
+		if self.inLayout:
+			return
+		self.inLayout = True
+		try:
+			count = len(self.rows)
+			shown = min(max(count, 1), ROWS_SHOWN)
+			height = 34 + shown * ROW_HEIGHT + 36
+			self.SetSize(BOARD_WIDTH, height)
+			extra = count - ROWS_SHOWN
+			if extra > 0:
+				self.first = max(0, min(self.first, extra))
+				self.scroll.LockScroll()
+				try:
+					self.scroll.SetPosition(BOARD_WIDTH - 28, 34)
+					self.scroll.SetScrollBarSize(shown * ROW_HEIGHT - 4)
+					self.scroll.SetMiddleBarSize(float(ROWS_SHOWN) / count)
+					self.scroll.SetScrollStep(1.0 / extra)
+					self.scroll.SetPos(float(self.first) / extra)
+				finally:
+					self.scroll.UnlockScroll()
+				# SetPos ran locked: the bar's own position, read back as OnMove would.
+				self.scroll.curPos = float(self.first) / extra
+				self.scroll.Show()
+			else:
+				self.first = 0
+				self.scroll.Hide()
+			self.calendar.SetPosition(BOARD_WIDTH / 2 - 44, height - 32)
+			self.__PlaceRows()
+		finally:
+			self.inLayout = False
+
+	def __PlaceRows(self):
 		for i, row in enumerate(self.rows):
 			index = i - self.first
 			if 0 <= index < ROWS_SHOWN:
@@ -362,14 +391,15 @@ class InGameEventDialog(ui.BoardWithTitleBar):
 				row.Show()
 			else:
 				row.Hide()
-		self.calendar.SetPosition(BOARD_WIDTH / 2 - 44, height - 32)
 
 	def __OnScroll(self):
 		extra = len(self.rows) - ROWS_SHOWN
-		if extra <= 0:
+		if extra <= 0 or self.inLayout:
 			return
-		self.first = int(round(self.scroll.GetPos() * extra))
-		self.__Layout()
+		first = max(0, min(int(round(self.scroll.GetPos() * extra)), extra))
+		if first != self.first:
+			self.first = first
+			self.__PlaceRows()
 
 	def __OnCalendar(self):
 		__import__('uieventcalendar').ToggleWindow()
