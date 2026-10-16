@@ -686,6 +686,24 @@ namespace
 				return true;
 			}
 
+			// MT2009_PLUS_BOT_NAV_SNAP_V1: the nearest cell of one component
+			// (the bot's own ground) within maxRadiusCells of a point - the
+			// shore under a monster standing in a river, the reachable side of
+			// an NPC whose approach point fell in a wall.
+			bool FindNearestComponentWorld(long x, long y, int maxRadiusCells,
+					DWORD component, PIXEL_POSITION& out) const
+			{
+				if (!m_initialized || component == 0 || !IsInsideWorld(x, y))
+					return false;
+				int gx, gy;
+				WorldToCell(x, y, gx, gy);
+				if (!FindNearestWalkableCell(gx, gy, maxRadiusCells, component, 0))
+					return false;
+				CellToWorld(gx, gy, out.x, out.y);
+				out.z = 0;
+				return true;
+			}
+
 			// The route just planned ends short of its goal on purpose: the
 			// corridor search hit PLAYERBOT_NAV_MAX_CORRIDOR_EXPANSIONS.
 			bool LastPlanWasPartial() const

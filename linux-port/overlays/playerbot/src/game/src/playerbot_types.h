@@ -5788,6 +5788,9 @@ namespace
 	// snap stays inside the radius that tests arrival.
 	const int PLAYERBOT_FISHING_TACKLE_ARRIVE = 400;
 	const int PLAYERBOT_FISHING_TACKLE_SNAP_CELLS = 4;
+	// MT2009_PLUS_BOT_NAV_RYBAK_REACH_V1: how far round the Rybak the bot's own
+	// ground is looked for when its approach lane is off the ground.
+	const int PLAYERBOT_FISHING_TACKLE_REACH_CELLS = 16;
 	// Independently planned route failures before the bank is written off. Six
 	// matches the town-service rescue; anything larger is indistinguishable from
 	// never giving up at all.
