@@ -4972,13 +4972,20 @@ namespace
 		// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: over
 		// PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT it scores
 		// PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE and wins a counter's space.
+		// MT2009_PLUS_BOT_DUST_BONUS_V1: the keep is what the bot will turn
+		// into a marble, an add or a change stone, and the 800 goes to the
+		// dust over it: PLAYERBOT_MAGIC_DUST_SURPLUS_SPARE more than the keep
+		// and over PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT in all (with the
+		// ordinary keep of a hundred, the "over 200" of before).
 		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
 		{
 			const int dustHeld = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM);
-			return dustHeld > GetPlayerBotStallBaseKeep(ch, item)
-					? PlayerBotGoods(dustHeld > PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT
+			const int dustKeep = GetPlayerBotStallBaseKeep(ch, item);
+			return dustHeld > dustKeep
+					? PlayerBotGoods(dustHeld > PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT &&
+							dustHeld - dustKeep > PLAYERBOT_MAGIC_DUST_SURPLUS_SPARE
 							? PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE : PLAYERBOT_SHOP_LOW_SOUL_STONE_SCORE + 20,
-						per::GOODS_MAGIC_DUST, (long long)dustHeld, GetPlayerBotStallBaseKeep(ch, item)) : -1;
+						per::GOODS_MAGIC_DUST, (long long)dustHeld, dustKeep) : -1;
 		}
 		// An ITEM_MATERIAL no recipe consumes is scenery, not goods: it was put
 		// up for its type, and its type is not a reason anybody would buy it -
