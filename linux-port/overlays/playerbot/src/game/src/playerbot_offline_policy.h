@@ -137,6 +137,9 @@ struct State {
     // How many visits in a row a restock or a take-off has chained, two
     // seconds apart (PLAYERBOT_OFFLINE_RESTOCK_CHAIN).
     uint32_t chainSteps = 0;
+    // MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1: weak-bonus scrap lines taken off
+    // in this burst of chained steps (a full counter takes several a visit).
+    uint32_t weakTakeoffBurst = 0;
     // Which compiled price table this shop was last priced against.
     uint32_t priceGeneration = 0;
     // The empty-hand probe of the counter, and the last line taken back to

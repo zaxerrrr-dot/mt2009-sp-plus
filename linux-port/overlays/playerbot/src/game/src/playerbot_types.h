@@ -3434,6 +3434,14 @@ namespace
 	// never asked (the owner: "nie limituj rynku").
 	const int PLAYERBOT_GOODS_BONUS_MIN_LINES = 2;
 	const int PLAYERBOT_GOODS_SCRAP_MAX_PLUS = 6;
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1 (the owner, 16 October: "przedmioty
+	// powyzej 41 lvl to niech do +4 beda sprzedawane u handlarki, powyzej +5 to
+	// juz nie"): a piece whose level limit is over PLAYERBOT_GOODS_SCRAP_HIGH_LEVEL
+	// is scrap, and comes off a counter unsold, only up to
+	// PLAYERBOT_GOODS_SCRAP_HIGH_MAX_PLUS; at +5 and +6 it stays on the counter
+	// (GetPlayerBotGoodsScrapMaxPlus). Level 41 and under keeps +0..+6.
+	const int PLAYERBOT_GOODS_SCRAP_HIGH_LEVEL = 41;
+	const int PLAYERBOT_GOODS_SCRAP_HIGH_MAX_PLUS = 4;
 	const long PLAYERBOT_GOODS_WEAPON_STRONG_MIN = 20;
 	const int PLAYERBOT_GOODS_WEAPON_OUTRIGHT_LINES = 4;
 	// Bonus goods of that rule (IsPlayerBotUnsoldBonusGoodsKind) unsold on a
@@ -3445,6 +3453,19 @@ namespace
 	const int PLAYERBOT_GOODS_UNSOLD_HOURS = 24;
 	const DWORD PLAYERBOT_GOODS_UNSOLD_MS = (DWORD)PLAYERBOT_GOODS_UNSOLD_HOURS * 60 * 60 * 1000;
 	const DWORD PLAYERBOT_GOODS_UNSOLD_HOLD_MS = 48 * 60 * 60 * 1000;
+	// MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1 (the owner, 16 October: "niech
+	// zdejmuja nawet kilka o ile nie maja miejsca w sklepie, jak maja miejsce w
+	// sklepie to niech sciagaja po 1"): the lines of one weak counted bonus
+	// already on a bot's counter (IsPlayerBotOneWeakBonusPiece) come home for
+	// the merchant - one a visit while the counter has room, and up to
+	// PLAYERBOT_STALL_WEAK_TAKEOFF_BURST in chained steps of a visit while it
+	// has fewer than PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS free cells, each
+	// only while the bag keeps PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP cells free
+	// besides the piece.
+	const int PLAYERBOT_STALL_WEAK_TAKEOFF_BURST = 8;
+	const int PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS = 4;
+	const int PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP = 3;
+	const DWORD PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS = 2000;
 	const int PLAYERBOT_BONUS_GOODS_PIECES = 2;
 	const int PLAYERBOT_BONUS_GOODS_STONE_RESERVE = 10;
 	// Point 10: a line worth keeping for itself is never mixed off by an

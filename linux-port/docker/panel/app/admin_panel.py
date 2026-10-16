@@ -12196,6 +12196,10 @@ DECISION_OFF = {
        "en": "bonus gear unsold for a day — for the merchant",
        "de": "Ausrüstung mit Boni blieb einen Tag unverkauft — für den Händler",
        "tr": "bonuslu ekipman bir gün satılmadı — satıcıya"},
+ 206: {"pl": "jeden słaby bonus — złom, do handlarza",
+       "en": "one weak bonus — scrap, for the merchant",
+       "de": "ein schwacher Bonus — Schrott, für den Händler",
+       "tr": "tek zayıf bonus — hurda, satıcıya"},
 }
 
 # The small vocabularies a parameter can be one of ("enum:NAME").
@@ -12828,7 +12832,7 @@ DECISION_CODE_NAMES = {
   6: "OFF_JUNK_WEAPON", 7: "OFF_POTION_PACK", 8: "OFF_LOW_ARMOUR", 9: "OFF_LOW_JEWEL", 10: "OFF_HAIR_DYE",
   11: "OFF_LEVEL30_ANVIL", 12: "OFF_CHEST_PACK", 13: "OFF_GM_STONE", 14: "OFF_SCROLL_PACK", 15: "OFF_MEDAL_PACK",
   16: "OFF_HEAP_PACK", 17: "OFF_MATERIAL_PACK", 18: "OFF_LOW_GEAR", 19: "OFF_TACKLE", 20: "OFF_RECLAIM_TO_WEAR",
-  200: "OFF_BUFF_POTION", 201: "OFF_DS_LOW_GRADE", 202: "OFF_SASH_KEEPER", 203: "OFF_CRAFT_EXCHANGE", 204: "OFF_RARE_UNSOLD", 205: "OFF_UNSOLD_BONUS_GOODS",
+  200: "OFF_BUFF_POTION", 201: "OFF_DS_LOW_GRADE", 202: "OFF_SASH_KEEPER", 203: "OFF_CRAFT_EXCHANGE", 204: "OFF_RARE_UNSOLD", 205: "OFF_UNSOLD_BONUS_GOODS", 206: "OFF_WEAK_BONUS_SCRAP",
  },
  "STEP": {
   1: "STEP_CONTEXT", 2: "STEP_BONUS_LINE", 3: "STEP_BONUS_MAX_LINES", 4: "STEP_BONUS_PERCENT", 5: "STEP_INVESTMENT",
