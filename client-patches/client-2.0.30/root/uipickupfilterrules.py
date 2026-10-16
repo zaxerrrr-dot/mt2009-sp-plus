@@ -732,11 +732,13 @@ class ItemPicker(ListPicker):
 
     def OnSearchChanged(self, text):
         # the server is asked once the typing stops for a moment
-        self.askAt = app.GetTime() + self.SEARCH_DELAY
+        import clientclock  # MT2009_PLUS_PICKUP_SYNC_CLOCK_V1: never runs backwards at a warp
+        self.askAt = clientclock.Now() + self.SEARCH_DELAY
 
     def OnUpdate(self):
         ListPicker.OnUpdate(self)
-        if self.askAt and app.GetTime() >= self.askAt:
+        import clientclock
+        if self.askAt and clientclock.Now() >= self.askAt:
             self.askAt = 0.0
             text = self.searchEdit.GetText().strip()
             if text == self.asked:
