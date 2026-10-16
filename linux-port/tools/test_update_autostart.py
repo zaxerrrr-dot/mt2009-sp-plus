@@ -14,7 +14,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPT = os.path.join(HERE, "update.sh")
 
 FAKE_DOCKER = """#!/bin/sh
-if [ "$1" = inspect ]; then cat "$FAKE_RUNNING" 2>/dev/null; exit 0; fi
+if [ "$1" = inspect ]; then
+    case "$3" in
+        *Config.Env*) cat "$FAKE_ENV" 2>/dev/null ;;
+        *Mounts*) cat "$FAKE_MOUNTS" 2>/dev/null ;;
+        *) cat "$FAKE_RUNNING" 2>/dev/null ;;
+    esac
+    exit 0
+fi
 printf '%s|stack=%s|watch=%s\\n' "$*" "$M2_UPDATE_STACK_DIR" "$M2_UPDATE_WATCH_UPDATES" >> "$FAKE_DOCKER_LOG"
 exit 0
 """
@@ -40,9 +47,12 @@ class UpdaterAutostart(unittest.TestCase):
         os.chmod(os.path.join(bindir, "docker"), 0o755)
         self.log = os.path.join(self.tmp, "docker.log")
         self.running = os.path.join(self.tmp, "running")
+        self.fake_env = os.path.join(self.tmp, "container.env")
+        self.fake_mounts = os.path.join(self.tmp, "container.mounts")
         self.environ = dict(os.environ, PATH=bindir + os.pathsep + os.environ["PATH"], FAKE_DOCKER_LOG=self.log,
-                            FAKE_RUNNING=self.running, M2_UPDATE_SPOOL=os.path.join(self.tmp, "spool"))
-        for key in ("M2_UPDATE_STACK_DIR", "M2_UPDATE_WATCHING", "M2_UPDATE_WATCH_UPDATES"):
+                            FAKE_RUNNING=self.running, FAKE_ENV=self.fake_env, FAKE_MOUNTS=self.fake_mounts,
+                            M2_UPDATE_SPOOL=os.path.join(self.tmp, "spool"))
+        for key in ("M2_UPDATE_STACK_DIR", "M2_UPDATE_WATCHING", "M2_UPDATE_WATCH_UPDATES", "M2_UPDATE_PARENT_REFRESHES"):
             self.environ.pop(key, None)
 
     def tearDown(self):
@@ -91,9 +101,45 @@ class UpdaterAutostart(unittest.TestCase):
         self.run_script("updater")
         self.assertEqual(self.calls(), [])
 
-    def test_running_updater_is_left_alone(self):
+    # MT2009_PLUS_UPDATER_REFRESH_V1: `updater' (an install, by hand) and an
+    # update recreate a running updater; its WATCH_UPDATES stays.
+    def test_running_updater_is_recreated(self):
         open(self.running, "w").write("true\n")
+        open(self.fake_env, "w").write("M2_UPDATE_STACK_DIR=%s\nM2_UPDATE_WATCH_UPDATES=1\n" % self.root)
+        open(self.fake_mounts, "w").write("%s|%s\n/opt/m2update|/var/lib/docker/volumes/x\n" % (self.root, self.root))
+        result = self.run_script("updater")
+        calls = self.calls()
+        self.assertEqual(len(calls), 1, result.stdout + result.stderr)
+        self.assertIn("up -d --build --no-deps --force-recreate updater", calls[0])
+        self.assertTrue(calls[0].endswith("|watch=1"), calls[0])
+
+    def test_updater_of_another_folder_is_replaced(self):
+        open(self.running, "w").write("true\n")
+        open(self.fake_env, "w").write("M2_UPDATE_STACK_DIR=/home/old/MT2009-PLUS-Serwer-2.12.0\nM2_UPDATE_WATCH_UPDATES=0\n")
+        result = self.run_script("updater")
+        calls = self.calls()
+        self.assertEqual(len(calls), 2, calls)
+        self.assertTrue(calls[0].startswith("rm -f metin2-updater"), calls[0])
+        self.assertIn("up -d --build --no-deps updater|stack=%s|" % self.root, calls[1])
+        self.assertIn("serves another folder", result.stdout)
+
+    def test_mount_of_another_folder_is_replaced(self):
+        open(self.running, "w").write("true\n")
+        open(self.fake_env, "w").write("M2_UPDATE_STACK_DIR=%s\n" % self.root)
+        open(self.fake_mounts, "w").write("%s|/srv/elsewhere\n" % self.root)
         self.run_script("updater")
+        self.assertTrue(self.calls()[0].startswith("rm -f metin2-updater"), self.calls())
+
+    def test_parent_that_refreshes_skips_the_background_start(self):
+        pending = os.path.join(self.root, ".update-build-pending")
+        open(pending, "w").close()
+        open(os.path.join(self.compose, ".env.example"), "w").write("")
+        self.environ["M2_UPDATE_STACK_DIR"] = self.root
+        self.environ["M2_UPDATE_PARENT_REFRESHES"] = "1"
+        result = self.run_script("env")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        os.remove(pending)
+        time.sleep(25)
         self.assertEqual(self.calls(), [])
 
     def test_after_an_older_scripts_unpack(self):

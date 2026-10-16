@@ -37,7 +37,11 @@ note                  what a change does, when the services alone don't say
 """
 import re
 
-SCHEMA_VERSION = 1
+# MT2009_PLUS_UPDATER_REFRESH_V1: raise it with every key added or removed -
+# the panel compares it with the updater's (env.current "schema_version") and
+# says "aktualizator działa na starej wersji" instead of "nieznana zmienna".
+# 2: M2_SHOP_BIG (2.34) and everything before it.
+SCHEMA_VERSION = 2
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",

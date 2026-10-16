@@ -59,17 +59,44 @@ def editor_state(spool):
     current = _read_json(os.path.join(spool, "env.current"))
     supports = FEATURE in features.get("features", "").split(",") or FEATURE in current.get("features", [])
     alive = age is not None and age < WATCHER_MAX_AGE
-    ready = bool(alive and supports and current)
+    stale = stale_schema_keys(current)
+    ready = bool(alive and supports and current and stale is None)
     if ready:
         reason = ""
     elif not alive:
         reason = "watcher"
     elif not supports or not current:
         reason = "old-watcher"
+    elif stale is not None:
+        reason = "stale-schema"
     else:
         reason = "watcher"
     return {"ready": ready, "alive": alive, "supports": supports, "reason": reason, "watcher_age": age,
-            "current": current, "status": read_status(spool)}
+            "current": current, "status": read_status(spool), "stale_keys": stale or []}
+
+
+# MT2009_PLUS_UPDATER_REFRESH_V1: an updater that reads an older env_schema.py
+# than this panel's (a container left running from another server folder, or
+# from before an update - it is created with that folder's path) refused every
+# key it did not know yet with "nieznana zmienna" (M2_SHOP_BIG, the owner,
+# 15 October). Its snapshot tells: schema_version under ours, or a key of
+# .env it calls unknown that our schema has. None when it is current, else
+# the keys it is known to lack (maybe none listed).
+STALE_MESSAGE = "aktualizator działa na starej wersji – uruchom go ponownie"
+
+
+def stale_schema_keys(current):
+    if not current:
+        return None
+    try:
+        version = int(current.get("schema_version") or 0)
+    except (TypeError, ValueError):
+        version = 0
+    unknown = current.get("unknown_keys") or []
+    known_here = sorted(k for k in unknown if isinstance(k, str) and k in env_schema.BY_KEY)
+    if version < env_schema.SCHEMA_VERSION or known_here:
+        return known_here
+    return None
 
 
 def read_status(spool):
@@ -82,6 +109,14 @@ def read_status(spool):
     limit = QUEUED_STALE_SECONDS if state == "queued" else RUNNING_STALE_SECONDS
     status["busy"] = state in BUSY_STATES and age < limit
     status["stale"] = state in BUSY_STATES and age >= limit
+    # MT2009_PLUS_UPDATER_REFRESH_V1: "nieznana zmienna" from the updater for a
+    # key this panel knows means the updater's schema is the older one.
+    results = status.get("results")
+    if isinstance(results, dict):
+        for key, result in results.items():
+            if isinstance(result, dict) and result.get("message") == "nieznana zmienna" and key in env_schema.BY_KEY:
+                result["message"] = STALE_MESSAGE
+                status["message"] = "Odrzucono zlecenie: %s (zmiany nie zapisano)." % STALE_MESSAGE.capitalize()
     return status
 
 
@@ -301,6 +336,10 @@ def install(app, login_required, csrf_token, spool_getter, db_connect=None):
             message = errors.pop("_", "") or "Popraw zaznaczone wartości."
             return jsonify({"ok": False, "message": message, "errors": errors}), 400
         other = sorted(k for k in clean if k not in env_schema.LIVE_KEYS)
+        if other and state.get("reason") == "stale-schema":
+            return jsonify({"ok": False, "message": "Aktualizator działa na starej wersji – uruchom go ponownie (polecenia na tej stronie), "
+                            "a do tego czasu od razu można zmienić tylko przełączniki oznaczone „działa od razu”. "
+                            "Tych ustawień nie da się teraz zapisać: %s." % ", ".join(other)}), 409
         if other:
             return jsonify({"ok": False, "message": "Aktualizator nie działa, więc od razu można zmienić tylko przełączniki oznaczone „działa od razu” "
                             "(Arezzo, Seon-Hae, alchemia, szarfy). Tych ustawień nie da się teraz zapisać: %s." % ", ".join(other)}), 409
@@ -380,6 +419,8 @@ def install(app, login_required, csrf_token, spool_getter, db_connect=None):
                 except ValueError:
                     changes = None
                 return save_live(state, live, changes, request.form.get("confirm", ""))
+            if state["reason"] == "stale-schema":
+                return jsonify({"ok": False, "message": "Aktualizator działa na starej wersji – uruchom go ponownie. Do tego czasu zmiany nie mogą zostać zapisane."}), 409
             return jsonify({"ok": False, "message": "Aktualizator nie jest uruchomiony albo nie obsługuje edytora .env – zmiany nie mogą zostać zapisane."}), 409
         if state["status"].get("busy"):
             return jsonify({"ok": False, "message": "Poprzednia zmiana jeszcze trwa. Poczekaj na jej zakończenie."}), 409
