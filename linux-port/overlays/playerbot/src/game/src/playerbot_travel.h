@@ -3560,18 +3560,35 @@ namespace
 			// A share of the bots keeps Joan as home: the services trip goes
 			// there, and only the services trip - a medal, a weapon hunt and
 			// a graduation are Bokjung's business.
+			// MT2009_PLUS_BOT_NAV_FRONTIER_M1_DIRECT_V1: and a services trip
+			// whose need only the first village meets - the Biologist, Baek-Go,
+			// the progression market, the skill reset (needsM1OnlyServices) - or
+			// that the river waits behind goes there straight, not through the
+			// second village. It went frontier -> M2 ("frontier_services_to_m2")
+			// and from M2 on to M1 at once: on the supporters' world after 2.34.0
+			// 8 672 of the 26 773 such trips in 18 hours were followed within ten
+			// minutes by M2 -> M1 (herbalist 2 179, angler 1 997, market 1 658,
+			// biologist 356, the rest unnamed) - a third of all M2 -> M1 changes,
+			// the "back and forth between M1 and M2 for nothing" of the report
+			// of 16 October. Joan has all of Bokjung's services and a Teleporter
+			// of its own back to the frontier (m1_direct_to_*).
+			const bool m1OnlyNeed = needsTown && !blocked &&
+					((needsM1OnlyServices && !onBattleTrialHere) || wantsFishing);
 			const bool joanHome = (needsTown &&
 					(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4a4f414eU) % 1000U) <
 						(DWORD)PLAYERBOT_JOAN_HOME_PER_MILLE) ||
 					// The bank, the bait merchant and the Fisherman are all in
 					// the first village.
-					(!needsTown && !outOfBand && wantsFishing);
+					(!needsTown && !outOfBand && wantsFishing) || m1OnlyNeed;
 			const char* reason = "frontier_visit_complete";
 			if (joanHome && wantsFishing && !needsTown && !outOfBand)
 			{
 				reason = "frontier_fishing_to_m1";
 				HoldPlayerBotRybakTrip(state, dwNow);
 			}
+			else if (m1OnlyNeed)
+				reason = wantsFishing && !(needsM1OnlyServices && !onBattleTrialHere)
+						? "frontier_fishing_services_to_m1" : "frontier_m1only_services_to_m1";
 			else if (joanHome)
 				reason = "frontier_services_to_m1";
 			else if (needsTown)
