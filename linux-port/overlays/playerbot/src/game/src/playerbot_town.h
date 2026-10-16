@@ -132,6 +132,8 @@ namespace
 	// half in playerbot_offline_shop.h.
 	std::map<DWORD, DWORD> s_mapPlayerBotSafeboxFullAt;
 	bool MakePlayerBotBagColumnRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	// MT2009_PLUS_BOT_FULL_CLEAROUT_V1 (playerbot_market_life.h).
+	bool RunPlayerBotFullClearout(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 	bool HurryPlayerBotStallForBagRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 #else
@@ -1030,6 +1032,7 @@ namespace
 		{
 			state.dwNextShopCheckTime = dwNow + number(60000, 120000);
 			MakePlayerBotBagColumnRoom(ch, state, dwNow);	// MT2009_PLUS_FRONTIER_BAG_LOOP_V1
+			RunPlayerBotFullClearout(ch, state, dwNow);	// MT2009_PLUS_BOT_FULL_CLEAROUT_V1
 			return;
 		}
 
@@ -1793,7 +1796,12 @@ namespace
 		// MT2009_PLUS_FRONTIER_BAG_LOOP_V1: a visit that left the bag with no
 		// free three-cell column and the box full makes the column now.
 		if (completed && ch)
+		{
 			MakePlayerBotBagColumnRoom(ch, state, dwNow);
+			// MT2009_PLUS_BOT_FULL_CLEAROUT_V1: stall, bag and box all full -
+			// its cheapest pieces to another bot or the merchant.
+			RunPlayerBotFullClearout(ch, state, dwNow);
+		}
 		// MT2009_PLUS_M1_LOOP_FIX_V1 (bag floor): what the bag keeps after it.
 		if (completed && ch)
 			NotePlayerBotBagFloor(ch, dwNow);
