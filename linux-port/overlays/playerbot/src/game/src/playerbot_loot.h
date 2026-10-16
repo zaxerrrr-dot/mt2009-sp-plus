@@ -411,6 +411,31 @@ namespace
 	const int PLAYERBOT_LOOT_RETURN_RANGE = 4000;
 	const size_t PLAYERBOT_LOOT_RETURN_MAX_ITEMS = 8;
 
+	// MT2009_PLUS_BOT_NAV_LOOT_REACH_V1: a drop on ground the bot cannot stand
+	// on (a river, a cliff's foot) is planned to the nearest cell the planner
+	// takes, the route runs out there ("arrived") and the drop is still past
+	// the pickup reach: the bot stood on the spot with "Zbieram lup" until the
+	// watchdog reset it, and the next scan chose the same drop - RaptorPL on
+	// map 64 of a player's ch3 every minute and a half (action=3 goal=0
+	// nav_out=2 route=N/N), Viktoria on ch2 the same. Such a drop is left
+	// alone for PLAYERBOT_LOOT_OFF_GROUND_MS. Asked right after MovePlayerBot,
+	// with bLastNavOutcome cleared before it.
+	const DWORD PLAYERBOT_LOOT_OFF_GROUND_MS = 5 * 60 * 1000;
+	bool IsPlayerBotLootOffGround(LPCHARACTER ch, TPlayerBotAIState& state, LPITEM item, DWORD dwNow)
+	{
+		if (!ch || !item || state.bLastNavOutcome != PLAYERBOT_NAV_OUT_ARRIVED)
+			return false;
+		const int distance = DISTANCE_APPROX(ch->GetX() - item->GetX(), ch->GetY() - item->GetY());
+		if (distance <= PLAYERBOT_LOOT_CHAIN_RANGE)
+			return false;
+		state.mapFailedLootVIDs[item->GetVID()] = dwNow + PLAYERBOT_LOOT_OFF_GROUND_MS;
+		PlayerBotLogThrottled("loot_off_ground", dwNow,
+				"PLAYERBOT_LOOT: drop off the ground, left pid=%u name=%s map=%ld item_vid=%u vnum=%u at=(%ld,%ld) from=(%ld,%ld) distance=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), item->GetVID(), item->GetVnum(),
+				item->GetX(), item->GetY(), ch->GetX(), ch->GetY(), distance);
+		return true;
+	}
+
 	struct TPlayerBotLootVerdict
 	{
 		DWORD dwUntil;
@@ -975,7 +1000,9 @@ namespace
 		const int distance = DISTANCE_APPROX(ch->GetX() - item->GetX(), ch->GetY() - item->GetY());
 		if (distance > PLAYERBOT_LOOT_CHAIN_RANGE)
 		{
-			if (!MovePlayerBot(ch, item->GetX(), item->GetY(), dwNow) && state.bStuckCounter >= 3)
+			state.bLastNavOutcome = PLAYERBOT_NAV_OUT_NONE;
+			if ((!MovePlayerBot(ch, item->GetX(), item->GetY(), dwNow) && state.bStuckCounter >= 3) ||
+					IsPlayerBotLootOffGround(ch, state, item, dwNow))	// MT2009_PLUS_BOT_NAV_LOOT_REACH_V1
 			{
 				EndPlayerBotPriorityLootDash(state, dwNow, PLAYERBOT_PRIORITY_LOOT_RETRY_MS);
 				ClearPlayerBotRoute(state, true);
@@ -1161,9 +1188,12 @@ namespace
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);
 		SetPlayerBotAction(state, BOT_ACTION_LOOT, dwNow);
-		if (!MovePlayerBot(ch, best->GetX(), best->GetY(), dwNow) && state.bStuckCounter >= 3)
+		state.bLastNavOutcome = PLAYERBOT_NAV_OUT_NONE;
+		if ((!MovePlayerBot(ch, best->GetX(), best->GetY(), dwNow) && state.bStuckCounter >= 3) ||
+				IsPlayerBotLootOffGround(ch, state, best, dwNow))	// MT2009_PLUS_BOT_NAV_LOOT_REACH_V1
 		{
-			state.mapFailedLootVIDs[best->GetVID()] = dwNow + 30000;
+			if (state.mapFailedLootVIDs[best->GetVID()] < dwNow + 30000)
+				state.mapFailedLootVIDs[best->GetVID()] = dwNow + 30000;
 			ClearPlayerBotRoute(state, true);
 			s_mapPlayerBotLootReturn.erase(it);
 			return false;
@@ -1471,10 +1501,13 @@ namespace
 
 		if (pendingItems.front().first > PLAYERBOT_LOOT_CHAIN_RANGE)
 		{
-			if (!MovePlayerBot(ch, nearest->GetX(), nearest->GetY(), dwNow) &&
-					state.bStuckCounter >= 3)
+			state.bLastNavOutcome = PLAYERBOT_NAV_OUT_NONE;
+			if ((!MovePlayerBot(ch, nearest->GetX(), nearest->GetY(), dwNow) &&
+					state.bStuckCounter >= 3) ||
+					IsPlayerBotLootOffGround(ch, state, nearest, dwNow))	// MT2009_PLUS_BOT_NAV_LOOT_REACH_V1
 			{
-				state.mapFailedLootVIDs[nearest->GetVID()] = dwNow + 30000;
+				if (state.mapFailedLootVIDs[nearest->GetVID()] < dwNow + 30000)
+					state.mapFailedLootVIDs[nearest->GetVID()] = dwNow + 30000;
 				ClearPlayerBotRoute(state, true);
 				return false;
 			}
