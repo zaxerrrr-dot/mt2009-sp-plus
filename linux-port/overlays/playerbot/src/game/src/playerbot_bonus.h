@@ -500,6 +500,139 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1 (the owner, 16 October: "Od teraz
+	// boty niech zostawiaja tylko produkty z dwoma bonusami - niech traktuja
+	// je jako drogocenne i wystawiaja na lady zgodnie z cennikiem. Przedmioty
+	// z jednym bonusem, nie wartosciowym, do handlarki. Bonusy w broniach
+	// (oprocz inteligencji czy na przyklad bonusu silny na xxx 20%) w ogole
+	// niech olewaja. Wyjatek to 4 bonusy w broni, bronie z srednimi i
+	// umiejetnosciami"). What a weapon or an armour piece is to the counter
+	// by its lines - it replaces MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1, which
+	// sold pieces of one or two weak lines only from a bot whose own counter
+	// was full:
+	//   - a piece of two or more counted lines is goods: kept, and listed at
+	//     the price list, whether or not the counter has room (no market cap -
+	//     the owner: "nie limituj rynku");
+	//   - a piece of exactly one counted line is goods when that line is
+	//     valuable - a top roll (IsPlayerBotTopBonusLine) or a prize piece
+	//     (IsPlayerBotPrizeItem) - and scrap otherwise: the merchant's, or the
+	//     Alchemist's at 35+ (IsPlayerBotOneWeakBonusScrap, playerbot_economy.h);
+	//   - a piece of no counted line is whatever it was before.
+	// On a weapon only Intelligence and "Silny przeciwko ..." at 20 or more
+	// (his "silny na xxx 20%", the top roll of the five races) count; every
+	// other line is ignored, and a weapon whose lines are all ignored is a
+	// weapon of no line. The exceptions are valuable outright, every line
+	// counted: four lines or more of any kind, any Srednie Obrazenia
+	// (APPLY_NORMAL_HIT_DAMAGE_BONUS) or any Obrazenia Umiejetnosci
+	// (APPLY_SKILL_DAMAGE_BONUS). The price list asks the same question
+	// (GetPlayerBotBonusLinePct, CountPlayerBotBonusCountLines), so an ignored
+	// line never raises a weapon's price either. The arrows are no gear here.
+	enum EPlayerBotGoodsBonusClass
+	{
+		PLAYERBOT_GOODS_BONUS_NONE = 0,		// no counted line, or no gear
+		PLAYERBOT_GOODS_BONUS_ONE_WEAK = 1,	// one counted line, not valuable: scrap
+		PLAYERBOT_GOODS_BONUS_GOODS = 2,	// two or more, one valuable, or the weapon exceptions
+	};
+
+	bool IsPlayerBotStrongAgainstApply(BYTE type)
+	{
+		switch (type)
+		{
+			case APPLY_ATTBONUS_HUMAN:
+			case APPLY_ATTBONUS_ANIMAL:
+			case APPLY_ATTBONUS_ORC:
+			case APPLY_ATTBONUS_MILGYO:
+			case APPLY_ATTBONUS_UNDEAD:
+			case APPLY_ATTBONUS_DEVIL:
+			case APPLY_ATTBONUS_MONSTER:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	bool IsPlayerBotGoodsGearPiece(LPITEM item)
+	{
+		if (!item)
+			return false;
+		if (item->GetType() == ITEM_WEAPON)
+			return item->GetSubType() != WEAPON_ARROW;
+		if (item->GetType() != ITEM_ARMOR)
+			return false;
+		switch (item->GetSubType())
+		{
+			case ARMOR_BODY: case ARMOR_HEAD: case ARMOR_SHIELD: case ARMOR_FOOTS:
+			case ARMOR_WRIST: case ARMOR_NECK: case ARMOR_EAR:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	// A weapon valuable outright: four lines or more, or an average or a
+	// skill damage line of any size.
+	bool IsPlayerBotOutrightBonusWeapon(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_WEAPON || item->GetSubType() == WEAPON_ARROW)
+			return false;
+		int lines = 0;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+		{
+			const BYTE type = item->GetAttributeType(i);
+			const long value = item->GetAttributeValue(i);
+			if (type == APPLY_NONE || value <= 0)
+				continue;
+			if (type == APPLY_NORMAL_HIT_DAMAGE_BONUS || type == APPLY_SKILL_DAMAGE_BONUS)
+				return true;
+			++lines;
+		}
+		return lines >= PLAYERBOT_GOODS_WEAPON_OUTRIGHT_LINES;
+	}
+
+	// Whether this line of this piece counts - for the goods rule and for the
+	// price list alike. `outright` is IsPlayerBotOutrightBonusWeapon(item),
+	// asked once by a caller walking every line.
+	bool IsPlayerBotGoodsLineCounted(LPITEM item, bool outright, BYTE type, long value)
+	{
+		if (!item || type == APPLY_NONE || value <= 0)
+			return false;
+		if (item->GetType() != ITEM_WEAPON || outright)
+			return true;
+		return type == APPLY_INT ||
+				(IsPlayerBotStrongAgainstApply(type) && value >= PLAYERBOT_GOODS_WEAPON_STRONG_MIN);
+	}
+
+	bool IsPlayerBotPrizeItem(LPITEM item);
+
+	int GetPlayerBotGoodsBonusClass(LPITEM item, int* countedOut = NULL)
+	{
+		if (countedOut)
+			*countedOut = 0;
+		if (!IsPlayerBotGoodsGearPiece(item))
+			return PLAYERBOT_GOODS_BONUS_NONE;
+		const bool outright = IsPlayerBotOutrightBonusWeapon(item);
+		int counted = 0;
+		bool valuable = false;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+		{
+			const BYTE type = item->GetAttributeType(i);
+			const long value = item->GetAttributeValue(i);
+			if (!IsPlayerBotGoodsLineCounted(item, outright, type, value))
+				continue;
+			++counted;
+			if (IsPlayerBotTopBonusLine(type, value))
+				valuable = true;
+		}
+		if (countedOut)
+			*countedOut = counted;
+		if (outright || counted >= PLAYERBOT_GOODS_BONUS_MIN_LINES)
+			return PLAYERBOT_GOODS_BONUS_GOODS;
+		if (counted == 1)
+			return valuable || IsPlayerBotPrizeItem(item) ? PLAYERBOT_GOODS_BONUS_GOODS
+					: PLAYERBOT_GOODS_BONUS_ONE_WEAK;
+		return PLAYERBOT_GOODS_BONUS_NONE;
+	}
+
 	// Iwakura's bonus multipliers - the rows per slot and line, and the tiers
 	// of a weapon's two damage lines - are generated into
 	// playerbot_price_tables.h from his sheet, each row checked against
@@ -594,6 +727,13 @@ namespace
 		if (atTop)
 			*atTop = false;
 		if (!item || type == 0 || value <= 0)
+			return 100;
+		// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: a weapon's ignored line (not
+		// Intelligence, not "Silny przeciwko" at 20+, on a weapon that is no
+		// exception) asks nothing and is at no top - for the price, the
+		// premium of lines at their top and the shop sign alike.
+		if (slot == PRICE_SLOT_WEAPON &&
+				!IsPlayerBotGoodsLineCounted(item, IsPlayerBotOutrightBonusWeapon(item), type, value))
 			return 100;
 		if (slot == PRICE_SLOT_WEAPON && type == APPLY_NORMAL_HIT_DAMAGE_BONUS)
 		{
@@ -801,12 +941,23 @@ namespace
 	}
 
 	// The ordinary lines (the first five slots) that carry a bonus.
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: on a weapon only the lines the goods
+	// rule counts (IsPlayerBotGoodsLineCounted) - an ignored line adds no yang.
 	int CountPlayerBotBonusCountLines(LPITEM item)
 	{
 		int lines = 0;
+		const bool weapon = item && item->GetType() == ITEM_WEAPON;
+		const bool outright = weapon && IsPlayerBotOutrightBonusWeapon(item);
 		for (int i = 0; item && i < playerbot_price_rules::BONUS_COUNT_MAX_LINES && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
-			if (item->GetAttributeType(i) != 0 && item->GetAttributeValue(i) != 0)
-				++lines;
+		{
+			const BYTE type = item->GetAttributeType(i);
+			const long value = item->GetAttributeValue(i);
+			if (type == 0 || value == 0)
+				continue;
+			if (weapon && !IsPlayerBotGoodsLineCounted(item, outright, type, value))
+				continue;
+			++lines;
+		}
 		return lines;
 	}
 
@@ -842,45 +993,51 @@ namespace
 		const int plus = GetPlayerBotBonusPlusLevel(item);
 		if (plus >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS && plus > (int)item->GetRefineLevel())
 			return true;
-		// MT2009_PLUS_BONUS_COUNT_PRICE_V1: and, while the owner's bonus-count
-		// prices hold, every piece its lines add yang to - a bracelet of two
-		// weak lines included: the counter's goods, never the merchant's or
-		// the storekeeper's.
-		return GetPlayerBotBonusCountAddon(item) > 0;
+		// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: and a weapon or an armour piece
+		// the owner's rule of 16 October calls valuable (GetPlayerBotGoodsBonusClass):
+		// two counted lines or more, one valuable line, or a weapon of four
+		// lines, an average or a skill line. Asked whatever the Moonlight
+		// clock says - the owner's rule has no such condition; the price
+		// list then prices it (the bonus-count add-on while it is on). Before,
+		// every piece the add-on priced was goods - one weak line included -
+		// and a weapon's every line counted.
+		return GetPlayerBotGoodsBonusClass(item) == PLAYERBOT_GOODS_BONUS_GOODS;
 	}
 
-	// MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1 (a report from another MT2009 PLUS
-	// server, checked here 16 October): the add-on above makes every piece of
-	// one weak line counter goods, and the junk rule never let the merchant
-	// have such a piece from a bot with a counter - full counter or not (the
-	// supporters' world: 39 377 weapons and armours +0..+3 of one or two lines
-	// in the bots' bags, 855 of 2 006 bot counters with all 160 cells taken).
-	// This is such a piece: a weapon or an armour +0..+6 of one or two lines,
-	// none of them a top roll, no prize lines, not priced as a +7 by its
-	// lines, not a level-30 weapon, not a Stalki. What the junk rule makes of
-	// it is IsPlayerBotWeakBonusScrapSurplus (playerbot_economy.h).
-	bool IsPlayerBotWeakBonusScrapPiece(LPITEM item)
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: a weapon or an armour piece +0..+6 of
+	// exactly one counted line that is not valuable (GetPlayerBotGoodsBonusClass)
+	// - scrap, the merchant's or the Alchemist's at 35+, whether or not the
+	// bot's counter has room. Never a level-30 weapon, a Stalki, a prize piece
+	// or one its lines price as a +7: those keep their own rules. What the
+	// junk rule keeps of it for the bot itself is IsPlayerBotOneWeakBonusScrap
+	// (playerbot_economy.h).
+	bool IsPlayerBotOneWeakBonusPiece(LPITEM item)
 	{
-		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR) ||
-				(item->GetType() == ITEM_WEAPON && item->GetSubType() == WEAPON_ARROW) ||
-				(int)item->GetRefineLevel() > PLAYERBOT_WEAK_BONUS_SCRAP_MAX_PLUS ||
+		if (!item || !IsPlayerBotGoodsGearPiece(item) ||
+				(int)item->GetRefineLevel() > PLAYERBOT_GOODS_SCRAP_MAX_PLUS ||
 				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) || IsPlayerBotPrizeItem(item))
 			return false;
-		int lines = 0;
-		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
-		{
-			const BYTE type = item->GetAttributeType(i);
-			const long value = item->GetAttributeValue(i);
-			if (type == APPLY_NONE || value <= 0)
-				continue;
-			if (IsPlayerBotTopBonusLine(type, value))
-				return false;
-			++lines;
-		}
-		if (lines < 1 || lines > PLAYERBOT_WEAK_BONUS_SCRAP_MAX_LINES)
+		if (GetPlayerBotGoodsBonusClass(item) != PLAYERBOT_GOODS_BONUS_ONE_WEAK)
 			return false;
-		const int plus = GetPlayerBotBonusPlusLevel(item);
-		return !(plus >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS && plus > (int)item->GetRefineLevel());
+		return GetPlayerBotPricedPlus(item) < PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS;
+	}
+
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1 (the owner, 16 October: "Wiadomo gdy
+	// po czasie sie nie sprzedadza - niech ida do sprzedania u handlarki"):
+	// the bonus goods a bot's counter takes home unsold after
+	// PLAYERBOT_GOODS_UNSOLD_HOURS (BotOfflineStaleBonusGoodsLine) for the
+	// merchant: a weapon or an armour piece +0..+6 that is goods by the rule
+	// above, and not a +7 by its lines or its average, a prize piece, a
+	// level-30 weapon or a Stalki - those are the market's high goods and keep
+	// their counter. Books, materials and stones are no gear and never asked.
+	bool IsPlayerBotUnsoldBonusGoodsKind(LPITEM item)
+	{
+		if (!item || !IsPlayerBotGoodsGearPiece(item) ||
+				(int)item->GetRefineLevel() > PLAYERBOT_GOODS_SCRAP_MAX_PLUS ||
+				IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotStalkiItem(item) || IsPlayerBotPrizeItem(item) ||
+				GetPlayerBotPricedPlus(item) >= PLAYERBOT_MARKET_V3_BONUS_GOODS_PLUS)
+			return false;
+		return GetPlayerBotGoodsBonusClass(item) == PLAYERBOT_GOODS_BONUS_GOODS;
 	}
 
 	int ScorePlayerBotItemBonuses(LPCHARACTER ch, LPITEM item, BYTE wearCell)

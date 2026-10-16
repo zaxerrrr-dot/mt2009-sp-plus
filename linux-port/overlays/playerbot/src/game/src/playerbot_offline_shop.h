@@ -1301,6 +1301,50 @@ namespace {
         NotePlayerBotRareGoodsUnsold(ch->GetPlayerID(), vnum, now);
         return true;
     }
+    // MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1 (the owner, 16 October: "Wiadomo gdy
+    // po czasie sie nie sprzedadza - niech ida do sprzedania u handlarki"): the
+    // first weapon or armour line of bonus goods (IsPlayerBotUnsoldBonusGoodsKind:
+    // +0..+6, not a +7 by its lines, a prize, a level-30 weapon or a Stalki;
+    // never a book, a material or a stone) that has stood unsold
+    // PLAYERBOT_GOODS_UNSOLD_HOURS - the markdown's whole twelve hours to its
+    // forty percent and as long again - on this bot's counter, clocked as
+    // the markdown clocks it (o.listed: from the listing, or from the first
+    // visit that saw a line from before this core started). Not one the
+    // operator put on "stall", not a gambler's, and not one the bag has no
+    // cell for (it would go to the shop's safebox, not the merchant).
+    DWORD BotOfflineStaleBonusGoodsLine(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
+        if (!ch || !shop) return 0;
+        auto& o = state.offlineShop;
+        for (const auto& [id, line] : shop->GetItems()) {
+            if (!line || !line->GetTable()) continue;
+            const BYTE type = line->GetTable()->bType;
+            if (type != ITEM_WEAPON && type != ITEM_ARMOR) continue;
+            auto listed = o.listed.find(id);
+            if (listed == o.listed.end())
+                listed = o.listed.emplace(id, playerbot_offline::ListedLine{
+                        line->GetInfo().vnum, 0u, 0u, 0 }).first;
+            if (listed->second.when == 0 && listed->second.observedSince == 0)
+                listed->second.observedSince = now;
+            const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
+            if (now - since < PLAYERBOT_GOODS_UNSOLD_MS) continue;
+            LPITEM preview = BotOfflinePreview(*line);
+            if (!preview) continue;
+            const bool stale = IsPlayerBotUnsoldBonusGoodsKind(preview) &&
+                    GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
+                    !IsPlayerBotGambleForSale(ch, preview) && ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            M2_DELETE(preview);
+            if (stale) return id;
+        }
+        return 0;
+    }
+    // Takes it home (BotOfflineTakeOff, one line a visit like every take-off)
+    // and marks the piece for the merchant (NotePlayerBotUnsoldBonusGoods).
+    bool BotOfflineTakeOffStaleBonusGoods(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
+        const DWORD stale = BotOfflineStaleBonusGoodsLine(ch, state, shop, now);
+        if (!stale || !BotOfflineTakeOff(ch, state, stale, 0, now, "unsold_bonus_goods")) return false;
+        NotePlayerBotUnsoldBonusGoods(stale, now);
+        return true;
+    }
     // How many lines of this item's kind kept by count - the books of its
     // skill, the soul stone (GetPlayerBotStallKindKey) - the counter carries.
     int BotOfflineKindLinesOf(NativeShop shop, LPITEM item) {
@@ -2415,6 +2459,11 @@ namespace {
                 BotOfflineFinishVisit(ch, state, now);
                 return false;
             }
+            // MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: and bonus goods unsold a day.
+            if (BotOfflineTakeOffStaleBonusGoods(ch, state, shop, now)) {
+                BotOfflineFinishVisit(ch, state, now);
+                return false;
+            }
             // So does a piece the owner should be wearing.
             {
                 long long gain = 0;
@@ -2582,6 +2631,12 @@ namespace {
         // A Cor Draconis or a sash that stood through the whole markdown comes
         // home, and the merchant visit sells it (IsPlayerBotJunkItem).
         if (BotOfflineTakeOffStaleRare(ch, state, shop, now)) {
+            BotOfflineFinishVisit(ch, state, now);
+            return false;
+        }
+        // MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: so do weapon and armour bonus
+        // goods unsold PLAYERBOT_GOODS_UNSOLD_HOURS, one line a visit.
+        if (BotOfflineTakeOffStaleBonusGoods(ch, state, shop, now)) {
             BotOfflineFinishVisit(ch, state, now);
             return false;
         }

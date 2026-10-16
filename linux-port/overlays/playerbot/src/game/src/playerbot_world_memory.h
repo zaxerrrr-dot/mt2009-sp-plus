@@ -330,6 +330,36 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: the bonus goods a counter took home
+	// unsold (BotOfflineTakeOffStaleBonusGoods), by item id - the shop hands
+	// the piece back under the id it stood under (CShopItem::CreateItem) - for
+	// the merchant, or the Alchemist at 35+, rather than back on the counter,
+	// for PLAYERBOT_GOODS_UNSOLD_HOLD_MS. A restart forgets it: the piece goes
+	// up again and its clock starts over.
+	std::map<DWORD, DWORD> s_mapPlayerBotUnsoldBonusGoods;
+
+	void NotePlayerBotUnsoldBonusGoods(DWORD itemId, DWORD dwNow)
+	{
+		if (!itemId)
+			return;
+		if (s_mapPlayerBotUnsoldBonusGoods.size() > 50000)
+			s_mapPlayerBotUnsoldBonusGoods.clear();
+		s_mapPlayerBotUnsoldBonusGoods[itemId] = dwNow ? dwNow : 1;
+	}
+
+	bool IsPlayerBotUnsoldBonusGoods(DWORD itemId, DWORD dwNow)
+	{
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotUnsoldBonusGoods.find(itemId);
+		if (it == s_mapPlayerBotUnsoldBonusGoods.end())
+			return false;
+		if (dwNow - it->second >= PLAYERBOT_GOODS_UNSOLD_HOLD_MS)
+		{
+			s_mapPlayerBotUnsoldBonusGoods.erase(it);
+			return false;
+		}
+		return true;
+	}
+
 	// Iwakura's Patch 3, point 4: body armours at +0..+4 on the bots'
 	// counters, by family, counted the way the junk weapons are above - and
 	// since his answer of 26 September the jewellery at +0..+3 as well
