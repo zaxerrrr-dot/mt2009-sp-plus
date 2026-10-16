@@ -17,6 +17,41 @@ every version here.
 
 ---
 
+## 2.35.0 — 2026-10-16 — Porządek w plecakach i na straganach botów, mniej krążenia między wioskami
+
+### Boty – plecaki, stragany i handel
+- **Stragan tylko dla wartościowego sprzętu.** Boty zostawiają na stragan broń i zbroję z co najmniej dwoma bonusami (albo z jednym naprawdę dobrym) i wystawiają je według cennika, także przy pełnym straganie. Przedmioty z jednym słabym bonusem sprzedaję u Handlarki, a od 35 poziomu oddaję Alchemikowi na Odłamki Energii. Przedmioty powyżej 41 poziomu idą tak do Handlarki tylko do +4 – od +5 zostają na straganie.
+- **Bonusy w broni.** W broni liczę tylko Inteligencję i „Silny przeciwko …” od 20%, pozostałe bonusy pomijam (także w cenie). Broń z 4 bonusami, ze Średnimi Obrażeniami albo z Obrażeniami Umiejętności zawsze traktuję jako cenną.
+- **Porządki na straganach.** Boty zdejmują ze straganów sprzęt z jednym słabym bonusem i sprzedają go u Handlarki – po kilka naraz, gdy stragan jest pełny, po jednym, gdy jest miejsce. Broń i zbroja z bonusami, które nie sprzedadzą się przez dobę, też schodzą do Handlarki.
+- **Awaryjne czyszczenie.** Gdy bot nie ma miejsca ani na straganie, ani w plecaku, ani w magazynie, pozbywam się jego 10–15 najtańszych przedmiotów: to, co przyda się innemu botowi w pobliżu, oddaję jemu, resztę sprzedaję. Nigdy nie dotyczy to przedmiotów +7 i wyżej, nagrodowych ani rzeczy, których bot używa.
+- **Zakupy z bonusami.** Boty kupujące sprzęt dla siebie wybierają przedmiot z przydatnymi bonusami zamiast takiego samego bez bonusów, jeśli stać je na dopłatę – żeby potem dodawać i zmieniać bonusy.
+- **Kamienie Duszy.** Boty trzymają na stragan tylko po 3 sztuki każdego Kamienia Duszy +0 do +2, a resztę zanoszą do Alchemika na Magiczny Pył, także dzieląc stosy. Wcześniej część stosów rosła bez końca i zapychała plecaki.
+- **Magiczny Pył.** Boty zamieniają pył na Marmur Błogosławieństwa (100), Wzmocnienie Przedmiotu (200) i Zaczarowanie Przedmiotu (100) – tylko gdy od razu użyją kamienia na własnym ekwipunku. Nadwyżkę ponad 200 sztuk wystawiam na stragan.
+- **Zioła.** Boty nie noszą już setek ziół: zostawiam im tylko tyle, ile potrzebują na 2–3 warki u Baek-Go, nadwyżkę wystawiam w pełnych stosach po 200, a resztę odkładam do magazynu. Jaskiniowy Grzyb ma teraz cenę jak pozostałe rzadkie zioła.
+
+### Boty – ruch i wędkowanie
+- **Mniej krążenia między pierwszą a drugą wioską.** Boty wracające z dalszych map po rzeczy, które są tylko w pierwszej wiosce (Baek-Go, targ, Biolog, ryby), idą tam od razu, bez przystanku w drugiej wiosce. Nie jeżdżą też co kwadrans do swojego straganu, kiedy nie mogą na nim nic wystawić.
+- **Wędkarze.** Nad wodą w pierwszych wioskach znowu łowi tylu botów co przed 2.34 – przywróciłem zwykłą regułę pełnego plecaka (warzenie u Baek-Go działa dalej). Bot nie kupuje przepustki, jeśli w plecaku nie zmieści zdjętej broni i jej kostiumu, a łowienie kończy postój bota w pierwszej wiosce.
+- **Rybak.** Boty znowu podchodzą do Rybaka w pierwszej wiosce Shinsoo – część próbowała dojść od strony rzeki, gdzie nie da się stanąć.
+- **Potwory i łup poza zasięgiem.** Boty zbierające dla Biologa i polujące na materiały nie wybierają potworów stojących w rzece albo na wyspie. Łup, do którego nie da się podejść, zostawiają, a gdy boss rajdu wejdzie tam, gdzie nie da się dojść, czekają na najbliższym kawałku lądu.
+- **Broń.** Bot, który został bez broni, a ma ją w plecaku, zakłada ją także wtedy, gdy zostało u niego otwarte okno straganu albo magazynu.
+
+### Lochy
+- **Pieczęcie i klucze.** Boty w lochach używają pieczęci i kluczy także wtedy, gdy przedmiot trafił do sakwy konia (pełne 4 strony plecaka), a w lochu nie zapychają sakwy łupem. Gdy pieczęć dostanie bot, a jej nie użyje, we Wzgórzu Wukonga, Ruinach Skorpiona, Starożytnej Dżungli i Bibliotece Wiedzy zadziała ona sama po ok. 30 s, a nie po 3 minutach.
+
+### Towarzysz
+- **„Sprzedaj złom”.** Towarzysz mówi teraz, czego z rzeczy od Ciebie nie sprzedał i dlaczego (włączone „Zablokuj ekwipunek”, przedmiot to nie broń ani zbroja, założony przez Ciebie, +8 i wyżej albo handlarz go nie kupi).
+
+### Panel i aktualizacje
+- **Aktualizator po aktualizacji.** Po każdej aktualizacji uruchamiam aktualizator ponownie, a gdy działa dla innego folderu serwera, zastępuję go – także w launcherze na Windowsie. Wcześniej taki aktualizator odrzucał nowe ustawienia jako „nieznana zmienna” (np. „Większe sklepy offline graczy”). Gdy mimo to jest starszy niż panel, strona „Ustawienia serwera (.env)” mówi wprost: „Aktualizator działa na starej wersji – uruchom go ponownie”.
+
+## Klient 2.0.66 — 2026-10-16 — Filtr podnoszenia i okno wydarzeń
+- **Filtr podnoszenia szybciej po zalogowaniu** (Autor: Vekirion) – reguły filtra trafiają na serwer od razu po wejściu do gry i zmianie kanału (wcześniej przy wielu regułach trwało to kilkanaście sekund, a czasem nie docierały wcale).
+- **Okno wydarzeń nie wyłącza już gry** przy wielu wydarzeniach naraz – przewijanie listy wpadało w nieskończoną pętlę. Po odświeżeniu lista zostaje w tym samym miejscu.
+- Dane przedmiotów się nie zmieniły – nie trzeba ponownie pobierać zipa edytora bazy danych.
+
+---
+
 ## 2.34.0 — 2026-10-15 — Boty nie krążą po pierwszej wiosce, sklepy offline i filtr podnoszenia
 
 ### Boty
