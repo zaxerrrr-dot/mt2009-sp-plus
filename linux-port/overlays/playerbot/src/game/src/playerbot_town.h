@@ -1802,9 +1802,6 @@ namespace
 			// its cheapest pieces to another bot or the merchant.
 			RunPlayerBotFullClearout(ch, state, dwNow);
 		}
-		// MT2009_PLUS_M1_LOOP_FIX_V1 (bag floor): what the bag keeps after it.
-		if (completed && ch)
-			NotePlayerBotBagFloor(ch, dwNow);
 		// MT2009_PLUS_SIDEKICK_BAG_LOOP_V1: a companion off the leash whose bag
 		// the visit's merchants could not clear goes out anyway (its bag is
 		// excused from BlocksPlayerBotTravel for a while), its owner told.

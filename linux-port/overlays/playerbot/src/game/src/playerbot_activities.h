@@ -455,6 +455,24 @@ namespace
 	}
 #endif
 
+	// MT2009_PLUS_BOT_BAG_FLOOR_OFF_V1: defined in playerbot_travel.h.
+	void EndPlayerBotM1HoldForFishing(LPCHARACTER ch, DWORD dwNow);
+
+	// Anglers with a stand on this map now; over
+	// PLAYERBOT_FISHING_BUSY_BANK_ANGLERS the stroll after a session is
+	// halved, so a crowded bank does not empty onto the market ring.
+	const int PLAYERBOT_FISHING_BUSY_BANK_ANGLERS = 15;
+	int CountPlayerBotAnglersOnMap(long mapIndex)
+	{
+		int count = 0;
+		for (std::map<int, TPlayerBotFishingStand>::const_iterator it =
+				s_mapPlayerBotFishingStands.begin();
+				it != s_mapPlayerBotFishingStands.end(); ++it)
+			if (it->first / 1000 == (int)mapIndex)
+				++count;
+		return count;
+	}
+
 	void ReleasePlayerBotFishingStand(DWORD playerID)
 	{
 		for (std::map<int, TPlayerBotFishingStand>::iterator it =
@@ -602,8 +620,8 @@ namespace
 	// ENABLE_WEAPON_COSTUME_SYSTEM) - each needs its own free cells, and a
 	// rod bought at the Rybak one more. A bot whose bag cannot take them does
 	// not set out nor buy a pass. Asked of the bag's real free cells, whatever
-	// rule decides the bag is "full" for the trip (the bag floor of
-	// IsPlayerBotBagFirst included), so the two never disagree about room.
+	// rule decides the bag is "full" for the trip (IsPlayerBotBagFirst), so
+	// the two never disagree about room.
 	bool PlayerBotHasRodRoom(LPCHARACTER ch)
 	{
 		if (!ch || IsPlayerBotHoldingRod(ch))
@@ -1274,7 +1292,10 @@ namespace
 		// the market ring for a while instead of walking straight back out -
 		// which is the whole of what makes that square look inhabited, since the
 		// bank, the bait merchant and the stalls are all on this one map.
-		if (RollPlayerBotTownRest(ch))
+		// MT2009_PLUS_BOT_BAG_FLOOR_OFF_V1: half as often off a crowded bank.
+		if (RollPlayerBotTownRest(ch) &&
+				(CountPlayerBotAnglersOnMap(ch->GetMapIndex()) <= PLAYERBOT_FISHING_BUSY_BANK_ANGLERS ||
+				 number(0, 1) == 0))
 			state.dwTownLingerUntil = dwNow + number(
 					(int)PLAYERBOT_TOWN_LINGER_MIN, (int)PLAYERBOT_TOWN_LINGER_MAX);
 		if (ch)
@@ -1643,6 +1664,8 @@ namespace
 			ch->SetVictim(NULL);
 			ch->Stop();
 			ClearPlayerBotRoute(state, true);
+			// MT2009_PLUS_BOT_BAG_FLOOR_OFF_V1: the session ends an M1 hold.
+			EndPlayerBotM1HoldForFishing(ch, dwNow);
 			sys_log(0, "PLAYERBOT_FISHING: heading for the bank pid=%u name=%s level=%u personality=%u mood=%u spell=%d minutes=%u",
 					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(),
 					(unsigned int)state.bPersonality, (unsigned int)state.persona.mood.mood,

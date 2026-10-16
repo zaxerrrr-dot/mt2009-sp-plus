@@ -48,12 +48,9 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded() || IsPlayerBotInDungeonBusiness(ch, state))
 			return false;
-		// MT2009_PLUS_M1_LOOP_FIX_V1 (bag floor): not for the fullness the last
-		// town visit could not take away (IsPlayerBotBagAtTownFloor).
-		if (ch->GetEmptyInventory(3) < 0)
-			return true;
-		return IsPlayerBotPersonaEnabled() && IsPlayerBotBagFull(ch) &&
-				!IsPlayerBotBagAtTownFloor(ch, get_dword_time());
+		// MT2009_PLUS_BOT_BAG_FLOOR_OFF_V1: the plain full bag again, no floor
+		// after a town visit (playerbot_economy.h says why).
+		return (IsPlayerBotPersonaEnabled() ? IsPlayerBotBagFull(ch) : false) || ch->GetEmptyInventory(3) < 0;
 	}
 }
 
