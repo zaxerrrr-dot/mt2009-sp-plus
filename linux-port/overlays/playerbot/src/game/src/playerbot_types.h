@@ -3422,18 +3422,29 @@ namespace
 	const int PLAYERBOT_BONUS_GOODS_SELLER_PERCENT = 20;
 	const int PLAYERBOT_BONUS_GOODS_MIN_LEVEL = 30;
 	const int PLAYERBOT_BONUS_GOODS_MIN_PLUS = 6;
-	// MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1: a weapon or an armour up to this
-	// plus with one or two weak lines (IsPlayerBotWeakBonusScrapPiece) is the
-	// merchant's from a bot whose own counter has fewer than
-	// PLAYERBOT_WEAK_BONUS_COUNTER_FULL_CELLS free cells for it, past the
-	// first PLAYERBOT_WEAK_BONUS_BAG_KEEP such pieces in the bag, which wait
-	// for a cell to free on that counter. No world cap: what the other
-	// counters hold is not asked (the owner, 16 October: "Nie limituj rynku
-	// na razie").
-	const int PLAYERBOT_WEAK_BONUS_SCRAP_MAX_PLUS = 6;
-	const int PLAYERBOT_WEAK_BONUS_SCRAP_MAX_LINES = 2;
-	const int PLAYERBOT_WEAK_BONUS_COUNTER_FULL_CELLS = 4;
-	const int PLAYERBOT_WEAK_BONUS_BAG_KEEP = 2;
+	// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1 (playerbot_bonus.h,
+	// GetPlayerBotGoodsBonusClass): a weapon or an armour piece of this many
+	// counted lines or more is counter goods; one of exactly one line that is
+	// not valuable, up to PLAYERBOT_GOODS_SCRAP_MAX_PLUS, is scrap whether or
+	// not the counter has room (it replaces MT2009_PLUS_BOT_WEAK_BONUS_SCRAP_V1
+	// and its "own counter full" test). On a weapon only Intelligence and
+	// "Silny przeciwko ..." at PLAYERBOT_GOODS_WEAPON_STRONG_MIN or more count,
+	// unless it carries PLAYERBOT_GOODS_WEAPON_OUTRIGHT_LINES lines, an
+	// average or a skill line. No market cap: what the other counters hold is
+	// never asked (the owner: "nie limituj rynku").
+	const int PLAYERBOT_GOODS_BONUS_MIN_LINES = 2;
+	const int PLAYERBOT_GOODS_SCRAP_MAX_PLUS = 6;
+	const long PLAYERBOT_GOODS_WEAPON_STRONG_MIN = 20;
+	const int PLAYERBOT_GOODS_WEAPON_OUTRIGHT_LINES = 4;
+	// Bonus goods of that rule (IsPlayerBotUnsoldBonusGoodsKind) unsold on a
+	// bot's counter this many hours from their listing come home, one line a
+	// visit, for the merchant (the owner, 16 October: "gdy po czasie sie nie
+	// sprzedadza - niech ida do sprzedania u handlarki"). Twice the markdown's
+	// twelve hours to its forty percent: a whole day at the lowest price.
+	// The bag holds such a piece for the merchant PLAYERBOT_GOODS_UNSOLD_HOLD_MS.
+	const int PLAYERBOT_GOODS_UNSOLD_HOURS = 24;
+	const DWORD PLAYERBOT_GOODS_UNSOLD_MS = (DWORD)PLAYERBOT_GOODS_UNSOLD_HOURS * 60 * 60 * 1000;
+	const DWORD PLAYERBOT_GOODS_UNSOLD_HOLD_MS = 48 * 60 * 60 * 1000;
 	const int PLAYERBOT_BONUS_GOODS_PIECES = 2;
 	const int PLAYERBOT_BONUS_GOODS_STONE_RESERVE = 10;
 	// Point 10: a line worth keeping for itself is never mixed off by an

@@ -4641,6 +4641,14 @@ namespace
 		// slot from something that would sell.
 		if (IsPlayerBotMerchantOnlyForgetScroll(item))
 			return merchant ? PlayerBotGoods(400, per::GOODS_FORGET_SCROLL_MERCHANT_ONLY, item->GetSocket(0)) : -1;
+		// MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: a piece of one counted line that
+		// is not valuable, and bonus goods the counter took home unsold, are
+		// the merchant's (IsPlayerBotJunkItem) and never go up - the counter
+		// has room for them or not. The junk rule asked whole, so a piece a
+		// rule above it keeps (Iwakura's list, a gambler's) is not left out.
+		if (ch && (IsPlayerBotOneWeakBonusPiece(item) || IsPlayerBotUnsoldBonusGoods(item->GetID(), get_dword_time())) &&
+				IsPlayerBotJunkItem(ch, item))
+			return -1;
 		// A Stalki (playerbot_stalki.h): the one a bot keeps for the level it is
 		// about to reach is not goods, nor the one the blacksmith is making into
 		// its next armour or weapon (IsPlayerBotHigherTierSpare); any other - of
