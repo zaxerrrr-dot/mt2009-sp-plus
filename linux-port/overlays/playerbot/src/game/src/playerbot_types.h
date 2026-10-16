@@ -3456,6 +3456,16 @@ namespace
 	// Point 11: a hundred of the Alchemist's dust make a Marmur Blogoslawienstwa.
 	const int PLAYERBOT_DUST_PER_MARBLE = 100;
 	const DWORD PLAYERBOT_BLESSING_MARBLE_VNUM = 70024;
+	// MT2009_PLUS_BOT_DUST_BONUS_V1 (the owner, 16 October): and, the same
+	// way - "magicznie", bots only - a hundred make a Zaczarowanie Przedmiotu
+	// (71084, PLAYERBOT_BONUS_CHANGE_VNUM) and two hundred a Wzmocnienie
+	// Przedmiotu (71085, PLAYERBOT_BONUS_ADD_VNUM), only when the bonus pass
+	// would spend that stone now (ManagePlayerBotDustBonusStones).
+	const int PLAYERBOT_DUST_PER_CHANGE = 100;
+	const int PLAYERBOT_DUST_PER_ADD = 200;
+	// The dust over what the bot keeps for those (GetPlayerBotDustBonusKeep)
+	// that makes it counter goods at PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE.
+	const int PLAYERBOT_MAGIC_DUST_SURPLUS_SPARE = 100;
 	// Point 10: how often a Metinolog with no stone in view uses its detector.
 	const DWORD PLAYERBOT_METIN_DETECTOR_GAP_MS = 60000;
 	// Pricing. The prior counts as this many sales when the market's median is

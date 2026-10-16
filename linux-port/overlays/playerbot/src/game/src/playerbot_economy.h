@@ -1458,6 +1458,9 @@ namespace
 	int GetPlayerBotRefineScrollKeep(LPCHARACTER ch);
 	// A worn piece the marble's fifth line would go on (playerbot_bonus.h).
 	bool PlayerBotWantsBlessingMarble(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_DUST_BONUS_V1: the dust kept for the marble, the add
+	// and the change stones the bot will make of it (playerbot_bonus.h).
+	int GetPlayerBotDustBonusKeep(LPCHARACTER ch);
 	// What a bag keeps of a bonus stone kind: PLAYERBOT_BONUS_STONE_KEEP, and
 	// no green one for a bot past their band (playerbot_bonus.h).
 	int GetPlayerBotBonusStoneKeep(LPCHARACTER ch, LPITEM item);
@@ -1501,9 +1504,12 @@ namespace
 		// arrives six or seven at a time, and kept only while a piece waited it
 		// went to the counters in between - on m2zip (27 September) two bots in
 		// 544 held a hundred and one marble was made in two days.
+		// MT2009_PLUS_BOT_DUST_BONUS_V1: and whatever more the bot will turn
+		// into a change or an add stone (GetPlayerBotDustBonusKeep): the
+		// counter takes only the dust over that.
 		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
-			return ch && (ch->GetLevel() >= PLAYERBOT_BONUS_MIN_LEVEL || PlayerBotWantsBlessingMarble(ch))
-					? PLAYERBOT_DUST_PER_MARBLE : 0;
+			return ch ? std::max((ch->GetLevel() >= PLAYERBOT_BONUS_MIN_LEVEL || PlayerBotWantsBlessingMarble(ch))
+					? PLAYERBOT_DUST_PER_MARBLE : 0, GetPlayerBotDustBonusKeep(ch)) : 0;
 		// MT2009_PLUS_BOT_CAPE_V1: a bot that uses Peleryna Mestwa keeps its
 		// own off the counter (IsPlayerBotCapeBuild).
 		if (IsPlayerBotValourCapeVnum(item->GetVnum()) && ch && IsPlayerBotCapeBuild(ch))

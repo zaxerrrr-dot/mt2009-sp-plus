@@ -1879,6 +1879,109 @@ namespace
 		return marble != NULL;
 	}
 
+	// MT2009_PLUS_BOT_DUST_BONUS_V1 (the owner, 16 October): the dust makes
+	// the two ordinary stones too, "magicznie" like the marble and for bots
+	// only - a hundred a Zaczarowanie Przedmiotu, two hundred a Wzmocnienie
+	// Przedmiotu - and only a stone the bonus pass would spend now: the bag
+	// holds no ordinary stone of the kind, and with one added the pass's own
+	// choice (StepFor, RestOpen read with that bag) puts it on one of the
+	// bot's own pieces - worn, or held for its slot; never goods for sale,
+	// which take the stones' surplus only. Nothing is made to be held. Not a
+	// companion: its bag is its owner's.
+	bool PlayerBotWouldSpendDustStone(LPCHARACTER ch, bool add)
+	{
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return false;
+		TPlayerBotBonusBag bag;
+		ReadPlayerBotBonusBag(ch, bag);
+		if (add ? bag.plainAdd >= 0 : bag.plainChange >= 0)
+			return false;
+		std::vector<TPlayerBotBonusTarget> targets;
+		CollectPlayerBotBonusTargets(ch, targets);
+		if (targets.empty())
+			return false;
+		playerbot_bonus_rules::TBag kinds = GetPlayerBotBonusBagKinds(bag);
+		if (add)
+			kinds.plainAdd = true;
+		else
+			kinds.plainChange = true;
+		const playerbot_bonus_rules::TLimits limits = GetPlayerBotBonusLimits();
+		std::vector<playerbot_bonus_rules::TPiece> pieces;
+		pieces.reserve(targets.size());
+		for (size_t i = 0; i < targets.size(); ++i)
+			pieces.push_back(BuildPlayerBotBonusPiece(ch, targets[i]));
+		const unsigned restOpen = playerbot_bonus_rules::RestOpen(&pieces[0], (int)pieces.size(), kinds, limits);
+		const playerbot_bonus_rules::EStep want = add ? playerbot_bonus_rules::STEP_ADD
+				: playerbot_bonus_rules::STEP_CHANGE;
+		for (size_t i = 0; i < pieces.size(); ++i)
+		{
+			if (pieces[i].goods)
+				continue;
+			const playerbot_bonus_rules::TStepChoice c =
+					playerbot_bonus_rules::StepFor(pieces[i], kinds, limits, restOpen, false);
+			if (c.step == want && c.stone == playerbot_bonus_rules::STONE_PLAIN)
+				return true;
+		}
+		return false;
+	}
+
+	// The dust the bot keeps back for what it will make of it: the marble's
+	// hundred while a worn piece waits for its fifth line, two hundred for an
+	// add while one of its pieces is short of four lines, a hundred for a
+	// change while one wants a reroll. The counter gets only the dust over it
+	// (GetPlayerBotStallBaseKeep).
+	int GetPlayerBotDustBonusKeep(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return 0;
+		int keep = PlayerBotWantsBlessingMarble(ch) ? PLAYERBOT_DUST_PER_MARBLE : 0;
+		if (PlayerBotWouldSpendDustStone(ch, true))
+			keep += PLAYERBOT_DUST_PER_ADD;
+		if (PlayerBotWouldSpendDustStone(ch, false))
+			keep += PLAYERBOT_DUST_PER_CHANGE;
+		return keep;
+	}
+
+	// One stone a pass, in the owner's order: the marble first
+	// (ManagePlayerBotDustMarble, asked before this - while a piece waits for
+	// its fifth line the dust is saved for the marble), then the add - saved
+	// up for while a piece is short of a line, no change made of that dust
+	// meanwhile - then the change.
+	bool ManagePlayerBotDustBonusStones(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		const int dust = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM);
+		if (dust < std::min(PLAYERBOT_DUST_PER_ADD, PLAYERBOT_DUST_PER_CHANGE) || ch->GetEmptyInventory(1) < 0 ||
+				PlayerBotWantsBlessingMarble(ch))
+			return false;
+		DWORD vnum = 0;
+		int cost = 0;
+		const char* what = "";
+		if (PlayerBotWouldSpendDustStone(ch, true))
+		{
+			vnum = PLAYERBOT_BONUS_ADD_VNUM;
+			cost = PLAYERBOT_DUST_PER_ADD;
+			what = "an add stone";
+		}
+		else if (PlayerBotWouldSpendDustStone(ch, false))
+		{
+			vnum = PLAYERBOT_BONUS_CHANGE_VNUM;
+			cost = PLAYERBOT_DUST_PER_CHANGE;
+			what = "a change stone";
+		}
+		if (!vnum || dust < cost)
+			return false;
+		ch->RemoveSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM, cost);
+		LPITEM stone = ch->AutoGiveItem(vnum, 1, -1, false);
+		if (stone)
+			LogManager::instance().ItemLog(ch, stone, "PLAYERBOT_DUST_BONUS", stone->GetName());
+		sys_log(0, "PLAYERBOT_BONUS: dust into %s pid=%u name=%s vnum=%u dust=%d dust_left=%d ok=%d",
+				what, ch->GetPlayerID(), ch->GetName(), vnum, cost,
+				(int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM), stone ? 1 : 0);
+		return stone != NULL;
+	}
+
 	// The refiners' exchange (Iwakura): with the market flooded by a refine
 	// material - over PLAYERBOT_EXCHANGE_FLOOD_UNITS on the stands at no more
 	// than PLAYERBOT_EXCHANGE_UNIT_PRICE_MAX a piece - a bot with a surplus of
@@ -2018,7 +2121,10 @@ namespace
 		if (!ch || !ch->IsItemLoaded() || dwNow < state.dwNextBonusCheckTime)
 			return false;
 		state.dwNextBonusCheckTime = dwNow + PLAYERBOT_BONUS_INTERVAL;
-		ManagePlayerBotDustMarble(ch);
+		// MT2009_PLUS_BOT_DUST_BONUS_V1: the marble first, else an add or a
+		// change stone the pass below spends at once.
+		if (!ManagePlayerBotDustMarble(ch))
+			ManagePlayerBotDustBonusStones(ch);
 		ManagePlayerBotRefinerExchange(ch);
 		// Nothing to spend, nothing to weigh: the pass below scores every line
 		// of eight worn pieces, and a bag with no stone and no marble ends here.
