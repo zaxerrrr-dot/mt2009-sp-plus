@@ -8,7 +8,7 @@ Table / InitializeItemRareTable, once at boot):
 
   SELECT apply, apply+0, prob, lv1..lv5, weapon, body, wrist, foots, neck,
          head, shield, ear, costume_body, costume_hair, costume_weapon, pendant
-  (glove is not read: ENABLE_GLOVE_SYSTEM is off)
+  , glove (ENABLE_GLOVE_SYSTEM, server-patches/rekawice: the Sung Ma gloves)
 
   * apply is an ENUM of POINT_* names; apply+0 (its 1-based position) is the
     number the item keeps - in this engine the POINT_* number (common/length.h
@@ -32,10 +32,12 @@ Zastosuj restarts the cores). apply.sh rewrites (see WARN_* below):
     in the whole table;
   * MT2009_PLUS_RARE_TABLE_V2 - item_attr_rare is written once per world
     (marker rare_6_7_v2 in world.mt2009_plus_once); later edits stay.
-  * MT2009_PLUS_RARE_WIKI_V1 - a switch of M2_BONUS_MODE swaps the whole
-    item_attr_rare: global gets the wiki's pool (bonusy67_global.sql, the
-    mt2009 pool kept in world.item_attr_rare_mt2009), mt2009 gets it back;
-    its apply ENUM is item_attr's (up to POINT_HIT_PCT, 197).
+  * MT2009_PLUS_BONUS67_V1 - item_attr_rare is the wiki's pool in BOTH bonus
+    modes, written once per world (marker rare_6_7_wiki_v2, bonusy67_wiki.sql;
+    the old mt2009 pool kept in world.item_attr_rare_mt2009); M2_BONUS_MODE
+    no longer swaps it. Its apply ENUM is item_attr's (up to
+    POINT_GLOVE_BASE_ATTR_PCT, 251 - the 6th/7th bonuses of the wiki,
+    server-patches/bonusy67).
 """
 import re
 
@@ -57,11 +59,14 @@ KINDS = [
     ("wrist", "Bransoleta", "📿"), ("foots", "Buty", "👢"), ("neck", "Naszyjnik", "📿"), ("ear", "Kolczyki", "💎"),
     ("costume_body", "Kostium", "👘"), ("costume_hair", "Fryzura", "💇"), ("costume_weapon", "Kostium broni", "🗡️"),
     ("pendant", "Talizman", "🧿"),
+    # MT2009_PLUS_BONUS67_V1: the Sung Ma gloves (their 6th line is their Will, the 7th comes from this pool)
+    ("glove", "Rękawice", "🧤"),
 ]
 KIND_NAMES = {col: name for col, name, _icon in KINDS}
 KIND_WHERE = {"weapon": "broni", "body": "zbroi", "head": "hełmie", "shield": "tarczy", "wrist": "bransolecie",
               "foots": "butach", "neck": "naszyjniku", "ear": "kolczykach", "costume_body": "kostiumie",
-              "costume_hair": "fryzurze", "costume_weapon": "kostiumie broni", "pendant": "talizmanie"}
+              "costume_hair": "fryzurze", "costume_weapon": "kostiumie broni", "pendant": "talizmanie",
+              "glove": "rękawicach"}
 KIND_COLS = [col for col, _n, _i in KINDS]
 COSTUME_COLS = ("costume_body", "costume_hair", "costume_weapon")
 LEVELS = ("lv1", "lv2", "lv3", "lv4", "lv5")
@@ -108,10 +113,10 @@ WARN_NORMAL = ("apply.sh (MT2009_PLUS_COSTUME_BONUS_V1) przy każdym starcie ser
                "Broń. Dopóki choć jeden bonus ma kostium większy od zera, Twoje zmiany zostają.")
 WARN_RARE = ("apply.sh (MT2009_PLUS_RARE_TABLE_V2) wpisuje tę tabelę tylko raz na świat (znacznik rare_6_7_v2 "
              "w world.mt2009_plus_once) – Twoje zmiany zostają po restartach. Tylko nowa baza bez tego znacznika "
-             "dostanie z powrotem tabelę z 1 października. Przy zmianie trybu bonusów (M2_BONUS_MODE, "
-             "MT2009_PLUS_RARE_WIKI_V1) tabela jest podmieniana: global – pula z wiki (pula mt2009 czeka w "
-             "world.item_attr_rare_mt2009), powrót do mt2009 – oddaje zapisaną pulę. Zmiany zrobione w danym "
-             "trybie zostają, dopóki tryb się nie zmieni.")
+             "dostanie z powrotem tabelę z 1 października. MT2009_PLUS_BONUS67_V1: raz na świat (znacznik "
+             "rare_6_7_wiki_v2) tabela dostaje pulę z wiki – tę samą w obu trybach bonusów (M2_BONUS_MODE już "
+             "jej nie podmienia); stara pula mt2009 zostaje jako kopia w world.item_attr_rare_mt2009. Twoje "
+             "późniejsze zmiany zostają.")
 WARN_COSTUME_RESET = ("Uwaga: wszystkie kolumny kostiumów w tabeli są teraz zerowe – przy następnym starcie serwera "
                       "apply.sh skopiuje do nich wartości ze Zbroi, Hełmu i Broni.")
 

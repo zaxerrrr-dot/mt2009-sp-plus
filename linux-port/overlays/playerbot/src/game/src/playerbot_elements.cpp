@@ -22,6 +22,7 @@
 #include "char.h"
 #include "item.h"
 #include "item_manager.h"
+#include "playerbot_bonus67.h" // MT2009_PLUS_BONUS67_V1 (elements): Bonus67Total
 
 #ifdef MT2009_PLUS_ELEMENTS_V1
 
@@ -165,7 +166,8 @@ int ElementsAttackBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iAtk)
 
 		for (const TElement& e : ELEMENTS)
 		{
-			const int power = pkAttacker->GetPoint(e.power);
+			// MT2009_PLUS_BONUS67_V1 (elements): the hit buff and the "+x% of the total" line of the power
+			const int power = Bonus67Total(pkAttacker, e.power);
 			if (power <= 0)
 				continue;
 
@@ -189,7 +191,7 @@ int ElementsAttackBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iAtk)
 
 		for (const TElement& e : ELEMENTS)
 			if (ElementsHasFlag(pkAttacker, e.flag))
-				resist = MAX(resist, MIN(pkVictim->GetPoint(e.resist), ELEMENT_CAP_PERCENT));
+				resist = MAX(resist, MIN(Bonus67Total(pkVictim, e.resist), ELEMENT_CAP_PERCENT)); // MT2009_PLUS_BONUS67_V1 (elements)
 
 		// MT2009_PLUS_GLOBAL_BONUS_V1: M2_BONUS_MODE=global - 30% of it, as the original game
 		// (15% = 4.5% less); mt2009 - the full percent (playerbot_bonus_mode.cpp).

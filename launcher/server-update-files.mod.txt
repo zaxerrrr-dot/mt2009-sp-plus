@@ -56,8 +56,7 @@ linux-port/docker/mariadb/initdb.d/20-log-schema.sql
 linux-port/docker/mariadb/playerbot/apply.sh
 linux-port/docker/mariadb/playerbot/bonusy_global.sql
 linux-port/docker/mariadb/playerbot/bonusy_mt2009.sql
-linux-port/docker/mariadb/playerbot/bonusy67_global.sql
-linux-port/docker/mariadb/playerbot/bonusy67_mt2009.sql
+linux-port/docker/mariadb/playerbot/bonusy67_wiki.sql
 linux-port/docker/mariadb/playerbot/zywioly_moby_global.sql
 linux-port/docker/mariadb/playerbot/itemshop_schema.sql
 linux-port/docker/mariadb/playerbot/log_schema.sql
@@ -433,3 +432,7 @@ linux-port/docker/mariadb/playerbot/kola_items.sql
 linux-port/docker/game/src/server/game/src/char_player.h
 linux-port/docker/game/src/server/game/src/battle.h
 linux-port/docker/game/dragon_soul_applys.global.txt
+# MT2009_PLUS_BONUS67_V1 (server-patches/bonusy67): the 6th/7th bonuses of the wiki the engine lacked (points 198-251) -
+# the engine files it changes are above (length.h, char.cpp, battle.cpp, char_battle.cpp, char_skill.cpp, item.cpp,
+# item_attribute.cpp); the logic is playerbot_bonus67.{h,cpp} (the playerbot_* lines); the pool of both bonus modes
+# bonusy67_wiki.sql (above, tools/bonusy67).

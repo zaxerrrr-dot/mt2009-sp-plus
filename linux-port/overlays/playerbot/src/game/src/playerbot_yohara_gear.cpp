@@ -19,7 +19,9 @@
 // Mt2009Champion.cpp asserts the same): a mismatch does not build on either side.
 static_assert(POINT_PACKET_NUM == 193, "the points packet keeps 193 points (no protocol change)");
 static_assert(POINT_SUNGMA_PER_STR == 193 && POINT_SUNGMA_PER_IMMUNE == 196, "POINT_SUNGMA_PER_* 193-196 (exe)");
-static_assert(POINT_HIT_PCT == 197 && POINT_MAX_NUM == 198, "POINT_HIT_PCT (Precyzja) 197, POINT_MAX_NUM 198 (exe)");
+// MT2009_PLUS_BONUS67_V1 (points): the server's points go on to 251 (the 6th/7th bonuses of the wiki,
+// playerbot_bonus67.cpp) - none of them is ever sent as a point, so the exe's POINT_MAX_NUM stays 198.
+static_assert(POINT_HIT_PCT == 197 && POINT_HIT_PCT + 1 == POINT_HIT_BUFF_ENCHANT_FIRE, "POINT_HIT_PCT (Precyzja) 197 (exe)");
 static_assert(METIN_SUNGMA == 2, "METIN_SUNGMA (Kamien Demonow) is subtype 2 (exe)");
 static_assert(WEAR_GLOVE == 26 && ARMOR_GLOVE == 8 && WEARABLE_GLOVE == (1 << 13), "the glove's numbers (exe)");
 static_assert(FLY_CONQUEROR_EXP == 30, "FLY_CONQUEROR_EXP is 30 (exe)");
@@ -153,8 +155,10 @@ static void Mt2009GloveWrite(LPITEM item, int iValue)
 	if (!Mt2009GloveType(item->GetVnum(), bWillType))
 		return;
 	item->SetForceAttribute(ITEM_ATTRIBUTE_RARE_START, bWillType, (short) iValue);
+	// MT2009_PLUS_BONUS67_V1 (glove write): the 7th line from the pool (71051 / 71052, Bonus67GloveRare) stays - a
+	// refine carries it as the engine copied it; a second line of the glove's own Will never stays
 	for (int i = ITEM_ATTRIBUTE_RARE_START + 1; i < ITEM_ATTRIBUTE_RARE_END; ++i)
-		if (item->GetAttributeType(i))
+		if (item->GetAttributeType(i) && (i != ITEM_ATTRIBUTE_RARE_START + 1 || item->GetAttributeType(i) == bWillType))
 			item->SetForceAttribute(i, 0, 0);
 }
 

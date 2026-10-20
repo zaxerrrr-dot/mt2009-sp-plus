@@ -120,6 +120,10 @@ Buty+9 (15029): ruch 15 + odporność na ogień 10 zamiast ruchu 25 + maks. wytr
 
 ## 6. i 7. bonus w trybie global – `MT2009_PLUS_RARE_WIKI_V1`
 
+> **Zastąpione 20.10.2026 przez `MT2009_PLUS_BONUS67_V1` (`server-patches/bonusy67/README.md`):** pula wiki (z 54
+> nowymi bonusami) jest teraz w **obu** trybach, wpisywana raz na świat; tryb już jej nie podmienia, a pliki
+> `bonusy67_global.sql` / `bonusy67_mt2009.sql` zastąpił `bonusy67_wiki.sql`. Opis niżej – historia.
+
 Właściciel, 20.10.2026: „zmień wszystkie bonusy 6/7 według wiki" (pl-wiki „6. i 7. bonus"). W trybie global pula
 `world.item_attr_rare` (Seon-Hae, 71051/71052) to bonusy z wiki, które silnik ma; tryb mt2009 zostaje przy tabeli
 właściciela z 1.10 (27 bonusów). Wiki podaje tylko maksimum na typ przedmiotu – stopnie z oficjalnej tabeli (10
