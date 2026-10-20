@@ -3,7 +3,7 @@
 # 2026; server side: tools/ymoby_arkusz/gen_moby_global.py -> mariadb/playerbot/moby_global.sql). The client shows a
 # monster's level (and the HP / stats the target window and the drop wiki read) from its own gamedata/mob_proto, so
 # the records of the changed monsters take the same values: tools/ymoby_arkusz/moby_global_client.json
-# ({vnum: {column: the new value}}): level, HP, EXP, defence, STR/DEX/VIT/INT, damage, speeds, regeneration, the
+# ({vnum: {column: the new value}}): rank (MT2009_PLUS_MOBY_RANK_V1), level, HP, EXP, defence, STR/DEX/VIT/INT, damage, speeds, regeneration, the
 # effects' chances, the eleven resistances; ai_flag / setImmuneFlag - only the bits the server file changes
 # (AGGR BERSERK STONESKIN GODSPEED DEATHBLOW REVIVE COWARD / STUN SLOW CURSE POISON TERROR); setRaceFlag:<RACE> - the
 # race bit added (the element bits 11-16 stay the client's). A vnum the client lacks is reported, not added.
@@ -28,6 +28,7 @@ RECORD = 256
 NAME = 'gamedata/mob_proto'
 # column -> (struct format, offset) of the 256-byte record (patch_shipdefense_client.mob_record)
 FIELD = {
+    'rank': ('<B', 55),     # MT2009_PLUS_MOBY_RANK_V1 (type 54, rank 55, battle type 56, level 57)
     'level': ('<B', 57), 'exp': ('<I', 67), 'max_hp': ('<I', 71), 'regen_cycle': ('<B', 75),
     'regen_percent': ('<B', 76), 'def': ('<H', 77), 'st': ('<B', 91), 'dx': ('<B', 92), 'ht': ('<B', 93),
     'iq': ('<B', 94), 'damage_min': ('<I', 95), 'damage_max': ('<I', 99), 'attack_speed': ('<h', 103),

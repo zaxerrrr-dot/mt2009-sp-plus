@@ -740,6 +740,7 @@
 "exp": 250800,
 "level": 86,
 "max_hp": 452900,
+"rank": 5,
 "regen_cycle": 30,
 "regen_percent": 20,
 "resist_bell": 20,
@@ -971,26 +972,32 @@
 },
 "2591": {
 "enchant_curse": 30,
+"rank": 3,
 "resist_magic": 60
 },
 "2592": {
 "enchant_curse": 30,
+"rank": 3,
 "resist_magic": 60
 },
 "2593": {
 "enchant_curse": 30,
+"rank": 3,
 "resist_magic": 60
 },
 "2594": {
 "enchant_curse": 30,
+"rank": 3,
 "resist_magic": 60
 },
 "2595": {
 "enchant_curse": 30,
+"rank": 3,
 "resist_magic": 60
 },
 "2596": {
 "enchant_curse": 30,
+"rank": 3,
 "resist_magic": 60
 },
 "2597": {

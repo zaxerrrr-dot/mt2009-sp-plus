@@ -3,7 +3,7 @@
 -- rerun it. HP, damage, EXP, level, defence, STR/DEX/VIT/INT, speeds, regeneration, the effects' chances, the eleven
 -- resistances; the AI flags AGGR/BERSERK/STONESKIN/GODSPEED/DEATHBLOW/REVIVE/COWARD and the immunities
 -- STUN/SLOW/CURSE/POISON/TERROR (the whole set, the other flags kept); a race flag where a monster had none (Zodiac 2676-2679 HUMAN, Tu-Gui
--- 7008-7010 ORC). Not here: rank, the elements (zywioly_moby*.sql), a column a script of ours writes (apply.sh, the
+-- 7008-7010 ORC); the rank (MT2009_PLUS_MOBY_RANK_V1). Not here: the elements (zywioly_moby*.sql), a column a script of ours writes (apply.sh, the
 -- other files). Guarded: a column changes only while it holds the value the world was made with (world.sql /
 -- mob_proto.mt2009plus.sql) - the operator's own value (the panel's database editor) is kept. Every start (apply.sh);
 -- idempotent.
@@ -1053,3 +1053,10 @@ UPDATE world.mob_proto SET `resist_fire` = 0 WHERE vnum = 8615 AND `resist_fire`
 UPDATE world.mob_proto SET `resist_elect` = 0 WHERE vnum = 8615 AND `resist_elect` = 50;
 UPDATE world.mob_proto SET `resist_magic` = 50 WHERE vnum = 8615 AND `resist_magic` = 0;
 UPDATE world.mob_proto SET `resist_wind` = 0 WHERE vnum = 8615 AND `resist_wind` = 50;
+UPDATE world.mob_proto SET `rank` = 5 WHERE vnum = 2307 AND `rank` = 4;
+UPDATE world.mob_proto SET `rank` = 3 WHERE vnum = 2591 AND `rank` = 4;
+UPDATE world.mob_proto SET `rank` = 3 WHERE vnum = 2592 AND `rank` = 4;
+UPDATE world.mob_proto SET `rank` = 3 WHERE vnum = 2593 AND `rank` = 4;
+UPDATE world.mob_proto SET `rank` = 3 WHERE vnum = 2594 AND `rank` = 4;
+UPDATE world.mob_proto SET `rank` = 3 WHERE vnum = 2595 AND `rank` = 4;
+UPDATE world.mob_proto SET `rank` = 3 WHERE vnum = 2596 AND `rank` = 4;

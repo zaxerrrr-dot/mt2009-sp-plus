@@ -423,6 +423,10 @@ def parse_sheet(path):
 def render():
     data = json.load(open(DATA, encoding='utf-8'))
     sql = [SQL_HEAD]
+    # MT2009_PLUS_MOBY_RANK_V1: the sheet's ranks (moby_global_data.RANK) - extract lists them under "ranks" (the
+    # world's value read where no script of ours writes the rank: world.sql's, every one of them)
+    if G.RANK:
+        data['fixes'] = data['fixes'] + [[v, 'rank', old, new] for v, name, old, new in data['ranks']]
     for v, c, old, new in data['fixes']:
         if c.startswith('setRaceFlag:'):        # only onto a monster with no race of its own (bits 0-10)
             bit = 1 << BITS['setRaceFlag'].index(c.split(':')[1])
@@ -465,7 +469,7 @@ SQL_HEAD = """-- MT2009_PLUS_MOBY_GLOBAL_V1: the monsters before Yohara as on th
 -- rerun it. HP, damage, EXP, level, defence, STR/DEX/VIT/INT, speeds, regeneration, the effects' chances, the eleven
 -- resistances; the AI flags AGGR/BERSERK/STONESKIN/GODSPEED/DEATHBLOW/REVIVE/COWARD and the immunities
 -- STUN/SLOW/CURSE/POISON/TERROR (the whole set, the other flags kept); a race flag where a monster had none (Zodiac 2676-2679 HUMAN, Tu-Gui
--- 7008-7010 ORC). Not here: rank, the elements (zywioly_moby*.sql), a column a script of ours writes (apply.sh, the
+-- 7008-7010 ORC); the rank (MT2009_PLUS_MOBY_RANK_V1). Not here: the elements (zywioly_moby*.sql), a column a script of ours writes (apply.sh, the
 -- other files). Guarded: a column changes only while it holds the value the world was made with (world.sql /
 -- mob_proto.mt2009plus.sql) - the operator's own value (the panel's database editor) is kept. Every start (apply.sh);
 -- idempotent.

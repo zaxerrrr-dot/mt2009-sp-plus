@@ -16,7 +16,10 @@ AI = ['AGGR', 'BERSERK', 'STONESKIN', 'GODSPEED', 'DEATHBLOW', 'REVIVE', 'COWARD
 IMMUNE = ['STUN', 'SLOW', 'CURSE', 'POISON', 'TERROR']
 # a race flag is only ADDED, to a monster that has none of these (2676-2679 HUMAN, 7008-7010 ORC)
 RACE = ['ANIMAL', 'UNDEAD', 'DEVIL', 'HUMAN', 'ORC', 'MILGYO', 'INSECT', 'DESERT']
-# not taken: rank (our boss systems - talisman drop, elements, boss panels - count rank >= 4; the report lists the 7)
+# MT2009_PLUS_MOBY_RANK_V1: the rank as the sheet's too (the owner, 20 October 2026 - first left out, our boss
+# systems count rank >= 4): every row of moby_global.json's "ranks" (2307 boss -> king, Tartar / Piekielne Bastardy /
+# Ereb / Motloch Azraela 2591-2596 boss -> Poziom 4 = S_KNIGHT) becomes a guarded UPDATE like the other columns
+RANK = True
 
 # the sheet's name and ours differ only in the translation (the same monster)
 SAME_NAME = {2301, 2302, 2311, 2312, 3790}
