@@ -83,6 +83,49 @@ quest beran_pb begin
 			end
 			d.notice("Œwi¹tynia Smoka (PB): Beran-Setaou (PB) czerpie moc z czterech Metinów.")
 			d.notice("Dopóki stoi choæ jeden z nich, smoka nie da siê zraniæ.")
+			clear_server_timer("beran_pb_watch", d.get_map_index()) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+			server_timer("beran_pb_watch", 15, d.get_map_index())
+		end
+
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): the dragon's shield
+		-- fell only when a Metin's kill event came, so a last Metin that left without one (a kill the core gave no
+		-- quest event, a Metin removed) kept Beran-Setaou (PB) unhurtable until the hour ran out. The four are
+		-- looked at every 15 s too (beran_pb_watch); a Metin seen gone is not asked again (sd<i>).
+		function stones_left()
+			local left = 0
+			for i = 1, 4 do
+				if d.getf("sd"..i) == 0 then
+					if d.is_unique_dead("stone"..i) then
+						d.setf("sd"..i, 1)
+					else
+						left = left + 1
+					end
+				end
+			end
+			return left
+		end
+
+		function shield_off()
+			if d.getf("shield_off") == 1 then
+				return
+			end
+			d.setf("shield_off", 1)
+			local vid = d.get_unique_vid("beran")
+			if vid > 0 then
+				d.reset_damage_from_race(vid)
+			end
+			d.notice("Ostatni Metin pad³ - Beran-Setaou (PB) straci³ swoj¹ tarczê!")
+		end
+
+		when beran_pb_watch.server_timer begin
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 or d.getf("level") ~= 2 or d.getf("shield_off") == 1 then
+				return
+			end
+			if beran_pb.stones_left() <= 0 then
+				beran_pb.shield_off()
+				return
+			end
+			server_timer("beran_pb_watch", 15, get_server_timer_arg())
 		end
 
 		when login with beran_pb.inside() begin
@@ -213,21 +256,12 @@ quest beran_pb begin
 				local g = {4288, 4288, 4289, 4289, 4290}
 				d.spawn_group(g[number(1, table.getn(g))], pc.get_local_x(), pc.get_local_y(), 1, true, 1)
 			end
-			local left = 0
-			for i = 1, 4 do
-				if not d.is_unique_dead("stone"..i) then
-					left = left + 1
-				end
-			end
+			local left = beran_pb.stones_left() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			if left > 0 then
 				d.notice("Metin pad³. Beran-Setaou (PB) czerpie jeszcze moc z "..left..".")
 				return
 			end
-			local vid = d.get_unique_vid("beran")
-			if vid > 0 then
-				d.reset_damage_from_race(vid)
-			end
-			d.notice("Ostatni Metin pad³ - Beran-Setaou (PB) straci³ swoj¹ tarczê!")
+			beran_pb.shield_off() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the shield's end moved there)
 		end
 
 		when 4410.kill with beran_pb.inside() and d.getf("level") == 2 and d.getf("closed") == 0 begin

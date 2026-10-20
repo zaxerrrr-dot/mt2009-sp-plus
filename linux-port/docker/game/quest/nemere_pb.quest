@@ -131,13 +131,13 @@ quest nemere_pb begin
 				d.notice("Pokonuj mroŸne potwory i zdob¹dŸ Klucz Lod. Kwiatu (PB) - wypada tylko, gdy zabija Ninja.")
 			elseif lv == 9 then
 				d.regen_file(c.path.."sd_9.txt")
-				d.spawn_mob(20538, c.pillar[1], c.pillar[2])
+				d.set_unique("tw_pillar", d.spawn_mob(20538, c.pillar[1], c.pillar[2])) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 				d.notice("Zniszcz Kolumnê Smoka Pó³nocy (PB) - zraniæ j¹ mo¿e tylko Ninja albo Szaman.")
 			elseif lv == 10 then
 				d.regen_file(c.path.."sd_10.txt")
 				d.notice("Pokonaj Nemere (PB), króla mrozu i lodu!")
 			end
-			if lv == 3 or lv == 4 or lv == 6 or lv == 7 then
+			if lv == 3 or lv == 4 or lv == 6 or lv == 7 or lv == 9 then -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (9: the Pillar)
 				server_timer("nemere_pb_check", c.check_sec, d.get_map_index())
 			end
 		end
@@ -284,10 +284,14 @@ quest nemere_pb begin
 			elseif lv == 6 then
 				if d.getf("metin6") == 0 and d.count_monster() <= 0 then
 					d.setf("metin6", 1)
-					d.spawn_mob(8135, c.metin6[1], c.metin6[2])
+					d.set_unique("tw_metin6", d.spawn_mob(8135, c.metin6[1], c.metin6[2])) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 					d.notice("Pojawi³ siê Metin Ch³odu (PB)! Zraniæ go mo¿e tylko Szaman.")
+				elseif d.getf("metin6") == 1 and d.is_unique_dead("tw_metin6") then
+					-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the Metin gone without its kill event (a kill the core gave
+					-- no quest event, a Metin removed) - the floor ends as after its kill.
+					again = false
+					nemere_pb.next_floor("Metin Ch³odu (PB) znikn¹³. Za chwilê zostaniecie przeniesieni na 7. piêtro.")
 				end
-				again = d.getf("metin6") == 0
 			elseif lv == 7 then
 				for k = 1, 3 do
 					if not d.is_unique_dead("szel_"..k) and d.unique_get_hp_perc("szel_"..k) < 50 then
@@ -298,6 +302,13 @@ quest nemere_pb begin
 				if d.is_unique_dead("szel_4") then
 					again = false
 					nemere_pb.next_floor("Szel (PB) pokonany. Za chwilê zostaniecie przeniesieni na 8. piêtro.")
+				end
+			elseif lv == 9 then
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the Pillar gone without its kill event - as after its kill.
+				again = d.getf("pillar") == 0
+				if again and d.is_unique_dead("tw_pillar") then
+					again = false
+					nemere_pb.pillar_down()
 				end
 			else
 				again = false
@@ -384,12 +395,16 @@ quest nemere_pb begin
 			nemere_pb.next_floor("Za chwilê zostaniecie przeniesieni na 9. piêtro.")
 		end
 
-		when 20538.kill with nemere_pb.inside() and d.getf("level") == 9 and d.getf("pillar") == 0 begin
+		function pillar_down()
 			local c = nemere_pb.cfg()
 			d.setf("pillar", 1)
 			nemere_pb.clear_level()
 			d.spawn_mob(20536, c.lion10[1], c.lion10[2])
 			d.notice("Kolumna Smoka Pó³nocy (PB) zniszczona. Przywódca grupy mo¿e porozmawiaæ z Lodowym Lwem (PB).")
+		end
+
+		when 20538.kill with nemere_pb.inside() and d.getf("level") == 9 and d.getf("pillar") == 0 begin
+			nemere_pb.pillar_down() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the body moved there)
 		end
 
 		when 4412.kill with nemere_pb.inside() and d.getf("level") == 10 and d.getf("closed") == 0 begin

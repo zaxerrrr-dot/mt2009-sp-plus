@@ -110,7 +110,7 @@ quest razador_pb begin
 				say("Zadanie: pokonaj Ignatora (PB), stra¿nika ¿aru.")
 				d.notice("Zadanie: znajdŸ i zabij Ignatora (PB).")
 				d.setf("level", 14)
-				d.spawn_mob(4309, c.ignator[1], c.ignator[2])
+				razador_pb.watch_target(d.spawn_mob(4309, c.ignator[1], c.ignator[2])) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 				d.set_regen_file(c.path.."fd_d.txt")
 			elseif lv == 5 then
 				say("Zadanie: zdob¹dŸ Kamienie Maat (PB) i umieœæ je na")
@@ -136,8 +136,53 @@ quest razador_pb begin
 				d.notice("Zadanie: zniszcz Metin Purgatorium (PB).")
 				d.setf("level", 16)
 				d.set_regen_file(c.path.."fd_f.txt")
-				d.spawn_mob(8134, c.metin6[1], c.metin6[2])
+				razador_pb.watch_target(d.spawn_mob(8134, c.metin6[1], c.metin6[2])) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			end
+		end
+
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"; the pattern of
+		-- MT2009_PLUS_WUKONG_TARGETS_V1): the Ignator (PB) and the Metin of Purgatory (PB) tasks ended only with
+		-- their kill events, so a target that left without one (a kill the core gave no quest event, a target
+		-- removed) held the task until the hour ran out. The target is an instance unique, looked at every
+		-- 15 s (razador_pb_watch): gone, the task is done; 90 s without it losing health end it too (a target
+		-- nobody can reach).
+		function watch_target(vid)
+			local lv = d.getf("level")
+			if vid ~= 0 then
+				d.set_unique("tw"..lv, vid)
+			end
+			d.setf("tw_vid", vid)
+			d.setf("tw_level", lv)
+			d.setf("tw_hp", 100)
+			d.setf("tw_progress", get_global_time())
+			clear_server_timer("razador_pb_watch", d.get_map_index())
+			server_timer("razador_pb_watch", 15, d.get_map_index())
+		end
+
+		when razador_pb_watch.server_timer begin
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local lv = d.getf("level")
+			if lv ~= d.getf("tw_level") then
+				return
+			end
+			local key = "tw"..lv
+			if d.getf("tw_vid") == 0 or d.is_unique_dead(key) then
+				razador_pb.task_done("Cel zadania znikn¹³ z mapy.")
+				return
+			end
+			local hp = d.unique_get_hp_perc(key)
+			if hp < d.getf("tw_hp") then
+				d.setf("tw_progress", get_global_time())
+			end
+			d.setf("tw_hp", hp)
+			if get_global_time() - d.getf("tw_progress") > 90 then
+				d.purge_unique(key)
+				razador_pb.task_done("Cel zadania rozpad³ siê sam.")
+				return
+			end
+			server_timer("razador_pb_watch", 15, get_server_timer_arg())
 		end
 
 		function task_done(text)
