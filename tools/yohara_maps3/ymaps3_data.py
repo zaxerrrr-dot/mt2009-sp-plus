@@ -109,6 +109,14 @@ MOBS = {
     4006: ('Stróż Żywiołów', 0, 'zywioly'),
 }
 
+# MT2009_PLUS_MOBY_ARKUSZ_V1: the owner's sheet of 20 October 2026 (Metin2_Moby_statystyki_EXP_i_drop.xlsx,
+# tools/ymoby_arkusz) over Owsap's row: both Alastors have 22 587 258 HP (Owsap: 67 751 800 / 48 751 800) and regenerate
+# every 30 s (Owsap's slaby: 15 s). The element stays the wiki's (MOBS above; the owner, 14 October: "wg wiki").
+OVERRIDE = {
+    6790: dict(MaxHp='22587258', RegenCycle='30'),
+    6791: dict(MaxHp='22587258'),
+}
+
 # -- NPCs (our NPC numbers, Owsap's folder; Owsap's NPC rows lack a column - gen_ymaps_sql.npc_row) ---------------
 NPCS = {
     20815: 'Upiorny Strażnik',          # Zejscie 383,614 - Glebie (slaby / silny)

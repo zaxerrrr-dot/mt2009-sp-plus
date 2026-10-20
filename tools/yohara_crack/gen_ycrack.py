@@ -197,8 +197,8 @@ SQL_HEAD = """-- %(m)s: Zaklety Las (SZC) (404, Jotun Thrym (SZC)) - the first T
 -- idempotent: INSERT IGNORE - a row the operator changed is kept. Every vnum was free in our world (14 October 2026).
 -- %(n)d rows: %(mobs)d monsters, bosses and stones, %(npcs)d NPCs. Monsters: Owsap v6.2.6 db/mob_proto.txt (the official
 -- "TR:" rows - more experience than the PB ones, the pl-wiki's "daja wiecej Doswiadczenia") in our r40250 columns
--- (tools/yohara_maps/gen_ymaps_sql.row_of); the pl-wiki over Owsap: the experience of 4267 / 4270, Jotun Thrym (SZC)
--- summons Niszczyciel En-Tai (SZC-125) (4271); the tr-wiki: Jotun Thrym (SZC) drops 10-27 million Yang - nothing else
+-- (tools/yohara_maps/gen_ymaps_sql.row_of; the experience Owsap's = the owner's sheet of 20 October); the pl-wiki over
+-- Owsap: Jotun Thrym (SZC) summons Niszczyciel En-Tai (SZC-125) (4271); the tr-wiki: Jotun Thrym (SZC) drops 10-27 million Yang - nothing else
 -- drops on map 404 (server-patches/szczelina). Names "SZC: ..." as the PB ones. Statua Szczeliny Czasu (20472) is
 -- yohara_iluzja.sql's row. Handlarka Iluzji's shop (%(shop)d): Zegarek Kieszonkowy by 1, 10 and 100 (the pl-wiki).
 -- The element: yohara_crack_zywioly.sql (after zywioly_moby.sql).

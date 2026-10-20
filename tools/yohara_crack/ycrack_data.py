@@ -41,11 +41,11 @@ MOBS = {
     8126: ('SZC: Metin Drz. Stworzeń', 0),         # 2nd reconnaissance (5 of them)
     8127: ('SZC: Metin Lasu', 0),
 }
-# the pl-wiki where Owsap's row differs: Basis-EXP of two monsters; Jotun Thrym (SZC) "Przywołuje Niszczycieli En-Tai
-# (SZC-125)" (Owsap: the 113 one); the tr-wiki's yang of Jotun Thrym (SZC) ("10.000.000-27.000.000 Yang düşer")
+# the pl-wiki where Owsap's row differs: Jotun Thrym (SZC) "Przywołuje Niszczycieli En-Tai (SZC-125)" (Owsap: the 113
+# one); the tr-wiki's yang of Jotun Thrym (SZC) ("10.000.000-27.000.000 Yang düşer"). MT2009_PLUS_MOBY_ARKUSZ_V1: the
+# experience of 4267 / 4270 is Owsap's again (41 001 / 61 350) - the owner's sheet of 20 October 2026 has it so (the
+# pl-wiki's 41 101 / 49 080 were the outliers)
 OVERRIDE = {
-    4267: dict(Exp='41101'),
-    4270: dict(Exp='49080'),
     4403: dict(SummonVnum='4271', MinGold='10000000', MaxGold='27000000'),
 }
 
