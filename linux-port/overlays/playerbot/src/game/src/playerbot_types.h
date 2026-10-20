@@ -383,6 +383,13 @@ namespace
 	const int PLAYERBOT_ZEN_BEAN_KEEP_MAX = 15;
 	const int PLAYERBOT_ZEN_BEAN_LINE_UNITS = 5;
 	const DWORD PLAYERBOT_ZEN_BEAN_CHECK_INTERVAL = 10000;
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: Owoc Zycia (71107; the
+	// engine's mythical peach, 39032 its twin) adds value0 to a rank that is
+	// not negative, once in value1 hours (CHARACTER::UseItem). A bot whose next
+	// Kamien Duchowy is short of rank (PlayerBotNeedsTrainingRank) buys up to
+	// this many off the counters and eats one when the read waits for rank.
+	const DWORD PLAYERBOT_LIFE_FRUIT_VNUM = 71107;
+	const int PLAYERBOT_LIFE_FRUIT_BUY_KEEP = 2;
 	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1 ("Towarzysz nie wie o
 	// istnieniu fasolki zen i czeka az wbije range zamiast wejsc na chwile na
 	// negatywna i zredukowac fasolkami", the owner, 5 October; then every
@@ -1392,6 +1399,9 @@ namespace
 	// Refine materials go up at a small markup over the merchant price, so a bot
 	// that needs one can buy it from a neighbour instead of farming for it.
 	const DWORD PLAYERBOT_SHOP_MATERIAL_MARKUP = 3;
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_MATERIAL_PRICE_V1: and on a bot's counter a
+	// refine material starts this percent of that prior (GetPlayerBotShopAskingPriceRaw).
+	const DWORD PLAYERBOT_UPSTREAM_MATERIAL_PRICE_PERCENT = 125;
 	// A soul stone has no shop price in the proto, so a counter asks this by
 	// grade (+0 to +4) until the market has paid something for it.
 	const DWORD PLAYERBOT_SHOP_PRICE_SOUL_STONE[5] = { 30000, 60000, 120000, 250000, 500000 };
@@ -3970,6 +3980,16 @@ namespace
 	// stock of red potions.
 	const int PLAYERBOT_SPIDER_SESSION_PERCENT = 35;
 	const int PLAYERBOT_SPIDER_SESSION_MAX_LEVEL = 75;
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_HUNT70_V1 (playerbot_travel.h,
+	// GetPlayerBotHunt70Map): from this level the draw sends a bot only where
+	// it earns experience; a party of this many goes to V2 and the Red Forest.
+	const int PLAYERBOT_HUNT70_MIN_LEVEL = 70;
+	const int PLAYERBOT_HUNT70_GROUP_MEMBERS = 3;
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOW_GEAR_V1 (playerbot_gear.h,
+	// IsPlayerBotMatureLowGear): from this level a bot raises no weapon or
+	// armour piece this many levels and more under its own.
+	const int PLAYERBOT_MATURE_GEAR_LEVEL = 55;
+	const int PLAYERBOT_MATURE_LOW_GEAR_GAP = 30;
 	const int PLAYERBOT_SPIDER_V1_WEAPON_PLUS = 4;
 	const int PLAYERBOT_SPIDER_V1_ARMOUR_PLUS = 4;
 	const int PLAYERBOT_SPIDER_V2_WEAPON_PLUS = 6;
@@ -6314,12 +6334,14 @@ namespace
 		{ 60, "collect_quest_lv60", 30050, 1107, 20, 60, 0, 0, "Matowy Lod",
 				30223, 1102, POINT_ATT_GRADE_BONUS, 50, 50112, "Kamien Duszy Aurtumryu", 0, 0, 0 },
 		// Konar Zelkova (30165): the hook on the Ghost Wood's trees 2301-2305
-		// (67) and the Red Forest's 2311-2315 (68), one kill in two hundred and
-		// only while the bag holds none - so one is carried at a time. Twenty-
-		// five; the key (30224) on the same trees, one in five hundred. Eleven
-		// movement speed and ten defence, casket 50113.
+		// (67) and the Red Forest's 2311-2315 (68), one kill in two hundred.
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_ZELKOVA_V1: our collect_quest_lv70.quest
+		// drops it whatever the bag holds and the branch stacks, so the row has
+		// no carry cap any more (it was one at a time). Twenty-five; the key
+		// (30224) on the same trees, one in five hundred. Eleven movement speed
+		// and ten defence, casket 50113.
 		{ 70, "collect_quest_lv70", 30165, 2301, 25, 60, 0, 0, "Konar Zelkova",
-				30224, 2301, POINT_MOV_SPEED, 11, 50113, "Kamien Duszy Gyimok", POINT_DEF_BONUS, 10, 1 },
+				30224, 2301, POINT_MOV_SPEED, 11, 50113, "Kamien Duszy Gyimok", POINT_DEF_BONUS, 10, 0 },
 		// Certyfikat Tugyisa (30166): the hook on the Giants 1401-1403 and the
 		// Ogres 1601-1603, five in a hundred and one at a time, and they stand
 		// only on metin2_map_nusluck01 (70) - a map no bot travels to, so 1401
@@ -9639,8 +9661,11 @@ namespace
 		// purpose: the operator asked that bots not run that dungeon until it is
 		// worked out properly, and a stone hunter sent inside is exactly how
 		// they would start.
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_HUNT70_V1: the Red Forest is a stone
+		// map after all - its stone.txt spawns four Metins (8026, 8027) - and a
+		// Metin hunter of seventy and up goes there too (GetPlayerBotHunt70Map).
 		return !IsPlayerBotSpiderMap(mapIndex) && !IsPlayerBotMonkeyMap(mapIndex) &&
-				mapIndex != PLAYERBOT_MAP_FOREST && mapIndex != PLAYERBOT_MAP_RED_FOREST &&
+				mapIndex != PLAYERBOT_MAP_FOREST &&
 				mapIndex != PLAYERBOT_MAP_DEMON_TOWER &&
 				mapIndex != PLAYERBOT_MAP_GROTTO_V1 && mapIndex != PLAYERBOT_MAP_GROTTO_V2 &&
 				mapIndex != PLAYERBOT_MAP_OCHAO; // MT2009_PLUS_OCHAO_BOTS_V1: its stone.txt is empty

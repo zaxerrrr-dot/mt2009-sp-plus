@@ -21,21 +21,54 @@ namespace {
         }
         return false;
     }
-    bool PlayerBotNeedsTrainingRank(LPCHARACTER ch) {
-        if (!PlayerBotHasGrandMasterToTrain(ch) || !ch->CountSpecifyItem(PLAYERBOT_GRAND_MASTER_STONE_VNUM)) return false;
+    // MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: a Kamien Duchowy goes to
+    // the skills in the build's own order (dwSkills, the order the points go
+    // in) - the first skill at Grand Master (G1..G10) is the one read, and a
+    // later one never jumps the queue because its read is cheaper. 0: none.
+    DWORD GetPlayerBotGrandMasterOrderSkill(LPCHARACTER ch) {
+        if (!ch || !ch->GetSkillGroup()) return 0;
         const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
-        bool blocked = false;
-        // MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: the beans in the bag count.
-        const int beanLift = GetPlayerBotZenBeanLift(ch);
         for (BYTE i = 0; i < build.bSkillCount; ++i) {
-            DWORD skill = build.dwSkills[i];
+            const DWORD skill = build.dwSkills[i];
             if (!skill || ch->GetSkillMasterType(skill) != SKILL_GRAND_MASTER) continue;
             const int level = ch->GetSkillLevel(skill);
-            if (level < 30 || level >= 40) continue;
-            if (ch->GetRealAlignment() + beanLift >= GetPlayerBotGrandMasterRankCost(level)) return false;
-            blocked = true;
+            if (level >= 30 && level < 40) return skill;
         }
-        return blocked;
+        return 0;
+    }
+    // MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: the rank the skill next in
+    // order is short of, beans counted - what sends a bot to the counters for
+    // Fasolki Zen and Owoce Zycia (playerbot_market.h).
+    bool PlayerBotNeedsTrainingRank(LPCHARACTER ch) {
+        if (!PlayerBotHasGrandMasterToTrain(ch) || !ch->CountSpecifyItem(PLAYERBOT_GRAND_MASTER_STONE_VNUM)) return false;
+        const DWORD skill = GetPlayerBotGrandMasterOrderSkill(ch);
+        if (!skill) return false;
+        // MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: the beans in the bag count.
+        const int beanLift = GetPlayerBotZenBeanLift(ch);
+        return ch->GetRealAlignment() + beanLift < GetPlayerBotGrandMasterRankCost(ch->GetSkillLevel(skill));
+    }
+    // MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: the Fasolki Zen and the
+    // Owoce Zycia a bot short of rank for its next Kamien Duchowy buys off the
+    // counters - beans up to its keep, fruit up to PLAYERBOT_LIFE_FRUIT_BUY_KEEP
+    // (playerbot_market.h asks the same of each line). `onLedger` asks only for
+    // what some counter holds (the walk's question, no counter read).
+    int CollectPlayerBotTrainingRankMissing(LPCHARACTER ch, std::map<DWORD, int>& missing, bool onLedger) {
+        if (!ch || ch->GetRealAlignment() < 0 || !PlayerBotNeedsTrainingRank(ch)) return 0;
+        int kinds = 0;
+        const int beans = GetPlayerBotZenBeanKeep(ch) - (int)ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM);
+        const int fruit = PLAYERBOT_LIFE_FRUIT_BUY_KEEP - (int)ch->CountSpecifyItem(PLAYERBOT_LIFE_FRUIT_VNUM);
+        const DWORD vnums[2] = { PLAYERBOT_ZEN_BEAN_VNUM, PLAYERBOT_LIFE_FRUIT_VNUM };
+        const int wants[2] = { beans, fruit };
+        for (int i = 0; i < 2; ++i) {
+            if (wants[i] <= 0) continue;
+            if (onLedger) {
+                const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(vnums[i]);
+                if (!entry || entry->dwSupplyUnits == 0) continue;
+            }
+            missing[vnums[i]] = wants[i];
+            ++kinds;
+        }
+        return kinds;
     }
     // The open collection chain, independent of whether a hunting slot is free.
     // Herbs and quest keys stay on their own quest path, never a new market.

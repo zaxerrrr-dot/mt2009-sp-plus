@@ -2070,7 +2070,8 @@ namespace
 				IsPlayerBotSashGrailProject(ch, item))
 			return false;
 		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
-				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()))
+				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) ||
+				IsPlayerBotFutureProject(ch, item))	// MT2009_PLUS_UPSTREAM_BOTLOGIC_FUTURE_V1
 			return false;
 		if (item->GetType() == ITEM_WEAPON)
 			return !IsPlayerBotKeptBackupWeapon(ch, item) && item != FindPlayerBotLinesProject(ch) &&
@@ -2376,6 +2377,10 @@ namespace
 	{
 		if (!ch || !item)
 			return false;
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the next tier's piece and the
+		// surplus level-30 weapon at the anvil today.
+		if (IsPlayerBotFutureProject(ch, item) || IsPlayerBotLottery30Piece(ch, item))
+			return true;
 		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
 				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) || IsPlayerBotTowerSmithReserve(ch, item) ||
 				(item->GetType() == ITEM_WEAPON ? IsPlayerBotKeptBackupWeapon(ch, item)
@@ -4061,6 +4066,11 @@ namespace
 		// and never junk.
 		if (PlayerBotRefinesLevel30ForSale(ch, item))
 			return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOTTERY30_V1: the surplus one the anvil
+		// took today; MT2009_PLUS_UPSTREAM_BOTLOGIC_FUTURE_V1: the next tier's
+		// piece a rich bot makes ready (its target is nought for a poor one).
+		if (IsPlayerBotLottery30Piece(ch, item) || IsPlayerBotFutureProject(ch, item))
+			return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
 		// A body armour taken to +5 before it may go on a counter (Iwakura's
 		// Patch 3, point 4).
 		if (PlayerBotRefinesLowArmourForSale(ch, item))
@@ -4312,6 +4322,9 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOTTERY30_V1 (playerbot_upstream_botlogic.h).
+	bool TryPickPlayerBotLottery30(LPCHARACTER ch, LPITEM item);
+
 	bool ManagePlayerBotRefining(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->IsItemLoaded() || dwNow < state.dwNextRefineCheckTime || IsPlayerBotGearFrozen(ch))
@@ -4390,6 +4403,13 @@ namespace
 			const bool coreProgression = IsPlayerBotCoreProgressionItem(ch, item);
 			// MT2009_PLUS_BOT_LAW_GEAR_V1: at least to the law's plus.
 			const BYTE lawPlus = GetPlayerBotLawRefinePlus(ch, item, wearSlots[i]);
+			// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOW_GEAR_V1: said once in a while -
+			// the target (IsPlayerBotMatureLowGear) holds it, the law does not.
+			if (lawPlus == 0 && IsPlayerBotMatureLowGear(ch, item))
+				PlayerBotLogThrottled("p20_low_gear", dwNow,
+						"PLAYERBOT_REFINE: low gear held pid=%u name=%s level=%d item=%u vnum=%u plus=%u item_level=%d",
+						ch->GetPlayerID(), ch->GetName(), (int)ch->GetLevel(), item->GetID(), item->GetVnum(),
+						(unsigned int)plusLevel, (int)item->GetLevelLimit());
 			if (plusLevel >= std::max<BYTE>(GetPlayerBotRefineTarget(ch, item), lawPlus))
 				continue;
 			// A worn piece is taken off for the anvil below, so a step the bag
@@ -4420,6 +4440,10 @@ namespace
 			// was last in the order and saw a twentieth of the weapon's steps.
 			if (lawPlus != 0 && cand.priority > 1)
 				cand.priority = 1;
+			// MT2009_PLUS_UPSTREAM_BOTLOGIC_LEVEL75_V1: a level-75 weapon is
+			// first in the plan, with the class's level-30 one.
+			if (IsPlayerBotLevel75Weapon(item))
+				cand.priority = 0;
 			candidates.push_back(cand);
 		}
 
@@ -4433,6 +4457,10 @@ namespace
 			// is worth raising; the rest is scrap and stays at what it is.
 			// The planner asks the same function, above.
 			LPITEM item = ch->GetInventoryItem(cell);
+			// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOTTERY30_V1: a surplus level-30
+			// weapon may go to the anvil today (playerbot_upstream_botlogic.h).
+			if (item && item->GetCell() == cell && IsPlayerBotSpecialLevel30Weapon(item))
+				TryPickPlayerBotLottery30(ch, item);
 			// "Na 341 broni na serwerze praktycznie wszystkie sa +0 (max +2),
 			// boty ich wcale nie ulepszaja" (Iwakura, 13 September). Four
 			// different rules can pass a bag piece over here and from outside
@@ -4488,6 +4516,13 @@ namespace
 			// after everything the bot refines for itself.
 			if (PlayerBotRefinesSpareForSale(ch, item))
 				cand.priority = PLAYERBOT_SPARE_SALE_REFINE_PRIORITY;
+			// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOTTERY30_V1: so does the surplus
+			// level-30 weapon; MT2009_PLUS_UPSTREAM_BOTLOGIC_LEVEL75_V1: and a
+			// level-75 weapon comes first.
+			if (IsPlayerBotLottery30Piece(ch, item))
+				cand.priority = PLAYERBOT_SPARE_SALE_REFINE_PRIORITY;
+			else if (IsPlayerBotLevel75Weapon(item))
+				cand.priority = 0;
 			candidates.push_back(cand);
 		}
 
@@ -4533,7 +4568,9 @@ namespace
 			const bool saleSpare = candidates[i].priority == PLAYERBOT_SPARE_SALE_REFINE_PRIORITY;
 			// What comes off the anvil must still fit. See IsPlayerBotWearableAtLevel
 			// for why the engine will not stop this on its own.
-			if (!saleSpare && !IsPlayerBotWearableAtLevel(ch, nextVnum))
+			// MT2009_PLUS_UPSTREAM_BOTLOGIC_FUTURE_V1: the next tier's piece is
+			// raised before the bot can wear it - that is what it is for.
+			if (!saleSpare && !IsPlayerBotFutureProject(ch, item) && !IsPlayerBotWearableAtLevel(ch, nextVnum))
 			{
 				PlayerBotLogThrottled("refine_outgrows", dwNow,
 						"PLAYERBOT_AI: refine would outgrow the bot pid=%u name=%s level=%u vnum=%u next=%u plus=%u",

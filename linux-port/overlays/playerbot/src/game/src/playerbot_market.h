@@ -271,6 +271,21 @@ namespace
 		if (WantsPlayerBotSashPieceOffer(ch, offer))
 			return true;
 
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1: no weapon or armour piece
+		// for a slot the bot's own box holds one for, of the offer's level or
+		// over - the storekeeper first (playerbot_upstream_botlogic.h).
+		if (IsPlayerBotOfferBeatenByOwnBox(ch, offer))
+			return false;
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_FUTURE_V1: a rich bot's piece for its
+		// next tier (WantsPlayerBotFutureOffer).
+		if (WantsPlayerBotFutureOffer(ch, offer))
+		{
+			PlayerBotLogThrottled("future_project", get_dword_time(), "PLAYERBOT_EQ_PLAN: future project looks at a piece pid=%u name=%s item=%u vnum=%u level=%u gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), offer->GetID(), offer->GetVnum(),
+					(unsigned int)offer->GetLevelLimit(), (long long)ch->GetGold());
+			return true;
+		}
+
 		// The piece over an outdated shield, helmet or body armour
 		// (IsPlayerBotOutdatedGearOffer, playerbot_gear.h).
 		if (IsPlayerBotOutdatedGearOffer(ch, offer))
@@ -309,6 +324,12 @@ namespace
 					!IsPlayerBotRankHunting(ch, get_dword_time())) ||
 					(ch->GetRealAlignment() >= 0 && PlayerBotNeedsTrainingRank(ch) &&
 					(int)ch->CountSpecifyItem(PLAYERBOT_ZEN_BEAN_VNUM) < GetPlayerBotZenBeanKeep(ch));
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: and an Owoc Zycia, the
+		// rank a positive one needs for the Kamien Duchowy next in order
+		// (ManagePlayerBotGrandMasterTraining eats it).
+		if (offer->GetVnum() == PLAYERBOT_LIFE_FRUIT_VNUM)
+			return ch->GetRealAlignment() >= 0 && PlayerBotNeedsTrainingRank(ch) &&
+					(int)ch->CountSpecifyItem(PLAYERBOT_LIFE_FRUIT_VNUM) + (int)offer->GetCount() <= PLAYERBOT_LIFE_FRUIT_BUY_KEEP;
 
 		// A Moonlight chest, to open (WantsPlayerBotMoonlightChest).
 		if (offer->GetVnum() == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
@@ -532,6 +553,14 @@ namespace
 		// counter holds one (the ledger).
 		if (PlayerBotWantsRankFruitFromMarket(ch))
 			return true;
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: beans or an Owoc Zycia
+		// for the rank its next Kamien Duchowy is short of, while a counter
+		// holds them (the ledger).
+		{
+			std::map<DWORD, int> rankGoods;
+			if (CollectPlayerBotTrainingRankMissing(ch, rankGoods, true) > 0)
+				return true;
+		}
 		// MT2009_PLUS_NEWPET_BOTS_V1: what a keeper's pet lacks, while a counter
 		// holds it (the ledger).
 		if (PlayerBotWantsNewPetFromMarket(ch))

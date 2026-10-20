@@ -262,6 +262,8 @@ RUN set -eux; \
     # collect_quest_lv85 is the Biologist's red-branch row with its hand-in
     # asking for the right item: the stock quest counted 30166, the level-80
     # row's, so nobody could hand in a single 30167 (2.0.95).
+    # collect_quest_lv70 drops its Konar Zelkova (30165) whatever the bag
+    # already holds - the branch stacks (MT2009_PLUS_UPSTREAM_BOTLOGIC_ZELKOVA_V1).
     # towarzysz is the letter that makes and commands a player's companion
     # (playerbot_sidekick.h): class, path and name, then call, free, dismiss.
     # devilcatacomb_zone is the Devil's Catacomb, which the package kept in
@@ -332,7 +334,7 @@ RUN set -eux; \
     # zodiac_temples (the twelve portals of the day on 358 and the Teleporter's entry),
     # zodiac_milbon (Mnich Milbon's insignia exchange), zodiac_prism_mission and
     # zodiac_emergency_mission are the Zodiac Temple (MT2009_PLUS_ZODIAC_V1, Autor: Digi Rasta).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \

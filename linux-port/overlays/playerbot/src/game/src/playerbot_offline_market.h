@@ -672,6 +672,19 @@ namespace {
                     return RunPlayerBotOfflinePick(ch, state, now);
                 }
             }
+            // MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: the beans and the
+            // Owoc Zycia for the rank its next Kamien Duchowy is short of, on
+            // every stand of the map, out of a third of the budget.
+            {
+                std::map<DWORD, int> missing;
+                if (CollectPlayerBotTrainingRankMissing(ch, missing, false) > 0 && budget / 3 > 0 &&
+                        FindPlayerBotGambleMaterialPick(ch, state, missing, budget / 3, now)) {
+                    sys_log(0, "PLAYERBOT_MARKET: goes for spirit stone rank pid=%u name=%s owner=%u item=%u kinds=%u rank=%d",
+                        ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size(),
+                        ch->GetRealAlignment());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+            }
             // MT2009_PLUS_NEWPET_BOTS_V1: a keeper's egg, its pet's food, elixirs,
             // books and evolution materials, on every stand of the map
             // (playerbot_newpet_bots.h).

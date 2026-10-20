@@ -399,6 +399,10 @@ db -e "UPDATE world.mob_proto SET gold_min = 15000, gold_max = 25000 WHERE vnum 
 # (tanaka_ears.quest), stacks to the 200 its row already says: the package
 # left ITEM_FLAG_STACKABLE off, so every ear took a cell. Idempotent.
 db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 30202 AND (flag & 4) = 0;" || fail_step "could not make Tanaka's ear stack" >&2
+# MT2009_PLUS_UPSTREAM_BOTLOGIC_ZELKOVA_V1: Konar Zelkova (30165), the
+# Biologist's level-70 branch, stacks to 200: collect_quest_lv70.quest now
+# drops one whatever the bag holds. Idempotent; never lowers a stack.
+db -e "UPDATE world.item_proto SET flag = flag | 4, stack = GREATEST(stack, 200) WHERE vnum = 30165 AND ((flag & 4) = 0 OR stack < 200);" || fail_step "could not make Konar Zelkova stack" >&2
 # The skill books (type 17), the Forgetting Book (22) and Kamien Duchowy
 # (50513) stacked to the package's ten; the operator's two hundred (DUDU,
 # 26 September). PROTO_FROM_DB: the db core reads it at boot, and books of

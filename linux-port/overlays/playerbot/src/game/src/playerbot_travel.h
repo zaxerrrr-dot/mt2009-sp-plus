@@ -821,6 +821,74 @@ namespace
 		return 0;
 	}
 
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_HUNT70_V1: from level seventy a bot hunts
+	// only where it still earns experience. Sohan, the Hwang Temple, the first
+	// Spider Dungeon and everything under them sit fifteen levels and more under
+	// it and pay next to nothing, and the draw below sent two bots in three of
+	// seventy there. Now the ground is the second Spider Dungeon (60-68, to its
+	// ceiling, with the dungeon's gear), Doyyumhwaji (69-72) and the Red Forest
+	// (74-82; the Forest, 65-71, for a bot of seventy that the Red Forest does
+	// not open yet). A Metin hunter takes Doyyumhwaji or the Red Forest, the two
+	// with stones, and a bot in a party of PLAYERBOT_HUNT70_GROUP_MEMBERS or
+	// more goes to the two maps with room for a group, V2 and the Red Forest.
+	// The Grotto rows from seventy-eight and the Temple of Ochao stand as they
+	// were; this is the draw under them.
+	bool IsPlayerBotNoExpGroundAt(long map, int level)
+	{
+		if (level < PLAYERBOT_HUNT70_MIN_LEVEL)
+			return false;
+		return map == PLAYERBOT_MAP_SOHAN || map == PLAYERBOT_MAP_HWANG || map == PLAYERBOT_MAP_SPIDER_V1 ||
+				map == PLAYERBOT_MAP_ORC_VALLEY || map == PLAYERBOT_MAP_DESERT ||
+				(map == PLAYERBOT_MAP_FOREST && IsPlayerBotMapOverCeiling(PLAYERBOT_MAP_FOREST, level));
+	}
+
+	// The experience ground for a bot of seventy and up, by the draw; 0 when
+	// none of it is hosted here (the caller keeps its own answer then).
+	long GetPlayerBotHunt70Map(LPCHARACTER ch, int level, DWORD draw, bool stoneHunter, bool spiderAllowed)
+	{
+		if (!ch || level < PLAYERBOT_HUNT70_MIN_LEVEL)
+			return 0;
+		using namespace playerbot_progression;
+		const long red = level >= (int)MapFrom(MAP_RED_FOREST) && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_RED_FOREST)
+				? PLAYERBOT_MAP_RED_FOREST
+				: (level >= (int)MapFrom(MAP_FOREST) && !IsPlayerBotMapOverCeiling(PLAYERBOT_MAP_FOREST, level) &&
+					IsPlayerBotMapHostedHere(PLAYERBOT_MAP_FOREST) ? PLAYERBOT_MAP_FOREST : 0);
+		const long fire = level >= (int)MapFrom(MAP_FIRE_LAND) && level <= (int)MapTo(MAP_FIRE_LAND) &&
+				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_FIRE_LAND) ? PLAYERBOT_MAP_FIRE_LAND : 0;
+		const long v2 = spiderAllowed && !stoneHunter && level >= (int)MapFrom(MAP_SPIDER2) &&
+				!IsPlayerBotMapOverCeiling(PLAYERBOT_MAP_SPIDER_V2, level) &&
+				IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SPIDER_V2) &&
+				IsPlayerBotSpiderGearReady(ch, PLAYERBOT_MAP_SPIDER_V2) ? PLAYERBOT_MAP_SPIDER_V2 : 0;
+		// A Metin hunter: the two maps with stones (the Forest has its own
+		// too, but only the Red Forest is its ground here).
+		if (stoneHunter)
+		{
+			const long stoneRed = red == PLAYERBOT_MAP_RED_FOREST ? red : 0;
+			if (stoneRed && fire)
+				return (draw % 2U) == 0 ? stoneRed : fire;
+			return stoneRed ? stoneRed : fire;
+		}
+		LPPARTY party = ch->GetParty();
+		const bool group = party && (int)party->GetMemberCount() >= PLAYERBOT_HUNT70_GROUP_MEMBERS;
+		long rows[3];
+		int n = 0;
+		if (group)
+		{
+			if (v2) rows[n++] = v2;
+			if (red) rows[n++] = red;
+			if (n == 0 && fire) rows[n++] = fire;
+		}
+		else
+		{
+			if (v2) rows[n++] = v2;
+			if (fire) rows[n++] = fire;
+			if (red) rows[n++] = red;
+		}
+		if (n == 0)
+			return 0;
+		return rows[(draw / 7U) % (DWORD)n];
+	}
+
 	// A new draw after the town: the bot is in a village and has not set off.
 	void RedrawPlayerBotSpiderSession(TPlayerBotAIState& state)
 	{
@@ -966,6 +1034,16 @@ namespace
 				return spider;
 			if (role != s_mapPlayerBotAIStates.end() && role->second.dwSpiderSessionRoll != 0)
 				draw = PlayerBotNavHash(ch->GetPlayerID() ^ role->second.dwSpiderSessionRoll ^ 0x45534f54U);
+		}
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_HUNT70_V1: seventy to the Grotto's
+		// first level (GetPlayerBotHunt70Map), only where experience is earned;
+		// a Metin hunter at any level from seventy (the Grottos have no stone,
+		// and it was sent to Sohan).
+		if ((int)level >= PLAYERBOT_HUNT70_MIN_LEVEL && ((int)level < (int)MapFrom(MAP_GROTTO1) || stoneHunter))
+		{
+			const long hunt70 = GetPlayerBotHunt70Map(ch, (int)level, draw, stoneHunter, true);
+			if (hunt70 != 0)
+				return hunt70;
 		}
 		if (level >= MapFrom(MAP_FIRE_LAND) && level <= MapTo(MAP_FIRE_LAND) &&
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x464c414dU) % 3U == 0)
@@ -1140,7 +1218,18 @@ namespace
 		if (IsPlayerBotSpiderMap(map) && !IsPlayerBotSpiderGearReady(ch, map) &&
 				map != GetPlayerBotHuntingMobHome(GetPlayerBotBiologistHuntMob(ch)) &&
 				map != GetPlayerBotGuildErrandMap(ch))
+		{
 			map = PlayerBotMapUnderCeiling(PLAYERBOT_MAP_SOHAN, (int)ch->GetLevel(), false);
+			// MT2009_PLUS_UPSTREAM_BOTLOGIC_HUNT70_V1: from seventy not to
+			// Sohan, where nothing pays, but to Doyyumhwaji or the Red Forest.
+			if (IsPlayerBotNoExpGroundAt(map, (int)ch->GetLevel()))
+			{
+				const long hunt70 = GetPlayerBotHunt70Map(ch, (int)ch->GetLevel(),
+						PlayerBotNavHash(ch->GetPlayerID() ^ 0x48373030U), false, false);
+				if (hunt70 != 0)
+					map = hunt70;
+			}
+		}
 		// MT2009_PLUS_SIDEKICK_TRIP_V1: a companion that could not get there
 		// takes the next ground down for a while.
 		if (map != 0 && IsPlayerBotSidekickTripBlocked(ch, map))

@@ -202,6 +202,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_energy_shards.h" // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii from the merchant's scrap at the Alchemist, their counter caps; the fixed shard and talisman prices
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
+#include "playerbot_upstream_botlogic.h" // MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the surplus level-30 weapon to the anvil, the next tier made ready, the own box before the market
 #include "playerbot_bonus.h"
 #include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the temple's map and clock, before the bots' knowledge of it
 #include "playerbot_ochao_bots.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the bots in the Temple of Ochao
@@ -2881,33 +2882,35 @@ namespace
 			return;
 #endif
 
-		// The skill the books would pick: the build's primary first, then the
-		// highest grade.
-		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
-		const int beanLift = GetPlayerBotZenBeanLift(ch);
-		DWORD skillVnum = 0;
-		int bestPriority = INT_MIN;
-		for (BYTE i = 0; i < build.bSkillCount; ++i)
-		{
-			const DWORD vnum = build.dwSkills[i];
-			if (vnum == 0 || ch->GetSkillMasterType(vnum) != SKILL_GRAND_MASTER)
-				continue;
-			const int level = ch->GetSkillLevel(vnum);
-			if (level < 30 || level >= 40)
-				continue;
-			// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: the beans in the bag count.
-			if (ch->GetRealAlignment() + beanLift < GetPlayerBotGrandMasterRankCost(level)) continue;
-			const int priority = (vnum == build.dwPrimaryMaxSkill ? 10000 : 0) + level;
-			if (priority > bestPriority)
-			{
-				bestPriority = priority;
-				skillVnum = vnum;
-			}
-		}
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_SPIRIT_STONE_V1: the skill next in the
+		// build's own order (GetPlayerBotGrandMasterOrderSkill), not the
+		// primary and then the highest grade the rank could pay for; one short
+		// of rank waits for it - a ripe Owoc Zycia is eaten here, and the
+		// counters sell it beans and fruit (PlayerBotNeedsTrainingRank).
+		const DWORD skillVnum = GetPlayerBotGrandMasterOrderSkill(ch);
 		if (skillVnum == 0)
 			return;
-
+		int beanLift = GetPlayerBotZenBeanLift(ch);
 		const int level = ch->GetSkillLevel(skillVnum);
+		if (ch->GetRealAlignment() >= 0 && ch->GetRealAlignment() + beanLift < GetPlayerBotGrandMasterRankCost(level))
+		{
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM fruit = ch->GetInventoryItem(cell);
+				if (!fruit || fruit->GetCell() != cell || fruit->GetVnum() != PLAYERBOT_LIFE_FRUIT_VNUM ||
+						fruit->isLocked() || fruit->IsExchanging())
+					continue;
+				const int before = ch->GetRealAlignment();
+				ch->UseItem(TItemPos(INVENTORY, cell));
+				if (ch->GetRealAlignment() != before)
+					sys_log(0, "PLAYERBOT_AI: life fruit for the spirit stone pid=%u name=%s skill=%u level=%d rank=%d->%d left=%d",
+							ch->GetPlayerID(), ch->GetName(), skillVnum, level, before, ch->GetRealAlignment(),
+							(int)ch->CountSpecifyItem(PLAYERBOT_LIFE_FRUIT_VNUM));
+				break;
+			}
+			beanLift = GetPlayerBotZenBeanLift(ch);
+		}
+
 		const int rank = ch->GetRealAlignment();
 		const int cost = GetPlayerBotGrandMasterRankCost(level) * (rank < 0 ? 2 : 1);
 		if (rank + beanLift - cost < 0)
