@@ -258,7 +258,9 @@ def chests():
         (31238, 'Polyskujaca Muszla'),
         (83065, 'Losowa Skrzynia Skarbow - another chest inside'),
         (83066, 'Los. Klucz do Skrz. Sk. - a key or Yang'),
-        (83067, 'Skrzynia z Bransoletka (Idealny Klucz 83054)'))]
+        (83067, 'Skrzynia z Bransoletka (Idealny Klucz 83054)'),
+        # MT2009_PLUS_CHEST_DROPS_V2: a row of 83065 that had no group (opened to nothing) - the sheet of 20 October
+        (50249, 'Skrzynia Triumfu - inside Losowa Skrzynia Skarbow (83065)'))]
 
 
 def write_sig(byv):

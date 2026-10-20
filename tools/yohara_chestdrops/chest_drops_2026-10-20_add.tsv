@@ -1,0 +1,124 @@
+# MT2009_PLUS_CHEST_DROPS_V2: the owner's sheet of 20 October 2026 (Metin2_Wszystkie_skrzynie_drop.xlsx, sheet "Drop",
+# metin2alerts, read 16 October 2026, community data, estimated) - only the chests of ours that had no contents at all:
+# Skrzynia Triumfu (50249, inside Losowa Skrzynia Skarbow 83065) and the Zodiac Temple's rewards Skarb Aureolin /
+# Skarb Aventurin / Gwiezdny Skarb (33026-33028, playerbot_zodiac_char.cpp ZTT_REWARD). Columns as in
+# chest_drops_2026-10-15_v2.tsv; the other 31 chests of that file are the same in this sheet.
+chest	chest_name	item	count	chance	vnum	time
+33026	Skarb Aureolin	Szarfa Yin (prosta)	1	0.0795756	86011	
+33026	Skarb Aureolin	Szarfa Chen (prosta)	1	0.0795756	86021	
+33026	Skarb Aureolin	Szarfa Wu (prosta)	1	0.0795756	86031	
+33026	Skarb Aureolin	Szarfa Shen (prosta)	1	0.0795756	86041	
+33026	Skarb Aureolin	Szarfa Xu (prosta)	1	0.0795756	86051	
+33026	Skarb Aureolin	Szarfa Zi (prosta)	1	0.0795755	86001	
+33026	Skarb Aureolin	Insygnia Bing	100	0.0318303	33015	
+33026	Skarb Aureolin	Insygnia Mu	100	0.0318303	33017	
+33026	Skarb Aureolin	Insygnia Xin	100	0.0318303	33020	
+33026	Skarb Aureolin	Insygnia Gui	100	0.0318303	33022	
+33026	Skarb Aureolin	Insygnia Jai	100	0.0318302	33013	
+33026	Skarb Aureolin	Insygnia Yi	100	0.0318302	33014	
+33026	Skarb Aureolin	Insygnia Ding	100	0.0318302	33016	
+33026	Skarb Aureolin	Insygnia Gee	100	0.0318302	33018	
+33026	Skarb Aureolin	Insygnia Geng	100	0.0318302	33019	
+33026	Skarb Aureolin	Insygnia Ren	100	0.0318302	33021	
+33026	Skarb Aureolin	Pancerz Zodiaku+0	1	0.0291778	21200	
+33026	Skarb Aureolin	Zbroja Zodiaku+0	1	0.0291777	19290	
+33026	Skarb Aureolin	Zbroja Płytowa Zodiaku+0	1	0.0291777	19690	
+33026	Skarb Aureolin	Ubranie Zodiaku+0	1	0.0291777	19490	
+33026	Skarb Aureolin	Szata Zodiaku+0	1	0.0291777	19890	
+33026	Skarb Aureolin	Mikstura Ataku +15	2	0.0106101	76017	30m
+33026	Skarb Aureolin	Wino z Kwiatu Brzoskwini	1	0.0106101	76000	
+33026	Skarb Aureolin	Cor Draconis (surowe)	5	0.0106101	50260	
+33026	Skarb Aureolin	Czerwona Mikstura(Ś)	200	0.0053051	27002	
+33026	Skarb Aureolin	Niebieska Mikstura(Ś)	200	0.0053051	27005	
+33026	Skarb Aureolin	Czerwona Mikstura(D)	200	0.005305	27003	
+33026	Skarb Aureolin	Niebieska Mikstura(D)	200	0.005305	27006	
+33026	Skarb Aureolin	Mikstura Pośpiechu	5	0.005305	76003	30m
+33027	Skarb Aventurin	Szarfa Wu (prosta)	1	0.0731708	86031	
+33027	Skarb Aventurin	Szarfa Zi (prosta)	1	0.0731707	86001	
+33027	Skarb Aventurin	Szarfa Yin (prosta)	1	0.0731707	86011	
+33027	Skarb Aventurin	Szarfa Chen (prosta)	1	0.0731707	86021	
+33027	Skarb Aventurin	Szarfa Shen (prosta)	1	0.0731707	86041	
+33027	Skarb Aventurin	Szarfa Xu (prosta)	1	0.0731707	86051	
+33027	Skarb Aventurin	Insygnia Zi	100	0.0292683	33001	
+33027	Skarb Aventurin	Insygnia Chou	100	0.0292683	33002	
+33027	Skarb Aventurin	Insygnia Yin	100	0.0292683	33003	
+33027	Skarb Aventurin	Insygnia Chen	100	0.0292683	33005	
+33027	Skarb Aventurin	Insygnia Si	100	0.0292683	33006	
+33027	Skarb Aventurin	Insygnia Wu	100	0.0292683	33007	
+33027	Skarb Aventurin	Insygnia Wei	100	0.0292683	33008	
+33027	Skarb Aventurin	Insygnia Shen	100	0.0292683	33009	
+33027	Skarb Aventurin	Insygnia Yu	100	0.0292683	33010	
+33027	Skarb Aventurin	Insygnia Xu	100	0.0292683	33011	
+33027	Skarb Aventurin	Insygnia Hai	100	0.0292683	33012	
+33027	Skarb Aventurin	Insygnia Mao	100	0.0292682	33004	
+33027	Skarb Aventurin	Ostrze Zodiaku+0	1	0.0195122	300	
+33027	Skarb Aventurin	Miecz Zodiaku+0	1	0.0195122	310	
+33027	Skarb Aventurin	Sztylet Zodiaku+0	1	0.0195122	1180	
+33027	Skarb Aventurin	Łuk Zodiaku+0	1	0.0195122	2200	
+33027	Skarb Aventurin	Glewia Zodiaku+0	1	0.0195122	3220	
+33027	Skarb Aventurin	Dzwon Zodiaku+0	1	0.0195122	5160	
+33027	Skarb Aventurin	Szpon Zodiaku+0	1	0.0195122	6120	
+33027	Skarb Aventurin	Wachlarz Zodiaku+0	1	0.0195122	7300	
+33027	Skarb Aventurin	Mikstura Ataku +15	2	0.0097561	76017	30m
+33027	Skarb Aventurin	Wino z Kwiatu Brzoskwini	1	0.0097561	76000	
+33027	Skarb Aventurin	Cor Draconis (surowe)	5	0.0097561	50260	
+33027	Skarb Aventurin	Czerwona Mikstura(Ś)	200	0.0048781	27002	
+33027	Skarb Aventurin	Niebieska Mikstura(Ś)	200	0.0048781	27005	
+33027	Skarb Aventurin	Mikstura Pośpiechu	5	0.0048781	76003	30m
+33027	Skarb Aventurin	Czerwona Mikstura(D)	200	0.004878	27003	
+33027	Skarb Aventurin	Niebieska Mikstura(D)	200	0.004878	27006	
+33028	Gwiezdny Skarb	Zbroja Płytowa Zodiaku+0	1	0.0818599	19690	
+33028	Gwiezdny Skarb	Szata Zodiaku+0	1	0.0818599	19890	
+33028	Gwiezdny Skarb	Zbroja Zodiaku+0	1	0.0818598	19290	
+33028	Gwiezdny Skarb	Ubranie Zodiaku+0	1	0.0818598	19490	
+33028	Gwiezdny Skarb	Pancerz Zodiaku+0	1	0.0818598	21200	
+33028	Gwiezdny Skarb	Ostrze Zodiaku+0	1	0.0586117	300	
+33028	Gwiezdny Skarb	Sztylet Zodiaku+0	1	0.0586117	1180	
+33028	Gwiezdny Skarb	Łuk Zodiaku+0	1	0.0586117	2200	
+33028	Gwiezdny Skarb	Dzwon Zodiaku+0	1	0.0586117	5160	
+33028	Gwiezdny Skarb	Wachlarz Zodiaku+0	1	0.0586117	7300	
+33028	Gwiezdny Skarb	Miecz Zodiaku+0	1	0.0586116	310	
+33028	Gwiezdny Skarb	Glewia Zodiaku+0	1	0.0586116	3220	
+33028	Gwiezdny Skarb	Szpon Zodiaku+0	1	0.0586116	6120	
+33028	Gwiezdny Skarb	Szarfa Zi (prosta)	1	0.0170269	86001	
+33028	Gwiezdny Skarb	Szarfa Chen (prosta)	1	0.0170269	86021	
+33028	Gwiezdny Skarb	Szarfa Shen (prosta)	1	0.0170269	86041	
+33028	Gwiezdny Skarb	Szarfa Xu (prosta)	1	0.0170269	86051	
+33028	Gwiezdny Skarb	Szarfa Yin (prosta)	1	0.0170268	86011	
+33028	Gwiezdny Skarb	Szarfa Wu (prosta)	1	0.0170268	86031	
+33028	Gwiezdny Skarb	Talizman Ognia+0	1	0.0032744	9600	
+33028	Gwiezdny Skarb	Talizman Ziemi+0	1	0.0032744	10060	
+33028	Gwiezdny Skarb	Talizman Lodu+0	1	0.0032744	9830	
+33028	Gwiezdny Skarb	Talizman Błyskawicy+0	1	0.0032744	10750	
+33028	Gwiezdny Skarb	Talizman Mroku+0	1	0.0032744	10290	
+33028	Gwiezdny Skarb	Talizman Wiatru+0	1	0.0032743	10520	
+50249	Skrzynia Triumfu	Czerwona Mikstura(M)	100	0.1	27001	
+50249	Skrzynia Triumfu	Niebieska Mikstura(M)	100	0.075	27004	
+50249	Skrzynia Triumfu	Czerwona Mikstura(Ś)	50	0.07	27002	
+50249	Skrzynia Triumfu	EXP	30000	0.07	9999999	
+50249	Skrzynia Triumfu	Niebieska Mikstura(Ś)	50	0.055	27005	
+50249	Skrzynia Triumfu	Czerwona Mikstura(D)	10	0.05	27003	
+50249	Skrzynia Triumfu	EXP	50000	0.04	9999999	
+50249	Skrzynia Triumfu	Niebieska Mikstura(D)	10	0.035	27006	
+50249	Skrzynia Triumfu	Pierścień Lucy	1	0.035	70049	4h
+50249	Skrzynia Triumfu	Igła Skorpiona	1	0.026	30045	
+50249	Skrzynia Triumfu	Nieznany Talizman	1	0.026	30051	
+50249	Skrzynia Triumfu	Skóra Tygrysa	1	0.026	30038	
+50249	Skrzynia Triumfu	Futro Wilka+	1	0.026	30070	
+50249	Skrzynia Triumfu	Futro Białego Tygrysa	1	0.026	30023	
+50249	Skrzynia Triumfu	Stłuczona Porcelana	1	0.026	30033	
+50249	Skrzynia Triumfu	Kłąb	1	0.026	30011	
+50249	Skrzynia Triumfu	Skóra Wilka	1	0.026	30151	
+50249	Skrzynia Triumfu	Ogon Węża+	1	0.026	30082	
+50249	Skrzynia Triumfu	Krem Do Twarzy	1	0.026	30035	
+50249	Skrzynia Triumfu	Żółć Niedźwiedzia	1	0.026	30010	
+50249	Skrzynia Triumfu	Szpon Skorpiona	1	0.026	30055	
+50249	Skrzynia Triumfu	Ząb Orka	1	0.026	30006	
+50249	Skrzynia Triumfu	Nos Świni	1	0.026	30003	
+50249	Skrzynia Triumfu	Ozdobna Spinka Do Włosów	1	0.026	30017	
+50249	Skrzynia Triumfu	EXP	70000	0.02	9999999	
+50249	Skrzynia Triumfu	Peleryna Maskująca	1	0.02	70048	4h
+50249	Skrzynia Triumfu	Rękawica Króla Przepow.	1	0.02	70051	4h
+50249	Skrzynia Triumfu	EXP	100000	0.01	9999999	
+50249	Skrzynia Triumfu	Fasolka Zen	1	0.009	70102	
+50249	Skrzynia Triumfu	Zwój Błogosławieństwa	1	0.001	72301	

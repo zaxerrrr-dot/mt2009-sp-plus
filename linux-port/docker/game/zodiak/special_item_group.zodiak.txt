@@ -43,3 +43,101 @@ Group	MT2009_zodiac_mats_jungle
 	1	30616	1	50 -- Dwutlenek Tytanu
 	2	30617	1	50 -- Agat
 }
+
+# MT2009_PLUS_CHEST_DROPS_V2: the Zodiac Temple's rewards (playerbot_zodiac_char.cpp ZTT_REWARD: yellow / green / both
+# colours) had no group and opened to nothing - their rows from the owner's sheet of 20 October 2026 through
+# tools/yohara_chestdrops (written from chestdrops.py, kept equal by verify_chestdrops.py).
+# MT2009_PLUS_CHEST_DROPS_V1: 33026 - 22 rows from the owner's sheet of 20 October 2026 (tools/yohara_chestdrops),
+# weights of 100000 (/ 1000 = %), one row an opening.
+# Left out (renormalised): Szarfa Yin (prosta) 7.958% - not in our world;
+#   Szarfa Chen (prosta) 7.958% - not in our world; Szarfa Wu (prosta) 7.958% - not in our world;
+#   Szarfa Shen (prosta) 7.958% - not in our world; Szarfa Xu (prosta) 7.958% - not in our world;
+#   Szarfa Zi (prosta) 7.958% - not in our world; Pancerz Zodiaku+0 2.918% - the Lycan's (no such class here)
+Group	MT2009_zodiac_reward_33026
+{
+	Vnum	33026 -- Skarb Aureolin
+	1	33015	100	6452 -- Insygnia Bing x100
+	2	33017	100	6452 -- Insygnia Mu x100
+	3	33020	100	6452 -- Insygnia Xin x100
+	4	33022	100	6452 -- Insygnia Gui x100
+	5	33013	100	6452 -- Insygnia Jai x100
+	6	33014	100	6452 -- Insygnia Yi x100
+	7	33016	100	6452 -- Insygnia Ding x100
+	8	33018	100	6452 -- Insygnia Gee x100
+	9	33019	100	6452 -- Insygnia Geng x100
+	10	33021	100	6452 -- Insygnia Ren x100
+	11	19290	1	5914 -- Zbroja Zodiaku+0
+	12	19690	1	5914 -- Zbroja Plytowa Zodiaku+0
+	13	19490	1	5914 -- Ubranie Zodiaku+0
+	14	19890	1	5914 -- Szata Zodiaku+0
+	15	76017	2	2151 -- Mikstura Ataku +15 x2 (30m)
+	16	76000	1	2151 -- Wino z Kwiatu Brzoskwini
+	17	50260	5	2151 -- Cor Draconis (surowe) x5
+	18	27002	200	1075 -- Czerwona Mikstura(S) x200
+	19	27005	200	1075 -- Niebieska Mikstura(S) x200
+	20	27003	200	1075 -- Czerwona Mikstura(D) x200
+	21	27006	200	1075 -- Niebieska Mikstura(D) x200
+	22	76003	5	1075 -- Mikstura Pospiechu x5 (30m)
+}
+# MT2009_PLUS_CHEST_DROPS_V1: 33027 - 27 rows from the owner's sheet of 20 October 2026 (tools/yohara_chestdrops),
+# weights of 100000 (/ 1000 = %), one row an opening.
+# Left out (renormalised): Szarfa Wu (prosta) 7.317% - not in our world;
+#   Szarfa Zi (prosta) 7.317% - not in our world; Szarfa Yin (prosta) 7.317% - not in our world;
+#   Szarfa Chen (prosta) 7.317% - not in our world; Szarfa Shen (prosta) 7.317% - not in our world;
+#   Szarfa Xu (prosta) 7.317% - not in our world; Szpon Zodiaku+0 1.951% - the Lycan's (no such class here)
+Group	MT2009_zodiac_reward_33027
+{
+	Vnum	33027 -- Skarb Aventurin
+	1	33001	100	5405 -- Insygnia Zi x100
+	2	33002	100	5405 -- Insygnia Chou x100
+	3	33003	100	5405 -- Insygnia Yin x100
+	4	33005	100	5405 -- Insygnia Chen x100
+	5	33006	100	5405 -- Insygnia Si x100
+	6	33007	100	5405 -- Insygnia Wu x100
+	7	33008	100	5405 -- Insygnia Wei x100
+	8	33009	100	5405 -- Insygnia Shen x100
+	9	33010	100	5405 -- Insygnia Yu x100
+	10	33011	100	5405 -- Insygnia Xu x100
+	11	33012	100	5405 -- Insygnia Hai x100
+	12	33004	100	5405 -- Insygnia Mao x100
+	13	300	1	3604 -- Ostrze Zodiaku+0
+	14	310	1	3604 -- Miecz Zodiaku+0
+	15	1180	1	3604 -- Sztylet Zodiaku+0
+	16	2200	1	3604 -- Luk Zodiaku+0
+	17	3220	1	3604 -- Glewia Zodiaku+0
+	18	5160	1	3604 -- Dzwon Zodiaku+0
+	19	7300	1	3604 -- Wachlarz Zodiaku+0
+	20	76017	2	1802 -- Mikstura Ataku +15 x2 (30m)
+	21	76000	1	1802 -- Wino z Kwiatu Brzoskwini
+	22	50260	5	1802 -- Cor Draconis (surowe) x5
+	23	27002	200	901 -- Czerwona Mikstura(S) x200
+	24	27005	200	901 -- Niebieska Mikstura(S) x200
+	25	76003	5	901 -- Mikstura Pospiechu x5 (30m)
+	26	27003	200	901 -- Czerwona Mikstura(D) x200
+	27	27006	200	901 -- Niebieska Mikstura(D) x200
+}
+# MT2009_PLUS_CHEST_DROPS_V1: 33028 - 11 rows from the owner's sheet of 20 October 2026 (tools/yohara_chestdrops),
+# weights of 100000 (/ 1000 = %), one row an opening.
+# Left out (renormalised): Pancerz Zodiaku+0 8.186% - the Lycan's (no such class here);
+#   Szpon Zodiaku+0 5.861% - the Lycan's (no such class here); Szarfa Zi (prosta) 1.703% - not in our world;
+#   Szarfa Chen (prosta) 1.703% - not in our world; Szarfa Shen (prosta) 1.703% - not in our world;
+#   Szarfa Xu (prosta) 1.703% - not in our world; Szarfa Yin (prosta) 1.703% - not in our world;
+#   Szarfa Wu (prosta) 1.703% - not in our world; Talizman Ognia+0 0.327% - not in our world;
+#   Talizman Ziemi+0 0.327% - not in our world; Talizman Lodu+0 0.327% - not in our world;
+#   Talizman Blyskawicy+0 0.327% - not in our world; Talizman Mroku+0 0.327% - not in our world;
+#   Talizman Wiatru+0 0.327% - not in our world
+Group	MT2009_zodiac_reward_33028
+{
+	Vnum	33028 -- Gwiezdny Skarb
+	1	19690	1	11096 -- Zbroja Plytowa Zodiaku+0
+	2	19890	1	11096 -- Szata Zodiaku+0
+	3	19290	1	11096 -- Zbroja Zodiaku+0
+	4	19490	1	11096 -- Ubranie Zodiaku+0
+	5	300	1	7945 -- Ostrze Zodiaku+0
+	6	1180	1	7945 -- Sztylet Zodiaku+0
+	7	2200	1	7945 -- Luk Zodiaku+0
+	8	5160	1	7945 -- Dzwon Zodiaku+0
+	9	7300	1	7945 -- Wachlarz Zodiaku+0
+	10	310	1	7945 -- Miecz Zodiaku+0
+	11	3220	1	7945 -- Glewia Zodiaku+0
+}

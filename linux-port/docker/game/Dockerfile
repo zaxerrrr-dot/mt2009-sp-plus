@@ -1337,7 +1337,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/atlantyda-add \
 # (data/dungeon/zodiac: the portals of each weekday, the merchant), the monsters' motions (data/monster/12zi_*,
 # cz_*: the server times attacks by them), 51 groups (vnums 2608-2937, none of ours), 41 server texts in Polish
 # (locale_string.zodiak.txt), the map's name for the quests, /goto zodiac for game masters and Zlota Skrzynia
-# Zodiaku's groups (special_item_group.zodiak.txt, MT2009_PLUS_ZODIAC_ITEMS_V1).
+# Zodiaku's groups (special_item_group.zodiak.txt, MT2009_PLUS_ZODIAC_ITEMS_V1) with the temple's rewards Skarb
+# Aureolin / Skarb Aventurin / Gwiezdny Skarb (33026-33028, MT2009_PLUS_CHEST_DROPS_V2).
 COPY zodiak/ /tmp/zodiak-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -1366,10 +1367,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/zodiak-add \
       printf '\r\n-- MT2009_PLUS_ZODIAC_V1\r\ntranslate.general.map_names[358] = "\214wi\271tynia Zodiaku"\r\n' >> "$f"; \
     done \
  && f="$L/special_item_group.txt" \
- && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(33033|951311)([^0-9]|$)' "$f" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(33033|951311|33026|33027|33028)([^0-9]|$)' "$f" \
  && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
  && cat "$A/special_item_group.zodiak.txt" >> "$f" \
- && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(33033|951311)([^0-9]|$)' "$f")" = 2 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(33033|951311|33026|33027|33028)([^0-9]|$)' "$f")" = 5 \
  && F="$L/mob_drop_item.txt" \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_zodiak_mat' "$F" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
@@ -2390,10 +2391,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps2-add \
  && cat "$A/mob_drop_item.yohara_maps2.txt" >> "$F" \
  && test "$(grep -c -i -E '^[[:blank:]]*mob[[:blank:]]+(67(1[89]|2[0-9]|3[01]|5[89]|6[0-4]|7[0-6]|8[4-9])|68(7[5-9]|8[0-8])|806[3-6]|8077|862[67])([^0-9]|$)' "$F")" = 56 \
  && G="$L/special_item_group.txt" \
- && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(31238|83065|83066|83067)([^0-9]|$)' "$G" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+(31238|83065|83066|83067|50249)([^0-9]|$)' "$G" \
  && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
  && cat "$A/special_item_group.yohara_items2.txt" >> "$G" \
- && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(31238|83065|83066|83067)([^0-9]|$)' "$G")" = 4 \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+(31238|83065|83066|83067|50249)([^0-9]|$)' "$G")" = 5 \
  && C="$L/quest/libs/crafting/crafting_data.lua" \
  && LC_ALL=C sed -i -E 's/^([[:blank:]]*\[20(06[0-9]|07[0-2])\] = \{50(62[1-9]|63[0-3]), 50635, 50636, 50637, 50638)\},(\r?)$/\1, 50661, 50662, 50663, 50664},\4/' "$C" \
  && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*\[20(06[0-9]|07[0-2])\] = \{50(62[1-9]|63[0-3]), 50635, 50636, 50637, 50638, 50661, 50662, 50663, 50664\},' "$C")" -eq 12 \

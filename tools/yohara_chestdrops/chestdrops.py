@@ -18,6 +18,11 @@ row at the owner's own chance (Skrzynia Hydry: Magiczny Kamien 4%, 13 October), 
 EXTRA adds rows the sheet lacks at a chance of their own (Skrzynia Berana-Setaou 54700: the pl-wiki's items without a
 rate, MT2009_PLUS_BERAN_CHEST_V1), the sheet's rows scaled to what is left.
 
+MT2009_PLUS_CHEST_DROPS_V2: the owner's sheet of 20 October 2026 (all ~370 chests, read 16 October; its 31 chests of
+the first sheet are the same) adds chest_drops_2026-10-20_add.tsv - only our chests that had no group at all: Skrzynia
+Triumfu (50249, a row of Losowa Skrzynia Skarbow 83065; group from tools/yohara_items/gen_yitems2.py) and the Zodiac
+Temple's Skarb Aureolin / Skarb Aventurin / Gwiezdny Skarb (33026-33028; game/zodiak/special_item_group.zodiak.txt).
+
 Example: python3 tools/yohara_chestdrops/chestdrops.py 54705     (prints the group's rows and what is left out)
 """
 import os
@@ -26,6 +31,10 @@ import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SHEET = os.path.join(HERE, 'chest_drops_2026-10-15_v2.tsv')
+# MT2009_PLUS_CHEST_DROPS_V2: the chests the first sheet lacks (the owner's sheet of 20 October 2026)
+SHEETS = (SHEET, os.path.join(HERE, 'chest_drops_2026-10-20_add.tsv'))
+SHEET_DATE = {SHEET: '15 October 2026', SHEETS[1]: '20 October 2026'}
+SOURCE = {}                                     # our chest -> the sheet's date (filled by sheet())
 SCALE = 100000
 
 # the sheet's chest -> our chest (the official Razador / Nemere chests are 50270 / 50271 here, the dungeons' quests)
@@ -90,8 +99,14 @@ SKIP = {
     28245: 'the engine draws no such stone',
     28345: 'the engine draws no such stone',
 }
+# MT2009_PLUS_CHEST_DROPS_V2: the Zodiac treasures' rows we lack (as Zlota Skrzynia Zodiaku 33033 leaves them out)
+for _v in (86001, 86011, 86021, 86031, 86041, 86051):              # Szarfa Zi/Yin/Chen/Wu/Shen/Xu (prosta)
+    SKIP[_v] = 'not in our world'
+for _v in (9600, 9830, 10060, 10290, 10520, 10750):                # Talizman Ognia/Lodu/Ziemi/Mroku/Wiatru/Blyskawicy+0
+    SKIP[_v] = 'not in our world'
 for _v in (6045, 6046, 6047, 6073, 6074, 6093, 6130, 6150, 21073, 21074, 21075, 21076, 21077, 21090, 21093, 21290,
-           50524, 50568, 50576, 28012, 28112, 28212, 28312, 28412):     # 280x2: Kamien Duszy Likanow
+           50524, 50568, 50576, 28012, 28112, 28212, 28312, 28412,      # 280x2: Kamien Duszy Likanow
+           6120, 21200):                                                # Szpon / Pancerz Zodiaku (V2, as 33033)
     SKIP[_v] = _LYCAN
 # MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia out of every drop and chest (the owner, 15 October 2026, fix 7)
 SKIP[50124] = 'no Sprochniala Skrzynia in any drop - owner 15.10'
@@ -131,12 +146,17 @@ def ascii_pl(s):
 def sheet():
     """our chest -> [(official chest, item name, count, chance, official vnum, time)] in the sheet's order"""
     out = {}
-    for line in open(SHEET, encoding='utf-8'):
-        t = line.rstrip('\n').split('\t')
-        if len(t) != 7 or not t[0].isdigit():
-            continue
-        c = int(t[0])
-        out.setdefault(OUR_CHEST.get(c, c), []).append((c, t[2], int(t[3]), float(t[4]), int(t[5]), t[6]))
+    for path in SHEETS:
+        part = {}
+        for line in open(path, encoding='utf-8'):
+            t = line.rstrip('\n').split('\t')
+            if len(t) != 7 or not t[0].isdigit():
+                continue
+            c = int(t[0])
+            part.setdefault(OUR_CHEST.get(c, c), []).append((c, t[2], int(t[3]), float(t[4]), int(t[5]), t[6]))
+        assert not set(part) & set(out), (path, 'a chest of an earlier sheet', sorted(set(part) & set(out)))
+        out.update(part)
+        SOURCE.update((c, SHEET_DATE[path]) for c in part)
     return out
 
 
@@ -192,8 +212,9 @@ def table(chest):
 def comment(chest):
     """the comment lines before a chest's group: the source and the sheet's rows left out"""
     rows, skipped = table(chest)
-    L = ['# MT2009_PLUS_CHEST_DROPS_V1: %d - %d rows from the owner\'s sheet of 15 October 2026 (tools/yohara_chestdrops),'
-         % (chest, len(rows) - len(EXTRA.get(chest, []))), '# weights of %d (/ 1000 = %%), one row an opening.' % SCALE]
+    L = ['# MT2009_PLUS_CHEST_DROPS_V1: %d - %d rows from the owner\'s sheet of %s (tools/yohara_chestdrops),'
+         % (chest, len(rows) - len(EXTRA.get(chest, [])), SOURCE[chest]),
+         '# weights of %d (/ 1000 = %%), one row an opening.' % SCALE]
     if chest in FIXED:
         L.append('# The owner\'s own chance kept: ' + ', '.join('vnum %d weight %d' % kv for kv in sorted(FIXED[chest].items())) +
                  ' (the rest scaled to what is left).')

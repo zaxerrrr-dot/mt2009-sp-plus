@@ -62,3 +62,40 @@ Group	MT2009_yitems2_83067
 	17	76003	1	2632 -- Mikstura Pospiechu (30m)
 	18	76008	1	2632 -- Medal Smoka
 }
+
+# MT2009_PLUS_CHEST_DROPS_V1: 50249 - 30 rows from the owner's sheet of 20 October 2026 (tools/yohara_chestdrops),
+# weights of 100000 (/ 1000 = %), one row an opening.
+Group	MT2009_yitems2_50249
+{
+	Vnum	50249 -- Skrzynia Triumfu - inside Losowa Skrzynia Skarbow (83065)
+	1	27001	100	10000 -- Czerwona Mikstura(M) x100
+	2	27004	100	7500 -- Niebieska Mikstura(M) x100
+	3	27002	50	7000 -- Czerwona Mikstura(S) x50
+	4	exp	30000	7000 -- EXP 30000
+	5	27005	50	5500 -- Niebieska Mikstura(S) x50
+	6	27003	10	5000 -- Czerwona Mikstura(D) x10
+	7	exp	50000	4000 -- EXP 50000
+	8	27006	10	3500 -- Niebieska Mikstura(D) x10
+	9	70049	1	3500 -- Pierscien Lucy (4h)
+	10	30045	1	2600 -- Igla Skorpiona
+	11	30051	1	2600 -- Nieznany Talizman
+	12	30038	1	2600 -- Skora Tygrysa
+	13	30070	1	2600 -- Futro Wilka+
+	14	30023	1	2600 -- Futro Bialego Tygrysa
+	15	30033	1	2600 -- Stluczona Porcelana
+	16	30011	1	2600 -- Klab
+	17	30151	1	2600 -- Skora Wilka
+	18	30082	1	2600 -- Ogon Weza+
+	19	30035	1	2600 -- Krem Do Twarzy
+	20	30010	1	2600 -- Zolc Niedzwiedzia
+	21	30055	1	2600 -- Szpon Skorpiona
+	22	30006	1	2600 -- Zab Orka
+	23	30003	1	2600 -- Nos Swini
+	24	30017	1	2600 -- Ozdobna Spinka Do Wlosow
+	25	exp	70000	2000 -- EXP 70000
+	26	70048	1	2000 -- Peleryna Maskujaca (4h)
+	27	70051	1	2000 -- Rekawica Krola Przepow. (4h)
+	28	exp	100000	1000 -- EXP 100000
+	29	70102	1	900 -- Fasolka Zen
+	30	25040	1	100 -- Zwoj Blogoslawienstwa
+}
