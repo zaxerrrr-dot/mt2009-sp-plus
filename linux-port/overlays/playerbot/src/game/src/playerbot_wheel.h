@@ -708,41 +708,695 @@ namespace mt2009_wheel
 	}
 }
 
-// "/kolo" (the window), "/kolo krec [n]", "/kolo odbierz <id>", and for a GM
-// "/kolo przeladuj" (server-patches/playerqol, MT2009_PLUS_WHEEL_V1).
+// MT2009_PLUS_KOLA_V1: Kolo Losu - the six wheels with keys and tiers (the owner,
+// 20 October 2026), the same system as the ItemShop's page. ONE state per account
+// in the database, the same tables and the same steps as the shop's PHP
+// (itemshop/app/itemshop/kola/kola_lib.php) - so a spin from the F12 window and a
+// spin from the shop can never pay twice or spend coins the account does not have:
+//   START TRANSACTION
+//   INSERT IGNORE itemshop.kola_state (the account's row)
+//   SELECT ... FROM itemshop.kola_state WHERE account_id=? FOR UPDATE
+//     (both spinners wait on this row lock: one spin after the other)
+//   the wheel changed / the tier's 930 s ran out -> tier 1
+//   UPDATE account.account SET cash=cash-cost WHERE id=? AND cash>=cost (1 row or refused)
+//   16 fields drawn (special fields by tier, weights from kola_pool), stop field 1..16
+//   INSERT player.item_award (mall=1: the ItemShop storage, as a purchase)
+//   INSERT itemshop.kola_spin_log (via 'f12'), UPDATE itemshop.kola_state
+//   COMMIT
+// The wheels, pools and the source id -> vnum mapping (kola_wheel, kola_pool,
+// kola_item) and the settings (kola_settings: the panel's override, the rotation)
+// are read again every 30 seconds. The old ticket wheel (above) only gives the
+// rewards of spins it drew before; its "WOF info/items/spin" are not sent any more.
+//
+// To the window (root/uiwheel.py, "WOF <sub>"):
+//   WOF kstate <enabled> <wheel> <tier> <maxTier> <keys> <keysNeeded> <secondsLeft> <cost> <balance>
+//   WOF kcosts <c1> <c2> <c3>
+//   WOF kpool <tier> <special> <vnum>|<count>|<weight x100>|<srcIcon>#...   (several lines)
+//   WOF kpoolend
+//   WOF klayout <vnum>|<count>|<srcIcon>#... (16)      WOF kspin <pos> <key> <special>
+//   WOF kfail
+#include <random>
+namespace mt2009_kola
+{
+	const DWORD RELOAD_MS = 30 * 1000;
+	const DWORD SPIN_GAP_MS = 1500;
+	const int FIELDS = 16;
+
+	struct PoolEntry
+	{
+		std::string src;
+		DWORD count;
+		DWORD weight;	// x100, as the source's weights
+	};
+
+	struct Item
+	{
+		DWORD vnum;
+		DWORD countMul;
+		long socket[3];
+		long expireRel;
+		bool srcIcon;
+		std::string status;
+		std::string name;
+	};
+
+	struct Wheel
+	{
+		int id;
+		std::string name;
+		int maxTier;
+		DWORD cost[4];
+		std::vector<PoolEntry> pool[4][2];	// [tier][special]
+	};
+
+	struct State
+	{
+		int wheel;
+		int tier;
+		int keys;
+		long long until;
+		std::string layout;
+		DWORD spins;
+		DWORD spent;
+	};
+
+	struct Field
+	{
+		const PoolEntry* e;
+		bool special;
+	};
+
+	std::map<int, Wheel> s_wheels;
+	std::map<std::string, Item> s_items;
+	std::map<std::string, std::string> s_settings;
+	DWORD s_loadedAt = 0;
+	bool s_loaded = false;
+	std::map<DWORD, DWORD> s_lastSpin;	// account -> get_dword_time()
+
+	std::mt19937& Rng()
+	{
+		static std::mt19937 rng(std::random_device{}());
+		return rng;
+	}
+
+	DWORD RandRange(DWORD lo, DWORD hi)
+	{
+		std::uniform_int_distribution<DWORD> d(lo, hi);
+		return d(Rng());
+	}
+
+	std::unique_ptr<SQLMsg> Q(const std::string& query)
+	{
+		return AccountDB::instance().DirectQuery(query.c_str());
+	}
+
+	bool Ok(const std::unique_ptr<SQLMsg>& msg)
+	{
+		return msg.get() && msg->uiSQLErrno == 0 && msg->Get();
+	}
+
+	bool Exec(const std::string& query)
+	{
+		std::unique_ptr<SQLMsg> msg(Q(query));
+		return Ok(msg);
+	}
+
+	std::string Esc(const std::string& in)
+	{
+		std::string out;
+		for (size_t i = 0; i < in.size(); ++i)
+		{
+			if (in[i] == '\\' || in[i] == '\'')
+				out += '\\';
+			out += in[i];
+		}
+		return out;
+	}
+
+	long long Setting(const char* name, long long def)
+	{
+		std::map<std::string, std::string>::const_iterator it = s_settings.find(name);
+		if (it == s_settings.end() || it->second.empty())
+			return def;
+		return strtoll(it->second.c_str(), NULL, 10);
+	}
+
+	void Load(bool force)
+	{
+		const DWORD now = get_dword_time();
+		if (!force && s_loaded && now - s_loadedAt < RELOAD_MS)
+			return;
+		s_loadedAt = now;
+		std::map<std::string, std::string> settings;
+		std::map<int, Wheel> wheels;
+		std::map<std::string, Item> items;
+		{
+			std::unique_ptr<SQLMsg> msg(Q("SELECT name, value FROM itemshop.kola_settings"));
+			if (!Ok(msg) || !msg->Get()->pSQLResult)
+				return;	// the tables are not there yet (playerbot-migrate makes them)
+			MYSQL_ROW row;
+			while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+				settings[row[0] ? row[0] : ""] = row[1] ? row[1] : "";
+		}
+		{
+			std::unique_ptr<SQLMsg> msg(Q("SELECT id, name, max_tier, cost1, cost2, cost3 FROM itemshop.kola_wheel"));
+			if (!Ok(msg) || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row;
+			while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			{
+				Wheel w;
+				w.id = atoi(row[0]);
+				w.name = row[1] ? row[1] : "";
+				w.maxTier = std::max(1, std::min(3, atoi(row[2])));
+				w.cost[0] = 0;
+				for (int t = 1; t <= 3; ++t)
+					w.cost[t] = (DWORD)strtoul(row[2 + t], NULL, 10);
+				wheels[w.id] = w;
+			}
+		}
+		{
+			std::unique_ptr<SQLMsg> msg(Q("SELECT wheel_id, tier, special, src_id, count, weight FROM itemshop.kola_pool ORDER BY wheel_id, tier, special, ord"));
+			if (!Ok(msg) || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row;
+			while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			{
+				std::map<int, Wheel>::iterator w = wheels.find(atoi(row[0]));
+				const int tier = atoi(row[1]);
+				const int special = atoi(row[2]) ? 1 : 0;
+				if (w == wheels.end() || tier < 1 || tier > 3)
+					continue;
+				PoolEntry e;
+				e.src = row[3] ? row[3] : "";
+				e.count = (DWORD)strtoul(row[4], NULL, 10);
+				e.weight = (DWORD)strtoul(row[5], NULL, 10);
+				w->second.pool[tier][special].push_back(e);
+			}
+		}
+		{
+			std::unique_ptr<SQLMsg> msg(Q("SELECT src_id, vnum, count_mul, socket0, socket1, socket2, expire_rel, src_icon, status, name FROM itemshop.kola_item"));
+			if (!Ok(msg) || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row;
+			while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			{
+				Item it;
+				it.vnum = (DWORD)strtoul(row[1], NULL, 10);
+				it.countMul = std::max<DWORD>(1, (DWORD)strtoul(row[2], NULL, 10));
+				for (int i = 0; i < 3; ++i)
+					it.socket[i] = strtol(row[3 + i], NULL, 10);
+				it.expireRel = strtol(row[6], NULL, 10);
+				it.srcIcon = atoi(row[7]) != 0;
+				it.status = row[8] ? row[8] : "";
+				it.name = row[9] ? row[9] : "";
+				items[row[0] ? row[0] : ""] = it;
+			}
+		}
+		s_settings.swap(settings);
+		s_wheels.swap(wheels);
+		s_items.swap(items);
+		s_loaded = true;
+	}
+
+	// The same reckoning as kola_active() in kola_lib.php.
+	int ActiveWheel(long long now)
+	{
+		const int over = (int)Setting("override_wheel", 0);
+		if (over && s_wheels.count(over))
+			return over;
+		std::vector<int> order;
+		std::map<std::string, std::string>::const_iterator it = s_settings.find("rotation_order");
+		if (it != s_settings.end())
+		{
+			const char* p = it->second.c_str();
+			while (*p)
+			{
+				const int id = atoi(p);
+				if (id && s_wheels.count(id))
+					order.push_back(id);
+				const char* comma = strchr(p, ',');
+				if (!comma)
+					break;
+				p = comma + 1;
+			}
+		}
+		if (order.empty())
+			for (std::map<int, Wheel>::const_iterator w = s_wheels.begin(); w != s_wheels.end(); ++w)
+				order.push_back(w->first);
+		if (order.empty())
+			return 0;
+		const long long period = std::max<long long>(1, Setting("rotation_days", 14)) * 86400LL;
+		const long long anchor = Setting("rotation_anchor", 1792360800LL);
+		long long n = (now - anchor) / period;
+		if ((now - anchor) % period != 0 && now < anchor)
+			--n;	// floor, as PHP's floor()
+		const long long cnt = (long long)order.size();
+		return order[(size_t)(((n % cnt) + cnt) % cnt)];
+	}
+
+	bool Ready(const Wheel& w)
+	{
+		for (int t = 1; t <= w.maxTier; ++t)
+			for (int sp = 0; sp < 2; ++sp)
+			{
+				if (w.pool[t][sp].empty())
+					return false;
+				for (size_t i = 0; i < w.pool[t][sp].size(); ++i)
+				{
+					std::map<std::string, Item>::const_iterator it = s_items.find(w.pool[t][sp][i].src);
+					if (it == s_items.end() || !it->second.vnum)
+						return false;
+				}
+			}
+		return true;
+	}
+
+	bool IsSpecialField(int tier, int pos)
+	{
+		if (tier >= 3)
+			return pos == 1 || pos == 7 || pos == 11;
+		if (tier == 2)
+			return pos == 1 || pos == 9;
+		return pos == 1;
+	}
+
+	bool IsKeyField(int pos)
+	{
+		return pos == 3 || pos == 7 || pos == 11 || pos == 15;
+	}
+
+	const PoolEntry* Pick(const std::vector<PoolEntry>& list)
+	{
+		unsigned long long total = 0;
+		for (size_t i = 0; i < list.size(); ++i)
+			total += list[i].weight;
+		if (!total)
+			return &list.back();
+		std::uniform_int_distribution<unsigned long long> d(1, total);
+		long long roll = (long long)d(Rng());
+		for (size_t i = 0; i < list.size(); ++i)
+		{
+			roll -= (long long)list[i].weight;
+			if (roll <= 0)
+				return &list[i];
+		}
+		return &list.back();
+	}
+
+	const Item* ItemOf(const std::string& src)
+	{
+		std::map<std::string, Item>::const_iterator it = s_items.find(src);
+		return it == s_items.end() ? NULL : &it->second;
+	}
+
+	// The source id when the window has its picture (mt2009_ui/kola/i/<id>.png), else 0.
+	std::string SrcIcon(const std::string& src, const Item* it)
+	{
+		if (!it || !it->srcIcon || src.empty())
+			return "0";
+		for (size_t i = 0; i < src.size(); ++i)
+			if (src[i] < '0' || src[i] > '9')
+				return "0";
+		return src;
+	}
+
+	bool Eligible(LPCHARACTER ch)
+	{
+		return ch && ch->IsPC() && ch->GetDesc() && !ch->GetDesc()->IsBot();
+	}
+
+	void Fail(LPCHARACTER ch, const char* text)
+	{
+		if (text && *text)
+			ch->ChatPacket(CHAT_TYPE_INFO, "Kolo Losu: %s", text);
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kfail");
+	}
+
+	bool ReadState(DWORD acc, bool lock, State& st)
+	{
+		char query[256];
+		snprintf(query, sizeof(query),
+				"SELECT wheel_id, tier, keys_count, tier_until, layout, spins, spent FROM itemshop.kola_state WHERE account_id=%u%s",
+				acc, lock ? " FOR UPDATE" : "");
+		std::unique_ptr<SQLMsg> msg(Q(query));
+		if (!Ok(msg) || !msg->Get()->pSQLResult)
+			return false;
+		MYSQL_ROW row = mysql_fetch_row(msg->Get()->pSQLResult);
+		if (!row)
+			return false;
+		st.wheel = atoi(row[0]);
+		st.tier = atoi(row[1]);
+		st.keys = atoi(row[2]);
+		st.until = strtoll(row[3], NULL, 10);
+		st.layout = row[4] ? row[4] : "";
+		st.spins = (DWORD)strtoul(row[5], NULL, 10);
+		st.spent = (DWORD)strtoul(row[6], NULL, 10);
+		return true;
+	}
+
+	// kola_normalize(): another wheel / the tier's time over -> tier 1.
+	bool Normalize(State& st, const Wheel& w, long long now)
+	{
+		bool changed = false;
+		if (st.wheel != w.id)
+		{
+			st.wheel = w.id;
+			st.tier = 1; st.keys = 0; st.until = 0; st.layout.clear();
+			changed = true;
+		}
+		if (st.tier < 1 || st.tier > w.maxTier)
+		{
+			st.tier = 1; st.keys = 0; st.until = 0;
+			changed = true;
+		}
+		if (st.tier > 1 && st.until <= now)
+		{
+			st.tier = 1; st.keys = 0; st.until = 0;
+			changed = true;
+		}
+		return changed;
+	}
+
+	std::string NewToken()
+	{
+		static const char* hex = "0123456789abcdef";
+		std::string t;
+		for (int i = 0; i < 16; ++i)
+			t += hex[RandRange(0, 15)];
+		return t;
+	}
+
+	// rotateToken: a spin here changes the token, so the shop's page (if open) loads
+	// the state again instead of spinning on an old one.
+	bool SaveState(DWORD acc, const State& st, bool rotateToken)
+	{
+		std::string q = "UPDATE itemshop.kola_state SET wheel_id=" + std::to_string(st.wheel) + ", tier=" + std::to_string(st.tier) +
+			", keys_count=" + std::to_string(st.keys) + ", tier_until=" + std::to_string(st.until) + ", layout='" + Esc(st.layout) +
+			"', spins=" + std::to_string(st.spins) + ", spent=" + std::to_string(st.spent);
+		if (rotateToken)
+			q += ", token='" + NewToken() + "', last_token='', last_result=NULL";
+		q += ", updated_at=NOW() WHERE account_id=" + std::to_string(acc);
+		return Exec(q);
+	}
+
+	bool EnsureRow(DWORD acc, int wheel)
+	{
+		return Exec("INSERT IGNORE INTO itemshop.kola_state (account_id, wheel_id, token, updated_at) VALUES (" +
+				std::to_string(acc) + ", " + std::to_string(wheel) + ", '" + NewToken() + "', NOW())");
+	}
+
+	DWORD Balance(DWORD acc)
+	{
+		std::unique_ptr<SQLMsg> msg(Q("SELECT cash FROM account.account WHERE id=" + std::to_string(acc)));
+		if (!Ok(msg) || !msg->Get()->pSQLResult)
+			return 0;
+		MYSQL_ROW row = mysql_fetch_row(msg->Get()->pSQLResult);
+		return row && row[0] ? (DWORD)strtoul(row[0], NULL, 10) : 0;
+	}
+
+	void SendState(LPCHARACTER ch, const State& st, const Wheel& w, DWORD balance, long long now)
+	{
+		const long long left = st.tier > 1 ? std::max<long long>(0, st.until - now) : 0;
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kstate %d %d %d %d %d %d %lld %u %u", Setting("enabled", 1) ? 1 : 0, w.id, st.tier,
+				w.maxTier, st.keys, (int)Setting("keys_needed", 4), left, w.cost[std::max(1, std::min(3, st.tier))], balance);
+	}
+
+	void SendPools(LPCHARACTER ch, const Wheel& w)
+	{
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kcosts %u %u %u", w.cost[1], w.cost[2], w.cost[3]);
+		for (int t = 1; t <= w.maxTier; ++t)
+			for (int sp = 1; sp >= 0; --sp)
+			{
+				std::string line;
+				for (size_t i = 0; i < w.pool[t][sp].size(); ++i)
+				{
+					const PoolEntry& e = w.pool[t][sp][i];
+					const Item* it = ItemOf(e.src);
+					if (!it)
+						continue;
+					char part[96];
+					snprintf(part, sizeof(part), "%u|%u|%u|%s#", it->vnum, e.count * it->countMul, e.weight, SrcIcon(e.src, it).c_str());
+					if (line.size() + strlen(part) > 380)
+					{
+						ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kpool %d %d %s", t, sp, line.c_str());
+						line.clear();
+					}
+					line += part;
+				}
+				if (!line.empty())
+					ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kpool %d %d %s", t, sp, line.c_str());
+			}
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kpoolend");
+	}
+
+	// "src|count|special#..." (the layout column, as kola_layout_encode) -> the window's line.
+	std::string LayoutLine(const std::string& stored)
+	{
+		std::string out;
+		int n = 0;
+		size_t p = 0;
+		while (p < stored.size())
+		{
+			size_t end = stored.find('#', p);
+			if (end == std::string::npos)
+				end = stored.size();
+			const std::string part = stored.substr(p, end - p);
+			p = end + 1;
+			const size_t a = part.find('|');
+			if (a == std::string::npos)
+				continue;
+			const std::string src = part.substr(0, a);
+			const DWORD count = (DWORD)strtoul(part.c_str() + a + 1, NULL, 10);
+			const Item* it = ItemOf(src);
+			char buf[96];
+			snprintf(buf, sizeof(buf), "%u|%u|%s#", it ? it->vnum : 0, count * (it ? it->countMul : 1), SrcIcon(src, it).c_str());
+			out += buf;
+			++n;
+		}
+		return n == FIELDS ? out : std::string();
+	}
+
+	const Wheel* Current(LPCHARACTER ch, bool quiet)
+	{
+		Load(false);
+		if (!s_loaded)
+		{
+			if (!quiet)
+				Fail(ch, "chwilowo niedostepne.");
+			return NULL;
+		}
+		if (!Setting("enabled", 1))
+		{
+			if (!quiet)
+				Fail(ch, "kolo jest teraz wylaczone.");
+			return NULL;
+		}
+		const int id = ActiveWheel((long long)time(0));
+		std::map<int, Wheel>::const_iterator w = s_wheels.find(id);
+		if (w == s_wheels.end() || !Ready(w->second))
+		{
+			if (!quiet)
+				Fail(ch, "chwilowo niedostepne (nagrody w przygotowaniu).");
+			return NULL;
+		}
+		return &w->second;
+	}
+
+	// The state under the row lock, put right (wheel / time) and written back.
+	bool LockedState(DWORD acc, const Wheel& w, long long now, State& st)
+	{
+		if (!ReadState(acc, true, st))
+			return false;
+		if (Normalize(st, w, now))
+			return SaveState(acc, st, false);
+		return true;
+	}
+
+	void Open(LPCHARACTER ch)
+	{
+		const Wheel* w = Current(ch, false);
+		if (!w)
+		{
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kstate 0 0 1 1 0 4 0 0 0");
+			return;
+		}
+		const DWORD acc = ch->GetDesc()->GetAccountTable().id;
+		const long long now = (long long)time(0);
+		State st;
+		EnsureRow(acc, w->id);
+		bool ok = Exec("START TRANSACTION") && LockedState(acc, *w, now, st);
+		Exec(ok ? "COMMIT" : "ROLLBACK");
+		if (!ok)
+			return Fail(ch, "blad bazy - sprobuj ponownie.");
+		SendState(ch, st, *w, Balance(acc), now);
+		SendPools(ch, *w);
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF klayout %s", LayoutLine(st.layout).c_str());
+	}
+
+	void Exit(LPCHARACTER ch)
+	{
+		const Wheel* w = Current(ch, false);
+		if (!w)
+			return;
+		const DWORD acc = ch->GetDesc()->GetAccountTable().id;
+		const long long now = (long long)time(0);
+		State st;
+		EnsureRow(acc, w->id);
+		bool ok = Exec("START TRANSACTION") && LockedState(acc, *w, now, st);
+		if (ok)
+		{
+			st.tier = 1; st.keys = 0; st.until = 0;
+			ok = SaveState(acc, st, false);
+		}
+		Exec(ok ? "COMMIT" : "ROLLBACK");
+		if (!ok)
+			return Fail(ch, "blad bazy - sprobuj ponownie.");
+		SendState(ch, st, *w, Balance(acc), now);
+	}
+
+	void Spin(LPCHARACTER ch)
+	{
+		const Wheel* w = Current(ch, false);
+		if (!w)
+			return;
+		const DWORD acc = ch->GetDesc()->GetAccountTable().id;
+		const std::string login = ch->GetDesc()->GetAccountTable().login;
+		{
+			const DWORD t = get_dword_time();
+			DWORD& last = s_lastSpin[acc];
+			if (last && t - last < SPIN_GAP_MS)
+				return Fail(ch, NULL);
+			last = t;
+		}
+		const long long now = (long long)time(0);
+		State st;
+		EnsureRow(acc, w->id);
+		if (!Exec("START TRANSACTION"))
+			return Fail(ch, "blad bazy - nic nie pobrano.");
+		if (!LockedState(acc, *w, now, st))
+		{
+			Exec("ROLLBACK");
+			return Fail(ch, "blad bazy - nic nie pobrano.");
+		}
+		const int tier = st.tier;
+		const DWORD cost = w->cost[tier];
+		{
+			std::unique_ptr<SQLMsg> paid(Q("UPDATE account.account SET cash=cash-" + std::to_string(cost) + " WHERE id=" +
+					std::to_string(acc) + " AND cash>=" + std::to_string(cost)));
+			if (!Ok(paid) || paid->Get()->uiAffectedRows != 1)
+			{
+				Exec("ROLLBACK");
+				char text[128];
+				snprintf(text, sizeof(text), "za malo Smoczych Monet - masz %u SM, obrot kosztuje %u SM.", Balance(acc), cost);
+				return Fail(ch, text);
+			}
+		}
+		Field fields[FIELDS + 1];
+		for (int pos = 1; pos <= FIELDS; ++pos)
+		{
+			const bool special = IsSpecialField(tier, pos);
+			fields[pos].e = Pick(w->pool[tier][special ? 1 : 0]);
+			fields[pos].special = special;
+		}
+		const int pos = (int)RandRange(1, FIELDS);
+		const PoolEntry& won = *fields[pos].e;
+		const Item* it = ItemOf(won.src);
+		const DWORD count = won.count * it->countMul;
+		const bool keyHit = IsKeyField(pos) && tier < w->maxTier;
+		if (keyHit)
+		{
+			++st.keys;
+			if (st.keys >= (int)Setting("keys_needed", 4))
+			{
+				st.tier = tier + 1;
+				st.keys = 0;
+				st.until = now + Setting("tier_seconds", 930);
+			}
+		}
+		const long socket0 = it->expireRel > 0 ? (long)(now + it->expireRel) : it->socket[0];
+		bool ok = Exec("INSERT INTO player.item_award (pid, login, vnum, count, given_time, why, socket0, socket1, socket2, mall) VALUES (" +
+				std::to_string(acc) + ", '" + Esc(login) + "', " + std::to_string(it->vnum) + ", " + std::to_string(count) +
+				", NOW(), 'ItemShop Kolo Losu', " + std::to_string(socket0) + ", " + std::to_string(it->socket[1]) + ", " +
+				std::to_string(it->socket[2]) + ", 1)");
+		ok = ok && Exec("INSERT INTO itemshop.kola_spin_log (account_id, login, via, wheel_id, tier, cost, position, special, src_id, vnum, count, name, status, key_hit, keys_after, tier_after, created_at) VALUES (" +
+				std::to_string(acc) + ", '" + Esc(login) + "', 'f12', " + std::to_string(w->id) + ", " + std::to_string(tier) + ", " +
+				std::to_string(cost) + ", " + std::to_string(pos) + ", " + (fields[pos].special ? "1" : "0") + ", '" + Esc(won.src) + "', " +
+				std::to_string(it->vnum) + ", " + std::to_string(count) + ", '" + Esc(it->name) + "', '" + Esc(it->status) + "', " +
+				(keyHit ? "1" : "0") + ", " + std::to_string(st.keys) + ", " + std::to_string(st.tier) + ", NOW())");
+		std::string stored, line;
+		for (int p = 1; p <= FIELDS; ++p)
+		{
+			const Item* fi = ItemOf(fields[p].e->src);
+			std::string src = fields[p].e->src;
+			src.erase(std::remove(src.begin(), src.end(), '|'), src.end());
+			src.erase(std::remove(src.begin(), src.end(), '#'), src.end());
+			stored += (p > 1 ? "#" : "") + src + "|" + std::to_string(fields[p].e->count) + "|" + (fields[p].special ? "1" : "0");
+			char buf[96];
+			snprintf(buf, sizeof(buf), "%u|%u|%s#", fi ? fi->vnum : 0, fields[p].e->count * (fi ? fi->countMul : 1),
+					SrcIcon(fields[p].e->src, fi).c_str());
+			line += buf;
+		}
+		st.layout = stored;
+		st.spins += 1;
+		st.spent += cost;
+		ok = ok && SaveState(acc, st, true);
+		ok = ok && Exec("COMMIT");
+		if (!ok)
+		{
+			Exec("ROLLBACK");
+			sys_err("KOLA: spin of %s (account %u) not written - rolled back", ch->GetName(), acc);
+			return Fail(ch, "blad bazy - nic nie pobrano.");
+		}
+		sys_log(0, "KOLA: %s (account %u) wheel %d tier %d cost %u pos %d %s x%u (vnum %u)%s", ch->GetName(), acc, w->id, tier, cost, pos,
+				won.src.c_str(), count, it->vnum, keyHit ? " key" : "");
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF klayout %s", line.c_str());
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "WOF kspin %d %d %d", pos, keyHit ? 1 : 0, fields[pos].special ? 1 : 0);
+		SendState(ch, st, *w, Balance(acc), now);
+	}
+}
+
+// "/kolo" (the window: the state, the pools, the last layout; the old ticket
+// wheel's pending rewards are given first), "/kolo krec", "/kolo opusc",
+// "/kolo odbierz" (the old wheel's pending spins), and for a GM "/kolo przeladuj"
+// (server-patches/playerqol, MT2009_PLUS_WHEEL_V1; MT2009_PLUS_KOLA_V1).
 void WheelCommand(LPCHARACTER ch, const char* argument)
 {
-	if (!mt2009_wheel::Eligible(ch))
+	if (!mt2009_kola::Eligible(ch))
 		return;
 	char sub[32], arg[32];
 	const char* rest = one_argument(argument, sub, sizeof(sub));
 	one_argument(rest, arg, sizeof(arg));
 	if (!*sub || !strcmp(sub, "otworz"))
-		mt2009_wheel::Open(ch);
-	else if (!strcmp(sub, "krec"))
 	{
-		if (mt2009_wheel::TooSoon(ch))
-			return mt2009_wheel::Fail(ch, NULL);
-		int spins = 1;	// MT2009_PLUS_PLAY_COUNT_V1 [Autor: Vekirion]: "/kolo krec <n>"
-		if (*arg)
-			str_to_number(spins, arg);
-		mt2009_wheel::Spin(ch, spins);
+		// The old ticket wheel: what it drew and never gave, given now.
+		mt2009_wheel::Load(false);
+		mt2009_wheel::EnsureTick();
+		std::vector<mt2009_wheel::Gift> got;
+		mt2009_wheel::ClaimAll(ch, got, false);
+		for (size_t i = 0; i < got.size(); ++i)
+		{
+			const TItemTable* t = ITEM_MANAGER::instance().GetTable(got[i].vnum);
+			ch->ChatPacket(CHAT_TYPE_INFO, "Kolo Fortuny (stare): otrzymujesz %ux %s.", got[i].count, t ? t->szLocaleName : "przedmiot");
+		}
+		mt2009_kola::Open(ch);
 	}
+	else if (!strcmp(sub, "krec"))
+		mt2009_kola::Spin(ch);
+	else if (!strcmp(sub, "opusc"))
+		mt2009_kola::Exit(ch);
 	else if (!strcmp(sub, "odbierz"))
 	{
-		DWORD id = 0;
-		str_to_number(id, arg);
 		mt2009_wheel::Load(false);
 		std::vector<mt2009_wheel::Gift> got;
-		if (!id || mt2009_wheel::Claim(ch, id, got, false) == mt2009_wheel::CLAIM_NONE)
-			mt2009_wheel::ClaimAll(ch, got, false);
+		mt2009_wheel::ClaimAll(ch, got, false);
 		mt2009_wheel::SendGifts(ch, got);
-		mt2009_wheel::SendInfo(ch);
 	}
 	else if (!strcmp(sub, "przeladuj") && ch->GetGMLevel() > GM_PLAYER)
 	{
-		mt2009_wheel::Load(true);
-		ch->ChatPacket(CHAT_TYPE_INFO, "Kolo Fortuny: nagrody wczytane ponownie (%u).",
-				(unsigned int)mt2009_wheel::s_vecRewards.size());
+		mt2009_kola::Load(true);
+		ch->ChatPacket(CHAT_TYPE_INFO, "Kolo Losu: dane wczytane ponownie (%u kol, %u przedmiotow), aktywne kolo %d.",
+				(unsigned int)mt2009_kola::s_wheels.size(), (unsigned int)mt2009_kola::s_items.size(),
+				mt2009_kola::ActiveWheel((long long)time(0)));
 	}
 }
