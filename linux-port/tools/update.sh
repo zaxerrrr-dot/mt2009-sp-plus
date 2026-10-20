@@ -480,6 +480,21 @@ migrate_log_keep_days() {
     printf 'M2_LOG_KEEP_DAYS_DEFAULTED=1\n' >> "$_env"
 }
 
+# MT2009_PLUS_DB_LOG_RETENTION_V1: a world installed before 2.36 has kept its
+# whole log database, and the owner of each decides when old rows go - the
+# first prune of a big log.log rewrites it once. So an .env without the key
+# gets 0 (keep everything, what compose already reads for an absent key),
+# written out so the panel's .env page shows what is in force instead of the
+# example's 14; a new install has the example's 14 already.
+migrate_db_log_retention() {
+    _env="$COMPOSE_DIR/.env"
+    [ -f "$_env" ] || return 0
+    grep -q '^M2_DB_LOG_RETENTION_DAYS=' "$_env" && return 0
+    [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+    printf 'M2_DB_LOG_RETENTION_DAYS=0\n' >> "$_env"
+    note "   the log database keeps everything: M2_DB_LOG_RETENTION_DAYS=0 (set 7 or 14 in the panel to prune it)"
+}
+
 # Channel N listens on BASE+10*(N-1)..+2 inside the container (BASE is
 # M2_GAME_PORT_BASE, 13000 unless a second stack on the host moved it -
 # m2-render-config), and compose publishes M2_GAME_PORT_RANGE onto
@@ -1015,6 +1030,8 @@ start_updater_after_build() {
 # reach that world as they reach an updated one. Existing values stay.
 migrate_env() {
     migrate_timezone
+    # Before the keys: an existing world's absent key means "keep everything".
+    migrate_db_log_retention
     add_missing_env_keys
     # Before the layout, which reads the kingdoms' own counts.
     migrate_kingdoms

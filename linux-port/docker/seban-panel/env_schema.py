@@ -41,7 +41,8 @@ import re
 # the panel compares it with the updater's (env.current "schema_version") and
 # says "aktualizator działa na starej wersji" instead of "nieznana zmienna".
 # 2: M2_SHOP_BIG (2.34) and everything before it.
-SCHEMA_VERSION = 2
+# 3: M2_DB_LOG_RETENTION_DAYS, M2_LOG_KEEP_HOURS (2.36).
+SCHEMA_VERSION = 3
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -428,6 +429,17 @@ SCHEMA = [
        "baza", "bool", "0", GAME),
     _e("PLAYERBOT_EXPECT_MIN_EXISTING_BOTS", "Minimalna liczba botów w bazie", "Ochrona świata: ilu botów musi już być w bazie, żeby start był uznany za dobry. 0 = bez sprawdzania.",
        "baza", "int", "0", GAME, min=0, max=10000),
+    # MT2009_PLUS_DB_LOG_RETENTION_V1
+    _e("M2_DB_LOG_RETENTION_DAYS", "Ile dni trzymać logi w bazie",
+       "Wpisy bazy logów (log.log, item_meta_log i inne rosnące tabele logów) starsze niż tyle dni są usuwane raz dziennie "
+       "około 5:00, małymi porcjami. 0 = trzymaj wszystko. Zalecane 14, na małym dysku 7. Statystyki „od początku serwera” "
+       "w panelu się nie zmieniają: panel trzyma je w osobnych podsumowaniach. Poniżej 7 dni rankingi „ostatnie 7 dni” "
+       "dalej działają (z podsumowań), ale surowa historia, np. kronika świata, będzie krótsza. "
+       "To nie są logi plików serwera (te ustawia „Ile godzin trzymać logi serwera”).",
+       "baza", "int", "14", SEBAN, min=0, max=365, step=1,
+       note="Pierwsze czyszczenie dużej bazy trwa dłużej: tabela log.log bez indeksu po czasie jest wtedy jednorazowo "
+            "podmieniana na nową (zachowane dni są przepisywane, stara tabela usuwana – miejsce na dysku wraca od razu). "
+            "Stan i wynik ostatniego czyszczenia: Narzędzia → Logi bazy danych."),
     _e("M2_TABLE_POSTFIX", "Przyrostek nazw tabel", "Przyrostek nazw tabel gry. Zostaw puste.", "baza", "string", "", ["game"], readonly=True,
        readonly_reason="Zmiana przyrostka sprawia, że serwer szuka innych tabel – świat wyglądałby na pusty."),
 
@@ -464,6 +476,10 @@ SCHEMA = [
        "zaawansowane", "string", "UTC", ["game", "itemshop", "mariadb", "panel", "updater"] + SEBAN,
        pattern=r"UTC|[A-Za-z_]+(/[A-Za-z0-9_+-]+){1,2}", hint="np. Europe/Warsaw", suggestions=["Europe/Warsaw", "UTC", "Europe/London", "Europe/Berlin"],
        note="Odtwarza wszystkie kontenery, także bazę danych (gracze zostaną rozłączeni)."),
+    _e("M2_LOG_KEEP_HOURS", "Ile godzin trzymać logi serwera",
+       "Ile godzin plików logów kanałów (syslog, syserr) trzymać. Gra sama usuwa starsze co godzinę; kanał zapisuje 40–120 MB na godzinę "
+       "(48 godzin to 2–6 GB na kanał). To nie są logi bazy danych (te ustawia „Ile dni trzymać logi w bazie”).",
+       "zaawansowane", "int", "48", ["game"], min=1, max=2160),
     _e("M2_LOG_KEEP_DAYS", "Ile dni trzymać logi", "Ile dni logów serwera trzymać. Kanał zapisuje 40–120 MB na godzinę – na małym dysku zmniejsz.",
        "zaawansowane", "int", "7", ["game"], min=1, max=90),
     _e("M2_TEST_SERVER", "Tryb testowy silnika", "Włącza tryb testowy silnika (komendy GM dla wszystkich, więcej logów). Na serwerze, na którym ktoś gra, zostaw wyłączone.",

@@ -829,6 +829,20 @@ function Assert-LogKeepDaysDefault {
     return (Set-DotEnvValue -Content $Content -Name 'M2_LOG_KEEP_DAYS_DEFAULTED' -Value '1')
 }
 
+function Assert-DbLogRetentionDefault {
+    # MT2009_PLUS_DB_LOG_RETENTION_V1: a world made before this setting kept its
+    # whole log database; its owner decides when old rows go (the first prune of
+    # a big log.log rewrites it once). An .env without the key gets 0 here,
+    # before Add-MissingDotEnvKeys would copy the example's 14 into it; a new
+    # .env is made from the example and has 14 already.
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content
+    )
+    if ([Regex]::IsMatch($Content, '(?m)^M2_DB_LOG_RETENTION_DAYS=')) { return $Content }
+    Write-Host 'Logi bazy: trzymane w calosci (M2_DB_LOG_RETENTION_DAYS=0); 7 lub 14 dni ustawisz w panelu.' -ForegroundColor DarkGray
+    return (Set-DotEnvValue -Content $Content -Name 'M2_DB_LOG_RETENTION_DAYS' -Value '0')
+}
+
 function Get-M2HostTimeZoneName {
     # The tz database name of this Windows' own zone, for the containers' TZ.
     # Windows keeps ids of its own ("Central European Standard Time") and the
@@ -1005,6 +1019,7 @@ function Initialize-InstallationIdentity {
     # one percent asked for, once.
     $content = Assert-BlessingScrollDefault -Content $content -EnvPath $envPath
     $content = Assert-LogKeepDaysDefault -Content $content
+    $content = Assert-DbLogRetentionDefault -Content $content
     # The same shape for the clock's zone: the example's UTC becomes this
     # machine's own, once.
     $content = Assert-TimezoneDefault -Content $content

@@ -20410,16 +20410,32 @@ def season_data():
             cur.execute(ranking_sql("SELECT name, gold AS level FROM player.player "
                         "WHERE <<RANKED_1>> ORDER BY gold DESC LIMIT 1"))
             recs["gold"] = cur.fetchone()
-            for key, how, extra in (
-                    ("metins", "STONE_KILL", ""),
-                    ("bosses", "BOSS_KILL", ""),
+            # MT2009_PLUS_DB_LOG_RETENTION_V1: all-time, so from the advanced
+            # panel's summaries once its collector has counted log.log into
+            # them - the retention (M2_DB_LOG_RETENTION_DAYS) deletes old rows.
+            summarized = False
+            try:
+                cur.execute("SELECT 1 FROM player.web_seban_settings WHERE name = 'logstat_wm:log'")
+                summarized = cur.fetchone() is not None
+            except Exception:
+                summarized = False
+            for key, how, extra, metric in (
+                    ("metins", "STONE_KILL", "", "stone"),
+                    ("bosses", "BOSS_KILL", "", "boss"),
                     ("refines", "REFINE SUCCESS",
-                     "AND l.hint REGEXP '" + SEASON_REFINE_PATTERN + "' ")):
-                cur.execute(
-                    ranking_sql("SELECT p.name, COUNT(*) AS level FROM log.log l "
-                    "JOIN player.player p ON p.id = l.who "
-                    "WHERE l.how = %s AND <<RANKED_P_2>> ") + extra +
-                    "GROUP BY l.who ORDER BY level DESC LIMIT 1", (how,))
+                     "AND l.hint REGEXP '" + SEASON_REFINE_PATTERN + "' ", "refine7")):
+                if summarized:
+                    cur.execute(
+                        ranking_sql("SELECT p.name, CAST(SUM(d.n) AS SIGNED) AS level "
+                        "FROM player.web_seban_log_daily d JOIN player.player p ON p.id = d.pid "
+                        "WHERE d.metric = %s AND <<RANKED_P_2>> ") +
+                        "GROUP BY d.pid ORDER BY level DESC LIMIT 1", (metric,))
+                else:
+                    cur.execute(
+                        ranking_sql("SELECT p.name, COUNT(*) AS level FROM log.log l "
+                        "JOIN player.player p ON p.id = l.who "
+                        "WHERE l.how = %s AND <<RANKED_P_2>> ") + extra +
+                        "GROUP BY l.who ORDER BY level DESC LIMIT 1", (how,))
                 recs[key] = cur.fetchone()
             out["records"] = {k: v for k, v in recs.items() if v}
     except Exception as e:

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Logi bazy danych · {{panel_brand}}{% endblock %}
+{% block content %}
+<p class="eyebrow">DIAGNOSTYKA</p><h1>Logi bazy danych</h1>
+<p class="muted">Gra zapisuje w bazie <code>log</code> każde zdarzenie: zdobyte przedmioty, ulepszenia, zabite Metiny, sprzedaże. Te tabele rosną bez końca. Statystyki „od początku serwera” (ulepszenia, Szkatułki, sprzedaże, ryby, rekordy +9, podsumowania dni) panel trzyma w osobnych podsumowaniach, więc usuwanie starych wpisów ich nie zmienia.</p>
+
+<section class="panel">
+  <h2 style="margin:0 0 12px">Retencja logów bazy</h2>
+  {% if days %}
+  <p><strong>Wpisy starsze niż {{days}} {{ 'dzień' if days == 1 else 'dni' }}</strong> są usuwane raz dziennie około godziny {{'%02d'|format(prune_hour)}}:00 (czas serwera), małymi porcjami.</p>
+  {% else %}
+  <p><strong>Wyłączona — baza logów trzyma wszystko.</strong> Zalecane: 14 dni (albo 7 na małym dysku).</p>
+  {% endif %}
+  <p class="muted">Zmienisz to w <a href="{{url_for('server_env')}}">Ustawieniach serwera (.env)</a> → Baza danych → „Ile dni trzymać logi w bazie” (<code>M2_DB_LOG_RETENTION_DAYS</code>: 0 = wszystko, 1–365 dni). To osobne ustawienie od logów plików serwera (<code>M2_LOG_KEEP_HOURS</code>).</p>
+  <p class="muted">Czyszczone tabele: {% for t in prune_tables %}<code>{{t}}</code>{% if not loop.last %}, {% endif %}{% endfor %}. Tabele ustawień, zakupów w ItemShopie, poziomów i stanów botów zostają nietknięte.</p>
+  {% if info and not info.indexed %}
+  <p class="muted">Tabela <code>log.log</code> nie ma indeksu po czasie. Przy pierwszym czyszczeniu zostanie podmieniona na nową z indeksem (wpisy z zachowanych dni są do niej przepisywane, stara tabela jest usuwana i od razu zwalnia miejsce na dysku). Na dużej tabeli to jednorazowo potrwa dłużej.</p>
+  {% endif %}
+  {% if info and info.rotation_pending %}<p><strong>Przerwana podmiana <code>log.log</code> czeka na dokończenie</strong> — dokończy ją następne czyszczenie.</p>{% endif %}
+</section>
+
+<section class="panel">
+  <h2 style="margin:0 0 12px">Ostatnie czyszczenie</h2>
+  {% if error %}<p class="muted">Baza nie odpowiedziała: {{error}}</p>
+  {% elif last %}
+  <p>{{last.started_at}} · retencja {{last.retention_days}} dni · granica {{last.cutoff}} · <strong>{{ 'podgląd (nic nie usunięto)' if last.dry_run else 'usunięto ' ~ '{:,}'.format(last.deleted|int).replace(',', ' ') ~ ' wpisów' }}</strong> · stan: {{ {'ok': 'zakończone', 'partial': 'częściowe', 'error': 'błąd', 'busy': 'pominięte (trwało inne)'}.get(last.status, last.status) }}</p>
+  {% if last.detail and last.detail.tables %}<table><thead><tr><th>Tabela</th><th>Wpisy</th><th>Sposób</th><th>Czas</th></tr></thead><tbody>
+  {% for name, t in last.detail.tables.items() %}<tr><td><code>{{name}}</code></td><td>{{t.deleted}}</td><td>{{t.how}}</td><td>{{t.seconds}} s</td></tr>{% endfor %}
+  </tbody></table>{% endif %}
+  {% if last.detail and last.detail.skipped %}<p class="muted">Pominięte: {% for name, why in last.detail.skipped.items() %}<code>{{name}}</code> ({{why}}){% if not loop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+  {% if last.detail and last.detail.error %}<p class="muted">Błąd: {{last.detail.error}}</p>{% endif %}
+  {% else %}<p class="muted">Jeszcze nie czyszczono.</p>{% endif %}
+</section>
+
+<section class="panel">
+  <h2 style="margin:0 0 12px">Podsumowania statystyk</h2>
+  {% if seeded %}
+  <p>Zliczone do: {% for source, mark in info.watermarks.items() %}<code>{{source}}</code> {{mark or '—'}}{% if not loop.last %} · {% endif %}{% endfor %}</p>
+  <p class="muted">Kolektor dolicza nowe wpisy co {{ '5 minut' if info.indexed else 'godzinę (log.log bez indeksu po czasie)' }}. Historia ekwipunku postaci trzyma ostatnie {{gear_days}} dni.</p>
+  {% else %}
+  <p class="muted">Kolektor jeszcze nie policzył historii (pierwsze zliczenie przechodzi przez całą bazę logów raz). Do tego czasu panel liczy z surowych logów, a czyszczenie czeka.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2 style="margin:0 0 12px">Tabele bazy logów{% if total_mb %} · razem {{ '{:,}'.format(total_mb).replace(',', ' ') }} MB{% endif %}</h2>
+  {% if info %}<table><thead><tr><th>Tabela</th><th>Silnik</th><th>Wiersze (szac.)</th><th>Rozmiar</th><th>Wolne w pliku</th></tr></thead><tbody>
+  {% for t in info.tables if (t.size_mb or 0) > 0 or (t.row_estimate or 0) > 0 %}<tr><td><code>{{t.name}}</code></td><td>{{t.engine}}</td><td>{{ '{:,}'.format((t.row_estimate or 0)|int).replace(',', ' ') }}</td><td>{{t.size_mb|int}} MB</td><td>{{(t.free_mb or 0)|int}} MB</td></tr>{% endfor %}
+  </tbody></table>
+  <p class="muted">Usunięte wiersze zostają w pliku tabeli jako wolne miejsce, które baza zapełnia nowymi wpisami — plik nie rośnie, ale też nie maleje. Żeby oddać to miejsce systemowi, przy zatrzymanej grze: <code>docker compose exec mariadb mariadb -uroot -p -e "OPTIMIZE TABLE log.item_meta_log"</code> (przepisuje całą tabelę: potrzebuje tyle wolnego miejsca, ile zajmuje tabela, i trwa długo na dużych tabelach — panel nie robi tego sam). <code>log.log</code> po podmianie nie potrzebuje tego wcale.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2 style="margin:0 0 12px">Zapytania przerwane przez limit</h2>
+  <p class="muted">Każde zapytanie strony panelu ma limit {{ statement_timeout|int }} s (<code>SEBAN_DB_STATEMENT_TIMEOUT</code>), odświeżanie w tle dłuższy. Fragment strony, który go przekroczy, pokazuje „chwilowo niedostępne”, reszta strony działa.{% if heavy_feed_off %} Odczyt zdarzeń z <code>log.log</code> do kroniki świata jest wyłączony (<code>SEBAN_DISABLE_HEAVY_LOG_FEED=1</code>).{% endif %}</p>
+  {% if failures %}<table><thead><tr><th>Strona</th><th>Fragment</th><th>Kod błędu</th><th>Ile razy</th><th>Ostatnio</th></tr></thead><tbody>
+  {% for f in failures %}<tr><td><code>{{f.route}}</code></td><td>{{f.block}}</td><td>{{f.errno}}</td><td>{{f.count}}</td><td>{{f.last.strftime('%d.%m %H:%M') if f.last else '—'}}</td></tr>{% endfor %}
+  </tbody></table><p class="muted">Liczone od ostatniego startu panelu, w tym procesie panelu.</p>
+  {% else %}<p class="muted">Brak od ostatniego startu panelu.</p>{% endif %}
+</section>
+{% endblock %}

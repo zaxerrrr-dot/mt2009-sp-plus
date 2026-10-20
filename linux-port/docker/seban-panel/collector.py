@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pymysql
 
+import log_maintenance
+
 INTERVAL = int(os.environ.get("SEBAN_COLLECTOR_INTERVAL", "300"))
 CHANNEL_VAR_ROOT = Path(os.environ.get("PLAYERBOTS_VAR_ROOT", "/opt/metin2/var"))
 
@@ -515,6 +517,17 @@ def main():
             with connect() as con:
                 previous = collect(con, previous)
                 print("[seban-collector] snapshot complete", flush=True)
+            # MT2009_PLUS_DB_LOG_RETENTION_V1: the log summaries and the daily
+            # prune, on a connection of their own without the panel's
+            # statement limit; a failure there never stops the snapshots.
+            try:
+                maintenance = log_maintenance.connect()
+                try:
+                    log_maintenance.run_cycle(maintenance)
+                finally:
+                    maintenance.close()
+            except Exception as exc:
+                print(f"[seban-collector] log maintenance: {exc}", flush=True)
             time.sleep(INTERVAL)
         except Exception as exc:
             # A failed attempt (most often: MariaDB not accepting connections

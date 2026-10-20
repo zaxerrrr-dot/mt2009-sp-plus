@@ -45,6 +45,7 @@ class _PolishOnly:
 translations = _PolishOnly()
 import decisions
 import event_autogen  # MT2009_PLUS_EVENTS_AUTOGEN_V1
+import log_maintenance  # MT2009_PLUS_DB_LOG_RETENTION_V1
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SEBAN_SESSION_SECRET", "change-this-before-public-use")
@@ -568,10 +569,43 @@ except OSError:
 CRASHED_TABLE_ERRNOS = (144, 145, 1194, 1195)
 
 
+# MT2009_PLUS_PANEL_DB_GUARD_V1: a query the panel's statement limit stopped
+# (1969), a connection the database dropped or refused (2013, 2006, 2003),
+# a lock wait or a killed query. Before, any of them anywhere on a page ended
+# the whole request in Flask's bare "Internal Server Error" (a player's
+# server, 18-20 October: /player/<id> and /players).
+DB_BUSY_ERRNOS = (1969, 3024, 1317, 1205, 2006, 2013, 2003, 2055)
+
+
+def _db_errno(error):
+    return error.args[0] if getattr(error, "args", None) and isinstance(error.args[0], int) else 0
+
+
+def _db_busy_page(error):
+    errno = _db_errno(error)
+    _note_db_block_failure("page", errno, 0.0)
+    body = """<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<title>Panel chwilowo przeciążony</title>
+<style>body{font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:46em;margin:3em auto;padding:0 1.5em;line-height:1.6;color:#222}</style>
+</head><body><h1>Baza danych chwilowo nie odpowiedziała</h1>
+<p>Zapytanie tej strony trwało dłużej, niż panel pozwala (ochrona gry przed
+obciążeniem), albo połączenie z bazą zostało przerwane. Gra działa dalej.
+Odśwież stronę za chwilę.</p>
+<p style="color:#666;font-size:.9em">Kod błędu bazy: %s</p></body></html>""" % errno
+    return body, 503, {"Retry-After": "10"}
+
+
+@app.errorhandler(pymysql.err.InterfaceError)
+def handle_db_interface_error(error):
+    return _db_busy_page(error)
+
+
 @app.errorhandler(pymysql.err.OperationalError)
 def handle_crashed_table(error):
     errno = error.args[0] if error.args else 0
     message = str(error.args[1]) if len(error.args) > 1 else str(error)
+    if errno in DB_BUSY_ERRNOS:
+        return _db_busy_page(error)
     if errno not in CRASHED_TABLE_ERRNOS:
         # Nie nasza sprawa - niech Flask pokaze swoje 500 i zapisze slad.
         raise error
@@ -619,19 +653,114 @@ def db():
         host=os.environ.get("DB_HOST", "mariadb"), port=int(os.environ.get("DB_PORT", "3306")),
         user=os.environ["DB_USER"], password=os.environ["DB_PASSWORD"],
         charset="utf8mb4", cursorclass=pymysql.cursors.DictCursor, autocommit=True,
+        # A dead or wedged database never holds a gunicorn thread forever.
+        connect_timeout=10, read_timeout=int(os.environ.get("SEBAN_DB_READ_TIMEOUT", "330")),
     )
+
+
+# MT2009_PLUS_PANEL_DB_GUARD_V1: every SELECT the panel runs through rows()
+# carries its own time limit (MariaDB's SET STATEMENT max_statement_time ...
+# FOR), so one heavy query can no longer run for hours next to the game (a
+# player's server, 17 October: three feed scans of log.log at 6784, 4522 and
+# 629 s, the database at 380% CPU). Only SELECTs: a write the panel starts is
+# never cut in half. A page's request gets SEBAN_DB_STATEMENT_TIMEOUT
+# seconds; the panel's own background refreshes (dashboard cache, rankings,
+# the world feed sync) get SEBAN_DB_BACKGROUND_TIMEOUT through
+# background_queries(). 0 switches the limit off.
+DB_STATEMENT_TIMEOUT = float(os.environ.get("SEBAN_DB_STATEMENT_TIMEOUT", "10") or 0)
+DB_BACKGROUND_TIMEOUT = float(os.environ.get("SEBAN_DB_BACKGROUND_TIMEOUT", "300") or 0)
+_db_limits = threading.local()
+
+
+def statement_timeout():
+    override = getattr(_db_limits, "seconds", None)
+    if override is not None:
+        return override
+    return DB_STATEMENT_TIMEOUT if has_request_context() else DB_BACKGROUND_TIMEOUT
+
+
+class background_queries:
+    """with background_queries(): ... - the longer limit for this thread."""
+
+    def __init__(self, seconds=None):
+        self.seconds = DB_BACKGROUND_TIMEOUT if seconds is None else seconds
+
+    def __enter__(self):
+        self.previous = getattr(_db_limits, "seconds", None)
+        _db_limits.seconds = self.seconds
+        return self
+
+    def __exit__(self, *exc):
+        _db_limits.seconds = self.previous
+        return False
+
+
+_SELECT_START = re.compile(r"^\s*(?:\(\s*)*(SELECT|WITH)\b", re.I)
+
+
+def limited_sql(sql, seconds=None):
+    seconds = statement_timeout() if seconds is None else seconds
+    if seconds and seconds > 0 and _SELECT_START.match(sql):
+        return f"SET STATEMENT max_statement_time={seconds:g} FOR {sql}"
+    return sql
 
 
 def rows(sql, params=()):
     with db() as con:
         with con.cursor() as cur:
-            cur.execute(sql, params)
+            cur.execute(limited_sql(sql), params)
             return cur.fetchall()
 
 
 def one(sql, params=()):
     result = rows(sql, params)
     return result[0] if result else {}
+
+
+# MT2009_PLUS_PANEL_DB_GUARD_V1: one block of a page (the equipment history,
+# the +9 marks, a ranking card) that fails on the database returns its
+# fallback and the rest of the page renders. Logged without anything that
+# names a player: the route's pattern (/player/<int:pid>, not the id), the
+# block, the error number, the time it took and the batch size.
+_db_block_stats = {}
+_db_block_stats_lock = threading.Lock()
+
+
+def _note_db_block_failure(block, errno, elapsed, size=None):
+    route = "-"
+    if has_request_context():
+        rule = getattr(request, "url_rule", None)
+        route = rule.rule if rule is not None else "-"
+    with _db_block_stats_lock:
+        entry = _db_block_stats.setdefault((route, block, errno), {"count": 0, "last": None, "max_s": 0.0})
+        entry["count"] += 1
+        entry["last"] = datetime.now()
+        entry["max_s"] = max(entry["max_s"], round(elapsed, 2))
+    app.logger.warning("db block failed: route=%s block=%s errno=%s elapsed=%.2fs size=%s",
+                       route, block, errno, elapsed, size if size is not None else "-")
+
+
+def db_block_failures():
+    with _db_block_stats_lock:
+        return [{"route": route, "block": block, "errno": errno, **entry}
+                for (route, block, errno), entry in sorted(_db_block_stats.items(),
+                                                            key=lambda kv: kv[1]["last"] or datetime.min,
+                                                            reverse=True)]
+
+
+def db_block(block, fallback, func, *args, size=None, **kwargs):
+    """func(*args, **kwargs), or fallback (a value, or a callable) when the
+    database fails it. A crashed MyISAM table still reaches its own page."""
+    started = time.monotonic()
+    try:
+        return func(*args, **kwargs)
+    except (pymysql.err.OperationalError, pymysql.err.InterfaceError, pymysql.err.InternalError,
+            pymysql.err.ProgrammingError) as exc:
+        errno = _db_errno(exc)
+        if errno in CRASHED_TABLE_ERRNOS:
+            raise
+        _note_db_block_failure(block, errno, time.monotonic() - started, size)
+        return fallback() if callable(fallback) else fallback
 
 
 def read_regen_settings():
@@ -1356,6 +1485,21 @@ def _refine9_event_rows(since, before=None, scan_limit=200_000):
     panel-side workaround over an engine rebuild. The one real loss: this
     table has no refine *method* (blacksmith/scroll/guild) -- that is taken
     from the matching refinelog row (same pid and second), see the SELECT."""
+    if logstat_ready("log"):
+        # MT2009_PLUS_DB_LOG_RETENTION_V1: the +9 refines the collector already
+        # copied out of log.log (time-indexed), not a scan of log.log itself.
+        # What is newer than the summaries waits for their next fold.
+        clauses, params = ["r.time>=%s"], [since]
+        if before:
+            clauses.append("r.time<%s")
+            params.append(before)
+        return rows(f"""SELECT r.pid,r.hint AS item_name,r.item_id,r.time,p.name,p.job,{EMPIRE_EXPR} AS empire,
+            (SELECT x.setType FROM log.refinelog x WHERE x.pid=r.pid AND x.time=r.time AND x.is_success=1 AND x.step=8 LIMIT 1) AS set_type
+          FROM player.web_seban_log_refine9 r JOIN player.player p ON p.id=r.pid
+          LEFT JOIN player.player_index pi ON pi.id=p.account_id
+          LEFT JOIN account.account a ON a.id=p.account_id
+          WHERE {' AND '.join(clauses)}
+          ORDER BY r.time DESC LIMIT %s""", params + [scan_limit])
     clauses, params = ["l.how='REFINE SUCCESS'", "l.hint LIKE '%%+9'", "l.time>=%s"], [since]
     if before:
         clauses.append("l.time<%s")
@@ -1456,6 +1600,34 @@ def _classify_refine_events(raw):
 
 
 NEWS_SYNC_INTERVAL = 300  # seconds -- see sync_news_events() docstring
+# MT2009_PLUS_PANEL_DB_GUARD_V1: without an index on log.log's `time` every
+# scan reads all rows of those kinds whatever the window - hourly then.
+NEWS_SYNC_INTERVAL_UNINDEXED = 3600
+NEWS_SYNC_MAX_DAYS = 14
+_log_index_cache = {"at": 0.0, "indexed": False}
+_news_sync_lock = threading.Lock()
+
+
+def log_time_indexed():
+    """Whether log.log has an index starting with `time` (cached 10 min)."""
+    if time.time() - _log_index_cache["at"] < 600:
+        return _log_index_cache["indexed"]
+    try:
+        found = one("""SELECT 1 AS ok FROM information_schema.statistics
+          WHERE table_schema='log' AND table_name='log' AND column_name='time' AND seq_in_index=1 LIMIT 1""")
+        indexed = bool(found)
+    except pymysql.MySQLError:
+        indexed = False
+    _log_index_cache.update(at=time.time(), indexed=indexed)
+    return indexed
+
+
+def heavy_log_feed_disabled():
+    """SEBAN_DISABLE_HEAVY_LOG_FEED=1: the world feed stops reading log.log
+    for skills, clams and Reaper chests (refines still come from refinelog
+    and the +9 summaries). An owner's switch for a big log.log without a
+    `time` index (a player's server, 17 October)."""
+    return os.environ.get("SEBAN_DISABLE_HEAVY_LOG_FEED", "0").strip() == "1"
 
 
 def sync_news_events():
@@ -1478,24 +1650,61 @@ def sync_news_events():
         con = db()
     except pymysql.MySQLError:
         return
+    interval = NEWS_SYNC_INTERVAL if log_time_indexed() else NEWS_SYNC_INTERVAL_UNINDEXED
     try:
         with con.cursor() as cur:
             now = time.time()
             cur.execute("""UPDATE player.web_seban_settings SET value=%s
               WHERE name='news_sync_last_run' AND (value IS NULL OR value='' OR CAST(value AS DECIMAL(20,3)) < %s)""",
-              (str(now), now - NEWS_SYNC_INTERVAL))
+              (str(now), now - interval))
             claimed = cur.rowcount == 1
             if not claimed:
                 cur.execute("INSERT IGNORE INTO player.web_seban_settings (name,value) VALUES ('news_sync_last_run', %s)", (str(now),))
                 claimed = cur.rowcount == 1
-            if not claimed:
-                return  # another request already claimed this window
+    except pymysql.MySQLError:
+        app.logger.exception("Nie można zsynchronizować feedu wydarzeń")
+        claimed = False
+    finally:
+        con.close()
+    if not claimed:
+        return  # another request already claimed this window
+    # MT2009_PLUS_PANEL_DB_GUARD_V1: the scan itself runs beside the request,
+    # with the background statement limit; the page reads the cache as it is.
+    if has_request_context():
+        threading.Thread(target=_sync_news_events_claimed, name="news-sync", daemon=True).start()
+    else:
+        _sync_news_events_claimed()
+
+
+def _sync_news_events_claimed():
+    if not _news_sync_lock.acquire(blocking=False):
+        return
+    try:
+        con = db()
+    except pymysql.MySQLError:
+        _news_sync_lock.release()
+        return
+    try:
+        with background_queries(), con.cursor() as cur:
             cur.execute("SELECT value FROM player.web_seban_settings WHERE name='news_scan_last_time'")
             cursor_row = cur.fetchone()
             since = cursor_row["value"] if cursor_row and cursor_row.get("value") else "2020-01-01 00:00:00"
-            events = _classify_news_events(_news_event_source_rows(since=since, scan_limit=2_000_000))
+            try:
+                since_at = datetime.strptime(str(since), "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                since_at = datetime(2020, 1, 1)
+            # The feed shows 14 days: a first scan (or one after a long stop)
+            # never reads further back than that.
+            since_at = max(since_at, datetime.now() - timedelta(days=NEWS_SYNC_MAX_DAYS))
+            since = since_at.strftime("%Y-%m-%d %H:%M:%S")
+            events = []
+            if not heavy_log_feed_disabled():
+                events += _classify_news_events(_news_event_source_rows(since=since, scan_limit=200_000))
             events += _classify_refine_events(_refine_event_rows(since=since))
-            events += _classify_refine9_events(_refine9_event_rows(since=since))
+            # The +9 summaries may be up to an hour behind log.log; read them
+            # with an overlap (the cache's INSERT IGNORE drops the repeats).
+            events += _classify_refine9_events(_refine9_event_rows(
+                since=(since_at - timedelta(hours=2)).strftime("%Y-%m-%d %H:%M:%S")))
             if events:
                 cur.executemany("""INSERT IGNORE INTO player.web_seban_news_event
                   (event_key,time,kind,message,actor,player_id,job,empire,vnum,socket0,refine_tier,method)
@@ -1505,10 +1714,12 @@ def sync_news_events():
                 newest = max(e["time"] for e in events)
                 cur.execute("REPLACE INTO player.web_seban_settings (name,value) VALUES ('news_scan_last_time', %s)",
                             (newest.strftime("%Y-%m-%d %H:%M:%S"),))
-    except pymysql.MySQLError:
+    except pymysql.MySQLError as exc:
+        _note_db_block_failure("news_sync", _db_errno(exc), 0.0)
         app.logger.exception("Nie można zsynchronizować feedu wydarzeń")
     finally:
         con.close()
+        _news_sync_lock.release()
 
 
 def legendary_notice_enabled(destination, current=None):
@@ -2794,7 +3005,9 @@ def check_finished_events():
         for open_run in open_runs:
             if open_run["kind"] in live_runs:
                 continue
-            stats = event_run_stats(open_run["kind"], open_run["started_at"], datetime.now(), open_run["value"])
+            with background_queries(60):
+                stats = db_block("events.run_stats", {"chest_count": None, "yang_extra": None}, event_run_stats,
+                                 open_run["kind"], open_run["started_at"], datetime.now(), open_run["value"])
             rows("UPDATE player.web_seban_event_runs SET ended_at=NOW(), chest_count=%s, yang_extra=%s WHERE id=%s",
                  (stats["chest_count"], stats["yang_extra"], open_run["id"]))
             label = event_run_label(open_run["kind"])
@@ -2889,42 +3102,8 @@ def _daily_leader(query, params):
     return result
 
 
-def daily_summary_details(summary_date):
-    """Live reconstruction of a finished day's achievements for old and new summaries."""
-    day_start = datetime.combine(summary_date, datetime.min.time())
-    day_end = day_start + timedelta(days=1)
-    scope = daily_player_scope_sql("p")
-    pvp = _daily_leader(f"""SELECT p.id,p.name,COUNT(*) AS score FROM log.log l
-      JOIN player.player p ON p.name=SUBSTRING_INDEX(CONVERT(l.hint USING latin1),' ',-1)
-      WHERE l.how='DEAD_BY_PC' AND l.time>=%s AND l.time<%s AND {scope}
-      GROUP BY p.id,p.name ORDER BY score DESC,p.name LIMIT 1""", (day_start, day_end))
-    refines = rows(f"""SELECT p.id,p.name,
-      SUM(l.how='REFINE SUCCESS') AS successes,
-      SUM(l.how='REMOVE (REFINE FAIL)') AS burned
-      FROM log.log l JOIN player.player p ON p.id=l.who
-      WHERE l.time>=%s AND l.time<%s AND l.how IN ('REFINE SUCCESS','REMOVE (REFINE FAIL)') AND {scope}
-      GROUP BY p.id,p.name""", (day_start, day_end))
-    refine_success = max(refines, key=lambda r: int(r.get("successes") or 0), default=None)
-    refine_burned = max(refines, key=lambda r: int(r.get("burned") or 0), default=None)
-    if refine_success:
-        refine_success = {"id": int(refine_success["id"]), "name": refine_success["name"], "score": int(refine_success.get("successes") or 0)}
-    if refine_burned:
-        refine_burned = {"id": int(refine_burned["id"]), "name": refine_burned["name"], "score": int(refine_burned.get("burned") or 0)}
-    shop = _daily_leader(f"""SELECT p.id,p.name,
-      SUM(GREATEST(0,l.yang-IF(l.extra LIKE 'TAX: %%',CAST(SUBSTRING_INDEX(l.extra,' ',-1) AS UNSIGNED),0))) AS score
-      FROM log.ikarusshop_log l JOIN player.player p ON p.id=l.shop_owner
-      WHERE l.what='BUY_ITEM' AND l.time>=%s AND l.time<%s AND {scope}
-      GROUP BY p.id,p.name ORDER BY score DESC,p.name LIMIT 1""", (day_start, day_end))
-
-    plus9 = rows(f"""SELECT l.who AS owner_pid,p.name AS owner_name,l.what AS item_id,l.time,l.hint,
-      i.vnum,HEX(COALESCE(ip.locale_name,l.hint)) AS item_name_hex,ip.type,ip.subtype,ip.value1,
-      COALESCE(CASE WHEN ip.limittype0=1 THEN ip.limitvalue0 WHEN ip.limittype1=1 THEN ip.limitvalue1 END,0) AS required_level,
-      i.attrtype0,i.attrvalue0,i.attrtype1,i.attrvalue1,i.attrtype2,i.attrvalue2,
-      i.attrtype3,i.attrvalue3,i.attrtype4,i.attrvalue4,i.attrtype5,i.attrvalue5,i.attrtype6,i.attrvalue6
-      FROM log.log l JOIN player.player p ON p.id=l.who
-      LEFT JOIN player.item i ON i.id=l.what LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum
-      WHERE l.how='REFINE SUCCESS' AND l.hint LIKE '%%+9' AND l.time>=%s AND l.time<%s AND {scope}""",
-      (day_start, day_end))
+def _daily_plus9_highlights(plus9, best_previous_armor, hammer_rows):
+    """The three highlights of a day's +9 refines (shared by both sources)."""
     for item in plus9:
         item["owner_pid"] = int(item.get("owner_pid") or 0)
         item["vnum"] = int(item.get("vnum") or 0)
@@ -2938,21 +3117,8 @@ def daily_summary_details(summary_date):
                      key=lambda item: (item["avg_damage"], int(item.get("required_level") or 0)), reverse=True)
     armor = max((item for item in plus9 if int(item.get("type") or 0) == 2 and int(item.get("subtype") or 0) == 0),
                 key=lambda item: item["armor_power"], default=None)
-    best_previous_armor = one(f"""SELECT MAX(COALESCE(ip.value1,0)+6*MOD(i.vnum,10)) AS score
-      FROM player.item i JOIN player.player p ON p.id=i.owner_id LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum
-      JOIN log.log rl ON rl.what=i.id AND rl.how='REFINE SUCCESS' AND rl.hint LIKE '%%+9' AND rl.time<%s
-      WHERE i.window='EQUIPMENT' AND i.pos=0 AND MOD(i.vnum,10)=9 AND {scope}""", (day_start,))
     if armor and armor["armor_power"] <= int((best_previous_armor or {}).get("score") or 0):
         armor = None
-
-    hammer_rows = rows(f"""SELECT p.id,p.name,MAX(l.time) AS completed_at FROM player.player p
-      JOIN player.item i ON i.owner_id=p.id AND i.window='EQUIPMENT' AND i.pos IN (0,1,2,3,4,5,6,10)
-      LEFT JOIN log.log l ON l.what=i.id AND l.how='REFINE SUCCESS' AND l.hint LIKE '%%+9'
-      LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum WHERE {scope}
-      GROUP BY p.id,p.name HAVING COUNT(DISTINCT i.pos)=8
-        AND SUM(COALESCE(ip.locale_name,'') LIKE '%%+9')=8 AND completed_at>=%s AND completed_at<%s
-      ORDER BY completed_at ASC""", (day_start, day_end))
-
     highlights, highlighted_ids = [], set()
     if weapons:
         item = weapons[0]
@@ -2994,6 +3160,103 @@ def daily_summary_details(summary_date):
             detail, kind = "wyróżniające się ulepszenie do +9", "item"
         highlights.append({"kind": kind, "vnum": item["vnum"], "name": item["item_name"], "detail": detail,
                            "player_id": item["owner_pid"], "player_name": item["owner_name"]})
+    return highlights[:3]
+
+
+def _daily_summary_details_from_summaries(day_start, day_end, scope):
+    """daily_summary_details() for a day web_seban_log_daily and
+    web_seban_log_refine9 already hold (log_maintenance.py)."""
+    def leader(metric):
+        return _daily_leader(f"""SELECT p.id,p.name,CAST(SUM(d.n) AS SIGNED) AS score
+          FROM player.web_seban_log_daily d JOIN player.player p ON p.id=d.pid
+          WHERE d.metric=%s AND d.day=%s AND {scope}
+          GROUP BY p.id,p.name ORDER BY score DESC,p.name LIMIT 1""", (metric, day_start.date()))
+    pvp = leader("pvp_kill")
+    refine_success = leader("refine_ok")
+    refine_burned = leader("refine_burn")
+    shop = leader("shop_yang") if logstat_ready("ikarusshop_log", day_end) else None
+    plus9 = rows(f"""SELECT r.pid AS owner_pid,p.name AS owner_name,r.item_id,r.time,r.hint,
+      i.vnum,HEX(COALESCE(ip.locale_name,r.hint)) AS item_name_hex,ip.type,ip.subtype,ip.value1,
+      COALESCE(CASE WHEN ip.limittype0=1 THEN ip.limitvalue0 WHEN ip.limittype1=1 THEN ip.limitvalue1 END,0) AS required_level,
+      i.attrtype0,i.attrvalue0,i.attrtype1,i.attrvalue1,i.attrtype2,i.attrvalue2,
+      i.attrtype3,i.attrvalue3,i.attrtype4,i.attrvalue4,i.attrtype5,i.attrvalue5,i.attrtype6,i.attrvalue6
+      FROM player.web_seban_log_refine9 r JOIN player.player p ON p.id=r.pid
+      LEFT JOIN player.item i ON i.id=r.item_id LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum
+      WHERE r.time>=%s AND r.time<%s AND {scope}""", (day_start, day_end))
+    best_previous_armor = one(f"""SELECT MAX(COALESCE(ip.value1,0)+6*MOD(i.vnum,10)) AS score
+      FROM player.item i JOIN player.player p ON p.id=i.owner_id LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum
+      JOIN player.web_seban_log_refine9 rl ON rl.item_id=i.id AND rl.time<%s
+      WHERE i.window='EQUIPMENT' AND i.pos=0 AND MOD(i.vnum,10)=9 AND {scope}""", (day_start,))
+    hammer_rows = rows(f"""SELECT p.id,p.name,MAX(l.time) AS completed_at FROM player.player p
+      JOIN player.item i ON i.owner_id=p.id AND i.window='EQUIPMENT' AND i.pos IN (0,1,2,3,4,5,6,10)
+      LEFT JOIN player.web_seban_log_refine9 l ON l.item_id=i.id
+      LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum WHERE {scope}
+      GROUP BY p.id,p.name HAVING COUNT(DISTINCT i.pos)=8
+        AND SUM(COALESCE(ip.locale_name,'') LIKE '%%+9')=8 AND completed_at>=%s AND completed_at<%s
+      ORDER BY completed_at ASC""", (day_start, day_end))
+    level_start, level_end = daily_level_bounds(day_start, day_end)
+    chest_total = one("""SELECT CAST(COALESCE(SUM(n),0) AS SIGNED) AS n FROM player.web_seban_log_daily
+      WHERE metric='reaper_chest' AND day<%s""", (day_end.date(),))
+    return {"level_start": level_start, "level_end": level_end,
+            "pvp": pvp, "refine_success": refine_success, "refine_burned": refine_burned,
+            "shop": shop, "highlights": _daily_plus9_highlights(plus9, best_previous_armor, hammer_rows),
+            "hammer_count": len(hammer_rows),
+            "reaper_chests_today": logstat_day_total("reaper_chest", day_start, day_end),
+            "reaper_chests_total": int((chest_total or {}).get("n") or 0)}
+
+
+def daily_summary_details(summary_date):
+    """Live reconstruction of a finished day's achievements for old and new summaries."""
+    day_start = datetime.combine(summary_date, datetime.min.time())
+    day_end = day_start + timedelta(days=1)
+    scope = daily_player_scope_sql("p")
+    # MT2009_PLUS_DB_LOG_RETENTION_V1: a finished day the summaries already
+    # hold is read from them - its raw rows may be gone after the retention.
+    if logstat_ready("log", day_end):
+        return _daily_summary_details_from_summaries(day_start, day_end, scope)
+    pvp = _daily_leader(f"""SELECT p.id,p.name,COUNT(*) AS score FROM log.log l
+      JOIN player.player p ON p.name=SUBSTRING_INDEX(CONVERT(l.hint USING latin1),' ',-1)
+      WHERE l.how='DEAD_BY_PC' AND l.time>=%s AND l.time<%s AND {scope}
+      GROUP BY p.id,p.name ORDER BY score DESC,p.name LIMIT 1""", (day_start, day_end))
+    refines = rows(f"""SELECT p.id,p.name,
+      SUM(l.how='REFINE SUCCESS') AS successes,
+      SUM(l.how='REMOVE (REFINE FAIL)') AS burned
+      FROM log.log l JOIN player.player p ON p.id=l.who
+      WHERE l.time>=%s AND l.time<%s AND l.how IN ('REFINE SUCCESS','REMOVE (REFINE FAIL)') AND {scope}
+      GROUP BY p.id,p.name""", (day_start, day_end))
+    refine_success = max(refines, key=lambda r: int(r.get("successes") or 0), default=None)
+    refine_burned = max(refines, key=lambda r: int(r.get("burned") or 0), default=None)
+    if refine_success:
+        refine_success = {"id": int(refine_success["id"]), "name": refine_success["name"], "score": int(refine_success.get("successes") or 0)}
+    if refine_burned:
+        refine_burned = {"id": int(refine_burned["id"]), "name": refine_burned["name"], "score": int(refine_burned.get("burned") or 0)}
+    shop = _daily_leader(f"""SELECT p.id,p.name,
+      SUM(GREATEST(0,l.yang-IF(l.extra LIKE 'TAX: %%',CAST(SUBSTRING_INDEX(l.extra,' ',-1) AS UNSIGNED),0))) AS score
+      FROM log.ikarusshop_log l JOIN player.player p ON p.id=l.shop_owner
+      WHERE l.what='BUY_ITEM' AND l.time>=%s AND l.time<%s AND {scope}
+      GROUP BY p.id,p.name ORDER BY score DESC,p.name LIMIT 1""", (day_start, day_end))
+
+    plus9 = rows(f"""SELECT l.who AS owner_pid,p.name AS owner_name,l.what AS item_id,l.time,l.hint,
+      i.vnum,HEX(COALESCE(ip.locale_name,l.hint)) AS item_name_hex,ip.type,ip.subtype,ip.value1,
+      COALESCE(CASE WHEN ip.limittype0=1 THEN ip.limitvalue0 WHEN ip.limittype1=1 THEN ip.limitvalue1 END,0) AS required_level,
+      i.attrtype0,i.attrvalue0,i.attrtype1,i.attrvalue1,i.attrtype2,i.attrvalue2,
+      i.attrtype3,i.attrvalue3,i.attrtype4,i.attrvalue4,i.attrtype5,i.attrvalue5,i.attrtype6,i.attrvalue6
+      FROM log.log l JOIN player.player p ON p.id=l.who
+      LEFT JOIN player.item i ON i.id=l.what LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum
+      WHERE l.how='REFINE SUCCESS' AND l.hint LIKE '%%+9' AND l.time>=%s AND l.time<%s AND {scope}""",
+      (day_start, day_end))
+    best_previous_armor = one(f"""SELECT MAX(COALESCE(ip.value1,0)+6*MOD(i.vnum,10)) AS score
+      FROM player.item i JOIN player.player p ON p.id=i.owner_id LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum
+      JOIN log.log rl ON rl.what=i.id AND rl.how='REFINE SUCCESS' AND rl.hint LIKE '%%+9' AND rl.time<%s
+      WHERE i.window='EQUIPMENT' AND i.pos=0 AND MOD(i.vnum,10)=9 AND {scope}""", (day_start,))
+    hammer_rows = rows(f"""SELECT p.id,p.name,MAX(l.time) AS completed_at FROM player.player p
+      JOIN player.item i ON i.owner_id=p.id AND i.window='EQUIPMENT' AND i.pos IN (0,1,2,3,4,5,6,10)
+      LEFT JOIN log.log l ON l.what=i.id AND l.how='REFINE SUCCESS' AND l.hint LIKE '%%+9'
+      LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum WHERE {scope}
+      GROUP BY p.id,p.name HAVING COUNT(DISTINCT i.pos)=8
+        AND SUM(COALESCE(ip.locale_name,'') LIKE '%%+9')=8 AND completed_at>=%s AND completed_at<%s
+      ORDER BY completed_at ASC""", (day_start, day_end))
+    highlights = _daily_plus9_highlights(plus9, best_previous_armor, hammer_rows)
     level_start, level_end = daily_level_bounds(day_start, day_end)
     chest_today = one("""SELECT COUNT(DISTINCT CONCAT(who, ':', UNIX_TIMESTAMP(time))) AS n FROM log.log
       WHERE how IN ('USE_ITEM','CHEST_OPEN') AND what=50082 AND time>=%s AND time<%s""",
@@ -3002,7 +3265,7 @@ def daily_summary_details(summary_date):
       WHERE how IN ('USE_ITEM','CHEST_OPEN') AND what=50082 AND time<%s""", (day_end,))
     return {"level_start": level_start, "level_end": level_end,
             "pvp": pvp, "refine_success": refine_success, "refine_burned": refine_burned,
-            "shop": shop, "highlights": highlights[:3], "hammer_count": len(hammer_rows),
+            "shop": shop, "highlights": highlights, "hammer_count": len(hammer_rows),
             "reaper_chests_today": int((chest_today or {}).get("n") or 0),
             "reaper_chests_total": int((chest_total or {}).get("n") or 0)}
 
@@ -3036,18 +3299,28 @@ def check_daily_summary():
         cash_start, cash_end = bounds("dragon_coins")
         shops_start, shops_end = bounds("shops_count")
         level_start, level_end = daily_level_bounds(day_start, day_end)
-        refine9 = one("SELECT COUNT(*) AS n FROM log.log WHERE how='REFINE SUCCESS' AND hint LIKE '%%+9' AND time BETWEEN %s AND %s",
-                       (day_start, day_end)).get("n", 0)
-        metins = one("SELECT COUNT(*) AS n FROM log.log WHERE how='STONE_KILL' AND time BETWEEN %s AND %s",
-                      (day_start, day_end)).get("n", 0)
-        bosses = one("SELECT COUNT(*) AS n FROM log.log WHERE how='BOSS_KILL' AND time BETWEEN %s AND %s",
-                      (day_start, day_end)).get("n", 0)
+        # MT2009_PLUS_DB_LOG_RETENTION_V1: from the summaries once they hold the day.
+        from_summaries = logstat_ready("log", day_end)
+        if from_summaries:
+            refine9 = logstat_day_total("refine9", day_start, day_end)
+            metins = logstat_day_total("stone", day_start, day_end)
+            bosses = logstat_day_total("boss", day_start, day_end)
+        else:
+            refine9 = one("SELECT COUNT(*) AS n FROM log.log WHERE how='REFINE SUCCESS' AND hint LIKE '%%+9' AND time BETWEEN %s AND %s",
+                           (day_start, day_end)).get("n", 0)
+            metins = one("SELECT COUNT(*) AS n FROM log.log WHERE how='STONE_KILL' AND time BETWEEN %s AND %s",
+                          (day_start, day_end)).get("n", 0)
+            bosses = one("SELECT COUNT(*) AS n FROM log.log WHERE how='BOSS_KILL' AND time BETWEEN %s AND %s",
+                          (day_start, day_end)).get("n", 0)
         # log.fish_log -- same table the "Wyłowione ryby" ranking reads
         # (found 2026-09-23), has its own `time` column so a daily window
         # works directly, unlike player_special_flag's stat_fishing which is
         # a cumulative all-time counter with no history to diff against.
-        fish = one("SELECT COALESCE(SUM(count),0) AS n FROM log.fish_log WHERE time BETWEEN %s AND %s",
-                    (day_start, day_end)).get("n", 0)
+        if logstat_ready("fish_log", day_end):
+            fish = logstat_day_total("fish", day_start, day_end)
+        else:
+            fish = one("SELECT COALESCE(SUM(count),0) AS n FROM log.fish_log WHERE time BETWEEN %s AND %s",
+                        (day_start, day_end)).get("n", 0)
         # Mining has no dedicated per-event log table and no timestamped
         # counter -- player_special_flag's stat_mining is cumulative only.
         # The actual source is log.money_log(type='DROP'), which every ore
@@ -3058,9 +3331,12 @@ def check_daily_summary():
         # to the 19 raw-ore vnums mining.cpp actually hands out (50601-50619,
         # mining.cpp's `info[MAX_ORE]` table) -- confirmed against those exact
         # vnums live before wiring this in.
-        mining = one("""SELECT COALESCE(SUM(gold),0) AS n FROM log.money_log
-          WHERE type='DROP' AND vnum BETWEEN 50601 AND 50619 AND time BETWEEN %s AND %s""",
-                      (day_start, day_end)).get("n", 0)
+        if logstat_ready("money_log", day_end):
+            mining = logstat_day_total("mining", day_start, day_end)
+        else:
+            mining = one("""SELECT COALESCE(SUM(gold),0) AS n FROM log.money_log
+              WHERE type='DROP' AND vnum BETWEEN 50601 AND 50619 AND time BETWEEN %s AND %s""",
+                          (day_start, day_end)).get("n", 0)
         events_count = one("SELECT COUNT(*) AS n FROM player.web_seban_event_runs WHERE ended_at BETWEEN %s AND %s",
                             (day_start, day_end)).get("n", 0)
         # Broń z najwyższymi średnimi obrażeniami aktualnie noszona przez
@@ -3984,6 +4260,56 @@ def not_game_master(alias="p"):
             " WHERE rgp.account_id = gacc.id AND rgp.name = rg.mName))")
 
 
+# MT2009_PLUS_DB_LOG_RETENTION_V1: the panel's "since the start" and 7-day
+# figures come from the summaries log_maintenance.py keeps (the collector
+# folds the log tables into them; the retention job deletes only what they
+# already hold). Until the first fold has run (a few minutes after an
+# update, longer on a big log.log) the old raw queries answer instead.
+_logstat_cache = {"at": 0.0, "marks": {}}
+
+
+def logstat_marks():
+    if time.time() - _logstat_cache["at"] < 30:
+        return _logstat_cache["marks"]
+    marks = {}
+    try:
+        for row in rows("SELECT name,value FROM player.web_seban_settings WHERE name LIKE %s", ("logstat_wm:%",)):
+            try:
+                marks[row["name"].split(":", 1)[1]] = datetime.strptime(row["value"], "%Y-%m-%d %H:%M:%S")
+            except (ValueError, IndexError):
+                continue
+    except pymysql.MySQLError:
+        marks = {}
+    _logstat_cache.update(at=time.time(), marks=marks)
+    return marks
+
+
+def logstat_ready(source="log", until=None):
+    """The summaries of `source` exist (and reach `until`, when given)."""
+    mark = logstat_marks().get(source)
+    return mark is not None and (until is None or mark >= until)
+
+
+def logstat_ranking(metric, scope, days=None, limit_clause="", min_score=None):
+    """Characters by the sum of one metric, all-time or over the last `days`
+    calendar days (today included)."""
+    clauses, params = ["d.metric=%s"], [metric]
+    if days:
+        clauses.append("d.day >= CURDATE() - INTERVAL %s DAY")
+        params.append(int(days) - 1)
+    having = f" HAVING score >= {int(min_score)}" if min_score is not None else " HAVING score > 0"
+    return rows(f"""SELECT p.id,p.name,p.level,p.gold,CAST(SUM(d.n) AS SIGNED) AS score
+      FROM player.web_seban_log_daily d JOIN player.player p ON p.id=d.pid
+      WHERE {' AND '.join(clauses)} AND {scope}
+      GROUP BY p.id,p.name,p.level,p.gold{having} ORDER BY score DESC,p.level DESC,p.name {limit_clause}""", params)
+
+
+def logstat_day_total(metric, day_start, day_end):
+    found = one("""SELECT CAST(COALESCE(SUM(n),0) AS SIGNED) AS n FROM player.web_seban_log_daily
+      WHERE metric=%s AND day>=%s AND day<%s""", (metric, day_start.date(), day_end.date()))
+    return int((found or {}).get("n") or 0)
+
+
 def ranking_scope_sql(alias="p", people_only=False):
     """The WHERE-clause predicate for 'who counts' in rankings/leaderboards
     (NOT the same question as economy stats, which already count everyone,
@@ -4070,7 +4396,8 @@ def cached_dashboard_ranking(kind, limit=10, ttl=300):
 
     def refresh():
         try:
-            data = bot_ranking(kind)[:limit]
+            with background_queries():
+                data = bot_ranking(kind)[:limit]
             rows("REPLACE INTO player.web_seban_query_cache (name,value) VALUES (%s,%s)",
                  (name, json.dumps({"at": time.time(), "rows": data}, default=str)))
         except Exception:
@@ -4203,6 +4530,11 @@ def bot_ranking(kind, sort_by="avg", people_only=False, weapon_type=None):
     if kind == "playtime":
         return rows(f"SELECT p.id,p.name,p.level,p.gold,p.playtime AS score,CONCAT(FLOOR(p.playtime/60),' h') AS detail FROM player.player p WHERE {base} ORDER BY p.playtime DESC,p.level DESC {limit_clause}")
     if kind == "bosses":
+        if logstat_ready("log"):
+            found = logstat_ranking("boss", base, days=7, limit_clause=limit_clause)
+            for row in found:
+                row["detail"] = f"{row['score']} zabitych bossów · 7 dni"
+            return found
         return rows(f"""SELECT p.id,p.name,p.level,p.gold,COUNT(*) AS score,
             CONCAT(COUNT(*),' zabitych bossów · 7 dni') AS detail
             FROM log.log l JOIN player.player p ON p.id=l.who
@@ -4212,6 +4544,11 @@ def bot_ranking(kind, sort_by="avg", people_only=False, weapon_type=None):
         # Same REFINE SUCCESS count character_stat_summary() already shows
         # on /player/ as "Pomyślne ulepszenia" -- all-time, not windowed,
         # so this ranking's numbers line up with that page's.
+        if logstat_ready("log"):
+            found = logstat_ranking("refine_ok", base, limit_clause=limit_clause)
+            for row in found:
+                row["detail"] = f"{row['score']} pomyślnych ulepszeń"
+            return found
         return rows(f"""SELECT p.id,p.name,p.level,p.gold,COUNT(*) AS score,
             CONCAT(COUNT(*),' pomyślnych ulepszeń') AS detail
             FROM log.log l JOIN player.player p ON p.id=l.who
@@ -4238,6 +4575,11 @@ def bot_ranking(kind, sort_by="avg", people_only=False, weapon_type=None):
         # log.log's `how` column, which genuinely has no fishing entry --
         # this is a separate table entirely. Confirmed live 2026-09-22: 5557
         # real rows, player_id joins cleanly to player.player.id.
+        if logstat_ready("fish_log"):
+            found = logstat_ranking("fish", base, limit_clause=limit_clause)
+            for row in found:
+                row["detail"] = f"{row['score']} złowionych ryb"
+            return found
         return rows(f"""SELECT p.id,p.name,p.level,p.gold,SUM(fl.count) AS score,
             CONCAT(SUM(fl.count),' złowionych ryb') AS detail
             FROM log.fish_log fl JOIN player.player p ON p.id=fl.player_id
@@ -4253,6 +4595,22 @@ def bot_ranking(kind, sort_by="avg", people_only=False, weapon_type=None):
         # 'REFINE FAIL' rows at all, every failed refine burns the item and
         # is logged only as the burn event.
         min_attempts = 20
+        if logstat_ready("log"):
+            found = rows(f"""SELECT p.id,p.name,p.level,p.gold,
+                CAST(SUM(IF(d.metric='refine_ok',d.n,0)) AS SIGNED) AS ok,
+                CAST(SUM(d.n) AS SIGNED) AS attempts
+                FROM player.web_seban_log_daily d JOIN player.player p ON p.id=d.pid
+                WHERE d.metric IN ('refine_ok','refine_burn') AND {base}
+                GROUP BY p.id,p.name,p.level,p.gold HAVING attempts >= {min_attempts}""")
+            for row in found:
+                ok, attempts = int(row.pop("ok") or 0), int(row.pop("attempts") or 0)
+                row["score"] = round(100 * ok / attempts, 1)
+                row["detail"] = f"{row['score']}% ({ok}/{attempts} ulepszeń)"
+                row["_attempts"] = attempts
+            found = sorted(found, key=lambda r: (-r["score"], -r["_attempts"], -int(r.get("level") or 0)))
+            for row in found:
+                row.pop("_attempts", None)
+            return found[:3000]
         return rows(f"""SELECT p.id,p.name,p.level,p.gold,
             ROUND(100*SUM(l.how='REFINE SUCCESS')/COUNT(*),1) AS score,
             CONCAT(ROUND(100*SUM(l.how='REFINE SUCCESS')/COUNT(*),1),'%% (',SUM(l.how='REFINE SUCCESS'),'/',COUNT(*),' ulepszeń)') AS detail
@@ -4283,6 +4641,11 @@ def bot_ranking(kind, sort_by="avg", people_only=False, weapon_type=None):
         # achievement to rank). Real money instead: all-time Yang earned
         # from offline-shop sales, log.ikarusshop_log -- same BUY_ITEM/TAX
         # pattern daily_summary_details()'s "shop" leader already uses.
+        if logstat_ready("ikarusshop_log"):
+            found = logstat_ranking("shop_yang", base, limit_clause=limit_clause)
+            for row in found:
+                row["detail"] = "{:,} Yang ze sprzedaży".format(int(row["score"]))
+            return found
         return rows(f"""SELECT p.id,p.name,p.level,p.gold,
             SUM(GREATEST(0,l.yang-IF(l.extra LIKE 'TAX: %%',CAST(SUBSTRING_INDEX(l.extra,' ',-1) AS UNSIGNED),0))) AS score,
             CONCAT(FORMAT(SUM(GREATEST(0,l.yang-IF(l.extra LIKE 'TAX: %%',CAST(SUBSTRING_INDEX(l.extra,' ',-1) AS UNSIGNED),0))),0),' Yang ze sprzedaży') AS detail
@@ -4723,11 +5086,14 @@ def _dashboard_deferred_context():
     quick_rankings.append({"title": "Yang", "subtitle": "najwięcej przy postaci", "items": [{"id": row["id"], "name": row["name"], "value": f"{int(row.get('gold') or 0):,}".replace(",", " ")} for row in gold]})
     weapon30 = bot_ranking("weapon30")[:10]
     quick_rankings.append({"title": "Broń 30 Lv", "subtitle": "średnie / umiejętności", "items": [{"id": row["id"], "name": row["name"], "value": f"Śr. {int(row.get('avg_damage') or 0)}% · Um. {int(row.get('skill_damage') or 0)}%"} for row in weapon30]})
-    metins = rows("""SELECT p.id,p.name,COUNT(*) AS score FROM log.log l JOIN player.player p ON p.id=l.who
+    def raw_metins():
+        return rows("""SELECT p.id,p.name,COUNT(*) AS score FROM log.log l JOIN player.player p ON p.id=l.who
                      WHERE """ + ranking_scope_sql("p") + """ AND l.how='STONE_KILL' AND l.time >= NOW() - INTERVAL 7 DAY
                      GROUP BY p.id,p.name ORDER BY score DESC,p.name LIMIT 10""")
+    metins = db_block("dashboard.metins", [], lambda: logstat_ranking("stone", ranking_scope_sql("p"), days=7, limit_clause="LIMIT 10")
+                      if logstat_ready("log") else raw_metins())
     quick_rankings.append({"title": "Metiny", "subtitle": "rozbite · ostatnie 7 dni", "items": [{"id": row["id"], "name": row["name"], "value": f"{int(row['score'])} szt."} for row in metins]})
-    bosses = bot_ranking("bosses")[:10]
+    bosses = db_block("dashboard.bosses", [], bot_ranking, "bosses")[:10]
     quick_rankings.append({"title": "Bossy", "subtitle": "zabite · ostatnie 7 dni", "items": [{"id": row["id"], "name": row["name"], "value": f"{int(row['score'])} szt."} for row in bosses]})
     refine = cached_dashboard_ranking("refine")
     quick_rankings.append({"title": "Pomyślne ulepszenia", "subtitle": "łącznie, całościowo", "items": [{"id": row["id"], "name": row["name"], "value": f"{int(row['score'])} szt."} for row in refine]})
@@ -4799,7 +5165,7 @@ def _refresh_dashboard_deferred_cache():
     try:
         # url_for() is used while composing map icons, so a lightweight request
         # context is required even though this refresh runs after the response.
-        with app.test_request_context("/"):
+        with app.test_request_context("/"), background_queries():
             data = _dashboard_deferred_context()
             _write_dashboard_deferred_cache(data)
     except Exception:
@@ -4845,7 +5211,8 @@ def players():
         args = [f"%{query}%", query if query.isdigit() else -1]
     sql += " ORDER BY p.level DESC, p.exp DESC LIMIT 250"
     roster, live = rows(sql, args), live_statuses()
-    full_plus9_ids = full_plus9_equipment_ids(character["id"] for character in roster)
+    full_plus9_ids = db_block("players.full_plus9", set(), full_plus9_equipment_ids,
+                              [character["id"] for character in roster], size=len(roster))
     for character in roster:
         character["full_plus9_equipment"] = character["id"] in full_plus9_ids
         state = live.get(character["id"])
@@ -5815,12 +6182,33 @@ def bot_debug_logs(name, limit=60, scan_lines=800):
     return matched[-limit:]
 
 
-def bot_gear_history(pid, limit=60):
+def _gear_history_rows(pid, limit):
+    """The raw lines of the equipment history, newest first.
+
+    MT2009_PLUS_PANEL_DB_GUARD_V1: read from player.web_seban_gear_event
+    (pid, time index), which the collector fills from log.log - not from
+    log.log itself, whose only usable index here is `who`: every row of the
+    character (tens of thousands of GET_GOLD for a bot) was read and sorted
+    on each visit, and on a 134M-row log.log that ran past the panel's
+    statement limit and took the whole profile down (a player's server,
+    18-20 October). A character the cache does not know (nothing in the last
+    log_maintenance.GEAR_KEEP_DAYS days, or the summaries not seeded yet)
+    falls back to log.log, bounded to its newest rows by the limit."""
     hows = list(GEAR_HISTORY_HOWS.keys())
     marks = ",".join(["%s"] * len(hows))
-    raw = rows(f"""SELECT l.time, l.how, l.hint, l.vnum, i.socket0 FROM log.log l
+    if logstat_ready("log"):
+        found = rows(f"""SELECT g.time, g.how, g.hint, g.vnum, i.socket0 FROM player.web_seban_gear_event g
+          LEFT JOIN player.item i ON i.id = g.what
+          WHERE g.pid=%s ORDER BY g.time DESC, g.id DESC LIMIT %s""", [pid, limit])
+        if found:
+            return found
+    return rows(f"""SELECT l.time, l.how, l.hint, l.vnum, i.socket0 FROM log.log l
       LEFT JOIN player.item i ON i.id = l.what
       WHERE l.who=%s AND l.how IN ({marks}) ORDER BY l.time DESC LIMIT %s""", [pid] + hows + [limit])
+
+
+def bot_gear_history(pid, limit=60):
+    raw = _gear_history_rows(pid, limit)
     result = []
     for r in raw:
         how = game_text(r["how"])
@@ -6446,23 +6834,56 @@ def is_full_plus9_equipment(equipment):
                for slot in PLUS9_EQUIPMENT_SLOTS.values())
 
 
+_plus9_vnum_cache = {"at": 0.0, "vnums": frozenset()}
+_plus9_ids_cache = {}
+PLUS9_IDS_CACHE_SECONDS = 120
+
+
+def plus9_vnums():
+    """Every vnum whose name ends in "+9", from item_proto once in 10 minutes
+    (it changes only with a database editor apply)."""
+    if time.time() - _plus9_vnum_cache["at"] < 600 and _plus9_vnum_cache["vnums"]:
+        return _plus9_vnum_cache["vnums"]
+    found = rows("SELECT vnum, HEX(locale_name) AS name_hex FROM player.item_proto WHERE locale_name LIKE %s", ("%+9",))
+    vnums = frozenset(int(row["vnum"]) for row in found
+                      if re.search(r"\+9\s*$", cp1250_hex_text(row.get("name_hex")) or ""))
+    _plus9_vnum_cache.update(at=time.time(), vnums=vnums)
+    return vnums
+
+
 def full_plus9_equipment_ids(player_ids):
-    """Batch equivalent of is_full_plus9_equipment() for the /players roster."""
+    """Batch equivalent of is_full_plus9_equipment() for the /players roster.
+
+    MT2009_PLUS_PANEL_DB_GUARD_V1: no join to item_proto per item any more
+    (the +9 vnums come from plus9_vnums()), only the columns needed, batches
+    of 100 characters through player.item's owner_id index, the answer kept
+    PLUS9_IDS_CACHE_SECONDS. Called through db_block() by /players: when the
+    database cannot answer, the list shows without the +9 marks."""
     if not full_plus9_badges_enabled():
         return set()
     ids = sorted({int(pid) for pid in player_ids if int(pid or 0) > 0})
     if not ids:
         return set()
-    marks = ",".join(["%s"] * len(ids))
-    equipped = rows(f"""SELECT i.owner_id,i.pos,COALESCE(p.locale_name,CONCAT('VNUM ',i.vnum)) AS item_name
-      FROM player.item i LEFT JOIN player.item_proto p ON p.vnum=i.vnum
-      WHERE i.owner_id IN ({marks}) AND i.window='EQUIPMENT' AND i.pos IN (0,1,2,3,4,5,6,10)""", ids)
+    key = hash(tuple(ids))
+    cached = _plus9_ids_cache.get(key)
+    if cached and time.time() - cached[0] < PLUS9_IDS_CACHE_SECONDS:
+        return cached[1]
+    plus9 = plus9_vnums()
     slots = {}
-    for item in equipped:
-        if re.search(r"\+9\s*$", game_text(item.get("item_name") or "")):
-            slots.setdefault(int(item["owner_id"]), set()).add(int(item["pos"]))
+    for start in range(0, len(ids), 100):
+        batch = ids[start:start + 100]
+        marks = ",".join(["%s"] * len(batch))
+        equipped = rows(f"""SELECT i.owner_id,i.pos,i.vnum FROM player.item i
+          WHERE i.owner_id IN ({marks}) AND i.window='EQUIPMENT' AND i.pos IN (0,1,2,3,4,5,6,10)""", batch)
+        for item in equipped:
+            if int(item["vnum"] or 0) in plus9:
+                slots.setdefault(int(item["owner_id"]), set()).add(int(item["pos"]))
     required = set(PLUS9_EQUIPMENT_SLOTS)
-    return {pid for pid, positions in slots.items() if positions == required}
+    result = {pid for pid, positions in slots.items() if positions == required}
+    if len(_plus9_ids_cache) > 64:
+        _plus9_ids_cache.clear()
+    _plus9_ids_cache[key] = (time.time(), result)
+    return result
 
 
 @app.route("/player/<int:pid>")
@@ -6544,8 +6965,9 @@ def player(pid):
     equipment, costumes, alchemy, inventory, safebox, horse_bag = load_character_items(pid, character["account_id"])
     dragon_soul_inventory, dragon_soul_decks = load_dragon_soul_items(pid)
     character["full_plus9_equipment"] = full_plus9_badges_enabled() and is_full_plus9_equipment(equipment)
-    gear_history = bot_gear_history(pid)
-    offline_shop = bot_offline_shop(pid)
+    # MT2009_PLUS_PANEL_DB_GUARD_V1: either block failing leaves the profile up.
+    gear_history = db_block("player.gear_history", None, bot_gear_history, pid)
+    offline_shop = db_block("player.offline_shop", None, bot_offline_shop, pid)
     character_stats = character_stat_summary(pid)
     mission_progress = character_mission_progress(pid)
     gm_row = one("SELECT mAuthority FROM common.gmlist WHERE mName=%s LIMIT 1", (character["name"],))
@@ -7211,6 +7633,15 @@ def shop_sales_velocity(hours=24, limit=15, only_skillbooks=False):
     return result
 
 
+def stall_sales_total():
+    """Every stall sale since the start (MT2009_PLUS_DB_LOG_RETENTION_V1: from
+    the summaries, which keep what the retention deletes)."""
+    if logstat_ready("log"):
+        found = one("SELECT CAST(COALESCE(SUM(n),0) AS SIGNED) AS n FROM player.web_seban_log_daily WHERE metric='stall_sold'")
+        return int((found or {}).get("n") or 0)
+    return int(one("SELECT COUNT(*) AS n FROM log.log WHERE how='PLAYERBOT_STALL_SOLD'").get("n") or 0)
+
+
 def recent_shop_sales(limit=10):
     """Last N completed stall sales, newest first. The engine's sale log
     (log.log how='PLAYERBOT_STALL_SOLD') only ever records the seller -- no
@@ -7271,8 +7702,8 @@ def economy_shops():
         "offers": sum(t["offers"] for t in empire_totals.values()),
         "items": sum(t["items"] for t in empire_totals.values()),
         "value": sum(t["value"] for t in empire_totals.values()),
-        "transactions_total": int(one("SELECT COUNT(*) AS n FROM log.log WHERE how='PLAYERBOT_STALL_SOLD'").get("n") or 0),
-        "transactions_24h": int(one("SELECT COUNT(*) AS n FROM log.log WHERE how='PLAYERBOT_STALL_SOLD' AND time >= NOW() - INTERVAL 24 HOUR").get("n") or 0),
+        "transactions_total": db_block("economy_shops.total", 0, stall_sales_total),
+        "transactions_24h": db_block("economy_shops.24h", 0, lambda: int(one("SELECT COUNT(*) AS n FROM log.log WHERE how='PLAYERBOT_STALL_SOLD' AND time >= NOW() - INTERVAL 24 HOUR").get("n") or 0)),
     }
 
     # Same label/series pivot as maps(): one line per empire, values aligned
@@ -7346,7 +7777,7 @@ def economy_shops():
     except (TypeError, ValueError):
         fastest_items_limit = 15
     fastest_items_limit = max(15, min(100, fastest_items_limit))
-    all_sales_velocity = shop_sales_velocity(limit=None)
+    all_sales_velocity = db_block("economy_shops.velocity", [], shop_sales_velocity, limit=None)
     velocity_by_item = {(int(item["vnum"]), int(item.get("socket0", 0))): item for item in all_sales_velocity}
     for item in market_items:
         velocity = velocity_by_item.get((int(item["vnum"]), int(item.get("socket0", 0))), {})
@@ -7357,14 +7788,15 @@ def economy_shops():
                             empire_totals=empire_totals, kpi=kpi, value_trend=value_trend,
                             market_items=market_items, fastest_items_limit=fastest_items_limit,
                             sales_velocity=all_sales_velocity[:fastest_items_limit],
-                            skillbook_velocity=shop_sales_velocity(limit=5, only_skillbooks=True),
-                            recent_sales=recent_shop_sales(10))
+                            skillbook_velocity=db_block("economy_shops.skillbooks", [], shop_sales_velocity,
+                                                        limit=5, only_skillbooks=True),
+                            recent_sales=db_block("economy_shops.recent", [], recent_shop_sales, 10))
 
 
 @app.route("/api/shop-feed")
 @login_required
 def api_shop_feed():
-    return {"ok": True, "sales": recent_shop_sales(10)}
+    return {"ok": True, "sales": db_block("shop_feed", [], recent_shop_sales, 10)}
 
 
 def ensure_retirement_tables():
@@ -8145,14 +8577,14 @@ def api_live_chat():
 @app.get("/world-feed")
 @login_required
 def world_feed():
-    return render_template("world_feed.html", events=news_feed_history())
+    return render_template("world_feed.html", events=db_block("world_feed", [], news_feed_history))
 
 
 @app.get("/api/world-feed")
 @login_required
 def api_world_feed():
     before = request.args.get("before") or None
-    events = news_feed_history(before=before)
+    events = db_block("world_feed.more", [], news_feed_history, before=before)
     return {"ok": True, "html": translated_fragment(render_template("partials/world_feed_events.html", events=events)),
             "next_before": events[-1]["cursor"] if events else None, "has_more": len(events) >= 40}
 
@@ -8796,7 +9228,7 @@ def api_live_bots():
 @login_required
 def api_news_feed():
     enabled = legendary_notice_enabled("ticker")
-    return {"ok": True, "events": news_feed_events(), "legendary_announcements": enabled}
+    return {"ok": True, "events": db_block("news_feed", [], news_feed_events), "legendary_announcements": enabled}
 
 
 @app.route("/system")
@@ -8851,7 +9283,7 @@ def rankings():
     # so a person far down a ranking of bots is still found (blipu, 28.09).
     people_ranked = include_real_players_in_rankings()
     people_only = people_ranked and request.args.get("people") == "1"
-    all_ranking = bot_ranking(kind, weapon30_sort, people_only, weapon_type)
+    all_ranking = db_block("rankings." + str(kind), [], bot_ranking, kind, weapon30_sort, people_only, weapon_type)
     total = len(all_ranking)
     total_pages = max(1, -(-total // per_page))  # ceil division
     # "goto_page" (the jump-to-page box, 1-based, what the operator actually
@@ -8933,6 +9365,28 @@ SEASON_CATEGORIES = {
 def _season_week_rows():
     if time.time() - _season_cache["at"] < 600 and _season_cache.get("weekly") is not None:
         return _season_cache["weekly"], _season_cache["records"]
+    if logstat_ready("log"):
+        # MT2009_PLUS_DB_LOG_RETENTION_V1: the last 7 calendar days of the summaries.
+        weekly = rows("""SELECT p.id,p.name,p.level,
+            CAST(SUM(IF(d.metric='stone',d.n,0)) AS SIGNED) AS metins,
+            CAST(SUM(IF(d.metric='boss',d.n,0)) AS SIGNED) AS bosses,
+            CAST(SUM(IF(d.metric='refine7',d.n,0)) AS SIGNED) AS refine7
+            FROM player.web_seban_log_daily d JOIN player.player p ON p.id=d.pid
+            WHERE d.day >= CURDATE() - INTERVAL 6 DAY AND d.metric IN ('stone','boss','refine7')
+              AND """ + ranking_scope_sql("p") + """
+            GROUP BY p.id""")
+        for row in weekly:
+            row["monsters"] = 0
+            row["points"] = int(row.get("metins") or 0)*150 + int(row.get("bosses") or 0)*500 + int(row.get("refine7") or 0)*200
+        records = one("""SELECT
+            CAST(SUM(IF(d.metric='stone',d.n,0)) AS SIGNED) AS metins,
+            CAST(SUM(IF(d.metric='boss',d.n,0)) AS SIGNED) AS bosses,
+            CAST(SUM(IF(d.metric='refine7',d.n,0)) AS SIGNED) AS refine7,
+            (SELECT MAX(p.level) FROM player.player p WHERE """ + ranking_scope_sql("p") + """) AS level
+            FROM player.web_seban_log_daily d
+            WHERE d.day >= CURDATE() - INTERVAL 6 DAY AND d.metric IN ('stone','boss','refine7')""")
+        _season_cache.update(at=time.time(), weekly=weekly, records=records)
+        return weekly, records
     weekly = rows("""SELECT p.id,p.name,p.level,
         SUM(l.how='STONE_KILL') AS metins,
         SUM(l.how='BOSS_KILL') AS bosses,
@@ -8988,7 +9442,7 @@ def season():
         ranking = _season_alltime_rows()
         records = None
     else:
-        ranking, records = _season_week_rows()
+        ranking, records = db_block("season.week", ([], None), _season_week_rows)
     sort_key = SEASON_CATEGORIES[cat][1]
     ranking = sorted(ranking, key=lambda r: (int(r.get(sort_key) or 0), int(r.get("level") or 0)), reverse=True)[:30]
     people = person_ids([row["id"] for row in ranking])
@@ -9059,6 +9513,35 @@ def panel_logs():
     return render_template("panel_logs.html", log_tail=tail, log_size=size)
 
 
+@app.route("/diagnostics/db-logs")
+@login_required
+def db_logs():
+    """MT2009_PLUS_DB_LOG_RETENTION_V1: the log database's retention, what the
+    last prune did, the summaries' state, the log tables' sizes and the
+    panel blocks the database failed lately (MT2009_PLUS_PANEL_DB_GUARD_V1)."""
+    days = log_maintenance.retention_days(os.environ.get(log_maintenance.RETENTION_ENV, "0"))
+    info, error = None, None
+    try:
+        con = db()
+        try:
+            info = log_maintenance.status(con)
+        finally:
+            con.close()
+    except pymysql.MySQLError as exc:
+        error = f"{_db_errno(exc)}: {exc}"
+    last = (info or {}).get("runs", [None])[0] if (info or {}).get("runs") else None
+    marks = (info or {}).get("watermarks") or {}
+    seeded = bool(marks.get("log"))
+    total_mb = sum(int(t.get("size_mb") or 0) for t in (info or {}).get("tables", []))
+    return render_template("db_logs.html", days=days, info=info, error=error, last=last, seeded=seeded,
+                           total_mb=total_mb, prune_hour=log_maintenance.PRUNE_HOUR,
+                           gear_days=log_maintenance.GEAR_KEEP_DAYS,
+                           prune_tables=[t for t, _c in log_maintenance.PRUNE_TABLES],
+                           failures=db_block_failures()[:30],
+                           statement_timeout=DB_STATEMENT_TIMEOUT,
+                           heavy_feed_off=heavy_log_feed_disabled())
+
+
 @app.route("/diagnostics/panel-logs/download")
 @login_required
 def panel_logs_download():
@@ -9082,7 +9565,11 @@ def daily_summary(summary_id):
     summary = one("SELECT * FROM player.web_seban_daily_summary WHERE id=%s", (summary_id,))
     if not summary:
         abort(404)
-    details = daily_summary_details(summary["summary_date"])
+    details = db_block("daily_summary.details", lambda: {
+        "level_start": summary.get("level_start"), "level_end": summary.get("level_end"), "pvp": None,
+        "refine_success": None, "refine_burned": None, "shop": None, "highlights": [], "hammer_count": 0,
+        "reaper_chests_today": 0, "reaper_chests_total": 0, "unavailable": True},
+        daily_summary_details, summary["summary_date"])
     summary["level_start"], summary["level_end"] = details["level_start"], details["level_end"]
     return render_template("daily_summary.html", s=summary, details=details)
 
@@ -10598,7 +11085,7 @@ def api_heat_events():
     base_x, base_y, width, height = bound
     grid = 72
     cell_w, cell_h = max(1, width // grid), max(1, height // grid)
-    grouped = rows("""SELECT FLOOR((l.x-%s)/%s) AS gx, FLOOR((l.y-%s)/%s) AS gy, COUNT(*) AS n
+    grouped = db_block("heat_events.cells", [], rows, """SELECT FLOOR((l.x-%s)/%s) AS gx, FLOOR((l.y-%s)/%s) AS gy, COUNT(*) AS n
         FROM log.log l WHERE l.type='CHARACTER' AND l.how=%s
           AND l.x >= %s AND l.x < %s AND l.y >= %s AND l.y < %s
         GROUP BY gx,gy HAVING n > 0""",
@@ -10612,7 +11099,7 @@ def api_heat_events():
         if 0 <= px <= 100 and 0 <= py <= 100:
             cells.append({"px": round(px, 2), "py": round(py, 2), "n": count})
             peak, total = max(peak, count), total + count
-    recent = rows("""SELECT l.time,p.name FROM log.log l LEFT JOIN player.player p ON p.id=l.who
+    recent = db_block("heat_events.recent", [], rows, """SELECT l.time,p.name FROM log.log l LEFT JOIN player.player p ON p.id=l.who
         WHERE l.type='CHARACTER' AND l.how=%s
           AND l.x >= %s AND l.x < %s AND l.y >= %s AND l.y < %s
         ORDER BY l.time DESC LIMIT 15""",
