@@ -146,6 +146,9 @@ BOOT_ONCE = {
     "transmutacja_tickets": {"adds": (950, 951), "note": "Bilet Transmutacji i Bilet Polimorfii Wierzchowca"},
     "yohara_scrolls_622": {"adds": (622, 623, 624, 625, 626),
                            "note": "Nowa Wola (4 rodzaje) i Wejście do Świątyni Węży"},
+    # MT2009_PLUS_COSTUME_SET_V2 (tools/zestawy): the costume sets' rings, amulets and sash the server lacked
+    "zestawy_60": {"adds": (60, 61, 62, 63, 64, 65),
+                   "note": "Zestawy kostiumów: Amulet Nazara, Lizak Magii, Czekoladowy Amulet, Mistrzowski Emblemat, Błogosławieństwo Mocy, Szarfa Serca"},
 }
 
 

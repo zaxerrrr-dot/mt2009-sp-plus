@@ -1,0 +1,102 @@
+{
+ "items": [
+  {
+   "vnum": 71202,
+   "template": 71136,
+   "name": "Amulet Nazara",
+   "locale_name": "Amulet Nazara",
+   "limit": 0,
+   "client": null
+  },
+  {
+   "vnum": 71188,
+   "template": 71136,
+   "name": "Lizak Magii",
+   "locale_name": "Lizak Magii",
+   "limit": 0,
+   "client": null
+  },
+  {
+   "vnum": 71199,
+   "template": 71136,
+   "name": "Czekoladowy Amulet",
+   "locale_name": "Czekoladowy Amulet",
+   "limit": 0,
+   "client": null
+  },
+  {
+   "vnum": 70607,
+   "template": 71136,
+   "name": "Mistrzowski Emblemat",
+   "locale_name": "Mistrzowski Emblemat",
+   "limit": 21600,
+   "client": null
+  },
+  {
+   "vnum": 72713,
+   "template": 71136,
+   "name": "Blogoslawienstwo Mocy",
+   "locale_name": "Błogosławieństwo Mocy",
+   "limit": 0,
+   "client": null
+  },
+  {
+   "vnum": 86064,
+   "template": 71136,
+   "name": "Szarfa Serca (unikat.)",
+   "locale_name": "Szarfa Serca (unikat.)",
+   "limit": null,
+   "client": {
+    "type": 28,
+    "subtype": 3,
+    "stack": 1,
+    "antiflag": 49280,
+    "flag": 0,
+    "wearflag": 0,
+    "limit": [
+     0,
+     0
+    ],
+    "applies": [
+     [
+      97,
+      20
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "values": [
+     4,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "specular": 100
+   }
+  }
+ ],
+ "item_list": {
+  "71202": "71202\tETC\ticon/item/71202.tga",
+  "71188": "71188\tETC\ticon/item/71188.tga",
+  "71199": "71199\tETC\ticon/item/71199.tga",
+  "70607": "70607\tETC\ticon/item/70607.tga",
+  "72713": "72713\tETC\ticon/item/72713.tga",
+  "86064": "86064\tWING\ticon/item/86064.tga\td:/ymir work/item/wing/acce_valentine_2020_4.gr2"
+ },
+ "itemdesc": {
+  "71202": "71202\tAmulet Nazara\tAmulet chroniący przed złym spojrzeniem. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń, +10% siły w walce z potworami. Czas upływa także, gdy go nie nosisz.",
+  "71188": "71188\tLizak Magii\tLizak o tajemniczym składzie, pełen magii. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +30% obrażeń magicznych, +10% maks. PŻ, +10% maks. PE. Działa 7 dni.",
+  "71199": "71199\tCzekoladowy Amulet\tSłodki amulet na walentynki. Daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z potworami, +10% maks. PŻ, +10% maks. PE. Czas upływa także, gdy go nie nosisz.",
+  "70607": "70607\tMistrzowski Emblemat\tEmblemat mistrzów piłki nożnej. Na 6 godzin daje: +50% PD, +20% szybkości ataku, +20% szybkości zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ, +10% maks. PE.",
+  "72713": "72713\tBłogosławieństwo Mocy\tAmulet z Koła Strażników. Daje: +50% PD, +5% szybkości ataku, +20% szybkości zaklęć, +10% siły w walce z kamieniami Metin, +40% obrażeń umiejętności. Czas upływa także, gdy go nie nosisz.",
+  "86064": "86064\tSzarfa Serca (unikat.)\tSzarfa walentynkowa w kształcie skrzydeł serca. Pochłania 11-25% bonusów broni lub zbroi (łączenie u Theowahdana)."
+ }
+}
