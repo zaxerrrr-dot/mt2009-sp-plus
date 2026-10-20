@@ -156,6 +156,18 @@ namespace {
         }
     };
 
+    // MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1 (the owner, 20 October): a
+    // person's line wins over a bot's while it asks at most
+    // SHOP_PLAYER_PREF_PCT (10%) more - the price a search ranks a line by is
+    // a person's price / 1.10. Only the ranking: the purse pays the real price
+    // and a person's price still has to be fair (CanPlayerBotPayForOffer).
+    long long PlayerBotOfferRankPrice(DWORD ownerPid, long long price) {
+        const int pct = GetPlayerBotShopMgmt(PLAYERBOT_SM_PLAYER_PREF_PCT);
+        if (price <= 0 || pct <= 0 || CPlayerBotManager::instance().IsRegisteredBotPID(ownerPid))
+            return price;
+        return price * 100 / (100 + pct);
+    }
+
     // One line of one stand as this bot would rate it: -1 for a line it would
     // not buy, else the priority a browse ranks by. The browse of the stands
     // in reach and the look at the first village's from a second village
@@ -619,7 +631,8 @@ namespace {
                 long long price = 0;
                 int cell = -1, useful = 0;
                 const int priority = RatePlayerBotOfflineLine(ch, shop, line, budget, personFirst, price, &cell, &useful);
-                if (!best.Take(priority, price, cell, useful, budget)) return;
+                // MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1: ranked by a person's price / 1.10.
+                if (!best.Take(priority, PlayerBotOfferRankPrice(shop->GetOwnerPID(), price), cell, useful, budget)) return;
                 o.buyOwner = shop->GetOwnerPID();
                 o.buyItem = id;
                 o.buyUntil = now + 45000;
@@ -887,7 +900,9 @@ namespace {
                         IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
                     continue;
                 const long long price = (long long)line->GetPrice().GetTotalYangAmount();
-                const long long unit = price / std::max<long long>(1, (long long)line->GetInfo().count);
+                // MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1: a person's unit ranked / 1.10.
+                const long long unit = PlayerBotOfferRankPrice(shop->GetOwnerPID(),
+                        price / std::max<long long>(1, (long long)line->GetInfo().count));
                 if (price <= 0 || price > cap || (bestOwner && unit >= bestUnit)) continue;
                 if (reach < 0)
                     reach = !haveNav || navigation.CanReach(ch->GetX(), ch->GetY(), spawn.x, spawn.y) ? 1 : 0;
@@ -1180,7 +1195,8 @@ namespace {
         const TPlayerBotOwnedWeapon owned = ReadPlayerBotBestOwnedWeapon(ch);
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
                 ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
-        struct TCandidate { long long blow; long long price; DWORD owner; DWORD item; long x; long y; };
+        // MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1: rank, a person's price / 1.10.
+        struct TCandidate { long long blow; long long price; long long rank; DWORD owner; DWORD item; long x; long y; };
         std::vector<TCandidate> candidates;
         std::map<DWORD, long long> blowByVnum;
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
@@ -1208,12 +1224,13 @@ namespace {
                         price > GetPlayerBotWeaponUpgradeBudget(ch, GetPlayerBotWeaponGainPercent(blow, owned.item ? owned.blow : 0)) ||
                         IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
                     continue;
-                candidates.push_back(TCandidate{ blow, price, shop->GetOwnerPID(), id, (long)spawn.x, (long)spawn.y });
+                candidates.push_back(TCandidate{ blow, price, PlayerBotOfferRankPrice(shop->GetOwnerPID(), price),
+                    shop->GetOwnerPID(), id, (long)spawn.x, (long)spawn.y });
             }
         }
         if (candidates.empty()) return false;
         std::sort(candidates.begin(), candidates.end(), [](const TCandidate& a, const TCandidate& b) {
-            return a.blow != b.blow ? a.blow > b.blow : a.price < b.price;
+            return a.blow != b.blow ? a.blow > b.blow : a.rank < b.rank;
         });
         CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(ch->GetMapIndex());
         const bool haveNav = navigation.Init(ch->GetMapIndex());
@@ -1240,10 +1257,10 @@ namespace {
             if (!buyable || blow <= 0 || blow < bestBlow) continue;
             // MT2009_PLUS_BOT_BUY_BONUS_PREF_V1: at an equal blow, the weapon
             // of more useful lines within the upgrade's purse, else the cheaper.
-            if (blow == bestBlow && !best.Take(0, c.price, WEAR_WEAPON, useful, cap)) continue;
+            if (blow == bestBlow && !best.Take(0, c.rank, WEAR_WEAPON, useful, cap)) continue;
             if (blow > bestBlow) {
                 best = TPlayerBotBuyBest();
-                best.Take(0, c.price, WEAR_WEAPON, useful, cap);
+                best.Take(0, c.rank, WEAR_WEAPON, useful, cap);
             }
             bestOwner = c.owner;
             bestItem = c.item;
@@ -1315,7 +1332,9 @@ namespace {
                         price > GetPlayerBotArmourUpgradeShare(spare, GetPlayerBotArmourGainPercent(score, ownedScore)) ||
                         IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
                     continue;
-                candidates.push_back(TCandidate{ GetPlayerBotArmourValuePerYang(score, ownedScore, price), slot, price,
+                // MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1: the value a yang of a person's price / 1.10.
+                candidates.push_back(TCandidate{ GetPlayerBotArmourValuePerYang(score, ownedScore,
+                    PlayerBotOfferRankPrice(shop->GetOwnerPID(), price)), slot, price,
                     shop->GetOwnerPID(), id, (long)spawn.x, (long)spawn.y });
             }
         }
@@ -1346,7 +1365,7 @@ namespace {
             M2_DELETE(preview);
             if (!buyable) continue;
             const long long value = GetPlayerBotArmourValuePerYang(score,
-                    owned.item[c.slot] ? owned.score[c.slot] : 0, c.price);
+                    owned.item[c.slot] ? owned.score[c.slot] : 0, PlayerBotOfferRankPrice(c.owner, c.price));
             if (value < bestValue || (value == bestValue && (c.slot > bestSlot ||
                     (c.slot == bestSlot && c.price >= bestPrice)))) continue;
             bestOwner = c.owner;
@@ -1436,7 +1455,7 @@ namespace {
         // purchase's rules accept is the cheapest buyable one, wherever its
         // stand sits in pid order.
         struct TSinkCandidate {
-            long long unit, price;
+            long long unit, rank, price;
             int personRank;
             DWORD spread, owner, item, vnum;
             NativeShop shop;
@@ -1460,12 +1479,13 @@ namespace {
                 if (personRank < 0)
                     personRank = botManager.IsRegisteredBotPID(shop->GetOwnerPID()) ? 1 : 0;
                 const long long unit = price / std::max<long long>(1, (long long)line->GetInfo().count);
-                candidates.push_back({ unit, price, personRank, (DWORD)((id ^ (self * 2654435761u)) * 2246822519u),
+                // MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1: sorted by a person's unit / 1.10.
+                candidates.push_back({ unit, PlayerBotOfferRankPrice(shop->GetOwnerPID(), unit), price, personRank, (DWORD)((id ^ (self * 2654435761u)) * 2246822519u),
                     shop->GetOwnerPID(), id, vnum, shop });
             }
         }
         std::sort(candidates.begin(), candidates.end(), [](const TSinkCandidate& a, const TSinkCandidate& b) {
-            if (a.unit != b.unit) return a.unit < b.unit;
+            if (a.rank != b.rank) return a.rank < b.rank;
             if (a.personRank != b.personRank) return a.personRank < b.personRank;
             return a.spread < b.spread;
         });
