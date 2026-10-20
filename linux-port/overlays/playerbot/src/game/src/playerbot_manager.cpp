@@ -37,6 +37,10 @@
 #include "input.h"
 #include "item.h"
 #include "item_manager.h"
+// MT2009_PLUS_REFINE_SELF_MATERIAL_V1: playerbot_elements.cpp (global), declared here outside the
+// anonymous namespace playerbot_economy.h is read into - a block-scope declaration there names a
+// function of that namespace, which nothing defines.
+ITEM_COUNT ElementsRefineMaterialCount(LPCHARACTER ch, LPITEM refined, DWORD vnum);
 // CMobManager: the conversation names the mob a hunting mission is after.
 #include "mob_manager.h"
 #include "log.h"

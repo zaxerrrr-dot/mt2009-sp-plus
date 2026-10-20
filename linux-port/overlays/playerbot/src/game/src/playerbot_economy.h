@@ -3995,10 +3995,9 @@ namespace
 			return false;
 		// MT2009_PLUS_REFINE_SELF_MATERIAL_V1: a material of the piece's own vnum (a Talizman Woli
 		// takes a second one of its level) is counted past the piece itself, as DoRefine counts it.
-		ITEM_COUNT ElementsRefineMaterialCount(LPCHARACTER ch, LPITEM refined, DWORD vnum);
 		for (int i = 0; i < recipe->material_count; ++i)
 		{
-			if (ElementsRefineMaterialCount(ch, item, recipe->materials[i].vnum) < recipe->materials[i].count)
+			if (::ElementsRefineMaterialCount(ch, item, recipe->materials[i].vnum) < recipe->materials[i].count)
 				return false;
 		}
 		return true;
@@ -5722,13 +5721,12 @@ namespace
 				ch->ComputeRefineFee(recipe->cost))
 			return false;
 
-		ITEM_COUNT ElementsRefineMaterialCount(LPCHARACTER ch, LPITEM refined, DWORD vnum);
 		for (int i = 0; i < recipe->material_count; ++i)
 		{
 			// What the Biologist is still owed is not the anvil's: an Orc Tooth
 			// goes to him first and into a recipe after (Tieru, 15 September).
 			// MT2009_PLUS_REFINE_SELF_MATERIAL_V1: the piece itself is no material of its own step.
-			if ((int)ElementsRefineMaterialCount(ch, item, recipe->materials[i].vnum) -
+			if ((int)::ElementsRefineMaterialCount(ch, item, recipe->materials[i].vnum) -
 					GetPlayerBotBiologistReserve(ch, recipe->materials[i].vnum) < recipe->materials[i].count)
 				return false;
 		}
