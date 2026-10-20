@@ -1146,3 +1146,40 @@ if getattr(app, "ENABLE_12ZI", 0) and hasattr(chr, "NEW_AFFECT_CZ_UNLIMIT_ENTER"
 		"description" : localeInfo.TOOLTIP_AFFECT_CZ_UNLIMIT_ENTER,
 		"icon" : "d:/ymir work/ui/skill/common/affect/cz_unlimit_enter.sub",
 	}
+
+# MT2009_PLUS_YSET_ICON_V1 (round 15.10 #17, #18): the set icons in the affect bar.
+# 546 - the Yohara equipment set (server-patches/ysets, Mt2009YSetsShowAffect): point none, value = set * 10 + pieces
+#       (ysets_data.SETS: 1 Swiety ... 5 Majestatyczny; 2 or 3 pieces); the tooltip names the set and its bonuses.
+# 545 - the costume set (server-patches/playerqol, MT2009_PLUS_COSTUME_SET_V1): +800 HP and +15 attack value, its two
+#       points listed under the text by the bar itself.
+# Icons: GF's set_bonus (newskillcommon.dds 160,224) as root/mt2009_ui/affect/yset_bonus.tga, and the same in red for
+# the costumes (costume_set_bonus.tga).
+AFFECT_YSET = 546
+AFFECT_COSTUME_SET = 545
+
+def _YSetDescription(value):
+	try:
+		import ysets
+		import ysets_data
+		value = int(value)
+		s, pieces = value / 10, value % 10
+		if not ysets_data.SETS.has_key(s):
+			return "Efekt zestawu"
+		prefix, name, tiers = ysets_data.SETS[s]
+		lines = [name, "Za\xb3o\xbfone cz\xea\x9cci zestawu: %d/3" % pieces]
+		for point, v in tiers.get(pieces, ()):
+			text = ysets._ApplyText(point, v)
+			if text:
+				lines.append(text)
+		return ";".join(lines)
+	except:
+		return "Efekt zestawu"
+
+AFFECT_SHOW_DATA[AFFECT_YSET] = {
+	"description" : _YSetDescription,
+	"icon" : "mt2009_ui/affect/yset_bonus.tga",
+}
+AFFECT_SHOW_DATA[AFFECT_COSTUME_SET] = {
+	"description" : "Bonus zestawu kostium\xf3w;Kostium i fryzura z jednego zestawu",
+	"icon" : "mt2009_ui/affect/costume_set_bonus.tga",
+}
