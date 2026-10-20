@@ -317,7 +317,9 @@ def write_groups(owsap):
 
 # what the quests spawn (the dungeons, the realm's port portal) - every vnum the client must draw, by map
 QUEST_SPAWNED = {
-    395: [4030, 3971, 3972, 3973, 6790, 6791, 8635, 8636, 6792, 6793, 6794, 6795, 6796],
+    # MT2009_PLUS_YOHARA_LOKACJE_V1: + Schronienie's 6784-6787 (the owner's sheet of 20 October: Glebie's monsters;
+    # the quest's waves take Owsap's groups 9150-9155 too)
+    395: [4030, 3971, 3972, 3973, 6790, 6791, 8635, 8636, 6792, 6793, 6794, 6795, 6796, 6784, 6785, 6786, 6787],
     391: [4022, 6750, 6751, 6752, 6753, 6754, 6755, 6756, 6765, 6850, 6851, 6852, 6853, 6854, 6745, 6747,
           8630, 8631, 8632, 8633, 8634, 6757, 20842, 20829, 4024, 4025, 4026, 4027],
     378: [3998],          # the port's (368) portal to the realm

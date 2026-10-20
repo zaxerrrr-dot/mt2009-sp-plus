@@ -2708,6 +2708,40 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
       test "$(grep -c -E "[[:blank:]]$6[[:space:]]*\$" "$N")" -ge 1 || { echo "FATAL: link $6 on $2"; exit 1; }; \
     done \
  && echo "links: Yohara dung4 (Seoganland -> Wieza Sung Mahi, Dongan -> Jaskinie Gnolli)"
+# MT2009_PLUS_YOHARA_LOKACJE_V1: every spawn point of the owner's spreadsheet of 20 October 2026 (Yohara monster
+# locations = GF's map_mob_list.txt) a spawn of that monster did not reach (40 m) gets one - tools/yohara_lokacje/
+# gen_ylokacje.py made yohara_lokacje/ (gen_report.txt: what, where). After every Yohara map step: each
+# map/<folder>/<file>.lokacje.txt is appended to that map's <file> (regen.txt, boss.txt, stone.txt); a map not in
+# map/index yet is only reported. Groups 9400-9439 (one boss each) and group_groups 4060-4069 (one boss of those the
+# sheet puts at one point, "r" lines of boss.txt) - none may exist before.
+COPY yohara_lokacje/ /tmp/yohara-lokacje-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && f="$L/group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+94[0-3][0-9][[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_lokacje.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+94[0-3][0-9][[:space:]]*$' "$f")" = "$(grep -c -E '^[[:blank:]]*Vnum' "$A/group.yohara_lokacje.txt")" \
+ && f="$L/group_group.txt" \
+ && ! grep -q -E '^[[:blank:]]*Vnum[[:blank:]]+406[0-9][[:space:]]*$' "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group_group.yohara_lokacje.txt" >> "$f" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+406[0-9][[:space:]]*$' "$f")" = "$(grep -c -E '^[[:blank:]]*Vnum' "$A/group_group.yohara_lokacje.txt")" \
+ && for d in "$A"/map/*/; do \
+      m="$(basename "$d")"; \
+      if ! grep -q -E "^[0-9]+[[:blank:]]+$m[[:space:]]*\$" "$L/map/index"; then \
+        echo "lokacje: map $m is not in map/index - its points wait for that batch"; continue; \
+      fi; \
+      for s in "$d"*.lokacje.txt; do \
+        T="$L/map/$m/$(basename "$s" .lokacje.txt).txt"; test -f "$T" || : > "$T"; \
+        n0="$(grep -c -E '^[mgrs][[:blank:]]' "$T" || true)"; \
+        { [ -z "$(tail -c 1 "$T")" ] || printf '\r\n' >> "$T"; }; \
+        cat "$s" >> "$T"; \
+        test "$(grep -c -E '^[mgrs][[:blank:]]' "$T")" = "$((n0 + $(grep -c -E '^[mgrs][[:blank:]]' "$s")))" \
+          || { echo "FATAL: lokacje $s"; exit 1; }; \
+      done; \
+    done \
+ && echo "lokacje: Yohara spawn points of the spreadsheet added ($(cat "$A"/map/*/*.lokacje.txt | wc -l) lines)"
 # MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia (50124) drops from nothing any more (the owner, 15 October
 # 2026, fix 7) - after every share step, so no append brings it back. The Yohara files (tools/yohara_items, yohara_maps3,
 # yohara_pb, yohara_iluzja, yohara_chestdrops) and special_item_group.dungeons.txt (54700) no longer have it; this
