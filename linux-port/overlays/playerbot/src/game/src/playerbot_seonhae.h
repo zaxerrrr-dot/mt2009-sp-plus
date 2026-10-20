@@ -272,8 +272,9 @@ namespace mt2009_seonhae
 			return MSG_NO_POOL;
 		{	// MT2009_PLUS_SEONHAE_RESERVED_V1: the shards would be spent and no bonus could ever be put on it
 			BYTE bReserved;
-			if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved) ||
-					Mt2009GloveType(item->GetVnum(), bReserved))
+			// MT2009_PLUS_SEONHAE_GLOVE_V1: a glove keeps its Will in slot 6 and takes its 7th bonus from the pool's
+			// glove column (server-patches/bonusy67) - AddRareAttribute puts it in slot 7, as 71051 does.
+			if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved))
 				return MSG_NO_POOL;
 		}
 		return 0;
