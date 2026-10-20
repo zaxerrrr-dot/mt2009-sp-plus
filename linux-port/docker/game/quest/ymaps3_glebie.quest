@@ -37,7 +37,9 @@ quest ymaps3_glebie begin
 				npc = 20815, min_level = 120, key = 70410, keys = 3,
 				party_min = party, party_max = 8, near = 30,
 				limit = 30 * 60, keep = 30 * 60 + 120, end_sec = 10,
-				groups = {9160, 9161, 9162, 9163, 9164},
+				-- MT2009_PLUS_YOHARA_LOKACJE_V1: + Schronienie's groups 9150-9155 (6784-6787, no General) - the owner's sheet
+				-- of 20 October lists them in Glebie beside Zejscie's 6792-6796
+				groups = {9160, 9161, 9162, 9163, 9164, 9150, 9151, 9152, 9153, 9154, 9155},
 				k = {
 					[1] = {boss = 6790, egg = 8635, hp = 67751800, cold_hp = 15000, cold_pct = 5, cold_max = 5,
 						   wrath = {150, 300, 450}, berserk = {6, 12, 18}, heal = {10, 20, 30}, rage = {10, 15, 20}, dead_kick = 180, reward = 70411,
