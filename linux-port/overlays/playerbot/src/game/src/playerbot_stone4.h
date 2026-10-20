@@ -2,6 +2,7 @@
 #define __INC_METIN2_PLAYERBOT_STONE4_H__
 
 // MT2009_PLUS_BOT_STONE4_MARKET_V1 (the owner, 19 October): the soul stones +4.
+// The player's patch this is ported from - Autor: mur4s.
 //
 // Iwakura's list kept every +4 a bot found, five of a kind counting the box
 // (playerbot_persona_rules.h, LppKeepsStone), and the box never let a stone
