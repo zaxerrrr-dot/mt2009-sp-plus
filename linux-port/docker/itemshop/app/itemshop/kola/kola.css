@@ -1,0 +1,157 @@
+/* MT2009_PLUS_KOLA_V1: Kolo Losu - wyglad oryginalu w oknie sklepu (740x475 pod
+   naglowkiem). Bez flex/transform/background-size/calc: stara wbudowana przegladarka
+   klienta (IE7-11). Grafiki: kola/img (przekonwertowane z webp; sprite.png jak w
+   oryginale - te same pozycje tla). */
+#kolaGame {
+	position:absolute; top:75px; left:0; width:740px; height:475px; overflow:hidden;
+	background-color:#0b0906; background-repeat:no-repeat; background-position:0 0;
+	font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#662d12; z-index:20;
+	text-align:left;
+}
+#kolaGame.kola-off { background:#1b140d; }
+.kola-offbox { width:360px; margin:150px auto 0 auto; padding:16px; background:#e8dcb5; border:1px solid #a08c50; text-align:center; }
+.kola-offbox h3 { font:bold 16px Georgia, "Times New Roman", serif; margin-bottom:8px; }
+.kola-offbox p { margin:6px 0; }
+
+/* drabinka poziomow (lewa strona) */
+.kola-stages {
+	position:absolute; left:12px; top:60px; width:100px; margin:0; padding:15px 0; list-style:none;
+	background:#cba770 url(img/ladder.jpg) repeat 0 0; z-index:5;
+}
+.kola-stages li { text-align:center; height:18px; padding:0 25px; position:relative; list-style:none; }
+.kola-stages li span { display:block; margin:0 auto; background-image:url(img/sprite.png); background-repeat:no-repeat; }
+.kola-stages li.kola-stg span { width:38px; height:29px; background-position:0 -1540px; }
+.kola-stages li.kola-stg span.kola-f1 { background-position:0 -1579px; }
+.kola-stages li.kola-stg span.kola-f2 { background-position:0 -1618px; }
+.kola-stages li.kola-lvl { height:auto; padding:12px 0 5px 0; }
+.kola-stages li.kola-lvl span {
+	width:39px; height:39px; line-height:40px; font-size:15px; font-weight:bold; color:#3c1e16; text-align:center;
+	background-position:0 -1657px;
+}
+.kola-stages li.kola-star-2 span { background-position:0 -1774px; }
+.kola-stages li.kola-star-3 span { background-position:0 -1891px; }
+.kola-stages li.kola-current span { width:58px; height:58px; line-height:55px; font-size:20px; background-position:0 -1706px; }
+.kola-stages li.kola-current.kola-star-2 span { background-position:0 -1823px; }
+.kola-stages li.kola-current.kola-star-3 span { background-position:0 -1940px; }
+.kola-stages li i.kola-arrow-l, .kola-stages li i.kola-arrow-r {
+	position:absolute; top:40%; width:20px; height:25px; background:url(img/sprite.png) no-repeat 0 0; font-size:0;
+}
+.kola-stages li i.kola-arrow-l { left:0; }
+.kola-stages li i.kola-arrow-r { left:80px; background-position:0 -35px; }
+.kola-stages li i.kola-lock { position:absolute; top:42%; right:5px; width:20px; height:20px; background:url(img/lock.png) no-repeat 0 0; font-size:0; }
+
+/* kolo 436x436 */
+.kola-wheel { position:absolute; left:128px; top:19px; width:436px; height:436px; }
+.kola-lay { position:absolute; top:0; left:0; width:436px; height:436px; background-repeat:no-repeat; font-size:0; }
+.kola-slices { background-image:url(img/sprite.png); background-position:0 -2412px; }
+.kola-lvl-2 .kola-slices { background-position:0 -2858px; }
+.kola-lvl-3 .kola-slices { background-position:0 -3304px; }
+.kola-ring { background-image:url(img/sprite.png); background-position:0 -202px; }
+.kola-lvl-2 .kola-ring { background-position:0 -648px; }
+.kola-lvl-3 .kola-ring { background-position:0 -1094px; }
+.kola-pointer { background-image:url(img/pointer.png); background-position:0 0; display:none; }
+.kola-playing .kola-pointer { display:block; }
+.kola-spinner { background-image:url(img/spinner.png); background-position:0 0; z-index:6; }
+.kola-items { position:absolute; top:50px; left:50px; width:336px; height:336px; }
+.kola-reward { position:absolute; width:45px; height:45px; overflow:hidden; display:none; z-index:10; }
+.kola-playing .kola-reward { display:block; }
+.kola-reward img { position:absolute; left:0; top:0; width:100%; height:100%; -ms-interpolation-mode:bicubic; }
+.kola-reward b {
+	position:absolute; right:0; bottom:0; font-size:10px; line-height:11px; color:#fff; background:#3c1e16;
+	padding:0 2px; font-weight:bold;
+}
+.kola-idle-ikon { position:absolute; display:none; z-index:10; -ms-interpolation-mode:bicubic; }
+.kola-playing .kola-idle-ikon { display:none !important; }
+.kola-keys { position:absolute; top:-6px; left:-6px; width:436px; height:436px; z-index:4; }
+.kola-key {
+	position:absolute; display:block; width:56px; height:56px; overflow:hidden; z-index:4;
+	background:url(img/sprite.png) no-repeat 0 -70px;
+}
+.kola-lvl-2 .kola-key { background-position:0 -136px; }
+.kola-lvl-3 .kola-keys, .kola-maxtier .kola-keys { display:none; }
+.kola-key img { position:absolute; left:11px; top:11px; width:34px; height:34px; }
+
+.kola-btn {
+	position:absolute; top:156px; left:155px; width:125px; height:124px; z-index:7; cursor:pointer;
+	background:url(img/sprite.png) no-repeat 0 -2008px;
+}
+.kola-btn.kola-running { background-position:0 -2142px; height:125px; cursor:default; }
+.kola-btn table { width:125px; height:124px; border-collapse:collapse; }
+.kola-btn td {
+	vertical-align:middle; text-align:center; color:#662d12; font-size:15px; font-weight:bold; line-height:20px;
+	padding:0 12px; cursor:pointer;
+}
+.kola-btn.kola-running td { cursor:default; }
+.kola-btn td img { width:16px; height:16px; vertical-align:middle; }
+
+/* prawy panel */
+.kola-side { position:absolute; left:574px; top:10px; width:156px; }
+.kola-side h2 {
+	font:bold 14px Georgia, "Times New Roman", serif; color:#f2e69f; margin:0; line-height:17px;
+	padding:5px 8px 2px 8px; background:#2a1a10;
+}
+.kola-rot { color:#d7caa1; font-size:11px; margin:0 0 8px 0; padding:0 8px 5px 8px; background:#2a1a10; }
+.kola-welcome {
+	background:#cba770 url(img/ladder.jpg) repeat 0 0; color:#662d12; padding:8px; font-size:12px; line-height:16px;
+}
+.kola-welcome h3 { margin:0; font:bold 13px Georgia, "Times New Roman", serif; color:#662d12; }
+.kola-welcome p { margin:5px 0 0 0; }
+.kola-coin { width:16px; height:16px; vertical-align:-3px; }
+.kola-timer { margin-top:8px; padding:8px; background:#d7caa1; text-align:center; color:#341917; }
+.kola-timer h4 { margin:0; font-size:12px; font-weight:normal; }
+.kola-time { display:block; font-size:16px; font-weight:bold; line-height:30px; }
+.kola-exit {
+	display:block; width:100%; height:30px; line-height:30px; color:#fff; text-align:center; text-decoration:none;
+	font:bold 12px Georgia, "Times New Roman", serif; background:url(img/button.png) no-repeat 0 -2px;
+}
+.kola-exit:hover { background-position:0 -39px; color:#fff; }
+.kola-balance { margin-top:8px; padding:5px 8px; background:#cba770 url(img/ladder.jpg) repeat 0 0; color:#662d12; }
+.kola-balance b { font-size:13px; }
+.kola-last { margin-top:8px; padding:6px 8px; background:#cba770 url(img/ladder.jpg) repeat 0 0; }
+.kola-last h4 { margin:0 0 4px 0; font:bold 12px Georgia, "Times New Roman", serif; color:#662d12; }
+.kola-prize { min-height:40px; }
+.kola-prize img { float:left; width:40px; height:40px; margin-right:6px; -ms-interpolation-mode:bicubic; }
+.kola-prize span { display:block; font-size:12px; font-weight:bold; color:#3c1e16; }
+.kola-prize small { display:block; font-size:11px; font-weight:normal; color:#5a3a20; }
+.kola-prize .kola-empty { font-weight:normal; color:#5a3a20; }
+.kola-msg { margin-top:6px; color:#ffd27a; font-size:11px; font-weight:bold; }
+
+.kola-prices {
+	position:absolute; left:0; bottom:0; z-index:10; display:block; width:130px; padding:7px 8px 5px 8px; line-height:20px;
+	color:#f2e69f; font:13px Georgia, "Times New Roman", serif; text-decoration:none;
+	background:url(img/button.png) no-repeat 0 -224px;
+}
+.kola-prices:hover { background-position:0 -274px; color:#f2e69f; }
+.kola-back { position:absolute; right:10px; bottom:8px; z-index:10; color:#f2e69f; font-size:12px; }
+.kola-back:hover { color:#fff; }
+
+/* okno "Mozliwe nagrody" */
+.kola-modal { position:absolute; left:0; top:0; width:740px; height:475px; z-index:60; background:url(img/shade.png) repeat 0 0; }
+.kola-modal-box, .kola-detail-box {
+	position:absolute; left:30px; top:14px; width:658px; height:425px; padding:10px 12px; overflow:hidden;
+	background:#efe4c2; border:1px solid #a08c50; color:#3a2e1a;
+}
+.kola-modal-box h3 { margin:0 0 6px 0; font:bold 15px Georgia, "Times New Roman", serif; }
+.kola-close { position:absolute; right:10px; top:4px; font-size:22px; line-height:22px; color:#662d12; text-decoration:none; }
+.kola-tabs a {
+	display:inline; zoom:1; display:inline-block; padding:3px 12px; margin-right:4px; border:1px solid #a08c50;
+	color:#662d12; text-decoration:none; background:#e2d3a6; font-size:12px;
+}
+.kola-tabs a.kola-sel { background:#8c1c1c; color:#fff; font-weight:bold; }
+.kola-pools { position:absolute; left:12px; top:66px; width:658px; height:368px; overflow-y:auto; overflow-x:hidden; }
+.kola-how { font-size:11px; margin:0 0 6px 0; color:#4a3a20; padding-right:10px; }
+.kola-group { font:bold 12px Georgia, "Times New Roman", serif; color:#8c1c1c; margin:6px 0 4px 0; clear:both; }
+.kola-card {
+	float:left; width:110px; height:126px; margin:0 6px 6px 0; padding:4px; overflow:hidden; text-align:center;
+	border:1px solid #c9b978; background:#f7efd6; cursor:pointer; color:#3a2e1a; text-decoration:none; display:block;
+}
+.kola-card:hover { border-color:#8c1c1c; }
+.kola-card span { display:block; height:28px; overflow:hidden; font-size:11px; font-weight:bold; line-height:14px; }
+.kola-card img { width:64px; height:64px; margin:3px 0; -ms-interpolation-mode:bicubic; }
+.kola-card b { display:block; font-size:12px; color:#8c1c1c; }
+.kola-clear { clear:both; height:0; font-size:0; overflow:hidden; }
+.kola-detail { position:absolute; left:0; top:0; width:740px; height:475px; z-index:70; background:url(img/shade.png) repeat 0 0; }
+.kola-detail-box { left:150px; top:60px; width:420px; height:auto; min-height:200px; }
+.kola-detail-box img { float:left; width:112px; height:112px; margin:6px 12px 6px 0; }
+.kola-detail-box h3 { margin:0 0 6px 0; font:bold 15px Georgia, "Times New Roman", serif; }
+.kola-detail-box p { margin:0 0 6px 0; font-size:12px; line-height:16px; }
