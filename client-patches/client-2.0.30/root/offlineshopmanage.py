@@ -1946,6 +1946,12 @@ class OfflineShopManage(ui.ScriptWindow):
 		self.visualState.OnSelectItemSlot(self, slotIndex, click)
 
 	def OnSelectEmptySlot(self, inventorySlotIndex, shopSlotIndex, inventoryWindowType, itemVnum, itemCount):
+		# MT2009_PLUS_IKASHOP_DS_V1: the shop grids hand over the mouse's slot
+		# type, not the window - the same number for the bag (1), another for
+		# the Dragon Soul inventory (11 against window 5), so a Dragon Soul
+		# stone was looked up and sent from a window that does not exist.
+		if inventoryWindowType == player.SLOT_TYPE_DRAGON_SOUL_INVENTORY:
+			inventoryWindowType = player.SlotTypeToInvenType(inventoryWindowType)
 		self.visualState.OnSelectEmptySlot(self, inventorySlotIndex, shopSlotIndex, inventoryWindowType, itemVnum, itemCount)
 
 	def ShowRevenueToolTip(self):

@@ -38,3 +38,14 @@ ma dokładnie raz, przerywa całość, zanim cokolwiek zostanie zapisane.
 `exchange.cpp` (`AddItem`, `Check`): przedmiot o numerze pola powyżej rozmiaru ekwipunku był odrzucany jako
 „juki konne”, bez sprawdzenia okna – kamień Smoczej Alchemii (własne okno, duże numery pól) zawsze dostawał
 komunikat „Przywołaj konia…”. Teraz tylko pole okna INVENTORY za ekwipunkiem to juki (`IsHorseInventory`).
+
+## Kamienie Smoczej Alchemii w sklepie offline (`MT2009_PLUS_IKASHOP_DS_V1`)
+
+Przyczyna była w kliencie (`offlineshopmanage.py`, ten sam znacznik): siatka sklepu podawała typ pola myszy zamiast
+okna – dla plecaka to ta sama liczba (1), dla okna Smoczej Alchemii nie (11 zamiast 5), więc kamień był szukany
+i wysyłany z okna, którego nie ma. Rdzeń wystawia kamień z okna DRAGON_SOUL_INVENTORY bez zmian i daje go kupującemu
+do tego okna (`CanTakeInventoryItem`). `ikarus_shop_manager.cpp` (`IkashopHasRoomFor`): przed kupnem i przed zdjęciem
+linii ze sklepu miejsce na kamień jest sprawdzane w oknie Smoczej Alchemii (było: w plecaku – pełny plecak blokował
+kupno kamienia, a pełne okno alchemii przepuszczało go do depozytu sklepu); kupujący bez odblokowanej Smoczej
+Alchemii dostaje komunikat.
+

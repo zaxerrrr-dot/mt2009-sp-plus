@@ -436,5 +436,23 @@
   "marker": "MT2009_PLUS_TOOL_REFINE_POINTS_V1 (reopen)",
   "old": "\t\t\t\tif (refineCh)\n\t\t\t\t{\n\t\t\t\t\tint distance = DISTANCE_APPROX(",
   "new": "\t\t\t\t// MT2009_PLUS_TOOL_REFINE_POINTS_V1 (reopen): no new window for a tool without its points.\n\t\t\t\tif (refineCh && !RefineToolNotReady(refreshedItem))\n\t\t\t\t{\n\t\t\t\t\tint distance = DISTANCE_APPROX("
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_IKASHOP_DS_V1 (helper)",
+  "old": "void MoveAndDestroyInstance(LPITEM item, BYTE window, WORD pos)\n{\n",
+  "new": "// MT2009_PLUS_IKASHOP_DS_V1 (helper) (server-patches/enginefixes): a Dragon Soul stone from an offline\n// shop goes to the Dragon Soul inventory (CanTakeInventoryItem), so the room asked for before a buy\n// or a take-back is there - HasSlotForItem only looks at the bag. A stone for someone without the\n// Dragon Soul inventory open (DragonSoul_IsQualified) finds no room.\ntemplate <typename TShopLine>\nstatic bool IkashopHasRoomFor(LPCHARACTER ch, const TShopLine& line)\n{\n\tconst TItemTable* proto = ITEM_MANAGER::instance().GetTable(line->GetVnum());\n\tif (!proto || proto->bType != ITEM_DS)\n\t\treturn ch->HasSlotForItem(line->GetVnum());\n\tif (!ch->DragonSoul_IsQualified())\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Najpierw odblokuj Smocza Alchemie - kamien trafia do jej okna.\");\n\t\treturn false;\n\t}\n\tLPITEM probe = line->CreateItem();\n\tif (!probe)\n\t\treturn false;\n\tTItemPos pos;\n\tconst bool room = ch->CanTakeInventoryItem(probe, &pos);\n\tprobe->SetSkipSave(true);\n\tM2_DESTROY_ITEM(probe);\n\treturn room;\n}\n\nvoid MoveAndDestroyInstance(LPITEM item, BYTE window, WORD pos)\n{\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_IKASHOP_DS_V1 (buy)",
+  "old": "\t\tif (!ch->HasSlotForItem(pitem->GetVnum()))\n",
+  "new": "\t\tif (!IkashopHasRoomFor(ch, pitem)) // MT2009_PLUS_IKASHOP_DS_V1 (buy): a stone's room is in the DS inventory\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_IKASHOP_DS_V1 (take back)",
+  "old": "\t\tif (!ch->HasSlotForItem(shopItem->GetVnum()))\n",
+  "new": "\t\tif (!IkashopHasRoomFor(ch, shopItem)) // MT2009_PLUS_IKASHOP_DS_V1 (take back)\n"
  }
 ]
