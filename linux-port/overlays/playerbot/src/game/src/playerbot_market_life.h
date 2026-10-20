@@ -281,8 +281,15 @@ namespace
 	bool IsPlayerBotImpulseHour(LPCHARACTER ch)
 	{
 		const DWORD hour = (DWORD)(get_global_time() / 3600);
-		return (int)(PlayerBotNavHash(ch->GetPlayerID() ^ (hour * 0x9E3779B9U) ^ 0x494d5055U) % 100U) <
-				PLAYERBOT_IMPULSE_HOUR_PERCENT;
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 1: "zachecac inne boty do
+		// kupowania"): while the bots' counters are glutted (IsPlayerBotShopGlut)
+		// SHOP_MGMT_IMPULSE_PCT of a bot's hours are impulse hours - the purse
+		// rules below (two hundredths of the spare over the reserves, the
+		// small price cap) are the same.
+		const int percent = IsPlayerBotShopGlut()
+				? std::max(PLAYERBOT_IMPULSE_HOUR_PERCENT, GetPlayerBotShopMgmt(PLAYERBOT_SM_IMPULSE_PCT))
+				: PLAYERBOT_IMPULSE_HOUR_PERCENT;
+		return (int)(PlayerBotNavHash(ch->GetPlayerID() ^ (hour * 0x9E3779B9U) ^ 0x494d5055U) % 100U) < percent;
 	}
 
 	// The goods a whim takes: what a counter lists as goods - refine
