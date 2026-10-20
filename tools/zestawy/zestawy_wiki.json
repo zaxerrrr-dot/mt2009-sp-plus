@@ -1,0 +1,8196 @@
+{
+"Zestawy": {
+"notes": [
+"Zestawy kostiumów — 48 zestawów",
+"Bonusy są łącznym efektem danego progu. Nie sumuj kolumn 2–6. Warianty jednego slotu są alternatywami.",
+"Źródło: https://metin2alerts.com/pl/wiki/costumes | Odczyt: 16.10.2026"
+],
+"header": [
+"Zestaw",
+"ID zestawu",
+"Liczba części",
+"Skład — wszystkie warianty",
+"2 części",
+"3 części",
+"4 części",
+"5 części",
+"6 części"
+],
+"rows": [
+[
+"Wiking Światła+",
+"Viking_Set",
+6,
+"Zbroja: Wiking Światła+ / Wiking Nocy+ / Walkiria Światła+ / Walkiria Nocy+\nFryzura: Hełm Wikinga Światła+ / Hełm Wikinga Nocy+ / Hełm Walkirii Światła+ / Hełm Walkirii Nocy+\nZwierzak: Hati / Skalli\nWierzchowiec: Niebieski Drakkar / Czerwony Drakkar\nBroń: Miecz Smoka Północy / Sztylet Smoka Północy / Łuk Smoka Północy / Miecz Ob. Smoka Północy / Dzwon Smoka Północy / Wachlarz Smoka Północy / Pazur Smoka Północy\nPierścień / amulet: Medal Bohatera",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nObrażenie Umiejętności: 5%",
+"Punkty Doświadczenia: +135%\nObrażenie Umiejętności: 7%\nSzansa na dropy przedmiotów zwiększona o 3%\nSzybkość Ruchu 10%",
+"Punkty Doświadczenia: +150%\nObrażenie Umiejętności: 10%\nSzansa na dropy przedmiotów zwiększona o 5%\nSzybkość Ruchu 20%",
+"Punkty Doświadczenia: +150%\nObrażenie Umiejętności: 10%\nSzansa na dropy przedmiotów zwiększona o 5%\nSzybkość Ruchu 20%\nSilny przeciwko Potworom +5%"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+4,
+"Zbroja: Czerwony Smoczy Rycerz+ / Czarny Smoczy Rycerz+ / Czerwona Smocza Rycerka+ / Czarna Smocza Rycerka+\nFryzura: Czer. Hełm Sm. Ryc.+ (m) / Czar. Hełm Sm. Ryc.+ (m) / Czer. Hełm Sm. Ryc.+ (k) / Czar. Hełm Sm. Ryc.+ (k)\nWierzchowiec: Feniks Wieczornej Zorzy / Feniks Zmierzchu\nPierścień / amulet: Amulet Nazara",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSilny przeciwko Potworom +2%\nSzansa na Omdlenie 3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nSzansa na cios krytyczny +5%\nSzansa na Omdlenie 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+4,
+"Zbroja: Św. Nosiciel Światła+ / Maj. Nosiciel Światła+ / Św. Nosicielka Światła+ / Maj. Nosicielka Światła+\nFryzura: Świetlisty Diadem+ (m) / Majestat. Diadem+ (m) / Świetlisty Diadem+ (k) / Majestat. Diadem+ (k)\nZwierzak: Pavo / Gallus\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +5%\nMagiczny/krótkodystansowy atak +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+6,
+"Zbroja: Świąt. Zim. Zbroja+ (m) / Piękna Zim. Zbroja+ (m) / Świąt. Zim. Zbroja+ (k) / Piękna Zim. Zbroja+ (k)\nFryzura: Świąt. Zim. Czapka+ (m) / Piękna Zim. Czapka+ (m) / Świąt. Zim. Czapka+ (k) / Piękna Zim. Czapka+ (k)\nBroń: Miecz Zimowego Ciernia / Sztylet Zimowego Ciernia / Łuk Zimowego Ciernia / Miecz Dwur. Zim. Ciernia / Dzwon Zimowego Ciernia / Wachlarz Zim. Ciernia / Szpon Zimowego Ciernia\nZwierzak: Niebieski Zimowy Skrzat / Różowy Zimowy Skrzat\nWierzchowiec: Śnieżny Bożonar. Baran / Węglowy Bożonar. Baran\nPierścień / amulet: Pierścień Radości",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nSzansa na cios krytyczny +2%\nSzansa na przeszywające Uderzenie: 2%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +7%\nSzansa na cios krytyczny +5%\nSzansa na przeszywające Uderzenie: 5%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +10%\nSzansa na cios krytyczny +8%\nSzansa na przeszywające Uderzenie: 8%\nSzansa na dropy przedmiotów zwiększona o 5%"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+5,
+"Zbroja: Słon. Szata Wukong+ (m) / Księż. Szata Wukong+ (m) / Słon. Szata Wukong+ (k) / Księż. Szata Wukong+ (k)\nFryzura: Słon. Brans. Wukong+ (m) / Księż. Bran. Wukong+ (m) / Słon. Brans. Wukong+ (k) / Księż. Bran. Wukong+ (k)\nZwierzak: Złoty Long / Srebrny Long\nWierzchowiec: Burza Wukong / Grzmot Wukong\nPierścień / amulet: Pierścień Radości",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nSzansa na cios krytyczny +5%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +7%\nSzansa na cios krytyczny +7%\nWartość Ataku +30\nWartość Magicznego Ataku: +30",
+"Nie dotyczy"
+],
+[
+"Śnieżny Bambi",
+"KAR_TANESI",
+2,
+"Zwierzak: Śnieżny Bambi\nWierzchowiec: Śnieżna Kometa",
+"Punkty Doświadczenia: +50%\n+3% siły przeciwko kamieniom Metin",
+"Nie dotyczy",
+"Nie dotyczy",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+5,
+"Zbroja: Szlachetny Legionista+ / Mroczny Legionista+ / Szlachetna Legionistka+ / Mroczna Legionistka+\nFryzura: Sz. Hełm Legionisty+ (m) / Mr. Hełm Legionisty+ (m) / Sz. Hełm Legionisty+ (k) / Mr. Hełm Legionisty+ (k)\nZwierzak: Śnieżny Krampus / Węglowy Krampus\nWierzchowiec: Szlachetny Legionowy Koń / Mroczny Legionowy Koń\nPierścień / amulet: Pierścień Radości",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nObrażenia od ataku przeciwko bossom +3%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +7%\nObrażenia od ataku przeciwko bossom +5%\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+4,
+"Zbroja: Zbr. Mroku Księżyca+ (m) / Zbr.Srebrnej Gwiazdy+(m) / Zbr. Mroku Księżyca+ (k) / Zbr.Srebrnej Gwiazdy+(k)\nFryzura: Hełm Mroku Księżyca+ (m) / Hełm Srebr. Gwiazdy+ (m) / Hełm Mroku Księżyca+ (k) / Hełm Srebr. Gwiazdy+ (k)\nZwierzak: Skrzat Nosek+ (czerw.) / Skrzat Nosek+ (ziel.)\nPierścień / amulet: Pierścień Radości",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +50%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +150%\nMagiczny/krótkodystansowy atak +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+4,
+"Zbroja: Zbroja Avalonu+ (srebr.) / Zbroja Avalonu+ (czerw.)\nFryzura: Hełm Avalonu+ (srebrny) / Hełm Avalonu+ (czerwony)\nZwierzak: Sir Oswald / Sir Cobblepot\nPierścień / amulet: Pierścień Radości",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +50%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +150%\nŚrednie Obrażenia: 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+4,
+"Zbroja: Czer. Sweter Świąt.+ (m) / Ziel. Sweter Świąt.+ (m) / Czer. Sweter Świąt.+ (k) / Ziel. Sweter Świąt.+ (k)\nFryzura: Czer. Czapka Świąt. (m) / Ziel. Czapka Świąt. (m) / Czer. Czapka Świąt. (k) / Ziel. Czapka Świąt. (k)\nZwierzak: Zielony Świąteczny Ent / Sękaty Świąteczny Ent\nPierścień / amulet: Pierścień Radości",
+"Magiczny/krótkodystansowy atak +3%",
+"Magiczny/krótkodystansowy atak +3%\nPunkty Doświadczenia: +100%",
+"Magiczny/krótkodystansowy atak +3%\nPunkty Doświadczenia: +100%\n+5% siły przeciwko kamieniom Metin",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+4,
+"Zbroja: Gwardia Ognistego Smoka+ / Gwardia Lodowego Smoka+\nFryzura: Hełm Gwardii Og. Smoka+ / Hełm Gwardii Lod. Smoka+\nZwierzak: Franiu Fistaszek / Stefek Orzeszek\nPierścień / amulet: Pierścień Radości",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +50%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +100%\nObrażenia od ataku przeciwko bossom +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+5,
+"Zbroja: Cz. zimowy samuraj+ (m) / B. zimowy samuraj+ (m) / Cz. zimowy samuraj+ (k) / Biały zimowy samuraj (k)\nFryzura: Cz. hełm z porożem+ (m) / B. hełm z porożem+ (m) / Cz. hełm z porożem+ (k) / B. hełm z porożem+ (k)\nZwierzak: Piernikowy Dasher / Piernikowy Rudolf\nWierzchowiec: Renifer śnieżycy / Renifer zimowej nocy\nPierścień / amulet: Pierścień Radości",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nObrażenia od ataku przeciwko bossom +3%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +7%\nObrażenia od ataku przeciwko bossom +5%",
+"Nie dotyczy"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+5,
+"Zbroja: Ciepły Kaftan Zimowy+(m) / Piękny Kaftan Zimowy+(m) / Ciepły Kaftan Zimowy+(k) / Piękny Kaftan Zimowy+(k)\nFryzura: Ciepła Czapa Zimowa+ (m) / Piękna Czapa Zimowa+ (m) / Ciepła Czapa Zimowa+ (k) / Piękna Czapa Zimowa+ (k)\nZwierzak: Przebiśnieg / Śnieżka\nWierzchowiec: Czerwony Zimowy Wilk / Niebieski Zimowy Wilk\nPierścień / amulet: Pierścień Radości",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nObrażenia od ataku przeciwko bossom +3%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +15%\nObrażenia od ataku przeciwko bossom +5%",
+"Nie dotyczy"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+4,
+"Zbroja: Czerw. Galowy Strój+ (m) / Zielony Galowy Strój+(m) / Czerw. Galowy Strój+ (k) / Zielony Galowy Strój+(k)\nFryzura: Świąt. Kaptur+ (czer.) / Świąt. Kaptur+ (ziel.) / Świąt. Beret+ (czerwony) / Świąt. Beret+ (zielony)\nZwierzak: Czerwony Elf / Zielony Elf\nPierścień / amulet: Pierścień Radości",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +20%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +50%\nŚrednie Obrażenia: 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+3,
+"Zwierzak: Wesoły Posłaniec Miłości / Ospały Posłaniec Miłości\nAkcesorium: Szarfa Serca (unikat.)\nPierścień / amulet: Amulet Wiecznej Miłości / Czekoladowy Amulet",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +3%",
+"Nie dotyczy",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+4,
+"Zbroja: Czarna Lampa Lorda+ / Fioletowa Lampa Lorda+ / Czarna Lampa Damy+ / Fioletowa Lampa Damy+\nFryzura: Czar. Maska Zaj. Lorda+ / Fiol. Maska Zaj. Lorda+ / Czar. Maska Zaj. Damy+ / Fiol. Maska Zaj. Damy+\nWierzchowiec: Niebieski Oldtimer / Zielony Oldtimer\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\n+5% siły przeciwko kamieniom Metin",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+4,
+"Zbroja: Czerwony Toreador+ / Niebieski Toreador+ / Czerwona Toreadorka+ / Niebieska Toreadorka+\nFryzura: Czerwona Montera+ (m) / Niebieska Montera+ (m) / Czerwona Montera+ (k) / Niebieska Montera+ (k)\nWierzchowiec: Czarny Byk / Brązowy Byk\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nMagiczny/krótkodystansowy atak +5%",
+"Punkty Doświadczenia: +100%\nMagiczny/krótkodystansowy atak +7%\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+4,
+"Zbroja: Niebieski Wzorowy Uczeń+ / Szary Wzorowy Uczeń+ / Nieb. Wzorowa Uczennica+ / Szara Wzorowa Uczennica+\nFryzura: Nieb. Okulary W. Ucznia+ / Czerw. Okul. Wz. Ucznia+ / Nieb. Spinka Wz. Ucznia+ / Czerw. Spinka W. Ucznia+\nWierzchowiec: Pośpieszny Królik (róż.) / Pośpieszny Królik (nie.)\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSilny przeciwko Potworom +5%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+4,
+"Zbroja: B. Mundur Morski+ (m) / Czer. Mundur Morski+ (m) / B. Mundur Morski+ (k) / Czer. Mundur Morski+ (k)\nFryzura: B. Dwuróg Morski+ (m) / Cz. Dwuróg Morski+ (m) / B. Dwuróg Morski+ (k) / Cz. Dwuróg Morski+ (k)\nWierzchowiec: Księżycowy Koń Morski / Słoneczny Koń Morski\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +5%\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+4,
+"Zbroja: Cz. Królik K. Czarów+(m) / Cza.Królik K. Czarów+(m) / Cz. Królik K. Czarów+(k) / Cza.Królik K. Czarów+(k)\nFryzura: Cz. Cylinder Królika+(m) / Cza.Cylinder Królika+(m) / Cz. Cylinder Królika+(k) / Cza.Cylinder Królika+(k)\nWierzchowiec: Pośp. Królik (czer.) / Pośp. Królik (czar.)\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"+3% siły przeciwko kamieniom Metin",
+"+3% siły przeciwko kamieniom Metin\nSzansa na dropy przedmiotów zwiększona o 5%",
+"+5% siły przeciwko kamieniom Metin\nPunkty Doświadczenia: +50%\nSzansa na dropy przedmiotów zwiększona o 10%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+4,
+"Zbroja: Pancerz Czar. Szp.+ (m) / Pancerz Sreb. Szp.+ (m) / Pancerz Czar. Szp.+ (k) / Pancerz Sreb. Szp.+ (k)\nFryzura: Hełm Czar. Szp.+ (m) / Hełm Sreb.+ Szp. (m) / Hełm Czar. Szp.+ (k) / Hełm Sreb. Szp.+ (k)\nWierzchowiec: Złoty Byk Bojowy / Srebrny Byk Bojowy\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Magiczny/krótkodystansowy atak +3%",
+"Magiczny/krótkodystansowy atak +3%\nPunkty Doświadczenia: +100%",
+"Magiczny/krótkodystansowy atak +5%\nPunkty Doświadczenia: +150%\n+5% siły przeciwko kamieniom Metin",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+4,
+"Zbroja: Zbroja Ajolosa+ (m) / Zbroja Astrajosa+ (m) / Zbroja Ajolosa+ (k) / Zbroja Astrajosa+ (k)\nFryzura: Hełm Ajolosa+ (m) / Hełm Astrajosa+ (m) / Hełm Ajolosa+ (k) / Hełm Astrajosa+ (k)\nZwierzak: Błękitny Błyszczący Paw / Różowy Błyszczący Paw\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Silny przeciwko Potworom +3%",
+"Silny przeciwko Potworom +3%\nPunkty Doświadczenia: +100%",
+"Silny przeciwko Potworom +5%\nPunkty Doświadczenia: +150%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Mistrzowska piłka nożna",
+"SAMPIYONLUK",
+2,
+"Zwierzak: Mistrzowska piłka nożna\nPierścień / amulet: Emblemat mistrzowski",
+"Punkty Doświadczenia: +50%\n+3% siły przeciwko kamieniom Metin",
+"Nie dotyczy",
+"Nie dotyczy",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+4,
+"Zbroja: Strażnik Srebr. Piasku+ / Strażnik Czer. Piasku+ / Strażniczka Sr. Piasku+ / Strażniczka Cz. Piasku+\nFryzura: Hełm Srebr. Piasku+ (m) / Hełm Czerw. Piasku+ (m) / Hełm Srebr. Piasku+ (k) / Hełm Czerw. Piasku+ (k)\nZwierzak: Sowa Strażn. Księżyca / Sowa Strażniczka Słońca\nPierścień / amulet: Błogosławieństwo Mocy",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nŚrednie Obrażenia: 3%",
+"Punkty Doświadczenia: +100%\nSzybkość Ataku +5%\nŚrednie Obrażenia: 5%\nSzansa na Omdlenie 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+4,
+"Zbroja: Cz. Szata Faraona+ (m) / Sz. Szata Faraona+ (m) / Cz. Szata Faraona+ (k) / Sz. Szata Faraona+ (k)\nFryzura: Cz. Stroik Faraona+ (m) / Sz. Stroik Faraona+ (m) / Cz. Stroik Faraona+ (k) / Sz. Stroik Faraona+ (k)\nZwierzak: Niebieski Anubis / Czerwony Anubis\nPierścień / amulet: Amulet Nazara",
+"Silny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +50%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\nSzansa na Omdlenie 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+4,
+"Zbroja: Zbroja Szczodrego+ / Zbroja Zwycięskiego+ / Zbroja Szczodrej+ / Zbroja Zwycięskiej+\nFryzura: Korona Szczodrego+ / Korona Zwycięskiego+ / Korona Szczodrej+ / Korona Zwycięskiej+\nWierzchowiec: Halia / Aquilos\nPierścień / amulet: Amulet Nazara",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\n+3% siły przeciwko kamieniom Metin",
+"Punkty Doświadczenia: +100%\n+8% siły przeciwko kamieniom Metin\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+4,
+"Zbroja: Lord steampunk / Hrabia steampunk / Dama steampunk / Hrabina steampunk\nFryzura: Kapelusz lorda+ / Kapelusz hrabiego+ / Kapelusz damy+ / Kapelusz hrabiny+\nZwierzak: Whistle / Wrench\nPierścień / amulet: Amulet Nazara",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Punkty Doświadczenia: +100%\nSzansa na dropy przedmiotów zwiększona o 10%\nRegeneracja PŻ: +20%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+4,
+"Zbroja: Cz. Wojownik P.Księżyca+ / N. Wojownik P.Księżyca+ / Cz. Wojowniczka P. K+ / B. Wojowniczka P. K+\nFryzura: Cz. Turban ze Złotem+(m) / N. Turban ze Złotem+ (m) / Cz. Turban ze Złotem+(k) / N. Turban ze Złotem+ (k)\nZwierzak: Biały Kot Angorski / Brązowy Kot Angorski\nPierścień / amulet: Amulet Nazara",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +100%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +150%\nMagiczny/krótkodystansowy atak +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+4,
+"Zbroja: Szata Dżinna+ (m) / Szata Sułtana+ (m) / Szata Dżinna (k) / Szata Sułtana (k)\nFryzura: Turban Dżinna+ (m) / Turban Sułtana+ (m) / Tiara Dżinna+ (k) / Tiara Sułtana+ (k)\nWierzchowiec: Biały Sfinks / Kamienny Sfinks\nPierścień / amulet: Amulet Nazara",
+"Silny przeciwko Potworom +3%",
+"Silny przeciwko Potworom +3%\nPunkty Doświadczenia: +100%",
+"Silny przeciwko Potworom +5%\nPunkty Doświadczenia: +150%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+4,
+"Zbroja: Książę Orientu (brąz.)+ / Książę Orientu (czarny)+ / Księżn. Orientu (brąz.)+ / Księżn. Orientu (czar.)+\nFryzura: Czerwona Arafatka+ (m) / Niebieska Arafatka+ (m) / Czerwona Arafatka+ (k) / Niebieska Arafatka+ (k)\nZwierzak: Wielzooka / Wieldziało\nPierścień / amulet: Amulet Nazara",
+"Silny przeciwko Potworom +3%",
+"Silny przeciwko Potworom +3%\nPunkty Doświadczenia: +100%",
+"Silny przeciwko Potworom +5%\nPunkty Doświadczenia: +150%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+4,
+"Zbroja: Czar. Skaf. Nurkowy+ (m) / Biały Skaf. Nurkowy+ (m) / Czar. Skaf. Nurkowy+ (k) / Biały Skaf. Nurkowy+ (k)\nFryzura: Czar. Maska do Nur.+ (m) / Biała Maska do Nur.+ (m) / Czar. Maska do Nur.+ (k) / Biała Maska do Nur.+ (k)\nZwierzak: Pebble\nPierścień / amulet: Medal Bohatera",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nŚrednie Obrażenia: 3%\nObrażenie Umiejętności: 3%",
+"Punkty Doświadczenia: +100%\nŚrednie Obrażenia: 7%\nObrażenie Umiejętności: 7%\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+4,
+"Zbroja: Książę Atlantydy+ / Wojownik Atlantydy+ / Księżniczka Atlantydy+ / Wojowniczka Atlantydy+\nFryzura: Korona Atlantydy+ (m) / Hełm Atlantydy+ (m) / Korona Atlantydy+ (k) / Hełm Atlantydy+ (k)\nZwierzak: Skubcio\nPierścień / amulet: Medal Bohatera",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nŚrednie Obrażenia: 7%",
+"Punkty Doświadczenia: +100%\nŚrednie Obrażenia: 10%\nOdporność na lód +5%\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+5,
+"Zbroja: C. Ratownik Plażowy+ / B. Ratownik Plażowy+ / C. Ratowniczka Plażowa+ / B. Ratowniczka Plażowa+\nFryzura: C. Czapka Plażowa+ (m) / B. Czapka Plażowa+ (m) / C. Czapka Plażowa+ (k) / B. Czapka Plażowa+ (k)\nZwierzak: Wierny Lod. Wiel. Zab.\nWierzchowiec: Turbodeska Surfingowa\nPierścień / amulet: Medal Bohatera",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nMagiczny/krótkodystansowy atak +5%",
+"Punkty Doświadczenia: +100%\nMagiczny/krótkodystansowy atak +10%\nSzansa na dropy przedmiotów zwiększona o 10%",
+"Punkty Doświadczenia: +150%\nMagiczny/krótkodystansowy atak +10%\nSzansa na dropy przedmiotów zwiększona o 10%\nSzybkość Ruchu 20%",
+"Nie dotyczy"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+4,
+"Zbroja: Lekki Strój Plażowy+ (m) / Luźny Strój Plażowy+ (m) / Lekki Strój Plażowy+ (k) / Luźny Strój Plażowy+ (k)\nFryzura: Lekki Kapelusz Plaż.+(m) / Luźny Kapelusz Plaż.+(m) / Lekki Kapelusz Plaż.+(k) / Luźny Kapelusz Plaż.+(k)\nZwierzak: Mini Krab Wojownik\nPierścień / amulet: Medal Bohatera",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +50%\nSzansa na dropy przedmiotów zwiększona o 10%",
+"Punkty Doświadczenia: +50%\nSzansa na dropy przedmiotów zwiększona o 10%\nSilny przeciwko Potworom +10%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Zbroja: B. Mundur Marynarski+(m) / N. Mundur Marynarski+(m) / B. Mundur Marynarski+(k) / N. Mundur Marynarski+(k)\nFryzura: B. Czapka Marynarska+(m) / N. Czapka Marynarska+(m) / B. Czapka Marynarska+(k) / N. Czapka Marynarska+(k)\nZwierzak: Potęż. Lod. Wielor. Zab.\nPierścień / amulet: Medal Bohatera",
+"Silny przeciwko Potworom +3%",
+"Silny przeciwko Potworom +5%\nSiła Błyskawic +5%\nSiła Ognia +5%\nSiła Lodu +5%\nSiła Wiatru +5%\nSiła Ziemi +5%\nSiła Mroku +5%",
+"Silny przeciwko Potworom +5%\nSiła Błyskawic +5%\nSiła Ognia +5%\nSiła Lodu +5%\nSiła Wiatru +5%\nSiła Ziemi +5%\nSiła Mroku +5%\nSzansa na dropy przedmiotów zwiększona o 10%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+3,
+"Zbroja: Pirat+ (m) / Korsarz+ (m) / Pirat+ (k) / Korsarz+ (k)\nFryzura: Trójróg Pirata+ (m) / Trójróg Korsarza+ (m) / Trójróg Pirata+ (k) / Trójróg Korsarza+ (k)\nZwierzak: Mini Krab Wojownik",
+"Silny przeciwko Potworom +3%",
+"Silny przeciwko Potworom +3%\nPunkty Doświadczenia: +100%",
+"Nie dotyczy",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+3,
+"Zbroja: Mundur Strażaka+(m) / Mundur Strażaka+(k)\nFryzura: Hełm Strażaka+(m) / Hełm Strażaka+(k)\nZwierzak: Mroźny Chrząszcz+",
+"Siła Lodu +5%\nOdporność na Ogień: 5%\nPunkty Doświadczenia: +50%",
+"Siła Lodu +5%\nOdporność na Ogień: 5%\nPunkty Doświadczenia: +100%",
+"Nie dotyczy",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+5,
+"Zbroja: Samuraj Cieni+ (m) / Samuraj Śniegu+ (m) / Samuraj Cieni+ (k) / Samuraj Śniegu+ (k)\nFryzura: Hełm Samuraja Cieni+ (m) / Hełm Sam. Śniegu+ (m) / Hełm Samuraja Cieni+ (k) / Hełm Sam. Śniegu+ (k)\nZwierzak: Czarne Dyn. Straszydło / Białe Dyniowe Straszydło\nWierzchowiec: Tygrys Dżungli / Tygrys Śniegu\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSzybkość Zaklęcia +2%\nSzybkość Ataku +2%",
+"Punkty Doświadczenia: +100%\n+5% siły przeciwko kamieniom Metin\nSzybkość Zaklęcia +2%\nSzybkość Ataku +2%",
+"Punkty Doświadczenia: +150%\n+7% siły przeciwko kamieniom Metin\nSzybkość Zaklęcia +5%\nSzybkość Ataku +5%",
+"Nie dotyczy"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+6,
+"Zbroja: Inkub Płomieni+ / Inkub Nocy+ / Sukkub Płomieni+ / Sukkub Nocy+\nFryzura: Płonące Rogi+ (m) / Rogi Skrzydła Nocy+ (m) / Płonące Rogi+ (k) / Rogi Skrzydła Nocy+ (k)\nBroń: Miecz Nosiciela Klątwy+ / Sztylet Nos. Klątwy+ / Łuk Nosiciela Klątwy+ / Dwur. Miecz Nos. Klątwy+ / Dzwonek Nos. Klątwy+ / Wachlarz Nos. Klątwy+ / Pazur Nosiciela Klątwy+\nZwierzak: Lilith / Helena\nWierzchowiec: Mroczny Rumak Piekieł / Okrutny Rumak Piekieł\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\n+3% siły przeciwko kamieniom Metin",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +7%\n+5% siły przeciwko kamieniom Metin\n5% obrażeń będzie dodanych do PŻ",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +7%\n+5% siły przeciwko kamieniom Metin\n5% obrażeń będzie dodanych do PŻ\nSzansa na dropy przedmiotów zwiększona o 5%"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+5,
+"Zbroja: Zielony Szaman+ / Czerwony Szaman+ / Zielona Szamanka+ / Czerwona Szamanka+\nFryzura: Ziel. Szam. Korona+ (m) / Czerw. Szam. Korona+ (m) / Ziel. Szam. Korona+ (k) / Czerw. Szam. Korona+ (k)\nZwierzak: Dzielne Straszydło Tiki / Zuchwałe Straszydło Tiki\nWierzchowiec: Przeklęta Miotła / Zaczarowana Miotła\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +75%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +100%\nSilny przeciwko Potworom +5%\n+2% siły przeciwko kamieniom Metin",
+"Punkty Doświadczenia: +150%\nSilny przeciwko Potworom +7%\n+5% siły przeciwko kamieniom Metin\nSzansa na dropy przedmiotów zwiększona o 5%",
+"Nie dotyczy"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+4,
+"Zbroja: Czarny jak noc Ks. Wam.+ / Krwistoczerwony Ks. Wa.+ / Czarna jak noc Ks. Wa.+ / Krwistoczerwona Ks. Wa.+\nFryzura: Cz. Fryzura Wampira+ (m) / Sz. Fryzura Wampira+ (m) / Cz. Fryzura Wampira+ (k) / Sz. Fryzura Wampira+ (k)\nZwierzak: Lodowata Trumna Grozy / Krwistocz. Trumna Grozy\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +50%",
+"Punkty Doświadczenia: +100%\nRegeneracja PŻ: +30%\nSilny przeciwko Potworom +3%",
+"Punkty Doświadczenia: +150%\nRegeneracja PŻ: +30%\nSilny przeciwko Potworom +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+5,
+"Zbroja: Czar. Szata Dokkaebi+(m) / Nieb. Szata Dokkaebi+(m) / Czar. Szata Dokkaebi+(k) / Nieb. Szata Dokkaebi+(k)\nFryzura: Czar. Rogi Dokkaebi+ (m) / Nieb. Rogi Dokkaebi+ (m) / Czar. Rogi Dokkaebi+ (k) / Nieb. Rogi Dokkaebi+ (k)\nBroń: Miecz Dokkaebi+ / Sztylet Dokkaebi+ / Łuk Dokkaebi+ / Glewia Dokkaebi+ / Dzwonek Dokkaebi+ / Wachlarz Dokkaebi+ / Szpony Dokkaebi+\nZwierzak: Lodowaty Burzyciel / Jadowity Burzyciel\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Punkty Doświadczenia: +75%",
+"Punkty Doświadczenia: +150%",
+"Punkty Doświadczenia: +150%\nObrażenie Umiejętności: 5%",
+"Punkty Doświadczenia: +150%\nObrażenie Umiejętności: 5%\nMagiczny/krótkodystansowy atak +5%",
+"Nie dotyczy"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+4,
+"Zbroja: Zbroja Zmarłych+ (m) / Zbroja Zaświatu+ (m) / Zbroja Zmarłych+ (k) / Zbroja Zaświatu+ (k)\nFryzura: Fryzura Zmarłych+ (m) / Fryzura Zaświatu+ (m) / Fryzura Zmarłych+ (k) / Fryzura Zaświatu+ (k)\nZwierzak: Mumia Szamotka / Mumia Kiwaczek\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +100%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +150%\nŚrednie Obrażenia: 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+4,
+"Zbroja: Czerw. Zbr. Azraela+ (m) / Biała Zbr. Azraela+ (m) / Czerw. Zbr. Azraela+ (k) / Biała Zbr. Azraela+ (k)\nFryzura: Czerw. Hełm Azraela+ (m) / Biały Hełm Azraela+ (m) / Czerw. Hełm Azraela+ (k) / Biały Hełm Azraela+ (k)\nZwierzak: Czerwony Mały Huashin / Biały Mały Huashin\nPierścień / amulet: Pierścień Siły Woli / Pierścień Śmier. Mocy",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +50%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +100%\nŚrednie Obrażenia: 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+4,
+"Zbroja: Ciemna Szata Proroka+(m) / Jasna Szata Proroka+ (m) / Ciemna Szata Proroka+(k) / Jasna Szata Proroka +(k)\nFryzura: Ciem. Kaptur Proroka+(m) / Jasny Kaptur Proroka+(m) / Fiolet. Oko Proroka+ (k) / Zielone Oko Proroka+ (k)\nZwierzak: Wszystkowidzą. Kot Ognia / Wszystkowidzący Kot Lodu\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +100%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +150%\nMagiczny/krótkodystansowy atak +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+4,
+"Zbroja: Wampir+ (szary) / Wampir+ (czerwony) / Wampirzyca+ (szary) / Wampirzyca+ (czerwony)\nFryzura: Hełm Wampira (szary) / Hełm Wampira (czerwony) / Hełm Wampirzycy (szary) / Hełm Wampirzycy (czer.)\nZwierzak: Pani Jiangshi+ / Pan Jiangshi+\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +20%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +50%\nŚrednie Obrażenia: 5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+4,
+"Zbroja: Pancerz Horroru+ (złoty) / Pancerz Horroru+ (nieb.)\nFryzura: Rogi Horroru+ (złote) / Rogi Horroru+ (nieb.)\nZwierzak: Huhu / Buhu\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +100%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +150%\nMagiczny/krótkodystansowy atak +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+4,
+"Zbroja: Brązowa Wilcza Szata+(m) / Szara Wilcza Szata+(m) / Brązowa Wilcza Szata+(k) / Szara Wilcza Szata+(k)\nFryzura: Brązowa Czapka Wilka+(m) / Szara Czapka Wilka+ (m) / Brązowa Czapka Wilka+(k) / Szara Czapka Wilka+ (k)\nZwierzak: Astrabell / Helexna\nPierścień / amulet: Lizak Potęgi / Lizak Magii",
+"Obrażenie Umiejętności: 5%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +100%",
+"Obrażenie Umiejętności: 5%\nPunkty Doświadczenia: +150%\nMagiczny/krótkodystansowy atak +5%",
+"Nie dotyczy",
+"Nie dotyczy"
+]
+]
+},
+"Przedmioty": {
+"notes": [
+"Przedmioty w zestawach — wszystkie warianty",
+"Jeden wiersz = jeden przedmiot w zestawie. ID odróżnia warianty o identycznej nazwie.",
+"Źródło: https://metin2alerts.com/pl/wiki/costumes | Odczyt: 16.10.2026"
+],
+"header": [
+"Zestaw",
+"ID zestawu",
+"Część / slot",
+"ID przedmiotu",
+"Nazwa przedmiotu",
+"Wariant płci"
+],
+"rows": [
+[
+"Wiking Światła+",
+"Viking_Set",
+"Zbroja",
+41982,
+"Wiking Światła+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Zbroja",
+41983,
+"Wiking Nocy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Zbroja",
+41984,
+"Walkiria Światła+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Zbroja",
+41985,
+"Walkiria Nocy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Fryzura",
+45726,
+"Hełm Wikinga Światła+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Fryzura",
+45727,
+"Hełm Wikinga Nocy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Fryzura",
+45728,
+"Hełm Walkirii Światła+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Fryzura",
+45729,
+"Hełm Walkirii Nocy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Zwierzak",
+53386,
+"Hati",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Zwierzak",
+53387,
+"Skalli",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Wierzchowiec",
+52206,
+"Niebieski Drakkar",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Wierzchowiec",
+52207,
+"Czerwony Drakkar",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Broń",
+40220,
+"Miecz Smoka Północy",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Broń",
+40221,
+"Sztylet Smoka Północy",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Broń",
+40222,
+"Łuk Smoka Północy",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Broń",
+40223,
+"Miecz Ob. Smoka Północy",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Broń",
+40224,
+"Dzwon Smoka Północy",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Broń",
+40225,
+"Wachlarz Smoka Północy",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Broń",
+40226,
+"Pazur Smoka Północy",
+"Brak oznaczenia w źródle"
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+"Pierścień / amulet",
+71158,
+"Medal Bohatera",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Zbroja",
+41978,
+"Czerwony Smoczy Rycerz+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Zbroja",
+41979,
+"Czarny Smoczy Rycerz+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Zbroja",
+41980,
+"Czerwona Smocza Rycerka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Zbroja",
+41981,
+"Czarna Smocza Rycerka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Fryzura",
+45722,
+"Czer. Hełm Sm. Ryc.+ (m)",
+"Męski"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Fryzura",
+45723,
+"Czar. Hełm Sm. Ryc.+ (m)",
+"Męski"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Fryzura",
+45724,
+"Czer. Hełm Sm. Ryc.+ (k)",
+"Damski"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Fryzura",
+45725,
+"Czar. Hełm Sm. Ryc.+ (k)",
+"Damski"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Wierzchowiec",
+71293,
+"Feniks Wieczornej Zorzy",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Wierzchowiec",
+71294,
+"Feniks Zmierzchu",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+"Pierścień / amulet",
+71202,
+"Amulet Nazara",
+"Brak oznaczenia w źródle"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Zbroja",
+41974,
+"Św. Nosiciel Światła+",
+"Męski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Zbroja",
+41975,
+"Maj. Nosiciel Światła+",
+"Męski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Zbroja",
+41976,
+"Św. Nosicielka Światła+",
+"Damski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Zbroja",
+41977,
+"Maj. Nosicielka Światła+",
+"Damski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Fryzura",
+45718,
+"Świetlisty Diadem+ (m)",
+"Męski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Fryzura",
+45719,
+"Majestat. Diadem+ (m)",
+"Męski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Fryzura",
+45720,
+"Świetlisty Diadem+ (k)",
+"Damski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Fryzura",
+45721,
+"Majestat. Diadem+ (k)",
+"Damski"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Zwierzak",
+53383,
+"Pavo",
+"Brak oznaczenia w źródle"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Zwierzak",
+53384,
+"Gallus",
+"Brak oznaczenia w źródle"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Zbroja",
+41964,
+"Świąt. Zim. Zbroja+ (m)",
+"Męski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Zbroja",
+41965,
+"Piękna Zim. Zbroja+ (m)",
+"Męski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Zbroja",
+41966,
+"Świąt. Zim. Zbroja+ (k)",
+"Damski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Zbroja",
+41967,
+"Piękna Zim. Zbroja+ (k)",
+"Damski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Fryzura",
+45708,
+"Świąt. Zim. Czapka+ (m)",
+"Męski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Fryzura",
+45709,
+"Piękna Zim. Czapka+ (m)",
+"Męski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Fryzura",
+45710,
+"Świąt. Zim. Czapka+ (k)",
+"Damski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Fryzura",
+45711,
+"Piękna Zim. Czapka+ (k)",
+"Damski"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Broń",
+40199,
+"Miecz Zimowego Ciernia",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Broń",
+40200,
+"Sztylet Zimowego Ciernia",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Broń",
+40201,
+"Łuk Zimowego Ciernia",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Broń",
+40202,
+"Miecz Dwur. Zim. Ciernia",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Broń",
+40203,
+"Dzwon Zimowego Ciernia",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Broń",
+40204,
+"Wachlarz Zim. Ciernia",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Broń",
+40205,
+"Szpon Zimowego Ciernia",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Zwierzak",
+53378,
+"Niebieski Zimowy Skrzat",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Zwierzak",
+53379,
+"Różowy Zimowy Skrzat",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Wierzchowiec",
+71291,
+"Śnieżny Bożonar. Baran",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Wierzchowiec",
+71292,
+"Węglowy Bożonar. Baran",
+"Brak oznaczenia w źródle"
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Zbroja",
+41940,
+"Słon. Szata Wukong+ (m)",
+"Męski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Zbroja",
+41941,
+"Księż. Szata Wukong+ (m)",
+"Męski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Zbroja",
+41942,
+"Słon. Szata Wukong+ (k)",
+"Damski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Zbroja",
+41943,
+"Księż. Szata Wukong+ (k)",
+"Damski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Fryzura",
+45680,
+"Słon. Brans. Wukong+ (m)",
+"Męski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Fryzura",
+45681,
+"Księż. Bran. Wukong+ (m)",
+"Męski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Fryzura",
+45682,
+"Słon. Brans. Wukong+ (k)",
+"Damski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Fryzura",
+45683,
+"Księż. Bran. Wukong+ (k)",
+"Damski"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Zwierzak",
+53365,
+"Złoty Long",
+"Brak oznaczenia w źródle"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Zwierzak",
+53366,
+"Srebrny Long",
+"Brak oznaczenia w źródle"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Wierzchowiec",
+52204,
+"Burza Wukong",
+"Brak oznaczenia w źródle"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Wierzchowiec",
+52205,
+"Grzmot Wukong",
+"Brak oznaczenia w źródle"
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Śnieżny Bambi",
+"KAR_TANESI",
+"Zwierzak",
+70615,
+"Śnieżny Bambi",
+"Brak oznaczenia w źródle"
+],
+[
+"Śnieżny Bambi",
+"KAR_TANESI",
+"Wierzchowiec",
+70614,
+"Śnieżna Kometa",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Zbroja",
+41908,
+"Szlachetny Legionista+",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Zbroja",
+41909,
+"Mroczny Legionista+",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Zbroja",
+41910,
+"Szlachetna Legionistka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Zbroja",
+41911,
+"Mroczna Legionistka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Fryzura",
+45648,
+"Sz. Hełm Legionisty+ (m)",
+"Męski"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Fryzura",
+45649,
+"Mr. Hełm Legionisty+ (m)",
+"Męski"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Fryzura",
+45650,
+"Sz. Hełm Legionisty+ (k)",
+"Damski"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Fryzura",
+45651,
+"Mr. Hełm Legionisty+ (k)",
+"Damski"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Zwierzak",
+53353,
+"Śnieżny Krampus",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Zwierzak",
+53354,
+"Węglowy Krampus",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Wierzchowiec",
+71275,
+"Szlachetny Legionowy Koń",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Wierzchowiec",
+71276,
+"Mroczny Legionowy Koń",
+"Brak oznaczenia w źródle"
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Zbroja",
+41722,
+"Zbr. Mroku Księżyca+ (m)",
+"Męski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Zbroja",
+41723,
+"Zbr.Srebrnej Gwiazdy+(m)",
+"Męski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Zbroja",
+41724,
+"Zbr. Mroku Księżyca+ (k)",
+"Damski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Zbroja",
+41725,
+"Zbr.Srebrnej Gwiazdy+(k)",
+"Damski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Fryzura",
+45396,
+"Hełm Mroku Księżyca+ (m)",
+"Męski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Fryzura",
+45397,
+"Hełm Srebr. Gwiazdy+ (m)",
+"Męski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Fryzura",
+45398,
+"Hełm Mroku Księżyca+ (k)",
+"Damski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Fryzura",
+45399,
+"Hełm Srebr. Gwiazdy+ (k)",
+"Damski"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Zwierzak",
+53285,
+"Skrzat Nosek+ (czerw.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Zwierzak",
+53286,
+"Skrzat Nosek+ (ziel.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Zbroja",
+41634,
+"Zbroja Avalonu+ (srebr.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Zbroja",
+41635,
+"Zbroja Avalonu+ (czerw.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Zbroja",
+41636,
+"Zbroja Avalonu+ (srebr.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Zbroja",
+41637,
+"Zbroja Avalonu+ (czerw.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Fryzura",
+45324,
+"Hełm Avalonu+ (srebrny)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Fryzura",
+45325,
+"Hełm Avalonu+ (czerwony)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Fryzura",
+45326,
+"Hełm Avalonu+ (srebrny)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Fryzura",
+45327,
+"Hełm Avalonu+ (czerwony)",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Zwierzak",
+53260,
+"Sir Oswald",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Zwierzak",
+53261,
+"Sir Cobblepot",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Zbroja",
+41786,
+"Czer. Sweter Świąt.+ (m)",
+"Męski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Zbroja",
+41787,
+"Ziel. Sweter Świąt.+ (m)",
+"Męski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Zbroja",
+41788,
+"Czer. Sweter Świąt.+ (k)",
+"Damski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Zbroja",
+41789,
+"Ziel. Sweter Świąt.+ (k)",
+"Damski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Fryzura",
+45518,
+"Czer. Czapka Świąt. (m)",
+"Męski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Fryzura",
+45519,
+"Ziel. Czapka Świąt. (m)",
+"Męski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Fryzura",
+45520,
+"Czer. Czapka Świąt. (k)",
+"Damski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Fryzura",
+45521,
+"Ziel. Czapka Świąt. (k)",
+"Damski"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Zwierzak",
+53304,
+"Zielony Świąteczny Ent",
+"Brak oznaczenia w źródle"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Zwierzak",
+53305,
+"Sękaty Świąteczny Ent",
+"Brak oznaczenia w źródle"
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Zbroja",
+41690,
+"Gwardia Ognistego Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Zbroja",
+41691,
+"Gwardia Lodowego Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Zbroja",
+41692,
+"Gwardia Ognistego Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Zbroja",
+41693,
+"Gwardia Lodowego Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Fryzura",
+45368,
+"Hełm Gwardii Og. Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Fryzura",
+45369,
+"Hełm Gwardii Lod. Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Fryzura",
+45370,
+"Hełm Gwardii Og. Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Fryzura",
+45371,
+"Hełm Gwardii Lod. Smoka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Zwierzak",
+53274,
+"Franiu Fistaszek",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Zwierzak",
+53275,
+"Stefek Orzeszek",
+"Brak oznaczenia w źródle"
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Zbroja",
+41852,
+"Cz. zimowy samuraj+ (m)",
+"Męski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Zbroja",
+41853,
+"B. zimowy samuraj+ (m)",
+"Męski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Zbroja",
+41854,
+"Cz. zimowy samuraj+ (k)",
+"Damski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Zbroja",
+41855,
+"Biały zimowy samuraj (k)",
+"Damski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Fryzura",
+45592,
+"Cz. hełm z porożem+ (m)",
+"Męski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Fryzura",
+45593,
+"B. hełm z porożem+ (m)",
+"Męski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Fryzura",
+45594,
+"Cz. hełm z porożem+ (k)",
+"Damski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Fryzura",
+45595,
+"B. hełm z porożem+ (k)",
+"Damski"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Zwierzak",
+53326,
+"Piernikowy Dasher",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Zwierzak",
+53327,
+"Piernikowy Rudolf",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Wierzchowiec",
+71269,
+"Renifer śnieżycy",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Wierzchowiec",
+71270,
+"Renifer zimowej nocy",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Zbroja",
+41828,
+"Ciepły Kaftan Zimowy+(m)",
+"Męski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Zbroja",
+41829,
+"Piękny Kaftan Zimowy+(m)",
+"Męski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Zbroja",
+41830,
+"Ciepły Kaftan Zimowy+(k)",
+"Damski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Zbroja",
+41831,
+"Piękny Kaftan Zimowy+(k)",
+"Damski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Fryzura",
+45568,
+"Ciepła Czapa Zimowa+ (m)",
+"Męski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Fryzura",
+45569,
+"Piękna Czapa Zimowa+ (m)",
+"Męski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Fryzura",
+45570,
+"Ciepła Czapa Zimowa+ (k)",
+"Damski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Fryzura",
+45571,
+"Piękna Czapa Zimowa+ (k)",
+"Damski"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Zwierzak",
+53320,
+"Przebiśnieg",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Zwierzak",
+53321,
+"Śnieżka",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Wierzchowiec",
+71263,
+"Czerwony Zimowy Wilk",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Wierzchowiec",
+71264,
+"Niebieski Zimowy Wilk",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Zbroja",
+41572,
+"Czerw. Galowy Strój+ (m)",
+"Męski"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Zbroja",
+41573,
+"Zielony Galowy Strój+(m)",
+"Męski"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Zbroja",
+41574,
+"Czerw. Galowy Strój+ (k)",
+"Damski"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Zbroja",
+41575,
+"Zielony Galowy Strój+(k)",
+"Damski"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Fryzura",
+45262,
+"Świąt. Kaptur+ (czer.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Fryzura",
+45263,
+"Świąt. Kaptur+ (ziel.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Fryzura",
+45264,
+"Świąt. Beret+ (czerwony)",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Fryzura",
+45265,
+"Świąt. Beret+ (zielony)",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Zwierzak",
+53247,
+"Czerwony Elf",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Zwierzak",
+53248,
+"Zielony Elf",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+"Pierścień / amulet",
+71143,
+"Pierścień Radości",
+"Brak oznaczenia w źródle"
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+"Zwierzak",
+53296,
+"Wesoły Posłaniec Miłości",
+"Brak oznaczenia w źródle"
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+"Zwierzak",
+53297,
+"Ospały Posłaniec Miłości",
+"Brak oznaczenia w źródle"
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+"Akcesorium",
+86064,
+"Szarfa Serca (unikat.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+"Pierścień / amulet",
+71145,
+"Amulet Wiecznej Miłości",
+"Brak oznaczenia w źródle"
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+"Pierścień / amulet",
+71199,
+"Czekoladowy Amulet",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Zbroja",
+41944,
+"Czarna Lampa Lorda+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Zbroja",
+41945,
+"Fioletowa Lampa Lorda+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Zbroja",
+41946,
+"Czarna Lampa Damy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Zbroja",
+41947,
+"Fioletowa Lampa Damy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Fryzura",
+45684,
+"Czar. Maska Zaj. Lorda+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Fryzura",
+45685,
+"Fiol. Maska Zaj. Lorda+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Fryzura",
+45686,
+"Czar. Maska Zaj. Damy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Fryzura",
+45687,
+"Fiol. Maska Zaj. Damy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Wierzchowiec",
+71282,
+"Niebieski Oldtimer",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Wierzchowiec",
+71283,
+"Zielony Oldtimer",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Zbroja",
+41924,
+"Czerwony Toreador+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Zbroja",
+41925,
+"Niebieski Toreador+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Zbroja",
+41926,
+"Czerwona Toreadorka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Zbroja",
+41927,
+"Niebieska Toreadorka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Fryzura",
+45664,
+"Czerwona Montera+ (m)",
+"Męski"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Fryzura",
+45665,
+"Niebieska Montera+ (m)",
+"Męski"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Fryzura",
+45666,
+"Czerwona Montera+ (k)",
+"Damski"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Fryzura",
+45667,
+"Niebieska Montera+ (k)",
+"Damski"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Wierzchowiec",
+53356,
+"Czarny Byk",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Wierzchowiec",
+53357,
+"Brązowy Byk",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Zbroja",
+41884,
+"Niebieski Wzorowy Uczeń+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Zbroja",
+41885,
+"Szary Wzorowy Uczeń+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Zbroja",
+41886,
+"Nieb. Wzorowa Uczennica+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Zbroja",
+41887,
+"Szara Wzorowa Uczennica+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Fryzura",
+45624,
+"Nieb. Okulary W. Ucznia+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Fryzura",
+45625,
+"Czerw. Okul. Wz. Ucznia+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Fryzura",
+45626,
+"Nieb. Spinka Wz. Ucznia+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Fryzura",
+45627,
+"Czerw. Spinka W. Ucznia+",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Wierzchowiec",
+71259,
+"Pośpieszny Królik (róż.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Wierzchowiec",
+71260,
+"Pośpieszny Królik (nie.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Zbroja",
+41836,
+"B. Mundur Morski+ (m)",
+"Męski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Zbroja",
+41837,
+"Czer. Mundur Morski+ (m)",
+"Męski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Zbroja",
+41838,
+"B. Mundur Morski+ (k)",
+"Damski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Zbroja",
+41839,
+"Czer. Mundur Morski+ (k)",
+"Damski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Fryzura",
+45576,
+"B. Dwuróg Morski+ (m)",
+"Męski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Fryzura",
+45577,
+"Cz. Dwuróg Morski+ (m)",
+"Męski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Fryzura",
+45578,
+"B. Dwuróg Morski+ (k)",
+"Damski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Fryzura",
+45579,
+"Cz. Dwuróg Morski+ (k)",
+"Damski"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Wierzchowiec",
+71265,
+"Księżycowy Koń Morski",
+"Brak oznaczenia w źródle"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Wierzchowiec",
+71266,
+"Słoneczny Koń Morski",
+"Brak oznaczenia w źródle"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Zbroja",
+41794,
+"Cz. Królik K. Czarów+(m)",
+"Męski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Zbroja",
+41795,
+"Cza.Królik K. Czarów+(m)",
+"Męski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Zbroja",
+41796,
+"Cz. Królik K. Czarów+(k)",
+"Damski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Zbroja",
+41797,
+"Cza.Królik K. Czarów+(k)",
+"Damski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Fryzura",
+45530,
+"Cz. Cylinder Królika+(m)",
+"Męski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Fryzura",
+45531,
+"Cza.Cylinder Królika+(m)",
+"Męski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Fryzura",
+45532,
+"Cz. Cylinder Królika+(k)",
+"Damski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Fryzura",
+45533,
+"Cza.Cylinder Królika+(k)",
+"Damski"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Wierzchowiec",
+71271,
+"Pośp. Królik (czer.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Wierzchowiec",
+71272,
+"Pośp. Królik (czar.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Zbroja",
+41754,
+"Pancerz Czar. Szp.+ (m)",
+"Męski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Zbroja",
+41755,
+"Pancerz Sreb. Szp.+ (m)",
+"Męski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Zbroja",
+41756,
+"Pancerz Czar. Szp.+ (k)",
+"Damski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Zbroja",
+41757,
+"Pancerz Sreb. Szp.+ (k)",
+"Damski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Fryzura",
+45486,
+"Hełm Czar. Szp.+ (m)",
+"Męski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Fryzura",
+45487,
+"Hełm Sreb.+ Szp. (m)",
+"Męski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Fryzura",
+45488,
+"Hełm Czar. Szp.+ (k)",
+"Damski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Fryzura",
+45489,
+"Hełm Sreb. Szp.+ (k)",
+"Damski"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Wierzchowiec",
+71248,
+"Złoty Byk Bojowy",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Wierzchowiec",
+71249,
+"Srebrny Byk Bojowy",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Zbroja",
+41682,
+"Zbroja Ajolosa+ (m)",
+"Męski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Zbroja",
+41683,
+"Zbroja Astrajosa+ (m)",
+"Męski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Zbroja",
+41684,
+"Zbroja Ajolosa+ (k)",
+"Damski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Zbroja",
+41685,
+"Zbroja Astrajosa+ (k)",
+"Damski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Fryzura",
+45360,
+"Hełm Ajolosa+ (m)",
+"Męski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Fryzura",
+45361,
+"Hełm Astrajosa+ (m)",
+"Męski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Fryzura",
+45362,
+"Hełm Ajolosa+ (k)",
+"Damski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Fryzura",
+45363,
+"Hełm Astrajosa+ (k)",
+"Damski"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Zwierzak",
+53271,
+"Błękitny Błyszczący Paw",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Zwierzak",
+53272,
+"Różowy Błyszczący Paw",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Mistrzowska piłka nożna",
+"SAMPIYONLUK",
+"Zwierzak",
+53343,
+"Mistrzowska piłka nożna",
+"Brak oznaczenia w źródle"
+],
+[
+"Mistrzowska piłka nożna",
+"SAMPIYONLUK",
+"Pierścień / amulet",
+70607,
+"Emblemat mistrzowski",
+"Brak oznaczenia w źródle"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Zbroja",
+41948,
+"Strażnik Srebr. Piasku+",
+"Męski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Zbroja",
+41949,
+"Strażnik Czer. Piasku+",
+"Męski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Zbroja",
+41950,
+"Strażniczka Sr. Piasku+",
+"Damski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Zbroja",
+41951,
+"Strażniczka Cz. Piasku+",
+"Damski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Fryzura",
+45688,
+"Hełm Srebr. Piasku+ (m)",
+"Męski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Fryzura",
+45689,
+"Hełm Czerw. Piasku+ (m)",
+"Męski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Fryzura",
+45690,
+"Hełm Srebr. Piasku+ (k)",
+"Damski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Fryzura",
+45691,
+"Hełm Czerw. Piasku+ (k)",
+"Damski"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Zwierzak",
+53372,
+"Sowa Strażn. Księżyca",
+"Brak oznaczenia w źródle"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Zwierzak",
+53373,
+"Sowa Strażniczka Słońca",
+"Brak oznaczenia w źródle"
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+"Pierścień / amulet",
+72713,
+"Błogosławieństwo Mocy",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Zbroja",
+41802,
+"Cz. Szata Faraona+ (m)",
+"Męski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Zbroja",
+41803,
+"Sz. Szata Faraona+ (m)",
+"Męski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Zbroja",
+41804,
+"Cz. Szata Faraona+ (k)",
+"Damski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Zbroja",
+41805,
+"Sz. Szata Faraona+ (k)",
+"Damski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Fryzura",
+45538,
+"Cz. Stroik Faraona+ (m)",
+"Męski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Fryzura",
+45539,
+"Sz. Stroik Faraona+ (m)",
+"Męski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Fryzura",
+45540,
+"Cz. Stroik Faraona+ (k)",
+"Damski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Fryzura",
+45541,
+"Sz. Stroik Faraona+ (k)",
+"Damski"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Zwierzak",
+53307,
+"Niebieski Anubis",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Zwierzak",
+53308,
+"Czerwony Anubis",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+"Pierścień / amulet",
+71202,
+"Amulet Nazara",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Zbroja",
+41916,
+"Zbroja Szczodrego+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Zbroja",
+41917,
+"Zbroja Zwycięskiego+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Zbroja",
+41918,
+"Zbroja Szczodrej+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Zbroja",
+41919,
+"Zbroja Zwycięskiej+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Fryzura",
+45656,
+"Korona Szczodrego+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Fryzura",
+45657,
+"Korona Zwycięskiego+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Fryzura",
+45658,
+"Korona Szczodrej+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Fryzura",
+45659,
+"Korona Zwycięskiej+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Wierzchowiec",
+71277,
+"Halia",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Wierzchowiec",
+71278,
+"Aquilos",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+"Pierścień / amulet",
+71202,
+"Amulet Nazara",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Zbroja",
+41872,
+"Lord steampunk",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Zbroja",
+41873,
+"Hrabia steampunk",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Zbroja",
+41874,
+"Dama steampunk",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Zbroja",
+41875,
+"Hrabina steampunk",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Fryzura",
+45616,
+"Kapelusz lorda+",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Fryzura",
+45617,
+"Kapelusz hrabiego+",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Fryzura",
+45618,
+"Kapelusz damy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Fryzura",
+45619,
+"Kapelusz hrabiny+",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Zwierzak",
+53345,
+"Whistle",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Zwierzak",
+53346,
+"Wrench",
+"Brak oznaczenia w źródle"
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+"Pierścień / amulet",
+71202,
+"Amulet Nazara",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Zbroja",
+41860,
+"Cz. Wojownik P.Księżyca+",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Zbroja",
+41861,
+"N. Wojownik P.Księżyca+",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Zbroja",
+41862,
+"Cz. Wojowniczka P. K+",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Zbroja",
+41863,
+"B. Wojowniczka P. K+",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Fryzura",
+45600,
+"Cz. Turban ze Złotem+(m)",
+"Męski"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Fryzura",
+45601,
+"N. Turban ze Złotem+ (m)",
+"Męski"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Fryzura",
+45602,
+"Cz. Turban ze Złotem+(k)",
+"Damski"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Fryzura",
+45603,
+"N. Turban ze Złotem+ (k)",
+"Damski"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Zwierzak",
+53339,
+"Biały Kot Angorski",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Zwierzak",
+53340,
+"Brązowy Kot Angorski",
+"Brak oznaczenia w źródle"
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+"Pierścień / amulet",
+71202,
+"Amulet Nazara",
+"Brak oznaczenia w źródle"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Zbroja",
+41760,
+"Szata Dżinna+ (m)",
+"Męski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Zbroja",
+41761,
+"Szata Sułtana+ (m)",
+"Męski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Zbroja",
+41762,
+"Szata Dżinna (k)",
+"Damski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Zbroja",
+41763,
+"Szata Sułtana (k)",
+"Damski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Fryzura",
+45494,
+"Turban Dżinna+ (m)",
+"Męski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Fryzura",
+45495,
+"Turban Sułtana+ (m)",
+"Męski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Fryzura",
+45496,
+"Tiara Dżinna+ (k)",
+"Damski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Fryzura",
+45497,
+"Tiara Sułtana+ (k)",
+"Damski"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Wierzchowiec",
+71250,
+"Biały Sfinks",
+"Brak oznaczenia w źródle"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Wierzchowiec",
+71251,
+"Kamienny Sfinks",
+"Brak oznaczenia w źródle"
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+"Pierścień / amulet",
+71202,
+"Amulet Nazara",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Zbroja",
+41706,
+"Książę Orientu (brąz.)+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Zbroja",
+41707,
+"Książę Orientu (czarny)+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Zbroja",
+41708,
+"Księżn. Orientu (brąz.)+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Zbroja",
+41709,
+"Księżn. Orientu (czar.)+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Fryzura",
+45408,
+"Czerwona Arafatka+ (m)",
+"Męski"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Fryzura",
+45409,
+"Niebieska Arafatka+ (m)",
+"Męski"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Fryzura",
+45410,
+"Czerwona Arafatka+ (k)",
+"Damski"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Fryzura",
+45411,
+"Niebieska Arafatka+ (k)",
+"Damski"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Zwierzak",
+53277,
+"Wielzooka",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Zwierzak",
+53278,
+"Wieldziało",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+"Pierścień / amulet",
+71202,
+"Amulet Nazara",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Zbroja",
+41956,
+"Czar. Skaf. Nurkowy+ (m)",
+"Męski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Zbroja",
+41957,
+"Biały Skaf. Nurkowy+ (m)",
+"Męski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Zbroja",
+41958,
+"Czar. Skaf. Nurkowy+ (k)",
+"Damski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Zbroja",
+41959,
+"Biały Skaf. Nurkowy+ (k)",
+"Damski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Fryzura",
+45700,
+"Czar. Maska do Nur.+ (m)",
+"Męski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Fryzura",
+45701,
+"Biała Maska do Nur.+ (m)",
+"Męski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Fryzura",
+45702,
+"Czar. Maska do Nur.+ (k)",
+"Damski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Fryzura",
+45703,
+"Biała Maska do Nur.+ (k)",
+"Damski"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Zwierzak",
+53370,
+"Pebble",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+"Pierścień / amulet",
+71158,
+"Medal Bohatera",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Zbroja",
+41932,
+"Książę Atlantydy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Zbroja",
+41933,
+"Wojownik Atlantydy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Zbroja",
+41934,
+"Księżniczka Atlantydy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Zbroja",
+41935,
+"Wojowniczka Atlantydy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Fryzura",
+45672,
+"Korona Atlantydy+ (m)",
+"Męski"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Fryzura",
+45673,
+"Hełm Atlantydy+ (m)",
+"Męski"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Fryzura",
+45674,
+"Korona Atlantydy+ (k)",
+"Damski"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Fryzura",
+45675,
+"Hełm Atlantydy+ (k)",
+"Damski"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Zwierzak",
+53359,
+"Skubcio",
+"Brak oznaczenia w źródle"
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+"Pierścień / amulet",
+71158,
+"Medal Bohatera",
+"Brak oznaczenia w źródle"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Zbroja",
+41892,
+"C. Ratownik Plażowy+",
+"Brak oznaczenia w źródle"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Zbroja",
+41893,
+"B. Ratownik Plażowy+",
+"Brak oznaczenia w źródle"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Zbroja",
+41894,
+"C. Ratowniczka Plażowa+",
+"Brak oznaczenia w źródle"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Zbroja",
+41895,
+"B. Ratowniczka Plażowa+",
+"Brak oznaczenia w źródle"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Fryzura",
+45632,
+"C. Czapka Plażowa+ (m)",
+"Męski"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Fryzura",
+45633,
+"B. Czapka Plażowa+ (m)",
+"Męski"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Fryzura",
+45634,
+"C. Czapka Plażowa+ (k)",
+"Damski"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Fryzura",
+45635,
+"B. Czapka Plażowa+ (k)",
+"Damski"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Zwierzak",
+53348,
+"Wierny Lod. Wiel. Zab.",
+"Brak oznaczenia w źródle"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Wierzchowiec",
+52202,
+"Turbodeska Surfingowa",
+"Brak oznaczenia w źródle"
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+"Pierścień / amulet",
+71158,
+"Medal Bohatera",
+"Brak oznaczenia w źródle"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Zbroja",
+41868,
+"Lekki Strój Plażowy+ (m)",
+"Brak oznaczenia w źródle"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Zbroja",
+41869,
+"Luźny Strój Plażowy+ (m)",
+"Brak oznaczenia w źródle"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Zbroja",
+41870,
+"Lekki Strój Plażowy+ (k)",
+"Brak oznaczenia w źródle"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Zbroja",
+41871,
+"Luźny Strój Plażowy+ (k)",
+"Brak oznaczenia w źródle"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Fryzura",
+45608,
+"Lekki Kapelusz Plaż.+(m)",
+"Męski"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Fryzura",
+45609,
+"Luźny Kapelusz Plaż.+(m)",
+"Męski"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Fryzura",
+45610,
+"Lekki Kapelusz Plaż.+(k)",
+"Damski"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Fryzura",
+45611,
+"Luźny Kapelusz Plaż.+(k)",
+"Damski"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Zwierzak",
+53299,
+"Mini Krab Wojownik",
+"Brak oznaczenia w źródle"
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+"Pierścień / amulet",
+71158,
+"Medal Bohatera",
+"Brak oznaczenia w źródle"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Zbroja",
+41810,
+"B. Mundur Marynarski+(m)",
+"Męski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Zbroja",
+41811,
+"N. Mundur Marynarski+(m)",
+"Męski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Zbroja",
+41812,
+"B. Mundur Marynarski+(k)",
+"Damski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Zbroja",
+41813,
+"N. Mundur Marynarski+(k)",
+"Damski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Fryzura",
+45550,
+"B. Czapka Marynarska+(m)",
+"Męski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Fryzura",
+45551,
+"N. Czapka Marynarska+(m)",
+"Męski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Fryzura",
+45552,
+"B. Czapka Marynarska+(k)",
+"Damski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Fryzura",
+45553,
+"N. Czapka Marynarska+(k)",
+"Damski"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Zwierzak",
+53311,
+"Potęż. Lod. Wielor. Zab.",
+"Brak oznaczenia w źródle"
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+"Pierścień / amulet",
+71158,
+"Medal Bohatera",
+"Brak oznaczenia w źródle"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Zbroja",
+41770,
+"Pirat+ (m)",
+"Męski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Zbroja",
+41771,
+"Korsarz+ (m)",
+"Męski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Zbroja",
+41772,
+"Pirat+ (k)",
+"Damski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Zbroja",
+41773,
+"Korsarz+ (k)",
+"Damski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Fryzura",
+45502,
+"Trójróg Pirata+ (m)",
+"Męski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Fryzura",
+45503,
+"Trójróg Korsarza+ (m)",
+"Męski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Fryzura",
+45504,
+"Trójróg Pirata+ (k)",
+"Damski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Fryzura",
+45505,
+"Trójróg Korsarza+ (k)",
+"Damski"
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+"Zwierzak",
+53299,
+"Mini Krab Wojownik",
+"Brak oznaczenia w źródle"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Zbroja",
+41698,
+"Mundur Strażaka+(m)",
+"Męski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Zbroja",
+41699,
+"Mundur Strażaka+(m)",
+"Męski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Zbroja",
+41700,
+"Mundur Strażaka+(k)",
+"Damski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Zbroja",
+41701,
+"Mundur Strażaka+(k)",
+"Damski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Fryzura",
+45376,
+"Hełm Strażaka+(m)",
+"Męski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Fryzura",
+45377,
+"Hełm Strażaka+(m)",
+"Męski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Fryzura",
+45378,
+"Hełm Strażaka+(k)",
+"Damski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Fryzura",
+45379,
+"Hełm Strażaka+(k)",
+"Damski"
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+"Zwierzak",
+53280,
+"Mroźny Chrząszcz+",
+"Brak oznaczenia w źródle"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Zbroja",
+41960,
+"Samuraj Cieni+ (m)",
+"Męski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Zbroja",
+41961,
+"Samuraj Śniegu+ (m)",
+"Męski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Zbroja",
+41962,
+"Samuraj Cieni+ (k)",
+"Damski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Zbroja",
+41963,
+"Samuraj Śniegu+ (k)",
+"Damski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Fryzura",
+45704,
+"Hełm Samuraja Cieni+ (m)",
+"Męski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Fryzura",
+45705,
+"Hełm Sam. Śniegu+ (m)",
+"Męski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Fryzura",
+45706,
+"Hełm Samuraja Cieni+ (k)",
+"Damski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Fryzura",
+45707,
+"Hełm Sam. Śniegu+ (k)",
+"Damski"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Zwierzak",
+53375,
+"Czarne Dyn. Straszydło",
+"Brak oznaczenia w źródle"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Zwierzak",
+53376,
+"Białe Dyniowe Straszydło",
+"Brak oznaczenia w źródle"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Wierzchowiec",
+71289,
+"Tygrys Dżungli",
+"Brak oznaczenia w źródle"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Wierzchowiec",
+71290,
+"Tygrys Śniegu",
+"Brak oznaczenia w źródle"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Zbroja",
+41936,
+"Inkub Płomieni+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Zbroja",
+41937,
+"Inkub Nocy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Zbroja",
+41938,
+"Sukkub Płomieni+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Zbroja",
+41939,
+"Sukkub Nocy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Fryzura",
+45676,
+"Płonące Rogi+ (m)",
+"Męski"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Fryzura",
+45677,
+"Rogi Skrzydła Nocy+ (m)",
+"Męski"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Fryzura",
+45678,
+"Płonące Rogi+ (k)",
+"Damski"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Fryzura",
+45679,
+"Rogi Skrzydła Nocy+ (k)",
+"Damski"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Broń",
+40192,
+"Miecz Nosiciela Klątwy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Broń",
+40193,
+"Sztylet Nos. Klątwy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Broń",
+40194,
+"Łuk Nosiciela Klątwy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Broń",
+40195,
+"Dwur. Miecz Nos. Klątwy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Broń",
+40196,
+"Dzwonek Nos. Klątwy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Broń",
+40197,
+"Wachlarz Nos. Klątwy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Broń",
+40198,
+"Pazur Nosiciela Klątwy+",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Zwierzak",
+53362,
+"Lilith",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Zwierzak",
+53363,
+"Helena",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Wierzchowiec",
+71280,
+"Mroczny Rumak Piekieł",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Wierzchowiec",
+71281,
+"Okrutny Rumak Piekieł",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Zbroja",
+41900,
+"Zielony Szaman+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Zbroja",
+41901,
+"Czerwony Szaman+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Zbroja",
+41902,
+"Zielona Szamanka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Zbroja",
+41903,
+"Czerwona Szamanka+",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Fryzura",
+45640,
+"Ziel. Szam. Korona+ (m)",
+"Męski"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Fryzura",
+45641,
+"Czerw. Szam. Korona+ (m)",
+"Męski"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Fryzura",
+45642,
+"Ziel. Szam. Korona+ (k)",
+"Damski"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Fryzura",
+45643,
+"Czerw. Szam. Korona+ (k)",
+"Damski"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Zwierzak",
+53350,
+"Dzielne Straszydło Tiki",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Zwierzak",
+53351,
+"Zuchwałe Straszydło Tiki",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Wierzchowiec",
+71273,
+"Przeklęta Miotła",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Wierzchowiec",
+71274,
+"Zaczarowana Miotła",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Zbroja",
+41844,
+"Czarny jak noc Ks. Wam.+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Zbroja",
+41845,
+"Krwistoczerwony Ks. Wa.+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Zbroja",
+41846,
+"Czarna jak noc Ks. Wa.+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Zbroja",
+41847,
+"Krwistoczerwona Ks. Wa.+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Fryzura",
+45584,
+"Cz. Fryzura Wampira+ (m)",
+"Męski"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Fryzura",
+45585,
+"Sz. Fryzura Wampira+ (m)",
+"Męski"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Fryzura",
+45586,
+"Cz. Fryzura Wampira+ (k)",
+"Damski"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Fryzura",
+45587,
+"Sz. Fryzura Wampira+ (k)",
+"Damski"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Zwierzak",
+53323,
+"Lodowata Trumna Grozy",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Zwierzak",
+53324,
+"Krwistocz. Trumna Grozy",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Zbroja",
+41818,
+"Czar. Szata Dokkaebi+(m)",
+"Męski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Zbroja",
+41819,
+"Nieb. Szata Dokkaebi+(m)",
+"Męski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Zbroja",
+41820,
+"Czar. Szata Dokkaebi+(k)",
+"Damski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Zbroja",
+41821,
+"Nieb. Szata Dokkaebi+(k)",
+"Damski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Fryzura",
+45558,
+"Czar. Rogi Dokkaebi+ (m)",
+"Męski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Fryzura",
+45559,
+"Nieb. Rogi Dokkaebi+ (m)",
+"Męski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Fryzura",
+45560,
+"Czar. Rogi Dokkaebi+ (k)",
+"Damski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Fryzura",
+45561,
+"Nieb. Rogi Dokkaebi+ (k)",
+"Damski"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Broń",
+40150,
+"Miecz Dokkaebi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Broń",
+40151,
+"Sztylet Dokkaebi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Broń",
+40152,
+"Łuk Dokkaebi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Broń",
+40153,
+"Glewia Dokkaebi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Broń",
+40154,
+"Dzwonek Dokkaebi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Broń",
+40155,
+"Wachlarz Dokkaebi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Broń",
+40156,
+"Szpony Dokkaebi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Zwierzak",
+53316,
+"Lodowaty Burzyciel",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Zwierzak",
+53317,
+"Jadowity Burzyciel",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Zbroja",
+41778,
+"Zbroja Zmarłych+ (m)",
+"Męski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Zbroja",
+41779,
+"Zbroja Zaświatu+ (m)",
+"Męski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Zbroja",
+41780,
+"Zbroja Zmarłych+ (k)",
+"Damski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Zbroja",
+41781,
+"Zbroja Zaświatu+ (k)",
+"Damski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Fryzura",
+45514,
+"Fryzura Zmarłych+ (m)",
+"Męski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Fryzura",
+45515,
+"Fryzura Zaświatu+ (m)",
+"Męski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Fryzura",
+45516,
+"Fryzura Zmarłych+ (k)",
+"Damski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Fryzura",
+45517,
+"Fryzura Zaświatu+ (k)",
+"Damski"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Zwierzak",
+53301,
+"Mumia Szamotka",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Zwierzak",
+53302,
+"Mumia Kiwaczek",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Zbroja",
+41726,
+"Czerw. Zbr. Azraela+ (m)",
+"Męski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Zbroja",
+41727,
+"Biała Zbr. Azraela+ (m)",
+"Męski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Zbroja",
+41728,
+"Czerw. Zbr. Azraela+ (k)",
+"Damski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Zbroja",
+41729,
+"Biała Zbr. Azraela+ (k)",
+"Damski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Fryzura",
+45412,
+"Czerw. Hełm Azraela+ (m)",
+"Męski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Fryzura",
+45413,
+"Biały Hełm Azraela+ (m)",
+"Męski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Fryzura",
+45414,
+"Czerw. Hełm Azraela+ (k)",
+"Damski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Fryzura",
+45415,
+"Biały Hełm Azraela+ (k)",
+"Damski"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Zwierzak",
+53288,
+"Czerwony Mały Huashin",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Zwierzak",
+53289,
+"Biały Mały Huashin",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Pierścień / amulet",
+71148,
+"Pierścień Siły Woli",
+"Brak oznaczenia w źródle"
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+"Pierścień / amulet",
+71149,
+"Pierścień Śmier. Mocy",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Zbroja",
+41714,
+"Ciemna Szata Proroka+(m)",
+"Męski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Zbroja",
+41715,
+"Jasna Szata Proroka+ (m)",
+"Męski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Zbroja",
+41716,
+"Ciemna Szata Proroka+(k)",
+"Damski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Zbroja",
+41717,
+"Jasna Szata Proroka +(k)",
+"Damski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Fryzura",
+45388,
+"Ciem. Kaptur Proroka+(m)",
+"Męski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Fryzura",
+45389,
+"Jasny Kaptur Proroka+(m)",
+"Męski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Fryzura",
+45390,
+"Fiolet. Oko Proroka+ (k)",
+"Damski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Fryzura",
+45391,
+"Zielone Oko Proroka+ (k)",
+"Damski"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Zwierzak",
+53282,
+"Wszystkowidzą. Kot Ognia",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Zwierzak",
+53283,
+"Wszystkowidzący Kot Lodu",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Zbroja",
+41564,
+"Wampir+ (szary)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Zbroja",
+41565,
+"Wampir+ (czerwony)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Zbroja",
+41566,
+"Wampirzyca+ (szary)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Zbroja",
+41567,
+"Wampirzyca+ (czerwony)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Fryzura",
+45250,
+"Hełm Wampira (szary)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Fryzura",
+45251,
+"Hełm Wampira (czerwony)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Fryzura",
+45252,
+"Hełm Wampirzycy (szary)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Fryzura",
+45253,
+"Hełm Wampirzycy (czer.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Zwierzak",
+53244,
+"Pani Jiangshi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Zwierzak",
+53245,
+"Pan Jiangshi+",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Zbroja",
+41596,
+"Pancerz Horroru+ (złoty)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Zbroja",
+41597,
+"Pancerz Horroru+ (nieb.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Zbroja",
+41598,
+"Pancerz Horroru+ (złoty)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Zbroja",
+41599,
+"Pancerz Horroru+ (nieb.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Fryzura",
+45286,
+"Rogi Horroru+ (złote)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Fryzura",
+45287,
+"Rogi Horroru+ (nieb.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Fryzura",
+45288,
+"Rogi Horroru+ (złote)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Fryzura",
+45289,
+"Rogi Horroru+ (nieb.)",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Zwierzak",
+53253,
+"Huhu",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Zwierzak",
+53254,
+"Buhu",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Zbroja",
+41674,
+"Brązowa Wilcza Szata+(m)",
+"Męski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Zbroja",
+41675,
+"Szara Wilcza Szata+(m)",
+"Męski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Zbroja",
+41676,
+"Brązowa Wilcza Szata+(k)",
+"Damski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Zbroja",
+41677,
+"Szara Wilcza Szata+(k)",
+"Damski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Fryzura",
+45340,
+"Brązowa Czapka Wilka+(m)",
+"Męski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Fryzura",
+45341,
+"Szara Czapka Wilka+ (m)",
+"Męski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Fryzura",
+45342,
+"Brązowa Czapka Wilka+(k)",
+"Damski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Fryzura",
+45343,
+"Szara Czapka Wilka+ (k)",
+"Damski"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Zwierzak",
+53265,
+"Astrabell",
+"Brak oznaczenia w źródle"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Zwierzak",
+53266,
+"Helexna",
+"Brak oznaczenia w źródle"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Pierścień / amulet",
+71136,
+"Lizak Potęgi",
+"Brak oznaczenia w źródle"
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+"Pierścień / amulet",
+71188,
+"Lizak Magii",
+"Brak oznaczenia w źródle"
+]
+]
+},
+"Bonusy": {
+"notes": [
+"Bonusy zestawów — dane do filtrowania",
+"Wartość dotyczy całego wskazanego progu; nie obejmuje własnych bonusów przedmiotów.",
+"Źródło: https://metin2alerts.com/pl/wiki/costumes | Odczyt: 16.10.2026"
+],
+"header": [
+"Zestaw",
+"ID zestawu",
+"Założone części",
+"Bonus",
+"Wartość",
+"Jednostka",
+"ID bonusu"
+],
+"rows": [
+[
+"Wiking Światła+",
+"Viking_Set",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+4,
+"Punkty Doświadczenia: +135%",
+135,
+"%",
+66
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+4,
+"Obrażenie Umiejętności: 7%",
+7,
+"%",
+71
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+4,
+"Szansa na dropy przedmiotów zwiększona o 3%",
+3,
+"%",
+67
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+4,
+"Szybkość Ruchu 10%",
+10,
+"%",
+8
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+5,
+"Obrażenie Umiejętności: 10%",
+10,
+"%",
+71
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+5,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+5,
+"Szybkość Ruchu 20%",
+20,
+"%",
+8
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+6,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+6,
+"Obrażenie Umiejętności: 10%",
+10,
+"%",
+71
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+6,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+6,
+"Szybkość Ruchu 20%",
+20,
+"%",
+8
+],
+[
+"Wiking Światła+",
+"Viking_Set",
+6,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+3,
+"Silny przeciwko Potworom +2%",
+2,
+"%",
+63
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+3,
+"Szansa na Omdlenie 3%",
+3,
+"%",
+13
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+4,
+"Szansa na cios krytyczny +5%",
+5,
+"%",
+15
+],
+[
+"Czerwony Smoczy Rycerz+",
+"Ramazan_2026",
+4,
+"Szansa na Omdlenie 5%",
+5,
+"%",
+13
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Św. Nosiciel Światła+",
+"Easter_2026",
+4,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+4,
+"Szansa na cios krytyczny +2%",
+2,
+"%",
+15
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+4,
+"Szansa na przeszywające Uderzenie: 2%",
+2,
+"%",
+16
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+5,
+"Silny przeciwko Potworom +7%",
+7,
+"%",
+63
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+5,
+"Szansa na cios krytyczny +5%",
+5,
+"%",
+15
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+5,
+"Szansa na przeszywające Uderzenie: 5%",
+5,
+"%",
+16
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+6,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+6,
+"Silny przeciwko Potworom +10%",
+10,
+"%",
+63
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+6,
+"Szansa na cios krytyczny +8%",
+8,
+"%",
+15
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+6,
+"Szansa na przeszywające Uderzenie: 8%",
+8,
+"%",
+16
+],
+[
+"Świąt. Zim. Zbroja+ (m)",
+"Kis_Hazinesi",
+6,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+4,
+"Szansa na cios krytyczny +5%",
+5,
+"%",
+15
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+5,
+"Silny przeciwko Potworom +7%",
+7,
+"%",
+63
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+5,
+"Szansa na cios krytyczny +7%",
+7,
+"%",
+15
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+5,
+"Wartość Ataku +30",
+30,
+"punkty",
+53
+],
+[
+"Słon. Szata Wukong+ (m)",
+"WUKONG",
+5,
+"Wartość Magicznego Ataku: +30",
+30,
+"punkty",
+55
+],
+[
+"Śnieżny Bambi",
+"KAR_TANESI",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Śnieżny Bambi",
+"KAR_TANESI",
+2,
+"+3% siły przeciwko kamieniom Metin",
+3,
+"%",
+214
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+4,
+"Obrażenia od ataku przeciwko bossom +3%",
+3,
+"%",
+151
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+5,
+"Silny przeciwko Potworom +7%",
+7,
+"%",
+63
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+5,
+"Obrażenia od ataku przeciwko bossom +5%",
+5,
+"%",
+151
+],
+[
+"Szlachetny Legionista+",
+"LEJYONER",
+5,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+3,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Zbr. Mroku Księżyca+ (m)",
+"YILDIZLI_AY",
+4,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+3,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Zbroja Avalonu+ (srebr.)",
+"AVALON",
+4,
+"Średnie Obrażenia: 5%",
+5,
+"%",
+72
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+2,
+"Magiczny/krótkodystansowy atak +3%",
+3,
+"%",
+86
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+3,
+"Magiczny/krótkodystansowy atak +3%",
+3,
+"%",
+86
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+4,
+"Magiczny/krótkodystansowy atak +3%",
+3,
+"%",
+86
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czer. Sweter Świąt.+ (m)",
+"YILBASI_KAZAGI",
+4,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+3,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Gwardia Ognistego Smoka+",
+"EJDERHA_MUHAFIZ",
+4,
+"Obrażenia od ataku przeciwko bossom +5%",
+5,
+"%",
+151
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+4,
+"Obrażenia od ataku przeciwko bossom +3%",
+3,
+"%",
+151
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+5,
+"Silny przeciwko Potworom +7%",
+7,
+"%",
+63
+],
+[
+"Cz. zimowy samuraj+ (m)",
+"KIS_SAMURAYI",
+5,
+"Obrażenia od ataku przeciwko bossom +5%",
+5,
+"%",
+151
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+4,
+"Obrażenia od ataku przeciwko bossom +3%",
+3,
+"%",
+151
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+5,
+"Silny przeciwko Potworom +15%",
+15,
+"%",
+63
+],
+[
+"Ciepły Kaftan Zimowy+(m)",
+"SICAK_LAPA",
+5,
+"Obrażenia od ataku przeciwko bossom +5%",
+5,
+"%",
+151
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+3,
+"Punkty Doświadczenia: +20%",
+20,
+"%",
+66
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+4,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Czerw. Galowy Strój+ (m)",
+"YILBASI_ESVABI",
+4,
+"Średnie Obrażenia: 5%",
+5,
+"%",
+72
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Wesoły Posłaniec Miłości",
+"SEVGILILER_GUNU_MUCEVHER",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Czarna Lampa Lorda+",
+"TAVSAN_LORDU",
+4,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+3,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+4,
+"Magiczny/krótkodystansowy atak +7%",
+7,
+"%",
+86
+],
+[
+"Czerwony Toreador+",
+"FESTIVAL",
+4,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+3,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Niebieski Wzorowy Uczeń+",
+"ORNEK_OGRENCI",
+4,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+3,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"B. Mundur Morski+ (m)",
+"DENIZCI",
+4,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+2,
+"+3% siły przeciwko kamieniom Metin",
+3,
+"%",
+214
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+3,
+"+3% siły przeciwko kamieniom Metin",
+3,
+"%",
+214
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+3,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+4,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+4,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Cz. Królik K. Czarów+(m)",
+"HARIKALAR_DIYARI_TAVSAN",
+4,
+"Szansa na dropy przedmiotów zwiększona o 10%",
+10,
+"%",
+67
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+2,
+"Magiczny/krótkodystansowy atak +3%",
+3,
+"%",
+86
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+3,
+"Magiczny/krótkodystansowy atak +3%",
+3,
+"%",
+86
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+4,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Pancerz Czar. Szp.+ (m)",
+"METAL_PENCE",
+4,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+2,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Zbroja Ajolosa+ (m)",
+"OSTARA",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Mistrzowska piłka nożna",
+"SAMPIYONLUK",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Mistrzowska piłka nożna",
+"SAMPIYONLUK",
+2,
+"+3% siły przeciwko kamieniom Metin",
+3,
+"%",
+214
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+3,
+"Średnie Obrażenia: 3%",
+3,
+"%",
+72
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+4,
+"Szybkość Ataku +5%",
+5,
+"%",
+7
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+4,
+"Średnie Obrażenia: 5%",
+5,
+"%",
+72
+],
+[
+"Strażnik Srebr. Piasku+",
+"KUM_BEKCISI",
+4,
+"Szansa na Omdlenie 5%",
+5,
+"%",
+13
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+2,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+3,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Cz. Szata Faraona+ (m)",
+"FIRAVUN",
+4,
+"Szansa na Omdlenie 5%",
+5,
+"%",
+13
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+3,
+"+3% siły przeciwko kamieniom Metin",
+3,
+"%",
+214
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+4,
+"+8% siły przeciwko kamieniom Metin",
+8,
+"%",
+214
+],
+[
+"Zbroja Szczodrego+",
+"HOSGORU",
+4,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+3,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+4,
+"Szansa na dropy przedmiotów zwiększona o 10%",
+10,
+"%",
+67
+],
+[
+"Lord steampunk",
+"ALTIN_KAPLI_ASALET",
+4,
+"Regeneracja PŻ: +20%",
+20,
+"%",
+10
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Cz. Wojownik P.Księżyca+",
+"COLDEKI_AY_SAVASCISI",
+4,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+2,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Szata Dżinna+ (m)",
+"SULTAN",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+2,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Książę Orientu (brąz.)+",
+"SARK",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+3,
+"Średnie Obrażenia: 3%",
+3,
+"%",
+72
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+3,
+"Obrażenie Umiejętności: 3%",
+3,
+"%",
+71
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+4,
+"Średnie Obrażenia: 7%",
+7,
+"%",
+72
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+4,
+"Obrażenie Umiejętności: 7%",
+7,
+"%",
+71
+],
+[
+"Czar. Skaf. Nurkowy+ (m)",
+"DALGIC",
+4,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+3,
+"Średnie Obrażenia: 7%",
+7,
+"%",
+72
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+4,
+"Średnie Obrażenia: 10%",
+10,
+"%",
+72
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+4,
+"Odporność na lód +5%",
+5,
+"%",
+87
+],
+[
+"Książę Atlantydy+",
+"ATLANTIS",
+4,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+3,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+4,
+"Magiczny/krótkodystansowy atak +10%",
+10,
+"%",
+86
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+4,
+"Szansa na dropy przedmiotów zwiększona o 10%",
+10,
+"%",
+67
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+5,
+"Magiczny/krótkodystansowy atak +10%",
+10,
+"%",
+86
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+5,
+"Szansa na dropy przedmiotów zwiększona o 10%",
+10,
+"%",
+67
+],
+[
+"C. Ratownik Plażowy+",
+"CANKURTARAN",
+5,
+"Szybkość Ruchu 20%",
+20,
+"%",
+8
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+3,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+3,
+"Szansa na dropy przedmiotów zwiększona o 10%",
+10,
+"%",
+67
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+4,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+4,
+"Szansa na dropy przedmiotów zwiększona o 10%",
+10,
+"%",
+67
+],
+[
+"Lekki Strój Plażowy+ (m)",
+"HAVALI_DENIZ",
+4,
+"Silny przeciwko Potworom +10%",
+10,
+"%",
+63
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+2,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+3,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+3,
+"Siła Błyskawic +5%",
+5,
+"%",
+99
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+3,
+"Siła Ognia +5%",
+5,
+"%",
+100
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+3,
+"Siła Lodu +5%",
+5,
+"%",
+101
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+3,
+"Siła Wiatru +5%",
+5,
+"%",
+102
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+3,
+"Siła Ziemi +5%",
+5,
+"%",
+103
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+3,
+"Siła Mroku +5%",
+5,
+"%",
+104
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Siła Błyskawic +5%",
+5,
+"%",
+99
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Siła Ognia +5%",
+5,
+"%",
+100
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Siła Lodu +5%",
+5,
+"%",
+101
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Siła Wiatru +5%",
+5,
+"%",
+102
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Siła Ziemi +5%",
+5,
+"%",
+103
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Siła Mroku +5%",
+5,
+"%",
+104
+],
+[
+"B. Mundur Marynarski+(m)",
+"BAHRIYELI",
+4,
+"Szansa na dropy przedmiotów zwiększona o 10%",
+10,
+"%",
+67
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+2,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Pirat+ (m)",
+"KORSAN",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+2,
+"Siła Lodu +5%",
+5,
+"%",
+101
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+2,
+"Odporność na Ogień: 5%",
+5,
+"%",
+35
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+3,
+"Siła Lodu +5%",
+5,
+"%",
+101
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+3,
+"Odporność na Ogień: 5%",
+5,
+"%",
+35
+],
+[
+"Mundur Strażaka+(m)",
+"ITFAYECI",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+3,
+"Szybkość Zaklęcia +2%",
+2,
+"%",
+9
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+3,
+"Szybkość Ataku +2%",
+2,
+"%",
+7
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+4,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+4,
+"Szybkość Zaklęcia +2%",
+2,
+"%",
+9
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+4,
+"Szybkość Ataku +2%",
+2,
+"%",
+7
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+5,
+"+7% siły przeciwko kamieniom Metin",
+7,
+"%",
+214
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+5,
+"Szybkość Zaklęcia +5%",
+5,
+"%",
+9
+],
+[
+"Samuraj Cieni+ (m)",
+"SAMURAY",
+5,
+"Szybkość Ataku +5%",
+5,
+"%",
+7
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+4,
+"+3% siły przeciwko kamieniom Metin",
+3,
+"%",
+214
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+5,
+"Silny przeciwko Potworom +7%",
+7,
+"%",
+63
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+5,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+5,
+"5% obrażeń będzie dodanych do PŻ",
+5,
+"%",
+23
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+6,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+6,
+"Silny przeciwko Potworom +7%",
+7,
+"%",
+63
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+6,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+6,
+"5% obrażeń będzie dodanych do PŻ",
+5,
+"%",
+23
+],
+[
+"Inkub Płomieni+",
+"CADILAR_BAYRAMI_CEHENNEM",
+6,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+3,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+4,
+"+2% siły przeciwko kamieniom Metin",
+2,
+"%",
+214
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+5,
+"Silny przeciwko Potworom +7%",
+7,
+"%",
+63
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+5,
+"+5% siły przeciwko kamieniom Metin",
+5,
+"%",
+214
+],
+[
+"Zielony Szaman+",
+"BUYUCU_HEKIM",
+5,
+"Szansa na dropy przedmiotów zwiększona o 5%",
+5,
+"%",
+67
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+2,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+3,
+"Regeneracja PŻ: +30%",
+30,
+"%",
+10
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+3,
+"Silny przeciwko Potworom +3%",
+3,
+"%",
+63
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+4,
+"Regeneracja PŻ: +30%",
+30,
+"%",
+10
+],
+[
+"Czarny jak noc Ks. Wam.+",
+"VAMPIR",
+4,
+"Silny przeciwko Potworom +5%",
+5,
+"%",
+63
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+2,
+"Punkty Doświadczenia: +75%",
+75,
+"%",
+66
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+3,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+5,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+5,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czar. Szata Dokkaebi+(m)",
+"DOKKAEBI",
+5,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Zbroja Zmarłych+ (m)",
+"OBUR_DUNYA",
+4,
+"Średnie Obrażenia: 5%",
+5,
+"%",
+72
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+3,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+4,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Czerw. Zbr. Azraela+ (m)",
+"AZRAIL",
+4,
+"Średnie Obrażenia: 5%",
+5,
+"%",
+72
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Ciemna Szata Proroka+(m)",
+"KAHIN",
+4,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+3,
+"Punkty Doświadczenia: +20%",
+20,
+"%",
+66
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+4,
+"Punkty Doświadczenia: +50%",
+50,
+"%",
+66
+],
+[
+"Wampir+ (szary)",
+"VAMPIR_SAVASCISI",
+4,
+"Średnie Obrażenia: 5%",
+5,
+"%",
+72
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Pancerz Horroru+ (złoty)",
+"DEHSET",
+4,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+2,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+3,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+3,
+"Punkty Doświadczenia: +100%",
+100,
+"%",
+66
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+4,
+"Obrażenie Umiejętności: 5%",
+5,
+"%",
+71
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+4,
+"Punkty Doświadczenia: +150%",
+150,
+"%",
+66
+],
+[
+"Brązowa Wilcza Szata+(m)",
+"KURT",
+4,
+"Magiczny/krótkodystansowy atak +5%",
+5,
+"%",
+86
+]
+]
+}
+}

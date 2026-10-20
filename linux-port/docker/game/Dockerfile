@@ -919,7 +919,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
 # The costume sets (server-patches/playerqol, MT2009_PLUS_COSTUME_SET_V1): a
 # body and a hair of one line give +800 HP and +15 attack value. The game
 # reads it from its locale at the first equip; the client's tooltip has the
-# same lists in costume_sets.py.
+# same lists in costume_sets.py. MT2009_PLUS_COSTUME_SET_V2 (server-patches/
+# zestawy): its "#Z" lines are the sets of the global server (parts, grades,
+# bonuses; tools/zestawy/gen_zestawy.py, client root/costume_set_bonus.py) -
+# a V1 line none of them claims keeps the old bonus.
 COPY costume_sets.txt /opt/metin2/share/locale/poland/costume_sets.txt
 
 # The drop wiki's extras (server-patches/dropwiki, MT2009_PLUS_DROP_WIKI_V2): the drops only quests or the

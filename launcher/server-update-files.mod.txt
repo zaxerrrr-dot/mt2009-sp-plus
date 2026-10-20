@@ -415,6 +415,10 @@ linux-port/docker/game/yohara_arkusz/*
 # length.h, item_length.h, item.cpp, char.cpp, char_item.cpp, char_battle.cpp, questlua.cpp, cmd.cpp); the logic is
 # playerbot_aura.cpp (the playerbot_* lines), quest szata_aury (quest/*), the items szata_aury.sql.
 linux-port/docker/mariadb/playerbot/szata_aury.sql
+# MT2009_PLUS_COSTUME_SET_V2 (server-patches/zestawy): the costume sets as on the global server - the engine files it
+# changes are above (item.cpp, char.cpp, item_manager.cpp), the sets costume_sets.txt and the rings' bonuses
+# special_item_group.unique_attr.txt (above), the items the server lacked zestawy_items.sql (tools/zestawy).
+linux-port/docker/mariadb/playerbot/zestawy_items.sql
 # MT2009_PLUS_HERB_BUSY_V1 (server-patches/enginefixes): the busy action's type and the stun's half.
 linux-port/docker/game/src/server/game/src/char_player.h
 linux-port/docker/game/src/server/game/src/battle.h

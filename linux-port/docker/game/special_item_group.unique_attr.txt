@@ -73,3 +73,68 @@ Group	MT2009_amulet_wiecznej_milosci
 	5	119	5
 	6	120	5
 }
+# BEGIN MT2009_PLUS_COSTUME_SET_V2 (tools/zestawy/gen_zestawy.py - generated, do not edit)
+Group	MT2009_zestawy_special
+{
+	Vnum	10051
+	type	special
+	1	71202	100010	1	-- Amulet Nazara
+	2	71188	100011	1	-- Lizak Magii
+	3	71199	100012	1	-- Czekoladowy Amulet
+	4	70607	100013	1	-- Mistrzowski Emblemat
+	5	72713	100014	1	-- Blogoslawienstwo Mocy
+}
+Group	MT2009_amulet_nazara
+{
+	Vnum	100010
+	type	attr
+	1	127	50
+	2	17	20
+	3	21	20
+	4	93	30
+	5	53	10
+}
+Group	MT2009_lizak_magii
+{
+	Vnum	100011
+	type	attr
+	1	127	50
+	2	17	20
+	3	21	20
+	4	131	30
+	5	119	10
+	6	120	10
+}
+Group	MT2009_czekoladowy_amulet
+{
+	Vnum	100012
+	type	attr
+	1	127	50
+	2	17	20
+	3	21	20
+	4	53	10
+	5	119	10
+	6	120	10
+}
+Group	MT2009_mistrzowski_emblemat
+{
+	Vnum	100013
+	type	attr
+	1	127	50
+	2	17	20
+	3	21	20
+	4	132	35
+	5	119	10
+	6	120	10
+}
+Group	MT2009_blogoslawienstwo_mocy
+{
+	Vnum	100014
+	type	attr
+	1	127	50
+	2	17	5
+	3	21	20
+	4	149	10
+	5	121	40
+}
+# END MT2009_PLUS_COSTUME_SET_V2

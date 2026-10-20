@@ -1562,4 +1562,18 @@ if ((Test-Path -LiteralPath $auraApply -PathType Leaf) -and
     }
 }
 
+# The costume sets as on the global server (server-patches/zestawy, MT2009_PLUS_COSTUME_SET_V2; the owner, 20 October
+# 2026): the "#Z" sets of costume_sets.txt - parts (costume, hair, weapon skin, pet, mount, ring/amulet, sash), grades
+# by the parts worn and each grade's bonuses as affect 545; judged when a set's item goes on or off and at the end of
+# the outermost ComputePoints; the drop chance in GetDropPct. Replaces playerqol's V1 judge, so after playerqol; last.
+$zestawyApply = Join-Path $repo 'server-patches/zestawy/Apply-ZestawyPatch.ps1'
+if ((Test-Path -LiteralPath $zestawyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $zestawyResult = & $zestawyApply -SourceDir $engineGameSource
+    if ($zestawyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} costume set edit(s).' -f $zestawyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
