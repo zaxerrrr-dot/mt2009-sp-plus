@@ -418,5 +418,23 @@
   "marker": "MT2009_PLUS_HERB_BUSY_V1 (stun)",
   "old": "\tif (pkVictim && pkVictim->IsBusyAction())\n\t{\n\t\tpkVictim->playerData->SetBusyAction(pkVictim, 0); // interrupt on stun\n",
   "new": "\t// MT2009_PLUS_HERB_BUSY_V1 (stun): a monster's stun spares herb gathering.\n\tif (pkVictim && pkVictim->IsBusyAction() && ((pkAttacker && pkAttacker->IsPC()) ||\n\t\tpkVictim->playerData->m_bBusyActionType != BUSY_ACTION_HERB))\n\t{\n\t\tpkVictim->playerData->SetBusyAction(pkVictim, 0); // interrupt on stun\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_TOOL_REFINE_POINTS_V1 (helper)",
+  "old": "void CInputMain::Refine(LPCHARACTER ch, const char* c_pData)\n{\n",
+  "new": "// MT2009_PLUS_TOOL_REFINE_POINTS_V1 (helper) (server-patches/enginefixes): a Herbalist's Knife or a\n// pickaxe refines only with its points gathered (socket0 >= value2) - the\n// check of ReceiveItem, missing on a resent packet and on the keep-open path.\nstatic bool RefineToolNotReady(LPITEM item)\n{\n\tif (!item)\n\t\treturn false;\n\tif (item->GetType() == ITEM_HERB_KNIFE || item->GetType() == ITEM_PICK)\n\t\treturn (DWORD) item->GetSocket(0) < (DWORD) item->GetValue(2);\n\treturn false;\n}\n\nvoid CInputMain::Refine(LPCHARACTER ch, const char* c_pData)\n{\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_TOOL_REFINE_POINTS_V1 (packet)",
+  "old": "\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"ITEM_PICKAXE_REFINE_ONLY_DEOKBAE\"));\n\t\tch->ClearRefineMode();\n\t\treturn;\n\t}\n",
+  "new": "\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"ITEM_PICKAXE_REFINE_ONLY_DEOKBAE\"));\n\t\tch->ClearRefineMode();\n\t\treturn;\n\t}\n\n\t// MT2009_PLUS_TOOL_REFINE_POINTS_V1 (packet): a tool without its points is not refined.\n\tif (RefineToolNotReady(item))\n\t{\n\t\tch->ClearRefineMode();\n\t\treturn;\n\t}\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_TOOL_REFINE_POINTS_V1 (reopen)",
+  "old": "\t\t\t\tif (refineCh)\n\t\t\t\t{\n\t\t\t\t\tint distance = DISTANCE_APPROX(",
+  "new": "\t\t\t\t// MT2009_PLUS_TOOL_REFINE_POINTS_V1 (reopen): no new window for a tool without its points.\n\t\t\t\tif (refineCh && !RefineToolNotReady(refreshedItem))\n\t\t\t\t{\n\t\t\t\t\tint distance = DISTANCE_APPROX("
  }
 ]
