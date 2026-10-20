@@ -6386,7 +6386,8 @@ def bot_offline_shop(pid):
         offer["col"] = int(offer["pos"] or 0) % 10
         offer["row"] = int(offer["pos"] or 0) // 10
         offer["explain"] = explain_shop_offer(offer["id"], offer["price"])
-    shop_rows = 16 if any(o["row"] >= 8 for o in offers) else 8
+    # MT2009_PLUS_BOT_SHOP_PAGES4_V1: up to four pages (cells 0-319), one under another.
+    shop_rows = 8 * (max([o["row"] // 8 for o in offers] or [0]) + 1)
     return {
         "name": game_text(shop["name"]) or "Bez nazwy", "map_index": int(shop["map"]), "map_name": map_name(shop["map"]),
         "x": int(shop["x"]), "y": int(shop["y"]), "is_premium": bool(shop["is_premium"]),

@@ -14,11 +14,14 @@ import chr
 import constInfo
 import playerbot_lang
 
-# A bot's offline shop is a person's grid twice over, side by side: one
-# grid twenty columns wide, cells 80-159 its right half row for row
-# (playerbot_offline::BOT_SHOP_PAGES on the server). A person's shop is the
-# stock grid.
-SHOP_BLOCKS_MAX = 2
+# A bot's offline shop is a person's grid four times over (MT2009_PLUS_BOT_SHOP_PAGES4_V1;
+# playerbot_offline::BOT_SHOP_PAGES on the server): blocks of 80 cells laid
+# out two by two - cells 80-159 right of the first, 160-239 under it, 240-319
+# under the second. A window shows as many rows of blocks as the shop's lines
+# reach. A person's shop is the stock grid (or two blocks with the bigger
+# shops switch).
+SHOP_BLOCKS_MAX = 4
+SHOP_BLOCK_COLUMNS = 2
 
 # MT2009_PLUS_SHOP_QOL_V2: a part of a stack costs its share of the line's
 # price, rounded up - the server's (and the Dom Aukcyjny's) PartPrice.
@@ -73,7 +76,9 @@ class OfflineShopGuest(ui.ScriptWindow):
 		self.yShopStart = 0
 		self.activeCells = []
 		self.wideSlot = None
+		self.wideSlots = {}
 		self.shopWide = False
+		self.shopBlocks = 1
 		self.partDialog = None  # MT2009_PLUS_SHOP_QOL_V2
 
 	@ui.WindowDestroy
@@ -126,8 +131,8 @@ class OfflineShopGuest(ui.ScriptWindow):
 		self.__CreateWideSlot()
 
 	# A shop's cell and the grid it is drawn in: the first block's cells in
-	# the stock grid, the second block's in the one beside it (wideSlot),
-	# which shows while a line stands past the first block.
+	# the stock grid, the other blocks' in the grids beside and under it
+	# (wideSlots), which show while a line stands past the first block.
 	def __BlockCells(self):
 		return shop.SHOP_PLAYER_WIDTH * shop.SHOP_PLAYER_HEIGHT
 
@@ -135,44 +140,55 @@ class OfflineShopGuest(ui.ScriptWindow):
 		block = cell // self.__BlockCells()
 		if block == 0:
 			return (self.itemSlot, cell)
-		if block < SHOP_BLOCKS_MAX and getattr(self, "shopWide", False) and getattr(self, "wideSlot", None):
-			return (self.wideSlot, cell - block * self.__BlockCells())
+		grid = getattr(self, "wideSlots", {}).get(block)
+		if block < getattr(self, "shopBlocks", 1) and grid:
+			return (grid, cell - block * self.__BlockCells())
 		return (None, -1)
 
 	def __RefreshGrids(self):
 		self.itemSlot.RefreshSlot()
-		if getattr(self, "wideSlot", None):
-			self.wideSlot.RefreshSlot()
+		for grid in getattr(self, "wideSlots", {}).values():
+			grid.RefreshSlot()
 
-	# Read from the cells: a classic stall's and a person's all lie in the
-	# first block.
+	# Read from the cells: how many blocks the lines reach (a classic stall's
+	# and a person's all lie in the first one or two).
 	def __WantsWide(self):
 		if not self.shopInfo or not self.shopInfo.get("items"):
-			return False
-		return max(self.shopInfo["items"].keys()) >= self.__BlockCells()
+			return 1
+		return min(SHOP_BLOCKS_MAX, max(self.shopInfo["items"].keys()) // self.__BlockCells() + 1)
 
 	# Made after the stock script's try: a failure here costs the second
 	# block, never the window - an error inside that try aborts the client.
 	def __CreateWideSlot(self):
 		self.wideSlot = None
+		self.wideSlots = {}
 		self.shopWide = False
-		try:
-			self.narrowSize = (self.GetWidth(), self.GetHeight())
-			slot = ui.GridSlotWindow()
-			slot.SetParent(self.board)
-			slot.ArrangeSlot(0, shop.SHOP_PLAYER_WIDTH, shop.SHOP_PLAYER_HEIGHT, 32, 32, 0, 0)
-			slot.SetSlotBaseImage("d:/ymir work/ui/public/Slot_Base.sub")
-			slot.SetSlotStyle(wndMgr.SLOT_STYLE_NONE)
-			slot.SAFE_SetButtonEvent("LEFT", "EXIST", self.__SelectWideSlot)
-			slot.SAFE_SetButtonEvent("RIGHT", "EXIST", self.__SelectWideSlot)
-			slot.SetOverInItemEvent(ui.__mem_func__(self.__OverInWideItem))
-			slot.SetOverOutItemEvent(ui.__mem_func__(self.__OverOutItem))
-			slot.Hide()
-			self.wideSlot = slot
-		except Exception as e:
-			import dbg
-			dbg.TraceError("offlineshopguest: no second block: %s" % e)
-			self.wideSlot = None
+		self.shopBlocks = 1
+		self.narrowSize = (self.GetWidth(), self.GetHeight())
+		events = {
+			1: (self.__SelectWideSlot, self.__OverInWideItem),
+			2: (self.__SelectWideSlot2, self.__OverInWideItem2),
+			3: (self.__SelectWideSlot3, self.__OverInWideItem3),
+		}
+		for block in range(1, SHOP_BLOCKS_MAX):
+			try:
+				(select, overIn) = events[block]
+				slot = ui.GridSlotWindow()
+				slot.SetParent(self.board)
+				slot.ArrangeSlot(0, shop.SHOP_PLAYER_WIDTH, shop.SHOP_PLAYER_HEIGHT, 32, 32, 0, 0)
+				slot.SetSlotBaseImage("d:/ymir work/ui/public/Slot_Base.sub")
+				slot.SetSlotStyle(wndMgr.SLOT_STYLE_NONE)
+				slot.SAFE_SetButtonEvent("LEFT", "EXIST", select)
+				slot.SAFE_SetButtonEvent("RIGHT", "EXIST", select)
+				slot.SetOverInItemEvent(ui.__mem_func__(overIn))
+				slot.SetOverOutItemEvent(ui.__mem_func__(self.__OverOutItem))
+				slot.Hide()
+				self.wideSlots[block] = slot
+			except Exception as e:
+				import dbg
+				dbg.TraceError("offlineshopguest: no block %d: %s" % (block, e))
+				break
+		self.wideSlot = self.wideSlots.get(1)
 
 	def __SelectWideSlot(self, slot):
 		self.__SelectItemSlot(slot + self.__BlockCells())
@@ -180,37 +196,65 @@ class OfflineShopGuest(ui.ScriptWindow):
 	def __OverInWideItem(self, slot):
 		self.__OverInItem(slot + self.__BlockCells())
 
-	# The window a grid wider for the second block beside the first, or the
-	# stock one; kept on the screen.
-	def __SetWide(self, wide):
-		wide = bool(wide) and getattr(self, "wideSlot", None) is not None
-		if wide == getattr(self, "shopWide", False):
+	def __SelectWideSlot2(self, slot):
+		self.__SelectItemSlot(slot + 2 * self.__BlockCells())
+
+	def __OverInWideItem2(self, slot):
+		self.__OverInItem(slot + 2 * self.__BlockCells())
+
+	def __SelectWideSlot3(self, slot):
+		self.__SelectItemSlot(slot + 3 * self.__BlockCells())
+
+	def __OverInWideItem3(self, slot):
+		self.__OverInItem(slot + 3 * self.__BlockCells())
+
+	# The window grown for the blocks the lines reach: a grid wider for the
+	# second beside the first, and a grid taller for the third and fourth
+	# under them; the stock one for one block. Kept on the screen.
+	def __SetWide(self, blocks):
+		wideSlots = getattr(self, "wideSlots", {})
+		blocks = max(1, min(int(blocks), 1 + len(wideSlots)))
+		if blocks == getattr(self, "shopBlocks", 1):
 			return
-		self.shopWide = wide
+		self.shopBlocks = blocks
+		self.shopWide = blocks > 1
 		try:
 			(width, height) = self.narrowSize
 			gridWidth = shop.SHOP_PLAYER_WIDTH * 32
-			if wide:
-				width += gridWidth
+			gridHeight = shop.SHOP_PLAYER_HEIGHT * 32
+			columns = min(SHOP_BLOCK_COLUMNS, blocks)
+			rows = (blocks + SHOP_BLOCK_COLUMNS - 1) // SHOP_BLOCK_COLUMNS
+			width += (columns - 1) * gridWidth
+			height += (rows - 1) * gridHeight
+			# A second row shows both its blocks, so the grid stays a rectangle.
+			shown = columns * rows
 			self.SetSize(width, height)
 			self.board.SetSize(width, height)
 			self.titleBar.SetWidth(width - 15)
-			if wide:
+			if blocks > 1:
 				left = (self.narrowSize[0] - gridWidth) // 2
 				self.itemSlot.SetWindowHorizontalAlignLeft()
 				self.itemSlot.SetPosition(left, 30)
-				self.wideSlot.SetPosition(left + gridWidth, 30)
-				self.wideSlot.Show()
+				for (block, grid) in wideSlots.items():
+					if block < shown:
+						grid.SetPosition(left + (block % SHOP_BLOCK_COLUMNS) * gridWidth,
+							30 + (block // SHOP_BLOCK_COLUMNS) * gridHeight)
+						grid.Show()
+					else:
+						grid.Hide()
+				self.shopBlocks = shown
 			else:
-				self.wideSlot.Hide()
+				for grid in wideSlots.values():
+					grid.Hide()
 				self.itemSlot.SetWindowHorizontalAlignCenter()
 				self.itemSlot.SetPosition(0, 30)
 			(x, y) = self.GetGlobalPosition()
-			self.SetPosition(max(0, min(x, wndMgr.GetScreenWidth() - width)), y)
+			self.SetPosition(max(0, min(x, wndMgr.GetScreenWidth() - width)),
+				max(0, min(y, wndMgr.GetScreenHeight() - height)))
 			self.UpdateRect()
 		except Exception as e:
 			import dbg
-			dbg.TraceError("offlineshopguest: second block: %s" % e)
+			dbg.TraceError("offlineshopguest: more blocks: %s" % e)
 
 	def __ShowTimeToolTip(self):
 		if self.tooltip:
@@ -543,12 +587,12 @@ class OfflineShopGuest(ui.ScriptWindow):
 		self.__RefreshGrids()
 
 	def ClearItemStock(self):
-		wideSlot = getattr(self, "wideSlot", None)
+		wideSlots = getattr(self, "wideSlots", {}).values()
 		for x in range(shop.SHOP_PLAYER_WIDTH):
 			for y in range(shop.SHOP_PLAYER_HEIGHT):
 				self.itemSlot.ClearSlot(x + shop.SHOP_PLAYER_WIDTH * y)
-				if wideSlot:
-					wideSlot.ClearSlot(x + shop.SHOP_PLAYER_WIDTH * y)
+				for grid in wideSlots:
+					grid.ClearSlot(x + shop.SHOP_PLAYER_WIDTH * y)
 
 	def SetTitle(self, ownerName):
 		self.titleLabel.SetText(localeInfo.PLAYER_SHOP_TITLE % ownerName)
@@ -668,6 +712,13 @@ class OfflineShopGuest(ui.ScriptWindow):
 		else:
 			self.SetHeight(328)
 			self.board.SetHeight(328)
+		# MT2009_PLUS_BOT_SHOP_PAGES4_V1: the blocks are laid out again over
+		# this height at the next refresh (__SetWide).
+		try:
+			self.narrowSize = (self.narrowSize[0], self.GetHeight())
+			self.shopBlocks = 0
+		except Exception:
+			pass
 
 		self.RefreshPosition()
 

@@ -460,5 +460,17 @@
   "marker": "MT2009_PLUS_IKASHOP_DS_V1 (take back)",
   "old": "\t\tif (!ch->HasSlotForItem(shopItem->GetVnum()))\n",
   "new": "\t\tif (!IkashopHasRoomFor(ch, shopItem)) // MT2009_PLUS_IKASHOP_DS_V1 (take back)\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_SHOP_PAGES4_V1 (slot)",
+  "old": "\t\tif (!ch->CanAddItemToShop(item, destPos))\n\t\t\treturn false;\n",
+  "new": "\t\t// MT2009_PLUS_BOT_SHOP_PAGES4_V1 (slot): the premium and locked cells are the first page's; a cell past it\n\t\t// is asked as the first cell past it - CanAddItemToShop takes a BYTE, and a bot's fourth page (240-319) wrapped\n\t\tif (!ch->CanAddItemToShop(item, destPos < SHOP_PLAYER_WIDTH * SHOP_PLAYER_HEIGHT ? destPos : SHOP_PLAYER_WIDTH * SHOP_PLAYER_HEIGHT))\n\t\t\treturn false;\n"
+ },
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_BOT_SHOP_PAGES4_V1 (person)",
+  "old": "\t\tbool spaceFree = false;\n\t\tif (secondPage)\n",
+  "new": "\t\t// MT2009_PLUS_BOT_SHOP_PAGES4_V1 (person): a bot's stand has playerbot_offline::BOT_SHOP_PAGES pages (four,\n\t\t// 320 cells); a person's never more than the two of the bigger shops switch\n\t\tif (destPos >= SHOP_PLAYER_WIDTH * SHOP_PLAYER_HEIGHT * 2 && !(ch->GetDesc() && ch->GetDesc()->IsBot()))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"SHOP_ITEM_WRONG_POS\"));\n\t\t\treturn false;\n\t\t}\n\t\tbool spaceFree = false;\n\t\tif (secondPage)\n"
  }
 ]

@@ -298,8 +298,12 @@ namespace {
 #ifdef ENABLE_SOULBIND_SYSTEM
         if (item->IsSealed()) return false;
 #endif
+        // MT2009_PLUS_BOT_SHOP_PAGES4_V1: a cell past the first page asked as
+        // the first one past it (the engine's add path does the same) - the
+        // engine's test takes a BYTE, and the fourth page wrapped.
         return playerbot_offline::FitsOnPage(cell, item->GetSize(), SHOP_PLAYER_WIDTH, SHOP_PLAYER_HEIGHT,
-                playerbot_offline::BOT_SHOP_PAGES) && ch->CanAddItemToShop(item, BYTE(cell));
+                playerbot_offline::BOT_SHOP_PAGES) &&
+                ch->CanAddItemToShop(item, BYTE(std::min(cell, PLAYERBOT_OFFLINE_SHOP_PAGE_CELLS)));
     }
     // The cells of a stand no line stands on, over both pages.
     const int PLAYERBOT_SHOP_BOOK_FREE_CELLS = 20;
