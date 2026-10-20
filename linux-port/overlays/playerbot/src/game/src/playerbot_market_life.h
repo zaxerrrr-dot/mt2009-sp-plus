@@ -530,7 +530,8 @@ namespace
 	{
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		auto shop = ch ? ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID()) : nullptr;
-		return !shop || BotOfflineFreeCells(shop) < PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS;
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1: full is at the fill target now.
+		return !shop || BotOfflineRoomForGoods(shop) < PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS;
 #else
 		return true;
 #endif
@@ -547,7 +548,7 @@ namespace
 		if (!ch || !PlayerBotHasCounter(ch))
 			return 0;
 		auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
-		if (!shop || BotOfflineFreeCells(shop) < PLAYERBOT_HERB_SURPLUS_STALL_FREE_CELLS)
+		if (!shop || BotOfflineRoomForGoods(shop) < PLAYERBOT_HERB_SURPLUS_STALL_FREE_CELLS)   // MT2009_PLUS_BOT_SHOP_MGMT_V1
 			return 0;
 		return std::max(0, PLAYERBOT_HERB_SURPLUS_STALL_LINES - BotOfflineLinesOf(shop, vnum));
 #else

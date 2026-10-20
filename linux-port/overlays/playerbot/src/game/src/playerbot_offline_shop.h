@@ -309,6 +309,22 @@ namespace {
             if (line && line->GetTable()) used += line->GetTable()->bSize;
         return std::max(0, PLAYERBOT_OFFLINE_SHOP_CELLS - used);
     }
+    // MT2009_PLUS_BOT_SHOP_MGMT_V1 (below, before BotOfflineKindLinesOf):
+    // The cells the counter's lines take, and the cells it may take before
+    // goods a counter does not have to keep stop going up
+    // (SHOP_MGMT_FILL_PCT): the rest is the counter's air.
+    int BotOfflineUsedCells(NativeShop shop) {
+        return PLAYERBOT_OFFLINE_SHOP_CELLS - BotOfflineFreeCells(shop);
+    }
+    int BotOfflineTargetCells() {
+        return PLAYERBOT_OFFLINE_SHOP_CELLS * GetPlayerBotShopMgmt(PLAYERBOT_SM_FILL_PCT) / 100;
+    }
+    // The cells left for ordinary goods: the free cells, less the air while the
+    // shop management runs.
+    int BotOfflineRoomForGoods(NativeShop shop) {
+        if (!IsPlayerBotShopMgmtOn()) return BotOfflineFreeCells(shop);
+        return std::max(0, BotOfflineTargetCells() - BotOfflineUsedCells(shop));
+    }
     // Eight bots in ten lay their stand out the way a player lays out a bag
     // (Iwakura): by kind, then by number and plus - the vnum, whose last digit
     // is the plus. The rest go by kind alone, as all of them did.
@@ -1422,7 +1438,7 @@ namespace {
             o.weakTakeoffBurst = 0;
             return false;
         }
-        const bool full = BotOfflineFreeCells(shop) < PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS;
+        const bool full = BotOfflineRoomForGoods(shop) < PLAYERBOT_STALL_WEAK_TAKEOFF_FULL_CELLS;   // MT2009_PLUS_BOT_SHOP_MGMT_V1
         if (!full) o.weakTakeoffBurst = 0;
         else if (o.weakTakeoffBurst >= (uint32_t)PLAYERBOT_STALL_WEAK_TAKEOFF_BURST) {
             o.weakTakeoffBurst = 0;   // the burst is spent: the next visit starts another
@@ -1433,6 +1449,293 @@ namespace {
             ++o.weakTakeoffBurst;
             chained = o.weakTakeoffBurst < (uint32_t)PLAYERBOT_STALL_WEAK_TAKEOFF_BURST;
         }
+        return true;
+    }
+    // MT2009_PLUS_BOT_SHOP_MGMT_V1 (the owner, 20 October: "bot nigdy nie
+    // moze doprowadzic do tego ze bedzie mial pelny sklep"). On the supporters'
+    // world that day 1 603 of the bots' 2 009 counters stood at 80% of their
+    // 160 cells or more, 699 of them at 100%, with 252 468 lines of which
+    // 209 581 had stood over three days; 42 060 lines were plain gear at +4,
+    // and 124 206 lines were stacks of a kind the same counter showed in
+    // another line. The numbers live in playerbot_weights.tsv (SHOP_MGMT_*,
+    // playerbot_config.h); SHOP_MGMT_OFF 1 is the old behaviour.
+    //
+    // What the shop management never takes off a counter, and lets up over
+    // the fill target: the valuable goods the owner keeps listed by the price
+    // list (two counted bonus lines or a top one - IsPlayerBotBonusGoodsPiece -,
+    // +7 and up, a prize, a level-30 weapon, a Stalki, Digi Rasta's awakening
+    // goods), whatever the operator's policy rules on, a gambler's piece, a line
+    // worth SHOP_MGMT_VALUABLE_YANG or more, and the kinds with rules of their
+    // own (Dragon Stones, soul stones and their +4 pool, Cors and sashes, the
+    // shards' and the herbs' caps, horse medals, Materialy Rzemieslnicze,
+    // Moonlight chests, the guild's building materials, costumes).
+    // The kinds with rules of their own are not taken off, but go up over the
+    // target no more than ordinary goods do (forAdd): only the valuable goods
+    // and the operator's "stall" do.
+    bool IsPlayerBotShopMgmtKept(LPCHARACTER ch, LPITEM item, long long linePrice, bool forAdd = false) {
+        if (!item) return true;
+        if (GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE) return true;
+        const BYTE type = item->GetType();
+        const DWORD vnum = item->GetVnum();
+        // A medal dropper's medals go up whatever the fill (a few lines, its
+        // counter's reason to be; BotOfflineWantsMedalLines calls it for them).
+        if (IsPlayerBotAwakeningGoods(vnum) || vnum == PLAYERBOT_HORSE_MEDAL_VNUM) return true;
+        if (item->IsDragonSoul() || type == ITEM_METIN || type == ITEM_COSTUME ||
+                GetPlayerBotRareGoodsKind(vnum) != PLAYERBOT_RARE_GOODS_NONE || IsPlayerBotCorVnum(vnum) ||
+                IsPlayerBotEnergyShardVnum(vnum) || IsPlayerBotHerbalismHerb(vnum) ||
+                vnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM ||
+                vnum == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED || IsPlayerBotGuildBuildMaterial(vnum))
+            return !forAdd;
+        if (IsPlayerBotStalkiItem(item) || IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotPrizeItem(item))
+            return true;
+        if ((type == ITEM_WEAPON || type == ITEM_ARMOR) &&
+                ((int)item->GetRefineLevel() >= 7 || IsPlayerBotBonusGoodsPiece(item)))
+            return true;
+        if (ch && IsPlayerBotGambleForSale(ch, item)) return true;
+        const long long price = linePrice > 0 ? linePrice : (long long)GetPlayerBotShopAskingPrice(item);
+        const int valuable = GetPlayerBotShopMgmt(PLAYERBOT_SM_VALUABLE_YANG);
+        return valuable > 0 && price >= valuable;
+    }
+    // The kinds a counter shows as one stack (point 4): a heap, a refine
+    // material (not a refine scroll), a herb - by a line's preview or a bag item.
+    bool IsPlayerBotShopMgmtStackKind(LPITEM item) {
+        if (!item || !item->IsStackable() || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK)) return false;
+        if (IsPlayerBotSafeRefineScroll(item->GetVnum())) return false;
+        return IsPlayerBotBulkGoods(item) || IsPlayerBotTradeableMaterial(item) ||
+                IsPlayerBotHerbalismHerb(item->GetVnum());
+    }
+    // A line's age as the markdown clocks it (o.listed: from the listing, or
+    // from the first visit that saw a line from before this core started).
+    uint32_t BotOfflineLineAgeMs(TPlayerBotAIState& state, DWORD id, DWORD vnum, DWORD now) {
+        auto& o = state.offlineShop;
+        auto listed = o.listed.find(id);
+        if (listed == o.listed.end())
+            listed = o.listed.emplace(id, playerbot_offline::ListedLine{ vnum, 0u, 0u, 0 }).first;
+        if (listed->second.when == 0 && listed->second.observedSince == 0)
+            listed->second.observedSince = now ? now : 1;
+        const uint32_t since = listed->second.when ? listed->second.when : listed->second.observedSince;
+        return now - since;
+    }
+    // Point 2: under this a line is cheap - SHOP_MGMT_CHEAP_YANG, or
+    // SHOP_MGMT_CHEAP_PER_LEVEL a level of the keeper's when that is more
+    // (100 000 to level 40, 150 000 at 60, 200 000 at 80 by default; on the
+    // supporters' world a counter line asked 243 000 on average at level 10
+    // to 19 and 600 000 from 50, and 37 237 lines asked under 100 000).
+    long long GetPlayerBotShopMgmtCheapYang(LPCHARACTER ch) {
+        const long long perLevel = ch ? (long long)ch->GetLevel() * GetPlayerBotShopMgmt(PLAYERBOT_SM_CHEAP_PER_LEVEL) : 0;
+        return std::max<long long>(GetPlayerBotShopMgmt(PLAYERBOT_SM_CHEAP_YANG), perLevel);
+    }
+    // Point 1: whether the bots' counters are glutted - SHOP_MGMT_GLUT_PCT of
+    // the running ones or more over their fill target - counted every five
+    // minutes. The buyers then look more often and buy on impulse more readily
+    // (playerbot_offline_market.h, playerbot_market_life.h).
+    DWORD s_dwPlayerBotShopGlutAt = 0;
+    bool s_bPlayerBotShopGlut = false;
+    bool IsPlayerBotShopGlut() {
+        if (!IsPlayerBotShopMgmtOn() || GetPlayerBotShopMgmt(PLAYERBOT_SM_GLUT_PCT) <= 0) return false;
+        const DWORD now = get_dword_time();
+        if (s_dwPlayerBotShopGlutAt != 0 && now - s_dwPlayerBotShopGlutAt < 5 * 60 * 1000) return s_bPlayerBotShopGlut;
+        s_dwPlayerBotShopGlutAt = now ? now : 1;
+        const int target = BotOfflineTargetCells();
+        int shops = 0, over = 0;
+        for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
+            if (!shop || shop->GetDuration() == 0) continue;
+            ++shops;
+            if (BotOfflineUsedCells(shop) > target) ++over;
+        }
+        const bool glut = shops > 0 && over * 100 >= shops * GetPlayerBotShopMgmt(PLAYERBOT_SM_GLUT_PCT);
+        if (glut != s_bPlayerBotShopGlut)
+            sys_log(0, "PLAYERBOT_SHOP_MGMT: counters %s over=%d shops=%d", glut ? "glutted" : "no longer glutted", over, shops);
+        s_bPlayerBotShopGlut = glut;
+        return glut;
+    }
+    // The line the shop management takes home this step, and why (points 1-3):
+    // first one whose time is out - plain weapon or armour (no counted bonus,
+    // +0 to the merchant's plus, GetPlayerBotGoodsScrapMaxPlus) unsold
+    // SHOP_MGMT_GEAR_HOURS, or SHOP_MGMT_OBSOLETE_HOURS when its level is
+    // SHOP_MGMT_OBSOLETE_LEVELS or more under the keeper's; any line under the
+    // cheap price unsold SHOP_MGMT_CHEAP_HOURS - the cheapest a cell first;
+    // and while the counter stands over its fill target, the line of the least
+    // yang a cell, an older line counting as cheaper (a day halves it, two
+    // days a third). Never what IsPlayerBotShopMgmtKept keeps, a line the bag
+    // has no cell for (with PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP to spare), or
+    // one whose take-off did not land.
+    DWORD BotOfflineShopMgmtLine(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now,
+            const char*& why) {
+        why = "";
+        if (!ch || !shop || !IsPlayerBotShopMgmtOn()) return 0;
+        auto& o = state.offlineShop;
+        const bool overTarget = BotOfflineUsedCells(shop) > BotOfflineTargetCells();
+        const int bagFree = CountPlayerBotFreeInventoryCells(ch);
+        const long long cheap = GetPlayerBotShopMgmtCheapYang(ch);
+        const uint32_t cheapMs = (uint32_t)GetPlayerBotShopMgmt(PLAYERBOT_SM_CHEAP_HOURS) * 3600000U;
+        const uint32_t gearMs = (uint32_t)GetPlayerBotShopMgmt(PLAYERBOT_SM_GEAR_HOURS) * 3600000U;
+        const uint32_t obsoleteMs = (uint32_t)GetPlayerBotShopMgmt(PLAYERBOT_SM_OBSOLETE_HOURS) * 3600000U;
+        const int obsoleteLevels = GetPlayerBotShopMgmt(PLAYERBOT_SM_OBSOLETE_LEVELS);
+        DWORD expired = 0, over = 0;
+        long long expiredKey = 0, overKey = 0;
+        const char* expiredWhy = "";
+        for (const auto& [id, line] : shop->GetItems()) {
+            if (!line || !line->GetTable()) continue;
+            const int size = (int)line->GetTable()->bSize;
+            if (bagFree < size + PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP) continue;
+            if (o.stuckTakeOffItem == id && !playerbot_offline::Due(now, o.stuckTakeOffUntil)) continue;
+            const long long price = (long long)line->GetPrice().GetTotalYangAmount();
+            if (price <= 0) continue;
+            const uint32_t age = BotOfflineLineAgeMs(state, id, line->GetInfo().vnum, now);
+            LPITEM preview = BotOfflinePreview(*line);
+            if (!preview) continue;
+            if (IsPlayerBotShopMgmtKept(ch, preview, price) || ch->GetEmptyInventory(preview->GetSize()) < 0) {
+                M2_DELETE(preview);
+                continue;
+            }
+            const BYTE type = preview->GetType();
+            const bool gear = type == ITEM_WEAPON || type == ITEM_ARMOR;
+            // The owner, 16 October: over level 41 the merchant takes gear up
+            // to +4 only, +5 and +6 stay on the counter.
+            const bool merchantPlus = !gear || (int)preview->GetRefineLevel() <= GetPlayerBotGoodsScrapMaxPlus(preview);
+            const int levelLimit = gear ? (int)preview->GetLevelLimit() : 0;
+            M2_DELETE(preview);
+            if (!merchantPlus) continue;
+            const long long key = price / std::max(1, size);
+            const char* lineWhy = NULL;
+            if (gear) {
+                const bool obsolete = obsoleteLevels > 0 && levelLimit > 0 && levelLimit + obsoleteLevels <= (int)ch->GetLevel();
+                const uint32_t after = obsolete ? obsoleteMs : gearMs;
+                if (after > 0 && age >= after)
+                    lineWhy = obsolete ? "mgmt_gear_obsolete" : "mgmt_gear_unsold";
+            }
+            if (!lineWhy && cheapMs > 0 && price < cheap && age >= cheapMs)
+                lineWhy = "mgmt_cheap_unsold";
+            if (lineWhy && (!expired || key < expiredKey)) {
+                expired = id;
+                expiredKey = key;
+                expiredWhy = lineWhy;
+            }
+            if (overTarget) {
+                const long long aged = key / (1 + (long long)(age / 86400000U));
+                if (!over || aged < overKey) {
+                    over = id;
+                    overKey = aged;
+                }
+            }
+        }
+        if (expired) {
+            why = expiredWhy;
+            return expired;
+        }
+        if (over) {
+            why = "mgmt_over_target";
+            return over;
+        }
+        return 0;
+    }
+    // Takes that line home for the merchant (NotePlayerBotShopMgmtMerchant: the
+    // junk rule sells it at the next merchant's, the Alchemist taking gear at
+    // 35+). While the counter stands over its target the visit goes on in
+    // PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS for the next - up to SHOP_MGMT_BURST
+    // lines when it is over SHOP_MGMT_FAR_PCT, a quarter of that nearer the
+    // target - and a line whose time is out alone is one a visit.
+    bool BotOfflineTakeOffShopMgmt(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now,
+            bool& chained) {
+        chained = false;
+        auto& o = state.offlineShop;
+        const char* why = "";
+        const DWORD id = BotOfflineShopMgmtLine(ch, state, shop, now, why);
+        if (!id) {
+            o.mgmtBurst = 0;
+            return false;
+        }
+        const int used = BotOfflineUsedCells(shop);
+        const bool overTarget = used > BotOfflineTargetCells();
+        const bool far = used > PLAYERBOT_OFFLINE_SHOP_CELLS * GetPlayerBotShopMgmt(PLAYERBOT_SM_FAR_PCT) / 100;
+        const uint32_t burst = (uint32_t)(far ? GetPlayerBotShopMgmt(PLAYERBOT_SM_BURST)
+                : std::max(1, GetPlayerBotShopMgmt(PLAYERBOT_SM_BURST) / 4));
+        if (!overTarget) o.mgmtBurst = 0;
+        else if (o.mgmtBurst >= burst) {
+            o.mgmtBurst = 0;   // the burst is spent: the next visit starts another
+            return false;
+        }
+        if (!BotOfflineTakeOff(ch, state, id, 0, now, why)) return false;
+        NotePlayerBotShopMgmtMerchant(id, now);
+        if (overTarget) {
+            ++o.mgmtBurst;
+            chained = o.mgmtBurst < burst;
+        }
+        PlayerBotLogThrottled("shop_mgmt_takeoff", now,
+            "PLAYERBOT_SHOP_MGMT: took off pid=%u name=%s item=%u reason=%s used=%d target=%d burst=%u",
+            ch->GetPlayerID(), ch->GetName(), id, why, used, BotOfflineTargetCells(), (unsigned int)o.mgmtBurst);
+        return true;
+    }
+    // Point 4: a stack kind the counter shows in two lines or more takes its
+    // smallest line home, and one line of it that is not full while the bag
+    // holds SHOP_MGMT_RESTACK_MIN more over the keep (and a quarter of the
+    // line) comes home too - the bag pours them together
+    // (MergePlayerBotStacks, BotOfflinePrepareVisitLine) and the next add puts
+    // one stack up (GetPlayerBotNaturalLineUnits). The engine has no edit of a
+    // line's count, so the line goes home and up again. One a visit, at most
+    // once in ten minutes, and not while the counter is over its target - the
+    // line would not go back up.
+    DWORD BotOfflineRestackLine(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
+        if (!ch || !shop || !IsPlayerBotShopMgmtStacking()) return 0;
+        auto& o = state.offlineShop;
+        if (o.restackAt && now - o.restackAt < 10 * 60 * 1000) return 0;
+        if (BotOfflineUsedCells(shop) > BotOfflineTargetCells()) return 0;
+        const int bagFree = CountPlayerBotFreeInventoryCells(ch);
+        struct TGroup { int lines = 0; DWORD smallest = 0; int smallestCount = 0; int notFull = 0; };
+        std::map<DWORD, TGroup> groups;
+        for (const auto& [id, line] : shop->GetItems()) {
+            const TItemTable* table = line ? line->GetTable() : NULL;
+            if (!table || !IS_SET(table->dwFlags, ITEM_FLAG_STACKABLE) || IS_SET(table->dwAntiFlags, ITEM_ANTIFLAG_STACK))
+                continue;
+            if (bagFree < (int)table->bSize + PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP) continue;
+            if (o.stuckTakeOffItem == id && !playerbot_offline::Due(now, o.stuckTakeOffUntil)) continue;
+            TGroup& g = groups[line->GetInfo().vnum];
+            ++g.lines;
+            const int count = (int)line->GetInfo().count;
+            if (count >= 200) continue;   // a full line stays as it is
+            ++g.notFull;
+            if (!g.smallest || count < g.smallestCount) {
+                g.smallest = id;
+                g.smallestCount = count;
+            }
+        }
+        for (const auto& [vnum, g] : groups) {
+            if (!g.smallest || g.notFull == 0) continue;
+            const auto& items = shop->GetItems();
+            const auto it = items.find(g.smallest);
+            if (it == items.end() || !it->second) continue;
+            LPITEM preview = BotOfflinePreview(*it->second);
+            if (!preview) continue;
+            const bool kind = IsPlayerBotShopMgmtStackKind(preview) &&
+                    GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
+                    (int)preview->GetCount() < (int)preview->GetMaxStack() &&
+                    ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            const bool herb = IsPlayerBotHerbalismHerb(vnum);
+            M2_DELETE(preview);
+            if (!kind) continue;
+            // Two lines of it that are not full: the smallest comes home.
+            if (g.notFull >= 2) return g.smallest;
+            // One line, and enough of it in the bag to make it bigger. A herb
+            // goes up by the herb rule's two hundred, never added to.
+            if (herb) continue;
+            LPITEM held = NULL;
+            for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && !held; ++cell) {
+                LPITEM bagItem = ch->GetInventoryItem(cell);
+                if (bagItem && bagItem->GetVnum() == vnum && !bagItem->IsEquipped() && !bagItem->isLocked())
+                    held = bagItem;
+            }
+            if (!held) continue;
+            const int spare = (int)ch->CountSpecifyItem(vnum) - GetPlayerBotStallBaseKeep(ch, held);
+            if (spare >= std::max(GetPlayerBotShopMgmt(PLAYERBOT_SM_RESTACK_MIN), g.smallestCount / 4))
+                return g.smallest;
+        }
+        return 0;
+    }
+    bool BotOfflineRestack(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
+        const DWORD id = BotOfflineRestackLine(ch, state, shop, now);
+        if (!id || !BotOfflineTakeOff(ch, state, id, 0, now, "mgmt_restack")) return false;
+        state.offlineShop.restackAt = now ? now : 1;
         return true;
     }
     // How many lines of this item's kind kept by count - the books of its
@@ -1473,6 +1776,21 @@ namespace {
     // or a line cut for the add would stand in the bag unadded.
     bool BotOfflineCounterRefuses(NativeShop shop, LPITEM item) {
         if (!item) return true;
+        // MT2009_PLUS_BOT_SHOP_MGMT_V1: nothing but the goods it keeps
+        // (IsPlayerBotShopMgmtKept) over the fill target, and a stack kind
+        // (point 4) goes up as a new line only once every line of it on the
+        // counter is a full stack - the service takes a smaller one home to
+        // go up again with the bag's (BotOfflineRestackLine).
+        if (IsPlayerBotShopMgmtOn() && shop) {
+            if (BotOfflineUsedCells(shop) + (int)item->GetSize() > BotOfflineTargetCells() &&
+                    !IsPlayerBotShopMgmtKept(item->GetOwner(), item, 0, true))
+                return true;
+            if (IsPlayerBotShopMgmtStacking() && IsPlayerBotShopMgmtStackKind(item) &&
+                    !IsPlayerBotHerbalismHerb(item->GetVnum()))
+                for (const auto& [lid, l] : shop->GetItems())
+                    if (l && l->GetInfo().vnum == item->GetVnum() && (int)l->GetInfo().count < (int)item->GetMaxStack())
+                        return true;
+        }
         // MT2009_PLUS_BOT_STONE4_MARKET_V1: no more +4 of a kind the world's
         // counters hold their cap of (playerbot_stone4.h).
         if (IsPlayerBotStone4CounterFull(item))
@@ -1895,6 +2213,10 @@ namespace {
         if (ch && shop && shop->GetDuration() != 0)
             NotePlayerBotStone4StallRoom(ch, BotOfflineFreeCells(shop) > 0);
         if (!ch || !shop || shop->GetDuration() == 0) return;
+        // MT2009_PLUS_BOT_SHOP_MGMT_V1: a stack line taken home is poured into
+        // the bag's stack of its kind before the line is cut (point 4).
+        if (IsPlayerBotShopMgmtStacking())
+            MergePlayerBotStacks(ch, 4);
         int lowGear = 0;
         BotOfflineUnwantedLine(ch, shop, lowGear);
         std::vector<std::pair<int, WORD> > scored;
@@ -2326,7 +2648,7 @@ namespace {
         const bool clearLines = !o.visiting && !medalLines && shop && o.lastServedAt != 0 &&
                 Due(now, o.lastServedAt + PLAYERBOT_CLEAR_STOCK_SERVICE_MS) &&
                 Due(now, o.clearStockHoldUntil) &&
-                BotOfflineFreeCells(shop) > 0 && IsPlayerBotClearStockReady(ch, state);
+                BotOfflineRoomForGoods(shop) > 0 && IsPlayerBotClearStockReady(ch, state);   // MT2009_PLUS_BOT_SHOP_MGMT_V1
         if (clearLines && o.clearStockAskedAt == 0) {
             o.clearStockAskedAt = now ? now : 1;
             o.clearStockBefore = GetPlayerBotSashGoodsInBag(ch) + CountPlayerBotOtherClassBooks(ch);
@@ -2598,6 +2920,15 @@ namespace {
                     return false;
                 }
             }
+            // MT2009_PLUS_BOT_SHOP_MGMT_V1: and what the shop management takes home.
+            {
+                bool chained = false;
+                if (BotOfflineTakeOffShopMgmt(ch, state, shop, now, chained)) {
+                    BotOfflineFinishVisit(ch, state, now);
+                    if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                    return false;
+                }
+            }
             // So does a piece the owner should be wearing.
             {
                 long long gain = 0;
@@ -2782,6 +3113,23 @@ namespace {
             if (BotOfflineTakeOffWeakScrap(ch, state, shop, now, chained)) {
                 BotOfflineFinishVisit(ch, state, now);
                 if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                return false;
+            }
+        }
+        // MT2009_PLUS_BOT_SHOP_MGMT_V1: the counter kept under its fill
+        // target, cheap goods and plain gear unsold too long home for the
+        // merchant (several in chained steps while over the target), and a
+        // stack line home to go up as one stack.
+        {
+            bool chained = false;
+            if (BotOfflineTakeOffShopMgmt(ch, state, shop, now, chained)) {
+                BotOfflineFinishVisit(ch, state, now);
+                if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                return false;
+            }
+            if (BotOfflineRestack(ch, state, shop, now)) {
+                BotOfflineFinishVisit(ch, state, now);
+                BotOfflineChainVisit(state, now);
                 return false;
             }
         }
@@ -3155,7 +3503,7 @@ namespace {
     bool HurryPlayerBotStallForBagRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow) {
         if (!ch) return false;
         auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
-        if (!shop || BotOfflineFreeCells(shop) < 3) return false;
+        if (!shop || BotOfflineRoomForGoods(shop) < 3) return false;   // MT2009_PLUS_BOT_SHOP_MGMT_V1: the fill target's room
         auto& o = state.offlineShop;
         if (!o.visiting && !playerbot_offline::Due(dwNow, o.nextService)) o.nextService = dwNow;
         return true;

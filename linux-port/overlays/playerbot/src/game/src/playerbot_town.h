@@ -4890,6 +4890,10 @@ namespace
 		if (ch && (IsPlayerBotOneWeakBonusPiece(item) || IsPlayerBotUnsoldBonusGoods(item->GetID(), get_dword_time())) &&
 				IsPlayerBotJunkItem(ch, item))
 			return -1;
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1: nor a line the shop management took
+		// home for the merchant (IsPlayerBotShopMgmtMerchant).
+		if (ch && IsPlayerBotShopMgmtMerchant(item->GetID(), get_dword_time()) && IsPlayerBotJunkItem(ch, item))
+			return -1;
 		// A Stalki (playerbot_stalki.h): the one a bot keeps for the level it is
 		// about to reach is not goods, nor the one the blacksmith is making into
 		// its next armour or weapon (IsPlayerBotHigherTierSpare); any other - of

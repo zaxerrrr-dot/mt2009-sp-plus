@@ -1428,6 +1428,12 @@ namespace
 		// hundred over the keep or not at all (the box takes a smaller spare).
 		if (IsPlayerBotHerbalismHerb(vnum))
 			return avail >= PLAYERBOT_HERB_SURPLUS_LINE_UNITS ? PLAYERBOT_HERB_SURPLUS_LINE_UNITS : 0;
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 4: "niech wystawia je w jednym
+		// stacku"): a heap or a refine material goes up as one stack of
+		// everything over the keep, to the item's own stack size - a buyer
+		// takes the part it needs (the part purchase, playerbot_offline_market.h).
+		if (IsPlayerBotShopMgmtStacking() && (IsPlayerBotBulkGoods(item) || IsPlayerBotTradeableMaterial(item)))
+			return std::min<int>(avail, std::max<int>(1, (int)item->GetMaxStack()));
 		if (IsPlayerBotBulkGoods(item))
 			return playerbot_stall_rules::HeapLineFromStack((int)item->GetCount(), spare, seed);
 		if (IsPlayerBotTradeableMaterial(item))
@@ -1448,6 +1454,10 @@ namespace
 		// ten and no other size (playerbot_energy_shards.h).
 		if (IsPlayerBotEnergyShardVnum(item->GetVnum()))
 			return count == PLAYERBOT_ENERGY_SHARD_LINE_UNITS;
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1: one stack of any size is the shape now.
+		if (IsPlayerBotShopMgmtStacking() && !IsPlayerBotSafeRefineScroll(item->GetVnum()) &&
+				(IsPlayerBotBulkGoods(item) || IsPlayerBotTradeableMaterial(item)))
+			return true;
 		if (IsPlayerBotBulkGoods(item))
 			return playerbot_stall_rules::IsHeapLine(count);
 		if (IsPlayerBotSafeRefineScroll(item->GetVnum()) || IsPlayerBotTradeableMaterial(item))
@@ -2439,6 +2449,14 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return false;
 		}
+
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1: a line the shop management took home
+		// for the merchant is the merchant's, unless the bot has since found a
+		// use for it itself. Before the keeps below, which hold some goods for
+		// a counter: the counter is what gave it back.
+		if (IsPlayerBotShopMgmtMerchant(item->GetID(), get_dword_time()))
+			return !((item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR) &&
+					IsPlayerBotGearKeptForSelf(ch, item));
 
 		// The guild building materials are goods now (playerbot_guild_land.h):
 		// the counters, never the merchant.

@@ -305,6 +305,76 @@ namespace
 		return stone ? s_iPlayerBotChestStoneConfigPermille : s_iPlayerBotChestConfigPermille;
 	}
 
+	// MT2009_PLUS_BOT_SHOP_MGMT_V1 (the owner, 20 October: "bot nigdy nie moze
+	// doprowadzic do tego ze bedzie mial pelny sklep"): the numbers of the bots'
+	// shop management (playerbot_offline_shop.h, playerbot_offline_market.h) by
+	// their key, default and range. SHOP_MGMT_OFF 1 is the old behaviour.
+	// MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1: SHOP_PLAYER_PREF_PCT, a person's
+	// line wins over a bot's while it asks at most this much more.
+	enum EPlayerBotShopMgmtKey
+	{
+		PLAYERBOT_SM_OFF,
+		PLAYERBOT_SM_FILL_PCT,
+		PLAYERBOT_SM_FAR_PCT,
+		PLAYERBOT_SM_BURST,
+		PLAYERBOT_SM_VALUABLE_YANG,
+		PLAYERBOT_SM_CHEAP_YANG,
+		PLAYERBOT_SM_CHEAP_PER_LEVEL,
+		PLAYERBOT_SM_CHEAP_HOURS,
+		PLAYERBOT_SM_GEAR_HOURS,
+		PLAYERBOT_SM_OBSOLETE_LEVELS,
+		PLAYERBOT_SM_OBSOLETE_HOURS,
+		PLAYERBOT_SM_L30_SALE_LINES,
+		PLAYERBOT_SM_CURIOUS,
+		PLAYERBOT_SM_STACK,
+		PLAYERBOT_SM_RESTACK_MIN,
+		PLAYERBOT_SM_PART_BUY,
+		PLAYERBOT_SM_GLUT_PCT,
+		PLAYERBOT_SM_BROWSE_PCT,
+		PLAYERBOT_SM_IMPULSE_PCT,
+		PLAYERBOT_SM_FULL_PREF_PCT,
+		PLAYERBOT_SM_PLAYER_PREF_PCT,
+		PLAYERBOT_SM_COUNT
+	};
+	struct TPlayerBotShopMgmtKey
+	{
+		const char* szName;
+		int iDefault;
+		int iLow;
+		int iHigh;
+	};
+	const TPlayerBotShopMgmtKey PLAYERBOT_SHOP_MGMT_KEYS[PLAYERBOT_SM_COUNT] = {
+		{ "SHOP_MGMT_OFF", 0, 0, 1 },
+		{ "SHOP_MGMT_FILL_PCT", 80, 30, 100 },
+		{ "SHOP_MGMT_FAR_PCT", 90, 30, 100 },
+		{ "SHOP_MGMT_BURST", 8, 1, 20 },
+		{ "SHOP_MGMT_VALUABLE_YANG", 2000000, 0, 2000000000 },
+		{ "SHOP_MGMT_CHEAP_YANG", 100000, 0, 100000000 },
+		{ "SHOP_MGMT_CHEAP_PER_LEVEL", 2500, 0, 1000000 },
+		{ "SHOP_MGMT_CHEAP_HOURS", 12, 0, 240 },
+		{ "SHOP_MGMT_GEAR_HOURS", 24, 0, 240 },
+		{ "SHOP_MGMT_OBSOLETE_LEVELS", 15, 0, 120 },
+		{ "SHOP_MGMT_OBSOLETE_HOURS", 6, 0, 240 },
+		{ "SHOP_MGMT_L30_SALE_LINES", 20, 0, 1000 },
+		{ "SHOP_MGMT_CURIOUS", 0, 0, 1 },
+		{ "SHOP_MGMT_STACK", 1, 0, 1 },
+		{ "SHOP_MGMT_RESTACK_MIN", 10, 1, 200 },
+		{ "SHOP_MGMT_PART_BUY", 1, 0, 1 },
+		{ "SHOP_MGMT_GLUT_PCT", 25, 0, 100 },
+		{ "SHOP_MGMT_BROWSE_PCT", 50, 10, 100 },
+		{ "SHOP_MGMT_IMPULSE_PCT", 24, 0, 100 },
+		{ "SHOP_MGMT_FULL_PREF_PCT", 5, 0, 50 },
+		{ "SHOP_PLAYER_PREF_PCT", 10, 0, 100 },
+	};
+	int s_aiPlayerBotShopMgmt[PLAYERBOT_SM_COUNT] = {};
+
+	int FindPlayerBotShopMgmtKey(const char* szKey);
+	void ResetPlayerBotShopMgmt()
+	{
+		for (int i = 0; i < PLAYERBOT_SM_COUNT; ++i)
+			s_aiPlayerBotShopMgmt[i] = PLAYERBOT_SHOP_MGMT_KEYS[i].iDefault;
+	}
+
 	void ResetPlayerBotWeights()
 	{
 		++s_dwPlayerBotWeightsGeneration;
@@ -330,6 +400,7 @@ namespace
 		s_iPlayerBotStone4BoxUnseated = 2;
 		s_iPlayerBotStone4ReleaseVisit = 2;
 		s_bPlayerBotStone4Off = false;
+		ResetPlayerBotShopMgmt();   // MT2009_PLUS_BOT_SHOP_MGMT_V1
 		s_iPlayerBotWarMinutes = 30;
 		s_iPlayerBotWarEveryHours = 1;
 		s_iPlayerBotWarKills = 200;
@@ -742,6 +813,19 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			s_iPlayerBotKingdomPvpPercent = percent;
 			return;
 		}
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1: one key a number, clamped.
+		{
+			const int key = FindPlayerBotShopMgmtKey(szKey);
+			if (key >= 0)
+			{
+				const TPlayerBotShopMgmtKey& k = PLAYERBOT_SHOP_MGMT_KEYS[key];
+				const int v = value < k.iLow ? k.iLow : (value > k.iHigh ? k.iHigh : (int)value);
+				if (v != s_aiPlayerBotShopMgmt[key])
+					sys_log(0, "PLAYERBOT_CONFIG: %s %d", k.szName, v);
+				s_aiPlayerBotShopMgmt[key] = v;
+				return;
+			}
+		}
 		// MT2009_PLUS_BOT_STONE4_MARKET_V1: one key a number, clamped.
 		{
 			int* const target = PlayerBotStone4SettingOf(szKey);
@@ -1008,6 +1092,16 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		{
 			value = value ? 1 : 0;
 			return true;
+		}
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1
+		{
+			const int key = FindPlayerBotShopMgmtKey(szKey);
+			if (key >= 0)
+			{
+				const TPlayerBotShopMgmtKey& k = PLAYERBOT_SHOP_MGMT_KEYS[key];
+				value = value < k.iLow ? k.iLow : (value > k.iHigh ? k.iHigh : value);
+				return true;
+			}
 		}
 		// MT2009_PLUS_BOT_STONE4_MARKET_V1
 		if (PlayerBotStone4SettingOf(szKey) || PlayerBotWeightNameEquals(szKey, "STONE4_OFF"))
@@ -1456,6 +1550,29 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			ResetPlayerBotWeights();
 		const int restMinutes = s_iPlayerBotWarEveryHours * 60 - s_iPlayerBotWarMinutes;
 		return std::max<DWORD>(PLAYERBOT_GUILD_WAR_RETRY_MS, (DWORD)std::max(0, restMinutes) * 60U * 1000U);
+	}
+
+	// MT2009_PLUS_BOT_SHOP_MGMT_V1
+	int FindPlayerBotShopMgmtKey(const char* szKey)
+	{
+		for (int i = 0; i < PLAYERBOT_SM_COUNT; ++i)
+			if (PlayerBotWeightNameEquals(szKey, PLAYERBOT_SHOP_MGMT_KEYS[i].szName))
+				return i;
+		return -1;
+	}
+	int GetPlayerBotShopMgmt(int key)
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return key >= 0 && key < PLAYERBOT_SM_COUNT ? s_aiPlayerBotShopMgmt[key] : 0;
+	}
+	bool IsPlayerBotShopMgmtOn()
+	{
+		return GetPlayerBotShopMgmt(PLAYERBOT_SM_OFF) == 0;
+	}
+	bool IsPlayerBotShopMgmtStacking()
+	{
+		return IsPlayerBotShopMgmtOn() && GetPlayerBotShopMgmt(PLAYERBOT_SM_STACK) != 0;
 	}
 
 	// MT2009_PLUS_BOT_STONE4_MARKET_V1

@@ -158,6 +158,12 @@ namespace playerbot_explain_rules
 		OFF_RARE_UNSOLD = 204,       // a Cor Draconis or a sash unsold through the markdown
 		OFF_UNSOLD_BONUS_GOODS = 205, // MT2009_PLUS_BOT_GOODS_TWO_BONUS_V1: bonus gear unsold a day
 		OFF_WEAK_BONUS_SCRAP = 206,   // MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1: one weak counted bonus, scrap
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1: the shop management's take-offs.
+		OFF_MGMT_OVER_TARGET = 207,   // the counter over its fill target, the least worth line
+		OFF_MGMT_CHEAP_UNSOLD = 208,  // a cheap line unsold SHOP_MGMT_CHEAP_HOURS
+		OFF_MGMT_GEAR_UNSOLD = 209,   // plain gear unsold SHOP_MGMT_GEAR_HOURS
+		OFF_MGMT_GEAR_OBSOLETE = 210, // plain gear far under the owner's level, unsold SHOP_MGMT_OBSOLETE_HOURS
+		OFF_MGMT_RESTACK = 211,       // a stack line home to go up again as one stack
 	};
 
 	// The take-off's reason word (BotOfflineUnwantedLine) as its code.
@@ -176,6 +182,9 @@ namespace playerbot_explain_rules
 			{ "sash_keeper", OFF_SASH_KEEPER }, { "craft_exchange", OFF_CRAFT_EXCHANGE },
 			{ "rare_unsold", OFF_RARE_UNSOLD }, { "unsold_bonus_goods", OFF_UNSOLD_BONUS_GOODS },
 			{ "weak_bonus_scrap", OFF_WEAK_BONUS_SCRAP },
+			{ "mgmt_over_target", OFF_MGMT_OVER_TARGET }, { "mgmt_cheap_unsold", OFF_MGMT_CHEAP_UNSOLD },
+			{ "mgmt_gear_unsold", OFF_MGMT_GEAR_UNSOLD }, { "mgmt_gear_obsolete", OFF_MGMT_GEAR_OBSOLETE },
+			{ "mgmt_restack", OFF_MGMT_RESTACK },
 		};
 		if (!why || !*why)
 			return OFF_NONE;
