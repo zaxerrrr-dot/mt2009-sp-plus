@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-16T13:08:20Z",
-  "statusMessage": "MT2009 PLUS 2.35.0: porzadek w plecakach i na straganach botow, mniej krazenia miedzy wioskami. Klient 2.0.66.",
+  "publishedAt": "2026-10-20T16:40:00Z",
+  "statusMessage": "MT2009 PLUS 2.36.0: sklepy botow bez przepelnienia, lochy bez zatrzyman, retencja logow w panelu. Klient 2.0.67.",
   "server": {
-    "version": "2.35.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.35.0/metin2-server-update-2.35.0.zip",
-    "sha256": "B89FF5288F39946414C02496F51267CA8A895E0616544D02D6A29D7F60445F71",
-    "size": 113783643
+    "version": "2.36.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.36.0/metin2-server-update-2.36.0.zip",
+    "sha256": "9D64466528633DFF6D3C5D282691926E2BABDD597F8487D438D5D6CB30A37C1E",
+    "size": 113903481
   },
   "client": {
-    "version": "2.0.66",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.66/metin2-client-update-2.0.66.zip",
-    "sha256": "01B2C0F8A70684F0F2DF81796A24344DCBF9002F571EA6DA6627E1C4DBB3A7DD",
-    "size": 617469877
+    "version": "2.0.67",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.67/metin2-client-update-2.0.67.zip",
+    "sha256": "112097357CD896CEEE990F5768F33B55B0BEFA3E6680CEBD6E19DFA286F8507E",
+    "size": 617471350
   }
 }
