@@ -2770,6 +2770,23 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-arkusz-add \
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_yarkusz_' "$F")" = "$n" \
  && rm -rf "$A" \
  && echo "share: Yohara monsters' drops of the owner's sheet ($n groups)"
+# MT2009_PLUS_MOBY_GLOBAL_V1: the monsters before Yohara drop as the owner's sheet of 20 October 2026 lists
+# (tools/ymoby_arkusz/gen_moby_global.py, moby_global/README.md): the package's rows the sheet does not list are cut
+# (mob_drop_item.moby_global.remove.txt - exactly those rows, in that monster's groups that are not ours, the group
+# numbered again, a group left empty dropped; every listed row must be found) and the sheet's items we lacked are
+# appended (groups MT2009_mglobal_<mob>, Type drop). Our own groups and rows, the special groups and a quest's items stay.
+COPY moby_global/ /tmp/moby-global-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/moby-global-add; F="$L/mob_drop_item.txt" \
+ && awk -v R="$A/mob_drop_item.moby_global.remove.txt" -f "$A/cut_rows.awk" "$F" > "$F.new" \
+ && mv "$F.new" "$F" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.moby_global.txt" \
+ && n="$(grep -c -E '^Group[[:blank:]]+MT2009_mglobal_' "$A/mob_drop_item.moby_global.txt")" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_mglobal_' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.moby_global.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_mglobal_' "$F")" = "$n" \
+ && rm -rf "$A" \
+ && echo "share: monsters before Yohara - the sheet's drops ($n groups added)"
 # MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia (50124) drops from nothing any more (the owner, 15 October
 # 2026, fix 7) - after every share step, so no append brings it back. The Yohara files (tools/yohara_items, yohara_maps3,
 # yohara_pb, yohara_iluzja, yohara_chestdrops) and special_item_group.dungeons.txt (54700) no longer have it; this

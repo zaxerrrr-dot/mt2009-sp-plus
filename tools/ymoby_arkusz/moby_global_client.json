@@ -1,0 +1,2013 @@
+{
+"1001": {
+"enchant_curse": 3
+},
+"1002": {
+"enchant_curse": 3,
+"resist_dagger": 0,
+"resist_magic": 5
+},
+"1003": {
+"enchant_curse": 3
+},
+"1004": {
+"enchant_curse": 3
+},
+"1031": {
+"enchant_curse": 5
+},
+"1032": {
+"enchant_curse": 5,
+"resist_dagger": 0
+},
+"1033": {
+"enchant_curse": 10
+},
+"1034": {
+"enchant_curse": 10,
+"resist_magic": 10
+},
+"1035": {
+"enchant_curse": 15
+},
+"1036": {
+"enchant_curse": 15,
+"resist_magic": 15
+},
+"1037": {
+"enchant_curse": 20,
+"resist_dagger": 5
+},
+"1038": {
+"enchant_curse": 20
+},
+"1039": {
+"enchant_curse": 20,
+"resist_dagger": -5,
+"resist_magic": 20
+},
+"1040": {
+"enchant_curse": 20
+},
+"1041": {
+"enchant_curse": 20,
+"resist_magic": 25
+},
+"1061": {
+"enchant_curse": 5
+},
+"1062": {
+"enchant_curse": 5,
+"resist_dagger": 0
+},
+"1063": {
+"enchant_curse": 10
+},
+"1064": {
+"enchant_curse": 10,
+"resist_magic": 10
+},
+"1065": {
+"enchant_curse": 15
+},
+"1066": {
+"enchant_curse": 15,
+"resist_magic": 15
+},
+"1067": {
+"enchant_curse": 20,
+"resist_dagger": 5
+},
+"1068": {
+"enchant_curse": 20
+},
+"1069": {
+"enchant_curse": 20,
+"resist_dagger": -5,
+"resist_magic": 20
+},
+"1070": {
+"enchant_curse": 20
+},
+"1071": {
+"enchant_curse": 20,
+"resist_magic": 25
+},
+"1091": {
+"enchant_curse": 30,
+"resist_magic": 30
+},
+"1092": {
+"enchant_curse": 30,
+"resist_magic": 30
+},
+"1093": {
+"enchant_curse": 50,
+"resist_bow": 50,
+"resist_magic": 60
+},
+"1094": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"1095": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"1096": {
+"enchant_curse": 30,
+"resist_magic": 30
+},
+"1101": {
+"exp": 1315
+},
+"1102": {
+"exp": 1336
+},
+"1103": {
+"exp": 1357
+},
+"1104": {
+"exp": 2262,
+"resist_dagger": 5
+},
+"1105": {
+"exp": 2297
+},
+"1106": {
+"exp": 2332
+},
+"1107": {
+"exp": 4664
+},
+"1131": {
+"resist_fire": 0
+},
+"1132": {
+"resist_fire": 0
+},
+"1133": {
+"resist_fire": 0
+},
+"1134": {
+"resist_fire": 0
+},
+"1135": {
+"resist_fire": 0
+},
+"1136": {
+"resist_fire": 0
+},
+"1137": {
+"resist_fire": 0
+},
+"1151": {
+"resist_fire": 0
+},
+"1152": {
+"resist_fire": 0
+},
+"1153": {
+"resist_fire": 0
+},
+"1154": {
+"resist_fire": 0
+},
+"1155": {
+"resist_fire": 0
+},
+"1156": {
+"resist_fire": 0
+},
+"1157": {
+"resist_fire": 0
+},
+"1174": {
+"resist_dagger": 5
+},
+"1191": {
+"resist_fire": 0,
+"resist_magic": 90
+},
+"1192": {
+"resist_fire": 0,
+"resist_magic": 40
+},
+"1301": {
+"exp": 1099,
+"resist_wind": -60
+},
+"1302": {
+"exp": 3792,
+"resist_dagger": 10,
+"resist_wind": -40
+},
+"1303": {
+"exp": 1118,
+"resist_wind": -60
+},
+"1304": {
+"exp": 72240,
+"resist_bow": 10,
+"resist_magic": 0,
+"resist_wind": -30
+},
+"1305": {
+"exp": 3920,
+"resist_wind": -40
+},
+"1306": {
+"resist_elect": -30,
+"resist_magic": 60
+},
+"1307": {
+"resist_elect": -20,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"1308": {
+"resist_elect": -30,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"1309": {
+"resist_elect": -30,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"131": {
+"enchant_curse": 10
+},
+"1310": {
+"resist_elect": -30,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"132": {
+"enchant_curse": 10
+},
+"133": {
+"enchant_curse": 10
+},
+"1331": {
+"resist_wind": -60
+},
+"1332": {
+"exp": 2654,
+"resist_dagger": 10,
+"resist_wind": -40
+},
+"1333": {
+"resist_wind": -60
+},
+"1334": {
+"resist_elect": -30
+},
+"1335": {
+"resist_wind": -40
+},
+"134": {
+"enchant_curse": 10
+},
+"135": {
+"enchant_curse": 10
+},
+"136": {
+"enchant_curse": 10
+},
+"137": {
+"enchant_curse": 10
+},
+"138": {
+"enchant_curse": 10
+},
+"139": {
+"enchant_curse": 10
+},
+"140": {
+"enchant_curse": 10
+},
+"1401": {
+"def": 64,
+"exp": 860,
+"max_hp": 4823,
+"resist_elect": -50,
+"resist_magic": 15,
+"st": 79
+},
+"1402": {
+"def": 66,
+"exp": 1604,
+"max_hp": 7208,
+"resist_elect": -50,
+"resist_magic": 20,
+"setImmuneFlag": "SLOW",
+"st": 86
+},
+"1403": {
+"def": 72,
+"exp": 3460,
+"max_hp": 11872,
+"resist_elect": -50,
+"resist_magic": 25,
+"setImmuneFlag": "STUN,SLOW,TERROR",
+"st": 89
+},
+"141": {
+"enchant_curse": 10
+},
+"142": {
+"enchant_curse": 10
+},
+"143": {
+"enchant_curse": 10
+},
+"144": {
+"enchant_curse": 10
+},
+"1501": {
+"def": 62,
+"exp": 930,
+"max_hp": 4933,
+"resist_magic": 15,
+"st": 79
+},
+"1502": {
+"def": 66,
+"exp": 971,
+"max_hp": 5315,
+"resist_magic": 20,
+"st": 80
+},
+"1503": {
+"def": 69,
+"exp": 1708,
+"max_hp": 7403,
+"resist_magic": 25,
+"st": 87
+},
+"151": {
+"def": 15
+},
+"152": {
+"def": 25
+},
+"153": {
+"def": 15
+},
+"154": {
+"def": 26
+},
+"155": {
+"def": 29
+},
+"1601": {
+"def": 65,
+"exp": 892,
+"max_hp": 5305,
+"resist_elect": -50,
+"resist_magic": 15,
+"st": 80
+},
+"1602": {
+"def": 68,
+"exp": 1873,
+"max_hp": 7828,
+"resist_elect": -50,
+"resist_magic": 20,
+"setImmuneFlag": "SLOW",
+"st": 80
+},
+"1603": {
+"def": 70,
+"exp": 1960,
+"max_hp": 7403,
+"resist_elect": -50,
+"resist_magic": 25,
+"setImmuneFlag": "STUN,SLOW,TERROR",
+"st": 80
+},
+"1901": {
+"exp": 69360
+},
+"1902": {
+"resist_magic": 60
+},
+"1903": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"1904": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"1905": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"1906": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"191": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 96
+},
+"192": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 84
+},
+"193": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 88
+},
+"194": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 100
+},
+"2001": {
+"exp": 1211
+},
+"2002": {
+"exp": 1267,
+"resist_dagger": 1
+},
+"2003": {
+"exp": 1621
+},
+"2004": {
+"exp": 1688
+},
+"2005": {
+"exp": 1756
+},
+"2031": {
+"resist_dagger": 2
+},
+"2033": {
+"resist_dagger": 2
+},
+"2051": {
+"exp": 848
+},
+"2052": {
+"exp": 887,
+"resist_dagger": 1
+},
+"2053": {
+"exp": 1135
+},
+"2054": {
+"exp": 1182
+},
+"2055": {
+"exp": 1229
+},
+"2061": {
+"resist_elect": 0
+},
+"2062": {
+"resist_elect": 0
+},
+"2063": {
+"exp": 9648,
+"resist_elect": 0
+},
+"2064": {
+"exp": 10032,
+"resist_elect": 0
+},
+"2065": {
+"exp": 10416,
+"resist_elect": 0
+},
+"2071": {
+"resist_elect": 0
+},
+"2072": {
+"resist_elect": 0
+},
+"2073": {
+"resist_elect": 0
+},
+"2074": {
+"resist_elect": 0
+},
+"2075": {
+"resist_elect": 0
+},
+"2076": {
+"resist_elect": 0
+},
+"2091": {
+"exp": 57840,
+"resist_magic": 60,
+"resist_wind": -30
+},
+"2092": {
+"resist_magic": 60,
+"resist_wind": -20
+},
+"2093": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": -20
+},
+"2094": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": -20
+},
+"2095": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 70,
+"resist_wind": -20
+},
+"2101": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 100,
+"resist_wind": 0
+},
+"2102": {
+"exp": 1252
+},
+"2103": {
+"exp": 1319
+},
+"2104": {
+"exp": 2478,
+"resist_dagger": 2
+},
+"2105": {
+"exp": 2646,
+"resist_magic": 10
+},
+"2106": {
+"exp": 2702
+},
+"2107": {
+"exp": 2870,
+"resist_magic": 10
+},
+"2131": {
+"exp": 4956,
+"resist_elect": 0
+},
+"2132": {
+"resist_elect": 0
+},
+"2133": {
+"resist_elect": 0
+},
+"2134": {
+"resist_elect": 0
+},
+"2135": {
+"resist_elect": 0
+},
+"2151": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 100,
+"resist_wind": 0
+},
+"2154": {
+"resist_dagger": 2
+},
+"2155": {
+"resist_magic": 10
+},
+"2157": {
+"resist_magic": 10
+},
+"2158": {
+"exp": 4253
+},
+"2191": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 20,
+"resist_twohand": 0,
+"resist_wind": -30
+},
+"2192": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": -20
+},
+"2201": {
+"exp": 997,
+"resist_dagger": 20,
+"resist_fire": -60
+},
+"2202": {
+"exp": 997,
+"resist_dagger": 5,
+"resist_fire": -60,
+"resist_magic": 20
+},
+"2203": {
+"exp": 1686,
+"resist_dagger": 25,
+"resist_fire": -50
+},
+"2204": {
+"exp": 1710,
+"resist_dagger": 0,
+"resist_fire": -50
+},
+"2205": {
+"exp": 3468,
+"resist_dagger": 5,
+"resist_fire": -40,
+"resist_magic": 10
+},
+"2206": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"exp": 17580,
+"max_hp": 51024,
+"resist_bow": -20,
+"resist_fire": -30
+},
+"2207": {
+"resist_fire": -30,
+"resist_magic": 60
+},
+"2231": {
+"resist_dagger": 20,
+"resist_fire": -60
+},
+"2232": {
+"resist_dagger": 5,
+"resist_fire": -60,
+"resist_magic": 20
+},
+"2233": {
+"resist_dagger": 25,
+"resist_fire": -50
+},
+"2234": {
+"resist_dagger": 0,
+"resist_fire": -50
+},
+"2235": {
+"resist_dagger": 5,
+"resist_fire": -40,
+"resist_magic": 10
+},
+"2291": {
+"resist_elect": 0,
+"resist_fire": -20,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"2301": {
+"exp": 1152,
+"level": 71,
+"max_hp": 3617,
+"resist_magic": 30
+},
+"2302": {
+"exp": 1204,
+"level": 73,
+"max_hp": 6302,
+"resist_dagger": 0,
+"resist_magic": 15
+},
+"2303": {
+"exp": 1546,
+"level": 75,
+"max_hp": 5676,
+"resist_magic": 10
+},
+"2304": {
+"exp": 1587,
+"level": 76,
+"max_hp": 8329,
+"resist_magic": 15,
+"setImmuneFlag": "SLOW"
+},
+"2305": {
+"exp": 2749,
+"level": 77,
+"max_hp": 11542,
+"resist_magic": 20,
+"setImmuneFlag": "SLOW"
+},
+"2306": {
+"ai_flag": "AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"level": 84,
+"max_hp": 353840,
+"resist_bell": 15,
+"resist_bow": -5,
+"resist_dagger": 10,
+"resist_fan": 15,
+"resist_magic": 60,
+"resist_poison": 0,
+"resist_sword": 10,
+"resist_twohand": 15,
+"setImmuneFlag": ""
+},
+"2307": {
+"ai_flag": "AGGR,IGNORE_LAST_ATTACK,NO_WANDER,RETURN_LASTATTACK_POS,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 224,
+"damage_min": 120,
+"def": 90,
+"enchant_poison": 5,
+"enchant_slow": 5,
+"enchant_stun": 10,
+"exp": 250800,
+"level": 86,
+"max_hp": 452900,
+"regen_cycle": 30,
+"regen_percent": 20,
+"resist_bell": 20,
+"resist_bow": 0,
+"resist_fan": 20,
+"resist_magic": 50,
+"resist_poison": 0,
+"resist_sword": 10,
+"setImmuneFlag": ""
+},
+"2311": {
+"exp": 1603,
+"level": 80,
+"max_hp": 5034,
+"resist_magic": 50
+},
+"2312": {
+"exp": 2745,
+"level": 82,
+"max_hp": 9844,
+"resist_dagger": 0,
+"resist_magic": 25
+},
+"2313": {
+"exp": 2781,
+"level": 83,
+"max_hp": 7978,
+"move_speed": 150,
+"resist_magic": 30
+},
+"2314": {
+"exp": 5778,
+"level": 86,
+"max_hp": 16181,
+"resist_magic": 35,
+"setImmuneFlag": "SLOW"
+},
+"2315": {
+"exp": 5922,
+"level": 88,
+"max_hp": 16580,
+"resist_magic": 40,
+"setImmuneFlag": "SLOW"
+},
+"2401": {
+"resist_elect": -70,
+"resist_magic": 30
+},
+"2402": {
+"resist_elect": -70,
+"resist_magic": 10
+},
+"2403": {
+"resist_dagger": 25,
+"resist_elect": -60
+},
+"2404": {
+"resist_elect": -60,
+"resist_magic": 15
+},
+"2411": {
+"resist_dagger": 15,
+"resist_elect": -60,
+"resist_magic": 30
+},
+"2412": {
+"resist_elect": -50,
+"resist_magic": 20
+},
+"2413": {
+"resist_elect": -50,
+"resist_magic": 40
+},
+"2414": {
+"resist_elect": -40
+},
+"2431": {
+"resist_elect": -70,
+"resist_magic": 30
+},
+"2432": {
+"resist_dagger": 0,
+"resist_elect": -70,
+"resist_magic": 15
+},
+"2433": {
+"resist_elect": -60,
+"resist_magic": 10
+},
+"2434": {
+"resist_elect": -60,
+"resist_magic": 15
+},
+"2451": {
+"resist_elect": -60,
+"resist_magic": 50
+},
+"2452": {
+"resist_dagger": 0,
+"resist_elect": -50,
+"resist_magic": 25
+},
+"2453": {
+"resist_elect": -50,
+"resist_magic": 30
+},
+"2454": {
+"resist_elect": -40,
+"resist_magic": 35
+},
+"2491": {
+"resist_elect": -40,
+"resist_magic": 20
+},
+"2492": {
+"resist_elect": -30,
+"resist_magic": 20
+},
+"2493": {
+"damage_max": 449,
+"damage_min": 289,
+"dx": 114,
+"enchant_critical": 25,
+"enchant_curse": 25,
+"enchant_penetrate": 25,
+"enchant_poison": 25,
+"enchant_slow": 25,
+"enchant_stun": 25,
+"ht": 76,
+"iq": 37,
+"resist_bell": 25,
+"resist_bow": 25,
+"resist_dagger": 25,
+"resist_elect": -10,
+"resist_fan": 25,
+"resist_fire": 0,
+"resist_magic": 25,
+"resist_poison": 25,
+"resist_sword": 25,
+"resist_twohand": 25,
+"resist_wind": 0,
+"setImmuneFlag": "STUN,SLOW,TERROR",
+"st": 153
+},
+"2494": {
+"resist_elect": -40,
+"resist_magic": 20
+},
+"2495": {
+"resist_elect": -30,
+"resist_magic": 20
+},
+"2501": {
+"enchant_curse": 1
+},
+"2502": {
+"enchant_curse": 1
+},
+"2503": {
+"enchant_curse": 1
+},
+"2504": {
+"enchant_curse": 1
+},
+"2505": {
+"enchant_curse": 1
+},
+"2506": {
+"enchant_curse": 1
+},
+"2507": {
+"enchant_curse": 1
+},
+"2508": {
+"enchant_curse": 5
+},
+"2509": {
+"enchant_curse": 5
+},
+"2510": {
+"enchant_curse": 10
+},
+"2511": {
+"enchant_curse": 10,
+"resist_dagger": 5,
+"resist_magic": 25
+},
+"2512": {
+"enchant_curse": 15,
+"resist_dagger": 10,
+"resist_magic": 30
+},
+"2513": {
+"enchant_curse": 15,
+"resist_dagger": 0,
+"resist_magic": 35
+},
+"2514": {
+"enchant_curse": 20,
+"resist_magic": 40
+},
+"2541": {
+"enchant_curse": 5
+},
+"2542": {
+"enchant_curse": 5
+},
+"2543": {
+"enchant_curse": 10
+},
+"2544": {
+"enchant_curse": 10,
+"resist_dagger": 5,
+"resist_magic": 25
+},
+"2545": {
+"enchant_curse": 15,
+"resist_dagger": 10,
+"resist_magic": 30
+},
+"2546": {
+"enchant_curse": 15,
+"resist_dagger": 0,
+"resist_magic": 35
+},
+"2547": {
+"enchant_curse": 20,
+"resist_magic": 40
+},
+"2591": {
+"enchant_curse": 30,
+"resist_magic": 60
+},
+"2592": {
+"enchant_curse": 30,
+"resist_magic": 60
+},
+"2593": {
+"enchant_curse": 30,
+"resist_magic": 60
+},
+"2594": {
+"enchant_curse": 30,
+"resist_magic": 60
+},
+"2595": {
+"enchant_curse": 30,
+"resist_magic": 60
+},
+"2596": {
+"enchant_curse": 30,
+"resist_magic": 60
+},
+"2597": {
+"enchant_curse": 50,
+"resist_magic": 60
+},
+"2598": {
+"enchant_curse": 50,
+"resist_magic": 60
+},
+"2676": {
+"setRaceFlag:HUMAN": 1
+},
+"2677": {
+"setRaceFlag:HUMAN": 1
+},
+"2678": {
+"setRaceFlag:HUMAN": 1
+},
+"2679": {
+"setRaceFlag:HUMAN": 1
+},
+"2790": {
+"ai_flag": "AGGR,BERSERK,REVIVE"
+},
+"2791": {
+"ai_flag": "AGGR,BERSERK,REVIVE"
+},
+"2792": {
+"ai_flag": "AGGR,BERSERK,REVIVE"
+},
+"3002": {
+"resist_dagger": 5
+},
+"3101": {
+"resist_elect": -70
+},
+"3102": {
+"resist_elect": -60
+},
+"3103": {
+"resist_elect": -60
+},
+"3104": {
+"resist_elect": -50
+},
+"3105": {
+"resist_elect": -40
+},
+"3190": {
+"resist_elect": -30
+},
+"3191": {
+"resist_elect": -20
+},
+"3201": {
+"resist_wind": -70
+},
+"3202": {
+"resist_wind": -60
+},
+"3203": {
+"resist_wind": -60
+},
+"3204": {
+"resist_wind": -50
+},
+"3205": {
+"resist_wind": -40
+},
+"3290": {
+"resist_wind": -30
+},
+"3291": {
+"resist_wind": -20
+},
+"3301": {
+"resist_wind": -70
+},
+"3302": {
+"resist_wind": -60
+},
+"3303": {
+"resist_wind": -60
+},
+"3304": {
+"resist_wind": -50
+},
+"3305": {
+"resist_wind": -40
+},
+"331": {
+"resist_wind": 0
+},
+"332": {
+"resist_wind": 0
+},
+"333": {
+"resist_wind": 0
+},
+"334": {
+"resist_wind": 0
+},
+"3390": {
+"resist_wind": -30
+},
+"3551": {
+"resist_elect": -70
+},
+"3552": {
+"resist_elect": -60
+},
+"3553": {
+"resist_elect": -60
+},
+"3554": {
+"resist_elect": -50
+},
+"3555": {
+"resist_elect": -40
+},
+"3595": {
+"resist_elect": -30
+},
+"3596": {
+"resist_elect": -20
+},
+"401": {
+"resist_wind": -70
+},
+"402": {
+"resist_wind": -70
+},
+"403": {
+"resist_wind": -70
+},
+"404": {
+"resist_wind": -60
+},
+"405": {
+"resist_wind": -60
+},
+"406": {
+"resist_wind": -60
+},
+"431": {
+"resist_wind": -50
+},
+"432": {
+"resist_wind": -50
+},
+"433": {
+"resist_wind": -50
+},
+"434": {
+"resist_wind": -50
+},
+"435": {
+"resist_wind": -50
+},
+"436": {
+"resist_wind": -50
+},
+"451": {
+"resist_wind": -70
+},
+"452": {
+"resist_wind": -70
+},
+"453": {
+"resist_wind": -70
+},
+"454": {
+"resist_wind": -60
+},
+"455": {
+"resist_wind": -60
+},
+"456": {
+"resist_wind": -60
+},
+"491": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 110,
+"damage_min": 75,
+"def": 38,
+"max_hp": 3201,
+"resist_wind": -50
+},
+"492": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"attack_speed": 100,
+"damage_max": 115,
+"damage_min": 62,
+"def": 43,
+"max_hp": 3911,
+"regen_cycle": 14,
+"resist_wind": -50
+},
+"493": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 120,
+"damage_min": 65,
+"def": 45,
+"max_hp": 4219,
+"regen_cycle": 4,
+"resist_wind": -50
+},
+"494": {
+"ai_flag": "IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"damage_max": 133,
+"damage_min": 72,
+"def": 52,
+"enchant_critical": 5,
+"max_hp": 5220,
+"regen_cycle": 19,
+"resist_wind": -50
+},
+"5002": {
+"resist_fire": -30
+},
+"5102": {
+"resist_dagger": 0
+},
+"5112": {
+"resist_dagger": 0
+},
+"5122": {
+"resist_dagger": 0
+},
+"5125": {
+"resist_dagger": 0
+},
+"5132": {
+"resist_dagger": 0
+},
+"5142": {
+"resist_dagger": 0
+},
+"5152": {
+"resist_dagger": 0
+},
+"5155": {
+"resist_dagger": 0
+},
+"6006": {
+"setImmuneFlag": "SLOW,TERROR"
+},
+"6051": {
+"setImmuneFlag": "STUN,SLOW,TERROR"
+},
+"6091": {
+"setImmuneFlag": "STUN,SLOW,TERROR"
+},
+"6151": {
+"setImmuneFlag": "STUN,SLOW,TERROR"
+},
+"6191": {
+"setImmuneFlag": "STUN,SLOW,TERROR"
+},
+"6301": {
+"ai_flag": "AGGR",
+"attack_speed": 200,
+"damage_max": 234,
+"damage_min": 173,
+"def": 111,
+"exp": 9375,
+"max_hp": 21825,
+"regen_percent": 7,
+"resist_bow": 0,
+"resist_twohand": 0,
+"resist_wind": -70
+},
+"6302": {
+"damage_max": 246,
+"damage_min": 179,
+"def": 117,
+"exp": 11255,
+"max_hp": 25634,
+"regen_cycle": 4,
+"regen_percent": 7,
+"resist_bell": -10,
+"resist_bow": -10,
+"resist_dagger": -10,
+"resist_fan": -10,
+"resist_sword": 5,
+"resist_twohand": 5,
+"resist_wind": -60
+},
+"6303": {
+"damage_max": 258,
+"damage_min": 207,
+"def": 103,
+"exp": 11380,
+"max_hp": 29043,
+"regen_cycle": 4,
+"regen_percent": 14,
+"resist_bow": 10,
+"resist_magic": 15,
+"resist_sword": 10,
+"resist_twohand": 10,
+"resist_wind": -60
+},
+"6304": {
+"damage_max": 262,
+"damage_min": 183,
+"def": 140,
+"exp": 25316,
+"max_hp": 38159,
+"regen_percent": 14,
+"resist_bow": 0,
+"resist_dagger": -5,
+"resist_fan": -5,
+"resist_sword": 0,
+"resist_twohand": 0,
+"resist_wind": -50
+},
+"6305": {
+"ai_flag": "AGGR",
+"attack_speed": 200,
+"damage_max": 264,
+"damage_min": 196,
+"def": 171,
+"exp": 39580,
+"max_hp": 97407,
+"regen_cycle": 7,
+"regen_percent": 15,
+"resist_bell": -5,
+"resist_bow": 0,
+"resist_dagger": -5,
+"resist_wind": -40
+},
+"636": {
+"exp": 5180
+},
+"637": {
+"exp": 5516
+},
+"691": {
+"def": 57,
+"enchant_critical": 0,
+"level": 50,
+"max_hp": 24618,
+"resist_bell": 0,
+"resist_bow": 0,
+"resist_dagger": 0,
+"resist_fan": 0,
+"resist_magic": 0,
+"resist_sword": 0,
+"resist_twohand": 0
+},
+"693": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"7008": {
+"setRaceFlag:ORC": 1
+},
+"7009": {
+"setRaceFlag:ORC": 1
+},
+"701": {
+"resist_dagger": 1,
+"resist_wind": -70
+},
+"7010": {
+"setRaceFlag:ORC": 1
+},
+"7012": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7013": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7014": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7015": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7016": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7017": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7018": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7019": {
+"resist_fire": -60
+},
+"702": {
+"resist_wind": -60
+},
+"7020": {
+"resist_fire": -60
+},
+"7021": {
+"resist_fire": -50
+},
+"7022": {
+"resist_fire": -50
+},
+"7023": {
+"resist_fire": -40
+},
+"7024": {
+"resist_magic": 50
+},
+"7025": {
+"resist_magic": 25
+},
+"7026": {
+"resist_magic": 30
+},
+"7027": {
+"resist_magic": 35
+},
+"7028": {
+"resist_magic": 40
+},
+"7029": {
+"resist_fire": 0
+},
+"703": {
+"resist_dagger": 1,
+"resist_wind": -60
+},
+"7030": {
+"resist_fire": 0
+},
+"7031": {
+"resist_fire": 0
+},
+"7032": {
+"resist_fire": 0
+},
+"7033": {
+"resist_fire": 0
+},
+"7034": {
+"resist_fire": 0
+},
+"7035": {
+"resist_fire": 0
+},
+"7036": {
+"resist_fire": 0
+},
+"7037": {
+"resist_fire": 0
+},
+"7038": {
+"resist_fire": 0
+},
+"7039": {
+"resist_fire": 0
+},
+"704": {
+"resist_wind": -50
+},
+"7040": {
+"resist_fire": 0
+},
+"7041": {
+"resist_fire": 0
+},
+"7042": {
+"resist_fire": 0
+},
+"7043": {
+"resist_fire": 0
+},
+"7044": {
+"resist_fire": 0
+},
+"7045": {
+"resist_fire": 0
+},
+"7046": {
+"resist_fire": 0
+},
+"7047": {
+"resist_fire": 0
+},
+"7048": {
+"resist_fire": 0
+},
+"7049": {
+"resist_fire": 0
+},
+"705": {
+"resist_wind": -60
+},
+"7050": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7051": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7052": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7053": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7054": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7055": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7056": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7057": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7058": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7059": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"706": {
+"resist_magic": 1,
+"resist_wind": -40
+},
+"7060": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7061": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7062": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7063": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7064": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7065": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7066": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7067": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7068": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7069": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"707": {
+"resist_magic": 1,
+"resist_wind": -40
+},
+"7070": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"7071": {
+"resist_fire": -60
+},
+"7072": {
+"resist_fire": -60
+},
+"7073": {
+"resist_fire": -50
+},
+"7074": {
+"resist_fire": -50
+},
+"7075": {
+"resist_fire": -40
+},
+"7076": {
+"resist_fire": -60
+},
+"7077": {
+"resist_fire": -60
+},
+"7078": {
+"resist_fire": -50
+},
+"7079": {
+"resist_fire": -50
+},
+"7080": {
+"resist_fire": -40
+},
+"7081": {
+"resist_fire": -60
+},
+"7082": {
+"resist_fire": -60
+},
+"7083": {
+"resist_fire": -50
+},
+"7084": {
+"resist_fire": -50
+},
+"7085": {
+"resist_fire": -40
+},
+"7086": {
+"resist_magic": 15
+},
+"7087": {
+"resist_magic": 10
+},
+"7088": {
+"resist_magic": 15
+},
+"7089": {
+"resist_magic": 20
+},
+"7090": {
+"resist_magic": 15
+},
+"7091": {
+"resist_magic": 10
+},
+"7092": {
+"resist_magic": 15
+},
+"7093": {
+"resist_magic": 20
+},
+"7094": {
+"resist_magic": 15
+},
+"7095": {
+"resist_magic": 10
+},
+"7096": {
+"resist_magic": 15
+},
+"731": {
+"resist_dagger": 1,
+"resist_wind": -70
+},
+"732": {
+"resist_wind": -60
+},
+"733": {
+"resist_dagger": 1,
+"resist_wind": -60
+},
+"734": {
+"resist_wind": -50
+},
+"735": {
+"resist_wind": -60
+},
+"736": {
+"resist_magic": 1,
+"resist_wind": -40
+},
+"737": {
+"resist_magic": 1,
+"resist_wind": -40
+},
+"751": {
+"resist_dagger": 1,
+"resist_wind": -70
+},
+"752": {
+"resist_wind": -60
+},
+"753": {
+"resist_dagger": 1,
+"resist_wind": -60
+},
+"754": {
+"resist_wind": -50
+},
+"755": {
+"resist_wind": -60
+},
+"756": {
+"resist_magic": 1,
+"resist_wind": -40
+},
+"757": {
+"resist_magic": 1,
+"resist_wind": -40
+},
+"771": {
+"exp": 732,
+"resist_dagger": 1,
+"resist_wind": -70
+},
+"772": {
+"exp": 895,
+"resist_wind": -60
+},
+"773": {
+"exp": 911,
+"resist_dagger": 1,
+"resist_wind": -60
+},
+"774": {
+"exp": 1519,
+"resist_wind": -50
+},
+"775": {
+"exp": 928,
+"resist_wind": -60
+},
+"776": {
+"exp": 3150,
+"resist_magic": 1,
+"resist_wind": -40
+},
+"777": {
+"exp": 3206,
+"resist_magic": 1,
+"resist_wind": -40
+},
+"791": {
+"enchant_critical": 0,
+"enchant_penetrate": 0,
+"level": 54,
+"max_hp": 101360,
+"resist_bell": 0,
+"resist_bow": 0,
+"resist_dagger": 0,
+"resist_fan": 0,
+"resist_magic": 50,
+"resist_sword": 0,
+"resist_twohand": 0,
+"resist_wind": -30
+},
+"792": {
+"attack_speed": 100,
+"enchant_critical": 0,
+"enchant_penetrate": 0,
+"level": 62,
+"max_hp": 319600,
+"move_speed": 120,
+"regen_percent": 27,
+"resist_bell": 0,
+"resist_bow": 0,
+"resist_dagger": 0,
+"resist_fan": 0,
+"resist_magic": 90,
+"resist_sword": 0,
+"resist_twohand": 0,
+"resist_wind": -20
+},
+"793": {
+"level": 54,
+"resist_magic": 60,
+"resist_wind": -30
+},
+"794": {
+"level": 62,
+"resist_magic": 60,
+"resist_wind": -20
+},
+"795": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": -20
+},
+"796": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": -20
+},
+"8043": {
+"resist_dagger": 19
+},
+"8044": {
+"resist_dagger": 16
+},
+"8045": {
+"resist_dagger": 18
+},
+"8046": {
+"resist_dagger": 16
+},
+"8047": {
+"resist_dagger": 16
+},
+"8049": {
+"resist_dagger": 15
+},
+"8050": {
+"max_hp": 1450000,
+"resist_dagger": 14
+},
+"8506": {
+"resist_wind": -70
+},
+"8507": {
+"resist_elect": 0,
+"resist_fire": 0
+},
+"8508": {
+"resist_magic": 10
+},
+"8509": {
+"resist_magic": 10
+},
+"8510": {
+"resist_elect": 0,
+"resist_fire": -70
+},
+"8511": {
+"resist_magic": 10
+},
+"8600": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8601": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8602": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8603": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8604": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8605": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8606": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8607": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8608": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8609": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8610": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": -30
+},
+"8611": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": -20
+},
+"8612": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8613": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8614": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"8615": {
+"resist_elect": 0,
+"resist_fire": 0,
+"resist_magic": 50,
+"resist_wind": 0
+},
+"901": {
+"enchant_curse": 1,
+"exp": 946,
+"move_speed": 100
+},
+"902": {
+"enchant_curse": 1,
+"exp": 984,
+"move_speed": 100,
+"resist_dagger": 1
+},
+"903": {
+"enchant_curse": 1,
+"exp": 1022,
+"move_speed": 100
+},
+"904": {
+"enchant_curse": 1,
+"exp": 1768
+},
+"905": {
+"enchant_curse": 1,
+"exp": 1864
+},
+"906": {
+"enchant_curse": 1,
+"exp": 2330,
+"resist_dagger": 0
+},
+"907": {
+"enchant_curse": 1,
+"exp": 3792
+},
+"931": {
+"enchant_curse": 1,
+"exp": 662
+},
+"932": {
+"enchant_curse": 1,
+"exp": 689,
+"resist_dagger": 1
+},
+"933": {
+"enchant_curse": 1,
+"exp": 716
+},
+"934": {
+"enchant_curse": 1,
+"exp": 1238
+},
+"935": {
+"enchant_curse": 1,
+"exp": 1305
+},
+"936": {
+"enchant_curse": 1,
+"exp": 1631,
+"resist_dagger": 0
+},
+"937": {
+"enchant_curse": 1,
+"exp": 2654
+},
+"991": {
+"enchant_curse": 30
+},
+"992": {
+"enchant_curse": 30
+},
+"993": {
+"enchant_curse": 50
+}
+}

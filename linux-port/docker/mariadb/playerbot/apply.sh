@@ -3879,6 +3879,20 @@ for yma_sql in yohara_moby_arkusz.sql; do
         fail_step "Yohara monsters (the owner's sheet): $yma_sql failed" >&2
     fi
 done
+# MT2009_PLUS_MOBY_GLOBAL_V1: the monsters before Yohara as on the global server (the owner, 20 October 2026) -
+# moby_global.sql (tools/ymoby_arkusz/gen_moby_global.py): HP, damage, EXP, levels, defence, stats, speeds,
+# regeneration, the effects' chances, resistances, the AI / immunity flags of the owner's sheet, the race flags of the
+# Zodiac's red thieves (2676-2679) and the Tu-Gui (7008-7010). After mob_proto.mt2009plus.sql and every UPDATE of ours
+# above (it leaves their columns alone). Guarded UPDATEs: a column changes only while it holds the value the world was
+# made with - the operator's own value (the panel's database editor) is kept. Idempotent.
+for ymg_sql in moby_global.sql; do
+    [ -s "/opt/playerbot/$ymg_sql" ] || continue
+    if db < "/opt/playerbot/$ymg_sql"; then
+        echo "[playerbot-migrate] monsters before Yohara (as on the global server): $ymg_sql applied"
+    else
+        fail_step "monsters before Yohara (as on the global server): $ymg_sql failed" >&2
+    fi
+done
 # Once: the Arezzo forest (362, natural_map) is in no map index and on no core any more. Every character saved there
 # or in an instance of it, or whose way out leads there - people and bots (all of level 95 and more) - stands at the
 # Temple of Ochao's gate (209, 853725 1416425, the temple's arrival; its En-Tai Guardian's portal leads to Zaklety Las

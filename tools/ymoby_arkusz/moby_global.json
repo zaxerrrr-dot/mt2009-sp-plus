@@ -1,0 +1,21076 @@
+{
+"adds": {
+"1002": {
+"kind": "normal",
+"name": "Demon Łucznik",
+"rows": [
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+"default:gear+0-5"
+],
+[
+30087,
+1,
+0.5,
+"Klejnot Demona+",
+"default:material"
+],
+[
+50012,
+1,
+2.0,
+"Złota Szkatułka+",
+"ours"
+]
+]
+},
+"1003": {
+"kind": "normal",
+"name": "Demon Włócznik",
+"rows": [
+[
+30016,
+1,
+0.5,
+"Klejnot Demona",
+"default:material"
+]
+]
+},
+"1004": {
+"kind": "normal",
+"name": "Demon Szaman",
+"rows": [
+[
+30086,
+1,
+0.5,
+"Pamiątka Po Demonie+",
+"default:material"
+]
+]
+},
+"102": {
+"kind": "normal",
+"name": "Wilk",
+"rows": [
+[
+30028,
+1,
+0.5,
+"Szpon Wilka",
+"default:material"
+]
+]
+},
+"103": {
+"kind": "normal",
+"name": "Alfa Wilk",
+"rows": [
+[
+30069,
+1,
+2.0,
+"Szpon Wilka+",
+"ours"
+]
+]
+},
+"105": {
+"kind": "normal",
+"name": "Nieb. Alfa Wilk",
+"rows": [
+[
+30027,
+1,
+0.5,
+"Futro Wilka",
+"default:material"
+]
+]
+},
+"106": {
+"kind": "normal",
+"name": "Szary Wilk",
+"rows": [
+[
+30070,
+1,
+2.0,
+"Futro Wilka+",
+"ours"
+],
+[
+30151,
+1,
+0.5,
+"Skóra Wilka",
+"default:material"
+]
+]
+},
+"1061": {
+"kind": "normal",
+"name": "Brutalny Demon Żołnierz",
+"rows": [
+[
+30193,
+1,
+0.5,
+"Kość Palca",
+"default:material"
+]
+]
+},
+"1062": {
+"kind": "normal",
+"name": "Brutalny Demon Łucznik",
+"rows": [
+[
+30193,
+1,
+0.5,
+"Kość Palca",
+"default:material"
+]
+]
+},
+"1063": {
+"kind": "normal",
+"name": "Brutalny Demon Włócznik",
+"rows": [
+[
+30193,
+1,
+0.5,
+"Kość Palca",
+"default:material"
+]
+]
+},
+"1064": {
+"kind": "normal",
+"name": "Brutalny Demon Szaman",
+"rows": [
+[
+30193,
+1,
+0.5,
+"Kość Palca",
+"default:material"
+]
+]
+},
+"1070": {
+"kind": "normal",
+"name": "Nieśm. Duch",
+"rows": [
+[
+13160,
+1,
+0.5,
+"Tarcza Trzech Władców+0",
+"default:gear+0-5"
+]
+]
+},
+"108": {
+"kind": "normal",
+"name": "Dzik",
+"rows": [
+[
+30004,
+1,
+2.0,
+"Ząb Dzika",
+"ours"
+]
+]
+},
+"109": {
+"kind": "normal",
+"name": "Czerw. Dzik",
+"rows": [
+[
+30003,
+1,
+0.5,
+"Nos Świni",
+"default:material"
+]
+]
+},
+"1093": {
+"kind": "boss",
+"name": "Umarły Rozpruwacz",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"110": {
+"kind": "normal",
+"name": "Niedźwiedź",
+"rows": [
+[
+30010,
+1,
+0.5,
+"Żółć Niedźwiedzia",
+"default:material"
+]
+]
+},
+"1101": {
+"kind": "normal",
+"name": "Zaczarowany Lód",
+"rows": [
+[
+30048,
+1,
+0.5,
+"Kawałek Lodu",
+"default:material"
+]
+]
+},
+"1102": {
+"kind": "normal",
+"name": "Lodowy Wieloryb Zab.",
+"rows": [
+[
+30049,
+1,
+0.5,
+"Lodowy Róg Wieloryba",
+"default:material"
+]
+]
+},
+"1103": {
+"kind": "normal",
+"name": "Lodowy Robak",
+"rows": [
+[
+30088,
+1,
+0.5,
+"Kawałek Lodu+",
+"default:material"
+]
+]
+},
+"1104": {
+"kind": "normal",
+"name": "Lodowy Lew",
+"rows": [
+[
+30014,
+1,
+0.5,
+"Futro Yeti",
+"default:material"
+]
+]
+},
+"1105": {
+"kind": "normal",
+"name": "Mroźny Lodowy Człowiek",
+"rows": [
+[
+30089,
+1,
+0.5,
+"Futro Yeti+",
+"default:material"
+]
+]
+},
+"1106": {
+"kind": "normal",
+"name": "Yeti",
+"rows": [
+[
+30090,
+1,
+0.5,
+"Matowy Lód+",
+"default:material"
+]
+]
+},
+"111": {
+"kind": "normal",
+"name": "Niedźw. Grizzly",
+"rows": [
+[
+30071,
+1,
+0.5,
+"Żółć Niedźwiedzia+",
+"default:material"
+]
+]
+},
+"112": {
+"kind": "normal",
+"name": "Czar. Niedźw.",
+"rows": [
+[
+30053,
+1,
+0.5,
+"Niedźwiedzia Skóra",
+"default:material"
+]
+]
+},
+"113": {
+"kind": "normal",
+"name": "Brąz. Niedźw.",
+"rows": [
+[
+30072,
+1,
+2.0,
+"Niedźwiedzia Skóra+",
+"ours"
+]
+]
+},
+"1131": {
+"kind": "normal",
+"name": "Podziemny Kawał Lodu",
+"rows": [
+[
+30048,
+1,
+0.5,
+"Kawałek Lodu",
+"default:material"
+]
+]
+},
+"1132": {
+"kind": "normal",
+"name": "Podziemny Lodowy Zabójca",
+"rows": [
+[
+30049,
+1,
+0.5,
+"Lodowy Róg Wieloryba",
+"default:material"
+]
+]
+},
+"1134": {
+"kind": "normal",
+"name": "Podziemny Lodowy Lew",
+"rows": [
+[
+30014,
+1,
+0.5,
+"Futro Yeti",
+"default:material"
+]
+]
+},
+"1135": {
+"kind": "normal",
+"name": "Podziemny Lod. Człowiek",
+"rows": [
+[
+30089,
+1,
+0.5,
+"Futro Yeti+",
+"default:material"
+]
+]
+},
+"1136": {
+"kind": "normal",
+"name": "Podziemne Yeti",
+"rows": [
+[
+30090,
+1,
+0.5,
+"Matowy Lód+",
+"default:material"
+]
+]
+},
+"1137": {
+"kind": "normal",
+"name": "Podziemny Lodowy Golem",
+"rows": [
+[
+30181,
+1,
+0.2,
+"Strona",
+"default:other"
+]
+]
+},
+"114": {
+"kind": "normal",
+"name": "Tygrys",
+"rows": [
+[
+30038,
+1,
+0.5,
+"Skóra Tygrysa",
+"default:material"
+]
+]
+},
+"115": {
+"kind": "normal",
+"name": "Biały Tygrys",
+"rows": [
+[
+30023,
+1,
+0.5,
+"Futro Białego Tygrysa",
+"default:material"
+]
+]
+},
+"1151": {
+"kind": "normal",
+"name": "Lodowy Diabeł",
+"rows": [
+[
+30048,
+1,
+0.5,
+"Kawałek Lodu",
+"default:material"
+]
+]
+},
+"1152": {
+"kind": "normal",
+"name": "Rogaty Zab. Wieloryb",
+"rows": [
+[
+30049,
+1,
+0.5,
+"Lodowy Róg Wieloryba",
+"default:material"
+]
+]
+},
+"1153": {
+"kind": "normal",
+"name": "Lodowy Robak",
+"rows": [
+[
+30088,
+1,
+0.5,
+"Kawałek Lodu+",
+"default:material"
+]
+]
+},
+"1154": {
+"kind": "normal",
+"name": "Seol-Gu",
+"rows": [
+[
+30014,
+1,
+0.5,
+"Futro Yeti",
+"default:material"
+]
+]
+},
+"1155": {
+"kind": "normal",
+"name": "Lodowy Człowiek",
+"rows": [
+[
+30089,
+1,
+0.5,
+"Futro Yeti+",
+"default:material"
+]
+]
+},
+"1156": {
+"kind": "normal",
+"name": "Lodowy Gigant",
+"rows": [
+[
+30090,
+1,
+0.5,
+"Matowy Lód+",
+"default:material"
+]
+]
+},
+"1171": {
+"kind": "normal",
+"name": "Wredny Zaczarowany Lód",
+"rows": [
+[
+30048,
+1,
+0.5,
+"Kawałek Lodu",
+"default:material"
+]
+]
+},
+"1172": {
+"kind": "normal",
+"name": "Wredny Lod. Wielor. Zab.",
+"rows": [
+[
+30049,
+1,
+0.5,
+"Lodowy Róg Wieloryba",
+"default:material"
+]
+]
+},
+"1173": {
+"kind": "normal",
+"name": "Wredny Lodowy Robak",
+"rows": [
+[
+30088,
+1,
+0.5,
+"Kawałek Lodu+",
+"default:material"
+]
+]
+},
+"1174": {
+"kind": "normal",
+"name": "Wredny Lodowy Lew",
+"rows": [
+[
+30014,
+1,
+0.5,
+"Futro Yeti",
+"default:material"
+]
+]
+},
+"1175": {
+"kind": "normal",
+"name": "Wredny Lodowy Człowiek",
+"rows": [
+[
+30089,
+1,
+0.5,
+"Futro Yeti+",
+"default:material"
+]
+]
+},
+"1176": {
+"kind": "normal",
+"name": "Wredny Yeti",
+"rows": [
+[
+30090,
+1,
+0.5,
+"Matowy Lód+",
+"default:material"
+]
+]
+},
+"1192": {
+"kind": "boss",
+"name": "Silna Lodowa Wiedźma",
+"rows": [
+[
+13166,
+1,
+5.0,
+"Tarcza Trzech Władców+6",
+"default:gear+6"
+],
+[
+39079,
+1,
+40.0,
+"Zielony Lśniący Odłamek",
+"ours"
+]
+]
+},
+"1301": {
+"kind": "normal",
+"name": "Drzewny Żabi Żołnierz",
+"rows": [
+[
+12260,
+1,
+0.5,
+"Maska Strachu+0",
+"default:gear+0-5"
+],
+[
+12390,
+1,
+0.5,
+"Orkowy Kaptur+0",
+"default:gear+0-5"
+],
+[
+12530,
+1,
+0.5,
+"Rogowy Hełm+0",
+"default:gear+0-5"
+],
+[
+12670,
+1,
+0.5,
+"Kapelusz Kardynała+0",
+"default:gear+0-5"
+],
+[
+30060,
+1,
+0.5,
+"Język Żaby",
+"default:material"
+]
+]
+},
+"1302": {
+"kind": "normal",
+"name": "Drzewny Żabi Przyw.",
+"rows": [
+[
+12260,
+1,
+0.5,
+"Maska Strachu+0",
+"default:gear+0-5"
+],
+[
+12390,
+1,
+0.5,
+"Orkowy Kaptur+0",
+"default:gear+0-5"
+],
+[
+12530,
+1,
+0.5,
+"Rogowy Hełm+0",
+"default:gear+0-5"
+],
+[
+12670,
+1,
+0.5,
+"Kapelusz Kardynała+0",
+"default:gear+0-5"
+],
+[
+30061,
+1,
+0.5,
+"Żabie Udka",
+"default:material"
+]
+]
+},
+"1303": {
+"kind": "normal",
+"name": "Straszydło",
+"rows": [
+[
+30040,
+1,
+0.5,
+"Liść",
+"default:material"
+]
+]
+},
+"1304": {
+"kind": "boss",
+"name": "Zjawa Żółt. Tygrysa",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"1305": {
+"kind": "normal",
+"name": "Ropuszy Generał",
+"rows": [
+[
+12260,
+1,
+0.5,
+"Maska Strachu+0",
+"default:gear+0-5"
+],
+[
+12390,
+1,
+0.5,
+"Orkowy Kaptur+0",
+"default:gear+0-5"
+],
+[
+12530,
+1,
+0.5,
+"Rogowy Hełm+0",
+"default:gear+0-5"
+],
+[
+12670,
+1,
+0.5,
+"Kapelusz Kardynała+0",
+"default:gear+0-5"
+]
+]
+},
+"131": {
+"kind": "normal",
+"name": "Przeklęty Wilk",
+"rows": [
+[
+30028,
+1,
+0.5,
+"Szpon Wilka",
+"default:material"
+]
+]
+},
+"132": {
+"kind": "normal",
+"name": "Przeklęty Alfa Wilk",
+"rows": [
+[
+30069,
+1,
+2.0,
+"Szpon Wilka+",
+"ours"
+]
+]
+},
+"1331": {
+"kind": "normal",
+"name": "Duży Drzewny Żabi Żołn.",
+"rows": [
+[
+30060,
+1,
+0.5,
+"Język Żaby",
+"default:material"
+]
+]
+},
+"1332": {
+"kind": "normal",
+"name": "Duży Drzewny Żabi Przyw.",
+"rows": [
+[
+30061,
+1,
+0.5,
+"Żabie Udka",
+"default:material"
+]
+]
+},
+"1333": {
+"kind": "normal",
+"name": "Duże Straszydło",
+"rows": [
+[
+30040,
+1,
+0.5,
+"Liść",
+"default:material"
+]
+]
+},
+"134": {
+"kind": "normal",
+"name": "Przekl. Nieb. Alfa Wilk",
+"rows": [
+[
+30027,
+1,
+0.5,
+"Futro Wilka",
+"default:material"
+]
+]
+},
+"135": {
+"kind": "normal",
+"name": "Przeklęty Szary Wilk",
+"rows": [
+[
+30070,
+1,
+2.0,
+"Futro Wilka+",
+"ours"
+],
+[
+50723,
+1,
+2.0,
+"Kwiat Kaki",
+"ours"
+]
+]
+},
+"137": {
+"kind": "normal",
+"name": "Przeklęty Dzik",
+"rows": [
+[
+30004,
+1,
+2.0,
+"Ząb Dzika",
+"ours"
+]
+]
+},
+"138": {
+"kind": "normal",
+"name": "Przeklęty Czerw. Dzik",
+"rows": [
+[
+30003,
+1,
+0.5,
+"Nos Świni",
+"default:material"
+]
+]
+},
+"139": {
+"kind": "normal",
+"name": "Przeklęty Niedźw.",
+"rows": [
+[
+30010,
+1,
+0.5,
+"Żółć Niedźwiedzia",
+"default:material"
+]
+]
+},
+"140": {
+"kind": "normal",
+"name": "Przekl. Niedźw. Grizzly",
+"rows": [
+[
+30071,
+1,
+0.5,
+"Żółć Niedźwiedzia+",
+"default:material"
+],
+[
+50726,
+1,
+1.5,
+"Grzyb Tue",
+"ours"
+]
+]
+},
+"1402": {
+"kind": "normal",
+"name": "Wojownik z Toporem",
+"rows": [
+[
+3025,
+1,
+0.5,
+"Gilotynowe Ostrze+5",
+"default:gear+0-5"
+]
+]
+},
+"141": {
+"kind": "normal",
+"name": "Przeklęty Czar. Niedźw.",
+"rows": [
+[
+13192,
+1,
+0.5,
+"Pięciokątna Tarcza+2",
+"default:gear+0-5"
+],
+[
+13193,
+1,
+0.5,
+"Pięciokątna Tarcza+3",
+"default:gear+0-5"
+],
+[
+30053,
+1,
+0.5,
+"Niedźwiedzia Skóra",
+"default:material"
+]
+]
+},
+"142": {
+"kind": "normal",
+"name": "Przeklęty Brąz. Niedźw.",
+"rows": [
+[
+30072,
+1,
+2.0,
+"Niedźwiedzia Skóra+",
+"ours"
+]
+]
+},
+"143": {
+"kind": "normal",
+"name": "Przeklęty Tygrys",
+"rows": [
+[
+30038,
+1,
+0.5,
+"Skóra Tygrysa",
+"default:material"
+]
+]
+},
+"144": {
+"kind": "normal",
+"name": "Przeklęty Biały Tygrys",
+"rows": [
+[
+30023,
+1,
+0.5,
+"Futro Białego Tygrysa",
+"default:material"
+]
+]
+},
+"1501": {
+"kind": "normal",
+"name": "Skalny Golem",
+"rows": [
+[
+8002,
+100,
+1.0,
+"Kamienna Strzała",
+"ours"
+]
+]
+},
+"1603": {
+"kind": "normal",
+"name": "Ogr Szaleniec",
+"rows": [
+[
+30194,
+1,
+2.0,
+"Orkowa Maczuga",
+"ours"
+]
+]
+},
+"172": {
+"kind": "normal",
+"name": "Głodny Wilk",
+"rows": [
+[
+30028,
+1,
+0.5,
+"Szpon Wilka",
+"default:material"
+]
+]
+},
+"173": {
+"kind": "normal",
+"name": "Głodny Alfa Wilk",
+"rows": [
+[
+30069,
+1,
+2.0,
+"Szpon Wilka+",
+"ours"
+]
+]
+},
+"175": {
+"kind": "normal",
+"name": "Głodny Nieb. Alfa Wilk",
+"rows": [
+[
+30027,
+1,
+0.5,
+"Futro Wilka",
+"default:material"
+]
+]
+},
+"176": {
+"kind": "normal",
+"name": "Głodny Szary Wilk",
+"rows": [
+[
+30070,
+1,
+2.0,
+"Futro Wilka+",
+"ours"
+]
+]
+},
+"178": {
+"kind": "normal",
+"name": "Głodny Dzik",
+"rows": [
+[
+30004,
+1,
+2.0,
+"Ząb Dzika",
+"ours"
+]
+]
+},
+"179": {
+"kind": "normal",
+"name": "Głodny Czerw. Dzik",
+"rows": [
+[
+30003,
+1,
+0.5,
+"Nos Świni",
+"default:material"
+]
+]
+},
+"180": {
+"kind": "normal",
+"name": "Głodny Niedźw.",
+"rows": [
+[
+30010,
+1,
+0.5,
+"Żółć Niedźwiedzia",
+"default:material"
+]
+]
+},
+"181": {
+"kind": "normal",
+"name": "Głodny Niedźw. Grizzly",
+"rows": [
+[
+30071,
+1,
+0.5,
+"Żółć Niedźwiedzia+",
+"default:material"
+]
+]
+},
+"182": {
+"kind": "normal",
+"name": "Głodny Czar. Niedźw.",
+"rows": [
+[
+30053,
+1,
+0.5,
+"Niedźwiedzia Skóra",
+"default:material"
+]
+]
+},
+"183": {
+"kind": "normal",
+"name": "Głodny Brąz. Niedźw.",
+"rows": [
+[
+30072,
+1,
+2.0,
+"Niedźwiedzia Skóra+",
+"ours"
+]
+]
+},
+"184": {
+"kind": "normal",
+"name": "Głodny Tygrys",
+"rows": [
+[
+30038,
+1,
+0.5,
+"Skóra Tygrysa",
+"default:material"
+]
+]
+},
+"185": {
+"kind": "normal",
+"name": "Głodny Biały Tygrys",
+"rows": [
+[
+30023,
+1,
+0.5,
+"Futro Białego Tygrysa",
+"default:material"
+]
+]
+},
+"1901": {
+"kind": "boss",
+"name": "Dziewięć Ogonów",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"1902": {
+"kind": "boss",
+"name": "Elit. Dziewięć Ogonów",
+"rows": [
+[
+50006,
+1,
+4.0,
+"Złota Szkatułka",
+"ours"
+],
+[
+50007,
+1,
+4.0,
+"Srebrna Szkatułka",
+"ours"
+],
+[
+50011,
+1,
+4.0,
+"Szkat. Blasku Księżyca",
+"default:other"
+],
+[
+50012,
+1,
+10.0,
+"Złota Szkatułka+",
+"ours-other-kind"
+],
+[
+50013,
+1,
+7.0,
+"Srebrna Szkatułka+",
+"ours"
+],
+[
+50090,
+1,
+4.0,
+"Szkat. Lisa o 9 Ogonach",
+"default:other"
+]
+]
+},
+"1904": {
+"kind": "boss",
+"name": "NoNAme",
+"rows": [
+[
+50006,
+1,
+4.0,
+"Złota Szkatułka",
+"ours"
+],
+[
+50007,
+1,
+4.0,
+"Srebrna Szkatułka",
+"ours"
+],
+[
+50011,
+1,
+4.0,
+"Szkat. Blasku Księżyca",
+"default:other"
+],
+[
+50012,
+1,
+10.0,
+"Złota Szkatułka+",
+"ours-other-kind"
+],
+[
+50013,
+1,
+7.0,
+"Srebrna Szkatułka+",
+"ours"
+]
+]
+},
+"1905": {
+"kind": "boss",
+"name": "NoNAme",
+"rows": [
+[
+50006,
+1,
+4.0,
+"Złota Szkatułka",
+"ours"
+],
+[
+50007,
+1,
+4.0,
+"Srebrna Szkatułka",
+"ours"
+],
+[
+50011,
+1,
+4.0,
+"Szkat. Blasku Księżyca",
+"default:other"
+],
+[
+50012,
+1,
+10.0,
+"Złota Szkatułka+",
+"ours-other-kind"
+],
+[
+50013,
+1,
+7.0,
+"Srebrna Szkatułka+",
+"ours"
+]
+]
+},
+"1906": {
+"kind": "boss",
+"name": "NoNAme",
+"rows": [
+[
+50006,
+1,
+4.0,
+"Złota Szkatułka",
+"ours"
+],
+[
+50007,
+1,
+4.0,
+"Srebrna Szkatułka",
+"ours"
+],
+[
+50011,
+1,
+4.0,
+"Szkat. Blasku Księżyca",
+"default:other"
+],
+[
+50012,
+1,
+10.0,
+"Złota Szkatułka+",
+"ours-other-kind"
+],
+[
+50013,
+1,
+7.0,
+"Srebrna Szkatułka+",
+"ours"
+]
+]
+},
+"2061": {
+"kind": "normal",
+"name": "Mały Trujący Pająk",
+"rows": [
+[
+13194,
+1,
+0.5,
+"Pięciokątna Tarcza+4",
+"default:gear+0-5"
+],
+[
+13205,
+1,
+0.5,
+"Czarna Okrągła Tarcza+5",
+"default:gear+0-5"
+]
+]
+},
+"2062": {
+"kind": "normal",
+"name": "Śmiert. Trujący Pająk",
+"rows": [
+[
+13160,
+1,
+0.5,
+"Tarcza Trzech Władców+0",
+"default:gear+0-5"
+]
+]
+},
+"2071": {
+"kind": "normal",
+"name": "Best. Młody Truj. Pająk",
+"rows": [
+[
+104,
+1,
+0.5,
+"Krwawy Miecz+4",
+"default:gear+0-5"
+],
+[
+114,
+1,
+0.5,
+"Wielki Miecz+4",
+"default:gear+0-5"
+],
+[
+124,
+1,
+0.5,
+"Miecz Lat. Maga+4",
+"default:gear+0-5"
+],
+[
+13006,
+1,
+0.2,
+"Bojowa Tarcza+6",
+"default:gear+6"
+],
+[
+13060,
+1,
+0.5,
+"Sokola Tarcza+0",
+"default:gear+0-5"
+],
+[
+13100,
+1,
+0.5,
+"Lwia Tarcza+0",
+"default:gear+0-5"
+],
+[
+13194,
+1,
+0.5,
+"Pięciokątna Tarcza+4",
+"default:gear+0-5"
+],
+[
+13205,
+1,
+0.5,
+"Czarna Okrągła Tarcza+5",
+"default:gear+0-5"
+]
+]
+},
+"2072": {
+"kind": "normal",
+"name": "Best. Śmiert. Truj. Paj.",
+"rows": [
+[
+1064,
+1,
+0.5,
+"Sztylet Pięści Diab.+4",
+"default:gear+0-5"
+],
+[
+1074,
+1,
+0.5,
+"Krwawy Sztylet+4",
+"default:gear+0-5"
+],
+[
+1084,
+1,
+0.5,
+"Żebrowy Nóż+4",
+"default:gear+0-5"
+],
+[
+12626,
+1,
+0.2,
+"Czapka Mnicha+6",
+"default:gear+6"
+],
+[
+12645,
+1,
+0.5,
+"Czapka Feniksa+5",
+"default:gear+0-5"
+],
+[
+12664,
+1,
+0.5,
+"Świetlista Czapka+4",
+"default:gear+0-5"
+],
+[
+13080,
+1,
+0.5,
+"Tarcza Tygrysa+0",
+"default:gear+0-5"
+],
+[
+13120,
+1,
+0.5,
+"Tarcza Smoka+0",
+"default:gear+0-5"
+]
+]
+},
+"2073": {
+"kind": "normal",
+"name": "Best. Czerw. Truj. Paj.",
+"rows": [
+[
+2094,
+1,
+0.5,
+"Łuk Kolczastego Liś.+4",
+"default:gear+0-5"
+],
+[
+2104,
+1,
+0.5,
+"Łuk z rogu byka+4",
+"default:gear+0-5"
+],
+[
+2114,
+1,
+0.5,
+"Łuk Jednorożca+4",
+"default:gear+0-5"
+],
+[
+2124,
+1,
+0.5,
+"Olbrz. Skrzydl. Łuk+4",
+"default:gear+0-5"
+],
+[
+12486,
+1,
+0.2,
+"Krwawy Hełm+6",
+"default:gear+6"
+],
+[
+12505,
+1,
+0.5,
+"Wyzywający Hełm+5",
+"default:gear+0-5"
+],
+[
+12524,
+1,
+0.5,
+"Zamkowy Hełm+4",
+"default:gear+0-5"
+],
+[
+13120,
+1,
+0.5,
+"Tarcza Smoka+0",
+"default:gear+0-5"
+]
+]
+},
+"2074": {
+"kind": "normal",
+"name": "Best. Szpon. Truj. Paj.",
+"rows": [
+[
+3094,
+1,
+0.5,
+"Lodowa Iglica+4",
+"default:gear+0-5"
+],
+[
+3104,
+1,
+0.5,
+"Miecz Dwunastu Duchów+4",
+"default:gear+0-5"
+],
+[
+3114,
+1,
+0.5,
+"Ostrze Zbawienia+4",
+"default:gear+0-5"
+],
+[
+12346,
+1,
+0.2,
+"Skórzana Maska+6",
+"default:gear+6"
+],
+[
+12365,
+1,
+0.5,
+"Maska Kolcza+5",
+"default:gear+0-5"
+],
+[
+12384,
+1,
+0.5,
+"Stalowa Maska+4",
+"default:gear+0-5"
+],
+[
+13120,
+1,
+0.5,
+"Tarcza Smoka+0",
+"default:gear+0-5"
+]
+]
+},
+"2075": {
+"kind": "normal",
+"name": "Best. Truj. Pająk Żołn.",
+"rows": [
+[
+5064,
+1,
+0.5,
+"Magiczny Dzwon+4",
+"default:gear+0-5"
+],
+[
+5074,
+1,
+0.5,
+"Złoty Robaczy Dzwon+4",
+"default:gear+0-5"
+],
+[
+12206,
+1,
+0.2,
+"Tradycyjny Hełm+6",
+"default:gear+6"
+],
+[
+12225,
+1,
+0.5,
+"Żelazny Hełm+5",
+"default:gear+0-5"
+],
+[
+12244,
+1,
+0.5,
+"Upiorna Maska+4",
+"default:gear+0-5"
+],
+[
+13100,
+1,
+0.5,
+"Lwia Tarcza+0",
+"default:gear+0-5"
+]
+]
+},
+"2076": {
+"kind": "normal",
+"name": "Best. Silny Truj. Pająk",
+"rows": [
+[
+5064,
+1,
+0.5,
+"Magiczny Dzwon+4",
+"default:gear+0-5"
+],
+[
+5074,
+1,
+0.5,
+"Złoty Robaczy Dzwon+4",
+"default:gear+0-5"
+],
+[
+12206,
+1,
+0.2,
+"Tradycyjny Hełm+6",
+"default:gear+6"
+],
+[
+12225,
+1,
+0.5,
+"Żelazny Hełm+5",
+"default:gear+0-5"
+],
+[
+12244,
+1,
+0.5,
+"Upiorna Maska+4",
+"default:gear+0-5"
+],
+[
+13100,
+1,
+0.5,
+"Lwia Tarcza+0",
+"default:gear+0-5"
+]
+]
+},
+"2091": {
+"kind": "boss",
+"name": "Królowa Pająków",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"2092": {
+"kind": "boss",
+"name": "Baronówna Pająków",
+"rows": [
+[
+183,
+1,
+20.0,
+"Zatruty miecz+3",
+"ours-other-kind"
+],
+[
+184,
+1,
+10.0,
+"Zatruty miecz+4",
+"default:gear+0-5"
+],
+[
+193,
+1,
+20.0,
+"Lwi Miecz+3",
+"ours-other-kind"
+],
+[
+194,
+1,
+10.0,
+"Lwi Miecz+4",
+"default:gear+0-5"
+],
+[
+1133,
+1,
+20.0,
+"Skrzydła Demona Chakr.+3",
+"ours-other-kind"
+],
+[
+1134,
+1,
+10.0,
+"Skrzydła Demona Chakr.+4",
+"default:gear+0-5"
+],
+[
+2173,
+1,
+20.0,
+"Stalowy Łuk Kruka+3",
+"ours-other-kind"
+],
+[
+2174,
+1,
+10.0,
+"Stalowy Łuk Kruka+4",
+"default:gear+0-5"
+],
+[
+3163,
+1,
+20.0,
+"Miecz Żalu+3",
+"ours-other-kind"
+],
+[
+3164,
+1,
+10.0,
+"Miecz Żalu+4",
+"default:gear+0-5"
+],
+[
+5123,
+1,
+20.0,
+"Bambusowy Dzwon+3",
+"ours-other-kind"
+],
+[
+5124,
+1,
+10.0,
+"Bambusowy Dzwon+4",
+"default:gear+0-5"
+],
+[
+7153,
+1,
+10.0,
+"Ekstazyjny Wachlarz+3",
+"default:gear+0-5"
+],
+[
+7154,
+1,
+10.0,
+"Ekstazyjny Wachlarz+4",
+"default:gear+0-5"
+],
+[
+11293,
+1,
+20.0,
+"Zbroja Z Czarnej Stali+3",
+"ours-other-kind"
+],
+[
+11294,
+1,
+50.0,
+"Zbroja Z Czarnej Stali+4",
+"ours"
+],
+[
+11493,
+1,
+20.0,
+"Ubranie Czarn. Wiatru+3",
+"ours-other-kind"
+],
+[
+11494,
+1,
+50.0,
+"Ubranie Czarn. Wiatru+4",
+"ours"
+],
+[
+11693,
+1,
+20.0,
+"Zbr. Płyt. Czar. Magii+3",
+"ours-other-kind"
+],
+[
+11694,
+1,
+50.0,
+"Zbr. Płyt. Czar. Magii+4",
+"ours"
+],
+[
+11893,
+1,
+20.0,
+"Czarna Szata+3",
+"ours-other-kind"
+],
+[
+11894,
+1,
+50.0,
+"Czarna Szata+4",
+"ours"
+],
+[
+13062,
+1,
+10.0,
+"Sokola Tarcza+2",
+"default:gear+0-5"
+],
+[
+13082,
+1,
+10.0,
+"Tarcza Tygrysa+2",
+"default:gear+0-5"
+],
+[
+13102,
+1,
+10.0,
+"Lwia Tarcza+2",
+"default:gear+0-5"
+],
+[
+13122,
+1,
+10.0,
+"Tarcza Smoka+2",
+"default:gear+0-5"
+],
+[
+13140,
+1,
+10.0,
+"Tarcza Tytanów+0",
+"default:gear+0-5"
+],
+[
+13162,
+1,
+10.0,
+"Tarcza Trzech Władców+2",
+"default:gear+0-5"
+],
+[
+14163,
+1,
+10.0,
+"Kryształowa Bransoleta+3",
+"default:gear+0-5"
+],
+[
+14201,
+1,
+10.0,
+"Bransol. Z Niebiań.Łez+1",
+"default:gear+0-5"
+],
+[
+16163,
+1,
+10.0,
+"Kryształowy Naszyjnik+3",
+"default:gear+0-5"
+],
+[
+16201,
+1,
+10.0,
+"Naszyj. Z Niebiań.Łez+1",
+"default:gear+0-5"
+],
+[
+17163,
+1,
+10.0,
+"Kryształowe Kolczyki+3",
+"default:gear+0-5"
+],
+[
+17201,
+1,
+10.0,
+"Kolczyki Z Niebiań.Łez+1",
+"default:gear+0-5"
+],
+[
+39079,
+1,
+40.0,
+"Zielony Lśniący Odłamek",
+"ours"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+55009,
+1,
+4.0,
+"Skrzynia Ksiąg Peta",
+"default:other"
+],
+[
+55402,
+1,
+4.0,
+"Jajo Pajączka",
+"default:other"
+],
+[
+70058,
+1,
+4.0,
+"Pierścień Teleportacji",
+"default:other"
+]
+]
+},
+"2105": {
+"kind": "normal",
+"name": "Skorpion Łucznik",
+"rows": [
+[
+8002,
+100,
+1.0,
+"Kamienna Strzała",
+"ours"
+],
+[
+30055,
+1,
+0.5,
+"Szpon Skorpiona",
+"default:material"
+],
+[
+50013,
+1,
+2.0,
+"Srebrna Szkatułka+",
+"ours"
+]
+]
+},
+"2106": {
+"kind": "normal",
+"name": "Wężowy Miecznik",
+"rows": [
+[
+30022,
+1,
+0.5,
+"Ogon Węża",
+"default:material"
+]
+]
+},
+"2107": {
+"kind": "normal",
+"name": "Wężowy Łucznik",
+"rows": [
+[
+8003,
+1,
+0.5,
+"Żelazna Strzała",
+"default:gear+0-5"
+],
+[
+13202,
+1,
+0.5,
+"Czarna Okrągła Tarcza+2",
+"default:gear+0-5"
+],
+[
+13203,
+1,
+0.5,
+"Czarna Okrągła Tarcza+3",
+"default:gear+0-5"
+],
+[
+30067,
+1,
+0.5,
+"Skóra Węża",
+"default:material"
+],
+[
+50006,
+1,
+2.0,
+"Złota Szkatułka",
+"ours"
+]
+]
+},
+"2131": {
+"kind": "normal",
+"name": "Best. Człowiek Skorpion",
+"rows": [
+[
+13194,
+1,
+0.5,
+"Pięciokątna Tarcza+4",
+"default:gear+0-5"
+],
+[
+13205,
+1,
+0.5,
+"Czarna Okrągła Tarcza+5",
+"default:gear+0-5"
+]
+]
+},
+"2132": {
+"kind": "normal",
+"name": "Skorpion Łucznik",
+"rows": [
+[
+13160,
+1,
+0.5,
+"Tarcza Trzech Władców+0",
+"default:gear+0-5"
+],
+[
+30055,
+1,
+0.5,
+"Szpon Skorpiona",
+"default:material"
+]
+]
+},
+"2133": {
+"kind": "normal",
+"name": "Wężowy Miecznik",
+"rows": [
+[
+13160,
+1,
+0.5,
+"Tarcza Trzech Władców+0",
+"default:gear+0-5"
+],
+[
+30022,
+1,
+0.5,
+"Ogon Węża",
+"default:material"
+]
+]
+},
+"2134": {
+"kind": "normal",
+"name": "Wężowy Łucznik",
+"rows": [
+[
+30067,
+1,
+0.5,
+"Skóra Węża",
+"default:material"
+]
+]
+},
+"2155": {
+"kind": "normal",
+"name": "Silny Skorpion Łucznik",
+"rows": [
+[
+30055,
+1,
+0.5,
+"Szpon Skorpiona",
+"default:material"
+]
+]
+},
+"2156": {
+"kind": "normal",
+"name": "Silny Wężowy Miecznik",
+"rows": [
+[
+30022,
+1,
+0.5,
+"Ogon Węża",
+"default:material"
+]
+]
+},
+"2157": {
+"kind": "normal",
+"name": "Silny Wężowy Łucznik",
+"rows": [
+[
+30067,
+1,
+0.5,
+"Skóra Węża",
+"default:material"
+]
+]
+},
+"2191": {
+"kind": "boss",
+"name": "Olbrzymi Żółw",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"2201": {
+"kind": "normal",
+"name": "Sługa Walczącego Tygr.",
+"rows": [
+[
+30042,
+1,
+0.5,
+"Pazur Tygrysa",
+"default:material"
+]
+]
+},
+"2203": {
+"kind": "normal",
+"name": "Walczący Tygrys",
+"rows": [
+[
+30019,
+1,
+0.5,
+"Płonąca Grzywa",
+"default:material"
+]
+]
+},
+"2204": {
+"kind": "normal",
+"name": "Płomień",
+"rows": [
+[
+12280,
+1,
+0.5,
+"Hełm Mistrza Wojny+0",
+"default:gear+0-5"
+],
+[
+12400,
+1,
+0.5,
+"Pajęczy Kaptur+0",
+"default:gear+0-5"
+],
+[
+12540,
+1,
+0.5,
+"Magiczny Hełm+0",
+"default:gear+0-5"
+],
+[
+12680,
+1,
+0.5,
+"Kapelusz Duszy+0",
+"default:gear+0-5"
+]
+]
+},
+"2205": {
+"kind": "normal",
+"name": "Ognisty Wojownik",
+"rows": [
+[
+12280,
+1,
+0.5,
+"Hełm Mistrza Wojny+0",
+"default:gear+0-5"
+],
+[
+12400,
+1,
+0.5,
+"Pajęczy Kaptur+0",
+"default:gear+0-5"
+],
+[
+12540,
+1,
+0.5,
+"Magiczny Hełm+0",
+"default:gear+0-5"
+],
+[
+12680,
+1,
+0.5,
+"Kapelusz Duszy+0",
+"default:gear+0-5"
+],
+[
+30091,
+1,
+0.5,
+"Symbol Wojownika",
+"default:material"
+]
+]
+},
+"2206": {
+"kind": "boss",
+"name": "Ognisty Król",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"2311": {
+"kind": "normal",
+"name": "Czerw. Duch Drzewa",
+"rows": [
+[
+30197,
+1,
+0.5,
+"Magiczne Nasiona",
+"default:material"
+]
+]
+},
+"2312": {
+"kind": "normal",
+"name": "Czerw. Duch Pniaka",
+"rows": [
+[
+30197,
+1,
+0.5,
+"Magiczne Nasiona",
+"default:material"
+]
+]
+},
+"2313": {
+"kind": "normal",
+"name": "Czerwona Driada",
+"rows": [
+[
+30197,
+1,
+0.5,
+"Magiczne Nasiona",
+"default:material"
+]
+]
+},
+"2314": {
+"kind": "normal",
+"name": "Czerw. Duch Wierzby",
+"rows": [
+[
+30197,
+1,
+0.5,
+"Magiczne Nasiona",
+"default:material"
+]
+]
+},
+"2315": {
+"kind": "normal",
+"name": "Czerwone Złe Drzewo",
+"rows": [
+[
+11291,
+1,
+2.0,
+"Zbroja Z Czarnej Stali+1",
+"ours-other-kind"
+],
+[
+11491,
+1,
+2.0,
+"Ubranie Czarn. Wiatru+1",
+"ours-other-kind"
+],
+[
+11691,
+1,
+2.0,
+"Zbr. Płyt. Czar. Magii+1",
+"ours-other-kind"
+],
+[
+11891,
+1,
+2.0,
+"Czarna Szata+1",
+"ours-other-kind"
+],
+[
+27987,
+1,
+2.0,
+"Małż",
+"ours-other-kind"
+]
+]
+},
+"2402": {
+"kind": "normal",
+"name": "Łowca Setaou",
+"rows": [
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+"default:gear+0-5"
+]
+]
+},
+"2412": {
+"kind": "normal",
+"name": "Łucznik Setaou",
+"rows": [
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+"default:gear+0-5"
+]
+]
+},
+"2432": {
+"kind": "normal",
+"name": "????",
+"rows": [
+[
+13163,
+1,
+0.5,
+"Tarcza Trzech Władców+3",
+"default:gear+0-5"
+]
+]
+},
+"2452": {
+"kind": "normal",
+"name": "?????",
+"rows": [
+[
+13164,
+1,
+0.5,
+"Tarcza Trzech Władców+4",
+"default:gear+0-5"
+]
+]
+},
+"2492": {
+"kind": "boss",
+"name": "Generał Yonghan",
+"rows": [
+[
+13163,
+1,
+10.0,
+"Tarcza Trzech Władców+3",
+"default:gear+0-5"
+]
+]
+},
+"2495": {
+"kind": "boss",
+"name": "Generał Huashin",
+"rows": [
+[
+13164,
+1,
+10.0,
+"Tarcza Trzech Władców+4",
+"default:gear+0-5"
+],
+[
+39079,
+1,
+40.0,
+"Zielony Lśniący Odłamek",
+"ours"
+]
+]
+},
+"2506": {
+"kind": "normal",
+"name": "Dwugłowy Strzelec",
+"rows": [
+[
+30193,
+1,
+0.5,
+"Kość Palca",
+"default:material"
+]
+]
+},
+"2507": {
+"kind": "normal",
+"name": "Piekielny Kleszcz",
+"rows": [
+[
+30193,
+1,
+0.5,
+"Kość Palca",
+"default:material"
+]
+]
+},
+"2543": {
+"kind": "normal",
+"name": "Zły Piekielny Włócznik",
+"rows": [
+[
+13160,
+1,
+0.5,
+"Tarcza Trzech Władców+0",
+"default:gear+0-5"
+],
+[
+30196,
+1,
+0.07,
+"Demoniczne Prochy",
+"ours"
+]
+]
+},
+"2545": {
+"kind": "normal",
+"name": "Zły Piekielny Major",
+"rows": [
+[
+13160,
+1,
+0.5,
+"Tarcza Trzech Władców+0",
+"default:gear+0-5"
+],
+[
+30196,
+1,
+0.07,
+"Demoniczne Prochy",
+"ours"
+]
+]
+},
+"2547": {
+"kind": "normal",
+"name": "Zły Piekielny Generał",
+"rows": [
+[
+30196,
+1,
+0.07,
+"Demoniczne Prochy",
+"ours"
+]
+]
+},
+"2597": {
+"kind": "boss",
+"name": "Charon",
+"rows": [
+[
+30016,
+1,
+10.0,
+"Klejnot Demona",
+"default:material"
+],
+[
+30019,
+1,
+10.0,
+"Płonąca Grzywa",
+"default:material"
+],
+[
+30079,
+1,
+10.0,
+"Nieznany Talizman+",
+"default:material"
+],
+[
+30089,
+1,
+10.0,
+"Futro Yeti+",
+"default:material"
+],
+[
+50614,
+1,
+4.0,
+"Dusza Rudy Kryształu",
+"default:other"
+],
+[
+51001,
+1,
+4.0,
+"Odłamek Energii",
+"default:other"
+],
+[
+95926,
+1,
+10.0,
+"Kamyki",
+"default:material"
+]
+]
+},
+"2598": {
+"kind": "boss",
+"name": "Azrael",
+"rows": [
+[
+161,
+1,
+10.0,
+"Miecz Nimfy+1",
+"default:gear+0-5"
+],
+[
+241,
+1,
+10.0,
+"Miecz Egzorcysty+1",
+"default:gear+0-5"
+],
+[
+1111,
+1,
+10.0,
+"Nóż Błyskawicy+1",
+"default:gear+0-5"
+],
+[
+2131,
+1,
+10.0,
+"Boski Łuk Moreli+1",
+"default:gear+0-5"
+],
+[
+3141,
+1,
+10.0,
+"Magnetyczne Ostrze+1",
+"default:gear+0-5"
+],
+[
+5101,
+1,
+10.0,
+"Dzwon Nieba I Ziemi+1",
+"default:gear+0-5"
+],
+[
+7141,
+1,
+10.0,
+"Wachlarz Zbawienia+1",
+"default:gear+0-5"
+],
+[
+11293,
+1,
+20.0,
+"Zbroja Z Czarnej Stali+3",
+"ours-other-kind"
+],
+[
+11493,
+1,
+20.0,
+"Ubranie Czarn. Wiatru+3",
+"ours-other-kind"
+],
+[
+11693,
+1,
+20.0,
+"Zbr. Płyt. Czar. Magii+3",
+"ours-other-kind"
+],
+[
+11893,
+1,
+20.0,
+"Czarna Szata+3",
+"ours-other-kind"
+],
+[
+14221,
+1,
+10.0,
+"Opaska Kryształu Duszy+1",
+"default:gear+0-5"
+],
+[
+16221,
+1,
+10.0,
+"Naszyjnik Krysz. Duszy+1",
+"default:gear+0-5"
+],
+[
+17221,
+1,
+10.0,
+"Kolczyki Krysz. Duszy+1",
+"default:gear+0-5"
+]
+]
+},
+"3001": {
+"kind": "normal",
+"name": "Gnoll Wojownik",
+"rows": [
+[
+30500,
+1,
+0.5,
+"Rubinowy Ozdobny Nóż",
+"default:material"
+],
+[
+30512,
+1,
+0.5,
+"Czerwona Smocza Stal",
+"default:material"
+]
+]
+},
+"3002": {
+"kind": "normal",
+"name": "Gnoll Łucznik",
+"rows": [
+[
+30500,
+1,
+0.5,
+"Rubinowy Ozdobny Nóż",
+"default:material"
+],
+[
+30512,
+1,
+0.5,
+"Czerwona Smocza Stal",
+"default:material"
+]
+]
+},
+"3003": {
+"kind": "normal",
+"name": "Gnoll Obrońca",
+"rows": [
+[
+30500,
+1,
+0.5,
+"Rubinowy Ozdobny Nóż",
+"default:material"
+],
+[
+30512,
+1,
+0.5,
+"Czerwona Smocza Stal",
+"default:material"
+]
+]
+},
+"3004": {
+"kind": "normal",
+"name": "Gnoll Mag",
+"rows": [
+[
+30500,
+1,
+0.5,
+"Rubinowy Ozdobny Nóż",
+"default:material"
+],
+[
+30512,
+1,
+0.5,
+"Czerwona Smocza Stal",
+"default:material"
+]
+]
+},
+"3005": {
+"kind": "normal",
+"name": "Gnoll Generał",
+"rows": [
+[
+30500,
+1,
+0.5,
+"Rubinowy Ozdobny Nóż",
+"default:material"
+],
+[
+30512,
+1,
+0.5,
+"Czerwona Smocza Stal",
+"default:material"
+]
+]
+},
+"301": {
+"kind": "normal",
+"name": "Zaprzys. Żołnierz",
+"rows": [
+[
+30034,
+1,
+0.5,
+"Biała Wstęga",
+"default:material"
+]
+]
+},
+"302": {
+"kind": "normal",
+"name": "Zaprzys. Łucznik",
+"rows": [
+[
+8001,
+1,
+0.5,
+"Bambusowa Strzała",
+"default:gear+0-5"
+],
+[
+30017,
+1,
+0.5,
+"Ozdobna Spinka Do Włosów",
+"default:material"
+],
+[
+30031,
+1,
+0.5,
+"Ornament",
+"default:material"
+]
+]
+},
+"303": {
+"kind": "normal",
+"name": "Zaprzys. Generał",
+"rows": [
+[
+30011,
+1,
+0.5,
+"Kłąb",
+"default:material"
+]
+]
+},
+"304": {
+"kind": "normal",
+"name": "Zaprzys. Komandor",
+"rows": [
+[
+30073,
+1,
+0.5,
+"Biała Wstęga+",
+"default:material"
+]
+]
+},
+"3090": {
+"kind": "boss",
+"name": "Gnoll Lord",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3091": {
+"kind": "boss",
+"name": "Główny Gnoll Strażnik",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3101": {
+"kind": "normal",
+"name": "Jednooki Zabijaka",
+"rows": [
+[
+30506,
+1,
+0.5,
+"Szafirowy Ozdobny Nóż",
+"default:material"
+],
+[
+30510,
+1,
+0.5,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30522,
+1,
+0.5,
+"Ogniwa Łańcucha",
+"default:material"
+]
+]
+},
+"3102": {
+"kind": "normal",
+"name": "Cyklop Żołnierz",
+"rows": [
+[
+30506,
+1,
+0.5,
+"Szafirowy Ozdobny Nóż",
+"default:material"
+],
+[
+30510,
+1,
+0.5,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30522,
+1,
+0.5,
+"Ogniwa Łańcucha",
+"default:material"
+]
+]
+},
+"3103": {
+"kind": "normal",
+"name": "Cyklop Mag",
+"rows": [
+[
+30506,
+1,
+0.5,
+"Szafirowy Ozdobny Nóż",
+"default:material"
+],
+[
+30510,
+1,
+0.5,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30522,
+1,
+0.5,
+"Ogniwa Łańcucha",
+"default:material"
+]
+]
+},
+"3104": {
+"kind": "normal",
+"name": "Cyklop Kat",
+"rows": [
+[
+30506,
+1,
+0.5,
+"Szafirowy Ozdobny Nóż",
+"default:material"
+],
+[
+30510,
+1,
+0.5,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30522,
+1,
+0.5,
+"Ogniwa Łańcucha",
+"default:material"
+]
+]
+},
+"3105": {
+"kind": "normal",
+"name": "Generał Outis",
+"rows": [
+[
+30506,
+1,
+0.5,
+"Szafirowy Ozdobny Nóż",
+"default:material"
+],
+[
+30510,
+1,
+0.5,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30522,
+1,
+0.5,
+"Ogniwa Łańcucha",
+"default:material"
+]
+]
+},
+"3190": {
+"kind": "boss",
+"name": "Arges",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3191": {
+"kind": "boss",
+"name": "Polifem",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3201": {
+"kind": "normal",
+"name": "Mantykora Wojownik",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+]
+]
+},
+"3202": {
+"kind": "normal",
+"name": "Mantykora Żołnierz",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+]
+]
+},
+"3203": {
+"kind": "normal",
+"name": "Mantykora Mag",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+]
+]
+},
+"3204": {
+"kind": "normal",
+"name": "Mantykora Kat",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+]
+]
+},
+"3205": {
+"kind": "normal",
+"name": "Generał Kor",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+]
+]
+},
+"3290": {
+"kind": "boss",
+"name": "Rakszas",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3291": {
+"kind": "boss",
+"name": "Martyaxwar",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3301": {
+"kind": "normal",
+"name": "Lemur Wojownik",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30523,
+1,
+0.5,
+"Element Ozdoby",
+"default:material"
+]
+]
+},
+"3302": {
+"kind": "normal",
+"name": "Lemur Żołnierz",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30523,
+1,
+0.5,
+"Element Ozdoby",
+"default:material"
+]
+]
+},
+"3303": {
+"kind": "normal",
+"name": "Lemur Mag",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30523,
+1,
+0.5,
+"Element Ozdoby",
+"default:material"
+]
+]
+},
+"3304": {
+"kind": "normal",
+"name": "Lemur Kat",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30523,
+1,
+0.5,
+"Element Ozdoby",
+"default:material"
+]
+]
+},
+"3305": {
+"kind": "normal",
+"name": "Lemur Generał",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30523,
+1,
+0.5,
+"Element Ozdoby",
+"default:material"
+]
+]
+},
+"331": {
+"kind": "normal",
+"name": "Zaprzys. Żołnierz",
+"rows": [
+[
+30034,
+1,
+0.5,
+"Biała Wstęga",
+"default:material"
+]
+]
+},
+"332": {
+"kind": "normal",
+"name": "Zaprzys. Łucznik",
+"rows": [
+[
+30031,
+1,
+0.5,
+"Ornament",
+"default:material"
+]
+]
+},
+"333": {
+"kind": "normal",
+"name": "Zaprzys. Generał",
+"rows": [
+[
+30011,
+1,
+0.5,
+"Kłąb",
+"default:material"
+]
+]
+},
+"334": {
+"kind": "normal",
+"name": "Zaprzys. Komandor",
+"rows": [
+[
+30073,
+1,
+0.5,
+"Biała Wstęga+",
+"default:material"
+]
+]
+},
+"3390": {
+"kind": "boss",
+"name": "Lemur Hrabia",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3391": {
+"kind": "boss",
+"name": "Straż Przyboczna Lemur",
+"rows": [
+[
+39078,
+1,
+10.0,
+"Szary Lśniący Odłamek",
+"default:material"
+],
+[
+39079,
+1,
+40.0,
+"Zielony Lśniący Odłamek",
+"ours"
+],
+[
+39080,
+1,
+10.0,
+"Żółty Lśniący Odłamek",
+"default:material"
+],
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3401": {
+"kind": "normal",
+"name": "Trytońska Murena",
+"rows": [
+[
+30501,
+1,
+0.5,
+"Złota Sprzączka",
+"default:material"
+],
+[
+30511,
+1,
+0.5,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30520,
+1,
+0.5,
+"Złota Spinka",
+"default:material"
+]
+]
+},
+"3402": {
+"kind": "normal",
+"name": "Żołnierz Shark",
+"rows": [
+[
+30501,
+1,
+0.5,
+"Złota Sprzączka",
+"default:material"
+],
+[
+30511,
+1,
+0.5,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30520,
+1,
+0.5,
+"Złota Spinka",
+"default:material"
+]
+]
+},
+"3403": {
+"kind": "normal",
+"name": "Trytoński Mag",
+"rows": [
+[
+30501,
+1,
+0.5,
+"Złota Sprzączka",
+"default:material"
+],
+[
+30511,
+1,
+0.5,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30520,
+1,
+0.5,
+"Złota Spinka",
+"default:material"
+]
+]
+},
+"3404": {
+"kind": "normal",
+"name": "Trytoński Łowca",
+"rows": [
+[
+30501,
+1,
+0.5,
+"Złota Sprzączka",
+"default:material"
+],
+[
+30511,
+1,
+0.5,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30520,
+1,
+0.5,
+"Złota Spinka",
+"default:material"
+]
+]
+},
+"3405": {
+"kind": "normal",
+"name": "Trytoński Rozpruwacz",
+"rows": [
+[
+30501,
+1,
+0.5,
+"Złota Sprzączka",
+"default:material"
+],
+[
+30511,
+1,
+0.5,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30520,
+1,
+0.5,
+"Złota Spinka",
+"default:material"
+]
+]
+},
+"3490": {
+"kind": "boss",
+"name": "Generał Kappa",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3491": {
+"kind": "boss",
+"name": "Tryton",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3501": {
+"kind": "normal",
+"name": "Czerwona Amazonka",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+]
+]
+},
+"3502": {
+"kind": "normal",
+"name": "Czerwony Asasyn",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+]
+]
+},
+"3503": {
+"kind": "normal",
+"name": "Czerwony Mag",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+]
+]
+},
+"3504": {
+"kind": "normal",
+"name": "Czerwony Kat",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+]
+]
+},
+"3505": {
+"kind": "normal",
+"name": "Czarny Generał",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+]
+]
+},
+"351": {
+"kind": "normal",
+"name": "Tchórz. Zaprzys. Żołn.",
+"rows": [
+[
+30034,
+1,
+0.5,
+"Biała Wstęga",
+"default:material"
+]
+]
+},
+"352": {
+"kind": "normal",
+"name": "Tchórz. Zaprzys. Łucznik",
+"rows": [
+[
+30031,
+1,
+0.5,
+"Ornament",
+"default:material"
+]
+]
+},
+"353": {
+"kind": "normal",
+"name": "Tchórz. Zaprzys. Generał",
+"rows": [
+[
+30011,
+1,
+0.5,
+"Kłąb",
+"default:material"
+]
+]
+},
+"354": {
+"kind": "normal",
+"name": "Tchórz. Zaprzys. Komand.",
+"rows": [
+[
+30073,
+1,
+0.5,
+"Biała Wstęga+",
+"default:material"
+]
+]
+},
+"3551": {
+"kind": "normal",
+"name": "Brutalna Czerw. Amazonka",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3552": {
+"kind": "normal",
+"name": "Brutalny Czerw. Asasyn",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3553": {
+"kind": "normal",
+"name": "Brutalny Czerw. Mag",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3554": {
+"kind": "normal",
+"name": "Brutalny Czerw. Kat",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3555": {
+"kind": "normal",
+"name": "Biały Generał",
+"rows": [
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3590": {
+"kind": "boss",
+"name": "Trupia Twarz",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3591": {
+"kind": "boss",
+"name": "Czerwony Wódz",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3596": {
+"kind": "boss",
+"name": "Brutalny Czerwony Wódz",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3601": {
+"kind": "normal",
+"name": "Krab Wojownik",
+"rows": [
+[
+30505,
+1,
+0.5,
+"Szmaragdowa Ozdoba",
+"default:material"
+],
+[
+30515,
+1,
+0.5,
+"Purpurowa Smocza Stal",
+"default:material"
+]
+]
+},
+"3602": {
+"kind": "normal",
+"name": "Kleszczo-Łucznik",
+"rows": [
+[
+30505,
+1,
+0.5,
+"Szmaragdowa Ozdoba",
+"default:material"
+],
+[
+30515,
+1,
+0.5,
+"Purpurowa Smocza Stal",
+"default:material"
+]
+]
+},
+"3603": {
+"kind": "normal",
+"name": "Żołnierz Shrimp",
+"rows": [
+[
+30505,
+1,
+0.5,
+"Szmaragdowa Ozdoba",
+"default:material"
+],
+[
+30515,
+1,
+0.5,
+"Purpurowa Smocza Stal",
+"default:material"
+]
+]
+},
+"3604": {
+"kind": "normal",
+"name": "Diabelski Pustelnik",
+"rows": [
+[
+30505,
+1,
+0.5,
+"Szmaragdowa Ozdoba",
+"default:material"
+],
+[
+30515,
+1,
+0.5,
+"Purpurowa Smocza Stal",
+"default:material"
+]
+]
+},
+"3605": {
+"kind": "normal",
+"name": "Krab Pancerny",
+"rows": [
+[
+30505,
+1,
+0.5,
+"Szmaragdowa Ozdoba",
+"default:material"
+],
+[
+30515,
+1,
+0.5,
+"Purpurowa Smocza Stal",
+"default:material"
+]
+]
+},
+"3690": {
+"kind": "boss",
+"name": "Generał Lobster",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3691": {
+"kind": "boss",
+"name": "Król Krabbs",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3701": {
+"kind": "normal",
+"name": "Gigantyczny Zgryzacz",
+"rows": [
+[
+30502,
+1,
+0.5,
+"Rubinowa Ozdoba",
+"default:material"
+],
+[
+30514,
+1,
+0.5,
+"Fioletowy Materiał",
+"default:material"
+],
+[
+30518,
+1,
+0.5,
+"Złota Przędza",
+"default:material"
+]
+]
+},
+"3702": {
+"kind": "normal",
+"name": "Gigant Oprawca",
+"rows": [
+[
+30502,
+1,
+0.5,
+"Rubinowa Ozdoba",
+"default:material"
+],
+[
+30514,
+1,
+0.5,
+"Fioletowy Materiał",
+"default:material"
+],
+[
+30518,
+1,
+0.5,
+"Złota Przędza",
+"default:material"
+]
+]
+},
+"3703": {
+"kind": "normal",
+"name": "Gigant Mag",
+"rows": [
+[
+30502,
+1,
+0.5,
+"Rubinowa Ozdoba",
+"default:material"
+],
+[
+30514,
+1,
+0.5,
+"Fioletowy Materiał",
+"default:material"
+],
+[
+30518,
+1,
+0.5,
+"Złota Przędza",
+"default:material"
+]
+]
+},
+"3704": {
+"kind": "normal",
+"name": "Dwigant",
+"rows": [
+[
+30502,
+1,
+0.5,
+"Rubinowa Ozdoba",
+"default:material"
+],
+[
+30514,
+1,
+0.5,
+"Fioletowy Materiał",
+"default:material"
+],
+[
+30518,
+1,
+0.5,
+"Złota Przędza",
+"default:material"
+]
+]
+},
+"3705": {
+"kind": "normal",
+"name": "Kapitan Haak",
+"rows": [
+[
+30502,
+1,
+0.5,
+"Rubinowa Ozdoba",
+"default:material"
+],
+[
+30514,
+1,
+0.5,
+"Fioletowy Materiał",
+"default:material"
+],
+[
+30518,
+1,
+0.5,
+"Złota Przędza",
+"default:material"
+]
+]
+},
+"3790": {
+"kind": "boss",
+"name": "Rzygacz",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3791": {
+"kind": "boss",
+"name": "Król Wobba",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"3801": {
+"kind": "normal",
+"name": "Katogr",
+"rows": [
+[
+30507,
+1,
+0.5,
+"Brązowy Zacisk",
+"default:material"
+],
+[
+30517,
+1,
+0.5,
+"Złoty Materiał",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3802": {
+"kind": "normal",
+"name": "Ogro-Łucznik",
+"rows": [
+[
+30507,
+1,
+0.5,
+"Brązowy Zacisk",
+"default:material"
+],
+[
+30517,
+1,
+0.5,
+"Złoty Materiał",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3803": {
+"kind": "normal",
+"name": "Ogr Bojowy",
+"rows": [
+[
+30507,
+1,
+0.5,
+"Brązowy Zacisk",
+"default:material"
+],
+[
+30517,
+1,
+0.5,
+"Złoty Materiał",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3804": {
+"kind": "normal",
+"name": "Ogro-Magus",
+"rows": [
+[
+30507,
+1,
+0.5,
+"Brązowy Zacisk",
+"default:material"
+],
+[
+30517,
+1,
+0.5,
+"Złoty Materiał",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3805": {
+"kind": "normal",
+"name": "Generał Ogg",
+"rows": [
+[
+30507,
+1,
+0.5,
+"Brązowy Zacisk",
+"default:material"
+],
+[
+30517,
+1,
+0.5,
+"Złoty Materiał",
+"default:material"
+],
+[
+30519,
+1,
+0.5,
+"Złoty Hak",
+"default:material"
+]
+]
+},
+"3890": {
+"kind": "boss",
+"name": "Kapitan Shrack",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3891": {
+"kind": "boss",
+"name": "Ogr Maximus",
+"rows": [
+[
+50324,
+1,
+4.0,
+"Skrzynia Ksiąg: Dopalacz",
+"default:other"
+],
+[
+90015,
+1,
+10.0,
+"Kamień do Fundamentu+",
+"default:material"
+],
+[
+90016,
+1,
+10.0,
+"Pień+",
+"default:material"
+],
+[
+90017,
+1,
+10.0,
+"Dykta+",
+"default:material"
+]
+]
+},
+"391": {
+"kind": "normal",
+"name": "Mi-Jung",
+"rows": [
+[
+30018,
+1,
+0.5,
+"Czerwona Wstęga",
+"default:material"
+]
+]
+},
+"3911": {
+"kind": "boss",
+"name": "Aku-Boku",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3912": {
+"kind": "boss",
+"name": "Arboretum",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"3913": {
+"kind": "boss",
+"name": "Sycomor",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"392": {
+"kind": "normal",
+"name": "Eun-Jung",
+"rows": [
+[
+30017,
+1,
+0.5,
+"Ozdobna Spinka Do Włosów",
+"default:material"
+]
+]
+},
+"393": {
+"kind": "normal",
+"name": "Se-Rang",
+"rows": [
+[
+30035,
+1,
+0.5,
+"Krem Do Twarzy",
+"default:material"
+]
+]
+},
+"394": {
+"kind": "normal",
+"name": "Jin-Hee",
+"rows": [
+[
+30073,
+1,
+0.5,
+"Biała Wstęga+",
+"default:material"
+]
+]
+},
+"395": {
+"kind": "normal",
+"name": "Bezduszna Mi-Jung",
+"rows": [
+[
+30018,
+1,
+0.5,
+"Czerwona Wstęga",
+"default:material"
+]
+]
+},
+"396": {
+"kind": "normal",
+"name": "Bezduszna Eun-Jung",
+"rows": [
+[
+30017,
+1,
+0.5,
+"Ozdobna Spinka Do Włosów",
+"default:material"
+]
+]
+},
+"397": {
+"kind": "normal",
+"name": "Bezduszna Se-Rang",
+"rows": [
+[
+30035,
+1,
+0.5,
+"Krem Do Twarzy",
+"default:material"
+]
+]
+},
+"398": {
+"kind": "normal",
+"name": "Bezduszna Jin-Hee",
+"rows": [
+[
+30073,
+1,
+0.5,
+"Biała Wstęga+",
+"default:material"
+]
+]
+},
+"401": {
+"kind": "normal",
+"name": "Żołnierz Czarn. Wiatru",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"402": {
+"kind": "normal",
+"name": "Maniak Czarnego Wiatru",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+],
+[
+30074,
+1,
+0.5,
+"Czarny Uniform+",
+"default:material"
+]
+]
+},
+"403": {
+"kind": "normal",
+"name": "Łucznik Czarnego Wiatru",
+"rows": [
+[
+8001,
+1,
+0.5,
+"Bambusowa Strzała",
+"default:gear+0-5"
+],
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+],
+[
+50007,
+1,
+2.0,
+"Srebrna Szkatułka",
+"ours"
+]
+]
+},
+"404": {
+"kind": "normal",
+"name": "Jak-To Czarnego Wiatru",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"405": {
+"kind": "normal",
+"name": "To-Su Czarnego Wiatru",
+"rows": [
+[
+30005,
+1,
+0.5,
+"Kawałek Zepsutej Zbroi",
+"default:material"
+],
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"406": {
+"kind": "normal",
+"name": "Gu-Ryung Czarnego Wiatru",
+"rows": [
+[
+30030,
+1,
+0.5,
+"Zardzewiałe Ostrze",
+"default:material"
+],
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"431": {
+"kind": "normal",
+"name": "Żołnierz Czarn. Burzy",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"432": {
+"kind": "normal",
+"name": "Maniak Czarn. Burzy",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"433": {
+"kind": "normal",
+"name": "Łucznik Czarn. Burzy",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"434": {
+"kind": "normal",
+"name": "Joh-Hwan Czarn. Burzy",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"435": {
+"kind": "normal",
+"name": "Kyuk-Jan Czarn. Burzy",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"436": {
+"kind": "normal",
+"name": "Pho-Hwan Czarn. Burzy",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"451": {
+"kind": "normal",
+"name": "Zły Czar. Burz. Żołnierz",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"452": {
+"kind": "normal",
+"name": "Zły Czar. Burz. Maniak",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+],
+[
+30074,
+1,
+0.5,
+"Czarny Uniform+",
+"default:material"
+]
+]
+},
+"453": {
+"kind": "normal",
+"name": "Zły Czar. Burz. Łucznik",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"454": {
+"kind": "normal",
+"name": "Zły Czar. Burz. Joh-Hwan",
+"rows": [
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"455": {
+"kind": "normal",
+"name": "Zły Czar. Burz.Kyuk-Jang",
+"rows": [
+[
+30005,
+1,
+0.5,
+"Kawałek Zepsutej Zbroi",
+"default:material"
+],
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"456": {
+"kind": "normal",
+"name": "Zły Czar. Burz. Pho-Hwan",
+"rows": [
+[
+30030,
+1,
+0.5,
+"Zardzewiałe Ostrze",
+"default:material"
+],
+[
+30032,
+1,
+0.5,
+"Czarny Uniform",
+"default:material"
+]
+]
+},
+"491": {
+"kind": "normal",
+"name": "Mahon",
+"rows": [
+[
+13001,
+1,
+0.5,
+"Bojowa Tarcza+1",
+"default:gear+0-5"
+]
+]
+},
+"494": {
+"kind": "normal",
+"name": "Chuong",
+"rows": [
+[
+12501,
+1,
+2.0,
+"Wyzywający Hełm+1",
+"ours"
+]
+]
+},
+"5002": {
+"kind": "boss",
+"name": "Hae-Tae",
+"rows": [
+[
+13203,
+1,
+10.0,
+"Czarna Okrągła Tarcza+3",
+"default:gear+0-5"
+],
+[
+13204,
+1,
+10.0,
+"Czarna Okrągła Tarcza+4",
+"default:gear+0-5"
+]
+]
+},
+"502": {
+"kind": "normal",
+"name": "Dziki Sługa",
+"rows": [
+[
+30041,
+1,
+0.5,
+"Shuriken",
+"default:material"
+]
+]
+},
+"503": {
+"kind": "normal",
+"name": "Dziki Łucznik",
+"rows": [
+[
+8001,
+1,
+0.5,
+"Bambusowa Strzała",
+"default:gear+0-5"
+],
+[
+30052,
+1,
+0.5,
+"Flaga",
+"default:material"
+],
+[
+50013,
+1,
+2.0,
+"Srebrna Szkatułka+",
+"ours"
+]
+]
+},
+"504": {
+"kind": "normal",
+"name": "Dziki Generał",
+"rows": [
+[
+30092,
+1,
+0.5,
+"Zdobycz Dzikusa",
+"default:material"
+]
+]
+},
+"5125": {
+"kind": "normal",
+"name": "Silna Kamienna Małpa",
+"rows": [
+[
+50611,
+1,
+0.2,
+"Ruda Kryształu",
+"default:other"
+]
+]
+},
+"5126": {
+"kind": "normal",
+"name": "Silna Złota Małpa",
+"rows": [
+[
+50611,
+1,
+0.2,
+"Ruda Kryształu",
+"default:other"
+]
+]
+},
+"5161": {
+"kind": "boss",
+"name": "Skalista Małpa",
+"rows": [
+[
+39078,
+1,
+10.0,
+"Szary Lśniący Odłamek",
+"default:material"
+],
+[
+55009,
+1,
+4.0,
+"Skrzynia Ksiąg Peta",
+"default:other"
+],
+[
+55401,
+1,
+4.0,
+"Jajo Małpki",
+"default:other"
+]
+]
+},
+"5162": {
+"kind": "boss",
+"name": "Chodząca Małpa",
+"rows": [
+[
+39078,
+1,
+10.0,
+"Szary Lśniący Odłamek",
+"default:material"
+],
+[
+55009,
+1,
+4.0,
+"Skrzynia Ksiąg Peta",
+"default:other"
+],
+[
+55401,
+1,
+4.0,
+"Jajo Małpki",
+"default:other"
+]
+]
+},
+"5163": {
+"kind": "boss",
+"name": "Lord Małp",
+"rows": [
+[
+39078,
+1,
+10.0,
+"Szary Lśniący Odłamek",
+"default:material"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+55009,
+1,
+4.0,
+"Skrzynia Ksiąg Peta",
+"default:other"
+],
+[
+55401,
+1,
+4.0,
+"Jajo Małpki",
+"default:other"
+]
+]
+},
+"552": {
+"kind": "normal",
+"name": "Silny Dziki Sługa",
+"rows": [
+[
+30041,
+1,
+0.5,
+"Shuriken",
+"default:material"
+]
+]
+},
+"553": {
+"kind": "normal",
+"name": "Silny Dziki Łucznik",
+"rows": [
+[
+30052,
+1,
+0.5,
+"Flaga",
+"default:material"
+]
+]
+},
+"554": {
+"kind": "normal",
+"name": "Silny Dziki Generał",
+"rows": [
+[
+30092,
+1,
+0.5,
+"Zdobycz Dzikusa",
+"default:material"
+]
+]
+},
+"595": {
+"kind": "normal",
+"name": "Best. Guem-Chul",
+"rows": [
+[
+30075,
+1,
+2.0,
+"Shuriken+",
+"ours"
+]
+]
+},
+"6006": {
+"kind": "normal",
+"name": "Ognisty Golem",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30550,
+1,
+0.5,
+"Niebieski Rzemyk",
+"default:material"
+]
+]
+},
+"6051": {
+"kind": "normal",
+"name": "Ignitor",
+"rows": [
+[
+30500,
+1,
+0.5,
+"Rubinowy Ozdobny Nóż",
+"default:material"
+],
+[
+30502,
+1,
+0.5,
+"Rubinowa Ozdoba",
+"default:material"
+],
+[
+30511,
+1,
+0.5,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30512,
+1,
+0.5,
+"Czerwona Smocza Stal",
+"default:material"
+],
+[
+30610,
+1,
+0.5,
+"Mithril",
+"default:material"
+],
+[
+95602,
+1,
+0.5,
+"Wzór Kroju",
+"default:material"
+],
+[
+95603,
+1,
+0.5,
+"Ciężkie Pasy",
+"default:material"
+]
+]
+},
+"6091": {
+"kind": "boss",
+"name": "Razador",
+"rows": [
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+39080,
+1,
+10.0,
+"Żółty Lśniący Odłamek",
+"default:material"
+],
+[
+50726,
+1,
+1.5,
+"Grzyb Tue",
+"ours-other-kind"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours-other-kind"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours-other-kind"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours-other-kind"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours-other-kind"
+]
+]
+},
+"6102": {
+"kind": "normal",
+"name": "Mroźny Owad",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+]
+]
+},
+"6103": {
+"kind": "normal",
+"name": "Mroźny Człowiek",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+]
+]
+},
+"6104": {
+"kind": "normal",
+"name": "Mroźny Yeti",
+"rows": [
+[
+30506,
+1,
+0.5,
+"Szafirowy Ozdobny Nóż",
+"default:material"
+],
+[
+30510,
+1,
+0.5,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30522,
+1,
+0.5,
+"Ogniwa Łańcucha",
+"default:material"
+]
+]
+},
+"6105": {
+"kind": "normal",
+"name": "Mroźny Golem",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+],
+[
+30550,
+1,
+0.5,
+"Niebieski Rzemyk",
+"default:material"
+]
+]
+},
+"6106": {
+"kind": "normal",
+"name": "Mroźny Troll",
+"rows": [
+[
+30503,
+1,
+0.5,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30550,
+1,
+0.5,
+"Niebieski Rzemyk",
+"default:material"
+]
+]
+},
+"6108": {
+"kind": "normal",
+"name": "Mroźny Generał",
+"rows": [
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30521,
+1,
+0.5,
+"Element Pierścienia",
+"default:material"
+],
+[
+30550,
+1,
+0.5,
+"Niebieski Rzemyk",
+"default:material"
+],
+[
+30608,
+1,
+0.5,
+"Stalowe Płyty",
+"default:material"
+],
+[
+95602,
+1,
+0.5,
+"Wzór Kroju",
+"default:material"
+]
+]
+},
+"6151": {
+"kind": "boss",
+"name": "Szel",
+"rows": [
+[
+30503,
+1,
+10.0,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+10.0,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+10.0,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30550,
+1,
+10.0,
+"Niebieski Rzemyk",
+"default:material"
+],
+[
+30610,
+1,
+10.0,
+"Mithril",
+"default:material"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+95602,
+1,
+10.0,
+"Wzór Kroju",
+"default:material"
+],
+[
+95603,
+1,
+10.0,
+"Ciężkie Pasy",
+"default:material"
+]
+]
+},
+"6191": {
+"kind": "boss",
+"name": "Nemere",
+"rows": [
+[
+30610,
+1,
+10.0,
+"Mithril",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+39080,
+1,
+10.0,
+"Żółty Lśniący Odłamek",
+"default:material"
+],
+[
+50726,
+1,
+1.5,
+"Grzyb Tue",
+"ours-other-kind"
+],
+[
+51001,
+1,
+4.0,
+"Odłamek Energii",
+"default:other"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours-other-kind"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours-other-kind"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours-other-kind"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours-other-kind"
+],
+[
+72058,
+1,
+4.0,
+"Pakiet Kamieni Duszy",
+"default:other"
+],
+[
+95926,
+1,
+10.0,
+"Kamyki",
+"default:material"
+]
+]
+},
+"6301": {
+"kind": "normal",
+"name": "Wojownik Ochao",
+"rows": [
+[
+1125,
+1,
+0.5,
+"Nóż Siamese+5",
+"default:gear+0-5"
+],
+[
+2173,
+1,
+2.0,
+"Stalowy Łuk Kruka+3",
+"ours"
+],
+[
+2184,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+4",
+"default:gear+0-5"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+"default:gear+0-5"
+],
+[
+30509,
+1,
+0.5,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30610,
+1,
+0.5,
+"Mithril",
+"default:material"
+],
+[
+50723,
+1,
+2.0,
+"Kwiat Kaki",
+"ours"
+]
+]
+},
+"6302": {
+"kind": "normal",
+"name": "Żołnierz Ochao",
+"rows": [
+[
+2145,
+1,
+0.5,
+"Olbrz. Łuk Żółt. Smoka+5",
+"default:gear+0-5"
+],
+[
+7153,
+1,
+0.5,
+"Ekstazyjny Wachlarz+3",
+"default:gear+0-5"
+],
+[
+12386,
+1,
+0.2,
+"Stalowa Maska+6",
+"default:gear+6"
+],
+[
+15184,
+1,
+0.5,
+"Deszczowe Buty+4",
+"default:gear+0-5"
+],
+[
+27113,
+1,
+1.0,
+"Fioletowa Mikstura(M)",
+"default:potion"
+],
+[
+30510,
+1,
+0.5,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30517,
+1,
+0.5,
+"Złoty Materiał",
+"default:material"
+],
+[
+30604,
+1,
+0.5,
+"Szary Barwnik",
+"default:material"
+],
+[
+30606,
+1,
+0.5,
+"Srebrne Płyty",
+"default:material"
+],
+[
+50722,
+1,
+2.0,
+"Pokrzywa",
+"ours"
+]
+]
+},
+"6303": {
+"kind": "normal",
+"name": "Mag Ochao",
+"rows": [
+[
+1122,
+1,
+0.5,
+"Nóż Siamese+2",
+"default:gear+0-5"
+],
+[
+1133,
+1,
+2.0,
+"Skrzydła Demona Chakr.+3",
+"ours"
+],
+[
+12666,
+1,
+0.2,
+"Świetlista Czapka+6",
+"default:gear+6"
+],
+[
+27100,
+1,
+1.0,
+"Zielona Mikstura(M)",
+"default:potion"
+],
+[
+30511,
+1,
+0.5,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30516,
+1,
+0.5,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+50122,
+1,
+0.2,
+"Żelazna Skrzynia",
+"default:other"
+],
+[
+50725,
+1,
+2.0,
+"Bez",
+"ours"
+],
+[
+50726,
+1,
+1.5,
+"Grzyb Tue",
+"ours"
+],
+[
+95601,
+1,
+0.5,
+"Stabilne Sznury",
+"default:material"
+]
+]
+},
+"6304": {
+"kind": "normal",
+"name": "Kat Ochao",
+"rows": [
+[
+2182,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+2",
+"default:gear+0-5"
+],
+[
+3163,
+1,
+2.0,
+"Miecz Żalu+3",
+"ours"
+],
+[
+5124,
+1,
+0.5,
+"Bambusowy Dzwon+4",
+"default:gear+0-5"
+],
+[
+12526,
+1,
+0.2,
+"Zamkowy Hełm+6",
+"default:gear+6"
+],
+[
+30512,
+1,
+0.5,
+"Czerwona Smocza Stal",
+"default:material"
+],
+[
+30515,
+1,
+0.5,
+"Purpurowa Smocza Stal",
+"default:material"
+],
+[
+30604,
+1,
+0.5,
+"Szary Barwnik",
+"default:material"
+],
+[
+30608,
+1,
+0.5,
+"Stalowe Płyty",
+"default:material"
+],
+[
+30610,
+1,
+0.5,
+"Mithril",
+"default:material"
+],
+[
+50121,
+1,
+2.0,
+"Żelazne Pudełko",
+"ours-other-kind"
+],
+[
+50300,
+1,
+2.0,
+"Księga Umiejętności",
+"ours-other-kind"
+]
+]
+},
+"6305": {
+"kind": "normal",
+"name": "Generał Ochao",
+"rows": [
+[
+183,
+1,
+2.0,
+"Zatruty miecz+3",
+"ours"
+],
+[
+3152,
+1,
+0.5,
+"Złodziej Dusz+2",
+"default:gear+0-5"
+],
+[
+12246,
+1,
+0.2,
+"Upiorna Maska+6",
+"default:gear+6"
+],
+[
+30513,
+1,
+0.5,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30514,
+1,
+0.5,
+"Fioletowy Materiał",
+"default:material"
+],
+[
+30604,
+1,
+0.5,
+"Szary Barwnik",
+"default:material"
+],
+[
+30610,
+1,
+0.5,
+"Mithril",
+"default:material"
+],
+[
+50120,
+1,
+0.2,
+"Żelazna Szkatułka",
+"default:other"
+],
+[
+50300,
+1,
+2.0,
+"Księga Umiejętności",
+"ours-other-kind"
+],
+[
+55003,
+1,
+0.5,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+95601,
+1,
+0.5,
+"Stabilne Sznury",
+"default:material"
+]
+]
+},
+"631": {
+"kind": "normal",
+"name": "Elit. Ork",
+"rows": [
+[
+30007,
+1,
+0.5,
+"Amulet Orka",
+"default:material"
+]
+]
+},
+"632": {
+"kind": "normal",
+"name": "Elit. Ork Zwiadowca",
+"rows": [
+[
+30076,
+1,
+0.5,
+"Amulet Orka+",
+"default:material"
+]
+]
+},
+"635": {
+"kind": "normal",
+"name": "Elit. Ork Generał",
+"rows": [
+[
+30076,
+1,
+0.5,
+"Amulet Orka+",
+"default:material"
+]
+]
+},
+"637": {
+"kind": "normal",
+"name": "Czarny Ork Zwiadowca",
+"rows": [
+[
+30077,
+1,
+0.5,
+"Ząb Orka+",
+"default:material"
+]
+]
+},
+"651": {
+"kind": "normal",
+"name": "Duży Łysy Ork",
+"rows": [
+[
+30007,
+1,
+0.5,
+"Amulet Orka",
+"default:material"
+]
+]
+},
+"652": {
+"kind": "normal",
+"name": "Duży Łysy Ork Zwiadowca",
+"rows": [
+[
+30076,
+1,
+0.5,
+"Amulet Orka+",
+"default:material"
+]
+]
+},
+"655": {
+"kind": "normal",
+"name": "Duży Łysy Ork Generał",
+"rows": [
+[
+30076,
+1,
+0.5,
+"Amulet Orka+",
+"default:material"
+]
+]
+},
+"657": {
+"kind": "normal",
+"name": "Olbrz. Łysy Czar. Ork",
+"rows": [
+[
+30077,
+1,
+0.5,
+"Ząb Orka+",
+"default:material"
+]
+]
+},
+"691": {
+"kind": "boss",
+"name": "Wódz Orków",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"701": {
+"kind": "normal",
+"name": "Ezot. Fanatyk",
+"rows": [
+[
+30008,
+1,
+0.5,
+"Ezoteryczny Przewodnik",
+"default:material"
+]
+]
+},
+"702": {
+"kind": "normal",
+"name": "Ezot. Arahan",
+"rows": [
+[
+30078,
+1,
+0.5,
+"Ezoteryczny Przewodnik+",
+"default:material"
+]
+]
+},
+"705": {
+"kind": "normal",
+"name": "Ezot. Egzekutor",
+"rows": [
+[
+30079,
+1,
+0.5,
+"Nieznany Talizman+",
+"default:material"
+]
+]
+},
+"707": {
+"kind": "normal",
+"name": "Ezot. Przyzywacz",
+"rows": [
+[
+30078,
+1,
+0.5,
+"Ezoteryczny Przewodnik+",
+"default:material"
+]
+]
+},
+"733": {
+"kind": "normal",
+"name": "Elit. Ezot. Wojownik",
+"rows": [
+[
+30079,
+1,
+0.5,
+"Nieznany Talizman+",
+"default:material"
+]
+]
+},
+"734": {
+"kind": "normal",
+"name": "Elit. Ezot. Wódz",
+"rows": [
+[
+30079,
+1,
+0.5,
+"Nieznany Talizman+",
+"default:material"
+]
+]
+},
+"735": {
+"kind": "normal",
+"name": "Elit. Ezot. Egzekutor",
+"rows": [
+[
+30080,
+1,
+0.5,
+"Księga Klątw+",
+"default:material"
+]
+]
+},
+"736": {
+"kind": "normal",
+"name": "Elit. Ezot. Dręczyciel",
+"rows": [
+[
+30080,
+1,
+0.5,
+"Księga Klątw+",
+"default:material"
+]
+]
+},
+"751": {
+"kind": "normal",
+"name": "Wysoki Fanatyk",
+"rows": [
+[
+30008,
+1,
+0.5,
+"Ezoteryczny Przewodnik",
+"default:material"
+]
+]
+},
+"752": {
+"kind": "normal",
+"name": "Wysoki Arahan",
+"rows": [
+[
+30078,
+1,
+0.5,
+"Ezoteryczny Przewodnik+",
+"default:material"
+]
+]
+},
+"755": {
+"kind": "normal",
+"name": "Wysoki Śmiercionośny",
+"rows": [
+[
+30079,
+1,
+0.5,
+"Nieznany Talizman+",
+"default:material"
+]
+]
+},
+"757": {
+"kind": "normal",
+"name": "Wysoki Przywoływacz",
+"rows": [
+[
+30078,
+1,
+0.5,
+"Ezoteryczny Przewodnik+",
+"default:material"
+]
+]
+},
+"773": {
+"kind": "normal",
+"name": "Best. Wojow. Arahan",
+"rows": [
+[
+30079,
+1,
+0.5,
+"Nieznany Talizman+",
+"default:material"
+]
+]
+},
+"774": {
+"kind": "normal",
+"name": "Best. Wódz Arahan",
+"rows": [
+[
+30079,
+1,
+0.5,
+"Nieznany Talizman+",
+"default:material"
+]
+]
+},
+"775": {
+"kind": "normal",
+"name": "Best. Śmiercionośny",
+"rows": [
+[
+30080,
+1,
+0.5,
+"Księga Klątw+",
+"default:material"
+]
+]
+},
+"776": {
+"kind": "normal",
+"name": "Best. Dręczyciel",
+"rows": [
+[
+30080,
+1,
+0.5,
+"Księga Klątw+",
+"default:material"
+]
+]
+},
+"8001": {
+"kind": "stone",
+"name": "Metin Cierpienia",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8002": {
+"kind": "stone",
+"name": "Metin Walki",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8003": {
+"kind": "stone",
+"name": "Metin Bitwy",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8004": {
+"kind": "stone",
+"name": "Metin Chciwości",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8005": {
+"kind": "stone",
+"name": "Metin Czerni",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8006": {
+"kind": "stone",
+"name": "Metin Ciemności",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8007": {
+"kind": "stone",
+"name": "Metin Zazdrości",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8008": {
+"kind": "stone",
+"name": "Metin Duszy",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+]
+]
+},
+"8009": {
+"kind": "stone",
+"name": "Metin Cienia",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8010": {
+"kind": "stone",
+"name": "Metin Twardości",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8011": {
+"kind": "stone",
+"name": "Metin Diabła",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8012": {
+"kind": "stone",
+"name": "Metin Upadku",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8013": {
+"kind": "stone",
+"name": "Metin Śmierci",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8014": {
+"kind": "stone",
+"name": "Metin Morderstwa",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8015": {
+"kind": "stone",
+"name": "Metin Twardości",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8016": {
+"kind": "stone",
+"name": "Metin Diabła",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8017": {
+"kind": "stone",
+"name": "Metin Upadku",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8018": {
+"kind": "stone",
+"name": "Metin Śmierci",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8019": {
+"kind": "stone",
+"name": "Metin Morderstwa",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8024": {
+"kind": "stone",
+"name": "Metin Pung-Ma",
+"rows": [
+[
+12280,
+1,
+10.0,
+"Hełm Mistrza Wojny+0",
+"default:gear+0-5"
+],
+[
+12281,
+1,
+10.0,
+"Hełm Mistrza Wojny+1",
+"default:gear+0-5"
+],
+[
+12400,
+1,
+10.0,
+"Pajęczy Kaptur+0",
+"default:gear+0-5"
+],
+[
+12401,
+1,
+10.0,
+"Pajęczy Kaptur+1",
+"default:gear+0-5"
+],
+[
+12540,
+1,
+10.0,
+"Magiczny Hełm+0",
+"default:gear+0-5"
+],
+[
+12541,
+1,
+10.0,
+"Magiczny Hełm+1",
+"default:gear+0-5"
+],
+[
+12680,
+1,
+10.0,
+"Kapelusz Duszy+0",
+"default:gear+0-5"
+],
+[
+12681,
+1,
+10.0,
+"Kapelusz Duszy+1",
+"default:gear+0-5"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8025": {
+"kind": "stone",
+"name": "Metin Ma-An",
+"rows": [
+[
+12280,
+1,
+10.0,
+"Hełm Mistrza Wojny+0",
+"default:gear+0-5"
+],
+[
+12281,
+1,
+10.0,
+"Hełm Mistrza Wojny+1",
+"default:gear+0-5"
+],
+[
+12400,
+1,
+10.0,
+"Pajęczy Kaptur+0",
+"default:gear+0-5"
+],
+[
+12401,
+1,
+10.0,
+"Pajęczy Kaptur+1",
+"default:gear+0-5"
+],
+[
+12540,
+1,
+10.0,
+"Magiczny Hełm+0",
+"default:gear+0-5"
+],
+[
+12541,
+1,
+10.0,
+"Magiczny Hełm+1",
+"default:gear+0-5"
+],
+[
+12680,
+1,
+10.0,
+"Kapelusz Duszy+0",
+"default:gear+0-5"
+],
+[
+12681,
+1,
+10.0,
+"Kapelusz Duszy+1",
+"default:gear+0-5"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8026": {
+"kind": "stone",
+"name": "Metin Tu-Young",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8027": {
+"kind": "stone",
+"name": "Metin Jeon-Un",
+"rows": [
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8051": {
+"kind": "stone",
+"name": "Metin Mroku",
+"rows": [
+[
+1107,
+1,
+2.0,
+"Smoczy Nóż+7",
+"default:gear+7"
+],
+[
+11296,
+1,
+5.0,
+"Zbroja Z Czarnej Stali+6",
+"default:gear+6"
+],
+[
+11497,
+1,
+2.0,
+"Ubranie Czarn. Wiatru+7",
+"default:gear+7"
+],
+[
+30500,
+1,
+10.0,
+"Rubinowy Ozdobny Nóż",
+"default:material"
+],
+[
+30506,
+1,
+10.0,
+"Szafirowy Ozdobny Nóż",
+"default:material"
+],
+[
+30512,
+1,
+10.0,
+"Czerwona Smocza Stal",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+50300,
+1,
+200.0,
+"Księga Umiejętności",
+"ours"
+],
+[
+50323,
+1,
+4.0,
+"Skrzynia Ksiąg: Riposta",
+"default:other"
+],
+[
+50525,
+1,
+4.0,
+"Kamień Duchowy+",
+"default:other"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8052": {
+"kind": "stone",
+"name": "Metin Żaru",
+"rows": [
+[
+157,
+1,
+2.0,
+"Miecz Szponu Ducha+7",
+"default:gear+7"
+],
+[
+11297,
+1,
+2.0,
+"Zbroja Z Czarnej Stali+7",
+"default:gear+7"
+],
+[
+30501,
+1,
+10.0,
+"Złota Sprzączka",
+"default:material"
+],
+[
+30507,
+1,
+10.0,
+"Brązowy Zacisk",
+"default:material"
+],
+[
+30513,
+1,
+10.0,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+50300,
+1,
+200.0,
+"Księga Umiejętności",
+"ours"
+],
+[
+50323,
+1,
+4.0,
+"Skrzynia Ksiąg: Riposta",
+"default:other"
+],
+[
+50525,
+1,
+4.0,
+"Kamień Duchowy+",
+"default:other"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8053": {
+"kind": "stone",
+"name": "Metin Próżności",
+"rows": [
+[
+147,
+1,
+2.0,
+"Miecz Bojowy+7",
+"default:gear+7"
+],
+[
+7147,
+1,
+2.0,
+"Wachlarz Zbawienia+7",
+"default:gear+7"
+],
+[
+11895,
+1,
+10.0,
+"Czarna Szata+5",
+"default:gear+0-5"
+],
+[
+30502,
+1,
+10.0,
+"Rubinowa Ozdoba",
+"default:material"
+],
+[
+30508,
+1,
+10.0,
+"Szafirowa Ozdoba",
+"default:material"
+],
+[
+30514,
+1,
+10.0,
+"Fioletowy Materiał",
+"default:material"
+],
+[
+30520,
+1,
+10.0,
+"Złota Spinka",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+50300,
+1,
+200.0,
+"Księga Umiejętności",
+"ours"
+],
+[
+50323,
+1,
+4.0,
+"Skrzynia Ksiąg: Riposta",
+"default:other"
+],
+[
+50525,
+1,
+4.0,
+"Kamień Duchowy+",
+"default:other"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8054": {
+"kind": "stone",
+"name": "Metin Gniewu",
+"rows": [
+[
+2145,
+1,
+10.0,
+"Olbrz. Łuk Żółt. Smoka+5",
+"default:gear+0-5"
+],
+[
+5107,
+1,
+2.0,
+"Dzwon Nieba I Ziemi+7",
+"default:gear+7"
+],
+[
+11695,
+1,
+10.0,
+"Zbr. Płyt. Czar. Magii+5",
+"default:gear+0-5"
+],
+[
+11896,
+1,
+5.0,
+"Czarna Szata+6",
+"default:gear+6"
+],
+[
+30503,
+1,
+10.0,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30509,
+1,
+10.0,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30515,
+1,
+10.0,
+"Purpurowa Smocza Stal",
+"default:material"
+],
+[
+30521,
+1,
+10.0,
+"Element Pierścienia",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+50300,
+1,
+200.0,
+"Księga Umiejętności",
+"ours"
+],
+[
+50323,
+1,
+4.0,
+"Skrzynia Ksiąg: Riposta",
+"default:other"
+],
+[
+50525,
+1,
+4.0,
+"Kamień Duchowy+",
+"default:other"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8055": {
+"kind": "stone",
+"name": "Metin Nieszczęścia",
+"rows": [
+[
+2146,
+1,
+5.0,
+"Olbrz. Łuk Żółt. Smoka+6",
+"default:gear+6"
+],
+[
+3147,
+1,
+2.0,
+"Magnetyczne Ostrze+7",
+"default:gear+7"
+],
+[
+11495,
+1,
+10.0,
+"Ubranie Czarn. Wiatru+5",
+"default:gear+0-5"
+],
+[
+11696,
+1,
+5.0,
+"Zbr. Płyt. Czar. Magii+6",
+"default:gear+6"
+],
+[
+11897,
+1,
+2.0,
+"Czarna Szata+7",
+"default:gear+7"
+],
+[
+30504,
+1,
+10.0,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30510,
+1,
+10.0,
+"Wytworny Naramiennik",
+"default:material"
+],
+[
+30516,
+1,
+10.0,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+50300,
+1,
+200.0,
+"Księga Umiejętności",
+"ours"
+],
+[
+50323,
+1,
+4.0,
+"Skrzynia Ksiąg: Riposta",
+"default:other"
+],
+[
+50525,
+1,
+4.0,
+"Kamień Duchowy+",
+"default:other"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8056": {
+"kind": "stone",
+"name": "Metin Podłości",
+"rows": [
+[
+2147,
+1,
+2.0,
+"Olbrz. Łuk Żółt. Smoka+7",
+"default:gear+7"
+],
+[
+11295,
+1,
+10.0,
+"Zbroja Z Czarnej Stali+5",
+"default:gear+0-5"
+],
+[
+11496,
+1,
+5.0,
+"Ubranie Czarn. Wiatru+6",
+"default:gear+6"
+],
+[
+11697,
+1,
+2.0,
+"Zbr. Płyt. Czar. Magii+7",
+"default:gear+7"
+],
+[
+30505,
+1,
+10.0,
+"Szmaragdowa Ozdoba",
+"default:material"
+],
+[
+30511,
+1,
+10.0,
+"Czerwony Materiał",
+"default:material"
+],
+[
+30517,
+1,
+10.0,
+"Złoty Materiał",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+50300,
+1,
+200.0,
+"Księga Umiejętności",
+"ours"
+],
+[
+50323,
+1,
+4.0,
+"Skrzynia Ksiąg: Riposta",
+"default:other"
+],
+[
+50525,
+1,
+4.0,
+"Kamień Duchowy+",
+"default:other"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"8058": {
+"kind": "stone",
+"name": "Metin Mrozu",
+"rows": [
+[
+30503,
+1,
+10.0,
+"Ametystowy Ozdobny Nóż",
+"default:material"
+],
+[
+30504,
+1,
+10.0,
+"Srebrny Zacisk",
+"default:material"
+],
+[
+30509,
+1,
+10.0,
+"Niebieska Smocza Stal",
+"default:material"
+],
+[
+30513,
+1,
+10.0,
+"Szlachetny Naramiennik",
+"default:material"
+],
+[
+30516,
+1,
+10.0,
+"Antyczny Naramiennik",
+"default:material"
+],
+[
+30550,
+1,
+10.0,
+"Niebieski Rzemyk",
+"default:material"
+],
+[
+30608,
+1,
+10.0,
+"Stalowe Płyty",
+"default:material"
+],
+[
+30610,
+1,
+10.0,
+"Mithril",
+"default:material"
+],
+[
+39002,
+1,
+4.0,
+"Pierścień Doświadczenia",
+"default:other"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+"default:other"
+],
+[
+50300,
+1,
+200.0,
+"Księga Umiejętności",
+"ours"
+],
+[
+50323,
+1,
+4.0,
+"Skrzynia Ksiąg: Riposta",
+"default:other"
+],
+[
+50525,
+1,
+4.0,
+"Kamień Duchowy+",
+"default:other"
+],
+[
+55003,
+1,
+10.0,
+"Księga Młodego Zwierza",
+"default:material"
+],
+[
+70012,
+1,
+15.0,
+"Łza Bogini",
+"ours"
+],
+[
+70014,
+1,
+1.0,
+"Pigułka Krwi",
+"ours"
+],
+[
+70037,
+1,
+5.0,
+"Księga Zapomnienia",
+"ours"
+],
+[
+70048,
+1,
+20.0,
+"Płaszcz Uciekiniera",
+"ours"
+],
+[
+95602,
+1,
+10.0,
+"Wzór Kroju",
+"default:material"
+],
+[
+95603,
+1,
+10.0,
+"Ciężkie Pasy",
+"default:material"
+],
+[
+95926,
+1,
+10.0,
+"Kamyki",
+"default:material"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+"default:material"
+]
+]
+},
+"902": {
+"kind": "normal",
+"name": "Zarażony Pies",
+"rows": [
+[
+27110,
+1,
+1.0,
+"Zielona Mikstura(M)",
+"default:potion"
+],
+[
+30009,
+1,
+0.5,
+"Nieznane Lekarstwo",
+"default:material"
+]
+]
+},
+"903": {
+"kind": "normal",
+"name": "Zarażony Człowiek",
+"rows": [
+[
+30083,
+1,
+0.5,
+"Nieznane Lekarstwo+",
+"default:material"
+]
+]
+},
+"904": {
+"kind": "normal",
+"name": "Zarażony Miecznik",
+"rows": [
+[
+27110,
+1,
+1.0,
+"Zielona Mikstura(M)",
+"default:potion"
+]
+]
+},
+"905": {
+"kind": "normal",
+"name": "Zarażony Włócznik",
+"rows": [
+[
+27110,
+1,
+1.0,
+"Zielona Mikstura(M)",
+"default:potion"
+],
+[
+30085,
+1,
+0.5,
+"Kawałek Płótna+",
+"default:material"
+]
+]
+},
+"906": {
+"kind": "normal",
+"name": "Zarażony Łucznik",
+"rows": [
+[
+8004,
+1,
+0.5,
+"Stalowa Strzała",
+"default:gear+0-5"
+],
+[
+50006,
+1,
+2.0,
+"Złota Szkatułka",
+"ours"
+]
+]
+},
+"932": {
+"kind": "normal",
+"name": "Zły Zarażony Pies",
+"rows": [
+[
+30009,
+1,
+0.5,
+"Nieznane Lekarstwo",
+"default:material"
+]
+]
+},
+"933": {
+"kind": "normal",
+"name": "Zły Zarażony Człowiek",
+"rows": [
+[
+30083,
+1,
+0.5,
+"Nieznane Lekarstwo+",
+"default:material"
+]
+]
+},
+"935": {
+"kind": "normal",
+"name": "Zły Zarażony Włócznik",
+"rows": [
+[
+30085,
+1,
+0.5,
+"Kawałek Płótna+",
+"default:material"
+]
+]
+}
+},
+"conflicts": [
+[
+1601,
+"Ogr Wojownik",
+"level",
+"68",
+71,
+"maps_wz.sql"
+],
+[
+1602,
+"Ogr Rzeźnik",
+"level",
+"70",
+73,
+"maps_wz.sql"
+],
+[
+2493,
+"Beran-Setaou",
+"level",
+"93",
+97,
+"apply.sh"
+],
+[
+2493,
+"Beran-Setaou",
+"max_hp",
+"3000000",
+6300000,
+"apply.sh"
+],
+[
+2493,
+"Beran-Setaou",
+"exp",
+"2000000",
+3564000,
+"apply.sh"
+],
+[
+2493,
+"Beran-Setaou",
+"def",
+"250",
+930,
+"apply.sh"
+],
+[
+2493,
+"Beran-Setaou",
+"regen_cycle",
+"30",
+44,
+"apply.sh"
+],
+[
+2493,
+"Beran-Setaou",
+"regen_percent",
+"1",
+6,
+"apply.sh"
+],
+[
+8031,
+"Metin Góry",
+"level",
+"90",
+60,
+"apply.sh"
+],
+[
+8031,
+"Metin Góry",
+"max_hp",
+"300000",
+250000,
+"apply.sh"
+],
+[
+8031,
+"Metin Góry",
+"def",
+"90",
+80,
+"apply.sh"
+],
+[
+8032,
+"Metin Zemsty",
+"level",
+"90",
+60,
+"apply.sh"
+],
+[
+8032,
+"Metin Zemsty",
+"max_hp",
+"300000",
+250000,
+"apply.sh"
+],
+[
+8032,
+"Metin Zemsty",
+"def",
+"90",
+80,
+"apply.sh"
+],
+[
+8033,
+"Metin Samotności",
+"level",
+"90",
+60,
+"apply.sh"
+],
+[
+8033,
+"Metin Samotności",
+"max_hp",
+"300000",
+250000,
+"apply.sh"
+],
+[
+8033,
+"Metin Samotności",
+"def",
+"90",
+80,
+"apply.sh"
+],
+[
+8034,
+"Metin Pychy",
+"level",
+"90",
+60,
+"apply.sh"
+],
+[
+8034,
+"Metin Pychy",
+"max_hp",
+"300000",
+250000,
+"apply.sh"
+],
+[
+8034,
+"Metin Pychy",
+"def",
+"90",
+80,
+"apply.sh"
+]
+],
+"fixes": [
+[
+131,
+"enchant_curse",
+0,
+10
+],
+[
+132,
+"enchant_curse",
+0,
+10
+],
+[
+133,
+"enchant_curse",
+0,
+10
+],
+[
+134,
+"enchant_curse",
+0,
+10
+],
+[
+135,
+"enchant_curse",
+0,
+10
+],
+[
+136,
+"enchant_curse",
+0,
+10
+],
+[
+137,
+"enchant_curse",
+0,
+10
+],
+[
+138,
+"enchant_curse",
+0,
+10
+],
+[
+139,
+"enchant_curse",
+0,
+10
+],
+[
+140,
+"enchant_curse",
+0,
+10
+],
+[
+141,
+"enchant_curse",
+0,
+10
+],
+[
+142,
+"enchant_curse",
+0,
+10
+],
+[
+143,
+"enchant_curse",
+0,
+10
+],
+[
+144,
+"enchant_curse",
+0,
+10
+],
+[
+151,
+"def",
+19,
+15
+],
+[
+152,
+"def",
+31,
+25
+],
+[
+153,
+"def",
+19,
+15
+],
+[
+154,
+"def",
+33,
+26
+],
+[
+155,
+"def",
+36,
+29
+],
+[
+191,
+"damage_max",
+106,
+96
+],
+[
+191,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+192,
+"damage_max",
+92,
+84
+],
+[
+192,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+193,
+"damage_max",
+97,
+88
+],
+[
+193,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+194,
+"damage_max",
+110,
+100
+],
+[
+194,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+331,
+"resist_wind",
+30,
+0
+],
+[
+332,
+"resist_wind",
+30,
+0
+],
+[
+333,
+"resist_wind",
+30,
+0
+],
+[
+334,
+"resist_wind",
+30,
+0
+],
+[
+401,
+"resist_wind",
+0,
+-70
+],
+[
+402,
+"resist_wind",
+0,
+-70
+],
+[
+403,
+"resist_wind",
+0,
+-70
+],
+[
+404,
+"resist_wind",
+0,
+-60
+],
+[
+405,
+"resist_wind",
+0,
+-60
+],
+[
+406,
+"resist_wind",
+0,
+-60
+],
+[
+431,
+"resist_wind",
+0,
+-50
+],
+[
+432,
+"resist_wind",
+0,
+-50
+],
+[
+433,
+"resist_wind",
+0,
+-50
+],
+[
+434,
+"resist_wind",
+0,
+-50
+],
+[
+435,
+"resist_wind",
+0,
+-50
+],
+[
+436,
+"resist_wind",
+0,
+-50
+],
+[
+451,
+"resist_wind",
+0,
+-70
+],
+[
+452,
+"resist_wind",
+0,
+-70
+],
+[
+453,
+"resist_wind",
+0,
+-70
+],
+[
+454,
+"resist_wind",
+0,
+-60
+],
+[
+455,
+"resist_wind",
+0,
+-60
+],
+[
+456,
+"resist_wind",
+0,
+-60
+],
+[
+491,
+"max_hp",
+3521,
+3201
+],
+[
+491,
+"damage_min",
+98,
+75
+],
+[
+491,
+"damage_max",
+143,
+110
+],
+[
+491,
+"def",
+68,
+38
+],
+[
+491,
+"resist_wind",
+0,
+-50
+],
+[
+491,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+492,
+"max_hp",
+4302,
+3911
+],
+[
+492,
+"damage_min",
+81,
+62
+],
+[
+492,
+"damage_max",
+150,
+115
+],
+[
+492,
+"def",
+77,
+43
+],
+[
+492,
+"attack_speed",
+120,
+100
+],
+[
+492,
+"regen_cycle",
+11,
+14
+],
+[
+492,
+"resist_wind",
+0,
+-50
+],
+[
+492,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+493,
+"max_hp",
+5742,
+4219
+],
+[
+493,
+"damage_min",
+85,
+65
+],
+[
+493,
+"damage_max",
+156,
+120
+],
+[
+493,
+"def",
+94,
+45
+],
+[
+493,
+"regen_cycle",
+13,
+4
+],
+[
+493,
+"resist_wind",
+0,
+-50
+],
+[
+493,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+494,
+"max_hp",
+5019,
+5220
+],
+[
+494,
+"damage_min",
+94,
+72
+],
+[
+494,
+"damage_max",
+173,
+133
+],
+[
+494,
+"def",
+81,
+52
+],
+[
+494,
+"regen_cycle",
+15,
+19
+],
+[
+494,
+"enchant_critical",
+25,
+5
+],
+[
+494,
+"resist_wind",
+0,
+-50
+],
+[
+494,
+"ai_flag",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+636,
+"exp",
+4403,
+5180
+],
+[
+637,
+"exp",
+4688,
+5516
+],
+[
+691,
+"level",
+54,
+50
+],
+[
+691,
+"max_hp",
+39850,
+24618
+],
+[
+691,
+"def",
+77,
+57
+],
+[
+691,
+"enchant_critical",
+25,
+0
+],
+[
+691,
+"resist_sword",
+10,
+0
+],
+[
+691,
+"resist_twohand",
+10,
+0
+],
+[
+691,
+"resist_dagger",
+10,
+0
+],
+[
+691,
+"resist_bell",
+10,
+0
+],
+[
+691,
+"resist_fan",
+10,
+0
+],
+[
+691,
+"resist_bow",
+15,
+0
+],
+[
+691,
+"resist_magic",
+10,
+0
+],
+[
+693,
+"resist_fire",
+100,
+0
+],
+[
+693,
+"resist_elect",
+50,
+0
+],
+[
+693,
+"resist_magic",
+0,
+50
+],
+[
+693,
+"resist_wind",
+50,
+0
+],
+[
+701,
+"resist_dagger",
+0,
+1
+],
+[
+701,
+"resist_wind",
+0,
+-70
+],
+[
+702,
+"resist_wind",
+0,
+-60
+],
+[
+703,
+"resist_dagger",
+0,
+1
+],
+[
+703,
+"resist_wind",
+0,
+-60
+],
+[
+704,
+"resist_wind",
+0,
+-50
+],
+[
+705,
+"resist_wind",
+0,
+-60
+],
+[
+706,
+"resist_magic",
+0,
+1
+],
+[
+706,
+"resist_wind",
+0,
+-40
+],
+[
+707,
+"resist_magic",
+0,
+1
+],
+[
+707,
+"resist_wind",
+0,
+-40
+],
+[
+731,
+"resist_dagger",
+0,
+1
+],
+[
+731,
+"resist_wind",
+0,
+-70
+],
+[
+732,
+"resist_wind",
+0,
+-60
+],
+[
+733,
+"resist_dagger",
+0,
+1
+],
+[
+733,
+"resist_wind",
+0,
+-60
+],
+[
+734,
+"resist_wind",
+0,
+-50
+],
+[
+735,
+"resist_wind",
+0,
+-60
+],
+[
+736,
+"resist_magic",
+0,
+1
+],
+[
+736,
+"resist_wind",
+0,
+-40
+],
+[
+737,
+"resist_magic",
+0,
+1
+],
+[
+737,
+"resist_wind",
+0,
+-40
+],
+[
+751,
+"resist_dagger",
+0,
+1
+],
+[
+751,
+"resist_wind",
+0,
+-70
+],
+[
+752,
+"resist_wind",
+0,
+-60
+],
+[
+753,
+"resist_dagger",
+0,
+1
+],
+[
+753,
+"resist_wind",
+0,
+-60
+],
+[
+754,
+"resist_wind",
+0,
+-50
+],
+[
+755,
+"resist_wind",
+0,
+-60
+],
+[
+756,
+"resist_magic",
+0,
+1
+],
+[
+756,
+"resist_wind",
+0,
+-40
+],
+[
+757,
+"resist_magic",
+0,
+1
+],
+[
+757,
+"resist_wind",
+0,
+-40
+],
+[
+771,
+"exp",
+1187,
+732
+],
+[
+771,
+"resist_dagger",
+0,
+1
+],
+[
+771,
+"resist_wind",
+0,
+-70
+],
+[
+772,
+"exp",
+1331,
+895
+],
+[
+772,
+"resist_wind",
+0,
+-60
+],
+[
+773,
+"exp",
+1426,
+911
+],
+[
+773,
+"resist_dagger",
+0,
+1
+],
+[
+773,
+"resist_wind",
+0,
+-60
+],
+[
+774,
+"exp",
+2122,
+1519
+],
+[
+774,
+"resist_wind",
+0,
+-50
+],
+[
+775,
+"exp",
+1388,
+928
+],
+[
+775,
+"resist_wind",
+0,
+-60
+],
+[
+776,
+"exp",
+3622,
+3150
+],
+[
+776,
+"resist_magic",
+0,
+1
+],
+[
+776,
+"resist_wind",
+0,
+-40
+],
+[
+777,
+"exp",
+3687,
+3206
+],
+[
+777,
+"resist_magic",
+0,
+1
+],
+[
+777,
+"resist_wind",
+0,
+-40
+],
+[
+791,
+"level",
+60,
+54
+],
+[
+791,
+"max_hp",
+91360,
+101360
+],
+[
+791,
+"enchant_critical",
+5,
+0
+],
+[
+791,
+"enchant_penetrate",
+15,
+0
+],
+[
+791,
+"resist_sword",
+14,
+0
+],
+[
+791,
+"resist_twohand",
+14,
+0
+],
+[
+791,
+"resist_dagger",
+5,
+0
+],
+[
+791,
+"resist_bell",
+5,
+0
+],
+[
+791,
+"resist_fan",
+5,
+0
+],
+[
+791,
+"resist_bow",
+15,
+0
+],
+[
+791,
+"resist_magic",
+5,
+50
+],
+[
+791,
+"resist_wind",
+0,
+-30
+],
+[
+792,
+"level",
+68,
+62
+],
+[
+792,
+"max_hp",
+219600,
+319600
+],
+[
+792,
+"attack_speed",
+150,
+100
+],
+[
+792,
+"move_speed",
+170,
+120
+],
+[
+792,
+"regen_percent",
+22,
+27
+],
+[
+792,
+"enchant_critical",
+5,
+0
+],
+[
+792,
+"enchant_penetrate",
+15,
+0
+],
+[
+792,
+"resist_sword",
+24,
+0
+],
+[
+792,
+"resist_twohand",
+24,
+0
+],
+[
+792,
+"resist_dagger",
+10,
+0
+],
+[
+792,
+"resist_bell",
+10,
+0
+],
+[
+792,
+"resist_fan",
+10,
+0
+],
+[
+792,
+"resist_bow",
+30,
+0
+],
+[
+792,
+"resist_magic",
+10,
+90
+],
+[
+792,
+"resist_wind",
+0,
+-20
+],
+[
+793,
+"level",
+57,
+54
+],
+[
+793,
+"resist_magic",
+0,
+60
+],
+[
+793,
+"resist_wind",
+0,
+-30
+],
+[
+794,
+"level",
+65,
+62
+],
+[
+794,
+"resist_magic",
+0,
+60
+],
+[
+794,
+"resist_wind",
+0,
+-20
+],
+[
+795,
+"resist_fire",
+100,
+0
+],
+[
+795,
+"resist_elect",
+50,
+0
+],
+[
+795,
+"resist_magic",
+0,
+50
+],
+[
+795,
+"resist_wind",
+50,
+-20
+],
+[
+796,
+"resist_fire",
+100,
+0
+],
+[
+796,
+"resist_elect",
+50,
+0
+],
+[
+796,
+"resist_magic",
+0,
+50
+],
+[
+796,
+"resist_wind",
+50,
+-20
+],
+[
+901,
+"exp",
+1135,
+946
+],
+[
+901,
+"move_speed",
+180,
+100
+],
+[
+901,
+"enchant_curse",
+0,
+1
+],
+[
+902,
+"exp",
+1181,
+984
+],
+[
+902,
+"move_speed",
+120,
+100
+],
+[
+902,
+"enchant_curse",
+0,
+1
+],
+[
+902,
+"resist_dagger",
+0,
+1
+],
+[
+903,
+"exp",
+1226,
+1022
+],
+[
+903,
+"move_speed",
+180,
+100
+],
+[
+903,
+"enchant_curse",
+0,
+1
+],
+[
+904,
+"exp",
+2122,
+1768
+],
+[
+904,
+"enchant_curse",
+0,
+1
+],
+[
+905,
+"exp",
+2237,
+1864
+],
+[
+905,
+"enchant_curse",
+0,
+1
+],
+[
+906,
+"exp",
+2796,
+2330
+],
+[
+906,
+"enchant_curse",
+0,
+1
+],
+[
+906,
+"resist_dagger",
+-5,
+0
+],
+[
+907,
+"exp",
+5119,
+3792
+],
+[
+907,
+"enchant_curse",
+0,
+1
+],
+[
+931,
+"exp",
+794,
+662
+],
+[
+931,
+"enchant_curse",
+0,
+1
+],
+[
+932,
+"exp",
+827,
+689
+],
+[
+932,
+"enchant_curse",
+0,
+1
+],
+[
+932,
+"resist_dagger",
+0,
+1
+],
+[
+933,
+"exp",
+859,
+716
+],
+[
+933,
+"enchant_curse",
+0,
+1
+],
+[
+934,
+"exp",
+1486,
+1238
+],
+[
+934,
+"enchant_curse",
+0,
+1
+],
+[
+935,
+"exp",
+1566,
+1305
+],
+[
+935,
+"enchant_curse",
+0,
+1
+],
+[
+936,
+"exp",
+1957,
+1631
+],
+[
+936,
+"enchant_curse",
+0,
+1
+],
+[
+936,
+"resist_dagger",
+-5,
+0
+],
+[
+937,
+"exp",
+3583,
+2654
+],
+[
+937,
+"enchant_curse",
+0,
+1
+],
+[
+991,
+"enchant_curse",
+0,
+30
+],
+[
+992,
+"enchant_curse",
+0,
+30
+],
+[
+993,
+"enchant_curse",
+0,
+50
+],
+[
+1001,
+"enchant_curse",
+0,
+3
+],
+[
+1002,
+"enchant_curse",
+0,
+3
+],
+[
+1002,
+"resist_dagger",
+-5,
+0
+],
+[
+1002,
+"resist_magic",
+0,
+5
+],
+[
+1003,
+"enchant_curse",
+0,
+3
+],
+[
+1004,
+"enchant_curse",
+0,
+3
+],
+[
+1031,
+"enchant_curse",
+0,
+5
+],
+[
+1032,
+"enchant_curse",
+0,
+5
+],
+[
+1032,
+"resist_dagger",
+-5,
+0
+],
+[
+1033,
+"enchant_curse",
+0,
+10
+],
+[
+1034,
+"enchant_curse",
+0,
+10
+],
+[
+1034,
+"resist_magic",
+0,
+10
+],
+[
+1035,
+"enchant_curse",
+0,
+15
+],
+[
+1036,
+"enchant_curse",
+0,
+15
+],
+[
+1036,
+"resist_magic",
+0,
+15
+],
+[
+1037,
+"enchant_curse",
+0,
+20
+],
+[
+1037,
+"resist_dagger",
+0,
+5
+],
+[
+1038,
+"enchant_curse",
+0,
+20
+],
+[
+1039,
+"enchant_curse",
+0,
+20
+],
+[
+1039,
+"resist_dagger",
+-15,
+-5
+],
+[
+1039,
+"resist_magic",
+0,
+20
+],
+[
+1040,
+"enchant_curse",
+0,
+20
+],
+[
+1041,
+"enchant_curse",
+0,
+20
+],
+[
+1041,
+"resist_magic",
+0,
+25
+],
+[
+1061,
+"enchant_curse",
+0,
+5
+],
+[
+1062,
+"enchant_curse",
+0,
+5
+],
+[
+1062,
+"resist_dagger",
+-5,
+0
+],
+[
+1063,
+"enchant_curse",
+0,
+10
+],
+[
+1064,
+"enchant_curse",
+0,
+10
+],
+[
+1064,
+"resist_magic",
+0,
+10
+],
+[
+1065,
+"enchant_curse",
+0,
+15
+],
+[
+1066,
+"enchant_curse",
+0,
+15
+],
+[
+1066,
+"resist_magic",
+0,
+15
+],
+[
+1067,
+"enchant_curse",
+0,
+20
+],
+[
+1067,
+"resist_dagger",
+0,
+5
+],
+[
+1068,
+"enchant_curse",
+0,
+20
+],
+[
+1069,
+"enchant_curse",
+0,
+20
+],
+[
+1069,
+"resist_dagger",
+-15,
+-5
+],
+[
+1069,
+"resist_magic",
+0,
+20
+],
+[
+1070,
+"enchant_curse",
+0,
+20
+],
+[
+1071,
+"enchant_curse",
+0,
+20
+],
+[
+1071,
+"resist_magic",
+0,
+25
+],
+[
+1091,
+"enchant_curse",
+0,
+30
+],
+[
+1091,
+"resist_magic",
+10,
+30
+],
+[
+1092,
+"enchant_curse",
+0,
+30
+],
+[
+1092,
+"resist_magic",
+10,
+30
+],
+[
+1093,
+"enchant_curse",
+0,
+50
+],
+[
+1093,
+"resist_bow",
+0,
+50
+],
+[
+1093,
+"resist_magic",
+10,
+60
+],
+[
+1094,
+"resist_fire",
+100,
+0
+],
+[
+1094,
+"resist_elect",
+50,
+0
+],
+[
+1094,
+"resist_magic",
+0,
+50
+],
+[
+1094,
+"resist_wind",
+50,
+0
+],
+[
+1095,
+"resist_fire",
+100,
+0
+],
+[
+1095,
+"resist_elect",
+50,
+0
+],
+[
+1095,
+"resist_magic",
+0,
+50
+],
+[
+1095,
+"resist_wind",
+50,
+0
+],
+[
+1096,
+"enchant_curse",
+0,
+30
+],
+[
+1096,
+"resist_magic",
+0,
+30
+],
+[
+1101,
+"exp",
+1973,
+1315
+],
+[
+1102,
+"exp",
+2004,
+1336
+],
+[
+1103,
+"exp",
+2036,
+1357
+],
+[
+1104,
+"exp",
+3393,
+2262
+],
+[
+1104,
+"resist_dagger",
+0,
+5
+],
+[
+1105,
+"exp",
+3446,
+2297
+],
+[
+1106,
+"exp",
+4081,
+2332
+],
+[
+1107,
+"exp",
+8162,
+4664
+],
+[
+1131,
+"resist_fire",
+-30,
+0
+],
+[
+1132,
+"resist_fire",
+-30,
+0
+],
+[
+1133,
+"resist_fire",
+-30,
+0
+],
+[
+1134,
+"resist_fire",
+-30,
+0
+],
+[
+1135,
+"resist_fire",
+-30,
+0
+],
+[
+1136,
+"resist_fire",
+-30,
+0
+],
+[
+1137,
+"resist_fire",
+-30,
+0
+],
+[
+1151,
+"resist_fire",
+-30,
+0
+],
+[
+1152,
+"resist_fire",
+-30,
+0
+],
+[
+1153,
+"resist_fire",
+-30,
+0
+],
+[
+1154,
+"resist_fire",
+-30,
+0
+],
+[
+1155,
+"resist_fire",
+-30,
+0
+],
+[
+1156,
+"resist_fire",
+-30,
+0
+],
+[
+1157,
+"resist_fire",
+-30,
+0
+],
+[
+1174,
+"resist_dagger",
+0,
+5
+],
+[
+1191,
+"resist_fire",
+-20,
+0
+],
+[
+1191,
+"resist_magic",
+0,
+90
+],
+[
+1192,
+"resist_fire",
+-20,
+0
+],
+[
+1192,
+"resist_magic",
+0,
+40
+],
+[
+1301,
+"exp",
+1483,
+1099
+],
+[
+1301,
+"resist_wind",
+0,
+-60
+],
+[
+1302,
+"exp",
+5005,
+3792
+],
+[
+1302,
+"resist_dagger",
+0,
+10
+],
+[
+1302,
+"resist_wind",
+0,
+-40
+],
+[
+1303,
+"exp",
+1536,
+1118
+],
+[
+1303,
+"resist_wind",
+0,
+-60
+],
+[
+1304,
+"exp",
+24080,
+72240
+],
+[
+1304,
+"resist_bow",
+15,
+10
+],
+[
+1304,
+"resist_magic",
+10,
+0
+],
+[
+1304,
+"resist_wind",
+0,
+-30
+],
+[
+1305,
+"exp",
+5223,
+3920
+],
+[
+1305,
+"resist_wind",
+0,
+-40
+],
+[
+1306,
+"resist_elect",
+0,
+-30
+],
+[
+1306,
+"resist_magic",
+0,
+60
+],
+[
+1307,
+"resist_fire",
+100,
+0
+],
+[
+1307,
+"resist_elect",
+50,
+-20
+],
+[
+1307,
+"resist_magic",
+0,
+50
+],
+[
+1307,
+"resist_wind",
+50,
+0
+],
+[
+1308,
+"resist_fire",
+100,
+0
+],
+[
+1308,
+"resist_elect",
+50,
+-30
+],
+[
+1308,
+"resist_magic",
+0,
+50
+],
+[
+1308,
+"resist_wind",
+50,
+0
+],
+[
+1309,
+"resist_fire",
+100,
+0
+],
+[
+1309,
+"resist_elect",
+50,
+-30
+],
+[
+1309,
+"resist_magic",
+0,
+50
+],
+[
+1309,
+"resist_wind",
+50,
+0
+],
+[
+1310,
+"resist_fire",
+100,
+0
+],
+[
+1310,
+"resist_elect",
+50,
+-30
+],
+[
+1310,
+"resist_magic",
+0,
+50
+],
+[
+1310,
+"resist_wind",
+50,
+0
+],
+[
+1331,
+"resist_wind",
+0,
+-60
+],
+[
+1332,
+"exp",
+3980,
+2654
+],
+[
+1332,
+"resist_dagger",
+0,
+10
+],
+[
+1332,
+"resist_wind",
+0,
+-40
+],
+[
+1333,
+"resist_wind",
+0,
+-60
+],
+[
+1334,
+"resist_elect",
+0,
+-30
+],
+[
+1335,
+"resist_wind",
+0,
+-40
+],
+[
+1401,
+"max_hp",
+72346,
+4823
+],
+[
+1401,
+"exp",
+8602,
+860
+],
+[
+1401,
+"def",
+81,
+64
+],
+[
+1401,
+"st",
+84,
+79
+],
+[
+1401,
+"resist_elect",
+0,
+-50
+],
+[
+1401,
+"resist_magic",
+0,
+15
+],
+[
+1402,
+"max_hp",
+108134,
+7208
+],
+[
+1402,
+"exp",
+16044,
+1604
+],
+[
+1402,
+"def",
+83,
+66
+],
+[
+1402,
+"st",
+91,
+86
+],
+[
+1402,
+"resist_elect",
+0,
+-50
+],
+[
+1402,
+"resist_magic",
+0,
+20
+],
+[
+1402,
+"setImmuneFlag",
+"SLOW,CURSE",
+"SLOW"
+],
+[
+1403,
+"max_hp",
+178080,
+11872
+],
+[
+1403,
+"exp",
+34608,
+3460
+],
+[
+1403,
+"def",
+90,
+72
+],
+[
+1403,
+"st",
+94,
+89
+],
+[
+1403,
+"resist_elect",
+0,
+-50
+],
+[
+1403,
+"resist_magic",
+0,
+25
+],
+[
+1403,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+"STUN,SLOW,TERROR"
+],
+[
+1501,
+"max_hp",
+73997,
+4933
+],
+[
+1501,
+"exp",
+4654,
+930
+],
+[
+1501,
+"def",
+78,
+62
+],
+[
+1501,
+"st",
+84,
+79
+],
+[
+1501,
+"resist_magic",
+0,
+15
+],
+[
+1502,
+"max_hp",
+79738,
+5315
+],
+[
+1502,
+"exp",
+4855,
+971
+],
+[
+1502,
+"def",
+83,
+66
+],
+[
+1502,
+"st",
+85,
+80
+],
+[
+1502,
+"resist_magic",
+0,
+20
+],
+[
+1503,
+"max_hp",
+111053,
+7403
+],
+[
+1503,
+"exp",
+8540,
+1708
+],
+[
+1503,
+"def",
+87,
+69
+],
+[
+1503,
+"st",
+92,
+87
+],
+[
+1503,
+"resist_magic",
+0,
+25
+],
+[
+1601,
+"max_hp",
+63024,
+5305
+],
+[
+1601,
+"exp",
+7490,
+892
+],
+[
+1601,
+"def",
+79,
+65
+],
+[
+1601,
+"st",
+85,
+80
+],
+[
+1601,
+"resist_elect",
+0,
+-50
+],
+[
+1601,
+"resist_magic",
+0,
+15
+],
+[
+1602,
+"max_hp",
+101222,
+7828
+],
+[
+1602,
+"exp",
+15736,
+1873
+],
+[
+1602,
+"def",
+85,
+68
+],
+[
+1602,
+"st",
+85,
+80
+],
+[
+1602,
+"resist_elect",
+0,
+-50
+],
+[
+1602,
+"resist_magic",
+0,
+20
+],
+[
+1602,
+"setImmuneFlag",
+"SLOW,CURSE",
+"SLOW"
+],
+[
+1603,
+"max_hp",
+111053,
+7403
+],
+[
+1603,
+"exp",
+16464,
+1960
+],
+[
+1603,
+"def",
+88,
+70
+],
+[
+1603,
+"st",
+85,
+80
+],
+[
+1603,
+"resist_elect",
+0,
+-50
+],
+[
+1603,
+"resist_magic",
+0,
+25
+],
+[
+1603,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+"STUN,SLOW,TERROR"
+],
+[
+1901,
+"exp",
+23120,
+69360
+],
+[
+1902,
+"resist_magic",
+0,
+60
+],
+[
+1903,
+"resist_fire",
+100,
+0
+],
+[
+1903,
+"resist_elect",
+50,
+0
+],
+[
+1903,
+"resist_magic",
+0,
+50
+],
+[
+1903,
+"resist_wind",
+50,
+0
+],
+[
+1904,
+"resist_fire",
+100,
+0
+],
+[
+1904,
+"resist_elect",
+50,
+0
+],
+[
+1904,
+"resist_magic",
+0,
+50
+],
+[
+1904,
+"resist_wind",
+50,
+0
+],
+[
+1905,
+"resist_fire",
+100,
+0
+],
+[
+1905,
+"resist_elect",
+50,
+0
+],
+[
+1905,
+"resist_magic",
+0,
+50
+],
+[
+1905,
+"resist_wind",
+50,
+0
+],
+[
+1906,
+"resist_fire",
+100,
+0
+],
+[
+1906,
+"resist_elect",
+50,
+0
+],
+[
+1906,
+"resist_magic",
+0,
+50
+],
+[
+1906,
+"resist_wind",
+50,
+0
+],
+[
+2001,
+"exp",
+1272,
+1211
+],
+[
+2002,
+"exp",
+1394,
+1267
+],
+[
+2002,
+"resist_dagger",
+0,
+1
+],
+[
+2003,
+"exp",
+1864,
+1621
+],
+[
+2004,
+"exp",
+2110,
+1688
+],
+[
+2005,
+"exp",
+2371,
+1756
+],
+[
+2031,
+"resist_dagger",
+0,
+2
+],
+[
+2033,
+"resist_dagger",
+1,
+2
+],
+[
+2051,
+"exp",
+890,
+848
+],
+[
+2052,
+"exp",
+976,
+887
+],
+[
+2052,
+"resist_dagger",
+0,
+1
+],
+[
+2053,
+"exp",
+1305,
+1135
+],
+[
+2054,
+"exp",
+1478,
+1182
+],
+[
+2055,
+"exp",
+1659,
+1229
+],
+[
+2061,
+"resist_elect",
+-20,
+0
+],
+[
+2062,
+"resist_elect",
+-20,
+0
+],
+[
+2063,
+"exp",
+8200,
+9648
+],
+[
+2063,
+"resist_elect",
+-20,
+0
+],
+[
+2064,
+"exp",
+8527,
+10032
+],
+[
+2064,
+"resist_elect",
+-20,
+0
+],
+[
+2065,
+"exp",
+8853,
+10416
+],
+[
+2065,
+"resist_elect",
+-20,
+0
+],
+[
+2071,
+"resist_elect",
+-20,
+0
+],
+[
+2072,
+"resist_elect",
+-20,
+0
+],
+[
+2073,
+"resist_elect",
+-20,
+0
+],
+[
+2074,
+"resist_elect",
+-20,
+0
+],
+[
+2075,
+"resist_elect",
+-20,
+0
+],
+[
+2076,
+"resist_elect",
+-20,
+0
+],
+[
+2091,
+"exp",
+19280,
+57840
+],
+[
+2091,
+"resist_magic",
+20,
+60
+],
+[
+2091,
+"resist_wind",
+0,
+-30
+],
+[
+2092,
+"resist_magic",
+0,
+60
+],
+[
+2092,
+"resist_wind",
+0,
+-20
+],
+[
+2093,
+"resist_fire",
+100,
+0
+],
+[
+2093,
+"resist_elect",
+50,
+0
+],
+[
+2093,
+"resist_magic",
+0,
+50
+],
+[
+2093,
+"resist_wind",
+50,
+-20
+],
+[
+2094,
+"resist_fire",
+100,
+0
+],
+[
+2094,
+"resist_elect",
+50,
+0
+],
+[
+2094,
+"resist_magic",
+0,
+50
+],
+[
+2094,
+"resist_wind",
+50,
+-20
+],
+[
+2095,
+"resist_fire",
+70,
+0
+],
+[
+2095,
+"resist_elect",
+70,
+0
+],
+[
+2095,
+"resist_magic",
+0,
+70
+],
+[
+2095,
+"resist_wind",
+70,
+-20
+],
+[
+2101,
+"resist_fire",
+100,
+0
+],
+[
+2101,
+"resist_elect",
+100,
+0
+],
+[
+2101,
+"resist_magic",
+0,
+100
+],
+[
+2101,
+"resist_wind",
+100,
+0
+],
+[
+2102,
+"exp",
+1377,
+1252
+],
+[
+2103,
+"exp",
+1450,
+1319
+],
+[
+2104,
+"exp",
+2725,
+2478
+],
+[
+2104,
+"resist_dagger",
+1,
+2
+],
+[
+2105,
+"exp",
+2910,
+2646
+],
+[
+2105,
+"resist_magic",
+0,
+10
+],
+[
+2106,
+"exp",
+3242,
+2702
+],
+[
+2107,
+"exp",
+3444,
+2870
+],
+[
+2107,
+"resist_magic",
+0,
+10
+],
+[
+2131,
+"exp",
+4958,
+4956
+],
+[
+2131,
+"resist_elect",
+-20,
+0
+],
+[
+2132,
+"resist_elect",
+-20,
+0
+],
+[
+2133,
+"resist_elect",
+-20,
+0
+],
+[
+2134,
+"resist_elect",
+-20,
+0
+],
+[
+2135,
+"resist_elect",
+-20,
+0
+],
+[
+2151,
+"resist_fire",
+100,
+0
+],
+[
+2151,
+"resist_elect",
+100,
+0
+],
+[
+2151,
+"resist_magic",
+0,
+100
+],
+[
+2151,
+"resist_wind",
+100,
+0
+],
+[
+2154,
+"resist_dagger",
+1,
+2
+],
+[
+2155,
+"resist_magic",
+0,
+10
+],
+[
+2157,
+"resist_magic",
+0,
+10
+],
+[
+2158,
+"exp",
+5528,
+4253
+],
+[
+2191,
+"resist_twohand",
+50,
+0
+],
+[
+2191,
+"resist_fire",
+20,
+0
+],
+[
+2191,
+"resist_elect",
+20,
+0
+],
+[
+2191,
+"resist_magic",
+60,
+20
+],
+[
+2191,
+"resist_wind",
+20,
+-30
+],
+[
+2192,
+"resist_fire",
+100,
+0
+],
+[
+2192,
+"resist_elect",
+50,
+0
+],
+[
+2192,
+"resist_magic",
+0,
+50
+],
+[
+2192,
+"resist_wind",
+50,
+-20
+],
+[
+2201,
+"exp",
+1296,
+997
+],
+[
+2201,
+"resist_dagger",
+15,
+20
+],
+[
+2201,
+"resist_fire",
+0,
+-60
+],
+[
+2202,
+"exp",
+1296,
+997
+],
+[
+2202,
+"resist_dagger",
+0,
+5
+],
+[
+2202,
+"resist_fire",
+0,
+-60
+],
+[
+2202,
+"resist_magic",
+0,
+20
+],
+[
+2203,
+"exp",
+2360,
+1686
+],
+[
+2203,
+"resist_dagger",
+20,
+25
+],
+[
+2203,
+"resist_fire",
+0,
+-50
+],
+[
+2204,
+"exp",
+3078,
+1710
+],
+[
+2204,
+"resist_dagger",
+-5,
+0
+],
+[
+2204,
+"resist_fire",
+0,
+-50
+],
+[
+2205,
+"exp",
+6936,
+3468
+],
+[
+2205,
+"resist_dagger",
+0,
+5
+],
+[
+2205,
+"resist_fire",
+0,
+-40
+],
+[
+2205,
+"resist_magic",
+0,
+10
+],
+[
+2206,
+"max_hp",
+101024,
+51024
+],
+[
+2206,
+"exp",
+60319,
+17580
+],
+[
+2206,
+"resist_bow",
+0,
+-20
+],
+[
+2206,
+"resist_fire",
+0,
+-30
+],
+[
+2206,
+"ai_flag",
+"STONESKIN,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+2207,
+"resist_fire",
+0,
+-30
+],
+[
+2207,
+"resist_magic",
+0,
+60
+],
+[
+2231,
+"resist_dagger",
+15,
+20
+],
+[
+2231,
+"resist_fire",
+0,
+-60
+],
+[
+2232,
+"resist_dagger",
+0,
+5
+],
+[
+2232,
+"resist_fire",
+0,
+-60
+],
+[
+2232,
+"resist_magic",
+0,
+20
+],
+[
+2233,
+"resist_dagger",
+20,
+25
+],
+[
+2233,
+"resist_fire",
+0,
+-50
+],
+[
+2234,
+"resist_dagger",
+-5,
+0
+],
+[
+2234,
+"resist_fire",
+0,
+-50
+],
+[
+2235,
+"resist_dagger",
+0,
+5
+],
+[
+2235,
+"resist_fire",
+0,
+-40
+],
+[
+2235,
+"resist_magic",
+0,
+10
+],
+[
+2291,
+"resist_fire",
+100,
+-20
+],
+[
+2291,
+"resist_elect",
+50,
+0
+],
+[
+2291,
+"resist_magic",
+0,
+50
+],
+[
+2291,
+"resist_wind",
+50,
+0
+],
+[
+2301,
+"level",
+65,
+71
+],
+[
+2301,
+"max_hp",
+2261,
+3617
+],
+[
+2301,
+"exp",
+883,
+1152
+],
+[
+2301,
+"resist_magic",
+0,
+30
+],
+[
+2302,
+"level",
+67,
+73
+],
+[
+2302,
+"max_hp",
+3939,
+6302
+],
+[
+2302,
+"exp",
+923,
+1204
+],
+[
+2302,
+"resist_dagger",
+-5,
+0
+],
+[
+2302,
+"resist_magic",
+0,
+15
+],
+[
+2303,
+"level",
+69,
+75
+],
+[
+2303,
+"max_hp",
+3548,
+5676
+],
+[
+2303,
+"exp",
+1186,
+1546
+],
+[
+2303,
+"resist_magic",
+0,
+10
+],
+[
+2304,
+"level",
+70,
+76
+],
+[
+2304,
+"max_hp",
+5206,
+8329
+],
+[
+2304,
+"exp",
+1217,
+1587
+],
+[
+2304,
+"resist_magic",
+0,
+15
+],
+[
+2304,
+"setImmuneFlag",
+"SLOW,CURSE",
+"SLOW"
+],
+[
+2305,
+"level",
+71,
+77
+],
+[
+2305,
+"max_hp",
+7214,
+11542
+],
+[
+2305,
+"exp",
+2108,
+2749
+],
+[
+2305,
+"resist_magic",
+0,
+20
+],
+[
+2305,
+"setImmuneFlag",
+"SLOW,CURSE",
+"SLOW"
+],
+[
+2306,
+"level",
+89,
+84
+],
+[
+2306,
+"max_hp",
+403840,
+353840
+],
+[
+2306,
+"resist_sword",
+0,
+10
+],
+[
+2306,
+"resist_twohand",
+0,
+15
+],
+[
+2306,
+"resist_dagger",
+0,
+10
+],
+[
+2306,
+"resist_bell",
+0,
+15
+],
+[
+2306,
+"resist_fan",
+0,
+15
+],
+[
+2306,
+"resist_bow",
+25,
+-5
+],
+[
+2306,
+"resist_magic",
+0,
+60
+],
+[
+2306,
+"resist_poison",
+10,
+0
+],
+[
+2306,
+"ai_flag",
+"AGGR,STONESKIN,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE",
+"AGGR,IGNORE_LAST_ATTACK,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+2306,
+"setImmuneFlag",
+"STUN,SLOW,TERROR",
+""
+],
+[
+2307,
+"level",
+97,
+86
+],
+[
+2307,
+"max_hp",
+6062500,
+452900
+],
+[
+2307,
+"exp",
+5000,
+250800
+],
+[
+2307,
+"damage_min",
+150,
+120
+],
+[
+2307,
+"damage_max",
+250,
+224
+],
+[
+2307,
+"def",
+110,
+90
+],
+[
+2307,
+"regen_cycle",
+25,
+30
+],
+[
+2307,
+"regen_percent",
+1,
+20
+],
+[
+2307,
+"enchant_slow",
+15,
+5
+],
+[
+2307,
+"enchant_poison",
+0,
+5
+],
+[
+2307,
+"enchant_stun",
+20,
+10
+],
+[
+2307,
+"resist_sword",
+15,
+10
+],
+[
+2307,
+"resist_bell",
+15,
+20
+],
+[
+2307,
+"resist_fan",
+15,
+20
+],
+[
+2307,
+"resist_bow",
+15,
+0
+],
+[
+2307,
+"resist_magic",
+-100,
+50
+],
+[
+2307,
+"resist_poison",
+100,
+0
+],
+[
+2307,
+"ai_flag",
+"AGGR,BERSERK,STONESKIN,IGNORE_LAST_ATTACK,NO_WANDER,RETURN_LASTATTACK_POS,LOOSE_AGGRO_ON_DISTANCE",
+"AGGR,IGNORE_LAST_ATTACK,NO_WANDER,RETURN_LASTATTACK_POS,LOOSE_AGGRO_ON_DISTANCE"
+],
+[
+2307,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+""
+],
+[
+2311,
+"level",
+74,
+80
+],
+[
+2311,
+"max_hp",
+3596,
+5034
+],
+[
+2311,
+"exp",
+1176,
+1603
+],
+[
+2311,
+"resist_magic",
+0,
+50
+],
+[
+2312,
+"level",
+76,
+82
+],
+[
+2312,
+"max_hp",
+7032,
+9844
+],
+[
+2312,
+"exp",
+2013,
+2745
+],
+[
+2312,
+"resist_dagger",
+-5,
+0
+],
+[
+2312,
+"resist_magic",
+0,
+25
+],
+[
+2313,
+"level",
+77,
+83
+],
+[
+2313,
+"max_hp",
+5699,
+7978
+],
+[
+2313,
+"exp",
+2039,
+2781
+],
+[
+2313,
+"move_speed",
+170,
+150
+],
+[
+2313,
+"resist_magic",
+0,
+30
+],
+[
+2314,
+"level",
+80,
+86
+],
+[
+2314,
+"max_hp",
+11558,
+16181
+],
+[
+2314,
+"exp",
+4237,
+5778
+],
+[
+2314,
+"resist_magic",
+0,
+35
+],
+[
+2314,
+"setImmuneFlag",
+"SLOW,CURSE",
+"SLOW"
+],
+[
+2315,
+"level",
+82,
+88
+],
+[
+2315,
+"max_hp",
+11843,
+16580
+],
+[
+2315,
+"exp",
+4343,
+5922
+],
+[
+2315,
+"resist_magic",
+0,
+40
+],
+[
+2315,
+"setImmuneFlag",
+"SLOW,CURSE",
+"SLOW"
+],
+[
+2401,
+"resist_elect",
+0,
+-70
+],
+[
+2401,
+"resist_magic",
+0,
+30
+],
+[
+2402,
+"resist_elect",
+0,
+-70
+],
+[
+2402,
+"resist_magic",
+0,
+10
+],
+[
+2403,
+"resist_dagger",
+10,
+25
+],
+[
+2403,
+"resist_elect",
+0,
+-60
+],
+[
+2404,
+"resist_elect",
+0,
+-60
+],
+[
+2404,
+"resist_magic",
+0,
+15
+],
+[
+2411,
+"resist_dagger",
+10,
+15
+],
+[
+2411,
+"resist_elect",
+0,
+-60
+],
+[
+2411,
+"resist_magic",
+0,
+30
+],
+[
+2412,
+"resist_elect",
+0,
+-50
+],
+[
+2412,
+"resist_magic",
+0,
+20
+],
+[
+2413,
+"resist_elect",
+0,
+-50
+],
+[
+2413,
+"resist_magic",
+0,
+40
+],
+[
+2414,
+"resist_elect",
+0,
+-40
+],
+[
+2431,
+"resist_elect",
+0,
+-70
+],
+[
+2431,
+"resist_magic",
+0,
+30
+],
+[
+2432,
+"resist_dagger",
+-5,
+0
+],
+[
+2432,
+"resist_elect",
+0,
+-70
+],
+[
+2432,
+"resist_magic",
+0,
+15
+],
+[
+2433,
+"resist_elect",
+0,
+-60
+],
+[
+2433,
+"resist_magic",
+0,
+10
+],
+[
+2434,
+"resist_elect",
+0,
+-60
+],
+[
+2434,
+"resist_magic",
+0,
+15
+],
+[
+2451,
+"resist_elect",
+0,
+-60
+],
+[
+2451,
+"resist_magic",
+0,
+50
+],
+[
+2452,
+"resist_dagger",
+-5,
+0
+],
+[
+2452,
+"resist_elect",
+0,
+-50
+],
+[
+2452,
+"resist_magic",
+0,
+25
+],
+[
+2453,
+"resist_elect",
+0,
+-50
+],
+[
+2453,
+"resist_magic",
+0,
+30
+],
+[
+2454,
+"resist_elect",
+0,
+-40
+],
+[
+2454,
+"resist_magic",
+0,
+35
+],
+[
+2491,
+"resist_elect",
+0,
+-40
+],
+[
+2491,
+"resist_magic",
+0,
+20
+],
+[
+2492,
+"resist_elect",
+0,
+-30
+],
+[
+2492,
+"resist_magic",
+0,
+20
+],
+[
+2493,
+"damage_min",
+150,
+289
+],
+[
+2493,
+"damage_max",
+278,
+449
+],
+[
+2493,
+"st",
+122,
+153
+],
+[
+2493,
+"dx",
+91,
+114
+],
+[
+2493,
+"ht",
+61,
+76
+],
+[
+2493,
+"iq",
+30,
+37
+],
+[
+2493,
+"enchant_curse",
+0,
+25
+],
+[
+2493,
+"enchant_slow",
+0,
+25
+],
+[
+2493,
+"enchant_poison",
+0,
+25
+],
+[
+2493,
+"enchant_stun",
+0,
+25
+],
+[
+2493,
+"enchant_critical",
+15,
+25
+],
+[
+2493,
+"enchant_penetrate",
+20,
+25
+],
+[
+2493,
+"resist_sword",
+0,
+25
+],
+[
+2493,
+"resist_twohand",
+0,
+25
+],
+[
+2493,
+"resist_dagger",
+0,
+25
+],
+[
+2493,
+"resist_bell",
+0,
+25
+],
+[
+2493,
+"resist_fan",
+0,
+25
+],
+[
+2493,
+"resist_bow",
+0,
+25
+],
+[
+2493,
+"resist_fire",
+100,
+0
+],
+[
+2493,
+"resist_elect",
+50,
+-10
+],
+[
+2493,
+"resist_magic",
+0,
+25
+],
+[
+2493,
+"resist_wind",
+50,
+0
+],
+[
+2493,
+"resist_poison",
+0,
+25
+],
+[
+2493,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+"STUN,SLOW,TERROR"
+],
+[
+2494,
+"resist_elect",
+0,
+-40
+],
+[
+2494,
+"resist_magic",
+0,
+20
+],
+[
+2495,
+"resist_elect",
+0,
+-30
+],
+[
+2495,
+"resist_magic",
+0,
+20
+],
+[
+2501,
+"enchant_curse",
+0,
+1
+],
+[
+2502,
+"enchant_curse",
+0,
+1
+],
+[
+2503,
+"enchant_curse",
+0,
+1
+],
+[
+2504,
+"enchant_curse",
+0,
+1
+],
+[
+2505,
+"enchant_curse",
+0,
+1
+],
+[
+2506,
+"enchant_curse",
+0,
+1
+],
+[
+2507,
+"enchant_curse",
+0,
+1
+],
+[
+2508,
+"enchant_curse",
+0,
+5
+],
+[
+2509,
+"enchant_curse",
+0,
+5
+],
+[
+2510,
+"enchant_curse",
+0,
+10
+],
+[
+2511,
+"enchant_curse",
+0,
+10
+],
+[
+2511,
+"resist_dagger",
+-10,
+5
+],
+[
+2511,
+"resist_magic",
+0,
+25
+],
+[
+2512,
+"enchant_curse",
+0,
+15
+],
+[
+2512,
+"resist_dagger",
+-5,
+10
+],
+[
+2512,
+"resist_magic",
+0,
+30
+],
+[
+2513,
+"enchant_curse",
+0,
+15
+],
+[
+2513,
+"resist_dagger",
+-5,
+0
+],
+[
+2513,
+"resist_magic",
+0,
+35
+],
+[
+2514,
+"enchant_curse",
+0,
+20
+],
+[
+2514,
+"resist_magic",
+0,
+40
+],
+[
+2541,
+"enchant_curse",
+0,
+5
+],
+[
+2542,
+"enchant_curse",
+0,
+5
+],
+[
+2543,
+"enchant_curse",
+0,
+10
+],
+[
+2544,
+"enchant_curse",
+0,
+10
+],
+[
+2544,
+"resist_dagger",
+-10,
+5
+],
+[
+2544,
+"resist_magic",
+0,
+25
+],
+[
+2545,
+"enchant_curse",
+0,
+15
+],
+[
+2545,
+"resist_dagger",
+-5,
+10
+],
+[
+2545,
+"resist_magic",
+0,
+30
+],
+[
+2546,
+"enchant_curse",
+0,
+15
+],
+[
+2546,
+"resist_dagger",
+-5,
+0
+],
+[
+2546,
+"resist_magic",
+0,
+35
+],
+[
+2547,
+"enchant_curse",
+0,
+20
+],
+[
+2547,
+"resist_magic",
+0,
+40
+],
+[
+2591,
+"enchant_curse",
+0,
+30
+],
+[
+2591,
+"resist_magic",
+0,
+60
+],
+[
+2592,
+"enchant_curse",
+0,
+30
+],
+[
+2592,
+"resist_magic",
+0,
+60
+],
+[
+2593,
+"enchant_curse",
+0,
+30
+],
+[
+2593,
+"resist_magic",
+0,
+60
+],
+[
+2594,
+"enchant_curse",
+0,
+30
+],
+[
+2594,
+"resist_magic",
+0,
+60
+],
+[
+2595,
+"enchant_curse",
+0,
+30
+],
+[
+2595,
+"resist_magic",
+0,
+60
+],
+[
+2596,
+"enchant_curse",
+0,
+30
+],
+[
+2596,
+"resist_magic",
+0,
+60
+],
+[
+2597,
+"enchant_curse",
+0,
+50
+],
+[
+2597,
+"resist_magic",
+0,
+60
+],
+[
+2598,
+"enchant_curse",
+0,
+50
+],
+[
+2598,
+"resist_magic",
+0,
+60
+],
+[
+2676,
+"setRaceFlag:HUMAN",
+0,
+1
+],
+[
+2677,
+"setRaceFlag:HUMAN",
+0,
+1
+],
+[
+2678,
+"setRaceFlag:HUMAN",
+0,
+1
+],
+[
+2679,
+"setRaceFlag:HUMAN",
+0,
+1
+],
+[
+2790,
+"ai_flag",
+"AGGR,BERSERK",
+"AGGR,BERSERK,REVIVE"
+],
+[
+2791,
+"ai_flag",
+"AGGR,BERSERK",
+"AGGR,BERSERK,REVIVE"
+],
+[
+2792,
+"ai_flag",
+"AGGR,BERSERK",
+"AGGR,BERSERK,REVIVE"
+],
+[
+3002,
+"resist_dagger",
+3,
+5
+],
+[
+3101,
+"resist_elect",
+0,
+-70
+],
+[
+3102,
+"resist_elect",
+0,
+-60
+],
+[
+3103,
+"resist_elect",
+0,
+-60
+],
+[
+3104,
+"resist_elect",
+0,
+-50
+],
+[
+3105,
+"resist_elect",
+0,
+-40
+],
+[
+3190,
+"resist_elect",
+0,
+-30
+],
+[
+3191,
+"resist_elect",
+0,
+-20
+],
+[
+3201,
+"resist_wind",
+0,
+-70
+],
+[
+3202,
+"resist_wind",
+0,
+-60
+],
+[
+3203,
+"resist_wind",
+0,
+-60
+],
+[
+3204,
+"resist_wind",
+0,
+-50
+],
+[
+3205,
+"resist_wind",
+0,
+-40
+],
+[
+3290,
+"resist_wind",
+0,
+-30
+],
+[
+3291,
+"resist_wind",
+0,
+-20
+],
+[
+3301,
+"resist_wind",
+0,
+-70
+],
+[
+3302,
+"resist_wind",
+0,
+-60
+],
+[
+3303,
+"resist_wind",
+0,
+-60
+],
+[
+3304,
+"resist_wind",
+0,
+-50
+],
+[
+3305,
+"resist_wind",
+0,
+-40
+],
+[
+3390,
+"resist_wind",
+0,
+-30
+],
+[
+3551,
+"resist_elect",
+0,
+-70
+],
+[
+3552,
+"resist_elect",
+0,
+-60
+],
+[
+3553,
+"resist_elect",
+0,
+-60
+],
+[
+3554,
+"resist_elect",
+0,
+-50
+],
+[
+3555,
+"resist_elect",
+0,
+-40
+],
+[
+3595,
+"resist_elect",
+0,
+-30
+],
+[
+3596,
+"resist_elect",
+0,
+-20
+],
+[
+5002,
+"resist_fire",
+90,
+-30
+],
+[
+5102,
+"resist_dagger",
+-5,
+0
+],
+[
+5112,
+"resist_dagger",
+-5,
+0
+],
+[
+5122,
+"resist_dagger",
+-5,
+0
+],
+[
+5125,
+"resist_dagger",
+-5,
+0
+],
+[
+5132,
+"resist_dagger",
+-5,
+0
+],
+[
+5142,
+"resist_dagger",
+-5,
+0
+],
+[
+5152,
+"resist_dagger",
+-5,
+0
+],
+[
+5155,
+"resist_dagger",
+-5,
+0
+],
+[
+6006,
+"setImmuneFlag",
+"SLOW,CURSE,TERROR",
+"SLOW,TERROR"
+],
+[
+6051,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+"STUN,SLOW,TERROR"
+],
+[
+6091,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+"STUN,SLOW,TERROR"
+],
+[
+6151,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+"STUN,SLOW,TERROR"
+],
+[
+6191,
+"setImmuneFlag",
+"STUN,SLOW,CURSE,TERROR",
+"STUN,SLOW,TERROR"
+],
+[
+6301,
+"max_hp",
+12950,
+21825
+],
+[
+6301,
+"exp",
+21000,
+9375
+],
+[
+6301,
+"damage_min",
+133,
+173
+],
+[
+6301,
+"damage_max",
+162,
+234
+],
+[
+6301,
+"def",
+105,
+111
+],
+[
+6301,
+"attack_speed",
+110,
+200
+],
+[
+6301,
+"regen_percent",
+2,
+7
+],
+[
+6301,
+"resist_twohand",
+-5,
+0
+],
+[
+6301,
+"resist_bow",
+20,
+0
+],
+[
+6301,
+"resist_wind",
+0,
+-70
+],
+[
+6301,
+"ai_flag",
+"AGGR,GODSPEED",
+"AGGR"
+],
+[
+6302,
+"max_hp",
+16100,
+25634
+],
+[
+6302,
+"exp",
+25000,
+11255
+],
+[
+6302,
+"damage_min",
+134,
+179
+],
+[
+6302,
+"damage_max",
+165,
+246
+],
+[
+6302,
+"def",
+120,
+117
+],
+[
+6302,
+"regen_cycle",
+3,
+4
+],
+[
+6302,
+"regen_percent",
+2,
+7
+],
+[
+6302,
+"resist_sword",
+-10,
+5
+],
+[
+6302,
+"resist_twohand",
+-25,
+5
+],
+[
+6302,
+"resist_dagger",
+5,
+-10
+],
+[
+6302,
+"resist_bell",
+-20,
+-10
+],
+[
+6302,
+"resist_fan",
+-20,
+-10
+],
+[
+6302,
+"resist_bow",
+20,
+-10
+],
+[
+6302,
+"resist_wind",
+0,
+-60
+],
+[
+6303,
+"max_hp",
+15400,
+29043
+],
+[
+6303,
+"exp",
+25500,
+11380
+],
+[
+6303,
+"damage_min",
+136,
+207
+],
+[
+6303,
+"damage_max",
+167,
+258
+],
+[
+6303,
+"def",
+120,
+103
+],
+[
+6303,
+"regen_cycle",
+5,
+4
+],
+[
+6303,
+"regen_percent",
+5,
+14
+],
+[
+6303,
+"resist_sword",
+-5,
+10
+],
+[
+6303,
+"resist_twohand",
+-5,
+10
+],
+[
+6303,
+"resist_bow",
+20,
+10
+],
+[
+6303,
+"resist_magic",
+0,
+15
+],
+[
+6303,
+"resist_wind",
+0,
+-60
+],
+[
+6304,
+"max_hp",
+20800,
+38159
+],
+[
+6304,
+"exp",
+52000,
+25316
+],
+[
+6304,
+"damage_min",
+123,
+183
+],
+[
+6304,
+"damage_max",
+183,
+262
+],
+[
+6304,
+"def",
+142,
+140
+],
+[
+6304,
+"regen_percent",
+7,
+14
+],
+[
+6304,
+"resist_sword",
+-5,
+0
+],
+[
+6304,
+"resist_twohand",
+-25,
+0
+],
+[
+6304,
+"resist_dagger",
+0,
+-5
+],
+[
+6304,
+"resist_fan",
+0,
+-5
+],
+[
+6304,
+"resist_bow",
+20,
+0
+],
+[
+6304,
+"resist_wind",
+0,
+-50
+],
+[
+6305,
+"max_hp",
+38000,
+97407
+],
+[
+6305,
+"exp",
+95000,
+39580
+],
+[
+6305,
+"damage_min",
+125,
+196
+],
+[
+6305,
+"damage_max",
+186,
+264
+],
+[
+6305,
+"def",
+172,
+171
+],
+[
+6305,
+"attack_speed",
+110,
+200
+],
+[
+6305,
+"regen_cycle",
+5,
+7
+],
+[
+6305,
+"regen_percent",
+10,
+15
+],
+[
+6305,
+"resist_dagger",
+-25,
+-5
+],
+[
+6305,
+"resist_bell",
+0,
+-5
+],
+[
+6305,
+"resist_bow",
+20,
+0
+],
+[
+6305,
+"resist_wind",
+0,
+-40
+],
+[
+6305,
+"ai_flag",
+"AGGR,GODSPEED",
+"AGGR"
+],
+[
+7008,
+"setRaceFlag:ORC",
+0,
+1
+],
+[
+7009,
+"setRaceFlag:ORC",
+0,
+1
+],
+[
+7010,
+"setRaceFlag:ORC",
+0,
+1
+],
+[
+7012,
+"resist_fire",
+10,
+0
+],
+[
+7012,
+"resist_elect",
+20,
+0
+],
+[
+7013,
+"resist_fire",
+10,
+0
+],
+[
+7013,
+"resist_elect",
+20,
+0
+],
+[
+7014,
+"resist_fire",
+10,
+0
+],
+[
+7014,
+"resist_elect",
+20,
+0
+],
+[
+7015,
+"resist_fire",
+10,
+0
+],
+[
+7015,
+"resist_elect",
+20,
+0
+],
+[
+7016,
+"resist_fire",
+10,
+0
+],
+[
+7016,
+"resist_elect",
+20,
+0
+],
+[
+7017,
+"resist_fire",
+10,
+0
+],
+[
+7017,
+"resist_elect",
+20,
+0
+],
+[
+7018,
+"resist_fire",
+10,
+0
+],
+[
+7018,
+"resist_elect",
+20,
+0
+],
+[
+7019,
+"resist_fire",
+90,
+-60
+],
+[
+7020,
+"resist_fire",
+90,
+-60
+],
+[
+7021,
+"resist_fire",
+90,
+-50
+],
+[
+7022,
+"resist_fire",
+90,
+-50
+],
+[
+7023,
+"resist_fire",
+90,
+-40
+],
+[
+7024,
+"resist_magic",
+0,
+50
+],
+[
+7025,
+"resist_magic",
+0,
+25
+],
+[
+7026,
+"resist_magic",
+0,
+30
+],
+[
+7027,
+"resist_magic",
+0,
+35
+],
+[
+7028,
+"resist_magic",
+0,
+40
+],
+[
+7029,
+"resist_fire",
+-30,
+0
+],
+[
+7030,
+"resist_fire",
+-30,
+0
+],
+[
+7031,
+"resist_fire",
+-30,
+0
+],
+[
+7032,
+"resist_fire",
+-30,
+0
+],
+[
+7033,
+"resist_fire",
+-30,
+0
+],
+[
+7034,
+"resist_fire",
+-30,
+0
+],
+[
+7035,
+"resist_fire",
+-30,
+0
+],
+[
+7036,
+"resist_fire",
+-30,
+0
+],
+[
+7037,
+"resist_fire",
+-30,
+0
+],
+[
+7038,
+"resist_fire",
+-30,
+0
+],
+[
+7039,
+"resist_fire",
+-30,
+0
+],
+[
+7040,
+"resist_fire",
+-30,
+0
+],
+[
+7041,
+"resist_fire",
+-30,
+0
+],
+[
+7042,
+"resist_fire",
+-30,
+0
+],
+[
+7043,
+"resist_fire",
+-30,
+0
+],
+[
+7044,
+"resist_fire",
+-30,
+0
+],
+[
+7045,
+"resist_fire",
+-30,
+0
+],
+[
+7046,
+"resist_fire",
+-30,
+0
+],
+[
+7047,
+"resist_fire",
+-30,
+0
+],
+[
+7048,
+"resist_fire",
+-30,
+0
+],
+[
+7049,
+"resist_fire",
+-30,
+0
+],
+[
+7050,
+"resist_fire",
+10,
+0
+],
+[
+7050,
+"resist_elect",
+20,
+0
+],
+[
+7051,
+"resist_fire",
+10,
+0
+],
+[
+7051,
+"resist_elect",
+20,
+0
+],
+[
+7052,
+"resist_fire",
+10,
+0
+],
+[
+7052,
+"resist_elect",
+20,
+0
+],
+[
+7053,
+"resist_fire",
+10,
+0
+],
+[
+7053,
+"resist_elect",
+20,
+0
+],
+[
+7054,
+"resist_fire",
+10,
+0
+],
+[
+7054,
+"resist_elect",
+20,
+0
+],
+[
+7055,
+"resist_fire",
+10,
+0
+],
+[
+7055,
+"resist_elect",
+20,
+0
+],
+[
+7056,
+"resist_fire",
+10,
+0
+],
+[
+7056,
+"resist_elect",
+20,
+0
+],
+[
+7057,
+"resist_fire",
+10,
+0
+],
+[
+7057,
+"resist_elect",
+20,
+0
+],
+[
+7058,
+"resist_fire",
+10,
+0
+],
+[
+7058,
+"resist_elect",
+20,
+0
+],
+[
+7059,
+"resist_fire",
+10,
+0
+],
+[
+7059,
+"resist_elect",
+20,
+0
+],
+[
+7060,
+"resist_fire",
+10,
+0
+],
+[
+7060,
+"resist_elect",
+20,
+0
+],
+[
+7061,
+"resist_fire",
+10,
+0
+],
+[
+7061,
+"resist_elect",
+20,
+0
+],
+[
+7062,
+"resist_fire",
+10,
+0
+],
+[
+7062,
+"resist_elect",
+20,
+0
+],
+[
+7063,
+"resist_fire",
+10,
+0
+],
+[
+7063,
+"resist_elect",
+20,
+0
+],
+[
+7064,
+"resist_fire",
+10,
+0
+],
+[
+7064,
+"resist_elect",
+20,
+0
+],
+[
+7065,
+"resist_fire",
+10,
+0
+],
+[
+7065,
+"resist_elect",
+20,
+0
+],
+[
+7066,
+"resist_fire",
+10,
+0
+],
+[
+7066,
+"resist_elect",
+20,
+0
+],
+[
+7067,
+"resist_fire",
+10,
+0
+],
+[
+7067,
+"resist_elect",
+20,
+0
+],
+[
+7068,
+"resist_fire",
+10,
+0
+],
+[
+7068,
+"resist_elect",
+20,
+0
+],
+[
+7069,
+"resist_fire",
+10,
+0
+],
+[
+7069,
+"resist_elect",
+20,
+0
+],
+[
+7070,
+"resist_fire",
+10,
+0
+],
+[
+7070,
+"resist_elect",
+20,
+0
+],
+[
+7071,
+"resist_fire",
+90,
+-60
+],
+[
+7072,
+"resist_fire",
+90,
+-60
+],
+[
+7073,
+"resist_fire",
+90,
+-50
+],
+[
+7074,
+"resist_fire",
+90,
+-50
+],
+[
+7075,
+"resist_fire",
+90,
+-40
+],
+[
+7076,
+"resist_fire",
+90,
+-60
+],
+[
+7077,
+"resist_fire",
+90,
+-60
+],
+[
+7078,
+"resist_fire",
+90,
+-50
+],
+[
+7079,
+"resist_fire",
+90,
+-50
+],
+[
+7080,
+"resist_fire",
+90,
+-40
+],
+[
+7081,
+"resist_fire",
+90,
+-60
+],
+[
+7082,
+"resist_fire",
+90,
+-60
+],
+[
+7083,
+"resist_fire",
+90,
+-50
+],
+[
+7084,
+"resist_fire",
+90,
+-50
+],
+[
+7085,
+"resist_fire",
+90,
+-40
+],
+[
+7086,
+"resist_magic",
+0,
+15
+],
+[
+7087,
+"resist_magic",
+0,
+10
+],
+[
+7088,
+"resist_magic",
+0,
+15
+],
+[
+7089,
+"resist_magic",
+0,
+20
+],
+[
+7090,
+"resist_magic",
+0,
+15
+],
+[
+7091,
+"resist_magic",
+0,
+10
+],
+[
+7092,
+"resist_magic",
+0,
+15
+],
+[
+7093,
+"resist_magic",
+0,
+20
+],
+[
+7094,
+"resist_magic",
+0,
+15
+],
+[
+7095,
+"resist_magic",
+0,
+10
+],
+[
+7096,
+"resist_magic",
+0,
+15
+],
+[
+8043,
+"resist_dagger",
+11,
+19
+],
+[
+8044,
+"resist_dagger",
+15,
+16
+],
+[
+8045,
+"resist_dagger",
+14,
+18
+],
+[
+8046,
+"resist_dagger",
+8,
+16
+],
+[
+8047,
+"resist_dagger",
+8,
+16
+],
+[
+8049,
+"resist_dagger",
+13,
+15
+],
+[
+8050,
+"max_hp",
+145000,
+1450000
+],
+[
+8050,
+"resist_dagger",
+13,
+14
+],
+[
+8506,
+"resist_wind",
+0,
+-70
+],
+[
+8507,
+"resist_fire",
+10,
+0
+],
+[
+8507,
+"resist_elect",
+20,
+0
+],
+[
+8508,
+"resist_magic",
+0,
+10
+],
+[
+8509,
+"resist_magic",
+0,
+10
+],
+[
+8510,
+"resist_fire",
+10,
+-70
+],
+[
+8510,
+"resist_elect",
+20,
+0
+],
+[
+8511,
+"resist_magic",
+0,
+10
+],
+[
+8600,
+"resist_fire",
+100,
+0
+],
+[
+8600,
+"resist_elect",
+50,
+0
+],
+[
+8600,
+"resist_magic",
+0,
+50
+],
+[
+8600,
+"resist_wind",
+50,
+0
+],
+[
+8601,
+"resist_fire",
+100,
+0
+],
+[
+8601,
+"resist_elect",
+50,
+0
+],
+[
+8601,
+"resist_magic",
+0,
+50
+],
+[
+8601,
+"resist_wind",
+50,
+0
+],
+[
+8602,
+"resist_fire",
+100,
+0
+],
+[
+8602,
+"resist_elect",
+50,
+0
+],
+[
+8602,
+"resist_magic",
+0,
+50
+],
+[
+8602,
+"resist_wind",
+50,
+0
+],
+[
+8603,
+"resist_fire",
+100,
+0
+],
+[
+8603,
+"resist_elect",
+50,
+0
+],
+[
+8603,
+"resist_magic",
+0,
+50
+],
+[
+8603,
+"resist_wind",
+50,
+0
+],
+[
+8604,
+"resist_fire",
+100,
+0
+],
+[
+8604,
+"resist_elect",
+50,
+0
+],
+[
+8604,
+"resist_magic",
+0,
+50
+],
+[
+8604,
+"resist_wind",
+50,
+0
+],
+[
+8605,
+"resist_fire",
+100,
+0
+],
+[
+8605,
+"resist_elect",
+50,
+0
+],
+[
+8605,
+"resist_magic",
+0,
+50
+],
+[
+8605,
+"resist_wind",
+50,
+0
+],
+[
+8606,
+"resist_fire",
+100,
+0
+],
+[
+8606,
+"resist_elect",
+50,
+0
+],
+[
+8606,
+"resist_magic",
+0,
+50
+],
+[
+8606,
+"resist_wind",
+50,
+0
+],
+[
+8607,
+"resist_fire",
+100,
+0
+],
+[
+8607,
+"resist_elect",
+50,
+0
+],
+[
+8607,
+"resist_magic",
+0,
+50
+],
+[
+8607,
+"resist_wind",
+50,
+0
+],
+[
+8608,
+"resist_fire",
+100,
+0
+],
+[
+8608,
+"resist_elect",
+50,
+0
+],
+[
+8608,
+"resist_magic",
+0,
+50
+],
+[
+8608,
+"resist_wind",
+50,
+0
+],
+[
+8609,
+"resist_fire",
+100,
+0
+],
+[
+8609,
+"resist_elect",
+50,
+0
+],
+[
+8609,
+"resist_magic",
+0,
+50
+],
+[
+8609,
+"resist_wind",
+50,
+0
+],
+[
+8610,
+"resist_fire",
+100,
+0
+],
+[
+8610,
+"resist_elect",
+50,
+0
+],
+[
+8610,
+"resist_magic",
+0,
+50
+],
+[
+8610,
+"resist_wind",
+50,
+-30
+],
+[
+8611,
+"resist_fire",
+100,
+0
+],
+[
+8611,
+"resist_elect",
+50,
+0
+],
+[
+8611,
+"resist_magic",
+0,
+50
+],
+[
+8611,
+"resist_wind",
+50,
+-20
+],
+[
+8612,
+"resist_fire",
+100,
+0
+],
+[
+8612,
+"resist_elect",
+50,
+0
+],
+[
+8612,
+"resist_magic",
+0,
+50
+],
+[
+8612,
+"resist_wind",
+50,
+0
+],
+[
+8613,
+"resist_fire",
+100,
+0
+],
+[
+8613,
+"resist_elect",
+50,
+0
+],
+[
+8613,
+"resist_magic",
+0,
+50
+],
+[
+8613,
+"resist_wind",
+50,
+0
+],
+[
+8614,
+"resist_fire",
+100,
+0
+],
+[
+8614,
+"resist_elect",
+50,
+0
+],
+[
+8614,
+"resist_magic",
+0,
+50
+],
+[
+8614,
+"resist_wind",
+50,
+0
+],
+[
+8615,
+"resist_fire",
+100,
+0
+],
+[
+8615,
+"resist_elect",
+50,
+0
+],
+[
+8615,
+"resist_magic",
+0,
+50
+],
+[
+8615,
+"resist_wind",
+50,
+0
+]
+],
+"kept": [
+[
+111,
+50721,
+"Kwiat Brzoskwini",
+"회색곰",
+"quest"
+],
+[
+113,
+50721,
+"Kwiat Brzoskwini",
+"불곰",
+"quest"
+],
+[
+132,
+290,
+"Miecz Pełni Księżyca+0",
+"playerbot_m3_cursed_bear_level30",
+"ours"
+],
+[
+135,
+1170,
+"Kozik Czar. Liś.+0",
+"playerbot_m3_cursed_tiger_level30",
+"ours"
+],
+[
+135,
+2150,
+"Łuk Z Rogu Jelenia+0",
+"playerbot_m3_cursed_tiger_level30",
+"ours"
+],
+[
+135,
+13020,
+"Pięciokątna Tarcza+0",
+"playerbot_m3_cursed_tiger_level30",
+"ours"
+],
+[
+139,
+50724,
+"Korzeń Gango",
+"저주받은곰",
+"quest"
+],
+[
+301,
+16082,
+"Jadeitowy Naszyjnik+2",
+"백결단원",
+"quest"
+],
+[
+302,
+50724,
+"Korzeń Gango",
+"백결궁병",
+"quest"
+],
+[
+401,
+50724,
+"Korzeń Gango",
+"흑풍단원",
+"quest"
+],
+[
+405,
+50721,
+"Kwiat Brzoskwini",
+"흑풍장수도수",
+"quest"
+],
+[
+502,
+50724,
+"Korzeń Gango",
+"오랑케졸개",
+"quest"
+],
+[
+503,
+50721,
+"Kwiat Brzoskwini",
+"오랑캐궁수",
+"quest"
+],
+[
+591,
+50513,
+"Kamień Duchowy",
+"비류단대장",
+"quest"
+],
+[
+636,
+50721,
+"Kwiat Brzoskwini",
+"흥웅귀",
+"quest"
+],
+[
+691,
+90010,
+"Kamień Węgielny",
+"웅귀족장",
+"quest"
+],
+[
+703,
+50724,
+"Korzeń Gango",
+"밀교나한투병",
+"quest"
+],
+[
+705,
+50724,
+"Korzeń Gango",
+"밀교집행병",
+"quest"
+],
+[
+731,
+72735,
+"Maska Sabaha",
+"진밀교추종자",
+"ours"
+],
+[
+732,
+72735,
+"Maska Sabaha",
+"ezot_arahan",
+"ours"
+],
+[
+735,
+72735,
+"Maska Sabaha",
+"ezot_egzekutor",
+"ours"
+],
+[
+737,
+50727,
+"Róża Alpejska",
+"진밀교소환령",
+"quest"
+],
+[
+792,
+90012,
+"Dykta",
+"환생한밀교교주",
+"quest"
+],
+[
+907,
+50728,
+"Morwa",
+"괴질감염대장",
+"quest"
+],
+[
+1001,
+50728,
+"Morwa",
+"사귀병",
+"quest"
+],
+[
+1002,
+50724,
+"Korzeń Gango",
+"사귀궁병",
+"quest"
+],
+[
+1003,
+50721,
+"Kwiat Brzoskwini",
+"사귀창병",
+"quest"
+],
+[
+1061,
+50724,
+"Korzeń Gango",
+"부활한전귀병",
+"quest"
+],
+[
+1065,
+50728,
+"Morwa",
+"부활한원망의망령",
+"quest"
+],
+[
+1066,
+50724,
+"Korzeń Gango",
+"부활한혼돈의망령",
+"quest"
+],
+[
+1068,
+50721,
+"Kwiat Brzoskwini",
+"부활한지마장",
+"quest"
+],
+[
+1070,
+50727,
+"Róża Alpejska",
+"부활한불사귀",
+"quest"
+],
+[
+1071,
+50721,
+"Kwiat Brzoskwini",
+"부활한재활괴물",
+"quest"
+],
+[
+1093,
+30319,
+"Zasuszona Głowa",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+183,
+"Zatruty miecz+3",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+184,
+"Zatruty miecz+4",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+193,
+"Lwi Miecz+3",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+194,
+"Lwi Miecz+4",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+3163,
+"Miecz Żalu+3",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+3164,
+"Miecz Żalu+4",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+2173,
+"Stalowy Łuk Kruka+3",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+2174,
+"Stalowy Łuk Kruka+4",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+1133,
+"Skrzydła Demona Chakr.+3",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+1134,
+"Skrzydła Demona Chakr.+4",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+7183,
+"Wachlarz 8 Trigramów+3",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+7184,
+"Wachlarz 8 Trigramów+4",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+5123,
+"Bambusowy Dzwon+3",
+"RiperLimit",
+"ours"
+],
+[
+1093,
+5124,
+"Bambusowy Dzwon+4",
+"RiperLimit",
+"ours"
+],
+[
+1101,
+90011,
+"Pień",
+"빙마",
+"ours"
+],
+[
+1102,
+90011,
+"Pień",
+"얼음뿔범고래",
+"ours"
+],
+[
+1102,
+50728,
+"Morwa",
+"얼음뿔범고래",
+"quest"
+],
+[
+1103,
+70050,
+"Symb. Króla Przepowiedni",
+"빙충",
+"quest"
+],
+[
+1103,
+90011,
+"Pień",
+"빙충",
+"ours"
+],
+[
+1105,
+90011,
+"Pień",
+"빙인",
+"ours"
+],
+[
+1106,
+70051,
+"Rękawica Króla Przepow.",
+"설거인",
+"quest"
+],
+[
+1106,
+90011,
+"Pień",
+"설거인",
+"ours"
+],
+[
+1106,
+50728,
+"Morwa",
+"설거인",
+"quest"
+],
+[
+1107,
+50721,
+"Kwiat Brzoskwini",
+"얼음고램",
+"quest"
+],
+[
+1131,
+50901,
+"Pusta Butelka (M)",
+"EisSplitter",
+"quest"
+],
+[
+1132,
+50901,
+"Pusta Butelka (M)",
+"Eiskillerwal",
+"quest"
+],
+[
+1133,
+50901,
+"Pusta Butelka (M)",
+"Eisinsekt",
+"quest"
+],
+[
+1134,
+50901,
+"Pusta Butelka (M)",
+"Eisl?e",
+"quest"
+],
+[
+1135,
+50901,
+"Pusta Butelka (M)",
+"Eismann",
+"quest"
+],
+[
+1136,
+50901,
+"Pusta Butelka (M)",
+"Yeti",
+"quest"
+],
+[
+1137,
+30050,
+"Matowy Lód",
+"Eisgolem",
+"quest"
+],
+[
+1192,
+30190,
+"Krwisty Kamień",
+"ice_witch",
+"quest"
+],
+[
+1192,
+30190,
+"Krwisty Kamień",
+"ice_witch",
+"quest"
+],
+[
+1301,
+90012,
+"Dykta",
+"청와병",
+"ours"
+],
+[
+1302,
+90012,
+"Dykta",
+"청와장",
+"ours"
+],
+[
+1303,
+90012,
+"Dykta",
+"풀잎머리도깨비",
+"ours"
+],
+[
+1304,
+90010,
+"Kamień Węgielny",
+"누렁범귀",
+"quest"
+],
+[
+1305,
+90012,
+"Dykta",
+"수구대장군",
+"ours"
+],
+[
+1401,
+5060,
+"Magiczny Dzwon+0",
+"MT2009_maps_wz_1401",
+"ours"
+],
+[
+1401,
+5080,
+"Stalowy Robaczy Dzwon+0",
+"MT2009_maps_wz_1401",
+"ours"
+],
+[
+1401,
+11680,
+"Duchowa Zbroja Płyt.+0",
+"MT2009_maps_wz_1401",
+"ours"
+],
+[
+1402,
+100,
+"Krwawy Miecz+0",
+"MT2009_maps_wz_1402",
+"ours"
+],
+[
+1402,
+3100,
+"Miecz Dwunastu Duchów+0",
+"MT2009_maps_wz_1402",
+"ours"
+],
+[
+1402,
+17160,
+"Kryształowe Kolczyki+0",
+"MT2009_maps_wz_1402",
+"ours"
+],
+[
+1402,
+15180,
+"Deszczowe Buty+0",
+"MT2009_maps_wz_1402",
+"ours"
+],
+[
+1402,
+70104,
+"Marmur Polimorfii",
+"MT2009_maps_wz_1402",
+"ours"
+],
+[
+1403,
+70003,
+"Książka Lidera",
+"투귀천장수",
+"quest"
+],
+[
+1403,
+70005,
+"Pierścień Doświadczenia",
+"투귀천장수",
+"quest"
+],
+[
+1403,
+70038,
+"Peleryna Męstwa",
+"투귀천장수",
+"quest"
+],
+[
+1403,
+1110,
+"Nóż Błyskawicy+0",
+"MT2009_maps_wz_1403",
+"ours"
+],
+[
+1403,
+100,
+"Krwawy Miecz+0",
+"MT2009_maps_wz_1403",
+"ours"
+],
+[
+1403,
+70104,
+"Marmur Polimorfii",
+"MT2009_maps_wz_1403",
+"ours"
+],
+[
+1501,
+100,
+"Krwawy Miecz+0",
+"MT2009_maps_wz_1501",
+"ours"
+],
+[
+1501,
+90,
+"Miecz Barbarzyńcy+0",
+"MT2009_maps_wz_1501",
+"ours"
+],
+[
+1501,
+3100,
+"Miecz Dwunastu Duchów+0",
+"MT2009_maps_wz_1501",
+"ours"
+],
+[
+1501,
+3080,
+"Olbrz. Topór+0",
+"MT2009_maps_wz_1501",
+"ours"
+],
+[
+1502,
+5060,
+"Magiczny Dzwon+0",
+"MT2009_maps_wz_1502",
+"ours"
+],
+[
+1502,
+5080,
+"Stalowy Robaczy Dzwon+0",
+"MT2009_maps_wz_1502",
+"ours"
+],
+[
+1502,
+11680,
+"Duchowa Zbroja Płyt.+0",
+"MT2009_maps_wz_1502",
+"ours"
+],
+[
+1503,
+50007,
+"Srebrna Szkatułka",
+"MT2009_maps_wz_1503",
+"ours"
+],
+[
+1601,
+50728,
+"Morwa",
+"투귀일꾼",
+"quest"
+],
+[
+1601,
+50725,
+"Bez",
+"MT2009_maps_wz_1601",
+"ours"
+],
+[
+1601,
+50721,
+"Kwiat Brzoskwini",
+"MT2009_maps_wz_1601",
+"ours"
+],
+[
+1601,
+50727,
+"Róża Alpejska",
+"MT2009_maps_wz_1601",
+"ours"
+],
+[
+1602,
+50721,
+"Kwiat Brzoskwini",
+"투귀감찰병",
+"quest"
+],
+[
+1602,
+3140,
+"Magnetyczne Ostrze+0",
+"MT2009_maps_wz_1602",
+"ours"
+],
+[
+1603,
+5060,
+"Magiczny Dzwon+0",
+"MT2009_maps_wz_1603",
+"ours"
+],
+[
+1603,
+130,
+"Pół-księżycowy Miecz+0",
+"MT2009_maps_wz_1603",
+"ours"
+],
+[
+1901,
+90010,
+"Kamień Węgielny",
+"구미호",
+"quest"
+],
+[
+2001,
+50721,
+"Kwiat Brzoskwini",
+"새끼거미",
+"quest"
+],
+[
+2004,
+50721,
+"Kwiat Brzoskwini",
+"집게거미",
+"quest"
+],
+[
+2005,
+50727,
+"Róża Alpejska",
+"병정거미",
+"quest"
+],
+[
+2033,
+50727,
+"Róża Alpejska",
+"붉은맹독거미",
+"quest"
+],
+[
+2061,
+50724,
+"Korzeń Gango",
+"새끼독거미",
+"quest"
+],
+[
+2062,
+50721,
+"Kwiat Brzoskwini",
+"맹독거미",
+"quest"
+],
+[
+2063,
+50724,
+"Korzeń Gango",
+"붉은맹독거미",
+"quest"
+],
+[
+2091,
+90011,
+"Pień",
+"여왕거미",
+"quest"
+],
+[
+2103,
+50721,
+"Kwiat Brzoskwini",
+"대왕전갈",
+"quest"
+],
+[
+2104,
+50724,
+"Korzeń Gango",
+"전갈인간",
+"quest"
+],
+[
+2108,
+50728,
+"Morwa",
+"사막의무법자",
+"quest"
+],
+[
+2131,
+50727,
+"Róża Alpejska",
+"전갈인간",
+"quest"
+],
+[
+2134,
+50727,
+"Róża Alpejska",
+"반인반사궁병",
+"quest"
+],
+[
+2191,
+90012,
+"Dykta",
+"거대사막거북",
+"quest"
+],
+[
+2201,
+90010,
+"Kamień Węgielny",
+"투지범졸개",
+"ours"
+],
+[
+2202,
+90010,
+"Kamień Węgielny",
+"화령",
+"ours"
+],
+[
+2202,
+50727,
+"Róża Alpejska",
+"화령",
+"quest"
+],
+[
+2203,
+90010,
+"Kamień Węgielny",
+"투지범",
+"ours"
+],
+[
+2203,
+50728,
+"Morwa",
+"투지범",
+"quest"
+],
+[
+2204,
+90010,
+"Kamień Węgielny",
+"참마인",
+"ours"
+],
+[
+2205,
+90010,
+"Kamień Węgielny",
+"태화무인",
+"ours"
+],
+[
+2206,
+90012,
+"Dykta",
+"화염왕",
+"quest"
+],
+[
+2301,
+50727,
+"Róża Alpejska",
+"귀목",
+"quest"
+],
+[
+2305,
+30192,
+"Mleczny Sok",
+"MT2009_buty_2305",
+"ours"
+],
+[
+2311,
+50728,
+"Morwa",
+"적귀목",
+"quest"
+],
+[
+2312,
+50724,
+"Korzeń Gango",
+"밑둥적귀목",
+"quest"
+],
+[
+2314,
+50727,
+"Róża Alpejska",
+"화류적귀목",
+"quest"
+],
+[
+2315,
+50728,
+"Morwa",
+"흑적귀목",
+"quest"
+],
+[
+2401,
+50721,
+"Kwiat Brzoskwini",
+"Setaou-K?pfer87",
+"quest"
+],
+[
+2401,
+70050,
+"Symb. Króla Przepowiedni",
+"Setaou-K?pfer87",
+"quest"
+],
+[
+2403,
+50727,
+"Róża Alpejska",
+"Setaou-Seherin89",
+"quest"
+],
+[
+2404,
+50724,
+"Korzeń Gango",
+"Setaou-Anf?rer90",
+"quest"
+],
+[
+2404,
+50728,
+"Morwa",
+"Setaou-Anf?rer90",
+"quest"
+],
+[
+2404,
+70051,
+"Rękawica Króla Przepow.",
+"Setaou-Anf?rer90",
+"quest"
+],
+[
+2411,
+50721,
+"Kwiat Brzoskwini",
+"Setaou-Soldat91",
+"quest"
+],
+[
+2413,
+50727,
+"Róża Alpejska",
+"Setaou-Seherin95",
+"quest"
+],
+[
+2431,
+50721,
+"Kwiat Brzoskwini",
+"Setaou-Soldat80",
+"quest"
+],
+[
+2431,
+70051,
+"Rękawica Króla Przepow.",
+"Setaou-Soldat80",
+"quest"
+],
+[
+2432,
+70050,
+"Symb. Króla Przepowiedni",
+"Setaou-J?er82",
+"quest"
+],
+[
+2433,
+50727,
+"Róża Alpejska",
+"Setaou-Seherin82",
+"quest"
+],
+[
+2434,
+50724,
+"Korzeń Gango",
+"Setaou-Anf?rer83",
+"quest"
+],
+[
+2434,
+50728,
+"Morwa",
+"Setaou-Anf?rer83",
+"quest"
+],
+[
+2451,
+50721,
+"Kwiat Brzoskwini",
+"Setaou-Soldat84",
+"quest"
+],
+[
+2454,
+70051,
+"Rękawica Króla Przepow.",
+"Setaou-Anf?rer90",
+"quest"
+],
+[
+2454,
+70050,
+"Symb. Króla Przepowiedni",
+"Setaou-Anf?rer90",
+"quest"
+],
+[
+2492,
+30190,
+"Krwisty Kamień",
+"Setaou-General2",
+"quest"
+],
+[
+2492,
+70051,
+"Rękawica Króla Przepow.",
+"Setaou-General2",
+"quest"
+],
+[
+2492,
+70050,
+"Symb. Króla Przepowiedni",
+"Setaou-General2",
+"quest"
+],
+[
+2493,
+30190,
+"Krwisty Kamień",
+"Water_Dragon",
+"quest"
+],
+[
+2493,
+30190,
+"Krwisty Kamień",
+"Water_Dragon",
+"quest"
+],
+[
+2493,
+71123,
+"Smocza Łuska",
+"Water_Dragon",
+"quest"
+],
+[
+2493,
+71129,
+"Smoczy Szpon",
+"Water_Dragon",
+"quest"
+],
+[
+2493,
+71083,
+"Księga Obróbki Kamienia",
+"Water_Dragon",
+"quest"
+],
+[
+2493,
+25040,
+"Zwój Błogosławieństwa",
+"Water_Dragon",
+"ours"
+],
+[
+2493,
+71085,
+"Wzmocnienie Przedmiotu",
+"Water_Dragon",
+"quest"
+],
+[
+2493,
+71084,
+"Zaczarowanie Przedmiotu",
+"Water_Dragon",
+"quest"
+],
+[
+2493,
+30190,
+"Krwisty Kamień",
+"Water_Dragon_HL",
+"quest"
+],
+[
+2493,
+27992,
+"Biała Perła",
+"Water_Dragon_HL",
+"quest"
+],
+[
+2493,
+27993,
+"Niebieska Perła",
+"Water_Dragon_HL",
+"quest"
+],
+[
+2493,
+27994,
+"Krwawa Perła",
+"Water_Dragon_HL",
+"quest"
+],
+[
+2493,
+70024,
+"Marmur Błogosławieństwa",
+"Water_Dragon_HL",
+"quest"
+],
+[
+2493,
+50513,
+"Kamień Duchowy",
+"Water_Dragon_HL",
+"quest"
+],
+[
+2493,
+50513,
+"Kamień Duchowy",
+"Water_Dragon_HL",
+"quest"
+],
+[
+2493,
+71085,
+"Wzmocnienie Przedmiotu",
+"Water_Dragon_HL",
+"ours"
+],
+[
+2493,
+71084,
+"Zaczarowanie Przedmiotu",
+"Water_Dragon_HL",
+"ours"
+],
+[
+2493,
+12264,
+"Maska Strachu+4",
+"MT2009_beran_2493",
+"ours"
+],
+[
+2493,
+12394,
+"Orkowy Kaptur+4",
+"MT2009_beran_2493",
+"ours"
+],
+[
+2493,
+12534,
+"Rogowy Hełm+4",
+"MT2009_beran_2493",
+"ours"
+],
+[
+2493,
+12674,
+"Kapelusz Kardynała+4",
+"MT2009_beran_2493",
+"ours"
+],
+[
+2493,
+71052,
+"Błogosław. Przedmiotu",
+"MT2009_beltmats_2493",
+"ours"
+],
+[
+2495,
+30190,
+"Krwisty Kamień",
+"Setaou-General4",
+"quest"
+],
+[
+2495,
+70050,
+"Symb. Króla Przepowiedni",
+"Setaou-General4",
+"quest"
+],
+[
+2495,
+70051,
+"Rękawica Króla Przepow.",
+"Setaou-General4",
+"quest"
+],
+[
+2503,
+50724,
+"Korzeń Gango",
+"아귀감염자",
+"quest"
+],
+[
+2506,
+50727,
+"Róża Alpejska",
+"아귀감염궁수",
+"quest"
+],
+[
+2507,
+50728,
+"Morwa",
+"아귀감염장수",
+"quest"
+],
+[
+2543,
+50724,
+"Korzeń Gango",
+"부활한아귀창병",
+"quest"
+],
+[
+2544,
+50724,
+"Korzeń Gango",
+"부활한아귀주술사",
+"quest"
+],
+[
+2545,
+50727,
+"Róża Alpejska",
+"부활한아귀검병",
+"quest"
+],
+[
+2546,
+50727,
+"Róża Alpejska",
+"부활한아귀마검사",
+"quest"
+],
+[
+2547,
+50728,
+"Morwa",
+"부활한아귀장수",
+"quest"
+],
+[
+2598,
+183,
+"Zatruty miecz+3",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+184,
+"Zatruty miecz+4",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+193,
+"Lwi Miecz+3",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+194,
+"Lwi Miecz+4",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+3163,
+"Miecz Żalu+3",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+3164,
+"Miecz Żalu+4",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+2173,
+"Stalowy Łuk Kruka+3",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+2174,
+"Stalowy Łuk Kruka+4",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+1133,
+"Skrzydła Demona Chakr.+3",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+1134,
+"Skrzydła Demona Chakr.+4",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+7183,
+"Wachlarz 8 Trigramów+3",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+7184,
+"Wachlarz 8 Trigramów+4",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+5123,
+"Bambusowy Dzwon+3",
+"아귀대제파황",
+"ours"
+],
+[
+2598,
+5124,
+"Bambusowy Dzwon+4",
+"아귀대제파황",
+"ours"
+],
+[
+3001,
+50721,
+"Kwiat Brzoskwini",
+"낭인병_약초",
+"quest"
+],
+[
+3004,
+50724,
+"Korzeń Gango",
+"낭인대법사_약초",
+"quest"
+],
+[
+3090,
+25040,
+"Zwój Błogosławieństwa",
+"낭인족부족장_약초_보상",
+"quest"
+],
+[
+3090,
+70043,
+"Rękawica Złodzieja",
+"낭인족부족장_약초_보상",
+"quest"
+],
+[
+3090,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3090",
+"ours"
+],
+[
+3090,
+30617,
+"Agat",
+"MT2009_beltmats_3090",
+"ours"
+],
+[
+3091,
+50727,
+"Róża Alpejska",
+"낭인족장_약초_보상",
+"quest"
+],
+[
+3091,
+25040,
+"Zwój Błogosławieństwa",
+"낭인족장_약초_보상",
+"quest"
+],
+[
+3091,
+70043,
+"Rękawica Złodzieja",
+"낭인족장_약초_보상",
+"quest"
+],
+[
+3091,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3091",
+"ours"
+],
+[
+3091,
+30617,
+"Agat",
+"MT2009_beltmats_3091",
+"ours"
+],
+[
+3101,
+50728,
+"Morwa",
+"외안투귀병_약초",
+"quest"
+],
+[
+3102,
+50721,
+"Kwiat Brzoskwini",
+"외안투귀척후병_약초",
+"quest"
+],
+[
+3105,
+50724,
+"Korzeń Gango",
+"외안투귀상급장군_약초",
+"quest"
+],
+[
+3190,
+25040,
+"Zwój Błogosławieństwa",
+"외안투귀족부족장_약초",
+"quest"
+],
+[
+3190,
+70043,
+"Rękawica Złodzieja",
+"외안투귀족부족장_약초",
+"quest"
+],
+[
+3190,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3190",
+"ours"
+],
+[
+3190,
+30617,
+"Agat",
+"MT2009_beltmats_3190",
+"ours"
+],
+[
+3191,
+25040,
+"Zwój Błogosławieństwa",
+"외안투귀족장_약초",
+"quest"
+],
+[
+3191,
+70043,
+"Rękawica Złodzieja",
+"외안투귀족장_약초",
+"quest"
+],
+[
+3191,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3191",
+"ours"
+],
+[
+3191,
+30617,
+"Agat",
+"MT2009_beltmats_3191",
+"ours"
+],
+[
+3201,
+50727,
+"Róża Alpejska",
+"범익병_약초",
+"quest"
+],
+[
+3202,
+50728,
+"Morwa",
+"범익척후병_약초",
+"quest"
+],
+[
+3203,
+50721,
+"Kwiat Brzoskwini",
+"범익법사_약초",
+"quest"
+],
+[
+3290,
+50724,
+"Korzeń Gango",
+"범익족부족장_약초",
+"quest"
+],
+[
+3290,
+25040,
+"Zwój Błogosławieństwa",
+"범익족부족장_약초",
+"quest"
+],
+[
+3290,
+70043,
+"Rękawica Złodzieja",
+"범익족부족장_약초",
+"quest"
+],
+[
+3290,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3290",
+"ours"
+],
+[
+3290,
+30617,
+"Agat",
+"MT2009_beltmats_3290",
+"ours"
+],
+[
+3291,
+25040,
+"Zwój Błogosławieństwa",
+"범익족장_약초",
+"quest"
+],
+[
+3291,
+70043,
+"Rękawica Złodzieja",
+"범익족장_약초",
+"quest"
+],
+[
+3291,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3291",
+"ours"
+],
+[
+3291,
+30617,
+"Agat",
+"MT2009_beltmats_3291",
+"ours"
+],
+[
+3302,
+50727,
+"Róża Alpejska",
+"망량척후병_약초",
+"quest"
+],
+[
+3303,
+50728,
+"Morwa",
+"망량법사_약초",
+"quest"
+],
+[
+3304,
+50721,
+"Kwiat Brzoskwini",
+"망량장군_약초",
+"quest"
+],
+[
+3390,
+25040,
+"Zwój Błogosławieństwa",
+"망량족부족장_약초",
+"quest"
+],
+[
+3390,
+70043,
+"Rękawica Złodzieja",
+"망량족부족장_약초",
+"quest"
+],
+[
+3390,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3390",
+"ours"
+],
+[
+3390,
+30617,
+"Agat",
+"MT2009_beltmats_3390",
+"ours"
+],
+[
+3391,
+50724,
+"Korzeń Gango",
+"망량족장_약초",
+"quest"
+],
+[
+3391,
+25040,
+"Zwój Błogosławieństwa",
+"망량족장_약초",
+"quest"
+],
+[
+3391,
+70043,
+"Rękawica Złodzieja",
+"망량족장_약초",
+"quest"
+],
+[
+3391,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3391",
+"ours"
+],
+[
+3391,
+30617,
+"Agat",
+"MT2009_beltmats_3391",
+"ours"
+],
+[
+3403,
+50727,
+"Róża Alpejska",
+"어인법사_약초",
+"quest"
+],
+[
+3404,
+50728,
+"Morwa",
+"어인장군_약초",
+"quest"
+],
+[
+3405,
+50721,
+"Kwiat Brzoskwini",
+"어인상급장군_약초",
+"quest"
+],
+[
+3490,
+25040,
+"Zwój Błogosławieństwa",
+"어인족부족장_약초",
+"quest"
+],
+[
+3490,
+70043,
+"Rękawica Złodzieja",
+"어인족부족장_약초",
+"quest"
+],
+[
+3490,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3490",
+"ours"
+],
+[
+3490,
+30617,
+"Agat",
+"MT2009_beltmats_3490",
+"ours"
+],
+[
+3491,
+25040,
+"Zwój Błogosławieństwa",
+"어인족장_약초",
+"quest"
+],
+[
+3491,
+70043,
+"Rękawica Złodzieja",
+"어인족장_약초",
+"quest"
+],
+[
+3491,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3491",
+"ours"
+],
+[
+3491,
+30617,
+"Agat",
+"MT2009_beltmats_3491",
+"ours"
+],
+[
+3501,
+50724,
+"Korzeń Gango",
+"붉은도적단원_약초",
+"quest"
+],
+[
+3504,
+50727,
+"Róża Alpejska",
+"붉은도적단장수_약초",
+"quest"
+],
+[
+3505,
+50728,
+"Morwa",
+"붉은도적단상급장군_약초",
+"quest"
+],
+[
+3551,
+50721,
+"Kwiat Brzoskwini",
+"진붉은도적단원_약초",
+"quest"
+],
+[
+3554,
+50724,
+"Korzeń Gango",
+"진붉은도적단장수_약초",
+"quest"
+],
+[
+3590,
+25040,
+"Zwój Błogosławieństwa",
+"붉은도적단부단장_약초",
+"quest"
+],
+[
+3590,
+70043,
+"Rękawica Złodzieja",
+"붉은도적단부단장_약초",
+"quest"
+],
+[
+3590,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3590",
+"ours"
+],
+[
+3590,
+30617,
+"Agat",
+"MT2009_beltmats_3590",
+"ours"
+],
+[
+3591,
+50727,
+"Róża Alpejska",
+"붉은도적단단장_약초",
+"quest"
+],
+[
+3591,
+25040,
+"Zwój Błogosławieństwa",
+"붉은도적단단장_약초",
+"quest"
+],
+[
+3591,
+70043,
+"Rękawica Złodzieja",
+"붉은도적단단장_약초",
+"quest"
+],
+[
+3591,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3591",
+"ours"
+],
+[
+3591,
+30617,
+"Agat",
+"MT2009_beltmats_3591",
+"ours"
+],
+[
+3595,
+50728,
+"Morwa",
+"진붉은도적단부단장_약초",
+"quest"
+],
+[
+3595,
+25040,
+"Zwój Błogosławieństwa",
+"진붉은도적단부단장_약초",
+"quest"
+],
+[
+3595,
+70043,
+"Rękawica Złodzieja",
+"진붉은도적단부단장_약초",
+"quest"
+],
+[
+3595,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3595",
+"ours"
+],
+[
+3595,
+30617,
+"Agat",
+"MT2009_beltmats_3595",
+"ours"
+],
+[
+3596,
+50721,
+"Kwiat Brzoskwini",
+"진붉은도적단단장_약초",
+"quest"
+],
+[
+3596,
+25040,
+"Zwój Błogosławieństwa",
+"진붉은도적단단장_약초",
+"quest"
+],
+[
+3596,
+70043,
+"Rękawica Złodzieja",
+"진붉은도적단단장_약초",
+"quest"
+],
+[
+3596,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3596",
+"ours"
+],
+[
+3596,
+30617,
+"Agat",
+"MT2009_beltmats_3596",
+"ours"
+],
+[
+3603,
+50724,
+"Korzeń Gango",
+"갑각구충_약초",
+"quest"
+],
+[
+3690,
+50727,
+"Róża Alpejska",
+"거대갑각투신충_약초",
+"quest"
+],
+[
+3690,
+25040,
+"Zwój Błogosławieństwa",
+"거대갑각투신충_약초",
+"quest"
+],
+[
+3690,
+70043,
+"Rękawica Złodzieja",
+"거대갑각투신충_약초",
+"quest"
+],
+[
+3690,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3690",
+"ours"
+],
+[
+3690,
+30617,
+"Agat",
+"MT2009_beltmats_3690",
+"ours"
+],
+[
+3691,
+50728,
+"Morwa",
+"대왕투귀충_약초",
+"quest"
+],
+[
+3691,
+25040,
+"Zwój Błogosławieństwa",
+"대왕투귀충_약초",
+"quest"
+],
+[
+3691,
+70043,
+"Rękawica Złodzieja",
+"대왕투귀충_약초",
+"quest"
+],
+[
+3691,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3691",
+"ours"
+],
+[
+3691,
+30617,
+"Agat",
+"MT2009_beltmats_3691",
+"ours"
+],
+[
+3701,
+50721,
+"Kwiat Brzoskwini",
+"거인병_약초",
+"quest"
+],
+[
+3704,
+50724,
+"Korzeń Gango",
+"거인장군_약초",
+"quest"
+],
+[
+3790,
+25040,
+"Zwój Błogosławieństwa",
+"거인족부족장_약초_보상",
+"quest"
+],
+[
+3790,
+70043,
+"Rękawica Złodzieja",
+"거인족부족장_약초_보상",
+"quest"
+],
+[
+3790,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3790",
+"ours"
+],
+[
+3790,
+30617,
+"Agat",
+"MT2009_beltmats_3790",
+"ours"
+],
+[
+3791,
+50727,
+"Róża Alpejska",
+"거인족장_약초_보상",
+"quest"
+],
+[
+3791,
+25040,
+"Zwój Błogosławieństwa",
+"거인족장_약초_보상",
+"quest"
+],
+[
+3791,
+70043,
+"Rękawica Złodzieja",
+"거인족장_약초_보상",
+"quest"
+],
+[
+3791,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3791",
+"ours"
+],
+[
+3791,
+30617,
+"Agat",
+"MT2009_beltmats_3791",
+"ours"
+],
+[
+3801,
+50728,
+"Morwa",
+"저인병_약초",
+"quest"
+],
+[
+3802,
+50721,
+"Kwiat Brzoskwini",
+"저인궁사_약초",
+"quest"
+],
+[
+3805,
+50724,
+"Korzeń Gango",
+"저인상급장군_약초",
+"quest"
+],
+[
+3890,
+25040,
+"Zwój Błogosławieństwa",
+"저인족부족장_약초_보상",
+"quest"
+],
+[
+3890,
+70043,
+"Rękawica Złodzieja",
+"저인족부족장_약초_보상",
+"quest"
+],
+[
+3890,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3890",
+"ours"
+],
+[
+3890,
+30617,
+"Agat",
+"MT2009_beltmats_3890",
+"ours"
+],
+[
+3891,
+25040,
+"Zwój Błogosławieństwa",
+"저인족장_약초_보상",
+"quest"
+],
+[
+3891,
+70043,
+"Rękawica Złodzieja",
+"저인족장_약초_보상",
+"quest"
+],
+[
+3891,
+30616,
+"Dwutlenek Tytanu",
+"MT2009_beltmats_3891",
+"ours"
+],
+[
+3891,
+30617,
+"Agat",
+"MT2009_beltmats_3891",
+"ours"
+],
+[
+5002,
+70038,
+"Peleryna Męstwa",
+"해태",
+"quest"
+],
+[
+5002,
+70050,
+"Symb. Króla Przepowiedni",
+"해태",
+"quest"
+],
+[
+5002,
+70051,
+"Rękawica Króla Przepow.",
+"해태",
+"quest"
+],
+[
+5002,
+25040,
+"Zwój Błogosławieństwa",
+"해태",
+"quest"
+],
+[
+5004,
+30202,
+"Ucho Tanaka",
+"이벤트용_다나까",
+"quest"
+],
+[
+5101,
+50050,
+"Medal Konny",
+"하선동_원숭이",
+"quest"
+],
+[
+5102,
+50050,
+"Medal Konny",
+"하선동_원숭이",
+"quest"
+],
+[
+5103,
+50050,
+"Medal Konny",
+"하선동_원숭이",
+"quest"
+],
+[
+5104,
+50050,
+"Medal Konny",
+"하선동_원숭이",
+"quest"
+],
+[
+5104,
+50721,
+"Kwiat Brzoskwini",
+"하선동원장수",
+"quest"
+],
+[
+5111,
+50050,
+"Medal Konny",
+"중선동_원숭이",
+"quest"
+],
+[
+5112,
+50050,
+"Medal Konny",
+"중선동_원숭이",
+"quest"
+],
+[
+5113,
+50050,
+"Medal Konny",
+"중선동_원숭이",
+"quest"
+],
+[
+5114,
+50050,
+"Medal Konny",
+"중선동_원숭이",
+"quest"
+],
+[
+5115,
+50050,
+"Medal Konny",
+"중선동_돌원숭이",
+"quest"
+],
+[
+5121,
+50050,
+"Medal Konny",
+"상선동_원숭이",
+"quest"
+],
+[
+5122,
+50050,
+"Medal Konny",
+"상선동_원숭이",
+"quest"
+],
+[
+5123,
+50050,
+"Medal Konny",
+"상선동_원숭이",
+"quest"
+],
+[
+5124,
+50050,
+"Medal Konny",
+"상선동_원숭이",
+"quest"
+],
+[
+5125,
+50050,
+"Medal Konny",
+"상선동_돌원숭이",
+"quest"
+],
+[
+5125,
+50724,
+"Korzeń Gango",
+"상선동돌원숭이",
+"quest"
+],
+[
+5126,
+50050,
+"Medal Konny",
+"상선동_금원숭이",
+"quest"
+],
+[
+5126,
+50721,
+"Kwiat Brzoskwini",
+"상선동금원숭이",
+"quest"
+],
+[
+5161,
+50736,
+"Jaskiniowy Grzyb",
+"이산대성",
+"quest"
+],
+[
+5162,
+50736,
+"Jaskiniowy Grzyb",
+"통천대성",
+"quest"
+],
+[
+5163,
+50059,
+"Zioło Z Trudnych Małp",
+"제천대성",
+"quest"
+],
+[
+5163,
+50736,
+"Jaskiniowy Grzyb",
+"제천대성",
+"quest"
+],
+[
+6006,
+30524,
+"Kamień Płomienia",
+"MT2009_beltmats_6006",
+"ours"
+],
+[
+6105,
+30525,
+"Kamień Lodowe. Płomienia",
+"MT2009_beltmats_6105",
+"ours"
+],
+[
+6106,
+30525,
+"Kamień Lodowe. Płomienia",
+"MT2009_beltmats_6106",
+"ours"
+],
+[
+6108,
+30525,
+"Kamień Lodowe. Płomienia",
+"MT2009_beltmats_6108",
+"ours"
+],
+[
+8008,
+50513,
+"Kamień Duchowy",
+"혼마석",
+"quest"
+],
+[
+8009,
+50513,
+"Kamień Duchowy",
+"영마석",
+"quest"
+],
+[
+8010,
+50513,
+"Kamień Duchowy",
+"강마석",
+"quest"
+],
+[
+8011,
+50513,
+"Kamień Duchowy",
+"악마석",
+"quest"
+],
+[
+8012,
+50513,
+"Kamień Duchowy",
+"운마석",
+"quest"
+],
+[
+8012,
+72735,
+"Maska Sabaha",
+"운마석",
+"ours"
+],
+[
+8013,
+50513,
+"Kamień Duchowy",
+"사마석",
+"quest"
+],
+[
+8014,
+50513,
+"Kamień Duchowy",
+"살마석",
+"quest"
+],
+[
+8014,
+25040,
+"Zwój Błogosławieństwa",
+"살마석",
+"quest"
+],
+[
+8019,
+50513,
+"Kamień Duchowy",
+"살마석",
+"quest"
+],
+[
+8024,
+50513,
+"Kamień Duchowy",
+"풍마석",
+"quest"
+],
+[
+8024,
+25040,
+"Zwój Błogosławieństwa",
+"풍마석",
+"quest"
+],
+[
+8025,
+50513,
+"Kamień Duchowy",
+"마안석",
+"quest"
+],
+[
+8025,
+25040,
+"Zwój Błogosławieństwa",
+"마안석",
+"quest"
+],
+[
+8026,
+70038,
+"Peleryna Męstwa",
+"투용석",
+"quest"
+],
+[
+8026,
+25040,
+"Zwój Błogosławieństwa",
+"투용석",
+"quest"
+],
+[
+8026,
+70043,
+"Rękawica Złodzieja",
+"투용석",
+"quest"
+],
+[
+8026,
+70005,
+"Pierścień Doświadczenia",
+"투용석",
+"quest"
+],
+[
+8026,
+50513,
+"Kamień Duchowy",
+"투용석",
+"quest"
+],
+[
+8026,
+25100,
+"Zwój Kamienia Duszy",
+"투용석",
+"quest"
+],
+[
+8026,
+71282,
+"Niebieski Oldtimer",
+"투용석",
+"ours"
+],
+[
+8026,
+71094,
+"Rada Pustelnika",
+"투용석",
+"ours"
+],
+[
+8027,
+70038,
+"Peleryna Męstwa",
+"전운석",
+"quest"
+],
+[
+8027,
+25040,
+"Zwój Błogosławieństwa",
+"전운석",
+"quest"
+],
+[
+8027,
+70043,
+"Rękawica Złodzieja",
+"전운석",
+"quest"
+],
+[
+8027,
+70005,
+"Pierścień Doświadczenia",
+"전운석",
+"quest"
+],
+[
+8027,
+50513,
+"Kamień Duchowy",
+"전운석",
+"quest"
+],
+[
+8027,
+25100,
+"Zwój Kamienia Duszy",
+"전운석",
+"quest"
+],
+[
+8027,
+71282,
+"Niebieski Oldtimer",
+"전운석",
+"ours"
+],
+[
+8027,
+71094,
+"Rada Pustelnika",
+"전운석",
+"ours"
+]
+],
+"outside": [
+[
+2832,
+"Generał Shen",
+"u nas inny potwor: Wu-Kong"
+],
+[
+3905,
+"Mu-Shu",
+"u nas inny potwor: Se-Rang"
+],
+[
+3906,
+"Yah-Ki",
+"u nas inny potwor: Jin-Hee"
+],
+[
+3907,
+"Moghu",
+"u nas inny potwor: Czerwony Mag"
+],
+[
+3908,
+"Carnifex",
+"u nas inny potwor: Brutalny Czerw. Kat"
+],
+[
+3909,
+"Generał Albus",
+"u nas inny potwor: Biały Generał"
+],
+[
+3910,
+"Szkieletor",
+"u nas inny potwor: Trupia Twarz"
+],
+[
+6001,
+"Ognisty Duch Żaru",
+"u nas inny potwor: Duch Płomienia"
+],
+[
+6002,
+"Ognisty Tygrys Żaru",
+"u nas inny potwor: Płomienny Tygrys"
+],
+[
+6003,
+"Płomień Żaru",
+"u nas inny potwor: Płomienny Wojownik"
+],
+[
+6004,
+"Ognisty Wojownik Żaru",
+"u nas inny potwor: Płomienny Rycerz"
+],
+[
+6005,
+"Ognisty Król Żaru",
+"u nas inny potwor: Król Płomieni"
+],
+[
+6007,
+"Ognista Broda Żaru",
+"u nas inny potwor: Ognisty Golem Mag"
+],
+[
+6008,
+"Ognisty Generał Żaru",
+"u nas inny potwor: Generał Golemów"
+],
+[
+6009,
+"Ognisty Książę Żaru",
+"u nas inny potwor: Wódz Golemów"
+],
+[
+6101,
+"Kryształ Mrozu",
+"u nas inny potwor: Mroźny Kryształ"
+],
+[
+6107,
+"Mroźna Broda",
+"u nas inny potwor: Lodowy Golem Mag"
+],
+[
+6109,
+"Mroźny Książę",
+"u nas inny potwor: Władca Mrozu"
+],
+[
+8057,
+"Metin Purgatorium",
+"u nas inny potwor: Metin Czyśćca"
+],
+[
+20082,
+"Mistrz",
+"NPC / obiekt"
+],
+[
+20399,
+"Kolumna Smoka Północy",
+"u nas inny potwor: Lodowy Filar"
+],
+[
+20702,
+"Relikwiarz Energii",
+"NPC / obiekt"
+],
+[
+20703,
+"Relikwiarz Szczęścia",
+"NPC / obiekt"
+],
+[
+20704,
+"Relikwiarz Mocy",
+"NPC / obiekt"
+],
+[
+20705,
+"Relikwiarz Skarbów",
+"NPC / obiekt"
+],
+[
+20706,
+"Relikwiarz Olśnienia",
+"NPC / obiekt"
+],
+[
+20710,
+"Skrzynka Zaopatrz. (BR)",
+"NPC / obiekt"
+]
+],
+"ranks": [
+[
+2307,
+"Władca Drzewa Duchów",
+4,
+5
+],
+[
+2591,
+"Tartar",
+4,
+3
+],
+[
+2592,
+"Piekielny Bastard",
+4,
+3
+],
+[
+2593,
+"Piekielny Bastard",
+4,
+3
+],
+[
+2594,
+"Piekielny Bastard",
+4,
+3
+],
+[
+2595,
+"Ereb",
+4,
+3
+],
+[
+2596,
+"Motłoch Azraela",
+4,
+3
+]
+],
+"removes": [
+[
+109,
+30353,
+1,
+"1",
+"Wieprzowina",
+"붉은멧돼지"
+],
+[
+111,
+30346,
+1,
+"1",
+"Niedźwiedzina",
+"회색곰"
+],
+[
+114,
+30037,
+1,
+"1",
+"Szpon Tygrysa",
+"대호"
+],
+[
+131,
+7042,
+1,
+"25",
+"Pawi Wachlarz+2",
+"저주받은_두목늑대"
+],
+[
+134,
+52,
+1,
+"15",
+"Szeroki Miecz+2",
+"저주받은_푸른두목늑대"
+],
+[
+138,
+1022,
+1,
+"25",
+"Sztylet Nożycowy+2",
+"저주받은_붉은멧돼지"
+],
+[
+140,
+50722,
+1,
+"1",
+"Pokrzywa",
+"저주받은회색곰"
+],
+[
+141,
+13022,
+1,
+"25",
+"Pięciokątna Tarcza+2",
+"저주받은_검은곰"
+],
+[
+141,
+13023,
+1,
+"20",
+"Pięciokątna Tarcza+3",
+"저주받은_검은곰"
+],
+[
+141,
+3042,
+1,
+"10",
+"Gizarma+2",
+"저주받은_검은곰"
+],
+[
+143,
+30037,
+1,
+"1",
+"Szpon Tygrysa",
+"대호"
+],
+[
+151,
+50934,
+1,
+"0.2",
+"Receptura Mikstury Stagnacji",
+"푸른두목늑대청목"
+],
+[
+152,
+50934,
+1,
+"0.4",
+"Receptura Mikstury Stagnacji",
+"회색두목늑대무랑"
+],
+[
+153,
+50934,
+1,
+"0.6",
+"Receptura Mikstury Stagnacji",
+"붉은멧돼지적혈"
+],
+[
+154,
+50934,
+1,
+"0.8",
+"Receptura Mikstury Stagnacji",
+"불곰영지"
+],
+[
+155,
+50934,
+1,
+"1",
+"Receptura Mikstury Stagnacji",
+"대호일안"
+],
+[
+184,
+30037,
+1,
+"1",
+"Szpon Tygrysa",
+"대호"
+],
+[
+191,
+30069,
+1,
+"80",
+"Szpon Wilka+",
+"산견신"
+],
+[
+191,
+30347,
+1,
+"12",
+"Gourou",
+"산견신"
+],
+[
+191,
+50934,
+1,
+"2",
+"Receptura Mikstury Stagnacji",
+"산견신"
+],
+[
+191,
+50007,
+1,
+"4",
+"Srebrna Szkatułka",
+"산견신"
+],
+[
+192,
+30353,
+1,
+"12",
+"Wieprzowina",
+"저신"
+],
+[
+192,
+50934,
+1,
+"2",
+"Receptura Mikstury Stagnacji",
+"저신"
+],
+[
+192,
+50007,
+1,
+"4",
+"Srebrna Szkatułka",
+"저신"
+],
+[
+193,
+30346,
+1,
+"12",
+"Niedźwiedzina",
+"웅신"
+],
+[
+193,
+50934,
+1,
+"2",
+"Receptura Mikstury Stagnacji",
+"웅신"
+],
+[
+193,
+50007,
+1,
+"4",
+"Srebrna Szkatułka",
+"웅신"
+],
+[
+194,
+50934,
+1,
+"2",
+"Receptura Mikstury Stagnacji",
+"호신"
+],
+[
+194,
+50007,
+1,
+"4",
+"Srebrna Szkatułka",
+"호신"
+],
+[
+302,
+8101,
+1,
+"12",
+"Bambusowy Grot",
+"백결궁병"
+],
+[
+391,
+30356,
+1,
+"2",
+"Waleczna Dusza",
+"미정"
+],
+[
+392,
+30356,
+1,
+"2",
+"Waleczna Dusza",
+"은정"
+],
+[
+393,
+30356,
+1,
+"2",
+"Waleczna Dusza",
+"세랑"
+],
+[
+394,
+30356,
+1,
+"3",
+"Waleczna Dusza",
+"진희"
+],
+[
+395,
+30356,
+1,
+"0.4",
+"Waleczna Dusza",
+"bezduszne1"
+],
+[
+396,
+30356,
+1,
+"0.5",
+"Waleczna Dusza",
+"bezduszne2"
+],
+[
+397,
+30356,
+1,
+"0.6",
+"Waleczna Dusza",
+"bezduszne3"
+],
+[
+398,
+30356,
+1,
+"0.7",
+"Waleczna Dusza",
+"bezduszne4"
+],
+[
+403,
+8101,
+1,
+"4",
+"Bambusowy Grot",
+"흑풍궁수"
+],
+[
+491,
+30357,
+1,
+"8",
+"Amulet Wojownika",
+"맹환"
+],
+[
+491,
+50007,
+1,
+"10",
+"Srebrna Szkatułka",
+"맹환"
+],
+[
+491,
+72732,
+1,
+"10",
+"Ogon Konia",
+"맹환"
+],
+[
+492,
+30357,
+1,
+"8",
+"Amulet Wojownika",
+"보우"
+],
+[
+492,
+50007,
+1,
+"10",
+"Srebrna Szkatułka",
+"보우"
+],
+[
+492,
+72732,
+1,
+"10",
+"Ogon Konia",
+"보우"
+],
+[
+493,
+30357,
+1,
+"8",
+"Amulet Wojownika",
+"구패"
+],
+[
+493,
+50013,
+1,
+"10",
+"Srebrna Szkatułka+",
+"구패"
+],
+[
+493,
+72732,
+1,
+"10",
+"Ogon Konia",
+"구패"
+],
+[
+494,
+30357,
+1,
+"8",
+"Amulet Wojownika",
+"추흔"
+],
+[
+494,
+50013,
+1,
+"10",
+"Srebrna Szkatułka+",
+"추흔"
+],
+[
+494,
+72732,
+1,
+"10",
+"Ogon Konia",
+"추흔"
+],
+[
+503,
+8101,
+1,
+"20",
+"Bambusowy Grot",
+"오랑캐궁수"
+],
+[
+503,
+82,
+1,
+"20",
+"Miecz Półtoraręczny+2",
+"오랑케궁수"
+],
+[
+531,
+30357,
+1,
+"2",
+"Amulet Wojownika",
+"오랑캐보병비연"
+],
+[
+532,
+30075,
+1,
+"2",
+"Shuriken+",
+"오랑캐졸개강두"
+],
+[
+533,
+30357,
+1,
+"2",
+"Amulet Wojownika",
+"오랑캐궁수상천"
+],
+[
+534,
+30075,
+1,
+"2",
+"Shuriken+",
+"오랑캐부단장강천"
+],
+[
+552,
+30358,
+1,
+"1.4",
+"Serce Wojownika",
+"오랑케장수"
+],
+[
+591,
+30357,
+1,
+"10",
+"Amulet Wojownika",
+"비류단대장"
+],
+[
+591,
+7160,
+1,
+"1",
+"Wachlarz Jes. Wiatru+0",
+"비류단대장"
+],
+[
+591,
+5110,
+1,
+"1",
+"Antyczny Dzwon+0",
+"비류단대장"
+],
+[
+591,
+50013,
+1,
+"10",
+"Srebrna Szkatułka+",
+"비류단대장"
+],
+[
+604,
+50733,
+1,
+"1",
+"Bursztynowy Płatek",
+"진웅귀마병두오쿠"
+],
+[
+634,
+50733,
+1,
+"0.2",
+"Bursztynowy Płatek",
+"진웅귀마병"
+],
+[
+691,
+70040,
+1,
+"10",
+"Upartość Orków",
+"웅귀족장"
+],
+[
+703,
+50733,
+1,
+"0.2",
+"Bursztynowy Płatek",
+"밀교나한투병"
+],
+[
+737,
+50734,
+1,
+"0.4",
+"Perłowe Wiechy",
+"진밀교소환령"
+],
+[
+792,
+50071,
+1,
+"100",
+"Szkatułka Ezot. Władcy",
+"밀교교주"
+],
+[
+792,
+30370,
+1,
+"30",
+"Pozwolenie na Zaczar. Przedmiotu",
+"환생한밀교교주"
+],
+[
+792,
+30375,
+1,
+"5",
+"Magiczna Ruda",
+"환생한밀교교주"
+],
+[
+792,
+30368,
+1,
+"1",
+"Pozwolenie na Wzmocn. Przedmiotu",
+"환생한밀교교주"
+],
+[
+906,
+8104,
+1,
+"20",
+"Stalowy Grot",
+"괴질감염궁수"
+],
+[
+1002,
+8105,
+1,
+"5",
+"Srebrny Grot",
+"사귀궁병"
+],
+[
+1101,
+30348,
+1,
+"1",
+"Lodowata Maź",
+"빙마"
+],
+[
+1104,
+30348,
+1,
+"0.6",
+"Lodowata Maź",
+"설구"
+],
+[
+1105,
+30348,
+1,
+"0.6",
+"Lodowata Maź",
+"빙인"
+],
+[
+1107,
+50732,
+1,
+"0.5",
+"Śnieżny Kwiat",
+"얼음고램"
+],
+[
+1107,
+30348,
+1,
+"2",
+"Lodowata Maź",
+"얼음고램"
+],
+[
+1304,
+30370,
+1,
+"20",
+"Pozwolenie na Zaczar. Przedmiotu",
+"누렁범귀"
+],
+[
+1401,
+50730,
+1,
+"0.2",
+"Oset",
+"투귀병"
+],
+[
+1402,
+50730,
+1,
+"0.2",
+"Oset",
+"투귀척후병"
+],
+[
+1403,
+30372,
+1,
+"27",
+"Czarna Stal",
+"투귀천장수"
+],
+[
+1403,
+5130,
+1,
+"1",
+"Dzwon Śmierci+0",
+"투귀천장수"
+],
+[
+1403,
+11282,
+1,
+"5",
+"Zbroja Boga Smoków+2",
+"투귀천장수"
+],
+[
+1403,
+11482,
+1,
+"5",
+"Ubranie Fuksyjne+2",
+"투귀천장수"
+],
+[
+1403,
+11682,
+1,
+"5",
+"Duchowa Zbroja Płyt.+2",
+"투귀천장수"
+],
+[
+1403,
+11882,
+1,
+"5",
+"Szata Baronów+2",
+"투귀천장수"
+],
+[
+1403,
+30372,
+1,
+"0.1",
+"Czarna Stal",
+"투귀천장수"
+],
+[
+1403,
+5130,
+1,
+"0.1",
+"Dzwon Śmierci+0",
+"투귀천장수"
+],
+[
+1501,
+8102,
+1,
+"1",
+"Kamienny Grot",
+"석인"
+],
+[
+1502,
+8102,
+1,
+"1",
+"Kamienny Grot",
+"투석인"
+],
+[
+1603,
+30372,
+1,
+"0.03",
+"Czarna Stal",
+"투귀백장수"
+],
+[
+1901,
+30370,
+1,
+"20",
+"Pozwolenie na Zaczar. Przedmiotu",
+"구미호"
+],
+[
+2061,
+13024,
+1,
+"0.2",
+"Pięciokątna Tarcza+4",
+"새끼독거미"
+],
+[
+2061,
+13045,
+1,
+"0.2",
+"Czarna Okrągła Tarcza+5",
+"새끼독거미"
+],
+[
+2102,
+30359,
+1,
+"1.25",
+"Piasek Pustyni",
+"비마귀안"
+],
+[
+2105,
+8102,
+1,
+"40",
+"Kamienny Grot",
+"전갈궁수"
+],
+[
+2107,
+13042,
+1,
+"65",
+"Czarna Okrągła Tarcza+2",
+"반인반사궁병"
+],
+[
+2107,
+13043,
+1,
+"35",
+"Czarna Okrągła Tarcza+3",
+"반인반사궁병"
+],
+[
+2107,
+8103,
+1,
+"40",
+"Żelazny Grot",
+"반인반사궁병"
+],
+[
+2107,
+50735,
+1,
+"0.5",
+"Korzeń Węża",
+"반인반사궁병"
+],
+[
+2131,
+13024,
+1,
+"0.2",
+"Pięciokątna Tarcza+4",
+"새끼독거미"
+],
+[
+2131,
+13045,
+1,
+"0.2",
+"Czarna Okrągła Tarcza+5",
+"새끼독거미"
+],
+[
+2204,
+50729,
+1,
+"0.5",
+"Mniszek Lekarski",
+"참마인"
+],
+[
+2206,
+30370,
+1,
+"20",
+"Pozwolenie na Zaczar. Przedmiotu",
+"화염왕"
+],
+[
+2304,
+50729,
+1,
+"0.2",
+"Mniszek Lekarski",
+"Refining_2304"
+],
+[
+2311,
+50731,
+1,
+"0.2",
+"Gwiazda Nocy",
+"적귀목"
+],
+[
+2314,
+50729,
+1,
+"0.2",
+"Mniszek Lekarski",
+"화류적귀목"
+],
+[
+2315,
+50730,
+1,
+"0.3",
+"Oset",
+"흑적귀목"
+],
+[
+2402,
+8105,
+1,
+"0.6",
+"Srebrny Grot",
+"Setaou-J?er89"
+],
+[
+2402,
+8105,
+1,
+"0.42",
+"Srebrny Grot",
+"Setaou-J?er89"
+],
+[
+2412,
+8105,
+1,
+"1.6",
+"Srebrny Grot",
+"Setaou-J?er93"
+],
+[
+2412,
+8105,
+1,
+"0.85",
+"Srebrny Grot",
+"Setaou-J?er93"
+],
+[
+2597,
+12282,
+1,
+"0.025",
+"Hełm Mistrza Wojny+2",
+"아귀왕염천"
+],
+[
+2597,
+12402,
+1,
+"0.1",
+"Pajęczy Kaptur+2",
+"아귀왕염천"
+],
+[
+2597,
+12542,
+1,
+"0.1",
+"Magiczny Hełm+2",
+"아귀왕염천"
+],
+[
+2597,
+12682,
+1,
+"0.1",
+"Kapelusz Duszy+2",
+"아귀왕염천"
+],
+[
+2597,
+13142,
+1,
+"0.1",
+"Tarcza Tytanów+2",
+"아귀왕염천"
+],
+[
+2597,
+11291,
+1,
+"0.15",
+"Zbroja Z Czarnej Stali+1",
+"아귀왕염천"
+],
+[
+2597,
+11491,
+1,
+"0.15",
+"Ubranie Czarn. Wiatru+1",
+"아귀왕염천"
+],
+[
+2597,
+11891,
+1,
+"0.15",
+"Czarna Szata+1",
+"아귀왕염천"
+],
+[
+2597,
+11691,
+1,
+"0.15",
+"Zbr. Płyt. Czar. Magii+1",
+"아귀왕염천"
+],
+[
+2598,
+14220,
+1,
+"0.2",
+"Opaska Kryształu Duszy+0",
+"아귀대제파황"
+],
+[
+2598,
+16220,
+1,
+"0.2",
+"Naszyjnik Krysz. Duszy+0",
+"아귀대제파황"
+],
+[
+2598,
+17220,
+1,
+"0.2",
+"Kolczyki Krysz. Duszy+0",
+"아귀대제파황"
+],
+[
+2598,
+11291,
+1,
+"0.25",
+"Zbroja Z Czarnej Stali+1",
+"아귀대제파황"
+],
+[
+2598,
+11491,
+1,
+"0.25",
+"Ubranie Czarn. Wiatru+1",
+"아귀대제파황"
+],
+[
+2598,
+11891,
+1,
+"0.25",
+"Czarna Szata+1",
+"아귀대제파황"
+],
+[
+2598,
+11691,
+1,
+"0.25",
+"Zbr. Płyt. Czar. Magii+1",
+"아귀대제파황"
+],
+[
+2598,
+3140,
+1,
+"0.4",
+"Magnetyczne Ostrze+0",
+"아귀대제파황"
+],
+[
+2598,
+1110,
+1,
+"0.4",
+"Nóż Błyskawicy+0",
+"아귀대제파황"
+],
+[
+2598,
+2130,
+1,
+"0.4",
+"Boski Łuk Moreli+0",
+"아귀대제파황"
+],
+[
+2598,
+7140,
+1,
+"0.4",
+"Wachlarz Zbawienia+0",
+"아귀대제파황"
+],
+[
+2598,
+5100,
+1,
+"0.4",
+"Dzwon Nieba I Ziemi+0",
+"아귀대제파황"
+],
+[
+2598,
+160,
+1,
+"0.4",
+"Miecz Nimfy+0",
+"아귀대제파황"
+],
+[
+2598,
+240,
+1,
+"0.4",
+"Miecz Egzorcysty+0",
+"아귀대제파황"
+],
+[
+5002,
+13043,
+1,
+"46",
+"Czarna Okrągła Tarcza+3",
+"해태"
+],
+[
+5002,
+13044,
+1,
+"20",
+"Czarna Okrągła Tarcza+4",
+"해태"
+],
+[
+5114,
+30350,
+1,
+"0.15",
+"Pazury Małpy",
+"중선동원장수"
+],
+[
+5122,
+30351,
+1,
+"0.2",
+"Ogon Małpy",
+"상선동투마원병"
+],
+[
+5161,
+50007,
+1,
+"4",
+"Srebrna Szkatułka",
+"이산대성"
+],
+[
+5162,
+50013,
+1,
+"4",
+"Srebrna Szkatułka+",
+"통천대성"
+],
+[
+5163,
+50006,
+1,
+"4",
+"Złota Szkatułka",
+"제천대성"
+],
+[
+8003,
+50307,
+1,
+"4",
+"Księga Misji (Łatwa)",
+"투마석"
+],
+[
+8006,
+50308,
+1,
+"3",
+"Księga Misji (Normalna)",
+"암마석"
+],
+[
+8006,
+72732,
+1,
+"5",
+"Ogon Konia",
+"암마석"
+],
+[
+8007,
+30370,
+1,
+"0.5",
+"Pozwolenie na Zaczar. Przedmiotu",
+"질마석"
+],
+[
+8008,
+30370,
+1,
+"1",
+"Pozwolenie na Zaczar. Przedmiotu",
+"혼마석"
+],
+[
+8008,
+30373,
+1,
+"1",
+"Księga Erudyty",
+"혼마석"
+],
+[
+8008,
+30374,
+1,
+"0.5",
+"Pióro Mędrca",
+"혼마석"
+],
+[
+8009,
+30370,
+1,
+"2",
+"Pozwolenie na Zaczar. Przedmiotu",
+"영마석"
+],
+[
+8009,
+30373,
+1,
+"2",
+"Księga Erudyty",
+"영마석"
+],
+[
+8009,
+30374,
+1,
+"1",
+"Pióro Mędrca",
+"영마석"
+],
+[
+8010,
+30370,
+1,
+"4",
+"Pozwolenie na Zaczar. Przedmiotu",
+"강마석"
+],
+[
+8010,
+50309,
+1,
+"4",
+"Księga Misji (Trudna)",
+"강마석"
+],
+[
+8010,
+30373,
+1,
+"2.5",
+"Księga Erudyty",
+"강마석"
+],
+[
+8010,
+30374,
+1,
+"1.25",
+"Pióro Mędrca",
+"강마석"
+],
+[
+8011,
+30370,
+1,
+"8",
+"Pozwolenie na Zaczar. Przedmiotu",
+"악마석"
+],
+[
+8011,
+30373,
+1,
+"3",
+"Księga Erudyty",
+"악마석"
+],
+[
+8011,
+30374,
+1,
+"1.5",
+"Pióro Mędrca",
+"악마석"
+],
+[
+8012,
+30370,
+1,
+"12",
+"Pozwolenie na Zaczar. Przedmiotu",
+"운마석"
+],
+[
+8012,
+50309,
+1,
+"4",
+"Księga Misji (Trudna)",
+"운마석"
+],
+[
+8012,
+30373,
+1,
+"3.5",
+"Księga Erudyty",
+"운마석"
+],
+[
+8012,
+30374,
+1,
+"1.75",
+"Pióro Mędrca",
+"운마석"
+],
+[
+8013,
+30370,
+1,
+"16",
+"Pozwolenie na Zaczar. Przedmiotu",
+"사마석"
+],
+[
+8013,
+30373,
+1,
+"4",
+"Księga Erudyty",
+"사마석"
+],
+[
+8013,
+30374,
+1,
+"2",
+"Pióro Mędrca",
+"사마석"
+],
+[
+8014,
+30370,
+1,
+"20",
+"Pozwolenie na Zaczar. Przedmiotu",
+"살마석"
+],
+[
+8014,
+30368,
+1,
+"0.3",
+"Pozwolenie na Wzmocn. Przedmiotu",
+"살마석"
+],
+[
+8014,
+50310,
+1,
+"4",
+"Księga Misji (ekspert)",
+"살마석"
+],
+[
+8014,
+30373,
+1,
+"4.5",
+"Księga Erudyty",
+"살마석"
+],
+[
+8014,
+30374,
+1,
+"2.25",
+"Pióro Mędrca",
+"살마석"
+],
+[
+8019,
+30370,
+1,
+"2",
+"Pozwolenie na Zaczar. Przedmiotu",
+"살마석"
+],
+[
+8024,
+30370,
+1,
+"25",
+"Pozwolenie na Zaczar. Przedmiotu",
+"풍마석"
+],
+[
+8024,
+30368,
+1,
+"1",
+"Pozwolenie na Wzmocn. Przedmiotu",
+"풍마석"
+],
+[
+8024,
+50300,
+1,
+"400",
+"Księga Umiejętności",
+"풍마석"
+],
+[
+8024,
+30373,
+1,
+"5",
+"Księga Erudyty",
+"풍마석"
+],
+[
+8024,
+30374,
+1,
+"2.5",
+"Pióro Mędrca",
+"풍마석"
+],
+[
+8024,
+30375,
+1,
+"1.25",
+"Magiczna Ruda",
+"풍마석"
+],
+[
+8025,
+30370,
+1,
+"30",
+"Pozwolenie na Zaczar. Przedmiotu",
+"마안석"
+],
+[
+8025,
+30368,
+1,
+"2.5",
+"Pozwolenie na Wzmocn. Przedmiotu",
+"마안석"
+],
+[
+8025,
+50310,
+1,
+"4",
+"Księga Misji (ekspert)",
+"마안석"
+],
+[
+8025,
+50300,
+1,
+"400",
+"Księga Umiejętności",
+"마안석"
+],
+[
+8025,
+30373,
+1,
+"5.5",
+"Księga Erudyty",
+"마안석"
+],
+[
+8025,
+30374,
+1,
+"2.75",
+"Pióro Mędrca",
+"마안석"
+],
+[
+8025,
+30375,
+1,
+"1",
+"Magiczna Ruda",
+"마안석"
+],
+[
+8026,
+30370,
+1,
+"35",
+"Pozwolenie na Zaczar. Przedmiotu",
+"투용석"
+],
+[
+8026,
+30368,
+1,
+"5",
+"Pozwolenie na Wzmocn. Przedmiotu",
+"투용석"
+],
+[
+8026,
+50300,
+1,
+"400",
+"Księga Umiejętności",
+"투용석"
+],
+[
+8026,
+71201,
+1,
+"2.5",
+"Zwój Egzorcyzmu",
+"투용석"
+],
+[
+8026,
+30373,
+1,
+"6",
+"Księga Erudyty",
+"투용석"
+],
+[
+8026,
+30374,
+1,
+"3",
+"Pióro Mędrca",
+"투용석"
+],
+[
+8026,
+30375,
+1,
+"1.5",
+"Magiczna Ruda",
+"투용석"
+],
+[
+8027,
+30370,
+1,
+"40",
+"Pozwolenie na Zaczar. Przedmiotu",
+"전운석"
+],
+[
+8027,
+30368,
+1,
+"8",
+"Pozwolenie na Wzmocn. Przedmiotu",
+"전운석"
+],
+[
+8027,
+71201,
+1,
+"5",
+"Zwój Egzorcyzmu",
+"전운석"
+],
+[
+8027,
+30373,
+1,
+"8",
+"Księga Erudyty",
+"전운석"
+],
+[
+8027,
+30374,
+1,
+"4",
+"Pióro Mędrca",
+"전운석"
+],
+[
+8027,
+30375,
+1,
+"2",
+"Magiczna Ruda",
+"전운석"
+]
+],
+"skipped": [
+[
+55004,
+"Księga Dzikiego Zwierza",
+"not in our world",
+45
+],
+[
+25040,
+"Zwój Błogosławieństwa",
+"a quest gives / takes it",
+33
+],
+[
+50721,
+"Kwiat Brzoskwini",
+"a quest gives / takes it",
+29
+],
+[
+50724,
+"Korzeń Gango",
+"a quest gives / takes it",
+29
+],
+[
+30168,
+"Notatka Przywódcy",
+"quest item",
+25
+],
+[
+50727,
+"Róża Alpejska",
+"a quest gives / takes it",
+24
+],
+[
+50728,
+"Morwa",
+"a quest gives / takes it",
+24
+],
+[
+6046,
+"Szpon Gryfa+6",
+"the Lycan's (no such class here)",
+22
+],
+[
+70043,
+"Rękawice Złodzieja",
+"our 70043 is another item (Rękawica Złodzieja)",
+22
+],
+[
+6045,
+"Szpon Gryfa+5",
+"the Lycan's (no such class here)",
+21
+],
+[
+21075,
+"Zbroja Nocnego Cienia+5",
+"the Lycan's (no such class here)",
+21
+],
+[
+21076,
+"Zbroja Nocnego Cienia+6",
+"the Lycan's (no such class here)",
+21
+],
+[
+30227,
+"Kamień Duchowy Liderów",
+"a quest gives / takes it",
+20
+],
+[
+50050,
+"Medal Konny",
+"a quest gives / takes it",
+15
+],
+[
+30221,
+"Świątynny Kamień Duchowy",
+"a quest gives / takes it",
+14
+],
+[
+55005,
+"Księga Dzielnego Zwierza",
+"not in our world",
+13
+],
+[
+50124,
+"Spróchniała Skrzynia",
+"Sprochniala Skrzynia - out of every drop (the owner, 15 October 2026)",
+11
+],
+[
+30224,
+"Kamień Duchowy Gyimok",
+"a quest gives / takes it",
+10
+],
+[
+30165,
+"Konar Zelkova",
+"a quest gives / takes it",
+10
+],
+[
+30150,
+"Strona Pamiętnika",
+"a quest gives / takes it",
+9
+],
+[
+6050,
+"Szpon Skarabeusza+0",
+"not in our world",
+9
+],
+[
+50067,
+"Zwój Ewolucji",
+"a quest gives / takes it",
+9
+],
+[
+50068,
+"Zwój Mutacji",
+"a quest gives / takes it",
+9
+],
+[
+70433,
+"Zwój Skarbu (Stopień B)",
+"not in our world",
+9
+],
+[
+72006,
+"Rękawice Złodzieja",
+"a quest gives / takes it",
+9
+],
+[
+30001,
+"List",
+"a quest gives / takes it",
+8
+],
+[
+90010,
+"Kamień Węgielny",
+"a quest gives / takes it",
+8
+],
+[
+6032,
+"Stalowy Szpon+2",
+"not in our world",
+8
+],
+[
+30220,
+"Kamień Duchowy Jinunggyi",
+"a quest gives / takes it",
+7
+],
+[
+90012,
+"Dykta",
+"a quest gives / takes it",
+7
+],
+[
+30223,
+"Kamień Duchowy Aurtumryu",
+"a quest gives / takes it",
+7
+],
+[
+70050,
+"Symb. Króla Przepowiedni",
+"a quest gives / takes it",
+7
+],
+[
+70051,
+"Rękawica Króla Przepow.",
+"a quest gives / takes it",
+7
+],
+[
+21530,
+"Hełm Łaski Niebios+0",
+"not in our world",
+7
+],
+[
+6073,
+"Kolczasty Szpon+3",
+"the Lycan's (no such class here)",
+7
+],
+[
+21073,
+"Zbroja Nocnego Cienia+3",
+"the Lycan's (no such class here)",
+7
+],
+[
+31027,
+"Drobny Piasek",
+"a material nothing of ours uses",
+7
+],
+[
+31016,
+"List Lee Chunga",
+"a material nothing of ours uses",
+7
+],
+[
+39076,
+"Czerwony Odłamek",
+"Seon-Hae event shard",
+7
+],
+[
+39075,
+"Fioletowy Odłamek",
+"Seon-Hae event shard",
+7
+],
+[
+39077,
+"Tęczowy Odłamek",
+"Seon-Hae event shard",
+7
+],
+[
+31036,
+"Czarne Złoto",
+"a material nothing of ours uses",
+7
+],
+[
+31035,
+"Czarny Kamień",
+"a material nothing of ours uses",
+7
+],
+[
+31013,
+"Kartka",
+"a material nothing of ours uses",
+7
+],
+[
+31028,
+"Cegła",
+"a material nothing of ours uses",
+7
+],
+[
+31042,
+"Włócznia Trytona",
+"a material nothing of ours uses",
+7
+],
+[
+31026,
+"Pancerz Skorupiaka",
+"a material nothing of ours uses",
+7
+],
+[
+31018,
+"Skrypt Karapaks",
+"a material nothing of ours uses",
+7
+],
+[
+31038,
+"Poświęcona Ziemia",
+"a material nothing of ours uses",
+7
+],
+[
+31086,
+"Zarodniki Grzybów",
+"our 31086 is another item (NoNAme)",
+7
+],
+[
+31039,
+"Sakiewka z Monetami",
+"a material nothing of ours uses",
+7
+],
+[
+31040,
+"Złoty Order",
+"a material nothing of ours uses",
+7
+],
+[
+50515,
+"Podręcznik: Riposta",
+"not in our world",
+7
+],
+[
+39074,
+"Niebieski Odłamek",
+"Seon-Hae event shard",
+6
+],
+[
+70432,
+"Zwój Skarbu (Stopień C)",
+"not in our world",
+6
+],
+[
+90011,
+"Pień",
+"a quest gives / takes it",
+6
+],
+[
+50901,
+"Pusta Butelka",
+"a quest gives / takes it",
+6
+],
+[
+30166,
+"Certyfikat Tugyisa",
+"a quest gives / takes it",
+6
+],
+[
+30225,
+"Kamień Duchowy Tugyi",
+"a quest gives / takes it",
+6
+],
+[
+21074,
+"Zbroja Nocnego Cienia+4",
+"the Lycan's (no such class here)",
+6
+],
+[
+21540,
+"Hełm Zielonego Lasu+0",
+"not in our world",
+6
+],
+[
+6072,
+"Kolczasty Szpon+2",
+"not in our world",
+6
+],
+[
+21032,
+"Zbroja Płytowa Ulewy+2",
+"not in our world",
+5
+],
+[
+6022,
+"Żelazny Szpon+2",
+"not in our world",
+5
+],
+[
+21522,
+"Hełm Gromu+2",
+"not in our world",
+5
+],
+[
+21052,
+"Zbroja Płytowa Kobolda+2",
+"not in our world",
+5
+],
+[
+6030,
+"Stalowy Szpon+0",
+"not in our world",
+5
+],
+[
+39073,
+"Żółty Odłamek",
+"Seon-Hae event shard",
+5
+],
+[
+30162,
+"Oko Pająka",
+"a material nothing of ours uses",
+5
+],
+[
+30167,
+"Cz. Konar Drzewa Duchów",
+"a quest gives / takes it",
+5
+],
+[
+30226,
+"Kamień Duchowy Lasu",
+"a quest gives / takes it",
+5
+],
+[
+30136,
+"Rozrzutnie Ozdobiony Łuk",
+"a material nothing of ours uses",
+5
+],
+[
+6010,
+"Dzida Feniksa+0",
+"not in our world",
+4
+],
+[
+27988,
+"Mapa Skarbów",
+"a quest gives / takes it",
+4
+],
+[
+30161,
+"Oszczep Męża",
+"a quest gives / takes it",
+4
+],
+[
+39070,
+"Szary Odłamek",
+"Seon-Hae event shard",
+4
+],
+[
+39071,
+"Biały Odłamek",
+"Seon-Hae event shard",
+4
+],
+[
+39072,
+"Zielony Odłamek",
+"Seon-Hae event shard",
+4
+],
+[
+30147,
+"Świątynna Doktryna",
+"a quest gives / takes it",
+4
+],
+[
+30148,
+"Świątynny Szal",
+"a quest gives / takes it",
+4
+],
+[
+6033,
+"Stalowy Szpon+3",
+"not in our world",
+4
+],
+[
+30222,
+"Kamień Duchowy Sagyi",
+"a quest gives / takes it",
+4
+],
+[
+21051,
+"Zbroja Płytowa Kobolda+1",
+"not in our world",
+4
+],
+[
+6031,
+"Stalowy Szpon+1",
+"not in our world",
+4
+],
+[
+30050,
+"Lodowa Kulka",
+"a quest gives / takes it",
+4
+],
+[
+21065,
+"Zbroja Płytowa Firello+5",
+"not in our world",
+4
+],
+[
+30190,
+"Krwisty Kamień",
+"a quest gives / takes it",
+4
+],
+[
+70038,
+"Peleryna Męstwa",
+"a quest gives / takes it",
+4
+],
+[
+21070,
+"Zbroja Nocnego Cienia+0",
+"not in our world",
+4
+],
+[
+21060,
+"Zbroja Płytowa Firello+0",
+"not in our world",
+4
+],
+[
+21071,
+"Zbroja Nocnego Cienia+1",
+"not in our world",
+4
+],
+[
+21512,
+"Hełm z Czarnej Chusty+2",
+"not in our world",
+3
+],
+[
+21513,
+"Hełm z Czarnej Chusty+3",
+"not in our world",
+3
+],
+[
+30006,
+"Ząb Orka",
+"a quest gives / takes it",
+3
+],
+[
+6023,
+"Żelazny Szpon+3",
+"not in our world",
+3
+],
+[
+21523,
+"Hełm Gromu+3",
+"not in our world",
+3
+],
+[
+6040,
+"Szpon Gryfa+0",
+"not in our world",
+3
+],
+[
+31005,
+"Nieb. Esencja Kryształu",
+"a material nothing of ours uses",
+3
+],
+[
+6060,
+"Jastrzębi Szpon+0",
+"not in our world",
+3
+],
+[
+70005,
+"Pierścień Doświad. (1h)",
+"a quest gives / takes it",
+3
+],
+[
+21062,
+"Zbroja Płytowa Firello+2",
+"not in our world",
+3
+],
+[
+6034,
+"Stalowy Szpon+4",
+"not in our world",
+3
+],
+[
+6024,
+"Żelazny Szpon+4",
+"not in our world",
+3
+],
+[
+30045,
+"Igła Skorpiona",
+"a quest gives / takes it",
+3
+],
+[
+31007,
+"Ziemia Wulkaniczna",
+"a material nothing of ours uses",
+3
+],
+[
+21541,
+"Hełm Zielonego Lasu+1",
+"not in our world",
+3
+],
+[
+6051,
+"Szpon Skarabeusza+1",
+"not in our world",
+3
+],
+[
+31090,
+"Serce Nemere",
+"our 31090 is another item (NoNAme)",
+3
+],
+[
+50705,
+"Bez",
+"a quest gives / takes it",
+2
+],
+[
+30176,
+"Lśniące Futro Tygrysa",
+"a material nothing of ours uses",
+2
+],
+[
+30102,
+"Złoty Topór",
+"a quest gives / takes it",
+2
+],
+[
+21012,
+"Zbroja Płytowa Orkanu+2",
+"not in our world",
+2
+],
+[
+21013,
+"Zbroja Płytowa Orkanu+3",
+"not in our world",
+2
+],
+[
+21510,
+"Hełm z Czarnej Chusty+0",
+"not in our world",
+2
+],
+[
+30021,
+"Kawałek Klejnotu",
+"a quest gives / takes it",
+2
+],
+[
+30033,
+"Stłuczona Porcelana",
+"a quest gives / takes it",
+2
+],
+[
+21022,
+"Malachitowa Zbr. Płyt.+2",
+"not in our world",
+2
+],
+[
+21023,
+"Malachitowa Zbr. Płyt.+3",
+"not in our world",
+2
+],
+[
+21033,
+"Zbroja Płytowa Ulewy+3",
+"not in our world",
+2
+],
+[
+30051,
+"Nieznany Talizman",
+"a quest gives / takes it",
+2
+],
+[
+30047,
+"Księga Klątw",
+"a quest gives / takes it",
+2
+],
+[
+21040,
+"Zbroja Płytowa z Brązu+0",
+"not in our world",
+2
+],
+[
+30039,
+"Kawałek Płótna",
+"a quest gives / takes it",
+2
+],
+[
+30015,
+"Pamiątka Po Demonie",
+"a quest gives / takes it",
+2
+],
+[
+21050,
+"Zbroja Płytowa Kobolda+0",
+"not in our world",
+2
+],
+[
+30146,
+"Kawał Lodu",
+"a quest gives / takes it",
+2
+],
+[
+21043,
+"Zbroja Płytowa z Brązu+3",
+"not in our world",
+2
+],
+[
+30251,
+"Klejnot Zawiści",
+"a quest gives / takes it",
+2
+],
+[
+21066,
+"Zbroja Płytowa Firello+6",
+"not in our world",
+2
+],
+[
+21053,
+"Zbroja Płytowa Kobolda+3",
+"not in our world",
+2
+],
+[
+30057,
+"Oczy Pająka",
+"a quest gives / takes it",
+2
+],
+[
+30056,
+"Pajęcza Sieć",
+"a quest gives / takes it",
+2
+],
+[
+30025,
+"Worek z Pajęczą Trucizną",
+"a quest gives / takes it",
+2
+],
+[
+30058,
+"Worek Z Pajęcz. Jajami",
+"a quest gives / takes it",
+2
+],
+[
+30059,
+"Nogi Pająka",
+"a quest gives / takes it",
+2
+],
+[
+21524,
+"Hełm Gromu+4",
+"not in our world",
+2
+],
+[
+21515,
+"Hełm z Czarnej Chusty+5",
+"not in our world",
+2
+],
+[
+30046,
+"Ogon Skorpiona",
+"a quest gives / takes it",
+2
+],
+[
+31004,
+"Święcona Żywica",
+"a material nothing of ours uses",
+2
+],
+[
+21525,
+"Hełm Gromu+5",
+"not in our world",
+2
+],
+[
+6070,
+"Kolczasty Szpon+0",
+"not in our world",
+2
+],
+[
+21526,
+"Hełm Gromu+6",
+"not in our world",
+2
+],
+[
+30252,
+"Klejnot Mądrości",
+"a quest gives / takes it",
+2
+],
+[
+30228,
+"Kamień D. Beran-Setaou",
+"a quest gives / takes it",
+2
+],
+[
+55407,
+"Jajo Mini Azraela",
+"not in our world",
+2
+],
+[
+31009,
+"List do Gnolli",
+"a material nothing of ours uses",
+2
+],
+[
+31030,
+"Wewnętrzne Światło",
+"a material nothing of ours uses",
+2
+],
+[
+31022,
+"Łuska Oin",
+"a material nothing of ours uses",
+2
+],
+[
+31010,
+"List do Bandy Czerwonych",
+"a material nothing of ours uses",
+2
+],
+[
+31019,
+"Proszek Karapaks",
+"a material nothing of ours uses",
+2
+],
+[
+30137,
+"Krew Małpy",
+"a material nothing of ours uses",
+2
+],
+[
+50059,
+"Zioło Z Trudnych Małp",
+"a quest gives / takes it",
+2
+],
+[
+21010,
+"Zbroja Płytowa Orkanu+0",
+"not in our world",
+2
+],
+[
+21011,
+"Zbroja Płytowa Orkanu+1",
+"not in our world",
+2
+],
+[
+21030,
+"Zbroja Płytowa Ulewy+0",
+"not in our world",
+2
+],
+[
+21031,
+"Zbroja Płytowa Ulewy+1",
+"not in our world",
+2
+],
+[
+6052,
+"Szpon Skarabeusza+2",
+"not in our world",
+2
+],
+[
+21061,
+"Zbroja Płytowa Firello+1",
+"not in our world",
+2
+],
+[
+30132,
+"Księga Uriela",
+"a quest gives / takes it",
+1
+],
+[
+21002,
+"Niebiańska Zbr.Wiatru+2",
+"not in our world",
+1
+],
+[
+6002,
+"Stalowa Pochodnia+2",
+"not in our world",
+1
+],
+[
+30029,
+"Wątroba Wilka",
+"a quest gives / takes it",
+1
+],
+[
+30026,
+"Kiszka Wilka",
+"a material nothing of ours uses",
+1
+],
+[
+21502,
+"Szkieletowy Hełm+2",
+"not in our world",
+1
+],
+[
+30020,
+"Nasionko Brzoskwini",
+"a quest gives / takes it",
+1
+],
+[
+30044,
+"Glina",
+"a quest gives / takes it",
+1
+],
+[
+60001,
+"Żółć",
+"a quest gives / takes it",
+1
+],
+[
+30134,
+"Przesyłka Uriela",
+"a material nothing of ours uses",
+1
+],
+[
+30144,
+"Wątroba Tygrysa",
+"a quest gives / takes it",
+1
+],
+[
+35001,
+"Wątroba Tygrysa+",
+"a quest gives / takes it",
+1
+],
+[
+30143,
+"Zioła Lecznicze",
+"a quest gives / takes it",
+1
+],
+[
+35000,
+"Zioła Lecznicze+",
+"a quest gives / takes it",
+1
+],
+[
+21003,
+"Niebiańska Zbr.Wiatru+3",
+"not in our world",
+1
+],
+[
+6003,
+"Stalowa Pochodnia+3",
+"not in our world",
+1
+],
+[
+30173,
+"Futro Mu-Rang",
+"a quest gives / takes it",
+1
+],
+[
+21004,
+"Niebiańska Zbr.Wiatru+4",
+"not in our world",
+1
+],
+[
+6004,
+"Stalowa Pochodnia+4",
+"not in our world",
+1
+],
+[
+30169,
+"Krwisty Kwiat",
+"a quest gives / takes it",
+1
+],
+[
+50701,
+"Kwiat Brzoskwini",
+"a quest gives / takes it",
+1
+],
+[
+30170,
+"Pomarańczowy Kwiat",
+"a quest gives / takes it",
+1
+],
+[
+50702,
+"Pokrzywa",
+"a quest gives / takes it",
+1
+],
+[
+30171,
+"Żółty Kwiat",
+"a quest gives / takes it",
+1
+],
+[
+50703,
+"Kwiat Kaki",
+"a quest gives / takes it",
+1
+],
+[
+50704,
+"Korzeń Gango",
+"a quest gives / takes it",
+1
+],
+[
+50706,
+"Grzyb Tue",
+"a quest gives / takes it",
+1
+],
+[
+30174,
+"Łapa Niedźwiedzia",
+"a material nothing of ours uses",
+1
+],
+[
+16082,
+"Jadeitowy Naszyjnik+2",
+"a quest gives / takes it",
+1
+],
+[
+21014,
+"Zbroja Płytowa Orkanu+4",
+"not in our world",
+1
+],
+[
+30101,
+"Obrączka Ariyoung",
+"a quest gives / takes it",
+1
+],
+[
+50054,
+"Siano",
+"a quest gives / takes it",
+1
+],
+[
+21024,
+"Malachitowa Zbr. Płyt.+4",
+"not in our world",
+1
+],
+[
+6012,
+"Dzida Feniksa+2",
+"not in our world",
+1
+],
+[
+30142,
+"List",
+"a material nothing of ours uses",
+1
+],
+[
+30139,
+"Kieł Orka",
+"a quest gives / takes it",
+1
+],
+[
+30156,
+"Sekretna Księga Świątyni",
+"a quest gives / takes it",
+1
+],
+[
+21041,
+"Zbroja Płytowa z Brązu+1",
+"not in our world",
+1
+],
+[
+30164,
+"Tłumaczenie Księgi Klątw",
+"a quest gives / takes it",
+1
+],
+[
+30114,
+"Plaga",
+"a material nothing of ours uses",
+1
+],
+[
+30157,
+"Grot Strzały",
+"a quest gives / takes it",
+1
+],
+[
+30319,
+"Zasuszona Głowa",
+"a quest gives / takes it",
+1
+],
+[
+21042,
+"Zbroja Płytowa z Brązu+2",
+"not in our world",
+1
+],
+[
+79695,
+"Grota Wygnańców, część 1",
+"not in our world",
+1
+],
+[
+79696,
+"Grota Wygnańców, część 2",
+"not in our world",
+1
+],
+[
+79697,
+"Grota Wygnańców, część 3",
+"not in our world",
+1
+],
+[
+79698,
+"Grota Wygnańców, część 4",
+"not in our world",
+1
+],
+[
+79699,
+"Grota Wygnańców, część 5",
+"not in our world",
+1
+],
+[
+30116,
+"Żabie Udka",
+"a quest gives / takes it",
+1
+],
+[
+79680,
+"Kraina Gigantów, część 1",
+"not in our world",
+1
+],
+[
+79675,
+"Wężowe Pole, część 1",
+"not in our world",
+1
+],
+[
+79681,
+"Kraina Gigantów, część 2",
+"not in our world",
+1
+],
+[
+79676,
+"Wężowe Pole, część 2",
+"not in our world",
+1
+],
+[
+21054,
+"Zbroja Płytowa Kobolda+4",
+"not in our world",
+1
+],
+[
+70003,
+"Książka Lidera",
+"a quest gives / takes it",
+1
+],
+[
+79677,
+"Wężowe Pole, część 3",
+"not in our world",
+1
+],
+[
+79678,
+"Wężowe Pole, część 4",
+"not in our world",
+1
+],
+[
+79679,
+"Wężowe Pole, część 5",
+"not in our world",
+1
+],
+[
+79682,
+"Kraina Gigantów, część 3",
+"not in our world",
+1
+],
+[
+79683,
+"Kraina Gigantów, część 4",
+"not in our world",
+1
+],
+[
+79684,
+"Kraina Gigantów, część 5",
+"not in our world",
+1
+],
+[
+30158,
+"Ciastka Ryżowe",
+"a quest gives / takes it",
+1
+],
+[
+79685,
+"Loch Pająków, część 1",
+"not in our world",
+1
+],
+[
+79686,
+"Loch Pająków, część 2",
+"not in our world",
+1
+],
+[
+79687,
+"Loch Pająków, część 3",
+"not in our world",
+1
+],
+[
+79688,
+"Loch Pająków, część 4",
+"not in our world",
+1
+],
+[
+79689,
+"Loch Pająków, część 5",
+"not in our world",
+1
+],
+[
+79690,
+"Loch Pająków 2, część 1",
+"not in our world",
+1
+],
+[
+79691,
+"Loch Pająków 2, część 2",
+"not in our world",
+1
+],
+[
+79692,
+"Loch Pająków 2, część 3",
+"not in our world",
+1
+],
+[
+79693,
+"Loch Pająków 2, część 4",
+"not in our world",
+1
+],
+[
+21506,
+"Szkieletowy Hełm+6",
+"not in our world",
+1
+],
+[
+79694,
+"Loch Pająków 2, część 5",
+"not in our world",
+1
+],
+[
+79725,
+"Loch Pająków 3, część 1",
+"not in our world",
+1
+],
+[
+79726,
+"Loch Pająków 3, część 2",
+"not in our world",
+1
+],
+[
+79727,
+"Loch Pająków 3, część 3",
+"not in our world",
+1
+],
+[
+79728,
+"Loch Pająków 3, część 4",
+"not in our world",
+1
+],
+[
+79729,
+"Loch Pająków 3, część 5",
+"not in our world",
+1
+],
+[
+30326,
+"Jad Królowej Pająków",
+"a quest gives / takes it",
+1
+],
+[
+6074,
+"Kolczasty Szpon+4",
+"the Lycan's (no such class here)",
+1
+],
+[
+71130,
+"Przepustka",
+"a quest gives / takes it",
+1
+],
+[
+30327,
+"Pajęczy Flet",
+"a quest gives / takes it",
+1
+],
+[
+30138,
+"Pustynny Piasek",
+"a material nothing of ours uses",
+1
+],
+[
+30184,
+"Zaczarowany Popiół",
+"a material nothing of ours uses",
+1
+],
+[
+31006,
+"Czerw. Kwarc Piekieł",
+"a material nothing of ours uses",
+1
+],
+[
+30188,
+"Obsydian",
+"a material nothing of ours uses",
+1
+],
+[
+31080,
+"Krew Ognistego Króla",
+"a material nothing of ours uses",
+1
+],
+[
+31002,
+"Stary Dokument",
+"a material nothing of ours uses",
+1
+],
+[
+79670,
+"Czerwony Las, część 1",
+"not in our world",
+1
+],
+[
+79671,
+"Czerwony Las, część 2",
+"not in our world",
+1
+],
+[
+79672,
+"Czerwony Las, część 3",
+"not in our world",
+1
+],
+[
+79673,
+"Czerwony Las, część 4",
+"not in our world",
+1
+],
+[
+79674,
+"Czerwony Las, część 5",
+"not in our world",
+1
+],
+[
+6064,
+"Jastrzębi Szpon+4",
+"not in our world",
+1
+],
+[
+6071,
+"Kolczasty Szpon+1",
+"not in our world",
+1
+],
+[
+79700,
+"Grota Wygn. 2, część 1",
+"not in our world",
+1
+],
+[
+79701,
+"Grota Wygn. 2, część 2",
+"not in our world",
+1
+],
+[
+6061,
+"Jastrzębi Szpon+1",
+"not in our world",
+1
+],
+[
+6056,
+"Szpon Skarabeusza+6",
+"not in our world",
+1
+],
+[
+79702,
+"Grota Wygn. 2, część 3",
+"not in our world",
+1
+],
+[
+79703,
+"Grota Wygn. 2, część 4",
+"not in our world",
+1
+],
+[
+79704,
+"Grota Wygn. 2, część 5",
+"not in our world",
+1
+],
+[
+21544,
+"Hełm Zielonego Lasu+4",
+"not in our world",
+1
+],
+[
+71083,
+"Księga Obróbki Kamienia",
+"a quest gives / takes it",
+1
+],
+[
+71123,
+"Smocza Łuska",
+"a quest gives / takes it",
+1
+],
+[
+71129,
+"Smoczy Szpon",
+"a quest gives / takes it",
+1
+],
+[
+71085,
+"Wzmocnienie Przedmiotu",
+"a quest gives / takes it",
+1
+],
+[
+71084,
+"Zaczarowanie Przedmiotu",
+"a quest gives / takes it",
+1
+],
+[
+27994,
+"Krwawa Perła",
+"a quest gives / takes it",
+1
+],
+[
+27993,
+"Niebieska Perła",
+"a quest gives / takes it",
+1
+],
+[
+21543,
+"Hełm Zielonego Lasu+3",
+"not in our world",
+1
+],
+[
+31024,
+"Skóra Mantykory",
+"a quest gives / takes it",
+1
+],
+[
+31075,
+"Kolczatka",
+"a material nothing of ours uses",
+1
+],
+[
+31043,
+"Tablica Lemurów",
+"a material nothing of ours uses",
+1
+],
+[
+31034,
+"Totem Gigantów",
+"a material nothing of ours uses",
+1
+],
+[
+31037,
+"Skórzana Sakiewka",
+"a material nothing of ours uses",
+1
+],
+[
+31015,
+"List Kapitana Haaka",
+"a material nothing of ours uses",
+1
+],
+[
+6035,
+"Stalowy Szpon+5",
+"not in our world",
+1
+],
+[
+21044,
+"Zbroja Płytowa z Brązu+4",
+"not in our world",
+1
+],
+[
+30202,
+"Ucho Tanaka",
+"a quest gives / takes it",
+1
+],
+[
+79705,
+"Hasun Dong, część 1",
+"not in our world",
+1
+],
+[
+79706,
+"Hasun Dong, część 2",
+"not in our world",
+1
+],
+[
+79707,
+"Hasun Dong, część 3",
+"not in our world",
+1
+],
+[
+79708,
+"Hasun Dong, część 4",
+"not in our world",
+1
+],
+[
+79710,
+"Jungsun Dong, część 1",
+"not in our world",
+1
+],
+[
+79711,
+"Jungsun Dong, część 2",
+"not in our world",
+1
+],
+[
+79712,
+"Jungsun Dong, część 3",
+"not in our world",
+1
+],
+[
+79713,
+"Jungsun Dong, część 4",
+"not in our world",
+1
+],
+[
+79715,
+"Sangsun Dong, część 1",
+"not in our world",
+1
+],
+[
+79716,
+"Sangsun Dong, część 2",
+"not in our world",
+1
+],
+[
+79717,
+"Sangsun Dong, część 3",
+"not in our world",
+1
+],
+[
+79718,
+"Sangsun Dong, część 4",
+"not in our world",
+1
+],
+[
+79709,
+"Hasun Dong, część 5",
+"not in our world",
+1
+],
+[
+79714,
+"Jungsun Dong, część 5",
+"not in our world",
+1
+],
+[
+79719,
+"Sangsun Dong, część 5",
+"not in our world",
+1
+],
+[
+31081,
+"Czarna Materia",
+"a material nothing of ours uses",
+1
+],
+[
+31082,
+"Pierścień Magmy",
+"a material nothing of ours uses",
+1
+],
+[
+30605,
+"Złote Płyty",
+"not in our world",
+1
+],
+[
+30607,
+"Miedziane Płyty",
+"not in our world",
+1
+],
+[
+79730,
+"Świątynia Ochao, część 1",
+"not in our world",
+1
+],
+[
+79731,
+"Świątynia Ochao, część 2",
+"not in our world",
+1
+],
+[
+30619,
+"Barwnik złoty metalik",
+"not in our world",
+1
+],
+[
+30609,
+"Brązowe Płyty",
+"not in our world",
+1
+],
+[
+21020,
+"Malachitowa Zbr. Płyt.+0",
+"not in our world",
+1
+],
+[
+21021,
+"Malachitowa Zbr. Płyt.+1",
+"not in our world",
+1
+],
+[
+6020,
+"Żelazny Szpon+0",
+"not in our world",
+1
+],
+[
+6021,
+"Żelazny Szpon+1",
+"not in our world",
+1
+],
+[
+6053,
+"Szpon Skarabeusza+3",
+"not in our world",
+1
+],
+[
+6041,
+"Szpon Gryfa+1",
+"not in our world",
+1
+],
+[
+6042,
+"Szpon Gryfa+2",
+"not in our world",
+1
+],
+[
+6043,
+"Szpon Gryfa+3",
+"not in our world",
+1
+],
+[
+21063,
+"Zbroja Płytowa Firello+3",
+"not in our world",
+1
+],
+[
+6047,
+"Szpon Gryfa+7",
+"the Lycan's (no such class here)",
+1
+],
+[
+21077,
+"Zbroja Nocnego Cienia+7",
+"the Lycan's (no such class here)",
+1
+]
+],
+"source": "Metin2_Moby_statystyki_EXP_i_drop.xlsx",
+"test_world_differs": [
+[
+191,
+"damage_max",
+"74"
+],
+[
+192,
+"damage_max",
+"64"
+],
+[
+193,
+"damage_max",
+"68"
+],
+[
+194,
+"damage_max",
+"77"
+],
+[
+491,
+"max_hp",
+"1408"
+],
+[
+491,
+"damage_min",
+"69"
+],
+[
+491,
+"damage_max",
+"100"
+],
+[
+492,
+"max_hp",
+"1721"
+],
+[
+492,
+"damage_min",
+"57"
+],
+[
+492,
+"damage_max",
+"105"
+],
+[
+493,
+"max_hp",
+"2297"
+],
+[
+493,
+"damage_min",
+"59"
+],
+[
+493,
+"damage_max",
+"109"
+],
+[
+494,
+"max_hp",
+"2008"
+],
+[
+494,
+"damage_min",
+"66"
+],
+[
+494,
+"damage_max",
+"121"
+],
+[
+691,
+"max_hp",
+"19925"
+],
+[
+791,
+"max_hp",
+"45680"
+],
+[
+792,
+"max_hp",
+"109800"
+],
+[
+1401,
+"max_hp",
+"50642"
+],
+[
+1402,
+"max_hp",
+"43254"
+],
+[
+1403,
+"max_hp",
+"71232"
+],
+[
+1501,
+"max_hp",
+"51798"
+],
+[
+1502,
+"max_hp",
+"55817"
+],
+[
+1503,
+"max_hp",
+"44421"
+],
+[
+1601,
+"max_hp",
+"44117"
+],
+[
+1602,
+"max_hp",
+"40489"
+],
+[
+1603,
+"max_hp",
+"44421"
+],
+[
+2206,
+"max_hp",
+"50512"
+],
+[
+2301,
+"max_hp",
+"1583"
+],
+[
+2302,
+"max_hp",
+"2757"
+],
+[
+2303,
+"max_hp",
+"2484"
+],
+[
+2304,
+"max_hp",
+"3644"
+],
+[
+2305,
+"max_hp",
+"2886"
+],
+[
+2306,
+"max_hp",
+"201920"
+],
+[
+2307,
+"max_hp",
+"3031250"
+],
+[
+2307,
+"damage_min",
+"105"
+],
+[
+2307,
+"damage_max",
+"175"
+],
+[
+2311,
+"max_hp",
+"2517"
+],
+[
+2312,
+"max_hp",
+"2813"
+],
+[
+2313,
+"max_hp",
+"2280"
+],
+[
+2314,
+"max_hp",
+"4623"
+],
+[
+2315,
+"max_hp",
+"4737"
+],
+[
+2493,
+"damage_min",
+"105"
+],
+[
+2493,
+"damage_max",
+"195"
+],
+[
+8050,
+"max_hp",
+"72500"
+]
+]
+}
