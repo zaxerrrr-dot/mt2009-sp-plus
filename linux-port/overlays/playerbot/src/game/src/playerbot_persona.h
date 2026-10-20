@@ -298,7 +298,8 @@ namespace
 		const BYTE lock = GetPlayerBotPersonaLockLevel(ch, state);
 		if (lock == 0 || ch->GetLevel() < lock)
 			return;
-		const int gaps = playerbot_persona::AwansGaps(GetPlayerBotAdvanceGear(ch));
+		// MT2009_PLUS_BOT_LAW_GEAR_V1: one plus more after "outgrew its gear".
+		const int gaps = playerbot_persona::AwansGaps(GetPlayerBotAdvanceGear(ch), p.bLockPinned ? 1 : 0);
 		if (gaps != 0)
 		{
 			p.dwNextAdvanceRoll = 0;
