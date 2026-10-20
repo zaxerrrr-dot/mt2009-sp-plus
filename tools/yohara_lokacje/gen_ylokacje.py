@@ -24,6 +24,16 @@ Every centre is on free ground of GF's attr.atr (the batches' terrain), a blocke
 metre (25 m at most, else left out and reported). Coordinates: the sheet's "X/Y lokalne" = raw / 100 = metres from
 the map's base, the same as regen.txt's; checked against each map's MapSize.
 
+MT2009_PLUS_YOHARA_LOKACJE_V2 (the owner, 20 October 2026, after the comparison):
+  - EXACT maps (Przelecz Yilad 385, Wawoz 388, Rozpadlina Dusz 389): their bosses and Metins are the sheet's and
+    nothing else - the map generators (gen_ymaps2.py, gen_ymaps4.py) write no boss/stone line there (sheet_placed()
+    tells them which vnums are placed here); every sheet Metin point gets its Metin, every boss place (all the
+    map's bosses share the same two places in the sheet) one of its bosses at random, 1 h / 30 min;
+  - Wodz Wojenny Schronienia (6789, 393): THREE at a time on 3 random of the sheet's 12 points, each respawn picks
+    again, never two on one point - special_spawns.yohara_lokacje.txt (the engine's SpecialSpawn: count 3 of 12
+    positions, a free position drawn per spawn), 1 h after a kill; gen_ymaps2.py writes no 6789 line.
+  - the extra monsters the sheet does not list stay; Tajemniczy Mnich's 8 places stay.
+
 Reads   tools/yohara_lokacje/lokalizacje.tsv (made from the xlsx by --from-xlsx, needs openpyxl)
         linux-port/docker/game/yohara_*/map/<folder>/{regen,boss,stone}.txt, yohara_*/group*.txt
 Writes  (GENERATED - edit this file, run it again)
@@ -31,6 +41,7 @@ Writes  (GENERATED - edit this file, run it again)
             Dockerfile step "MT2009_PLUS_YOHARA_LOKACJE_V1" to the map's own files)
         linux-port/docker/game/yohara_lokacje/group.yohara_lokacje.txt        groups 9400-9439 (one boss each)
         linux-port/docker/game/yohara_lokacje/group_group.yohara_lokacje.txt  group_groups 4060-4069
+        linux-port/docker/game/yohara_lokacje/special_spawns.yohara_lokacje.txt  (V2: Wodz Wojenny Schronienia)
         linux-port/docker/game/yohara_lokacje/spawned.txt, gen_report.txt
 
   /opt/metin2/cache/xlsxenv/bin/python tools/yohara_lokacje/gen_ylokacje.py --from-xlsx <xlsx>   (once)
@@ -63,6 +74,10 @@ FOLDERS = collections.OrderedDict([
     # quest dungeons (no fixed point in the sheet): nothing to add
     (386, 'metin2_map_smhdungeon_01'), (391, 'metin2_map_snake_temple_02'), (395, 'metin2_map_whitedragoncave_boss'),
 ])
+# V2: maps whose bosses and Metins are exactly the sheet's (the map generators leave them out)
+EXACT = (385, 388, 389)
+# V2: a boss on N random of its sheet points at a time (special_spawns): map -> (vnum, at a time, respawn s)
+WORLD = {393: (6789, 3, 3600)}
 GROUP_FIRST, GROUP_LAST = 9400, 9439
 GGROUP_FIRST, GGROUP_LAST = 4060, 4069
 
@@ -103,6 +118,18 @@ def read_sheet():
         if x:
             pts[m][v].append((int(x), int(y)))
     return pts, info
+
+
+def sheet_placed(m):
+    """V2: the vnums this generator places on map m that its map generator must leave out (and still list as
+    spawned there): an EXACT map's bosses and Metins, a WORLD boss."""
+    sheet, info = read_sheet()
+    out = set()
+    if m in EXACT:
+        out |= set(v for v in sheet[m] if info[(m, v)][0] == 'Boss' or 8000 <= v < 9000)
+    if m in WORLD:
+        out.add(WORLD[m][0])
+    return out
 
 
 def read_groups():
@@ -195,6 +222,7 @@ def main():
         shutil.rmtree(OUT)
     os.makedirs(OUT)
     new_groups, new_ggroups = [], []
+    world = []
     spawned = []
     totals = collections.Counter()
     say('MT2009_PLUS_YOHARA_LOKACJE_V1 - points of the sheet a spawn of the monster does not reach within %d m' % R)
@@ -242,6 +270,24 @@ def main():
         boss_at = collections.defaultdict(list)
         for v, pts in sorted(sheet[m].items()):
             rank, name = info[(m, v)]
+            if m in WORLD and v == WORLD[m][0]:
+                wv, n, secs = WORLD[m]
+                if any(v in e[6] for e in ents):
+                    raise SystemExit('%d %d: the map generator still spawns it' % (m, v))
+                wp = []
+                for (x, y) in pts:
+                    p = grid.nearest_free(x, y, 25)
+                    if p is None:
+                        raise SystemExit('%d %d at %d,%d: no free ground' % (m, v, x, y))
+                    wp.append(p)
+                assert len(set(wp)) == len(wp) >= n
+                world.append((m, v, name, n, secs, wp))
+                spawned.append((m, v))
+                say('  + world %d %s: %d at a time on %d random of the sheet\'s points, %d s' % (
+                    v, name, n, len(wp), secs))
+                continue
+            if m in EXACT and (rank == 'Boss' or 8000 <= v < 9000) and any(v in e[6] for e in ents):
+                raise SystemExit('%d %d: an EXACT map\'s boss/Metin the map generator still spawns' % (m, v))
             for (x, y) in pts:
                 if not (0 <= x < w * 256 and 0 <= y < h * 256):
                     raise SystemExit('%d %d %s: %d,%d outside the map' % (m, v, name, x, y))
@@ -331,6 +377,16 @@ def main():
             f.write('Group\tMT2009_ylok_%s\n{\n\tVnum\t%d\n' % ('_'.join(str(v) for v in key), ggv))
             for k, gv in enumerate(gvs, 1):
                 f.write('\t%d\t%d\t1\n' % (k, gv))
+            f.write('}\n')
+    with open(os.path.join(OUT, 'special_spawns.yohara_lokacje.txt'), 'w', encoding='latin-1') as f:
+        f.write('# MT2009_PLUS_YOHARA_LOKACJE_V2: bosses on N random of their sheet points at a time (the owner, 20 October\n'
+                '# 2026); each spawn draws a free point (special_spawn.cpp). GENERATED by tools/yohara_lokacje/gen_ylokacje.py\n')
+        for m, v, name, n, secs, wp in world:
+            f.write('Group\tMT2009_ylok_%s\n{\n\tvnum\t%d\n\tspawn_vnum\t%d\n\tspawn_type\tmob\n\tchannel\t0\n'
+                    '\tmap_index\t%d\n\ttime\t%d-%d\n\ttime_type\tnormal\n\tcount\t%d\n\tsave_kill\t0\n'
+                    '\tinitial_delay\t30-90\n' % (ascii_pl(name), v, v, m, secs, secs, n))
+            for k, (x, y) in enumerate(wp, 1):
+                f.write('\t%d\t%d\t%d\t0\n' % (k, x, y))
             f.write('}\n')
     with open(os.path.join(OUT, 'spawned.txt'), 'w', encoding='utf-8') as f:
         f.write('# MT2009_PLUS_YOHARA_LOKACJE_V1: the vnums this adds to each map (GENERATED): <map index> <vnum>\n')

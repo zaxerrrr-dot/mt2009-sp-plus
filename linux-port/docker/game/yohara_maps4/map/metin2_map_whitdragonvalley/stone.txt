@@ -1,6 +1,1 @@
-m	631	507	10	10	0	0	1800s	100	1	8066
-m	528	442	10	10	0	0	1800s	100	1	8066
-m	295	419	10	10	0	0	1800s	100	1	8066
-m	413	373	10	10	0	0	1800s	100	1	8066
-m	389	106	10	10	0	0	1800s	100	1	8077
-m	316	197	10	10	0	0	1800s	100	1	8077
+// MT2009_PLUS_YOHARA_LOKACJE_V2: bosses and Metins of this map - yohara_lokacje (the owner's sheet of 20 October 2026; tools/yohara_lokacje/gen_ylokacje.py): 6782 6783 6894 6895 8066 8077

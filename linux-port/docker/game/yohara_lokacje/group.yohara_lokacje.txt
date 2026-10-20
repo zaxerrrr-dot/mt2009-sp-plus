@@ -49,28 +49,53 @@ Group	MT2009_ylok_Skazony_Wodz_Wojenny_6881
 	Leader	Skazony_Wodz_Wojenny	6881
 	Vnum	9409
 }
+Group	MT2009_ylok_Zamarzniety_Wodz_6775
+{
+	Leader	Zamarzniety_Wodz	6775
+	Vnum	9410
+}
+Group	MT2009_ylok_Zamarzniety_Wodz_Wojenny_6776
+{
+	Leader	Zamarzniety_Wodz_Wojenny	6776
+	Vnum	9411
+}
+Group	MT2009_ylok_Zamarzniety_Wodz_6887
+{
+	Leader	Zamarzniety_Wodz	6887
+	Vnum	9412
+}
+Group	MT2009_ylok_Zamarzniety_Wodz_Wojenny_6888
+{
+	Leader	Zamarzniety_Wodz_Wojenny	6888
+	Vnum	9413
+}
 Group	MT2009_ylok_Wielka_Stopa_6782
 {
 	Leader	Wielka_Stopa	6782
-	Vnum	9410
+	Vnum	9414
+}
+Group	MT2009_ylok_Wodz_Wojenny_Pln._Wiatru_6783
+{
+	Leader	Wodz_Wojenny_Pln._Wiatru	6783
+	Vnum	9415
 }
 Group	MT2009_ylok_Wielka_Stopa_6894
 {
 	Leader	Wielka_Stopa	6894
-	Vnum	9411
+	Vnum	9416
 }
 Group	MT2009_ylok_Wodz_Wojenny_Pln._Wiatru_6895
 {
 	Leader	Wodz_Wojenny_Pln._Wiatru	6895
-	Vnum	9412
+	Vnum	9417
 }
 Group	MT2009_ylok_Tajemniczy_Mnich_6870
 {
 	Leader	Tajemniczy_Mnich	6870
-	Vnum	9413
+	Vnum	9418
 }
 Group	MT2009_ylok_Tajemniczy_Mnich_6871
 {
 	Leader	Tajemniczy_Mnich	6871
-	Vnum	9414
+	Vnum	9419
 }

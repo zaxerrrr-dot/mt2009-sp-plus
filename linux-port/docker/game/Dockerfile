@@ -2716,7 +2716,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
 # gen_ylokacje.py made yohara_lokacje/ (gen_report.txt: what, where). After every Yohara map step: each
 # map/<folder>/<file>.lokacje.txt is appended to that map's <file> (regen.txt, boss.txt, stone.txt); a map not in
 # map/index yet is only reported. Groups 9400-9439 (one boss each) and group_groups 4060-4069 (one boss of those the
-# sheet puts at one point, "r" lines of boss.txt) - none may exist before.
+# sheet puts at one point, "r" lines of boss.txt) - none may exist before. MT2009_PLUS_YOHARA_LOKACJE_V2 (the owner,
+# 20 October): Yilad/Wawoz/Rozpadlina bosses and Metins only the sheet's (their batches write none), and
+# special_spawns.yohara_lokacje.txt: Wodz Wojenny Schronienia (6789) three at a time on 3 random of its 12 sheet
+# points (SpecialSpawn: a free point drawn per spawn, 1 h after a kill) - appended to special_spawns.txt.
 COPY yohara_lokacje/ /tmp/yohara-lokacje-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
  && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
@@ -2744,7 +2747,12 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
           || { echo "FATAL: lokacje $s"; exit 1; }; \
       done; \
     done \
- && echo "lokacje: Yohara spawn points of the spreadsheet added ($(cat "$A"/map/*/*.lokacje.txt | wc -l) lines)"
+ && S="$L/special_spawns.txt" \
+ && ! grep -q -E '^[[:blank:]]*vnum[[:blank:]]+6789[[:space:]]*$' "$S" \
+ && { [ -z "$(tail -c 1 "$S")" ] || printf '\r\n' >> "$S"; } \
+ && cat "$A/special_spawns.yohara_lokacje.txt" >> "$S" \
+ && test "$(grep -c -E '^[[:blank:]]*spawn_vnum[[:blank:]]+6789[[:space:]]*$' "$S")" -eq 1 \
+ && echo "lokacje: Yohara spawn points of the spreadsheet added ($(cat "$A"/map/*/*.lokacje.txt | wc -l) lines; Wodz Wojenny Schronienia 3 of 12 points)"
 
 # MT2009_PLUS_MOBY_ARKUSZ_V1: the drops of the owner's sheet of 20 October 2026 (Metin2_Moby_statystyki_EXP_i_drop.xlsx)
 # our Yohara monsters lacked - mob_drop_item.yohara_arkusz.txt (tools/ymoby_arkusz/gen_ymoby_arkusz.py, yohara_arkusz/

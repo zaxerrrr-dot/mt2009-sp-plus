@@ -143,7 +143,7 @@ MT2009_PLUS_YOHARA_LOKACJE_V1 - points of the sheet a spawn of the monster does 
   + mob   6818 Ahtrin Komendant at 200,550
   + mob   6818 Ahtrin Komendant at 618,138
   = regen.txt +5
-385 metin2_map_snakevalley (6x3 = 1536x768 m): 536 spawn lines; a monster spawn here: 1, 30s; boss 3600s; Metin 1800s
+385 metin2_map_snakevalley (6x3 = 1536x768 m): 519 spawn lines; a monster spawn here: 1, 30s; boss 3600s; Metin 1800s
   + mob   6758 Skażony Żołnierz at 1100,550
   + mob   6758 Skażony Żołnierz at 403,677
   + mob   6758 Skażony Żołnierz at 1111,185
@@ -170,22 +170,32 @@ MT2009_PLUS_YOHARA_LOKACJE_V1 - points of the sheet a spawn of the monster does 
   + mob   6879 Skażony Generał at 497,570
   + mob   6879 Skażony Generał at 156,554
   + stone 8064 Metin Uważności at 200,250
+  + stone 8065 Metin Jin at 920,300
   + stone 8065 Metin Jin at 1196,260
   + stone 8066 Metin Shiho at 1120,470
   + boss  6763 Skażony Wódz/6764 Skażony Wódz Wojenny/6880 Skażony Wódz/6881 Skażony Wódz Wojenny (one at random) at 1150,300, 3600s
   + boss  6763 Skażony Wódz/6764 Skażony Wódz Wojenny/6880 Skażony Wódz/6881 Skażony Wódz Wojenny (one at random) at 1195,540, 3600s
-  = boss.txt +2, regen.txt +25, stone.txt +3
-388 metin2_map_icecrystalcave (5x4 = 1280x1024 m): 621 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
-389 metin2_map_whitdragonvalley (3x3 = 768x768 m): 263 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
+  = boss.txt +2, regen.txt +25, stone.txt +4
+388 metin2_map_icecrystalcave (5x4 = 1280x1024 m): 596 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
+  + stone 8066 Metin Shiho at 850,130
+  + stone 8066 Metin Shiho at 937,666
+  + stone 8066 Metin Shiho at 430,370
+  + stone 8077 Metin z Gumar at 530,770
+  + boss  6775 Zamarznięty Wódz/6776 Zamarznięty Wódz Wojenny/6887 Zamarznięty Wódz/6888 Zamarznięty Wódz Wojenny (one at random) at 580,750, 3600s
+  + boss  6775 Zamarznięty Wódz/6776 Zamarznięty Wódz Wojenny/6887 Zamarznięty Wódz/6888 Zamarznięty Wódz Wojenny (one at random) at 850,850, 3600s
+  = boss.txt +2, stone.txt +4
+389 metin2_map_whitdragonvalley (3x3 = 768x768 m): 249 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
   + mob   6778 Opętany Śnieżny Leopard at 325,487
   + mob   6889 Przeklęty Mroźny Jeleń at 600,500
   + mob   6890 Opętany Śnieżny Leopard at 300,300
   + stone 8066 Metin Shiho at 580,420
   + stone 8066 Metin Shiho at 625,279
   + stone 8066 Metin Shiho at 209,409
+  + stone 8077 Metin z Gumar at 350,110
   + stone 8077 Metin z Gumar at 120,180
+  + boss  6782 Wielka Stopa/6783 Wódz Wojenny Płn. Wiatru/6894 Wielka Stopa/6895 Wódz Wojenny Płn. Wiatru (one at random) at 200,500, 3600s
   + boss  6782 Wielka Stopa/6894 Wielka Stopa/6895 Wódz Wojenny Płn. Wiatru (one at random) at 620,250, 3600s
-  = boss.txt +1, regen.txt +3, stone.txt +4
+  = boss.txt +2, regen.txt +3, stone.txt +5
 390 metin2_map_snake_temple_01 (3x3 = 768x768 m): 243 spawn lines; a monster spawn here: 3, 60s; boss 3600s; Metin 3600s
   + mob   6745 Kappa Robotnik at 315,436
   + mob   6747 Kappa Czarodziej at 372,700
@@ -214,19 +224,8 @@ MT2009_PLUS_YOHARA_LOKACJE_V1 - points of the sheet a spawn of the monster does 
   + stone 8076 Metin Wężowy Przestrzeni at 416,678
   = regen.txt +22, stone.txt +3
 391 metin2_map_snake_temple_02: no fixed point in the sheet (quest dungeon) - nothing
-393 metin2_map_whitedragoncave_01 (6x6 = 1536x1536 m): 1052 spawn lines; a monster spawn here: 4, 70s; boss 3600s; Metin 1800s
-  + boss  6789 Wódz Wojenny Schronienia at 200,1170, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 390,208, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 460,1200, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 555,300, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 640,730, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 773,1314, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 900,1330, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 1111,830, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 1215,950, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 1480,530, 3600s
-  + boss  6789 Wódz Wojenny Schronienia at 1480,960, 3600s
-  = boss.txt +11
+393 metin2_map_whitedragoncave_01 (6x6 = 1536x1536 m): 1051 spawn lines; a monster spawn here: 4, 70s; boss 3600s; Metin 1800s
+  + world 6789 Wódz Wojenny Schronienia: 3 at a time on 12 random of the sheet's points, 3600 s
 394 metin2_map_whitedragoncave_02 (3x3 = 768x768 m): 141 spawn lines; a monster spawn here: 4, 60s; boss 1800s; Metin 1800s
   + mob   6793 Zadziora Schron. Płn. W. at 154,446
   + mob   6794 Wojownik Schron. Płn. W. at 567,80
@@ -270,4 +269,4 @@ MT2009_PLUS_YOHARA_LOKACJE_V1 - points of the sheet a spawn of the monster does 
 423: not our map (15 monsters, 213 points) - nothing
 424: not our map (14 monsters, 0 points) - nothing
 425: not our map (14 monsters, 0 points) - nothing
-total: boss.txt +29, regen.txt +145, stone.txt +57; groups 15, group_groups 6
+total: boss.txt +21, regen.txt +145, stone.txt +63; groups 20, group_groups 8
