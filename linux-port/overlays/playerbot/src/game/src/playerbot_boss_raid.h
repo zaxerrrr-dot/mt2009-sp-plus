@@ -74,10 +74,15 @@ namespace
 		{  591,   3, 34, 51, 2, false },	// Bestial Captain (42), Jayang
 		{  591,  23, 34, 51, 2, false },	// Bokjung
 		{  591,  43, 34, 51, 2, false },	// Bakra
-		{  691,  64, 46, 63, 4, true },	// Orc Chief (54), Orc Valley
+		// MT2009_PLUS_BOT_BOSS_LEVELS_V1 (the owner, 20 October 2026): the
+		// bosses whose level moby_global.sql moved to the global sheet's - the
+		// Orc Chief 54 -> 50, the Esoteric Leader 60 -> 54 and what his fall
+		// leaves 68 -> 62, the Giant Ghost Tree 89 -> 84 - with the windows
+		// the same eight under / nine over.
+		{  691,  64, 42, 59, 4, true },	// Orc Chief (50), Orc Valley
 		{ 2091, 104, 52, 69, 6, true },	// Spider Queen (60), Spider Dungeon
-		{  791,  65, 52, 69, 6, true },	// Esoteric Leader (60), Hwang
-		{  792,  65, 60, 77, 6, true },	// what his fall leaves standing (68)
+		{  791,  65, 46, 63, 6, true },	// Esoteric Leader (54), Hwang
+		{  792,  65, 54, 71, 6, true },	// what his fall leaves standing (62)
 		{ 2191,  63, 59, 76, 6, true },	// Giant Turtle (67), Yongbi Desert
 		{ 1901,  61, 64, 81, 6, true },	// Nine Tails (72), Mount Sohan
 		{ 2206,  62, 65, 82, 5, true },	// Flame King (73), Doyyumhwaji
@@ -135,9 +140,9 @@ namespace
 		{ 5162, 108, 33, 52, 3, false },	// Chodzaca Malpa (43), Monkey Dungeon II
 		{ 5163, 109, 46, 64, 4, false },	// Lord Malp (55), Monkey Dungeon III
 		// The Red Forest's Olbrzymi Duch Drzewa (special_spawns.txt Boss_RedLas,
-		// group 2314, every 2.5-3.5 h), 404 thousand health - the window opens
-		// at 80, where the Red Forest's own bots stand.
-		{ 2306,  68, 80, 98, 6, true },		// Olbrzymi Duch Drzewa (89), Red Forest
+		// group 2314, every 2.5-3.5 h), 354 thousand health - the window opens
+		// at 77, where the Red Forest's own bots stand (PLAYERBOT_RED_FOREST_MIN_LEVEL).
+		{ 2306,  68, 77, 93, 6, true },		// Olbrzymi Duch Drzewa (84), Red Forest
 	};
 	const size_t PLAYERBOT_WORLD_BOSS_COUNT = sizeof(PLAYERBOT_WORLD_BOSSES) / sizeof(PLAYERBOT_WORLD_BOSSES[0]);
 

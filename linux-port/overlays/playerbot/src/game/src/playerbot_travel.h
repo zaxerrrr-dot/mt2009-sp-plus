@@ -827,8 +827,8 @@ namespace
 	// it and pay next to nothing, and the draw below sent two bots in three of
 	// seventy there. Now the ground is the second Spider Dungeon (60-68, to its
 	// ceiling, with the dungeon's gear), Doyyumhwaji (69-72) and the Red Forest
-	// (74-82; the Forest, 65-71, for a bot of seventy that the Red Forest does
-	// not open yet). A Metin hunter takes Doyyumhwaji or the Red Forest, the two
+	// (80-88; the Forest, 71-77, for a bot of seventy that the Red Forest does
+	// not open yet - MT2009_PLUS_BOT_FOREST_BANDS_V1, the global sheet's trees). A Metin hunter takes Doyyumhwaji or the Red Forest, the two
 	// with stones, and a bot in a party of PLAYERBOT_HUNT70_GROUP_MEMBERS or
 	// more goes to the two maps with room for a group, V2 and the Red Forest.
 	// The Grotto rows from seventy-eight and the Temple of Ochao stand as they
@@ -1009,14 +1009,14 @@ namespace
 		// first one had - spiders of sixty to sixty-eight that never attack
 		// first, against V1's fifty to fifty-eight - and a stone hunter
 		// still goes to Sohan, because neither dungeon has a stone.
-		// Seventy-one and up: the Red Forest, whose 2311-2315 run 74 to 82 and
+		// Seventy-seven and up: the Red Forest, whose 2311-2315 run 80 to 88 and
 		// are the highest ordinary ground this world hosts, with the Forest
 		// below it as the other half of the draw. Neither carries a stone.txt,
 		// so a Metin hunter by role keeps Sohan - the same rule the Spider
 		// Dungeon already lives under.
 		// Sixty-six to eighty: Doyyumhwaji takes a third of the draw, by a
 		// hash of its own so that nobody else's answer moves. Its 69 to 72 lie
-		// between the Forest's and the Red Forest's, on a map richer than both
+		// just under the Forest's 71-77 (once between it and the Red Forest), on a map richer than both
 		// together, and it keeps its stones, so a Metin hunter may go too.
 		// Past eighty its monsters are too far under the bot to pay.
 		// MT2009_PLUS_OCHAO_BOTS_V1 (draw): ninety-five and up, the Temple of
@@ -1066,7 +1066,7 @@ namespace
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x464c414dU) % 3U == 0)
 			return PLAYERBOT_MAP_FIRE_LAND;
 		// Seventy-eight and up: the Grotto of Exile, the only ground past the
-		// Red Forest's 74-82 (26 September). V1's ice and Setaou run 81-89,
+		// Red Forest's 80-88 (26 September; 74-82 then). V1's ice and Setaou run 81-89,
 		// V2's Setaou 87-97. From eighty-four V2 takes two draws in three and
 		// V1 the third; below it V1 takes two and the rows under this one the
 		// third, so the Red Forest's own bots do not all move at once. Neither
@@ -1093,7 +1093,7 @@ namespace
 				default: return PlayerBotMapUnderCeiling(PLAYERBOT_MAP_HWANG, level, stoneHunter);
 			}
 		}
-		// Sixty-two and up: the Forest, 65 to 71.
+		// Sixty-eight and up: the Forest, 71 to 77 (MT2009_PLUS_BOT_FOREST_BANDS_V1).
 		if (level >= MapFrom(MAP_FOREST))
 		{
 			switch (draw % 3U)

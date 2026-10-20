@@ -91,7 +91,9 @@ namespace
 		{ "hwang",       PLAYERBOT_MAP_HWANG,       53, 59 },
 		{ "demon_tower", PLAYERBOT_MAP_DEMON_TOWER, 57, 63 },
 		{ "fire_land",   PLAYERBOT_MAP_FIRE_LAND,   66, 72 },
-		{ "red_forest",  PLAYERBOT_MAP_RED_FOREST,  74, 79 },
+		// MT2009_PLUS_BOT_FOREST_BANDS_V1: 74-79 for the old 74-82 trees; six
+		// up with them (the global sheet's 80-88, 20 October 2026).
+		{ "red_forest",  PLAYERBOT_MAP_RED_FOREST,  80, 85 },
 	};
 	const int PLAYERBOT_FARMER_SPOT_COUNT = (int)(sizeof(PLAYERBOT_FARMER_SPOTS) / sizeof(PLAYERBOT_FARMER_SPOTS[0]));
 

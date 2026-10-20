@@ -83,6 +83,12 @@ namespace playerbot_progression
 	// first Spider Dungeon and the Hwang Temple to 61, the second Spider
 	// Dungeon to 78, the Forest to 72; a bot past one draws higher ground
 	// (PlayerBotMapUnderCeiling, playerbot_travel.h).
+	// MT2009_PLUS_BOT_FOREST_BANDS_V1 (the owner, 20 October 2026): the Ghost
+	// Trees at the global sheet's levels (moby_global.sql: 2301-2305 71-77,
+	// the red 2311-2315 80-88, six over the old ones) - the Forest 68-80 and
+	// the Red Forest from 77, three under each one's weakest tree as before;
+	// their floors moved with them. 68-80 still chains Spider Dungeon 2 (to 78),
+	// Doyyumhwaji (66-80) and the Grotto (78) without a gap.
 	const TMapRowDef MAP_DEFAULTS[MAP_ROW_COUNT] = {
 		{ "m2",          20, 35, true,  15 },
 		{ "islands",     30, 35, true,  25 },
@@ -93,9 +99,9 @@ namespace playerbot_progression
 		{ "hwang",       52, 61, true,  45 },
 		{ "spider2",     54, 78, true,  48 },
 		{ "demon_tower", 57, 255, false, 50 },
-		{ "forest",      62, 72, true,  55 },
+		{ "forest",      68, 80, true,  61 },
 		{ "fire_land",   66, 80, true,  60 },
-		{ "red_forest",  71, 255, false, 65 },
+		{ "red_forest",  77, 255, false, 71 },
 		{ "grotto1",     78, 255, false, 72 },
 		{ "grotto2",     84, 255, false, 78 },
 	};

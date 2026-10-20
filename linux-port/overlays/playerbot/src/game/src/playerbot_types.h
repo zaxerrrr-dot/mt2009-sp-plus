@@ -3731,8 +3731,9 @@ namespace
 	// them at all. The Demon Tower (66) is where the Biologist's level-50
 	// specimen and the military horse live - 1001-1004 of 57-60 stand nowhere
 	// else in this world - and the two forests are ground this world had none
-	// of: Trent (67) carries 2301-2305 of 65-71 over 912 spawn points, the Red
-	// Forest (68) carries 2311-2315 of 74-82 over 1456. Measured out of their
+	// of: Trent (67) carries 2301-2305 of 71-77 over 912 spawn points, the Red
+	// Forest (68) carries 2311-2315 of 80-88 over 1456 (the global sheet's
+	// levels, MT2009_PLUS_BOT_FOREST_BANDS_V1; 65-71 / 74-82 when measured). Measured out of their
 	// own regen files, not a wiki.
 	const long PLAYERBOT_MAP_DEMON_TOWER = 66;
 	const long PLAYERBOT_MAP_FOREST = 67;
@@ -3743,7 +3744,8 @@ namespace
 	// of 69 to 72 - Sluga Walczacego Tygrysa (2201) and Ognisty Duch (2202) of
 	// 69, Walczacy Tygrys (2203) of 70, Plomien (2204) of 71 and Ognisty
 	// Wojownik (2205) of 72, every one of the FIRE race - so it fills the band
-	// between the Forest (65-71) and the Red Forest (74-82) and is richer than
+	// between the Forest (65-71) and the Red Forest (74-82) - 71-77 and 80-88 since
+	// MT2009_PLUS_BOT_FOREST_BANDS_V1, just under both - and is richer than
 	// both together. boss.txt puts two elites there every half hour with an
 	// escort, Piekielny Zarlacz Dusz (2281, 71) and Plomienny Egzekutor (2282,
 	// 72); stone.txt four Metins of Murder (8014, 70) and thirteen ore veins.
@@ -4035,9 +4037,11 @@ namespace
 	const long PLAYERBOT_FOREST_ARRIVAL_Y = 16500;
 	const long PLAYERBOT_FOREST_EXIT_X = 316300;
 	const long PLAYERBOT_FOREST_EXIT_Y = 17000;
-	// Trent's own spawns are 65 to 71 (Duch Drzewa through Zle Drzewo), so the
+	// Trent's own spawns are 71 to 77 (Duch Drzewa through Zle Drzewo), so the
 	// band starts where its weakest monster stops being a waste of a trip.
-	const BYTE PLAYERBOT_FOREST_MIN_LEVEL = 62;
+	// MT2009_PLUS_BOT_FOREST_BANDS_V1: 62 for the old 65-71; the trees are the
+	// global sheet's since 20 October 2026 (moby_global.sql).
+	const BYTE PLAYERBOT_FOREST_MIN_LEVEL = 68;
 	// The Red Forest's two points were the ones that check was owed: decoded
 	// in 2.0.77, both stood on blocked cells. An arrival there is rescued a
 	// cell away by the engine, but the exit's nearest open cell was 625 units
@@ -4052,8 +4056,9 @@ namespace
 	const long PLAYERBOT_RED_FOREST_ARRIVAL_Y = 72425;
 	const long PLAYERBOT_RED_FOREST_EXIT_X = 1109625;
 	const long PLAYERBOT_RED_FOREST_EXIT_Y = 72425;
-	// 74 to 82 (Czerw. Duch Drzewa through Czerwone Zle Drzewo).
-	const BYTE PLAYERBOT_RED_FOREST_MIN_LEVEL = 71;
+	// 80 to 88 (Czerw. Duch Drzewa through Czerwone Zle Drzewo; 74 to 82 and
+	// 71 here before MT2009_PLUS_BOT_FOREST_BANDS_V1).
+	const BYTE PLAYERBOT_RED_FOREST_MIN_LEVEL = 77;
 	// Doyyumhwaji for a caller with no character: Chunjo's entrance and
 	// Chunjo's gate. Every bot asks the kingdom table instead
 	// (GetPlayerBotFrontierArrivalFor), which puts each kingdom down where the

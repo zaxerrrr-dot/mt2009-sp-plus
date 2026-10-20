@@ -141,7 +141,7 @@ namespace
 		{ PLAYERBOT_MAP_SOHAN, 412800, 278400, 20052 },
 		{ PLAYERBOT_MAP_SOHAN, 483200, 208000, 20056 },
 		// MT2009_PLUS_JEWELS75_V1: Rubin, Szmaragd and Szafir where the level-75
-		// jewellery is worn - the Red Forest (68, monsters 74-82) and the Grotto of
+		// jewellery is worn - the Red Forest (68, monsters 80-88) and the Grotto of
 		// Exile V1 (72, 78-86), one of each per map, on hunting hubs of
 		// playerbot_wandering.h (redForestHubs, grottoV1Hubs).
 		{ PLAYERBOT_MAP_RED_FOREST, 1070400, 67400, 30302 },   // rubin

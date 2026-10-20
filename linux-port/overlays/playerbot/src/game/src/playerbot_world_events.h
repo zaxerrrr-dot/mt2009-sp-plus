@@ -131,8 +131,10 @@ namespace
 		{ 61, "Gora Sohan", "na Gorze Sohan", "z Gory Sohan", "Mount Sohan", 45, 75, 45, 65, true, true, { 791, 1902, 1901, 0, 0 } },
 		{ 65, "Swiatynia Hwang", "w Swiatyni Hwang", "ze Swiatyni Hwang", "Hwang Temple", 55, 85, 55, 75, false, true, { 791, 794, 792, 1304, 0 } },
 		{ 62, "Ognista Ziemia", "na Ognistej Ziemi", "z Ognistej Ziemi", "Doyyumhwaji", 60, 90, 60, 80, true, true, { 2206, 2207, 1191, 0, 0 } },
-		{ 67, "Las Duchow", "w Lesie Duchow", "z Lasu Duchow", "Ghost Wood", 60, 95, 65, 85, false, false, { 1191, 2306, 1304, 0, 0 } },
-		{ 68, "Czerwony Las", "w Czerwonym Lesie", "z Czerwonego Lasu", "Red Wood", 65, 99, 70, 90, false, false, { 2306, 1192, 1191, 0, 0 } },
+		// MT2009_PLUS_BOT_FOREST_BANDS_V1: the two forests' bots six up with
+		// their trees (the global sheet, 20 October 2026; 60 / 65 before).
+		{ 67, "Las Duchow", "w Lesie Duchow", "z Lasu Duchow", "Ghost Wood", 66, 95, 65, 85, false, false, { 1191, 2306, 1304, 0, 0 } },
+		{ 68, "Czerwony Las", "w Czerwonym Lesie", "z Czerwonego Lasu", "Red Wood", 71, 99, 70, 90, false, false, { 2306, 1192, 1191, 0, 0 } },
 	};
 	const size_t PLAYERBOT_EVENT_MAP_COUNT = sizeof(PLAYERBOT_EVENT_MAPS) / sizeof(PLAYERBOT_EVENT_MAPS[0]);
 

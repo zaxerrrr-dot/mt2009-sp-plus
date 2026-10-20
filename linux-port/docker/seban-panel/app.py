@@ -5446,7 +5446,8 @@ FARMER_SPOTS = [
     ("hwang", "Świątynia Hwang", 53, 59),
     ("demon_tower", "Wieża Demonów", 57, 63),
     ("fire_land", "Doyyumhwaji", 66, 72),
-    ("red_forest", "Czerwony Las", 74, 79),
+    # MT2009_PLUS_BOT_FOREST_BANDS_V1: the red trees at the global sheet's 80-88 (playerbot_farmer_link.h).
+    ("red_forest", "Czerwony Las", 80, 85),
 ]
 for _key, _label, _from, _lock in FARMER_SPOTS:
     FARMER_SPOT_LABELS[_key] = f"{_label} (lv {_from}–{_lock})"
@@ -5580,9 +5581,10 @@ PROGRESSION_MAPS = [
     ("hwang", "Świątynia Hwang", 52, 61, True, 45),
     ("spider2", "Loch Pająków V2", 54, 78, True, 48),
     ("demon_tower", "Wieża Demonów", 57, 255, False, 50),
-    ("forest", "Las Duchów", 62, 72, True, 55),
+    # MT2009_PLUS_BOT_FOREST_BANDS_V1: the trees at the global sheet's levels (20 October 2026).
+    ("forest", "Las Duchów", 68, 80, True, 61),
     ("fire_land", "Ognista Ziemia (Doyyumhwaji)", 66, 80, True, 60),
-    ("red_forest", "Czerwony Las", 71, 255, False, 65),
+    ("red_forest", "Czerwony Las", 77, 255, False, 71),
     ("grotto1", "Grota Wygnańców V1", 78, 255, False, 72),
     ("grotto2", "Grota Wygnańców V2", 84, 255, False, 78),
 ]

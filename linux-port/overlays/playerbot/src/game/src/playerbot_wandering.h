@@ -1093,22 +1093,25 @@ namespace
 			// The Forest (67). Its own regen, densest 6400-unit cells first, each
 			// hub on the real spawn point nearest that cell's centre; the band is
 			// the cell's median monster level less three, the same rule the
-			// village hubs use. Trent carries 2301-2305 of 65-71 over 527 spawn
-			// points and no stones at all.
+			// village hubs use. Trent carries 2301-2305 of 71-77 over 527 spawn
+			// points and no stones at all. MT2009_PLUS_BOT_FOREST_BANDS_V1: the
+			// trees six levels up (the global sheet, 20 October 2026), every
+			// band with them (62 / 64 -> 68 / 70).
 			const TPlayerBotHuntingHub forestHubs[] = {
 				{  316300,   16500, PLAYERBOT_FOREST_MIN_LEVEL, 255, false, 0 },
 				// Moved 325 units off a blocked cell (2.0.77, server_attr).
 				{  316325,   40575, PLAYERBOT_FOREST_MIN_LEVEL, 255, false, 0 },
 				{  310300,   27200, PLAYERBOT_FOREST_MIN_LEVEL, 255, false, 0 },
 				{  324400,   36200, PLAYERBOT_FOREST_MIN_LEVEL, 255, false, 0 },
-				{  284800,   29700, 64, 255, false, 0 },
-				{  310500,   21500, 64, 255, false, 0 },
+				{  284800,   29700, 70, 255, false, 0 },
+				{  310500,   21500, 70, 255, false, 0 },
 				{  296600,   36500, PLAYERBOT_FOREST_MIN_LEVEL, 255, false, 0 },
 				{  299000,   28100, PLAYERBOT_FOREST_MIN_LEVEL, 255, false, 0 }
 			};
-			// The Red Forest (68): 2311-2315 of 74-82 over 693 spawn points, and
-			// the two hardest of them (80 and 82) are what makes the upper hubs
-			// a party's ground rather than anybody's.
+			// The Red Forest (68): 2311-2315 of 80-88 over 693 spawn points, and
+			// the two hardest of them (86 and 88) are what makes the upper hubs
+			// a party's ground rather than anybody's. MT2009_PLUS_BOT_FOREST_BANDS_V1:
+			// six up with the trees (71 / 73 -> 77 / 79).
 			const TPlayerBotHuntingHub redForestHubs[] = {
 				// The first and third stood on blocked cells; both moved onto
 				// the nearest open ground (2.0.77, server_attr), the first to
@@ -1116,10 +1119,10 @@ namespace
 				{ PLAYERBOT_RED_FOREST_ARRIVAL_X, PLAYERBOT_RED_FOREST_ARRIVAL_Y, PLAYERBOT_RED_FOREST_MIN_LEVEL, 255, false, 0 },
 				{ 1070400,   67400, PLAYERBOT_RED_FOREST_MIN_LEVEL, 255, false, 0 },
 				{ 1122625,   15675, PLAYERBOT_RED_FOREST_MIN_LEVEL, 255, false, 0 },
-				{ 1078200,   40800, 73, 255, false, 0 },
+				{ 1078200,   40800, 79, 255, false, 0 },
 				{ 1053300,   43700, PLAYERBOT_RED_FOREST_MIN_LEVEL, 255, false, 0 },
-				{ 1080600,   16200, 73, 255, false, 0 },
-				{ 1092600,   15100, 73, 255, false, 0 },
+				{ 1080600,   16200, 79, 255, false, 0 },
+				{ 1092600,   15100, 79, 255, false, 0 },
 				{ 1092600,   42500, PLAYERBOT_RED_FOREST_MIN_LEVEL, 255, false, 0 }
 			};
 			// Doyyumhwaji (62). Its own regen and server_attr (23 September), the
