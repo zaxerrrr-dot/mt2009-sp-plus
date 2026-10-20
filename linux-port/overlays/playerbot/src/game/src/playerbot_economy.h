@@ -2467,8 +2467,9 @@ namespace
 	// whose price-list value a piece (the bots' asking price, by the piece) is
 	// over SHOP_BOOK_STALL_MIN_PRICE (450 000) always goes to the stall and is
 	// never the merchant's - from any rule, the medal droppers' included. A
-	// bot that can never keep a counter (the second channel,
-	// PlayerBotCanOpenShop) puts it in its safebox (CollectPlayerBotSafeboxBooks).
+	// bot that can reach no counter (PlayerBotCanReachCounter; a second
+	// channel's bot carries it to the first channel's) puts it in its safebox
+	// (CollectPlayerBotSafeboxBooks).
 	DWORD GetPlayerBotShopAskingPrice(LPITEM item);
 	bool IsPlayerBotStallOnlyBook(LPITEM item)
 	{
