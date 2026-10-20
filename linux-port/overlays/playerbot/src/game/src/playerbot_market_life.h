@@ -399,6 +399,13 @@ namespace
 		std::map<DWORD, TPlayerBotCuriosity>::const_iterator known = s_mapPlayerBotCuriosity.find(ch->GetPlayerID());
 		if (known != s_mapPlayerBotCuriosity.end() && known->second.day == day)
 			return item->GetID() == known->second.itemId && (int)item->GetRefineLevel() < known->second.target;
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 3): a new piece "to see" is gear
+		// refined for a counter and nothing else - the counters stood full of
+		// plain +4 (42 060 lines on the supporters' world, 20 October). Off
+		// under the shop management unless SHOP_MGMT_CURIOUS says otherwise; a
+		// pick made today runs out.
+		if (IsPlayerBotShopMgmtOn() && GetPlayerBotShopMgmt(PLAYERBOT_SM_CURIOUS) == 0)
+			return false;
 		if ((int)(PlayerBotNavHash(ch->GetPlayerID() ^ (day * 0x85EBCA6BU) ^ 0x44415953U) % 100U) >=
 				PLAYERBOT_CURIOUS_DAY_PERCENT || (long long)ch->GetGold() < PLAYERBOT_CURIOUS_MIN_GOLD)
 			return false;
