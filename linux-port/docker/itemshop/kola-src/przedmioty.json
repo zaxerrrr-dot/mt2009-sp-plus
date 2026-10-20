@@ -532,16 +532,16 @@
   "expire_rel_sec": null
  },
  "8100": {
-  "vnum": 50258,
+  "vnum": 100701,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Cor Draconis (antyczne)",
-  "status": "zamiennik",
+  "name": "Smoczy Płomień",
+  "status": "ok",
   "src_name": "Smoczy Płomień",
-  "note": "Brak mitycznych smoczych kamieni i Smoczego Płomienia; propozycja: Cor Draconis (antyczne) - przedmiot z tej samej rodziny (smocze kamienie), podobna wartość",
-  "icon_vnum": 50258,
+  "note": "Ten sam przedmiot (100701 - zmienia bonusy Smoczej Alchemii; wlasciciel 20.10)",
+  "icon_vnum": 100701,
   "limit": null,
   "expire_rel_sec": null
  },
@@ -890,7 +890,7 @@
   "name": "Gaya",
   "status": "zamiennik",
   "src_name": "Torba Sportowa z Gaya (100) (30 dni)",
-  "note": "Brak torby; zamiast niej od razu 100x Gaya (waluta Yohary jako przedmiot, stos do 999999)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak torby; zamiast niej od razu 100x Gaya (waluta Yohary jako przedmiot, stos do 999999)",
   "icon_vnum": null,
   "limit": null,
   "expire_rel_sec": null
@@ -918,7 +918,7 @@
   "name": "Ognisty Feniks (Łup) (15 dni)",
   "status": "zamiennik",
   "src_name": "Przepustka Łupu (15 dni)",
-  "note": "Brak filtra łupu; propozycja: pet Ognisty Feniks (Łup) - sam zbiera łup, na ten sam czas; proto ma 30 dni; żeby dać 15 dni, socket0 = UNIX_TIMESTAMP()+1296000 przy wydaniu (pole expire_rel_sec)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak filtra łupu; propozycja: pet Ognisty Feniks (Łup) - sam zbiera łup, na ten sam czas; proto ma 30 dni; żeby dać 15 dni, socket0 = UNIX_TIMESTAMP()+1296000 przy wydaniu (pole expire_rel_sec)",
   "icon_vnum": null,
   "limit": "REAL_TIME",
   "expire_rel_sec": 1296000
@@ -932,7 +932,7 @@
   "name": "Przepustka Triumfu (30 dni)",
   "status": "zamiennik",
   "src_name": "Osobisty Sklepik Premium (7 dni)",
-  "note": "Nasz Sklep Premium (72151) to pakiet VIP nadawany tylko przy zakupie w ItemShopie - wydany jako przedmiot nie ma użycia; propozycja: Przepustka Triumfu (pełne Konto Premium na 30 dni, zawsze 30 dni, do handlu) - wartościowsza niż sklepik 7/15 dni",
+  "note": "Zaakceptowane przez wlasciciela 20.10 (VIP 30 dni). Nasz Sklep Premium (72151) to pakiet VIP nadawany tylko przy zakupie w ItemShopie - wydany jako przedmiot nie ma użycia; propozycja: Przepustka Triumfu (pełne Konto Premium na 30 dni, zawsze 30 dni, do handlu) - wartościowsza niż sklepik 7/15 dni",
   "icon_vnum": null,
   "limit": null,
   "expire_rel_sec": null
@@ -946,7 +946,7 @@
   "name": "Ognisty Feniks (Łup) (7 dni)",
   "status": "zamiennik",
   "src_name": "Przepustka Łupu (7 dni)",
-  "note": "Brak filtra łupu; propozycja: pet Ognisty Feniks (Łup) - sam zbiera łup, na ten sam czas; proto ma 30 dni; żeby dać 7 dni, socket0 = UNIX_TIMESTAMP()+604800 przy wydaniu (pole expire_rel_sec)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak filtra łupu; propozycja: pet Ognisty Feniks (Łup) - sam zbiera łup, na ten sam czas; proto ma 30 dni; żeby dać 7 dni, socket0 = UNIX_TIMESTAMP()+604800 przy wydaniu (pole expire_rel_sec)",
   "icon_vnum": null,
   "limit": "REAL_TIME",
   "expire_rel_sec": 604800
@@ -974,7 +974,7 @@
   "name": "Przepustka Triumfu (30 dni)",
   "status": "zamiennik",
   "src_name": "Osobisty Sklepik Premium (15 dni)",
-  "note": "Nasz Sklep Premium (72151) to pakiet VIP nadawany tylko przy zakupie w ItemShopie - wydany jako przedmiot nie ma użycia; propozycja: Przepustka Triumfu (pełne Konto Premium na 30 dni, zawsze 30 dni, do handlu) - wartościowsza niż sklepik 7/15 dni",
+  "note": "Zaakceptowane przez wlasciciela 20.10 (VIP 30 dni). Nasz Sklep Premium (72151) to pakiet VIP nadawany tylko przy zakupie w ItemShopie - wydany jako przedmiot nie ma użycia; propozycja: Przepustka Triumfu (pełne Konto Premium na 30 dni, zawsze 30 dni, do handlu) - wartościowsza niż sklepik 7/15 dni",
   "icon_vnum": null,
   "limit": null,
   "expire_rel_sec": null
@@ -1198,7 +1198,7 @@
   "name": "Gaya",
   "status": "zamiennik",
   "src_name": "Konwerter Gaya",
-  "note": "Brak konwertera (10 kamyków -> 1 Gaya); zamiast 10 konwerterów od razu 10x Gaya",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak konwertera (10 kamyków -> 1 Gaya); zamiast 10 konwerterów od razu 10x Gaya",
   "icon_vnum": null,
   "limit": null,
   "expire_rel_sec": null
@@ -1394,7 +1394,7 @@
   "name": "Ognisty Feniks (Łup) (30 dni)",
   "status": "zamiennik",
   "src_name": "Przepustka Łupu (30 dni)",
-  "note": "Brak filtra łupu; propozycja: pet Ognisty Feniks (Łup) - sam zbiera łup, na ten sam czas",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak filtra łupu; propozycja: pet Ognisty Feniks (Łup) - sam zbiera łup, na ten sam czas",
   "icon_vnum": null,
   "limit": "REAL_TIME",
   "expire_rel_sec": null
@@ -1450,7 +1450,7 @@
   "name": "Przepustka Triumfu (30 dni)",
   "status": "zamiennik",
   "src_name": "Osobisty Sklepik Premium (30 dni)",
-  "note": "Nasz Sklep Premium (72151) to pakiet VIP nadawany tylko przy zakupie w ItemShopie - wydany jako przedmiot nie ma użycia; propozycja: Przepustka Triumfu (pełne Konto Premium na 30 dni, zawsze 30 dni, do handlu) - wartościowsza niż sklepik 7/15 dni",
+  "note": "Zaakceptowane przez wlasciciela 20.10 (VIP 30 dni). Nasz Sklep Premium (72151) to pakiet VIP nadawany tylko przy zakupie w ItemShopie - wydany jako przedmiot nie ma użycia; propozycja: Przepustka Triumfu (pełne Konto Premium na 30 dni, zawsze 30 dni, do handlu) - wartościowsza niż sklepik 7/15 dni",
   "icon_vnum": null,
   "limit": null,
   "expire_rel_sec": null
@@ -1716,7 +1716,7 @@
   "name": "Zwój Boga Smoków",
   "status": "zamiennik",
   "src_name": "5* Runa Wykuwania Pasów",
-  "note": "Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
   "icon_vnum": 71032,
   "limit": null,
   "expire_rel_sec": null
@@ -1730,7 +1730,7 @@
   "name": "Zwój Boga Smoków",
   "status": "zamiennik",
   "src_name": "5* Runa Wykuwania Rękawic",
-  "note": "Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
   "icon_vnum": 71032,
   "limit": null,
   "expire_rel_sec": null
@@ -1744,7 +1744,7 @@
   "name": "Zwój Boga Smoków",
   "status": "zamiennik",
   "src_name": "5* Runa Wykuwania Akcesoriów",
-  "note": "Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
   "icon_vnum": 71032,
   "limit": null,
   "expire_rel_sec": null
@@ -1772,7 +1772,7 @@
   "name": "Zwój Boga Smoków",
   "status": "zamiennik",
   "src_name": "5* Runa Wykuwania Zbroi",
-  "note": "Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
   "icon_vnum": 71032,
   "limit": null,
   "expire_rel_sec": null
@@ -1786,7 +1786,7 @@
   "name": "Zwój Boga Smoków",
   "status": "zamiennik",
   "src_name": "5* Runa Wykuwania Broni",
-  "note": "Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
+  "note": "Zaakceptowane przez wlasciciela 20.10. Brak run wykuwania (+20% przy wytwarzaniu); propozycja: Zwój Boga Smoków (+10% szansy ulepszenia, bez zniszczenia)",
   "icon_vnum": 71032,
   "limit": null,
   "expire_rel_sec": null
@@ -1806,16 +1806,16 @@
   "expire_rel_sec": null
  },
  "10331": {
-  "vnum": 50258,
+  "vnum": 100701,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Cor Draconis (antyczne)",
-  "status": "zamiennik",
+  "name": "Smoczy Płomień",
+  "status": "ok",
   "src_name": "Smoczy Płomień",
-  "note": "Brak mitycznych smoczych kamieni i Smoczego Płomienia; propozycja: Cor Draconis (antyczne) - przedmiot z tej samej rodziny (smocze kamienie), podobna wartość",
-  "icon_vnum": 50258,
+  "note": "Ten sam przedmiot (100701 - zmienia bonusy Smoczej Alchemii; wlasciciel 20.10)",
+  "icon_vnum": 100701,
   "limit": null,
   "expire_rel_sec": null
  },
