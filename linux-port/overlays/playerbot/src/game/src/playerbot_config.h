@@ -334,6 +334,7 @@ namespace
 		PLAYERBOT_SM_IMPULSE_PCT,
 		PLAYERBOT_SM_FULL_PREF_PCT,
 		PLAYERBOT_SM_PLAYER_PREF_PCT,
+		PLAYERBOT_SM_BOOK_STALL_MIN_PRICE,
 		PLAYERBOT_SM_COUNT
 	};
 	struct TPlayerBotShopMgmtKey
@@ -365,6 +366,9 @@ namespace
 		{ "SHOP_MGMT_IMPULSE_PCT", 24, 0, 100 },
 		{ "SHOP_MGMT_FULL_PREF_PCT", 5, 0, 50 },
 		{ "SHOP_PLAYER_PREF_PCT", 10, 0, 100 },
+		// MT2009_PLUS_BOT_BOOK_STACKS_V1: a book over this price-list value a
+		// piece is stall goods, never the merchant's (0 = no such rule).
+		{ "SHOP_BOOK_STALL_MIN_PRICE", 450000, 0, 2000000000 },
 	};
 	int s_aiPlayerBotShopMgmt[PLAYERBOT_SM_COUNT] = {};
 

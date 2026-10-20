@@ -323,6 +323,8 @@ AI_SHOP_MGMT_KEYS = (
     ("SHOP_MGMT_IMPULSE_PCT", "Przepełniony rynek: godziny zakupów pod wpływem impulsu (%)", 0, 100, 24),
     ("SHOP_MGMT_FULL_PREF_PCT", "Boty wolą kupować z przepełnionych sklepów (% taniej w ocenie)", 0, 50, 5),
     ("SHOP_PLAYER_PREF_PCT", "Boty wolą sklepy graczy, nawet droższe o (%)", 0, 100, 10),
+    # MT2009_PLUS_BOT_BOOK_STACKS_V1
+    ("SHOP_BOOK_STALL_MIN_PRICE", "Księgi droższe niż (Yang/szt.) zawsze na stragan, nigdy do handlarki (0 = wył.)", 0, 2000000000, 450000),
 )
 AI_LIVE_DEFAULTS.update({key: default for key, _, _, _, default in AI_SHOP_MGMT_KEYS})
 AI_SPECIAL_WEIGHT_KEYS = frozenset(AI_LIVE_DEFAULTS)
