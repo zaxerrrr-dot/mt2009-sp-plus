@@ -793,5 +793,13 @@ quest blue_dragon_lair begin
 				blue_dragon_lair.end_count(c.end_sec_bots)
 			end
 		end
+
+		-- MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (the owner, 15 October 2026, fix 6): Beran-Setaou killed outside his lair (a
+		-- GM's /m - no map spawns him outside it) drops the lair's chests too (give_rewards: Skrzynia Berana-Setaou on the
+		-- ground round him, for the people of the killer's party on his map); his own drop (mob_drop_item) comes from the
+		-- engine at the full rate for any level (item_manager.cpp, MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1).
+		when 2493.kill with not blue_dragon_lair.inside() begin
+			blue_dragon_lair.give_rewards()
+		end
 	end
 end
