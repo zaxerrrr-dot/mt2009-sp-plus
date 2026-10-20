@@ -101,10 +101,18 @@ POINT_LABELS = {
     171: ("Magiczny atak broni min. (klient)", ""), 172: ("Magiczny atak broni maks. (klient)", ""),
     173: ("Atak min. (klient)", ""), 174: ("Atak maks. (klient)", ""), 175: ("Celność (klient)", ""),
     176: ("Unik (klient)", ""), 177: ("Absorpcja szarfy", "%"),
+    # MT2009_PLUS_RARE_WIKI_V1: the element powers, Sung Ma, Champion and Precyzja points (178-197, common/length.h)
+    178: ("Siła Błyskawic", "%"), 179: ("Siła Ognia", "%"), 180: ("Siła Lodu", "%"), 181: ("Siła Wiatru", "%"),
+    182: ("Siła Ziemi", "%"), 183: ("Siła Mroku", "%"), 184: ("Siła Sung Ma", ""), 185: ("Witalność Sung Ma", ""),
+    186: ("Odporność Sung Ma", ""), 187: ("Inteligencja Sung Ma", ""), 188: ("Poziom Czempiona", ""),
+    189: ("Krok poziomu Czempiona", ""), 190: ("Doświadczenie Czempiona", ""),
+    191: ("Wymagane doświadczenie Czempiona", ""), 192: ("Punkty Czempiona", ""),
+    193: ("Wola Sung Ma: Siła", "%"), 194: ("Wola Sung Ma: Witalność", "%"), 195: ("Wola Sung Ma: Odporność", "%"),
+    196: ("Wola Sung Ma: Inteligencja", "%"), 197: ("Precyzja", ""),
 }
 TECHNICAL_POINTS = {1, 2, 3, 4, 5, 7, 9, 11, 20, 24, 25, 26, 27, 29, 30, 31, 35, 36, 91, 92, 102, 103, 104, 105,
                     106, 108, 109, 110, 111, 112, 113, 125, 126, 127, 128, 129, 169, 170, 171, 172, 173, 174,
-                    175, 176, 177}
+                    175, 176, 177, 188, 189, 190, 191, 192}
 
 ITEM_TYPES = {
     0: "Brak", 1: "Broń", 2: "Zbroja i biżuteria", 3: "Przedmiot użytkowy", 4: "Używany automatycznie",

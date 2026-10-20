@@ -32,6 +32,10 @@ Zastosuj restarts the cores). apply.sh rewrites (see WARN_* below):
     in the whole table;
   * MT2009_PLUS_RARE_TABLE_V2 - item_attr_rare is written once per world
     (marker rare_6_7_v2 in world.mt2009_plus_once); later edits stay.
+  * MT2009_PLUS_RARE_WIKI_V1 - a switch of M2_BONUS_MODE swaps the whole
+    item_attr_rare: global gets the wiki's pool (bonusy67_global.sql, the
+    mt2009 pool kept in world.item_attr_rare_mt2009), mt2009 gets it back;
+    its apply ENUM is item_attr's (up to POINT_HIT_PCT, 197).
 """
 import re
 
@@ -104,7 +108,10 @@ WARN_NORMAL = ("apply.sh (MT2009_PLUS_COSTUME_BONUS_V1) przy każdym starcie ser
                "Broń. Dopóki choć jeden bonus ma kostium większy od zera, Twoje zmiany zostają.")
 WARN_RARE = ("apply.sh (MT2009_PLUS_RARE_TABLE_V2) wpisuje tę tabelę tylko raz na świat (znacznik rare_6_7_v2 "
              "w world.mt2009_plus_once) – Twoje zmiany zostają po restartach. Tylko nowa baza bez tego znacznika "
-             "dostanie z powrotem tabelę z 1 października.")
+             "dostanie z powrotem tabelę z 1 października. Przy zmianie trybu bonusów (M2_BONUS_MODE, "
+             "MT2009_PLUS_RARE_WIKI_V1) tabela jest podmieniana: global – pula z wiki (pula mt2009 czeka w "
+             "world.item_attr_rare_mt2009), powrót do mt2009 – oddaje zapisaną pulę. Zmiany zrobione w danym "
+             "trybie zostają, dopóki tryb się nie zmieni.")
 WARN_COSTUME_RESET = ("Uwaga: wszystkie kolumny kostiumów w tabeli są teraz zerowe – przy następnym starcie serwera "
                       "apply.sh skopiuje do nich wartości ze Zbroi, Hełmu i Broni.")
 

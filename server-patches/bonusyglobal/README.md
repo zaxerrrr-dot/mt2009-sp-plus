@@ -118,6 +118,35 @@ Buty+9 (15029): ruch 15 + odporność na ogień 10 zamiast ruchu 25 + maks. wytr
   w `dbdata` (zip edytora bazy panelu podmienia dbdata – nie rusza tych plików). Klient bez tych plików pokazuje
   wartości mt2009 (serwer i tak liczy global).
 
+## 6. i 7. bonus w trybie global – `MT2009_PLUS_RARE_WIKI_V1`
+
+Właściciel, 20.10.2026: „zmień wszystkie bonusy 6/7 według wiki" (pl-wiki „6. i 7. bonus"). W trybie global pula
+`world.item_attr_rare` (Seon-Hae, 71051/71052) to bonusy z wiki, które silnik ma; tryb mt2009 zostaje przy tabeli
+właściciela z 1.10 (27 bonusów). Wiki podaje tylko maksimum na typ przedmiotu – stopnie z oficjalnej tabeli (10
+poziomów, u nas 5: jej poziomy 2/4/6/8/10):
+
+| Bonus | lv1–lv5 | Gdzie (maks.) |
+|---|---|---|
+| Maks. PŻ | 100/200/300/400/500 | broń, zbroja, hełm, tarcza, bransoleta, buty, naszyjnik, kolczyki, talizman |
+| Maks. PE | 10/20/40/60/80 | jw. |
+| Szansa na otrucie, odporność na trucizny | 1–5% | jw. |
+| Wartość ataku, wartość magicznego ataku | 8/15/25/35/50 | jw. |
+| Silny przeciwko Metinom | 2/4/5/7/8% | broń, naszyjnik |
+| Transfer obrażeń do PE (wiki: „% obrażeń będzie dodanych do PE") | 1–5% | broń, zbroja 5%; buty 3% |
+| Szansa na blok (wiki: „x% szans na zablokowanie obrażeń od ataku") | 1–5% | tarcza |
+| Wola Sung Ma SIŁA/WIT/ODP/INT +x% (punkty 193–196) | 2/4/6/8/15% | talizman 8% (poziom 4) |
+
+Rękawice, Talizmany Woli i Obręcz Jadeitu mają w slotach 6/7 własne linie – silnik nie dokłada im bonusu z puli, a
+Seon-Hae ich nie przyjmuje (`MT2009_PLUS_SEONHAE_RESERVED_V1`, wcześniej Obręcz Jadeitu mogła zjeść odłamki). Bonusy
+z wiki, których silnik nie ma (krwawienie, moce/odporności żywiołów w walce, „+x% łącznej wartości", bonusy
+umiejętności, bossów, 1.–5. bonus +x%, bonusy rękawic…): `/opt/metin2/cache/yohara/bonusy-6-7-wiki.md` – decyzja
+właściciela.
+
+- `mariadb/playerbot/bonusy67_global.sql` / `bonusy67_mt2009.sql`, krok `apply.sh` zaraz po kroku `item_attr`: ten
+  sam stan co wyżej – `world.item_attr_rare_mt2009` trzyma pulę mt2009 dokładnie wtedy, gdy w `item_attr_rare` jest
+  pula wiki. Najpierw ENUM `apply` tabeli `item_attr_rare` dostaje pełną listę `item_attr` (do `POINT_HIT_PCT`, 197).
+- Klient: nazwy wszystkich tych punktów są w `localeinfo_point.py` – bez zmian. Panel: nazwy punktów 178–197.
+
 ## Pliki
 
 - `linux-port/overlays/playerbot/src/game/src/playerbot_bonus_mode.cpp` – flaga `m2_bonus_global`, trzy funkcje wyżej;

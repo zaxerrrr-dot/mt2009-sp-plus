@@ -56,6 +56,8 @@ linux-port/docker/mariadb/initdb.d/20-log-schema.sql
 linux-port/docker/mariadb/playerbot/apply.sh
 linux-port/docker/mariadb/playerbot/bonusy_global.sql
 linux-port/docker/mariadb/playerbot/bonusy_mt2009.sql
+linux-port/docker/mariadb/playerbot/bonusy67_global.sql
+linux-port/docker/mariadb/playerbot/bonusy67_mt2009.sql
 linux-port/docker/mariadb/playerbot/zywioly_moby_global.sql
 linux-port/docker/mariadb/playerbot/itemshop_schema.sql
 linux-port/docker/mariadb/playerbot/log_schema.sql
