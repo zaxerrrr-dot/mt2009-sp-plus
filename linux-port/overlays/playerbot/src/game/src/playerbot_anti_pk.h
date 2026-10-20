@@ -165,6 +165,47 @@ namespace
 	};
 	std::map<DWORD, TPlayerBotPersonTruce> s_mapPlayerBotPersonTruce;
 
+	// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (Autor: mur4s): a person with Auto Lowy
+	// on who strikes a bot (a skill's radius, a wrong target) is no aggressor to
+	// the bots - the bot, its party and its guild do not answer, the blow breaks
+	// no truce, and the bot's death leaves no grudge. The client asks for a
+	// target (/autohunt_target) every 0.8 s and for loot (/autohunt_loot) every
+	// 1 s for as long as it hunts, so a question younger than
+	// PLAYERBOT_AUTOHUNT_ACTIVE_MS means "Auto Lowy on"; /autohunt_stop
+	// (uiautohunt.py Stop) ends it at once. Without Auto Lowy all is as before.
+	std::map<DWORD, DWORD> s_mapPlayerBotAutoHuntSeen;
+	std::map<DWORD, DWORD> s_mapPlayerBotAutoHuntLogged;
+	const DWORD PLAYERBOT_AUTOHUNT_ACTIVE_MS = 5000;
+	const DWORD PLAYERBOT_AUTOHUNT_LOG_MS = 60000;
+
+	void NotePlayerBotAutoHunt(LPCHARACTER ch, bool on, DWORD dwNow)
+	{
+		if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
+			return;
+		const DWORD pid = ch->GetPlayerID();
+		if (!on)
+		{
+			s_mapPlayerBotAutoHuntSeen.erase(pid);
+			return;
+		}
+		if (s_mapPlayerBotAutoHuntSeen.size() >= 1024)
+			for (std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotAutoHuntSeen.begin();
+					it != s_mapPlayerBotAutoHuntSeen.end(); )
+				if (dwNow - it->second >= PLAYERBOT_AUTOHUNT_ACTIVE_MS)
+					s_mapPlayerBotAutoHuntSeen.erase(it++);
+				else
+					++it;
+		s_mapPlayerBotAutoHuntSeen[pid] = dwNow;
+	}
+
+	bool IsPlayerBotPersonAutoHunting(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch || !ch->IsPC() || !ch->GetDesc() || ch->GetDesc()->IsBot())
+			return false;
+		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotAutoHuntSeen.find(ch->GetPlayerID());
+		return it != s_mapPlayerBotAutoHuntSeen.end() && dwNow - it->second < PLAYERBOT_AUTOHUNT_ACTIVE_MS;
+	}
+
 	bool IsPlayerBotPersonCharacter(LPCHARACTER ch)
 	{
 		return ch && ch->IsPC() && ch->GetDesc() && !ch->GetDesc()->IsBot();
@@ -456,6 +497,25 @@ namespace
 		if (!victim || !attacker || victim == attacker || !attacker->IsPC() ||
 				IsPlayerBotBlowConsensual(victim, attacker))
 			return;
+		// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (Autor: mur4s): a blow of a person on
+		// Auto Lowy does not exist for the bots - no answer, no party's or
+		// guild's call, no truce broken, and with no blow kept the bot's death
+		// gives no grudge and no capitulation.
+		if (IsPlayerBotPersonAutoHunting(attacker, dwNow))
+		{
+			if (victim->GetDesc() && victim->GetDesc()->IsBot())
+			{
+				DWORD& logged = s_mapPlayerBotAutoHuntLogged[attacker->GetPlayerID()];
+				if (logged == 0 || dwNow - logged >= PLAYERBOT_AUTOHUNT_LOG_MS)
+				{
+					logged = dwNow ? dwNow : 1;
+					sys_log(0, "PLAYERBOT_ANTIPK: autohunt blow ignored pid=%u name=%s bot_pid=%u bot=%s map=%ld",
+							attacker->GetPlayerID(), attacker->GetName(), victim->GetPlayerID(),
+							victim->GetName(), attacker->GetMapIndex());
+				}
+			}
+			return;
+		}
 		// A bot's blow counts only when it was meant: the bot is aiming at this
 		// character, or fighting it. A splash skill lands on every attackable
 		// thing in its radius (FuncSplashDamage asks battle_is_attackable and

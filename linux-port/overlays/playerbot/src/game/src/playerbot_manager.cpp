@@ -9105,6 +9105,13 @@ void CPlayerBotManager::OnPlayerStruck(LPCHARACTER victim, LPCHARACTER attacker)
 	NotePlayerBotStruck(victim, attacker, get_dword_time());
 }
 
+// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (Autor: mur4s): Auto Lowy on or off
+// (cmd_general.cpp /autohunt_target, /autohunt_loot, /autohunt_stop).
+void CPlayerBotManager::OnAutoHunt(LPCHARACTER ch, bool on)
+{
+	NotePlayerBotAutoHunt(ch, on, get_dword_time());
+}
+
 void CPlayerBotManager::OnBossKilled(LPCHARACTER boss, LPCHARACTER killer)
 {
 	NotePlayerBotBossKilled(boss, killer, get_dword_time());

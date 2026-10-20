@@ -1427,6 +1427,13 @@ class Hunter(object):
         self.ResetRider()
         self.running = False
         SetPassThroughPlayers(False)
+        # MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (Autor: mur4s): the server stops
+        # taking a blow at a bot for a hunt's at once, not 5 s after the last
+        # /autohunt_target (cmd_general.cpp do_autohunt_stop).
+        try:
+            net.SendChatPacket('/autohunt_stop')
+        except Exception:
+            pass
         if self.escapeUntil:
             
             (px, py, pz) = player.GetMainCharacterPosition()

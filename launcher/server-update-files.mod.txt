@@ -246,6 +246,7 @@ linux-port/docker/game/src/server/game/src/char_skill.cpp
 linux-port/docker/game/src/server/game/src/char_state.cpp
 linux-port/docker/game/src/server/game/src/cmd.cpp
 linux-port/docker/game/src/server/game/src/cmd_general.cpp
+# MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (server-patches/autohuntnorevenge, Autor: mur4s): cmd.cpp and cmd_general.cpp above.
 linux-port/docker/game/src/server/game/src/cmd_emotion.cpp
 linux-port/docker/game/src/server/game/src/cmd_gm.cpp
 linux-port/docker/game/src/server/game/src/cube.cpp

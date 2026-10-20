@@ -1179,6 +1179,19 @@ if ((Test-Path -LiteralPath $shopQolApply -PathType Leaf) -and
         Write-Host ('Applied {0} offline shop QoL edit(s).' -f $shopQolResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Auto Lowy without the bots' revenge (server-patches/autohuntnorevenge,
+# MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1, Autor: mur4s): /autohunt_target and /autohunt_loot mark the
+# person as hunting, /autohunt_stop ends it - cmd_general.cpp and cmd.cpp, after pickuprules
+# (its unthrottled list). The rest is the overlay's playerbot_anti_pk.h.
+$autoHuntNoRevengeApply = Join-Path $repo 'server-patches/autohuntnorevenge/Apply-AutoHuntNoRevengePatch.ps1'
+if ((Test-Path -LiteralPath $autoHuntNoRevengeApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $autoHuntNoRevengeResult = & $autoHuntNoRevengeApply -SourceDir $engineGameSource
+    if ($autoHuntNoRevengeResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Auto Lowy no-revenge edit(s).' -f $autoHuntNoRevengeResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade
