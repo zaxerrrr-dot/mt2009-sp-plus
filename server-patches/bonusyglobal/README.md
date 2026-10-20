@@ -86,6 +86,33 @@ najwyższy stopień, +6 = ×160%):
 - Strona panelu „Alchemia” edytuje tabelę trybu mt2009; w trybie global jej status mówi, że rdzenie używają tabeli global.
 - Klient nie czyta `dragon_soul_table` (opisy z atrybutów przedmiotu; nazwy punktów 178–187 i 197 ma `localeinfo_point.py`).
 
+## Stałe bonusy przedmiotów w trybie global – `MT2009_PLUS_GLOBAL_PROTO_V1`
+
+Właściciel, lista poprawek z 15.10.2026, pkt 19: w trybie global przedmioty mają stałe bonusy (`item_proto`
+applytype0..2/applyvalue0..2) jak na serwerze globalnym (Owsap `Server/Server/db/item_proto.txt`), np. Bambusowe
+Buty+9 (15029): ruch 15 + odporność na ogień 10 zamiast ruchu 25 + maks. wytrzymałości 800. Tryb mt2009 bez zmian.
+
+- `tools/protoglobal/gen_item_proto_global.py` porównuje każdy vnum obu item_proto (nazwy bonusów → nasze numery
+  `POINT_*`). Bierze **tylko ten sam przedmiot**: zbroje (buty, hełmy, tarcze, bransolety, naszyjniki, kolczyki) i broń,
+  ten sam typ/podtyp, ten sam poziom, ten sam stopień ulepszenia (+N), najwyżej 3 bonusy, każdy bonus znany silnikowi.
+  Pomija: `APPLY_RANDOM` (sprzęt Yohary z losowymi bonusami), wierzchowce (różnią się tylko `APPLY_MOUNT`), zwierzaki,
+  kamienie duszy, przedmioty unikalne, jedzenie, nasze przeróbki (inny poziom, np. Miecz+0, Pogromca Niebieskiego
+  Smoka, Tarcza Trzech Władców), szpony Wilkołaka. Wynik: 390 przedmiotów (110 broni, 280 zbroi/biżuterii); pełna
+  lista różnic z werdyktem: `--report` (`/opt/metin2/cache/yohara/item-proto-global-diff.tsv`).
+- `mariadb/playerbot/item_proto_global.sql` – tabela `world.item_proto_apply_global` (wartości global + strażnik:
+  typ, podtyp, poziom). Krok `apply.sh` (po wszystkich krokach, które piszą `item_proto`): global – zapisuje bonusy
+  mt2009 w `world.item_proto_apply_mt2009` i wpisuje global; mt2009 – oddaje zapisane (tylko tam, gdzie dalej są
+  wartości global) i czyści tabelę. Przełączanie tam i z powrotem daje bajt w bajt tę samą tabelę. Przedmioty graczy
+  zmieniają się od razu (stałe bonusy są z proto). Edycja tych bonusów w edytorze bazy panelu w trybie global trafia
+  do zapisu trybu mt2009 przy następnym starcie (global ma pierwszeństwo).
+- Klient: tooltip czyta `item_proto` klienta (wartości mt2009). `client-patches/client-2.0.30/tools/protoglobal/
+  build_protoglobal_pack.py` (ostatni krok przedmiotów, po yfinal) dokłada do paczki `gamedata` dwa małe item_proto
+  z tymi 390 rekordami klienta: `gamedata/item_proto_global` (bonusy global) i `gamedata/item_proto_mt2009` (bez
+  zmian). `root/protoglobal.py` po `BonusMode 1` z serwera woła `item.LoadItemTable("gamedata/item_proto_global")`
+  (exe nadpisuje rekordy tych vnumów), po `BonusMode 0` – wersję mt2009, tylko przy zmianie trybu. Bez zmian w exe i
+  w `dbdata` (zip edytora bazy panelu podmienia dbdata – nie rusza tych plików). Klient bez tych plików pokazuje
+  wartości mt2009 (serwer i tak liczy global).
+
 ## Pliki
 
 - `linux-port/overlays/playerbot/src/game/src/playerbot_bonus_mode.cpp` – flaga `m2_bonus_global`, trzy funkcje wyżej;
