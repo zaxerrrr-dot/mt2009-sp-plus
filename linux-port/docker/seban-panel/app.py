@@ -9931,125 +9931,102 @@ def battlepass():
                            battlepass_csrf=update_csrf_token())
 
 
-# ---- Koło Fortuny (MT2009 PLUS) ----------------------------------------------
-# MT2009_PLUS_WHEEL_V1: the price of a spin and the reward pool the game's
-# wheel reads (playerbot_wheel.h, "/kolo", client uiwheel.py - F12):
-# player.wheel_config and player.wheel_reward; every spin is a row of
-# player.wheel_spin. The game reads the first two again every 30 seconds.
-WHEEL_NEW_ROWS = 4
-WHEEL_TICKET_VNUM = 80030
+# ---- Koło Losu (MT2009 PLUS) --------------------------------------------------
+# MT2009_PLUS_KOLA_V1: the six wheels with keys and tiers (the owner, 20 October
+# 2026) - one system for the ItemShop's page (itemshop/app/itemshop/kola/) and the
+# game's F12 window (playerbot_wheel.h): the tables itemshop.kola_* (made and
+# seeded by playerbot-migrate, mariadb/playerbot/itemshop_schema.sql). The wheel
+# changes every 14 days by itself (kola_settings rotation_*); here the operator can
+# pin one wheel instead, or switch the wheel off. The game reads the settings again
+# every 30 seconds, the shop at every request. Costs, pools and percentages are the
+# source's and are not edited here; the item mapping (and the replacements for the
+# items this world does not have) is linux-port/docker/itemshop/kola-src/przedmioty.json.
+# (Replaces MT2009_PLUS_WHEEL_V1's ticket wheel page: its tables stay, unused.)
+KOLA_STATUS = {"ok": "jest", "inny_czas": "inny czas (ustawiany przy wydaniu)",
+               "zamiennik": "ZAMIENNIK - propozycja do akceptacji", "brak": "BRAK"}
 
 
-def ensure_wheel_tables():
-    """The tables the game makes at its first wheel call, with the same starter
-    pool (only while there is no config row yet), so the page works first."""
-    rows("""CREATE TABLE IF NOT EXISTS player.wheel_config (
-        id TINYINT UNSIGNED NOT NULL PRIMARY KEY, enabled TINYINT UNSIGNED NOT NULL DEFAULT 1,
-        cost_vnum INT UNSIGNED NOT NULL DEFAULT 80030, cost_count INT UNSIGNED NOT NULL DEFAULT 1) ENGINE=InnoDB""")
-    rows("""CREATE TABLE IF NOT EXISTS player.wheel_reward (
-        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, vnum INT UNSIGNED NOT NULL,
-        count INT UNSIGNED NOT NULL DEFAULT 1, weight INT UNSIGNED NOT NULL DEFAULT 10,
-        rare TINYINT UNSIGNED NOT NULL DEFAULT 0, active TINYINT UNSIGNED NOT NULL DEFAULT 1) ENGINE=InnoDB""")
-    rows("""CREATE TABLE IF NOT EXISTS player.wheel_spin (
-        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, pid INT UNSIGNED NOT NULL,
-        created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, items VARCHAR(255) NOT NULL DEFAULT '',
-        slot TINYINT UNSIGNED NOT NULL DEFAULT 0, vnum INT UNSIGNED NOT NULL, count INT UNSIGNED NOT NULL DEFAULT 1,
-        rare TINYINT UNSIGNED NOT NULL DEFAULT 0, cost_vnum INT UNSIGNED NOT NULL DEFAULT 0,
-        cost_count INT UNSIGNED NOT NULL DEFAULT 0, state TINYINT UNSIGNED NOT NULL DEFAULT 0,
-        given DATETIME NULL DEFAULT NULL, KEY pid_state (pid, state), KEY state_created (state, created)) ENGINE=InnoDB""")
-    rows("""INSERT INTO player.wheel_reward (vnum, count, weight, rare)
-        SELECT t.v, t.c, t.w, t.r FROM (
-        SELECT 27002 AS v, 50 AS c, 150 AS w, 0 AS r UNION ALL SELECT 27005, 50, 150, 0
-        UNION ALL SELECT 71095, 5, 100, 0 UNION ALL SELECT 50255, 2, 100, 0 UNION ALL SELECT 71001, 1, 70, 0
-        UNION ALL SELECT 71084, 1, 60, 0 UNION ALL SELECT 71085, 1, 50, 0 UNION ALL SELECT 50513, 1, 50, 0
-        UNION ALL SELECT 71027, 2, 50, 0 UNION ALL SELECT 71028, 2, 50, 0 UNION ALL SELECT 71026, 1, 40, 0
-        UNION ALL SELECT 71044, 2, 40, 0 UNION ALL SELECT 71045, 2, 40, 0 UNION ALL SELECT 71025, 1, 30, 0
-        UNION ALL SELECT 80017, 1, 16, 1 UNION ALL SELECT 80018, 1, 4, 1
-        ) AS t WHERE NOT EXISTS (SELECT 1 FROM player.wheel_config)
-        AND NOT EXISTS (SELECT 1 FROM player.wheel_reward)""")
-    rows("INSERT IGNORE INTO player.wheel_config (id, enabled, cost_vnum, cost_count) VALUES (1, 1, 80030, 1)")
+def kola_setting_map():
+    return {r["name"]: r["value"] for r in rows("SELECT name, value FROM itemshop.kola_settings")}
+
+
+def kola_active_wheel(settings, wheels, now=None):
+    """The same reckoning as kola_active() in the shop's kola_lib.php."""
+    now = int(time.time()) if now is None else now
+    ids = [w["id"] for w in wheels]
+    order = [int(x) for x in (settings.get("rotation_order") or "").split(",") if x.strip().isdigit() and int(x) in ids] or ids
+    period = max(1, int(settings.get("rotation_days") or 14)) * 86400
+    anchor = int(settings.get("rotation_anchor") or 1792360800)
+    n = (now - anchor) // period
+    auto = order[n % len(order)] if order else 0
+    nxt = order[(n + 1) % len(order)] if order else 0
+    override = int(settings.get("override_wheel") or 0)
+    active = override if override in ids else auto
+    return {"id": active, "auto": auto, "override": override if override in ids else 0, "next": nxt,
+            "from": anchor + n * period, "until": anchor + (n + 1) * period}
 
 
 @app.route("/wheel", methods=["GET", "POST"])
 @login_required
 def wheel():
-    ensure_wheel_tables()
+    try:
+        settings = kola_setting_map()
+        wheels = rows("SELECT id, name, max_tier, cost1, cost2, cost3, ord FROM itemshop.kola_wheel ORDER BY ord, id")
+    except Exception:
+        flash("Tabel Koła Losu jeszcze nie ma - uruchom serwer raz (playerbot-migrate je zakłada).", "error")
+        return render_template("wheel.html", ready=False, wheel_csrf=update_csrf_token())
     if request.method == "POST":
         if request.form.get("wheel_csrf", "") != session.get("seban_update_csrf", ""):
             flash("Sesja formularza wygasła - odśwież stronę i spróbuj jeszcze raz.", "error")
             return redirect(url_for("wheel"))
-        action = request.form.get("action", "")
         try:
-            if action == "config":
-                cost_vnum = battlepass_int(request.form, "cost_vnum", 1, 2147483647, WHEEL_TICKET_VNUM)
-                cost_count = battlepass_int(request.form, "cost_count", 1, 200, 1)
-                enabled = 1 if request.form.get("enabled") else 0
-                if not battlepass_item_name(cost_vnum):
-                    raise ValueError("cost_vnum")
-                rows("UPDATE player.wheel_config SET enabled=%s, cost_vnum=%s, cost_count=%s WHERE id=1",
-                     (enabled, cost_vnum, cost_count))
-                rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_WHEEL',%s)",
-                     (f"config enabled={enabled} cost={cost_vnum}x{cost_count}",))
-                flash("Ustawienia koła zapisane. Gra wczyta je w ciągu 30 sekund.", "success")
-            elif action == "rewards":
-                saved = removed = added = 0
-                for index in range(int(request.form.get("row_count", 0) or 0)):
-                    key = f"r{index}_"
-                    raw_id = request.form.get(key + "id", "")
-                    if raw_id and request.form.get(key + "delete"):
-                        rows("DELETE FROM player.wheel_reward WHERE id=%s", (int(raw_id),))
-                        removed += 1
-                        continue
-                    vnum = battlepass_int(request.form, key + "vnum", 0, 2147483647)
-                    if not vnum:
-                        continue  # an empty new row
-                    if not battlepass_item_name(vnum):
-                        raise ValueError(f"{key}vnum (nieznany VNUM {vnum})")
-                    count = battlepass_int(request.form, key + "count", 1, 60000, 1)
-                    weight = battlepass_int(request.form, key + "weight", 0, 1000000, 10)
-                    rare = 1 if request.form.get(key + "rare") else 0
-                    active = 1 if request.form.get(key + "active") else 0
-                    if raw_id:
-                        rows("UPDATE player.wheel_reward SET vnum=%s, count=%s, weight=%s, rare=%s, active=%s WHERE id=%s",
-                             (vnum, count, weight, rare, active, int(raw_id)))
-                        saved += 1
-                    else:
-                        rows("INSERT INTO player.wheel_reward (vnum, count, weight, rare, active) VALUES (%s,%s,%s,%s,%s)",
-                             (vnum, count, weight, rare, active))
-                        added += 1
-                rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_WHEEL',%s)",
-                     (f"saved {saved}, added {added}, removed {removed}",))
-                flash(f"Pula nagród zapisana (zmienione: {saved}, nowe: {added}, usunięte: {removed}). "
-                      "Gra wczyta ją w ciągu 30 sekund.", "success")
-        except ValueError as error:
-            flash(f"Nieprawidłowa wartość w polu {error}.", "error")
+            override = int(request.form.get("override_wheel", "0") or 0)
+        except ValueError:
+            override = 0
+        if override and override not in [w["id"] for w in wheels]:
+            override = 0
+        enabled = "1" if request.form.get("enabled") else "0"
+        rows("REPLACE INTO itemshop.kola_settings (name, value) VALUES ('override_wheel', %s), ('enabled', %s)",
+             (str(override), enabled))
+        rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_KOLA',%s)",
+             (f"override={override} enabled={enabled}",))
+        flash("Zapisane. Sklep stosuje to od razu, okno F12 w grze w ciągu 30 sekund. Gracze z innym kołem "
+              "wracają przy następnym obrocie na poziom 1 nowego koła.", "success")
         return redirect(url_for("wheel"))
 
-    config = one("SELECT enabled, cost_vnum, cost_count FROM player.wheel_config WHERE id=1") or {}
-    config["cost_name"] = battlepass_item_name(config.get("cost_vnum", 0))
-    rewards = rows("SELECT id, vnum, count, weight, rare, active FROM player.wheel_reward ORDER BY id")
-    total = sum(r["weight"] for r in rewards if r["active"] and r["vnum"])
-    for r in rewards:
-        r["name"] = battlepass_item_name(r["vnum"])
-        r["chance"] = (100.0 * r["weight"] / total) if (total and r["active"]) else 0.0
-    ticket = one("""SELECT `index`, count, price FROM common.itemshop_items
-        WHERE vnum=%s AND currency='DRAGON_COIN' ORDER BY count LIMIT 1""", (config.get("cost_vnum", 0),))
-    stats = one("""SELECT COUNT(*) AS total,
-        COALESCE(SUM(created >= CURDATE()), 0) AS today,
-        COALESCE(SUM(created >= NOW() - INTERVAL 7 DAY), 0) AS week,
-        COALESCE(SUM(state = 0), 0) AS pending,
-        COALESCE(SUM(rare = 1 AND created >= NOW() - INTERVAL 7 DAY), 0) AS rare_week,
-        COUNT(DISTINCT pid) AS players FROM player.wheel_spin""") or {}
-    recent = rows("""SELECT s.id, s.created, s.vnum, s.count, s.rare, s.state, s.pid, p.name
-        FROM player.wheel_spin s LEFT JOIN player.player p ON p.id = s.pid ORDER BY s.id DESC LIMIT 25""")
-    names = {}
-    for s in recent:
-        s["name"] = game_text(s["name"]) if s.get("name") else f"PID {s['pid']}"
-        if s["vnum"] not in names:
-            names[s["vnum"]] = battlepass_item_name(s["vnum"])
-        s["item"] = names[s["vnum"]] or str(s["vnum"])
-    return render_template("wheel.html", config=config, rewards=rewards, total=total, ticket=ticket,
-                           stats=stats, recent=recent, new_rows=WHEEL_NEW_ROWS, wheel_csrf=update_csrf_token())
+    active = kola_active_wheel(settings, wheels)
+    names = {w["id"]: w["name"] for w in wheels}
+    order = [int(x) for x in (settings.get("rotation_order") or "").split(",") if x.strip().isdigit()]
+    schedule = []
+    period = max(1, int(settings.get("rotation_days") or 14)) * 86400
+    start = active["from"]
+    for i in range(len(order) or 1):
+        t = start + i * period
+        a = kola_active_wheel(settings, wheels, t + 60)
+        schedule.append({"from": datetime.fromtimestamp(t).strftime("%d.%m.%Y %H:%M"),
+                         "until": datetime.fromtimestamp(t + period).strftime("%d.%m.%Y %H:%M"),
+                         "name": names.get(a["auto"], a["auto"])})
+    flagged = rows("""SELECT i.src_id, i.vnum, i.status, i.name, i.src_name, i.note,
+        GROUP_CONCAT(DISTINCT CONCAT(p.wheel_id, ':', p.tier) ORDER BY p.wheel_id, p.tier SEPARATOR ', ') AS used
+        FROM itemshop.kola_item i LEFT JOIN itemshop.kola_pool p ON p.src_id = i.src_id
+        WHERE i.status <> 'ok' GROUP BY i.src_id ORDER BY FIELD(i.status, 'brak', 'zamiennik', 'inny_czas'), i.src_name""")
+    for f in flagged:
+        f["status_text"] = KOLA_STATUS.get(f["status"], f["status"])
+        f["used"] = ", ".join(f"{names.get(int(x.split(':')[0]), x.split(':')[0])} p{x.split(':')[1]}"
+                              for x in (f["used"] or "").split(", ") if ":" in x)
+    stats = one("""SELECT COUNT(*) AS total, COALESCE(SUM(created_at >= CURDATE()), 0) AS today,
+        COALESCE(SUM(created_at >= NOW() - INTERVAL 7 DAY), 0) AS week, COUNT(DISTINCT account_id) AS players,
+        COALESCE(SUM(cost), 0) AS spent, COALESCE(SUM(special = 1 AND created_at >= NOW() - INTERVAL 7 DAY), 0) AS special_week,
+        COALESCE(SUM(via = 'f12'), 0) AS f12
+        FROM itemshop.kola_spin_log""") or {}
+    recent = rows("""SELECT id, created_at, login, via, wheel_id, tier, cost, position, special, vnum, count, name, status,
+        key_hit, tier_after FROM itemshop.kola_spin_log ORDER BY id DESC LIMIT 30""")
+    for r in recent:
+        r["wheel"] = names.get(r["wheel_id"], r["wheel_id"])
+    return render_template("wheel.html", ready=True, wheels=wheels, settings=settings, active=active, names=names,
+                           schedule=schedule, flagged=flagged, stats=stats, recent=recent,
+                           until=datetime.fromtimestamp(active["until"]).strftime("%d.%m.%Y %H:%M"),
+                           wheel_csrf=update_csrf_token())
 
 
 @app.route("/events", methods=["GET", "POST"])
