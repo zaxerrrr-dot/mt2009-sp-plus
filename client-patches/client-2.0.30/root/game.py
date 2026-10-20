@@ -4148,6 +4148,9 @@ class GameWindow(ui.ScriptWindow):
 	def __BonusMode(self, mode = "0", *args):
 		import localeinfo_point
 		localeinfo_point.SetBonusMode(str(mode).strip() == "1")
+		# MT2009_PLUS_GLOBAL_PROTO_V1: the items' fixed bonuses of global mode (protoglobal.py)
+		import protoglobal
+		protoglobal.SetBonusMode(str(mode).strip() == "1")
 
 	# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher's lines (uibonusswitch.py).
 	def __BonusSwitch(self, *args):

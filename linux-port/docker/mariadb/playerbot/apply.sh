@@ -4003,6 +4003,65 @@ if [ "$bonus_global" = 1 ] && [ -s /opt/playerbot/zywioly_moby_global.sql ]; the
         fail_step "bonus mode: zywioly_moby_global.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_GLOBAL_PROTO_V1 (server-patches/bonusyglobal/README.md, the owner's list of 15 October, item 19): the
+# fixed bonuses of item_proto (applytype0..2 / applyvalue0..2) of global mode - armour and weapons that are the same
+# item in the official data (Bambusowe Buty+9: movement 15 and fire resistance 10 instead of movement 25 and max
+# stamina 800; tools/protoglobal/gen_item_proto_global.py). item_proto_global.sql (re)writes the table of the global
+# values every start; world.item_proto_apply_mt2009 holds the mt2009 applies of every item global mode changed.
+#   * global: an item whose applies are not the global ones now (the first switch, or a step above wrote its mt2009
+#     values again this start) has them saved as its mt2009 ones, then gets the global ones; the guard (type,
+#     subtype, level) leaves a vnum that is another item alone; an item taken off the global list goes back.
+#   * mt2009: every saved item whose applies are still the global ones (an edit since stays) gets its mt2009 ones
+#     back, and the table empties.
+# Players' items follow at once (the fixed bonuses are the proto's, not the item's). Runs after every step above
+# that writes item_proto; the db core reads world.item_proto when it starts. The client switches its tooltips the
+# same way ("BonusMode 1", root protoglobal.py).
+if [ -s /opt/playerbot/item_proto_global.sql ] && db < /opt/playerbot/item_proto_global.sql; then
+    gp_same="p.applytype0 = g.applytype0 AND p.applyvalue0 = g.applyvalue0 AND p.applytype1 = g.applytype1 AND p.applyvalue1 = g.applyvalue1 AND p.applytype2 = g.applytype2 AND p.applyvalue2 = g.applyvalue2"
+    gp_guard="p.type = g.type AND p.subtype = g.subtype AND p.limitvalue0 = g.limitvalue0"
+    gp_back="p.applytype0 = m.applytype0, p.applyvalue0 = m.applyvalue0, p.applytype1 = m.applytype1, p.applyvalue1 = m.applyvalue1, p.applytype2 = m.applytype2, p.applyvalue2 = m.applyvalue2"
+    gp_sql="CREATE TABLE IF NOT EXISTS world.item_proto_apply_mt2009 (vnum INT UNSIGNED NOT NULL PRIMARY KEY,
+            applytype0 TINYINT UNSIGNED NOT NULL, applyvalue0 INT NOT NULL, applytype1 TINYINT UNSIGNED NOT NULL,
+            applyvalue1 INT NOT NULL, applytype2 TINYINT UNSIGNED NOT NULL, applyvalue2 INT NOT NULL) ENGINE=InnoDB;
+        START TRANSACTION;"
+    if [ "$bonus_global" = 1 ]; then
+        gp_sql="$gp_sql
+        UPDATE world.item_proto p JOIN world.item_proto_apply_mt2009 m ON m.vnum = p.vnum
+            LEFT JOIN world.item_proto_apply_global g ON g.vnum = p.vnum SET $gp_back WHERE g.vnum IS NULL;
+        DELETE FROM world.item_proto_apply_mt2009 WHERE vnum NOT IN (SELECT vnum FROM world.item_proto_apply_global);
+        REPLACE INTO world.item_proto_apply_mt2009 SELECT p.vnum, p.applytype0, p.applyvalue0, p.applytype1,
+            p.applyvalue1, p.applytype2, p.applyvalue2 FROM world.item_proto p JOIN world.item_proto_apply_global g
+            ON g.vnum = p.vnum WHERE $gp_guard AND NOT ($gp_same);
+        UPDATE world.item_proto p JOIN world.item_proto_apply_global g ON g.vnum = p.vnum
+            JOIN world.item_proto_apply_mt2009 m ON m.vnum = p.vnum
+            SET p.applytype0 = g.applytype0, p.applyvalue0 = g.applyvalue0, p.applytype1 = g.applytype1,
+                p.applyvalue1 = g.applyvalue1, p.applytype2 = g.applytype2, p.applyvalue2 = g.applyvalue2
+            WHERE $gp_guard;
+        COMMIT;
+        SELECT COUNT(*) FROM world.item_proto p JOIN world.item_proto_apply_global g ON g.vnum = p.vnum
+            WHERE $gp_guard AND $gp_same;"
+    else
+        gp_sql="$gp_sql
+        UPDATE world.item_proto p JOIN world.item_proto_apply_mt2009 m ON m.vnum = p.vnum
+            LEFT JOIN world.item_proto_apply_global g ON g.vnum = p.vnum SET $gp_back
+            WHERE g.vnum IS NULL OR ($gp_same);
+        SELECT ROW_COUNT();
+        DELETE FROM world.item_proto_apply_mt2009;
+        COMMIT;"
+    fi
+    if gp_out=$(db -N -e "$gp_sql"); then
+        gp_n=$(printf '%s\n' "$gp_out" | tail -n 1 | tr -d ' \r')
+        if [ "$bonus_global" = 1 ]; then
+            echo "[playerbot-migrate] bonus mode: global - ${gp_n:-0} item(s) with the global fixed bonuses (item_proto_global.sql)"
+        else
+            echo "[playerbot-migrate] bonus mode: mt2009 - fixed bonuses: ${gp_n:-0} item(s) back to the mt2009 ones"
+        fi
+    else
+        fail_step "bonus mode: could not switch the fixed item bonuses (item_proto_global.sql)" >&2
+    fi
+else
+    fail_step "bonus mode: item_proto_global.sql missing or failed" >&2
+fi
 if ! db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_bonus_global', '', $bonus_global);"; then
     fail_step "bonus mode: could not write m2_bonus_global" >&2
 fi
