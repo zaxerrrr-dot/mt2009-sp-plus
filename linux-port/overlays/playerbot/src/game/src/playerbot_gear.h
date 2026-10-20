@@ -2850,6 +2850,24 @@ namespace
 		// The bow or fan a keeper builds for its sash is not goods.
 		if (IsPlayerBotSashGrailProject(ch, item))
 			return false;
+		// MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 3: "ogranicz ulepszanie
+		// przedmiotow tylko na sprzedaz"): the anvil grinds a weapon for sale
+		// only while the market wants its family - the bots' counters hold
+		// fewer than SHOP_MGMT_L30_SALE_LINES of it at any plus (the ledger,
+		// once a minute); 0 grinds none. Otherwise it is goods as it is.
+		if (IsPlayerBotShopMgmtOn())
+		{
+			const int cap = GetPlayerBotShopMgmt(PLAYERBOT_SM_L30_SALE_LINES);
+			if (cap <= 0)
+				return false;
+			const DWORD base = item->GetVnum() - (DWORD)std::max(0, item->GetRefineLevel());
+			DWORD supply = 0;
+			for (DWORD plus = 0; plus <= 9; ++plus)
+				if (const TPlayerBotMarketLedgerEntry* entry = GetPlayerBotMarketLedgerEntry(base + plus))
+					supply += entry->dwSupplyUnits;
+			if ((int)supply >= cap)
+				return false;
+		}
 		// Two of a family in the bag at most, and the rest are goods at once
 		// (PLAYERBOT_HELD_FAMILY_LIMIT): what a bot grinds for sale is still
 		// what it holds. A copy counts when it lies ahead of this one - or
