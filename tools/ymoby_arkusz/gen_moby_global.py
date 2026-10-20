@@ -234,6 +234,8 @@ def extract(a):
             outside.append([v, e['name'], 'u nas inny potwor: ' + o['locale_name']])
             continue
         made = base.get(v, o)          # the value our world was made with
+        if v in G.SCRIPT_BASE:         # MT2009_PLUS_MOBY_GLOBAL_OCHAO_BASE_V1
+            made = dict(made, **{c: str(x) for c, x in G.SCRIPT_BASE[v].items()})
         for c in G.NUM:
             if e.get(c) is None:
                 continue
@@ -427,6 +429,9 @@ def render():
     # world's value read where no script of ours writes the rank: world.sql's, every one of them)
     if G.RANK:
         data['fixes'] = data['fixes'] + [[v, 'rank', old, new] for v, name, old, new in data['ranks']]
+    # MT2009_PLUS_MOBY_GLOBAL_OCHAO_BASE_V1: the guard is apply.sh's value; a column already the sheet's goes
+    data['fixes'] = [[v, c, G.SCRIPT_BASE.get(v, {}).get(c, old), new] for v, c, old, new in data['fixes']
+                     if G.SCRIPT_BASE.get(v, {}).get(c, old) != new]
     for v, c, old, new in data['fixes']:
         if c.startswith('setRaceFlag:'):        # only onto a monster with no race of its own (bits 0-10)
             bit = 1 << BITS['setRaceFlag'].index(c.split(':')[1])

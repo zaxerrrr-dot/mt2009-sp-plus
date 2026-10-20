@@ -27,3 +27,15 @@ SAME_NAME = {2301, 2302, 2311, 2312, 3790}
 # drops: what the sheet lists and we leave out - besides chestdrops SKIP, ymoby_data.EXCLUDE, a quest's own items
 # (any vnum a quest of ours gives, counts or takes) and the materials no recipe, shop, chest or drop of our world uses
 EXCLUDE = dict((v, 'Seon-Hae event shard') for v in range(39070, 39078))
+
+# MT2009_PLUS_MOBY_GLOBAL_OCHAO_BASE_V1: monsters our apply.sh makes (not in mob_proto.mt2009plus.sql) - the values a
+# fresh world gets from apply.sh (world.ochao_mob), not the test world's: that one held the panel's database-editor
+# import (6301 max_hp 12950), so the guards never fired on a fresh world (found when the editor's changes were undone,
+# 20 Oct). extract() takes them as "made", and the build corrects a json extracted before.
+SCRIPT_BASE = {
+    6301: dict(max_hp=18500, damage_min=190, damage_max=232),
+    6302: dict(max_hp=23000, damage_min=192, damage_max=236),
+    6303: dict(max_hp=22000, damage_min=194, damage_max=238),
+    6304: dict(max_hp=52000, damage_min=176, damage_max=262),
+    6305: dict(max_hp=95000, damage_min=178, damage_max=266),
+}
