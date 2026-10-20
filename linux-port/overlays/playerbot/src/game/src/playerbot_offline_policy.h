@@ -140,6 +140,14 @@ struct State {
     // MT2009_PLUS_BOT_STALL_WEAK_TAKEOFF_V1: weak-bonus scrap lines taken off
     // in this burst of chained steps (a full counter takes several a visit).
     uint32_t weakTakeoffBurst = 0;
+    // MT2009_PLUS_BOT_SHOP_MGMT_V1: shop-management take-offs in this burst
+    // of chained steps (a counter far over its fill target takes several a
+    // visit), and when this keeper last took a line home to stack it again.
+    uint32_t mgmtBurst = 0, restackAt = 0;
+    // MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 5): the buyer's pick is this many
+    // pieces of the line's stack (0: the whole line) - the shop window's part
+    // purchase (MT2009_PLUS_SHOP_QOL_V2, /ikashop_buy_part).
+    uint32_t buyQuantity = 0;
     // Which compiled price table this shop was last priced against.
     uint32_t priceGeneration = 0;
     // The empty-hand probe of the counter, and the last line taken back to
