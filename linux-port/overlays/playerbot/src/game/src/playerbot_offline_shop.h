@@ -1727,15 +1727,28 @@ namespace {
             }
             if (!held) continue;
             const int spare = (int)ch->CountSpecifyItem(vnum) - GetPlayerBotStallBaseKeep(ch, held);
-            if (spare >= std::max(GetPlayerBotShopMgmt(PLAYERBOT_SM_RESTACK_MIN), g.smallestCount / 4))
+            // The kind whose second line came home last time goes on with
+            // whatever came home: those pieces wait for this line otherwise.
+            if (spare >= std::max(GetPlayerBotShopMgmt(PLAYERBOT_SM_RESTACK_MIN), g.smallestCount / 4) ||
+                    (spare > 0 && o.restackVnum == vnum))
                 return g.smallest;
         }
         return 0;
     }
     bool BotOfflineRestack(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
         const DWORD id = BotOfflineRestackLine(ch, state, shop, now);
-        if (!id || !BotOfflineTakeOff(ch, state, id, 0, now, "mgmt_restack")) return false;
+        if (!id) return false;
+        const auto& items = shop->GetItems();
+        const auto line = items.find(id);
+        const DWORD vnum = line != items.end() && line->second ? line->second->GetInfo().vnum : 0;
+        int lines = 0;
+        for (const auto& [lid, l] : items)
+            if (l && l->GetInfo().vnum == vnum && (int)l->GetInfo().count < 200) ++lines;
+        if (!BotOfflineTakeOff(ch, state, id, 0, now, "mgmt_restack")) return false;
         state.offlineShop.restackAt = now ? now : 1;
+        // A second line of the kind came home: the one left comes home next
+        // whatever the bag holds of it, and the two go up as one.
+        state.offlineShop.restackVnum = lines >= 2 ? vnum : 0;
         return true;
     }
     // How many lines of this item's kind kept by count - the books of its
