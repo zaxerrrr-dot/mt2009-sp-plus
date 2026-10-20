@@ -671,12 +671,23 @@ namespace playerbot_persona
 		return p.present && (unsigned int)p.levelLimit + window >= (unsigned int)level;
 	}
 
-	inline int AwansGaps(const TAdvanceGear& g)
+	// MT2009_PLUS_BOT_LAW_GEAR_V1: `extraPlus` raises every plus the row asks
+	// (at most to +9) - one for a bot that went back to grinding after its
+	// deaths, so it does not advance again two minutes later on the gear it
+	// died in (1 007 advances and 1 051 returns in half a day, 18 October).
+	inline int AwansGaps(const TAdvanceGear& g, int extraPlus = 0)
 	{
 		// MT2009_PLUS_PROGRESSION_V1: the thresholds are the law's row for
 		// this level (AwansLawFor); a zero asks nothing of that piece.
 		int gaps = 0;
-		const TLawRow law = AwansLawFor(g.level);
+		TLawRow law = AwansLawFor(g.level);
+		if (extraPlus > 0)
+		{
+			uint8_t* rows[] = { &law.weapon, &law.armour, &law.shield, &law.helmet };
+			for (uint8_t* r : rows)
+				if (*r != 0)
+					*r = (uint8_t)std::min<int>(9, *r + extraPlus);
+		}
 		if (law.weapon != 0 && (!IsPieceCurrent(g.weapon, g.level) || g.weapon.plus < law.weapon))
 			gaps |= AWANS_GAP_WEAPON;
 		if (law.helmet != 0 && (!IsPieceCurrent(g.helmet, g.level) || g.helmet.plus < law.helmet))

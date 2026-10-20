@@ -1091,11 +1091,14 @@ namespace {
     // can walk to, for no more than `cap`.
     bool FindPlayerBotOutdatedGearPick(LPCHARACTER ch, TPlayerBotAIState& state, long long cap, DWORD now) {
         using namespace playerbot_offline;
-        if (!ch || cap <= 0 || (int)ch->GetLevel() < PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL) return false;
+        if (!ch || cap <= 0) return false;
+        // MT2009_PLUS_BOT_LAW_GEAR_V1: under level 50 only a piece under the
+        // Law of Advancement's level window (IsPlayerBotLawStaleGear).
+        const bool fifty = (int)ch->GetLevel() >= PLAYERBOT_OUTDATED_GEAR_MIN_LEVEL;
         bool outdated[3] = {
-            IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_BODY)),
-            IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_HEAD)),
-            IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_SHIELD)) };
+            IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_BODY)) && (fifty || IsPlayerBotLawStaleGear(ch, ch->GetWear(WEAR_BODY))),
+            IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_HEAD)) && (fifty || IsPlayerBotLawStaleGear(ch, ch->GetWear(WEAR_HEAD))),
+            fifty && IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_SHIELD)) };
         if (!outdated[0] && !outdated[1] && !outdated[2]) return false;
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
                 ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;

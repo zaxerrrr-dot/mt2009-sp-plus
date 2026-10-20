@@ -4298,7 +4298,9 @@ namespace
 		// Perfectionist's half: its step is the scroll's and the materials'
 		// (Community Patch 5, point 4), and a rule a purse's share can stop at
 		// every visit is not the rule.
-		if (perfectSpent && !classLevel30 && !PlayerBotHasScrollRuleWork(ch))
+		// MT2009_PLUS_BOT_LAW_GEAR_V1: nor a worn piece the Law of Advancement
+		// is short of (GetPlayerBotLawRefinePlus).
+		if (perfectSpent && !classLevel30 && !PlayerBotHasScrollRuleWork(ch) && !PlayerBotHasLawRefineWork(ch))
 			return false;
 		const BYTE wearSlots[] = {
 			WEAR_WEAPON, WEAR_BODY, WEAR_SHIELD, WEAR_HEAD,
@@ -4314,7 +4316,9 @@ namespace
 
 			const BYTE plusLevel = item->GetRefineLevel();
 			const bool coreProgression = IsPlayerBotCoreProgressionItem(ch, item);
-			if (plusLevel >= GetPlayerBotRefineTarget(ch, item))
+			// MT2009_PLUS_BOT_LAW_GEAR_V1: at least to the law's plus.
+			const BYTE lawPlus = GetPlayerBotLawRefinePlus(ch, item, wearSlots[i]);
+			if (plusLevel >= std::max<BYTE>(GetPlayerBotRefineTarget(ch, item), lawPlus))
 				continue;
 			// A worn piece is taken off for the anvil below, so a step the bag
 			// cannot pay for - a material short, or the fee - is not queued at
@@ -4338,6 +4342,11 @@ namespace
 			// thirty, the armour first under it (community patch 2, point 4).
 			if (personaOn && state.persona.bMedalGoalDone && cand.priority != 0 &&
 					wearSlots[i] == (ch->GetLevel() >= PLAYERBOT_MEDAL_GOAL_WEAPON_FIRST_LEVEL ? WEAR_WEAPON : WEAR_BODY))
+				cand.priority = 1;
+			// MT2009_PLUS_BOT_LAW_GEAR_V1: the piece the law is short of goes
+			// with the weapon, right after the class's level-30 one - the helmet
+			// was last in the order and saw a twentieth of the weapon's steps.
+			if (lawPlus != 0 && cand.priority > 1)
 				cand.priority = 1;
 			candidates.push_back(cand);
 		}
@@ -4505,7 +4514,8 @@ namespace
 			}
 			// Past the Perfectionist's half only the level-30 weapon goes on,
 			// and the scroll rule's piece.
-			if (perfectSpent && item != classLevel30 && !rulePiece)
+			if (perfectSpent && item != classLevel30 && !rulePiece &&
+					GetPlayerBotLawRefinePlus(ch, item, wearCell != 255 ? (int)wearCell : -1) == 0)   // MT2009_PLUS_BOT_LAW_GEAR_V1
 				continue;
 			// The level-30 weapon's purchase and anvil share one budget
 			// (GetPlayerBotLevel30BudgetLeft): the step's fee has to fit in
