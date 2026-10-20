@@ -1,0 +1,273 @@
+MT2009_PLUS_YOHARA_LOKACJE_V1 - points of the sheet a spawn of the monster does not reach within 40 m
+373 metin2_map_eastplain_01 (4x5 = 1024x1280 m): 372 spawn lines; a monster spawn here: 5, 10s; boss 3600s; Metin 1800s
+  + mob   6701 Troll Żołnierz at 600,600
+  + mob   6710 Dręczony Duch at 602,898 (GF 600,900 blocked)
+  + mob   6712 Troll Żołnierz at 754,605 (GF 750,600 blocked)
+  + mob   6713 Troll Wojownik at 750,1249 (GF 750,1250 blocked)
+  + mob   6714 Troll Strzelec at 60,800
+  + mob   6714 Troll Strzelec at 900,800
+  + mob   6714 Troll Strzelec at 250,1050
+  + mob   6714 Troll Strzelec at 177,1068
+  + mob   6714 Troll Strzelec at 739,1026
+  + mob   6714 Troll Strzelec at 870,1096
+  + mob   6715 Troll Szamanka at 120,1020
+  + mob   6715 Troll Szamanka at 887,1063 (GF 900,1050 blocked)
+  + mob   6715 Troll Szamanka at 700,900
+  + mob   6715 Troll Szamanka at 53,834
+  + mob   6715 Troll Szamanka at 756,1030
+  + mob   6715 Troll Szamanka at 639,893
+  8062 Metin Świadomość (misja): a quest monster - skipped (8 points)
+  + stone 8067 Metin Świadomość at 77,750
+  + stone 8067 Metin Świadomość at 671,549
+  + stone 8067 Metin Świadomość at 871,520
+  + stone 8067 Metin Świadomość at 900,750
+  + stone 8625 Posterunek Trolli at 105,577
+  + stone 8625 Posterunek Trolli at 85,730
+  + stone 8625 Posterunek Trolli at 55,825
+  + stone 8625 Posterunek Trolli at 255,780
+  + stone 8625 Posterunek Trolli at 346,690
+  + stone 8625 Posterunek Trolli at 470,615
+  + stone 8625 Posterunek Trolli at 715,680
+  + stone 8625 Posterunek Trolli at 745,805
+  + stone 8625 Posterunek Trolli at 715,940
+  + stone 8625 Posterunek Trolli at 666,985
+  + stone 8625 Posterunek Trolli at 890,1120
+  + stone 8625 Posterunek Trolli at 455,915
+  + stone 8625 Posterunek Trolli at 270,1115
+  + stone 8625 Posterunek Trolli at 111,1010
+  + boss  6706 Argos/6716 Natanan/6717 Argos (one at random) at 220,1200, 3600s
+  + boss  6705 Natanan/6706 Argos/6716 Natanan/6717 Argos (one at random) at 930,502, 3600s (GF 930,500 blocked)
+  = boss.txt +2, regen.txt +16, stone.txt +18
+374 metin2_map_empirecastle (2x2 = 512x512 m): 97 spawn lines; a monster spawn here: 5, 10s; boss 3600s; Metin 3600s
+  + mob   6686 Jin Bing at 160,150
+  + mob   6686 Jin Bing at 230,152
+  + mob   6686 Jin Bing at 92,145
+  + mob   6687 Żołnierz Ki at 110,130
+  + mob   6687 Żołnierz Ki at 319,429
+  + mob   6688 Żołnierz Mao at 110,130
+  + mob   6688 Żołnierz Mao at 300,430
+  + mob   6688 Żołnierz Mao at 228,155
+  + mob   6688 Żołnierz Mao at 140,367
+  + mob   6689 Żołnierz Gong at 110,130
+  + mob   6689 Żołnierz Gong at 355,160
+  + mob   6689 Żołnierz Gong at 250,148
+  + mob   6689 Żołnierz Gong at 329,408
+  + mob   6690 Mag Frontowy at 110,140
+  + mob   6690 Mag Frontowy at 115,377
+  6692 Król Bao (misja): a quest monster - skipped (1 points)
+  + mob   6693 Jin Bing at 40,190
+  + mob   6693 Jin Bing at 115,304
+  + mob   6693 Jin Bing at 414,150
+  + mob   6694 Żołnierz Ki at 22,234
+  + mob   6694 Żołnierz Ki at 353,261
+  + mob   6694 Żołnierz Ki at 481,208
+  + mob   6695 Żołnierz Mao at 35,190
+  + mob   6695 Żołnierz Mao at 450,180
+  + mob   6695 Żołnierz Mao at 176,188
+  + mob   6695 Żołnierz Mao at 483,207
+  + mob   6695 Żołnierz Mao at 212,149
+  + mob   6696 Żołnierz Gong at 350,150
+  + mob   6696 Żołnierz Gong at 100,140
+  + mob   6696 Żołnierz Gong at 218,236
+  + mob   6696 Żołnierz Gong at 490,237
+  + mob   6697 Mag Frontowy at 400,200
+  + boss  6698 Kao at 328,228, 3600s
+  + boss  6698 Kao at 350,190, 3600s
+  + boss  6691 Kao at 400,100, 3600s
+  = boss.txt +3, regen.txt +31
+376 metin2_map_eastplain_02 (3x6 = 768x1536 m): 462 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
+  + mob   6718 Myr Kovix at 179,1347
+  + mob   6719 Myr Proletariusz at 640,492
+  + mob   6720 Myr Golem at 634,527
+  + mob   6721 Myr Bojownik at 619,509
+  + stone 8063 Metin Szacunku at 187,585
+  + stone 8067 Metin Świadomość at 650,570
+  + stone 8626 1. Posterunek Myr at 680,535
+  + stone 8626 1. Posterunek Myr at 670,765
+  + stone 8626 1. Posterunek Myr at 550,810
+  + stone 8626 1. Posterunek Myr at 510,720
+  + stone 8626 1. Posterunek Myr at 422,635
+  + stone 8626 1. Posterunek Myr at 275,495
+  + stone 8626 1. Posterunek Myr at 160,595
+  + stone 8626 1. Posterunek Myr at 105,670
+  + stone 8626 1. Posterunek Myr at 105,866
+  + stone 8626 1. Posterunek Myr at 685,1095
+  + stone 8626 1. Posterunek Myr at 630,690
+  + stone 8626 1. Posterunek Myr at 505,1015
+  + stone 8626 1. Posterunek Myr at 405,1090
+  + stone 8626 1. Posterunek Myr at 415,950
+  + stone 8626 1. Posterunek Myr at 355,840
+  + stone 8626 1. Posterunek Myr at 315,650
+  + boss  6723 Myr Weteran/6724 Myr Prymus (one at random) at 520,810, 3600s
+  = boss.txt +1, regen.txt +4, stone.txt +18
+377 metin2_map_eastplain_03 (4x2 = 1024x512 m): 299 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
+  + mob   6701 Troll Żołnierz at 871,199 (GF 870,200 blocked)
+  + mob   6701 Troll Żołnierz at 958,162
+  + mob   6710 Dręczony Duch at 932,200
+  + mob   6714 Troll Strzelec at 970,160
+  + mob   6714 Troll Strzelec at 109,61
+  + mob   6714 Troll Strzelec at 599,77
+  + mob   6718 Myr Kovix at 700,174 (GF 700,150 blocked)
+  + mob   6718 Myr Kovix at 805,362
+  + stone 8627 2. Posterunek Myr at 422,60
+  + stone 8627 2. Posterunek Myr at 260,120
+  + stone 8627 2. Posterunek Myr at 95,55
+  + stone 8627 2. Posterunek Myr at 180,340
+  + stone 8627 2. Posterunek Myr at 577,365
+  + stone 8627 2. Posterunek Myr at 690,380
+  + stone 8627 2. Posterunek Myr at 775,195
+  + stone 8627 2. Posterunek Myr at 840,150
+  + stone 8627 2. Posterunek Myr at 650,240
+  + stone 8627 2. Posterunek Myr at 577,360
+  + stone 8627 2. Posterunek Myr at 765,366
+  + boss  6705 Natanan at 550,80, 3600s
+  = boss.txt +1, regen.txt +8, stone.txt +11
+382 metin2_map_maze_dungeon1 (3x3 = 768x768 m): 247 spawn lines; a monster spawn here: 3, 120s; boss 3600s; Metin 1800s
+  + mob   6802 Czarodziej Gnoll at 100,430
+  + mob   6803 Gnoll Marszałek at 620,500
+  + mob   6803 Gnoll Marszałek at 309,563
+  = regen.txt +3
+383 metin2_map_maze_dungeon2 (3x3 = 768x768 m): 246 spawn lines; a monster spawn here: 3, 120s; boss 7200s; Metin 1800s
+  + mob   6808 Gnoll Mag at 105,373
+  + mob   6808 Gnoll Mag at 538,57
+  + mob   6809 Komendant Gnoll at 616,97
+  + mob   6812 Ahtrin Czarodziej at 630,490
+  + mob   6813 Ahtrin Komendant at 620,60
+  + mob   6813 Ahtrin Komendant at 650,500
+  + mob   6813 Ahtrin Komendant at 377,632
+  = regen.txt +7
+384 metin2_map_maze_dungeon3 (3x3 = 768x768 m): 257 spawn lines; a monster spawn here: 3, 120s; boss 10800s; Metin 1800s
+  + mob   6817 Ahtrin Wiedźmin at 420,380
+  + mob   6817 Ahtrin Wiedźmin at 540,78
+  + mob   6818 Ahtrin Komendant at 80,270
+  + mob   6818 Ahtrin Komendant at 200,550
+  + mob   6818 Ahtrin Komendant at 618,138
+  = regen.txt +5
+385 metin2_map_snakevalley (6x3 = 1536x768 m): 536 spawn lines; a monster spawn here: 1, 30s; boss 3600s; Metin 1800s
+  + mob   6758 Skażony Żołnierz at 1100,550
+  + mob   6758 Skażony Żołnierz at 403,677
+  + mob   6758 Skażony Żołnierz at 1111,185
+  + mob   6759 Skażony Zadziora at 700,680
+  + mob   6759 Skażony Zadziora at 626,366
+  + mob   6761 Skażony Mnich at 1050,500
+  + mob   6761 Skażony Mnich at 544,444 (GF 550,450 blocked)
+  + mob   6761 Skażony Mnich at 981,351
+  + mob   6761 Skażony Mnich at 114,414
+  + mob   6762 Skażony Generał at 1200,550
+  + mob   6762 Skażony Generał at 160,500
+  + mob   6762 Skażony Generał at 145,241
+  + mob   6762 Skażony Generał at 644,420
+  + mob   6762 Skażony Generał at 1150,321
+  + mob   6875 Skażony Żołnierz at 187,363 (GF 186,360 blocked)
+  + mob   6875 Skażony Żołnierz at 329,473
+  + mob   6875 Skażony Żołnierz at 1085,473
+  + mob   6875 Skażony Żołnierz at 640,164
+  + mob   6876 Skażony Zadziora at 1153,420
+  + mob   6876 Skażony Zadziora at 1111,179
+  + mob   6878 Skażony Mnich at 622,572
+  + mob   6878 Skażony Mnich at 1149,311
+  + mob   6879 Skażony Generał at 344,292
+  + mob   6879 Skażony Generał at 497,570
+  + mob   6879 Skażony Generał at 156,554
+  + stone 8064 Metin Uważności at 200,250
+  + stone 8065 Metin Jin at 1196,260
+  + stone 8066 Metin Shiho at 1120,470
+  + boss  6763 Skażony Wódz/6764 Skażony Wódz Wojenny/6880 Skażony Wódz/6881 Skażony Wódz Wojenny (one at random) at 1150,300, 3600s
+  + boss  6763 Skażony Wódz/6764 Skażony Wódz Wojenny/6880 Skażony Wódz/6881 Skażony Wódz Wojenny (one at random) at 1195,540, 3600s
+  = boss.txt +2, regen.txt +25, stone.txt +3
+388 metin2_map_icecrystalcave (5x4 = 1280x1024 m): 621 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
+389 metin2_map_whitdragonvalley (3x3 = 768x768 m): 263 spawn lines; a monster spawn here: 4, 10s; boss 3600s; Metin 1800s
+  + mob   6778 Opętany Śnieżny Leopard at 325,487
+  + mob   6889 Przeklęty Mroźny Jeleń at 600,500
+  + mob   6890 Opętany Śnieżny Leopard at 300,300
+  + stone 8066 Metin Shiho at 580,420
+  + stone 8066 Metin Shiho at 625,279
+  + stone 8066 Metin Shiho at 209,409
+  + stone 8077 Metin z Gumar at 120,180
+  + boss  6782 Wielka Stopa/6894 Wielka Stopa/6895 Wódz Wojenny Płn. Wiatru (one at random) at 620,250, 3600s
+  = boss.txt +1, regen.txt +3, stone.txt +4
+390 metin2_map_snake_temple_01 (3x3 = 768x768 m): 243 spawn lines; a monster spawn here: 3, 60s; boss 3600s; Metin 3600s
+  + mob   6745 Kappa Robotnik at 315,436
+  + mob   6747 Kappa Czarodziej at 372,700
+  + mob   6747 Kappa Czarodziej at 413,114
+  + mob   6747 Kappa Czarodziej at 81,387
+  + mob   6748 Kappa Łowca at 628,166
+  + mob   6758 Skażony Żołnierz at 488,542
+  + mob   6758 Skażony Żołnierz at 381,471
+  + mob   6759 Skażony Zadziora at 513,309
+  + mob   6759 Skażony Zadziora at 381,614
+  + mob   6760 Skażony Wojownik at 404,179
+  + mob   6761 Skażony Mnich at 412,198
+  + mob   6761 Skażony Mnich at 483,462
+  + mob   6762 Skażony Generał at 368,611
+  + mob   6875 Skażony Żołnierz at 400,245
+  + mob   6875 Skażony Żołnierz at 375,597
+  + mob   6876 Skażony Zadziora at 402,559
+  + mob   6876 Skażony Zadziora at 594,350 (GF 607,337 blocked)
+  + mob   6878 Skażony Mnich at 493,470
+  + mob   6878 Skażony Mnich at 216,340
+  + mob   6878 Skażony Mnich at 611,378
+  + mob   6879 Skażony Generał at 222,257
+  + mob   6879 Skażony Generał at 486,543
+  + stone 8076 Metin Wężowy Przestrzeni at 119,562
+  + stone 8076 Metin Wężowy Przestrzeni at 627,174
+  + stone 8076 Metin Wężowy Przestrzeni at 416,678
+  = regen.txt +22, stone.txt +3
+391 metin2_map_snake_temple_02: no fixed point in the sheet (quest dungeon) - nothing
+393 metin2_map_whitedragoncave_01 (6x6 = 1536x1536 m): 1052 spawn lines; a monster spawn here: 4, 70s; boss 3600s; Metin 1800s
+  + boss  6789 Wódz Wojenny Schronienia at 200,1170, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 390,208, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 460,1200, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 555,300, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 640,730, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 773,1314, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 900,1330, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 1111,830, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 1215,950, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 1480,530, 3600s
+  + boss  6789 Wódz Wojenny Schronienia at 1480,960, 3600s
+  = boss.txt +11
+394 metin2_map_whitedragoncave_02 (3x3 = 768x768 m): 141 spawn lines; a monster spawn here: 4, 60s; boss 1800s; Metin 1800s
+  + mob   6793 Zadziora Schron. Płn. W. at 154,446
+  + mob   6794 Wojownik Schron. Płn. W. at 567,80
+  + mob   6794 Wojownik Schron. Płn. W. at 214,577
+  + mob   6795 Czarownik Sch. Płn. W. at 567,91
+  + mob   6796 Generał Schron. Płn. W. at 190,453
+  + mob   6796 Generał Schron. Płn. W. at 156,680
+  = regen.txt +6
+395 metin2_map_whitedragoncave_boss: no fixed point in the sheet (quest dungeon) - nothing
+396 metin2_map_anglar_dungeon_01 (6x6 = 1536x1536 m): 1813 spawn lines; a monster spawn here: 5, 30s; boss 21600s; Metin 1800s
+  + mob   6860 Mistrz Miecza Jin at 292,300 (GF 300,300 blocked)
+  + mob   6861 Mistrz Włóczni Ki at 700,1300
+  + mob   6862 Mistrz Włóczni Mao at 1402,138 (GF 1400,150 blocked)
+  + mob   6863 Łucznik Gong at 400,900
+  + mob   6864 Mistrz Miecza Kao at 1421,130
+  + mob   6865 Mistrz Miecza Jin at 1100,601 (GF 1100,600 blocked)
+  + mob   6865 Mistrz Miecza Jin at 640,85
+  + mob   6866 Mistrz Włóczni Ki at 1100,650
+  + mob   6866 Mistrz Włóczni Ki at 900,300
+  + mob   6866 Mistrz Włóczni Ki at 293,798 (GF 300,800 blocked)
+  + mob   6867 Mistrz Włóczni Mao at 500,1000
+  + mob   6867 Mistrz Włóczni Mao at 1402,138 (GF 1400,150 blocked)
+  + mob   6868 Łucznik Gong at 320,895 (GF 300,900 blocked)
+  + mob   6868 Łucznik Gong at 1300,911 (GF 1300,900 blocked)
+  6868 Łucznik Gong at 800,900: no free ground within 25 m - left out
+  + mob   6869 Mistrz Miecza Kao at 1100,601 (GF 1100,600 blocked)
+  6869 Mistrz Miecza Kao at 800,1100: no free ground within 25 m - left out
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 177,988, 21600s
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 281,134, 21600s
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 428,652, 21600s
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 693,123, 21600s
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 697,1430, 21600s
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 751,303, 21600s
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 1156,925, 21600s
+  + boss  6870 Tajemniczy Mnich/6871 Tajemniczy Mnich (one at random) at 1177,125, 21600s
+  = boss.txt +8, regen.txt +15
+415: not our map (6 monsters, 31 points) - nothing
+420: not our map (10 monsters, 0 points) - nothing
+421: not our map (22 monsters, 116 points) - nothing
+422: not our map (2 monsters, 0 points) - nothing
+423: not our map (15 monsters, 213 points) - nothing
+424: not our map (14 monsters, 0 points) - nothing
+425: not our map (14 monsters, 0 points) - nothing
+total: boss.txt +29, regen.txt +145, stone.txt +57; groups 15, group_groups 6
