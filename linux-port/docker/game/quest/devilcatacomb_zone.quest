@@ -484,6 +484,7 @@ quest devilcatacomb_zone begin
 		
 			local vid = d.spawn_mob( setting.floor3_stone, position[n][1], position[n][2])
 			d.set_unique ("real",vid)
+			d.setf("tw_real", n) -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: the real one's place, to bring it back
 			-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the real one watched (devilcatacomb_tw_watch).
 			clear_server_timer("devilcatacomb_tw_watch", get_server_timer_arg())
 			server_timer("devilcatacomb_tw_watch", 15, get_server_timer_arg())
@@ -492,18 +493,21 @@ quest devilcatacomb_zone begin
 		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): floor 3 asked
 		-- whether the real Metin of Revenge was dead only when a Metin's kill event came, so a real one that
 		-- went last without one (a kill the core gave no quest event, a Metin removed) held the floor until
-		-- the hour ran out. Every 15 s the real one is looked at; gone, the party goes down to Tartar as
-		-- after its kill. No closing for want of hits here: the floor's monsters take the party's time.
+		-- the hour ran out. Every 15 s the real one is looked at.
+		-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy
+		-- czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"): the floor ends only by the real one's
+		-- kill (a Metin's kill event that finds it dead calls floor 5) - gone without one, it comes back at its
+		-- place, the same unique; untouched, it is left be.
 		when devilcatacomb_tw_watch.server_timer begin
 			if d.select(get_server_timer_arg()) then
 				if d.getf("level") ~= 3 or d.getf("floor5_called") == 1 then
 					return
 				end
 				if d.is_unique_dead("real") then
-					d.setf("floor5_called", 1)
-					d.notice("Prawdziwy Kamieñ Metin znikn¹³. Za chwilê zejdziecie do Tartara!")
-					server_timer("devilcatacomb_floor5_enter_timer", 3, get_server_timer_arg())
-					return
+					local setting = devilcatacomb_zone.setting()
+					local pos = setting.floor3_stone_pos[d.getf("tw_real")]
+					d.set_unique("real", d.spawn_mob(setting.floor3_stone, pos[1], pos[2]))
+					d.notice("Zaginiony Kamieñ Metin pojawia siê ponownie.")
 				end
 				server_timer("devilcatacomb_tw_watch", 15, get_server_timer_arg())
 			end

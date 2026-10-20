@@ -72,11 +72,10 @@ quest nemere_dungeon begin
 				key_permille = 20,
 				crystal_permille = 40,
 				chests_min = 2, chests_max = 5,
-				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the kills a wave step asks (watch_targets), how often the
-				-- watch looks and how long a step may go without a kill or a target being hurt.
-				tw_waves = {[1] = 20, [3] = 20, [4] = 20},
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the kills a wave step asks and (MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1)
+				-- its regen file, to bring lost monsters back; how often the watch looks.
+				tw_waves = {[1] = {20, "zone_1.txt"}, [3] = {20, "zone_3.txt"}, [4] = {20, "zone_4.txt"}},
 				target_watch = 15,
-				stage_watch = 90,
 			}
 		end
 
@@ -295,16 +294,15 @@ quest nemere_dungeon begin
 		end
 
 		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"; the pattern of
-		-- MT2009_PLUS_WUKONG_TARGETS_V1): a step that counts kills no longer waits for ever for a kill event
-		-- that never comes (a kill the core gave no quest event, a monster removed). Every target_watch
-		-- seconds, while the step runs:
-		-- - a wave of a regen file (groups - too many to name; cfg().tw_waves, the kills it asks): the
-		--   monsters standing, less those that stood before the wave (tw_others), fewer than the kills
-		--   still wanted - the step ends;
-		-- - named targets (instance uniques, target1..n): fewer standing than "tleft" says - "tleft" (and
-		--   "kills") follow them, and the step ends at 0;
-		-- - stage_watch seconds without a kill or a target losing health - the step ends (a target nobody
-		--   can reach).
+		-- MT2009_PLUS_WUKONG_TARGETS_V1): a step that counts kills is looked at every target_watch seconds while
+		-- it runs.
+		-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy
+		-- czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"): a step ends only by its kills - the watch
+		-- never lowers a count and never closes a step for want of hits:
+		-- - a wave of a regen file (groups - too many to name; cfg().tw_waves): fewer of its monsters standing
+		--   (less those standing before it, tw_others) than the kills still wanted - the wave's regen file comes again;
+		-- - a named target (an instance unique, target<i>: its VID while it stands, 0 once its kill counted,
+		--   -1 after a failed spawn) not alive whose kill never counted comes back at its spot.
 		function target_key(step, i)
 			return "tw"..step.."_"..i
 		end
@@ -313,9 +311,6 @@ quest nemere_dungeon begin
 		function watch_start(n)
 			d.setf("tw_step", d.getf("step"))
 			d.setf("targets", n)
-			d.setf("tleft", n)
-			d.setf("tw_kills", d.getf("kills"))
-			d.setf("progress_time", get_global_time())
 			clear_server_timer("nemere_watch", d.get_map_index())
 			server_timer("nemere_watch", nemere_dungeon.cfg().target_watch, d.get_map_index())
 		end
@@ -329,41 +324,22 @@ quest nemere_dungeon begin
 			local vid = d.spawn_mob(vnum, x, y)
 			if vid ~= 0 then
 				d.set_unique(nemere_dungeon.target_key(d.getf("step"), i), vid)
+			else
+				vid = -1
 			end
 			d.setf("target"..i, vid)
-			d.setf("target_hp"..i, 100)
+			d.setf("tvnum"..i, vnum)
+			d.setf("tx"..i, x)
+			d.setf("ty"..i, y)
 		end
 
-		-- A kill event of a target: progress, and the target is no longer counted standing.
+		-- A kill event of a target: its kill counted, never brought back.
 		function target_down(vid)
-			d.setf("progress_time", get_global_time())
 			for i = 1, d.getf("targets") do
 				if d.getf("target"..i) == vid then
 					d.setf("target"..i, 0)
-					d.setf("tleft", d.getf("tleft") - 1)
 				end
 			end
-		end
-
-		-- The targets still standing; a target hurt since the last look counts as progress.
-		function living_targets(step)
-			local n = 0
-			for i = 1, d.getf("targets") do
-				if d.getf("target"..i) ~= 0 then
-					local key = nemere_dungeon.target_key(step, i)
-					if d.is_unique_dead(key) then
-						d.setf("target"..i, 0)
-					else
-						n = n + 1
-						local hp = d.unique_get_hp_perc(key)
-						if hp < d.getf("target_hp"..i) then
-							d.setf("progress_time", get_global_time())
-						end
-						d.setf("target_hp"..i, hp)
-					end
-				end
-			end
-			return n
 		end
 
 		-- true while the watch goes on
@@ -373,38 +349,26 @@ quest nemere_dungeon begin
 			if d.getf("closed") == 1 or d.getf("ready") ~= 1 or d.getf("tw_step") ~= step then
 				return false
 			end
-			local now = get_global_time()
-			local need = c.tw_waves[step]
+			local w = c.tw_waves[step]
 			if d.getf("targets") > 0 then
-				local living = nemere_dungeon.living_targets(step)
-				if living < d.getf("tleft") then
-					d.setf("tleft", living)
-					d.setf("kills", d.getf("targets") - living)
-					d.setf("progress_time", now)
-					if living <= 0 then
-						d.notice("Nemere: Ostatnie cele etapu zniknê³y z mapy.")
-						nemere_dungeon.go(step + 1)
-						return false
+				local n = 0
+				for i = 1, d.getf("targets") do
+					local v = d.getf("target"..i)
+					if v ~= 0 and (v < 0 or d.is_unique_dead(nemere_dungeon.target_key(step, i))) then
+						nemere_dungeon.spawn_target(i, d.getf("tvnum"..i), d.getf("tx"..i), d.getf("ty"..i))
+						n = n + 1
 					end
-					d.notice("Nemere: Pozosta³o: "..living)
 				end
-			elseif need ~= nil then
-				local k = d.getf("kills")
-				if k ~= d.getf("tw_kills") then
-					d.setf("tw_kills", k)
-					d.setf("progress_time", now)
+				if n > 0 then
+					d.notice("Nemere: Zaginione cele etapu pojawiaj¹ siê ponownie ("..n..").")
 				end
-				if d.count_monster() - d.getf("tw_others") < need - k then
-					d.notice("Nemere: W komnacie zosta³o za ma³o potworów, by skoñczyæ zadanie.")
-					nemere_dungeon.go(step + 1)
-					return false
+			elseif w ~= nil then
+				local need = w[1] - d.getf("kills")
+				if need > 0 and d.count_monster() - d.getf("tw_others") < need then
+					d.regen_file(c.path..w[2])
+					d.notice("Nemere: Brakuj¹ce potwory komnaty pojawiaj¹ siê ponownie.")
 				end
 			else
-				return false
-			end
-			if now - d.getf("progress_time") > c.stage_watch then
-				d.notice("Nemere: Ostatnie cele etapu rozpad³y siê same.")
-				nemere_dungeon.go(step + 1)
 				return false
 			end
 			return true

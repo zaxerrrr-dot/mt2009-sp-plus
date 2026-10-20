@@ -40,14 +40,13 @@ quest starozytna_dzungla begin
 				seals = 3,
 				chests_min = 2, chests_max = 5,
 				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the targets of stages 2-4 (the regen files stones.txt, faethorns.txt, ancients.txt before),
-				-- each an instance unique, and how long a stage may go without a target falling or being hurt.
+				-- each an instance unique, and how often the watch looks (MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: a lost one comes back).
 				targets = {
 					[2] = {vnum = 9710, points = {{371, 362}, {371, 373}, {371, 387}, {384, 362}, {395, 374}, {395, 387}}},
 					[3] = {vnum = 9712, points = {{360, 374}, {384, 352}, {410, 374}}},
 					[4] = {vnum = 9711, points = {{394, 362}, {371, 365}, {373, 385}, {394, 387}}},
 				},
 				target_watch = 15,
-				stage_watch = 90,
 				path = "data/dungeon/starozytna_dzungla/",
 			}
 		end
@@ -282,40 +281,47 @@ quest starozytna_dzungla begin
 
 		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"; the pattern of
 		-- MT2009_PLUS_WUKONG_TARGETS_V1): the targets a stage counts are instance uniques (cfg().targets, the
-		-- regen files' points before), counted every target_watch seconds. A target that leaves the map
-		-- without a kill event (a kill the core gave no quest event, a target removed) no longer holds the
-		-- run: when fewer stand than "left" says, "left" follows them and the stage ends at 0. stage_watch
-		-- seconds without a target falling or losing health close the stage (a target nobody can reach) -
-		-- not on a stage whose cfg().targets entry says idle = 0.
+		-- regen files' points before), looked at every target_watch seconds.
+		-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy
+		-- czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"): a stage ends only by its kills. A target
+		-- not alive whose kill never counted (it left the map without a kill event) comes back at its spot - the
+		-- same race, the same unique, the same kill event - and "left" stays as it is; a target alive but
+		-- untouched is left be. target<i>: its VID while it stands, 0 once its kill counted, -1 after a failed spawn.
 		function target_key(stage, i)
 			return "tw"..stage.."_"..i
 		end
 
-		-- n targets are watched from now on (target1..n, their VIDs; 0 = gone).
+		-- n targets are watched from now on (target1..n).
 		function watch_start(n)
 			d.setf("targets", n)
-			d.setf("progress_time", get_global_time())
 			clear_server_timer("dzungla_watch", d.get_map_index())
 			server_timer("dzungla_watch", starozytna_dzungla.cfg().target_watch, d.get_map_index())
+		end
+
+		function spawn_target(stage, i, vnum, x, y)
+			local vid = d.spawn_mob(vnum, x, y)
+			if vid ~= 0 then
+				d.set_unique(starozytna_dzungla.target_key(stage, i), vid)
+			else
+				vid = -1
+			end
+			d.setf("target"..i, vid)
+			d.setf("tvnum"..i, vnum)
+			d.setf("tx"..i, x)
+			d.setf("ty"..i, y)
 		end
 
 		function spawn_targets(stage)
 			local t = starozytna_dzungla.cfg().targets[stage]
 			local n = table.getn(t.points)
 			for i = 1, n do
-				local vid = d.spawn_mob(t.vnum, t.points[i][1], t.points[i][2])
-				if vid ~= 0 then
-					d.set_unique(starozytna_dzungla.target_key(stage, i), vid)
-				end
-				d.setf("target"..i, vid)
-				d.setf("target_hp"..i, 100)
+				starozytna_dzungla.spawn_target(stage, i, t.vnum, t.points[i][1], t.points[i][2])
 			end
 			starozytna_dzungla.watch_start(n)
 		end
 
-		-- A kill event of a target: progress, and the target is no longer counted standing.
+		-- A kill event of a target: its kill counted, never brought back.
 		function target_down(vid)
-			d.setf("progress_time", get_global_time())
 			for i = 1, d.getf("targets") do
 				if d.getf("target"..i) == vid then
 					d.setf("target"..i, 0)
@@ -323,53 +329,22 @@ quest starozytna_dzungla begin
 			end
 		end
 
-		-- The targets still standing; a target hurt since the last look counts as progress.
-		function living_targets(stage)
-			local n = 0
-			for i = 1, d.getf("targets") do
-				if d.getf("target"..i) ~= 0 then
-					local key = starozytna_dzungla.target_key(stage, i)
-					if d.is_unique_dead(key) then
-						d.setf("target"..i, 0)
-					else
-						n = n + 1
-						local hp = d.unique_get_hp_perc(key)
-						if hp < d.getf("target_hp"..i) then
-							d.setf("progress_time", get_global_time())
-						end
-						d.setf("target_hp"..i, hp)
-					end
-				end
-			end
-			return n
-		end
-
 		-- true while the watch goes on
 		function watch_targets()
-			local c = starozytna_dzungla.cfg()
 			local st = d.getf("stage")
-			local t = c.targets[st]
-			if t == nil then
+			if starozytna_dzungla.cfg().targets[st] == nil or d.getf("left") <= 0 then
 				return false
 			end
-			local left = d.getf("left")
-			if left <= 0 then
-				return false
-			end
-			local living = starozytna_dzungla.living_targets(st)
-			if living < left then
-				d.setf("left", living)
-				d.setf("progress_time", get_global_time())
-				if living <= 0 then
-					d.notice("Staro¿ytna D¿ungla: Ostatnie cele etapu zniknê³y z mapy.")
-					starozytna_dzungla.next_stage()
-					return false
+			local n = 0
+			for i = 1, d.getf("targets") do
+				local v = d.getf("target"..i)
+				if v ~= 0 and (v < 0 or d.is_unique_dead(starozytna_dzungla.target_key(st, i))) then
+					starozytna_dzungla.spawn_target(st, i, d.getf("tvnum"..i), d.getf("tx"..i), d.getf("ty"..i))
+					n = n + 1
 				end
-				d.notice("Staro¿ytna D¿ungla: Pozosta³o: "..living)
-			elseif t.idle ~= 0 and get_global_time() - d.getf("progress_time") > c.stage_watch then
-				d.notice("Staro¿ytna D¿ungla: Ostatnie cele etapu rozpad³y siê same.")
-				starozytna_dzungla.next_stage()
-				return false
+			end
+			if n > 0 then
+				d.notice("Staro¿ytna D¿ungla: Zaginione cele etapu pojawiaj¹ siê ponownie ("..n..").")
 			end
 			return true
 		end
