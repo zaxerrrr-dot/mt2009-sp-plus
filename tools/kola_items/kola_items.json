@@ -1,0 +1,46 @@
+{
+"items": [
+{
+"vnum": 25046,
+"name": "Kamien Rytualny",
+"locale_name": "Kamień Rytualny",
+"type": 3,
+"subtype": 2,
+"stack": 200,
+"weight": 0,
+"size": 1,
+"antiflag": 90240,
+"flag": 4,
+"wearflag": 0,
+"gold": 0,
+"shop_buy_price": 0,
+"refined_vnum": 0,
+"refine_set": 0,
+"magic_pct": 0,
+"specular": 0,
+"socket_pct": 0,
+"limittype0": 0,
+"limitvalue0": 0,
+"limittype1": 0,
+"limitvalue1": 0,
+"applytype0": 0,
+"applyvalue0": 0,
+"applytype1": 0,
+"applyvalue1": 0,
+"applytype2": 0,
+"applyvalue2": 0,
+"value0": 1,
+"value1": 15,
+"value2": 0,
+"value3": 0,
+"value4": 0,
+"value5": 0
+}
+],
+"item_list": {
+"25046": "25046\tETC\ticon/item/25046.tga"
+},
+"itemdesc": {
+"25046": "25046\tKamień Rytualny\tTen tajemniczo połyskujący kamień daje doskonałą szansę przy ulepszaniu przedmiotów. Ulepszony w ten sposób przedmiot nie może zostać ani pogorszony ani zniszczony. Kamień ten funkcjonuje tylko dla przedmiotów powyżej poziomu 80. Zwiększa szansę na ulepszenie o 15%."
+}
+}

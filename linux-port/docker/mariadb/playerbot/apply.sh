@@ -3960,6 +3960,17 @@ FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 8999
 fi
 fi
 
+# MT2009_PLUS_KOLA_ITEMS_V1: the ItemShop wheels' prizes the server lacked (the owner, 20 October 2026) - kola_items.sql
+# (tools/kola_items/gen_kola_items.py): Kamien Rytualny (25046, the global Ritual Stone; server-patches/kolaprzedmioty)
+# and the Polish names of Smoczy Plomien (B) / Smoczy Plomien (100700/100701) where they are still English. Idempotent.
+if [ -s /opt/playerbot/kola_items.sql ]; then
+    if db < /opt/playerbot/kola_items.sql; then
+        echo "[playerbot-migrate] wheel items: kola_items.sql applied"
+    else
+        fail_step "wheel items: kola_items.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
 # Nazara 71202, Lizak Magii 71188, Czekoladowy Amulet 71199, Mistrzowski Emblemat 70607, Blogoslawienstwo Mocy 72713,
