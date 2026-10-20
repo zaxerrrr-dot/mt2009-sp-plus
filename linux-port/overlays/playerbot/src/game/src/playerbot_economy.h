@@ -2411,6 +2411,55 @@ namespace
 		return !IsPlayerBotGearKeptForSelf(ch, item);
 	}
 
+	// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1 (the owner, 17 October: the medal
+	// droppers "maja sprzedawac to, co zbieraja", one of them with 42 books of
+	// Aura Miecza). A medal dropper picks up every skill book in the Monkey
+	// Dungeon (IsPlayerBotMedalDropperLoot), and a skill book is never the
+	// merchant's (below), so the books rode in its bag for good: on the
+	// supporters' world on 20 October 163 medal droppers (level 33-35) carried
+	// 19 392 books in 2 981 stacks (about 120 a bot, up to 803) and 14 933 more
+	// in their safeboxes. The 46 on the second channel have no counter at all
+	// (PlayerBotCanOpenShop) and held 10 338 of them (about 225 a bot, 34 cells
+	// of a ninety-cell bag); the first channel's counters show at most
+	// PLAYERBOT_OTHER_CLASS_BOOK_SKILL_LINES lines of a skill, and the rest
+	// waited in the bag. What a medal dropper keeps now: its own skill's
+	// reading stock (IsPlayerBotSurplusSkillBook) and, with a counter, the next
+	// PLAYERBOT_MEDAL_DROPPER_BOOK_BAG_STOCK books of each skill to restock it;
+	// every further book is the merchant's. With no counter to sell from, the
+	// refine materials it does not refine with and the herbs go to the merchant
+	// too, instead of to a safebox it never empties. The stall and merchant
+	// rules do the rest.
+	const int PLAYERBOT_MEDAL_DROPPER_BOOK_BAG_STOCK = 6;
+
+	bool IsPlayerBotMedalDropperBot(LPCHARACTER ch)
+	{
+		return ch && (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_MEDAL_DROPPER ||
+				CPlayerBotManager::instance().IsMedalDropperCohortPID(ch->GetPlayerID()));
+	}
+
+	bool IsPlayerBotMedalDropperSurplus(LPCHARACTER ch, LPITEM item)
+	{
+		if (!item || !IsPlayerBotMedalDropperBot(ch))
+			return false;
+		if (item->GetType() == ITEM_SKILLBOOK)
+		{
+			if (!IsPlayerBotSurplusSkillBook(ch, item))
+				return false;
+			if (!PlayerBotHasCounter(ch))
+				return true;
+			const DWORD skill = GetPlayerBotSkillBookSkillVnum(item);
+			const int keep = IsPlayerBotOwnSkill(ch, skill) ? GetPlayerBotBookKeepLimit(ch, skill) : 0;
+			return CountPlayerBotSkillBooksAhead(ch, item, skill) >= keep + PLAYERBOT_MEDAL_DROPPER_BOOK_BAG_STOCK;
+		}
+		if (PlayerBotHasCounter(ch))
+			return false;
+		const DWORD vnum = item->GetVnum();
+		if (IsPlayerBotTradeableMaterial(item))
+			return !PlayerBotNeedsRefineMaterial(ch, vnum) && !IsPlayerBotKeptCraftMaterial(ch, item);
+		return vnum >= PLAYERBOT_HERB_VNUM_FIRST && vnum <= PLAYERBOT_HERB_VNUM_LAST &&
+				!IsPlayerBotHerbGatherer(ch);
+	}
+
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
@@ -2497,6 +2546,11 @@ namespace
 		// merchant's, whatever the rules below would make of it.
 		if (IsPlayerBotLppKeptItem(ch, item))
 			return false;
+		// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1: a medal dropper's surplus books
+		// (and, with no counter, its spare materials and herbs) are the
+		// merchant's - IsPlayerBotMedalDropperSurplus.
+		if (IsPlayerBotMedalDropperSurplus(ch, item))
+			return true;
 		// Nor what a gambler's session made or took off for it, which goes on
 		// the counter at any plus, nor a base one of Community Patch 5's four
 		// gamblers holds for its anvil (playerbot_gambler.h): the merchant's
