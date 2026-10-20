@@ -544,9 +544,10 @@ quest swiatynia_wezy begin
 		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): levels 3 and 4
 		-- went on only with their kill events, so a Metin or a Warrior that left without one (a kill the core
 		-- gave no quest event, a monster removed) held the temple until its time ran out. They are instance
-		-- uniques now (tw3_<element>, tw4_<n>), looked at with the level's tick (watch_targets): the wanted
-		-- Metin gone counts as destroyed in order, another one gone comes back at its corner (no penalty -
-		-- nobody chose it); a Warrior gone counts as beaten.
+		-- uniques now (tw3_<element>, tw4_<n>), looked at with the level's tick (watch_targets).
+		-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"):
+		-- a level ends only by its kills - a Metin gone without its kill event comes back at its corner (no penalty,
+		-- nobody chose it), a Warrior gone comes back where he stood (the same race, the next unique).
 		function spawn_metin(k)
 			local c = swiatynia_wezy.cfg()
 			local x, y = swiatynia_wezy.room_xy(3, c.corners[d.getf("corner"..k)])
@@ -572,6 +573,8 @@ quest swiatynia_wezy begin
 				d.setf("tw4v", -1)
 			end
 			d.setf("tw4r", race)
+			d.setf("tw4x", x) -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1
+			d.setf("tw4y", y)
 		end
 
 		function watch_targets()
@@ -580,25 +583,15 @@ quest swiatynia_wezy begin
 				for k = 1, 4 do
 					local v = d.getf("tw3v"..k)
 					if v ~= 0 and (v < 0 or d.is_unique_dead("tw3_"..k)) then
-						d.setf("tw3v"..k, 0)
-						if k == d.getf("o"..d.getf("next")) then
-							d.notice("Metin Wê¿owy znikn¹³ - liczy siê jak zniszczony.")
-							swiatynia_wezy.metin_down(k)
-							return
-						end
 						swiatynia_wezy.spawn_metin(k)
+						d.notice("Zaginiony Metin Wê¿owy pojawia siê ponownie.")
 					end
 				end
 			elseif lvl == 4 then
 				local v = d.getf("tw4v")
 				if v ~= 0 and (v < 0 or d.is_unique_dead("tw4_"..d.getf("tw4_n"))) then
-					d.setf("tw4v", 0)
-					d.notice("Potê¿ny Wojownik Wê¿owy znikn¹³ - liczy siê jak pokonany.")
-					if d.getf("tw4r") == 6765 then
-						swiatynia_wezy.warrior_down()
-					else
-						swiatynia_wezy.ice_warrior_down()
-					end
+					swiatynia_wezy.spawn_warrior(d.getf("tw4r"), d.getf("tw4x"), d.getf("tw4y"))
+					d.notice("Zaginiony Potê¿ny Wojownik Wê¿owy pojawia siê ponownie.")
 				end
 			end
 		end
@@ -625,7 +618,7 @@ quest swiatynia_wezy begin
 			swiatynia_wezy.metin_down(e)
 		end
 
-		-- A Metin of level 3 down (its kill, or watch_targets for the wanted one gone).
+		-- A Metin of level 3 down (its kill).
 		function metin_down(e)
 			local c = swiatynia_wezy.cfg()
 			local want = d.getf("o"..d.getf("next"))

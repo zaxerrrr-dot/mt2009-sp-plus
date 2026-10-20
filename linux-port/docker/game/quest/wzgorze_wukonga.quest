@@ -46,12 +46,11 @@ quest wzgorze_wukonga begin
 				guardians = {{277, 289}, {253, 260}, {251, 286}},
 				guardian_idle = 180,
 				-- MT2009_PLUS_WUKONG_TARGETS_V1: the Hill Stones and the Phoenix Eggs (stones.txt and
-				-- eggs.txt before), each an instance unique, and how long stage 2 or 4 may go without a
-				-- target falling or being hurt before the stage closes (240 s of wukong_tick before).
+				-- eggs.txt before), each an instance unique, and how often the watch looks at them
+				-- (MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: a lost one comes back; no stage closes by itself).
 				stones = {{253, 262}, {253, 274}, {253, 285}, {263, 262}, {275, 262}, {275, 285}},
 				eggs = {{254, 284}, {254, 261}, {273, 261}, {273, 284}},
 				target_watch = 15,
-				stage_watch = 90,
 			}
 		end
 
@@ -269,8 +268,8 @@ quest wzgorze_wukonga begin
 		-- is at war gave no kill event (the core skipped Reward(); fixed there, MT2009_PLUS_WAR_KILL_QUEST_V1),
 		-- and a target that leaves the map without a death gives none either. The targets are now
 		-- instance uniques, counted every target_watch seconds: when fewer stand than "left" says,
-		-- "left" follows them and the stage ends at 0. stage_watch seconds without a target falling or
-		-- losing health still close the stage (a target nobody can reach).
+		-- "left" followed them and the stage ended at 0; stage_watch seconds without a target falling or
+		-- losing health closed the stage. Both gone since MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (below).
 		function target_key(stage)
 			if stage == 4 then
 				return "wukong_egg"
@@ -278,16 +277,26 @@ quest wzgorze_wukonga begin
 			return "wukong_stone"
 		end
 
+		-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy
+		-- czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"): the stage ends only by its kills - "left"
+		-- is never lowered by the watch and no stage closes for want of hits any more (the 90 s stage watch is
+		-- gone). A target not alive whose kill never counted comes back at its spot, the same race and unique.
+		-- target<i>: its VID while it stands, 0 once its kill counted, -1 after a failed spawn.
+		function spawn_target(vnum, points, key, i)
+			local vid = d.spawn_mob(vnum, points[i][1], points[i][2])
+			if vid ~= 0 then
+				d.set_unique(key..i, vid)
+			else
+				vid = -1
+			end
+			d.setf("target"..i, vid)
+		end
+
 		function spawn_targets(vnum, points, key)
 			local c = wzgorze_wukonga.cfg()
 			local n = table.getn(points)
 			for i = 1, n do
-				local vid = d.spawn_mob(vnum, points[i][1], points[i][2])
-				if vid ~= 0 then
-					d.set_unique(key..i, vid)
-				end
-				d.setf("target"..i, vid)
-				d.setf("target_hp"..i, 100)
+				wzgorze_wukonga.spawn_target(vnum, points, key, i)
 			end
 			d.setf("targets", n)
 			clear_server_timer("wukong_watch", d.get_map_index())
@@ -302,27 +311,6 @@ quest wzgorze_wukonga begin
 			end
 		end
 
-		-- The targets still standing; a target hurt since the last look counts as progress.
-		function living_targets()
-			local key = wzgorze_wukonga.target_key(d.getf("stage"))
-			local n = 0
-			for i = 1, d.getf("targets") do
-				if d.getf("target"..i) ~= 0 then
-					if d.is_unique_dead(key..i) then
-						d.setf("target"..i, 0)
-					else
-						n = n + 1
-						local hp = d.unique_get_hp_perc(key..i)
-						if hp < d.getf("target_hp"..i) then
-							d.setf("progress_time", get_global_time())
-						end
-						d.setf("target_hp"..i, hp)
-					end
-				end
-			end
-			return n
-		end
-
 		-- true while the watch goes on
 		function watch_targets()
 			local c = wzgorze_wukonga.cfg()
@@ -330,25 +318,24 @@ quest wzgorze_wukonga begin
 			if st ~= 2 and st ~= 4 then
 				return false
 			end
-			local left = d.getf("left")
-			if left <= 0 then
+			if d.getf("left") <= 0 then
 				return false
 			end
-			local living = wzgorze_wukonga.living_targets()
-			if living < left then
-				d.setf("left", living)
-				d.setf("progress_time", get_global_time())
-				if living <= 0 then
-					d.notice("Wzgórze Wukonga: Ostatnie cele etapu zniknê³y z mapy.")
-					wzgorze_wukonga.next_stage()
-					return false
+			local key = wzgorze_wukonga.target_key(st)
+			local vnum, points = 9701, c.stones
+			if st == 4 then
+				vnum, points = 9702, c.eggs
+			end
+			local n = 0
+			for i = 1, d.getf("targets") do
+				local v = d.getf("target"..i)
+				if v ~= 0 and (v < 0 or d.is_unique_dead(key..i)) then
+					wzgorze_wukonga.spawn_target(vnum, points, key, i)
+					n = n + 1
 				end
-				d.notice("Wzgórze Wukonga: Pozosta³o: "..living)
-			elseif get_global_time() - d.getf("progress_time") > c.stage_watch then
-				-- MT2009_PLUS_WUKONG_STAGE_WATCH_V1
-				d.notice("Wzgórze Wukonga: Ostatnie cele etapu rozpad³y siê same.")
-				wzgorze_wukonga.next_stage()
-				return false
+			end
+			if n > 0 then
+				d.notice("Wzgórze Wukonga: Zaginione cele etapu pojawiaj¹ siê ponownie ("..n..").")
 			end
 			return true
 		end
@@ -944,7 +931,8 @@ quest wzgorze_wukonga begin
 				-- MT2009_PLUS_WUKONG_STAGE_WATCH_V1 (12 October): a Kamien Wzgorza or a Jajo Feniksa that never
 				-- came up (an exact spawn point the engine refused) or stands where nobody reaches it left the
 				-- run waiting for ever with "Pozostalo: 1". The watch is wukong_watch's now
-				-- (MT2009_PLUS_WUKONG_TARGETS_V1): every 15 s, cfg().stage_watch seconds.
+				-- (MT2009_PLUS_WUKONG_TARGETS_V1): every 15 s; a lost target comes back
+				-- (MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1), the stage never closes by itself.
 				server_timer("wukong_tick", 60, get_server_timer_arg())
 			end
 		end

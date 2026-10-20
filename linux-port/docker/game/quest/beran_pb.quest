@@ -90,19 +90,41 @@ quest beran_pb begin
 		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): the dragon's shield
 		-- fell only when a Metin's kill event came, so a last Metin that left without one (a kill the core gave no
 		-- quest event, a Metin removed) kept Beran-Setaou (PB) unhurtable until the hour ran out. The four are
-		-- looked at every 15 s too (beran_pb_watch); a Metin seen gone is not asked again (sd<i>).
+		-- looked at every 15 s too (beran_pb_watch).
+		-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"):
+		-- the shield falls only by the four kills (sk<i> = 1 at the kill event); a Metin not alive whose kill
+		-- never counted comes back at its place (same race, same unique).
 		function stones_left()
 			local left = 0
 			for i = 1, 4 do
-				if d.getf("sd"..i) == 0 then
-					if d.is_unique_dead("stone"..i) then
-						d.setf("sd"..i, 1)
-					else
-						left = left + 1
-					end
+				if d.getf("sk"..i) == 0 then
+					left = left + 1
 				end
 			end
 			return left
+		end
+
+		function stone_down(vid)
+			for i = 1, 4 do
+				if d.getf("sk"..i) == 0 and d.get_unique_vid("stone"..i) == vid then
+					d.setf("sk"..i, 1)
+				end
+			end
+		end
+
+		function respawn_stones()
+			local c = beran_pb.cfg()
+			local n = 0
+			for i = 1, 4 do
+				if d.getf("sk"..i) == 0 and d.is_unique_dead("stone"..i) then
+					local st = c.stones[i]
+					d.set_unique("stone"..i, d.spawn_mob(st[1], st[2], st[3]))
+					n = n + 1
+				end
+			end
+			if n > 0 then
+				d.notice("Zaginione Metiny pojawiaj¹ siê ponownie ("..n..").")
+			end
 		end
 
 		function shield_off()
@@ -121,10 +143,7 @@ quest beran_pb begin
 			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 or d.getf("level") ~= 2 or d.getf("shield_off") == 1 then
 				return
 			end
-			if beran_pb.stones_left() <= 0 then
-				beran_pb.shield_off()
-				return
-			end
+			beran_pb.respawn_stones() -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1
 			server_timer("beran_pb_watch", 15, get_server_timer_arg())
 		end
 
@@ -256,6 +275,7 @@ quest beran_pb begin
 				local g = {4288, 4288, 4289, 4289, 4290}
 				d.spawn_group(g[number(1, table.getn(g))], pc.get_local_x(), pc.get_local_y(), 1, true, 1)
 			end
+			beran_pb.stone_down(npc.get_vid()) -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1
 			local left = beran_pb.stones_left() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			if left > 0 then
 				d.notice("Metin pad³. Beran-Setaou (PB) czerpie jeszcze moc z "..left..".")

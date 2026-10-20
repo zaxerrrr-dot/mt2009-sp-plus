@@ -288,9 +288,10 @@ quest nemere_pb begin
 					d.notice("Pojawi³ siê Metin Ch³odu (PB)! Zraniæ go mo¿e tylko Szaman.")
 				elseif d.getf("metin6") == 1 and d.is_unique_dead("tw_metin6") then
 					-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the Metin gone without its kill event (a kill the core gave
-					-- no quest event, a Metin removed) - the floor ends as after its kill.
-					again = false
-					nemere_pb.next_floor("Metin Ch³odu (PB) znikn¹³. Za chwilê zostaniecie przeniesieni na 7. piêtro.")
+					-- no quest event, a Metin removed; its kill moves the party on at once).
+					-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: it comes back at its place - the floor ends only by its kill.
+					d.set_unique("tw_metin6", d.spawn_mob(8135, c.metin6[1], c.metin6[2]))
+					d.notice("Zaginiony Metin Ch³odu (PB) pojawia siê ponownie.")
 				end
 			elseif lv == 7 then
 				for k = 1, 3 do
@@ -304,11 +305,12 @@ quest nemere_pb begin
 					nemere_pb.next_floor("Szel (PB) pokonany. Za chwilê zostaniecie przeniesieni na 8. piêtro.")
 				end
 			elseif lv == 9 then
-				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the Pillar gone without its kill event - as after its kill.
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the Pillar gone without its kill event (its kill sets "pillar").
+				-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: it comes back at its place - the floor ends only by its kill.
 				again = d.getf("pillar") == 0
 				if again and d.is_unique_dead("tw_pillar") then
-					again = false
-					nemere_pb.pillar_down()
+					d.set_unique("tw_pillar", d.spawn_mob(20538, c.pillar[1], c.pillar[2]))
+					d.notice("Zaginiona Kolumna Smoka Pó³nocy (PB) pojawia siê ponownie.")
 				end
 			else
 				again = false

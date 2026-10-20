@@ -463,6 +463,16 @@ quest wieza_sung_mahi begin
 				end
 				d.set_unique("ca"..i, d.spawn_mob_dir(a, pairs[i][1][1], pairs[i][1][2], pairs[i][1][3]))
 				d.set_unique("cb"..i, d.spawn_mob_dir(b, pairs[i][2][1], pairs[i][2][2], pairs[i][2][3]))
+				if i == odd then -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: the odd pair, to bring a lost one back
+					d.setf("tw_odd_va", a)
+					d.setf("tw_odd_xa", pairs[i][1][1])
+					d.setf("tw_odd_ya", pairs[i][1][2])
+					d.setf("tw_odd_da", pairs[i][1][3])
+					d.setf("tw_odd_vb", b)
+					d.setf("tw_odd_xb", pairs[i][2][1])
+					d.setf("tw_odd_yb", pairs[i][2][2])
+					d.setf("tw_odd_db", pairs[i][2][3])
+				end
 			end
 		end
 
@@ -802,10 +812,14 @@ quest wieza_sung_mahi begin
 				wieza_sung_mahi.floor_done()
 			elseif room == 3 and d.getf("boss_vid") > 0 and d.is_unique_dead("tw_boss"..d.getf("floor")) then
 				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): the floor's boss
-				-- gone without its kill event (a kill the core gave no quest event, a boss removed) - the floor is
-				-- won as after his kill (the ranking keeps to real kills).
-				d.setf("boss_dead", 1)
-				d.notice("Boss piêtra znikn¹³ - piêtro zdobyte.")
+				-- gone without its kill event (a kill the core gave no quest event, a boss removed).
+				-- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"):
+				-- the floor is won only by his kill - he comes back at his place, the same unique.
+				d.setf("boss_vid", d.spawn_mob(d.getf("tw_boss_v"), 407, 434))
+				if d.getf("boss_vid") > 0 then
+					d.set_unique("tw_boss"..d.getf("floor"), d.getf("boss_vid"))
+				end
+				d.notice("Zaginiony boss piêtra pojawia siê ponownie.")
 			elseif room == 3 then
 				if d.getf("waves") == 0 and d.getf("boss_vid") == 0 and d.count_monster() == 0 then
 					local f = d.getf("floor")
@@ -819,6 +833,7 @@ quest wieza_sung_mahi begin
 						v = c.el[e][1] + 5
 					end
 					d.setf("boss_vid", d.spawn_mob(v, 407, 434))
+					d.setf("tw_boss_v", v) -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1
 					if d.getf("boss_vid") > 0 then
 						d.set_unique("tw_boss"..d.getf("floor"), d.getf("boss_vid")) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 					end
@@ -856,9 +871,13 @@ quest wieza_sung_mahi begin
 					wieza_sung_mahi.room_cleared()
 				end
 			elseif t == 2 then
-				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the right Metin gone without its kill event - as after its kill.
-				if d.getf("wrong") == 0 and d.is_unique_dead("ms"..d.getf("good")) then
-					d.setf("task_ok", 1)
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the right Metin gone without its kill event (its kill sets
+				-- task_ok at once). MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: it comes back at its place.
+				if d.getf("wrong") == 0 and d.getf("task_ok") == 0 and d.is_unique_dead("ms"..d.getf("good")) then
+					local pos = {{432, 128}, {464, 129}, {448, 112}, {447, 145}}
+					local g = d.getf("good")
+					d.set_unique("ms"..g, d.spawn_mob(7600, pos[g][1], pos[g][2]))
+					d.notice("Zaginiony kamieñ metin pojawia siê ponownie.")
 				end
 				if d.getf("wrong") == 1 and d.getf("waves") == 0 and d.count_monster() == 0 then
 					wieza_sung_mahi.room_cleared()
@@ -868,19 +887,17 @@ quest wieza_sung_mahi begin
 					wieza_sung_mahi.room_cleared()
 				end
 			elseif t == 4 then
-				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the odd pair counted by its kill events (odd_dead); a monster of it
-				-- gone without one no longer holds the room - both gone is the task done.
-				if d.getf("wrong") == 0 then
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the odd pair counted by its kill events (odd_dead; tw_odd_<side>
+				-- = 1 at the kill). MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: a monster of it gone without its kill comes
+				-- back at its square, the same race and unique - the task is done only by the two kills.
+				if d.getf("wrong") == 0 and d.getf("task_ok") == 0 then
 					local odd = d.getf("odd")
-					local gone = 0
 					for i, side in next, {"a", "b"}, nil do
 						if d.getf("tw_odd_"..side) == 0 and d.is_unique_dead("c"..side..odd) then
-							d.setf("tw_odd_"..side, 1)
+							d.set_unique("c"..side..odd, d.spawn_mob_dir(d.getf("tw_odd_v"..side), d.getf("tw_odd_x"..side),
+								d.getf("tw_odd_y"..side), d.getf("tw_odd_d"..side)))
+							d.notice("Zaginiony potwór szachownicy pojawia siê ponownie.")
 						end
-						gone = gone + d.getf("tw_odd_"..side)
-					end
-					if gone >= 2 then
-						d.setf("task_ok", 1)
 					end
 				end
 				if d.getf("wrong") == 1 and d.count_monster() == 0 then
@@ -1071,6 +1088,11 @@ quest wieza_sung_mahi begin
 				if d.getf("wrong") == 0 then
 					local odd = d.getf("odd")
 					if vid == d.get_unique_vid("ca"..odd) or vid == d.get_unique_vid("cb"..odd) then
+						if vid == d.get_unique_vid("ca"..odd) then -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1
+							d.setf("tw_odd_a", 1)
+						else
+							d.setf("tw_odd_b", 1)
+						end
 						d.setf("odd_dead", d.getf("odd_dead") + 1)
 						if d.getf("odd_dead") >= 2 then
 							d.setf("task_ok", 1)

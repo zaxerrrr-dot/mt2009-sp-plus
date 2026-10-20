@@ -544,27 +544,37 @@ quest deviltower_zone begin
         -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"; the pattern of
         -- MT2009_PLUS_WUKONG_TARGETS_V1): the seventh floor counted the four Metins of Death (8018) by their kill
         -- events, and a Metin that left the map without one (a kill the core gave no quest event, a Metin
-        -- removed) held the floor shut. They are instance uniques now, counted every 15 s (devil_tw_watch):
-        -- fewer standing than the count still wants - the count follows them, and the floor opens at 0;
-        -- 90 s without a Metin falling or losing health open it as well (a Metin nobody can reach).
+        -- removed) held the floor shut. They are instance uniques now, looked at every 15 s (devil_tw_watch).
+        -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1 (the owner, 20 October: "jak nie jest dotkniêty, to respi siê nowy
+        -- czy coœ, bo to za du¿e u³atwienie, jak same siê bêd¹ zbija³y"): the floor opens only by the four kills -
+        -- a Metin not alive whose kill never counted comes back at its spot (same race, same unique); one alive
+        -- but untouched is left be. tw_target<i>: its VID while it stands, 0 once its kill counted, -1 after a
+        -- failed spawn.
+        function death_stone_pos()
+            return {{639, 658}, {611, 637}, {596, 674}, {629, 670}}
+        end
+
+        function spawn_death_stone(i)
+            local pos = deviltower_zone.death_stone_pos()
+            local vid = d.spawn_mob(8018, pos[i][1], pos[i][2])
+            if vid ~= 0 then
+                d.set_unique("tw5_"..i, vid)
+            else
+                vid = -1
+            end
+            d.setf("tw_target"..i, vid)
+        end
+
         function spawn_death_stones()
-            local pos = {{639, 658}, {611, 637}, {596, 674}, {629, 670}}
             for i = 1, 4 do
-                local vid = d.spawn_mob(8018, pos[i][1], pos[i][2])
-                if vid ~= 0 then
-                    d.set_unique("tw5_"..i, vid)
-                end
-                d.setf("tw_target"..i, vid)
-                d.setf("tw_hp"..i, 100)
+                deviltower_zone.spawn_death_stone(i)
             end
             d.setf("tw_open", 0)
-            d.setf("tw_progress", get_global_time())
             clear_server_timer("devil_tw_watch", d.get_map_index())
             server_timer("devil_tw_watch", 15, d.get_map_index())
         end
 
         function death_stone_down(vid)
-            d.setf("tw_progress", get_global_time())
             for i = 1, 4 do
                 if d.getf("tw_target"..i) == vid then
                     d.setf("tw_target"..i, 0)
@@ -572,7 +582,7 @@ quest deviltower_zone begin
             end
         end
 
-        -- The four have fallen (their kills, or the watch): the floor's demons and the Metin of Murder.
+        -- The four have fallen (their kills): the floor's demons and the Metin of Murder.
         function open_floor7()
             if d.getf("tw_open") == 1 then
                 return
@@ -602,35 +612,16 @@ quest deviltower_zone begin
             if d.get_level() ~= 5 or d.getf("tw_open") == 1 then
                 return false
             end
-            local now = get_global_time()
-            local living = 0
+            local n = 0
             for i = 1, 4 do
-                if d.getf("tw_target"..i) ~= 0 then
-                    if d.is_unique_dead("tw5_"..i) then
-                        d.setf("tw_target"..i, 0)
-                    else
-                        living = living + 1
-                        local hp = d.unique_get_hp_perc("tw5_"..i)
-                        if hp < d.getf("tw_hp"..i) then
-                            d.setf("tw_progress", now)
-                        end
-                        d.setf("tw_hp"..i, hp)
-                    end
+                local v = d.getf("tw_target"..i)
+                if v ~= 0 and (v < 0 or d.is_unique_dead("tw5_"..i)) then
+                    deviltower_zone.spawn_death_stone(i)
+                    n = n + 1
                 end
             end
-            if living < 4 - d.getf("7_stone_kill") then
-                d.setf("7_stone_kill", 4 - living)
-                d.setf("tw_progress", now)
-                if living <= 0 then
-                    d.notice("Wie¿a Demonów: Ostatnie Metiny piêtra zniknê³y z mapy.")
-                    deviltower_zone.open_floor7()
-                    return false
-                end
-                d.notice("Wie¿a Demonów: Pozosta³o Metinów: "..living)
-            elseif now - d.getf("tw_progress") > 90 then
-                d.notice("Wie¿a Demonów: Ostatnie Metiny piêtra rozpad³y siê same.")
-                deviltower_zone.open_floor7()
-                return false
+            if n > 0 then
+                d.notice("Wie¿a Demonów: Zaginione Metiny piêtra pojawiaj¹ siê ponownie ("..n..").")
             end
             return true
         end
