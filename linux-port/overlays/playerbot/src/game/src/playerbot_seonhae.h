@@ -57,6 +57,12 @@
 #include "log.h"
 #include "constants.h"
 
+// MT2009_PLUS_SEONHAE_RESERVED_V1: items whose 6th/7th slots hold their own lines (Talizman Woli,
+// Obrecz Jadeitu, Rekawice Sung Ma) - AddRareAttribute2 refuses them, so Seon-Hae must not take them.
+bool Mt2009WillTalismanType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/talizmanwoli)
+bool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/obreczjadeitu)
+bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType);	// playerbot_yohara_gear.cpp
+
 namespace mt2009_seonhae
 {
 	const DWORD NPC_VNUM = 20095;
@@ -259,6 +265,12 @@ namespace mt2009_seonhae
 			return MSG_HAS_TWO;
 		if (!RarePoolHasRoom(item))
 			return MSG_NO_POOL;
+		{	// MT2009_PLUS_SEONHAE_RESERVED_V1: the shards would be spent and no bonus could ever be put on it
+			BYTE bReserved;
+			if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved) ||
+					Mt2009GloveType(item->GetVnum(), bReserved))
+				return MSG_NO_POOL;
+		}
 		return 0;
 	}
 
