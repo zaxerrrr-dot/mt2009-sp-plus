@@ -11,6 +11,7 @@
 // lines, a shield's defence) and of the bonuses copied onto it (attributes, all seven); a line under 1 rounds up
 // to 1 (Owsap). CItem::ModifyPoints hands an outfit here and does nothing else with it.
 //
+// MT2009_PLUS_AURA_NAMES_V1: the owner's names - growth (runes) is "rozwoj", evolution "ewolucja".
 // Theowahdan's (60003) three windows - Owsap's packets replaced by chat commands, like Transmutacja:
 //   client -> "/aura in <slot> <cell>" (slot 0 the outfit, 1 the jewel / rune / material), "/aura out <slot>",
 //             "/aura accept", "/aura cancel"
@@ -306,7 +307,7 @@ namespace aura
 					}
 					if (IsFull(item->GetVnum(), st))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, "Ta szata jest na szczycie swojego rodzaju - teraz rozw\xf3j (Szata aury: rozw\xf3j).");
+						ch->ChatPacket(CHAT_TYPE_INFO, "Ta szata jest na szczycie swojego rodzaju - teraz ewolucja (Szata aury: ewolucja).");	// MT2009_PLUS_AURA_NAMES_V1
 						return false;
 					}
 					break;
@@ -318,7 +319,7 @@ namespace aura
 					}
 					if (!IsFull(item->GetVnum(), st))
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j jest mo\xbfliwy dopiero na poziomie %d ze 100%% do\x9cwiadczenia.",
+						ch->ChatPacket(CHAT_TYPE_INFO, "Ewolucja jest mo\xbfliwa dopiero na poziomie %d ze 100%% do\x9cwiadczenia.",
 								GRADES[GradeOf(item->GetVnum())].maxLevel);
 						return false;
 					}
@@ -354,7 +355,7 @@ namespace aura
 				if (item->GetVnum() != g.material)
 				{
 					const TItemTable* t = ITEM_MANAGER::instance().GetTable(g.material);
-					ch->ChatPacket(CHAT_TYPE_INFO, "Do rozwoju tej szaty potrzeba: %s x%d.", t ? t->szLocaleName : "?", g.materialCount);
+					ch->ChatPacket(CHAT_TYPE_INFO, "Do ewolucji tej szaty potrzeba: %s x%d.", t ? t->szLocaleName : "?", g.materialCount);
 					return false;
 				}
 				if (ch->CountSpecifyItem(g.material) < (ITEM_COUNT) g.materialCount)
@@ -458,9 +459,9 @@ namespace aura
 		sub->SetCount(sub->GetCount() - used);
 		Finish(ch, s);
 		if (IsFull(main->GetVnum(), st) && GradeOf(main->GetVnum()) < 5)
-			ch->ChatPacket(CHAT_TYPE_INFO, "Ulepszenie udane. Teraz mo\xbfliwy jest rozw\xf3j szaty (Szata aury: rozw\xf3j).");
+			ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j udany. Teraz mo\xbfliwa jest ewolucja szaty (Szata aury: ewolucja).");
 		else
-			ch->ChatPacket(CHAT_TYPE_INFO, "Ulepszenie udane: poziom %d.", st.level);
+			ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j udany: poziom %d.", st.level);
 	}
 
 	void AcceptEvolve(LPCHARACTER ch, TSession& s, LPITEM main, LPITEM sub)
@@ -508,7 +509,7 @@ namespace aura
 		ITEM_MANAGER::instance().FlushDelayedSave(item);
 		LogManager::instance().ItemLog(ch, item, "AURA_EVOLVE_NEW", hint);
 		Finish(ch, s);
-		ch->ChatPacket(CHAT_TYPE_INFO, "Rozw\xf3j udany: %s, poziom %d.", item->GetName(), next.level);
+		ch->ChatPacket(CHAT_TYPE_INFO, "Ewolucja udana: %s, poziom %d.", item->GetName(), next.level);
 	}
 
 	void Accept(LPCHARACTER ch, TSession& s)

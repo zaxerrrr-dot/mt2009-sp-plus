@@ -21,7 +21,7 @@ Aury”, „Szaty Aury”, „Zwyczajna … Promienista Szata Aury”, „Lodowa
 - **Okna u Theowahdana bez nowych pakietów** (jak Transmutacja): komendy czatu, okno w pythonie
   (`root/uiaura.py`), serwer sprawdza wszystko jeszcze raz przy „accept” po id przedmiotów.
   - klient → `/aura in <pole> <komórka>` (0 szata, 1 drugi przedmiot), `/aura out <pole>`, `/aura accept`, `/aura cancel`
-  - serwer → `AURA open <typ>` (0 przenoszenie, 1 ulepszanie, 2 rozwój), `AURA set <pole> <komórka> <vnum> <ilość>`,
+  - serwer → `AURA open <typ>` (0 przenoszenie, 1 rozwój – runy, 2 ewolucja), `AURA set <pole> <komórka> <vnum> <ilość>`,
     `AURA del <pole>`, `AURA close`, `AURA done`
 - **Wygląd u innych**: `AURA view <vid> <vnum>` (0: brak) – gdy postać wchodzi w pole widzenia (`EncodeInsertPacket`)
   i gdy jej szata się zmienia (`UpdatePacket`, tylko raz na zmianę; postać bez szaty nic nie wysyła). Efekt rysuje
@@ -36,9 +36,9 @@ Aury”, „Szaty Aury”, „Zwyczajna … Promienista Szata Aury”, „Lodowa
 | Szata zakładana jak szarfa | własne miejsce kostiumu 27, bez limitu poziomu |
 | Przenieś parametry (Theowahdan, okno: szata + bransoleta / naszyjnik / kolczyki / tarcza, przedmiot znika) | okno 0; szata bez przeniesionych parametrów; kopiowane wszystkie bonusy, `socket0` = vnum |
 | Świadectwo Aury+ usuwa parametry | 89999 przeciągnięte na szatę w ekwipunku: bonusy i `socket0` czyszczone, poziom zostaje |
-| Ulepszanie runami (Lodowa 1, Ogniste 10/50/100/250/500 PD) | okno 1; runy po kolei aż do szczytu rodzaju, zabierane tylko użyte |
+| Rozwój runami (Lodowa 1, Ogniste 10/50/100/250/500 PD) | okno 1 („Szata aury: rozwój”); runy po kolei aż do szczytu rodzaju, zabierane tylko użyte |
 | Poziom: 1000 / 2000 / 4000 / 8000 / 16000 PD | jak u Owsapa (Zwyczajna … Wytworna) |
-| Rozwój na 49/99/149/199/249: Agat x10 5 mln, Prosty KC x10 5 mln, Ładny KC x10 5 mln, Wspaniały KC x10 8 mln, Wspaniały KC x20 10 mln; zawsze się udaje, +1 poziom | okno 2; nowa szata (vnum + 1), bonusy i `socket0` zachowane, poziom + 1; materiał liczony z całego ekwipunku |
+| Ewolucja na 49/99/149/199/249: Agat x10 5 mln, Prosty KC x10 5 mln, Ładny KC x10 5 mln, Wspaniały KC x10 8 mln, Wspaniały KC x20 10 mln; zawsze się udaje, +1 poziom | okno 2 („Szata aury: ewolucja”); nowa szata (vnum + 1), bonusy i `socket0` zachowane, poziom + 1; materiał liczony z całego ekwipunku |
 | Stopień absorpcji zależy od poziomu | `poziom / 10 %` (Owsap) |
 | Wytwarzanie u Baek-Go: Ładny KC, 200 Odłamków Energii, Wyjątkowy Barwnik, 25 mln, 20% | quest `szata_aury` (20018 „Szata Aury”) |
 | Zwyczajna … Wytworna bez handlu, Promienista handlowa | `antiflag` jak u Owsapa |

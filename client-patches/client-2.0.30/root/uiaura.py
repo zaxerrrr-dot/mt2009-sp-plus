@@ -3,8 +3,8 @@
 # instead of his packets (server-patches/aura; the server checks everything again at "accept"):
 #   window 0  przenies parametry  the outfit (left) + a bracelet / necklace / earrings / shield (right, destroyed);
 #             the small slot shows the outfit with the bonuses it will get
-#   window 1  ulepszanie          the outfit + Lodowa / Ognista Runa Aury (only the runes needed are taken)
-#   window 2  rozwoj              the outfit at the top of its grade, full + the grade's material and Yang
+#   window 1  rozwoj              the outfit + Lodowa / Ognista Runa Aury (only the runes needed are taken)
+#   window 2  ewolucja            the outfit at the top of its grade, full + the grade's material and Yang
 # server -> "AURA open <type>", "AURA set <slot> <cell> <vnum> <count>", "AURA del <slot>", "AURA close", "AURA done",
 #           "AURA view <vid> <vnum>" (the outfit another character wears: the 3.0 exe's chrmgr.SetAura draws it)
 # client -> /aura in <slot> <cell> | out <slot> | accept | cancel
@@ -61,20 +61,21 @@ EFFECTS = {
 	49106: 'd:/ymir work/pc/common/effect/aura/aura_250_006.mse',
 }
 
-TITLE = {TYPE_ABSORB: 'Szata aury: przenie\x9c parametry', TYPE_GROWTH: 'Szata aury: ulepszanie', TYPE_EVOLVE: 'Szata aury: rozw\xf3j'}
+# MT2009_PLUS_AURA_NAMES_V1: the owner's names - the runes are "rozwoj", the next grade "ewolucja" (the quest's too)
+TITLE = {TYPE_ABSORB: 'Szata aury: przenie\x9c parametry', TYPE_GROWTH: 'Szata aury: rozw\xf3j', TYPE_EVOLVE: 'Szata aury: ewolucja'}
 SCRIPT = {TYPE_ABSORB: 'UIScript/Aura_AbsorbWindow.py', TYPE_GROWTH: 'UIScript/Aura_LevelUpWindow.py',
 	TYPE_EVOLVE: 'UIScript/Aura_LevelUpWindow.py'}
 TEXT_NOT_BAG = 'Przeci\xb9gnij przedmiot z ekwipunku (nie za\xb3o\xbfony).'
 TEXT_PUT_MAIN = 'Najpierw w\xb3\xf3\xbf szat\xea aury.'
 TEXT_PUT_BOTH = 'W\xb3\xf3\xbf oba przedmioty.'
 TEXT_QUESTION_ABSORB = 'Przedmiot z prawego pola zniknie. Przenie\x9c\xe6 parametry?'
-TEXT_QUESTION_EVOLVE = 'Rozwin\xb9\xe6 szat\xea za %s Yang i materia\xb3?'
+TEXT_QUESTION_EVOLVE = 'Ewoluowa\xe6 szat\xea za %s Yang i materia\xb3?'
 TEXT_NOW = 'Teraz:'
-TEXT_AFTER = 'Po ulepszeniu (%d szt.):'
-TEXT_EVOLVED = 'Po rozwoju:'
+TEXT_AFTER = 'Po rozwoju (%d szt.):'
+TEXT_EVOLVED = 'Po ewolucji:'
 TEXT_LEVEL = 'Poziom %d (%s), absorpcja %.1f%%'
 TEXT_EXP = 'Do\x9cwiadczenie: %d%%'
-TEXT_READY = 'Szczyt rodzaju - czas na rozw\xf3j'
+TEXT_READY = 'Szczyt rodzaju - czas na ewolucj\xea'
 TEXT_CHANCE = 'Szansa powodzenia: 100%'
 TEXT_NEED = 'Potrzeba:'
 TEXT_MATERIAL = '%s x%d (masz %d)'
@@ -82,7 +83,7 @@ TEXT_COST = 'Koszt: %s'
 
 TOOLTIP_LEVEL = 'Poziom: %d (%s Szata Aury)'
 TOOLTIP_EXP = 'Do\x9cwiadczenie: %d%% (%d / %d)'
-TOOLTIP_READY = 'Gotowa do rozwoju u Theowahdana'
+TOOLTIP_READY = 'Gotowa do ewolucji u Theowahdana'
 TOOLTIP_ABSORB = 'Stopie\xf1 absorpcji: %.1f%%'
 TOOLTIP_FROM = 'Przeniesione z: %s'
 TOOLTIP_NONE = 'Brak przeniesionych parametr\xf3w'
@@ -309,6 +310,7 @@ class AuraWindow(ui.ScriptWindow):
 		except Exception, e:
 			import dbg
 			dbg.TraceError('AuraWindow.Load: %s' % str(e))
+			self.ClearDictionary()	# MT2009_PLUS_AURA_UI_PATH_V1: no half-loaded children kept for the next try
 			return False
 
 		self.wndItem.SetSelectEmptySlotEvent(ui.__mem_func__(self.__DropOnSlot))

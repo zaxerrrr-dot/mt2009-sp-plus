@@ -1,12 +1,14 @@
 -- MT2009_PLUS_AURA_V1: Szata Aury (w³aœciciel 15.10.2026: "Dodajemy ca³y system szaty aury"; pl-wiki "System Szat Aury",
 -- "Theowahdan", "Zwyczajna Szata Aury") - server-patches/aura/README.md.
 --   * Theowahdan (60003): "Szata aury: przenieœ parametry" (okno 0 - bonusy bransolety, naszyjnika, kolczyków albo
---     tarczy na szatê; przedmiot znika), "Szata aury: ulepszanie" (okno 1 - Lodowe i Ogniste Runy Aury daj¹
---     doœwiadczenie), "Szata aury: rozwój" (okno 2 - na poziomie 49 / 99 / 149 / 199 / 249 z pe³nym doœwiadczeniem:
+--     tarczy na szatê; przedmiot znika), "Szata aury: rozwój" (okno 1 - Lodowe i Ogniste Runy Aury daj¹
+--     doœwiadczenie), "Szata aury: ewolucja" (okno 2 - na poziomie 49 / 99 / 149 / 199 / 249 z pe³nym doœwiadczeniem:
 --     materia³ i Yang, zawsze siê udaje). Okna i zasady: silnik (playerbot_aura.cpp, game.open_aura), klient
 --     root/uiaura.py. Osobny quest - opcje szarf (acce_costume_uriel) i Transmutacja (transmutacja) zostaj¹.
 --   * Baek-Go (20018): Zwyczajna Szata Aury z £adnego Kamienia Chaosu, 200 Od³amków Energii i Wyj¹tkowego Barwnika
 --     za 25 000 000 Yang, szansa 20% (wiki) - przy pora¿ce materia³y przepadaj¹.
+-- MT2009_PLUS_AURA_NAMES_V1 (lista 15.10, pkt 1/2/20): nazwy jak u w³aœciciela - runy to "rozwój", nastêpny
+--   rodzaj to "ewolucja" (wczeœniej "ulepszanie" / "rozwój" odwrotnie).
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest szata_aury begin
 	state start begin
@@ -33,7 +35,7 @@ quest szata_aury begin
 			end
 		end
 
-		when 60003.chat."Szata aury: ulepszanie" begin
+		when 60003.chat."Szata aury: rozwój" begin
 			say_title(mob_name(60003)..":")
 			say("Runy aury podnosz¹ poziom szaty: Lodowa Runa Aury")
 			say("daje 1 punkt doœwiadczenia, Ogniste - 10, 50, 100,")
@@ -41,7 +43,7 @@ quest szata_aury begin
 			say("8000 albo 16000 punktów - zale¿nie od jej rodzaju.")
 			say("")
 			say_reward("Na poziomie 49, 99, 149, 199 i 249 z pe³nym")
-			say_reward("doœwiadczeniem szata czeka na rozwój.")
+			say_reward("doœwiadczeniem szata czeka na ewolucjê.")
 			say_reward("Biorê tylko tyle run, ile trzeba.")
 			if select("Otwórz okno", "Anuluj") == 1 then
 				setskin(NOWINDOW)
@@ -49,16 +51,16 @@ quest szata_aury begin
 			end
 		end
 
-		when 60003.chat."Szata aury: rozwój" begin
+		when 60003.chat."Szata aury: ewolucja" begin
 			say_title(mob_name(60003)..":")
-			say("Szatê ze szczytu jej rodzaju rozwinê w nastêpn¹:")
+			say("Szatê ze szczytu jej rodzaju zmieniê w nastêpn¹:")
 			say("Prosta - 10x Agat i 5 000 000 Yang,")
 			say("Szlachetna - 10x Prosty Kamieñ Chaosu i 5 000 000 Yang,")
 			say("B³yszcz¹ca - 10x £adny Kamieñ Chaosu i 5 000 000 Yang,")
 			say("Wytworna - 10x Wspania³y Kamieñ Chaosu i 8 000 000 Yang,")
 			say("Promienista - 20x Wspania³y Kamieñ Chaosu i 10 000 000 Yang.")
 			say("")
-			say_reward("Rozwój zawsze siê udaje i daje +1 poziom,")
+			say_reward("Ewolucja zawsze siê udaje i daje +1 poziom,")
 			say_reward("przeniesione parametry zostaj¹.")
 			if select("Otwórz okno", "Anuluj") == 1 then
 				setskin(NOWINDOW)
@@ -71,7 +73,7 @@ quest szata_aury begin
 			say_title(mob_name(20018)..":")
 			say("Mogê wytworzyæ dla ciebie "..item_name(c.result)..".")
 			say("Przenosi ona parametry bi¿uterii, a u Theowahdana")
-			say("ulepszysz j¹ a¿ do poziomu 250.")
+			say("rozwiniesz j¹ a¿ do poziomu 250.")
 			say("")
 			say_reward("Potrzebujê: 1x "..item_name(31137)..", 200x "..item_name(51001)..",")
 			say_reward("1x "..item_name(31135).." i "..c.fee_text.." Yang.")
