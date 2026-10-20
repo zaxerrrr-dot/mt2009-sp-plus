@@ -59,7 +59,8 @@ KINDS = [
     ("wrist", "Bransoleta", "📿"), ("foots", "Buty", "👢"), ("neck", "Naszyjnik", "📿"), ("ear", "Kolczyki", "💎"),
     ("costume_body", "Kostium", "👘"), ("costume_hair", "Fryzura", "💇"), ("costume_weapon", "Kostium broni", "🗡️"),
     ("pendant", "Talizman", "🧿"),
-    # MT2009_PLUS_BONUS67_V1: the Sung Ma gloves (their 6th line is their Will, the 7th comes from this pool)
+    # MT2009_PLUS_BONUS67_V1: the Sung Ma gloves - MT2009_PLUS_GLOVE_BASE_V1: their Will is their base attribute,
+    # the 6th and the 7th come from this pool
     ("glove", "Rękawice", "🧤"),
 ]
 KIND_NAMES = {col: name for col, name, _icon in KINDS}

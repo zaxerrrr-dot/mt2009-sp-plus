@@ -76,5 +76,23 @@
   "marker": "MT2009_PLUS_GLOVES_V1 (stone)",
   "old": "\t\tcase ITEM_METIN:\n\t\t\t{\n\t\t\t\tLPITEM item2;\n\n\t\t\t\tif (!IsValidItemPosition(DestCell) || !(item2 = GetItem(DestCell)))\n\t\t\t\t\treturn false;\n",
   "new": "\t\tcase ITEM_METIN:\n\t\t\t{\n\t\t\t\tLPITEM item2;\n\n\t\t\t\tif (!IsValidItemPosition(DestCell) || !(item2 = GetItem(DestCell)))\n\t\t\t\t\treturn false;\n\n\t\t\t\t// MT2009_PLUS_GLOVES_V1 (stone): a Kamien (Mocy) Demonow goes into a glove only, a glove takes nothing else\n\t\t\t\tif (item->GetSubType() == METIN_SUNGMA || (item2->GetType() == ITEM_ARMOR && item2->GetSubType() == ARMOR_GLOVE))\n\t\t\t\t{\n\t\t\t\t\tbool Mt2009GloveUseStone(LPCHARACTER, LPITEM, LPITEM);\n\t\t\t\t\treturn Mt2009GloveUseStone(this, item, item2);\n\t\t\t\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_GLOVE_BASE_V1 (load)",
+  "old": "\tMt2009YSetsCreate(item, bIsNewItem, bSkipSave); // MT2009_PLUS_YOHARA_SETS_V1 (create): its set / random bonuses\n",
+  "new": "\tMt2009YSetsCreate(item, bIsNewItem, bSkipSave); // MT2009_PLUS_YOHARA_SETS_V1 (create): its set / random bonuses\n\t{ // MT2009_PLUS_GLOVE_BASE_V1 (load): a Sung Ma glove's Will (its base attribute) - saved / read back\n\t\tvoid Mt2009GloveLoad(LPITEM item, bool bIsNewItem, bool bSkipSave);\n\t\tMt2009GloveLoad(item, bIsNewItem, bSkipSave);\n\t}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_GLOVE_BASE_V1 (points)",
+  "old": "\tMt2009YSetsItemPoints(this, m_pOwner, bAdd); // MT2009_PLUS_YOHARA_SETS_V1 (points): a serpent piece's random base bonuses\n",
+  "new": "\t{ // MT2009_PLUS_GLOVE_BASE_V1 (points): a Sung Ma glove's Will (its base attribute, raised by its 6/7 \"+x%\" line)\n\t\tvoid Mt2009GloveBasePoints(LPITEM item, LPCHARACTER owner, bool bAdd);\n\t\tMt2009GloveBasePoints(this, m_pOwner, bAdd);\n\t}\n\tMt2009YSetsItemPoints(this, m_pOwner, bAdd); // MT2009_PLUS_YOHARA_SETS_V1 (points): a serpent piece's random base bonuses\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_GLOVE_BASE_V1 (after created)",
+  "old": "bool CItem::OnAfterCreatedItem()\n{\n",
+  "new": "bool CItem::OnAfterCreatedItem()\n{\n\t{ // MT2009_PLUS_GLOVE_BASE_V1 (after created): a glove with its Will still in the 6th bonus slot - its base attribute now\n\t\tvoid Mt2009GloveAfterCreated(LPITEM item);\n\t\tMt2009GloveAfterCreated(this);\n\t}\n"
  }
 ]

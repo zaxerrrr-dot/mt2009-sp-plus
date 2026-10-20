@@ -34,10 +34,12 @@ bool Bonus67FallResist(const CHARACTER* ch);
 // CHARACTER::UseSkill (after the cooldown is set): the gloves' 5 s shorter next cooldown of a champion skill - the
 // new next usable time (and the client's cooldown ended then).
 unsigned int Bonus67SkillCooldown(LPCHARACTER ch, unsigned int dwVnum, unsigned int dwNextUsable);
-// CItem::ModifyPoints: an attribute slot's value as worn (FIRST..FIFTH_ATTRIBUTE_BONUS, the glove's Will line).
+// CItem::ModifyPoints: an attribute slot's value as worn (FIRST..FIFTH_ATTRIBUTE_BONUS; the glove's Will is its base
+// attribute since MT2009_PLUS_GLOVE_BASE_V1 - playerbot_yohara_gear.cpp Mt2009GloveBaseWill).
 int Bonus67AttrValue(LPITEM item, int iSlot, unsigned char bType, int iValue);
-// CItem::AddRareAttribute(2) / ChangeRareAttribute(2) on a glove: its 7th slot from the pool's glove column (the 6th
-// is the glove's Will). iMode 0 add (the panel's level odds), 1 add2 (aiPct), 2 change, 3 change2. -1: not a glove.
+// CItem::AddRareAttribute(2) / ChangeRareAttribute(2) on a glove: its 6th and 7th slots from the pool's glove column
+// (MT2009_PLUS_GLOVE_BASE_V1: an addition fills the first free one, a change rolls the lines it has again). iMode 0 add
+// (the panel's level odds), 1 add2 (aiPct), 2 change, 3 change2. -1: not a glove.
 int Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct);
 
 #endif

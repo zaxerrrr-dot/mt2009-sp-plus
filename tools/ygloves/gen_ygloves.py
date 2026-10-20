@@ -11,8 +11,10 @@ refine_proto of db/data/player.sql), the Polish names and descriptions of its Po
   23000-23009 Rekawice Mocy+0..+9       level 105 gloves (ITEM_ARMOR / ARMOR_GLOVE, the glove slot WEAR_GLOVE 26 -
   23010-23019 Zwinne Rekawice+0..+9     ENABLE_GLOVE_SYSTEM, server-patches/rekawice); 3 empty sockets (socket_pct 3)
   23020-23029 Pancerne Rekawice+0..+9   for Kamienie Demonow; no item_proto apply: the glove's Sung Ma Will (Mocy SILA,
-  23030-23039 Ochronne Rekawice+0..+9   Zwinne ODP, Pancerne WIT, Ochronne INT; the wiki's ranges 3-7 .. 58-63) is the
-                                        6th bonus slot, rolled by the engine when one is made, carried by a refine;
+  23030-23039 Ochronne Rekawice+0..+9   Zwinne ODP, Pancerne WIT, Ochronne INT; the wiki's ranges 3-7 .. 58-63) is its
+                                        base attribute (MT2009_PLUS_GLOVE_BASE_V1: the item's yextra, not a bonus slot -
+                                        the 6th and 7th are the 6/7 system's), rolled by the engine when one is made,
+                                        carried by a refine;
                                         refined at the blacksmith with Owsap's refine rows 800-808 (= the wiki: 10..200
                                         Utwardzacz Skory, from +5 Utwardzacz Skory+, +6 Biala Perla, +7 Kamien
                                         Ksiezycowy, +8 Niebieska Perla, +9 Krwawa Perla; 250 000 .. 650 000 Yang) - ours
@@ -198,8 +200,8 @@ def write_sql(items, refines, names):
          '-- not edit, rerun it. Every start (apply.sh, after the Yohara item files), idempotent. Source: Owsap v6.2.6',
          '-- db/item_proto.txt (the official vnums and numbers), refine_proto 800-808 (db/data/player.sql) as ours %d-%d,'
          % (refines[0]['id'], refines[-1]['id']),
-         '-- the Polish names of its Polish client. The gloves have no item_proto apply: their Sung Ma Will is the 6th bonus',
-         '-- slot, rolled by the engine (server-patches/rekawice); the stones (ITEM_METIN / METIN_SUNGMA 2, value0 = level,',
+         '-- the Polish names of its Polish client. The gloves have no item_proto apply: their Sung Ma Will is their base',
+         '-- attribute (item_yextra; server-patches/rekawice); the stones (ITEM_METIN / METIN_SUNGMA 2, value0 = level,',
          '-- value5 1 Demonow / 2 Mocy Demonow) give a random Will in a glove\'s socket (server-patches/rekawice).',
          'SET NAMES utf8mb4;',
          'INSERT IGNORE INTO world.item_proto (%s) VALUES' % ','.join('`%s`' % c for c in Y.COLS),

@@ -23,14 +23,17 @@ Punkty są tylko na serwerze: pakiet punktów i zmiana punktu kończą się na 1
 | 241 | `GLOVE_FALL_RESIST` | rękawice: otrzymany cios – x% szans na odporność na upadek (`IsResistPush`) na `b67_fall_seconds` (10 s); potem 60 s przerwy |
 | 242 | `GLOVE_LIGHTNING` | rękawice: zwykły cios w potwora – błyskawice na potwory w pobliżu (`b67_lightning_range` 600, do 8) za te same obrażenia; co 15 s |
 | 243–250 | `GLOVE_COOLDOWN_FINISH … ILIPUNGU` | rękawice: użycie umiejętności Czempiona (176–183) – x% szans, że jej kolejny czas odnowienia jest krótszy o 5 s; klient dostaje `HEADER_GC_SKILL_COOLTIME_END` (73, exe go ma) w nowej chwili |
-| 251 | `GLOVE_BASE_ATTR_PCT` | rękawice: wbudowana linia rękawic (Wola Sung Ma, 6. bonus) +x% |
+| 251 | `GLOVE_BASE_ATTR_PCT` | rękawice: atrybut podstawowy rękawic (ich Wola Sung Ma) +x% (`Mt2009GloveBaseWill`) |
 
 ## Rękawice
 
-Rękawice mają w 6. slocie własną Wolę – teraz **7. slot** bierze się z puli (kolumna `glove`): 71051 / 71052
-(`Bonus67GloveRare`, krawędzie `item_attribute.cpp`), ulepszenie go przenosi (`playerbot_yohara_gear.cpp`). Pula
-rękawic (wiki): bossowie ×4, Metiny 8%, Wola ×4 do 15%, 11 linii rękawic. Seon-Hae rękawic nie przyjmuje
-(`playerbot_seonhae.h`, `MT2009_PLUS_SEONHAE_RESERVED_V1` – inny agent).
+`MT2009_PLUS_GLOVE_BASE_V1` (właściciel, 20.10: „Rękawice mają 5 bonusów, które można dodać standardowo, i 6-7 bonus,
+który dodaje się za odłamki i suplementy”): Wola rękawic to ich **atrybut podstawowy** (`server-patches/rekawice`,
+`player.item_yextra`), a **6. i 7. slot** biorą się z puli (kolumna `glove`): Seon-Hae i 71051 dodają najpierw 6., potem
+7. bonus (pierwszy wolny slot), 71052 losuje od nowa wszystkie, które rękawice mają – nigdy tej samej linii ani dwóch
+takich samych (`Bonus67GloveRare`, krawędzie `item_attribute.cpp`); ulepszenie je przenosi (kopia silnika). Pula
+rękawic (wiki): bossowie ×4, Metiny 8%, Wola ×4 do 15%, 11 linii rękawic, „Atrybuty podstawowe rękawic +x%” (podnosi
+atrybut podstawowy). Seon-Hae przyjmuje rękawice (`MT2009_PLUS_SEONHAE_GLOVE_V1`).
 
 ## Silnik (`edits.json`, `gen_edits.py [<game/src>]`)
 

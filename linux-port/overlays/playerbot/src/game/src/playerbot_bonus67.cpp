@@ -13,6 +13,7 @@
 #include "sectree.h"
 #include "questmanager.h"
 
+#include <algorithm>
 #include <map>
 #include <vector>
 
@@ -439,18 +440,61 @@ int Bonus67AttrValue(LPITEM item, int iSlot, unsigned char bType, int iValue)
 {
 	if (!item || !iValue)
 		return iValue;
+	// MT2009_PLUS_GLOVE_BASE_V1: the glove's Will is no bonus slot any more - its "+x%" is Mt2009GloveBaseWill's
 	int iPct = 0;
 	if (iSlot >= 0 && iSlot < 5)
 		iPct = ItemRareValue(item, (BYTE) (POINT_FIRST_ATTRIBUTE_BONUS + iSlot));
-	else if (iSlot == ITEM_ATTRIBUTE_RARE_START)
-	{
-		BYTE bWillType;
-		if (Mt2009GloveType(item->GetVnum(), bWillType) && bType == bWillType)
-			iPct = ItemRareValue(item, POINT_GLOVE_BASE_ATTR_PCT);
-	}
 	if (iPct <= 0)
 		return iValue;
 	return iValue + iValue * iPct / 100;
+}
+
+// MT2009_PLUS_GLOVE_BASE_V1: the glove's 6th and 7th bonus are the 6/7 system's (the owner, 20 Oct) - its Will is its
+// base attribute (playerbot_yohara_gear.cpp). An addition (71051, Seon-Hae) fills the first free of the two slots, a
+// change (71052) rolls every line the glove has again (as the engine's ChangeRareAttribute), never one it had nor two
+// alike. The pool's glove column (item_attr_rare.glove) and the level odds of the engine's own path.
+namespace
+{
+	bool GloveRareRoll(LPITEM item, int iSlot, int iSet, int iMode, const int* aiPct, const std::vector<BYTE>& vecSkip)
+	{
+		std::vector<int> vecAvail;
+		unsigned int uTotal = 0;
+		for (TItemAttrMap::const_iterator it = g_map_itemRare.begin(); it != g_map_itemRare.end(); ++it)
+		{
+			const TItemAttrTable& r = it->second;
+			if (!r.dwApplyIndex || r.dwApplyIndex >= POINT_MAX_NUM || !r.bMaxLevelBySet[iSet] || !r.dwProb)
+				continue;
+			if (std::find(vecSkip.begin(), vecSkip.end(), (BYTE) r.dwApplyIndex) != vecSkip.end())
+				continue;
+			vecAvail.push_back(it->first);
+			uTotal += r.dwProb;
+		}
+		if (vecAvail.empty() || !uTotal)
+			return false;
+		unsigned int uRoll = number(1, uTotal);
+		int iApply = vecAvail.back();
+		for (size_t i = 0; i < vecAvail.size(); ++i)
+		{
+			const unsigned int uProb = g_map_itemRare[vecAvail[i]].dwProb;
+			if (uRoll <= uProb)
+			{
+				iApply = vecAvail[i];
+				break;
+			}
+			uRoll -= uProb;
+		}
+		const TItemAttrTable& r = g_map_itemRare[iApply];
+		static const int s_aiAdd2[5] = { 40, 50, 10, 0, 0 };	// CItem::AddRareAttribute2's own table
+		int iLevel = RollRareLevel(iMode == 0 || iMode == 2 ? NULL : (aiPct ? aiPct : s_aiAdd2));
+		iLevel = MIN(iLevel, (int) r.bMaxLevelBySet[iSet]);
+		const long lValue = r.lValues[MINMAX(1, iLevel, 5) - 1];
+		if (!lValue)
+			return false;
+		item->SetForceAttribute(iSlot, (BYTE) iApply, (short) lValue);
+		sys_log(0, "BONUS67: glove %u (id %u) bonus %d: line %d = %ld (level %d)", item->GetVnum(), item->GetID(),
+				iSlot + 1, iApply, lValue, iLevel);
+		return true;
+	}
 }
 
 int Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct)
@@ -458,51 +502,38 @@ int Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct)
 	BYTE bWillType;
 	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
 		return -1;
-	const int iSlot = ITEM_ATTRIBUTE_RARE_START + 1;	// the 6th is the glove's Will line
-	if (iSlot >= ITEM_ATTRIBUTE_RARE_END || item->GetAttributeType(ITEM_ATTRIBUTE_RARE_START) != bWillType)
-		return 0;
-	const bool bChange = iMode == 2 || iMode == 3;
-	if (bChange != (item->GetAttributeType(iSlot) != 0))
-		return 0;	// a change needs a line there, an addition a free slot
-
 	const int iSet = item->GetAttributeSetIndex();
 	if (iSet < 0)
 		return 0;
-	const BYTE bOld = item->GetAttributeType(iSlot);
-	std::vector<int> vecAvail;
-	unsigned int uTotal = 0;
-	for (TItemAttrMap::const_iterator it = g_map_itemRare.begin(); it != g_map_itemRare.end(); ++it)
+	// never the glove's own flat Will (its base attribute) - the pool has no such line, kept as a guard
+	std::vector<BYTE> vecSkip(1, bWillType);
+	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+		if (item->GetAttributeType(i))
+			vecSkip.push_back(item->GetAttributeType(i));
+
+	const bool bChange = iMode == 2 || iMode == 3;
+	if (!bChange)
 	{
-		const TItemAttrTable& r = it->second;
-		if (!r.dwApplyIndex || r.dwApplyIndex >= POINT_MAX_NUM || !r.bMaxLevelBySet[iSet] || !r.dwProb)
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+			if (!item->GetAttributeType(i))
+				return GloveRareRoll(item, i, iSet, iMode, aiPct, vecSkip) ? 1 : 0;
+		return 0;	// both slots taken
+	}
+
+	// a change: the lines there now are rolled again in their slots (the old ones and the new ones never twice)
+	bool bAny = false, bDone = false;
+	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+	{
+		if (!item->GetAttributeType(i))
 			continue;
-		if (r.dwApplyIndex == bWillType || r.dwApplyIndex == bOld)
-			continue;	// never a second Will of the glove's own, a change never gives the same line back
-		vecAvail.push_back(it->first);
-		uTotal += r.dwProb;
-	}
-	if (vecAvail.empty() || !uTotal)
-		return 0;
-	unsigned int uRoll = number(1, uTotal);
-	int iApply = vecAvail.back();
-	for (size_t i = 0; i < vecAvail.size(); ++i)
-	{
-		const unsigned int uProb = g_map_itemRare[vecAvail[i]].dwProb;
-		if (uRoll <= uProb)
+		bAny = true;
+		const size_t uBefore = vecSkip.size();
+		if (GloveRareRoll(item, i, iSet, iMode, aiPct, vecSkip))
 		{
-			iApply = vecAvail[i];
-			break;
+			bDone = true;
+			if (vecSkip.size() == uBefore)
+				vecSkip.push_back(item->GetAttributeType(i));
 		}
-		uRoll -= uProb;
 	}
-	const TItemAttrTable& r = g_map_itemRare[iApply];
-	static const int s_aiAdd2[5] = { 40, 50, 10, 0, 0 };	// CItem::AddRareAttribute2's own table
-	int iLevel = RollRareLevel(iMode == 0 || iMode == 2 ? NULL : (aiPct ? aiPct : s_aiAdd2));
-	iLevel = MIN(iLevel, (int) r.bMaxLevelBySet[iSet]);
-	const long lValue = r.lValues[MINMAX(1, iLevel, 5) - 1];
-	if (!lValue)
-		return 0;
-	item->SetForceAttribute(iSlot, (BYTE) iApply, (short) lValue);
-	sys_log(0, "BONUS67: glove %u (id %u) 7th line %d = %ld (level %d)", item->GetVnum(), item->GetID(), iApply, lValue, iLevel);
-	return 1;
+	return bAny && bDone ? 1 : 0;
 }

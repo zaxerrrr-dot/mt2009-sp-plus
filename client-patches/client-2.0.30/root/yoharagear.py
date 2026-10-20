@@ -1,7 +1,8 @@
 # MT2009_PLUS_YOHARA_EXE2_V1: the root's side of the Yohara gear of the second exe round (server-patches/rekawice,
 # obreczjadeitu2 - the same numbers as the server's playerbot_yohara_gear.cpp):
 #   * Rekawice Sung Ma (23000-23039): a Kamien (Mocy) Demonow in a socket is Owsap's number
-#     apply * 10000 + stone level * 1000 + stone kind * 100 + value (apply = POINT_SUNGMA_* 184-187);
+#     apply * 10000 + stone level * 1000 + stone kind * 100 + value (apply = POINT_SUNGMA_* 184-187); the glove's own
+#     Will is its base attribute (MT2009_PLUS_GLOVE_BASE_V1, GloveBaseLine);
 #   * Obrecze Jadeitu (14580-14619), Kolie Jadeitu (16580-16619) and Klipsy Jadeitu (17570-17609,
 #     MT2009_PLUS_JADE_JEWELLERY_V1): what the jade in the k-th socket adds to their two lines (pl-wiki, each kind).
 import localeinfo_point
@@ -62,6 +63,35 @@ def GloveSocketData(number):
 	(point, value, level, kind) = decoded
 	vnum = STONE_VNUM_DEMON + level * 100 + (1 if kind == 2 else 0)
 	return (vnum, localeinfo_point.GetApplyString(point, value) or "")
+
+
+# MT2009_PLUS_GLOVE_BASE_V1: a glove's Will SungMa is its base attribute (the owner, 20 Oct: 5 bonuses as usual, the 6th
+# and 7th from the 6/7 system) - the server keeps it in the item's yextra, bits 8-15 (YITEM, ysets.py), not in a bonus
+# slot. Its kind by the glove (23000 SILA, 23010 ODP, 23020 WIT, 23030 INT), the wiki's range of each level when the
+# client has not heard the value (a glove that is not the player's own: a trade, a shop, Seon-Hae's window).
+GLOVE_WILL = {23000: 184, 23010: 186, 23020: 185, 23030: 187}
+GLOVE_WILL_RANGE = ((3, 7), (5, 11), (9, 17), (14, 22), (19, 28), (24, 34), (29, 40), (34, 46), (39, 52), (58, 63))
+POINT_GLOVE_BASE_ATTR_PCT = 251
+
+
+def GloveBaseLine(vnum, extra, attrSlot):
+	"""(the glove's Will line - as worn, raised by its "Atrybuty podstawowe rekawic +x%" lines -, known)."""
+	point = GLOVE_WILL.get(vnum - vnum % 10)
+	if not point:
+		return ("", False)
+	value = (extra >> 8) & 0xFF
+	if value <= 0:
+		low, high = GLOVE_WILL_RANGE[vnum % 10]
+		text = localeinfo_point.GetApplyString(point, low) or ""
+		return ((text + " - %d" % high) if text else "", False)
+	pct = 0
+	if attrSlot:
+		for (attrType, attrValue) in attrSlot[5:7]:
+			if attrType == POINT_GLOVE_BASE_ATTR_PCT:
+				pct += attrValue
+	if pct > 0:
+		value += value * pct / 100
+	return (localeinfo_point.GetApplyString(point, value) or "", True)
 
 
 def JadeJewel(vnum):

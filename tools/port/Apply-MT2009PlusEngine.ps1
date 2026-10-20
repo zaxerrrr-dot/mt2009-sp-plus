@@ -104,7 +104,8 @@ param(
 #   Precyzja           common length.h/skill_length.h, char.cpp, char_item.cpp, char_skill.cpp (MT2009_PLUS_PRECISION_V1,
 #                      the passive skill Precyzja MT2009_PLUS_PRECISION_SKILL_V1; server-patches/precyzja, after szczelina)
 #   Rekawice Sung Ma   common CommonDefines.h/item_length.h, item.cpp, item_manager.cpp, item_attribute.cpp,
-#                      char_item.cpp, ENABLE_GLOVE_SYSTEM (MT2009_PLUS_GLOVES_V1; server-patches/rekawice, after precyzja)
+#                      char_item.cpp, ENABLE_GLOVE_SYSTEM (MT2009_PLUS_GLOVES_V1; the Will as the base attribute in the
+#                      item's yextra MT2009_PLUS_GLOVE_BASE_V1; server-patches/rekawice, after precyzja and ysets)
 #   Obrecze Jadeitu V2 item.cpp, item_manager.cpp, item_attribute.cpp (MT2009_PLUS_JADE_BRACELET_V2;
 #                      server-patches/obreczjadeitu2, after obreczjadeitu and rekawice)
 #   Szata Aury         common CommonDefines.h/length.h/item_length.h, item.cpp, char.cpp, char_item.cpp,

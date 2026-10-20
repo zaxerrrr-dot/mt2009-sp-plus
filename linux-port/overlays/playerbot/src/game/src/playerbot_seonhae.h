@@ -63,6 +63,9 @@
 bool Mt2009WillTalismanType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/talizmanwoli)
 bool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/obreczjadeitu)
 bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType);	// playerbot_yohara_gear.cpp
+// MT2009_PLUS_GLOVE_BASE_V1: a glove's Will is its base attribute (its yextra, by item id) - the remade glove gets the
+// kept one back (playerbot_yohara_gear.cpp)
+void Mt2009GloveRestore(LPITEM item, DWORD dwYExtra);
 
 namespace mt2009_seonhae
 {
@@ -89,6 +92,7 @@ namespace mt2009_seonhae
 	const char* const F_SOCKET[ITEM_SOCKET_MAX_NUM] = { "seonhae.s0", "seonhae.s1", "seonhae.s2" };
 	const char* const F_ATTR[ITEM_ATTRIBUTE_MAX_NUM] = { "seonhae.a0", "seonhae.a1", "seonhae.a2", "seonhae.a3",
 		"seonhae.a4", "seonhae.a5", "seonhae.a6" };
+	const char* const F_YEXTRA = "seonhae.yx";	// MT2009_PLUS_GLOVE_BASE_V1: the item's yextra (a glove's Will)
 
 	enum
 	{
@@ -272,8 +276,9 @@ namespace mt2009_seonhae
 			return MSG_NO_POOL;
 		{	// MT2009_PLUS_SEONHAE_RESERVED_V1: the shards would be spent and no bonus could ever be put on it
 			BYTE bReserved;
-			// MT2009_PLUS_SEONHAE_GLOVE_V1: a glove keeps its Will in slot 6 and takes its 7th bonus from the pool's
-			// glove column (server-patches/bonusy67) - AddRareAttribute puts it in slot 7, as 71051 does.
+			// MT2009_PLUS_SEONHAE_GLOVE_V1 / MT2009_PLUS_GLOVE_BASE_V1: a glove is taken - its Will is its base
+			// attribute, its 6th and then its 7th bonus come from the pool's glove column (server-patches/bonusy67;
+			// AddRareAttribute fills the first free slot, as 71051 does).
 			if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved))
 				return MSG_NO_POOL;
 		}
@@ -385,6 +390,7 @@ namespace mt2009_seonhae
 			const short v = item->GetAttributeValue(i);
 			ch->SetQuestFlag(F_ATTR[i], t ? (int)(((unsigned int)t << 16) | (unsigned short)v) : 0);
 		}
+		ch->SetQuestFlag(F_YEXTRA, (int)item->GetYExtra()); // MT2009_PLUS_GLOVE_BASE_V1 (hold)
 		ch->SetQuestFlag(F_PCT, pct);
 		ch->SetQuestFlag(F_RESULT, success ? RESULT_SUCCESS : RESULT_FAIL);
 		ch->SetQuestFlag(F_READY, (int)get_global_time() + wait * 60);
@@ -406,6 +412,7 @@ namespace mt2009_seonhae
 		ch->SetQuestFlag(F_READY, 0);
 		ch->SetQuestFlag(F_RESULT, 0);
 		ch->SetQuestFlag(F_PCT, 0);
+		ch->SetQuestFlag(F_YEXTRA, 0); // MT2009_PLUS_GLOVE_BASE_V1
 		for (int i = 0; i < ITEM_SOCKET_MAX_NUM; ++i)
 			ch->SetQuestFlag(F_SOCKET[i], 0);
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
@@ -444,6 +451,7 @@ namespace mt2009_seonhae
 		}
 		item->SetSockets(sockets);
 		item->SetAttributes(attrs);
+		Mt2009GloveRestore(item, (DWORD)ch->GetQuestFlag(F_YEXTRA)); // MT2009_PLUS_GLOVE_BASE_V1 (collect): a glove's Will back
 
 		const int cell = ch->GetEmptyInventoryEx(item);
 		if (cell < 0)

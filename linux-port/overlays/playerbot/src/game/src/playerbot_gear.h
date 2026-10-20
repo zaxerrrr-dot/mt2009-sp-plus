@@ -743,6 +743,12 @@ namespace
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 			if (item->GetAttributeType(i) == applyType)
 				total += item->GetAttributeValue(i);
+		{	// MT2009_PLUS_GLOVE_BASE_V1: a Sung Ma glove's Will - its base attribute, no bonus slot
+			unsigned char bWillType = 0;
+			const int iWill = Mt2009GloveBaseWill(item, bWillType);
+			if (iWill > 0 && bWillType == applyType)
+				total += iWill;
+		}
 		return total;
 	}
 
@@ -1373,6 +1379,12 @@ namespace
 					continue;
 				protoLines += ScorePlayerBotApplyTiered(extra.bType, extra.lValue, ch);
 			}
+		{	// MT2009_PLUS_GLOVE_BASE_V1: a Sung Ma glove's Will is its base attribute (the item's yextra) - a proto line
+			unsigned char bWillType = 0;
+			const int iWill = Mt2009GloveBaseWill(item, bWillType);
+			if (iWill > 0)
+				protoLines += ScorePlayerBotApplyTiered(bWillType, iWill, ch);
+		}
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
 			const BYTE t = item->GetAttributeType(i);

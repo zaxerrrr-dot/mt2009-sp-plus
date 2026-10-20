@@ -3737,6 +3737,35 @@ for ygl_sql in yohara_gloves.sql; do
         fail_step "gloves: $ygl_sql failed" >&2
     fi
 done
+# MT2009_PLUS_GLOVE_BASE_V1 (server-patches/rekawice/README.md; the owner, 20 October: "Rekawice maja 5 bonusow, ktore
+# mozna dodac standardowo, i 6-7 bonus, ktory dodaje sie za odlamki i suplementy"): a glove's Will SungMa is its base
+# attribute - player.item_yextra bits 8-15 (by item id; yohara_sets.sql made the table) - not its 6th bonus. A glove of
+# any window (the inventory, the equipment, the storehouse, the mall, the offline shop) still holding its Will as a
+# 6th/7th line of its own kind (23000 SILA 184, 23010 ODP 186, 23020 WIT 185, 23030 INT 187) gets it as its base
+# attribute and the line leaves (a 7th line moves to the 6th). Idempotent: only rows that still have that line change.
+# Anything kept elsewhere (the mall's item_award, Seon-Hae's hold) is moved by the game when the glove is made again.
+m2_glove_will="CASE i.vnum DIV 10 WHEN 2300 THEN 184 WHEN 2301 THEN 186 WHEN 2302 THEN 185 WHEN 2303 THEN 187 END"
+if db -N -e "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'player' AND TABLE_NAME = 'item_yextra'" 2>/dev/null | grep -q 1; then
+    m2_glove_old=$(db -N -e "SELECT COUNT(*) FROM player.item i WHERE i.vnum BETWEEN 23000 AND 23039 AND (i.attrtype5 = $m2_glove_will OR i.attrtype6 = $m2_glove_will)" 2>/dev/null | tr -d ' \r')
+    if [ "${m2_glove_old:-0}" = 0 ]; then
+        echo "[playerbot-migrate] glove base: every glove keeps its Will as its base attribute already"
+    elif db -e "START TRANSACTION;
+INSERT INTO player.item_yextra (id, yextra)
+  SELECT i.id, (IF(i.attrtype5 = $m2_glove_will, i.attrvalue5, i.attrvalue6) & 255) << 8 FROM player.item i
+  WHERE i.vnum BETWEEN 23000 AND 23039 AND (i.attrtype5 = $m2_glove_will OR i.attrtype6 = $m2_glove_will)
+  ON DUPLICATE KEY UPDATE yextra = (player.item_yextra.yextra & ~65280) | VALUES(yextra);
+UPDATE player.item i SET i.attrtype5 = i.attrtype6, i.attrvalue5 = i.attrvalue6, i.attrtype6 = 0, i.attrvalue6 = 0
+  WHERE i.vnum BETWEEN 23000 AND 23039 AND i.attrtype5 = $m2_glove_will;
+UPDATE player.item i SET i.attrtype6 = 0, i.attrvalue6 = 0
+  WHERE i.vnum BETWEEN 23000 AND 23039 AND i.attrtype6 = $m2_glove_will;
+COMMIT;"; then
+        echo "[playerbot-migrate] glove base: $m2_glove_old glove(s) - the 6th-slot Will is the base attribute now (player.item_yextra)"
+    else
+        fail_step "glove base: moving the gloves' Will to player.item_yextra failed" >&2
+    fi
+else
+    fail_step "glove base: player.item_yextra is missing (yohara_sets.sql) - the gloves keep their Will in the 6th slot" >&2
+fi
 
 # MT2009_PLUS_GAYA_V1: Kamienie Gaya and Statua Wojownika (the owner, 14 October 2026): yohara_gaya.sql
 # (tools/ygaya/gen_ygaya.py) - Gaya (95927, the currency as an item), Reset / Rozszerzenie Sklepu Gaya (39063/39064),

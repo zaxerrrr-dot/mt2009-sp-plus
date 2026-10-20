@@ -6531,11 +6531,34 @@ def format_seconds_short(seconds):
     return f"{hours} h {minutes} min" if hours else f"{minutes} min"
 
 
+# MT2009_PLUS_GLOVE_BASE_V1: a Sung Ma glove's (23000-23039) Will is its base
+# attribute - player.item_yextra bits 8-15 by item id (server-patches/rekawice),
+# not a bonus slot; its kind by the glove: Sila / Odpornosc / Witalnosc /
+# Inteligencja SungMa (POINT_SUNGMA_STR 184, MOVE 186, HP 185, IMMUNE 187).
+GLOVE_WILL_POINT = {2300: 184, 2301: 186, 2302: 185, 2303: 187}
+GLOVE_WILL_NAME = {184: "Siła Sung Ma", 185: "Witalność Sung Ma", 186: "Odporność Sung Ma", 187: "Inteligencja Sung Ma"}
+POINT_GLOVE_BASE_ATTR_PCT = 251
+
+
+def _glove_base_wills(items):
+    """{item id: the glove's Will value} of the gloves among `items`."""
+    ids = [int(item["id"]) for item in items
+           if item.get("id") and int(item.get("vnum") or 0) // 10 in GLOVE_WILL_POINT]
+    if not ids:
+        return {}
+    try:
+        found = rows("SELECT id, yextra FROM player.item_yextra WHERE id IN (%s)" % ",".join(["%s"] * len(ids)), tuple(ids))
+    except Exception:
+        return {}
+    return {int(r["id"]): (int(r["yextra"] or 0) >> 8) & 0xFF for r in found}
+
+
 def _enrich_items(items):
     """Adds item_name/item_size/base_stats/bonuses/stones to each item dict
     (mutated in place) -- shared by load_character_items() and
     bot_offline_shop() so the equipment/inventory tooltip and the offline
     shop window read the exact same tooltip data from the exact same logic."""
+    glove_wills = _glove_base_wills(items)  # MT2009_PLUS_GLOVE_BASE_V1
     for item in items:
         item["item_name"] = resolve_item_display_name(item["vnum"], item.get("socket0"), game_text(item["item_name"]))
         item["item_size"] = max(1, min(3, int(item.get("item_size") or 1)))
@@ -6576,6 +6599,14 @@ def _enrich_items(items):
             for i in range(3)
             if item.get(f"applytype{i}") and item.get(f"applyvalue{i}")
         ]
+        # MT2009_PLUS_GLOVE_BASE_V1: a glove's Will - its base attribute, as
+        # worn (raised by its "Atrybuty podstawowe rękawic +x%" 6th/7th lines)
+        will_point = GLOVE_WILL_POINT.get(int(item.get("vnum") or 0) // 10)
+        will = glove_wills.get(int(item.get("id") or 0), 0) if will_point else 0
+        if will > 0:
+            pct = sum(int(item.get(f"attrvalue{i}") or 0) for i in (5, 6)
+                      if int(item.get(f"attrtype{i}") or 0) == POINT_GLOVE_BASE_ATTR_PCT)
+            item["bonuses"].append({"text": f"{GLOVE_WILL_NAME[will_point]} {will + will * pct // 100:+d}", "source": "native"})
         item["bonuses"] += [
             {"text": apply_text(item.get(f"attrtype{i}"), item.get(f"attrvalue{i}")), "source": "added"}
             for i in range(7)

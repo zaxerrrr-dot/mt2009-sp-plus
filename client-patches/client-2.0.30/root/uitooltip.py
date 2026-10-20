@@ -1106,6 +1106,25 @@ class ItemToolTip(ToolTip):
 	def __AppendYSetsInformation(self, itemVnum):
 		__import__("ysets").AppendInfo(self, itemVnum, getattr(self, "ysetsExtra", 0))
 
+	# MT2009_PLUS_GLOVE_BASE_V1: a glove's Will SungMa - its base attribute ("Atrybuty podstawowe"), as worn (with its
+	# "Atrybuty podstawowe rekawic +x%" lines); the wiki's range of its level while the client has not heard the value
+	# (the player's own glove: asked again by "/yitem", as a serpent piece's bonuses are)
+	def __AppendGloveBaseInformation(self, itemVnum, attrSlot):
+		extra = getattr(self, "ysetsExtra", 0)
+		(text, known) = yoharagear.GloveBaseLine(itemVnum, extra, attrSlot)
+		if not text:
+			return
+		if known:
+			self.AppendTextLine(text, self.GetChangeTextLineColor(1))
+			return
+		self.AppendTextLine(text, self.CONDITION_COLOR)
+		try:
+			ysets = __import__("ysets")
+			if ysets._lastOwn[0]:
+				ysets._AskServer()
+		except:
+			pass
+
 	def __SetItemTitle(self, itemVnum, metinSlot, attrSlot):
 		if self.__IsPolymorphItem(itemVnum):
 			self.__SetPolymorphItemTitle(metinSlot[0])
@@ -1314,12 +1333,17 @@ class ItemToolTip(ToolTip):
 			# (slots 6-7: Precyzja, Wola SungMa) are drawn as the item's fixed lines - white, under the limits, like
 			# Max PZ / Sila of the Ebonitowe Kolczyki - and only the five added bonuses below as bonuses
 			# (MT2009_PLUS_JADE_JEWELLERY_V1: a jade necklace's / earrings' too).
-			yoharaOwn = yoharagear.IsJadeJewellery(itemVnum) or yoharagear.IsGlove(itemVnum)
+			# MT2009_PLUS_GLOVE_BASE_V1 (the owner, 20 Oct): a glove's Will is its base attribute (the item's yextra, not a
+			# bonus slot) - drawn as its fixed line; its 6th and 7th bonus are the 6/7 system's, drawn as bonuses.
+			yoharaOwn = yoharagear.IsJadeJewellery(itemVnum)
 			if yoharaOwn:
 				self.__AppendAffectInformation(attrSlot)
 			else:
 				self.__AppendAffectInformation()
-			self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
+			if yoharagear.IsGlove(itemVnum):
+				self.__AppendGloveBaseInformation(itemVnum, attrSlot)
+			else:
+				self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
 			# MT2009_PLUS_SEONHAE_V1: armour and jewellery showed only the five
 			# bonuses - the 6th and 7th were never drawn.
 			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_RARE_START if yoharaOwn else player.ATTRIBUTE_SLOT_MAX_NUM)

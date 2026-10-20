@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """gen_edits.py [<game/src>] - writes edits.json of server-patches/rekawice (MT2009_PLUS_GLOVES_V1, README.md) from the
-code below; the developer's tool (the apply scripts read edits.json only). With a game/src dir it also checks that
+code below (MT2009_PLUS_GLOVE_BASE_V1 too); the developer's tool (the apply scripts read edits.json only). With a game/src dir it also checks that
 every edit's code is there exactly once (or its marker is). Applied after server-patches/precyzja; the logic is the
 overlay's playerbot_yohara_gear.cpp (Mt2009Glove*, Mt2009GearSocketPoints)."""
 import json
@@ -10,6 +10,11 @@ import sys
 M = 'MT2009_PLUS_GLOVES_V1'
 T = 'MT2009_PLUS_WILL_TALISMAN_V1'
 J = 'MT2009_PLUS_JADE_BRACELET_V1'
+G = 'MT2009_PLUS_GLOVE_BASE_V1'
+# the ysets lines (server-patches/ysets, applied before this patch) the glove's base attribute hooks next to
+YC = '\tMt2009YSetsCreate(item, bIsNewItem, bSkipSave); // MT2009_PLUS_YOHARA_SETS_V1 (create): its set / random bonuses\n'
+YP = ('\tMt2009YSetsItemPoints(this, m_pOwner, bAdd); // MT2009_PLUS_YOHARA_SETS_V1 (points): a serpent piece\'s random base '
+      'bonuses\n')
 
 
 def guard(tag):
@@ -77,6 +82,28 @@ EDITS = [
              '\t\t\t\t\tbool Mt2009GloveUseStone(LPCHARACTER, LPITEM, LPITEM);\n'
              '\t\t\t\t\treturn Mt2009GloveUseStone(this, item, item2);\n'
              '\t\t\t\t}\n'),
+    # MT2009_PLUS_GLOVE_BASE_V1 (the owner, 20 Oct): the glove's Will is its base attribute (the item's yextra -
+    # server-patches/ysets, player.item_yextra), its 6th and 7th bonus the 6/7 system's. Read / saved when the item is
+    # made, worn by ModifyPoints, an old 6th-slot Will moved once the loaded item has its bonuses.
+    dict(file='item_manager.cpp', marker=G + ' (load)',
+         old=YC,
+         new=YC + '\t{ // ' + G + ' (load): a Sung Ma glove\'s Will (its base attribute) - saved / read back\n'
+             '\t\tvoid Mt2009GloveLoad(LPITEM item, bool bIsNewItem, bool bSkipSave);\n'
+             '\t\tMt2009GloveLoad(item, bIsNewItem, bSkipSave);\n'
+             '\t}\n'),
+    dict(file='item.cpp', marker=G + ' (points)',
+         old=YP,
+         new='\t{ // ' + G + ' (points): a Sung Ma glove\'s Will (its base attribute, raised by its 6/7 "+x%" line)\n'
+             '\t\tvoid Mt2009GloveBasePoints(LPITEM item, LPCHARACTER owner, bool bAdd);\n'
+             '\t\tMt2009GloveBasePoints(this, m_pOwner, bAdd);\n'
+             '\t}\n' + YP),
+    dict(file='item.cpp', marker=G + ' (after created)',
+         old='bool CItem::OnAfterCreatedItem()\n{\n',
+         new='bool CItem::OnAfterCreatedItem()\n{\n'
+             '\t{ // ' + G + ' (after created): a glove with its Will still in the 6th bonus slot - its base attribute now\n'
+             '\t\tvoid Mt2009GloveAfterCreated(LPITEM item);\n'
+             '\t\tMt2009GloveAfterCreated(this);\n'
+             '\t}\n'),
 ]
 
 

@@ -11,6 +11,7 @@
 #include "item_manager.h"
 #include "questmanager.h"
 #include "log.h"
+#include "db.h"
 
 #include <algorithm>
 #include <vector>
@@ -149,30 +150,191 @@ bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType)
 	return false;
 }
 
-static void Mt2009GloveWrite(LPITEM item, int iValue)
+// MT2009_PLUS_GLOVE_BASE_V1 (the owner, 20 Oct: "Rekawice maja 5 bonusow, ktore mozna dodac standardowo, i 6-7 bonus,
+// ktory dodaje sie za odlamki i suplementy"): the glove's Will SungMa is its base attribute ("Atrybuty podstawowe"), no
+// longer its 6th bonus - slots 6 and 7 are the 6/7 system's (Seon-Hae, 71051 / 71052: Bonus67GloveRare, the pool's
+// glove column). The Will is kept in the item's yextra (server-patches/ysets: player.item_yextra by item id, read when
+// the item is loaded): bits 8-15 its value (its kind is the glove's, by the vnum); bits 0-3 (a set) stay 0 on a glove.
+// The client hears it by "YITEM" like a serpent piece's base bonuses (the same notify paths) and draws it as the
+// glove's own line. POINT_GLOVE_BASE_ATTR_PCT (a 6/7 line of the glove) raises it.
+namespace
 {
-	BYTE bWillType;
-	if (!Mt2009GloveType(item->GetVnum(), bWillType))
-		return;
-	item->SetForceAttribute(ITEM_ATTRIBUTE_RARE_START, bWillType, (short) iValue);
-	// MT2009_PLUS_BONUS67_V1 (glove write): the 7th line from the pool (71051 / 71052, Bonus67GloveRare) stays - a
-	// refine carries it as the engine copied it; a second line of the glove's own Will never stays
-	for (int i = ITEM_ATTRIBUTE_RARE_START + 1; i < ITEM_ATTRIBUTE_RARE_END; ++i)
-		if (item->GetAttributeType(i) && (i != ITEM_ATTRIBUTE_RARE_START + 1 || item->GetAttributeType(i) == bWillType))
-			item->SetForceAttribute(i, 0, 0);
+	const DWORD GLOVE_BASE_SHIFT = 8;
+	const DWORD GLOVE_BASE_MASK = 0xFF00;
+
+	int GloveBase(LPITEM item)
+	{
+		return (int) ((item->GetYExtra() & GLOVE_BASE_MASK) >> GLOVE_BASE_SHIFT);
+	}
+
+	void GloveBaseSave(LPITEM item)
+	{
+		if (!item->GetID())
+			return;
+		if (item->GetYExtra())
+			DBManager::instance().DirectQuery("REPLACE INTO item_yextra (id, yextra) VALUES (%u, %u)", item->GetID(), item->GetYExtra());
+		else
+			DBManager::instance().DirectQuery("DELETE FROM item_yextra WHERE id = %u", item->GetID());
+	}
+
+	// the value alone (no points, no save, no client) - a new glove, a loaded one
+	void GloveBaseStore(LPITEM item, int iValue)
+	{
+		item->SetYExtra((item->GetYExtra() & ~GLOVE_BASE_MASK) | ((DWORD) MINMAX(0, iValue, 255) << GLOVE_BASE_SHIFT));
+	}
+
+	void GloveBaseNotify(LPITEM item)
+	{
+		LPCHARACTER ch = item->GetOwner();
+		if (ch && (item->GetWindow() == INVENTORY || item->GetWindow() == EQUIPMENT))
+			Mt2009YSetsNotify(ch, 1, item->GetCell(), item->GetYExtra());
+	}
+
+	// a 6th/7th line of the glove's own Will kind (POINT_SUNGMA_*, flat): the Will as MT2009_PLUS_GLOVES_V1 kept it.
+	// The pool's glove column has no such line (Bonus67GloveRare never gives it), so it is always the old Will.
+	int GloveLegacySlot(LPITEM item, BYTE bWillType)
+	{
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+			if (item->GetAttributeType(i) == bWillType)
+				return i;
+		return -1;
+	}
+
+	// the old Will line out of the bonus slots (the 6/7 lines after it move up); its value, -1 when there was none
+	int GloveTakeLegacy(LPITEM item, BYTE bWillType)
+	{
+		const int iSlot = GloveLegacySlot(item, bWillType);
+		if (iSlot < 0)
+			return -1;
+		const int iValue = item->GetAttributeValue(iSlot);
+		int iTo = ITEM_ATTRIBUTE_RARE_START;
+		TPlayerItemAttribute aKeep[ITEM_ATTRIBUTE_RARE_NUM];
+		memset(aKeep, 0, sizeof(aKeep));
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+			if (item->GetAttributeType(i) && item->GetAttributeType(i) != bWillType)
+				aKeep[iTo++ - ITEM_ATTRIBUTE_RARE_START] = item->GetAttribute(i);
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+		{
+			const TPlayerItemAttribute& a = aKeep[i - ITEM_ATTRIBUTE_RARE_START];
+			if (item->GetAttributeType(i) != a.bType || item->GetAttributeValue(i) != a.sValue)
+				item->SetForceAttribute(i, a.bType, a.sValue);
+		}
+		return iValue;
+	}
+
+	// The glove's Will from now on: iValue >= 0 sets it, an old 6th/7th Will line (MT2009_PLUS_GLOVES_V1) wins over it
+	// and leaves the bonus slots. A worn glove gives the new value at once; saved and told to the client.
+	void GloveBaseApply(LPITEM item, BYTE bWillType, int iValue)
+	{
+		const bool bLegacy = GloveLegacySlot(item, bWillType) >= 0;
+		if (!bLegacy && (iValue < 0 || iValue == GloveBase(item)))
+			return;
+		const bool bWorn = item->IsEquipped() && item->GetOwner();
+		if (bWorn)
+			item->ModifyPoints(false);
+		const int iOld = GloveTakeLegacy(item, bWillType);
+		GloveBaseStore(item, iOld > 0 ? iOld : (iValue >= 0 ? iValue : GloveBase(item)));
+		if (bWorn)
+			item->ModifyPoints(true);
+		GloveBaseSave(item);
+		GloveBaseNotify(item);
+		if (bLegacy)
+			sys_log(0, "GLOVE_BASE: glove %u (id %u) - its 6th-slot Will %d is its base attribute now", item->GetVnum(),
+					item->GetID(), iOld);
+	}
+
+	// "Atrybuty podstawowe rekawic +x%" - the glove's own 6th/7th lines
+	int GloveBasePct(LPITEM item)
+	{
+		int iPct = 0;
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+			if (item->GetAttributeType(i) == POINT_GLOVE_BASE_ATTR_PCT)
+				iPct += item->GetAttributeValue(i);
+		return iPct;
+	}
 }
 
 // ITEM_MANAGER::CreateItem (a new item): the glove's Will, a random value of its level's range - always there
-// (the wiki gives every glove its Will line).
+// (the wiki gives every glove its Will). Saved by Mt2009GloveLoad (it knows whether the item is saved at all).
 void Mt2009GloveCreate(LPITEM item)
 {
 	BYTE bWillType;
 	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
 		return;
-	Mt2009GloveWrite(item, RandomIn(s_aGloveWill[item->GetVnum() % 10]));
+	GloveBaseStore(item, RandomIn(s_aGloveWill[item->GetVnum() % 10]));
 }
 
-// CItem::CopyAttributeTo (a refine): the Will at the same place of the new level's range; a missing one rolled.
+// MT2009_PLUS_GLOVE_BASE_V1 (load): ITEM_MANAGER::CreateItem, after the ysets' own yextra - a new glove's Will is
+// saved, a loaded glove's read back; a loaded glove without one (made again by a system that copies only the sockets
+// and the bonuses) gets its level's random value, as a new one.
+void Mt2009GloveLoad(LPITEM item, bool bIsNewItem, bool bSkipSave)
+{
+	BYTE bWillType;
+	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
+		return;
+	if (!bIsNewItem)
+	{
+		std::unique_ptr<SQLMsg> pMsg(DBManager::instance().DirectQuery("SELECT yextra FROM item_yextra WHERE id = %u", item->GetID()));
+		SQLResult* pRes = pMsg ? pMsg->Get() : NULL;
+		MYSQL_ROW row = pRes && pRes->uiNumRows > 0 ? mysql_fetch_row(pRes->pSQLResult) : NULL;
+		DWORD dwExtra = 0;
+		if (row && row[0])
+			str_to_number(dwExtra, row[0]);
+		item->SetYExtra(dwExtra);
+		if (GloveBase(item) > 0)
+			return;
+		GloveBaseStore(item, RandomIn(s_aGloveWill[item->GetVnum() % 10]));
+	}
+	if (!bSkipSave)
+		GloveBaseSave(item);
+}
+
+// MT2009_PLUS_GLOVE_BASE_V1 (after created): CItem::OnAfterCreatedItem (a loaded item with its sockets and bonuses) - a
+// glove still holding its Will as the 6th bonus (a copy older than the migration: the mall, a held item) moves it to
+// its base attribute.
+void Mt2009GloveAfterCreated(LPITEM item)
+{
+	BYTE bWillType;
+	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
+		return;
+	GloveBaseApply(item, bWillType, -1);
+}
+
+// A glove made again from what a system kept of it (Seon-Hae's hold): its Will (the kept yextra) back, an old 6th-slot
+// Will moved to it.
+void Mt2009GloveRestore(LPITEM item, DWORD dwYExtra)
+{
+	BYTE bWillType;
+	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
+		return;
+	const int iKept = (int) ((dwYExtra & GLOVE_BASE_MASK) >> GLOVE_BASE_SHIFT);
+	GloveBaseApply(item, bWillType, iKept > 0 ? iKept : -1);
+}
+
+// MT2009_PLUS_GLOVE_BASE_V1 (points): CItem::ModifyPoints - the glove's Will, raised by its "Atrybuty podstawowe
+// rekawic +x%" lines.
+void Mt2009GloveBasePoints(LPITEM item, LPCHARACTER owner, bool bAdd)
+{
+	BYTE bWillType;
+	int iValue;
+	if (!owner || !item || (iValue = Mt2009GloveBaseWill(item, bWillType)) <= 0)
+		return;
+	owner->PointChange(bWillType, bAdd ? iValue : -iValue);
+}
+
+// The glove's Will as worn (its base attribute + "Atrybuty podstawowe rekawic +x%"), 0 for anything else - the points
+// and the bots' gear scoring.
+int Mt2009GloveBaseWill(LPITEM item, BYTE& bWillType)
+{
+	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
+		return 0;
+	const int iBase = GloveBase(item);
+	const int iPct = GloveBasePct(item);
+	return iPct > 0 ? iBase + iBase * iPct / 100 : iBase;
+}
+
+// CItem::CopyAttributeTo (a refine): the Will at the same place of the new level's range (an old 6th-slot Will too);
+// the 6/7 lines the engine copied stay; an old Will line copied with them leaves the new glove's bonus slots.
 void Mt2009GloveRefine(LPITEM pOld, LPITEM pNew)
 {
 	BYTE bWillType, bNewWillType;
@@ -181,11 +343,16 @@ void Mt2009GloveRefine(LPITEM pOld, LPITEM pNew)
 		return;
 	const short* rOld = s_aGloveWill[pOld->GetVnum() % 10];
 	const short* rNew = s_aGloveWill[pNew->GetVnum() % 10];
-	int iValue = -1;
-	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END && iValue < 0; ++i)
-		if (pOld->GetAttributeType(i) == bWillType)
-			iValue = Carry(pOld->GetAttributeValue(i), rOld, rNew);
-	Mt2009GloveWrite(pNew, iValue >= 0 ? iValue : RandomIn(rNew));
+	int iOld = GloveBase(pOld);
+	if (iOld <= 0)
+	{
+		const int iSlot = GloveLegacySlot(pOld, bWillType);
+		iOld = iSlot >= 0 ? pOld->GetAttributeValue(iSlot) : 0;
+	}
+	GloveTakeLegacy(pNew, bWillType);
+	GloveBaseStore(pNew, iOld > 0 ? Carry(iOld, rOld, rNew) : RandomIn(rNew));
+	GloveBaseSave(pNew);
+	GloveBaseNotify(pNew);
 }
 
 // CHARACTER::UseItemEx, ITEM_METIN: a Kamien (Mocy) Demonow (METIN_SUNGMA) - only into a glove - or anything into a

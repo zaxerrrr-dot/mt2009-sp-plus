@@ -1,7 +1,8 @@
 // MT2009_PLUS_GLOVES_V1 / MT2009_PLUS_PRECISION_V1 / MT2009_PLUS_JADE_BRACELET_V2: the Yohara gear of the second 3.x
 // exe round (server-patches/rekawice, precyzja, obreczjadeitu2 - their README.md):
-//   * Rekawice Sung Ma (23000-23039): the glove slot (WEAR_GLOVE, ENABLE_GLOVE_SYSTEM), the glove's Sung Ma Will line
-//     (6th bonus slot, the wiki's range of the level, carried by a refine), Kamienie (Mocy) Demonow (METIN_SUNGMA) in
+//   * Rekawice Sung Ma (23000-23039): the glove slot (WEAR_GLOVE, ENABLE_GLOVE_SYSTEM), the glove's Sung Ma Will - its
+//     base attribute (MT2009_PLUS_GLOVE_BASE_V1: the item's yextra, not a bonus slot; the wiki's range of the level,
+//     carried by a refine; the 6th and 7th bonus slots are the 6/7 system's), Kamienie (Mocy) Demonow (METIN_SUNGMA) in
 //     its three sockets - a random Will of the stone's value, kept in the socket as Owsap's number
 //     apply * 10000 + stone level * 1000 + stone kind * 100 + value;
 //   * Obrecze Jadeitu (14580-14619), Kolie Jadeitu (16580-16619) and Klipsy Jadeitu (17570-17609,
@@ -34,5 +35,9 @@ namespace yohara_gear
 	// A Sung Ma stone's socket number: its Will (POINT_SUNGMA_*) and value; false for any other socket.
 	bool DecodeSungmaSocket(long lSocket, unsigned char& bPoint, int& iValue);
 }
+
+// MT2009_PLUS_GLOVE_BASE_V1: a glove's Will as worn (its base attribute raised by its "Atrybuty podstawowe rekawic +x%"
+// lines) and its kind (POINT_SUNGMA_*); 0 for any other item.
+int Mt2009GloveBaseWill(LPITEM item, unsigned char& bWillType);
 
 #endif
