@@ -71,6 +71,11 @@ quest razador_dungeon begin
 				cog_permille = 20,
 				maat_permille = 40,
 				chests_min = 2, chests_max = 5,
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the kills a wave step asks (watch_targets), how often the
+				-- watch looks and how long a step may go without a kill or a target being hurt.
+				tw_waves = {[1] = 20, [3] = 20},
+				target_watch = 15,
+				stage_watch = 90,
 			}
 		end
 
@@ -266,15 +271,20 @@ quest razador_dungeon begin
 			d.kill_unique("idoor"..step)
 			d.notice("Razador: "..razador_dungeon.step_text(step))
 			if step == 1 then
+				razador_dungeon.wave_start() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 				d.regen_file(c.path.."fd_a.txt")
+				razador_dungeon.watch_start(0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			elseif step == 2 then
 				d.set_regen_file(c.path.."fd_b.txt")
 				d.set_unique("stone2", d.spawn_mob(20386, c.stone2[1], c.stone2[2]))
 			elseif step == 3 then
+				razador_dungeon.wave_start() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 				d.regen_file(c.path.."fd_c.txt")
+				razador_dungeon.watch_start(0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			elseif step == 4 then
 				d.set_regen_file(c.path.."fd_d.txt")
-				d.spawn_mob(6051, c.ignitor[1], c.ignitor[2])
+				razador_dungeon.spawn_target(1, 6051, c.ignitor[1], c.ignitor[2]) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+				razador_dungeon.watch_start(1)
 			elseif step == 5 then
 				d.set_regen_file(c.path.."fd_e.txt")
 				for i = 1, table.getn(c.stones5) do
@@ -283,7 +293,8 @@ quest razador_dungeon begin
 				d.setf("stones", table.getn(c.stones5))
 			elseif step == 6 then
 				d.set_regen_file(c.path.."fd_f.txt")
-				d.spawn_mob(8057, c.metin6[1], c.metin6[2])
+				razador_dungeon.spawn_target(1, 8057, c.metin6[1], c.metin6[2]) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+				razador_dungeon.watch_start(1)
 			end
 		end
 
@@ -320,6 +331,122 @@ quest razador_dungeon begin
 			server_timer("razador_end", 1, d.get_map_index())
 		end
 
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"; the pattern of
+		-- MT2009_PLUS_WUKONG_TARGETS_V1): a step that counts kills no longer waits for ever for a kill event
+		-- that never comes (a kill the core gave no quest event, a monster removed). Every target_watch
+		-- seconds, while the step runs:
+		-- - a wave of a regen file (groups - too many to name; cfg().tw_waves, the kills it asks): the
+		--   monsters standing, less those that stood before the wave (tw_others), fewer than the kills
+		--   still wanted - the step ends;
+		-- - named targets (instance uniques, target1..n): fewer standing than "tleft" says - "tleft" (and
+		--   "kills") follow them, and the step ends at 0;
+		-- - stage_watch seconds without a kill or a target losing health - the step ends (a target nobody
+		--   can reach).
+		function target_key(step, i)
+			return "tw"..step.."_"..i
+		end
+
+		-- The watch from now on, for this step: n named targets (0 = a wave, or nothing named).
+		function watch_start(n)
+			d.setf("tw_step", d.getf("step"))
+			d.setf("targets", n)
+			d.setf("tleft", n)
+			d.setf("tw_kills", d.getf("kills"))
+			d.setf("progress_time", get_global_time())
+			clear_server_timer("razador_watch", d.get_map_index())
+			server_timer("razador_watch", razador_dungeon.cfg().target_watch, d.get_map_index())
+		end
+
+		-- Before a wave's regen file: what stands already is not the wave's.
+		function wave_start()
+			d.setf("tw_others", d.count_monster())
+		end
+
+		function spawn_target(i, vnum, x, y)
+			local vid = d.spawn_mob(vnum, x, y)
+			if vid ~= 0 then
+				d.set_unique(razador_dungeon.target_key(d.getf("step"), i), vid)
+			end
+			d.setf("target"..i, vid)
+			d.setf("target_hp"..i, 100)
+		end
+
+		-- A kill event of a target: progress, and the target is no longer counted standing.
+		function target_down(vid)
+			d.setf("progress_time", get_global_time())
+			for i = 1, d.getf("targets") do
+				if d.getf("target"..i) == vid then
+					d.setf("target"..i, 0)
+					d.setf("tleft", d.getf("tleft") - 1)
+				end
+			end
+		end
+
+		-- The targets still standing; a target hurt since the last look counts as progress.
+		function living_targets(step)
+			local n = 0
+			for i = 1, d.getf("targets") do
+				if d.getf("target"..i) ~= 0 then
+					local key = razador_dungeon.target_key(step, i)
+					if d.is_unique_dead(key) then
+						d.setf("target"..i, 0)
+					else
+						n = n + 1
+						local hp = d.unique_get_hp_perc(key)
+						if hp < d.getf("target_hp"..i) then
+							d.setf("progress_time", get_global_time())
+						end
+						d.setf("target_hp"..i, hp)
+					end
+				end
+			end
+			return n
+		end
+
+		-- true while the watch goes on
+		function watch_targets()
+			local c = razador_dungeon.cfg()
+			local step = d.getf("step")
+			if d.getf("closed") == 1 or d.getf("active") ~= 1 or d.getf("tw_step") ~= step then
+				return false
+			end
+			local now = get_global_time()
+			local need = c.tw_waves[step]
+			if d.getf("targets") > 0 then
+				local living = razador_dungeon.living_targets(step)
+				if living < d.getf("tleft") then
+					d.setf("tleft", living)
+					d.setf("kills", d.getf("targets") - living)
+					d.setf("progress_time", now)
+					if living <= 0 then
+						d.notice("Razador: Ostatnie cele etapu zniknê³y z mapy.")
+						razador_dungeon.step_done()
+						return false
+					end
+					d.notice("Razador: Pozosta³o: "..living)
+				end
+			elseif need ~= nil then
+				local k = d.getf("kills")
+				if k ~= d.getf("tw_kills") then
+					d.setf("tw_kills", k)
+					d.setf("progress_time", now)
+				end
+				if d.count_monster() - d.getf("tw_others") < need - k then
+					d.notice("Razador: W komnacie zosta³o za ma³o potworów, by skoñczyæ zadanie.")
+					razador_dungeon.step_done()
+					return false
+				end
+			else
+				return false
+			end
+			if now - d.getf("progress_time") > c.stage_watch then
+				d.notice("Razador: Ostatnie cele etapu rozpad³y siê same.")
+				razador_dungeon.step_done()
+				return false
+			end
+			return true
+		end
+
 		-- MT2009_PLUS_DUNGEON_ONE_WARP_V1: one loading screen (the owner, 29 September: the guard's
 		-- warp to the lobby and then the lobby's warp into the instance were two). The guard
 		-- (map 62, game1) asks for a new instance of 351 with d.new_jump_pids: game2, which
@@ -347,7 +474,14 @@ quest razador_dungeon begin
 				d.set_unique("door"..i, d.spawn_mob_ac_dir(20387, c.doors[i][1], c.doors[i][2], c.doors_dir[i]))
 				d.set_unique("idoor"..i, d.spawn_mob_ac_dir(20388, c.idoors[i][1], c.idoors[i][2], c.idoors_dir[i]))
 			end
-			server_timer("razador_tick", 60, d.get_map_index())
+			-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (timers): an earlier instance with the same index may have
+			-- left its timers behind; they would run this instance's clock and stages, and block its own.
+			local idx = d.get_map_index()
+			clear_server_timer("razador_tick", idx)
+			clear_server_timer("razador_boss", idx)
+			clear_server_timer("razador_watch", idx)
+			clear_server_timer("razador_end", idx)
+			server_timer("razador_tick", 60, idx)
 		end
 
 		function entry_xy()
@@ -806,6 +940,15 @@ quest razador_dungeon begin
 			end
 		end
 
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the step's kills and targets, every target_watch seconds.
+		when razador_watch.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if razador_dungeon.watch_targets() then
+					server_timer("razador_watch", razador_dungeon.cfg().target_watch, get_server_timer_arg())
+				end
+			end
+		end
+
 		-- MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1: the countdown after the last boss (end_count), a second at a time.
 		when razador_end.server_timer begin
 			if d.select(get_server_timer_arg()) then
@@ -860,10 +1003,12 @@ quest razador_dungeon begin
 		end
 
 		when 6051.kill with razador_dungeon.inside() and d.getf("active") == 1 and d.getf("step") == 4 begin
+			razador_dungeon.target_down(npc.get_vid()) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			razador_dungeon.step_done()
 		end
 
 		when 8057.kill with razador_dungeon.inside() and d.getf("active") == 1 and d.getf("step") == 6 begin
+			razador_dungeon.target_down(npc.get_vid()) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			razador_dungeon.step_done()
 		end
 
