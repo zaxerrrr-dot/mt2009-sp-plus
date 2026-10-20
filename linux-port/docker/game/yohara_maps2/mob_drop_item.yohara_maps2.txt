@@ -1263,16 +1263,15 @@ Group	MT2009_ymaps2_6784
 	12	50529	1	0.03	-- Skrzynia Ksiag (9.skill)
 	13	83067	1	0.03	-- Skrzynia z Bransoletka
 	14	83054	1	0.03	-- Idealny Klucz
-	15	50124	1	0.08	-- Sprochniala Skrzynia
-	16	50662	1	0.08	-- Jadeit Nocy
-	17	50663	1	0.08	-- Jadeit Dymu
-	18	83065	1	0.1	-- Losowa Skrzynia Skarbow
-	19	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
-	20	31246	1	0.08	-- Wzor Rekawicy
-	21	31247	1	0.03	-- Czerwona Runa SungMa
-	22	31248	1	0.03	-- Liliowa Runa SungMa
-	23	31249	1	0.03	-- Niebieska Runa SungMa
-	24	31250	1	0.03	-- Zielona Runa SungMa
+	15	50662	1	0.08	-- Jadeit Nocy
+	16	50663	1	0.08	-- Jadeit Dymu
+	17	83065	1	0.1	-- Losowa Skrzynia Skarbow
+	18	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	19	31246	1	0.08	-- Wzor Rekawicy
+	20	31247	1	0.03	-- Czerwona Runa SungMa
+	21	31248	1	0.03	-- Liliowa Runa SungMa
+	22	31249	1	0.03	-- Niebieska Runa SungMa
+	23	31250	1	0.03	-- Zielona Runa SungMa
 }
 
 Group	MT2009_ymaps2_6785
@@ -1293,22 +1292,21 @@ Group	MT2009_ymaps2_6785
 	12	50529	1	0.03	-- Skrzynia Ksiag (9.skill)
 	13	83067	1	0.03	-- Skrzynia z Bransoletka
 	14	83054	1	0.03	-- Idealny Klucz
-	15	50124	1	0.08	-- Sprochniala Skrzynia
-	16	50662	1	0.08	-- Jadeit Nocy
-	17	50663	1	0.08	-- Jadeit Dymu
-	18	83065	1	0.1	-- Losowa Skrzynia Skarbow
-	19	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
-	20	31241	1	0.02	-- Polyskujaca Krwawa Perla
-	21	31242	1	0.08	-- Kamien Broni Pln. Wiatru
-	22	31246	1	0.08	-- Wzor Rekawicy
-	23	39081	1	0.03	-- Swiety Fragment (120)
-	24	31247	1	0.03	-- Czerwona Runa SungMa
-	25	31248	1	0.03	-- Liliowa Runa SungMa
-	26	31249	1	0.03	-- Niebieska Runa SungMa
-	27	31250	1	0.03	-- Zielona Runa SungMa
-	28	39078	1	0.05	-- Szary Lsniacy Odlamek
-	29	39079	1	0.05	-- Zielony Lsniacy Odlamek
-	30	39080	1	0.05	-- Zolty Lsniacy Odlamek
+	15	50662	1	0.08	-- Jadeit Nocy
+	16	50663	1	0.08	-- Jadeit Dymu
+	17	83065	1	0.1	-- Losowa Skrzynia Skarbow
+	18	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	19	31241	1	0.02	-- Polyskujaca Krwawa Perla
+	20	31242	1	0.08	-- Kamien Broni Pln. Wiatru
+	21	31246	1	0.08	-- Wzor Rekawicy
+	22	39081	1	0.03	-- Swiety Fragment (120)
+	23	31247	1	0.03	-- Czerwona Runa SungMa
+	24	31248	1	0.03	-- Liliowa Runa SungMa
+	25	31249	1	0.03	-- Niebieska Runa SungMa
+	26	31250	1	0.03	-- Zielona Runa SungMa
+	27	39078	1	0.05	-- Szary Lsniacy Odlamek
+	28	39079	1	0.05	-- Zielony Lsniacy Odlamek
+	29	39080	1	0.05	-- Zolty Lsniacy Odlamek
 }
 
 Group	MT2009_ymaps2_6786
@@ -1331,23 +1329,22 @@ Group	MT2009_ymaps2_6786
 	14	50529	1	0.03	-- Skrzynia Ksiag (9.skill)
 	15	83067	1	0.03	-- Skrzynia z Bransoletka
 	16	83054	1	0.03	-- Idealny Klucz
-	17	50124	1	0.08	-- Sprochniala Skrzynia
-	18	50662	1	0.08	-- Jadeit Nocy
-	19	50663	1	0.08	-- Jadeit Dymu
-	20	83065	1	0.1	-- Losowa Skrzynia Skarbow
-	21	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
-	22	31241	1	0.02	-- Polyskujaca Krwawa Perla
-	23	31242	1	0.08	-- Kamien Broni Pln. Wiatru
-	24	31259	1	0.03	-- Kowadlo Pln. Wiatru
-	25	31246	1	0.08	-- Wzor Rekawicy
-	26	39081	1	0.03	-- Swiety Fragment (120)
-	27	31247	1	0.03	-- Czerwona Runa SungMa
-	28	31248	1	0.03	-- Liliowa Runa SungMa
-	29	31249	1	0.03	-- Niebieska Runa SungMa
-	30	31250	1	0.03	-- Zielona Runa SungMa
-	31	39078	1	0.05	-- Szary Lsniacy Odlamek
-	32	39079	1	0.05	-- Zielony Lsniacy Odlamek
-	33	39080	1	0.05	-- Zolty Lsniacy Odlamek
+	17	50662	1	0.08	-- Jadeit Nocy
+	18	50663	1	0.08	-- Jadeit Dymu
+	19	83065	1	0.1	-- Losowa Skrzynia Skarbow
+	20	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	21	31241	1	0.02	-- Polyskujaca Krwawa Perla
+	22	31242	1	0.08	-- Kamien Broni Pln. Wiatru
+	23	31259	1	0.03	-- Kowadlo Pln. Wiatru
+	24	31246	1	0.08	-- Wzor Rekawicy
+	25	39081	1	0.03	-- Swiety Fragment (120)
+	26	31247	1	0.03	-- Czerwona Runa SungMa
+	27	31248	1	0.03	-- Liliowa Runa SungMa
+	28	31249	1	0.03	-- Niebieska Runa SungMa
+	29	31250	1	0.03	-- Zielona Runa SungMa
+	30	39078	1	0.05	-- Szary Lsniacy Odlamek
+	31	39079	1	0.05	-- Zielony Lsniacy Odlamek
+	32	39080	1	0.05	-- Zolty Lsniacy Odlamek
 }
 
 Group	MT2009_ymaps2_6787
@@ -1365,14 +1362,13 @@ Group	MT2009_ymaps2_6787
 	9	50529	1	0.03	-- Skrzynia Ksiag (9.skill)
 	10	83067	1	0.03	-- Skrzynia z Bransoletka
 	11	83054	1	0.03	-- Idealny Klucz
-	12	50124	1	0.08	-- Sprochniala Skrzynia
-	13	50662	1	0.08	-- Jadeit Nocy
-	14	50663	1	0.08	-- Jadeit Dymu
-	15	83065	1	0.1	-- Losowa Skrzynia Skarbow
-	16	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
-	17	27992	1	0.05	-- Biala Perla
-	18	27993	1	0.05	-- Niebieska Perla
-	19	27994	1	0.05	-- Krwawa Perla
+	12	50662	1	0.08	-- Jadeit Nocy
+	13	50663	1	0.08	-- Jadeit Dymu
+	14	83065	1	0.1	-- Losowa Skrzynia Skarbow
+	15	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	16	27992	1	0.05	-- Biala Perla
+	17	27993	1	0.05	-- Niebieska Perla
+	18	27994	1	0.05	-- Krwawa Perla
 }
 
 Group	MT2009_ymaps2_6788
@@ -1396,27 +1392,26 @@ Group	MT2009_ymaps2_6788
 	15	50529	1	0.03	-- Skrzynia Ksiag (9.skill)
 	16	83067	1	0.03	-- Skrzynia z Bransoletka
 	17	83054	1	0.03	-- Idealny Klucz
-	18	50124	1	0.08	-- Sprochniala Skrzynia
-	19	50662	1	0.08	-- Jadeit Nocy
-	20	50663	1	0.08	-- Jadeit Dymu
-	21	83065	1	0.1	-- Losowa Skrzynia Skarbow
-	22	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
-	23	81000	1	0.05	-- Talizman Woli SILA+0
-	24	81300	1	0.05	-- Talizman Woli WIT+0
-	25	81250	1	0.05	-- Talizman Woli ODP+0
-	26	81550	1	0.05	-- Talizman Woli INT+0
-	27	31216	1	0.25	-- Plyta z Surowego Metalu
-	28	31218	1	0.25	-- Plyta ze Stali Kuzniczej
-	29	31224	1	0.25	-- Plyta ze Stali Ozdobnej
-	30	31259	1	0.03	-- Kowadlo Pln. Wiatru
-	31	31239	1	0.02	-- Polyskujaca Biala Perla
-	32	31240	1	0.02	-- Polyskujaca Nieb. Perla
-	33	31241	1	0.02	-- Polyskujaca Krwawa Perla
-	34	55001	1	0.05	-- Odzywka (Proteinowa Przekaska)
-	35	31247	1	0.03	-- Czerwona Runa SungMa
-	36	31248	1	0.03	-- Liliowa Runa SungMa
-	37	31249	1	0.03	-- Niebieska Runa SungMa
-	38	31250	1	0.03	-- Zielona Runa SungMa
+	18	50662	1	0.08	-- Jadeit Nocy
+	19	50663	1	0.08	-- Jadeit Dymu
+	20	83065	1	0.1	-- Losowa Skrzynia Skarbow
+	21	83066	1	0.1	-- Los. Klucz do Skrz. Sk.
+	22	81000	1	0.05	-- Talizman Woli SILA+0
+	23	81300	1	0.05	-- Talizman Woli WIT+0
+	24	81250	1	0.05	-- Talizman Woli ODP+0
+	25	81550	1	0.05	-- Talizman Woli INT+0
+	26	31216	1	0.25	-- Plyta z Surowego Metalu
+	27	31218	1	0.25	-- Plyta ze Stali Kuzniczej
+	28	31224	1	0.25	-- Plyta ze Stali Ozdobnej
+	29	31259	1	0.03	-- Kowadlo Pln. Wiatru
+	30	31239	1	0.02	-- Polyskujaca Biala Perla
+	31	31240	1	0.02	-- Polyskujaca Nieb. Perla
+	32	31241	1	0.02	-- Polyskujaca Krwawa Perla
+	33	55001	1	0.05	-- Odzywka (Proteinowa Przekaska)
+	34	31247	1	0.03	-- Czerwona Runa SungMa
+	35	31248	1	0.03	-- Liliowa Runa SungMa
+	36	31249	1	0.03	-- Niebieska Runa SungMa
+	37	31250	1	0.03	-- Zielona Runa SungMa
 }
 
 Group	MT2009_ymaps2_6789

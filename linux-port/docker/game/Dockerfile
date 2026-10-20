@@ -2707,6 +2707,28 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
       test "$(grep -c -E "[[:blank:]]$6[[:space:]]*\$" "$N")" -ge 1 || { echo "FATAL: link $6 on $2"; exit 1; }; \
     done \
  && echo "links: Yohara dung4 (Seoganland -> Wieza Sung Mahi, Dongan -> Jaskinie Gnolli)"
+# MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia (50124) drops from nothing any more (the owner, 15 October
+# 2026, fix 7) - after every share step, so no append brings it back. The Yohara files (tools/yohara_items, yohara_maps3,
+# yohara_pb, yohara_iluzja, yohara_chestdrops) and special_item_group.dungeons.txt (54700) no longer have it; this
+# takes the package's rows too: the ice monsters 1131-1137, the Setaou 2401-2403, Beran-Setaou's 0% rows
+# (MT2009_PLUS_DRAGON_NO_ROTTEN_CHEST_V1) and the Zelazna Skrzynia's group (50122). The loaders stop at the first
+# missing number (item_manager_read_tables.cpp, k = 1, 2, ...), so a group that lost a row is numbered again; the chest's
+# own group (Vnum 50124) stays - a chest someone already has still opens.
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && for F in "$L/mob_drop_item.txt" "$L/special_item_group.txt"; do \
+      awk -v v=50124 ' \
+        /^[[:blank:]]*Group([[:blank:]]|$)/ { k = 0; gone = 0; print; next } \
+        /^[[:blank:]]*}/ { if (gone && k == 0) { print "FATAL: a group of nothing but 50124" > "/dev/stderr"; bad = 1 } gone = 0; print; next } \
+        $1 ~ /^[0-9]+$/ && NF >= 3 { \
+          if ($2 == v) { cut++; gone = 1; next } \
+          k++; \
+          if (gone) { match($0, /^[[:blank:]]*[0-9]+/); lead = substr($0, 1, RLENGTH); sub(/[0-9]+$/, "", lead); $0 = lead k substr($0, RLENGTH + 1) } \
+          print; next } \
+        { print } \
+        END { printf "share: %d row(s) of 50124 cut\n", cut > "/dev/stderr"; if (bad) exit 1 }' "$F" > "$F.new"; \
+      mv "$F.new" "$F"; \
+      test "$(awk '$1 ~ /^[0-9]+$/ && $2 == "50124"' "$F" | wc -l)" = 0 || { echo "FATAL: 50124 left in $F"; exit 1; }; \
+    done
 COPY --from=quests /out-quest/ /opt/metin2/share/locale/
 
 # Seed for a core's mark/ directory (guild symbols): copied into the state

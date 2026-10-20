@@ -28,14 +28,13 @@ Group	MT2009_ymaps3_6792
 	13	83067	1	0.03	-- Skrzynia z Bransoletka
 	14	83054	1	0.03	-- Idealny Klucz
 	15	70050	1	0.1	-- Symbol Krola Przepowiedni
-	16	50124	1	0.1	-- Sprochniala Skrzynia
-	17	31246	1	0.15	-- Wzor Rekawicy
-	18	31247	1	0.08	-- Czerwona Runa SungMa
-	19	31248	1	0.08	-- Liliowa Runa SungMa
-	20	31249	1	0.08	-- Niebieska Runa SungMa
-	21	31250	1	0.08	-- Zielona Runa SungMa
-	22	31251	1	0.15	-- Utwardzacz Skory
-	23	31252	1	0.08	-- Utwardzacz Skory+
+	16	31246	1	0.15	-- Wzor Rekawicy
+	17	31247	1	0.08	-- Czerwona Runa SungMa
+	18	31248	1	0.08	-- Liliowa Runa SungMa
+	19	31249	1	0.08	-- Niebieska Runa SungMa
+	20	31250	1	0.08	-- Zielona Runa SungMa
+	21	31251	1	0.15	-- Utwardzacz Skory
+	22	31252	1	0.08	-- Utwardzacz Skory+
 }
 
 Group	MT2009_ymaps3_6793
@@ -57,20 +56,19 @@ Group	MT2009_ymaps3_6793
 	13	83067	1	0.03	-- Skrzynia z Bransoletka
 	14	83054	1	0.03	-- Idealny Klucz
 	15	70050	1	0.1	-- Symbol Krola Przepowiedni
-	16	50124	1	0.1	-- Sprochniala Skrzynia
-	17	31246	1	0.15	-- Wzor Rekawicy
-	18	31247	1	0.08	-- Czerwona Runa SungMa
-	19	31248	1	0.08	-- Liliowa Runa SungMa
-	20	31249	1	0.08	-- Niebieska Runa SungMa
-	21	31250	1	0.08	-- Zielona Runa SungMa
-	22	31251	1	0.15	-- Utwardzacz Skory
-	23	31252	1	0.08	-- Utwardzacz Skory+
-	24	31241	1	0.1	-- Polyskujaca Krwawa Perla
-	25	31242	1	0.15	-- Kamien Broni Pln. Wiatru
-	26	39078	1	0.04	-- Szary Lsniacy Odlamek
-	27	39079	1	0.04	-- Zielony Lsniacy Odlamek
-	28	39080	1	0.04	-- Zolty Lsniacy Odlamek
-	29	39081	1	0.02	-- Swiety Fragment (120)
+	16	31246	1	0.15	-- Wzor Rekawicy
+	17	31247	1	0.08	-- Czerwona Runa SungMa
+	18	31248	1	0.08	-- Liliowa Runa SungMa
+	19	31249	1	0.08	-- Niebieska Runa SungMa
+	20	31250	1	0.08	-- Zielona Runa SungMa
+	21	31251	1	0.15	-- Utwardzacz Skory
+	22	31252	1	0.08	-- Utwardzacz Skory+
+	23	31241	1	0.1	-- Polyskujaca Krwawa Perla
+	24	31242	1	0.15	-- Kamien Broni Pln. Wiatru
+	25	39078	1	0.04	-- Szary Lsniacy Odlamek
+	26	39079	1	0.04	-- Zielony Lsniacy Odlamek
+	27	39080	1	0.04	-- Zolty Lsniacy Odlamek
+	28	39081	1	0.02	-- Swiety Fragment (120)
 }
 
 Group	MT2009_ymaps3_6794
@@ -94,21 +92,20 @@ Group	MT2009_ymaps3_6794
 	15	83067	1	0.03	-- Skrzynia z Bransoletka
 	16	83054	1	0.03	-- Idealny Klucz
 	17	70050	1	0.1	-- Symbol Krola Przepowiedni
-	18	50124	1	0.1	-- Sprochniala Skrzynia
-	19	31246	1	0.15	-- Wzor Rekawicy
-	20	31247	1	0.08	-- Czerwona Runa SungMa
-	21	31248	1	0.08	-- Liliowa Runa SungMa
-	22	31249	1	0.08	-- Niebieska Runa SungMa
-	23	31250	1	0.08	-- Zielona Runa SungMa
-	24	31251	1	0.15	-- Utwardzacz Skory
-	25	31252	1	0.08	-- Utwardzacz Skory+
-	26	31241	1	0.1	-- Polyskujaca Krwawa Perla
-	27	31242	1	0.15	-- Kamien Broni Pln. Wiatru
-	28	31259	1	0.1	-- Kowadlo Pln. Wiatru
-	29	39078	1	0.04	-- Szary Lsniacy Odlamek
-	30	39079	1	0.04	-- Zielony Lsniacy Odlamek
-	31	39080	1	0.04	-- Zolty Lsniacy Odlamek
-	32	39081	1	0.02	-- Swiety Fragment (120)
+	18	31246	1	0.15	-- Wzor Rekawicy
+	19	31247	1	0.08	-- Czerwona Runa SungMa
+	20	31248	1	0.08	-- Liliowa Runa SungMa
+	21	31249	1	0.08	-- Niebieska Runa SungMa
+	22	31250	1	0.08	-- Zielona Runa SungMa
+	23	31251	1	0.15	-- Utwardzacz Skory
+	24	31252	1	0.08	-- Utwardzacz Skory+
+	25	31241	1	0.1	-- Polyskujaca Krwawa Perla
+	26	31242	1	0.15	-- Kamien Broni Pln. Wiatru
+	27	31259	1	0.1	-- Kowadlo Pln. Wiatru
+	28	39078	1	0.04	-- Szary Lsniacy Odlamek
+	29	39079	1	0.04	-- Zielony Lsniacy Odlamek
+	30	39080	1	0.04	-- Zolty Lsniacy Odlamek
+	31	39081	1	0.02	-- Swiety Fragment (120)
 }
 
 Group	MT2009_ymaps3_6795
@@ -127,10 +124,9 @@ Group	MT2009_ymaps3_6795
 	10	83067	1	0.03	-- Skrzynia z Bransoletka
 	11	83054	1	0.03	-- Idealny Klucz
 	12	70050	1	0.1	-- Symbol Krola Przepowiedni
-	13	50124	1	0.1	-- Sprochniala Skrzynia
-	14	27992	1	0.1	-- Biala Perla
-	15	27993	1	0.1	-- Niebieska Perla
-	16	27994	1	0.1	-- Krwawa Perla
+	13	27992	1	0.1	-- Biala Perla
+	14	27993	1	0.1	-- Niebieska Perla
+	15	27994	1	0.1	-- Krwawa Perla
 }
 
 Group	MT2009_ymaps3_6796

@@ -22,11 +22,10 @@ Group	MT2009_ypb_4411
 	9	50513	1	15	-- Kamien Duchowy
 	10	70012	1	10	-- Lza Bogini
 	11	39002	1	10	-- Pierscien Doswiadczenia (1 h)
-	12	50124	1	20	-- Sprochniala Skrzynia
-	13	31209	1	12	-- PB: Plan Helmu Wojownika
-	14	31211	1	12	-- PB: Plan Helmu Sura
-	15	31200	1	12	-- PB: Plan Ostrza
-	16	31203	1	12	-- PB: Plan Wachlarza
+	12	31209	1	12	-- PB: Plan Helmu Wojownika
+	13	31211	1	12	-- PB: Plan Helmu Sura
+	14	31200	1	12	-- PB: Plan Ostrza
+	15	31203	1	12	-- PB: Plan Wachlarza
 }
 
 Group	MT2009_ypb_4412
@@ -44,11 +43,10 @@ Group	MT2009_ypb_4412
 	9	50513	1	15	-- Kamien Duchowy
 	10	70048	1	10	-- Peleryna Maskujaca (our Plaszcz Uciekiniera)
 	11	71015	1	10	-- Pierscien Doswiadczenia
-	12	50124	1	20	-- Sprochniala Skrzynia
-	13	31196	1	12	-- PB: Plan Miecza
-	14	31197	1	12	-- PB: Plan Brzeszczota
-	15	31199	1	12	-- PB: Plan Luku
-	16	31211	1	12	-- PB: Plan Helmu Sura
+	12	31196	1	12	-- PB: Plan Miecza
+	13	31197	1	12	-- PB: Plan Brzeszczota
+	14	31199	1	12	-- PB: Plan Luku
+	15	31211	1	12	-- PB: Plan Helmu Sura
 }
 
 Group	MT2009_ypb_4329

@@ -179,33 +179,33 @@ Group	MT2009_yitems3_70429
 	39	28447	1	202 -- Kamien Mocy Demonow+4
 }
 
-# MT2009_PLUS_CHEST_DROPS_V1: 83053 - 22 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# MT2009_PLUS_CHEST_DROPS_V1: 83053 - 21 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
+# Left out (renormalised): Sprochniala Skrzynia 1.639% - no Sprochniala Skrzynia in any drop - owner 15.10
 Group	MT2009_yitems3_83053
 {
 	Vnum	83053 -- Id. Skrzynia Kolczykow (Idealny Klucz)
-	1	50661	1	13115 -- Jadeit Slonca
-	2	50664	1	13115 -- Jadeit Mgly
-	3	50662	1	13115 -- Jadeit Nocy
-	4	31227	1	6557 -- Kiel Argosa
-	5	31226	1	6557 -- Skazony Rdzen
-	6	31217	5	4918 -- Rog Trolla x5
-	7	76003	1	4918 -- Mikstura Pospiechu (30m)
-	8	31216	5	4918 -- Plyta z Surowego Metalu x5
-	9	31218	5	4918 -- Plyta ze Stali Kuzniczej x5
-	10	31238	1	4918 -- Polyskujaca Muszla
-	11	76008	1	3279 -- Medal Smoka
-	12	71020	1	3279 -- Blogoslawienstwo Smoka
-	13	17590	1	1639 -- Klipsy Jadeitu Nocy+0
-	14	50124	1	1639 -- Sprochniala Skrzynia
-	15	72006	1	1639 -- Rekawica Zlodzieja (30m)
-	16	72012	1	1639 -- Pioro Ptaka Milosci
-	17	72339	1	1639 -- Kamien Metin z Yohara
-	18	17570	1	1639 -- Klipsy Jadeitu Mgly+0
-	19	17580	1	1639 -- Klipsy Jadeitu Slonca+0
-	20	72003	1	1639 -- Pierscien Doswiad. (3h)
-	21	72023	1	1639 -- Medal Szczescia (30m)
-	22	72015	1	1639 -- Rybie Wnetrznosci (3h)
+	1	50661	1	13333 -- Jadeit Slonca
+	2	50664	1	13333 -- Jadeit Mgly
+	3	50662	1	13333 -- Jadeit Nocy
+	4	31227	1	6667 -- Kiel Argosa
+	5	31226	1	6667 -- Skazony Rdzen
+	6	31217	5	5000 -- Rog Trolla x5
+	7	76003	1	5000 -- Mikstura Pospiechu (30m)
+	8	31216	5	5000 -- Plyta z Surowego Metalu x5
+	9	31218	5	5000 -- Plyta ze Stali Kuzniczej x5
+	10	31238	1	5000 -- Polyskujaca Muszla
+	11	76008	1	3333 -- Medal Smoka
+	12	71020	1	3333 -- Blogoslawienstwo Smoka
+	13	17590	1	1667 -- Klipsy Jadeitu Nocy+0
+	14	72006	1	1667 -- Rekawica Zlodzieja (30m)
+	15	72012	1	1667 -- Pioro Ptaka Milosci
+	16	72339	1	1667 -- Kamien Metin z Yohara
+	17	17570	1	1667 -- Klipsy Jadeitu Mgly+0
+	18	17580	1	1667 -- Klipsy Jadeitu Slonca+0
+	19	72003	1	1667 -- Pierscien Doswiad. (3h)
+	20	72023	1	1667 -- Medal Szczescia (30m)
+	21	72015	1	1667 -- Rybie Wnetrznosci (3h)
 }
 
 # MT2009_PLUS_CHEST_DROPS_V1: 83052 - 21 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
