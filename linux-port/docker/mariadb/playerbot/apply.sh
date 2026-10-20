@@ -4079,49 +4079,55 @@ if bonus_saved=$(db -N -e "CREATE TABLE IF NOT EXISTS world.item_attr_mt2009 LIK
 else
     fail_step "bonus mode: could not read world.item_attr_mt2009" >&2
 fi
-# MT2009_PLUS_RARE_WIKI_V1 (the owner, 20 October: "change all 6/7 bonuses according to the wiki"): the 6th/7th
-# bonus pool of global mode is the wiki's (bonusy67_global.sql; what the wiki has and the engine lacks waits for the
-# owner), mt2009 keeps its own (the 1 October table above). Same state as item_attr: world.item_attr_rare_mt2009
-# holds the mt2009 pool exactly while the wiki pool is in item_attr_rare. First item_attr_rare's apply ENUM gets the
-# full POINT_* list item_attr has (yohara_gloves.sql: up to POINT_HIT_PCT, 197) - the Sung Ma Will per cent bonuses
-# are 193-196 - when item_attr's is a longer list with the same start (apply+0 is the POINT_* number).
-m2_rare_types=$(db -N -e "SELECT (SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = 'item_attr' AND COLUMN_NAME = 'apply'), '|',
-        (SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = 'item_attr_rare' AND COLUMN_NAME = 'apply')" 2>/dev/null | tr -d '\t\r')
-m2_attr_enum=${m2_rare_types%%|*}
-m2_rare_enum=${m2_rare_types#*|}
+# MT2009_PLUS_BONUS67_V1 (server-patches/bonusy67/README.md; the owner, 20 October: the 6th/7th bonuses of the wiki
+# the engine lacked added, "Bonusy 6/7 takie same w jednym i drugim trybie"): replaces MT2009_PLUS_RARE_WIKI_V1's swap
+# of item_attr_rare with M2_BONUS_MODE - both modes have the wiki's pool now, the mode never touches it again.
+#   1. item_attr's apply ENUM (apply+0 = the POINT_* number) gets the 54 new points 198-251 after POINT_HIT_PCT (197),
+#      item_attr_rare's takes item_attr's (it was a shorter list with the same start);
+#   2. once per world (marker rare_6_7_wiki_v2): bonusy67_wiki.sql (tools/bonusy67) - the old mt2009 pool (the owner's
+#      table of 1 October) kept as a backup in world.item_attr_rare_mt2009 (a world in global mode has it there
+#      already), the pool = the wiki's 13 rows + the 54 new ones. A later operator's edit stays.
+m2_b67_names="'POINT_HIT_BUFF_ENCHANT_FIRE','POINT_HIT_BUFF_ENCHANT_ICE','POINT_HIT_BUFF_ENCHANT_ELEC','POINT_HIT_BUFF_ENCHANT_WIND','POINT_HIT_BUFF_ENCHANT_DARK','POINT_HIT_BUFF_ENCHANT_EARTH','POINT_HIT_BUFF_RESIST_FIRE','POINT_HIT_BUFF_RESIST_ICE','POINT_HIT_BUFF_RESIST_ELEC','POINT_HIT_BUFF_RESIST_WIND','POINT_HIT_BUFF_RESIST_DARK','POINT_HIT_BUFF_RESIST_EARTH','POINT_ATTBONUS_PER_MONSTER','POINT_ATTBONUS_PER_STONE','POINT_ATTBONUS_PER_CZ','POINT_ATTBONUS_PER_MILGYO','POINT_ATTBONUS_PER_ORC','POINT_ATTBONUS_PER_DEVIL','POINT_ATTBONUS_PER_INSECT','POINT_ATTBONUS_PER_ANIMAL','POINT_ENCHANT_PER_ELECT','POINT_ENCHANT_PER_FIRE','POINT_ENCHANT_PER_ICE','POINT_ENCHANT_PER_WIND','POINT_ENCHANT_PER_EARTH','POINT_ENCHANT_PER_DARK','POINT_RESIST_PER_HUMAN','POINT_RESIST_PER_MAGIC','POINT_RESIST_PER_ELEC','POINT_RESIST_PER_FIRE','POINT_RESIST_PER_ICE','POINT_RESIST_PER_WIND','POINT_RESIST_PER_EARTH','POINT_RESIST_PER_DARK','POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE','POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE','POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE','POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE','POINT_FIRST_ATTRIBUTE_BONUS','POINT_SECOND_ATTRIBUTE_BONUS','POINT_THIRD_ATTRIBUTE_BONUS','POINT_FOURTH_ATTRIBUTE_BONUS','POINT_FIFTH_ATTRIBUTE_BONUS','POINT_GLOVE_FALL_RESIST','POINT_GLOVE_LIGHTNING','POINT_GLOVE_COOLDOWN_FINISH','POINT_GLOVE_COOLDOWN_ILGWANGPYO','POINT_GLOVE_COOLDOWN_PUNGLOEPO','POINT_GLOVE_COOLDOWN_GEOMAGGWI','POINT_GLOVE_COOLDOWN_MABEOBAGGWI','POINT_GLOVE_COOLDOWN_METEO','POINT_GLOVE_COOLDOWN_CHEONUN','POINT_GLOVE_COOLDOWN_ILIPUNGU','POINT_GLOVE_BASE_ATTR_PCT'"
+m2_b67_type() {
+    db -N -e "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = '$1' AND COLUMN_NAME = 'apply'" 2>/dev/null | tr -d '\r'
+}
+m2_attr_enum=$(m2_b67_type item_attr)
 case "$m2_attr_enum" in
-    *"'POINT_SUNGMA_PER_IMMUNE'"*)
+    *"'POINT_HIT_PCT')")
+        if [ "$(printf '%s' "$m2_attr_enum" | grep -o "','" | wc -l | tr -d ' ')" = 196 ] &&
+                db -e "ALTER TABLE world.item_attr MODIFY apply ${m2_attr_enum%)},$m2_b67_names) NOT NULL DEFAULT 'POINT_MAX_HP';"; then
+            echo "[playerbot-migrate] 6th/7th bonuses: item_attr apply ENUM up to POINT_GLOVE_BASE_ATTR_PCT (251)"
+            m2_attr_enum=$(m2_b67_type item_attr)
+        else
+            fail_step "6th/7th bonuses: could not add the points 198-251 to item_attr's apply ENUM (not 197 names?)" >&2
+        fi ;;
+esac
+m2_rare_enum=$(m2_b67_type item_attr_rare)
+case "$m2_attr_enum" in
+    *"'POINT_GLOVE_BASE_ATTR_PCT'"*)
         case "$m2_rare_enum" in
-            *"'POINT_SUNGMA_PER_IMMUNE'"*) ;;
+            *"'POINT_GLOVE_BASE_ATTR_PCT'"*) ;;
             *)
                 if [ -n "$m2_rare_enum" ] && [ "${m2_attr_enum#"${m2_rare_enum%)}"}" != "$m2_attr_enum" ] &&
                         db -e "ALTER TABLE world.item_attr_rare MODIFY apply $m2_attr_enum NOT NULL;"; then
-                    echo "[playerbot-migrate] 6th/7th bonus pool: apply ENUM up to the Sung Ma Will bonuses (193-196)"
+                    echo "[playerbot-migrate] 6th/7th bonus pool: apply ENUM up to POINT_GLOVE_BASE_ATTR_PCT (251)"
                 else
-                    fail_step "6th/7th bonus pool: could not widen the apply ENUM" >&2
+                    fail_step "6th/7th bonus pool: could not widen the apply ENUM to item_attr's" >&2
                 fi ;;
         esac ;;
 esac
-if db -N -e "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = 'item_attr_rare' AND COLUMN_NAME = 'apply' AND COLUMN_TYPE LIKE '%''POINT_SUNGMA_PER_IMMUNE''%'" 2>/dev/null | grep -q 1 &&
-        rare_saved=$(db -N -e "CREATE TABLE IF NOT EXISTS world.item_attr_rare_mt2009 LIKE world.item_attr_rare;
-        SELECT COUNT(*) FROM world.item_attr_rare_mt2009;" 2>/dev/null | tr -d ' \r'); then
-    if [ "$bonus_global" = 1 ] && [ "$rare_saved" = 0 ]; then
-        if db < /opt/playerbot/bonusy67_global.sql; then
-            echo "[playerbot-migrate] bonus mode: global - 6th/7th bonus pool switched to the wiki's (the mt2009 pool kept in world.item_attr_rare_mt2009)"
+if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare_6_7_wiki_v2'" 2>/dev/null || echo 1)" = 0 ]; then
+    if db -N -e "SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = 'item_attr_rare' AND COLUMN_NAME = 'apply' AND COLUMN_TYPE LIKE '%''POINT_GLOVE_BASE_ATTR_PCT''%'" 2>/dev/null | grep -q 1; then
+        if db < /opt/playerbot/bonusy67_wiki.sql; then
+            echo "[playerbot-migrate] 6th/7th bonus pool: the wiki's for both bonus modes ($(db -N -e "SELECT COUNT(*) FROM world.item_attr_rare" 2>/dev/null | tr -d ' \r') rows; the old mt2009 pool kept in world.item_attr_rare_mt2009)"
         else
-            fail_step "bonus mode: bonusy67_global.sql failed; item_attr_rare stays as it was" >&2
-        fi
-    elif [ "$bonus_global" = 0 ] && [ "$rare_saved" != 0 ]; then
-        if db < /opt/playerbot/bonusy67_mt2009.sql; then
-            echo "[playerbot-migrate] bonus mode: mt2009 - 6th/7th bonus pool back to the mt2009 one ($rare_saved rows)"
-        else
-            fail_step "bonus mode: bonusy67_mt2009.sql failed; item_attr_rare stays as it was" >&2
+            fail_step "6th/7th bonus pool: bonusy67_wiki.sql failed; item_attr_rare stays as it was" >&2
         fi
     else
-        echo "[playerbot-migrate] bonus mode: $([ "$bonus_global" = 1 ] && echo global || echo mt2009) - 6th/7th bonus pool already on it"
+        fail_step "6th/7th bonus pool: item_attr_rare's apply ENUM lacks the points 198-251; the pool stays as it was" >&2
     fi
 else
-    fail_step "bonus mode: item_attr_rare has no Sung Ma Will points or item_attr_rare_mt2009 cannot be read; the 6th/7th pool stays as it was" >&2
+    echo "[playerbot-migrate] 6th/7th bonus pool: the wiki's for both bonus modes already (rare_6_7_wiki_v2)"
 fi
 if [ "$bonus_global" = 1 ] && [ -s /opt/playerbot/zywioly_moby_global.sql ]; then
     if db < /opt/playerbot/zywioly_moby_global.sql; then

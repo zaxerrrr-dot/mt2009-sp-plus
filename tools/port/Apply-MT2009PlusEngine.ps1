@@ -111,7 +111,10 @@ param(
 #                      char_battle.cpp, questlua.cpp, cmd.cpp, ENABLE_AURA_COSTUME_SYSTEM (MT2009_PLUS_AURA_V1;
 #                      server-patches/aura, after transmutacja, ukryjkostium, rankpoints and rekawice)
 #   Kamien Rytualny    char_item.cpp - the wheels' Kamien Rytualny (25046) only above level 80 (MT2009_PLUS_KOLA_ITEMS_V1;
-#                      server-patches/kolaprzedmioty, last)
+#                      server-patches/kolaprzedmioty)
+#   Bonusy 6/7 z wiki  common length.h (points 198-251), char.cpp, battle.cpp, char_battle.cpp, char_skill.cpp, item.cpp,
+#                      item_attribute.cpp (MT2009_PLUS_BONUS67_V1; server-patches/bonusy67, after precyzja and rekawice -
+#                      last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1588,6 +1591,20 @@ if ((Test-Path -LiteralPath $kolaItemsApply -PathType Leaf) -and
     if ($kolaItemsResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} wheel item edit(s).' -f $kolaItemsResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Bonusy 6/7 z wiki (server-patches/bonusy67, MT2009_PLUS_BONUS67_V1; the owner, 20 October 2026): the 6th/7th bonuses
+# the engine lacked - points 198-251 (server-only), the element hit buffs, the "+x% of the total" lines, the boss lines,
+# the 1st..5th bonus +x%, the gloves' lines (a glove's 7th slot from the pool). Changes lines of precyzja and rekawice,
+# so after them. The logic is playerbot_bonus67.cpp.
+$bonusy67Apply = Join-Path $repo 'server-patches/bonusy67/Apply-Bonusy67Patch.ps1'
+if ((Test-Path -LiteralPath $bonusy67Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $bonusy67Result = & $bonusy67Apply -SourceDir $engineGameSource
+    if ($bonusy67Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} 6th/7th bonus edit(s).' -f $bonusy67Result.Applied) -ForegroundColor DarkGray
     }
 }
 

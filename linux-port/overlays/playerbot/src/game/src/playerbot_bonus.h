@@ -222,8 +222,62 @@ namespace
 			// less than the 300 SP a mastered aura costs - and it rolls to
 			// eighty, so this is one of the few lines that can fix that.
 			case APPLY_MAX_SP:                  return bCaster ? value * 2 : value / 2;
-			// Everything else - stamina, poison reduction, mana burn - is real but
-			// minor for a bot that only grinds. Never zero: a line is still a line.
+			// MT2009_PLUS_BONUS67_V1 (bot weights): the 6th/7th bonuses of the wiki
+			// (playerbot_bonus67.cpp). The boss lines multiply every blow against
+			// the thing a bot's dungeon run is for; the "+x% of the total" lines
+			// are worth what the bonus they raise is worth to a bot - a fraction
+			// of it, since they need that bonus first; the hit buffs are seconds
+			// of an element a few times a minute. The champion skills' cooldown
+			// lines are nothing to a bot (no bot is a champion) - a line still.
+			case POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE:
+			case POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE:     return value * 12;
+			case POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE:
+			case POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE:     return value * 10;
+			case POINT_ATTBONUS_PER_MONSTER:                return value * 6;
+			case POINT_ATTBONUS_PER_STONE:
+			case POINT_ATTBONUS_PER_MILGYO:
+			case POINT_ATTBONUS_PER_ORC:
+			case POINT_ATTBONUS_PER_DEVIL:
+			case POINT_ATTBONUS_PER_INSECT:
+			case POINT_ATTBONUS_PER_ANIMAL:
+			case POINT_ATTBONUS_PER_CZ:                     return value * 3;
+			case POINT_ENCHANT_PER_ELECT:
+			case POINT_ENCHANT_PER_FIRE:
+			case POINT_ENCHANT_PER_ICE:
+			case POINT_ENCHANT_PER_WIND:
+			case POINT_ENCHANT_PER_EARTH:
+			case POINT_ENCHANT_PER_DARK:                    return value * 2;
+			case POINT_RESIST_PER_HUMAN:
+			case POINT_RESIST_PER_MAGIC:
+			case POINT_RESIST_PER_ELEC:
+			case POINT_RESIST_PER_FIRE:
+			case POINT_RESIST_PER_ICE:
+			case POINT_RESIST_PER_WIND:
+			case POINT_RESIST_PER_EARTH:
+			case POINT_RESIST_PER_DARK:                     return value * 2;
+			case POINT_HIT_BUFF_ENCHANT_FIRE:
+			case POINT_HIT_BUFF_ENCHANT_ICE:
+			case POINT_HIT_BUFF_ENCHANT_ELEC:
+			case POINT_HIT_BUFF_ENCHANT_WIND:
+			case POINT_HIT_BUFF_ENCHANT_DARK:
+			case POINT_HIT_BUFF_ENCHANT_EARTH:              return value * 8;
+			case POINT_HIT_BUFF_RESIST_FIRE:
+			case POINT_HIT_BUFF_RESIST_ICE:
+			case POINT_HIT_BUFF_RESIST_ELEC:
+			case POINT_HIT_BUFF_RESIST_WIND:
+			case POINT_HIT_BUFF_RESIST_DARK:
+			case POINT_HIT_BUFF_RESIST_EARTH:               return value * 4;
+			case POINT_FIRST_ATTRIBUTE_BONUS:
+			case POINT_SECOND_ATTRIBUTE_BONUS:
+			case POINT_THIRD_ATTRIBUTE_BONUS:
+			case POINT_FOURTH_ATTRIBUTE_BONUS:
+			case POINT_FIFTH_ATTRIBUTE_BONUS:               return value * 3;
+			case POINT_GLOVE_FALL_RESIST:                   return value * 2;
+			case POINT_GLOVE_LIGHTNING:                     return 150;
+			case POINT_GLOVE_BASE_ATTR_PCT:                 return value * 8;
+			// Everything else - stamina, poison reduction, mana burn, the
+			// champion skills' cooldown lines - is real but minor for a bot that
+			// only grinds. Never zero: a line is still a line.
 			default:                            return value;
 		}
 	}

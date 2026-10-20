@@ -1,0 +1,80 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_BONUS67_V1 (points)",
+  "old": "\tPOINT_HIT_PCT,\t// 197 Precyzja\n\tPOINT_MAX_NUM,\t// 198\n};\n",
+  "new": "\tPOINT_HIT_PCT,\t// 197 Precyzja\n\t// MT2009_PLUS_BONUS67_V1 (points): the 6th/7th bonuses of the wiki the engine lacked (server-patches/bonusy67,\n\t// playerbot_bonus67.cpp) - server-only like the element powers: never in a point packet (the Yohara exe\n\t// has POINT_MAX_NUM 198), the item tooltip names them (root/localeinfo_point.py).\n\tPOINT_HIT_BUFF_ENCHANT_FIRE,\t// 198 a blow dealt: the element power for x s\n\tPOINT_HIT_BUFF_ENCHANT_ICE,\t// 199\n\tPOINT_HIT_BUFF_ENCHANT_ELEC,\t// 200\n\tPOINT_HIT_BUFF_ENCHANT_WIND,\t// 201\n\tPOINT_HIT_BUFF_ENCHANT_DARK,\t// 202\n\tPOINT_HIT_BUFF_ENCHANT_EARTH,\t// 203\n\tPOINT_HIT_BUFF_RESIST_FIRE,\t// 204 a blow taken: the element resistance for x s\n\tPOINT_HIT_BUFF_RESIST_ICE,\t// 205\n\tPOINT_HIT_BUFF_RESIST_ELEC,\t// 206\n\tPOINT_HIT_BUFF_RESIST_WIND,\t// 207\n\tPOINT_HIT_BUFF_RESIST_DARK,\t// 208\n\tPOINT_HIT_BUFF_RESIST_EARTH,\t// 209\n\tPOINT_ATTBONUS_PER_MONSTER,\t// 210 +x% of the whole bonus\n\tPOINT_ATTBONUS_PER_STONE,\t// 211\n\tPOINT_ATTBONUS_PER_CZ,\t// 212\n\tPOINT_ATTBONUS_PER_MILGYO,\t// 213\n\tPOINT_ATTBONUS_PER_ORC,\t// 214\n\tPOINT_ATTBONUS_PER_DEVIL,\t// 215\n\tPOINT_ATTBONUS_PER_INSECT,\t// 216\n\tPOINT_ATTBONUS_PER_ANIMAL,\t// 217\n\tPOINT_ENCHANT_PER_ELECT,\t// 218\n\tPOINT_ENCHANT_PER_FIRE,\t// 219\n\tPOINT_ENCHANT_PER_ICE,\t// 220\n\tPOINT_ENCHANT_PER_WIND,\t// 221\n\tPOINT_ENCHANT_PER_EARTH,\t// 222\n\tPOINT_ENCHANT_PER_DARK,\t// 223\n\tPOINT_RESIST_PER_HUMAN,\t// 224\n\tPOINT_RESIST_PER_MAGIC,\t// 225\n\tPOINT_RESIST_PER_ELEC,\t// 226\n\tPOINT_RESIST_PER_FIRE,\t// 227\n\tPOINT_RESIST_PER_ICE,\t// 228\n\tPOINT_RESIST_PER_WIND,\t// 229\n\tPOINT_RESIST_PER_EARTH,\t// 230\n\tPOINT_RESIST_PER_DARK,\t// 231\n\tPOINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE,\t// 232 against / from a boss\n\tPOINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE,\t// 233\n\tPOINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE,\t// 234\n\tPOINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE,\t// 235\n\tPOINT_FIRST_ATTRIBUTE_BONUS,\t// 236 the item's 1st..5th normal bonus +x%\n\tPOINT_SECOND_ATTRIBUTE_BONUS,\t// 237\n\tPOINT_THIRD_ATTRIBUTE_BONUS,\t// 238\n\tPOINT_FOURTH_ATTRIBUTE_BONUS,\t// 239\n\tPOINT_FIFTH_ATTRIBUTE_BONUS,\t// 240\n\tPOINT_GLOVE_FALL_RESIST,\t// 241 the gloves (Yohara): fall resistance in combat, x% (60 s)\n\tPOINT_GLOVE_LIGHTNING,\t// 242 lightning on the monsters around (15 s)\n\tPOINT_GLOVE_COOLDOWN_FINISH,\t// 243 x%: the next cooldown 5 s shorter (SKILL_FINISH .. SKILL_ILIPUNGU)\n\tPOINT_GLOVE_COOLDOWN_ILGWANGPYO,\t// 244\n\tPOINT_GLOVE_COOLDOWN_PUNGLOEPO,\t// 245\n\tPOINT_GLOVE_COOLDOWN_GEOMAGGWI,\t// 246\n\tPOINT_GLOVE_COOLDOWN_MABEOBAGGWI,\t// 247\n\tPOINT_GLOVE_COOLDOWN_METEO,\t// 248\n\tPOINT_GLOVE_COOLDOWN_CHEONUN,\t// 249\n\tPOINT_GLOVE_COOLDOWN_ILIPUNGU,\t// 250\n\tPOINT_GLOVE_BASE_ATTR_PCT,\t// 251 the glove's built-in Will line +x%\n\tPOINT_MAX_NUM,\t// 252 (an item keeps its bonus type in one byte: at most 256)\n};\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (point change)",
+  "old": "\t\tcase POINT_HIT_PCT:\n\t\tcase POINT_RESIST_HUMAN:\n",
+  "new": "\t\tcase POINT_HIT_PCT:\n\t\t// MT2009_PLUS_BONUS67_V1 (point change): the 6th/7th bonuses of the wiki (198-251)\n\t\tcase POINT_HIT_BUFF_ENCHANT_FIRE:\n\t\tcase POINT_HIT_BUFF_ENCHANT_ICE:\n\t\tcase POINT_HIT_BUFF_ENCHANT_ELEC:\n\t\tcase POINT_HIT_BUFF_ENCHANT_WIND:\n\t\tcase POINT_HIT_BUFF_ENCHANT_DARK:\n\t\tcase POINT_HIT_BUFF_ENCHANT_EARTH:\n\t\tcase POINT_HIT_BUFF_RESIST_FIRE:\n\t\tcase POINT_HIT_BUFF_RESIST_ICE:\n\t\tcase POINT_HIT_BUFF_RESIST_ELEC:\n\t\tcase POINT_HIT_BUFF_RESIST_WIND:\n\t\tcase POINT_HIT_BUFF_RESIST_DARK:\n\t\tcase POINT_HIT_BUFF_RESIST_EARTH:\n\t\tcase POINT_ATTBONUS_PER_MONSTER:\n\t\tcase POINT_ATTBONUS_PER_STONE:\n\t\tcase POINT_ATTBONUS_PER_CZ:\n\t\tcase POINT_ATTBONUS_PER_MILGYO:\n\t\tcase POINT_ATTBONUS_PER_ORC:\n\t\tcase POINT_ATTBONUS_PER_DEVIL:\n\t\tcase POINT_ATTBONUS_PER_INSECT:\n\t\tcase POINT_ATTBONUS_PER_ANIMAL:\n\t\tcase POINT_ENCHANT_PER_ELECT:\n\t\tcase POINT_ENCHANT_PER_FIRE:\n\t\tcase POINT_ENCHANT_PER_ICE:\n\t\tcase POINT_ENCHANT_PER_WIND:\n\t\tcase POINT_ENCHANT_PER_EARTH:\n\t\tcase POINT_ENCHANT_PER_DARK:\n\t\tcase POINT_RESIST_PER_HUMAN:\n\t\tcase POINT_RESIST_PER_MAGIC:\n\t\tcase POINT_RESIST_PER_ELEC:\n\t\tcase POINT_RESIST_PER_FIRE:\n\t\tcase POINT_RESIST_PER_ICE:\n\t\tcase POINT_RESIST_PER_WIND:\n\t\tcase POINT_RESIST_PER_EARTH:\n\t\tcase POINT_RESIST_PER_DARK:\n\t\tcase POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE:\n\t\tcase POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE:\n\t\tcase POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE:\n\t\tcase POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE:\n\t\tcase POINT_FIRST_ATTRIBUTE_BONUS:\n\t\tcase POINT_SECOND_ATTRIBUTE_BONUS:\n\t\tcase POINT_THIRD_ATTRIBUTE_BONUS:\n\t\tcase POINT_FOURTH_ATTRIBUTE_BONUS:\n\t\tcase POINT_FIFTH_ATTRIBUTE_BONUS:\n\t\tcase POINT_GLOVE_FALL_RESIST:\n\t\tcase POINT_GLOVE_LIGHTNING:\n\t\tcase POINT_GLOVE_COOLDOWN_FINISH:\n\t\tcase POINT_GLOVE_COOLDOWN_ILGWANGPYO:\n\t\tcase POINT_GLOVE_COOLDOWN_PUNGLOEPO:\n\t\tcase POINT_GLOVE_COOLDOWN_GEOMAGGWI:\n\t\tcase POINT_GLOVE_COOLDOWN_MABEOBAGGWI:\n\t\tcase POINT_GLOVE_COOLDOWN_METEO:\n\t\tcase POINT_GLOVE_COOLDOWN_CHEONUN:\n\t\tcase POINT_GLOVE_COOLDOWN_ILIPUNGU:\n\t\tcase POINT_GLOVE_BASE_ATTR_PCT:\n\t\tcase POINT_RESIST_HUMAN:\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (point packet)",
+  "old": "if (GetDesc() && (type < POINT_PACKET_NUM || (type >= POINT_SUNGMA_PER_STR && type < POINT_MAX_NUM)))",
+  "new": "if (GetDesc() && (type < POINT_PACKET_NUM || (type >= POINT_SUNGMA_PER_STR && type <= POINT_HIT_PCT))) /* MT2009_PLUS_BONUS67_V1 (point packet): 198-251 stay on the server */"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (resist)",
+  "old": "\tif (GetPoint(idx) <= 0)\n\t\treturn GetPoint(idx);\n\n\tint value = MAX(GetPoint(idx) - break_resist_value, 0);\n",
+  "new": "\t// MT2009_PLUS_BONUS67_V1 (resist): the hit buff and the \"+x% of the total\" line of a resistance (playerbot_bonus67.cpp)\n\tint Bonus67Total(const CHARACTER* ch, unsigned char bPoint);\n\tconst int iResistTotal = Bonus67Total(this, idx);\n\tif (iResistTotal <= 0)\n\t\treturn iResistTotal;\n\n\tint value = MAX(iResistTotal - break_resist_value, 0);\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (att bonus)",
+  "old": "\t\tiAtk += (iAtk * point_value) / 100;\n",
+  "new": "\t\t{ // MT2009_PLUS_BONUS67_V1 (att bonus): the \"+x% of the total\" lines of these bonuses (playerbot_bonus67.cpp)\n\t\t\tint Bonus67AttBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iPointValue);\n\t\t\tpoint_value = Bonus67AttBonus(pkAttacker, pkVictim, point_value);\n\t\t}\n\t\tiAtk += (iAtk * point_value) / 100;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (damage)",
+  "old": "\tif (pAttacker && IsNPC() && (IsStone() || GetMobRank() >= MOB_RANK_BOSS && !IsStone() || IsMiniBoss(GetRaceNum())))\n",
+  "new": "\tif (pAttacker) // MT2009_PLUS_BONUS67_V1 (damage): the boss lines, the hit buffs, the gloves (playerbot_bonus67.cpp)\n\t{\n\t\tint Bonus67Damage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType, int iDam);\n\t\tdam = Bonus67Damage(this, pAttacker, (int) type, dam);\n\t}\n\n\tif (pAttacker && IsNPC() && (IsStone() || GetMobRank() >= MOB_RANK_BOSS && !IsStone() || IsMiniBoss(GetRaceNum())))\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (push)",
+  "old": "bool CHARACTER::IsResistPush()\n{\n",
+  "new": "bool CHARACTER::IsResistPush()\n{\n\t{ // MT2009_PLUS_BONUS67_V1 (push): the gloves' fall resistance in combat (playerbot_bonus67.cpp)\n\t\tbool Bonus67FallResist(const CHARACTER* ch);\n\t\tif (Bonus67FallResist(this))\n\t\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (cooldown)",
+  "old": "\t// anti cheat fix error\n\tif (HasPlayerData() && dwVnum == SKILL_HORSE_WILDATTACK)\n",
+  "new": "\tif (false == m_bDisableCooltime) // MT2009_PLUS_BONUS67_V1 (cooldown): the gloves' line of a champion skill\n\t{\n\t\tunsigned int Bonus67SkillCooldown(LPCHARACTER ch, unsigned int dwVnum, unsigned int dwNextUsable);\n\t\tm_SkillUseInfo[dwVnum].dwNextSkillUsableTime = Bonus67SkillCooldown(this, dwVnum, m_SkillUseInfo[dwVnum].dwNextSkillUsableTime);\n\t}\n\n\t// anti cheat fix error\n\tif (HasPlayerData() && dwVnum == SKILL_HORSE_WILDATTACK)\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (attr value)",
+  "old": "\t\t\t\tif (m_pOwner->IsUtilityPoint(ia.bType))\n\t\t\t\t\tcontinue;\n\n\t\t\t\tm_pOwner->PointChange(ia.bType, bAdd ? value : -value);\n",
+  "new": "\t\t\t\tif (m_pOwner->IsUtilityPoint(ia.bType))\n\t\t\t\t\tcontinue;\n\n\t\t\t\t{ // MT2009_PLUS_BONUS67_V1 (attr value): \"1./2./3./4./5. dodany bonus +x%\", the glove's built-in line +x%\n\t\t\t\t\tint Bonus67AttrValue(LPITEM item, int iSlot, unsigned char bType, int iValue);\n\t\t\t\t\tvalue = Bonus67AttrValue(this, i, ia.bType, value);\n\t\t\t\t}\n\t\t\t\tm_pOwner->PointChange(ia.bType, bAdd ? value : -value);\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (change rare)",
+  "old": "\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (change rare): the glove's Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_BONUS67_V1 (change rare): a glove takes its 7th line from the pool (its 6th is its Will line)\n\t\tint Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct);\n\t\tconst int iGlove = Bonus67GloveRare(this, 2, NULL);\n\t\tif (iGlove >= 0)\n\t\t\treturn iGlove > 0;\n\t}\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (change rare): the glove's Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (change rare 2)",
+  "old": "\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (change rare 2): the glove's Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_BONUS67_V1 (change rare 2): a glove takes its 7th line from the pool (its 6th is its Will line)\n\t\tint Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct);\n\t\tconst int iGlove = Bonus67GloveRare(this, 3, NULL);\n\t\tif (iGlove >= 0)\n\t\t\treturn iGlove > 0;\n\t}\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (change rare 2): the glove's Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (add rare)",
+  "old": "\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (add rare): the glove's Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_BONUS67_V1 (add rare): a glove takes its 7th line from the pool (its 6th is its Will line)\n\t\tint Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct);\n\t\tconst int iGlove = Bonus67GloveRare(this, 0, NULL);\n\t\tif (iGlove >= 0)\n\t\t\treturn iGlove > 0;\n\t}\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (add rare): the glove's Will line\n\t\treturn false;\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_BONUS67_V1 (add rare 2)",
+  "old": "\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (add rare 2): the glove's Will line\n\t\treturn false;\n",
+  "new": "\t{ // MT2009_PLUS_BONUS67_V1 (add rare 2): a glove takes its 7th line from the pool (its 6th is its Will line)\n\t\tint Bonus67GloveRare(LPITEM item, int iMode, const int* aiPct);\n\t\tconst int iGlove = Bonus67GloveRare(this, 1, aiAttrPercentTable);\n\t\tif (iGlove >= 0)\n\t\t\treturn iGlove > 0;\n\t}\n\tif (Mt2009GloveType(GetVnum(), bWillTalismanType)) // MT2009_PLUS_GLOVES_V1 (add rare 2): the glove's Will line\n\t\treturn false;\n"
+ }
+]

@@ -260,6 +260,67 @@ for _zywPoint, _zywName in (
 	):
 	AFFECT_DICT.setdefault(_zywPoint, _zywName)
 
+# MT2009_PLUS_BONUS67_V1: the 6th/7th bonuses of the wiki the server's engine lacked (points 198-251,
+# server-patches/bonusy67, tools/bonusy67/bonusy67_data.py - the same order). Server-only points (the exe's
+# POINT_MAX_NUM is 198): no player.POINT_* constant, only an item's line shows them - with the wiki's words.
+for _b67Point, _b67Name in (
+	(198, "Otrzymujesz moc ognia na %d sek. w walce"),	# POINT_HIT_BUFF_ENCHANT_FIRE
+	(199, "Otrzymujesz moc lodu na %d sek. w walce"),	# POINT_HIT_BUFF_ENCHANT_ICE
+	(200, "Otrzymujesz moc b\xb3yskawic na %d sek. w walce"),	# POINT_HIT_BUFF_ENCHANT_ELEC
+	(201, "Otrzymujesz moc wiatru na %d sek. w walce"),	# POINT_HIT_BUFF_ENCHANT_WIND
+	(202, "Otrzymujesz moc mroku na %d sek. w walce"),	# POINT_HIT_BUFF_ENCHANT_DARK
+	(203, "Otrzymujesz moc ziemi na %d sek. w walce"),	# POINT_HIT_BUFF_ENCHANT_EARTH
+	(204, "Otrzymujesz odporno\x9c\xe6 na ogie\xf1 na %d sek. w walce"),	# POINT_HIT_BUFF_RESIST_FIRE
+	(205, "Otrzymujesz odporno\x9c\xe6 na l\xf3d na %d sek. w walce"),	# POINT_HIT_BUFF_RESIST_ICE
+	(206, "Otrzymujesz odporno\x9c\xe6 na b\xb3yskawice na %d sek. w walce"),	# POINT_HIT_BUFF_RESIST_ELEC
+	(207, "Otrzymujesz odporno\x9c\xe6 na wiatr na %d sek. w walce"),	# POINT_HIT_BUFF_RESIST_WIND
+	(208, "Otrzymujesz odporno\x9c\xe6 na mrok na %d sek. w walce"),	# POINT_HIT_BUFF_RESIST_DARK
+	(209, "Otrzymujesz odporno\x9c\xe6 na ziemi\xea na %d sek. w walce"),	# POINT_HIT_BUFF_RESIST_EARTH
+	(210, "Silny przeciwko potworom (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_MONSTER
+	(211, "Si\xb3a w walce z kamieniami Metin (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_STONE
+	(212, "Silny przeciwko potworom Zodiaku (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_CZ
+	(213, "Si\xb3a w walce z mistykami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_MILGYO
+	(214, "Si\xb3a w walce z orkami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ORC
+	(215, "Si\xb3a w walce z diab\xb3ami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_DEVIL
+	(216, "Si\xb3a w walce z insektami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_INSECT
+	(217, "Si\xb3a w walce ze zwierz\xeatami (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ATTBONUS_PER_ANIMAL
+	(218, "Si\xb3a B\xb3yskawic (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_ELECT
+	(219, "Si\xb3a Ognia (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_FIRE
+	(220, "Si\xb3a Lodu (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_ICE
+	(221, "Si\xb3a Wiatru (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_WIND
+	(222, "Si\xb3a Ziemi (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_EARTH
+	(223, "Si\xb3a Mroku (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_ENCHANT_PER_DARK
+	(224, "Odporno\x9c\xe6 na ludzi (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_HUMAN
+	(225, "Odporno\x9c\xe6 na magi\xea (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_MAGIC
+	(226, "Odporno\x9c\xe6 na b\xb3yskawice (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_ELEC
+	(227, "Odporno\x9c\xe6 na ogie\xf1 (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_FIRE
+	(228, "Odporno\x9c\xe6 na l\xf3d (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_ICE
+	(229, "Odporno\x9c\xe6 na wiatr (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_WIND
+	(230, "Odporno\x9c\xe6 na ziemi\xea (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_EARTH
+	(231, "Odporno\x9c\xe6 na mrok (+%d%% \xb3\xb9cznej warto\x9cci)"),	# POINT_RESIST_PER_DARK
+	(232, "Obra\xbfenia od ataku boss\xf3w -%d%%"),	# POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE
+	(233, "Obra\xbfenia od umiej\xeatno\x9cci boss\xf3w -%d%%"),	# POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE
+	(234, "Obra\xbfenia od ataku przeciwko bossom +%d%%"),	# POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE
+	(235, "Obra\xbfenia od umiej\xeatno\x9cci przeciwko bossom +%d%%"),	# POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE
+	(236, "1. dodany bonus +%d%%"),	# POINT_FIRST_ATTRIBUTE_BONUS
+	(237, "2. dodany bonus +%d%%"),	# POINT_SECOND_ATTRIBUTE_BONUS
+	(238, "3. dodany bonus +%d%%"),	# POINT_THIRD_ATTRIBUTE_BONUS
+	(239, "4. dodany bonus +%d%%"),	# POINT_FOURTH_ATTRIBUTE_BONUS
+	(240, "5. dodany bonus +%d%%"),	# POINT_FIFTH_ATTRIBUTE_BONUS
+	(241, "Podczas walki %d%% szans na odporno\x9c\xe6 na upadek (regeneracja 60 sek.)"),	# POINT_GLOVE_FALL_RESIST
+	(242, "Atakuj potwory w pobli\xbfu b\xb3yskawicami (regeneracja 15 sek.)"),	# POINT_GLOVE_LIGHTNING
+	(243, "Trz\xeasienie: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_FINISH
+	(244, "\x8cwiat\xb3o Gwiazd: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_ILGWANGPYO
+	(245, "Strza\xb3 Wichury: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_PUNGLOEPO
+	(246, "Piekielny Cios: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_GEOMAGGWI
+	(247, "Fala \x8cmierci: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_MABEOBAGGWI
+	(248, "Meteor: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_METEO
+	(249, "Tarcza Eteru: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_CHEONUN
+	(250, "Burza Szpon\xf3w: %d%% szans na kolejn\xb9 regeneracj\xea kr\xf3tsz\xb9 o 5 sek."),	# POINT_GLOVE_COOLDOWN_ILIPUNGU
+	(251, "Atrybuty podstawowe r\xeakawic +%d%%"),	# POINT_GLOVE_BASE_ATTR_PCT
+	):
+	AFFECT_DICT.setdefault(_b67Point, _b67Name)
+
 def Is1000PCT(affectType):
 	return affectType in POINT_1000PCT_Tuple
 
