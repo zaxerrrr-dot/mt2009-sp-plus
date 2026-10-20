@@ -110,6 +110,8 @@ param(
 #   Szata Aury         common CommonDefines.h/length.h/item_length.h, item.cpp, char.cpp, char_item.cpp,
 #                      char_battle.cpp, questlua.cpp, cmd.cpp, ENABLE_AURA_COSTUME_SYSTEM (MT2009_PLUS_AURA_V1;
 #                      server-patches/aura, after transmutacja, ukryjkostium, rankpoints and rekawice)
+#   Kamien Rytualny    char_item.cpp - the wheels' Kamien Rytualny (25046) only above level 80 (MT2009_PLUS_KOLA_ITEMS_V1;
+#                      server-patches/kolaprzedmioty, last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1573,6 +1575,19 @@ if ((Test-Path -LiteralPath $zestawyApply -PathType Leaf) -and
     if ($zestawyResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} costume set edit(s).' -f $zestawyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# The ItemShop wheels' Kamien Rytualny (server-patches/kolaprzedmioty, MT2009_PLUS_KOLA_ITEMS_V1; the owner, 20 October
+# 2026): the global server's Ritual Stone (25046 here - our 25042 is Magiczny Kamien) - the Magic Stone's protection with
+# +15%, only on an item above level 80 (the refine by scroll and its roll). Last.
+$kolaItemsApply = Join-Path $repo 'server-patches/kolaprzedmioty/Apply-KolaPrzedmiotyPatch.ps1'
+if ((Test-Path -LiteralPath $kolaItemsApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $kolaItemsResult = & $kolaItemsApply -SourceDir $engineGameSource
+    if ($kolaItemsResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} wheel item edit(s).' -f $kolaItemsResult.Applied) -ForegroundColor DarkGray
     }
 }
 
