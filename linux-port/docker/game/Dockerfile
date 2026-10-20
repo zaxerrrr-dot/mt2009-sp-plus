@@ -2742,6 +2742,23 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-lokacje-add \
       done; \
     done \
  && echo "lokacje: Yohara spawn points of the spreadsheet added ($(cat "$A"/map/*/*.lokacje.txt | wc -l) lines)"
+
+# MT2009_PLUS_MOBY_ARKUSZ_V1: the drops of the owner's sheet of 20 October 2026 (Metin2_Moby_statystyki_EXP_i_drop.xlsx)
+# our Yohara monsters lacked - mob_drop_item.yohara_arkusz.txt (tools/ymoby_arkusz/gen_ymoby_arkusz.py, yohara_arkusz/
+# README.md): groups MT2009_yarkusz_<mob> of Type drop, which the engine adds to the monster's own groups. After every
+# Yohara share step (their monsters' groups are in already); none may exist before. Every item and monster is in the
+# world of the Yohara SQL files (apply.sh).
+COPY yohara_arkusz/ /tmp/yohara-arkusz-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-arkusz-add \
+ && F="$L/mob_drop_item.txt" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.yohara_arkusz.txt" \
+ && n="$(grep -c -E '^Group[[:blank:]]+MT2009_yarkusz_' "$A/mob_drop_item.yohara_arkusz.txt")" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_yarkusz_' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.yohara_arkusz.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_yarkusz_' "$F")" = "$n" \
+ && rm -rf "$A" \
+ && echo "share: Yohara monsters' drops of the owner's sheet ($n groups)"
 # MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia (50124) drops from nothing any more (the owner, 15 October
 # 2026, fix 7) - after every share step, so no append brings it back. The Yohara files (tools/yohara_items, yohara_maps3,
 # yohara_pb, yohara_iluzja, yohara_chestdrops) and special_item_group.dungeons.txt (54700) no longer have it; this

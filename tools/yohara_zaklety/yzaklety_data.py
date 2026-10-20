@@ -51,10 +51,10 @@ MOBS = {
     8059: ('Metin Drzewnych Stworzeń', 0),      # 100 - "Drugi rekonesans" (5 of them)
     8061: ('Metin Lasu', 0),                    # 120
 }
-# the pl-wiki over Owsap: Bojownik En-Tai's Basis-EXP; Jotun Thrym summons Uzdrowiciele Ochao ("Erebu": "przywołuje 4
-# respy Uzdrowicieli Ochao"; Owsap: Niszczyciel En-Tai) and drops 10-27 million Yang (tr-wiki "Jotun Thrym")
+# the pl-wiki over Owsap: Jotun Thrym summons Uzdrowiciele Ochao ("Erebu": "przywołuje 4 respy Uzdrowicieli Ochao";
+# Owsap: Niszczyciel En-Tai) and drops 10-27 million Yang (tr-wiki "Jotun Thrym"). MT2009_PLUS_MOBY_ARKUSZ_V1: Bojownik
+# En-Tai's experience is Owsap's again (28 934, the owner's sheet of 20 October 2026; the pl-wiki's 27 356 is gone)
 OVERRIDE = {
-    6402: dict(Exp='27356'),
     6192: dict(SummonVnum='6409', MinGold='10000000', MaxGold='27000000'),
 }
 

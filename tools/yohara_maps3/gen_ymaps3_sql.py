@@ -67,6 +67,7 @@ def main():
         assert len(pl) <= 24, pl
         r = rows[v]
         assert r['Type'] in ('MONSTER', 'STONE'), (v, r['Type'])
+        r = dict(r, **D.OVERRIDE.get(v, {}))     # MT2009_PLUS_MOBY_ARKUSZ_V1: the owner's sheet over Owsap
         t = row_of(r, en.get(v) or ascii_pl(pl), pl)
         lines.append(t)
     for v in sorted(D.NPCS):

@@ -1,0 +1,14608 @@
+{
+"adds": {
+"3956": {
+"kind": "boss",
+"name": "Królowa Syren",
+"rows": [
+[
+95926,
+50,
+10.0,
+"Kamyki",
+50926,
+"ours"
+]
+]
+},
+"4000": {
+"kind": "stone",
+"name": "Metin Ognia",
+"rows": [
+[
+27007,
+5,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+]
+]
+},
+"4001": {
+"kind": "stone",
+"name": "Metin Lodu",
+"rows": [
+[
+27007,
+5,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+]
+]
+},
+"4002": {
+"kind": "stone",
+"name": "Metin Błyskawicy",
+"rows": [
+[
+27007,
+5,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+]
+]
+},
+"4003": {
+"kind": "stone",
+"name": "Metin Wiatru",
+"rows": [
+[
+27007,
+5,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+]
+]
+},
+"4004": {
+"kind": "stone",
+"name": "Metin Ziemi",
+"rows": [
+[
+27007,
+5,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+]
+]
+},
+"4005": {
+"kind": "stone",
+"name": "Metin Nocy",
+"rows": [
+[
+27007,
+5,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+]
+]
+},
+"4280": {
+"kind": "normal",
+"name": "PB: Wojownik Setaou",
+"rows": [
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31209,
+1,
+0.5,
+"PB: Plan Hełmu Wojownika",
+31209,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+50254,
+1,
+0.2,
+"Skrzynia Mroku",
+50254,
+"default:other"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4281": {
+"kind": "normal",
+"name": "PB: Łowca Setaou",
+"rows": [
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31210,
+1,
+2.0,
+"PB: Plan Hełmu Ninja",
+31210,
+"ours-other-kind"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4282": {
+"kind": "normal",
+"name": "PB: Mistyk Setaou",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31121,
+2,
+2.0,
+"Stal",
+31121,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4283": {
+"kind": "normal",
+"name": "PB: Żołnierz Setaou",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+50726,
+3,
+2.0,
+"Grzyb Tue",
+50726,
+"ours-other-kind"
+],
+[
+50060,
+1,
+0.2,
+"Instr. Jazdy Konnej",
+50060,
+"default:other"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+],
+[
+31196,
+1,
+0.5,
+"PB: Plan Miecza",
+31196,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+50254,
+1,
+0.2,
+"Skrzynia Mroku",
+50254,
+"default:other"
+],
+[
+31121,
+2,
+2.0,
+"Stal",
+31121,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4284": {
+"kind": "normal",
+"name": "PB: Łucznik Setaou",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+50060,
+1,
+0.2,
+"Instr. Jazdy Konnej",
+50060,
+"default:other"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31199,
+1,
+2.0,
+"PB: Plan Łuku",
+31199,
+"ours-other-kind"
+],
+[
+31205,
+1,
+0.5,
+"PB: Plan Zbroi Ninja",
+31205,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+50727,
+3,
+2.0,
+"Róża Alpejska",
+50727,
+"ours-other-kind"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+],
+[
+31121,
+2,
+2.0,
+"Stal",
+31121,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4285": {
+"kind": "normal",
+"name": "PB: Magistrat Setaou",
+"rows": [
+[
+50726,
+3,
+2.0,
+"Grzyb Tue",
+50726,
+"ours-other-kind"
+],
+[
+50060,
+1,
+0.2,
+"Instr. Jazdy Konnej",
+50060,
+"default:other"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+50727,
+3,
+2.0,
+"Róża Alpejska",
+50727,
+"ours-other-kind"
+],
+[
+50254,
+1,
+0.2,
+"Skrzynia Mroku",
+50254,
+"default:other"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4289": {
+"kind": "boss",
+"name": "PB: Generał Yonghan",
+"rows": [
+[
+50723,
+3,
+25.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+50727,
+3,
+25.0,
+"Róża Alpejska",
+50727,
+"ours"
+]
+]
+},
+"4290": {
+"kind": "boss",
+"name": "PB: Generał Yonghan",
+"rows": [
+[
+50726,
+3,
+25.0,
+"Grzyb Tue",
+50726,
+"ours"
+],
+[
+31115,
+2,
+25.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50723,
+3,
+25.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours-other-kind"
+],
+[
+31114,
+1,
+10.0,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4300": {
+"kind": "normal",
+"name": "PB: Ognisty Duch Żaru",
+"rows": [
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4301": {
+"kind": "normal",
+"name": "PB: Ognisty Tygrys Żaru",
+"rows": [
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4302": {
+"kind": "normal",
+"name": "PB: Płomień Żaru",
+"rows": [
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31121,
+2,
+2.0,
+"Stal",
+31121,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4303": {
+"kind": "normal",
+"name": "PB: Og. Wojownik Żaru",
+"rows": [
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4304": {
+"kind": "normal",
+"name": "PB: Ognisty Król Żaru",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4305": {
+"kind": "normal",
+"name": "PB: Ognisty Troll Żaru",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4306": {
+"kind": "normal",
+"name": "PB: Ognista Broda Żaru",
+"rows": [
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4307": {
+"kind": "normal",
+"name": "PB: Og. Generał Żaru",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31121,
+2,
+2.0,
+"Stal",
+31121,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4308": {
+"kind": "normal",
+"name": "PB: Ognisty Książę Żaru",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+39076,
+1,
+2.0,
+"Czerwony Odłamek",
+39076,
+"ours-other-kind"
+],
+[
+31125,
+2,
+2.0,
+"Gruba Nić",
+31125,
+"ours-other-kind"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31121,
+2,
+2.0,
+"Stal",
+31121,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4320": {
+"kind": "normal",
+"name": "PB: Kryształ Mrozu",
+"rows": [
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4321": {
+"kind": "normal",
+"name": "PB: Mroźny Robak",
+"rows": [
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4322": {
+"kind": "normal",
+"name": "PB: Mroźny Człowiek",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4323": {
+"kind": "normal",
+"name": "PB: Mroźny Yeti",
+"rows": [
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4324": {
+"kind": "normal",
+"name": "PB: Mroźny Golem",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4325": {
+"kind": "normal",
+"name": "PB: Mroźny Troll",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31118,
+1,
+2.0,
+"Oznaka Sławy",
+31118,
+"ours"
+],
+[
+31120,
+1,
+2.0,
+"Środek Ścierny",
+31120,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4326": {
+"kind": "normal",
+"name": "PB: Mroźna Broda",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31118,
+1,
+2.0,
+"Oznaka Sławy",
+31118,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4327": {
+"kind": "normal",
+"name": "PB: Mroźny Generał",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31120,
+1,
+2.0,
+"Środek Ścierny",
+31120,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4328": {
+"kind": "normal",
+"name": "PB: Mroźny Książę",
+"rows": [
+[
+31124,
+2,
+2.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+39076,
+1,
+2.0,
+"Czerwony Odłamek",
+39076,
+"ours-other-kind"
+],
+[
+31109,
+1,
+0.5,
+"Drobny Kam. Przebudzenia",
+31109,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31132,
+2,
+2.0,
+"Odłamki",
+31132,
+"ours-other-kind"
+],
+[
+31118,
+1,
+2.0,
+"Oznaka Sławy",
+31118,
+"ours"
+],
+[
+31196,
+1,
+0.5,
+"PB: Plan Miecza",
+31196,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31120,
+1,
+2.0,
+"Środek Ścierny",
+31120,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4329": {
+"kind": "boss",
+"name": "PB: Szel",
+"rows": [
+[
+31123,
+2,
+27.5,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+39076,
+1,
+10.0,
+"Czerwony Odłamek",
+39076,
+"ours"
+],
+[
+31109,
+1,
+20.0,
+"Drobny Kam. Przebudzenia",
+31109,
+"ours"
+],
+[
+31125,
+2,
+30.0,
+"Gruba Nić",
+31125,
+"ours"
+],
+[
+31145,
+5,
+50.0,
+"Liście Życia",
+31145,
+"ours"
+],
+[
+31108,
+3,
+40.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31132,
+2,
+25.0,
+"Odłamki",
+31132,
+"ours"
+],
+[
+31118,
+3,
+40.0,
+"Oznaka Sławy",
+31118,
+"ours"
+],
+[
+31120,
+2,
+30.0,
+"Środek Ścierny",
+31120,
+"ours"
+],
+[
+31133,
+1,
+10.0,
+"Zwykły Barwnik",
+31133,
+"default:material"
+]
+]
+},
+"4340": {
+"kind": "normal",
+"name": "PB: Wojownik En-Tai",
+"rows": [
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4341": {
+"kind": "normal",
+"name": "PB: Bojownik En-Tai",
+"rows": [
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31206,
+1,
+0.4,
+"PB: Plan Zbroi Sura",
+31206,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4342": {
+"kind": "normal",
+"name": "PB: Druid En-Tai",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31120,
+1,
+2.0,
+"Środek Ścierny",
+31120,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4343": {
+"kind": "normal",
+"name": "PB: Uzdrowiciel En-Tai",
+"rows": [
+[
+31117,
+1,
+2.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+31123,
+1,
+2.0,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31108,
+1,
+1.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+31120,
+1,
+2.0,
+"Środek Ścierny",
+31120,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4344": {
+"kind": "normal",
+"name": "PB: Niszczyciel En-Tai",
+"rows": [
+[
+50726,
+3,
+2.0,
+"Grzyb Tue",
+50726,
+"ours-other-kind"
+],
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours-other-kind"
+],
+[
+31145,
+5,
+2.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4345": {
+"kind": "boss",
+"name": "PB: Władca En-Tai",
+"rows": [
+[
+50725,
+3,
+22.5,
+"Bez",
+50725,
+"ours"
+],
+[
+31117,
+2,
+30.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+39076,
+1,
+10.0,
+"Czerwony Odłamek",
+39076,
+"ours"
+],
+[
+27115,
+1,
+40.0,
+"Fioletowa Mikstura(D)",
+27115,
+"default:potion"
+],
+[
+31131,
+1,
+10.0,
+"Jedwab",
+31131,
+"default:material"
+],
+[
+31145,
+5,
+50.0,
+"Liście Życia",
+31145,
+"ours"
+],
+[
+31108,
+3,
+40.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31149,
+2,
+30.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+]
+]
+},
+"4347": {
+"kind": "normal",
+"name": "PB: Wojownik En-Tai",
+"rows": [
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4348": {
+"kind": "normal",
+"name": "PB: Bojownik En-Tai",
+"rows": [
+[
+31115,
+1,
+2.0,
+"Kowadło",
+31115,
+"ours"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4349": {
+"kind": "normal",
+"name": "PB: Druid En-Tai",
+"rows": [
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+31114,
+1,
+0.5,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"4350": {
+"kind": "normal",
+"name": "PB: Uzdrowiciel En-Tai",
+"rows": [
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+]
+]
+},
+"4351": {
+"kind": "normal",
+"name": "PB: Niszczyciel En-Tai",
+"rows": [
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31149,
+1,
+2.0,
+"Mocny Sznur",
+31149,
+"ours"
+],
+[
+31118,
+1,
+2.0,
+"Oznaka Sławy",
+31118,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours"
+]
+]
+},
+"4352": {
+"kind": "boss",
+"name": "PB: Bagjanamu",
+"rows": [
+[
+31124,
+2,
+30.0,
+"Cienka Nić",
+31124,
+"ours"
+],
+[
+31117,
+2,
+30.0,
+"Cienka Przędza",
+31117,
+"ours"
+],
+[
+39076,
+1,
+10.0,
+"Czerwony Odłamek",
+39076,
+"ours"
+],
+[
+31109,
+1,
+20.0,
+"Drobny Kam. Przebudzenia",
+31109,
+"ours"
+],
+[
+31125,
+2,
+30.0,
+"Gruba Nić",
+31125,
+"ours"
+],
+[
+31131,
+1,
+10.0,
+"Jedwab",
+31131,
+"default:material"
+],
+[
+31145,
+5,
+50.0,
+"Liście Życia",
+31145,
+"ours"
+],
+[
+31108,
+3,
+40.0,
+"Mały Kamień Przebudzenia",
+31108,
+"ours"
+],
+[
+31132,
+2,
+25.0,
+"Odłamki",
+31132,
+"ours"
+],
+[
+31118,
+3,
+40.0,
+"Oznaka Sławy",
+31118,
+"ours"
+],
+[
+31136,
+1,
+10.0,
+"Prosty Kamień Chaosu",
+31136,
+"default:material"
+],
+[
+31120,
+2,
+30.0,
+"Środek Ścierny",
+31120,
+"ours"
+],
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+],
+[
+39080,
+1,
+15.0,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"4410": {
+"kind": "boss",
+"name": "PB: Beran-Setaou",
+"rows": [
+[
+95926,
+50,
+10.0,
+"Kamyki",
+50926,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70048,
+1,
+8.0,
+"Płaszcz Uciekiniera",
+70048,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+39002,
+1,
+5.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+39077,
+1,
+7.5,
+"Tęczowy Odłamek",
+39077,
+"ours"
+],
+[
+39080,
+1,
+15.0,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"4411": {
+"kind": "boss",
+"name": "PB: Razador",
+"rows": [
+[
+31123,
+2,
+27.5,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+95926,
+50,
+10.0,
+"Kamyki",
+50926,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70048,
+1,
+8.0,
+"Płaszcz Uciekiniera",
+70048,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+31121,
+2,
+30.0,
+"Stal",
+31121,
+"ours"
+],
+[
+39077,
+1,
+7.5,
+"Tęczowy Odłamek",
+39077,
+"ours"
+],
+[
+39080,
+1,
+15.0,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"4412": {
+"kind": "boss",
+"name": "PB: Nemere",
+"rows": [
+[
+31123,
+2,
+27.5,
+"Cienka Skóra",
+31123,
+"ours"
+],
+[
+31125,
+2,
+30.0,
+"Gruba Nić",
+31125,
+"ours"
+],
+[
+70012,
+1,
+10.0,
+"Łza Bogini",
+70012,
+"ours"
+],
+[
+31118,
+3,
+40.0,
+"Oznaka Sławy",
+31118,
+"ours"
+],
+[
+31201,
+1,
+8.0,
+"PB: Plan Dzwonu",
+31201,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+39002,
+1,
+5.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+39077,
+1,
+7.5,
+"Tęczowy Odłamek",
+39077,
+"ours"
+],
+[
+31133,
+1,
+10.0,
+"Zwykły Barwnik",
+31133,
+"default:material"
+],
+[
+39080,
+1,
+15.0,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"4413": {
+"kind": "boss",
+"name": "PB: Jotun Thrym",
+"rows": [
+[
+31131,
+1,
+10.0,
+"Jedwab",
+31131,
+"default:material"
+],
+[
+70048,
+1,
+8.0,
+"Płaszcz Uciekiniera",
+70048,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+39002,
+1,
+5.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+31136,
+1,
+10.0,
+"Prosty Kamień Chaosu",
+31136,
+"default:material"
+],
+[
+39077,
+1,
+7.5,
+"Tęczowy Odłamek",
+39077,
+"ours"
+],
+[
+39080,
+1,
+15.0,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"6116": {
+"kind": "boss",
+"name": "Smoczy Strażnik Idall",
+"rows": [
+[
+50725,
+3,
+22.5,
+"Bez",
+50725,
+"ours"
+],
+[
+70031,
+1,
+4.0,
+"Broszura Szermierki",
+70031,
+"default:other"
+],
+[
+27115,
+1,
+40.0,
+"Fioletowa Mikstura(D)",
+27115,
+"default:potion"
+],
+[
+50726,
+3,
+25.0,
+"Grzyb Tue",
+50726,
+"ours"
+],
+[
+50060,
+1,
+4.0,
+"Instr. Jazdy Konnej",
+50060,
+"default:other"
+],
+[
+50724,
+3,
+25.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+50721,
+3,
+22.5,
+"Kwiat Brzoskwini",
+50721,
+"ours"
+],
+[
+50728,
+3,
+22.5,
+"Morwa",
+50728,
+"ours"
+],
+[
+30622,
+1,
+40.0,
+"Plan Zbroi: Hełm",
+30622,
+"ours-other-kind"
+],
+[
+50727,
+3,
+25.0,
+"Róża Alpejska",
+50727,
+"ours"
+],
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+]
+]
+},
+"6192": {
+"kind": "boss",
+"name": "Jotun Thrym",
+"rows": [
+[
+39076,
+1,
+10.0,
+"Czerwony Odłamek",
+39076,
+"ours"
+],
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours-other-kind"
+],
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+]
+]
+},
+"6401": {
+"kind": "normal",
+"name": "Wojownik En-Tai",
+"rows": [
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+2144,
+1,
+0.5,
+"Olbrz. Łuk Żółt. Smoka+4",
+2144,
+"default:gear+0-5"
+],
+[
+30500,
+1,
+0.5,
+"Rubinowy Ozdobny Nóż",
+30500,
+"default:material"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+],
+[
+11285,
+1,
+0.5,
+"Zbroja Boga Smoków+5",
+11285,
+"default:gear+0-5"
+]
+]
+},
+"6402": {
+"kind": "normal",
+"name": "Bojownik En-Tai",
+"rows": [
+[
+7155,
+1,
+2.0,
+"Ekstazyjny Wachlarz+5",
+7155,
+"ours-other-kind"
+],
+[
+12680,
+1,
+0.5,
+"Kapelusz Duszy+0",
+12680,
+"default:gear+0-5"
+],
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+30608,
+1,
+0.25,
+"Stalowe Płyty",
+30608,
+"ours"
+],
+[
+30508,
+1,
+0.5,
+"Szafirowa Ozdoba",
+30508,
+"default:material"
+],
+[
+30501,
+1,
+0.5,
+"Złota Sprzączka",
+30501,
+"default:material"
+]
+]
+},
+"6403": {
+"kind": "normal",
+"name": "Druid En-Tai",
+"rows": [
+[
+15204,
+1,
+0.5,
+"Buty Feniksa+4",
+15204,
+"default:gear+0-5"
+],
+[
+12401,
+1,
+0.5,
+"Pajęczy Kaptur+1",
+12401,
+"default:gear+0-5"
+],
+[
+50120,
+1,
+0.2,
+"Żelazna Szkatułka",
+50120,
+"default:other"
+]
+]
+},
+"6404": {
+"kind": "normal",
+"name": "Uzdrowiciel En-Tai",
+"rows": [
+[
+30503,
+1,
+2.0,
+"Ametystowy Ozdobny Nóż",
+30503,
+"ours-other-kind"
+],
+[
+30192,
+1,
+0.5,
+"Mleczny Sok",
+30192,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+30608,
+1,
+0.25,
+"Stalowe Płyty",
+30608,
+"ours"
+],
+[
+30506,
+1,
+2.0,
+"Szafirowy Ozdobny Nóż",
+30506,
+"ours-other-kind"
+]
+]
+},
+"6406": {
+"kind": "normal",
+"name": "Niszczyciel En-Tai",
+"rows": [
+[
+50726,
+3,
+2.0,
+"Grzyb Tue",
+50726,
+"ours-other-kind"
+],
+[
+12280,
+1,
+0.5,
+"Hełm Mistrza Wojny+0",
+12280,
+"default:gear+0-5"
+],
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours-other-kind"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+30504,
+1,
+0.5,
+"Srebrny Zacisk",
+30504,
+"default:material"
+],
+[
+30604,
+1,
+0.5,
+"Szary Barwnik",
+30604,
+"ours"
+],
+[
+30505,
+1,
+0.5,
+"Szmaragdowa Ozdoba",
+30505,
+"default:material"
+],
+[
+50122,
+1,
+0.2,
+"Żelazna Skrzynia",
+50122,
+"default:other"
+]
+]
+},
+"6407": {
+"kind": "boss",
+"name": "Władca En-Tai",
+"rows": [
+[
+90017,
+1,
+0.05,
+"Dykta+",
+90017,
+"ours-other-kind"
+],
+[
+27115,
+1,
+40.0,
+"Fioletowa Mikstura(D)",
+27115,
+"default:potion"
+],
+[
+90015,
+1,
+0.05,
+"Kamień do Fundamentu+",
+90015,
+"ours-other-kind"
+],
+[
+90016,
+1,
+0.05,
+"Pień+",
+90016,
+"ours-other-kind"
+],
+[
+50727,
+3,
+25.0,
+"Róża Alpejska",
+50727,
+"ours"
+],
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+]
+]
+},
+"6408": {
+"kind": "boss",
+"name": "Bagjanamu",
+"rows": [
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+],
+[
+39080,
+1,
+15.0,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"6410": {
+"kind": "normal",
+"name": "Silny Wojownik En-Tai",
+"rows": [
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+]
+]
+},
+"6411": {
+"kind": "normal",
+"name": "Silny Bojownik En-Tai",
+"rows": [
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+]
+]
+},
+"6412": {
+"kind": "normal",
+"name": "Silny Druid En-Tai",
+"rows": [
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+]
+]
+},
+"6413": {
+"kind": "normal",
+"name": "Silny Uzdrowiciel En-Tai",
+"rows": [
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+]
+]
+},
+"6690": {
+"kind": "normal",
+"name": "Mag Frontowy (mrok)",
+"rows": [
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+]
+]
+},
+"6691": {
+"kind": "boss",
+"name": "Kao (mrok)",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+]
+]
+},
+"6697": {
+"kind": "normal",
+"name": "Mag Frontowy (lód)",
+"rows": [
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+]
+]
+},
+"6698": {
+"kind": "boss",
+"name": "Kao (lód)",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+95734,
+1,
+10.0,
+"Mroźny Korzonek",
+50734,
+"ours"
+]
+]
+},
+"6699": {
+"kind": "boss",
+"name": "Król Bao",
+"rows": [
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+50664,
+1,
+10.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+31226,
+1,
+10.0,
+"Skażony Rdzeń",
+31226,
+"default:material"
+],
+[
+31245,
+1,
+4.0,
+"Twarda Skóra",
+31245,
+"ours"
+],
+[
+31246,
+1,
+4.0,
+"Wzór Rękawicy",
+31246,
+"ours"
+]
+]
+},
+"6702": {
+"kind": "normal",
+"name": "Troll Wojownik (mrok)",
+"rows": [
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6705": {
+"kind": "boss",
+"name": "Natanan (mrok)",
+"rows": [
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6706": {
+"kind": "boss",
+"name": "Argos (mrok)",
+"rows": [
+[
+50339,
+1,
+1.5,
+"Charyzma Adepta",
+50339,
+"ours"
+],
+[
+50340,
+1,
+0.75,
+"Charyzma Eksperta",
+50340,
+"ours"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+50529,
+1,
+3.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6713": {
+"kind": "normal",
+"name": "Troll Wojownik (ogień)",
+"rows": [
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6714": {
+"kind": "normal",
+"name": "Troll Strzelec (ogień)",
+"rows": [
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6715": {
+"kind": "normal",
+"name": "Troll Szamanka (ogień)",
+"rows": [
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6716": {
+"kind": "boss",
+"name": "Natanan (ogień)",
+"rows": [
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+95733,
+1,
+15.0,
+"Ognisty Liść",
+50733,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6717": {
+"kind": "boss",
+"name": "Argos (ogień)",
+"rows": [
+[
+50339,
+1,
+1.5,
+"Charyzma Adepta",
+50339,
+"ours"
+],
+[
+50340,
+1,
+0.75,
+"Charyzma Eksperta",
+50340,
+"ours"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+50529,
+1,
+3.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6720": {
+"kind": "normal",
+"name": "Myr Golem (ziemia)",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6721": {
+"kind": "normal",
+"name": "Myr Bojownik (ziemia)",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6722": {
+"kind": "normal",
+"name": "Myr Czarodziej (ziemia)",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6723": {
+"kind": "boss",
+"name": "Myr Weteran (ziemia)",
+"rows": [
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+3.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+],
+[
+50737,
+1,
+10.0,
+"Ziemne Pnącze",
+50737,
+"ours"
+]
+]
+},
+"6724": {
+"kind": "boss",
+"name": "Myr Prymus (ziemia)",
+"rows": [
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+50529,
+1,
+3.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+],
+[
+70408,
+1,
+5.0,
+"Tajemniczy Bilet",
+70408,
+"ours"
+]
+]
+},
+"6727": {
+"kind": "normal",
+"name": "Myr Golem (wiatr)",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6728": {
+"kind": "normal",
+"name": "Myr Bojownik (wiatr)",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6729": {
+"kind": "normal",
+"name": "Myr Czarodziej (wiatr)",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6730": {
+"kind": "boss",
+"name": "Myr Weteran (wiatr)",
+"rows": [
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+95736,
+1,
+10.0,
+"Kwiat Północnego Wiatru",
+50736,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50529,
+1,
+3.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+]
+]
+},
+"6731": {
+"kind": "boss",
+"name": "Myr Prymus (wiatr)",
+"rows": [
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+50341,
+1,
+5.0,
+"Inspiracja Nowicjusza",
+50341,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+50529,
+1,
+3.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+],
+[
+70408,
+1,
+5.0,
+"Tajemniczy Bilet",
+70408,
+"ours"
+]
+]
+},
+"6744": {
+"kind": "boss",
+"name": "Kappa Żołnierz",
+"rows": [
+[
+72740,
+1,
+2.0,
+"Licencja Najemnika",
+72740,
+"ours"
+],
+[
+70428,
+1,
+3.0,
+"Pył Wężowy",
+70428,
+"ours"
+]
+]
+},
+"6746": {
+"kind": "normal",
+"name": "Kappa Żołnierz",
+"rows": [
+[
+95736,
+1,
+0.5,
+"Kwiat Północnego Wiatru",
+50736,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+]
+]
+},
+"6747": {
+"kind": "normal",
+"name": "Kappa Czarodziej",
+"rows": [
+[
+95736,
+1,
+0.5,
+"Kwiat Północnego Wiatru",
+50736,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+]
+]
+},
+"6748": {
+"kind": "normal",
+"name": "Kappa Łowca",
+"rows": [
+[
+95736,
+1,
+0.5,
+"Kwiat Północnego Wiatru",
+50736,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+]
+]
+},
+"6749": {
+"kind": "normal",
+"name": "Potężny Kappa",
+"rows": [
+[
+50339,
+1,
+1.5,
+"Charyzma Adepta",
+50339,
+"ours-other-kind"
+],
+[
+50340,
+1,
+0.75,
+"Charyzma Eksperta",
+50340,
+"ours-other-kind"
+],
+[
+257,
+1,
+0.1,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50342,
+1,
+0.5,
+"Inspiracja Adepta",
+50342,
+"ours-other-kind"
+],
+[
+50343,
+1,
+0.25,
+"Inspiracja Eksperta",
+50343,
+"ours-other-kind"
+],
+[
+28446,
+1,
+0.2,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+39015,
+1,
+0.2,
+"Kamień Kowala",
+39015,
+"default:other"
+],
+[
+39004,
+1,
+0.2,
+"Marmur Błogosławieństwa",
+39004,
+"default:other"
+],
+[
+95736,
+1,
+0.5,
+"Kwiat Północnego Wiatru",
+50736,
+"ours"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+70048,
+1,
+2.0,
+"Płaszcz Uciekiniera",
+70048,
+"ours-other-kind"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours-other-kind"
+],
+[
+72006,
+1,
+2.0,
+"Rękawica Złodzieja",
+70043,
+"ours-other-kind"
+],
+[
+95601,
+1,
+0.25,
+"Stabilne Sznury",
+30612,
+"ours"
+],
+[
+39081,
+1,
+0.02,
+"Święty Odłamek",
+39081,
+"ours"
+],
+[
+72353,
+1,
+0.4,
+"Topaz Woli",
+72353,
+"ours"
+],
+[
+31251,
+1,
+0.15,
+"Utwardzacz Skóry",
+31251,
+"ours"
+],
+[
+31252,
+1,
+0.05,
+"Utwardzacz Skóry+",
+31252,
+"ours"
+],
+[
+31246,
+1,
+0.15,
+"Wzór Rękawicy",
+31246,
+"ours"
+]
+]
+},
+"6760": {
+"kind": "normal",
+"name": "Skażony Wojownik",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+]
+]
+},
+"6761": {
+"kind": "normal",
+"name": "Skażony Mnich",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+]
+]
+},
+"6762": {
+"kind": "normal",
+"name": "Skażony Generał",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+]
+]
+},
+"6763": {
+"kind": "boss",
+"name": "Skażony Wódz",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+255,
+1,
+2.0,
+"Demoniczne Ostrze+5",
+255,
+"ours"
+],
+[
+256,
+1,
+0.5,
+"Demoniczne Ostrze+6",
+256,
+"ours"
+],
+[
+7155,
+1,
+2.0,
+"Ekstazyjny Wachlarz+5",
+7155,
+"ours"
+],
+[
+7156,
+1,
+0.5,
+"Ekstazyjny Wachlarz+6",
+7156,
+"ours"
+],
+[
+72740,
+1,
+2.0,
+"Licencja Najemnika",
+72740,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+2185,
+1,
+2.0,
+"Łuk Niebieskiego Smoka+5",
+2185,
+"ours"
+],
+[
+2186,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+6",
+2186,
+"ours"
+],
+[
+175,
+1,
+2.0,
+"Miecz Żądło+5",
+175,
+"ours"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+1125,
+1,
+2.0,
+"Nóż Siamese+5",
+1125,
+"ours"
+],
+[
+1126,
+1,
+0.5,
+"Nóż Siamese+6",
+1126,
+"ours"
+],
+[
+31238,
+1,
+8.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+3155,
+1,
+2.0,
+"Złodziej Dusz+5",
+3155,
+"ours"
+],
+[
+3156,
+1,
+0.5,
+"Złodziej Dusz+6",
+3156,
+"ours"
+]
+]
+},
+"6764": {
+"kind": "boss",
+"name": "Skażony Wódz Wojenny",
+"rows": [
+[
+50339,
+1,
+1.5,
+"Charyzma Adepta",
+50339,
+"ours"
+],
+[
+50340,
+1,
+0.75,
+"Charyzma Eksperta",
+50340,
+"ours"
+],
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+253,
+1,
+10.0,
+"Demoniczne Ostrze+3",
+253,
+"default:gear+0-5"
+],
+[
+254,
+1,
+10.0,
+"Demoniczne Ostrze+4",
+254,
+"default:gear+0-5"
+],
+[
+255,
+1,
+2.0,
+"Demoniczne Ostrze+5",
+255,
+"ours"
+],
+[
+256,
+1,
+0.5,
+"Demoniczne Ostrze+6",
+256,
+"ours"
+],
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+72740,
+1,
+2.0,
+"Licencja Najemnika",
+72740,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+172,
+1,
+10.0,
+"Miecz Żądło+2",
+172,
+"default:gear+0-5"
+],
+[
+173,
+1,
+10.0,
+"Miecz Żądło+3",
+173,
+"default:gear+0-5"
+],
+[
+174,
+1,
+10.0,
+"Miecz Żądło+4",
+174,
+"default:gear+0-5"
+],
+[
+175,
+1,
+2.0,
+"Miecz Żądło+5",
+175,
+"ours"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+1124,
+1,
+10.0,
+"Nóż Siamese+4",
+1124,
+"default:gear+0-5"
+],
+[
+1125,
+1,
+2.0,
+"Nóż Siamese+5",
+1125,
+"ours"
+],
+[
+1126,
+1,
+0.5,
+"Nóż Siamese+6",
+1126,
+"ours"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+39002,
+1,
+5.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+72354,
+1,
+2.0,
+"Przenośna Żyła Jadeitu",
+72354,
+"ours"
+],
+[
+72006,
+1,
+5.0,
+"Rękawica Złodzieja",
+70043,
+"ours"
+],
+[
+39081,
+1,
+3.0,
+"Święty Odłamek",
+39081,
+"ours"
+],
+[
+31245,
+1,
+4.0,
+"Twarda Skóra",
+31245,
+"ours"
+],
+[
+31246,
+1,
+4.0,
+"Wzór Rękawicy",
+31246,
+"ours"
+]
+]
+},
+"6775": {
+"kind": "boss",
+"name": "Zamarznięty Wódz",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+]
+]
+},
+"6776": {
+"kind": "boss",
+"name": "Zamarznięty Wódz Wojenny",
+"rows": [
+[
+254,
+1,
+10.0,
+"Demoniczne Ostrze+4",
+254,
+"default:gear+0-5"
+],
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+174,
+1,
+10.0,
+"Miecz Żądło+4",
+174,
+"default:gear+0-5"
+],
+[
+1124,
+1,
+10.0,
+"Nóż Siamese+4",
+1124,
+"default:gear+0-5"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+72354,
+1,
+2.0,
+"Przenośna Żyła Jadeitu",
+72354,
+"ours"
+]
+]
+},
+"6782": {
+"kind": "boss",
+"name": "Wielka Stopa",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+7155,
+1,
+2.0,
+"Ekstazyjny Wachlarz+5",
+7155,
+"ours"
+],
+[
+7156,
+1,
+0.5,
+"Ekstazyjny Wachlarz+6",
+7156,
+"ours"
+],
+[
+31259,
+1,
+3.0,
+"Kowadło Płn. Wiatru",
+31259,
+"ours"
+],
+[
+50336,
+1,
+5.0,
+"Księga Misji (W.Płn.W.)",
+50336,
+"ours"
+],
+[
+2185,
+1,
+2.0,
+"Łuk Niebieskiego Smoka+5",
+2185,
+"ours"
+],
+[
+2186,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+6",
+2186,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+],
+[
+3155,
+1,
+2.0,
+"Złodziej Dusz+5",
+3155,
+"ours"
+],
+[
+3156,
+1,
+0.5,
+"Złodziej Dusz+6",
+3156,
+"ours"
+]
+]
+},
+"6783": {
+"kind": "boss",
+"name": "Wódz Wojenny Płn. Wiatru",
+"rows": [
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+31237,
+1,
+6.5,
+"Kamień Duchowy Płn. W.",
+31237,
+"ours"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+72354,
+1,
+2.0,
+"Przenośna Żyła Jadeitu",
+72354,
+"ours"
+]
+]
+},
+"6784": {
+"kind": "normal",
+"name": "Żołnierz Schron. Płn. W.",
+"rows": [
+[
+257,
+1,
+0.1,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+70050,
+1,
+0.1,
+"Symb. Króla Przepowiedni",
+70050,
+"ours"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+]
+]
+},
+"6785": {
+"kind": "normal",
+"name": "Zadziora Schron. Płn. W.",
+"rows": [
+[
+5128,
+1,
+0.05,
+"Bambusowy Dzwon+8",
+5128,
+"default:gear+8"
+],
+[
+258,
+1,
+0.05,
+"Demoniczne Ostrze+8",
+258,
+"default:gear+8"
+],
+[
+7158,
+1,
+0.05,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+31259,
+1,
+0.065,
+"Kowadło Płn. Wiatru",
+31259,
+"ours"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+70050,
+1,
+0.1,
+"Symb. Króla Przepowiedni",
+70050,
+"ours"
+],
+[
+39068,
+1,
+0.05,
+"Zdobna Skrz. z Odłamkiem",
+39068,
+"ours"
+]
+]
+},
+"6786": {
+"kind": "normal",
+"name": "Wojownik Schron. Płn. W.",
+"rows": [
+[
+5128,
+1,
+0.05,
+"Bambusowy Dzwon+8",
+5128,
+"default:gear+8"
+],
+[
+258,
+1,
+0.05,
+"Demoniczne Ostrze+8",
+258,
+"default:gear+8"
+],
+[
+7158,
+1,
+0.05,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+70051,
+1,
+0.2,
+"Rękawica Króla Przepow.",
+70051,
+"default:other"
+],
+[
+1138,
+1,
+0.05,
+"Skrzydła Demona Chakr.+8",
+1138,
+"default:gear+8"
+],
+[
+70050,
+1,
+0.1,
+"Symb. Króla Przepowiedni",
+70050,
+"ours"
+],
+[
+188,
+1,
+0.05,
+"Zatruty miecz+8",
+188,
+"default:gear+8"
+],
+[
+39068,
+1,
+0.05,
+"Zdobna Skrz. z Odłamkiem",
+39068,
+"ours"
+],
+[
+3158,
+1,
+0.05,
+"Złodziej Dusz+8",
+3158,
+"default:gear+8"
+]
+]
+},
+"6787": {
+"kind": "normal",
+"name": "Czarownik Sch. Płn. W.",
+"rows": [
+[
+31258,
+1,
+0.15,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+2188,
+1,
+0.05,
+"Łuk Niebieskiego Smoka+8",
+2188,
+"default:gear+8"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+70051,
+1,
+0.2,
+"Rękawica Króla Przepow.",
+70051,
+"default:other"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+39068,
+1,
+0.05,
+"Zdobna Skrz. z Odłamkiem",
+39068,
+"ours"
+]
+]
+},
+"6788": {
+"kind": "normal",
+"name": "Generał Schron. Płn. W.",
+"rows": [
+[
+7158,
+1,
+0.05,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+31242,
+1,
+0.115,
+"Kamień Broni Płn. Wiatru",
+31242,
+"ours"
+],
+[
+2188,
+1,
+0.05,
+"Łuk Niebieskiego Smoka+8",
+2188,
+"default:gear+8"
+],
+[
+3168,
+1,
+0.05,
+"Miecz Żalu+8",
+3168,
+"default:gear+8"
+],
+[
+178,
+1,
+0.05,
+"Miecz Żądło+8",
+178,
+"default:gear+8"
+],
+[
+1128,
+1,
+0.05,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+3158,
+1,
+0.05,
+"Złodziej Dusz+8",
+3158,
+"default:gear+8"
+]
+]
+},
+"6789": {
+"kind": "boss",
+"name": "Wódz Wojenny Schronienia",
+"rows": [
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+258,
+1,
+1.0,
+"Demoniczne Ostrze+8",
+258,
+"default:gear+8"
+],
+[
+7157,
+1,
+2.0,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+7158,
+1,
+1.0,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+31258,
+1,
+5.0,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+28440,
+1,
+4.0,
+"Kamień Duszy Magii+4",
+28440,
+"default:other"
+],
+[
+28434,
+1,
+4.0,
+"Kamień Duszy Ninja+4",
+28434,
+"default:other"
+],
+[
+28442,
+1,
+4.0,
+"Kamień Duszy Obrony+4",
+28442,
+"default:other"
+],
+[
+28430,
+1,
+4.0,
+"Kamień Duszy Penetr.+4",
+28430,
+"default:other"
+],
+[
+28437,
+1,
+4.0,
+"Kamień Duszy Potwora+4",
+28437,
+"default:other"
+],
+[
+28432,
+1,
+4.0,
+"Kamień Duszy Powtórki+4",
+28432,
+"default:other"
+],
+[
+28443,
+1,
+4.0,
+"Kamień Duszy Przysp.+4",
+28443,
+"default:other"
+],
+[
+28435,
+1,
+4.0,
+"Kamień Duszy Sury+4",
+28435,
+"default:other"
+],
+[
+28436,
+1,
+4.0,
+"Kamień Duszy Szamana+4",
+28436,
+"default:other"
+],
+[
+28431,
+1,
+4.0,
+"Kamień Duszy Śmierci+4",
+28431,
+"default:other"
+],
+[
+28438,
+1,
+4.0,
+"Kamień Duszy Uchylenia+4",
+28438,
+"default:other"
+],
+[
+28439,
+1,
+4.0,
+"Kamień Duszy Uniku+4",
+28439,
+"default:other"
+],
+[
+28433,
+1,
+4.0,
+"Kamień Duszy Wojownika+4",
+28433,
+"default:other"
+],
+[
+28441,
+1,
+4.0,
+"Kamień Witalności+4",
+28441,
+"default:other"
+],
+[
+72740,
+1,
+2.0,
+"Licencja Najemnika",
+72740,
+"ours"
+],
+[
+2187,
+1,
+2.0,
+"Łuk Niebieskiego Smoka+7",
+2187,
+"default:gear+7"
+],
+[
+2188,
+1,
+1.0,
+"Łuk Niebieskiego Smoka+8",
+2188,
+"default:gear+8"
+],
+[
+177,
+1,
+2.0,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+178,
+1,
+1.0,
+"Miecz Żądło+8",
+178,
+"default:gear+8"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+50529,
+1,
+3.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+31257,
+1,
+8.0,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+3157,
+1,
+2.0,
+"Złodziej Dusz+7",
+3157,
+"default:gear+7"
+],
+[
+3158,
+1,
+1.0,
+"Złodziej Dusz+8",
+3158,
+"default:gear+8"
+]
+]
+},
+"6792": {
+"kind": "normal",
+"name": "Żołnierz Schron. Płn. W.",
+"rows": [
+[
+257,
+1,
+0.1,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+95735,
+1,
+0.5,
+"Piorunowe Zioło",
+50735,
+"ours"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+]
+]
+},
+"6793": {
+"kind": "normal",
+"name": "Zadziora Schron. Płn. W.",
+"rows": [
+[
+5128,
+1,
+0.05,
+"Bambusowy Dzwon+8",
+5128,
+"default:gear+8"
+],
+[
+258,
+1,
+0.05,
+"Demoniczne Ostrze+8",
+258,
+"default:gear+8"
+],
+[
+7158,
+1,
+0.05,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+31259,
+1,
+0.065,
+"Kowadło Płn. Wiatru",
+31259,
+"ours"
+],
+[
+198,
+1,
+0.05,
+"Lwi Miecz+8",
+198,
+"default:gear+8"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+95735,
+1,
+0.5,
+"Piorunowe Zioło",
+50735,
+"ours"
+],
+[
+39068,
+1,
+0.05,
+"Zdobna Skrz. z Odłamkiem",
+39068,
+"ours"
+]
+]
+},
+"6794": {
+"kind": "normal",
+"name": "Wojownik Schron. Płn. W.",
+"rows": [
+[
+5128,
+1,
+0.05,
+"Bambusowy Dzwon+8",
+5128,
+"default:gear+8"
+],
+[
+258,
+1,
+0.05,
+"Demoniczne Ostrze+8",
+258,
+"default:gear+8"
+],
+[
+7158,
+1,
+0.05,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+95735,
+1,
+0.5,
+"Piorunowe Zioło",
+50735,
+"ours"
+],
+[
+70051,
+1,
+0.2,
+"Rękawica Króla Przepow.",
+70051,
+"default:other"
+],
+[
+1138,
+1,
+0.05,
+"Skrzydła Demona Chakr.+8",
+1138,
+"default:gear+8"
+],
+[
+188,
+1,
+0.05,
+"Zatruty miecz+8",
+188,
+"default:gear+8"
+],
+[
+39068,
+1,
+0.05,
+"Zdobna Skrz. z Odłamkiem",
+39068,
+"ours"
+],
+[
+3158,
+1,
+0.05,
+"Złodziej Dusz+8",
+3158,
+"default:gear+8"
+]
+]
+},
+"6795": {
+"kind": "normal",
+"name": "Czarownik Sch. Płn. W.",
+"rows": [
+[
+31258,
+1,
+0.15,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+2188,
+1,
+0.05,
+"Łuk Niebieskiego Smoka+8",
+2188,
+"default:gear+8"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+95735,
+1,
+0.5,
+"Piorunowe Zioło",
+50735,
+"ours"
+],
+[
+70051,
+1,
+0.2,
+"Rękawica Króla Przepow.",
+70051,
+"default:other"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+39068,
+1,
+0.05,
+"Zdobna Skrz. z Odłamkiem",
+39068,
+"ours"
+]
+]
+},
+"6796": {
+"kind": "normal",
+"name": "Generał Schron. Płn. W.",
+"rows": [
+[
+7158,
+1,
+0.05,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+83054,
+1,
+0.03,
+"Idealny Klucz",
+83054,
+"ours"
+],
+[
+31242,
+1,
+0.115,
+"Kamień Broni Płn. Wiatru",
+31242,
+"ours"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+2188,
+1,
+0.05,
+"Łuk Niebieskiego Smoka+8",
+2188,
+"default:gear+8"
+],
+[
+3168,
+1,
+0.05,
+"Miecz Żalu+8",
+3168,
+"default:gear+8"
+],
+[
+178,
+1,
+0.05,
+"Miecz Żądło+8",
+178,
+"default:gear+8"
+],
+[
+1128,
+1,
+0.05,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+95735,
+1,
+0.5,
+"Piorunowe Zioło",
+50735,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+3158,
+1,
+0.05,
+"Złodziej Dusz+8",
+3158,
+"default:gear+8"
+]
+]
+},
+"6797": {
+"kind": "boss",
+"name": "Wódz Wojenny Schronienia",
+"rows": [
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+258,
+1,
+1.0,
+"Demoniczne Ostrze+8",
+258,
+"default:gear+8"
+],
+[
+7157,
+1,
+2.0,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+7158,
+1,
+1.0,
+"Ekstazyjny Wachlarz+8",
+7158,
+"default:gear+8"
+],
+[
+31258,
+1,
+5.0,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+28440,
+1,
+4.0,
+"Kamień Duszy Magii+4",
+28440,
+"default:other"
+],
+[
+28434,
+1,
+4.0,
+"Kamień Duszy Ninja+4",
+28434,
+"default:other"
+],
+[
+28442,
+1,
+4.0,
+"Kamień Duszy Obrony+4",
+28442,
+"default:other"
+],
+[
+28430,
+1,
+4.0,
+"Kamień Duszy Penetr.+4",
+28430,
+"default:other"
+],
+[
+28437,
+1,
+4.0,
+"Kamień Duszy Potwora+4",
+28437,
+"default:other"
+],
+[
+28432,
+1,
+4.0,
+"Kamień Duszy Powtórki+4",
+28432,
+"default:other"
+],
+[
+28443,
+1,
+4.0,
+"Kamień Duszy Przysp.+4",
+28443,
+"default:other"
+],
+[
+28435,
+1,
+4.0,
+"Kamień Duszy Sury+4",
+28435,
+"default:other"
+],
+[
+28436,
+1,
+4.0,
+"Kamień Duszy Szamana+4",
+28436,
+"default:other"
+],
+[
+28431,
+1,
+4.0,
+"Kamień Duszy Śmierci+4",
+28431,
+"default:other"
+],
+[
+28438,
+1,
+4.0,
+"Kamień Duszy Uchylenia+4",
+28438,
+"default:other"
+],
+[
+28439,
+1,
+4.0,
+"Kamień Duszy Uniku+4",
+28439,
+"default:other"
+],
+[
+28433,
+1,
+4.0,
+"Kamień Duszy Wojownika+4",
+28433,
+"default:other"
+],
+[
+31244,
+1,
+5.0,
+"Kamień Rękawic Płn. W.",
+31244,
+"ours"
+],
+[
+28441,
+1,
+4.0,
+"Kamień Witalności+4",
+28441,
+"default:other"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+2187,
+1,
+2.0,
+"Łuk Niebieskiego Smoka+7",
+2187,
+"default:gear+7"
+],
+[
+2188,
+1,
+1.0,
+"Łuk Niebieskiego Smoka+8",
+2188,
+"default:gear+8"
+],
+[
+177,
+1,
+2.0,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+178,
+1,
+1.0,
+"Miecz Żądło+8",
+178,
+"default:gear+8"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+39002,
+1,
+5.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+31238,
+1,
+8.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+55009,
+1,
+3.0,
+"Skrzynia Ksiąg Peta",
+55009,
+"ours"
+],
+[
+31257,
+1,
+8.0,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+3157,
+1,
+2.0,
+"Złodziej Dusz+7",
+3157,
+"default:gear+7"
+],
+[
+3158,
+1,
+1.0,
+"Złodziej Dusz+8",
+3158,
+"default:gear+8"
+]
+]
+},
+"6800": {
+"kind": "normal",
+"name": "Gnoll Wojownik",
+"rows": [
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+]
+]
+},
+"6801": {
+"kind": "normal",
+"name": "Gnoll Zwiadowca",
+"rows": [
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+]
+]
+},
+"6802": {
+"kind": "normal",
+"name": "Czarodziej Gnoll",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+]
+]
+},
+"6803": {
+"kind": "normal",
+"name": "Gnoll Marszałek",
+"rows": [
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31248,
+1,
+0.055,
+"Liliowa Runa SungMa",
+31248,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+]
+]
+},
+"6804": {
+"kind": "boss",
+"name": "Mistrz Gnolli",
+"rows": [
+[
+31248,
+1,
+4.0,
+"Liliowa Runa SungMa",
+31248,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50727,
+3,
+25.0,
+"Róża Alpejska",
+50727,
+"ours"
+],
+[
+31246,
+1,
+4.0,
+"Wzór Rękawicy",
+31246,
+"ours"
+],
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+],
+[
+50737,
+1,
+10.0,
+"Ziemne Pnącze",
+50737,
+"ours"
+],
+[
+31250,
+1,
+4.0,
+"Zielona Runa SungMa",
+31250,
+"ours"
+]
+]
+},
+"6805": {
+"kind": "boss",
+"name": "Gnoll Kapitan",
+"rows": [
+[
+50726,
+3,
+25.0,
+"Grzyb Tue",
+50726,
+"ours"
+],
+[
+31248,
+1,
+4.0,
+"Liliowa Runa SungMa",
+31248,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50737,
+1,
+10.0,
+"Ziemne Pnącze",
+50737,
+"ours"
+],
+[
+31250,
+1,
+4.0,
+"Zielona Runa SungMa",
+31250,
+"ours"
+]
+]
+},
+"6806": {
+"kind": "normal",
+"name": "Gnoll Żołnierz",
+"rows": [
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+]
+]
+},
+"6807": {
+"kind": "normal",
+"name": "Gnoll Szpieg",
+"rows": [
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+]
+]
+},
+"6808": {
+"kind": "normal",
+"name": "Gnoll Mag",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+]
+]
+},
+"6809": {
+"kind": "normal",
+"name": "Komendant Gnoll",
+"rows": [
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31248,
+1,
+0.055,
+"Liliowa Runa SungMa",
+31248,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+]
+]
+},
+"6810": {
+"kind": "normal",
+"name": "Ahtrin Wojownik",
+"rows": [
+[
+50723,
+1,
+1.0,
+"Kwiat Kaki",
+50723,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+]
+]
+},
+"6811": {
+"kind": "normal",
+"name": "Ahtrin Zwiadowca",
+"rows": [
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+]
+]
+},
+"6812": {
+"kind": "normal",
+"name": "Ahtrin Czarodziej",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+]
+]
+},
+"6813": {
+"kind": "normal",
+"name": "Ahtrin Komendant",
+"rows": [
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+31249,
+1,
+0.055,
+"Niebieska Runa SungMa",
+31249,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+]
+]
+},
+"6814": {
+"kind": "boss",
+"name": "Ahtrin Kapitan",
+"rows": [
+[
+27115,
+1,
+40.0,
+"Fioletowa Mikstura(D)",
+27115,
+"default:potion"
+],
+[
+31248,
+1,
+4.0,
+"Liliowa Runa SungMa",
+31248,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+31249,
+1,
+4.0,
+"Niebieska Runa SungMa",
+31249,
+"ours"
+],
+[
+50727,
+3,
+25.0,
+"Róża Alpejska",
+50727,
+"ours"
+],
+[
+31246,
+1,
+4.0,
+"Wzór Rękawicy",
+31246,
+"ours"
+]
+]
+},
+"6815": {
+"kind": "boss",
+"name": "Ahtrin Kapitan",
+"rows": [
+[
+50726,
+3,
+25.0,
+"Grzyb Tue",
+50726,
+"ours"
+],
+[
+31248,
+1,
+4.0,
+"Liliowa Runa SungMa",
+31248,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+31249,
+1,
+4.0,
+"Niebieska Runa SungMa",
+31249,
+"ours"
+]
+]
+},
+"6816": {
+"kind": "normal",
+"name": "Ahtrin Szpieg",
+"rows": [
+[
+50721,
+3,
+2.0,
+"Kwiat Brzoskwini",
+50721,
+"ours-other-kind"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+]
+]
+},
+"6817": {
+"kind": "normal",
+"name": "Ahtrin Wiedźmin",
+"rows": [
+[
+50725,
+1,
+1.0,
+"Bez",
+50725,
+"ours"
+],
+[
+50728,
+1,
+1.0,
+"Morwa",
+50728,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+]
+]
+},
+"6818": {
+"kind": "normal",
+"name": "Ahtrin Komendant",
+"rows": [
+[
+50724,
+1,
+2.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+31248,
+1,
+0.055,
+"Liliowa Runa SungMa",
+31248,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+50722,
+1,
+1.0,
+"Pokrzywa",
+50722,
+"ours"
+],
+[
+8005,
+1,
+0.5,
+"Srebrna Strzała",
+8005,
+"default:gear+0-5"
+]
+]
+},
+"6819": {
+"kind": "boss",
+"name": "Mistrz Ahtrin",
+"rows": [
+[
+31247,
+1,
+4.0,
+"Czerwona Runa SungMa",
+31247,
+"ours"
+],
+[
+27115,
+1,
+40.0,
+"Fioletowa Mikstura(D)",
+27115,
+"default:potion"
+],
+[
+50726,
+3,
+25.0,
+"Grzyb Tue",
+50726,
+"ours"
+],
+[
+50724,
+3,
+25.0,
+"Korzeń Gango",
+50724,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+31249,
+1,
+4.0,
+"Niebieska Runa SungMa",
+31249,
+"ours"
+],
+[
+95737,
+1,
+2.0,
+"Przeb. Księga Zwierza",
+55007,
+"ours"
+],
+[
+27112,
+1,
+40.0,
+"Zielona Mikstura(D)",
+27112,
+"default:potion"
+],
+[
+50737,
+1,
+10.0,
+"Ziemne Pnącze",
+50737,
+"ours"
+],
+[
+31250,
+1,
+4.0,
+"Zielona Runa SungMa",
+31250,
+"ours"
+]
+]
+},
+"6820": {
+"kind": "boss",
+"name": "Ahtrin Wielki Mistrz",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50726,
+3,
+25.0,
+"Grzyb Tue",
+50726,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+70048,
+1,
+8.0,
+"Płaszcz Uciekiniera",
+70048,
+"ours"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+]
+]
+},
+"6860": {
+"kind": "normal",
+"name": "Mistrz Miecza Jin",
+"rows": [
+[
+257,
+1,
+0.1,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+31258,
+1,
+0.15,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+196,
+1,
+0.2,
+"Lwi Miecz+6",
+196,
+"default:gear+6"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours-other-kind"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+70050,
+1,
+0.1,
+"Symb. Króla Przepowiedni",
+70050,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+186,
+1,
+0.2,
+"Zatruty miecz+6",
+186,
+"default:gear+6"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+],
+[
+3156,
+1,
+0.5,
+"Złodziej Dusz+6",
+3156,
+"ours-other-kind"
+]
+]
+},
+"6861": {
+"kind": "normal",
+"name": "Mistrz Włóczni Ki",
+"rows": [
+[
+5127,
+1,
+0.1,
+"Bambusowy Dzwon+7",
+5127,
+"default:gear+7"
+],
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+1126,
+1,
+0.5,
+"Nóż Siamese+6",
+1126,
+"ours-other-kind"
+],
+[
+1127,
+1,
+0.1,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+70050,
+1,
+0.1,
+"Symb. Króla Przepowiedni",
+70050,
+"ours"
+],
+[
+39081,
+1,
+0.02,
+"Święty Odłamek",
+39081,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+39079,
+1,
+0.05,
+"Zielony Lśniący Odłamek",
+39079,
+"ours"
+],
+[
+39080,
+1,
+0.04,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"6862": {
+"kind": "normal",
+"name": "Mistrz Włóczni Mao",
+"rows": [
+[
+5126,
+1,
+0.2,
+"Bambusowy Dzwon+6",
+5126,
+"default:gear+6"
+],
+[
+5127,
+1,
+0.1,
+"Bambusowy Dzwon+7",
+5127,
+"default:gear+7"
+],
+[
+257,
+1,
+0.1,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+7156,
+1,
+0.5,
+"Ekstazyjny Wachlarz+6",
+7156,
+"ours-other-kind"
+],
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+3166,
+1,
+0.2,
+"Miecz Żalu+6",
+3166,
+"default:gear+6"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours-other-kind"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+70051,
+1,
+0.2,
+"Rękawica Króla Przepow.",
+70051,
+"default:other"
+],
+[
+1136,
+1,
+0.2,
+"Skrzydła Demona Chakr.+6",
+1136,
+"default:gear+6"
+],
+[
+1137,
+1,
+0.1,
+"Skrzydła Demona Chakr.+7",
+1137,
+"default:gear+7"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+],
+[
+3157,
+1,
+0.1,
+"Złodziej Dusz+7",
+3157,
+"default:gear+7"
+]
+]
+},
+"6863": {
+"kind": "normal",
+"name": "Łucznik Gong",
+"rows": [
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+31258,
+1,
+0.15,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+2186,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+6",
+2186,
+"ours-other-kind"
+],
+[
+2187,
+1,
+0.1,
+"Łuk Niebieskiego Smoka+7",
+2187,
+"default:gear+7"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+2176,
+1,
+0.2,
+"Stalowy Łuk Kruka+6",
+2176,
+"default:gear+6"
+],
+[
+2177,
+1,
+0.1,
+"Stalowy Łuk Kruka+7",
+2177,
+"default:gear+7"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+]
+]
+},
+"6864": {
+"kind": "normal",
+"name": "Mistrz Miecza Kao",
+"rows": [
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+2187,
+1,
+0.1,
+"Łuk Niebieskiego Smoka+7",
+2187,
+"default:gear+7"
+],
+[
+3167,
+1,
+0.1,
+"Miecz Żalu+7",
+3167,
+"default:gear+7"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours"
+],
+[
+1127,
+1,
+0.1,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+55009,
+1,
+2.0,
+"Skrzynia Ksiąg Peta",
+55009,
+"ours-other-kind"
+],
+[
+3157,
+1,
+0.1,
+"Złodziej Dusz+7",
+3157,
+"default:gear+7"
+]
+]
+},
+"6865": {
+"kind": "normal",
+"name": "Mistrz Miecza Jin",
+"rows": [
+[
+257,
+1,
+0.1,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+31258,
+1,
+0.15,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+196,
+1,
+0.2,
+"Lwi Miecz+6",
+196,
+"default:gear+6"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours-other-kind"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+95734,
+1,
+0.5,
+"Mroźny Korzonek",
+50734,
+"ours"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+70050,
+1,
+0.1,
+"Symb. Króla Przepowiedni",
+70050,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+186,
+1,
+0.2,
+"Zatruty miecz+6",
+186,
+"default:gear+6"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+],
+[
+3156,
+1,
+0.5,
+"Złodziej Dusz+6",
+3156,
+"ours-other-kind"
+]
+]
+},
+"6866": {
+"kind": "normal",
+"name": "Mistrz Włóczni Ki",
+"rows": [
+[
+5127,
+1,
+0.1,
+"Bambusowy Dzwon+7",
+5127,
+"default:gear+7"
+],
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+95734,
+1,
+0.5,
+"Mroźny Korzonek",
+50734,
+"ours"
+],
+[
+1126,
+1,
+0.5,
+"Nóż Siamese+6",
+1126,
+"ours-other-kind"
+],
+[
+1127,
+1,
+0.1,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+70050,
+1,
+0.1,
+"Symb. Króla Przepowiedni",
+70050,
+"ours"
+],
+[
+39081,
+1,
+0.02,
+"Święty Odłamek",
+39081,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+39079,
+1,
+0.05,
+"Zielony Lśniący Odłamek",
+39079,
+"ours"
+],
+[
+39080,
+1,
+0.04,
+"Żółty Lśniący Odłamek",
+39080,
+"ours"
+]
+]
+},
+"6867": {
+"kind": "normal",
+"name": "Mistrz Włóczni Mao",
+"rows": [
+[
+5126,
+1,
+0.2,
+"Bambusowy Dzwon+6",
+5126,
+"default:gear+6"
+],
+[
+5127,
+1,
+0.1,
+"Bambusowy Dzwon+7",
+5127,
+"default:gear+7"
+],
+[
+257,
+1,
+0.1,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+7156,
+1,
+0.5,
+"Ekstazyjny Wachlarz+6",
+7156,
+"ours-other-kind"
+],
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+3166,
+1,
+0.2,
+"Miecz Żalu+6",
+3166,
+"default:gear+6"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours-other-kind"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+95734,
+1,
+0.5,
+"Mroźny Korzonek",
+50734,
+"ours"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+70051,
+1,
+0.2,
+"Rękawica Króla Przepow.",
+70051,
+"default:other"
+],
+[
+1136,
+1,
+0.2,
+"Skrzydła Demona Chakr.+6",
+1136,
+"default:gear+6"
+],
+[
+1137,
+1,
+0.1,
+"Skrzydła Demona Chakr.+7",
+1137,
+"default:gear+7"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+],
+[
+3157,
+1,
+0.1,
+"Złodziej Dusz+7",
+3157,
+"default:gear+7"
+]
+]
+},
+"6868": {
+"kind": "normal",
+"name": "Łucznik Gong",
+"rows": [
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+50664,
+1,
+2.0,
+"Jadeit Mgły",
+50664,
+"ours-other-kind"
+],
+[
+50661,
+1,
+2.0,
+"Jadeit Słońca",
+50661,
+"ours-other-kind"
+],
+[
+31258,
+1,
+0.15,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+197,
+1,
+0.1,
+"Lwi Miecz+7",
+197,
+"default:gear+7"
+],
+[
+2186,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+6",
+2186,
+"ours-other-kind"
+],
+[
+2187,
+1,
+0.1,
+"Łuk Niebieskiego Smoka+7",
+2187,
+"default:gear+7"
+],
+[
+95734,
+1,
+0.5,
+"Mroźny Korzonek",
+50734,
+"ours"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+2176,
+1,
+0.2,
+"Stalowy Łuk Kruka+6",
+2176,
+"default:gear+6"
+],
+[
+2177,
+1,
+0.1,
+"Stalowy Łuk Kruka+7",
+2177,
+"default:gear+7"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours"
+],
+[
+187,
+1,
+0.1,
+"Zatruty miecz+7",
+187,
+"default:gear+7"
+]
+]
+},
+"6869": {
+"kind": "normal",
+"name": "Mistrz Miecza Kao",
+"rows": [
+[
+7157,
+1,
+0.1,
+"Ekstazyjny Wachlarz+7",
+7157,
+"default:gear+7"
+],
+[
+83066,
+1,
+0.1,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+0.1,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+2187,
+1,
+0.1,
+"Łuk Niebieskiego Smoka+7",
+2187,
+"default:gear+7"
+],
+[
+3167,
+1,
+0.1,
+"Miecz Żalu+7",
+3167,
+"default:gear+7"
+],
+[
+177,
+1,
+0.1,
+"Miecz Żądło+7",
+177,
+"default:gear+7"
+],
+[
+95734,
+1,
+0.5,
+"Mroźny Korzonek",
+50734,
+"ours"
+],
+[
+1127,
+1,
+0.1,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+55001,
+1,
+0.075,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+55009,
+1,
+2.0,
+"Skrzynia Ksiąg Peta",
+55009,
+"ours-other-kind"
+],
+[
+3157,
+1,
+0.1,
+"Złodziej Dusz+7",
+3157,
+"default:gear+7"
+]
+]
+},
+"6870": {
+"kind": "boss",
+"name": "Tajemniczy Mnich",
+"rows": [
+[
+83053,
+1,
+0.03,
+"Id. Skrzynia Kolczyków",
+83053,
+"ours-other-kind"
+],
+[
+83052,
+1,
+0.03,
+"Id. Skrzynia Naszyjniku",
+83052,
+"ours-other-kind"
+],
+[
+83051,
+1,
+0.03,
+"Id. Skrzynia Talizmanu",
+83051,
+"ours-other-kind"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+28440,
+1,
+4.0,
+"Kamień Duszy Magii+4",
+28440,
+"default:other"
+],
+[
+28434,
+1,
+4.0,
+"Kamień Duszy Ninja+4",
+28434,
+"default:other"
+],
+[
+28442,
+1,
+4.0,
+"Kamień Duszy Obrony+4",
+28442,
+"default:other"
+],
+[
+28430,
+1,
+4.0,
+"Kamień Duszy Penetr.+4",
+28430,
+"default:other"
+],
+[
+28437,
+1,
+4.0,
+"Kamień Duszy Potwora+4",
+28437,
+"default:other"
+],
+[
+28432,
+1,
+4.0,
+"Kamień Duszy Powtórki+4",
+28432,
+"default:other"
+],
+[
+28443,
+1,
+4.0,
+"Kamień Duszy Przysp.+4",
+28443,
+"default:other"
+],
+[
+28435,
+1,
+4.0,
+"Kamień Duszy Sury+4",
+28435,
+"default:other"
+],
+[
+28436,
+1,
+4.0,
+"Kamień Duszy Szamana+4",
+28436,
+"default:other"
+],
+[
+28431,
+1,
+4.0,
+"Kamień Duszy Śmierci+4",
+28431,
+"default:other"
+],
+[
+28438,
+1,
+4.0,
+"Kamień Duszy Uchylenia+4",
+28438,
+"default:other"
+],
+[
+28439,
+1,
+4.0,
+"Kamień Duszy Uniku+4",
+28439,
+"default:other"
+],
+[
+28433,
+1,
+4.0,
+"Kamień Duszy Wojownika+4",
+28433,
+"default:other"
+],
+[
+28441,
+1,
+4.0,
+"Kamień Witalności+4",
+28441,
+"default:other"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+95734,
+1,
+10.0,
+"Mroźny Korzonek",
+50734,
+"ours"
+],
+[
+55009,
+1,
+3.0,
+"Skrzynia Ksiąg Peta",
+55009,
+"ours"
+]
+]
+},
+"6871": {
+"kind": "boss",
+"name": "Tajemniczy Mnich",
+"rows": [
+[
+83053,
+1,
+0.03,
+"Id. Skrzynia Kolczyków",
+83053,
+"ours-other-kind"
+],
+[
+83052,
+1,
+0.03,
+"Id. Skrzynia Naszyjniku",
+83052,
+"ours-other-kind"
+],
+[
+83051,
+1,
+0.03,
+"Id. Skrzynia Talizmanu",
+83051,
+"ours-other-kind"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+28440,
+1,
+4.0,
+"Kamień Duszy Magii+4",
+28440,
+"default:other"
+],
+[
+28434,
+1,
+4.0,
+"Kamień Duszy Ninja+4",
+28434,
+"default:other"
+],
+[
+28442,
+1,
+4.0,
+"Kamień Duszy Obrony+4",
+28442,
+"default:other"
+],
+[
+28430,
+1,
+4.0,
+"Kamień Duszy Penetr.+4",
+28430,
+"default:other"
+],
+[
+28437,
+1,
+4.0,
+"Kamień Duszy Potwora+4",
+28437,
+"default:other"
+],
+[
+28432,
+1,
+4.0,
+"Kamień Duszy Powtórki+4",
+28432,
+"default:other"
+],
+[
+28443,
+1,
+4.0,
+"Kamień Duszy Przysp.+4",
+28443,
+"default:other"
+],
+[
+28435,
+1,
+4.0,
+"Kamień Duszy Sury+4",
+28435,
+"default:other"
+],
+[
+28436,
+1,
+4.0,
+"Kamień Duszy Szamana+4",
+28436,
+"default:other"
+],
+[
+28431,
+1,
+4.0,
+"Kamień Duszy Śmierci+4",
+28431,
+"default:other"
+],
+[
+28438,
+1,
+4.0,
+"Kamień Duszy Uchylenia+4",
+28438,
+"default:other"
+],
+[
+28439,
+1,
+4.0,
+"Kamień Duszy Uniku+4",
+28439,
+"default:other"
+],
+[
+28433,
+1,
+4.0,
+"Kamień Duszy Wojownika+4",
+28433,
+"default:other"
+],
+[
+28441,
+1,
+4.0,
+"Kamień Witalności+4",
+28441,
+"default:other"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+50738,
+1,
+0.5,
+"Mroczny Cierń",
+50738,
+"ours-other-kind"
+],
+[
+55009,
+1,
+3.0,
+"Skrzynia Ksiąg Peta",
+55009,
+"ours"
+]
+]
+},
+"6877": {
+"kind": "normal",
+"name": "Skażony Wojownik",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+50737,
+1,
+0.5,
+"Ziemne Pnącze",
+50737,
+"ours"
+]
+]
+},
+"6878": {
+"kind": "normal",
+"name": "Skażony Mnich",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50529,
+1,
+0.03,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+50737,
+1,
+0.5,
+"Ziemne Pnącze",
+50737,
+"ours"
+]
+]
+},
+"6879": {
+"kind": "normal",
+"name": "Skażony Generał",
+"rows": [
+[
+27007,
+10,
+2.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+50737,
+1,
+0.5,
+"Ziemne Pnącze",
+50737,
+"ours"
+]
+]
+},
+"6880": {
+"kind": "boss",
+"name": "Skażony Wódz",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+255,
+1,
+2.0,
+"Demoniczne Ostrze+5",
+255,
+"ours"
+],
+[
+256,
+1,
+0.5,
+"Demoniczne Ostrze+6",
+256,
+"ours"
+],
+[
+7155,
+1,
+2.0,
+"Ekstazyjny Wachlarz+5",
+7155,
+"ours"
+],
+[
+7156,
+1,
+0.5,
+"Ekstazyjny Wachlarz+6",
+7156,
+"ours"
+],
+[
+72740,
+1,
+2.0,
+"Licencja Najemnika",
+72740,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+2185,
+1,
+2.0,
+"Łuk Niebieskiego Smoka+5",
+2185,
+"ours"
+],
+[
+2186,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+6",
+2186,
+"ours"
+],
+[
+175,
+1,
+2.0,
+"Miecz Żądło+5",
+175,
+"ours"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours"
+],
+[
+1125,
+1,
+2.0,
+"Nóż Siamese+5",
+1125,
+"ours"
+],
+[
+1126,
+1,
+0.5,
+"Nóż Siamese+6",
+1126,
+"ours"
+],
+[
+31238,
+1,
+8.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+50737,
+1,
+10.0,
+"Ziemne Pnącze",
+50737,
+"ours"
+],
+[
+3155,
+1,
+2.0,
+"Złodziej Dusz+5",
+3155,
+"ours"
+],
+[
+3156,
+1,
+0.5,
+"Złodziej Dusz+6",
+3156,
+"ours"
+]
+]
+},
+"6881": {
+"kind": "boss",
+"name": "Skażony Wódz Wojenny",
+"rows": [
+[
+50339,
+1,
+1.5,
+"Charyzma Adepta",
+50339,
+"ours"
+],
+[
+50340,
+1,
+0.75,
+"Charyzma Eksperta",
+50340,
+"ours"
+],
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+253,
+1,
+10.0,
+"Demoniczne Ostrze+3",
+253,
+"default:gear+0-5"
+],
+[
+254,
+1,
+10.0,
+"Demoniczne Ostrze+4",
+254,
+"default:gear+0-5"
+],
+[
+255,
+1,
+2.0,
+"Demoniczne Ostrze+5",
+255,
+"ours"
+],
+[
+256,
+1,
+0.5,
+"Demoniczne Ostrze+6",
+256,
+"ours"
+],
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+72740,
+1,
+2.0,
+"Licencja Najemnika",
+72740,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+172,
+1,
+10.0,
+"Miecz Żądło+2",
+172,
+"default:gear+0-5"
+],
+[
+173,
+1,
+10.0,
+"Miecz Żądło+3",
+173,
+"default:gear+0-5"
+],
+[
+174,
+1,
+10.0,
+"Miecz Żądło+4",
+174,
+"default:gear+0-5"
+],
+[
+175,
+1,
+2.0,
+"Miecz Żądło+5",
+175,
+"ours"
+],
+[
+176,
+1,
+0.5,
+"Miecz Żądło+6",
+176,
+"ours"
+],
+[
+1124,
+1,
+10.0,
+"Nóż Siamese+4",
+1124,
+"default:gear+0-5"
+],
+[
+1125,
+1,
+2.0,
+"Nóż Siamese+5",
+1125,
+"ours"
+],
+[
+1126,
+1,
+0.5,
+"Nóż Siamese+6",
+1126,
+"ours"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+39002,
+1,
+5.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+72354,
+1,
+2.0,
+"Przenośna Żyła Jadeitu",
+72354,
+"ours"
+],
+[
+72006,
+1,
+5.0,
+"Rękawica Złodzieja",
+70043,
+"ours"
+],
+[
+39081,
+1,
+3.0,
+"Święty Odłamek",
+39081,
+"ours"
+],
+[
+31245,
+1,
+4.0,
+"Twarda Skóra",
+31245,
+"ours"
+],
+[
+31246,
+1,
+4.0,
+"Wzór Rękawicy",
+31246,
+"ours"
+],
+[
+50737,
+1,
+10.0,
+"Ziemne Pnącze",
+50737,
+"ours"
+]
+]
+},
+"6887": {
+"kind": "boss",
+"name": "Zamarznięty Wódz",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+]
+]
+},
+"6888": {
+"kind": "boss",
+"name": "Zamarznięty Wódz Wojenny",
+"rows": [
+[
+254,
+1,
+10.0,
+"Demoniczne Ostrze+4",
+254,
+"default:gear+0-5"
+],
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+83066,
+1,
+5.0,
+"Los. Klucz do Skrz. Sk.",
+83066,
+"ours"
+],
+[
+83065,
+1,
+5.0,
+"Losowa Skrzynia Skarbów",
+83065,
+"ours"
+],
+[
+174,
+1,
+10.0,
+"Miecz Żądło+4",
+174,
+"default:gear+0-5"
+],
+[
+1124,
+1,
+10.0,
+"Nóż Siamese+4",
+1124,
+"default:gear+0-5"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+72354,
+1,
+2.0,
+"Przenośna Żyła Jadeitu",
+72354,
+"ours"
+]
+]
+},
+"6891": {
+"kind": "normal",
+"name": "Yeti Płn. Wiatru",
+"rows": [
+[
+50336,
+1,
+0.05,
+"Księga Misji (W.Płn.W.)",
+50336,
+"ours"
+]
+]
+},
+"6892": {
+"kind": "normal",
+"name": "Duch Płn. Wiatru",
+"rows": [
+[
+50336,
+1,
+0.05,
+"Księga Misji (W.Płn.W.)",
+50336,
+"ours"
+]
+]
+},
+"6893": {
+"kind": "normal",
+"name": "Golem Płn. Wiatru",
+"rows": [
+[
+50336,
+1,
+0.05,
+"Księga Misji (W.Płn.W.)",
+50336,
+"ours"
+]
+]
+},
+"6894": {
+"kind": "boss",
+"name": "Wielka Stopa",
+"rows": [
+[
+27007,
+50,
+100.0,
+"Czerwona Mikstura (XXL)",
+27007,
+"ours"
+],
+[
+7155,
+1,
+2.0,
+"Ekstazyjny Wachlarz+5",
+7155,
+"ours"
+],
+[
+7156,
+1,
+0.5,
+"Ekstazyjny Wachlarz+6",
+7156,
+"ours"
+],
+[
+31259,
+1,
+3.0,
+"Kowadło Płn. Wiatru",
+31259,
+"ours"
+],
+[
+50336,
+1,
+5.0,
+"Księga Misji (W.Płn.W.)",
+50336,
+"ours"
+],
+[
+2185,
+1,
+2.0,
+"Łuk Niebieskiego Smoka+5",
+2185,
+"ours"
+],
+[
+2186,
+1,
+0.5,
+"Łuk Niebieskiego Smoka+6",
+2186,
+"ours"
+],
+[
+95601,
+2,
+15.0,
+"Stabilne Sznury",
+30612,
+"ours"
+],
+[
+3155,
+1,
+2.0,
+"Złodziej Dusz+5",
+3155,
+"ours"
+],
+[
+3156,
+1,
+0.5,
+"Złodziej Dusz+6",
+3156,
+"ours"
+]
+]
+},
+"6895": {
+"kind": "boss",
+"name": "Wódz Wojenny Płn. Wiatru",
+"rows": [
+[
+257,
+1,
+2.0,
+"Demoniczne Ostrze+7",
+257,
+"default:gear+7"
+],
+[
+50342,
+1,
+3.0,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+2.0,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+31237,
+1,
+6.5,
+"Kamień Duchowy Płn. W.",
+31237,
+"ours"
+],
+[
+1127,
+1,
+2.0,
+"Nóż Siamese+7",
+1127,
+"default:gear+7"
+],
+[
+1128,
+1,
+1.0,
+"Nóż Siamese+8",
+1128,
+"default:gear+8"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+72354,
+1,
+2.0,
+"Przenośna Żyła Jadeitu",
+72354,
+"ours"
+]
+]
+},
+"8061": {
+"kind": "stone",
+"name": "Metin Lasu",
+"rows": [
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70048,
+1,
+8.0,
+"Płaszcz Uciekiniera",
+70048,
+"ours-other-kind"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+50323,
+1,
+1.0,
+"Skrzynia Ksiąg: Riposta",
+50323,
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8063": {
+"kind": "stone",
+"name": "Metin Szacunku",
+"rows": [
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+70408,
+1,
+1.0,
+"Tajemniczy Bilet",
+70408,
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8064": {
+"kind": "stone",
+"name": "Metin Uważności",
+"rows": [
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8065": {
+"kind": "stone",
+"name": "Metin Jin",
+"rows": [
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8066": {
+"kind": "stone",
+"name": "Metin Shiho",
+"rows": [
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+28346,
+1,
+0.2,
+"Kamień Demonów+3",
+28346,
+"ours-other-kind"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50527,
+1,
+2.0,
+"Mikstura Talentu",
+50527,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8067": {
+"kind": "stone",
+"name": "Metin Świadomość",
+"rows": [
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8076": {
+"kind": "stone",
+"name": "Metin Wężowy Przestrzeni",
+"rows": [
+[
+50342,
+1,
+0.5,
+"Inspiracja Adepta",
+50342,
+"ours"
+],
+[
+50343,
+1,
+0.25,
+"Inspiracja Eksperta",
+50343,
+"ours"
+],
+[
+28346,
+1,
+0.2,
+"Kamień Demonów+3",
+28346,
+"ours-other-kind"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50325,
+1,
+2.0,
+"Księga Precyzji",
+50325,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+50324,
+1,
+1.0,
+"Skrzynia Ksiąg: Dopalacz",
+50324,
+"ours"
+],
+[
+50323,
+1,
+1.0,
+"Skrzynia Ksiąg: Riposta",
+50323,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours-other-kind"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+],
+[
+50737,
+1,
+0.5,
+"Ziemne Pnącze",
+50737,
+"ours-other-kind"
+]
+]
+},
+"8077": {
+"kind": "stone",
+"name": "Metin z Gumar",
+"rows": [
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+28346,
+1,
+0.2,
+"Kamień Demonów+3",
+28346,
+"ours-other-kind"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50527,
+1,
+2.0,
+"Mikstura Talentu",
+50527,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+70408,
+1,
+1.0,
+"Tajemniczy Bilet",
+70408,
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8137": {
+"kind": "stone",
+"name": "PB: Metin Lasu",
+"rows": [
+[
+31124,
+2,
+30.0,
+"Cienka Nić",
+31124,
+"ours-other-kind"
+],
+[
+31123,
+2,
+25.0,
+"Cienka Skóra",
+31123,
+"ours-other-kind"
+],
+[
+31125,
+2,
+30.0,
+"Gruba Nić",
+31125,
+"ours-other-kind"
+],
+[
+50525,
+1,
+2.0,
+"Kamień Duchowy+",
+50525,
+"ours"
+],
+[
+31115,
+1,
+13.5,
+"Kowadło",
+31115,
+"ours-other-kind"
+],
+[
+55003,
+1,
+1.0,
+"Księga Młodego Zwierza",
+55003,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+31145,
+5,
+40.0,
+"Liście Życia",
+31145,
+"ours-other-kind"
+],
+[
+70012,
+1,
+3.0,
+"Łza Bogini",
+70012,
+"ours"
+],
+[
+31149,
+1,
+16.0,
+"Mocny Sznur",
+31149,
+"ours-other-kind"
+],
+[
+70048,
+1,
+8.0,
+"Płaszcz Uciekiniera",
+70048,
+"ours-other-kind"
+],
+[
+39006,
+1,
+4.0,
+"Peleryna Męstwa",
+39006,
+"default:other"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+31122,
+1,
+2.0,
+"Płótno",
+31122,
+"ours-other-kind"
+],
+[
+72006,
+1,
+3.0,
+"Rękawica Złodzieja",
+72006,
+"ours"
+],
+[
+50323,
+1,
+1.0,
+"Skrzynia Ksiąg: Riposta",
+50323,
+"ours"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+],
+[
+31114,
+1,
+10.0,
+"Zwykła Skóra",
+31114,
+"default:material"
+]
+]
+},
+"8630": {
+"kind": "stone",
+"name": "Metin Wężowy Ognia",
+"rows": [
+[
+83053,
+1,
+2.0,
+"Id. Skrzynia Kolczyków",
+83053,
+"ours"
+],
+[
+83052,
+1,
+2.0,
+"Id. Skrzynia Naszyjniku",
+83052,
+"ours"
+],
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+31258,
+1,
+5.0,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50525,
+1,
+2.0,
+"Kamień Duchowy+",
+50525,
+"ours"
+],
+[
+50043,
+1,
+1.0,
+"Klucz Nimfy Wodnej",
+50043,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+55001,
+1,
+3.0,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+31238,
+1,
+5.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+70428,
+1,
+10.0,
+"Pył Wężowy",
+70428,
+"ours"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours-other-kind"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8631": {
+"kind": "stone",
+"name": "Metin Wężowy Lodu",
+"rows": [
+[
+83053,
+1,
+2.0,
+"Id. Skrzynia Kolczyków",
+83053,
+"ours"
+],
+[
+83052,
+1,
+2.0,
+"Id. Skrzynia Naszyjniku",
+83052,
+"ours"
+],
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+31258,
+1,
+5.0,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50525,
+1,
+2.0,
+"Kamień Duchowy+",
+50525,
+"ours"
+],
+[
+50043,
+1,
+1.0,
+"Klucz Nimfy Wodnej",
+50043,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+55001,
+1,
+3.0,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+31238,
+1,
+5.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+70428,
+1,
+10.0,
+"Pył Wężowy",
+70428,
+"ours"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours-other-kind"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8632": {
+"kind": "stone",
+"name": "Metin Wężowy Wiatru",
+"rows": [
+[
+83053,
+1,
+2.0,
+"Id. Skrzynia Kolczyków",
+83053,
+"ours"
+],
+[
+83052,
+1,
+2.0,
+"Id. Skrzynia Naszyjniku",
+83052,
+"ours"
+],
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+31258,
+1,
+5.0,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50525,
+1,
+2.0,
+"Kamień Duchowy+",
+50525,
+"ours"
+],
+[
+50043,
+1,
+1.0,
+"Klucz Nimfy Wodnej",
+50043,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+55001,
+1,
+3.0,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+31238,
+1,
+5.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+70428,
+1,
+10.0,
+"Pył Wężowy",
+70428,
+"ours"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours-other-kind"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8633": {
+"kind": "stone",
+"name": "Metin Wężowy Ziemi",
+"rows": [
+[
+83053,
+1,
+2.0,
+"Id. Skrzynia Kolczyków",
+83053,
+"ours"
+],
+[
+83052,
+1,
+2.0,
+"Id. Skrzynia Naszyjniku",
+83052,
+"ours"
+],
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+31258,
+1,
+5.0,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50525,
+1,
+2.0,
+"Kamień Duchowy+",
+50525,
+"ours"
+],
+[
+50043,
+1,
+1.0,
+"Klucz Nimfy Wodnej",
+50043,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+55001,
+1,
+3.0,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+31238,
+1,
+5.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+70428,
+1,
+10.0,
+"Pył Wężowy",
+70428,
+"ours"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours-other-kind"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+},
+"8634": {
+"kind": "stone",
+"name": "Metin Wężowy Czasu",
+"rows": [
+[
+83053,
+1,
+2.0,
+"Id. Skrzynia Kolczyków",
+83053,
+"ours"
+],
+[
+83052,
+1,
+2.0,
+"Id. Skrzynia Naszyjniku",
+83052,
+"ours"
+],
+[
+50663,
+1,
+5.0,
+"Jadeit Dymu",
+50663,
+"ours"
+],
+[
+31258,
+1,
+5.0,
+"Jedwab Wężowy",
+31258,
+"ours"
+],
+[
+28446,
+1,
+4.0,
+"Kamień Demonów+4",
+28446,
+"default:other"
+],
+[
+50525,
+1,
+2.0,
+"Kamień Duchowy+",
+50525,
+"ours"
+],
+[
+50043,
+1,
+1.0,
+"Klucz Nimfy Wodnej",
+50043,
+"ours"
+],
+[
+50300,
+1,
+10.0,
+"Księga Umiejętności",
+50300,
+"ours"
+],
+[
+70037,
+1,
+2.0,
+"Księga Zapomnienia",
+70037,
+"ours"
+],
+[
+55001,
+1,
+3.0,
+"Proteinowa Przekąska",
+55001,
+"ours"
+],
+[
+39002,
+1,
+2.0,
+"Pierścień Doświadczenia",
+39002,
+"ours"
+],
+[
+70014,
+1,
+10.0,
+"Pigułka Krwi",
+70014,
+"ours"
+],
+[
+31238,
+1,
+5.0,
+"Połyskująca Muszla",
+31238,
+"ours"
+],
+[
+50739,
+1,
+0.25,
+"Pusty Eliksir Mocy",
+50739,
+"ours-other-kind"
+],
+[
+50740,
+1,
+0.25,
+"Pusty Eliksir Odp.",
+50740,
+"ours-other-kind"
+],
+[
+70428,
+1,
+10.0,
+"Pył Wężowy",
+70428,
+"ours"
+],
+[
+50529,
+1,
+2.0,
+"Skrzynia Ksiąg (9.skill)",
+50529,
+"ours"
+],
+[
+31257,
+1,
+0.15,
+"Wzór Wężowy",
+31257,
+"ours-other-kind"
+],
+[
+100300,
+1,
+10.0,
+"Green Dragon Bean",
+100300,
+"default:material"
+]
+]
+}
+},
+"no_drop": {
+"3965": "Skarb Hydry - its drop is the ship defence quest's chest group (game/shipdefense)",
+"4262": "the Time Rift (map 404) drops nothing - server-patches/szczelina",
+"4264": "the Time Rift (map 404) drops nothing - server-patches/szczelina",
+"4265": "the Time Rift (map 404) drops nothing - server-patches/szczelina"
+},
+"sheet": {
+"3950": {
+"EXP": 0,
+"HP / PŻ": 23288,
+"Mob": "Kappa",
+"Poziom": 97,
+"SungMa EXP": 0
+},
+"3951": {
+"EXP": 0,
+"HP / PŻ": 24488,
+"Mob": "Kappa Laguny",
+"Poziom": 97,
+"SungMa EXP": 0
+},
+"3952": {
+"EXP": 0,
+"HP / PŻ": 25688,
+"Mob": "Kappa Głębiny",
+"Poziom": 97,
+"SungMa EXP": 0
+},
+"3953": {
+"EXP": 0,
+"HP / PŻ": 82364,
+"Mob": "Kappa Przywódca",
+"Poziom": 105,
+"SungMa EXP": 0
+},
+"3954": {
+"EXP": 0,
+"HP / PŻ": 117791,
+"Mob": "Murena Żołnierz",
+"Poziom": 103,
+"SungMa EXP": 0
+},
+"3955": {
+"EXP": 0,
+"HP / PŻ": 117791,
+"Mob": "Murena Wojownik Głębin",
+"Poziom": 103,
+"SungMa EXP": 0
+},
+"3956": {
+"EXP": 104702,
+"HP / PŻ": 992568,
+"Mob": "Królowa Syren",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"3957": {
+"EXP": 0,
+"HP / PŻ": 872568,
+"Mob": "Wyląg Hydry",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"3958": {
+"EXP": 0,
+"HP / PŻ": 992568,
+"Mob": "Wyląg Hydry",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"3959": {
+"EXP": 0,
+"HP / PŻ": 992568,
+"Mob": "Wyląg Hydry",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"3960": {
+"EXP": 104702,
+"HP / PŻ": 2536605,
+"Mob": "Hydra",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3961": {
+"EXP": 104702,
+"HP / PŻ": 2656605,
+"Mob": "Hydra",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3962": {
+"EXP": 104702,
+"HP / PŻ": 3184606,
+"Mob": "Hydra",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3963": {
+"EXP": 104702,
+"HP / PŻ": 1313838,
+"Mob": "Hydra",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3964": {
+"EXP": 104702,
+"HP / PŻ": 1313838,
+"Mob": "Hydra",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3965": {
+"EXP": 584702,
+"HP / PŻ": 120,
+"Mob": "Skarb Hydry",
+"Poziom": 105,
+"SungMa EXP": 0
+},
+"3971": {
+"EXP": 0,
+"HP / PŻ": 2536605,
+"Mob": "Kryształ Płn. Wiatru",
+"Poziom": 105,
+"SungMa EXP": 1
+},
+"3980": {
+"EXP": 23500,
+"HP / PŻ": 128637,
+"Mob": "Żywiołak Ognia",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"3981": {
+"EXP": 23500,
+"HP / PŻ": 128637,
+"Mob": "Żywiołak Lodu",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"3982": {
+"EXP": 23500,
+"HP / PŻ": 128637,
+"Mob": "Żywiołak Błyskawicy",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"3983": {
+"EXP": 23500,
+"HP / PŻ": 128637,
+"Mob": "Żywiołak Wiatru",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"3984": {
+"EXP": 23500,
+"HP / PŻ": 128637,
+"Mob": "Żywiołak Ziemi",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"3985": {
+"EXP": 23500,
+"HP / PŻ": 128637,
+"Mob": "Żywiołak Mroku",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"3986": {
+"EXP": 23500,
+"HP / PŻ": 79407,
+"Mob": "Duch Żaru",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"3987": {
+"EXP": 18900,
+"HP / PŻ": 79407,
+"Mob": "Duch Mrozu",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"3988": {
+"EXP": 18900,
+"HP / PŻ": 79407,
+"Mob": "Duch Elektro",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"3989": {
+"EXP": 18900,
+"HP / PŻ": 79407,
+"Mob": "Duch Powietrza",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"3990": {
+"EXP": 18900,
+"HP / PŻ": 79407,
+"Mob": "Duch Kamienia",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"3991": {
+"EXP": 18900,
+"HP / PŻ": 79407,
+"Mob": "Duch Półmroku",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"3992": {
+"EXP": 36900,
+"HP / PŻ": 168637,
+"Mob": "Władca Płomieni",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3993": {
+"EXP": 36900,
+"HP / PŻ": 168637,
+"Mob": "Władca Lodowca",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3994": {
+"EXP": 36900,
+"HP / PŻ": 168637,
+"Mob": "Władca Grzmotu",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3995": {
+"EXP": 36900,
+"HP / PŻ": 168637,
+"Mob": "Władca Wichury",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3996": {
+"EXP": 36900,
+"HP / PŻ": 168637,
+"Mob": "Władca Ziemi",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"3997": {
+"EXP": 36900,
+"HP / PŻ": 168637,
+"Mob": "Władca Nocy",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4000": {
+"EXP": 51,
+"HP / PŻ": 1600000,
+"Mob": "Metin Ognia",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4001": {
+"EXP": 51,
+"HP / PŻ": 1600000,
+"Mob": "Metin Lodu",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4002": {
+"EXP": 51,
+"HP / PŻ": 1600000,
+"Mob": "Metin Błyskawicy",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4003": {
+"EXP": 51,
+"HP / PŻ": 1600000,
+"Mob": "Metin Wiatru",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4004": {
+"EXP": 51,
+"HP / PŻ": 1600000,
+"Mob": "Metin Ziemi",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4005": {
+"EXP": 51,
+"HP / PŻ": 1600000,
+"Mob": "Metin Nocy",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4006": {
+"EXP": 28900,
+"HP / PŻ": 138637,
+"Mob": "Stróż Żywiołów",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4260": {
+"EXP": 36501,
+"HP / PŻ": 52210,
+"Mob": "SZC: Wojownik En-Tai",
+"Poziom": 107,
+"SungMa EXP": 0
+},
+"4261": {
+"EXP": 43401,
+"HP / PŻ": 78638,
+"Mob": "SZC: Bojownik En-Tai",
+"Poziom": 109,
+"SungMa EXP": 0
+},
+"4262": {
+"EXP": 53202,
+"HP / PŻ": 59126,
+"Mob": "SZC: Druid En-Tai",
+"Poziom": 111,
+"SungMa EXP": 0
+},
+"4263": {
+"EXP": 56850,
+"HP / PŻ": 74318,
+"Mob": "SZC: Uzdrowiciel En-Tai",
+"Poziom": 112,
+"SungMa EXP": 0
+},
+"4264": {
+"EXP": 79821,
+"HP / PŻ": 217140,
+"Mob": "SZC: Niszczyciel En-Tai",
+"Poziom": 113,
+"SungMa EXP": 0
+},
+"4265": {
+"EXP": 776880,
+"HP / PŻ": 822784,
+"Mob": "SZC: Władca En-Tai",
+"Poziom": 128,
+"SungMa EXP": 0
+},
+"4267": {
+"EXP": 41001,
+"HP / PŻ": 59652,
+"Mob": "SZC: Wojownik En-Tai",
+"Poziom": 119,
+"SungMa EXP": 0
+},
+"4268": {
+"EXP": 47901,
+"HP / PŻ": 72765,
+"Mob": "SZC: Bojownik En-Tai",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4269": {
+"EXP": 57702,
+"HP / PŻ": 97351,
+"Mob": "SZC: Druid En-Tai",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4270": {
+"EXP": 61350,
+"HP / PŻ": 103581,
+"Mob": "SZC: Uzdrowiciel En-Tai",
+"Poziom": 121,
+"SungMa EXP": 0
+},
+"4271": {
+"EXP": 84321,
+"HP / PŻ": 221140,
+"Mob": "SZC: Niszczyciel En-Tai",
+"Poziom": 125,
+"SungMa EXP": 0
+},
+"4272": {
+"EXP": 1732057,
+"HP / PŻ": 1809226,
+"Mob": "SZC: Bagjanamu",
+"Poziom": 130,
+"SungMa EXP": 0
+},
+"4280": {
+"EXP": 8460,
+"HP / PŻ": 60324,
+"Mob": "PB: Wojownik Setaou",
+"Poziom": 108,
+"SungMa EXP": 0
+},
+"4281": {
+"EXP": 8654,
+"HP / PŻ": 52679,
+"Mob": "PB: Łowca Setaou",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"4282": {
+"EXP": 10389,
+"HP / PŻ": 50281,
+"Mob": "PB: Mistyk Setaou",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"4283": {
+"EXP": 23368,
+"HP / PŻ": 60800,
+"Mob": "PB: Żołnierz Setaou",
+"Poziom": 114,
+"SungMa EXP": 0
+},
+"4284": {
+"EXP": 23904,
+"HP / PŻ": 52936,
+"Mob": "PB: Łucznik Setaou",
+"Poziom": 116,
+"SungMa EXP": 0
+},
+"4285": {
+"EXP": 24424,
+"HP / PŻ": 72137,
+"Mob": "PB: Magistrat Setaou",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"4286": {
+"EXP": 49896,
+"HP / PŻ": 105920,
+"Mob": "PB: Komendant Setaou",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4287": {
+"EXP": 53640,
+"HP / PŻ": 640000,
+"Mob": "PB: Kapitan Yonghan",
+"Poziom": 116,
+"SungMa EXP": 0
+},
+"4288": {
+"EXP": 53640,
+"HP / PŻ": 600000,
+"Mob": "PB: Kapitan Yonghan",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"4289": {
+"EXP": 547920,
+"HP / PŻ": 800000,
+"Mob": "PB: Generał Yonghan",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"4290": {
+"EXP": 547920,
+"HP / PŻ": 500000,
+"Mob": "PB: Generał Yonghan",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"4300": {
+"EXP": 1587,
+"HP / PŻ": 38458,
+"Mob": "PB: Ognisty Duch Żaru",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"4301": {
+"EXP": 3848,
+"HP / PŻ": 78022,
+"Mob": "PB: Ognisty Tygrys Żaru",
+"Poziom": 112,
+"SungMa EXP": 0
+},
+"4302": {
+"EXP": 3924,
+"HP / PŻ": 80228,
+"Mob": "PB: Płomień Żaru",
+"Poziom": 113,
+"SungMa EXP": 0
+},
+"4303": {
+"EXP": 1587,
+"HP / PŻ": 38458,
+"Mob": "PB: Og. Wojownik Żaru",
+"Poziom": 113,
+"SungMa EXP": 0
+},
+"4304": {
+"EXP": 3848,
+"HP / PŻ": 78022,
+"Mob": "PB: Ognisty Król Żaru",
+"Poziom": 116,
+"SungMa EXP": 0
+},
+"4305": {
+"EXP": 3924,
+"HP / PŻ": 80228,
+"Mob": "PB: Ognisty Troll Żaru",
+"Poziom": 116,
+"SungMa EXP": 0
+},
+"4306": {
+"EXP": 11888,
+"HP / PŻ": 145252,
+"Mob": "PB: Ognista Broda Żaru",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"4307": {
+"EXP": 28674,
+"HP / PŻ": 294424,
+"Mob": "PB: Og. Generał Żaru",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"4308": {
+"EXP": 139519,
+"HP / PŻ": 993544,
+"Mob": "PB: Ognisty Książę Żaru",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4309": {
+"EXP": 139519,
+"HP / PŻ": 993544,
+"Mob": "PB: Ignator",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4320": {
+"EXP": 1587,
+"HP / PŻ": 58458,
+"Mob": "PB: Kryształ Mrozu",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"4321": {
+"EXP": 3848,
+"HP / PŻ": 78022,
+"Mob": "PB: Mroźny Robak",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"4322": {
+"EXP": 3924,
+"HP / PŻ": 80228,
+"Mob": "PB: Mroźny Człowiek",
+"Poziom": 113,
+"SungMa EXP": 0
+},
+"4323": {
+"EXP": 1587,
+"HP / PŻ": 58458,
+"Mob": "PB: Mroźny Yeti",
+"Poziom": 113,
+"SungMa EXP": 0
+},
+"4324": {
+"EXP": 3848,
+"HP / PŻ": 78022,
+"Mob": "PB: Mroźny Golem",
+"Poziom": 116,
+"SungMa EXP": 0
+},
+"4325": {
+"EXP": 3924,
+"HP / PŻ": 80228,
+"Mob": "PB: Mroźny Troll",
+"Poziom": 116,
+"SungMa EXP": 0
+},
+"4326": {
+"EXP": 11888,
+"HP / PŻ": 145252,
+"Mob": "PB: Mroźna Broda",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"4327": {
+"EXP": 28674,
+"HP / PŻ": 294424,
+"Mob": "PB: Mroźny Generał",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"4328": {
+"EXP": 139519,
+"HP / PŻ": 993544,
+"Mob": "PB: Mroźny Książę",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4329": {
+"EXP": 139519,
+"HP / PŻ": 993544,
+"Mob": "PB: Szel",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4340": {
+"EXP": 29200,
+"HP / PŻ": 61210,
+"Mob": "PB: Wojownik En-Tai",
+"Poziom": 107,
+"SungMa EXP": 0
+},
+"4341": {
+"EXP": 34720,
+"HP / PŻ": 80638,
+"Mob": "PB: Bojownik En-Tai",
+"Poziom": 109,
+"SungMa EXP": 0
+},
+"4342": {
+"EXP": 42561,
+"HP / PŻ": 59126,
+"Mob": "PB: Druid En-Tai",
+"Poziom": 111,
+"SungMa EXP": 0
+},
+"4343": {
+"EXP": 45480,
+"HP / PŻ": 84318,
+"Mob": "PB: Uzdrowiciel En-Tai",
+"Poziom": 112,
+"SungMa EXP": 0
+},
+"4344": {
+"EXP": 63856,
+"HP / PŻ": 217140,
+"Mob": "PB: Niszczyciel En-Tai",
+"Poziom": 113,
+"SungMa EXP": 0
+},
+"4345": {
+"EXP": 621504,
+"HP / PŻ": 822784,
+"Mob": "PB: Władca En-Tai",
+"Poziom": 128,
+"SungMa EXP": 0
+},
+"4347": {
+"EXP": 32800,
+"HP / PŻ": 61373,
+"Mob": "PB: Wojownik En-Tai",
+"Poziom": 119,
+"SungMa EXP": 0
+},
+"4348": {
+"EXP": 38320,
+"HP / PŻ": 78829,
+"Mob": "PB: Bojownik En-Tai",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4349": {
+"EXP": 46161,
+"HP / PŻ": 105463,
+"Mob": "PB: Druid En-Tai",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"4350": {
+"EXP": 49080,
+"HP / PŻ": 112213,
+"Mob": "PB: Uzdrowiciel En-Tai",
+"Poziom": 121,
+"SungMa EXP": 0
+},
+"4351": {
+"EXP": 67456,
+"HP / PŻ": 221140,
+"Mob": "PB: Niszczyciel En-Tai",
+"Poziom": 125,
+"SungMa EXP": 0
+},
+"4352": {
+"EXP": 1385646,
+"HP / PŻ": 1959994,
+"Mob": "PB: Bagjanamu",
+"Poziom": 130,
+"SungMa EXP": 0
+},
+"4403": {
+"EXP": 5933200,
+"HP / PŻ": 3627676,
+"Mob": "SZC: Jotun Thrym",
+"Poziom": 135,
+"SungMa EXP": 0
+},
+"4410": {
+"EXP": 4276800,
+"HP / PŻ": 7560000,
+"Mob": "PB: Beran-Setaou",
+"Poziom": 122,
+"SungMa EXP": 0
+},
+"4411": {
+"EXP": 4732952,
+"HP / PŻ": 3627676,
+"Mob": "PB: Razador",
+"Poziom": 130,
+"SungMa EXP": 0
+},
+"4412": {
+"EXP": 4732952,
+"HP / PŻ": 3627676,
+"Mob": "PB: Nemere",
+"Poziom": 130,
+"SungMa EXP": 0
+},
+"4413": {
+"EXP": 5476800,
+"HP / PŻ": 4171827,
+"Mob": "PB: Jotun Thrym",
+"Poziom": 135,
+"SungMa EXP": 0
+},
+"6110": {
+"EXP": 0,
+"HP / PŻ": 97407,
+"Mob": "Magmowy Yeti",
+"Poziom": 103,
+"SungMa EXP": 0
+},
+"6111": {
+"EXP": 0,
+"HP / PŻ": 159159,
+"Mob": "Magmowy Golem",
+"Poziom": 107,
+"SungMa EXP": 0
+},
+"6112": {
+"EXP": 0,
+"HP / PŻ": 159159,
+"Mob": "Magmowy Insekt",
+"Poziom": 105,
+"SungMa EXP": 0
+},
+"6113": {
+"EXP": 0,
+"HP / PŻ": 147212,
+"Mob": "Człowiek-Magma",
+"Poziom": 105,
+"SungMa EXP": 0
+},
+"6114": {
+"EXP": 0,
+"HP / PŻ": 159159,
+"Mob": "Magmowy Kryształ",
+"Poziom": 103,
+"SungMa EXP": 0
+},
+"6115": {
+"EXP": 0,
+"HP / PŻ": 289159,
+"Mob": "Magmowy Wiwern",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"6116": {
+"EXP": 4564000,
+"HP / PŻ": 996772,
+"Mob": "Smoczy Strażnik Idall",
+"Poziom": 113,
+"SungMa EXP": 0
+},
+"6117": {
+"EXP": 0,
+"HP / PŻ": 297407,
+"Mob": "Sługus Idalla",
+"Poziom": 97,
+"SungMa EXP": 0
+},
+"6118": {
+"EXP": 0,
+"HP / PŻ": 7000000,
+"Mob": "Smocze Statuy",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"6192": {
+"EXP": 4564000,
+"HP / PŻ": 1813838,
+"Mob": "Jotun Thrym",
+"Poziom": 123,
+"SungMa EXP": 0
+},
+"6193": {
+"EXP": 4564000,
+"HP / PŻ": 1813838,
+"Mob": "Królowa Smoków Meley",
+"Poziom": 123,
+"SungMa EXP": 0
+},
+"6401": {
+"EXP": 24334,
+"HP / PŻ": 22605,
+"Mob": "Wojownik En-Tai",
+"Poziom": 100,
+"SungMa EXP": 0
+},
+"6402": {
+"EXP": 28934,
+"HP / PŻ": 29319,
+"Mob": "Bojownik En-Tai",
+"Poziom": 102,
+"SungMa EXP": 0
+},
+"6403": {
+"EXP": 35468,
+"HP / PŻ": 39563,
+"Mob": "Druid En-Tai",
+"Poziom": 104,
+"SungMa EXP": 0
+},
+"6404": {
+"EXP": 37900,
+"HP / PŻ": 42159,
+"Mob": "Uzdrowiciel En-Tai",
+"Poziom": 105,
+"SungMa EXP": 0
+},
+"6406": {
+"EXP": 53214,
+"HP / PŻ": 108570,
+"Mob": "Niszczyciel En-Tai",
+"Poziom": 108,
+"SungMa EXP": 0
+},
+"6407": {
+"EXP": 517920,
+"HP / PŻ": 822784,
+"Mob": "Władca En-Tai",
+"Poziom": 112,
+"SungMa EXP": 0
+},
+"6408": {
+"EXP": 1154705,
+"HP / PŻ": 1507688,
+"Mob": "Bagjanamu",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"6409": {
+"EXP": 9843,
+"HP / PŻ": 159159,
+"Mob": "Uzdrowiciel Ochao",
+"Poziom": 110,
+"SungMa EXP": 0
+},
+"6410": {
+"EXP": 27334,
+"HP / PŻ": 23605,
+"Mob": "Silny Wojownik En-Tai",
+"Poziom": 117,
+"SungMa EXP": 0
+},
+"6411": {
+"EXP": 31934,
+"HP / PŻ": 30319,
+"Mob": "Silny Bojownik En-Tai",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"6412": {
+"EXP": 38468,
+"HP / PŻ": 40563,
+"Mob": "Silny Druid En-Tai",
+"Poziom": 118,
+"SungMa EXP": 0
+},
+"6413": {
+"EXP": 40900,
+"HP / PŻ": 43159,
+"Mob": "Silny Uzdrowiciel En-Tai",
+"Poziom": 119,
+"SungMa EXP": 0
+},
+"6414": {
+"EXP": 56214,
+"HP / PŻ": 110570,
+"Mob": "Silny Niszczyciel En-Tai",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"6686": {
+"EXP": 0,
+"HP / PŻ": 64750,
+"Mob": "Jin Bing",
+"Poziom": 119,
+"SungMa EXP": 23
+},
+"6687": {
+"EXP": 0,
+"HP / PŻ": 87364,
+"Mob": "Żołnierz Ki",
+"Poziom": 119,
+"SungMa EXP": 24
+},
+"6688": {
+"EXP": 0,
+"HP / PŻ": 93487,
+"Mob": "Żołnierz Mao",
+"Poziom": 120,
+"SungMa EXP": 24
+},
+"6689": {
+"EXP": 0,
+"HP / PŻ": 97364,
+"Mob": "Żołnierz Gong",
+"Poziom": 120,
+"SungMa EXP": 25
+},
+"6690": {
+"EXP": 0,
+"HP / PŻ": 86648,
+"Mob": "Mag Frontowy",
+"Poziom": 120,
+"SungMa EXP": 26
+},
+"6691": {
+"EXP": 0,
+"HP / PŻ": 424864,
+"Mob": "Kao",
+"Poziom": 123,
+"SungMa EXP": 27
+},
+"6692": {
+"EXP": 0,
+"HP / PŻ": 467518,
+"Mob": "Król Bao (misja)",
+"Poziom": 125,
+"SungMa EXP": 1
+},
+"6693": {
+"EXP": 0,
+"HP / PŻ": 64750,
+"Mob": "Jin Bing",
+"Poziom": 119,
+"SungMa EXP": 23
+},
+"6694": {
+"EXP": 0,
+"HP / PŻ": 87364,
+"Mob": "Żołnierz Ki",
+"Poziom": 119,
+"SungMa EXP": 24
+},
+"6695": {
+"EXP": 0,
+"HP / PŻ": 93487,
+"Mob": "Żołnierz Mao",
+"Poziom": 120,
+"SungMa EXP": 24
+},
+"6696": {
+"EXP": 0,
+"HP / PŻ": 97364,
+"Mob": "Żołnierz Gong",
+"Poziom": 120,
+"SungMa EXP": 25
+},
+"6697": {
+"EXP": 0,
+"HP / PŻ": 86648,
+"Mob": "Mag Frontowy",
+"Poziom": 120,
+"SungMa EXP": 26
+},
+"6698": {
+"EXP": 0,
+"HP / PŻ": 424864,
+"Mob": "Kao",
+"Poziom": 123,
+"SungMa EXP": 27
+},
+"6699": {
+"EXP": 0,
+"HP / PŻ": 567518,
+"Mob": "Król Bao",
+"Poziom": 125,
+"SungMa EXP": 64
+},
+"6700": {
+"EXP": 0,
+"HP / PŻ": 63421,
+"Mob": "Piekielny Pies",
+"Poziom": 119,
+"SungMa EXP": 27
+},
+"6701": {
+"EXP": 0,
+"HP / PŻ": 87364,
+"Mob": "Troll Żołnierz",
+"Poziom": 119,
+"SungMa EXP": 28
+},
+"6702": {
+"EXP": 0,
+"HP / PŻ": 93487,
+"Mob": "Troll Wojownik",
+"Poziom": 120,
+"SungMa EXP": 29
+},
+"6703": {
+"EXP": 0,
+"HP / PŻ": 86648,
+"Mob": "Troll Strzelec",
+"Poziom": 120,
+"SungMa EXP": 29
+},
+"6704": {
+"EXP": 0,
+"HP / PŻ": 86648,
+"Mob": "Troll Szamanka",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6705": {
+"EXP": 0,
+"HP / PŻ": 454864,
+"Mob": "Natanan",
+"Poziom": 123,
+"SungMa EXP": 64
+},
+"6706": {
+"EXP": 0,
+"HP / PŻ": 687518,
+"Mob": "Argos",
+"Poziom": 125,
+"SungMa EXP": 70
+},
+"6710": {
+"EXP": 0,
+"HP / PŻ": 86648,
+"Mob": "Dręczony Duch",
+"Poziom": 119,
+"SungMa EXP": 28
+},
+"6711": {
+"EXP": 0,
+"HP / PŻ": 83421,
+"Mob": "Piekielny Pies",
+"Poziom": 119,
+"SungMa EXP": 27
+},
+"6712": {
+"EXP": 0,
+"HP / PŻ": 87364,
+"Mob": "Troll Żołnierz",
+"Poziom": 119,
+"SungMa EXP": 28
+},
+"6713": {
+"EXP": 0,
+"HP / PŻ": 93487,
+"Mob": "Troll Wojownik",
+"Poziom": 120,
+"SungMa EXP": 29
+},
+"6714": {
+"EXP": 0,
+"HP / PŻ": 86648,
+"Mob": "Troll Strzelec",
+"Poziom": 120,
+"SungMa EXP": 29
+},
+"6715": {
+"EXP": 0,
+"HP / PŻ": 86648,
+"Mob": "Troll Szamanka",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6716": {
+"EXP": 0,
+"HP / PŻ": 454864,
+"Mob": "Natanan",
+"Poziom": 123,
+"SungMa EXP": 64
+},
+"6717": {
+"EXP": 0,
+"HP / PŻ": 687518,
+"Mob": "Argos",
+"Poziom": 125,
+"SungMa EXP": 70
+},
+"6718": {
+"EXP": 0,
+"HP / PŻ": 114750,
+"Mob": "Myr Kovix",
+"Poziom": 119,
+"SungMa EXP": 29
+},
+"6719": {
+"EXP": 0,
+"HP / PŻ": 147364,
+"Mob": "Myr Proletariusz",
+"Poziom": 119,
+"SungMa EXP": 30
+},
+"6720": {
+"EXP": 0,
+"HP / PŻ": 173487,
+"Mob": "Myr Golem",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6721": {
+"EXP": 0,
+"HP / PŻ": 147364,
+"Mob": "Myr Bojownik",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6722": {
+"EXP": 0,
+"HP / PŻ": 106648,
+"Mob": "Myr Czarodziej",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6723": {
+"EXP": 0,
+"HP / PŻ": 514864,
+"Mob": "Myr Weteran",
+"Poziom": 123,
+"SungMa EXP": 66
+},
+"6724": {
+"EXP": 0,
+"HP / PŻ": 767518,
+"Mob": "Myr Prymus",
+"Poziom": 125,
+"SungMa EXP": 72
+},
+"6725": {
+"EXP": 0,
+"HP / PŻ": 114750,
+"Mob": "Myr Kovix",
+"Poziom": 119,
+"SungMa EXP": 30
+},
+"6726": {
+"EXP": 0,
+"HP / PŻ": 147364,
+"Mob": "Myr Proletariusz",
+"Poziom": 119,
+"SungMa EXP": 30
+},
+"6727": {
+"EXP": 0,
+"HP / PŻ": 173487,
+"Mob": "Myr Golem",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6728": {
+"EXP": 0,
+"HP / PŻ": 147364,
+"Mob": "Myr Bojownik",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6729": {
+"EXP": 0,
+"HP / PŻ": 106648,
+"Mob": "Myr Czarodziej",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6730": {
+"EXP": 0,
+"HP / PŻ": 514864,
+"Mob": "Myr Weteran",
+"Poziom": 123,
+"SungMa EXP": 66
+},
+"6731": {
+"EXP": 0,
+"HP / PŻ": 767518,
+"Mob": "Myr Prymus",
+"Poziom": 125,
+"SungMa EXP": 72
+},
+"6744": {
+"EXP": 0,
+"HP / PŻ": 173487,
+"Mob": "Kappa Żołnierz",
+"Poziom": 124,
+"SungMa EXP": 36
+},
+"6745": {
+"EXP": 0,
+"HP / PŻ": 95000,
+"Mob": "Kappa Robotnik",
+"Poziom": 123,
+"SungMa EXP": 35
+},
+"6746": {
+"EXP": 0,
+"HP / PŻ": 147364,
+"Mob": "Kappa Żołnierz",
+"Poziom": 123,
+"SungMa EXP": 35
+},
+"6747": {
+"EXP": 0,
+"HP / PŻ": 173487,
+"Mob": "Kappa Czarodziej",
+"Poziom": 123,
+"SungMa EXP": 36
+},
+"6748": {
+"EXP": 0,
+"HP / PŻ": 147364,
+"Mob": "Kappa Łowca",
+"Poziom": 123,
+"SungMa EXP": 36
+},
+"6749": {
+"EXP": 0,
+"HP / PŻ": 797518,
+"Mob": "Potężny Kappa",
+"Poziom": 124,
+"SungMa EXP": 76
+},
+"6750": {
+"EXP": 0,
+"HP / PŻ": 167518,
+"Mob": "Skorpion Wężowy",
+"Poziom": 123,
+"SungMa EXP": 40
+},
+"6751": {
+"EXP": 0,
+"HP / PŻ": 178248,
+"Mob": "Robotnik Wężowy",
+"Poziom": 123,
+"SungMa EXP": 41
+},
+"6752": {
+"EXP": 0,
+"HP / PŻ": 174581,
+"Mob": "Kappa Wężowy",
+"Poziom": 124,
+"SungMa EXP": 41
+},
+"6753": {
+"EXP": 0,
+"HP / PŻ": 176487,
+"Mob": "Żołnierz Wężowy",
+"Poziom": 125,
+"SungMa EXP": 40
+},
+"6754": {
+"EXP": 0,
+"HP / PŻ": 197364,
+"Mob": "Wężowa Ascetka",
+"Poziom": 124,
+"SungMa EXP": 42
+},
+"6755": {
+"EXP": 0,
+"HP / PŻ": 1914864,
+"Mob": "Potężny Wojownik Wężowy",
+"Poziom": 128,
+"SungMa EXP": 43
+},
+"6756": {
+"EXP": 0,
+"HP / PŻ": 23247518,
+"Mob": "Królowa Węży Nethis",
+"Poziom": 129,
+"SungMa EXP": 168
+},
+"6758": {
+"EXP": 0,
+"HP / PŻ": 124750,
+"Mob": "Skażony Żołnierz",
+"Poziom": 122,
+"SungMa EXP": 32
+},
+"6759": {
+"EXP": 0,
+"HP / PŻ": 167364,
+"Mob": "Skażony Zadziora",
+"Poziom": 122,
+"SungMa EXP": 32
+},
+"6760": {
+"EXP": 0,
+"HP / PŻ": 183487,
+"Mob": "Skażony Wojownik",
+"Poziom": 122,
+"SungMa EXP": 33
+},
+"6761": {
+"EXP": 0,
+"HP / PŻ": 157364,
+"Mob": "Skażony Mnich",
+"Poziom": 123,
+"SungMa EXP": 33
+},
+"6762": {
+"EXP": 0,
+"HP / PŻ": 176648,
+"Mob": "Skażony Generał",
+"Poziom": 123,
+"SungMa EXP": 34
+},
+"6763": {
+"EXP": 0,
+"HP / PŻ": 614864,
+"Mob": "Skażony Wódz",
+"Poziom": 124,
+"SungMa EXP": 36
+},
+"6764": {
+"EXP": 0,
+"HP / PŻ": 867518,
+"Mob": "Skażony Wódz Wojenny",
+"Poziom": 126,
+"SungMa EXP": 77
+},
+"6765": {
+"EXP": 0,
+"HP / PŻ": 1014864,
+"Mob": "Potężny Wojownik Wężowy",
+"Poziom": 128,
+"SungMa EXP": 38
+},
+"6770": {
+"EXP": 0,
+"HP / PŻ": 129750,
+"Mob": "Zamarznięty Lis",
+"Poziom": 123,
+"SungMa EXP": 37
+},
+"6771": {
+"EXP": 0,
+"HP / PŻ": 170364,
+"Mob": "Zamarznięty Zwiadowca",
+"Poziom": 123,
+"SungMa EXP": 37
+},
+"6772": {
+"EXP": 0,
+"HP / PŻ": 184487,
+"Mob": "Zamarznięty Wojownik",
+"Poziom": 123,
+"SungMa EXP": 36
+},
+"6773": {
+"EXP": 0,
+"HP / PŻ": 168488,
+"Mob": "Zamarznięty Łowca",
+"Poziom": 124,
+"SungMa EXP": 36
+},
+"6774": {
+"EXP": 0,
+"HP / PŻ": 179648,
+"Mob": "Zamarznięty Generał",
+"Poziom": 124,
+"SungMa EXP": 37
+},
+"6775": {
+"EXP": 0,
+"HP / PŻ": 644864,
+"Mob": "Zamarznięty Wódz",
+"Poziom": 125,
+"SungMa EXP": 78
+},
+"6776": {
+"EXP": 0,
+"HP / PŻ": 897518,
+"Mob": "Zamarznięty Wódz Wojenny",
+"Poziom": 127,
+"SungMa EXP": 82
+},
+"6777": {
+"EXP": 0,
+"HP / PŻ": 131750,
+"Mob": "Opętany Mroźny Jeleń",
+"Poziom": 123,
+"SungMa EXP": 38
+},
+"6778": {
+"EXP": 0,
+"HP / PŻ": 173364,
+"Mob": "Opętany Śnieżny Leopard",
+"Poziom": 123,
+"SungMa EXP": 38
+},
+"6779": {
+"EXP": 0,
+"HP / PŻ": 187487,
+"Mob": "Yeti Płn. Wiatru",
+"Poziom": 123,
+"SungMa EXP": 37
+},
+"6780": {
+"EXP": 0,
+"HP / PŻ": 164364,
+"Mob": "Duch Płn. Wiatru",
+"Poziom": 124,
+"SungMa EXP": 39
+},
+"6781": {
+"EXP": 0,
+"HP / PŻ": 183648,
+"Mob": "Golem Płn. Wiatru",
+"Poziom": 124,
+"SungMa EXP": 38
+},
+"6782": {
+"EXP": 0,
+"HP / PŻ": 664864,
+"Mob": "Wielka Stopa",
+"Poziom": 125,
+"SungMa EXP": 80
+},
+"6783": {
+"EXP": 0,
+"HP / PŻ": 917518,
+"Mob": "Wódz Wojenny Płn. Wiatru",
+"Poziom": 127,
+"SungMa EXP": 84
+},
+"6784": {
+"EXP": 0,
+"HP / PŻ": 175364,
+"Mob": "Żołnierz Schron. Płn. W.",
+"Poziom": 124,
+"SungMa EXP": 44
+},
+"6785": {
+"EXP": 0,
+"HP / PŻ": 189487,
+"Mob": "Zadziora Schron. Płn. W.",
+"Poziom": 124,
+"SungMa EXP": 46
+},
+"6786": {
+"EXP": 0,
+"HP / PŻ": 167364,
+"Mob": "Wojownik Schron. Płn. W.",
+"Poziom": 124,
+"SungMa EXP": 46
+},
+"6787": {
+"EXP": 0,
+"HP / PŻ": 187648,
+"Mob": "Czarownik Sch. Płn. W.",
+"Poziom": 125,
+"SungMa EXP": 48
+},
+"6788": {
+"EXP": 0,
+"HP / PŻ": 694864,
+"Mob": "Generał Schron. Płn. W.",
+"Poziom": 125,
+"SungMa EXP": 49
+},
+"6789": {
+"EXP": 0,
+"HP / PŻ": 937518,
+"Mob": "Wódz Wojenny Schronienia",
+"Poziom": 130,
+"SungMa EXP": 106
+},
+"6790": {
+"EXP": 0,
+"HP / PŻ": 22587258,
+"Mob": "Alastor",
+"Poziom": 135,
+"SungMa EXP": 256
+},
+"6791": {
+"EXP": 0,
+"HP / PŻ": 22587258,
+"Mob": "Alastor",
+"Poziom": 135,
+"SungMa EXP": 548
+},
+"6792": {
+"EXP": 0,
+"HP / PŻ": 178364,
+"Mob": "Żołnierz Schron. Płn. W.",
+"Poziom": 125,
+"SungMa EXP": 48
+},
+"6793": {
+"EXP": 0,
+"HP / PŻ": 191487,
+"Mob": "Zadziora Schron. Płn. W.",
+"Poziom": 125,
+"SungMa EXP": 50
+},
+"6794": {
+"EXP": 0,
+"HP / PŻ": 169364,
+"Mob": "Wojownik Schron. Płn. W.",
+"Poziom": 125,
+"SungMa EXP": 50
+},
+"6795": {
+"EXP": 0,
+"HP / PŻ": 189648,
+"Mob": "Czarownik Sch. Płn. W.",
+"Poziom": 125,
+"SungMa EXP": 52
+},
+"6796": {
+"EXP": 0,
+"HP / PŻ": 714864,
+"Mob": "Generał Schron. Płn. W.",
+"Poziom": 126,
+"SungMa EXP": 53
+},
+"6797": {
+"EXP": 0,
+"HP / PŻ": 947518,
+"Mob": "Wódz Wojenny Schronienia",
+"Poziom": 131,
+"SungMa EXP": 119
+},
+"6800": {
+"EXP": 0,
+"HP / PŻ": 95312,
+"Mob": "Gnoll Wojownik",
+"Poziom": 119,
+"SungMa EXP": 30
+},
+"6801": {
+"EXP": 0,
+"HP / PŻ": 96100,
+"Mob": "Gnoll Zwiadowca",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6802": {
+"EXP": 0,
+"HP / PŻ": 77700,
+"Mob": "Czarodziej Gnoll",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6803": {
+"EXP": 0,
+"HP / PŻ": 107100,
+"Mob": "Gnoll Marszałek",
+"Poziom": 122,
+"SungMa EXP": 30
+},
+"6804": {
+"EXP": 0,
+"HP / PŻ": 467350,
+"Mob": "Mistrz Gnolli",
+"Poziom": 124,
+"SungMa EXP": 35
+},
+"6805": {
+"EXP": 0,
+"HP / PŻ": 624270,
+"Mob": "Gnoll Kapitan",
+"Poziom": 125,
+"SungMa EXP": 40
+},
+"6806": {
+"EXP": 0,
+"HP / PŻ": 104843,
+"Mob": "Gnoll Żołnierz",
+"Poziom": 119,
+"SungMa EXP": 30
+},
+"6807": {
+"EXP": 0,
+"HP / PŻ": 105710,
+"Mob": "Gnoll Szpieg",
+"Poziom": 119,
+"SungMa EXP": 30
+},
+"6808": {
+"EXP": 0,
+"HP / PŻ": 85470,
+"Mob": "Gnoll Mag",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"6809": {
+"EXP": 0,
+"HP / PŻ": 117810,
+"Mob": "Komendant Gnoll",
+"Poziom": 123,
+"SungMa EXP": 30
+},
+"6810": {
+"EXP": 0,
+"HP / PŻ": 115327,
+"Mob": "Ahtrin Wojownik",
+"Poziom": 120,
+"SungMa EXP": 35
+},
+"6811": {
+"EXP": 0,
+"HP / PŻ": 116281,
+"Mob": "Ahtrin Zwiadowca",
+"Poziom": 121,
+"SungMa EXP": 35
+},
+"6812": {
+"EXP": 0,
+"HP / PŻ": 94017,
+"Mob": "Ahtrin Czarodziej",
+"Poziom": 121,
+"SungMa EXP": 35
+},
+"6813": {
+"EXP": 0,
+"HP / PŻ": 129591,
+"Mob": "Ahtrin Komendant",
+"Poziom": 124,
+"SungMa EXP": 35
+},
+"6814": {
+"EXP": 0,
+"HP / PŻ": 560820,
+"Mob": "Ahtrin Kapitan",
+"Poziom": 126,
+"SungMa EXP": 35
+},
+"6815": {
+"EXP": 0,
+"HP / PŻ": 749124,
+"Mob": "Ahtrin Kapitan",
+"Poziom": 127,
+"SungMa EXP": 45
+},
+"6816": {
+"EXP": 0,
+"HP / PŻ": 151165,
+"Mob": "Ahtrin Szpieg",
+"Poziom": 123,
+"SungMa EXP": 35
+},
+"6817": {
+"EXP": 0,
+"HP / PŻ": 122222,
+"Mob": "Ahtrin Wiedźmin",
+"Poziom": 123,
+"SungMa EXP": 35
+},
+"6818": {
+"EXP": 0,
+"HP / PŻ": 168468,
+"Mob": "Ahtrin Komendant",
+"Poziom": 127,
+"SungMa EXP": 35
+},
+"6819": {
+"EXP": 0,
+"HP / PŻ": 729066,
+"Mob": "Mistrz Ahtrin",
+"Poziom": 129,
+"SungMa EXP": 40
+},
+"6820": {
+"EXP": 0,
+"HP / PŻ": 1048773,
+"Mob": "Ahtrin Wielki Mistrz",
+"Poziom": 130,
+"SungMa EXP": 50
+},
+"6850": {
+"EXP": 0,
+"HP / PŻ": 137518,
+"Mob": "Skorpion Wężowy",
+"Poziom": 123,
+"SungMa EXP": 40
+},
+"6851": {
+"EXP": 0,
+"HP / PŻ": 148248,
+"Mob": "Robotnik Wężowy",
+"Poziom": 123,
+"SungMa EXP": 41
+},
+"6852": {
+"EXP": 0,
+"HP / PŻ": 154581,
+"Mob": "Kappa Wężowy",
+"Poziom": 124,
+"SungMa EXP": 41
+},
+"6853": {
+"EXP": 0,
+"HP / PŻ": 156487,
+"Mob": "Żołnierz Wężowy",
+"Poziom": 125,
+"SungMa EXP": 40
+},
+"6854": {
+"EXP": 0,
+"HP / PŻ": 157364,
+"Mob": "Rzeźnik Wężowy",
+"Poziom": 124,
+"SungMa EXP": 42
+},
+"6860": {
+"EXP": 0,
+"HP / PŻ": 114750,
+"Mob": "Mistrz Miecza Jin",
+"Poziom": 123,
+"SungMa EXP": 53
+},
+"6861": {
+"EXP": 0,
+"HP / PŻ": 139364,
+"Mob": "Mistrz Włóczni Ki",
+"Poziom": 123,
+"SungMa EXP": 55
+},
+"6862": {
+"EXP": 0,
+"HP / PŻ": 133487,
+"Mob": "Mistrz Włóczni Mao",
+"Poziom": 123,
+"SungMa EXP": 57
+},
+"6863": {
+"EXP": 0,
+"HP / PŻ": 149364,
+"Mob": "Łucznik Gong",
+"Poziom": 123,
+"SungMa EXP": 59
+},
+"6864": {
+"EXP": 0,
+"HP / PŻ": 154864,
+"Mob": "Mistrz Miecza Kao",
+"Poziom": 125,
+"SungMa EXP": 62
+},
+"6865": {
+"EXP": 0,
+"HP / PŻ": 114750,
+"Mob": "Mistrz Miecza Jin",
+"Poziom": 123,
+"SungMa EXP": 53
+},
+"6866": {
+"EXP": 0,
+"HP / PŻ": 139364,
+"Mob": "Mistrz Włóczni Ki",
+"Poziom": 123,
+"SungMa EXP": 55
+},
+"6867": {
+"EXP": 0,
+"HP / PŻ": 133487,
+"Mob": "Mistrz Włóczni Mao",
+"Poziom": 123,
+"SungMa EXP": 57
+},
+"6868": {
+"EXP": 0,
+"HP / PŻ": 149364,
+"Mob": "Łucznik Gong",
+"Poziom": 123,
+"SungMa EXP": 59
+},
+"6869": {
+"EXP": 0,
+"HP / PŻ": 154864,
+"Mob": "Mistrz Miecza Kao",
+"Poziom": 125,
+"SungMa EXP": 62
+},
+"6870": {
+"EXP": 0,
+"HP / PŻ": 1852410,
+"Mob": "Tajemniczy Mnich",
+"Poziom": 127,
+"SungMa EXP": 120
+},
+"6871": {
+"EXP": 0,
+"HP / PŻ": 1852410,
+"Mob": "Tajemniczy Mnich",
+"Poziom": 127,
+"SungMa EXP": 120
+},
+"6875": {
+"EXP": 0,
+"HP / PŻ": 124750,
+"Mob": "Skażony Żołnierz",
+"Poziom": 122,
+"SungMa EXP": 32
+},
+"6876": {
+"EXP": 0,
+"HP / PŻ": 167364,
+"Mob": "Skażony Zadziora",
+"Poziom": 122,
+"SungMa EXP": 32
+},
+"6877": {
+"EXP": 0,
+"HP / PŻ": 183487,
+"Mob": "Skażony Wojownik",
+"Poziom": 122,
+"SungMa EXP": 33
+},
+"6878": {
+"EXP": 0,
+"HP / PŻ": 157364,
+"Mob": "Skażony Mnich",
+"Poziom": 123,
+"SungMa EXP": 33
+},
+"6879": {
+"EXP": 0,
+"HP / PŻ": 176648,
+"Mob": "Skażony Generał",
+"Poziom": 123,
+"SungMa EXP": 34
+},
+"6880": {
+"EXP": 0,
+"HP / PŻ": 614864,
+"Mob": "Skażony Wódz",
+"Poziom": 124,
+"SungMa EXP": 36
+},
+"6881": {
+"EXP": 0,
+"HP / PŻ": 867518,
+"Mob": "Skażony Wódz Wojenny",
+"Poziom": 126,
+"SungMa EXP": 38
+},
+"6882": {
+"EXP": 0,
+"HP / PŻ": 129750,
+"Mob": "Bezduszny Lis",
+"Poziom": 123,
+"SungMa EXP": 37
+},
+"6883": {
+"EXP": 0,
+"HP / PŻ": 170364,
+"Mob": "Zamarznięty Zwiadowca",
+"Poziom": 123,
+"SungMa EXP": 37
+},
+"6884": {
+"EXP": 0,
+"HP / PŻ": 184487,
+"Mob": "Zamarznięty Wojownik",
+"Poziom": 123,
+"SungMa EXP": 36
+},
+"6885": {
+"EXP": 0,
+"HP / PŻ": 168488,
+"Mob": "Zamarznięty Łowca",
+"Poziom": 124,
+"SungMa EXP": 36
+},
+"6886": {
+"EXP": 0,
+"HP / PŻ": 179648,
+"Mob": "Zamarznięty Generał",
+"Poziom": 124,
+"SungMa EXP": 37
+},
+"6887": {
+"EXP": 0,
+"HP / PŻ": 644864,
+"Mob": "Zamarznięty Wódz",
+"Poziom": 125,
+"SungMa EXP": 78
+},
+"6888": {
+"EXP": 0,
+"HP / PŻ": 897518,
+"Mob": "Zamarznięty Wódz Wojenny",
+"Poziom": 127,
+"SungMa EXP": 82
+},
+"6889": {
+"EXP": 0,
+"HP / PŻ": 131750,
+"Mob": "Przeklęty Mroźny Jeleń",
+"Poziom": 123,
+"SungMa EXP": 38
+},
+"6890": {
+"EXP": 0,
+"HP / PŻ": 173364,
+"Mob": "Opętany Śnieżny Leopard",
+"Poziom": 123,
+"SungMa EXP": 38
+},
+"6891": {
+"EXP": 0,
+"HP / PŻ": 187487,
+"Mob": "Yeti Płn. Wiatru",
+"Poziom": 123,
+"SungMa EXP": 37
+},
+"6892": {
+"EXP": 0,
+"HP / PŻ": 164364,
+"Mob": "Duch Płn. Wiatru",
+"Poziom": 124,
+"SungMa EXP": 39
+},
+"6893": {
+"EXP": 0,
+"HP / PŻ": 183648,
+"Mob": "Golem Płn. Wiatru",
+"Poziom": 124,
+"SungMa EXP": 38
+},
+"6894": {
+"EXP": 0,
+"HP / PŻ": 664864,
+"Mob": "Wielka Stopa",
+"Poziom": 125,
+"SungMa EXP": 80
+},
+"6895": {
+"EXP": 0,
+"HP / PŻ": 917518,
+"Mob": "Wódz Wojenny Płn. Wiatru",
+"Poziom": 127,
+"SungMa EXP": 84
+},
+"7550": {
+"EXP": 0,
+"HP / PŻ": 78829,
+"Mob": "Wilk Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 33
+},
+"7551": {
+"EXP": 0,
+"HP / PŻ": 105463,
+"Mob": "Zbir Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 34
+},
+"7552": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Berserk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 35
+},
+"7553": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Wiedźmin Piek. Wieży",
+"Poziom": 125,
+"SungMa EXP": 35
+},
+"7554": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 36
+},
+"7555": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wóżbit Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 53
+},
+"7556": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wielki Mistrz P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 54
+},
+"7557": {
+"EXP": 0,
+"HP / PŻ": 78829,
+"Mob": "Wilk Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 35
+},
+"7558": {
+"EXP": 0,
+"HP / PŻ": 105463,
+"Mob": "Zbir Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 35
+},
+"7559": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Berserk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 36
+},
+"7560": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Wiedźmin Piek. Wieży",
+"Poziom": 125,
+"SungMa EXP": 33
+},
+"7561": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 34
+},
+"7562": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wóżbit Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 53
+},
+"7563": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wielki Mistrz P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 54
+},
+"7564": {
+"EXP": 0,
+"HP / PŻ": 78829,
+"Mob": "Wilk Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 36
+},
+"7565": {
+"EXP": 0,
+"HP / PŻ": 105463,
+"Mob": "Zbir Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 33
+},
+"7566": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Berserk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 34
+},
+"7567": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Wiedźmin Piek. Wieży",
+"Poziom": 125,
+"SungMa EXP": 35
+},
+"7568": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 35
+},
+"7569": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wóżbit Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 53
+},
+"7570": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wielki Mistrz P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 54
+},
+"7571": {
+"EXP": 0,
+"HP / PŻ": 78829,
+"Mob": "Wilk Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 34
+},
+"7572": {
+"EXP": 0,
+"HP / PŻ": 105463,
+"Mob": "Zbir Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 35
+},
+"7573": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Berserk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 35
+},
+"7574": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Wiedźmin Piek. Wieży",
+"Poziom": 125,
+"SungMa EXP": 36
+},
+"7575": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 33
+},
+"7576": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wóżbit Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 53
+},
+"7577": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wielki Mistrz P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 54
+},
+"7578": {
+"EXP": 0,
+"HP / PŻ": 78829,
+"Mob": "Wilk Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 35
+},
+"7579": {
+"EXP": 0,
+"HP / PŻ": 105463,
+"Mob": "Zbir Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 36
+},
+"7580": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Berserk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 33
+},
+"7581": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Wiedźmin Piek. Wieży",
+"Poziom": 125,
+"SungMa EXP": 34
+},
+"7582": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 35
+},
+"7583": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wóżbit Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 53
+},
+"7584": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wielki Mistrz P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 54
+},
+"7585": {
+"EXP": 0,
+"HP / PŻ": 78829,
+"Mob": "Wilk Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 33
+},
+"7586": {
+"EXP": 0,
+"HP / PŻ": 105463,
+"Mob": "Zbir Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 34
+},
+"7587": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Berserk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 35
+},
+"7588": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Wiedźmin Piek. Wieży",
+"Poziom": 125,
+"SungMa EXP": 35
+},
+"7589": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 36
+},
+"7590": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wóżbit Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 53
+},
+"7591": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Wielki Mistrz P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 54
+},
+"7592": {
+"EXP": 0,
+"HP / PŻ": 50000,
+"Mob": "Niszczyciel P. Wieży",
+"Poziom": 97,
+"SungMa EXP": 35
+},
+"7593": {
+"EXP": 0,
+"HP / PŻ": 50000,
+"Mob": "Niszczyciel P. Wieży",
+"Poziom": 97,
+"SungMa EXP": 35
+},
+"7594": {
+"EXP": 0,
+"HP / PŻ": 178829,
+"Mob": "Demon. Kamień P. Wieży",
+"Poziom": 120,
+"SungMa EXP": 33
+},
+"7595": {
+"EXP": 0,
+"HP / PŻ": 178829,
+"Mob": "Łucznika P. Wieży",
+"Poziom": 100,
+"SungMa EXP": 1
+},
+"7600": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Kamień Duchowy P. Wieży",
+"Poziom": 120,
+"SungMa EXP": 24
+},
+"7609": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Czarnoksiężnik P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 33
+},
+"7610": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Książę Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 33
+},
+"7611": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Książę Piekielnej Wieży",
+"Poziom": 135,
+"SungMa EXP": 34
+},
+"7612": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Książę Śmierci P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 35
+},
+"7613": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Książę Śmierci P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 35
+},
+"7614": {
+"EXP": 0,
+"HP / PŻ": 4171827,
+"Mob": "Czarnoksiężnik P. Wieży",
+"Poziom": 135,
+"SungMa EXP": 35
+},
+"7615": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Wilk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 35
+},
+"7616": {
+"EXP": 0,
+"HP / PŻ": 105463,
+"Mob": "Zbir Piekielnej Wieży",
+"Poziom": 120,
+"SungMa EXP": 35
+},
+"7617": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 35
+},
+"7618": {
+"EXP": 0,
+"HP / PŻ": 1959994,
+"Mob": "Rzeźnik Piekielnej Wieży",
+"Poziom": 130,
+"SungMa EXP": 33
+},
+"7619": {
+"EXP": 0,
+"HP / PŻ": 112213,
+"Mob": "Berserk Piekielnej Wieży",
+"Poziom": 121,
+"SungMa EXP": 33
+},
+"7620": {
+"EXP": 0,
+"HP / PŻ": 221140,
+"Mob": "Wiedźmin Piek. Wieży",
+"Poziom": 125,
+"SungMa EXP": 35
+},
+"8059": {
+"EXP": 51,
+"HP / PŻ": 705000,
+"Mob": "Metin Drzewnych Stworzeń",
+"Poziom": 100,
+"SungMa EXP": 0
+},
+"8061": {
+"EXP": 51,
+"HP / PŻ": 1600000,
+"Mob": "Metin Lasu",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"8063": {
+"EXP": 0,
+"HP / PŻ": 1900000,
+"Mob": "Metin Szacunku",
+"Poziom": 120,
+"SungMa EXP": 24
+},
+"8064": {
+"EXP": 0,
+"HP / PŻ": 2100000,
+"Mob": "Metin Uważności",
+"Poziom": 120,
+"SungMa EXP": 25
+},
+"8065": {
+"EXP": 0,
+"HP / PŻ": 2300000,
+"Mob": "Metin Jin",
+"Poziom": 120,
+"SungMa EXP": 26
+},
+"8066": {
+"EXP": 1,
+"HP / PŻ": 2500000,
+"Mob": "Metin Shiho",
+"Poziom": 120,
+"SungMa EXP": 27
+},
+"8067": {
+"EXP": 1,
+"HP / PŻ": 1900000,
+"Mob": "Metin Świadomość",
+"Poziom": 120,
+"SungMa EXP": 32
+},
+"8076": {
+"EXP": 0,
+"HP / PŻ": 2700000,
+"Mob": "Metin Wężowy Przestrzeni",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"8077": {
+"EXP": 0,
+"HP / PŻ": 2500000,
+"Mob": "Metin z Gumar",
+"Poziom": 120,
+"SungMa EXP": 27
+},
+"8126": {
+"EXP": 100,
+"HP / PŻ": 1305000,
+"Mob": "SZC: Metin Drz. Stworzeń",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"8127": {
+"EXP": 100,
+"HP / PŻ": 1600000,
+"Mob": "SZC: Metin Lasu",
+"Poziom": 125,
+"SungMa EXP": 0
+},
+"8130": {
+"EXP": 100,
+"HP / PŻ": 500000,
+"Mob": "PB: Metin Góry",
+"Poziom": 111,
+"SungMa EXP": 0
+},
+"8131": {
+"EXP": 100,
+"HP / PŻ": 500000,
+"Mob": "PB : Metin Zemsty",
+"Poziom": 111,
+"SungMa EXP": 0
+},
+"8132": {
+"EXP": 100,
+"HP / PŻ": 500000,
+"Mob": "PB: Metin Samotności",
+"Poziom": 111,
+"SungMa EXP": 0
+},
+"8133": {
+"EXP": 100,
+"HP / PŻ": 500000,
+"Mob": "PB: Metin Pychy",
+"Poziom": 111,
+"SungMa EXP": 0
+},
+"8134": {
+"EXP": 100,
+"HP / PŻ": 1200000,
+"Mob": "PB: Metin Purgatorium",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"8135": {
+"EXP": 100,
+"HP / PŻ": 1200000,
+"Mob": "PB: Metin Chłodu",
+"Poziom": 115,
+"SungMa EXP": 0
+},
+"8136": {
+"EXP": 100,
+"HP / PŻ": 1305000,
+"Mob": "PB: Metin Drz. Stworzeń",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"8137": {
+"EXP": 100,
+"HP / PŻ": 1600000,
+"Mob": "PB: Metin Lasu",
+"Poziom": 125,
+"SungMa EXP": 0
+},
+"8625": {
+"EXP": 0,
+"HP / PŻ": 584000,
+"Mob": "Posterunek Trolli",
+"Poziom": 120,
+"SungMa EXP": 1
+},
+"8626": {
+"EXP": 0,
+"HP / PŻ": 705000,
+"Mob": "1. Posterunek Myr",
+"Poziom": 120,
+"SungMa EXP": 1
+},
+"8627": {
+"EXP": 0,
+"HP / PŻ": 905000,
+"Mob": "2. Posterunek Myr",
+"Poziom": 120,
+"SungMa EXP": 1
+},
+"8630": {
+"EXP": 0,
+"HP / PŻ": 8500000,
+"Mob": "Metin Wężowy Ognia",
+"Poziom": 120,
+"SungMa EXP": 5
+},
+"8631": {
+"EXP": 0,
+"HP / PŻ": 8500000,
+"Mob": "Metin Wężowy Lodu",
+"Poziom": 120,
+"SungMa EXP": 5
+},
+"8632": {
+"EXP": 0,
+"HP / PŻ": 8500000,
+"Mob": "Metin Wężowy Wiatru",
+"Poziom": 120,
+"SungMa EXP": 5
+},
+"8633": {
+"EXP": 0,
+"HP / PŻ": 8500000,
+"Mob": "Metin Wężowy Ziemi",
+"Poziom": 120,
+"SungMa EXP": 5
+},
+"8634": {
+"EXP": 0,
+"HP / PŻ": 2800000,
+"Mob": "Metin Wężowy Czasu",
+"Poziom": 120,
+"SungMa EXP": 30
+},
+"8635": {
+"EXP": 0,
+"HP / PŻ": 4500000,
+"Mob": "Białe Jajo Smoka (słaby)",
+"Poziom": 120,
+"SungMa EXP": 5
+},
+"8636": {
+"EXP": 0,
+"HP / PŻ": 6000000,
+"Mob": "Białe Jajo Smoka (silny)",
+"Poziom": 120,
+"SungMa EXP": 5
+},
+"20422": {
+"EXP": 51,
+"HP / PŻ": 1300000,
+"Mob": "Jajo Smoka",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"20432": {
+"EXP": 10,
+"HP / PŻ": 238386,
+"Mob": "Jajo Hydry",
+"Poziom": 120,
+"SungMa EXP": 0
+},
+"20437": {
+"EXP": 10,
+"HP / PŻ": 10,
+"Mob": "Drewno na Naprawę",
+"Poziom": 1,
+"SungMa EXP": 0
+},
+"20538": {
+"EXP": 51,
+"HP / PŻ": 1200000,
+"Mob": "PB: Kolumna Smoka Płn.",
+"Poziom": 120,
+"SungMa EXP": 0
+}
+},
+"skipped": {
+"21075 Zbroja Nocnego Cienia+5": [
+"the Lycan's (no such class here)",
+1
+],
+"27124 Opatrunek": [
+"not in our world",
+1
+],
+"27213 Eliksir: W. SungMa(SIŁA)": [
+"not in our world",
+4
+],
+"27214 Eliksir: W. SungMa (WIT)": [
+"not in our world",
+4
+],
+"27215 Eliksir: W. SungMa (ODP)": [
+"not in our world",
+4
+],
+"27216 Eliksir: W. SungMa (INT)": [
+"not in our world",
+4
+],
+"28444 Kamień Antymagii+4": [
+"not in our world",
+4
+],
+"28445 Kamień Antymagii+4": [
+"not in our world",
+4
+],
+"30168 Notatka Przywódcy": [
+"quest item",
+2
+],
+"30601 Plan Zbroi": [
+"not in our world",
+1
+],
+"30605 Złote Płyty": [
+"not in our world",
+3
+],
+"30607 Miedziane Płyty": [
+"not in our world",
+2
+],
+"30609 Brązowe Płyty": [
+"not in our world",
+2
+],
+"30619 Barwnik złoty metalik": [
+"not in our world",
+1
+],
+"30675 Mnisi Len": [
+"not in our world",
+2
+],
+"30676 Odłamek Miecza Kao": [
+"not in our world",
+2
+],
+"31096 Szlachetne Drewno": [
+"quest item",
+1
+],
+"31097 Rosa En-Tai": [
+"quest item",
+1
+],
+"31099 Drzewny Szmaragd": [
+"quest item",
+1
+],
+"31100 Apteczka": [
+"quest item",
+1
+],
+"31143 Skrzynia Przebudzenia": [
+"Skrzynia Przebudzenia - the awakened bosses' quest gives it",
+8
+],
+"31180 Kręty Klucz (PB)": [
+"quest item (PB)",
+1
+],
+"31182 Szlachetne Drzewo (PB)": [
+"quest item (PB)",
+1
+],
+"31183 Rosa En-Tai (PB)": [
+"quest item (PB)",
+1
+],
+"31185 Drzewny Szmaragd (PB)": [
+"quest item (PB)",
+1
+],
+"31186 Apteczka (PB)": [
+"quest item (PB)",
+1
+],
+"31202 PB: Plan Pazura": [
+"not in our world",
+3
+],
+"31208 PB: Plan Zbroi Likana": [
+"not in our world",
+4
+],
+"31213 PB: Plan Hełmu Likana": [
+"not in our world",
+4
+],
+"31231 Kryształ Metin": [
+"not in our world",
+5
+],
+"31232 Mroczna Paproć": [
+"not in our world",
+21
+],
+"31256 Skrzynia Labiryntowa": [
+"the labyrinth chest of its quest",
+4
+],
+"50046 Szlachetna Trawa": [
+"not in our world",
+6
+],
+"50124 Spróchniała Skrzynia": [
+"Sprochniala Skrzynia - out of every drop (the owner, 15 October 2026)",
+15
+],
+"50331 Księga Misji (Książę 2)": [
+"not in our world",
+6
+],
+"50332 Księga Misji (Książę 3)": [
+"not in our world",
+6
+],
+"50335 Księga Misji (P. Yilad)": [
+"not in our world",
+7
+],
+"50337 Księga Misji (R. Dusz)": [
+"not in our world",
+5
+],
+"50514 Podręcznik: Dopalacz": [
+"not in our world",
+2
+],
+"50515 Podręcznik: Riposta": [
+"not in our world",
+4
+],
+"50576 Burza Szponów (9.skill)": [
+"the Lycan's (no such class here)",
+7
+],
+"54704 Skrzynia Jotuna Thryma": [
+"not in our world",
+1
+],
+"55004 Księga Dzikiego Zwierza": [
+"not in our world",
+8
+],
+"55005 Księga Dzielnego Zwierza": [
+"not in our world",
+2
+],
+"55006 Bohat. Księga Zwierza": [
+"not in our world",
+4
+],
+"55070 S. Umiejętności Konnych": [
+"not in our world",
+2
+],
+"6025 Żelazny Szpon+5": [
+"not in our world",
+1
+],
+"6044 Szpon Gryfa+4": [
+"not in our world",
+1
+],
+"6045 Szpon Gryfa+5": [
+"the Lycan's (no such class here)",
+13
+],
+"6046 Szpon Gryfa+6": [
+"the Lycan's (no such class here)",
+14
+],
+"6065 Jastrzębi Szpon+5": [
+"not in our world",
+6
+],
+"6066 Jastrzębi Szpon+6": [
+"not in our world",
+6
+],
+"6067 Jastrzębi Szpon+7": [
+"not in our world",
+4
+],
+"6068 Jastrzębi Szpon+8": [
+"not in our world",
+4
+],
+"6076 Kolczasty Szpon+6": [
+"not in our world",
+4
+],
+"6077 Kolczasty Szpon+7": [
+"not in our world",
+2
+],
+"6078 Kolczasty Szpon+8": [
+"not in our world",
+6
+],
+"70433 Zwój Skarbu (Stopień B)": [
+"not in our world",
+1
+],
+"72749 Powolne Leczenia Najem.": [
+"not in our world",
+3
+],
+"79740 PB: Grota Wygn., część 1": [
+"not in our world",
+1
+],
+"79741 PB: Grota Wygn., część 2": [
+"not in our world",
+1
+],
+"79742 PB: Grota Wygn., część 3": [
+"not in our world",
+1
+],
+"79743 PB: Grota Wygn., część 4": [
+"not in our world",
+1
+],
+"79744 PB: Grota Wygn., część 5": [
+"not in our world",
+1
+],
+"79745 Jaskinie Gnolli, część 1": [
+"not in our world",
+1
+],
+"79746 Jaskinie Gnolli, część 2": [
+"not in our world",
+1
+],
+"79747 Jaskinie Gnolli, część 3": [
+"not in our world",
+1
+],
+"79748 Jaskinie Gnolli, część 4": [
+"not in our world",
+1
+],
+"79749 Jaskinie Gnolli, część 5": [
+"not in our world",
+1
+],
+"79750 Jaskinie Gnolli 2, cz. 1": [
+"not in our world",
+1
+],
+"79751 Jaskinie Gnolli 2, cz. 2": [
+"not in our world",
+1
+],
+"79752 Jaskinie Gnolli 2, cz. 3": [
+"not in our world",
+1
+],
+"79753 Jaskinie Gnolli 2, cz. 4": [
+"not in our world",
+1
+],
+"79754 Jaskinie Gnolli 2, cz. 5": [
+"not in our world",
+1
+],
+"79755 Jaskinie Gnolli 3, cz. 1": [
+"not in our world",
+1
+],
+"79756 Jaskinie Gnolli 3, cz. 2": [
+"not in our world",
+1
+],
+"79757 Jaskinie Gnolli 3, cz. 3": [
+"not in our world",
+1
+],
+"79758 Jaskinie Gnolli 3, cz. 4": [
+"not in our world",
+1
+],
+"79759 Jaskinie Gnolli 3, cz. 5": [
+"not in our world",
+1
+],
+"79760 Świątynia Węży, część 1": [
+"not in our world",
+1
+],
+"79761 Świątynia Węży, część 2": [
+"not in our world",
+1
+],
+"79762 Świątynia Węży, część 3": [
+"not in our world",
+1
+],
+"79763 Świątynia Węży, część 4": [
+"not in our world",
+1
+],
+"79764 Świątynia Węży, część 5": [
+"not in our world",
+1
+],
+"79765 Sch. Półn. Wiatru, cz. 1": [
+"not in our world",
+1
+],
+"79766 Sch. Półn. Wiatru, cz. 2": [
+"not in our world",
+1
+],
+"79767 Sch. Półn. Wiatru, cz. 3": [
+"not in our world",
+1
+],
+"79768 Sch. Półn. Wiatru, cz. 4": [
+"not in our world",
+1
+],
+"79769 Sch. Półn. Wiatru, cz. 5": [
+"not in our world",
+1
+],
+"79770 Zej. Półn. Wiatru, cz. 1": [
+"not in our world",
+1
+],
+"79771 Zej. Półn. Wiatru, cz. 2": [
+"not in our world",
+1
+],
+"79772 Zej. Półn. Wiatru, cz. 3": [
+"not in our world",
+1
+],
+"79773 Zej. Półn. Wiatru, cz. 4": [
+"not in our world",
+1
+],
+"79774 Zej. Półn. Wiatru, cz. 5": [
+"not in our world",
+1
+],
+"83057 Skrzynia Skarbów Namgan": [
+"not in our world",
+1
+],
+"83058 Klucz do Skrz. Sk. Namg.": [
+"not in our world",
+1
+],
+"83059 Skrzynia Skarbów Yilad": [
+"not in our world",
+2
+],
+"83060 Klucz do Skrz. Sk. Yilad": [
+"not in our world",
+2
+],
+"83061 Skrzynia Skarbów Dongan": [
+"not in our world",
+2
+],
+"83062 Klucz do Skrz. Sk. Dong.": [
+"not in our world",
+2
+],
+"83063 Skrzynia Skarbów Seogan": [
+"not in our world",
+1
+],
+"83064 Klucz do Skrz. Sk. Seog.": [
+"not in our world",
+1
+]
+},
+"source": "Metin2_Moby_statystyki_EXP_i_drop.xlsx"
+}

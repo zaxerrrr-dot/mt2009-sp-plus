@@ -3866,6 +3866,19 @@ for yml_sql in yohara_meley.sql yohara_items_meley.sql yohara_meley_zywioly.sql;
         fail_step "Schronienie Meley: $yml_sql failed" >&2
     fi
 done
+# MT2009_PLUS_MOBY_ARKUSZ_V1: our Yohara monsters brought to the owner's sheet of 20 October 2026 - yohara_moby_arkusz.sql
+# (tools/ymoby_arkusz/gen_ymoby_arkusz.py): the official levels of Obrona Statku (3953-3964, 20432), the experience of
+# 4267 / 4270 / 6402, Alastor's HP (6790 / 6791). Their own files above hold the new values already (INSERT IGNORE);
+# this moves a world made before. Guarded UPDATEs (only a row with our old value; one the operator set is kept),
+# after every Yohara mob file. Idempotent.
+for yma_sql in yohara_moby_arkusz.sql; do
+    [ -s "/opt/playerbot/$yma_sql" ] || continue
+    if db < "/opt/playerbot/$yma_sql"; then
+        echo "[playerbot-migrate] Yohara monsters (the owner's sheet): $yma_sql applied"
+    else
+        fail_step "Yohara monsters (the owner's sheet): $yma_sql failed" >&2
+    fi
+done
 # Once: the Arezzo forest (362, natural_map) is in no map index and on no core any more. Every character saved there
 # or in an instance of it, or whose way out leads there - people and bots (all of level 95 and more) - stands at the
 # Temple of Ochao's gate (209, 853725 1416425, the temple's arrival; its En-Tai Guardian's portal leads to Zaklety Las
