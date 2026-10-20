@@ -75,3 +75,11 @@ nie pasują do terenu Wąwozu – bossowie, Metiny i NPC Wąwozu stoją tu w mie
   powrotnego.
 - **Wejście**: od 120 poziomu, bez Poziomu Czempiona (jak 373/374) – quest `yohara_mapy2` odsyła niższych do portu.
   Boty: mapy Sung Ma (`sungma_table.txt`) są dla botów zamknięte, a rdzeń Yohary botów nie ma.
+
+## Zmiana 20.10.2026 (MT2009_PLUS_YOHARA_LOKACJE_V2)
+
+Decyzja właściciela po porównaniu z jego arkuszem lokalizacji: bossowie i Metiny Przełęczy Yilad i Wąwozu są
+dokładnie z arkusza (Yilad: 2 miejsca bossów z losowym Wodzem, 4 Metiny; Wąwóz: 2 miejsca, 4 Metiny) – stawia je
+`tools/yohara_lokacje/gen_ylokacje.py` (`yohara_lokacje/`), ten katalog nie ma już ich linii (miejsca Amerii i
+pierścienie Metinów z 14.10 usunięte). Wódz Wojenny Schronienia: trzech naraz w 3 losowych z 12 punktów arkusza
+(`special_spawns.yohara_lokacje.txt`), linii Owsapa w `boss.txt` już nie ma.

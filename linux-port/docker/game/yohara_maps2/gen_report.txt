@@ -46,15 +46,12 @@
   Yilad regen: 1060,646 is blocked -> 1060,647
   Yilad regen: 413,431 is blocked -> 411,431
   regen: 513 monsters (Ameria 483 + Skazony Wojownik 30)
-  Yilad boss: 1312,550 is blocked -> 1301,541
-  bosses: 11 (Skazony Wodz / Wodz Wojenny, mrok and ziemia) on Ameria's spots, 1 h
-  Metins: 6 (of Ameria's 33 spots: two a ring), 30 min
+  bosses and Metins: the sheet's (yohara_lokacje): [6763, 6764, 6880, 6881, 8064, 8065, 8066]
   veins: 6 (Żyła Jadeitu Nocy, Żyła Jadeitu Mgły), range 30, 600 s
 388 Wawoz Polnocnego Wiatru (metin2_map_icecrystalcave) - placed here
   portal 10140 (to Yilad): 1140,915 is blocked -> 1125,902
   regen: 590 group lines (target 600 = Seoganland's density x 384463 reachable m2; 23.0 m apart), 297 ice / 293 lightning by the nearest GF position of each kind
-  bosses: 6 (Zamarzniety Wodz / Wodz Wojenny, lod and blyskawice), 1 h
-  Metins: 19 (Shiho / z Gumar), 30 min
+  bosses and Metins: the sheet's (yohara_lokacje): [6775, 6776, 6887, 6888, 8066, 8077]
   veins: 6 (Żyła Jadeitu Dymu, Żyła Jadeitu Nocy, Żyła Jadeitu Słońca), range 30, 600 s
 393 Schronienie Polnocnego Wiatru (metin2_map_whitedragoncave_01)
   regen: 39 of Owsap's 1051 centres on blocked GF ground moved to the nearest free metre

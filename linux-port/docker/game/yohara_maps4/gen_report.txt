@@ -1,8 +1,7 @@
 389 Rozpadlina Dusz (metin2_map_whitdragonvalley)
   arrival from Schronienie: 150,100 is blocked -> 146,96
   regen: 249 group lines (target 252 = Seoganland's density 0.001561 x 161738 reachable m2; 24.5 m apart), 139 lod / 110 blyskawice by the nearest GF position of each kind
-  bosses: 8 on Ameria's spots (Wielka Stopa / Wodz Wojenny Pln. Wiatru, lod and blyskawice), 1 h
-  Metins: 6 (of Ameria's 33 spots in 3 rings: two a ring), 30 min: Shiho 4, Gumar 2
+  bosses and Metins: the sheet's (yohara_lokacje): [6782, 6783, 6894, 6895, 8066, 8077]
 389 metin2_map_whitdragonvalley: 0 spawn centre(s) on blocked ground
 links: Wawoz 10142 at 235,267 -> SoulGorge 1830 15794; Schronienie 10201 at 19,640 -> Leave 1426 15200; Kohan -> Schronienie 10064,12672
 quest yohara_mapy4: Kohan (134, 89), by Kohan 146,96, town 550,690

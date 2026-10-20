@@ -51,3 +51,9 @@ leopardy, yeti, duchy, golemy 6777–6783 / 6889–6895). Wąwóz to `metin2_map
   Linie portali w `npc.txt` Wąwozu i Schronienia dopisuje krok Dockerfile (`links.yohara_maps4.txt`).
 - **Wejście**: od 120 poziomu, bez Poziomu Czempiona (jak reszta map Yohary) – `yohara_mapy4` odsyła niższych do portu.
   Boty: mapa Sung Ma (`sungma_table.txt`) – zamknięta dla botów; rdzeń Yohary botów nie ma. `/goto rozpadlina`.
+
+## Zmiana 20.10.2026 (MT2009_PLUS_YOHARA_LOKACJE_V2)
+
+Decyzja właściciela: bossowie i Metiny Rozpadliny dokładnie z jego arkusza lokalizacji – 2 miejsca bossów (w każdym
+jeden losowy z bossów, których arkusz tam podaje), 5 Metinów (Shiho ×3, Gumar ×2); stawia je
+`tools/yohara_lokacje/gen_ylokacje.py` (`yohara_lokacje/`). 8 miejsc bossów i pierścienie Metinów Amerii usunięte.

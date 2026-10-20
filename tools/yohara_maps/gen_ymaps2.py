@@ -51,6 +51,20 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 import gen_ymaps_sql as m1  # noqa: E402  (the first batch's row writers and columns)
+sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_lokacje'))
+import gen_ylokacje as ylok  # noqa: E402  (MT2009_PLUS_YOHARA_LOKACJE_V2: what the sheet places)
+
+# MT2009_PLUS_YOHARA_LOKACJE_V2 (the owner, 20 October 2026): the bosses and Metins of Przelecz Yilad and Wawoz are
+# exactly the sheet's and Wodz Wojenny Schronienia stands three at a time on 3 of its 12 sheet points - all placed by
+# tools/yohara_lokacje/gen_ylokacje.py (yohara_lokacje/); this batch writes no line of them, only lists them as
+# spawned (the client builder, the SQL rows).
+SHEET = dict((m, ylok.sheet_placed(m)) for m in (385, 388, 393))
+
+
+def sheet_note(m):
+    return ['// MT2009_PLUS_YOHARA_LOKACJE_V2: %s of this map - yohara_lokacje (the owner\'s sheet of 20 October 2026; '
+            'tools/yohara_lokacje/gen_ylokacje.py): %s' % ('bosses and Metins' if m != 393 else 'Wodz Wojenny',
+                                                            ' '.join(str(v) for v in sorted(SHEET[m])))]
 
 GF = '/opt/metin2/cache/gf/Gameforge_26.1.11/_client'
 OWSAP = '/opt/metin2/cache/owsap/Server/Server'
@@ -460,28 +474,11 @@ def main():
             p = check_free(g, x + (n % 3 - 1) * 8, y + (n // 3) * 8 - 4, 'Skazony Wojownik', rep, maxr=40)
             regen.append(spawn_line('m', p[0], p[1], 10, '30s', 6760 if (j + n) % 2 == 0 else 6877, direction=1))
     rep('  regen: %d monsters (Ameria %d + Skazony Wojownik %d)' % (len(regen), k, len(regen) - k))
-    # bosses: Ameria's 11 hourly spots, the wiki's four bosses over them
-    boss = []
-    order = [6763, 6880, 6764, 6763, 6881, 6880, 6763, 6764, 6880, 6763, 6881]
-    for j, t in enumerate(read_lines(os.path.join(am, 'boss.txt'))):
-        x, y = check_free(g, int(t[1]), int(t[2]), 'Yilad boss', rep)
-        boss.append(spawn_line('m', x, y, 10, '3600s', order[j % len(order)]))
-    rep('  bosses: %d (Skazony Wodz / Wodz Wojenny, mrok and ziemia) on Ameria\'s spots, 1 h' % len(boss))
-    # Metins: Ameria's three rings of 11 (10 s, a farm) - two spots of each ring (its first and the one farthest from
-    # it), six in all, every 30 min (the owner, 14 October: "Yilad: 6 Metinow co 30 min"); the wiki's three Metins by
-    # GF's positions: the east ring Shiho (8066 at 1120,470), the middle Jin (8065 at 920,300), the west Uwaznosci
-    stone = []
-    rings = collections.defaultdict(list)
-    for t in read_lines(os.path.join(am, 'stone.txt')):
-        x = int(t[1])
-        rings[8066 if x > 1050 else 8064 if x < 400 else 8065].append((x, int(t[2])))
-    for v, pts in sorted(rings.items()):
-        far = max(pts, key=lambda p: (p[0] - pts[0][0]) ** 2 + (p[1] - pts[0][1]) ** 2)
-        for x, y in (pts[0], far):
-            x, y = check_free(g, x, y, 'Yilad Metin', rep)
-            stone.append(spawn_line('m', x, y, 10, '1800s', v))
-    rep('  Metins: %d (of Ameria\'s %d spots: two a ring), 30 min' % (
-        len(stone), sum(len(p) for p in rings.values())))
+    # bosses and Metins: the owner's sheet (MT2009_PLUS_YOHARA_LOKACJE_V2) - yohara_lokacje; Ameria's 11 boss spots
+    # and its Metin rings (the 14 October decision) are gone
+    boss = sheet_note(385)
+    stone = sheet_note(385)
+    rep('  bosses and Metins: the sheet\'s (yohara_lokacje): %s' % sorted(SHEET[385]))
     npc = []
     for t in read_lines(os.path.join(am, 'npc.txt')):
         x, y = check_free(g, int(t[1]), int(t[2]), 'Yilad NPC %s' % t[10], rep)
@@ -530,40 +527,10 @@ def main():
     rep('  regen: %d group lines (target %d = Seoganland\'s density x %d reachable m2; %.1f m apart), %d ice / %d '
         'lightning by the nearest GF position of each kind' % (len(regen), target, sum(reach), d, n_ice,
                                                                 len(regen) - n_ice))
-    # bosses: GF's two positions (all four bosses), two more spots each element away from them
-    boss = []
-    for v, (x, y) in ((6775, (580, 750)), (6887, (850, 850)), (6776, (560, 770)), (6888, (870, 830))):
-        x, y = check_free(g, x, y, 'boss %d' % v, rep)
-        boss.append(spawn_line('m', x, y, 20, '3600s', v))
-    far = sorted(pts, key=lambda p: -min((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 for q in [(580, 750), (850, 850)] +
-                                         avoid))
-    extra = []
-    for p in far:
-        if all((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 > 250 ** 2 for q in extra):
-            extra.append(p)
-        if len(extra) == 2:
-            break
-    for p in extra:
-        ice = nearest(p, ice_h) <= nearest(p, bl_h)
-        boss.append(spawn_line('m', p[0], p[1], 20, '3600s', 6775 if ice else 6887))
-    rep('  bosses: %d (Zamarzniety Wodz / Wodz Wojenny, lod and blyskawice), 1 h' % len(boss))
-    # Metins: GF's positions (Shiho 8066 x3, Gumar 8077 x1) and more spots to Seoganland's share (17 on 18 sectors)
-    stone = []
-    for v, pl in ((8066, h.get(8066, [])), (8077, h.get(8077, []))):
-        for x, y in pl:
-            x, y = check_free(g, x, y, 'Metin %d' % v, rep)
-            stone.append(spawn_line('m', x, y, 30, '1800s', v))
-    want = int(round(17 / 18.0 * 20))
-    more = []
-    taken = [(int(l.split('\t')[1]), int(l.split('\t')[2])) for l in stone]
-    for p in far:
-        if all((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 > 120 ** 2 for q in taken + more + avoid):
-            more.append(p)
-        if len(more) + len(stone) >= want:
-            break
-    for k, p in enumerate(more):
-        stone.append(spawn_line('m', p[0], p[1], 30, '1800s', 8077 if k % 2 == 0 else 8066))
-    rep('  Metins: %d (Shiho / z Gumar), 30 min' % len(stone))
+    # bosses and Metins: the owner's sheet (MT2009_PLUS_YOHARA_LOKACJE_V2) - yohara_lokacje
+    boss = sheet_note(388)
+    stone = sheet_note(388)
+    rep('  bosses and Metins: the sheet\'s (yohara_lokacje): %s' % sorted(SHEET[388]))
     npc = [spawn_line('m', p[0], p[1], 0, '1m', v, direction=1) for v, p in npcs]
     npc.append(spawn_line('m', p_back[0], p_back[1], 0, '10s', 10140))
     regen += veins(g, reach, rng, (30312, 30311, 30310), 6, avoid, rep)
@@ -578,7 +545,9 @@ def main():
     g = Grid(f, M['size'])
     rep('393 Schronienie Polnocnego Wiatru (%s)' % f)
     regen = nudged(g, read_lines(os.path.join(o, 'regen.txt')), 'regen', rep)
-    boss = nudged(g, read_lines(os.path.join(o, 'boss.txt')), 'boss', rep)
+    # Wodz Wojenny Schronienia (6789, Owsap's one spot): three of the sheet's 12 points - yohara_lokacje (V2)
+    boss = [l for l in nudged(g, read_lines(os.path.join(o, 'boss.txt')), 'boss', rep)
+            if int(l.split('\t')[10]) not in SHEET[393]] + sheet_note(393)
     npc = []
     for t in read_lines(os.path.join(o, 'npc.txt')):
         x, y = check_free(g, int(t[1]), int(t[2]), 'NPC %s' % t[10], rep)
@@ -603,6 +572,8 @@ def main():
         bad = 0
         for name, lines in files[M['folder']].items():
             for l in lines:
+                if l.startswith('//'):
+                    continue
                 t = l.split('\t')
                 if not g.free(int(t[1]), int(t[2])):
                     bad += 1
@@ -685,6 +656,7 @@ def write_all(files, dongan_npc, attr, hints, rep):
         open(os.path.join(d, 'Setting.txt'), 'w', newline='\n').write('\n'.join(setting) + '\n')
         town = {376: '713 565', 377: '508 57', 385: '316 68', 388: '1106 893', 393: '80 640'}[idx]
         open(os.path.join(d, 'Town.txt'), 'w', newline='\n').write(town + '\n')
+        spawned |= SHEET.get(idx, set())
         for name, lines in files[M['folder']].items():
             open(os.path.join(d, name), 'w', newline='\n').write('\n'.join(lines) + ('\n' if lines else ''))
             for l in lines:
@@ -730,9 +702,11 @@ def per_map_text(files):
     out = ['# MT2009_PLUS_YOHARA_MAPS2_V1: every vnum each map spawns (GENERATED by tools/yohara_maps/gen_ymaps2.py;',
            '# the client builder client-patches/client-2.0.30/tools/ymaps2 reads it): <map index> <vnum>']
     for idx, M in MAPS.items():
-        vs = set()
+        vs = set(SHEET.get(idx, set()))
         for name, lines in files[M['folder']].items():
             for l in lines:
+                if l.startswith('//'):
+                    continue
                 t = l.split('\t')
                 v = int(t[10])
                 if t[0] == 'r':

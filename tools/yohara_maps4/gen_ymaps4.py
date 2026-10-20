@@ -56,6 +56,11 @@ sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_maps'))
 sys.path.insert(0, os.path.join(REPO, 'tools', 'yohara_items'))
 import gen_ymaps2 as m2  # noqa: E402  (the second batch: terrain grid, spawn lines, Wawoz's spawn method)
 import gen_ymaps_sql as m1  # noqa: E402  (row writers and columns)
+import gen_ylokacje as ylok  # noqa: E402  (MT2009_PLUS_YOHARA_LOKACJE_V2: what the owner's sheet places)
+
+# MT2009_PLUS_YOHARA_LOKACJE_V2 (the owner, 20 October 2026): Rozpadlina's bosses and Metins are exactly the sheet's -
+# placed by tools/yohara_lokacje/gen_ylokacje.py (yohara_lokacje/); Ameria's 8 boss spots and Metin rings are gone.
+SHEET = ylok.sheet_placed(389)
 
 GF = m2.GF
 OWSAP = m2.OWSAP
@@ -253,33 +258,14 @@ def main():
     rep('  regen: %d group lines (target %d = Seoganland\'s density %.6f x %d reachable m2; %.1f m apart), %d lod / %d '
         'blyskawice by the nearest GF position of each kind' % (len(regen), target, seog_density, sum(reach), d,
                                                                n_ice, len(regen) - n_ice))
-    # bosses: Ameria's 8 spots, every hour - the wiki's four, two each
-    order = [6782, 6895, 6894, 6783, 6782, 6895, 6894, 6783]
-    boss = []
-    for j, t in enumerate(m2.read_lines(os.path.join(am, 'boss.txt'))):
-        x, y = m2.check_free(g, int(t[1]), int(t[2]), 'boss', rep)
-        boss.append(m2.spawn_line('m', x, y, 10, '3600s', order[j], direction=1))
-    assert len(boss) == 8, len(boss)
-    rep('  bosses: %d on Ameria\'s spots (Wielka Stopa / Wodz Wojenny Pln. Wiatru, lod and blyskawice), 1 h' % len(boss))
-    # Metins: Ameria's rings, two spots each, 30 min; the Metin by GF's nearest position of 8066 / 8077
-    rings = collections.defaultdict(list)
-    for t in m2.read_lines(os.path.join(am, 'stone.txt')):
-        x, y = int(t[1]), int(t[2])
-        rings['east' if x > 500 else 'north' if y < 250 else 'middle'].append((x, y))
-    met_h = [(p, 8066) for p in h.get(8066, [])] + [(p, 8077) for p in h.get(8077, [])]
-    stone = []
-    for ring, rp in sorted(rings.items()):
-        far = max(rp, key=lambda p: (p[0] - rp[0][0]) ** 2 + (p[1] - rp[0][1]) ** 2)
-        for x, y in (rp[0], far):
-            x, y = m2.check_free(g, x, y, 'Metin', rep)
-            v = min(met_h, key=lambda q: (q[0][0] - x) ** 2 + (q[0][1] - y) ** 2)[1]
-            stone.append(m2.spawn_line('m', x, y, 10, '1800s', v))
-    rep('  Metins: %d (of Ameria\'s %d spots in %s rings: two a ring), 30 min: %s' % (
-        len(stone), sum(len(p) for p in rings.values()), len(rings),
-        ', '.join('%s %d' % (n, sum(1 for l in stone if l.endswith('\t%d' % v))) for n, v in (('Shiho', 8066),
-                                                                                               ('Gumar', 8077)))))
+    # bosses and Metins: the owner's sheet (MT2009_PLUS_YOHARA_LOKACJE_V2) - yohara_lokacje
+    note = ['// MT2009_PLUS_YOHARA_LOKACJE_V2: bosses and Metins of this map - yohara_lokacje (the owner\'s sheet of '
+            '20 October 2026; tools/yohara_lokacje/gen_ylokacje.py): %s' % ' '.join(str(v) for v in sorted(SHEET))]
+    boss, stone = list(note), list(note)
+    rep('  bosses and Metins: the sheet\'s (yohara_lokacje): %s' % sorted(SHEET))
     files = collections.OrderedDict([('regen.txt', regen), ('boss.txt', boss), ('stone.txt', stone), ('npc.txt', npc)])
-    bad = sum(1 for ls in files.values() for l in ls if not g.free(int(l.split('\t')[1]), int(l.split('\t')[2])))
+    bad = sum(1 for ls in files.values() for l in ls
+              if not l.startswith('//') and not g.free(int(l.split('\t')[1]), int(l.split('\t')[2])))
     rep('389 %s: %d spawn centre(s) on blocked ground' % (M['folder'], bad))
     assert bad == 0
 
@@ -346,9 +332,11 @@ def main():
     open(os.path.join(OUT, 'group_group.yohara_maps4.txt'), 'w', newline='\n').write('\n'.join(L))
     write_drops(rep)
     # spawned (the client builder reads it)
-    vs = set()
+    vs = set(SHEET)
     for name, lines in files.items():
         for l in lines:
+            if l.startswith('//'):
+                continue
             t = l.split('\t')
             v = int(t[10])
             if t[0] == 'r':
