@@ -48,6 +48,16 @@ quest ruiny_atlantydy begin
 				chests_min = 2, chests_max = 4,
 				-- Morkhot's time by the penalty points of the Elites' stage (0, 1, 2 and more), seconds.
 				boss_time = {300, 240, 180},
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the Hearts of stage 5 (hearts.txt before), each an instance
+				-- unique, and the real Elite of stage 3 (its spawn as before; idle = 0: no closing for want of
+				-- hits there, the illusions take the hits); how long a stage may go without a target falling or
+				-- being hurt. Stage 2 (the Shell and the Guardian) is watched by watch_pillars.
+				targets = {
+					[3] = {vnum = 4558, points = {}, idle = 0},
+					[5] = {vnum = 8730, points = {{522, 500}, {584, 526}, {560, 577}, {504, 550}}},
+				},
+				target_watch = 15,
+				stage_watch = 90,
 				path = "data/dungeon/ruiny_atlantydy/",
 			}
 		end
@@ -219,7 +229,14 @@ quest ruiny_atlantydy begin
 		function spawn_shell()
 			d.setf("shell", 1)
 			d.setf("key_out", 0)
-			d.spawn_mob(8729, 198, 179)
+			-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: each Shell its own unique (watch_pillars).
+			local n = d.getf("shell_n") + 1
+			d.setf("shell_n", n)
+			local vid = d.spawn_mob(8729, 198, 179)
+			if vid ~= 0 then
+				d.set_unique("tw2_shell"..n, vid)
+			end
+			d.setf("shell_vid", vid)
 		end
 
 		function spawn_morkhot()
@@ -276,7 +293,9 @@ quest ruiny_atlantydy begin
 				d.setf("next", 1)
 				d.setf("left", c.pillars)
 				d.setf("boss_up", 0)
+				d.setf("guard_vid", 0)
 				ruiny_atlantydy.spawn_shell()
+				ruiny_atlantydy.watch_start(0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (watch_pillars)
 			elseif stage == 3 then
 				d.setf("floor", 2)
 				d.setf("negative", 0)
@@ -287,15 +306,23 @@ quest ruiny_atlantydy begin
 					local vid = d.spawn_mob(4558, pos[i][1], pos[i][2])
 					if i == real then
 						d.setf("real_vid", vid)
+						-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the real one an instance unique, watched.
+						if vid ~= 0 then
+							d.set_unique(ruiny_atlantydy.target_key(3, 1), vid)
+						end
+						d.setf("target1", vid)
+						d.setf("target_hp1", 100)
 					end
 				end
+				d.setf("left", 1)
+				ruiny_atlantydy.watch_start(1)
 				-- Mag Atlantydy at the first floor's entry: the way down for whoever comes back up there.
 				d.spawn_mob_dir(9460, 199, 236, 5)
 			elseif stage == 4 then
 				d.set_regen_file(c.path.."wave2.txt")
 			elseif stage == 5 then
 				d.setf("left", c.hearts)
-				d.regen_file(c.path.."hearts.txt")
+				ruiny_atlantydy.spawn_targets(5) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (was hearts.txt)
 			end
 			d.notice("Ruiny Atlantydy ("..stage.."/6): "..ruiny_atlantydy.stage_text(stage))
 			-- Morkhot after the stage's notice, so his clock's notice ("Macie N s") comes second (test of 8 October).
@@ -322,6 +349,134 @@ quest ruiny_atlantydy begin
 			server_timer("atlantyda_stage", 5, d.get_map_index())
 		end
 
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"; the pattern of
+		-- MT2009_PLUS_WUKONG_TARGETS_V1): the targets a stage counts are instance uniques (cfg().targets, the
+		-- regen files' points before), counted every target_watch seconds. A target that leaves the map
+		-- without a kill event (a kill the core gave no quest event, a target removed) no longer holds the
+		-- run: when fewer stand than "left" says, "left" follows them and the stage ends at 0. stage_watch
+		-- seconds without a target falling or losing health close the stage (a target nobody can reach) -
+		-- not on a stage whose cfg().targets entry says idle = 0.
+		function target_key(stage, i)
+			return "tw"..stage.."_"..i
+		end
+
+		-- n targets are watched from now on (target1..n, their VIDs; 0 = gone).
+		function watch_start(n)
+			d.setf("targets", n)
+			d.setf("progress_time", get_global_time())
+			clear_server_timer("atlantyda_watch", d.get_map_index())
+			server_timer("atlantyda_watch", ruiny_atlantydy.cfg().target_watch, d.get_map_index())
+		end
+
+		function spawn_targets(stage)
+			local t = ruiny_atlantydy.cfg().targets[stage]
+			local n = table.getn(t.points)
+			for i = 1, n do
+				local vid = d.spawn_mob(t.vnum, t.points[i][1], t.points[i][2])
+				if vid ~= 0 then
+					d.set_unique(ruiny_atlantydy.target_key(stage, i), vid)
+				end
+				d.setf("target"..i, vid)
+				d.setf("target_hp"..i, 100)
+			end
+			ruiny_atlantydy.watch_start(n)
+		end
+
+		-- A kill event of a target: progress, and the target is no longer counted standing.
+		function target_down(vid)
+			d.setf("progress_time", get_global_time())
+			for i = 1, d.getf("targets") do
+				if d.getf("target"..i) == vid then
+					d.setf("target"..i, 0)
+				end
+			end
+		end
+
+		-- The targets still standing; a target hurt since the last look counts as progress.
+		function living_targets(stage)
+			local n = 0
+			for i = 1, d.getf("targets") do
+				if d.getf("target"..i) ~= 0 then
+					local key = ruiny_atlantydy.target_key(stage, i)
+					if d.is_unique_dead(key) then
+						d.setf("target"..i, 0)
+					else
+						n = n + 1
+						local hp = d.unique_get_hp_perc(key)
+						if hp < d.getf("target_hp"..i) then
+							d.setf("progress_time", get_global_time())
+						end
+						d.setf("target_hp"..i, hp)
+					end
+				end
+			end
+			return n
+		end
+
+		-- true while the watch goes on
+		function watch_targets()
+			local c = ruiny_atlantydy.cfg()
+			local st = d.getf("stage")
+			local t = c.targets[st]
+			if t == nil then
+				return false
+			end
+			local left = d.getf("left")
+			if left <= 0 then
+				return false
+			end
+			local living = ruiny_atlantydy.living_targets(st)
+			if living < left then
+				d.setf("left", living)
+				d.setf("progress_time", get_global_time())
+				if living <= 0 then
+					d.notice("Ruiny Atlantydy: Ostatnie cele etapu zniknê³y z mapy.")
+					ruiny_atlantydy.next_stage()
+					return false
+				end
+				d.notice("Ruiny Atlantydy: Pozosta³o: "..living)
+			elseif t.idle ~= 0 and get_global_time() - d.getf("progress_time") > c.stage_watch then
+				d.notice("Ruiny Atlantydy: Ostatnie cele etapu rozpad³y siê same.")
+				ruiny_atlantydy.next_stage()
+				return false
+			end
+			return true
+		end
+
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1, stage 2: a Shell or a Guardian that left the map without a
+		-- kill event no longer holds the pillars - a new Shell comes, a Guardian gone counts as beaten.
+		function watch_pillars()
+			if d.getf("stage") ~= 2 then
+				return false
+			end
+			if d.getf("boss_up") == 1 then
+				local g = d.getf("guard_vid")
+				if g == 0 or d.is_unique_dead("tw2_guard"..d.getf("next")) then
+					d.notice("Ruiny Atlantydy: Stra¿nik Atlantydy znikn¹³ z mapy.")
+					ruiny_atlantydy.guardian_down()
+				end
+			elseif d.getf("shell") == 1 then
+				local v = d.getf("shell_vid")
+				if v == 0 or d.is_unique_dead("tw2_shell"..d.getf("shell_n")) then
+					d.notice("Ruiny Atlantydy: G³êbinowa Muszla zniknê³a. Pojawia siê nowa.")
+					ruiny_atlantydy.spawn_shell()
+				end
+			end
+			return d.getf("stage") == 2
+		end
+
+		-- A Guardian beaten (his kill, or watch_pillars).
+		function guardian_down()
+			d.setf("boss_up", 0)
+			d.setf("guard_vid", 0)
+			if d.getf("left") <= 0 then
+				ruiny_atlantydy.next_stage()
+			else
+				d.notice("Ruiny Atlantydy: Stra¿nik pokonany. Zosta³o kolumn: "..d.getf("left")..".")
+				ruiny_atlantydy.spawn_shell()
+			end
+		end
+
 		function init()
 			local c = ruiny_atlantydy.cfg()
 			d.setf("init", 1)
@@ -332,8 +487,16 @@ quest ruiny_atlantydy begin
 			d.setf("floor", 1)
 			d.setf("minutes", c.limit_min)
 			d.notice("Ruiny Atlantydy: Witajcie w g³êbinach. Za 5 sekund obudz¹ siê stra¿nicy ruin.")
-			server_timer("atlantyda_stage", 5, d.get_map_index())
-			server_timer("atlantyda_tick", 60, d.get_map_index())
+			-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (timers): an earlier instance with the same index may have
+			-- left its timers behind; they would run this instance's clock and stages, and block its own.
+			local idx = d.get_map_index()
+			clear_server_timer("atlantyda_tick", idx)
+			clear_server_timer("atlantyda_stage", idx)
+			clear_server_timer("atlantyda_watch", idx)
+			clear_server_timer("atlantyda_boss", idx)
+			clear_server_timer("atlantyda_end", idx)
+			server_timer("atlantyda_stage", 5, idx)
+			server_timer("atlantyda_tick", 60, idx)
 		end
 
 		function finish()
@@ -844,6 +1007,24 @@ quest ruiny_atlantydy begin
 			end
 		end
 
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the counted targets, every target_watch seconds.
+		when atlantyda_watch.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("closed") == 1 then
+					return
+				end
+				local go = false
+				if d.getf("stage") == 2 then
+					go = ruiny_atlantydy.watch_pillars()
+				else
+					go = ruiny_atlantydy.watch_targets()
+				end
+				if go then
+					server_timer("atlantyda_watch", ruiny_atlantydy.cfg().target_watch, get_server_timer_arg())
+				end
+			end
+		end
+
 		when atlantyda_end.server_timer begin
 			if d.select(get_server_timer_arg()) then
 				if d.getf("closed") == 1 then
@@ -881,6 +1062,7 @@ quest ruiny_atlantydy begin
 
 		when 8729.kill with ruiny_atlantydy.inside() and d.getf("stage") == 2 begin
 			local c = ruiny_atlantydy.cfg()
+			d.setf("shell_vid", 0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			d.setf("shell", 0)
 			d.setf("key_out", 1)
 			d.setf("key_at", get_global_time())
@@ -922,7 +1104,12 @@ quest ruiny_atlantydy begin
 				d.setf("next", nx + 1)
 				d.setf("left", d.getf("left") - 1)
 				d.setf("boss_up", 1)
-				d.spawn_mob(4557, 198, 179)
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the Guardian an instance unique (watch_pillars).
+				local gv = d.spawn_mob(4557, 198, 179)
+				if gv ~= 0 then
+					d.set_unique("tw2_guard"..(nx + 1), gv)
+				end
+				d.setf("guard_vid", gv)
 				d.notice("Ruiny Atlantydy: Kolumna siê otwiera! Pokonajcie Stra¿nika Atlantydy.")
 			else
 				d.notice("Ruiny Atlantydy: To nie ta kolumna. Klucz rozpad³ siê - pojawia siê nowa G³êbinowa Muszla.")
@@ -931,17 +1118,12 @@ quest ruiny_atlantydy begin
 		end
 
 		when 4557.kill with ruiny_atlantydy.inside() and d.getf("stage") == 2 begin
-			d.setf("boss_up", 0)
-			if d.getf("left") <= 0 then
-				ruiny_atlantydy.next_stage()
-			else
-				d.notice("Ruiny Atlantydy: Stra¿nik pokonany. Zosta³o kolumn: "..d.getf("left")..".")
-				ruiny_atlantydy.spawn_shell()
-			end
+			ruiny_atlantydy.guardian_down() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the body moved there)
 		end
 
 		when 4558.kill with ruiny_atlantydy.inside() and d.getf("stage") == 3 begin
 			if npc.get_vid() == d.getf("real_vid") then
+				ruiny_atlantydy.target_down(npc.get_vid()) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 				d.notice("Ruiny Atlantydy: To by³a prawdziwa Elita Atlantydy! Z³udzenia rozp³ywaj¹ siê w wodzie.")
 				ruiny_atlantydy.next_stage()
 			else
@@ -952,6 +1134,7 @@ quest ruiny_atlantydy begin
 		end
 
 		when 8730.kill with ruiny_atlantydy.inside() and d.getf("stage") == 5 begin
+			ruiny_atlantydy.target_down(npc.get_vid()) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			local left = d.getf("left") - 1
 			d.setf("left", left)
 			if left <= 0 then
