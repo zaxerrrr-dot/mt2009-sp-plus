@@ -896,16 +896,16 @@
   "expire_rel_sec": null
  },
  "8835": {
-  "vnum": 39080,
+  "vnum": 71052,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Żółty Lśniący Odłamek",
-  "status": "zamiennik",
+  "name": "Błogosław. Przedmiotu",
+  "status": "ok",
   "src_name": "Błogosławieństwo",
-  "note": "Brak przedmiotu zmieniającego 6./7. bonus; u nas 6./7. bonus dodaje Seon-Hae z odłamkami - propozycja: Żółty Lśniący Odłamek (2% szansy na 6./7. bonus, poz. 105, talizmany)",
-  "icon_vnum": null,
+  "note": "właściciel 20.10: nasza zmiana 6/7 bonusu (71052 Błogosław. Przedmiotu - losuje 6./7. bonus od nowa)",
+  "icon_vnum": 71052,
   "limit": null,
   "expire_rel_sec": null
  },
@@ -1456,16 +1456,16 @@
   "expire_rel_sec": null
  },
  "7311": {
-  "vnum": 25042,
+  "vnum": 25046,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Magiczny Kamień",
-  "status": "zamiennik",
+  "name": "Kamień Rytualny",
+  "status": "ok",
   "src_name": "Kamień Rytualny",
-  "note": "Brak Kamienia Rytualnego; Magiczny Kamień działa tak samo (ochrona przy ulepszaniu), bez limitu poz. 80",
-  "icon_vnum": 25042,
+  "note": "właściciel 20.10: prawdziwy Kamień Rytualny jak na globalu (u nas vnum 25046, bo 25042 to Magiczny Kamień): ochrona jak Magiczny Kamień +15% szansy, tylko przedmioty powyżej poz. 80",
+  "icon_vnum": 25046,
   "limit": null,
   "expire_rel_sec": null
  },

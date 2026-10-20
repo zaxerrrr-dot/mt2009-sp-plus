@@ -1,0 +1,14 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_KOLA_ITEMS_V1 (ritual stone)",
+  "old": "\tif (pkItem->GetSubType() == USE_TUNING)\n\t{\n\t\tif (pkItem->GetValue(0) == UP_TO_3TH_LEVEL_SCROLL)\n",
+  "new": "\tif (pkItem->GetSubType() == USE_TUNING)\n\t{\n\t\t// MT2009_PLUS_KOLA_ITEMS_V1 (ritual stone): Kamien Rytualny (25046, the wheels' prize) - the Magic Stone's\n\t\t// protection (value0 1: no loss, no downgrade) with +15% (value1), only on an item above level 80\n\t\t// (as on the global server)\n\t\tif (pkItem->GetVnum() == 25046 && (!pkTarget || pkTarget->GetLevelLimit() <= 80))\n\t\t{\n\t\t\tChatPacket(CHAT_TYPE_INFO, \"Kamie\\361 Rytualny dzia\\263a tylko na przedmioty powy\\277ej 80. poziomu.\");\n\t\t\treturn false;\n\t\t}\n\t\tif (pkItem->GetValue(0) == UP_TO_3TH_LEVEL_SCROLL)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_KOLA_ITEMS_V1 (ritual stone roll)",
+  "old": "\tif (pkItemScroll->GetVnum() == item->GetVnum())\n\t\treturn false;\n\n\tDWORD result_vnum = item->GetRefinedVnum();\n\tDWORD result_fail_vnum = item->GetRefineFromVnum();\n",
+  "new": "\tif (pkItemScroll->GetVnum() == item->GetVnum())\n\t\treturn false;\n\n\t// MT2009_PLUS_KOLA_ITEMS_V1 (ritual stone roll): the level rule again at the roll\n\tif (pkItemScroll->GetVnum() == 25046 && item->GetLevelLimit() <= 80)\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, \"Kamie\\361 Rytualny dzia\\263a tylko na przedmioty powy\\277ej 80. poziomu.\");\n\t\treturn false;\n\t}\n\n\tDWORD result_vnum = item->GetRefinedVnum();\n\tDWORD result_fail_vnum = item->GetRefineFromVnum();\n"
+ }
+]

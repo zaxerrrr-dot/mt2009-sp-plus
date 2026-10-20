@@ -2870,6 +2870,9 @@ class InventoryWindow(ui.ScriptWindow):
 			return False
 
 		if item.IsRefineScroll(srcItemVNum):
+			# MT2009_PLUS_KOLA_ITEMS_V1: Kamien Rytualny (25046) only on an item above level 80 (the server checks it too)
+			if srcItemVNum == 25046 and player.GetItemIndex(dstSlotPos) != srcItemVNum and not self.__IsAboveLevel80(dstSlotPos):
+				return False
 			if player.REFINE_OK == player.CanRefine(srcItemVNum, dstSlotPos):
 				return True
 			elif constInfo.ENABLE_SELF_STACK_SCROLLS and player.GetItemIndex(dstSlotPos) == srcItemVNum:
@@ -2926,6 +2929,18 @@ class InventoryWindow(ui.ScriptWindow):
 				if self.__CanResetCostumeAttr(dstSlotPos):
 					return True
 
+		return False
+
+	# MT2009_PLUS_KOLA_ITEMS_V1: the item in dstSlotPos needs a level above 80 (Kamien Rytualny)
+	def __IsAboveLevel80(self, dstSlotPos):
+		dstItemVNum = player.GetItemIndex(dstSlotPos)
+		if dstItemVNum == 0:
+			return False
+		item.SelectItem(dstItemVNum)
+		for i in xrange(item.LIMIT_MAX_NUM):
+			(limitType, limitValue) = item.GetLimit(i)
+			if item.LIMIT_LEVEL == limitType:
+				return limitValue > 80
 		return False
 
 	def __CanCleanBrokenMetinStone(self, dstSlotPos):
