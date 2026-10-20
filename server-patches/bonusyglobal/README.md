@@ -93,12 +93,16 @@ applytype0..2/applyvalue0..2) jak na serwerze globalnym (Owsap `Server/Server/db
 Buty+9 (15029): ruch 15 + odporność na ogień 10 zamiast ruchu 25 + maks. wytrzymałości 800. Tryb mt2009 bez zmian.
 
 - `tools/protoglobal/gen_item_proto_global.py` porównuje każdy vnum obu item_proto (nazwy bonusów → nasze numery
-  `POINT_*`). Bierze **tylko ten sam przedmiot**: zbroje (buty, hełmy, tarcze, bransolety, naszyjniki, kolczyki) i broń,
-  ten sam typ/podtyp, ten sam poziom, ten sam stopień ulepszenia (+N), najwyżej 3 bonusy, każdy bonus znany silnikowi.
-  Pomija: `APPLY_RANDOM` (sprzęt Yohary z losowymi bonusami), wierzchowce (różnią się tylko `APPLY_MOUNT`), zwierzaki,
-  kamienie duszy, przedmioty unikalne, jedzenie, nasze przeróbki (inny poziom, np. Miecz+0, Pogromca Niebieskiego
-  Smoka, Tarcza Trzech Władców), szpony Wilkołaka. Wynik: 390 przedmiotów (110 broni, 280 zbroi/biżuterii); pełna
-  lista różnic z werdyktem: `--report` (`/opt/metin2/cache/yohara/item-proto-global-diff.tsv`).
+  `POINT_*`). Właściciel 20.10: „tak, wszystko jak global”. Bierze **ten sam przedmiot** (ten sam typ/podtyp, poziom,
+  stopień +N; mikstury i pieczone ryby – ten sam czas działania, bonus z value0/value2 globalu), najwyżej 3 bonusy, każdy
+  znany silnikowi; `APPLY_RANDOM` (losowy bonus robiony na przedmiocie) i `APPLY_MOUNT` (rasa wierzchowca) to nie stałe
+  bonusy – pomijane (wierzchowiec trzyma pustą 1. szczelinę jak dotąd). Wynik: 436 przedmiotów – 280 zbroi/biżuterii,
+  110 broni, 15 kamieni duszy (Magii, Witalności, Obrony +0..+4), 17 zwierzaków (żywioły zwierzaków, Precyzja, Sung
+  Ma), 7 wierzchowców, 6 mikstur/ryb, 1 unikalny (Buty Wiatru). Nie zmienia: przedmiotów Wilkołaka (szpony, kamienie
+  i fryzury Likanów – nie ma u nas Wilkołaka), szarf (absorpcja w value0/gniazdach), przedmiotów, którym global nie
+  daje stałego bonusu (efekt gdzie indziej) albo których tam nie ma, naszych przeróbek (inny poziom: Miecz+0, Pogromca
+  Niebieskiego Smoka, Tarcza Trzech Władców – w raporcie jako „rework”). Pełna lista różnic z kategorią i werdyktem:
+  `--report` (`/opt/metin2/cache/yohara/item-proto-global-diff.tsv`).
 - `mariadb/playerbot/item_proto_global.sql` – tabela `world.item_proto_apply_global` (wartości global + strażnik:
   typ, podtyp, poziom). Krok `apply.sh` (po wszystkich krokach, które piszą `item_proto`): global – zapisuje bonusy
   mt2009 w `world.item_proto_apply_mt2009` i wpisuje global; mt2009 – oddaje zapisane (tylko tam, gdzie dalej są
@@ -107,7 +111,8 @@ Buty+9 (15029): ruch 15 + odporność na ogień 10 zamiast ruchu 25 + maks. wytr
   do zapisu trybu mt2009 przy następnym starcie (global ma pierwszeństwo).
 - Klient: tooltip czyta `item_proto` klienta (wartości mt2009). `client-patches/client-2.0.30/tools/protoglobal/
   build_protoglobal_pack.py` (ostatni krok przedmiotów, po yfinal) dokłada do paczki `gamedata` dwa małe item_proto
-  z tymi 390 rekordami klienta: `gamedata/item_proto_global` (bonusy global) i `gamedata/item_proto_mt2009` (bez
+  z rekordami klienta tych przedmiotów (24 zwierzaki/wierzchowce nie mają rekordu w item_proto klienta – bez
+  zmian w opisie): `gamedata/item_proto_global` (bonusy global) i `gamedata/item_proto_mt2009` (bez
   zmian). `root/protoglobal.py` po `BonusMode 1` z serwera woła `item.LoadItemTable("gamedata/item_proto_global")`
   (exe nadpisuje rekordy tych vnumów), po `BonusMode 0` – wersję mt2009, tylko przy zmianie trybu. Bez zmian w exe i
   w `dbdata` (zip edytora bazy panelu podmienia dbdata – nie rusza tych plików). Klient bez tych plików pokazuje

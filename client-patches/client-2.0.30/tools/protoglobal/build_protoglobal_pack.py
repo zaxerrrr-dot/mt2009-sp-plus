@@ -5,7 +5,7 @@
 # The client reads every item's fixed bonuses from its item_proto (dbdata pack, gamedata/item_proto), which carries
 # the mt2009 values. The exe's item.LoadItemTable(<file>) loads one more item_proto over the table: a vnum it has
 # gets that record (CItemData::SetItemTableData), nothing else changes (the exe's own items after the loop - Smocze
-# Kamienie, Magma Manni... - are written again as at the start). So two small item_protos with the same 390 records:
+# Kamienie, Magma Manni... - are written again as at the start). So two small item_protos with the same records (every item of the global list the client has):
 #   gamedata/item_proto_global  the client's own record of each item, the three applies (offset 124, 5 bytes each:
 #                               type BYTE + value LONG) being global mode's (tools/protoglobal/item_proto_global.json)
 #   gamedata/item_proto_mt2009  the same records as the client's item_proto has them (back to mt2009 in the same
