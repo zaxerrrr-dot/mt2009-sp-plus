@@ -388,5 +388,35 @@
   "marker": "MT2009_PLUS_EXCHANGE_DS_V1 (check)",
   "old": "\t\tif (item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t\t{\n\t\t\tGetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\t\treturn false;\n\t\t}\n",
   "new": "\t\t// MT2009_PLUS_EXCHANGE_DS_V1 (check) (server-patches/enginefixes): only an INVENTORY cell past the bag is the horse's\n\t\t// saddlebag - a Dragon Soul stone (its own window, cells far above the bag's) was refused with the saddlebag text.\n\t\tif (m_pOwner->IsHorseInventory(item->GetItemPos()) && item->GetCell() >= m_pOwner->GetInventoryMaxCount())\n\t\t{\n\t\t\tGetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"Summon your horse to get access to horse inventory.\"));\n\t\t\treturn false;\n\t\t}\n"
+ },
+ {
+  "file": "char_player.h",
+  "marker": "MT2009_PLUS_HERB_BUSY_V1 (field)",
+  "old": "\tbool\tm_isBusyAction;\n",
+  "new": "\tbool\tm_isBusyAction;\n\t// MT2009_PLUS_HERB_BUSY_V1 (field) (server-patches/enginefixes): the type of the running\n\t// busy action (BUSY_ACTION_*), so a monster's hit can spare herb gathering.\n\tBYTE\tm_bBusyActionType;\n"
+ },
+ {
+  "file": "char_player.cpp",
+  "marker": "MT2009_PLUS_HERB_BUSY_V1 (init)",
+  "old": "\tm_isBusyAction = false;\n\tm_SpecialShopGuest = {};\n",
+  "new": "\tm_isBusyAction = false;\n\tm_bBusyActionType = 0; // MT2009_PLUS_HERB_BUSY_V1 (init)\n\tm_SpecialShopGuest = {};\n"
+ },
+ {
+  "file": "char_player.cpp",
+  "marker": "MT2009_PLUS_HERB_BUSY_V1 (set)",
+  "old": "\tm_isBusyAction = dwDuration > 0;\n",
+  "new": "\tm_isBusyAction = dwDuration > 0;\n\tm_bBusyActionType = dwDuration > 0 ? bActionType : 0; // MT2009_PLUS_HERB_BUSY_V1 (set)\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_HERB_BUSY_V1 (hit)",
+  "old": "\tif (iRet == BATTLE_DAMAGE || iRet == BATTLE_DEAD)\n\t{\n\t\tif (pkVictim->IsBusyAction()) {\n",
+  "new": "\tif (iRet == BATTLE_DAMAGE || iRet == BATTLE_DEAD)\n\t{\n\t\t// MT2009_PLUS_HERB_BUSY_V1 (hit) (server-patches/enginefixes): a monster's hit no longer\n\t\t// interrupts herb gathering (a player's hit and a move still do).\n\t\tif (pkVictim->IsBusyAction() && (IsPC() ||\n\t\t\tpkVictim->playerData->m_bBusyActionType != BUSY_ACTION_HERB)) {\n"
+ },
+ {
+  "file": "battle.h",
+  "marker": "MT2009_PLUS_HERB_BUSY_V1 (stun)",
+  "old": "\tif (pkVictim && pkVictim->IsBusyAction())\n\t{\n\t\tpkVictim->playerData->SetBusyAction(pkVictim, 0); // interrupt on stun\n",
+  "new": "\t// MT2009_PLUS_HERB_BUSY_V1 (stun): a monster's stun spares herb gathering.\n\tif (pkVictim && pkVictim->IsBusyAction() && ((pkAttacker && pkAttacker->IsPC()) ||\n\t\tpkVictim->playerData->m_bBusyActionType != BUSY_ACTION_HERB))\n\t{\n\t\tpkVictim->playerData->SetBusyAction(pkVictim, 0); // interrupt on stun\n"
  }
 ]
