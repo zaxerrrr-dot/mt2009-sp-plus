@@ -8,16 +8,20 @@ mt2009 mode stays as it is).
 
 Source of the global values: Owsap's official item_proto (Server/Server/db/item_proto.txt = the GF data; the same
 source as the dragon soul table and the monsters' elements of global mode). Every vnum both item_protos have is
-compared; an item takes the global applies only when it is the SAME item (conservative - our own items and reworks
-keep theirs):
-  * type ITEM_ARMOR or ITEM_WEAPON (boots, helmets, shields, bracelets, necklaces, earrings, armour, weapons) - not
-    the costumes (mounts differ only by APPLY_MOUNT), pets, stones, unique items, food;
-  * the same type and subtype, the same level limit (limittype0/limitvalue0), the same refine step (+N) in the name;
+compared; an item takes the global applies only when it is the SAME item - the owner (20 October 2026): "tak,
+wszystko jak global" (everything the global data gives as a fixed bonus):
+  * armour, weapons, soul stones, pets, costumes and mounts, unique items: the same type (and subtype), the same
+    level limit, the same refine step (+N) in the name (or the same Korean name);
+  * potions and grilled fish (our type 36, the effect in the applies) against the global USE_ABILITY_UP (the effect
+    in value0 = APPLY_* number, value2 = amount): the same duration (value1 = our value0);
   * every global apply maps by NAME onto our POINT_* numbers (item_proto's applytype is a POINT_* number here,
-    playerbot_engine_compat.h) - APPLY_RANDOM (the Yohara random-bonus gear), APPLY_MOUNT and other names this
-    engine has not got skip the item; the Wolfman's own applies are left out (no Wolfman here);
-  * at most three applies (our item_proto has three; Owsap's fourth one skips the item) and at least one;
-  * not the Wolfman's claws (WEAPON_CLAW).
+    playerbot_engine_compat.h); APPLY_RANDOM (a random bonus made on the item) and APPLY_MOUNT (a mount's race) are
+    no fixed bonuses and are left out; another name this engine has not got skips the item;
+  * at most three applies, at least one (an item the global data gives none - its effect lives elsewhere, or a
+    vnum that is no item there - keeps ours);
+  * NOT: the Wolfman (Lykan) items (claws, Lycan stones, Lycan hairstyles - no Wolfman here, the owner 20 October),
+    the sashes (our sashes keep their absorption in value0/sockets), our reworks (another level limit - listed
+    in the report as "rework", not changed).
 Only the six apply columns change; names, limits, values, sockets stay ours.
 
 Output:
@@ -56,7 +60,10 @@ TYPES = ['ITEM_NONE', 'ITEM_WEAPON', 'ITEM_ARMOR', 'ITEM_USE', 'ITEM_AUTOUSE', '
          'ITEM_RESOURCE', 'ITEM_CAMPFIRE', 'ITEM_UNIQUE', 'ITEM_SKILLBOOK', 'ITEM_QUEST', 'ITEM_POLYMORPH',
          'ITEM_TREASURE_BOX', 'ITEM_TREASURE_KEY', 'ITEM_SKILLFORGET', 'ITEM_GIFTBOX', 'ITEM_PICK', 'ITEM_HAIR',
          'ITEM_TOTEM', 'ITEM_BLEND', 'ITEM_COSTUME', 'ITEM_DS', 'ITEM_SPECIAL_DS', 'ITEM_EXTRACT',
-         'ITEM_SECONDARY_COIN', 'ITEM_RING', 'ITEM_BELT']
+         'ITEM_SECONDARY_COIN', 'ITEM_RING', 'ITEM_BELT', 'ITEM_HERB_KNIFE', 'ITEM_POTION', 'ITEM_PET']
+CATEGORY = {'ITEM_ARMOR': 'armour', 'ITEM_WEAPON': 'weapon', 'ITEM_METIN': 'stone', 'ITEM_PET': 'pet',
+            'ITEM_COSTUME': 'costume', 'ITEM_UNIQUE': 'unique', 'ITEM_POTION': 'food', 'ITEM_BELT': 'belt'}
+OWSAP_LENGTH_H = '/opt/metin2/cache/owsap/Srcs/Srcs/Server/common/length.h'
 SUBTYPES = {
     'ITEM_ARMOR': ['ARMOR_BODY', 'ARMOR_HEAD', 'ARMOR_SHIELD', 'ARMOR_WRIST', 'ARMOR_FOOTS', 'ARMOR_NECK', 'ARMOR_EAR',
                    'ARMOR_PENDANT', 'ARMOR_GLOVE'],
@@ -66,7 +73,6 @@ SUBTYPES = {
 }
 LIMITS = ['LIMIT_NONE', 'LIMIT_LEVEL', 'LIMIT_STR', 'LIMIT_DEX', 'LIMIT_INT', 'LIMIT_CON', 'LIMIT_PCBANG',
           'LIMIT_REAL_TIME', 'LIMIT_REAL_TIME_START_FIRST_USE', 'LIMIT_TIMER_BASED_ON_WEAR']
-SCOPE = ('ITEM_ARMOR', 'ITEM_WEAPON')
 # APPLY_<x> whose POINT_* has another name (playerbot_engine_compat.h)
 ALIAS = {'CON': 'HT', 'INT': 'IQ', 'STR': 'ST', 'DEX': 'DX', 'CAST_SPEED': 'CASTING_SPEED',
          'KILL_HP_RECOVER': 'KILL_HP_RECOVERY', 'ANTI_CRITICAL_PCT': 'RESIST_CRITICAL',
@@ -94,6 +100,23 @@ def point_numbers():
     return pts
 
 
+def owsap_apply_names():
+    """Owsap's EApplyTypes: number -> APPLY_* name (a potion's value0 is one)."""
+    src = open(OWSAP_LENGTH_H, 'rb').read().decode('latin-1').replace('\r', '')
+    body = src[src.index('enum EApplyTypes'):]
+    body = body[body.index('{') + 1:body.index('};')]
+    names, n = {}, 0
+    for line in body.split('\n'):
+        m = re.match(r'(APPLY_\w+)\s*(=\s*(\d+))?', line.split('//')[0].strip())
+        if m:
+            if m.group(3):
+                n = int(m.group(3))
+            names[n] = m.group(1)
+            n += 1
+    assert names[8] == 'APPLY_MOV_SPEED' and names[63] == 'APPLY_ATTBONUS_MONSTER', 'Owsap EApplyTypes changed'
+    return names
+
+
 def apply_number(pts, name):
     if name == 'APPLY_NONE':
         return 0
@@ -109,7 +132,8 @@ def read_ours(path):
             continue
         ours[int(f[0])] = dict(
             kname=bytes.fromhex(f[1]).rstrip(), pl=f[2], type=int(f[3]), sub=int(f[4]), lim=(int(f[5]), int(f[6])),
-            app=[(int(f[9]), int(f[10])), (int(f[11]), int(f[12])), (int(f[13]), int(f[14]))])
+            app=[(int(f[9]), int(f[10])), (int(f[11]), int(f[12])), (int(f[13]), int(f[14]))],
+            val=[int(x) for x in f[15:18]] + [0] * (3 - len(f[15:18])))
     return ours
 
 
@@ -156,59 +180,97 @@ def main():
     def fmt(apps):
         return ' '.join('%s:%d' % (pname.get(t, t), v) for t, v in apps if t) or '-'
 
+    owsap_apply = owsap_apply_names()
     chosen, report = {}, []
     for v in sorted(set(ours) & set(ows)):
         o, w = ours[v], ows[v]
         mine = [x for x in o['app'] if x[0]]
-        glob_, unmapped = [], []
-        for i in range(4):
-            t, val = w.get('ApplyType%d' % i, 'APPLY_NONE'), int(w.get('ApplyValue%d' % i, '0') or 0)
-            if t == 'APPLY_NONE':
-                continue
-            if 'WOLFMAN' in t or t == 'APPLY_RESIST_CLAW':
-                continue   # no Wolfman here
-            n = apply_number(pts, t)
-            if n is None:
-                unmapped.append(t)
-            else:
-                glob_.append((n, val))
-        if not unmapped and sorted(mine) == sorted(glob_):
-            continue
+        otype = TYPES[o['type']] if 0 <= o['type'] < len(TYPES) else str(o['type'])
         wtype = w['Type']
+        glob_, unmapped, dropped, slots = [], [], [], []
+        wolfman = False
+        if otype == 'ITEM_POTION' and wtype == 'ITEM_USE' and w['SubType'] == 'USE_ABILITY_UP':
+            # our potions and grilled fish (type 36) carry the effect in the applies, the global ones in
+            # value0 (APPLY_* number), value1 (seconds), value2 (amount)
+            t = owsap_apply.get(int(w['Value0'] or 0), 'APPLY_NONE')
+            if t != 'APPLY_NONE':
+                n = apply_number(pts, t)
+                if n is None:
+                    unmapped.append(t)
+                else:
+                    glob_.append((n, int(w['Value2'] or 0)))
+                    slots.append(0)
+        else:
+            for i in range(4):
+                t, val = w.get('ApplyType%d' % i, 'APPLY_NONE'), int(w.get('ApplyValue%d' % i, '0') or 0)
+                if t == 'APPLY_NONE':
+                    continue
+                if 'WOLFMAN' in t or 'CLAW' in t:
+                    wolfman = True
+                    continue
+                if t in ('APPLY_RANDOM', 'APPLY_MOUNT'):
+                    dropped.append(t)   # a random bonus made on the item / the mount's race - not a fixed bonus
+                    continue
+                n = apply_number(pts, t)
+                if n is None:
+                    unmapped.append(t)
+                else:
+                    glob_.append((n, val))
+                    slots.append(i)   # the global slot: a mount's slot 0 (APPLY_MOUNT) stays empty as ours
+        wolfman = wolfman and not glob_ and not unmapped   # a Lycan stone; a bracelet's extra Lycan line is dropped
+        if not unmapped and not wolfman and sorted(mine) == sorted(glob_):
+            continue
+        wsub_s = w['SubType']
         subs = SUBTYPES.get(wtype)
-        wsub = subs.index(w['SubType']) if subs and w['SubType'] in subs else (
-            int(w['SubType']) if w['SubType'].isdigit() else -1)
+        wsub = subs.index(wsub_s) if subs and wsub_s in subs else (int(wsub_s) if wsub_s.isdigit() else -1)
         lt = w['LimitType0'] if w['LimitType0'].startswith('LIMIT_') else 'LIMIT_' + w['LimitType0']
         wlim = (LIMITS.index(lt) if lt in LIMITS else -1, int(w['LimitValue0']))
-        otype = TYPES[o['type']] if 0 <= o['type'] < len(TYPES) else str(o['type'])
-        if wtype not in SCOPE or otype != wtype:
-            why = 'skip: type %s (ours %s) - only armour and weapons' % (wtype, otype) if otype == wtype or wtype not in SCOPE \
-                else 'skip: type differs (ours %s, global %s)' % (otype, wtype)
-        elif wsub != o['sub']:
-            why = 'skip: subtype differs'
-        elif wtype == 'ITEM_WEAPON' and w['SubType'] == 'WEAPON_CLAW':
-            why = 'skip: Wolfman claw'
-        elif wlim != o['lim']:
-            why = 'skip: level limit differs (ours %d/%d, global %d/%d) - our rework' % (o['lim'] + wlim)
+        same_type = otype == wtype or (otype == 'ITEM_POTION' and wtype == 'ITEM_USE')
+        level_diff = (o['lim'][0] == 1 or wlim[0] == 1) and wlim != o['lim']
+        cat = CATEGORY.get(otype, otype)
+        if wolfman or (wtype == 'ITEM_WEAPON' and wsub_s == 'WEAPON_CLAW'):
+            cat, why = 'wolfman', 'skip: Wolfman (Lykan) item - no Wolfman here'
+        elif wtype == 'ITEM_NONE':
+            why = 'skip: not an item in the global data (ITEM_NONE)'
+        elif not same_type:
+            why = 'skip: another item in the global data (ours %s, global %s %s)' % (otype, wtype, wsub_s)
+        elif subs and otype != 'ITEM_PET' and wsub != o['sub']:
+            why = 'skip: subtype differs (ours %d, global %s)' % (o['sub'], wsub_s)
+        elif otype == 'ITEM_COSTUME' and wsub_s == 'COSTUME_ACCE':
+            why = 'skip: sash - our sashes keep their absorption in value0/sockets, ACCEDRAIN_RATE is no bonus here'
+        elif level_diff:
+            cat, why = 'rework', 'not changed: our rework - level limit differs (ours %d/%d, global %d/%d)' % (
+                o['lim'] + wlim)
         elif not (o['kname'] == w['kname'] or step(o['pl']) == step(en.get(v))):
             why = 'skip: name/refine step differs'
+        elif otype == 'ITEM_POTION' and int(w['Value1'] or 0) != o['val'][0]:
+            why = 'skip: another potion/food (duration %d s, global %s s)' % (o['val'][0], w['Value1'])
         elif unmapped:
             why = 'skip: global apply %s not in this engine' % ','.join(sorted(set(unmapped)))
         elif not glob_:
-            why = 'skip: no global apply'
+            why = 'skip: the global item has no fixed bonus (its effect lives elsewhere) - ours kept'
         elif len(glob_) > 3:
             why = 'skip: four global applies'
+        elif sorted(mine) == sorted(glob_):
+            continue
         else:
             why = 'APPLIED'
-            chosen[v] = dict(type=o['type'], sub=o['sub'], lim=o['lim'][1], app=(glob_ + [(0, 0)] * 3)[:3],
-                             mine=o['app'])
-        report.append((v, o['pl'], en.get(v, ''), otype, o['sub'], '%d/%d' % o['lim'], why, fmt(mine),
-                       fmt(glob_) + (' +' + ','.join(unmapped) if unmapped else '')))
+            app = [(0, 0)] * 3
+            for slot, x in zip(slots, glob_):
+                if slot < 3:
+                    app[slot] = x
+            for slot, x in zip(slots, glob_):
+                if slot >= 3:   # a mount's third bonus (slot 3 there; ours has three slots): the free one
+                    app[app.index((0, 0))] = x
+            chosen[v] = dict(type=o['type'], sub=o['sub'], lim=o['lim'][1], app=app,
+                             mine=o['app'], cat=cat)
+        report.append((v, o['pl'], en.get(v, ''), otype, o['sub'], '%d/%d' % o['lim'], cat, why, fmt(mine),
+                       fmt(glob_) + (' +' + ','.join(unmapped + dropped) if unmapped or dropped else '')))
 
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('-- MT2009_PLUS_GLOBAL_PROTO_V1: the fixed item bonuses of M2_BONUS_MODE=global (made by\n'
                 '-- tools/protoglobal/gen_item_proto_global.py from Owsap\'s official item_proto - do not edit by hand).\n'
-                '-- %d items (armour and weapons that are the same item in both: type, subtype, level, refine step).\n'
+                '-- %d items (the same item in both: type, subtype, level, refine step).\n'
                 '-- Only the table of the global values; apply.sh switches world.item_proto with it (global: writes these\n'
                 '-- applies and keeps the mt2009 ones in world.item_proto_apply_mt2009; mt2009: puts those back).\n'
                 % len(chosen))
@@ -230,10 +292,14 @@ def main():
                                     for v, c in sorted(chosen.items())) + '\n}\n')
     if a.report:
         with open(a.report, 'w', encoding='utf-8') as f:
-            f.write('vnum\tour_name\tglobal_name\ttype\tsubtype\tour_limit\tverdict\tour_applies\tglobal_applies\n')
+            f.write('vnum\tour_name\tglobal_name\ttype\tsubtype\tour_limit\tcategory\tverdict\tour_applies\t'
+                    'global_applies\n')
             for r in report:
                 f.write('\t'.join(str(x) for x in r) + '\n')
-    print('differing: %d, applied: %d -> %s, %s' % (len(report), len(chosen), SQL_OUT, JSON_OUT))
+    import collections
+    cats = collections.Counter(c['cat'] for c in chosen.values())
+    print('differing: %d, applied: %d (%s) -> %s, %s' % (len(report), len(chosen),
+          ', '.join('%s %d' % kv for kv in sorted(cats.items())), SQL_OUT, JSON_OUT))
 
 
 if __name__ == '__main__':
