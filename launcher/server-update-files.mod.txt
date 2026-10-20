@@ -407,6 +407,8 @@ linux-port/docker/mariadb/playerbot/yohara_gloves.sql
 # MT2009_PLUS_HELM100_V1: the level-100 helmets, their materials and Straznik Smokow Jaharr (tools/yhelm100); quest
 # helm100 (quest/*), Jaharr's places in the towns (game/Dockerfile).
 linux-port/docker/mariadb/playerbot/yohara_helm100.sql
+# MT2009_PLUS_REFINE_GLOBAL_V1: refining as on the global server for every item (tools/refineglobal), apply.sh runs it.
+linux-port/docker/mariadb/playerbot/refine_global.sql
 # MT2009_PLUS_MOBY_ARKUSZ_V1: the Yohara monsters brought to the owner's sheet of 20 October 2026 (tools/ymoby_arkusz):
 # the guarded UPDATEs and the drops the sheet lists (game/Dockerfile appends them).
 linux-port/docker/mariadb/playerbot/yohara_moby_arkusz.sql

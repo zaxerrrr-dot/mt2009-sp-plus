@@ -4145,6 +4145,20 @@ db -e "UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768
 WHERE vnum = 50325 AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);" \
   || fail_step "could not make Ksiega Precyzji stack (MT2009_PLUS_PRECISION_BOOK_STACK_V1)" >&2
 
+# MT2009_PLUS_REFINE_GLOBAL_V1: refining as on the global server for every item (the owner, 20 October 2026) -
+# refine_global.sql (tools/refineglobal/gen_refineglobal.py, from the owner's upgrade sheet): the sheet's recipes
+# (Yang, chance, materials) as refine_proto 40000.. and every item we have on its step, the "+9 -> next item" steps
+# where both items exist. LAST of the item steps: the earlier ones (JEWELS75 7320-7328, the boots' 22350-22358, the
+# Yohara generators' rows ...) set their own refine_set first, this puts the sheet's on top. A step whose material
+# we lack, or without a chance in the sheet, stays as it was. Every start, idempotent.
+if [ -s /opt/playerbot/refine_global.sql ]; then
+    if db < /opt/playerbot/refine_global.sql; then
+        echo "[playerbot-migrate] refining as on the global server: refine_global.sql applied"
+    else
+        fail_step "refining as on the global server: refine_global.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
