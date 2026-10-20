@@ -222,6 +222,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_rank_fruit_market.h" // MT2009_PLUS_RANK_FRUIT_MARKET_V1: the eaters buy the rank fruit of their total off the counters
 // Iwakura's gambler: the session a town visit turns into at its end.
 #include "playerbot_gambler.h"
+// MT2009_PLUS_BOT_STONE4_MARKET_V1: the soul stones +4 - a bot's own, counter,
+// box or merchant (the owner, 19 October).
+#include "playerbot_stone4.h"
 // Iwakura's Useful Items List: what a bot keeps at the storekeeper rather than
 // sells, and when it lets it go.
 #include "playerbot_lpp.h"
@@ -2330,6 +2333,9 @@ namespace
 		if (!ch || !ch->IsItemLoaded() || dwNow < state.dwNextSoulStoneTime || IsPlayerBotGearFrozen(ch))
 			return;
 		state.dwNextSoulStoneTime = dwNow + PLAYERBOT_SOUL_STONE_CHECK_INTERVAL;
+		// MT2009_PLUS_BOT_STONE4_MARKET_V1: the +4 counted and drawn on the
+		// same clock (playerbot_stone4.h).
+		UpdatePlayerBotStone4(ch, dwNow);
 
 		LPITEM bestStone = NULL;
 		LPITEM bestGear = NULL;
@@ -2396,6 +2402,8 @@ namespace
 				: stoneGone ? "CONSUMED" : "REFUSED";
 
 		PlayerBotEquipItem(ch, bestGear);
+		if (after == kdVnum || after == PLAYERBOT_BROKEN_SOUL_STONE_VNUM)
+			NotePlayerBotStone4Used(ch, kdVnum);
 		SetPlayerBotAction(state, BOT_ACTION_SOCKET_STONE, dwNow);
 		sys_log(0, "PLAYERBOT_AI: soul stone %s pid=%u name=%s kd_vnum=%u gear_vnum=%u socket=%d now=%u score=%d",
 				outcome, ch->GetPlayerID(), ch->GetName(), kdVnum, gearVnum,

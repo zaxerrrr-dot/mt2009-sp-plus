@@ -1981,6 +1981,10 @@ namespace
 
 	// Iwakura's Useful Items List (playerbot_lpp.h).
 	bool IsPlayerBotLppKeptItem(LPCHARACTER ch, LPITEM item);
+	// MT2009_PLUS_BOT_STONE4_MARKET_V1 (playerbot_stone4.h).
+	bool IsPlayerBotStone4ForMerchant(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotStone4Vnum(DWORD vnum);
+	void NotePlayerBotStone4Sold(int units);
 
 	// "Jesli bot chce wystawic taki przedmiot, musi najpierw ulepszyc go
 	// minimum do poziomu +5" (Iwakura's Patch 3, point 4): a body armour of a
@@ -2931,8 +2935,10 @@ namespace
 		// A soul stone is somebody's socket: this bot's, or across a counter
 		// another's. The merchant paid one yang for a Potwora +4. One of the
 		// grades Iwakura bans waits in the bag for the Alchemist.
+		// MT2009_PLUS_BOT_STONE4_MARKET_V1: but a +4 past the market's cap and
+		// the box's (playerbot_stone4.h) is the merchant's.
 		if (item->GetType() == ITEM_METIN)
-			return false;
+			return IsPlayerBotStone4ForMerchant(ch, item);
 		// And what the Alchemist gave for it is counter goods: the merchant
 		// pays fifty yang for a dust that cost five hundred and a stone.
 		if (vnum == PLAYERBOT_MAGIC_DUST_VNUM)
@@ -3429,6 +3435,14 @@ namespace
 			const long long salePrice = GetPlayerBotJunkSalePrice(item);
 			totalSoldGold += salePrice;
 			PlayerBotChangeGold(ch, salePrice);
+			// MT2009_PLUS_BOT_STONE4_MARKET_V1: a +4 past the market's and the
+			// box's caps, counted for the report.
+			if (item->GetType() == ITEM_METIN && IsPlayerBotStone4Vnum(item->GetVnum()))
+			{
+				NotePlayerBotStone4Sold((int)item->GetCount());
+				sys_log(0, "PLAYERBOT_STONE4: merchant pid=%u name=%s vnum=%u units=%u gold=%lld",
+						ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (unsigned int)item->GetCount(), salePrice);
+			}
 			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SHOP_SELL");
 			++soldCount;
 		}

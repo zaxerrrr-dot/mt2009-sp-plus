@@ -285,6 +285,19 @@ AI_LIVE_DEFAULTS = {"CHAT": 1, "BOOKS": 1, "NIGHT": 1, "LIFE": 0,
                      "SALE_TAX": 0}
 # MT2009_PLUS_SALE_TAX_V1: the slider's top, the core's own (MAX_PERCENT).
 SALE_TAX_MAX = 50
+# MT2009_PLUS_BOT_STONE4_MARKET_V1: the bots' soul stones +4 (playerbot_stone4.h):
+# key, Polish label, low, high, default - the core's own ranges.
+AI_STONE4_KEYS = (
+    ("STONE4_KEEP", "Kamienie +4: pula własna bota (szt./rodzaj)", 0, 50, 4),
+    ("STONE4_KEEP_PCT", "Kamienie +4: szansa nowej sztuki do puli (%)", 0, 100, 60),
+    ("STONE4_MARKET_SEATED", "Kamienie +4 osadzane: limit ofert na rynku (0 = bez limitu)", 0, 1000, 0),
+    ("STONE4_MARKET_UNSEATED", "Kamienie +4 nieosadzane: limit ofert na rynku (0 = bez limitu)", 0, 1000, 0),
+    ("STONE4_BOX_SEATED", "Kamienie +4 osadzane: limit w magazynie bota", 0, 200, 200),
+    ("STONE4_BOX_UNSEATED", "Kamienie +4 nieosadzane: limit w magazynie bota", 0, 200, 2),
+    ("STONE4_RELEASE_VISIT", "Kamienie +4: wyjęcia z magazynu na wizytę", 0, 50, 2),
+    ("STONE4_OFF", "Kamienie +4: stara reguła (każdy +4 w magazynie)", 0, 1, 0),
+)
+AI_LIVE_DEFAULTS.update({key: default for key, _, _, _, default in AI_STONE4_KEYS})
 AI_SPECIAL_WEIGHT_KEYS = frozenset(AI_LIVE_DEFAULTS)
 AI_LIFE_HOURS_MAX = 24
 BIOLOGIST_COMPLETE_STATE = 557528158
@@ -3405,6 +3418,9 @@ def read_ai_weights():
                         values[key] = max(0, min(1000, int(raw_value)))
                     elif key in ("CHEST", "CHEST_STONE"):
                         values[key] = max(0, min(1000, int(raw_value)))
+                    elif key.startswith("STONE4_"):
+                        low, high = next((lo, hi) for k, _, lo, hi, _ in AI_STONE4_KEYS if k == key)
+                        values[key] = max(low, min(high, int(raw_value)))
                     else:
                         values[key] = max(AI_WEIGHT_MIN, min(AI_WEIGHT_MAX, int(raw_value)))
                 except ValueError:
@@ -3477,6 +3493,9 @@ def write_ai_weights(values):
     for key in ("CHEST", "CHEST_STONE"):
         if values.get(key) is not None:
             content.append(f"{key}\t{max(0, min(1000, int(values[key])))}")
+    # MT2009_PLUS_BOT_STONE4_MARKET_V1
+    for key, _, low, high, default in AI_STONE4_KEYS:
+        content.append(f"{key}\t{max(low, min(high, int(values.get(key, default))))}")
     content.extend(preserved_ai_weight_lines())
     temporary = AI_WEIGHTS_FILE.with_suffix(".tsv.new")
     temporary.write_text("\n".join(content) + "\n", encoding="utf-8")
@@ -10246,7 +10265,7 @@ def manage():
     bot_channels = sorted(per_channel.items()) if len(per_channel) > 1 else []
     updater = update_status()
     updater["protected"] = current_settings.get("auth_enabled") == "1" and bool(session.get("seban_admin"))
-    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers(), shop_big=read_shop_big())
+    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, ai_stone4_keys=AI_STONE4_KEYS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers(), shop_big=read_shop_big())
 
 
 @app.post("/manage/difficulty")
@@ -10852,6 +10871,12 @@ def manage_behavior():
     for key, minimum, maximum, default in (("WAR_MINUTES", 5, 180, 30), ("WAR_HOURS", 1, 24, 1), ("WAR_KILLS", 0, 1000, 200)):
         try:
             values[key] = max(minimum, min(maximum, int(request.form.get(key, values.get(key, default)))))
+        except (TypeError, ValueError):
+            values[key] = default
+    # MT2009_PLUS_BOT_STONE4_MARKET_V1: a field the page did not render keeps the file's value.
+    for key, _, low, high, default in AI_STONE4_KEYS:
+        try:
+            values[key] = max(low, min(high, int(request.form.get(key, values.get(key, default)))))
         except (TypeError, ValueError):
             values[key] = default
     switch = read_chest_switch()

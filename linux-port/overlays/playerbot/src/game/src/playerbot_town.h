@@ -113,6 +113,10 @@ namespace
 	bool IsPlayerBotLppReleased(LPCHARACTER ch, DWORD itemId);
 	void NotePlayerBotLppDeposit();
 	bool IsPlayerBotZielarz(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_STONE4_MARKET_V1 (playerbot_stone4.h, before the list).
+	int GetPlayerBotStone4BoxRelease(LPCHARACTER ch, LPITEM boxItem, int takenOfKind, int takenAll);
+	void NotePlayerBotStone4Released(int units);
+	bool IsPlayerBotStone4HeldBack(LPCHARACTER ch, LPITEM item);
 	// MT2009_PLUS_MARKET_V3: how the counters stand for a kind (-1 missing, 1
 	// too much of it, 0 otherwise), defined with the market index below.
 	int GetPlayerBotMarketSupplyState(DWORD vnum);
@@ -542,6 +546,10 @@ namespace
 		if (!pGambler)
 			CollectPlayerBotLppBoxRelease(ch, box, lppRelease);
 		int taken = 0;
+		// MT2009_PLUS_BOT_STONE4_MARKET_V1: the +4 this visit gave back for a
+		// counter, by kind and in all.
+		std::map<DWORD, int> stone4Taken;
+		int stone4TakenAll = 0;
 		for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM &&
 				taken < PLAYERBOT_SAFEBOX_WITHDRAW_MAX; ++pos)
 		{
@@ -730,6 +738,46 @@ namespace
 				// A soul stone the list kept, now that the bot has a socket for it.
 				wanted = CanPlayerBotSeatSoulStone(ch, item->GetVnum(), (DWORD)item->GetValue(5));
 				why = "lpp_stone";
+				// MT2009_PLUS_BOT_STONE4_MARKET_V1: a +4 over the bot's own, for
+				// a counter while the market has room (playerbot_stone4.h) - as
+				// many as the box's surplus, the room and the visit allow, cut
+				// off the box's stack into a stack of its own in the bag.
+				if (!wanted && !pGambler && !IsPlayerBotSidekickServing(ch))
+				{
+					const DWORD vnum = item->GetVnum();
+					const int units = GetPlayerBotStone4BoxRelease(ch, item, stone4Taken[vnum], stone4TakenAll);
+					if (units > 0 && units < (int)item->GetCount())
+					{
+						const int cell = ch->GetEmptyInventory(1);
+						if (cell < 0)
+							break;
+						LPITEM part = ITEM_MANAGER::instance().CreateItem(vnum, units);
+						if (!part)
+							continue;
+						item->SetCount(item->GetCount() - units);
+						ITEM_MANAGER::instance().FlushDelayedSave(item);
+						part->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)cell));
+						FlushPlayerBotItemRow(part);
+						char szHint[128];
+						snprintf(szHint, sizeof(szHint), "%s %d", part->GetName(), units);
+						LogManager::instance().ItemLog(ch, part, "SAFEBOX GET", szHint);
+						sys_log(0, "PLAYERBOT_TOWN: safebox withdraw pid=%u name=%s vnum=%u count=%d reason=stone4_market left=%u",
+								ch->GetPlayerID(), ch->GetName(), vnum, units, (unsigned int)item->GetCount());
+						stone4Taken[vnum] += units;
+						stone4TakenAll += units;
+						NotePlayerBotStone4Released(units);
+						++taken;
+						continue;
+					}
+					if (units > 0)
+					{
+						wanted = true;
+						why = "stone4_market";
+						stone4Taken[vnum] += units;
+						stone4TakenAll += units;
+						NotePlayerBotStone4Released(units);
+					}
+				}
 			}
 			else if (IsPlayerBotHerbalismHerb(item->GetVnum()))
 			{
@@ -5209,6 +5257,10 @@ namespace
 		if (item->GetType() == ITEM_METIN)
 		{
 			if (CanPlayerBotSeatSoulStone(ch, item->GetVnum(), (DWORD)item->GetValue(5)))
+				return -1;
+			// MT2009_PLUS_BOT_STONE4_MARKET_V1: a +4 is goods only as the
+			// counter's surplus while the market has room (playerbot_stone4.h).
+			if (IsPlayerBotStone4HeldBack(ch, item))
 				return -1;
 #if defined(PLAYERBOT_ENGINE_MT2009)
 			if (IsPlayerBotSoulStoneVnum(item->GetVnum()) &&
