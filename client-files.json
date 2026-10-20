@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.66",
+  "version": "2.0.67",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -245,7 +245,7 @@
     {
       "path": "pack/root.index",
       "size": 33052,
-      "sha256": "E44BBEAC0F507A826CF1639D800A187946353C84F5A0CF2DAE8237FDF8E0C7F0"
+      "sha256": "DC1F64658E80FC70597E182A0C68DA2DC9A25E9757985F9B2A90832EEF42B532"
     },
     {
       "path": "pack/wiki_nowe.index",

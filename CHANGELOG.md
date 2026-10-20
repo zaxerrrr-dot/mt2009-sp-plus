@@ -17,6 +17,52 @@ every version here.
 
 ---
 
+## 2.36.0 — 2026-10-20 — Sklepy botów bez przepełnienia, lochy bez zatrzymań, retencja logów w panelu
+
+### Boty – stragany i handel
+- **Poprawa logiki botów.**
+- **Sklepy botów nigdy pełne.** Boty pilnują teraz, żeby ich sklepy nie były pełne: trzymam je zapełnione najwyżej w 80%, a gdy jest ich więcej, boty zdejmują najmniej warte rzeczy i sprzedają je u handlarki. Cennych przedmiotów (z dwoma bonusami, od +7, nagrodowych, broni 30 poziomu, Stalek, drogich ksiąg) nigdy nie zdejmują.
+- **Niesprzedany towar schodzi do handlarki.** Tani towar, który nie sprzeda się przez 12 godzin, i zwykły sprzęt bez bonusów, który nie sprzeda się przez dobę, boty sprzedają u handlarki. Sprzęt dużo poniżej poziomu bota schodzi już po 6 godzinach.
+- Boty nie ulepszają już sprzętu tylko po to, żeby go wystawić, gdy na rynku jest go pełno.
+- **Jeden stos zamiast wielu linii.** Boty wystawiają materiały i inne stackujące się przedmioty jednym stosem zamiast w kilku liniach po kilka sztuk.
+- Boty kupują ze sklepów tylko tyle sztuk ze stosu, ile im potrzeba, tak jak gracze.
+- Gdy sklepy botów są przepełnione, inne boty częściej je przeglądają i chętniej kupują, w pierwszej kolejności z najpełniejszych sklepów.
+- **Sklepy botów 2× większe.** Sklepy offline botów mają teraz dwa razy więcej miejsca (4 strony). Okno sklepu bota pokazuje je dwie obok siebie i dwie pod spodem (wymaga klienta 2.0.67). Sklepy graczy się nie zmieniają.
+- **Boty wolą sklepy graczy.** Boty kupują teraz chętniej ze sklepów graczy: wybierają ofertę gracza, nawet jeśli jest do 10% droższa od oferty bota.
+- **Najtańsza oferta z całej mapy.** Poprawiłem kupowanie przez boty Medali Konia, Materiałów Rzemieślniczych, Cor Draconis i szarf – teraz wybierają najtańszą ofertę z całej mapy, więc kupują też ze straganów graczy (wcześniej sprawdzały tylko stragany botów).
+- **Księgi w stosach.** Boty wystawiają księgi umiejętności jednym stosem na umiejętność, a księgi warte ponad 450 000 Yang zawsze trafiają na stragan – nigdy do handlarki.
+- **Dropki medali sprzedają łup.** Boty farmiące medale zostawiają sobie tylko księgi, które same przeczytają, cenne księgi wystawiam na straganie, a tanie nadwyżki sprzedaję u Handlarki. Zapasy ksiąg z magazynu wyjmuję po kilka stosów przy każdej wizycie u Dozorcy.
+- **Medale znowu na straganach.** Dropki medali utykały na 47 medalach i nigdy nie szły ich sprzedać – teraz wystawiają je na straganie, także te z drugiego kanału (sprzedaż przenosi się na pierwszy kanał, jak u innych botów).
+- **Kamienie Duszy +4 wracają na rynek.** Naprawiłem znikanie Kamieni Duszy +4 z rynku – boty zostawiają sobie kilka sztuk rodzajów, które osadzają, a resztę (także z magazynu) wystawiają na swoich straganach. Dziękuję graczowi za raport i poprawkę. (Autor: mur4s)
+- **Prawo Awansu.** Boty trzymane przez Prawo Awansu zakładają, kupują i ulepszają brakujące części (hełm i zbroję na swój poziom, potrzebny plus), a po powrocie do expienia przez zgony awansują dopiero z plusem więcej.
+
+### Boty – ruch
+- **Krótsza droga do domu z dalekich map.** Bot, który ma do bramy swojego królestwa ponad 30 tys. kroków, używa Pierścienia Teleportacji, a gdy go nie ma (albo pierścień jeszcze się nie odnowił), idzie do Teleportera na tej mapie, jeśli jest wyraźnie bliżej. Boty płacą za Teleportera i pierścień tyle samo co gracze.
+
+### Lochy
+- **Lochy nie stoją już przy „Pozostało: 2”.** Zabójstwo gracza, którego gildia prowadzi wojnę, znowu liczy się do zadań lochu (nadal bez doświadczenia i dropu).
+- **Lochy nie stoją już na ostatnich celach.** W każdym lochu, w którym etap czeka na zniszczenie konkretnych celów (Ruiny Skorpiona, Starożytna Dżungla, Biblioteka Wiedzy, Ruiny Atlantydy, Nemere, Razador, Wieża Demonów, Katakumby, Wzgórze Wukonga), sprawdzam co kilkanaście sekund, czy cele naprawdę stoją – zaginiony cel pojawia się ponownie na swoim miejscu. Etap nadal kończy się tylko po zniszczeniu wszystkich celów, nigdy sam.
+
+### Panel
+- Naprawiłem błąd „Internal Server Error” na profilu postaci i liście postaci przy dużej bazie logów – wolny fragment strony pokazuje teraz „chwilowo niedostępne”, a reszta strony działa.
+- Dodałem ustawienie „Ile dni trzymać logi w bazie” (7, 14 albo dowolnie 1–365 dni; 0 = wszystko). Stare wpisy usuwam raz dziennie około 5:00, a statystyki „od początku serwera” zostają bez zmian. Na istniejącym serwerze ustawienie startuje od 0 – nic nie znika, dopóki sam go nie zmienisz.
+- Dodałem stronę „Logi bazy danych” z wynikiem ostatniego czyszczenia i rozmiarami tabel logów.
+
+### Silnik/Gra
+- **Autołowy bez zemsty.** Dodałem mod „Autołowy bez zemsty”: gdy masz włączone Auto Łowy i przypadkiem uderzysz bota, bot nie oddaje, nie woła swojej grupy ani gildii, cios nie zrywa rozejmu, a zabity w ten sposób bot nie chowa urazy. Z wyłączonymi Auto Łowami wszystko działa jak dotąd. (Autor: mur4s)
+- **Kamienie Smoczej Alchemii w sklepie offline.** Kamienie da się teraz wystawić prosto z okna Smoczej Alchemii, a kupujący dostaje je od razu do tego okna. Wcześniej sklep szukał kamienia w złym oknie i nic się nie działo. Wymaga klienta 2.0.67.
+- Naprawiłem przerywanie zbierania ziół przez potwory – trafienie ani ogłuszenie od potwora nie przerywa już zbierania (atak gracza i ruch dalej przerywają).
+- Naprawiłem ponowne ulepszanie Nożyka Zielarza i kilofa bez zebranych punktów.
+
+### Klient
+- Wystawianie Kamieni Smoczej Alchemii w sklepie offline i widok 4 stron sklepu bota wymagają klienta 2.0.67 (niżej).
+
+## Klient 2.0.67 — 2026-10-20 — Smocza Alchemia w sklepie offline, 4 strony sklepu bota
+- **Kamienie Smoczej Alchemii w sklepie offline** – kamień przeciągnięty z okna Smoczej Alchemii trafia na półkę sklepu (wcześniej klient szukał go w złym oknie i nic się nie działo).
+- **Sklep bota na 4 strony** – okno sklepu bota pokazuje cztery strony: dwie obok siebie i dwie pod spodem.
+- **Autołowy bez zemsty** (Autor: mur4s) – wyłączenie Auto Łowów od razu mówi o tym serwerowi (ze starszym klientem łowy „gasną” same po 5 sekundach).
+- Dane przedmiotów się nie zmieniły – nie trzeba ponownie pobierać zipa edytora bazy danych.
+
 ## 2.35.0 — 2026-10-16 — Porządek w plecakach i na straganach botów, mniej krążenia między wioskami
 
 ### Boty – plecaki, stragany i handel
