@@ -2435,6 +2435,27 @@ namespace
 	// too, instead of to a safebox it never empties. The stall and merchant
 	// rules do the rest.
 	const int PLAYERBOT_MEDAL_DROPPER_BOOK_BAG_STOCK = 6;
+	// Book stacks a medal dropper's box lets go of a visit (WithdrawPlayerBotSafebox).
+	const int PLAYERBOT_MEDAL_DROPPER_BOX_BOOK_STACKS = 4;
+
+	// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1 (the owner, 20 October: "sprzedaz
+	// niech sie przenosi na CH1, tak samo jak dotychczas"): a counter this bot
+	// keeps, or one it gets by the shop channel's move (the assignment table,
+	// EnsurePlayerBotPrivateShopChannel) - a bot of the second channel with
+	// that table on sells its goods on the first like every other keeper, so
+	// they are not the merchant's for want of a counter here.
+	bool PlayerBotCanReachCounter(LPCHARACTER ch)
+	{
+		if (PlayerBotHasCounter(ch))
+			return true;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		return ch && g_bChannel != playerbot_channel_rules::SHOP_CHANNEL &&
+				CPlayerBotManager::instance().IsChannelTableMode() && ch->CanOpenShop() &&
+				!IsPlayerBotSidekickPID(ch->GetPlayerID());
+#else
+		return false;
+#endif
+	}
 
 	bool IsPlayerBotMedalDropperBot(LPCHARACTER ch)
 	{
@@ -2478,7 +2499,7 @@ namespace
 			const int keep = IsPlayerBotOwnSkill(ch, skill) ? GetPlayerBotBookKeepLimit(ch, skill) : 0;
 			return CountPlayerBotSkillBooksAhead(ch, item, skill) >= keep + PLAYERBOT_MEDAL_DROPPER_BOOK_BAG_STOCK;
 		}
-		if (PlayerBotHasCounter(ch))
+		if (PlayerBotCanReachCounter(ch))
 			return false;
 		const DWORD vnum = item->GetVnum();
 		if (IsPlayerBotTradeableMaterial(item))

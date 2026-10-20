@@ -560,6 +560,10 @@ namespace
 		if (!pGambler)
 			CollectPlayerBotLppBoxRelease(ch, box, lppRelease);
 		int taken = 0;
+		// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1: the medal droppers' books
+		// taken out this visit (PLAYERBOT_MEDAL_DROPPER_BOX_BOOK_STACKS).
+		int medalBooksTaken = 0;
+		const bool medalDropper = !IsPlayerBotSidekickServing(ch) && IsPlayerBotMedalDropperBot(ch);
 		// MT2009_PLUS_BOT_STONE4_MARKET_V1: the +4 this visit gave back for a
 		// counter, by kind and in all.
 		std::map<DWORD, int> stone4Taken;
@@ -600,6 +604,23 @@ namespace
 				// limit rose with it, or the bot finally has a skill group.
 				wanted = !IsPlayerBotSurplusSkillBook(ch, item);
 				why = "book";
+				// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1: a medal dropper's box
+				// lets its surplus books go, a few stacks a visit, into a bag
+				// clear of pressure: a book its counter sells goes up there
+				// (a counter of its own only - the second channel's box keeps
+				// them for the visit after the move), a cheap one to the
+				// merchant on the next visit (IsPlayerBotMedalDropperSurplus).
+				// 14 933 books lay in their boxes on 20 October.
+				if (!wanted && medalDropper && medalBooksTaken < PLAYERBOT_MEDAL_DROPPER_BOX_BOOK_STACKS &&
+						(PlayerBotHasCounter(ch) || IsPlayerBotJunkItem(ch, item)))
+				{
+					const int freeAfter = CountPlayerBotFreeInventoryCells(ch) - (int)item->GetSize();
+					wanted = freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS &&
+							(PLAYERBOT_BAG_CELLS - freeAfter) * 100 < PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
+					why = "medal_dropper_book";
+					if (wanted)
+						++medalBooksTaken;
+				}
 				// And another class's book comes out for the counter, into a
 				// bag that stays clear of the pressure the deposit waits for -
 				// the deposit keeps them in the bag now, so it does not go
@@ -2161,12 +2182,18 @@ namespace
 	// A medal dropper with its stock in the bag (PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK)
 	// has a counter to put up. The Monkey Dungeon sends it out at that count
 	// and will not take it back until the medals have gone on a counter.
+	// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1: at the stock less its margin -
+	// the Monkey Dungeon's gate keeps a dropper out from there
+	// (PLAYERBOT_MEDAL_DROPPER_STOCK_MARGIN, MT2009_PLUS_HORSE_ECONOMY_V2), so
+	// at fifty no dropper ever got to sell: 156 of the supporters' 163 medal
+	// droppers sat at exactly 47 medals on 20 October, and none of the 46 on
+	// the second channel ever asked for the shop channel to stand them.
 	bool IsPlayerBotMedalStockReady(LPCHARACTER ch, const TPlayerBotAIState& state)
 	{
 		return ch && ch->IsItemLoaded() &&
 				state.bPersonality == BOT_PERSONALITY_MEDAL_DROPPER &&
 				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >=
-					PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK;
+					PLAYERBOT_MEDAL_DROPPER_MEDAL_STOCK - PLAYERBOT_MEDAL_DROPPER_STOCK_MARGIN;
 	}
 
 	// MT2009_PLUS_BOT_BOOKS_TO_STALL_V1 / MT2009_PLUS_BOT_SASH_CLEAR_V1: a
