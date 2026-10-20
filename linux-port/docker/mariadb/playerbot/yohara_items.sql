@@ -49,7 +49,7 @@
 -- MT2009_PLUS_ELEMENTS_V1, level 105, no item_proto apply: their two standard lines - Sung Ma Will of the stat
 -- (APPLY_SUNGMA_STR/MOVE/HP/IMMUNE = 184/186/185/187) and an element's power (178-183), each common or rare -
 -- are the item's 6th/7th bonus slots (MT2009_PLUS_WILL_TALISMAN_V1, server-patches/talizmanwoli), refined with Topaz
--- Woli (6..54, 1-5 mln Yang, 70-20%) - refine_proto 22501-22536 (Owsap's 680-715 are other rows here).
+-- Woli (6..54) and a second talisman of the same level (1-5 mln Yang, 70-20%) - refine_proto 22501-22536 (Owsap's 680-715 are other rows here).
 SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES
 (72353,'Topaz Woli',_cp1250 X'546F70617A20576F6C69',5,0,200,0,1,204928,4,0,'',1000,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
@@ -159,42 +159,79 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (81558,'Talizman Woli INT+8',_cp1250 X'54616C697A6D616E20576F6C6920494E542B38',2,7,1,0,1,0,0,4096,'',360000,5000,81559,22536,0,0,0,0,1,105,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (81559,'Talizman Woli INT+9',_cp1250 X'54616C697A6D616E20576F6C6920494E542B39',2,7,1,0,1,0,0,4096,'',360000,5000,0,0,0,0,0,0,1,105,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1);
 INSERT IGNORE INTO world.refine_proto (id,vnum0,count0,vnum1,count1,vnum2,count2,vnum3,count3,vnum4,count4,cost,src_vnum,result_vnum,prob) VALUES
-(22501,72353,6,0,0,0,0,0,0,0,0,1000000,0,0,70),
-(22502,72353,12,0,0,0,0,0,0,0,0,1500000,0,0,60),
-(22503,72353,18,0,0,0,0,0,0,0,0,2000000,0,0,60),
-(22504,72353,24,0,0,0,0,0,0,0,0,2500000,0,0,50),
-(22505,72353,30,0,0,0,0,0,0,0,0,3000000,0,0,50),
-(22506,72353,36,0,0,0,0,0,0,0,0,3500000,0,0,50),
-(22507,72353,42,0,0,0,0,0,0,0,0,4000000,0,0,40),
-(22508,72353,48,0,0,0,0,0,0,0,0,4500000,0,0,30),
-(22509,72353,54,0,0,0,0,0,0,0,0,5000000,0,0,20),
-(22510,72353,6,0,0,0,0,0,0,0,0,1000000,0,0,70),
-(22511,72353,12,0,0,0,0,0,0,0,0,1500000,0,0,60),
-(22512,72353,18,0,0,0,0,0,0,0,0,2000000,0,0,60),
-(22513,72353,24,0,0,0,0,0,0,0,0,2500000,0,0,50),
-(22514,72353,30,0,0,0,0,0,0,0,0,3000000,0,0,50),
-(22515,72353,36,0,0,0,0,0,0,0,0,3500000,0,0,50),
-(22516,72353,42,0,0,0,0,0,0,0,0,4000000,0,0,40),
-(22517,72353,48,0,0,0,0,0,0,0,0,4500000,0,0,30),
-(22518,72353,54,0,0,0,0,0,0,0,0,5000000,0,0,20),
-(22519,72353,6,0,0,0,0,0,0,0,0,1000000,0,0,70),
-(22520,72353,12,0,0,0,0,0,0,0,0,1500000,0,0,60),
-(22521,72353,18,0,0,0,0,0,0,0,0,2000000,0,0,60),
-(22522,72353,24,0,0,0,0,0,0,0,0,2500000,0,0,50),
-(22523,72353,30,0,0,0,0,0,0,0,0,3000000,0,0,50),
-(22524,72353,36,0,0,0,0,0,0,0,0,3500000,0,0,50),
-(22525,72353,42,0,0,0,0,0,0,0,0,4000000,0,0,40),
-(22526,72353,48,0,0,0,0,0,0,0,0,4500000,0,0,30),
-(22527,72353,54,0,0,0,0,0,0,0,0,5000000,0,0,20),
-(22528,72353,6,0,0,0,0,0,0,0,0,1000000,0,0,70),
-(22529,72353,12,0,0,0,0,0,0,0,0,1500000,0,0,60),
-(22530,72353,18,0,0,0,0,0,0,0,0,2000000,0,0,60),
-(22531,72353,24,0,0,0,0,0,0,0,0,2500000,0,0,50),
-(22532,72353,30,0,0,0,0,0,0,0,0,3000000,0,0,50),
-(22533,72353,36,0,0,0,0,0,0,0,0,3500000,0,0,50),
-(22534,72353,42,0,0,0,0,0,0,0,0,4000000,0,0,40),
-(22535,72353,48,0,0,0,0,0,0,0,0,4500000,0,0,30),
-(22536,72353,54,0,0,0,0,0,0,0,0,5000000,0,0,20);
+(22501,72353,6,81000,1,0,0,0,0,0,0,1000000,0,0,70),
+(22502,72353,12,81001,1,0,0,0,0,0,0,1500000,0,0,60),
+(22503,72353,18,81002,1,0,0,0,0,0,0,2000000,0,0,60),
+(22504,72353,24,81003,1,0,0,0,0,0,0,2500000,0,0,50),
+(22505,72353,30,81004,1,0,0,0,0,0,0,3000000,0,0,50),
+(22506,72353,36,81005,1,0,0,0,0,0,0,3500000,0,0,50),
+(22507,72353,42,81006,1,0,0,0,0,0,0,4000000,0,0,40),
+(22508,72353,48,81007,1,0,0,0,0,0,0,4500000,0,0,30),
+(22509,72353,54,81008,1,0,0,0,0,0,0,5000000,0,0,20),
+(22510,72353,6,81250,1,0,0,0,0,0,0,1000000,0,0,70),
+(22511,72353,12,81251,1,0,0,0,0,0,0,1500000,0,0,60),
+(22512,72353,18,81252,1,0,0,0,0,0,0,2000000,0,0,60),
+(22513,72353,24,81253,1,0,0,0,0,0,0,2500000,0,0,50),
+(22514,72353,30,81254,1,0,0,0,0,0,0,3000000,0,0,50),
+(22515,72353,36,81255,1,0,0,0,0,0,0,3500000,0,0,50),
+(22516,72353,42,81256,1,0,0,0,0,0,0,4000000,0,0,40),
+(22517,72353,48,81257,1,0,0,0,0,0,0,4500000,0,0,30),
+(22518,72353,54,81258,1,0,0,0,0,0,0,5000000,0,0,20),
+(22519,72353,6,81300,1,0,0,0,0,0,0,1000000,0,0,70),
+(22520,72353,12,81301,1,0,0,0,0,0,0,1500000,0,0,60),
+(22521,72353,18,81302,1,0,0,0,0,0,0,2000000,0,0,60),
+(22522,72353,24,81303,1,0,0,0,0,0,0,2500000,0,0,50),
+(22523,72353,30,81304,1,0,0,0,0,0,0,3000000,0,0,50),
+(22524,72353,36,81305,1,0,0,0,0,0,0,3500000,0,0,50),
+(22525,72353,42,81306,1,0,0,0,0,0,0,4000000,0,0,40),
+(22526,72353,48,81307,1,0,0,0,0,0,0,4500000,0,0,30),
+(22527,72353,54,81308,1,0,0,0,0,0,0,5000000,0,0,20),
+(22528,72353,6,81550,1,0,0,0,0,0,0,1000000,0,0,70),
+(22529,72353,12,81551,1,0,0,0,0,0,0,1500000,0,0,60),
+(22530,72353,18,81552,1,0,0,0,0,0,0,2000000,0,0,60),
+(22531,72353,24,81553,1,0,0,0,0,0,0,2500000,0,0,50),
+(22532,72353,30,81554,1,0,0,0,0,0,0,3000000,0,0,50),
+(22533,72353,36,81555,1,0,0,0,0,0,0,3500000,0,0,50),
+(22534,72353,42,81556,1,0,0,0,0,0,0,4000000,0,0,40),
+(22535,72353,48,81557,1,0,0,0,0,0,0,4500000,0,0,30),
+(22536,72353,54,81558,1,0,0,0,0,0,0,5000000,0,0,20);
+-- MT2009_PLUS_REFINE_DATA_V1: the second talisman of the same level (the owner's upgrade sheet, 20 October)
+UPDATE world.refine_proto SET vnum1=81000, count1=1 WHERE id=22501 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81001, count1=1 WHERE id=22502 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81002, count1=1 WHERE id=22503 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81003, count1=1 WHERE id=22504 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81004, count1=1 WHERE id=22505 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81005, count1=1 WHERE id=22506 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81006, count1=1 WHERE id=22507 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81007, count1=1 WHERE id=22508 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81008, count1=1 WHERE id=22509 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81250, count1=1 WHERE id=22510 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81251, count1=1 WHERE id=22511 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81252, count1=1 WHERE id=22512 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81253, count1=1 WHERE id=22513 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81254, count1=1 WHERE id=22514 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81255, count1=1 WHERE id=22515 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81256, count1=1 WHERE id=22516 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81257, count1=1 WHERE id=22517 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81258, count1=1 WHERE id=22518 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81300, count1=1 WHERE id=22519 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81301, count1=1 WHERE id=22520 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81302, count1=1 WHERE id=22521 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81303, count1=1 WHERE id=22522 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81304, count1=1 WHERE id=22523 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81305, count1=1 WHERE id=22524 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81306, count1=1 WHERE id=22525 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81307, count1=1 WHERE id=22526 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81308, count1=1 WHERE id=22527 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81550, count1=1 WHERE id=22528 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81551, count1=1 WHERE id=22529 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81552, count1=1 WHERE id=22530 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81553, count1=1 WHERE id=22531 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81554, count1=1 WHERE id=22532 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81555, count1=1 WHERE id=22533 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81556, count1=1 WHERE id=22534 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81557, count1=1 WHERE id=22535 AND vnum0=72353 AND vnum1=0;
+UPDATE world.refine_proto SET vnum1=81558, count1=1 WHERE id=22536 AND vnum0=72353 AND vnum1=0;
 UPDATE world.item_proto SET applytype0=0, applyvalue0=0 WHERE vnum IN (81000,81001,81002,81003,81004,81005,81006,81007,81008,81009,81250,81251,81252,81253,81254,81255,81256,81257,81258,81259,81300,81301,81302,81303,81304,81305,81306,81307,81308,81309,81550,81551,81552,81553,81554,81555,81556,81557,81558,81559) AND applytype0<>0;
 UPDATE world.item_proto SET locale_name='Czerwona Mikstura (XXL)' WHERE vnum=27007 AND locale_name<>'Czerwona Mikstura (XXL)';
 UPDATE world.item_proto SET locale_name='Niebieska Mikstura (XXL)' WHERE vnum=27008 AND locale_name<>'Niebieska Mikstura (XXL)';

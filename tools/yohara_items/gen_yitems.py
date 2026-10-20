@@ -142,7 +142,7 @@ add(50043, status=need('Skrzynia Nimfy Wodnej - none here yet'))      # Klucz Ni
 add(70408, status=need('Tajemnicza Instancja (dungeon) - none here yet'))   # Tajemniczy Bilet
 add(70434, status=need('the secret dungeons of the treasure scrolls - none here yet'),
     type='ITEM_MATERIAL', subtype='MATERIAL_LEATHER')                # Zwoj Skarbu (Stopien A): Owsap's subtype is not ours
-# Talizmany Woli +0..+9 - the talisman slot (MT2009_PLUS_ELEMENTS_V1), refined with Topaz Woli
+# Talizmany Woli +0..+9 - the talisman slot (MT2009_PLUS_ELEMENTS_V1), refined with Topaz Woli and a second talisman (MT2009_PLUS_REFINE_DATA_V1)
 TALISMANS = ((81000, 'SIŁA', APPLY_SUNGMA_STR), (81250, 'ODP', APPLY_SUNGMA_MOVE), (81300, 'WIT', APPLY_SUNGMA_HP),
              (81550, 'INT', APPLY_SUNGMA_IMMUNE))
 # No item_proto apply (MT2009_PLUS_WILL_TALISMAN_V1, server-patches/talizmanwoli): Owsap's APPLY_RANDOM 10..13 / 14 -
@@ -238,10 +238,13 @@ def main():
             if lv < 9:
                 rid = REFINE_ID0 + len(refines)
                 r = refine[src_set]
-                assert r[1] == 72353, r
-                # Owsap's second material is the same talisman again (vnum1 = the source's own vnum): left out -
-                # our refine would count the talisman being refined as that material (the wiki: Topaz Woli only)
-                refines.append(dict(id=rid, vnum0=72353, count0=r[2], cost=r[11], prob=r[14], src=it['vnum']))
+                assert r[1] == 72353 and r[3] == it['src'] and r[4] == 1, r
+                # MT2009_PLUS_REFINE_DATA_V1 (the owner's upgrade sheet, 20 October): Owsap's second material - the
+                # same talisman again, one piece (vnum1 = the source's own vnum) - is ours too, as the sheet has it.
+                # The engine counts and takes it past the talisman being refined (MT2009_PLUS_ELEMENTS_V1,
+                # ElementsRefineMaterialCount/Remove, playerbot_elements.cpp). (V1 left it out: "the wiki: Topaz only".)
+                refines.append(dict(id=rid, vnum0=72353, count0=r[2], vnum1=it['vnum'], count1=1, cost=r[11],
+                                    prob=r[14], src=it['vnum']))
                 refine_set = rid
             else:
                 refine_set = 0
@@ -324,15 +327,23 @@ def write_sql(items, refines):
     L.append('-- MT2009_PLUS_ELEMENTS_V1, level 105, no item_proto apply: their two standard lines - Sung Ma Will of the stat')
     L.append('-- (APPLY_SUNGMA_STR/MOVE/HP/IMMUNE = 184/186/185/187) and an element\'s power (178-183), each common or rare -')
     L.append('-- are the item\'s 6th/7th bonus slots (MT2009_PLUS_WILL_TALISMAN_V1, server-patches/talizmanwoli), refined with Topaz')
-    L.append('-- Woli (6..54, 1-5 mln Yang, 70-20%%) - refine_proto %d-%d (Owsap\'s 680-715 are other rows here).'
+    L.append('-- Woli (6..54) and a second talisman of the same level (1-5 mln Yang, 70-20%%) - refine_proto %d-%d (Owsap\'s'
+             ' 680-715 are other rows here).'
              % (refines[0]['id'], refines[-1]['id']))
     L.append('SET NAMES utf8mb4;')
     L.append('INSERT IGNORE INTO world.item_proto (%s) VALUES' % ','.join('`%s`' % c for c in COLS))
     L.append(',\n'.join(sqlrow(i) for i in items) + ';')
     L.append('INSERT IGNORE INTO world.refine_proto (id,vnum0,count0,vnum1,count1,vnum2,count2,vnum3,count3,vnum4,'
              'count4,cost,src_vnum,result_vnum,prob) VALUES')
-    L.append(',\n'.join('(%d,%d,%d,0,0,0,0,0,0,0,0,%d,0,0,%d)' % (r['id'], r['vnum0'], r['count0'], r['cost'],
-                                                                     r['prob']) for r in refines) + ';')
+    L.append(',\n'.join('(%d,%d,%d,%d,%d,0,0,0,0,0,0,%d,0,0,%d)' % (r['id'], r['vnum0'], r['count0'], r['vnum1'],
+                                                                       r['count1'], r['cost'], r['prob'])
+                         for r in refines) + ';')
+    # MT2009_PLUS_REFINE_DATA_V1: a world made before has the rows without the second talisman - added once
+    # (only to a row still without a second material, so a recipe the operator changed stays)
+    L.append('-- MT2009_PLUS_REFINE_DATA_V1: the second talisman of the same level (the owner\'s upgrade sheet, 20 October)')
+    for r in refines:
+        L.append('UPDATE world.refine_proto SET vnum1=%d, count1=%d WHERE id=%d AND vnum0=%d AND vnum1=0;'
+                 % (r['vnum1'], r['count1'], r['id'], r['vnum0']))
     # the owner (13 October): 27007/27008 under their official names - the "(XXL)" the wiki and the Yohara chests
     # use (item_proto.mt2009plus.sql had "(XL)"; its INSERT IGNORE never renames a row that is there)
     # MT2009_PLUS_WILL_TALISMAN_V1: the first rows had the common Will as their apply 0 - gone (the lines are the item's)
