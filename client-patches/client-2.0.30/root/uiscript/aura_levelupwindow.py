@@ -1,8 +1,12 @@
-# MT2009_PLUS_AURA_V1: Owsap's aura level-up window (Autor: Owsap) for "ulepszanie" and "rozwoj" - slot 0 the outfit,
+# MT2009_PLUS_AURA_V1: Owsap's aura level-up window (Autor: Owsap) for "rozwoj" (runes) and "ewolucja" - slot 0 the outfit,
 # 1 the runes / the material, six lines of what will happen (uiaura.py). The pictures: locale/pl/ui/aura (GF).
+# MT2009_PLUS_AURA_UI_PATH_V1: the pictures by the locale path (AURA_UI) - LOCALE_UISCRIPT_PATH is "UIScript/" with
+# ENABLE_LOCALE_COMMON and there is no uiscript/aura in the packs ("Failed to load image ... aura_levelup_bg.sub").
 import uiScriptLocale
 import item
 import app
+
+AURA_UI = "%s/ui/aura/" % app.GetLocalePath()
 
 window = {
 	"name" : "Aura_LevelUpWindow",
@@ -56,7 +60,7 @@ window = {
 					"x" : 13,
 					"y" : 35,
 					
-					"image" : uiScriptLocale.LOCALE_UISCRIPT_PATH + "aura/aura_levelup_bg.sub",
+					"image" : AURA_UI + "aura_levelup_bg.sub",
 					
 					"children" :
 					(
@@ -91,7 +95,7 @@ window = {
 					"x" : 27,
 					"y" : 176,
 					
-					"image" : uiScriptLocale.LOCALE_UISCRIPT_PATH + "aura/aura_levelup_line.sub",
+					"image" : AURA_UI + "aura_levelup_line.sub",
 				},
 
 				## ToolTips				
