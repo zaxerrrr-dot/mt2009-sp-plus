@@ -79,7 +79,7 @@ def sql_vnums(path):
 def db_rows(container, sql):
     out = subprocess.run(['docker', 'exec', '-i', container, 'sh', '-c',
                           'mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" -B -N'], input=sql.encode(),
-                         stdout=subprocess.PIPE, check=True).stdout.decode('utf-8')
+                         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=True).stdout.decode('utf-8')
     return [l.split('\t') for l in out.split('\n') if l]
 
 

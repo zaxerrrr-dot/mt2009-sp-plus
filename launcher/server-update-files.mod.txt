@@ -411,6 +411,9 @@ linux-port/docker/mariadb/playerbot/yohara_helm100.sql
 # the guarded UPDATEs and the drops the sheet lists (game/Dockerfile appends them).
 linux-port/docker/mariadb/playerbot/yohara_moby_arkusz.sql
 linux-port/docker/game/yohara_arkusz/*
+# MT2009_PLUS_MOBY_GLOBAL_V1: the monsters before Yohara as on the global server (tools/ymoby_arkusz/gen_moby_global.py).
+linux-port/docker/mariadb/playerbot/moby_global.sql
+linux-port/docker/game/moby_global/*
 # MT2009_PLUS_AURA_V1 (server-patches/aura): Szata Aury - the engine files it changes are above (CommonDefines.h,
 # length.h, item_length.h, item.cpp, char.cpp, char_item.cpp, char_battle.cpp, questlua.cpp, cmd.cpp); the logic is
 # playerbot_aura.cpp (the playerbot_* lines), quest szata_aury (quest/*), the items szata_aury.sql.
