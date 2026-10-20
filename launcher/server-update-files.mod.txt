@@ -407,6 +407,10 @@ linux-port/docker/mariadb/playerbot/yohara_gloves.sql
 # MT2009_PLUS_HELM100_V1: the level-100 helmets, their materials and Straznik Smokow Jaharr (tools/yhelm100); quest
 # helm100 (quest/*), Jaharr's places in the towns (game/Dockerfile).
 linux-port/docker/mariadb/playerbot/yohara_helm100.sql
+# MT2009_PLUS_MOBY_ARKUSZ_V1: the Yohara monsters brought to the owner's sheet of 20 October 2026 (tools/ymoby_arkusz):
+# the guarded UPDATEs and the drops the sheet lists (game/Dockerfile appends them).
+linux-port/docker/mariadb/playerbot/yohara_moby_arkusz.sql
+linux-port/docker/game/yohara_arkusz/*
 # MT2009_PLUS_AURA_V1 (server-patches/aura): Szata Aury - the engine files it changes are above (CommonDefines.h,
 # length.h, item_length.h, item.cpp, char.cpp, char_item.cpp, char_battle.cpp, questlua.cpp, cmd.cpp); the logic is
 # playerbot_aura.cpp (the playerbot_* lines), quest szata_aury (quest/*), the items szata_aury.sql.
