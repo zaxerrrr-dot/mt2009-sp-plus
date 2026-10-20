@@ -298,6 +298,33 @@ AI_STONE4_KEYS = (
     ("STONE4_OFF", "Kamienie +4: stara reguła (każdy +4 w magazynie)", 0, 1, 0),
 )
 AI_LIVE_DEFAULTS.update({key: default for key, _, _, _, default in AI_STONE4_KEYS})
+# MT2009_PLUS_BOT_SHOP_MGMT_V1 / MT2009_PLUS_BOT_MARKET_PLAYER_PREF_V1: the bots'
+# shop management (playerbot_config.h, PLAYERBOT_SHOP_MGMT_KEYS): key, Polish
+# label, low, high, default - the core's own ranges.
+AI_SHOP_MGMT_KEYS = (
+    ("SHOP_MGMT_OFF", "Sklepy botów: stare zasady (wyłącza zarządzanie sklepem)", 0, 1, 0),
+    ("SHOP_MGMT_FILL_PCT", "Sklepy botów: docelowe zapełnienie (%)", 30, 100, 80),
+    ("SHOP_MGMT_FAR_PCT", "Sklepy botów: zapełnienie, od którego zdejmują kilka linii naraz (%)", 30, 100, 90),
+    ("SHOP_MGMT_BURST", "Sklepy botów: najwięcej zdjęć na wizytę", 1, 20, 8),
+    ("SHOP_MGMT_VALUABLE_YANG", "Sklepy botów: linia od tej ceny jest cenna (nie zdejmowana)", 0, 2000000000, 2000000),
+    ("SHOP_MGMT_CHEAP_YANG", "Sklepy botów: tani towar poniżej (Yang)", 0, 100000000, 100000),
+    ("SHOP_MGMT_CHEAP_PER_LEVEL", "Sklepy botów: próg taniego towaru na poziom bota (Yang)", 0, 1000000, 2500),
+    ("SHOP_MGMT_CHEAP_HOURS", "Sklepy botów: tani towar do handlarki po (h, 0 = nigdy)", 0, 240, 12),
+    ("SHOP_MGMT_GEAR_HOURS", "Sklepy botów: zwykły sprzęt do handlarki po (h, 0 = nigdy)", 0, 240, 24),
+    ("SHOP_MGMT_OBSOLETE_LEVELS", "Sklepy botów: sprzęt przestarzały, gdy tyle poziomów poniżej bota", 0, 120, 15),
+    ("SHOP_MGMT_OBSOLETE_HOURS", "Sklepy botów: przestarzały sprzęt do handlarki po (h)", 0, 240, 6),
+    ("SHOP_MGMT_L30_SALE_LINES", "Sklepy botów: broń 30 lvl ulepszana na sprzedaż, gdy na rynku mniej niż", 0, 1000, 20),
+    ("SHOP_MGMT_CURIOUS", "Sklepy botów: ulepszanie „z ciekawości” (1 = tak)", 0, 1, 0),
+    ("SHOP_MGMT_STACK", "Sklepy botów: wystawiaj jednym stosem (1 = tak)", 0, 1, 1),
+    ("SHOP_MGMT_RESTACK_MIN", "Sklepy botów: dołóż do stosu od tylu sztuk", 1, 200, 10),
+    ("SHOP_MGMT_PART_BUY", "Boty kupują część stosu (1 = tak)", 0, 1, 1),
+    ("SHOP_MGMT_GLUT_PCT", "Rynek przepełniony, gdy tyle % sklepów botów ponad cel", 0, 100, 25),
+    ("SHOP_MGMT_BROWSE_PCT", "Przepełniony rynek: odstęp przeglądania sklepów (% zwykłego)", 10, 100, 50),
+    ("SHOP_MGMT_IMPULSE_PCT", "Przepełniony rynek: godziny zakupów pod wpływem impulsu (%)", 0, 100, 24),
+    ("SHOP_MGMT_FULL_PREF_PCT", "Boty wolą kupować z przepełnionych sklepów (% taniej w ocenie)", 0, 50, 5),
+    ("SHOP_PLAYER_PREF_PCT", "Boty wolą sklepy graczy, nawet droższe o (%)", 0, 100, 10),
+)
+AI_LIVE_DEFAULTS.update({key: default for key, _, _, _, default in AI_SHOP_MGMT_KEYS})
 AI_SPECIAL_WEIGHT_KEYS = frozenset(AI_LIVE_DEFAULTS)
 AI_LIFE_HOURS_MAX = 24
 BIOLOGIST_COMPLETE_STATE = 557528158
@@ -3421,6 +3448,9 @@ def read_ai_weights():
                     elif key.startswith("STONE4_"):
                         low, high = next((lo, hi) for k, _, lo, hi, _ in AI_STONE4_KEYS if k == key)
                         values[key] = max(low, min(high, int(raw_value)))
+                    elif any(k == key for k, _, _, _, _ in AI_SHOP_MGMT_KEYS):  # MT2009_PLUS_BOT_SHOP_MGMT_V1
+                        low, high = next((lo, hi) for k, _, lo, hi, _ in AI_SHOP_MGMT_KEYS if k == key)
+                        values[key] = max(low, min(high, int(raw_value)))
                     else:
                         values[key] = max(AI_WEIGHT_MIN, min(AI_WEIGHT_MAX, int(raw_value)))
                 except ValueError:
@@ -3495,6 +3525,9 @@ def write_ai_weights(values):
             content.append(f"{key}\t{max(0, min(1000, int(values[key])))}")
     # MT2009_PLUS_BOT_STONE4_MARKET_V1
     for key, _, low, high, default in AI_STONE4_KEYS:
+        content.append(f"{key}\t{max(low, min(high, int(values.get(key, default))))}")
+    # MT2009_PLUS_BOT_SHOP_MGMT_V1
+    for key, _, low, high, default in AI_SHOP_MGMT_KEYS:
         content.append(f"{key}\t{max(low, min(high, int(values.get(key, default))))}")
     content.extend(preserved_ai_weight_lines())
     temporary = AI_WEIGHTS_FILE.with_suffix(".tsv.new")
@@ -10265,7 +10298,7 @@ def manage():
     bot_channels = sorted(per_channel.items()) if len(per_channel) > 1 else []
     updater = update_status()
     updater["protected"] = current_settings.get("auth_enabled") == "1" and bool(session.get("seban_admin"))
-    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, ai_stone4_keys=AI_STONE4_KEYS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers(), shop_big=read_shop_big())
+    return render_template("manage.html", rates=read_rates(), rate_presets=RATE_PRESETS, ai_weights=read_ai_weights(), sale_tax_max=SALE_TAX_MAX, chest_switch=read_chest_switch(), ai_weight_keys=[k for k in AI_WEIGHT_KEYS if not (ENGINE_MT2009 and k[0] == "HUNTING") and not (not ENGINE_MT2009 and k[0] == "HERB")], ai_weight_capped=AI_WEIGHT_CAPPED, ai_weight_hints=AI_WEIGHT_HINTS, ai_stone4_keys=AI_STONE4_KEYS, ai_shop_mgmt_keys=AI_SHOP_MGMT_KEYS, engine_mt2009=ENGINE_MT2009, restart=restart_progress(), settings=current_settings, map_counts=map_counts, bot_count=len(bots), bot_channels=bot_channels, map_respawn_options=MAP_RESPAWN_OPTIONS, map_stone_respawn_ids=MAP_STONE_RESPAWN_IDS, map_respawn_status=read_map_regen_status(), server_settings=server_settings_status(), updater=updater, playerbots_release=playerbots_release_status(), update_csrf=update_csrf_token(), bot_count_wanted=read_bot_count() if panel_feature_enabled("bot_count", current_settings) else len(live_bots()) or 350, spawn_plan=read_spawn_plan(), student_chest_disabled=read_student_chest_disabled() if panel_feature_enabled("student_chest", current_settings) else False, custom_patches_enabled=CUSTOM_PATCHES_ENABLED, include_real_players=include_real_players_in_rankings(), announce_plus9=read_announce_plus9_refines() if panel_feature_enabled("plus9_announcements", current_settings) else False, bots_held=read_bot_hold(), item_policy=read_ai_item_policy(), difficulty=read_difficulty(), drop_bonus=read_drop_bonus(), autohunt=read_autohunt(), channels=read_channel_settings(), channel_shares=CH2_SHARE_CHOICES, vouchers=read_vouchers(), shop_big=read_shop_big())
 
 
 @app.post("/manage/difficulty")
@@ -10875,6 +10908,12 @@ def manage_behavior():
             values[key] = default
     # MT2009_PLUS_BOT_STONE4_MARKET_V1: a field the page did not render keeps the file's value.
     for key, _, low, high, default in AI_STONE4_KEYS:
+        try:
+            values[key] = max(low, min(high, int(request.form.get(key, values.get(key, default)))))
+        except (TypeError, ValueError):
+            values[key] = default
+    # MT2009_PLUS_BOT_SHOP_MGMT_V1: the same for the shop management's keys.
+    for key, _, low, high, default in AI_SHOP_MGMT_KEYS:
         try:
             values[key] = max(low, min(high, int(request.form.get(key, values.get(key, default)))))
         except (TypeError, ValueError):
