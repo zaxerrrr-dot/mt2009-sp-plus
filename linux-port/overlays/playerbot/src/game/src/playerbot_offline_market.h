@@ -1419,34 +1419,71 @@ namespace {
         if (!wants) return false;
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
                 ? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
-        unsigned int looked = 0;
+        // MT2009_PLUS_BOT_MARKET_SCAN_ORDER_V1: the scan walked the stands in
+        // pid order and stopped after 400 previews, and only a line cheaper
+        // than the best so far was previewed - so the bots' own stands, low
+        // pids holding hundreds of medals, sashes and Cors, used the whole
+        // allowance and a person's stand (pid 9005, the last of 1435 on map
+        // 41) was never reached: no medal of his sold while the market sold
+        // some 800 a day. Now a first pass reads only the vnum and the price
+        // of every line of the map (no item built), the candidates are
+        // ordered cheapest unit first - a person's line before a bot's at the
+        // same unit, ties spread by bot so they do not all queue for one
+        // line - and the previews go down that list: the first line the
+        // purchase's rules accept is the cheapest buyable one, wherever its
+        // stand sits in pid order.
+        struct TSinkCandidate {
+            long long unit, price;
+            int personRank;
+            DWORD spread, owner, item, vnum;
+            NativeShop shop;
+        };
+        std::vector<TSinkCandidate> candidates;
+        auto& botManager = CPlayerBotManager::instance();
+        const DWORD self = ch->GetPlayerID();
         for (const auto& [pid, shop] : ikashop::GetManager().GetPlayerBotOfflineShops()) {
-            if (looked > 400) break;
-            if (!shop || pid == ch->GetPlayerID() || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
+            if (!shop || pid == self || shop->GetDuration() == 0 || shop->IsEditMode()) continue;
             const auto spawn = shop->GetSpawn();
             if (spawn.map != mapIndex || (int)spawn.channel != shopChannel) continue;
+            int personRank = -1;
             for (const auto& [id, line] : shop->GetItems()) {
                 if (!line) continue;
                 const DWORD vnum = line->GetInfo().vnum;
                 if (!IsPlayerBotSinkGoodsVnum(vnum) || (vnum == PLAYERBOT_HORSE_MEDAL_VNUM && !medal) ||
-                        IsPlayerBotLineClaimedByOther(id, ch->GetPlayerID(), now))
+                        IsPlayerBotLineClaimedByOther(id, self, now))
                     continue;
                 const long long price = (long long)line->GetPrice().GetTotalYangAmount();
+                if (price <= 0) continue;
+                if (personRank < 0)
+                    personRank = botManager.IsRegisteredBotPID(shop->GetOwnerPID()) ? 1 : 0;
                 const long long unit = price / std::max<long long>(1, (long long)line->GetInfo().count);
-                if (price <= 0 || (bestOwner && unit >= bestUnit)) continue;
-                if (++looked > 400) break;
-                LPITEM preview = BotOfflinePreview(*line);
-                if (!preview) continue;
-                const bool buyable = WantsPlayerBotStallItem(ch, preview) &&
-                        CanPlayerBotPayForOffer(ch, preview, price, shop->GetOwnerPID()) &&
-                        ch->GetEmptyInventory(preview->GetSize()) >= 0;
-                M2_DELETE(preview);
-                if (!buyable) continue;
-                bestOwner = shop->GetOwnerPID();
-                bestItem = id;
-                bestVnum = vnum;
-                bestUnit = unit;
+                candidates.push_back({ unit, price, personRank, (DWORD)((id ^ (self * 2654435761u)) * 2246822519u),
+                    shop->GetOwnerPID(), id, vnum, shop });
             }
+        }
+        std::sort(candidates.begin(), candidates.end(), [](const TSinkCandidate& a, const TSinkCandidate& b) {
+            if (a.unit != b.unit) return a.unit < b.unit;
+            if (a.personRank != b.personRank) return a.personRank < b.personRank;
+            return a.spread < b.spread;
+        });
+        unsigned int looked = 0;
+        for (const auto& c : candidates) {
+            if (++looked > 400) break;
+            const auto& items = c.shop->GetItems();
+            const auto it = items.find(c.item);
+            if (it == items.end() || !it->second) continue;
+            LPITEM preview = BotOfflinePreview(*it->second);
+            if (!preview) continue;
+            const bool buyable = WantsPlayerBotStallItem(ch, preview) &&
+                    CanPlayerBotPayForOffer(ch, preview, c.price, c.owner) &&
+                    ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            M2_DELETE(preview);
+            if (!buyable) continue;
+            bestOwner = c.owner;
+            bestItem = c.item;
+            bestVnum = c.vnum;
+            bestUnit = c.unit;
+            break;
         }
         return bestOwner != 0;
     }
