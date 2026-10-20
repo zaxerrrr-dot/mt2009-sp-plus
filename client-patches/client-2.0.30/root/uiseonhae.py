@@ -61,7 +61,7 @@ TEXT_RULES = (
 	"Seon-Hae dodaje 6. lub 7. bonus do broni, zbroi i bi\xbfuterii,",
 	"kt\xf3ra ma ju\xbf pi\xea\xe6 bonus\xf3w.",
 	"Ka\xbfdy Od\xb3amek poziomu przedmiotu daje 2% szansy (do 10).",
-	"Suplementy (do 5) zwi\xeakszaj\xb9 szans\xea - im wi\xeacej Od\xb3amk\xf3w, tym bardziej.",
+	"Suplement (do 5 szt.): Ma\xb3y +1%, \x8credni +2%, Du\xbfy +4%, Silny +10% za sztuk\xea.",
 	"Seon-Hae trzyma przedmiot przez jaki\x9c czas; po odbi\xf3r wr\xf3\xe6 do niego.",
 	"Od\xb3amki i Suplementy przepadaj\xb9 tak\xbfe przy niepowodzeniu.",
 )
@@ -220,7 +220,8 @@ def MaterialVnum(itemVnum):
 def ChancePct(materials, supportPct, supports):
 	pct = materials * SUCCESS_PER_MATERIAL
 	if supports > 0 and supportPct > 0:
-		pct += supportPct * supports * materials / (MATERIAL_MAX_COUNT * SUPPORT_MAX_COUNT)
+		# MT2009_PLUS_SEONHAE_WIKI_V1: the wiki's chance, as the core counts it (playerbot_seonhae.h)
+		pct += supportPct * supports / SUPPORT_MAX_COUNT
 	return max(0, min(100, pct))
 
 

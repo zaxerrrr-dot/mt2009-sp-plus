@@ -25,8 +25,8 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
   a rdzeń odrzuca każdy deskryptor bota).
 - **Okno** (`uiseonhae.py` + `uiscript/seonhaewindow.py` w kliencie): przedmiot (broń, zbroja,
   biżuteria z 5 bonusami i mniej niż 2 dodatkowymi), 1–10 Odłamków poziomu przedmiotu, 0–5
-  Suplementów. Szansa jak u Owsapa: `odłamki × 2 + suplement% × suplementy × odłamki / 50`, najwyżej
-  100 (10 odłamków = 20%, z 5 Silnymi Suplementami 70%).
+  Suplementów. Szansa jak na wiki (`MT2009_PLUS_SEONHAE_WIKI_V1`, niżej): `odłamki × 2 + % suplementu ×
+  sztuki`, najwyżej 100 (10 odłamków = 20%, z 5 Silnymi Suplementami 70%; 1 odłamek + 5 Silnych = 52%).
 - **Rdzeń sprawdza wszystko jeszcze raz** (`/seonhae add <komórka> <odłamki> <komórka suplementu>
   <suplementy>`): flaga, NPC po vid na tej samej mapie w promieniu 25 m i rozmowa sprzed najwyżej
   30 min, żadnego handlu/sklepu/magazynu/kostki/okna, komórka ekwipunku, typ, 5 bonusów, < 2
@@ -57,7 +57,7 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
 | 39076 | Czerwony Odłamek | 90–104 |
 | 39077 | Tęczowy Odłamek | 105–119 |
 | 39081 | Święty Odłamek | 120+ |
-| 72064–72067 | Mały / Średni / Duży / Silny Suplement | +5 / 10 / 20 / 50 |
+| 72064–72067 | Mały / Średni / Duży / Silny Suplement | +1 / 2 / 4 / 10% za sztukę (5 szt.: 5 / 10 / 20 / 50) |
 
 Lśniące Odłamki (`MT2009_PLUS_SEONHAE_LUCENT_V1`, poprawka 3.0 #9 – tabela pl-wiki „6. i 7. bonus”): poziom przedmiotu dokładnie 30 – Szary Lśniący (39078), 75 – Zielony Lśniący (39079), 105 – Żółty Lśniący (39080: Zodiak, biżuteria 105, Talizmany Woli); Żółty Lśniący także do broni, zbroi i hełmów na 96. poziom (Smoka Mroku) oraz do talizmanów. Wypadają z potworów Yohary (`tools/yohara_items`, `tools/yohara_maps3`).
 
@@ -95,3 +95,33 @@ shard_map 209
 shard_map 353
 shard 39070 1                # shard <vnum odłamka> <waga>; tak samo 39071-39077 i 39081
 ```
+
+## Szansa i poziom bonusu jak na wiki – `MT2009_PLUS_SEONHAE_WIKI_V1`
+
+Właściciel, 20.10.2026: Seon-Hae „jak z wiki”.
+
+**Szansa powodzenia** – pl-wiki „6. i 7. bonus”: każdy odłamek 2%, suplementy (najwyżej 5): Mały 1% (maks. 5%),
+Średni 2% (10%), Duży 4% (20%), Silny 10% (50%) – za sztukę, niezależnie od liczby odłamków (wcześniej, jak u Owsapa,
+suplement liczył się proporcjonalnie do odłamków: 1 odłamek + 5 Silnych = 7%). Tabela z wiki (5 suplementów):
+
+| Odłamki | Mały ×5 | Średni ×5 | Duży ×5 | Silny ×5 |
+|---|---|---|---|---|
+| x1 | 7% | 12% | 22% | 52% |
+| x2 | 9% | 14% | 22% | 54% |
+| x3 | 11% | 16% | 24% | 56% |
+| x4 | 13% | 18% | 26% | 58% |
+| x5 | 15% | 20% | 28% | 60% |
+| x6 | 17% | 22% | 30% | 62% |
+| x7 | 19% | 24% | 32% | 64% |
+| x8 | 21% | 26% | 34% | 66% |
+| x9 | 23% | 28% | 36% | 68% |
+| x10 | 25% | 30% | 38% | 70% |
+
+Rdzeń i okno klienta (`uiseonhae.py`, ten sam wzór) liczą `odłamki × 2 + % × sztuki`: zgadza się z każdą liczbą
+tabeli poza kolumną Dużego od x2 (wiki: 22, 22, 24 … 38 – powtórzone 22, przesunięcie o jeden; wzór i podane „4% za
+sztukę” dają 24, 26 … 40).
+
+**Poziom 6./7. bonusu** – wiki nie podaje szans poziomów. Seon-Hae losuje poziom tak samo jak Zaczarowanie 71051 i
+71052: `AddRareAttribute` z szansami panelu (`m2_rare_lv1` … `m2_rare_lv5`, domyślnie 35/30/20/10/5,
+`server-patches/rarelevelroll`), a nie stałą tabelą `AddRareAttribute2` 40/50/10/0/0 – poziomy 4–5 (maksima z wiki)
+wchodzą też od Seon-Hae. Bonus jest losowany równo spośród dozwolonych (kolumna wagi nie jest tu używana).

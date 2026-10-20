@@ -11,10 +11,10 @@
 //  - the player puts a weapon or an armour/jewel with all five ordinary bonuses
 //    and fewer than two extra ones, 1-10 Powershards of the item's level band
 //    (the band table below - Owsap's item_proto column 67AttrMaterial, which our
-//    protos have not) and 0-5 Additives (72064-72067: 5/10/20/50) and sends
+//    protos have not) and 0-5 Additives (72064-72067: 5/10/20/50 for five) and sends
 //    "/seonhae add <cell> <shards> <additive cell> <additives>". The chance is
-//    Owsap's: shards x 2 + additive% x additives x shards / 50, at most 100
-//    (10 shards 20 %, with 5 Power Additives 70 %).
+//    the wiki's (MT2009_PLUS_SEONHAE_WIKI_V1): shards x 2 + additive% x additives / 5,
+//    at most 100 (10 shards 20 %, with 5 Power Additives 70 %; 1 shard + 5 Power 52 %).
 //  - everything is checked here again (the client's window is only a form):
 //    the NPC by its vid on the same map within 25 m, the flag, no other window
 //    or trade, the item's cell, type, bonuses, the rare pool, the shard vnum by
@@ -29,7 +29,8 @@
 //    stuck when the quest is off: "/seonhae collect" at the NPC remakes the
 //    item (a new id) once the time is up. The roll is made at hand-in and kept
 //    in seonhae.result; the bonus itself is added to the remade item
-//    (AddRareAttribute2, as 71051 with ENABLE_ITEM_RARE_ATTR_LEVEL_PCT).
+//    (AddRareAttribute, as 71051: the level by the panel's m2_rare_lv1..5 -
+//    MT2009_PLUS_SEONHAE_WIKI_V1).
 //    Order for a crash: at hand-in the item's destroy reaches the db core at
 //    once and the flags right after it (ch->Save()); at collection the cleared
 //    flags go first and the remade item after them - at worst an item is lost,
@@ -58,7 +59,7 @@
 #include "constants.h"
 
 // MT2009_PLUS_SEONHAE_RESERVED_V1: items whose 6th/7th slots hold their own lines (Talizman Woli,
-// Obrecz Jadeitu, Rekawice Sung Ma) - AddRareAttribute2 refuses them, so Seon-Hae must not take them.
+// Obrecz Jadeitu, Rekawice Sung Ma) - AddRareAttribute(2) refuses them, so Seon-Hae must not take them.
 bool Mt2009WillTalismanType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/talizmanwoli)
 bool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/obreczjadeitu)
 bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType);	// playerbot_yohara_gear.cpp
@@ -164,11 +165,15 @@ namespace mt2009_seonhae
 		return 0;
 	}
 
+	// MT2009_PLUS_SEONHAE_WIKI_V1 (the owner, 20 October: "as the wiki"): the wiki's chance - 2% a shard plus the
+	// additive's own per cent for each one (Maly 1, Sredni 2, Duzy 4, Silny 10; SupportPct is the 5-piece total),
+	// independent of the shard count: 1 shard + 5 Silne = 52%, 10 + 5 Silne = 70%. Owsap's scaled the additives
+	// by shards / 10 (1 shard + 5 Silne = 7%).
 	int ChancePct(int materials, int supportPct, int supports)
 	{
 		int pct = materials * PCT_PER_MATERIAL;
 		if (supports > 0 && supportPct > 0)
-			pct += supportPct * supports * materials / (MATERIAL_MAX * SUPPORT_MAX);
+			pct += supportPct * supports / SUPPORT_MAX;
 		return std::max(0, std::min(100, pct));
 	}
 
@@ -460,7 +465,10 @@ namespace mt2009_seonhae
 			const int before = item->GetRareAttrCount();
 			if (before < ITEM_ATTRIBUTE_RARE_NUM && RarePoolHasRoom(item))
 			{
-				item->AddRareAttribute2();
+				// MT2009_PLUS_SEONHAE_WIKI_V1: the level by the panel's odds (m2_rare_lv1..5, 71051/71052's
+				// AddRareAttribute) instead of AddRareAttribute2's fixed 40/50/10/0/0 - levels 4-5 (the wiki's
+				// maxima) can come from Seon-Hae too.
+				item->AddRareAttribute();
 				added = item->GetRareAttrCount() > before;
 			}
 			if (!added)

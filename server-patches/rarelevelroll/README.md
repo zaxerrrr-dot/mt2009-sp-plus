@@ -2,8 +2,8 @@
 
 Poprawka silnika (`game/src/item_attribute.cpp`, `CItem::AddRareAttribute` –
 Zaczarowanie 71051 i Wzmocnienie 71052 (`ChangeRareAttribute`)). Znacznik: `MT2009_PLUS_RARE_LEVEL_ROLL_V1`.
-Seon-Hae (`playerbot_seonhae.h`) woła `AddRareAttribute2` – stała tabela poziomów 40/50/10/0/0, panelowe szanse
-go nie dotyczą (stan na 20.10.2026).
+Od 20.10.2026 także Seon-Hae (`playerbot_seonhae.h`, `MT2009_PLUS_SEONHAE_WIKI_V1`) woła `AddRareAttribute` –
+te same szanse panelu (wcześniej `AddRareAttribute2`, stała tabela 40/50/10/0/0).
 
 - Poziom bonusu (lv1–lv5 z tabeli `world.item_attr_rare`) jest losowany według
   wag z flag `m2_rare_lv1` … `m2_rare_lv5` (panel → Seon-Hae → „Szanse poziomów
