@@ -157,11 +157,12 @@ namespace
 			return;
 		const bool pressure = IsPlayerBotBagFull(ch) ||
 				CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
-		// MT2009_PLUS_BOT_BOOK_STACKS_V1: a bot that can never keep a counter
-		// (PlayerBotCanOpenShop - the second channel) puts its dear surplus
-		// books (IsPlayerBotStallOnlyBook) in the box whatever its bag holds:
-		// the merchant may not have them, and they wait there for the owner.
-		const bool stallLess = !PlayerBotCanOpenShop(ch);
+		// MT2009_PLUS_BOT_BOOK_STACKS_V1: a bot that can reach no counter
+		// (PlayerBotCanReachCounter - a second channel's bot reaches the first
+		// channel's through the shop-channel move, and carries its dear books
+		// there) puts its dear surplus books (IsPlayerBotStallOnlyBook) in the
+		// box whatever its bag holds: the merchant may not have them.
+		const bool stallLess = !PlayerBotCanReachCounter(ch);
 		if (!pressure && !stallLess)
 			return;
 		int keep = PLAYERBOT_SAFEBOX_BOOK_KEEP;
