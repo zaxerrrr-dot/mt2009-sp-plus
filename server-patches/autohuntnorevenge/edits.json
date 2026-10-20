@@ -1,0 +1,38 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (declare)",
+  "old": "ACMD(do_autohunt_loot);\n",
+  "new": "ACMD(do_autohunt_loot);\nACMD(do_autohunt_stop);\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (declare) (Autor: mur4s)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (table)",
+  "old": "\t{ \"autohunt_loot\",\tdo_autohunt_loot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"autohunt_loot\",\tdo_autohunt_loot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"autohunt_stop\",\tdo_autohunt_stop,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (table) (Autor: mur4s)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (unthrottled)",
+  "old": "s_apszUnthrottled[] = { \"autohunt_target\", \"autohunt_loot\", ",
+  "new": "s_apszUnthrottled[] = { \"autohunt_target\", \"autohunt_loot\", \"autohunt_stop\" /* MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (unthrottled) */, "
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (target)",
+  "old": "\t// playerbot: Auto Lowy only with the ItemShop's time (target).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\tif (!ch->FindAffect(560))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntOff item\");\n\t\t\treturn;\n\t\t}\n\t}\n\tchar arg1[256]",
+  "new": "\t// playerbot: Auto Lowy only with the ItemShop's time (target).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\tif (!ch->FindAffect(560))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntOff item\");\n\t\t\treturn;\n\t\t}\n\t}\n\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (target) (server-patches/autohuntnorevenge, Autor: mur4s): Auto Lowy are on - a blow of\n\t// this person at a bot is no attack for the bots (playerbot_anti_pk.h NotePlayerBotAutoHunt).\n\tCPlayerBotManager::instance().OnAutoHunt(ch, true);\n\tchar arg1[256]"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (stop)",
+  "old": "ACMD(do_autohunt_loot)\n{\n\t// playerbot: Auto Lowy switched off for this world (loot).\n",
+  "new": "// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (stop) (server-patches/autohuntnorevenge, Autor: mur4s): the client stopped Auto Lowy\n// (uiautohunt.py Stop) - from now on a blow at a bot counts as before, without waiting out\n// PLAYERBOT_AUTOHUNT_ACTIVE_MS. An older client without it: Auto Lowy end 5 s after its last question.\nACMD(do_autohunt_stop)\n{\n\tCPlayerBotManager::instance().OnAutoHunt(ch, false);\n}\n\nACMD(do_autohunt_loot)\n{\n\t// playerbot: Auto Lowy switched off for this world (loot).\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (loot)",
+  "old": "\t// playerbot: Auto Lowy only with the ItemShop's time (loot).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\tif (!ch->FindAffect(560))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntOff item\");\n\t\t\treturn;\n\t\t}\n\t}\n\tchar arg1[256]",
+  "new": "\t// playerbot: Auto Lowy only with the ItemShop's time (loot).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\tif (!ch->FindAffect(560))\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntOff item\");\n\t\t\treturn;\n\t\t}\n\t}\n\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (loot) (server-patches/autohuntnorevenge, Autor: mur4s): Auto Lowy are on - a blow of\n\t// this person at a bot is no attack for the bots (playerbot_anti_pk.h NotePlayerBotAutoHunt).\n\tCPlayerBotManager::instance().OnAutoHunt(ch, true);\n\tchar arg1[256]"
+ }
+]

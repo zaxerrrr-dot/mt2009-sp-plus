@@ -156,6 +156,10 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// protocol's only source of who is attacking a bot or a guild's person
 		// - the engine keeps no record of it.
 		void	OnPlayerStruck(LPCHARACTER victim, LPCHARACTER attacker);
+		// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (Autor: mur4s): a person's Auto Lowy
+		// asks for a target or loot (on) or was stopped (/autohunt_stop) -
+		// cmd_general.cpp; playerbot_anti_pk.h NotePlayerBotAutoHunt.
+		void	OnAutoHunt(LPCHARACTER ch, bool on);
 		// A boss or a king fell, and this is who struck the last blow
 		// (CHARACTER::Dead, mt2009 via playerbotify.py): the Demon Tower's
 		// Reaper is told with the name (playerbot_demon_tower.h).
