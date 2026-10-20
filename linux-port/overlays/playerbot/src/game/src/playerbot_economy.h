@@ -2442,6 +2442,25 @@ namespace
 				CPlayerBotManager::instance().IsMedalDropperCohortPID(ch->GetPlayerID()));
 	}
 
+	// MT2009_PLUS_BOT_BOOK_STACKS_V1 (the owner, 20 October): a skill book
+	// whose price-list value a piece (the bots' asking price, by the piece) is
+	// over SHOP_BOOK_STALL_MIN_PRICE (450 000) always goes to the stall and is
+	// never the merchant's - from any rule, the medal droppers' included. A
+	// bot that can never keep a counter (the second channel,
+	// PlayerBotCanOpenShop) puts it in its safebox (CollectPlayerBotSafeboxBooks).
+	DWORD GetPlayerBotShopAskingPrice(LPITEM item);
+	bool IsPlayerBotStallOnlyBook(LPITEM item)
+	{
+		if (!item || item->GetType() != ITEM_SKILLBOOK || IsPlayerBotMissionBook(item->GetVnum()))
+			return false;
+		const int floor = GetPlayerBotShopMgmt(PLAYERBOT_SM_BOOK_STALL_MIN_PRICE);
+		if (floor <= 0)
+			return false;
+		const long long unit = (long long)GetPlayerBotShopAskingPrice(item) /
+				std::max<long long>(1, (long long)item->GetCount());
+		return unit > floor;
+	}
+
 	bool IsPlayerBotMedalDropperSurplus(LPCHARACTER ch, LPITEM item)
 	{
 		if (!item || !IsPlayerBotMedalDropperBot(ch))
@@ -2449,6 +2468,9 @@ namespace
 		if (item->GetType() == ITEM_SKILLBOOK)
 		{
 			if (!IsPlayerBotSurplusSkillBook(ch, item))
+				return false;
+			// MT2009_PLUS_BOT_BOOK_STACKS_V1: a dear book is stall goods.
+			if (IsPlayerBotStallOnlyBook(item))
 				return false;
 			if (!PlayerBotHasCounter(ch))
 				return true;
@@ -2503,6 +2525,10 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return false;
 		}
+
+		// MT2009_PLUS_BOT_BOOK_STACKS_V1: a dear book is never the merchant's.
+		if (IsPlayerBotStallOnlyBook(item))
+			return false;
 
 		// MT2009_PLUS_BOT_SHOP_MGMT_V1: a line the shop management took home
 		// for the merchant is the merchant's, unless the bot has since found a

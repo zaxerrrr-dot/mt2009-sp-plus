@@ -153,8 +153,16 @@ namespace
 	void CollectPlayerBotSafeboxBooks(LPCHARACTER ch, std::vector<WORD>& cells)
 	{
 		cells.clear();
-		if (!ch || (!IsPlayerBotBagFull(ch) &&
-				CountPlayerBotFreeInventoryCells(ch) > PLAYERBOT_BAG_PRESSURE_FREE_CELLS))
+		if (!ch)
+			return;
+		const bool pressure = IsPlayerBotBagFull(ch) ||
+				CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
+		// MT2009_PLUS_BOT_BOOK_STACKS_V1: a bot that can never keep a counter
+		// (PlayerBotCanOpenShop - the second channel) puts its dear surplus
+		// books (IsPlayerBotStallOnlyBook) in the box whatever its bag holds:
+		// the merchant may not have them, and they wait there for the owner.
+		const bool stallLess = !PlayerBotCanOpenShop(ch);
+		if (!pressure && !stallLess)
 			return;
 		int keep = PLAYERBOT_SAFEBOX_BOOK_KEEP;
 		if (GetPlayerBotPersonalityByPID(ch->GetPlayerID()) == BOT_PERSONALITY_METIN_DROPPER)
@@ -170,6 +178,12 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!IsPlayerBotSurplusSkillBook(ch, item))
 				continue;
+			if (!pressure)
+			{
+				if (IsPlayerBotStallOnlyBook(item))
+					cells.push_back(cell);
+				continue;
+			}
 			if (counter && ch->GetSkillGroup() != 0 &&
 					!IsPlayerBotOwnSkill(ch, GetPlayerBotSkillBookSkillVnum(item)))
 				continue;
@@ -8194,7 +8208,9 @@ namespace
 		switch (item->GetType())
 		{
 			case ITEM_SKILLBOOK:
-				if (!IsPlayerBotSurplusSkillBook(ch, item) || IsPlayerBotMissionBook(item->GetVnum()))
+				// MT2009_PLUS_BOT_BOOK_STACKS_V1: nor a dear book, the stall's.
+				if (!IsPlayerBotSurplusSkillBook(ch, item) || IsPlayerBotMissionBook(item->GetVnum()) ||
+						IsPlayerBotStallOnlyBook(item))
 					return 0;
 				stallWorthy = true;
 				break;

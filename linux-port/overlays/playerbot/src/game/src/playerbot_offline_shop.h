@@ -1492,6 +1492,8 @@ namespace {
                 ((int)item->GetRefineLevel() >= 7 || IsPlayerBotBonusGoodsPiece(item)))
             return true;
         if (ch && IsPlayerBotGambleForSale(ch, item)) return true;
+        // MT2009_PLUS_BOT_BOOK_STACKS_V1: a dear book always goes to the stall.
+        if (IsPlayerBotStallOnlyBook(item)) return true;
         const long long price = linePrice > 0 ? linePrice : (long long)GetPlayerBotShopAskingPrice(item);
         const int valuable = GetPlayerBotShopMgmt(PLAYERBOT_SM_VALUABLE_YANG);
         return valuable > 0 && price >= valuable;
@@ -1501,8 +1503,23 @@ namespace {
     bool IsPlayerBotShopMgmtStackKind(LPITEM item) {
         if (!item || !item->IsStackable() || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_STACK)) return false;
         if (IsPlayerBotSafeRefineScroll(item->GetVnum())) return false;
+        // MT2009_PLUS_BOT_BOOK_STACKS_V1: and a skill book, one stack a skill.
+        if (item->GetType() == ITEM_SKILLBOOK) return !IsPlayerBotMissionBook(item->GetVnum());
         return IsPlayerBotBulkGoods(item) || IsPlayerBotTradeableMaterial(item) ||
                 IsPlayerBotHerbalismHerb(item->GetVnum());
+    }
+    // The key a counter stacks a line by: a book's skill (GetPlayerBotStallKindKeyOf),
+    // anything else's vnum.
+    DWORD BotOfflineStackKeyOf(const ikashop::CShopItem& line) {
+        const TItemTable* table = line.GetTable();
+        const auto& info = line.GetInfo();
+        if (table && table->bType == ITEM_SKILLBOOK)
+            return GetPlayerBotStallKindKeyOf(info.vnum, table->bType, info.alSockets[0], table->alValues[0]);
+        return info.vnum;
+    }
+    DWORD BotOfflineStackKey(LPITEM item) {
+        if (item && item->GetType() == ITEM_SKILLBOOK) return GetPlayerBotStallKindKey(item);
+        return item ? item->GetVnum() : 0;
     }
     // A line's age as the markdown clocks it (o.listed: from the listing, or
     // from the first visit that saw a line from before this core started).
@@ -1690,7 +1707,7 @@ namespace {
                 continue;
             if (bagFree < (int)table->bSize + PLAYERBOT_STALL_WEAK_TAKEOFF_BAG_KEEP) continue;
             if (o.stuckTakeOffItem == id && !playerbot_offline::Due(now, o.stuckTakeOffUntil)) continue;
-            TGroup& g = groups[line->GetInfo().vnum];
+            TGroup& g = groups[BotOfflineStackKeyOf(*line)];
             ++g.lines;
             const int count = (int)line->GetInfo().count;
             if (count >= 200) continue;   // a full line stays as it is
@@ -1700,7 +1717,7 @@ namespace {
                 g.smallestCount = count;
             }
         }
-        for (const auto& [vnum, g] : groups) {
+        for (const auto& [key, g] : groups) {
             if (!g.smallest || g.notFull == 0) continue;
             const auto& items = shop->GetItems();
             const auto it = items.find(g.smallest);
@@ -1711,7 +1728,9 @@ namespace {
                     GetPlayerBotItemPolicy(preview) == PLAYERBOT_ITEM_POLICY_NONE &&
                     (int)preview->GetCount() < (int)preview->GetMaxStack() &&
                     ch->GetEmptyInventory(preview->GetSize()) >= 0;
+            const DWORD vnum = preview->GetVnum();
             const bool herb = IsPlayerBotHerbalismHerb(vnum);
+            const bool book = preview->GetType() == ITEM_SKILLBOOK;
             M2_DELETE(preview);
             if (!kind) continue;
             // Two lines of it that are not full: the smallest comes home.
@@ -1722,15 +1741,18 @@ namespace {
             LPITEM held = NULL;
             for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && !held; ++cell) {
                 LPITEM bagItem = ch->GetInventoryItem(cell);
-                if (bagItem && bagItem->GetVnum() == vnum && !bagItem->IsEquipped() && !bagItem->isLocked())
+                if (bagItem && bagItem->GetVnum() == vnum && BotOfflineStackKey(bagItem) == key &&
+                        !bagItem->IsEquipped() && !bagItem->isLocked())
                     held = bagItem;
             }
             if (!held) continue;
-            const int spare = (int)ch->CountSpecifyItem(vnum) - GetPlayerBotStallBaseKeep(ch, held);
+            // A book's spare is over its skill's keep (GetPlayerBotCountedGoodsKeep).
+            const int spare = book ? CountPlayerBotStallKindUnits(ch, held) - GetPlayerBotCountedGoodsKeep(ch, held)
+                    : (int)ch->CountSpecifyItem(vnum) - GetPlayerBotStallBaseKeep(ch, held);
             // The kind whose second line came home last time goes on with
             // whatever came home: those pieces wait for this line otherwise.
             if (spare >= std::max(GetPlayerBotShopMgmt(PLAYERBOT_SM_RESTACK_MIN), g.smallestCount / 4) ||
-                    (spare > 0 && o.restackVnum == vnum))
+                    (spare > 0 && o.restackVnum == key))
                 return g.smallest;
         }
         return 0;
@@ -1740,10 +1762,10 @@ namespace {
         if (!id) return false;
         const auto& items = shop->GetItems();
         const auto line = items.find(id);
-        const DWORD vnum = line != items.end() && line->second ? line->second->GetInfo().vnum : 0;
+        const DWORD vnum = line != items.end() && line->second ? BotOfflineStackKeyOf(*line->second) : 0;
         int lines = 0;
         for (const auto& [lid, l] : items)
-            if (l && l->GetInfo().vnum == vnum && (int)l->GetInfo().count < 200) ++lines;
+            if (l && BotOfflineStackKeyOf(*l) == vnum && (int)l->GetInfo().count < 200) ++lines;
         if (!BotOfflineTakeOff(ch, state, id, 0, now, "mgmt_restack")) return false;
         state.offlineShop.restackAt = now ? now : 1;
         // A second line of the kind came home: the one left comes home next
@@ -1799,10 +1821,19 @@ namespace {
                     !IsPlayerBotShopMgmtKept(item->GetOwner(), item, 0, true))
                 return true;
             if (IsPlayerBotShopMgmtStacking() && IsPlayerBotShopMgmtStackKind(item) &&
-                    !IsPlayerBotHerbalismHerb(item->GetVnum()))
+                    !IsPlayerBotHerbalismHerb(item->GetVnum())) {
+                const DWORD key = BotOfflineStackKey(item);
                 for (const auto& [lid, l] : shop->GetItems())
-                    if (l && l->GetInfo().vnum == item->GetVnum() && (int)l->GetInfo().count < (int)item->GetMaxStack())
+                    if (l && l->GetInfo().vnum == item->GetVnum() && BotOfflineStackKeyOf(*l) == key &&
+                            (int)l->GetInfo().count < (int)item->GetMaxStack())
                         return true;
+                // MT2009_PLUS_BOT_BOOK_STACKS_V1: a book's stack replaces the
+                // lines a skill (PLAYERBOT_SHOP_COUNTED_SINGLE_LINES,
+                // PLAYERBOT_OTHER_CLASS_BOOK_SKILL_LINES): every line of it full,
+                // a new one goes up.
+                if (item->GetType() == ITEM_SKILLBOOK)
+                    return false;
+            }
         }
         // MT2009_PLUS_BOT_STONE4_MARKET_V1: no more +4 of a kind the world's
         // counters hold their cap of (playerbot_stone4.h).
@@ -2153,7 +2184,12 @@ namespace {
             // rest, the keep included, and the next visit cuts the next.
             const int keep = GetPlayerBotCountedGoodsKeep(ch, item);
             const int total = CountPlayerBotStallKindUnits(ch, item);
-            const int take = playerbot_stall_rules::LineTake((int)item->GetCount(), total, keep, units);
+            // MT2009_PLUS_BOT_BOOK_STACKS_V1: a book goes up as one stack of
+            // everything of its skill over the keep (the buyers take a part).
+            const int take = IsPlayerBotShopMgmtStacking() && item->GetType() == ITEM_SKILLBOOK &&
+                    !IsPlayerBotMissionBook(item->GetVnum())
+                    ? std::min(std::min((int)item->GetCount(), total - keep), std::max(1, (int)item->GetMaxStack()))
+                    : playerbot_stall_rules::LineTake((int)item->GetCount(), total, keep, units);
             cutNote.shape = per::SHAPE_COUNTED_SINGLE;
             cutNote.keep = keep;
             if (take <= 0) return -1;
