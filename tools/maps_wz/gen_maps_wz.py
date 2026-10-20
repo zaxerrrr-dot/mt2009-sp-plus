@@ -83,7 +83,9 @@ TARGET = {P_DESERT_IN: (10590, 7262), P_FROM_GIANT: (10590, 7262), P_TO_DESERT: 
 DESERT_ARRIVAL_FROM_10030 = (3519 - 2048, 6223 - 4864)     # 1471,1359
 
 # -- the wiki's levels (Ameria's / Owsap's: 1601 71, 1602 73 - the wiki 68 / 70); the golems are the wiki's already --
-LEVELS = collections.OrderedDict([(1401, 66), (1402, 73), (1403, 77), (1601, 68), (1602, 70), (1603, 75)])
+# MT2009_PLUS_OGRE_LEVEL_V1: the ogres 1601 / 1602 at the global sheet's 71 / 73 (= Ameria / Owsap), the owner,
+# 20 October 2026 (tools/ymoby_arkusz/moby_global_data.py) - the 15 October wiki's 68 / 70 overridden
+LEVELS = collections.OrderedDict([(1401, 66), (1402, 73), (1403, 77), (1601, 71), (1602, 73), (1603, 75)])
 OUR_LEVELS = {1401: 76, 1402: 83, 1403: 87, 1601: 78, 1602: 80, 1603: 85}       # 15 October 2026, the test server
 
 # -- the drops: what each wiki page lists and our mob_drop_item.txt does not drop yet (the official groups - kill
@@ -407,8 +409,9 @@ def write_drops(rep):
 
 def write_sql(rep):
     L = ['-- MT2009_PLUS_MAPS_WZ_V1: Wezowe Pole (80) and Kraina Gigantow (70) - the Giants\' and ogres\' levels as the',
-         '-- pl-wiki has them (Niszczyciel 66, Wojownik z Toporem 73, Tysieczny Wojownik 77, Ogr Wojownik 68, Ogr Rzeznik',
-         '-- 70, Ogr Szaleniec 75 - Owsap / Ameria agree but for the two ogres, 71 / 73; ours were 76/83/87/78/80/85; the',
+         '-- pl-wiki has them (Niszczyciel 66, Wojownik z Toporem 73, Tysieczny Wojownik 77, Ogr Szaleniec 75); Ogr',
+         '-- Wojownik 71 / Ogr Rzeznik 73 as the global sheet, Owsap and Ameria (the wiki 68 / 70; the owner 20.10.2026,',
+         '-- MT2009_PLUS_OGRE_LEVEL_V1); ours were 76/83/87/78/80/85; the',
          '-- golems 69/72/76 are the wiki\'s already). Only the level: HP, damage, exp and the rest stay ours. GENERATED',
          '-- by tools/maps_wz/gen_maps_wz.py. Every start (apply.sh), idempotent. Every vnum the maps spawn, portal and',
          '-- drop exists in our world already (15 October 2026, the test server): no INSERT.', 'SET NAMES utf8mb4;']

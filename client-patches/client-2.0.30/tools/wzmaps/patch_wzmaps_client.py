@@ -3,7 +3,7 @@
 #
 #   gamedata/mob_proto      the level byte (offset 57 of the 256-byte record, as ../rznm/patch_rznm_client.py) of the
 #                           Giants and ogres 1401-1403 / 1601-1603 = the server's (mariadb/playerbot/maps_wz.sql, the
-#                           pl-wiki's: 66/73/77/68/70/75) - the target window shows the client's level; nothing else
+#                           pl-wiki's: 66/73/77, the ogres 71/73 as the global sheet, 75) - the target window shows the client's level; nothing else
 #                           of the record changes. Every other vnum of the maps is in the client already;
 #   gamedata/atlasinfo.txt  the rows of the maps' own folders (= the server's Setting.txt: metin2_map_snakefield
 #                           1049600 716800 4 4, metin2_map_giantland 819200 716800 2 2) in place of the base
