@@ -438,6 +438,12 @@
   "new": "\t\t\t\t// MT2009_PLUS_TOOL_REFINE_POINTS_V1 (reopen): no new window for a tool without its points.\n\t\t\t\tif (refineCh && !RefineToolNotReady(refreshedItem))\n\t\t\t\t{\n\t\t\t\t\tint distance = DISTANCE_APPROX("
  },
  {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_WAR_KILL_QUEST_V1",
+  "old": "\t\t\telse\n\t\t\t{\n\t\t\t\tif (pkKiller->m_dwUnderGuildWarInfoMessageTime < get_dword_time())\n",
+  "new": "\t\t\telse\n\t\t\t{\n\t\t\t\t// MT2009_PLUS_WAR_KILL_QUEST_V1 (server-patches/enginefixes): a killer whose guild is at war gets\n\t\t\t\t// no experience and no drop, but the kill still counts for the quests (a dungeon's\n\t\t\t\t// \"Pozostalo\" counter, a hunting mission) - Reward() was skipped whole and a Metin or a\n\t\t\t\t// Phoenix Egg of Wukong's hill fell without its kill event. The companion's kill is its\n\t\t\t\t// owner's, as in Reward().\n\t\t\t\tpkKiller->SetQuestNPCID(GetVID());\n\t\t\t\tLPCHARACTER pkWarQuestKiller = CPlayerBotManager::instance().GetSidekickKillCredit(pkKiller, this);\n\t\t\t\tif (pkWarQuestKiller)\n\t\t\t\t\tpkWarQuestKiller->SetQuestNPCID(GetVID());\n\t\t\t\telse\n\t\t\t\t\tpkWarQuestKiller = pkKiller;\n\t\t\t\tquest::CQuestManager::instance().Kill(pkWarQuestKiller->GetPlayerID(), GetRaceNum());\n\n\t\t\t\tif (pkKiller->m_dwUnderGuildWarInfoMessageTime < get_dword_time())\n"
+ },
+ {
   "file": "ikarus_shop_manager.cpp",
   "marker": "MT2009_PLUS_IKASHOP_DS_V1 (helper)",
   "old": "void MoveAndDestroyInstance(LPITEM item, BYTE window, WORD pos)\n{\n",

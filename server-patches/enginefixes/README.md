@@ -49,3 +49,9 @@ linii ze sklepu miejsce na kamień jest sprawdzane w oknie Smoczej Alchemii (by�
 kupno kamienia, a pełne okno alchemii przepuszczało go do depozytu sklepu); kupujący bez odblokowanej Smoczej
 Alchemii dostaje komunikat.
 
+## Zabójstwo gracza z gildii na wojnie liczy się dla questów (`MT2009_PLUS_WAR_KILL_QUEST_V1`)
+
+`char_battle.cpp` (`CHARACTER::Dead`): zabójca, którego gildia prowadzi wojnę, nie dostaje doświadczenia ani dropu,
+ale rdzeń pomijał całe `Reward()` – razem ze zdarzeniem `kill` questów. Licznik lochu („Pozostało: 2” na Wzgórzu
+Wukonga, 16.10) stał. Teraz w tej gałęzi idzie samo `CQuestManager::Kill` (z zaliczeniem zabójstwa towarzysza jego
+właścicielowi, jak w `Reward()`); doświadczenie, drop, karty, owoce rang i Przepustka Bojowa – dalej nie.
