@@ -1786,6 +1786,10 @@ class ItemToolTip(ToolTip):
 				self.AppendTimerBasedOnWearLastTime(metinSlot)
 				#dbg.TraceError("1) REAL_TIME flag On ")
 
+		# MT2009_PLUS_COSTUME_SET_V2: an item of a costume set (any part - costume, hair, weapon skin, pet, mount, ring,
+		# amulet, sash) names its set and the bonuses of each grade (costume_set_bonus.py)
+		self.__AppendCostumeSetBonusInformation(itemVnum)
+
 		self.__AppendSealInformation(window_type, slotIndex) ## cyh itemseal 2013 11 11
 
 		self.AdditionalTips(window_type, itemVnum, metinSlot, slotIndex)
@@ -2005,6 +2009,13 @@ class ItemToolTip(ToolTip):
 			import costume_sets
 		except ImportError:
 			return
+		# MT2009_PLUS_COSTUME_SET_V2: a set of the global server's list has its own lines (__AppendCostumeSetBonusInformation)
+		try:
+			import costume_set_bonus
+			if costume_set_bonus.VNUM_SETS.has_key(itemVnum):
+				return
+		except ImportError:
+			pass
 		if itemVnum in costume_sets.BODY_SETS:
 			partners = [v for i in costume_sets.BODY_SETS[itemVnum] for v in costume_sets.SETS[i][1]]
 			line = 'Z pasuj\xb9c\xb9 fryzur\xb9: +800 P\xaf, +15 warto\x9cci ataku'
@@ -2032,6 +2043,34 @@ class ItemToolTip(ToolTip):
 		self.AppendTextLine(line, self.SPECIAL_POSITIVE_COLOR)
 		if names:
 			self.AppendTextLine('Pasuje: ' + ', '.join(names) + (' ...' if more else ''), self.CONDITION_COLOR)
+
+	# MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (costume_set_bonus.py, the server's "#Z" lines
+	# of costume_sets.txt). An item of one set: its name, its parts and every grade's bonuses (a grade is the whole bonus
+	# for that many parts, not added to the lower ones). An item of several sets (the rings and lollipops): their names.
+	def __AppendCostumeSetBonusInformation(self, itemVnum):
+		try:
+			import costume_set_bonus
+		except ImportError:
+			return
+		ids = costume_set_bonus.VNUM_SETS.get(itemVnum)
+		if not ids:
+			return
+		self.AppendSpace(5)
+		if len(ids) > 1:
+			names = [costume_set_bonus.SETS[i][0] for i in ids]
+			self.AppendTextLine('Cz\xea\x9c\xe6 zestaw\xf3w kostium\xf3w (%d)' % len(ids), self.SPECIAL_TITLE_COLOR)
+			for i in xrange(0, min(len(names), 6), 2):
+				self.AppendTextLine(', '.join(names[i:i + 2]), self.CONDITION_COLOR)
+			if len(names) > 6:
+				self.AppendTextLine('...', self.CONDITION_COLOR)
+			return
+		name, parts, grades = costume_set_bonus.SETS[ids[0]]
+		self.AppendTextLine('Zestaw kostium\xf3w: ' + name, self.SPECIAL_TITLE_COLOR)
+		self.AppendTextLine('Cz\xea\x9cci: ' + ', '.join([label for label, vnums in parts]), self.CONDITION_COLOR)
+		for count in sorted(grades.keys()):
+			self.AppendTextLine('%d cz\xea\x9cci (z %d):' % (count, len(parts)), self.NORMAL_COLOR)
+			for line in grades[count]:
+				self.AppendTextLine('  ' + line, self.SPECIAL_POSITIVE_COLOR)
 
 	def __AppendAffectInformation(self, attrList=None):
 		affectList = [item.GetAffect(i) for i in xrange(item.ITEM_APPLY_MAX_NUM)]

@@ -750,7 +750,7 @@ class AffectImage(BarItem):
 						self.tooltip.AppendSpace(5)
 					else:
 						self.tooltip.AppendTextLine(text)
-		if len(self.pointsDict) > 0:
+		if len(self.pointsDict) > 0 and self.affect != 545: # MT2009_PLUS_COSTUME_SET_V2: the set lists its own lines
 			self.tooltip.AppendSpace(5)
 			for point in self.pointsDict.keys():
 				try:
@@ -1179,7 +1179,18 @@ AFFECT_SHOW_DATA[AFFECT_YSET] = {
 	"description" : _YSetDescription,
 	"icon" : "mt2009_ui/affect/yset_bonus.tga",
 }
+# MT2009_PLUS_COSTUME_SET_V2: 545 is the costume set of the global server's list - its entry without a point has the
+# value set * 10 + parts worn (server-patches/zestawy); the tooltip names the set, the parts and that grade's bonuses
+# (costume_set_bonus.py, the sheet's lines - the drop chance among them, which is no point). The bonus entries' own
+# points are not listed under it (AffectImage.ShowToolTip), they would repeat the lines.
+def _CostumeSetDescription(value):
+	try:
+		import costume_set_bonus
+		return costume_set_bonus.AffectDescription(value)
+	except:
+		return "Bonus zestawu kostium\xf3w"
+
 AFFECT_SHOW_DATA[AFFECT_COSTUME_SET] = {
-	"description" : "Bonus zestawu kostium\xf3w;Kostium i fryzura z jednego zestawu",
+	"description" : _CostumeSetDescription,
 	"icon" : "mt2009_ui/affect/costume_set_bonus.tga",
 }
