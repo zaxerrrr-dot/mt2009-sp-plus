@@ -451,6 +451,14 @@ namespace
 		if (st == s_mapPlayerBotAIStates.end() || !st->second.persona.bRestored)
 			return false;
 		const TPlayerBotPersona& p = st->second.persona;
+		// MT2009_PLUS_BOT_STONE4_MARKET_V1: a +4 by its own rule
+		// (playerbot_stone4.h) - kept while it is the bot's own or waits in
+		// the box for room on the market, the box full or not.
+		{
+			const int role = GetPlayerBotStone4Role(ch, item, p.bLppBoxFull);
+			if (role != PLAYERBOT_STONE4_NONE)
+				return role == PLAYERBOT_STONE4_KEEP || role == PLAYERBOT_STONE4_BOX;
+		}
 		// A box with no room keeps nothing more: the bag's pieces sell as they
 		// always did until a visit finds room again (RefreshPlayerBotLppStored).
 		if (p.bLppBoxFull)
@@ -683,7 +691,10 @@ namespace
 			std::set<DWORD> release;
 			int kept = 0;
 			CollectPlayerBotLppBoxRelease(ch, box, release, &kept);
-			p.wLppReleasable = (WORD)std::min<size_t>(release.size(), 65535);
+			// MT2009_PLUS_BOT_STONE4_MARKET_V1: the +4 the box counts, and
+			// the ones it gives back while the market has room.
+			NotePlayerBotStone4Box(ch, box);
+			p.wLppReleasable = (WORD)std::min<size_t>(release.size() + (size_t)CountPlayerBotStone4Releasable(ch), 65535);
 			p.wLppBoxGearKept = (WORD)std::max(0, kept);
 			s_mapPlayerBotLppBagTotal.erase(ch->GetPlayerID());
 			p.dwLppReleaseVisitAt = get_dword_time() + PLAYERBOT_LPP_RELEASE_VISIT_GAP_MS;

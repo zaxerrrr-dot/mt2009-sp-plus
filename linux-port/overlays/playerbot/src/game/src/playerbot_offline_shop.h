@@ -1473,6 +1473,10 @@ namespace {
     // or a line cut for the add would stand in the bag unadded.
     bool BotOfflineCounterRefuses(NativeShop shop, LPITEM item) {
         if (!item) return true;
+        // MT2009_PLUS_BOT_STONE4_MARKET_V1: no more +4 of a kind the world's
+        // counters hold their cap of (playerbot_stone4.h).
+        if (IsPlayerBotStone4CounterFull(item))
+            return true;
         // MT2009_PLUS_LOW_GEAR_GLUT_V1: no more plain gear under level thirty
         // of a vnum the world's counters hold their cap of.
         if (IsPlayerBotLowGearGlutPiece(item) && IsPlayerBotLowGearGlutFull(item->GetVnum()))
@@ -1886,6 +1890,10 @@ namespace {
     void BotOfflinePrepareVisitLine(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop) {
         auto& o = state.offlineShop;
         o.preparedItem = 0;
+        // MT2009_PLUS_BOT_STONE4_MARKET_V1 (MT2009 PLUS port): the counter's
+        // room, for the +4 surplus (counter first, box and merchant after).
+        if (ch && shop && shop->GetDuration() != 0)
+            NotePlayerBotStone4StallRoom(ch, BotOfflineFreeCells(shop) > 0);
         if (!ch || !shop || shop->GetDuration() == 0) return;
         int lowGear = 0;
         BotOfflineUnwantedLine(ch, shop, lowGear);

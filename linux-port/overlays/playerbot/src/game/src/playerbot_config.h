@@ -155,6 +155,18 @@ namespace
 	// way a bot with no scroll refines - asked for as one setting for the whole
 	// world ("tylko mozna np uzywac na +7 +8 +9", Tieru).
 	int s_iPlayerBotScrollFromPlus = 1;
+	// MT2009_PLUS_BOT_STONE4_MARKET_V1 (the owner, 19 October): the soul
+	// stones +4 a bot keeps, puts on a counter, stores or sells to the merchant
+	// (playerbot_stone4.h). STONE4_OFF 1 is the old rule, every +4 kept.
+	// MT2009 PLUS: the market caps default to 0, no cap (the owner, 20 October).
+	int s_iPlayerBotStone4Keep = 4;
+	int s_iPlayerBotStone4KeepPercent = 60;
+	int s_iPlayerBotStone4MarketSeated = 0;
+	int s_iPlayerBotStone4MarketUnseated = 0;
+	int s_iPlayerBotStone4BoxSeated = 200;
+	int s_iPlayerBotStone4BoxUnseated = 2;
+	int s_iPlayerBotStone4ReleaseVisit = 2;
+	bool s_bPlayerBotStone4Off = false;
 	// The bots' guild wars (playerbot_guild_war.h): how long one lasts, in
 	// minutes - the engine's field war is thirty, and at fifteen the bots end
 	// theirs early - and how often a kingdom has one, in hours from the start
@@ -310,6 +322,14 @@ namespace
 		s_iPlayerBotTickBudgetMs = PLAYERBOT_TICK_BUDGET_MS_DEFAULT;
 		s_iPlayerBotKingdomPvpPercent = 0;
 		s_iPlayerBotScrollFromPlus = 1;
+		s_iPlayerBotStone4Keep = 4;
+		s_iPlayerBotStone4KeepPercent = 60;
+		s_iPlayerBotStone4MarketSeated = 0;
+		s_iPlayerBotStone4MarketUnseated = 0;
+		s_iPlayerBotStone4BoxSeated = 200;
+		s_iPlayerBotStone4BoxUnseated = 2;
+		s_iPlayerBotStone4ReleaseVisit = 2;
+		s_bPlayerBotStone4Off = false;
 		s_iPlayerBotWarMinutes = 30;
 		s_iPlayerBotWarEveryHours = 1;
 		s_iPlayerBotWarKills = 200;
@@ -372,6 +392,48 @@ namespace
 				return false;
 		}
 		return *szLeft == 0 && *szRight == 0;
+	}
+
+	// MT2009_PLUS_BOT_STONE4_MARKET_V1: the numbers of playerbot_stone4.h by
+	// their key, and the range each is held to.
+	struct TPlayerBotStone4Key
+	{
+		const char* szName;
+		int* piTarget;
+		int iLow;
+		int iHigh;
+	};
+
+	const TPlayerBotStone4Key* FindPlayerBotStone4Key(const char* szKey)
+	{
+		static const TPlayerBotStone4Key keys[] = {
+			{ "STONE4_KEEP", &s_iPlayerBotStone4Keep, 0, 50 },
+			{ "STONE4_KEEP_PCT", &s_iPlayerBotStone4KeepPercent, 0, 100 },
+			{ "STONE4_MARKET_SEATED", &s_iPlayerBotStone4MarketSeated, 0, 1000 },
+			{ "STONE4_MARKET_UNSEATED", &s_iPlayerBotStone4MarketUnseated, 0, 1000 },
+			{ "STONE4_BOX_SEATED", &s_iPlayerBotStone4BoxSeated, 0, 200 },
+			{ "STONE4_BOX_UNSEATED", &s_iPlayerBotStone4BoxUnseated, 0, 200 },
+			{ "STONE4_RELEASE_VISIT", &s_iPlayerBotStone4ReleaseVisit, 0, 50 },
+		};
+		for (size_t i = 0; i < sizeof(keys) / sizeof(keys[0]); ++i)
+			if (PlayerBotWeightNameEquals(szKey, keys[i].szName))
+				return &keys[i];
+		return NULL;
+	}
+
+	int* PlayerBotStone4SettingOf(const char* szKey)
+	{
+		const TPlayerBotStone4Key* key = FindPlayerBotStone4Key(szKey);
+		return key ? key->piTarget : NULL;
+	}
+
+	void ClampPlayerBotStone4Value(const char* szKey, long& value)
+	{
+		const TPlayerBotStone4Key* key = FindPlayerBotStone4Key(szKey);
+		if (key)
+			value = value < key->iLow ? key->iLow : (value > key->iHigh ? key->iHigh : value);
+		else
+			value = value != 0 ? 1 : 0;
 	}
 
 	void ApplyPlayerBotWeightLine(const char* szKey, long value)
@@ -680,6 +742,27 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			s_iPlayerBotKingdomPvpPercent = percent;
 			return;
 		}
+		// MT2009_PLUS_BOT_STONE4_MARKET_V1: one key a number, clamped.
+		{
+			int* const target = PlayerBotStone4SettingOf(szKey);
+			if (target)
+			{
+				long v = value;
+				ClampPlayerBotStone4Value(szKey, v);
+				if ((int)v != *target)
+					sys_log(0, "PLAYERBOT_CONFIG: %s %ld", szKey, v);
+				*target = (int)v;
+				return;
+			}
+			if (PlayerBotWeightNameEquals(szKey, "STONE4_OFF"))
+			{
+				const bool off = value != 0;
+				if (off != s_bPlayerBotStone4Off)
+					sys_log(0, "PLAYERBOT_CONFIG: soul stones +4 %s", off ? "by the old rule (STONE4_OFF)" : "by the stone4 market rule");
+				s_bPlayerBotStone4Off = off;
+				return;
+			}
+		}
 		if (PlayerBotWeightNameEquals(szKey, "WAR_MINUTES"))
 		{
 			const int minutes = value <= 15 ? 15 : 30;
@@ -924,6 +1007,12 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				PlayerBotWeightNameEquals(szKey, "SPOT"))
 		{
 			value = value ? 1 : 0;
+			return true;
+		}
+		// MT2009_PLUS_BOT_STONE4_MARKET_V1
+		if (PlayerBotStone4SettingOf(szKey) || PlayerBotWeightNameEquals(szKey, "STONE4_OFF"))
+		{
+			ClampPlayerBotStone4Value(szKey, value);
 			return true;
 		}
 		// MT2009_PLUS_BOT_CHAT_V2
@@ -1367,6 +1456,31 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			ResetPlayerBotWeights();
 		const int restMinutes = s_iPlayerBotWarEveryHours * 60 - s_iPlayerBotWarMinutes;
 		return std::max<DWORD>(PLAYERBOT_GUILD_WAR_RETRY_MS, (DWORD)std::max(0, restMinutes) * 60U * 1000U);
+	}
+
+	// MT2009_PLUS_BOT_STONE4_MARKET_V1
+	int GetPlayerBotStone4Setting(const int& setting)
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return setting;
+	}
+	int GetPlayerBotStone4KeepUnits() { return GetPlayerBotStone4Setting(s_iPlayerBotStone4Keep); }
+	int GetPlayerBotStone4KeepPercent() { return GetPlayerBotStone4Setting(s_iPlayerBotStone4KeepPercent); }
+	int GetPlayerBotStone4ReleaseVisit() { return GetPlayerBotStone4Setting(s_iPlayerBotStone4ReleaseVisit); }
+	int GetPlayerBotStone4MarketCapOf(bool seated)
+	{
+		return GetPlayerBotStone4Setting(seated ? s_iPlayerBotStone4MarketSeated : s_iPlayerBotStone4MarketUnseated);
+	}
+	int GetPlayerBotStone4BoxCapOf(bool seated)
+	{
+		return GetPlayerBotStone4Setting(seated ? s_iPlayerBotStone4BoxSeated : s_iPlayerBotStone4BoxUnseated);
+	}
+	bool IsPlayerBotStone4Off()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_bPlayerBotStone4Off;
 	}
 
 	int GetPlayerBotScrollFromPlus()
