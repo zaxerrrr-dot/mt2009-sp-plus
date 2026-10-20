@@ -2762,12 +2762,25 @@ namespace
 		return at >= plus ? proto : NULL;
 	}
 
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_LEVEL75_V1: a level-75 weapon (the Stalki
+	// weapon families, playerbot_stalki_rules.h).
+	bool IsPlayerBotLevel75Weapon(LPITEM item)
+	{
+		return item && item->GetType() == ITEM_WEAPON &&
+				playerbot_stalki_rules::KindOf(item->GetVnum()) == playerbot_stalki_rules::KIND_WEAPON;
+	}
+
 	// A weapon whose lines are worth more than any blacksmith's odds: refined
 	// under a scroll at every step or not at all (PLAYERBOT_WEAPON_SCROLL_ONLY_*).
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_LEVEL75_V1: and a level-75 weapon, whatever
+	// its lines - the plain anvil never takes one; a scroll that hands it back
+	// on a failure does, or it waits (PlayerBotNeedsScrollForWeapon buys them).
 	bool IsPlayerBotScrollOnlyWeapon(LPITEM item)
 	{
 		if (!item || item->GetType() != ITEM_WEAPON)
 			return false;
+		if (IsPlayerBotLevel75Weapon(item))
+			return true;
 		long avg = 0, skill = 0;
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{
@@ -3688,6 +3701,33 @@ namespace
 	// Defined in playerbot_economy.h, beside the prize line it asks for.
 	LPITEM FindPlayerBotLinesProject(LPCHARACTER ch);
 
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1 (playerbot_upstream_botlogic.h).
+	bool IsPlayerBotLottery30Piece(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotFutureProject(LPCHARACTER ch, LPITEM item);
+	BYTE GetPlayerBotFutureProjectTarget(LPCHARACTER ch, LPITEM item);
+
+	// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOW_GEAR_V1: a mature bot (from
+	// PLAYERBOT_MATURE_GEAR_LEVEL) puts no more yang into its weakest gear - a
+	// weapon or armour piece PLAYERBOT_MATURE_LOW_GEAR_GAP levels and more under
+	// its own level. The refine target stops at the plus the piece has, so the
+	// planner, the material shopping and both refine passes agree. Not the
+	// level-30 weapons (their own rules), an Archer's stone dagger, a piece a
+	// sale rule raises for a counter, the scroll rule's piece or the sash's
+	// grail; and the Law of Advancement's plus (GetPlayerBotLawRefinePlus) is
+	// asked beside the target, so a piece the law is short of still climbs.
+	bool IsPlayerBotMatureLowGear(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || (int)ch->GetLevel() < PLAYERBOT_MATURE_GEAR_LEVEL ||
+				(item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR) ||
+				(int)item->GetLevelLimit() + PLAYERBOT_MATURE_LOW_GEAR_GAP > (int)ch->GetLevel())
+			return false;
+		if (IsPlayerBotSpecialLevel30Weapon(item) || IsPlayerBotArcherStoneWeapon(ch, item) ||
+				IsPlayerBotSashGrailProject(ch, item) || IsPlayerBotScrollRulePiece(ch, item) ||
+				PlayerBotRefinesLowArmourForSale(ch, item) || PlayerBotRefinesSpareForSale(ch, item))
+			return false;
+		return true;
+	}
+
 	BYTE GetPlayerBotRefineTargetOwnBase(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item)
@@ -3723,6 +3763,14 @@ namespace
 		// One of another class, ground for sale, as far as its ceiling.
 		if (PlayerBotRefinesLevel30ForSale(ch, item))
 			return GetPlayerBotLevel30SaleTarget(item);
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOTTERY30_V1: a surplus one the anvil
+		// took today (IsPlayerBotLottery30Piece), as far as its ceiling.
+		if (IsPlayerBotLottery30Piece(ch, item))
+			return GetPlayerBotLevel30SaleTarget(item);
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_FUTURE_V1: the piece a rich bot makes
+		// ready for its next tier (GetPlayerBotFutureProjectTarget).
+		if (IsPlayerBotFutureProject(ch, item))
+			return GetPlayerBotFutureProjectTarget(ch, item);
 		// Under Iwakura's personalities the helmet, the boots and the jewellery
 		// go no further than +4 until the weapon, the armour and the shield
 		// stand at +7 (GetPlayerBotRefineAmbition) - and a scroll in the bag,
@@ -3764,6 +3812,10 @@ namespace
 	// then agree that the step is wanted.
 	BYTE GetPlayerBotRefineTargetOwn(LPCHARACTER ch, LPITEM item)
 	{
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_LOW_GEAR_V1: no step on a mature bot's
+		// weakest gear.
+		if (IsPlayerBotMatureLowGear(ch, item))
+			return item->GetRefineLevel();
 		BYTE target = GetPlayerBotRefineTargetOwnBase(ch, item);
 		// The helmet worn from level fifty goes to +6 at least, past the
 		// persona's cap on the small pieces: it was the outdated gear's slot

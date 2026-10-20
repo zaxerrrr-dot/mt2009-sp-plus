@@ -694,6 +694,18 @@ namespace
 				wanted = freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
 				why = "stalki";
 			}
+			else if (!pGambler && !IsPlayerBotSidekickServing(ch) && IsPlayerBotPersonaEnabled() &&
+					IsPlayerBotOwnBoxGear(ch, item))
+			{
+				// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1: a weapon or armour
+				// piece of its own that beats what it wears comes out before
+				// the counters sell it one (IsPlayerBotOfferBeatenByOwnBox), into
+				// a bag with room for it; the equipment pass puts it on. Iwakura's
+				// list keeps a gambler's stock, not a piece its keeper would wear.
+				const int freeAfter = CountPlayerBotFreeInventoryCells(ch) - (int)item->GetSize();
+				wanted = freeAfter >= 1;
+				why = "own_gear";
+			}
 			else if (!pGambler && IsPlayerBotFinishedSpareGoods(ch, item) && PlayerBotHasCounter(ch))
 			{
 				// A weapon, armour or shield from +7 that what the bot fights in
@@ -1249,7 +1261,8 @@ namespace
 				(IsPlayerBotGambling(state, dwNow) && !state.persona.bGambleSafeboxChecked) ||
 				PlayerBotWantsLppRelease(ch, state, dwNow) ||
 				PlayerBotWantsMaterialRelease(ch, state, dwNow) ||
-				PlayerBotSidekickWantsBoxSweep(ch);	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
+				PlayerBotSidekickWantsBoxSweep(ch) ||	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
+				PlayerBotWantsOwnBoxGear(ch, state, dwNow);	// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1
 		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion sent to sell its scrap
 		// ("sprzedaj") calls on the merchants with scrap of theirs and nobody else.
 		if (IsPlayerBotSidekickSellOnly(ch))
@@ -4155,6 +4168,13 @@ namespace
 				PlayerBotPriceStep(per::STEP_WALLET, unit, wallet, permille, worthPercent);
 			}
 		}
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_MATERIAL_PRICE_V1: a refine material on
+		// a bot's counter starts PLAYERBOT_UPSTREAM_MATERIAL_PRICE_PERCENT of its
+		// prior (the scrolls not) - the sale memory, the index and the step
+		// limiter move it from there as before.
+		if (unit > 0 && IsPlayerBotTradeableMaterial(item) && !IsPlayerBotSafeRefineScroll(item->GetVnum()))
+			unit = (DWORD)std::min<unsigned long long>(0xFFFFFFFFULL, (unsigned long long)unit *
+					(unsigned long long)PLAYERBOT_UPSTREAM_MATERIAL_PRICE_PERCENT / 100ULL);
 		// And never under what the blacksmith was paid.
 		if (investment > unit)
 		{
@@ -4902,6 +4922,11 @@ namespace
 		// merchant's. Before the caps below, which would have sent Lwi Miecz
 		// home as one of the junk weapons and a black-steel armour at +0..+4 as
 		// one of a flooded family.
+		// MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the next tier's piece a rich bot
+		// makes ready, and the surplus level-30 weapon at the anvil today, are
+		// no goods (playerbot_upstream_botlogic.h).
+		if (ch && (IsPlayerBotFutureProject(ch, item) || IsPlayerBotLottery30Piece(ch, item)))
+			return -1;
 		if (IsPlayerBotStalkiItem(item))
 		{
 			if (ch && (IsPlayerBotKeptStalki(ch, item) || IsPlayerBotHigherTierSpare(ch, item)))
