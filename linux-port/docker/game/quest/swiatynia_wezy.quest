@@ -435,6 +435,7 @@ quest swiatynia_wezy begin
 				end
 			end
 			swiatynia_wezy.level_tick(now)
+			swiatynia_wezy.watch_targets() -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 		end
 
 		when swiatynia_atk.server_timer begin
@@ -508,7 +509,7 @@ quest swiatynia_wezy begin
 				elseif m >= 6 and d.getf("warrior") == 0 and spent >= 240 and d.count_monster() == 0 then
 					d.setf("warrior", 1)
 					local x, y = swiatynia_wezy.room_xy(4, {0, -35})
-					d.spawn_mob(6765, x, y)
+					swiatynia_wezy.spawn_warrior(6765, x, y) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 					d.notice("Potê¿ny Wojownik Wê¿owy (ziemia) wkracza do sali!")
 				elseif m >= 6 and d.getf("warrior") == 0 and spent < 240 and now - d.getf("g_t") >= 30 then
 					d.setf("g_t", now)
@@ -540,6 +541,68 @@ quest swiatynia_wezy begin
 			end
 		end
 
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): levels 3 and 4
+		-- went on only with their kill events, so a Metin or a Warrior that left without one (a kill the core
+		-- gave no quest event, a monster removed) held the temple until its time ran out. They are instance
+		-- uniques now (tw3_<element>, tw4_<n>), looked at with the level's tick (watch_targets): the wanted
+		-- Metin gone counts as destroyed in order, another one gone comes back at its corner (no penalty -
+		-- nobody chose it); a Warrior gone counts as beaten.
+		function spawn_metin(k)
+			local c = swiatynia_wezy.cfg()
+			local x, y = swiatynia_wezy.room_xy(3, c.corners[d.getf("corner"..k)])
+			local vid = d.spawn_mob(c.el[k].metin, x, y)
+			if vid ~= 0 then
+				d.set_unique("tw3_"..k, vid)
+			end
+			d.setf("tw3v"..k, vid)
+			if vid == 0 then
+				d.setf("tw3v"..k, -1)
+			end
+		end
+
+		function spawn_warrior(race, x, y)
+			local n = d.getf("tw4_n") + 1
+			d.setf("tw4_n", n)
+			local vid = d.spawn_mob(race, x, y)
+			if vid ~= 0 then
+				d.set_unique("tw4_"..n, vid)
+			end
+			d.setf("tw4v", vid)
+			if vid == 0 then
+				d.setf("tw4v", -1)
+			end
+			d.setf("tw4r", race)
+		end
+
+		function watch_targets()
+			local lvl = d.getf("lvl")
+			if lvl == 3 then
+				for k = 1, 4 do
+					local v = d.getf("tw3v"..k)
+					if v ~= 0 and (v < 0 or d.is_unique_dead("tw3_"..k)) then
+						d.setf("tw3v"..k, 0)
+						if k == d.getf("o"..d.getf("next")) then
+							d.notice("Metin Wê¿owy znikn¹³ - liczy siê jak zniszczony.")
+							swiatynia_wezy.metin_down(k)
+							return
+						end
+						swiatynia_wezy.spawn_metin(k)
+					end
+				end
+			elseif lvl == 4 then
+				local v = d.getf("tw4v")
+				if v ~= 0 and (v < 0 or d.is_unique_dead("tw4_"..d.getf("tw4_n"))) then
+					d.setf("tw4v", 0)
+					d.notice("Potê¿ny Wojownik Wê¿owy znikn¹³ - liczy siê jak pokonany.")
+					if d.getf("tw4r") == 6765 then
+						swiatynia_wezy.warrior_down()
+					else
+						swiatynia_wezy.ice_warrior_down()
+					end
+				end
+			end
+		end
+
 		function spawn_metins()
 			local c = swiatynia_wezy.cfg()
 			-- the four element Metins in the corners, at random
@@ -549,17 +612,22 @@ quest swiatynia_wezy begin
 				o[i], o[j] = o[j], o[i]
 			end
 			for i = 1, 4 do
-				local x, y = swiatynia_wezy.room_xy(3, c.corners[i])
-				d.spawn_mob(c.el[o[i]].metin, x, y)
 				d.setf("corner"..o[i], i)
+				swiatynia_wezy.spawn_metin(o[i]) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			end
 			d.setf("next", 1)
 			d.setf("dead_mask", 0)
 		end
 
 		when 8630.kill or 8631.kill or 8632.kill or 8633.kill with swiatynia_wezy.inside() and d.getf("lvl") == 3 begin
-			local c = swiatynia_wezy.cfg()
 			local e = npc.get_race() - 8629      -- 1 fire, 2 ice, 3 wind, 4 earth
+			d.setf("tw3v"..e, 0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+			swiatynia_wezy.metin_down(e)
+		end
+
+		-- A Metin of level 3 down (its kill, or watch_targets for the wanted one gone).
+		function metin_down(e)
+			local c = swiatynia_wezy.cfg()
 			local want = d.getf("o"..d.getf("next"))
 			if e == want then
 				local n = d.getf("next") + 1
@@ -577,8 +645,7 @@ quest swiatynia_wezy begin
 				local mask = d.getf("dead_mask") + math.pow(2, e - 1)
 				for k = 1, 4 do
 					if math.mod(math.floor(mask / math.pow(2, k - 1)), 2) == 1 then
-						local x, y = swiatynia_wezy.room_xy(3, c.corners[d.getf("corner"..k)])
-						d.spawn_mob(c.el[k].metin, x, y)
+						swiatynia_wezy.spawn_metin(k) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 					end
 				end
 				d.setf("next", 1)
@@ -587,20 +654,30 @@ quest swiatynia_wezy begin
 		end
 
 		when 6765.kill with swiatynia_wezy.inside() and d.getf("lvl") == 4 begin
+			d.setf("tw4v", 0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+			swiatynia_wezy.warrior_down()
+		end
+
+		function warrior_down()
 			local x, y = swiatynia_wezy.room_xy(4, {0, -35})
 			d.setf("extra", number(0, 3))
 			d.setf("extra_left", d.getf("extra"))
-			d.spawn_mob(6755, x, y)
+			swiatynia_wezy.spawn_warrior(6755, x, y) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 			d.notice("Potê¿ny Wojownik Wê¿owy odradza siê w lodzie!")
 		end
 
 		when 6755.kill with swiatynia_wezy.inside() and d.getf("lvl") == 4 begin
+			d.setf("tw4v", 0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+			swiatynia_wezy.ice_warrior_down()
+		end
+
+		function ice_warrior_down()
 			local c = swiatynia_wezy.cfg()
 			local left = d.getf("extra_left")
 			if left > 0 then
 				d.setf("extra_left", left - 1)
 				local x, y = swiatynia_wezy.room_xy(4, c.six[number(1, 6)])
-				d.spawn_mob(6755, x, y)
+				swiatynia_wezy.spawn_warrior(6755, x, y) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
 				d.notice("Kolejny Potê¿ny Wojownik Wê¿owy (lód)!")
 				return
 			end

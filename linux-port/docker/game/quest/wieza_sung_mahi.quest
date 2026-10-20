@@ -453,6 +453,8 @@ quest wieza_sung_mahi begin
 				{{110, 440, 7}, {72, 440, 3}}, {{118, 448, 7}, {65, 448, 3}}, {{110, 448, 7}, {72, 448, 3}}}
 			local odd = number(1, 12)
 			d.setf("odd", odd)
+			d.setf("tw_odd_a", 0) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+			d.setf("tw_odd_b", 0)
 			for i = 1, 12 do
 				local a = 7615 + number(0, 5)
 				local b = a
@@ -798,6 +800,12 @@ quest wieza_sung_mahi begin
 				end
 			elseif room == 3 and d.getf("boss_dead") == 1 then
 				wieza_sung_mahi.floor_done()
+			elseif room == 3 and d.getf("boss_vid") > 0 and d.is_unique_dead("tw_boss"..d.getf("floor")) then
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): the floor's boss
+				-- gone without its kill event (a kill the core gave no quest event, a boss removed) - the floor is
+				-- won as after his kill (the ranking keeps to real kills).
+				d.setf("boss_dead", 1)
+				d.notice("Boss piêtra znikn¹³ - piêtro zdobyte.")
 			elseif room == 3 then
 				if d.getf("waves") == 0 and d.getf("boss_vid") == 0 and d.count_monster() == 0 then
 					local f = d.getf("floor")
@@ -811,6 +819,9 @@ quest wieza_sung_mahi begin
 						v = c.el[e][1] + 5
 					end
 					d.setf("boss_vid", d.spawn_mob(v, 407, 434))
+					if d.getf("boss_vid") > 0 then
+						d.set_unique("tw_boss"..d.getf("floor"), d.getf("boss_vid")) -- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1
+					end
 					d.notice("Pojawia siê "..mob_name(v).."! Pokonaj go, by zdobyæ piêtro.")
 				end
 				wieza_sung_mahi.branches(now)
@@ -845,6 +856,10 @@ quest wieza_sung_mahi begin
 					wieza_sung_mahi.room_cleared()
 				end
 			elseif t == 2 then
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the right Metin gone without its kill event - as after its kill.
+				if d.getf("wrong") == 0 and d.is_unique_dead("ms"..d.getf("good")) then
+					d.setf("task_ok", 1)
+				end
 				if d.getf("wrong") == 1 and d.getf("waves") == 0 and d.count_monster() == 0 then
 					wieza_sung_mahi.room_cleared()
 				end
@@ -853,6 +868,21 @@ quest wieza_sung_mahi begin
 					wieza_sung_mahi.room_cleared()
 				end
 			elseif t == 4 then
+				-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the odd pair counted by its kill events (odd_dead); a monster of it
+				-- gone without one no longer holds the room - both gone is the task done.
+				if d.getf("wrong") == 0 then
+					local odd = d.getf("odd")
+					local gone = 0
+					for i, side in next, {"a", "b"}, nil do
+						if d.getf("tw_odd_"..side) == 0 and d.is_unique_dead("c"..side..odd) then
+							d.setf("tw_odd_"..side, 1)
+						end
+						gone = gone + d.getf("tw_odd_"..side)
+					end
+					if gone >= 2 then
+						d.setf("task_ok", 1)
+					end
+				end
 				if d.getf("wrong") == 1 and d.count_monster() == 0 then
 					wieza_sung_mahi.room_cleared()
 				end
