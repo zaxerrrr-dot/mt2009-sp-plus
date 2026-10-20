@@ -126,7 +126,9 @@ for v in list(range(50516, 50524)) + list(range(50560, 50568)):       # their bo
     add(v, status=need(WARD))
 add(50525, status=need(WARD + ' (their master levels)'))              # Kamien Duchowy+
 # Ksiega Precyzji: the passive skill Precyzja (skill_proto 246, MT2009_PLUS_PRECISION_SKILL_V1, server-patches/precyzja)
-add(50325, desc=u'Przeczytanie księgi umożliwi ci zwiększenie precyzji. Znika po przeczytaniu. '
+# MT2009_PLUS_PRECISION_BOOK_STACK_V1 (the owner, 15 October 2026, fix 13): it stacks to 200 like the skill books
+# (50300); Owsap's row has no ITEM_STACKABLE. Reading takes one book of the stack (ENABLE_BOOKS_STACKFIX, char_item.cpp).
+add(50325, stackable=True, desc=u'Przeczytanie księgi umożliwi ci zwiększenie precyzji. Znika po przeczytaniu. '
                 u'Wymaga co najmniej 1. Poziomu Czempiona.')
 for v in range(50338, 50344):                                         # Charyzma / Inspiracja x3
     add(v, status=need('the leadership books Charyzma / Inspiracja - none here yet'))
@@ -215,6 +217,8 @@ def main():
         if it['status'] != ST or ov.get('tradeable'):
             anti &= ~ANTI_TRADE        # an item without its system: at least tradeable (the owner's rule)
         flag = flags(o['Flags'], FLAGS, 'flag')
+        if ov.get('stackable'):         # MT2009_PLUS_PRECISION_BOOK_STACK_V1: stacks as our other books (50300)
+            flag |= FLAGS['ITEM_STACKABLE']
         wear = flags(ov.get('wear', o['WearFlags']), WEAR, 'wearflag')
         refined = ov.get('refined', int(o['RefinedVnum']))
         refine_set = ov.get('refine_set', int(o['RefineSet']))

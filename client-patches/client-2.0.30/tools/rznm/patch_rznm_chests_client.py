@@ -24,6 +24,10 @@ RECORD = 184
 ANTI_STACK = 32768
 STACKABLE = 4
 CHESTS = (50270, 50271)
+# MT2009_PLUS_CHEST_NO_STACK_V1 (the owner, 15 October 2026, fix 8): Skrzynia Hydry (54705, patch_yohara_client.py's
+# record, which runs before) single as well, and all of them a stack of 1 - apply.sh's MT2009_PLUS_CHEST_NO_STACK_V1
+# block writes the same; Skrzynia Berana-Setaou (54700) is beran/patch_beran_chest_client.py's (stack 1, ANTI_STACK).
+NO_STACK = CHESTS + (54705,)
 DESC = {
     50270: u'50270\tSkrzynia Razadora\tTa skrzynia została wydobyta z Czyśćca Ognia, legowiska Razadora. '
            u'Znajduje się w niej prawdziwy królewski skarb. Można ją otworzyć 3 razy - za każdym razem coś daje.',
@@ -44,17 +48,17 @@ def item_proto(b):
     for i in range(cnt):
         off = i * RECORD
         vnum = struct.unpack_from('<I', raw, off)[0]
-        if vnum not in CHESTS:
+        if vnum not in NO_STACK:
             continue
         seen.add(vnum)
-        anti, flag = struct.unpack_from('<II', raw, off + 82)
-        new = (anti | ANTI_STACK, flag & ~STACKABLE)
-        if new != (anti, flag):
-            struct.pack_into('<II', raw, off + 82, *new)
-            print('%d: antiflag %d -> %d, flag %d -> %d' % (vnum, anti, new[0], flag, new[1]))
+        stack, anti, flag = struct.unpack_from('<III', raw, off + 78)
+        new = (1, anti | ANTI_STACK, flag & ~STACKABLE)
+        if new != (stack, anti, flag):
+            struct.pack_into('<III', raw, off + 78, *new)
+            print('%d: stack %d -> 1, antiflag %d -> %d, flag %d -> %d' % (vnum, stack, anti, new[1], flag, new[2]))
             changed += 1
-    if seen != set(CHESTS):
-        raise SystemExit('item_proto: not in the client: %s' % sorted(set(CHESTS) - seen))
+    if seen != set(NO_STACK):
+        raise SystemExit('item_proto: not in the client: %s' % sorted(set(NO_STACK) - seen))
     if not changed:
         return b, 0
     blob = m2pack.mcoz_encode(bytes(raw), ITEM_KEY)
