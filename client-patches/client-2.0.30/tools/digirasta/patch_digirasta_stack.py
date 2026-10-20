@@ -41,12 +41,16 @@ STACK_VNUMS = (30118, 50006, 50007, 50011, 50012, 50013, 50033, 50034, 50037,
                # MT2009_PLUS_STACK_CHESTS_COUPONS_V1: the Kupony SM (80014-80018) and
                # the Grotto's chests (50120-50122, 50124 - gift boxes, here as well)
                80014, 80015, 80016, 80017, 80018, 50121, 50122, 50124)
+# MT2009_PLUS_CHEST_NO_STACK_V1: never the chests that open several times (socket 0 counts the openings) -
+# apply.sh's block leaves them out as well; rznm/patch_rznm_chests_client.py and beran/patch_beran_chest_client.py
+# make them single.
+NO_STACK_VNUMS = (50270, 50271, 54700, 54705)
 UNTIMED_VNUMS = (30270,)  # Odlamek Smoczego Kamienia: no 24 h limit
 LIMIT_REAL_TIME = 7
 
 
 def patch_record(vnum, r):
-    if r[74] in STACK_TYPES or vnum in STACK_VNUMS:
+    if (r[74] in STACK_TYPES or vnum in STACK_VNUMS) and vnum not in NO_STACK_VNUMS:
         stack, anti, flag = struct.unpack_from('<III', r, 78)
         struct.pack_into('<III', r, 78, STACK, anti & ~ANTIFLAG_STACK, flag | FLAG_STACKABLE)
     if vnum in UNTIMED_VNUMS:

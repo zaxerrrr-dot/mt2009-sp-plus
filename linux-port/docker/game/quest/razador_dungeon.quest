@@ -1094,5 +1094,13 @@ quest razador_dungeon begin
 				razador_dungeon.end_count(10)
 			end
 		end
+
+		-- MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (the owner, 15 October 2026, fix 6): Razador killed outside his dungeon (a GM's
+		-- /m - no map spawns him) drops the same set as in it (give_chests: the chests and the boss's extra drop on the
+		-- ground round him, for the people of the killer's party on his map), at any level of the killer, Champion levels
+		-- too. The engine gives him no items of its own (item_manager.cpp), so before this a /m Razador dropped nothing.
+		when 6091.kill with not razador_dungeon.inside() begin
+			razador_dungeon.give_chests()
+		end
 	end
 end

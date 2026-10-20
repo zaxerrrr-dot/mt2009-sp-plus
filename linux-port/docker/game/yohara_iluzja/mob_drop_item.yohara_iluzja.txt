@@ -27,7 +27,6 @@ Group	MT2009_yil_4410
 	17	31198	1	8	-- PB: Plan Sztyletu
 	18	31201	1	8	-- PB: Plan Dzwonu
 	19	50513	1	15	-- Kamien Duchowy
-	20	50124	1	20	-- Sprochniala Skrzynia
 }
 
 Group	MT2009_yil_4413

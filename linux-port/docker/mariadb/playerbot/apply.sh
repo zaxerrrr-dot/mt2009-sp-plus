@@ -2738,6 +2738,9 @@ ON DUPLICATE KEY UPDATE vnum0 = VALUES(vnum0), count0 = VALUES(count0), vnum1 = 
 # Kamienia (30270) loses its 24 h limit, which wrote a different end time into
 # every piece's socket0 (no two ever stacked) - the pieces held lose it too.
 # The client's item_proto carries the same (patch_digirasta_client.py).
+# MT2009_PLUS_CHEST_NO_STACK_V1: never the chests that open several times (50270, 50271, 54700, 54705 -
+# ShipDefense_ChestKeep counts the openings in socket 0): this block made them STACKABLE again every start
+# after the RZNM / Beran blocks above had made them single (the owner, 15 October 2026, fix 8).
 # Every start; idempotent.
 db -e "UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768, stack = 200
 WHERE (type IN (10, 23) OR vnum IN (30118, 50006, 50007, 50011, 50012, 50013, 50033, 50034, 50037,
@@ -2746,6 +2749,7 @@ WHERE (type IN (10, 23) OR vnum IN (30118, 50006, 50007, 50011, 50012, 50013, 50
                50109, 50110, 50111, 50112, 50113, 50114, 50115, 50120, 50218,
                70009, 70619, 30670,
                30300, 38054, 38056, 38057, 50130, 50132, 50133, 50134, 50135, 50136, 50137))
+  AND vnum NOT IN (50270, 50271, 54700, 54705)
   AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);
 UPDATE world.item_proto SET limittype0 = 0, limitvalue0 = 0 WHERE vnum = 30270 AND limittype0 = 7;
 UPDATE player.item SET socket0 = 0 WHERE vnum = 30270 AND socket0 <> 0;" || fail_step "could not write the stacks of 200 (soul stones, caskets, chests)" >&2
@@ -4065,6 +4069,27 @@ fi
 if ! db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES (0, 'm2_bonus_global', '', $bonus_global);"; then
     fail_step "bonus mode: could not write m2_bonus_global" >&2
 fi
+
+# MT2009_PLUS_CHEST_NO_STACK_V1 (the owner, 15 October 2026, fix 8): the chests that open several times never stack -
+# Skrzynia Razadora (50270) and Skrzynia Nemere (50271) 3 times, Skrzynia Berana-Setaou (54700) 2 times, Skrzynia
+# Hydry (54705) chest_uses times. The openings are counted in the chest's socket 0 (ShipDefense_ChestKeep,
+# playerbot_ship_defense.cpp - the only such counter), so a stack shared one count. Not STACKABLE, ANTI_STACK and a
+# stack of 1: every way the engine and the bots join items (pickup, AutoGiveItem / AutoStackItem, MoveItem, the
+# safebox, the shops, the bots' bags and stalls) asks these flags, and CreateItem makes a non-stackable item one
+# piece. Written last, after every block that writes stacks (MT2009_PLUS_DIGI_STACK_V1 made every giftbox stack
+# after MT2009_PLUS_RZNM_BOSS_DROP_V1 / MT2009_PLUS_BERAN_CHEST_V1 had made them single). The client's item_proto:
+# client-patches/client-2.0.30/tools/rznm/patch_rznm_chests_client.py (50270, 50271, 54705) and
+# tools/beran/patch_beran_chest_client.py (54700). Every start; idempotent.
+db -e "UPDATE world.item_proto SET flag = flag & ~4, antiflag = antiflag | 32768, stack = 1
+WHERE vnum IN (50270, 50271, 54700, 54705) AND ((flag & 4) <> 0 OR (antiflag & 32768) = 0 OR stack <> 1);" \
+  || fail_step "could not make the chests that open several times single (MT2009_PLUS_CHEST_NO_STACK_V1)" >&2
+# MT2009_PLUS_PRECISION_BOOK_STACK_V1 (the owner, 15 October 2026, fix 13): Ksiega Precyzji (50325) stacks to 200 like
+# the skill books (50300); yohara_items.sql's INSERT IGNORE kept the old row (stack 1, not STACKABLE). Reading takes
+# one book of the stack (ENABLE_BOOKS_STACKFIX, char_item.cpp). The client: tools/yohara_items/yohara_items.json
+# (patch_yohara_client.py). Every start; idempotent.
+db -e "UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768, stack = 200
+WHERE vnum = 50325 AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);" \
+  || fail_step "could not make Ksiega Precyzji stack (MT2009_PLUS_PRECISION_BOOK_STACK_V1)" >&2
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then

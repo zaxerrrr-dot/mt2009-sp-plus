@@ -37,28 +37,28 @@ Group	MT2009_yitems2_83066
 	4	83056	1	5000 -- Plat. Klucz do Skrz. Sk.
 }
 
-# MT2009_PLUS_CHEST_DROPS_V1: 83067 - 19 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# MT2009_PLUS_CHEST_DROPS_V1: 83067 - 18 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
+# Left out (renormalised): Sprochniala Skrzynia 1.299% - no Sprochniala Skrzynia in any drop - owner 15.10
 Group	MT2009_yitems2_83067
 {
 	Vnum	83067 -- Skrzynia z Bransoletka (Idealny Klucz 83054)
-	1	31238	1	12987 -- Polyskujaca Muszla
-	2	72003	1	7792 -- Pierscien Doswiad. (3h)
-	3	72023	1	7792 -- Medal Szczescia (30m)
-	4	72006	1	7792 -- Rekawica Zlodzieja (30m)
-	5	72015	1	6494 -- Rybie Wnetrznosci (3h)
-	6	72012	1	6494 -- Pioro Ptaka Milosci
-	7	72339	1	6494 -- Kamien Metin z Yohara
-	8	14590	1	5195 -- Obrecz Jadeitu Slonca+0
-	9	14600	1	5195 -- Obrecz Jadeitu Nocy+0
-	10	14610	1	5195 -- Obrecz Jadeitu Dymu+0
-	11	14580	1	5195 -- Obrecz Jadeitu Mgly+0
-	12	14581	1	3896 -- Obrecz Jadeitu Mgly+1
-	13	14591	1	3896 -- Obrecz Jadeitu Slonca+1
-	14	14601	1	3896 -- Obrecz Jadeitu Nocy+1
-	15	71020	1	2597 -- Blogoslawienstwo Smoka
-	16	14611	1	2597 -- Obrecz Jadeitu Dymu+1
-	17	76003	1	2597 -- Mikstura Pospiechu (30m)
-	18	76008	1	2597 -- Medal Smoka
-	19	50124	1	1299 -- Sprochniala Skrzynia
+	1	31238	1	13158 -- Polyskujaca Muszla
+	2	72003	1	7895 -- Pierscien Doswiad. (3h)
+	3	72023	1	7895 -- Medal Szczescia (30m)
+	4	72006	1	7895 -- Rekawica Zlodzieja (30m)
+	5	72015	1	6579 -- Rybie Wnetrznosci (3h)
+	6	72012	1	6579 -- Pioro Ptaka Milosci
+	7	72339	1	6579 -- Kamien Metin z Yohara
+	8	14590	1	5263 -- Obrecz Jadeitu Slonca+0
+	9	14600	1	5263 -- Obrecz Jadeitu Nocy+0
+	10	14610	1	5263 -- Obrecz Jadeitu Dymu+0
+	11	14580	1	5263 -- Obrecz Jadeitu Mgly+0
+	12	14581	1	3947 -- Obrecz Jadeitu Mgly+1
+	13	14591	1	3947 -- Obrecz Jadeitu Slonca+1
+	14	14601	1	3947 -- Obrecz Jadeitu Nocy+1
+	15	71020	1	2632 -- Blogoslawienstwo Smoka
+	16	14611	1	2632 -- Obrecz Jadeitu Dymu+1
+	17	76003	1	2632 -- Mikstura Pospiechu (30m)
+	18	76008	1	2632 -- Medal Smoka
 }

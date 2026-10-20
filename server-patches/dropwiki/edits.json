@@ -148,5 +148,35 @@
   "marker": "MT2009_PLUS_DROP_WIKI_V2 (reload)",
   "old": "\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"DropWiki open\");\n\t\treturn;\n\t}\n",
   "new": "\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"DropWiki open\");\n\t\treturn;\n\t}\n\t// MT2009_PLUS_DROP_WIKI_V2 (reload): a game master reads the map regens, dungeon_info.txt and drop_wiki.txt\n\t// again (the tables are read again by themselves, at most every 30 s).\n\tif (!strcmp(sub, \"reload\") && ch->GetGMLevel() >= GM_HIGH_WIZARD)\n\t{\n\t\ts_dropWikiFiles.loaded = false;\n\t\ts_dropWiki.dwBuilt = 0;\n\t\tDropWikiBuild();\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Drop wiki: %u przedmiot\\xf3w, %u potwor\\xf3w.\", (unsigned) s_dropWikiMore.items.size(),\n\t\t\t\t(unsigned) s_dropWikiMore.mobs.size());\n\t\treturn;\n\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (helper)",
+  "old": "bool ITEM_MANAGER::GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange)\n{\n",
+  "new": "// MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (helper) (server-patches/dropwiki): Razador (6091), Nemere (6191) and Beran-Setaou\n// (2493) drop for a character of any level, the Champion levels too (the owner, 15 October 2026, fix 6:\n// a level 120 with 25 Champion levels got nothing): no level fade (aiPercentByDeltaLevForBoss paid a level\n// 120 a few percent of Beran-Setaou's 93) wherever they die - their dungeon or a GM's /m - and no level\n// limit of a limit group (Beran-Setaou's level_limit 90). A bot keeps the fade (as the dungeons').\nstatic bool Mt2009PlusAnyLevelBoss(DWORD race)\n{\n\treturn race == 2493 || race == 6091 || race == 6191;\n}\n\nbool ITEM_MANAGER::GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange)\n{\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (delta)",
+  "old": "\tif (iDeltaPercent < 100 && (Mt2009PlusDemonTowerFullDrop(pkKiller) || Mt2009PlusDungeonNoFade(pkKiller)))\n\t\tiDeltaPercent = 100;\n",
+  "new": "\tif (iDeltaPercent < 100 && (Mt2009PlusDemonTowerFullDrop(pkKiller) || Mt2009PlusDungeonNoFade(pkKiller)))\n\t\tiDeltaPercent = 100;\n\t// MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (delta): nor for Razador, Nemere and Beran-Setaou, anywhere, for a player.\n\tif (iDeltaPercent < 100 && Mt2009PlusAnyLevelBoss(race) && pkKiller->IsPC() && pkKiller->GetDesc() && !pkKiller->GetDesc()->IsBot())\n\t\tiDeltaPercent = 100;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (drop limit)",
+  "old": "\t\t\tif ( it->second->GetLevelLimit() <= (DWORD)iLevel )\n",
+  "new": "\t\t\t// MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (drop limit): the three bosses' limit groups at any level.\n\t\t\tif ( it->second->GetLevelLimit() <= (DWORD)iLevel || Mt2009PlusAnyLevelBoss(pkChr->GetRaceNum()) )\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (wiki limit)",
+  "old": "\t\t\tif (it->second->GetLevelLimit() <= (DWORD) iLevel)\n",
+  "new": "\t\t\t// MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (wiki limit): as CreateDropItem, the three bosses' limit groups at any level.\n\t\t\tif (it->second->GetLevelLimit() <= (DWORD) iLevel || Mt2009PlusAnyLevelBoss(race))\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (preview limit)",
+  "old": "\t\tif (level != m_map_pkLevelItemGroup.end() && level->second->GetLevelLimit() <= (DWORD) viewer->GetLevel())\n",
+  "new": "\t\t// MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (preview limit): the three bosses' limit groups at any level.\n\t\tif (level != m_map_pkLevelItemGroup.end() && (level->second->GetLevelLimit() <= (DWORD) viewer->GetLevel() || Mt2009PlusAnyLevelBoss(race)))\n"
  }
 ]

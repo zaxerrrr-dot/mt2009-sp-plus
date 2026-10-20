@@ -49,3 +49,10 @@ no refine lines and is no search result for them alone - so the switched-off wik
 ladder to nowhere. `/drop_wiki reload` (GM, high wizard or more) reads the map regens, `dungeon_info.txt`
 and `drop_wiki.txt` again. The new answer lines come before the rows and an older client skips them
 (protocol: the comment above `DropWikiMat` in `cmd_general.cpp`, and `uidropwiki.py`).
+
+
+MT2009_PLUS_RZNM_BERAN_ANY_LEVEL_V1 (the owner, 15 October 2026, fix 6) - `item_manager.cpp`: Razador (6091), Nemere
+(6191) and Beran-Setaou (2493) drop for a player (not a bot) of any level, the Champion levels too: no level fade
+(`GetDropPct`, wherever they die - their dungeon or a GM's `/m`) and no `level_limit` of a limit group (the drop, the
+drop wiki and the preview). Their dungeon chests and Razador's / Nemere's extra drop come from the quests
+(`razador_dungeon`, `nemere_dungeon`, `blue_dragon_lair` - also when the boss dies outside the dungeon).

@@ -93,6 +93,8 @@ SKIP = {
 for _v in (6045, 6046, 6047, 6073, 6074, 6093, 6130, 6150, 21073, 21074, 21075, 21076, 21077, 21090, 21093, 21290,
            50524, 50568, 50576, 28012, 28112, 28212, 28312, 28412):     # 280x2: Kamien Duszy Likanow
     SKIP[_v] = _LYCAN
+# MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia out of every drop and chest (the owner, 15 October 2026, fix 7)
+SKIP[50124] = 'no Sprochniala Skrzynia in any drop - owner 15.10'
 
 # our chest -> {our vnum: the owner's own weight of SCALE}
 FIXED = {54705: {25042: 4000}}      # Skrzynia Hydry: Magiczny Kamien exactly 4% (the owner, 13 October 2026)

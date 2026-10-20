@@ -316,7 +316,8 @@ def frozen(element):      # Zamarzniety ... (Wawoz Polnocnego Wiatru)
 
 SHELTER_COMMON = [(31238, 1, 0.15), (31244, 1, 0.1), (31251, 1, 0.15), (31252, 1, 0.05), (95734, 1, 0.5),
                   (50739, 1, 0.25), (50740, 1, 0.25), (50529, 1, 0.03), (83067, 1, 0.03), (83054, 1, 0.03),
-                  (50124, 1, 0.08), (50662, 1, 0.08), (50663, 1, 0.08)] + RANDOM_CHEST
+                  (50662, 1, 0.08), (50663, 1, 0.08)] + RANDOM_CHEST
+# MT2009_PLUS_NO_ROTTEN_CHEST_V1: no Sprochniala Skrzynia (50124) from any drop (the owner, 15 October 2026, fix 7)
 
 
 def shelter(weps, extra):
