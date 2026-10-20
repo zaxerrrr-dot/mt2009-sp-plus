@@ -855,6 +855,75 @@ EDITS += [
 ]
 
 
+# -- MT2009_PLUS_YSET_ICON_V1: the set icons in the affect bar (round 15.10 #17, #18) --
+# The set bonus went into the points (Mt2009YSetsApplyTier) without an affect, so the client's affect bar had nothing to
+# show. Now a worn set also carries affect 546 (no point, value = set * 10 + pieces, not saved - judged again at every
+# equip and in ComputePoints like the bonus). uiaffectbar.py draws it with the set's name and bonuses. It is taken off
+# without CHARACTER::RemoveAffect, which recomputes the points - Mt2009YSetsRefresh runs inside ComputePoints. At the
+# entry to the game (Mt2009YSetsSendAll) the client hears 546 and the costume set's 545 (playerqol) once more: both
+# are put on while the items load, before the game window exists, and that packet was lost.
+M5 = 'MT2009_PLUS_YSET_ICON_V1'
+
+SHOW_AFFECT = '// ' + M5 + r''' (show): the worn set as affect 546 (no point, value set * 10 + pieces) - the client's affect bar
+// shows it (uiaffectbar.py); nothing in the points: Mt2009YSetsApplyTier gives the bonus
+static const DWORD MT2009_PLUS_AFFECT_YSET = 546;
+
+void SendAffectRemovePacket(LPDESC d, DWORD pid, DWORD type, BYTE point);
+
+static void Mt2009YSetsShowAffect(LPCHARACTER ch, BYTE bSet, BYTE bPieces)
+{
+	if (!ch->GetDesc() || ch->GetDesc()->IsBot())
+		return;
+	const long lValue = bSet ? bSet * 10 + bPieces : 0;
+	CAffect* pkAff = ch->FindAffect(MT2009_PLUS_AFFECT_YSET);
+	if (pkAff ? pkAff->lApplyValue == lValue : !lValue)
+		return;
+	if (lValue)
+	{
+		ch->AddAffect(MT2009_PLUS_AFFECT_YSET, POINT_NONE, lValue, AFF_NONE, INFINITE_AFFECT_DURATION, 0, true);
+		return;
+	}
+	// not CHARACTER::RemoveAffect: it runs ComputePoints, and this is called from inside ComputePoints too;
+	// the affect changes no point and no flag, so taking it out of the list is all
+	std::list<CAffect*>& rList = const_cast<std::list<CAffect*>&>(ch->GetAffectContainer());
+	rList.remove(pkAff);
+	SendAffectRemovePacket(ch->GetDesc(), ch->GetPlayerID(), pkAff->dwType, pkAff->bApplyOn);
+	CAffect::Release(pkAff);
+}
+
+// CItem::EquipTo / Unequip and CHARACTER::ComputePoints: the set bonus of what is worn now in the points
+void Mt2009YSetsRefresh(LPCHARACTER ch)
+{
+'''
+
+EDITS += [
+    dict(file='item.cpp', marker=M5 + ' (show)',
+         old='// CItem::EquipTo / Unequip and CHARACTER::ComputePoints: the set bonus of what is worn now in the points\n'
+             'void Mt2009YSetsRefresh(LPCHARACTER ch)\n{\n',
+         new=SHOW_AFFECT),
+    dict(file='item.cpp', marker=M5 + ' (refresh)',
+         old='\t\tbSet = bPieces = 0;              // the princely / majestic sets have no two-piece bonus\n'
+             '\tif (bSet == ch->m_bYSetApplied && bPieces == ch->m_bYSetAppliedCount)\n',
+         new='\t\tbSet = bPieces = 0;              // the princely / majestic sets have no two-piece bonus\n'
+             '\tMt2009YSetsShowAffect(ch, bSet, bPieces); // ' + M5 + ' (refresh): the icon follows what is worn\n'
+             '\tif (bSet == ch->m_bYSetApplied && bPieces == ch->m_bYSetAppliedCount)\n'),
+    dict(file='item.cpp', marker=M5 + ' (enter)',
+         old='\t\t\tMt2009YSetsNotify(ch, 1, INVENTORY_MAX_NUM + i, item->GetYExtra());\n\t}\n}\n',
+         new='\t\t\tMt2009YSetsNotify(ch, 1, INVENTORY_MAX_NUM + i, item->GetYExtra());\n\t}\n'
+             '\t// ' + M5 + ' (enter): the set icons once more in the game phase - 546 (this set) and 545 (the costume\n'
+             '\t// set, playerqol) are put on while the items load, when the client has no game window for the packet yet\n'
+             '\tif (ch->GetDesc() && !ch->GetDesc()->IsBot())\n'
+             '\t\tfor (std::list<CAffect*>::const_iterator it = ch->GetAffectContainer().begin(); it != ch->GetAffectContainer().end(); ++it)\n'
+             '\t\t\tif ((*it)->dwType == 545 || (*it)->dwType == 546)\n'
+             '\t\t\t\tSendAffectAddPacket(ch->GetDesc(), *it);\n'
+             '}\n'),
+    dict(file='char_affect.cpp', marker=M5 + ' (no save)',
+         old='(type) == 545 /* MT2009_PLUS_COSTUME_SET_V1 (no save): judged at every equip */)',
+         new='(type) == 545 /* MT2009_PLUS_COSTUME_SET_V1 (no save): judged at every equip */ || (type) == 546 /* '
+             + M5 + ' (no save): the Yohara set icon, judged at every equip */)'),
+]
+
+
 def check(src):
     ok = True
     texts = {}

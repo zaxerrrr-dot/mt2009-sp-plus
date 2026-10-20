@@ -7,11 +7,17 @@
 #                 (ShipDefense_ChestKeep, the Skrzynia Hydry's way), so the client must not merge two chests;
 #   itemdesc.txt  their lines say so ("Można ją otworzyć 3 razy").
 #
+# MT2009_PLUS_RZNM_CHEST_ICONS_V1 (round 15.10 #14): with --item-list=<item_list.txt> also their icons - GF 26.1.11's
+# icon/item/50270.tga and 50271.tga are one and the same golden chest (the generic boss chest); the pl-wiki's pictures
+# of "Skrzynia Razadora" / "Skrzynia Nemere" are GF's icon/item/54702.tga (red) and 54703.tga (blue), pixel for pixel.
+# The two .tga travel in client-2.0.30/root/icon/item (the root pack, like every root file); the rows keep the model.
+#
 # Record layout (184 bytes): stack 78, antiflag 82, flag 86 (<I each). Idempotent: a second run changes nothing.
 # From client 2.0.52 both files live in the "dbdata" pack (gamedata/item_proto, locale/pl/itemdesc.txt). Run on
 # plain copies, in the m2pack-lzo image for the MCOZ:
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 \
-#     <repo>/client-patches/client-2.0.30/tools/rznm/patch_rznm_chests_client.py <item_proto> <itemdesc.txt> [<out dir>]
+#     <repo>/client-patches/client-2.0.30/tools/rznm/patch_rznm_chests_client.py <item_proto> <itemdesc.txt> [<out dir>] \
+#     [--item-list=<item_list.txt>]
 # Without an out dir the files are rewritten in place. Either file may be "-" to leave it alone.
 import os
 import struct
@@ -30,6 +36,29 @@ DESC = {
     50271: u'50271\tSkrzynia Nemere\tTa skrzynia została wydobyta z Lodowej Krainy, legowiska Nemere. '
            u'Znajduje się w niej prawdziwy królewski skarb. Można ją otworzyć 3 razy - za każdym razem coś daje.',
 }
+
+
+ICONS = {50270: 'icon/item/54702.tga', 50271: 'icon/item/54703.tga'}   # MT2009_PLUS_RZNM_CHEST_ICONS_V1
+
+
+def item_list(b):
+    text = b.decode('cp1250')
+    nl = '\r\n' if '\r\n' in text else '\n'
+    lines = text.split(nl)
+    changed = 0
+    seen = set()
+    for i, l in enumerate(lines):
+        f = l.split('\t')
+        if len(f) >= 3 and f[0].strip().isdigit() and int(f[0]) in ICONS:
+            seen.add(int(f[0]))
+            if f[2] != ICONS[int(f[0])]:
+                f[2] = ICONS[int(f[0])]
+                lines[i] = '\t'.join(f)
+                changed += 1
+    if seen != set(ICONS):
+        raise SystemExit('item_list.txt: not in the client: %s' % sorted(set(ICONS) - seen))
+    print('item_list.txt: %d icons changed' % changed)
+    return nl.join(lines).encode('cp1250'), changed
 
 
 def item_proto(b):
@@ -86,10 +115,15 @@ def itemdesc(b):
 
 
 def main():
-    if len(sys.argv) not in (3, 4):
-        raise SystemExit('usage: patch_rznm_chests_client.py <item_proto> <itemdesc.txt> [<out dir>]')
-    out_dir = sys.argv[3] if len(sys.argv) == 4 else None
-    for path, fn in ((sys.argv[1], item_proto), (sys.argv[2], itemdesc)):
+    opts = [a for a in sys.argv[1:] if a.startswith('--item-list=')]
+    args = [a for a in sys.argv[1:] if not a.startswith('--item-list=')]
+    if len(args) not in (2, 3):
+        raise SystemExit('usage: patch_rznm_chests_client.py <item_proto> <itemdesc.txt> [<out dir>] [--item-list=<item_list.txt>]')
+    out_dir = args[2] if len(args) == 3 else None
+    jobs = [(args[0], item_proto), (args[1], itemdesc)]
+    for o in opts:                                  # MT2009_PLUS_RZNM_CHEST_ICONS_V1
+        jobs.append((o.split('=', 1)[1], item_list))
+    for path, fn in jobs:
         if path == '-':
             continue
         with open(path, 'rb') as f:

@@ -82,3 +82,17 @@ Pliki: `item.h`, `item.cpp`, `item_manager.cpp`, `item_attribute.cpp`, `char.h`,
 - Edycja V4 zastępuje funkcje listy V2/V3 (od mapy do końca `Mt2009YSetsCubeMaterialInfo`); komentarz V2 zostaje, więc
   V2 liczy się jako nałożone w każdym drzewie. Klient (`game.py`, V4): Yang kowala po przeczytaniu wszystkich wierszy,
   pytanie o materiały po 4 wiersze (było 7 – wiersze z alternatywami, np. hełmy Jaharra, przekraczały 512 znaków).
+
+## Ikonki zestawów na pasku efektów (`MT2009_PLUS_YSET_ICON_V1`, runda 15.10 nr 17 i 18)
+
+- Dlaczego nie było ikonki: bonus zestawu szedł prosto do punktów (`Mt2009YSetsApplyTier`), bez afektu – pasek efektów
+  klienta (`uiaffectbar.py`) pokazuje tylko afekty. Zestaw kostiumów (`playerqol`, afekt 545) miał afekt, ale klient
+  nie miał dla niego wpisu (ikony/opisu) w `AFFECT_SHOW_DATA`, a pakiet z czasu wczytywania przedmiotów (przed oknem gry)
+  ginął.
+- Serwer: noszony zestaw ma afekt **546** (bez punktu, wartość = zestaw × 10 + liczba części, niezapisywany – liczony
+  przy każdym założeniu/zdjęciu i w `ComputePoints`, więc wraca po relogu i teleporcie). Zdejmowany bez
+  `CHARACTER::RemoveAffect` (ten przelicza punkty, a `Mt2009YSetsRefresh` działa w `ComputePoints`). Boty – bez afektu.
+  Przy wejściu do gry (`Mt2009YSetsSendAll`) klient dostaje jeszcze raz 546 i 545.
+- Klient (`root/uiaffectbar.py`): 546 – ikonka GF `set_bonus` (`root/mt2009_ui/affect/yset_bonus.tga`), dymek: nazwa
+  efektu, „Założone części zestawu: n/3” i bonusy progu; 545 – ta sama ikonka w czerwieni
+  (`costume_set_bonus.tga`), dymek „Bonus zestawu kostiumów” + +800 PŻ i +15 wartości ataku z punktów afektu.
