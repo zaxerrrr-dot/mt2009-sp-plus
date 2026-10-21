@@ -81,7 +81,8 @@
 //
 // The log: PLAYERBOT_HANDOVER (out, claimed, arrived, home, refused, cancel,
 // census), PLAYERBOT_YOHARA (the temple, the stay, the restock, the loot runs,
-// the Time Rift).
+// the Time Rift). The operator's hook: the file playerbot_yohara_test in the
+// core's directory (RunPlayerBotYoharaTestFile).
 //
 // An implementation fragment in the sense playerbot_types.h describes: include
 // it once, last (after playerbot_dungeon_runs.h and playerbot_ochao_bots.h).
@@ -705,13 +706,14 @@ namespace
 	};
 
 	// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: the 90-level maps' Metins (stone.txt) and bosses (boss.txt),
-	// tools/yohara_bot_lootrun_map.py (21 October) - a boss row is chosen while its boss stands.
+	// tools/yohara_bot_lootrun_map.py with the container's group.txt (21 October) - a boss row (the group's
+	// leader) is chosen while its boss stands.
 	const TPlayerBotHuntingHub PLAYERBOT_YOHARA_LOOT_HUBS_301[] = {
-		{ 1111750, 1725450, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3008 },	// boss 3008 cell 881,614
-		{ 1067450, 1701450, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3009 },	// boss 3009 cell 434,374
-		{ 1134650, 1695950, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3028 },	// boss 3028 cell 1106,319
-		{ 1109150, 1701650, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3029 },	// boss 3029 cell 839,380
-		{ 1162650, 1796550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3058 },	// boss 3058 cell 1386,1325
+		{ 1111750, 1725450, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3090 },	// boss 3090 cell 881,614
+		{ 1067450, 1701450, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3091 },	// boss 3091 cell 434,374
+		{ 1134650, 1695950, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3290 },	// boss 3290 cell 1106,319
+		{ 1109150, 1701650, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3291 },	// boss 3291 cell 839,380
+		{ 1162650, 1796550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3590 },	// boss 3590 cell 1386,1325
 		{ 1047750, 1739650, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8051 cell 237,756
 		{ 1069050, 1706350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8051 cell 450,423
 		{ 1113050, 1723950, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8051 cell 890,599
@@ -731,10 +733,10 @@ namespace
 		{ 1141050, 1740950, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 2008 cell 1170,769
 	};
 	const TPlayerBotHuntingHub PLAYERBOT_YOHARA_LOOT_HUBS_302[] = {
-		{ 1318750, 1699750, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3098 },	// boss 3098 cell 1411,357
-		{ 1327450, 1686650, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3099 },	// boss 3099 cell 1498,226
-		{ 1279950, 1733250, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3038 },	// boss 3038 cell 1023,692
-		{ 1255250, 1699050, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3039 },	// boss 3039 cell 776,351
+		{ 1318750, 1699750, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3890 },	// boss 3890 cell 1411,357
+		{ 1327450, 1686650, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3891 },	// boss 3891 cell 1498,226
+		{ 1279950, 1733250, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3390 },	// boss 3390 cell 1023,692
+		{ 1255250, 1699050, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3391 },	// boss 3391 cell 776,351
 		{ 1193350, 1692650, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8054 cell 157,286
 		{ 1332650, 1740150, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8056 cell 1550,761
 		{ 1324050, 1687350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8056 cell 1469,229
@@ -754,12 +756,12 @@ namespace
 		{ 1224450, 1682650, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 2008 cell 468,186
 	};
 	const TPlayerBotHuntingHub PLAYERBOT_YOHARA_LOOT_HUBS_303[] = {
-		{ 1073450, 1596850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3048 },	// boss 3048 cell 238,864
-		{ 1064250, 1599950, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3049 },	// boss 3049 cell 146,895
-		{ 1078450, 1556150, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3078 },	// boss 3078 cell 288,457
-		{ 1070550, 1546350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3079 },	// boss 3079 cell 209,359
-		{ 1112250, 1621450, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3058 },	// boss 3058 cell 626,1110
-		{ 1115550, 1552850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3059 },	// boss 3059 cell 659,424
+		{ 1073450, 1596850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3490 },	// boss 3490 cell 238,864
+		{ 1064250, 1599950, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3491 },	// boss 3491 cell 146,895
+		{ 1078450, 1556150, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3690 },	// boss 3690 cell 288,457
+		{ 1070550, 1546350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3691 },	// boss 3691 cell 209,359
+		{ 1112250, 1621450, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3590 },	// boss 3590 cell 626,1110
+		{ 1115550, 1552850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3591 },	// boss 3591 cell 659,424
 		{ 1097650, 1527150, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8052 cell 480,167
 		{ 1101850, 1551550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8052 cell 522,411
 		{ 1103450, 1581850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8052 cell 538,714
@@ -778,12 +780,12 @@ namespace
 		{ 1081150, 1641550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 2008 cell 315,1311
 	};
 	const TPlayerBotHuntingHub PLAYERBOT_YOHARA_LOOT_HUBS_304[] = {
-		{ 1164050, 1619850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3068 },	// boss 3068 cell 376,1094
-		{ 1161050, 1594550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3069 },	// boss 3069 cell 346,841
-		{ 1137750, 1521350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3088 },	// boss 3088 cell 113,109
-		{ 1187550, 1624350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3089 },	// boss 3089 cell 611,1139
-		{ 1179750, 1590550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3018 },	// boss 3018 cell 533,801
-		{ 1217450, 1519250, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3019 },	// boss 3019 cell 910,88
+		{ 1164050, 1619850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3595 },	// boss 3595 cell 376,1094
+		{ 1161050, 1594550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3596 },	// boss 3596 cell 346,841
+		{ 1137750, 1521350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3790 },	// boss 3790 cell 113,109
+		{ 1187550, 1624350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3791 },	// boss 3791 cell 611,1139
+		{ 1179750, 1590550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3190 },	// boss 3190 cell 533,801
+		{ 1217450, 1519250, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 3191 },	// boss 3191 cell 910,88
 		{ 1141750, 1530850, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8055 cell 153,204
 		{ 1149750, 1563550, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8055 cell 233,531
 		{ 1190650, 1623350, PLAYERBOT_YOHARA_LOOT_MIN_LEVEL, 255, false, 0 },	// stone 8055 cell 642,1129
@@ -1131,6 +1133,100 @@ namespace
 		return PLAYERBOT_YOHARA_SZC_WATCH_PRICE;
 	}
 
+	// ------------------------------------------------------------ the operator
+
+	// The test hook: a file "playerbot_yohara_test" in the core's directory, read at the poll and
+	// renamed to .done (the Ochao/Arezzo tests' way):
+	//     send <n> zaklety|szc|loot [map]   n bots of this core of the purpose's band straight to the
+	//                                       other core (the temple's road left out: a test of the handover)
+	//     home <n|all>                      residents of this core sent home
+	//     status                            the census and every resident here, one line each
+	const char* const PLAYERBOT_YOHARA_TEST_FILE = "playerbot_yohara_test";
+
+	void RunPlayerBotYoharaTestFile(DWORD dwNow)
+	{
+		FILE* fp = fopen(PLAYERBOT_YOHARA_TEST_FILE, "r");
+		if (!fp)
+			return;
+		char line[128];
+		std::vector<std::string> lines;
+		while (fgets(line, sizeof(line), fp))
+			lines.push_back(line);
+		fclose(fp);
+		char done[128];
+		snprintf(done, sizeof(done), "%s.done", PLAYERBOT_YOHARA_TEST_FILE);
+		rename(PLAYERBOT_YOHARA_TEST_FILE, done);
+		for (size_t l = 0; l < lines.size(); ++l)
+		{
+			char cmd[32] = "", arg[32] = "", what[32] = "";
+			long mapArg = 0;
+			if (sscanf(lines[l].c_str(), "%31s %31s %31s %ld", cmd, arg, what, &mapArg) < 1)
+				continue;
+			const int n = !strcmp(arg, "all") ? 100000 : atoi(arg);
+			if (!strcmp(cmd, "send"))
+			{
+				const int purpose = ParsePlayerBotYoharaPurpose(what);
+				long map = purpose == YOHARA_PURPOSE_ZAKLETY ? PLAYERBOT_MAP_ZAKLETY
+						: purpose == YOHARA_PURPOSE_SZC ? PLAYERBOT_MAP_SZC_PLATEAU
+						: purpose == YOHARA_PURPOSE_LOOT ? (mapArg >= 301 && mapArg <= 304 ? mapArg :
+							(GetPlayerBotYoharaConfig().lootMaps.empty() ? 303 : GetPlayerBotYoharaConfig().lootMaps[0])) : 0;
+				int sent = 0, looked = 0;
+				for (TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.begin();
+						map != 0 && st != s_mapPlayerBotAIStates.end() && sent < n; ++st)
+				{
+					LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(st->first);
+					if (!ch || ch->IsDead() || !IsPlayerBotYoharaEligible(ch) || IsPlayerBotYoharaLeaving(st->first) ||
+							FindPlayerBotYoharaResident(st->first) || IsPlayerBotOnDungeonRun(st->first))
+						continue;
+					const int level = ch->GetLevel();
+					const bool band = purpose == YOHARA_PURPOSE_ZAKLETY
+							? level >= PLAYERBOT_OCHAO_MIN_LEVEL && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL
+							: purpose == YOHARA_PURPOSE_SZC ? level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL
+							: level >= PLAYERBOT_YOHARA_LOOT_MIN_LEVEL;
+					++looked;
+					if (!band)
+						continue;
+					long x = 0, y = 0;
+					GetPlayerBotFrontierArrival(map, x, y);
+					if (RequestPlayerBotYoharaHandover(ch, st->second, map, x, y, purpose, "test_send", dwNow))
+						++sent;
+				}
+				sys_log(0, "PLAYERBOT_YOHARA: test send purpose=%s map=%ld asked=%d sent=%d looked=%d",
+						PlayerBotYoharaPurposeName(purpose), map, n, sent, looked);
+			}
+			else if (!strcmp(cmd, "home"))
+			{
+				int sent = 0;
+				std::vector<DWORD> pids;
+				for (std::map<DWORD, TPlayerBotYoharaResident>::const_iterator r = s_mapPlayerBotYoharaResident.begin();
+						r != s_mapPlayerBotYoharaResident.end(); ++r)
+					pids.push_back(r->first);
+				for (size_t i = 0; i < pids.size() && sent < n; ++i)
+				{
+					LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pids[i]);
+					TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(pids[i]);
+					if (ch && st != s_mapPlayerBotAIStates.end() && SendPlayerBotYoharaHome(ch, st->second, dwNow, "test_home"))
+						++sent;
+				}
+				sys_log(0, "PLAYERBOT_YOHARA: test home asked=%d sent=%d residents=%u", n, sent, (unsigned int)pids.size());
+			}
+			else if (!strcmp(cmd, "status"))
+			{
+				s_dwPlayerBotYoharaNextCensusLog = 0;
+				for (std::map<DWORD, TPlayerBotYoharaResident>::const_iterator r = s_mapPlayerBotYoharaResident.begin();
+						r != s_mapPlayerBotYoharaResident.end(); ++r)
+				{
+					LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(r->first);
+					sys_log(0, "PLAYERBOT_YOHARA: status resident pid=%u name=%s level=%d purpose=%s map=%ld pos=(%ld,%ld) stay_s=%u run=%d",
+							r->first, ch ? ch->GetName() : "-", ch ? (int)ch->GetLevel() : 0,
+							PlayerBotYoharaPurposeName(r->second.iPurpose), ch ? ch->GetMapIndex() : 0L,
+							ch ? ch->GetX() : 0L, ch ? ch->GetY() : 0L, (dwNow - r->second.dwArrived) / 1000,
+							IsPlayerBotOnDungeonRun(r->first) ? 1 : 0);
+				}
+			}
+		}
+	}
+
 	// ------------------------------------------------------------ the pass
 
 	// From CPlayerBotManager::Update, before the bots' tick: the departures
@@ -1163,6 +1259,7 @@ namespace
 			return;
 		if (!EnsurePlayerBotYoharaTable())
 			return;
+		RunPlayerBotYoharaTestFile(dwNow);
 		char query[512];
 		snprintf(query, sizeof(query),
 				"SELECT pid, state, target_map, x, y, purpose, ready_at <= NOW(), "

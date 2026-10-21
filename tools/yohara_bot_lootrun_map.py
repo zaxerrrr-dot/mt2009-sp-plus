@@ -2,12 +2,14 @@
 """yohara_bot_lootrun_map.py - the 90-level maps' loot-run knowledge for the bots
 (MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1, playerbot_yohara_bots.h).
 
-    yohara_bot_lootrun_map.py <mapdir> <map_index> [out.inc]
+    yohara_bot_lootrun_map.py <mapdir> <map_index> [out.inc [group.txt]]
 
 <mapdir> holds the map's own files: grid.bin (server_attr decoded by
 tools/arezzo_bot_map.py decode, one byte per 50-unit cell), Setting.txt,
 Town.txt, stone.txt, boss.txt (the final ones of the game container,
-/opt/metin2/share/locale/poland/map/<name>/).
+/opt/metin2/share/locale/poland/map/<name>/); group.txt (the container's
+/opt/metin2/share/locale/poland/group.txt) names the leader of a boss.txt
+"g" line - the boss a spot exists for is the monster, not its group.
 
 A loot run is no hunt: the bot goes from Metin to Metin and to the bosses and
 leaves the ordinary monsters alone (the owner, 21 October 2026: "mapy na 90 lvl
@@ -25,6 +27,7 @@ from collections import deque
 if len(sys.argv) < 3:
     sys.exit(__doc__)
 D = sys.argv[1].rstrip('/'); MAPIDX = int(sys.argv[2]); OUT = sys.argv[3] if len(sys.argv) > 3 else None
+GROUPS = sys.argv[4] if len(sys.argv) > 4 else None
 BLOCK = 0x81      # ATTR_BLOCK | ATTR_OBJECT, as the bots' navigation reads them
 SNAP_CLEAR = 3    # a spot stands with three open 100-unit cells all round
 SNAP_RADIUS = 40  # looked for this many 100-unit cells round the point
@@ -37,6 +40,14 @@ def rd(name):
     except FileNotFoundError:
         return []
 
+
+LEADER = {}
+if GROUPS:
+    import re
+    for b in re.findall(r'\{(.*?)\}', open(GROUPS, encoding='cp1250', errors='replace').read(), re.S):
+        L = re.search(r'Leader\s+.*?\s(\d+)\s*$', b, re.M); V = re.search(r'Vnum\s+(\d+)', b)
+        if L and V:
+            LEADER[int(V.group(1))] = int(L.group(1))
 
 BX = BY = None
 for f in rd('Setting.txt'):
@@ -109,6 +120,11 @@ print('arrival (Town %d,%d) -> (%d,%d)' % (tcx, tcy, ax, ay))
 rows = []   # (x, y, boss, race, what)
 def add(kind, f):
     cx, cy, race = int(f[1]), int(f[2]), int(f[-1])
+    if kind == 'boss' and f[0] == 'g':
+        if race not in LEADER:
+            print('  boss group %d: no leader known (pass group.txt), left out' % race)
+            return
+        race = LEADER[race]
     p = snap(cx, cy, piece)
     if not p:
         print('  %s %d at cell (%d,%d): off the arrival piece, left out' % (kind, race, cx, cy))
