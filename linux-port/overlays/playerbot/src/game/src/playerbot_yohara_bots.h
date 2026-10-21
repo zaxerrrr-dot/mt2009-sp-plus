@@ -932,8 +932,10 @@ namespace
 		// map it cannot reach here is the way home.
 		if (FindPlayerBotYoharaResident(pid) || !IsPlayerBotYoharaHomeCore(ch))
 		{
-			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member rests out where it stands instead.
-			if (IsPlayerBotYoharaCohortPID(pid) && IsPlayerBotYoharaOn())
+			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member rests out where it stands instead - also when
+			// m2_bot_handover_off sends every resident home (game1 of the first channel has no room
+			// for 300 more at once).
+			if (IsPlayerBotYoharaCohortPID(pid))
 				return RestOutPlayerBotYoharaCohort(ch, state, dwNow, reason ? reason : "home") ? 1 : 0;
 			return RequestPlayerBotYoharaHandover(ch, state, base, targetX, targetY, YOHARA_PURPOSE_HOME,
 					reason ? reason : "home", dwNow) ? 1 : 0;
@@ -1878,6 +1880,7 @@ namespace
 		int members[YOHARA_PURPOSE_MAX] = { 0 }, resting[YOHARA_PURPOSE_MAX] = { 0 };
 		int here[YOHARA_PURPOSE_MAX] = { 0 }, inMap[YOHARA_PURPOSE_MAX] = { 0 }, onRun[YOHARA_PURPOSE_MAX] = { 0 };
 		int lvSum[YOHARA_PURPOSE_MAX] = { 0 };
+		std::string expCase, expPids;	// one UPDATE for the experience of all of them
 		for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
 				i != s_mapPlayerBotYoharaCohort.end(); ++i)
 		{
@@ -1903,9 +1906,16 @@ namespace
 			// The experience it made, into its row.
 			if (r->second.llExpUnsaved > 0)
 			{
-				NotePlayerBotYoharaCohortDb(r->first, "exp_gained", r->second.llExpUnsaved, ch->GetMapIndex());
+				expCase += " WHEN " + std::to_string(r->first) + " THEN " + std::to_string(r->second.llExpUnsaved);
+				expPids += (expPids.empty() ? "" : ",") + std::to_string(r->first);
 				r->second.llExpUnsaved = 0;
 			}
+		}
+		if (!expPids.empty() && s_bPlayerBotYoharaCohortTableReady)
+		{
+			const std::string q = "UPDATE common.playerbot_yohara_cohort SET exp_gained = exp_gained + CASE pid" + expCase +
+					" ELSE 0 END, last_seen = NOW() WHERE pid IN (" + expPids + ")";
+			RunPlayerBotYoharaSql(q.c_str());
 		}
 		const DWORD span = s_dwPlayerBotYoharaCohortLastCensus ? dwNow - s_dwPlayerBotYoharaCohortLastCensus : 0;
 		for (int p = YOHARA_PURPOSE_ZAKLETY; p < YOHARA_PURPOSE_MAX; ++p)
