@@ -124,6 +124,9 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 #ifdef ENABLE_SPECIAL_STORAGE
 			TItemData			aSpecialItem[SPECIAL_INVENTORY_WINDOW_COUNT][c_Special_ItemSlot_Count]; // MT2009_PLUS_EKWIPUNEK_V1 (items)
 #endif
+#ifdef ENABLE_SWITCHBOT
+			TItemData			aSwitchbotItem[SWITCHBOT_SLOT_COUNT]; // MT2009_PLUS_SWITCHBOT_V1 (items): what the slots show
+#endif
 			TQuickSlot			aQuickSlot[QUICKSLOT_MAX_NUM];
 			TSkillInstance		aSkill[SKILL_MAX_NUM];
 			long				m_alPoint[POINT_MAX_NUM];

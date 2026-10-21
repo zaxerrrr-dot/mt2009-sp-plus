@@ -575,6 +575,10 @@ const TItemData * CPythonPlayer::GetItemData(TItemPos Cell) const
 	case CHEST_INVENTORY:
 		return &m_playerStatus.aSpecialItem[Cell.window_type - UPGRADE_INVENTORY][Cell.cell]; // MT2009_PLUS_EKWIPUNEK_V1 (get)
 #endif
+#ifdef ENABLE_SWITCHBOT
+	case SWITCHBOT:
+		return &m_playerStatus.aSwitchbotItem[Cell.cell]; // MT2009_PLUS_SWITCHBOT_V1 (get)
+#endif
 	default:
 		return NULL;
 	}
@@ -611,6 +615,11 @@ void CPythonPlayer::SetItemData(TItemPos Cell, const TItemData & c_rkItemInst)
 	case CHANGE_INVENTORY:
 	case CHEST_INVENTORY:
 		m_playerStatus.aSpecialItem[Cell.window_type - UPGRADE_INVENTORY][Cell.cell] = c_rkItemInst; // MT2009_PLUS_EKWIPUNEK_V1 (set)
+		break;
+#endif
+#ifdef ENABLE_SWITCHBOT
+	case SWITCHBOT:
+		m_playerStatus.aSwitchbotItem[Cell.cell] = c_rkItemInst; // MT2009_PLUS_SWITCHBOT_V1 (set)
 		break;
 #endif
 	}

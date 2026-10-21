@@ -212,6 +212,11 @@
 // GetItemCountByVnum counts them), player.UPGRADE_INVENTORY .. CHEST_INVENTORY, player.SLOT_TYPE_*_INVENTORY,
 // player.SPECIAL_PAGE_SIZE / SPECIAL_PAGE_COUNT / SPECIAL_SLOT_COUNT for root/uiekwipunek.py. No packet changes.
 #define ENABLE_SPECIAL_STORAGE
+// MT2009_PLUS_SWITCHBOT_V1 (Bonus Switcher, Ameria Project's ENABLE_SWITCHBOT + RENEWAL): the window SWITCHBOT (16, Server/common/
+// length.h) - five slots showing bag items the server locked there - in CPythonPlayer, player.SWITCHBOT,
+// player.SLOT_TYPE_SWITCHBOT, the packets CG 170 / GC 171 (Packet.h) and the python module switchbot
+// (PythonSwitchbot.cpp) for root/uiswitchbot.py. The server sends GC 171 only after "/switchbot hello".
+#define ENABLE_SWITCHBOT
 // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): app.SetHideEffects, app.SetChatLog, chrmgr.SetShopsVisible
 // for the "Opcje dodatkowe" tab (UserInterface/Mt2009ClientQol.cpp, EffectLib/EffectInstance.cpp,
 // PythonIkarusShop.cpp, PythonChat.cpp).

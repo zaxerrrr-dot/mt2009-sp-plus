@@ -2902,6 +2902,11 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "SPECIAL_PAGE_COUNT",				c_Special_Inventory_Page_Count);
 	PyModule_AddIntConstant(poModule, "SPECIAL_SLOT_COUNT",				c_Special_ItemSlot_Count);
 #endif
+#ifdef ENABLE_SWITCHBOT
+	// MT2009_PLUS_SWITCHBOT_V1 (constants): root/uiswitchbot.py
+	PyModule_AddIntConstant(poModule, "SWITCHBOT",					SWITCHBOT);
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_SWITCHBOT",			SLOT_TYPE_SWITCHBOT);
+#endif
 
 	PyModule_AddIntConstant(poModule, "RESERVED_WINDOW",					RESERVED_WINDOW);
 	PyModule_AddIntConstant(poModule, "INVENTORY",							INVENTORY);

@@ -78,6 +78,9 @@ void initAcce();
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 void initInGameEventSystem(); // MT2009_PLUS_EVENT_MANAGER_V1
 #endif
+#ifdef ENABLE_SWITCHBOT
+void initSwitchbot(); // MT2009_PLUS_SWITCHBOT_V1
+#endif
 void initplayersettingsmodule();
 
 extern const std::string& ApplicationStringTable_GetString(DWORD dwID);

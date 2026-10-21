@@ -789,6 +789,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 	initInGameEventSystem(); // MT2009_PLUS_EVENT_MANAGER_V1
 #endif
+#ifdef ENABLE_SWITCHBOT
+	initSwitchbot(); // MT2009_PLUS_SWITCHBOT_V1
+#endif
 #ifdef ENABLE_DIGI_CLIENT_QOL
 	{ void Mt2009DigiQol_RegisterPython(); Mt2009DigiQol_RegisterPython(); } // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta)
 #endif
