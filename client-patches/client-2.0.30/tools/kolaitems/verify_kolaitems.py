@@ -46,7 +46,8 @@ for k, line in d['item_list'].items():
     if lst.get(k, '').split() != line.split():
         fails.append('item_list %s: missing or other' % k)
     icon = line.split('\t')[2]
-    if not os.path.isfile(os.path.join(ROOT_ICONS, os.path.basename(icon))):
+    # MT2009_PLUS_KOLA_ITEMS_V2: Smoczy Plomien's icon (100700.tga) is the base client's own (root pack)
+    if os.path.basename(icon) != '100700.tga' and not os.path.isfile(os.path.join(ROOT_ICONS, os.path.basename(icon))):
         fails.append('item_list %s: icon %s not in root/icon/item' % (k, icon))
 for k, line in d['itemdesc'].items():
     if desc.get(k) != line:

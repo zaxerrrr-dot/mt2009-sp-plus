@@ -78,7 +78,7 @@ def main():
                   icon='icon/item/%d.tga' % RITUAL_STONE, list_type='ETC')]
     write_sql(items)
     write_json(items + flame_records())
-    copy_icons({'%d.tga' % RITUAL_STONE: '%d.tga' % RITUAL_STONE_SRC, '100700.tga': '100700.tga'}, a.gf)
+    copy_icons({'%d.tga' % RITUAL_STONE: '%d.tga' % RITUAL_STONE_SRC}, a.gf)   # 100700.tga is in the base client's root pack
     print('items %d (Kamien Rytualny %d), renames %d' % (len(items), RITUAL_STONE, len(RENAMES)))
 
 
