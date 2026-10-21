@@ -259,5 +259,12 @@
 // instance (mount, armour shape) gets it back (UserInterface/Mt2009Aura.cpp). An old exe has no chrmgr.SetAura -
 // root then draws nothing and nothing else changes.
 #define ENABLE_MT2009_AURA
+// MT2009_PLUS_BUFFI_V2 (Buffi, server-patches/buffi): Ameria's four costume slots of the buffi - WEAR_BUFFI_BODY / HEAD /
+// WEAPON / SASH 28-31 (Server/common/length.h; the free wear cells under WEAR_MAX 32, so no cell layout, packet or
+// database change), c_Buffi_Slot_* (GameType.h), item.BUFFI_SLOT_START/BODY/HEAD/WEAPON/SASH/COUNT
+// (PythonItemModule.cpp) and app.ENABLE_MT2009_BUFFI_COSTUME (PythonApplicationModule.cpp) for root's uibuffi.py. An
+// older exe already keeps the items of these cells (c_Wear_Max 32); root then takes the cells from
+// player.EQUIPMENT_SLOT_START.
+#define ENABLE_MT2009_BUFFI_COSTUME
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

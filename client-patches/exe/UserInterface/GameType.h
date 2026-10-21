@@ -96,6 +96,19 @@ constexpr DWORD c_Equipment_Glove  = c_Equipment_Start + WEAR_GLOVE;
 
 #endif
 
+#ifdef ENABLE_MT2009_BUFFI_COSTUME
+// MT2009_PLUS_BUFFI_V2: Buffi's costume slots - the equipment cells of WEAR_BUFFI_BODY ... WEAR_BUFFI_SASH (28-31;
+// root/uibuffi.py: item.BUFFI_SLOT_*). Inside the wear cells, so no cell after them moves.
+constexpr DWORD c_Buffi_Slot_Start	= c_Equipment_Start + WEAR_BUFFI_BODY;
+constexpr DWORD c_Buffi_Slot_Body	= c_Equipment_Start + WEAR_BUFFI_BODY;
+constexpr DWORD c_Buffi_Slot_Head	= c_Equipment_Start + WEAR_BUFFI_HEAD;
+constexpr DWORD c_Buffi_Slot_Weapon	= c_Equipment_Start + WEAR_BUFFI_WEAPON;
+constexpr DWORD c_Buffi_Slot_Sash	= c_Equipment_Start + WEAR_BUFFI_SASH;
+constexpr DWORD c_Buffi_Slot_Count	= 4;
+static_assert(WEAR_BUFFI_SASH < WEAR_MAX_NUM, "Buffi's costume slots must stay inside the wear cells");
+static_assert(WEAR_BUFFI_BODY > WEAR_GLOVE, "Buffi's costume slots after the glove");
+#endif
+
 const DWORD c_Wear_Max = WEAR_MAX_NUM;
 const DWORD c_DragonSoul_Equip_Start = c_ItemSlot_Count + c_Wear_Max;
 const DWORD c_DragonSoul_Equip_Slot_Max = DS_SLOT_MAX;
