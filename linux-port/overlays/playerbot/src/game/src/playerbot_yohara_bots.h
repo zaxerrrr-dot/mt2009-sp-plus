@@ -391,9 +391,10 @@ namespace
 		int iLastLevel;
 		DWORD dwLastExp, dwLastNeed;
 		long long llExpUnsaved;	// written to the cohort's row at the census
+		DWORD dwNextTidy;	// a member's bag: its junk sold where it stands
 		TPlayerBotYoharaResident() : iPurpose(0), lMap(0), dwArrived(0), dwLastRun(0), dwNextRestock(0), dwOffRunSince(0),
 			bDead(false), iDeaths(0), iDeathsWindowed(0), dwWindowStart(0), iLastLevel(0), dwLastExp(0), dwLastNeed(0),
-			llExpUnsaved(0) {}
+			llExpUnsaved(0), dwNextTidy(0) {}
 	};
 	// A bot on its way into Zaklety Las through the temple (the home core).
 	struct TPlayerBotYoharaTemple
@@ -606,6 +607,7 @@ namespace
 	};
 
 	const DWORD PLAYERBOT_YOHARA_COHORT_LOAD_MS = 60000;
+	const DWORD PLAYERBOT_YOHARA_COHORT_TIDY_MS = 5 * 60 * 1000;
 	// An online member at home whose bag or belt its own visit is sorting out: handed over anyway after this.
 	const DWORD PLAYERBOT_YOHARA_COHORT_HOME_PATIENCE_MS = 15 * 60 * 1000;
 	std::map<DWORD, TPlayerBotYoharaCohortMember> s_mapPlayerBotYoharaCohort;
@@ -631,7 +633,7 @@ namespace
 				"sent INT UNSIGNED NOT NULL DEFAULT 0, arrived INT UNSIGNED NOT NULL DEFAULT 0, "
 				"deaths INT UNSIGNED NOT NULL DEFAULT 0, runs INT UNSIGNED NOT NULL DEFAULT 0, "
 				"rest_outs INT UNSIGNED NOT NULL DEFAULT 0, exp_gained BIGINT UNSIGNED NOT NULL DEFAULT 0, "
-				"last_map INT NOT NULL DEFAULT 0, last_seen DATETIME NULL, "
+				"last_map INT NOT NULL DEFAULT 0, last_seen DATETIME NULL, applied_at DATETIME NULL, "
 				"KEY purpose (purpose)) ENGINE=InnoDB"));
 		s_bPlayerBotYoharaCohortTableReady = msg.get() && msg->uiSQLErrno == 0;
 		if (!s_bPlayerBotYoharaCohortTableReady)
@@ -1400,6 +1402,22 @@ namespace
 		if ((int)(dwNow - r.dwNextRestock) < 0 || ch->IsDead() || !ch->IsItemLoaded())
 			return;
 		r.dwNextRestock = dwNow + PLAYERBOT_YOHARA_RESTOCK_MS;
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member never goes to town for its bag (the cohorts' bags are full -
+		// 170 things in some on the test world): its junk is sold at the merchants' price where it stands, by
+		// the town visit's own rule, once in PLAYERBOT_YOHARA_COHORT_TIDY_MS while no column of three is free.
+		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) && (int)(dwNow - r.dwNextTidy) >= 0)
+		{
+			r.dwNextTidy = dwNow + PLAYERBOT_YOHARA_COHORT_TIDY_MS;
+			if (ch->GetEmptyInventory(3) < 0)
+			{
+				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_MISC, "cohort_misc");
+				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_WEAPON, "cohort_weapon");
+				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_ARMOR, "cohort_armor");
+				if (ch->GetEmptyInventory(1) < 0)
+					PlayerBotLogThrottled("cohort_bag", dwNow, "PLAYERBOT_COHORT: bag still full pid=%u name=%s map=%ld",
+							ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex());
+			}
+		}
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
 		const bool big = ch->GetLevel() >= PLAYERBOT_BIG_POTION_MIN_LEVEL;
