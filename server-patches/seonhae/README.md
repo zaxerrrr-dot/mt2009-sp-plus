@@ -125,3 +125,6 @@ sztukę” dają 24, 26 … 40).
 71052: `AddRareAttribute` z szansami panelu (`m2_rare_lv1` … `m2_rare_lv5`, domyślnie 35/30/20/10/5,
 `server-patches/rarelevelroll`), a nie stałą tabelą `AddRareAttribute2` 40/50/10/0/0 – poziomy 4–5 (maksima z wiki)
 wchodzą też od Seon-Hae. Bonus jest losowany równo spośród dozwolonych (kolumna wagi nie jest tu używana).
+
+Decyzja właściciela 21.10: Duży Suplement „zgodnie z wiki” – zostaje wzór z wiki (4% za sztukę: 24, 26 … 40), nie
+liczby z kolumny tabeli (22, 22 … 38).
