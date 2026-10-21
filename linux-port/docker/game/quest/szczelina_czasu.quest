@@ -8,8 +8,11 @@
 --   * 60 minut; po ukoñczeniu lub po up³ywie czasu ca³a grupa wraca na P³askowy¿ Iluzji (obok tej statui) - innego
 --     wyjœcia nie ma; "Wróæ do lochu" - do trwaj¹cej wyprawy;
 --   * potwory nie daj¹ dropu, ale daj¹ wiêcej PD (server-patches/szczelina, rzêdy "TR:" w bazie);
---   * na razie jeden loch: Zaklêty Las (SZC) (404, quest jotun_szc); Grota Wygnañców 2, Twierdza Czerwonego Smoka i
---     Stra¿nica Nemere (SZC) przyjd¹ póŸniej. Codziennej misji przy statui wiki nie podaje (pl i tr: brak misji).
+--   * cztery lochy (kolejnoœæ Owsapa): Grota Wygnañców 2 (SZC) (405, quest beran_szc), Twierdza Czerwonego
+--     Smoka (SZC) (406, razador_szc), Stra¿nica Nemere (SZC) (407, nemere_szc - w grupie Ninja i Szaman, jak w
+--     PB i u Owsapa), Zaklêty Las (SZC) (404, jotun_szc). MT2009_PLUS_YOHARA_CRACK2_V1 (w³aœciciel, 21.10.2026:
+--     "Szczeliny Czasu - 3 brakuj¹ce lochy") doda³ trzy pierwsze. Codziennej misji przy statui wiki nie podaje (pl i
+--     tr: brak misji).
 -- Mapa lochu jest na rdzeniu Yohary (game3): boty tam nie wchodz¹ - licz¹ siê ludzie z grupy.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest szczelina_czasu begin
@@ -19,7 +22,13 @@ quest szczelina_czasu begin
 				min_level = 110, ticket = 31147, near = 30, keep = 3600 + 300, statue = 20472,
 				-- P³askowy¿ Iluzji: the way back from every Time Rift dungeon - beside the statue (local 106,96)
 				plateau = 397, landing = {3072 + 106, 17920 + 96},
+				-- MT2009_PLUS_YOHARA_CRACK2_V1: the three others (tools/yohara_crack2) - the entries as the PB twins'
 				dungeons = {
+					{map = 405, name = "Grota Wygnañców 2 (SZC)", boss = 4400, entry = {0 + 877, 18176 + 722}},
+					{map = 406, name = "Twierdza Czerwonego Smoka (SZC)", boss = 4401,
+					 entry = {1536 + 342, 18176 + 584}},
+					{map = 407, name = "Stra¿nica Nemere (SZC)", boss = 4402, entry = {2304 + 171, 18176 + 270},
+					 need_jobs = true},
 					{map = 404, name = "Zaklêty Las (SZC)", boss = 4403, entry = {3328 + 478, 18176 + 970}},
 				},
 			}
@@ -68,6 +77,7 @@ quest szczelina_czasu begin
 			local me = pc.get_player_id()
 			local humans = {me}
 			local bad = {}
+			local ninja, shaman = pc.get_job() == 1, pc.get_job() == 3 -- MT2009_PLUS_YOHARA_CRACK2_V1
 			local function check(name)
 				if pc.get_level() < c.min_level then
 					table.insert(bad, name.." (poziom)")
@@ -89,6 +99,8 @@ quest szczelina_czasu begin
 							local dx, dy = pc.get_x() - lx, pc.get_y() - ly
 							if pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
 								table.insert(humans, pid)
+								ninja = ninja or pc.get_job() == 1
+								shaman = shaman or pc.get_job() == 3
 								if not pc.is_gm() then
 									check(pc.get_name())
 								end
@@ -112,6 +124,13 @@ quest szczelina_czasu begin
 			if not pc.is_gm() and table.getn(humans) < 2 then
 				say("Sam nie przetrwasz w Szczelinie Czasu - potrzebujesz")
 				say("co najmniej jednego towarzysza z grupy.")
+				return
+			end
+			-- MT2009_PLUS_YOHARA_CRACK2_V1: Stra¿nica Nemere (SZC) - a Ninja and a Shaman (Owsap labyrinth_dungeon.quest; the
+			-- tr-wiki's floors 2, 6, 8, 9 need them)
+			if dg.need_jobs and not pc.is_gm() and not (ninja and shaman) then
+				say("W grupie musi byæ co najmniej jeden Ninja i jeden")
+				say("Szaman - bez nich nie przejdziecie Stra¿nicy Nemere.")
 				return
 			end
 			if table.getn(humans) > 8 then
@@ -145,6 +164,7 @@ quest szczelina_czasu begin
 			say("dropuj¹, ale daj¹ wiêcej PD ni¿ zazwyczaj.")
 			say_reward("Od poziomu "..c.min_level..", tylko w grupie. Po ukoñczeniu lub")
 			say_reward("po czasie wrócicie na P³askowy¿ Iluzji.")
+			say_orange("Do Stra¿nicy Nemere (SZC): Ninja i Szaman w grupie.")
 			say_item_vnum(c.ticket)
 			local opts = {}
 			for i, dg in ipairs(c.dungeons) do

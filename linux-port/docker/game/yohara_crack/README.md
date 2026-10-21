@@ -1,8 +1,8 @@
 # Szczelina Czasu: Statua Szczeliny Czasu i Zaklęty Las (SZC) (MT2009_PLUS_YOHARA_CRACK_V1)
 
 Decyzja właściciela z 14.10.2026: „Statua Szczeliny Czasu na Płaskowyżu Iluzji, na razie tylko jeden loch –
-Zaklęty Las”. Pozostałe trzy lochy dojdą później: Grota Wygnańców 2, Twierdza Czerwonego Smoka i Strażnica
-Nemere (SZC).
+Zaklęty Las”. Pozostałe trzy lochy – Grota Wygnańców 2, Twierdza Czerwonego Smoka i Strażnica Nemere (SZC) – doszły
+21.10.2026: `../yohara_crack2/README.md` (MT2009_PLUS_YOHARA_CRACK2_V1); statua ma teraz cztery lochy.
 
 Źródła:
 - pl-wiki: „Statua Szczeliny Czasu”, „Płaskowyż Iluzji” (rozdział „Statua Szczeliny Czasu”), „Zaklęty Las (SZC)”,

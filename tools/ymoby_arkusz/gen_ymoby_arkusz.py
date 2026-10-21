@@ -164,8 +164,9 @@ def extract(a):
         if os.path.basename(f) != os.path.basename(SQL_OUT):
             yohara.update(sql_vnums(f))
     no_drop = dict(D.NO_DROP_MOBS)
-    for v in sql_vnums(os.path.join(PB, D.NO_DROP_SQL)):
-        no_drop.setdefault(v, 'the Time Rift (map 404) drops nothing - server-patches/szczelina')
+    for f in [D.NO_DROP_SQL] + D.NO_DROP_SQL_MORE:      # MT2009_PLUS_YOHARA_CRACK2_V1: the three other rifts
+        for v in sql_vnums(os.path.join(PB, f)):
+            no_drop.setdefault(v, 'the Time Rift (maps 404-407) drops nothing - server-patches/szczelina')
     mob = {}
     for p in db_rows(a.db, 'SELECT vnum, locale_name, `rank`, type, level FROM world.mob_proto'):
         mob[int(p[0])] = dict(name=p[1], rank=int(p[2]), type=int(p[3]), level=int(p[4]))

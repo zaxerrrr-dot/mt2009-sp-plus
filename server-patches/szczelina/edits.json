@@ -16,5 +16,17 @@
   "marker": "MT2009_PLUS_YOHARA_CRACK_V1 (items)",
   "old": "\t\tsys_log(0, \"Drop money : Attacker %s\", pkAttacker->GetName());\n\tRewardGold(pkAttacker);\n",
   "new": "\t\tsys_log(0, \"Drop money : Attacker %s\", pkAttacker->GetName());\n\tRewardGold(pkAttacker);\n\n\t// MT2009_PLUS_YOHARA_CRACK_V1 (items): nothing more in the Time Rift dungeons - the yang above is the\n\t// mob_proto's own (Jotun Thrym (SZC) only).\n\tif (Mt2009PlusTimeRiftNoDrop(this))\n\t\treturn;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_YOHARA_CRACK2_V1 (no drop maps)",
+  "old": "\tconst long base = mapIndex >= 10000 ? mapIndex / 10000 : mapIndex;\n\treturn base == 404;\n}\n",
+  "new": "\tconst long base = mapIndex >= 10000 ? mapIndex / 10000 : mapIndex;\n\t// MT2009_PLUS_YOHARA_CRACK2_V1 (no drop maps): the three other Time Rift dungeons too - Grota Wygnancow 2 (SZC)\n\t// 405, Twierdza Czerwonego Smoka (SZC) 406, Straznica Nemere (SZC) 407 (and their instances); the yang of\n\t// Beran-Setaou (SZC) (mob_proto, the tr-wiki's 20 000 000) still falls.\n\treturn base == 404 || base == 405 || base == 406 || base == 407;\n}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_YOHARA_CRACK2_V1 (damage)",
+  "old": "\tif (IsStone() && (GetRaceNum() == 8135 || GetRaceNum() == 20538))\n\t{\n\t\tconst bool bAllowed = pAttacker && pAttacker->IsPC() &&\n\t\t\t(pAttacker->GetJob() == JOB_SHAMAN || (GetRaceNum() == 20538 && pAttacker->GetJob() == JOB_ASSASSIN));\n\t\tif (!bAllowed)\n\t\t{\n\t\t\tif (pAttacker)\n\t\t\t{\n\t\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\t\t\tif (pAttacker->IsPC() && type == DAMAGE_TYPE_NORMAL)\n\t\t\t\t\tpAttacker->ChatPacket(CHAT_TYPE_INFO, GetRaceNum() == 8135 ? \"Ten Metin moze zranic tylko Szaman.\" : \"Te Kolumne moze zranic tylko Ninja albo Szaman.\");\n\t\t\t}\n\t\t\treturn false;\n\t\t}\n\t}\n",
+  "new": "\t// MT2009_PLUS_YOHARA_CRACK2_V1 (damage): the same in Straznica Nemere (SZC) - Metin Chlodu (SZC) (8125) only from a\n\t// Shaman, Kolumna Smoka Polnocy (SZC) (20518) only from a Shaman or a Ninja (the pl-/tr-wiki; server-patches/szczelina).\n\tif (IsStone() && (GetRaceNum() == 8135 || GetRaceNum() == 20538 || GetRaceNum() == 8125 || GetRaceNum() == 20518))\n\t{\n\t\tconst bool bAllowed = pAttacker && pAttacker->IsPC() &&\n\t\t\t(pAttacker->GetJob() == JOB_SHAMAN || ((GetRaceNum() == 20538 || GetRaceNum() == 20518) && pAttacker->GetJob() == JOB_ASSASSIN));\n\t\tif (!bAllowed)\n\t\t{\n\t\t\tif (pAttacker)\n\t\t\t{\n\t\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\t\t\tif (pAttacker->IsPC() && type == DAMAGE_TYPE_NORMAL)\n\t\t\t\t\tpAttacker->ChatPacket(CHAT_TYPE_INFO, (GetRaceNum() == 8135 || GetRaceNum() == 8125) ? \"Ten Metin moze zranic tylko Szaman.\" : \"Te Kolumne moze zranic tylko Ninja albo Szaman.\");\n\t\t\t}\n\t\t\treturn false;\n\t\t}\n\t}\n"
  }
 ]

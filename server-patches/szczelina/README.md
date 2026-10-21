@@ -16,7 +16,17 @@ fruits)`, `(items)`): gdy potwór, Metin albo boss ginie na mapie 404 (Zaklęty 
 (misje lasu), Karty Potworów i Przepustka Bitewna – bez zmian.
 
 Same lochy to questy `szczelina_czasu` (statua na płaskowyżu) i `jotun_szc` (Zaklęty Las (SZC)) – bez zmian w silniku.
-Kolejne lochy Szczeliny Czasu dopiszą swoje mapy do `Mt2009PlusTimeRiftNoDrop`.
+
+`MT2009_PLUS_YOHARA_CRACK2_V1` (21.10.2026, właściciel: „Szczeliny Czasu – 3 brakujące lochy”), dwie nowe zmiany (nowe
+znaczniki, bo stare się nie nakładają ponownie):
+- `(no drop maps)`: `Mt2009PlusTimeRiftNoDrop` obejmuje też mapy 405 (Grota Wygnańców 2 (SZC)), 406 (Twierdza
+  Czerwonego Smoka (SZC)) i 407 (Strażnica Nemere (SZC)) z instancjami; Yangi z `mob_proto` ma tylko Beran-Setaou (SZC)
+  (20 000 000, tr-wiki);
+- `(damage)`: blok z `server-patches/przebudzeni` (Metin Chłodu (PB) 8135 – tylko Szaman, Kolumna Smoka Północy (PB)
+  20538 – Szaman albo Ninja) obejmuje też bliźniaki SZC: Metin Chłodu (SZC) 8125 i Kolumnę Smoka Północy (SZC) 20518.
+  Wymaga, by `przebudzeni` było nałożone wcześniej (tak jest w `Apply-MT2009PlusEngine.ps1` i w skrypcie wgrywania).
+
+Lochy: `game/yohara_crack2`, questy `beran_szc`, `razador_szc`, `nemere_szc`.
 
 Linux/VPS: `python3 apply_szczelina.py <game/src>`; Windows: `Apply-SzczelinaPatch.ps1 -SourceDir <game/src>` (wołane
 przez `tools/port/Apply-MT2009PlusEngine.ps1`, po `skill9`). Plik silnika: `char_battle.cpp` (lista
