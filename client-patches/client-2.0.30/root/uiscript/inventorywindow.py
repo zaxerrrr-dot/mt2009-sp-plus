@@ -26,13 +26,12 @@ PENDANT_SLOT_Y = 147
 
 # MT2009_PLUS_GLOVES_V1: the Sung Ma glove slot (WEAR_GLOVE = 26; server-patches/rekawice) - only with the exe of
 # the second Yohara round (ENABLE_GLOVE_SYSTEM: item.EQUIPMENT_GLOVE). Right column, under the necklace (the
-# arrow, the earrings, the necklace, the gloves); the Dragon Soul button, which stood there, goes small into the gap
-# between the arrow and the earrings (uiinventory.py scales it).
+# arrow, the earrings, the necklace, the gloves); the Dragon Soul button, which stood there, went small into the gap
+# between the arrow and the earrings - now (MT2009_PLUS_INVENTORY_DSS_V1, below) full size in the costume button's place.
 EQUIPMENT_GLOVE_SLOT = getattr(item, "EQUIPMENT_GLOVE", 0) if getattr(app, "ENABLE_GLOVE_SYSTEM", 0) else 0
 GLOVE_SLOT_X = 114
 GLOVE_SLOT_Y = 117
 if EQUIPMENT_GLOVE_SLOT:
-	DSS_BUTTON_X, DSS_BUTTON_Y = 124, 37
 	GLOVE_SLOT_TUPLE = ({"index":EQUIPMENT_GLOVE_SLOT, "x":GLOVE_SLOT_X, "y":GLOVE_SLOT_Y, "width":32, "height":32},)
 	GLOVE_BASE_TUPLE = ({
 		"name" : "GloveSlotBase",
@@ -42,9 +41,14 @@ if EQUIPMENT_GLOVE_SLOT:
 		"image" : "d:/ymir work/ui/public/slot_base.sub",
 	},)
 else:
-	DSS_BUTTON_X, DSS_BUTTON_Y = 114, 120
 	GLOVE_SLOT_TUPLE = ()
 	GLOVE_BASE_TUPLE = ()
+
+# MT2009_PLUS_INVENTORY_DSS_V1 (the owner, 21 October 2026: "usunac przycisk kostiumow, w jego miejsce przycisk
+# Alchemii normalnej wielkosci"): the costume button is gone (the costume window opens from the extra inventory's
+# "Kostiumy" button, uiekwipunek.py MT2009_PLUS_EKWIPUNEK_ROW2_V1); the Dragon Soul button, at its own size (38 x 34),
+# takes its place between the helmet and the arrow - over the shield, clear of all three slots.
+DSS_BUTTON_X, DSS_BUTTON_Y = 77, 3
 
 window = {
 	"name" : "InventoryWindow",
@@ -225,7 +229,7 @@ window = {
 						{
 							"name" : "DSSButton",
 							"type" : "button",
-							"x" : DSS_BUTTON_X, # MT2009_PLUS_GLOVES_V1: 114, 120 without the glove slot
+							"x" : DSS_BUTTON_X, # MT2009_PLUS_INVENTORY_DSS_V1: the costume button's place
 							"y" : DSS_BUTTON_Y,
 							"tooltip_text" : uiScriptLocale.TASKBAR_DRAGON_SOUL,
 							"default_image" : "d:/ymir work/ui/dragonsoul/dss_inventory_button_01.tga",
@@ -233,17 +237,7 @@ window = {
 							"down_image" : "d:/ymir work/ui/dragonsoul/dss_inventory_button_03.tga",
 						},
 
-						## Costume Button
-						{
-							"name" : "CostumeButton",
-							"type" : "button",
-							"x" : 78,
-							"y" : 5,
-							"tooltip_text" : uiScriptLocale.COSTUME_TITLE,
-							"default_image" : "d:/ymir work/ui/game/costume_button_01.tga",
-							"over_image" : "d:/ymir work/ui/game/costume_button_02.tga",
-							"down_image" : "d:/ymir work/ui/game/costume_button_03.tga",
-						},
+						## Costume Button - MT2009_PLUS_INVENTORY_DSS_V1: removed (Kostiumy in the extra inventory)
 
 						{
 							"name" : "ChestPreviewButton",

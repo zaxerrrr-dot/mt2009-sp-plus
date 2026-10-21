@@ -38,6 +38,13 @@
 # shows that item and counts the materials here too (CountInStorages).
 # MT2009_PLUS_EKWIPUNEK_MOVE_V1: "Przenies do extra EQ", the third choice of
 # the inventory's sort button (inventoryarrange.py, RequestMoveFromBag).
+# MT2009_PLUS_EKWIPUNEK_ROW2_V1 (the owner, 21 October 2026: "dodaj tam
+# Kostiumy, Alchemie i ItemShop", "okno kostiumow, nie magazyn kostiumow"): the
+# second row of category buttons as Ameria's - Kostiumy opens the costume window
+# (uiinventory.py CostumeWindow; the inventory's own costume button is gone,
+# MT2009_PLUS_INVENTORY_DSS_V1), Alchemia the Dragon Soul window, ItemShop the
+# in-game ItemShop (as the minimap's / taskbar's button). interfacemodule.py
+# binds the interface (BindInterface).
 #
 # The windows need the 3.0 exe (client-patches/exe, ENABLE_SPECIAL_STORAGE:
 # player.UPGRADE_INVENTORY ...). With an older exe this module does nothing and
@@ -47,6 +54,7 @@
 
 import app
 import chat
+import eventManager
 import item
 import mouseModule
 import net
@@ -55,6 +63,7 @@ import snd
 import ui
 import uiCommon
 import uiToolTip
+import weakref
 import wndMgr
 
 TEXT_TITLE = "Dodatkowy ekwipunek"
@@ -68,6 +77,10 @@ TEXT_SORT_TIP = "Sortuj"
 TEXT_SORT_ASK = "Po\xb3\xb9czy\xe6 stosy i posortowa\xe6 kategori\xea \"%s\"?"
 TEXT_NEEDS_EXE = "Dodatkowy ekwipunek wymaga nowego klienta (exe 3.0)."
 TEXT_WRONG_KIND = "Ten przedmiot nie pasuje do kategorii \"%s\"."
+# MT2009_PLUS_EKWIPUNEK_ROW2_V1: the second row's window buttons (tooltips)
+TEXT_COSTUME_TIP = "Kostiumy"
+TEXT_ALCHEMY_TIP = "Alchemia"
+TEXT_ITEMSHOP_TIP = "ItemShop"
 TEXT_ATTACH_ASK = "W\xb3o\xbfy\xe6 %s do przedmiotu?"
 TEXT_OPEN_START = "Otwieranie skrzynek: %d szt."
 TEXT_OPEN_DONE = "Otwarto skrzynek: %d."
@@ -113,7 +126,55 @@ _state = {
 	'server': False,
 	'categories': None,
 	'refineWindow': None,
+	'interface': None,	# MT2009_PLUS_EKWIPUNEK_ROW2_V1: weakref.ref of interfacemodule.Interface
 }
+
+
+# ---------------------------------------------------------------- MT2009_PLUS_EKWIPUNEK_ROW2_V1
+
+def BindInterface(interface):
+	"""interfacemodule.py, when it builds the inventory: the second row's
+	buttons open the windows the interface holds."""
+	_state['interface'] = weakref.ref(interface) if interface else None
+
+
+def _Interface():
+	ref = _state['interface']
+	if ref is None:
+		return None
+	return ref()
+
+
+def ToggleCostumeWindow():
+	"""Kostiumy: the costume window, as the inventory's costume button opened
+	it (uiinventory.InventoryWindow.ClickCostumeButton - it keeps the window)."""
+	if not getattr(app, "ENABLE_COSTUME_SYSTEM", 0):
+		return
+	interface = _Interface()
+	inventory = getattr(interface, "wndInventory", None) if interface else None
+	if inventory and hasattr(inventory, "ClickCostumeButton"):
+		inventory.ClickCostumeButton()
+		costume = getattr(inventory, "wndCostume", None)
+		if costume and costume.IsShow():
+			costume.SetTop()
+
+
+def ToggleDragonSoulWindow():
+	"""Alchemia: the Dragon Soul window, as the inventory's Dragon Soul button
+	(with the note when the character may not use it yet)."""
+	interface = _Interface()
+	if interface and hasattr(interface, "ToggleDragonSoulWindow"):
+		interface.ToggleDragonSoulWindow()
+
+
+def ToggleItemShop():
+	"""ItemShop: as the minimap's and the taskbar's ItemShop button
+	(uiItemShop opens it, or closes it when it is open)."""
+	try:
+		eventManager.EventManager().send_event(__import__("uiItemShop").EVENT_OPEN_ITEMSHOP)
+	except Exception, e:
+		import dbg
+		dbg.TraceError("uiekwipunek.ToggleItemShop: %s" % str(e))
 
 
 def IsSupported():
@@ -591,6 +652,16 @@ class EkwipunekWindow(ui.ScriptWindow):
 			button.SetToolTipText(name)
 			button.SAFE_SetEvent(self.SetCategory, i)
 			self.categoryButtons.append(button)
+		# MT2009_PLUS_EKWIPUNEK_ROW2_V1: the second row's window buttons. The
+		# windows behind them are built on their first click: no click sample
+		# (MSS32 crashes on it then, as with the inventory's side bar).
+		for name, tip, event in (("Window_costume", TEXT_COSTUME_TIP, ToggleCostumeWindow),
+				("Window_alchemy", TEXT_ALCHEMY_TIP, ToggleDragonSoulWindow),
+				("Window_itemshop", TEXT_ITEMSHOP_TIP, ToggleItemShop)):
+			button = self.GetChild(name)
+			button.SetToolTipText(tip)
+			button.disableClickSound = True
+			button.SetEvent(event)
 
 		self.objectToMove = [grid, categoryBoard] + self.pageTabs
 
