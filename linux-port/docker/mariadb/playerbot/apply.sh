@@ -3875,6 +3875,26 @@ if [ -s /opt/playerbot/buffi_itemshop.sql ]; then
     db < /opt/playerbot/buffi_itemshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Buffi" >&2
 fi
 
+# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek - Ameria's special storage (server-patches/ekwipunek/README.md). The
+# five category storages are the windows 11-15 of the engine (common/length.h), saved as player.item.window - an enum
+# the core writes by number, so their names go at its end, in that order, after the ten windows the dump has
+# (INVENTORY .. IKASHOP_AUCTION). Every item query of a db core with the patch names them - must run before that core
+# starts. Idempotent: done once the enum has CHEST_INVENTORY; an enum of another shape is left alone and reported.
+ekw_old="enum('INVENTORY','EQUIPMENT','SAFEBOX','MALL','DRAGON_SOUL_INVENTORY','BELT_INVENTORY','GROUND','IKASHOP_OFFLINESHOP','IKASHOP_SAFEBOX','IKASHOP_AUCTION')"
+ekw_new="enum('INVENTORY','EQUIPMENT','SAFEBOX','MALL','DRAGON_SOUL_INVENTORY','BELT_INVENTORY','GROUND','IKASHOP_OFFLINESHOP','IKASHOP_SAFEBOX','IKASHOP_AUCTION','UPGRADE_INVENTORY','BOOK_INVENTORY','STONE_INVENTORY','CHANGE_INVENTORY','CHEST_INVENTORY')"
+ekw_type=$(db -e "SELECT COLUMN_TYPE FROM information_schema.columns WHERE table_schema='player' AND table_name='item' AND column_name='window';" 2>/dev/null || echo x)
+if [ "$ekw_type" = "$ekw_new" ]; then
+    :
+elif [ "$ekw_type" = "$ekw_old" ]; then
+    if db -e "ALTER TABLE player.item MODIFY COLUMN \`window\` $ekw_new NOT NULL;"; then
+        echo "[playerbot-migrate] extra inventory: player.item.window has the five category storages"
+    else
+        fail_step "extra inventory: could not add the category storages to player.item.window"
+    fi
+else
+    fail_step "extra inventory: player.item.window is not the expected enum ($ekw_type)"
+fi
+
 # MT2009_PLUS_YOHARA_ILUZJA_V1: Plaskowyz Iluzji and the two remaining awakened bosses - Beran-Setaou (PB), Jotun Thrym
 # (PB) (the owner, 14 October 2026). After the PB files (the PB bosses' drops name the plans this one adds):
 # yohara_iluzja.sql (tools/yohara_iluzja/gen_yiluzja.py) - the two dungeons' monsters, bosses, stones and NPCs, the
