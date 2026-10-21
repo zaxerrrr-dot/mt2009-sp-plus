@@ -78,6 +78,93 @@ edit('cmd.cpp', 'table',
      '\t{ "buffi",\tdo_buffi,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// ' + M + ' (table)\n')
 
 
+# ---------------------------------------------------------------------- MT2009_PLUS_BUFFI_V2: Ameria's four costume
+# slots of the buffi (outfit, hairstyle, weapon, sash) - the free wear cells 28-31 under WEAR_MAX 32 (no cell layout,
+# packet or database change; the exe's Server/common/length.h has the same numbers, client-patches/exe)
+M2 = 'MT2009_PLUS_BUFFI_V2'
+
+
+def edit2(file, tag, old, new):
+    EDITS.append(dict(file=file, marker='%s (%s)' % (M2, tag), old=old, new=new))
+
+
+edit2('../../common/length.h', 'wear',
+      '\tWEAR_MAX = 32\n};',
+      '\t// ' + M2 + ' (wear): Buffi\'s costume slots (Ameria\'s WEAR_BUFFI_*; playerbot_buffi.cpp) - fixed numbers, the\n'
+      '\t// free cells under WEAR_MAX whatever the costume systems above\n'
+      '\tWEAR_BUFFI_BODY = 28,\n'
+      '\tWEAR_BUFFI_HEAD = 29,\n'
+      '\tWEAR_BUFFI_WEAPON = 30,\n'
+      '\tWEAR_BUFFI_SASH = 31,\n'
+      '\n'
+      '\tWEAR_MAX = 32\n};')
+
+# where a costume goes: onto the buffi when dragged onto its slot or used with the Buffi window open
+edit2('item.cpp', 'cell',
+      'int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)\n{\n',
+      'int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)\n{\n'
+      '\t// ' + M2 + ' (cell): a costume for Buffi\'s slots, one worn there (playerbot_buffi.cpp)\n'
+      '\t{\n'
+      '\t\tint Mt2009BuffiFindEquipCell(LPCHARACTER, CItem*, int);\n'
+      '\t\tconst int iBuffiCell = Mt2009BuffiFindEquipCell(ch, this, iCandidateCell);\n'
+      '\t\tif (iBuffiCell != -2)\n'
+      '\t\t\treturn iBuffiCell;\n'
+      '\t}\n')
+
+# a costume on the buffi gives its owner nothing (no bonus, no part of the owner's look)
+edit2('item.cpp', 'points',
+      'void CItem::ModifyPoints(bool bAdd)\n{\n',
+      'void CItem::ModifyPoints(bool bAdd)\n{\n'
+      '\t// ' + M2 + ' (points): a costume worn on Buffi gives its owner nothing (playerbot_buffi.cpp)\n'
+      '\t{\n'
+      '\t\tbool Mt2009BuffiWornItem(CItem*);\n'
+      '\t\tif (Mt2009BuffiWornItem(this))\n'
+      '\t\t\treturn;\n'
+      '\t}\n')
+
+# the cell the client named, for CanEquipNow and the sex check
+edit2('char_item.cpp', 'begin',
+      'bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)\n{\n',
+      'bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)\n{\n'
+      '\t// ' + M2 + ' (begin): the cell named, for Buffi\'s costume slots (playerbot_buffi.cpp)\n'
+      '\t{ void Mt2009BuffiEquipBegin(LPCHARACTER, LPITEM, int); Mt2009BuffiEquipBegin(this, item, iCandidateCell); }\n')
+
+edit2('char_item.cpp', 'swap',
+      '\t\tif (false == CanUnequipNow(item2) || false == CanEquipNow(item1))\n\t\t\treturn false;\n\n'
+      '\t\tif (bEquipCell != item1->FindEquipCell(this))\n',
+      '\t\t// ' + M2 + ' (swap): a costume swapped with one on Buffi\'s slot goes onto that slot (playerbot_buffi.cpp)\n'
+      '\t\t{ void Mt2009BuffiEquipBegin(LPCHARACTER, LPITEM, int); Mt2009BuffiEquipBegin(this, item1, bEquipCell); }\n'
+      '\t\tif (false == CanUnequipNow(item2) || false == CanEquipNow(item1))\n\t\t\treturn false;\n\n'
+      '\t\tif (bEquipCell != item1->FindEquipCell(this, bEquipCell))\n')
+
+# a costume for the buffi: the shaman's class, not the owner's
+edit2('char_item.cpp', 'job',
+      '\t//BYTE itemSubType = item->GetSubType();\n\n\tswitch (GetJob())\n',
+      '\t//BYTE itemSubType = item->GetSubType();\n\n'
+      '\t// ' + M2 + ' (job): a costume for Buffi - a shaman\'s, whatever its owner\'s class (playerbot_buffi.cpp)\n'
+      '\tint iBuffiEquip = -1;\n'
+      '\t{\n'
+      '\t\tint Mt2009BuffiCanEquip(LPCHARACTER, LPITEM);\n'
+      '\t\tiBuffiEquip = Mt2009BuffiCanEquip(this, item);\n'
+      '\t\tif (iBuffiEquip == 0)\n'
+      '\t\t\treturn false;\n'
+      '\t}\n'
+      '\tif (iBuffiEquip < 0)\n'
+      '\tswitch (GetJob())\n')
+
+# a costume for the buffi: a woman's
+edit2('char_item.cpp', 'sex',
+      'static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)\n{\n',
+      'static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)\n{\n'
+      '\t// ' + M2 + ' (sex): a costume for Buffi - a woman\'s (playerbot_buffi.cpp)\n'
+      '\t{\n'
+      '\t\tint Mt2009BuffiCheckSex(LPCHARACTER, LPITEM);\n'
+      '\t\tconst int iBuffiSex = Mt2009BuffiCheckSex(ch, item);\n'
+      '\t\tif (iBuffiSex >= 0)\n'
+      '\t\t\treturn iBuffiSex != 0;\n'
+      '\t}\n')
+
+
 def main():
     with open(os.path.join(HERE, 'edits.json'), 'w', encoding='utf-8', newline='\n') as f:
         json.dump(EDITS, f, indent=1, ensure_ascii=False)

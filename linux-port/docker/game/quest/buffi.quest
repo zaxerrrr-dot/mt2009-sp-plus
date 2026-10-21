@@ -3,9 +3,10 @@
 --   Kamieñ Duchowy Buffi (61031) - a buffi skill (164-167) from G1 to P, Ameria's rules (= Kamieñ Duchowy:
 --     punkty rangi 1000 + 500 za stopieñ, przy ujemnej podwójnie, nieudana próba 1/3-1/2) with our wait between two
 --     tries (12 h, Zwój Egzorcyzmu at once), as Kamieñ Duchowy+ of the quest riposty;
---   Buffi (7 dni) 61025 and Zwój Imienia Buffi 61030 for a new character, once (Ameria's starter chest 66002);
---   the General Store (9003): the books 61035-61038 for 1 000 000 Yang + 3 Zwoje Egzorcyzmu, Kamieñ Duchowy Buffi for
---     500 000 Yang + 2 Kamienie Duchowe (Ameria's shop 3 with its item prices).
+--   Buffi (7 dni) 61025 and Zwój Imienia Buffi 61030 for a new character, once (Ameria's starter chest 66002).
+-- MT2009_PLUS_BUFFI_V2 (the owner, 21 October 2026): M1 -> G1 are the shaman's own skill books dragged onto the buffi
+-- skill in the Buffi window (playerbot_buffi.cpp, "/buffi read"); the General Store's offer of the books 61035-61038
+-- and of Kamieñ Duchowy Buffi is gone - the stone drops from Metins and bosses (Zaczarowany Las and up).
 -- The seals and the name scroll are the core's (playerbot_buffi.cpp, the window root/uibuffi.py); the books are the
 -- engine's skill books (server-patches/buffi (learnable)). Off (m2_buffi_off, .env M2_BUFFI=0): nothing here.
 -- cp1250; no string ends with a Polish letter (qc).
@@ -60,7 +61,9 @@ quest buffi begin
 			if table.getn(vnums) == 0 then
 				say("Kamieñ Duchowy Buffi trenuje umiejêtnoœci Buffi")
 				say("od stopnia G1 do P. ¯adna z nich nie jest teraz")
-				say("na stopniu G1-G10 (od M1 do G1 - ksiêgi Buffi).")
+				say("na stopniu G1-G10. Od M1 do G1 - zwyk³e Ksiêgi")
+				say("Umiejêtnoœci szamana przeci¹gniête w oknie Buffi")
+				say("(klawisz P) na jej umiejêtnoœæ.")
 				return
 			end
 			local now = get_time()
@@ -125,51 +128,6 @@ quest buffi begin
 				say("Spróbuj ponownie póŸniej.")
 				say_reward(string.format("Zu¿yto %d punktów rangi.", lost))
 			end
-		end
-
-		when 9003.chat."Ksiêgi i kamienie Buffi" with game.get_event_flag("m2_buffi_off") == 0 begin
-			-- Ameria's General Store: vnum, Yang, the item it costs and how many
-			local wares = {
-				{ 61035, 1000000, 71001, 3 },
-				{ 61036, 1000000, 71001, 3 },
-				{ 61037, 1000000, 71001, 3 },
-				{ 61038, 1000000, 71001, 3 },
-				{ 61031, 500000, 50513, 2 },
-			}
-			say_title("Ksiêgi i kamienie Buffi")
-			say("Ksiêgi Buffi ucz¹ jej umiejêtnoœci od M1 do G1,")
-			say("Kamieñ Duchowy Buffi - od G1 do P.")
-			say("Ksiêga: 1 000 000 Yang i 3 Zwoje Egzorcyzmu.")
-			say("Kamieñ: 500 000 Yang i 2 Kamienie Duchowe.")
-			local menu = {}
-			for i = 1, table.getn(wares) do
-				table.insert(menu, item_name(wares[i][1]))
-			end
-			table.insert(menu, "Anuluj")
-			local s = select_table(menu)
-			if s == table.getn(menu) then
-				return
-			end
-			local w = wares[s]
-			say_title(item_name(w[1]))
-			if pc.get_gold() < w[2] then
-				say(string.format("Potrzebujesz %d Yang.", w[2]))
-				return
-			end
-			if pc.count_item(w[3]) < w[4] then
-				say(string.format("Potrzebujesz jeszcze: %s x%d.", item_name(w[3]), w[4]))
-				return
-			end
-			if select("Kup", "Anuluj") != 1 then
-				return
-			end
-			if pc.get_gold() < w[2] or pc.count_item(w[3]) < w[4] then
-				return
-			end
-			pc.change_gold(-w[2])
-			pc.remove_item(w[3], w[4])
-			pc.give_item2(w[1], 1)
-			say_reward(string.format("Kupiono: %s.", item_name(w[1])))
 		end
 	end
 end

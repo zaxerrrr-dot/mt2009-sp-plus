@@ -46,5 +46,47 @@
   "marker": "MT2009_PLUS_BUFFI_V1 (table)",
   "old": "\t{ \"cardmonster\",\tdo_cardmonster,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_MONSTER_CARDS_V1 (table)\n",
   "new": "\t{ \"cardmonster\",\tdo_cardmonster,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_MONSTER_CARDS_V1 (table)\n\t{ \"buffi\",\tdo_buffi,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_BUFFI_V1 (table)\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_BUFFI_V2 (wear)",
+  "old": "\tWEAR_MAX = 32\n};",
+  "new": "\t// MT2009_PLUS_BUFFI_V2 (wear): Buffi's costume slots (Ameria's WEAR_BUFFI_*; playerbot_buffi.cpp) - fixed numbers, the\n\t// free cells under WEAR_MAX whatever the costume systems above\n\tWEAR_BUFFI_BODY = 28,\n\tWEAR_BUFFI_HEAD = 29,\n\tWEAR_BUFFI_WEAPON = 30,\n\tWEAR_BUFFI_SASH = 31,\n\n\tWEAR_MAX = 32\n};"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V2 (cell)",
+  "old": "int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)\n{\n",
+  "new": "int CItem::FindEquipCell(LPCHARACTER ch, int iCandidateCell)\n{\n\t// MT2009_PLUS_BUFFI_V2 (cell): a costume for Buffi's slots, one worn there (playerbot_buffi.cpp)\n\t{\n\t\tint Mt2009BuffiFindEquipCell(LPCHARACTER, CItem*, int);\n\t\tconst int iBuffiCell = Mt2009BuffiFindEquipCell(ch, this, iCandidateCell);\n\t\tif (iBuffiCell != -2)\n\t\t\treturn iBuffiCell;\n\t}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V2 (points)",
+  "old": "void CItem::ModifyPoints(bool bAdd)\n{\n",
+  "new": "void CItem::ModifyPoints(bool bAdd)\n{\n\t// MT2009_PLUS_BUFFI_V2 (points): a costume worn on Buffi gives its owner nothing (playerbot_buffi.cpp)\n\t{\n\t\tbool Mt2009BuffiWornItem(CItem*);\n\t\tif (Mt2009BuffiWornItem(this))\n\t\t\treturn;\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V2 (begin)",
+  "old": "bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)\n{\n",
+  "new": "bool CHARACTER::EquipItem(LPITEM item, int iCandidateCell)\n{\n\t// MT2009_PLUS_BUFFI_V2 (begin): the cell named, for Buffi's costume slots (playerbot_buffi.cpp)\n\t{ void Mt2009BuffiEquipBegin(LPCHARACTER, LPITEM, int); Mt2009BuffiEquipBegin(this, item, iCandidateCell); }\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V2 (swap)",
+  "old": "\t\tif (false == CanUnequipNow(item2) || false == CanEquipNow(item1))\n\t\t\treturn false;\n\n\t\tif (bEquipCell != item1->FindEquipCell(this))\n",
+  "new": "\t\t// MT2009_PLUS_BUFFI_V2 (swap): a costume swapped with one on Buffi's slot goes onto that slot (playerbot_buffi.cpp)\n\t\t{ void Mt2009BuffiEquipBegin(LPCHARACTER, LPITEM, int); Mt2009BuffiEquipBegin(this, item1, bEquipCell); }\n\t\tif (false == CanUnequipNow(item2) || false == CanEquipNow(item1))\n\t\t\treturn false;\n\n\t\tif (bEquipCell != item1->FindEquipCell(this, bEquipCell))\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V2 (job)",
+  "old": "\t//BYTE itemSubType = item->GetSubType();\n\n\tswitch (GetJob())\n",
+  "new": "\t//BYTE itemSubType = item->GetSubType();\n\n\t// MT2009_PLUS_BUFFI_V2 (job): a costume for Buffi - a shaman's, whatever its owner's class (playerbot_buffi.cpp)\n\tint iBuffiEquip = -1;\n\t{\n\t\tint Mt2009BuffiCanEquip(LPCHARACTER, LPITEM);\n\t\tiBuffiEquip = Mt2009BuffiCanEquip(this, item);\n\t\tif (iBuffiEquip == 0)\n\t\t\treturn false;\n\t}\n\tif (iBuffiEquip < 0)\n\tswitch (GetJob())\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V2 (sex)",
+  "old": "static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)\n{\n",
+  "new": "static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)\n{\n\t// MT2009_PLUS_BUFFI_V2 (sex): a costume for Buffi - a woman's (playerbot_buffi.cpp)\n\t{\n\t\tint Mt2009BuffiCheckSex(LPCHARACTER, LPITEM);\n\t\tconst int iBuffiSex = Mt2009BuffiCheckSex(ch, item);\n\t\tif (iBuffiSex >= 0)\n\t\t\treturn iBuffiSex != 0;\n\t}\n"
  }
 ]

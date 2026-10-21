@@ -18,7 +18,20 @@
 //     Szybkosc and Zwiekszenie Ataku, and +10% against bosses for 7 days (Ameria's AFFECT_NAME_BUFFI); not while
 //     that bonus still lasts (Ameria returns there too);
 //   - its looks: Czarna Szata+9 (11899) and Ekstazyjny Wachlarz+9 (7159) on a female shaman, Ameria's defaults.
-//     Ameria's four costume slots for the buffi are the exe's (new equipment cells) - not here.
+//
+// MT2009_PLUS_BUFFI_V2 (the owner, 21 October 2026: "okno i rozwoj dokladnie jak w Amerii", "do G1 zwykle ksiegi
+// szamana przez okno buffi"):
+//   - Ameria's four costume slots of the buffi (WEAR_BUFFI_BODY/HEAD/WEAPON/SASH 28-31, the free wear cells under
+//     WEAR_MAX 32 - common/length.h, server-patches/buffi (wear)): a costume dragged onto them, or used while the
+//     Buffi window is open (Ameria's /buffi_costume_page - here "/buffi page 1|0"), goes onto the buffi: outfit and
+//     hairstyle for a woman, a weapon a shaman can hold, any sash. They give their owner nothing (item.cpp (points))
+//     and dress the shaman (RefreshLook, Ameria's CheckSupportWear - its sash too);
+//   - M1 -> G1: the shaman's own skill books (50300 of Blogoslawienstwo 94, Pomoc Smoka 96, Szybkosc 110,
+//     Zwiekszenie Ataku 111) dragged onto the buffi's skill in the window ("/buffi read") - the engine's book
+//     reading (chance, 20 000 experience, the wait, Zwoj Egzorcyzmu) on the buffi skill, never on the player's own;
+//     G1 -> P stays Kamien Duchowy Buffi 61031 (quest buffi). The books 61035-61038 have no source any more (the
+//     General Store's offer is gone) - one still owned is read as before;
+//   - Szybkosc and Zwiekszenie Ataku get M1 only once the buffi has a name, as at Ameria (its CheckOwnerSupport).
 //
 // Without an exe change: the buffi is an NPC on the server (a pet: no AI of its own, nobody can attack it) and is
 // shown to the clients as a female shaman (race 3, type PC) - BuffiInsertLook in CHARACTER::EncodeInsertPacket; its
@@ -109,6 +122,36 @@ namespace mt2009_buffi
 	std::set<DWORD> s_setVid;				// the shamans' vids, for the insert packet
 	LPEVENT s_pkTick = NULL;
 	bool s_bTable = false;
+
+	// MT2009_PLUS_BUFFI_V2: the owners whose Buffi window is open (Ameria's IsLookingBuffiPage) - a costume used then
+	// goes onto the buffi
+	std::set<DWORD> s_setLookPage;
+
+	// MT2009_PLUS_BUFFI_V2: the equip under way (CHARACTER::EquipItem / SwapItem set it, CanEquipNow and the sex check
+	// read it) - the wear cell the client named, -1 none
+	struct SEquip
+	{
+		DWORD dwPID;
+		DWORD dwItemID;
+		int iCandidate;
+		SEquip() : dwPID(0), dwItemID(0), iCandidate(-1) {}
+	};
+	SEquip s_equip;
+
+	// MT2009_PLUS_BUFFI_V2: the shaman skill whose ordinary book (50300) trains a buffi skill up to G1
+	struct SBook
+	{
+		DWORD dwBuffiSkill;
+		DWORD dwShamanSkill;
+	};
+	const SBook BOOKS[4] =
+	{
+		{ 164, 94 },	// Blogoslawienstwo
+		{ 165, 96 },	// Pomoc Smoka
+		{ 166, 110 },	// Szybkosc
+		{ 167, 111 },	// Zwiekszenie Ataku
+	};
+	const DWORD SKILL_BOOK = 50300;
 
 	bool Enabled()
 	{
@@ -233,6 +276,57 @@ namespace mt2009_buffi
 		return name;
 	}
 
+	// MT2009_PLUS_BUFFI_V2: what the shaman wears - the owner's buffi costume slots (Ameria's CheckSupportWear: the
+	// outfit's vnum, the hairstyle's value 3, the weapon's vnum; here the sash too), a transmuted costume with its look;
+	// without a costume Ameria's Czarna Szata+9 / Ekstazyjny Wachlarz+9. [0] body, [1] hair, [2] weapon, [3] sash.
+	DWORD Look(LPITEM item)
+	{
+		return item->GetTransmutation() ? item->GetTransmutation() : item->GetVnum();
+	}
+
+	void LookParts(LPCHARACTER owner, DWORD adwPart[4])
+	{
+		LPITEM body = owner->GetWear(WEAR_BUFFI_BODY);
+		LPITEM hair = owner->GetWear(WEAR_BUFFI_HEAD);
+		LPITEM weapon = owner->GetWear(WEAR_BUFFI_WEAPON);
+		LPITEM sash = owner->GetWear(WEAR_BUFFI_SASH);
+		adwPart[0] = body ? Look(body) : ARMOR;
+		adwPart[1] = 0;
+		if (hair)
+		{
+			const TItemTable* look = ITEM_MANAGER::instance().GetTable(Look(hair));
+			adwPart[1] = look ? (DWORD) look->alValues[3] : (DWORD) hair->GetValue(3);
+		}
+		adwPart[2] = weapon ? Look(weapon) : WEAPON;
+		adwPart[3] = 0;
+#ifdef ENABLE_ACCE_COSTUME_SYSTEM
+		if (sash)
+			adwPart[3] = sash->GetAcceVnum();
+#endif
+	}
+
+	void RefreshLook(LPCHARACTER owner, LPCHARACTER mob)
+	{
+		DWORD adwPart[4];
+		LookParts(owner, adwPart);
+		bool bChanged = false;
+#ifdef ENABLE_ACCE_COSTUME_SYSTEM
+		const BYTE abPart[] = { PART_MAIN, PART_HAIR, PART_WEAPON, PART_ACCE };
+#else
+		const BYTE abPart[] = { PART_MAIN, PART_HAIR, PART_WEAPON };
+#endif
+		for (size_t i = 0; i < sizeof(abPart) / sizeof(abPart[0]); ++i)
+		{
+			if (mob->GetPart(abPart[i]) != adwPart[i])
+			{
+				mob->SetPart(abPart[i], adwPart[i]);
+				bChanged = true;
+			}
+		}
+		if (bChanged)
+			mob->UpdatePacket();
+	}
+
 	bool Spawn(LPCHARACTER owner, SBuffi& b)
 	{
 		Dismiss(b);
@@ -250,9 +344,16 @@ namespace mt2009_buffi
 		mob->SetPet();
 		mob->SetEmpire(owner->GetEmpire());
 		mob->SetName(ShownName(owner, b));
-		mob->SetPart(PART_MAIN, ARMOR);
-		mob->SetPart(PART_WEAPON, WEAPON);
-		mob->SetPart(PART_HAIR, 0);
+		{
+			DWORD adwPart[4];
+			LookParts(owner, adwPart);
+			mob->SetPart(PART_MAIN, adwPart[0]);
+			mob->SetPart(PART_HAIR, adwPart[1]);
+			mob->SetPart(PART_WEAPON, adwPart[2]);
+#ifdef ENABLE_ACCE_COSTUME_SYSTEM
+			mob->SetPart(PART_ACCE, adwPart[3]);
+#endif
+		}
 		b.dwVID = (DWORD) mob->GetVID();
 		s_setVid.insert(b.dwVID);	// before Show: its insert packet already says "female shaman"
 		if (!mob->Show(owner->GetMapIndex(), x, y, owner->GetZ()))
@@ -407,6 +508,7 @@ namespace mt2009_buffi
 				continue;
 			}
 			Follow(owner, mob);
+			RefreshLook(owner, mob);	// MT2009_PLUS_BUFFI_V2: a costume put onto / taken off the buffi's slots
 			Support(owner, mob, b, dwNow);
 			++it;
 		}
@@ -446,8 +548,9 @@ namespace mt2009_buffi
 		b.dwItemID = seal->GetID();
 		b.stName = LoadName(seal->GetID());
 		seal->SetSocket(1, 1);
+		// MT2009_PLUS_BUFFI_V2: Szybkosc and Zwiekszenie Ataku get M1 once the buffi has a name (Ameria)
 		for (int i = 0; i < 4; ++i)
-			if (owner->GetSkillLevel(BUFFS[i].dwSkill) == 0)
+			if (owner->GetSkillLevel(BUFFS[i].dwSkill) == 0 && (!BUFFS[i].bNeedsName || !b.stName.empty()))
 				owner->SetSkillLevel(BUFFS[i].dwSkill, START_LEVEL);
 		owner->SkillLevelPacket();
 		b.dwNextSpawn = 0;
@@ -497,7 +600,7 @@ namespace mt2009_buffi
 	}
 
 	// "BUFFI state <on> <called> <seal vnum> <named> <name|-> <lv164> <lv165> <lv166> <lv167> <boss bonus seconds>
-	// <name scrolls>" - root/uibuffi.py
+	// <name scrolls> <skill group>" - root/uibuffi.py (MT2009_PLUS_BUFFI_V2: the skill group, 0 = none chosen yet)
 	void SendState(LPCHARACTER ch)
 	{
 		if (!Enabled())
@@ -510,10 +613,10 @@ namespace mt2009_buffi
 		std::map<DWORD, SBuffi>::const_iterator it = s_mapBuffi.find(ch->GetPlayerID());
 		std::string name = it != s_mapBuffi.end() ? it->second.stName : (seal ? LoadName(seal->GetID()) : std::string());
 		const CAffect* aff = ch->FindAffect(AFFECT_NAME);
-		Command(ch, "state 1 %d %u %d %s %d %d %d %d %ld %u", called ? 1 : 0, seal ? seal->GetVnum() : 0,
+		Command(ch, "state 1 %d %u %d %s %d %d %d %d %ld %u %d", called ? 1 : 0, seal ? seal->GetVnum() : 0,
 				name.empty() ? 0 : 1, name.empty() ? "-" : name.c_str(),
 				ch->GetSkillLevel(164), ch->GetSkillLevel(165), ch->GetSkillLevel(166), ch->GetSkillLevel(167),
-				aff ? (long) aff->lDuration : 0L, (unsigned int) ch->CountSpecifyItem(NAME_SCROLL));
+				aff ? (long) aff->lDuration : 0L, (unsigned int) ch->CountSpecifyItem(NAME_SCROLL), (int) ch->GetSkillGroup());
 	}
 
 	void Rename(LPCHARACTER ch, const char* name)
@@ -549,8 +652,118 @@ namespace mt2009_buffi
 		scroll->SetCount(scroll->GetCount() - 1);
 		b.stName = name;
 		ch->AddAffect(AFFECT_NAME, POINT_ATTBONUS_BOSS, NAME_BONUS, AFF_NONE, NAME_BONUS_SECONDS, 0, false);
+		// MT2009_PLUS_BUFFI_V2: Szybkosc and Zwiekszenie Ataku from M1 now (Ameria gives it at the next cast)
+		bool bNew = false;
+		for (int i = 0; i < 4; ++i)
+			if (BUFFS[i].bNeedsName && ch->GetSkillLevel(BUFFS[i].dwSkill) == 0)
+			{
+				ch->SetSkillLevel(BUFFS[i].dwSkill, START_LEVEL);
+				bNew = true;
+			}
+		if (bNew)
+			ch->SkillLevelPacket();
 		Spawn(ch, b);
 		Say(ch, "Buffi ma nowe imi\xea. Odblokowane: Szybko\x9c\xe6 i Zwi\xeakszenie Ataku, +10% silny przeciwko bossom na 7 dni.");
+	}
+
+	// MT2009_PLUS_BUFFI_V2: "/buffi read <skill> <window> <cell>" - the shaman's ordinary skill book (50300 of the
+	// matching shaman skill) dragged onto a buffi skill in the window trains that buffi skill, M1 -> G1, by the
+	// engine's own book reading (LearnSkillByBook: the chance, the books a level, 20 000 experience, the wait, Zwoj
+	// Egzorcyzmu / Rada Pustelnika) - on the buffi skill 164-167, never on the reader's own skill.
+	void ReadBook(LPCHARACTER ch, DWORD dwSkill, int iWindow, int iCell)
+	{
+		const SBook* book = NULL;
+		for (int i = 0; i < 4; ++i)
+			if (BOOKS[i].dwBuffiSkill == dwSkill)
+				book = &BOOKS[i];
+		if (!book || iWindow < 0 || iWindow > 255 || iCell < 0 || iCell > 65535)
+			return;
+		LPITEM item = ch->GetItem(TItemPos((BYTE) iWindow, (WORD) iCell));
+		if (!item || item->GetOwner() != ch || item->IsEquipped() || item->IsExchanging() || item->isLocked())
+			return;
+		const char* name = "";
+		for (int i = 0; i < 4; ++i)
+			if (BUFFS[i].dwSkill == dwSkill)
+				name = i == 0 ? "B\xb3ogos\xb3""awie\xf1stwo" : i == 1 ? "Pomoc Smoka" : i == 2 ? "Szybko\x9c\xe6" : "Zwi\xea""kszenie Ataku";
+		if (item->GetVnum() != SKILL_BOOK || (DWORD) item->GetSocket(0) != book->dwShamanSkill)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "[Buffi] T\xea umiej\xea""tno\x9c\xe6 trenuje Ksi\xea""ga Umiej\xea""tno\x9c""ci: %s (szaman).", name);
+			return;
+		}
+		if (ch->GetSkillGroup() == 0)
+		{
+			Say(ch, "Najpierw wybierz drog\xea umiej\xea""tno\x9c""ci (Szkolenie).");
+			return;
+		}
+		if (ch->IsPolymorphed())
+		{
+			Say(ch, "Nie mo\xbfesz czyta\xe6 ksi\xb1g podczas przemiany.");
+			return;
+		}
+		const int iLevel = ch->GetSkillLevel(dwSkill);
+		if (iLevel < START_LEVEL)
+		{
+			Say(ch, BUFFS[dwSkill - SKILL_FIRST].bNeedsName ? "Ta umiej\xea""tno\x9c\xe6 Buffi wymaga imienia (Zw\xf3j Imienia Buffi)."
+					: "Najpierw przywo\xb3""aj Buffi - umiej\xea""tno\x9c""ci dostaj\xb9 wtedy M1.");
+			return;
+		}
+		if (iLevel >= 30)
+		{
+			Say(ch, "Od G1 umiej\xea""tno\x9c\xe6 Buffi trenuje Kamie\xf1 Duchowy Buffi.");
+			return;
+		}
+		if (ch->LearnSkillByBook(dwSkill))
+		{
+			item->SetCount(item->GetCount() - 1);
+			ch->SkillLevelPacket();
+		}
+	}
+
+	// ------------------------------------------------------------------ MT2009_PLUS_BUFFI_V2: the costume slots
+
+	bool IsBuffiCell(int iWearCell)
+	{
+		return iWearCell >= WEAR_BUFFI_BODY && iWearCell <= WEAR_BUFFI_SASH;
+	}
+
+	// the buffi cell of a costume (-1: no costume of the four)
+	int CellOf(CItem* item)
+	{
+		if (!item || item->GetType() != ITEM_COSTUME)
+			return -1;
+		switch (item->GetSubType())
+		{
+			case COSTUME_BODY:		return WEAR_BUFFI_BODY;
+			case COSTUME_HAIR:		return WEAR_BUFFI_HEAD;
+#ifdef ENABLE_WEAPON_COSTUME_SYSTEM
+			case COSTUME_WEAPON:	return WEAR_BUFFI_WEAPON;
+#endif
+#ifdef ENABLE_ACCE_COSTUME_SYSTEM
+			case COSTUME_ACCE:		return WEAR_BUFFI_SASH;
+#endif
+		}
+		return -1;
+	}
+
+	// the buffi cell an equip of this item goes to: -2 not the buffi's (the engine as ever), -1 refused, else the cell
+	int TargetCell(LPCHARACTER ch, CItem* item, int iCandidate)
+	{
+		if (!ch || !item || !ch->IsPC())
+			return -2;
+		// worn on the buffi already: its own cell (MoveItem, UnequipItem, the safebox ask it)
+		if (item->IsEquipped() && item->GetOwner() == ch && IsBuffiCell((int) item->GetCell() - INVENTORY_MAX_NUM))
+			return (int) item->GetCell() - INVENTORY_MAX_NUM;
+		const bool bAsked = IsBuffiCell(iCandidate);
+		if (!bAsked && !(iCandidate < 0 && s_setLookPage.count(ch->GetPlayerID())))
+			return -2;
+		const int iCell = CellOf(item);
+		if (!Counts(ch) || !Enabled())
+			return bAsked ? -1 : -2;
+		if (iCell < 0)
+			return bAsked ? -1 : -2;		// the open window does not change where an armour or a mount goes
+		if (bAsked && iCell != iCandidate)
+			return -1;
+		return iCell;
 	}
 }
 
@@ -619,6 +832,8 @@ int BuffiLearnable(const CHARACTER* ch, unsigned int dwVnum)
 // input_login.cpp, entering the game (after the Monster Cards): a seal called before brings its buffi back.
 void BuffiOnLogin(LPCHARACTER ch)
 {
+	if (ch)
+		s_setLookPage.erase(ch->GetPlayerID());		// MT2009_PLUS_BUFFI_V2: the window opens closed
 	if (!Counts(ch) || !Enabled())
 		return;
 	LPITEM seal = FindSeal(ch, true);
@@ -643,7 +858,85 @@ bool BuffiIsShaman(LPCHARACTER ch)
 	return ch && !ch->IsPC() && !s_setVid.empty() && s_setVid.count((DWORD) ch->GetVID());
 }
 
+// ---------------------------------------------------------------------- MT2009_PLUS_BUFFI_V2: the costume slots'
+// hooks (server-patches/buffi (cell), (begin), (swap), (job), (sex), (points))
+
+// item.cpp, CItem::FindEquipCell (its start): the buffi's cell for a costume dragged onto it (the candidate) or used
+// while the Buffi window is open, and the cell of one worn on the buffi. -2 not the buffi's, -1 refused, else the cell.
+int Mt2009BuffiFindEquipCell(LPCHARACTER ch, CItem* item, int iCandidateCell)
+{
+	return TargetCell(ch, item, iCandidateCell);
+}
+
+// char_item.cpp, CHARACTER::EquipItem (its start) and SwapItem (before its CanEquipNow): the cell the client named,
+// for CanEquipNow and the sex check below.
+void Mt2009BuffiEquipBegin(LPCHARACTER ch, LPITEM item, int iCandidateCell)
+{
+	s_equip.dwPID = ch ? ch->GetPlayerID() : 0;
+	s_equip.dwItemID = item ? item->GetID() : 0;
+	s_equip.iCandidate = iCandidateCell;
+}
+
+static int EquipTarget(LPCHARACTER ch, LPITEM item)
+{
+	if (!ch || !item)
+		return -2;
+	const int iCandidate = (s_equip.dwPID == ch->GetPlayerID() && s_equip.dwItemID == item->GetID()) ? s_equip.iCandidate : -1;
+	return TargetCell(ch, item, iCandidate);
+}
+
+// char_item.cpp, CHARACTER::CanEquipNow (before the class check): a costume for the buffi is checked against the
+// shaman, not against its owner's class (Ameria's IsLookingBuffiPage branch). -1 not for the buffi (the class check
+// as ever), 0 refused, 1 allowed (the class check skipped).
+int Mt2009BuffiCanEquip(LPCHARACTER ch, LPITEM item)
+{
+	const int iCell = EquipTarget(ch, item);
+	if (iCell == -2)
+		return -1;
+	if (iCell < 0 && !Enabled())
+	{
+		Say(ch, "Buffi jest wy\xb3\xb9""czony na tym serwerze.");
+		return 0;
+	}
+	if (iCell < 0)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "[Buffi] To miejsce Buffi przyjmuje tylko: %s.",
+				s_equip.iCandidate == WEAR_BUFFI_BODY ? "kostium (str\xf3j)" : s_equip.iCandidate == WEAR_BUFFI_HEAD ? "kostium fryzury" :
+				s_equip.iCandidate == WEAR_BUFFI_WEAPON ? "kostium broni szamana" : "szarf\xea");
+		return 0;
+	}
+	if (item->GetAntiFlag() & ITEM_ANTIFLAG_SHAMAN)
+	{
+		Say(ch, "Buffi jest szamank\xb9 - nie mo\xbf""e nosi\xe6 tego kostiumu.");
+		return 0;
+	}
+	return 1;
+}
+
+// char_item.cpp, FN_check_item_sex (its start): the buffi is a woman - an outfit or a hairstyle for her must not be a
+// man's only (Ameria checks the same at its IsLookingBuffiPage). -1 not for the buffi, 0 refused, 1 allowed.
+int Mt2009BuffiCheckSex(LPCHARACTER ch, LPITEM item)
+{
+	const int iCell = EquipTarget(ch, item);
+	if (iCell == -2)
+		return -1;
+	if (iCell < 0)
+		return 0;
+	if ((iCell == WEAR_BUFFI_BODY || iCell == WEAR_BUFFI_HEAD) && IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_FEMALE))
+		return 0;
+	return 1;
+}
+
+// item.cpp, CItem::ModifyPoints (its start): a costume worn on the buffi gives its owner nothing - no bonus, no part
+// of the owner's look (Ameria: "Buffi Costumes do not offer any bonus"). Whether the buffi is on or not.
+bool Mt2009BuffiWornItem(CItem* item)
+{
+	return item && item->IsEquipped() && IsBuffiCell((int) item->GetCell() - INVENTORY_MAX_NUM);
+}
+
 // "/buffi info|toggle|name <name>" - root/uibuffi.py (the P key, the inventory's side bar)
+// MT2009_PLUS_BUFFI_V2: "/buffi page 1|0" (the window open / closed - Ameria's /buffi_costume_page) and
+// "/buffi read <skill> <window> <cell>" (a shaman's skill book dragged onto a buffi skill)
 ACMD(do_buffi)
 {
 	if (!Counts(ch))
@@ -674,6 +967,25 @@ ACMD(do_buffi)
 	if (!strcmp(sub, "name"))
 	{
 		Rename(ch, arg);
+		SendState(ch);
+		return;
+	}
+	if (!strcmp(sub, "page"))
+	{
+		if (atoi(arg) == 1)
+			s_setLookPage.insert(ch->GetPlayerID());
+		else
+			s_setLookPage.erase(ch->GetPlayerID());
+		return;
+	}
+	if (!strcmp(sub, "read"))
+	{
+		char szWindow[16] = "", szCell[16] = "";
+		const char* more = one_argument(rest, arg, sizeof(arg));
+		more = one_argument(more, szWindow, sizeof(szWindow));
+		one_argument(more, szCell, sizeof(szCell));
+		if (*arg && *szWindow && *szCell)
+			ReadBook(ch, (DWORD) atoi(arg), atoi(szWindow), atoi(szCell));
 		SendState(ch);
 		return;
 	}
