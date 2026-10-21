@@ -1568,7 +1568,7 @@ function Set-DifficultyAction {
     $currentBotBook = Get-DotEnvValue -Key 'M2_BOT_BOOK_WAIT_HOURS' -Default '0'
     $currentAutoHunt = (Get-DotEnvValue -Key 'M2_AUTOHUNT' -Default '1') -ne '0'
     $currentAutoHuntItem = (Get-DotEnvValue -Key 'M2_AUTOHUNT_ITEM' -Default '0') -eq '1'
-    $currentSidekick = (Get-DotEnvValue -Key 'M2_SIDEKICK' -Default '1') -ne '0'
+    $currentSidekick = (Get-DotEnvValue -Key 'M2_SIDEKICK' -Default '0') -eq '1'   # MT2009_PLUS_SIDEKICK_OFF_V1
     $currentStarter = (Get-DotEnvValue -Key 'M2_STARTER_CHEST' -Default '1') -ne '0'
     $currentFlea = (Get-DotEnvValue -Key 'M2_FLEA_MARKET' -Default '1') -ne '0'
     $currentArezzo = (Get-DotEnvValue -Key 'M2_AREZZO' -Default '0') -eq '1'
@@ -1629,8 +1629,8 @@ function Set-DifficultyAction {
             if ("$answer".Trim() -eq '1') { $autoHuntItemOn = $false }
             elseif ("$answer".Trim() -eq '2') { $autoHuntItemOn = $true }
         }
-        $answer = Read-Host "Towarzysz (stały kompan gracza, list i okno P) włączony? (T/n, Enter = $(if ($currentSidekick) { 'tak' } else { 'nie' }))"
-        if ("$answer".Trim()) { $sidekickOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
+        $answer = Read-Host "Towarzysz (list Towarzysz; system nierozwijany, może działać niewłaściwie) włączony? (t/N, Enter = $(if ($currentSidekick) { 'tak' } else { 'nie' }))"
+        if ("$answer".Trim()) { $sidekickOn = "$answer".Trim().ToLowerInvariant() -in @('t', 'tak', 'y', 'yes', '1') }
         $answer = Read-Host "Skrzynia Ucznia w grze - dla nowych postaci graczy i dla botów? (T/n, Enter = $(if ($currentStarter) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $starterOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
         $answer = Read-Host "Dom Towarowy (wszystkie oferty sklepów offline u Handlarki Różności w M1) włączony? (T/n, Enter = $(if ($currentFlea) { 'tak' } else { 'nie' }))"

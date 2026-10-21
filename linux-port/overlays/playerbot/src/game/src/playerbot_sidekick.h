@@ -4487,14 +4487,18 @@ namespace
 		if (dwNow < s_dwPlayerBotSidekickNextManage)
 			return;
 		s_dwPlayerBotSidekickNextManage = dwNow + 1000;
-		if (dwNow >= s_dwPlayerBotSidekickNextLoad)
+		const bool off = IsPlayerBotSidekickSwitchedOff();
+		// MT2009_PLUS_SIDEKICK_OFF_V1 (Yohara 3.0: off unless .env M2_SIDEKICK=1 - not developed any further): switched
+		// off, the table is not read again and the self-test does not run; the records the core read at its start
+		// only send out the companions still in the world (below). They stay in the database as they are.
+		if (!off && dwNow >= s_dwPlayerBotSidekickNextLoad)
 		{
 			s_dwPlayerBotSidekickNextLoad = dwNow + PLAYERBOT_SIDEKICK_RELOAD_MS;
 			LoadPlayerBotSidekicks();
 			FillPlayerBotSidekickPool(dwNow); // MT2009_PLUS_SIDEKICK_POOL_V1
 		}
-		RunPlayerBotSidekickSelfTest(dwNow);
-		const bool off = IsPlayerBotSidekickSwitchedOff();
+		if (!off)
+			RunPlayerBotSidekickSelfTest(dwNow);
 		for (TPlayerBotSidekickMap::iterator it = s_mapPlayerBotSidekicks.begin(); it != s_mapPlayerBotSidekicks.end(); ++it)
 		{
 			TPlayerBotSidekick& rec = it->second;
