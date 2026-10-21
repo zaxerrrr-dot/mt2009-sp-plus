@@ -28,6 +28,10 @@ Owsapie (`__7AND8TH_SKILLS__`: `skill.h`, `char_skill.cpp`, `cmd_general.cpp`, `
 - **Nauka**: poziom postaci ≥ 5 i wybrana droga. Riposta – **Podręcznik: Riposta** (50515), wybór jednej z 8, poziom 1;
   można znać **tylko jedną**. Dopalacz – **Podręcznik: Dopalacz** (50514), zawsze dopalacz własnej klasy i drogi,
   wymaga **riposty na P**. Quest `riposty` (pc.learn_passive_skill).
+  Źródła Podręczników: Skrzynia Jotuna Thryma, Książę Ochao, a od 21.10.2026 (`MT2009_PLUS_RIPOSTY_FORGET_V1`, wiki)
+  **Metin Lasu** (8061: Riposta, 4) i **Niszczyciel En-Tai** (6406: Riposta i Dopalacz, po 0,2) – w
+  `tools/yohara_zaklety/gen_yzaklety.py` → `mob_drop_item.yohara_zaklety.txt` (wiki nie podaje szans – domyślne
+  `tools/ymoby_arkusz` dla „innego” przedmiotu).
 - **1 → M1**: punkty umiejętności (pewne; od 17 do 20 klasyczny rzut na M jak 9. umiejętność, bez blokady „użyj zwoju
   resetu”) albo księgi riposty/dopalacza (35 % za odczyt jak księgi klasowe, Rada Pustelnika 100 %, 20 000 PD, odstęp
   między księgami). **M1 → G1**: księgi (jak księgi klasowe). **G1 → P**: **Kamień Duchowy+** (50525) – jak Kamień Duchowy
@@ -42,13 +46,23 @@ Owsapie (`__7AND8TH_SKILLS__`: `skill.h`, `char_skill.cpp`, `cmd_general.cpp`, `
 - **Reset**: zwykły reset umiejętności (zwoje, zmiana drogi – `ResetSkill`/`ClearSkill`) **zostawia** ripostę i dopalacz,
   a punkty na nie wydane zostają wydane (`riposty.pts_<vnum>` w flagach questa). **Zwój Zmiany Treningu** (71000,
   ItemShop „Bonusy” za 49 – `riposty_itemshop.sql`) usuwa oba i oddaje te punkty. Zmiana drogi przenosi poziom
-  dopalacza na dopalacz nowej drogi (`RipostyGroupChanged`). Księga Zapomnienia ich nie cofa (`SkillLevelDown`).
+  dopalacza na dopalacz nowej drogi (`RipostyGroupChanged`).
+- **Księga Zapomnienia** (`MT2009_PLUS_RIPOSTY_FORGET_V1`, decyzja właściciela 21.10.2026; wiki: „W grze istnieją także
+  Księgi Zapomnienia dla Ripost / Dopalaczy”, strona przedmiotu: „Odejmuje jeden punkt umiejętności”, „Umiejętności na M
+  i wyższej nie można cofnąć”): to zwykła Księga Zapomnienia 70037 z ripostą / dopalaczem w gnieździe 0 (klient pisze
+  „Riposta: Wir Miecza Księga Zapomnienia”). Nowa Księga Zapomnienia (`ITEM_MANAGER::CreateItem`) dostaje ripostę lub
+  dopalacz tak, jakby każda z 16 była jeszcze jedną umiejętnością losowania (16 na 63 – `RipostyForgetBookSkill`) – te
+  same źródła co każda Księga Zapomnienia (Metiny od 15, bossy, szkatułki). Użycie (`RipostyLevelDown`, w `SkillLevelDown`
+  przed regułami silnika): tylko poniżej M1, poziom w dół i punkt umiejętności z powrotem – tylko za punkty na nią wydane
+  (`riposty.pts_<vnum>`); poziomu 1 z Podręcznika i poziomów z ksiąg nie cofa (całość usuwa Zwój Zmiany Treningu).
 
 ## Pliki
 
 `common/skill_length.h` `(vnum)`; `char_skill.cpp` `(learnable)`, `(book check)`, `(book grade)`, `(level up book)`,
-`(level up stop)`, `(level up roll)`, `(points)`, `(reset)`, `(clear)`, `(level down)`, `(damage)`, `(group)`;
-`cmd_general.cpp` `(skillup)` – 14 edycji, każda ze swoim znacznikiem. `gen_edits.py [<game/src>]` tworzy `edits.json`
+`(level up stop)`, `(level up roll)`, `(points)`, `(reset)`, `(clear)`, `(damage)`, `(group)`;
+`cmd_general.cpp` `(skillup)`; `MT2009_PLUS_RIPOSTY_FORGET_V1`: `char_skill.cpp` `(level down)`, `item_manager.cpp`
+`(forget book)` – 15 edycji, każda ze swoim znacznikiem (pierwsza wersja `MT2009_PLUS_RIPOSTY_V1 (level down)` – „brak
+punktu z riposty” – wypadła; w drzewie, które ją ma, nowa edycja i tak decyduje pierwsza). `gen_edits.py [<game/src>]` tworzy `edits.json`
 i sprawdza kotwice. Logika: `playerbot_riposty.{h,cpp}` (nakładka; funkcje questa rejestrowane razem z funkcjami
 Czempiona w `playerbot_champion.cpp`). Quest: `linux-port/docker/game/quest/riposty.quest`. Przedmioty (Podręczniki,
 Zwój Zmiany Treningu, opisy ksiąg): `tools/yohara_items/gen_yitems.py` → `yohara_items.sql`.

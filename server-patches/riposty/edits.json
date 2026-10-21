@@ -61,9 +61,15 @@
  },
  {
   "file": "char_skill.cpp",
-  "marker": "MT2009_PLUS_RIPOSTY_V1 (level down)",
-  "old": "\tif (dwVnum >= SKILL_FINISH && dwVnum <= SKILL_CHEONUN)\n\t\treturn false;\n\n\tif (GetSkillMasterType(pkSk->dwVnum) != SKILL_NORMAL)\n",
-  "new": "\tif (dwVnum >= SKILL_FINISH && dwVnum <= SKILL_CHEONUN)\n\t\treturn false;\n\t// MT2009_PLUS_RIPOSTY_V1 (level down): no point back from a riposte / boost (Zwoj Zmiany Treningu gives them back)\n\tif ((dwVnum >= SKILL_ANTI_PALBANG && dwVnum <= SKILL_ANTI_BYEURAK) || (dwVnum >= SKILL_HELP_PALBANG && dwVnum <= SKILL_HELP_BYEURAK))\n\t\treturn false;\n\n\tif (GetSkillMasterType(pkSk->dwVnum) != SKILL_NORMAL)\n"
+  "marker": "MT2009_PLUS_RIPOSTY_FORGET_V1 (level down)",
+  "old": "\tif (!IsLearnableSkill(dwVnum))\n\t\treturn false;\n\n\t// MT2009_PLUS_SKILL9_V1 (level down)",
+  "new": "\tif (!IsLearnableSkill(dwVnum))\n\t\treturn false;\n\n\t// MT2009_PLUS_RIPOSTY_FORGET_V1 (level down): a riposte / boost - its own rules (playerbot_riposty.cpp)\n\t{\n\t\tint RipostyLevelDown(CHARACTER*, unsigned int);\n\t\tconst int r = RipostyLevelDown(this, dwVnum);\n\t\tif (r >= 0)\n\t\t\treturn r != 0;\n\t}\n\n\t// MT2009_PLUS_SKILL9_V1 (level down)"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_FORGET_V1 (forget book)",
+  "old": "\t\t\titem->SetSocket(0, GetRandomSkillVnum());\n\t\t}\n",
+  "new": "\t\t\titem->SetSocket(0, GetRandomSkillVnum());\n\t\t\t// MT2009_PLUS_RIPOSTY_FORGET_V1 (forget book): Ksiega Zapomnienia - a riposte's / boost's too (playerbot_riposty.cpp)\n\t\t\tif (vnum == ITEM_SKILLFORGET_VNUM)\n\t\t\t{\n\t\t\t\tunsigned int RipostyForgetBookSkill(unsigned int);\n\t\t\t\titem->SetSocket(0, RipostyForgetBookSkill((unsigned int) item->GetSocket(0)));\n\t\t\t}\n\t\t}\n"
  },
  {
   "file": "char_skill.cpp",

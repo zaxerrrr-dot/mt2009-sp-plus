@@ -8,6 +8,7 @@ import os
 import sys
 
 M = 'MT2009_PLUS_RIPOSTY_V1'
+MF = 'MT2009_PLUS_RIPOSTY_FORGET_V1'
 # a riposte or a boost (both vnum ranges) - written out at every hook (no helper in the shared headers)
 PASSIVE = ('((%(v)s >= SKILL_ANTI_PALBANG && %(v)s <= SKILL_ANTI_BYEURAK) || '
            '(%(v)s >= SKILL_HELP_PALBANG && %(v)s <= SKILL_HELP_BYEURAK))')
@@ -125,18 +126,38 @@ EDITS = [
              '\t\tint RipostyKeptPoints(CHARACTER*);\n'
              '\t\tPointChange(POINT_SKILL, 4 + (GetLevel() - 5) - RipostyKeptPoints(this) - GetPoint(POINT_SKILL));\n'
              '\t}\n'),
-    dict(file='char_skill.cpp', marker=M + ' (level down)',
-         old='\tif (dwVnum >= SKILL_FINISH && dwVnum <= SKILL_CHEONUN)\n'
+    # MT2009_PLUS_RIPOSTY_FORGET_V1: Ksiega Zapomnienia (70037) with a riposte / boost in its socket - the wiki's
+    # "Ksiegi Zapomnienia dla Ripost / Dopalaczy": a level below M back for a skill point spent on it (playerbot_riposty.cpp;
+    # before the 9th skill's check, so a tree with the first version's "(level down)" edit works the same)
+    dict(file='char_skill.cpp', marker=MF + ' (level down)',
+         old='\tif (!IsLearnableSkill(dwVnum))\n'
              '\t\treturn false;\n'
              '\n'
-             '\tif (GetSkillMasterType(pkSk->dwVnum) != SKILL_NORMAL)\n',
-         new='\tif (dwVnum >= SKILL_FINISH && dwVnum <= SKILL_CHEONUN)\n'
-             '\t\treturn false;\n'
-             '\t// ' + M + ' (level down): no point back from a riposte / boost (Zwoj Zmiany Treningu gives them back)\n'
-             '\tif ' + passive('dwVnum') + '\n'
+             '\t// MT2009_PLUS_SKILL9_V1 (level down)',
+         new='\tif (!IsLearnableSkill(dwVnum))\n'
              '\t\treturn false;\n'
              '\n'
-             '\tif (GetSkillMasterType(pkSk->dwVnum) != SKILL_NORMAL)\n'),
+             '\t// ' + MF + ' (level down): a riposte / boost - its own rules (playerbot_riposty.cpp)\n'
+             '\t{\n'
+             '\t\tint RipostyLevelDown(CHARACTER*, unsigned int);\n'
+             '\t\tconst int r = RipostyLevelDown(this, dwVnum);\n'
+             '\t\tif (r >= 0)\n'
+             '\t\t\treturn r != 0;\n'
+             '\t}\n'
+             '\n'
+             '\t// MT2009_PLUS_SKILL9_V1 (level down)'),
+    # a new Ksiega Zapomnienia's skill: now and then a riposte / boost (each one more skill of the draw)
+    dict(file='item_manager.cpp', marker=MF + ' (forget book)',
+         old='\t\t\titem->SetSocket(0, GetRandomSkillVnum());\n'
+             '\t\t}\n',
+         new='\t\t\titem->SetSocket(0, GetRandomSkillVnum());\n'
+             '\t\t\t// ' + MF + ' (forget book): Ksiega Zapomnienia - a riposte\'s / boost\'s too (playerbot_riposty.cpp)\n'
+             '\t\t\tif (vnum == ITEM_SKILLFORGET_VNUM)\n'
+             '\t\t\t{\n'
+             '\t\t\t\tunsigned int RipostyForgetBookSkill(unsigned int);\n'
+             '\t\t\t\titem->SetSocket(0, RipostyForgetBookSkill((unsigned int) item->GetSocket(0)));\n'
+             '\t\t\t}\n'
+             '\t\t}\n'),
     # the effect: the splash damage of an attack skill (where the old 112-119 anti skills sit), before Damage
     dict(file='char_skill.cpp', marker=M + ' (damage)',
          old='\t\tif (m_pkSk->dwVnum == SKILL_FLAME_SPIRIT)\n'

@@ -42,6 +42,8 @@ TEXT_GROW_1 = "Do M1: punkty umiej\xeatno\x9cci lub ksi\xeagi (bez gwarancji)."
 TEXT_GROW_M = "Od M1 do G1: ksi\xeagi."
 TEXT_GROW_G = "Od G1 do P: Kamie\xf1 Duchowy+."
 TEXT_RESET = "Zw\xf3j Zmiany Treningu usuwa ripost\xea i dopalacz."
+# MT2009_PLUS_RIPOSTY_FORGET_V1: Ksiega Zapomnienia of this skill (server: playerbot_riposty.cpp RipostyLevelDown)
+TEXT_FORGET = "Ksi\xeaga Zapomnienia tej umiej\xeatno\x9cci oddaje wydany punkt (poni\xbfej M1)."
 
 
 def IsRiposte(skillIndex):
@@ -147,6 +149,8 @@ def AppendToolTip(tip, skillIndex, skillGrade, skillLevel):
 	tip.AppendSpace(5)
 	if level < 20:
 		tip.AppendTextLine(TEXT_GROW_1, tip.CONDITION_COLOR)
+		if level > 1:
+			tip.AppendTextLine(TEXT_FORGET, tip.DISABLE_COLOR)
 	elif level < 30:
 		tip.AppendTextLine(TEXT_GROW_M, tip.CONDITION_COLOR)
 	elif level < MAX_LEVEL:

@@ -306,6 +306,58 @@ void RipostyGroupChanged(CHARACTER* ch)
 	sys_log(0, "RIPOSTY: %s boost %u -> %u (level %d)", ch->GetName(), have, want, iLevel);
 }
 
+// MT2009_PLUS_RIPOSTY_FORGET_V1: Ksiega Zapomnienia (70037) with a riposte / boost in its socket (the pl-wiki: "W grze
+// istnieja takze Ksiegi Zapomnienia dla Ripost / Dopalaczy"; its page: one skill point back, "Umiejetnosci na M i wyzszej
+// nie mozna cofnac"). SkillLevelDown, before the engine's own rules: -1 not a riposte / boost; 0 refused (why, in
+// Polish); 1 a level down and a point back. Only the points spent on it come back (riposty.pts_<vnum>) - the levels its
+// Podrecznik (1) and its books gave stay; Zwoj Zmiany Treningu still removes it whole.
+int RipostyLevelDown(CHARACTER* ch, unsigned int dwVnum)
+{
+	if (!IsPassive(dwVnum))
+		return -1;
+	if (!ch || !ch->IsPC())
+		return 0;
+	const int iLevel = ch->GetSkillLevel(dwVnum);
+	if (iLevel <= 0)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Nie znasz tej umiejetnosci.");
+		return 0;
+	}
+	if (ch->GetSkillMasterType(dwVnum) != SKILL_NORMAL)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Riposty i dopalacza od stopnia M1 nie mozna cofnac.");
+		return 0;
+	}
+	const std::string flag = PointFlag(dwVnum);
+	const int iSpent = MAX(0, ch->GetQuestFlag(flag));
+	if (iLevel <= 1 || iSpent <= 0)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Na te umiejetnosc nie wydano punktow umiejetnosci - poziomu z Podrecznika i z ksiag nie mozna cofnac. Cala riposte i dopalacz usuwa Zwoj Zmiany Treningu.");
+		return 0;
+	}
+	ch->SetQuestFlag(flag, iSpent - 1);
+	ch->PointChange(POINT_SKILL, 1);
+	ch->SetSkillLevel(dwVnum, iLevel - 1);
+	ch->Save();
+	ch->ComputePoints();
+	ch->SkillLevelPacket();
+	LogManager::instance().CharLog(ch, dwVnum, "PASSIVE_FORGET", "");
+	sys_log(0, "RIPOSTY: %s forgets a level of %u (%d -> %d)", ch->GetName(), dwVnum, iLevel, iLevel - 1);
+	return 1;
+}
+
+// ITEM_MANAGER::CreateItem of a Ksiega Zapomnienia (its socket drawn by GetRandomSkillVnum, about 47 class skills):
+// each riposte and boost is one more skill of that draw - 16 in 63 books are theirs. The same sources as every
+// Ksiega Zapomnienia (Metins from 15, bosses, chests - the wiki).
+unsigned int RipostyForgetBookSkill(unsigned int dwSkill)
+{
+	const int CLASS_SKILLS = 47, PASSIVES = 16;
+	if (number(1, CLASS_SKILLS + PASSIVES) > PASSIVES)
+		return dwSkill;
+	const int i = number(0, PASSIVES - 1);
+	return i < 8 ? RIPOSTE_FIRST + i : BOOST_FIRST + (i - 8);
+}
+
 // ---- quest functions (quest riposty) ------------------------------------------------------------------------------
 
 namespace quest
