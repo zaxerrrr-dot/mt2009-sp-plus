@@ -4016,6 +4016,23 @@ INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, pric
 SELECT 1089999, 10, 'Świadectwo Aury+', 'Usuwa parametry przeniesione na szatę aury (poziom zostaje).', 50, 'cash', 89999, 1, 0, 0, 0, '89999', NOW()
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 89999);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the aura items" >&2
 fi
+# MT2009_PLUS_AURA_RUNES_SHOP_V1 (the owner, 21 October 2026: "Ogniste Runy Aury 250/500 have no source - as on the
+# global server"): the pl-wiki's sources of Ognista Runa Aury (250) / (500) are the ItemShop (Item-Shop, the ItemShop
+# boxes Pudelko Uszlachetniania Aury / Pudlo Chaosu SungMa / Tajemnicze Pudelko Najemnika, Aukcja Blyskawiczna) and the
+# wheels (kola_pool already has both, itemshop_schema.sql) - no monster, Metin or chest. In-game ItemShop (after the
+# outfit and the certificate) and the web shop, once per install; the prices are ours (the wiki gives none: the
+# 55 SM Pudelko Uszlachetniania Aury holds one rune 50..500 or a Chaos stone).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (49994, 49995);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once aura_954 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
+(954, 49994, 1, 30, 'DRAGON_COIN', 0),
+(955, 49995, 1, 55, 'DRAGON_COIN', 0);" "could not add the aura fire runes (250/500) to the ItemShop"
+db -e "INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1049994, 10, 'Ognista Runa Aury (250)', 'Daje szacie aury 250 PD - ulepszanie u Theowahdana.', 30, 'cash', 49994, 1, 0, 0, 0, '49994', NOW()
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 49994);
+INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+SELECT 1049995, 10, 'Ognista Runa Aury (500)', 'Daje szacie aury 500 PD - ulepszanie u Theowahdana.', 55, 'cash', 49995, 1, 0, 0, 0, '49995', NOW()
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 49995);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the aura runes" >&2
+fi
 fi
 
 # MT2009_PLUS_KOLA_ITEMS_V1: the ItemShop wheels' prizes the server lacked (the owner, 20 October 2026) - kola_items.sql

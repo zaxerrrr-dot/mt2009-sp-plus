@@ -43,7 +43,8 @@ Aury”, „Szaty Aury”, „Zwyczajna … Promienista Szata Aury”, „Lodowa
 | Wytwarzanie u Baek-Go: Ładny KC, 200 Odłamków Energii, Wyjątkowy Barwnik, 25 mln, 20% | quest `szata_aury` (20018 „Szata Aury”) |
 | Zwyczajna … Wytworna bez handlu, Promienista handlowa | `antiflag` jak u Owsapa |
 | Lodowa Runa Aury – „Drop alternatywny” (wszystkie potwory) | 1–3 szt., flaga zdarzeń `aura_rune_drop` (promile; 0 = 30, < 0 wyłączone), potwór najwyżej 15 poziomów niżej od gracza (boty nie) |
-| Ogniste Runy (10/50/100) | już wypadają (Yohara, `yohara_items2.sql`); 250/500 – tylko przedmioty (brak skrzyń z wiki: Pudło Chaosu SungMa, Pudełko Uszlachetniania Aury) |
+| Ogniste Runy (10/50/100) | już wypadają (Yohara, `yohara_items2.sql`) |
+| Ogniste Runy (250/500) – wiki: tylko Item-Shop, jego pudełka (Pudełko Uszlachetniania Aury, Pudło Chaosu SungMa, Tajemnicze Pudełko Najemnika), Aukcja Błyskawiczna i koła | koła ItemShopu (`kola_pool`) i od 21.10.2026 ItemShop (indeksy 954/955: 30 / 55 SM – cena nasza) i sklep www (`MT2009_PLUS_AURA_RUNES_SHOP_V1`, `apply.sh`); pudełek z wiki brak |
 | Item-Shop: Zwyczajna Szata Aury 650 SM | ItemShop w grze (indeks 952) i sklep www |
 | Świadectwo Aury+ – Aukcja Błyskawiczna | ItemShop 50 SM (indeks 953; cena nasza) |
 | Wygląd: „bańka” rośnie z rodzajem, Promienista – skrzydełka | efekty GF `d:/ymir work/pc/common/effect/aura/aura_*.mse` |
