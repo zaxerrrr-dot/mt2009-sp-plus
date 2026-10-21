@@ -11,8 +11,12 @@ Rules:
      Metin stone or an NPC):
        Grota Wygnancow 1 (72) and 2 (73)            -> lightning
        Swiatynia Ochao (209)                         -> wind
+       Dolina Seungryong (64)                        -> wind (MT2009_PLUS_SEUNGRYONG_WIND_V1, the owner 20 Oct 2026:
+                                                    "dolina seungryong - brak zywiolow - wiatr"; its boss of
+                                                    rule e, Wodz Orkow 691, keeps the owner's earth of 7 Oct)
      (MT2009_PLUS_YOHARA_ZAKLETY_V1: the Arezzo forest, Zaczarowany Las (362), is gone - its lemurs 9611-9615
-     spawn nowhere now and keep the wind it gave them (FORMER_FOREST_WIND: the generated file unchanged); Zaklety Las
+     spawn nowhere now and keep the wind it gave them (FORMER_FOREST_WIND: the generated file unchanged; the cats and
+     counts 3304/3305/3390/3391 too - MT2009_PLUS_SEUNGRYONG_WIND_V1); Zaklety Las
      (353) and Erebu are mariadb/playerbot/yohara_zaklety_zywioly.sql's, after this file)
      a boss there keeps its wiki element; one not on the wiki list takes the map's;
   c. dungeons - every monster and boss of the dungeon (its map files, its quest's regen files in
@@ -78,9 +82,16 @@ RANK_BOSS = 4
 MAP_RULES = (
     ('Grota Wygnancow 1/2', (72, 73), ELEC),
     ('Swiatynia Ochao', (209,), WIND),
+    ('Dolina Seungryong', (64,), WIND),  # MT2009_PLUS_SEUNGRYONG_WIND_V1
 )
+# MT2009_PLUS_SEUNGRYONG_WIND_V1: guests of a rule map that live on other maps keep no element there either (a vnum
+# carries its element everywhere): the valley's Bestial mini-bosses 531-534 (boss.txt; the village maps 3/23/43) and
+# the King Scorpions 2103 of the orc groups 601/602 (the desert, 63)
+MAP_RULE_SKIP = {'Dolina Seungryong': (531, 532, 533, 534, 2103)}
 # the lemurs of the removed Arezzo forest (362) - the wind its map rule gave them (MT2009_PLUS_YOHARA_ZAKLETY_V1)
-FORMER_FOREST_WIND = (9611, 9612, 9613, 9614, 9615)
+# and its lemur cats / counts 3304/3305/3390/3391 (the map's own spawns and groups 36201-36203 before d40a04e6;
+# MT2009_PLUS_SEUNGRYONG_WIND_V1: a regeneration without them dropped their wind)
+FORMER_FOREST_WIND = (9611, 9612, 9613, 9614, 9615, 3304, 3305, 3390, 3391)
 # (label, map index, data/dungeon dirs, quest, extra lua (enemy = vnum lines), element)
 DUNGEON_RULES = (
     ('Nemere', 352, ('nemere_mt',), 'nemere_dungeon.quest', None, ICE),
@@ -96,6 +107,7 @@ BOSS_OVERRIDES = (
     (DARK, (791, 792, 793, 794, 795, 993, 1491, 3290, 3291)),
     (FIRE, (9684, 2291, 2592, 2593, 2594, 9675, 9681, 9694, 9695)),
 )
+OVERRIDE_BOSSES = frozenset(v for _, vs in BOSS_OVERRIDES for v in vs)  # MT2009_PLUS_SEUNGRYONG_WIND_V1
 # g. the Zodiac signs' elements (1 Zi .. 12 Hai)
 ZODIAC_SIGN_ELEMENT = {1: DARK, 2: EARTH, 3: FIRE, 4: WIND, 5: ELEC, 6: ICE, 7: ICE, 8: ELEC, 9: EARTH, 10: WIND,
                        11: DARK, 12: FIRE}
@@ -352,11 +364,13 @@ def main():
             for i in idxs:
                 vs |= share.map_vnums(i)
                 vs |= share.special_spawns().get(i, set())
-            vs = with_summons(monsters(vs, mobs), mobs)
+            vs = with_summons(monsters(vs, mobs), mobs) - set(MAP_RULE_SKIP.get(label, ()))
             map_sets[label] = vs
             for v in sorted(vs):
                 if mobs[v]['rank'] >= RANK_BOSS and v in wiki:
                     continue  # a boss keeps its wiki element
+                if mobs[v]['rank'] >= RANK_BOSS and v in OVERRIDE_BOSSES:
+                    continue  # MT2009_PLUS_SEUNGRYONG_WIND_V1: and the owner's override (rule e)
                 if v in result and result[v] != elem and why[v].startswith('map'):
                     rep.append('CONFLICT %d %s: %s (%s) vs %s (%s)' % (v, mobs[v]['name'], NAMES[result[v]], why[v],
                                                                        NAMES[elem], label))
@@ -471,7 +485,7 @@ def main():
                '-- ice, wind, earth, dark; in the column\'s SET: SAVAGE, ATT_FIRE, ATT_ICE, ATT_TEMPLE, ATT_EARTH,',
                '-- ATT_DARK). Autor: Digi Rasta (Zywioly i talizmany, nowy-system 0.28.0) - by the owner\'s rules of',
                '-- 7 October 2026 (tools/zywioly/gen_zywioly_moby.py: wiki bosses, Grota Wygnancow 1/2, Swiatynia',
-               '-- Ochao, the lemurs of the former Arezzo forest, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374 and 376-393). GENERATED - do not',
+               '-- Ochao, Dolina Seungryong, the lemurs of the former Arezzo forest, the dungeons Nemere, Leze Smoka, Starozytna Dzungla, Ruiny Atlantydy, boss overrides, Zodiac bosses, Yohara 373/374 and 376-393). GENERATED - do not',
                '-- edit; rerun the generator. Every start (apply.sh), idempotent: bits 11-16 cleared on every other',
                '-- mob, set on these.']
         for line in out[1:7]:
