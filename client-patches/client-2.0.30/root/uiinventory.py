@@ -472,7 +472,8 @@ class SidebarWindow(ui.Window):
 	# action's current one (keybind.py, rebound in the Esc menu's "Skroty
 	# klawiszowe"), refreshed when it changes; no action, no key shown.
 	BUTTONS = (
-		("companion", "Towarzysz", "OnClickCompanion", "companion"),
+		# MT2009_PLUS_BUFFI_V1: the companion's button opens Buffi now (uibuffi.py), as P does.
+		("companion", "Buffi", "OnClickCompanion", "companion"),
 		("autohunt", "Auto\xb3owy", "OnClickAutoHunt", "autohunt"),
 		# MT2009_PLUS_AUTOHUNT_QUICK_V1: the quick start/stop has no sidebar button any more
 		# (the owner, 5 October) - Shift+K (keybind "autohunt_quick") stays.
@@ -773,10 +774,11 @@ class SidebarWindow(ui.Window):
 		except ReferenceError:
 			return None
 
-	# Towarzysz - as the taskbar's button and the P key open it.
+	# Buffi - as the P key opens it (MT2009_PLUS_BUFFI_V1; the companion's window
+	# was here - it opens from its letter now, uisidekick.py).
 	def OnClickCompanion(self):
-		import uisidekick
-		uisidekick.ToggleWindow()
+		import uibuffi
+		uibuffi.ToggleWindow()
 
 	# Autolowy - as the K key and the taskbar's button.
 	def OnClickAutoHunt(self):
