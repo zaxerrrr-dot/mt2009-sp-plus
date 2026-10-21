@@ -2,7 +2,8 @@
 # MT2009_PLUS_BUFFI_V1 (client data) - Buffi's items (61025/61026/61030/61031/61035-61038) in the client's data, the method
 # of ../ygaya/patch_ygaya_client.py:
 #
-#   gamedata/item_list.txt, gamedata/item_proto (dbdata), locale/pl/itemdesc.txt (dbdata)
+#   gamedata/item_list.txt, gamedata/item_proto (dbdata), locale/pl/itemdesc.txt (dbdata); MT2009_PLUS_BUFFI_V2:
+#   locale/pl/skilldesc.txt and gamedata/skilltable.txt (dbdata) - the buffi skills 164-167
 #       the items of tools/buffi/buffi.json (= the server's buffi.sql, tools/buffi/gen_buffi.py):
 #       a full record each over Zelazna Szkatulka 50120 (../yohara/patch_yohara_client.py yitem_record), its item_list
 #       line (Ameria's icons: client-2.0.30/root/icon/item/610xx.tga, buffi_book.tga) and its itemdesc line.
@@ -75,8 +76,21 @@ def itemdesc(b):
     return base.set_rows(b, [d['itemdesc'][k] for k in sorted(d['itemdesc'], key=int)])
 
 
+# MT2009_PLUS_BUFFI_V2: the buffi skills 164-167 in the client's skill data (dbdata: locale/pl/skilldesc.txt,
+# gamedata/skilltable.txt) - their names, the shaman's icons and the tooltip's polys (uibuffi.py's window)
+def skilldesc(b):
+    d = items_json()
+    return base.set_rows(b, [d['skilldesc'][k] for k in sorted(d['skilldesc'], key=int)])
+
+
+def skilltable(b):
+    d = items_json()
+    return base.set_rows(b, [d['skilltable'][k] for k in sorted(d['skilltable'], key=int)])
+
+
 # in-pack name -> function
-JOBS = {'gamedata/item_list.txt': item_list, 'gamedata/item_proto': item_proto, 'locale/pl/itemdesc.txt': itemdesc}
+JOBS = {'gamedata/item_list.txt': item_list, 'gamedata/item_proto': item_proto, 'locale/pl/itemdesc.txt': itemdesc,
+        'locale/pl/skilldesc.txt': skilldesc, 'gamedata/skilltable.txt': skilltable}
 BY_FILE = dict((os.path.basename(k), f) for k, f in JOBS.items())
 
 
@@ -84,7 +98,7 @@ def main():
     args = [a for a in sys.argv[1:] if a != '--check']
     check = '--check' in sys.argv
     if not args:
-        raise SystemExit('usage: patch_buffi_client.py <item_list.txt|item_proto|itemdesc.txt> ... [--check]')
+        raise SystemExit('usage: patch_buffi_client.py <item_list.txt|item_proto|itemdesc.txt|skilldesc.txt|skilltable.txt> ... [--check]')
     for path in args:
         fn = BY_FILE[os.path.basename(path)]
         b = open(path, 'rb').read()

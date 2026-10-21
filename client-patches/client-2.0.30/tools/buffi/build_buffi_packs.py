@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_BUFFI_V1 - the client build's part for Buffi's items: no new pack; the
-# existing packs "gamedata" (gamedata/item_list.txt) and "dbdata" (gamedata/item_proto, locale/pl/itemdesc.txt) get the
+# existing packs "gamedata" (gamedata/item_list.txt) and "dbdata" (gamedata/item_proto, locale/pl/itemdesc.txt; V2 also
+# locale/pl/skilldesc.txt and gamedata/skilltable.txt - the buffi skills 164-167) get the
 # item of buffi.sql (tools/buffi/buffi.json, patch_buffi_client.py). The icon
 # (root/icon/item/61025.tga ...) and root/uibuffi.py travel in client-2.0.30/root like every root change.
 # BUILD ORDER - they share gamedata and dbdata: after the other Yohara steps (after ../skowyt, the last line), on the same OUT (a pack
@@ -61,7 +62,9 @@ def main():
                     under_zip_limit=len(nd) < ZIP_LIMIT)
 
     jobs = {'gamedata': [('gamedata/item_list.txt', pc.item_list)],
-            'dbdata': [('gamedata/item_proto', pc.item_proto), ('locale/pl/itemdesc.txt', pc.itemdesc)]}
+            'dbdata': [('gamedata/item_proto', pc.item_proto), ('locale/pl/itemdesc.txt', pc.itemdesc),
+                       # MT2009_PLUS_BUFFI_V2: the buffi skills' client data (uibuffi.py's window)
+                       ('locale/pl/skilldesc.txt', pc.skilldesc), ('gamedata/skilltable.txt', pc.skilltable)]}
     for pack, files in jobs.items():
         src = src_of(pack)
         f, v, ents = m2pack.read_index(os.path.join(src, pack + '.index'))

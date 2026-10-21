@@ -11,10 +11,12 @@ __buffi__), Polish names and texts (Ameria's "pl" locale is English):
                                  gives it with the name scroll at a new character's first login)
   61026 Buffi                    the seal, for good, tradeable (Ameria's ItemShop: 750)
   61030 Zwoj Imienia Buffi       the name: Szybkosc and Zwiekszenie Ataku, +10% against bosses for 7 days (ItemShop 50)
-  61031 Kamien Duchowy Buffi     G1 -> P of a buffi skill (quest buffi; the General Store: 500 000 Yang + 2 Kamien
-                                 Duchowy)
+  61031 Kamien Duchowy Buffi     G1 -> P of a buffi skill (quest buffi); MT2009_PLUS_BUFFI_V2: drops from Metins
+                                 and bosses from Zaklety Las up (tools/ymoby_arkusz/gen_buffi_stone.py)
   61035-61038 the books          M1 -> G1 of Blogoslawienstwo / Pomoc Smoka / Szybkosc / Zwiekszenie Ataku Buffi
-                                 (the engine's book reading; the General Store: 1 000 000 Yang + 3 Zwoj Egzorcyzmu)
+                                 (the engine's book reading). MT2009_PLUS_BUFFI_V2: withdrawn - no source any more
+                                 (the owner: M1 -> G1 with the shaman's own skill books in the Buffi window); the rows
+                                 stay so that a book still owned does not vanish, and it still reads
   skill_proto 164-167            Ameria's rows - the engine's book and soul stone paths want them; the buffs
                                  themselves are computed by playerbot_buffi.cpp with the same polys
   mob_proto 65000                the shaman - an NPC (a copy of the pet 34001's row); the clients see a female shaman
@@ -24,7 +26,9 @@ Every vnum was free in our world (21 October 2026). The engine's numbers: tools/
 
 Writes (all GENERATED - edit this file, run it again):
   linux-port/docker/mariadb/playerbot/buffi.sql             items, skills, the mob, the name table, the ItemShop offers
-  tools/buffi/buffi.json                                    the client's records, item_list, itemdesc
+  tools/buffi/buffi.json                                    the client's records, item_list, itemdesc and
+                                                            (MT2009_PLUS_BUFFI_V2) the skills' skilldesc / skilltable
+                                                            lines (164-167: names, icons, the tooltip's polys)
   client-patches/client-2.0.30/root/icon/item/<icon>.tga    Ameria's icons
 
 Example: python3 tools/buffi/gen_buffi.py
@@ -91,14 +95,16 @@ def items():
              u'ten bonus minie.', '61030.tga'),
         base(61031, 61031, u'Kamień Duchowy Buffi', ITEM_QUEST, 0,
              u'Trenuje umiejętność Buffi od stopnia G1 do P, jak Kamień Duchowy zwykłe umiejętności (punkty rangi, '
-             u'następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Handlarka: 500 000 Yang i 2 Kamienie '
-             u'Duchowe.', '61031.tga', stack=200, flag=STACKABLE),
+             u'następna próba po 12 godzinach, Zwój Egzorcyzmu od razu). Wypada z Metinów i bossów od Zaklętego '
+             u'Lasu wzwyż.', '61031.tga', stack=200, flag=STACKABLE),
     ]
     for n, (vnum, sname, pl, *_rest) in enumerate(SKILLS):
         extra = u' Działa, gdy Buffi ma imię.' if vnum in NAMED_ONLY else u''
+        # MT2009_PLUS_BUFFI_V2: withdrawn (no source); one still owned reads as before
         out.append(base(61035 + n, 61035 + n, u'Księga Buffi: %s' % pl, ITEM_SKILLBOOK, 0,
-                        u'Uczy umiejętności Buffi "%s" od stopnia M1 do G1, jak zwykłe księgi umiejętności.%s '
-                        u'Handlarka: 1 000 000 Yang i 3 Zwoje Egzorcyzmu.' % (pl, extra), BOOK_ICON,
+                        u'Księga wycofana - nie można jej już zdobyć. Uczy umiejętności Buffi "%s" od stopnia M1 '
+                        u'do G1.%s Teraz do G1 służą zwykłe Księgi Umiejętności szamana przeciągnięte w oknie Buffi '
+                        u'(klawisz P) na jej umiejętność.' % (pl, extra), BOOK_ICON,
                         stack=200, flag=STACKABLE, value0=vnum))
     return out
 
@@ -166,6 +172,49 @@ def write_itemshop(its):
         f.write('\n'.join(L) + '\n')
 
 
+# MT2009_PLUS_BUFFI_V2: the client's skill data of the buffi skills (locale/pl/skilldesc.txt and
+# gamedata/skilltable.txt of the dbdata pack - names, the shaman's icons and motions, the tooltip's polys with
+# Ameria's iq 226 as playerbot_buffi.cpp casts them). 28 / 27 columns as the client's shaman lines 94/96/110/111.
+SKILLDESC = (  # vnum, names, description, affect texts and polys
+    (164, u'Błogosławieństwo Buffi', u'Buffi otacza cię kręgiem ochronnym. Trenuj: zwykłe Księgi Umiejętności '
+          u'szamana w oknie Buffi (do G1), Kamień Duchowy Buffi (do P).', u'Odporność na fizyczne obrażenia',
+     u'', 'hosin', '4', [u'Odporność Na Ataki Fizyczne %.1f%%', u'(226*0.2+5)*(2*k+0.5)/(k+1.5)']),
+    (165, u'Pomoc Smoka Buffi', u'Buffi zwiększa twoją szansę na cios krytyczny. Trenuj: zwykłe Księgi '
+          u'Umiejętności szamana w oknie Buffi (do G1), Kamień Duchowy Buffi (do P).',
+     u'Zwiększa szansę na krytyczne uderzenie', u'', 'gicheon', '6',
+     [u'Szansa na cios krytyczny: +%.1f%%', u'(226*0.2+5)*(2*k+0.5)/(k+1.5)']),
+    (166, u'Szybkość Buffi', u'Buffi przyspiesza twój ruch. Wymaga imienia Buffi. Trenuj: zwykłe Księgi '
+          u'Umiejętności szamana w oknie Buffi (do G1), Kamień Duchowy Buffi (do P).', u'Zwiększa Szybkość Ruchu',
+     u'Zmniejsza się Czas Ładowania Umiejętności', 'kwaesok', '20',
+     [u'Szybkość Ruchu +%.0f%%', u'5 + 35*k', u'', u'Czas Ładowania -%.0f%%', u'3+33*k']),
+    (167, u'Zwiększenie Ataku Buffi', u'Buffi wzmacnia twój atak. Wymaga imienia Buffi. Trenuj: zwykłe Księgi '
+          u'Umiejętności szamana w oknie Buffi (do G1), Kamień Duchowy Buffi (do P).', u'Zwiększa Siłę Ataku', u'',
+     'jeungryeok', '21', [u'Siła Ataku: +%.0f', u'5+(226*0.2+15)*k']),
+)
+
+
+def skilldesc_lines():
+    out = {}
+    for vnum, name, desc, aff1, aff2, icon, motion, polys in SKILLDESC:
+        cols = [str(vnum), 'SHAMAN', name, name, name, desc, aff1, aff2, u'', u'', u'', u'', icon, motion, '4', u'',
+                u''] + polys
+        cols += [u''] * (28 - len(cols))
+        assert len(cols) == 28, vnum
+        out[str(vnum)] = u'\t'.join(cols)
+    return out
+
+
+def skilltable_lines():
+    # the client's own shaman rows (94/96/110/111) with the buffi's vnum, name and polys
+    out = {}
+    for vnum, sname, pl, point, poly, sp, dur, flag, point2, poly2, dur2 in SKILLS:
+        cols = [str(vnum), sname, '4', '1', '1', '0', point, poly, sp, '60+100*k', '', '2', poly, '', '', flag,
+                point2 or 'NONE', poly2, dur2, 'NONE', '0', '0', 'NORMAL', '1', '1', '1000', '0']
+        assert len(cols) == 27, vnum
+        out[str(vnum)] = '\t'.join(cols)
+    return out
+
+
 def write_json(its):
     keys = ('vnum', 'name', 'locale_name', 'type', 'subtype', 'stack', 'weight', 'size', 'antiflag', 'flag',
             'wearflag', 'gold', 'shop_buy_price', 'refined_vnum', 'refine_set', 'magic_pct', 'specular', 'socket_pct',
@@ -174,7 +223,9 @@ def write_json(its):
     out = {'items': [dict((k, i[k]) for k in keys) for i in its],
            'item_list': dict((str(i['vnum']), '%d\t%s\t%s' % (i['vnum'], i['list_type'], i['icon'])) for i in its),
            'itemdesc': dict((str(i['vnum']), '%d\t%s\t%s' % (i['vnum'], i['locale_name'], Y.client_desc(i)))
-                            for i in its)}
+                            for i in its),
+           'skilldesc': skilldesc_lines(),
+           'skilltable': skilltable_lines()}
     with open(JSON_OUT, 'w', encoding='utf-8', newline='\n') as f:
         json.dump(out, f, ensure_ascii=False, indent=0)
         f.write('\n')
