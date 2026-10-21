@@ -34,6 +34,8 @@
 //   /ekwipunek sortuj <window>                    Ameria's two buttons in one: stacks joined, then sorted by kind
 //   /ekwipunek sprzedaj <window> <cell> <count>   the NPC shop's sale from a storage (CShopManager::Sell)
 //   /ekwipunek kostka <cube index> <window> <cell> an item of a storage into the crafting window (Cube_add_item)
+//   /ekwipunek stos <window>                      Ameria's "stack" button: the stacks joined (MT2009_PLUS_EKWIPUNEK_LOOK_V1)
+//   /ekwipunek dotorby <window> <cell>            a right click: the stack into the bag (MT2009_PLUS_EKWIPUNEK_TOBAG_V1)
 //   /ekwipunek przenies [keep=<hex>]              the bag's items of a category into their storages (the inventory's
 //                                                 sort menu, "Przenies do extra EQ"; MT2009_PLUS_EKWIPUNEK_MOVE_V1)
 //
@@ -96,6 +98,28 @@ BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum)
 		case 72346:
 			return CHANGE_INVENTORY;
 	}
+
+	// MT2009_PLUS_EKWIPUNEK_BOOKS_V1: every book that is read goes with the books (the owner, 21 October 2026: "Ksiegi
+	// Precyzji nie wchodza do dodatkowego ekwipunku" - Ameria's rule, ITEM_SKILLBOOK and 50301-50303, missed the books
+	// our client and Yohara have of other types). Kept with root/uiekwipunek.py (CategoryOf, BOOK_VNUMS) in step.
+	// Left where they were: the refine and quest materials named "Ksiega" (ITEM_MATERIAL - Ksiega Klatw, Ksiega Uriela,
+	// Ksiega Mlodego Zwierza...: counted for refines from the materials' storage), the refine scroll Podrecznik Kowala
+	// (USE_TUNING), Ksiega Obrobki Kamienia (used on an item), the worn Ksiazka Lidera (ITEM_UNIQUE), the chests of
+	// books (ITEM_GIFTBOX) and Mikstura Talentu (a potion).
+	if (bType == ITEM_SKILLFORGET)		// Ksiega Zapomnienia 70037
+		return BOOK_INVENTORY;
+	if ((dwVnum >= 50304 && dwVnum <= 50306)	// Sztuka Combo x3
+		|| (dwVnum >= 50307 && dwVnum <= 50310) || (dwVnum >= 50317 && dwVnum <= 50321) || dwVnum == 50336
+		|| (dwVnum >= 71088 && dwVnum <= 71090)	// Ksiega Misji
+		|| (dwVnum >= 50311 && dwVnum <= 50313)	// Jezyk Shinsoo / Chunjo / Jinno
+		|| (dwVnum >= 50314 && dwVnum <= 50316) || dwVnum == 71092	// Ksiega Polimorfii
+		|| dwVnum == 50325	// Ksiega Precyzji
+		|| (dwVnum >= 50338 && dwVnum <= 50343)	// Charyzma / Inspiracja
+		|| dwVnum == 50514 || dwVnum == 50515	// Podrecznik: Dopalacz / Riposta
+		|| dwVnum == 50052 || dwVnum == 50053 || dwVnum == 50060	// the horse books (Ksiega Opanc. / Wojskowego Konia, Instr. Jazdy Konnej)
+		|| (dwVnum >= 55050 && dwVnum <= 55067)	// Jazda ... (the horse skills' books)
+		|| (dwVnum >= 55010 && dwVnum <= 55031))	// the pet's skill books (Sztuka ...)
+		return BOOK_INVENTORY;
 
 	if (bType == ITEM_MATERIAL && bSubType == MATERIAL_LEATHER)
 		return UPGRADE_INVENTORY;
@@ -529,9 +553,9 @@ LPITEM CHARACTER::Mt2009EkwAutoStackProto(const TItemTable* p, DWORD dwItemVnum,
 
 // Ameria's "stack" and "sort" buttons (do_sort_special_storage, do_real_sort_items) in one: the stacks of one vnum and
 // the same sockets joined, then every item put back from the first cell on, ordered by type, subtype and vnum.
-static void EkwSort(LPCHARACTER ch, BYTE bWindow)
+// MT2009_PLUS_EKWIPUNEK_LOOK_V1: the stacks alone - Ameria's "stack" button ("/ekwipunek stos"); "sortuj" does this first.
+static void EkwJoinStacks(LPCHARACTER ch, BYTE bWindow)
 {
-	// join the stacks
 	for (WORD i = 0; i < SPECIAL_INVENTORY_MAX_NUM; ++i)
 	{
 		LPITEM item = ch->Mt2009SpecialGetItem(bWindow, i);
@@ -553,6 +577,12 @@ static void EkwSort(LPCHARACTER ch, BYTE bWindow)
 			item2->SetCount(item2->GetCount() - add);
 		}
 	}
+}
+
+static void EkwSort(LPCHARACTER ch, BYTE bWindow)
+{
+	// join the stacks
+	EkwJoinStacks(ch, bWindow);
 
 	// sort
 	std::vector<LPITEM> items;
@@ -717,6 +747,58 @@ static void EkwMoveBagToStorages(LPCHARACTER ch, const std::string& keep)
 	}
 }
 
+// MT2009_PLUS_EKWIPUNEK_TOBAG_V1: a right click on an item of the extra inventory (root/uiekwipunek.py; the owner,
+// 21 October 2026: "prawy klik w dodatkowym ekwipunku ma przenosic przedmiot do glownego ekwipunku") - the whole stack
+// into the bag: first into the bag's stacks of the same item (same sockets), then the rest into the bag's first free
+// cell. What has no room stays where it was ("Brak miejsca w ekwipunku").
+static void EkwMoveToBag(LPCHARACTER ch, BYTE bWindow, WORD wCell)
+{
+	LPITEM item = ch->Mt2009SpecialGetItem(bWindow, wCell);
+	if (!item || item->GetCell() != wCell)
+		return;
+	if (item->isLocked() || item->IsExchanging())
+		return;
+	LPSHOP pkMyShop = ch->GetMyShop();
+	if (pkMyShop && pkMyShop->IsSellingItem(item->GetID()))
+		return;
+
+	if (EkwStacks(item))
+	{
+		for (int i = 0; i < ch->GetInventoryMaxCount() && i < INVENTORY_MAX_NUM; ++i)
+		{
+			LPITEM item2 = ch->GetInventoryItem(i);
+			if (!item2 || item2 == item || item2->GetCell() != i)
+				continue;
+			if (item2->GetVnum() != item->GetVnum() || !EkwSameSockets(item, item2))
+				continue;
+			if (item2->isLocked() || item2->IsExchanging() || item2->GetCount() >= item2->GetMaxStack())
+				continue;
+			if (pkMyShop && pkMyShop->IsSellingItem(item2->GetID()))
+				continue;
+
+			const ITEM_COUNT add = MIN(item2->GetMaxStack() - item2->GetCount(), item->GetCount());
+			item2->SetCount(item2->GetCount() + add);
+			if (add >= item->GetCount())
+			{
+				item->SetCount(0);	// all of it joined - SetCount destroys it
+				return;
+			}
+			item->SetCount(item->GetCount() - add);
+		}
+	}
+
+	const int cell = ch->GetEmptyInventory(item->GetSize());
+	if (cell < 0)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Brak miejsca w ekwipunku.");
+		return;
+	}
+
+	item->RemoveFromCharacter();
+	item->AddToCharacter(ch, TItemPos(INVENTORY, cell));
+	ITEM_MANAGER::instance().FlushDelayedSave(item);
+}
+
 static bool EkwParseInt(const char* arg, int& out)
 {
 	if (!arg || !*arg)
@@ -774,6 +856,39 @@ ACMD(do_ekwipunek)
 			return;
 		}
 		EkwSort(ch, bWindow);
+		return;
+	}
+
+	// MT2009_PLUS_EKWIPUNEK_LOOK_V1: Ameria's "stack" button - the stacks joined, the order kept.
+	if (sub == "stos")
+	{
+		BYTE bWindow = 0;
+		if (!EkwParseWindow(arg2, bWindow))
+			return;
+		if (ch->IsDead() || ch->GetExchange() || ch->GetShop() || ch->IsOpenSafebox() || ch->IsCubeOpen() || !ch->CanHandleItem())
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Zamknij inne okna, aby po\263\271czy\346 stosy w dodatkowym ekwipunku.");
+			return;
+		}
+		if (!PulseManager::Instance().IncreaseClock(ch->GetPlayerID(), MT2009_PLUS_PULSE_EKW_SORT, std::chrono::milliseconds(3000)))
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "\243\271czy\346 stosy mo\277na raz na 3 sekundy.");
+			return;
+		}
+		EkwJoinStacks(ch, bWindow);
+		return;
+	}
+
+	// MT2009_PLUS_EKWIPUNEK_TOBAG_V1: a right click in the extra inventory - the stack into the bag.
+	if (sub == "dotorby")
+	{
+		BYTE bWindow = 0;
+		int cell = -1;
+		if (!EkwParseWindow(arg2, bWindow) || !EkwParseInt(arg3, cell) || cell < 0 || cell >= SPECIAL_INVENTORY_MAX_NUM)
+			return;
+		if (ch->IsDead() || ch->GetExchange() || ch->GetShop() || ch->IsCubeOpen() || !ch->CanHandleItem())
+			return;
+		EkwMoveToBag(ch, bWindow, (WORD) cell);
 		return;
 	}
 

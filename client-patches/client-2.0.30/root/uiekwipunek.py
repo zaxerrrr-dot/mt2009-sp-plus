@@ -12,14 +12,22 @@
 #     or the item mall; drag out into the bag (an empty cell, the same item's
 #     stack, a soul stone onto the piece it goes into - with a question -, an
 #     enchantment onto the piece it changes);
-#   - right click / double click uses (a book is read, a chest opened);
-#     Ctrl + right click on a stack of chests opens the whole stack, as in the
-#     bag;
+#   - right click moves the whole stack into the bag (MT2009_PLUS_EKWIPUNEK_
+#     TOBAG_V1, "/ekwipunek dotorby"); double click or Ctrl + right click
+#     uses (a book is read, a chest opened); Ctrl + right click on a stack of
+#     chests opens the whole stack, as in the bag;
 #   - Shift + click splits a stack; the shop's sell cursor sells (asks first);
 #   - the trade window and the crafting window take its items too
 #     (uiexchange.py, uicube.py);
-#   - "Sortuj": the stacks joined and the items ordered by kind (Ameria's two
-#     buttons, "/ekwipunek sortuj").
+#   - Ameria's settings bar: "stack" joins the stacks ("/ekwipunek stos"),
+#     "sort" joins them and orders the items by kind ("/ekwipunek sortuj"), the
+#     search field shows the category's items with the text in their name.
+#
+# MT2009_PLUS_EKWIPUNEK_LOOK_V1 (the owner, 21 October 2026: "okno ma wygladac
+# jak w Amerii"): the window is Ameria's 1:1 - uiscript/ekwipunekwindow.py,
+# Ameria's images in mt2009_ui/ekwipunek.
+# MT2009_PLUS_EKWIPUNEK_BOOKS_V1: every read book in Ksiegi (BOOK_VNUMS, the
+# server's Mt2009EkwCategoryOf in step).
 #
 # MT2009_PLUS_EKWIPUNEK_REFINE_V1 (the owner, 21 October 2026: "jak ulepszacz
 # jest w dodatkowym EQ, to mozna ulepszac"): the refine scrolls (USE_TUNING)
@@ -50,8 +58,13 @@ import uiToolTip
 import wndMgr
 
 TEXT_TITLE = "Dodatkowy ekwipunek"
-TEXT_SORT = "Sortuj"
-TEXT_SORT_TIP = "Po\xb3\xb9cz stosy i posortuj t\xea kategori\xea"
+# MT2009_PLUS_EKWIPUNEK_LOOK_V1: the title bar is Ameria's (128 wide, the close
+# button on it) - a short title fits it whole
+TEXT_TITLE_BAR = "Dodatkowy EQ"
+TEXT_MANAGE_TIP = "Sortowanie i wyszukiwanie"
+TEXT_STACK_TIP = "Po\xb3\xb9cz stosy"
+TEXT_STACK_ASK = "Po\xb3\xb9czy\xe6 stosy w kategorii \"%s\"?"
+TEXT_SORT_TIP = "Sortuj"
 TEXT_SORT_ASK = "Po\xb3\xb9czy\xe6 stosy i posortowa\xe6 kategori\xea \"%s\"?"
 TEXT_NEEDS_EXE = "Dodatkowy ekwipunek wymaga nowego klienta (exe 3.0)."
 TEXT_WRONG_KIND = "Ten przedmiot nie pasuje do kategorii \"%s\"."
@@ -59,7 +72,6 @@ TEXT_ATTACH_ASK = "W\xb3o\xbfy\xe6 %s do przedmiotu?"
 TEXT_OPEN_START = "Otwieranie skrzynek: %d szt."
 TEXT_OPEN_DONE = "Otwarto skrzynek: %d."
 TEXT_OPEN_STOP = "Otwieranie przerwane, otwarto skrzynek: %d."
-TEXT_HINT = "PPM: u\xbfyj  |  Shift+klik: podziel  |  przeci\xb9gnij do ekwipunku"
 
 # (window constant, slot type constant, name, icon) in the tabs' order.
 CATEGORY_DEFS = (
@@ -70,10 +82,6 @@ CATEGORY_DEFS = (
 	("CHEST_INVENTORY", "SLOT_TYPE_CHEST_INVENTORY", "Skrzynie", "chest"),
 )
 
-ICON_IMAGE = "mt2009_ui/ekwipunek/btn_%s_%d.png"
-SLOT_BASE_IMAGE = "d:/ymir work/ui/public/slot_base.sub"
-TAB_IMAGE = "d:/ymir work/ui/game/windows/tab_button_large_half_%02d.sub"
-BUTTON_IMAGE = "d:/ymir work/ui/public/middle_button_%02d.sub"
 PAGE_NAMES = ("I", "II", "III", "IV")
 
 COLUMNS = 5
@@ -87,6 +95,17 @@ EXTRA_VNUMS = {
 	50301: "BOOK_INVENTORY", 50302: "BOOK_INVENTORY", 50303: "BOOK_INVENTORY",
 	72346: "CHANGE_INVENTORY",
 }
+
+# MT2009_PLUS_EKWIPUNEK_BOOKS_V1: the books of other types than ITEM_SKILLBOOK
+# (playerbot_ekwipunek.cpp, Mt2009EkwCategoryOf - keep both in step): Sztuka
+# Combo, Ksiega Misji, the language books, Ksiega Polimorfii, Ksiega Precyzji,
+# Charyzma / Inspiracja, Podrecznik: Dopalacz / Riposta, the horse books, the
+# horse skills' books (Jazda ...) and the pet's skill books (Sztuka ...).
+# Ksiega Zapomnienia (ITEM_SKILLFORGET) goes there by its type.
+BOOK_VNUMS = set(range(50304, 50307) + range(50307, 50311) + range(50317, 50322) + [50336]
+	+ range(71088, 71091) + range(50311, 50314) + range(50314, 50317) + [71092, 50325]
+	+ range(50338, 50344) + [50514, 50515, 50052, 50053, 50060]
+	+ range(55050, 55068) + range(55010, 55032))
 
 _state = {
 	'window': None,
@@ -140,6 +159,8 @@ def CategoryOf(vnum):
 		return 0
 	if vnum in EXTRA_VNUMS:
 		return getattr(player, EXTRA_VNUMS[vnum])
+	if vnum in BOOK_VNUMS:
+		return player.BOOK_INVENTORY
 	item.SelectItem(vnum)
 	itemType = item.GetItemType()
 	subType = item.GetItemSubType()
@@ -149,6 +170,8 @@ def CategoryOf(vnum):
 	if item.IsRefineScroll(vnum):
 		return player.UPGRADE_INVENTORY
 	if itemType == getattr(item, "ITEM_TYPE_SKILLBOOK", -1):
+		return player.BOOK_INVENTORY
+	if itemType == getattr(item, "ITEM_TYPE_SKILLFORGET", 22):
 		return player.BOOK_INVENTORY
 	if itemType == getattr(item, "ITEM_TYPE_METIN", -1) and subType == getattr(item, "METIN_NORMAL", 0):
 		return player.STONE_INVENTORY
@@ -473,16 +496,36 @@ class OpenAllRunner(ui.Window):
 
 # ---------------------------------------------------------------- the window
 
-class EkwipunekWindow(ui.BoardWithTitleBar):
-	WIDTH = 184
-	GRID_X = 12
-	GRID_Y = 34
+# MT2009_PLUS_EKWIPUNEK_LOOK_V1: CP1250 upper -> lower case of the Polish letters
+# for the search field (str.lower knows ASCII only).
+_LOWER_PL = {'\xa5': '\xb9', '\xc6': '\xe6', '\xca': '\xea', '\xa3': '\xb3', '\xd1': '\xf1',
+	'\xd3': '\xf3', '\x8c': '\x9c', '\x8f': '\x9f', '\xaf': '\xbf'}
+
+
+def _Lower(text):
+	return "".join([_LOWER_PL.get(c, c) for c in text.lower()])
+
+
+class EkwipunekWindow(ui.ScriptWindow):
+	"""MT2009_PLUS_EKWIPUNEK_LOOK_V1: Ameria's special storage window 1:1
+	(uiscript/ekwipunekwindow.py; Ameria root/uispecialinventory.py
+	InventoryWindowNew): the settings button left of the title opens / closes
+	the bar with "stack", "sort" and the search field (open from the start, the
+	grid, page tabs and category buttons 25 lower then), pages I-IV, the
+	category buttons in Ameria's frame under them.
+
+	Mouse (MT2009_PLUS_EKWIPUNEK_TOBAG_V1): right click - the whole stack into
+	the bag (joins its stacks there first, then the first free cell); double
+	click or Ctrl + right click - use (Ameria uses on a right click; the owner
+	wanted the move to the bag there); Ctrl + right click on a stack of chests
+	opens the whole stack, as in the bag; Shift + click - split; the shop's sell
+	cursor sells (asks first); drag - into the bag, onto an item, to an NPC."""
+
+	MANAGE_SHIFT = 25
+	PAGE_SIZE = COLUMNS * ROWS
 
 	def __init__(self):
-		ui.BoardWithTitleBar.__init__(self)
-		self.widgets = []
-		self.pageTabs = []
-		self.categoryButtons = []
+		ui.ScriptWindow.__init__(self)
 		self.page = 0
 		self.category = 0
 		self.questionDialog = None
@@ -490,82 +533,73 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		self.sellCount = 0
 		self.pickDialog = None
 		self.pickPos = -1
+		self.manageOpen = False
+		self.searchMap = None
+		self.pageTabs = []
+		self.categoryButtons = []
+		self.objectToMove = []
+		self.grid = None
+		self.tooltip = None
 		self.openAll = OpenAllRunner()
-		self.AddFlag('movable')
-		self.AddFlag('float')
-		self.SetCloseEvent(ui.__mem_func__(self.Close))
-		self.__Build()
-		(screenWidth, screenHeight) = (wndMgr.GetScreenWidth(), wndMgr.GetScreenHeight())
-		self.SetPosition(max(0, screenWidth - 176 - self.WIDTH - 12), 88)
+		self.__Load()
 
 	def __del__(self):
-		ui.BoardWithTitleBar.__del__(self)
+		ui.ScriptWindow.__del__(self)
 
-	def __Build(self):
-		y = self.GRID_Y
-		grid = ui.GridSlotWindow()
-		grid.SetParent(self)
-		grid.SetPosition(self.GRID_X, y)
-		grid.ArrangeSlot(0, COLUMNS, ROWS, CELL, CELL, 0, 0)
-		grid.SetSlotBaseImage(SLOT_BASE_IMAGE, 1.0, 1.0, 1.0, 1.0)
+	def __Load(self):
+		ui.PythonScriptLoader().LoadScriptFile(self, "uiscript/ekwipunekwindow.py")
+
+		self.board = self.GetChild("board")
+		self.GetChild("TitleBar").SetCloseEvent(ui.__mem_func__(self.Close))
+		self.GetChild("TitleName").SetText(TEXT_TITLE_BAR)
+
+		manageButton = self.GetChild("ManageInventory")
+		manageButton.SetToolTipText(TEXT_MANAGE_TIP)
+		manageButton.SAFE_SetEvent(self.ManageInventory)
+
+		self.manageBar = self.GetChild("ManageBar")
+		stackButton = self.GetChild("StackButton")
+		stackButton.SetToolTipText(TEXT_STACK_TIP)
+		stackButton.SAFE_SetEvent(self.AskStack)
+		sortButton = self.GetChild("SortButton")
+		sortButton.SetToolTipText(TEXT_SORT_TIP)
+		sortButton.SAFE_SetEvent(self.AskSort)
+
+		search = self.GetChild("SearchEdit")
+		search.OnIMEUpdate = ui.__mem_func__(self.OnSearchUpdate)
+		search.SetEscapeEvent(ui.__mem_func__(self.Close))
+		search.SetReturnEvent(ui.__mem_func__(self.OnSearchReturn))
+		self.search = search
+
+		grid = self.GetChild("ItemSlot")
 		grid.SetSelectEmptySlotEvent(ui.__mem_func__(self.OnSelectEmptySlot))
 		grid.SetSelectItemSlotEvent(ui.__mem_func__(self.OnSelectItemSlot))
-		grid.SetUnselectItemSlotEvent(ui.__mem_func__(self.OnUseSlot))
+		grid.SetUnselectItemSlotEvent(ui.__mem_func__(self.OnRightClick))
 		grid.SetUseSlotEvent(ui.__mem_func__(self.OnUseSlot))
 		grid.SetOverInItemEvent(ui.__mem_func__(self.OnOverInItem))
 		grid.SetOverOutItemEvent(ui.__mem_func__(self.OnOverOutItem))
-		grid.Show()
-		self.widgets.append(grid)
 		self.grid = grid
-		y += ROWS * CELL + 4
 
-		for i, name in enumerate(PAGE_NAMES):
-			tab = ui.RadioButton()
-			tab.SetParent(self)
-			tab.SetPosition(14 + 39 * i, y)
-			tab.SetUpVisual(TAB_IMAGE % 1)
-			tab.SetOverVisual(TAB_IMAGE % 2)
-			tab.SetDownVisual(TAB_IMAGE % 3)
-			tab.SetText(name)
+		for i in xrange(len(PAGE_NAMES)):
+			tab = self.GetChild("Inventory_Tab_%02d" % (i + 1))
 			tab.SAFE_SetEvent(self.SetPage, i)
-			tab.Show()
-			self.widgets.append(tab)
 			self.pageTabs.append(tab)
-		y += 26
 
+		categoryBoard = self.GetChild("CategoryBoard")
 		for i, (win, slot, name, icon) in enumerate(Categories()):
-			button = ui.RadioButton()
-			button.SetParent(self)
-			button.SetPosition(8 + 34 * i, y)
-			button.SetUpVisual(ICON_IMAGE % (icon, 1))
-			button.SetOverVisual(ICON_IMAGE % (icon, 2))
-			button.SetDownVisual(ICON_IMAGE % (icon, 3))
+			button = self.GetChild("Category_%s" % icon)
 			button.SetToolTipText(name)
 			button.SAFE_SetEvent(self.SetCategory, i)
-			button.Show()
-			self.widgets.append(button)
 			self.categoryButtons.append(button)
-		y += 36
 
-		sortButton = ui.Button()
-		sortButton.SetParent(self)
-		sortButton.SetPosition((self.WIDTH - 61) // 2, y)
-		sortButton.SetUpVisual(BUTTON_IMAGE % 1)
-		sortButton.SetOverVisual(BUTTON_IMAGE % 2)
-		sortButton.SetDownVisual(BUTTON_IMAGE % 3)
-		sortButton.SetText(TEXT_SORT)
-		sortButton.SetToolTipText(TEXT_SORT_TIP)
-		sortButton.SAFE_SetEvent(self.AskSort)
-		sortButton.Show()
-		self.widgets.append(sortButton)
-		y += 30
-
-		self.SetSize(self.WIDTH, y + 4)
+		self.objectToMove = [grid, categoryBoard] + self.pageTabs
 
 		tooltip = uiToolTip.ItemToolTip()
 		tooltip.HideToolTip()
 		self.tooltip = tooltip
 
+		self.manageBar.Hide()
+		self.ManageInventory()	# open at the start, as Ameria's window
 		self.SetPage(0)
 		self.SetCategory(0)
 
@@ -582,12 +616,16 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		if self.tooltip:
 			self.tooltip.HideToolTip()
 		self.tooltip = None
-		for widget in self.widgets:
-			widget.Hide()
-		self.widgets = []
+		if self.search and self.search.IsFocus():
+			self.search.KillFocus()
+		self.search = None
+		self.manageBar = None
+		self.board = None
 		self.pageTabs = []
 		self.categoryButtons = []
+		self.objectToMove = []
 		self.grid = None
+		self.ClearDictionary()
 
 	def __CloseDialogs(self):
 		if self.questionDialog:
@@ -605,11 +643,52 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		self.__CloseDialogs()
 		if self.tooltip:
 			self.tooltip.HideToolTip()
+		if self.search and self.search.IsFocus():
+			self.search.KillFocus()
 		self.Hide()
 
 	def OnPressEscapeKey(self):
 		self.Close()
 		return True
+
+	# ---------------------------------------------------------- Ameria's settings bar
+
+	def ManageInventory(self):
+		"""Ameria's ManageInventory: the bar shown / hidden, everything under it
+		25 lower / higher."""
+		shift = self.MANAGE_SHIFT
+		if self.manageOpen:
+			self.manageOpen = False
+			self.manageBar.Hide()
+			if self.search.IsFocus():
+				self.search.KillFocus()
+			self.search.SetText("")
+			if self.search.CanPlaceholder():
+				self.search.placeholderTextLine.Show()
+			self.searchMap = None
+			shift = -shift
+		else:
+			self.manageOpen = True
+			self.manageBar.Show()
+		self.SetSize(self.GetWidth(), self.GetHeight() + shift)
+		self.board.SetSize(self.board.GetWidth(), self.board.GetHeight() + shift)
+		for widget in self.objectToMove:
+			(x, y) = widget.GetLocalPosition()
+			widget.SetPosition(x, y + shift)
+		self.Refresh()
+
+	def OnSearchUpdate(self):
+		if self.search.IsFocus():
+			ui.EditLine.OnIMEUpdate(self.search)
+		self.Refresh()
+
+	def OnSearchReturn(self):
+		self.search.KillFocus()
+
+	def SearchText(self):
+		if not self.manageOpen or not self.search:
+			return ""
+		return self.search.GetText().strip()
 
 	# ---------------------------------------------------------- state
 
@@ -626,7 +705,11 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		return Categories()[self.category][2]
 
 	def GlobalPos(self, local):
-		return self.page * COLUMNS * ROWS + local
+		"""The storage cell of a grid slot: the page's, or the item the search
+		put there (-1 for an empty slot of the search)."""
+		if self.searchMap is not None:
+			return self.searchMap.get(local, -1)
+		return self.page * self.PAGE_SIZE + local
 
 	def SetPage(self, page):
 		self.page = page
@@ -646,14 +729,18 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 				button.Down()
 			else:
 				button.SetUp()
-		self.SetTitleName("%s - %s" % (TEXT_TITLE, self.CategoryName()))
 		self.Refresh()
 
 	def Refresh(self):
 		if not self.grid:
 			return
 		window = self.Window()
-		for local in xrange(COLUMNS * ROWS):
+		text = _Lower(self.SearchText())
+		if text:
+			self.__RefreshSearch(window, text)
+			return
+		self.searchMap = None
+		for local in xrange(self.PAGE_SIZE):
 			pos = self.GlobalPos(local)
 			vnum = player.GetItemIndex(window, pos)
 			if not vnum:
@@ -661,6 +748,52 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 				continue
 			count = player.GetItemCount(window, pos)
 			self.grid.SetItemSlot(local, vnum, count if count > 1 else 0)
+		self.grid.RefreshSlot()
+
+	def __ItemName(self, window, pos, vnum):
+		item.SelectItem(vnum)
+		name = item.GetItemName()
+		if vnum == 50300:
+			try:
+				import skill
+				name = skill.GetSkillName(player.GetItemMetinSocket(window, pos, 0)) or name
+			except Exception:
+				pass
+		return name
+
+	def __RefreshSearch(self, window, text):
+		"""Ameria's search field: the category's items (all four pages) whose
+		name has the text, one after another in the grid."""
+		used = [False] * self.PAGE_SIZE
+		found = {}
+		for pos in xrange(self.PAGE_SIZE * len(PAGE_NAMES)):
+			vnum = player.GetItemIndex(window, pos)
+			if not vnum:
+				continue
+			if text not in _Lower(self.__ItemName(window, pos, vnum)):
+				continue
+			item.SelectItem(vnum)
+			height = max(1, item.GetItemSize()[1])
+			local = -1
+			for cell in xrange(self.PAGE_SIZE):
+				if cell // COLUMNS + height > ROWS:
+					break
+				if not [1 for h in xrange(height) if used[cell + h * COLUMNS]]:
+					local = cell
+					break
+			if local < 0:
+				break
+			for h in xrange(height):
+				used[local + h * COLUMNS] = True
+			found[local] = pos
+		self.searchMap = found
+		for local in xrange(self.PAGE_SIZE):
+			if local not in found:
+				self.grid.ClearSlot(local)
+				continue
+			pos = found[local]
+			count = player.GetItemCount(window, pos)
+			self.grid.SetItemSlot(local, player.GetItemIndex(window, pos), count if count > 1 else 0)
 		self.grid.RefreshSlot()
 
 	def OnUpdate(self):
@@ -674,8 +807,11 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		controller = _Controller()
 		if controller and controller.isAttached():
 			return
+		pos = self.GlobalPos(local)
+		if pos < 0:
+			return
 		self.tooltip.ClearToolTip()
-		self.tooltip.SetInventoryItem(self.GlobalPos(local), self.Window())
+		self.tooltip.SetInventoryItem(pos, self.Window())
 
 	def OnOverOutItem(self):
 		if self.tooltip:
@@ -728,11 +864,18 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 
 	def OnSelectEmptySlot(self, local):
 		controller = _Controller()
-		if controller and controller.isAttached():
-			self.__DropHere(self.GlobalPos(local))
+		if not controller or not controller.isAttached():
+			return
+		pos = self.GlobalPos(local)
+		if pos < 0:
+			# an empty slot of the search has no cell - the item stays on the cursor
+			return
+		self.__DropHere(pos)
 
 	def OnSelectItemSlot(self, local):
 		pos = self.GlobalPos(local)
+		if pos < 0:
+			return
 		window = self.Window()
 		controller = _Controller()
 		if controller and controller.isAttached():
@@ -760,22 +903,51 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		if AttachItem(self, self.SlotType(), pos, vnum, count):
 			snd.PlaySound("sound/ui/pick.wav")
 
-	def OnUseSlot(self, local):
+	def OnRightClick(self, local):
+		"""MT2009_PLUS_EKWIPUNEK_TOBAG_V1: right click - the whole stack into the
+		bag ("/ekwipunek dotorby": its stacks there first, then the first free
+		cell); Ctrl + right click - use (a stack of chests: open all of it)."""
 		controller = _Controller()
 		if controller and controller.isAttached():
 			return
 		pos = self.GlobalPos(local)
 		window = self.Window()
-		if not player.GetItemIndex(window, pos):
+		if pos < 0 or not player.GetItemIndex(window, pos):
 			return
-		if self.openAll:
-			if self.openAll.IsRunning():
-				self.openAll.Stop()
-				return
-			if (app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(app.DIK_RCONTROL)) and self.openAll.Start(window, pos):
+		if app.SELL == app.GetCursor():
+			return
+		if self.openAll and self.openAll.IsRunning():
+			self.openAll.Stop()
+			return
+		if app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(app.DIK_RCONTROL):
+			if self.openAll and self.openAll.Start(window, pos):
 				self.OnOverOutItem()
 				return
-		net.SendItemUsePacket(window, pos)
+			self.UseItem(pos)
+			return
+		net.SendChatPacket("/ekwipunek dotorby %d %d" % (window, pos))
+		self.OnOverOutItem()
+
+	def OnUseSlot(self, local):
+		"""A double click uses the item, as in Ameria (its first click put the
+		item on the cursor - it comes off)."""
+		pos = self.GlobalPos(local)
+		if pos < 0:
+			return
+		controller = _Controller()
+		if controller and controller.isAttached():
+			if controller.GetAttachedType() != self.SlotType() or controller.GetAttachedSlotNumber() != pos:
+				return
+			Deattach()
+		if not player.GetItemIndex(self.Window(), pos):
+			return
+		if self.openAll and self.openAll.IsRunning():
+			self.openAll.Stop()
+			return
+		self.UseItem(pos)
+
+	def UseItem(self, pos):
+		net.SendItemUsePacket(self.Window(), pos)
 		self.OnOverOutItem()
 
 	# ---------------------------------------------------------- split
@@ -799,7 +971,7 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 			return
 		AttachItem(self, self.SlotType(), pos, vnum, count)
 
-	# ---------------------------------------------------------- sell and sort
+	# ---------------------------------------------------------- sell, stack and sort
 
 	def AskSell(self, pos):
 		window = self.Window()
@@ -834,14 +1006,24 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		net.SendChatPacket("/ekwipunek sprzedaj %d %d %d" % (self.Window(), self.sellPos, self.sellCount))
 		self.__CloseDialogs()
 
-	def AskSort(self):
+	def __Ask(self, text, event):
 		self.__CloseDialogs()
 		dialog = uiCommon.QuestionDialog()
-		dialog.SetText(TEXT_SORT_ASK % self.CategoryName())
-		dialog.SetAcceptEvent(ui.__mem_func__(self.Sort))
+		dialog.SetText(text)
+		dialog.SetAcceptEvent(ui.__mem_func__(event))
 		dialog.SetCancelEvent(ui.__mem_func__(self.__CloseDialogs))
 		dialog.Open()
 		self.questionDialog = dialog
+
+	def AskStack(self):
+		self.__Ask(TEXT_STACK_ASK % self.CategoryName(), self.Stack)
+
+	def Stack(self):
+		net.SendChatPacket("/ekwipunek stos %d" % self.Window())
+		self.__CloseDialogs()
+
+	def AskSort(self):
+		self.__Ask(TEXT_SORT_ASK % self.CategoryName(), self.Sort)
 
 	def Sort(self):
 		net.SendChatPacket("/ekwipunek sortuj %d" % self.Window())
