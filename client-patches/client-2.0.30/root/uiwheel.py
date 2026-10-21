@@ -34,14 +34,32 @@ import uiToolTip
 import koladata
 
 UI = koladata.UI
-CONTENT_W = 740
-CONTENT_H = 475
-WINDOW_W = CONTENT_W + 12
-WINDOW_H = CONTENT_H + 38
-WHEEL_X = 126	# the 436x436 wheel inside the content
-WHEEL_Y = 19
-PANEL_X = 566
-PANEL_W = 168
+# MT2009_PLUS_KOLA_UI_V2: the window is the page's game area (.crk-game,
+# 900x489) with no title bar - the whole background art, the wheel in the
+# middle, the ladder left, the small welcome box bottom right (bottom 35,
+# right 10, 192 wide, as high as its rows), "Mozliwe nagrody" bottom left and
+# a small close button; dragged by any free spot of the art.
+CONTENT_W = 900
+CONTENT_H = 489
+WHEEL_X = 232	# the 436x436 wheel, centred: (900 - 436) / 2
+WHEEL_Y = 26	# (489 - 436) / 2
+LADDER_X = 15	# .crk-stages left:15, centred in height
+BOX_W = 192	# .crk-welcome
+BOX_RIGHT = 10
+BOX_BOTTOM = 35
+BOX_PAD = 10
+BOX_INNER = BOX_W - 2 * BOX_PAD
+BOX_MAX_H = 320	# box.jpg's height
+BOX_X = CONTENT_W - BOX_RIGHT - BOX_W
+CLOSE_SIZE = 24
+CLOSE_X = CONTENT_W - CLOSE_SIZE - 6
+CLOSE_Y = 6
+NAME_X = LADDER_X	# the wheel's name, small, top left
+NAME_Y = 9
+PRICES_Y = CONTENT_H - 32	# .crk-prices: bottom 0, left 0
+EXIT_W = 144	# exit.png
+TIMER_W = 172	# timer.jpg
+TIMER_H = 50
 ICON = 45	# a field's icon box
 
 TITLE = 'Ko\xb3o Losu'
@@ -49,11 +67,11 @@ TEXT_SPIN = ('ZAKR\xca\xc6', 'TERAZ!')
 TEXT_SPINNING = 'KR\xcaCI SI\xca...'
 TEXT_WELCOME = 'Witaj na poziomie %d'
 TEXT_COST_1 = 'Zakr\xea\xe6 ko\xb3em za jedyne'
-TEXT_COST_2 = '%d SM!'
+TEXT_COST_2 = '%d!'	# MT2009_PLUS_KOLA_UI_V2: "... za jedyne [coin] 16!" like the page
 TEXT_BALANCE = 'Twoje Smocze Monety: %d'
 TEXT_BACK = 'Powr\xf3t na poziom 1'
 TEXT_EXIT = 'Opu\x9c\xe6 ten poziom'
-TEXT_LAST = 'Ostatnia nagroda'
+TEXT_LAST = 'Ostatnia nagroda:'
 TEXT_LAST_NONE = 'Zakr\xea\xe6 ko\xb3em.'
 TEXT_PRICES = 'Mo\xbfliwe nagrody'
 TEXT_OFF = 'Ko\xb3o Losu jest teraz wy\xb3\xb9czone.'
@@ -128,19 +146,6 @@ def Clock(seconds):
 	return '%02d:%02d:%02d' % (seconds / 3600, (seconds % 3600) / 60, seconds % 60)
 
 
-def SplitName(text, width=24):
-	"""Two lines at most, broken at a space."""
-	if len(text) <= width:
-		return (text, '')
-	cut = text.rfind(' ', 0, width + 1)
-	if cut <= 0:
-		cut = width
-	rest = text[cut:].strip()
-	if len(rest) > width:
-		rest = rest[:width - 3] + '...'
-	return (text[:cut], rest)
-
-
 # the original's easings
 def EaseP(t):
 	return 0.5 - math.cos(t * math.pi) / 2.0
@@ -152,6 +157,28 @@ def EaseM(t):
 
 def EaseH(t):
 	return t
+
+
+def BoxRows(costLines, last, timer, message):
+	"""MT2009_PLUS_KOLA_UI_V2: the welcome box's rows from its top,
+	[(name, y, height)], and the box's height (the box grows upwards)."""
+	rows = [('welcome', 19), ('cost1', 17)]
+	if costLines > 1:
+		rows.append(('cost2', 17))
+	rows.append(('balance', 17))
+	if last:
+		rows.append(('last', 36))
+	if timer:
+		rows.append(('timer', TIMER_H + 6))
+		rows.append(('exit', 32))
+	if message:
+		rows.append(('message', 17))
+	out = []
+	y = BOX_PAD - 2
+	for name, h in rows:
+		out.append((name, y, h))
+		y += h
+	return out, min(BOX_MAX_H, y + BOX_PAD - 2)
 
 
 def _Int(value, default=0):
@@ -430,9 +457,9 @@ class PrizeWindow(ui.BoardWithTitleBar):
 		return True
 
 
-class WheelWindow(ui.BoardWithTitleBar):
+class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 	def __init__(self):
-		ui.BoardWithTitleBar.__init__(self)
+		ui.Window.__init__(self)
 		self.tooltipItem = uiToolTip.ItemToolTip()
 		self.tooltipItem.HideToolTip()
 		self.prizeWindow = None
@@ -465,7 +492,7 @@ class WheelWindow(ui.BoardWithTitleBar):
 		self.__Build()
 
 	def __del__(self):
-		ui.BoardWithTitleBar.__del__(self)
+		ui.Window.__del__(self)
 
 	# ------------------------------------------------------------------ build
 
@@ -495,17 +522,18 @@ class WheelWindow(ui.BoardWithTitleBar):
 		return img
 
 	def __Build(self):
-		self.SetSize(WINDOW_W, WINDOW_H)
-		self.SetTitleName(TITLE)
-		self.SetCloseEvent(ui.__mem_func__(self.Close))
+		# MT2009_PLUS_KOLA_UI_V2: the art is the window; the pictures let the
+		# clicks through (not_pick), so a click on the art drags the window
+		self.SetSize(CONTENT_W, CONTENT_H)
 		self.AddFlag('movable')
 		self.AddFlag('float')
 		self.SetCenterPosition()
 
 		bg = ui.ExpandedImageBox()
 		bg.SetParent(self)
-		bg.SetPosition(6, 31)
+		bg.SetPosition(0, 0)
 		bg.SetSize(CONTENT_W, CONTENT_H)
+		bg.AddFlag('not_pick')
 		bg.Show()
 		self.bg = bg
 		self.bgPath = ''
@@ -523,6 +551,7 @@ class WheelWindow(ui.BoardWithTitleBar):
 		wheel.SetParent(bg)
 		wheel.SetPosition(WHEEL_X, WHEEL_Y)
 		wheel.SetSize(436, 436)
+		wheel.AddFlag('not_pick')	# MT2009_PLUS_KOLA_UI_V2
 		wheel.Show()
 		self.wheel = wheel
 		self.slices = self.__Image(wheel, UI + 'slices_1.png', 0, 0)
@@ -555,6 +584,14 @@ class WheelWindow(ui.BoardWithTitleBar):
 			line = self.__Text(button, 62, 34 + i * 20, BROWN, True, True)
 			line.AddFlag('not_pick')
 			self.buttonLines.append(line)
+		# MT2009_PLUS_KOLA_UI_V2: "(16 [coin])" like the page
+		self.buttonCost = self.__Text(button, 0, 74, BROWN, True)
+		self.buttonCost.AddFlag('not_pick')
+		self.buttonCoin = self.__Image(button, UI + 'coin.png', 0, 73)
+		self.buttonCoin.AddFlag('not_pick')
+		self.buttonParen = self.__Text(button, 0, 74, BROWN, True)
+		self.buttonParen.AddFlag('not_pick')
+		self.buttonParen.SetText(')')
 		self.rewards = []
 		for i in xrange(16):
 			x, y = koladata.FIELD_POS[i]
@@ -566,55 +603,74 @@ class WheelWindow(ui.BoardWithTitleBar):
 			sprite.Hide()
 			self.rewards.append(sprite)
 
-		# the right panel
-		self.title = self.__Text(bg, PANEL_X + PANEL_W / 2, 14, GOLD, True, True)
+		# MT2009_PLUS_KOLA_UI_V2: the wheel's name, small, top left (the page has none;
+		# the title bar that showed it is gone)
+		self.title = self.__Text(self, NAME_X, NAME_Y, GOLD, True)
 		self.title.SetOutline()
-		panel = ui.ExpandedImageBox()
-		panel.SetParent(bg)
-		panel.LoadImage(UI + 'panel.jpg')
-		panel.SetPosition(PANEL_X, 38)
-		panel.SetRenderingRect(0.0, 0.0, -1.0 + float(PANEL_W) / 176.0, 0.0)
-		panel.Show()
-		self.panel = panel
-		cx = PANEL_W / 2
-		self.welcome = self.__Text(panel, cx, 10, BROWN, True, True)
-		self.costLine1 = self.__Text(panel, cx, 30, BROWN, False, True)
-		self.coin = self.__Image(panel, UI + 'coin.png', 0, 47)
-		self.costLine2 = self.__Text(panel, cx + 10, 46, BROWN, True, True)
-		self.balanceLine = self.__Text(panel, cx, 66, DARK, False, True)
-		self.backLine = self.__Text(panel, cx, 92, DARK, False, True)
-		self.backLine.SetText(TEXT_BACK)
-		self.clockLine = self.__Text(panel, cx, 110, DARK, True, True)
-		exitButton = ui.Button()
-		exitButton.SetParent(panel)
-		exitButton.SetUpVisual(UI + 'exit.png')
-		exitButton.SetOverVisual(UI + 'exit_h.png')
-		exitButton.SetDownVisual(UI + 'exit_h.png')
-		exitButton.SetPosition((PANEL_W - 144) / 2, 130)
-		exitButton.SetText(TEXT_EXIT)
-		exitButton.SetEvent(ui.__mem_func__(self.__OnExit))
-		self.exitButton = exitButton
-		self.lastTitle = self.__Text(panel, cx, 176, BROWN, True, True)
-		self.lastTitle.SetText(TEXT_LAST)
-		lastIcon = Sprite(panel)
+		self.title.AddFlag('not_pick')
+
+		# MT2009_PLUS_KOLA_UI_V2: the welcome box (.crk-welcome), bottom right; its
+		# rows (BoxRows) and height follow the state, the art above stays free
+		box = ui.ExpandedImageBox()
+		box.SetParent(self)
+		box.LoadImage(UI + 'box.jpg')
+		box.AddFlag('not_pick')
+		box.Show()
+		self.box = box
+		self.welcome = self.__Text(box, BOX_PAD, 0, BROWN, True)
+		self.costLine1 = self.__Text(box, BOX_PAD, 0, BROWN)
+		self.costLine1.SetText(TEXT_COST_1)
+		self.coin = self.__Image(box, UI + 'coin.png', 0, 0)
+		self.coin.AddFlag('not_pick')
+		self.costLine2 = self.__Text(box, 0, 0, BROWN, True)
+		self.balanceLine = self.__Text(box, BOX_PAD, 0, DARK)
+		lastIcon = Sprite(box)
 		lastIcon.img.SAFE_SetStringEvent('MOUSE_OVER_IN', self.__OverLast)
 		lastIcon.img.SAFE_SetStringEvent('MOUSE_OVER_OUT', self.__OverOut)
 		self.lastIcon = lastIcon
-		self.lastName1 = self.__Text(panel, 58, 204, DARK)
-		self.lastName2 = self.__Text(panel, 58, 220, DARK)
-		self.lastName1.SetText(TEXT_LAST_NONE)
-		self.message = self.__Text(panel, cx, 262, DARK, False, True)
+		self.lastTitle = self.__Text(box, BOX_PAD + 36, 0, BROWN)
+		self.lastTitle.SetText(TEXT_LAST)
+		self.lastName1 = self.__Text(box, BOX_PAD + 36, 0, DARK, True)
+		timer = self.__Image(box, UI + 'timer.jpg', BOX_PAD, 0)
+		timer.AddFlag('not_pick')
+		self.timerBox = timer
+		self.backLine = self.__Text(timer, TIMER_W / 2, 9, DARK, False, True)
+		self.backLine.SetText(TEXT_BACK)
+		self.clockLine = self.__Text(timer, TIMER_W / 2, 27, DARK, True, True)
+		exitButton = ui.Button()
+		exitButton.SetParent(box)
+		exitButton.SetUpVisual(UI + 'exit.png')
+		exitButton.SetOverVisual(UI + 'exit_h.png')
+		exitButton.SetDownVisual(UI + 'exit_h.png')
+		exitButton.SetText(TEXT_EXIT)
+		exitButton.SetEvent(ui.__mem_func__(self.__OnExit))
+		self.exitButton = exitButton
+		self.message = self.__Text(box, BOX_PAD, 0, DARK)
 
 		prices = ui.Button()
-		prices.SetParent(bg)
+		prices.SetParent(self)
 		prices.SetUpVisual(UI + 'prices.png')
 		prices.SetOverVisual(UI + 'prices_h.png')
 		prices.SetDownVisual(UI + 'prices_h.png')
-		prices.SetPosition(0, CONTENT_H - 32)
-		prices.SetText(TEXT_PRICES)
+		prices.SetPosition(0, PRICES_Y)
 		prices.SetEvent(ui.__mem_func__(self.__OnPrices))
 		prices.Show()
 		self.pricesButton = prices
+		# MT2009_PLUS_KOLA_UI_V2: the label left (padding 8) in #f2e69f, like the page
+		self.pricesText = self.__Text(prices, 8, 9, GOLD)
+		self.pricesText.SetText(TEXT_PRICES)
+		self.pricesText.AddFlag('not_pick')
+
+		# MT2009_PLUS_KOLA_UI_V2: close, in the red of the page's exit button
+		close = ui.Button()
+		close.SetParent(self)
+		close.SetUpVisual(UI + 'close.png')
+		close.SetOverVisual(UI + 'close_h.png')
+		close.SetDownVisual(UI + 'close_h.png')
+		close.SetPosition(CLOSE_X, CLOSE_Y)
+		close.SetEvent(ui.__mem_func__(self.Close))
+		close.Show()
+		self.closeButton = close
 
 		self.__ApplyState()
 
@@ -765,13 +821,12 @@ class WheelWindow(ui.BoardWithTitleBar):
 	def __ApplyState(self):
 		info = koladata.WHEELS.get(self.wheelId)
 		if info:
-			self.SetTitleName('%s - %s' % (TITLE, info['name']))
 			self.title.SetText(info['name'])
 			if self.bgPath != info['bg']:
 				self.bgPath = info['bg']
 				self.bg.LoadImage(info['bg'])
 		else:
-			self.SetTitleName(TITLE)
+			self.title.SetText(TITLE)
 		lvl = min(3, self.tier)
 		self.slices.LoadImage(UI + 'slices_%d.png' % lvl)
 		self.ring.LoadImage(UI + 'ring_%d.png' % lvl)
@@ -789,25 +844,58 @@ class WheelWindow(ui.BoardWithTitleBar):
 		self.__RefreshPanel()
 
 	def __RefreshPanel(self):
+		"""MT2009_PLUS_KOLA_UI_V2: fills the welcome box and lays its rows out."""
 		if not self.enabled:
 			self.message.SetText(TEXT_OFF)
 		elif self.message.GetText() == TEXT_OFF:
 			self.message.SetText('')
 		self.welcome.SetText(TEXT_WELCOME % self.tier)
-		self.costLine1.SetText(TEXT_COST_1)
 		self.costLine2.SetText(TEXT_COST_2 % self.cost)
-		(w, h) = self.costLine2.GetTextSize()
-		self.coin.SetPosition(PANEL_W / 2 + 10 - w / 2 - 20, 47)
+		(w1, h1) = self.costLine1.GetTextSize()
+		(w2, h2) = self.costLine2.GetTextSize()
+		costLines = 1 if w1 + 4 + 16 + 4 + w2 <= BOX_INNER else 2
 		self.balanceLine.SetText(TEXT_BALANCE % self.balance)
-		if self.tier > 1:
-			self.backLine.Show()
-			self.clockLine.Show()
+		timer = self.tier > 1
+		message = self.message.GetText() != ''
+		rows, height = BoxRows(costLines, self.lastPrize is not None, timer, message)
+		at = dict([(name, y) for (name, y, h) in rows])
+		self.box.SetPosition(BOX_X, CONTENT_H - BOX_BOTTOM - height)
+		self.box.SetRenderingRect(0.0, 0.0, 0.0, -1.0 + float(height) / float(BOX_MAX_H))
+		self.welcome.SetPosition(BOX_PAD, at['welcome'])
+		self.costLine1.SetPosition(BOX_PAD, at['cost1'])
+		if costLines == 1:
+			cx, cy = BOX_PAD + w1 + 4, at['cost1']
+		else:
+			cx, cy = BOX_PAD, at['cost2']
+		self.coin.SetPosition(cx, cy)
+		self.costLine2.SetPosition(cx + 20, cy)
+		self.balanceLine.SetPosition(BOX_PAD, at['balance'])
+		if 'last' in at:
+			y = at['last']
+			self.lastIcon.Box(BOX_PAD, y + 2, 30, 30)
+			self.lastIcon.Show()
+			self.lastTitle.SetPosition(BOX_PAD + 36, y + 2)
+			self.lastTitle.Show()
+			self.lastName1.SetPosition(BOX_PAD + 36, y + 17)
+			self.lastName1.Show()
+		else:
+			self.lastIcon.Hide()
+			self.lastTitle.Hide()
+			self.lastName1.Hide()
+		if timer:
+			self.timerBox.SetPosition(BOX_PAD, at['timer'] + 3)
+			self.timerBox.Show()
+			self.exitButton.SetPosition((BOX_W - EXIT_W) / 2, at['exit'])
 			self.exitButton.Show()
 			self.__RefreshClock()
 		else:
-			self.backLine.Hide()
-			self.clockLine.Hide()
+			self.timerBox.Hide()
 			self.exitButton.Hide()
+		if message:
+			self.message.SetPosition(BOX_PAD, at['message'])
+			self.message.Show()
+		else:
+			self.message.Hide()
 
 	def __RefreshClock(self):
 		left = self.deadline - app.GetTime() if self.deadline else 0
@@ -818,16 +906,31 @@ class WheelWindow(ui.BoardWithTitleBar):
 			net.SendChatPacket('/kolo')
 
 	def __SetButton(self, running):
+		self.buttonLines[2].SetText('')
 		if running:
 			self.button.LoadImage(UI + 'btn_run.png')
 			self.buttonLines[0].SetText('')
 			self.buttonLines[1].SetText(TEXT_SPINNING)
-			self.buttonLines[2].SetText('')
 		else:
 			self.button.LoadImage(UI + 'btn.png')
 			self.buttonLines[0].SetText(TEXT_SPIN[0])
 			self.buttonLines[1].SetText(TEXT_SPIN[1])
-			self.buttonLines[2].SetText('(%d SM)' % self.cost if self.cost else '')
+		# MT2009_PLUS_KOLA_UI_V2: "(16 [coin])", centred under TERAZ!
+		if running or not self.cost:
+			self.buttonCost.Hide()
+			self.buttonCoin.Hide()
+			self.buttonParen.Hide()
+			return
+		self.buttonCost.SetText('(%d' % self.cost)
+		(w1, h1) = self.buttonCost.GetTextSize()
+		(w2, h2) = self.buttonParen.GetTextSize()
+		x = 62 - (w1 + 3 + 16 + 2 + w2) / 2
+		self.buttonCost.SetPosition(x, 74)
+		self.buttonCoin.SetPosition(x + w1 + 3, 73)
+		self.buttonParen.SetPosition(x + w1 + 3 + 16 + 2, 74)
+		self.buttonCost.Show()
+		self.buttonCoin.Show()
+		self.buttonParen.Show()
 
 	# ----------------------------------------------------------------- ladder
 
@@ -844,7 +947,7 @@ class WheelWindow(ui.BoardWithTitleBar):
 					items.append(('stg', (e - 1, k), 18))
 		height = 30 + sum([i[2] for i in items]) + 11	# the lowest slot image overhangs its 18 px
 		ly = max(0, (CONTENT_H - height) / 2)
-		x0 = 12
+		x0 = LADDER_X	# MT2009_PLUS_KOLA_UI_V2
 		self.ladderBg.SetPosition(x0, ly)
 		self.ladderBg.SetRenderingRect(0.0, 0.0, 0.0, -1.0 + min(1.0, float(height) / 420.0))
 		y = ly + 15
@@ -1065,11 +1168,11 @@ class WheelWindow(ui.BoardWithTitleBar):
 		vnum, count, src = self.layout[position - 1]
 		self.lastPrize = (vnum, count, src, special)
 		self.lastIcon.Load(IconPath(vnum, src))
-		self.lastIcon.Box(8, 196, ICON, ICON)
-		self.lastIcon.Show()
-		(a, b) = SplitName(PrizeName(vnum, count))
-		self.lastName1.SetText(a)
-		self.lastName2.SetText(b)
+		# MT2009_PLUS_KOLA_UI_V2: one short line in the welcome box (the tooltip has the rest)
+		name = PrizeName(vnum, count)
+		if len(name) > 22:
+			name = name[:20] + '...'
+		self.lastName1.SetText(name)
 		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_WON % PrizeName(vnum, count))
 		self.animating = False
 		state = self.pendingState

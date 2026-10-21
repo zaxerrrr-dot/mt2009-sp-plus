@@ -8,13 +8,19 @@
 # strips become 16 images each. The root pack takes every file of
 # client-2.0.30/root, so nothing else is needed for the build.
 #
+# MT2009_PLUS_KOLA_UI_V2: the window has the original's game area (900x489,
+# no title bar): the backgrounds come whole from tools/kola/bg/bg_<id>.jpg (the
+# source's 972x490 art, cut to 900x489 as the page's "cover" does, with its
+# 1 px #f2e69f frame), plus the small close button, the welcome box's paper and
+# the timer's box.
+#
 #   python3 make_kola_ui.py [<repo root>]     (needs PIL)
 import json
 import os
 import shutil
 import sys
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = sys.argv[1] if len(sys.argv) > 1 else os.path.normpath(os.path.join(HERE, '..', '..', '..', '..'))
@@ -22,6 +28,15 @@ SRC = os.path.join(REPO, 'linux-port', 'docker', 'itemshop', 'app', 'itemshop', 
 ROOT = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'root')
 OUT = os.path.join(ROOT, 'mt2009_ui', 'kola')
 UI = 'mt2009_ui/kola/'
+BG_SRC = os.path.join(HERE, 'bg')  # MT2009_PLUS_KOLA_UI_V2: the whole 972x490 backgrounds
+GAME_W = 900  # MT2009_PLUS_KOLA_UI_V2: the original's .crk-game (min-width 900, height 489)
+GAME_H = 489
+BOX_W = 192  # .crk-welcome (min-width 192, padding 10)
+BOX_MAX_H = 320
+TIMER_W = 172  # .crk-timer, the box's inner width
+TIMER_H = 50
+CLOSE = 24
+FRAME = (242, 230, 159)  # #f2e69f
 ICON = 64	# icons: shown at 45x45 (scale 0.70), popped up to ~105 px
 
 # The original's field positions (JS array u: top, left of a 45x45 field
@@ -71,6 +86,43 @@ def icon(path, dst):
     im.save(dst, optimize=True)
 
 
+def background(src, dst):
+    """MT2009_PLUS_KOLA_UI_V2: background-size:cover; background-position:50%
+    into the 900x489 game area, with the page's 1 px frame."""
+    im = Image.open(src).convert('RGB')
+    s = max(float(GAME_W) / im.size[0], float(GAME_H) / im.size[1])
+    if abs(s - 1.0) > 0.01:
+        im = im.resize((int(round(im.size[0] * s)), int(round(im.size[1] * s))), Image.LANCZOS)
+    left = (im.size[0] - GAME_W) // 2
+    top = (im.size[1] - GAME_H) // 2
+    im = im.crop((left, top, left + GAME_W, top + GAME_H))
+    ImageDraw.Draw(im).rectangle((0, 0, GAME_W - 1, GAME_H - 1), outline=FRAME)
+    im.save(dst, quality=90)
+
+
+def close_button(button, top, dst):
+    """MT2009_PLUS_KOLA_UI_V2: a small square cut from the exit button's red
+    (button.png), a dark edge and a light X."""
+    big = CLOSE * 4
+    im = crop(button, 57, top, 30, 30).resize((big, big), Image.LANCZOS)
+    d = ImageDraw.Draw(im)
+    d.rectangle((0, 0, big - 1, big - 1), outline=(60, 30, 22, 255), width=4)
+    m = big * 0.3
+    d.line((m, m, big - m, big - m), fill=FRAME + (255,), width=9)
+    d.line((m, big - m, big - m, m), fill=FRAME + (255,), width=9)
+    im.resize((CLOSE, CLOSE), Image.LANCZOS).save(dst, optimize=True)
+
+
+def timer_box(dst):
+    """MT2009_PLUS_KOLA_UI_V2: .crk-timer - #d7caa1, box-shadow inset 0 0 7px."""
+    shade = Image.new('L', (TIMER_W, TIMER_H), 255)
+    ImageDraw.Draw(shade).rectangle((4, 4, TIMER_W - 5, TIMER_H - 5), fill=0)
+    shade = shade.filter(ImageFilter.GaussianBlur(3)).point(lambda v: v * 170 // 255)
+    im = Image.new('RGB', (TIMER_W, TIMER_H), (215, 202, 161))
+    im.paste(Image.new('RGB', (TIMER_W, TIMER_H), (9, 8, 5)), (0, 0), shade)
+    im.save(dst, quality=92)
+
+
 def esc(text):
     """Python 2 source literal, CP1250 escapes."""
     out = ''
@@ -110,12 +162,19 @@ def main():
         Image.open(os.path.join(img, name + '.png')).convert('RGBA').save(os.path.join(OUT, name + '.png'), optimize=True)
     ladder = Image.open(os.path.join(img, 'ladder.jpg')).convert('RGB')
     tile(ladder, 100, 420).save(os.path.join(OUT, 'ladder.jpg'), quality=90)
-    tile(ladder, 176, 300).save(os.path.join(OUT, 'panel.jpg'), quality=90)
+    # MT2009_PLUS_KOLA_UI_V2: the welcome box (shown from its top, as high as it needs), close, timer
+    tile(ladder, BOX_W, BOX_MAX_H).save(os.path.join(OUT, 'box.jpg'), quality=90)
+    close_button(button, BUTTON['exit'][0], os.path.join(OUT, 'close.png'))
+    close_button(button, BUTTON['exit_h'][0], os.path.join(OUT, 'close_h.png'))
+    timer_box(os.path.join(OUT, 'timer.jpg'))
 
     wheels = []
     for wid in cfg['rotation']['order']:
         w = cfg['wheels'][str(wid)]
-        shutil.copyfile(os.path.join(img, w['bg']), os.path.join(OUT, 'bg_%d.jpg' % wid))
+        src = os.path.join(BG_SRC, 'bg_%d.jpg' % wid)  # MT2009_PLUS_KOLA_UI_V2
+        if not os.path.exists(src):
+            src = os.path.join(img, w['bg'])
+        background(src, os.path.join(OUT, 'bg_%d.jpg' % wid))
         fields = {}
         for t, names in w['fields'].items():
             paths = []
