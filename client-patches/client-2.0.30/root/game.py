@@ -470,6 +470,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiworldboss").DestroyWindow()
 		# MT2009_PLUS_BUFFI_V1: the Buffi window (uibuffi.py).
 		__import__("uibuffi").DestroyWindow()
+		# MT2009_PLUS_EKWIPUNEK_V1: the extra inventory's window (uiekwipunek.py).
+		__import__("uiekwipunek").DestroyWindow()
 		# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's windows (uigoblin.py).
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
@@ -797,6 +799,8 @@ class GameWindow(ui.ScriptWindow):
 			"event_calendar"	: (lambda : Window("uieventcalendar"), None),
 			# MT2009_PLUS_WHEEL_V1: Kolo Fortuny (uiwheel.py).
 			"wheel"				: (lambda : Window("uiwheel"), None),
+			# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek (uiekwipunek.py), Shift+I.
+			"extra_inventory"	: (lambda : Window("uiekwipunek"), None),
 			# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (uiworldboss.py), no key by default.
 			"world_boss"		: (lambda : Window("uiworldboss"), None),
 			# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
@@ -2618,6 +2622,9 @@ class GameWindow(ui.ScriptWindow):
 				__import__("uiworldboss").Register()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
+				# MT2009_PLUS_EKWIPUNEK_V1: "/ekwipunek hello" - the server routes items into the extra
+				# inventory from now on (only with the 3.0 exe that knows its windows; uiekwipunek.py).
+				__import__("uiekwipunek").Start()
 
 		constInfo.FIXED_TIME_SINCE_START += FIXED_TIMESTEP_UPDATE
 		self.oneSecondTimer += FIXED_TIMESTEP_UPDATE
@@ -3412,6 +3419,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
+		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
 		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
 		# a Stage A server only refreshes the window (the numbers are points now).
 		serverCommandList["champion_info"] = self.__ChampionInfo
@@ -4138,6 +4146,10 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_BUFFI_V1: Buffi's lines (uibuffi.py).
 	def __Buffi(self, *args):
 		__import__("uibuffi").OnCommand(*args)
+
+	# MT2009_PLUS_EKWIPUNEK_V1: the server's answer to the extra inventory's hello (uiekwipunek.py).
+	def __Ekwipunek(self, *args):
+		__import__("uiekwipunek").OnServerOk(*args)
 
 	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
 	def __NewPet(self, *args):

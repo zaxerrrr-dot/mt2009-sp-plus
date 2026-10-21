@@ -180,7 +180,8 @@ class ExchangeDialog(ui.ScriptWindow):
 		else:
 			attachedSlotType = mouseModule.mouseController.GetAttachedType()
 			if (player.SLOT_TYPE_INVENTORY == attachedSlotType
-				or player.SLOT_TYPE_DRAGON_SOUL_INVENTORY == attachedSlotType):
+				or player.SLOT_TYPE_DRAGON_SOUL_INVENTORY == attachedSlotType
+				or __import__("uiekwipunek").IsEkwSlotType(attachedSlotType)): # MT2009_PLUS_EKWIPUNEK_V1
 
 				attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
 				SrcSlotNumber = mouseModule.mouseController.GetAttachedSlotNumber()

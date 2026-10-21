@@ -5283,6 +5283,7 @@ class Interface(object):
 		self.wndTaskBar.RefreshQuickSlot()
 		if self.wndInventory:
 			self.wndInventory.RefreshItemSlot()
+		__import__("uiekwipunek").Refresh() # MT2009_PLUS_EKWIPUNEK_V1
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
 			if self.wndDragonSoul and self.wndDragonSoul.IsShow():
 				self.wndDragonSoul.RefreshItemSlot()

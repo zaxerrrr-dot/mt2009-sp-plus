@@ -122,6 +122,8 @@ CATEGORIES = (
 		('emote_window', 'Okno emotek', ((0, 'DIK_B'),), False),
 		('quests', 'Zadania', ((0, 'DIK_N'),), False),
 		('inventory', 'Ekwipunek', ((0, 'DIK_I'),), False),
+		# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek (uiekwipunek.py).
+		('extra_inventory', 'Dodatkowy ekwipunek', ((SHIFT, 'DIK_I'),), False),
 		('dragon_soul', 'Alchemia', ((0, 'DIK_O'),), False),
 		('atlas', 'Mapa \x9cwiata', ((0, 'DIK_M'),), False),
 		('minimap', 'Minimapa (poka\xbf/ukryj)', ((SHIFT, 'DIK_M'),), False),
