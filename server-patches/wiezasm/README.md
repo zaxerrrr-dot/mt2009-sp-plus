@@ -18,6 +18,16 @@ Wiki („Wieża Sung Mahi”): na każdym etapie piętra gracz dostaje losowy bo
   immune)` / `d.clear_sungma()` z nakładki `playerbot_champion.cpp` (`MT2009_PLUS_YOHARA_DUNG4_V1 (sungma)`;
   wymaganie instancji zamiast wiersza mapy w `sungma_table.txt`) – nie jest częścią tej łatki.
 
+## Użycie przedmiotów questowych (`MT2009_PLUS_QUEST_USE_V1`, 21.10.2026)
+
+Silnik (`char_item.cpp`, `CHARACTER::UseItemEx`, `case ITEM_QUEST`) przekazywał „użycie” do questa tylko przedmiotom
+**bez** flagi `ITEM_FLAG_QUEST_USE` / `_MULTIPLE` – a generatory przedmiotów Yohary stawiają ją właśnie na przedmiotach,
+które quest obsługuje po kliknięciu (`when <vnum>.use`). Prawy klik nic nie robił: Zagadkowy Klucz 70403 i Antidotum
+SungMa 70405 (ta wieża), Kamień Metin z Yohara 72339, Pierścień Siły Natury 39114/39116 i Medal 39113, Reset /
+Rozszerzenie Sklepu Gaya 39063/39064, Pył Węża 70428, Wejście do Świątyni Węży 70430, Pierścień Smoczego Ognia 30340,
+31189/31191 (PB Nemere). Edycja usuwa ten warunek – przedmiot bez obsługi w queście nadal nic nie robi. Żaden nasz quest
+nie liczy na to, że flaga wycisza „use” (brak ogólnego `when use`).
+
 Linux/VPS: `python3 apply_wiezasm.py <game/src>`; Windows: `Apply-WiezaSmPatch.ps1 -SourceDir <game/src>` (wołane przez
 `tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `char_skill.cpp`, `char_item.cpp` (lista `launcher/server-update-files.mod.txt`).
 

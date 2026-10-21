@@ -22,5 +22,11 @@
   "marker": "MT2009_PLUS_SMH_TOWER_V2 (auto potions)",
   "old": "\tif (AFFECT_AUTO_HP_RECOVERY != type && AFFECT_AUTO_SP_RECOVERY != type)\n\t\treturn;\n",
   "new": "\tif (AFFECT_AUTO_HP_RECOVERY != type && AFFECT_AUTO_SP_RECOVERY != type)\n\t\treturn;\n\n\t// MT2009_PLUS_SMH_TOWER_V2 (auto potions): an auto-potion switched on outside does not heal inside Wieza Sung Mahi\n\tif ((GetMapIndex() >= 10000 ? GetMapIndex() / 10000 : GetMapIndex()) == 387)\n\t\treturn;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_QUEST_USE_V1 (server-patches/wiezasm)",
+  "old": "\t\t\tif (!IS_SET(item->GetFlag(), ITEM_FLAG_QUEST_USE | ITEM_FLAG_QUEST_USE_MULTIPLE))\n\t\t\t{\n\t\t\t\tif (item->GetSIGVnum() == 0)\n",
+  "new": "\t\t\t// MT2009_PLUS_QUEST_USE_V1 (server-patches/wiezasm): an ITEM_QUEST item with ITEM_FLAG_QUEST_USE(_MULTIPLE) -\n\t\t\t// the Yohara items' generators set it on the items a quest answers on \"use\" (Zagadkowy Klucz, Antidotum\n\t\t\t// SungMa, Kamien Metin z Yohara, Pierscien Sily Natury, the Gaya shop's tickets ...) - never reached the\n\t\t\t// quest here, so a right click did nothing. No quest of ours waits for that flag to stay silent: such an\n\t\t\t// item reaches its \"use\" too (an item without a handler: the quest manager finds none, as before).\n\t\t\tif (true)\n\t\t\t{\n\t\t\t\tif (item->GetSIGVnum() == 0)\n"
  }
 ]

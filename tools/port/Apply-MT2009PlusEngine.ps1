@@ -86,7 +86,8 @@ param(
 #                      (MT2009_PLUS_YOHARA_SETS_V1; server-patches/ysets)
 #   Strefy na ziemi    questlua_dungeon.cpp, char_battle.cpp (MT2009_PLUS_DUNGEON_ZONE_V1,
 #                      MT2009_PLUS_DUNGEON_RAGE_V1; server-patches/strefy)
-#   Wieza Sung Mahi    char_skill.cpp, char_item.cpp (MT2009_PLUS_SMH_TOWER_V1; server-patches/wiezasm)
+#   Wieza Sung Mahi    char_skill.cpp, char_item.cpp (MT2009_PLUS_SMH_TOWER_V1, MT2009_PLUS_QUEST_USE_V1;
+#                      server-patches/wiezasm)
 #   Transmutacja       common tables.h/CommonDefines.h, db ClientManager*.cpp/Cache.cpp/IkarusShopCache.cpp,
 #                      item.h/.cpp, item_manager.cpp, input_db.cpp, char.cpp, char_item.cpp, packet.h, safebox.cpp,
 #                      exchange.cpp, ikarus_shop_manager.cpp, MountSystem.cpp, cmd_general.cpp, questlua.cpp, cmd.cpp,
@@ -1383,6 +1384,7 @@ if ((Test-Path -LiteralPath $strefyApply -PathType Leaf) -and
 # Wieza Sung Mahi (server-patches/wiezasm, MT2009_PLUS_SMH_TOWER_V1): the tower's curse "Umiejetnosci sa zablokowane"
 # (affect 1849, quest wieza_sung_mahi) refuses every skill in char_skill.cpp's UseSkill. The floors' Sung Ma
 # requirements are the overlay's (playerbot_champion.cpp, d.set_sungma).
+# MT2009_PLUS_QUEST_USE_V1: char_item.cpp - an ITEM_QUEST item with ITEM_FLAG_QUEST_USE reaches its quest "use" too.
 $wiezaSmApply = Join-Path $repo 'server-patches/wiezasm/Apply-WiezaSmPatch.ps1'
 if ((Test-Path -LiteralPath $wiezaSmApply -PathType Leaf) -and
     (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_skill.cpp') -PathType Leaf)) {
