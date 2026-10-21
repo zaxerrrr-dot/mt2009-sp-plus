@@ -13,6 +13,8 @@
 #     stack, a soul stone onto the piece it goes into - with a question -, an
 #     enchantment onto the piece it changes);
 #   - right click / double click uses (a book is read, a chest opened);
+#     Ctrl + right click on a stack of chests opens the whole stack, as in the
+#     bag;
 #   - Shift + click splits a stack; the shop's sell cursor sells (asks first);
 #   - the trade window and the crafting window take its items too
 #     (uiexchange.py, uicube.py);
@@ -44,6 +46,9 @@ TEXT_SORT_ASK = "Po\xb3\xb9czy\xe6 stosy i posortowa\xe6 kategori\xea \"%s\"?"
 TEXT_NEEDS_EXE = "Dodatkowy ekwipunek wymaga nowego klienta (exe 3.0)."
 TEXT_WRONG_KIND = "Ten przedmiot nie pasuje do kategorii \"%s\"."
 TEXT_ATTACH_ASK = "W\xb3o\xbfy\xe6 %s do przedmiotu?"
+TEXT_OPEN_START = "Otwieranie skrzynek: %d szt."
+TEXT_OPEN_DONE = "Otwarto skrzynek: %d."
+TEXT_OPEN_STOP = "Otwieranie przerwane, otwarto skrzynek: %d."
 TEXT_HINT = "PPM: u\xbfyj  |  Shift+klik: podziel  |  przeci\xb9gnij do ekwipunku"
 
 # (window constant, slot type constant, name, icon) in the tabs' order.
@@ -270,6 +275,116 @@ def CubeItemOf(attachedType, attachedPos):
 	return (WindowOfSlotType(attachedType), attachedPos)
 
 
+# ---------------------------------------------------------------- opening a stack of chests
+
+class OpenAllRunner(ui.Window):
+	"""Ctrl + right click on a stack of chests in the storage opens the whole
+	stack (up to OPEN_LIMIT) - the bag's Ctrl + right click (uiinventory.py,
+	ItemOpenAllRunner) for the Skrzynie storage: uses go out RATE_COUNT a
+	RATE_WINDOW, at most IN_FLIGHT unanswered; a stack that stops shrinking
+	for LOST_AFTER seconds MAX_RETRIES times (the bag full, the server's
+	limits) ends the run."""
+	OPEN_LIMIT = 50
+	IN_FLIGHT = 20
+	RATE_COUNT = 20
+	RATE_WINDOW = 0.5
+	LOST_AFTER = 0.8
+	MAX_RETRIES = 2
+
+	def __init__(self):
+		ui.Window.__init__(self)
+		self.__Reset()
+
+	def __del__(self):
+		ui.Window.__del__(self)
+
+	def __Reset(self):
+		self.window = -1
+		self.pos = -1
+		self.vnum = 0
+		self.count = 0
+		self.opened = 0
+		self.target = 0
+		self.inFlight = 0
+		self.sendTimes = []
+		self.lastProgress = 0.0
+		self.retries = 0
+
+	def IsRunning(self):
+		return 0 != self.vnum
+
+	def Start(self, window, pos):
+		vnum = player.GetItemIndex(window, pos)
+		count = player.GetItemCount(window, pos)
+		if not vnum or count <= 0:
+			return False
+		item.SelectItem(vnum)
+		if item.GetItemType() != getattr(item, "ITEM_TYPE_GIFTBOX", 23):
+			return False
+		if hasattr(item, "ITEM_FLAG_CONFIRM_WHEN_USE") and item.IsFlag(item.ITEM_FLAG_CONFIRM_WHEN_USE):
+			return False
+		self.__Reset()
+		self.window = window
+		self.pos = pos
+		self.vnum = vnum
+		self.count = count
+		self.target = min(count, self.OPEN_LIMIT)
+		self.lastProgress = app.GetTime()
+		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_OPEN_START % self.target)
+		self.Show()
+		return True
+
+	def Stop(self, message=None):
+		if not self.IsRunning():
+			return
+		if message is None:
+			message = TEXT_OPEN_STOP % self.opened
+		self.__Reset()
+		self.Hide()
+		chat.AppendChat(chat.CHAT_TYPE_INFO, message)
+
+	def OnUpdate(self):
+		if not self.IsRunning():
+			return
+		if not __import__("warpsafe").InGame():
+			self.Stop()
+			return
+		now = app.GetTime()
+		if player.GetItemIndex(self.window, self.pos) == self.vnum:
+			count = player.GetItemCount(self.window, self.pos)
+		else:
+			count = 0
+		if count < self.count:
+			taken = self.count - count
+			self.opened += taken
+			self.inFlight = max(0, self.inFlight - taken)
+			self.lastProgress = now
+			self.retries = 0
+		self.count = count
+		if self.opened >= self.target or 0 == count:
+			self.Stop(TEXT_OPEN_DONE % self.opened)
+			return
+		if self.inFlight > 0 and now - self.lastProgress > self.LOST_AFTER:
+			self.retries += 1
+			if self.retries > self.MAX_RETRIES:
+				self.Stop()
+				return
+			self.inFlight = 0
+			self.lastProgress = now
+		controller = _Controller()
+		if controller and controller.isAttached():
+			self.Stop()
+			return
+		self.sendTimes = [t for t in self.sendTimes if now - t < self.RATE_WINDOW]
+		while self.opened + self.inFlight < self.target and self.inFlight < min(self.IN_FLIGHT, self.count) \
+				and len(self.sendTimes) < self.RATE_COUNT:
+			if 0 == self.inFlight:
+				self.lastProgress = now
+			self.inFlight += 1
+			self.sendTimes.append(now)
+			net.SendItemUsePacket(self.window, self.pos)
+
+
 # ---------------------------------------------------------------- the window
 
 class EkwipunekWindow(ui.BoardWithTitleBar):
@@ -289,6 +404,7 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		self.sellCount = 0
 		self.pickDialog = None
 		self.pickPos = -1
+		self.openAll = OpenAllRunner()
 		self.AddFlag('movable')
 		self.AddFlag('float')
 		self.SetCloseEvent(ui.__mem_func__(self.Close))
@@ -370,6 +486,13 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 	def Destroy(self):
 		self.Hide()
 		self.__CloseDialogs()
+		if self.openAll:
+			self.openAll.Stop()
+			self.openAll.Hide()
+		self.openAll = None
+		if self.pickDialog:
+			self.pickDialog.Destroy()
+			self.pickDialog = None
 		if self.tooltip:
 			self.tooltip.HideToolTip()
 		self.tooltip = None
@@ -548,6 +671,13 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		window = self.Window()
 		if not player.GetItemIndex(window, pos):
 			return
+		if self.openAll:
+			if self.openAll.IsRunning():
+				self.openAll.Stop()
+				return
+			if (app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(app.DIK_RCONTROL)) and self.openAll.Start(window, pos):
+				self.OnOverOutItem()
+				return
 		net.SendItemUsePacket(window, pos)
 		self.OnOverOutItem()
 
