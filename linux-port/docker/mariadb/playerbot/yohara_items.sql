@@ -12,9 +12,6 @@
 --   31217 Rog Trolla - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   31227 Kiel Argosa - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   31226 Skazony Rdzen - the Skazony Rdzen's quest/crafting (Seoganland) - none here yet
---   50738 Mroczny Ciern - herbalism (the elixirs of Yohara) - none here yet
---   95733 Ognisty Lisc - herbalism (the elixirs of Yohara) - none here yet; 50733 is our Bursztynowy Platek, so 95733
---   95734 Mrozny Korzonek - herbalism (the elixirs of Yohara) - none here yet; 50734 is our Perlowe Wiechy, so 95734
 --   50661 Jadeit Slonca - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   50662 Jadeit Nocy - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   50664 Jadeit Mgly - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
