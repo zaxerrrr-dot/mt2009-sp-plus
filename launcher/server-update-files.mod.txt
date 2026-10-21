@@ -463,3 +463,9 @@ linux-port/docker/mariadb/playerbot/buffi_itemshop.sql
 # engine files it changes are above (length.h, char.h, char.cpp, char_item.cpp, item.cpp, item_manager.cpp, input_db.cpp,
 # input_main.cpp, exchange.cpp, shop.cpp, shop_manager.cpp, cube.cpp, cmd_gm.cpp, cmd.cpp, ClientManagerPlayer.cpp); the
 # logic is playerbot_ekwipunek.cpp (the playerbot_* lines); player.item.window's five new names in apply.sh (above).
+
+# MT2009_PLUS_SWITCHBOT_V1 (server-patches/switchbot): Bonus Switcher, Ameria Project's switchbot instead of our
+# "Zmiana bonusow" (MT2009_PLUS_BONUS_SWITCH_V1, server-patches/bonusswitch and playerbot_bonus_switch.h - removed) -
+# the engine files it changes are above (length.h, packet.h, packet_info.cpp, input_main.cpp, input_p2p.cpp, char.cpp,
+# char_item.cpp, cmd.cpp; cmd_general.cpp loses the old command); the logic is playerbot_switchbot.cpp (the playerbot_*
+# lines); player.switchbot in apply.sh (above).

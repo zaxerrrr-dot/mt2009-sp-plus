@@ -166,7 +166,8 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_voucher.h" // Kody promocyjne, "/kod" (MT2009_PLUS_VOUCHER_CODES_V1)
 #include "playerbot_ingame_events.h" // the in-game event manager, "/ingame_event" (MT2009_PLUS_EVENT_MANAGER_V1)
 #include "playerbot_seonhae.h" // Seon-Hae's 6th/7th bonus, "/seonhae" (MT2009_PLUS_SEONHAE_V1)
-#include "playerbot_bonus_switch.h" // the bonus switcher window, "/bonus_switch" (MT2009_PLUS_BONUS_SWITCH_V1, Autor: Vekirion)
+// MT2009_PLUS_SWITCHBOT_V1: the bonus switcher is Ameria's switchbot now (playerbot_switchbot.cpp, its own unit);
+// the old window of MT2009_PLUS_BONUS_SWITCH_V1 (playerbot_bonus_switch.h, "/bonus_switch") is gone.
 #include "playerbot_dbdata_stamp.h" // "DbDataStamp" at login: the client's files vs the database editor's (MT2009_PLUS_DBDATA_STAMP_V1)
 #include "playerbot_digi_qol.h" // Digi Rasta's server conveniences, "/nowy_ksiegi" (MT2009_PLUS_DIGI_SERVER_QOL_V1)
 #include "playerbot_flower.h" // the Flower Event "Dzieci Kwiaty", packets 187 (MT2009_PLUS_FLOWER_V1)

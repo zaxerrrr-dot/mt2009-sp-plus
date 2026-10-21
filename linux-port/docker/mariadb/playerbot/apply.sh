@@ -4374,6 +4374,21 @@ if [ -s /opt/playerbot/worldboss.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_SWITCHBOT_V1: Bonus Switcher - Ameria's switchbot (server-patches/switchbot/README.md,
+# playerbot_switchbot.cpp). player.switchbot keeps a player's five slots: the bag cell + 1 of the item in a slot and
+# the changes made in it (Ameria's local_database/switchbot/pid_<pid>.txt). Idempotent: CREATE TABLE IF NOT EXISTS.
+if db -e "CREATE TABLE IF NOT EXISTS player.switchbot (
+    pid INT UNSIGNED NOT NULL,
+    slot TINYINT UNSIGNED NOT NULL,
+    cell SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    used INT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (pid, slot)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;"; then
+    :
+else
+    fail_step "switchbot: could not create player.switchbot"
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
