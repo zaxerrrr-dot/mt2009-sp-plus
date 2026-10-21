@@ -1357,10 +1357,11 @@ namespace
 				}
 				continue;
 			}
-			// Away from this core: on its way to another, or staying there.
+			// Away from this core: on its way to another, staying there - or on its way here and
+			// not ready yet (the other core's save first; the claim above takes it when it is).
 			if (CHARACTER_MANAGER::instance().FindByPID(t.pid))
 				continue;
-			if ((t.state == 1 && !hostedHere) || (t.state == 2 && t.fresh))
+			if (t.state == 1 || (t.state == 2 && t.fresh))
 				away.insert(t.pid);
 		}
 		s_setPlayerBotYoharaAway.swap(away);
