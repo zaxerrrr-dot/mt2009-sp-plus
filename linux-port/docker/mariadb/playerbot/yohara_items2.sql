@@ -43,7 +43,8 @@
 --   55066 Jazda (W. SungMa. INT) - the pet system of Yohara (its riding books, level books) - ours is the older one
 --   55067 Jazda Konna (Precyzja) - the pet system of Yohara (its riding books, level books) - ours is the older one
 -- The jade (server-patches/jadeit, MT2009_PLUS_JADE_VEINS_V1): Ruda Jadeitu 50641-50644 from the veins, 100
--- of it smelted into Jadeit 50661-50664 by a guild alchemist (crafting_proto, 60 000 Yang, 60%).
+-- of it smelted into Jadeit 50661-50664 by a guild alchemist (crafting_proto, 1 500 000 Yang, 30% - the pl-wiki;
+-- MT2009_PLUS_JADE_SMELT_WIKI_V1, the owner 21.10.2026: 60 000 Yang / 60% before).
 SET NAMES utf8mb4;
 INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype`,`stack`,`weight`,`size`,`antiflag`,`flag`,`wearflag`,`immuneflag`,`gold`,`shop_buy_price`,`refined_vnum`,`refine_set`,`magic_pct`,`specular`,`socket_pct`,`addon_type`,`limittype0`,`limitvalue0`,`limittype1`,`limitvalue1`,`applytype0`,`applyvalue0`,`applytype1`,`applyvalue1`,`applytype2`,`applyvalue2`,`value0`,`value1`,`value2`,`value3`,`value4`,`value5`,`socket0`,`socket1`,`socket2`,`socket3`,`socket4`,`socket5`) VALUES
 (50641,'Ruda Jadeitu Slonca',_cp1250 X'52756461204A6164656974752053B36FF16361',6,0,200,0,1,0,4,0,'',1000,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
@@ -105,9 +106,10 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (55066,'Jazda (W. SungMa. INT)',_cp1250 X'4A617A64612028572E2053756E674D612E20494E5429',5,0,200,0,1,32768,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (55067,'Jazda Konna (Precyzja)',_cp1250 X'4A617A6461204B6F6E6E61202850726563797A6A6129',5,0,200,0,1,32768,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1);
 INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, recipe, req_progress, req_level, recipe_vnum) VALUES
-(50661, 50661, 1, 60000, 60, '50641,100', 0, 0, 0),
-(50662, 50662, 1, 60000, 60, '50642,100', 0, 0, 0),
-(50663, 50663, 1, 60000, 60, '50643,100', 0, 0, 0),
-(50664, 50664, 1, 60000, 60, '50644,100', 0, 0, 0);
+(50661, 50661, 1, 1500000, 30, '50641,100', 0, 0, 0),
+(50662, 50662, 1, 1500000, 30, '50642,100', 0, 0, 0),
+(50663, 50663, 1, 1500000, 30, '50643,100', 0, 0, 0),
+(50664, 50664, 1, 1500000, 30, '50644,100', 0, 0, 0);
+UPDATE world.crafting_proto SET price=1500000, chance=30 WHERE vnum IN (50661, 50662, 50663, 50664) AND price=60000 AND chance=60;
 -- MT2009_PLUS_SMH_BANNER_V1: Sztandar Czaszki - a quest item (quest wieza_sung_mahi) since 21 October 2026
 UPDATE world.item_proto SET type=18, subtype=0, antiflag=221312, flag=8196 WHERE vnum=70401 AND type=5;

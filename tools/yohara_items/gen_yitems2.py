@@ -51,6 +51,11 @@ need = y1.need
 ITEMS = []
 
 
+# MT2009_PLUS_JADE_SMELT_WIKI_V1: the pl-wiki's smelting price and chance (the owner, 21 October 2026)
+JADE_PRICE = 1500000
+JADE_CHANCE = 30
+
+
 def add(vnum, src=None, name=None, status=ST, **over):
     ITEMS.append(dict(vnum=vnum, src=src or vnum, name=name, status=status, over=over))
 
@@ -224,13 +229,16 @@ def write_sql(items):
         if i['status'] != ST:
             L.append('--   %d %s - %s' % (i['vnum'], i['name'], i['status'][len('needs: '):]))
     L.append('-- The jade (server-patches/jadeit, MT2009_PLUS_JADE_VEINS_V1): Ruda Jadeitu 50641-50644 from the veins, 100')
-    L.append('-- of it smelted into Jadeit 50661-50664 by a guild alchemist (crafting_proto, 60 000 Yang, 60%).')
+    L.append('-- of it smelted into Jadeit 50661-50664 by a guild alchemist (crafting_proto, 1 500 000 Yang, 30% - the pl-wiki;')
+    L.append('-- MT2009_PLUS_JADE_SMELT_WIKI_V1, the owner 21.10.2026: 60 000 Yang / 60% before).')
     L.append('SET NAMES utf8mb4;')
     L.append('INSERT IGNORE INTO world.item_proto (%s) VALUES' % ','.join('`%s`' % c for c in y1.COLS))
     L.append(',\n'.join(y1.sqlrow(i) for i in items) + ';')
     L.append('INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, recipe, req_progress, '
              'req_level, recipe_vnum) VALUES')
-    L.append(',\n'.join("(%d, %d, 1, 60000, 60, '%s', 0, 0, 0)" % (v, v, r) for v, r in CRAFT) + ';')
+    L.append(',\n'.join("(%d, %d, 1, %d, %d, '%s', 0, 0, 0)" % (v, v, JADE_PRICE, JADE_CHANCE, r) for v, r in CRAFT) + ';')
+    L.append('UPDATE world.crafting_proto SET price=%d, chance=%d WHERE vnum IN (%s) AND price=60000 AND chance=60;'
+             % (JADE_PRICE, JADE_CHANCE, ', '.join(str(v) for v, r in CRAFT)))
     # MT2009_PLUS_SMH_BANNER_V1: Sztandar Czaszki was an inert material (type 5) - now a quest item with Owsap's
     # antiflags; only a row still inert is changed
     b = next(i for i in items if i['vnum'] == 70401)
