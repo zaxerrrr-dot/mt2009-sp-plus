@@ -452,3 +452,9 @@ linux-port/docker/mariadb/playerbot/riposty_itemshop.sql
 # (tools/worldboss/gen_worldboss.py).
 linux-port/docker/mariadb/playerbot/worldboss.sql
 linux-port/docker/game/worldboss/*
+# MT2009_PLUS_BUFFI_V1 (server-patches/buffi): Buffi, the support shaman of Ameria Project - the engine files it changes
+# are above (char.cpp, char_item.cpp, char_skill.cpp, input_login.cpp, cmd.cpp); the logic is playerbot_buffi.cpp (the
+# playerbot_* lines), the quest buffi (quest/*), the items, skills and mob buffi.sql (tools/buffi/gen_buffi.py), the
+# ItemShop offers buffi_itemshop.sql.
+linux-port/docker/mariadb/playerbot/buffi.sql
+linux-port/docker/mariadb/playerbot/buffi_itemshop.sql

@@ -1,0 +1,175 @@
+-- MT2009_PLUS_BUFFI_V1: Buffi, the support shaman of Ameria Project (server-patches/buffi/README.md,
+-- playerbot_buffi.cpp) - Ameria's quest __buffi__ and the rest of its Buffi data around it:
+--   Kamieñ Duchowy Buffi (61031) - a buffi skill (164-167) from G1 to P, Ameria's rules (= Kamieñ Duchowy:
+--     punkty rangi 1000 + 500 za stopieñ, przy ujemnej podwójnie, nieudana próba 1/3-1/2) with our wait between two
+--     tries (12 h, Zwój Egzorcyzmu at once), as Kamieñ Duchowy+ of the quest riposty;
+--   Buffi (7 dni) 61025 and Zwój Imienia Buffi 61030 for a new character, once (Ameria's starter chest 66002);
+--   the General Store (9003): the books 61035-61038 for 1 000 000 Yang + 3 Zwoje Egzorcyzmu, Kamieñ Duchowy Buffi for
+--     500 000 Yang + 2 Kamienie Duchowe (Ameria's shop 3 with its item prices).
+-- The seals and the name scroll are the core's (playerbot_buffi.cpp, the window root/uibuffi.py); the books are the
+-- engine's skill books (server-patches/buffi (learnable)). Off (m2_buffi_off, .env M2_BUFFI=0): nothing here.
+-- cp1250; no string ends with a Polish letter (qc).
+quest buffi begin
+	state start begin
+		function name(vnum)
+			local names = {
+				[164] = "B³ogos³awieñstwo Buffi", [165] = "Pomoc Smoka Buffi",
+				[166] = "Szybkoœæ Buffi", [167] = "Zwiêkszenie Ataku Buffi",
+			}
+			return names[vnum] or "Buffi"
+		end
+
+		function grade(level)
+			if level >= 40 then
+				return "P"
+			elseif level >= 30 then
+				return "G" .. (level - 29)
+			elseif level >= 20 then
+				return "M" .. (level - 19)
+			end
+			return "" .. level
+		end
+
+		when login with pc.getqf("starter") == 0 and pc.get_level() <= 5 and
+				game.get_event_flag("m2_buffi_off") == 0 and not pc.is_playerbot() begin
+			pc.setqf("starter", 1)
+			pc.give_item2(61025, 1)
+			pc.give_item2(61030, 1)
+			syschat("Otrzymujesz Buffi (7 dni) i Zwój Imienia Buffi. Okno Buffi otwiera klawisz P.")
+		end
+
+		when 61031.use begin
+			local STONE = 61031
+			say_title("Kamieñ Duchowy Buffi")
+			if game.get_event_flag("m2_buffi_off") != 0 then
+				say("Buffi jest wy³¹czony na tym serwerze.")
+				return
+			end
+			if pc.get_skill_group() == 0 then
+				say("Najpierw wybierz drogê umiejêtnoœci (Szkolenie).")
+				return
+			end
+			local vnums, names = {}, {}
+			for v = 164, 167 do
+				local lv = pc.get_skill_level(v)
+				if lv >= 30 and lv < 40 then
+					table.insert(vnums, v)
+					table.insert(names, string.format("%s (%s)", buffi.name(v), buffi.grade(lv)))
+				end
+			end
+			if table.getn(vnums) == 0 then
+				say("Kamieñ Duchowy Buffi trenuje umiejêtnoœci Buffi")
+				say("od stopnia G1 do P. ¯adna z nich nie jest teraz")
+				say("na stopniu G1-G10 (od M1 do G1 - ksiêgi Buffi).")
+				return
+			end
+			local now = get_time()
+			if now < pc.getqf("next_time") and not pc.is_skill_book_no_delay() then
+				say("Twój duch musi jeszcze odpocz¹æ po ostatnim treningu.")
+				say_reward(string.format("Nastêpna próba za: %s.", second_to_smart_time(pc.getqf("next_time") - now)))
+				say("Zwój Egzorcyzmu pozwala spróbowaæ od razu.")
+				return
+			end
+			say("Któr¹ umiejêtnoœæ Buffi chcesz trenowaæ?")
+			table.insert(names, "Anuluj")
+			local s = select_table(names)
+			if s == table.getn(names) then
+				return
+			end
+			local vnum = vnums[s]
+			local level = pc.get_skill_level(vnum)
+			local alignment = pc.get_real_alignment()
+			local need = 1000 + 500 * (level - 30)
+			say_title(string.format("%s: %s -> %s", buffi.name(vnum), buffi.grade(level), buffi.grade(level + 1)))
+			if alignment < -19000 + need then
+				say("Twoja ranga jest zbyt niska, by trenowaæ z Kamieniem")
+				say("Duchowym Buffi.")
+				return
+			end
+			if alignment < 0 then
+				need = need * 2
+				say_reward(string.format("Przy ujemnej randze trening kosztuje %d punktów rangi.", need))
+			else
+				say_reward(string.format("Trening kosztuje %d punktów rangi.", need))
+				if alignment < need then
+					say("Masz za ma³o punktów rangi - ranga spadnie poni¿ej zera.")
+				end
+			end
+			say("Nieudana próba zabiera od 1/3 do 1/2 tych punktów.")
+			say("Nastêpna próba mo¿liwa po 12 godzinach.")
+			if select("Trenuj", "Anuluj") != 1 then
+				return
+			end
+			-- again after the dialog: the bag, the wait, the skill
+			if pc.count_item(STONE) < 1 or pc.get_skill_level(vnum) != level then
+				return
+			end
+			if get_time() < pc.getqf("next_time") then
+				if not pc.is_skill_book_no_delay() then
+					return
+				end
+				pc.remove_skill_book_no_delay()
+			end
+			pc.setqf("next_time", get_time() + 12 * 3600)
+			pc.remove_item(STONE, 1)
+			say_title(buffi.name(vnum))
+			if pc.learn_grand_master_skill(vnum) then
+				pc.change_alignment(-need)
+				say_reward("Trening siê uda³!")
+				say(string.format("%s: teraz %s.", buffi.name(vnum), buffi.grade(pc.get_skill_level(vnum))))
+				say_reward(string.format("Zu¿yto %d punktów rangi.", need))
+			else
+				local lost = number(math.floor(need / 3), math.floor(need / 2))
+				pc.change_alignment(-lost)
+				say_reward("Trening siê nie uda³...")
+				say("Spróbuj ponownie póŸniej.")
+				say_reward(string.format("Zu¿yto %d punktów rangi.", lost))
+			end
+		end
+
+		when 9003.chat."Ksiêgi i kamienie Buffi" with game.get_event_flag("m2_buffi_off") == 0 begin
+			-- Ameria's General Store: vnum, Yang, the item it costs and how many
+			local wares = {
+				{ 61035, 1000000, 71001, 3 },
+				{ 61036, 1000000, 71001, 3 },
+				{ 61037, 1000000, 71001, 3 },
+				{ 61038, 1000000, 71001, 3 },
+				{ 61031, 500000, 50513, 2 },
+			}
+			say_title("Ksiêgi i kamienie Buffi")
+			say("Ksiêgi Buffi ucz¹ jej umiejêtnoœci od M1 do G1,")
+			say("Kamieñ Duchowy Buffi - od G1 do P.")
+			say("Ksiêga: 1 000 000 Yang i 3 Zwoje Egzorcyzmu.")
+			say("Kamieñ: 500 000 Yang i 2 Kamienie Duchowe.")
+			local menu = {}
+			for i = 1, table.getn(wares) do
+				table.insert(menu, item_name(wares[i][1]))
+			end
+			table.insert(menu, "Anuluj")
+			local s = select_table(menu)
+			if s == table.getn(menu) then
+				return
+			end
+			local w = wares[s]
+			say_title(item_name(w[1]))
+			if pc.get_gold() < w[2] then
+				say(string.format("Potrzebujesz %d Yang.", w[2]))
+				return
+			end
+			if pc.count_item(w[3]) < w[4] then
+				say(string.format("Potrzebujesz jeszcze: %s x%d.", item_name(w[3]), w[4]))
+				return
+			end
+			if select("Kup", "Anuluj") != 1 then
+				return
+			end
+			if pc.get_gold() < w[2] or pc.count_item(w[3]) < w[4] then
+				return
+			end
+			pc.change_gold(-w[2])
+			pc.remove_item(w[3], w[4])
+			pc.give_item2(w[1], 1)
+			say_reward(string.format("Kupiono: %s.", item_name(w[1])))
+		end
+	end
+end

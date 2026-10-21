@@ -119,7 +119,9 @@ param(
 #   Riposty/Dopalacze  common skill_length.h, char_skill.cpp, cmd_general.cpp (MT2009_PLUS_RIPOSTY_V1;
 #                      server-patches/riposty, after skill9 and precyzja)
 #   Boss Swiata        char_battle.cpp, item_manager.cpp, cmd.cpp (MT2009_PLUS_WORLDBOSS_V1; server-patches/worldboss,
-#                      after shipdefense, zestawy and ysets - last)
+#                      after shipdefense, zestawy and ysets)
+#   Buffi              char.cpp, char_item.cpp, char_skill.cpp, input_login.cpp, cmd.cpp (MT2009_PLUS_BUFFI_V1;
+#                      server-patches/buffi, after monstercard and riposty - last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1638,6 +1640,20 @@ if ((Test-Path -LiteralPath $worldBossApply -PathType Leaf) -and
     if ($worldBossResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} World Boss edit(s).' -f $worldBossResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Buffi (server-patches/buffi, MT2009_PLUS_BUFFI_V1; the owner, 21 October 2026): Ameria's support shaman in place of
+# the companion - the seals and the name scroll in UseItemEx, the skills 164-167 learnable by every class and kept by a
+# reset, the seal's buffi back at login, the shaman shown as a female shaman, /buffi. Anchors on the Monster Cards' and
+# the ripostes' code, so after them. The logic is playerbot_buffi.cpp.
+$buffiApply = Join-Path $repo 'server-patches/buffi/Apply-BuffiPatch.ps1'
+if ((Test-Path -LiteralPath $buffiApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_skill.cpp') -PathType Leaf)) {
+    $buffiResult = & $buffiApply -SourceDir $engineGameSource
+    if ($buffiResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Buffi edit(s).' -f $buffiResult.Applied) -ForegroundColor DarkGray
     }
 }
 
