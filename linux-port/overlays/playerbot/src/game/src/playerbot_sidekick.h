@@ -2827,6 +2827,7 @@ namespace
 						// their identities.
 						IsPlayerBotArezzoCohortPID(pid) || IsPlayerBotArezzoDungeonCohortPID(pid) ||
 						IsPlayerBotArezzoDungeonReservedPID(pid) ||
+						IsPlayerBotYoharaCohortPID(pid) ||	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 						IsPlayerBotTakeoverHold(pid) || IsPlayerBotRetirementHold(pid) ||
 						CHARACTER_MANAGER::instance().FindByPID(pid) || P2P_MANAGER::instance().FindByPID(pid))
 					continue;

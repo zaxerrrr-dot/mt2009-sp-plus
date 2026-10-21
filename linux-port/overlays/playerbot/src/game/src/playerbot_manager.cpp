@@ -4335,7 +4335,8 @@ size_t CPlayerBotManager::CollectIdleRegisteredBots(BYTE bEmpire, BYTE bMinLevel
 				CHARACTER_MANAGER::instance().FindByPID(pid) != NULL)
 			continue;
 		if (IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid) || IsMedalDropperCohortPID(pid) ||
-				IsPlayerBotSidekickPID(pid) || IsRetiredPlayerBotIdentity(pid))
+				IsPlayerBotSidekickPID(pid) || IsRetiredPlayerBotIdentity(pid) ||
+				IsPlayerBotYoharaCohortPID(pid))	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: offline at home, not idle
 			continue;
 		found.push_back(std::make_pair(-(int)account->second.bLevel, pid));
 	}
@@ -4806,7 +4807,8 @@ void CPlayerBotManager::TryScheduleRetirement(DWORD dwNow)
 			if (IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid) ||
 					IsPlayerBotLegendTier(GetPlayerBotLegendTier(pid)) || GetPlayerBotLegendNameSlot(ch->GetName()) >= 0 ||
 					IsPlayerBotSidekickPID(pid) || IsPlayerBotArezzoCohortPID(pid) ||
-					IsPlayerBotArezzoDungeonCohortPID(pid) || IsPlayerBotTakeoverHold(pid))
+					IsPlayerBotArezzoDungeonCohortPID(pid) || IsPlayerBotTakeoverHold(pid) ||
+					IsPlayerBotYoharaCohortPID(pid))	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 				continue;
 			CGuild* guild = ch->GetGuild();
 			if (guild && guild->GetMasterPID() == pid)
@@ -5488,6 +5490,9 @@ void CPlayerBotManager::ManageLifeSchedule(DWORD dwNow)
 		// MT2009_PLUS_AREZZO_BOTS_V1 (cohort): the Arezzo test's characters
 		// play for as long as the test runs.
 		if (IsPlayerBotArezzoCohortPID(pid) || IsPlayerBotArezzoDungeonCohortPID(pid)) // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1
+			continue;
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: nor a member of the night's cohorts (its rests are its own).
+		if (IsPlayerBotYoharaCohortPID(pid))
 			continue;
 		// MT2009_PLUS_AREZZO_COHORT_FREE_V1: nor one let go from it (an identity
 		// past the population's part: sent to rest, nothing would wake it).

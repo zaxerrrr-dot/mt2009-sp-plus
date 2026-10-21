@@ -79,6 +79,11 @@
 // MB). The event flag m2_bot_handover_off (a GM's /e, the panel's flags)
 // stops every new handover and sends every resident home.
 //
+// MT2009_PLUS_BOT_YOHARA_COHORT_V1 (21 October, night): Wezowe Pole (80) and Kraina Gigantow (70) on
+// game2 are purposes too (their frontier bands, the draw's quarter each; PLAYERBOT_SNAKEFIELD_MAX,
+// PLAYERBOT_GIANTLAND_MAX, PLAYERBOT_WZ_STAY_MIN), and the night's cohorts - see "the cohorts" below
+// (PLAYERBOT_COHORT*, the event flag m2_bot_cohort_off).
+//
 // The log: PLAYERBOT_HANDOVER (out, claimed, arrived, home, refused, cancel,
 // census), PLAYERBOT_YOHARA (the temple, the stay, the restock, the loot runs,
 // the Time Rift). The operator's hook: the file playerbot_yohara_test in the
@@ -145,6 +150,9 @@ namespace
 		YOHARA_PURPOSE_ZAKLETY,
 		YOHARA_PURPOSE_SZC,
 		YOHARA_PURPOSE_LOOT,
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole (80) and Kraina Gigantow (70) on game2.
+		YOHARA_PURPOSE_SNAKEFIELD,
+		YOHARA_PURPOSE_GIANTLAND,
 		YOHARA_PURPOSE_MAX
 	};
 
@@ -156,6 +164,8 @@ namespace
 			case YOHARA_PURPOSE_ZAKLETY: return "zaklety";
 			case YOHARA_PURPOSE_SZC: return "szc";
 			case YOHARA_PURPOSE_LOOT: return "loot";
+			case YOHARA_PURPOSE_SNAKEFIELD: return "snakefield";	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
+			case YOHARA_PURPOSE_GIANTLAND: return "giantland";
 			default: return "none";
 		}
 	}
@@ -180,6 +190,10 @@ namespace
 		int szcMax, szcParties;
 		int lootMax;
 		std::vector<long> lootMaps;
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow, and the cohorts.
+		int snakeMax, giantMax, wzStayMin;
+		bool cohortOn, cohortExclusive;
+		int cohortStayMin, cohortDispatch, cohortRestMin, cohortDeathRestMin;
 	};
 
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi)
@@ -236,15 +250,31 @@ namespace
 			if (maps[i] >= 301 && maps[i] <= 304 &&
 					std::find(s_cfg.lootMaps.begin(), s_cfg.lootMaps.end(), maps[i]) == s_cfg.lootMaps.end())
 				s_cfg.lootMaps.push_back(maps[i]);
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the owner, 21 October (night): "Wezowe Pole i Kraina
+		// Gigantow: wlaczyc" - their bands are the frontier's (63-78, 63-80), through the handover to
+		// game2; and the night's cohorts (common.playerbot_yohara_cohort, tools/yohara_bot_cohort.py).
+		s_cfg.snakeMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SNAKEFIELD_MAX", 50, 0, 300);
+		s_cfg.giantMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_GIANTLAND_MAX", 50, 0, 300);
+		s_cfg.wzStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_WZ_STAY_MIN", 120, 20, 600);
+		s_cfg.cohortOn = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT", 1, 0, 1) != 0;
+		s_cfg.cohortExclusive = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT_EXCLUSIVE", 1, 0, 1) != 0;
+		s_cfg.cohortStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT_STAY_MIN", 720, 20, 1440);
+		s_cfg.cohortDispatch = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT_DISPATCH", 6, 1, 50);
+		s_cfg.cohortRestMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT_REST_MIN", 10, 1, 600);
+		s_cfg.cohortDeathRestMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT_DEATH_REST_MIN", 60, 1, 1440);
 		std::string chans, loot;
 		for (std::set<int>::const_iterator i = s_cfg.channels.begin(); i != s_cfg.channels.end(); ++i)
 			chans += (chans.empty() ? "" : ",") + std::to_string(*i);
 		for (size_t i = 0; i < s_cfg.lootMaps.size(); ++i)
 			loot += (loot.empty() ? "" : ",") + std::to_string(s_cfg.lootMaps[i]);
 		sys_log(0, "PLAYERBOT_HANDOVER: config on=%d channels=%s zaklety_max=%d zaklety_min_level=%d zaklety_stay_min=%d "
-				"zaklety_min_hp=%d szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s channel_here=%u",
+				"zaklety_min_hp=%d szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s snakefield_max=%d giantland_max=%d "
+				"wz_stay_min=%d cohort=%d cohort_exclusive=%d cohort_stay_min=%d cohort_dispatch=%d cohort_rest_min=%d "
+				"cohort_death_rest_min=%d channel_here=%u",
 				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin, s_cfg.zakletyMinHp,
-				s_cfg.szcMax, s_cfg.szcParties, s_cfg.lootMax, loot.c_str(), (unsigned int)g_bChannel);
+				s_cfg.szcMax, s_cfg.szcParties, s_cfg.lootMax, loot.c_str(), s_cfg.snakeMax, s_cfg.giantMax, s_cfg.wzStayMin,
+				s_cfg.cohortOn ? 1 : 0, s_cfg.cohortExclusive ? 1 : 0, s_cfg.cohortStayMin, s_cfg.cohortDispatch,
+				s_cfg.cohortRestMin, s_cfg.cohortDeathRestMin, (unsigned int)g_bChannel);
 		return s_cfg;
 	}
 
@@ -264,6 +294,68 @@ namespace
 	{
 		const std::vector<long>& maps = GetPlayerBotYoharaConfig().lootMaps;
 		return std::find(maps.begin(), maps.end(), mapIndex) != maps.end();
+	}
+
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a purpose's map (the loot runs have several: 0), the
+	// purpose of a map, its limit a channel and its band.
+	long GetPlayerBotYoharaPurposeMap(int purpose)
+	{
+		switch (purpose)
+		{
+			case YOHARA_PURPOSE_ZAKLETY: return PLAYERBOT_MAP_ZAKLETY;
+			case YOHARA_PURPOSE_SZC: return PLAYERBOT_MAP_SZC_PLATEAU;
+			case YOHARA_PURPOSE_SNAKEFIELD: return PLAYERBOT_MAP_SNAKEFIELD;
+			case YOHARA_PURPOSE_GIANTLAND: return PLAYERBOT_MAP_GIANTLAND;
+			default: return 0;
+		}
+	}
+
+	int GetPlayerBotYoharaMapPurpose(long base)
+	{
+		if (base == PLAYERBOT_MAP_ZAKLETY)
+			return YOHARA_PURPOSE_ZAKLETY;
+		if (base == PLAYERBOT_MAP_SZC_PLATEAU)
+			return YOHARA_PURPOSE_SZC;
+		if (base == PLAYERBOT_MAP_SNAKEFIELD)
+			return YOHARA_PURPOSE_SNAKEFIELD;
+		if (base == PLAYERBOT_MAP_GIANTLAND)
+			return YOHARA_PURPOSE_GIANTLAND;
+		if (IsPlayerBotYoharaLootMap(base))
+			return YOHARA_PURPOSE_LOOT;
+		return YOHARA_PURPOSE_NONE;
+	}
+
+	int GetPlayerBotYoharaCap(int purpose)
+	{
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		switch (purpose)
+		{
+			case YOHARA_PURPOSE_ZAKLETY: return cfg.zakletyMax;
+			case YOHARA_PURPOSE_SZC: return cfg.szcMax;
+			case YOHARA_PURPOSE_LOOT: return cfg.lootMax;
+			case YOHARA_PURPOSE_SNAKEFIELD: return cfg.snakeMax;
+			case YOHARA_PURPOSE_GIANTLAND: return cfg.giantMax;
+			default: return 0;
+		}
+	}
+
+	bool IsPlayerBotYoharaInBand(int purpose, int level)
+	{
+		switch (purpose)
+		{
+			case YOHARA_PURPOSE_ZAKLETY:
+				return level >= GetPlayerBotYoharaConfig().zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL;
+			case YOHARA_PURPOSE_SZC:
+				return level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL;
+			case YOHARA_PURPOSE_SNAKEFIELD:
+				return level >= PLAYERBOT_SNAKEFIELD_MIN_LEVEL && level <= PLAYERBOT_SNAKEFIELD_MAX_LEVEL;
+			case YOHARA_PURPOSE_GIANTLAND:
+				return level >= PLAYERBOT_GIANTLAND_MIN_LEVEL && level <= PLAYERBOT_GIANTLAND_MAX_LEVEL;
+			case YOHARA_PURPOSE_LOOT:
+				return level >= PLAYERBOT_YOHARA_LOOT_MIN_LEVEL;
+			default:
+				return false;
+		}
 	}
 
 	// ------------------------------------------------------------ the state
@@ -295,8 +387,13 @@ namespace
 		bool bDead;
 		int iDeaths, iDeathsWindowed;
 		DWORD dwWindowStart;
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the experience the poll last saw (a cohort's EXP an hour).
+		int iLastLevel;
+		DWORD dwLastExp, dwLastNeed;
+		long long llExpUnsaved;	// written to the cohort's row at the census
 		TPlayerBotYoharaResident() : iPurpose(0), lMap(0), dwArrived(0), dwLastRun(0), dwNextRestock(0), dwOffRunSince(0),
-			bDead(false), iDeaths(0), iDeathsWindowed(0), dwWindowStart(0) {}
+			bDead(false), iDeaths(0), iDeathsWindowed(0), dwWindowStart(0), iLastLevel(0), dwLastExp(0), dwLastNeed(0),
+			llExpUnsaved(0) {}
 	};
 	// A bot on its way into Zaklety Las through the temple (the home core).
 	struct TPlayerBotYoharaTemple
@@ -356,10 +453,17 @@ namespace
 		return &res;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the cohorts, below.
+	bool IsPlayerBotYoharaCohortHeld(DWORD pid);
+
 	bool IsPlayerBotYoharaAway(DWORD pid)
 	{
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: claimed by this core - its Spawn is the claim's.
+		if (s_mapPlayerBotYoharaArrival.count(pid) != 0)
+			return false;
 		return s_setPlayerBotYoharaAway.count(pid) != 0 || s_mapPlayerBotYoharaOut.count(pid) != 0 ||
-				s_mapPlayerBotYoharaLeaving.count(pid) != 0;
+				s_mapPlayerBotYoharaLeaving.count(pid) != 0 ||
+				IsPlayerBotYoharaCohortHeld(pid);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 	}
 
 	bool IsPlayerBotYoharaLeaving(DWORD pid)
@@ -373,9 +477,22 @@ namespace
 		return r != s_mapPlayerBotYoharaResident.end() && r->second.iPurpose == YOHARA_PURPOSE_SZC;
 	}
 
-	DWORD GetPlayerBotYoharaStayMs(long mapIndex)
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a cohort's bot stays its own (long) time; Wezowe Pole and
+	// Kraina Gigantow are expeditions too (a trip there is a handover each way).
+	bool IsPlayerBotYoharaCohortPID(DWORD pid);
+
+	DWORD GetPlayerBotYoharaStayMs(LPCHARACTER ch, long mapIndex)
 	{
-		return mapIndex == PLAYERBOT_MAP_ZAKLETY ? (DWORD)GetPlayerBotYoharaConfig().zakletyStayMin * 60000U : 0;
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		DWORD ms = 0;
+		if (mapIndex == PLAYERBOT_MAP_ZAKLETY)
+			ms = (DWORD)cfg.zakletyStayMin * 60000U;
+		else if ((mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND) && ch &&
+				FindPlayerBotYoharaResident(ch->GetPlayerID()))
+			ms = (DWORD)cfg.wzStayMin * 60000U;
+		if (ms != 0 && ch && IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
+			ms = std::max<DWORD>(ms, (DWORD)cfg.cohortStayMin * 60000U);
+		return ms;
 	}
 
 	// The Time Rift's runs at once on this core (playerbot_dungeon_runs.h).
@@ -389,7 +506,8 @@ namespace
 	{
 		if (!IsPlayerBotYoharaOn() || IsPlayerBotMapHostedHere(mapIndex))
 			return false;
-		return mapIndex == PLAYERBOT_MAP_ZAKLETY || mapIndex == PLAYERBOT_MAP_SZC_PLATEAU || IsPlayerBotYoharaLootMap(mapIndex);
+		return mapIndex == PLAYERBOT_MAP_ZAKLETY || mapIndex == PLAYERBOT_MAP_SZC_PLATEAU || IsPlayerBotYoharaLootMap(mapIndex) ||
+				mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND;	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 	}
 
 	// Who may cross: the population's ordinary bots, not with a person.
@@ -439,6 +557,241 @@ namespace
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get())
 			return 0;
 		return (unsigned int)msg->Get()->uiAffectedRows;
+	}
+
+	// ------------------------------------------------------------ the cohorts
+
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1 - the owner, 21 October 2026 (night): "Kohorty na noc: 100
+	// botow Zaklety Las (super EQ, rozne klasy), 100 botow lvl 110 na SZC Zaklety Las, 2 x 50 botow:
+	// Wezowe Pole i Kraina Gigantow. Cala noc." The members are rows of common.playerbot_yohara_cohort
+	// (pid, purpose, channel, rest_until and the night's counters), written - with their level, gear
+	// and skills - by tools/yohara_bot_cohort.py's SQL while the game is stopped; deleting the rows
+	// dissolves the cohorts (the event flag m2_bot_cohort_off, or PLAYERBOT_COHORT=0, sets them aside
+	// without touching the table).
+	//
+	//   * A member never loads on its home core while the cohorts are on: it is "held" there
+	//     (IsPlayerBotYoharaAway - Spawn and the top-up step over it), and that core's dispatcher
+	//     writes its handover row straight away (state 1, ready at once) - the other core claims it
+	//     and loads it on its purpose's map. A member that is online at home (it was when the
+	//     cohort was made, or the cohorts were off) is handed over from where it stands, the
+	//     Temple of Ochao left out. game1 of the first channel is at its 4 GB limit: a member costs
+	//     it nothing.
+	//   * There it stays PLAYERBOT_COHORT_STAY_MIN; what would send another resident home (the
+	//     stay over, its deaths, the band) logs it out where it is instead - "rest out", the row
+	//     gone and rest_until set (PLAYERBOT_COHORT_REST_MIN, after its deaths
+	//     PLAYERBOT_COHORT_DEATH_REST_MIN) - and the dispatcher sends it again after the rest. A
+	//     full bag is no reason for it (the belt is kept full where it stands, its gold is the
+	//     cohort's), only no weapon, no armour, no arrows.
+	//   * A purpose with members is theirs alone while PLAYERBOT_COHORT_EXCLUSIVE: the population's
+	//     own bots are not drawn to it.
+	//   * Never rested by the life schedule, retired, renamed a Legend, taken for a companion or
+	//     an idle reserve; always an alchemy user.
+	//   * The log: PLAYERBOT_COHORT (loaded, dispatch, rest out, census per purpose - members,
+	//     resting, here, in the map, on a run, staying on the channel's other cores, sent, arrived,
+	//     deaths, runs, rest-outs, levels and experience gained here and the experience an hour).
+
+	struct TPlayerBotYoharaCohortMember
+	{
+		int iPurpose;
+		int iChannel;
+		bool bResting;
+		int iLevel;	// player.player's: the db core's last save
+		TPlayerBotYoharaCohortMember() : iPurpose(0), iChannel(0), bResting(false), iLevel(0) {}
+	};
+	struct TPlayerBotYoharaCohortStats
+	{
+		unsigned int sent, arrived, deaths, runs, restOuts, levels;
+		long long exp, expAtCensus;
+		TPlayerBotYoharaCohortStats() : sent(0), arrived(0), deaths(0), runs(0), restOuts(0), levels(0), exp(0), expAtCensus(0) {}
+	};
+
+	const DWORD PLAYERBOT_YOHARA_COHORT_LOAD_MS = 60000;
+	// An online member at home whose bag or belt its own visit is sorting out: handed over anyway after this.
+	const DWORD PLAYERBOT_YOHARA_COHORT_HOME_PATIENCE_MS = 15 * 60 * 1000;
+	std::map<DWORD, TPlayerBotYoharaCohortMember> s_mapPlayerBotYoharaCohort;
+	int s_aiPlayerBotYoharaCohortSize[YOHARA_PURPOSE_MAX] = { 0 };
+	TPlayerBotYoharaCohortStats s_aPlayerBotYoharaCohortStats[YOHARA_PURPOSE_MAX];
+	std::map<DWORD, DWORD> s_mapPlayerBotYoharaCohortHomeSince;
+	bool s_bPlayerBotYoharaCohortTableReady = false;
+	bool s_bPlayerBotYoharaCohortLoaded = false;
+	DWORD s_dwPlayerBotYoharaCohortNextLoad = 0;
+	DWORD s_dwPlayerBotYoharaCohortLastCensus = 0;
+	size_t s_uPlayerBotYoharaCohortCursor = 0;
+
+	bool EnsurePlayerBotYoharaCohortTable()
+	{
+		if (s_bPlayerBotYoharaCohortTableReady)
+			return true;
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(
+				"CREATE TABLE IF NOT EXISTS common.playerbot_yohara_cohort ("
+				"pid INT UNSIGNED NOT NULL PRIMARY KEY, purpose VARCHAR(16) NOT NULL, "
+				"channel TINYINT UNSIGNED NOT NULL DEFAULT 1, rest_until DATETIME NULL, "
+				"created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+				"level_start TINYINT UNSIGNED NOT NULL DEFAULT 0, exp_start INT UNSIGNED NOT NULL DEFAULT 0, "
+				"sent INT UNSIGNED NOT NULL DEFAULT 0, arrived INT UNSIGNED NOT NULL DEFAULT 0, "
+				"deaths INT UNSIGNED NOT NULL DEFAULT 0, runs INT UNSIGNED NOT NULL DEFAULT 0, "
+				"rest_outs INT UNSIGNED NOT NULL DEFAULT 0, exp_gained BIGINT UNSIGNED NOT NULL DEFAULT 0, "
+				"last_map INT NOT NULL DEFAULT 0, last_seen DATETIME NULL, "
+				"KEY purpose (purpose)) ENGINE=InnoDB"));
+		s_bPlayerBotYoharaCohortTableReady = msg.get() && msg->uiSQLErrno == 0;
+		if (!s_bPlayerBotYoharaCohortTableReady)
+			sys_err("PLAYERBOT_COHORT: common.playerbot_yohara_cohort cannot be made");
+		return s_bPlayerBotYoharaCohortTableReady;
+	}
+
+	void LoadPlayerBotYoharaCohort(DWORD dwNow, bool force)
+	{
+		if (!force && s_bPlayerBotYoharaCohortLoaded && (int)(dwNow - s_dwPlayerBotYoharaCohortNextLoad) < 0)
+			return;
+		s_bPlayerBotYoharaCohortLoaded = true;
+		s_dwPlayerBotYoharaCohortNextLoad = dwNow + PLAYERBOT_YOHARA_COHORT_LOAD_MS;
+		if (!GetPlayerBotYoharaConfig().cohortOn || !EnsurePlayerBotYoharaCohortTable())
+		{
+			if (GetPlayerBotYoharaConfig().cohortOn)
+				s_dwPlayerBotYoharaCohortNextLoad = dwNow + PLAYERBOT_YOHARA_POLL_MS;	// the database not there yet
+			s_mapPlayerBotYoharaCohort.clear();
+			for (int p = 0; p < YOHARA_PURPOSE_MAX; ++p)
+				s_aiPlayerBotYoharaCohortSize[p] = 0;
+			return;
+		}
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(
+				"SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0) "
+				"FROM common.playerbot_yohara_cohort AS c LEFT JOIN player.player AS p ON p.id = c.pid"));
+		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
+		{
+			s_dwPlayerBotYoharaCohortNextLoad = dwNow + PLAYERBOT_YOHARA_POLL_MS;
+			return;
+		}
+		std::map<DWORD, TPlayerBotYoharaCohortMember> fresh;
+		int size[YOHARA_PURPOSE_MAX] = { 0 };
+		int resting = 0;
+		MYSQL_ROW row;
+		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		{
+			DWORD pid = 0;
+			if (row[0])
+				str_to_number(pid, row[0]);
+			const int purpose = ParsePlayerBotYoharaPurpose(row[1]);
+			if (pid == 0 || purpose == YOHARA_PURPOSE_NONE || purpose == YOHARA_PURPOSE_HOME || purpose == YOHARA_PURPOSE_LOOT)
+				continue;
+			TPlayerBotYoharaCohortMember& m = fresh[pid];
+			m.iPurpose = purpose;
+			m.iChannel = row[2] ? atoi(row[2]) : 0;
+			m.bResting = row[3] && atoi(row[3]) != 0;
+			m.iLevel = row[4] ? atoi(row[4]) : 0;
+			++size[purpose];
+			resting += m.bResting ? 1 : 0;
+		}
+		const bool changed = fresh.size() != s_mapPlayerBotYoharaCohort.size();
+		s_mapPlayerBotYoharaCohort.swap(fresh);
+		for (int p = 0; p < YOHARA_PURPOSE_MAX; ++p)
+			s_aiPlayerBotYoharaCohortSize[p] = size[p];
+		if (changed)
+			sys_log(0, "PLAYERBOT_COHORT: loaded members=%u (zaklety=%d szc=%d snakefield=%d giantland=%d) resting=%d channel_here=%u",
+					(unsigned int)s_mapPlayerBotYoharaCohort.size(), size[YOHARA_PURPOSE_ZAKLETY], size[YOHARA_PURPOSE_SZC],
+					size[YOHARA_PURPOSE_SNAKEFIELD], size[YOHARA_PURPOSE_GIANTLAND], resting, (unsigned int)g_bChannel);
+	}
+
+	bool IsPlayerBotYoharaCohortOn()
+	{
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		return cfg.on && cfg.cohortOn && quest::CQuestManager::instance().GetEventFlag("m2_bot_cohort_off") == 0;
+	}
+
+	const TPlayerBotYoharaCohortMember* FindPlayerBotYoharaCohortMember(DWORD pid)
+	{
+		if (!s_bPlayerBotYoharaCohortLoaded)
+			LoadPlayerBotYoharaCohort(get_dword_time(), true);
+		if (s_mapPlayerBotYoharaCohort.empty())
+			return NULL;
+		std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator it = s_mapPlayerBotYoharaCohort.find(pid);
+		if (it == s_mapPlayerBotYoharaCohort.end() || !IsPlayerBotYoharaCohortOn())
+			return NULL;
+		return &it->second;
+	}
+
+	bool IsPlayerBotYoharaCohortPID(DWORD pid)
+	{
+		return FindPlayerBotYoharaCohortMember(pid) != NULL;
+	}
+
+	int GetPlayerBotYoharaCohortPurpose(DWORD pid)
+	{
+		const TPlayerBotYoharaCohortMember* m = FindPlayerBotYoharaCohortMember(pid);
+		return m ? m->iPurpose : YOHARA_PURPOSE_NONE;
+	}
+
+	// Not to be loaded here: a member of this channel's cohorts, not in this world, while the
+	// handover of this channel is on (the dispatcher writes its row; a claim's Spawn passes).
+	bool IsPlayerBotYoharaCohortHeld(DWORD pid)
+	{
+		const TPlayerBotYoharaCohortMember* m = FindPlayerBotYoharaCohortMember(pid);
+		return m && m->iChannel == (int)g_bChannel && IsPlayerBotYoharaOn() &&
+				CHARACTER_MANAGER::instance().FindByPID(pid) == NULL;
+	}
+
+	// A purpose with members is theirs alone.
+	bool IsPlayerBotYoharaPurposeReserved(int purpose)
+	{
+		return purpose > 0 && purpose < YOHARA_PURPOSE_MAX && s_aiPlayerBotYoharaCohortSize[purpose] > 0 &&
+				GetPlayerBotYoharaConfig().cohortExclusive && IsPlayerBotYoharaCohortOn();
+	}
+
+	// The purpose a member goes for at this level: its own, or from 110 the Time Rift for one of the
+	// forest's (the owner's route) - NONE when neither fits.
+	int GetPlayerBotYoharaCohortPurposeAt(int purpose, int level)
+	{
+		if (IsPlayerBotYoharaInBand(purpose, level))
+			return purpose;
+		if (purpose == YOHARA_PURPOSE_ZAKLETY && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_SZC, level))
+			return YOHARA_PURPOSE_SZC;
+		return YOHARA_PURPOSE_NONE;
+	}
+
+	// One of the night's counters in the table (the summary script reads them).
+	void NotePlayerBotYoharaCohortDb(DWORD pid, const char* column, long long add, long mapIndex)
+	{
+		if (!s_bPlayerBotYoharaCohortTableReady || !column)
+			return;
+		char q[256];
+		snprintf(q, sizeof(q), "UPDATE common.playerbot_yohara_cohort SET %s = %s + %lld, last_map = %ld, last_seen = NOW() "
+				"WHERE pid = %u", column, column, add, mapIndex, pid);
+		RunPlayerBotYoharaSql(q);
+	}
+
+	// The experience of a member staying here since the last poll (the level's own need for a level-up).
+	void TrackPlayerBotYoharaCohortExp(LPCHARACTER ch, TPlayerBotYoharaResident& r)
+	{
+		if (!ch || !IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) || r.iPurpose <= 0 || r.iPurpose >= YOHARA_PURPOSE_MAX)
+			return;
+		const int level = ch->GetLevel();
+		const DWORD exp = ch->GetExp();
+		if (r.iLastLevel == 0)
+		{
+			r.iLastLevel = level;
+			r.dwLastExp = exp;
+			r.dwLastNeed = ch->GetNextExp();
+			return;
+		}
+		long long gained = 0;
+		if (level == r.iLastLevel)
+			gained = exp > r.dwLastExp ? (long long)(exp - r.dwLastExp) : 0;
+		else if (level > r.iLastLevel)
+		{
+			gained = (r.dwLastNeed > r.dwLastExp ? (long long)(r.dwLastNeed - r.dwLastExp) : 0) + (long long)exp;
+			s_aPlayerBotYoharaCohortStats[r.iPurpose].levels += (unsigned int)(level - r.iLastLevel);
+			sys_log(0, "PLAYERBOT_COHORT: level up pid=%u name=%s purpose=%s level=%d->%d map=%ld",
+					ch->GetPlayerID(), ch->GetName(), PlayerBotYoharaPurposeName(r.iPurpose), r.iLastLevel, level,
+					ch->GetMapIndex());
+		}
+		if (gained > 0)
+		{
+			s_aPlayerBotYoharaCohortStats[r.iPurpose].exp += gained;
+			r.llExpUnsaved += gained;
+		}
+		r.iLastLevel = level;
+		r.dwLastExp = exp;
+		r.dwLastNeed = ch->GetNextExp();
 	}
 
 	// ------------------------------------------------------------ out
@@ -515,6 +868,53 @@ namespace
 		return TransitionPlayerBotMap(ch, state, destMap, destX, destY, dwNow, why);
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member's way "home" - out of the world where it stands, its
+	// row gone, a rest written to its cohort row; its home core's dispatcher sends it again after it.
+	bool IsPlayerBotYoharaDeathsOver(const TPlayerBotYoharaResident& r);
+
+	bool RestOutPlayerBotYoharaCohort(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow, const char* why)
+	{
+		if (!ch)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		if (s_mapPlayerBotYoharaLeaving.count(pid))
+			return true;
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		std::map<DWORD, TPlayerBotYoharaResident>::iterator r = s_mapPlayerBotYoharaResident.find(pid);
+		const bool deaths = r != s_mapPlayerBotYoharaResident.end() && IsPlayerBotYoharaDeathsOver(r->second);
+		const int purpose = r != s_mapPlayerBotYoharaResident.end() ? r->second.iPurpose : GetPlayerBotYoharaCohortPurpose(pid);
+		const int restMin = deaths ? cfg.cohortDeathRestMin : cfg.cohortRestMin;
+		char q[256];
+		snprintf(q, sizeof(q), "UPDATE common.playerbot_yohara_cohort SET rest_until = DATE_ADD(NOW(), INTERVAL %d MINUTE), "
+				"rest_outs = rest_outs + 1, exp_gained = exp_gained + %lld, last_map = %ld, last_seen = NOW() WHERE pid = %u",
+				restMin, r != s_mapPlayerBotYoharaResident.end() ? r->second.llExpUnsaved : 0LL, ch->GetMapIndex(), pid);
+		RunPlayerBotYoharaSql(q);
+		if (r != s_mapPlayerBotYoharaResident.end())
+			r->second.llExpUnsaved = 0;
+		snprintf(q, sizeof(q), "DELETE FROM common.playerbot_core_handover WHERE pid = %u", pid);
+		RunPlayerBotYoharaSql(q);
+		std::map<DWORD, TPlayerBotYoharaCohortMember>::iterator m = s_mapPlayerBotYoharaCohort.find(pid);
+		if (m != s_mapPlayerBotYoharaCohort.end())
+			m->second.bResting = true;
+		if (purpose > 0 && purpose < YOHARA_PURPOSE_MAX)
+			++s_aPlayerBotYoharaCohortStats[purpose].restOuts;
+		if (ch->GetParty())
+			LeavePlayerBotParty(ch);
+		ClosePlayerBotShop(ch, state, dwNow, "cohort_rest");
+		ClearPlayerBotRoute(state, true);
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		ch->Stop();
+		TPlayerBotYoharaLeave& leave = s_mapPlayerBotYoharaLeaving[pid];
+		leave.lMap = 0;
+		leave.iPurpose = YOHARA_PURPOSE_HOME;
+		sys_log(0, "PLAYERBOT_COHORT: rest out pid=%u name=%s level=%u map=%ld purpose=%s stay_s=%u rest_min=%d why=%s",
+				pid, ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex(), PlayerBotYoharaPurposeName(purpose),
+				r != s_mapPlayerBotYoharaResident.end() && r->second.dwArrived ? (dwNow - r->second.dwArrived) / 1000 : 0,
+				restMin, why ? why : "-");
+		return true;
+	}
+
 	// ------------------------------------------------------------ the route
 
 	int RoutePlayerBotYoharaTransition(LPCHARACTER ch, TPlayerBotAIState& state, long targetMap,
@@ -529,28 +929,18 @@ namespace
 		// A resident (or a bot standing on a core that is not its home): every
 		// map it cannot reach here is the way home.
 		if (FindPlayerBotYoharaResident(pid) || !IsPlayerBotYoharaHomeCore(ch))
+		{
+			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member rests out where it stands instead.
+			if (IsPlayerBotYoharaCohortPID(pid) && IsPlayerBotYoharaOn())
+				return RestOutPlayerBotYoharaCohort(ch, state, dwNow, reason ? reason : "home") ? 1 : 0;
 			return RequestPlayerBotYoharaHandover(ch, state, base, targetX, targetY, YOHARA_PURPOSE_HOME,
 					reason ? reason : "home", dwNow) ? 1 : 0;
+		}
 		if (!IsPlayerBotYoharaOn())
 			return -1;
-		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
-		int purpose = YOHARA_PURPOSE_NONE;
-		int cap = 0;
-		if (base == PLAYERBOT_MAP_ZAKLETY)
-		{
-			purpose = YOHARA_PURPOSE_ZAKLETY;
-			cap = cfg.zakletyMax;
-		}
-		else if (base == PLAYERBOT_MAP_SZC_PLATEAU)
-		{
-			purpose = YOHARA_PURPOSE_SZC;
-			cap = cfg.szcMax;
-		}
-		else if (IsPlayerBotYoharaLootMap(base))
-		{
-			purpose = YOHARA_PURPOSE_LOOT;
-			cap = cfg.lootMax;
-		}
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole and Kraina Gigantow join the purposes.
+		const int purpose = GetPlayerBotYoharaMapPurpose(base);
+		const int cap = GetPlayerBotYoharaCap(purpose);
 		if (purpose == YOHARA_PURPOSE_NONE)
 			return -1;
 		if (s_aiPlayerBotYoharaCensus[purpose] >= cap)
@@ -565,6 +955,10 @@ namespace
 		}
 		if (purpose == YOHARA_PURPOSE_ZAKLETY)
 		{
+			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member goes straight there.
+			if (IsPlayerBotYoharaCohortPID(pid))
+				return RequestPlayerBotYoharaHandover(ch, state, base, PLAYERBOT_ZAKLETY_ARRIVAL_X,
+						PLAYERBOT_ZAKLETY_ARRIVAL_Y, purpose, "cohort", dwNow) ? 1 : 0;
 			// The forest only through the temple's Portal (or its wait), from the temple.
 			if (ch->GetMapIndex() == PLAYERBOT_MAP_OCHAO)
 			{
@@ -645,6 +1039,13 @@ namespace
 				case YOHARA_PURPOSE_LOOT:
 					return IsPlayerBotMapHostedHere(r->lMap) && dwNow - r->dwArrived < PLAYERBOT_YOHARA_LOOT_STAY_MS
 							? r->lMap : 0;
+				// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow, while the band lasts.
+				case YOHARA_PURPOSE_SNAKEFIELD:
+				case YOHARA_PURPOSE_GIANTLAND:
+				{
+					const long m = GetPlayerBotYoharaPurposeMap(r->iPurpose);
+					return IsPlayerBotYoharaInBand(r->iPurpose, level) && IsPlayerBotMapHostedHere(m) ? m : 0;
+				}
 				default:
 					return 0;
 			}
@@ -658,6 +1059,18 @@ namespace
 				return 0;
 			s_mapPlayerBotYoharaCooldown.erase(cd);
 		}
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member of a cohort, online at home: its purpose, no draw
+		// (the dispatcher hands it over; this keeps its own travel pointed there meanwhile).
+		{
+			const int cohort = GetPlayerBotYoharaCohortPurpose(pid);
+			if (cohort != YOHARA_PURPOSE_NONE)
+			{
+				const int p = GetPlayerBotYoharaCohortPurposeAt(cohort, level);
+				if (p != YOHARA_PURPOSE_NONE && s_aiPlayerBotYoharaCensus[p] < GetPlayerBotYoharaCap(p))
+					return GetPlayerBotYoharaPurposeMap(p);
+				return 0;
+			}
+		}
 		// A loot run now and then (in a village, at most every half hour a bot).
 		const long loot = GetPlayerBotYoharaLootPlan(ch, dwNow);
 		if (loot != 0)
@@ -665,6 +1078,7 @@ namespace
 		// The Time Rift: three in four of the band, while there is room.
 		if (level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL && cfg.szcMax > 0 &&
 				s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SZC] < cfg.szcMax &&
+				!IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_SZC) &&	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 				PlayerBotNavHash(pid ^ 0x535a4331U) % 4U != 0)
 			return PLAYERBOT_MAP_SZC_PLATEAU;
 		// Zaklety Las: two in three of the band, while there is room (and a
@@ -676,10 +1090,26 @@ namespace
 					pid, ch->GetName(), level, (int)ch->GetMaxHP(), cfg.zakletyMinHp);
 		if (level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && cfg.zakletyMax > 0 &&
 				ch->GetMaxHP() >= cfg.zakletyMinHp && IsPlayerBotOchaoHosted() &&
-				(inTemple || s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] < cfg.zakletyMax) &&
+				(inTemple || (s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] < cfg.zakletyMax &&
+				 !IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_ZAKLETY))) &&	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 				PlayerBotNavHash(pid ^ 0x5a4b4c53U) % 3U != 0)
 			return PLAYERBOT_MAP_ZAKLETY;
-		(void)stoneHunter;
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole (80) and Kraina Gigantow (70) on game2 - the
+		// quarter of the draw each that playerbot_travel.h gives them on a core hosting them (the same
+		// hash), here through the handover, within PLAYERBOT_SNAKEFIELD_MAX / PLAYERBOT_GIANTLAND_MAX.
+		{
+			const DWORD wz = PlayerBotNavHash(pid ^ 0x575a4d50U) % 4U;
+			if (wz == 1 && !stoneHunter && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_SNAKEFIELD, level) && cfg.snakeMax > 0 &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SNAKEFIELD] < cfg.snakeMax &&
+					!IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_SNAKEFIELD) &&
+					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SNAKEFIELD))
+				return PLAYERBOT_MAP_SNAKEFIELD;
+			if (wz == 2 && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_GIANTLAND, level) && cfg.giantMax > 0 &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_GIANTLAND] < cfg.giantMax &&
+					!IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_GIANTLAND) &&
+					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GIANTLAND))
+				return PLAYERBOT_MAP_GIANTLAND;
+		}
 		return 0;
 	}
 
@@ -1008,6 +1438,9 @@ namespace
 			return false;
 		if (ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL || NeedsPlayerBotArrows(ch))
 			return true;
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member - only what stops the fight (the bag is no reason).
+		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
+			return false;
 		if (dwNow - r.dwArrived < PLAYERBOT_YOHARA_SETTLE_MS)
 			return false;
 		return BlocksPlayerBotTravel(ch);
@@ -1057,6 +1490,19 @@ namespace
 					return -1;
 				return TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_ZAKLETY, PLAYERBOT_ZAKLETY_ARRIVAL_X,
 						PLAYERBOT_ZAKLETY_ARRIVAL_Y, dwNow, "zaklety_back") ? 1 : 0;
+			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow - frontiers of game2, as the forest.
+			case YOHARA_PURPOSE_SNAKEFIELD:
+			case YOHARA_PURPOSE_GIANTLAND:
+			{
+				if (IsPlayerBotYoharaDeathsOver(res))
+					return SendPlayerBotYoharaHome(ch, state, dwNow, "wz_deaths") ? 1 : 0;
+				if (base == res.lMap)
+					return -1;
+				long x = 0, y = 0;
+				if (!GetPlayerBotFrontierArrival(res.lMap, x, y))
+					return SendPlayerBotYoharaHome(ch, state, dwNow, "wz_no_arrival") ? 1 : 0;
+				return TransitionPlayerBotMap(ch, state, res.lMap, x, y, dwNow, "wz_back") ? 1 : 0;
+			}
 			case YOHARA_PURPOSE_SZC:
 			{
 				if (IsPlayerBotOnDungeonRun(pid))
@@ -1069,7 +1515,8 @@ namespace
 				const char* why = NULL;
 				if (level < PLAYERBOT_SZC_MIN_LEVEL || level > PLAYERBOT_SZC_MAX_LEVEL)
 					why = "szc_level";
-				else if (dwNow - res.dwArrived >= PLAYERBOT_YOHARA_SZC_STAY_MS)
+				else if (dwNow - res.dwArrived >= (IsPlayerBotYoharaCohortPID(pid)	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
+						? (DWORD)GetPlayerBotYoharaConfig().cohortStayMin * 60000U : PLAYERBOT_YOHARA_SZC_STAY_MS))
 					why = "szc_stay_over";
 				else if (dwNow - idleFrom >= PLAYERBOT_YOHARA_SZC_IDLE_MS)
 					why = "szc_no_party";
@@ -1158,6 +1605,13 @@ namespace
 				res.iPurpose = a->second.iPurpose;
 				res.lMap = a->second.lMap;
 				res.dwArrived = dwNow;
+				// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member's arrival.
+				if (IsPlayerBotYoharaCohortPID(a->first))
+				{
+					++s_aPlayerBotYoharaCohortStats[res.iPurpose].arrived;
+					NotePlayerBotYoharaCohortDb(a->first, "arrived", 1, ch->GetMapIndex());
+					TrackPlayerBotYoharaCohortExp(ch, res);
+				}
 			}
 			else
 				s_mapPlayerBotYoharaCooldown[a->first] = dwNow + (a->second.bDeaths ? PLAYERBOT_YOHARA_DEATHS_COOLDOWN_MS
@@ -1197,6 +1651,8 @@ namespace
 	//                                       other core (the temple's road left out: a test of the handover)
 	//     home <n|all>                      residents of this core sent home
 	//     status                            the census and every resident here, one line each
+	//     cohort                            common.playerbot_yohara_cohort read again (MT2009_PLUS_BOT_YOHARA_COHORT_V1)
+	//     (send takes snakefield|giantland too)
 	const char* const PLAYERBOT_YOHARA_TEST_FILE = "playerbot_yohara_test";
 
 	void RunPlayerBotYoharaTestFile(DWORD dwNow)
@@ -1222,10 +1678,9 @@ namespace
 			if (!strcmp(cmd, "send"))
 			{
 				const int purpose = ParsePlayerBotYoharaPurpose(what);
-				long map = purpose == YOHARA_PURPOSE_ZAKLETY ? PLAYERBOT_MAP_ZAKLETY
-						: purpose == YOHARA_PURPOSE_SZC ? PLAYERBOT_MAP_SZC_PLATEAU
-						: purpose == YOHARA_PURPOSE_LOOT ? (mapArg >= 301 && mapArg <= 304 ? mapArg :
-							(GetPlayerBotYoharaConfig().lootMaps.empty() ? 303 : GetPlayerBotYoharaConfig().lootMaps[0])) : 0;
+				long map = purpose == YOHARA_PURPOSE_LOOT ? (mapArg >= 301 && mapArg <= 304 ? mapArg :
+							(GetPlayerBotYoharaConfig().lootMaps.empty() ? 303 : GetPlayerBotYoharaConfig().lootMaps[0]))
+						: GetPlayerBotYoharaPurposeMap(purpose);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1 (snakefield, giantland)
 				int sent = 0, looked = 0;
 				for (TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.begin();
 						map != 0 && st != s_mapPlayerBotAIStates.end() && sent < n; ++st)
@@ -1235,11 +1690,8 @@ namespace
 							FindPlayerBotYoharaResident(st->first) || IsPlayerBotOnDungeonRun(st->first))
 						continue;
 					const int level = ch->GetLevel();
-					const bool band = purpose == YOHARA_PURPOSE_ZAKLETY
-							? level >= GetPlayerBotYoharaConfig().zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL &&
-								ch->GetMaxHP() >= GetPlayerBotYoharaConfig().zakletyMinHp
-							: purpose == YOHARA_PURPOSE_SZC ? level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL
-							: level >= PLAYERBOT_YOHARA_LOOT_MIN_LEVEL;
+					const bool band = IsPlayerBotYoharaInBand(purpose, level) &&
+							(purpose != YOHARA_PURPOSE_ZAKLETY || ch->GetMaxHP() >= GetPlayerBotYoharaConfig().zakletyMinHp);
 					++looked;
 					if (!band)
 						continue;
@@ -1267,6 +1719,12 @@ namespace
 				}
 				sys_log(0, "PLAYERBOT_YOHARA: test home asked=%d sent=%d residents=%u", n, sent, (unsigned int)pids.size());
 			}
+			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: "cohort" - the table read again now.
+			else if (!strcmp(cmd, "cohort"))
+			{
+				LoadPlayerBotYoharaCohort(dwNow, true);
+				s_dwPlayerBotYoharaNextCensusLog = 0;
+			}
 			else if (!strcmp(cmd, "status"))
 			{
 				s_dwPlayerBotYoharaNextCensusLog = 0;
@@ -1281,6 +1739,204 @@ namespace
 							IsPlayerBotOnDungeonRun(r->first) ? 1 : 0);
 				}
 			}
+		}
+	}
+
+	// ------------------------------------------------------------ the dispatcher
+
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: on the core that hosts a member's first village (its home),
+	// at the poll: up to PLAYERBOT_COHORT_DISPATCH members a poll whose purpose has room and who are
+	// not on their way, staying, resting or cooling down - an offline one by a row written here (the
+	// claim loads it on the other core; never in this world), an online one from where it stands.
+	void DispatchPlayerBotYoharaCohort(DWORD dwNow, const std::set<DWORD>& seen, const std::set<DWORD>& live,
+			int (&census)[YOHARA_PURPOSE_MAX])
+	{
+		if (s_mapPlayerBotYoharaCohort.empty() || !IsPlayerBotYoharaOn() || !IsPlayerBotYoharaCohortOn())
+			return;
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		CPlayerBotManager& mgr = CPlayerBotManager::instance();
+		static const long PLAYERBOT_YOHARA_FIRST_VILLAGE[4] = { 0, 1, 21, 41 };
+		std::vector<DWORD> pids;
+		pids.reserve(s_mapPlayerBotYoharaCohort.size());
+		for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
+				i != s_mapPlayerBotYoharaCohort.end(); ++i)
+			pids.push_back(i->first);
+		const size_t n = pids.size();
+		int sent = 0;
+		size_t k = 0;
+		for (; k < n && sent < cfg.cohortDispatch; ++k)
+		{
+			const DWORD pid = pids[(s_uPlayerBotYoharaCohortCursor + k) % n];
+			const TPlayerBotYoharaCohortMember& m = s_mapPlayerBotYoharaCohort[pid];
+			if (m.iChannel != (int)g_bChannel || m.bResting || live.count(pid) || s_mapPlayerBotYoharaOut.count(pid) ||
+					s_mapPlayerBotYoharaLeaving.count(pid) || s_mapPlayerBotYoharaArrival.count(pid) ||
+					s_mapPlayerBotYoharaResident.count(pid) || !mgr.IsRegisteredBotPID(pid))
+				continue;
+			const BYTE empire = mgr.GetRegisteredEmpire(pid);
+			if (empire < 1 || empire > 3 || !IsPlayerBotMapHostedHere(PLAYERBOT_YOHARA_FIRST_VILLAGE[empire]))
+				continue;
+			std::map<DWORD, DWORD>::iterator cd = s_mapPlayerBotYoharaCooldown.find(pid);
+			if (cd != s_mapPlayerBotYoharaCooldown.end())
+			{
+				if ((int)(cd->second - dwNow) > 0)
+					continue;
+				s_mapPlayerBotYoharaCooldown.erase(cd);
+			}
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+			const int level = ch ? (int)ch->GetLevel() : m.iLevel;
+			const int purpose = GetPlayerBotYoharaCohortPurposeAt(m.iPurpose, level);
+			if (purpose == YOHARA_PURPOSE_NONE)
+			{
+				PlayerBotLogThrottled("cohort_band", dwNow, "PLAYERBOT_COHORT: out of its band pid=%u purpose=%s level=%d",
+						pid, PlayerBotYoharaPurposeName(m.iPurpose), level);
+				continue;
+			}
+			if (census[purpose] >= GetPlayerBotYoharaCap(purpose))
+				continue;
+			const long map = GetPlayerBotYoharaPurposeMap(purpose);
+			long x = 0, y = 0;
+			if (map == 0 || !GetPlayerBotFrontierArrival(map, x, y))
+				continue;
+			if (ch)
+			{
+				TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(pid);
+				if (st == s_mapPlayerBotAIStates.end() || ch->IsDead() || !ch->GetSectree() || !IsPlayerBotYoharaEligible(ch) ||
+						IsPlayerBotOnDungeonRun(pid))
+					continue;
+				DWORD& since = s_mapPlayerBotYoharaCohortHomeSince[pid];
+				if (since == 0)
+					since = dwNow;
+				// Its own town visit first (a bag to sell, a belt to buy), for a while.
+				if (BlocksPlayerBotTravel(ch) && dwNow - since < PLAYERBOT_YOHARA_COHORT_HOME_PATIENCE_MS)
+					continue;
+				if (!RequestPlayerBotYoharaHandover(ch, st->second, map, x, y, purpose, "cohort", dwNow))
+					continue;
+				s_mapPlayerBotYoharaCohortHomeSince.erase(pid);
+			}
+			else
+			{
+				if (P2P_MANAGER::instance().FindByPID(pid))
+					continue;
+				// A stay row nobody refreshes any more (its core gone): not a stay.
+				char q[640];
+				if (seen.count(pid))
+				{
+					snprintf(q, sizeof(q), "DELETE FROM common.playerbot_core_handover WHERE pid = %u AND state = 2 AND "
+							"updated_at < DATE_SUB(NOW(), INTERVAL %d SECOND)", pid, PLAYERBOT_YOHARA_STALE_S);
+					if (RunPlayerBotYoharaSql(q) != 1)
+						continue;
+				}
+				// One statement: no row while its rest lasts (another core's rest-out writes it first).
+				snprintf(q, sizeof(q),
+						"INSERT IGNORE INTO common.playerbot_core_handover (pid, channel, target_map, x, y, from_map, purpose, "
+						"state, reason, ready_at, updated_at) SELECT %u, %u, %ld, %ld, %ld, 0, '%s', 1, 'cohort', NOW(), NOW() "
+						"FROM common.playerbot_yohara_cohort WHERE pid = %u AND (rest_until IS NULL OR rest_until <= NOW())",
+						pid, (unsigned int)g_bChannel, map, x, y, PlayerBotYoharaPurposeName(purpose), pid);
+				if (RunPlayerBotYoharaSql(q) != 1)
+					continue;
+				TPlayerBotYoharaOut& out = s_mapPlayerBotYoharaOut[pid];
+				out.dwAt = dwNow;
+				out.iPurpose = purpose;
+				out.lMap = map;
+				++s_aiPlayerBotYoharaCensus[purpose];
+				++s_uPlayerBotYoharaOutCount;
+			}
+			++census[purpose];
+			++sent;
+			++s_aPlayerBotYoharaCohortStats[purpose].sent;
+			NotePlayerBotYoharaCohortDb(pid, "sent", 1, map);
+			sys_log(0, "PLAYERBOT_COHORT: dispatch pid=%u name=%s level=%d purpose=%s to=%ld online_here=%d census=%d/%d",
+					pid, ch ? ch->GetName() : "-", level, PlayerBotYoharaPurposeName(purpose), map, ch ? 1 : 0, census[purpose],
+					GetPlayerBotYoharaCap(purpose));
+		}
+		s_uPlayerBotYoharaCohortCursor = n ? (s_uPlayerBotYoharaCohortCursor + k) % n : 0;
+	}
+
+	// The census of the cohorts on this core (every PLAYERBOT_YOHARA_CENSUS_LOG_MS): a line a purpose.
+	void LogPlayerBotYoharaCohortCensus(DWORD dwNow, const int (&staying)[YOHARA_PURPOSE_MAX], const int (&onWay)[YOHARA_PURPOSE_MAX])
+	{
+		if (s_mapPlayerBotYoharaCohort.empty())
+			return;
+		int members[YOHARA_PURPOSE_MAX] = { 0 }, resting[YOHARA_PURPOSE_MAX] = { 0 };
+		int here[YOHARA_PURPOSE_MAX] = { 0 }, inMap[YOHARA_PURPOSE_MAX] = { 0 }, onRun[YOHARA_PURPOSE_MAX] = { 0 };
+		int lvSum[YOHARA_PURPOSE_MAX] = { 0 };
+		for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
+				i != s_mapPlayerBotYoharaCohort.end(); ++i)
+		{
+			++members[i->second.iPurpose];
+			resting[i->second.iPurpose] += i->second.bResting ? 1 : 0;
+		}
+		for (std::map<DWORD, TPlayerBotYoharaResident>::iterator r = s_mapPlayerBotYoharaResident.begin();
+				r != s_mapPlayerBotYoharaResident.end(); ++r)
+		{
+			const int p = r->second.iPurpose;
+			if (p <= 0 || p >= YOHARA_PURPOSE_MAX || !s_mapPlayerBotYoharaCohort.count(r->first))
+				continue;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(r->first);
+			if (!ch)
+				continue;
+			++here[p];
+			lvSum[p] += ch->GetLevel();
+			const long base = ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? ch->GetMapIndex() / 10000 : ch->GetMapIndex();
+			if (base == GetPlayerBotYoharaPurposeMap(p) || (p == YOHARA_PURPOSE_SZC && base == PLAYERBOT_MAP_SZC))
+				++inMap[p];
+			if (IsPlayerBotOnDungeonRun(r->first))
+				++onRun[p];
+			// The experience it made, into its row.
+			if (r->second.llExpUnsaved > 0)
+			{
+				NotePlayerBotYoharaCohortDb(r->first, "exp_gained", r->second.llExpUnsaved, ch->GetMapIndex());
+				r->second.llExpUnsaved = 0;
+			}
+		}
+		const DWORD span = s_dwPlayerBotYoharaCohortLastCensus ? dwNow - s_dwPlayerBotYoharaCohortLastCensus : 0;
+		for (int p = YOHARA_PURPOSE_ZAKLETY; p < YOHARA_PURPOSE_MAX; ++p)
+		{
+			TPlayerBotYoharaCohortStats& st = s_aPlayerBotYoharaCohortStats[p];
+			if (members[p] == 0 && here[p] == 0)
+				continue;
+			const long long expH = span > 0 ? (st.exp - st.expAtCensus) * 3600000LL / (long long)span : 0;
+			sys_log(0, "PLAYERBOT_COHORT: census channel=%u purpose=%s members=%d resting=%d channel_staying=%d channel_on_way=%d "
+					"here=%d in_map=%d on_run=%d avg_level=%d sent=%u arrived=%u deaths=%u runs=%u rest_outs=%u levels=%u "
+					"exp=%lld exp_h=%lld",
+					(unsigned int)g_bChannel, PlayerBotYoharaPurposeName(p), members[p], resting[p], staying[p], onWay[p],
+					here[p], inMap[p], onRun[p], here[p] ? lvSum[p] / here[p] : 0, st.sent, st.arrived, st.deaths, st.runs,
+					st.restOuts, st.levels, st.exp, expH);
+			st.expAtCensus = st.exp;
+		}
+		s_dwPlayerBotYoharaCohortLastCensus = dwNow;
+	}
+
+	// The Time Rift's runs (playerbot_dungeon_runs.h): a line at the start and at the end, the end
+	// counted for the cohort's members in it.
+	void NotePlayerBotYoharaSzcRun(bool start, int runId, long instance, const std::vector<DWORD>& members,
+			const char* result, DWORD tookS)
+	{
+		int cohort = 0;
+		std::string list;
+		for (size_t i = 0; i < members.size(); ++i)
+		{
+			if (!IsPlayerBotYoharaCohortPID(members[i]))
+				continue;
+			++cohort;
+			list += (list.empty() ? "" : ",") + std::to_string(members[i]);
+		}
+		if (start)
+		{
+			sys_log(0, "PLAYERBOT_YOHARA: szc run start run=%d instance=%ld members=%u cohort=%d", runId, instance,
+					(unsigned int)members.size(), cohort);
+			return;
+		}
+		sys_log(0, "PLAYERBOT_YOHARA: szc run end run=%d instance=%ld result=%s took_s=%u members=%u cohort=%d", runId,
+				instance, result ? result : "-", tookS, (unsigned int)members.size(), cohort);
+		if (cohort == 0 || !result || strcmp(result, "aborted") == 0 || tookS < 60)
+			return;
+		s_aPlayerBotYoharaCohortStats[YOHARA_PURPOSE_SZC].runs += (unsigned int)cohort;
+		if (s_bPlayerBotYoharaCohortTableReady)
+		{
+			const std::string q = "UPDATE common.playerbot_yohara_cohort SET runs = runs + 1, last_seen = NOW() WHERE pid IN (" +
+					list + ")";
+			RunPlayerBotYoharaSql(q.c_str());
 		}
 	}
 
@@ -1317,6 +1973,7 @@ namespace
 		if (!EnsurePlayerBotYoharaTable())
 			return;
 		RunPlayerBotYoharaTestFile(dwNow);
+		LoadPlayerBotYoharaCohort(dwNow, false);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 		char query[512];
 		snprintf(query, sizeof(query),
 				"SELECT pid, state, target_map, x, y, purpose, ready_at <= NOW(), "
@@ -1353,10 +2010,22 @@ namespace
 				++residentsHere[r->second.iPurpose];
 		std::set<DWORD> away;
 		std::set<DWORD> seen;
+		std::set<DWORD> live;	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: on its way, or a stay refreshed
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the cohorts' members on the channel's cores / on their way.
+		int cohortStaying[YOHARA_PURPOSE_MAX] = { 0 }, cohortOnWay[YOHARA_PURPOSE_MAX] = { 0 };
 		for (size_t i = 0; i < rows.size(); ++i)
 		{
 			const TRow& t = rows[i];
 			seen.insert(t.pid);
+			if (t.state == 1 || (t.state == 2 && t.fresh))
+				live.insert(t.pid);
+			if (t.purpose > 0 && t.purpose < YOHARA_PURPOSE_MAX && s_mapPlayerBotYoharaCohort.count(t.pid))
+			{
+				if (t.state == 2 && t.fresh)
+					++cohortStaying[t.purpose];
+				else if (t.state == 1)
+					++cohortOnWay[t.purpose];
+			}
 			const bool hostedHere = t.map > 0 && IsPlayerBotMapHostedHere(t.map);
 			if (t.state == 1 && t.purpose > 0 && t.purpose < YOHARA_PURPOSE_MAX && t.purpose != YOHARA_PURPOSE_HOME)
 				++census[t.purpose];
@@ -1368,13 +2037,9 @@ namespace
 			{
 				if (CHARACTER_MANAGER::instance().FindByPID(t.pid) || P2P_MANAGER::instance().FindByPID(t.pid))
 					continue;	// still logged in somewhere: the next poll
-				bool refused = false;
-				if (t.purpose == YOHARA_PURPOSE_ZAKLETY && residentsHere[t.purpose] >= cfg.zakletyMax)
-					refused = true;
-				else if (t.purpose == YOHARA_PURPOSE_SZC && residentsHere[t.purpose] >= cfg.szcMax)
-					refused = true;
-				else if (t.purpose == YOHARA_PURPOSE_LOOT && residentsHere[t.purpose] >= cfg.lootMax)
-					refused = true;
+				// MT2009_PLUS_BOT_YOHARA_COHORT_V1: every purpose's limit (Wezowe Pole / Kraina too).
+				const bool refused = t.purpose != YOHARA_PURPOSE_HOME && t.purpose != YOHARA_PURPOSE_NONE &&
+						residentsHere[t.purpose] >= GetPlayerBotYoharaCap(t.purpose);
 				char q[192];
 				if (refused || t.purpose == YOHARA_PURPOSE_HOME || t.purpose == YOHARA_PURPOSE_NONE)
 					snprintf(q, sizeof(q), "DELETE FROM common.playerbot_core_handover WHERE pid=%u AND state=1", t.pid);
@@ -1467,6 +2132,8 @@ namespace
 			}
 			s_mapPlayerBotYoharaOut.erase(o++);
 		}
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the members this core is home to, sent.
+		DispatchPlayerBotYoharaCohort(dwNow, seen, live, census);
 		// The residents: gone from this core without a handover (a rest, a
 		// channel move, a GM) - their rows go too.
 		std::string gone, stay;
@@ -1494,12 +2161,20 @@ namespace
 					}
 					++r->second.iDeaths;
 					++r->second.iDeathsWindowed;
+					// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member's death, counted for its cohort.
+					if (IsPlayerBotYoharaCohortPID(r->first) && r->second.iPurpose > 0 && r->second.iPurpose < YOHARA_PURPOSE_MAX)
+					{
+						++s_aPlayerBotYoharaCohortStats[r->second.iPurpose].deaths;
+						NotePlayerBotYoharaCohortDb(r->first, "deaths", 1, rc->GetMapIndex());
+					}
 					sys_log(0, "PLAYERBOT_YOHARA: died pid=%u name=%s level=%u map=%ld pos=(%ld,%ld) purpose=%s deaths=%d windowed=%d max_hp=%d",
 							r->first, rc->GetName(), (unsigned int)rc->GetLevel(), rc->GetMapIndex(), rc->GetX(), rc->GetY(),
 							PlayerBotYoharaPurposeName(r->second.iPurpose), r->second.iDeaths, r->second.iDeathsWindowed,
 							(int)rc->GetMaxHP());
 				}
 				r->second.bDead = dead;
+				// MT2009_PLUS_BOT_YOHARA_COHORT_V1: its experience since the last poll.
+				TrackPlayerBotYoharaCohortExp(rc, r->second);
 			}
 			stay += (stay.empty() ? "" : ",") + std::to_string(r->first);
 			++r;
@@ -1520,15 +2195,20 @@ namespace
 			s_dwPlayerBotYoharaNextCensusLog = dwNow + PLAYERBOT_YOHARA_CENSUS_LOG_MS;
 			// The old rows of a stay nobody refreshes (the core gone with them).
 			RunPlayerBotYoharaSql("DELETE FROM common.playerbot_core_handover WHERE state=2 AND updated_at < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
-			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d szc=%d/%d loot=%d/%d residents_here=%u "
-					"(zaklety=%d szc=%d loot=%d) away=%u requests=%u out=%u in=%u home=%u refused=%u cancel=%u",
+			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow in it, and the cohorts' lines.
+			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d szc=%d/%d loot=%d/%d snakefield=%d/%d "
+					"giantland=%d/%d residents_here=%u (zaklety=%d szc=%d loot=%d snakefield=%d giantland=%d) away=%u requests=%u "
+					"out=%u in=%u home=%u refused=%u cancel=%u",
 					(unsigned int)g_bChannel, IsPlayerBotYoharaOn() ? 1 : 0,
 					census[YOHARA_PURPOSE_ZAKLETY], cfg.zakletyMax, census[YOHARA_PURPOSE_SZC], cfg.szcMax,
-					census[YOHARA_PURPOSE_LOOT], cfg.lootMax, (unsigned int)s_mapPlayerBotYoharaResident.size(),
+					census[YOHARA_PURPOSE_LOOT], cfg.lootMax, census[YOHARA_PURPOSE_SNAKEFIELD], cfg.snakeMax,
+					census[YOHARA_PURPOSE_GIANTLAND], cfg.giantMax, (unsigned int)s_mapPlayerBotYoharaResident.size(),
 					residentsHere[YOHARA_PURPOSE_ZAKLETY], residentsHere[YOHARA_PURPOSE_SZC], residentsHere[YOHARA_PURPOSE_LOOT],
+					residentsHere[YOHARA_PURPOSE_SNAKEFIELD], residentsHere[YOHARA_PURPOSE_GIANTLAND],
 					(unsigned int)s_setPlayerBotYoharaAway.size(), (unsigned int)s_mapPlayerBotYoharaOut.size(),
 					s_uPlayerBotYoharaOutCount, s_uPlayerBotYoharaInCount, s_uPlayerBotYoharaHomeCount,
 					s_uPlayerBotYoharaRefusedCount, s_uPlayerBotYoharaCancelCount);
+			LogPlayerBotYoharaCohortCensus(dwNow, cohortStaying, cohortOnWay);
 		}
 	}
 }

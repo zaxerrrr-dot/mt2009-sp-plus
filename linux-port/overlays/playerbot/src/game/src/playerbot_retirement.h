@@ -1129,7 +1129,8 @@ bool IsPlayerBotRetirementCandidateInner(LPCHARACTER ch, BYTE bLevelLo, BYTE bLe
 	// would find a level-1 stranger at his side), an Arezzo test cohort or a
 	// bot a person has taken over from the panel.
 	if (IsPlayerBotSidekickPID(ch->GetPlayerID()) || IsPlayerBotArezzoCohortPID(ch->GetPlayerID()) ||
-			IsPlayerBotArezzoDungeonCohortPID(ch->GetPlayerID()) || IsPlayerBotTakeoverHold(ch->GetPlayerID()))
+			IsPlayerBotArezzoDungeonCohortPID(ch->GetPlayerID()) || IsPlayerBotTakeoverHold(ch->GetPlayerID()) ||
+			IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 		return false;
 	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: nor a bot of a dungeon run, until it is out.
 	if (IsPlayerBotOnDungeonRun(ch->GetPlayerID()))
