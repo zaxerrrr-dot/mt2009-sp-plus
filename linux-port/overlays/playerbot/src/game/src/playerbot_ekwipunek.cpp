@@ -9,7 +9,7 @@
 // appended the same way, ekwipunek.sql), four pages of 5 x 9 cells each (SPECIAL_INVENTORY_MAX_NUM 180), items of one
 // category only:
 //   UPGRADE_INVENTORY  ITEM_MATERIAL / MATERIAL_LEATHER (the refine materials) and Ameria's 27987, 27799, 70031,
-//                      27992-27994;
+//                      27992-27994; here also the refine scrolls (ITEM_USE / USE_TUNING, MT2009_PLUS_EKWIPUNEK_REFINE_V1);
 //   BOOK_INVENTORY     ITEM_SKILLBOOK and Ameria's extra books 50301-50303;
 //   STONE_INVENTORY    ITEM_METIN / METIN_NORMAL (the soul stones);
 //   CHANGE_INVENTORY   ITEM_USE / USE_CHANGE_ATTRIBUTE (Zaczarowanie przedmiotu) and Ameria's 72346;
@@ -34,6 +34,14 @@
 //   /ekwipunek sortuj <window>                    Ameria's two buttons in one: stacks joined, then sorted by kind
 //   /ekwipunek sprzedaj <window> <cell> <count>   the NPC shop's sale from a storage (CShopManager::Sell)
 //   /ekwipunek kostka <cube index> <window> <cell> an item of a storage into the crafting window (Cube_add_item)
+//   /ekwipunek przenies [keep=<hex>]              the bag's items of a category into their storages (the inventory's
+//                                                 sort menu, "Przenies do extra EQ"; MT2009_PLUS_EKWIPUNEK_MOVE_V1)
+//
+// Refining (MT2009_PLUS_EKWIPUNEK_REFINE_V1, server-patches/ekwipunek "REFINE" edits): a scroll in the materials'
+// storage used on an item, an item of a storage given to the blacksmith (a soul stone's next grade) or a scroll used
+// on it - the refine window keeps the item's and the scroll's windows (RefineInformation, CInputMain::Refine), the
+// result goes back into the item's cell (Mt2009EkwRefinePlace), the materials come from the bag and the storages
+// (CountSpecifyItem / RemoveSpecifyItem).
 #include "stdafx.h"
 #include "constants.h"
 #include "config.h"
@@ -90,6 +98,12 @@ BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum)
 	}
 
 	if (bType == ITEM_MATERIAL && bSubType == MATERIAL_LEATHER)
+		return UPGRADE_INVENTORY;
+	// MT2009_PLUS_EKWIPUNEK_REFINE_V1 (category): the refine scrolls and stones used on an item (ITEM_USE / USE_TUNING -
+	// Zwoj Blogoslawienstwa, Magiczny Kamien, Podrecznik Kowala, Zwoj Wojny, Zwoj Boga Smokow, Kamien Rytualny,
+	// Gwarancja Rzemiosla) - in none of Ameria's categories; with the materials, since they are refined from there
+	// (the owner, 21 October 2026: "jak ulepszacz jest w dodatkowym EQ, to mozna ulepszac").
+	if (bType == ITEM_USE && bSubType == USE_TUNING)
 		return UPGRADE_INVENTORY;
 	if (bType == ITEM_SKILLBOOK)
 		return BOOK_INVENTORY;
@@ -345,6 +359,61 @@ bool CHARACTER::Mt2009SpecialCheckoutAllowed(LPITEM item, const TItemPos& DestCe
 	return false;
 }
 
+// MT2009_PLUS_EKWIPUNEK_REFINE_V1: the refine window's window of an item - its category storage, else the bag (also an
+// item of the bag's horse pages or a stray window: the refine code read those by a bag cell before as well).
+BYTE CHARACTER::Mt2009EkwWindowOf(LPITEM item) const
+{
+	if (item && Mt2009IsSpecialWindow(item->GetWindow()))
+		return item->GetWindow();
+	return INVENTORY;
+}
+
+// MT2009_PLUS_EKWIPUNEK_REFINE_V1: the free cell the rest of a refined stack goes to (DigiStackRefineAllowed / Split):
+// a storage's stack keeps it in its storage while there is room, else - and for the bag's stack always - the bag.
+int CHARACTER::Mt2009EkwRefineRestCell(LPITEM item, BYTE* pbWindow)
+{
+	if (pbWindow)
+		*pbWindow = INVENTORY;
+	if (!item)
+		return -1;
+
+	if (Mt2009IsSpecialWindow(item->GetWindow()))
+	{
+		const int cell = GetEmptySpecialInventory(item->GetWindow(), item->GetSize());
+		if (cell >= 0)
+		{
+			if (pbWindow)
+				*pbWindow = item->GetWindow();
+			return cell;
+		}
+	}
+	return GetEmptyInventory(item->GetSize());
+}
+
+// MT2009_PLUS_EKWIPUNEK_REFINE_V1: a refine's result (DoRefine, DoRefineWithScroll) into the cell of the item it was
+// made from - in the bag as before; in a storage when it is still of that storage's category and fits there, else
+// wherever a new item of its kind goes (its storage, the bag; the ground with this player's ownership when all are
+// full - AutoGiveItem keeps the item, the caller goes on using it).
+void CHARACTER::Mt2009EkwRefinePlace(LPITEM pkNewItem, BYTE bWindow, WORD wCell)
+{
+	if (!pkNewItem)
+		return;
+
+	if (!Mt2009IsSpecialWindow(bWindow))
+	{
+		pkNewItem->AddToCharacter(this, TItemPos(INVENTORY, wCell));
+		return;
+	}
+
+	if (Mt2009EkwCategoryOfItem(pkNewItem) == bWindow && Mt2009SpecialIsEmptyGrid(bWindow, wCell, pkNewItem->GetSize(), -1))
+	{
+		pkNewItem->AddToCharacter(this, TItemPos(bWindow, wCell));
+		return;
+	}
+
+	AutoGiveItem(pkNewItem, true);
+}
+
 namespace
 {
 	// char_item.cpp's IsStackableCorDraconisVnum (static there; the same list): a Cor Draconis stacks whatever its
@@ -526,6 +595,128 @@ static void EkwSort(LPCHARACTER ch, BYTE bWindow)
 	}
 }
 
+// MT2009_PLUS_EKWIPUNEK_MOVE_V1: "Przenies do extra EQ" - the third choice of the inventory's sort button
+// (root/inventoryarrange.py; the owner, 21 October 2026: "tak, jako trzecia opcja w sortowaniu EQ"). Every item of the
+// bag that belongs to a category goes into its storage: first into the storage's stacks of the same item, then into a
+// free cell. Left in the bag: worn items, locked ones, those in a trade or on sale in the player's shop, the cells
+// locked against sorting (Alt + click, inventorysortlock.py - "keep=<hex>", four cells a digit) and whatever its full
+// storage has no room for.
+static bool EkwKeptCell(const std::string& mask, int cell)
+{
+	const size_t digit = cell / 4;
+	if (digit >= mask.size())
+		return false;
+	const char c = mask[digit];
+	int v = 0;
+	if (c >= '0' && c <= '9')
+		v = c - '0';
+	else if (c >= 'a' && c <= 'f')
+		v = c - 'a' + 10;
+	else if (c >= 'A' && c <= 'F')
+		v = c - 'A' + 10;
+	return (v >> (cell % 4)) & 1;
+}
+
+static const char* EkwStorageName(BYTE bWindow)
+{
+	switch (bWindow)
+	{
+		case UPGRADE_INVENTORY:	return "Materia\263y ulepsze\361";
+		case BOOK_INVENTORY:	return "Ksi\352gi";
+		case STONE_INVENTORY:	return "Kamienie Duszy";
+		case CHANGE_INVENTORY:	return "Zaczarowania";
+		case CHEST_INVENTORY:	return "Skrzynie";
+	}
+	return "?";
+}
+
+static void EkwMoveBagToStorages(LPCHARACTER ch, const std::string& keep)
+{
+	int moved = 0, joined = 0, left = 0;
+	bool full[SPECIAL_INVENTORY_WINDOW_COUNT] = {};
+	LPSHOP pkMyShop = ch->GetMyShop();
+
+	for (int i = 0; i < ch->GetInventoryMaxCount() && i < INVENTORY_MAX_NUM; ++i)
+	{
+		LPITEM item = ch->GetInventoryItem(i);
+		if (!item || item->GetCell() != i)
+			continue;
+		if (item->IsEquipped() || item->isLocked() || item->IsExchanging())
+			continue;
+		if (pkMyShop && pkMyShop->IsSellingItem(item->GetID()))
+			continue;
+		if (!keep.empty() && EkwKeptCell(keep, i))
+			continue;
+
+		const BYTE bWindow = Mt2009EkwCategoryOfItem(item);
+		if (!bWindow)
+			continue;
+
+		// the storage's stacks of the same item first
+		if (EkwStacks(item))
+		{
+			for (WORD j = 0; j < SPECIAL_INVENTORY_MAX_NUM && item->GetCount() > 0; ++j)
+			{
+				LPITEM item2 = ch->Mt2009SpecialGetItem(bWindow, j);
+				if (!item2 || item2->GetVnum() != item->GetVnum() || !EkwSameSockets(item, item2))
+					continue;
+				if (item2->isLocked() || item2->IsExchanging() || item2->GetCount() >= item2->GetMaxStack())
+					continue;
+
+				const ITEM_COUNT add = MIN(item2->GetMaxStack() - item2->GetCount(), item->GetCount());
+				item2->SetCount(item2->GetCount() + add);
+				if (add >= item->GetCount())
+				{
+					++joined;
+					item->SetCount(0);	// gone - SetCount clears its quickslot and destroys it
+					item = NULL;
+					break;
+				}
+				item->SetCount(item->GetCount() - add);
+			}
+			if (!item)
+				continue;
+		}
+
+		const int cell = ch->GetEmptySpecialInventory(bWindow, item->GetSize());
+		if (cell < 0)
+		{
+			full[bWindow - UPGRADE_INVENTORY] = true;
+			++left;
+			continue;
+		}
+
+		ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, i, 255);
+		item->RemoveFromCharacter();
+		item->AddToCharacter(ch, TItemPos(bWindow, cell));
+		ITEM_MANAGER::instance().FlushDelayedSave(item);
+		++moved;
+	}
+
+	if (!moved && !joined && !left)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "W ekwipunku nie ma przedmiot\363w do dodatkowego ekwipunku.");
+		return;
+	}
+
+	if (moved || joined)
+		ch->ChatPacket(CHAT_TYPE_INFO, "Przeniesiono do dodatkowego ekwipunku: %d (do\263\271czono do stos\363w: %d).", moved + joined, joined);
+
+	if (left)
+	{
+		std::string names;
+		for (BYTE w = UPGRADE_INVENTORY; w <= CHEST_INVENTORY; ++w)
+		{
+			if (!full[w - UPGRADE_INVENTORY])
+				continue;
+			if (!names.empty())
+				names += ", ";
+			names += EkwStorageName(w);
+		}
+		ch->ChatPacket(CHAT_TYPE_INFO, "Zosta\263o w ekwipunku: %d - brak miejsca w kategorii: %s.", left, names.c_str());
+	}
+}
+
 static bool EkwParseInt(const char* arg, int& out)
 {
 	if (!arg || !*arg)
@@ -583,6 +774,28 @@ ACMD(do_ekwipunek)
 			return;
 		}
 		EkwSort(ch, bWindow);
+		return;
+	}
+
+	// MT2009_PLUS_EKWIPUNEK_MOVE_V1: "Przenies do extra EQ" (root/inventoryarrange.py)
+	if (sub == "przenies")
+	{
+		if (!ch->Mt2009EkwRoutes())
+			return;
+		if (ch->IsDead() || ch->GetExchange() || ch->GetShop() || ch->IsOpenSafebox() || ch->IsCubeOpen() || !ch->CanHandleItem())
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Zamknij inne okna, aby przenie\234\346 przedmioty do dodatkowego ekwipunku.");
+			return;
+		}
+		if (!PulseManager::Instance().IncreaseClock(ch->GetPlayerID(), MT2009_PLUS_PULSE_EKW_SORT, std::chrono::milliseconds(3000)))
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Przenosi\346 mo\277na raz na 3 sekundy.");
+			return;
+		}
+		std::string keep;
+		if (!strncmp(arg2, "keep=", 5))
+			keep = arg2 + 5;
+		EkwMoveBagToStorages(ch, keep);
 		return;
 	}
 

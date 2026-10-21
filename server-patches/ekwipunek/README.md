@@ -10,7 +10,7 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
 | Część | Miejsce |
 |---|---|
 | Logika serwera | `linux-port/overlays/playerbot/src/game/src/playerbot_ekwipunek.cpp` (metody `CHARACTER`, `/ekwipunek`) |
-| Haki silnika | `edits.json` (47 zmian w 15 plikach: common `length.h`, db `ClientManagerPlayer.cpp`, game); `gen_edits.py` je generuje i sprawdza, `apply_ekwipunek.py` (Linux) i `Apply-EkwipunekPatch.ps1` (Windows, krok `tools/port/Apply-MT2009PlusEngine.ps1` po Buffi) czytają ten sam plik |
+| Haki silnika | `edits.json` (70 zmian w 15 plikach: common `length.h`, db `ClientManagerPlayer.cpp`, game); `gen_edits.py` je generuje i sprawdza, `apply_ekwipunek.py` (Linux) i `Apply-EkwipunekPatch.ps1` (Windows, krok `tools/port/Apply-MT2009PlusEngine.ps1` po Buffi) czytają ten sam plik |
 | Baza | `linux-port/docker/mariadb/playerbot/apply.sh` (krok „extra inventory”): `player.item.window` dostaje na końcu `UPGRADE_INVENTORY`, `BOOK_INVENTORY`, `STONE_INVENTORY`, `CHANGE_INVENTORY`, `CHEST_INVENTORY` |
 | Exe (3.0) | `client-patches/exe` – `ENABLE_SPECIAL_STORAGE` (opis w `client-patches/exe/README.md`) |
 | Klient (root) | `client-2.0.30/root/uiekwipunek.py` (okno), haki w `uiinventory.py`, `uiexchange.py`, `uicube.py` (nowa kopia), `game.py`, `interfacemodule.py`, `keybind.py`; ikony `root/mt2009_ui/ekwipunek/*.png` (z Amerii), `root/mt2009_ui/sidebar/ekwipunek_0[1-3].tga` |
@@ -21,7 +21,9 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
   sklepu offline, żeby `player.item.window` – enum zapisywany numerem – i klient zachowały stare numery). Każdy ma 4
   strony 5 × 9 (180 pól), przedmiot zajmuje swoją wysokość w kolumnie i nie przechodzi na następną stronę.
 - **Kategorie (jak w Amerii)**: Materiały ulepszeń (`ITEM_MATERIAL`/`MATERIAL_LEATHER` + 27987, 27799, 70031,
-  27992–27994), Księgi (`ITEM_SKILLBOOK` + 50301–50303), Kamienie Duszy (`ITEM_METIN`/`METIN_NORMAL`), Zaczarowania
+  27992–27994; **u nas także zwoje i kamienie ulepszania** `ITEM_USE`/`USE_TUNING` – Zwój Błogosławieństwa, Magiczny
+  Kamień, Podręcznik Kowala, Zwój Wojny, Zwój Boga Smoków, Kamień Rytualny, Gwarancje Rzemiosła;
+  `MT2009_PLUS_EKWIPUNEK_REFINE_V1`), Księgi (`ITEM_SKILLBOOK` + 50301–50303), Kamienie Duszy (`ITEM_METIN`/`METIN_NORMAL`), Zaczarowania
   (`ITEM_USE`/`USE_CHANGE_ATTRIBUTE` + 72346), Skrzynie (`ITEM_GIFTBOX`). Szóste okno Amerii (kostiumy) pominięte –
   w Amerii `CItem::IsCostume()` zawsze zwraca `false`, więc nic tam nie trafia.
 - **Automatyczne wpadanie** (`GetEmptyInventoryRouted`): podniesienie (własne i drużyny), `AutoGiveItem` (questy,
@@ -37,16 +39,28 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
   zaczarowanie na przedmiot), `CountSpecifyItem` / `RemoveSpecifyItem` liczą i biorą z magazynów (materiały
   ulepszania u kowala, questy), sprzedaż w sklepie NPC (`/ekwipunek sprzedaj`), magazyn (depozyt) w obie strony
   (do magazynu kategorii tylko jego przedmioty), handel, okno craftingu (`/ekwipunek kostka`).
-- **Ulepszanie u kowala / zwojem** czyta przedmiot po polu torby – przedmiot z magazynu trzeba najpierw przenieść
-  do torby (komunikat). Materiały do ulepszenia mogą zostać w magazynie.
+- **Ulepszanie** (`MT2009_PLUS_EKWIPUNEK_REFINE_V1`, edycje „REFINE” w `gen_edits.py`): zwój z magazynu
+  przeciągnięty na przedmiot (w torbie albo w magazynie) otwiera okno ulepszania i ulepszenie zabiera zwój z magazynu;
+  przedmiot z magazynu oddany kowalowi (np. Kamień Duszy +4…+8 – następny stopień) ulepsza się w swoim polu, wynik
+  wraca w to samo pole (`Mt2009EkwRefinePlace`; reszta stosu zostaje w magazynie). Pakiety ulepszania bez zmian:
+  niosą tylko pole, więc serwer pamięta okno przedmiotu i zwoju z `RefineInformation` (`m_bEkwRefineWindow`,
+  `m_bEkwRefineScrollWindow`) i czyta po nich w `CInputMain::Refine` / `DoRefineWithScroll` (także „okno zostaje
+  otwarte”). Klient dostaje okno komendą `ekwipunek_refine <okno>` tuż przed pakietem (`uirefine.py` pokazuje ten
+  przedmiot i liczy materiały także z magazynów). Materiały z przepisu kowala są liczone i zabierane z torby i magazynów
+  (`CountSpecifyItem` / `RemoveSpecifyItem`). Usunięte edycje V1 „npc refine” / „scroll refine” (komunikat
+  „przenieś do zwykłego ekwipunku”).
 - **Szybki pasek** nie przyjmuje przedmiotów z magazynów (serwer odrzuca typ > 3); synchronizacja paska nie
   rusza pól torby o tym samym numerze (strażniki w `SetCount`, `RemoveItem`, `DropItem`, depozycie, handlu).
 - **Sortuj** (`/ekwipunek sortuj <okno>`, raz na 3 s): przyciski Amerii „stack” i „sort” w jednym – łączy stosy
   i układa według typu, podtypu i vnum. Zablokowane przedmioty zostają na miejscu.
-- Przedmioty, które już są w torbach, zostają tam (Ameria nie ma przycisku „przenieś do kategorii”; przeciąganie
-  działa).
+- **Przenieś do extra EQ** (`MT2009_PLUS_EKWIPUNEK_MOVE_V1`, trzecia opcja przycisku sortowania ekwipunku,
+  `inventoryarrange.py`; `/ekwipunek przenies [keep=<hex>]`, raz na 3 s): każdy przedmiot torby należący do kategorii
+  idzie do swojego magazynu – najpierw dołącza do stosów, potem wolne pole. Zostają: założone, zablokowane, w handlu,
+  wystawione w sklepie gracza, zablokowane przed sortowaniem (Alt+LPM) i te, dla których magazyn jest pełny (czat
+  podaje liczby i pełne kategorie). Tylko prawdziwy gracz z nowym exe.
 
 ## Komendy
 
 `/ekwipunek hello`, `/ekwipunek sortuj <okno 11-15>`, `/ekwipunek sprzedaj <okno> <pole> <ilość>`,
-`/ekwipunek kostka <pole kostki> <okno> <pole>` – wszystkie wysyła `uiekwipunek.py` / `uicube.py`.
+`/ekwipunek kostka <pole kostki> <okno> <pole>`, `/ekwipunek przenies [keep=<hex>]` – wysyłają je `uiekwipunek.py`,
+`uicube.py`, `inventoryarrange.py`. Serwer → klient: `ekwipunek_ok <strony>`, `ekwipunek_refine <okno>`.

@@ -173,24 +173,6 @@ edit(C, "remove",
 	"\tif (count)\n\t\tsys_log(0, \"CHARACTER::RemoveSpecifyItem cannot remove enough item vnum %u, still remain %d\", vnum, count);\n",
 	"\tcount = Mt2009SpecialRemoveItem(vnum, count); // " + M + " (remove): what the bag lacked, from the storages\n"
 	"\tif (count)\n\t\tsys_log(0, \"CHARACTER::RemoveSpecifyItem cannot remove enough item vnum %u, still remain %d\", vnum, count);\n")
-edit(C, "npc refine",
-	"void CHARACTER::ReceiveItem(LPCHARACTER from, LPITEM item)\n{\n\tif (IsPC())\n\t\treturn;\n",
-	"void CHARACTER::ReceiveItem(LPCHARACTER from, LPITEM item)\n{\n\tif (IsPC())\n\t\treturn;\n"
-	"\t// " + M + " (npc refine): the refine window reads its item by a bag cell - a storage's item goes to the bag first\n"
-	"\tif (item && Mt2009IsSpecialWindow(item->GetWindow()))\n\t{\n\t\tswitch (GetRaceNum())\n\t\t{\n"
-	"\t\t\tcase fishing::FISHER_MOB:\n\t\t\tcase HERB_BLACKSMITH:\n\t\t\tcase PICKAXE_BLACKSMITH:\n"
-	"\t\t\tcase DEVILTOWER_BLACKSMITH_WEAPON_MOB:\n\t\t\tcase DEVILTOWER_BLACKSMITH_ARMOR_MOB:\n\t\t\tcase DEVILTOWER_BLACKSMITH_ACCESSORY_MOB:\n"
-	"\t\t\tcase BLACKSMITH_MOB:\n\t\t\tcase BLACKSMITH2_MOB:\n\t\t\tcase BLACKSMITH_WEAPON_MOB:\n\t\t\tcase BLACKSMITH_ARMOR_MOB:\n\t\t\tcase BLACKSMITH_ACCESSORY_MOB:\n"
-	"\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, \"Przenies przedmiot z dodatkowego ekwipunku do zwyklego, aby go ulepszyc.\");\n"
-	"\t\t\t\treturn;\n\t\t}\n\t}\n")
-edit(C, "scroll refine",
-	"bool CHARACTER::RefineItem(LPITEM pkItem, LPITEM pkTarget)\n{\n\tif (!CanHandleItem())\n\t\treturn false;\n",
-	"bool CHARACTER::RefineItem(LPITEM pkItem, LPITEM pkTarget)\n{\n\tif (!CanHandleItem())\n\t\treturn false;\n"
-	"\t// " + M + " (scroll refine): the refine window reads both items by bag cells\n"
-	"\tif ((pkItem && Mt2009IsSpecialWindow(pkItem->GetWindow())) || (pkTarget && Mt2009IsSpecialWindow(pkTarget->GetWindow())))\n\t{\n"
-	"\t\tChatPacket(CHAT_TYPE_INFO, \"Przenies przedmiot z dodatkowego ekwipunku do zwyklego, aby go ulepszyc.\");\n"
-	"\t\treturn false;\n\t}\n")
-
 # ---------------------------------------------------------------- item.cpp
 I = "item.cpp"
 edit(I, "remove",
@@ -314,6 +296,172 @@ edit(D, "delete",
 	"\"DELETE FROM item%%s WHERE owner_id=%%d AND (`window` in %s)\", GetTablePostfix(), pi->player_id);\n" % OLDW,
 	"\"DELETE FROM item%%s WHERE owner_id=%%d AND (`window` in %s)\", GetTablePostfix(), pi->player_id); // %s (delete)\n" % (NEWW, M))
 
+
+# ---------------------------------------------------------------- refining with the storages (MT2009_PLUS_EKWIPUNEK_REFINE_V1)
+# The owner, 21 October 2026: "Chce, aby dzialalo tak, ze jak ulepszacz jest w dodatkowym EQ, to mozna ulepszac."
+# The refine window (TPacketGCRefineInformation / TPacketCGRefine) carries a bag cell only; the server keeps the
+# window of the refined item and of the scroll for the open refine (m_bEkwRefineWindow, m_bEkwRefineScrollWindow,
+# set by RefineInformation) and reads both by them - the packets stay as they are. The client learns the window from
+# "ekwipunek_refine <window>" sent just before the refine packet (root/uirefine.py shows that window's item).
+# Replaces the V1 "npc refine" / "scroll refine" edits that sent a storage's item to the bag first.
+R = "MT2009_PLUS_EKWIPUNEK_REFINE_V1"
+
+
+def redit(file, tag, old, new):
+	E.append({"file": file, "marker": "%s (%s)" % (R, tag), "old": old, "new": new})
+
+
+redit(H, "decl",
+	"\t\tbool\t\t\tRefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell = -1);\n",
+	"\t\t// " + R + " (decl): the refined item's window and the scroll's - INVENTORY or a category storage\n"
+	"\t\tbool\t\t\tRefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell = -1, BYTE bWindow = INVENTORY, BYTE bScrollWindow = INVENTORY);\n"
+	"\t\tBYTE\t\t\tGetEkwRefineWindow() const { return m_bEkwRefineWindow; }\n"
+	"\t\tBYTE\t\t\tGetEkwRefineScrollWindow() const { return m_bEkwRefineScrollWindow; }\n"
+	"\t\tBYTE\t\t\tMt2009EkwWindowOf(LPITEM item) const;\n"
+	"\t\tint\t\t\t\tMt2009EkwRefineRestCell(LPITEM item, BYTE* pbWindow);\n"
+	"\t\tvoid\t\t\tMt2009EkwRefinePlace(LPITEM pkNewItem, BYTE bWindow, WORD wCell);\n")
+redit(H, "members",
+	"\t\tint\t\t\t\tm_iRefineAdditionalCell;\n\t\tbool\t\t\tm_bUnderRefine;\n",
+	"\t\tint\t\t\t\tm_iRefineAdditionalCell;\n"
+	"\t\tBYTE\t\t\tm_bEkwRefineWindow{INVENTORY};\t\t// " + R + " (members): the open refine's item window\n"
+	"\t\tBYTE\t\t\tm_bEkwRefineScrollWindow{INVENTORY};\t// and its scroll's (m_iRefineAdditionalCell)\n"
+	"\t\tbool\t\t\tm_bUnderRefine;\n")
+
+redit(C, "stack room",
+	"\tif (item->IsExchanging() || item->isLocked() || ch->GetEmptyInventory(item->GetSize()) < 0)\n",
+	"\t// " + R + " (stack room): the rest of a storage's stack goes back into its storage, else the bag\n"
+	"\tif (item->IsExchanging() || item->isLocked() || ch->Mt2009EkwRefineRestCell(item, NULL) < 0)\n")
+redit(C, "stack split",
+	"\tconst int iCell = ch->GetEmptyInventory(item->GetSize());\n\tif (iCell < 0)\n\t\treturn false;\n"
+	"\tLPITEM pkRest = ITEM_MANAGER::instance().CreateItem(item->GetVnum(), item->GetCount() - 1, 0, false);\n"
+	"\tif (!pkRest)\n\t\treturn false;\n\tpkRest->SetSockets(item->GetSockets());\n\tpkRest->SetAttributes(item->GetAttributes());\n"
+	"\tif (!pkRest->AddToCharacter(ch, TItemPos(INVENTORY, iCell)))\n",
+	"\tBYTE bEkwRestWindow = INVENTORY; // " + R + " (stack split): a storage's stack keeps its rest there\n"
+	"\tconst int iCell = ch->Mt2009EkwRefineRestCell(item, &bEkwRestWindow);\n\tif (iCell < 0)\n\t\treturn false;\n"
+	"\tLPITEM pkRest = ITEM_MANAGER::instance().CreateItem(item->GetVnum(), item->GetCount() - 1, 0, false);\n"
+	"\tif (!pkRest)\n\t\treturn false;\n\tpkRest->SetSockets(item->GetSockets());\n\tpkRest->SetAttributes(item->GetAttributes());\n"
+	"\tif (!pkRest->AddToCharacter(ch, TItemPos(bEkwRestWindow, iCell)))\n")
+
+redit(C, "do refine window",
+	"bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly, BYTE refineType)\n{\n",
+	"bool CHARACTER::DoRefine(LPITEM item, bool bMoneyOnly, BYTE refineType)\n{\n"
+	"\t// " + R + " (do refine window): the result goes back into the item's own window (Mt2009EkwRefinePlace)\n"
+	"\tconst BYTE bEkwRefineWindow = Mt2009EkwWindowOf(item);\n")
+redit(C, "do refine success",
+	"\t\t\tpkNewItem->AddToCharacter(this, TItemPos(INVENTORY, bCell));\n\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n\n"
+	"\t\t\tsys_log(0, \"Refine Success %d\", cost);\n",
+	"\t\t\tMt2009EkwRefinePlace(pkNewItem, bEkwRefineWindow, bCell); // " + R + " (do refine success)\n"
+	"\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n\n"
+	"\t\t\tsys_log(0, \"Refine Success %d\", cost);\n")
+redit(C, "do refine fail",
+	"\t\t\t\tpkNewItem->AddToCharacter(this, TItemPos(INVENTORY, bCell));\n\t\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n\n"
+	"\t\t\t\tpkNewItem->AttrLog();\n\n\t\t\t\tif (pkNewItem->GetType() == ITEM_ROD ||\n",
+	"\t\t\t\tMt2009EkwRefinePlace(pkNewItem, bEkwRefineWindow, bCell); // " + R + " (do refine fail)\n"
+	"\t\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n\n"
+	"\t\t\t\tpkNewItem->AttrLog();\n\n\t\t\t\tif (pkNewItem->GetType() == ITEM_ROD ||\n")
+redit(C, "scroll window",
+	"bool CHARACTER::DoRefineWithScroll(LPITEM item)\n{\n",
+	"bool CHARACTER::DoRefineWithScroll(LPITEM item)\n{\n"
+	"\t// " + R + " (scroll window): the result goes back into the item's own window (Mt2009EkwRefinePlace)\n"
+	"\tconst BYTE bEkwRefineWindow = Mt2009EkwWindowOf(item);\n")
+redit(C, "scroll item",
+	"\tpkItemScroll = GetInventoryItem(m_iRefineAdditionalCell);\n",
+	"\t// " + R + " (scroll item): the scroll from the window RefineInformation saw it in (the bag or the materials' storage)\n"
+	"\tpkItemScroll = GetItem(TItemPos(m_bEkwRefineScrollWindow, m_iRefineAdditionalCell));\n")
+redit(C, "scroll success",
+	"\t\t\tpkNewItem->AddToCharacter(this, TItemPos(INVENTORY, bCell));\n\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n"
+	"\t\t\tpkNewItem->AttrLog();\n\t\t\tPayRefineFee(cost);\n",
+	"\t\t\tMt2009EkwRefinePlace(pkNewItem, bEkwRefineWindow, bCell); // " + R + " (scroll success)\n"
+	"\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n"
+	"\t\t\tpkNewItem->AttrLog();\n\t\t\tPayRefineFee(cost);\n")
+redit(C, "scroll fail",
+	"\t\t\t\tpkNewItem->AddToCharacter(this, TItemPos(INVENTORY, bCell));\n\t\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n\n"
+	"\t\t\t\tpkNewItem->AttrLog();\n\t\t\t}\n",
+	"\t\t\t\tMt2009EkwRefinePlace(pkNewItem, bEkwRefineWindow, bCell); // " + R + " (scroll fail)\n"
+	"\t\t\t\tITEM_MANAGER::instance().FlushDelayedSave(pkNewItem);\n\n"
+	"\t\t\t\tpkNewItem->AttrLog();\n\t\t\t}\n")
+redit(C, "info item",
+	"bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell)\n{\n\tif (bCell > INVENTORY_MAX_NUM)\n\t\treturn false;\n\n"
+	"\tLPITEM item = GetInventoryItem(bCell);\n",
+	"bool CHARACTER::RefineInformation(BYTE bCell, BYTE bType, int iAdditionalCell, BYTE bWindow, BYTE bScrollWindow)\n{\n"
+	"\tif (bCell > INVENTORY_MAX_NUM)\n\t\treturn false;\n\n"
+	"\t// " + R + " (info item): the item in the bag or in a category storage, the scroll likewise\n"
+	"\tif (bWindow != INVENTORY && !Mt2009IsSpecialWindow(bWindow))\n\t\treturn false;\n"
+	"\tif (!Mt2009IsSpecialWindow(bScrollWindow))\n\t\tbScrollWindow = INVENTORY;\n"
+	"\tLPITEM item = GetItem(TItemPos(bWindow, bCell));\n")
+redit(C, "info scroll",
+	"\tLPITEM itemScroll = GetInventoryItem(iAdditionalCell);\n",
+	"\tLPITEM itemScroll = (Mt2009IsSpecialWindow(bScrollWindow) && iAdditionalCell >= 0) ? GetItem(TItemPos(bScrollWindow, iAdditionalCell))\n"
+	"\t\t: GetInventoryItem(iAdditionalCell); // " + R + " (info scroll)\n")
+redit(C, "info send",
+	"\tGetDesc()->Packet(&p, sizeof(TPacketGCRefineInformation));\n\n\tSetRefineMode(iAdditionalCell);\n\treturn true;\n}\n",
+	"\t// " + R + " (info send): the window of the item, for root/uirefine.py (a client that said \"/ekwipunek hello\")\n"
+	"\tif (IsSpecialStorageClient())\n\t\tChatPacket(CHAT_TYPE_COMMAND, \"ekwipunek_refine %d\", (int) bWindow);\n"
+	"\tGetDesc()->Packet(&p, sizeof(TPacketGCRefineInformation));\n\n\tSetRefineMode(iAdditionalCell);\n"
+	"\tm_bEkwRefineWindow = bWindow;\n\tm_bEkwRefineScrollWindow = bScrollWindow;\n\treturn true;\n}\n")
+redit(C, "scroll use",
+	"\t\tif (pkItem->GetValue(0) == UP_TO_3TH_LEVEL_SCROLL)\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_UP_TO_3TH_LEVEL, pkItem->GetCell());\n"
+	"\t\telse if (pkItem->GetValue(0) == NO_REDUCTION_WHEN_FAIL_SCROLL)\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_NO_REDUCTION_WHEN_FAIL, pkItem->GetCell());\n"
+	"\t\telse if (pkItem->GetValue(0) == REFINE_BONUS_SCROLL)\n\t\t{\n"
+	"\t\t\tif (pkTarget && pkTarget->GetType() == ITEM_WEAPON && pkTarget->GetLimitValue(0) == 30) // blokada uzycia na FMSy itp.\n"
+	"\t\t\t\treturn false;\n\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_SCROLL, pkItem->GetCell());\n\t\t}\n\t\telse\n\t\t{\n"
+	"\t\t\tif (IsEliteRefine(pkTarget->GetRefineSet())) return false;\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_SCROLL, pkItem->GetCell());\n\t\t}\n",
+	"\t\t// " + R + " (scroll use): the scroll and the item each from its own window (the bag or a storage)\n"
+	"\t\tconst BYTE bEkwItemWindow = Mt2009EkwWindowOf(pkTarget), bEkwScrollWindow = Mt2009EkwWindowOf(pkItem);\n"
+	"\t\tif (pkItem->GetValue(0) == UP_TO_3TH_LEVEL_SCROLL)\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_UP_TO_3TH_LEVEL, pkItem->GetCell(), bEkwItemWindow, bEkwScrollWindow);\n"
+	"\t\telse if (pkItem->GetValue(0) == NO_REDUCTION_WHEN_FAIL_SCROLL)\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_NO_REDUCTION_WHEN_FAIL, pkItem->GetCell(), bEkwItemWindow, bEkwScrollWindow);\n"
+	"\t\telse if (pkItem->GetValue(0) == REFINE_BONUS_SCROLL)\n\t\t{\n"
+	"\t\t\tif (pkTarget && pkTarget->GetType() == ITEM_WEAPON && pkTarget->GetLimitValue(0) == 30) // blokada uzycia na FMSy itp.\n"
+	"\t\t\t\treturn false;\n\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_SCROLL, pkItem->GetCell(), bEkwItemWindow, bEkwScrollWindow);\n\t\t}\n\t\telse\n\t\t{\n"
+	"\t\t\tif (IsEliteRefine(pkTarget->GetRefineSet())) return false;\n"
+	"\t\t\tRefineInformation(pkTarget->GetCell(), REFINE_TYPE_SCROLL, pkItem->GetCell(), bEkwItemWindow, bEkwScrollWindow);\n\t\t}\n")
+redit(C, "npc money",
+	"\t\t\t\tfrom->RefineInformation(item->GetCell(), REFINE_TYPE_MONEY_ONLY);\n",
+	"\t\t\t\tfrom->RefineInformation(item->GetCell(), REFINE_TYPE_MONEY_ONLY, -1, from->Mt2009EkwWindowOf(item)); // " + R + " (npc money)\n")
+redit(C, "npc normal",
+	"\t\t\t\tfrom->RefineInformation(item->GetCell(), REFINE_TYPE_NORMAL);\n",
+	"\t\t\t\tfrom->RefineInformation(item->GetCell(), REFINE_TYPE_NORMAL, -1, from->Mt2009EkwWindowOf(item)); // " + R + " (npc normal)\n")
+redit(C, "mode",
+	"void CHARACTER::SetRefineMode(int iAdditionalCell)\n{\n\tm_iRefineAdditionalCell = iAdditionalCell;\n",
+	"void CHARACTER::SetRefineMode(int iAdditionalCell)\n{\n\tm_iRefineAdditionalCell = iAdditionalCell;\n"
+	"\t// " + R + " (mode): the bag's cells unless RefineInformation says otherwise right after (a bot's own SetRefineMode)\n"
+	"\tm_bEkwRefineWindow = INVENTORY;\n\tm_bEkwRefineScrollWindow = INVENTORY;\n")
+
+IM = "input_main.cpp"
+redit(IM, "packet window",
+	"\tconst DWORD dwRefineNPCVID = ch->GetRefineNPCVID();\n",
+	"\tconst DWORD dwRefineNPCVID = ch->GetRefineNPCVID();\n"
+	"\t// " + R + " (packet window): the windows RefineInformation opened this refine with (the packet has a cell only)\n"
+	"\tconst BYTE bEkwRefineWindow = ch->GetEkwRefineWindow();\n"
+	"\tconst BYTE bEkwRefineScrollWindow = ch->GetEkwRefineScrollWindow();\n")
+redit(IM, "packet item",
+	"\tLPITEM item = ch->GetInventoryItem(p->pos);\n\n\tif (!item)\n\t{\n\t\tch->ClearRefineMode();\n\t\treturn;\n\t}\n\n"
+	"\tif (item->GetCell() >= ch->GetInventoryMaxCount())\n",
+	"\tLPITEM item = ch->GetItem(TItemPos(bEkwRefineWindow, p->pos)); // " + R + " (packet item)\n\n"
+	"\tif (!item)\n\t{\n\t\tch->ClearRefineMode();\n\t\treturn;\n\t}\n\n"
+	"\tif (!Mt2009IsSpecialWindow(item->GetWindow()) && item->GetCell() >= ch->GetInventoryMaxCount())\n")
+redit(IM, "packet money",
+	"\t\tconst LPITEM item = ch->GetInventoryItem(p->pos);\n\n\t\tif (NULL != item)\n",
+	"\t\tconst LPITEM item = ch->GetItem(TItemPos(bEkwRefineWindow, p->pos)); // " + R + " (packet money)\n\n\t\tif (NULL != item)\n")
+redit(IM, "keep open item",
+	"\t\tLPITEM refreshedItem = ch->GetInventoryItem(p->pos);\n",
+	"\t\tLPITEM refreshedItem = ch->GetItem(TItemPos(bEkwRefineWindow, p->pos)); // " + R + " (keep open item)\n")
+redit(IM, "keep open npc",
+	"\t\t\t\t\t\tif (!ch->RefineInformation(p->pos, p->type))\n",
+	"\t\t\t\t\t\tif (!ch->RefineInformation(p->pos, p->type, -1, bEkwRefineWindow)) // " + R + " (keep open npc)\n")
+redit(IM, "keep open scroll",
+	"\t\t\t\t\trefineScroll = ch->GetInventoryItem(iRefineAdditionalCell);\n",
+	"\t\t\t\t\trefineScroll = ch->GetItem(TItemPos(bEkwRefineScrollWindow, iRefineAdditionalCell)); // " + R + " (keep open scroll)\n")
+redit(IM, "keep open info",
+	"\t\t\t\t\tch->RefineInformation(p->pos, p->type, iRefineAdditionalCell);\n",
+	"\t\t\t\t\tch->RefineInformation(p->pos, p->type, iRefineAdditionalCell, bEkwRefineWindow, bEkwRefineScrollWindow); // " + R + " (keep open info)\n")
 
 def main():
 	json.dump(E, open(os.path.join(HERE, "edits.json"), "w"), indent=1)
