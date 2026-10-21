@@ -6,7 +6,8 @@ gen_buffi_stone.py extract [--db CONTAINER] [--game CONTAINER]
 
 MT2009_PLUS_BUFFI_STONE_DROP_V1: Kamien Duchowy Buffi (61031, mariadb/playerbot/buffi.sql - trains Buffi's skills
 G1 -> P) drops from every Metin and boss of Zaklety Las (353) and of every map above it, the whole of Yohara too (the
-owner, 21 October 2026). Chances by the rule of cache/yohara/PROCENTY.md (ymoby_data.py): the same kind of item on our
+owner, 21 October 2026) - only one that drops the plain Kamien Duchowy (50513) too (the owner, 21 October: "jesli z bossa
+nie dropi zwykly kamien duchowy, to niech nie dropi tez buffi"; MT2009_PLUS_BUFFI_STONE_DROP_V2). Chances by the rule of cache/yohara/PROCENTY.md (ymoby_data.py): the same kind of item on our
 monsters of the same kind - here the plain Kamien Duchowy (50513): the median of its Type drop rows on our Metins
 (type 2) and, apart, on our bosses (type 0, rank >= 4). Writes
 
@@ -207,15 +208,18 @@ def extract(a):
             out |= expand(t, seen)
         return out
 
-    ref, has = collections.defaultdict(list), set()
+    ref, has, plain = collections.defaultdict(list), set(), set()
     for g in M.groups(img):
         if g['mob'] is None or g['name'].startswith(GROUP):
             continue
         for it, cnt, pct in g['rows']:
             if g['type'] == 'drop' and it == str(SAME) and kind(g['mob']):
                 ref[kind(g['mob'])].append((cnt, float(pct)))
-            if STONE in expand(it, set()):
+            got = expand(it, set())
+            if STONE in got:
                 has.add(g['mob'])
+            if SAME in got:
+                plain.add(g['mob'])
     chance = {}
     for k in ('stone', 'boss'):
         rows = ref[k]
@@ -229,7 +233,8 @@ def extract(a):
             continue
         maps = sorted(where[v] - {0})
         why = EXCLUDE.get(v) or ('a map below the forest spawns it too' if 0 in where[v] else None) or \
-            ('drops 61031 already' if v in has else None)
+            ('drops 61031 already' if v in has else None) or \
+            ('no plain Kamien Duchowy (50513) in its drop' if v not in plain else None)
         if why:
             out.append([v, mob[v]['name'], maps, why])
             continue

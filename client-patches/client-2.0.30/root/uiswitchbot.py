@@ -13,8 +13,8 @@
 #
 # Ameria's window as it is: five item tabs at the top (drag a weapon or an
 # armour from the bag onto a tab; the item stays in the bag, locked), the
-# selected tab's alternatives (two shown - Ameria's premium switchbot opened the
-# other three) and five bonus rows (search a bonus the item can get, its
+# selected tab's alternatives (all five - Ameria's premium ones open for everyone,
+# MT2009_PLUS_SWITCHBOT_PREMIUM_V1) and five bonus rows (search a bonus the item can get, its
 # minimum - the maximum the item can roll by default), Start / Stop, the saved
 # sets (a list beside the window). The server changes the bonuses every 0.2 s
 # with Zaczarowanie Przedmiotu (39028, 71084, 76014, 71151) until one
@@ -62,11 +62,12 @@ ADDON_TYPES = {
 	getattr(player, "POINT_NORMAL_HIT_DAMAGE_BONUS", 122): NORMAL_HIT_DAMAGE_BONUS_MAX,
 }
 
-# Ameria's premium switchbot opened the alternatives 3-5; without it two.
-VISIBLE_ALTERNATIVES = 2
-
 SLOT_COUNT = switchbot.SLOT_COUNT if switchbot else 5
 ALTERNATIVE_COUNT = switchbot.ALTERNATIVE_COUNT if switchbot else 5
+
+# MT2009_PLUS_SWITCHBOT_PREMIUM_V1 (the owner, 21 Oct 2026: "odblokuj premium dla wszystkich bez dodatkowego
+# przedmiotu"): every alternative of Ameria's premium switchbot (3-5 too) for everyone - the server takes all five.
+VISIBLE_ALTERNATIVES = ALTERNATIVE_COUNT
 
 BOARD_WIDTH = 400
 INPUT_HEIGHT = 27
