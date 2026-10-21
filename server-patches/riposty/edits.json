@@ -1,0 +1,86 @@
+[
+ {
+  "file": "../../common/skill_length.h",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (vnum)",
+  "old": "\tSKILL_PRECISION = 246,\n",
+  "new": "\tSKILL_PRECISION = 246,\n\t// MT2009_PLUS_RIPOSTY_V1 (vnum): Riposty (7th) and Dopalacze (8th), the passive skills of every character - GF's\n\t// vnums (server-patches/riposty, playerbot_riposty.cpp); 229 / 244 are the Lycan's (no Lycan here)\n\tSKILL_ANTI_PALBANG = 221,\t// Riposta: Wir Miecza\n\tSKILL_ANTI_AMSEOP = 222,\t// Riposta: Zasadzka\n\tSKILL_ANTI_SWAERYUNG = 223,\t// Riposta: Uderzenie Palcem\n\tSKILL_ANTI_YONGBI = 224,\t// Riposta: Strzelajacy Smok\n\tSKILL_ANTI_GIGONGCHAM = 225,\t// Riposta: Duchowe Uderzenie\n\tSKILL_ANTI_HWAJO = 226,\t// Riposta: Ognista Strzala\n\tSKILL_ANTI_MARYUNG = 227,\t// Riposta: Mroczne Uderzenie\n\tSKILL_ANTI_BYEURAK = 228,\t// Riposta: Przywolanie Blyskawicy\n\tSKILL_HELP_PALBANG = 236,\t// Dopalacz: Wir Miecza\n\tSKILL_HELP_AMSEOP = 237,\t// Dopalacz: Zasadzka\n\tSKILL_HELP_SWAERYUNG = 238,\t// Dopalacz: Uderzenie Palcem\n\tSKILL_HELP_YONGBI = 239,\t// Dopalacz: Strzelajacy Smok\n\tSKILL_HELP_GIGONGCHAM = 240,\t// Dopalacz: Duchowe Uderzenie\n\tSKILL_HELP_HWAJO = 241,\t// Dopalacz: Ognista Strzala\n\tSKILL_HELP_MARYUNG = 242,\t// Dopalacz: Mroczne Uderzenie\n\tSKILL_HELP_BYEURAK = 243,\t// Dopalacz: Przywolanie Blyskawicy\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (learnable)",
+  "old": "\t// MT2009_PLUS_SKILL9_V1 (learnable): a 9th skill belongs to one class AND specialisation (playerbot_skill9.cpp).\n",
+  "new": "\t// MT2009_PLUS_RIPOSTY_V1 (learnable): a riposte / boost grows once its Podrecznik taught it (playerbot_riposty.cpp).\n\t{\n\t\tint RipostyLearnable(const CHARACTER*, unsigned int);\n\t\tconst int r = RipostyLearnable(this, dwSkillVnum);\n\t\tif (r >= 0)\n\t\t\treturn r != 0;\n\t}\n\t// MT2009_PLUS_SKILL9_V1 (learnable): a 9th skill belongs to one class AND specialisation (playerbot_skill9.cpp).\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (book check)",
+  "old": "\tif (!IsLearnableSkill(dwSkillVnum))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot train this skill.\"));\n\t\treturn false;\n\t}\n\n\t// MT2009_PLUS_SKILL9_V1 (book check)",
+  "new": "\t// MT2009_PLUS_RIPOSTY_V1 (book check): a riposte's / boost's book - its Podrecznik first, one riposte, the class's boost\n\t{\n\t\tint RipostyBookCheck(CHARACTER*, unsigned int);\n\t\tif (!RipostyBookCheck(this, dwSkillVnum))\n\t\t\treturn false;\n\t}\n\n\tif (!IsLearnableSkill(dwSkillVnum))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot train this skill.\"));\n\t\treturn false;\n\t}\n\n\t// MT2009_PLUS_SKILL9_V1 (book check)"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (book grade)",
+  "old": "\tif (pkSk->dwType != 0 && !(dwSkillVnum >= SKILL_FINISH && dwSkillVnum <= SKILL_CHEONUN && GetSkillMasterType(dwSkillVnum) == SKILL_NORMAL))\n",
+  "new": "\t// MT2009_PLUS_RIPOSTY_V1 (book grade): a riposte's / boost's books from level 1 to M1 as well (a level a successful read)\n\tif (pkSk->dwType != 0 && !(dwSkillVnum >= SKILL_FINISH && dwSkillVnum <= SKILL_CHEONUN && GetSkillMasterType(dwSkillVnum) == SKILL_NORMAL)\n\t\t&& !(((dwSkillVnum >= SKILL_ANTI_PALBANG && dwSkillVnum <= SKILL_ANTI_BYEURAK) || (dwSkillVnum >= SKILL_HELP_PALBANG && dwSkillVnum <= SKILL_HELP_BYEURAK)) && GetSkillMasterType(dwSkillVnum) == SKILL_NORMAL))\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (level up book)",
+  "old": "\t\tif (pkSk->dwType != 0 && !(pkSk->dwVnum >= SKILL_FINISH && pkSk->dwVnum <= SKILL_CHEONUN))\n",
+  "new": "\t\t// MT2009_PLUS_RIPOSTY_V1 (level up book): a riposte / boost goes up by its books below M too\n\t\tif (pkSk->dwType != 0 && !(pkSk->dwVnum >= SKILL_FINISH && pkSk->dwVnum <= SKILL_CHEONUN) &&\n\t\t\t!((pkSk->dwVnum >= SKILL_ANTI_PALBANG && pkSk->dwVnum <= SKILL_ANTI_BYEURAK) || (pkSk->dwVnum >= SKILL_HELP_PALBANG && pkSk->dwVnum <= SKILL_HELP_BYEURAK)))\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (level up stop)",
+  "old": "\t\t!(pkSk->dwVnum >= SKILL_FINISH && pkSk->dwVnum <= SKILL_CHEONUN) && // MT2009_PLUS_SKILL9_V1 (level up stop)\n",
+  "new": "\t\t!(pkSk->dwVnum >= SKILL_FINISH && pkSk->dwVnum <= SKILL_CHEONUN) && // MT2009_PLUS_SKILL9_V1 (level up stop)\n\t\t!((pkSk->dwVnum >= SKILL_ANTI_PALBANG && pkSk->dwVnum <= SKILL_ANTI_BYEURAK) || (pkSk->dwVnum >= SKILL_HELP_PALBANG && pkSk->dwVnum <= SKILL_HELP_BYEURAK)) && // MT2009_PLUS_RIPOSTY_V1 (level up stop)\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (level up roll)",
+  "old": "\t\t\t\tif (pkSk->dwVnum >= SKILL_FINISH && pkSk->dwVnum <= SKILL_CHEONUN)\n\t\t\t\t{\n\t\t\t\t\tif (GetSkillLevel(pkSk->dwVnum) >= 17 && number(1, 21 - MIN(20, GetSkillLevel(pkSk->dwVnum))) == 1)\n",
+  "new": "\t\t\t\t// MT2009_PLUS_RIPOSTY_V1 (level up roll): a riposte / boost as well (the wiki: M1 \"gdy osiagnie poziom od 17 do 20\")\n\t\t\t\tif ((pkSk->dwVnum >= SKILL_FINISH && pkSk->dwVnum <= SKILL_CHEONUN) || ((pkSk->dwVnum >= SKILL_ANTI_PALBANG && pkSk->dwVnum <= SKILL_ANTI_BYEURAK) || (pkSk->dwVnum >= SKILL_HELP_PALBANG && pkSk->dwVnum <= SKILL_HELP_BYEURAK)))\n\t\t\t\t{\n\t\t\t\t\tif (GetSkillLevel(pkSk->dwVnum) >= 17 && number(1, 21 - MIN(20, GetSkillLevel(pkSk->dwVnum))) == 1)\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (points)",
+  "old": "\t\tPointChange(idx, -1);\n\t}\n\n\tint SkillPointBefore = GetSkillLevel(pkSk->dwVnum);\n",
+  "new": "\t\tPointChange(idx, -1);\n\t\t// MT2009_PLUS_RIPOSTY_V1 (points): a riposte's / boost's point is remembered (a skill reset keeps them spent)\n\t\t{ void RipostyPointSpent(CHARACTER*, unsigned int); RipostyPointSpent(this, pkSk->dwVnum); }\n\t}\n\n\tint SkillPointBefore = GetSkillLevel(pkSk->dwVnum);\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (reset)",
+  "old": "\tvec.emplace_back(SKILL_PRECISION, m_pSkillLevels[SKILL_PRECISION]);\n",
+  "new": "\tvec.emplace_back(SKILL_PRECISION, m_pSkillLevels[SKILL_PRECISION]);\n\t// MT2009_PLUS_RIPOSTY_V1 (reset): the riposte and boost are kept too (Zwoj Zmiany Treningu removes them)\n\tfor (DWORD dwPassive = SKILL_ANTI_PALBANG; dwPassive <= SKILL_HELP_BYEURAK; ++dwPassive)\n\t\tif (dwPassive <= SKILL_ANTI_BYEURAK || dwPassive >= SKILL_HELP_PALBANG)\n\t\t\tvec.emplace_back(dwPassive, m_pSkillLevels[dwPassive]);\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (clear)",
+  "old": "\tPointChange(POINT_SKILL, 4 + (GetLevel() - 5) - GetPoint(POINT_SKILL));\n",
+  "new": "\t// MT2009_PLUS_RIPOSTY_V1 (clear): the points of the riposte and boost the reset keeps stay spent\n\t{\n\t\tint RipostyKeptPoints(CHARACTER*);\n\t\tPointChange(POINT_SKILL, 4 + (GetLevel() - 5) - RipostyKeptPoints(this) - GetPoint(POINT_SKILL));\n\t}\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (level down)",
+  "old": "\tif (dwVnum >= SKILL_FINISH && dwVnum <= SKILL_CHEONUN)\n\t\treturn false;\n\n\tif (GetSkillMasterType(pkSk->dwVnum) != SKILL_NORMAL)\n",
+  "new": "\tif (dwVnum >= SKILL_FINISH && dwVnum <= SKILL_CHEONUN)\n\t\treturn false;\n\t// MT2009_PLUS_RIPOSTY_V1 (level down): no point back from a riposte / boost (Zwoj Zmiany Treningu gives them back)\n\tif ((dwVnum >= SKILL_ANTI_PALBANG && dwVnum <= SKILL_ANTI_BYEURAK) || (dwVnum >= SKILL_HELP_PALBANG && dwVnum <= SKILL_HELP_BYEURAK))\n\t\treturn false;\n\n\tif (GetSkillMasterType(pkSk->dwVnum) != SKILL_NORMAL)\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (damage)",
+  "old": "\t\tif (m_pkSk->dwVnum == SKILL_FLAME_SPIRIT)\n\t\t{\n\t\t\tif (distance > 0)\n",
+  "new": "\t\t// MT2009_PLUS_RIPOSTY_V1 (damage): the attacker's boost of this skill adds, the victim's riposte against it takes away\n\t\t{\n\t\t\tint RipostyDamage(CHARACTER*, CHARACTER*, unsigned int, int);\n\t\t\tiDam = RipostyDamage(m_pkChr, pkChrVictim, m_pkSk->dwVnum, iDam);\n\t\t}\n\n\t\tif (m_pkSk->dwVnum == SKILL_FLAME_SPIRIT)\n\t\t{\n\t\t\tif (distance > 0)\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (group)",
+  "old": "\tm_points.skill_group = bSkillGroup;\n\n\tTPacketGCChangeSkillGroup p;\n",
+  "new": "\tm_points.skill_group = bSkillGroup;\n\t// MT2009_PLUS_RIPOSTY_V1 (group): a known boost moves to the new specialisation's (playerbot_riposty.cpp)\n\t{ void RipostyGroupChanged(CHARACTER*); RipostyGroupChanged(this); }\n\n\tTPacketGCChangeSkillGroup p;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_RIPOSTY_V1 (skillup)",
+  "old": "\tif (true == ch->CanUseSkill(vnum))\n\t{\n\t\tch->SkillLevelUp(vnum);\n\t}\n",
+  "new": "\t// MT2009_PLUS_RIPOSTY_V1 (skillup): a riposte / boost takes the class skill points (the skill window's plus)\n\tif ((vnum >= SKILL_ANTI_PALBANG && vnum <= SKILL_ANTI_BYEURAK) || (vnum >= SKILL_HELP_PALBANG && vnum <= SKILL_HELP_BYEURAK))\n\t{\n\t\tch->SkillLevelUp(vnum);\n\t\treturn;\n\t}\n\n\tif (true == ch->CanUseSkill(vnum))\n\t{\n\t\tch->SkillLevelUp(vnum);\n\t}\n"
+ }
+]

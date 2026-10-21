@@ -436,3 +436,8 @@ linux-port/docker/game/dragon_soul_applys.global.txt
 # the engine files it changes are above (length.h, char.cpp, battle.cpp, char_battle.cpp, char_skill.cpp, item.cpp,
 # item_attribute.cpp); the logic is playerbot_bonus67.{h,cpp} (the playerbot_* lines); the pool of both bonus modes
 # bonusy67_wiki.sql (above, tools/bonusy67).
+# MT2009_PLUS_RIPOSTY_V1 (server-patches/riposty): Riposty i Dopalacze - the engine files it changes are above
+# (skill_length.h, char_skill.cpp, cmd_general.cpp); the logic is playerbot_riposty.{h,cpp} (the playerbot_* lines), the
+# quest riposty (quest/*), the skills riposty_skill.sql, Zwoj Zmiany Treningu's ItemShop offer riposty_itemshop.sql.
+linux-port/docker/mariadb/playerbot/riposty_skill.sql
+linux-port/docker/mariadb/playerbot/riposty_itemshop.sql

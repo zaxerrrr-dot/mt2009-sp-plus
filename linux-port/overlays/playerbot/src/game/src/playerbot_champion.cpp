@@ -1012,6 +1012,9 @@ void RegisterChampionFunctions()
 
 #endif // ENABLE_CONQUEROR_LEVEL
 
+// MT2009_PLUS_RIPOSTY_V1: Riposty i Dopalacze's pc.* functions (playerbot_riposty.cpp) ride on the hook below.
+void RegisterRipostyFunctions();
+
 // questlua.cpp declares and calls it inside namespace quest (a block-scope declaration there names
 // quest::RegisterChampionFunctions), so that is the name the linker looks for.
 namespace quest
@@ -1019,5 +1022,6 @@ namespace quest
 	void RegisterChampionFunctions()
 	{
 		::RegisterChampionFunctions();
+		::RegisterRipostyFunctions();	// MT2009_PLUS_RIPOSTY_V1
 	}
 }
