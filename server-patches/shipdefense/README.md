@@ -97,6 +97,15 @@ solo, 5 000 000 Yang, bez przerwy, 10 wejść dziennie. Wszystko da się zmieni�
 | `(lua)` | `questlua.cpp` | Rejestracja modułu `dw`. |
 | `(declare)`, `(table)` | `cmd.cpp` | Polecenie GM `/dw` (create, start, info, wave 1-4, end). |
 | `(hydra chest)` | `char_item.cpp` | Skrzynia Hydry (54705) po udanym otwarciu zostaje, dopóki nie otwarto jej `chest_uses` razy (gniazdo 0 liczy otwarcia; `ShipDefense_ChestKeep`). |
+| `MT2009_PLUS_HYDRA_NO_DROP_V1 (no drop)` | `char_battle.cpp` | `CHARACTER::Reward`: Hydra 3960–3964 na statku nie daje nic (ani tabel, ani dodatków świata, ani Yang) – ginie w morzu, poza pokładem; nagroda to Skarb Hydry (3965) na pokładzie. Owoce rangi i runa aury – te same sprawdzenie w nakładce (`ShipDefense_NoDrop`). |
+
+## Ściany przy odliczaniu (`MT2009_PLUS_HYDRA_WALL_V1`, 20.10.2026)
+
+Cztery ściany 3970 (`defensewave_wall`, pozycje Owsapa: tylne 400,372 i 369,372 – znikają na koniec odliczania fali,
+przednie 400,435 i 369,435 – po zwycięstwie). Były NPC (typ 1), a klient przepuszcza NPC – gracze schodzili na pokład
+przed końcem odliczania. Teraz typ DOOR (4): klient zatrzymuje ruch (także doskoki umiejętności) na sferach kolizji
+modelu (`defensewave_wall.msm`), a `IsBlockedDamage` nie przepuszcza na nie obrażeń. `shipdefense.sql` zmienia typ
+istniejącego wiersza (strzeżony `UPDATE`).
 
 ## Moduł `dw` (dla questa, krok 5)
 

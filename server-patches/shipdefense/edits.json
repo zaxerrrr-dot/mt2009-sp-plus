@@ -112,5 +112,11 @@
   "marker": "MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest)",
   "old": "DropSpecialItemGroup(dwBoxVnum, bSuccess);\n\t\t\t\tif (bSuccess)\n\t\t\t\t{\n\t\t\t\t\titem->SetCount(item->GetCount()-1);\n\t\t\t\t}",
   "new": "DropSpecialItemGroup(dwBoxVnum, bSuccess);\n\t\t\t\tif (bSuccess)\n\t\t\t\t{\n\t\t\t\t\t// MT2009_PLUS_SHIP_DEFENSE_V1 (hydra chest): Skrzynia Hydry (54705) opens chest_uses times (3),\n\t\t\t\t\t// socket 0 counts the openings (the tooltip shows the rest); the last one takes the chest.\n\t\t\t\t\tbool ShipDefense_ChestKeep(LPITEM item);\n\t\t\t\t\tif (!ShipDefense_ChestKeep(item))\n\t\t\t\t\t\titem->SetCount(item->GetCount()-1);\n\t\t\t\t}"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_HYDRA_NO_DROP_V1 (no drop)",
+  "old": "\tif (!bItemDrop)\n\t\treturn;\n",
+  "new": "\t// MT2009_PLUS_HYDRA_NO_DROP_V1 (no drop): the Hydra on the ship (3960-3964) drops nothing, not even yang -\n\t// it dies in the sea, out of reach; the reward is the treasure it leaves on the deck (playerbot_ship_defense.cpp).\n\t{ bool ShipDefense_NoDrop(LPCHARACTER); if (ShipDefense_NoDrop(this)) return; }\n\n\tif (!bItemDrop)\n\t\treturn;\n"
  }
 ]

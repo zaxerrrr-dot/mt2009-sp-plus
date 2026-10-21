@@ -2,7 +2,8 @@
 -- idempotent: INSERT IGNORE - a row the operator changed is kept. Every vnum checked free in world.sql and in our
 -- other files (13 October 2026; refine_proto 20432-20437 in zywioly_talizmany.sql is another table).
 -- Source: Owsap v6.2.6 db/mob_proto.txt and item_proto.txt (the official vnums), recomputed into our r40250 columns:
---  * rank/type/battle_type as numbers; Owsap's OBJECT (the invisible wall 3970) is our NPC (1) - not attackable;
+--  * rank/type/battle_type as numbers; Owsap's OBJECT (the invisible wall 3970) is our DOOR (4) - the client blocks
+--    walking through a door (an NPC it lets through), the C++ blocks the damage (MT2009_PLUS_HYDRA_WALL_V1);
 --  * ai_flag/setImmuneFlag only with our names: NORECOVERY and COUNT (the mast, the repair plank) do not exist here,
 --    the mast regenerates 1 HP every 255 s instead and the C++ (playerbot_ship_defense.cpp) makes every blow on the
 --    plank cost one point; UNK_IMMUNE_FLAG4-6 dropped;
@@ -32,7 +33,7 @@ INSERT IGNORE INTO world.mob_proto (`vnum`,`name`,`locale_name`,`rank`,`type`,`b
 (3963,'Hydra','Hydra',5,0,2,120,'NONE','AGGR,NOMOVE,BERSERK,DEATHBLOW,REVIVE',0,'','STUN,SLOW,TERROR',0,'defensewave_hydra_boss_left',0,131,65,131,32,153,285,1313838,10,5,0,0,104702,210,100,100,100,2000,100,0,0,0,0,0,0,3,15,0,0,45,35,45,25,25,40,0,0,0,0,0,3.0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- glowa (ozdoba), poziom 120 -> 110
 (3964,'Hydra','Hydra',5,0,2,120,'NONE','AGGR,NOMOVE,BERSERK,DEATHBLOW,REVIVE',0,'','STUN,SLOW,TERROR',0,'defensewave_hydra_boss_right',0,131,65,131,32,153,285,1313838,10,10,0,0,104702,210,100,100,100,2000,100,0,0,0,0,0,0,3,15,0,0,45,35,45,25,25,40,0,0,0,0,0,3.0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- glowa (ozdoba), poziom 120 -> 110
 (3965,'Hydra\'s Treasure','Skarb Hydry',5,0,0,105,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'reddragon_room_box',0,0,0,0,0,0,0,120,3,1,0,0,584702,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- skrzynia-potwor: Owsap 120 PZ, exp 584702, drop w kroku 6
-(3970,'Wall','Ściana',5,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',0,0,0,0,0,0,0,120,3,1,0,0,10,4,100,0,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- Owsap OBJECT (13) -> nasz NPC (1): nie do zaatakowania
+(3970,'Wall','Ściana',5,4,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',0,0,0,0,0,0,0,120,3,1,0,0,10,4,100,0,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- Owsap OBJECT (13) -> nasz DOOR (4): klient nie przepuszcza (MT2009_PLUS_HYDRA_WALL_V1), obrażeń nie przyjmuje (C++)
 (20432,'Hydra Egg','Jajo Hydry',5,2,0,120,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'metinstone_defensewave',0,0,0,100,0,0,0,238386,5,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- kamien, poziom oficjalny (arkusz wlasciciela 20.10, MT2009_PLUS_MOBY_ARKUSZ_V1)
 (20433,'Warrior Statue','Statua Wojownika',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',2,0,0,0,0,0,0,120,3,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- posag w porcie (etap Yohary)
 (20434,'Mast','Maszt',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'defensewave_sail',0,0,0,0,0,0,0,5000000,255,0,0,0,10,250,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), -- 5 000 000 PZ, NORECOVERY nie istnieje u nas -> regen co 255 s, +1 PZ (MAX(1,...))
@@ -58,3 +59,9 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 -- MT2009_PLUS_YOHARA_PORT_V1 (the owner, 13 October): the statue is "Statua Wojownika" as on the wiki (a row from an
 -- earlier start keeps INSERT IGNORE's old name, so set it).
 UPDATE world.mob_proto SET locale_name = 'Statua Wojownika' WHERE vnum = 20433 AND locale_name <> 'Statua Wojownika';
+
+-- MT2009_PLUS_HYDRA_WALL_V1 (the owner, 20 October 2026: players walked down onto the deck before the countdown
+-- ended): the wall 3970 was our NPC (1) - the client walks through a NPC; it blocks a door (4) by the model's
+-- collision spheres (defensewave_wall.msm). A row from an earlier start keeps INSERT IGNORE's old type, so set it
+-- (guarded: an operator's other type stays).
+UPDATE world.mob_proto SET `type` = 4 WHERE vnum = 3970 AND `type` = 1;

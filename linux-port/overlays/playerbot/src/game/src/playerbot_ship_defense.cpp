@@ -1016,7 +1016,9 @@ bool CShipDefense::IsBlockedDamage(LPCHARACTER pChar) const
 {
 	const DWORD vid = pChar->GetVID();
 	// The Hydra only while its wave runs: one killed in the countdown would leave the wave without it.
-	return IsHead(pChar->GetRaceNum()) || vid == m_dwIntro || vid == m_dwWheel ||
+	// MT2009_PLUS_HYDRA_WALL_V1: the walls (3970) are doors now (mob_proto type 4, so the client blocks
+	// walking through them) and a door can be struck - they take no damage either.
+	return IsHead(pChar->GetRaceNum()) || vid == m_dwIntro || vid == m_dwWheel || pChar->GetRaceNum() == VNUM_WALL ||
 		(vid == m_dwMast && m_bState == STATE_IDLE) || (vid == m_dwHydra && m_bState != STATE_RUNNING);
 }
 
@@ -1152,6 +1154,19 @@ int ShipDefense_DamageRule(LPCHARACTER victim, LPCHARACTER attacker)
 	if (victim->GetRaceNum() == VNUM_WOOD)
 		return 2;
 	return 0;
+}
+
+// MT2009_PLUS_HYDRA_NO_DROP_V1: the Hydra (3960-3964) drops nothing - it dies off the deck, in the sea, where
+// nobody can pick its drop up (the owner, 20 October 2026). The reward is the treasure (3965) it leaves on the deck
+// and the Skrzynia Hydry (54705) from it. Asked by CHARACTER::Reward (edits.json "(no drop)": the mob's tables, the
+// world's extras, yang), RankPointsOnKill (playerbot_rank_points.h) and the aura rune (playerbot_aura.cpp); the
+// experience, the quests' kill and the Battle Pass stay.
+bool ShipDefense_NoDrop(LPCHARACTER victim)
+{
+	if (!victim || victim->IsPC() || !CShipDefenseManager::IsShipMap(victim->GetMapIndex()))
+		return false;
+	const DWORD v = victim->GetRaceNum();
+	return IsHydra(v) || IsHead(v);
 }
 
 bool ShipDefense_CannotAttack(LPCHARACTER ch)
