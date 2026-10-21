@@ -1,0 +1,284 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (sizes)",
+  "old": "enum EWindows\n{\n",
+  "new": "// MT2009_PLUS_EKWIPUNEK_V1 (sizes): Dodatkowy ekwipunek (Ameria's special storage) - five category storages of four pages\n// 5 x 9 each (playerbot_ekwipunek.cpp, the client's exe the same).\nenum EMt2009SpecialStorage\n{\n\tSPECIAL_INVENTORY_PAGE_COLUMN = 5,\n\tSPECIAL_INVENTORY_PAGE_ROW = 9,\n\tSPECIAL_INVENTORY_PAGE_SIZE = SPECIAL_INVENTORY_PAGE_COLUMN * SPECIAL_INVENTORY_PAGE_ROW,\n\tSPECIAL_INVENTORY_PAGE_COUNT = 4,\n\tSPECIAL_INVENTORY_MAX_NUM = SPECIAL_INVENTORY_PAGE_SIZE * SPECIAL_INVENTORY_PAGE_COUNT,\n\tSPECIAL_INVENTORY_WINDOW_COUNT = 5,\n};\n\nenum EWindows\n{\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (windows)",
+  "old": "\tIKASHOP_AUCTION,\n#endif\n\tWINDOW_TYPE_MAX,\n",
+  "new": "\tIKASHOP_AUCTION,\n#endif\n\t// MT2009_PLUS_EKWIPUNEK_V1 (windows): the category storages, 11-15 - after every old window, so player.item.window (an enum\n\t// appended the same way, ekwipunek.sql) and the client keep their numbers\n\tUPGRADE_INVENTORY,\n\tBOOK_INVENTORY,\n\tSTONE_INVENTORY,\n\tCHANGE_INVENTORY,\n\tCHEST_INVENTORY,\n\tWINDOW_TYPE_MAX,\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (is special)",
+  "old": "typedef struct SItemPos\n{\n",
+  "new": "// MT2009_PLUS_EKWIPUNEK_V1 (is special): one of the category storages\ninline bool Mt2009IsSpecialWindow(BYTE bWindow)\n{\n\treturn bWindow >= UPGRADE_INVENTORY && bWindow <= CHEST_INVENTORY;\n}\n\ntypedef struct SItemPos\n{\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (valid pos)",
+  "old": "\t\tcase DRAGON_SOUL_INVENTORY:\n\t\t\treturn cell < (DRAGON_SOUL_INVENTORY_MAX_NUM);\n\n\t\tcase SAFEBOX:\n\t\tcase MALL:\n\t\t\treturn false;\n",
+  "new": "\t\tcase DRAGON_SOUL_INVENTORY:\n\t\t\treturn cell < (DRAGON_SOUL_INVENTORY_MAX_NUM);\n\t\t// MT2009_PLUS_EKWIPUNEK_V1 (valid pos)\n\t\tcase UPGRADE_INVENTORY:\n\t\tcase BOOK_INVENTORY:\n\t\tcase STONE_INVENTORY:\n\t\tcase CHANGE_INVENTORY:\n\t\tcase CHEST_INVENTORY:\n\t\t\treturn cell < SPECIAL_INVENTORY_MAX_NUM;\n\n\t\tcase SAFEBOX:\n\t\tcase MALL:\n\t\t\treturn false;\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (slots)",
+  "old": "\tstd::array<WORD,DRAGON_SOUL_INVENTORY_MAX_NUM> wDSItemGrid;\n",
+  "new": "\tstd::array<WORD,DRAGON_SOUL_INVENTORY_MAX_NUM> wDSItemGrid;\n\t// MT2009_PLUS_EKWIPUNEK_V1 (slots): the five category storages, window by window (UPGRADE_INVENTORY first), and whether the\n\t// client said it knows them (\"/ekwipunek hello\" - only then does anything go there)\n\tstd::array<LPITEM,SPECIAL_INVENTORY_MAX_NUM * SPECIAL_INVENTORY_WINDOW_COUNT> pSpecialItems{};\n\tstd::array<WORD,SPECIAL_INVENTORY_MAX_NUM * SPECIAL_INVENTORY_WINDOW_COUNT> wSpecialItemGrid{};\n\tbool bSpecialStorageClient{false};\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (methods)",
+  "old": "\t\tint\t\t\t\tGetEmptyInventoryEx(LPITEM item);\n",
+  "new": "\t\tint\t\t\t\tGetEmptyInventoryEx(LPITEM item);\n\t\t// MT2009_PLUS_EKWIPUNEK_V1 (methods): Dodatkowy ekwipunek, playerbot_ekwipunek.cpp\n\t\tint\t\t\t\tGetEmptyInventoryRouted(LPITEM item, BYTE& bWindow);\n\t\tint\t\t\t\tGetEmptySpecialInventory(BYTE bWindow, BYTE bSize) const;\n\t\tBYTE\t\t\tGetSpecialWindowFor(LPITEM item) const;\n\t\tbool\t\t\tIsSpecialStorageClient() const;\n\t\tvoid\t\t\tSetSpecialStorageClient(bool bOn);\n\t\tbool\t\t\tMt2009EkwRoutes() const;\n\t\tLPITEM\t\t\tMt2009SpecialGetItem(BYTE bWindow, WORD wCell) const;\n\t\tvoid\t\t\tMt2009SpecialSetItem(BYTE bWindow, WORD wCell, LPITEM pItem);\n\t\tbool\t\t\tMt2009SpecialIsEmptyGrid(BYTE bWindow, WORD wCell, BYTE bSize, int iExceptionCell) const;\n\t\tvoid\t\t\tMt2009SpecialClearItems();\n\t\tITEM_COUNT\t\tMt2009SpecialCountItem(DWORD dwVnum) const;\n\t\tITEM_COUNT\t\tMt2009SpecialRemoveItem(DWORD dwVnum, ITEM_COUNT count);\n\t\tbool\t\t\tMt2009SpecialMoveAllowed(LPITEM item, const TItemPos& Cell, const TItemPos& DestCell);\n\t\tbool\t\t\tMt2009SpecialCheckoutAllowed(LPITEM item, const TItemPos& DestCell);\n\t\tLPITEM\t\t\tMt2009EkwAutoStack(LPITEM item, bool& bSkipBag);\n\t\tLPITEM\t\t\tMt2009EkwAutoStackProto(const TItemTable* p, DWORD dwItemVnum, ITEM_COUNT& bCount, bool& bSkipBag);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (get)",
+  "old": "\t\treturn m_PlayerSlots->pDSItems[wCell];\n\n\tdefault:\n\t\treturn NULL;\n\t}\n\treturn NULL;\n}\n",
+  "new": "\t\treturn m_PlayerSlots->pDSItems[wCell];\n\n\t// MT2009_PLUS_EKWIPUNEK_V1 (get): the category storages\n\tcase UPGRADE_INVENTORY:\n\tcase BOOK_INVENTORY:\n\tcase STONE_INVENTORY:\n\tcase CHANGE_INVENTORY:\n\tcase CHEST_INVENTORY:\n\t\treturn Mt2009SpecialGetItem(window_type, wCell);\n\n\tdefault:\n\t\treturn NULL;\n\t}\n\treturn NULL;\n}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (set)",
+  "old": "\t\t\tm_PlayerSlots->pDSItems[wCell] = pItem;\n\t\t}\n\t\tbreak;\n\tdefault:\n\t\tsys_err (\"Invalid Inventory type %d\", window_type);\n",
+  "new": "\t\t\tm_PlayerSlots->pDSItems[wCell] = pItem;\n\t\t}\n\t\tbreak;\n\t// MT2009_PLUS_EKWIPUNEK_V1 (set): the category storages - an item takes its size down one column, as in the bag\n\tcase UPGRADE_INVENTORY:\n\tcase BOOK_INVENTORY:\n\tcase STONE_INVENTORY:\n\tcase CHANGE_INVENTORY:\n\tcase CHEST_INVENTORY:\n\t\tif (wCell >= SPECIAL_INVENTORY_MAX_NUM)\n\t\t{\n\t\t\tsys_err(\"CHARACTER::SetItem: invalid special storage cell %d\", wCell);\n\t\t\treturn;\n\t\t}\n\t\tMt2009SpecialSetItem(window_type, wCell, pItem);\n\t\tbreak;\n\tdefault:\n\t\tsys_err (\"Invalid Inventory type %d\", window_type);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (set window)",
+  "old": "\t\tcase DRAGON_SOUL_INVENTORY:\n\t\t\tpItem->SetWindow(DRAGON_SOUL_INVENTORY);\n\t\t\tbreak;\n\t\t}\n\t}\n",
+  "new": "\t\tcase DRAGON_SOUL_INVENTORY:\n\t\t\tpItem->SetWindow(DRAGON_SOUL_INVENTORY);\n\t\t\tbreak;\n\t\t// MT2009_PLUS_EKWIPUNEK_V1 (set window)\n\t\tcase UPGRADE_INVENTORY:\n\t\tcase BOOK_INVENTORY:\n\t\tcase STONE_INVENTORY:\n\t\tcase CHANGE_INVENTORY:\n\t\tcase CHEST_INVENTORY:\n\t\t\tpItem->SetWindow(window_type);\n\t\t\tbreak;\n\t\t}\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (clear)",
+  "old": "\t\t\titem->RemoveFromCharacter();\n\t\t\tM2_DESTROY_ITEM(item);\n\t\t}\n\t}\n}\n\nbool CHARACTER::IsEmptyItemGrid",
+  "new": "\t\t\titem->RemoveFromCharacter();\n\t\t\tM2_DESTROY_ITEM(item);\n\t\t}\n\t}\n\tMt2009SpecialClearItems(); // MT2009_PLUS_EKWIPUNEK_V1 (clear): the category storages\n}\n\nbool CHARACTER::IsEmptyItemGrid"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (grid)",
+  "old": "\t\t\t\treturn true;\n\t\t\t}\n\t\t}\n\t}\n\treturn false;\n}\n\nbool CHARACTER::HasSlotForItem",
+  "new": "\t\t\t\treturn true;\n\t\t\t}\n\t\t}\n\t// MT2009_PLUS_EKWIPUNEK_V1 (grid): the category storages - on the cell's own page\n\tcase UPGRADE_INVENTORY:\n\tcase BOOK_INVENTORY:\n\tcase STONE_INVENTORY:\n\tcase CHANGE_INVENTORY:\n\tcase CHEST_INVENTORY:\n\t\treturn Mt2009SpecialIsEmptyGrid(Cell.window_type, Cell.cell, bSize, iExceptionCell);\n\t}\n\treturn false;\n}\n\nbool CHARACTER::HasSlotForItem"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (valid pos)",
+  "old": "\tcase DRAGON_SOUL_INVENTORY:\n\t\treturn cell < (DRAGON_SOUL_INVENTORY_MAX_NUM);\n\n\tcase SAFEBOX:\n\t\tif (NULL != m_pkSafebox)\n",
+  "new": "\tcase DRAGON_SOUL_INVENTORY:\n\t\treturn cell < (DRAGON_SOUL_INVENTORY_MAX_NUM);\n\n\t// MT2009_PLUS_EKWIPUNEK_V1 (valid pos): the category storages\n\tcase UPGRADE_INVENTORY:\n\tcase BOOK_INVENTORY:\n\tcase STONE_INVENTORY:\n\tcase CHANGE_INVENTORY:\n\tcase CHEST_INVENTORY:\n\t\treturn cell < SPECIAL_INVENTORY_MAX_NUM;\n\n\tcase SAFEBOX:\n\t\tif (NULL != m_pkSafebox)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (move)",
+  "old": "\t\telse if (DRAGON_SOUL_INVENTORY == DestCell.window_type)\n\t\t\treturn false;\n\n\t\tLPITEM item2;\n",
+  "new": "\t\telse if (DRAGON_SOUL_INVENTORY == DestCell.window_type)\n\t\t\treturn false;\n\n\t\t// MT2009_PLUS_EKWIPUNEK_V1 (move): a storage takes only its category, from the bag or itself; out of it only into the bag\n\t\tif (!Mt2009SpecialMoveAllowed(item, Cell, DestCell))\n\t\t\treturn false;\n\n\t\tLPITEM item2;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (move quickslot)",
+  "old": "\t\t\tif (INVENTORY == Cell.window_type && INVENTORY == DestCell.window_type)\n\t\t\t\tSyncQuickslot(QUICKSLOT_TYPE_ITEM, Cell.cell, DestCell.cell);\n",
+  "new": "\t\t\tif (INVENTORY == Cell.window_type && INVENTORY == DestCell.window_type)\n\t\t\t\tSyncQuickslot(QUICKSLOT_TYPE_ITEM, Cell.cell, DestCell.cell);\n\t\t\telse if (INVENTORY == Cell.window_type && Mt2009IsSpecialWindow(DestCell.window_type)) // MT2009_PLUS_EKWIPUNEK_V1 (move quickslot)\n\t\t\t\tSyncQuickslot(QUICKSLOT_TYPE_ITEM, Cell.cell, 255);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (drop quickslot)",
+  "old": "\tSyncQuickslot(QUICKSLOT_TYPE_ITEM, Cell.cell, 255);\n\n\tLPITEM pkItemToDrop;\n",
+  "new": "\tif (!Mt2009IsSpecialWindow(Cell.window_type)) // MT2009_PLUS_EKWIPUNEK_V1 (drop quickslot): a storage's cell is no bag cell\n\t\tSyncQuickslot(QUICKSLOT_TYPE_ITEM, Cell.cell, 255);\n\n\tLPITEM pkItemToDrop;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (pickup cell)",
+  "old": "\t\t\tint iEmptyCell = GetEmptyInventoryEx(item);\n\t\t\tif (iEmptyCell == -1)\n\t\t\t{\n\t\t\t\tsys_log(0, \"No empty inventory pid %u size %ud itemid %u\"",
+  "new": "\t\t\tBYTE bEkwWindow = INVENTORY; // MT2009_PLUS_EKWIPUNEK_V1 (pickup cell): a real player's item of a category into its storage\n\t\t\tint iEmptyCell = GetEmptyInventoryRouted(item, bEkwWindow);\n\t\t\tif (iEmptyCell == -1)\n\t\t\t{\n\t\t\t\tsys_log(0, \"No empty inventory pid %u size %ud itemid %u\""
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (pickup add)",
+  "old": "\t\t\titem->AddToCharacter(this, TItemPos(item->GetWindowInventoryEx(), iEmptyCell));\n\n\t\t\tchar szHint[32+1];\n",
+  "new": "\t\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, iEmptyCell)); // MT2009_PLUS_EKWIPUNEK_V1 (pickup add)\n\n\t\t\tchar szHint[32+1];\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (party cell)",
+  "old": "\t\tint iEmptyCell = -1;\n\t\tif (!(owner && (iEmptyCell = owner->GetEmptyInventoryEx(item)) != -1))\n",
+  "new": "\t\tint iEmptyCell = -1;\n\t\tBYTE bEkwWindow = INVENTORY; // MT2009_PLUS_EKWIPUNEK_V1 (party cell): the owner's storage\n\t\tif (!(owner && (iEmptyCell = owner->GetEmptyInventoryRouted(item, bEkwWindow)) != -1))\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (party add)",
+  "old": "\t\titem->AddToCharacter(owner, TItemPos(item->GetWindowInventoryEx(), iEmptyCell));\n",
+  "new": "\t\titem->AddToCharacter(owner, TItemPos(bEkwWindow, iEmptyCell)); // MT2009_PLUS_EKWIPUNEK_V1 (party add)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (stack proto)",
+  "old": "std::pair<bool, LPITEM> CHARACTER::AutoStackItemProto(DWORD dwItemVnum, ITEM_COUNT& bCount)\n{\n\tTItemTable * p = ITEM_MANAGER::instance().GetTable(dwItemVnum);\n\tif (!p)\n\t\treturn {false, nullptr};\n",
+  "new": "std::pair<bool, LPITEM> CHARACTER::AutoStackItemProto(DWORD dwItemVnum, ITEM_COUNT& bCount)\n{\n\tTItemTable * p = ITEM_MANAGER::instance().GetTable(dwItemVnum);\n\tif (!p)\n\t\treturn {false, nullptr};\n\t// MT2009_PLUS_EKWIPUNEK_V1 (stack proto): a routed item joins its storage's stacks; the bag's only when the storage is full\n\t{\n\t\tbool bEkwSkipBag = false;\n\t\tif (LPITEM pEkw = Mt2009EkwAutoStackProto(p, dwItemVnum, bCount, bEkwSkipBag))\n\t\t\treturn {true, pEkw};\n\t\tif (bEkwSkipBag)\n\t\t\treturn {true, nullptr};\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (stack)",
+  "old": "LPITEM CHARACTER::AutoStackItem(LPITEM item)\n{\n",
+  "new": "LPITEM CHARACTER::AutoStackItem(LPITEM item)\n{\n\t// MT2009_PLUS_EKWIPUNEK_V1 (stack): a routed item joins its storage's stacks; the bag's only when the storage is full\n\t{\n\t\tbool bEkwSkipBag = false;\n\t\tif (LPITEM pEkw = Mt2009EkwAutoStack(item, bEkwSkipBag))\n\t\t\treturn pEkw;\n\t\tif (bEkwSkipBag)\n\t\t\treturn nullptr;\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (give)",
+  "old": "\tint cell = GetEmptyInventoryEx(item);\n\tif (cell != -1)\n\t{\n\t\titem->AddToCharacter(this, TItemPos(item->GetWindowInventoryEx(), cell));\n",
+  "new": "\tBYTE bEkwWindow = INVENTORY; // MT2009_PLUS_EKWIPUNEK_V1 (give): a real player's item of a category into its storage\n\tint cell = GetEmptyInventoryRouted(item, bEkwWindow);\n\tif (cell != -1)\n\t{\n\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, cell));\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (give vnum)",
+  "old": "\tint iEmptyCell = GetEmptyInventoryEx(item);\n\tif (iEmptyCell != -1)\n\t{\n\t\tif (bMsg)\n\t\t\tChatPacketRecieveItem(this, item, original_count);\n\n\t\titem->AddToCharacter(this, TItemPos(item->GetWindowInventoryEx(), iEmptyCell));\n",
+  "new": "\tBYTE bEkwWindow = INVENTORY; // MT2009_PLUS_EKWIPUNEK_V1 (give vnum): a real player's item of a category into its storage\n\tint iEmptyCell = GetEmptyInventoryRouted(item, bEkwWindow);\n\tif (iEmptyCell != -1)\n\t{\n\t\tif (bMsg)\n\t\t\tChatPacketRecieveItem(this, item, original_count);\n\n\t\titem->AddToCharacter(this, TItemPos(bEkwWindow, iEmptyCell));\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (count)",
+  "old": "\t\t\t\tcount += item->GetCount();\n\t\t\t}\n\t\t}\n\t}\n\n\treturn count;\n}\n\nvoid CHARACTER::RemoveSpecifyItem(DWORD vnum, ITEM_COUNT count)\n",
+  "new": "\t\t\t\tcount += item->GetCount();\n\t\t\t}\n\t\t}\n\t}\n\n\tcount += Mt2009SpecialCountItem(vnum); // MT2009_PLUS_EKWIPUNEK_V1 (count): the category storages\n\treturn count;\n}\n\nvoid CHARACTER::RemoveSpecifyItem(DWORD vnum, ITEM_COUNT count)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (remove)",
+  "old": "\tif (count)\n\t\tsys_log(0, \"CHARACTER::RemoveSpecifyItem cannot remove enough item vnum %u, still remain %d\", vnum, count);\n",
+  "new": "\tcount = Mt2009SpecialRemoveItem(vnum, count); // MT2009_PLUS_EKWIPUNEK_V1 (remove): what the bag lacked, from the storages\n\tif (count)\n\t\tsys_log(0, \"CHARACTER::RemoveSpecifyItem cannot remove enough item vnum %u, still remain %d\", vnum, count);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (npc refine)",
+  "old": "void CHARACTER::ReceiveItem(LPCHARACTER from, LPITEM item)\n{\n\tif (IsPC())\n\t\treturn;\n",
+  "new": "void CHARACTER::ReceiveItem(LPCHARACTER from, LPITEM item)\n{\n\tif (IsPC())\n\t\treturn;\n\t// MT2009_PLUS_EKWIPUNEK_V1 (npc refine): the refine window reads its item by a bag cell - a storage's item goes to the bag first\n\tif (item && Mt2009IsSpecialWindow(item->GetWindow()))\n\t{\n\t\tswitch (GetRaceNum())\n\t\t{\n\t\t\tcase fishing::FISHER_MOB:\n\t\t\tcase HERB_BLACKSMITH:\n\t\t\tcase PICKAXE_BLACKSMITH:\n\t\t\tcase DEVILTOWER_BLACKSMITH_WEAPON_MOB:\n\t\t\tcase DEVILTOWER_BLACKSMITH_ARMOR_MOB:\n\t\t\tcase DEVILTOWER_BLACKSMITH_ACCESSORY_MOB:\n\t\t\tcase BLACKSMITH_MOB:\n\t\t\tcase BLACKSMITH2_MOB:\n\t\t\tcase BLACKSMITH_WEAPON_MOB:\n\t\t\tcase BLACKSMITH_ARMOR_MOB:\n\t\t\tcase BLACKSMITH_ACCESSORY_MOB:\n\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, \"Przenies przedmiot z dodatkowego ekwipunku do zwyklego, aby go ulepszyc.\");\n\t\t\t\treturn;\n\t\t}\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (scroll refine)",
+  "old": "bool CHARACTER::RefineItem(LPITEM pkItem, LPITEM pkTarget)\n{\n\tif (!CanHandleItem())\n\t\treturn false;\n",
+  "new": "bool CHARACTER::RefineItem(LPITEM pkItem, LPITEM pkTarget)\n{\n\tif (!CanHandleItem())\n\t\treturn false;\n\t// MT2009_PLUS_EKWIPUNEK_V1 (scroll refine): the refine window reads both items by bag cells\n\tif ((pkItem && Mt2009IsSpecialWindow(pkItem->GetWindow())) || (pkTarget && Mt2009IsSpecialWindow(pkTarget->GetWindow())))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, \"Przenies przedmiot z dodatkowego ekwipunku do zwyklego, aby go ulepszyc.\");\n\t\treturn false;\n\t}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (remove)",
+  "old": "\t\t\t\t\tpOwner->SetItem(TItemPos(m_bWindow, m_wCell), NULL);\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tTItemPos cell(INVENTORY, m_wCell);\n",
+  "new": "\t\t\t\t\tpOwner->SetItem(TItemPos(m_bWindow, m_wCell), NULL);\n\t\t\t}\n\t\t\t// MT2009_PLUS_EKWIPUNEK_V1 (remove): an item of a category storage leaves its own window, not the bag's cell of that number\n\t\t\telse if (Mt2009IsSpecialWindow(m_bWindow))\n\t\t\t{\n\t\t\t\tif (m_wCell >= SPECIAL_INVENTORY_MAX_NUM)\n\t\t\t\t\tsys_err(\"CItem::RemoveFromCharacter: pos >= SPECIAL_INVENTORY_MAX_NUM\");\n\t\t\t\telse\n\t\t\t\t\tpOwner->SetItem(TItemPos(m_bWindow, m_wCell), NULL);\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tTItemPos cell(INVENTORY, m_wCell);\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (count quickslot)",
+  "old": "\t\t\tif (!IsDragonSoul())\n\t\t\t{\n\t\t\t\tm_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, m_wCell, 255);\n",
+  "new": "\t\t\tif (!IsDragonSoul() && !Mt2009IsSpecialWindow(GetWindow())) // MT2009_PLUS_EKWIPUNEK_V1 (count quickslot)\n\t\t\t{\n\t\t\t\tm_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, m_wCell, 255);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (remove quickslot)",
+  "old": "\t\telse\n\t\t{\n\t\t\to->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n\t\t\titem->RemoveFromCharacter();\n",
+  "new": "\t\telse\n\t\t{\n\t\t\tif (!Mt2009IsSpecialWindow(item->GetWindow())) // MT2009_PLUS_EKWIPUNEK_V1 (remove quickslot): a storage's cell is no bag cell\n\t\t\t\to->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n\t\t\titem->RemoveFromCharacter();\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (load)",
+  "old": "\t\t\t\tcase INVENTORY:\n\t\t\t\tcase DRAGON_SOUL_INVENTORY:\n\t\t\t\t\titem->AddToCharacter(ch, TItemPos(p->window, p->pos));\n\t\t\t\t\tbreak;\n",
+  "new": "\t\t\t\tcase INVENTORY:\n\t\t\t\tcase DRAGON_SOUL_INVENTORY:\n\t\t\t\t\titem->AddToCharacter(ch, TItemPos(p->window, p->pos));\n\t\t\t\t\tbreak;\n\n\t\t\t\t// MT2009_PLUS_EKWIPUNEK_V1 (load): the category storages - a taken or broken cell gives the item a bag cell below\n\t\t\t\tcase UPGRADE_INVENTORY:\n\t\t\t\tcase BOOK_INVENTORY:\n\t\t\t\tcase STONE_INVENTORY:\n\t\t\t\tcase CHANGE_INVENTORY:\n\t\t\t\tcase CHEST_INVENTORY:\n\t\t\t\t\tif (p->pos >= SPECIAL_INVENTORY_MAX_NUM || ch->GetItem(TItemPos(p->window, p->pos)))\n\t\t\t\t\t\tv.emplace_back(item);\n\t\t\t\t\telse\n\t\t\t\t\t\titem->AddToCharacter(ch, TItemPos(p->window, p->pos));\n\t\t\t\t\tbreak;\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (safebox in)",
+  "old": "\tpkItem->RemoveFromCharacter();\n\tif (!pkItem->IsDragonSoul())\n\t\tch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, p->ItemPos.cell, 255);\n",
+  "new": "\tpkItem->RemoveFromCharacter();\n\tif (!pkItem->IsDragonSoul() && !Mt2009IsSpecialWindow(p->ItemPos.window_type)) // MT2009_PLUS_EKWIPUNEK_V1 (safebox in)\n\t\tch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, p->ItemPos.cell, 255);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (safebox out)",
+  "old": "\tif (!ch->IsEmptyItemGrid(p->ItemPos, pkItem->GetSize()))\n\t\treturn;\n\n\tif (pkItem->IsDragonSoul())\n",
+  "new": "\tif (!ch->IsEmptyItemGrid(p->ItemPos, pkItem->GetSize()))\n\t\treturn;\n\n\t// MT2009_PLUS_EKWIPUNEK_V1 (safebox out): into a category storage only its own items\n\tif (!ch->Mt2009SpecialCheckoutAllowed(pkItem, p->ItemPos))\n\t\treturn;\n\n\tif (pkItem->IsDragonSoul())\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (done cell)",
+  "old": "\t\tif (item->IsDragonSoul())\n\t\t\tempty_pos = victim->GetEmptyDragonSoulInventory(item);\n\t\telse\n\t\t\tempty_pos = victim->GetEmptyInventory(item->GetSize());\n",
+  "new": "\t\t// MT2009_PLUS_EKWIPUNEK_V1 (done cell): the Alchemy's, a real player's category storage or the bag\n\t\tBYTE bEkwWindow = INVENTORY;\n\t\tempty_pos = victim->GetEmptyInventoryRouted(item, bEkwWindow);\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (done add)",
+  "old": "\t\tm_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n\n\t\titem->RemoveFromCharacter();\n\t\titem->AddToCharacter(victim, TItemPos(item->GetWindowInventoryEx(), empty_pos));\n",
+  "new": "\t\tif (!Mt2009IsSpecialWindow(item->GetWindow())) // MT2009_PLUS_EKWIPUNEK_V1 (done add)\n\t\t\tm_pOwner->SyncQuickslot(QUICKSLOT_TYPE_ITEM, item->GetCell(), 255);\n\n\t\titem->RemoveFromCharacter();\n\t\titem->AddToCharacter(victim, TItemPos(bEkwWindow, empty_pos));\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (buy cell)",
+  "old": "\tint iEmptyPos = ch->GetEmptyInventoryEx(item);\n\tif (iEmptyPos < 0)\n\t{\n\t\tif (m_pkPC)\n",
+  "new": "\tBYTE bEkwWindow = INVENTORY; // MT2009_PLUS_EKWIPUNEK_V1 (buy cell): a real player's item of a category into its storage\n\tint iEmptyPos = ch->GetEmptyInventoryRouted(item, bEkwWindow);\n\tif (iEmptyPos < 0)\n\t{\n\t\tif (m_pkPC)\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (buy add pc)",
+  "old": "\t\t\titem->RemoveFromCharacter();\n\t\t\titem->AddToCharacter(ch, TItemPos(item->GetWindowInventoryEx(), iEmptyPos));\n",
+  "new": "\t\t\titem->RemoveFromCharacter();\n\t\t\titem->AddToCharacter(ch, TItemPos(bEkwWindow, iEmptyPos)); // MT2009_PLUS_EKWIPUNEK_V1 (buy add pc)\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (buy add)",
+  "old": "\t\titem->AddToCharacter(ch, TItemPos(item->GetWindowInventoryEx(), iEmptyPos));\n\t\tITEM_MANAGER::instance().FlushDelayedSave(item);\n\t\tLogManager::instance().ItemLog(ch, item, \"BUY\", item->GetName());\n",
+  "new": "\t\titem->AddToCharacter(ch, TItemPos(bEkwWindow, iEmptyPos)); // MT2009_PLUS_EKWIPUNEK_V1 (buy add)\n\t\tITEM_MANAGER::instance().FlushDelayedSave(item);\n\t\tLogManager::instance().ItemLog(ch, item, \"BUY\", item->GetName());\n"
+ },
+ {
+  "file": "shop_manager.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (sell)",
+  "old": "\tLPITEM item = ch->GetInventoryItem(bCell);\n",
+  "new": "\t// MT2009_PLUS_EKWIPUNEK_V1 (sell): \"/ekwipunek sprzedaj\" sells from a category storage (playerbot_ekwipunek.cpp)\n\textern BYTE g_bMt2009EkwSellWindow;\n\tLPITEM item = ch->GetItem(TItemPos(g_bMt2009EkwSellWindow, bCell));\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (cube add)",
+  "old": "\titem = ch->GetInventoryItem(inven_index);\n",
+  "new": "\t// MT2009_PLUS_EKWIPUNEK_V1 (cube add): \"/ekwipunek kostka\" takes it from a category storage (playerbot_ekwipunek.cpp)\n\textern BYTE g_bMt2009EkwCubeWindow;\n\titem = ch->GetItem(TItemPos(g_bMt2009EkwCubeWindow, inven_index));\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (ikashop)",
+  "old": "\t\tpos->cell = emptyPos = GetEmptyInventory(item->GetSize());\n\t\tpos->window_type = INVENTORY;\n",
+  "new": "\t\t// MT2009_PLUS_EKWIPUNEK_V1 (ikashop): a real player's item of a category into its storage\n\t\tBYTE bEkwWindow = INVENTORY;\n\t\tpos->cell = emptyPos = GetEmptyInventoryRouted(item, bEkwWindow);\n\t\tpos->window_type = bEkwWindow;\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (gm item)",
+  "old": "\t\tint iEmptyPos = ch->GetEmptyInventoryEx(item);\n\t\tif (iEmptyPos != -1)\n\t\t{\n\t\t\titem->AddToCharacter(ch, TItemPos(item->GetWindowInventoryEx(), iEmptyPos));\n\t\t\tLogManager::instance().ItemLog(ch, item, \"GM\", item->GetName());\n",
+  "new": "\t\tBYTE bEkwWindow = INVENTORY; // MT2009_PLUS_EKWIPUNEK_V1 (gm item): as a pickup, into the category's storage\n\t\tint iEmptyPos = ch->GetEmptyInventoryRouted(item, bEkwWindow);\n\t\tif (iEmptyPos != -1)\n\t\t{\n\t\t\titem->AddToCharacter(ch, TItemPos(bEkwWindow, iEmptyPos));\n\t\t\tLogManager::instance().ItemLog(ch, item, \"GM\", item->GetName());\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (declare)",
+  "old": "ACMD(do_buffi);\t// MT2009_PLUS_BUFFI_V1 (declare): Buffi, root/uibuffi.py (playerbot_buffi.cpp)\n",
+  "new": "ACMD(do_buffi);\t// MT2009_PLUS_BUFFI_V1 (declare): Buffi, root/uibuffi.py (playerbot_buffi.cpp)\nACMD(do_ekwipunek);\t// MT2009_PLUS_EKWIPUNEK_V1 (declare): Dodatkowy ekwipunek, root/uiekwipunek.py (playerbot_ekwipunek.cpp)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (table)",
+  "old": "\t{ \"buffi\",\tdo_buffi,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_BUFFI_V1 (table)\n",
+  "new": "\t{ \"buffi\",\tdo_buffi,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_BUFFI_V1 (table)\n\t{ \"ekwipunek\",\tdo_ekwipunek,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_EKWIPUNEK_V1 (table)\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (select 1)",
+  "old": "transmutation \" // MT2009_PLUS_CHANGE_LOOK_V1 (select 1)\n\t\t\t\t\t\"FROM item%s WHERE owner_id=%d AND (`window` in ('INVENTORY','EQUIPMENT','DRAGON_SOUL_INVENTORY','BELT_INVENTORY'))\",\n",
+  "new": "transmutation \" // MT2009_PLUS_CHANGE_LOOK_V1 (select 1)\n\t\t\t\t\t\"FROM item%s WHERE owner_id=%d AND (`window` in ('INVENTORY','EQUIPMENT','DRAGON_SOUL_INVENTORY','BELT_INVENTORY','UPGRADE_INVENTORY','BOOK_INVENTORY','STONE_INVENTORY','CHANGE_INVENTORY','CHEST_INVENTORY'))\", // MT2009_PLUS_EKWIPUNEK_V1 (select 1): the category storages\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (select 2)",
+  "old": "transmutation \" // MT2009_PLUS_CHANGE_LOOK_V1 (select 2)\n\t\t\t\t\"FROM item%s WHERE owner_id=%d AND (`window` in ('INVENTORY','EQUIPMENT','DRAGON_SOUL_INVENTORY','BELT_INVENTORY'))\",\n",
+  "new": "transmutation \" // MT2009_PLUS_CHANGE_LOOK_V1 (select 2)\n\t\t\t\t\"FROM item%s WHERE owner_id=%d AND (`window` in ('INVENTORY','EQUIPMENT','DRAGON_SOUL_INVENTORY','BELT_INVENTORY','UPGRADE_INVENTORY','BOOK_INVENTORY','STONE_INVENTORY','CHANGE_INVENTORY','CHEST_INVENTORY'))\", // MT2009_PLUS_EKWIPUNEK_V1 (select 2): the category storages\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerPlayer.cpp",
+  "marker": "MT2009_PLUS_EKWIPUNEK_V1 (delete)",
+  "old": "\"DELETE FROM item%s WHERE owner_id=%d AND (`window` in ('INVENTORY','EQUIPMENT','DRAGON_SOUL_INVENTORY','BELT_INVENTORY'))\", GetTablePostfix(), pi->player_id);\n",
+  "new": "\"DELETE FROM item%s WHERE owner_id=%d AND (`window` in ('INVENTORY','EQUIPMENT','DRAGON_SOUL_INVENTORY','BELT_INVENTORY','UPGRADE_INVENTORY','BOOK_INVENTORY','STONE_INVENTORY','CHANGE_INVENTORY','CHEST_INVENTORY'))\", GetTablePostfix(), pi->player_id); // MT2009_PLUS_EKWIPUNEK_V1 (delete)\n"
+ }
+]

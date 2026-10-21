@@ -482,6 +482,19 @@ enum EOnIdleEvents
 	ON_IDLE_MAX_NUM
 };
 
+#ifdef ENABLE_SPECIAL_STORAGE
+// MT2009_PLUS_EKWIPUNEK_V1 (sizes): Dodatkowy ekwipunek - the server's five category storages, four pages of 5 x 9 each
+enum EMt2009SpecialStorage
+{
+	SPECIAL_INVENTORY_PAGE_COLUMN = 5,
+	SPECIAL_INVENTORY_PAGE_ROW = 9,
+	SPECIAL_INVENTORY_PAGE_SIZE = SPECIAL_INVENTORY_PAGE_COLUMN * SPECIAL_INVENTORY_PAGE_ROW,
+	SPECIAL_INVENTORY_PAGE_COUNT = 4,
+	SPECIAL_INVENTORY_MAX_NUM = SPECIAL_INVENTORY_PAGE_SIZE * SPECIAL_INVENTORY_PAGE_COUNT,
+	SPECIAL_INVENTORY_WINDOW_COUNT = 5,
+};
+#endif
+
 enum EWindows
 {
 	RESERVED_WINDOW,
@@ -496,6 +509,14 @@ enum EWindows
 	IKASHOP_OFFLINESHOP,
 	IKASHOP_SAFEBOX,
 	IKASHOP_AUCTION,
+#endif
+#ifdef ENABLE_SPECIAL_STORAGE
+	// MT2009_PLUS_EKWIPUNEK_V1 (windows): the category storages 11-15, the server's numbers (after every old window)
+	UPGRADE_INVENTORY,
+	BOOK_INVENTORY,
+	STONE_INVENTORY,
+	CHANGE_INVENTORY,
+	CHEST_INVENTORY,
 #endif
 	WINDOW_TYPE_MAX,
 
@@ -1350,6 +1371,14 @@ enum ESpecialShopLimitTypes {
 
 #pragma pack(push, 1)
 
+#ifdef ENABLE_SPECIAL_STORAGE
+// MT2009_PLUS_EKWIPUNEK_V1 (is special): one of the category storages
+inline bool Mt2009IsSpecialWindow(BYTE bWindow)
+{
+	return bWindow >= UPGRADE_INVENTORY && bWindow <= CHEST_INVENTORY;
+}
+#endif
+
 typedef struct SItemPos
 {
 	BYTE window_type;
@@ -1378,6 +1407,15 @@ typedef struct SItemPos
 			return cell < INVENTORY_AND_EQUIP_SLOT_MAX;
 		case DRAGON_SOUL_INVENTORY:
 			return cell < (DRAGON_SOUL_INVENTORY_MAX_NUM);
+#ifdef ENABLE_SPECIAL_STORAGE
+		// MT2009_PLUS_EKWIPUNEK_V1 (valid pos)
+		case UPGRADE_INVENTORY:
+		case BOOK_INVENTORY:
+		case STONE_INVENTORY:
+		case CHANGE_INVENTORY:
+		case CHEST_INVENTORY:
+			return cell < SPECIAL_INVENTORY_MAX_NUM;
+#endif
 
 		case SAFEBOX:
 		case MALL:

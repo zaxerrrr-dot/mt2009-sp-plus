@@ -121,7 +121,10 @@ param(
 #   Boss Swiata        char_battle.cpp, item_manager.cpp, cmd.cpp (MT2009_PLUS_WORLDBOSS_V1; server-patches/worldboss,
 #                      after shipdefense, zestawy and ysets)
 #   Buffi              char.cpp, char_item.cpp, char_skill.cpp, input_login.cpp, cmd.cpp (MT2009_PLUS_BUFFI_V1;
-#                      server-patches/buffi, after monstercard and riposty - last)
+#                      server-patches/buffi, after monstercard and riposty)
+#   Dodatkowy ekwip.   common length.h, char.h, char.cpp, char_item.cpp, item.cpp, item_manager.cpp, input_db.cpp,
+#                      input_main.cpp, exchange.cpp, shop.cpp, shop_manager.cpp, cube.cpp, cmd_gm.cpp, cmd.cpp,
+#                      db ClientManagerPlayer.cpp (MT2009_PLUS_EKWIPUNEK_V1; server-patches/ekwipunek, after buffi - last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1654,6 +1657,21 @@ if ((Test-Path -LiteralPath $buffiApply -PathType Leaf) -and
     if ($buffiResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Buffi edit(s).' -f $buffiResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Dodatkowy ekwipunek (server-patches/ekwipunek, MT2009_PLUS_EKWIPUNEK_V1; the owner, 21 October 2026): Ameria's special
+# storage - five category storages (windows 11-15, common/length.h), the items of a category routed there for a real
+# player whose client said so, the db's item queries (db/src/ClientManagerPlayer.cpp; player.item.window by apply.sh),
+# "/ekwipunek". Anchors on Buffi's cmd.cpp lines, so after buffi. The logic is playerbot_ekwipunek.cpp.
+$ekwipunekApply = Join-Path $repo 'server-patches/ekwipunek/Apply-EkwipunekPatch.ps1'
+if ((Test-Path -LiteralPath $ekwipunekApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource '../../db/src/ClientManagerPlayer.cpp') -PathType Leaf)) {
+    $ekwipunekResult = & $ekwipunekApply -SourceDir $engineGameSource
+    if ($ekwipunekResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} extra inventory edit(s).' -f $ekwipunekResult.Applied) -ForegroundColor DarkGray
     }
 }
 

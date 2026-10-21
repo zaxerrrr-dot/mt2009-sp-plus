@@ -452,3 +452,30 @@ skrzydełka `wing_lv06.mde`) są w paczce root (`client-2.0.30/atlas/d_`); `uiau
 Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, źródła: client-build + cały
 ten katalog, casefix) – `Mt2009Aura.cpp`, `InstanceBase.cpp`, `NetworkActorManager.cpp`, `PythonCharacterManagerModule.cpp`
 bez błędów. Exe nie budowane (wspólna budowa później: `build.sh msvc --smoke`).
+
+## Dodatkowy ekwipunek – `MT2009_PLUS_EKWIPUNEK_V1` (`ENABLE_SPECIAL_STORAGE`)
+
+Specjalny magazyn z Amerii (`server-patches/ekwipunek/README.md`): pięć magazynów kategorii serwera jako okna
+przedmiotów 11–15 (Materiały ulepszeń, Księgi, Kamienie Duszy, Zaczarowania, Skrzynie), po 4 strony 5 × 9. **Bez
+zmian pakietów** – pozycja przedmiotu (`TItemPos`) i wszystkie funkcje `net.*` z oknem (`SendItemMovePacket`,
+`SendItemUsePacket`, `SendItemUseToItemPacket`, `SendSafeboxCheckin/CheckoutPacket`, `SendExchangeItemAddPacket`)
+już niosą okno; exe tylko przechowuje i podaje przedmioty nowych okien. Okno w pythonie: `root/uiekwipunek.py`.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_SPECIAL_STORAGE` |
+| `Server/common/length.h` | `EMt2009SpecialStorage` (`SPECIAL_INVENTORY_PAGE_*`, `SPECIAL_INVENTORY_MAX_NUM` 180, `SPECIAL_INVENTORY_WINDOW_COUNT` 5), okna `UPGRADE_INVENTORY` … `CHEST_INVENTORY` po `IKASHOP_AUCTION` (11–15, numery serwera), `Mt2009IsSpecialWindow`, `TItemPos::IsValidItemPosition` |
+| `UserInterface/GameType.h` | `c_Special_Inventory_Page_Size/Count`, `c_Special_ItemSlot_Count`; `SLOT_TYPE_UPGRADE_INVENTORY` … `SLOT_TYPE_CHEST_INVENTORY` przed `SLOT_TYPE_MAX` |
+| `UserInterface/GameType.cpp` (nowy w tym katalogu, z client-build) | `c_aSlotTypeToInvenType`: pięć nowych typów slotów → okna (`player.SlotTypeToInvenType`, depozyt) |
+| `UserInterface/PythonPlayer.h/.cpp` | `TPlayerStatus::aSpecialItem[5][180]` (zerowane jak reszta przez `memset` w `Clear`), `GetItemData`/`SetItemData` dla okien 11–15, `GetItemCountByVnum` liczy też magazyny (okno ulepszania i craftingu pokazują materiały jak w Amerii) |
+| `UserInterface/PythonPlayerSkill.cpp` | `__HasItem` szuka też w magazynach (jak w Amerii) |
+| `UserInterface/PythonPlayerModule.cpp` | `player.UPGRADE_INVENTORY` … `CHEST_INVENTORY`, `player.SLOT_TYPE_*_INVENTORY`, `player.SPECIAL_PAGE_SIZE` (45), `SPECIAL_PAGE_COUNT` (4), `SPECIAL_SLOT_COUNT` (180) |
+
+Stary exe dostaje pakiety przedmiotów z oknem 11–15 i je pomija (`TItemPos::IsValidItemPosition` = false) – bez
+awarii; dlatego serwer kieruje przedmioty do magazynów dopiero po `/ekwipunek hello`, które `uiekwipunek.py` wysyła
+tylko, gdy `player.UPGRADE_INVENTORY` istnieje.
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, drzewo
+`exebuild/src` + ten katalog) – `GameType.cpp`, `PythonPlayer.cpp`, `PythonPlayerModule.cpp`, `PythonPlayerSkill.cpp`,
+`PythonNetworkStreamPhaseGameItem.cpp` bez błędów. Exe nie budowane (`build.sh msvc --smoke` przy najbliższym
+wydaniu exe).

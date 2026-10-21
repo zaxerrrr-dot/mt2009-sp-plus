@@ -495,6 +495,8 @@ class SidebarWindow(ui.Window):
 		("ranking", "Ranking tygodniowy", "OnClickWeeklyRank", "weekly_rank"),
 		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
 		("dropwiki", "Drop wiki", "OnClickDropWiki", "drop_wiki"),
+		# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek (uiekwipunek.py).
+		("ekwipunek", "Dodatkowy ekwipunek", "OnClickExtraInventory", "extra_inventory"),
 	)
 
 	def __init__(self, wndInventory):
@@ -849,6 +851,9 @@ class SidebarWindow(ui.Window):
 	def OnClickWeeklyRank(self):
 		import uiweeklyrank
 		uiweeklyrank.ToggleWindow()
+
+	def OnClickExtraInventory(self):	# MT2009_PLUS_EKWIPUNEK_V1
+		__import__("uiekwipunek").ToggleWindow()
 
 	def OnClickDropWiki(self):
 		import uidropwiki
@@ -2470,6 +2475,9 @@ class InventoryWindow(ui.ScriptWindow):
 			if uicollector.DropIntoPlayerBag(attachedSlotType, attachedSlotPos, selectedSlotPos):
 				mouseModule.mouseController.DeattachObject()
 				return
+			# MT2009_PLUS_EKWIPUNEK_V1: an item of the extra inventory (uiekwipunek.py) into the bag.
+			if __import__("uiekwipunek").DropIntoPlayerBag(attachedSlotType, attachedSlotPos, selectedSlotPos):
+				return
 			if player.SLOT_TYPE_INVENTORY == attachedSlotType:
 				#@fixme011 BEGIN (block ds equip)
 				attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
@@ -2528,6 +2536,9 @@ class InventoryWindow(ui.ScriptWindow):
 			import uicollector
 			if uicollector.DropIntoPlayerBag(attachedSlotType, attachedSlotPos, itemSlotIndex):
 				mouseModule.mouseController.DeattachObject()
+				return
+			# MT2009_PLUS_EKWIPUNEK_V1: an item of the extra inventory (uiekwipunek.py) onto an item of the bag.
+			if __import__("uiekwipunek").DropOnPlayerItem(attachedSlotType, attachedSlotPos, itemSlotIndex):
 				return
 
 			if player.SLOT_TYPE_INVENTORY == attachedSlotType:

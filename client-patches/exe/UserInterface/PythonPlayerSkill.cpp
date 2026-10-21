@@ -843,6 +843,13 @@ bool CPythonPlayer::__HasItem(DWORD dwItemID)
 		if (dwItemID == GetItemIndex(TItemPos (DRAGON_SOUL_INVENTORY, i)))
 			return true;
 	}
+#ifdef ENABLE_SPECIAL_STORAGE
+	// MT2009_PLUS_EKWIPUNEK_V1 (has item): the category storages
+	for (BYTE w = UPGRADE_INVENTORY; w <= CHEST_INVENTORY; ++w)
+		for (int j = 0; j < (int) c_Special_ItemSlot_Count; ++j)
+			if (dwItemID == GetItemIndex(TItemPos(w, j)))
+				return true;
+#endif
 
 	return false;
 }

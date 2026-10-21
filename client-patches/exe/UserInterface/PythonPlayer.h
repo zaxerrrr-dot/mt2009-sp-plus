@@ -121,6 +121,9 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		{
 			TItemData			aItem[c_Inventory_Count];
 			TItemData			aDSItem[c_DragonSoul_Inventory_Count];
+#ifdef ENABLE_SPECIAL_STORAGE
+			TItemData			aSpecialItem[SPECIAL_INVENTORY_WINDOW_COUNT][c_Special_ItemSlot_Count]; // MT2009_PLUS_EKWIPUNEK_V1 (items)
+#endif
 			TQuickSlot			aQuickSlot[QUICKSLOT_MAX_NUM];
 			TSkillInstance		aSkill[SKILL_MAX_NUM];
 			long				m_alPoint[POINT_MAX_NUM];

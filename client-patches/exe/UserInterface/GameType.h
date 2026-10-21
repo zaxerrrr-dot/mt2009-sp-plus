@@ -119,6 +119,12 @@ const DWORD c_DragonSoul_Inventory_Start = 0;
 const DWORD c_DragonSoul_Inventory_Box_Size = 32;
 const DWORD c_DragonSoul_Inventory_Count = DS_SLOT_MAX * DRAGON_SOUL_GRADE_MAX * c_DragonSoul_Inventory_Box_Size;
 const DWORD c_DragonSoul_Inventory_End = c_DragonSoul_Inventory_Start + c_DragonSoul_Inventory_Count;
+#ifdef ENABLE_SPECIAL_STORAGE
+// MT2009_PLUS_EKWIPUNEK_V1 (sizes): the category storages' pages (Server/common/length.h)
+const DWORD c_Special_Inventory_Page_Size = SPECIAL_INVENTORY_PAGE_SIZE;
+const DWORD c_Special_Inventory_Page_Count = SPECIAL_INVENTORY_PAGE_COUNT;
+const DWORD c_Special_ItemSlot_Count = SPECIAL_INVENTORY_MAX_NUM;
+#endif
 
 enum EDSRefineType
 {
@@ -143,6 +149,14 @@ enum ESlotType
 	SLOT_TYPE_PRIVATE_SHOP,
 	SLOT_TYPE_MALL,
 	SLOT_TYPE_DRAGON_SOUL_INVENTORY,
+#ifdef ENABLE_SPECIAL_STORAGE
+	// MT2009_PLUS_EKWIPUNEK_V1 (slot types): the category storages' windows (root/uiekwipunek.py)
+	SLOT_TYPE_UPGRADE_INVENTORY,
+	SLOT_TYPE_BOOK_INVENTORY,
+	SLOT_TYPE_STONE_INVENTORY,
+	SLOT_TYPE_CHANGE_INVENTORY,
+	SLOT_TYPE_CHEST_INVENTORY,
+#endif
 	SLOT_TYPE_MAX,
 };
 
