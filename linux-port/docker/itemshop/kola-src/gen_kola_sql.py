@@ -59,7 +59,9 @@ def main():
         if not m or not m.get('vnum'):
             missing.append(src)
             m = {'vnum': 0, 'status': 'brak', 'name': srcname, 'note': 'brak przypisania'}
-        icon = 1 if (m.get('status') in ('ok', 'inny_czas') and src in cfg['src_items']) else 0
+        # MT2009_PLUS_KOLA_ICONS_V1 (owner, 21.10: a won 71052 was not recognised on the wheel): every field shows
+        # our item's own icon, as in the inventory - never the source's picture of a different-looking item.
+        icon = 0
         rows.append('(%s, %d, %d, %d, %d, %d, %d, %d, %s, %s, %s, %s, %d)' % (
             q(src), int(m['vnum']), int(m.get('count_mul') or 1), int(m.get('socket0') or 0), int(m.get('socket1') or 0),
             int(m.get('socket2') or 0), int(m.get('expire_rel_sec') or 0), int(m.get('icon_vnum') or 0),

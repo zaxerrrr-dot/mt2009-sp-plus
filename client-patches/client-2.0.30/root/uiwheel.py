@@ -225,8 +225,28 @@ class Sprite(object):
 		self.alpha = 1.0
 		self.path = ''
 		self.home = (0, 0)
+		self.label = None
 		if path:
 			self.Load(path)
+
+	def SetCount(self, count):
+		"""MT2009_PLUS_KOLA_ICONS_V1: our item icons carry no amount - 'x100' in the
+		icon's bottom right corner (the original's pictures had it drawn in)."""
+		if count <= 1:
+			if self.label:
+				self.label.Hide()
+			return
+		if not self.label:
+			label = ui.TextLine()
+			label.SetParent(self.img)
+			label.SetHorizontalAlignRight()
+			label.SetOutline()
+			label.SetPackedFontColor(0xffffffff)
+			label.AddFlag('not_pick')
+			self.label = label
+		self.label.SetText('x%d' % count)
+		self.label.Show()
+		self.Apply()
 
 	def Load(self, path):
 		if path == self.path or not path:
@@ -250,6 +270,8 @@ class Sprite(object):
 		self.img.SetScale(s, s)
 		self.img.SetPosition(int(round(self.x + (self.w - dw) / 2.0)), int(round(self.y + (self.h - dh) / 2.0)))
 		self.img.SetAlpha(self.alpha)
+		if self.label:
+			self.label.SetPosition(int(dw), max(0, int(dh) - 12))
 
 	def Show(self):
 		self.img.Show()
@@ -985,20 +1007,38 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 
 	# ------------------------------------------------------------------- idle
 
+	def __IdleIcon(self, layer, pos):
+		"""MT2009_PLUS_KOLA_ICONS_V1: the idle show shows the tier's real prizes with our
+		icons (special fields from the special pool, the rest from the standard one, in
+		the pool's order) - the original's pictures only until the pools arrive."""
+		pools = _data['pool'].get(layer, {})
+		special = pos in koladata.SPECIAL_FIELDS.get(layer, ())
+		entries = pools.get(1 if special else 0, [])
+		if entries:
+			fields = [p for p in xrange(1, 17) if (p in koladata.SPECIAL_FIELDS.get(layer, ())) == special]
+			vnum, count, weight, src = entries[fields.index(pos) % len(entries)]
+			path = IconPath(vnum, src)
+			if path:
+				return path, (count if not src else 1)
+		info = koladata.WHEELS.get(self.wheelId)
+		paths = info['fields'].get(layer) if info else None
+		if not paths or pos > len(paths):
+			return None, 1
+		return paths[pos - 1], 1
+
 	def __IdleSprite(self, layer, pos):
+		path, count = self.__IdleIcon(layer, pos)
+		if not path:
+			return None
 		key = (layer, pos)
 		sprite = self.idle.get(key)
 		if sprite is None:
-			info = koladata.WHEELS.get(self.wheelId)
-			if not info:
-				return None
-			paths = info['fields'].get(layer)
-			if not paths or pos > len(paths):
-				return None
-			sprite = Sprite(self.wheel, paths[pos - 1])
+			sprite = Sprite(self.wheel)
 			sprite.img.AddFlag('not_pick')
 			sprite.Hide()
 			self.idle[key] = sprite
+		sprite.Load(path)
+		sprite.SetCount(count)
 		return sprite
 
 	def __StopIdle(self):
@@ -1081,6 +1121,7 @@ class WheelWindow(ui.Window):	# MT2009_PLUS_KOLA_UI_V2: no board, no title bar
 			vnum, count, src = self.layout[i]
 			self.Stop(sprite)
 			sprite.Load(IconPath(vnum, src))
+			sprite.SetCount(count if not src else 1)
 			sprite.alpha = 1.0
 			sprite.Box(sprite.home[0], sprite.home[1], ICON, ICON)
 			sprite.Show()
