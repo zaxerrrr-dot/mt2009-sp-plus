@@ -104,6 +104,9 @@ namespace mt2009_ingame_event
 		{ "catchking",	playerbot_events::KIND_CATCHKING,	"mini_game_catchking",		FLAG_END_EPOCH,	0, NULL,			"mini_game_catchking_drop",	"mini_game_catchking_reward",	20506, true },
 		// event_easter.quest's two switches (the classic panel's Easter page).
 		{ "easter",		playerbot_events::KIND_EASTER,		"easter_drop",				FLAG_VALUE,		1, "easter_rabbit",	NULL,						NULL,						0, true },
+		// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata - the flag is the event's switch, written by the core that runs the
+		// boss (worldboss_config.mode: 1 always, 2 the scheduler's window, 0 off; playerbot_worldboss.h).
+		{ "worldboss",	playerbot_events::KIND_WORLDBOSS,	"worldboss_event",			FLAG_VALUE,		1, NULL,			NULL,						NULL,						0, false },
 	};
 	const int DEFS = sizeof(s_defs) / sizeof(s_defs[0]);
 

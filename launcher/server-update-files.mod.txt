@@ -446,3 +446,9 @@ linux-port/docker/game/dragon_soul_applys.global.txt
 # quest riposty (quest/*), the skills riposty_skill.sql, Zwoj Zmiany Treningu's ItemShop offer riposty_itemshop.sql.
 linux-port/docker/mariadb/playerbot/riposty_skill.sql
 linux-port/docker/mariadb/playerbot/riposty_itemshop.sql
+# MT2009_PLUS_WORLDBOSS_V1 (server-patches/worldboss): Boss Swiata - the engine files it changes are above
+# (char_battle.cpp, item_manager.cpp, cmd.cpp); the logic is playerbot_worldboss.h (the playerbot_* lines), the coupons'
+# quest worldboss_kupony (quest/*); the monsters, items and tables worldboss.sql and the game's data game/worldboss/*
+# (tools/worldboss/gen_worldboss.py).
+linux-port/docker/mariadb/playerbot/worldboss.sql
+linux-port/docker/game/worldboss/*

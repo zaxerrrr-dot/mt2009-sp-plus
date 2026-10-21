@@ -117,7 +117,9 @@ param(
 #   Bonusy 6/7 z wiki  common length.h (points 198-251), char.cpp, battle.cpp, char_battle.cpp, char_skill.cpp, item.cpp,
 #                      item_attribute.cpp (MT2009_PLUS_BONUS67_V1; server-patches/bonusy67, after precyzja and rekawice)
 #   Riposty/Dopalacze  common skill_length.h, char_skill.cpp, cmd_general.cpp (MT2009_PLUS_RIPOSTY_V1;
-#                      server-patches/riposty, after skill9 and precyzja - last)
+#                      server-patches/riposty, after skill9 and precyzja)
+#   Boss Swiata        char_battle.cpp, item_manager.cpp, cmd.cpp (MT2009_PLUS_WORLDBOSS_V1; server-patches/worldboss,
+#                      after shipdefense, zestawy and ysets - last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1622,6 +1624,20 @@ if ((Test-Path -LiteralPath $ripostyApply -PathType Leaf) -and
     if ($ripostyResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} riposte/boost edit(s).' -f $ripostyResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Boss Swiata (server-patches/worldboss, MT2009_PLUS_WORLDBOSS_V1; the owner, 21 October 2026): the World Boss event -
+# every player's damage to the boss (char_battle.cpp), no drop from its monsters, the loot tier's drop buff
+# (item_manager.cpp) and "/worldboss" (cmd.cpp). Anchors on shipdefense's, zestawy's and ysets' lines, so after them.
+# The logic is playerbot_worldboss.h.
+$worldBossApply = Join-Path $repo 'server-patches/worldboss/Apply-WorldBossPatch.ps1'
+if ((Test-Path -LiteralPath $worldBossApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $worldBossResult = & $worldBossApply -SourceDir $engineGameSource
+    if ($worldBossResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} World Boss edit(s).' -f $worldBossResult.Applied) -ForegroundColor DarkGray
     }
 }
 

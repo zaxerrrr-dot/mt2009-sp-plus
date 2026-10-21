@@ -4319,6 +4319,20 @@ if [ -s /opt/playerbot/refine_global.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (the owner, 21 October 2026; playerbot_worldboss.h, server-patches/worldboss) -
+# worldboss.sql (tools/worldboss/gen_worldboss.py): the six bosses 4429-4479 and their thirty men 4420-4474 (INSERT
+# IGNORE), their element (UPDATE - after zywioly_moby.sql, which clears what it does not list, so here at the end),
+# Skrzynka Tajemnic 38015 and Kupon SM (20) / (10) 80031 / 80032 (INSERT IGNORE), the event's tables
+# player.worldboss_config / _state / _damage / _reward / _points (CREATE TABLE IF NOT EXISTS, one config and one
+# state row INSERT IGNORE). Every start, idempotent.
+if [ -s /opt/playerbot/worldboss.sql ]; then
+    if db < /opt/playerbot/worldboss.sql; then
+        echo "[playerbot-migrate] Boss Swiata: worldboss.sql applied"
+    else
+        fail_step "Boss Swiata: worldboss.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

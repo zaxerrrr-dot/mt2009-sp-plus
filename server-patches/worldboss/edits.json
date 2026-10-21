@@ -1,0 +1,32 @@
+[
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_WORLDBOSS_V1 (damage)",
+  "old": "\t\tStartRecoveryEvent();\n\t\tUpdateAggrPointEx(pAttacker, type, dam, it->second);\n\t}\n\n\tif (GetHP() <= 0)\n\t{\n\t\tStun();\n",
+  "new": "\t\tStartRecoveryEvent();\n\t\tUpdateAggrPointEx(pAttacker, type, dam, it->second);\n\t}\n\n\t// MT2009_PLUS_WORLDBOSS_V1 (damage): Boss Swiata adds up every player's damage to the standing boss\n\t// (playerbot_worldboss.h - the loot tiers, the season's rank points).\n\tif (pAttacker && dam > 0 && IsMonster())\n\t{ void WorldBossOnDamage(LPCHARACTER, LPCHARACTER, int); WorldBossOnDamage(this, pAttacker, dam); }\n\n\tif (GetHP() <= 0)\n\t{\n\t\tStun();\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_WORLDBOSS_V1 (no drop)",
+  "old": "\t{ bool ShipDefense_NoDrop(LPCHARACTER); if (ShipDefense_NoDrop(this)) return; }\n",
+  "new": "\t{ bool ShipDefense_NoDrop(LPCHARACTER); if (ShipDefense_NoDrop(this)) return; }\n\t// MT2009_PLUS_WORLDBOSS_V1 (no drop): Boss Swiata's bosses and their men (4420-4479) drop nothing, not even\n\t// yang - the rewards are the damage ranking's (playerbot_worldboss.h, which notes the boss's fall here).\n\t{ bool WorldBossNoDrop(LPCHARACTER); if (WorldBossNoDrop(this)) return; }\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_WORLDBOSS_V1 (drop)",
+  "old": "\t\tconst int set_drop = Mt2009PlusCostumeSetDropBonus(pkKiller);\n\t\tif (set_drop > 0)\n\t\t\tAddToBonusItemDrop(item_drop_bonus, set_drop);\n\t}\n",
+  "new": "\t\tconst int set_drop = Mt2009PlusCostumeSetDropBonus(pkKiller);\n\t\tif (set_drop > 0)\n\t\t\tAddToBonusItemDrop(item_drop_bonus, set_drop);\n\t}\n\t// MT2009_PLUS_WORLDBOSS_V1 (drop): Boss Swiata's loot-tier buff - +100 / 50 / 25 % drop chance for 2 h\n\t// (the affect 720, playerbot_worldboss.h).\n\t{\n\t\tint WorldBossDropBonus(LPCHARACTER ch);\n\t\tconst int wb_drop = WorldBossDropBonus(pkKiller);\n\t\tif (wb_drop > 0)\n\t\t\tAddToBonusItemDrop(item_drop_bonus, wb_drop);\n\t}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WORLDBOSS_V1 (declare)",
+  "old": "// MT2009_PLUS_YOHARA_SETS_V2 (command declare): \"/yitem\" - the client asks for its items' set / random bonuses again\n",
+  "new": "// MT2009_PLUS_WORLDBOSS_V1 (declare): \"/worldboss info|ranking|sezon|odbierz\" - Boss Swiata's window; a game\n// master's \"spawn|ucieczka|przeladuj|stan\" (playerbot_worldboss.h).\nvoid WorldBossCommand(LPCHARACTER ch, const char* argument);\nACMD(do_worldboss)\n{\n\tWorldBossCommand(ch, argument);\n}\n// MT2009_PLUS_YOHARA_SETS_V2 (command declare): \"/yitem\" - the client asks for its items' set / random bonuses again\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WORLDBOSS_V1 (table)",
+  "old": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n",
+  "new": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n\t{ \"worldboss\",\tdo_worldboss,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_WORLDBOSS_V1 (table)\n"
+ }
+]

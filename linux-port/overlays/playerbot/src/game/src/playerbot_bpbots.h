@@ -572,6 +572,9 @@ namespace playerbot_bpbots
 		for (size_t i = 0; i < PLAYERBOT_WORLD_BOSS_COUNT; ++i)
 		{
 			const TPlayerBotWorldBoss& row = PLAYERBOT_WORLD_BOSSES[i];
+			// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's bosses come and go with the event - no mission plan.
+			if (IsWorldBossEventRace(row.wRace))
+				continue;
 			if ((m.target != 0 && m.target != row.wRace) || level < (int)row.bMinLevel ||
 					level > (int)row.bMaxLevel || !IsPlayerBotMapHostedHere(row.lMap))
 				continue;

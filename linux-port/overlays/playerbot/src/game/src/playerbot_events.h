@@ -48,6 +48,9 @@ void RumiTick(DWORD dwNow);
 // MT2009_PLUS_CATCH_KING_V1: Catch the King's season (playerbot_catchking.h,
 // included after this file), every pass.
 void CatchKingTick(DWORD dwNow);
+// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (playerbot_worldboss.h, included after
+// this file), every pass - the core of its channel runs the boss.
+void WorldBossTick(DWORD dwNow);
 
 namespace {
 	const char* const PLAYERBOT_EVENTS_DEFAULT_PATH = "/opt/m2spool/playerbot_events.tsv";
@@ -736,6 +739,8 @@ namespace {
 		RumiTick(dwNow);
 		// MT2009_PLUS_CATCH_KING_V1: Catch the King's season flag (playerbot_catchking.h).
 		CatchKingTick(dwNow);
+		// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (playerbot_worldboss.h).
+		WorldBossTick(dwNow);
 	}
 }
 
