@@ -77,9 +77,32 @@ def main():
                   desc=text + u' Zwiększa szansę na ulepszenie o 15%.',
                   icon='icon/item/%d.tga' % RITUAL_STONE, list_type='ETC')]
     write_sql(items)
-    write_json(items)
-    copy_icons({'%d.tga' % RITUAL_STONE: '%d.tga' % RITUAL_STONE_SRC}, a.gf)
+    write_json(items + flame_records())
+    copy_icons({'%d.tga' % RITUAL_STONE: '%d.tga' % RITUAL_STONE_SRC, '100700.tga': '100700.tga'}, a.gf)
     print('items %d (Kamien Rytualny %d), renames %d' % (len(items), RITUAL_STONE, len(RENAMES)))
+
+
+# MT2009_PLUS_KOLA_ITEMS_V2 (the owner, 21 October 2026: "to jest chyba zly plomien smoka, musi byc ten co faktycznie
+# dziala do naszej alchemii"): 100701 is the right one - MATERIAL_DS_CHANGE_ATTR, the material the Alchemy window's
+# bonus change (DSManager::DoChangeAttribute) takes; 100700 is its bound twin. But the client's item_proto lacked both,
+# so the exe made them up (GameLib/ItemManager.cpp, aDragonSoulUtilityItems) as "Plomien Smoka(+)" in UTF-8 - a
+# garbled name in game. The client gets the server's records (item_proto.mt2009plus.sql) and a text.
+FLAME_DESC = u'Zmienia bonusy mitycznego Smoczego Kamienia w oknie Smoczej Alchemii (zakładka zmiany bonusów).'
+
+
+def flame_records():
+    import ast
+    src = os.path.join(REPO, 'linux-port', 'docker', 'mariadb', 'playerbot', 'item_proto.mt2009plus.sql')
+    out = []
+    for line in open(src, encoding='utf-8'):
+        for vnum, en, pl in RENAMES:
+            if line.startswith('(%d,' % vnum):
+                row = dict(zip(Y.COLS, ast.literal_eval(line.strip().rstrip(',;'))))
+                assert (row['type'], row['subtype'], row['locale_name']) == (5, 8, pl), row
+                row.update(status=Y.ST, desc=FLAME_DESC, icon='icon/item/100700.tga', list_type='ETC')
+                out.append(row)
+    assert len(out) == len(RENAMES), out
+    return out
 
 
 def write_sql(items):

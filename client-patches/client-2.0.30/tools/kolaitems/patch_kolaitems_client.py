@@ -25,7 +25,7 @@ import patch_yohara_client as py  # noqa: E402
 
 REPO = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..'))
 ITEMS_JSON = os.path.join(REPO, 'tools', 'kola_items', 'kola_items.json')
-ITEMS = 1
+ITEMS = 3  # MT2009_PLUS_KOLA_ITEMS_V2: + Smoczy Plomien (B) / Smoczy Plomien (100700/100701)
 
 
 def items_json():
