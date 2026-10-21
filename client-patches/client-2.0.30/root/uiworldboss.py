@@ -214,6 +214,7 @@ class WorldBossWindow(ui.ScriptWindow):
 		self.page = 0
 		self.lines = []
 		self.nextPoll = 0.0
+		self.rewardEnabled = None	# MT2009_PLUS_WORLDBOSS_CLAIM_V1
 		self.__LoadWindow()
 
 	def __del__(self):
@@ -321,7 +322,7 @@ class WorldBossWindow(ui.ScriptWindow):
 			self.breakTimeText.SetText('--:--')
 			self.totalDamageText.SetText('0')
 			self.minDamageText.SetText('-')
-			self.rewardButton.Disable()
+			self.__SetRewardEnabled(False)
 			return
 		state, vnum, mapIndex, fightLeft, nextLeft, damage, minDamage, claims = info[:8]
 		enabled = info[11]
@@ -330,12 +331,21 @@ class WorldBossWindow(ui.ScriptWindow):
 		self.breakTimeText.SetText(Clock(nextLeft) if (nextLeft > 0 and state != 1) else '--:--')
 		self.totalDamageText.SetText(Number(damage))
 		self.minDamageText.SetText(Number(minDamage))
-		if claims > 0:
+		self.__SetRewardEnabled(claims > 0)
+		if self.page == 0:
+			self.__ShowPage()
+
+	# MT2009_PLUS_WORLDBOSS_CLAIM_V1: "Odbierz nagrod\xea" did nothing - Refresh runs every frame (OnUpdate) and
+	# Button.Enable() is CButton::Enable -> SetUp(), which drops the pressed state, so a press never became a
+	# click. The button is switched only when its state changes.
+	def __SetRewardEnabled(self, enabled):
+		if self.rewardEnabled == enabled:
+			return
+		self.rewardEnabled = enabled
+		if enabled:
 			self.rewardButton.Enable()
 		else:
 			self.rewardButton.Disable()
-		if self.page == 0:
-			self.__ShowPage()
 
 	def __ClickRanking(self):
 		OpenRanking()
@@ -346,6 +356,7 @@ class WorldBossWindow(ui.ScriptWindow):
 			chat.AppendChat(chat.CHAT_TYPE_INFO, 'Boss \x8cwiata: nie masz nagr\xf3d do odebrania.')
 			return
 		Send('odbierz')
+		self.nextPoll = app.GetTime() + POLL_SECONDS	# MT2009_PLUS_WORLDBOSS_CLAIM_V1: the answer brings the info
 
 	def OnUpdate(self):
 		now = app.GetTime()
