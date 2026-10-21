@@ -10,5 +10,17 @@
   "marker": "MT2009_PLUS_SMH_TOWER_V1 (potions)",
   "old": "\tsys_log(0, \"%s: USE_ITEM %s (inven %d, cell: %d)\", GetName(), item->GetName(), window_type, wCell);\n",
   "new": "\tsys_log(0, \"%s: USE_ITEM %s (inven %d, cell: %d)\", GetName(), item->GetName(), window_type, wCell);\n\n\t// MT2009_PLUS_SMH_TOWER_V1 (potions): Handlarka's (9014) tower potions 70390-70395 - Czerwona/Niebieska Mikstura (W),\n\t// Wino Brzoskwini (W), Blogoslawienstwa Zycia/Magii/Smoka (W) - work only inside Wieza Sung Mahi (map 387 and its\n\t// instances 387xxxx), as officially (\"Mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi\").\n\tif (item->GetVnum() >= 70390 && item->GetVnum() <= 70395)\n\t{\n\t\tconst long lSmhMap = GetMapIndex() >= 10000 ? GetMapIndex() / 10000 : GetMapIndex();\n\t\tif (lSmhMap != 387)\n\t\t{\n\t\t\tChatPacket(CHAT_TYPE_INFO, \"Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.\");\n\t\t\treturn false;\n\t\t}\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SMH_TOWER_V2 (other potions)",
+  "old": "\t// MT2009_PLUS_SMH_TOWER_V1 (potions): Handlarka's (9014)",
+  "new": "\t// MT2009_PLUS_SMH_TOWER_V2 (other potions) (the owner, 21 Oct 2026, as officially): inside Wieza Sung Mahi (map 387\n\t// and its instances) only the tower potions heal - the ordinary potions (USE_POTION, USE_POTION_NODELAY,\n\t// USE_POTION_CONTINUE) and the auto-potions (Eliksir Slonca/Ksiezyca 72723-72730, 39037-39042) are refused there.\n\tif (IsPC() && (GetMapIndex() >= 10000 ? GetMapIndex() / 10000 : GetMapIndex()) == 387 &&\n\t\t\t!(item->GetVnum() >= 70390 && item->GetVnum() <= 70395) &&\n\t\t\t((item->GetType() == ITEM_USE && (item->GetSubType() == USE_POTION || item->GetSubType() == USE_POTION_NODELAY ||\n\t\t\t\titem->GetSubType() == USE_POTION_CONTINUE)) ||\n\t\t\t(item->GetVnum() >= 72723 && item->GetVnum() <= 72730) || (item->GetVnum() >= 39037 && item->GetVnum() <= 39042)))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, \"W Piekielnej Wiezy Sunga Mahi dzialaja tylko mikstury wiezowe (W) od Handlarki.\");\n\t\treturn false;\n\t}\n\n\t// MT2009_PLUS_SMH_TOWER_V1 (potions): Handlarka's (9014)"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SMH_TOWER_V2 (auto potions)",
+  "old": "\tif (AFFECT_AUTO_HP_RECOVERY != type && AFFECT_AUTO_SP_RECOVERY != type)\n\t\treturn;\n",
+  "new": "\tif (AFFECT_AUTO_HP_RECOVERY != type && AFFECT_AUTO_SP_RECOVERY != type)\n\t\treturn;\n\n\t// MT2009_PLUS_SMH_TOWER_V2 (auto potions): an auto-potion switched on outside does not heal inside Wieza Sung Mahi\n\tif ((GetMapIndex() >= 10000 ? GetMapIndex() / 10000 : GetMapIndex()) == 387)\n\t\treturn;\n"
  }
 ]

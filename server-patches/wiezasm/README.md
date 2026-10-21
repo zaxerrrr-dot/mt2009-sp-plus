@@ -20,3 +20,8 @@ Wiki („Wieża Sung Mahi”): na każdym etapie piętra gracz dostaje losowy bo
 
 Linux/VPS: `python3 apply_wiezasm.py <game/src>`; Windows: `Apply-WiezaSmPatch.ps1 -SourceDir <game/src>` (wołane przez
 `tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `char_skill.cpp`, `char_item.cpp` (lista `launcher/server-update-files.mod.txt`).
+
+`MT2009_PLUS_SMH_TOWER_V2` (właściciel 21.10: „tak, zablokuj”): w Piekielnej Wieży (mapa 387 i jej instancje) działają
+tylko mikstury wieżowe (W) 70390–70395 – zwykłe mikstury (USE_POTION, USE_POTION_NODELAY, USE_POTION_CONTINUE) i
+autoeliksiry (Eliksir Słońca/Księżyca 72723–72730, 39037–39042) są odrzucane, a włączony wcześniej autoeliksir nie leczy
+w wieży (`AutoRecoveryItemProcess`). Edycje `(other potions)` i `(auto potions)` w `char_item.cpp`.
