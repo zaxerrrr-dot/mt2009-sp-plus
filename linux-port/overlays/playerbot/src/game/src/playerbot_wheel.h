@@ -919,6 +919,22 @@ namespace mt2009_kola
 		s_loaded = true;
 	}
 
+	// MT2009_PLUS_KOLA_KEYS_V1 (the owner, 21 Oct 2026: "a noticeably bigger chance of the key fields, so
+	// players get to the higher tiers sooner"): below the top tier the wheel stops on one of the four key
+	// fields key_chance % of the time (default 40; the original's even 4 in 16 = 25), else on one of the
+	// other twelve - the same as kola_stop_field() in kola_lib.php. The fields' prizes are drawn as before.
+	int StopField(int tier, int maxTier)
+	{
+		if (tier >= maxTier)
+			return (int)RandRange(1, FIELDS);
+		const long long chance = std::min<long long>(100, std::max<long long>(0, Setting("key_chance", 40)));
+		static const int keys[4] = { 3, 7, 11, 15 };
+		static const int rest[12] = { 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16 };
+		if ((long long)RandRange(1, 100) <= chance)
+			return keys[RandRange(0, 3)];
+		return rest[RandRange(0, 11)];
+	}
+
 	// The same reckoning as kola_active() in kola_lib.php.
 	int ActiveWheel(long long now)
 	{
@@ -1299,7 +1315,7 @@ namespace mt2009_kola
 			fields[pos].e = Pick(w->pool[tier][special ? 1 : 0]);
 			fields[pos].special = special;
 		}
-		const int pos = (int)RandRange(1, FIELDS);
+		const int pos = StopField(tier, w->maxTier);
 		const PoolEntry& won = *fields[pos].e;
 		const Item* it = ItemOf(won.src);
 		const DWORD count = won.count * it->countMul;

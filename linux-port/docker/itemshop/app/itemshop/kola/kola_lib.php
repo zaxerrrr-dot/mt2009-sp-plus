@@ -28,6 +28,18 @@
 		return array(3, 7, 11, 15);
 	}
 
+	// MT2009_PLUS_KOLA_KEYS_V1 (wlasciciel 21.10.2026: "zauwazalnie wieksza szansa na pola z kluczem"): ponizej
+	// najwyzszego poziomu kolo staje na jednym z 4 pol z kluczem z szansa key_chance % (domyslnie 40; oryginal
+	// rowno 4 z 16 = 25%), inaczej na jednym z 12 pozostalych - tak samo jak StopField() w playerbot_wheel.h.
+	function kola_stop_field($tier, $maxTier, $settings) {
+		if ($tier >= $maxTier) return random_int(1, KOLA_FIELDS);
+		$chance = max(0, min(100, (int)(isset($settings['key_chance']) ? $settings['key_chance'] : 40)));
+		$keys = kola_key_fields();
+		if (random_int(1, 100) <= $chance) return $keys[random_int(0, count($keys) - 1)];
+		$rest = array_values(array_diff(range(1, KOLA_FIELDS), $keys));
+		return $rest[random_int(0, count($rest) - 1)];
+	}
+
 	// Dane do wygladu (ikony pol, tla, nazwy i opisy przedmiotow zrodla) - mechanika
 	// (koszty, pule, wagi, vnumy) jest wylacznie w bazie.
 	function kola_look() {
@@ -60,7 +72,7 @@
 	function kola_settings($db) {
 		$s = array('enabled' => '1', 'override_wheel' => '0', 'rotation_anchor' => '1792360800',
 			'rotation_days' => '14', 'rotation_order' => '243,162,238,239,240,241',
-			'tier_seconds' => '930', 'keys_needed' => '4');
+			'tier_seconds' => '930', 'keys_needed' => '4', 'key_chance' => '40');
 		$r = kola_try_q($db, "SELECT name, value FROM itemshop.kola_settings");
 		if ($r) {
 			while ($row = mysqli_fetch_assoc($r)) $s[$row['name']] = $row['value'];
@@ -344,7 +356,7 @@
 				return array('ok' => false, 'error' => 'Za mało Smoczych Monet: masz ' . $bal . ' SM, obrót kosztuje ' . $cost . ' SM.');
 			}
 			$layout = kola_layout($pools, $tier);
-			$pos = random_int(1, KOLA_FIELDS);
+			$pos = kola_stop_field($tier, (int)$wheel['max_tier'], $settings);
 			$won = $layout[$pos];
 			$it = $items[$won[0]];
 			$count = (int)$won[1] * max(1, (int)$it['count_mul']);
@@ -443,7 +455,7 @@
 		$tier = (int)$st['tier'];
 		$keysNeeded = max(1, (int)$settings['keys_needed']);
 		$layout = kola_layout($pools, $tier);
-		$pos = random_int(1, KOLA_FIELDS);
+		$pos = kola_stop_field($tier, (int)$wheel['max_tier'], $settings);
 		$won = $layout[$pos];
 		$keyHit = in_array($pos, kola_key_fields()) && $tier < (int)$wheel['max_tier'];
 		$keysBefore = (int)$st['keys_count'];

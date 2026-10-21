@@ -35,6 +35,7 @@
 {% for w in wheels %}<option value="{{ w.id }}" {% if active.override == w.id %}selected{% endif %}>{{ w.name }} (koszt {{ w.cost1 }}/{{ w.cost2 }}{% if w.max_tier > 2 %}/{{ w.cost3 }}{% endif %} SM)</option>{% endfor %}
 </select></label>
 <label>Włączone<input type="checkbox" name="enabled" value="1" {% if (settings.enabled or '1') == '1' %}checked{% endif %}></label>
+<label title="Jak często koło staje na jednym z 4 pól z kluczem (poniżej najwyższego poziomu). Oryginał: 25% (4 z 16).">Szansa na pole z kluczem (%)<input type="number" name="key_chance" min="0" max="100" value="{{ settings.key_chance or 40 }}" style="width:5em"></label>
 <button>Zapisz</button>
 </form>
 <p class="kl-note">Zmiana koła cofa graczy przy następnym wejściu/obrocie na poziom 1 nowego koła (klucze od zera). Okno F12 widzi zmianę w ciągu 30 sekund.</p>

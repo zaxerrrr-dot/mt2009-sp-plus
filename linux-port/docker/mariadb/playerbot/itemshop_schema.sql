@@ -213,7 +213,8 @@ INSERT IGNORE INTO itemshop.kola_settings (name, value) VALUES
   ('rotation_days', '14'),
   ('rotation_order', '243,162,238,239,240,241'),
   ('tier_seconds', '930'),
-  ('keys_needed', '4');
+  ('keys_needed', '4'),
+  ('key_chance', '40');
 
 CREATE TABLE IF NOT EXISTS itemshop.kola_state (
   account_id INT UNSIGNED NOT NULL PRIMARY KEY,

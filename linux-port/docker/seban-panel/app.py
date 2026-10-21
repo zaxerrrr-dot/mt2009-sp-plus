@@ -10019,10 +10019,15 @@ def wheel():
         if override and override not in [w["id"] for w in wheels]:
             override = 0
         enabled = "1" if request.form.get("enabled") else "0"
-        rows("REPLACE INTO itemshop.kola_settings (name, value) VALUES ('override_wheel', %s), ('enabled', %s)",
-             (str(override), enabled))
+        # MT2009_PLUS_KOLA_KEYS_V1: how often the wheel stops on a key field below the top tier (0-100 %)
+        try:
+            key_chance = max(0, min(100, int(request.form.get("key_chance", "") or settings.get("key_chance") or 40)))
+        except ValueError:
+            key_chance = int(settings.get("key_chance") or 40)
+        rows("REPLACE INTO itemshop.kola_settings (name, value) VALUES ('override_wheel', %s), ('enabled', %s), ('key_chance', %s)",
+             (str(override), enabled, str(key_chance)))
         rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_KOLA',%s)",
-             (f"override={override} enabled={enabled}",))
+             (f"override={override} enabled={enabled} key_chance={key_chance}",))
         flash("Zapisane. Sklep stosuje to od razu, okno F12 w grze w ciągu 30 sekund. Gracze z innym kołem "
               "wracają przy następnym obrocie na poziom 1 nowego koła.", "success")
         return redirect(url_for("wheel"))
