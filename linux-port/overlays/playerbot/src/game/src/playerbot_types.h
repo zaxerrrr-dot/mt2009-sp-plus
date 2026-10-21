@@ -4148,7 +4148,7 @@ namespace
 	// The band: the quest's gate is 95, the forest pays from a few levels under its 100-108 and
 	// to 109 - from 110 the Time Rift (SZC) takes over. The floor is PLAYERBOT_ZAKLETY_MIN_LEVEL
 	// in the .env (playerbot_yohara_bots.h); this is its default.
-	const BYTE PLAYERBOT_ZAKLETY_MIN_LEVEL = 97;
+	const BYTE PLAYERBOT_ZAKLETY_MIN_LEVEL = 100;	// MT2009_PLUS_BOT_YOHARA_FIX_V1: 97 -> 100 (the test of 21 October)
 	const BYTE PLAYERBOT_ZAKLETY_MAX_LEVEL = 109;
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: Szczelina Czasu - Zaklety Las (SZC, 404) for 110-119, entered
 	// from Plaskowyz Iluzji (397, metin2_map_labyrinth) by Statua Szczeliny Czasu (20472); the bots'

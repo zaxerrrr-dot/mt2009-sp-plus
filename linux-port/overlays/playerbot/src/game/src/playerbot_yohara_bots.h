@@ -102,6 +102,15 @@ namespace
 	const DWORD PLAYERBOT_YOHARA_CLAIM_TIMEOUT_MS = 90000;
 	// After a stay, a refused or taken-back request: no new trip for this long.
 	const DWORD PLAYERBOT_YOHARA_TRIP_COOLDOWN_MS = 30 * 60 * 1000;
+	// MT2009_PLUS_BOT_YOHARA_FIX_V1: a stay ended by its deaths - no new trip for this long, and the
+	// deaths that end it: this many in PLAYERBOT_YOHARA_DEATH_WINDOW_MS, or this many in the stay.
+	const DWORD PLAYERBOT_YOHARA_DEATHS_COOLDOWN_MS = 3 * 60 * 60 * 1000;
+	const int PLAYERBOT_YOHARA_DEATHS_WINDOWED = 3;
+	const DWORD PLAYERBOT_YOHARA_DEATH_WINDOW_MS = 30 * 60 * 1000;
+	const int PLAYERBOT_YOHARA_DEATHS_STAY = 5;
+	// MT2009_PLUS_BOT_YOHARA_FIX_V1: what is not a reason to go home in the first minutes of a stay
+	// (a bag with no free column, a short belt the restock fills) - only the gear is.
+	const DWORD PLAYERBOT_YOHARA_SETTLE_MS = 3 * 60 * 1000;
 	const DWORD PLAYERBOT_YOHARA_REFUSED_COOLDOWN_MS = 20 * 60 * 1000;
 	// The temple: no Portal in this long since the bot came in for the forest -
 	// it takes the handover where it stands.
@@ -167,7 +176,7 @@ namespace
 	{
 		bool on;
 		std::set<int> channels;
-		int zakletyMax, zakletyMinLevel, zakletyStayMin;
+		int zakletyMax, zakletyMinLevel, zakletyStayMin, zakletyMinHp;
 		int szcMax, szcParties;
 		int lootMax;
 		std::vector<long> lootMaps;
@@ -215,6 +224,9 @@ namespace
 		s_cfg.zakletyMinLevel = ReadPlayerBotYoharaEnvInt("PLAYERBOT_ZAKLETY_MIN_LEVEL", PLAYERBOT_ZAKLETY_MIN_LEVEL,
 				PLAYERBOT_OCHAO_MIN_LEVEL, PLAYERBOT_ZAKLETY_MAX_LEVEL);
 		s_cfg.zakletyStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_ZAKLETY_STAY_MIN", 120, 20, 600);
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: the test of 21 October - two warriors of 97/101 with 11 250 /
+		// 11 550 health died at once; the forest's packs are 3-5 En-Tai of 100-108 (179-290 a blow).
+		s_cfg.zakletyMinHp = ReadPlayerBotYoharaEnvInt("PLAYERBOT_ZAKLETY_MIN_HP", 20000, 0, 1000000);
 		s_cfg.szcMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SZC_MAX", 18, 0, 200);
 		s_cfg.szcParties = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SZC_PARTIES", 2, 0, 20);
 		s_cfg.lootMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_LOOTRUN_MAX", 6, 0, 200);
@@ -230,8 +242,8 @@ namespace
 		for (size_t i = 0; i < s_cfg.lootMaps.size(); ++i)
 			loot += (loot.empty() ? "" : ",") + std::to_string(s_cfg.lootMaps[i]);
 		sys_log(0, "PLAYERBOT_HANDOVER: config on=%d channels=%s zaklety_max=%d zaklety_min_level=%d zaklety_stay_min=%d "
-				"szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s channel_here=%u",
-				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin,
+				"zaklety_min_hp=%d szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s channel_here=%u",
+				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin, s_cfg.zakletyMinHp,
 				s_cfg.szcMax, s_cfg.szcParties, s_cfg.lootMax, loot.c_str(), (unsigned int)g_bChannel);
 		return s_cfg;
 	}
@@ -270,7 +282,8 @@ namespace
 		long lMap, lX, lY;
 		int iPurpose;
 		DWORD dwAt;
-		TPlayerBotYoharaArrival() : lMap(0), lX(0), lY(0), iPurpose(0), dwAt(0) {}
+		bool bDeaths;	// MT2009_PLUS_BOT_YOHARA_FIX_V1: a way home its deaths asked for (the long rest)
+		TPlayerBotYoharaArrival() : lMap(0), lX(0), lY(0), iPurpose(0), dwAt(0), bDeaths(false) {}
 	};
 	// A bot living on this core for a purpose (this core is not its home).
 	struct TPlayerBotYoharaResident
@@ -278,7 +291,12 @@ namespace
 		int iPurpose;
 		long lMap;
 		DWORD dwArrived, dwLastRun, dwNextRestock, dwOffRunSince;
-		TPlayerBotYoharaResident() : iPurpose(0), lMap(0), dwArrived(0), dwLastRun(0), dwNextRestock(0), dwOffRunSince(0) {}
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: the stay's deaths (counted by the poll, outside a dungeon run).
+		bool bDead;
+		int iDeaths, iDeathsWindowed;
+		DWORD dwWindowStart;
+		TPlayerBotYoharaResident() : iPurpose(0), lMap(0), dwArrived(0), dwLastRun(0), dwNextRestock(0), dwOffRunSince(0),
+			bDead(false), iDeaths(0), iDeathsWindowed(0), dwWindowStart(0) {}
 	};
 	// A bot on its way into Zaklety Las through the temple (the home core).
 	struct TPlayerBotYoharaTemple
@@ -578,6 +596,10 @@ namespace
 				return plan->second.lMap;
 			s_mapPlayerBotYoharaLootPlan.erase(plan);
 		}
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: never with a bag, a belt or gear its town visit has to sort out
+		// first (21 October: Hyuuga left with a full bag and was sent home at the arrival).
+		if (BlocksPlayerBotTravel(ch))
+			return 0;
 		if (cfg.lootMax <= 0 || cfg.lootMaps.empty() || ch->GetLevel() < PLAYERBOT_YOHARA_LOOT_MIN_LEVEL ||
 				!IsPlayerBotVillageMap(ch->GetMapIndex()) || s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_LOOT] >= cfg.lootMax)
 			return 0;
@@ -648,8 +670,12 @@ namespace
 		// Zaklety Las: two in three of the band, while there is room (and a
 		// bot already on its way through the temple keeps it).
 		const bool inTemple = s_mapPlayerBotYoharaTemple.count(pid) != 0;
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: strong enough for the forest's packs (PLAYERBOT_ZAKLETY_MIN_HP).
+		if (level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && ch->GetMaxHP() < cfg.zakletyMinHp)
+			PlayerBotLogThrottled("zaklety_weak", dwNow, "PLAYERBOT_YOHARA: too weak for the forest pid=%u name=%s level=%d max_hp=%d need=%d",
+					pid, ch->GetName(), level, (int)ch->GetMaxHP(), cfg.zakletyMinHp);
 		if (level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL && cfg.zakletyMax > 0 &&
-				IsPlayerBotOchaoHosted() &&
+				ch->GetMaxHP() >= cfg.zakletyMinHp && IsPlayerBotOchaoHosted() &&
 				(inTemple || s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] < cfg.zakletyMax) &&
 				PlayerBotNavHash(pid ^ 0x5a4b4c53U) % 3U != 0)
 			return PLAYERBOT_MAP_ZAKLETY;
@@ -677,32 +703,35 @@ namespace
 	// holding 98.8 % of it; the walk 1.51 times the straight line at the median, 2.09 at p90 - ridges and
 	// gullies): the regen's 346 spawn lines in 24 spots, densest first, each with five open cells all round;
 	// the last row Wladca En-Tai (6407, boss 112, group 6318, boss.txt 587,97) for a party.
+	// MT2009_PLUS_BOT_YOHARA_FIX_V1: each spot's floor by the En-Tai within 3 600 of it (the regen's groups
+	// 6311-6317 and their members): 100-102 only (the two by the arrival) from 95, to 104-105 from 99, the
+	// ones with Niszczyciel En-Tai (108) from 103 - a bot starts by the arrival and moves out as it grows.
 	const TPlayerBotHuntingHub PLAYERBOT_YOHARA_ZAKLETY_HUBS[] = {
-		{ 827350, 1465350, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 27 spawn lines
-		{ 805650, 1420250, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 23 spawn lines
-		{ 824750, 1483050, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 19 spawn lines
-		{ 784650, 1469750, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 19 spawn lines
-		{ 821550, 1461350, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 13 spawn lines
-		{ 831150, 1447350, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 13 spawn lines
-		{ 787750, 1477250, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 13 spawn lines
-		{ 804450, 1497550, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 12 spawn lines
-		{ 793650, 1433850, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 12 spawn lines
-		{ 778750, 1450950, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 12 spawn lines
-		{ 808750, 1447450, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 11 spawn lines
-		{ 818250, 1444850, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 11 spawn lines
-		{ 795750, 1486050, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 9 spawn lines
-		{ 829450, 1434550, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 9 spawn lines
-		{ 790950, 1470550, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 9 spawn lines
-		{ 799850, 1442250, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 9 spawn lines
-		{ 777850, 1439350, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 9 spawn lines
-		{ 826050, 1417450, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
-		{ 827350, 1473850, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
-		{ 827850, 1454750, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
-		{ 812950, 1493050, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 795350, 1457050, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 802150, 1426150, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
-		{ 801350, 1450550, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
-		{ 826700, 1417700, PLAYERBOT_OCHAO_MIN_LEVEL, 255, true, 6407 },	// Wladca En-Tai (boss.txt)
+		{ 827350, 1465350, 99, 255, false, 0 },	// 27 spawn lines, to 104-105
+		{ 805650, 1420250, 103, 255, false, 0 },	// 23 spawn lines, En-Tai to 108
+		{ 824750, 1483050, 99, 255, false, 0 },	// 19 spawn lines, to 104-105
+		{ 784650, 1469750, 99, 255, false, 0 },	// 19 spawn lines, to 104-105
+		{ 821550, 1461350, 99, 255, false, 0 },	// 13 spawn lines, to 104-105
+		{ 831150, 1447350, 99, 255, false, 0 },	// 13 spawn lines, to 104-105
+		{ 787750, 1477250, 99, 255, false, 0 },	// 13 spawn lines, to 104-105
+		{ 804450, 1497550, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 12 spawn lines, 100-102 only - by the arrival
+		{ 793650, 1433850, 103, 255, false, 0 },	// 12 spawn lines, En-Tai to 108
+		{ 778750, 1450950, 103, 255, false, 0 },	// 12 spawn lines, En-Tai to 108
+		{ 808750, 1447450, 103, 255, false, 0 },	// 11 spawn lines, En-Tai to 108
+		{ 818250, 1444850, 99, 255, false, 0 },	// 11 spawn lines, to 104-105
+		{ 795750, 1486050, 99, 255, false, 0 },	// 9 spawn lines, to 104-105
+		{ 829450, 1434550, 99, 255, false, 0 },	// 9 spawn lines, to 104-105
+		{ 790950, 1470550, 99, 255, false, 0 },	// 9 spawn lines, to 104-105
+		{ 799850, 1442250, 103, 255, false, 0 },	// 9 spawn lines, En-Tai to 108
+		{ 777850, 1439350, 103, 255, false, 0 },	// 9 spawn lines, En-Tai to 108
+		{ 826050, 1417450, 103, 255, false, 0 },	// 8 spawn lines, En-Tai to 108
+		{ 827350, 1473850, 99, 255, false, 0 },	// 7 spawn lines, to 104-105
+		{ 827850, 1454750, 99, 255, false, 0 },	// 7 spawn lines, to 104-105
+		{ 812950, 1493050, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines, 100-102 only - by the arrival
+		{ 795350, 1457050, 99, 255, false, 0 },	// 6 spawn lines, to 104-105
+		{ 802150, 1426150, 103, 255, false, 0 },	// 6 spawn lines, En-Tai to 108
+		{ 801350, 1450550, 103, 255, false, 0 },	// 5 spawn lines, En-Tai to 108
+		{ 826700, 1417700, 105, 255, true, 6407 },	// Wladca En-Tai (boss.txt)
 	};
 
 	// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: the 90-level maps' Metins (stone.txt) and bosses (boss.txt),
@@ -970,6 +999,25 @@ namespace
 					boughtRed, boughtBlue, (long long)ch->GetGold());
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_FIX_V1: what sends a resident home before its time - no weapon or
+	// armour, the arrows; the belt only when the restock could not fill it; the bag and the rest only
+	// once it has settled in. BlocksPlayerBotTravel at the arrival sent a loot runner home in 0 s.
+	bool IsPlayerBotYoharaFightStopped(LPCHARACTER ch, const TPlayerBotYoharaResident& r, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		if (ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL || NeedsPlayerBotArrows(ch))
+			return true;
+		if (dwNow - r.dwArrived < PLAYERBOT_YOHARA_SETTLE_MS)
+			return false;
+		return BlocksPlayerBotTravel(ch);
+	}
+
+	bool IsPlayerBotYoharaDeathsOver(const TPlayerBotYoharaResident& r)
+	{
+		return r.iDeaths >= PLAYERBOT_YOHARA_DEATHS_STAY || r.iDeathsWindowed >= PLAYERBOT_YOHARA_DEATHS_WINDOWED;
+	}
+
 	// The travel pass's part (ManagePlayerBotWorldTravel, before the frontier):
 	// -1 nothing here, 0/1 its answer.
 	int ManagePlayerBotYoharaTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
@@ -1001,6 +1049,9 @@ namespace
 		switch (res.iPurpose)
 		{
 			case YOHARA_PURPOSE_ZAKLETY:
+				// MT2009_PLUS_BOT_YOHARA_FIX_V1: too many deaths - out of the forest, back in three hours.
+				if (IsPlayerBotYoharaDeathsOver(res))
+					return SendPlayerBotYoharaHome(ch, state, dwNow, "zaklety_deaths") ? 1 : 0;
 				// The forest is a frontier: its visit, its band and its exit are the frontier's.
 				if (base == PLAYERBOT_MAP_ZAKLETY)
 					return -1;
@@ -1022,8 +1073,10 @@ namespace
 					why = "szc_stay_over";
 				else if (dwNow - idleFrom >= PLAYERBOT_YOHARA_SZC_IDLE_MS)
 					why = "szc_no_party";
-				else if (BlocksPlayerBotTravel(ch))
+				else if (IsPlayerBotYoharaFightStopped(ch, res, dwNow))
 					why = "szc_blocked";
+				else if (IsPlayerBotYoharaDeathsOver(res))
+					why = "szc_deaths";
 				if (why)
 					return SendPlayerBotYoharaHome(ch, state, dwNow, why) ? 1 : 0;
 				if (base == PLAYERBOT_MAP_SZC_PLATEAU)
@@ -1046,8 +1099,10 @@ namespace
 					why = "loot_off_map";
 				else if (dwNow - res.dwArrived >= PLAYERBOT_YOHARA_LOOT_STAY_MS)
 					why = "loot_done";
-				else if (BlocksPlayerBotTravel(ch))
+				else if (IsPlayerBotYoharaFightStopped(ch, res, dwNow))
 					why = "loot_blocked";
+				else if (IsPlayerBotYoharaDeathsOver(res))
+					why = "loot_deaths";
 				if (why)
 					return SendPlayerBotYoharaHome(ch, state, dwNow, why) ? 1 : 0;
 				return 0;	// the Metins and the bosses (the hubs, the combat policy)
@@ -1105,7 +1160,8 @@ namespace
 				res.dwArrived = dwNow;
 			}
 			else
-				s_mapPlayerBotYoharaCooldown[a->first] = dwNow + PLAYERBOT_YOHARA_TRIP_COOLDOWN_MS;
+				s_mapPlayerBotYoharaCooldown[a->first] = dwNow + (a->second.bDeaths ? PLAYERBOT_YOHARA_DEATHS_COOLDOWN_MS
+						: PLAYERBOT_YOHARA_TRIP_COOLDOWN_MS);
 			sys_log(0, "PLAYERBOT_HANDOVER: arrived pid=%u name=%s level=%u map=%ld pos=(%ld,%ld) purpose=%s took_ms=%u",
 					a->first, ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex(), ch->GetX(), ch->GetY(),
 					PlayerBotYoharaPurposeName(a->second.iPurpose), dwNow - a->second.dwAt);
@@ -1180,7 +1236,8 @@ namespace
 						continue;
 					const int level = ch->GetLevel();
 					const bool band = purpose == YOHARA_PURPOSE_ZAKLETY
-							? level >= PLAYERBOT_OCHAO_MIN_LEVEL && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL
+							? level >= GetPlayerBotYoharaConfig().zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL &&
+								ch->GetMaxHP() >= GetPlayerBotYoharaConfig().zakletyMinHp
 							: purpose == YOHARA_PURPOSE_SZC ? level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL
 							: level >= PLAYERBOT_YOHARA_LOOT_MIN_LEVEL;
 					++looked;
@@ -1263,18 +1320,19 @@ namespace
 		char query[512];
 		snprintf(query, sizeof(query),
 				"SELECT pid, state, target_map, x, y, purpose, ready_at <= NOW(), "
-				"updated_at > DATE_SUB(NOW(), INTERVAL %d SECOND) FROM common.playerbot_core_handover WHERE channel=%u",
+				"updated_at > DATE_SUB(NOW(), INTERVAL %d SECOND), reason LIKE '%%deaths%%' "
+				"FROM common.playerbot_core_handover WHERE channel=%u",
 				PLAYERBOT_YOHARA_STALE_S, (unsigned int)g_bChannel);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
-		struct TRow { DWORD pid; int state; long map, x, y; int purpose; bool ready, fresh; };
+		struct TRow { DWORD pid; int state; long map, x, y; int purpose; bool ready, fresh, deaths; };
 		std::vector<TRow> rows;
 		MYSQL_ROW row;
 		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
 		{
 			TRow t;
-			t.pid = 0; t.state = 0; t.map = t.x = t.y = 0; t.ready = t.fresh = false;
+			t.pid = 0; t.state = 0; t.map = t.x = t.y = 0; t.ready = t.fresh = t.deaths = false;
 			if (row[0]) str_to_number(t.pid, row[0]);
 			if (row[1]) str_to_number(t.state, row[1]);
 			if (row[2]) str_to_number(t.map, row[2]);
@@ -1283,6 +1341,7 @@ namespace
 			t.purpose = ParsePlayerBotYoharaPurpose(row[5]);
 			t.ready = row[6] && atoi(row[6]) != 0;
 			t.fresh = row[7] && atoi(row[7]) != 0;
+			t.deaths = row[8] && atoi(row[8]) != 0;
 			if (t.pid != 0)
 				rows.push_back(t);
 		}
@@ -1334,7 +1393,7 @@ namespace
 				s_setPlayerBotYoharaAway.erase(t.pid);
 				s_mapPlayerBotYoharaOut.erase(t.pid);
 				TPlayerBotYoharaArrival& a = s_mapPlayerBotYoharaArrival[t.pid];
-				a.lMap = t.map; a.lX = t.x; a.lY = t.y; a.iPurpose = t.purpose; a.dwAt = dwNow;
+				a.lMap = t.map; a.lX = t.x; a.lY = t.y; a.iPurpose = t.purpose; a.dwAt = dwNow; a.bDeaths = t.deaths;
 				CPlayerBotManager& mgr = CPlayerBotManager::instance();
 				const bool sent = mgr.Spawn(t.pid, mgr.GetRegisteredEmpire(t.pid));
 				if (t.purpose == YOHARA_PURPOSE_HOME)
@@ -1421,6 +1480,26 @@ namespace
 						PlayerBotYoharaPurposeName(r->second.iPurpose), (dwNow - r->second.dwArrived) / 1000);
 				s_mapPlayerBotYoharaResident.erase(r++);
 				continue;
+			}
+			// MT2009_PLUS_BOT_YOHARA_FIX_V1: the stay's deaths (a dungeon run counts its own).
+			{
+				LPCHARACTER rc = CHARACTER_MANAGER::instance().FindByPID(r->first);
+				const bool dead = rc && rc->IsDead() && !IsPlayerBotOnDungeonRun(r->first);
+				if (dead && !r->second.bDead)
+				{
+					if (r->second.dwWindowStart == 0 || dwNow - r->second.dwWindowStart > PLAYERBOT_YOHARA_DEATH_WINDOW_MS)
+					{
+						r->second.dwWindowStart = dwNow;
+						r->second.iDeathsWindowed = 0;
+					}
+					++r->second.iDeaths;
+					++r->second.iDeathsWindowed;
+					sys_log(0, "PLAYERBOT_YOHARA: died pid=%u name=%s level=%u map=%ld pos=(%ld,%ld) purpose=%s deaths=%d windowed=%d max_hp=%d",
+							r->first, rc->GetName(), (unsigned int)rc->GetLevel(), rc->GetMapIndex(), rc->GetX(), rc->GetY(),
+							PlayerBotYoharaPurposeName(r->second.iPurpose), r->second.iDeaths, r->second.iDeathsWindowed,
+							(int)rc->GetMaxHP());
+				}
+				r->second.bDead = dead;
 			}
 			stay += (stay.empty() ? "" : ",") + std::to_string(r->first);
 			++r;

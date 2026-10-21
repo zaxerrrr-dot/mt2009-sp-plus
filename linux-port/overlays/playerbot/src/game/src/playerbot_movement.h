@@ -672,6 +672,18 @@ namespace
 		// it came for them (playerbot_yohara_bots.h).
 		if (IsPlayerBotYoharaLootRunHere(ch))
 			return true;
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: Zaklety Las's Metins call the Silni En-Tai (117-120) round
+		// whoever hits them - two bots of 97/101 died there within 20 s of their arrival (21 October).
+		// Metin Drzewnych Stworzen (100) for a bot of 108 or a party of three; Metin Lasu (120) for a
+		// party only.
+		if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY)
+		{
+			const int partySize = ch->GetParty() ? (int)ch->GetParty()->GetMemberCount() : 1;
+			if (stone->GetLevel() >= 110)
+				return partySize >= 3;
+			if (ch->GetLevel() < 108 && partySize < 3)
+				return false;
+		}
 		// MT2009_PLUS_BP_BOTS_V1: a stone its Battle Pass mission names, and
 		// one it can break, is worth it however far the bot has outgrown it.
 		if (playerbot_bpbots::WantsStone(ch, stone))

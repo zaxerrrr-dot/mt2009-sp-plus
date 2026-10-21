@@ -554,6 +554,12 @@ namespace
 			return false;
 		if (IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()))
 			return IsPlayerBotDungeonStoneObjective(ch, stone);
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: Zaklety Las's Metins (the Silni En-Tai round them) - joined
+		// only by a party of three, or from 103 for Metin Drzewnych Stworzen (IsPlayerBotMetinWorthFighting).
+		if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY &&
+				(!ch->GetParty() || ch->GetParty()->GetMemberCount() < 3) &&
+				(stone->GetLevel() >= 110 || ch->GetLevel() < 103))
+			return false;
 		// Under Iwakura's system the band of the stone hunter is the band of
 		// every stone, joined or not: ten levels either way.
 		if (IsPlayerBotPersonaEnabled())
