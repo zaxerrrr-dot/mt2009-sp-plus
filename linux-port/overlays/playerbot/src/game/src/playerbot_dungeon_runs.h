@@ -187,8 +187,14 @@ namespace
 		DGRUN_KIND_SMOK,	// four stones, then the Blue Dragon
 		DGRUN_KIND_TOWER,	// the Demon Tower: the stone, then the tower's floors
 		DGRUN_KIND_ATLANTYDA,	// MT2009_PLUS_ATLANTYDA_V1: stage flag; two floors (d.jump_all), the key to the pillars
-		DGRUN_KIND_MELEY	// MT2009_PLUS_YOHARA_MELEY_V1: stage flag; the four statues, the eggs, Idall, the rings
+		DGRUN_KIND_MELEY,	// MT2009_PLUS_YOHARA_MELEY_V1: stage flag; the four statues, the eggs, Idall, the rings
+		DGRUN_KIND_SZC		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift - only the hunt, no missions, the quest's hour
 	};
+
+	// MT2009_PLUS_BOT_YOHARA_SZC_V1: playerbot_yohara_bots.h, the last fragment.
+	bool IsPlayerBotYoharaSzcResident(DWORD pid);
+	int GetPlayerBotYoharaSzcParties();
+	long long ChargePlayerBotYoharaSzcWatch(LPCHARACTER ch);
 
 	struct TPlayerBotDgRunDef
 	{
@@ -238,8 +244,26 @@ namespace
 		// at Zlota Smocza Skrzynia after the win (no chest for a bot) and a margin; one run at a time (one sector).
 		{ "meley", DGRUN_KIND_MELEY, 356, "meley_dungeon", "meley_dgrun", NULL, 127, 167,
 			7500000LL, 5, 60, 90000, 1 },
+		// MT2009_PLUS_BOT_YOHARA_SZC_V1: Szczelina Czasu - Zaklety Las (SZC, 404, jotun_szc.quest) on the Yohara
+		// core, gathered at Statua Szczeliny Czasu on Plaskowyz Iluzji (the dungeon panel's entrance). The owner's
+		// correction of 21 October: a party goes in, kills the Metins and the monsters - no missions, no keys -
+		// and when the time is over goes out and in again. The ticket is the Zegarek Kieszonkowy each
+		// (ChargePlayerBotYoharaSzcWatch), no daily count; the quest's 60 minutes end it (d.exit_all); the
+		// runs at once are PLAYERBOT_SZC_PARTIES (GetPlayerBotDgRunDefCap). Only the bots the handover
+		// brought for it take part (IsPlayerBotYoharaSzcResident).
+		{ "jotun_szc", DGRUN_KIND_SZC, 404, NULL, "jotun_szc_dgrun", NULL, 478, 970,
+			0LL, 0, 60, 30000, 2 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
+	// MT2009_PLUS_BOT_YOHARA_SZC_V1: the runs of a dungeon at once - the Time Rift's from the .env.
+	int GetPlayerBotDgRunDefCap(int i)
+	{
+		return PLAYERBOT_DGRUN_DEFS[i].bKind == DGRUN_KIND_SZC ? GetPlayerBotYoharaSzcParties() : PLAYERBOT_DGRUN_DEFS[i].iCap;
+	}
+	// MT2009_PLUS_BOT_YOHARA_SZC_V1: after a Time Rift's hour the next one soon - "gdy czas minie,
+	// wychodzisz z lochu i wchodzisz kolejny raz".
+	const DWORD PLAYERBOT_DGRUN_SZC_REST_MIN_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_DGRUN_SZC_REST_SPREAD_MS = 3 * 60 * 1000;
 	// MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy's second floor, where d.jump_all puts the party (cells).
 	const long PLAYERBOT_DGRUN_ATLANTYDA_FLOOR2_X = 544;
 	const long PLAYERBOT_DGRUN_ATLANTYDA_FLOOR2_Y = 475;
@@ -738,6 +762,9 @@ namespace
 				const int s = d->GetFlag("stage");
 				return s >= 10 ? previous : s;
 			}
+			// MT2009_PLUS_BOT_YOHARA_SZC_V1: one stage - the hour's hunt (jotun_szc's init()).
+			case DGRUN_KIND_SZC:
+				return d->GetFlag("init") == 1 ? 1 : 0;
 			default:
 				return previous;
 		}
@@ -880,7 +907,14 @@ namespace
 		// given up as stalled (8 October 00:22, Nemere run 7: step 2, four bots
 		// at the room's 6103s, "stalled" at 240 s).
 		bool itemStep = false;
-		if (def.bKind == DGRUN_KIND_RAZADOR)
+		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift has no flag to move - its progress is the
+		// monsters' health and their number (the bots only hunt there).
+		if (def.bKind == DGRUN_KIND_SZC)
+		{
+			itemStep = true;
+			sig = (long long)d->GetFlag("init");
+		}
+		else if (def.bKind == DGRUN_KIND_RAZADOR)
 			itemStep = d->GetFlag("active") == 1 && (d->GetFlag("step") == 2 || d->GetFlag("step") == 5);
 		else if (def.bKind == DGRUN_KIND_NEMERE)
 			itemStep = d->GetFlag("ready") == 1 && (d->GetFlag("step") == 2 || d->GetFlag("step") == 5 || d->GetFlag("step") == 8);
@@ -1852,8 +1886,11 @@ namespace
 			else if (strcmp(result, "aborted"))
 				ShoutPlayerBotDgRun(leader, playerbot_dgrun::FailLine(rng, l), "failed");
 		}
-		const DWORD rest = entered ? PLAYERBOT_DGRUN_REST_MIN_MS + (DWORD)number(0, (int)PLAYERBOT_DGRUN_REST_SPREAD_MS)
+		DWORD rest = entered ? PLAYERBOT_DGRUN_REST_MIN_MS + (DWORD)number(0, (int)PLAYERBOT_DGRUN_REST_SPREAD_MS)
 				: PLAYERBOT_DGRUN_REST_DISBAND_MS;
+		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift's bots are there for it - a short rest.
+		if (def.bKind == DGRUN_KIND_SZC)
+			rest = PLAYERBOT_DGRUN_SZC_REST_MIN_MS + (DWORD)number(0, (int)PLAYERBOT_DGRUN_SZC_REST_SPREAD_MS);
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 			ReleasePlayerBotDgRunBot(members[i], run, dwNow, rest, NULL);
@@ -1926,6 +1963,9 @@ namespace
 			}
 			ch->SetQuestFlag(q + ".runs", ch->GetQuestFlag(q + ".runs") + 1);
 		}
+		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift's ticket, a Zegarek Kieszonkowy each.
+		if (def.bKind == DGRUN_KIND_SZC)
+			return ChargePlayerBotYoharaSzcWatch(ch);
 		long long fee = def.llFee;
 		if (fee > 0 && (long long)ch->GetGold() >= fee * PLAYERBOT_DGRUN_FEE_RESERVE)
 			PlayerBotChangeGold(ch, -fee);
@@ -2843,7 +2883,7 @@ namespace
 				continue;
 			const mt2009_dpanel::Def* panel = mt2009_dpanel::FindKey(def.szKey);
 			if (!panel || mt2009_dpanel::Hidden(*panel) || !IsPlayerBotMapHostedHere(def.lMap) ||
-					!SECTREE_MANAGER::instance().GetMap(def.lMap) || CountPlayerBotDgRuns(i) >= def.iCap)
+					!SECTREE_MANAGER::instance().GetMap(def.lMap) || CountPlayerBotDgRuns(i) >= GetPlayerBotDgRunDefCap(i))
 				continue;
 			if (overCap && !IsPlayerBotDgRunStarved(i, dwNow))
 				continue;
@@ -2897,7 +2937,10 @@ namespace
 			if (empire < 1 || empire > 3)
 				continue;
 			const TPlayerBotAIState& state = it->second;
-			if (!playerbot_dgrun::IsDungeonGoer(pid, GetPlayerBotDgRunShare(state)))
+			// MT2009_PLUS_BOT_YOHARA_SZC_V1: a bot the handover brought for the Time Rift goes, whatever
+			// its personality's share.
+			const bool szcResident = IsPlayerBotYoharaSzcResident(pid);
+			if (!szcResident && !playerbot_dgrun::IsDungeonGoer(pid, GetPlayerBotDgRunShare(state)))
 				continue;
 			const int level = ch->GetLevel();
 			bool fits = false;
@@ -2919,6 +2962,9 @@ namespace
 				if (!slot.ok || !slot.empireOk[empire] || !playerbot_dgrun::InBand(level, slot.lvMin, slot.lvMax))
 					continue;
 				const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[i];
+				// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift only for those, and they only for it.
+				if ((def.bKind == DGRUN_KIND_SZC) != szcResident)
+					continue;
 				if (slot.panel && mt2009_dpanel::CooldownLeft(ch, *slot.panel) > 0)
 					continue;
 				if (def.iDaily > 0 && GetPlayerBotDgRunRunsToday(ch, def) >= def.iDaily)

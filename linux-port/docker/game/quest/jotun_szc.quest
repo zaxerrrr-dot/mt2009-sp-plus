@@ -23,7 +23,7 @@
 -- Potwory nie daj¹ dropu (wiki) - silnik nie upuszcza niczego na mapie 404 poza Yangami Jotuna Thryma (SZC)
 -- (server-patches/szczelina); daj¹ wiêcej PD (rzêdy "TR:" w bazie). 60 minut od wejœcia; po zwyciêstwie (minuta) lub po
 -- czasie wszyscy wracaj¹ na P³askowy¿ Iluzji (obok Statuy Szczeliny Czasu). Zegarek Kieszonkowy znika przy pierwszym
--- wejœciu do nowej wyprawy. Panel lochów: jotun_szc. Boty nie wchodz¹.
+-- wejœciu do nowej wyprawy. Panel lochów: jotun_szc. Boty nie wchodz¹ same - wyprawy botów (MT2009_PLUS_BOT_YOHARA_SZC_V1) przez jotun_szc_dgrun.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest jotun_szc begin
 	state start begin
@@ -473,6 +473,17 @@ quest jotun_szc begin
 			if d.select(get_server_timer_arg()) then
 				d.setf("mt2009_keep_until", 0)
 				d.exit_all()
+			end
+		end
+
+		-- MT2009_PLUS_BOT_YOHARA_SZC_V1: start wyprawy botow (playerbot_dungeon_runs.h, wiersz jotun_szc): rdzen tworzy
+		-- instancje, oznacza ja flaga mt2009_dgrun i prosi o init - boty tylko poluja (bez misji i kluczy, wlasciciel
+		-- 21.10.2026), godzina i wyjscie jak u ludzi (jotun_szc_tick, d.exit_all).
+		when jotun_szc_dgrun.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				if d.getf("mt2009_dgrun") == 1 and d.getf("init") == 0 then
+					jotun_szc.init()
+				end
 			end
 		end
 	end

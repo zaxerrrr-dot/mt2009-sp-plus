@@ -222,6 +222,18 @@ if [ -n "${M2_DB_ROOT_PASSWORD:-}" ]; then
     fi
 fi
 
+# MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots' handovers between the game cores of a channel
+# (playerbot_core_handover.sql, playerbot_yohara_bots.h) start empty on every start - before the
+# fast start's skip, because no core holds a bot now: a bot that stayed on another core is saved
+# there and comes back through its home core (the stranded step, or the load's first village).
+if [ -s /opt/playerbot/playerbot_core_handover.sql ]; then
+    if db < /opt/playerbot/playerbot_core_handover.sql; then
+        echo "[playerbot-migrate] core handover table ready (emptied)"
+    else
+        echo "[playerbot-migrate] WARNING: playerbot_core_handover.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_FAST_START_V1: a start with nothing new skips the rest. The
 # fingerprint is every file this step reads (/opt/playerbot), this script and
 # the M2_/PLAYERBOT_ settings; it is written at the very end of a full run and

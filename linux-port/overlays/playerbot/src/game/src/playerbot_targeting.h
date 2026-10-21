@@ -1302,6 +1302,17 @@ namespace
 							ch->GetY() - candidate->GetY()) > PLAYERBOT_OUTGROWN_CHAIN_RANGE)
 				context.outgrownPrey = true;
 		}
+		// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: a loot run on a 90-level map is for the Metins and
+		// the bosses (the owner, 21 October: "tylko drop, bez expienia") - a boss is its
+		// objective, an ordinary monster only what attacks it or its party (the defence
+		// answers above SERVICE_ONLY). The Metins keep their own rule (IsPlayerBotMetinWorthFighting).
+		if (context.mode == playerbot_combat_value::OBJECTIVES && IsPlayerBotYoharaLootRunHere(ch))
+		{
+			if (candidate->IsMonster() && candidate->GetMobRank() >= MOB_RANK_BOSS)
+				context.activeQuestTarget = true;
+			else
+				context.mode = playerbot_combat_value::SERVICE_ONLY;
+		}
 		return context;
 	}
 

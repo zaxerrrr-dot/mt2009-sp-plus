@@ -160,6 +160,10 @@ namespace playerbot_dgrun
 		// of 97-123 (the statues 7 million HP, the eggs 1.3 million, four Idalls of 113 with three men each): the
 		// band from 95, six called and five to go in, a Shaman always.
 		{ "meley", 95, 6, 6, 5, true },
+		// MT2009_PLUS_BOT_YOHARA_SZC_V1: Szczelina Czasu - Zaklety Las (SZC) - the quest's 110, a party of
+		// several (the owner: "party kilkuosobowe"), the bots there only to hunt: four called, three to go in,
+		// no Shaman asked for.
+		{ "jotun_szc", 110, 4, 4, 3, false },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

@@ -668,6 +668,10 @@ namespace
 		// Breaking one warps every PC on the killer's map into a new tower.
 		if (IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()))
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: a loot run breaks every Metin of its 90-level map -
+		// it came for them (playerbot_yohara_bots.h).
+		if (IsPlayerBotYoharaLootRunHere(ch))
+			return true;
 		// MT2009_PLUS_BP_BOTS_V1: a stone its Battle Pass mission names, and
 		// one it can break, is worth it however far the bot has outgrown it.
 		if (playerbot_bpbots::WantsStone(ch, stone))

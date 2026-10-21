@@ -461,6 +461,8 @@ linux-port/docker/game/worldboss/*
 # ItemShop offers buffi_itemshop.sql.
 linux-port/docker/mariadb/playerbot/buffi.sql
 linux-port/docker/mariadb/playerbot/buffi_itemshop.sql
+# MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots' handovers between the game cores (playerbot_yohara_bots.h)
+linux-port/docker/mariadb/playerbot/playerbot_core_handover.sql
 
 # MT2009_PLUS_EKWIPUNEK_V1 (server-patches/ekwipunek): Dodatkowy ekwipunek, Ameria Project's special storage - the
 # engine files it changes are above (length.h, char.h, char.cpp, char_item.cpp, item.cpp, item_manager.cpp, input_db.cpp,

@@ -560,7 +560,10 @@ namespace
 			return -1;
 		const DWORD pid = ch->GetPlayerID();
 		std::map<DWORD, TPlayerBotOchaoCrossing>::iterator c = s_mapPlayerBotOchaoCrossing.find(pid);
-		const bool wants = GetPlayerBotFrontierMapForLevel(ch) == PLAYERBOT_MAP_OCHAO;
+		// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1: a bot bound for Zaklety Las crosses the temple on its
+		// way - its Guardian's Portal leads there (playerbot_yohara_bots.h).
+		const bool wants = GetPlayerBotFrontierMapForLevel(ch) == PLAYERBOT_MAP_OCHAO ||
+				IsPlayerBotYoharaBoundForZaklety(ch);
 		if (c == s_mapPlayerBotOchaoCrossing.end())
 		{
 			// Landed in the valley by its own road (the Portal, a raid) with the
