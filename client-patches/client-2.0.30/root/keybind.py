@@ -150,8 +150,8 @@ CATEGORIES = (
 		('dungeon_info', 'Wyprawy', ((0, 'DIK_X'),), False),
 		('battle_pass', 'Battle Pass', (), False),
 		('tp_bookmarks', 'Zapisane pozycje', (), False),
-		# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher (uibonusswitch.py), no key by default.
-		('bonus_switch', 'Zmiana bonus\xf3w', (), False),
+		# MT2009_PLUS_SWITCHBOT_V1: the bonus switcher - Ameria's switchbot now (uiswitchbot.py), the same action, no key by default.
+		('bonus_switch', 'Switchbot (zmiana bonus\xf3w)', (), False),
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py), no key by default.
 		('weekly_rank', 'Ranking tygodniowy', (), False),
 		# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's window (uiworldboss.py), no key by default.

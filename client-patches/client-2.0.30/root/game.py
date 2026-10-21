@@ -490,8 +490,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uitpbookmarks").DestroyWindow()
 		# MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s): the teleport map under TAB (uiteleportmap.py).
 		__import__("uiteleportmap").DestroyWindow()
-		# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher (uibonusswitch.py).
-		__import__("uibonusswitch").DestroyWindow()
+		# MT2009_PLUS_SWITCHBOT_V1: the bonus switcher - Ameria's switchbot (uiswitchbot.py).
+		__import__("uiswitchbot").DestroyWindow()
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 		__import__("uiweeklyrank").DestroyWindow()
 		# MT2009_PLUS_CLEAR_MISSIONS_V1: the /usunmisje window (uiusunmisje.py).
@@ -810,8 +810,8 @@ class GameWindow(ui.ScriptWindow):
 			# The inventory bar's windows that never had a key (none by default).
 			"battle_pass"		: (lambda : Window("uibattlepass"), None),
 			"tp_bookmarks"		: (lambda : Window("uitpbookmarks"), None),
-			# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher (uibonusswitch.py).
-			"bonus_switch"		: (lambda : Window("uibonusswitch"), None),
+			# MT2009_PLUS_SWITCHBOT_V1: the bonus switcher's key opens Ameria's switchbot (uiswitchbot.py).
+			"bonus_switch"		: (lambda : Window("uiswitchbot"), None),
 			# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py).
 			"weekly_rank"		: (lambda : Window("uiweeklyrank"), None),
 			# MT2009_PLUS_CHAMPION_V2: Poziom Czempiona - the character window's Sung Ma page, no key by default.
@@ -2630,6 +2630,9 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_EKWIPUNEK_V1: "/ekwipunek hello" - the server routes items into the extra
 				# inventory from now on (only with the 3.0 exe that knows its windows; uiekwipunek.py).
 				__import__("uiekwipunek").Start()
+				# MT2009_PLUS_SWITCHBOT_V1: "/switchbot hello" - the server sends the switchbot's packets from now on
+				# (only with the 3.0 exe that has the module switchbot; uiswitchbot.py).
+				__import__("uiswitchbot").Start()
 
 		constInfo.FIXED_TIME_SINCE_START += FIXED_TIMESTEP_UPDATE
 		self.oneSecondTimer += FIXED_TIMESTEP_UPDATE
@@ -3421,7 +3424,6 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
 		serverCommandList["MAPA_TAB"] = self.__TeleportMap # MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s)
 		serverCommandList["BonusMode"] = self.__BonusMode # MT2009_PLUS_GLOBAL_BONUS_V1
-		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
 		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
@@ -4196,10 +4198,12 @@ class GameWindow(ui.ScriptWindow):
 		import protoglobal
 		protoglobal.SetBonusMode(str(mode).strip() == "1")
 
-	# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher's lines (uibonusswitch.py).
-	def __BonusSwitch(self, *args):
-		import uibonusswitch
-		uibonusswitch.OnCommand(*args)
+	# MT2009_PLUS_SWITCHBOT_V1: the exe's calls on GC 171 (Ameria's game.py RefreshSwitchbotWindow / RefreshSwitchbotItem).
+	def RefreshSwitchbotWindow(self):
+		__import__("uiswitchbot").RefreshSwitchbotWindow()
+
+	def RefreshSwitchbotItem(self, slot):
+		__import__("uiswitchbot").RefreshSwitchbotItem(slot)
 
 	# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking's lines (uiweeklyrank.py); "tail" is
 	# MT2009_PLUS_RANK_POINTS_V1: "RANGA tail <vid> <tier>" - a rank of Punkty Rangi

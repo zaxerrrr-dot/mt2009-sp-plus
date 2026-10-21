@@ -638,7 +638,7 @@ tylko te dwie rzeczy; pakiet 60+ FPS (`Ustaw_FPS.bat` łatający exe, `updateabl
 Jego `etc.index/.data` to inna, pełna paczka `etc` (m.in. `environment/*.msenv`) – bazowej paczki `etc` naszego klienta
 nie ma na VPS, więc nie da się jej porównać; kod poprawki mgły jest w całości w `root`, `etc` nie jest przenoszone.
 
-**Zmiana bonusów** – `MT2009_PLUS_BONUS_SWITCH_V1`, część serwerowa: `server-patches/bonusswitch` +
+**Zmiana bonusów** (od 21.10.2026 **zastąpiona switchbotem z Amerii** – `MT2009_PLUS_SWITCHBOT_V1`, niżej; `uibonusswitch.py`, `server-patches/bonusswitch` i `playerbot_bonus_switch.h` usunięte) – `MT2009_PLUS_BONUS_SWITCH_V1`, część serwerowa: `server-patches/bonusswitch` +
 `playerbot_bonus_switch.h`. Okno z 5 polami (przedmiot na pole przeciągnięciem albo PPM w ekwipunku przy otwartym
 oknie), wybór bonusów, które przedmiot może mieć, i ich minimalnych wartości, „Wszystkie” / „Co najmniej X z”,
 szybkość 1–20 zmian/s, Start/Stop, „Zmień raz”. Zmienia serwer: 1 zmiana = 1 zmianka (najpierw 76014, potem 71084,
@@ -1037,3 +1037,24 @@ Exe: osobny build z `client-patches/exe` (pakiet GC 220, efekty, czat misji, wyc
 bez nowego exe root i paczki niczego nie psują, Zodiaku w kliencie po prostu nie ma. Klient zmienia dane przedmiotów
 (dbdata): w wydaniu ostrzeżenie o nieaktualnych plikach i nowa baza panelu (`python3 -m m2clientpack.make_base
 <klient>/pack <wersja>`).
+
+## Bonus Switcher – switchbot z Amerii (`MT2009_PLUS_SWITCHBOT_V1`)
+
+Prośba właściciela z 21.10.2026: *„Zamień bonus switcher z naszej wersji na ten z Amerii, zastosuj nowy kod po stronie
+serwera jak i klienta.”* Serwer: `server-patches/switchbot` + `playerbot_switchbot.cpp` (zasady w README łatki), exe:
+`client-patches/exe` (`ENABLE_SWITCHBOT`, moduł `switchbot`, okno przedmiotów 16, pakiety 170/171).
+
+- `root/uiswitchbot.py` (nowy, okno Amerii `root/uiswitchbot.py`): 5 zakładek przedmiotów u góry (przeciągnięcie broni /
+  zbroi z torby; przedmiot zostaje w torbie, zablokowany), warianty (2 widoczne – 3–5 w Amerii tylko z „premium”), 5 wierszy
+  bonusów (szukajka bonusów, które przedmiot może wylosować, minimalna wartość – domyślnie maksimum), Start / Stop, zapisane
+  zestawy (lista obok okna, plik `autohunt/switchbot.cfg` zamiast `switchbot.pkl` Amerii). Teksty po polsku (CP1250), nazwy
+  bonusów z `localeinfo_point` (jak w dymkach). Klik albo PPM na przedmiocie zakładki go wyjmuje (w Amerii klik brał go na
+  kursor). `/switchbot hello` po wejściu do gry i po teleporcie (`Start`, tylko z exe, które ma moduł `switchbot`); stary exe
+  – okno pisze „Switchbot wymaga nowego klienta (exe 3.0).”.
+- `atlas/d_/ymir work/ui/switchbot/*` (nowe, z paczki `etc` Amerii) – przyciski okna (`switchbot.tga` + 18 `.sub`).
+- Te same wejścia co stara „Zmiana bonusów”: przycisk paska przy ekwipunku (`uiinventory.py`, `bonusswitch`), akcja klawisza
+  `bonus_switch` (`keybind.py`, domyślnie bez klawisza; nazwa „Switchbot (zmiana bonusów)”), PPM na broni/zbroi w torbie przy
+  otwartym oknie wkłada ją do zaznaczonej (albo pierwszej wolnej) zakładki.
+- `game.py` – `RefreshSwitchbotWindow` / `RefreshSwitchbotItem` (wołane przez exe na GC 171), hello, zamknięcie okna przy
+  wyjściu; usunięte `serverCommandList["BSW"]`. `interfacemodule.py` – odświeżenie okna przy pakietach przedmiotów.
+- `uibonusswitch.py` usunięty z repo (w starej paczce root zostaje, nic go nie importuje).
