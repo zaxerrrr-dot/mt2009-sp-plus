@@ -1736,9 +1736,21 @@ ishop_once owner_prices_pets "DELETE FROM common.itemshop_items WHERE vnum IN (5
 # ItemShop's first page sells it for 25 Smocze Monety. PROTO_FROM_DB: read at the db core's boot. Idempotent.
 db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES (80030, 'Bilet Kola Fortuny', _cp1250 X'42696C6574204B6FB36120466F7274756E79', 18, 0, 200, 0, 1, 384, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add Bilet Kola Fortuny" >&2
 # MT2009_PLUS_KOLA_SHOP_V1 (the owner, 21 October 2026: "z itemshopu trzeba usunac bilet do losowania, bo stare kolo juz
-# powinno byc wylaczone"): the ticket is no longer sold - the Kolo Losu (MT2009_PLUS_KOLA_V1) is paid in Smocze Monety. The
-# item stays (tickets players hold); the ItemShop line goes once per install (the operator may sell it again).
+# powinno byc wylaczone"): the ticket is no longer sold - the Kolo Losu (MT2009_PLUS_KOLA_V1) is paid in Smocze Monety; the
+# ItemShop line goes once per install (the operator may sell it again).
 ishop_once kola_no_ticket "DELETE FROM common.itemshop_items WHERE vnum = 80030;" "could not take the wheel ticket out of the ItemShop"
+# The owner, 21 October 2026: "bilety po prostu usunac" - the tickets players and bots hold go too, once (inventory,
+# storeroom, mall, an unclaimed award, a guild bank) - no refund.
+if [ "$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'kola_tickets_gone';" 2>/dev/null || echo x)" = "0" ]; then
+    if db -e "DELETE FROM player.item WHERE vnum = 80030;
+              DELETE FROM player.item_award WHERE vnum = 80030 AND taken_time IS NULL;"; then
+        db -e "DELETE FROM player.guild_duty_bank WHERE vnum = 80030;" 2>/dev/null || true
+        db -e "INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('kola_tickets_gone', NOW());" || true
+        echo "[playerbot-migrate] wheel: the old wheel's tickets (80030) removed"
+    else
+        fail_step "could not remove the old wheel's tickets" >&2
+    fi
+fi
 # MT2009_PLUS_OCHAO_V1 (db): Swiatynia Ochao (map 209, playerbot_ochao.h,
 # quest/temple_of_the_ochao.quest). The package's monsters on this world's
 # ladder - after the Grotto of Exile (81-97), level 98-105 - cloned from the
@@ -4031,16 +4043,12 @@ if [ -s /opt/playerbot/zestawy_items.sql ]; then
     fi
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 86064);" 2>/dev/null || echo x)" = "6" ]; then
 # MT2009_PLUS_KOLA_SHOP_V1 (the owner, 21 October 2026: "z itemshopu nalezy usunac wszystkie amulety, amulety sa dostepne
-# tylko w kolach do losowania"): the sets' amulets (71202, 71188, 71199, 70607, 72713) are not sold - only the sash.
-ishop_once zestawy_60 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
-(65, 86064, 1, 250, 'DRAGON_COIN', 0);" "could not add the costume sets' sash to the ItemShop"
-ishop_once kola_no_amulets "DELETE FROM common.itemshop_items WHERE vnum IN (71202, 71188, 71199, 70607, 72713);" "could not take the amulets out of the ItemShop"
-db -e "INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
-SELECT 1086064, 10, 'Szarfa Serca (unikat.)', 'Szarfa unikatowa (pochłania 11-25% bonusów). Część zestawu walentynkowego.', 250, 'cash', 86064, 1, 0, 0, 0, '86064', NOW()
-FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 86064);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the costume sets' items" >&2
+# tylko w kolach do losowania"; the sash too): the sets' amulets (71202, 71188, 71199, 70607, 72713) and the Szarfa
+# Serca (86064) are not sold.
+ishop_once kola_no_amulets "DELETE FROM common.itemshop_items WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 86064);" "could not take the amulets out of the ItemShop"
 # MT2009_PLUS_KOLA_SHOP_V1: the amulets leave the web shop too (once - the operator may put them back)
 if [ "$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'kola_web_no_amulets';" 2>/dev/null || echo x)" = "0" ]; then
-    db -e "DELETE FROM itemshop.ishop_items WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 80030);
+    db -e "DELETE FROM itemshop.ishop_items WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 86064, 80030);
            INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('kola_web_no_amulets', NOW());" 2>/dev/null ||
         echo "[playerbot-migrate] note: no web ItemShop tables to take the amulets out of" >&2
 fi
