@@ -115,8 +115,9 @@ param(
 #   Kamien Rytualny    char_item.cpp - the wheels' Kamien Rytualny (25046) only above level 80 (MT2009_PLUS_KOLA_ITEMS_V1;
 #                      server-patches/kolaprzedmioty)
 #   Bonusy 6/7 z wiki  common length.h (points 198-251), char.cpp, battle.cpp, char_battle.cpp, char_skill.cpp, item.cpp,
-#                      item_attribute.cpp (MT2009_PLUS_BONUS67_V1; server-patches/bonusy67, after precyzja and rekawice -
-#                      last)
+#                      item_attribute.cpp (MT2009_PLUS_BONUS67_V1; server-patches/bonusy67, after precyzja and rekawice)
+#   Riposty/Dopalacze  common skill_length.h, char_skill.cpp, cmd_general.cpp (MT2009_PLUS_RIPOSTY_V1;
+#                      server-patches/riposty, after skill9 and precyzja - last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1608,6 +1609,19 @@ if ((Test-Path -LiteralPath $bonusy67Apply -PathType Leaf) -and
     if ($bonusy67Result.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} 6th/7th bonus edit(s).' -f $bonusy67Result.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Riposty i Dopalacze (server-patches/riposty, MT2009_PLUS_RIPOSTY_V1; the owner, 21 October 2026): the passive 7th/8th
+# skills of every character - skill_proto 221-228 / 236-243, their points, books and Kamien Duchowy+, the damage they
+# take away / add. Anchors on skill9's and precyzja's code, so after them. The logic is playerbot_riposty.cpp.
+$ripostyApply = Join-Path $repo 'server-patches/riposty/Apply-RipostyPatch.ps1'
+if ((Test-Path -LiteralPath $ripostyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_skill.cpp') -PathType Leaf)) {
+    $ripostyResult = & $ripostyApply -SourceDir $engineGameSource
+    if ($ripostyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} riposte/boost edit(s).' -f $ripostyResult.Applied) -ForegroundColor DarkGray
     }
 }
 

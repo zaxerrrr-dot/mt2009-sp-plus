@@ -161,10 +161,18 @@ add(39068)                                                            # Zdobna S
 NINTH = 'the 9th skills (skill_proto 176-183) - none here yet'
 for v in range(50569, 50576):                                         # 9th skill books (50576 = Lycan's: no Lycan)
     add(v)                                    # MT2009_PLUS_SKILL9_V1 (server-patches/skill9): they work now
-WARD = 'the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet'
-for v in list(range(50516, 50524)) + list(range(50560, 50568)):       # their books (the Lycan's 50524 / 50568 out)
-    add(v, status=need(WARD))
-add(50525, status=need(WARD + ' (their master levels)'))              # Kamien Duchowy+
+# MT2009_PLUS_RIPOSTY_V1 (server-patches/riposty, quest riposty): Riposty i Dopalacze work now - their books (the Lycan's
+# 50524 / 50568 out), Kamien Duchowy+ (G1 -> P), the two Podreczniki that teach level 1 and Zwoj Zmiany Treningu (the
+# ItemShop's, riposty_itemshop.sql) that removes both (the pl-wiki "Umiejetnosci - Riposty i Dopalacze")
+for v in list(range(50516, 50524)) + list(range(50560, 50568)):       # their books
+    add(v)
+add(50525)                                                            # Kamien Duchowy+
+add(50515, desc=u'Księga ta umożliwia ci wybór jednej z ośmiu ripost i naukę jej 1. poziomu. Można znać tylko jedną '
+    u'ripostę - wybieraj mądrze! Wymaga 5. poziomu i wybranej drogi umiejętności.')          # Podrecznik: Riposta
+add(50514, desc=u'Ta księga umiejętności uczy cię dopalacza twojej klasy i drogi umiejętności (1. poziom). '
+    u'Wymaga riposty rozwiniętej do poziomu P.')                                              # Podrecznik: Dopalacz
+add(71000, desc=u'Przedmiot ten usuwa wszystkie riposty i dopalacze (7. i 8. umiejętność), a wydane na nie punkty '
+    u'umiejętności wracają. Potem możesz nauczyć się ich ponownie z podręczników.')          # Zwoj Zmiany Treningu
 # Ksiega Precyzji: the passive skill Precyzja (skill_proto 246, MT2009_PLUS_PRECISION_SKILL_V1, server-patches/precyzja)
 # MT2009_PLUS_PRECISION_BOOK_STACK_V1 (the owner, 15 October 2026, fix 13): it stacks to 200 like the skill books
 # (50300); Owsap's row has no ITEM_STACKABLE. Reading takes one book of the stack (ENABLE_BOOKS_STACKFIX, char_item.cpp).

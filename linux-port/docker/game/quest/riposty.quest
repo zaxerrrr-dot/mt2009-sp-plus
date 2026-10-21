@@ -1,0 +1,267 @@
+-- MT2009_PLUS_RIPOSTY_V1: Riposty i Dopalacze (server-patches/riposty/README.md, playerbot_riposty.cpp) - pl-wiki
+-- "Umiejêtnoœci - Riposty i Dopalacze": Podrêcznik: Riposta (50515) - wybór jednej z oœmiu ripost (bez Likana), poziom 1;
+-- Podrêcznik: Dopalacz (50514) - dopalacz klasy i drogi, gdy jakaœ riposta jest na P; Kamieñ Duchowy+ (50525) - riposta
+-- / dopalacz od G1 do P jak Kamieñ Duchowy przy zwyk³ych umiejêtnoœciach (pc.learn_grand_master_skill: punkty rangi,
+-- nastêpna próba po 12 h, Zwój Egzorcyzmu od razu); Zwój Zmiany Treningu (71000) - usuwa oba, punkty umiejêtnoœci wracaj¹.
+-- Od 1 do M1: punkty umiejêtnoœci albo ksiêgi 50516-50523 / 50560-50567 (silnik), od M1 do G1: ksiêgi.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest riposty begin
+	state start begin
+		function name(vnum)
+			local names = {
+				[221] = "Riposta: Wir Miecza", [222] = "Riposta: Zasadzka", [223] = "Riposta: Uderzenie Palcem",
+				[224] = "Riposta: Strzelaj¹cy Smok", [225] = "Riposta: Duchowe Uderzenie",
+				[226] = "Riposta: Ognista Strza³a", [227] = "Riposta: Mroczne Uderzenie",
+				[228] = "Riposta: Przywo³anie B³yskawicy",
+				[236] = "Dopalacz: Wir Miecza", [237] = "Dopalacz: Zasadzka", [238] = "Dopalacz: Uderzenie Palcem",
+				[239] = "Dopalacz: Strzelaj¹cy Smok", [240] = "Dopalacz: Duchowe Uderzenie",
+				[241] = "Dopalacz: Ognista Strza³a", [242] = "Dopalacz: Mroczne Uderzenie",
+				[243] = "Dopalacz: Przywo³anie B³yskawicy",
+			}
+			return names[vnum] or ("umiejêtnoœæ " .. vnum)
+		end
+
+		function grade(level)
+			if level >= 40 then
+				return "P"
+			elseif level >= 30 then
+				return "G" .. (level - 29)
+			elseif level >= 20 then
+				return "M" .. (level - 19)
+			end
+			return "" .. level
+		end
+
+		function why(code)
+			if code == 1 then
+				return "Najpierw wybierz drogê umiejêtnoœci (Szkolenie)."
+			elseif code == 2 then
+				return "Wymagany jest co najmniej 5. poziom postaci."
+			elseif code == 3 then
+				return "Znasz ju¿ tê umiejêtnoœæ - wystarczy j¹ rozwijaæ."
+			elseif code == 4 then
+				return "Dopalacza nauczysz siê, gdy rozwiniesz dowoln¹ ripostê do poziomu P."
+			end
+			return "Tej umiejêtnoœci nie mo¿esz siê nauczyæ."
+		end
+
+		when 50515.use begin
+			local BOOK = 50515
+			say_title("Podrêcznik: Riposta")
+			local have = pc.get_riposte()
+			if have != 0 then
+				say(string.format("Znasz ju¿ ripostê: %s (%s).", riposty.name(have), riposty.grade(pc.get_skill_level(have))))
+				say("Mo¿na mieæ tylko jedn¹ ripostê. Zwój Zmiany Treningu")
+				say("pozwala zapomnieæ j¹ i wybraæ now¹.")
+				return
+			end
+			if pc.get_skill_group() == 0 then
+				say(riposty.why(1))
+				return
+			end
+			if pc.get_level() < 5 then
+				say(riposty.why(2))
+				return
+			end
+			say("Riposta zmniejsza obra¿enia, które otrzymujesz od jednej")
+			say("umiejêtnoœci przeciwnika. Mo¿esz znaæ tylko jedn¹ ripostê -")
+			say("wybieraj m¹drze.")
+			local list = {}
+			for v = 221, 228 do
+				table.insert(list, riposty.name(v))
+			end
+			table.insert(list, "Anuluj")
+			local s = select_table(list)
+			if s == table.getn(list) then
+				return
+			end
+			local vnum = 220 + s
+			say_title(riposty.name(vnum))
+			say("Ta riposta zmniejszy obra¿enia od tej umiejêtnoœci:")
+			say_reward("1 poziom: 1,2%, M1: 12%, G1: 19,7%, P: 30%.")
+			say("Rozwijasz j¹ punktami umiejêtnoœci lub ksiêgami riposty")
+			say("(do M1), ksiêgami (do G1) i Kamieniem Duchowym+ (do P).")
+			if select("Naucz siê teraz", "Anuluj") != 1 then
+				return
+			end
+			if pc.count_item(BOOK) < 1 then
+				return
+			end
+			local r = pc.learn_passive_skill(vnum)
+			say_title(riposty.name(vnum))
+			if r != 0 then
+				say(riposty.why(r))
+				return
+			end
+			pc.remove_item(BOOK, 1)
+			char_log(vnum, "RIPOSTA_LEARN", "50515")
+			say_reward("Nauczy³eœ siê riposty (poziom 1).")
+			say("Znajdziesz j¹ w oknie umiejêtnoœci, obok 9. umiejêtnoœci.")
+		end
+
+		when 50514.use begin
+			local BOOK = 50514
+			say_title("Podrêcznik: Dopalacz")
+			local have = pc.get_boost()
+			if have != 0 then
+				say(string.format("Znasz ju¿ dopalacz: %s (%s).", riposty.name(have), riposty.grade(pc.get_skill_level(have))))
+				return
+			end
+			local vnum = pc.get_class_boost()
+			if pc.get_skill_group() == 0 or vnum == 0 then
+				say(riposty.why(1))
+				return
+			end
+			if pc.get_level() < 5 then
+				say(riposty.why(2))
+				return
+			end
+			say("Dopalacz zwiêksza obra¿enia zadawane jedn¹ umiejêtnoœci¹.")
+			say("Ka¿da klasa i droga ma swój dopalacz - twój to:")
+			say_reward(riposty.name(vnum))
+			say_reward("1 poziom: 0,8%, M1: 8%, G1: 13,1%, P: 20%.")
+			local r = pc.get_riposte()
+			if r == 0 or pc.get_skill_level(r) < 40 then
+				say(riposty.why(4))
+				return
+			end
+			if select("Naucz siê teraz", "Anuluj") != 1 then
+				return
+			end
+			if pc.count_item(BOOK) < 1 then
+				return
+			end
+			local code = pc.learn_passive_skill(vnum)
+			say_title(riposty.name(vnum))
+			if code != 0 then
+				say(riposty.why(code))
+				return
+			end
+			pc.remove_item(BOOK, 1)
+			char_log(vnum, "DOPALACZ_LEARN", "50514")
+			say_reward("Nauczy³eœ siê dopalacza (poziom 1).")
+			say("Znajdziesz go w oknie umiejêtnoœci, w umiejêtnoœciach")
+			say("pomocniczych (ostatnie pole).")
+		end
+
+		when 50525.use begin
+			local STONE = 50525
+			say_title("Kamieñ Duchowy+")
+			if pc.get_skill_group() == 0 then
+				say(riposty.why(1))
+				return
+			end
+			local vnums, names = {}, {}
+			local known = { pc.get_riposte(), pc.get_boost() }
+			for i = 1, 2 do
+				local v = known[i]
+				if v != 0 then
+					local lv = pc.get_skill_level(v)
+					if lv >= 30 and lv < 40 then
+						table.insert(vnums, v)
+						table.insert(names, string.format("%s (%s)", riposty.name(v), riposty.grade(lv)))
+					end
+				end
+			end
+			if table.getn(vnums) == 0 then
+				say("Kamieñ Duchowy+ rozwija ripostê i dopalacz od stopnia G1")
+				say("do P. Nie masz ¿adnej z nich na stopniu G1-G10.")
+				return
+			end
+			local now = get_time()
+			if now < pc.getqf("next_time") and not pc.is_skill_book_no_delay() then
+				say("Twój duch musi jeszcze odpocz¹æ po ostatnim treningu.")
+				say_reward(string.format("Nastêpna próba za: %s.", second_to_smart_time(pc.getqf("next_time") - now)))
+				say("Zwój Egzorcyzmu pozwala spróbowaæ od razu.")
+				return
+			end
+			say("Któr¹ umiejêtnoœæ chcesz trenowaæ?")
+			table.insert(names, "Anuluj")
+			local s = select_table(names)
+			if s == table.getn(names) then
+				return
+			end
+			local vnum = vnums[s]
+			local level = pc.get_skill_level(vnum)
+			local alignment = pc.get_real_alignment()
+			local need = 1000 + 500 * (level - 30)
+			say_title(string.format("%s: %s -> %s", riposty.name(vnum), riposty.grade(level), riposty.grade(level + 1)))
+			if alignment < -19000 + need then
+				say("Twoja ranga jest zbyt niska, by trenowaæ z Kamieniem")
+				say("Duchowym+.")
+				return
+			end
+			if alignment < 0 then
+				need = need * 2
+				say_reward(string.format("Przy ujemnej randze trening kosztuje %d punktów rangi.", need))
+			else
+				say_reward(string.format("Trening kosztuje %d punktów rangi.", need))
+				if alignment < need then
+					say("Masz za ma³o punktów rangi - ranga spadnie poni¿ej zera.")
+				end
+			end
+			say("Nieudana próba zabiera od 1/3 do 1/2 tych punktów.")
+			say("Nastêpna próba mo¿liwa po 12 godzinach.")
+			if select("Trenuj", "Anuluj") != 1 then
+				return
+			end
+			-- again after the dialog: the bag, the wait, the skill
+			if pc.count_item(STONE) < 1 or pc.get_skill_level(vnum) != level then
+				return
+			end
+			if get_time() < pc.getqf("next_time") then
+				if not pc.is_skill_book_no_delay() then
+					return
+				end
+				pc.remove_skill_book_no_delay()
+			end
+			pc.setqf("next_time", get_time() + 12 * 3600)
+			pc.remove_item(STONE, 1)
+			say_title(riposty.name(vnum))
+			if pc.learn_grand_master_skill(vnum) then
+				pc.change_alignment(-need)
+				say_reward("Trening siê uda³!")
+				say(string.format("%s: teraz %s.", riposty.name(vnum), riposty.grade(pc.get_skill_level(vnum))))
+				say_reward(string.format("Zu¿yto %d punktów rangi.", need))
+			else
+				local lost = number(math.floor(need / 3), math.floor(need / 2))
+				pc.change_alignment(-lost)
+				say_reward("Trening siê nie uda³...")
+				say("Spróbuj ponownie póŸniej.")
+				say_reward(string.format("Zu¿yto %d punktów rangi.", lost))
+			end
+		end
+
+		when 71000.use begin
+			local SCROLL = 71000
+			say_title("Zwój Zmiany Treningu")
+			local r, b = pc.get_riposte(), pc.get_boost()
+			if r == 0 and b == 0 then
+				say("Nie znasz ¿adnej riposty ani dopalacza.")
+				return
+			end
+			say("Zwój usunie wszystkie twoje riposty i dopalacze:")
+			if r != 0 then
+				say_reward(string.format("%s (%s)", riposty.name(r), riposty.grade(pc.get_skill_level(r))))
+			end
+			if b != 0 then
+				say_reward(string.format("%s (%s)", riposty.name(b), riposty.grade(pc.get_skill_level(b))))
+			end
+			say("Punkty umiejêtnoœci wydane na nie wróc¹. Potem mo¿esz")
+			say("nauczyæ siê ich ponownie z podrêczników.")
+			if select("U¿yj zwoju", "Anuluj") != 1 then
+				return
+			end
+			if pc.count_item(SCROLL) < 1 then
+				return
+			end
+			local n = pc.reset_passive_skills()
+			if n > 0 then
+				pc.remove_item(SCROLL, 1)
+				char_log(0, "PASSIVE_RESET", string.format("%d", n))
+				say_title("Zwój Zmiany Treningu")
+				say_reward("Twoje riposty i dopalacze zosta³y zapomniane.")
+			end
+		end
+	end
+end

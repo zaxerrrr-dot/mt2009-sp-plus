@@ -3840,6 +3840,20 @@ if [ -s /opt/playerbot/precyzja_skill.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_RIPOSTY_V1: Riposty i Dopalacze - skill_proto 221-228 / 236-243 (server-patches/riposty/README.md); their
+# books, Podreczniki, Kamien Duchowy+ and Zwoj Zmiany Treningu are yohara_items.sql's (above). riposty_skill.sql is
+# idempotent; riposty_itemshop.sql puts Zwoj Zmiany Treningu in the ItemShop once (no web shop tables: a note).
+if [ -s /opt/playerbot/riposty_skill.sql ]; then
+    if db < /opt/playerbot/riposty_skill.sql; then
+        echo "[playerbot-migrate] Riposty i Dopalacze: riposty_skill.sql applied"
+    else
+        fail_step "Riposty i Dopalacze: riposty_skill.sql failed" >&2
+    fi
+fi
+if [ -s /opt/playerbot/riposty_itemshop.sql ]; then
+    db < /opt/playerbot/riposty_itemshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Zwoj Zmiany Treningu" >&2
+fi
+
 # MT2009_PLUS_YOHARA_ILUZJA_V1: Plaskowyz Iluzji and the two remaining awakened bosses - Beran-Setaou (PB), Jotun Thrym
 # (PB) (the owner, 14 October 2026). After the PB files (the PB bosses' drops name the plans this one adds):
 # yohara_iluzja.sql (tools/yohara_iluzja/gen_yiluzja.py) - the two dungeons' monsters, bosses, stones and NPCs, the

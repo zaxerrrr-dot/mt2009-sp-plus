@@ -10,6 +10,7 @@ import localeInfo
 import app
 
 import appPlayerSettingsModule
+import riposty # MT2009_PLUS_RIPOSTY_V1
 
 JOB_WARRIOR = 0
 JOB_ASSASSIN = 1
@@ -66,6 +67,9 @@ def RegisterSkill(race, group, empire=0):
 	DefineSkillIndexDict()
 
 	job = chr.RaceToJob(race)
+
+	# MT2009_PLUS_RIPOSTY_V1: every riposte / boost has a hidden slot (slot = vnum) where its level arrives (riposty.py)
+	riposty.RegisterSlots()
 
 	## Character Skill
 	if SKILL_INDEX_DICT.has_key(job):
