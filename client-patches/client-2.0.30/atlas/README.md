@@ -68,3 +68,16 @@ własne nazwy (`mt2009_` / `_yohara`), żaden wpis nie zastępuje pliku paczek b
 | root | `d:/ymir work/ui/game/windows/mt2009_{level_exp_info,base_info_bar,status_extent_bar,char_info_status_img,char_info_status_plus_img,char_info_status_value_img}.sub` | `.sub` GF, obraz `windows_yohara.dds` (= GF `windows.dds`) | ramka Lv / EXP, pasek z wolnymi punktami („+” i liczba), linia nad dolnym blokiem |
 | root | `d:/ymir work/ui/game/windows/mt2009_char_info_{con,int,str,dex,hp,sp,att,def,movespeed,attspeed,magspeed,magatt,magdef,hitpct}.sub` | `.sub` GF, obraz `windows_yohara.dds` | ikony statystyk (`hitpct` = Precyzja) |
 | root | `d:/ymir work/ui/game/windows/mt2009_passive_expanded_button_01..03.sub` | `.sub` GF, obraz `windows_yohara.dds` | trzeci przycisk rzędu (u nas „Bonusy”) |
+
+### Okno umiejętności w układzie 3.0 (`MT2009_PLUS_SKILL_WINDOW_V1`)
+
+Zakładka Umiejętności jak w kliencie globalnym (`root/uiscript/characterwindow.py` „Skill_Page”, `root/uicharacter.py`,
+`root/riposty.py`): pięć rzędów po trzy stopnie (M → G → P) ze strzałkami – umiejętności 1–6, riposta (pole 7), dopalacz
+(pole 8), 9. umiejętność (pole 9); umiejętności pomocnicze 6 × 3 pod paskiem z ikoną; wolne punkty jako „+ [n]”. Nowe
+wpisy (własne nazwy, obraz `windows_yohara.dds` = GF `windows.dds`, który już jest w paczce):
+
+| Paczka | Wpis | Skąd | Po co |
+|---|---|---|---|
+| root | `d:/ymir work/ui/game/windows/mt2009_skill_board.sub` | `.sub` GF `skill_board` (0,0–227,152) | tło 4 rzędów umiejętności ze strzałkami |
+| root | `d:/ymir work/ui/game/windows/mt2009_skill_board_expanded.sub` | `.sub` GF `skill_board_expanded` (8,442–235,484) | 5. rząd (9. umiejętność) |
+| root | `d:/ymir work/ui/game/windows/mt2009_support_skill_bar_icon.sub` | `.sub` GF `support_skill_bar_icon` (496,513–512,528) | ikona paska umiejętności pomocniczych |

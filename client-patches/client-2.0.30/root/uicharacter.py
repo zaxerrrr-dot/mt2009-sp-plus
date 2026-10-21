@@ -81,6 +81,10 @@ ICON_TOOLTIPS = (
 	("CSPD_IMG", "Pr\xeadko\x9c\xe6 czarowania"),
 	("MATT_IMG", "Atak magiczny"),
 	("MDEF_IMG", "Obrona magiczna"),
+	# MT2009_PLUS_SKILL_WINDOW_V1: the skill tab's bar icon and the free points ("+ [n]")
+	("Support_Skill_ToolTip", "Umiej\xeatno\x9cci pomocnicze"),
+	("Active_Skill_Point_Label", "Wolne punkty umiej\xeatno\x9cci"),
+	("Active_Skill_Plus_Img", "Wolne punkty umiej\xeatno\x9cci"),
 )
 STAT_ICONS = (("HTH_IMG", "HTH"), ("INT_IMG", "INT"), ("STR_IMG", "STR"), ("DEX_IMG", "DEX"))
 
@@ -1134,11 +1138,6 @@ class CharacterWindow(ui.ScriptWindow):
 		skillGrade = player.GetSkillGrade(srcSlotIndex)
 		skillType = skill.GetSkillType(skillIndex)
 
-		# MT2009_PLUS_RIPOSTY_V1: the boost's one cell (112) - its own grade's tooltip
-		if riposty.BOOST_PLACE == slotNumber and riposty.IsBoost(skillIndex):
-			self.toolTipSkill.SetSkillNew(srcSlotIndex, skillIndex, skillGrade, skillLevel)
-			return
-
 		## ACTIVE
 		if skill.SKILL_TYPE_ACTIVE == skillType:
 			overInSkillGrade = self.__GetSkillGradeFromSlot(slotNumber)
@@ -1294,15 +1293,22 @@ class CharacterWindow(ui.ScriptWindow):
 		getSkillLevelUpPoint=skill.GetSkillLevelUpPoint
 		getSkillMaxLevel=skill.GetSkillMaxLevel
 
-		for i in xrange(slotCount+1):
+		# MT2009_PLUS_SKILL_WINDOW_V1: the active page has 9 places (riposty.NINTH_PLACE) - on the horse page too, so place
+		# 9 is cleared there
+		placeCount = slotCount + 1
+		if "ACTIVE" == name:
+			placeCount = max(placeCount, riposty.NINTH_PLACE + 1)
+
+		for i in xrange(placeCount):
 			slotIndex = i + startSlotIndex
-			# MT2009_PLUS_RIPOSTY_V1: place 8 / cell 112 show the known riposte / boost - read from its hidden slot (riposty.py)
+			# MT2009_PLUS_RIPOSTY_V1 / MT2009_PLUS_SKILL_WINDOW_V1: places 7 / 8 show the known riposte / boost (their
+			# hidden slots), place 9 the 9th skill (slot 7) - riposty.SourceSlot
 			srcSlotIndex = slotIndex
-			if self.PAGE_HORSE != self.curSelectedSkillGroup or "SUPPORT" == name:
+			if "ACTIVE" == name and self.PAGE_HORSE != self.curSelectedSkillGroup:
 				srcSlotIndex = riposty.SourceSlot(slotIndex)
-			if riposty.BOOST_PLACE == slotIndex and "SUPPORT" == name:
-				skillPage.ClearSlot(slotIndex)
 			skillIndex = getSkillIndex(srcSlotIndex)
+			if "SUPPORT" == name and 0 == skillIndex:
+				skillPage.ClearSlot(slotIndex)
 			if app.ENABLE_SLOT_WINDOW_EX:
 				activeList = {}
 				cooltmList = {}
@@ -1331,11 +1337,6 @@ class CharacterWindow(ui.ScriptWindow):
 
 				skillPage.SetSkillSlotNew(slotIndex, skillIndex, max(skillLevel-1, 0), skillLevel)
 				skillPage.SetSlotCount(slotIndex, skillLevel)
-
-			## MT2009_PLUS_RIPOSTY_V1: the boost in one cell of the support grid - the icon of its grade, the level
-			elif riposty.BOOST_PLACE == slotIndex and "SUPPORT" == name and riposty.IsBoost(skillIndex):
-				skillPage.SetSkillSlotNew(slotIndex, skillIndex, min(skillGrade, skill.SKILL_GRADE_COUNT-1), skillLevel)
-				skillPage.SetSlotCountNew(slotIndex, skillGrade, skillLevel)
 
 			## ACTIVE
 			elif skill.SKILL_TYPE_ACTIVE == skillType:
@@ -1402,7 +1403,7 @@ class CharacterWindow(ui.ScriptWindow):
 	def __RefreshSkillPlusButton(self, name):
 		global HIDE_SUPPORT_SKILL_POINT
 		if HIDE_SUPPORT_SKILL_POINT and "SUPPORT" == name:
-			self.__RefreshBoostPlusButton() # MT2009_PLUS_RIPOSTY_V1
+			self.skillPageDict[name].HideAllSlotButton() # MT2009_PLUS_SKILL_WINDOW_V1: the boost's plus is on the active page now
 			return
 
 		slotWindow = self.skillPageDict[name]
@@ -1422,7 +1423,7 @@ class CharacterWindow(ui.ScriptWindow):
 				slotIndex = i + startSlotIndex
 				srcSlotIndex = slotIndex
 				if "ACTIVE" == name:
-					srcSlotIndex = riposty.SourceSlot(slotIndex) # MT2009_PLUS_RIPOSTY_V1: place 8 - the known riposte
+					srcSlotIndex = riposty.SourceSlot(slotIndex) # MT2009_PLUS_SKILL_WINDOW_V1: places 7 / 8 / 9 - riposte, boost, 9th skill
 				skillIndex = player.GetSkillIndex(srcSlotIndex)
 				skillGrade = player.GetSkillGrade(srcSlotIndex)
 				skillLevel = player.GetSkillLevel(srcSlotIndex)
@@ -1446,19 +1447,6 @@ class CharacterWindow(ui.ScriptWindow):
 						if self.CanShowPlusButton(skillIndex, skillLevel, statPoint):
 							slotWindow.ShowSlotButton(slotIndex)
 
-
-	def __RefreshBoostPlusButton(self):
-		# MT2009_PLUS_RIPOSTY_V1: the boost (cell 112 of the support grid) takes the class skill points - its plus there
-		slotWindow = self.skillPageDict["SUPPORT"]
-		slotWindow.HideAllSlotButton()
-		if not self.__CanUseSkillNow() or player.GetStatus(player.SKILL_ACTIVE) <= 0:
-			return
-		srcSlotIndex = riposty.SourceSlot(riposty.BOOST_PLACE)
-		skillIndex = player.GetSkillIndex(srcSlotIndex)
-		if not riposty.IsBoost(skillIndex) or player.GetSkillGrade(srcSlotIndex) != 0:
-			return
-		if self.CanShowPlusButton(skillIndex, player.GetSkillLevel(srcSlotIndex), 0):
-			slotWindow.ShowSlotButton(riposty.BOOST_PLACE)
 
 	def RefreshSkillPlusButtonList(self):
 
@@ -1534,7 +1522,7 @@ class CharacterWindow(ui.ScriptWindow):
 		## ACTIVE
 		if skill.SKILL_TYPE_ACTIVE == skillType:
 			skillGrade = player.GetSkillGrade(slotIndex)
-			slotIndex = self.__GetRealSkillSlot(skillGrade, slotIndex)
+			slotIndex = self.__GetRealSkillSlot(skillGrade, self.__SourceSlotToPlace(slotIndex))
 		## ETC
 		else:
 			slotIndex = self.__GetETCSkillRealSlotIndex(slotIndex)
@@ -1546,7 +1534,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 	def OnActivateSkill(self, slotIndex):
 		skillGrade = player.GetSkillGrade(slotIndex)
-		slotIndex = self.__GetRealSkillSlot(skillGrade, slotIndex)
+		slotIndex = self.__GetRealSkillSlot(skillGrade, self.__SourceSlotToPlace(slotIndex))
 
 		for slotWindow in self.skillPageDict.values():
 			if slotWindow.HasSlot(slotIndex):
@@ -1555,7 +1543,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 	def OnDeactivateSkill(self, slotIndex):
 		skillGrade = player.GetSkillGrade(slotIndex)
-		slotIndex = self.__GetRealSkillSlot(skillGrade, slotIndex)
+		slotIndex = self.__GetRealSkillSlot(skillGrade, self.__SourceSlotToPlace(slotIndex))
 
 		for slotWindow in self.skillPageDict.values():
 			if slotWindow.HasSlot(slotIndex):
@@ -1774,12 +1762,19 @@ class CharacterWindow(ui.ScriptWindow):
 		return skillSlot % self.ACTIVE_PAGE_SLOT_COUNT
 
 	def __RealSkillSlotToSourceSlot(self, realSkillSlot):
-		# MT2009_PLUS_RIPOSTY_V1: place 8 and cell 112 are the known riposte's / boost's hidden slots (riposty.SourceSlot)
+		# MT2009_PLUS_RIPOSTY_V1 / MT2009_PLUS_SKILL_WINDOW_V1: places 7 / 8 the known riposte's / boost's hidden slots,
+		# place 9 the 9th skill's slot 7 (riposty.SourceSlot)
 		if realSkillSlot > 100:
-			return riposty.SourceSlot(realSkillSlot)
+			return realSkillSlot
 		if self.PAGE_HORSE == self.curSelectedSkillGroup:
 			return realSkillSlot + self.ACTIVE_PAGE_SLOT_COUNT
 		return riposty.SourceSlot(realSkillSlot % skill.SKILL_GRADE_STEP_COUNT)
+
+	def __SourceSlotToPlace(self, srcSlotIndex):
+		# MT2009_PLUS_SKILL_WINDOW_V1: the place of the active page that shows a skill slot (the 9th skill's 7 -> 9)
+		if self.PAGE_HORSE == self.curSelectedSkillGroup:
+			return srcSlotIndex
+		return riposty.PlaceOfSource(srcSlotIndex)
 
 	def __GetSkillGradeFromSlot(self, skillSlot):
 		return int(skillSlot / skill.SKILL_GRADE_STEP_COUNT)

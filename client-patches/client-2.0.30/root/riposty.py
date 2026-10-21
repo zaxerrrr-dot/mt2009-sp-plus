@@ -1,17 +1,23 @@
 # MT2009_PLUS_RIPOSTY_V1: Riposty i Dopalacze - the passive 7th and 8th skills (server-patches/riposty/README.md).
 # The client's part: every riposte (221-228) and boost (236-243) has a hidden slot of its own (slot = vnum, RegisterSlots
-# from playersettingmodule.RegisterSkill), where the exe's RecvSkillLevelNew puts its level; the skill window shows the
-# riposte a character knows in the active page's place 8 (slot 8, its grades in 28 / 48 - beside the 9th skill) and the
-# boost in the support grid's last cell (112) - uicharacter asks SourceSlot() which hidden slot a shown place reads.
-# The exe empties place 8 on every skill packet (SetSkill(8, 0)) - nothing of ours is there, so nothing to restore.
+# from playersettingmodule.RegisterSkill), where the exe's RecvSkillLevelNew puts its level; uicharacter asks SourceSlot()
+# which slot a shown place of the skill page reads.
+# MT2009_PLUS_SKILL_WINDOW_V1: the places as in the 3.0 skill window of the global client - place 7 (the left column's
+# 4th row, grades 27 / 47) the riposte a character knows, place 8 (the right column's 4th row) the boost, place 9 (the
+# left column's 5th row) the 9th skill, which stays in skill slot 7 (playersettingmodule; the quickslot bar keeps it).
+# A place with nothing known reads slot 8 - the exe empties it on every skill packet (SetSkill(8, 0)) and nothing of
+# ours is ever put there. PlaceOfSource() is the way back (a skill slot's cool time / activation -> its place).
 # The tooltip (uitooltip.SkillToolTip.SetSkillNew): the level (1-19, M1-M10, G1-G10, P), the wiki's per cent now and at
 # the next level (GF's power table: riposte 24*k, boost 16*k - the server's riposty::Percent), how it grows.
 import player
 
 RIPOSTE_FIRST, RIPOSTE_LAST = 221, 228
 BOOST_FIRST, BOOST_LAST = 236, 243
-RIPOSTE_PLACE = 8	# the active page's place 8 (Skill_Active_Slot 8/28/48)
-BOOST_PLACE = 112	# Skill_ETC_Slot's last cell
+RIPOSTE_PLACE = 7	# the active page's place 7 (Skill_Active_Slot 7/27/47) - MT2009_PLUS_SKILL_WINDOW_V1 (was 8)
+BOOST_PLACE = 8		# the active page's place 8 (Skill_Active_Slot 8/28/48) - MT2009_PLUS_SKILL_WINDOW_V1 (was cell 112)
+NINTH_PLACE = 9		# the active page's place 9 (Skill_Active_Slot 9/29/49): the 9th skill...
+NINTH_SOURCE = 7	# ...in skill slot 7 (playersettingmodule.SKILL_INDEX_DICT, RestoreNinthSkillSlot)
+EMPTY_SOURCE = 8	# a skill slot that is always empty (the exe clears it, we never fill it)
 MAX_LEVEL = 40
 
 # GF's skill power of a level 0-40 (the server's riposty.cpp s_aiPower)
@@ -74,12 +80,26 @@ def _Known(first, last):
 
 
 def SourceSlot(slotIndex):
-	# the hidden slot a shown place reads (place 8: the known riposte, 112: the known boost); the place itself if none
+	# the skill slot a shown place of the active page reads (MT2009_PLUS_SKILL_WINDOW_V1): place 7 the known riposte,
+	# 8 the known boost (an always empty slot if none), 9 the 9th skill (slot 7); 1-6 their own slots
 	if slotIndex == RIPOSTE_PLACE:
-		return _Known(RIPOSTE_FIRST, RIPOSTE_LAST) or slotIndex
+		return _Known(RIPOSTE_FIRST, RIPOSTE_LAST) or EMPTY_SOURCE
 	if slotIndex == BOOST_PLACE:
-		return _Known(BOOST_FIRST, BOOST_LAST) or slotIndex
+		return _Known(BOOST_FIRST, BOOST_LAST) or EMPTY_SOURCE
+	if slotIndex == NINTH_PLACE:
+		return NINTH_SOURCE
 	return slotIndex
+
+
+def PlaceOfSource(srcSlotIndex):
+	# MT2009_PLUS_SKILL_WINDOW_V1: the way back - the place of the active page that shows a skill slot
+	if srcSlotIndex == NINTH_SOURCE:
+		return NINTH_PLACE
+	if IsRiposte(srcSlotIndex):
+		return RIPOSTE_PLACE
+	if IsBoost(srcSlotIndex):
+		return BOOST_PLACE
+	return srcSlotIndex
 
 
 def RealLevel(grade, level):

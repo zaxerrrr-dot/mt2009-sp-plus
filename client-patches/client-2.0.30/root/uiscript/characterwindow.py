@@ -329,29 +329,37 @@ window = {
 					),
 				},
 				{
+					# MT2009_PLUS_SKILL_WINDOW_V1: the skill tab in the layout of the 3.0 skill window of the global client
+					# (GF 26.1.11 uiscript/characterwindow.py "Skill_Page"): five rows of a skill's three stages (M, G, P) with
+					# GF's arrows between them - the class skills 1-6, the riposte (place 7) and the boost (place 8), the 9th
+					# skill in the left column's 5th row (place 9; the right one's 5th row stays empty, as in GF); the support
+					# skills in a grid of 6 x 3 under a bar with GF's icon; the free skill points as GF's "+ [n]". The boards are
+					# GF's (windows_yohara.dds = GF windows.dds, atlas/d_ mt2009_skill_board*.sub). Which skill a place shows:
+					# root/riposty.py SourceSlot / PlaceOfSource.
 					"name" : "Skill_Page",
 					"type" : "window",
 					"style" : ("attach",),
 
 					"x" : 0,
-					"y" : 24,
+					"y" : 22,	# GF 24 - our tab strip stands 3 px higher (TAB_Y), the support grid's 3rd row clears it
 
 					"width" : 250,
-					"height" : 304,
+					"height" : 350,
 
 					"children" :
 					(
 
 						{
-							"name":"Skill_Active_Title_Bar", "type":"horizontalbar", "x":15, "y":17, "width":223,
+							"name":"Skill_Active_Title_Bar", "type":"horizontalbar", "x":15, "y":9, "width":223,
 
 							"children" :
 							(
 								{
-									"name":"Active_Skill_Point_Label", "type":"image", "x":145, "y":3, "image":LOCALE_PATH+"label_uppt.sub",
+									"name":"Active_Skill_Point_Label", "type":"image", "x":180, "y":3, "image":ROOT_PATH+"mt2009_char_info_status_plus_img.sub",
 									"children" :
 									(
-										{ "name":"Active_Skill_Point_Value", "type":"text", "x":62, "y":0, "text":"99", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
+										{ "name":"Active_Skill_Plus_Img", "type":"image", "x":13, "y":0, "image":ROOT_PATH+"mt2009_char_info_status_value_img.sub", },
+										{ "name":"Active_Skill_Point_Value", "type":"text", "x":25, "y":0, "text":"99", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
 									),
 								},
 
@@ -403,44 +411,36 @@ window = {
 						},
 
 						{
-							"name":"Skill_ETC_Title_Bar", "type":"horizontalbar", "x":15, "y":200, "width":223,
+							"name":"Skill_ETC_Title_Bar", "type":"horizontalbar", "x":15, "y":200+22, "width":223,
 
 							"children" :
 							(
-								{
-									"name" : "Support_Skill_Group_Name",
-									"type" : "text",
-
-									"x" : 7,
-									"y" : 1,
-									"text" : uiScriptLocale.SKILL_SUPPORT_TITLE,
-
-									"vertical_align" : "center",
-									"text_vertical_align" : "center",
-									"color" : 0xFFFFE3AD,
-								},
+								## GF's icon of the support skills (its tooltip: uicharacter ICON_TOOLTIPS)
+								{ "name":"Support_Skill_ToolTip", "type":"image", "x":3, "y":3, "image":ROOT_PATH+"mt2009_support_skill_bar_icon.sub", },
 
 								{
-									"name":"Support_Skill_Point_Label", "type":"image", "x":145, "y":3, "image":LOCALE_PATH+"label_uppt.sub",
+									"name":"Support_Skill_Point_Label", "type":"image", "x":180, "y":3, "image":ROOT_PATH+"mt2009_char_info_status_plus_img.sub",
 									"children" :
 									(
-										{ "name":"Support_Skill_Point_Value", "type":"text", "x":62, "y":0, "text":"99", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
+										{ "name":"Support_Skill_Plus_Img", "type":"image", "x":13, "y":0, "image":ROOT_PATH+"mt2009_char_info_status_value_img.sub", },
+										{ "name":"Support_Skill_Point_Value", "type":"text", "x":25, "y":0, "text":"99", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
 									),
 								},
 							),
 						},
-						{ "name":"Skill_Board", "type":"image", "x":13, "y":38, "image":"d:/ymir work/ui/game/windows/skill_board.sub", },
+						{ "name":"Skill_Board", "type":"image", "x":13, "y":30, "image":ROOT_PATH+"mt2009_skill_board.sub", },
+						{ "name":"Skill_Board_expanded", "type":"image", "x":13, "y":179, "image":ROOT_PATH+"mt2009_skill_board_expanded.sub", },
 
-						## Active Slot
+						## Active Slot: place n (1-9) and its grades n+20 (G) / n+40 (P)
 						{
 							"name" : "Skill_Active_Slot",
 							"type" : "slot",
 
 							"x" : 0 + 16,
-							"y" : 0 + 15 + 23,
+							"y" : 0 + 15 + 15,
 
 							"width" : 223,
-							"height" : 223,
+							"height" : 190,
 							"image" : ICON_SLOT_FILE,
 
 							"slot" :	(
@@ -459,6 +459,10 @@ window = {
 											{"index": 7, "x": 1, "y":112, "width":32, "height":32},
 											{"index":27, "x":38, "y":112, "width":32, "height":32},
 											{"index":47, "x":75, "y":112, "width":32, "height":32},
+
+											{"index": 9, "x": 1, "y":151, "width":32, "height":32},
+											{"index":29, "x":38, "y":151, "width":32, "height":32},
+											{"index":49, "x":75, "y":151, "width":32, "height":32},
 
 											####
 
@@ -480,15 +484,15 @@ window = {
 										),
 						},
 
-						## ETC Slot
+						## ETC Slot: 6 x 3 (101-118)
 						{
 							"name" : "Skill_ETC_Slot",
 							"type" : "grid_table",
 							"x" : 18,
-							"y" : 221,
+							"y" : 221 + 22,
 							"start_index" : 101,
 							"x_count" : 6,
-							"y_count" : 2,
+							"y_count" : 3,
 							"x_step" : 32,
 							"y_step" : 32,
 							"x_blank" : 5,
@@ -501,7 +505,7 @@ window = {
 							"type": "bar",
 							"x": 0, "y": 0,
 							"horizontal_align": "center",
-							"width": 253 - 15, "height": 361 - 26,
+							"width": 253 - 15, "height": 350,
 							"color": 0x94000000,
 							"children": (
 								{
@@ -515,7 +519,7 @@ window = {
 								{
 									"name": "SprintOnboardingIcon",
 									"type": "image",
-									"x": 18 + 4 * 32 + 3 * 5 - 1, "y": 221,
+									"x": 18 + 4 * 32 + 3 * 5 - 1, "y": 221 + 22,
 									"image": "d:/ymir work/ui/skill/common/support/sprint.sub",
 								},
 							)

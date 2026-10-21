@@ -36,9 +36,9 @@ SKILL_INDEX_DICT = []
 def DefineSkillIndexDict():
 	global SKILL_INDEX_DICT
 	SKILL_INDEX_DICT = {
-		# MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara (176-182) in the 7th place (slot 7, the left column's
-		# 4th row of the skill page): Trzesienie, Swiatlo Gwiazd / Strzal Wichury, Piekielny Cios / Fala Smierci,
-		# Meteor / Tarcza Eteru. Its grades M/G/P are slots 27/47 like the others'.
+		# MT2009_PLUS_SKILL9_V1: the 9th skill of Yohara (176-182) in the 7th place (slot 7): Trzesienie, Swiatlo Gwiazd /
+		# Strzal Wichury, Piekielny Cios / Fala Smierci, Meteor / Tarcza Eteru. MT2009_PLUS_SKILL_WINDOW_V1: the skill page
+		# shows it in the left column's 5th row (place 9, grades 29/49 - riposty.SourceSlot), as the global client does.
 		# MT2009_PLUS_PRECISION_SKILL_V1: "SUPPORT" 11th = slot 111 - the passive skill Precyzja (246, precisionskill.py).
 		JOB_WARRIOR: {
 			1: (1, 2, 3, 4, 5, 0, 176, 0, 137, 0, 138, 0, 139, 0,),
