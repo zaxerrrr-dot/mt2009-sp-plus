@@ -2886,6 +2886,22 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "SLOT_TYPE_MALL",						SLOT_TYPE_MALL);
 	PyModule_AddIntConstant(poModule, "SLOT_TYPE_EMOTION",					SLOT_TYPE_EMOTION);
 	PyModule_AddIntConstant(poModule, "SLOT_TYPE_DRAGON_SOUL_INVENTORY",	SLOT_TYPE_DRAGON_SOUL_INVENTORY);
+#ifdef ENABLE_SPECIAL_STORAGE
+	// MT2009_PLUS_EKWIPUNEK_V1 (constants): root/uiekwipunek.py
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_UPGRADE_INVENTORY",	SLOT_TYPE_UPGRADE_INVENTORY);
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_BOOK_INVENTORY",		SLOT_TYPE_BOOK_INVENTORY);
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_STONE_INVENTORY",		SLOT_TYPE_STONE_INVENTORY);
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_CHANGE_INVENTORY",	SLOT_TYPE_CHANGE_INVENTORY);
+	PyModule_AddIntConstant(poModule, "SLOT_TYPE_CHEST_INVENTORY",		SLOT_TYPE_CHEST_INVENTORY);
+	PyModule_AddIntConstant(poModule, "UPGRADE_INVENTORY",				UPGRADE_INVENTORY);
+	PyModule_AddIntConstant(poModule, "BOOK_INVENTORY",					BOOK_INVENTORY);
+	PyModule_AddIntConstant(poModule, "STONE_INVENTORY",				STONE_INVENTORY);
+	PyModule_AddIntConstant(poModule, "CHANGE_INVENTORY",				CHANGE_INVENTORY);
+	PyModule_AddIntConstant(poModule, "CHEST_INVENTORY",				CHEST_INVENTORY);
+	PyModule_AddIntConstant(poModule, "SPECIAL_PAGE_SIZE",				c_Special_Inventory_Page_Size);
+	PyModule_AddIntConstant(poModule, "SPECIAL_PAGE_COUNT",				c_Special_Inventory_Page_Count);
+	PyModule_AddIntConstant(poModule, "SPECIAL_SLOT_COUNT",				c_Special_ItemSlot_Count);
+#endif
 
 	PyModule_AddIntConstant(poModule, "RESERVED_WINDOW",					RESERVED_WINDOW);
 	PyModule_AddIntConstant(poModule, "INVENTORY",							INVENTORY);

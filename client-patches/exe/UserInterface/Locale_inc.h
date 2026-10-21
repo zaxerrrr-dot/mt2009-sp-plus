@@ -207,6 +207,11 @@
 // titles and of the ranks of Punkty Rangi over a woman - chrmgr.RegisterTitleNameFemale(grade, name),
 // chrmgr.RegisterRankTitleFemale(tier, name) (root/rankpoints.py, introloading.py).
 #define ENABLE_FEMALE_TITLES
+// MT2009_PLUS_EKWIPUNEK_V1 (Dodatkowy ekwipunek, Ameria Project's ENABLE_SPECIAL_STORAGE): the server's five category storages
+// as item windows 11-15 (Server/common/length.h), their items in CPythonPlayer (GetItemData/SetItemData,
+// GetItemCountByVnum counts them), player.UPGRADE_INVENTORY .. CHEST_INVENTORY, player.SLOT_TYPE_*_INVENTORY,
+// player.SPECIAL_PAGE_SIZE / SPECIAL_PAGE_COUNT / SPECIAL_SLOT_COUNT for root/uiekwipunek.py. No packet changes.
+#define ENABLE_SPECIAL_STORAGE
 // MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): app.SetHideEffects, app.SetChatLog, chrmgr.SetShopsVisible
 // for the "Opcje dodatkowe" tab (UserInterface/Mt2009ClientQol.cpp, EffectLib/EffectInstance.cpp,
 // PythonIkarusShop.cpp, PythonChat.cpp).

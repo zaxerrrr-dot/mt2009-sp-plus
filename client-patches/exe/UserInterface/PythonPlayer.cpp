@@ -567,6 +567,14 @@ const TItemData * CPythonPlayer::GetItemData(TItemPos Cell) const
 		return &m_playerStatus.aItem[Cell.cell];
 	case DRAGON_SOUL_INVENTORY:
 		return &m_playerStatus.aDSItem[Cell.cell];
+#ifdef ENABLE_SPECIAL_STORAGE
+	case UPGRADE_INVENTORY:
+	case BOOK_INVENTORY:
+	case STONE_INVENTORY:
+	case CHANGE_INVENTORY:
+	case CHEST_INVENTORY:
+		return &m_playerStatus.aSpecialItem[Cell.window_type - UPGRADE_INVENTORY][Cell.cell]; // MT2009_PLUS_EKWIPUNEK_V1 (get)
+#endif
 	default:
 		return NULL;
 	}
@@ -596,6 +604,15 @@ void CPythonPlayer::SetItemData(TItemPos Cell, const TItemData & c_rkItemInst)
 	case DRAGON_SOUL_INVENTORY:
 		m_playerStatus.aDSItem[Cell.cell] = c_rkItemInst;
 		break;
+#ifdef ENABLE_SPECIAL_STORAGE
+	case UPGRADE_INVENTORY:
+	case BOOK_INVENTORY:
+	case STONE_INVENTORY:
+	case CHANGE_INVENTORY:
+	case CHEST_INVENTORY:
+		m_playerStatus.aSpecialItem[Cell.window_type - UPGRADE_INVENTORY][Cell.cell] = c_rkItemInst; // MT2009_PLUS_EKWIPUNEK_V1 (set)
+		break;
+#endif
 	}
 }
 
@@ -679,6 +696,13 @@ ITEM_COUNT CPythonPlayer::GetItemCountByVnum(DWORD dwVnum)
 			dwCount += c_rItemData.count;
 		}
 	}
+#ifdef ENABLE_SPECIAL_STORAGE
+	// MT2009_PLUS_EKWIPUNEK_V1 (count): the category storages too - the refine and crafting windows' material counts (Ameria's)
+	for (int w = 0; w < SPECIAL_INVENTORY_WINDOW_COUNT; ++w)
+		for (int i = 0; i < (int) c_Special_ItemSlot_Count; ++i)
+			if (m_playerStatus.aSpecialItem[w][i].vnum == dwVnum)
+				dwCount += m_playerStatus.aSpecialItem[w][i].count;
+#endif
 
 	return dwCount;
 }
