@@ -660,6 +660,18 @@ if ((Test-Path -LiteralPath $luaStackApply -PathType Leaf) -and
         Write-Host ('Applied {0} Lua stack edit(s).' -f $luaStackResult.Applied) -ForegroundColor DarkGray
     }
 }
+# Other-PC block without a character (server-patches/questpcblock, MT2009_PLUS_QUEST_PCBLOCK_V1): a server timer has
+# no current character, and q.begin_other_pc_block(pid) only wrote "NULL?" - every dungeon tick that walks its
+# players skipped them all. The block now selects the player and gives back exactly what it found at its end.
+$questPcBlockApply = Join-Path $repo 'server-patches/questpcblock/Apply-QuestPcBlockPatch.ps1'
+if ((Test-Path -LiteralPath $questPcBlockApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'questmanager.cpp') -PathType Leaf)) {
+    $questPcBlockResult = & $questPcBlockApply -SourceDir $engineGameSource
+    if ($questPcBlockResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} other-PC block edit(s).' -f $questPcBlockResult.Applied) -ForegroundColor DarkGray
+    }
+}
 # A dungeon's own monster health (server-patches/dungeonhp): d.count_players()
 # and d.mob_hp_percent(vnum, percent) - the Biblioteka Wiedzy's Metins at 55%
 # and its Baroness by the players inside (the owner, 2 October); V2: a raised
