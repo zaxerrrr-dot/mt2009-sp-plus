@@ -9,6 +9,11 @@
 #           grade columns 1/21/41 ...), buffi_skill_bg.png with the Zwoj Imienia Buffi icon and three lines, and the
 #           covers over Szybkosc / Zwiekszenie Ataku while the buffi has no name (Ameria's buffi_slot_hide_1-6);
 #   under - our call / send away and name buttons (Ameria does both with the items only).
+# MT2009_PLUS_BUFFI_V3 (the owner's list of 22 October 2026, 1+2: "tylko 3 sloty: kostium, fryzura, naklada na bron"):
+# the left page has the three slots only - outfit (28), hairstyle (29), weapon (30); no sash (31), no mount (the
+# player's own mount costume was shown here - gone) and none of Ameria's empty pet / mount frames:
+# buffi_costume_bg.png is companion_bg.png cut to its weapon and outfit / hairstyle columns (106 x 138, its border
+# kept). The buttons stand under it.
 # The slots of the right page take a shaman's skill book (uibuffi.py: "/buffi read").
 import item
 import player
@@ -16,11 +21,11 @@ import player
 BUFFI_SLOT_BODY = getattr(item, "BUFFI_SLOT_BODY", player.EQUIPMENT_SLOT_START + 28)
 BUFFI_SLOT_HEAD = getattr(item, "BUFFI_SLOT_HEAD", player.EQUIPMENT_SLOT_START + 29)
 BUFFI_SLOT_WEAPON = getattr(item, "BUFFI_SLOT_WEAPON", player.EQUIPMENT_SLOT_START + 30)
-BUFFI_SLOT_SASH = getattr(item, "BUFFI_SLOT_SASH", player.EQUIPMENT_SLOT_START + 31)
-MOUNT_SLOT = item.COSTUME_SLOT_START + 2
 
 COSTUME_X, COSTUME_Y = 10, 32				# Ameria's page: board (10, 33)
-SKILL_X, SKILL_Y = 10 + 155 + 10, 32		# Ameria's Skill_Page: the bar at (15, 9), the slots at (16, 30)
+COSTUME_W, COSTUME_H = 106, 138				# MT2009_PLUS_BUFFI_V3: buffi_costume_bg.png
+BUTTON_W = 88								# large_button_01.sub
+SKILL_X, SKILL_Y = 10 + COSTUME_W + 10, 32	# Ameria's Skill_Page: the bar at (15, 9), the slots at (16, 30)
 LOCK = "d:/ymir work/ui/game/costume/hideslot_01.tga"
 WIDTH = SKILL_X + 223 + 12
 HEIGHT = SKILL_Y + 21 + 76 + 107 + 44
@@ -61,7 +66,7 @@ window = {
 					"x" : COSTUME_X,
 					"y" : COSTUME_Y,
 
-					"image" : "d:/ymir work/ui/game/inventory/companion_bg.png",
+					"image" : "d:/ymir work/ui/game/buffi/buffi_costume_bg.png",
 
 					"children" :
 					(
@@ -72,15 +77,13 @@ window = {
 							"x" : 0,
 							"y" : 0,
 
-							"width" : 165,
-							"height" : 187,
+							"width" : COSTUME_W,
+							"height" : COSTUME_H,
 
 							"slot" : (
 								{"index":BUFFI_SLOT_BODY, "x":62, "y":54, "width":32, "height":64},
 								{"index":BUFFI_SLOT_HEAD, "x":62, "y":15, "width":32, "height":32},
 								{"index":BUFFI_SLOT_WEAPON, "x":11, "y":15, "width":32, "height":96},
-								{"index":BUFFI_SLOT_SASH, "x":116, "y":13, "width":32, "height":32},
-								{"index":MOUNT_SLOT, "x":60, "y":141, "width":32, "height":32},
 							),
 						},
 					),
@@ -175,8 +178,8 @@ window = {
 					"name" : "Toggle_Button",
 					"type" : "button",
 
-					"x" : COSTUME_X + 2,
-					"y" : HEIGHT - 36,
+					"x" : COSTUME_X + (COSTUME_W - BUTTON_W) / 2,
+					"y" : COSTUME_Y + COSTUME_H + 10,
 
 					"text" : "",
 
@@ -188,8 +191,8 @@ window = {
 					"name" : "Rename_Button",
 					"type" : "button",
 
-					"x" : COSTUME_X + 2 + 98,
-					"y" : HEIGHT - 36,
+					"x" : COSTUME_X + (COSTUME_W - BUTTON_W) / 2,
+					"y" : COSTUME_Y + COSTUME_H + 10 + 28,
 
 					"text" : "Nadaj imi\xea",
 
