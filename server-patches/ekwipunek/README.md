@@ -23,7 +23,7 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
 - **Kategorie (jak w Amerii)**: Materiały ulepszeń (`ITEM_MATERIAL`/`MATERIAL_LEATHER` + 27987, 27799, 70031,
   27992–27994; **u nas także zwoje i kamienie ulepszania** `ITEM_USE`/`USE_TUNING` – Zwój Błogosławieństwa, Magiczny
   Kamień, Podręcznik Kowala, Zwój Wojny, Zwój Boga Smoków, Kamień Rytualny, Gwarancje Rzemiosła;
-  `MT2009_PLUS_EKWIPUNEK_REFINE_V1`), Księgi (`ITEM_SKILLBOOK` + 50301–50303), Kamienie Duszy (`ITEM_METIN`/`METIN_NORMAL`), Zaczarowania
+  `MT2009_PLUS_EKWIPUNEK_REFINE_V1`), Księgi (`ITEM_SKILLBOOK` + 50301–50303; **u nas wszystkie czytane księgi** – `ITEM_SKILLFORGET` (Księga Zapomnienia), Sztuka Combo 50304–50306, Księgi Misji, języki 50311–50313, Księgi Polimorfii, Księga Precyzji 50325, Charyzma/Inspiracja 50338–50343, Podręczniki 50514/50515, księgi konne 50052/50053/50060 i 55050–55067, księgi umiejętności peta 55010–55031; `MT2009_PLUS_EKWIPUNEK_BOOKS_V1`, ta sama lista w `uiekwipunek.py`), Kamienie Duszy (`ITEM_METIN`/`METIN_NORMAL`), Zaczarowania
   (`ITEM_USE`/`USE_CHANGE_ATTRIBUTE` + 72346), Skrzynie (`ITEM_GIFTBOX`). Szóste okno Amerii (kostiumy) pominięte –
   w Amerii `CItem::IsCostume()` zawsze zwraca `false`, więc nic tam nie trafia.
 - **Automatyczne wpadanie** (`GetEmptyInventoryRouted`): podniesienie (własne i drużyny), `AutoGiveItem` (questy,
@@ -51,8 +51,14 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
   „przenieś do zwykłego ekwipunku”).
 - **Szybki pasek** nie przyjmuje przedmiotów z magazynów (serwer odrzuca typ > 3); synchronizacja paska nie
   rusza pól torby o tym samym numerze (strażniki w `SetCount`, `RemoveItem`, `DropItem`, depozycie, handlu).
-- **Sortuj** (`/ekwipunek sortuj <okno>`, raz na 3 s): przyciski Amerii „stack” i „sort” w jednym – łączy stosy
+- **Stos / Sortuj** (pasek ustawień okna jak w Amerii, `MT2009_PLUS_EKWIPUNEK_LOOK_V1`, raz na 3 s):
+  `/ekwipunek stos <okno>` – przycisk Amerii „stack”, łączy stosy; `/ekwipunek sortuj <okno>` – „sort”, łączy stosy
   i układa według typu, podtypu i vnum. Zablokowane przedmioty zostają na miejscu.
+- **Prawy klik = do torby** (`MT2009_PLUS_EKWIPUNEK_TOBAG_V1`, `/ekwipunek dotorby <okno> <pole>`): cały stos
+  z magazynu do zwykłego ekwipunku – najpierw dołącza do stosów tego samego przedmiotu (te same gniazda), reszta
+  w pierwsze wolne pole; bez miejsca zostaje, czat „Brak miejsca w ekwipunku.”. Pomija przedmioty zablokowane,
+  w handlu i wystawione w sklepie gracza. (W Amerii prawy klik używa przedmiotu – u nas użycie to podwójny klik
+  albo Ctrl+PPM.)
 - **Przenieś do extra EQ** (`MT2009_PLUS_EKWIPUNEK_MOVE_V1`, trzecia opcja przycisku sortowania ekwipunku,
   `inventoryarrange.py`; `/ekwipunek przenies [keep=<hex>]`, raz na 3 s): każdy przedmiot torby należący do kategorii
   idzie do swojego magazynu – najpierw dołącza do stosów, potem wolne pole. Zostają: założone, zablokowane, w handlu,
@@ -61,6 +67,6 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
 
 ## Komendy
 
-`/ekwipunek hello`, `/ekwipunek sortuj <okno 11-15>`, `/ekwipunek sprzedaj <okno> <pole> <ilość>`,
+`/ekwipunek hello`, `/ekwipunek sortuj <okno 11-15>`, `/ekwipunek stos <okno>`, `/ekwipunek dotorby <okno> <pole>`, `/ekwipunek sprzedaj <okno> <pole> <ilość>`,
 `/ekwipunek kostka <pole kostki> <okno> <pole>`, `/ekwipunek przenies [keep=<hex>]` – wysyłają je `uiekwipunek.py`,
 `uicube.py`, `inventoryarrange.py`. Serwer → klient: `ekwipunek_ok <strony>`, `ekwipunek_refine <okno>`.
