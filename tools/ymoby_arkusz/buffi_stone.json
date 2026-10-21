@@ -1,13 +1,5 @@
 {
 "adds": {
-"20399": {
-"kind": "stone",
-"level": 100,
-"maps": [
-352
-],
-"name": "Lodowy Filar"
-},
 "20422": {
 "kind": "stone",
 "level": 120,
@@ -16,14 +8,6 @@
 ],
 "name": "Jajo Smoka"
 },
-"20518": {
-"kind": "stone",
-"level": 120,
-"maps": [
-407
-],
-"name": "SZC: Kolumna Smoka Płn."
-},
 "20538": {
 "kind": "stone",
 "level": 120,
@@ -31,54 +15,6 @@
 370
 ],
 "name": "PB: Kolumna Smoka Płn."
-},
-"3956": {
-"kind": "boss",
-"level": 110,
-"maps": [
-367
-],
-"name": "Królowa Syren"
-},
-"3957": {
-"kind": "boss",
-"level": 110,
-"maps": [
-367
-],
-"name": "Potomstwo Hydry"
-},
-"3958": {
-"kind": "boss",
-"level": 110,
-"maps": [
-367
-],
-"name": "Potomstwo Hydry"
-},
-"3959": {
-"kind": "boss",
-"level": 110,
-"maps": [
-367
-],
-"name": "Potomstwo Hydry"
-},
-"3965": {
-"kind": "boss",
-"level": 105,
-"maps": [
-367
-],
-"name": "Skarb Hydry"
-},
-"3971": {
-"kind": "boss",
-"level": 105,
-"maps": [
-395
-],
-"name": "Kryształ Płn. Wiatru"
 },
 "4000": {
 "kind": "stone",
@@ -128,118 +64,6 @@
 ],
 "name": "Metin Nocy"
 },
-"4209": {
-"kind": "boss",
-"level": 115,
-"maps": [
-405
-],
-"name": "SZC: Generał Yonghan"
-},
-"4210": {
-"kind": "boss",
-"level": 115,
-"maps": [
-405
-],
-"name": "SZC: Generał Yonghan"
-},
-"4249": {
-"kind": "boss",
-"level": 120,
-"maps": [
-407
-],
-"name": "SZC: Szel"
-},
-"4265": {
-"kind": "boss",
-"level": 128,
-"maps": [
-404
-],
-"name": "SZC: Władca En-Tai"
-},
-"4272": {
-"kind": "boss",
-"level": 130,
-"maps": [
-404
-],
-"name": "SZC: Bagjanamu"
-},
-"4289": {
-"kind": "boss",
-"level": 115,
-"maps": [
-398
-],
-"name": "PB: Generał Yonghan"
-},
-"4290": {
-"kind": "boss",
-"level": 115,
-"maps": [
-398
-],
-"name": "PB: Generał Yonghan"
-},
-"4329": {
-"kind": "boss",
-"level": 120,
-"maps": [
-370
-],
-"name": "PB: Szel"
-},
-"4345": {
-"kind": "boss",
-"level": 128,
-"maps": [
-371
-],
-"name": "PB: Władca En-Tai"
-},
-"4352": {
-"kind": "boss",
-"level": 130,
-"maps": [
-371
-],
-"name": "PB: Bagjanamu"
-},
-"4400": {
-"kind": "boss",
-"level": 122,
-"maps": [
-405
-],
-"name": "SZC: Beran-Setaou"
-},
-"4401": {
-"kind": "boss",
-"level": 130,
-"maps": [
-406
-],
-"name": "SZC: Razador"
-},
-"4402": {
-"kind": "boss",
-"level": 130,
-"maps": [
-407
-],
-"name": "SZC: Nemere"
-},
-"4403": {
-"kind": "boss",
-"level": 135,
-"maps": [
-404
-],
-"name": "SZC: Jotun Thrym"
-},
 "4410": {
 "kind": "boss",
 "level": 122,
@@ -263,70 +87,6 @@
 370
 ],
 "name": "PB: Nemere"
-},
-"4413": {
-"kind": "boss",
-"level": 135,
-"maps": [
-371
-],
-"name": "PB: Jotun Thrym"
-},
-"6091": {
-"kind": "boss",
-"level": 108,
-"maps": [
-351
-],
-"name": "Razador"
-},
-"6116": {
-"kind": "boss",
-"level": 113,
-"maps": [
-356
-],
-"name": "Smoczy Strażnik Idall"
-},
-"6118": {
-"kind": "stone",
-"level": 120,
-"maps": [
-356
-],
-"name": "Smocza Statua"
-},
-"6151": {
-"kind": "boss",
-"level": 107,
-"maps": [
-352
-],
-"name": "Szel"
-},
-"6191": {
-"kind": "boss",
-"level": 108,
-"maps": [
-352
-],
-"name": "Nemere"
-},
-"6192": {
-"kind": "boss",
-"level": 123,
-"maps": [
-353
-],
-"name": "Jotun Thrym"
-},
-"6193": {
-"kind": "boss",
-"level": 123,
-"maps": [
-356
-],
-"name": "Królowa Smoków Meley"
 },
 "6407": {
 "kind": "boss",
@@ -441,14 +201,6 @@
 ],
 "name": "Myr Prymus (wiatr)"
 },
-"6744": {
-"kind": "boss",
-"level": 124,
-"maps": [
-390
-],
-"name": "Kappa Żołnierz"
-},
 "6756": {
 "kind": "boss",
 "level": 129,
@@ -472,38 +224,6 @@
 385
 ],
 "name": "Skażony Wódz Wojenny"
-},
-"6775": {
-"kind": "boss",
-"level": 125,
-"maps": [
-388
-],
-"name": "Zamarznięty Wódz"
-},
-"6776": {
-"kind": "boss",
-"level": 127,
-"maps": [
-388
-],
-"name": "Zamarznięty Wódz Wojenny"
-},
-"6782": {
-"kind": "boss",
-"level": 125,
-"maps": [
-389
-],
-"name": "Wielka Stopa"
-},
-"6783": {
-"kind": "boss",
-"level": 127,
-"maps": [
-389
-],
-"name": "Wódz Wojenny Płn. Wiatru"
 },
 "6789": {
 "kind": "boss",
@@ -545,25 +265,9 @@
 ],
 "name": "Mistrz Gnolli"
 },
-"6805": {
-"kind": "boss",
-"level": 125,
-"maps": [
-382
-],
-"name": "Gnoll Kapitan"
-},
 "6814": {
 "kind": "boss",
 "level": 126,
-"maps": [
-383
-],
-"name": "Ahtrin Kapitan"
-},
-"6815": {
-"kind": "boss",
-"level": 127,
 "maps": [
 383
 ],
@@ -576,30 +280,6 @@
 384
 ],
 "name": "Mistrz Ahtrin"
-},
-"6820": {
-"kind": "boss",
-"level": 130,
-"maps": [
-384
-],
-"name": "Ahtrin Wielki Mistrz"
-},
-"6870": {
-"kind": "boss",
-"level": 127,
-"maps": [
-396
-],
-"name": "Tajemniczy Mnich"
-},
-"6871": {
-"kind": "boss",
-"level": 127,
-"maps": [
-396
-],
-"name": "Tajemniczy Mnich"
 },
 "6880": {
 "kind": "boss",
@@ -616,254 +296,6 @@
 385
 ],
 "name": "Skażony Wódz Wojenny"
-},
-"6887": {
-"kind": "boss",
-"level": 125,
-"maps": [
-388
-],
-"name": "Zamarznięty Wódz"
-},
-"6888": {
-"kind": "boss",
-"level": 127,
-"maps": [
-388
-],
-"name": "Zamarznięty Wódz Wojenny"
-},
-"6894": {
-"kind": "boss",
-"level": 125,
-"maps": [
-389
-],
-"name": "Wielka Stopa"
-},
-"6895": {
-"kind": "boss",
-"level": 127,
-"maps": [
-389
-],
-"name": "Wódz Wojenny Płn. Wiatru"
-},
-"7555": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wóżbit Piekielnej Wieży"
-},
-"7556": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wielki Mistrz P. Wieży"
-},
-"7562": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wóżbit Piekielnej Wieży"
-},
-"7563": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wielki Mistrz P. Wieży"
-},
-"7569": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wóżbit Piekielnej Wieży"
-},
-"7570": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wielki Mistrz P. Wieży"
-},
-"7576": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wóżbit Piekielnej Wieży"
-},
-"7577": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wielki Mistrz P. Wieży"
-},
-"7583": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wóżbit Piekielnej Wieży"
-},
-"7584": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wielki Mistrz P. Wieży"
-},
-"7590": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wóżbit Piekielnej Wieży"
-},
-"7591": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Wielki Mistrz P. Wieży"
-},
-"7600": {
-"kind": "stone",
-"level": 120,
-"maps": [
-387
-],
-"name": "Kamień Duchowy P. Wieży"
-},
-"7609": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Czarnoksiężnik P. Wieży"
-},
-"7610": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Książę Piekielnej Wieży"
-},
-"7611": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Książę Piekielnej Wieży"
-},
-"7612": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Książę Śmierci P. Wieży"
-},
-"7613": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Książę Śmierci P. Wieży"
-},
-"7614": {
-"kind": "boss",
-"level": 135,
-"maps": [
-387
-],
-"name": "Czarnoksiężnik P. Wieży"
-},
-"7615": {
-"kind": "boss",
-"level": 121,
-"maps": [
-387
-],
-"name": "Wilk Piekielnej Wieży"
-},
-"7616": {
-"kind": "boss",
-"level": 120,
-"maps": [
-387
-],
-"name": "Zbir Piekielnej Wieży"
-},
-"7617": {
-"kind": "boss",
-"level": 130,
-"maps": [
-387
-],
-"name": "Rzeźnik Piekielnej Wieży"
-},
-"7618": {
-"kind": "boss",
-"level": 130,
-"maps": [
-387
-],
-"name": "Rzeźnik Piekielnej Wieży"
-},
-"7619": {
-"kind": "boss",
-"level": 121,
-"maps": [
-387
-],
-"name": "Berserk Piekielnej Wieży"
-},
-"7620": {
-"kind": "boss",
-"level": 125,
-"maps": [
-387
-],
-"name": "Wiedźmin Piek. Wieży"
-},
-"8057": {
-"kind": "stone",
-"level": 100,
-"maps": [
-351
-],
-"name": "Metin Czyśćca"
-},
-"8058": {
-"kind": "stone",
-"level": 100,
-"maps": [
-352
-],
-"name": "Metin Mrozu"
 },
 "8059": {
 "kind": "stone",
@@ -946,110 +378,6 @@
 ],
 "name": "Metin z Gumar"
 },
-"8120": {
-"kind": "stone",
-"level": 111,
-"maps": [
-405
-],
-"name": "SZC: Metin Góry"
-},
-"8121": {
-"kind": "stone",
-"level": 111,
-"maps": [
-405
-],
-"name": "SZC: Metin Zemsty"
-},
-"8122": {
-"kind": "stone",
-"level": 111,
-"maps": [
-405
-],
-"name": "SZC: Metin Samotności"
-},
-"8123": {
-"kind": "stone",
-"level": 111,
-"maps": [
-405
-],
-"name": "SZC: Metin Pychy"
-},
-"8124": {
-"kind": "stone",
-"level": 115,
-"maps": [
-406
-],
-"name": "SZC: Metin Purgatorium"
-},
-"8125": {
-"kind": "stone",
-"level": 115,
-"maps": [
-407
-],
-"name": "SZC: Metin Chłodu"
-},
-"8126": {
-"kind": "stone",
-"level": 120,
-"maps": [
-404
-],
-"name": "SZC: Metin Drz. Stworzeń"
-},
-"8127": {
-"kind": "stone",
-"level": 125,
-"maps": [
-404
-],
-"name": "SZC: Metin Lasu"
-},
-"8130": {
-"kind": "stone",
-"level": 111,
-"maps": [
-398
-],
-"name": "PB: Metin Góry"
-},
-"8131": {
-"kind": "stone",
-"level": 111,
-"maps": [
-398
-],
-"name": "PB: Metin Zemsty"
-},
-"8132": {
-"kind": "stone",
-"level": 111,
-"maps": [
-398
-],
-"name": "PB: Metin Samotności"
-},
-"8133": {
-"kind": "stone",
-"level": 111,
-"maps": [
-398
-],
-"name": "PB: Metin Pychy"
-},
-"8134": {
-"kind": "stone",
-"level": 115,
-"maps": [
-369
-],
-"name": "PB: Metin Purgatorium"
-},
 "8135": {
 "kind": "stone",
 "level": 115,
@@ -1097,102 +425,6 @@
 377
 ],
 "name": "2. Posterunek Myr"
-},
-"8630": {
-"kind": "stone",
-"level": 120,
-"maps": [
-391
-],
-"name": "Metin Wężowy Ognia"
-},
-"8631": {
-"kind": "stone",
-"level": 120,
-"maps": [
-391
-],
-"name": "Metin Wężowy Lodu"
-},
-"8632": {
-"kind": "stone",
-"level": 120,
-"maps": [
-391
-],
-"name": "Metin Wężowy Wiatru"
-},
-"8633": {
-"kind": "stone",
-"level": 120,
-"maps": [
-391
-],
-"name": "Metin Wężowy Ziemi"
-},
-"8634": {
-"kind": "stone",
-"level": 120,
-"maps": [
-391
-],
-"name": "Metin Wężowy Czasu"
-},
-"8635": {
-"kind": "stone",
-"level": 120,
-"maps": [
-395
-],
-"name": "Białe Jajo Smoka (słaby)"
-},
-"8636": {
-"kind": "stone",
-"level": 120,
-"maps": [
-395
-],
-"name": "Białe Jajo Smoka (silny)"
-},
-"9710": {
-"kind": "stone",
-"level": 98,
-"maps": [
-366
-],
-"name": "Starożytny Kamień"
-},
-"9711": {
-"kind": "stone",
-"level": 100,
-"maps": [
-366
-],
-"name": "Pradawny Kamień"
-},
-"9712": {
-"kind": "boss",
-"level": 102,
-"maps": [
-366
-],
-"name": "Faethorn"
-},
-"9713": {
-"kind": "boss",
-"level": 104,
-"maps": [
-366
-],
-"name": "Królewska Sowa"
-},
-"9714": {
-"kind": "boss",
-"level": 106,
-"maps": [
-366
-],
-"name": "Królowa Dżungli"
 }
 },
 "chance": {
@@ -1207,5 +439,774 @@
 "value": 10.0
 }
 },
-"out": []
+"out": [
+[
+3956,
+"Królowa Syren",
+[
+367
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+3957,
+"Potomstwo Hydry",
+[
+367
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+3958,
+"Potomstwo Hydry",
+[
+367
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+3959,
+"Potomstwo Hydry",
+[
+367
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+3965,
+"Skarb Hydry",
+[
+367
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+3971,
+"Kryształ Płn. Wiatru",
+[
+395
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4209,
+"SZC: Generał Yonghan",
+[
+405
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4210,
+"SZC: Generał Yonghan",
+[
+405
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4249,
+"SZC: Szel",
+[
+407
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4265,
+"SZC: Władca En-Tai",
+[
+404
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4272,
+"SZC: Bagjanamu",
+[
+404
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4289,
+"PB: Generał Yonghan",
+[
+398
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4290,
+"PB: Generał Yonghan",
+[
+398
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4329,
+"PB: Szel",
+[
+370
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4345,
+"PB: Władca En-Tai",
+[
+371
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4352,
+"PB: Bagjanamu",
+[
+371
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4400,
+"SZC: Beran-Setaou",
+[
+405
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4401,
+"SZC: Razador",
+[
+406
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4402,
+"SZC: Nemere",
+[
+407
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4403,
+"SZC: Jotun Thrym",
+[
+404
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+4413,
+"PB: Jotun Thrym",
+[
+371
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6091,
+"Razador",
+[
+351
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6116,
+"Smoczy Strażnik Idall",
+[
+356
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6118,
+"Smocza Statua",
+[
+356
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6151,
+"Szel",
+[
+352
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6191,
+"Nemere",
+[
+352
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6192,
+"Jotun Thrym",
+[
+353
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6193,
+"Królowa Smoków Meley",
+[
+356
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6744,
+"Kappa Żołnierz",
+[
+390
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6775,
+"Zamarznięty Wódz",
+[
+388
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6776,
+"Zamarznięty Wódz Wojenny",
+[
+388
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6782,
+"Wielka Stopa",
+[
+389
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6783,
+"Wódz Wojenny Płn. Wiatru",
+[
+389
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6805,
+"Gnoll Kapitan",
+[
+382
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6815,
+"Ahtrin Kapitan",
+[
+383
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6820,
+"Ahtrin Wielki Mistrz",
+[
+384
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6870,
+"Tajemniczy Mnich",
+[
+396
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6871,
+"Tajemniczy Mnich",
+[
+396
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6887,
+"Zamarznięty Wódz",
+[
+388
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6888,
+"Zamarznięty Wódz Wojenny",
+[
+388
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6894,
+"Wielka Stopa",
+[
+389
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+6895,
+"Wódz Wojenny Płn. Wiatru",
+[
+389
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7555,
+"Wóżbit Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7556,
+"Wielki Mistrz P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7562,
+"Wóżbit Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7563,
+"Wielki Mistrz P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7569,
+"Wóżbit Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7570,
+"Wielki Mistrz P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7576,
+"Wóżbit Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7577,
+"Wielki Mistrz P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7583,
+"Wóżbit Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7584,
+"Wielki Mistrz P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7590,
+"Wóżbit Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7591,
+"Wielki Mistrz P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7600,
+"Kamień Duchowy P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7609,
+"Czarnoksiężnik P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7610,
+"Książę Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7611,
+"Książę Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7612,
+"Książę Śmierci P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7613,
+"Książę Śmierci P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7614,
+"Czarnoksiężnik P. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7615,
+"Wilk Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7616,
+"Zbir Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7617,
+"Rzeźnik Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7618,
+"Rzeźnik Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7619,
+"Berserk Piekielnej Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+7620,
+"Wiedźmin Piek. Wieży",
+[
+387
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8057,
+"Metin Czyśćca",
+[
+351
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8058,
+"Metin Mrozu",
+[
+352
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8120,
+"SZC: Metin Góry",
+[
+405
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8121,
+"SZC: Metin Zemsty",
+[
+405
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8122,
+"SZC: Metin Samotności",
+[
+405
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8123,
+"SZC: Metin Pychy",
+[
+405
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8124,
+"SZC: Metin Purgatorium",
+[
+406
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8125,
+"SZC: Metin Chłodu",
+[
+407
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8126,
+"SZC: Metin Drz. Stworzeń",
+[
+404
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8127,
+"SZC: Metin Lasu",
+[
+404
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8130,
+"PB: Metin Góry",
+[
+398
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8131,
+"PB: Metin Zemsty",
+[
+398
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8132,
+"PB: Metin Samotności",
+[
+398
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8133,
+"PB: Metin Pychy",
+[
+398
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8134,
+"PB: Metin Purgatorium",
+[
+369
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8630,
+"Metin Wężowy Ognia",
+[
+391
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8631,
+"Metin Wężowy Lodu",
+[
+391
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8632,
+"Metin Wężowy Wiatru",
+[
+391
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8633,
+"Metin Wężowy Ziemi",
+[
+391
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8634,
+"Metin Wężowy Czasu",
+[
+391
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8635,
+"Białe Jajo Smoka (słaby)",
+[
+395
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+8636,
+"Białe Jajo Smoka (silny)",
+[
+395
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+9710,
+"Starożytny Kamień",
+[
+366
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+9711,
+"Pradawny Kamień",
+[
+366
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+9712,
+"Faethorn",
+[
+366
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+9713,
+"Królewska Sowa",
+[
+366
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+9714,
+"Królowa Dżungli",
+[
+366
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+20399,
+"Lodowy Filar",
+[
+352
+],
+"no plain Kamien Duchowy (50513) in its drop"
+],
+[
+20518,
+"SZC: Kolumna Smoka Płn.",
+[
+407
+],
+"no plain Kamien Duchowy (50513) in its drop"
+]
+]
 }
