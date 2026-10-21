@@ -732,6 +732,16 @@ namespace
 				CHARACTER_MANAGER::instance().FindByPID(pid) == NULL;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_COHORT_PIN_V1: the channel coordinator's moves pass the members by -
+	// on the first night's run it sent them to channel 2 by the dozen, and each came back at the
+	// next dispatch to be sent away again. A clause for its UPDATEs ("" with no cohorts).
+	std::string PlayerBotYoharaCohortChannelPin()
+	{
+		if (s_mapPlayerBotYoharaCohort.empty() || !IsPlayerBotYoharaCohortOn())
+			return "";
+		return " AND pid NOT IN (SELECT pid FROM common.playerbot_yohara_cohort)";
+	}
+
 	// A purpose with members is theirs alone.
 	bool IsPlayerBotYoharaPurposeReserved(int purpose)
 	{

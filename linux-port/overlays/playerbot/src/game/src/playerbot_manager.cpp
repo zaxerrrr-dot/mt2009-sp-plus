@@ -5991,7 +5991,8 @@ namespace
 				"WHERE channel=" + shop + " AND shop_busy<=" + std::to_string(maxCost) +
 				" AND requested_channel=0 AND " + PlayerBotChannelSeen() +
 				" AND (moved_at IS NULL OR moved_at<DATE_SUB(NOW(),INTERVAL " +
-				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) "
+				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) " +
+				PlayerBotYoharaCohortChannelPin() + " " + // MT2009_PLUS_BOT_YOHARA_COHORT_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
@@ -6027,7 +6028,8 @@ namespace
 				" SECOND),moved_at=NOW(),updated_at=NOW() "
 				"WHERE channel<>" + shop + " AND requested_channel=0 AND shop_busy<" +
 				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND " +
-				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " "
+				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " " +
+				PlayerBotYoharaCohortChannelPin() + " " + // MT2009_PLUS_BOT_YOHARA_COHORT_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
@@ -6047,7 +6049,8 @@ namespace
 				" SECOND),moved_at=NOW(),updated_at=NOW() "
 				"WHERE channel=" + shop + " AND shop_busy<" +
 				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND requested_channel=0 AND " +
-				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " "
+				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " " +
+				PlayerBotYoharaCohortChannelPin() + " " + // MT2009_PLUS_BOT_YOHARA_COHORT_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
@@ -6064,7 +6067,8 @@ namespace
 				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND requested_channel=0 AND " +
 				PlayerBotChannelSeen() +
 				" AND (moved_at IS NULL OR moved_at<DATE_SUB(NOW(),INTERVAL " +
-				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) "
+				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) " +
+				PlayerBotYoharaCohortChannelPin() + " " + // MT2009_PLUS_BOT_YOHARA_COHORT_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
