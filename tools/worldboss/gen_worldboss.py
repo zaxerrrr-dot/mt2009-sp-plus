@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS player.worldboss_config (
   id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
   mode TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '0 off, 1 always on, 2 only while the scheduler event worldboss runs',
   channel TINYINT UNSIGNED NOT NULL DEFAULT 1,
-  break_min SMALLINT UNSIGNED NOT NULL DEFAULT 60 COMMENT 'minutes between a fall/escape and the next boss',
+  break_min SMALLINT UNSIGNED NOT NULL DEFAULT 120 COMMENT 'minutes from a boss appearing to the next (at least 5 after its end)',
   break_max SMALLINT UNSIGNED NOT NULL DEFAULT 120,
   fight_minutes SMALLINT UNSIGNED NOT NULL DEFAULT 45 COMMENT 'the boss escapes after this',
   min_damage INT UNSIGNED NOT NULL DEFAULT 250000 COMMENT 'the least damage for a loot tier',
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS player.worldboss_config (
   hp_start_pct TINYINT UNSIGNED NOT NULL DEFAULT 30 COMMENT 'the first bosses are weak (the wiki) ...',
   hp_step_pct TINYINT UNSIGNED NOT NULL DEFAULT 5 COMMENT '... and grow this much a fall, up to 100',
   groups_per_call TINYINT UNSIGNED NOT NULL DEFAULT 6 COMMENT 'groups of five men at 75/50/25 % (the it-wiki: about 10)',
-  bots TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'the bots raid the boss (they never rank)',
+  bots TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'the bots raid the boss (and rank and get rewards like players)',
   season_weeks TINYINT UNSIGNED NOT NULL DEFAULT 8,
   force_at INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'the next boss at this epoch (0 = the game draws)',
   force_boss TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '1-6 = that boss, 0 = drawn',
@@ -206,6 +206,14 @@ CREATE TABLE IF NOT EXISTS player.worldboss_config (
   season_end_now INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'an epoch: the season ends then (its rewards given)'
 ) ENGINE=InnoDB;
 INSERT IGNORE INTO player.worldboss_config (id) VALUES (1);
+-- MT2009_PLUS_WORLDBOSS_ICON_V1 (the owner, 21 October 2026: "Boss Swiata niech bedzie co 120 minut"): a boss every
+-- 120 minutes from the last one's appearance. Once (defaults_rev 0 -> 1): an install still on the first default break
+-- (60-120 minutes) moves to 120-120; one the operator changed keeps its own.
+ALTER TABLE player.worldboss_config ADD COLUMN IF NOT EXISTS defaults_rev TINYINT UNSIGNED NOT NULL DEFAULT 0
+  COMMENT 'the default migrations done (1: the break 60-120 -> 120-120)';
+ALTER TABLE player.worldboss_config ALTER COLUMN break_min SET DEFAULT 120, ALTER COLUMN break_max SET DEFAULT 120;
+UPDATE player.worldboss_config SET break_min = 120, break_max = 120 WHERE defaults_rev < 1 AND break_min = 60 AND break_max = 120;
+UPDATE player.worldboss_config SET defaults_rev = 1 WHERE defaults_rev < 1;
 -- the event's state, one row; written by the core that runs the boss (its channel's core of maps 61-64)
 CREATE TABLE IF NOT EXISTS player.worldboss_state (
   id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
@@ -267,6 +275,8 @@ CREATE TABLE IF NOT EXISTS player.worldboss_reward (
   KEY pid_state (pid, state),
   KEY serial_kind (serial, kind)
 ) ENGINE=InnoDB;
+-- MT2009_PLUS_WORLDBOSS_ICON_V1: every core looks for its bots' waiting rewards (BotClaims, every 30 s)
+ALTER TABLE player.worldboss_reward ADD INDEX IF NOT EXISTS state_pid (state, pid);
 -- rank points (10/5/2/1 by tier) per season, character and the guild the character was in when it earned them
 CREATE TABLE IF NOT EXISTS player.worldboss_points (
   season INT UNSIGNED NOT NULL,

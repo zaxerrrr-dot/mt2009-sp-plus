@@ -152,9 +152,10 @@ namespace
 		// bosses (level 120, millions of health, a time limit) on the four maps
 		// they appear on; a raid of every kingdom from level 100, twelve at a
 		// time and more when he outheals them (V2's stall rule). No fall notice of
-		// the raid's own (the event speaks). The bots hit him but never rank: the
-		// loot tiers and the season are the players' (WorldBossOnDamage takes no
-		// bot); worldboss_config.bots = 0 keeps them away (WorldBossBotsAllowed).
+		// the raid's own (the event speaks). MT2009_PLUS_WORLDBOSS_ICON_V1: the
+		// bots rank like players (loot tiers, rank points, the season - their
+		// rewards given by BotClaims); worldboss_config.bots = 0 keeps them away
+		// (WorldBossBotsAllowed).
 		{ 4449,  64, 100, 135, 12, false, true },	// Azrael (BS), Dolina Seungryong
 		{ 4449,  63, 100, 135, 12, false, true },	// Azrael (BS), Pustynia Yongbi
 		{ 4449,  62, 100, 135, 12, false, true },	// Azrael (BS), Doyyumhwan

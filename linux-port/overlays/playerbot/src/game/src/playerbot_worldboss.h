@@ -9,16 +9,21 @@
 //    the event runs (worldboss_config.mode: 1 always, 2 only while the panels'
 //    scheduler kind "worldboss" runs, 0 off) one of the six bosses (4429 ...
 //    4479, worldboss.txt) appears at a spot of one of the four maps (Dolina
-//    Seungryong 64, Pustynia Yongbi 63, Doyyumhwan 62, Gora Sohan 61) a random
-//    break (break_min..break_max minutes) after the last one fell or escaped,
-//    with a notice naming the area it terrorises.
-//  - every blow a player (not a bot) of min_level or more deals to it is added
-//    up; a player who leaves the map (or the game) loses what he dealt (the
-//    it-wiki), "musicie znajdować się nadal na tej samej mapie, gdy boss padnie".
+//    Seungryong 64, Pustynia Yongbi 63, Doyyumhwan 62, Gora Sohan 61) with a
+//    notice naming the area it terrorises. MT2009_PLUS_WORLDBOSS_ICON_V1 (the
+//    owner, 21 October 2026: "Boss Świata niech będzie co 120 minut"): the
+//    next one appears break_min..break_max minutes (120..120 by default) after
+//    the last one APPEARED - a boss every two hours whether he fell in ten
+//    minutes or escaped - but never sooner than NEXT_GAP_MIN minutes after the
+//    last one fell or escaped (a break shorter than the fight).
+//  - every blow a character (a player or, the owner's word of 21 October, a
+//    bot) of min_level or more deals to it is added up; a character who
+//    leaves the map (or the game) loses what he dealt (the it-wiki),
+//    "musicie znajdować się nadal na tej samej mapie, gdy boss padnie".
 //  - at 75, 50 and 25 % of its health it calls groups of its five men around it.
 //  - it escapes after fight_minutes: "licznik obrażeń zostanie zresetowany i
 //    nikt na serwerze nie otrzyma nagrody" (the boss and its men vanish).
-//  - when it falls, the players with min_damage or more are ranked by damage:
+//  - when it falls, the characters with min_damage or more are ranked by damage:
 //    places 1-10 loot tier I, 11-25 II, 26-100 III, past 100 IV, each with its
 //    items and drop buff (worldboss.txt "tier"); the rank points 10/5/2/1 go to
 //    the character and to its guild of the moment (the season's ranking per
@@ -41,8 +46,13 @@
 //
 // Bots: they raid the boss when worldboss_config.bots is 1
 // (PLAYERBOT_WORLD_BOSSES rows of playerbot_boss_raid.h, WorldBossBotsAllowed)
-// - a level-120 king of millions of health is no fight for one player - but
-// a bot's damage never ranks: the loot tiers and the season are the players'.
+// - a level-120 king of millions of health is no fight for one player.
+// MT2009_PLUS_WORLDBOSS_ICON_V1 (the owner, 21 October 2026: "W rankingach
+// również boty. Nagrody również dla botów."): a bot's damage ranks like a
+// player's - the loot tiers, the mission, the rank points of the character
+// and its guild, the season's prizes - and as a bot cannot click "Odbierz
+// nagrode", every core gives its bots their waiting rewards itself
+// (BotClaims, every BOT_CLAIM_MS, when the bag has room).
 //
 // To the client (game.py "WB", root/uiworldboss.py):
 //   WB info <state> <boss vnum> <map> <fight left s> <next left s> <my damage>
@@ -55,6 +65,10 @@
 //           <guild|-> / WB sg <place> <points> <guild> / WB sme <place> <points>
 //           / WB send
 //   WB claimok
+//   WB mark <x> <y> <local x> <local y> <boss vnum> - MT2009_PLUS_WORLDBOSS_ICON_V1: the standing boss's
+//           place (global and map-local units), every MARK_MS to the players on his map - the client draws
+//           his icon on the atlas and the minimap (root/uiworldboss.py)
+//   WB unmark - he fell or escaped: the icon goes
 // From the client: "/worldboss info|ranking|sezon <empire>|odbierz"; a game
 // master also "spawn [boss 1-6] [map]", "ucieczka", "przeladuj", "stan".
 //
@@ -79,6 +93,9 @@ namespace mt2009_worldboss
 	const DWORD COMMAND_GAP_MS = 700;
 	const DWORD MAP_CHECK_MS = 3000;
 	const DWORD BOOT_DELAY_MS = 3 * 60 * 1000;
+	const DWORD MARK_MS = 3000;		// MT2009_PLUS_WORLDBOSS_ICON_V1: the map icon's position
+	const DWORD BOT_CLAIM_MS = 30 * 1000;	// MT2009_PLUS_WORLDBOSS_ICON_V1: the bots' rewards
+	const int NEXT_GAP_MIN = 5;		// the least break after a fall/escape
 	const int SPOT_SPREAD = 600;		// a spot's spawn square, +- units
 	const int MEN_SPREAD = 1500;		// the men around the boss
 	const int RANK_LIST_MAX = 200;		// the ranking sent to a window
@@ -113,7 +130,8 @@ namespace mt2009_worldboss
 		DWORD hpFull;
 		int hpStart, hpStep, groups, bots, seasonWeeks;
 		DWORD forceAt, forceBoss, forceMap, escapeNow, seasonEndNow;
-		TConfig() : mode(1), channel(1), breakMin(60), breakMax(120), fightMinutes(45), minDamage(250000),
+		// MT2009_PLUS_WORLDBOSS_ICON_V1: a boss every 120 minutes (break_min = break_max = 120)
+		TConfig() : mode(1), channel(1), breakMin(120), breakMax(120), fightMinutes(45), minDamage(250000),
 			missionDamage(100000), minLevel(30), hpFull(8000000), hpStart(30), hpStep(5), groups(6), bots(1),
 			seasonWeeks(8), forceAt(0), forceBoss(0), forceMap(0), escapeNow(0), seasonEndNow(0) {}
 	};
@@ -150,6 +168,8 @@ namespace mt2009_worldboss
 	DWORD s_dwNextReminder = 0;
 	DWORD s_dwNextMapCheck = 0;
 	DWORD s_dwNextSecond = 0;
+	DWORD s_dwNextMark = 0;		// MT2009_PLUS_WORLDBOSS_ICON_V1
+	DWORD s_dwNextBotClaim = 0;	// MT2009_PLUS_WORLDBOSS_ICON_V1
 	bool s_bOwnerKnown = false;
 	bool s_bOwner = false;
 	// the boss this core runs
@@ -524,10 +544,13 @@ namespace mt2009_worldboss
 		return std::min(100, s_cfg.hpStart + (int)falls * s_cfg.hpStep);
 	}
 
+	// MT2009_PLUS_WORLDBOSS_ICON_V1: the break runs from the last boss's
+	// appearance ("co 120 minut"), at least NEXT_GAP_MIN minutes from now.
 	void PlanNext(DWORD now)
 	{
 		const int minutes = number(s_cfg.breakMin, s_cfg.breakMax);
-		s_state.nextAt = now + (DWORD)minutes * 60;
+		const DWORD from = s_state.spawnedAt && s_state.spawnedAt <= now ? s_state.spawnedAt : now;
+		s_state.nextAt = std::max(from + (DWORD)minutes * 60, now + (DWORD)NEXT_GAP_MIN * 60);
 		if (s_cfg.forceAt > now)
 			s_state.nextAt = s_cfg.forceAt;
 		sys_log(0, "WORLDBOSS: the next boss in %d min (epoch %u)", (int)(s_state.nextAt - now) / 60, s_state.nextAt);
@@ -648,6 +671,41 @@ namespace mt2009_worldboss
 		sys_log(0, "WORLDBOSS: call %d at %d%% - %d men", s_iCalls, boss->GetMaxHP() > 0 ? (int)((long long)boss->GetHP() * 100 / boss->GetMaxHP()) : 0, spawned);
 	}
 
+	// ------------------------------------------------------------ the map icon
+
+	// MT2009_PLUS_WORLDBOSS_ICON_V1: "Dodaj ikonkę bossa na mapie" - the players
+	// on the boss's map learn where he stands (root/uiworldboss.py draws his
+	// icon on the atlas and the minimap); "WB unmark" when he is gone.
+	void SendMarks(LPCHARACTER boss)
+	{
+		long lx = boss->GetX(), ly = boss->GetY();
+		const LPSECTREE_MAP map = SECTREE_MANAGER::instance().GetMap(boss->GetMapIndex());
+		if (map)
+		{
+			lx -= map->m_setting.iBaseX;
+			ly -= map->m_setting.iBaseY;
+		}
+		const DESC_MANAGER::DESC_SET& descs = DESC_MANAGER::instance().GetClientSet();
+		for (DESC_MANAGER::DESC_SET::const_iterator d = descs.begin(); d != descs.end(); ++d)
+		{
+			LPCHARACTER ch = (*d)->GetCharacter();
+			if (IsPlayer(ch) && ch->GetMapIndex() == boss->GetMapIndex())
+				ch->ChatPacket(CHAT_TYPE_COMMAND, "WB mark %ld %ld %ld %ld %u", boss->GetX(), boss->GetY(), lx, ly,
+						(unsigned)boss->GetRaceNum());
+		}
+	}
+
+	void SendUnmark(long mapIndex)
+	{
+		const DESC_MANAGER::DESC_SET& descs = DESC_MANAGER::instance().GetClientSet();
+		for (DESC_MANAGER::DESC_SET::const_iterator d = descs.begin(); d != descs.end(); ++d)
+		{
+			LPCHARACTER ch = (*d)->GetCharacter();
+			if (IsPlayer(ch) && ch->GetMapIndex() == mapIndex)
+				ch->ChatPacket(CHAT_TYPE_COMMAND, "WB unmark");
+		}
+	}
+
 	// ------------------------------------------------------------ the end
 
 	void BossEscaped(DWORD now, const char* why)
@@ -659,6 +717,7 @@ namespace mt2009_worldboss
 		DestroyMen();
 		s_dwBossVID = 0;
 		s_mapDamage.clear();
+		SendUnmark((long)s_state.map);	// MT2009_PLUS_WORLDBOSS_ICON_V1
 		s_state.state = ST_ESCAPED;
 		s_state.endedAt = now;
 		PlanNext(now);
@@ -699,7 +758,9 @@ namespace mt2009_worldboss
 		const long map = (long)s_state.map;
 		DestroyMen();
 		s_dwBossVID = 0;
-		// the players still on the map with the least damage or more
+		SendUnmark(map);	// MT2009_PLUS_WORLDBOSS_ICON_V1
+		// the characters (players and bots alike - MT2009_PLUS_WORLDBOSS_ICON_V1) still on the map with the least
+		// damage or more
 		std::vector<TRanked> ranked;
 		int below = 0;
 		for (std::map<DWORD, TDamage>::const_iterator it = s_mapDamage.begin(); it != s_mapDamage.end(); ++it)
@@ -710,8 +771,9 @@ namespace mt2009_worldboss
 			if (it->second.damage < (long long)s_cfg.minDamage)
 			{
 				++below;
-				ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).",
-						it->second.damage, s_cfg.minDamage);
+				if (IsPlayer(ch))
+					ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: zadales %lld obrazen - za malo na nagrode (potrzeba %u).",
+							it->second.damage, s_cfg.minDamage);
 				continue;
 			}
 			TRanked r;
@@ -744,7 +806,7 @@ namespace mt2009_worldboss
 							s_state.season, ranked[i].pid, d.guildId, name.c_str(), guild.c_str(), (unsigned)d.empire, t->points, t->points);
 			}
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(ranked[i].pid);
-			if (ch)
+			if (IsPlayer(ch))
 				ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: %d. miejsce, poziom lupu %s (%lld obrazen, +%d pkt rangi). Odbierz nagrode w oknie Bossa Swiata, zanim pojawi sie kolejny boss.",
 						pos, TierName(tier), d.damage, t ? t->points : 0);
 		}
@@ -764,8 +826,9 @@ namespace mt2009_worldboss
 			if (Ok(m) && m->Get()->uiAffectedRows == 1)
 			{
 				++missions;
-				ch->ChatPacket(CHAT_TYPE_INFO, "Misja \"Pokonaj Bossa Swiata\" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.",
-						s_data.missionPct, s_data.missionSeconds / 3600);
+				if (IsPlayer(ch))
+					ch->ChatPacket(CHAT_TYPE_INFO, "Misja \"Pokonaj Bossa Swiata\" wykonana - premia +%d%% wartosci ataku na %d h czeka w oknie Bossa Swiata.",
+							s_data.missionPct, s_data.missionSeconds / 3600);
 			}
 		}
 		s_mapDamage.clear();
@@ -776,7 +839,7 @@ namespace mt2009_worldboss
 		PlanNext(now);
 		SaveState();
 		char msg[CHAT_MAX_LEN + 1];
-		snprintf(msg, sizeof(msg), "Boss Swiata %s zostal pokonany! Nagrody (%d graczy w rankingu) czekaja w oknie Bossa Swiata - odbierzcie je przed pojawieniem sie kolejnego bossa.",
+		snprintf(msg, sizeof(msg), "Boss Swiata %s zostal pokonany! Nagrody (%d postaci w rankingu) czekaja w oknie Bossa Swiata - odbierzcie je przed pojawieniem sie kolejnego bossa.",
 				BossName(vnum), (int)ranked.size());
 		BroadcastNotice(msg);
 		sys_log(0, "WORLDBOSS: serial=%u %u defeated - ranked %d, below the least %d, missions %d", s_state.serial, vnum,
@@ -914,7 +977,7 @@ namespace mt2009_worldboss
 				++s_iCalls;
 				CallMen(boss);
 			}
-			// a player who left the map lost what he dealt
+			// a character who left the map lost what he dealt
 			if (get_dword_time() >= s_dwNextMapCheck)
 			{
 				s_dwNextMapCheck = get_dword_time() + MAP_CHECK_MS;
@@ -926,6 +989,11 @@ namespace mt2009_worldboss
 					else
 						++it;
 				}
+			}
+			if (get_dword_time() >= s_dwNextMark)
+			{
+				s_dwNextMark = get_dword_time() + MARK_MS;
+				SendMarks(boss);	// MT2009_PLUS_WORLDBOSS_ICON_V1
 			}
 			if (get_dword_time() >= s_dwNextReminder)
 			{
@@ -1149,18 +1217,21 @@ namespace mt2009_worldboss
 		}
 	}
 
-	void Claim(LPCHARACTER ch)
+	// bot: MT2009_PLUS_WORLDBOSS_ICON_V1 - a bot's rewards, given by BotClaims (no chat, no window lines).
+	void Claim(LPCHARACTER ch, bool bot = false)
 	{
 		if (ch->GetExchange() || ch->GetMyShop() || ch->GetShopOwner() || ch->IsOpenSafebox() || ch->IsCubeOpen())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.");
+			if (!bot)
+				ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: zamknij inne okna (handel, sklep, magazyn), zanim odbierzesz nagrode.");
 			return;
 		}
 		std::unique_ptr<SQLMsg> m(Query("SELECT id, kind, tier, pos, items, buff_drop, buff_attack, season FROM player.worldboss_reward "
 				"WHERE pid = %u AND state = 0 ORDER BY id LIMIT 20", ch->GetPlayerID()));
 		if (!Ok(m) || !m->Get()->pSQLResult || !m->Get()->uiNumRows)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: nie masz nagrody do odebrania.");
+			if (!bot)
+				ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: nie masz nagrody do odebrania.");
 			return;
 		}
 		struct TRow { DWORD id; int kind, tier, pos, drop, attack; DWORD season; std::vector<TItem> items; };
@@ -1183,7 +1254,8 @@ namespace mt2009_worldboss
 		}
 		if (needSlots > 0 && ch->GetEmptyInventory(1) < 0)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: brak miejsca w ekwipunku - zwolnij miejsce i sprobuj ponownie.");
+			if (!bot)
+				ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: brak miejsca w ekwipunku - zwolnij miejsce i sprobuj ponownie.");
 			return;
 		}
 		int given = 0;
@@ -1208,7 +1280,7 @@ namespace mt2009_worldboss
 				ch->RemoveAffect(AFFECT_ATTACK);
 				ch->AddAffect(AFFECT_ATTACK, POINT_MALL_ATTBONUS, t.attack, AFF_NONE, s_data.missionSeconds, 0, true);
 			}
-			switch (t.kind)
+			switch (bot ? -1 : t.kind)
 			{
 				case KIND_TIER:
 					ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: odebrano nagrode za %d. miejsce (poziom lupu %s)%s.", t.pos, TierName(t.tier),
@@ -1224,13 +1296,37 @@ namespace mt2009_worldboss
 					ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: nagroda sezonu %u za %d. miejsce Twojej gildii.", t.season, t.pos);
 					break;
 			}
-			sys_log(0, "WORLDBOSS: reward id=%u kind=%d tier=%d pos=%d items=%s drop=%d attack=%d given to %s (%u)", t.id, t.kind, t.tier,
-					t.pos, FormatItems(t.items).c_str(), t.drop, t.attack, ch->GetName(), ch->GetPlayerID());
+			sys_log(0, "WORLDBOSS: reward id=%u kind=%d tier=%d pos=%d items=%s drop=%d attack=%d given to %s%s (%u)", t.id, t.kind, t.tier,
+					t.pos, FormatItems(t.items).c_str(), t.drop, t.attack, bot ? "the bot " : "", ch->GetName(), ch->GetPlayerID());
 			++given;
 		}
+		if (bot)
+			return;
 		if (given)
 			ch->ChatPacket(CHAT_TYPE_COMMAND, "WB claimok");
 		SendInfo(ch);
+	}
+
+	// MT2009_PLUS_WORLDBOSS_ICON_V1: "Nagrody również dla botów" - the waiting
+	// rewards of this core's bots (a loot tier, the mission, the season's
+	// prizes) go straight to them; one waiting for a bag with room waits as a
+	// player's does (a loot tier until the next boss).
+	void BotClaims()
+	{
+		std::unique_ptr<SQLMsg> m(Query("SELECT DISTINCT pid FROM player.worldboss_reward WHERE state = 0 LIMIT 2000"));
+		if (!Ok(m) || !m->Get()->pSQLResult)
+			return;
+		std::vector<DWORD> pids;
+		MYSQL_ROW r;
+		while ((r = mysql_fetch_row(m->Get()->pSQLResult)))
+			pids.push_back(Num(r[0]));
+		for (size_t i = 0; i < pids.size(); ++i)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pids[i]);
+			if (!ch || !ch->IsPC() || !ch->GetDesc() || !ch->GetDesc()->IsBot() || !ch->IsItemLoaded() || ch->IsDead())
+				continue;
+			Claim(ch, true);
+		}
 	}
 
 	bool TooSoon(LPCHARACTER ch)
@@ -1252,7 +1348,9 @@ void WorldBossOnDamage(LPCHARACTER victim, LPCHARACTER attacker, int dam)
 	using namespace mt2009_worldboss;
 	if (!s_dwBossVID || !victim || (DWORD)victim->GetVID() != s_dwBossVID || dam <= 0)
 		return;
-	if (!IsPlayer(attacker) || attacker->GetLevel() < s_cfg.minLevel || attacker->GetMapIndex() != victim->GetMapIndex())
+	// MT2009_PLUS_WORLDBOSS_ICON_V1: a bot's blow counts as a player's ("W rankingach również boty")
+	if (!attacker || !attacker->IsPC() || !attacker->GetDesc() || attacker->GetLevel() < s_cfg.minLevel ||
+			attacker->GetMapIndex() != victim->GetMapIndex())
 		return;
 	TDamage& d = s_mapDamage[attacker->GetPlayerID()];
 	d.damage += dam;
@@ -1340,6 +1438,12 @@ void WorldBossTick(DWORD dwNow)
 		}
 		if (s_bOwner)
 			SyncEventFlag();
+	}
+	// MT2009_PLUS_WORLDBOSS_ICON_V1: the bots' rewards, on every core (wherever the bot stands)
+	if (dwNow >= s_dwNextBotClaim && !g_bAuthServer)
+	{
+		s_dwNextBotClaim = dwNow + BOT_CLAIM_MS;
+		BotClaims();
 	}
 	if (!s_bOwner)
 	{

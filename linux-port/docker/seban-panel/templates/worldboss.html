@@ -14,7 +14,7 @@
 {% if not ready %}
 <p class="muted">Tabele Bossa Świata powstają przy starcie serwera (playerbot-migrate, worldboss.sql). Uruchom serwer i wróć tutaj.</p>
 {% else %}
-<p class="muted">Event jak na wiki: jeden z sześciu bossów (Azrael, Bagjanamu, Ogr Maximus, Polifem, Smoczy Strażnik Idall, Zjawa Żółtego Tygrysa - wersje BŚ, poziom 120) pojawia się w losowym miejscu Doliny Seungryong, Pustyni Yongbi, Doyyumhwan albo Góry Sohan. Obrażenia graczy są sumowane; po pokonaniu ranking daje poziomy łupu I-IV (min. obrażenia), punkty rangi postaci i gildii, sezon co {{ cfg.season_weeks }} tyg. Boty mogą walczyć, ale nigdy nie zajmują miejsc w rankingu. Gra czyta te ustawienia co 30 sekund.</p>
+<p class="muted">Event jak na wiki: jeden z sześciu bossów (Azrael, Bagjanamu, Ogr Maximus, Polifem, Smoczy Strażnik Idall, Zjawa Żółtego Tygrysa - wersje BŚ, poziom 120) pojawia się w losowym miejscu Doliny Seungryong, Pustyni Yongbi, Doyyumhwan albo Góry Sohan. Obrażenia graczy są sumowane; po pokonaniu ranking daje poziomy łupu I-IV (min. obrażenia), punkty rangi postaci i gildii, sezon co {{ cfg.season_weeks }} tyg. Boty (gdy walczą) liczą się w rankingach jak gracze i dostają te same nagrody - gra wydaje im je sama. Kolejny boss pojawia się {{ cfg.break_min }}{% if cfg.break_max != cfg.break_min %}-{{ cfg.break_max }}{% endif %} min po pojawieniu się poprzedniego (najwcześniej 5 min po jego upadku/ucieczce); na mapie gracze widzą ikonę bossa. Gra czyta te ustawienia co 30 sekund.</p>
 
 <section class="cards compact">
 <article><span>Stan</span><strong>{{ state.text }}</strong><small>boss: {{ state.boss }} · {{ state.area }}</small></article>
@@ -28,8 +28,8 @@
 <input type="hidden" name="wb_csrf" value="{{ wb_csrf }}"><input type="hidden" name="action" value="save">
 <label>Tryb<select name="mode">{% for v, l in modes %}<option value="{{ v }}" {% if cfg.mode == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></label>
 <label title="Rdzeń tego kanału prowadzi bossa (game1 kanału).">Kanał<input type="number" name="channel" value="{{ cfg.channel }}" min="1" max="99"></label>
-<label title="Ile minut po pokonaniu/ucieczce pojawi się kolejny (losowo od-do).">Przerwa od (min)<input type="number" name="break_min" value="{{ cfg.break_min }}" min="1"></label>
-<label>Przerwa do (min)<input type="number" name="break_max" value="{{ cfg.break_max }}" min="1"></label>
+<label title="Co ile minut pojawia się boss: liczone od pojawienia się poprzedniego (losowo od-do; domyślnie 120-120 = co 2 godziny), ale najwcześniej 5 min po jego pokonaniu/ucieczce.">Co ile min (od)<input type="number" name="break_min" value="{{ cfg.break_min }}" min="1"></label>
+<label title="Ustaw tyle samo co „od”, by boss był równo co tyle minut.">Co ile min (do)<input type="number" name="break_max" value="{{ cfg.break_max }}" min="1"></label>
 <label title="Po tym czasie boss ucieka i nikt nie dostaje nagrody.">Czas walki (min)<input type="number" name="fight_minutes" value="{{ cfg.fight_minutes }}" min="1"></label>
 <label title="Minimalne obrażenia, by dostać poziom łupu (okno: 250 000).">Min. obrażenia<input type="number" name="min_damage" value="{{ cfg.min_damage }}" min="0"></label>
 <label title="Misja „Pokonaj Bossa Świata”: Wartość Ataku +20% na 3 h, raz dziennie.">Obrażenia misji<input type="number" name="mission_damage" value="{{ cfg.mission_damage }}" min="0"></label>
@@ -39,7 +39,7 @@
 <label title="...i o ile rośnie po każdym pokonaniu (do 100%).">Wzrost PŻ (%/boss)<input type="number" name="hp_step_pct" value="{{ cfg.hp_step_pct }}" min="0" max="100"></label>
 <label title="Przy 75/50/25% życia boss wzywa tyle grup po 5 sług.">Grupy sług<input type="number" name="groups_per_call" value="{{ cfg.groups_per_call }}" min="0" max="20"></label>
 <label>Sezon (tygodnie)<input type="number" name="season_weeks" value="{{ cfg.season_weeks }}" min="1" max="52"></label>
-<label title="Boty mogą rajdować bossa (nigdy nie wchodzą do rankingu).">Boty walczą<input type="checkbox" name="bots" value="1" {% if cfg.bots %}checked{% endif %}></label>
+<label title="Boty rajdują bossa; ich obrażenia liczą się w rankingu jak graczy (poziomy łupu, punkty rangi, sezon) i dostają te same nagrody.">Boty walczą<input type="checkbox" name="bots" value="1" {% if cfg.bots %}checked{% endif %}></label>
 <button>Zapisz</button>
 </form>
 <p class="wb-note">Tryb „Tylko w oknach harmonogramu” używa eventu „Boss Świata” z Planera eventów.</p>
@@ -64,7 +64,7 @@
 <h2>Ostatni ranking - {{ last_info.boss }} ({{ last_info.at }})</h2>
 {% if last %}
 <div class="table-wrap"><table>
-<thead><tr><th>Miejsce</th><th>Gracz</th><th>Gildia</th><th>Królestwo</th><th>Poziom łupu</th><th>Obrażenia</th></tr></thead>
+<thead><tr><th>Miejsce</th><th>Postać</th><th>Gildia</th><th>Królestwo</th><th>Poziom łupu</th><th>Obrażenia</th></tr></thead>
 <tbody>{% for r in last %}<tr><td>{{ r.pos }}</td><td>{{ r.name }} <span class="wb-note">lv {{ r.level }}</span></td><td>{{ r.guild_name or '-' }}</td><td>{{ ['-','Shinsoo','Chunjo','Jinno'][r.empire] if r.empire <= 3 else r.empire }}</td><td>{{ tiers.get(r.tier, '-') }}</td><td>{{ '{:,}'.format(r.damage).replace(',', ' ') }}</td></tr>{% endfor %}</tbody>
 </table></div>
 {% else %}<p class="muted">Jeszcze żaden boss nie został pokonany.</p>{% endif %}
