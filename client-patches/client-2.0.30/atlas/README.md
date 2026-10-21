@@ -55,3 +55,16 @@ Wszystko nowe (własne nazwy / własny katalog – żaden wpis nie zastępuje pl
 | root | `d:/ymir work/ui/game/taskbar/mt2009_conqueror_exp_point.tga` | 1462 | `taskbar.tga` GF 26.1.11, wycinek 493,107–512,126 (`new_exp_gauge_point.sub` GF), TGA 32 bit typ 2 | niebieska kula exp Czempiona (`uitaskbar.py`) |
 | root | `d:/ymir work/ui/skill/common/affect/mt2009_sungma_{buff,str_debuff,hp_debuff,move_debuff,immune_debuff,control_debuff}.sub` | ~90 | `.sub` GF (`sungma_all`, `sungma_*_debuff`, `hit_bonus`) z obrazem `skill9_common.dds` (paczka `yskill9` = `newskillcommon.dds` GF) | ikony Sung Ma na pasku afektów (`sungmastate.py`; bez `skill9_common.dds` – ikony okna postaci) |
 | root | `d:/ymir work/effect/etc/conqueror_exp/ga_piece_orange_small.msf`, `ga_piece_orange2.mse`, `ga_center_small_orange.mse`, `ga_piece_orange.dds`, `ga_center_small_yellow.dds`, `ga_chips copy.dds` | 32 KB | GF 26.1.11 `effect/etc/gathering/` (bajt w bajt; nazwy w środku względne) | efekt exp Czempiona `FLY_CONQUEROR_EXP` (exe `PythonPlayerSettingsModule.cpp`) |
+
+### Okno postaci w układzie 3.0 (`MT2009_PLUS_CHAMPION_WINDOW_V1`)
+
+Zakładka Status jak w kliencie globalnym (`root/uiscript/characterwindow.py`, `root/uicharacter.py`). Wszystko nowe,
+własne nazwy (`mt2009_` / `_yohara`), żaden wpis nie zastępuje pliku paczek bazowych:
+
+| Paczka | Wpis | Skąd | Po co |
+|---|---|---|---|
+| root | `d:/ymir work/ui/tabchar_yohara.tga` | `tabchar.tga` GF 26.1.11 bajt w bajt (253×148, TGA 32 bit typ 2) | pasek zakładek z ikonami |
+| root | `d:/ymir work/ui/game/windows/mt2009_char_tab_01..04.sub` | `.sub` GF `char_tab_0x`, obraz `tabchar_yohara.tga` | 4 stany paska zakładek |
+| root | `d:/ymir work/ui/game/windows/mt2009_{level_exp_info,base_info_bar,status_extent_bar,char_info_status_img,char_info_status_plus_img,char_info_status_value_img}.sub` | `.sub` GF, obraz `windows_yohara.dds` (= GF `windows.dds`) | ramka Lv / EXP, pasek z wolnymi punktami („+” i liczba), linia nad dolnym blokiem |
+| root | `d:/ymir work/ui/game/windows/mt2009_char_info_{con,int,str,dex,hp,sp,att,def,movespeed,attspeed,magspeed,magatt,magdef,hitpct}.sub` | `.sub` GF, obraz `windows_yohara.dds` | ikony statystyk (`hitpct` = Precyzja) |
+| root | `d:/ymir work/ui/game/windows/mt2009_passive_expanded_button_01..03.sub` | `.sub` GF, obraz `windows_yohara.dds` | trzeci przycisk rzędu (u nas „Bonusy”) |

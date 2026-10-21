@@ -7,8 +7,9 @@
 # przyciskow takich jak 'polecenia'").
 #
 # The window is the stock uiscript of the player's character window
-# (UIScript/CharacterWindow.py, the one uicharacter.py loads) in a window of its
-# own - the board, the pages and the tab strip are the player's, pixel for
+# (UIScript/SidekickWindow.py - the pre-3.0 UIScript/CharacterWindow.py, kept as
+# it was when uicharacter.py moved to the 3.0 layout: MT2009_PLUS_CHAMPION_WINDOW_V1)
+# in a window of its own - the board, the pages and the tab strip are the player's, pixel for
 # pixel - with the companion's numbers where the player's stand:
 #
 #   Status        the player's status page: the face and the name (the path
@@ -149,7 +150,7 @@ YES_NO = (('nie', 'tak'))
 
 # ---------------------------------------------------------------- the pages
 
-SCRIPT = 'UIScript/CharacterWindow.py'
+SCRIPT = 'UIScript/SidekickWindow.py'
 
 PAGE_STATUS = 'STATUS'
 PAGE_SKILL = 'SKILL'
