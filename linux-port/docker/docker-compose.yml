@@ -120,7 +120,14 @@ services:
       # Whether the world is played with Auto Lowy and with the companion
       # (the launcher's difficulty window; the migrator writes the flags).
       M2_AUTOHUNT: "${M2_AUTOHUNT:-1}"
-      M2_SIDEKICK: "${M2_SIDEKICK:-1}"
+      # MT2009_PLUS_SIDEKICK_OFF_V1 (Yohara 3.0, the owner, 21 October 2026): the
+      # companion is off unless .env says 1 - it is not developed any further and
+      # may not work correctly; Buffi (M2_BUFFI) took its key and its button.
+      M2_SIDEKICK: "${M2_SIDEKICK:-0}"
+      # MT2009_PLUS_BUFFI_V1: Buffi, Ameria's support shaman (playerbot_buffi.cpp):
+      # 1 on, 0 off. The game core reads it at start, the migrator writes
+      # m2_buffi_off for the quests; seals, names and skills stay when off.
+      M2_BUFFI: "${M2_BUFFI:-1}"
       # Auto Lowy only with the ItemShop's ticket (1) or for everybody (0).
       M2_AUTOHUNT_ITEM: "${M2_AUTOHUNT_ITEM:-0}"
       # The Dom Towarowy at the miscellaneous merchant in M1 (the launcher's

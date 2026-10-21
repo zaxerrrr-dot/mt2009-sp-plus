@@ -1166,7 +1166,8 @@ fi
 # Whether the world is played with Auto Lowy and with the companion
 # (Towarzysz): the launcher's difficulty window writes M2_AUTOHUNT and
 # M2_SIDEKICK, both on unless .env says 0 (Tieru, 25 September, for Drip's
-# COOP without the auto hunt). Off, the server refuses the hunt's target
+# COOP without the auto hunt; since Yohara 3.0 the companion is off unless .env
+# says 1 - MT2009_PLUS_SIDEKICK_OFF_V1). Off, the server refuses the hunt's target
 # and drop (m2_autohunt_off, playerbotify apply_auto_hunt_switch) and
 # sends no Towarzysz letter, refuses its command and keeps companions out
 # of the world (m2_sidekick_off). Event flags like the difficulty, so a
@@ -1181,13 +1182,18 @@ feature_off() {
     esac
 }
 autohunt_off=$(feature_off "${M2_AUTOHUNT:-1}")
-sidekick_off=$(feature_off "${M2_SIDEKICK:-1}")
+# MT2009_PLUS_SIDEKICK_OFF_V1 (Yohara 3.0): the companion is off unless .env says 1 (not developed any further).
+sidekick_off=$(feature_off "${M2_SIDEKICK:-0}")
 flea_off=$(feature_off "${M2_FLEA_MARKET:-1}")
+# MT2009_PLUS_BUFFI_V1: Buffi (M2_BUFFI, default on) - the game core reads M2_BUFFI itself; the
+# quest buffi (the starter seal, the General Store's books) reads m2_buffi_off.
+buffi_off=$(feature_off "${M2_BUFFI:-1}")
 if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_autohunt_off', '', $autohunt_off),
         (0, 'm2_sidekick_off', '', $sidekick_off),
+        (0, 'm2_buffi_off', '', $buffi_off),
         (0, 'm2_flea_market_off', '', $flea_off);"; then
-    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
+    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Buffi: $([ "$buffi_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
 else
     fail_step "could not write the Auto Lowy, companion and Dom Towarowy flags; the cores keep the last ones" >&2
 fi
@@ -3852,6 +3858,21 @@ if [ -s /opt/playerbot/riposty_skill.sql ]; then
 fi
 if [ -s /opt/playerbot/riposty_itemshop.sql ]; then
     db < /opt/playerbot/riposty_itemshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Zwoj Zmiany Treningu" >&2
+fi
+
+# MT2009_PLUS_BUFFI_V1: Buffi, the support shaman of Ameria Project (server-patches/buffi/README.md; tools/buffi/gen_buffi.py):
+# the seals 61025/61026, Zwoj Imienia Buffi 61030, Kamien Duchowy Buffi 61031, the books 61035-61038, skill_proto
+# 164-167, the shaman mob 65000 (a copy of the pet 34001's row) and player.mt2009_buffi_name. Idempotent (INSERT IGNORE,
+# CREATE TABLE IF NOT EXISTS); buffi_itemshop.sql puts the seal and the name scroll in the ItemShop once.
+if [ -s /opt/playerbot/buffi.sql ]; then
+    if db < /opt/playerbot/buffi.sql; then
+        echo "[playerbot-migrate] Buffi: buffi.sql applied"
+    else
+        fail_step "Buffi: buffi.sql failed" >&2
+    fi
+fi
+if [ -s /opt/playerbot/buffi_itemshop.sql ]; then
+    db < /opt/playerbot/buffi_itemshop.sql 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for Buffi" >&2
 fi
 
 # MT2009_PLUS_YOHARA_ILUZJA_V1: Plaskowyz Iluzji and the two remaining awakened bosses - Beran-Setaou (PB), Jotun Thrym

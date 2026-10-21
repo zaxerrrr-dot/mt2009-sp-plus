@@ -468,6 +468,8 @@ class GameWindow(ui.ScriptWindow):
 		uiwheel.DestroyWindow()
 		# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's window and ranking (uiworldboss.py).
 		__import__("uiworldboss").DestroyWindow()
+		# MT2009_PLUS_BUFFI_V1: the Buffi window (uibuffi.py).
+		__import__("uibuffi").DestroyWindow()
 		# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's windows (uigoblin.py).
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
@@ -781,7 +783,11 @@ class GameWindow(ui.ScriptWindow):
 			"chat_log"			: (lambda : self.interface.ToggleChatLogWindow(), None),
 			"help"				: (lambda : self.interface.OpenHelpWindow(), None),
 			"player_stat"		: (lambda : self.interface.wndPlayerStat.Open(), None),
-			"companion"			: (lambda : self.__ToggleSidekick(), None),
+			# MT2009_PLUS_BUFFI_V1: the companion's key (P) opens Buffi now (uibuffi.py) - the
+			# companion is off unless the server's .env says M2_SIDEKICK=1 and then has
+			# "sidekick" (no key by default) and its letter.
+			"companion"			: (lambda : Window("uibuffi"), None),
+			"sidekick"			: (lambda : self.__ToggleSidekick(), None),
 			"autohunt"			: (lambda : self.__ToggleAutoHunt(), None),
 			# MT2009_PLUS_AUTOHUNT_QUICK_V1: Shift+K starts/stops the hunt, no window.
 			"autohunt_quick"	: (lambda : __import__("uiautohunt").QuickToggle(), None),
@@ -3405,6 +3411,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["BonusMode"] = self.__BonusMode # MT2009_PLUS_GLOBAL_BONUS_V1
 		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
+		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
 		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
 		# a Stage A server only refreshes the window (the numbers are points now).
 		serverCommandList["champion_info"] = self.__ChampionInfo
@@ -4127,6 +4134,10 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's lines (uiworldboss.py).
 	def __WorldBoss(self, *args):
 		__import__("uiworldboss").OnCommand(*args)
+
+	# MT2009_PLUS_BUFFI_V1: Buffi's lines (uibuffi.py).
+	def __Buffi(self, *args):
+		__import__("uibuffi").OnCommand(*args)
 
 	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
 	def __NewPet(self, *args):

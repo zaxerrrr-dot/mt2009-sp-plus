@@ -1,0 +1,50 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (use)",
+  "old": "\t\t\treturn iMonsterCardUse != 0;\n\t}\n",
+  "new": "\t\t\treturn iMonsterCardUse != 0;\n\t}\n\t// MT2009_PLUS_BUFFI_V1 (use): the Buffi seals 61025/61026 and the name scroll 61030 (playerbot_buffi.cpp)\n\t{\n\t\tint BuffiUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iBuffiUse = BuffiUseItem(this, item);\n\t\tif (iBuffiUse >= 0)\n\t\t\treturn iBuffiUse != 0;\n\t}\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (learnable)",
+  "old": "\t// MT2009_PLUS_RIPOSTY_V1 (learnable): a riposte / boost grows once its Podrecznik taught it (playerbot_riposty.cpp).\n",
+  "new": "\t// MT2009_PLUS_BUFFI_V1 (learnable): the Buffi's skills 164-167 for every class, with a path (playerbot_buffi.cpp).\n\t{\n\t\tint BuffiLearnable(const CHARACTER*, unsigned int);\n\t\tconst int r = BuffiLearnable(this, dwSkillVnum);\n\t\tif (r >= 0)\n\t\t\treturn r != 0;\n\t}\n\t// MT2009_PLUS_RIPOSTY_V1 (learnable): a riposte / boost grows once its Podrecznik taught it (playerbot_riposty.cpp).\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (reset)",
+  "old": "\t\t\tvec.emplace_back(dwPassive, m_pSkillLevels[dwPassive]);\n",
+  "new": "\t\t\tvec.emplace_back(dwPassive, m_pSkillLevels[dwPassive]);\n\t// MT2009_PLUS_BUFFI_V1 (reset): the Buffi's skills 164-167 are kept (books and Kamien Duszy Buffi, not skill points)\n\tfor (DWORD dwBuffi = 164; dwBuffi <= 167; ++dwBuffi)\n\t\tvec.emplace_back(dwBuffi, m_pSkillLevels[dwBuffi]);\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (login)",
+  "old": "\t{ void MonsterCardOnLogin(LPCHARACTER); MonsterCardOnLogin(ch); }\n",
+  "new": "\t{ void MonsterCardOnLogin(LPCHARACTER); MonsterCardOnLogin(ch); }\n\t// MT2009_PLUS_BUFFI_V1 (login): a Buffi seal called before brings its buffi back (playerbot_buffi.cpp).\n\t{ void BuffiOnLogin(LPCHARACTER); BuffiOnLogin(ch); }\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (insert)",
+  "old": "\tpack.wRaceNum\t= GetRaceNum();\n",
+  "new": "\tpack.wRaceNum\t= GetRaceNum();\n\t// MT2009_PLUS_BUFFI_V1 (insert): a Buffi is shown as a female shaman, type PC and race 3 (playerbot_buffi.cpp)\n\t{ bool BuffiInsertLook(LPCHARACTER, BYTE&, DWORD&); BuffiInsertLook(this, pack.bType, pack.wRaceNum); }\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (level)",
+  "old": "\t\tif (false)\n\t\t{\n\t\t\tLPCHARACTER ch = (LPCHARACTER) entity;\n",
+  "new": "\t\t// MT2009_PLUS_BUFFI_V1 (level): no level over a Buffi's head (playerbot_buffi.cpp)\n\t\t{ bool BuffiIsShaman(LPCHARACTER); if (BuffiIsShaman(this)) addPacket.dwLevel = 0; }\n\n\t\tif (false)\n\t\t{\n\t\t\tLPCHARACTER ch = (LPCHARACTER) entity;\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (declare)",
+  "old": "ACMD(do_cardmonster);\t// MT2009_PLUS_MONSTER_CARDS_V1 (declare): Karty Potworow (Autor: Digi Rasta), playerbot_monster_card.h\n",
+  "new": "ACMD(do_cardmonster);\t// MT2009_PLUS_MONSTER_CARDS_V1 (declare): Karty Potworow (Autor: Digi Rasta), playerbot_monster_card.h\nACMD(do_buffi);\t// MT2009_PLUS_BUFFI_V1 (declare): Buffi, root/uibuffi.py (playerbot_buffi.cpp)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BUFFI_V1 (table)",
+  "old": "\t{ \"cardmonster\",\tdo_cardmonster,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_MONSTER_CARDS_V1 (table)\n",
+  "new": "\t{ \"cardmonster\",\tdo_cardmonster,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_MONSTER_CARDS_V1 (table)\n\t{ \"buffi\",\tdo_buffi,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_BUFFI_V1 (table)\n"
+ }
+]

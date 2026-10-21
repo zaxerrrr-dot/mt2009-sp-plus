@@ -29,8 +29,11 @@ quest towarzysz begin
 			if game.get_event_flag("m2_sidekick_off") != 0 then
 				say_title("Towarzysz")
 				say("Towarzysze sa wylaczeni na tym serwerze.")
-				say("Wlacza je wlasciciel serwera w launcherze")
-				say("(poziom trudnosci swiata).")
+				-- MT2009_PLUS_SIDEKICK_OFF_V1 (Yohara 3.0): off by default, Buffi took the key P
+				say("System towarzysza nie jest dalej rozwijany")
+				say("i moze niewlasciwie dzialac. Wlacza go wlasciciel")
+				say("serwera (M2_SIDEKICK=1). Zamiast niego jest Buffi")
+				say("(klawisz P).")
 				return
 			end
 			if pc.getqf("created") == 0 then

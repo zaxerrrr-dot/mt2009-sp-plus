@@ -1153,7 +1153,7 @@ function Get-DifficultyFromEnv {
     # the keys are not there yet (an older .env, which start-server.ps1 fills in).
     $envPath = Join-Path $root 'linux-port\docker\.env'
     $level = 'easy'; $bio = '0'; $horse = '0'; $book = '0'; $botBook = '0'
-    $autoHunt = $true; $sidekick = $true; $starter = $true; $autoHuntItem = $false; $flea = $true; $arezzo = $false
+    $autoHunt = $true; $sidekick = $false; $starter = $true; $autoHuntItem = $false; $flea = $true; $arezzo = $false
     $exchangeCustom = @('0', '0', '0')
     $monsterHp = 'default'
     $starterKit = 'default'
@@ -1175,8 +1175,9 @@ function Get-DifficultyFromEnv {
         # Only with the ItemShop's ticket: off unless .env says 1.
         $m = [Regex]::Match($content, '(?m)^M2_AUTOHUNT_ITEM=(\S+)\s*$')
         if ($m.Success) { $autoHuntItem = ($m.Groups[1].Value.Trim() -eq '1') }
+        # MT2009_PLUS_SIDEKICK_OFF_V1 (Yohara 3.0): the companion is off unless .env says 1.
         $m = [Regex]::Match($content, '(?m)^M2_SIDEKICK=(\S+)\s*$')
-        if ($m.Success) { $sidekick = ($m.Groups[1].Value.Trim() -ne '0') }
+        if ($m.Success) { $sidekick = ($m.Groups[1].Value.Trim() -eq '1') }
         $m = [Regex]::Match($content, '(?m)^M2_STARTER_CHEST=(\S+)\s*$')
         if ($m.Success) { $starter = ($m.Groups[1].Value.Trim() -ne '0') }
         $m = [Regex]::Match($content, '(?m)^M2_FLEA_MARKET=(\S+)\s*$')
@@ -1410,10 +1411,10 @@ function Show-DifficultyDialog {
     })
     $sidekickCheck = [Windows.Forms.CheckBox]::new()
     $sidekickCheck.Name = 'sidekick'
-    $sidekickCheck.Text = 'Towarzysz - stały kompan gracza (list "Towarzysz" i okno P)'
+    $sidekickCheck.Text = 'Towarzysz (list "Towarzysz") - nierozwijany, może działać niewłaściwie'
     $sidekickCheck.Location = [Drawing.Point]::new(18, $y + 214)
     $sidekickCheck.Size = [Drawing.Size]::new(516, 24)
-    $sidekickCheck.Checked = ($Current.Sidekick -ne $false)
+    $sidekickCheck.Checked = ($Current.Sidekick -eq $true)
     $dialog.Controls.Add($sidekickCheck)
     $starterCheck = [Windows.Forms.CheckBox]::new()
     $starterCheck.Name = 'starterChest'

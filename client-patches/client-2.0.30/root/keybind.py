@@ -132,7 +132,11 @@ CATEGORIES = (
 		('chat_log', 'Historia czatu', ((0, 'DIK_L'),), False),
 		('help', 'Pomoc', ((0, 'DIK_H'),), False),
 		('player_stat', 'Statystyki gracza', ((0, 'DIK_Y'),), False),
-		('companion', 'Towarzysz', ((0, 'DIK_P'),), False),
+		# MT2009_PLUS_BUFFI_V1: the companion's P is Buffi's now (uibuffi.py) - the action keeps its
+		# name, so a key somebody saved for it opens Buffi too; the companion (off unless the
+		# server's .env says M2_SIDEKICK=1) has its own action without a key.
+		('companion', 'Buffi', ((0, 'DIK_P'),), False),
+		('sidekick', 'Towarzysz (nierozwijany)', (), False),
 		('autohunt', 'Auto\xb3owy', ((0, 'DIK_K'),), False),
 		# MT2009_PLUS_AUTOHUNT_QUICK_V1: start/stop with the saved settings, no window.
 		('autohunt_quick', 'Auto\xb3owy - szybki start/stop', ((SHIFT, 'DIK_K'),), False),

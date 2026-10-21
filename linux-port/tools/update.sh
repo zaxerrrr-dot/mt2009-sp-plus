@@ -480,6 +480,24 @@ migrate_log_keep_days() {
     printf 'M2_LOG_KEEP_DAYS_DEFAULTED=1\n' >> "$_env"
 }
 
+# MT2009_PLUS_SIDEKICK_OFF_V1 (Yohara 3.0; the owner, 21 October 2026: "Wylacz
+# system towarzysza. Zostaw go do wlaczenia w env"): the companion is not
+# developed any further and may not work correctly, and Buffi (M2_BUFFI) took
+# its key. The launcher wrote M2_SIDEKICK=1 into every .env, where the new
+# default never reaches, so 1 becomes 0 here, once; a world that switches it
+# back on afterwards keeps its 1. The companions stay in the database.
+migrate_sidekick_off() {
+    _env="$COMPOSE_DIR/.env"
+    [ -f "$_env" ] || return 0
+    grep -q '^M2_SIDEKICK_DEFAULTED=' "$_env" && return 0
+    [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+    if [ "$(kv "$_env" M2_SIDEKICK | tr -d ' \r')" = 1 ]; then
+        sed -i 's|^M2_SIDEKICK=.*|M2_SIDEKICK=0|' "$_env"
+        note "   the companion (Towarzysz) is off: M2_SIDEKICK=0 - not developed any further; 1 brings it back"
+    fi
+    printf 'M2_SIDEKICK_DEFAULTED=1\n' >> "$_env"
+}
+
 # MT2009_PLUS_DB_LOG_RETENTION_V1: a world installed before 2.36 has kept its
 # whole log database, and the owner of each decides when old rows go - the
 # first prune of a big log.log rewrites it once. So an .env without the key
@@ -613,7 +631,7 @@ sync_channel_ports() {
 # the keys named below, whose example value is the compose default (an
 # absent key already meant that), never a password, a port or an address;
 # a key already there, empty included, is the operator's and is left alone.
-ENV_KEYS_FROM_EXAMPLE="M2_DIFFICULTY M2_BIOLOGIST_WAIT_HOURS M2_HORSE_WAIT_HOURS M2_BOOK_WAIT_HOURS M2_BOT_BOOK_WAIT_HOURS M2_EXCHANGE_DUST_CHANCE M2_EXCHANGE_PARCHMENT_CHANCE M2_EXCHANGE_MATERIAL_CHANCE PLAYERBOT_SPAWN_WINDOW_MINUTES PLAYERBOT_LATE_JOINERS PLAYERBOT_LATE_JOIN_HOURS PLAYERBOT_MEDAL_DROPPERS PLAYERBOT_MEDAL_DROPPER_LEVEL M2_MOONLIGHT_CHEST_PERMILLE M2_MOONLIGHT_CHEST_STONE_PERMILLE M2_BLESSING_SCROLL_STONE_PERMILLE M2_PLAYERBOT_WORLD_LAYOUT PLAYERBOT_AUTOSPAWN_PER_KINGDOM PLAYERBOT_AUTOSPAWN_SHINSOO PLAYERBOT_AUTOSPAWN_CHUNJO PLAYERBOT_AUTOSPAWN_JINNO M2_PLAYERBOT_CH2 PLAYERBOT_CH2_SHARE M2_PLAYERBOT_CH2_SET_AT M2_PLAYERBOT_CH3 M2_PLAYERBOT_CH4 M2_RATE_EXP M2_RATE_DROP M2_RATE_YANG M2_PLAYERBOT_START_HELD M2_STARTER_CHEST M2_AUTOHUNT M2_SIDEKICK M2_ALCHEMY M2_SASHES M2_AUTOHUNT_ITEM M2_FLEA_MARKET M2_AREZZO M2_SEONHAE M2_TELEPORT_MAP M2_MONSTER_HP M2_STARTER_KIT M2_BONUS_MODE"
+ENV_KEYS_FROM_EXAMPLE="M2_DIFFICULTY M2_BIOLOGIST_WAIT_HOURS M2_HORSE_WAIT_HOURS M2_BOOK_WAIT_HOURS M2_BOT_BOOK_WAIT_HOURS M2_EXCHANGE_DUST_CHANCE M2_EXCHANGE_PARCHMENT_CHANCE M2_EXCHANGE_MATERIAL_CHANCE PLAYERBOT_SPAWN_WINDOW_MINUTES PLAYERBOT_LATE_JOINERS PLAYERBOT_LATE_JOIN_HOURS PLAYERBOT_MEDAL_DROPPERS PLAYERBOT_MEDAL_DROPPER_LEVEL M2_MOONLIGHT_CHEST_PERMILLE M2_MOONLIGHT_CHEST_STONE_PERMILLE M2_BLESSING_SCROLL_STONE_PERMILLE M2_PLAYERBOT_WORLD_LAYOUT PLAYERBOT_AUTOSPAWN_PER_KINGDOM PLAYERBOT_AUTOSPAWN_SHINSOO PLAYERBOT_AUTOSPAWN_CHUNJO PLAYERBOT_AUTOSPAWN_JINNO M2_PLAYERBOT_CH2 PLAYERBOT_CH2_SHARE M2_PLAYERBOT_CH2_SET_AT M2_PLAYERBOT_CH3 M2_PLAYERBOT_CH4 M2_RATE_EXP M2_RATE_DROP M2_RATE_YANG M2_PLAYERBOT_START_HELD M2_STARTER_CHEST M2_AUTOHUNT M2_SIDEKICK M2_BUFFI M2_ALCHEMY M2_SASHES M2_AUTOHUNT_ITEM M2_FLEA_MARKET M2_AREZZO M2_SEONHAE M2_TELEPORT_MAP M2_MONSTER_HP M2_STARTER_KIT M2_BONUS_MODE"
 add_missing_env_keys() {
     _env="$COMPOSE_DIR/.env"
     _ex="$COMPOSE_DIR/.env.example"
@@ -1045,6 +1063,7 @@ migrate_env() {
     # After the keys too: a world that never had the line gets the example's.
     migrate_blessing_scroll
     migrate_log_keep_days
+    migrate_sidekick_off
     # Before compose, because a published port range only changes at a recreate.
     sync_channel_ports
 }

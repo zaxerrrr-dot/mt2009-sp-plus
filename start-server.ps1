@@ -829,6 +829,24 @@ function Assert-LogKeepDaysDefault {
     return (Set-DotEnvValue -Content $Content -Name 'M2_LOG_KEEP_DAYS_DEFAULTED' -Value '1')
 }
 
+function Assert-SidekickOffDefault {
+    # MT2009_PLUS_SIDEKICK_OFF_V1 (Yohara 3.0; the owner, 21 October 2026): the
+    # companion is not developed any further and may not work correctly, and
+    # Buffi took its key. The launcher wrote M2_SIDEKICK=1 into every .env,
+    # where the new default never reaches, so 1 becomes 0 here, once; a world
+    # that switches it back on afterwards keeps it. The companions stay.
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content
+    )
+    if ([Regex]::IsMatch($Content, '(?m)^M2_SIDEKICK_DEFAULTED=')) { return $Content }
+    $current = [Regex]::Match($Content, '(?m)^M2_SIDEKICK=(.*)$')
+    if ($current.Success -and $current.Groups[1].Value.Trim() -eq '1') {
+        Write-Host 'Towarzysz wylaczony (M2_SIDEKICK=0): system nie jest dalej rozwijany i moze niewlasciwie dzialac; 1 wlacza go z powrotem.' -ForegroundColor Cyan
+        $Content = Set-DotEnvValue -Content $Content -Name 'M2_SIDEKICK' -Value '0'
+    }
+    return (Set-DotEnvValue -Content $Content -Name 'M2_SIDEKICK_DEFAULTED' -Value '1')
+}
+
 function Assert-DbLogRetentionDefault {
     # MT2009_PLUS_DB_LOG_RETENTION_V1: a world made before this setting kept its
     # whole log database; its owner decides when old rows go (the first prune of
@@ -1019,6 +1037,7 @@ function Initialize-InstallationIdentity {
     # one percent asked for, once.
     $content = Assert-BlessingScrollDefault -Content $content -EnvPath $envPath
     $content = Assert-LogKeepDaysDefault -Content $content
+    $content = Assert-SidekickOffDefault -Content $content
     $content = Assert-DbLogRetentionDefault -Content $content
     # The same shape for the clock's zone: the example's UTC becomes this
     # machine's own, once.
