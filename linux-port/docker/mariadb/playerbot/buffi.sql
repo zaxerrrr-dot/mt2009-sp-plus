@@ -21,8 +21,9 @@ INSERT IGNORE INTO world.skill_proto (dwVnum, szName, bType, bLevelStep, bMaxLev
 -- the shaman: an NPC with no AI of its own (a pet's row, 34001, under its own vnum and name)
 DROP TEMPORARY TABLE IF EXISTS world.mt2009_buffi_mob;
 CREATE TEMPORARY TABLE world.mt2009_buffi_mob AS SELECT * FROM world.mob_proto WHERE vnum = 34001;
-UPDATE world.mt2009_buffi_mob SET vnum = 65000, name = 'buffi', locale_name = 'Buffi', type = 1, `rank` = 0, level = 1, folder = 'buffi', on_click = 0, move_speed = 200, attack_speed = 100, empire = 0;
+UPDATE world.mt2009_buffi_mob SET vnum = 65000, name = 'buffi', locale_name = 'Buffi', type = 1, `rank` = 0, level = 1, folder = 'phoenix1', on_click = 0, move_speed = 200, attack_speed = 100, empire = 0;
 INSERT IGNORE INTO world.mob_proto SELECT * FROM world.mt2009_buffi_mob;
+UPDATE world.mob_proto SET folder = 'phoenix1' WHERE vnum = 65000 AND folder = 'buffi';
 DROP TEMPORARY TABLE IF EXISTS world.mt2009_buffi_mob;
 -- a buffi's name, a name per seal (Ameria: share/buffi_name/<item id>; the core makes it too)
 CREATE TABLE IF NOT EXISTS player.mt2009_buffi_name (item_id INT UNSIGNED NOT NULL PRIMARY KEY, owner_pid INT UNSIGNED NOT NULL DEFAULT 0, name VARCHAR(24) NOT NULL DEFAULT '', named_at DATETIME NOT NULL) ENGINE=InnoDB;

@@ -128,8 +128,11 @@ def write_sql(its):
           'DROP TEMPORARY TABLE IF EXISTS world.mt2009_buffi_mob;',
           'CREATE TEMPORARY TABLE world.mt2009_buffi_mob AS SELECT * FROM world.mob_proto WHERE vnum = %d;' % MOB_TEMPLATE,
           "UPDATE world.mt2009_buffi_mob SET vnum = %d, name = 'buffi', locale_name = 'Buffi', type = 1, `rank` = 0, level = 1, "
-          "folder = 'buffi', on_click = 0, move_speed = 200, attack_speed = 100, empire = 0;" % MOB,
+          "folder = 'phoenix1', on_click = 0, move_speed = 200, attack_speed = 100, empire = 0;" % MOB,
           'INSERT IGNORE INTO world.mob_proto SELECT * FROM world.mt2009_buffi_mob;',
+          # MT2009_PLUS_BUFFI_V1 (folder): the server reads the walk timing from data/monster/<folder>/motlist.txt - there
+          # is no 'buffi' folder, so the pet's (the client draws a shaman anyway)
+          "UPDATE world.mob_proto SET folder = 'phoenix1' WHERE vnum = %d AND folder = 'buffi';" % MOB,
           'DROP TEMPORARY TABLE IF EXISTS world.mt2009_buffi_mob;',
           '-- a buffi\'s name, a name per seal (Ameria: share/buffi_name/<item id>; the core makes it too)',
           'CREATE TABLE IF NOT EXISTS player.mt2009_buffi_name (item_id INT UNSIGNED NOT NULL PRIMARY KEY, '
