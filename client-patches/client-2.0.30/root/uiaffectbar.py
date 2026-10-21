@@ -27,6 +27,10 @@ AFFECT_AUTOHUNT_TIME = 560
 AFFECT_SKILL9_CHEONUN = 182
 AFFECT_SKILL9_CHEONUN_PROTECT = 608
 
+# MT2009_PLUS_YELIXIRS_V1: the server's AFFECT_BLEND (531; the exe's chr module has no name for it) - a dew (Rosa
+# 50821-50826) or an elixir of Yohara (50830-50841, Huahn-So's) drunk: one icon a point, the item's icon and name.
+AFFECT_BLEND = 531
+
 AFFECT_SHOW_DATA = {
 	AFFECT_SKILL9_CHEONUN : {
 		"description" : "Tarcza Eteru: szansa na ochronê co 12 s: %d%%",
@@ -416,6 +420,29 @@ AFFECT_SHOW_DATA = {
 		player.POINT_NORMAL_HIT_DEFEND_BONUS : {"icon" : flamewindPath.GetAffect("potion_brown"), },
 	},
 
+	# MT2009_PLUS_YELIXIRS_V1: the dews and the elixirs of Yohara (AFFECT_BLEND, the point is the bonus; the description
+	# is the item's name - an int is an item vnum, AffectImage.Load). 178-183 are the element powers (server-only points),
+	# 75/76/78/133/134/135 the element resistances.
+	AFFECT_BLEND : {
+		player.POINT_CRITICAL_PCT : {"description" : 50821, "icon" : "icon/item/50821.tga", },
+		player.POINT_PENETRATE_PCT : {"description" : 50822, "icon" : "icon/item/50822.tga", },
+		player.POINT_ATT_SPEED : {"description" : 50823, "icon" : "icon/item/50823.tga", },
+		player.POINT_RESIST_MAGIC : {"description" : 50824, "icon" : "icon/item/50824.tga", },
+		player.POINT_ATT_GRADE_BONUS : {"description" : 50825, "icon" : "icon/item/50825.tga", },
+		player.POINT_DEF_GRADE_BONUS : {"description" : 50826, "icon" : "icon/item/50826.tga", },
+		179 : {"description" : 50830, "icon" : "icon/item/50830.tga", },
+		180 : {"description" : 50831, "icon" : "icon/item/50831.tga", },
+		178 : {"description" : 50832, "icon" : "icon/item/50832.tga", },
+		181 : {"description" : 50833, "icon" : "icon/item/50833.tga", },
+		182 : {"description" : 50834, "icon" : "icon/item/50834.tga", },
+		183 : {"description" : 50835, "icon" : "icon/item/50835.tga", },
+		75 : {"description" : 50836, "icon" : "icon/item/50836.tga", },
+		133 : {"description" : 50837, "icon" : "icon/item/50837.tga", },
+		76 : {"description" : 50838, "icon" : "icon/item/50838.tga", },
+		78 : {"description" : 50839, "icon" : "icon/item/50839.tga", },
+		134 : {"description" : 50840, "icon" : "icon/item/50840.tga", },
+		135 : {"description" : 50841, "icon" : "icon/item/50841.tga", },
+	},
 	chr.AFFECT_MONKEY_CURSE_EASY: {"description": localeInfo.TOOLTIP_AFFECT_MONKEY_CURSE_EASY,
 									  "icon": flamewindPath.GetAffect("monkey"), },
 	chr.AFFECT_MONKEY_CURSE_NORMAL: {"description": localeInfo.TOOLTIP_AFFECT_MONKEY_CURSE_NORMAL,
