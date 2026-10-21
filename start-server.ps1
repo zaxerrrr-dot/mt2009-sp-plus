@@ -178,9 +178,13 @@ function Start-M2Updater {
                 Write-Host 'Aktualizator: nie udalo sie zbudowac obrazu (serwer dziala bez niego; strona Ustawienia serwera (.env) bedzie tylko do odczytu).' -ForegroundColor DarkYellow
                 return $false
             }
+            # MT2009_PLUS_YOHARA_IMAGES_V1: the updater's image as compose names it (the Yohara images carry their own
+            # names); metin2/updater:latest only when compose cannot tell.
+            $updaterImage = @(& docker compose --profile update config --images 2>$null | Where-Object { "$_" -match 'updater' } | Select-Object -First 1)
+            if (-not $updaterImage -or -not "$($updaterImage[0])".Trim()) { $updaterImage = @('metin2/updater:latest') }
             $stack = $null
             foreach ($candidate in (Get-M2EngineHostPaths $ServerRoot)) {
-                & docker run --rm --entrypoint sh -v "${candidate}:/probe:ro" metin2/updater:latest -c 'test -f /probe/VERSION && test -f /probe/linux-port/tools/update.sh' 1>$null 2>$null
+                & docker run --rm --entrypoint sh -v "${candidate}:/probe:ro" "$($updaterImage[0])" -c 'test -f /probe/VERSION && test -f /probe/linux-port/tools/update.sh' 1>$null 2>$null
                 if ($LASTEXITCODE -eq 0) { $stack = $candidate; break }
             }
             if (-not $stack) {
