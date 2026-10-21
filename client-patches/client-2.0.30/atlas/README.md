@@ -68,3 +68,9 @@ własne nazwy (`mt2009_` / `_yohara`), żaden wpis nie zastępuje pliku paczek b
 | root | `d:/ymir work/ui/game/windows/mt2009_{level_exp_info,base_info_bar,status_extent_bar,char_info_status_img,char_info_status_plus_img,char_info_status_value_img}.sub` | `.sub` GF, obraz `windows_yohara.dds` (= GF `windows.dds`) | ramka Lv / EXP, pasek z wolnymi punktami („+” i liczba), linia nad dolnym blokiem |
 | root | `d:/ymir work/ui/game/windows/mt2009_char_info_{con,int,str,dex,hp,sp,att,def,movespeed,attspeed,magspeed,magatt,magdef,hitpct}.sub` | `.sub` GF, obraz `windows_yohara.dds` | ikony statystyk (`hitpct` = Precyzja) |
 | root | `d:/ymir work/ui/game/windows/mt2009_passive_expanded_button_01..03.sub` | `.sub` GF, obraz `windows_yohara.dds` | trzeci przycisk rzędu (u nas „Bonusy”) |
+
+## Boss Świata (`MT2009_PLUS_WORLDBOSS_V1`)
+
+`d:/ymir work/ui/worldboss.dds` (380×100, DXT5) i `d:/ymir work/ui/minigame/world_boss/*.sub` (6 plików) – grafika okien
+Bossa Świata z klienta GF 26.1.11, bajt w bajt (układy `root/uiscript/worldbosswindow.py`,
+`worldbossrankingwindow.py`, logika `root/uiworldboss.py`). Nazwy nowe w naszych paczkach.

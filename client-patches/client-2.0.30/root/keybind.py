@@ -148,6 +148,8 @@ CATEGORIES = (
 		('bonus_switch', 'Zmiana bonus\xf3w', (), False),
 		# MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking (uiweeklyrank.py), no key by default.
 		('weekly_rank', 'Ranking tygodniowy', (), False),
+		# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's window (uiworldboss.py), no key by default.
+		('world_boss', 'Boss \x8cwiata', (), False),
 		# MT2009_PLUS_CHAMPION_V2: Poziom Czempiona - the character window's Sung Ma page, no key by default.
 		('champion', 'Czempion', (), False),
 		# MT2009_PLUS_MONSTER_CARDS_V1: Karty Potworow (monstercard.py) - J, the package's key, is
