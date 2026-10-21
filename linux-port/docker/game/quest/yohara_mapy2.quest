@@ -5,6 +5,9 @@
 --     Dongan -> Seoganland -> Namgan -> Prze³êcz Yilad -> W¹wóz -> Schronienie i z powrotem;
 --   * wejœcie od poziomu 120, bez wymogu czempiona (jak 373/374) - kto nie ma 120 poziomu, wraca do portu;
 --   * ¯y³y Jadeitu (30310-30313): kilof wydobywa z nich Rudê Jadeitu (server-patches/jadeit), jak mining.quest.
+-- MT2009_PLUS_PORTABLE_VEIN_V1 (w³aœciciel, 21.10.2026; wiki "Przenoœna ¯y³a Jadeitu"): Przenoœna ¯y³a Jadeitu (72354)
+--   przywo³uje obok gracza losow¹ z czterech ¿y³ (S³oñca, Nocy, Dymu, Mg³y) w dowolnym miejscu poza lochami; ¿y³a
+--   znika jak ka¿da (silnik: 7-15 min), przedmiot jednorazowy.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest yohara_mapy2 begin
 	state start begin
@@ -34,6 +37,25 @@ quest yohara_mapy2 begin
 			if pc.is_mount() != true then
 				pc.mining()
 			end
+		end
+
+		-- MT2009_PLUS_PORTABLE_VEIN_V1: Przenoœna ¯y³a Jadeitu
+		when 72354.use begin
+			if pc.in_dungeon() or pc.get_map_index() >= 10000 then
+				syschat("Przenoœnej ¯y³y Jadeitu nie u¿yjesz w lochu.")
+				return
+			end
+			if pc.count_item(72354) < 1 then
+				return
+			end
+			local veins = {30310, 30311, 30312, 30313}
+			local vid = spawn_mob(veins[number(1, table.getn(veins))], pc.get_x() * 100 + 200, pc.get_y() * 100, 0, false)
+			if vid == nil or vid == 0 then
+				syschat("Tutaj ¿y³a siê nie pojawi. Spróbuj w innym miejscu.")
+				return
+			end
+			pc.remove_item(72354, 1)
+			syschat("Obok ciebie pojawi³a siê ¯y³a Jadeitu. Wydob¹dŸ z niej rudê kilofem, zanim zniknie.")
 		end
 	end
 end

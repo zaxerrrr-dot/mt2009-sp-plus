@@ -79,12 +79,42 @@ def add(vnum, src=None, name=None, status=ST, **over):
 GLOVES = 'the Sung Ma gloves (Chaegirab\'s crafting, Owsap\'s Sung-Ma Power Gloves) - none here yet'
 JADE = 'the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet'
 add(72353)                                                            # Topaz Woli - the talismans' refine
+# MT2009_PLUS_YOHARA_DESC_V1 (the owner, 21 October 2026: "Na razie bez zastosowania" on items that work now): the
+# jade jewellery (Obrecze / Kolie / Klipsy Jadeitu - Mistrz Chi's crafting, quest yohara_mapy4, refine_proto
+# 40285-40290, the jade in its sockets - server-patches/obreczjadeitu2) uses these materials - a Polish text of what
+# they are for here (the pl-wiki pages' "Funkcja"), tradeable as before (antiflag unchanged).
+JADE_GEAR = u'Obręczy, Kolii i Klipsów Jadeitu'
+YDESC = {
+    31216: u'Materiał do wytwarzania i ulepszania biżuterii z jadeitu. Mistrz Chi w Dongan potrzebuje 25 lub 30 płyt '
+           u'do ' + JADE_GEAR + u'; ulepszanie tej biżuterii z +3 na +4, +5 i +6 wymaga 15, 20 i 25 płyt.',
+    31217: u'Materiał do ulepszania biżuterii z jadeitu (' + JADE_GEAR + u'): z +3 na +4, +5 i +6 potrzeba 5, 7 i '
+           u'10 rogów.',
+    31218: u'Materiał do ulepszania biżuterii z jadeitu (' + JADE_GEAR + u'): z +6 na +7, +8 i +9 potrzeba 15, 20 i '
+           u'25 płyt.',
+    31224: u'Materiał do ulepszania biżuterii z jadeitu (' + JADE_GEAR + u'): z +6 na +7, +8 i +9 potrzeba 5, 7 i '
+           u'10 płyt.',
+    31226: u'Materiał do wytworzenia biżuterii z Jadeitu Słońca. Mistrz Chi w Dongan potrzebuje 2 rdzeni do Obręczy, '
+           u'Kolii lub Klipsów Jadeitu Słońca.',
+    31227: u'Materiał do wytworzenia biżuterii z Jadeitu Nocy. Mistrz Chi w Dongan potrzebuje 5 kłów do Obręczy, '
+           u'Kolii lub Klipsów Jadeitu Nocy.',
+}
+
+
+def jade_desc(kind, will):
+    """the jade of a kind: the jewellery's crafting (10) and its sockets (pl-wiki "Jadeit Slonca" ...)"""
+    return (u'Materiał do produkcji biżuterii z Jadeitu %s - Mistrz Chi w Dongan potrzebuje 10 sztuk do Obręczy, '
+            u'Kolii lub Klipsów. Włożony do gniazda takiej biżuterii (gniazdo robi Diament) zwiększa jej Precyzję '
+            u'i Wolę SungMa (%s); najwyżej 3 sztuki, znikają po 24, 12 i 6 godz.' % (kind, will))
+
+
+YDESC.update({50661: jade_desc(u'Słońca', u'INT'), 50662: jade_desc(u'Nocy', u'WIT'),
+              50664: jade_desc(u'Mgły', u'ODP')})
 for v in (31216, 31218):                                              # Plyty: Surowego Metalu, Stali Kuzniczej
-    add(v, status=need(JADE))
-add(31224, status=need(JADE))   # wiki drop lists: "Plyta ze Stali Obronnej" - its page shows 31224's icon (Ozdobnej)
-add(31217, status=need(JADE))                                         # Rog Trolla
-add(31227, status=need(JADE))                                         # Kiel Argosa
-add(31226, status=need('the Skazony Rdzen\'s quest/crafting (Seoganland) - none here yet'))
+    add(v, desc=YDESC[v], tradeable=True)
+add(31224, desc=YDESC[31224], tradeable=True)   # wiki drop lists: "Plyta ze Stali Obronnej" - its page shows 31224's icon (Ozdobnej)
+add(31217, desc=YDESC[31217], tradeable=True)                         # Rog Trolla
+add(31227, desc=YDESC[31227], tradeable=True)                         # Kiel Argosa
+add(31226, desc=YDESC[31226], tradeable=True)                         # Skazony Rdzen
 # MT2009_PLUS_GLOVES_V1: the Sung Ma gloves work now (tools/ygloves, quest rekawice, server-patches/rekawice)
 for v in (31245, 31246, 31247, 31248, 31249, 31251, 31252):           # Twarda Skora .. Utwardzacz Skory+
     add(v)
@@ -121,7 +151,7 @@ LUCENT_DESC = {
 for v in (39078, 39079, 39080):                                       # Lsniace Odlamki
     add(v, desc=LUCENT_DESC[v], tradeable=True)            # pl-wiki: Handlowanie z Graczem - Tak
 for v in (50661, 50662, 50664):                                       # Jadeit Slonca, Nocy, Mgly
-    add(v, status=need(JADE))
+    add(v, desc=YDESC[v], tradeable=True)                             # MT2009_PLUS_YOHARA_DESC_V1
 # chests - their contents: special_item_group.yohara_items.txt
 add(50528)                                                            # Szkatulka Yohara
 add(50529)                                                            # Skrzynia Ksiag (9.skill)
@@ -146,8 +176,13 @@ for v in range(50338, 50344):                                         # Charyzma
 # the Sung Ma stone (ITEM_METIN / METIN_SUNGMA) and adds +1..+4
 add(28046, name='Kamień Demonów+0',
     type='ITEM_MATERIAL', subtype='MATERIAL_LEATHER', wear='NONE', refined=0, refine_set=0)
-add(72354, status=need('the jade veins (Zyly Jadeitu, mining) - none here yet'),
-    type='ITEM_MATERIAL', subtype='MATERIAL_LEATHER')                # Przenosna Zyla Jadeitu (Owsap: a summon box)
+# MT2009_PLUS_PORTABLE_VEIN_V1 (the owner, 21 October 2026; pl-wiki "Przenosna Zyla Jadeitu"): used, it raises one of
+# the four jade veins (30310-30313, server-patches/jadeit) beside its owner - quest yohara_mapy2; one use, no stacking,
+# no trade / drop / shop, storage yes (Owsap's antiflags). A quest item here (Owsap: a summon box of its closed engine);
+# a world made before gets the type and antiflags once (write_sql).
+add(72354, type='ITEM_QUEST', subtype='QUEST_NONE',
+    desc=u'Sprawia, że obok ciebie pojawia się losowa Żyła Jadeitu (Słońca, Nocy, Dymu lub Mgły), z której kilofem '
+         u'wydobędziesz Rudę Jadeitu. Żyła znika po kilku minutach. Przedmiot jednorazowy; nie działa w lochach.')
 add(50043, status=need('Skrzynia Nimfy Wodnej - none here yet'))      # Klucz Nimfy Wodnej
 add(70408, status=need('Tajemnicza Instancja (dungeon) - none here yet'))   # Tajemniczy Bilet
 add(70434, status=need('the secret dungeons of the treasure scrolls - none here yet'),
@@ -361,6 +396,12 @@ def write_sql(items, refines):
              % ','.join(str(b + lv) for b, _s, _a in TALISMANS for lv in range(10)))
     for vnum, pl in RENAMED:
         L.append("UPDATE world.item_proto SET locale_name='%s' WHERE vnum=%d AND locale_name<>'%s';" % (pl, vnum, pl))
+    # MT2009_PLUS_PORTABLE_VEIN_V1: Przenosna Zyla Jadeitu was an inert material (type 5) - now the quest item its
+    # quest uses, with Owsap's antiflags (no trade); only a row still inert is changed
+    v = next(i for i in items if i['vnum'] == 72354)
+    L.append('-- MT2009_PLUS_PORTABLE_VEIN_V1: Przenosna Zyla Jadeitu - a quest item (quest yohara_mapy2) since 21 October 2026')
+    L.append('UPDATE world.item_proto SET type=%d, subtype=%d, antiflag=%d, flag=%d WHERE vnum=72354 AND type=5;'
+             % (v['type'], v['subtype'], v['antiflag'], v['flag']))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
 

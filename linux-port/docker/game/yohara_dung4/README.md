@@ -31,6 +31,8 @@ mapę po bazie. Wieża stoi na **998400 614400** (wolne w każdej naszej mapie, 
 ## Wieża Sung Mahi
 - Wejście Piekielnej Wieży (4019) w Seoganland (76,1459) → hala; w hali portal 4020: wybór odblokowanego piętra,
   Sztandar Czaszki (70401) za wspinaczkę, sam lub z drużyną; Wyjście (10126) do Seoganland.
+- Sztandar Czaszki użyty z ekwipunku (`MT2009_PLUS_SMH_BANNER_V1`, 21.10.2026): opis i droga do hali wieży (warunki
+  Wejścia), sam nie znika; przedmiot questowy bez handlu i magazynu (wiki; `tools/yohara_items/gen_yitems2.py`).
 - 50 pięter × 3 etapy (sale i punkty z questów Amerii): fale; jedna z 7 misji wiki; fale + boss (Wóżbit, co 5. piętro
   Wielki Mistrz, co 10. Książę/Czarnoksiężnik); co 20 s gałęzie z ziemi (podwójne obrażenia na 10., 20. … piętrze);
   żywioł piętra po kolei, co 10. wszystkie; losowy bonus/klątwa na każdy etap (afekty 1847/1849, łatka

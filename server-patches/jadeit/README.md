@@ -16,6 +16,9 @@ przetapia się w **Jadeit** (materiał biżuterii z jadeitu).
 - Silnik: tabela rud `mining.cpp` (`MAX_ORE` 19 → 23, cztery wiersze Owsapa v6.2.6) – `CHARACTER::mining`,
   `IsVeinOfOre` (żyła sama znika po 7–15 min, `regen.txt` mapy ją odnawia) i `OreRefine` znają żyły.
 - Kliknięcie żyły: quest `yohara_mapy2` (`pc.mining()`, jak `mining.quest` dla starych żył).
+- **Przenośna Żyła Jadeitu** (72354, `MT2009_PLUS_PORTABLE_VEIN_V1`, 21.10.2026): użyta przywołuje obok gracza losową
+  z czterech żył (quest `yohara_mapy2`, `spawn_mob`) – wszędzie poza lochami; żyła znika jak każda (7–15 min), przedmiot
+  jednorazowy, bez handlu (wiki). Przedmiot questowy (`tools/yohara_items/gen_yitems.py`, jednorazowy `UPDATE` typu).
 - Przetop: okno wytwarzania alchemików gildii 20060–20072 (jak MT2009_PLUS_JEWELS75_V1): przepisy
   `world.crafting_proto` 50661–50664 (100 rudy, 60 000 Yang, 60%; `yohara_items2.sql`), lista – krok Dockerfile
   „Yohara: Seoganland, Namgan, …”.

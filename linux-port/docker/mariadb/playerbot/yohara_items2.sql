@@ -6,7 +6,6 @@
 -- its Polish client. Each vnum was free in our world.item_proto (14 October 2026); our 50735 / 50736 hold
 -- other items, so Piorunowe Ziolo / Kwiat Polnocnego Wiatru are 95735 / 95736 here. An item whose system we
 -- do not have is tradeable and does nothing yet - its row says what it waits for:
---   50663 Jadeit Dymu - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   31233 Kamien Wezowy - the Serpent equipment of Yohara (Bron/Zbroja Wezowa) and its refining - none here yet
 --   31234 Kamien Wezowy+ - the Serpent equipment of Yohara (Bron/Zbroja Wezowa) and its refining - none here yet
 --   31257 Wzor Wezowy - the Serpent equipment of Yohara (Bron/Zbroja Wezowa) and its refining - none here yet
@@ -24,10 +23,6 @@
 --   31241 Polyskujaca Krwawa Perla - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet (the pearls of the Northwind jewellery)
 --   50336 Ksiega Misji (W.Pln.W.) - the mission books of Wawoz Polnocnego Wiatru - none here yet
 --   72740 Licencja Najemnika - the mercenaries (Licencja Najemnika) - none here yet
---   49991 Ognista Runa Aury (10) - the aura costume (Runy Aury) - none here yet
---   49992 Ognista Runa Aury (50) - the aura costume (Runy Aury) - none here yet
---   49993 Ognista Runa Aury (100) - the aura costume (Runy Aury) - none here yet
---   70401 Sztandar Czaszki - the Northwind guild quest (Sztandar Czaszki) - none here yet
 --   55003 Ksiega Mlodego Zwierza - the pet system of Yohara (its riding books, level books) - ours is the older one
 --   55050 Jazda (Zwinne Kopyta) - the pet system of Yohara (its riding books, level books) - ours is the older one
 --   55051 Jazda Konna (PD) - the pet system of Yohara (its riding books, level books) - ours is the older one
@@ -89,7 +84,7 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (49991,'Ognista Runa Aury (10)',_cp1250 X'4F676E697374612052756E6120417572792028313029',5,0,200,0,1,16384,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (49992,'Ognista Runa Aury (50)',_cp1250 X'4F676E697374612052756E6120417572792028353029',5,0,200,0,1,16384,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (49993,'Ognista Runa Aury (100)',_cp1250 X'4F676E697374612052756E612041757279202831303029',5,0,200,0,1,16384,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
-(70401,'Sztandar Czaszki',_cp1250 X'537A74616E64617220437A61737A6B69',5,0,200,0,1,16384,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
+(70401,'Sztandar Czaszki',_cp1250 X'537A74616E64617220437A61737A6B69',18,0,200,0,1,221312,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (55003,'Ksiega Mlodego Zwierza',_cp1250 X'4B7369EA6761204DB36F6465676F205A776965727A61',5,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (55050,'Jazda (Zwinne Kopyta)',_cp1250 X'4A617A646120285A77696E6E65204B6F7079746129',5,0,200,0,1,32768,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (55051,'Jazda Konna (PD)',_cp1250 X'4A617A6461204B6F6E6E612028504429',5,0,200,0,1,32768,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
@@ -114,3 +109,5 @@ INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, 
 (50662, 50662, 1, 60000, 60, '50642,100', 0, 0, 0),
 (50663, 50663, 1, 60000, 60, '50643,100', 0, 0, 0),
 (50664, 50664, 1, 60000, 60, '50644,100', 0, 0, 0);
+-- MT2009_PLUS_SMH_BANNER_V1: Sztandar Czaszki - a quest item (quest wieza_sung_mahi) since 21 October 2026
+UPDATE world.item_proto SET type=18, subtype=0, antiflag=221312, flag=8196 WHERE vnum=70401 AND type=5;

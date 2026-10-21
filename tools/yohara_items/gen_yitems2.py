@@ -63,9 +63,11 @@ HERBS = y1.HERBS
 # the jade ores of the veins (server-patches/jadeit) and the fourth jade
 for v in (50641, 50642, 50643, 50644):                  # Ruda Jadeitu Slonca / Nocy / Dymu / Mgly
     add(v, type='ITEM_SPECIAL', subtype='0')            # as our ores 50601-50619 (type 6)
-add(50663, status=need(JADE))                           # Jadeit Dymu (50661/50662/50664: the first batch)
+add(50663, desc=y1.jade_desc(u'Dymu', u'SIŁA'), tradeable=1)  # Jadeit Dymu (50661/50662/50664: the first batch;
+                                                        # MT2009_PLUS_YOHARA_DESC_V1 - its use, as gen_yitems.py's)
 # materials of the Serpent / Northwind sets and their refining
-add(31228, tradeable=1)                                              # Luska Argosa - Obrecz Jadeitu Dymu (quest yohara_mapy4)
+add(31228, tradeable=1, desc=u'Materiał do wytworzenia biżuterii z Jadeitu Dymu. Mistrz Chi w Dongan potrzebuje '
+    u'10 łusek do Obręczy, Kolii lub Klipsów Jadeitu Dymu.')     # Luska Argosa - quest yohara_mapy4 (MT2009_PLUS_YOHARA_DESC_V1)
 for v in (31233, 31234, 31257, 31258):                  # Kamien Wezowy(+), Wzor Wezowy, Jedwab Wezowy
     add(v, status=need(SERPENT))
 add(70428, status=need(SERPENT), **MAT)                 # Pyl Wezowy (Owsap: USE_SPECIAL, a quest use)
@@ -96,8 +98,14 @@ add(50527, desc='Potrzebna, by udoskonalić 9. umiejętność od G1 do P - każd
 add(50336, status=need('the mission books of Wawoz Polnocnego Wiatru - none here yet'))
 add(72740, status=need('the mercenaries (Licencja Najemnika) - none here yet'), **MAT)
 for v in (49991, 49992, 49993):                         # Ognista Runa Aury (10/50/100)
-    add(v, status=need('the aura costume (Runy Aury) - none here yet'), **MAT)
-add(70401, status=need('the Northwind guild quest (Sztandar Czaszki) - none here yet'))
+    add(v, tradeable=1, **MAT)                          # work: Szata Aury (MT2009_PLUS_AURA_V1, Theowahdan)
+# MT2009_PLUS_SMH_BANNER_V1 (the owner, 21 October 2026; pl-wiki "Sztandar Czaszki"): the ticket of Wieza Sung Mahi -
+# one a climb at the hall's portal (quest wieza_sung_mahi); used, it offers the way to the tower's hall. A quest item
+# (Owsap: a material - its use is ours), Owsap's antiflags (the wiki: no trade, storage, dropping); a world made
+# before gets the type and antiflags once (write_sql).
+add(70401, type='ITEM_QUEST', subtype='QUEST_NONE',
+    desc=u'Pod tym sztandarem możesz wejść do Piekielnej Wieży Sunga Mahi - każda wspinaczka (portal w hali wieży) '
+         u'zabiera jeden sztandar. Użyj go, aby przenieść się do hali wieży (od 120. poziomu i 1. Poziomu Czempiona).')
 PET = 'the pet system of Yohara (its riding books, level books) - ours is the older one'
 add(55003, status=need(PET))                            # Ksiega Mlodego Zwierza
 for v in range(55050, 55068):                           # Jazda Konna (...) / Jazda (...): 18 pet skill books
@@ -223,6 +231,12 @@ def write_sql(items):
     L.append('INSERT IGNORE INTO world.crafting_proto (vnum, item_vnum, count, price, chance, recipe, req_progress, '
              'req_level, recipe_vnum) VALUES')
     L.append(',\n'.join("(%d, %d, 1, 60000, 60, '%s', 0, 0, 0)" % (v, v, r) for v, r in CRAFT) + ';')
+    # MT2009_PLUS_SMH_BANNER_V1: Sztandar Czaszki was an inert material (type 5) - now a quest item with Owsap's
+    # antiflags; only a row still inert is changed
+    b = next(i for i in items if i['vnum'] == 70401)
+    L.append('-- MT2009_PLUS_SMH_BANNER_V1: Sztandar Czaszki - a quest item (quest wieza_sung_mahi) since 21 October 2026')
+    L.append('UPDATE world.item_proto SET type=%d, subtype=%d, antiflag=%d, flag=%d WHERE vnum=70401 AND type=5;'
+             % (b['type'], b['subtype'], b['antiflag'], b['flag']))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
 

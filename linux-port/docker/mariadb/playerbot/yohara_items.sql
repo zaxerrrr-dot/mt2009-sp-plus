@@ -6,15 +6,6 @@
 -- in our world.item_proto (13 October 2026); our 50733/50734/50926 hold other items, so Ognisty Lisc,
 -- Mrozny Korzonek and Kamyki are 95733/95734/95926 here. An item whose system we do not have is tradeable
 -- (drop/give/shop/storage allowed) and does nothing yet - its row says what it waits for:
---   31216 Plyta z Surowego Metalu - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   31218 Plyta ze Stali Kuzniczej - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   31224 Plyta ze Stali Ozdobnej - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   31217 Rog Trolla - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   31227 Kiel Argosa - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   31226 Skazony Rdzen - the Skazony Rdzen's quest/crafting (Seoganland) - none here yet
---   50661 Jadeit Slonca - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   50662 Jadeit Nocy - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   50664 Jadeit Mgly - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   50516 Riposta: Wir Miecza - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
 --   50517 Riposta: Zasadzka - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
 --   50518 Riposta: Uderz. Palcem - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
@@ -38,7 +29,6 @@
 --   50341 Inspiracja Nowicjusza - the leadership books Charyzma / Inspiracja - none here yet
 --   50342 Inspiracja Adepta - the leadership books Charyzma / Inspiracja - none here yet
 --   50343 Inspiracja Eksperta - the leadership books Charyzma / Inspiracja - none here yet
---   72354 Przenosna Zyla Jadeitu - the jade veins (Zyly Jadeitu, mining) - none here yet
 --   50043 Klucz Nimfy Wodnej - Skrzynia Nimfy Wodnej - none here yet
 --   70408 Tajemniczy Bilet - Tajemnicza Instancja (dungeon) - none here yet
 --   70434 Zwoj Skarbu (Stopien A) - the secret dungeons of the treasure scrolls - none here yet
@@ -111,7 +101,7 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (50342,'Inspiracja Adepta',_cp1250 X'496E7370697261636A6120416465707461',3,10,1,0,1,0,0,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,20,30,20,50000,0,0,-1,-1,-1,-1,-1,-1),
 (50343,'Inspiracja Eksperta',_cp1250 X'496E7370697261636A6120456B737065727461',3,10,1,0,1,0,0,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,40,20,50000,0,0,-1,-1,-1,-1,-1,-1),
 (28046,'Kamien Demonow+0',_cp1250 X'4B616D6965F12044656D6F6EF3772B30',5,0,200,0,1,0,4,0,'',2500,2500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,-1,-1,-1,-1,-1,-1),
-(72354,'Przenosna Zyla Jadeitu',_cp1250 X'50727A656E6F9C6E6120AF79B361204A616465697475',5,0,200,0,1,32768,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
+(72354,'Przenosna Zyla Jadeitu',_cp1250 X'50727A656E6F9C6E6120AF79B361204A616465697475',18,0,200,0,1,106624,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (50043,'Klucz Nimfy Wodnej',_cp1250 X'4B6C75637A204E696D667920576F646E656A',21,0,200,0,1,0,4,0,'',0,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (70408,'Tajemniczy Bilet',_cp1250 X'54616A656D6E69637A792042696C6574',5,0,200,0,1,16384,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (70434,'Zwoj Skarbu (Stopien A)',_cp1250 X'5A77F36A20536B61726275202853746F706965F1204129',5,0,1,0,1,16384,0,0,'',0,0,0,0,0,0,0,0,7,259200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
@@ -232,3 +222,5 @@ UPDATE world.refine_proto SET vnum1=81558, count1=1 WHERE id=22536 AND vnum0=723
 UPDATE world.item_proto SET applytype0=0, applyvalue0=0 WHERE vnum IN (81000,81001,81002,81003,81004,81005,81006,81007,81008,81009,81250,81251,81252,81253,81254,81255,81256,81257,81258,81259,81300,81301,81302,81303,81304,81305,81306,81307,81308,81309,81550,81551,81552,81553,81554,81555,81556,81557,81558,81559) AND applytype0<>0;
 UPDATE world.item_proto SET locale_name='Czerwona Mikstura (XXL)' WHERE vnum=27007 AND locale_name<>'Czerwona Mikstura (XXL)';
 UPDATE world.item_proto SET locale_name='Niebieska Mikstura (XXL)' WHERE vnum=27008 AND locale_name<>'Niebieska Mikstura (XXL)';
+-- MT2009_PLUS_PORTABLE_VEIN_V1: Przenosna Zyla Jadeitu - a quest item (quest yohara_mapy2) since 21 October 2026
+UPDATE world.item_proto SET type=18, subtype=0, antiflag=106624, flag=4 WHERE vnum=72354 AND type=5;

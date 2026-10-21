@@ -1192,6 +1192,45 @@ quest wieza_sung_mahi begin
 			loop_timer("wsm_dead", 2)
 		end
 
+		-- MT2009_PLUS_SMH_BANNER_V1 (w³aœciciel, 21.10.2026; wiki "Sztandar Czaszki" - "Umo¿liwia wejœcie do Piekielnej
+		-- Wie¿y Sunga Mahi"): sztandar zabiera portal hali za ka¿d¹ wspinaczkê (wy¿ej); u¿yty z ekwipunku mówi, do czego
+		-- s³u¿y, i prowadzi do hali wie¿y (te same warunki co Wejœcie Piekielnej Wie¿y), sam nie znika.
+		when 70401.use begin
+			local c = wieza_sung_mahi.cfg()
+			say_title(item_name(c.banner)..":")
+			if wieza_sung_mahi.inside() then
+				say("Wspinaczka ju¿ trwa - sztandar powiewa nad tob¹.")
+				return
+			end
+			say("Pod tym sztandarem mo¿esz wejœæ do Piekielnej Wie¿y")
+			say("Sunga Mahi. Ka¿da wspinaczka (portal w hali wie¿y)")
+			say("zabiera jeden sztandar.")
+			say("")
+			say_reward("Od poziomu "..c.min_level.." i 1. Poziomu Czempiona.")
+			if pc.get_map_index() == c.hall_map then
+				say("Jesteœ w hali - podejdŸ do portalu wie¿y.")
+				return
+			end
+			if select("Przenieœ mnie do hali wie¿y", "Nie teraz") ~= 1 then
+				return
+			end
+			if not pc.is_gm() and (pc.get_level() < c.min_level or pc.get_conqueror_level() < 1) then
+				say_title(item_name(c.banner)..":")
+				say("Wie¿a przyjmuje od 1. Poziomu Czempiona.")
+				return
+			end
+			if pc.in_dungeon() or pc.get_map_index() >= 10000 then
+				say_title(item_name(c.banner)..":")
+				say("Najpierw opuœæ loch.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			wieza_sung_mahi.to_hall()
+		end
+
 		when wsm_dead.timer begin
 			local c = wieza_sung_mahi.cfg()
 			if pc.is_dead() then
