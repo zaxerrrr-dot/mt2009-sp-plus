@@ -9,6 +9,10 @@
 -- and of Kamieñ Duchowy Buffi is gone - the stone drops from Metins and bosses (Zaczarowany Las and up).
 -- The seals and the name scroll are the core's (playerbot_buffi.cpp, the window root/uibuffi.py); the books are the
 -- engine's skill books (server-patches/buffi (learnable)). Off (m2_buffi_off, .env M2_BUFFI=0): nothing here.
+-- MT2009_PLUS_BUFFI_V3 (the owner's list of 22 October 2026, 5): Buffi from the character's level 55. The starter gift
+-- is now Buffi for good (61026) + Zwój Imienia Buffi (61030), once, on reaching level 55 - or at the login of a
+-- character already 55+ that never got it (its own flag "gift55"; the old 7-day gift of a new character is gone, a
+-- character that got it keeps it). Never for the bots. Kamieñ Duchowy Buffi also from level 55.
 -- cp1250; no string ends with a Polish letter (qc).
 quest buffi begin
 	state start begin
@@ -31,12 +35,25 @@ quest buffi begin
 			return "" .. level
 		end
 
-		when login with pc.getqf("starter") == 0 and pc.get_level() <= 5 and
-				game.get_event_flag("m2_buffi_off") == 0 and not pc.is_playerbot() begin
-			pc.setqf("starter", 1)
-			pc.give_item2(61025, 1)
+		-- MT2009_PLUS_BUFFI_V3: the gift of level 55 (Buffi for good + Zwój Imienia Buffi), once a character
+		function gift55()
+			if pc.getqf("gift55") != 0 or pc.get_level() < 55 or pc.is_playerbot() then
+				return
+			end
+			pc.setqf("gift55", 1)
+			pc.give_item2(61026, 1)
 			pc.give_item2(61030, 1)
-			syschat("Otrzymujesz Buffi (7 dni) i Zwój Imienia Buffi. Okno Buffi otwiera klawisz P.")
+			syschat("Otrzymujesz Buffi (na zawsze) i Zwój Imienia Buffi za 55 poziom. Okno Buffi otwiera klawisz P.")
+		end
+
+		when levelup with pc.get_level() >= 55 and pc.getqf("gift55") == 0 and
+				game.get_event_flag("m2_buffi_off") == 0 and not pc.is_playerbot() begin
+			buffi.gift55()
+		end
+
+		when login with pc.get_level() >= 55 and pc.getqf("gift55") == 0 and
+				game.get_event_flag("m2_buffi_off") == 0 and not pc.is_playerbot() begin
+			buffi.gift55()
 		end
 
 		when 61031.use begin
@@ -44,6 +61,10 @@ quest buffi begin
 			say_title("Kamieñ Duchowy Buffi")
 			if game.get_event_flag("m2_buffi_off") != 0 then
 				say("Buffi jest wy³¹czony na tym serwerze.")
+				return
+			end
+			if pc.get_level() < 55 then
+				say("Buffi dostêpna od 55 poziomu.")
 				return
 			end
 			if pc.get_skill_group() == 0 then
