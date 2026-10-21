@@ -194,7 +194,11 @@ services:
         # .env takes this default too, so an install made before it needs no
         # edit. Set M2_APT_MIRROR to another mirror for another country.
         APT_MIRROR: "${M2_APT_MIRROR:-http://ubuntu.task.gda.pl/ubuntu/}"
-    image: metin2/game:mt2009
+    # MT2009_PLUS_YOHARA_IMAGES_V1 (the owner's fix in the 3.0.0-test package, 21 Oct 2026): every Yohara installation
+    # gets its own images. The 2.x/Tieru package uses metin2/game:mt2009; sharing that tag made a fresh Yohara world
+    # start the already-built 2.x engine without compiling this package. The tag follows the Yohara version, so an
+    # update builds new images instead of starting the old ones.
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-game:3.0.1-test"
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-game"
     restart: unless-stopped
     stop_grace_period: 90s
@@ -323,7 +327,7 @@ services:
     build:
       context: ./panel
       dockerfile: Dockerfile
-    image: metin2/panel:latest
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-panel:3.0.1-test"
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-panel"
     restart: unless-stopped
 
@@ -530,7 +534,7 @@ services:
     build:
       context: ./seban-panel
       dockerfile: Dockerfile
-    image: metin2/seban-panel:latest
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-seban-panel:3.0.1-test"
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-seban-panel"
     restart: unless-stopped
     depends_on:
@@ -586,7 +590,7 @@ services:
     build:
       context: ./itemshop
       dockerfile: Dockerfile
-    image: metin2/itemshop:latest
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-itemshop:3.0.1-test"
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-itemshop"
     restart: unless-stopped
     depends_on:
@@ -611,7 +615,7 @@ services:
   # updating on Windows, 18 September; Compose 5.5 here never pulls it).
   # Never pulled: the build in the same `up` makes it before they start.
   seban-collector:
-    image: metin2/seban-panel:latest
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-seban-panel:3.0.1-test"
     pull_policy: never
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-seban-collector"
     restart: unless-stopped
@@ -627,7 +631,7 @@ services:
     networks: [backend]
 
   seban-item-grants:
-    image: metin2/seban-panel:latest
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-seban-panel:3.0.1-test"
     pull_policy: never
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-seban-item-grants"
     restart: unless-stopped
@@ -641,7 +645,7 @@ services:
     build:
       context: ./updater
       dockerfile: Dockerfile
-    image: metin2/updater:latest
+    image: "${M2_CONTAINER_PREFIX:-m2yohara-test}-updater:3.0.1-test"
     container_name: "${M2_CONTAINER_PREFIX:-metin2}-updater"
     profiles: ["update"]
     restart: unless-stopped
