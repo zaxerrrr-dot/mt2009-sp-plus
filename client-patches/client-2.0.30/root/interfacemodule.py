@@ -4427,6 +4427,7 @@ class Interface(object):
 		__import__("uiweeklyrank").AttachCharacterWindow(wndCharacter)
 		wndInventory = uiInventory.InventoryWindow()
 		wndInventory.BindInterfaceClass(self)
+		__import__("uiekwipunek").BindInterface(self) # MT2009_PLUS_EKWIPUNEK_ROW2_V1: Kostiumy / Alchemia / ItemShop buttons
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
 			wndDragonSoul = uiDragonSoul.DragonSoulWindow()
 			wndDragonSoul.BindInterfaceClass(self)

@@ -1724,11 +1724,9 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndMoney = self.GetChild("Money")
 			self.wndMoneySlot = self.GetChild("Money_Slot")
 			self.DSSButton = self.GetChild2("DSSButton")
-			# MT2009_PLUS_GLOVES_V1: with the glove slot the Dragon Soul button sits small between the arrow and the
-			# earrings (uiscript/inventorywindow.py) - its picture scaled, its hit area the picture's
-			if self.DSSButton and getattr(app, "ENABLE_GLOVE_SYSTEM", 0) and hasattr(item, "EQUIPMENT_GLOVE") and hasattr(wndMgr, "SetButtonScale"):
-				wndMgr.SetButtonScale(self.DSSButton.hWnd, 0.5, 0.5)
-				self.DSSButton.SetSize(19, 17)
+			# MT2009_PLUS_INVENTORY_DSS_V1: the Dragon Soul button at its own size in the costume button's place
+			# (uiscript/inventorywindow.py; no more MT2009_PLUS_GLOVES_V1 half scale); the costume button is gone -
+			# GetChild2 gives None, the costume window opens from the extra inventory (uiekwipunek.py "Kostiumy")
 			self.costumeButton = self.GetChild2("CostumeButton")
 
 			# additional buttons

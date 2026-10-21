@@ -10,6 +10,14 @@
 # there; of the second only the chests (Ameria's btn_guild icon) - Ameria's costume
 # storage never fills, and its safebox / item mall buttons open the safebox from
 # anywhere, which this server does not have.
+#
+# MT2009_PLUS_EKWIPUNEK_ROW2_V1 (the owner, 21 October 2026: "dodaj tam Kostiumy,
+# Alchemie i ItemShop" - "okno kostiumow, nie magazyn kostiumow"): the second row
+# as Ameria's (costume, guild = our chests, safebox, item mall), three of them
+# plain buttons that open windows: Kostiumy - the costume window (the one the
+# inventory's costume button opened), Alchemia - the Dragon Soul window (Ameria's
+# Dragon Soul button of its taskbar, DragonSoul_Button_0x), ItemShop - the
+# in-game ItemShop. uiekwipunek.py binds them.
 
 import uiScriptLocale
 
@@ -40,10 +48,10 @@ def PageTab(index, text, tooltip):
 		),
 	}
 
-def CategoryButton(name, icon, col, row):
+def CategoryButton(name, icon, col, row, kind = "radio_button"):
 	return {
 		"name" : name,
-		"type" : "radio_button",
+		"type" : kind,
 		"x" : 12 + 34 * col,
 		"y" : 5 + 34 * row,
 		"default_image" : ROOT + "btn_%s_1.png" % icon,
@@ -233,7 +241,11 @@ window = {
 						CategoryButton("Category_stone", "stone", 1, 0),
 						CategoryButton("Category_book", "book", 2, 0),
 						CategoryButton("Category_bonus", "bonus", 3, 0),
-						CategoryButton("Category_chest", "chest", 0, 1),
+						# MT2009_PLUS_EKWIPUNEK_ROW2_V1: Ameria's second row (chests where its guild button is)
+						CategoryButton("Window_costume", "costume", 0, 1, "button"),
+						CategoryButton("Category_chest", "chest", 1, 1),
+						CategoryButton("Window_alchemy", "alchemy", 2, 1, "button"),
+						CategoryButton("Window_itemshop", "ishop", 3, 1, "button"),
 					),
 				},
 			),
