@@ -7,8 +7,9 @@ the owner, 21 October 2026: "W zamian za towarzysza dodaj system buffi z Amerii"
 numbers (serverfiles home share/conf/item_proto.txt, mysql player.sql skill_proto 164-167 and ishop_data, the quest
 __buffi__), Polish names and texts (Ameria's "pl" locale is English):
 
-  61025 Buffi (7 dni)            the seal, 7 days real time, bound (Ameria's starter chest; here the quest buffi
-                                 gives it with the name scroll at a new character's first login)
+  61025 Buffi (7 dni)            the seal, 7 days real time, bound (Ameria's starter chest; here V1's starter gift of
+                                 a new character - MT2009_PLUS_BUFFI_V3: no source any more, the gift of level 55 is
+                                 61026 + 61030, quest buffi)
   61026 Buffi                    the seal, for good, tradeable (Ameria's ItemShop: 750)
   61030 Zwoj Imienia Buffi       the name: Szybkosc and Zwiekszenie Ataku, +10% against bosses for 7 days (ItemShop 50)
   61031 Kamien Duchowy Buffi     G1 -> P of a buffi skill (quest buffi); MT2009_PLUS_BUFFI_V2: drops from Metins
@@ -21,6 +22,11 @@ __buffi__), Polish names and texts (Ameria's "pl" locale is English):
                                  themselves are computed by playerbot_buffi.cpp with the same polys
   mob_proto 65000                the shaman - an NPC (a copy of the pet 34001's row); the clients see a female shaman
                                  (playerbot_buffi.cpp, BuffiInsertLook)
+
+MT2009_PLUS_BUFFI_V3 (the owner's list of 22 October 2026): weaker buffs - the value (not the time) of every buff
+M1-M10 -50%, G1-G4 -35%, G5-G10 -25%, P -18%. The server applies it where the value is made (playerbot_buffi.cpp,
+GradeFactor - the skill_proto rows below are not read for it and stay Ameria's); the client's tooltip polys here get
+the same factor (CLIENT_FACTOR, by the real skill level "sl" the tooltip passes). Buffi from level 55: the seals' text.
 
 Every vnum was free in our world (21 October 2026). The engine's numbers: tools/yohara_items/gen_yitems.py.
 
@@ -69,7 +75,8 @@ NAMED_ONLY = (166, 167)
 
 BUFFI_TEXT = (u'Przywołuje Buffi - szamankę, która chodzi za tobą i co 3 sekundy rzuca na ciebie brakujące '
               u'wzmocnienie: Błogosławieństwo i Pomoc Smoka, a gdy ma imię (Zwój Imienia Buffi) także Szybkość '
-              u'i Zwiększenie Ataku. Użyj ponownie, aby ją odwołać. Okno Buffi: klawisz P.')
+              u'i Zwiększenie Ataku. Użyj ponownie, aby ją odwołać. Okno Buffi: klawisz P. '
+              u'Buffi dostępna od 55 poziomu postaci.')  # MT2009_PLUS_BUFFI_V3: from level 55
 
 
 def base(vnum, src, locale_name, typ, subtype, desc, icon, **over):
@@ -172,17 +179,33 @@ def write_itemshop(its):
         f.write('\n'.join(L) + '\n')
 
 
+# MT2009_PLUS_BUFFI_V3 (weaker): the server's GradeFactor (playerbot_buffi.cpp) as a client poly - the tooltip
+# (uitooltip.py AppendSkillLevelDescriptionNew) evaluates skilldesc's polys with "sl" = the real skill level and the
+# skilltable's point poly overwrites the first one (PythonSkill.cpp OVERWRITE_SKILLPROTO_POLY): M1-M10 0.5, G1-G4 0.65,
+# G5-G10 0.75, P 0.82. The texts are "%.0f" - the client floors, as the server's (long) does.
+CLIENT_FACTOR = '(0.5*(isgraden+isgradem)+isgradeg*(0.65+0.1*min(1,max(0,sl-33)))+0.82*isgradep)'
+
+
+def client_poly(poly):
+    return '(%s)*%s' % (poly, CLIENT_FACTOR) if poly else poly
+
+
+def factor(level):
+    """The server's GradeFactor (a check of CLIENT_FACTOR)."""
+    return 0.82 if level >= 40 else 0.75 if level >= 34 else 0.65 if level >= 30 else 0.5
+
+
 # MT2009_PLUS_BUFFI_V2: the client's skill data of the buffi skills (locale/pl/skilldesc.txt and
 # gamedata/skilltable.txt of the dbdata pack - names, the shaman's icons and motions, the tooltip's polys with
 # Ameria's iq 226 as playerbot_buffi.cpp casts them). 28 / 27 columns as the client's shaman lines 94/96/110/111.
 SKILLDESC = (  # vnum, names, description, affect texts and polys
     (164, u'Błogosławieństwo Buffi', u'Buffi otacza cię kręgiem ochronnym. Trenuj: zwykłe Księgi Umiejętności '
           u'szamana w oknie Buffi (do G1), Kamień Duchowy Buffi (do P).', u'Odporność na fizyczne obrażenia',
-     u'', 'hosin', '4', [u'Odporność Na Ataki Fizyczne %.1f%%', u'(226*0.2+5)*(2*k+0.5)/(k+1.5)']),
+     u'', 'hosin', '4', [u'Odporność Na Ataki Fizyczne %.0f%%', u'(226*0.2+5)*(2*k+0.5)/(k+1.5)']),
     (165, u'Pomoc Smoka Buffi', u'Buffi zwiększa twoją szansę na cios krytyczny. Trenuj: zwykłe Księgi '
           u'Umiejętności szamana w oknie Buffi (do G1), Kamień Duchowy Buffi (do P).',
      u'Zwiększa szansę na krytyczne uderzenie', u'', 'gicheon', '6',
-     [u'Szansa na cios krytyczny: +%.1f%%', u'(226*0.2+5)*(2*k+0.5)/(k+1.5)']),
+     [u'Szansa na cios krytyczny: +%.0f%%', u'(226*0.2+5)*(2*k+0.5)/(k+1.5)']),
     (166, u'Szybkość Buffi', u'Buffi przyspiesza twój ruch. Wymaga imienia Buffi. Trenuj: zwykłe Księgi '
           u'Umiejętności szamana w oknie Buffi (do G1), Kamień Duchowy Buffi (do P).', u'Zwiększa Szybkość Ruchu',
      u'Zmniejsza się Czas Ładowania Umiejętności', 'kwaesok', '20',
@@ -196,6 +219,8 @@ SKILLDESC = (  # vnum, names, description, affect texts and polys
 def skilldesc_lines():
     out = {}
     for vnum, name, desc, aff1, aff2, icon, motion, polys in SKILLDESC:
+        # MT2009_PLUS_BUFFI_V3: every affect's min poly (text, min, max) times the grade's factor
+        polys = [client_poly(p) if n % 3 == 1 else p for n, p in enumerate(polys)]
         cols = [str(vnum), 'SHAMAN', name, name, name, desc, aff1, aff2, u'', u'', u'', u'', icon, motion, '4', u'',
                 u''] + polys
         cols += [u''] * (28 - len(cols))
@@ -208,8 +233,11 @@ def skilltable_lines():
     # the client's own shaman rows (94/96/110/111) with the buffi's vnum, name and polys
     out = {}
     for vnum, sname, pl, point, poly, sp, dur, flag, point2, poly2, dur2 in SKILLS:
-        cols = [str(vnum), sname, '4', '1', '1', '0', point, poly, sp, '60+100*k', '', '2', poly, '', '', flag,
-                point2 or 'NONE', poly2, dur2, 'NONE', '0', '0', 'NORMAL', '1', '1', '1000', '0']
+        # MT2009_PLUS_BUFFI_V3: the point polys times the grade's factor (this one overwrites the tooltip's first)
+        cp, cp2 = client_poly(poly), client_poly(poly2)
+        # (and the time the server gives - 3600 s, Ameria's szDurationPoly - in place of the shaman's 60+100*k)
+        cols = [str(vnum), sname, '4', '1', '1', '0', point, cp, sp, dur, '', '2', cp, '', '', flag,
+                point2 or 'NONE', cp2, dur2, 'NONE', '0', '0', 'NORMAL', '1', '1', '1000', '0']
         assert len(cols) == 27, vnum
         out[str(vnum)] = '\t'.join(cols)
     return out

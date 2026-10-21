@@ -33,6 +33,18 @@
 //     General Store's offer is gone) - one still owned is read as before;
 //   - Szybkosc and Zwiekszenie Ataku get M1 only once the buffi has a name, as at Ameria (its CheckOwnerSupport).
 //
+// MT2009_PLUS_BUFFI_V3 (the owner's list of 22 October 2026, cache/yohara/poprawki-runda-2026-10-22.md 1-5):
+//   - three costume slots only - outfit, hairstyle, weapon: no sash on the buffi any more (WEAR_BUFFI_SASH stays in
+//     the enum, nothing goes onto it, the shaman never shows one); a sash still worn there goes back to its owner at
+//     the next login - the bag, or the item mall's storage when the bag is full (ReturnSash);
+//   - weaker buffs: the value of every buff (not its time) times GradeFactor - M1-M10 -50%, G1-G4 -35%, G5-G10 -25%,
+//     P -18% of Ameria's polys (the owner's ranges, confirmed 21 October 2026). Here, where the value is made - exact
+//     per grade (the skill_proto rows 164-167 are not read for it); the client's tooltip polys are cut the same way
+//     (tools/buffi/gen_buffi.py, skilldesc / skilltable);
+//   - Buffi from the character's level 55 (MIN_LEVEL): the seals, the name scroll, the window's commands and the
+//     costume slots refuse below it ("Buffi dostepna od 55 poziomu."); a buffi called before by a lower character is
+//     sent away at its login. The starter gift (the seal for good 61026 + Zwoj Imienia 61030) is quest buffi's, at 55.
+//
 // Without an exe change: the buffi is an NPC on the server (a pet: no AI of its own, nobody can attack it) and is
 // shown to the clients as a female shaman (race 3, type PC) - BuffiInsertLook in CHARACTER::EncodeInsertPacket; its
 // casting is the move packet of a skill (FUNC_SKILL | the skill's motion), which the client plays like a player's; the
@@ -56,6 +68,7 @@
 #include "db.h"
 #include "cmd.h"
 #include "vector.h"
+#include "../../libgame/include/grid.h"	// MT2009_PLUS_BUFFI_V3: the item mall's free place (ReturnSash)
 
 #include <cmath>
 #include <cstdarg>
@@ -88,6 +101,7 @@ namespace mt2009_buffi
 	const float RUN_DISTANCE = 300.0f;
 	const float RESPAWN_DISTANCE = 3000.0f;
 	const int APPROACH = 200;
+	const int MIN_LEVEL = 55;				// MT2009_PLUS_BUFFI_V3: Buffi from the character's level 55 (the owner)
 
 	// The four buffs: the skill, the real shaman skill whose affect it is (the type, so the client shows its icon and
 	// a real shaman's same buff is the same affect), the flag, the client's motion (skilldesc's motion index) and
@@ -180,6 +194,16 @@ namespace mt2009_buffi
 	bool IsBuffiSkill(DWORD dwVnum)
 	{
 		return dwVnum >= SKILL_FIRST && dwVnum <= SKILL_LAST;
+	}
+
+	// MT2009_PLUS_BUFFI_V3: Buffi from level 55 - false (and the owner told so) below it
+	bool LevelOk(LPCHARACTER ch, bool bSay = true)
+	{
+		if (ch && ch->GetLevel() >= MIN_LEVEL)
+			return true;
+		if (ch && bSay)
+			ch->ChatPacket(CHAT_TYPE_INFO, "[Buffi] Buffi dost\xea""pna od %d poziomu.", MIN_LEVEL);
+		return false;
 	}
 
 	void Command(LPCHARACTER ch, const char* fmt, ...)
@@ -277,8 +301,9 @@ namespace mt2009_buffi
 	}
 
 	// MT2009_PLUS_BUFFI_V2: what the shaman wears - the owner's buffi costume slots (Ameria's CheckSupportWear: the
-	// outfit's vnum, the hairstyle's value 3, the weapon's vnum; here the sash too), a transmuted costume with its look;
-	// without a costume Ameria's Czarna Szata+9 / Ekstazyjny Wachlarz+9. [0] body, [1] hair, [2] weapon, [3] sash.
+	// outfit's vnum, the hairstyle's value 3, the weapon's vnum), a transmuted costume with its look; without a costume
+	// Ameria's Czarna Szata+9 / Ekstazyjny Wachlarz+9. [0] body, [1] hair, [2] weapon, [3] sash - MT2009_PLUS_BUFFI_V3:
+	// always none (the owner: no sash on the buffi; a shaman spawned before still loses its one at RefreshLook).
 	DWORD Look(LPITEM item)
 	{
 		return item->GetTransmutation() ? item->GetTransmutation() : item->GetVnum();
@@ -289,7 +314,6 @@ namespace mt2009_buffi
 		LPITEM body = owner->GetWear(WEAR_BUFFI_BODY);
 		LPITEM hair = owner->GetWear(WEAR_BUFFI_HEAD);
 		LPITEM weapon = owner->GetWear(WEAR_BUFFI_WEAPON);
-		LPITEM sash = owner->GetWear(WEAR_BUFFI_SASH);
 		adwPart[0] = body ? Look(body) : ARMOR;
 		adwPart[1] = 0;
 		if (hair)
@@ -299,10 +323,6 @@ namespace mt2009_buffi
 		}
 		adwPart[2] = weapon ? Look(weapon) : WEAPON;
 		adwPart[3] = 0;
-#ifdef ENABLE_ACCE_COSTUME_SYSTEM
-		if (sash)
-			adwPart[3] = sash->GetAcceVnum();
-#endif
 	}
 
 	void RefreshLook(LPCHARACTER owner, LPCHARACTER mob)
@@ -378,27 +398,42 @@ namespace mt2009_buffi
 		return bLevel >= 40 ? 3 : bLevel >= 30 ? 2 : bLevel >= 20 ? 1 : 0;
 	}
 
-	// Ameria's skill_proto 164-167 (szPointPoly, iq = 226): the point(s) a level gives
+	// MT2009_PLUS_BUFFI_V3 (weaker): the part of Ameria's value a grade keeps (the owner, 22 October 2026: M1-M10
+	// -50%, G1-G4 -35%, G5-G10 -25%, P -18%). The client's tooltip polys say the same (gen_buffi.py, CLIENT_FACTOR).
+	double GradeFactor(BYTE bLevel)
+	{
+		if (bLevel >= 40)
+			return 0.82;	// P
+		if (bLevel >= 34)
+			return 0.75;	// G5-G10
+		if (bLevel >= 30)
+			return 0.65;	// G1-G4
+		return 0.50;		// M1-M10
+	}
+
+	// Ameria's skill_proto 164-167 (szPointPoly, iq = 226): the point(s) a level gives; MT2009_PLUS_BUFFI_V3: times
+	// GradeFactor (the value only - the time stays)
 	void Cast(LPCHARACTER owner, LPCHARACTER mob, const SBuff& buff, BYTE bLevel)
 	{
 		const double k = Power(bLevel);
+		const double f = GradeFactor(bLevel);
 		const long lDuration = 3600;
 		switch (buff.dwSkill)
 		{
 			case 164:
-				owner->AddAffect(buff.dwAffect, POINT_RESIST_NORMAL_DAMAGE, (long) ((226 * 0.2 + 5) * (2 * k + 0.5) / (k + 1.5)),
+				owner->AddAffect(buff.dwAffect, POINT_RESIST_NORMAL_DAMAGE, (long) ((226 * 0.2 + 5) * (2 * k + 0.5) / (k + 1.5) * f),
 						buff.dwFlag, lDuration, 0, true);
 				break;
 			case 165:
-				owner->AddAffect(buff.dwAffect, POINT_CRITICAL_PCT, (long) ((226 * 0.2 + 5) * (2 * k + 0.5) / (k + 1.5)),
+				owner->AddAffect(buff.dwAffect, POINT_CRITICAL_PCT, (long) ((226 * 0.2 + 5) * (2 * k + 0.5) / (k + 1.5) * f),
 						buff.dwFlag, lDuration, 0, true);
 				break;
 			case 166:
-				owner->AddAffect(buff.dwAffect, POINT_MOV_SPEED, (long) (5 + 35 * k), buff.dwFlag, lDuration, 0, true);
-				owner->AddAffect(buff.dwAffect, POINT_CASTING_SPEED, (long) (3 + 33 * k), AFF_NONE, (long) (60 + 100 * k), 0, true);
+				owner->AddAffect(buff.dwAffect, POINT_MOV_SPEED, (long) ((5 + 35 * k) * f), buff.dwFlag, lDuration, 0, true);
+				owner->AddAffect(buff.dwAffect, POINT_CASTING_SPEED, (long) ((3 + 33 * k) * f), AFF_NONE, (long) (60 + 100 * k), 0, true);
 				break;
 			case 167:
-				owner->AddAffect(buff.dwAffect, POINT_ATT_GRADE_BONUS, (long) (5 + (226 * 0.2 + 15) * k), buff.dwFlag,
+				owner->AddAffect(buff.dwAffect, POINT_ATT_GRADE_BONUS, (long) ((5 + (226 * 0.2 + 15) * k) * f), buff.dwFlag,
 						lDuration, 0, true);
 				break;
 		}
@@ -482,7 +517,8 @@ namespace mt2009_buffi
 			LPCHARACTER owner = CHARACTER_MANAGER::instance().FindByPID(it->first);
 			// the owner gone (logout, warp, another core), the seal gone or put away, the system off: the
 			// shaman goes; the seal's socket brings it back at the next login
-			if (!Enabled() || !owner || !owner->GetDesc() || !SealOf(owner, b))
+			// MT2009_PLUS_BUFFI_V3: or the owner under level 55
+			if (!Enabled() || !owner || !owner->GetDesc() || !SealOf(owner, b) || !LevelOk(owner, false))
 			{
 				Dismiss(b);
 				s_mapBuffi.erase(it++);
@@ -538,6 +574,8 @@ namespace mt2009_buffi
 
 	bool Call(LPCHARACTER owner, LPITEM seal)
 	{
+		if (!LevelOk(owner))	// MT2009_PLUS_BUFFI_V3
+			return false;
 		std::map<DWORD, SBuffi>::iterator it = s_mapBuffi.find(owner->GetPlayerID());
 		if (it != s_mapBuffi.end() && it->second.dwItemID != seal->GetID() && SealOf(owner, it->second))
 		{
@@ -726,6 +764,71 @@ namespace mt2009_buffi
 		return iWearCell >= WEAR_BUFFI_BODY && iWearCell <= WEAR_BUFFI_SASH;
 	}
 
+	// MT2009_PLUS_BUFFI_V3 (sash back): a sash worn on the buffi's old sash slot (V2) goes back to its owner, once - the
+	// bag; with a full bag the item mall's storage (a free place of its grid, written as the safebox does it); with
+	// both full it waits on the slot (it gives nothing there) for the next login. Idempotent: an empty slot does nothing.
+	bool SashToMall(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch->GetDesc() || ch->GetMall())
+			return false;	// the mall open in this session: its own grid would not know this item
+		const DWORD dwAccount = ch->GetDesc()->GetAccountTable().id;
+		char query[192];
+		snprintf(query, sizeof(query), "SELECT pos, vnum FROM player.item WHERE owner_id = %u AND `window` = 'MALL'", dwAccount);
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+		if (!dwAccount || !msg.get() || msg->uiSQLErrno != 0 || !msg->Get())
+			return false;
+		CGrid grid(SAFEBOX_PAGE_WIDTH, SAFEBOX_PAGE_COUNT * SAFEBOX_PAGE_HEIGHT);
+		MYSQL_ROW row;
+		while (msg->Get()->pSQLResult && (row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		{
+			int iPos = 0;
+			DWORD dwVnum = 0;
+			str_to_number(iPos, row[0]);
+			str_to_number(dwVnum, row[1]);
+			const TItemTable* table = ITEM_MANAGER::instance().GetTable(dwVnum);
+			const int iSize = table ? MAX(1, (int) table->bSize) : 1;
+			if (iPos >= 0 && grid.IsEmpty(iPos, 1, iSize))
+				grid.Put(iPos, 1, iSize);
+		}
+		const int iFree = grid.FindBlank(1, item->GetSize());
+		if (iFree < 0)
+			return false;
+		item->RemoveFromCharacter();
+		item->SetWindow(MALL);
+		item->SetCell(ch, (WORD) iFree);
+		item->Save();
+		ITEM_MANAGER::instance().FlushDelayedSave(item);
+		item->SetSkipSave(true);
+		M2_DESTROY_ITEM(item->RemoveFromCharacter());
+		return true;
+	}
+
+	void ReturnSash(LPCHARACTER ch)
+	{
+		LPITEM sash = ch ? ch->GetWear(WEAR_BUFFI_SASH) : NULL;
+		if (!sash)
+			return;
+		const DWORD dwID = sash->GetID();
+		const DWORD dwVnum = sash->GetVnum();
+		const int iPos = ch->GetEmptyInventoryEx(sash);
+		if (iPos >= 0)
+		{
+			const BYTE bWindow = (BYTE) sash->GetWindowInventoryEx();
+			sash->RemoveFromCharacter();
+			sash->AddToCharacter(ch, TItemPos(bWindow, iPos));
+			sys_log(0, "BUFFI: %s's sash %u (id %u) from the buffi back to the bag", ch->GetName(), dwVnum, dwID);
+			Say(ch, "Buffi nie nosi ju\xbf szarfy - szarfa wr\xf3""ci\xb3""a do twojego ekwipunku.");
+			return;
+		}
+		if (SashToMall(ch, sash))
+		{
+			sys_log(0, "BUFFI: %s's sash %u (id %u) from the buffi to the item mall's storage", ch->GetName(), dwVnum, dwID);
+			Say(ch, "Buffi nie nosi ju\xbf szarfy - ekwipunek jest pe\xb3""ny, szarfa czeka w magazynie przedmiot\xf3w (ItemShop).");
+			return;
+		}
+		Say(ch, "Buffi nie nosi ju\xbf szarfy - zwolnij miejsce w ekwipunku, szarfa wr\xf3""ci przy nast\xea""pnym logowaniu.");
+	}
+
 	// the buffi cell of a costume (-1: no costume of the four)
 	int CellOf(CItem* item)
 	{
@@ -738,9 +841,7 @@ namespace mt2009_buffi
 #ifdef ENABLE_WEAPON_COSTUME_SYSTEM
 			case COSTUME_WEAPON:	return WEAR_BUFFI_WEAPON;
 #endif
-#ifdef ENABLE_ACCE_COSTUME_SYSTEM
-			case COSTUME_ACCE:		return WEAR_BUFFI_SASH;
-#endif
+			// MT2009_PLUS_BUFFI_V3: no sash (the owner) - a sash used with the window open goes onto its owner as ever
 		}
 		return -1;
 	}
@@ -757,7 +858,7 @@ namespace mt2009_buffi
 		if (!bAsked && !(iCandidate < 0 && s_setLookPage.count(ch->GetPlayerID())))
 			return -2;
 		const int iCell = CellOf(item);
-		if (!Counts(ch) || !Enabled())
+		if (!Counts(ch) || !Enabled() || !LevelOk(ch, false))	// MT2009_PLUS_BUFFI_V3: from level 55
 			return bAsked ? -1 : -2;
 		if (iCell < 0)
 			return bAsked ? -1 : -2;		// the open window does not change where an armour or a mount goes
@@ -784,6 +885,8 @@ int BuffiUseItem(LPCHARACTER ch, LPITEM item)
 		Say(ch, "Buffi jest wy\xb3\xb9""czony na tym serwerze.");
 		return 0;
 	}
+	if (!LevelOk(ch))	// MT2009_PLUS_BUFFI_V3: from level 55
+		return 0;
 	if (item->GetVnum() == NAME_SCROLL)
 	{
 		std::map<DWORD, SBuffi>::iterator it = s_mapBuffi.find(ch->GetPlayerID());
@@ -834,9 +937,17 @@ void BuffiOnLogin(LPCHARACTER ch)
 {
 	if (ch)
 		s_setLookPage.erase(ch->GetPlayerID());		// MT2009_PLUS_BUFFI_V2: the window opens closed
-	if (!Counts(ch) || !Enabled())
+	if (!Counts(ch))
+		return;
+	ReturnSash(ch);		// MT2009_PLUS_BUFFI_V3: whether Buffi is on or not
+	if (!Enabled())
 		return;
 	LPITEM seal = FindSeal(ch, true);
+	if (seal && !LevelOk(ch, false))
+	{
+		SendAway(ch, seal);		// MT2009_PLUS_BUFFI_V3: called before by a character under level 55 - it stays away
+		return;
+	}
 	if (seal)
 		Call(ch, seal);
 }
@@ -898,11 +1009,19 @@ int Mt2009BuffiCanEquip(LPCHARACTER ch, LPITEM item)
 		Say(ch, "Buffi jest wy\xb3\xb9""czony na tym serwerze.");
 		return 0;
 	}
+	if (iCell < 0 && !LevelOk(ch))	// MT2009_PLUS_BUFFI_V3: from level 55
+		return 0;
+	// MT2009_PLUS_BUFFI_V3: three slots - no sash
+	if (iCell < 0 && s_equip.iCandidate == WEAR_BUFFI_SASH)
+	{
+		Say(ch, "Buffi nie nosi szarfy - ma tylko kostium, fryzur\xea i nak\xb3""adk\xea na bro\xf1.");
+		return 0;
+	}
 	if (iCell < 0)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, "[Buffi] To miejsce Buffi przyjmuje tylko: %s.",
 				s_equip.iCandidate == WEAR_BUFFI_BODY ? "kostium (str\xf3j)" : s_equip.iCandidate == WEAR_BUFFI_HEAD ? "kostium fryzury" :
-				s_equip.iCandidate == WEAR_BUFFI_WEAPON ? "kostium broni szamana" : "szarf\xea");
+				"kostium broni szamana");
 		return 0;
 	}
 	if (item->GetAntiFlag() & ITEM_ANTIFLAG_SHAMAN)
@@ -950,6 +1069,17 @@ ACMD(do_buffi)
 	char arg[64] = "";
 	const char* rest = one_argument(argument ? argument : "", sub, sizeof(sub));
 	one_argument(rest, arg, sizeof(arg));
+	// MT2009_PLUS_BUFFI_V3: Buffi from level 55 - below it the window's commands are refused (closing it is fine)
+	if (!LevelOk(ch, false))
+	{
+		s_setLookPage.erase(ch->GetPlayerID());
+		if (strcmp(sub, "page"))
+		{
+			LevelOk(ch);
+			Command(ch, "low %d", MIN_LEVEL);
+		}
+		return;
+	}
 	if (!strcmp(sub, "toggle"))
 	{
 		LPITEM seal = FindSeal(ch, true);
@@ -957,7 +1087,7 @@ ACMD(do_buffi)
 			seal = FindSeal(ch, false);
 		if (!seal)
 		{
-			Say(ch, "Nie masz piecz\xea""ci Buffi (ItemShop, Skrzynia Ucznia).");
+			Say(ch, "Nie masz piecz\xea""ci Buffi (ItemShop; prezent na 55 poziomie).");
 			SendState(ch);
 			return;
 		}

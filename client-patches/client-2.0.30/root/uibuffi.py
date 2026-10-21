@@ -18,6 +18,14 @@
 #     trains it to G1 ("/buffi read <skill> <window> <cell>"); from G1 the
 #     Kamien Duchowy Buffi (61031) - used from the bag (quest buffi).
 #
+# MT2009_PLUS_BUFFI_V3 (the owner's list of 22 October 2026, poprawki 1-5):
+#   - three costume slots: outfit, hairstyle, weapon - no sash, and the player's own mount costume is not shown
+#     here any more (it was: Ameria's page showed it, the owner took it for a buffi slot);
+#   - the skills show their grade as the skill window does: the grade's icon column and M1-M10 / G1-G10 / P
+#     (player.GetSkillGrade + the level within it - player.GetSkillLevel is that, not the raw 20-40), the tooltip
+#     likewise (uicharacter.py OverInItem); the tooltip's values are the weaker ones (gen_buffi.py CLIENT_FACTOR);
+#   - Buffi from level 55: below it the window does not open ("Buffi dostepna od 55 poziomu.").
+#
 # The server half is playerbot_buffi.cpp (server-patches/buffi/README.md):
 #   window -> "/buffi info"          the state
 #             "/buffi toggle"        call / send away (the seal in the bag)
@@ -29,6 +37,7 @@
 #                [<skill group>]"
 #             "BUFFI askname"       a name scroll was used: the name dialog
 #             "BUFFI off"           M2_BUFFI=0 on the server
+#             "BUFFI low <level>"   MT2009_PLUS_BUFFI_V3: under the level Buffi needs (the window closes)
 # (game.py passes the "BUFFI" lines here.)
 #
 # The costume slots are the server's wear cells 28-31 (WEAR_BUFFI_*); the 3.0
@@ -43,6 +52,7 @@ import item
 import mouseModule
 import net
 import player
+import skill
 import ui
 import uiCommon
 import uiToolTip
@@ -51,17 +61,18 @@ import warpsafe
 
 NAME_MAX = 16
 
-# the buffi's costume cells (the server's WEAR_BUFFI_BODY/HEAD/WEAPON/SASH = 28-31)
+# the buffi's costume cells (the server's WEAR_BUFFI_BODY/HEAD/WEAPON = 28-30; MT2009_PLUS_BUFFI_V3: no sash 31,
+# no mount)
 BUFFI_CELLS = (
 	getattr(item, "BUFFI_SLOT_BODY", player.EQUIPMENT_SLOT_START + 28),
 	getattr(item, "BUFFI_SLOT_HEAD", player.EQUIPMENT_SLOT_START + 29),
 	getattr(item, "BUFFI_SLOT_WEAPON", player.EQUIPMENT_SLOT_START + 30),
-	getattr(item, "BUFFI_SLOT_SASH", player.EQUIPMENT_SLOT_START + 31),
 )
-MOUNT_CELL = item.COSTUME_SLOT_START + 2	# shown on Ameria's page too
+MIN_LEVEL = 55		# MT2009_PLUS_BUFFI_V3: the server's MIN_LEVEL
 
 TEXT_TITLE = "Buffi"
 TEXT_OFF = "Buffi jest wy\xb3\xb9czony na tym serwerze."
+TEXT_LOW_LEVEL = "Buffi dost\xeapna od %d poziomu."
 TEXT_INFO_PAGE = "Ta strona jest tylko dla Buffi."
 TEXT_NO_SEAL = "Potrzebujesz piecz\xeaci Buffi."
 TEXT_CALLED = "%s - przywo\xb3ana."
@@ -79,6 +90,10 @@ TEXT_BOOK_TIP = "Do G1: Ksi\xeaga Umiej\xeatno\x9cci - %s (szaman)."
 TEXT_BOOK_TIP2 = "Przeci\xb9gnij j\xb9 tutaj (szansa, PD i odst\xeap jak zwykle)."
 TEXT_STONE_TIP = "Od G1 do P: Kamie\xf1 Duchowy Buffi (u\xbfyj go)."
 TEXT_NEEDS_NAME = "Wymaga imienia Buffi (Zw\xf3j Imienia Buffi)."
+TEXT_LEVEL_NOW = "Aktualny poziom: %s"
+TEXT_LEVEL_NEXT = "Nast\xeapny poziom: %s (maks. P)"
+TEXT_DURATION = "Czas trwania: 60 min (Buffi odnawia je sama)"
+TEXT_CASTING_TIME = "Czas \xb3adowania kr\xf3tszy przez %d s"
 TEXT_WRONG_BOOK = "[Buffi] T\xea umiej\xeatno\x9c\xe6 trenuje Ksi\xeaga Umiej\xeatno\x9cci: %s (szaman)."
 TEXT_NOT_BOOK = "[Buffi] Na umiej\xeatno\x9c\xe6 Buffi przeci\xb9gnij Ksi\xeag\xea Umiej\xeatno\x9cci szamana."
 SEALS = {61025: "Buffi (7 dni)", 61026: "Buffi"}
@@ -93,6 +108,8 @@ SKILLS = (
 NAMED_ONLY = (166, 167)
 SKILL_BOOK = 50300
 GRADE_STEP = 20		# Ameria's grid: the grade columns 1/21/41 (skill.SKILL_GRADE_STEP_COUNT)
+GRADE_COLUMNS = 3	# skill.SKILL_GRADE_COUNT: the normal, master and grand master columns, P in the last
+GRADE_BASE = {0: 0, 1: 19, 2: 29, 3: 39}	# MT2009_PLUS_BUFFI_V3: the raw level of a grade's first step - 1
 
 COLOR_GOOD = 0xff9be27c
 COLOR_WARN = 0xffe0b060
@@ -150,16 +167,58 @@ def RegisterSlots():
 			pass
 
 
-def Level(vnum):
-	data = _state['data']
-	level = data['levels'].get(vnum, 0) if data else 0
+def GradeLevel(vnum):
+	"""MT2009_PLUS_BUFFI_V3: (grade, level within it, raw level 0-40) of a buffi skill - the client's own skill
+	data (player.GetSkillGrade / GetSkillLevel of its slot = its vnum, the level within the grade as the skill window
+	shows it), else the server's raw level of "BUFFI state"."""
+	raw = 0
 	try:
-		known = player.GetSkillLevel(vnum)
-		if known > 0:
-			level = known
+		grade = player.GetSkillGrade(vnum)
+		level = player.GetSkillLevel(vnum)
+		if level > 0 and grade in GRADE_BASE:
+			raw = min(40, level + GRADE_BASE[grade])
 	except Exception:
 		pass
-	return level
+	if raw <= 0:
+		data = _state['data']
+		raw = min(40, data['levels'].get(vnum, 0)) if data else 0
+	if raw <= 0:
+		return 0, 0, 0
+	grade = Grade(raw)		# from the raw level, whatever grade the packet said
+	return grade, raw - GRADE_BASE[grade], raw
+
+
+def GradeText(raw):
+	"""MT2009_PLUS_BUFFI_V3: a raw level as the skill window names it - M1-M10, G1-G10, P."""
+	if raw >= 40:
+		return "P"
+	if raw >= 30:
+		return "G%d" % (raw - 29)
+	if raw >= 20:
+		return "M%d" % (raw - 19)
+	return "%d" % raw
+
+
+# the client's skill power of a level (Locale.cpp INTERNATIONAL_SKILL_POWERS = the server's table): k = power / 100
+SKILL_POWER = (0, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 50, 52, 54, 56, 58, 60,
+	63, 66, 69, 72, 82, 85, 88, 91, 94, 98, 102, 106, 110, 115, 125)
+
+
+def Level(vnum):
+	"""The raw level 0-40 (M1 = 20, G1 = 30, P = 40)."""
+	return GradeLevel(vnum)[2]
+
+
+def LevelOk(say=True):
+	"""MT2009_PLUS_BUFFI_V3: Buffi from the character's level 55."""
+	try:
+		if player.GetStatus(player.LEVEL) >= MIN_LEVEL:
+			return True
+	except Exception:
+		return True		# the server checks it anyway
+	if say:
+		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_LOW_LEVEL % MIN_LEVEL)
+	return False
 
 
 def AttachedWindow(slotType):
@@ -307,12 +366,18 @@ class BuffiWindow(ui.ScriptWindow):
 		if not entry or not self.skillToolTip:
 			return
 		vnum, book, name = entry
-		level = Level(vnum)
-		grade = Grade(level)
+		grade, inGrade, level = GradeLevel(vnum)
+		column = min(GRADE_COLUMNS - 1, slot // GRADE_STEP)
 		tip = self.skillToolTip
 		tip.ClearToolTip()
+		# MT2009_PLUS_BUFFI_V3: as the skill window's tooltip (uicharacter.py OverInItem) on the column of its grade
+		# (P on the last) - the grade's name (Mistrz / Arcymistrz / Perfekcyjny Mistrz), the level as M1-M10 /
+		# G1-G10 / P now and next, the (weaker) values of both; only the name on another column
 		try:
-			tip.SetSkillNew(vnum, vnum, max(grade, 1), max(level, 1))
+			if level > 0 and (column == grade or (grade == GRADE_COLUMNS and column == GRADE_COLUMNS - 1)):
+				self.__SkillToolTip(tip, vnum, grade, level)
+			else:
+				tip.SetSkillOnlyName(vnum, vnum, column)
 		except Exception:
 			tip.SetTitle(name)
 		tip.AppendSpace(5)
@@ -326,32 +391,59 @@ class BuffiWindow(ui.ScriptWindow):
 			tip.AppendTextLine(TEXT_STONE_TIP, COLOR_GOOD)
 		tip.ShowToolTip()
 
+	def __SkillToolTip(self, tip, vnum, grade, level):
+		"""MT2009_PLUS_BUFFI_V3: a buffi skill's tooltip - the values its owner gets from the buffi at this level and
+		the next (skilldesc's polys with the grade's cut, gen_buffi.py CLIENT_FACTOR; "sl" = the raw level)."""
+		tip.toolTipWidth = tip.SKILL_TOOL_TIP_WIDTH
+		tip.ResizeToolTip()
+		tip.ClearToolTip()
+		tip.SetTitle(skill.GetSkillName(vnum, grade))
+		gradeName = tip.SKILL_GRADE_NAME.get(grade)
+		if gradeName:
+			tip.AppendSpace(5)
+			tip.AppendTextLine(gradeName % skill.GetSkillName(vnum, 0), tip.CAN_LEVEL_UP_COLOR)
+		tip.AppendDescription(skill.GetSkillDescription(vnum), 25)
+		tip.AppendSkillConditionData(vnum)
+		steps = [(level, TEXT_LEVEL_NOW % GradeText(level), tip.NORMAL_COLOR, tip.ENABLE_COLOR)]
+		if level < 40:
+			steps.append((level + 1, TEXT_LEVEL_NEXT % GradeText(level + 1), tip.NEGATIVE_COLOR, tip.DISABLE_COLOR))
+		for raw, title, titleColor, color in steps:
+			k = SKILL_POWER[min(raw, len(SKILL_POWER) - 1)] / 100.0
+			tip.AppendSpace(5)
+			tip.AppendTextLine(title, titleColor)
+			for i in xrange(skill.GetSkillAffectDescriptionCount(vnum)):
+				tip.AppendTextLine(skill.GetSkillAffectDescription(vnum, i, raw, k), color)
+			tip.AppendTextLine(TEXT_DURATION, color)
+			if vnum == 166:		# Szybkosc's casting speed lasts 60 + 100 * k seconds (playerbot_buffi.cpp Cast)
+				tip.AppendTextLine(TEXT_CASTING_TIME % int(60 + 100 * k), color)
+
 	# ------------------------------------------------------------------ the state
 
 	def Refresh(self):
-		for cell in BUFFI_CELLS + (MOUNT_CELL,):
+		for cell in BUFFI_CELLS:
 			self.costumeSlot.SetItemSlot(cell, player.GetItemIndex(cell), 0)
 		self.costumeSlot.RefreshSlot()
 
 		data = _state['data']
 		named = bool(data and data['named'])
-		# Ameria's grid: a skill's three grade columns, the one of its grade lit and counted
+		# Ameria's grid: a skill's three grade columns, the one of its grade lit and counted - MT2009_PLUS_BUFFI_V3:
+		# as uicharacter.py's active skills, the grade and the level within it (M4 = "m4", G2 = "g2", P = "p"),
+		# not the raw level
 		for k, (vnum, book, name) in enumerate(SKILLS):
-			level = Level(vnum)
-			grade = Grade(level)
-			for j in xrange(3):
+			grade, inGrade, level = GradeLevel(vnum)
+			for j in xrange(GRADE_COLUMNS):
 				real = k + 1 + j * GRADE_STEP
 				if level <= 0:
 					self.skillSlot.ClearSlot(real)
 					continue
-				self.skillSlot.SetSkillSlotNew(real, vnum, j, level)
-				if grade == 3 and j == 2:
-					self.skillSlot.SetSlotCountNew(real, grade, level)
+				self.skillSlot.SetSkillSlotNew(real, vnum, j, inGrade)
+				if grade == GRADE_COLUMNS and j == GRADE_COLUMNS - 1:
+					self.skillSlot.SetSlotCountNew(real, grade, inGrade)
 				elif grade != j:
 					self.skillSlot.SetSlotCount(real, 0)
 					self.skillSlot.DeactivateSlot(real)
 				else:
-					self.skillSlot.SetSlotCountNew(real, grade, level)
+					self.skillSlot.SetSlotCountNew(real, grade, inGrade)
 		self.skillSlot.RefreshSlot()
 		# Ameria's buffi_slot_hide: Szybkosc (1-3) and Zwiekszenie Ataku (4-6) until they are learned
 		for i, lock in enumerate(self.locks):
@@ -438,6 +530,8 @@ class BuffiWindow(ui.ScriptWindow):
 	# ------------------------------------------------------------------ open / close
 
 	def Open(self):
+		if not LevelOk():	# MT2009_PLUS_BUFFI_V3
+			return
 		self.Refresh()
 		self.Show()
 		self.SetTop()
@@ -473,6 +567,8 @@ def GetWindow():
 
 
 def OpenWindow():
+	if not LevelOk():	# MT2009_PLUS_BUFFI_V3: Buffi from level 55
+		return
 	window = GetWindow()
 	if window is None:
 		return
@@ -511,6 +607,12 @@ def OnCommand(sub='', *args):
 	try:
 		if sub == 'off':
 			_state['off'] = True
+		elif sub == 'low':
+			# MT2009_PLUS_BUFFI_V3: under level 55 (the server said so in the chat) - the window closes
+			window = _state['window']
+			if window is not None and window.IsShow():
+				window.Close()
+			return
 		elif sub == 'state' and len(args) >= 11:
 			_state['off'] = ToInt(args[0]) == 0
 			_state['data'] = {
@@ -525,7 +627,7 @@ def OnCommand(sub='', *args):
 			}
 		elif sub == 'askname':
 			window = GetWindow()
-			if window is not None:
+			if window is not None and LevelOk(False):
 				window.Open()
 				window.AskName()
 			return
