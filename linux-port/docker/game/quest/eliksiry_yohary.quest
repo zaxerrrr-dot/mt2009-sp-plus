@@ -1,0 +1,32 @@
+-- MT2009_PLUS_YELIXIRS_V1 (the owner, 21 October 2026): the elixirs of Yohara at Huahn-So (20022; Bokjung, Bakra,
+-- Jayang), as the pl-wiki's "Zielarstwo" (Eliksiry): 10 herbs of an element and 20 empty bottles - Pusty Eliksir Mocy
+-- for the element's power, Pusty Eliksir Odp. for the resistance - make one elixir (90%, from level 120; +8-20% for
+-- 1-10 minutes, random). The recipes are cube.eliksiry.txt (tools/yohara_eliksiry); the window shows Huahn-So's dew
+-- recipes of the package's cube.txt too (the wiki's herbalist). cp1250; no literal ends with a Polish letter (qc).
+quest eliksiry_yohary begin
+	state start begin
+		when 20022.chat."Eliksiry Yohary" begin
+			say_title(mob_name(20022)..":")
+			say("Zio³a Yohary, zmienione przez moc Sunga Mahi,")
+			say("skrywaj¹ wielk¹ si³ê. Przynieœ mi 10 zió³ jednego")
+			say("¿ywio³u i 20 pustych butelek, a sporz¹dzê z nich")
+			say("eliksir (szansa 90%, od 120. poziomu):")
+			say("")
+			say("- z Pustym Eliksirem Mocy - eliksir mocy ¿ywio³u,")
+			say("- z Pustym Eliksirem Odp. - eliksir odpornoœci.")
+			say("")
+			say("Ognisty Liœæ - ogieñ, MroŸny Korzonek - lód,")
+			say("Piorunowe Zio³o - b³yskawica, Kwiat Pó³nocnego")
+			say("Wiatru - wiatr, Ziemne Pn¹cze - ziemia,")
+			say("Mroczny Cierñ - mrok.")
+			say("")
+			say("Eliksir daje od 8 do 20% na 1 do 10 minut -")
+			say("wartoœæ i czas losujê przy sporz¹dzaniu.")
+			say("")
+			if select("Otwórz okno zielarstwa", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+	end
+end

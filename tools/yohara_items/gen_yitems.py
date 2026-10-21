@@ -90,10 +90,20 @@ for v in (31245, 31246, 31247, 31248, 31249, 31251, 31252):           # Twarda S
     add(v)
 add(31250, name='Zielona Runa SungMa')                                # wiki's name (Owsap's PL: Zolta)
 HERBS = 'herbalism (the elixirs of Yohara) - none here yet'
-add(50738, status=need(HERBS))                                        # Mroczny Ciern
+# MT2009_PLUS_YELIXIRS_V1 (the owner, 21 October 2026): the herbs and the empty bottles work now - Huahn-So (20022) makes
+# the elixirs of Yohara from them (tools/yohara_eliksiry, cube.eliksiry.txt, quest eliksiry_yohary); the pl-wiki's text
+# and where the elixirs are made.
+HUAHN = ' Eliksiry sporządza zielarz Huahn-So (Bokjung, Bakra, Jayang).'
+
+
+def herb_desc(kind):
+    return u'Zioło zmienione przez moc Sunga Mahi. Wymagane do sporządzania %s.' % kind + HUAHN
+
+
+add(50738, tradeable=1, desc=herb_desc(u'mrocznych eliksirów'))      # Mroczny Ciern
 # our 50733 / 50734 / 50926 are other items (Bursztynowy Platek, Perlowe Wiechy, a recipe): 957xx / 95926 here
-add(95733, src=50733, status=need(HERBS + '; 50733 is our Bursztynowy Platek, so 95733'))
-add(95734, src=50734, status=need(HERBS + '; 50734 is our Perlowe Wiechy, so 95734'))
+add(95733, src=50733, tradeable=1, desc=herb_desc(u'ognistych eliksirów'))       # 50733 is our Bursztynowy Platek
+add(95734, src=50734, tradeable=1, desc=herb_desc(u'mroźnych eliksirów'))        # 50734 is our Perlowe Wiechy
 # MT2009_PLUS_GAYA_V1: Kamyki work now (Statua Wojownika grinds them into Gaya, quest ygaya, tools/ygaya)
 add(95926, src=50926, desc='Zbieraj Kamyki i oszlifuj je u Statuy Wojownika w Porcie Nowego Kontynentu w drogocenne '
     'Gaya (30 Kamyków, Kamień Duszy +0 do +3 i 15 000 Yang - szansa 70%, 3 Gaya).')  # 50926 is our recipe, so 95926

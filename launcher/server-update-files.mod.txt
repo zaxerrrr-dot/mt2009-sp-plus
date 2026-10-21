@@ -428,6 +428,11 @@ linux-port/docker/mariadb/playerbot/zestawy_items.sql
 # MT2009_PLUS_KOLA_ITEMS_V1 (server-patches/kolaprzedmioty): the wheels' Kamien Rytualny - the engine file it changes is
 # above (char_item.cpp); the item and the Smoczy Plomien names kola_items.sql (tools/kola_items).
 linux-port/docker/mariadb/playerbot/kola_items.sql
+# MT2009_PLUS_YELIXIRS_V1: the elixirs of Yohara (tools/yohara_eliksiry) - the items, Huahn-So's recipes and the blend rows
+# (game/Dockerfile appends them; quest eliksiry_yohary in quest/*).
+linux-port/docker/mariadb/playerbot/yohara_eliksiry.sql
+linux-port/docker/game/cube.eliksiry.txt
+linux-port/docker/game/blend.eliksiry.txt
 # MT2009_PLUS_HERB_BUSY_V1 (server-patches/enginefixes): the busy action's type and the stun's half.
 linux-port/docker/game/src/server/game/src/char_player.h
 linux-port/docker/game/src/server/game/src/battle.h

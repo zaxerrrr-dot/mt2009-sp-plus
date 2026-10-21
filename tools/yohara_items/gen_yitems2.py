@@ -76,11 +76,12 @@ for v in (31239, 31240, 31241):                         # Polyskujaca Biala / Ni
 add(31238, type='ITEM_GIFTBOX', subtype='0')            # Polyskujaca Muszla - a chest (special_item_group)
 # herbs of the elements (wiki: wind Kwiat Polnocnego Wiatru, earth Ziemne Pnacze, lightning Piorunowe Ziolo; our
 # 50735 / 50736 are Korzen Weza / Jaskiniowy Grzyb, so 95735 / 95736 here as the first batch's 957xx)
-add(95735, src=50735, status=need(HERBS + '; 50735 is our Korzen Weza, so 95735'))
-add(95736, src=50736, status=need(HERBS + '; 50736 is our Jaskiniowy Grzyb, so 95736'))
-add(50737, status=need(HERBS))
-add(50739, status=need(HERBS))                          # Pusty Eliksir Mocy
-add(50740, status=need(HERBS))                          # Pusty Eliksir Odp.
+# MT2009_PLUS_YELIXIRS_V1: they work now - Huahn-So's elixirs of Yohara (tools/yohara_eliksiry); the pl-wiki's texts
+add(95735, src=50735, tradeable=1, desc=y1.herb_desc(u'piorunowych eliksirów'))    # 50735 is our Korzen Weza
+add(95736, src=50736, tradeable=1, desc=y1.herb_desc(u'eliksirów północnego wiatru'))  # 50736 is our Jaskiniowy Grzyb
+add(50737, tradeable=1, desc=y1.herb_desc(u'eliksirów ziemi'))
+add(50739, tradeable=1, desc=u'Pusta butelka, wymagana do sporządzenia eliksirów mocy.' + y1.HUAHN)   # Pusty Eliksir Mocy
+add(50740, tradeable=1, desc=u'Pusta butelka, wymagana do sporządzenia eliksirów odporności.' + y1.HUAHN)  # Pusty Eliksir Odp.
 # chests and keys
 add(83065, type='ITEM_GIFTBOX', subtype='0')            # Losowa Skrzynia Skarbow
 add(83066, type='ITEM_GIFTBOX', subtype='0')            # Los. Klucz do Skrz. Sk.

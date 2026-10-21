@@ -4029,6 +4029,17 @@ if [ -s /opt/playerbot/kola_items.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_YELIXIRS_V1: the elixirs of Yohara (the owner, 21 October 2026) - yohara_eliksiry.sql
+# (tools/yohara_eliksiry/gen_yeliksiry.py): 50830-50841, Huahn-So's (cube.eliksiry.txt, blend.eliksiry.txt in the game
+# image). Idempotent (INSERT IGNORE).
+if [ -s /opt/playerbot/yohara_eliksiry.sql ]; then
+    if db < /opt/playerbot/yohara_eliksiry.sql; then
+        echo "[playerbot-migrate] elixirs of Yohara: yohara_eliksiry.sql applied"
+    else
+        fail_step "elixirs of Yohara: yohara_eliksiry.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
 # Nazara 71202, Lizak Magii 71188, Czekoladowy Amulet 71199, Mistrzowski Emblemat 70607, Blogoslawienstwo Mocy 72713,

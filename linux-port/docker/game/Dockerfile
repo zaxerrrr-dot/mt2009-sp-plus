@@ -382,11 +382,13 @@ RUN set -eux; \
     # absorbed, runes for the level, the evolution - and Baek-Go's (20018) Zwyczajna Szata Aury (20%, the pl-wiki).
     # kawuco opens Kawuco's (20413, Przyladek Smoczego Ognia) cube window: Ogniste Buty / Buty Oceanu from Buty Zimorodka /
     # Euforii +5..+9 (cube.buty.txt, 5-50% by plus; MT2009_PLUS_KAWUCO_V1).
+    # eliksiry_yohary opens Huahn-So's (20022, Bokjung / Bakra / Jayang) cube window: the elixirs of Yohara from the
+    # herbs and the empty bottles (cube.eliksiry.txt, blend.eliksiry.txt; MT2009_PLUS_YELIXIRS_V1, tools/yohara_eliksiry).
     # meley_dungeon is Schronienie Meley - Straznik Smokow Dolnarr on Doyyumhwaji, the Dragon Queen's lair (356)
     # (MT2009_PLUS_YOHARA_MELEY_V1).
     # labirynth and black_steel_crafting are the package's, with Min-Sun (20402) on Pustynia Yongbi since Przelecz (69)
     # is gone (MT2009_PLUS_PASS69_OFF_V1) - their objects replace the stock ones.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco meley_dungeon labirynth black_steel_crafting; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco eliksiry_yohary meley_dungeon labirynth black_steel_crafting; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1506,6 +1508,33 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-helm100/cub
  && test "$(grep -c -E '^fail_keep[[:blank:]]' "$C")" -eq 20 \
  && rm -rf /tmp/cube-helm100 \
  && echo "share: Jaharr's cube window - $n level-100 helmet recipes (MT2009_PLUS_HELM100_CUBE_V1)"
+
+# MT2009_PLUS_YELIXIRS_V1 (share; the owner, 21 October 2026): the elixirs of Yohara (tools/yohara_eliksiry, the pl-wiki's
+# "Zielarstwo"): Huahn-So (20022) makes 50830-50841 from 10 herbs (95733-95736, 50737, 50738) and 20 empty bottles
+# (50739 power / 50740 resistance), 90% - cube.eliksiry.txt, appended to cube.txt; quest eliksiry_yohary opens his window.
+# blend.eliksiry.txt gives each elixir its point (the element powers 178-183, the resistances 75/76/78/133/134/135),
+# +8-20% and 1-10 minutes - appended to blend.txt. blend_item.cpp reads apply_type as a number (str_to_number), so the
+# package's dews (Rosy 50821-50826, also Huahn-So's) had apply_type 0 - no effect; their names become the points here
+# (CRITICAL_PCT 40, PENETRATE_PCT 41, ATTACK_SPEED 17, RESIST_MAGIC 77, ATT_BONUS 95 = ATT_GRADE_BONUS,
+# DEF_BONUS 96 = DEF_GRADE_BONUS - the global data's apply names). Krysztal Energii's ENERGY (51002) is left as it is.
+COPY cube.eliksiry.txt blend.eliksiry.txt /tmp/yelixirs/
+RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; B=$L/blend.txt; A=/tmp/yelixirs \
+ && ! grep -q 'MT2009_PLUS_YELIXIRS_V1' "$C" \
+ && sed -i 's/\r$//; s/$/\r/' "$A/cube.eliksiry.txt" "$A/blend.eliksiry.txt" \
+ && n=$(grep -c -E '^section' "$A/cube.eliksiry.txt") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A/cube.eliksiry.txt" >> "$C" \
+ && test "$n" -eq 12 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+20022[[:space:]]*$' "$C")" -eq 30 \
+ && sed -i -E 's/^([[:blank:]]*apply_type[[:blank:]]+)CRITICAL_PCT\b/\140/; s/^([[:blank:]]*apply_type[[:blank:]]+)PENETRATE_PCT\b/\141/; s/^([[:blank:]]*apply_type[[:blank:]]+)ATTACK_SPEED\b/\117/; s/^([[:blank:]]*apply_type[[:blank:]]+)RESIST_MAGIC\b/\177/; s/^([[:blank:]]*apply_type[[:blank:]]+)ATT_BONUS\b/\195/; s/^([[:blank:]]*apply_type[[:blank:]]+)DEF_BONUS\b/\196/' "$B" \
+ && test "$(grep -c -E '^[[:blank:]]*apply_type[[:blank:]]+(40|41|17|77|95|96)[[:space:]]*$' "$B")" -eq 6 \
+ && bb=$(grep -c -E '^section' "$B") \
+ && { [ -z "$(tail -c 1 "$B")" ] || printf '\r\n' >> "$B"; } \
+ && cat "$A/blend.eliksiry.txt" >> "$B" \
+ && test "$(grep -c -E '^section' "$B")" -eq "$((bb + 12))" \
+ && test "$(grep -c -E '^[[:blank:]]*item_vnum[[:blank:]]+508(3[0-9]|4[01])[[:space:]]*$' "$B")" -eq 12 \
+ && rm -rf "$A" \
+ && echo "share: Huahn-So's elixirs of Yohara - $n recipes, 12 blend rows, the dews' apply types as points (MT2009_PLUS_YELIXIRS_V1)"
 
 # MT2009_PLUS_KAWUCO_V1 (share; the owner, 15 October 2026): Kawuco (20413, the boots NPC - mariadb/playerbot/kawuco.sql,
 # quest/kawuco.quest, cube.buty.txt) where the pl-wiki's "Kawuco" and Owsap's npc.txt put him: Przyladek Smoczego Ognia
