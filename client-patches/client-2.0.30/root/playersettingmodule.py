@@ -70,6 +70,8 @@ def RegisterSkill(race, group, empire=0):
 
 	# MT2009_PLUS_RIPOSTY_V1: every riposte / boost has a hidden slot (slot = vnum) where its level arrives (riposty.py)
 	riposty.RegisterSlots()
+	# MT2009_PLUS_BUFFI_V2: the buffi's skills 164-167 too - slot = vnum (uibuffi.py: its window and tooltip)
+	__import__("uibuffi").RegisterSlots()
 
 	## Character Skill
 	if SKILL_INDEX_DICT.has_key(job):
