@@ -82,4 +82,5 @@ ma Kamień Driad (zabierany) → **Erebu (PB)**: Bagjanamu (PB) (4352), minutę 
 
 ## Szczelina Czasu
 Dodana osobno (MT2009_PLUS_YOHARA_CRACK_V1, właściciel 14.10.2026 – na razie jeden loch): `../yohara_crack/README.md`
-– Statua Szczeliny Czasu (103,90), Zegarek Kieszonkowy u Handlarki Iluzji, Zaklęty Las (SZC) (404, quest `jotun_szc`).
+– Statua Szczeliny Czasu (103,90), Zegarek Kieszonkowy u Handlarki Iluzji, Zaklęty Las (SZC) (404, quest `jotun_szc`);
+pozostałe trzy lochy SZC (405–407, MT2009_PLUS_YOHARA_CRACK2_V1): `../yohara_crack2/README.md`.
