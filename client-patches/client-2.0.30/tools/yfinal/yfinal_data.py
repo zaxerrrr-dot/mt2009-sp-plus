@@ -63,6 +63,7 @@ DEAD = [
 # apply.sh's order (linux-port/docker/mariadb/playerbot/apply.sh): zywioly_moby.sql, then these
 ELEMENT_SQL = ['yohara_maps3_zywioly.sql', 'yohara_maps4_zywioly.sql', 'yohara_dung4_zywioly.sql',
                'yohara_pb_zywioly.sql', 'yohara_iluzja_zywioly.sql', 'yohara_crack_zywioly.sql',
+               'yohara_crack2_zywioly.sql',  # MT2009_PLUS_YOHARA_CRACK2_V1
                'yohara_zaklety_zywioly.sql', 'yohara_meley_zywioly.sql']
 
 

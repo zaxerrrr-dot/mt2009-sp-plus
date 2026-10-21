@@ -1,0 +1,936 @@
+{
+ "maps": {
+  "405": {
+   "base": [
+    0,
+    1817600
+   ],
+   "folder": "metin2_map_boss_crack_skipia",
+   "pb": "metin2_map_boss_awaken_skipia",
+   "size": [
+    6,
+    6
+   ],
+   "terrain": "metin2_map_boss_awaken_skipia"
+  },
+  "406": {
+   "base": [
+    153600,
+    1817600
+   ],
+   "folder": "metin2_map_boss_crack_flame",
+   "pb": "metin2_map_boss_awaken_flame",
+   "size": [
+    3,
+    3
+   ],
+   "terrain": "metin2_map_n_flame_dungeon_01"
+  },
+  "407": {
+   "base": [
+    230400,
+    1817600
+   ],
+   "folder": "metin2_map_boss_crack_snow",
+   "pb": "metin2_map_boss_awaken_snow",
+   "size": [
+    4,
+    3
+   ],
+   "terrain": "metin2_map_n_snow_dungeon_01"
+  }
+ },
+ "new_packs": [
+  "ycrack2_maps",
+  "ycrack2_mobs"
+ ],
+ "packs": {
+  "ycrack2_mobs": [
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/00.msa",
+    "sha1": "ba48b888def1cb5c408f5b1f4722979a87abc679",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/00_1.msa",
+    "sha1": "6d91f24ba7275525c43fb5ba788699fb3c8d86dc",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/03.msa",
+    "sha1": "42cd3aabdb7c48efe3b9474e774a40b52e63d289",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/14.jpg",
+    "sha1": "289a84cb4b4249bee1820126bb2d8db38536d133",
+    "size": 13945,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/20.msa",
+    "sha1": "afca6015240b226345100a3b1d77f92a48dee069",
+    "size": 518,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/20_1.msa",
+    "sha1": "73fe6a91649a404d0989c19354fbc365b91170d2",
+    "size": 520,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/27.msa",
+    "sha1": "03ca70506272ab27264aa0e77b5d2a91e45d1b52",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/30.msa",
+    "sha1": "853e2e9cee52a2a9c5ae89c98aff9b71e4fa704e",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/30_1.msa",
+    "sha1": "9c0bb3aa20628eea19d2b2777e3da6b39d6c6524",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/31.msa",
+    "sha1": "25d41dbd5779c8561078f855ae69876eb7013a63",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/32.msa",
+    "sha1": "91cf4ff6b590872b14d63a455e4d113630120db0",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/33.msa",
+    "sha1": "e81021075e5d601215326356b3d028ad5cd7b8a0",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/34.msa",
+    "sha1": "0fcef5837c447670c9f090dc537d9bce5e0384c3",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/34_1.msa",
+    "sha1": "3f1ec8d6b7629c56ed7e1d1afe6c302f725d5d91",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/35.msa",
+    "sha1": "54ddd7814d80dd7249dd2255b27c1d7fc50e0c72",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/36.msa",
+    "sha1": "8b5bb05319c718b6bfc40f8fad3bfd622ed2d13c",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/37.msa",
+    "sha1": "ade8ee22944fb1961646b69a2c2fcd61e76cec0d",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/amseup.jpg",
+    "sha1": "4a8a49ab6f58e5ab2729c67384eabcd30d11b654",
+    "size": 11292,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/ch_bowman.msm",
+    "sha1": "566ba7fba1d6344ff6c51f9263a9e2c34fd46025",
+    "size": 1088,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/motlist.txt",
+    "sha1": "d99dde27df869b09f7b3593b9c29068b101b0e2a",
+    "size": 473,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/ring_rainbow_line.jpg",
+    "sha1": "601e4b7ccfba29a23ff87497442a39b16422dd95",
+    "size": 11849,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/shape.msm",
+    "sha1": "566ba7fba1d6344ff6c51f9263a9e2c34fd46025",
+    "size": 1088,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/skipia_bowman.gr2",
+    "sha1": "92cff62db8b47480141a2e808f2f798b265d8b69",
+    "size": 78527,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/skipia_bowman01.dds",
+    "sha1": "14946606ba1ad663f35ecb3b13e9600382d2031a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/skipia_bowman02.dds",
+    "sha1": "446b0ae3060cc931063212879a99018ada17560a",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_bowman/skipia_bowman_lod_01.gr2",
+    "sha1": "ce500d1affc3246049036440480bc2717bbf7135",
+    "size": 67433,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/00.msa",
+    "sha1": "533c35f4bb66c99560d05663ae5f8108b3e24a7b",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/00_1.msa",
+    "sha1": "54136645ac956d4cc32865a0b0f6faa00ae0c7c6",
+    "size": 146,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/03.msa",
+    "sha1": "e5d07ae8a33be1bba6591cb187a4024a20d139f8",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/20.msa",
+    "sha1": "853ac57eb2244cf6dbf2280787c76dc04a50f34a",
+    "size": 2843,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/20_1.msa",
+    "sha1": "22e7230d28aa56bca2ac4966f3f151627fe1d4b4",
+    "size": 3876,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/30.msa",
+    "sha1": "a84d159d2d737f6a390edb2755ddf947026bc71f",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/30_1.msa",
+    "sha1": "9feffa9f847729cd68dd92cd43cd71fa811cb244",
+    "size": 146,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/31.msa",
+    "sha1": "4e667296f4711c875bf3a44543000a1ef3244771",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/32.msa",
+    "sha1": "c0b33269ac3285aa7c78f28c1b6067a6fb0a4350",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/33.msa",
+    "sha1": "6c655fbf3135b05863c972bb4425f3eeefb9dee4",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/34.msa",
+    "sha1": "ef36fcb6ffa1d6f81e75f44a0c2d5caa2cb4f690",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/34_1.msa",
+    "sha1": "07c35c80f07298eadce52b84eca17b7dc03b7bf0",
+    "size": 146,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/35.msa",
+    "sha1": "8b0afa110516199cc6dbd36fbb232490cdd3339b",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/36.msa",
+    "sha1": "44c1946bf8dcc91f639e31509feeb2342077bbe3",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/37.msa",
+    "sha1": "d033fea23daea504a14c3d18c980b49a1ebcb5ec",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/ch_footman.msm",
+    "sha1": "1d1f863022053398afc6d3ffa37e33a652921fff",
+    "size": 1090,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/motlist.txt",
+    "sha1": "d99dde27df869b09f7b3593b9c29068b101b0e2a",
+    "size": 473,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/shape.msm",
+    "sha1": "1d1f863022053398afc6d3ffa37e33a652921fff",
+    "size": 1090,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/skipia_footman.gr2",
+    "sha1": "d140d891befd68adebb0fde1aaf4ab1954fcf230",
+    "size": 75051,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/skipia_footman01.dds",
+    "sha1": "1b170fa0cb35e6d6e252084089357887760f995a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/skipia_footman02.dds",
+    "sha1": "0986160695697fc75b51fe6e7b00ff109d7b288e",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_footman/skipia_footman_lod_01.gr2",
+    "sha1": "0cb9b395cb737c98d1001f7de6ebf55585d9bdc5",
+    "size": 62408,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/00.msa",
+    "sha1": "4128b07e11ae8acfe836e6d18f7ce76c6962d7cf",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/0001.tga",
+    "sha1": "48626910d789fab250afa89beb5918a5a932add8",
+    "size": 16428,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/0002.tga",
+    "sha1": "5d7a49c72696f041369660739b53945b74b61fa4",
+    "size": 16428,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/0003.tga",
+    "sha1": "3c2b21fe10e91d097fcb8373aec661c1385ca92b",
+    "size": 16428,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/0004.tga",
+    "sha1": "6e8b4998f342e236d4b65708ff4bd035c22a2460",
+    "size": 16428,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/0005.tga",
+    "sha1": "da3ba01e44a5cfa9e62ada1d6b717e9beb6ee453",
+    "size": 16428,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/0006.tga",
+    "sha1": "e074bf9c70bb74156e729b91c19a7005f6ed394f",
+    "size": 16428,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/00_1.msa",
+    "sha1": "8ad238df5ceadaf6222913d46ce66f2a2f97e8ce",
+    "size": 147,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/03.msa",
+    "sha1": "cf488a96c7800b79babbc24adfefef202477c3ef",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/20.msa",
+    "sha1": "6bc4cde26d17a7a7bce9ff4018eae712a374cc7d",
+    "size": 926,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/20_1.msa",
+    "sha1": "b0a8740d0b52de7a472a300f4bba0c5d82efb4f8",
+    "size": 933,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/30.msa",
+    "sha1": "b9b0ce0e860f3aaf81af8b33baed4415d0dddda6",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/30_1.gr2",
+    "sha1": "c68b924a15bc7c5496b115dbd98900d3a09faffc",
+    "size": 18347,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/30_1.msa",
+    "sha1": "b9b0ce0e860f3aaf81af8b33baed4415d0dddda6",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/31.msa",
+    "sha1": "39c36c9a6ee1fbcde86298ab24db157b016d18ad",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/32.msa",
+    "sha1": "076bfd6d40ce9212b5028fbb20f8f4f5c50dfc4d",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/33.msa",
+    "sha1": "f3107bb8f84ad806a988809e09925081ae97e525",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/34.msa",
+    "sha1": "1e39cfbc244b78b65272045842ccf0ba00a6d3ae",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/34_1.msa",
+    "sha1": "7d5370cc052d02ea892667f17d822017a7cf535e",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/35.msa",
+    "sha1": "4988a18a8bf2852b5d0481bb1180ee043e693d2d",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/36.msa",
+    "sha1": "cd4509ad731a4443a2996143cddd5e13f624ad6a",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/37.msa",
+    "sha1": "b4fdc530014fee28ef85f2813fb6ca95ab290ab2",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/ch_magician.msm",
+    "sha1": "1f8f88cbfb7ffa86d8cfb552b82721455c196492",
+    "size": 1091,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/chip.jpg",
+    "sha1": "a2353452193315b7252866dbe453a78b3cdb6d94",
+    "size": 9004,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/flame.dds",
+    "sha1": "517dc187420c7045a72cc9a0a5b23b0d9eee3706",
+    "size": 8320,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/gatein.jpg",
+    "sha1": "60cea9753d6da634d0db461ab95b34c24709fd86",
+    "size": 43100,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/ls1_1 copy.jpg",
+    "sha1": "e99c8c8c19e9ab7752c5d670237dcee9072c8847",
+    "size": 17568,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/motlist.txt",
+    "sha1": "d99dde27df869b09f7b3593b9c29068b101b0e2a",
+    "size": 473,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/noejeon_light copy.jpg",
+    "sha1": "6888e75566ae2dabf7433ce9f7d6672c0b157bff",
+    "size": 16833,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/shamandust.jpg",
+    "sha1": "ebcd1f0ac08f435a4d49465803856327b143b608",
+    "size": 9949,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/shape.msm",
+    "sha1": "256b7597e87b0aa2c4cd744220f31cd60f5a49a0",
+    "size": 1098,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/skipia_magician.gr2",
+    "sha1": "ac21a2d0abb845591f4d6b61b63eb11740d6e644",
+    "size": 78594,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/skipia_magician01.dds",
+    "sha1": "452858bf87c71d185c4fcfeda4a6b811989c1e55",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/skipia_magician02.dds",
+    "sha1": "6d51e095641c0513723ccfa9728fe90ba64ed78b",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/skipia_magician_lod_01.gr2",
+    "sha1": "ee1465652d18ffeaf43815b3b1cd57994062c300",
+    "size": 65863,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_magician/w_star.jpg",
+    "sha1": "6cbb153035af308eacb1530a5b1006426afe66f9",
+    "size": 9057,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/00.msa",
+    "sha1": "53c2ff47a9a6576defacb23ffc1084b27f614cd1",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/00_1.msa",
+    "sha1": "76142b4b212b4e417b3c3bcb6a7d1d36d986332b",
+    "size": 146,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/03.msa",
+    "sha1": "0b6be6fd7be5621575c5ecb39eb5a615cb4b6422",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/20.msa",
+    "sha1": "ea99c8bc5170d1f6fd94cced15fd5f7376a39e39",
+    "size": 3403,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/20_1.msa",
+    "sha1": "56466308153465ef3a35f288ac877d446db85495",
+    "size": 2762,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/30.msa",
+    "sha1": "1941795af5b9e27708279eb48daa4cf43b55ce2d",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/30_1.msa",
+    "sha1": "4ded4ae4a1878fda7102e62fb9cc1e65de4af0e9",
+    "size": 146,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/31.msa",
+    "sha1": "4067b539791df0291003406ca5ce89c5acb7a4ac",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/32.msa",
+    "sha1": "a4a7c550ba0d0047c35ca01f6928fd39a04f26db",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/33.msa",
+    "sha1": "56a1c216cc33e18eebbe96fc5f84a9ed7c2d618f",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/34.msa",
+    "sha1": "9275af43a4857bd95b93c46b6b20fa4c089165a1",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/34_1.msa",
+    "sha1": "21789d84cf9cf8903d88f819c8f71de15f935f93",
+    "size": 146,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/35.msa",
+    "sha1": "aacaa73623e0f560a32a03b25e78575f6a469d79",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/36.msa",
+    "sha1": "69d4325ab9ab106f4552ec4157b3ce0500e91f62",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/37.msa",
+    "sha1": "1fefdc4da6ed6ae7643da7e1d2c67635a9686114",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/ch_officer.msm",
+    "sha1": "c24bee705c3d44beb32073cb3b07713bb419c303",
+    "size": 1088,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/motlist.txt",
+    "sha1": "d99dde27df869b09f7b3593b9c29068b101b0e2a",
+    "size": 473,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/shape.msm",
+    "sha1": "521eebec748c2ac7a378e9c792637647ba81d67f",
+    "size": 1090,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/skipia_officer.gr2",
+    "sha1": "24fce52465117e601baada0a72cb15543a845411",
+    "size": 88459,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/skipia_officer02.dds",
+    "sha1": "dee4505b3841f00c8efb5de4daeee3c9b3c9db2e",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/ch_officer/skipia_officer_lod_01.gr2",
+    "sha1": "9f7c2974fd3be1ee8bc8019fc4815db52cb5c56d",
+    "size": 76583,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "20510": {
+   "msm": "d:/ymir work/npc2/suraghost/suraghost.msm",
+   "race": "suraghost",
+   "status": "earlier builder"
+  },
+  "20511": {
+   "msm": "d:/ymir work/npc2/flame_dungeon_npc/flame_npc.msm",
+   "race": "flame_npc",
+   "status": "ours"
+  },
+  "20512": {
+   "msm": "d:/ymir work/npc2/keyholestone/keyholestone.msm",
+   "race": "keyholestone",
+   "status": "earlier builder"
+  },
+  "20513": {
+   "msm": "d:/ymir work/npc/seal_stone/seal_stone.msm",
+   "race": "seal_stone",
+   "status": "earlier builder"
+  },
+  "20514": {
+   "msm": "d:/ymir work/npc2/flame_bridge_block_chain/bridge_block_chain.msm",
+   "race": "bridge_block_chain",
+   "status": "ours"
+  },
+  "20515": {
+   "msm": "d:/ymir work/npc2/flame_door_npc/flame_door_npc.msm",
+   "race": "flame_door_npc",
+   "status": "ours"
+  },
+  "20516": {
+   "msm": "d:/ymir work/npc2/ice_lionstone/ice_lionstone.msm",
+   "race": "ice_lionstone",
+   "status": "ours"
+  },
+  "20517": {
+   "msm": "d:/ymir work/npc2/ice_keybox/ice_keybox.msm",
+   "race": "ice_keybox",
+   "status": "ours"
+  },
+  "20518": {
+   "msm": "d:/ymir work/npc2/ice_stonepillar/ice_stonepillar.msm",
+   "race": "ice_stonepillar",
+   "status": "ours"
+  },
+  "4200": {
+   "msm": "d:/ymir work/monster2/ch_footman/ch_footman.msm",
+   "race": "ch_footman",
+   "status": "staged"
+  },
+  "4201": {
+   "msm": "d:/ymir work/monster2/ch_bowman/ch_bowman.msm",
+   "race": "ch_bowman",
+   "status": "staged"
+  },
+  "4202": {
+   "msm": "d:/ymir work/monster2/ch_magician/ch_magician.msm",
+   "race": "ch_magician",
+   "status": "staged"
+  },
+  "4203": {
+   "msm": "d:/ymir work/monster2/ch_footman/ch_footman.msm",
+   "race": "ch_footman",
+   "status": "staged"
+  },
+  "4204": {
+   "msm": "d:/ymir work/monster2/ch_bowman/ch_bowman.msm",
+   "race": "ch_bowman",
+   "status": "staged"
+  },
+  "4205": {
+   "msm": "d:/ymir work/monster2/ch_magician/ch_magician.msm",
+   "race": "ch_magician",
+   "status": "staged"
+  },
+  "4206": {
+   "msm": "d:/ymir work/monster2/ch_officer/ch_officer.msm",
+   "race": "ch_officer",
+   "status": "staged"
+  },
+  "4207": {
+   "msm": "d:/ymir work/monster2/ch_general/ch_general.msm",
+   "race": "ch_general",
+   "status": "earlier builder"
+  },
+  "4208": {
+   "msm": "d:/ymir work/monster2/ch_general/ch_general.msm",
+   "race": "ch_general",
+   "status": "earlier builder"
+  },
+  "4209": {
+   "msm": "d:/ymir work/monster2/ch_general/ch_general.msm",
+   "race": "ch_general",
+   "status": "earlier builder"
+  },
+  "4210": {
+   "msm": "d:/ymir work/monster2/ch_general/ch_general.msm",
+   "race": "ch_general",
+   "status": "earlier builder"
+  },
+  "4220": {
+   "msm": "d:/ymir work/monster2/fire_ghost/fire_ghost1.msm",
+   "race": "fire_ghost1",
+   "status": "ours"
+  },
+  "4221": {
+   "msm": "d:/ymir work/monster2/fire_tiger_boss/fire_tiger_boss1.msm",
+   "race": "fire_tiger_boss1",
+   "status": "ours"
+  },
+  "4222": {
+   "msm": "d:/ymir work/monster2/fire_man/fire_man1.msm",
+   "race": "fire_man1",
+   "status": "ours"
+  },
+  "4223": {
+   "msm": "d:/ymir work/monster2/fire_knight/fire_knight1.msm",
+   "race": "fire_knight1",
+   "status": "ours"
+  },
+  "4224": {
+   "msm": "d:/ymir work/monster2/fire_king/fire_king1.msm",
+   "race": "fire_king1",
+   "status": "ours"
+  },
+  "4225": {
+   "msm": "d:/ymir work/monster2/firegolem_soldier/firegolem_soldier.msm",
+   "race": "firegolem_soldier",
+   "status": "ours"
+  },
+  "4226": {
+   "msm": "d:/ymir work/monster2/firegolem_magician/firegolem_magician.msm",
+   "race": "firegolem_magician",
+   "status": "ours"
+  },
+  "4227": {
+   "msm": "d:/ymir work/monster2/firegolem_general/firegolem_general.msm",
+   "race": "firegolem_general",
+   "status": "ours"
+  },
+  "4228": {
+   "msm": "d:/ymir work/monster2/firegolem_boss/firegolem_boss.msm",
+   "race": "firegolem_boss",
+   "status": "ours"
+  },
+  "4229": {
+   "msm": "d:/ymir work/monster2/firegolem_boss/firegolem_boss.msm",
+   "race": "firegolem_boss",
+   "status": "ours"
+  },
+  "4240": {
+   "msm": "d:/ymir work/monster/ice_snow_monster/ice_snow_monster1.msm",
+   "race": "ice_snow_monster1",
+   "status": "ours"
+  },
+  "4241": {
+   "msm": "d:/ymir work/monster/ice_snow_insect/ice_snow_insect1.msm",
+   "race": "ice_snow_insect1",
+   "status": "ours"
+  },
+  "4242": {
+   "msm": "d:/ymir work/monster/ice_snow_man/ice_snow_man1.msm",
+   "race": "ice_snow_man1",
+   "status": "ours"
+  },
+  "4243": {
+   "msm": "d:/ymir work/monster/ice_snow_giant_man/ice_snow_giant_man1.msm",
+   "race": "ice_snow_giant_man1",
+   "status": "ours"
+  },
+  "4244": {
+   "msm": "d:/ymir work/monster/ice_snow_golem/ice_snow_golem1.msm",
+   "race": "ice_snow_golem1",
+   "status": "ours"
+  },
+  "4245": {
+   "msm": "d:/ymir work/monster2/icegolem_soldier/icegolem_soldier.msm",
+   "race": "icegolem_soldier",
+   "status": "ours"
+  },
+  "4246": {
+   "msm": "d:/ymir work/monster2/icegolem_magician/icegolem_magician.msm",
+   "race": "icegolem_magician",
+   "status": "ours"
+  },
+  "4247": {
+   "msm": "d:/ymir work/monster2/icegolem_general/icegolem_general.msm",
+   "race": "icegolem_general",
+   "status": "ours"
+  },
+  "4248": {
+   "msm": "d:/ymir work/monster2/icegolem_boss/icegolem_boss.msm",
+   "race": "icegolem_boss",
+   "status": "ours"
+  },
+  "4249": {
+   "msm": "d:/ymir work/monster2/icegolem_boss/icegolem_boss.msm",
+   "race": "icegolem_boss",
+   "status": "ours"
+  },
+  "4400": {
+   "msm": "d:/ymir work/monster2/blue_dragon/blue_dragon.msm",
+   "race": "blue_dragon",
+   "status": "ours"
+  },
+  "4401": {
+   "msm": "d:/ymir work/monster2/yamachun_boss/yamachun_boss.msm",
+   "race": "yamachun_boss",
+   "status": "ours"
+  },
+  "4402": {
+   "msm": "d:/ymir work/monster2/hanma_boss/hanma_boss.msm",
+   "race": "hanma_boss",
+   "status": "ours"
+  },
+  "8120": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_09.msm",
+   "race": "metinstone_09",
+   "status": "earlier builder"
+  },
+  "8121": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_01.msm",
+   "race": "metinstone_01",
+   "status": "earlier builder"
+  },
+  "8122": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_06.msm",
+   "race": "metinstone_06",
+   "status": "earlier builder"
+  },
+  "8123": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_02.msm",
+   "race": "metinstone_02",
+   "status": "earlier builder"
+  },
+  "8124": {
+   "msm": "d:/ymir work/monster/metinstone_02/metinstone_12.msm",
+   "race": "metinstone_12",
+   "status": "ours"
+  },
+  "8125": {
+   "msm": "d:/ymir work/monster/metinstone_02/metinstone_13.msm",
+   "race": "metinstone_13",
+   "status": "ours"
+  }
+ },
+ "unresolved": {
+  "effects": [],
+  "races": {
+   "ch_bowman": [
+    "d:/ymir work/monster2/ch_bowman/27.gr2"
+   ]
+  }
+ }
+}
