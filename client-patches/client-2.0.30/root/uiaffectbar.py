@@ -1221,3 +1221,15 @@ AFFECT_SHOW_DATA[AFFECT_COSTUME_SET] = {
 	"description" : _CostumeSetDescription,
 	"icon" : "mt2009_ui/affect/costume_set_bonus.tga",
 }
+# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's buffs (the server's playerbot_worldboss.h) - 720 the loot tier's drop chance
+# (+100/50/25 % for 2 h), 721 "Pokonaj Bossa Swiata" (attack value +20 % for 3 h); the pl-wiki's icon.
+AFFECT_WORLDBOSS_DROP = 720
+AFFECT_WORLDBOSS_ATTACK = 721
+AFFECT_SHOW_DATA[AFFECT_WORLDBOSS_DROP] = {
+	"description" : "Boss \x8cwiata: szansa na drop przedmiot\xf3w +%d%%",
+	"icon" : "mt2009_ui/affect/worldboss.tga",
+}
+AFFECT_SHOW_DATA[AFFECT_WORLDBOSS_ATTACK] = {
+	"description" : "Boss \x8cwiata: warto\x9c\xe6 ataku +%d%%",
+	"icon" : "mt2009_ui/affect/worldboss.tga",
+}

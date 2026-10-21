@@ -466,6 +466,8 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_WHEEL_V1: Kolo Fortuny (uiwheel.py).
 		import uiwheel
 		uiwheel.DestroyWindow()
+		# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's window and ranking (uiworldboss.py).
+		__import__("uiworldboss").DestroyWindow()
 		# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's windows (uigoblin.py).
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
@@ -789,6 +791,8 @@ class GameWindow(ui.ScriptWindow):
 			"event_calendar"	: (lambda : Window("uieventcalendar"), None),
 			# MT2009_PLUS_WHEEL_V1: Kolo Fortuny (uiwheel.py).
 			"wheel"				: (lambda : Window("uiwheel"), None),
+			# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (uiworldboss.py), no key by default.
+			"world_boss"		: (lambda : Window("uiworldboss"), None),
 			# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
 			"new_pet"			: (lambda : Window("uinewpet"), None),
 			# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel ("Wyprawy", uidungeoninfo.py).
@@ -2604,6 +2608,8 @@ class GameWindow(ui.ScriptWindow):
 				__import__("uiminigamecatchking").Register()
 				# MT2009_PLUS_YUTNORI_V1: the hub's Yut Nori button opens its window.
 				__import__("uiminigameyutnori").Register()
+				# MT2009_PLUS_WORLDBOSS_V1: the hub's Boss Swiata button opens its window (uiworldboss.py).
+				__import__("uiworldboss").Register()
 				# MT2009_PLUS_NEW_PET_V1: the New Pet System's pet back after the loading screen.
 				__import__("uinewpet").Start()
 
@@ -3382,6 +3388,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["SidekickSkill"] = self.__SidekickSkill
 		serverCommandList["SidekickSkillEnd"] = self.__SidekickSkillEnd
 		serverCommandList["WOF"] = self.__WheelOfFortune # MT2009_PLUS_WHEEL_V1
+		serverCommandList["WB"] = self.__WorldBoss # MT2009_PLUS_WORLDBOSS_V1
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
@@ -4116,6 +4123,10 @@ class GameWindow(ui.ScriptWindow):
 	def __WheelOfFortune(self, *args):
 		import uiwheel
 		uiwheel.OnCommand(*args)
+
+	# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's lines (uiworldboss.py).
+	def __WorldBoss(self, *args):
+		__import__("uiworldboss").OnCommand(*args)
 
 	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
 	def __NewPet(self, *args):

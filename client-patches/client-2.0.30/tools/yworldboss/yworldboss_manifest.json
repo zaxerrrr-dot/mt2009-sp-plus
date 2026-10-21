@@ -1,0 +1,1257 @@
+{
+ "models": [
+  "w_trent_boss2",
+  "w_cyclops_boss2",
+  "w_zombie_bigboss2",
+  "w_yellow_tigerman",
+  "w_reddragon_human_boss",
+  "w_ogre_boss2"
+ ],
+ "new_packs": [
+  "yworldboss"
+ ],
+ "packs": {
+  "yworldboss": [
+   {
+    "name": "d:/ymir work/effect/monster2/w_blast2.mse",
+    "sha1": "ad8462ac5987a4364f1e94fd859bbcbe4c272265",
+    "size": 6882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_ent_black.mse",
+    "sha1": "1d15f176ae8b911c70312820a903fe71f4455001",
+    "size": 46978,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_ent_elder_s3.mse",
+    "sha1": "89cb7c9688979827e27690b2f91055924fe9b5c5",
+    "size": 35415,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_ent_elder_s3_1.mse",
+    "sha1": "3f7dd79809e6103217957ce0b7399eb96d80e7f3",
+    "size": 47490,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_ent_elder_s4.mse",
+    "sha1": "2a6eb9857552365d65a28c0dbd0805cfef57e383",
+    "size": 12939,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_fire_red1.mse",
+    "sha1": "b82a29cf05bceff65b00790bb5aa186b6ca6966f",
+    "size": 61446,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_impact3.mse",
+    "sha1": "08938e055025cb0878b4a426c042a9610197f0bc",
+    "size": 38657,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_impact3_2.mse",
+    "sha1": "e6a459e9dc425b3df51cec3412744379c8d9fb83",
+    "size": 29521,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_impact4.mse",
+    "sha1": "850375370f43bd49ac696a60cd6a8342eae2daf3",
+    "size": 9163,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_impact_poison1.mse",
+    "sha1": "d3fbebaaa2a12b18c8609fa79027d67d9d1a3968",
+    "size": 9637,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_mob_hide3.mse",
+    "sha1": "8e2df6ac2fd537463183c9e9def78d1b682efa60",
+    "size": 23505,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redblack.mse",
+    "sha1": "b7bbd001b7fe872802ea846a4abac82c0959d1e3",
+    "size": 12537,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redblack1.mse",
+    "sha1": "0489a76ba71ff4c5861ad7cd85c5efaeaacaa899",
+    "size": 12450,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redblack2.mse",
+    "sha1": "4c86d83e80be4d73c147da1eb5e7c4811b817fc7",
+    "size": 9767,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redblack4.mse",
+    "sha1": "3b15f6bdc591202f9c788bf615c05b254e1535ca",
+    "size": 6229,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redd_human_sattack1.mse",
+    "sha1": "77153bc370240c9d38151a490b2646b3fc1cc8ac",
+    "size": 26133,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redd_human_sattack1_start.mse",
+    "sha1": "a0004d93e1c347c3512165b8ea629feecb901d55",
+    "size": 15588,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redd_human_sattack_boom.mse",
+    "sha1": "c497283e5351defa3ed0851e3a58373d8c022f96",
+    "size": 21962,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redd_human_sattack_end.mse",
+    "sha1": "daf412294509b6cbee19263682bf53e2bfdd5f08",
+    "size": 19368,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_redd_human_sattack_start.mse",
+    "sha1": "a556568385690818579cf93c1eb1cb86b5104945",
+    "size": 6408,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_smoke1.mse",
+    "sha1": "928a1a469788b964f11dba745e4405a0aaaa0f8c",
+    "size": 9934,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_yellow_tigerman_24.mse",
+    "sha1": "b334ab281b4d4b50fd1e0e169a9e9050d5d292bc",
+    "size": 6238,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_yellow_tigerman_24_1.mse",
+    "sha1": "172d6fa7e57b3472404368e39328eaf99f1980db",
+    "size": 47805,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_yellow_tigerman_25.mse",
+    "sha1": "52dc86950365287e9f2a98d4d7dbe931cf067b04",
+    "size": 50892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/w_yellow_tigerman_25_1.mse",
+    "sha1": "fd875fb1621857344ac044912c5047a39141c447",
+    "size": 53985,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/front_damage.gr2",
+    "sha1": "ecb992fc9f9bce99e94f5e7cfd4f02eb5d97f7a7",
+    "size": 20828,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/front_damage.msa",
+    "sha1": "28fd8b3f461c30936d3a6e6d525235c0ef05f421",
+    "size": 159,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/front_dead.gr2",
+    "sha1": "eb37f5f0fd25a20c0844fd9df20a8ffcc15bda4d",
+    "size": 71832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/front_dead.msa",
+    "sha1": "a17264e1f618803f56188d7297c3b28571b1ae51",
+    "size": 157,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/motlist.txt",
+    "sha1": "ba590725963e8fdec88d6799e7fe51659a40411a",
+    "size": 328,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/normal_attack.gr2",
+    "sha1": "170793e8150fa06a51cdf13c3cf5f48e3413b521",
+    "size": 29114,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/normal_attack.msa",
+    "sha1": "d1940bac5efed76f068a21ccf458f2e6c0e903ea",
+    "size": 844,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/normal_attack1.gr2",
+    "sha1": "9168cb38c3e0a8a6b7c8ca0cb596096f6dda80c7",
+    "size": 30208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/normal_attack1.msa",
+    "sha1": "4ea8f17f67ff10a99655dc5f64eea8b9d8cd9002",
+    "size": 845,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/run.gr2",
+    "sha1": "4b61de4d251b4646271281be02c2a19336601ff8",
+    "size": 27034,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/run.msa",
+    "sha1": "e4aef551c3e378cf66a2cf2b9006119673974172",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/special_attack.gr2",
+    "sha1": "34b8fa0feedb46e4db5b850a2c0505ff7ed8fc4c",
+    "size": 45366,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/special_attack.msa",
+    "sha1": "01d18044ca043f26a4a2bbd8c91c79d5fbf1da5e",
+    "size": 2292,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/special_attack1.gr2",
+    "sha1": "7ba83e15d6a3126d632545ce8154e1324743301c",
+    "size": 27734,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/special_attack1.msa",
+    "sha1": "9b381a69ae6c93af30fc96be1eb0264cf99e7cc7",
+    "size": 2263,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/w_cyclops_boss2.dds",
+    "sha1": "b5a6f9d7f42340da3ae0f9dfa338082e1da0e0bc",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/w_cyclops_boss2.gr2",
+    "sha1": "657ee6a37a43f89e351d42024b04b4a107449fcf",
+    "size": 192188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/w_cyclops_boss2.msm",
+    "sha1": "2a6fc503853e50d0cb2df30fd53cc708cb52bad5",
+    "size": 1102,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/w_cyclops_boss2_lod_01.gr2",
+    "sha1": "5d9c346441a8091c6dfe2e52edf34ce44c0d6448",
+    "size": 132712,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/w_cyclops_boss2_weapon.dds",
+    "sha1": "b924612b82968aaac6766b38c6cd1da6e5159984",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/wait.gr2",
+    "sha1": "00cbb04cd4a3f780a3bd1a31c9f7eeff8ba143be",
+    "size": 26614,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/wait.msa",
+    "sha1": "72a7105cb1479c0d816c5365193d805cbe038f8e",
+    "size": 151,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/wait1.gr2",
+    "sha1": "6640f643f8f5ad403397fba866eb2a1df1b2a257",
+    "size": 41046,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_cyclops_boss2/wait1.msa",
+    "sha1": "61fe9eaf1b864ad83205699bcd84f4baad43b9f9",
+    "size": 152,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/front_damage.gr2",
+    "sha1": "ee8ef8c546d485a167ba0f6e36820de193b7a857",
+    "size": 22588,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/front_damage.msa",
+    "sha1": "4cd94f6dd3ad6a66dcbfedb9aeffed3434c3043c",
+    "size": 156,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/front_dead.gr2",
+    "sha1": "f8e6dc189b68a6bb3f27a38ebf7d38b3a7b53b94",
+    "size": 49598,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/front_dead.msa",
+    "sha1": "9dc1ccc992945a3716cacc7d5e404ebdd4b5a826",
+    "size": 154,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/motlist.txt",
+    "sha1": "a55948d68fcdd586eb6f8106672011aeddad2340",
+    "size": 329,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/normal_attack.gr2",
+    "sha1": "e6c27bee9fa7a9c634da8c4b6bb023f8f1c46eb7",
+    "size": 31898,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/normal_attack.msa",
+    "sha1": "dcdaa4316e4abee5585ad99b1bc245e5593f8e11",
+    "size": 1469,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/normal_attack1.gr2",
+    "sha1": "16dec097bc5d0410aef66f2b8d1ef5e0fd341f47",
+    "size": 31620,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/normal_attack1.msa",
+    "sha1": "1191fe7dceb75de2f32991c5e9dc9d4bbdca6bd4",
+    "size": 842,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/run.gr2",
+    "sha1": "0df0b899d2b9da3dde80edb360499035164dd614",
+    "size": 22020,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/run.msa",
+    "sha1": "58ca9f2873593d0403efcc2d4033b9810508ff9c",
+    "size": 184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/special_attack.gr2",
+    "sha1": "ce64a38efdba375e89c5d82358cc314d3e4a6109",
+    "size": 31288,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/special_attack.msa",
+    "sha1": "253daee96cc76f1fe091ad7fa5a83751fdcd0908",
+    "size": 2589,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/special_attack1.gr2",
+    "sha1": "09c90e7349be5d2a94125867bf9288bc31466d78",
+    "size": 50662,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/special_attack1.msa",
+    "sha1": "9961617bf73bdf6d6b24ac205967480afc44338e",
+    "size": 2281,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/w_ogre_boss2.gr2",
+    "sha1": "b460e47bdb4082a459bf10dfae9704504ef88fb1",
+    "size": 213824,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/w_ogre_boss2.msm",
+    "sha1": "9fdda9f926f77cb187f324ae56f0ef52394544c8",
+    "size": 1100,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/w_ogre_boss2_1.dds",
+    "sha1": "a927a667ae562dce497c24c3b280a5649d3da39d",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/w_ogre_boss2_2.dds",
+    "sha1": "338b9a00fef3ee538055a580c97e01cb67d995c1",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/w_ogre_boss2_lod_01.gr2",
+    "sha1": "5cba79f6d575eef0c1a89f276b1749a4d89e759c",
+    "size": 161296,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/w_ogre_boss2_weapon.dds",
+    "sha1": "1c8621c5ed6047b49bcb7342b3fd5dbd3e7b4e55",
+    "size": 43648,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/wait.gr2",
+    "sha1": "e5f22f5037ae664d59a08e2c09a64f5dbb8ac830",
+    "size": 28968,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/wait.msa",
+    "sha1": "338009c9103cdd738ece072386013b85d19b658f",
+    "size": 148,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/wait1.gr2",
+    "sha1": "610096e120bfb30722ca3d61c65d00996ea1ce5d",
+    "size": 73260,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_ogre_boss2/wait1.msa",
+    "sha1": "f3beda184436cca8e1374df7bf3d6a8a0a42eeca",
+    "size": 150,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/front_damage.gr2",
+    "sha1": "bad30e98273e7035e0afbd2997885ac50bd33bcc",
+    "size": 20562,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/front_damage.msa",
+    "sha1": "45fc2c8dc697975cdda863b0b729d3b4b1afb763",
+    "size": 207,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/front_dead.gr2",
+    "sha1": "6055d2ceade0e03e4d35d828d9770ddeb2d4c29c",
+    "size": 68378,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/front_dead.msa",
+    "sha1": "9090bb999423cc6690a336f88a2405ccd752aaae",
+    "size": 205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/motlist.txt",
+    "sha1": "5af05a74923c726bd5944941f471057087d5eb68",
+    "size": 302,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/normal_attack.gr2",
+    "sha1": "61a3dd5ef473cdfae4e2dc04c94a3c17e3c99198",
+    "size": 46590,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/normal_attack.msa",
+    "sha1": "7f87cbfdd5e641a80e4c33ab0de393741d607e39",
+    "size": 892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/normal_attack1.gr2",
+    "sha1": "dd935c2531525204579a2c6a111ac2e0364d95bc",
+    "size": 46068,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/normal_attack1.msa",
+    "sha1": "43157517636a0ecb921ec93b25cee5164fd95cd7",
+    "size": 893,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/run.gr2",
+    "sha1": "f4c2af6871c7465b0a4e3d6d6898df1aceb72647",
+    "size": 27982,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/run.msa",
+    "sha1": "e895b7f2d35475bbb398212f92b7e69bb60bc4a3",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/special_attack.gr2",
+    "sha1": "7ab97cd92daf8ae8b9b772e08b943848a5f460d4",
+    "size": 30632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/special_attack.msa",
+    "sha1": "9a554e930f28aac56377616f370f62cf8d89fb4f",
+    "size": 2399,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/special_attack1.gr2",
+    "sha1": "31daf05ad24a06ee8cbf37ed5708c25f9d7d3171",
+    "size": 77386,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/special_attack1.msa",
+    "sha1": "55a64ebf97672abb8e5244587e24d54f944d8b44",
+    "size": 1683,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/w_reddragon_human_boss.dds",
+    "sha1": "08b10d12395d418e82d3c3163f24129e741dd37e",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/w_reddragon_human_boss.gr2",
+    "sha1": "b8aa8fd7040e85aad79967a97a6fdedaf26e091b",
+    "size": 123624,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/w_reddragon_human_boss.msm",
+    "sha1": "8c3a1a0dde5b0dc728d262cdd8ad6ed860421a06",
+    "size": 1116,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/wait.gr2",
+    "sha1": "129076b588a1de6747c86ef2ebef2b28e18b37b4",
+    "size": 27730,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_reddragon_human_boss/wait.msa",
+    "sha1": "6b982f973edfe10523943e2b033441ba75aa6e3b",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/front_damage.gr2",
+    "sha1": "30a89b299800b6bad43057dcbab903cfdc60399a",
+    "size": 24554,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/front_damage.msa",
+    "sha1": "60592c36e194f15ef1a5e6ac8ab953516baeb61f",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/front_dead.gr2",
+    "sha1": "88a4dd5550912caa6c84e46ddb452ea659c8663e",
+    "size": 52848,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/front_dead.msa",
+    "sha1": "d2ec0b2b04f16b944598328a18cd9a5379d3cd17",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/motlist.txt",
+    "sha1": "a55948d68fcdd586eb6f8106672011aeddad2340",
+    "size": 329,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/normal_attack.gr2",
+    "sha1": "bf6378df4ee943258fd722bd96fd4809b40f5ac2",
+    "size": 36266,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/normal_attack.msa",
+    "sha1": "012a886ca6510100aa426e3fe51b8a836ae0c122",
+    "size": 884,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/normal_attack1.gr2",
+    "sha1": "410d574152e94988a68caa2182784cef783c30b7",
+    "size": 36126,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/normal_attack1.msa",
+    "sha1": "037ed448b87fcfa61ab92c09e0492e3741d6931c",
+    "size": 885,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/run.gr2",
+    "sha1": "8091054f139f90f998bbcac4d3f11c9ba24fce6a",
+    "size": 34398,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/run.msa",
+    "sha1": "c8c4bb0f3c7d9b867b374530ffd4e255f8378cc9",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/special_attack.gr2",
+    "sha1": "302d13ad6e80e4a84322ea45cb579cdf01490648",
+    "size": 51456,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/special_attack.msa",
+    "sha1": "0d0fbbfd868284746c2c21459a00be4e36ee9f74",
+    "size": 2658,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/special_attack1.msa",
+    "sha1": "f43ca2c6e29e138220c28ca5e9145c755c878010",
+    "size": 1888,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/w_trent_boss2.dds",
+    "sha1": "d2b8595d0fcc47992609b37b0b050337634e2725",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/w_trent_boss2.gr2",
+    "sha1": "73a43bf4af1fb73682e3d6215e1224bd3d76ab41",
+    "size": 114492,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/w_trent_boss2.msm",
+    "sha1": "897b850d831b62aab6fced7a2cb5b816b130af38",
+    "size": 1505,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/w_trent_boss2_lod_01.gr2",
+    "sha1": "d9a7d4e4995b376554565845c58d41c6261c48c5",
+    "size": 84936,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/wait.gr2",
+    "sha1": "160abcac319509c9399b644c1c29083283b57903",
+    "size": 31246,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/wait.msa",
+    "sha1": "b588a407d92535c61851ff7911fe32378b531f8b",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/wait1.gr2",
+    "sha1": "31f12e92120e68e436a133f7f9120ef3bedcc4aa",
+    "size": 52616,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_trent_boss2/wait1.msa",
+    "sha1": "64c6113499c32a8377add2cf200f08c5243ffd75",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/front_damage.gr2",
+    "sha1": "13d938232ec755973babd7f63355b12bf2777994",
+    "size": 113972,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/front_damage.msa",
+    "sha1": "ae0ff78b4837e0b8c18ac7f05ed9a69ae140d0c2",
+    "size": 161,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/front_dead.gr2",
+    "sha1": "ac7bf42c687cfd6a2c62f21ec49692e134b6b8cd",
+    "size": 204160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/front_dead.msa",
+    "sha1": "8570e9b15e7e9fcd4698809e769c26429dd26267",
+    "size": 159,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/motlist.txt",
+    "sha1": "a55948d68fcdd586eb6f8106672011aeddad2340",
+    "size": 329,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/normal_attack.gr2",
+    "sha1": "2317cf4589b8afa6e0a7abadfa198627756745ed",
+    "size": 31380,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/normal_attack.msa",
+    "sha1": "0e0ca3de24c5c3d201ade2142686aac2a46ef4b5",
+    "size": 1069,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/normal_attack1.gr2",
+    "sha1": "c6d5d51606359074ee044c2be8e08087344eea8b",
+    "size": 32852,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/normal_attack1.msa",
+    "sha1": "aa71f22c1b73b0a84d5f8782f79854c22d217d66",
+    "size": 1068,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/run.gr2",
+    "sha1": "8ef89e39afe390cdc31250d54aa07ba9237e9638",
+    "size": 23248,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/run.msa",
+    "sha1": "a162106b2fbf36b2cfde8cb682667ae4d1472859",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/special_attack.gr2",
+    "sha1": "73ed39b1945cdb20f42fa7fe56584102b61a740c",
+    "size": 32360,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/special_attack.msa",
+    "sha1": "330784635c831c7ac72443801b133ec7852f5791",
+    "size": 1691,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/special_attack1.msa",
+    "sha1": "324ff149b43a2595d7a044decc40f731daba798d",
+    "size": 2310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/w_yellow_tigerman.dds",
+    "sha1": "02dec4f22feabd48e3894e8227dc89b755e53b57",
+    "size": 349680,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/w_yellow_tigerman.gr2",
+    "sha1": "c785d4ca0661187aa5f7b84ae113b408154904b6",
+    "size": 48264,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/w_yellow_tigerman.msm",
+    "sha1": "e4dee4dfb3ce5a1a7086001a5e941b8ef81db5b1",
+    "size": 1106,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/w_yellow_tigerman_crown.dds",
+    "sha1": "9aef3ee3a4c195d537939efa45273d68c79f1f1e",
+    "size": 4224,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/w_yellow_tigerman_lod_01.gr2",
+    "sha1": "779e98bc0a78b878410cd113e31dfe72637c4328",
+    "size": 44264,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/wait.gr2",
+    "sha1": "d9ef63ebac639a4f702f5888935f61e1178d189f",
+    "size": 27740,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/wait.msa",
+    "sha1": "56b91cfb822ceb5662c7223f78614159033776af",
+    "size": 153,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/wait1.gr2",
+    "sha1": "25b2cb57cf3bcb1e04bd988fd5a840004cf4bb61",
+    "size": 47748,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_yellow_tigerman/wait1.msa",
+    "sha1": "bec88fa5fbd82887e4961e6283a652b1567361f9",
+    "size": 154,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/front_damage.gr2",
+    "sha1": "17fb6379c214f4b278c2404fc54112ac5662d215",
+    "size": 21668,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/front_damage.msa",
+    "sha1": "b3d2e6a441047bd4b0167996d530c4b2caadbcb6",
+    "size": 202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/front_dead.gr2",
+    "sha1": "3b163ab345c0f2f8270d759f8819cb00b8096383",
+    "size": 70856,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/front_dead.msa",
+    "sha1": "909826e2e448bad0a45cd16b09270a00661b708a",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/motlist.txt",
+    "sha1": "a55948d68fcdd586eb6f8106672011aeddad2340",
+    "size": 329,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/normal_attack.gr2",
+    "sha1": "76b5aad2b2baceb3a264d0a68eb3997ee13ba0ff",
+    "size": 31000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/normal_attack.msa",
+    "sha1": "760eb0d5638756b34347d108950e28149ae99a67",
+    "size": 889,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/normal_attack1.gr2",
+    "sha1": "1872da4a001513146f1f27f8400b56383f9e7ec2",
+    "size": 30688,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/normal_attack1.msa",
+    "sha1": "ab328c17d7d8492ff0dfa37f048762493c3297e3",
+    "size": 890,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/run.gr2",
+    "sha1": "2c1993a1bbc6fd17a34e0826afafc76d489377c3",
+    "size": 29874,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/run.msa",
+    "sha1": "f35048cff6e91faebf064d45a0631b50e8ecf7e6",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/special_attack.gr2",
+    "sha1": "d37aee0f8a9839c24e5fffaebc6c92df018b1275",
+    "size": 31162,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/special_attack.msa",
+    "sha1": "06909c3d588da4c3e4e71f92e5eb5e9422cd2149",
+    "size": 3678,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/special_attack1.gr2",
+    "sha1": "ab19aad786e0428825a4319844d1aa569efcc610",
+    "size": 31356,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/special_attack1.msa",
+    "sha1": "d85b834a1e476c78ca0b3a165842c85f600edb41",
+    "size": 2536,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/w_zombie_bigboss2.gr2",
+    "sha1": "48218066bb34aa21401148d33d7959cf535e371a",
+    "size": 110348,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/w_zombie_bigboss2.msm",
+    "sha1": "f54365a38f085cc6c9961bbb496a6a2a58e99f1e",
+    "size": 1530,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/wait.gr2",
+    "sha1": "32889db299af074acba8759117d553b9f9b132c1",
+    "size": 38218,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/wait.msa",
+    "sha1": "e0aa51c67112c6f31ffbce8c3eab1a5a2b87e706",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/wait1.gr2",
+    "sha1": "510314d51522475589bbff2d1e4bca3c28fb341b",
+    "size": 43442,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/wait1.msa",
+    "sha1": "43e89d34a77d6bca3fcac8305e82e3cf5bc4e875",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/w_zombie_bigboss2/walk.gr2",
+    "sha1": "1af9c9d64afa4f1bb251106c023f3d967c391e48",
+    "size": 209480,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/barbarian_knight/attack_1.wav",
+    "sha1": "a54a9b63b0e6e9b6a0eb558ba9aedddc90b32db4",
+    "size": 76570,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/bou/attack_1.wav",
+    "sha1": "daf38f71bf14ab403ba874611d265fbb1b79f4c7",
+    "size": 31714,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/bou/back_1.wav",
+    "sha1": "715ec1b011d01eeaa4ec76f361c6bfaa28721aee",
+    "size": 25826,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/bou/back_1_1.wav",
+    "sha1": "cf1bcf31c6cf94763048f459528819113c91c7d0",
+    "size": 37986,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/bou/drop2.wav",
+    "sha1": "b5003853b695e09d18df1c983eab905802503442",
+    "size": 25004,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/bou/fall_2.wav",
+    "sha1": "9c47d54714714311aa81e33107d2d0e7906ed32b",
+    "size": 27862,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/skeleton_god/attack_1.wav",
+    "sha1": "a73666590e8a59e37e58b183664af8b0af7c2d64",
+    "size": 62892,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/yellow_tigerman/attack_1.wav",
+    "sha1": "dcb847d934cb7026f853c9a89b1199e7c5224786",
+    "size": 31230,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/yellow_tigerman/attack_2.wav",
+    "sha1": "f820199d96a06272d1a90709e1726d7b50aedbc6",
+    "size": 38680,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/yellow_tigerman/dead_1.wav",
+    "sha1": "68112925ff980a94f3405c083bb69dea6d2331a2",
+    "size": 121426,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_cyclops_boss2/front_dead.mss",
+    "sha1": "71c1b26b36aab50e485dda81659a1c2e0f71b26c",
+    "size": 260,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_cyclops_boss2/normal_attack.mss",
+    "sha1": "95a923161585a36ca62573b258c9e6624c08274b",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_cyclops_boss2/normal_attack1.mss",
+    "sha1": "5260ad12d1c5ef13783b6ac771646f6b00105b80",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_cyclops_boss2/run.mss",
+    "sha1": "d6a9914e18a9ac1b8b921b44c4181a411484d5a7",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_cyclops_boss2/special_attack.mss",
+    "sha1": "f17eb802bdccda499de9b98eaaae0575c32e2b07",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_cyclops_boss2/special_attack1.mss",
+    "sha1": "d0acf4b47e41fbbb95c36d0205213d3c78460c1b",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_ogre_boss2/front_dead.mss",
+    "sha1": "f2bb1ef5edbe3343cf1c4e46b4fe0dd9c1c1bb6b",
+    "size": 413,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_ogre_boss2/normal_attack.mss",
+    "sha1": "cbea208632be2b30c71bf6b59c245d73b2b84765",
+    "size": 269,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_ogre_boss2/normal_attack1.mss",
+    "sha1": "009b077d36bdb463a3895cbf3e3d5a0e3dc02ed4",
+    "size": 269,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_ogre_boss2/run.mss",
+    "sha1": "3fadfc014eea80c5339014f378ac6d70b3864164",
+    "size": 370,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_ogre_boss2/special_attack.mss",
+    "sha1": "035b82d54214710036fdb1d5780c82d4e738da05",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_ogre_boss2/special_attack1.mss",
+    "sha1": "19f9c2c17273e09f85b36c065365a112fa3a7191",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_reddragon_human_boss/front_dead.mss",
+    "sha1": "03c664ede75bbb3f104b1e30a5531aff736c8567",
+    "size": 185,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_reddragon_human_boss/normal_attack.mss",
+    "sha1": "905efdf67b041ed01359ab86aa1d3938c1bb5156",
+    "size": 127,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_reddragon_human_boss/normal_attack1.mss",
+    "sha1": "a04bddc5e3d2f6280025b1d4b2b10d38fe345437",
+    "size": 127,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_reddragon_human_boss/special_attack.mss",
+    "sha1": "e8aa1f2c1d576c2422b46a97a6757ca66d018a08",
+    "size": 217,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_reddragon_human_boss/special_attack1.mss",
+    "sha1": "d6046646d11855382604194fe3d6eac541bb3ff3",
+    "size": 392,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_trent_boss2/front_dead.mss",
+    "sha1": "f7ac940f719c88e7f8b078d018495555ac297f7d",
+    "size": 260,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_trent_boss2/normal_attack.mss",
+    "sha1": "69a949194ff5794827e66e7679bbf7d459c6877a",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_trent_boss2/normal_attack1.mss",
+    "sha1": "272c71bd07b5c470dd88126931a587cc7e34601d",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_trent_boss2/run.mss",
+    "sha1": "ccaee01fb5d99bc5199bc41cc16bda749354c406",
+    "size": 369,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_trent_boss2/special_attack.mss",
+    "sha1": "10f996ed5264c66669236a8d99523afb6d189200",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_trent_boss2/special_attack1.mss",
+    "sha1": "10f996ed5264c66669236a8d99523afb6d189200",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_yellow_tigerman/front_dead.mss",
+    "sha1": "943b1dbd2ad9e3ac6843239b43e45ac19ae6e4d8",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_yellow_tigerman/normal_attack.mss",
+    "sha1": "fef774c2985dab21b541a75e4636a83400502337",
+    "size": 207,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_yellow_tigerman/normal_attack1.mss",
+    "sha1": "5611fecb3459a38f745356770198f93bab3d9c06",
+    "size": 207,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_yellow_tigerman/run.mss",
+    "sha1": "0dc49d1a4cc6b9814d30200ebf2ea34f070e2390",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_yellow_tigerman/special_attack.mss",
+    "sha1": "76168f4b08b50d4d926d183c929fe144552f0611",
+    "size": 211,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_yellow_tigerman/special_attack1.mss",
+    "sha1": "76168f4b08b50d4d926d183c929fe144552f0611",
+    "size": 211,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_zombie_bigboss2/front_dead.mss",
+    "sha1": "4d1ef94df6642a1f1c3e95f0fc7b4b4a09136437",
+    "size": 136,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_zombie_bigboss2/normal_attack.mss",
+    "sha1": "f88983fc2875f9efa2ecf9ff06e47632d35c94f4",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_zombie_bigboss2/normal_attack1.mss",
+    "sha1": "d73918ec0519e93ebafd8739d3f3f687c1cb3915",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_zombie_bigboss2/run.mss",
+    "sha1": "cfd2bffc2561896d0fb8923f0a7094199dcda067",
+    "size": 136,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_zombie_bigboss2/special_attack.mss",
+    "sha1": "f3af1dee9bb0c83f99623c80287bd35363cf9bf0",
+    "size": 518,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/w_zombie_bigboss2/special_attack1.mss",
+    "sha1": "c07f284d6090d1867d324289be33af652ebd414e",
+    "size": 269,
+    "source": "gf"
+   }
+  ]
+ },
+ "unresolved": {
+  "effects": [],
+  "models": {}
+ }
+}

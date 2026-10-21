@@ -45,6 +45,11 @@
 // An implementation fragment in the sense playerbot_types.h describes:
 // include it once, after playerbot_demon_tower.h, whose fight it borrows.
 
+// MT2009_PLUS_WORLDBOSS_V1 (playerbot_worldboss.h)
+bool WorldBossBotsAllowed();
+bool IsWorldBossEventRace(DWORD race);
+bool WorldBossStandsOn(DWORD race, long lMap);
+
 namespace
 {
 	struct TPlayerBotWorldBoss
@@ -143,6 +148,37 @@ namespace
 		// group 2314, every 2.5-3.5 h), 354 thousand health - the window opens
 		// at 77, where the Red Forest's own bots stand (PLAYERBOT_RED_FOREST_MIN_LEVEL).
 		{ 2306,  68, 77, 93, 6, true },		// Olbrzymi Duch Drzewa (84), Red Forest
+		// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (playerbot_worldboss.h) - the six
+		// bosses (level 120, millions of health, a time limit) on the four maps
+		// they appear on; a raid of every kingdom from level 100, twelve at a
+		// time and more when he outheals them (V2's stall rule). No fall notice of
+		// the raid's own (the event speaks). The bots hit him but never rank: the
+		// loot tiers and the season are the players' (WorldBossOnDamage takes no
+		// bot); worldboss_config.bots = 0 keeps them away (WorldBossBotsAllowed).
+		{ 4449,  64, 100, 135, 12, false, true },	// Azrael (BS), Dolina Seungryong
+		{ 4449,  63, 100, 135, 12, false, true },	// Azrael (BS), Pustynia Yongbi
+		{ 4449,  62, 100, 135, 12, false, true },	// Azrael (BS), Doyyumhwan
+		{ 4449,  61, 100, 135, 12, false, true },	// Azrael (BS), Gora Sohan
+		{ 4429,  64, 100, 135, 12, false, true },	// Bagjanamu (BS), Dolina Seungryong
+		{ 4429,  63, 100, 135, 12, false, true },	// Bagjanamu (BS), Pustynia Yongbi
+		{ 4429,  62, 100, 135, 12, false, true },	// Bagjanamu (BS), Doyyumhwan
+		{ 4429,  61, 100, 135, 12, false, true },	// Bagjanamu (BS), Gora Sohan
+		{ 4479,  64, 100, 135, 12, false, true },	// Ogr Maximus (BS), Dolina Seungryong
+		{ 4479,  63, 100, 135, 12, false, true },	// Ogr Maximus (BS), Pustynia Yongbi
+		{ 4479,  62, 100, 135, 12, false, true },	// Ogr Maximus (BS), Doyyumhwan
+		{ 4479,  61, 100, 135, 12, false, true },	// Ogr Maximus (BS), Gora Sohan
+		{ 4439,  64, 100, 135, 12, false, true },	// Polifem (BS), Dolina Seungryong
+		{ 4439,  63, 100, 135, 12, false, true },	// Polifem (BS), Pustynia Yongbi
+		{ 4439,  62, 100, 135, 12, false, true },	// Polifem (BS), Doyyumhwan
+		{ 4439,  61, 100, 135, 12, false, true },	// Polifem (BS), Gora Sohan
+		{ 4469,  64, 100, 135, 12, false, true },	// Smoczy Straznik Idall (BS), Dolina Seungryong
+		{ 4469,  63, 100, 135, 12, false, true },	// Smoczy Straznik Idall (BS), Pustynia Yongbi
+		{ 4469,  62, 100, 135, 12, false, true },	// Smoczy Straznik Idall (BS), Doyyumhwan
+		{ 4469,  61, 100, 135, 12, false, true },	// Smoczy Straznik Idall (BS), Gora Sohan
+		{ 4459,  64, 100, 135, 12, false, true },	// Zjawa Zoltego Tygrysa (BS), Dolina Seungryong
+		{ 4459,  63, 100, 135, 12, false, true },	// Zjawa Zoltego Tygrysa (BS), Pustynia Yongbi
+		{ 4459,  62, 100, 135, 12, false, true },	// Zjawa Zoltego Tygrysa (BS), Doyyumhwan
+		{ 4459,  61, 100, 135, 12, false, true },	// Zjawa Zoltego Tygrysa (BS), Gora Sohan
 	};
 	const size_t PLAYERBOT_WORLD_BOSS_COUNT = sizeof(PLAYERBOT_WORLD_BOSSES) / sizeof(PLAYERBOT_WORLD_BOSSES[0]);
 
@@ -1241,6 +1277,13 @@ namespace
 			if (!IsPlayerBotMapHostedHere(row.lMap))
 			{
 				s_mapPlayerBotBossRaidNext[key] = dwNow + PLAYERBOT_BOSS_RAID_CENSUS_MS;
+				continue;
+			}
+			// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's bosses only when the operator lets the bots raid them, and
+			// a map looked over only for the one boss the event says stands there (24 rows, one boss at a time).
+			if (IsWorldBossEventRace(row.wRace) && (!WorldBossBotsAllowed() || !WorldBossStandsOn(row.wRace, row.lMap)))
+			{
+				s_mapPlayerBotBossRaidNext[key] = dwNow + PLAYERBOT_BOSS_RAID_DOWN_RECHECK_MS;
 				continue;
 			}
 			LPCHARACTER boss = FindPlayerBotWorldBoss(row.lMap, row.wRace);

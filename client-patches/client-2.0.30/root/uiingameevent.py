@@ -49,6 +49,9 @@ EVENTS = {
 	# MT2009_PLUS_YUTNORI_V1: uiminigameyutnori.py registers the opener; the three boxes a game gives.
 	'yutnori': {'name': 'Yut Nori', 'icon': CAL + 'bonus_event.tga', 'open': 'game',
 			'rewards': ((83030, 1), (83031, 1), (83034, 1))},
+	# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (uiworldboss.py registers the window); a loot tier I's rewards.
+	'worldboss': {'name': 'Boss \x8cwiata', 'icon': CAL + 'double_boss_loot_event.tga', 'open': 'game',
+			'rewards': ((95926, 100), (38015, 1), (50033, 1))},
 	'easter': {'name': 'Event wielkanocny', 'icon': CAL + 'bonus_event.tga', 'open': 'info',
 			'desc': 'Metiny wielkanocne dropi\xb9 jajka - wymie\xf1 je u Wielkanocnego Zaj\xb9ca w mie\x9ccie.'},
 	'goblin': {'name': 'Poszukiwanie skarb\xf3w', 'icon': CAL + 'goblin_event.tga', 'open': 'goblin'},
@@ -62,7 +65,7 @@ EVENTS = {
 	'metinloot': {'name': 'Podw\xf3jny loot z Metin\xf3w', 'icon': CAL + 'double_metin_loot_event.tga', 'open': 'calendar'},
 }
 # The hub's order; keys not listed come after, as the server sends them.
-ORDER = ('catchking', 'rumi', 'rumi_xmas', 'yutnori', 'flower', 'easter', 'goblin',
+ORDER = ('worldboss', 'catchking', 'rumi', 'rumi_xmas', 'yutnori', 'flower', 'easter', 'goblin',
 		'chest', 'bossloot', 'metinloot', 'tanaka', 'zuo', 'exp', 'drop', 'yang')
 DEFAULT_ICON = CAL + 'bonus_event.tga'
 

@@ -73,7 +73,10 @@ enum Kind
 	// monsters while the window is open - the map column holds its vnum, the
 	// value the chance a kill in per mille (the panel's "Drop szkatulek").
 	KIND_CHESTDROP = 14,
-	KIND_MAX = 15
+	// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata - with worldboss_config.mode 2 the
+	// bosses come only while this window is open (playerbot_worldboss.h).
+	KIND_WORLDBOSS = 15,
+	KIND_MAX = 16
 };
 
 inline const char* KindName(int kind)
@@ -95,6 +98,7 @@ inline const char* KindName(int kind)
 		case KIND_FLOWER: return "flower";
 		case KIND_EASTER: return "easter";
 		case KIND_CHESTDROP: return "chestdrop";
+		case KIND_WORLDBOSS: return "worldboss";
 	}
 	return "";
 }

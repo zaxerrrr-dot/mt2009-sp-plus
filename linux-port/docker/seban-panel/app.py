@@ -2529,7 +2529,10 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                "catchking", "rumi", "yutnori", "flower", "easter",
                # MT2009_PLUS_CHEST_DROP_EVENT_V1: Drop szkatułek - any chest by
                # vnum, its chance a kill in per mille (playerbot_events.h).
-               "chestdrop")
+               "chestdrop",
+               # MT2009_PLUS_WORLDBOSS_V1: Boss Świata's window - only with the
+               # mode "harmonogram" of its page (playerbot_worldboss.h).
+               "worldboss")
 EVENT_WORLD_KINDS = ("tanaka", "zuo")
 # MT2009_PLUS_CHEST_DROP_EVENT_V1: the kinds whose lines carry a sixth column
 # and whose "now" lines are kept one per that column - Tanaka's and Zuo's map,
@@ -2541,7 +2544,8 @@ EVENT_AUTOGEN_EXCLUDED = (EVENT_CHESTDROP_KIND,)
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1, playerbot_events.h).
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
-                    "catchking", "rumi", "yutnori", "flower", "easter")  # MT2009_PLUS_EVENT_MANAGER_V1
+                    "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
+                    "worldboss")  # MT2009_PLUS_WORLDBOSS_V1
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
 EVENT_BOTS_DEFAULT = 50
@@ -2571,11 +2575,13 @@ EVENT_LABELS = {
     "flower": "Dzieci Kwiaty",
     "easter": "Event wielkanocny",
     "chestdrop": "Drop szkatułek",  # MT2009_PLUS_CHEST_DROP_EVENT_V1
+    "worldboss": "Boss Świata",  # MT2009_PLUS_WORLDBOSS_V1
 }
 EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "tanaka": "🏴‍☠️", "zuo": "☄️", "bossloot": "👹", "metinloot": "🪨",
                "goblin": "🪙",  # goblin: MT2009_PLUS_GOBLIN_V1
                "catchking": "👑", "rumi": "🃏", "yutnori": "🎲", "flower": "🌸", "easter": "🐇",  # MT2009_PLUS_EVENT_MANAGER_V1
-               "chestdrop": "🧰"}  # MT2009_PLUS_CHEST_DROP_EVENT_V1
+               "chestdrop": "🧰",  # MT2009_PLUS_CHEST_DROP_EVENT_V1
+               "worldboss": "🐲"}  # MT2009_PLUS_WORLDBOSS_V1
 EVENT_DAY_NAMES = ("Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd")
 EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360, 720, 1440, 2880, 4320, 7200, 10080)  # MT2009_PLUS_EVENTS_7_DAYS_V1: up to 7 days
 
@@ -10065,6 +10071,145 @@ def wheel():
                            schedule=schedule, flagged=flagged, stats=stats, recent=recent,
                            until=datetime.fromtimestamp(active["until"]).strftime("%d.%m.%Y %H:%M"),
                            wheel_csrf=update_csrf_token())
+
+
+# ---- Boss Świata (MT2009 PLUS) -----------------------------------------------
+# MT2009_PLUS_WORLDBOSS_V1: the World Boss event (playerbot_worldboss.h). The
+# settings are player.worldboss_config (one row, made by playerbot-migrate's
+# worldboss.sql); the game reads them every 30 seconds. "Przywołaj teraz" and
+# "następny boss o" write force_at/force_boss/force_map, "ucieczka" escape_now,
+# "zakończ sezon" season_end_now - the core of the boss's channel acts on them
+# and clears them. The page also shows the state, the last ranking and the
+# season's rankings of every kingdom (the wiki's "rankingi na stronie").
+WORLDBOSS_MODES = ((1, "Zawsze włączony (jak na serwerze eventowym)"),
+                   (2, "Tylko w oknach harmonogramu (Planer eventów: Boss Świata)"),
+                   (0, "Wyłączony"))
+WORLDBOSS_BOSSES = ((0, "losowy"), (1, "Azrael (BŚ)"), (2, "Bagjanamu (BŚ)"), (3, "Ogr Maximus (BŚ)"),
+                    (4, "Polifem (BŚ)"), (5, "Smoczy Strażnik Idall (BŚ)"), (6, "Zjawa Żółtego Tygrysa (BŚ)"))
+WORLDBOSS_BOSS_VNUMS = {4449: "Azrael (BŚ)", 4429: "Bagjanamu (BŚ)", 4479: "Ogr Maximus (BŚ)", 4439: "Polifem (BŚ)",
+                        4469: "Smoczy Strażnik Idall (BŚ)", 4459: "Zjawa Żółtego Tygrysa (BŚ)"}
+WORLDBOSS_MAPS = ((0, "losowa"), (64, "Dolina Seungryong"), (63, "Pustynia Yongbi"), (62, "Doyyumhwan"),
+                  (61, "Góra Sohan"))
+WORLDBOSS_STATES = {0: "czeka na pojawienie się", 1: "STOI - walka trwa", 2: "pokonany", 3: "uciekł"}
+WORLDBOSS_INTS = (("channel", 1, 99), ("break_min", 1, 1440), ("break_max", 1, 1440), ("fight_minutes", 1, 600),
+                  ("min_damage", 0, 2000000000), ("mission_damage", 0, 2000000000), ("min_level", 1, 250),
+                  ("hp_full", 1000, 2000000000), ("hp_start_pct", 1, 100), ("hp_step_pct", 0, 100),
+                  ("groups_per_call", 0, 20), ("season_weeks", 1, 52))
+
+
+def worldboss_text(v):
+    """The game writes the area in CP1250 through a latin1 connection."""
+    if not v:
+        return "-"
+    if isinstance(v, bytes):
+        return v.decode("cp1250", "replace")
+    try:
+        return v.encode("latin1").decode("cp1250")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return v
+
+
+@app.route("/worldboss", methods=["GET", "POST"])
+@login_required
+def worldboss():
+    try:
+        cfg = one("SELECT * FROM player.worldboss_config WHERE id = 1")
+        st = one("SELECT * FROM player.worldboss_state WHERE id = 1")
+    except Exception:
+        cfg = st = None
+    if not cfg or not st:
+        flash("Tabel Bossa Świata jeszcze nie ma - uruchom serwer raz (playerbot-migrate je zakłada).", "error")
+        return render_template("worldboss.html", ready=False, wb_csrf=update_csrf_token())
+    if request.method == "POST":
+        if request.form.get("wb_csrf", "") != session.get("seban_update_csrf", ""):
+            flash("Sesja formularza wygasła - odśwież stronę i spróbuj jeszcze raz.", "error")
+            return redirect(url_for("worldboss"))
+        action = request.form.get("action", "save")
+        now = int(time.time())
+        if action == "save":
+            vals = {}
+            try:
+                mode = int(request.form.get("mode", cfg["mode"]))
+            except ValueError:
+                mode = int(cfg["mode"])
+            vals["mode"] = mode if mode in (0, 1, 2) else 1
+            for name, lo, hi in WORLDBOSS_INTS:
+                try:
+                    vals[name] = max(lo, min(hi, int(request.form.get(name, cfg[name]))))
+                except (TypeError, ValueError):
+                    vals[name] = int(cfg[name])
+            vals["break_max"] = max(vals["break_max"], vals["break_min"])
+            vals["bots"] = 1 if request.form.get("bots") else 0
+            rows("UPDATE player.worldboss_config SET " + ", ".join(f"{k} = %s" for k in vals) + " WHERE id = 1",
+                 tuple(vals.values()))
+            msg = "Zapisane - gra stosuje ustawienia w ciągu 30 sekund."
+        elif action == "spawn":
+            try:
+                boss = int(request.form.get("force_boss", "0") or 0)
+                mapi = int(request.form.get("force_map", "0") or 0)
+            except ValueError:
+                boss, mapi = 0, 0
+            when = now
+            hhmm = (request.form.get("force_time") or "").strip()
+            if hhmm:
+                try:
+                    t = datetime.strptime(hhmm, "%Y-%m-%dT%H:%M")
+                    when = int(t.timestamp())
+                except ValueError:
+                    flash("Niepoprawna data/godzina.", "error")
+                    return redirect(url_for("worldboss"))
+            boss = boss if 0 <= boss <= 6 else 0
+            mapi = mapi if mapi in (0, 61, 62, 63, 64) else 0
+            rows("UPDATE player.worldboss_config SET force_at = %s, force_boss = %s, force_map = %s WHERE id = 1",
+                 (when, boss, mapi))
+            msg = ("Boss pojawi się w ciągu 30 sekund" if when <= now + 30 else
+                   "Następny boss ustawiony na " + datetime.fromtimestamp(when).strftime("%d.%m.%Y %H:%M")) + \
+                  " (jeśli event jest włączony i nie stoi inny boss)."
+        elif action == "escape":
+            rows("UPDATE player.worldboss_config SET escape_now = %s WHERE id = 1", (now,))
+            msg = "Stojący boss ucieknie w ciągu 30 sekund (bez nagród)."
+        elif action == "season_end":
+            rows("UPDATE player.worldboss_config SET season_end_now = %s WHERE id = 1", (now,))
+            msg = "Sezon zakończy się w ciągu 30 sekund - nagrody rankingowe trafią do okna Bossa Świata."
+        else:
+            msg = "Nieznana akcja."
+        rows("INSERT INTO log.log (type,time,who,how,hint) VALUES ('SYSTEM',NOW(),0,'PANEL_WORLDBOSS',%s)",
+             (f"{action} " + " ".join(f"{k}={v}" for k, v in request.form.items() if k != "wb_csrf")[:200],))
+        flash(msg, "success")
+        return redirect(url_for("worldboss"))
+
+    now = int(time.time())
+    fmt = lambda t: datetime.fromtimestamp(int(t)).strftime("%d.%m.%Y %H:%M") if t else "-"  # noqa: E731
+    state = {
+        "text": WORLDBOSS_STATES.get(int(st["state"]), st["state"]),
+        "boss": WORLDBOSS_BOSS_VNUMS.get(int(st["boss_vnum"]), st["boss_vnum"] or "-"),
+        "area": worldboss_text(st["area"]),
+        "next": fmt(st["next_at"]) if int(st["state"]) != 1 else "-",
+        "fight_end": fmt(st["fight_end"]) if int(st["state"]) == 1 else "-",
+        "season_end": fmt(st["season_end"]),
+        "updated": fmt(st["updated_at"]),
+    }
+    last = rows("""SELECT pos, tier, damage, name, guild_name, empire, level, boss_vnum, at FROM player.worldboss_damage
+        WHERE serial = (SELECT MAX(serial) FROM player.worldboss_damage) ORDER BY pos LIMIT 25""")
+    last_info = {"boss": WORLDBOSS_BOSS_VNUMS.get(int(last[0]["boss_vnum"]), last[0]["boss_vnum"]) if last else "-",
+                 "at": fmt(last[0]["at"]) if last else "-"}
+    season = int(st["season"])
+    kingdoms = []
+    for empire, label in ((1, "Shinsoo"), (2, "Chunjo"), (3, "Jinno")):
+        chars = rows("""SELECT pid, SUM(points) AS points, MAX(name) AS name, MAX(guild_name) AS guild
+            FROM player.worldboss_points WHERE season = %s AND empire = %s GROUP BY pid HAVING points > 0
+            ORDER BY points DESC, pid LIMIT 25""", (season, empire))
+        guilds = rows("""SELECT guild_id, SUM(points) AS points, MAX(guild_name) AS guild FROM player.worldboss_points
+            WHERE season = %s AND empire = %s AND guild_id > 0 GROUP BY guild_id HAVING points > 0
+            ORDER BY points DESC, guild_id LIMIT 3""", (season, empire))
+        kingdoms.append({"label": label, "chars": chars, "guilds": guilds})
+    stats = one("""SELECT COUNT(*) AS waiting, COALESCE(SUM(kind IN (1, 2)), 0) AS season_waiting FROM player.worldboss_reward
+        WHERE state = 0""") or {}
+    taken = one("SELECT COUNT(*) AS n FROM player.worldboss_reward WHERE state = 1") or {}
+    return render_template("worldboss.html", ready=True, cfg=cfg, st=st, state=state, last=last, last_info=last_info,
+                           kingdoms=kingdoms, season=season, stats=stats, taken=taken.get("n", 0),
+                           modes=WORLDBOSS_MODES, bosses=WORLDBOSS_BOSSES, maps=WORLDBOSS_MAPS,
+                           tiers={1: "I", 2: "II", 3: "III", 4: "IV"}, wb_csrf=update_csrf_token())
 
 
 @app.route("/events", methods=["GET", "POST"])

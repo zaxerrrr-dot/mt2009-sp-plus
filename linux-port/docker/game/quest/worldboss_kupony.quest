@@ -1,0 +1,22 @@
+-- MT2009_PLUS_WORLDBOSS_V1: Kupon SM (20) 80031 and Kupon SM (10) 80032 - Boss Swiata's loot tiers II and III (the pl-wiki's
+-- "Kupon TM (20)" / "(10)": this world has no Tiger Coins, the coupons are Dragon Coins as Kupon SM (50) 80017 of tier I).
+-- Cashed as the package's itemshop quest cashes 80014-80018 (pc.charge_cash, one piece of a stack). The text without
+-- diacritics, as the other quests' syschat.
+quest worldboss_kupony begin
+	state start begin
+		when 80031.use or 80032.use begin
+			if game.get_event_flag("block_dragon_voucher") > 0 then
+				syschat("Ta funkcja jest chwilowo niedostepna.")
+				return
+			end
+			local value = item.get_value(0)
+			if value <= 0 then
+				return
+			end
+			if item.remove(1) then
+				pc.charge_cash(value)
+				syschat(string.format("Dodano %d Smoczych Monet do Twojego konta.", value))
+			end
+		end
+	end
+end

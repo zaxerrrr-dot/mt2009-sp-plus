@@ -81,3 +81,8 @@ wpisy (własne nazwy, obraz `windows_yohara.dds` = GF `windows.dds`, który już
 | root | `d:/ymir work/ui/game/windows/mt2009_skill_board.sub` | `.sub` GF `skill_board` (0,0–227,152) | tło 4 rzędów umiejętności ze strzałkami |
 | root | `d:/ymir work/ui/game/windows/mt2009_skill_board_expanded.sub` | `.sub` GF `skill_board_expanded` (8,442–235,484) | 5. rząd (9. umiejętność) |
 | root | `d:/ymir work/ui/game/windows/mt2009_support_skill_bar_icon.sub` | `.sub` GF `support_skill_bar_icon` (496,513–512,528) | ikona paska umiejętności pomocniczych |
+## Boss Świata (`MT2009_PLUS_WORLDBOSS_V1`)
+
+`d:/ymir work/ui/worldboss.dds` (380×100, DXT5) i `d:/ymir work/ui/minigame/world_boss/*.sub` (6 plików) – grafika okien
+Bossa Świata z klienta GF 26.1.11, bajt w bajt (układy `root/uiscript/worldbosswindow.py`,
+`worldbossrankingwindow.py`, logika `root/uiworldboss.py`). Nazwy nowe w naszych paczkach.
