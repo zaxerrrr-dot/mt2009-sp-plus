@@ -510,3 +510,32 @@ i bazy; stary exe też trzyma przedmioty tych pól (`c_Wear_Max` 32), a `root/ui
 Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` +
 ten katalog, casefix) – `PythonItemModule.cpp`, `PythonApplicationModule.cpp`, `GameType.cpp`, `PythonPlayerModule.cpp`
 bez błędów; `/E` potwierdza stałe `BUFFI_SLOT_*` w module. Exe nie budowane (wspólna budowa rundy).
+## Bonus Switcher (switchbot z Amerii) – `MT2009_PLUS_SWITCHBOT_V1` (`ENABLE_SWITCHBOT`)
+
+Switchbot z Ameria Project (`srcs/client/UserInterface/PythonSwitchbot.cpp`, `ENABLE_SWITCHBOT` + `ENABLE_SWITCHBOT_RENEWAL`)
+zamiast naszej „Zmiany bonusów” (sam python). Serwer: `server-patches/switchbot` + `playerbot_switchbot.cpp` (opis zasad w
+`server-patches/switchbot/README.md`). Okno w pythonie: `root/uiswitchbot.py` (Amerii).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_SWITCHBOT` |
+| `Server/common/length.h` | `SwitchbotValues` (`SWITCHBOT_SLOT_COUNT` 5, `SWITCHBOT_ALTERNATIVE_COUNT` 5, `SWITCHBOT_ATTR_COUNT` 5), okno `SWITCHBOT` = 16 (po `CHEST_INVENTORY`, numer serwera), `TItemPos::IsValidItemPosition` (pole < 5) |
+| `UserInterface/GameType.h`, `GameType.cpp` | `SLOT_TYPE_SWITCHBOT` przed `SLOT_TYPE_MAX` → okno `SWITCHBOT` |
+| `UserInterface/PythonPlayer.h/.cpp` | `TPlayerStatus::aSwitchbotItem[5]`, `GetItemData`/`SetItemData` dla okna `SWITCHBOT` |
+| `UserInterface/PythonPlayerModule.cpp` | `player.SWITCHBOT`, `player.SLOT_TYPE_SWITCHBOT` |
+| `UserInterface/Packet.h` | `HEADER_CG_SWITCHBOT = 170`, `HEADER_GC_SWITCHBOT = 171` (wolne po obu stronach), `TSwitchbotAttributeAlternativeTable` (15 B), `TSwitchbotTable` (409 B), `TSwitchbotAttributeInfo` (9 B), `TPacketCGSwitchbot`/`TPacketGCSwitchbot` (5 B, `WORD size`), `TSwitchbotUpdateItem` (44 B) + `static_assert` (serwer ma te same) |
+| `UserInterface/PythonNetworkStream.cpp/.h`, `PythonNetworkStreamPhaseGame.cpp` | GC 171 jako pakiet dynamiczny, `case HEADER_GC_SWITCHBOT`, deklaracje `RecvSwitchbotPacket` / `SendSwitchbotStartPacket` / `SendSwitchbotStopPacket` |
+| `UserInterface/PythonSwitchbot.h/.cpp` | **nowe**: `CPythonSwitchbot` Amerii (stan pól, alternatywy, bonusy i maksima zestawów), ciała `Recv`/`Send` (zły rozmiar – pominięty, strumień zsynchronizowany), moduł `switchbot` (`IsActive`, `IsFinished`, `GetAttribute`, `SetAttribute`, `GetAttributesForSet`, `GetAttributeMaxValue`, `ClearSlot`, `Start`, `Stop`, `SLOT_COUNT`, `ALTERNATIVE_COUNT`, `ATTR_COUNT`) |
+| `UserInterface/PythonApplication.h`, `StdAfx.h`, `UserInterface.cpp`, `UserInterface.vcxproj(.filters)` | instancja `m_pySwitchbot`, `initSwitchbot()`, nowe pliki |
+
+Pakiety: GC 171 `UPDATE` (cała tabela), `UPDATE_ITEM` (nowe bonusy przedmiotu – pole switchbota i jego miejsce w torbie),
+`SEND_ATTRIBUTE_INFORMATION` (dla każdego zestawu bonusów: bonus + maksimum z `item_attr`); CG 170 `START` (+ 5
+alternatyw) / `STOP`, z bajtem sekwencji. Przedmioty pól to zwykłe pakiety przedmiotów (`ITEM_SET` / `ITEM_DEL`) z
+oknem 16. Serwer wysyła 171 i okno 16 **tylko** po `/switchbot hello`, które `uiswitchbot.py` wysyła, gdy istnieje moduł
+`switchbot` – stary exe zamknąłby się na nieznanym nagłówku.
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` + ten
+katalog, casefix) – `PythonSwitchbot.cpp`, `PythonPlayer.cpp`, `PythonPlayerModule.cpp`, `GameType.cpp`,
+`PythonNetworkStream.cpp`, `PythonNetworkStreamPhaseGame.cpp`, `PythonNetworkStreamPhaseGameItem.cpp`, `UserInterface.cpp`,
+`PythonApplication.cpp` bez błędów (`static_assert` okna 16 i rozmiarów przechodzą). Exe nie budowane (wspólna budowa
+później: `build.sh msvc --smoke`).

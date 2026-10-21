@@ -469,3 +469,9 @@ linux-port/docker/mariadb/playerbot/buffi_itemshop.sql
 # MT2009_PLUS_QUEST_PCBLOCK_V1 (server-patches/questpcblock): q.begin_other_pc_block in server timers - the engine files
 # it changes: questmanager.cpp, questmanager.h, questlua_quest.cpp (above) and questpc.h.
 linux-port/docker/game/src/server/game/src/questpc.h
+
+# MT2009_PLUS_SWITCHBOT_V1 (server-patches/switchbot): Bonus Switcher, Ameria Project's switchbot instead of our
+# "Zmiana bonusow" (MT2009_PLUS_BONUS_SWITCH_V1, server-patches/bonusswitch and playerbot_bonus_switch.h - removed) -
+# the engine files it changes are above (length.h, packet.h, packet_info.cpp, input_main.cpp, input_p2p.cpp, char.cpp,
+# char_item.cpp, cmd.cpp; cmd_general.cpp loses the old command); the logic is playerbot_switchbot.cpp (the playerbot_*
+# lines); player.switchbot in apply.sh (above).

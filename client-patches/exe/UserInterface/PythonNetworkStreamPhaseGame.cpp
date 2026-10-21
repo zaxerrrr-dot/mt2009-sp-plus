@@ -1282,6 +1282,11 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvAccePacket();
 				break;
 #endif
+#ifdef ENABLE_SWITCHBOT
+			case HEADER_GC_SWITCHBOT: // MT2009_PLUS_SWITCHBOT_V1
+				ret = RecvSwitchbotPacket();
+				break;
+#endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			case HEADER_GC_INGAME_EVENT: // MT2009_PLUS_EVENT_MANAGER_V1
 				ret = RecvInGameEventPacket();

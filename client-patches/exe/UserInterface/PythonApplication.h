@@ -53,6 +53,9 @@
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 #include "PythonInGameEventSystemManager.h" // MT2009_PLUS_EVENT_MANAGER_V1
 #endif
+#ifdef ENABLE_SWITCHBOT
+#include "PythonSwitchbot.h" // MT2009_PLUS_SWITCHBOT_V1
+#endif
 #if defined(RENDER_TARGET)
 #include "../EterLib/RenderTargetManager.h" // MT2009_PLUS_MINIGAMES_V1
 #endif
@@ -378,6 +381,9 @@ class CPythonApplication : public CMSApplication, public CInputKeyboard, public 
 #endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 		CPythonInGameEventSystemManager	m_pyInGameEventSystem; // MT2009_PLUS_EVENT_MANAGER_V1
+#endif
+#ifdef ENABLE_SWITCHBOT
+		CPythonSwitchbot			m_pySwitchbot; // MT2009_PLUS_SWITCHBOT_V1
 #endif
 #if defined(RENDER_TARGET)
 		CRenderTargetManager		m_kRenderTargetManager; // MT2009_PLUS_MINIGAMES_V1

@@ -220,6 +220,10 @@ class CMainPacketHeaderMap : public CNetworkPacketHeaderMap
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 			Set(HEADER_GC_ACCE, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketAcce), STATIC_SIZE_PACKET));
 #endif
+#ifdef ENABLE_SWITCHBOT
+			// MT2009_PLUS_SWITCHBOT_V1 (header)
+			Set(HEADER_GC_SWITCHBOT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCSwitchbot), DYNAMIC_SIZE_PACKET));
+#endif
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 			// MT2009_PLUS_EVENT_MANAGER_V1
 			Set(HEADER_GC_INGAME_EVENT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCInGameEvent), DYNAMIC_SIZE_PACKET));

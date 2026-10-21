@@ -57,8 +57,6 @@ param(
 #                      server-patches/digirasta-qol)
 #   quick chest opening char_item.cpp         (MT2009_PLUS_VEKIRION_V1; server-patches/vekirion,
 #                      Autor: Vekirion)
-#   bonus switcher     cmd.cpp, cmd_general.cpp (MT2009_PLUS_BONUS_SWITCH_V1;
-#                      server-patches/bonusswitch, Autor: Vekirion)
 #   guild war entry    guild_war.cpp, cmd.cpp, cmd_general.cpp
 #                      (MT2009_PLUS_GUILD_WAR_JOIN_V1; server-patches/guildwarjoin)
 #   Monster Cards      cmd.cpp, char_battle.cpp, char_item.cpp, input_login.cpp
@@ -124,7 +122,10 @@ param(
 #                      server-patches/buffi, after monstercard and riposty)
 #   Dodatkowy ekwip.   common length.h, char.h, char.cpp, char_item.cpp, item.cpp, item_manager.cpp, input_db.cpp,
 #                      input_main.cpp, exchange.cpp, shop.cpp, shop_manager.cpp, cube.cpp, cmd_gm.cpp, cmd.cpp,
-#                      db ClientManagerPlayer.cpp (MT2009_PLUS_EKWIPUNEK_V1; server-patches/ekwipunek, after buffi - last)
+#                      db ClientManagerPlayer.cpp (MT2009_PLUS_EKWIPUNEK_V1; server-patches/ekwipunek, after buffi)
+#   Bonus Switcher     common length.h, packet.h, packet_info.cpp, input_main.cpp, input_p2p.cpp, char.cpp,
+#                      char_item.cpp, cmd.cpp; takes the old bonus switcher's lines out of cmd.cpp / cmd_general.cpp
+#                      (MT2009_PLUS_SWITCHBOT_V1; server-patches/switchbot, after ekwipunek - last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -907,19 +908,6 @@ if ((Test-Path -LiteralPath $vekirionApply -PathType Leaf) -and
         Write-Host ('Applied {0} quick chest opening edit(s).' -f $vekirionResult.Applied) -ForegroundColor DarkGray
     }
 }
-# The bonus switcher (server-patches/bonusswitch, MT2009_PLUS_BONUS_SWITCH_V1,
-# "Autor: Vekirion"): "/bonus_switch" in cmd.cpp / cmd_general.cpp for the
-# client's "Zmiana bonusow" window; the work is playerbot_bonus_switch.h
-# (overlay). After seonhae and digirasta-qol, whose cmd.cpp lines it sits by.
-$bonusSwitchApply = Join-Path $repo 'server-patches/bonusswitch/Apply-BonusSwitchPatch.ps1'
-if ((Test-Path -LiteralPath $bonusSwitchApply -PathType Leaf) -and
-    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd.cpp') -PathType Leaf)) {
-    $bonusSwitchResult = & $bonusSwitchApply -SourceDir $engineGameSource
-    if ($bonusSwitchResult.Changed) {
-        $syncedFiles++
-        Write-Host ('Applied {0} bonus switcher edit(s).' -f $bonusSwitchResult.Applied) -ForegroundColor DarkGray
-    }
-}
 # The guild war's "Wejdz na wojne" (server-patches/guildwarjoin,
 # MT2009_PLUS_GUILD_WAR_JOIN_V1): /guild_war_enter for the client's button,
 # and a field war on a bot guild entered at the guild's camp on the kingdom's
@@ -1684,6 +1672,21 @@ if ((Test-Path -LiteralPath $ekwipunekApply -PathType Leaf) -and
     if ($ekwipunekResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} extra inventory edit(s).' -f $ekwipunekResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Bonus Switcher (server-patches/switchbot, MT2009_PLUS_SWITCHBOT_V1; the owner, 21 October 2026): Ameria's switchbot
+# instead of our "Zmiana bonusow" (MT2009_PLUS_BONUS_SWITCH_V1, server-patches/bonusswitch - removed; this step takes its
+# cmd.cpp / cmd_general.cpp lines out of an engine that still has them). The window SWITCHBOT (16, common/length.h), the
+# packets CG 170 / GC 171 / GG 39, the hooks of item move / use, warp, logout, equip and swap, "/switchbot". Anchors on
+# the extra inventory's lines, so after ekwipunek. The logic is playerbot_switchbot.cpp.
+$switchbotApply = Join-Path $repo 'server-patches/switchbot/Apply-SwitchbotPatch.ps1'
+if ((Test-Path -LiteralPath $switchbotApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_main.cpp') -PathType Leaf)) {
+    $switchbotResult = & $switchbotApply -SourceDir $engineGameSource
+    if ($switchbotResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} switchbot edit(s), took out {1} old bonus switcher line(s).' -f $switchbotResult.Applied, $switchbotResult.Reverted) -ForegroundColor DarkGray
     }
 }
 

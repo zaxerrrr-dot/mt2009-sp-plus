@@ -149,6 +149,9 @@ enum
 #ifdef ENABLE_FLOWER_EVENT
 	HEADER_CG_FLOWER_EVENT						= 187,
 #endif
+#ifdef ENABLE_SWITCHBOT
+	HEADER_CG_SWITCHBOT							= 170,	// MT2009_PLUS_SWITCHBOT_V1 (cg header)
+#endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_CG_MINI_GAME_CATCH_KING				= 226,
 #endif
@@ -359,6 +362,9 @@ enum
 #endif
 #ifdef ENABLE_FLOWER_EVENT
 	HEADER_GC_FLOWER_EVENT						= 187,
+#endif
+#ifdef ENABLE_SWITCHBOT
+	HEADER_GC_SWITCHBOT							= 171,	// MT2009_PLUS_SWITCHBOT_V1 (gc header)
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_GC_MINI_GAME_CATCH_KING				= 238,
@@ -3818,6 +3824,80 @@ typedef struct SPacketCGFlowerEvent
 } TPacketCGFlowerEvent;
 #endif
 
+#ifdef ENABLE_SWITCHBOT
+// MT2009_PLUS_SWITCHBOT_V1 (structs): Ameria's switchbot - the server's packet.h (server-patches/switchbot) the same
+struct TSwitchbotAttributeAlternativeTable
+{
+	TPlayerItemAttribute attributes[SWITCHBOT_ATTR_COUNT];
+
+	bool IsConfigured() const
+	{
+		for (int i = 0; i < SWITCHBOT_ATTR_COUNT; ++i)
+		{
+			if (attributes[i].bType && attributes[i].sValue)
+				return true;
+		}
+
+		return false;
+	}
+};
+
+struct TSwitchbotTable
+{
+	DWORD player_id;
+	bool active[SWITCHBOT_SLOT_COUNT];
+	bool finished[SWITCHBOT_SLOT_COUNT];
+	DWORD items[SWITCHBOT_SLOT_COUNT];
+	TSwitchbotAttributeAlternativeTable alternatives[SWITCHBOT_SLOT_COUNT][SWITCHBOT_ALTERNATIVE_COUNT];
+};
+
+struct TSwitchbotAttributeInfo
+{
+	BYTE attribute_set;
+	int apply_num;
+	int max_value;
+};
+
+enum ECGSwitchbotSubheader
+{
+	SUBHEADER_CG_SWITCHBOT_START,
+	SUBHEADER_CG_SWITCHBOT_STOP,
+};
+
+typedef struct SPacketCGSwitchbot
+{
+	BYTE header;
+	WORD size;
+	BYTE subheader;
+	BYTE slot;
+} TPacketCGSwitchbot;	// + 5 alternatives at START
+
+enum EGCSwitchbotSubheader
+{
+	SUBHEADER_GC_SWITCHBOT_UPDATE,
+	SUBHEADER_GC_SWITCHBOT_UPDATE_ITEM,
+	SUBHEADER_GC_SWITCHBOT_SEND_ATTRIBUTE_INFORMATION,
+};
+
+typedef struct SPacketGCSwitchbot
+{
+	BYTE header;
+	WORD size;
+	BYTE subheader;
+	BYTE slot;
+} TPacketGCSwitchbot;
+
+typedef struct SSwitchbotUpdateItem
+{
+	BYTE	slot;
+	DWORD	vnum;
+	DWORD	count;
+	int		alSockets[ITEM_SOCKET_SLOT_MAX_NUM];
+	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_SLOT_MAX_NUM];
+	WORD	CellInven;
+} TSwitchbotUpdateItem;
+#endif
+
 #pragma pack(pop)
 
 #ifdef ENABLE_MINI_GAME_RUMI
@@ -3826,6 +3906,12 @@ static_assert(sizeof(TPacketCGMiniGameRumi) == 7, "CG Rumi must be 7 bytes (Owsa
 #ifdef ENABLE_FLOWER_EVENT
 static_assert(sizeof(TPacketGCFlowerEvent) == 32, "GC Flower must be 32 bytes (Owsap)");
 static_assert(sizeof(TPacketCGFlowerEvent) == 4, "CG Flower must be 4 bytes (Owsap)");
+#endif
+#ifdef ENABLE_SWITCHBOT
+// MT2009_PLUS_SWITCHBOT_V1 (sizes): the server's static_assert the same
+static_assert(sizeof(TPacketCGSwitchbot) == 5 && sizeof(TPacketGCSwitchbot) == 5, "switchbot packets must be 5 bytes");
+static_assert(sizeof(TSwitchbotUpdateItem) == 44, "switchbot update item must be 44 bytes");
+static_assert(sizeof(TSwitchbotAttributeAlternativeTable) == 15 && sizeof(TSwitchbotTable) == 409 && sizeof(TSwitchbotAttributeInfo) == 9, "switchbot tables");
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 static_assert(sizeof(TPacketGCMiniGameCatchKingResult) == 11, "CatchKing result must be 11 bytes (Owsap)");

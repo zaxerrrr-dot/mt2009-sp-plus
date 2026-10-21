@@ -170,6 +170,9 @@ enum ESlotType
 	SLOT_TYPE_CHANGE_INVENTORY,
 	SLOT_TYPE_CHEST_INVENTORY,
 #endif
+#ifdef ENABLE_SWITCHBOT
+	SLOT_TYPE_SWITCHBOT,	// MT2009_PLUS_SWITCHBOT_V1 (slot type): root/uiswitchbot.py
+#endif
 	SLOT_TYPE_MAX,
 };
 

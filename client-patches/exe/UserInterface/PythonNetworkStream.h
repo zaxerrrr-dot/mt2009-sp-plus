@@ -715,6 +715,14 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		// MT2009_PLUS_EVENT_MANAGER_V1
 		bool RecvInGameEventPacket();
 #endif
+#ifdef ENABLE_SWITCHBOT
+		// MT2009_PLUS_SWITCHBOT_V1: Ameria's switchbot (PythonNetworkStreamPhaseGame.cpp)
+		bool RecvSwitchbotPacket();
+	public:
+		bool SendSwitchbotStartPacket(BYTE slot, const std::vector<TSwitchbotAttributeAlternativeTable>& alternatives);
+		bool SendSwitchbotStopPacket(BYTE slot);
+	protected:
+#endif
 
 		// MT2009_PLUS_MINIGAMES_V1 (Owsap v6.2.6 names)
 #if defined(ENABLE_MINI_GAME_RUMI) || defined(ENABLE_MINI_GAME_YUTNORI) || defined(ENABLE_MINI_GAME_CATCH_KING)

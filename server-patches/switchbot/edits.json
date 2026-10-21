@@ -1,0 +1,137 @@
+[
+ {
+  "file": "cmd.cpp",
+  "revert": true,
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (old declare out)",
+  "old": "// MT2009_PLUS_BONUS_SWITCH_V1 (declare) (Autor: Vekirion)\nACMD(do_bonus_switch);\n",
+  "new": ""
+ },
+ {
+  "file": "cmd.cpp",
+  "revert": true,
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (old table out)",
+  "old": "\t// MT2009_PLUS_BONUS_SWITCH_V1 (table) (Autor: Vekirion)\n\t{ \"bonus_switch\",\tdo_bonus_switch,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": ""
+ },
+ {
+  "file": "cmd_general.cpp",
+  "revert": true,
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (old command out)",
+  "old": "// MT2009_PLUS_BONUS_SWITCH_V1 (command) (Autor: Vekirion): the bonus switcher window's\n// \"/bonus_switch info <cell> | items | start <cell> <speed> <need> <costume bonuses> <apply>:<min> ... | once <cell> | stop [cell]\"\n// (playerbot_bonus_switch.h).\nACMD(do_bonus_switch)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tvoid BonusSwitchCommand(LPCHARACTER ch, const char* argument);\n\tBonusSwitchCommand(ch, argument);\n}\n\n",
+  "new": ""
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (values)",
+  "old": "enum EWindows\n{\n",
+  "new": "// MT2009_PLUS_SWITCHBOT_V1 (values): Ameria's switchbot (common/length.h SwitchbotValues) - five slots, five alternatives of\n// five bonuses each (playerbot_switchbot.cpp; the client's exe the same, client-patches/exe Server/common/length.h).\nenum SwitchbotValues\n{\n\tSWITCHBOT_SLOT_COUNT = 5,\n\tSWITCHBOT_ALTERNATIVE_COUNT = 5,\n\tSWITCHBOT_ATTR_COUNT = 5,\t// Ameria's MAX_NORM_ATTR_NUM: the five normal bonuses\n};\n\nenum EWindows\n{\n"
+ },
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (window)",
+  "old": "\tCHEST_INVENTORY,\n\tWINDOW_TYPE_MAX,\n",
+  "new": "\tCHEST_INVENTORY,\n\t// MT2009_PLUS_SWITCHBOT_V1 (window): the switchbot's slots, 16 - after every old window (the client's exe the same); no item is\n\t// ever kept here (the slot's item stays in the bag, locked), so player.item.window is not touched\n\tSWITCHBOT,\n\tWINDOW_TYPE_MAX,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (cg header)",
+  "old": "\tHEADER_CG_FLOWER_EVENT\t\t\t= 187,\n",
+  "new": "\tHEADER_CG_FLOWER_EVENT\t\t\t= 187,\n\t// MT2009_PLUS_SWITCHBOT_V1 (cg header): Ameria's switchbot - start / stop a slot (playerbot_switchbot.cpp)\n\tHEADER_CG_SWITCHBOT\t\t\t\t= 170,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (gc header)",
+  "old": "\tHEADER_GC_FLOWER_EVENT\t\t\t\t\t= 187,\n",
+  "new": "\tHEADER_GC_FLOWER_EVENT\t\t\t\t\t= 187,\n\t// MT2009_PLUS_SWITCHBOT_V1 (gc header): Ameria's switchbot - only to a client that sent \"/switchbot hello\"\n\tHEADER_GC_SWITCHBOT\t\t\t\t\t\t= 171,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (gg header)",
+  "old": "\tHEADER_GG_DUNGEON_NEW_JUMP = 37,\n};",
+  "new": "\tHEADER_GG_DUNGEON_NEW_JUMP = 37,\n\n\t// MT2009_PLUS_SWITCHBOT_V1 (gg header): a running switchbot follows its player to another core (Ameria's)\n\tHEADER_GG_SWITCHBOT = 39,\n};"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (structs)",
+  "old": "} TPacketCGFlowerEvent;\t\t// 4 B\n\n#pragma pack()\n#endif",
+  "new": "} TPacketCGFlowerEvent;\t\t// 4 B\n\n// MT2009_PLUS_SWITCHBOT_V1 (structs): Ameria's switchbot (new_switchbot.h, common/tables.h, packet.h), fixed-size fields here -\n// the client's exe has the same (client-patches/exe UserInterface/Packet.h, static_assert of the sizes).\nstruct TSwitchbotAttributeAlternativeTable\n{\n\tTPlayerItemAttribute attributes[SWITCHBOT_ATTR_COUNT];\n\n\tbool IsConfigured() const\n\t{\n\t\tfor (const auto& it : attributes)\n\t\t{\n\t\t\tif (it.bType && it.sValue)\n\t\t\t{\n\t\t\t\treturn true;\n\t\t\t}\n\t\t}\n\n\t\treturn false;\n\t}\n};\t// 15 B\n\nstruct TSwitchbotTable\n{\n\tDWORD player_id;\n\tbool active[SWITCHBOT_SLOT_COUNT];\n\tbool finished[SWITCHBOT_SLOT_COUNT];\n\tDWORD items[SWITCHBOT_SLOT_COUNT];\n\tTSwitchbotAttributeAlternativeTable alternatives[SWITCHBOT_SLOT_COUNT][SWITCHBOT_ALTERNATIVE_COUNT];\n\n\tTSwitchbotTable() : player_id(0)\n\t{\n\t\tmemset(&items, 0, sizeof(items));\n\t\tmemset(&alternatives, 0, sizeof(alternatives));\n\t\tmemset(&active, false, sizeof(active));\n\t\tmemset(&finished, false, sizeof(finished));\n\t}\n};\t// 409 B\n\nstruct TSwitchbotAttributeInfo\n{\n\tBYTE attribute_set;\n\tint apply_num;\n\tint max_value;\n};\t// 9 B\n\nstruct TPacketGGSwitchbot\n{\n\tBYTE bHeader;\n\tWORD wPort;\n\tTSwitchbotTable table;\n};\n\nenum ECGSwitchbotSubheader\n{\n\tSUBHEADER_CG_SWITCHBOT_START,\n\tSUBHEADER_CG_SWITCHBOT_STOP,\n};\n\nstruct TPacketCGSwitchbot\n{\n\tBYTE header;\n\tWORD size;\n\tBYTE subheader;\n\tBYTE slot;\n};\t// 5 B; START: + 5 alternatives\n\nenum EGCSwitchbotSubheader\n{\n\tSUBHEADER_GC_SWITCHBOT_UPDATE,\n\tSUBHEADER_GC_SWITCHBOT_UPDATE_ITEM,\n\tSUBHEADER_GC_SWITCHBOT_SEND_ATTRIBUTE_INFORMATION,\n};\n\nstruct TPacketGCSwitchbot\n{\n\tBYTE header;\n\tWORD size;\n\tBYTE subheader;\n\tBYTE slot;\n};\t// 5 B\n\nstruct TSwitchbotUpdateItem\n{\n\tBYTE\tslot;\n\tDWORD\tvnum;\n\tDWORD\tcount;\n\tint\t\talSockets[ITEM_SOCKET_MAX_NUM];\n\tTPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];\n\tWORD\tCellInven;\n};\t// 44 B\n\nstatic_assert(sizeof(TSwitchbotAttributeAlternativeTable) == 15, \"switchbot alternative\");\nstatic_assert(sizeof(TSwitchbotTable) == 409, \"switchbot table\");\nstatic_assert(sizeof(TSwitchbotAttributeInfo) == 9, \"switchbot attribute info\");\nstatic_assert(sizeof(TPacketCGSwitchbot) == 5 && sizeof(TPacketGCSwitchbot) == 5, \"switchbot packets\");\nstatic_assert(sizeof(TSwitchbotUpdateItem) == 44, \"switchbot update item\");\n\n#pragma pack()\n#endif"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (cg size)",
+  "old": "\tSet(HEADER_CG_MINI_GAME_RUMI, sizeof(TPacketCGMiniGameRumi), \"MiniGameRumi\", true);\n",
+  "new": "\tSet(HEADER_CG_MINI_GAME_RUMI, sizeof(TPacketCGMiniGameRumi), \"MiniGameRumi\", true);\n\t// MT2009_PLUS_SWITCHBOT_V1 (cg size): Ameria's switchbot, 5 bytes + what the handler reads, with the sequence byte\n\tSet(HEADER_CG_SWITCHBOT, sizeof(TPacketCGSwitchbot), \"Switchbot\", true);\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (gg size)",
+  "old": "\tSet(HEADER_GG_DUNGEON_NEW_JUMP, sizeof(TPacketGGDungeonNewJump), \"DungeonNewJump\", false);\n",
+  "new": "\tSet(HEADER_GG_DUNGEON_NEW_JUMP, sizeof(TPacketGGDungeonNewJump), \"DungeonNewJump\", false);\n\t// MT2009_PLUS_SWITCHBOT_V1 (gg size)\n\tSet(HEADER_GG_SWITCHBOT, sizeof(TPacketGGSwitchbot), \"Switchbot\", false);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (packet)",
+  "old": "\t\tcase HEADER_CG_MINI_GAME_RUMI:\n\t\t\t{\n\t\t\t\tvoid RumiPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tRumiPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n",
+  "new": "\t\tcase HEADER_CG_MINI_GAME_RUMI:\n\t\t\t{\n\t\t\t\tvoid RumiPacket(LPCHARACTER ch, const char* data);\n\t\t\t\tRumiPacket(ch, c_pData);\n\t\t\t}\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_SWITCHBOT_V1 (packet): Ameria's switchbot - start / stop a slot (playerbot_switchbot.cpp)\n\t\tcase HEADER_CG_SWITCHBOT:\n\t\t\t{\n\t\t\t\tint Mt2009SwitchbotPacket(LPCHARACTER ch, const char* data, size_t uiBytes);\n\t\t\t\tif ((iExtraLen = Mt2009SwitchbotPacket(ch, c_pData, m_iBufferLeft)) < 0)\n\t\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (move)",
+  "old": "\tstruct command_item_move * pinfo = (struct command_item_move *) data;\n\n\tif (ch)\n\t\tch->MoveItem(pinfo->Cell, pinfo->CellTo, pinfo->count);\n",
+  "new": "\tstruct command_item_move * pinfo = (struct command_item_move *) data;\n\n\t// MT2009_PLUS_SWITCHBOT_V1 (move): into / out of a switchbot slot (Ameria's MoveItem, IsSwitchbotPosition)\n\tbool Mt2009SwitchbotItemMove(LPCHARACTER ch, const TItemPos& Cell, const TItemPos& DestCell);\n\tif (ch && Mt2009SwitchbotItemMove(ch, pinfo->Cell, pinfo->CellTo))\n\t\treturn;\n\n\tif (ch)\n\t\tch->MoveItem(pinfo->Cell, pinfo->CellTo, pinfo->count);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (use)",
+  "old": "void CInputMain::ItemUse(LPCHARACTER ch, const char * data)\n{\n\tch->UseItem(((struct command_item_use *) data)->Cell);\n}\n",
+  "new": "void CInputMain::ItemUse(LPCHARACTER ch, const char * data)\n{\n\t// MT2009_PLUS_SWITCHBOT_V1 (use): a switchbot slot's item taken out (Ameria's UseItem)\n\tbool Mt2009SwitchbotItemUse(LPCHARACTER ch, const TItemPos& Cell);\n\tif (Mt2009SwitchbotItemUse(ch, ((struct command_item_use *) data)->Cell))\n\t\treturn;\n\n\tch->UseItem(((struct command_item_use *) data)->Cell);\n}\n"
+ },
+ {
+  "file": "input_p2p.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (p2p)",
+  "old": "\t\tcase HEADER_GG_DUNGEON_NEW_JUMP:\n\t\t\tquest::Mt2009PlusDungeonNewJumpRecv(c_pData);\n\t\t\tbreak;\n",
+  "new": "\t\tcase HEADER_GG_DUNGEON_NEW_JUMP:\n\t\t\tquest::Mt2009PlusDungeonNewJumpRecv(c_pData);\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_SWITCHBOT_V1 (p2p): a running switchbot of a player coming to this core (Ameria's)\n\t\tcase HEADER_GG_SWITCHBOT:\n\t\t\t{\n\t\t\t\tvoid Mt2009SwitchbotP2P(const char* c_pData);\n\t\t\t\tMt2009SwitchbotP2P(c_pData);\n\t\t\t}\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (warp)",
+  "old": "\tp.wPort\t= wPort;\n\n\tGetDesc()->Packet(p);\n",
+  "new": "\tp.wPort\t= wPort;\n\n\t// MT2009_PLUS_SWITCHBOT_V1 (warp): Ameria's - the switchbot pauses, to another core it goes along (playerbot_switchbot.cpp)\n\t{\n\t\tvoid Mt2009SwitchbotWarp(LPCHARACTER ch, WORD wPort);\n\t\tMt2009SwitchbotWarp(this, p.wPort);\n\t}\n\n\tGetDesc()->Packet(p);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (channel)",
+  "old": "\tp.wPort\t= newPort;\n\tGetDesc()->Packet(p);\n",
+  "new": "\tp.wPort\t= newPort;\n\t// MT2009_PLUS_SWITCHBOT_V1 (channel): Ameria's, as at a warp\n\t{\n\t\tvoid Mt2009SwitchbotWarp(LPCHARACTER ch, WORD wPort);\n\t\tMt2009SwitchbotWarp(this, p.wPort);\n\t}\n\tGetDesc()->Packet(p);\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (logout)",
+  "old": "\tMessengerManager::instance().Logout(GetName());\n",
+  "new": "\tMessengerManager::instance().Logout(GetName());\n\n\t// MT2009_PLUS_SWITCHBOT_V1 (logout): Ameria's ItemSaveSwitchbot; a real logout (no warp) stops the slots\n\t{\n\t\tvoid Mt2009SwitchbotDisconnect(LPCHARACTER ch);\n\t\tMt2009SwitchbotDisconnect(this);\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (equip)",
+  "old": "bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TItemPos& destCell) /*const*/\n{\n",
+  "new": "bool CHARACTER::CanEquipNow(const LPITEM item, const TItemPos& srcCell, const TItemPos& destCell) /*const*/\n{\n\t// MT2009_PLUS_SWITCHBOT_V1 (equip): Ameria's - an item in a switchbot slot (locked) is not put on\n\t{\n\t\tbool Mt2009SwitchbotRefuseEquip(LPCHARACTER ch, LPITEM item);\n\t\tif (Mt2009SwitchbotRefuseEquip(this, item))\n\t\t\treturn false;\n\t}\n\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (swap)",
+  "old": "\t    sys_log(0, \"[WARNING][WARNING][HACK USER!] : %s %d %d\", m_stName.c_str(), bCell, bDestCell);\n\t    return false;\n\t}\n\n\tif (!IsEmptyItemGrid(TItemPos (INVENTORY, item1->GetCell()), item2->GetSize(), item1->GetCell()))\n",
+  "new": "\t    sys_log(0, \"[WARNING][WARNING][HACK USER!] : %s %d %d\", m_stName.c_str(), bCell, bDestCell);\n\t    return false;\n\t}\n\n\t// MT2009_PLUS_SWITCHBOT_V1 (swap): Ameria's - no swap of a locked item (a switchbot slot's)\n\tif (item1->isLocked() || item2->isLocked())\n\t\treturn false;\n\n\tif (!IsEmptyItemGrid(TItemPos (INVENTORY, item1->GetCell()), item2->GetSize(), item1->GetCell()))\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (declare)",
+  "old": "ACMD(do_ekwipunek);\t// MT2009_PLUS_EKWIPUNEK_V1 (declare): Dodatkowy ekwipunek, root/uiekwipunek.py (playerbot_ekwipunek.cpp)\n",
+  "new": "ACMD(do_ekwipunek);\t// MT2009_PLUS_EKWIPUNEK_V1 (declare): Dodatkowy ekwipunek, root/uiekwipunek.py (playerbot_ekwipunek.cpp)\nACMD(do_switchbot);\t// MT2009_PLUS_SWITCHBOT_V1 (declare): \"/switchbot hello\", root/uiswitchbot.py (playerbot_switchbot.cpp)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_SWITCHBOT_V1 (table)",
+  "old": "\t{ \"ekwipunek\",\tdo_ekwipunek,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_EKWIPUNEK_V1 (table)\n",
+  "new": "\t{ \"ekwipunek\",\tdo_ekwipunek,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_EKWIPUNEK_V1 (table)\n\t{ \"switchbot\",\tdo_switchbot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SWITCHBOT_V1 (table)\n"
+ }
+]

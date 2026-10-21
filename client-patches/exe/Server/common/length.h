@@ -491,6 +491,17 @@ enum EOnIdleEvents
 	ON_IDLE_MAX_NUM
 };
 
+#ifdef ENABLE_SWITCHBOT
+// MT2009_PLUS_SWITCHBOT_V1 (values): Ameria's switchbot - five slots, five alternatives of five bonuses (the server's
+// common/length.h the same, server-patches/switchbot)
+enum SwitchbotValues
+{
+	SWITCHBOT_SLOT_COUNT = 5,
+	SWITCHBOT_ALTERNATIVE_COUNT = 5,
+	SWITCHBOT_ATTR_COUNT = 5,
+};
+#endif
+
 #ifdef ENABLE_SPECIAL_STORAGE
 // MT2009_PLUS_EKWIPUNEK_V1 (sizes): Dodatkowy ekwipunek - the server's five category storages, four pages of 5 x 9 each
 enum EMt2009SpecialStorage
@@ -526,6 +537,10 @@ enum EWindows
 	STONE_INVENTORY,
 	CHANGE_INVENTORY,
 	CHEST_INVENTORY,
+#endif
+#ifdef ENABLE_SWITCHBOT
+	// MT2009_PLUS_SWITCHBOT_V1 (window): the switchbot's slots, 16 - the server's number (after every old window)
+	SWITCHBOT,
 #endif
 	WINDOW_TYPE_MAX,
 
@@ -1424,6 +1439,11 @@ typedef struct SItemPos
 		case CHANGE_INVENTORY:
 		case CHEST_INVENTORY:
 			return cell < SPECIAL_INVENTORY_MAX_NUM;
+#endif
+#ifdef ENABLE_SWITCHBOT
+		// MT2009_PLUS_SWITCHBOT_V1 (valid pos)
+		case SWITCHBOT:
+			return cell < SWITCHBOT_SLOT_COUNT;
 #endif
 
 		case SAFEBOX:

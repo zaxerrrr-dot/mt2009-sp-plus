@@ -300,6 +300,7 @@
     </ClCompile>
     <ClCompile Include="PythonAcce.cpp" />
     <ClCompile Include="PythonInGameEventSystemManager.cpp" />
+    <ClCompile Include="PythonSwitchbot.cpp" />
     <ClCompile Include="PythonYutnoriManager.cpp" />
     <ClCompile Include="Mt2009ClientQol.cpp" />
     <ClCompile Include="Mt2009MonsterModel.cpp" />
@@ -410,6 +411,7 @@
     <ClInclude Include="MemoryModule.h" />
     <ClInclude Include="PythonAcce.h" />
     <ClInclude Include="PythonInGameEventSystemManager.h" />
+    <ClInclude Include="PythonSwitchbot.h" />
     <ClInclude Include="PythonYutnoriManager.h" />
     <ClInclude Include="PythonBackground.h" />
     <ClInclude Include="PythonCaptcha.h" />
