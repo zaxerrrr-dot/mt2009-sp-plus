@@ -1735,7 +1735,10 @@ ishop_once owner_prices_pets "DELETE FROM common.itemshop_items WHERE vnum IN (5
 # "/kolo"): quest type, stacks to 200, tradeable, no drop/NPC sale (the SM coupon's antiflags); the
 # ItemShop's first page sells it for 25 Smocze Monety. PROTO_FROM_DB: read at the db core's boot. Idempotent.
 db -e "INSERT IGNORE INTO world.item_proto (vnum, name, locale_name, type, subtype, stack, weight, size, antiflag, flag, wearflag, immuneflag, gold, shop_buy_price, refined_vnum, refine_set, magic_pct, specular, socket_pct, addon_type, limittype0, limitvalue0, limittype1, limitvalue1, applytype0, applyvalue0, applytype1, applyvalue1, applytype2, applyvalue2, value0, value1, value2, value3, value4, value5, socket0, socket1, socket2, socket3, socket4, socket5) VALUES (80030, 'Bilet Kola Fortuny', _cp1250 X'42696C6574204B6FB36120466F7274756E79', 18, 0, 200, 0, 1, 384, 8196, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1);" || fail_step "could not add Bilet Kola Fortuny" >&2
-ishop_once wheel_ticket_9 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (9, 80030, 1, 25, 'DRAGON_COIN', 0);" "could not add the wheel ticket to the ItemShop"
+# MT2009_PLUS_KOLA_SHOP_V1 (the owner, 21 October 2026: "z itemshopu trzeba usunac bilet do losowania, bo stare kolo juz
+# powinno byc wylaczone"): the ticket is no longer sold - the Kolo Losu (MT2009_PLUS_KOLA_V1) is paid in Smocze Monety. The
+# item stays (tickets players hold); the ItemShop line goes once per install (the operator may sell it again).
+ishop_once kola_no_ticket "DELETE FROM common.itemshop_items WHERE vnum = 80030;" "could not take the wheel ticket out of the ItemShop"
 # MT2009_PLUS_OCHAO_V1 (db): Swiatynia Ochao (map 209, playerbot_ochao.h,
 # quest/temple_of_the_ochao.quest). The package's monsters on this world's
 # ladder - after the Grotto of Exile (81-97), level 98-105 - cloned from the
@@ -4027,31 +4030,20 @@ if [ -s /opt/playerbot/zestawy_items.sql ]; then
         fail_step "costume sets: zestawy_items.sql failed" >&2
     fi
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 86064);" 2>/dev/null || echo x)" = "6" ]; then
+# MT2009_PLUS_KOLA_SHOP_V1 (the owner, 21 October 2026: "z itemshopu nalezy usunac wszystkie amulety, amulety sa dostepne
+# tylko w kolach do losowania"): the sets' amulets (71202, 71188, 71199, 70607, 72713) are not sold - only the sash.
 ishop_once zestawy_60 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
-(60, 71202, 1, 150, 'DRAGON_COIN', 0),
-(61, 71188, 1, 150, 'DRAGON_COIN', 0),
-(62, 71199, 1, 150, 'DRAGON_COIN', 0),
-(63, 70607, 1, 100, 'DRAGON_COIN', 0),
-(64, 72713, 1, 150, 'DRAGON_COIN', 0),
-(65, 86064, 1, 250, 'DRAGON_COIN', 0);" "could not add the costume sets' rings and sash to the ItemShop"
+(65, 86064, 1, 250, 'DRAGON_COIN', 0);" "could not add the costume sets' sash to the ItemShop"
+ishop_once kola_no_amulets "DELETE FROM common.itemshop_items WHERE vnum IN (71202, 71188, 71199, 70607, 72713);" "could not take the amulets out of the ItemShop"
 db -e "INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
-SELECT 1071202, 10, 'Amulet Nazara', '+50% PD, +20% szybkości ataku i zaklęć, +30% obrażeń, +10% siły w walce z potworami (7 dni). Część zestawów kostiumów.', 150, 'cash', 71202, 1, 0, 0, 0, '71202', NOW()
-FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 71202);
-INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
-SELECT 1071188, 10, 'Lizak Magii', '+50% PD, +20% szybkości ataku i zaklęć, +30% obrażeń magicznych, +10% maks. PŻ i PE (7 dni). Część zestawów kostiumów.', 150, 'cash', 71188, 1, 0, 0, 0, '71188', NOW()
-FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 71188);
-INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
-SELECT 1071199, 10, 'Czekoladowy Amulet', '+50% PD, +20% szybkości ataku i zaklęć, +10% siły w walce z potworami, +10% maks. PŻ i PE (7 dni). Część zestawu walentynkowego.', 150, 'cash', 71199, 1, 0, 0, 0, '71199', NOW()
-FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 71199);
-INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
-SELECT 1070607, 10, 'Mistrzowski Emblemat', '+50% PD, +20% szybkości ataku i zaklęć, +35% ataku magicznego i w zwarciu, +10% maks. PŻ i PE (6 godzin). Część zestawu piłkarskiego.', 100, 'cash', 70607, 1, 0, 0, 0, '70607', NOW()
-FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 70607);
-INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
-SELECT 1072713, 10, 'Błogosławieństwo Mocy', '+50% PD, +5% szybkości ataku, +20% szybkości zaklęć, +10% siły przeciw Metinom, +40% obrażeń umiejętności (7 dni). Część zestawu Strażników Piasku.', 150, 'cash', 72713, 1, 0, 0, 0, '72713', NOW()
-FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 72713);
-INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
 SELECT 1086064, 10, 'Szarfa Serca (unikat.)', 'Szarfa unikatowa (pochłania 11-25% bonusów). Część zestawu walentynkowego.', 250, 'cash', 86064, 1, 0, 0, 0, '86064', NOW()
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 86064);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the costume sets' items" >&2
+# MT2009_PLUS_KOLA_SHOP_V1: the amulets leave the web shop too (once - the operator may put them back)
+if [ "$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'kola_web_no_amulets';" 2>/dev/null || echo x)" = "0" ]; then
+    db -e "DELETE FROM itemshop.ishop_items WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 80030);
+           INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('kola_web_no_amulets', NOW());" 2>/dev/null ||
+        echo "[playerbot-migrate] note: no web ItemShop tables to take the amulets out of" >&2
+fi
 fi
 fi
 
