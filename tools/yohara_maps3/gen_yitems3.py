@@ -89,7 +89,9 @@ add(70410)                                                        # Zamarzniety 
 add(70411, name='B. Smocza Skrz. (lekka)')                        # wiki's names (Owsap's PL: slaby/silny)
 add(70412, name='B. Smocza Skrz. (ciężka)')
 add(72740, status=need('the mercenaries (Licencja Najemnika) - none here yet'), **INERT)
-add(55001, status=need('the official pets (Odzywka) - none here yet'), **INERT)
+# MT2009_PLUS_YOHARA_DESC_V1 (21 October 2026): 55001 is our New Pet System's Proteinowa Przekaska (playerbot_newpet.h
+# ITEM_PROTEIN, ITEM_PET / PET_FEEDSTUFF: +7 days of the pet's life) - it works; no inert row and client record of
+# its own here any more (it replaced the base client's record with a material "Na razie bez zastosowania"): EXISTING
 AURA = 'the aura costume (Ognista Runa Aury) - none here yet'
 add(49992, status=need(AURA), **INERT)
 add(49993, status=need(AURA), **INERT)
@@ -143,6 +145,7 @@ DESC = {
 
 # items we have (official vnums or ours - see the notes): their names in the drop file
 EXISTING = {
+    55001: 'Proteinowa Przekaska',     # MT2009_PLUS_YOHARA_DESC_V1: the New Pet System's (gen_yitems2: Odzywka)
     250: 'Demoniczne Ostrze', 3150: 'Zlodziej Dusz', 190: 'Lwi Miecz', 180: 'Zatruty Miecz', 7150: 'Ekstazyjny Wachlarz',
     5120: 'Bambusowy Dzwon', 1130: 'Skrzydla Demona Chakr.', 2180: 'Luk Niebieskiego Smoka', 170: 'Miecz Zadlo',
     1120: 'Noz Siamese', 2170: 'Stalowy Luk Kruka', 50662: 'Jadeit Nocy', 50661: 'Jadeit Slonca', 50664: 'Jadeit Mgly',

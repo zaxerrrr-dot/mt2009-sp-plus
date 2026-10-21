@@ -145,7 +145,7 @@ Group	MT2009_ymaps3_6796
 	10	31241	1	0.2	-- Polyskujaca Krwawa Perla
 	11	31259	1	0.2	-- Kowadlo Pln. Wiatru
 	12	31244	1	0.2	-- Kamien Rekawic Pln. W.
-	13	55001	1	0.1	-- Odzywka
+	13	55001	1	0.1	-- Proteinowa Przekaska
 	14	95734	1	0.3	-- Mrozny Korzonek
 	15	50739	1	0.15	-- Pusty Eliksir Mocy
 	16	50740	1	0.15	-- Pusty Eliksir Odp.
@@ -414,7 +414,7 @@ Group	MT2009_ymaps3_8076
 	17	50043	1	3	-- Klucz Nimfy Wodnej
 	18	31238	1	5	-- Polyskujaca Muszla
 	19	31258	1	5	-- Jedwab Wezowy
-	20	55001	1	3	-- Odzywka
+	20	55001	1	3	-- Proteinowa Przekaska
 	21	76029	1	5	-- Zielona Smocza Fasola
 	22	70428	1	10	-- Pyl Wezowy
 	23	50663	1	5	-- Jadeit Dymu

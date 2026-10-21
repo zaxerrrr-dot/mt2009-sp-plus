@@ -8,7 +8,7 @@
 #   have none), every object of every sector (areadata CRC -> a property of pack property -> its model/effect/tree
 #   and, for a Building, the .mdatr), every race of the maps (npclist -> .msm) and every name the staged text files
 #   give; the new packs under the 29 MB limit and in Index; gamedata/dbdata: the 132 mob_proto rows of
-#   yohara_maps3.sql, the nine atlasinfo rows, npclist 10125 and 3975, the 69 items (item_proto, item_list, itemdesc).
+#   yohara_maps3.sql, the nine atlasinfo rows, npclist 10125 and 3975, the 68 items (item_proto, item_list, itemdesc).
 # Run in the m2pack-lzo image, on the OUT the whole chain (cape301, maps302, shipdefense, port368, ymaps, ymaps2,
 # ymaps3) was built into:
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/ymaps3/verify_ymaps3.py \

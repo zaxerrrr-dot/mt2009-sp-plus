@@ -10,7 +10,7 @@
 #   gamedata/npclist.txt    10125 (Turnioblysk's portal - Owsap's 10109, which is our Przelecz) and 3975 (the ground
 #                           zones' marker, server-patches/strefy) drawn as "warp";
 #   gamedata/item_list.txt, gamedata/item_proto, locale/pl/itemdesc.txt
-#                           the 69 items of tools/yohara_maps3/yohara_items3.json (= the server's yohara_items3.sql,
+#                           the 68 items of tools/yohara_maps3/yohara_items3.json (= the server's yohara_items3.sql,
 #                           tools/yohara_maps3/gen_yitems3.py): a full record each over a template (Talizman Ognia+0
 #                           94000 for an armour, Zelazna Szkatulka 50120 for the rest - ../yohara/patch_yohara_client.py
 #                           yitem_record), its item_list line (the GF icons: client-2.0.30/root/icon/item) and its
@@ -53,7 +53,7 @@ ATLAS = ['metin2_map_whitedragoncave_02\t1152000\t1203200\t3\t3',  # = linux-por
          'metin2_map_elemental_03\t256000\t921600\t5\t5',
          'metin2_map_elemental_04\t384000\t921600\t1\t2']
 ROWS = 132      # 131 + the ground zones' marker 3975 (server-patches/strefy)
-ITEMS = 69
+ITEMS = 68                     # 69 - Proteinowa Przekaska 55001 (MT2009_PLUS_YOHARA_DESC_V1: the pet system's own record)
 RACE_FLAG = 83                 # the record's dwRaceFlag (= ../zywioly/patch_zywioly_client.py)
 ELEMENT_MASK = 0x1F800         # bits 11-16
 Collision = sd.Collision

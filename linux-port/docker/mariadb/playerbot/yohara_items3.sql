@@ -9,7 +9,6 @@
 --   30616 Dwutlenek Tytanu - the mined stones' crafting (Yohara jewellery) - none here yet
 --   30617 Agat - the mined stones' crafting (Yohara jewellery) - none here yet
 --   30618 Kamien Ksiezycowy - the mined stones' crafting (Yohara jewellery) - none here yet
---   55001 Odzywka - the official pets (Odzywka) - none here yet
 --   31262 Politura Wezowa - the serpent weapons and armour (Zbroje / Bronie Wezowe, the crafting at Statua Wezy) - none here yet
 --   376 Miecz Wezowy (wykon.) - the serpent weapons and armour (Zbroje / Bronie Wezowe, the crafting at Statua Wezy) - none here yet
 --   396 Ostrze Wezowe (wykon.) - the serpent weapons and armour (Zbroje / Bronie Wezowe, the crafting at Statua Wezy) - none here yet
@@ -63,7 +62,6 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (30618,'Kamien Ksiezycowy',_cp1250 X'4B616D6965F1204B7369EABF79636F7779',5,0,200,0,1,0,4,0,'',1000,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (70411,'B. Smocza Skrz. (lekka)',_cp1250 X'422E20536D6F637A6120536B727A2E20286C656B6B6129',23,0,200,0,1,0,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (70412,'B. Smocza Skrz. (ciezka)',_cp1250 X'422E20536D6F637A6120536B727A2E20286369EABF6B6129',23,0,200,0,1,0,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
-(55001,'Odzywka',_cp1250 X'4F64BF79776B61',5,0,200,0,1,16384,8196,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (83051,'Id. Skrzynia Talizmanu',_cp1250 X'49642E20536B727A796E69612054616C697A6D616E75',20,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (83052,'Id. Skrzynia Naszyjniku',_cp1250 X'49642E20536B727A796E6961204E61737A796A6E696B75',20,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (83053,'Id. Skrzynia Kolczykow',_cp1250 X'49642E20536B727A796E6961204B6F6C637A796BF377',20,0,200,0,1,0,4,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1,0,0,0,0,-1,-1,-1,-1,-1,-1),
