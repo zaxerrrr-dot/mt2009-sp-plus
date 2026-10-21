@@ -32,6 +32,10 @@ REFINE_ALL_ONLY_MODES = "Wszystkie: tylko %s lub %s."
 REFINE_ALL_QUESTION = "Uszlachetni\xe6 %d razy za %s?"
 REFINE_ALL_SUMMARY = "Wszystkie: %d pr\xf3b (udane: %d, nieudane: %d)."
 
+# MT2009_PLUS_DS_FLAME_VNUMS_V1: Smoczy Plomien (B) and Smoczy Plomien (ItemShop wheel) - the
+# change-attributes materials, in the order they are taken.
+DS_CHANGE_ATTR_FLAME_VNUMS = (100700, 100701)
+
 # MT2009_PLUS_ALCHEMY_MSG_V1: the Alchemy's message window shows the latest
 # message only. The stock uiCommon.PopupDialog.SetText adds a line to the
 # lines already there (even after Close), so every refusal of the refine
@@ -2190,8 +2194,20 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 
 			self.currentRecipe = { "ds_info" : ds_info, "need_count" : 2, "fee" : 500000, "material_count" : (1, 3, 9, 27, 81) }
 			if self.currentRecipe:
-				target_vnum = 100700
+				# MT2009_PLUS_DS_FLAME_VNUMS_V1: both Smoczy Plomien items (100700 and the
+				# ItemShop wheel's 100701) change the attributes (the server takes any
+				# MATERIAL_DS_CHANGE_ATTR); the first one the player has enough of goes in.
 				material_count = self.currentRecipe["material_count"][step]
+				target_vnum = DS_CHANGE_ATTR_FLAME_VNUMS[0]
+				for flameVnum in DS_CHANGE_ATTR_FLAME_VNUMS:
+					if player.GetItemCountByVnum(flameVnum) >= material_count:
+						target_vnum = flameVnum
+						break
+				else:
+					for flameVnum in DS_CHANGE_ATTR_FLAME_VNUMS:
+						if player.GetItemCountByVnum(flameVnum) > 0:
+							target_vnum = flameVnum
+							break
 				for slotNumber in xrange(player.INVENTORY_MAX_NUM):
 					itemVNum = player.GetItemIndex(slotNumber)
 					itemCount = player.GetItemCount(slotNumber)
@@ -2216,8 +2232,15 @@ class DragonSoulRefineWindow(ui.ScriptWindow):
 				return False
 
 			ds_type, grade, step, strength = self.currentRecipe["ds_info"]
+			# MT2009_PLUS_DS_FLAME_VNUMS_V1: no flame in the bag -> no slot entry (was a KeyError);
+			# the count is of the flame that lies in the slot (100700 or 100701).
+			if not self.DRAGON_SOUL_SLOT in self.refineItemInfo:
+				return False
 			invenType, invenPos, itemCount = self.refineItemInfo[self.DRAGON_SOUL_SLOT]
-			if (grade >= 5) and (player.GetItemCountByVnum(100700) >= itemCount):
+			flameVnum = player.GetItemIndex(invenType, invenPos)
+			if not flameVnum in DS_CHANGE_ATTR_FLAME_VNUMS:
+				return False
+			if (grade >= 5) and (player.GetItemCountByVnum(flameVnum) >= itemCount):
 				return True
 
 			return False

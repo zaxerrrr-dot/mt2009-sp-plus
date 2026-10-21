@@ -479,3 +479,16 @@ Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang
 `exebuild/src` + ten katalog) – `GameType.cpp`, `PythonPlayer.cpp`, `PythonPlayerModule.cpp`, `PythonPlayerSkill.cpp`,
 `PythonNetworkStreamPhaseGameItem.cpp` bez błędów. Exe nie budowane (`build.sh msvc --smoke` przy najbliższym
 wydaniu exe).
+
+## Pomocnicze przedmioty Smoczych Kamieni z danych klienta – `MT2009_PLUS_DS_UTILITY_FROM_PROTO_V1` (`ENABLE_DRAGON_SOUL_SYSTEM`)
+
+`GameLib/ItemManager.cpp` (`LoadItemTable`, tablica `aDragonSoulUtilityItems`): 12 przedmiotów (30270, 50255, 50260,
+76029, 100100, 100101, 100200, 100300, 100400, 100500, 100700, 100701) exe tworzy już **tylko wtedy, gdy item_proto
+klienta (dbdata) nie ma ich rekordu** (wpis z samego item_list.txt ma pustą tabelę – liczy się tabela z tym vnumem).
+Wcześniej nadpisywał wszystkie 12 nazwami w UTF-8 (krzaki w oknach, np. „PĹ‚omieĹ„ Smoka+”) i ikoną
+`icon/item/<vnum>.tga` (100701.tga nie istnieje – brak ikony). Teraz nazwa, opis, flagi i ikona idą z danych (item_list:
+100701 → 100700.tga, 76029 → 100300.tga). Zapasowe nazwy w cp1250 (jak w danych); przy wpisie z item_list zostaje jego ikona.
+W danych 3.0 rekordu nie mają tylko 76029 i 100101 – te dalej tworzy exe (antyflagi jak world.item_proto).
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, drzewo `exebuild/src`
++ ten katalog) – `ItemManager.cpp` bez błędów. Exe nie budowane.

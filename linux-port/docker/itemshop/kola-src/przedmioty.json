@@ -532,16 +532,16 @@
   "expire_rel_sec": null
  },
  "8100": {
-  "vnum": 100701,
+  "vnum": 100700,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Smoczy Płomień",
+  "name": "Smoczy Płomień (B)",
   "status": "ok",
   "src_name": "Smoczy Płomień",
-  "note": "Ten sam przedmiot (100701 - zmienia bonusy Smoczej Alchemii; wlasciciel 20.10)",
-  "icon_vnum": 100701,
+  "note": "Smoczy Płomień (B) 100700 - ten z Wieży Sung Mahi, zmienia bonusy w oknie Smoczej Alchemii (wlasciciel 21.10, zamiast 100701)",
+  "icon_vnum": 100700,
   "limit": null,
   "expire_rel_sec": null
  },
@@ -1806,16 +1806,16 @@
   "expire_rel_sec": null
  },
  "10331": {
-  "vnum": 100701,
+  "vnum": 100700,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Smoczy Płomień",
+  "name": "Smoczy Płomień (B)",
   "status": "ok",
   "src_name": "Smoczy Płomień",
-  "note": "Ten sam przedmiot (100701 - zmienia bonusy Smoczej Alchemii; wlasciciel 20.10)",
-  "icon_vnum": 100701,
+  "note": "Smoczy Płomień (B) 100700 - ten z Wieży Sung Mahi, zmienia bonusy w oknie Smoczej Alchemii (wlasciciel 21.10, zamiast 100701)",
+  "icon_vnum": 100700,
   "limit": null,
   "expire_rel_sec": null
  },

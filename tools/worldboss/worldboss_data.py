@@ -90,11 +90,16 @@ MINION_IMMUNE = 'STUN,SLOW,CURSE,TERROR'           # the wiki: "Omdlewa / Spowal
 # Sohan." The spots: the middle of each map's own boss and big-monster groups (boss.txt of the map - open ground
 # the server's regen already uses), in the map's local cells (x 100 = units). The area's name for the notice
 # ("komunikat serwerowy z informacją o terroryzowanym przez bossa obszarze") is the map and its part.
+# MT2009_PLUS_WORLDBOSS_SPOTS_V1 (21 October 2026, syserr "spawn of 4469 on map 64 at 770,757 failed"): every spot
+# checked against the map's server_attr - the boss's square (+-600 units, SPOT_SPREAD) must be free of BLOCK /
+# OBJECT / BANPK (SpawnMob's test). Five were not: 64 770,757 and 418,270, 62 426,911 and 903,755 on 61 lay wholly
+# on blocked ground, 62 1357,336 half; each moved to the nearest spot whose square (+-800 units) is wholly free and
+# joined to the map's walkable ground: 792,733 / 432,314 / 424,889 / 879,729 / 1363,346.
 MAPS = [
-    (64, 'Dolina Seungryong', [(770, 757), (418, 270), (1242, 810)]),
+    (64, 'Dolina Seungryong', [(792, 733), (432, 314), (1242, 810)]),
     (63, 'Pustynia Yongbi', [(869, 658), (1309, 1073), (824, 266), (356, 722), (825, 1064)]),
-    (62, 'Doyyumhwan', [(998, 463), (426, 911), (1266, 1082), (1357, 336)]),
-    (61, 'Góra Sohan', [(789, 184), (194, 1156), (1349, 1210), (903, 755)]),
+    (62, 'Doyyumhwan', [(998, 463), (424, 889), (1266, 1082), (1363, 346)]),
+    (61, 'Góra Sohan', [(789, 184), (194, 1156), (1349, 1210), (879, 729)]),
 ]
 MAP_CELLS = 1536                # 6 x 6 sectors of 256 cells (each of the four maps)
 

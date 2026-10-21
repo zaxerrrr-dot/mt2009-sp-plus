@@ -179,7 +179,9 @@ namespace mt2009_worldboss
 	std::vector<DWORD> s_vecMen;
 	std::map<DWORD, TDamage> s_mapDamage;	// pid -> what a player dealt
 	DWORD s_dwLastBossIndex = 999;
-	std::map<DWORD, DWORD> s_mapLastCommand;	// pid -> get_dword_time()
+	// MT2009_PLUS_WORLDBOSS_CLAIM_V1: (pid << 1 | 1 for "odbierz") -> get_dword_time(); the claim has its own gap,
+	// so the window's "info" poll every 5 s no longer swallows a click that comes within 0.7 s of it
+	std::map<unsigned long long, DWORD> s_mapLastCommand;
 
 	// ------------------------------------------------------------ helpers
 
@@ -1236,7 +1238,6 @@ namespace mt2009_worldboss
 		}
 		struct TRow { DWORD id; int kind, tier, pos, drop, attack; DWORD season; std::vector<TItem> items; };
 		std::vector<TRow> rows;
-		int needSlots = 0;
 		MYSQL_ROW r;
 		while ((r = mysql_fetch_row(m->Get()->pSQLResult)))
 		{
@@ -1249,19 +1250,32 @@ namespace mt2009_worldboss
 			t.drop = (int)Num(r[5]);
 			t.attack = (int)Num(r[6]);
 			t.season = Num(r[7]);
-			needSlots += (int)t.items.size();
 			rows.push_back(t);
 		}
-		if (needSlots > 0 && ch->GetEmptyInventory(1) < 0)
-		{
-			if (!bot)
-				ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: brak miejsca w ekwipunku - zwolnij miejsce i sprobuj ponownie.");
-			return;
-		}
-		int given = 0;
+		// MT2009_PLUS_WORLDBOSS_CLAIM_V1: room for each reward's items in the bag (their cells, the largest one
+		// placeable) before it is taken - a reward that does not fit waits; before, one free cell was enough and
+		// the rest of the items fell to the ground
+		int given = 0, noRoom = 0, needCells = 0;
 		for (size_t i = 0; i < rows.size(); ++i)
 		{
 			const TRow& t = rows[i];
+			if (!t.items.empty())
+			{
+				int cells = 0, biggest = 1;
+				for (size_t k = 0; k < t.items.size(); ++k)
+				{
+					const TItemTable* proto = ITEM_MANAGER::instance().GetTable(t.items[k].vnum);
+					const int size = proto ? std::max<int>(1, proto->bSize) : 1;
+					cells += size;
+					biggest = std::max(biggest, size);
+				}
+				if (ch->CountEmptyInventory() < cells || ch->GetEmptyInventory((BYTE)biggest) < 0)
+				{
+					++noRoom;
+					needCells = std::max(needCells, cells);
+					continue;
+				}
+			}
 			std::unique_ptr<SQLMsg> u(Query("UPDATE player.worldboss_reward SET state = 1, taken_at = UNIX_TIMESTAMP() WHERE id = %u AND state = 0", t.id));
 			if (!Ok(u) || u->Get()->uiAffectedRows != 1)
 				continue;
@@ -1302,6 +1316,12 @@ namespace mt2009_worldboss
 		}
 		if (bot)
 			return;
+		if (noRoom)	// MT2009_PLUS_WORLDBOSS_CLAIM_V1
+			ch->ChatPacket(CHAT_TYPE_INFO, given
+					? "Boss Swiata: czesc nagrod odebrana; na reszte brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie."
+					: "Boss Swiata: brak miejsca w ekwipunku (potrzeba %d wolnych pol) - zwolnij miejsce i kliknij ponownie.", needCells);
+		else if (!given)
+			ch->ChatPacket(CHAT_TYPE_INFO, "Boss Swiata: nagroda zostala juz odebrana albo przepadla.");
 		if (given)
 			ch->ChatPacket(CHAT_TYPE_COMMAND, "WB claimok");
 		SendInfo(ch);
@@ -1329,10 +1349,10 @@ namespace mt2009_worldboss
 		}
 	}
 
-	bool TooSoon(LPCHARACTER ch)
+	bool TooSoon(LPCHARACTER ch, bool claim = false)
 	{
 		const DWORD now = get_dword_time();
-		DWORD& last = s_mapLastCommand[ch->GetPlayerID()];
+		DWORD& last = s_mapLastCommand[((unsigned long long)ch->GetPlayerID() << 1) | (claim ? 1ULL : 0ULL)];
 		if (last && now - last < COMMAND_GAP_MS)
 			return true;
 		last = now;
@@ -1470,7 +1490,7 @@ void WorldBossCommand(LPCHARACTER ch, const char* argument)
 	rest = one_argument(rest, arg, sizeof(arg));
 	one_argument(rest, arg2, sizeof(arg2));
 	const bool gm = ch->GetGMLevel() >= GM_HIGH_WIZARD;
-	if (!gm && TooSoon(ch))
+	if (!gm && TooSoon(ch, !strcmp(sub, "odbierz")))	// MT2009_PLUS_WORLDBOSS_CLAIM_V1
 		return;
 	if (!s_data.loaded)
 	{
