@@ -31,12 +31,22 @@ dodaj system buffi z Amerii. Pod tym samym skrótem klawiszowym itd.”). Źród
 - **Kostiumy Buffi** (`MT2009_PLUS_BUFFI_V2`, sloty Amerii): `WEAR_BUFFI_BODY/HEAD/WEAPON/SASH` = 28–31 (wolne pola pod
   `WEAR_MAX` 32 – bez zmiany układu pól, pakietów i bazy). Kostium przeciągnięty w oknie Buffi na jej slot albo użyty z
   torby przy otwartym oknie (`/buffi page 1|0`, Ameria: `/buffi_costume_page`) trafia na Buffi: strój i fryzura dla
-  kobiety, broń, którą może trzymać szaman, dowolna szarfa. Kostiumy Buffi nie dają właścicielowi nic (`(points)`),
-  a szamanka je nosi (strój, fryzura, broń i szarfa; przetransmutowany – z wyglądem).
+  kobiety, broń, którą może trzymać szaman. Kostiumy Buffi nie dają właścicielowi nic (`(points)`),
+  a szamanka je nosi (strój, fryzura, broń; przetransmutowany – z wyglądem). **V3: tylko 3 sloty** – szarfy już nie
+  (pole 31 `WEAR_BUFFI_SASH` zostaje w enumie, nic na nie nie trafia); szarfa założona wcześniej na Buffi wraca przy
+  logowaniu do ekwipunku, a przy pełnym – do magazynu przedmiotów (ItemShop).
 - **Zwój Imienia Buffi** 61030 – imię dla przywołanej Buffi (jedno na pieczęć – `player.mt2009_buffi_name`, u Amerii plik
   `share/buffi_name/<id przedmiotu>`), odblokowuje Szybkość i Zwiększenie Ataku i daje +10% silny przeciwko bossom na
   7 dni (efekt 640, Ameria `AFFECT_NAME_BUFFI`). Nowe imię dopiero, gdy ten bonus minie (Ameria też odmawia).
-- **Skąd**: nowa postać (poziom ≤ 5, raz) dostaje 61025 i 61030 (skrzynia startowa 66002 Amerii); ItemShop „Koń i pomoc”:
+- **Od 55 poziomu** (`MT2009_PLUS_BUFFI_V3`): pieczęcie, Zwój Imienia, polecenia okna, sloty kostiumów i Kamień Duchowy
+  Buffi niżej odmawiają („Buffi dostępna od 55 poziomu.”); Buffi przywołana wcześniej przez niższą postać jest odwołana
+  przy logowaniu.
+- **Słabsze wzmocnienia** (V3): wartość (nie czas) każdego wzmocnienia × współczynnik stopnia – M1–M10 0,50, G1–G4 0,65,
+  G5–G10 0,75, P 0,82 (`GradeFactor` w `playerbot_buffi.cpp`; wiersze `skill_proto` 164–167 nie są do tego czytane i
+  zostają Amerii). Dymek klienta liczy to samo (`gen_buffi.py` `CLIENT_FACTOR`, zmienna `sl` = prawdziwy poziom).
+- **Skąd**: prezent za **55 poziom** (V3, raz na postać, flaga questa `gift55`; także przy logowaniu postaci, która już
+  ma 55+ i go nie dostała): Buffi na zawsze 61026 + Zwój Imienia 61030. Dawny prezent nowej postaci (61025 + 61030 przy
+  poziomie ≤ 5) – usunięty, kto go dostał, ma go dalej. ItemShop „Koń i pomoc”:
   Buffi 61026 za 750, Zwój Imienia za 50 (ceny Amerii). Oferta Handlarki (9003) „Księgi i kamienie Buffi” – usunięta
   w V2 (decyzja właściciela 21.10.2026).
   Ameria dawała też Zwój Imienia z Bossa Świata (5%) i skrzyń – tu nie (Boss Świata to osobna praca).
