@@ -15,6 +15,7 @@ import systemSetting
 from constInfo import TextColor
 import uiItemShop
 import serverInfo as serverInfoModule
+import uiworldboss # MT2009_PLUS_WORLDBOSS_ICON_V1: the World Boss's icon on the atlas and the minimap
 
 EVENT_SET_MINIMAP_HIDE_STATE = "EVENT_SET_MINIMAP_HIDE_STATE" # args | isHidden: boolean
 
@@ -218,11 +219,17 @@ class AtlasWindow(ui.ScriptWindow):
 		self.infoGuildMark.Hide()
 		self.tooltipInfo.Hide()
 
+		# MT2009_PLUS_WORLDBOSS_ICON_V1: the World Boss's icon (uiworldboss.py); its name on hover
+		worldBossHover = uiworldboss.UpdateAtlasIcon(self)
+
 		if False == self.board.IsIn():
 			return
 
 		(mouseX, mouseY) = wndMgr.GetMousePosition()
 		(bFind, sName, iPosX, iPosY, dwTextColor, dwGuildID) = miniMap.GetAtlasInfo(mouseX, mouseY)
+		if worldBossHover:
+			(bFind, dwGuildID) = (True, 0)
+			(sName, iPosX, iPosY, dwTextColor) = worldBossHover
 
 		(miniMapMousePosX, miniMapMousePosY) = self.AtlasMainWindow.GetMouseLocalPosition()
 		(bGet, atlasSizeX, atlasSizeY) = miniMap.GetAtlasSize()
@@ -312,6 +319,7 @@ class MiniMap(ui.ScriptWindow):
 
 		miniMap.Create()
 		miniMap.SetScale(2.0)
+		self.worldBossScale = 2.0 # MT2009_PLUS_WORLDBOSS_ICON_V1: the scale the exe keeps (ScaleUp/ScaleDown below)
 
 		self.AtlasWindow = AtlasWindow()
 		self.AtlasWindow.LoadWindow()
@@ -546,6 +554,8 @@ class MiniMap(ui.ScriptWindow):
 	def OnUpdate(self):
 		(x, y, z) = player.GetMainCharacterPosition()
 		miniMap.Update(x, y)
+		# MT2009_PLUS_WORLDBOSS_ICON_V1: the World Boss's icon (uiworldboss.py); its name on hover
+		worldBossHover = uiworldboss.UpdateMiniMapIcon(self, x, y, getattr(self, "worldBossScale", 2.0))
 
 		self.positionInfo.SetText("(%.0f, %.0f)" % (x/100, y/100))
 
@@ -553,7 +563,12 @@ class MiniMap(ui.ScriptWindow):
 			if True == self.MiniMapWindow.IsIn():
 				(mouseX, mouseY) = wndMgr.GetMousePosition()
 				(bFind, sName, iPosX, iPosY, dwTextColor) = miniMap.GetInfo(mouseX, mouseY)
-				if bFind == 0:
+				if worldBossHover: # MT2009_PLUS_WORLDBOSS_ICON_V1
+					self.tooltipInfo.SetText(worldBossHover)
+					self.tooltipInfo.SetTooltipPosition(mouseX - 5, mouseY)
+					self.tooltipInfo.SetTextColor(uiworldboss.MARK_TOOLTIP_COLOR)
+					self.tooltipInfo.Show()
+				elif bFind == 0:
 					self.tooltipInfo.Hide()
 				elif not self.canSeeInfo:
 					self.tooltipInfo.SetText("%s(%s)" % (sName, localeInfo.UI_POS_UNKNOWN))
@@ -638,9 +653,11 @@ class MiniMap(ui.ScriptWindow):
 
 	def ScaleUp(self):
 		miniMap.ScaleUp()
+		self.worldBossScale = min(4.0, getattr(self, "worldBossScale", 2.0) * 2.0) # MT2009_PLUS_WORLDBOSS_ICON_V1
 
 	def ScaleDown(self):
 		miniMap.ScaleDown()
+		self.worldBossScale = max(0.5, getattr(self, "worldBossScale", 2.0) * 0.5) # MT2009_PLUS_WORLDBOSS_ICON_V1
 
 	def ShowAtlas(self):
 		if not miniMap.IsAtlas():

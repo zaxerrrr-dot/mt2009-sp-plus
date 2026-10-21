@@ -13,6 +13,9 @@
 #   WB sbegin <season> <seconds left> <empire> / WB s <pos> <points> <name> <guild|-> / WB sg <pos> <points> <guild> /
 #   WB sme <pos> <points> / WB send                                            - a kingdom's season ranking
 #   WB claimok
+#   WB mark <x> <y> <local x> <local y> <boss vnum> / WB unmark   - MT2009_PLUS_WORLDBOSS_ICON_V1: the standing boss's
+#        place (every 3 s to the players on his map) - his icon on the atlas (M) and the minimap (uiminimap.py hooks
+#        UpdateAtlasIcon / UpdateMiniMapIcon), the boss's name on hover
 # Opened from the event hub's "Boss Swiata" button (uiingameevent.RegisterOpener('worldboss')) or the "world_boss"
 # key (keybind.py, none by default). Receiving "WB info" never opens it.
 #
@@ -22,6 +25,11 @@ import app
 import chat
 import net
 import ui
+
+try:
+	import background
+except ImportError:
+	background = None
 
 try:
 	import nonplayer
@@ -123,7 +131,21 @@ _data = {
 	'rankBoss': 0,
 	'season': {},	# empire -> dict(season, left, at, rows, guilds, me)
 	'seasonIn': None,
+	# MT2009_PLUS_WORLDBOSS_ICON_V1: the last "WB mark": (x, y, local x, local y, vnum, map name, app.GetTime())
+	'mark': None,
 }
+
+# MT2009_PLUS_WORLDBOSS_ICON_V1: "Dodaj ikonk\xea bossa na mapie" - the event's icon (the pl-wiki's "Boss \x8cwiata
+# Ikona", 32x32, already the buffs' icon) where the boss stands: on the atlas and on the minimap (on its rim when he
+# is farther away, pointing the way). No line for MARK_TIMEOUT seconds (he is gone, the player left his map) hides it.
+MARK_ICON = 'mt2009_ui/affect/worldboss.tga'
+MARK_ICON_SIZE = 32
+MARK_ATLAS_SIZE = 20
+MARK_MINIMAP_SIZE = 16
+MARK_TIMEOUT = 10.0
+MARK_TOOLTIP_COLOR = 0xFFFF6040 - 0x100000000	# the atlas tooltip's ARGB, signed as GetAtlasInfo gives it
+MINIMAP_CENTER = (4 + 64, 5 + 64)	# uiscript/minimap.py "MiniMapWindow" (4, 5, 128 x 128) in "OpenWindow"
+MINIMAP_RIM = 56.0
 
 
 def Send(command):
@@ -579,6 +601,7 @@ def Register():
 
 
 def DestroyWindow():
+	_data['mark'] = None	# MT2009_PLUS_WORLDBOSS_ICON_V1: a new map, a new icon (or none)
 	for key in ('window', 'ranking'):
 		window = _data[key]
 		if window:
@@ -604,6 +627,8 @@ def OnCommand(sub='', *args):
 			values.append(0)
 		_data['info'] = tuple(values)
 		_data['infoAt'] = app.GetTime()
+		if values[0] != 1:
+			_data['mark'] = None	# MT2009_PLUS_WORLDBOSS_ICON_V1: no boss standing
 		if _data['window']:
 			_data['window'].Refresh()
 	elif sub == 'where':
@@ -644,3 +669,110 @@ def OnCommand(sub='', *args):
 		_RefreshRanking()
 	elif sub == 'claimok':
 		Send('info')
+	elif sub == 'mark':	# MT2009_PLUS_WORLDBOSS_ICON_V1
+		values = [ToInt(_Name(args, i)) for i in range(5)]
+		_data['mark'] = (values[0], values[1], values[2], values[3], values[4], _MapName(), app.GetTime())
+	elif sub == 'unmark':
+		_data['mark'] = None
+
+
+# ---------------------------------------------------------------- MT2009_PLUS_WORLDBOSS_ICON_V1: the map icon
+
+def _MapName():
+	if background:
+		try:
+			return background.GetCurrentMapName()
+		except Exception:
+			pass
+	return ''
+
+
+def MarkNow():
+	"""The standing boss's last place on this map, or None."""
+	mark = _data['mark']
+	if not mark:
+		return None
+	if app.GetTime() - mark[6] > MARK_TIMEOUT:
+		_data['mark'] = None
+		return None
+	if mark[5] and mark[5] != _MapName():
+		return None
+	return mark
+
+
+def _Icon(owner, attr, parent, size):
+	icon = getattr(owner, attr, None)
+	if icon is None:
+		icon = ui.ExpandedImageBox()
+		icon.SetParent(parent)
+		icon.AddFlag('not_pick')
+		icon.LoadImage(MARK_ICON)
+		scale = float(size) / MARK_ICON_SIZE
+		icon.SetScale(scale, scale)
+		icon.SetSize(size, size)
+		icon.Hide()
+		setattr(owner, attr, icon)
+	return icon
+
+
+def _MouseOver(icon, size):
+	import wndMgr
+	(mx, my) = wndMgr.GetMousePosition()
+	(ix, iy) = icon.GetGlobalPosition()
+	return ix <= mx < ix + size and iy <= my < iy + size
+
+
+def _Tooltip(mark):
+	return 'Boss \x8cwiata: %s' % MobName(mark[4])
+
+
+def UpdateAtlasIcon(atlas):
+	"""uiminimap.AtlasWindow.OnUpdate: places the icon on the atlas; (text, x, y, color) when the mouse is on it."""
+	board = getattr(atlas, 'board', None)
+	if not board:
+		return None
+	icon = _Icon(atlas, 'mt2009WorldBossIcon', board, MARK_ATLAS_SIZE)
+	mark = MarkNow()
+	if not mark or not atlas.IsShow():
+		icon.Hide()
+		return None
+	import miniMap
+	(ok, sizeX, sizeY) = miniMap.GetAtlasSize()
+	(ok2, maxX, maxY) = miniMap.GetAtlasMaxSize()
+	if not ok or not ok2 or maxX <= 0 or maxY <= 0:
+		icon.Hide()
+		return None
+	# the atlas is drawn at (7, 30) of the board (AtlasWindow.LoadWindow), the map-local units scaled to its size
+	x = 7 + int(float(mark[2]) / maxX * sizeX) - MARK_ATLAS_SIZE / 2
+	y = 30 + int(float(mark[3]) / maxY * sizeY) - MARK_ATLAS_SIZE / 2
+	icon.SetPosition(x, y)
+	icon.Show()
+	icon.SetTop()
+	if _MouseOver(icon, MARK_ATLAS_SIZE):
+		return (_Tooltip(mark), mark[2] / 100, mark[3] / 100, MARK_TOOLTIP_COLOR)
+	return None
+
+
+def UpdateMiniMapIcon(minimap, playerX, playerY, scale):
+	"""uiminimap.MiniMap.OnUpdate: places the icon on the minimap; the tooltip's text when the mouse is on it."""
+	parent = getattr(minimap, 'OpenWindow', None)
+	if not parent:
+		return None
+	icon = _Icon(minimap, 'mt2009WorldBossIcon', parent, MARK_MINIMAP_SIZE)
+	mark = MarkNow()
+	if not mark:
+		icon.Hide()
+		return None
+	# PythonMiniMap.cpp: a mark is (its pixel position - the player's) / CELLSCALE (200) * the minimap's scale
+	dx = (float(mark[0]) - playerX) / 200.0 * scale
+	dy = (float(mark[1]) - playerY) / 200.0 * scale
+	dist = (dx * dx + dy * dy) ** 0.5
+	if dist > MINIMAP_RIM:
+		dx = dx * MINIMAP_RIM / dist
+		dy = dy * MINIMAP_RIM / dist
+	icon.SetPosition(MINIMAP_CENTER[0] + int(dx) - MARK_MINIMAP_SIZE / 2, MINIMAP_CENTER[1] + int(dy) - MARK_MINIMAP_SIZE / 2)
+	icon.Show()
+	icon.SetTop()
+	if _MouseOver(icon, MARK_MINIMAP_SIZE):
+		return _Tooltip(mark)
+	return None
