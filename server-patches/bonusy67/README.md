@@ -65,3 +65,7 @@ db bez zmian (nie używa `POINT_MAX_NUM`).
 - `root/localeinfo_point.py`: nazwy 198–251 słowami wiki (cp1250). Bez ikon afektów, bez zmian w exe.
 - Panel: `dbeditor/items.py` (nazwy 198–251), `dbeditor/attrs.py` (kolumna Rękawice, opis kroku).
 - Boty: wagi w `playerbot_bonus.h` (`ScorePlayerBotBonusLineRaw`).
+
+Decyzja właściciela 21.10: działanie nowych bonusów jak w tabeli wyżej – zatwierdzone. „Silny przeciwko Metinom”
+(`POINT_ATTBONUS_STONE`, +x%: 2/4/5/7/8, broń, naszyjnik, rękawice) zostaje osobnym bonusem obok „Siła w walce
+z kamieniami Metin” (`ATTBONUS_PER_STONE`, +x% łącznej wartości) – w puli są oba wiersze.
