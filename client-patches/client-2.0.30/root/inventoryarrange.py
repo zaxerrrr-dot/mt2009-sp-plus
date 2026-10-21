@@ -66,6 +66,13 @@ MSG_NO_LOCK = 'Serwer nie obs\xb3uguje blokady sortowania (Alt+LPM) - zaktualizu
 # asks "/inventory_arrange merge" (server-patches/playerqol).
 MODE_ARRANGE = 0
 MODE_MERGE = 1
+# MT2009_PLUS_EKWIPUNEK_MOVE_V1: the third choice (the owner, 21 October 2026:
+# "tak, jako trzecia opcja w sortowaniu EQ -> Przenies do extra EQ") - the
+# bag's items of a category into the extra inventory ("/ekwipunek przenies",
+# uiekwipunek.RequestMoveFromBag; the server answers in the chat). Shown only
+# with the exe that knows the extra inventory.
+MODE_EXTRA = 2
+TEXT_EXTRA = 'Przenie\x9c do extra EQ'
 
 _state = {'pendingUntil': 0.0, 'mode': MODE_ARRANGE, 'choice': None, 'keep': False}
 
@@ -108,6 +115,24 @@ def Request(mode=MODE_ARRANGE):
 	return True
 
 
+def _ExtraSupported():
+	try:
+		return __import__("uiekwipunek").IsSupported()
+	except Exception:
+		return False
+
+
+def RequestExtra():
+	"""MT2009_PLUS_EKWIPUNEK_MOVE_V1: "Przenies do extra EQ"."""
+	if mouseModule.mouseController.isAttached():
+		chat.AppendChat(chat.CHAT_TYPE_INFO, MSG_ATTACHED)
+		return False
+	if uiPrivateShopBuilder.IsBuildingPrivateShop():
+		chat.AppendChat(chat.CHAT_TYPE_INFO, MSG_SHOP)
+		return False
+	return __import__("uiekwipunek").RequestMoveFromBag()
+
+
 class ChoiceWindow(ui.ThinBoard):
 	WIDTH = 196
 	HEIGHT = 70
@@ -115,10 +140,13 @@ class ChoiceWindow(ui.ThinBoard):
 	def __init__(self):
 		ui.ThinBoard.__init__(self)
 		self.AddFlag('float')
-		self.SetSize(self.WIDTH, self.HEIGHT)
 		self.widgets = []
 		self._Btn(8, 8, 'U\xb3\xf3\xbf i scal', MODE_ARRANGE)
 		self._Btn(8, 36, 'Tylko scal stosy', MODE_MERGE)
+		if _ExtraSupported():
+			self._Btn(8, 64, TEXT_EXTRA, MODE_EXTRA)
+			self.HEIGHT = 98
+		self.SetSize(self.WIDTH, self.HEIGHT)
 
 	def _Btn(self, x, y, text, mode):
 		button = ui.Button()
@@ -134,6 +162,9 @@ class ChoiceWindow(ui.ThinBoard):
 
 	def OnChoose(self, mode):
 		self.Hide()
+		if mode == MODE_EXTRA:
+			RequestExtra()
+			return
 		Request(mode)
 
 	def OpenAt(self, x, y):

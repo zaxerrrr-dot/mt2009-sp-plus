@@ -2308,6 +2308,11 @@ class GameWindow(ui.ScriptWindow):
 			elif player.SLOT_TYPE_DRAGON_SOUL_INVENTORY == attachedType:
 				self.__PutItem(attachedType, attachedItemIndex, attachedItemSlotPos, attachedItemCount, self.PickingCharacterIndex)
 
+			# MT2009_PLUS_EKWIPUNEK_REFINE_V1: an item of the extra inventory given to an NPC (a soul stone to the
+			# blacksmith - uiekwipunek.py).
+			elif __import__("uiekwipunek").GiveToCharacter(attachedType, attachedItemSlotPos, attachedItemCount, self.PickingCharacterIndex):
+				pass
+
 			mouseModule.mouseController.DeattachObject()
 
 		else:
@@ -3420,6 +3425,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
 		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
+		serverCommandList["ekwipunek_refine"] = self.__EkwipunekRefine # MT2009_PLUS_EKWIPUNEK_REFINE_V1
 		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
 		# a Stage A server only refreshes the window (the numbers are points now).
 		serverCommandList["champion_info"] = self.__ChampionInfo
@@ -4150,6 +4156,10 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_EKWIPUNEK_V1: the server's answer to the extra inventory's hello (uiekwipunek.py).
 	def __Ekwipunek(self, *args):
 		__import__("uiekwipunek").OnServerOk(*args)
+
+	# MT2009_PLUS_EKWIPUNEK_REFINE_V1: the window of the item the next refine window is for (uirefine.py).
+	def __EkwipunekRefine(self, *args):
+		__import__("uiekwipunek").OnRefineWindow(*args)
 
 	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
 	def __NewPet(self, *args):

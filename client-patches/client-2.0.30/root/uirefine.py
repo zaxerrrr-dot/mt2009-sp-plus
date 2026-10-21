@@ -316,6 +316,13 @@ class RefineDialogNew(ui.ScriptWindow):
 		self.cost = cost
 		self.percentage = prob
 		self.type = type
+		# MT2009_PLUS_EKWIPUNEK_REFINE_V1: the item may lie in the extra inventory
+		# (uiekwipunek.py) - the server said which window just before; the cell
+		# goes back as it came, the server keeps the window itself.
+		try:
+			self.targetWindow = __import__("uiekwipunek").TakeRefineWindow()
+		except Exception:
+			self.targetWindow = player.INVENTORY
 
 		try:
 			self.probText.SetText(localeInfo.REFINE_SUCCESS_PROBALITY % (self.percentage))
@@ -333,11 +340,11 @@ class RefineDialogNew(ui.ScriptWindow):
 		self.toolTip.ClearToolTip()
 		metinSlot = []
 		for i in xrange(player.METIN_SOCKET_MAX_NUM):
-			metinSlot.append(player.GetItemMetinSocket(targetItemPos, i))
+			metinSlot.append(player.GetItemMetinSocket(self.targetWindow, targetItemPos, i))
 
 		attrSlot = []
 		for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
-			attrSlot.append(player.GetItemAttribute(targetItemPos, i))
+			attrSlot.append(player.GetItemAttribute(self.targetWindow, targetItemPos, i))
 
 		if constInfo.IS_UNIQUE_70LEVEL_WEAPON(nextGradeItemVnum):
 			refineLevel = nextGradeItemVnum - int(nextGradeItemVnum / 10) * 10
@@ -359,7 +366,8 @@ class RefineDialogNew(ui.ScriptWindow):
 		self.dialogHeight = self.toolTip.GetHeight() + 46
 		self.UpdateDialog()
 
-		eventManager.EventManager().send_event(EVENT_OPEN_REFINE, targetItemPos)
+		if self.targetWindow == player.INVENTORY: # MT2009_PLUS_EKWIPUNEK_REFINE_V1: the bag marks only its own cell
+			eventManager.EventManager().send_event(EVENT_OPEN_REFINE, targetItemPos)
 
 		self.SetTop()
 		self.Show()
@@ -396,6 +404,12 @@ class RefineDialogNew(ui.ScriptWindow):
 		textLine.SetPosition(15, 0)
 
 		count_in_inventory = utils.CountItemCountInInventory(vnum)
+		# MT2009_PLUS_EKWIPUNEK_REFINE_V1: the server takes the materials from the
+		# extra inventory too (uiekwipunek.py)
+		try:
+			count_in_inventory += __import__("uiekwipunek").CountInStorages(vnum)
+		except Exception:
+			pass
 		if count_in_inventory >= count:
 			textLine.SetPackedFontColor(colorInfo.POSITIVE_COLOR)
 		else:

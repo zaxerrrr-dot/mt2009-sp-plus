@@ -21,6 +21,16 @@
 #   - "Sortuj": the stacks joined and the items ordered by kind (Ameria's two
 #     buttons, "/ekwipunek sortuj").
 #
+# MT2009_PLUS_EKWIPUNEK_REFINE_V1 (the owner, 21 October 2026: "jak ulepszacz
+# jest w dodatkowym EQ, to mozna ulepszac"): the refine scrolls (USE_TUNING)
+# go with the materials; a scroll dragged from here onto an item of the bag or
+# of a storage opens the refine window, an item of a storage dragged onto the
+# blacksmith is refined in its cell. The server tells which window the refine
+# window is for ("ekwipunek_refine <window>", OnRefineWindow), uirefine.py
+# shows that item and counts the materials here too (CountInStorages).
+# MT2009_PLUS_EKWIPUNEK_MOVE_V1: "Przenies do extra EQ", the third choice of
+# the inventory's sort button (inventoryarrange.py, RequestMoveFromBag).
+#
 # The windows need the 3.0 exe (client-patches/exe, ENABLE_SPECIAL_STORAGE:
 # player.UPGRADE_INVENTORY ...). With an older exe this module does nothing and
 # never says hello, so the server keeps every item in the bag.
@@ -83,6 +93,7 @@ _state = {
 	'icon': 0,
 	'server': False,
 	'categories': None,
+	'refineWindow': None,
 }
 
 
@@ -133,6 +144,9 @@ def CategoryOf(vnum):
 	itemType = item.GetItemType()
 	subType = item.GetItemSubType()
 	if itemType == getattr(item, "ITEM_TYPE_MATERIAL", -1) and subType == 0:
+		return player.UPGRADE_INVENTORY
+	# MT2009_PLUS_EKWIPUNEK_REFINE_V1: the refine scrolls with the materials (the server's rule)
+	if item.IsRefineScroll(vnum):
 		return player.UPGRADE_INVENTORY
 	if itemType == getattr(item, "ITEM_TYPE_SKILLBOOK", -1):
 		return player.BOOK_INVENTORY
@@ -236,6 +250,12 @@ def DropOnPlayerItem(attachedType, attachedPos, cell):
 		return True
 	if player.IsEquipmentSlot(cell):
 		return True
+	# MT2009_PLUS_EKWIPUNEK_REFINE_V1: a refine scroll from the materials' storage
+	# opens the refine window for the item (the server takes the scroll from here)
+	if item.IsRefineScroll(srcVnum):
+		if player.REFINE_OK == player.CanRefine(srcVnum, cell):
+			net.SendItemUseToItemPacket(window, attachedPos, player.INVENTORY, cell)
+		return True
 	if window == player.STONE_INVENTORY and item.IsMetin(srcVnum):
 		_AskAttachMetin(window, attachedPos, cell, srcVnum)
 		return True
@@ -266,6 +286,72 @@ def _AskAttachMetin(window, pos, cell, vnum):
 	dialog.SetCancelEvent(Cancel)
 	dialog.Open()
 	_state['dialog'] = dialog
+
+
+def GiveToCharacter(attachedType, attachedPos, count, dstChrID):
+	"""game.py, a storage's item let go over a character: an NPC gets it (the
+	blacksmith refines a soul stone where it lies - the server reads the
+	window). True when it was a storage's item."""
+	if not IsEkwSlotType(attachedType):
+		return False
+	import chr
+	if dstChrID and chr.HasInstance(dstChrID) and player.GetMainCharacterIndex() != dstChrID and chr.IsNPC(dstChrID):
+		net.SendGiveItemPacket(dstChrID, WindowOfSlotType(attachedType), attachedPos, count)
+	return True
+
+
+def OnRefineWindow(window="0", *args):
+	"""game.py, "ekwipunek_refine <window>": the window of the item the refine
+	packet right after it is for."""
+	try:
+		_state['refineWindow'] = int(window)
+	except (TypeError, ValueError):
+		_state['refineWindow'] = None
+
+
+def TakeRefineWindow():
+	"""uirefine.py, opening the refine window: the window its cell is in (and
+	forgotten - every refine packet of a client with the storages has its own
+	command before it)."""
+	window = _state['refineWindow']
+	_state['refineWindow'] = None
+	if window is None or not IsSupported() or window == player.INVENTORY:
+		return player.INVENTORY
+	for win, slot, name, icon in Categories():
+		if win == window:
+			return window
+	return player.INVENTORY
+
+
+def CountInStorages(vnum):
+	"""How many of an item the storages hold (the refine window's materials)."""
+	count = 0
+	if not vnum or not IsSupported():
+		return 0
+	for win, slot, name, icon in Categories():
+		for pos in xrange(COLUMNS * ROWS * len(PAGE_NAMES)):
+			if player.GetItemIndex(win, pos) == vnum:
+				count += player.GetItemCount(win, pos)
+	return count
+
+
+def RequestMoveFromBag():
+	"""inventoryarrange.py's third choice: every item of the bag that belongs
+	to a category into its storage (the server joins the stacks first and
+	leaves worn, locked, traded and sort-locked items where they are)."""
+	if not IsSupported():
+		chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NEEDS_EXE)
+		return False
+	words = ["/ekwipunek", "przenies"]
+	try:
+		import inventorysortlock
+		keep = inventorysortlock.KeepArgument()
+	except Exception:
+		keep = ""
+	if keep:
+		words.append(keep)
+	net.SendChatPacket(" ".join(words))
+	return True
 
 
 def CubeItemOf(attachedType, attachedPos):
@@ -604,7 +690,18 @@ class EkwipunekWindow(ui.BoardWithTitleBar):
 		vnum = controller.GetAttachedItemIndex()
 		window = self.Window()
 
-		if IsEkwSlotType(attachedType):
+		# MT2009_PLUS_EKWIPUNEK_REFINE_V1: a refine scroll (from the bag or a storage)
+		# dropped on another item here opens the refine window for that item
+		targetVnum = player.GetItemIndex(window, pos)
+		if vnum and targetVnum and targetVnum != vnum and item.IsRefineScroll(vnum) and \
+				(attachedType == player.SLOT_TYPE_INVENTORY or IsEkwSlotType(attachedType)):
+			if attachedType == player.SLOT_TYPE_INVENTORY:
+				srcWindow = player.INVENTORY
+			else:
+				srcWindow = WindowOfSlotType(attachedType)
+			if not (attachedType == player.SLOT_TYPE_INVENTORY and player.IsEquipmentSlot(attachedPos)):
+				net.SendItemUseToItemPacket(srcWindow, attachedPos, window, pos)
+		elif IsEkwSlotType(attachedType):
 			srcWindow = WindowOfSlotType(attachedType)
 			if srcWindow != window:
 				chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_WRONG_KIND % self.CategoryName())
