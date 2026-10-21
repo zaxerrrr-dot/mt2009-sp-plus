@@ -161,9 +161,10 @@ namespace playerbot_dgrun
 		// band from 95, six called and five to go in, a Shaman always.
 		{ "meley", 95, 6, 6, 5, true },
 		// MT2009_PLUS_BOT_YOHARA_SZC_V1: Szczelina Czasu - Zaklety Las (SZC) - the quest's 110, a party of
-		// several (the owner: "party kilkuosobowe"), the bots there only to hunt: four called, three to go in,
-		// no Shaman asked for.
-		{ "jotun_szc", 110, 4, 4, 3, false },
+		// several (the owner: "party kilkuosobowe"), the bots there only to hunt, no Shaman asked for.
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the owner, 21 October (night): "SZC: druzyna botow minimum 2" -
+		// two free to call, two asked for, two to go in (the dungeon's own 2-8; PartyOk below).
+		{ "jotun_szc", 110, 2, 2, 2, false },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)
@@ -190,7 +191,10 @@ namespace playerbot_dgrun
 	// The drawn party is worth the shout.
 	inline bool PartyOk(const std::vector<TCand>& picked, const TRunRule& r)
 	{
-		return (int)picked.size() >= std::max(r.preferMin, CALL_MIN) && (!r.needHealer || HasHealer(picked));
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a rule that calls with fewer than CALL_MIN (the Time Rift's two)
+		// is satisfied by its own number; every other rule as before.
+		const int least = r.callMin < CALL_MIN ? r.preferMin : std::max(r.preferMin, CALL_MIN);
+		return (int)picked.size() >= least && (!r.needHealer || HasHealer(picked));
 	}
 
 	// The gathered party goes in.

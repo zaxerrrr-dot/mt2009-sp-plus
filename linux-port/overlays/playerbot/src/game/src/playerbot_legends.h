@@ -427,7 +427,8 @@ namespace
 		CPlayerBotManager& mgr = CPlayerBotManager::instance();
 		return IsPlayerBotSidekickPID(pid) || IsPlayerBotShouterPID(pid) || IsPlayerBotMedalShouterPID(pid) ||
 				mgr.IsMedalDropperCohortPID(pid) || IsPlayerBotArezzoCohortPID(pid) ||
-				IsPlayerBotArezzoDungeonCohortPID(pid) || IsPlayerBotTakeoverHold(pid) || IsPlayerBotRetirementHold(pid);
+				IsPlayerBotArezzoDungeonCohortPID(pid) || IsPlayerBotTakeoverHold(pid) || IsPlayerBotRetirementHold(pid) ||
+				IsPlayerBotYoharaCohortPID(pid);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 	}
 
 	// One vacant place: the pending pick renamed when it can be, or a new

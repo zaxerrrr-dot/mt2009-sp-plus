@@ -223,7 +223,8 @@ namespace
 				!IsPlayerBotDropper(state.bPersonality) &&
 				!CPlayerBotManager::instance().IsMedalDropperCohortPID(pid) &&
 				!IsPlayerBotArezzoCohortPID(pid) && !IsPlayerBotArezzoBound(ch) &&
-				!IsPlayerBotArezzoDungeonCohortPID(pid) && !IsPlayerBotOchaoForced(ch);
+				!IsPlayerBotArezzoDungeonCohortPID(pid) && !IsPlayerBotOchaoForced(ch) &&
+				!IsPlayerBotYoharaCohortPID(pid);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 	}
 
 	// The Orc Tooth row of the Biologist done with its teeth: in its key

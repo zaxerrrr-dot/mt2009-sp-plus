@@ -195,6 +195,9 @@ namespace
 	bool IsPlayerBotYoharaSzcResident(DWORD pid);
 	int GetPlayerBotYoharaSzcParties();
 	long long ChargePlayerBotYoharaSzcWatch(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the Time Rift's run start/end lines, its runs counted for the cohort.
+	void NotePlayerBotYoharaSzcRun(bool start, int runId, long instance, const std::vector<DWORD>& members,
+			const char* result, DWORD tookS);
 
 	struct TPlayerBotDgRunDef
 	{
@@ -1866,6 +1869,8 @@ namespace
 				run.iId, def.szKey, run.lInstance, (unsigned int)run.bEmpire, result, took / 1000, run.iStage,
 				run.stageSecs.empty() ? "-" : run.stageSecs.c_str(), run.iDeaths, run.iWipes, run.llFees,
 				(unsigned int)run.members.size(), leader ? leader->GetName() : "-", run.iBreakOffs, run.iFallbacks);
+		if (def.bKind == DGRUN_KIND_SZC && entered)	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
+			NotePlayerBotYoharaSzcRun(false, run.iId, run.lInstance, run.members, result, took / 1000);
 		FILE* fp = fopen(PLAYERBOT_DGRUN_RUNS_FILE, "a");
 		if (fp)
 		{
@@ -2282,6 +2287,8 @@ namespace
 			sys_log(0, "BOT_DGRUN: entered run=%d dungeon=%s instance=%ld empire=%u members=%u fees=%lld names=%s",
 					run.iId, def.szKey, run.lInstance, (unsigned int)run.bEmpire, (unsigned int)run.members.size(),
 					run.llFees, names.c_str());
+			if (def.bKind == DGRUN_KIND_SZC)	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
+				NotePlayerBotYoharaSzcRun(true, run.iId, run.lInstance, run.members, NULL, 0);
 			return true;
 		}
 		// V3: a replacement for the Shaman, or for those short of the start,

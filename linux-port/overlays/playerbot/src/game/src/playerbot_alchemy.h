@@ -186,7 +186,8 @@ namespace
 		if (!ch || !ch->IsPC() || ch->GetLevel() < PLAYERBOT_ALCHEMY_MIN_LEVEL || ArePlayerBotAlchemyOff())
 			return false;
 		const DWORD pid = ch->GetPlayerID();
-		return IsPlayerBotAlchemyUserPID(pid) && !IsPlayerBotSidekickPID(pid) &&
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member of the night's cohorts wears its stones, always.
+		return (IsPlayerBotAlchemyUserPID(pid) || IsPlayerBotYoharaCohortPID(pid)) && !IsPlayerBotSidekickPID(pid) &&
 				!CPlayerBotManager::instance().IsMedalDropperCohortPID(pid);
 	}
 

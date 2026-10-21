@@ -6923,7 +6923,10 @@ namespace
 	bool IsPlayerBotYoharaSzcResident(DWORD pid);
 	bool IsPlayerBotYoharaBoundForZaklety(LPCHARACTER ch);
 	bool IsPlayerBotYoharaRemoteFrontier(long mapIndex);
-	DWORD GetPlayerBotYoharaStayMs(long mapIndex);
+	DWORD GetPlayerBotYoharaStayMs(LPCHARACTER ch, long mapIndex);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the bot's own
+	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member of the night's cohorts (common.playerbot_yohara_cohort) -
+	// never rested, retired, renamed, borrowed; always an alchemy user.
+	bool IsPlayerBotYoharaCohortPID(DWORD pid);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),

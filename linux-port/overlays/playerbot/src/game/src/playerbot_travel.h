@@ -913,6 +913,14 @@ namespace
 		// Temple of Ochao hunts there until told to leave.
 		if (IsPlayerBotOchaoForced(ch) && WantsPlayerBotOchao(ch, 0, false))
 			return PLAYERBOT_MAP_OCHAO;
+		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member of the night's cohorts - its purpose before every
+		// errand of the population (the Biologist's row, a guild's errand, a trial).
+		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
+		{
+			const long cohort = GetPlayerBotYoharaFrontier(ch, false);
+			if (cohort != 0)
+				return cohort;
+		}
 		// The Metinolog skips the two errands below when they would take it to
 		// a map with no stone: from forty-eight the Biologist's row sent it to
 		// the Spider Dungeons and the military trial to the Demon Tower, and
@@ -3667,7 +3675,7 @@ namespace
 			// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 (stay): Zaklety Las is an expedition - the owner's
 			// rule for the Arezzo forest it replaces (1 October): once in, a bot stays some two
 			// hours (PLAYERBOT_ZAKLETY_STAY_MIN), its belt kept full on the map.
-			const DWORD yoharaStay = GetPlayerBotYoharaStayMs(mapIndex);
+			const DWORD yoharaStay = GetPlayerBotYoharaStayMs(ch, mapIndex);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the bot's
 			const bool visitExpired = (!onBattleTrialHere && !heldStoneWork && !IsPlayerBotSidekickOnPlan(ch) && stayed >=
 					std::max<DWORD>(yoharaStay, GetPlayerBotFrontierVisitTime(state.bPersonality))) ||
 					(mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaveOrdered(ch)) || // MT2009_PLUS_OCHAO_BOTS_V1 (test)
