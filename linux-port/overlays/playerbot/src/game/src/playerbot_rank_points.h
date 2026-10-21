@@ -750,6 +750,10 @@ void RankPointsOnKill(LPCHARACTER killer, LPCHARACTER victim)
 		return;
 	if (!victim->IsStone() && victim->GetMobRank() < MOB_RANK_BOSS)
 		return;
+	// MT2009_PLUS_HYDRA_NO_DROP_V1: not from the Hydra - it dies in the sea (playerbot_ship_defense.cpp).
+	bool ShipDefense_NoDrop(LPCHARACTER victim);
+	if (ShipDefense_NoDrop(victim))
+		return;
 	Drop(killer, victim);
 }
 

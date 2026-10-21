@@ -679,6 +679,10 @@ void Mt2009AuraOnKill(LPCHARACTER killer, LPCHARACTER victim)
 		return;
 	if (victim->GetLevel() + 15 < killer->GetLevel())
 		return;
+	// MT2009_PLUS_HYDRA_NO_DROP_V1: not from the Hydra - it dies in the sea (playerbot_ship_defense.cpp).
+	bool ShipDefense_NoDrop(LPCHARACTER victim);
+	if (ShipDefense_NoDrop(victim))
+		return;
 	aura::DropRune(killer, victim);
 }
 
