@@ -24,6 +24,7 @@ import constInfo
 from constInfo import Emoji
 import yoharagear # MT2009_PLUS_YOHARA_EXE2_V1
 import precisionskill # MT2009_PLUS_PRECISION_SKILL_V1
+import riposty # MT2009_PLUS_RIPOSTY_V1
 import colorinfo
 import uiItemShop
 
@@ -3016,6 +3017,9 @@ class SkillToolTip(ToolTip):
 				self.AppendSpace(5)
 				self.AppendTextLine(localeInfo.TOOLTIP_SKILL_LEVEL % (skillLevel+1), self.NEGATIVE_COLOR)
 				self.__AppendSummonDescription(skillLevel+1, self.NEGATIVE_COLOR)
+
+		elif riposty.IsPassive(skillIndex): # MT2009_PLUS_RIPOSTY_V1: level, the wiki's per cent now and next, how it grows
+			riposty.AppendToolTip(self, skillIndex, skillGrade, skillLevel)
 
 		elif precisionskill.SKILL_INDEX == skillIndex: # MT2009_PLUS_PRECISION_SKILL_V1: level, bonus, its book
 			precisionskill.AppendToolTip(self, skillIndex, skillGrade, skillLevel)
