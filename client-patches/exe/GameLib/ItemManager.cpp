@@ -515,6 +515,12 @@ bool CItemManager::LoadItemTable(const char* c_szFileName)
 		}
 	}
 
+	// MT2009_PLUS_DS_UTILITY_FROM_PROTO_V1: these Dragon Soul helpers come from the client's
+	// item_proto (dbdata) and item_list.txt - name, description, flags and icon (100701 and 76029
+	// share another item's icon there). The table below only fills a vnum the item_proto has no
+	// record for (76029 and 100101 in the 3.0 data); before, it overwrote all twelve with UTF-8
+	// names (garbled in the cp1250 UI) and icon/item/<vnum>.tga (no 100701.tga - no icon).
+	// Names in cp1250, as the data's.
 	struct SDragonSoulUtilityItem
 	{
 		DWORD dwVnum;
@@ -522,26 +528,37 @@ bool CItemManager::LoadItemTable(const char* c_szFileName)
 		BYTE bType;
 		BYTE bSubType;
 		DWORD dwMaxStack;
+		DWORD dwAntiFlags;
 	};
+	const DWORD c_dwDragonSoulUtilityAnti = ITEM_ANTIFLAG_DROP | ITEM_ANTIFLAG_GIVE |
+		ITEM_ANTIFLAG_PKDROP | ITEM_ANTIFLAG_MYSHOP | ITEM_ANTIFLAG_SAFEBOX;	// world.item_proto 221312
 	const SDragonSoulUtilityItem aDragonSoulUtilityItems[] =
 	{
-		{ 30270,  "Odłamek Smoczego Kamienia", ITEM_QUEST,    0,                          200 },
-		{ 50255,  "Cor Draconis",               ITEM_GIFTBOX,  1,                          200 },
-		{ 50260,  "Cor Draconis+",              ITEM_GIFTBOX,  1,                          200 },
-		{ 76029,  "Smocza Fasola",              ITEM_MATERIAL, MATERIAL_DS_REFINE_NORMAL, 200 },
-		{ 100100, "Szczypce Czasu",             ITEM_EXTRACT,  EXTRACT_DRAGON_SOUL,       200 },
-		{ 100101, "Szczypce Czasu+",            ITEM_EXTRACT,  EXTRACT_DRAGON_SOUL,       200 },
-		{ 100200, "Szczypce Smoka",             ITEM_EXTRACT,  EXTRACT_DRAGON_HEART,      200 },
-		{ 100300, "Smocza Fasola",              ITEM_MATERIAL, MATERIAL_DS_REFINE_NORMAL, 200 },
-		{ 100400, "Błogosławiona Smocza Fasola",ITEM_MATERIAL, MATERIAL_DS_REFINE_BLESSED,200 },
-		{ 100500, "Zielona Smocza Fasola",      ITEM_MATERIAL, MATERIAL_DS_REFINE_HOLLY,  200 },
-		{ 100700, "Płomień Smoka",              ITEM_MATERIAL, MATERIAL_DS_CHANGE_ATTR,   200 },
-		{ 100701, "Płomień Smoka+",             ITEM_MATERIAL, MATERIAL_DS_CHANGE_ATTR,   200 },
+		{ 30270,  "Od\xb3" "amek Smocz. Kamienia", ITEM_QUEST,    0,                          200, c_dwDragonSoulUtilityAnti },
+		{ 50255,  "Cor Draconis (surowe)",        ITEM_GIFTBOX,  1,                          200, 0 },
+		{ 50260,  "Cor Draconis (surowe)",        ITEM_GIFTBOX,  1,                          200, 0 },
+		{ 76029,  "Zielona Smocza Fasola",        ITEM_MATERIAL, MATERIAL_DS_REFINE_NORMAL, 200, c_dwDragonSoulUtilityAnti },
+		{ 100100, "Smocze C\xea" "gi",              ITEM_EXTRACT,  EXTRACT_DRAGON_SOUL,       200, 0 },
+		{ 100101, "Smocze C\xea" "gi+",             ITEM_EXTRACT,  EXTRACT_DRAGON_SOUL,       200, c_dwDragonSoulUtilityAnti },
+		{ 100200, "C\xea" "gi Czasu",               ITEM_EXTRACT,  EXTRACT_DRAGON_HEART,      200, 0 },
+		{ 100300, "Zielona Smocza Fasola",        ITEM_MATERIAL, MATERIAL_DS_REFINE_NORMAL, 200, 0 },
+		{ 100400, "Niebieska Smocza Fasola",      ITEM_MATERIAL, MATERIAL_DS_REFINE_BLESSED,200, 0 },
+		{ 100500, "R\xf3\xbf" "owa Smocza Fasola",     ITEM_MATERIAL, MATERIAL_DS_REFINE_HOLLY,  200, 0 },
+		{ 100700, "Smoczy P\xb3" "omie\xf1" " (B)",      ITEM_MATERIAL, MATERIAL_DS_CHANGE_ATTR,   200, 0 },
+		{ 100701, "Smoczy P\xb3" "omie\xf1",             ITEM_MATERIAL, MATERIAL_DS_CHANGE_ATTR,   200, 0 },
 	};
 
 	for (DWORD i = 0; i < _countof(aDragonSoulUtilityItems); ++i)
 	{
 		const SDragonSoulUtilityItem& source = aDragonSoulUtilityItems[i];
+
+		// An item_list.txt line alone also makes a map entry (icon, empty table), so only a
+		// table with this vnum counts as the item_proto's record.
+		TItemMap::iterator existingItem = m_ItemMap.find(source.dwVnum);
+		if (existingItem != m_ItemMap.end() && existingItem->second &&
+			existingItem->second->GetTable()->dwVnum == source.dwVnum)
+			continue;
+
 		CItemData::TItemTable table = { 0 };
 		table.dwVnum = source.dwVnum;
 		strncpy_s(table.szName, source.szName, _TRUNCATE);
@@ -551,12 +568,16 @@ bool CItemManager::LoadItemTable(const char* c_szFileName)
 		table.bSize = 1;
 		table.dwMaxStack = source.dwMaxStack;
 		table.dwFlags |= ITEM_FLAG_STACKABLE;
-		table.dwAntiFlags &= ~ITEM_ANTIFLAG_STACK;
+		table.dwAntiFlags = source.dwAntiFlags & ~ITEM_ANTIFLAG_STACK;
 
-		char szDragonSoulIcon[MAX_PATH];
-		_snprintf(szDragonSoulIcon, sizeof(szDragonSoulIcon), "icon/item/%u.tga", source.dwVnum);
 		CItemData* pItemData = MakeItemData(source.dwVnum);
-		pItemData->SetDefaultItemData(szDragonSoulIcon);
+		// The item_list.txt icon stays (76029 -> 100300.tga); no line -> icon/item/<vnum>.tga.
+		if (existingItem == m_ItemMap.end())
+		{
+			char szDragonSoulIcon[MAX_PATH];
+			_snprintf(szDragonSoulIcon, sizeof(szDragonSoulIcon), "icon/item/%u.tga", source.dwVnum);
+			pItemData->SetDefaultItemData(szDragonSoulIcon);
+		}
 		pItemData->SetItemTableData(&table);
 	}
 #endif
