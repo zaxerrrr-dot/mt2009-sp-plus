@@ -86,7 +86,7 @@ param(
 #                      (MT2009_PLUS_YOHARA_SETS_V1; server-patches/ysets)
 #   Strefy na ziemi    questlua_dungeon.cpp, char_battle.cpp (MT2009_PLUS_DUNGEON_ZONE_V1,
 #                      MT2009_PLUS_DUNGEON_RAGE_V1; server-patches/strefy)
-#   Wieza Sung Mahi    char_skill.cpp (MT2009_PLUS_SMH_TOWER_V1; server-patches/wiezasm)
+#   Wieza Sung Mahi    char_skill.cpp, char_item.cpp (MT2009_PLUS_SMH_TOWER_V1; server-patches/wiezasm)
 #   Transmutacja       common tables.h/CommonDefines.h, db ClientManager*.cpp/Cache.cpp/IkarusShopCache.cpp,
 #                      item.h/.cpp, item_manager.cpp, input_db.cpp, char.cpp, char_item.cpp, packet.h, safebox.cpp,
 #                      exchange.cpp, ikarus_shop_manager.cpp, MountSystem.cpp, cmd_general.cpp, questlua.cpp, cmd.cpp,

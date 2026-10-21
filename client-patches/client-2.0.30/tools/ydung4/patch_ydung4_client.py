@@ -10,7 +10,7 @@
 #                           GF's is our Komnata Wiedzy's);
 #   gamedata/npclist.txt    nothing new (client 2.0.61 has every race) - kept for the method;
 #   gamedata/item_list.txt, gamedata/item_proto, locale/pl/itemdesc.txt
-#                           the 10 items of tools/yohara_dung4/yohara_items_d4.json (= yohara_items_d4.sql): a full
+#                           the 16 items of tools/yohara_dung4/yohara_items_d4.json (= yohara_items_d4.sql): a full
 #                           record each over a template (../yohara/patch_yohara_client.py yitem_record), its item_list
 #                           line (the GF icons: client-2.0.30/root/icon/item) and its itemdesc line.
 # APPEND ONLY for mob_proto/atlasinfo/npclist: a vnum/map already there with other content (the element bits aside) is
@@ -44,7 +44,7 @@ ATLAS = ['metin2_map_maze_dungeon1\t768000\t1203200\t3\t3',   # = linux-port/doc
          'metin2_map_smhdungeon_01\t921600\t614400\t1\t1',
          'metin2_map_smhdungeon_02\t998400\t614400\t2\t2']
 ROWS = 161
-ITEMS = 10
+ITEMS = 16    # MT2009_PLUS_SMH_SHOP_V1: + the tower's six potions 70390-70395 (Handlarka 9014)
 RACE_FLAG = 83                 # the record's dwRaceFlag (= ../zywioly/patch_zywioly_client.py)
 ELEMENT_MASK = 0x1F800         # bits 11-16
 Collision = sd.Collision

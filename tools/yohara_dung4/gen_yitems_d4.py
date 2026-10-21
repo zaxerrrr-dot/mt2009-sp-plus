@@ -52,7 +52,7 @@ HAVE_ICONS = set(('boss_box.tga',))     # Skrzynia Labiryntowa's: our packs have
 
 ST = Y.ST
 TYPES = dict(Y.TYPES, ITEM_TREASURE_BOX=20, ITEM_TREASURE_KEY=21, ITEM_PET=37, ITEM_RESOURCE=14)
-SUBTYPES = dict(Y.SUBTYPES, USE_REMOVE_AFFECT=0, UNIQUE_NONE=0)
+SUBTYPES = dict(Y.SUBTYPES, USE_REMOVE_AFFECT=0, UNIQUE_NONE=0, USE_POTION_NODELAY=11)   # 11: MT2009_PLUS_SMH_SHOP_V1
 LIMIT_CONQUEROR_LEVEL = 10     # common/item_length.h (MT2009_PLUS_CHAMPION_V2, czempion): Owsap's NEWWORLD_LEVEL
 
 
@@ -77,6 +77,22 @@ for v in (31253, 31254, 31255, 31256):                        # Skrzynia Mistrza
 add(70403, **QUEST)                                           # Zagadkowy Klucz - the tower's task (quest)
 add(70404, **QUEST)                                           # Kam. Pieczeci Sunga Mahi - the tower's task (quest)
 add(70405, **QUEST)                                           # Antidotum SungMa - the tower's curse (quest)
+# MT2009_PLUS_SMH_SHOP_V1: the tower's potions - Handlarka (9014) in the hall sells them (shop 9552, written after the items in
+# yohara_items_d4.sql;
+# the owner, 21 October 2026: "Handlarka w wiezy Sung Ma - jest pusta"). Owsap's USE_POTION_TOWER /
+# USE_POTION_NODELAY_TOWER are our USE_POTION / USE_POTION_NODELAY: the engine lets them be used only in the tower
+# (387) - server-patches/wiezasm, MT2009_PLUS_SMH_TOWER_V1 (potions). Owsap gives no price (ShopBuyPrice 0): the
+# price a piece is the wiki's (it-wiki "Bottegaia (Inferna Sung Mahi)", en-wiki "Red Potion (T.)" / "Blessing of
+# Life (T.)": 50 / 200 pieces for 750 000 / 3 000 000 Yang ...); selling back gives nothing (ShopSellPrice 0).
+TOWER_POTIONS = ((70390, 'USE_POTION', 15000),             # Czerwona Mikstura (W) - HP +2400
+                 (70391, 'USE_POTION', 10000),             # Niebieska Mikstura (W) - PE +800
+                 (70392, 'USE_POTION_NODELAY', 120000),    # Wino Brzoskwini (W) - HP +2000 at once
+                 (70393, 'USE_POTION_NODELAY', 500000),    # Blogoslawien. Zycia (W) - HP +100%
+                 (70394, 'USE_POTION_NODELAY', 250000),    # Blogoslawien. Magii (W) - PE +100%
+                 (70395, 'USE_POTION_NODELAY', 770000))    # Blogoslawien. Smoka (W) - HP and PE +100%
+SHOP_VNUM, SHOP_NAME, SHOP_NPC, SHOP_COUNTS = 9552, 'Handlarka (Wieza Sung Mahi)', 9014, (50, 200)
+for v, sub, price in TOWER_POTIONS:
+    add(v, subtype=sub, gold=price)
 
 # items we have (official vnums or ours): their names in the drop file
 EXISTING = {
@@ -157,7 +173,7 @@ def main():
         items.append(dict(
             vnum=it['vnum'], src=it['src'], status=it['status'], name=Y.ascii_name(name), locale_name=name,
             type=typ, subtype=sub, stack=200 if stackable else 1, weight=0, size=int(o['Size']), antiflag=anti,
-            flag=flag, wearflag=wear, gold=int(o['ShopBuyPrice']), shop_buy_price=int(o['ShopSellPrice']),
+            flag=flag, wearflag=wear, gold=int(ov.get('gold', o['ShopBuyPrice'])), shop_buy_price=int(o['ShopSellPrice']),
             refined_vnum=int(o['RefinedVnum']), refine_set=int(o['RefineSet']),
             magic_pct=int(o['AlterToMagicItemPercent']), specular=int(o['Specular']),
             socket_pct=int(o['GainSocketPercent']), addon_type=0,
@@ -193,6 +209,13 @@ def write_sql(items):
     L.append('SET NAMES utf8mb4;')
     L.append('INSERT IGNORE INTO world.item_proto (%s) VALUES' % ','.join('`%s`' % c for c in Y.COLS))
     L.append(',\n'.join(Y.sqlrow(i) for i in items) + ';')
+    # MT2009_PLUS_SMH_SHOP_V1: Handlarka (9014) in the tower's hall - each potion in 50 and 200 pieces, as the wiki's
+    # shop window; the price is the item's gold x the count (shop.cpp). INSERT IGNORE: an existing install gets them.
+    L.append('-- MT2009_PLUS_SMH_SHOP_V1: Handlarka (9014, Wieza Sung Mahi - the hall) sells the tower\'s potions, 50 and')
+    L.append('-- 200 pieces each (the wiki\'s shop window); price = gold a piece x count. Usable only in the tower (387).')
+    L.append('INSERT IGNORE INTO world.shop (`vnum`,`name`,`npc_vnum`) VALUES (%d,\'%s\',%d);' % (SHOP_VNUM, SHOP_NAME, SHOP_NPC))
+    L.append('INSERT IGNORE INTO world.shop_item (`shop_vnum`,`item_vnum`,`count`) VALUES %s;' % ','.join(
+        '(%d,%d,%d)' % (SHOP_VNUM, v, c) for v, _, _ in TOWER_POTIONS for c in SHOP_COUNTS))
     with open(SQL_OUT, 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join(L) + '\n')
 

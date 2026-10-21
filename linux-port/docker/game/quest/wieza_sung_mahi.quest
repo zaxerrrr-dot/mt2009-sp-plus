@@ -4,7 +4,7 @@
 --   * wejœcie: Wejœcie Piekielnej Wie¿y (4019) w Seoganland (76,1459) prowadzi do hali (od 120 poziomu i 1. Poziomu
 --     Czempiona); w hali portal Piek. Wie¿a Sunga Mahi (4020): wybór odblokowanego piêtra (po kolei, 1-50),
 --     Sztandar Czaszki (70401) za ka¿d¹ wspinaczkê, sam albo z dru¿yn¹ (bez wymogu dru¿yny); Wyjœcie (10126) wraca
---     do Seoganland; Handlarka (9014) stoi w hali (jej towary - mikstury wie¿y - przyjd¹ z kolejn¹ aktualizacj¹);
+--     do Seoganland; Handlarka (9014) stoi w hali i sprzedaje mikstury wie¿y (sklep 9552, yohara_items_d4.sql);
 --   * piêtro = trzy etapy: 1. fale potworów (losowo 2-4) - zabij wszystkie, 4 min; 2. jedna z siedmiu misji
 --     (losowo): kamieñ demonów z ³ucznikami, prawid³owy kamieñ metin, unikanie ataków (Niszczyciele wybuchaj¹:
 --     pierwszy wybuch zostawia 1% P¯, drugi zabija), szachy potworów, zagadkowy klucz, pieczêcie, kl¹twa z
@@ -18,7 +18,7 @@
 --     d.set_sungma (nak³adka playerbot_champion.cpp);
 --   * nagrody piêter z tabeli wiki - raz na sezon (sezon = miesi¹c; nowy miesi¹c zeruje odblokowane piêtra,
 --     nagrody i czasy); najlepszy czas piêtra widaæ przy portalu; panel lochów (wieza_smh).
--- Pominiête (brak systemu): mikstury wie¿y i zakaz innych przedmiotów, Skrzynka Pocztowa, ranking sezonu ze
+-- Pominiête (brak systemu): zakaz innych przedmiotów w wie¿y, Skrzynka Pocztowa, ranking sezonu ze
 -- Skrzyniami Rankingu Wie¿y, z nagród: Ma³e B³ogos³awieñstwo, B³ogos³awieñstwo, Spirala Czasu, Akcja Piekielnej
 -- Wie¿y; ³ucznicy budz¹ siê, gdy kamieñ demonów straci P¯ (nie od pierwszego ciosu); Niszczyciele wybuchaj¹, gdy
 -- padn¹. Ga³êzie i kl¹twa rani¹ przez d.zone_attack / d.zone_hurt (server-patches/strefy), gdy silnik je ma -

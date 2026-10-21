@@ -35,10 +35,12 @@ mapę po bazie. Wieża stoi na **998400 614400** (wolne w każdej naszej mapie, 
   Wielki Mistrz, co 10. Książę/Czarnoksiężnik); co 20 s gałęzie z ziemi (podwójne obrażenia na 10., 20. … piętrze);
   żywioł piętra po kolei, co 10. wszystkie; losowy bonus/klątwa na każdy etap (afekty 1847/1849, łatka
   `server-patches/wiezasm`); Wola SungMa piętra (`d.set_sungma`, nakładka `playerbot_champion.cpp`).
+- Handlarka (9014) w hali: mikstury wieży 70390–70395 po 50 i 200 sztuk, ceny wiki (sklep 9552 w
+  `yohara_items_d4.sql`, `MT2009_PLUS_SMH_SHOP_V1`); działają tylko w wieży (387) – łatka `server-patches/wiezasm`.
 - Nagrody pięter z tabeli wiki raz na sezon (miesiąc); odblokowanie i czasy – też na sezon. Potwory wieży nie dają
   doświadczenia czempiona (wiki: 0). Panel lochów: `wieza_smh`.
 
-Uproszczenia: brak mikstur wieży (Handlarka bez towaru) i zakazu innych przedmiotów, Skrzynki Pocztowej, rankingu
+Uproszczenia: brak zakazu innych przedmiotów w wieży, Skrzynki Pocztowej, rankingu
 sezonu ze skrzyniami; z nagród pominięte Małe Błogosławieństwo, Błogosławieństwo, Spirala Czasu, Akcja Piekielnej
 Wieży (brak systemów); łucznicy budzą się, gdy kamień straci PŻ; Niszczyciele wybuchają, gdy padną; w jaskiniach brak
 zakazu zwojów/pierścieni teleportu. Gałęzie i klątwa ranią przez `d.zone_attack`/`d.zone_hurt`

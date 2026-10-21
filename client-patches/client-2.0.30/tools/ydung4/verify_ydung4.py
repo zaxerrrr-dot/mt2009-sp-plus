@@ -6,7 +6,7 @@
 # msenv (fog as exe 2.0.25 reads it), the atlas (where GF has one), every object of every sector (areadata CRC ->
 # property -> model/effect/tree, .mdatr), every race of spawned.txt (npclist -> .msm), the tower's ground thorns
 # (smh_circle_thorn.mse) and every name the staged text files give; the new packs under the 29 MB limit and in
-# Index; gamedata/dbdata: the 161 mob_proto rows of yohara_dung4.sql, the five atlasinfo rows, the 10 items.
+# Index; gamedata/dbdata: the 161 mob_proto rows of yohara_dung4.sql, the five atlasinfo rows, the 16 items.
 # Run in the m2pack-lzo image, on the OUT the whole chain (cape301 ... ymaps3, ydung4) was built into:
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/ydung4/verify_ydung4.py \
 #     <OUT pack dir> [<work dir with c58.lst>] [<npclist.txt>]
