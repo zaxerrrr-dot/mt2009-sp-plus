@@ -281,6 +281,22 @@ quest wieza_sung_mahi begin
 			d.spawn_group(wieza_sung_mahi.group(k), p[1], p[2], 3, true, 1)
 		end
 
+		-- MT2009_PLUS_SMH_WAVES_V1: ostatnia fala pokonana (zosta³y tylko kamienie metin misji „z³y wybór")
+		function wave_gone()
+			if d.getf("wv_n") == 0 then
+				return false
+			end
+			local rest = 0
+			if d.getf("room") == 2 and d.getf("task") == 2 then
+				for i = 1, 4 do
+					if not d.is_unique_dead("ms"..i) then
+						rest = rest + 1
+					end
+				end
+			end
+			return d.count_monster() <= rest
+		end
+
 		-- bonus albo kl¹twa etapu
 		function room_effect()
 			local c = wieza_sung_mahi.cfg()
@@ -331,6 +347,7 @@ quest wieza_sung_mahi begin
 			d.setf("boss_dead", 0)
 			d.setf("br_at", now + 20)
 			d.setf("br_pid", 0)
+			d.setf("wv_n", 0) -- MT2009_PLUS_SMH_WAVES_V1: fale tego etapu
 			if room == 4 then
 				local x, y = wieza_sung_mahi.xy(c.stairs)
 				d.jump_all(x, y)
@@ -495,42 +512,55 @@ quest wieza_sung_mahi begin
 			d.notice("Misja wykonana! Portal do nastêpnego etapu jest otwarty.")
 		end
 
-		function floor_done()
-			local c = wieza_sung_mahi.cfg()
+		-- MT2009_PLUS_SMH_FLOORS_V1 (w³aœciciel 21.10: „brak mo¿liwoœci teleportacji do poziomów, które siê ukoñczy³o"):
+		-- postêp, czas i nagroda piêtra zapisuj¹ siê przy zabiciu bossa (zdarzenie kill ma postaæ gracza). Dot¹d robi³ to
+		-- zegar lochu (server_timer) - ten nie ma bie¿¹cej postaci, wiêc q.begin_other_pc_block nic nie prze³¹cza³
+		-- (syserr „BeginOtherPCBlock: NULL?"): ukoñczone piêtra siê nie zapisywa³y, portal hali dawa³ tylko 1. piêtro,
+		-- a nagród piêter nie by³o. W cudzym bloku pc.getf/pc.setf z nazw¹ questa - pc.getqf/pc.setqf bior¹ bie¿¹cy
+		-- quest tamtej postaci (mo¿e byæ inny).
+		function floor_progress()
 			local f = d.getf("floor")
 			local secs = get_global_time() - d.getf("fl_start")
 			local season = wieza_sung_mahi.season()
-			d.setf("phase", 1)
-			wieza_sung_mahi.clear_effects()
+			local qn = "wieza_sung_mahi"
+			d.setf("fl_secs", secs)
 			for i = 1, 8 do
 				local pid = d.getf("p"..i)
 				if pid > 0 then
 					q.begin_other_pc_block(pid)
 					if pc.get_player_id() == pid and wieza_sung_mahi.inside() then
-						if pc.getqf("season") ~= season then
-							pc.setqf("season", season)
-							pc.setqf("best", 0)
+						if pc.getf(qn, "season") ~= season then
+							pc.setf(qn, "season", season)
+							pc.setf(qn, "best", 0)
 						end
-						if f > pc.getqf("best") then
-							pc.setqf("best", f)
+						if f > pc.getf(qn, "best") then
+							pc.setf(qn, "best", f)
 						end
-						if pc.getqf("ts"..f) ~= season or pc.getqf("t"..f) == 0 or secs < pc.getqf("t"..f) then
-							pc.setqf("ts"..f, season)
-							pc.setqf("t"..f, secs)
+						if pc.getf(qn, "ts"..f) ~= season or pc.getf(qn, "t"..f) == 0 or secs < pc.getf(qn, "t"..f) then
+							pc.setf(qn, "ts"..f, season)
+							pc.setf(qn, "t"..f, secs)
 						end
-						if pc.getqf("r"..f) ~= season then
-							pc.setqf("r"..f, season)
+						if pc.getf(qn, "r"..f) ~= season then
+							pc.setf(qn, "r"..f, season)
 							local r = wieza_sung_mahi.rewards(f)
 							for k = 1, table.getn(r) do
 								pc.give_item2(r[k][1], r[k][2])
 							end
 							syschat("Wie¿a Sung Mahi: nagroda za "..f..". piêtro w tym sezonie odebrana.")
 						end
-						syschat("Wie¿a Sung Mahi: "..f..". piêtro ukoñczone w "..wieza_sung_mahi.fmt_time(secs).." (min:s).")
+						syschat("Wie¿a Sung Mahi: "..f..". piêtro ukoñczone w "..wieza_sung_mahi.fmt_time(secs).." (min:s). Mo¿esz na nie wróciæ portalem w hali.")
 					end
 					q.end_other_pc_block()
 				end
 			end
+		end
+
+		function floor_done()
+			local c = wieza_sung_mahi.cfg()
+			local f = d.getf("floor")
+			local secs = d.getf("fl_secs") -- MT2009_PLUS_SMH_FLOORS_V1: zapisane przy zabiciu bossa (floor_progress)
+			d.setf("phase", 1)
+			wieza_sung_mahi.clear_effects()
 			if f >= c.max_floor then
 				d.notice("Wszystkie 50 piêter Wie¿y Sung Mahi zdobyte! Za 20 s wracacie do hali.")
 				d.setf("closed", 1)
@@ -639,15 +669,38 @@ quest wieza_sung_mahi begin
 			end
 			local f = top
 			if s == 2 then
-				say_title(mob_name(4020)..":")
-				say("Podaj piêtro (1-"..top..").")
-				local n = tonumber(input(""))
-				if n == nil or n < 1 or n > top then
+				-- MT2009_PLUS_SMH_FLOORS_V1: wybór z listy (dziesi¹tki, potem piêtro) zamiast wpisywania numeru -
+				-- ka¿de ukoñczone piêtro i nastêpne do zdobycia
+				local tens = {}
+				for b = 1, math.ceil(top / 10) do
+					table.insert(tens, "Piêtra "..(b * 10 - 9).."-"..math.min(b * 10, top))
+				end
+				table.insert(tens, "Nie teraz")
+				local b = 1
+				if top > 10 then
 					say_title(mob_name(4020)..":")
-					say("To piêtro nie jest dla ciebie otwarte.")
+					say("Wybierz piêtra (ukoñczone: "..best..").")
+					b = select_table(tens)
+					if b >= table.getn(tens) then
+						return
+					end
+				end
+				local list = {}
+				for n = b * 10 - 9, math.min(b * 10, top) do
+					if n <= best then
+						table.insert(list, "Piêtro "..n.." (ukoñczone)")
+					else
+						table.insert(list, "Piêtro "..n.." (nowe)")
+					end
+				end
+				table.insert(list, "Nie teraz")
+				say_title(mob_name(4020)..":")
+				say("Na które piêtro chcesz wejœæ?")
+				local k = select_table(list)
+				if k >= table.getn(list) then
 					return
 				end
-				f = math.floor(n)
+				f = b * 10 - 10 + k
 			end
 			if party.is_party() and not party.is_leader() and not wieza_sung_mahi.bot_leads() then
 				say_title(mob_name(4020)..":")
@@ -732,7 +785,7 @@ quest wieza_sung_mahi begin
 				d.setf("mt2009_keep_until", now + 3 * 3600)
 				d.setf("countdown", now + 10)
 				d.notice("Wie¿a Sung Mahi: walka na "..f..". piêtrze zaczyna siê za 10 sekund.")
-				server_timer("wsm_tick", 2, d.get_map_index())
+				server_timer("wsm_tick", 1, d.get_map_index()) -- MT2009_PLUS_SMH_WAVES_V1: co 1 s
 			elseif d.getf("init") == 0 then
 				syschat("Wie¿a Sung Mahi: czekamy na przywódcê dru¿yny.")
 				if d.getf("wait") == 0 then
@@ -754,13 +807,13 @@ quest wieza_sung_mahi begin
 			affect.remove(c.affect_root)
 		end
 
-		-- wie¿a: zegar (co 2 s)
+		-- wie¿a: zegar (co 1 s)
 		when wsm_tick.server_timer begin
 			local c = wieza_sung_mahi.cfg()
 			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
 				return
 			end
-			server_timer("wsm_tick", 2, get_server_timer_arg())
+			server_timer("wsm_tick", 1, get_server_timer_arg()) -- MT2009_PLUS_SMH_WAVES_V1: co 1 s
 			local now = get_global_time()
 			if d.getf("countdown") > 0 then
 				if now < d.getf("countdown") then
@@ -780,9 +833,16 @@ quest wieza_sung_mahi begin
 				return
 			end
 			-- fale
+			-- MT2009_PLUS_SMH_WAVES_V1 (w³aœciciel 21.10: „d³ugi czas czekania na moby po zabiciu grupy"): fala
+			-- pokonana - nastêpna od razu (zegar fali to ju¿ tylko najd³u¿szy odstêp, gdy grupa wci¹¿ ¿yje); w misji
+			-- klucza i pieczêci potwory nie koñcz¹ siê, dopóki misja trwa
 			local w = d.getf("waves")
-			if w > 0 and now >= d.getf("wave_at") then
-				d.setf("waves", w - 1)
+			if w > 0 and (now >= d.getf("wave_at") or wieza_sung_mahi.wave_gone()) then
+				local t = d.getf("task")
+				if room ~= 2 or (t ~= 5 and t ~= 6) then
+					d.setf("waves", w - 1)
+				end
+				d.setf("wv_n", d.getf("wv_n") + 1)
 				d.setf("wave_at", now + d.getf("wave_every"))
 				if room == 1 then
 					wieza_sung_mahi.wave(c.spawn_a, false)
@@ -1064,6 +1124,7 @@ quest wieza_sung_mahi begin
 				if d.getf("boss_vid") > 0 and vid == d.getf("boss_vid") and d.getf("boss_dead") == 0 then
 					d.setf("boss_dead", 1)
 					d.update_ranking("wieza_smh", get_global_time() - d.getf("fl_start"))
+					wieza_sung_mahi.floor_progress() -- MT2009_PLUS_SMH_FLOORS_V1
 				end
 				return
 			end
