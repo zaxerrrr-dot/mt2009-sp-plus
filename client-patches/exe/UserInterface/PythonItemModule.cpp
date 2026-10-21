@@ -697,6 +697,15 @@ void initItem()
 #endif
 	PyModule_AddIntConstant(poModule, "COSTUME_SLOT_END",			c_Costume_Slot_End);
 #endif
+#ifdef ENABLE_MT2009_BUFFI_COSTUME
+	// MT2009_PLUS_BUFFI_V2: Buffi's costume slots (root/uibuffi.py, uiscript/buffiwindow.py)
+	PyModule_AddIntConstant(poModule, "BUFFI_SLOT_START",			c_Buffi_Slot_Start);
+	PyModule_AddIntConstant(poModule, "BUFFI_SLOT_BODY",			c_Buffi_Slot_Body);
+	PyModule_AddIntConstant(poModule, "BUFFI_SLOT_HEAD",			c_Buffi_Slot_Head);
+	PyModule_AddIntConstant(poModule, "BUFFI_SLOT_WEAPON",			c_Buffi_Slot_Weapon);
+	PyModule_AddIntConstant(poModule, "BUFFI_SLOT_SASH",			c_Buffi_Slot_Sash);
+	PyModule_AddIntConstant(poModule, "BUFFI_SLOT_COUNT",			c_Buffi_Slot_Count);
+#endif
 
 #ifdef ENABLE_NEW_EQUIPMENT_SYSTEM
 	PyModule_AddIntConstant(poModule, "BELT_INVENTORY_SLOT_START",			c_Belt_Inventory_Slot_Start);

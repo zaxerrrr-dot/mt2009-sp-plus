@@ -2890,6 +2890,20 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/moby-global-add; F="$L/mo
  && test "$(grep -c -E '^Group[[:blank:]]+MT2009_mglobal_' "$F")" = "$n" \
  && rm -rf "$A" \
  && echo "share: monsters before Yohara - the sheet's drops ($n groups added)"
+# MT2009_PLUS_BUFFI_STONE_DROP_V1: Kamien Duchowy Buffi (61031) from every Metin and boss of Zaklety Las (353) and of
+# every map above it, the whole of Yohara too (the owner, 21 October 2026) - mob_drop_item.buffi_stone.txt
+# (tools/ymoby_arkusz/gen_buffi_stone.py): groups MT2009_buffistone_<mob> of Type drop, which the engine adds to the
+# monster's own groups; none may exist before. The item is mariadb/playerbot/buffi.sql's (apply.sh).
+COPY buffi_stone/ /tmp/buffi-stone-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/buffi-stone-add; F="$L/mob_drop_item.txt" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.buffi_stone.txt" \
+ && n="$(grep -c -E '^Group[[:blank:]]+MT2009_buffistone_' "$A/mob_drop_item.buffi_stone.txt")" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_buffistone_' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.buffi_stone.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_buffistone_' "$F")" = "$n" \
+ && rm -rf "$A" \
+ && echo "share: Kamien Duchowy Buffi from the Metins and bosses of Zaklety Las and above ($n groups)"
 # MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia (50124) drops from nothing any more (the owner, 15 October
 # 2026, fix 7) - after every share step, so no append brings it back. The Yohara files (tools/yohara_items, yohara_maps3,
 # yohara_pb, yohara_iluzja, yohara_chestdrops) and special_item_group.dungeons.txt (54700) no longer have it; this

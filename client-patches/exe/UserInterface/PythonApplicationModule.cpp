@@ -2100,6 +2100,13 @@ void initapp()
 	PyModule_AddIntConstant(poModule, "ENABLE_GLOVE_SYSTEM",   0);
 #endif
 
+	// MT2009_PLUS_BUFFI_V2: Buffi's costume slots (item.BUFFI_SLOT_*)
+#ifdef ENABLE_MT2009_BUFFI_COSTUME
+	PyModule_AddIntConstant(poModule, "ENABLE_MT2009_BUFFI_COSTUME",   1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_MT2009_BUFFI_COSTUME",   0);
+#endif
+
 #ifdef ENABLE_MOVE_CHANNEL
 	PyModule_AddIntConstant(poModule, "ENABLE_MOVE_CHANNEL",   1);
 #else

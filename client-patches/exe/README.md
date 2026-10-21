@@ -492,3 +492,21 @@ W danych 3.0 rekordu nie mają tylko 76029 i 100101 – te dalej tworzy exe (ant
 
 Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, drzewo `exebuild/src`
 + ten katalog) – `ItemManager.cpp` bez błędów. Exe nie budowane.
+## Kostiumy Buffi – `MT2009_PLUS_BUFFI_V2` (`ENABLE_MT2009_BUFFI_COSTUME`)
+
+Cztery sloty kostiumów Buffi z Amerii (strój, fryzura, broń, szarfa; serwer: `server-patches/buffi`,
+`playerbot_buffi.cpp`). Pola to **wolne pola wyposażenia 28–31 pod `WEAR_MAX` 32** – bez zmiany układu pól, pakietów
+i bazy; stary exe też trzyma przedmioty tych pól (`c_Wear_Max` 32), a `root/uibuffi.py` bierze je wtedy z
+`player.EQUIPMENT_SLOT_START + 28…31`.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_BUFFI_COSTUME` |
+| `Server/common/length.h` | `WEAR_BUFFI_BODY = 28`, `WEAR_BUFFI_HEAD = 29`, `WEAR_BUFFI_WEAPON = 30`, `WEAR_BUFFI_SASH = 31` (stałe numery serwera) |
+| `UserInterface/GameType.h` | `c_Buffi_Slot_Start/Body/Head/Weapon/Sash/Count` + `static_assert` (wewnątrz pól wyposażenia, po rękawicach) |
+| `UserInterface/PythonItemModule.cpp` | `item.BUFFI_SLOT_START`, `BUFFI_SLOT_BODY`, `BUFFI_SLOT_HEAD`, `BUFFI_SLOT_WEAPON`, `BUFFI_SLOT_SASH`, `BUFFI_SLOT_COUNT` |
+| `UserInterface/PythonApplicationModule.cpp` | `app.ENABLE_MT2009_BUFFI_COSTUME` |
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` +
+ten katalog, casefix) – `PythonItemModule.cpp`, `PythonApplicationModule.cpp`, `GameType.cpp`, `PythonPlayerModule.cpp`
+bez błędów; `/E` potwierdza stałe `BUFFI_SLOT_*` w module. Exe nie budowane (wspólna budowa rundy).

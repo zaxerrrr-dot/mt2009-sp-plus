@@ -51,6 +51,14 @@ for k, line in d['item_list'].items():
 for k, line in d['itemdesc'].items():
     if desc.get(k) != line:
         fails.append('itemdesc %s: missing or other' % k)
+# MT2009_PLUS_BUFFI_V2: the buffi skills' client lines
+for name, key in (('locale/pl/skilldesc.txt', 'skilldesc'), ('gamedata/skilltable.txt', 'skilltable')):
+    b = entry('dbdata', name)
+    rows = dict((l.split('\t')[0].strip(), l) for l in (b or b'').decode('cp1250').replace('\r\n', '\n').split('\n')
+                if l.strip())
+    for k, line in d[key].items():
+        if rows.get(k) != line:
+            fails.append('%s %s: missing or other' % (key, k))
 print('buffi: %d items, %d problem(s)' % (len(d['items']), len(fails)))
 for f in fails:
     print('  ' + f)

@@ -5,67 +5,97 @@
 # window was; the companion (uisidekick.py) is off unless the server's .env
 # says M2_SIDEKICK=1 and then opens from its letter or the "sidekick" key.
 #
+# MT2009_PLUS_BUFFI_V2 (the owner, 21 October 2026: "okno i rozwoj buffi
+# dokladnie jak w Amerii", "do G1 zwykle ksiegi szamana przez okno buffi"):
+# the window is Ameria's two Buffi pages side by side (uiscript/buffiwindow.py):
+#   - the buffi's costume slots (Ameria's inventory page IV, companion_bg.png):
+#     an outfit, a hairstyle, a weapon and a sash costume dragged onto them (or
+#     used from the bag while this window is open - "/buffi page 1|0", Ameria's
+#     /buffi_costume_page) dress the shaman; they give their owner nothing;
+#   - its skills (Ameria's character window "Buffi" page, buffi_skill_bg.png):
+#     the four skills by grade; a shaman's skill book (50300 of Blogoslawienstwo,
+#     Pomoc Smoka, Szybkosc, Zwiekszenie Ataku) dropped onto its buffi skill
+#     trains it to G1 ("/buffi read <skill> <window> <cell>"); from G1 the
+#     Kamien Duchowy Buffi (61031) - used from the bag (quest buffi).
+#
 # The server half is playerbot_buffi.cpp (server-patches/buffi/README.md):
 #   window -> "/buffi info"          the state
 #             "/buffi toggle"        call / send away (the seal in the bag)
 #             "/buffi name <name>"   Zwoj Imienia Buffi (61030)
+#             "/buffi page 1|0"      the window open / closed
+#             "/buffi read <skill> <window> <cell>"   a shaman's skill book
 #   server -> "BUFFI state <on> <called> <seal vnum> <named> <name|-> <lv164>
-#                <lv165> <lv166> <lv167> <boss bonus seconds> <name scrolls>"
+#                <lv165> <lv166> <lv167> <boss bonus seconds> <name scrolls>
+#                [<skill group>]"
 #             "BUFFI askname"       a name scroll was used: the name dialog
 #             "BUFFI off"           M2_BUFFI=0 on the server
 # (game.py passes the "BUFFI" lines here.)
 #
-# What the window shows: the seal, called or not, the name, the four buffs
-# with their grade (M1..P) - Szybkosc and Zwiekszenie Ataku only with a name -
-# and where the books and soul stones are sold. It sends only on a click and
-# when it opens, only in the game phase (warpsafe.InGame).
+# The costume slots are the server's wear cells 28-31 (WEAR_BUFFI_*); the 3.0
+# exe names them item.BUFFI_SLOT_* (client-patches/exe), an older one gets the
+# same cells from player.EQUIPMENT_SLOT_START. The skills' slots are their
+# vnums (RegisterSlots, as riposty.py) so the skill tooltip reads them.
 #
 # Python 2.7 as the client has it; the texts are CP1250.
 
 import chat
+import item
+import mouseModule
 import net
+import player
 import ui
 import uiCommon
+import uiToolTip
 
 import warpsafe
 
 NAME_MAX = 16
 
+# the buffi's costume cells (the server's WEAR_BUFFI_BODY/HEAD/WEAPON/SASH = 28-31)
+BUFFI_CELLS = (
+	getattr(item, "BUFFI_SLOT_BODY", player.EQUIPMENT_SLOT_START + 28),
+	getattr(item, "BUFFI_SLOT_HEAD", player.EQUIPMENT_SLOT_START + 29),
+	getattr(item, "BUFFI_SLOT_WEAPON", player.EQUIPMENT_SLOT_START + 30),
+	getattr(item, "BUFFI_SLOT_SASH", player.EQUIPMENT_SLOT_START + 31),
+)
+MOUNT_CELL = item.COSTUME_SLOT_START + 2	# shown on Ameria's page too
+
 TEXT_TITLE = "Buffi"
 TEXT_OFF = "Buffi jest wy\xb3\xb9czony na tym serwerze."
-TEXT_SEAL = "Piecz\xea\xe6: %s"
-TEXT_NO_SEAL = "Piecz\xea\xe6: brak (ItemShop, nowa posta\xe6 dostaje Buffi na 7 dni)"
-TEXT_CALLED = "Stan: przywo\xb3ana - chodzi za tob\xb9 i rzuca wzmocnienia"
-TEXT_NOT_CALLED = "Stan: odwo\xb3ana"
+TEXT_INFO_PAGE = "Ta strona jest tylko dla Buffi."
+TEXT_NO_SEAL = "Potrzebujesz piecz\xeaci Buffi."
+TEXT_CALLED = "%s - przywo\xb3ana."
+TEXT_NOT_CALLED = "%s - odwo\xb3ana."
+TEXT_NO_NAME = "Bez imienia (Zw\xf3j Imienia Buffi)."
 TEXT_NAME = "Imi\xea: %s"
-TEXT_NO_NAME = "Imi\xea: brak - Zw\xf3j Imienia Buffi odblokowuje dwa wzmocnienia"
-TEXT_BOSS = "+10%% silny przeciwko bossom jeszcze: %s"
-TEXT_SKILLS = "Wzmocnienia (co 3 sekundy, gdy ich brakuje):"
-TEXT_NEEDS_NAME = "wymaga imienia"
-TEXT_NOT_YET = "M1 przy pierwszym przywo\xb3aniu"
-TEXT_HELP1 = "Ksi\xeagi Buffi (M1 - G1) i Kamie\xf1 Duchowy Buffi (G1 - P):"
-TEXT_HELP2 = "Handlarka - \"Ksi\xeagi i kamienie Buffi\". Wymagana droga umiej\xeatno\x9cci."
+TEXT_NO_GROUP = "Wybierz drog\xea umiej\xeatno\x9cci."
+TEXT_BOSS = "+10%% w bossy: %s"
 TEXT_CALL = "Przywo\xb3aj"
 TEXT_SEND_AWAY = "Odwo\xb3aj"
-TEXT_RENAME = "Nadaj imi\xea"
-TEXT_CLOSE = "Zamknij"
 TEXT_ASK_NAME = "Imi\xea Buffi (2-%d liter lub cyfr)"
 TEXT_NO_SCROLL = "Nie masz Zwoju Imienia Buffi (ItemShop)."
+TEXT_COSTUMES_FREE = "Kostiumy Buffi nie daj\xb9 bonus\xf3w."
+TEXT_BOOK_TIP = "Do G1: Ksi\xeaga Umiej\xeatno\x9cci - %s (szaman)."
+TEXT_BOOK_TIP2 = "Przeci\xb9gnij j\xb9 tutaj (szansa, PD i odst\xeap jak zwykle)."
+TEXT_STONE_TIP = "Od G1 do P: Kamie\xf1 Duchowy Buffi (u\xbfyj go)."
+TEXT_NEEDS_NAME = "Wymaga imienia Buffi (Zw\xf3j Imienia Buffi)."
+TEXT_WRONG_BOOK = "[Buffi] T\xea umiej\xeatno\x9c\xe6 trenuje Ksi\xeaga Umiej\xeatno\x9cci: %s (szaman)."
+TEXT_NOT_BOOK = "[Buffi] Na umiej\xeatno\x9c\xe6 Buffi przeci\xb9gnij Ksi\xeag\xea Umiej\xeatno\x9cci szamana."
 SEALS = {61025: "Buffi (7 dni)", 61026: "Buffi"}
 
-# the skill, its Polish name, the shaman skill's icon
+# the buffi skill, the shaman skill whose book trains it, its Polish name
 SKILLS = (
-	(164, "B\xb3ogos\xb3awie\xf1stwo", "hosin"),
-	(165, "Pomoc Smoka", "gicheon"),
-	(166, "Szybko\x9c\xe6", "kwaesok"),
-	(167, "Zwi\xeakszenie Ataku", "jeungryeok"),
+	(164, 94, "B\xb3ogos\xb3awie\xf1stwo"),
+	(165, 96, "Pomoc Smoka"),
+	(166, 110, "Szybko\x9c\xe6"),
+	(167, 111, "Zwi\xeakszenie Ataku"),
 )
 NAMED_ONLY = (166, 167)
+SKILL_BOOK = 50300
+GRADE_STEP = 20		# Ameria's grid: the grade columns 1/21/41 (skill.SKILL_GRADE_STEP_COUNT)
 
-COLOR_INFO = 0xffc8c8c8
 COLOR_GOOD = 0xff9be27c
 COLOR_WARN = 0xffe0b060
-COLOR_OFF = 0xff909090
 
 _state = {
 	'window': None,
@@ -90,12 +120,12 @@ def Send(command):
 
 def Grade(level):
 	if level >= 40:
-		return "P"
+		return 3
 	if level >= 30:
-		return "G%d" % (level - 29)
+		return 2
 	if level >= 20:
-		return "M%d" % (level - 19)
-	return ""
+		return 1
+	return 0
 
 
 def Duration(seconds):
@@ -111,142 +141,254 @@ def CleanName(text):
 	return "".join([c for c in text if c.isalnum()])[:NAME_MAX]
 
 
-class BuffiWindow(ui.BoardWithTitleBar):
-	WIDTH = 330
-	TOP = 34
-	ROW_H = 38
-
-	def __init__(self):
-		ui.BoardWithTitleBar.__init__(self)
-		self.widgets = []
-		self.rows = []
-		self.dialog = None
-		self.AddFlag('movable')
-		self.AddFlag('float')
-		self.SetTitleName(TEXT_TITLE)
-		self.SetCloseEvent(ui.__mem_func__(self.Close))
-		self.__Build()
-		self.SetCenterPosition()
-
-	def __del__(self):
-		ui.BoardWithTitleBar.__del__(self)
-
-	def __Label(self, x, y, text="", color=None):
-		line = ui.TextLine()
-		line.SetParent(self)
-		line.SetPosition(x, y)
-		line.SetText(text)
-		if color is not None:
-			line.SetPackedFontColor(color)
-		line.Show()
-		self.widgets.append(line)
-		return line
-
-	def __Button(self, x, y, text, event):
-		button = ui.Button()
-		button.SetParent(self)
-		button.SetPosition(x, y)
-		button.SetUpVisual('d:/ymir work/ui/public/large_button_01.sub')
-		button.SetOverVisual('d:/ymir work/ui/public/large_button_02.sub')
-		button.SetDownVisual('d:/ymir work/ui/public/large_button_03.sub')
-		button.SetText(text)
-		button.SAFE_SetEvent(event)
-		button.Show()
-		self.widgets.append(button)
-		return button
-
-	def __Build(self):
-		y = self.TOP
-		self.sealLine = self.__Label(16, y)
-		self.stateLine = self.__Label(16, y + 16)
-		self.nameLine = self.__Label(16, y + 32)
-		self.bossLine = self.__Label(16, y + 48, "", COLOR_GOOD)
-		y += 70
-		self.__Label(16, y, TEXT_SKILLS, COLOR_INFO)
-		y += 18
-		board = ui.ThinBoard()
-		board.SetParent(self)
-		board.SetPosition(10, y)
-		board.SetSize(self.WIDTH - 20, len(SKILLS) * self.ROW_H + 10)
-		board.Show()
-		self.widgets.append(board)
-		for i, (vnum, name, icon) in enumerate(SKILLS):
-			ry = y + 6 + i * self.ROW_H
-			image = ui.ImageBox()
-			image.SetParent(self)
-			image.SetPosition(20, ry)
-			image.Show()
-			self.widgets.append(image)
-			title = self.__Label(60, ry + 2, name)
-			grade = self.__Label(60, ry + 17, "", COLOR_INFO)
-			self.rows.append((vnum, icon, image, title, grade))
-		y += len(SKILLS) * self.ROW_H + 18
-		self.__Label(16, y, TEXT_HELP1, COLOR_INFO)
-		self.__Label(16, y + 15, TEXT_HELP2, COLOR_INFO)
-		y += 38
-		self.toggleButton = self.__Button(16, y, TEXT_CALL, self.OnToggle)
-		self.renameButton = self.__Button(16 + 98, y, TEXT_RENAME, self.OnRename)
-		self.__Button(self.WIDTH - 16 - 88, y, TEXT_CLOSE, self.Close)
-		self.SetSize(self.WIDTH, y + 40)
-
-	def __Icon(self, image, icon, level):
-		grade = 1 if level < 20 else 2 if level < 30 else 3
+def RegisterSlots():
+	"""playersettingmodule.RegisterSkill: each buffi skill's slot is its vnum (the skill tooltip and its level)."""
+	for vnum, book, name in SKILLS:
 		try:
-			image.LoadImage("d:/ymir work/ui/skill/shaman/%s_%02d.sub" % (icon, grade))
+			player.SetSkill(vnum, vnum)
 		except Exception:
 			pass
 
+
+def Level(vnum):
+	data = _state['data']
+	level = data['levels'].get(vnum, 0) if data else 0
+	try:
+		known = player.GetSkillLevel(vnum)
+		if known > 0:
+			level = known
+	except Exception:
+		pass
+	return level
+
+
+def AttachedWindow(slotType):
+	"""The item window of an attached item: the bag or a storage of the extra inventory (uiekwipunek.py)."""
+	if slotType == player.SLOT_TYPE_INVENTORY:
+		return player.INVENTORY
+	try:
+		return __import__("uiekwipunek").WindowOfSlotType(slotType)
+	except Exception:
+		return -1
+
+
+class BuffiWindow(ui.ScriptWindow):
+
+	def __init__(self):
+		ui.ScriptWindow.__init__(self)
+		self.dialog = None
+		self.itemToolTip = None
+		self.skillToolTip = None
+		self.__Load()
+
+	def __del__(self):
+		ui.ScriptWindow.__del__(self)
+
+	def __Load(self):
+		ui.PythonScriptLoader().LoadScriptFile(self, "UIScript/BuffiWindow.py")
+		self.GetChild("board").SetCloseEvent(ui.__mem_func__(self.Close))
+		self.costumeSlot = self.GetChild("CostumeSlot")
+		self.skillSlot = self.GetChild("Skill_Slot")
+		self.groupButton = self.GetChild("Skill_Group_Button")
+		self.groupButton.Down()
+		self.groupButton.SAFE_SetEvent(self.groupButton.Down)
+		self.infoLines = [self.GetChild("Buffi_Info_%d" % i) for i in (1, 2, 3)]
+		self.locks = [self.GetChild("Buffi_Lock_%d" % i) for i in xrange(1, 7)]
+		self.toggleButton = self.GetChild("Toggle_Button")
+		self.renameButton = self.GetChild("Rename_Button")
+		self.stateText = self.GetChild("State_Text")
+		self.toggleButton.SetText(TEXT_CALL)
+		self.toggleButton.SAFE_SetEvent(self.OnToggle)
+		self.renameButton.SAFE_SetEvent(self.OnRename)
+		for lock in self.locks:
+			lock.AddFlag("not_pick")
+			lock.Hide()
+
+		slot = self.costumeSlot
+		slot.SetSelectEmptySlotEvent(ui.__mem_func__(self.OnSelectEmptyCostume))
+		slot.SetSelectItemSlotEvent(ui.__mem_func__(self.OnSelectCostume))
+		slot.SetUnselectItemSlotEvent(ui.__mem_func__(self.OnUseCostume))
+		slot.SetUseSlotEvent(ui.__mem_func__(self.OnUseCostume))
+		slot.SetOverInItemEvent(ui.__mem_func__(self.OnOverInCostume))
+		slot.SetOverOutItemEvent(ui.__mem_func__(self.OnOverOut))
+
+		slot = self.skillSlot
+		slot.SetSelectEmptySlotEvent(ui.__mem_func__(self.OnDropOnSkill))
+		slot.SetSelectItemSlotEvent(ui.__mem_func__(self.OnDropOnSkill))
+		slot.SetOverInItemEvent(ui.__mem_func__(self.OnOverInSkill))
+		slot.SetOverOutItemEvent(ui.__mem_func__(self.OnOverOut))
+
+		self.itemToolTip = uiToolTip.ItemToolTip()
+		self.itemToolTip.HideToolTip()
+		self.skillToolTip = uiToolTip.SkillToolTip()
+		self.skillToolTip.HideToolTip()
+
+	# ------------------------------------------------------------------ the costume slots
+
+	def OnSelectEmptyCostume(self, cell):
+		if not mouseModule.mouseController.isAttached():
+			return
+		attachedType = mouseModule.mouseController.GetAttachedType()
+		attachedPos = mouseModule.mouseController.GetAttachedSlotNumber()
+		mouseModule.mouseController.DeattachObject()
+		if attachedType != player.SLOT_TYPE_INVENTORY or attachedPos == cell:
+			return
+		# the server puts it onto this buffi slot, or refuses (another kind of costume)
+		net.SendItemMovePacket(attachedPos, cell, 0)
+
+	def OnSelectCostume(self, cell):
+		if mouseModule.mouseController.isAttached():
+			attachedType = mouseModule.mouseController.GetAttachedType()
+			attachedPos = mouseModule.mouseController.GetAttachedSlotNumber()
+			mouseModule.mouseController.DeattachObject()
+			# onto a dressed slot: the costume is used - with this window open it goes onto the buffi and
+			# the old one back into the bag
+			if attachedType == player.SLOT_TYPE_INVENTORY and attachedPos != cell:
+				net.SendItemUsePacket(attachedPos)
+			return
+		vnum = player.GetItemIndex(cell)
+		if vnum:
+			mouseModule.mouseController.AttachObject(self, player.SLOT_TYPE_INVENTORY, cell, vnum)
+
+	def OnUseCostume(self, cell):
+		if player.GetItemIndex(cell):
+			net.SendItemUsePacket(cell)
+
+	def OnOverInCostume(self, cell):
+		if not self.itemToolTip or not player.GetItemIndex(cell):
+			return
+		self.itemToolTip.ClearToolTip()
+		self.itemToolTip.SetInventoryItem(cell)
+		if cell in BUFFI_CELLS:
+			self.itemToolTip.AppendSpace(5)
+			self.itemToolTip.AppendTextLine(TEXT_COSTUMES_FREE, COLOR_WARN)
+		self.itemToolTip.ShowToolTip()
+
+	def OnOverOut(self):
+		if self.itemToolTip:
+			self.itemToolTip.HideToolTip()
+		if self.skillToolTip:
+			self.skillToolTip.HideToolTip()
+
+	# ------------------------------------------------------------------ the skills
+
+	def SkillOfSlot(self, slot):
+		index = slot % GRADE_STEP
+		if 1 <= index <= len(SKILLS):
+			return SKILLS[index - 1]
+		return None
+
+	def OnDropOnSkill(self, slot):
+		if not mouseModule.mouseController.isAttached():
+			return
+		entry = self.SkillOfSlot(slot)
+		attachedType = mouseModule.mouseController.GetAttachedType()
+		attachedPos = mouseModule.mouseController.GetAttachedSlotNumber()
+		attachedVnum = mouseModule.mouseController.GetAttachedItemIndex()
+		mouseModule.mouseController.DeattachObject()
+		if not entry:
+			return
+		vnum, book, name = entry
+		window = AttachedWindow(attachedType)
+		if window < 0 or attachedVnum != SKILL_BOOK:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NOT_BOOK)
+			return
+		try:
+			bookSkill = player.GetItemMetinSocket(window, attachedPos, 0)
+		except Exception:
+			bookSkill = book	# the server checks it anyway
+		if bookSkill != book:
+			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_WRONG_BOOK % name)
+			return
+		Send("read %d %d %d" % (vnum, window, attachedPos))
+
+	def OnOverInSkill(self, slot):
+		entry = self.SkillOfSlot(slot)
+		if not entry or not self.skillToolTip:
+			return
+		vnum, book, name = entry
+		level = Level(vnum)
+		grade = Grade(level)
+		tip = self.skillToolTip
+		tip.ClearToolTip()
+		try:
+			tip.SetSkillNew(vnum, vnum, max(grade, 1), max(level, 1))
+		except Exception:
+			tip.SetTitle(name)
+		tip.AppendSpace(5)
+		data = _state['data']
+		if vnum in NAMED_ONLY and not (data and data['named']):
+			tip.AppendTextLine(TEXT_NEEDS_NAME, COLOR_WARN)
+		if level < 30:
+			tip.AppendTextLine(TEXT_BOOK_TIP % name, COLOR_GOOD)
+			tip.AppendTextLine(TEXT_BOOK_TIP2, COLOR_GOOD)
+		if level < 40:
+			tip.AppendTextLine(TEXT_STONE_TIP, COLOR_GOOD)
+		tip.ShowToolTip()
+
+	# ------------------------------------------------------------------ the state
+
 	def Refresh(self):
+		for cell in BUFFI_CELLS + (MOUNT_CELL,):
+			self.costumeSlot.SetItemSlot(cell, player.GetItemIndex(cell), 0)
+		self.costumeSlot.RefreshSlot()
+
+		data = _state['data']
+		named = bool(data and data['named'])
+		# Ameria's grid: a skill's three grade columns, the one of its grade lit and counted
+		for k, (vnum, book, name) in enumerate(SKILLS):
+			level = Level(vnum)
+			grade = Grade(level)
+			for j in xrange(3):
+				real = k + 1 + j * GRADE_STEP
+				if level <= 0:
+					self.skillSlot.ClearSlot(real)
+					continue
+				self.skillSlot.SetSkillSlotNew(real, vnum, j, level)
+				if grade == 3 and j == 2:
+					self.skillSlot.SetSlotCountNew(real, grade, level)
+				elif grade != j:
+					self.skillSlot.SetSlotCount(real, 0)
+					self.skillSlot.DeactivateSlot(real)
+				else:
+					self.skillSlot.SetSlotCountNew(real, grade, level)
+		self.skillSlot.RefreshSlot()
+		# Ameria's buffi_slot_hide: Szybkosc (1-3) and Zwiekszenie Ataku (4-6) until they are learned
+		for i, lock in enumerate(self.locks):
+			if Level(166 if i < 3 else 167) < 1:
+				lock.Show()
+			else:
+				lock.Hide()
+
 		if _state['off']:
-			self.sealLine.SetText(TEXT_OFF)
-			self.sealLine.SetPackedFontColor(COLOR_WARN)
-			for line in (self.stateLine, self.nameLine, self.bossLine):
-				line.SetText("")
-			for vnum, icon, image, title, grade in self.rows:
-				grade.SetText("")
+			self.__Info(TEXT_OFF, "", "")
 			self.toggleButton.Hide()
 			self.renameButton.Hide()
+			self.stateText.SetText("")
 			return
-		data = _state['data']
 		if data is None:
+			self.__Info(TEXT_INFO_PAGE, "", "")
 			return
 		self.toggleButton.Show()
-		if data['seal']:
-			self.sealLine.SetText(TEXT_SEAL % SEALS.get(data['seal'], "Buffi"))
-			self.sealLine.SetPackedFontColor(COLOR_INFO)
+		self.toggleButton.SetText(TEXT_SEND_AWAY if data['called'] else TEXT_CALL)
+		if not data['seal']:
+			line1 = TEXT_NO_SEAL
 		else:
-			self.sealLine.SetText(TEXT_NO_SEAL)
-			self.sealLine.SetPackedFontColor(COLOR_WARN)
-		if data['called']:
-			self.stateLine.SetText(TEXT_CALLED)
-			self.stateLine.SetPackedFontColor(COLOR_GOOD)
-			self.toggleButton.SetText(TEXT_SEND_AWAY)
-		else:
-			self.stateLine.SetText(TEXT_NOT_CALLED)
-			self.stateLine.SetPackedFontColor(COLOR_INFO)
-			self.toggleButton.SetText(TEXT_CALL)
-		if data['named']:
-			self.nameLine.SetText(TEXT_NAME % data['name'])
-			self.nameLine.SetPackedFontColor(COLOR_GOOD)
-		else:
-			self.nameLine.SetText(TEXT_NO_NAME)
-			self.nameLine.SetPackedFontColor(COLOR_WARN)
-		self.bossLine.SetText(TEXT_BOSS % Duration(data['boss']) if data['boss'] > 0 else "")
+			line1 = (TEXT_CALLED if data['called'] else TEXT_NOT_CALLED) % SEALS.get(data['seal'], "Buffi")
+		line2 = TEXT_NAME % data['name'] if named else TEXT_NO_NAME
+		line3 = TEXT_NO_GROUP if data.get('group', 1) == 0 else TEXT_INFO_PAGE
+		self.__Info(line1, line2, line3)
 		if data['scrolls'] > 0 and data['called']:
 			self.renameButton.Show()
 		else:
 			self.renameButton.Hide()
-		for vnum, icon, image, title, grade in self.rows:
-			level = data['levels'].get(vnum, 0)
-			self.__Icon(image, icon, level)
-			if vnum in NAMED_ONLY and not data['named']:
-				text, color = "%s - %s" % (Grade(level) or "-", TEXT_NEEDS_NAME), COLOR_OFF
-			elif level <= 0:
-				text, color = TEXT_NOT_YET, COLOR_INFO
-			else:
-				text, color = Grade(level), COLOR_GOOD
-			grade.SetText(text)
-			grade.SetPackedFontColor(color)
+		self.stateText.SetText(TEXT_BOSS % Duration(data['boss']) if data['boss'] > 0 else "")
+
+	def __Info(self, line1, line2, line3):
+		for line, text in zip(self.infoLines, (line1, line2, line3)):
+			line.SetText(text)
+
+	# ------------------------------------------------------------------ the buttons
 
 	def OnToggle(self):
 		Send("toggle")
@@ -293,13 +435,19 @@ class BuffiWindow(ui.BoardWithTitleBar):
 			except Exception:
 				pass
 
+	# ------------------------------------------------------------------ open / close
+
 	def Open(self):
 		self.Refresh()
 		self.Show()
 		self.SetTop()
+		Send("page 1")
 
 	def Close(self):
 		self.__CloseDialog()
+		self.OnOverOut()
+		if self.IsShow():
+			Send("page 0")
 		self.Hide()
 
 	def OnPressEscapeKey(self):
@@ -308,9 +456,11 @@ class BuffiWindow(ui.BoardWithTitleBar):
 
 	def Destroy(self):
 		self.__CloseDialog()
+		self.OnOverOut()
 		self.Hide()
-		self.rows = []
-		self.widgets = []
+		self.itemToolTip = None
+		self.skillToolTip = None
+		self.ClearDictionary()
 
 
 def GetWindow():
@@ -345,6 +495,18 @@ def DestroyWindow():
 		window.Destroy()
 
 
+def Refresh():
+	"""interfacemodule.RefreshInventory / RefreshSkill: the slots of an open window."""
+	window = _state['window']
+	if window is not None and window.IsShow():
+		try:
+			window.Refresh()
+		except Exception:
+			import dbg
+			import sys
+			dbg.TraceError('uibuffi.Refresh: %s' % str(sys.exc_info()[1]))
+
+
 def OnCommand(sub='', *args):
 	try:
 		if sub == 'off':
@@ -359,6 +521,7 @@ def OnCommand(sub='', *args):
 				'levels': {164: ToInt(args[5]), 165: ToInt(args[6]), 166: ToInt(args[7]), 167: ToInt(args[8])},
 				'boss': ToInt(args[9]),
 				'scrolls': ToInt(args[10]),
+				'group': ToInt(args[11], 1) if len(args) >= 12 else 1,
 			}
 		elif sub == 'askname':
 			window = GetWindow()
@@ -368,9 +531,7 @@ def OnCommand(sub='', *args):
 			return
 		else:
 			return
-		window = _state['window']
-		if window is not None and window.IsShow():
-			window.Refresh()
+		Refresh()
 	except Exception:
 		import dbg
 		import sys

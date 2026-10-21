@@ -214,6 +214,15 @@ enum EWearPositions
 	WEAR_PENDANT,		// 25
 	WEAR_GLOVE,			// 26
 
+#ifdef ENABLE_MT2009_BUFFI_COSTUME
+	// MT2009_PLUS_BUFFI_V2 (wear): Buffi's costume slots (Ameria's WEAR_BUFFI_*), the server's numbers
+	// (server-patches/buffi (wear)) - the free wear cells under WEAR_MAX, whatever the costume systems above
+	WEAR_BUFFI_BODY = 28,
+	WEAR_BUFFI_HEAD = 29,
+	WEAR_BUFFI_WEAPON = 30,
+	WEAR_BUFFI_SASH = 31,
+#endif
+
 	WEAR_MAX = 32
 };
 

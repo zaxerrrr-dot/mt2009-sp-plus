@@ -5279,12 +5279,14 @@ class Interface(object):
 	def RefreshSkill(self):
 		self.wndCharacter.RefreshSkill()
 		self.wndTaskBar.RefreshSkill()
+		__import__("uibuffi").Refresh() # MT2009_PLUS_BUFFI_V2: the buffi's skills
 
 	def RefreshInventory(self):
 		self.wndTaskBar.RefreshQuickSlot()
 		if self.wndInventory:
 			self.wndInventory.RefreshItemSlot()
 		__import__("uiekwipunek").Refresh() # MT2009_PLUS_EKWIPUNEK_V1
+		__import__("uibuffi").Refresh() # MT2009_PLUS_BUFFI_V2: the buffi's costume slots
 		if app.ENABLE_DRAGON_SOUL_SYSTEM:
 			if self.wndDragonSoul and self.wndDragonSoul.IsShow():
 				self.wndDragonSoul.RefreshItemSlot()

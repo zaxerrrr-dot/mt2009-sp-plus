@@ -1,0 +1,1211 @@
+{
+"adds": {
+"20399": {
+"kind": "stone",
+"level": 100,
+"maps": [
+352
+],
+"name": "Lodowy Filar"
+},
+"20422": {
+"kind": "stone",
+"level": 120,
+"maps": [
+356
+],
+"name": "Jajo Smoka"
+},
+"20518": {
+"kind": "stone",
+"level": 120,
+"maps": [
+407
+],
+"name": "SZC: Kolumna Smoka Płn."
+},
+"20538": {
+"kind": "stone",
+"level": 120,
+"maps": [
+370
+],
+"name": "PB: Kolumna Smoka Płn."
+},
+"3956": {
+"kind": "boss",
+"level": 110,
+"maps": [
+367
+],
+"name": "Królowa Syren"
+},
+"3957": {
+"kind": "boss",
+"level": 110,
+"maps": [
+367
+],
+"name": "Potomstwo Hydry"
+},
+"3958": {
+"kind": "boss",
+"level": 110,
+"maps": [
+367
+],
+"name": "Potomstwo Hydry"
+},
+"3959": {
+"kind": "boss",
+"level": 110,
+"maps": [
+367
+],
+"name": "Potomstwo Hydry"
+},
+"3965": {
+"kind": "boss",
+"level": 105,
+"maps": [
+367
+],
+"name": "Skarb Hydry"
+},
+"3971": {
+"kind": "boss",
+"level": 105,
+"maps": [
+395
+],
+"name": "Kryształ Płn. Wiatru"
+},
+"4000": {
+"kind": "stone",
+"level": 120,
+"maps": [
+379
+],
+"name": "Metin Ognia"
+},
+"4001": {
+"kind": "stone",
+"level": 120,
+"maps": [
+378
+],
+"name": "Metin Lodu"
+},
+"4002": {
+"kind": "stone",
+"level": 120,
+"maps": [
+378
+],
+"name": "Metin Błyskawicy"
+},
+"4003": {
+"kind": "stone",
+"level": 120,
+"maps": [
+379
+],
+"name": "Metin Wiatru"
+},
+"4004": {
+"kind": "stone",
+"level": 120,
+"maps": [
+380
+],
+"name": "Metin Ziemi"
+},
+"4005": {
+"kind": "stone",
+"level": 120,
+"maps": [
+380
+],
+"name": "Metin Nocy"
+},
+"4209": {
+"kind": "boss",
+"level": 115,
+"maps": [
+405
+],
+"name": "SZC: Generał Yonghan"
+},
+"4210": {
+"kind": "boss",
+"level": 115,
+"maps": [
+405
+],
+"name": "SZC: Generał Yonghan"
+},
+"4249": {
+"kind": "boss",
+"level": 120,
+"maps": [
+407
+],
+"name": "SZC: Szel"
+},
+"4265": {
+"kind": "boss",
+"level": 128,
+"maps": [
+404
+],
+"name": "SZC: Władca En-Tai"
+},
+"4272": {
+"kind": "boss",
+"level": 130,
+"maps": [
+404
+],
+"name": "SZC: Bagjanamu"
+},
+"4289": {
+"kind": "boss",
+"level": 115,
+"maps": [
+398
+],
+"name": "PB: Generał Yonghan"
+},
+"4290": {
+"kind": "boss",
+"level": 115,
+"maps": [
+398
+],
+"name": "PB: Generał Yonghan"
+},
+"4329": {
+"kind": "boss",
+"level": 120,
+"maps": [
+370
+],
+"name": "PB: Szel"
+},
+"4345": {
+"kind": "boss",
+"level": 128,
+"maps": [
+371
+],
+"name": "PB: Władca En-Tai"
+},
+"4352": {
+"kind": "boss",
+"level": 130,
+"maps": [
+371
+],
+"name": "PB: Bagjanamu"
+},
+"4400": {
+"kind": "boss",
+"level": 122,
+"maps": [
+405
+],
+"name": "SZC: Beran-Setaou"
+},
+"4401": {
+"kind": "boss",
+"level": 130,
+"maps": [
+406
+],
+"name": "SZC: Razador"
+},
+"4402": {
+"kind": "boss",
+"level": 130,
+"maps": [
+407
+],
+"name": "SZC: Nemere"
+},
+"4403": {
+"kind": "boss",
+"level": 135,
+"maps": [
+404
+],
+"name": "SZC: Jotun Thrym"
+},
+"4410": {
+"kind": "boss",
+"level": 122,
+"maps": [
+398
+],
+"name": "PB: Beran-Setaou"
+},
+"4411": {
+"kind": "boss",
+"level": 130,
+"maps": [
+369
+],
+"name": "PB: Razador"
+},
+"4412": {
+"kind": "boss",
+"level": 130,
+"maps": [
+370
+],
+"name": "PB: Nemere"
+},
+"4413": {
+"kind": "boss",
+"level": 135,
+"maps": [
+371
+],
+"name": "PB: Jotun Thrym"
+},
+"6091": {
+"kind": "boss",
+"level": 108,
+"maps": [
+351
+],
+"name": "Razador"
+},
+"6116": {
+"kind": "boss",
+"level": 113,
+"maps": [
+356
+],
+"name": "Smoczy Strażnik Idall"
+},
+"6118": {
+"kind": "stone",
+"level": 120,
+"maps": [
+356
+],
+"name": "Smocza Statua"
+},
+"6151": {
+"kind": "boss",
+"level": 107,
+"maps": [
+352
+],
+"name": "Szel"
+},
+"6191": {
+"kind": "boss",
+"level": 108,
+"maps": [
+352
+],
+"name": "Nemere"
+},
+"6192": {
+"kind": "boss",
+"level": 123,
+"maps": [
+353
+],
+"name": "Jotun Thrym"
+},
+"6193": {
+"kind": "boss",
+"level": 123,
+"maps": [
+356
+],
+"name": "Królowa Smoków Meley"
+},
+"6407": {
+"kind": "boss",
+"level": 112,
+"maps": [
+353
+],
+"name": "Władca En-Tai"
+},
+"6408": {
+"kind": "boss",
+"level": 120,
+"maps": [
+353
+],
+"name": "Bagjanamu"
+},
+"6691": {
+"kind": "boss",
+"level": 123,
+"maps": [
+374
+],
+"name": "Kao (mrok)"
+},
+"6692": {
+"kind": "boss",
+"level": 125,
+"maps": [
+374
+],
+"name": "Król Bao (misja)"
+},
+"6698": {
+"kind": "boss",
+"level": 123,
+"maps": [
+374
+],
+"name": "Kao (lód)"
+},
+"6699": {
+"kind": "boss",
+"level": 125,
+"maps": [
+374
+],
+"name": "Król Bao"
+},
+"6705": {
+"kind": "boss",
+"level": 123,
+"maps": [
+373,
+377
+],
+"name": "Natanan (mrok)"
+},
+"6706": {
+"kind": "boss",
+"level": 125,
+"maps": [
+373
+],
+"name": "Argos (mrok)"
+},
+"6716": {
+"kind": "boss",
+"level": 123,
+"maps": [
+373
+],
+"name": "Natanan (ogień)"
+},
+"6717": {
+"kind": "boss",
+"level": 125,
+"maps": [
+373
+],
+"name": "Argos (ogień)"
+},
+"6723": {
+"kind": "boss",
+"level": 123,
+"maps": [
+376
+],
+"name": "Myr Weteran (ziemia)"
+},
+"6724": {
+"kind": "boss",
+"level": 125,
+"maps": [
+376
+],
+"name": "Myr Prymus (ziemia)"
+},
+"6730": {
+"kind": "boss",
+"level": 123,
+"maps": [
+377
+],
+"name": "Myr Weteran (wiatr)"
+},
+"6731": {
+"kind": "boss",
+"level": 125,
+"maps": [
+377
+],
+"name": "Myr Prymus (wiatr)"
+},
+"6744": {
+"kind": "boss",
+"level": 124,
+"maps": [
+390
+],
+"name": "Kappa Żołnierz"
+},
+"6756": {
+"kind": "boss",
+"level": 129,
+"maps": [
+391
+],
+"name": "Królowa Węży Nethis"
+},
+"6763": {
+"kind": "boss",
+"level": 124,
+"maps": [
+385
+],
+"name": "Skażony Wódz"
+},
+"6764": {
+"kind": "boss",
+"level": 126,
+"maps": [
+385
+],
+"name": "Skażony Wódz Wojenny"
+},
+"6775": {
+"kind": "boss",
+"level": 125,
+"maps": [
+388
+],
+"name": "Zamarznięty Wódz"
+},
+"6776": {
+"kind": "boss",
+"level": 127,
+"maps": [
+388
+],
+"name": "Zamarznięty Wódz Wojenny"
+},
+"6782": {
+"kind": "boss",
+"level": 125,
+"maps": [
+389
+],
+"name": "Wielka Stopa"
+},
+"6783": {
+"kind": "boss",
+"level": 127,
+"maps": [
+389
+],
+"name": "Wódz Wojenny Płn. Wiatru"
+},
+"6789": {
+"kind": "boss",
+"level": 130,
+"maps": [
+393
+],
+"name": "Wódz Wojenny Schronienia"
+},
+"6790": {
+"kind": "boss",
+"level": 135,
+"maps": [
+395
+],
+"name": "Alastor"
+},
+"6791": {
+"kind": "boss",
+"level": 135,
+"maps": [
+395
+],
+"name": "Alastor"
+},
+"6797": {
+"kind": "boss",
+"level": 131,
+"maps": [
+394
+],
+"name": "Wódz Wojenny Schronienia"
+},
+"6804": {
+"kind": "boss",
+"level": 124,
+"maps": [
+382
+],
+"name": "Mistrz Gnolli"
+},
+"6805": {
+"kind": "boss",
+"level": 125,
+"maps": [
+382
+],
+"name": "Gnoll Kapitan"
+},
+"6814": {
+"kind": "boss",
+"level": 126,
+"maps": [
+383
+],
+"name": "Ahtrin Kapitan"
+},
+"6815": {
+"kind": "boss",
+"level": 127,
+"maps": [
+383
+],
+"name": "Ahtrin Kapitan"
+},
+"6819": {
+"kind": "boss",
+"level": 129,
+"maps": [
+384
+],
+"name": "Mistrz Ahtrin"
+},
+"6820": {
+"kind": "boss",
+"level": 130,
+"maps": [
+384
+],
+"name": "Ahtrin Wielki Mistrz"
+},
+"6870": {
+"kind": "boss",
+"level": 127,
+"maps": [
+396
+],
+"name": "Tajemniczy Mnich"
+},
+"6871": {
+"kind": "boss",
+"level": 127,
+"maps": [
+396
+],
+"name": "Tajemniczy Mnich"
+},
+"6880": {
+"kind": "boss",
+"level": 124,
+"maps": [
+385
+],
+"name": "Skażony Wódz"
+},
+"6881": {
+"kind": "boss",
+"level": 126,
+"maps": [
+385
+],
+"name": "Skażony Wódz Wojenny"
+},
+"6887": {
+"kind": "boss",
+"level": 125,
+"maps": [
+388
+],
+"name": "Zamarznięty Wódz"
+},
+"6888": {
+"kind": "boss",
+"level": 127,
+"maps": [
+388
+],
+"name": "Zamarznięty Wódz Wojenny"
+},
+"6894": {
+"kind": "boss",
+"level": 125,
+"maps": [
+389
+],
+"name": "Wielka Stopa"
+},
+"6895": {
+"kind": "boss",
+"level": 127,
+"maps": [
+389
+],
+"name": "Wódz Wojenny Płn. Wiatru"
+},
+"7555": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wóżbit Piekielnej Wieży"
+},
+"7556": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wielki Mistrz P. Wieży"
+},
+"7562": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wóżbit Piekielnej Wieży"
+},
+"7563": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wielki Mistrz P. Wieży"
+},
+"7569": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wóżbit Piekielnej Wieży"
+},
+"7570": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wielki Mistrz P. Wieży"
+},
+"7576": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wóżbit Piekielnej Wieży"
+},
+"7577": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wielki Mistrz P. Wieży"
+},
+"7583": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wóżbit Piekielnej Wieży"
+},
+"7584": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wielki Mistrz P. Wieży"
+},
+"7590": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wóżbit Piekielnej Wieży"
+},
+"7591": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Wielki Mistrz P. Wieży"
+},
+"7600": {
+"kind": "stone",
+"level": 120,
+"maps": [
+387
+],
+"name": "Kamień Duchowy P. Wieży"
+},
+"7609": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Czarnoksiężnik P. Wieży"
+},
+"7610": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Książę Piekielnej Wieży"
+},
+"7611": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Książę Piekielnej Wieży"
+},
+"7612": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Książę Śmierci P. Wieży"
+},
+"7613": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Książę Śmierci P. Wieży"
+},
+"7614": {
+"kind": "boss",
+"level": 135,
+"maps": [
+387
+],
+"name": "Czarnoksiężnik P. Wieży"
+},
+"7615": {
+"kind": "boss",
+"level": 121,
+"maps": [
+387
+],
+"name": "Wilk Piekielnej Wieży"
+},
+"7616": {
+"kind": "boss",
+"level": 120,
+"maps": [
+387
+],
+"name": "Zbir Piekielnej Wieży"
+},
+"7617": {
+"kind": "boss",
+"level": 130,
+"maps": [
+387
+],
+"name": "Rzeźnik Piekielnej Wieży"
+},
+"7618": {
+"kind": "boss",
+"level": 130,
+"maps": [
+387
+],
+"name": "Rzeźnik Piekielnej Wieży"
+},
+"7619": {
+"kind": "boss",
+"level": 121,
+"maps": [
+387
+],
+"name": "Berserk Piekielnej Wieży"
+},
+"7620": {
+"kind": "boss",
+"level": 125,
+"maps": [
+387
+],
+"name": "Wiedźmin Piek. Wieży"
+},
+"8057": {
+"kind": "stone",
+"level": 100,
+"maps": [
+351
+],
+"name": "Metin Czyśćca"
+},
+"8058": {
+"kind": "stone",
+"level": 100,
+"maps": [
+352
+],
+"name": "Metin Mrozu"
+},
+"8059": {
+"kind": "stone",
+"level": 100,
+"maps": [
+353
+],
+"name": "Metin Drzewnych Stworzeń"
+},
+"8061": {
+"kind": "stone",
+"level": 120,
+"maps": [
+353
+],
+"name": "Metin Lasu"
+},
+"8063": {
+"kind": "stone",
+"level": 120,
+"maps": [
+376,
+377
+],
+"name": "Metin Szacunku"
+},
+"8064": {
+"kind": "stone",
+"level": 120,
+"maps": [
+377,
+385
+],
+"name": "Metin Uważności"
+},
+"8065": {
+"kind": "stone",
+"level": 120,
+"maps": [
+377,
+385
+],
+"name": "Metin Jin"
+},
+"8066": {
+"kind": "stone",
+"level": 120,
+"maps": [
+385,
+388,
+389
+],
+"name": "Metin Shiho"
+},
+"8067": {
+"kind": "stone",
+"level": 120,
+"maps": [
+373,
+374,
+376,
+377
+],
+"name": "Metin Świadomość"
+},
+"8076": {
+"kind": "stone",
+"level": 120,
+"maps": [
+390
+],
+"name": "Metin Wężowy Przestrzeni"
+},
+"8077": {
+"kind": "stone",
+"level": 120,
+"maps": [
+388,
+389
+],
+"name": "Metin z Gumar"
+},
+"8120": {
+"kind": "stone",
+"level": 111,
+"maps": [
+405
+],
+"name": "SZC: Metin Góry"
+},
+"8121": {
+"kind": "stone",
+"level": 111,
+"maps": [
+405
+],
+"name": "SZC: Metin Zemsty"
+},
+"8122": {
+"kind": "stone",
+"level": 111,
+"maps": [
+405
+],
+"name": "SZC: Metin Samotności"
+},
+"8123": {
+"kind": "stone",
+"level": 111,
+"maps": [
+405
+],
+"name": "SZC: Metin Pychy"
+},
+"8124": {
+"kind": "stone",
+"level": 115,
+"maps": [
+406
+],
+"name": "SZC: Metin Purgatorium"
+},
+"8125": {
+"kind": "stone",
+"level": 115,
+"maps": [
+407
+],
+"name": "SZC: Metin Chłodu"
+},
+"8126": {
+"kind": "stone",
+"level": 120,
+"maps": [
+404
+],
+"name": "SZC: Metin Drz. Stworzeń"
+},
+"8127": {
+"kind": "stone",
+"level": 125,
+"maps": [
+404
+],
+"name": "SZC: Metin Lasu"
+},
+"8130": {
+"kind": "stone",
+"level": 111,
+"maps": [
+398
+],
+"name": "PB: Metin Góry"
+},
+"8131": {
+"kind": "stone",
+"level": 111,
+"maps": [
+398
+],
+"name": "PB: Metin Zemsty"
+},
+"8132": {
+"kind": "stone",
+"level": 111,
+"maps": [
+398
+],
+"name": "PB: Metin Samotności"
+},
+"8133": {
+"kind": "stone",
+"level": 111,
+"maps": [
+398
+],
+"name": "PB: Metin Pychy"
+},
+"8134": {
+"kind": "stone",
+"level": 115,
+"maps": [
+369
+],
+"name": "PB: Metin Purgatorium"
+},
+"8135": {
+"kind": "stone",
+"level": 115,
+"maps": [
+370
+],
+"name": "PB: Metin Chłodu"
+},
+"8136": {
+"kind": "stone",
+"level": 120,
+"maps": [
+371
+],
+"name": "PB: Metin Drz. Stworzeń"
+},
+"8137": {
+"kind": "stone",
+"level": 125,
+"maps": [
+371
+],
+"name": "PB: Metin Lasu"
+},
+"8625": {
+"kind": "stone",
+"level": 120,
+"maps": [
+373
+],
+"name": "Posterunek Trolli"
+},
+"8626": {
+"kind": "stone",
+"level": 120,
+"maps": [
+376
+],
+"name": "1. Posterunek Myr"
+},
+"8627": {
+"kind": "stone",
+"level": 120,
+"maps": [
+377
+],
+"name": "2. Posterunek Myr"
+},
+"8630": {
+"kind": "stone",
+"level": 120,
+"maps": [
+391
+],
+"name": "Metin Wężowy Ognia"
+},
+"8631": {
+"kind": "stone",
+"level": 120,
+"maps": [
+391
+],
+"name": "Metin Wężowy Lodu"
+},
+"8632": {
+"kind": "stone",
+"level": 120,
+"maps": [
+391
+],
+"name": "Metin Wężowy Wiatru"
+},
+"8633": {
+"kind": "stone",
+"level": 120,
+"maps": [
+391
+],
+"name": "Metin Wężowy Ziemi"
+},
+"8634": {
+"kind": "stone",
+"level": 120,
+"maps": [
+391
+],
+"name": "Metin Wężowy Czasu"
+},
+"8635": {
+"kind": "stone",
+"level": 120,
+"maps": [
+395
+],
+"name": "Białe Jajo Smoka (słaby)"
+},
+"8636": {
+"kind": "stone",
+"level": 120,
+"maps": [
+395
+],
+"name": "Białe Jajo Smoka (silny)"
+},
+"9710": {
+"kind": "stone",
+"level": 98,
+"maps": [
+366
+],
+"name": "Starożytny Kamień"
+},
+"9711": {
+"kind": "stone",
+"level": 100,
+"maps": [
+366
+],
+"name": "Pradawny Kamień"
+},
+"9712": {
+"kind": "boss",
+"level": 102,
+"maps": [
+366
+],
+"name": "Faethorn"
+},
+"9713": {
+"kind": "boss",
+"level": 104,
+"maps": [
+366
+],
+"name": "Królewska Sowa"
+},
+"9714": {
+"kind": "boss",
+"level": 106,
+"maps": [
+366
+],
+"name": "Królowa Dżungli"
+}
+},
+"chance": {
+"boss": {
+"count": 1,
+"rows": 35,
+"value": 15.0
+},
+"stone": {
+"count": 1,
+"rows": 35,
+"value": 10.0
+}
+},
+"out": []
+}
