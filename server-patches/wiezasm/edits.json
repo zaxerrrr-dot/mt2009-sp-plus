@@ -4,5 +4,11 @@
   "marker": "MT2009_PLUS_SMH_TOWER_V1 (skills)",
   "old": "\tif (IsPolymorphed())\n\t\treturn false;\n\n\t// MT2009_PLUS_DRAGON_ROAR_TARGET_V1",
   "new": "\tif (IsPolymorphed())\n\t\treturn false;\n\n\t// MT2009_PLUS_SMH_TOWER_V1 (skills): Wieza Sung Mahi's curse \"Umiejetnosci sa zablokowane\" (pl-wiki) - the\n\t// affect 1849 the quest wieza_sung_mahi lays on a room (d.affect_all) blocks every skill until the room ends.\n\tif (FindAffect(1849))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, \"Klatwa Sunga Mahi blokuje twoje umiejetnosci.\");\n\t\treturn false;\n\t}\n\n\t// MT2009_PLUS_DRAGON_ROAR_TARGET_V1"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SMH_TOWER_V1 (potions)",
+  "old": "\tsys_log(0, \"%s: USE_ITEM %s (inven %d, cell: %d)\", GetName(), item->GetName(), window_type, wCell);\n",
+  "new": "\tsys_log(0, \"%s: USE_ITEM %s (inven %d, cell: %d)\", GetName(), item->GetName(), window_type, wCell);\n\n\t// MT2009_PLUS_SMH_TOWER_V1 (potions): Handlarka's (9014) tower potions 70390-70395 - Czerwona/Niebieska Mikstura (W),\n\t// Wino Brzoskwini (W), Blogoslawienstwa Zycia/Magii/Smoka (W) - work only inside Wieza Sung Mahi (map 387 and its\n\t// instances 387xxxx), as officially (\"Mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi\").\n\tif (item->GetVnum() >= 70390 && item->GetVnum() <= 70395)\n\t{\n\t\tconst long lSmhMap = GetMapIndex() >= 10000 ? GetMapIndex() / 10000 : GetMapIndex();\n\t\tif (lSmhMap != 387)\n\t\t{\n\t\t\tChatPacket(CHAT_TYPE_INFO, \"Tego przedmiotu mozna uzyc tylko w Piekielnej Wiezy Sunga Mahi.\");\n\t\t\treturn false;\n\t\t}\n\t}\n"
  }
 ]

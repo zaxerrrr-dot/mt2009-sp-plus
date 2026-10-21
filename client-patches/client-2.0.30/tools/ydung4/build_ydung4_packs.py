@@ -10,7 +10,7 @@
 #   4) the existing packs "gamedata" and "dbdata" (patch_ydung4_client.py): gamedata/mob_proto - the 161 rows of
 #      yohara_dung4.sql with their elements; gamedata/atlasinfo.txt - the five maps' rows (the tower at our base
 #      998400 614400); gamedata/item_list.txt, gamedata/item_proto (dbdata) and locale/pl/itemdesc.txt (dbdata) - the
-#      10 items of yohara_items_d4.sql (tools/yohara_dung4/yohara_items_d4.json).
+#      16 items of yohara_items_d4.sql (tools/yohara_dung4/yohara_items_d4.json).
 # The maps' names on the minimap (localeinfo.py MINIMAP_ZONE_NAME_DICT) and the items' icons (root/icon/item) travel
 # in client-2.0.30/root like every root change.
 # BUILD ORDER - they share pack/Index, property, gamedata and dbdata: the build's own packs, then ../cape301,

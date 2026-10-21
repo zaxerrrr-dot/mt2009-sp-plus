@@ -9,6 +9,9 @@ Wiki („Wieża Sung Mahi”): na każdym etapie piętra gracz dostaje losowy bo
 
 - Silnik: `char_skill.cpp`, `CHARACTER::UseSkill` – z afektem 1849 każda umiejętność jest odrzucana z komunikatem
   „Klatwa Sunga Mahi blokuje twoje umiejetnosci.” (jedna zmiana, znacznik `MT2009_PLUS_SMH_TOWER_V1 (skills)`).
+- Mikstury wieży 70390–70395 (Handlarka 9014 w hali, `MT2009_PLUS_SMH_SHOP_V1`): `char_item.cpp`,
+  `CHARACTER::UseItem` – poza mapą 387 (i jej instancjami) odmowa z komunikatem „Tego przedmiotu mozna uzyc tylko w
+  Piekielnej Wiezy Sunga Mahi.” (znacznik `MT2009_PLUS_SMH_TOWER_V1 (potions)`), jak oficjalnie.
 - Pozostałe bonusy i klątwy (wartość ataku, obrona, PŻ, prędkości, regeneracja, odporności, Wola SungMa, precyzja)
   to zwykłe punkty – afekt 1847 questa, bez zmian w silniku.
 - Wymagania Woli SungMa pięter (co pięć pięter wyżej: 35/25/35/55 … 70/58/70/90) – `d.set_sungma(str, hp, move,
@@ -16,4 +19,4 @@ Wiki („Wieża Sung Mahi”): na każdym etapie piętra gracz dostaje losowy bo
   wymaganie instancji zamiast wiersza mapy w `sungma_table.txt`) – nie jest częścią tej łatki.
 
 Linux/VPS: `python3 apply_wiezasm.py <game/src>`; Windows: `Apply-WiezaSmPatch.ps1 -SourceDir <game/src>` (wołane przez
-`tools/port/Apply-MT2009PlusEngine.ps1`). Plik silnika: `char_skill.cpp` (lista `launcher/server-update-files.mod.txt`).
+`tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `char_skill.cpp`, `char_item.cpp` (lista `launcher/server-update-files.mod.txt`).
