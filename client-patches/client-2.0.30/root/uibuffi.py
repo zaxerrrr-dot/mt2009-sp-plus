@@ -52,6 +52,7 @@ import item
 import mouseModule
 import net
 import player
+import skill
 import ui
 import uiCommon
 import uiToolTip
@@ -89,6 +90,10 @@ TEXT_BOOK_TIP = "Do G1: Ksi\xeaga Umiej\xeatno\x9cci - %s (szaman)."
 TEXT_BOOK_TIP2 = "Przeci\xb9gnij j\xb9 tutaj (szansa, PD i odst\xeap jak zwykle)."
 TEXT_STONE_TIP = "Od G1 do P: Kamie\xf1 Duchowy Buffi (u\xbfyj go)."
 TEXT_NEEDS_NAME = "Wymaga imienia Buffi (Zw\xf3j Imienia Buffi)."
+TEXT_LEVEL_NOW = "Aktualny poziom: %s"
+TEXT_LEVEL_NEXT = "Nast\xeapny poziom: %s (maks. P)"
+TEXT_DURATION = "Czas trwania: 60 min (Buffi odnawia je sama)"
+TEXT_CASTING_TIME = "Czas \xb3adowania kr\xf3tszy przez %d s"
 TEXT_WRONG_BOOK = "[Buffi] T\xea umiej\xeatno\x9c\xe6 trenuje Ksi\xeaga Umiej\xeatno\x9cci: %s (szaman)."
 TEXT_NOT_BOOK = "[Buffi] Na umiej\xeatno\x9c\xe6 Buffi przeci\xb9gnij Ksi\xeag\xea Umiej\xeatno\x9cci szamana."
 SEALS = {61025: "Buffi (7 dni)", 61026: "Buffi"}
@@ -166,19 +171,37 @@ def GradeLevel(vnum):
 	"""MT2009_PLUS_BUFFI_V3: (grade, level within it, raw level 0-40) of a buffi skill - the client's own skill
 	data (player.GetSkillGrade / GetSkillLevel of its slot = its vnum, the level within the grade as the skill window
 	shows it), else the server's raw level of "BUFFI state"."""
+	raw = 0
 	try:
 		grade = player.GetSkillGrade(vnum)
 		level = player.GetSkillLevel(vnum)
 		if level > 0 and grade in GRADE_BASE:
-			return grade, level, min(40, level + GRADE_BASE[grade])
+			raw = min(40, level + GRADE_BASE[grade])
 	except Exception:
 		pass
-	data = _state['data']
-	raw = data['levels'].get(vnum, 0) if data else 0
+	if raw <= 0:
+		data = _state['data']
+		raw = min(40, data['levels'].get(vnum, 0)) if data else 0
 	if raw <= 0:
 		return 0, 0, 0
-	grade = Grade(raw)
+	grade = Grade(raw)		# from the raw level, whatever grade the packet said
 	return grade, raw - GRADE_BASE[grade], raw
+
+
+def GradeText(raw):
+	"""MT2009_PLUS_BUFFI_V3: a raw level as the skill window names it - M1-M10, G1-G10, P."""
+	if raw >= 40:
+		return "P"
+	if raw >= 30:
+		return "G%d" % (raw - 29)
+	if raw >= 20:
+		return "M%d" % (raw - 19)
+	return "%d" % raw
+
+
+# the client's skill power of a level (Locale.cpp INTERNATIONAL_SKILL_POWERS = the server's table): k = power / 100
+SKILL_POWER = (0, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 50, 52, 54, 56, 58, 60,
+	63, 66, 69, 72, 82, 85, 88, 91, 94, 98, 102, 106, 110, 115, 125)
 
 
 def Level(vnum):
@@ -347,11 +370,12 @@ class BuffiWindow(ui.ScriptWindow):
 		column = min(GRADE_COLUMNS - 1, slot // GRADE_STEP)
 		tip = self.skillToolTip
 		tip.ClearToolTip()
-		# MT2009_PLUS_BUFFI_V3: as the skill window's tooltip (uicharacter.py OverInItem) - the grade and the level
-		# within it on the column of its grade (P on the last), only the name on another column
+		# MT2009_PLUS_BUFFI_V3: as the skill window's tooltip (uicharacter.py OverInItem) on the column of its grade
+		# (P on the last) - the grade's name (Mistrz / Arcymistrz / Perfekcyjny Mistrz), the level as M1-M10 /
+		# G1-G10 / P now and next, the (weaker) values of both; only the name on another column
 		try:
 			if level > 0 and (column == grade or (grade == GRADE_COLUMNS and column == GRADE_COLUMNS - 1)):
-				tip.SetSkillNew(vnum, vnum, grade, inGrade)
+				self.__SkillToolTip(tip, vnum, grade, level)
 			else:
 				tip.SetSkillOnlyName(vnum, vnum, column)
 		except Exception:
@@ -366,6 +390,32 @@ class BuffiWindow(ui.ScriptWindow):
 		if level < 40:
 			tip.AppendTextLine(TEXT_STONE_TIP, COLOR_GOOD)
 		tip.ShowToolTip()
+
+	def __SkillToolTip(self, tip, vnum, grade, level):
+		"""MT2009_PLUS_BUFFI_V3: a buffi skill's tooltip - the values its owner gets from the buffi at this level and
+		the next (skilldesc's polys with the grade's cut, gen_buffi.py CLIENT_FACTOR; "sl" = the raw level)."""
+		tip.toolTipWidth = tip.SKILL_TOOL_TIP_WIDTH
+		tip.ResizeToolTip()
+		tip.ClearToolTip()
+		tip.SetTitle(skill.GetSkillName(vnum, grade))
+		gradeName = tip.SKILL_GRADE_NAME.get(grade)
+		if gradeName:
+			tip.AppendSpace(5)
+			tip.AppendTextLine(gradeName % skill.GetSkillName(vnum, 0), tip.CAN_LEVEL_UP_COLOR)
+		tip.AppendDescription(skill.GetSkillDescription(vnum), 25)
+		tip.AppendSkillConditionData(vnum)
+		steps = [(level, TEXT_LEVEL_NOW % GradeText(level), tip.NORMAL_COLOR, tip.ENABLE_COLOR)]
+		if level < 40:
+			steps.append((level + 1, TEXT_LEVEL_NEXT % GradeText(level + 1), tip.NEGATIVE_COLOR, tip.DISABLE_COLOR))
+		for raw, title, titleColor, color in steps:
+			k = SKILL_POWER[min(raw, len(SKILL_POWER) - 1)] / 100.0
+			tip.AppendSpace(5)
+			tip.AppendTextLine(title, titleColor)
+			for i in xrange(skill.GetSkillAffectDescriptionCount(vnum)):
+				tip.AppendTextLine(skill.GetSkillAffectDescription(vnum, i, raw, k), color)
+			tip.AppendTextLine(TEXT_DURATION, color)
+			if vnum == 166:		# Szybkosc's casting speed lasts 60 + 100 * k seconds (playerbot_buffi.cpp Cast)
+				tip.AppendTextLine(TEXT_CASTING_TIME % int(60 + 100 * k), color)
 
 	# ------------------------------------------------------------------ the state
 
