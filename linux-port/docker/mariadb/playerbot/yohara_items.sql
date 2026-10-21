@@ -18,23 +18,6 @@
 --   50661 Jadeit Slonca - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   50662 Jadeit Nocy - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
 --   50664 Jadeit Mgly - the jade jewellery of Yohara (Klipsy/Kolia/Obrecz Jadeitu ...) and its crafting - none here yet
---   50516 Riposta: Wir Miecza - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50517 Riposta: Zasadzka - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50518 Riposta: Uderz. Palcem - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50519 Riposta: Strzel. Smok - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50520 Riposta: Duchowe Uderz. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50521 Riposta: Ognista Strzala - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50522 Riposta: Mroczne Uderz. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50523 Riposta: Przyw. Blysk. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50560 Dopalacz: Wir Miecza - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50561 Dopalacz: Zasadzka - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50562 Dopalacz: Uderz. Palcem - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50563 Dopalacz: Strzel. Smok - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50564 Dopalacz: Duchowe Uderz. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50565 Dopalacz: Ogni. Strzala - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50566 Dopalacz: Mroczne Uderz. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50567 Dopalacz: Przyw. Blysk. - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet
---   50525 Kamien Duchowy+ - the boost / ward skills (Riposty i Dopalacze, skill_proto 221-244) - none here yet (their master levels)
 --   50338 Charyzma Nowicjusza - the leadership books Charyzma / Inspiracja - none here yet
 --   50339 Charyzma Adepta - the leadership books Charyzma / Inspiracja - none here yet
 --   50340 Charyzma Eksperta - the leadership books Charyzma / Inspiracja - none here yet
@@ -106,6 +89,9 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (50566,'Dopalacz: Mroczne Uderz.',_cp1250 X'446F70616C61637A3A204D726F637A6E6520556465727A2E',17,0,1,0,1,0,0,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,242,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (50567,'Dopalacz: Przyw. Blysk.',_cp1250 X'446F70616C61637A3A2050727A79772E2042B379736B2E',17,0,1,0,1,0,0,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,243,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (50525,'Kamien Duchowy+',_cp1250 X'4B616D6965F120447563686F77792B',18,0,200,0,1,0,4,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
+(50515,'Podrecznik: Riposta',_cp1250 X'506F6472EA637A6E696B3A205269706F737461',18,0,1,0,1,32768,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
+(50514,'Podrecznik: Dopalacz',_cp1250 X'506F6472EA637A6E696B3A20446F70616C61637A',18,0,1,0,1,32768,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
+(71000,'Zwoj Zmiany Treningu',_cp1250 X'5A77F36A205A6D69616E79205472656E696E6775',18,0,1,0,1,123008,8192,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (50325,'Ksiega Precyzji',_cp1250 X'4B7369EA67612050726563797A6A69',3,10,200,0,1,0,4,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,40,0,0,0,0,-1,-1,-1,-1,-1,-1),
 (50338,'Charyzma Nowicjusza',_cp1250 X'43686172797A6D61204E6F7769636A75737A61',3,10,1,0,1,0,0,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,20,20,50000,0,0,-1,-1,-1,-1,-1,-1),
 (50339,'Charyzma Adepta',_cp1250 X'43686172797A6D6120416465707461',3,10,1,0,1,0,0,0,'',1000,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,20,30,20,50000,0,0,-1,-1,-1,-1,-1,-1),

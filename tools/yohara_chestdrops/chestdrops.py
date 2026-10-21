@@ -81,8 +81,7 @@ SKIP = {
     31232: 'not in our world',
     39067: 'not in our world',
     72350: 'not in our world',
-    50514: 'not in our world',
-    50515: 'not in our world',
+    # 50514 / 50515 (Podreczniki: Dopalacz / Riposta) are ours since MT2009_PLUS_RIPOSTY_V1 (tools/yohara_items)
     30601: 'not in our world',
     30605: 'not in our world',
     30607: 'not in our world',

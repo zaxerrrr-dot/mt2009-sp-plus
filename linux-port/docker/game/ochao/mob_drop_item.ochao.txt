@@ -130,8 +130,8 @@ Group	OchaoMonster7BType1
 	21	30519	1	50.0
 	22	71094	1	50.0	-- Rada Pustelnika (za 50323)
 	23	25040	1	50.0	-- Zwoj Blogoslawienstwa (za 50324)
-	24	72723	1	50.0	-- Eliksir Slonca (M) (za 50514)
-	25	72724	1	50.0	-- Eliksir Slonca (S) (za 50515)
+	24	50514	1	50.0	-- Podrecznik: Dopalacz (MT2009_PLUS_RIPOSTY_V1; before: Eliksir Slonca (M) 72723)
+	25	50515	1	50.0	-- Podrecznik: Riposta (MT2009_PLUS_RIPOSTY_V1; before: Eliksir Slonca (S) 72724)
 	26	50254	1	50.0
 	27	70005	1	50.0
 	28	70043	1	50.0
