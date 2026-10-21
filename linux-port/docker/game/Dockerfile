@@ -371,7 +371,9 @@ RUN set -eux; \
     # Statua Przebudzenia, the plateau's statues and Handlarka Iluzji, Baek-Go's Lekarstwo Iluzji), razador_pb Twierdza
     # Czerwonego Smoka (PB), nemere_pb Straznica Nemere (PB) (MT2009_PLUS_YOHARA_PB_V1), beran_pb Grota Wygnancow 2 (PB),
     # jotun_pb Zaklety Las (PB) (MT2009_PLUS_YOHARA_ILUZJA_V1). szczelina_czasu is Statua Szczeliny Czasu on the plateau
-    # (the Time Rift dungeons' entrance, Zegarek Kieszonkowy), jotun_szc Zaklety Las (SZC) (MT2009_PLUS_YOHARA_CRACK_V1).
+    # (the Time Rift dungeons' entrance, Zegarek Kieszonkowy), jotun_szc Zaklety Las (SZC) (MT2009_PLUS_YOHARA_CRACK_V1);
+    # beran_szc Grota Wygnancow 2 (SZC), razador_szc Twierdza Czerwonego Smoka (SZC), nemere_szc Straznica Nemere (SZC)
+    # (MT2009_PLUS_YOHARA_CRACK2_V1).
     # zaklety_las is Zaklety Las's seven missions (Kamien Driad), erebu Erebu - Jotun Thrym's dungeon and the forest's
     # map rules (MT2009_PLUS_YOHARA_ZAKLETY_V1).
     # rekawice is Mistrz Chi's (20823, Dongan) "Rekawice SungMa": the four Sung Ma gloves +0 from runes, leather, patterns,
@@ -386,7 +388,7 @@ RUN set -eux; \
     # (MT2009_PLUS_YOHARA_MELEY_V1).
     # labirynth and black_steel_crafting are the package's, with Min-Sun (20402) on Pustynia Yongbi since Przelecz (69)
     # is gone (MT2009_PLUS_PASS69_OFF_V1) - their objects replace the stock ones.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco meley_dungeon labirynth black_steel_crafting; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc beran_szc razador_szc nemere_szc zaklety_las erebu rekawice helm100 szata_aury kawuco meley_dungeon labirynth black_steel_crafting; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -2052,6 +2054,72 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack-add \
     done \
  && rm -rf "$A" \
  && echo "share: Szczelina Czasu - Statua Szczeliny Czasu on Plaskowyz Iluzji, Zaklety Las (SZC) (404): map, rooms, groups, the dungeon panel"
+# MT2009_PLUS_YOHARA_CRACK2_V1 (share): the three other Time Rift dungeons (the owner, 21 October 2026: "Szczeliny Czasu
+# - 3 brakujace lochy"; pl-wiki "Statua Szczeliny Czasu", "Grota Wygnancow 2 (SZC)", "Twierdza Czerwonego Smoka (SZC)",
+# "Straznica Nemere (SZC)" and their bosses; Owsap v6.2.6 crack_*_dungeon for the spawns, the groups and the stages) -
+# Grota Wygnancow 2 (SZC) (405, metin2_map_boss_crack_skipia, base 0 1817600, quest beran_szc), Twierdza Czerwonego Smoka
+# (SZC) (406, metin2_map_boss_crack_flame, base 153600 1817600, razador_szc), Straznica Nemere (SZC) (407,
+# metin2_map_boss_crack_snow, base 230400 1817600, nemere_szc) - the official bases, no map of ours overlaps them; the
+# PB twins' terrain - on the Yohara core (bin/m2-render-config), entered from Statua Szczeliny Czasu (quest
+# szczelina_czasu). tools/yohara_crack2/gen_ycrack2.py made everything here: the folders, the rooms' spawn files
+# (data/dungeon/beran_szc, razador_szc, nemere_szc: Owsap's points), Owsap's groups 4201-4212 / 6021-6031 / 6071-6082 and
+# groups of groups 4201-4207 / 6021-6023 - none may exist before. No drop file and no chest: the monsters drop nothing
+# there (server-patches/szczelina, MT2009_PLUS_YOHARA_CRACK2_V1) but Beran-Setaou (SZC)'s yang. Monsters and NPCs:
+# yohara_crack2.sql; items: yohara_items_crack2.sql. The dungeon panel gets beran_szc / razador_szc / nemere_szc (the
+# ticket Zegarek Kieszonkowy, party 2-8, level 110, the entrance on the plateau beside the statue).
+COPY yohara_crack2/ /tmp/yohara-crack2-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-crack2-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for p in "405 metin2_map_boss_crack_skipia 1800000018000000 0 1817600" \
+             "406 metin2_map_boss_crack_flame 0c0000000c000000 153600 1817600" \
+             "407 metin2_map_boss_crack_snow 100000000c000000 230400 1817600"; do \
+      set -- $p; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: Szczelina Czasu map $1 $2"; exit 1; }; \
+    done \
+ && mkdir -p /opt/metin2/share/data/dungeon \
+ && for s in beran_szc:3 razador_szc:7 nemere_szc:10; do \
+      rm -rf "/opt/metin2/share/data/dungeon/${s%%:*}" \
+      && cp -a "$A/data/dungeon/${s%%:*}" /opt/metin2/share/data/dungeon/ \
+      && test "$(ls "/opt/metin2/share/data/dungeon/${s%%:*}" | wc -l)" = "${s##*:}" \
+      || { echo "FATAL: Szczelina Czasu rooms ${s%%:*}"; exit 1; }; \
+    done \
+ && GV='(420[1-9]|421[0-2]|602[1-9]|603[01]|607[1-9]|608[0-2])' \
+ && f="$L/group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group.yohara_crack2.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GV[[:space:]]*\$" "$f")" = 35 \
+ && GG='(420[1-7]|602[1-3])' \
+ && f="$L/group_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$GG[[:space:]]*\$" "$f" \
+ && { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; } \
+ && cat "$A/group_group.yohara_crack2.txt" >> "$f" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$GG[[:space:]]*\$" "$f")" = 10 \
+ && MV='(420[0-9]|4210|422[0-9]|424[0-9]|440[0-2]|812[0-5]|20518)' \
+ && ! grep -q -i -E "^[[:blank:]]*mob[[:blank:]]+$MV([^0-9]|\$)" "$L/mob_drop_item.txt" \
+ && I="$L/dungeon_info.txt" \
+ && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+beran_szc[[:blank:]]' "$I" \
+      || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
+           printf 'dungeon\tberan_szc\t405\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4400\t-\t0\t31147\t1\tGrota_Wygna\361c\363w_2_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; \
+           printf 'dungeon\trazador_szc\t406\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4401\t-\t0\t31147\t1\tTwierdza_Czerwonego_Smoka_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; \
+           printf 'dungeon\tnemere_szc\t407\t1\txy\t397\t3178\t18016\t110\t0\t2\t8\t4402\t-\t0\t31147\t1\tStra\277nica_Nemere_(SZC)\tP\263askowy\277_Iluzji\n' >> "$I"; }; } \
+ && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+(beran_szc|razador_szc|nemere_szc)[[:blank:]]' "$I")" = 3 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[405\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_YOHARA_CRACK2_V1\r\ntranslate.general.map_names[405] = "Grota Wygna\361c\363w 2 (SZC)"\r\ntranslate.general.map_names[406] = "Twierdza Czerwonego Smoka (SZC)"\r\ntranslate.general.map_names[407] = "Stra\277nica Nemere (SZC)"\r\n' >> "$f"; \
+    done \
+ && rm -rf "$A" \
+ && echo "share: Szczelina Czasu - Grota Wygnancow 2 (SZC) (405), Twierdza Czerwonego Smoka (SZC) (406), Straznica Nemere (SZC) (407): maps, rooms, groups, the dungeon panel"
 # MT2009_PLUS_YOHARA_ZAKLETY_V1 (share): Zaklety Las and Erebu - the official Enchanted Forest past the Temple of Ochao
 # (the owner, 14 October 2026: it replaces the Arezzo forest, natural_map 362, gone from the Arezzo step above; pl-wiki
 # "Zaklety Las", "Erebu", the seven missions; Owsap v6.2.6 metin2_map_dawnmist_dungeon_01 for the spawns) - Zaklety Las

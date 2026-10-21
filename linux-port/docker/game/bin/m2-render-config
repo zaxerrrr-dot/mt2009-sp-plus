@@ -234,7 +234,10 @@ MAPS_game1="$MAPS_game1 356"
 # MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaklety Las (353, 3x4 - the open Enchanted Forest past the Temple of Ochao, whose
 # portal on game1 warps there; Erebu's instances 3530000+) - 12 sectors more (the same terrain). Not a Yohara or Sung Ma
 # map, but here beside the PB / SZC forests: no bot goes there.
-MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387 369 370 397 398 371 404 353"
+# MT2009_PLUS_YOHARA_CRACK2_V1: the three other Time Rift dungeons - Grota Wygnancow 2 (SZC) (405, 6x6), Twierdza
+# Czerwonego Smoka (SZC) (406, 3x3), Straznica Nemere (SZC) (407, 4x3), the PB twins' terrain; their instances
+# 4050000+ / 4060000+ / 4070000+ - 57 sectors more. Entered from Statua Szczeliny Czasu, no bot goes there.
+MAPS_game3_all="367 368 373 374 376 377 385 388 393 378 379 380 381 390 391 394 395 396 389 382 383 384 386 387 369 370 397 398 371 404 353 405 406 407"
 yohara_maps_present() {
   local idx="$SHARE_DIR/locale/poland/map/index" m out=""
   for m in $MAPS_game3_all; do

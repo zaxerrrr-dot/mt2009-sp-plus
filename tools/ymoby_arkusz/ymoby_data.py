@@ -67,6 +67,8 @@ NO_DROP_MOBS = {
 # the Time Rift (SZC, map 404) drops nothing but Jotun Thrym's yang (pl-wiki, server-patches/szczelina): every
 # vnum of yohara_crack.sql
 NO_DROP_SQL = 'yohara_crack.sql'
+# MT2009_PLUS_YOHARA_CRACK2_V1: the three other Time Rift dungeons (maps 405-407) - the same rule
+NO_DROP_SQL_MORE = ['yohara_crack2.sql']
 
 # -- the chance of an added row (the file's value v; one kill draws v / 4 % before the level difference and the drop
 #    bonuses - as the other Yohara drop files). The same item on our Yohara monsters of the same kind (normal /

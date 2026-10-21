@@ -3870,6 +3870,20 @@ for ycr_sql in yohara_crack.sql yohara_items_crack.sql yohara_crack_zywioly.sql;
     fi
 done
 
+# MT2009_PLUS_YOHARA_CRACK2_V1: the three other Time Rift dungeons - Grota Wygnancow 2 (SZC), Twierdza Czerwonego Smoka
+# (SZC), Straznica Nemere (SZC) (the owner, 21 October 2026). After the first rift's files: yohara_crack2.sql
+# (tools/yohara_crack2/gen_ycrack2.py) - the SZC monsters, bosses, Metins and NPCs; yohara_items_crack2.sql - Krety
+# Klucz (SZC) and the quests' items; yohara_crack2_zywioly.sql - lightning / fire / ice. All idempotent (INSERT IGNORE /
+# UPDATE). The groups name these vnums: without them the cores stop.
+for ycr2_sql in yohara_crack2.sql yohara_items_crack2.sql yohara_crack2_zywioly.sql; do
+    [ -s "/opt/playerbot/$ycr2_sql" ] || continue
+    if db < "/opt/playerbot/$ycr2_sql"; then
+        echo "[playerbot-migrate] Szczelina Czasu: $ycr2_sql applied"
+    else
+        fail_step "Szczelina Czasu: $ycr2_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaklety Las (353) and Erebu - the official Enchanted Forest past the Temple of Ochao
 # (the owner, 14 October 2026; it replaces the Arezzo forest, Zaczarowany Las 362). yohara_zaklety.sql
 # (tools/yohara_zaklety/gen_yzaklety.py) - the forest's monsters, bosses, Metins and guards; yohara_items_zaklety.sql -
