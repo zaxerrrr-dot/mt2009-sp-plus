@@ -41,9 +41,6 @@ SUNGMA_STATS = (
 )
 TEXT_PAGE_BASE = "Statystyki postaci"
 TEXT_PAGE_SUNGMA = "Poziom Czempiona i Sung Ma"
-TEXT_BAR_SUNGMA = "Status Sung Ma"
-TEXT_SUNGMA_POINTS = "Punkty Sung Ma: %d"
-TEXT_CHAMPION_LEVEL = "Czempion %d"
 TEXT_NOT_CHAMPION_1 = "Nie jeste\x9c jeszcze Czempionem."
 TEXT_NOT_CHAMPION_2 = "Statua Wojownika w Porcie Nowego Kontynentu nada Ci ten poziom"
 TEXT_NOT_CHAMPION_3 = "(najwy\xbfszy poziom, Obrona Statku, pe\xb3na kula do\x9cwiadczenia)."
@@ -54,6 +51,46 @@ TEXT_SUNGMA_PER = "%d i premia z przedmiot\xf3w %d procent: razem %d"
 COLOR_SUNGMA_SHORT = 0xffff6a5a
 COLOR_SUNGMA_OK = 0xffffffff
 COLOR_CHAMPION_LEVEL = 0xff55b9ff
+# MT2009_PLUS_CHAMPION_WINDOW_V1: the window in the 3.0 layout of the global client (uiscript/characterwindow.py):
+# a Champion's level (blue) and experience stand in the Lv / EXP box on both pages, the experience as "now / needed";
+# the free points ("+" and the number) on the bar under the page buttons, the Sung Ma ones on the champion page;
+# "Bonusy" is the third button of the row; tooltips on the icons; Precyzja in the lower block's last box (GF's
+# char_info_hitpct icon), red under the map's requirement.
+CHAMPION_MAX_LEVEL = 30
+TEXT_LEVEL = "Poziom postaci: %d"
+TEXT_CHAMPION_LEVEL_TIP = "Poziom Czempiona: %d / %d"
+TEXT_EXP = "Do\x9cwiadczenie: %s / %s"
+TEXT_CHAMPION_EXP = "Do\x9cwiadczenie Czempiona: %s / %s"
+TEXT_EXP_REST = "Do nast\xeapnego poziomu: %s (%.2f%%)"
+TEXT_EXP_MAX = "Najwy\xbfszy poziom"
+TEXT_CHAMPION_EXP_SOURCE = "Zdobywasz je za potwory i zadania Nowego Kontynentu."
+TEXT_FREE_POINTS = "Wolne punkty statusu: %d"
+TEXT_FREE_SUNGMA_POINTS = "Wolne punkty Sung Ma: %d"
+TEXT_ATTRIBUTE_LIST = "Bonusy postaci"
+TEXT_PRECISION = "Precyzja: %d"
+TEXT_PRECISION_HINT = "Na mapach Sung Ma za ma\xb3a Precyzja oznacza chybione ciosy."
+TEXT_EVADE = "Unik: %d%%"
+ICON_TOOLTIPS = (
+	("HEL_IMG", "Punkty \xafycia (P\xaf)"),
+	("SP_IMG", "Punkty Energii (PE)"),
+	("ATT_IMG", "Atak"),
+	("DEF_IMG", "Obrona"),
+	("MSPD_IMG", "Pr\xeadko\x9c\xe6 ruchu"),
+	("ASPD_IMG", "Pr\xeadko\x9c\xe6 ataku"),
+	("CSPD_IMG", "Pr\xeadko\x9c\xe6 czarowania"),
+	("MATT_IMG", "Atak magiczny"),
+	("MDEF_IMG", "Obrona magiczna"),
+)
+STAT_ICONS = (("HTH_IMG", "HTH"), ("INT_IMG", "INT"), ("STR_IMG", "STR"), ("DEX_IMG", "DEX"))
+
+def _Number(n):
+	"""1234567 -> 1.234.567"""
+	s = str(n)
+	out = ""
+	while len(s) > 3:
+		out = "." + s[-3:] + out
+		s = s[:-3]
+	return s + out
 _SUNGMA_MAP = [0, 0, 0, 0]
 
 def SetSungmaMap(*args):
@@ -153,6 +190,7 @@ class CharacterWindow(ui.ScriptWindow):
 
 		self.faceImage = None
 		self.statusPlusLabel = None
+		self.statusPlusValue = None
 		self.activeSlot = None
 		self.tabDict = None
 		self.tabButtonDict = None
@@ -198,8 +236,6 @@ class CharacterWindow(ui.ScriptWindow):
 		self.sungmaImageDict = None
 		self.baseStatWindowList = None
 		self.sungmaInfo = None
-		self.conquerorLevelText = None
-		self.standardBarText = None
 
 	def Show(self):
 		self.__LoadWindow()
@@ -223,9 +259,11 @@ class CharacterWindow(ui.ScriptWindow):
 			faceSlot.SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideJobToolTip)
 
 		self.statusPlusLabel = self.GetChild("Status_Plus_Label")
+		self.statusPlusValue = self.GetChild("Status_Plus_Value")	# MT2009_PLUS_CHAMPION_WINDOW_V1
 
 		self.attributeListButton = self.GetChild("AttributeListButton")
 		self.attributeListButton.SAFE_SetEvent(self.__OnAttributeListButtonClick)
+		self.__BindWindowToolTips()	# MT2009_PLUS_CHAMPION_WINDOW_V1
 
 		self.characterNameSlot = self.GetChild("Character_Name_Slot")
 		self.characterNameValue = self.GetChild("Character_Name")
@@ -376,8 +414,6 @@ class CharacterWindow(ui.ScriptWindow):
 				"SUNGMA"	: self.GetChild("change_conqueror_button"),
 			}
 			self.sungmaInfo = self.GetChild("sungma_info")
-			self.conquerorLevelText = self.GetChild("Conqueror_Level_Text")
-			self.standardBarText = self.GetChild("Character_Bar_01_Text")
 			self.sungmaValueDict = {}
 			self.sungmaPlusButtonDict = {}
 			self.sungmaImageDict = {}
@@ -385,7 +421,7 @@ class CharacterWindow(ui.ScriptWindow):
 				self.sungmaValueDict[key] = self.GetChild("sungma_%s_value" % part)
 				self.sungmaPlusButtonDict[key] = self.GetChild("sungma_%s_plus" % part)
 				self.sungmaImageDict[key] = self.GetChild("SUNGMA_%s_IMG" % part.upper())
-			self.baseStatWindowList = [self.GetChild(name) for name in ("HTH_Label", "INT_Label", "STR_Label", "DEX_Label", "Status_Standard_ItemList1")]
+			self.baseStatWindowList = [self.GetChild("base_info")]	# MT2009_PLUS_CHAMPION_WINDOW_V1
 		except KeyError:
 			self.championButtonDict = None
 
@@ -396,7 +432,6 @@ class CharacterWindow(ui.ScriptWindow):
 			for button in self.championButtonDict.itervalues():
 				button.Hide()
 			self.sungmaInfo.Hide()
-			self.conquerorLevelText.Hide()
 			self.championButtonDict = None
 			return
 
@@ -675,10 +710,8 @@ class CharacterWindow(ui.ScriptWindow):
 					window.Show()
 			if isSungma:
 				self.sungmaInfo.Show()
-				self.standardBarText.SetText(TEXT_BAR_SUNGMA)
 			else:
 				self.sungmaInfo.Hide()
-				self.standardBarText.SetText("Status postaci")
 
 		self.RefreshStatus()
 
@@ -740,12 +773,6 @@ class CharacterWindow(ui.ScriptWindow):
 		if not self.championButtonDict:
 			return
 
-		conquerorLevel = player.GetStatus(player.CONQUEROR_LEVEL)
-		if conquerorLevel >= 1:
-			self.conquerorLevelText.SetText(TEXT_CHAMPION_LEVEL % conquerorLevel)
-		else:
-			self.conquerorLevelText.SetText("")
-
 		for i in xrange(len(SUNGMA_STATS)):
 			(key, part, pointName, command, name, shortage) = SUNGMA_STATS[i]
 			value = sungmastate.Effective(i) # MT2009_PLUS_YOHARA_EXE2_V1: with the per cent bonus (= the server's check)
@@ -756,20 +783,94 @@ class CharacterWindow(ui.ScriptWindow):
 			else:
 				valueText.SetPackedFontColor(COLOR_SUNGMA_OK)
 
-		if "SUNGMA" != self.substate:
-			return
+	# MT2009_PLUS_CHAMPION_WINDOW_V1: the experience of the Lv / EXP box - a Champion's or the ordinary one
+	def __GetExpPair(self):
+		if self.__IsChampion():
+			return (unsigned32(player.GetConquerorEXP()), unsigned32(player.GetStatus(player.CONQUEROR_NEXT_EXP)))
+		return (unsigned32(player.GetEXP()), unsigned32(player.GetStatus(player.NEXT_EXP)))
 
-		levelText = self.GetChild("Level_Value")
-		levelText.SetText(str(conquerorLevel))
-		levelText.SetPackedFontColor(COLOR_CHAMPION_LEVEL)
-		if conquerorLevel >= 1:
-			curExp = unsigned32(player.GetConquerorEXP())
-			nextExp = unsigned32(player.GetStatus(player.CONQUEROR_NEXT_EXP))
-			self.GetChild("Exp_Value").SetText(str(curExp))
-			self.GetChild("RestExp_Value").SetText(str(max(0, nextExp - curExp)))
+	def __RefreshPrecision(self):
+		valueText = self.GetChild("ER_Value")
+		if not hasattr(player, "HIT_PCT"):
+			valueText.SetText(str(player.GetStatus(player.EVADE_RATE)))
+			return
+		value = sungmastate.Precision()
+		valueText.SetText(str(value))
+		if sungmastate.MAP[4] > 0 and value < sungmastate.MAP[4]:
+			valueText.SetPackedFontColor(COLOR_SUNGMA_SHORT)
 		else:
-			self.GetChild("Exp_Value").SetText("0")
-			self.GetChild("RestExp_Value").SetText("0")
+			valueText.SetPackedFontColor(COLOR_SUNGMA_OK)
+
+	def __BindWindowToolTips(self):
+		try:
+			for (name, text) in ICON_TOOLTIPS:
+				self.GetChild(name).SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowTextToolTip, text)
+				self.GetChild(name).SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideStatToolTip)
+			for (name, key) in STAT_ICONS:
+				self.GetChild(name).SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowTextToolTip, self.STAT_DESCRIPTION[key])
+				self.GetChild(name).SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideStatToolTip)
+			self.GetChild("ER_IMG").SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowPrecisionToolTip)
+			self.GetChild("ER_IMG").SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideStatToolTip)
+			self.GetChild("ER_Slot").SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowPrecisionToolTip)
+			self.GetChild("ER_Slot").SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideStatToolTip)
+			self.statusPlusLabel.SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowFreePointsToolTip)
+			self.statusPlusLabel.SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideStatToolTip)
+			self.GetChild("Status_Plus_Btn_Img").SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowFreePointsToolTip)
+			self.GetChild("Status_Plus_Btn_Img").SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideStatToolTip)
+			for (name, func) in (("Lv_ToolTip", self.__ShowLevelToolTip), ("Exp_ToolTip", self.__ShowExpToolTip)):
+				button = self.GetChild(name)
+				button.ShowToolTip = func
+				button.HideToolTip = self.__HideStatToolTip
+			self.attributeListButton.ShowToolTip = lambda: self.__ShowTextToolTip(TEXT_ATTRIBUTE_LIST)
+			self.attributeListButton.HideToolTip = self.__HideStatToolTip
+		except KeyError:
+			pass
+
+	def __ShowTextToolTip(self, text):
+		self.toolTip.ClearToolTip()
+		self.toolTip.AppendTextLine(text)
+		self.toolTip.Show()
+
+	def __ShowLevelToolTip(self):
+		self.toolTip.ClearToolTip()
+		self.toolTip.AppendTextLine(TEXT_LEVEL % player.GetStatus(player.LEVEL))
+		if self.__IsChampion():
+			self.toolTip.AppendTextLine(TEXT_CHAMPION_LEVEL_TIP % (player.GetStatus(player.CONQUEROR_LEVEL), CHAMPION_MAX_LEVEL), COLOR_CHAMPION_LEVEL)
+		self.toolTip.Show()
+
+	def __ShowExpToolTip(self):
+		self.toolTip.ClearToolTip()
+		(curExp, nextExp) = self.__GetExpPair()
+		if self.__IsChampion():
+			self.toolTip.AppendTextLine(TEXT_CHAMPION_EXP % (_Number(curExp), _Number(nextExp)), COLOR_CHAMPION_LEVEL)
+		else:
+			self.toolTip.AppendTextLine(TEXT_EXP % (_Number(curExp), _Number(nextExp)))
+		if nextExp > 0:
+			self.toolTip.AppendTextLine(TEXT_EXP_REST % (_Number(max(0, nextExp - curExp)), min(100.0, curExp * 100.0 / nextExp)))
+		else:
+			self.toolTip.AppendTextLine(TEXT_EXP_MAX)
+		if self.__IsChampion():
+			self.toolTip.AppendTextLine(TEXT_CHAMPION_EXP_SOURCE)
+		self.toolTip.Show()
+
+	def __ShowFreePointsToolTip(self):
+		self.toolTip.ClearToolTip()
+		if self.championButtonDict and "SUNGMA" == self.substate:
+			self.toolTip.AppendTextLine(TEXT_FREE_SUNGMA_POINTS % (player.GetStatus(player.CONQUEROR_POINT) if self.__IsChampion() else 0))
+		else:
+			self.toolTip.AppendTextLine(TEXT_FREE_POINTS % player.GetStatus(player.STAT))
+		self.toolTip.Show()
+
+	def __ShowPrecisionToolTip(self):
+		self.toolTip.ClearToolTip()
+		if hasattr(player, "HIT_PCT"):
+			value = sungmastate.Precision()
+			self.toolTip.AppendTextLine(TEXT_PRECISION % value)
+			if sungmastate.MAP[4] > 0:
+				self.toolTip.AppendTextLine(TEXT_MAP_REQUIRED % sungmastate.MAP[4], COLOR_SUNGMA_SHORT if value < sungmastate.MAP[4] else COLOR_SUNGMA_OK)
+			self.toolTip.AppendTextLine(TEXT_PRECISION_HINT)
+		self.toolTip.AppendTextLine(TEXT_EVADE % player.GetStatus(player.EVADE_RATE))
+		self.toolTip.Show()
 
 	def __GetTotalAtkText(self):
 		minAtk=player.GetStatus(player.ATT_MIN)
@@ -828,10 +929,17 @@ class CharacterWindow(ui.ScriptWindow):
 			return
 
 		try:
-			self.GetChild("Level_Value").SetText(str(player.GetStatus(player.LEVEL)))
-			self.GetChild("Level_Value").SetPackedFontColor(0xffffffff)	# MT2009_PLUS_CHAMPION_V2: blue on the Sung Ma page
-			self.GetChild("Exp_Value").SetText(str(unsigned32(player.GetEXP())))
-			self.GetChild("RestExp_Value").SetText(str(unsigned32(player.GetStatus(player.NEXT_EXP)) - unsigned32(player.GetStatus(player.EXP))))
+			# MT2009_PLUS_CHAMPION_WINDOW_V1: a Champion's level (blue) and experience "now / needed" in the Lv / EXP box
+			levelText = self.GetChild("Level_Value")
+			if self.__IsChampion():
+				levelText.SetText(str(player.GetStatus(player.CONQUEROR_LEVEL)))
+				levelText.SetPackedFontColor(COLOR_CHAMPION_LEVEL)
+			else:
+				levelText.SetText(str(player.GetStatus(player.LEVEL)))
+				levelText.SetPackedFontColor(0xffffffff)
+			(curExp, nextExp) = self.__GetExpPair()
+			self.GetChild("Exp_Value").SetText(str(curExp))
+			self.GetChild("RestExp_Value").SetText(str(nextExp) if nextExp > 0 else "-")
 			self.GetChild("HP_Value").SetText(str(player.GetStatus(player.HP)) + '/' + str(player.GetStatus(player.MAX_HP)))
 			self.GetChild("SP_Value").SetText(str(player.GetStatus(player.SP)) + '/' + str(player.GetStatus(player.MAX_SP)))
 
@@ -850,7 +958,7 @@ class CharacterWindow(ui.ScriptWindow):
 			self.GetChild("ASPD_Value").SetText(str(player.GetStatus(player.ATT_SPEED)))
 			self.GetChild("MSPD_Value").SetText(str(player.GetStatus(player.MOVING_SPEED)))
 			self.GetChild("CSPD_Value").SetText(str(player.GetStatus(player.CASTING_SPEED)))
-			self.GetChild("ER_Value").SetText(str(player.GetStatus(player.EVADE_RATE)))
+			self.__RefreshPrecision()	# MT2009_PLUS_CHAMPION_WINDOW_V1 (was the evade rate)
 
 			self.__RefreshChampionPage()	# MT2009_PLUS_CHAMPION_V2
 
@@ -881,7 +989,7 @@ class CharacterWindow(ui.ScriptWindow):
 					else:
 						button.Hide()
 				if sungmaPoint > 0:
-					self.statusPlusLabel.SetText(TEXT_SUNGMA_POINTS % sungmaPoint)
+					self.statusPlusValue.SetText(str(sungmaPoint))	# MT2009_PLUS_CHAMPION_WINDOW_V1
 					self.statusPlusLabel.Show()
 				else:
 					self.statusPlusLabel.Hide()
@@ -892,7 +1000,7 @@ class CharacterWindow(ui.ScriptWindow):
 		statusPlusPoint=player.GetStatus(player.STAT)
 
 		if statusPlusPoint>0:
-			self.statusPlusLabel.SetText(localeInfo.STATUS_PLUS_LABEL % statusPlusPoint)
+			self.statusPlusValue.SetText(str(statusPlusPoint))	# MT2009_PLUS_CHAMPION_WINDOW_V1
 			self.statusPlusLabel.Show()
 			self.ShowStatusPlusButtonList()
 		else:

@@ -12,21 +12,59 @@ ROOT_PATH = "d:/ymir work/ui/game/windows/"
 
 LOCALE_PATH = uiScriptLocale.WINDOWS_PATH
 
-# MT2009_PLUS_CHAMPION_V2: the Sung Ma page of the status tab (GF's layout of uicharacternew/characterwindow, fitted to
-# this window): two page buttons under the level row (GF's old_level_btn / new_level_btn; 03, the bright one, = the open page), the window 24 px taller,
-# the Sung Ma rows (GF's char_info_sungma_* icons) where the four stats stand. uicharacter.py switches the pages.
-CHAMPION_DY = 24
-SUNGMA_ROW_Y = 32
+# MT2009_PLUS_CHAMPION_WINDOW_V1: the status tab in the layout of the 3.0 character window of the global client
+# (GF 26.1.11 uiscript/characterwindow.py): the Lv / EXP box (a Champion's level and experience in it), the page
+# buttons ordinary stats / Poziom Czempiona with "Bonusy" beside them, the bar with the free points ("+" and the
+# number), the stat rows with their icons (the Sung Ma rows in their place on the champion page), HP / PE / atak /
+# obrona on the right, the lower block with icons and the tab strip with icons. The pictures are GF's, on
+# windows_yohara.dds / tabchar_yohara.tga under our own names (client-2.0.30/atlas/d_: mt2009_*.sub). The window is
+# GF's size, 253 x 405. The companion's window keeps the old layout (uiscript/sidekickwindow.py).
+WINDOW_HEIGHT = 405
+TAB_Y = 368		# GF 371; the strip's picture (37, its last rows its shadow) ends 2 px above the window's bottom, as before
+PAGE_HEIGHT = 371
+STAT_ROW_Y = 26		# base_info / sungma_info in Status_Standard
+STAT_ROW_STEP = 31
+PLUS_IMAGES = { "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", }
+MINUS_IMAGES = { "default_image" : ROOT_PATH+"btn_minus_up.sub", "over_image" : ROOT_PATH+"btn_minus_over.sub", "down_image" : ROOT_PATH+"btn_minus_down.sub", }
+
+def _Plus(name, x, y):
+	element = { "name" : name, "type" : "button", "x" : x, "y" : y, }
+	element.update(PLUS_IMAGES)
+	return element
+
+def _Minus(name, x, y):
+	element = { "name" : name, "type" : "button", "x" : x, "y" : y, }
+	element.update(MINUS_IMAGES)
+	return element
+
+def _StatRow(slotName, valueName, plusName, imageName, image, row):
+	y = row * STAT_ROW_STEP
+	return (
+		{ "name" : imageName, "type" : "image", "x" : 20, "y" : y - 2, "image" : ROOT_PATH + image },
+		{ "name" : slotName, "type" : "image", "x" : 50, "y" : y, "image" : SMALL_VALUE_FILE },
+		{ "name" : valueName, "type" : "text", "x" : 70, "y" : y + 3, "text" : "0", "r" : 1.0, "g" : 1.0, "b" : 1.0, "a" : 1.0, "text_horizontal_align" : "center" },
+		_Plus(plusName, 91, y + 3),
+	)
+
+def _ValueBox(labelName, slotName, valueName, x, y, slotFile, textX):
+	return {
+		"name" : labelName, "type" : "window", "x" : x, "y" : y, "width" : textX * 2, "height" : 20,
+		"children" :
+		(
+			{ "name" : slotName, "type" : "image", "x" : 0, "y" : 0, "image" : slotFile },
+			{ "name" : valueName, "type" : "text", "x" : textX, "y" : 3, "text" : "0", "r" : 1.0, "g" : 1.0, "b" : 1.0, "a" : 1.0, "text_horizontal_align" : "center" },
+		),
+	}
 
 window = {
 	"name" : "CharacterWindow",
 	"style" : ("movable", "float",),
 
 	"x" : 24,
-	"y" : (SCREEN_HEIGHT - 37 - 361) / 2,
+	"y" : (SCREEN_HEIGHT - 37 - WINDOW_HEIGHT) / 2,
 
 	"width" : 253,
-	"height" : 361 + CHAMPION_DY,
+	"height" : WINDOW_HEIGHT,
 
 	"children" :
 	(
@@ -39,7 +77,7 @@ window = {
 			"y" : 0,
 
 			"width" : 253,
-			"height" : 361 + CHAMPION_DY,
+			"height" : WINDOW_HEIGHT,
 
 			"children" :
 			(
@@ -57,7 +95,6 @@ window = {
 					"children" :
 					(
 						{ "name":"TitleName", "type":"text", "x":0, "y":-1, "text":uiScriptLocale.CHARACTER_SKILL, "all_align":"center" },
-						#{ "name":"TitleName", "type":"image", "style" : ("attach",), "x":101, "y" : 1, "image" : LOCALE_PATH+"title_skill.sub", },
 					),
 				},
 				{
@@ -93,109 +130,29 @@ window = {
 					),
 				},
 
-				## Tab Area
+				## Tab Area - MT2009_PLUS_CHAMPION_WINDOW_V1: GF's tab strip with icons (karta postaci, miecz, popiersie, zwoj)
 				{
 					"name" : "TabControl",
 					"type" : "window",
 
 					"x" : 0,
-					"y" : 328 + CHAMPION_DY,
+					"y" : TAB_Y,
 
-					"width" : 250,
+					"width" : 253,
 					"height" : 31,
 
 					"children" :
 					(
 						## Tab
-						{
-							"name" : "Tab_01",
-							"type" : "image",
-
-							"x" : 0,
-							"y" : 0,
-
-							"width" : 250,
-							"height" : 31,
-
-							"image" : LOCALE_PATH+"tab_1.sub",
-						},
-						{
-							"name" : "Tab_02",
-							"type" : "image",
-
-							"x" : 0,
-							"y" : 0,
-
-							"width" : 250,
-							"height" : 31,
-
-							"image" : LOCALE_PATH+"tab_2.sub",
-						},
-						{
-							"name" : "Tab_03",
-							"type" : "image",
-
-							"x" : 0,
-							"y" : 0,
-
-							"width" : 250,
-							"height" : 31,
-
-							"image" : LOCALE_PATH+"tab_3.sub",
-						},
-						{
-							"name" : "Tab_04",
-							"type" : "image",
-
-							"x" : 0,
-							"y" : 0,
-
-							"width" : 250,
-							"height" : 31,
-
-							"image" : LOCALE_PATH+"tab_4.sub",
-						},
+						{ "name" : "Tab_01", "type" : "image", "x" : 0, "y" : 0, "width" : 253, "height" : 31, "image" : ROOT_PATH+"mt2009_char_tab_01.sub", },
+						{ "name" : "Tab_02", "type" : "image", "x" : 0, "y" : 0, "width" : 253, "height" : 31, "image" : ROOT_PATH+"mt2009_char_tab_02.sub", },
+						{ "name" : "Tab_03", "type" : "image", "x" : 0, "y" : 0, "width" : 253, "height" : 31, "image" : ROOT_PATH+"mt2009_char_tab_03.sub", },
+						{ "name" : "Tab_04", "type" : "image", "x" : 0, "y" : 0, "width" : 253, "height" : 31, "image" : ROOT_PATH+"mt2009_char_tab_04.sub", },
 						## RadioButton
-						{
-							"name" : "Tab_Button_01",
-							"type" : "radio_button",
-
-							"x" : 6,
-							"y" : 5,
-
-							"width" : 53,
-							"height" : 27,
-						},
-						{
-							"name" : "Tab_Button_02",
-							"type" : "radio_button",
-
-							"x" : 61,
-							"y" : 5,
-
-							"width" : 67,
-							"height" : 27,
-						},
-						{
-							"name" : "Tab_Button_03",
-							"type" : "radio_button",
-
-							"x" : 130,
-							"y" : 5,
-
-							"width" : 61,
-							"height" : 27,
-						},
-						{
-							"name" : "Tab_Button_04",
-							"type" : "radio_button",
-
-							"x" : 192,
-							"y" : 5,
-
-							"width" : 55,
-							"height" : 27,
-						},
+						{ "name" : "Tab_Button_01", "type" : "radio_button", "x" : 6, "y" : 5, "width" : 53, "height" : 27, },
+						{ "name" : "Tab_Button_02", "type" : "radio_button", "x" : 61, "y" : 5, "width" : 67, "height" : 27, },
+						{ "name" : "Tab_Button_03", "type" : "radio_button", "x" : 130, "y" : 5, "width" : 61, "height" : 27, },
+						{ "name" : "Tab_Button_04", "type" : "radio_button", "x" : 192, "y" : 5, "width" : 55, "height" : 27, },
 					),
 				},
 
@@ -208,8 +165,8 @@ window = {
 					"x" : 0,
 					"y" : 0,
 
-					"width" : 250,
-					"height" : 324 + CHAMPION_DY,
+					"width" : 253,
+					"height" : PAGE_HEIGHT,
 
 					"children" :
 					(
@@ -219,7 +176,6 @@ window = {
 							"name" : "Character_TitleBar", "type" : "titlebar", "style" : ("attach",), "x" : 61, "y" : 7, "width" : 185, "color" : "red",
 							"children" :
 							(
-								#{ "name" : "TitleName", "type" : "image", "style" : ("attach",), "x" : 70, "y" : 1, "image" : LOCALE_PATH+"title_status.sub", },
 								{ "name" : "TitleName", "type":"text", "x":0, "y":-1, "text":uiScriptLocale.CHARACTER_MAIN, "all_align":"center" },
 							),
 						},
@@ -228,24 +184,13 @@ window = {
 						{
 							"name" : "Guild_Name_Slot",
 							"type" : "image",
-							"x" : 60,
+							"x" : 63,
 							"y" :27+7,
 							"image" : LARGE_VALUE_FILE,
 
 							"children" :
 							(
-								{
-									"name" : "Guild_Name",
-									"type":"text",
-									"text":"",
-									"x":0,
-									"y":0,
-									"r":1.0,
-									"g":1.0,
-									"b":1.0,
-									"a":1.0,
-									"all_align" : "center",
-								},
+								{ "name" : "Guild_Name", "type":"text", "text":"", "x":0, "y":0, "r":1.0, "g":1.0, "b":1.0, "a":1.0, "all_align" : "center", },
 							),
 						},
 
@@ -259,54 +204,29 @@ window = {
 
 							"children" :
 							(
-								{
-									"name" : "Character_Name",
-									"type":"text",
-									"text":"",
-									"x":0,
-									"y":0,
-									"r":1.0,
-									"g":1.0,
-									"b":1.0,
-									"a":1.0,
-									"all_align" : "center",
-								},
+								{ "name" : "Character_Name", "type":"text", "text":"", "x":0, "y":0, "r":1.0, "g":1.0, "b":1.0, "a":1.0, "all_align" : "center", },
 							),
 						},
 
-						## Header
+						## Lv / EXP (GF level_exp_info: the "Lv" and "EXP" coins over the values)
+						{ "name":"Lv_Exp_BackImg", "type":"image", "x":9, "y":60, "image":ROOT_PATH+"mt2009_level_exp_info.sub" },
+						{ "name":"Lv_ToolTip", "type":"button", "x":9, "y":60, "width":52, "height":44, },
+						{ "name":"Exp_ToolTip", "type":"button", "x":61, "y":60, "width":182, "height":44, },
+
+						{ "name":"Level_Value", "type":"text", "x":35, "y":84, "fontsize":"LARGE", "text":"1", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
 						{
-							"name":"Status_Header", "type":"window", "x":3, "y":31, "width":0, "height":0,
+							"name":"Status_CurExp", "type":"window", "x":61, "y":84, "width":92, "height":20,
 							"children" :
 							(
-								## Lv
-								{
-									"name":"Status_Lv", "type":"window", "x":9, "y":30, "width":37, "height":42,
-									"children" :
-									(
-										{ "name":"Level_Header", "type":"image", "x":0, "y":0, "image":LOCALE_PATH+"label_level.sub" },
-										{ "name":"Level_Value", "type":"text", "x":19, "y":19, "fontsize":"LARGE", "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									),
-								},
-
-								## EXP
-								{
-									"name":"Status_CurExp", "type":"window", "x":53, "y":30, "width":87, "height":42,
-									"children" :
-									(
-										{ "name":"Exp_Slot", "type":"image", "x":0, "y":0, "image":LOCALE_PATH+"label_cur_exp.sub" },
-										{ "name":"Exp_Value", "type":"text", "x":46, "y":19, "fontsize":"LARGE", "text":"12345678901", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },									),
-								},
-
-								## REXP
-								{
-									"name":"Status_RestExp", "type":"window", "x":150, "y":30, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"RestExp_Slot", "type":"image", "x":0, "y":0, "image":LOCALE_PATH+"label_last_exp.sub" },
-										{ "name":"RestExp_Value", "type":"text", "x":46, "y":19, "fontsize":"LARGE", "text":"12345678901", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									),
-								},
+								{ "name":"Exp_Value", "type":"text", "x":46, "y":0, "fontsize":"LARGE", "text":"0", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
+							),
+						},
+						{ "name":"Exp_Slash", "type":"text", "text":"/", "x":153, "y":86, "text_horizontal_align":"center", },
+						{
+							"name":"Status_RestExp", "type":"window", "x":153, "y":84, "width":92, "height":20,
+							"children" :
+							(
+								{ "name":"RestExp_Value", "type":"text", "x":46, "y":0, "fontsize":"LARGE", "text":"0", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
 							),
 						},
 
@@ -314,239 +234,96 @@ window = {
 						{ "name" : "Face_Image", "type" : "image", "x" : 11, "y" : 11, "image" : "d:/ymir work/ui/game/windows/face_warrior.sub" },
 						{ "name" : "Face_Slot", "type" : "image", "x" : 7, "y" : 7, "image" : FACE_SLOT_FILE, },
 
+						## The page buttons - ordinary stats / Poziom Czempiona (GF: 03 the bright one while the page is not open,
+						## 01 the pressed one of the open page) - and "Bonusy" (the attribute list) in the place of GF's third button
 						{
-							# MT2009_PLUS_CHAMPION_V2: the page buttons - ordinary stats / Poziom Czempiona and Sung Ma
-							"name":"change_base_button", "type":"radio_button", "x":13, "y":101,
-							"default_image" : ROOT_PATH+"old_level_btn_01.sub", "over_image" : ROOT_PATH+"old_level_btn_02.sub", "down_image" : ROOT_PATH+"old_level_btn_03.sub",
+							"name":"change_base_button", "type":"radio_button", "x":8, "y":107,
+							"default_image" : ROOT_PATH+"old_level_btn_03.sub", "over_image" : ROOT_PATH+"old_level_btn_03.sub", "down_image" : ROOT_PATH+"old_level_btn_01.sub",
 						},
 						{
-							"name":"change_conqueror_button", "type":"radio_button", "x":93, "y":101,
-							"default_image" : ROOT_PATH+"new_level_btn_01.sub", "over_image" : ROOT_PATH+"new_level_btn_02.sub", "down_image" : ROOT_PATH+"new_level_btn_03.sub",
+							"name":"change_conqueror_button", "type":"radio_button", "x":87, "y":107,
+							"default_image" : ROOT_PATH+"new_level_btn_03.sub", "over_image" : ROOT_PATH+"new_level_btn_03.sub", "down_image" : ROOT_PATH+"new_level_btn_01.sub",
 						},
 						{
-							"name":"Conqueror_Level_Text", "type":"text", "x":176, "y":104, "text":"", "r":0.333, "g":0.725, "b":1.0, "a":1.0,
+							"name":"AttributeListButton", "type":"button", "x":166, "y":107,
+							"default_image" : ROOT_PATH+"mt2009_passive_expanded_button_01.sub", "over_image" : ROOT_PATH+"mt2009_passive_expanded_button_02.sub", "down_image" : ROOT_PATH+"mt2009_passive_expanded_button_03.sub",
 						},
+
+						## The stats
 						{
-							"name":"Status_Standard", "type":"window", "x":3, "y":100 + CHAMPION_DY, "width":223, "height":250,
+							"name":"Status_Standard", "type":"window", "x":3, "y":125, "width":250, "height":145,
 							"children" :
 							(
-								{ "name":"Character_Bar_01", "type":"horizontalbar", "x":12, "y":8, "width":223, },
-								{ "name":"Character_Bar_01_Text", "type" : "text", "x" : 15, "y" : 8, "text" : "Status postaci", "bold":True, "fontsize":"LARGE","r":0.9373, "g":0.8902, "b":0.7412, },
-								# { "name":"Character_Bar_01_Text", "type" : "image", "x" : 13, "y" : 9, "image" : LOCALE_PATH+"label_std.sub", },
-
+								## the bar: the stats' sign and the free points ("+" and the number)
+								{ "name":"Base_Info_bar", "type":"image", "x":6, "y":5, "image":ROOT_PATH+"mt2009_base_info_bar.sub" },
+								{ "name":"Char_Info_Status_img", "type":"image", "x":12, "y":7, "image":ROOT_PATH+"mt2009_char_info_status_img.sub" },
 								{
-									"name":"Status_Plus_Label",
-									"type":"text",
-									"x":-5, "y":9,
-									"text": "status",
-									"horizontal_align" : "right",
-									"text_horizontal_align" : "right",
-
-									# "children" :
-									# (
-									# 	{ "name":"Status_Plus_Value", "type":"text", "x":62, "y":0, "text":"99", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									# ),
-								},
-
-								{"name":"Status_Standard_ItemList1", "type" : "image", "x":17, "y":31, "image" : LOCALE_PATH+"label_std_item1.sub", },
-								{"name":"Status_Standard_ItemList2", "type" : "image", "x":100, "y":30, "image" : LOCALE_PATH+"label_std_item2.sub", },
-
-								## HTH
-								{
-									"name":"HTH_Label", "type":"window", "x":50, "y":32, "width":60, "height":20,
+									"name":"Status_Plus_Label", "type":"image", "x":191, "y":8, "image":ROOT_PATH+"mt2009_char_info_status_plus_img.sub",
 									"children" :
 									(
-										{ "name":"HTH_Slot", "type":"image", "x":0, "y":0, "image":SMALL_VALUE_FILE },
-										{ "name":"HTH_Value", "type":"text", "x":20, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"HTH_Plus", "type" : "button", "x":41, "y":3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
-									),
-								},
-								## INT
-								{
-									"name":"INT_Label", "type":"window", "x":50, "y":32+23, "width":60, "height":20,
-									"children" :
-									(
-										{ "name":"INT_Slot", "type":"image", "x":0, "y":0, "image":SMALL_VALUE_FILE },
-										{ "name":"INT_Value", "type":"text", "x":20, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"INT_Plus", "type" : "button", "x" : 41, "y" : 3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
-									)
-								},
-								## STR
-								{
-									"name":"STR_Label", "type":"window", "x":50, "y":32+23*2, "width":60, "height":20,
-									"children" :
-									(
-										{ "name":"STR_Slot", "type":"image", "x":0, "y":0, "image":SMALL_VALUE_FILE },
-										{ "name":"STR_Value", "type":"text", "x":20, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"STR_Plus", "type" : "button", "x" : 41, "y" : 3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
-									)
-								},
-								## DEX
-								{
-									"name":"DEX_Label", "type":"window", "x":50, "y":32+23*3, "width":60, "height":20,
-									"children" :
-									(
-										{ "name":"DEX_Slot", "type":"image", "x":0, "y":0, "image":SMALL_VALUE_FILE },
-										{ "name":"DEX_Value", "type":"text", "x":20, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"DEX_Plus", "type" : "button", "x" : 41, "y" : 3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
-									)
-								},
-
-								{ "name":"HTH_Minus", "type" : "button", "x":9, "y":35, "default_image" : ROOT_PATH+"btn_minus_up.sub", "over_image" : ROOT_PATH+"btn_minus_over.sub", "down_image" : ROOT_PATH+"btn_minus_down.sub", },
-								{ "name":"INT_Minus", "type" : "button", "x":9, "y":35+23, "default_image" : ROOT_PATH+"btn_minus_up.sub", "over_image" : ROOT_PATH+"btn_minus_over.sub", "down_image" : ROOT_PATH+"btn_minus_down.sub", },
-								{ "name":"STR_Minus", "type" : "button", "x":9, "y":35+23*2, "default_image" : ROOT_PATH+"btn_minus_up.sub", "over_image" : ROOT_PATH+"btn_minus_over.sub", "down_image" : ROOT_PATH+"btn_minus_down.sub", },
-								{ "name":"DEX_Minus", "type" : "button", "x":9, "y":35+23*3, "default_image" : ROOT_PATH+"btn_minus_up.sub", "over_image" : ROOT_PATH+"btn_minus_over.sub", "down_image" : ROOT_PATH+"btn_minus_down.sub", },
-
-								## MT2009_PLUS_CHAMPION_V2: the Sung Ma rows (hidden on the ordinary page)
-								{
-									"name":"sungma_info", "type":"window", "x":0, "y":0, "width":120, "height":125,
-									"children" :
-									(
-										{ "name":"SUNGMA_STR_IMG", "type":"image", "x":18, "y":SUNGMA_ROW_Y-3, "image":ROOT_PATH+"char_info_sungma_str.sub" },
-										{ "name":"sungma_str_slot", "type":"image", "x":50, "y":SUNGMA_ROW_Y, "image":SMALL_VALUE_FILE },
-										{ "name":"sungma_str_value", "type":"text", "x":70, "y":SUNGMA_ROW_Y+3, "text":"0", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"sungma_str_plus", "type":"button", "x":91, "y":SUNGMA_ROW_Y+3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
-
-										{ "name":"SUNGMA_HP_IMG", "type":"image", "x":18, "y":SUNGMA_ROW_Y+23-3, "image":ROOT_PATH+"char_info_sungma_hp.sub" },
-										{ "name":"sungma_hp_slot", "type":"image", "x":50, "y":SUNGMA_ROW_Y+23, "image":SMALL_VALUE_FILE },
-										{ "name":"sungma_hp_value", "type":"text", "x":70, "y":SUNGMA_ROW_Y+23+3, "text":"0", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"sungma_hp_plus", "type":"button", "x":91, "y":SUNGMA_ROW_Y+23+3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
-
-										{ "name":"SUNGMA_MOVE_IMG", "type":"image", "x":18, "y":SUNGMA_ROW_Y+23*2-3, "image":ROOT_PATH+"char_info_sungma_move.sub" },
-										{ "name":"sungma_move_slot", "type":"image", "x":50, "y":SUNGMA_ROW_Y+23*2, "image":SMALL_VALUE_FILE },
-										{ "name":"sungma_move_value", "type":"text", "x":70, "y":SUNGMA_ROW_Y+23*2+3, "text":"0", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"sungma_move_plus", "type":"button", "x":91, "y":SUNGMA_ROW_Y+23*2+3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
-
-										{ "name":"SUNGMA_IMMUNE_IMG", "type":"image", "x":18, "y":SUNGMA_ROW_Y+23*3-3, "image":ROOT_PATH+"char_info_sungma_immune.sub" },
-										{ "name":"sungma_immune_slot", "type":"image", "x":50, "y":SUNGMA_ROW_Y+23*3, "image":SMALL_VALUE_FILE },
-										{ "name":"sungma_immune_value", "type":"text", "x":70, "y":SUNGMA_ROW_Y+23*3+3, "text":"0", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-										{ "name":"sungma_immune_plus", "type":"button", "x":91, "y":SUNGMA_ROW_Y+23*3+3, "default_image" : ROOT_PATH+"btn_plus_up.sub", "over_image" : ROOT_PATH+"btn_plus_over.sub", "down_image" : ROOT_PATH+"btn_plus_down.sub", },
+										{ "name":"Status_Plus_Btn_Img", "type":"image", "x":19, "y":0, "image":ROOT_PATH+"mt2009_char_info_status_value_img.sub", },
+										{ "name":"Status_Plus_Value", "type":"text", "x":31, "y":-1, "text":"0", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
 									),
 								},
 
-								####
+								## the four stats (Witalnosc, Inteligencja, Sila, Zrecznosc)
+								{
+									"name":"base_info", "type":"window", "x":0, "y":STAT_ROW_Y, "width":115, "height":120,
+									"children" :
+									_StatRow("HTH_Slot", "HTH_Value", "HTH_Plus", "HTH_IMG", "mt2009_char_info_con.sub", 0) +
+									_StatRow("INT_Slot", "INT_Value", "INT_Plus", "INT_IMG", "mt2009_char_info_int.sub", 1) +
+									_StatRow("STR_Slot", "STR_Value", "STR_Plus", "STR_IMG", "mt2009_char_info_str.sub", 2) +
+									_StatRow("DEX_Slot", "DEX_Value", "DEX_Plus", "DEX_IMG", "mt2009_char_info_dex.sub", 3),
+								},
 
-								## HP
+								## the four Sung Ma stats (the champion page)
 								{
-									"name":"HEL_Label", "type":"window", "x":145, "y":32, "width":50, "height":20,
+									"name":"sungma_info", "type":"window", "x":0, "y":STAT_ROW_Y, "width":115, "height":120,
 									"children" :
-									(
-										{ "name":"HP_Slot", "type":"image", "x":0, "y":0, "image":LARGE_VALUE_FILE },
-										{ "name":"HP_Value", "type":"text", "x":45, "y":3, "text":"9999/9999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									),
+									_StatRow("sungma_str_slot", "sungma_str_value", "sungma_str_plus", "SUNGMA_STR_IMG", "char_info_sungma_str.sub", 0) +
+									_StatRow("sungma_hp_slot", "sungma_hp_value", "sungma_hp_plus", "SUNGMA_HP_IMG", "char_info_sungma_hp.sub", 1) +
+									_StatRow("sungma_move_slot", "sungma_move_value", "sungma_move_plus", "SUNGMA_MOVE_IMG", "char_info_sungma_move.sub", 2) +
+									_StatRow("sungma_immune_slot", "sungma_immune_value", "sungma_immune_plus", "SUNGMA_IMMUNE_IMG", "char_info_sungma_immune.sub", 3),
 								},
-								## SP
-								{
-									"name":"SP_Label", "type":"window", "x":145, "y":32+23, "width":125, "height":20,
-									"children" :
-									(
-										{ "name":"SP_Slot", "type":"image", "x":0, "y":0, "image":LARGE_VALUE_FILE },
-										{ "name":"SP_Value", "type":"text", "x":45, "y":3, "text":"9999/9999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
-								## ATT
-								{
-									"name":"ATT_Label", "type":"window", "x":145, "y":32+23*2, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"ATT_Slot", "type":"image", "x":0, "y":0, "image":LARGE_VALUE_FILE },
-										{ "name":"ATT_Value", "type":"text", "x":45, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									),
-								},
-								## DEF
-								{
-									"name":"DEF_Label", "type":"window", "x":145, "y":32+23*3, "width":125, "height":20,
-									"children" :
-									(
-										{ "name":"DEF_Slot", "type":"image", "x":0, "y":0, "image":LARGE_VALUE_FILE },
-										{ "name":"DEF_Value", "type":"text", "x":45, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
+
+								## the minus buttons (a stat reset item), left of the icons
+								_Minus("HTH_Minus", 5, STAT_ROW_Y + 3),
+								_Minus("INT_Minus", 5, STAT_ROW_Y + 3 + STAT_ROW_STEP),
+								_Minus("STR_Minus", 5, STAT_ROW_Y + 3 + STAT_ROW_STEP * 2),
+								_Minus("DEX_Minus", 5, STAT_ROW_Y + 3 + STAT_ROW_STEP * 3),
+
+								## P.Z., P.E., atak, obrona
+								{ "name":"HEL_IMG", "type":"image", "x":118, "y":STAT_ROW_Y - 2, "image":ROOT_PATH+"mt2009_char_info_hp.sub" },
+								{ "name":"SP_IMG", "type":"image", "x":118, "y":STAT_ROW_Y - 2 + STAT_ROW_STEP, "image":ROOT_PATH+"mt2009_char_info_sp.sub" },
+								{ "name":"ATT_IMG", "type":"image", "x":118, "y":STAT_ROW_Y - 2 + STAT_ROW_STEP * 2, "image":ROOT_PATH+"mt2009_char_info_att.sub" },
+								{ "name":"DEF_IMG", "type":"image", "x":118, "y":STAT_ROW_Y - 2 + STAT_ROW_STEP * 3, "image":ROOT_PATH+"mt2009_char_info_def.sub" },
+								_ValueBox("HEL_Label", "HP_Slot", "HP_Value", 145, STAT_ROW_Y, LARGE_VALUE_FILE, 45),
+								_ValueBox("SP_Label", "SP_Slot", "SP_Value", 145, STAT_ROW_Y + STAT_ROW_STEP, LARGE_VALUE_FILE, 45),
+								_ValueBox("ATT_Label", "ATT_Slot", "ATT_Value", 145, STAT_ROW_Y + STAT_ROW_STEP * 2, LARGE_VALUE_FILE, 45),
+								_ValueBox("DEF_Label", "DEF_Slot", "DEF_Value", 145, STAT_ROW_Y + STAT_ROW_STEP * 3, LARGE_VALUE_FILE, 45),
 							),
 						},
 
+						## The lower block: ruch, atak, czarowanie (speeds) | atak magiczny, obrona magiczna, precyzja
 						{
-							"name":"Status_Extent", "type":"window", "x":3, "y":221 + CHAMPION_DY, "width":233, "height":200,
+							"name":"Status_Extent", "type":"window", "x":3, "y":270, "width":250, "height":100,
 							"children" :
 							(
+								{ "name":"Status_Extent_Label", "type":"image", "x":13, "y":0, "image":ROOT_PATH+"mt2009_status_extent_bar.sub", },
 
-								{ "name":"Status_Extent_Bar", "type":"horizontalbar", "x":12, "y":6, "width":223, },
-								# { "name":"Status_Extent_Label", "type" : "image", "x" : 13, "y" : 8, "image" : LOCALE_PATH+"label_ext.sub", },
-								{ "name":"Status_Extent_Label", "type" : "text", "x" : 15, "y" : 8, "text" : "Atrybuty", "bold":True, "fontsize":"LARGE","r":0.9373, "g":0.8902, "b":0.7412, },
+								{ "name":"MSPD_IMG", "type":"image", "x":20, "y":6, "image":ROOT_PATH+"mt2009_char_info_movespeed.sub" },
+								{ "name":"ASPD_IMG", "type":"image", "x":20, "y":6 + STAT_ROW_STEP, "image":ROOT_PATH+"mt2009_char_info_attspeed.sub" },
+								{ "name":"CSPD_IMG", "type":"image", "x":20, "y":6 + STAT_ROW_STEP * 2, "image":ROOT_PATH+"mt2009_char_info_magspeed.sub" },
+								{ "name":"MATT_IMG", "type":"image", "x":118, "y":6, "image":ROOT_PATH+"mt2009_char_info_magatt.sub" },
+								{ "name":"MDEF_IMG", "type":"image", "x":118, "y":6 + STAT_ROW_STEP, "image":ROOT_PATH+"mt2009_char_info_magdef.sub" },
+								{ "name":"ER_IMG", "type":"image", "x":118, "y":6 + STAT_ROW_STEP * 2, "image":ROOT_PATH+"mt2009_char_info_hitpct.sub" },
 
-								{
-									"name" : "AttributeListButton",
-									"type" : "button",
-
-									"x" : 41,
-									"y" : 6,
-
-									"horizontal_align" : "right",
-
-									"text" : "Bonusy",
-
-									"default_image" : "d:/ymir work/ui/game/windows/skill_tab_button_01.sub",
-									"over_image" : "d:/ymir work/ui/game/windows/skill_tab_button_02.sub",
-									"down_image" : "d:/ymir work/ui/game/windows/skill_tab_button_03.sub",
-								},
-
-								{"name":"Status_Extent_ItemList1", "type" : "image", "x":11, "y":31, "image" : LOCALE_PATH+"label_ext_item1.sub", },
-								{"name":"Status_Extent_ItemList2", "type" : "image", "x":128, "y":32, "image" : LOCALE_PATH+"label_ext_item2.sub", },
-
-								{
-									"name":"MOV_Label", "type":"window", "x":66, "y":33, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"MSPD_Slot", "type":"image", "x":0, "y":0, "image":MIDDLE_VALUE_FILE },
-										{ "name":"MSPD_Value", "type":"text", "x":26, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
-
-								{
-									"name":"ASPD_Label", "type":"window", "x":66, "y":33+23, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"ASPD_Slot", "type":"image", "x":0, "y":0, "image":MIDDLE_VALUE_FILE },
-										{ "name":"ASPD_Value", "type":"text", "x":26, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
-
-								{
-									"name":"CSPD_Label", "type":"window", "x":66, "y":33+23*2, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"CSPD_Slot", "type":"image", "x":0, "y":0, "image":MIDDLE_VALUE_FILE },
-										{ "name":"CSPD_Value", "type":"text", "x":26, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
-
-								{
-									"name":"MATT_Label", "type":"window", "x":183, "y":33, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"MATT_Slot", "type":"image", "x":0, "y":0, "image":MIDDLE_VALUE_FILE },
-										{ "name":"MATT_Value", "type":"text", "x":26, "y":3, "text":"999-999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
-
-								{
-									"name":"MDEF_Label", "type":"window", "x":183, "y":33+23, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"MDEF_Slot", "type":"image", "x":0, "y":0, "image":MIDDLE_VALUE_FILE },
-										{ "name":"MDEF_Value", "type":"text", "x":26, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
-
-								{
-									"name":"ER_Label", "type":"window", "x":183, "y":33+23*2, "width":50, "height":20,
-									"children" :
-									(
-										{ "name":"ER_Slot", "type":"image", "x":0, "y":0, "image":MIDDLE_VALUE_FILE },
-										{ "name":"ER_Value", "type":"text", "x":26, "y":3, "text":"999", "r":1.0, "g":1.0, "b":1.0, "a":1.0, "text_horizontal_align":"center" },
-									)
-								},
-
+								_ValueBox("MOV_Label", "MSPD_Slot", "MSPD_Value", 50, 8, MIDDLE_VALUE_FILE, 26),
+								_ValueBox("ASPD_Label", "ASPD_Slot", "ASPD_Value", 50, 8 + STAT_ROW_STEP, MIDDLE_VALUE_FILE, 26),
+								_ValueBox("CSPD_Label", "CSPD_Slot", "CSPD_Value", 50, 8 + STAT_ROW_STEP * 2, MIDDLE_VALUE_FILE, 26),
+								_ValueBox("MATT_Label", "MATT_Slot", "MATT_Value", 148, 8, MIDDLE_VALUE_FILE, 26),
+								_ValueBox("MDEF_Label", "MDEF_Slot", "MDEF_Value", 148, 8 + STAT_ROW_STEP, MIDDLE_VALUE_FILE, 26),
+								_ValueBox("ER_Label", "ER_Slot", "ER_Value", 148, 8 + STAT_ROW_STEP * 2, MIDDLE_VALUE_FILE, 26),
 							),
 						},
 					),
