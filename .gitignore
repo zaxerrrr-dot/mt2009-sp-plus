@@ -15,3 +15,5 @@
 /support-bundles/
 /.m2*
 __pycache__/
+*.pyc
+*.pyo
