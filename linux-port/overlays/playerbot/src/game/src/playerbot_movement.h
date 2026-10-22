@@ -681,7 +681,10 @@ namespace
 			const int partySize = ch->GetParty() ? (int)ch->GetParty()->GetMemberCount() : 1;
 			if (stone->GetLevel() >= 110)
 				return partySize >= 3;
-			if (ch->GetLevel() < 108 && partySize < 3)
+			// MT2009_PLUS_BOT_ZAKLETY_SPOTS_V2: Metin Drzewnych Stworzen for a party of three only - 155 of
+			// the 924 deaths of the night of 21/22 October came within 90 s of a stone fight, 137 of them
+			// bots of 108-109 alone at the three western stones.
+			if (partySize < 3)
 				return false;
 		}
 		// MT2009_PLUS_BP_BOTS_V1: a stone its Battle Pass mission names, and

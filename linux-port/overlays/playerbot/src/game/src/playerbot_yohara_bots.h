@@ -1150,31 +1150,38 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_FIX_V1: each spot's floor by the En-Tai within 3 600 of it (the regen's groups
 	// 6311-6317 and their members): 100-102 only (the two by the arrival) from 95, to 104-105 from 99, the
 	// ones with Niszczyciel En-Tai (108) from 103 - a bot starts by the arrival and moves out as it grows.
+	// MT2009_PLUS_BOT_ZAKLETY_SPOTS_V2: the night of 21/22 October (~65 bots of 102-109, 22-26k HP, 924 deaths
+	// in 8.7 h) - 432 of the 769 deaths to monsters at the nine spots within 2 700 of a Niszczyciel pack
+	// (group 6317: the 108 with two Uzdrowiciele and two Bojownicy, the southern strip y 1413 000-1452 000),
+	// 16.6-22.1 deaths per bot and 10 h at the busy ones against 10.1 at the rest, and the dying bots of
+	// every level up to 109: those nine are for a party of three now (from 105). The densest spot (27 lines,
+	// 19.2) from 107, the two next worst (14.7, and 13.0 by an Uzdrowiciel pack) from 105. 15 spots stay
+	// for the lone bots (crowd-shared, ~7 bots a spot at 100 bots).
 	const TPlayerBotHuntingHub PLAYERBOT_YOHARA_ZAKLETY_HUBS[] = {
-		{ 827350, 1465350, 99, 255, false, 0 },	// 27 spawn lines, to 104-105
-		{ 805650, 1420250, 103, 255, false, 0 },	// 23 spawn lines, En-Tai to 108
+		{ 827350, 1465350, 107, 255, false, 0 },	// 27 spawn lines, to 104-105 (V2: densest, from 107)
+		{ 805650, 1420250, 105, 255, true, 0 },	// 23 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
 		{ 824750, 1483050, 99, 255, false, 0 },	// 19 spawn lines, to 104-105
 		{ 784650, 1469750, 99, 255, false, 0 },	// 19 spawn lines, to 104-105
-		{ 821550, 1461350, 99, 255, false, 0 },	// 13 spawn lines, to 104-105
+		{ 821550, 1461350, 105, 255, false, 0 },	// 13 spawn lines, to 104-105 (V2: from 105)
 		{ 831150, 1447350, 99, 255, false, 0 },	// 13 spawn lines, to 104-105
 		{ 787750, 1477250, 99, 255, false, 0 },	// 13 spawn lines, to 104-105
 		{ 804450, 1497550, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 12 spawn lines, 100-102 only - by the arrival
-		{ 793650, 1433850, 103, 255, false, 0 },	// 12 spawn lines, En-Tai to 108
-		{ 778750, 1450950, 103, 255, false, 0 },	// 12 spawn lines, En-Tai to 108
-		{ 808750, 1447450, 103, 255, false, 0 },	// 11 spawn lines, En-Tai to 108
+		{ 793650, 1433850, 105, 255, true, 0 },	// 12 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
+		{ 778750, 1450950, 105, 255, true, 0 },	// 12 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
+		{ 808750, 1447450, 105, 255, true, 0 },	// 11 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
 		{ 818250, 1444850, 99, 255, false, 0 },	// 11 spawn lines, to 104-105
 		{ 795750, 1486050, 99, 255, false, 0 },	// 9 spawn lines, to 104-105
 		{ 829450, 1434550, 99, 255, false, 0 },	// 9 spawn lines, to 104-105
 		{ 790950, 1470550, 99, 255, false, 0 },	// 9 spawn lines, to 104-105
-		{ 799850, 1442250, 103, 255, false, 0 },	// 9 spawn lines, En-Tai to 108
-		{ 777850, 1439350, 103, 255, false, 0 },	// 9 spawn lines, En-Tai to 108
-		{ 826050, 1417450, 103, 255, false, 0 },	// 8 spawn lines, En-Tai to 108
+		{ 799850, 1442250, 105, 255, true, 0 },	// 9 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
+		{ 777850, 1439350, 105, 255, true, 0 },	// 9 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
+		{ 826050, 1417450, 105, 255, true, 0 },	// 8 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
 		{ 827350, 1473850, 99, 255, false, 0 },	// 7 spawn lines, to 104-105
 		{ 827850, 1454750, 99, 255, false, 0 },	// 7 spawn lines, to 104-105
 		{ 812950, 1493050, PLAYERBOT_OCHAO_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines, 100-102 only - by the arrival
-		{ 795350, 1457050, 99, 255, false, 0 },	// 6 spawn lines, to 104-105
-		{ 802150, 1426150, 103, 255, false, 0 },	// 6 spawn lines, En-Tai to 108
-		{ 801350, 1450550, 103, 255, false, 0 },	// 5 spawn lines, En-Tai to 108
+		{ 795350, 1457050, 105, 255, false, 0 },	// 6 spawn lines, to 104-105 (V2: Uzdrowiciel pack, from 105)
+		{ 802150, 1426150, 105, 255, true, 0 },	// 6 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
+		{ 801350, 1450550, 105, 255, true, 0 },	// 5 spawn lines, En-Tai to 108 (V2: Niszczyciel pack, party only)
 		{ 826700, 1417700, 105, 255, true, 6407 },	// Wladca En-Tai (boss.txt)
 	};
 
