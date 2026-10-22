@@ -64,7 +64,8 @@ namespace
 		if (!ch || !ch->IsItemLoaded())
 			return best;
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
-		if (worn && worn->GetType() == ITEM_WEAPON && IsPlayerBotWeapon(ch, worn))
+		// MT2009_PLUS_BOT_MLODZI_V1: the real weapons only - a young heroes' one goes in fifteen days.
+		if (worn && worn->GetType() == ITEM_WEAPON && IsPlayerBotWeapon(ch, worn) && !IsPlayerBotMlodziWeapon(worn))
 		{
 			best.item = worn;
 			best.blow = GetPlayerBotWeaponHitDamage(worn, ch);
@@ -75,7 +76,7 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetCell() != cell || item->IsEquipped() || item->GetType() != ITEM_WEAPON ||
 					!IsPlayerBotEquipmentCandidate(ch, item) || item->GetLevelLimit() > ch->GetLevel() ||
-					item->FindEquipCell(ch) != WEAR_WEAPON)
+					item->FindEquipCell(ch) != WEAR_WEAPON || IsPlayerBotMlodziWeapon(item))	// MT2009_PLUS_BOT_MLODZI_V1
 				continue;
 			const long long blow = GetPlayerBotWeaponHitDamage(item, ch);
 			if (best.item && blow <= best.blow)
@@ -132,7 +133,8 @@ namespace
 	{
 		if (!ch || !offer || offer->GetType() != ITEM_WEAPON || offer->GetSubType() == WEAPON_ARROW ||
 				!IsPlayerBotEquipmentCandidate(ch, offer) || offer->GetLevelLimit() > ch->GetLevel() ||
-				offer->FindEquipCell(ch) != WEAR_WEAPON || IsPlayerBotArcherStoneWeapon(ch, offer))
+				offer->FindEquipCell(ch) != WEAR_WEAPON || IsPlayerBotArcherStoneWeapon(ch, offer) ||
+				IsPlayerBotWeaponPlanSuspended(ch))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
 		const TPlayerBotOwnedWeapon owned = ReadPlayerBotBestOwnedWeapon(ch);
 		if (owned.item == offer)
@@ -239,7 +241,8 @@ namespace
 
 	bool PlayerBotWantsWeaponUpgradeFromMarket(LPCHARACTER ch)
 	{
-		if (!ch || !ch->IsItemLoaded() || IsPlayerBotGearFrozen(ch))
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotGearFrozen(ch) ||
+				IsPlayerBotWeaponPlanSuspended(ch))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
 		return LookPlayerBotWeaponUpgrade(ch, get_dword_time()).vnum != 0;
 	}
@@ -252,7 +255,7 @@ namespace
 	{
 		if (priceOut)
 			*priceOut = 0;
-		if (!ch || !ch->IsItemLoaded())
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotWeaponPlanSuspended(ch))	// MT2009_PLUS_BOT_MLODZI_V1
 			return 0;
 		static const DWORD merchants[] = { 9001, 9002, 9003 };
 		TPlayerBotOwnedWeapon owned;

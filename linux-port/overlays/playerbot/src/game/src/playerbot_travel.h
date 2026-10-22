@@ -1536,6 +1536,9 @@ namespace
 		// tier's Grinder is not there for the weapon.
 		if (!tierGrinder && HasPlayerBotSpecialLevel30Weapon(ch, true))
 			return false;
+		// MT2009_PLUS_BOT_MLODZI_V1: nor while the young heroes' weapon holds the weapon planning.
+		if (!tierGrinder && IsPlayerBotWeaponPlanSuspended(ch))
+			return false;
 		// MT2009_PLUS_BOT_M3_WEAPON_DROP_V1: only for a weapon M3 can still
 		// drop for it.
 		if (!tierGrinder && !CanPlayerBotM3WeaponDropFor(ch))

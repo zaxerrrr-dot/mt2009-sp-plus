@@ -2056,7 +2056,8 @@ namespace
 	bool IsPlayerBotUnwantedGear(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() ||
-				item->GetWindow() != INVENTORY || item->GetRefineLevel() > PLAYERBOT_MERCHANT_MAX_REFINE)
+				item->GetWindow() != INVENTORY || item->GetRefineLevel() > PLAYERBOT_MERCHANT_MAX_REFINE ||
+				IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
 		if (item->GetType() == ITEM_WEAPON)
 		{
@@ -2519,6 +2520,9 @@ namespace
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
+			return false;
+		// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon, and the real weapon prepared behind one in the hand.
+		if (IsPlayerBotMlodziKept(ch, item))
 			return false;
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a piece of the G0 package is never scrap - another bot buys it, or (V2) the
 		// merchant once no bot did (IsPlayerBotG0NpcSaleDue, SellPlayerBotJunkAtMerchant).
@@ -3521,6 +3525,7 @@ namespace
 			// without a sale - the one place a bag is emptied on purpose.
 			if (item && !item->IsEquipped() && !item->isLocked() &&
 					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_DROP &&
+					!IsPlayerBotMlodziKept(ch, item) &&	// MT2009_PLUS_BOT_MLODZI_V1
 					!IsPlayerBotSidekickLockedItem(ch, item) &&	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 					// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: nor a companion's
 					// valuables, which are its owner's.
@@ -3803,7 +3808,10 @@ namespace
 			if (slot >= 0)
 				return slot;
 		}
-		if (item->GetType() == ITEM_WEAPON && !ch->GetWear(WEAR_WEAPON) && item == GetPlayerBotHandWeapon(ch))
+		// MT2009_PLUS_BOT_MLODZI_V1: the real weapon prepared behind a young heroes' one is the hand's too.
+		if (item->GetType() == ITEM_WEAPON &&
+				(!ch->GetWear(WEAR_WEAPON) || IsPlayerBotMlodziWeapon(ch->GetWear(WEAR_WEAPON))) &&
+				item == GetPlayerBotHandWeapon(ch))
 			return WEAR_WEAPON;
 		if (item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY && !ch->GetWear(WEAR_BODY) &&
 				item == GetPlayerBotBodyArmour(ch))
@@ -4153,6 +4161,10 @@ namespace
 		{
 			TPlayerBotAIStateMap::const_iterator st = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
 			if (st != s_mapPlayerBotAIStates.end() && GetPlayerBotTakenOffSlotOf(ch, st->second, item) >= 0)
+				return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
+			// MT2009_PLUS_BOT_MLODZI_V1: so is the real weapon prepared behind a young heroes' one in the hand -
+			// raised as the hand's own once the hold is over (the target waits at its plus while it holds).
+			if (!IsPlayerBotMlodziWeapon(item) && IsPlayerBotMlodziKept(ch, item))
 				return item->GetRefineLevel() < GetPlayerBotRefineTarget(ch, item);
 		}
 		// A level-30 weapon of a class this bot cannot wear, ground for sale

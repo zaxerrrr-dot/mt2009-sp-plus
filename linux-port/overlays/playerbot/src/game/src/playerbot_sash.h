@@ -1311,7 +1311,7 @@ namespace
 
 	bool IsPlayerBotSashPieceKind(LPITEM item)
 	{
-		if (!item || !item->GetProto())
+		if (!item || !item->GetProto() || IsPlayerBotMlodziWeapon(item))	// MT2009_PLUS_BOT_MLODZI_V1: never absorbed
 			return false;
 		if (item->GetType() == ITEM_WEAPON)
 			return item->GetSubType() != WEAPON_ARROW
@@ -1407,7 +1407,8 @@ namespace
 				continue;
 			if (IsPlayerBotLppKeptItem(ch, item) || IsPlayerBotKeptBackupArmour(ch, item) ||
 					IsPlayerBotSidekickGift(ch, item) || IsPlayerBotSidekickPinned(ch, item) ||
-					IsPlayerBotSashPieceWorn(ch, item))
+					IsPlayerBotSashPieceWorn(ch, item) ||
+					IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1: the real weapon prepared behind it
 				continue;
 			const long long value = GetPlayerBotSashPieceWorth(ch, item, absorption, reference, wornValue);
 			if (value < 0)

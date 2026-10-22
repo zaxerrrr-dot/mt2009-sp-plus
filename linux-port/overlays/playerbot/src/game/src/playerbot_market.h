@@ -170,7 +170,8 @@ namespace
 	bool PlayerBotNeedsScrollForWeapon(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded() ||
-				CountPlayerBotSafeRefineScrolls(ch) >= PLAYERBOT_LEVEL30_SCROLL_WANT)
+				CountPlayerBotSafeRefineScrolls(ch) >= PLAYERBOT_LEVEL30_SCROLL_WANT ||
+				IsPlayerBotWeaponPlanSuspended(ch))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
 		if (worn && IsPlayerBotScrollFreeGear(worn))
@@ -203,12 +204,19 @@ namespace
 	// (CanPlayerBotPayForOffer, GetPlayerBotWhimKind).
 	bool WantsPlayerBotStallItem(LPCHARACTER ch, LPITEM offer)
 	{
-		return WantsPlayerBotStallItemOwn(ch, offer) || IsPlayerBotWhimCandidate(ch, offer);
+		return WantsPlayerBotStallItemOwn(ch, offer) ||
+				(IsPlayerBotWhimCandidate(ch, offer) && !IsPlayerBotWeaponPlanSuspendedFor(ch, offer));	// MT2009_PLUS_BOT_MLODZI_V1
 	}
 
 	bool WantsPlayerBotStallItemOwn(LPCHARACTER ch, LPITEM offer)
 	{
 		if (!ch || !offer)
+			return false;
+		// MT2009_PLUS_BOT_MLODZI_V1: no weapon for itself while the young heroes' weapon holds the planning - only
+		// what a sash, a craft or a gambler's anvil takes (playerbot_mlodzi_bots.h).
+		if (IsPlayerBotMlodziWeapon(offer) ||
+				(IsPlayerBotWeaponPlanSuspendedFor(ch, offer) && !WantsPlayerBotSashPieceOffer(ch, offer) &&
+				 !WantsPlayerBotCraftOffer(ch, offer) && !WantsPlayerBotGambleOffer(ch, offer)))
 			return false;
 		// MT2009_PLUS_TRADEABLE_BONUS_V2: the tradeable change or add
 		// (71284/71285) only for a bot that would spend it on its own gear and

@@ -157,6 +157,9 @@ namespace
 		const DWORD pid = ch->GetPlayerID();
 		if (IsPlayerBotDropper(GetPlayerBotPersonalityByPID(pid)) || IsPlayerBotSidekickPID(pid))
 			return false;
+		// MT2009_PLUS_BOT_MLODZI_V1: no Stalki weapon while the young heroes' weapon holds the planning.
+		if (kind == playerbot_stalki_rules::KIND_WEAPON && IsPlayerBotWeaponPlanSuspended(ch))
+			return false;
 		return playerbot_stalki_rules::InBuyWindow(level, kind, PLAYERBOT_STALKI_BUY_AHEAD_LEVELS,
 				PlayerBotHoldsStalkiTier(ch, kind));
 	}

@@ -110,6 +110,15 @@ namespace
 	const TPlayerBotWeaponGoal& GetPlayerBotWeaponGoal(LPCHARACTER ch, DWORD dwNow)
 	{
 		TPlayerBotWeaponGoal& goal = s_mapPlayerBotWeaponGoals[ch->GetPlayerID()];
+		// MT2009_PLUS_BOT_MLODZI_V1: no goal while the young heroes' weapon holds the planning (seven days and more
+		// left); the next read after the hold works it out afresh.
+		if (IsPlayerBotWeaponPlanSuspended(ch))
+		{
+			goal.family = NULL;
+			goal.goalBlow = 0;
+			goal.when = 0;
+			return goal;
+		}
 		if (goal.when != 0 && dwNow - goal.when < PLAYERBOT_WEAPON_GOAL_REFRESH_MS)
 			return goal;
 		const TPlayerBotWeaponFamily* previous = goal.family;
@@ -137,7 +146,8 @@ namespace
 	bool IsPlayerBotStrategicWeaponOffer(LPCHARACTER ch, LPITEM offer)
 	{
 		if (!ch || !offer || offer->GetType() != ITEM_WEAPON || !IsPlayerBotEquipmentCandidate(ch, offer) ||
-				offer->GetLevelLimit() > ch->GetLevel() || offer->FindEquipCell(ch) != WEAR_WEAPON)
+				offer->GetLevelLimit() > ch->GetLevel() || offer->FindEquipCell(ch) != WEAR_WEAPON ||
+				IsPlayerBotWeaponPlanSuspended(ch))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
 		LPITEM hand = GetPlayerBotHandWeapon(ch);
 		const long long handBlow = hand ? GetPlayerBotWeaponHitDamage(hand, ch) : 0;
