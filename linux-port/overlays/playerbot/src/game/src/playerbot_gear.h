@@ -627,6 +627,13 @@ namespace
 			if (willWeight >= 0)
 				return (long long)lValue * willWeight;
 		}
+		// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1 (D14): a resistance to an element of the bot's Sung Ma map weighs twice the
+		// catch-all's fifty a point there (playerbot_yohara_elements.h); anywhere else, and any other element, as ever.
+		{
+			const int resistFactor = GetPlayerBotYoharaResistFactor(ch, bType);
+			if (resistFactor > 1)
+				return (long long)lValue * 50 * resistFactor;
+		}
 		switch (bType)
 		{
 			case APPLY_NONE:
@@ -1240,6 +1247,7 @@ namespace
 	// potions, and what the two crafts keep and buy.
 	bool IsPlayerBotTalismanItem(LPITEM item);
 	long long GetPlayerBotTalismanScore(LPCHARACTER ch, LPITEM item);
+	bool GetPlayerBotPendantScore(LPCHARACTER ch, LPITEM item, long long& score);	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1
 	bool UsePlayerBotBeltPotion(LPCHARACTER ch, const DWORD* vnums, size_t count, const char* what);
 	int GetPlayerBotCraftMaterialKeep(LPCHARACTER ch, DWORD vnum);
 	bool IsPlayerBotKeptCraftGoods(LPCHARACTER ch, LPITEM item);
@@ -1254,14 +1262,14 @@ namespace
 		// MT2009_PLUS_BOT_TALISMANS_V1: a talisman scores by its expected damage bonus on the
 		// bot's hunting map (the element's monsters there, the engine's formula), so the
 		// equipment pass puts on the one the map wants (playerbot_talismans.h).
-		if (ch && IsPlayerBotTalismanItem(item))
-			return GetPlayerBotTalismanScore(ch, item);
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Talizman Woli over the element's while the Will of the Champion's map is short
 		// (the owner's D15, playerbot_yohara_g0.h); otherwise scored by its lines as any piece.
+		// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the two in one rule, GetPlayerBotPendantScore (playerbot_talismans.h) -
+		// the talisman's light pass asks the same score.
 		{
-			long long willTalisman = 0;
-			if (ch && GetPlayerBotG0WillTalismanScore(ch, item, willTalisman))
-				return willTalisman;
+			long long pendant = 0;
+			if (ch && GetPlayerBotPendantScore(ch, item, pendant))
+				return pendant;
 		}
 		// MT2009_PLUS_LEGENDS_V1 (gear): a Specjalny and up weighs a piece's
 		// plus and bonuses more (playerbot_legend_tier.h).

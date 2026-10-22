@@ -211,6 +211,9 @@ namespace
 			DecidePlayerBotTalismanSeed(ch);
 		}
 		WearPlayerBotBestTalisman(ch);
+		// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: on a Sung Ma map, the elixirs of resistance to its elements and the census
+		// (playerbot_yohara_elements_late.h).
+		ManagePlayerBotYoharaElements(ch, dwNow);
 		ManagePlayerBotBeltPouch(ch);
 		// The shards a maker's belt needs stay off the counters (playerbot_energy_shards.h:
 		// the Alchemist's shards are listed over this keep only).

@@ -195,6 +195,20 @@ namespace
 	// map it hunted on (playerbot_workshop.h keeps it).
 	long GetPlayerBotHuntingMap(LPCHARACTER ch);
 
+	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the shares a bot's talisman is chosen by - its Sung Ma map's from the table
+	// (playerbot_yohara_elements.h: fixed, so a map of two near equal elements no longer swaps the talisman with what
+	// is alive, and a trade trip home keeps the talisman of the map it goes back to), else the hunting map's count.
+	// Returns the map.
+	long GetPlayerBotTalismanMapShares(LPCHARACTER ch, int share[PLAYERBOT_TALISMAN_ELEMENTS])
+	{
+		const long yohara = GetPlayerBotYoharaElementMap(ch);
+		if (yohara != 0 && GetPlayerBotYoharaMapShares(yohara, share))
+			return yohara;
+		const long map = GetPlayerBotHuntingMap(ch);
+		GetPlayerBotMapElementShares(map, share);
+		return map;
+	}
+
 	// ---- the formula ----------------------------------------------------------------------
 
 	// ElementsAttackBonus's numbers for one talisman of power `plus`, in hundredths of a
@@ -227,9 +241,17 @@ namespace
 		if (!ch || e < 0)
 			return 0;
 		int share[PLAYERBOT_TALISMAN_ELEMENTS];
-		GetPlayerBotMapElementShares(GetPlayerBotHuntingMap(ch), share);
+		GetPlayerBotTalismanMapShares(ch, share);	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1
 		const int plus = GetPlayerBotTalismanPlus(item);
 		return 1 + (long long)GetPlayerBotTalismanGain(e, plus, share) * 1000 + plus;
+	}
+
+	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the pendant slot's one rule (D15), GetPlayerBotPendantScore, is in
+	// playerbot_yohara_elements_late.h (it needs the Will of the Sung Ma maps); a pendant it chooses from:
+	bool IsPlayerBotPendantChoice(LPITEM item)
+	{
+		return item && (IsPlayerBotTalismanItem(item) ||
+				(item->GetType() == ITEM_ARMOR && GetPlayerBotWillTalismanKind(item->GetVnum()) >= 0));
 	}
 
 	// ---- what the bot owns ----------------------------------------------------------------
@@ -259,6 +281,37 @@ namespace
 			if (!item || item->GetCell() != cell || !IsPlayerBotTalismanWearable(ch, item))
 				continue;
 			const long long score = GetPlayerBotTalismanScore(ch, item);
+			if (!best || score > bestScore)
+			{
+				best = item;
+				bestScore = score;
+			}
+		}
+		return best;
+	}
+
+	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the pendant to wear - an element talisman or a Talizman Woli, worn or in the
+	// bag - by the equipment score itself (GetPlayerBotPendantScore inside), so the light pass and the equipment pass
+	// never disagree; the worn one stays on a tie.
+	LPITEM FindPlayerBotBestPendant(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return NULL;
+		LPITEM best = NULL;
+		long long bestScore = 0;
+		LPITEM worn = ch->GetWear(WEAR_PENDANT);
+		if (IsPlayerBotPendantChoice(worn) && worn->GetLevelLimit() <= (int)ch->GetLevel() && worn->CanUsedBy(ch))
+		{
+			best = worn;
+			bestScore = GetPlayerBotEquipmentScore(worn, ch);
+		}
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || !IsPlayerBotPendantChoice(item) ||
+					item->GetLevelLimit() > (int)ch->GetLevel() || !item->CanUsedBy(ch))
+				continue;
+			const long long score = GetPlayerBotEquipmentScore(item, ch);
 			if (!best || score > bestScore)
 			{
 				best = item;
@@ -362,7 +415,7 @@ namespace
 			return p;
 
 		int share[PLAYERBOT_TALISMAN_ELEMENTS];
-		GetPlayerBotMapElementShares(GetPlayerBotHuntingMap(ch), share);
+		GetPlayerBotTalismanMapShares(ch, share);	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1
 		int dominantShare = 0;
 		for (int e = 0; e < PLAYERBOT_TALISMAN_ELEMENTS; ++e)
 			if (share[e] >= PLAYERBOT_TALISMAN_DOMINANT_PERCENT && share[e] > dominantShare)
@@ -467,12 +520,85 @@ namespace
 		return p.spares >= 1 && p.ornaments >= 1;
 	}
 
+	// ---- the Yohara spare (MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1, D14) ---------------------------
+
+	// The map the spare is for: the next Sung Ma map up switched on for the bots, else (the top one) the map itself.
+	long GetPlayerBotYoharaSpareMap(long map)
+	{
+		const int slot = GetPlayerBotYoharaElementSlot(map);
+		if (slot < 0)
+			return 0;
+		for (int i = slot + 1; i < PLAYERBOT_YOHARA_ELEMENT_MAP_COUNT; ++i)
+			if (IsPlayerBotSungmaMapOn(PLAYERBOT_YOHARA_ELEMENT_MAPS[i].lMap))
+				return PLAYERBOT_YOHARA_ELEMENT_MAPS[i].lMap;
+		return PLAYERBOT_YOHARA_ELEMENT_MAPS[slot].lMap;
+	}
+
+	int GetPlayerBotTalismanItemGain(LPITEM item, const int share[PLAYERBOT_TALISMAN_ELEMENTS])
+	{
+		return item ? GetPlayerBotTalismanGain(GetPlayerBotTalismanElementOf(item->GetVnum()), GetPlayerBotTalismanPlus(item), share) : 0;
+	}
+
+	// The one spare talisman of a bot on Yohara: of those it owns but the best for its map, the best for the spare's
+	// map (a real bonus there); NULL off Yohara.
+	LPITEM FindPlayerBotYoharaSpareTalisman(LPCHARACTER ch)
+	{
+		int share[PLAYERBOT_TALISMAN_ELEMENTS];
+		if (!ch || !ch->IsItemLoaded() || !GetPlayerBotYoharaMapShares(GetPlayerBotYoharaSpareMap(GetPlayerBotYoharaElementMap(ch)), share))
+			return NULL;
+		LPITEM main = FindPlayerBotBestTalisman(ch);
+		LPITEM best = NULL;
+		int bestGain = 0;
+		LPITEM worn = ch->GetWear(WEAR_PENDANT);
+		if (worn && worn != main && IsPlayerBotTalismanItem(worn) && GetPlayerBotTalismanItemGain(worn, share) > bestGain)
+		{
+			best = worn;
+			bestGain = GetPlayerBotTalismanItemGain(worn, share);
+		}
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item == main || item->GetCell() != cell || !IsPlayerBotTalismanItem(item))
+				continue;
+			const int gain = GetPlayerBotTalismanItemGain(item, share);
+			if (gain > bestGain)
+			{
+				best = item;
+				bestGain = gain;
+			}
+		}
+		return best;
+	}
+
+	// A talisman on a stand for a bot on Yohara: one it can wear, with a plus, that betters the best it owns for its
+	// map, or - of another element than that one - its spare for the next map. The price: the talisman's rules below.
+	bool WantsPlayerBotYoharaTalismanOffer(LPCHARACTER ch, LPITEM offer)
+	{
+		const int e = offer ? GetPlayerBotTalismanElementOf(offer->GetVnum()) : -1;
+		if (!ch || e < 0 || GetPlayerBotTalismanPlus(offer) <= 0 || !IsPlayerBotTalismanWearable(ch, offer))
+			return false;
+		const long map = GetPlayerBotYoharaElementMap(ch);
+		int share[PLAYERBOT_TALISMAN_ELEMENTS];
+		if (!GetPlayerBotYoharaMapShares(map, share))
+			return false;
+		LPITEM main = FindPlayerBotBestTalisman(ch);
+		if (GetPlayerBotTalismanItemGain(offer, share) > GetPlayerBotTalismanItemGain(main, share))
+			return true;
+		if (main && GetPlayerBotTalismanElementOf(main->GetVnum()) == e)
+			return false;
+		int spareShare[PLAYERBOT_TALISMAN_ELEMENTS];
+		GetPlayerBotYoharaMapShares(GetPlayerBotYoharaSpareMap(map), spareShare);
+		return GetPlayerBotTalismanItemGain(offer, spareShare) > GetPlayerBotTalismanItemGain(FindPlayerBotYoharaSpareTalisman(ch), spareShare);
+	}
+
 	// ---- the market -----------------------------------------------------------------------
 
 	// A Talisman +0 of the project's element and the Ornament, for a worker short of them -
 	// not while the seed still owes it the step.
 	bool WantsPlayerBotTalismanOffer(LPCHARACTER ch, LPITEM offer)
 	{
+		if (WantsPlayerBotYoharaTalismanOffer(ch, offer))	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1
+			return true;
 		if (!ch || !offer || !IsPlayerBotTalismanWorker(ch) || GetPlayerBotTalismanSeedLeft(ch) > 0)
 			return false;
 		const TPlayerBotTalismanPlan& p = GetPlayerBotTalismanPlan(ch);
@@ -553,6 +679,10 @@ namespace
 				GetPlayerBotTalismanPlus(item) >= GetPlayerBotTalismanPlus(worn) &&
 				GetPlayerBotTalismanElementOf(item->GetVnum()) != GetPlayerBotTalismanElementOf(worn->GetVnum()))
 			return true;
+		// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1 (D14): on Yohara the spare for the next map stays in the bag too (a drop or
+		// a stand's included).
+		if (item == FindPlayerBotYoharaSpareTalisman(ch))
+			return true;
 		return item == FindPlayerBotBestTalisman(ch);
 	}
 
@@ -563,6 +693,14 @@ namespace
 		++s_kPlayerBotTalismanStats.bought;
 		s_kPlayerBotTalismanStats.boughtYang += (unsigned long long)std::max<long long>(0, price);
 		ForgetPlayerBotTalismanPlan(ch);
+		// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: a Yohara bot's talisman for its map or its spare.
+		if (IsPlayerBotTalismanVnum(vnum) && GetPlayerBotYoharaElementMap(ch) != 0)
+		{
+			const int e = GetPlayerBotTalismanElementOf(vnum);
+			sys_log(0, "PLAYERBOT_ELEMENTS: talisman bought pid=%u name=%s map=%ld vnum=%u (%s +%d) price=%lld gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), GetPlayerBotYoharaElementMap(ch), vnum, PLAYERBOT_TALISMAN_ELEMENT[e].name,
+					(int)(vnum - PLAYERBOT_TALISMAN_ELEMENT[e].baseVnum), price, (long long)ch->GetGold());
+		}
 	}
 
 	// ---- the gifts --------------------------------------------------------------------------
@@ -605,11 +743,11 @@ namespace
 		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || ch->GetExchange() || ch->GetMyShop() ||
 				IsPlayerBotGearFrozen(ch))
 			return false;
-		LPITEM best = FindPlayerBotBestTalisman(ch);
+		LPITEM best = FindPlayerBotBestPendant(ch);	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: a Talizman Woli too (D15)
 		LPITEM worn = ch->GetWear(WEAR_PENDANT);
 		if (!best || best == worn)
 			return false;
-		if (worn && (IsPlayerBotSidekickLockedItem(ch, worn) || !IsPlayerBotTalismanItem(worn)))
+		if (worn && (IsPlayerBotSidekickLockedItem(ch, worn) || !IsPlayerBotPendantChoice(worn)))
 			return false;
 		const DWORD oldVnum = worn ? worn->GetVnum() : 0;
 		if (worn && (ch->GetEmptyInventory(worn->GetSize()) < 0 || !ch->UnequipItem(worn) || worn->IsEquipped()))
@@ -622,12 +760,11 @@ namespace
 		}
 		++s_kPlayerBotTalismanStats.wears;
 		int share[PLAYERBOT_TALISMAN_ELEMENTS];
-		const long huntMap = GetPlayerBotHuntingMap(ch);
-		GetPlayerBotMapElementShares(huntMap, share);
+		const long huntMap = GetPlayerBotTalismanMapShares(ch, share);	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1
 		const int e = GetPlayerBotTalismanElementOf(best->GetVnum());
 		sys_log(0, "PLAYERBOT_TALISMAN: wear pid=%u name=%s lv=%d vnum=%u (%s +%d) old=%u map=%ld share=%d gain=%d",
 				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), best->GetVnum(),
-				e >= 0 ? PLAYERBOT_TALISMAN_ELEMENT[e].name : "?", GetPlayerBotTalismanPlus(best), oldVnum, huntMap,
+				e >= 0 ? PLAYERBOT_TALISMAN_ELEMENT[e].name : "Woli", e >= 0 ? GetPlayerBotTalismanPlus(best) : (int)(best->GetVnum() % 10), oldVnum, huntMap,
 				e >= 0 ? share[e] : 0, GetPlayerBotTalismanGain(e, GetPlayerBotTalismanPlus(best), share));
 		ForgetPlayerBotTalismanPlan(ch);
 		return true;
@@ -761,6 +898,7 @@ namespace
 {
 	bool IsPlayerBotTalismanItem(LPITEM) { return false; }
 	long long GetPlayerBotTalismanScore(LPCHARACTER, LPITEM) { return 0; }
+	int GetPlayerBotTalismanElementOf(DWORD) { return -1; }	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1
 	bool HasPlayerBotTalismanWork(LPCHARACTER) { return false; }
 	bool WantsPlayerBotTalismanOffer(LPCHARACTER, LPITEM) { return false; }
 	bool CanPlayerBotPayForTalismanOffer(LPCHARACTER, LPITEM, long long) { return false; }

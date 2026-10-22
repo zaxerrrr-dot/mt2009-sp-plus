@@ -354,6 +354,8 @@ namespace
 
 	// D15: a Talizman Woli over the element's talisman while the bot, its pendant's Will taken out, lacks that Will
 	// for the map of its band - the same answer whichever of the two it wears (no swapping back and forth).
+	// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: asked only through GetPlayerBotPendantScore (playerbot_yohara_elements_late.h),
+	// the pendant's one rule.
 	bool GetPlayerBotG0WillTalismanScore(LPCHARACTER ch, LPITEM item, long long& score)
 	{
 		const int kind = item ? GetPlayerBotWillTalismanKind(item->GetVnum()) : -1;
