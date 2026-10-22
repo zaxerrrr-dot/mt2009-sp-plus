@@ -7021,6 +7021,10 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member of the night's cohorts (common.playerbot_yohara_cohort) -
 	// never rested, retired, renamed, borrowed; always an alchemy user.
 	bool IsPlayerBotYoharaCohortPID(DWORD pid);
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a bot living on the Sung Ma maps (its belt and bag are Dongan's errand, never a way
+	// home) and its revival there - at the safe point by its map's arrival, a person's "restart in town" (playerbot_yohara_sungma.h).
+	bool IsPlayerBotSungmaResidentPID(DWORD pid);
+	bool MovePlayerBotSungmaRevived(LPCHARACTER ch);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),

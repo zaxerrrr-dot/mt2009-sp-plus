@@ -61,6 +61,20 @@
 // minutes: here, the channel's rows, kills and kills an hour, experience and champion experience an hour, deaths,
 // stuck, navigation failures, level-ups, champion level-ups, moves in and out, the average Champion level).
 //
+// MT2009_PLUS_BOT_YOHARA_MAPS_V2 (the owner, 22 October evening: "dokoncz mapy" - the roads, Dongan's services, the
+// deaths on the higher maps; doc: cache/yohara/boty-mapy-yohary.md, section 9):
+//   * the spots are the bots' at last (GetPlayerBotYoharaHubs never answered for these maps: V1's bots walked +-1200
+//     round wherever they stood);
+//   * a portal is walked to only from near it (PLAYERBOT_SUNGMA_PORTAL_WALK_NEAR) - the onward portals stand 87-355 k
+//     units' walk from the arrivals, past up to 144 spawn points: the Yilad nav_fail and most deaths of the first run;
+//   * a revived resident stands up at its map's safe point (PLAYERBOT_SUNGMA_SAFE_POINTS), not in the pack;
+//   * a lone bot leaves a Sung Ma boss alone (BuildPlayerBotCombatContext), Schronienie's five densest spots are a
+//     party's;
+//   * a step up asks PLAYERBOT_SUNGMA_STEP_UP_LEVELS over the floor and every requirement, Inteligencja too (its points
+//     now go to the next map's Inteligencja as well); the map judged only once the items (the glove's Will) are in;
+//   * Dongan's errand (ManagePlayerBotSungmaErrand): potions and junk at Dongan's merchants, never home; the belt kept
+//     full where it stands only as the errand's fallback.
+//
 // An implementation fragment: included by playerbot_yohara_bots.h inside its namespace, after the cohorts and the
 // way out, before the route.
 
@@ -369,6 +383,49 @@
 	const DWORD PLAYERBOT_SUNGMA_NOT_NOW_MS = 2 * 60 * 60 * 1000;
 	const int PLAYERBOT_SUNGMA_DEATHS_STAY = 10;
 	const DWORD PLAYERBOT_SUNGMA_HP_LOOK_MS = 10 * 1000;	// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V2 (the owner, 22 October evening: "dokoncz mapy" - the roads, Dongan's services, the
+	// deaths on the higher maps):
+	// The walk to a portal only from this near (a straight line, and the navigation joining the two); farther - the warp,
+	// as a person takes a Teleporter. The portals onward stand at the far ends of the maps: the walk from the arrival is
+	// 87 000 (Dongan -> Seoganland) to 355 500 units (Yilad -> Wawoz; Schronienie -> Zejscie 343 500) on the maps' grids,
+	// past 20-144 spawn points - over PLAYERBOT_SUNGMA_PORTAL_WALK_MS at a bot's ~900 units a second, so every step up
+	// from Yilad ended "portal walk too long" (the census's nav_fail: 14 in half an hour, 9 in the first 5 minutes of the
+	// next run) and 24 of Yilad's 24 deaths, 26 of Dongan's 34 and 19 of Seoganland's 27 (18:40-18:47) came on such walks.
+	// The portals back stand by the arrivals (600-6 100 units' walk) and are still walked to.
+	const int PLAYERBOT_SUNGMA_PORTAL_WALK_NEAR = 12000;
+	// The map judged (the Will, the band) only once the items are loaded and this long after the bot came onto it: a bot
+	// just loaded read its glove's Will as 0 (Sila 0, Witalnosc without the glove's stone) and was sent down to the
+	// Twierdza as "unfit" (ChybaTy, Champion 17, 0/10/18/20 on Wawoz; Parowapl, Champion 27, on Zejscie).
+	const DWORD PLAYERBOT_SUNGMA_FIT_SETTLE_MS = 30 * 1000;
+	// A step up (onto a map above the one it stands on, or the first map from home) only this many Champion levels over
+	// the band's floor, with every requirement met - Inteligencja too; staying on a map asks the floor and Sila /
+	// Witalnosc / Odpornosc as before. The owner's "step up only when the bot is some levels above the band floor AND
+	// meets every requirement".
+	const int PLAYERBOT_SUNGMA_STEP_UP_LEVELS = 2;
+	// Dongan's services (the errand): a resident short of potions (under PLAYERBOT_SUNGMA_ERRAND_RED / _BLUE) or with no
+	// free column of three and junk to sell goes to Dongan's merchants (373 is on this core: a warp, as a person's
+	// Teleporter; walked from Dongan's own ground) - Handlarka Roznosci (9003: junk, potions to _FILL), Handlarz Bronia
+	// (9001) and Handlarz Zbrojami (9002) for their junk - and goes back to its map. An errand over _MS, or a warp
+	// refused, keeps the belt full where it stands (RestockPlayerBotYohara) for _FALLBACK_MS. Never home: Dongan is
+	// game3's. (No repair: an item here does not wear.)
+	const size_t PLAYERBOT_SUNGMA_ERRAND_RED = 60;
+	const size_t PLAYERBOT_SUNGMA_ERRAND_BLUE = 60;
+	const size_t PLAYERBOT_SUNGMA_ERRAND_FILL = 600;
+	const size_t PLAYERBOT_SUNGMA_ERRAND_EMERGENCY = 15;	// fewer and no errand now (a fight): the fallback at once
+	const DWORD PLAYERBOT_SUNGMA_ERRAND_LOOK_MS = 15 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_ERRAND_MS = 4 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_ERRAND_FALLBACK_MS = 30 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_ERRAND_BAG_MS = 20 * 60 * 1000;	// a bag errand at most this often (its junk may not free it)
+	const int PLAYERBOT_SUNGMA_ERRAND_REACH = 350;
+	// Dongan's merchants (npc.txt of metin2_map_eastplain_01, base 1049600,435200): 9003 (566,687), 9001 (484,677),
+	// 9002 (484,727) - beside the arrival (1102450,506850), no spawn within 9 400 units of it.
+	struct TPlayerBotSungmaMerchant { DWORD dwRace; long x, y; EPlayerBotMerchantCategory eCategory; const char* szTag; };
+	const TPlayerBotSungmaMerchant PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[] = {
+		{ 9003, 1106200, 503900, BOT_MERCHANT_MISC, "dongan_misc" },
+		{ 9001, 1098000, 502900, BOT_MERCHANT_WEAPON, "dongan_weapon" },
+		{ 9002, 1098000, 507900, BOT_MERCHANT_ARMOR, "dongan_armor" },
+	};
+	const int PLAYERBOT_SUNGMA_DONGAN_MERCHANT_COUNT = 3;
 
 	int GetPlayerBotSungmaSlot(long mapIndex)
 	{
@@ -432,6 +489,18 @@
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a step up onto a slot's map - PLAYERBOT_SUNGMA_STEP_UP_LEVELS over its floor and every
+	// requirement met, Inteligencja too (see there).
+	bool IsPlayerBotSungmaStepUpReady(LPCHARACTER ch, int slot, int champion)
+	{
+		if (champion < (int)PLAYERBOT_SUNGMA_MAPS[slot].bChampionMin + PLAYERBOT_SUNGMA_STEP_UP_LEVELS)
+			return false;
+		for (int i = 0; i < 4; ++i)
+			if (GetPlayerBotSungmaWill(ch, i) < GetPlayerBotSungmaReq(slot, i))
+				return false;
+		return true;
+	}
+
 	// ------------------------------------------------------------ the state
 
 	struct TPlayerBotSungmaBot
@@ -445,9 +514,15 @@
 		DWORD dwLastExp, dwLastNeed, dwLastChampionExp;
 		bool bFlee;			// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: stepped down after its deaths - the next move warps
 		DWORD dwNextHpLook;	// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: the maximum health's look (TrackPlayerBotSungma)
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: Dongan's errand - on it (bErrand), its next merchant, since when, what for
+		// (1 potions, 2 the bag), the fallback's end, the next look, the last bag errand.
+		bool bErrand;
+		int iErrandStop, iErrandNeed;
+		DWORD dwErrandSince, dwErrandFallbackUntil, dwNextErrandLook, dwLastBagErrand;
 		TPlayerBotSungmaBot() : dwNextPoints(0), dwNextPick(0), dwOnMapSince(0), dwWalkSince(0), dwChamberSince(0), lMapSeen(0),
 			bSeen(false), bStuck(false), iLastLevel(0), iLastChampion(0), dwLastExp(0), dwLastNeed(0), dwLastChampionExp(0),
-			bFlee(false), dwNextHpLook(0) {}
+			bFlee(false), dwNextHpLook(0), bErrand(false), iErrandStop(0), iErrandNeed(0), dwErrandSince(0),
+			dwErrandFallbackUntil(0), dwNextErrandLook(0), dwLastBagErrand(0) {}
 	};
 	std::map<DWORD, TPlayerBotSungmaBot> s_mapPlayerBotSungma;
 
@@ -455,8 +530,12 @@
 	{
 		unsigned int kills, killsAtCensus, deaths, stuck, navFail, levelUps, championUps, movesIn, movesOut, stepsDown, hops;
 		long long exp, expAtCensus, championExp, championExpAtCensus;
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: the walks to a portal, the warps instead of one, the revivals at the arrival,
+		// Dongan's errands from this map and their fallbacks
+		unsigned int portalWalks, portalWarps, revives, errands, errandFallbacks;
 		TPlayerBotSungmaStats() : kills(0), killsAtCensus(0), deaths(0), stuck(0), navFail(0), levelUps(0), championUps(0),
-			movesIn(0), movesOut(0), stepsDown(0), hops(0), exp(0), expAtCensus(0), championExp(0), championExpAtCensus(0) {}
+			movesIn(0), movesOut(0), stepsDown(0), hops(0), exp(0), expAtCensus(0), championExp(0), championExpAtCensus(0),
+			portalWalks(0), portalWarps(0), revives(0), errands(0), errandFallbacks(0) {}
 	};
 	TPlayerBotSungmaStats s_aPlayerBotSungmaStats[9];
 	static_assert(sizeof(s_aPlayerBotSungmaStats) / sizeof(s_aPlayerBotSungmaStats[0]) ==
@@ -484,6 +563,8 @@
 			return 0;
 		const DWORD dwNow = get_dword_time();
 		std::map<DWORD, TPlayerBotSungmaBot>::const_iterator b = s_mapPlayerBotSungma.find(ch->GetPlayerID());
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a map above the one it stands on (any map, from home) is a step up
+		const int currentSlot = currentMap ? GetPlayerBotSungmaSlot(currentMap) : -1;
 		long lowest = 0;
 		for (int i = PLAYERBOT_SUNGMA_MAP_COUNT - 1; i >= 0; --i)
 		{
@@ -492,6 +573,8 @@
 				continue;
 			lowest = m.lMap;
 			if (champion < (int)m.bChampionMin || !IsPlayerBotSungmaWillEnough(ch, i) || !HasPlayerBotSungmaRoom(i, currentMap))
+				continue;
+			if (i > currentSlot && !IsPlayerBotSungmaStepUpReady(ch, i, champion))
 				continue;
 			if (b != s_mapPlayerBotSungma.end())
 			{
@@ -517,7 +600,8 @@
 			if (!IsPlayerBotSungmaMapOn(m.lMap))
 				continue;
 			lowest = m.lMap;
-			if (champion >= (int)m.bChampionMin && HasPlayerBotSungmaRoom(i, 0))
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V2: from home every map is a step up (its Will is read there, on the map)
+			if (champion >= (int)m.bChampionMin + PLAYERBOT_SUNGMA_STEP_UP_LEVELS && HasPlayerBotSungmaRoom(i, 0))
 				return m.lMap;
 		}
 		return lowest;
@@ -552,9 +636,10 @@
 		for (int slot = 0; slot < PLAYERBOT_SUNGMA_MAP_COUNT; ++slot)
 		{
 			int best = -1, bestGap = 0;
-			// Sila first on a tie (its penalty halves the damage), then Odpornosc (the speed), then Witalnosc
-			static const int order[3] = { 0, 2, 1 };
-			for (int k = 0; k < 3; ++k)
+			// Sila first on a tie (its penalty halves the damage), then Odpornosc (the speed), then Witalnosc;
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V2: then Inteligencja - a step up asks it too (IsPlayerBotSungmaStepUpReady)
+			static const int order[4] = { 0, 2, 1, 3 };
+			for (int k = 0; k < 4; ++k)
 			{
 				const int i = order[k];
 				const int gap = GetPlayerBotSungmaReq(slot, i) - GetPlayerBotSungmaWill(ch, i);
@@ -747,12 +832,28 @@
 			for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_PORTALS) / sizeof(PLAYERBOT_SUNGMA_PORTALS[0]); ++i)
 				if (PLAYERBOT_SUNGMA_PORTALS[i].lFrom == here && PLAYERBOT_SUNGMA_PORTALS[i].lTo == step)
 					portal = &PLAYERBOT_SUNGMA_PORTALS[i];
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V2: walked to only from near it (PLAYERBOT_SUNGMA_PORTAL_WALK_NEAR) and on its
+			// ground; a walk begun goes on (the bot comes nearer).
+			if (portal && b.dwWalkSince == 0)
+			{
+				CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(ch->GetMapIndex());
+				const int d = DISTANCE_APPROX(ch->GetX() - portal->x, ch->GetY() - portal->y);
+				if (d > PLAYERBOT_SUNGMA_PORTAL_USE && (d > PLAYERBOT_SUNGMA_PORTAL_WALK_NEAR ||
+						!navigation.Init(ch->GetMapIndex()) || !navigation.CanReach(ch->GetX(), ch->GetY(), portal->x, portal->y)))
+				{
+					sys_log(0, "PLAYERBOT_SUNGMA: portal far, warp pid=%u name=%s map=%ld to=%ld portal=(%ld,%ld) pos=(%ld,%ld) dist=%d",
+							ch->GetPlayerID(), ch->GetName(), here, toMap, portal->x, portal->y, ch->GetX(), ch->GetY(), d);
+					++s_aPlayerBotSungmaStats[from].portalWarps;
+					portal = NULL;
+				}
+			}
 		}
 		if (portal && DISTANCE_APPROX(ch->GetX() - portal->x, ch->GetY() - portal->y) > PLAYERBOT_SUNGMA_PORTAL_USE)
 		{
 			if (b.dwWalkSince == 0)
 			{
 				b.dwWalkSince = dwNow ? dwNow : 1;
+				++s_aPlayerBotSungmaStats[from].portalWalks;	// MT2009_PLUS_BOT_YOHARA_MAPS_V2
 				sys_log(0, "PLAYERBOT_SUNGMA: to the portal pid=%u name=%s map=%ld to=%ld portal=(%ld,%ld) pos=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), here, toMap, portal->x, portal->y, ch->GetX(), ch->GetY());
 			}
@@ -809,6 +910,195 @@
 		return true;
 	}
 
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_YOHARA_MAPS_V2: the revival, Dongan's errand
+
+	bool IsPlayerBotSungmaResidentPID(DWORD pid)
+	{
+		const TPlayerBotYoharaResident* r = FindPlayerBotYoharaResident(pid);
+		return r && r->iPurpose == YOHARA_PURPOSE_SUNGMA;
+	}
+
+	// HandleDeath (playerbot_survival.h), the bot just stood up: a Sung Ma resident is put at its map's safe point by the
+	// arrival (PLAYERBOT_SUNGMA_SAFE_POINTS; Zejscie's in its first room), a person's "restart in town" there. True when
+	// moved.
+	bool MovePlayerBotSungmaRevived(LPCHARACTER ch)
+	{
+		if (!ch || ch->IsDead() || !IsPlayerBotSungmaResidentPID(ch->GetPlayerID()))
+			return false;
+		const long mapIndex = ch->GetMapIndex();
+		const int slot = GetPlayerBotSungmaSlot(mapIndex);
+		if (slot < 0 || mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
+			return false;
+		long ax = 0, ay = 0;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_SAFE_POINTS) / sizeof(PLAYERBOT_SUNGMA_SAFE_POINTS[0]); ++i)
+			if (PLAYERBOT_SUNGMA_SAFE_POINTS[i].lMap == mapIndex)
+			{
+				ax = PLAYERBOT_SUNGMA_SAFE_POINTS[i].x;
+				ay = PLAYERBOT_SUNGMA_SAFE_POINTS[i].y;
+			}
+		if (ax == 0 && !GetPlayerBotSungmaArrival(mapIndex, ax, ay))
+			return false;
+		// a party's fight goes on where it is (its members stand by it)
+		if (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3)
+			return false;
+		long ox = 0, oy = 0;
+		GetPlayerBotStableOffset(ch->GetPlayerID(), 0x53524556U, 50, 250, ox, oy);
+		sys_log(0, "PLAYERBOT_SUNGMA: revived at the safe point pid=%u name=%s map=%ld from=(%ld,%ld) to=(%ld,%ld) champion=%d",
+				ch->GetPlayerID(), ch->GetName(), mapIndex, ch->GetX(), ch->GetY(), ax + ox, ay + oy, GetPlayerBotChampionLevel(ch));
+		++s_aPlayerBotSungmaStats[slot].revives;
+		ch->Stop();
+		ch->Show(mapIndex, ax + ox, ay + oy, 0);
+		return true;
+	}
+
+	// What the bot lacks that Dongan sells: 1 potions, 2 room in the bag (no free column of three, junk to sell).
+	int GetPlayerBotSungmaErrandNeed(LPCHARACTER ch, const TPlayerBotSungmaBot& b, DWORD dwNow)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return 0;
+		int need = 0;
+		size_t red = 0, blue = 0;
+		CountPlayerBotPotions(ch, red, blue);
+		const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
+		if (red < PLAYERBOT_SUNGMA_ERRAND_RED || (caster && blue < PLAYERBOT_SUNGMA_ERRAND_BLUE))
+			need |= 1;
+		if (ch->GetEmptyInventory(3) < 0 && (b.dwLastBagErrand == 0 || dwNow - b.dwLastBagErrand >= PLAYERBOT_SUNGMA_ERRAND_BAG_MS) &&
+				(HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) || HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) ||
+				 HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR)))
+			need |= 2;
+		return need;
+	}
+
+	// The errand given up (too long, a warp refused, Dongan off): the belt kept full where it stands for a while.
+	void FailPlayerBotSungmaErrand(LPCHARACTER ch, TPlayerBotYoharaResident& res, TPlayerBotSungmaBot& b, DWORD dwNow, const char* why)
+	{
+		const int slot = GetPlayerBotSungmaSlot(res.lMap);
+		if (slot >= 0)
+			++s_aPlayerBotSungmaStats[slot].errandFallbacks;
+		PlayerBotLogThrottled("sungma_errand_fallback", dwNow, "PLAYERBOT_SUNGMA: errand fallback pid=%u name=%s map=%ld home_map=%ld why=%s after_s=%u",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), res.lMap, why,
+				b.dwErrandSince ? (dwNow - b.dwErrandSince) / 1000 : 0);
+		b.bErrand = false;
+		b.dwErrandFallbackUntil = dwNow + PLAYERBOT_SUNGMA_ERRAND_FALLBACK_MS;
+		res.dwNextRestock = 0;
+		RestockPlayerBotYohara(ch, res, dwNow);
+	}
+
+	// Dongan's errand: -1 not on one (hunt on), 1 this tick is the errand's. Before the map's pick: on Dongan for an
+	// errand a bot is not "off its map".
+	int ManagePlayerBotSungmaErrand(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotYoharaResident& res,
+			TPlayerBotSungmaBot& b, long base, DWORD dwNow)
+	{
+		// an errand of an earlier stay (the bot went home and came back) is over
+		if (b.bErrand && (int)(res.dwArrived - b.dwErrandSince) > 0)
+			b.bErrand = false;
+		if (!b.bErrand)
+		{
+			if ((int)(dwNow - b.dwNextErrandLook) < 0)
+				return -1;
+			b.dwNextErrandLook = dwNow + PLAYERBOT_SUNGMA_ERRAND_LOOK_MS;
+			const int need = GetPlayerBotSungmaErrandNeed(ch, b, dwNow);
+			if (!need)
+				return -1;
+			const bool fallback = (int)(b.dwErrandFallbackUntil - dwNow) > 0 ||
+					!IsPlayerBotSungmaMapOn(PLAYERBOT_MAP_SUNGMA_DONGAN) || !IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SUNGMA_DONGAN);
+			if (fallback)
+			{
+				res.dwNextRestock = 0;
+				RestockPlayerBotYohara(ch, res, dwNow);
+				return -1;
+			}
+			// Not out of a fight, nor half dead, nor off a party's stone: later - but an empty belt now is the fallback's.
+			const bool busy = state.dwTargetVID != 0 || ch->GetVictim() != NULL || state.bTacticalRetreat ||
+					ch->GetHP() * 100 < ch->GetMaxHP() * 40 || (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3) ||
+					IsPlayerBotOnDungeonRun(ch->GetPlayerID());
+			if (busy)
+			{
+				size_t red = 0, blue = 0;
+				CountPlayerBotPotions(ch, red, blue);
+				if (red < PLAYERBOT_SUNGMA_ERRAND_EMERGENCY)
+				{
+					res.dwNextRestock = 0;
+					RestockPlayerBotYohara(ch, res, dwNow);
+				}
+				return -1;
+			}
+			b.bErrand = true;
+			b.iErrandStop = 0;
+			b.iErrandNeed = need;
+			b.dwErrandSince = dwNow ? dwNow : 1;
+			if (need & 2)
+				b.dwLastBagErrand = b.dwErrandSince;
+			const int slot = GetPlayerBotSungmaSlot(res.lMap);
+			if (slot >= 0)
+				++s_aPlayerBotSungmaStats[slot].errands;
+			size_t red = 0, blue = 0;
+			CountPlayerBotPotions(ch, red, blue);
+			sys_log(0, "PLAYERBOT_SUNGMA: errand to dongan pid=%u name=%s map=%ld need=%s%s red=%u blue=%u free3=%d pos=(%ld,%ld)",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (need & 1) ? "potions" : "", (need & 2) ? "+bag" : "",
+					(unsigned int)red, (unsigned int)blue, ch->GetEmptyInventory(3) >= 0 ? 1 : 0, ch->GetX(), ch->GetY());
+		}
+		if (ch->IsDead() || state.bRecoveringAfterDeath)
+			return -1;
+		if (dwNow - b.dwErrandSince >= PLAYERBOT_SUNGMA_ERRAND_MS)
+		{
+			FailPlayerBotSungmaErrand(ch, res, b, dwNow, "too_long");
+			return -1;
+		}
+		// the next merchant this errand calls on (the misc one for the potions and its junk, the others for theirs)
+		while (b.iErrandStop < PLAYERBOT_SUNGMA_DONGAN_MERCHANT_COUNT)
+		{
+			const TPlayerBotSungmaMerchant& m = PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[b.iErrandStop];
+			if ((m.eCategory == BOT_MERCHANT_MISC && (b.iErrandNeed & 1)) || HasPlayerBotJunkForMerchant(ch, m.eCategory))
+				break;
+			++b.iErrandStop;
+		}
+		if (b.iErrandStop >= PLAYERBOT_SUNGMA_DONGAN_MERCHANT_COUNT)
+		{
+			size_t red = 0, blue = 0;
+			CountPlayerBotPotions(ch, red, blue);
+			sys_log(0, "PLAYERBOT_SUNGMA: errand done pid=%u name=%s back_to=%ld red=%u blue=%u free3=%d gold=%lld took_s=%u",
+					ch->GetPlayerID(), ch->GetName(), res.lMap, (unsigned int)red, (unsigned int)blue,
+					ch->GetEmptyInventory(3) >= 0 ? 1 : 0, (long long)ch->GetGold(), (dwNow - b.dwErrandSince) / 1000);
+			b.bErrand = false;
+			b.dwWalkSince = 0;
+			return -1;	// the map's pick takes it back to its map (the arrival - by the portal when that is near)
+		}
+		const TPlayerBotSungmaMerchant& m = PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[b.iErrandStop];
+		long ax = 0, ay = 0;
+		GetPlayerBotNpcApproach(ch->GetPlayerID(), m.x, m.y, 0x444f4e47U + (DWORD)b.iErrandStop, ax, ay);
+		if (base != PLAYERBOT_MAP_SUNGMA_DONGAN)
+		{
+			s_szPlayerBotTransitionRefusal = NULL;
+			if (!TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_SUNGMA_DONGAN, ax, ay, dwNow, "sungma_errand"))
+			{
+				FailPlayerBotSungmaErrand(ch, res, b, dwNow, s_szPlayerBotTransitionRefusal ? s_szPlayerBotTransitionRefusal : "warp_refused");
+				return -1;
+			}
+			return 1;
+		}
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		if (DISTANCE_APPROX(ch->GetX() - ax, ch->GetY() - ay) > PLAYERBOT_SUNGMA_ERRAND_REACH)
+		{
+			SetPlayerBotAction(state, BOT_ACTION_SHOP, dwNow);
+			MovePlayerBot(ch, ax, ay, dwNow, 6, true, false, false, false);
+			return 1;
+		}
+		// at the merchant: its junk sold; at Handlarka Roznosci the belt bought too
+		ch->Stop();
+		SellPlayerBotJunkAtMerchant(ch, m.eCategory, m.szTag);
+		if (m.eCategory == BOT_MERCHANT_MISC)
+		{
+			int boughtRed = 0, boughtBlue = 0;
+			BuyPlayerBotYoharaBelt(ch, PLAYERBOT_SUNGMA_ERRAND_FILL, PLAYERBOT_SUNGMA_ERRAND_FILL, boughtRed, boughtBlue);
+			sys_log(0, "PLAYERBOT_SUNGMA: errand bought pid=%u name=%s merchant=%u bought_red=%d bought_blue=%d gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), m.dwRace, boughtRed, boughtBlue, (long long)ch->GetGold());
+		}
+		++b.iErrandStop;
+		return 1;
+	}
+
 	// The travel pass's part for a resident of purpose "yohara" (ManagePlayerBotYoharaTravel): -1 hunt on, 0/1 its answer.
 	int ManagePlayerBotSungmaResident(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotYoharaResident& res, DWORD dwNow)
 	{
@@ -848,9 +1138,12 @@
 			b.dwChamberSince = dwNow ? dwNow : 1;
 		}
 		const int slotNow = GetPlayerBotSungmaSlot(res.lMap);
-		const bool fitsNow = slotNow >= 0 && IsPlayerBotSungmaMapOn(res.lMap) && IsPlayerBotSungmaWillEnough(ch, slotNow) &&
-				GetPlayerBotChampionLevel(ch) >= (int)PLAYERBOT_SUNGMA_MAPS[slotNow].bChampionMin &&
-				b.mapNotNow.count(res.lMap) == 0;
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: the Will and the band judged once the items are in and the bot has stood here
+		// PLAYERBOT_SUNGMA_FIT_SETTLE_MS (its glove's Will read 0 at the load); the deaths' "not now" at once.
+		const bool judged = ch->IsItemLoaded() && dwNow - b.dwOnMapSince >= PLAYERBOT_SUNGMA_FIT_SETTLE_MS;
+		const bool fitsNow = slotNow >= 0 && IsPlayerBotSungmaMapOn(res.lMap) && b.mapNotNow.count(res.lMap) == 0 &&
+				(!judged || (IsPlayerBotSungmaWillEnough(ch, slotNow) &&
+				 GetPlayerBotChampionLevel(ch) >= (int)PLAYERBOT_SUNGMA_MAPS[slotNow].bChampionMin));
 		if (!fitsNow || ((int)(dwNow - b.dwNextPick) >= 0 && dwNow - b.dwOnMapSince >= PLAYERBOT_SUNGMA_SETTLE_MS))
 		{
 			b.dwNextPick = dwNow + PLAYERBOT_SUNGMA_PICK_MS;
@@ -959,11 +1252,12 @@
 			const long long championExpH = span > 0 ? (st.championExp - st.championExpAtCensus) * 3600000LL / (long long)span : 0;
 			sys_log(0, "PLAYERBOT_SUNGMA: census channel=%u map=%ld name=%s here=%d channel_rows=%d avg_champion=%d kills=%u kills_h=%lld "
 					"exp=%lld exp_h=%lld champion_exp=%lld champion_exp_h=%lld deaths=%u stuck=%u nav_fail=%u level_ups=%u "
-					"champion_ups=%u moves_in=%u moves_out=%u steps_down=%u hops=%u",
+					"champion_ups=%u moves_in=%u moves_out=%u steps_down=%u hops=%u portal_walks=%u portal_warps=%u revives=%u "
+					"errands=%u errand_fallbacks=%u",
 					(unsigned int)g_bChannel, PLAYERBOT_SUNGMA_MAPS[i].lMap, PLAYERBOT_SUNGMA_MAPS[i].szKey, here[i],
 					s_aiPlayerBotSungmaMapCensus[i], here[i] ? champSum[i] / here[i] : 0, st.kills, killsH, st.exp, expH,
 					st.championExp, championExpH, st.deaths, st.stuck, st.navFail, st.levelUps, st.championUps, st.movesIn,
-					st.movesOut, st.stepsDown, st.hops);
+					st.movesOut, st.stepsDown, st.hops, st.portalWalks, st.portalWarps, st.revives, st.errands, st.errandFallbacks);
 			st.killsAtCensus = st.kills;
 			st.expAtCensus = st.exp;
 			st.championExpAtCensus = st.championExp;
