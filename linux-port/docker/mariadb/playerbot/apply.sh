@@ -3576,6 +3576,25 @@ if [ -s /opt/playerbot/czempion.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_EXP_UNSIGNED_V1: a character's exp is a DWORD in the cores (TPlayerTable.exp, CHARACTER::GetExp,
+# exp_table, the db core's "exp = %u"), but the dump's player.exp is a signed INT: this sql_mode clamps it silently at
+# 2 147 483 647, below the level-120 bar (exp_table[120] = 2 500 000 000) - the top level could never be filled and
+# the Champion's bubbles stopped. INT UNSIGNED (4.29 bn) in player, player_deleted (copied with SELECT *) and the
+# Yohara cohort tools' backup; once, a no-op after (information_schema decides). Before a db core starts.
+for exp_tab in player player_deleted playerbot_yohara_cohort_bak_player; do
+    exp_type=$(db -e "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='player' AND TABLE_NAME='$exp_tab' AND COLUMN_NAME='exp';" 2>/dev/null || true)
+    case "$exp_type" in
+        ''|*unsigned*) ;;
+        *)
+            if db -e "ALTER TABLE player.$exp_tab MODIFY exp INT UNSIGNED NOT NULL DEFAULT 0;"; then
+                echo "[playerbot-migrate] exp: player.$exp_tab.exp ($exp_type) is INT UNSIGNED"
+            else
+                fail_step "exp: could not make player.$exp_tab.exp INT UNSIGNED (MT2009_PLUS_EXP_UNSIGNED_V1)"
+            fi
+            ;;
+    esac
+done
+
 # MT2009_PLUS_CHANGE_LOOK_V1: Transmutacja (server-patches/transmutacja/README.md). transmutacja.sql is idempotent
 # (ADD COLUMN IF NOT EXISTS, INSERT IGNORE): player.item.transmutation, which every item query of a db core with the
 # patch names - must run before that core starts - and the tickets / reversals 72325, 72326, 72341, 72343, 72344.
