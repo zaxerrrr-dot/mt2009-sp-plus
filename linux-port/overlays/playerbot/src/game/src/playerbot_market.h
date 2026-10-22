@@ -243,6 +243,9 @@ namespace
 		// takes (playerbot_yohara_g0.h).
 		if (WantsPlayerBotG0DustOffer(ch, offer))
 			return true;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: and over its reserve, the dust of a Champion's elixirs of power (playerbot_yohara_shop.h).
+		if (WantsPlayerBotYoharaShopDustOffer(ch, offer))
+			return true;
 
 		// Cor Draconis and Dragon Stones, for an alchemy bot (playerbot_alchemy.h).
 		if (IsPlayerBotCorVnum(offer->GetVnum()) || offer->IsDragonSoul())
@@ -559,6 +562,9 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: the dust of a Champion's G0 package, while a counter holds some.
 		if (WantsPlayerBotG0DustFromMarket(ch))
 			return true;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the dust of a Champion's elixirs of power, while a counter holds some.
+		if (PlayerBotYoharaShopWantsDustFromMarket(ch))
+			return true;
 		if (PlayerBotNeedsProgressionShopping(ch)) return true;
 		// MT2009_PLUS_RANK_FRUIT_MARKET_V1: the rank fruit it eats, while a
 		// counter holds one (the ledger).
@@ -739,6 +745,9 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion's dust for its G0 package - its own cap and share of the purse.
 		if (WantsPlayerBotG0DustOffer(ch, item))
 			return CanPlayerBotPayForG0Dust(ch, item, price);
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the elixirs' dust - its own cap and a smaller share of the purse.
+		if (WantsPlayerBotYoharaShopDustOffer(ch, item))
+			return CanPlayerBotPayForYoharaShopDust(ch, item, price);
 		// MT2009_PLUS_MARKET_LIFE_V1, point 9: a line bought on a whim, not for
 		// a need, is paid for by the whim's own rules alone.
 		if (IsPlayerBotWhimCandidate(ch, item) && !WantsPlayerBotStallItemOwn(ch, item))
@@ -1109,6 +1118,7 @@ namespace
 		NotePlayerBotGamblePurchase(ch, paid);
 		NotePlayerBotGuildMaterialBought(ch, pick.dwVnum, paid);
 		NotePlayerBotG0DustBought(ch, pick.dwVnum, paid, pick.wCount);	// MT2009_PLUS_BOT_YOHARA_G0_V1
+		NotePlayerBotYoharaShopBought(ch, pick.dwVnum, paid, pick.wCount);	// MT2009_PLUS_BOT_YOHARA_SHOP_V1
 		if (gambleBase)
 			NotePlayerBotGambleBaseBought(ch, pick.dwVnum, paid);
 		if (whim)

@@ -503,6 +503,7 @@ namespace {
         NotePlayerBotGuildMaterialBought(ch, boughtVnum, payPrice);
         NotePlayerBotCraftBought(ch, boughtVnum, payPrice); // MT2009_PLUS_BOT_WORKSHOP_V1
         NotePlayerBotG0DustBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_G0_V1
+        NotePlayerBotYoharaShopBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_SHOP_V1
         if (Begin(ch->GetPlayerID(), Buy, o.buyItem, now)) {
             auto& request = requests.at(ch->GetPlayerID());
             request.vnum = line->GetInfo().vnum;

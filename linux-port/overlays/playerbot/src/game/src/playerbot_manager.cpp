@@ -403,6 +403,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_yohara_g0.h"
 // MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the elements' part that reads the Sung Ma state (the map, the elixirs, the census)
 #include "playerbot_yohara_elements_late.h"
+#include "playerbot_yohara_shop.h" // MT2009_PLUS_BOT_YOHARA_SHOP_V1: the bots' exchange in Dongan (elixirs for materials / dust) and the Champions' world set
 
 namespace
 {
@@ -7941,6 +7942,10 @@ WritePlayerBotGuildStatus(dwNow);
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin && !curTarget &&
 				ManagePlayerBotG0(ch, state, dwNow))
 			continue;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's world set - its old jewellery off the Sung Ma maps, the jade on them
+		// (playerbot_yohara_shop.h); its own clock, never the tick's owner.
+		if (!bServingPerson && !state.bMultiPullActive)
+			ManagePlayerBotYoharaShop(ch, state, dwNow);
 
 		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and
 		// worn. Beside the Alchemist and for his reason: above the travel pass,

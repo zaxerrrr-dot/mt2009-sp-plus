@@ -333,6 +333,10 @@ namespace
 	{
 		if (bType < POINT_SUNGMA_STR || bType > POINT_SUNGMA_IMMUNE || !IsPlayerBotSungmaWillUser(ch))
 			return -1;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: off the Sung Ma maps the Will counts nothing - the world set goes on there
+		// (playerbot_yohara_shop.h).
+		if (!IsPlayerBotDressedForSungma(ch))
+			return 0;
 		return bType == POINT_SUNGMA_IMMUNE ? PLAYERBOT_G0_WILL_WEIGHT_IMMUNE : PLAYERBOT_G0_WILL_WEIGHT;
 	}
 
@@ -469,6 +473,9 @@ namespace
 	// of its kind is owned).
 	bool IsPlayerBotG0PieceReplaced(LPCHARACTER ch, LPITEM item)
 	{
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the jade of a world set's slot is kept, whatever the dress (playerbot_yohara_shop.h).
+		if (IsPlayerBotYoharaWorldSetKeptJade(ch, item))
+			return false;
 		const int kind = GetPlayerBotWillTalismanKind(item->GetVnum());
 		if (kind >= 0)
 			return GetPlayerBotBestWillTalismanPlus(ch, kind, item) > (int)(item->GetVnum() % 10);

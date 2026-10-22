@@ -1528,9 +1528,11 @@ namespace
 		// into a change or an add stone (GetPlayerBotDustBonusKeep): the
 		// counter takes only the dust over that.
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: and a Champion's 400 for its G0 package (playerbot_yohara_g0.h).
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: and over them the dust its elixirs of power still take (playerbot_yohara_shop.h).
 		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
 			return ch ? std::max(std::max((ch->GetLevel() >= PLAYERBOT_BONUS_MIN_LEVEL || PlayerBotWantsBlessingMarble(ch))
-					? PLAYERBOT_DUST_PER_MARBLE : 0, GetPlayerBotDustBonusKeep(ch)), GetPlayerBotG0DustReserve(ch)) : 0;
+					? PLAYERBOT_DUST_PER_MARBLE : 0, GetPlayerBotDustBonusKeep(ch)),
+					GetPlayerBotG0DustReserve(ch) + GetPlayerBotYoharaShopDustKeep(ch)) : 0;
 		// MT2009_PLUS_BOT_CAPE_V1: a bot that uses Peleryna Mestwa keeps its
 		// own off the counter (IsPlayerBotCapeBuild).
 		if (IsPlayerBotValourCapeVnum(item->GetVnum()) && ch && IsPlayerBotCapeBuild(ch))
@@ -2379,6 +2381,9 @@ namespace
 		// MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the next tier's piece and the
 		// surplus level-30 weapon at the anvil today.
 		if (IsPlayerBotFutureProject(ch, item) || IsPlayerBotLottery30Piece(ch, item))
+			return true;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's world set and its jade (playerbot_yohara_shop.h).
+		if (IsPlayerBotYoharaShopKept(ch, item))
 			return true;
 		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
 				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) || IsPlayerBotTowerSmithReserve(ch, item) ||
