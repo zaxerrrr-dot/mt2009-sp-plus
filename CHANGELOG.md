@@ -17,6 +17,19 @@ every version here.
 
 ---
 
+## 2.37.0 — (szkic)
+
+### Tryb global (`M2_BONUS_MODE`)
+- **Ustawienia serwera globalnego jednym przełącznikiem.** Dodałem w `.env` i w panelu ustawienie „Tryb global”: `mt2009` (domyślnie) zostawia świat dokładnie takim, jaki był, a `global` włącza ustawienia serwera globalnego – bonusy, żywioły, alchemię, ulepszanie i potwory. Działa po restarcie serwera, można przełączać w obie strony, a powrót do `mt2009` przywraca świat co do wartości.
+- **Bonusy jak na serwerze globalnym:** Maks. PŻ do 2000, Maks. PE do 80 (200 na naszyjniku), regeneracja do 30%, odporność na ogień, błyskawice i wiatr na zbroi, bransolecie i hełmie, szansa na bonus doświadczenia (buty, naszyjnik, tarcza) i na podwójną ilość przedmiotów (bransoleta, kolczyki – podnosi szansę dropu). Na broni, zbroi i biżuterii nie losują się już wytrzymałość, czas trwania umiejętności, odbicie strzał i stałe doświadczenie. Przedmioty zachowują wszystkie bonusy, które już mają.
+- **Stałe bonusy przedmiotów** jak na serwerze globalnym (np. Bambusowe Buty+9: szybkość ruchu 15 i odporność na ogień 10) – także w opisie przedmiotu.
+- **Żywioły wszystkich potworów** według danych gry; odporność na żywioł działa w 30% swojej wartości (15% odporności = 4,5% mniej obrażeń). Ikona żywiołu przy pasku życia celu pokazuje żywioł trybu global.
+- **Alchemia:** Smocze Kamienie dostają domyślne bonusy (np. Diament: inteligencja, odporność na lód i siła lodu). Kamienie zachowują swoje bonusy, a przy ulepszaniu rosną z tymi, które mają.
+- **Ulepszanie jak na serwerze globalnym:** szansa, koszt w Yangach i ulepszacze każdego kroku dla każdego przedmiotu, także przemiany „+9 → następny przedmiot” tam, gdzie oba przedmioty są w grze. Kowal, zwoje i kamienie ulepszania liczą te same szanse, a okno ulepszania i zwoje w kliencie pokazują nowe kroki.
+- **Potwory jak na serwerze globalnym:** PŻ, obrażenia, doświadczenie, poziom, obrona, statystyki, szybkości, odporności, efekty i rangi prawie 500 potworów oraz ich drop.
+- Boty w trybie global zbierają ulepszacze nowych kroków (także do pasów) i nie zużywają ich na sprzęt na sprzedaż, jeśli brakuje ich do sprzętu, który noszą.
+- Opisy przedmiotów, maksymalne wartości bonusów i ikony żywiołów trybu global wymagają nowego klienta; serwer liczy tryb global także ze starym klientem.
+
 ## 2.36.0 — 2026-10-20 — Sklepy botów bez przepełnienia, lochy bez zatrzymań, retencja logów w panelu
 
 ### Boty – stragany i handel
