@@ -3338,7 +3338,8 @@ namespace
 				(PlayerBotWantsShield(ch) && !ch->GetWear(WEAR_SHIELD)))
 			return false;
 		const int plus = IsPlayerBotCapeTank(ch) ? PLAYERBOT_CAPE_TANK_PLUS : PLAYERBOT_CAPE_OTHER_PLUS;	// MT2009_PLUS_BOT_CAPE_V2
-		return (int)weapon->GetRefineLevel() >= plus && (int)armor->GetRefineLevel() >= plus;
+		return GetPlayerBotReadyWeaponPlus(weapon) >= plus &&	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: the young one is +9
+				(int)armor->GetRefineLevel() >= plus;
 	}
 
 	int CountPlayerBotValourCapes(LPCHARACTER ch)
