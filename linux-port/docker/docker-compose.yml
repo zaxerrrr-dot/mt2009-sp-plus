@@ -249,8 +249,8 @@ services:
       M2_PLAYERBOT_CH2: "${M2_PLAYERBOT_CH2:-0}"
       PLAYERBOT_CH2_SHARE: "${PLAYERBOT_CH2_SHARE:-40}"
       # MT2009_PLUS_BOT_YOHARA_HANDOVER_V1 / MT2009_PLUS_237_ZAKLETY_LAS_V1: the bots between the game cores of a
-      # channel (playerbot_yohara_bots.h) - Zaklety Las 100-109 on game2, the loot runs on the 90-level maps;
-      # the limits are per channel.
+      # channel (playerbot_yohara_bots.h) - Zaklety Las 100-109 and the loot runs on the 90-level maps, all on
+      # game3 (MT2009_PLUS_237_NEWCORE_V1); the limits are per channel.
       PLAYERBOT_HANDOVER: "${PLAYERBOT_HANDOVER:-1}"
       PLAYERBOT_HANDOVER_CHANNELS: "${PLAYERBOT_HANDOVER_CHANNELS:-1,2,3,4,5,6}"
       PLAYERBOT_ZAKLETY_MAX: "${PLAYERBOT_ZAKLETY_MAX:-30}"
@@ -258,7 +258,11 @@ services:
       PLAYERBOT_ZAKLETY_MIN_HP: "${PLAYERBOT_ZAKLETY_MIN_HP:-20000}"
       PLAYERBOT_ZAKLETY_STAY_MIN: "${PLAYERBOT_ZAKLETY_STAY_MIN:-120}"
       PLAYERBOT_LOOTRUN_MAX: "${PLAYERBOT_LOOTRUN_MAX:-6}"
-      PLAYERBOT_LOOTRUN_MAPS: "${PLAYERBOT_LOOTRUN_MAPS:-303,304}"
+      PLAYERBOT_LOOTRUN_MAPS: "${PLAYERBOT_LOOTRUN_MAPS:-301,302,303,304}"
+      # MT2009_PLUS_237_NEWCORE_V1: game3, the fourth core of every channel - Zaklety Las (353) and the
+      # level-90 maps (301-304), on BASE+3 (CH1) .. BASE+6 (CH4). 0 puts the five maps back on game2 and
+      # starts no game3 (a PC short of memory; bin/m2-render-config).
+      M2_MAP_CORE: "${M2_MAP_CORE:-1}"
       M2_PLAYERBOT_CH2_SET_AT: "${M2_PLAYERBOT_CH2_SET_AT:-0}"
       # MT2009_PLUS_CH34_V1: the third and fourth channel on the same principle
       # (bots relog to CH1 for the stalls), off by default; CH3 only with CH2,
@@ -266,7 +270,7 @@ services:
       # above/below has to reach base+22 (CH3) or base+32 (CH4).
       M2_PLAYERBOT_CH3: "${M2_PLAYERBOT_CH3:-0}"
       M2_PLAYERBOT_CH4: "${M2_PLAYERBOT_CH4:-0}"
-      M2_GAME_CONTAINER_PORT_RANGE: "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}"
+      M2_GAME_CONTAINER_PORT_RANGE: "${M2_GAME_CONTAINER_PORT_RANGE:-13000-13003}"
       # The channels' first port inside the container (m2-render-config); the
       # range above has to start there. 13000 unless a second stack on the same
       # host needs another one.
@@ -299,7 +303,10 @@ services:
       # 13000-13012 when it switches the second channel on (M2_PLAYERBOT_CH2),
       # 13000-13022 with CH3 and 13000-13032 with CH4 (MT2009_PLUS_CH34_V1),
       # and a world without it publishes the first channel's three as before.
-      - "${M2_HOST_BIND_ADDRESS:-0.0.0.0}:${M2_GAME_PORT_RANGE:-13000-13002}:${M2_GAME_CONTAINER_PORT_RANGE:-13000-13002}/tcp"
+      # MT2009_PLUS_237_NEWCORE_V1: plus the map core (game3) of each channel, which
+      # listens in the gap (13003 for CH1, 13004-13006 for CH2-CH4) - one
+      # channel publishes 13000-13003, two and more need no more than before.
+      - "${M2_HOST_BIND_ADDRESS:-0.0.0.0}:${M2_GAME_PORT_RANGE:-13000-13003}:${M2_GAME_CONTAINER_PORT_RANGE:-13000-13003}/tcp"
       # never published: 12000, 14000-14002 (p2p), 15000 (the db core).
 
     volumes:
@@ -391,7 +398,7 @@ services:
       M2PANEL_REGISTER_GAME_ADDRESS: "${M2_REGISTER_GAME_ADDRESS:-}"
       M2PANEL_GAME_ADDRESS: "${M2_CLIENT_ADDRESS:-${M2_PUBLIC_ADDRESS:-}}"
       M2PANEL_LOGIN_PORT: "${M2_CLIENT_AUTH_PORT:-${M2_AUTH_PORT:-11000}}"
-      M2PANEL_GAME_PORT_RANGE: "${M2_GAME_PORT_RANGE:-13000-13002}"
+      M2PANEL_GAME_PORT_RANGE: "${M2_GAME_PORT_RANGE:-13000-13003}"
 
       # ---- the client that runs in a browser ------------------------------
       # Off. With it off the panel offers nothing, serves nothing under /play

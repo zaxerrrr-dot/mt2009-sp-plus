@@ -7,7 +7,7 @@ Zastępuje Zaczarowany Las z Arezzo (`natural_map`, 362), który został usunię
 
 | Mapa | Nazwa | Folder | Baza | Rdzeń |
 |---|---|---|---|---|
-| 353 | Zaklęty Las (+ Erebu – prywatna kopia narożnika z bossami, 3530000+) | `metin2_map_dawnmist_dungeon_01` (3×4) | 768000 1408000 | game2 (zawsze) |
+| 353 | Zaklęty Las (+ Erebu – prywatna kopia narożnika z bossami, 3530000+) | `metin2_map_dawnmist_dungeon_01` (3×4) | 768000 1408000 | game3 (zawsze; osobny rdzeń nowych map, `MT2009_PLUS_237_NEWCORE_V1`) |
 
 Pliki tego katalogu i SQL-e `yohara_zaklety*.sql`, `yohara_items_zaklety.sql` są wynikiem generatora linii Yohara
 (`tools/yohara_zaklety/gen_yzaklety.py` na `claude/yohara-3`), przeniesionym skryptem `tools/las237/port_las237.py`
@@ -32,7 +32,7 @@ Jotun Thrym 123 (Ziemia), Metin Drzewnych Stworzeń 100, Metin Lasu 120. Seon-Ha
 
 ## Boty
 
-Las jest na game2, boty żyją na game1 – przechodzą tam **przekazaniem między rdzeniami**
+Las jest na game3 (razem z mapami 301–304), boty żyją na game1 – przechodzą tam **przekazaniem między rdzeniami**
 (`playerbot_yohara_bots.h`, `MT2009_PLUS_BOT_YOHARA_HANDOVER_V1`, tabela `common.playerbot_core_handover`):
 od 100 poziomu i 20 000 PŻ, droga przez Świątynię Ochao (Strażnik En-Tai albo 20 min czekania), pobyt jak wyprawa
 (mikstury uzupełniane w lesie), Niszczyciele En-Tai i Metiny lasu tylko w drużynie 3+, po 110 poziomie bot z lasu

@@ -909,6 +909,29 @@ function Assert-TimezoneDefault {
     return (Set-DotEnvValue -Content $Content -Name 'M2_TZ_DEFAULTED' -Value '1')
 }
 
+function Assert-MapCorePortRange {
+    # MT2009_PLUS_237_NEWCORE_V1: 2.37 starts a fourth game core in every
+    # channel - game3, Zaklety Las and the level-90 maps - on BASE+3 (CH1;
+    # BASE+4..BASE+6 for CH2..CH4, inside the range a second channel already
+    # publishes). A one-channel world's .env says 13000-13002, which would
+    # leave it unpublished: a warp there would hang at the loading screen. A
+    # range of exactly three ports (host or container side) becomes four,
+    # every start; a wider one, or a single port somebody chose, stays.
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content
+    )
+    foreach ($key in @('M2_GAME_PORT_RANGE', 'M2_GAME_CONTAINER_PORT_RANGE')) {
+        $m = [Regex]::Match($Content, '(?m)^' + $key + '=\s*(\d+)\s*-\s*(\d+)\s*$')
+        if (-not $m.Success) { continue }
+        $first = [int]$m.Groups[1].Value
+        $last = [int]$m.Groups[2].Value
+        if ($last -ne ($first + 2)) { continue }
+        Write-Host ("Porty gry: {0}-{1} (nowy rdzen map 90 i Zakletego Lasu na {1})." -f $first, ($first + 3)) -ForegroundColor Cyan
+        $Content = Set-DotEnvValue -Content $Content -Name $key -Value ('{0}-{1}' -f $first, ($first + 3))
+    }
+    return $Content
+}
+
 function Assert-PanelPassphrase {
     # The one password an operator actually types, and the one way it can go
     # missing.
@@ -1023,6 +1046,8 @@ function Initialize-InstallationIdentity {
     # The same shape for the clock's zone: the example's UTC becomes this
     # machine's own, once.
     $content = Assert-TimezoneDefault -Content $content
+    # The new map core's port (MT2009_PLUS_237_NEWCORE_V1).
+    $content = Assert-MapCorePortRange -Content $content
     # Last, so anything the identity decides above wins over the example.
     $content = Add-MissingDotEnvKeys -Content $content -ExamplePath (
         Join-Path (Split-Path -Parent $envPath) '.env.example')
@@ -1573,7 +1598,7 @@ try {
         if ($raw -match '^\d+$') { $wantedPorts += [int]$raw } else { $wantedPorts += [int]$pair[1] }
     }
     $rangeFirst = 13000
-    $rangeLast = 13002
+    $rangeLast = 13003
     $gameRange = [string]$portValues['M2_GAME_PORT_RANGE']
     if ($gameRange -match '^(\d+)\s*-\s*(\d+)$') { $rangeFirst = [int]$Matches[1]; $rangeLast = [int]$Matches[2] }
     elseif ($gameRange -match '^(\d+)$') { $rangeFirst = [int]$Matches[1]; $rangeLast = $rangeFirst }

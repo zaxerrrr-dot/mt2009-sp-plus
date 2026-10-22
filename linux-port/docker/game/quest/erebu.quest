@@ -10,7 +10,7 @@
 --     Stra¿nika Œwi¹tyni na Zboczu Gautama - pl-wiki "Zaklêty Las"); kto stanie w naro¿niku Erebu na otwartej mapie,
 --     wraca na jej pocz¹tek.
 -- Mapa jest na rdzeniu Yohary (game3) - boty tam nie wchodz¹, licz¹ siê ludzie z grupy. MT2009_PLUS_237_ZAKLETY_LAS_V1:
--- na linii 2.x las jest na rdzeniu game2; boty poluj¹ w lesie, ale do Erebu wchodz¹ tylko ludzie z grupy.
+-- na linii 2.x las jest na rdzeniu game3 (MT2009_PLUS_237_NEWCORE_V1); boty poluj¹ w lesie, ale do Erebu wchodz¹ tylko ludzie z grupy.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest erebu begin
 	state start begin

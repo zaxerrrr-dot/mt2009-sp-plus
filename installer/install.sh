@@ -132,7 +132,7 @@ DOMAIN="${M2_DOMAIN:-}"
 TLS_EMAIL="${M2_TLS_EMAIL:-}"
 DROP_DOMAIN=0   # --no-domain: forget the domain an earlier run set up
 AUTH_PORT="${M2_AUTH_PORT:-11000}"
-GAME_PORTS="${M2_GAME_PORT_RANGE:-13000-13002}"
+GAME_PORTS="${M2_GAME_PORT_RANGE:-13000-13003}"
 PANEL_PORT="${M2_PANEL_PUBLIC_PORT:-7788}"
 # Migrate values written by older installers (127.0.0.1:7788) and even the
 # doubly-prefixed malformed form reported in Issue #2. From here onward a port
@@ -431,7 +431,7 @@ usage() {
                           it out; not for a real server.
     --dir PATH            where to install (default: /opt/metin2/stack)
     --auth-port N         login port (default: 11000)
-    --game-ports A-B      channel ports (default: 13000-13002)
+    --game-ports A-B      channel ports (default: 13000-13003)
     --panel-port N        admin panel port (default: 7788)
     --no-client           don't build the downloadable game client
     --web-client          deprecated compatibility flag; ignored (native only)
@@ -516,12 +516,13 @@ validate_ports() {
     valid_port "$PANEL_PORT" || die "--panel-port must be a number from 1 to 65535."
     case "$GAME_PORTS" in
         *-*) _game_first=${GAME_PORTS%%-*}; _game_last=${GAME_PORTS##*-} ;;
-        *) die "--game-ports must be a range of exactly three ports, for example 13000-13002." ;;
+        *) die "--game-ports must be a range of exactly four ports, for example 13000-13003." ;;
     esac
     valid_port "$_game_first" && valid_port "$_game_last" ||
         die "--game-ports must contain valid numeric ports."
-    [ "$_game_last" -eq $(( _game_first + 2 )) ] ||
-        die "--game-ports must contain exactly three consecutive ports, for example 13000-13002."
+    # One channel's three cores and its map core (game3, MT2009_PLUS_237_NEWCORE_V1: 13003).
+    [ "$_game_last" -eq $(( _game_first + 3 )) ] ||
+        die "--game-ports must contain exactly four consecutive ports, for example 13000-13003."
 }
 
 # =============================================================================

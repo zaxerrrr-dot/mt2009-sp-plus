@@ -4116,8 +4116,8 @@ namespace
 	const BYTE PLAYERBOT_ZAKLETY_MIN_LEVEL = 100;	// MT2009_PLUS_BOT_YOHARA_FIX_V1: 97 -> 100 (the test of 21 October)
 	const BYTE PLAYERBOT_ZAKLETY_MAX_LEVEL = 109;
 	// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: the 90-level maps for loot only - Przyladek Smoczej Glowy
-	// (301) and Nefrytowa Zatoka (303) on game2, Zbocze Gautama (302) and Gromiste Gory (304) on the
-	// first core. Metins and bosses, no experience grinding (the owner, 21 October).
+	// (301), Zbocze Gautama (302), Nefrytowa Zatoka (303) and Gromiste Gory (304), on game3 with Zaklety Las
+	// (MT2009_PLUS_237_NEWCORE_V1). Metins and bosses, no experience grinding (the owner, 21 October).
 	const BYTE PLAYERBOT_YOHARA_LOOT_MIN_LEVEL = 95;
 	// MT2009_PLUS_AREZZO_BOTS_V1 (maps): the Arezzo module's three open maps
 	// (flag mt2009_arezzo_closed, playerbot_arezzo.h). Only the operator's test

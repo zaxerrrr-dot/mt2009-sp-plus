@@ -1181,8 +1181,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/arezzo-p58 \
 # Zaklety Las for bots and players ... a default map that cannot be switched off") - the Yohara line's
 # MT2009_PLUS_YOHARA_ZAKLETY_V1 step: the official Enchanted Forest past the Temple of Ochao (pl-wiki "Zaklety Las",
 # "Erebu", the seven missions; Owsap v6.2.6 metin2_map_dawnmist_dungeon_01 for the spawns) - Zaklety Las (353,
-# metin2_map_dawnmist_dungeon_01, the official base 768000 1408000 - no map of ours overlaps it; GF's terrain) on game2
-# (bin/m2-render-config), in place of the Arezzo forest (362, gone from the Arezzo step above) and with no switch: the
+# metin2_map_dawnmist_dungeon_01, the official base 768000 1408000 - no map of ours overlaps it; GF's terrain) on game3
+# (bin/m2-render-config, MT2009_PLUS_237_NEWCORE_V1 - game2 in n-las), in place of the Arezzo forest (362, gone from the Arezzo step above) and with no switch: the
 # Temple of Ochao's portal leads there (quest temple_of_the_ochao), the guards' missions (quest zaklety_las), Erebu at
 # Przywodca Strazy Lasu (quest erebu, a private copy of the map's boss corner). The files are the Yohara generator's
 # (tools/yohara_zaklety/gen_yzaklety.py on claude/yohara-3), taken over by tools/las237/port_las237.py, which leaves out
@@ -1254,10 +1254,10 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-zaklety-add; D=/op
 # maps from the GF 26.1.11 client (client-patches/client-2.0.30/tools/cape301, maps302), so each server_attr becomes
 # the one that matches that terrain (Owsap's: 100% of the block/water/safe-zone cells equal GF's attr.atr, tools/gf28/
 # srvattr.py; 302 100% block / 95.73% water / 100% safe zone). Przyladek Smoczego Ognia (301, Metin2_map_CapeDragonHead,
-# game2): npc.txt the base image's with the two warp portals 10101 (to Nefrytowa Zatoka, 303) and 10103 (to Gromiste Gory,
+# game3 - MT2009_PLUS_237_NEWCORE_V1, all four 90 maps): npc.txt the base image's with the two warp portals 10101 (to Nefrytowa Zatoka, 303) and 10103 (to Gromiste Gory,
 # 304) standing again (commented out while our client had neither map); Rybak 9009 stays at 838 1187 (official). Zbocze
-# Gautama (302, metin2_map_dawnmistwood, first), Nefrytowa Zatoka (303, metin2_map_BayBlackSand, game2), Gromiste Gory
-# (304, metin2_map_Mt_Thunder, first): server_attr only - the rest (npc/regen/boss/stone, Setting, Town) stays the base
+# Gautama (302, metin2_map_dawnmistwood), Nefrytowa Zatoka (303, metin2_map_BayBlackSand), Gromiste Gory
+# (304, metin2_map_Mt_Thunder): server_attr only - the rest (npc/regen/boss/stone, Setting, Town) stays the base
 # image's; every NPC, Town.txt point and warp-portal landing (10100-10105) is on a free cell of the new files. The
 # Temple of Ochao's entrance (Straznik Swiatyni) is on Zbocze Gautama only (the Ochao step above,
 # MT2009_PLUS_OCHAO_GAUTAMA_V1). The maps' names for the quests (the Teleporter lists 301-304 from level 90,
@@ -1640,7 +1640,7 @@ ENV M2_SHARE_DIR=/opt/metin2/share \
     M2_VAR_DIR=/opt/metin2/var \
     TZ=UTC
 
-EXPOSE 11000/tcp 13000/tcp 13001/tcp 13002/tcp
+EXPOSE 11000/tcp 13000/tcp 13001/tcp 13002/tcp 13003/tcp
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=180s --retries=4 \
     CMD ["/usr/local/bin/m2-healthcheck"]

@@ -13,7 +13,7 @@
 --      potem Drzewny Szmaragd (31099) - 11 650 000 PD i Kamieñ Driad (30613), przepustka do Erebu (quest erebu).
 -- Potem od nowa od misji 2 (pl-wiki: "Proces wytworzenia mo¿na powtarzaæ i jest 100%"), po kolejny Kamieñ Driad.
 -- Wejœcie do lasu: portal Stra¿nika En-Tai w Œwi¹tyni Ochao (quest temple_of_the_ochao). Mapa jest na rdzeniu Yohary
--- (game3) - boty tam nie wchodz¹. MT2009_PLUS_237_ZAKLETY_LAS_V1: na linii 2.x las stoi na rdzeniu game2,
+-- (game3) - boty tam nie wchodz¹. MT2009_PLUS_237_ZAKLETY_LAS_V1: na linii 2.x las stoi na rdzeniu game3 (MT2009_PLUS_237_NEWCORE_V1),
 -- boty przychodz¹ tam przekazaniem miêdzy rdzeniami (playerbot_yohara_bots.h) i misji nie robi¹.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest zaklety_las begin

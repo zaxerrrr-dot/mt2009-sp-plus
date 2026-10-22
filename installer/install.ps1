@@ -119,7 +119,7 @@ $script:SelfDir = if ($PSScriptRoot) { $PSScriptRoot } else { '' }
 # State filled in as we go.
 $script:InstallDir        = ''
 $script:AuthPort          = 11000
-$script:GamePorts         = '13000-13002'
+$script:GamePorts         = '13000-13003'
 $script:PanelPort         = 7788
 # The WebSocket bridge for the browser client. Off unless .env already says
 # otherwise; this installer never switches it on by itself, because it is only
@@ -393,12 +393,12 @@ function Assert-ValidPortConfiguration {
         throw "-PanelPort must be a number from 1 to 65535."
     }
     if ($script:GamePorts -notmatch '^(\d+)-(\d+)$') {
-        throw "-GamePorts must be a range of exactly three ports, for example 13000-13002."
+        throw "-GamePorts must be a range of exactly four ports, for example 13000-13003."
     }
     $first = [int]$Matches[1]
     $last = [int]$Matches[2]
-    if ($first -lt 1 -or $last -gt 65535 -or $last -ne ($first + 2)) {
-        throw "-GamePorts must be a valid range of exactly three consecutive ports, for example 13000-13002."
+    if ($first -lt 1 -or $last -gt 65535 -or $last -ne ($first + 3)) {
+        throw "-GamePorts must be a valid range of exactly four consecutive ports, for example 13000-13003."
     }
 }
 
@@ -1853,21 +1853,22 @@ updates), then run this installer again.
 "@
     }
 
-    # Inside the container the channel cores always listen on 13000-13002 --
-    # one channel, three ports, decided by the game and not by us; the auth
+    # Inside the container the channel cores always listen on 13000-13003 --
+    # one channel, three ports and its map core's (game3) (MT2009_PLUS_237_NEWCORE_V1),
+    # decided by the game and not by us; the auth
     # core is likewise always 11000. Only the host side of each mapping is the
     # operator's to choose. Writing $script:GamePorts on *both* sides of the
     # colon published a range that led nowhere: docker accepted the connection
     # and then had nothing behind it to hand the player to, which looks exactly
     # like a server that is up but broken.
-    $containerGamePorts = '13000-13002'
+    $containerGamePorts = '13000-13003'
     $span = $script:GamePorts.Split('-')
-    if ($span.Count -ne 2 -or ([int]$span[1] - [int]$span[0]) -ne 2) {
+    if ($span.Count -ne 2 -or ([int]$span[1] - [int]$span[0]) -ne 3) {
         Stop-Friendly @"
--GamePorts has to be a range of exactly three ports, like 13000-13002.
+-GamePorts has to be a range of exactly four ports, like 13000-13003.
 
-This install runs one channel, and one channel occupies three consecutive
-ports inside the server. '$($script:GamePorts)' is not three ports, so there would be
+This install runs one channel, and one channel occupies four consecutive
+ports inside the server. '$($script:GamePorts)' is not four ports, so there would be
 nothing behind part of the range.
 "@
     }
@@ -3435,7 +3436,7 @@ function Invoke-Metin2Install {
     -Yes               don't ask anything; accept every default
     -InstallDir PATH   where to install (default: %USERPROFILE%\Metin2Server)
     -AuthPort N        login port (default: 11000)
-    -GamePorts A-B     channel ports (default: 13000-13002)
+    -GamePorts A-B     channel ports (default: 13000-13003)
     -PanelPort N       admin panel port (default: 7788)
     -WebClient         deprecated compatibility switch; ignored (native only)
     -NoWebClient       compatibility switch; native-only is already the default

@@ -750,7 +750,7 @@ function ConvertFrom-M2VpsStatus {
         Started = (& $get 'started'); Finished = (& $get 'finished'); Exit = (& $get 'exit')
         LogLines = (& $number 'log_lines' 0); Version = (& $get 'version')
         PublicAddress = (& $get 'public_address'); AuthPort = (& $number 'auth_port' 11000)
-        GamePortRange = (& $get 'game_port_range' '13000-13002'); Ch2 = ((& $get 'ch2') -eq '1')
+        GamePortRange = (& $get 'game_port_range' '13000-13003'); Ch2 = ((& $get 'ch2') -eq '1')
         PanelPort = (& $number 'panel_port' 7788); SebanPanelPort = (& $number 'seban_panel_port' 7790)
         ItemShopPort = (& $number 'itemshop_port' 7791); PanelBind = (& $get 'panel_bind'); HostBind = (& $get 'host_bind')
         Bots = (& $get 'bots'); AccountsFile = ((& $get 'accounts_file') -eq '1')
@@ -1122,7 +1122,7 @@ function Get-M2VpsAccounts {
 function Get-M2VpsGamePorts {
     # Pure: the auth port and every game core's port of a range - three a
     # channel, ten apart - the order an invite code carries them in.
-    param([int]$AuthPort = 11000, [AllowEmptyString()][string]$GamePortRange = '13000-13002')
+    param([int]$AuthPort = 11000, [AllowEmptyString()][string]$GamePortRange = '13000-13003')
     $ports = @($AuthPort)
     if ($GamePortRange -match '^\s*(\d+)\s*-\s*(\d+)\s*$') {
         $from = [int]$Matches[1]; $to = [int]$Matches[2]
