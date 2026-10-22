@@ -6682,6 +6682,9 @@ namespace
 			return "Ten przedmiot jest teraz zajety.";
 		if (item->IsDragonSoul())
 			return "Kamieni smoka nie da sie tu przekazac.";
+		// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapon stays with the character it was given to.
+		if (IsPlayerBotMlodziWeapon(item))
+			return "Broni Mlodych Bohaterow nie da sie przekazac.";
 		return std::string();
 	}
 

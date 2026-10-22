@@ -48,6 +48,7 @@
 #include <set>
 #include <vector>
 #include <cstring>
+#include "playerbot_mlodzi.h"
 
 namespace
 {
@@ -268,6 +269,12 @@ static void SetSwitchbotItem(LPCHARACTER ch, WORD wCell, WORD wCellInven);
 bool SwitchbotHelper::IsValidItem(LPITEM pkItem)
 {
 	if (!pkItem)
+	{
+		return false;
+	}
+
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (switchbot): a young heroes' weapon takes no bonus changes
+	if (MlodziIsWeaponVnum(pkItem->GetVnum()))
 	{
 		return false;
 	}

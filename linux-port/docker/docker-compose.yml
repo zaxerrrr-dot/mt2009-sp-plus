@@ -128,6 +128,10 @@ services:
       # 1 on, 0 off. The game core reads it at start, the migrator writes
       # m2_buffi_off for the quests; seals, names and skills stay when off.
       M2_BUFFI: "${M2_BUFFI:-1}"
+      # MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla Mlodych Bohaterow (the letter at
+      # level 1, 10 ... 70, one weapon of the tier, 15 days): 1 on, 0 off (apply.sh
+      # writes m2_mlodzi_off for the quest and the cores; given weapons keep their days).
+      M2_MLODZI_BOHATEROWIE: "${M2_MLODZI_BOHATEROWIE:-1}"
       # Auto Lowy only with the ItemShop's ticket (1) or for everybody (0).
       M2_AUTOHUNT_ITEM: "${M2_AUTOHUNT_ITEM:-0}"
       # The Dom Towarowy at the miscellaneous merchant in M1 (the launcher's

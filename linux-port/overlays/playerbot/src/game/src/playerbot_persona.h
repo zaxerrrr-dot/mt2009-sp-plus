@@ -128,6 +128,10 @@ namespace
 		LPITEM weapon = GetPlayerBotHandWeapon(ch);
 		gear.weapon = GetPlayerBotPersonaPiece(weapon,
 				weapon && IsPlayerBotSpecialLevel30Weapon(weapon));
+		// MT2009_PLUS_BOT_MLODZI_V1: a valid young heroes' weapon in the hand meets the law's weapon (it cannot be
+		// refined, and it is what the bot levels with), so it never holds the bot's experience.
+		if (IsPlayerBotMlodziWeaponValid(ch->GetWear(WEAR_WEAPON)))
+			gear.weapon = playerbot_persona::TGearPiece(9, GetPlayerBotPersonaLevelLimit(ch->GetWear(WEAR_WEAPON)), true);
 		gear.armour = GetPlayerBotPersonaPiece(ch->GetWear(WEAR_BODY), false);
 		gear.shield = GetPlayerBotPersonaPiece(ch->GetWear(WEAR_SHIELD), false);
 		// The mask or the helmet, which the law asks for from level 35 on.

@@ -251,6 +251,12 @@ namespace
 		if (!ch || !p.bLppStoredKnown || !IsPlayerBotOwnBoxSlot(wearCell) || p.mapGearStored.empty())
 			return false;
 		LPITEM worn = ch->GetWear((WORD)wearCell);
+		// MT2009_PLUS_BOT_MLODZI_V1: the weapon waits while the young heroes' one holds the planning; after that the
+		// box's weapon is measured against the real one prepared, not the young one in the hand.
+		if (wearCell == WEAR_WEAPON && IsPlayerBotWeaponPlanSuspended(ch))
+			return false;
+		if (wearCell == WEAR_WEAPON && IsPlayerBotMlodziWeapon(worn))
+			worn = GetPlayerBotHandWeapon(ch);
 		const int wornLevel = worn ? (int)worn->GetLevelLimit() : -1;
 		for (std::map<DWORD, BYTE>::const_iterator it = p.mapGearStored.begin(); it != p.mapGearStored.end(); ++it)
 		{

@@ -63,6 +63,7 @@
 bool Mt2009WillTalismanType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/talizmanwoli)
 bool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType);	// item_attribute.cpp (server-patches/obreczjadeitu)
 bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType);	// playerbot_yohara_gear.cpp
+bool MlodziIsWeaponVnum(unsigned int vnum);	// MT2009_PLUS_MLODZI_BOHATEROWIE_V1: playerbot_mlodzi.cpp
 // MT2009_PLUS_GLOVE_BASE_V1: a glove's Will is its base attribute (its yextra, by item id) - the remade glove gets the
 // kept one back (playerbot_yohara_gear.cpp)
 void Mt2009GloveRestore(LPITEM item, DWORD dwYExtra);
@@ -255,6 +256,9 @@ namespace mt2009_seonhae
 		if (!item || item->GetOwner() != ch || item->GetWindow() != INVENTORY)
 			return MSG_BAD_ITEM;
 		if (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR)
+			return MSG_BAD_ITEM;
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (seon-hae): a young heroes' weapon takes no 6th/7th bonus
+		if (MlodziIsWeaponVnum(item->GetVnum()))
 			return MSG_BAD_ITEM;
 		if (item->GetAttributeSetIndex() < 0)
 			return MSG_BAD_ITEM;

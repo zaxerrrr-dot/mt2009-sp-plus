@@ -130,7 +130,10 @@ param(
 #                      Tower smiths refuse his steps (MT2009_PLUS_SEONPYEONG_ELITE_V1; server-patches/seonpyeong)
 #   Przypisane do konta item.h, item.cpp, item_attribute.cpp, char_shop.cpp, ikarus_shop_manager.cpp, shop.cpp - an
 #                      account-bound item instance (the bots' G0 package): no drop, trade, merchant or shop, carried by
-#                      a refine (MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1; server-patches/g0bind, last)
+#                      a refine (MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1; server-patches/g0bind)
+#   Mlodzi Bohaterowie questlua.cpp (the "mlodzi" module), char_item.cpp (nothing used on the weapons), item_attribute.cpp
+#                      (no bonus change / addition, 1-5 and 6/7), char.cpp (no sash absorption) - Bronie dla Mlodych
+#                      Bohaterow 21900-21975 (MT2009_PLUS_MLODZI_BOHATEROWIE_V1; server-patches/mlodzi, last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1720,6 +1723,20 @@ if ((Test-Path -LiteralPath $g0bindApply -PathType Leaf) -and
     if ($g0bindResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} account-bound item edit(s).' -f $g0bindResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Bronie dla Mlodych Bohaterow (server-patches/mlodzi, MT2009_PLUS_MLODZI_BOHATEROWIE_V1; the owner, 22 October 2026): the
+# quests' "mlodzi" module, nothing used on the weapons 21900-21975, no bonus change / addition in the item's own functions,
+# no sash absorption. The logic is playerbot_mlodzi.{h,cpp}. Anchors on lines of talizmanwoli, switchbot and ship defense;
+# last.
+$mlodziApply = Join-Path $repo 'server-patches/mlodzi/Apply-MlodziPatch.ps1'
+if ((Test-Path -LiteralPath $mlodziApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $mlodziResult = & $mlodziApply -SourceDir $engineGameSource
+    if ($mlodziResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} young heroes weapon edit(s).' -f $mlodziResult.Applied) -ForegroundColor DarkGray
     }
 }
 

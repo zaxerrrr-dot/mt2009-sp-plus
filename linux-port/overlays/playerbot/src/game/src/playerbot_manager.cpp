@@ -194,6 +194,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_yohara_gear.h" // MT2009_PLUS_GLOVE_BASE_V1: a Sung Ma glove's Will (its base attribute), counted by the gear scoring
 #include "playerbot_yohara_elements.h" // MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the Sung Ma maps' elements - the talisman, the resistances, the elixirs
 #include "playerbot_gear.h"
+#include "playerbot_mlodzi_bots.h" // MT2009_PLUS_BOT_MLODZI_V1: the bots take, wear and keep the young heroes' weapons; their weapon planning waits
 #include "playerbot_horse30.h" // Digi Rasta's horse to level 30: paid training, the Black Steed trial, the horse bonus (MT2009_PLUS_HORSE30_V1)
 #include "playerbot_shaman_buff_set.h" // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman's INT set for its buffs
 // The Stalki - the level-66 armours and the level-75 weapons - as the bots
@@ -7632,6 +7633,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// Rings and gloves on the clock while the bot hunts and off in town,
 		// and the uniques a bot never wears off for good.
 		ManagePlayerBotUniqueSlots(ch, state, dwNow);
+		// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapon taken at its tier and the hand's expiry switch, right
+		// before the gear pass that puts it on (playerbot_mlodzi_bots.h).
+		ManagePlayerBotMlodzi(ch, state, dwNow);
 		// The gear pass, early. It used to sit at the bottom of the tick, past
 		// the stall, the loot, the horse, the fishing, the travel, the town
 		// visit and the wander, each of which claims the tick - so a bot that

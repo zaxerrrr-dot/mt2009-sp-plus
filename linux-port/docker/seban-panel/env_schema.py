@@ -42,7 +42,8 @@ import re
 # says "aktualizator działa na starej wersji" instead of "nieznana zmienna".
 # 2: M2_SHOP_BIG (2.34) and everything before it.
 # 3: M2_DB_LOG_RETENTION_DAYS, M2_LOG_KEEP_HOURS (2.36).
-SCHEMA_VERSION = 3
+# 4: M2_MLODZI_BOHATEROWIE (Yohara 3.x, MT2009_PLUS_MLODZI_BOHATEROWIE_V1).
+SCHEMA_VERSION = 4
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -50,7 +51,7 @@ SECTIONS = [
     {"id": "swiat", "label": "Świat i rates", "icon": "🌍",
      "desc": "Trudność, mnożniki świeżego świata, szanse eventów i dropu, poziom maksymalny."},
     {"id": "moduly", "label": "Moduły gry", "icon": "🧩",
-     "desc": "Arezzo, Seon-Hae, alchemia, szarfy, Auto Łowy, Towarzysz, Dom Towarowy, Karty Potworów, zestawy startowe."},
+     "desc": "Arezzo, Seon-Hae, alchemia, szarfy, Auto Łowy, Towarzysz, Dom Towarowy, Karty Potworów, Bronie dla Młodych Bohaterów, zestawy startowe."},
     {"id": "siec", "label": "Sieć i porty", "icon": "🌐",
      "desc": "Adres serwera, porty gry, logowania, paneli i sklepu, adresy nasłuchu."},
     {"id": "panele", "label": "Panele i strona", "icon": "🖥",
@@ -373,6 +374,13 @@ SCHEMA = [
        "moduly", "bool", "0", GAME),
     _e("M2_SIDEKICK", "Towarzysz", "Towarzysz (list „Towarzysz”) dostępny na tym świecie. System towarzysza nie jest dalej rozwijany i może niewłaściwie działać – domyślnie wyłączony; towarzysze graczy zostają w bazie.", "moduly", "bool", "0", GAME),
     _e("M2_BUFFI", "Buffi", "Buffi – szamanka wsparcia (pieczęć 61025/61026, klawisz P): rzuca na właściciela Błogosławieństwo, Pomoc Smoka, a z imieniem także Szybkość i Zwiększenie Ataku. Wyłączony: pieczęcie, imiona i umiejętności zostają.", "moduly", "bool", "1", GAME),
+    # MT2009_PLUS_MLODZI_BOHATEROWIE_V1
+    _e("M2_MLODZI_BOHATEROWIE", "Bronie dla Młodych Bohaterów",
+       "Na poziomie 1, 10, 20, 30, 40, 50, 60 i 70 postać dostaje list i wybiera jedną broń swojej klasy z tego progu "
+       "(pominięty próg przepada). Bronie nie dają się wymieniać, sprzedawać, ulepszać ani zmieniać bonusów i znikają "
+       "15 dni po otrzymaniu, także założone. Boty też z nich korzystają. Wyłączone: nikt nie dostaje nowych broni, "
+       "wydane zostają do końca swoich 15 dni. Działa od następnego startu serwera.",
+       "moduly", "bool", "1", GAME),
     _e("M2_FLEA_MARKET", "Dom Towarowy", "Dom Towarowy u Handlarki Rozmaitości w M1: oferty wszystkich sklepów offline w jednym oknie, zakup zdalny.",
        "moduly", "bool", "1", GAME),
     _e("M2_MONSTER_CARDS", "Karty Potworów", "System Kart Potworów (misje, karty, gwiazdki, bonusy zestawów). Wyłączone: karty nic nie robią, postęp zostaje w bazie.",

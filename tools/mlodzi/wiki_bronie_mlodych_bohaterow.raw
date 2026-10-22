@@ -1,0 +1,812 @@
+[[Plik:Bronie dla Młodych Bohaterów SS.png|right]]
+Debiutanci w Metin2 mogą w przyszłości liczyć na gorliwe zaangażowanie Boga Smoków: gracze do poziomu 70 włącznie, otrzymają za każdym razem po osiągnięciu wielokrotności 10-tego poziomu specjalne bronie dla początkujących, które osłodzą im żywot bohatera. Bronie te posiadają tak dźwięczne nazwy, jak Wyrok, Obsydianowy Młot czy też Skrytobójcza Wykałaczka, i mają określony czas trwania. Inaczej niż w przypadku zwyczajnych broni, nie mogą one jednak osiągać wyższych poziomów ani być wzmacniane.<br>
+Bronie zostały wprowadzone podczas aktualizacji [[Wersja 17.1|Wersji 17.1]].
+
+===Broń jednoręczna===
+<center>
+{|width="715px" {{Prettytable}}
+|-{{Hl3}}
+!width="75px"| Obrazek
+! width="175px"| Nazwa
+! width="40px"| Poziom
+! width="130px"| Klasa
+! width="220px"| Bonusy
+! Czas użytkowania
+|-
+| [[Plik:Mściciel Durendala.png|center]]
+| [[Mściciel Durendala]]
+| 1
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 62 - 64 </font>
+*Wartość magicznego ataku <font color="green"> 64 - 68 </font>
+*Szybkość ataku  <font color="green">+ 22% </font>
+*Szansa na cios krytyczny <font color="green"> + 5% </font>
+*Wartość ataku <font color="green"> + 20% </font>
+*Średnie obrażenia <font color="green"> + 10% </font>
+| 15 dni
+|-
+| [[Plik:Palący Gniew.png|center]]
+| [[Palący Gniew]]
+| 10
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 69 - 73 </font>
+*Wartość magicznego ataku <font color="green"> 69 - 73 </font>
+*Szybkość ataku  <font color="green">+ 24% </font>
+*Szansa na cios krytyczny <font color="green"> + 5% </font>
+*Wartość ataku <font color="green"> + 25% </font>
+*Średnie obrażenia <font color="green"> + 13% </font>
+| 15 dni
+|-
+| [[Plik:Ostrze Przeznaczenia.png|center]]
+| [[Ostrze Przeznaczenia]]
+| 20
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 74 - 84  </font>
+*Wartość magicznego ataku <font color="green"> 69 - 77 </font>
+*Szybkość ataku  <font color="green">+ 15% </font>
+*Szansa na cios krytyczny <font color="green"> + 6% </font>
+*Wartość ataku <font color="green"> + 30% </font>
+*Średnie obrażenia <font color="green"> + 16% </font>
+| 15 dni
+|-
+| [[Plik:Ostrze Dusz.png|center]]
+| [[Ostrze Dusz]]
+| 30 
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 89 - 103   </font>
+*Wartość magicznego ataku <font color="green"> 87 - 97  </font>
+*Szybkość ataku  <font color="green"> +27%  </font>
+*Szansa na cios krytyczny <font color="green"> + 6% </font>
+*Wartość ataku <font color="green"> +35% </font>
+*Średnie obrażenia <font color="green"> +19%</font>
+| 15 dni
+|-
+| [[Plik:Śpiew Stali.png|center]]
+| [[Śpiew Stali]]
+| 40 
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 103 - 119    </font>
+*Wartość magicznego ataku <font color="green"> 99 - 109  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green">  +7%  </font>
+*Wartość ataku <font color="green">  +40%  </font>
+*Średnie obrażenia <font color="green"> +22%</font>
+| 15 dni
+|-
+| [[Plik:Dziedzictwo Balmunga.png|center]]
+| [[Dziedzictwo Balmunga]]
+| 50 
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 113 - 135  </font>
+*Wartość magicznego ataku <font color="green"> 109 - 131  </font>
+*Szybkość ataku  <font color="green"> +22%  </font>
+*Szansa na cios krytyczny <font color="green">  +7%  </font>
+*Wartość ataku <font color="green">  +45%  </font>
+*Średnie obrażenia <font color="green"> +25%</font>
+| 15 dni
+|-
+| [[Plik:Askalahel.png|center]]
+| [[Askalahel]]
+| 60 
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 116 - 152   </font>
+*Wartość magicznego ataku <font color="green"> 118 - 144  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green">  +8%  </font>
+*Wartość ataku <font color="green">  +50%  </font>
+*Średnie obrażenia <font color="green"> +28%</font>
+| 15 dni
+|-
+| [[Plik:Requiem.png|center]]
+| [[Requiem]]
+| 70 
+| [[Wojownik]], [[Sura]], [[Ninja]]
+|
+*Wartość ataku <font color="green"> 123 - 164   </font>
+*Wartość magicznego ataku <font color="green"> 167 - 187  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green">  +9%  </font>
+*Wartość ataku <font color="green">  +50%  </font>
+*Średnie obrażenia <font color="green"> +30%</font>
+| 15 dni
+|-
+|}
+</center>
+<br>
+===Broń dwuręczna===
+
+<center>
+{|width="715px" {{Prettytable}}
+|-{{Hl3}}
+!width="75px"| Obrazek
+! width="175px"| Nazwa
+! width="40px"| Poziom
+! width="130px"| Klasa
+! width="220px"| Bonusy
+! Czas użytkowania
+|-
+| [[Plik:Rzeźnik Orków.png|center]]
+| [[Rzeźnik Orków]]
+| 1
+| [[Wojownik]]
+|
+*Wartość ataku <font color="green"> 70 - 78   </font>
+*Szybkość ataku  <font color="green"> + 26%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +20% </font>
+*Średnie obrażenia <font color="green"> +10% </font>
+| 15 dni
+|-
+| [[Plik:Obsydianowy Młot.png|center]]
+| [[Obsydianowy Młot]]
+| 10
+| [[Wojownik]]
+|
+*Wartość ataku <font color="green">   80 - 98   </font>
+*Szybkość ataku  <font color="green"> +24%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +25% </font>
+*Średnie obrażenia <font color="green"> +13% </font>
+| 15 dni
+|-
+| [[Plik:Pakt Krwi.png|center]]
+| [[Pakt Krwi]]
+| 20
+| [[Wojownik]]
+|
+*Wartość ataku <font color="green"> 90 - 108   </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +30% </font>
+*Średnie obrażenia <font color="green"> +16% </font>
+| 15 dni
+|-
+| [[Plik:Wyrok.png|center]]
+| [[Wyrok]]
+| 30
+| [[Wojownik]]
+|
+*Wartość ataku <font color="green"> 109 - 139   </font>
+*Szybkość ataku  <font color="green"> +24%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +35% </font>
+*Średnie obrażenia <font color="green"> +19% </font>
+| 15 dni
+|-
+| [[Plik:Armagedon.png|center]]
+| [[Armagedon]]
+| 40
+| [[Wojownik]]
+|
+*Wartość ataku <font color="green"> 120 - 154    </font>
+*Szybkość ataku  <font color="green"> 15%   </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +40% </font>
+*Średnie obrażenia <font color="green"> +22% </font>
+| 15 dni
+|-
+| [[Plik:Uderzenie Pioruna.png|center]]
+| [[Uderzenie Pioruna]]
+| 50
+| [[Wojownik]]
+|
+*Wartość ataku <font color="green"> 129 - 183   </font>
+*Szybkość ataku  <font color="green"> +25%  </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +45% </font>
+*Średnie obrażenia <font color="green"> +25% </font>
+| 15 dni
+|-
+| [[Plik:Zmierzch Bogów.png|center]]
+| [[Zmierzch Bogów]]
+| 60
+| [[Wojownik]]
+| 
+*Wartość ataku <font color="green"> 146 - 200  </font>
+*Szybkość ataku  <font color="green"> 15 %  </font>
+*Szansa na cios krytyczny <font color="green"> +8%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +28% </font>
+| 15 dni
+|-
+| [[Plik:Brachindul.png|center]]
+| [[Brachindul]]
+| 70
+| [[Wojownik]]
+|
+*Wartość ataku <font color="green"> 189 - 257 </font>
+*Szybkość ataku  <font color="green"> +24%  </font>
+*Szansa na cios krytyczny <font color="green"> +9%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +30% </font>
+| 15 dni
+|-
+
+
+|}
+</center>
+
+===Szpony===
+<center>
+{|width="715px" {{Prettytable}}
+|-{{Hl3}}
+!width="75px"| Obrazek
+! width="175px"| Nazwa
+! width="40px"| Poziom
+! width="130px"| Klasa
+! width="220px"| Bonusy
+! Czas uzytkowania
+|-
+| [[Plik:Błyskawica i Grzmot.png|center]]
+| [[Błyskawica i Grzmot]]
+| 1
+| [[Likan]]
+|
+*Wartość ataku <font color="green"> 62 - 64   </font>
+*Wartość magicznego ataku <font color="green"> 64 - 68  </font>
+*Szybkość ataku  <font color="green"> + 22%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku  <font color="green"> +20% </font>
+*Średnie obrażenia <font color="green"> +10% </font>
+| 15 dni
+|-
+| [[Plik:Raptory.png|center]]
+| [[Raptory]]
+| 10
+| [[Likan]]
+|
+*Wartość ataku <font color="green">   62 - 66    </font>
+*Wartość magicznego ataku <font color="green">  64 - 68   </font>
+*Szybkość ataku  <font color="green"> +22%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +25% </font>
+*Średnie obrażenia <font color="green"> +13% </font>
+| 15 dni
+|-
+| [[Plik:Prosektor.png|center]]
+| [[Prosektor]]
+| 20
+| [[Likan]]
+|
+*Wartość ataku <font color="green"> 65 - 72   </font>
+*Wartość magicznego ataku <font color="green"> 64 - 68</font>
+*Szybkość ataku  <font color="green"> +17%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +30% </font>
+*Średnie obrażenia <font color="green"> +16% </font>
+| 15 dni
+|-
+| [[Plik:Rozpruwacz Dusz.png|center]]
+| [[Rozpruwacz Dusz]]
+| 30
+| [[Likan]]
+|
+*Wartość ataku <font color="green"> 67 - 71   </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +35% </font>
+*Średnie obrażenia <font color="green"> +19% </font>
+| 15 dni
+|-
+| [[Plik:Szpony Przeznaczenia.png|center]]
+| [[Szpony Przeznaczenia]]
+| 40
+| [[Likan]]
+|
+*Wartość ataku <font color="green"> 67 - 83    </font>
+*Szybkość ataku  <font color="green"> +22%   </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +40% </font>
+*Średnie obrażenia <font color="green"> +22% </font>
+| 15 dni
+|-
+| [[Plik:Szpony Udręki.png|center]]
+| [[Szpony Udręki]]
+| 50
+| [[Likan]]
+|
+*Wartość ataku <font color="green"> 91 - 107   </font>
+*Szybkość ataku  <font color="green"> +22%  </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +45% </font>
+*Średnie obrażenia <font color="green"> +25% </font>
+| 15 dni
+|-
+| [[Plik:Aksamitne Łapy.png|center]]
+| [[Aksamitne Łapy]]
+| 60
+| [[Likan]]
+|
+*Wartość ataku <font color="green"> 113 - 135    </font>
+*Szybkość ataku  <font color="green"> +22%  </font>
+*Szansa na cios krytyczny <font color="green"> +8%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +28% </font>
+| 15 dni
+|-
+| [[Plik:Ślepy Gniew.png|center]]
+| [[Ślepy Gniew]]
+| 70
+| [[Likan]]
+|
+*Wartość ataku <font color="green"> 116 - 152   </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +9%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +30% </font>
+| 15 dni
+|-
+
+
+|}
+</center>
+
+===Wachlarze===
+<center>
+{|width="715px" {{Prettytable}}
+|-{{Hl3}}
+!width="75px"| Obrazek
+! width="175px"| Nazwa
+! width="40px"| Poziom
+! width="130px"| Klasa
+! width="220px"| Bonusy
+! Czas użytkowania
+|-
+| [[Plik:Mściciel Wdowy.png|center]]
+| [[Mściciel Wdowy]]
+| 1
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 60 - 66  </font>
+*Wartość magicznego ataku <font color="green"> 63 - 71  </font>
+*Szybkość ataku  <font color="green"> +26% </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +20% </font>
+*Średnie obrażenia <font color="green"> +10% </font>
+| 15 dni
+|-
+| [[Plik:Cicha Klątwa.png|center]]
+| [[Cicha Klątwa]]
+| 10
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 63 - 71  </font>
+*Wartość magicznego ataku <font color="green"> 67 - 77  </font>
+*Szybkość ataku  <font color="green"> +23%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +25% </font>
+*Średnie obrażenia <font color="green"> +13% </font>
+| 15 dni
+|-
+| [[Plik:Tancerz Cienia.png|center]]
+| [[Tancerz Cienia]]
+| 20
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 67 - 73  </font>
+*Wartość magicznego ataku <font color="green"> 78 - 82  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +30% </font>
+*Średnie obrażenia <font color="green"> +16% </font>
+| 15 dni
+|-
+| [[Plik:Śpiew Wiatru.png|center]]
+| [[Śpiew Wiatru]]
+| 30
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 81 - 97  </font>
+*Wartość magicznego ataku <font color="green"> 84 - 98 </font>
+*Szybkość ataku  <font color="green"> +24%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +35% </font>
+*Średnie obrażenia <font color="green"> +19% </font>
+| 15 dni
+|-
+| [[Plik:Szpon Kruka.png|center]]
+| [[Szpon Kruka]]
+| 40
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 88 - 104  </font>
+*Wartość magicznego ataku <font color="green"> 93 - 111   </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +40% </font>
+*Średnie obrażenia <font color="green"> +22% </font>
+| 15 dni
+|-
+| [[Plik:Wachlarze Bojowe Beliala.png|center]]
+| [[Wachlarze Bojowe Beliala]]
+| 50
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 93 - 117 </font>
+*Wartość magicznego ataku <font color="green"> 112 - 134  </font>
+*Szybkość ataku  <font color="green"> +23%  </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +45% </font>
+*Średnie obrażenia <font color="green"> +25% </font>
+| 15 dni
+|-
+| [[Plik:Nexus.png|center]]
+| [[Nexus]]
+| 60
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 99 - 127   </font>
+*Wartość magicznego ataku <font color="green"> 127 - 141 </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +8%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +28% </font>
+| 15 dni
+|-
+| [[Plik:Kor-Glâsh.png|center]]
+| [[Kor-Glâsh]]
+| 70
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 141 - 173   </font>
+*Wartość magicznego ataku <font color="green"> 129 - 158  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +9%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +30% </font>
+| 15 dni
+|-
+
+
+|}
+</center>
+
+===Dzwony===
+<center>
+{|width="715px" {{Prettytable}}
+|-{{Hl3}}
+!width="75px"| Obrazek
+! width="175px"| Nazwa
+! width="40px"| Poziom
+! width="130px"| Klasa
+! width="220px"| Bonusy
+! Czas użytkowania
+|-
+| [[Plik:Pocałunek Elfa.png|center]]
+| [[Pocałunek Elfa]]
+| 1
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 48 - 50   </font>
+*Wartość magicznego ataku <font color="green"> 45 - 53 </font>
+*Szybkość ataku  <font color="green"> +32%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +20% </font>
+*Średnie obrażenia <font color="green"> +10% </font>
+| 15 dni
+|-
+| [[Plik:Zew Walkirii.png|center]]
+| [[Zew Walkirii]]
+| 10
+| [[Szaman]]
+|
+*Wartość ataku <font color="green">  62 - 64   </font>
+*Wartość magicznego ataku <font color="green">  59 - 67   </font>
+*Szybkość ataku  <font color="green"> +32%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +25% </font>
+*Średnie obrażenia <font color="green"> +13% </font>
+| 15 dni
+|-
+| [[Plik:Szturmowy Okrzyk.png|center]]
+| [[Szturmowy Okrzyk]]
+| 20
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 74 - 84   </font>
+*Wartość magicznego ataku <font color="green"> 68 - 76  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +30% </font>
+*Średnie obrażenia <font color="green"> +16% </font>
+| 15 dni
+|-
+| [[Plik:Echo Grzmotu.png|center]]
+| [[Echo Grzmotu]]
+| 30
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 80 - 90  </font>
+*Wartość magicznego ataku <font color="green"> 81 - 89 </font>
+*Szybkość ataku  <font color="green"> +30%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +35% </font>
+*Średnie obrażenia <font color="green"> +19% </font>
+| 15 dni
+|-
+| [[Plik:Dźwięk Honoru.png|center]]
+| [[Dźwięk Honoru]]
+| 40
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 93 - 111   </font>
+*Wartość magicznego ataku <font color="green"> 93 - 99   </font>
+*Szybkość ataku  <font color="green"> +15%   </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +40% </font>
+*Średnie obrażenia <font color="green"> +22% </font>
+| 15 dni
+|-
+| [[Plik:Śpiewająca Furia.png|center]]
+|  [[Śpiewająca Furia]]
+| 50
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 103 - 133  </font>
+*Wartość magicznego ataku <font color="green"> 87 - 111  </font>
+*Szybkość ataku  <font color="green"> +27%  </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +45% </font>
+*Średnie obrażenia <font color="green"> +25% </font>
+| 15 dni
+|-
+| [[Plik:Ostatnie Uderzenie.png|center]]
+| [[Ostatnie Uderzenie]]
+| 60
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 120 - 148    </font>
+*Wartość magicznego ataku <font color="green"> 109 - 119  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +8%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +28% </font>
+| 15 dni
+|-
+| [[Plik:Pocałunek Śmierci.png|center]]
+| [[Pocałunek Śmierci]]
+| 70
+| [[Szaman]]
+|
+*Wartość ataku <font color="green"> 168 - 206  </font>
+*Wartość magicznego ataku <font color="green"> 93 - 138  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +9%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +30% </font>
+| 15 dni
+|-
+
+
+|}
+</center>
+
+===Sztylety===
+<center>
+{|width="715px" {{Prettytable}}
+|-{{Hl3}}
+!width="75px"| Obrazek
+! width="175px"| Nazwa
+! width="40px"| Poziom
+! width="130px"| Klasa
+! width="220px"| Bonusy
+! Czas użytkowania
+|-
+| [[Plik:Skrytobójcza Wykałaczka.png|center]]
+| [[Skrytobójcza Wykałaczka]]
+| 1
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 36 - 39  </font>
+*Szybkość ataku  <font color="green"> +28% </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +20% </font>
+*Średnie obrażenia <font color="green"> +10% </font>
+| 15 dni
+|-
+| [[Plik:Elfie Łowy.png|center]]
+| [[Elfie Łowy]]
+| 10
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 41 - 43 </font>
+*Szybkość ataku  <font color="green"> +23%  </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +25% </font>
+*Średnie obrażenia <font color="green"> +13% </font>
+| 15 dni
+|-
+| [[Plik:Włócznia Wiatru.png|center]]
+| [[Włócznia Wiatru]]
+| 20
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 43 - 47  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +30% </font>
+*Średnie obrażenia <font color="green"> +16% </font>
+| 15 dni
+|-
+| [[Plik:Rzeźbiarz Dusz.png|center]]
+| [[Rzeźbiarz Dusz]]
+| 30
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 60 - 66   </font>
+*Szybkość ataku  <font color="green"> +23%  </font>
+*Szansa na cios krytyczny <font color="green"> +6%  </font>
+*Wartość ataku <font color="green"> +35% </font>
+*Średnie obrażenia <font color="green"> +19% </font>
+| 15 dni
+|-
+| [[Plik:Skalpel Księżyc. Światła.png|center]]
+| [[Skalpel Księżyc. Światła]]
+| 40
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 66 - 70 </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +40% </font>
+*Średnie obrażenia <font color="green"> +22% </font>
+| 15 dni
+|-
+| [[Plik:Wróżka Śmierci.png|center]]
+| [[Wróżka Śmierci]]
+| 50
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 71 - 79 </font>
+*Szybkość ataku  <font color="green"> +24%  </font>
+*Szansa na cios krytyczny <font color="green"> +7%  </font>
+*Wartość ataku <font color="green"> +45% </font>
+*Średnie obrażenia <font color="green"> +25% </font>
+| 15 dni
+|-
+| [[Plik:Wściekły Cierń.png|center]]
+| [[Wściekły Cierń]]
+| 60
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 76 - 88  </font>
+*Szybkość ataku  <font color="green"> +15%  </font>
+*Szansa na cios krytyczny <font color="green"> +8%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +28% </font>
+| 15 dni
+|-
+| [[Plik:Zabójca Króla.png|center]]
+| [[Zabójca Króla]]
+| 70
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 137 - 149   </font>
+*Szybkość ataku  <font color="green"> +24%  </font>
+*Szansa na cios krytyczny <font color="green"> +9%  </font>
+*Wartość ataku <font color="green"> +50% </font>
+*Średnie obrażenia <font color="green"> +30% </font>
+| 15 dni
+|-
+
+
+|}
+</center>
+===Łuki===
+<center>
+{|width="715px" {{Prettytable}}
+|-{{Hl3}}
+!width="75px"| Obrazek
+! width="175px"| Nazwa
+! width="40px"| Poziom
+! width="130px"| Klasa
+! width="220px"| Bonusy
+! Czas użytkowania
+|-
+| [[Plik:Łowca Snów.png|center]]
+| [[Łowca Snów]]
+| 1
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 63 - 85  </font>
+*Szybkość ataku  <font color="green"> +28% </font>
+*Szansa na cios krytyczny <font color="green"> +5%  </font>
+*Wartość ataku <font color="green"> +20% </font>
+*Średnie obrażenia <font color="green"> +10% </font>
+| 15 dni
+|-
+| [[Plik:Żałobna Pieśń.png|center]]
+| [[Żałobna Pieśń]]
+| 10
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 75 - 113  </font>
+*Szybkość ataku  <font color="green"> +27%  </font>
+*Szansa na cios krytyczny <font color="green"> + 5% </font>
+*Wartość ataku <font color="green"> + 25% </font>
+*Średnie obrażenia <font color="green"> + 13% </font>
+| 15 dni
+|-
+| [[Plik:Tchnienie Smoka.png|center]]
+| [[Tchnienie Smoka]]
+| 20
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 96 - 144   </font>
+*Szybkość ataku <font color="green"> +15%   </font>
+*Szansa na cios krytyczny <font color="green"> +6% </font>
+*Wartość ataku <font color="green"> + 30% </font>
+*Średnie obrażenia <font color="green"> + 16% </font>
+| 15 dni
+|-
+| [[Plik:Posłaniec Burzy.png|center]]
+| [[Posłaniec Burzy]]
+| 30
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 120 - 186    </font>
+*Szybkość ataku <font color="green"> +26%   </font>
+*Szansa na cios krytyczny <font color="green"> +6% </font>
+*Wartość ataku <font color="green"> + 35% </font>
+*Średnie obrażenia <font color="green"> + 19% </font>
+| 15 dni
+|-
+| [[Plik:Cieniolubny Liść.png|center]]
+| [[Cieniolubny Liść]]
+| 40
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 123 - 252   </font>
+*Szybkość ataku <font color="green"> +15%   </font>
+*Szansa na cios krytyczny <font color="green"> +7% </font>
+*Wartość ataku <font color="green"> + 40% </font>
+*Średnie obrażenia <font color="green"> + 22% </font>
+| 15 dni
+|-
+| [[Plik:Szeptacz Tytanów.png|center]]
+| [[Szeptacz Tytanów]]
+| 50
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 167 - 267  </font>
+*Szybkość ataku <font color="green"> +22%   </font>
+*Szansa na cios krytyczny <font color="green"> +7% </font>
+*Wartość ataku <font color="green"> + 45% </font>
+*Średnie obrażenia <font color="green"> + 25% </font>
+| 15 dni
+|-
+| [[Plik:Boska Cięciwa.png|center]]
+| [[Boska Cięciwa]]
+| 60
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 186 - 302   </font>
+*Szybkość ataku <font color="green"> +15%   </font>
+*Szansa na cios krytyczny <font color="green"> +8% </font>
+*Wartość ataku <font color="green"> + 50% </font>
+*Średnie obrażenia <font color="green"> + 28% </font>
+| 15 dni
+|-
+| [[Plik:Ependrion.png|center]]
+| [[Ependrion]]
+| 70
+| [[Ninja]]
+|
+*Wartość ataku <font color="green"> 253 - 353  </font>
+*Szybkość ataku <font color="green"> +24%   </font>
+*Szansa na cios krytyczny <font color="green"> +9% </font>
+*Wartość ataku <font color="green"> + 50% </font>
+*Średnie obrażenia <font color="green"> + 30% </font>
+| 15 dni
+|-
+|}
+</center>
+
+[[Kategoria:Broń]]

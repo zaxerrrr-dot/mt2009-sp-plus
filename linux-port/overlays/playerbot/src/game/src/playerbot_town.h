@@ -1251,7 +1251,7 @@ namespace
 		for (size_t i = 0; i < cells.size(); ++i)
 		{
 			LPITEM item = ch->GetInventoryItem(cells[i]);
-			if (!item)
+			if (!item || IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1: never into the box
 				continue;
 			// MT2009_PLUS_237_BOT_CHURN_FIX_V1: not a kind this bot took out a
 			// moment ago while the bag still has room (IsPlayerBotBoxPingPong).
@@ -4571,6 +4571,9 @@ namespace
 	// (+7, +8, +9) as raw sums. Every caller goes through here.
 	DWORD GetPlayerBotShopAskingPrice(LPITEM item)
 	{
+		// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon is never priced - it is nobody's goods.
+		if (IsPlayerBotMlodziWeapon(item))
+			return 0;
 		// The explanation's steps are the ones of this pricing, not of one it
 		// asks on the way (TPlayerBotPriceDepth, playerbot_explain.h).
 		TPlayerBotPriceDepth depth;
@@ -5774,7 +5777,8 @@ namespace
 			const TItemTable* proto = item->GetProto();
 			// MT2009_PLUS_BOT_YOHARA_G0_V1: the item's own flags (an account-bound piece's too), not its proto's alone
 			if (!proto || IS_SET(item->GetAntiFlag(),
-					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP))
+					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP) ||
+					IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1: nor the real weapon prepared behind it
 				continue;
 			// Not the vendor-trash rule: a stall should carry something a player
 			// might actually want. Materials and spare loot qualify; the bot's own
@@ -7004,7 +7008,8 @@ namespace
 			const TItemTable* proto = item->GetProto();
 			// MT2009_PLUS_BOT_YOHARA_G0_V1: the item's own flags (an account-bound piece's too), not its proto's alone
 			if (!proto || IS_SET(item->GetAntiFlag(),
-					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP))
+					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP) ||
+					IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1
 			{
 				++uAntiFlag;
 				++explainRefused;

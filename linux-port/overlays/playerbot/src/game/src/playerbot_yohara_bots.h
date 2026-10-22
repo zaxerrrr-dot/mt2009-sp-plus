@@ -1717,6 +1717,7 @@ namespace
 					LPITEM item = ch->GetInventoryItem(cell);
 					if (!item || item->IsEquipped() || item->isLocked() || item->GetType() == ITEM_QUEST ||
 							item->GetVnum() == PLAYERBOT_YOHARA_SZC_WATCH ||
+							IsPlayerBotMlodziKept(ch, item) ||	// MT2009_PLUS_BOT_MLODZI_V1
 							(item->GetVnum() >= 27001 && item->GetVnum() <= 27008) ||
 							GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
 						continue;

@@ -1192,7 +1192,8 @@ namespace
 	bool CanPlayerBotTakeBonusStone(LPITEM item)
 	{
 		if (!item || item->GetType() == ITEM_COSTUME || item->isLocked() || item->IsExchanging() ||
-				item->GetAttributeSetIndex() == -1)
+				item->GetAttributeSetIndex() == -1 ||
+				IsPlayerBotMlodziWeapon(item))	// MT2009_PLUS_BOT_MLODZI_V1: no bonus added or changed
 			return false;
 		const DWORD vnum = item->GetVnum();
 		return !((vnum >= 11901 && vnum <= 11904) || vnum == 50201 || vnum == 50202);

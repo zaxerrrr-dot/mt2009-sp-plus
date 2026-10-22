@@ -1203,12 +1203,16 @@ flea_off=$(feature_off "${M2_FLEA_MARKET:-1}")
 # MT2009_PLUS_BUFFI_V1: Buffi (M2_BUFFI, default on) - the game core reads M2_BUFFI itself; the
 # quest buffi (the starter seal, the General Store's books) reads m2_buffi_off.
 buffi_off=$(feature_off "${M2_BUFFI:-1}")
+# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla Mlodych Bohaterow (M2_MLODZI_BOHATEROWIE, default on) - quest
+# mlodzi_bohaterowie and the cores (playerbot_mlodzi.cpp, the bots) read m2_mlodzi_off.
+mlodzi_off=$(feature_off "${M2_MLODZI_BOHATEROWIE:-1}")
 if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_autohunt_off', '', $autohunt_off),
         (0, 'm2_sidekick_off', '', $sidekick_off),
         (0, 'm2_buffi_off', '', $buffi_off),
+        (0, 'm2_mlodzi_off', '', $mlodzi_off),
         (0, 'm2_flea_market_off', '', $flea_off);"; then
-    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Buffi: $([ "$buffi_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
+    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Buffi: $([ "$buffi_off" = 1 ] && echo off || echo on), Bronie Mlodych Bohaterow: $([ "$mlodzi_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
 else
     fail_step "could not write the Auto Lowy, companion and Dom Towarowy flags; the cores keep the last ones" >&2
 fi
@@ -3994,6 +3998,18 @@ for yh_sql in yohara_helm100.sql; do
         echo "[playerbot-migrate] level-100 helmets: $yh_sql applied"
     else
         fail_step "level-100 helmets: $yh_sql failed" >&2
+    fi
+done
+
+# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla Mlodych Bohaterow (the owner, 22 October 2026) - mlodzi_bohaterowie.sql
+# (tools/mlodzi/gen_mlodzi.py): the official weapons 21900-21975 (8 tiers x 6 kinds, no Lycan) with our restrictions
+# (no trade / refine / sockets / random bonus, LIMIT_REAL_TIME 15 days). Idempotent (INSERT IGNORE + a guarded UPDATE).
+for ml_sql in mlodzi_bohaterowie.sql; do
+    [ -s "/opt/playerbot/$ml_sql" ] || continue
+    if db < "/opt/playerbot/$ml_sql"; then
+        echo "[playerbot-migrate] Bronie dla Mlodych Bohaterow: $ml_sql applied"
+    else
+        fail_step "Bronie dla Mlodych Bohaterow: $ml_sql failed" >&2
     fi
 done
 

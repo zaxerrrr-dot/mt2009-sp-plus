@@ -99,6 +99,13 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapons (playerbot_mlodzi_bots.h, included after this file).
+	bool IsPlayerBotMlodziWeapon(LPITEM item);
+	bool IsPlayerBotMlodziWeaponValid(LPITEM item);
+	bool IsPlayerBotWeaponPlanSuspended(LPCHARACTER ch);
+	LPITEM GetPlayerBotMlodziPreparedWeapon(LPCHARACTER ch);
+	int PlayerBotMlodziHandRule(LPITEM item, LPITEM old);
+
 	bool IsPlayerBotWeapon(LPCHARACTER ch, LPITEM item)
 	{
 		return item && item->GetType() == ITEM_WEAPON &&
@@ -132,6 +139,7 @@ namespace
 	{
 		return ch && item && IsPlayerBotWeapon(ch, item) && !item->IsExchanging() && item->CanUsedBy(ch) &&
 				!IsPlayerBotSidekickUnwanted(ch, item) &&
+				!IsPlayerBotMlodziWeapon(item) &&	// MT2009_PLUS_BOT_MLODZI_V1: not the real weapon it prepares
 				playerbot_refine_rules::IsProperWeaponFor((int)ch->GetLevel(), (int)item->GetLevelLimit());
 	}
 
@@ -277,7 +285,8 @@ namespace
 	bool NeedsPlayerBotProperWeapon(LPCHARACTER ch)
 	{
 		if (!ch || (int)ch->GetLevel() < PLAYERBOT_LOW_WEAPON_BAN_LEVEL || !ch->IsItemLoaded() ||
-				IsPlayerBotSidekickPinned(ch, ch->GetWear(WEAR_WEAPON)))
+				IsPlayerBotSidekickPinned(ch, ch->GetWear(WEAR_WEAPON)) ||
+				IsPlayerBotWeaponPlanSuspended(ch))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
 		// A weapon over the line in the hand - nearly every bot - is answered
 		// without the bag and the merchants behind the kept answer.
@@ -448,7 +457,8 @@ namespace
 	// a step goes to the anvil ahead of the rest (ManagePlayerBotRefining).
 	BYTE GetPlayerBotLawRefinePlus(LPCHARACTER ch, LPITEM item, int wearCell)
 	{
-		if (!ch || !item || wearCell < 0 || IsPlayerBotLawStaleGear(ch, item))
+		if (!ch || !item || wearCell < 0 || IsPlayerBotLawStaleGear(ch, item) ||
+				IsPlayerBotMlodziWeapon(item))	// MT2009_PLUS_BOT_MLODZI_V1: never refined
 			return 0;
 		if (wearCell == WEAR_WEAPON && (item->GetType() != ITEM_WEAPON ||
 				(int)item->GetLevelLimit() + (int)playerbot_persona::AWANS_PREMIUM_LEVEL_WINDOW < (int)ch->GetLevel()))
@@ -1516,7 +1526,8 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item == except || item->GetCell() != cell || item->IsEquipped() ||
 					item->GetType() != ITEM_WEAPON || !IsPlayerBotEquipmentCandidate(ch, item) ||
-					item->GetLevelLimit() > ch->GetLevel() || item->FindEquipCell(ch) != WEAR_WEAPON)
+					item->GetLevelLimit() > ch->GetLevel() || item->FindEquipCell(ch) != WEAR_WEAPON ||
+					IsPlayerBotMlodziWeapon(item))	// MT2009_PLUS_BOT_MLODZI_V1: the real weapons only
 				continue;
 			const long long score = GetPlayerBotEquipmentScore(item, ch);
 			if (!best || score > bestScore || (score == bestScore && item->GetID() < best->GetID()))
@@ -1588,6 +1599,10 @@ namespace
 		if (!ch || !ch->IsItemLoaded())
 			return NULL;
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		// MT2009_PLUS_BOT_MLODZI_V1: with a young heroes' weapon in the hand, the hand of the weapon planning (the
+		// goal, the anvil, the backup, the counters) is the real weapon prepared in the bag - none, while it has none.
+		if (IsPlayerBotMlodziWeapon(worn))
+			return GetPlayerBotMlodziPreparedWeapon(ch);
 		if (worn && worn->GetType() == ITEM_WEAPON)
 			return worn;
 		LPITEM taken = FindPlayerBotTakenOffPiece(ch, WEAR_WEAPON);
@@ -1634,7 +1649,8 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item == hand || item->GetCell() != cell || item->IsEquipped() ||
 					item->GetType() != ITEM_WEAPON || !IsPlayerBotEquipmentCandidate(ch, item) ||
-					item->GetLevelLimit() > ch->GetLevel() || item->FindEquipCell(ch) != WEAR_WEAPON)
+					item->GetLevelLimit() > ch->GetLevel() || item->FindEquipCell(ch) != WEAR_WEAPON ||
+					IsPlayerBotMlodziWeapon(item))	// MT2009_PLUS_BOT_MLODZI_V1
 				continue;
 			const long long score = GetPlayerBotEquipmentScore(item, ch);
 			if (item->GetRefineLevel() >= PLAYERBOT_SPARE_GOODS_MIN_PLUS && score <= handScore)
@@ -2080,8 +2096,16 @@ namespace
 			const bool oldDoesNotFit = oldItem && wearCell == WEAR_WEAPON && !PlayerBotWeaponFitsNow(ch, state, oldItem);
 			const bool oldBanned = oldItem && wearCell == WEAR_WEAPON && !oldDoesNotFit && !stoneMode &&
 					IsPlayerBotBannedLowWeapon(ch, oldItem);
+			// MT2009_PLUS_BOT_MLODZI_V1: a valid young heroes' weapon goes on over any other and stays on until
+			// its last two minutes (PlayerBotMlodziHandRule); the Archer's stone swap keeps its own rule, and one the
+			// build no longer fights with (a Ninja's dagger of level one, an Archer from level five) gives way.
+			const int mlodziRule = wearCell == WEAR_WEAPON && !stoneMode
+					? PlayerBotMlodziHandRule(item, oldDoesNotFit ? NULL : oldItem) : 0;
+			if (mlodziRule < 0)
+				continue;
 			const long long oldScore = oldItem
-					? ((oldDoesNotFit || oldBanned || outdatedGivesWay) ? 0 : GetPlayerBotEquipmentScore(oldItem, ch))
+					? ((oldDoesNotFit || oldBanned || outdatedGivesWay || mlodziRule > 0) ? 0
+						: GetPlayerBotEquipmentScore(oldItem, ch))
 					: 0;
 			if (oldItem && itemScore <= oldScore)
 				continue;
@@ -2123,7 +2147,7 @@ namespace
 				bestRule = !oldItem ? per::RULE_EMPTY_SLOT
 						: (oldDoesNotFit && IsPlayerBotArcherBuild(ch) ? per::RULE_ARCHER_STONE_SWITCH
 							: (oldBanned ? per::RULE_OLD_LOW_WEAPON_BANNED : per::RULE_SCORE_UPGRADE));
-				bestOldZeroed = oldItem && (oldDoesNotFit || oldBanned || outdatedGivesWay);
+				bestOldZeroed = oldItem && (oldDoesNotFit || oldBanned || outdatedGivesWay || mlodziRule > 0);
 			}
 		}
 
@@ -2528,7 +2552,8 @@ namespace
 				if (!item || !IsPlayerBotEquipmentCandidate(ch, item) ||
 						item->FindEquipCell(ch) != wearCell)
 					continue;
-				if (wearCell == WEAR_WEAPON && !IsPlayerBotWeapon(ch, item))
+				if (wearCell == WEAR_WEAPON && (!IsPlayerBotWeapon(ch, item) ||
+						IsPlayerBotMlodziWeapon(item)))	// MT2009_PLUS_BOT_MLODZI_V1: the real one is asked for
 					continue;
 				if (item->GetLevelLimit() >= desiredLevel && item->GetLevelLimit() <= ch->GetLevel())
 					return true;
@@ -2657,7 +2682,8 @@ namespace
 
 	bool NeedsPlayerBotProgressionWeapon(LPCHARACTER ch)
 	{
-		return ch && !HasPlayerBotProgressionGear(
+		return ch && !IsPlayerBotWeaponPlanSuspended(ch) &&	// MT2009_PLUS_BOT_MLODZI_V1
+				!HasPlayerBotProgressionGear(
 				ch, GetPlayerBotProgressionWeaponVnum(ch), WEAR_WEAPON);
 	}
 
@@ -3087,6 +3113,7 @@ namespace
 	{
 		return ch && ch->GetLevel() >= 30 && ch->IsItemLoaded() &&
 				!IsPlayerBotDropper(GetPlayerBotPersonalityByPID(ch->GetPlayerID())) &&
+				!IsPlayerBotWeaponPlanSuspended(ch) &&	// MT2009_PLUS_BOT_MLODZI_V1
 				FindPlayerBotClassLevel30Weapon(ch) == NULL;
 	}
 
@@ -3371,7 +3398,8 @@ namespace
 	// seventy on a level-65 weapon +9 has nothing to look for there.
 	bool PlayerBotCouldUseLevel30Weapon(LPCHARACTER ch)
 	{
-		if (!ch || ch->GetLevel() < 30 || !ch->IsItemLoaded())
+		if (!ch || ch->GetLevel() < 30 || !ch->IsItemLoaded() ||
+				IsPlayerBotWeaponPlanSuspended(ch))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
 		if (worn && !IsPlayerBotWeapon(ch, worn))
@@ -3887,6 +3915,13 @@ namespace
 		if (IsPlayerBotSashGrailProject(ch, item))
 			return std::max<BYTE>(GetPlayerBotRefineTargetOwn(ch, item), PLAYERBOT_SASH_GRAIL_PLUS);
 		const BYTE target = GetPlayerBotRefineTargetOwn(ch, item);
+		// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon is never refined, and the bot's own weapon waits at its
+		// plus while the hold holds - but for what the anvil makes for a counter (the level-30 weapon of another
+		// class, a spare for sale).
+		if (ch && item && item->GetType() == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW &&
+				(IsPlayerBotMlodziWeapon(item) || (IsPlayerBotWeaponPlanSuspended(ch) &&
+					!PlayerBotRefinesLevel30ForSale(ch, item) && !PlayerBotRefinesSpareForSale(ch, item))))
+			return std::min<BYTE>(target, item->GetRefineLevel());
 		if (!ch || !item || item->IsEquipped() || item->GetType() != ITEM_WEAPON)
 			return target;
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
@@ -5105,7 +5140,8 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (!IsPlayerBotWeapon(ch, item) || item->GetCell() != cell || IsPlayerBotSidekickUnwanted(ch, item))
+			if (!IsPlayerBotWeapon(ch, item) || item->GetCell() != cell || IsPlayerBotSidekickUnwanted(ch, item) ||
+					(IsPlayerBotMlodziWeapon(item) && !IsPlayerBotMlodziWeaponValid(item)))	// MT2009_PLUS_BOT_MLODZI_V1
 				continue;
 			if (IsPlayerBotBannedLowWeapon(ch, item))
 			{

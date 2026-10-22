@@ -31,6 +31,7 @@
 #include <cstdio>
 #include <cstring>
 #include <map>
+#include "playerbot_mlodzi.h"
 
 #ifdef ENABLE_CHANGELOOK_SYSTEM
 
@@ -69,6 +70,9 @@ namespace changelook
 	bool IsWeaponLook(LPITEM item)
 	{
 		if (item->GetType() != ITEM_WEAPON)
+			return false;
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (look): a young heroes' weapon neither takes nor gives a look
+		if (MlodziIsWeaponVnum(item->GetVnum()))
 			return false;
 		switch (item->GetSubType())
 		{

@@ -1,0 +1,92 @@
+-- MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla M³odych Bohaterów (decyzja w³aœciciela 22.10.2026; wiki: "Bronie dla
+-- M³odych Bohaterów"). Na poziomie 1, 10, 20 ... 70 postaæ dostaje list; klikniêty otwiera okno klienta
+-- (root/uimlodzibohaterowie.py: "Wybierz broñ:", ikony z nazwami, postaæ, przycisk na ka¿d¹ broñ, "Dalej").
+-- Klient odsy³a "/mlodzi_wybor <próg> <numer wyboru 1-3>" - nigdy vnum; serwer sprawdza wszystko jeszcze raz
+-- (playerbot_mlodzi.cpp: mlodzi.offer / mlodzi.weapons / mlodzi.claim):
+--   * jedna broñ na próg, tylko z progu obecnego poziomu: kto wzi¹³ broñ 10, pomin¹³ 20 i doszed³ do 30,
+--     dostaje ju¿ tylko ofertê 30 (próg pominiêty przepada); od 70 zostaje oferta 70;
+--   * Wojownik: miecz / broñ dwurêczna, Ninja: miecz / sztylet / ³uk, Sura: miecz, Szaman: dzwon / wachlarz;
+--   * bronie 21900-21975 (mlodzi_bohaterowie.sql, tools/mlodzi): bez handlu, wyrzucania, sprzeda¿y, sklepu
+--     i magazynu, bez ulepszania, bonusów, kamieni duszy i transmutacji, znikaj¹ 15 dni po otrzymaniu
+--     (tak¿e za³o¿one);
+--   * pe³ny ekwipunek niczego nie zu¿ywa - broñ nie spada na ziemiê, oferta czeka.
+-- Wy³¹cznik: .env M2_MLODZI_BOHATEROWIE=0 (apply.sh zapisuje flagê m2_mlodzi_off) - bez listu i bez broni;
+-- bronie ju¿ wydane maj¹ swoje 15 dni. Boty bior¹ bronie same w C++ (playerbot_mlodzi*), nie przez ten quest.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc). Kompiluje go Dockerfile.
+quest mlodzi_bohaterowie begin
+	state start begin
+		function refresh()
+			if mlodzi.offer() > 0 then
+				send_letter("Bronie dla M³odych Bohaterów")
+			else
+				clear_letter()
+			end
+		end
+
+		function open()
+			local n, v1, v2, v3 = mlodzi.weapons()
+			local t = mlodzi.offer()
+			if t == 0 or n == 0 then
+				cmdchat("MLODZI_CLOSE")
+				return false
+			end
+			cmdchat("MLODZI_OPEN " .. t .. " " .. mlodzi.tier_level(t) .. " " .. v1 .. " " .. v2 .. " " .. v3)
+			return true
+		end
+
+		when login or levelup begin
+			if pc.is_bot() then
+				return
+			end
+			mlodzi_bohaterowie.refresh()
+		end
+
+		when button or info begin
+			if not mlodzi.enabled() then
+				clear_letter()
+				say_title("Bronie dla M³odych Bohaterów")
+				say("Bronie dla M³odych Bohaterów s¹ wy³¹czone")
+				say("na tym serwerze.")
+				return
+			end
+			if not mlodzi_bohaterowie.open() then
+				clear_letter()
+				say_title("Bronie dla M³odych Bohaterów")
+				say("Nie masz teraz broni do odebrania. Kolejna czeka")
+				say("na poziomie 10, 20, 30, 40, 50, 60 i 70 - zawsze")
+				say("tylko z progu twojego obecnego poziomu.")
+			end
+		end
+
+		when write with mes.get_message() == "mlodzi_wybor" begin
+			if pc.is_bot() then
+				return
+			end
+			local args = mes.get_arguments()
+			local t = tonumber(args[1] or "") or 0
+			local c = tonumber(args[2] or "") or 0
+			local st, vnum = mlodzi.claim(t, c)
+			if st == 0 then
+				cmdchat("MLODZI_CLOSE")
+				syschat("Otrzymujesz: " .. item_name(vnum) .. ". Broñ zniknie za 15 dni (tak¿e za³o¿ona).")
+				syschat("Nie mo¿na jej ulepszaæ, zmieniaæ bonusów, wymieniaæ ani sprzedawaæ.")
+			elseif st == 3 then
+				syschat("Brak miejsca w ekwipunku na tê broñ - zwolnij miejsce i wybierz jeszcze raz.")
+			elseif st == 6 then
+				syschat("Zamknij handel, sklep, magazyn i okna ulepszania, a potem wybierz jeszcze raz.")
+			elseif st == 7 then
+				cmdchat("MLODZI_CLOSE")
+				syschat("Bronie dla M³odych Bohaterów s¹ wy³¹czone na tym serwerze.")
+			elseif st == 1 then
+				syschat("Ta oferta jest ju¿ nieaktualna - otwórz list jeszcze raz.")
+				if not mlodzi_bohaterowie.open() then
+					cmdchat("MLODZI_CLOSE")
+				end
+			else
+				cmdchat("MLODZI_CLOSE")
+				syschat("Nie uda³o siê wydaæ broni (kod " .. st .. "). Zg³oœ to administratorowi serwera.")
+			end
+			mlodzi_bohaterowie.refresh()
+		end
+	end
+end
