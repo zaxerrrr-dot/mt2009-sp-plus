@@ -1115,6 +1115,10 @@ namespace
 
 	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps - their table, the pick, the points, the stay, the census.
 	bool IsPlayerBotYoharaFightStopped(LPCHARACTER ch, const TPlayerBotYoharaResident& r, DWORD dwNow);
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V2: the belt kept full where the bot stands (the Dongan errand's fallback) and the
+	// belt bought at a merchant (the errand's own purchase) - below, after the route.
+	void RestockPlayerBotYohara(LPCHARACTER ch, TPlayerBotYoharaResident& r, DWORD dwNow);
+	void BuyPlayerBotYoharaBelt(LPCHARACTER ch, size_t redWant, size_t blueWant, int& boughtRed, int& boughtBlue);
 #include "playerbot_yohara_sungma.h"
 
 	// ------------------------------------------------------------ the route
@@ -1533,7 +1537,19 @@ namespace
 				count = sizeof(PLAYERBOT_YOHARA_LOOT_HUBS_304) / sizeof(PLAYERBOT_YOHARA_LOOT_HUBS_304[0]);
 				return PLAYERBOT_YOHARA_LOOT_HUBS_304;
 			default:
+			{
+				// MT2009_PLUS_BOT_YOHARA_MAPS_V2: the Sung Ma maps' spots (playerbot_yohara_sungma.h). V1 wrote the table
+				// and the wandering asked here for it (IsPlayerBotSungmaBotMap), but this switch never answered: every
+				// bot on the nine maps had no spot at all and walked +-1200 round wherever it stood (the frontier's
+				// fallback for a pocket) - no Champion floors, no party-only bosses, the nearest packs for everyone.
+				const int slot = GetPlayerBotSungmaSlot(mapIndex);
+				if (slot >= 0)
+				{
+					count = PLAYERBOT_SUNGMA_MAPS[slot].uHubs;
+					return PLAYERBOT_SUNGMA_MAPS[slot].pHubs;
+				}
 				return NULL;
+			}
 		}
 	}
 
@@ -1703,10 +1719,27 @@ namespace
 				ITEM_MANAGER::instance().RemoveItem(cheapest, "PLAYERBOT_COHORT_SELL");
 			}
 		}
+		int boughtRed = 0, boughtBlue = 0;
+		BuyPlayerBotYoharaBelt(ch, PLAYERBOT_YOHARA_BELT_RED, PLAYERBOT_YOHARA_BELT_BLUE, boughtRed, boughtBlue);
+		if (boughtRed || boughtBlue)
+			sys_log(0, "PLAYERBOT_YOHARA: restock pid=%u name=%s map=%ld red=%u blue=%u bought_red=%d bought_blue=%d gold=%lld",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)red, (unsigned int)blue,
+					boughtRed, boughtBlue, (long long)ch->GetGold());
+	}
+
+	// The belt bought at the merchant's price, by the stack of 200 (big ones from PLAYERBOT_BIG_POTION_MIN_LEVEL), red to
+	// redWant and - a Shaman's or a Sura's - blue to blueWant, while a cell is free and twice a stack's price is there.
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V2: RestockPlayerBotYohara's purchase, shared with the Dongan errand (which buys more).
+	void BuyPlayerBotYoharaBelt(LPCHARACTER ch, size_t redWant, size_t blueWant, int& boughtRed, int& boughtBlue)
+	{
+		boughtRed = boughtBlue = 0;
+		if (!ch)
+			return;
+		size_t red = 0, blue = 0;
+		CountPlayerBotPotions(ch, red, blue);
 		const bool big = ch->GetLevel() >= PLAYERBOT_BIG_POTION_MIN_LEVEL;
 		const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
-		int boughtRed = 0, boughtBlue = 0;
-		for (int i = 0; i < 2 && red + boughtRed < PLAYERBOT_YOHARA_BELT_RED && ch->GetEmptyInventory(1) >= 0; ++i)
+		for (int i = 0; i < 8 && red + boughtRed < redWant && ch->GetEmptyInventory(1) >= 0; ++i)
 		{
 			const long long cost = 200LL * (big ? 40 : 20);
 			if ((long long)ch->GetGold() < cost * 2)
@@ -1715,7 +1748,7 @@ namespace
 			ch->AutoGiveItem(big ? 27003 : 27002, 200);
 			boughtRed += 200;
 		}
-		for (int i = 0; caster && i < 2 && blue + boughtBlue < PLAYERBOT_YOHARA_BELT_BLUE && ch->GetEmptyInventory(1) >= 0; ++i)
+		for (int i = 0; caster && i < 8 && blue + boughtBlue < blueWant && ch->GetEmptyInventory(1) >= 0; ++i)
 		{
 			const long long cost = 200LL * (big ? 64 : 32);
 			if ((long long)ch->GetGold() < cost * 2)
@@ -1724,10 +1757,6 @@ namespace
 			ch->AutoGiveItem(big ? 27006 : 27005, 200);
 			boughtBlue += 200;
 		}
-		if (boughtRed || boughtBlue)
-			sys_log(0, "PLAYERBOT_YOHARA: restock pid=%u name=%s map=%ld red=%u blue=%u bought_red=%d bought_blue=%d gold=%lld",
-					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)red, (unsigned int)blue,
-					boughtRed, boughtBlue, (long long)ch->GetGold());
 	}
 
 	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's kit kept up on the pier - an Archer Ninja's Marmur Polimorfii
@@ -1989,7 +2018,8 @@ namespace
 		if (ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL || NeedsPlayerBotArrows(ch))
 			return true;
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member - only what stops the fight (the bag is no reason).
-		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: nor for a Sung Ma resident - its bag and belt are Dongan's errand.
+		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) || r.iPurpose == YOHARA_PURPOSE_SUNGMA)
 			return false;
 		if (dwNow - r.dwArrived < PLAYERBOT_YOHARA_SETTLE_MS)
 			return false;
@@ -2027,7 +2057,10 @@ namespace
 			return SendPlayerBotYoharaHome(ch, state, dwNow, "yohara_switched_off") ? 1 : 0;
 		if (ch->IsDead() || state.bRecoveringAfterDeath)
 			return -1;
-		RestockPlayerBotYohara(ch, res, dwNow);
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a Sung Ma resident buys and sells at Dongan's merchants (the errand,
+		// playerbot_yohara_sungma.h) - the belt kept full where it stands only when the errand cannot be made.
+		if (res.iPurpose != YOHARA_PURPOSE_SUNGMA)
+			RestockPlayerBotYohara(ch, res, dwNow);
 		const int level = ch->GetLevel();
 		switch (res.iPurpose)
 		{

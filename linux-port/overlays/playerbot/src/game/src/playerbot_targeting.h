@@ -1322,6 +1322,15 @@ namespace
 			else
 				context.mode = playerbot_combat_value::SERVICE_ONLY;
 		}
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a Sung Ma map's boss (the War Chiefs 127-131, Argos, Natanan, Kao, Krol Bao,
+		// the Myr Primus / Veteran - 0.4-0.95 M health with their packs) is a party of three's, as its hub is: a lone bot
+		// only answers it. 22 October, game3: the deaths round the bosses' points - 4 by Argos on Dongan, 4 by the
+		// Frozen War Chief on Wawoz, 2 by Schronienie's - were lone bots that took the boss as a target on their way.
+		if (context.mode == playerbot_combat_value::OBJECTIVES && candidate->IsMonster() &&
+				candidate->GetMobRank() >= MOB_RANK_BOSS && !candidate->IsStone() &&
+				IsPlayerBotSungmaBotMap(ch->GetMapIndex()) &&
+				(!ch->GetParty() || ch->GetParty()->GetMemberCount() < 3))
+			context.mode = playerbot_combat_value::SERVICE_ONLY;
 		return context;
 	}
 

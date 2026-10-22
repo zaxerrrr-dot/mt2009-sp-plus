@@ -437,6 +437,11 @@ namespace
 						ch->GetPlayerID(), ch->GetName(), ch->GetHP(), ch->GetMaxHP());
 				state.dwDeathDetectedTime = 0;
 				state.dwNextReviveAttemptTime = 0;
+				// MT2009_PLUS_BOT_YOHARA_MAPS_V2: on a Sung Ma map a resident stands up at the safe point by its arrival (a
+				// person's "restart in town" there), not inside the pack that killed it - 22 October, game3: four
+				// deaths in two minutes at one point, revived with a fifth of its health among the same monsters.
+				if (MovePlayerBotSungmaRevived(ch))
+					ClearPlayerBotRoute(state, true);
 			}
 		}
 
