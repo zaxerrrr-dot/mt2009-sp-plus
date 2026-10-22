@@ -1179,6 +1179,14 @@ namespace
 				// that open it, so their bush counts a third as far.
 				if (peachFirst && bush->GetRaceNum() == PLAYERBOT_HERBALISM_PEACH_BUSH)
 					distance /= 3;
+				// MT2009_PLUS_237_BOT_CHURN_FIX_V1: never a bush on ground this
+				// bot's own does not join - a pocket of a village, a ledge. One
+				// bush in a pocket of Joan, (87877,181052), was walked at 246
+				// times on 22 October, every bot standing two minutes in front
+				// of the refusal (35 of the day's 175 watchdog resets).
+				if ((!best || distance < bestDistance) &&
+						!IsPlayerBotReachable(ch->GetMapIndex(), ch->GetX(), ch->GetY(), bush->GetX(), bush->GetY()))
+					continue;
 				if (!best || distance < bestDistance)
 				{
 					best = bush;
@@ -1475,6 +1483,15 @@ namespace
 			}
 			StowPlayerBotHerbKnife(ch);
 			MovePlayerBot(ch, bush->GetX(), bush->GetY(), dwNow, 4, false, true, false, false);
+			// MT2009_PLUS_237_BOT_CHURN_FIX_V1: the planner's "no way" ends the
+			// walk now, not after the two minutes above.
+			if (state.bLastNavOutcome == PLAYERBOT_NAV_OUT_UNREACHABLE)
+			{
+				s_mapPlayerBotHerbSkipBush[pid] = (DWORD)bush->GetVID();
+				s_mapPlayerBotHerbSkipUntil[pid] = dwNow + 10 * 60 * 1000;
+				s_mapPlayerBotHerbBush.erase(pid);
+				ClearPlayerBotRoute(state, true);
+			}
 			return true;
 		}
 

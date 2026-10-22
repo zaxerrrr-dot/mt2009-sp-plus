@@ -8010,9 +8010,18 @@ WritePlayerBotGuildStatus(dwNow);
 		// the next tier loops forever between the weapon and armour merchants and
 		// never returns to combat (or to its local party).
 		const bool bOnTownMap = IsPlayerBotVillageMap(ch->GetMapIndex());
+		// MT2009_PLUS_237_BOT_CHURN_FIX_V1: the missing skill group skips the
+		// cooldown only where a trainer can give it - the visit's own test
+		// (bTownNeedTrainer in StartPlayerBotTownVisit). In a second village a
+		// bot of five without a group whose full bag kept it from the road
+		// began a visit on every tick it was free: armour merchant, storekeeper
+		// and back every 25 seconds for twenty hours (2 476 safebox visits of
+		// one bot on 22 October).
+		const bool bProfessionHere = bNeedsProfession && !IsPlayerBotM2Map(ch->GetMapIndex()) &&
+				ch->GetJob() <= JOB_SHAMAN && playerbot_empire_rules::HasSkillTrainers(ch->GetMapIndex());
 		if (bTownVisitAllowed && bOnTownMap && !state.bVisitingShop && !state.bMultiPullActive &&
 				!bFightingMetin &&
-				(bNeedsProfession || dwNow > state.dwNextShopCheckTime))
+				(bProfessionHere || dwNow > state.dwNextShopCheckTime))
 		{
 			size_t occupiedItems = 0;
 			size_t occupiedGridCells = 0;

@@ -135,6 +135,73 @@ namespace
 	// the room-making itself is defined at the end of this file, the stall's
 	// half in playerbot_offline_shop.h.
 	std::map<DWORD, DWORD> s_mapPlayerBotSafeboxFullAt;
+
+	// MT2009_PLUS_237_BOT_CHURN_FIX_V1: the storekeeper's churn (supporters'
+	// world, 22 October, both channels): 75 998 safebox visits in twenty
+	// hours, 32 881 of them putting down nothing and taking nothing - one bot
+	// every 25 seconds all day - and 3 079 withdrawals for the anvil that the
+	// deposit sent straight back down. Three answers, by bot:
+	// - a visit that moved nothing keeps the box off the visit's list for
+	//   PLAYERBOT_SAFEBOX_IDLE_BACKOFF_MS (the release's own timers too): the
+	//   same bag and the same box would move nothing again;
+	// - a kind this bot took out is not put back down inside
+	//   PLAYERBOT_SAFEBOX_PINGPONG_MS, nor a kind it put down taken out again,
+	//   unless the bag is out of room (PLAYERBOT_SAFEBOX_PINGPONG_FREE_CELLS);
+	// - the errand is asked again at the storekeeper's phase: the merchants
+	//   before it often sold what made the bag "under pressure".
+	const DWORD PLAYERBOT_SAFEBOX_IDLE_BACKOFF_MS = 30 * 60 * 1000;
+	const DWORD PLAYERBOT_SAFEBOX_RELEASE_IDLE_GAP_MS = 30 * 60 * 1000;
+	const DWORD PLAYERBOT_SAFEBOX_PINGPONG_MS = 30 * 60 * 1000;
+	const int PLAYERBOT_SAFEBOX_PINGPONG_FREE_CELLS = 2;
+	std::map<DWORD, DWORD> s_mapPlayerBotSafeboxIdleUntil;
+	std::map<DWORD, std::map<DWORD, DWORD> > s_mapPlayerBotBoxTakenAt;	// pid -> vnum -> when taken out
+	std::map<DWORD, std::map<DWORD, DWORD> > s_mapPlayerBotBoxPutAt;	// pid -> vnum -> when put down
+	std::set<DWORD> s_setPlayerBotBoxGearVisit;	// the visit was asked for the box's gear
+	std::set<DWORD> s_setPlayerBotBoxPhaseAsked;	// the storekeeper's phase asked its errand again
+
+	bool IsPlayerBotSafeboxIdle(DWORD pid, DWORD dwNow)
+	{
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotSafeboxIdleUntil.find(pid);
+		if (it == s_mapPlayerBotSafeboxIdleUntil.end())
+			return false;
+		if ((int)(it->second - dwNow) > 0)
+			return true;
+		s_mapPlayerBotSafeboxIdleUntil.erase(it);
+		return false;
+	}
+
+	void NotePlayerBotBoxMove(std::map<DWORD, std::map<DWORD, DWORD> >& moves, DWORD pid, DWORD vnum, DWORD dwNow)
+	{
+		std::map<DWORD, DWORD>& kinds = moves[pid];
+		for (std::map<DWORD, DWORD>::iterator it = kinds.begin(); it != kinds.end();)
+		{
+			if (dwNow - it->second >= PLAYERBOT_SAFEBOX_PINGPONG_MS)
+				kinds.erase(it++);
+			else
+				++it;
+		}
+		kinds[vnum] = dwNow ? dwNow : 1;
+	}
+
+	bool WasPlayerBotBoxMovedRecently(const std::map<DWORD, std::map<DWORD, DWORD> >& moves, DWORD pid,
+			DWORD vnum, DWORD dwNow)
+	{
+		std::map<DWORD, std::map<DWORD, DWORD> >::const_iterator bot = moves.find(pid);
+		if (bot == moves.end())
+			return false;
+		std::map<DWORD, DWORD>::const_iterator at = bot->second.find(vnum);
+		return at != bot->second.end() && dwNow - at->second < PLAYERBOT_SAFEBOX_PINGPONG_MS;
+	}
+
+	// A kind taken out of the box inside the window, in a bag that still has
+	// room: it stays in the bag rather than going straight back down.
+	bool IsPlayerBotBoxPingPong(LPCHARACTER ch, LPITEM item, DWORD dwNow)
+	{
+		return ch && item && WasPlayerBotBoxMovedRecently(s_mapPlayerBotBoxTakenAt, ch->GetPlayerID(),
+				item->GetVnum(), dwNow) &&
+				CountPlayerBotFreeInventoryCells(ch) > PLAYERBOT_SAFEBOX_PINGPONG_FREE_CELLS;
+	}
+
 	bool MakePlayerBotBagColumnRoom(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	// MT2009_PLUS_BOT_FULL_CLEAROUT_V1 (playerbot_market_life.h).
 	bool RunPlayerBotFullClearout(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
@@ -464,9 +531,28 @@ namespace
 		CollectPlayerBotSafeboxDeadStock(ch, state, cells);
 		if (!cells.empty())
 			return true;
-		CollectPlayerBotSafeboxMaterials(ch, cells);
-		if (!cells.empty())
-			return true;
+		// MT2009_PLUS_237_BOT_CHURN_FIX_V1: the materials on the deposit's own
+		// terms - none while gambling, only a kind with units over the anvil's
+		// reserve (the deposit cuts the stack there and put down nothing at all
+		// for a bag holding just its reserve), and not one taken out a moment
+		// ago. Asked on the collector's word alone, a bag under pressure with a
+		// material stack past the stock slots called at the storekeeper on
+		// every visit and moved nothing.
+		if (!IsPlayerBotGambling(state, get_dword_time()))
+		{
+			CollectPlayerBotSafeboxMaterials(ch, cells);
+			const DWORD dwNow = get_dword_time();
+			for (size_t i = 0; i < cells.size(); ++i)
+			{
+				LPITEM item = ch->GetInventoryItem(cells[i]);
+				if (!item || IsPlayerBotBoxPingPong(ch, item, dwNow))
+					continue;
+				if (!IsPlayerBotTradeableMaterial(item) || IsPlayerBotSafeRefineScroll(item->GetVnum()) ||
+						(int)ch->CountSpecifyItem(item->GetVnum()) >
+						GetPlayerBotRefineMaterialReserve(ch, item->GetVnum()))
+					return true;
+			}
+		}
 		CollectPlayerBotSafeboxKeys(ch, cells);
 		if (!cells.empty())
 			return true;
@@ -495,6 +581,9 @@ namespace
 		if (!ch || !IsPlayerBotPersonaEnabled() || !p.bRestored ||
 				(p.bLppStoredKnown && p.wLppReleasable == 0) || dwNow < p.dwLppReleaseVisitAt)
 			return false;
+		// MT2009_PLUS_237_BOT_CHURN_FIX_V1: not after a visit that moved nothing.
+		if (IsPlayerBotSafeboxIdle(ch->GetPlayerID(), dwNow))
+			return false;
 		// A bot that never paid for a page has nothing down there to look at.
 		if (!p.bLppStoredKnown && ch->GetQuestFlag(PLAYERBOT_SAFEBOX_PAID_FLAG) <= 0)
 			return false;
@@ -514,6 +603,9 @@ namespace
 	{
 		const TPlayerBotPersona& p = state.persona;
 		if (!ch || p.wBoxMaterialUnits == 0 || dwNow < p.dwMaterialReleaseVisitAt || !PlayerBotHasCounter(ch))
+			return false;
+		// MT2009_PLUS_237_BOT_CHURN_FIX_V1: not after a visit that moved nothing.
+		if (IsPlayerBotSafeboxIdle(ch->GetPlayerID(), dwNow))
 			return false;
 		const int freeAfter = CountPlayerBotFreeInventoryCells(ch) - 1;
 		return freeAfter > PLAYERBOT_BAG_PRESSURE_FREE_CELLS &&
@@ -561,6 +653,7 @@ namespace
 		if (!pGambler)
 			CollectPlayerBotLppBoxRelease(ch, box, lppRelease);
 		int taken = 0;
+		const DWORD dwBoxNow = get_dword_time();	// MT2009_PLUS_237_BOT_CHURN_FIX_V1
 		// MT2009_PLUS_BOT_MEDAL_DROPPER_SELL_V1: the medal droppers' books
 		// taken out this visit (PLAYERBOT_MEDAL_DROPPER_BOX_BOOK_STACKS).
 		int medalBooksTaken = 0;
@@ -586,6 +679,15 @@ namespace
 			// and the pairs of CreateItem: ITEM_ID_DUP / LoadSafebox lines in
 			// syserr are that round trip seen from the database (Tieru).
 			if (pJustDeposited && pJustDeposited->find(item->GetVnum()) != pJustDeposited->end())
+				continue;
+			// MT2009_PLUS_237_BOT_CHURN_FIX_V1: nor, for a material, a herb, a
+			// key or a stone, a kind an earlier visit of this bot put down
+			// inside PLAYERBOT_SAFEBOX_PINGPONG_MS - the same round trip over
+			// two visits (627 anvil withdrawals within a quarter of an hour of
+			// their deposit on 22 October). Gear and books keep their rules.
+			if (!IsPlayerBotSidekickServing(ch) && item->GetType() != ITEM_WEAPON &&
+					item->GetType() != ITEM_ARMOR && item->GetType() != ITEM_SKILLBOOK &&
+					WasPlayerBotBoxMovedRecently(s_mapPlayerBotBoxPutAt, ch->GetPlayerID(), item->GetVnum(), dwBoxNow))
 				continue;
 
 			bool wanted = false;
@@ -814,6 +916,7 @@ namespace
 						stone4Taken[vnum] += units;
 						stone4TakenAll += units;
 						NotePlayerBotStone4Released(units);
+						NotePlayerBotBoxMove(s_mapPlayerBotBoxTakenAt, ch->GetPlayerID(), vnum, dwBoxNow);	// MT2009_PLUS_237_BOT_CHURN_FIX_V1
 						++taken;
 						continue;
 					}
@@ -899,6 +1002,7 @@ namespace
 					ch->AutoGiveItem(vnum, need, -1, false);
 					sys_log(0, "PLAYERBOT_TOWN: safebox withdraw pid=%u name=%s vnum=%u count=%d reason=herb_brew left=%u",
 							ch->GetPlayerID(), ch->GetName(), vnum, need, (unsigned int)item->GetCount());
+					NotePlayerBotBoxMove(s_mapPlayerBotBoxTakenAt, ch->GetPlayerID(), vnum, dwBoxNow);	// MT2009_PLUS_237_BOT_CHURN_FIX_V1
 					++taken;
 					continue;
 				}
@@ -936,6 +1040,7 @@ namespace
 			}
 			if (pGambler && (item->GetType() == ITEM_WEAPON || item->GetType() == ITEM_ARMOR))
 				++pGambler->bGambleSafeboxTaken;
+			NotePlayerBotBoxMove(s_mapPlayerBotBoxTakenAt, ch->GetPlayerID(), item->GetVnum(), dwBoxNow);	// MT2009_PLUS_237_BOT_CHURN_FIX_V1
 			++taken;
 		}
 		return taken;
@@ -1090,6 +1195,10 @@ namespace
 		{
 			LPITEM item = ch->GetInventoryItem(cells[i]);
 			if (!item)
+				continue;
+			// MT2009_PLUS_237_BOT_CHURN_FIX_V1: not a kind this bot took out a
+			// moment ago while the bag still has room (IsPlayerBotBoxPingPong).
+			if (IsPlayerBotBoxPingPong(ch, item, dwNow))
 				continue;
 			// The anvil's reserve stays in the bag, and only what is over it
 			// goes down - the stack is cut here the way a counter line is cut
@@ -1293,12 +1402,26 @@ namespace
 		state.bTownNeedBlacksmith = HasPlayerBotRefineOpportunity(ch) ||
 				IsPlayerBotGambling(state, dwNow);
 		// The gambler's first stop is the storekeeper, once a session.
-		state.bTownNeedSafebox = HasPlayerBotSafeboxDeposit(ch, state) ||
+		// MT2009_PLUS_237_BOT_CHURN_FIX_V1: after a visit that moved nothing the
+		// box is off the list for a while (IsPlayerBotSafeboxIdle) - but for
+		// the gambler's one look a session and a companion's sweep - and the
+		// reason "the box holds gear for me" is remembered for the
+		// storekeeper's phase, which asks the errand again.
+		const DWORD boxPid = ch->GetPlayerID();
+		const bool boxIdle = IsPlayerBotSafeboxIdle(boxPid, dwNow);
+		s_setPlayerBotBoxPhaseAsked.erase(boxPid);
+		s_setPlayerBotBoxGearVisit.erase(boxPid);
+		state.bTownNeedSafebox = (!boxIdle && HasPlayerBotSafeboxDeposit(ch, state)) ||
 				(IsPlayerBotGambling(state, dwNow) && !state.persona.bGambleSafeboxChecked) ||
 				PlayerBotWantsLppRelease(ch, state, dwNow) ||
 				PlayerBotWantsMaterialRelease(ch, state, dwNow) ||
-				PlayerBotSidekickWantsBoxSweep(ch) ||	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
-				PlayerBotWantsOwnBoxGear(ch, state, dwNow);	// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1
+				PlayerBotSidekickWantsBoxSweep(ch);	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
+		if (!state.bTownNeedSafebox && !boxIdle &&
+				PlayerBotWantsOwnBoxGear(ch, state, dwNow))	// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1
+		{
+			state.bTownNeedSafebox = true;
+			s_setPlayerBotBoxGearVisit.insert(boxPid);
+		}
 		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion sent to sell its scrap
 		// ("sprzedaj") calls on the merchants with scrap of theirs and nobody else.
 		if (IsPlayerBotSidekickSellOnly(ch))
@@ -7737,6 +7860,31 @@ namespace
 		// refuse the next request as "overlapped", so the wait cancels it.
 		if (state.bTownVisitPhase == BOT_TOWN_PHASE_SAFEBOX)
 		{
+			// MT2009_PLUS_237_BOT_CHURN_FIX_V1: the errand asked again on the
+			// way to the storekeeper, once a visit. The merchants before him
+			// sold the junk that put the bag "under pressure", and the deposit
+			// then found nothing to put down: 15 491 of the day's empty visits
+			// began with a bag under pressure. A gambler's session and a
+			// companion's sweep go on as before.
+			if (s_setPlayerBotBoxPhaseAsked.insert(ch->GetPlayerID()).second &&
+					!IsPlayerBotGambling(state, dwNow) && !PlayerBotSidekickWantsBoxSweep(ch) &&
+					s_setPlayerBotBoxGearVisit.find(ch->GetPlayerID()) == s_setPlayerBotBoxGearVisit.end() &&
+					!HasPlayerBotSafeboxDeposit(ch, state) && !PlayerBotWantsLppRelease(ch, state, dwNow) &&
+					!PlayerBotWantsMaterialRelease(ch, state, dwNow))
+			{
+				PlayerBotLogThrottled("safebox_errand_gone", dwNow,
+						"PLAYERBOT_TOWN: safebox errand gone before the storekeeper pid=%u name=%s free_cells=%d",
+						ch->GetPlayerID(), ch->GetName(), CountPlayerBotFreeInventoryCells(ch));
+				state.bTownNeedSafebox = false;
+				state.bTownVisitPhase = bDirect
+						? GetPlayerBotFirstDirectTownPhase(state)
+						: ((state.bTownNeedMisc || state.bTownNeedBlacksmith)
+							? BOT_TOWN_PHASE_GATE_IN : BOT_TOWN_PHASE_NONE);
+				ClearPlayerBotRoute(state, true);
+				if (state.bTownVisitPhase == BOT_TOWN_PHASE_NONE)
+					FinishPlayerBotTownVisit(ch, state, dwNow, true);
+				return true;
+			}
 			const long keeperX = svc.storekeeper.x;
 			const long keeperY = svc.storekeeper.y;
 			long goalX = 0, goalY = 0;
@@ -7890,6 +8038,26 @@ namespace
 				sys_log(0, "PLAYERBOT_TOWN: safebox deposit pid=%u name=%s deposited=%d taken=%d books_left=%d free_cells=%d topped_up=%d stacked=%d arranged=%d arrange_code=%d",
 						ch->GetPlayerID(), ch->GetName(), deposited, taken, CountPlayerBotSkillBooks(ch),
 						CountPlayerBotFreeInventoryCells(ch), toppedUp, stacked, rearranged, arrangeCode);
+				// MT2009_PLUS_237_BOT_CHURN_FIX_V1: what went down is remembered for
+				// the withdrawal's next visits; a visit that moved nothing keeps the
+				// box off the list, and one that took nothing keeps the release's
+				// own visits away, for half an hour rather than four minutes.
+				{
+					const DWORD boxPid = ch->GetPlayerID();
+					for (std::set<DWORD>::const_iterator put = justDeposited.begin(); put != justDeposited.end(); ++put)
+						NotePlayerBotBoxMove(s_mapPlayerBotBoxPutAt, boxPid, *put, dwNow);
+					const bool special = IsPlayerBotGambling(state, dwNow) || IsPlayerBotSidekickServing(ch);
+					if (deposited == 0 && taken == 0 && !special)
+						s_mapPlayerBotSafeboxIdleUntil[boxPid] = dwNow + PLAYERBOT_SAFEBOX_IDLE_BACKOFF_MS;
+					else
+						s_mapPlayerBotSafeboxIdleUntil.erase(boxPid);
+					if (taken == 0 && !special)
+					{
+						state.persona.dwLppReleaseVisitAt = dwNow + PLAYERBOT_SAFEBOX_RELEASE_IDLE_GAP_MS;
+						state.persona.dwMaterialReleaseVisitAt = dwNow + PLAYERBOT_SAFEBOX_RELEASE_IDLE_GAP_MS;
+					}
+					s_setPlayerBotBoxGearVisit.erase(boxPid);
+				}
 				done = true;
 			}
 			else if (dwNow >= state.dwTownWaitUntil)
@@ -8281,7 +8449,9 @@ namespace
 				dwNow - full->second < PLAYERBOT_BAG_ROOM_SAFEBOX_FULL_MS;
 		const bool noBox = ch->GetQuestFlag(PLAYERBOT_SAFEBOX_PAID_FLAG) <= 0 &&
 				ch->GetGold() < PLAYERBOT_SAFEBOX_FEE;
-		if (!boxFull && !noBox && HasPlayerBotSafeboxDeposit(ch, state))
+		// MT2009_PLUS_237_BOT_CHURN_FIX_V1: nor a box whose last visit took
+		// nothing of this bag - it would take nothing again.
+		if (!boxFull && !noBox && !IsPlayerBotSafeboxIdle(pid, dwNow) && HasPlayerBotSafeboxDeposit(ch, state))
 			return false;
 
 		const int page = PLAYERBOT_BAG_PAGE_COLUMNS * PLAYERBOT_BAG_PAGE_ROWS;
