@@ -103,6 +103,11 @@ def main():
     for pack in new_packs:
         keys = [e['name'] for e in man['packs'].get(pack, [])]
         items = dict((k, staged(pack, k)) for k in keys)
+        if pack == 'zaklety_mobs':
+            # MT2009_PLUS_237_TREE_METIN_V1: the tree Metins' own race (patch_zaklety237_client.tree_files)
+            tree = pc.tree_files(items[pc.TREE_DIR + 'metinstone_16.msm'], items[pc.TREE_DIR + 'metinstone_16.dds'])
+            items.update(tree)
+            keys = keys + sorted(tree)
         done = [d for d in (base, out) if os.path.exists(os.path.join(d, pack + '.index'))]
         if done:
             f, v, ents = m2pack.read_index(os.path.join(done[0], pack + '.index'))

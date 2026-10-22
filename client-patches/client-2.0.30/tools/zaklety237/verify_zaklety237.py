@@ -166,8 +166,19 @@ _GD = dict((k.split('/')[-1], CONTENT.get(k)) for k in ('gamedata/npclist.txt', 
 if _GD['npclist.txt']:
     for l in _GD['npclist.txt'].decode('cp1250').splitlines():
         t = l.split()
-        if len(t) >= 2 and t[0].isdigit():
-            npc.setdefault(int(t[0]), t[1].lower())
+        # MT2009_PLUS_237_TREE_METIN_V1: OUT's own rows win over the reference list (8059/8061 -> mt2009_metin_tree)
+        if len(t) >= 3 and t[0] == '0':
+            alias[t[1].lower()] = t[2].lower()
+        elif len(t) >= 2 and t[0].isdigit():
+            npc[int(t[0])] = t[1].lower()
+    for v in pc.TREE_VNUMS:
+        msm = pc.TREE_DIR + pc.RACE_TREE + '.msm'
+        if npc.get(v) != pc.RACE_TREE:
+            fail.append('vnum %d: npclist names %r, not %s (the base client shadows metinstone_16)' % (v, npc.get(v), pc.RACE_TREE))
+        elif msm not in NAMES or (pc.TREE_DIR + pc.RACE_TREE + '.dds') not in NAMES:
+            fail.append('tree Metin race %s: no .msm/.dds in OUT' % pc.RACE_TREE)
+        elif ('"%s.dds"' % pc.RACE_TREE) not in text(msm):
+            fail.append('%s does not name its own skin' % msm)
 for v in VNUMS:
     name = npc.get(v)
     if not name:

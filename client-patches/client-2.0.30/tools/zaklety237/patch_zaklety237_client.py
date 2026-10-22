@@ -171,9 +171,61 @@ def atlasinfo(b):
     return nl.join(keep).encode('cp1250'), n + len(lines) - len(keep)
 
 
+# MT2009_PLUS_237_TREE_METIN_V1: Metin Drzewnych Stworzen (8059) and Metin Lasu (8061) are GF's race metinstone_16, but
+# the 2.x base client has a monster/metinstone/metinstone_16.msm of its own in its "monster" pack, and the exe takes a
+# name from the pack registered first - the base one: a grey stone with a red glow (owner's in-game test, 22 October)
+# instead of the green Metin wrapped in vines. As the Yohara line's yfinal step does it: GF's metinstone_16.msm/.dds
+# under a name no client has (RACE_TREE, written into zaklety_mobs by build_zaklety237_packs.py) and the two vnums'
+# npclist lines pointed at it, with its race line (source folder metinstone).
+RACE_TREE = 'mt2009_metin_tree'
+TREE_VNUMS = (8059, 8061)
+TREE_DIR = 'd:/ymir work/monster/metinstone/'
+
+
+def tree_files(msm16, dds16):
+    """{in-pack name: bytes} of the tree Metin's own race from GF's metinstone_16.msm / .dds."""
+    msm = msm16.decode('latin-1')
+    assert msm.count('"metinstone_16.dds"') == 1, 'GF metinstone_16.msm changed'
+    return {TREE_DIR + RACE_TREE + '.msm': msm.replace('"metinstone_16.dds"', '"%s.dds"' % RACE_TREE).encode('latin-1'),
+            TREE_DIR + RACE_TREE + '.dds': dds16}
+
+
+def _tree_rows(b):
+    text = b.decode('cp1250')
+    nl = '\r\n' if '\r\n' in text else '\n'
+    lines = text.split(nl)
+    tail = bool(lines) and lines[-1] == ''
+    if tail:
+        lines.pop()
+    want = dict(('%d' % v, '%d\t%s' % (v, RACE_TREE)) for v in TREE_VNUMS)
+    changed, seen = 0, set()
+    for i, l in enumerate(lines):
+        t = l.split('\t')
+        k = t[0].strip()
+        if k in want:
+            seen.add(k)
+            if l != want[k]:
+                lines[i] = want[k]
+                changed += 1
+        elif k == '0' and len(t) > 1 and t[1].strip() == RACE_TREE:
+            seen.add(RACE_TREE)
+    if RACE_TREE not in seen:
+        last0 = max([i for i, l in enumerate(lines) if l.split('\t')[0].strip() == '0'] or [-1])
+        lines.insert(last0 + 1, '0\t%s\tmetinstone' % RACE_TREE)
+        changed += 1
+    for k in sorted(set(want) - seen):
+        lines.append(want[k])
+        changed += 1
+    if not changed:
+        return b, 0
+    return nl.join(lines + ([''] if tail else [])).encode('cp1250'), changed
+
+
 def npclist(b):
     rows = ['%s\t%s' % (k, v) for k, v in sorted(data().get('npclist_add', {}).items())]
-    return _append_rows(b, rows, lambda l: l.split()[0] if l.split() else '')
+    b, n = _append_rows(b, rows, lambda l: l.split()[0] if l.split() else '')
+    b, m = _tree_rows(b)
+    return b, n + m
 
 
 def item_record(template, w):
