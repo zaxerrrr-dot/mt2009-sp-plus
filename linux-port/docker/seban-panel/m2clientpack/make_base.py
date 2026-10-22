@@ -31,7 +31,7 @@ def make_base(pack_dir, version, root=dbdata.BASE_ROOT):
             f.write(blobs[ext])
     for e in entries:
         data = eterpack.read_entry(blobs['data'], e)
-        path = os.path.join(out, 'files', *e.name.split('/'))
+        path = os.path.join(out, 'files', *dbdata.base_safe_parts(e.name))  # MT2009_PLUS_BASE_SAFE_NAMES_V1
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, 'wb') as g:
             g.write(data)

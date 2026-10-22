@@ -36,6 +36,23 @@ OPTIONAL_FILES = {'gamedata/item_extra_apply.txt': 2}
 BASE_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'base')
 
 
+
+# MT2009_PLUS_BASE_SAFE_NAMES_V1: a pack entry may name a drive ("d:/ymir work/..."). Windows cannot make a
+# folder with ':' - a player's checkout or unzip turns it into "d_", and the panel then could not find the
+# file ("No such file or directory: .../files/d:/ymir work/ui/skill/common/support/hit_attribute.sub",
+# Yohara 3.0.1, 22 October). The base keeps such names with ':' -> '_' on disk; the old spelling is read too.
+def base_safe_parts(name):
+    return [part.replace(':', '_') for part in name.split('/')]
+
+
+def base_file_path(base_dir, name):
+    path = os.path.join(base_dir, 'files', *base_safe_parts(name))
+    if not os.path.exists(path):
+        old = os.path.join(base_dir, 'files', *name.split('/'))
+        if os.path.exists(old):
+            return old
+    return path
+
 def sha256(data):
     return hashlib.sha256(data).hexdigest().upper()
 
@@ -54,7 +71,7 @@ class Base(object):
         return int(self.meta['files'][name]['ctype'])
 
     def file(self, name):
-        with open(os.path.join(self.path, 'files', *name.split('/')), 'rb') as f:
+        with open(base_file_path(self.path, name), 'rb') as f:
             data = f.read()
         if sha256(data) != self.meta['files'][name]['sha256']:
             # e.g. a checkout that turned the line ends round (base/.gitattributes)
