@@ -497,3 +497,8 @@ linux-port/docker/game/src/server/game/src/questpc.h
 # the NPCs' recipes cube.wiki_kto.txt (above) and quest mikstury_okno (quest/*).
 linux-port/docker/mariadb/playerbot/zbroje105.sql
 linux-port/docker/mariadb/playerbot/gf_wartosci.sql
+
+# MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 / MT2009_PLUS_BOT_YOHARA_G0_V1 (server-patches/g0bind; the owner, 22 October 2026): the
+# bots' G0 package bound to the account - the engine files it changes are above (item.h, item.cpp, item_attribute.cpp,
+# char_shop.cpp, ikarus_shop_manager.cpp, shop.cpp); the logic is playerbot_yohara_g0.{h,cpp} (the playerbot_* lines);
+# player.item_account_bound is made by the game core itself (CREATE TABLE IF NOT EXISTS).

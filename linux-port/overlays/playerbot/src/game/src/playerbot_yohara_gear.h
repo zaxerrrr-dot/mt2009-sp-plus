@@ -40,4 +40,14 @@ namespace yohara_gear
 // lines) and its kind (POINT_SUNGMA_*); 0 for any other item.
 int Mt2009GloveBaseWill(LPITEM item, unsigned char& bWillType);
 
+// MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 / MT2009_PLUS_BOT_YOHARA_G0_V1 (playerbot_yohara_g0.cpp): the account-bound items of the
+// bots' G0 package - bound (the engine's flag, server-patches/g0bind: no drop, trade, merchant or shop), marked with
+// their row (player.item_account_bound), read back at load, carried by a refine, moved to another bot by a sale.
+bool Mt2009AccountBoundFamily(unsigned int dwVnum);
+bool Mt2009AccountBound(LPITEM item);
+bool Mt2009AccountBoundMark(LPITEM item, unsigned int dwPID, const char* szWhy);
+void Mt2009AccountBoundOwner(LPITEM item, unsigned int dwPID);
+void Mt2009AccountBoundLoad(LPITEM item, bool bIsNewItem);
+void Mt2009AccountBoundCarry(LPITEM pOld, LPITEM pNew);
+
 #endif
