@@ -76,7 +76,7 @@ MAP_NAMES = {
     67: "Las", 68: "Czerwony Las", 66: "Wieża Demonów",
     72: "Grota Wygnańców V1", 73: "Grota Wygnańców V2",
     # MT2009_PLUS_SEBAN_MAPS_V1: the Temple of Ochao and the Arezzo places.
-    209: "Świątynia Ochao", 360: "Dolina Cyklopów", 361: "Pustkowie Faraona", 362: "Zaczarowany Las",
+    209: "Świątynia Ochao", 360: "Dolina Cyklopów", 361: "Pustkowie Faraona", 353: "Zaklęty Las",
     363: "Biblioteka Wiedzy", 364: "Wzgórze Wukonga", 365: "Ruiny Skorpiona", 366: "Starożytna Dżungla",
 }
 MAP_BOUNDS = {
@@ -103,7 +103,7 @@ MAP_BOUNDS = {
     # MT2009_PLUS_SEBAN_MAPS_V1: BasePosition + MapSize x 25600 from each map's Setting.txt.
     209: (844800, 1408000, 76800, 76800),
     360: (230400, 281600, 102400, 102400), 361: (230400, 384000, 102400, 102400),
-    362: (332800, 384000, 102400, 102400), 363: (947200, 614400, 51200, 51200),
+    353: (768000, 1408000, 76800, 102400), 363: (947200, 614400, 51200, 51200),  # MT2009_PLUS_237_ZAKLETY_LAS_V1: 353 for 362
     364: (844800, 537600, 51200, 51200), 365: (844800, 588800, 51200, 51200),
     366: (768000, 537600, 76800, 76800),
 }

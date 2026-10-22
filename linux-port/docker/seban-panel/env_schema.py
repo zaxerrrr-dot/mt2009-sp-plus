@@ -255,7 +255,7 @@ SCHEMA = [
 
     # ------------------------------------------------------------------ Moduły
     _e("M2_AREZZO", "Moduł Arezzo",
-       "Mapy i lochy z Arezzo: Dolina Cyklopów, Pustkowie Faraona, Zaczarowany Las, Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona, Starożytna Dżungla "
+       "Mapy i lochy z Arezzo: Dolina Cyklopów, Pustkowie Faraona, Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona, Starożytna Dżungla "
        "oraz zestawy kostiumów w ItemShopie. Panel klasyczny przełącza go od razu.",
        "moduly", "bool", "0", GAME),
     _e("M2_SEONHAE", "Seon-Hae (6/7 bonus)", "NPC Seon-Hae w pierwszych wioskach dodaje 6. i 7. bonus. Panel klasyczny przełącza go od razu i ustawia czas oczekiwania.",

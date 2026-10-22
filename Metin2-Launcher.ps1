@@ -1633,7 +1633,7 @@ function Set-DifficultyAction {
         if ("$answer".Trim()) { $starterOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
         $answer = Read-Host "Dom Towarowy (wszystkie oferty sklepów offline u Handlarki Różności w M1) włączony? (T/n, Enter = $(if ($currentFlea) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $fleaOn = "$answer".Trim().ToLowerInvariant() -notin @('n', 'nie', 'no', '0') }
-        $answer = Read-Host "Moduł Arezzo (nowe mapy: Dolina Cyklopów, Pustkowie Faraona, Zaczarowany Las i 4 lochy) włączony? (t/N, Enter = $(if ($currentArezzo) { 'tak' } else { 'nie' }))"
+        $answer = Read-Host "Moduł Arezzo (nowe mapy: Dolina Cyklopów, Pustkowie Faraona i 4 lochy) włączony? (t/N, Enter = $(if ($currentArezzo) { 'tak' } else { 'nie' }))"
         if ("$answer".Trim()) { $arezzoOn = "$answer".Trim().ToLowerInvariant() -in @('t', 'tak', 'y', 'yes', '1') }
         $answer = Read-Host "Życie potworów, bossów i Metinów: 1 = jak w grze (100%), 2 = łatwiej (80%) (Enter = $currentMonsterPct%)"
         if ("$answer".Trim() -eq '1') { $monsterSetting = 'default' }
