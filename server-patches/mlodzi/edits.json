@@ -1,0 +1,68 @@
+[
+  {
+    "file": "questlua.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (lua)",
+    "old": "\t\t{ void RegisterShipDefenseFunctionTable(); RegisterShipDefenseFunctionTable(); }\n",
+    "new": "\t\t{ void RegisterShipDefenseFunctionTable(); RegisterShipDefenseFunctionTable(); }\n\t\t// MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (lua): the quests' \"mlodzi\" module - Bronie dla Mlodych Bohaterow (playerbot_mlodzi.cpp).\n\t\t{ void RegisterMlodziFunctionTable(); RegisterMlodziFunctionTable(); }\n"
+  },
+  {
+    "file": "char_item.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (use on)",
+    "old": "bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)\n{\n",
+    "new": "bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)\n{\n\t// MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (use on): nothing is used on a young heroes' weapon - no bonus change or addition (1-5, 6/7),\n\t// no soul stone, no scroll, no skin (playerbot_mlodzi.cpp); a weapon, armour or costume put on is not refused.\n\tif (item && item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR && item->GetType() != ITEM_COSTUME &&\n\t\tIsValidItemPosition(DestCell))\n\t{\n\t\tbool MlodziRefuseChange(CHARACTER* ch, CItem* item);\n\t\tLPITEM pkMlodziTarget = GetItem(DestCell);\n\t\tif (pkMlodziTarget && pkMlodziTarget != item && MlodziRefuseChange(this, pkMlodziTarget))\n\t\t\treturn false;\n\t}\n"
+  },
+  {
+    "file": "item_attribute.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (change)",
+    "old": "void CItem::ChangeAttribute(const int* aiChangeProb)\n{\n\tSetChangingAttr(true);\n",
+    "new": "void CItem::ChangeAttribute(const int* aiChangeProb)\n{\n\t{ // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (change): a young heroes' weapon keeps its bonuses as given\n\t\tbool MlodziIsWeaponVnum(unsigned int vnum);\n\t\tif (MlodziIsWeaponVnum(GetVnum()))\n\t\t\treturn;\n\t}\n\tSetChangingAttr(true);\n"
+  },
+  {
+    "file": "item_attribute.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add)",
+    "old": "void CItem::AddAttribute()\n{\n\tstatic const int aiItemAddAttributePercent[ITEM_ATTRIBUTE_MAX_LEVEL] =\n",
+    "new": "void CItem::AddAttribute()\n{\n\t{ // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add): a young heroes' weapon keeps its bonuses as given\n\t\tbool MlodziIsWeaponVnum(unsigned int vnum);\n\t\tif (MlodziIsWeaponVnum(GetVnum()))\n\t\t\treturn;\n\t}\n\tstatic const int aiItemAddAttributePercent[ITEM_ATTRIBUTE_MAX_LEVEL] =\n"
+  },
+  {
+    "file": "item_attribute.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add one)",
+    "old": "void CItem::AddAttribute(BYTE bApply, short sValue)\n{\n\tif (HasAttr(bApply))\n",
+    "new": "void CItem::AddAttribute(BYTE bApply, short sValue)\n{\n\t{ // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add one): a young heroes' weapon keeps its bonuses as given\n\t\tbool MlodziIsWeaponVnum(unsigned int vnum);\n\t\tif (MlodziIsWeaponVnum(GetVnum()))\n\t\t\treturn;\n\t}\n\tif (HasAttr(bApply))\n"
+  },
+  {
+    "file": "item_attribute.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (change rare)",
+    "old": "bool CItem::ChangeRareAttribute()\n{\n\tBYTE bWillTalismanType;\n",
+    "new": "bool CItem::ChangeRareAttribute()\n{\n\t{ // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (change rare): a young heroes' weapon keeps its bonuses as given\n\t\tbool MlodziIsWeaponVnum(unsigned int vnum);\n\t\tif (MlodziIsWeaponVnum(GetVnum()))\n\t\t\treturn false;\n\t}\n\tBYTE bWillTalismanType;\n"
+  },
+  {
+    "file": "item_attribute.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (change rare 2)",
+    "old": "bool CItem::ChangeRareAttribute2()\n{\n\tBYTE bWillTalismanType;\n",
+    "new": "bool CItem::ChangeRareAttribute2()\n{\n\t{ // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (change rare 2): a young heroes' weapon keeps its bonuses as given\n\t\tbool MlodziIsWeaponVnum(unsigned int vnum);\n\t\tif (MlodziIsWeaponVnum(GetVnum()))\n\t\t\treturn false;\n\t}\n\tBYTE bWillTalismanType;\n"
+  },
+  {
+    "file": "item_attribute.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add rare)",
+    "old": "bool CItem::AddRareAttribute()\n{\n\tBYTE bWillTalismanType;\n",
+    "new": "bool CItem::AddRareAttribute()\n{\n\t{ // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add rare): a young heroes' weapon keeps its bonuses as given\n\t\tbool MlodziIsWeaponVnum(unsigned int vnum);\n\t\tif (MlodziIsWeaponVnum(GetVnum()))\n\t\t\treturn false;\n\t}\n\tBYTE bWillTalismanType;\n"
+  },
+  {
+    "file": "item_attribute.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add rare 2)",
+    "old": "bool CItem::AddRareAttribute2(const int * aiAttrPercentTable)\n{\n\tBYTE bWillTalismanType;\n",
+    "new": "bool CItem::AddRareAttribute2(const int * aiAttrPercentTable)\n{\n\t{ // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (add rare 2): a young heroes' weapon keeps its bonuses as given\n\t\tbool MlodziIsWeaponVnum(unsigned int vnum);\n\t\tif (MlodziIsWeaponVnum(GetVnum()))\n\t\t\treturn false;\n\t}\n\tBYTE bWillTalismanType;\n"
+  },
+  {
+    "file": "char.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (sash decl)",
+    "old": "void CHARACTER::AddAcceMaterial(TItemPos tPos, BYTE bPos)\n{\n",
+    "new": "bool MlodziRefuseChange(CHARACTER* ch, CItem* item); // MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (sash decl): playerbot_mlodzi.cpp\nvoid CHARACTER::AddAcceMaterial(TItemPos tPos, BYTE bPos)\n{\n"
+  },
+  {
+    "file": "char.cpp",
+    "marker": "MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (sash)",
+    "old": "\tLPITEM pkItem = GetItem(tPos);\n\tif (!pkItem)\n\t\treturn;\n\telse if ((pkItem->GetCell() >= INVENTORY_MAX_NUM) || (pkItem->IsEquipped()) || (tPos.IsBeltInventoryPosition()) || (pkItem->IsDragonSoul()))\n\t\treturn;\n",
+    "new": "\tLPITEM pkItem = GetItem(tPos);\n\tif (!pkItem)\n\t\treturn;\n\telse if ((pkItem->GetCell() >= INVENTORY_MAX_NUM) || (pkItem->IsEquipped()) || (tPos.IsBeltInventoryPosition()) || (pkItem->IsDragonSoul()))\n\t\treturn;\n\t// MT2009_PLUS_MLODZI_BOHATEROWIE_V1 (sash): a young heroes' weapon gives a sash no bonuses (playerbot_mlodzi.cpp)\n\telse if (m_bAcceAbsorption && MlodziRefuseChange(this, pkItem))\n\t\treturn;\n"
+  }
+]
