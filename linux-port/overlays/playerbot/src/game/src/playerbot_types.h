@@ -7038,6 +7038,18 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a bot living on the Sung Ma maps (its belt and bag are Dongan's errand, never a way
 	// home) and its revival there - at the safe point by its map's arrival, a person's "restart in town" (playerbot_yohara_sungma.h).
 	bool IsPlayerBotSungmaResidentPID(DWORD pid);
+	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1 (playerbot_yohara_gear2.h, after playerbot_yohara_elements_late.h): the level-100
+	// helmets at Jaharr, the body armours 90-115 at Kawuco / Angmur and the cyanite step at Seon-Pyeong - what their
+	// recipes keep and buy, the hunt's wanted materials, a Sung Ma bot's trip home for them, the cape as a loot map.
+	int GetPlayerBotGear2MaterialKeep(LPCHARACTER ch, DWORD vnum);
+	void CollectPlayerBotGear2Missing(LPCHARACTER ch, std::map<DWORD, int>& missing);
+	void CollectPlayerBotGear2WantedMaterials(LPCHARACTER ch, std::set<DWORD>& out);
+	bool WantsPlayerBotGear2Offer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForGear2Offer(LPCHARACTER ch, LPITEM offer, long long price);
+	void NotePlayerBotGear2Bought(LPCHARACTER ch, DWORD vnum, long long price);
+	bool WantsPlayerBotGear2TradeTrip(LPCHARACTER ch);
+	bool IsPlayerBotGear2ErrandBusy(DWORD pid);
+	bool IsPlayerBotGear2CapeOn();
 	bool MovePlayerBotSungmaRevived(LPCHARACTER ch);
 	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1 (playerbot_sungma_fight.h, before survival.h, asks playerbot_yohara_sungma.h): a
 	// map's slot in PLAYERBOT_SUNGMA_MAPS (-1 none), its band's Champion floor, its safe point, and what a resident is
