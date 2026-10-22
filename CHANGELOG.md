@@ -17,6 +17,14 @@ every version here.
 
 ---
 
+## 2.37.0 — (szkic)
+
+### Boty – stragany i handel
+- **Kamienie Duszy +0, +1 i +2 idą w pył.** Boty nie wystawiają już Kamieni Duszy +0, +1 ani +2 na rynek – od razu zamieniają je u Alchemika w Magiczny Pył (tak jak gracz: ta sama opłata i ta sama ilość pyłu). Kamienie tych stopni, które już stoją w ich sklepach, boty stopniowo zdejmują i też oddają na pył.
+- **Kamienie Duszy +3 i +4 w stosach.** Boty wystawiają Kamienie Duszy +3 i wyższe jednym stosem zamiast po jednej sztuce, w cenie za sztukę razy liczba kamieni. Inne boty kupują z takiego stosu tylko tyle kamieni, ile potrzebują.
+
+---
+
 ## 2.36.0 — 2026-10-20 — Sklepy botów bez przepełnienia, lochy bez zatrzymań, retencja logów w panelu
 
 ### Boty – stragany i handel
