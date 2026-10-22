@@ -1,0 +1,557 @@
+-- MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaklêty Las (353, metin2_map_dawnmist_dungeon_01) - misje stra¿ników lasu (pl-wiki
+-- "Zaklêty Las", "Chaos w Zaklêtym Lesie", "Pierwszy rekonesans", "ZnajdŸ apteczkê stra¿ników", "Dostarcz apteczkê Zwiadowcy", "Drugi
+-- rekonesans", "Zdob¹dŸ Rosy En-Tai", "Zabij w³adcê En-Tai"; przebieg i szanse jak Owsap v6.2.6
+-- dawnmist_dungeon_access.quest). Od poziomu 95, ka¿dy gracz osobno:
+--   1. Chaos w Zaklêtym Lesie - Stra¿nik Œwi¹tyni (20426, Zbocze Gautama) daje Ducha Ziemi (31098) dla Stra¿nika
+--      Lasu (20160): 5 825 000 PD i 5 Ró¿ Alpejskich;
+--   2. Pierwszy rekonesans - Stra¿nik Lasu: 50 Wojowników En-Tai (6401): 776 600 PD;
+--   3. ZnajdŸ apteczkê - Druid En-Tai (6403) ma Apteczkê (31100, 1 na 25): 776 600 PD;
+--   4. Dostarcz apteczkê - od Stra¿nika Lasu do Zwiadowcy Lasu (20161): 5 582 500 PD i 10 Korzeni Gango;
+--   5. Drugi rekonesans - Zwiadowca: 5 Metinów Drzewnych Stworzeñ (8059): 7 766 000 PD;
+--   6. Zdob¹dŸ Rosy En-Tai - Niszczyciele En-Tai (6406), Rosa (31097) 1 na 10, piêæ: 7 766 000 PD i 10 Wód Young;
+--   7. Zabij w³adcê En-Tai - Badacz Lasu (20162): Szlachetne Drewno (31096) z W³adcy En-Tai (6407) - 11 650 000 PD,
+--      potem Drzewny Szmaragd (31099) - 11 650 000 PD i Kamieñ Driad (30613), przepustka do Erebu (quest erebu).
+-- Potem od nowa od misji 2 (pl-wiki: "Proces wytworzenia mo¿na powtarzaæ i jest 100%"), po kolejny Kamieñ Driad.
+-- Wejœcie do lasu: portal Stra¿nika En-Tai w Œwi¹tyni Ochao (quest temple_of_the_ochao). Mapa jest na rdzeniu Yohary
+-- (game3) - boty tam nie wchodz¹. MT2009_PLUS_237_ZAKLETY_LAS_V1: na linii 2.x las stoi na rdzeniu game2,
+-- boty przychodz¹ tam przekazaniem miêdzy rdzeniami (playerbot_yohara_bots.h) i misji nie robi¹.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest zaklety_las begin
+	state start begin
+		when login or levelup with pc.get_level() >= 95 begin
+			set_state(information)
+		end
+	end
+
+	-- 1. Chaos w Zaklêtym Lesie
+	state information begin
+		when letter begin
+			local v = find_npc_by_vnum(20426)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20426))
+			end
+			send_letter("Chaos w Zaklêtym Lesie")
+		end
+
+		when button or info begin
+			say_title("Chaos w Zaklêtym Lesie")
+			say("Stra¿nik Œwi¹tyni na Zboczu Gautama ma wieœci z")
+			say("Zaklêtego Lasu za Œwi¹tyni¹ Ochao. Porozmawiaj z nim.")
+		end
+
+		when __TARGET__.target.click or 20426.chat."Chaos w Zaklêtym Lesie" with pc.get_map_index() == 302 begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20426)..":")
+			say("Z Zaklêtego Lasu dochodz¹ straszne krzyki. Drzewa")
+			say("o¿y³y - wojownicy En-Tai napadaj¹ na stra¿ników lasu.")
+			say("Zanieœ Stra¿nikowi Lasu tego Ducha Ziemi. Do lasu")
+			say("prowadzi portal Stra¿nika En-Tai w Œwi¹tyni Ochao.")
+			say_item_vnum(31098)
+			if pc.count_item(31098) < 1 then
+				pc.give_item2(31098, 1)
+			end
+			set_state(to_guard)
+		end
+	end
+
+	state to_guard begin
+		when letter begin
+			local v = find_npc_by_vnum(20160)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20160))
+			end
+			send_letter("Chaos w Zaklêtym Lesie")
+		end
+
+		when button or info begin
+			say_title("Chaos w Zaklêtym Lesie")
+			say("Zanieœ Ducha Ziemi Stra¿nikowi Lasu w Zaklêtym Lesie.")
+			say_item_vnum(31098)
+		end
+
+		when 20426.chat."Chaos w Zaklêtym Lesie" with pc.get_map_index() == 302 begin
+			say_title(mob_name(20426)..":")
+			if pc.count_item(31098) < 1 then
+				pc.give_item2(31098, 1)
+				say("Zgubi³eœ Ducha Ziemi? Masz drugiego.")
+			else
+				say("Stra¿nik Lasu czeka na Ducha Ziemi.")
+			end
+		end
+
+		when __TARGET__.target.click or 20160.chat."Chaos w Zaklêtym Lesie" begin
+			say_title(mob_name(20160)..":")
+			if pc.count_item(31098) < 1 then
+				say("Stra¿nik Œwi¹tyni mia³ mi coœ przes³aæ. Wróæ z tym.")
+				return
+			end
+			target.delete("__TARGET__")
+			say("Duch Ziemi! Dziêki niemu zrozumiemy, co siê dzieje")
+			say("z tym lasem. Zostañ z nami - przyda siê ka¿da pomoc.")
+			pc.remove_item(31098, pc.count_item(31098))
+			pc.give_exp2(5825000)
+			pc.give_item2(50727, 5)
+			say_reward("Nagroda: 5 825 000 PD i 5 Ró¿ Alpejskich.")
+			set_state(r1_talk)
+		end
+	end
+
+	-- 2. Pierwszy rekonesans
+	state r1_talk begin
+		when letter begin
+			local v = find_npc_by_vnum(20160)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20160))
+			end
+			send_letter("Pierwszy rekonesans")
+		end
+
+		when button or info begin
+			say_title("Pierwszy rekonesans")
+			say("Stra¿nik Lasu potrzebuje twojej pomocy.")
+		end
+
+		when __TARGET__.target.click or 20160.chat."Pierwszy rekonesans" begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20160)..":")
+			say("Moi bracia zaginêli, a z nimi apteczka. Wojownicy")
+			say("En-Tai zachowuj¹ siê co najmniej dziwnie. PrzerzedŸ ich")
+			say("szeregi - pokonaj 50 Wojowników En-Tai.")
+			pc.setqf("cnt", 0)
+			set_state(r1_kill)
+		end
+	end
+
+	state r1_kill begin
+		when letter begin
+			send_letter("Pierwszy rekonesans")
+			q.set_counter_name("Wojownicy En-Tai")
+			q.set_counter_value(math.max(0, 50 - pc.getqf("cnt")))
+		end
+
+		when button or info begin
+			say_title("Pierwszy rekonesans")
+			say("Pokonaj 50 Wojowników En-Tai w Zaklêtym Lesie.")
+			say_reward("Pokonani: "..pc.getqf("cnt").." / 50")
+		end
+
+		when 6401.kill or 6401.party_kill with pc.get_map_index() == 353 begin
+			local n = pc.getqf("cnt") + 1
+			pc.setqf("cnt", n)
+			q.set_counter_value(math.max(0, 50 - n))
+			if n >= 50 then
+				syschat("Pierwszy rekonesans: wróæ do Stra¿nika Lasu.")
+				set_state(r1_done)
+			end
+		end
+	end
+
+	state r1_done begin
+		when letter begin
+			local v = find_npc_by_vnum(20160)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20160))
+			end
+			send_letter("Pierwszy rekonesans")
+		end
+
+		when button or info begin
+			say_title("Pierwszy rekonesans")
+			say("Wróæ do Stra¿nika Lasu.")
+		end
+
+		when __TARGET__.target.click or 20160.chat."Pierwszy rekonesans" begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20160)..":")
+			say("Pokona³eœ Wojowników En-Tai, ale apteczki nie mieli.")
+			say("To Druidzi En-Tai za tym stoj¹. Odbierz im apteczkê.")
+			pc.give_exp2(776600)
+			say_reward("Nagroda: 776 600 PD.")
+			set_state(kit_find)
+		end
+	end
+
+	-- 3. ZnajdŸ apteczkê
+	state kit_find begin
+		when letter begin
+			send_letter("ZnajdŸ apteczkê stra¿ników")
+		end
+
+		when button or info begin
+			say_title("ZnajdŸ apteczkê stra¿ników")
+			say("Pokonuj Druidów En-Tai, a¿ znajdziesz apteczkê.")
+		end
+
+		when 6403.kill or 6403.party_kill with pc.get_map_index() == 353 begin
+			if number(1, 25) == 1 and pc.enough_inventory(31100) then
+				pc.give_item2(31100, 1)
+				syschat("Druid En-Tai mia³ przy sobie apteczkê. Zanieœ j¹ Stra¿nikowi Lasu.")
+				set_state(kit_back)
+			end
+		end
+	end
+
+	state kit_back begin
+		when letter begin
+			local v = find_npc_by_vnum(20160)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20160))
+			end
+			send_letter("ZnajdŸ apteczkê stra¿ników")
+		end
+
+		when button or info begin
+			say_title("ZnajdŸ apteczkê stra¿ników")
+			say("Zanieœ apteczkê Stra¿nikowi Lasu.")
+		end
+
+		when __TARGET__.target.click or 20160.chat."ZnajdŸ apteczkê stra¿ników" begin
+			say_title(mob_name(20160)..":")
+			if pc.count_item(31100) < 1 then
+				say("Gdzie jest apteczka? Odbierz j¹ Druidom En-Tai.")
+				set_state(kit_find)
+				return
+			end
+			target.delete("__TARGET__")
+			pc.remove_item(31100, pc.count_item(31100))
+			say("Wszystko w niej jest. Odpocznij chwilê - zaraz")
+			say("zaniesiesz j¹ moim braciom.")
+			pc.give_exp2(776600)
+			say_reward("Nagroda: 776 600 PD.")
+			set_state(kit_deliver)
+		end
+	end
+
+	-- 4. Dostarcz apteczkê
+	state kit_deliver begin
+		when letter begin
+			local v = find_npc_by_vnum(20161)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20161))
+			end
+			send_letter("Dostarcz apteczkê Zwiadowcy")
+		end
+
+		when button or info begin
+			say_title("Dostarcz apteczkê Zwiadowcy")
+			say("Zanieœ apteczkê Zwiadowcy Lasu.")
+		end
+
+		when 20160.chat."Dostarcz apteczkê Zwiadowcy" begin
+			say_title(mob_name(20160)..":")
+			say("Zwiadowca Lasu czeka na apteczkê. Pospiesz siê!")
+			if pc.count_item(31100) < 1 then
+				pc.give_item2(31100, 1)
+			end
+		end
+
+		when __TARGET__.target.click or 20161.chat."Dostarcz apteczkê Zwiadowcy" begin
+			say_title(mob_name(20161)..":")
+			if pc.count_item(31100) < 1 then
+				say("Stra¿nik Lasu mia³ mi przys³aæ apteczkê.")
+				return
+			end
+			target.delete("__TARGET__")
+			pc.remove_item(31100, pc.count_item(31100))
+			say("Apteczka! W ostatniej chwili - dziêkujê.")
+			pc.give_exp2(5582500)
+			pc.give_item2(50724, 10)
+			say_reward("Nagroda: 5 582 500 PD i 10 Korzeni Gango.")
+			set_state(r2_talk)
+		end
+	end
+
+	-- 5. Drugi rekonesans
+	state r2_talk begin
+		when letter begin
+			local v = find_npc_by_vnum(20161)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20161))
+			end
+			send_letter("Drugi rekonesans")
+		end
+
+		when button or info begin
+			say_title("Drugi rekonesans")
+			say("Porozmawiaj ze Zwiadowc¹ Lasu.")
+		end
+
+		when __TARGET__.target.click or 20161.chat."Drugi rekonesans" begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20161)..":")
+			say("Metiny Drzewnych Stworzeñ budz¹ En-Tai do ¿ycia.")
+			say("Zniszcz piêæ z nich.")
+			pc.setqf("cnt", 0)
+			set_state(r2_kill)
+		end
+	end
+
+	state r2_kill begin
+		when letter begin
+			send_letter("Drugi rekonesans")
+			q.set_counter_name("Zniszczone Metiny")
+			q.set_counter_value(math.max(0, 5 - pc.getqf("cnt")))
+		end
+
+		when button or info begin
+			say_title("Drugi rekonesans")
+			say("Zniszcz 5 Metinów Drzewnych Stworzeñ.")
+			say_reward("Zniszczone: "..pc.getqf("cnt").." / 5")
+		end
+
+		when 8059.kill or 8059.party_kill with pc.get_map_index() == 353 begin
+			local n = pc.getqf("cnt") + 1
+			pc.setqf("cnt", n)
+			q.set_counter_value(math.max(0, 5 - n))
+			if n >= 5 then
+				syschat("Drugi rekonesans: wróæ do Zwiadowcy Lasu.")
+				set_state(r2_done)
+			end
+		end
+	end
+
+	state r2_done begin
+		when letter begin
+			local v = find_npc_by_vnum(20161)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20161))
+			end
+			send_letter("Drugi rekonesans")
+		end
+
+		when button or info begin
+			say_title("Drugi rekonesans")
+			say("Wróæ do Zwiadowcy Lasu.")
+		end
+
+		when __TARGET__.target.click or 20161.chat."Drugi rekonesans" begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20161)..":")
+			say("Metiny zniszczone. Las trochê siê uspokoi³.")
+			pc.give_exp2(7766000)
+			say_reward("Nagroda: 7 766 000 PD.")
+			set_state(dew_talk)
+		end
+	end
+
+	-- 6. Zdob¹dŸ Rosy En-Tai
+	state dew_talk begin
+		when letter begin
+			local v = find_npc_by_vnum(20161)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20161))
+			end
+			send_letter("Zdob¹dŸ Rosy En-Tai")
+		end
+
+		when button or info begin
+			say_title("Zdob¹dŸ Rosy En-Tai")
+			say("Porozmawiaj ze Zwiadowc¹ Lasu.")
+		end
+
+		when __TARGET__.target.click or 20161.chat."Zdob¹dŸ Rosy En-Tai" begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20161)..":")
+			say("Niszczyciele En-Tai nosz¹ Rosê En-Tai - z niej")
+			say("zrobimy lekarstwo dla rannych. Przynieœ mi piêæ.")
+			pc.setqf("cnt", 0)
+			set_state(dew_collect)
+		end
+	end
+
+	state dew_collect begin
+		when letter begin
+			send_letter("Zdob¹dŸ Rosy En-Tai")
+			q.set_counter_name("Rosy En-Tai")
+			q.set_counter_value(math.max(0, 5 - pc.getqf("cnt")))
+		end
+
+		when button or info begin
+			say_title("Zdob¹dŸ Rosy En-Tai")
+			say("Zdob¹dŸ 5 Ros En-Tai od Niszczycieli En-Tai.")
+			say_reward("Zdobyte: "..pc.getqf("cnt").." / 5")
+		end
+
+		when 6406.kill or 6406.party_kill with pc.get_map_index() == 353 begin
+			if number(1, 10) ~= 1 or not pc.enough_inventory(31097) then
+				return
+			end
+			pc.give_item2(31097, 1)
+			local n = pc.getqf("cnt") + 1
+			pc.setqf("cnt", n)
+			q.set_counter_value(math.max(0, 5 - n))
+			if n >= 5 then
+				syschat("Zdob¹dŸ Rosy En-Tai: zanieœ je Zwiadowcy Lasu.")
+				set_state(dew_done)
+			end
+		end
+	end
+
+	state dew_done begin
+		when letter begin
+			local v = find_npc_by_vnum(20161)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20161))
+			end
+			send_letter("Zdob¹dŸ Rosy En-Tai")
+		end
+
+		when button or info begin
+			say_title("Zdob¹dŸ Rosy En-Tai")
+			say("Zanieœ Rosy En-Tai Zwiadowcy Lasu.")
+		end
+
+		when __TARGET__.target.click or 20161.chat."Zdob¹dŸ Rosy En-Tai" begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20161)..":")
+			say("Piêæ Ros En-Tai - wystarczy dla wszystkich rannych.")
+			say("Badacz Lasu szuka kogoœ odwa¿nego. IdŸ do niego.")
+			pc.remove_item(31097, pc.count_item(31097))
+			pc.give_exp2(7766000)
+			pc.give_item2(50816, 10)
+			say_reward("Nagroda: 7 766 000 PD i 10 Wód Young.")
+			set_state(lord_talk)
+		end
+	end
+
+	-- 7. Zabij w³adcê En-Tai
+	state lord_talk begin
+		when letter begin
+			local v = find_npc_by_vnum(20162)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20162))
+			end
+			send_letter("Zabij w³adcê En-Tai")
+		end
+
+		when button or info begin
+			say_title("Zabij w³adcê En-Tai")
+			say("Porozmawiaj z Badaczem Lasu.")
+		end
+
+		when __TARGET__.target.click or 20162.chat."Zabij w³adcê En-Tai" begin
+			target.delete("__TARGET__")
+			say_title(mob_name(20162)..":")
+			say("W³adca En-Tai rz¹dzi tym lasem. Pokonaj go i przynieœ mi")
+			say("Szlachetne Drewno - tylko on je ma.")
+			set_state(lord_timber)
+		end
+	end
+
+	state lord_timber begin
+		when letter begin
+			target.pos("__TARGET__", 590, 75, 353, "")
+			send_letter("Zabij w³adcê En-Tai")
+		end
+
+		when button or info begin
+			say_title("Zabij w³adcê En-Tai")
+			say("Pokonaj W³adcê En-Tai i zdob¹dŸ Szlachetne Drewno.")
+		end
+
+		when 6407.kill or 6407.party_kill with pc.get_map_index() == 353 begin
+			if not pc.enough_inventory(31096) then
+				return
+			end
+			target.delete("__TARGET__")
+			pc.give_item2(31096, 1)
+			syschat("W³adca En-Tai pokonany. Zanieœ Szlachetne Drewno Badaczowi Lasu.")
+			set_state(timber_back)
+		end
+	end
+
+	state timber_back begin
+		when letter begin
+			local v = find_npc_by_vnum(20162)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20162))
+			end
+			send_letter("Zabij w³adcê En-Tai")
+		end
+
+		when button or info begin
+			say_title("Zabij w³adcê En-Tai")
+			say("Zanieœ Szlachetne Drewno Badaczowi Lasu.")
+		end
+
+		when __TARGET__.target.click or 20162.chat."Zabij w³adcê En-Tai" begin
+			say_title(mob_name(20162)..":")
+			if pc.count_item(31096) < 1 then
+				say("Bez Szlachetnego Drewna nic nie zrobiê. Pokonaj")
+				say("W³adcê En-Tai jeszcze raz.")
+				set_state(lord_timber)
+				return
+			end
+			target.delete("__TARGET__")
+			pc.remove_item(31096, pc.count_item(31096))
+			say("Œwietnie! W³adca En-Tai siê odrodzi - przynieœ mi")
+			say("jeszcze jego Drzewny Szmaragd, a dam ci coœ cennego.")
+			pc.give_exp2(11650000)
+			say_reward("Nagroda: 11 650 000 PD.")
+			set_state(lord_emerald)
+		end
+	end
+
+	state lord_emerald begin
+		when letter begin
+			target.pos("__TARGET__", 590, 75, 353, "")
+			send_letter("Zabij w³adcê En-Tai")
+		end
+
+		when button or info begin
+			say_title("Zabij w³adcê En-Tai")
+			say("Pokonaj W³adcê En-Tai i zdob¹dŸ Drzewny Szmaragd.")
+		end
+
+		when 6407.kill or 6407.party_kill with pc.get_map_index() == 353 begin
+			if not pc.enough_inventory(31099) then
+				return
+			end
+			target.delete("__TARGET__")
+			pc.give_item2(31099, 1)
+			syschat("W³adca En-Tai pokonany. Zanieœ Drzewny Szmaragd Badaczowi Lasu.")
+			set_state(emerald_back)
+		end
+	end
+
+	state emerald_back begin
+		when letter begin
+			local v = find_npc_by_vnum(20162)
+			if v != 0 then
+				target.vid("__TARGET__", v, mob_name(20162))
+			end
+			send_letter("Zabij w³adcê En-Tai")
+		end
+
+		when button or info begin
+			say_title("Zabij w³adcê En-Tai")
+			say("Zanieœ Drzewny Szmaragd Badaczowi Lasu.")
+		end
+
+		when __TARGET__.target.click or 20162.chat."Zabij w³adcê En-Tai" begin
+			say_title(mob_name(20162)..":")
+			if pc.count_item(31099) < 1 then
+				say("Bez Drzewnego Szmaragdu nic nie zrobiê. Pokonaj")
+				say("W³adcê En-Tai jeszcze raz.")
+				set_state(lord_emerald)
+				return
+			end
+			if not pc.enough_inventory(30613) then
+				say("Zrób miejsce w ekwipunku i wróæ.")
+				return
+			end
+			target.delete("__TARGET__")
+			pc.remove_item(31099, pc.count_item(31099))
+			say("W tym kamieniu zamkn¹³em duszê driady. Zna s³owa,")
+			say("które otwieraj¹ Erebu. Przywódca Stra¿y Lasu wpuœci")
+			say("twoj¹ grupê, gdy ka¿dy z was bêdzie mia³ taki kamieñ.")
+			say_item_vnum(30613)
+			pc.give_item2(30613, 1)
+			pc.give_exp2(11650000)
+			say_reward("Nagroda: 11 650 000 PD i Kamieñ Driad.")
+			say_reward("Stra¿nik Lasu da ci kolejne zadania - po nastêpny")
+			say_reward("Kamieñ Driad.")
+			set_state(r1_talk)
+		end
+	end
+end

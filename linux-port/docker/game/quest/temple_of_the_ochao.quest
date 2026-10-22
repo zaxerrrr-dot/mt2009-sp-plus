@@ -1,26 +1,33 @@
 -- MT2009_PLUS_OCHAO_V1: Swiatynia Ochao (Temple of Ochao, map 209), the
 -- "Version 16.2" package's temple_of_the_ochao.lua made ours:
 --  * Straznik Swiatyni (20426 - the package's 20408 is this world's Friendly
---    Monkey) stands beside Koe-Pung in Orc Valley and, as in the package, in
---    Dawnmistwood; from level 95 he takes a character to the temple's gate;
+--    Monkey) stands only on Zbocze Gautama (302, metin2_map_dawnmistwood,
+--    cell 1003 700 as on the wiki; MT2009_PLUS_OCHAO_GAUTAMA_V1 - no longer in
+--    Orc Valley) and talks only there; from level 95 he takes a character to
+--    the temple's gate;
 --  * the Portal (20415) opens for a minute where the En-Tai Guardian (6400)
 --    fell (playerbot_ochao.h). The package sent it to the Enchanted Forest
 --    (map 210), which this world does not have yet: here it is the way out;
---    MT2009_PLUS_AREZZO_V1: the portal leads to the forest again - Zaczarowany Las
---    (natural_map, 362, from the Arezzo files) - and to Orc Valley as the second choice;
+--    MT2009_PLUS_YOHARA_ZAKLETY_V1: the portal leads to the Enchanted Forest - Zaklety Las
+--    (353, metin2_map_dawnmist_dungeon_01, quests zaklety_las / erebu; the Arezzo forest it led
+--    to before is gone) - and, as the second choice, back to Zbocze Gautama beside the guard
+--    (cell 1003 704 = 1177600 + 100300, 1664000 + 70400; MT2009_PLUS_OCHAO_GAUTAMA_V1 - it was
+--    Orc Valley);
 --  * the Ochao Bodyguard (6311) gives the package's reward list, with the
 --    Arboreal materials and the Lycan armour mapped to this world's items:
 --    30609 -> 30015 Pamiatka Po Demonie, 30612 -> 30082 Ogon Weza+,
 --    21075 (Lycan) left out.
 -- The package's "when login ... temple_ochao.initialize()" is not needed: the
--- Guardian starts with the core. Bots never come here.
+-- Guardian starts with the core. The bots' own way in and out is
+-- playerbot_ochao_bots.h's (through Orc Valley on game1, without the NPC).
 quest temple_of_the_ochao begin
 	state start begin
 		function min_level()
 			return 95
 		end
 
-		when 20426.chat."Swiatynia Ochao" begin
+		-- MT2009_PLUS_OCHAO_GAUTAMA_V1: the entrance is on Zbocze Gautama (302) only
+		when 20426.chat."Swiatynia Ochao" with pc.get_map_index() == 302 begin
 			say_title(mob_name(20426)..":")
 			say("Za tymi gorami lezy Swiatynia Ochao. Jej wojownicy")
 			say("i magowie strzega swiatyni dzien i noc, a po jej")
@@ -45,21 +52,20 @@ quest temple_of_the_ochao begin
 			end
 		end
 
-		-- MT2009_PLUS_AREZZO_V1 (ochao portal): Zaczarowany Las (362, level 95+), landing where
-		-- Arezzo's portal does (cell 459, 106 of natural_map = 378700, 394600); Orc Valley stays.
+		-- MT2009_PLUS_YOHARA_ZAKLETY_V1 (ochao portal): Zaklety Las (353, level 95+) on the Yohara core
+		-- (MT2009_PLUS_237_ZAKLETY_LAS_V1: on game2 on the 2.x line, always open - no Arezzo switch),
+		-- landing on its Town.txt cell (478, 970 = 768000 + 47800, 1408000 + 97000) - pl-wiki "Straznik
+		-- En-Tai": the portal leads to Zaklety Las.
+		-- MT2009_PLUS_OCHAO_GAUTAMA_V1: the second choice is Zbocze Gautama beside the guard
+		-- (cell 1003 704 of 302 = 1277900, 1734400), where Orc Valley was.
 		when 20415.chat."Opusc Swiatynie" with pc.get_map_index() == 209 begin
 			say_title(mob_name(20415))
 			say("Portal pozostawiony przez Straznika En-Tai drga")
-			say("jeszcze przez chwile. Prowadzi do Zaczarowanego")
-			say("Lasu, najgrozniejszej krainy za Swiatynia, albo")
-			say("z powrotem do Doliny Orkow.")
+			say("jeszcze przez chwile. Prowadzi do Zakletego Lasu,")
+			say("krainy Jotuna Thryma za Swiatynia, albo z powrotem")
+			say("na Zbocze Gautama.")
 			say("")
-			local s
-			if game.get_event_flag("mt2009_arezzo_closed") > 0 then
-				s = select("Dolina Orkow", "Zostan w Swiatyni") + 1
-			else
-				s = select("Zaczarowany Las", "Dolina Orkow", "Zostan w Swiatyni")
-			end
+			local s = select("Zaklety Las", "Zbocze Gautama", "Zostan w Swiatyni")
 			if s == 3 then
 				return
 			end
@@ -69,9 +75,9 @@ quest temple_of_the_ochao begin
 				return
 			end
 			if s == 1 then
-				pc.warp(378700, 394600)
+				pc.warp(815800, 1505000)
 			else
-				pc.warp(284700, 810600)
+				pc.warp(1277900, 1734400)
 			end
 		end
 

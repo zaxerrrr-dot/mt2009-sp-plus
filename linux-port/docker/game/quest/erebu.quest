@@ -1,0 +1,257 @@
+-- MT2009_PLUS_YOHARA_ZAKLETY_V1: Erebu - loch Jotuna Thryma w Zaklêtym Lesie (353; pl-wiki "Erebu", "Przywódca Stra¿.
+-- Lasu", "Kamieñ Driad", "Bagjanamu", "Jotun Thrym", "Zaklêty Las"; przebieg jak Owsap v6.2.6 dawnmist_dungeon.quest -
+-- prywatna kopia naro¿nika lasu z bossami):
+--   * Przywódca Stra¿y Lasu (20412, Zaklêty Las 615,108): tylko grupa, otwiera przywódca, co najmniej 5 osób (GM sam),
+--     ka¿dy od poziomu 95 z Kamieniem Driad (30613 - od Badacza Lasu, quest zaklety_las; znika przy wejœciu), ca³a
+--     grupa przy nim; ponownie 2 godziny po zakoñczeniu (flaga erebu.end - te¿ panel lochów);
+--   * Bagjanamu (6408), minutê po nim Jotun Thrym (6192 - przywo³uje Uzdrowicieli Ochao); 30 minut (Owsap: 15+10+4+1);
+--     po zwyciêstwie 3 minuty, potem wszyscy wracaj¹ do Przywódcy Stra¿y Lasu;
+--   * Zaklêty Las: kto by³ wylogowany na tej mapie d³u¿ej ni¿ 10 minut, wraca przed wejœcie do Œwi¹tyni Ochao (do
+--     Stra¿nika Œwi¹tyni na Zboczu Gautama - pl-wiki "Zaklêty Las"); kto stanie w naro¿niku Erebu na otwartej mapie,
+--     wraca na jej pocz¹tek.
+-- Mapa jest na rdzeniu Yohary (game3) - boty tam nie wchodz¹, licz¹ siê ludzie z grupy. MT2009_PLUS_237_ZAKLETY_LAS_V1:
+-- na linii 2.x las jest na rdzeniu game2; boty poluj¹ w lesie, ale do Erebu wchodz¹ tylko ludzie z grupy.
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest erebu begin
+	state start begin
+		function cfg()
+			return {
+				map = 353, base_x = 7680, base_y = 14080,
+				entry = {100, 940}, boss = {69, 941}, corner = {200, 800}, town = {478, 970},
+				out = {611, 107}, leader = 20412, ticket = 30613, min_level = 95, party_min = 5, party_max = 8,
+				near = 30, cooldown = 2 * 60 * 60, limit = 30 * 60, keep = 30 * 60 + 300, boss_delay = 60,
+				end_sec = 180, first = 6408, final = 6192, offline = 10 * 60,
+				-- Stra¿nik Œwi¹tyni on Zbocze Gautama (temple_of_the_ochao.quest): the forest's way out after 10 minutes
+				gautama = {12779, 17344},
+			}
+		end
+
+		function inside()
+			local idx = pc.get_map_index()
+			return idx >= 353 * 10000 and idx < 354 * 10000 and pc.in_dungeon()
+		end
+
+		function finish(text)
+			d.setf("closed", 1)
+			d.setf("mt2009_keep_until", 0)
+			if text then
+				d.notice(text)
+			end
+			d.exit_all()
+		end
+
+		-- Przywódca Stra¿y Lasu: the way in
+		function enter()
+			local c = erebu.cfg()
+			say_title(mob_name(c.leader)..":")
+			if not pc.is_gm() and game.get_event_flag("mt2009_dungeons_closed") > 0 then
+				say("Erebu jest dziœ zamkniête. Wróæ póŸniej.")
+				return
+			end
+			if not pc.is_gm() and not party.is_party() then
+				say("Do Erebu wchodzi siê tylko w grupie.")
+				return
+			end
+			if party.is_party() and not party.is_leader() then
+				say("Tylko przywódca grupy mo¿e poprowadziæ was do Erebu.")
+				return
+			end
+			if not pc.can_warp() or pc.is_busy() then
+				say("Poczekaj chwilê po handlu lub rozmowie.")
+				return
+			end
+			local now = get_global_time()
+			local me = pc.get_player_id()
+			local humans = {me}
+			local bad = {}
+			local function check(name)
+				if pc.get_level() < c.min_level then
+					table.insert(bad, name.." (poziom)")
+				elseif pc.count_item(c.ticket) < 1 then
+					table.insert(bad, name.." (Kamieñ Driad)")
+				elseif pc.getf("erebu", "end") + c.cooldown > now then
+					local m = math.floor((pc.getf("erebu", "end") + c.cooldown - now + 59) / 60)
+					table.insert(bad, name.." (odpoczynek: "..m.." min)")
+				end
+			end
+			if not pc.is_gm() then
+				check(pc.get_name())
+			end
+			local far = 0
+			if party.is_party() then
+				local lmap, lx, ly = pc.get_map_index(), pc.get_x(), pc.get_y()
+				local pids = {party.get_member_pids()}
+				for i, pid in next, pids, nil do
+					if pid ~= me then
+						q.begin_other_pc_block(pid)
+						if pc.get_player_id() == pid and not pc.is_playerbot() then
+							local dx, dy = pc.get_x() - lx, pc.get_y() - ly
+							if pc.get_map_index() == lmap and dx * dx + dy * dy <= c.near * c.near and pc.can_warp() then
+								table.insert(humans, pid)
+								if not pc.is_gm() then
+									check(pc.get_name())
+								end
+							else
+								far = far + 1
+							end
+						end
+						q.end_other_pc_block()
+					end
+				end
+			end
+			if far > 0 then
+				say("Cz³onek grupy jest za daleko. Zbierzcie siê przy mnie.")
+				return
+			end
+			if table.getn(bad) > 0 then
+				say("Nie spe³niaj¹ warunków:")
+				say_item_vnum(c.ticket)
+				for i, n in next, bad, nil do say(color(1, 1, 0).."    "..n) end
+				return
+			end
+			if not pc.is_gm() and table.getn(humans) < c.party_min then
+				say("Do Erebu wejdzie tylko grupa co najmniej "..c.party_min.." osób.")
+				return
+			end
+			if table.getn(humans) > c.party_max then
+				say("Do Erebu wchodzi najwy¿ej "..c.party_max.." osób.")
+				return
+			end
+			if d.new_jump_pids(c.map, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, humans) < 0 then
+				say("Erebu nie przyjmie was teraz. Spróbuj za chwilê.")
+			end
+		end
+
+		-- the open forest: the 10 minutes offline, the Erebu corner
+		when logout with pc.get_map_index() == 353 begin
+			pc.setf("erebu", "off", get_global_time())
+		end
+
+		when login with pc.get_map_index() == 353 begin
+			local c = erebu.cfg()
+			local off = pc.getf("erebu", "off")
+			pc.setf("erebu", "off", 0)
+			if off > 0 and get_global_time() - off > c.offline and not pc.is_gm() then
+				syschat("Zaklêty Las: by³eœ za d³ugo nieobecny - wracasz przed Œwi¹tyniê Ochao.")
+				pc.warp(c.gautama[1] * 100, c.gautama[2] * 100)
+				return
+			end
+			if pc.get_local_x() < c.corner[1] and pc.get_local_y() > c.corner[2] and not pc.is_gm() then
+				pc.warp((c.base_x + c.town[1]) * 100, (c.base_y + c.town[2]) * 100)
+			end
+		end
+
+		-- Erebu: the instance
+		when login with erebu.inside() begin
+			local c = erebu.cfg()
+			local idx = pc.get_map_index()
+			pc.set_warp_location(c.map, c.base_x + c.out[1], c.base_y + c.out[2])
+			if d.getf("closed") == 1 then
+				syschat("Erebu: ta wyprawa ju¿ siê skoñczy³a.")
+				pc.warp((c.base_x + c.out[1]) * 100, (c.base_y + c.out[2]) * 100, c.map)
+				return
+			end
+			if pc.getf("erebu", "idx") ~= idx then
+				if not pc.is_gm() then
+					if pc.count_item(c.ticket) < 1 then
+						syschat("Erebu: potrzebujesz Kamienia Driad.")
+						pc.warp((c.base_x + c.out[1]) * 100, (c.base_y + c.out[2]) * 100, c.map)
+						return
+					end
+					pc.remove_item(c.ticket, 1)
+				end
+				pc.setf("erebu", "idx", idx)
+				pc.setf("erebu", "entry", get_global_time())
+				pc.setf("erebu", "end", get_global_time() + c.limit)
+			end
+			pc.unmount()
+			if d.getf("init") == 0 then
+				d.setf("init", 1)
+				d.setf("start", get_global_time())
+				d.setf("mt2009_keep_until", get_global_time() + c.keep)
+				d.spawn_mob(c.first, c.boss[1], c.boss[2])
+				d.notice("Erebu: Bagjanamu strze¿e drogi do Jotuna Thryma! Macie 30 minut.")
+				server_timer("erebu_tick", 60, d.get_map_index())
+			end
+		end
+
+		when erebu_tick.server_timer begin
+			local c = erebu.cfg()
+			if not d.select(get_server_timer_arg()) or d.getf("closed") == 1 then
+				return
+			end
+			local left = d.getf("start") + c.limit - get_global_time()
+			if left <= 0 then
+				erebu.finish("Erebu: czas min¹³ - wracacie do Zaklêtego Lasu.")
+				return
+			end
+			local m = math.floor((left + 30) / 60)
+			if m == 15 or m == 5 or m == 1 then
+				d.notice("Erebu: zosta³o "..m.." min. Po czasie grupa wróci do Zaklêtego Lasu.")
+			end
+			server_timer("erebu_tick", 60, get_server_timer_arg())
+		end
+
+		when 6408.kill with erebu.inside() and d.getf("closed") == 0 begin
+			local c = erebu.cfg()
+			d.notice("Bagjanamu pokonany. Ziemia dr¿y - Jotun Thrym nadchodzi!")
+			server_timer("erebu_spawn", c.boss_delay, d.get_map_index())
+		end
+
+		when erebu_spawn.server_timer begin
+			local c = erebu.cfg()
+			if d.select(get_server_timer_arg()) and d.getf("closed") == 0 then
+				d.spawn_mob(c.final, c.boss[1], c.boss[2])
+				d.notice("Jotun Thrym przyby³ do Erebu!")
+			end
+		end
+
+		when 6192.kill with erebu.inside() and d.getf("closed") == 0 and d.getf("won") == 0 begin
+			local c = erebu.cfg()
+			d.setf("won", 1)
+			d.setqf2("erebu", "end", get_global_time())
+			d.update_ranking("erebu", get_global_time() - d.getf("start"))
+			d.notice("Pokonaliœcie Jotuna Thryma!")
+			d.notice("Za 3 minuty wszyscy wróc¹ do Zaklêtego Lasu.")
+			server_timer("erebu_end", c.end_sec, d.get_map_index())
+		end
+
+		when erebu_end.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				erebu.finish(nil)
+			end
+		end
+
+		when 20412.chat."Erebu" with pc.get_map_index() == 353 begin
+			local c = erebu.cfg()
+			say_title(mob_name(c.leader)..":")
+			say("Za mn¹ le¿y Erebu - kraina Jotuna Thryma.")
+			say("Wpuszczê grupê, jeœli ka¿dy z was ma Kamieñ Driad od")
+			say("Badacza Lasu. Najpierw zmierzycie siê z Bagjanamu.")
+			say_reward("Od poziomu "..c.min_level..", grupa od "..c.party_min.." osób, 30 minut;")
+			say_reward("ponownie 2 godziny po zakoñczeniu.")
+			say_item_vnum(c.ticket)
+			local opts = {"WejdŸ do Erebu"}
+			local back = 0
+			local idx = pc.getf("erebu", "idx")
+			if idx > 0 and get_global_time() - pc.getf("erebu", "entry") < c.keep then
+				table.insert(opts, "Wróæ do Erebu")
+				back = table.getn(opts)
+			end
+			table.insert(opts, "Nie teraz")
+			local s = select_table(opts)
+			if s == back then
+				if d.find(idx, (c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, pc.get_player_id()) then
+					pc.warp((c.base_x + c.entry[1]) * 100, (c.base_y + c.entry[2]) * 100, idx)
+				else
+					say_title(mob_name(c.leader)..":")
+					say("Tamta wyprawa ju¿ siê skoñczy³a.")
+				end
+				return
+			end
+			if s == 1 then
+				erebu.enter()
+			end
+		end
+	end
+end

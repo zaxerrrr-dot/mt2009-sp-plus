@@ -70,12 +70,12 @@ liczą się jak ich mapa (indeks / 10000).
 
 - **Suplementy** – z Metinów (`IsStone`) i bossów (ranga boss/król) map z wiersza `additive_map`,
   każde zabicie losuje `additive_chance` (60%): Grota Wygnańców V1 i V2 (72, 73) – 1× Średni (72065),
-  Zaczarowany Las (362) – 1× Duży (72066). Wiersz `mob` dotyczy jednego potwora (dowolnej rangi, na
+  Zaklęty Las (353; do 2.36 Zaczarowany Las Arezzo, 362 – usunięty, `MT2009_PLUS_237_ZAKLETY_LAS_V1`) – 1× Duży (72066). Wiersz `mob` dotyczy jednego potwora (dowolnej rangi, na
   każdej mapie) zamiast reguły mapy: Beran-Setaou (2493) – 2× Średni. „Wróżki” (9707 Leśna Wróżka?)
   domyślnie nie ma – właściciel jeszcze nie wskazał potwora; wystarczy dopisać `mob 9707 72065 2`.
   Żadnych innych źródeł (Mały, Silny, Ochao) domyślnie.
 - **Odłamki** – ze zwykłych potworów (nie Metin, nie boss/król) map z wiersza `shard_map`: Grota V2
-  (73), Świątynia Ochao (209), Zaczarowany Las (362); szansa `shard_chance` 0,5% (ułamki dozwolone),
+  (73), Świątynia Ochao (209), Zaklęty Las (353); szansa `shard_chance` 0,5% (ułamki dozwolone),
   1 odłamek, kolor losowany z wag wierszy `shard` (domyślnie równo: 39070–39077, 39081).
 
 Reguły: `/opt/m2spool/seonhae_drops.tsv` (pisze go strona „Seon-Hae” panelu klasycznego, która
@@ -87,11 +87,11 @@ więc 2493 musi w nim zostać). Błędny wiersz rdzeń pomija (syserr). Domyśln
 additive_chance 60
 additive_map 72 72065 1      # additive_map <mapa> <vnum suplementu> <liczba>
 additive_map 73 72065 1
-additive_map 362 72066 1
+additive_map 353 72066 1
 mob 2493 72065 2             # mob <vnum potwora> <vnum suplementu> <liczba>
 shard_chance 0.5             # procent, ułamki dozwolone
 shard_map 73
 shard_map 209
-shard_map 362
+shard_map 353
 shard 39070 1                # shard <vnum odłamka> <waga>; tak samo 39071-39077 i 39081
 ```

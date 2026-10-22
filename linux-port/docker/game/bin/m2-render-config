@@ -165,7 +165,9 @@ MAPS_game2="$MAPS_game2 419"
 # unified layout then hosts 35 maps of MAP_ALLOW_LIMIT 48), the Biblioteka Wiedzy dungeon (363) on
 # game2 with Razador and Nemere (d.new_jump_pids from its guard in Orc Valley).
 # MT2009_PLUS_BOT_DUNGEONS_ALL_V1: 363 on game1 with Razador and Nemere since.
-MAPS_game1="$MAPS_game1 360 362 363"
+# MT2009_PLUS_237_ZAKLETY_LAS_V1: Zaczarowany Las (362) is gone - no core hosts it, no index names it; the Temple of
+# Ochao's portal leads to Zaklety Las (353) on game2 below.
+MAPS_game1="$MAPS_game1 360 363"
 # MT2009_PLUS_AREZZO_V1 (maps, phases 5-8): Pustkowie Faraona (361) on game1 with the other open Arezzo
 # maps (game1 of the unified layout: 36 maps of 48); the dungeons 364-366 on game2 with 363.
 # MT2009_PLUS_BOT_DUNGEONS_ALL_V1: 364-366 on game1 with 363 since (the Arezzo dungeon test
@@ -184,6 +186,15 @@ MAPS_game1="$MAPS_game1 110"
 # floors are private copies (3580000+) made on the core of the map, a person's party bots follow into them and the
 # bots' own temple runs go there (a bot cannot cross cores).
 MAPS_game1="$MAPS_game1 358"
+# MT2009_PLUS_237_ZAKLETY_LAS_V1 (maps): Zaklety Las (353, metin2_map_dawnmist_dungeon_01, 3x4 - the open Enchanted
+# Forest past the Temple of Ochao, whose portal on game1 warps there; Erebu's instances 3530000+) on game2 under either
+# layout, always (no switch - the owner, 22 October 2026: "a default map that cannot be switched off"; it replaces the
+# Arezzo forest 362, 4x4 on game1). Not on game1: game1 is the core near the 32-bit 4 GB line (the test server,
+# 21 October: 3.86 GB of 4) and could not give the bots' navigation grids more; game2 hosts 301/303 in ~0.17 GB and
+# takes the forest's 12 sectors and ~350 spawn groups (~0.1 GB) and the bots' 53 MB grid. The bots come over by the
+# handover between the cores of a channel (playerbot_yohara_bots.h, MT2009_PLUS_BOT_YOHARA_HANDOVER_V1) - the Yohara
+# line's way into its forest on game3. game2 of the unified layout: 10 maps of MAP_ALLOW_LIMIT 48.
+MAPS_game2="$MAPS_game2 353"
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"

@@ -1,6 +1,7 @@
 -- MT2009_PLUS_AREZZO_V1 (dzungla): Staro¿ytna D¿ungla - najtrudniejszy loch, od poziomu 95 (mapa 366,
 -- plechito_easter2023_dungeon z Arezzo), tylko dla graczy. Wzorzec biblioteka_wiedzy.quest (tools/questgen.py):
--- Stra¿nik D¿ungli (20425) w Zaczarowanym Lesie. Etapy: 3 fale po 40 stworzeñ (Pieczêæ D¿ungli 30768),
+-- Stra¿nik D¿ungli (20425) w Œwi¹tyni Ochao (209, obok wejœcia - MT2009_PLUS_YOHARA_ZAKLETY_V1: Zaczarowany Las Arezzo
+-- usuniêty; stra¿nika stawia playerbot_arezzo.h, gdy modu³ Arezzo jest w³¹czony). Etapy: 3 fale po 40 stworzeñ (Pieczêæ D¿ungli 30768),
 -- 6 Staro¿ytnych Kamieni, 3 Faethorny, 4 Pradawne Kamienie, Królewska Sowa, Królowa D¿ungli; potem 2-5 Skrzyñ
 -- D¿ungli (30776) do podzia³u miêdzy graczy (MT2009_PLUS_DUNGEON_CHEST_SPLIT_V1). Limit 60 minut, ponowne wejœcie po 60 minutach.
 -- MT2009_PLUS_BOT_DUNGEONS_ALL_V1: mapa lochu jest od teraz na rdzeniu game1, razem z botami
@@ -27,7 +28,7 @@ quest starozytna_dzungla begin
 				map = 366,
 				base_x = 7680, base_y = 5376, size = 768,
 				entry = {384, 374},
-				exit_map = 362, exit_x = 3783, exit_y = 3954,
+				exit_map = 209, exit_x = 8540, exit_y = 14160,
 				min_level = 95,
 				near = 30,
 				cooldown = 60 * 60,
@@ -183,11 +184,11 @@ quest starozytna_dzungla begin
 
 		function end_text(n)
 			if n == 1 then
-				return "Za 1 sekundê zostaniesz teleportowany do Zaczarowanego Lasu."
+				return "Za 1 sekundê zostaniesz teleportowany do Œwi¹tyni Ochao."
 			elseif n >= 2 and n <= 4 then
-				return "Za "..n.." sekundy zostaniesz teleportowany do Zaczarowanego Lasu."
+				return "Za "..n.." sekundy zostaniesz teleportowany do Œwi¹tyni Ochao."
 			end
-			return "Za "..n.." sekund zostaniesz teleportowany do Zaczarowanego Lasu."
+			return "Za "..n.." sekund zostaniesz teleportowany do Œwi¹tyni Ochao."
 		end
 
 		-- After the last boss: a second at a time, 10 to 0, then everyone out (finish). MT2009_PLUS_DUNGEON_BOSS_EXIT_10S_V1:
@@ -443,7 +444,7 @@ quest starozytna_dzungla begin
 			if pc.is_playerbot() then
 				return
 			end
-			say("Za Zaczarowanym Lasem roœnie Staro¿ytna D¿ungla.")
+			say("Za Œwi¹tyni¹ Ochao roœnie Staro¿ytna D¿ungla.")
 			say("Jej Królowa nie wypuœci³a jeszcze nikogo,")
 			say("kto wszed³ tam bez dru¿yny najlepszych wojowników.")
 			say("")

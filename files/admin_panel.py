@@ -5792,7 +5792,7 @@ additive_chance 60
 # additive_map <map> <additive vnum> <count>: Grotto of Exile V1 + V2 - 1 Medium, Enchanted Forest - 1 Large
 additive_map 72 72065 1
 additive_map 73 72065 1
-additive_map 362 72066 1
+additive_map 353 72066 1
 # mob <mob vnum> <additive vnum> <count>: one monster (any rank, any map), instead of its map's rule
 # Beran-Setaou: 2 Large (the owner, drop workbook, 1 October)
 mob 2493 72066 2
@@ -5803,7 +5803,7 @@ shard_chance 0.5
 # Grotto of Exile V2, Temple of Ochao, Enchanted Forest
 shard_map 73
 shard_map 209
-shard_map 362
+shard_map 353
 # shard <vnum> <weight>: the shard's colour
 shard 39070 1
 shard 39071 1

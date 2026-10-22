@@ -67,6 +67,10 @@ linux-port/docker/mariadb/playerbot/zywioly_moby.sql
 linux-port/docker/mariadb/playerbot/zodiak.sql
 linux-port/docker/mariadb/playerbot/wiki_nowe.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
+# MT2009_PLUS_237_ZAKLETY_LAS_V1: Zaklety Las's monsters, items and elements (apply.sh, after zywioly_moby.sql).
+linux-port/docker/mariadb/playerbot/yohara_zaklety.sql
+linux-port/docker/mariadb/playerbot/yohara_items_zaklety.sql
+linux-port/docker/mariadb/playerbot/yohara_zaklety_zywioly.sql
 linux-port/docker/game/Dockerfile
 linux-port/docker/game/.dockerignore
 linux-port/docker/game/build-deps-mt2009.sh
@@ -128,6 +132,22 @@ linux-port/docker/game/treasure_hunt/*
 linux-port/docker/game/treasure_hunt/map/metin2_map_treasure_hunt/*
 linux-port/docker/game/treasure_hunt/monster/treasure_hunt_box/*
 linux-port/docker/game/treasure_hunt/monster/treasure_hunt_goblin/*
+# MT2009_PLUS_237_ZAKLETY_LAS_V1: Zaklety Las's share files (Dockerfile step "share: Zaklety Las (353) and Erebu").
+linux-port/docker/game/yohara_zaklety/*
+linux-port/docker/game/yohara_zaklety/map/metin2_map_dawnmist_dungeon_01/*
+linux-port/docker/game/yohara_zaklety/data/monster/thunder_boss/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_boss/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_boss2/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_general/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_magic/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_soldier/*
+# MT2009_PLUS_237_MAPS90_V1: the level-90 maps' server_attr / npc.txt (Dockerfile steps after Zaklety Las).
+linux-port/docker/game/cape301/*
+linux-port/docker/game/cape301/map/Metin2_map_CapeDragonHead/*
+linux-port/docker/game/maps302/*
+linux-port/docker/game/maps302/map/metin2_map_dawnmistwood/*
+linux-port/docker/game/maps302/map/metin2_map_BayBlackSand/*
+linux-port/docker/game/maps302/map/metin2_map_Mt_Thunder/*
 # MT2009_PLUS_ZODIAC_V1: Swiatynia Zodiaku's share files (Dockerfile step "share: Swiatynia Zodiaku").
 linux-port/docker/game/zodiak/*
 linux-port/docker/game/zodiak/data/dungeon/zodiac/*
