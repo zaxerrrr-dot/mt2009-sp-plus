@@ -33,8 +33,7 @@ PB = 'linux-port/docker/mariadb/playerbot'
 COPY_DIRS = [GAME + '/yohara_zaklety/map', GAME + '/yohara_zaklety/data',
              GAME + '/cape301', GAME + '/maps302']
 COPY_FILES = [GAME + '/yohara_zaklety/group.yohara_zaklety.txt', GAME + '/yohara_zaklety/spawned.txt',
-              PB + '/yohara_zaklety.sql', PB + '/yohara_items_zaklety.sql', PB + '/yohara_zaklety_zywioly.sql',
-              PB + '/playerbot_core_handover.sql']
+              PB + '/yohara_zaklety.sql', PB + '/yohara_items_zaklety.sql', PB + '/yohara_zaklety_zywioly.sql']
 FILTER_DROP = GAME + '/yohara_zaklety/mob_drop_item.yohara_zaklety.txt'
 FILTER_CHEST = GAME + '/yohara_zaklety/special_item_group.yohara_zaklety.txt'
 ITEM_SQL = ['item_proto.mt2009plus.sql', 'wiki_nowe.sql', 'zodiak.sql', 'arezzo_costumes.sql',
@@ -99,10 +98,11 @@ def filter_groups(text, have, what):
         out.append(line)
     body = b'\n'.join(out)
     if dropped:
-        note = ('// %s: the 2.x line (2.37) leaves out what its world has not (tools/las237/port_las237.py): %s\n'
-                % (M, '; '.join(dropped))) if what == 'drop' else \
-               ('# %s: the 2.x line (2.37) leaves out what its world has not (tools/las237/port_las237.py): %s\n'
+        import textwrap
+        lead = '// ' if what == 'drop' else '# '
+        text = ('%s: the 2.x line (2.37) leaves out what its world has not (tools/las237/port_las237.py): %s.'
                 % (M, '; '.join(dropped)))
+        note = ''.join(lead + l + '\r\n' for l in textwrap.wrap(text, 116))
         body = note.encode('cp1250') + body
     return body, dropped
 
