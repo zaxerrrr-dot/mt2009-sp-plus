@@ -1707,11 +1707,23 @@ namespace {
     // line's count, so the line goes home and up again. One a visit, at most
     // once in ten minutes, and not while the counter is over its target - the
     // line would not go back up.
+    // MT2009_PLUS_BOT_BOOK_RESTACK_FAST_V1 (the owner, 22 October): old single
+    // books stood in their lines for days - one line in ten minutes, and a
+    // counter of 90 lines of eleven skills (Kombajnista) took 13 hours at best.
+    // A skill's partial book lines all come home in one run of chained steps
+    // (BotOfflineRestack, restackBook) and go up as one stack (the counted
+    // cut, MT2009_PLUS_BOT_BOOK_STACKS_V1); between two skills a minute, not
+    // ten, so the stack of the last one goes up before the next run.
     DWORD BotOfflineRestackLine(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
         if (!ch || !shop || !IsPlayerBotShopMgmtStacking()) return 0;
         auto& o = state.offlineShop;
-        if (o.restackAt && now - o.restackAt < 10 * 60 * 1000) return 0;
-        if (BotOfflineUsedCells(shop) > BotOfflineTargetCells()) return 0;
+        const bool gap = o.restackAt && now - o.restackAt < 10 * 60 * 1000;
+        const bool bookGap = o.restackAt && now - o.restackAt < 60 * 1000;
+        if (gap && bookGap && !o.restackBook) return 0;
+        if (BotOfflineUsedCells(shop) > BotOfflineTargetCells()) {
+            o.restackBook = false;
+            return 0;
+        }
         const int bagFree = CountPlayerBotFreeInventoryCells(ch);
         struct TGroup { int lines = 0; DWORD smallest = 0; int smallestCount = 0; int notFull = 0; };
         std::map<DWORD, TGroup> groups;
@@ -1731,6 +1743,15 @@ namespace {
                 g.smallestCount = count;
             }
         }
+        // MT2009_PLUS_BOT_BOOK_RESTACK_FAST_V1: the run goes on while a
+        // partial line of its skill is up; the last one home ends it.
+        if (o.restackBook) {
+            const auto run = groups.find(o.restackVnum);
+            if (run != groups.end() && run->second.smallest)
+                return run->second.smallest;
+            o.restackBook = false;
+            if (bookGap) return 0;
+        }
         for (const auto& [key, g] : groups) {
             if (!g.smallest || g.notFull == 0) continue;
             const auto& items = shop->GetItems();
@@ -1747,6 +1768,8 @@ namespace {
             const bool book = preview->GetType() == ITEM_SKILLBOOK;
             M2_DELETE(preview);
             if (!kind) continue;
+            // MT2009_PLUS_BOT_BOOK_RESTACK_FAST_V1: a book waits a minute, the rest ten.
+            if (book ? bookGap : gap) continue;
             // Two lines of it that are not full: the smallest comes home.
             if (g.notFull >= 2) return g.smallest;
             // One line, and enough of it in the bag to make it bigger. A herb
@@ -1771,12 +1794,15 @@ namespace {
         }
         return 0;
     }
-    bool BotOfflineRestack(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now) {
+    bool BotOfflineRestack(LPCHARACTER ch, TPlayerBotAIState& state, NativeShop shop, DWORD now, bool& chained) {
+        chained = false;
         const DWORD id = BotOfflineRestackLine(ch, state, shop, now);
         if (!id) return false;
         const auto& items = shop->GetItems();
         const auto line = items.find(id);
         const DWORD vnum = line != items.end() && line->second ? BotOfflineStackKeyOf(*line->second) : 0;
+        const bool book = line != items.end() && line->second && line->second->GetTable() &&
+                line->second->GetTable()->bType == ITEM_SKILLBOOK;
         int lines = 0;
         for (const auto& [lid, l] : items)
             if (l && BotOfflineStackKeyOf(*l) == vnum && (int)l->GetInfo().count < 200) ++lines;
@@ -1785,6 +1811,14 @@ namespace {
         // A second line of the kind came home: the one left comes home next
         // whatever the bag holds of it, and the two go up as one.
         state.offlineShop.restackVnum = lines >= 2 ? vnum : 0;
+        // MT2009_PLUS_BOT_BOOK_RESTACK_FAST_V1: a book's partial lines come
+        // home in one run - the next step two seconds on, until none is left.
+        state.offlineShop.restackBook = book && lines >= 2;
+        chained = state.offlineShop.restackBook;
+        if (book)
+            PlayerBotLogThrottled("shop_book_restack", now,
+                "PLAYERBOT_SHOP_MGMT: book restack pid=%u name=%s item=%u kind=%u partial_lines=%d",
+                ch->GetPlayerID(), ch->GetName(), id, (unsigned int)(vnum & 0x7fffffffU), lines);
         return true;
     }
     // How many lines of this item's kind kept by count - the books of its
@@ -3227,9 +3261,12 @@ namespace {
                 if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
                 return false;
             }
-            if (BotOfflineRestack(ch, state, shop, now)) {
+            if (BotOfflineRestack(ch, state, shop, now, chained)) {
                 BotOfflineFinishVisit(ch, state, now);
-                BotOfflineChainVisit(state, now);
+                // MT2009_PLUS_BOT_BOOK_RESTACK_FAST_V1: a book run's steps
+                // outside the restock chain's count.
+                if (chained) state.offlineShop.nextService = now + PLAYERBOT_STALL_WEAK_TAKEOFF_STEP_MS;
+                else BotOfflineChainVisit(state, now);
                 return false;
             }
         }
