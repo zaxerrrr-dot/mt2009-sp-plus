@@ -40,5 +40,77 @@
   "marker": "MT2009_PLUS_GAYA_V2 (cube add)",
   "old": "\titem = ch->GetInventoryItem(inven_index);\n\n\tif (NULL==item)\treturn;\n",
   "new": "\titem = ch->GetInventoryItem(inven_index);\n\n\tif (NULL==item)\treturn;\n\t// MT2009_PLUS_GAYA_V2 (cube add): the Gaya is never a cube item - the recipe's \"gaya\" takes it from the inventory\n\t// (Mt2009GayaCubeTake), and a stack emptied there while still in the window would leave a dangling cube item\n\tif (item->GetVnum() == MT2009_GAYA_VNUM)\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Gaya nie k\\263adzie si\\352 w oknie - kowal bierze j\\271 sam z ekwipunku.\");\n\t\treturn;\n\t}\n"
+ },
+ {
+  "file": "cube.h",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube pick decl)",
+  "old": "void Cube_close (LPCHARACTER ch);\n",
+  "new": "void Cube_close (LPCHARACTER ch);\nvoid Cube_pick (LPCHARACTER ch, DWORD dwRewardVnum); // MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube pick decl): the row the player chose in the window\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info fields)",
+  "old": "\tDWORD\t\t\t\tgold;\n\tTCubeValueVector\tcomplicateMaterial;\n",
+  "new": "\tDWORD\t\t\t\tgold;\n\tTCubeValueVector\tcomplicateMaterial;\n\t// MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info fields): the owner, 22 October 2026 (\"at every NPC with crafting a window must show what\n\t// you need to give\") - the window's row tells its chance (the lowest and highest of the +5..+9 rows merged into\n\t// one) and its Gaya too\n\tint\t\t\t\t\tgaya = 0;\n\tint\t\t\t\t\tpctMin = 0;\n\tint\t\t\t\t\tpctMax = 0;\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info init)",
+  "old": "\t\tmaterialInfo.gold = cubeData->gold;\n",
+  "new": "\t\tmaterialInfo.gold = cubeData->gold;\n\t\tmaterialInfo.gaya = cubeData->gaya; // MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info init)\n\t\tmaterialInfo.pctMin = materialInfo.pctMax = cubeData->percent;\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info merge)",
+  "old": "\t\t\t\t\t\t\t\tbComplicate = true;\n",
+  "new": "\t\t\t\t\t\t\t\tbComplicate = true;\n\t\t\t\t\t\t\t\texistInfo.pctMin = MIN(existInfo.pctMin, cubeData->percent); // MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info merge)\n\t\t\t\t\t\t\t\texistInfo.pctMax = MAX(existInfo.pctMax, cubeData->percent);\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info text)",
+  "old": "\t\t\tif (0 < materialInfo.gold)\n\t\t\t{\n\t\t\t\tchar temp[128];\n\t\t\t\tsprintf(temp, \"%d\", materialInfo.gold);\n\t\t\t\tinfoText += std::string(\"/\") + temp;\n\t\t\t}\n",
+  "new": "\t\t\t// MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube info text): \"materials/Yang/chance[/Gaya]\" - the Yang always, then the chance (\"30\" or\n\t\t\t// \"5-50\" for a merged row) and the Gaya the recipe takes from the inventory; a client that knows only the\n\t\t\t// Yang reads the second field and ignores the rest\n\t\t\t{\n\t\t\t\tchar temp[128];\n\t\t\t\tif (materialInfo.pctMin == materialInfo.pctMax)\n\t\t\t\t\tsnprintf(temp, sizeof(temp), \"/%u/%d\", (unsigned int)materialInfo.gold, materialInfo.pctMin);\n\t\t\t\telse\n\t\t\t\t\tsnprintf(temp, sizeof(temp), \"/%u/%d-%d\", (unsigned int)materialInfo.gold, materialInfo.pctMin, materialInfo.pctMax);\n\t\t\t\tinfoText += temp;\n\t\t\t\tif (0 < materialInfo.gaya)\n\t\t\t\t{\n\t\t\t\t\tsnprintf(temp, sizeof(temp), \"/%d\", materialInfo.gaya);\n\t\t\t\t\tinfoText += temp;\n\t\t\t\t}\n\t\t\t}\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube set chance)",
+  "old": "\t\tif (pRecipe->gold > 0)\n\t\t{\n\t\t\tsnprintf(szPart, sizeof(szPart), \"/%lld\", (long long)pRecipe->gold);\n\t\t\tstrOne += szPart;\n\t\t}\n",
+  "new": "\t\t// MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube set chance): the Yang always and the chance after it (the Gaya is a material above)\n\t\tsnprintf(szPart, sizeof(szPart), \"/%lld/%d\", (long long)MAX(pRecipe->gold, 0), pRecipe->percent);\n\t\tstrOne += szPart;\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube pick)",
+  "old": "static bool FN_check_valid_npc( WORD vnum )\n",
+  "new": "// MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube pick): rows with the same materials (Mistrz Chi's Obrecz / Kolia / Klipsy of one jade, Statua Wezy's\n// Pyl / Jedwab Wezowy) - the first recipe in cube.txt always won. The client says which row the player chose\n// (\"cube pick <reward vnum>\", before \"cube make\"); a recipe of that reward the materials fit is taken first, else the\n// first that fits, as before. Forgotten when the window opens or closes.\nstatic std::map<DWORD, DWORD> s_mapMt2009CubePick;\n\nvoid Cube_pick (LPCHARACTER ch, DWORD dwRewardVnum)\n{\n\tif (NULL == ch)\n\t\treturn;\n\tif (0 == dwRewardVnum)\n\t\ts_mapMt2009CubePick.erase(ch->GetPlayerID());\n\telse\n\t\ts_mapMt2009CubePick[ch->GetPlayerID()] = dwRewardVnum;\n}\n\nstatic CUBE_DATA* Mt2009CubeFindPicked (LPCHARACTER ch, LPITEM *items, WORD npc_vnum)\n{\n\tstd::map<DWORD, DWORD>::const_iterator it = s_mapMt2009CubePick.find(ch->GetPlayerID());\n\tif (it != s_mapMt2009CubePick.end())\n\t{\n\t\tfor (size_t i = 0; i < s_cube_proto.size(); ++i)\n\t\t{\n\t\t\tCUBE_DATA* pCube = s_cube_proto[i];\n\t\t\tif (1 == pCube->reward.size() && pCube->reward[0].vnum == it->second && pCube->can_make_item(items, npc_vnum))\n\t\t\t\treturn pCube;\n\t\t}\n\t}\n\treturn FN_find_cube(items, npc_vnum);\n}\n\nstatic bool FN_check_valid_npc( WORD vnum )\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube make pick)",
+  "old": "\tcube_proto = FN_find_cube(items, npc->GetRaceNum());\n",
+  "new": "\tcube_proto = Mt2009CubeFindPicked(ch, items, npc->GetRaceNum()); // MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube make pick)\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube status pick)",
+  "old": "\tCUBE_DATA* cube = FN_find_cube(ch->GetCubeItem(), npc->GetRaceNum());\n",
+  "new": "\tCUBE_DATA* cube = Mt2009CubeFindPicked(ch, ch->GetCubeItem(), npc->GetRaceNum()); // MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube status pick)\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube open pick)",
+  "old": "\tch->SetCubeNpc(npc);\n",
+  "new": "\tch->SetCubeNpc(npc);\n\ts_mapMt2009CubePick.erase(ch->GetPlayerID()); // MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube open pick)\n"
+ },
+ {
+  "file": "cube.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube close pick)",
+  "old": "\tch->SetCubeNpc(NULL);\n",
+  "new": "\tch->SetCubeNpc(NULL);\n\ts_mapMt2009CubePick.erase(ch->GetPlayerID()); // MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube close pick)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube pick cmd)",
+  "old": "\t\tcase 'm':\t// make\n",
+  "new": "\t\tcase 'p':\t// pick <reward vnum> - MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (cube pick cmd): the row chosen in the window (cube.cpp Cube_pick)\n\t\t\t{\n\t\t\t\tDWORD dwRewardVnum = 0;\n\t\t\t\tif (0 != arg2[0] && isdigit(*arg2))\n\t\t\t\t\tstr_to_number(dwRewardVnum, arg2);\n\t\t\t\tCube_pick(ch, dwRewardVnum);\n\t\t\t}\n\t\t\tbreak;\n\n\t\tcase 'm':\t// make\n"
  }
 ]
