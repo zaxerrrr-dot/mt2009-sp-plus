@@ -138,6 +138,7 @@ if a.hydra_end:
         '-- MT2009_PLUS_BOT_CHAMPION_V1: the Hydra\'s cohort dissolved, its rows kept in common.playerbot_yohara_cohort_ended',
         '-- (as the other cohorts\'). The bots keep level, gear and Champion level. Safe with the game running.',
         'SET NAMES latin1;',
+        'USE common;',
         COLS,
         'CREATE TABLE IF NOT EXISTS common.playerbot_yohara_cohort_ended LIKE common.playerbot_yohara_cohort;',
         COLS.replace('playerbot_yohara_cohort ', 'playerbot_yohara_cohort_ended '),
