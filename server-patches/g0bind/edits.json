@@ -3,7 +3,7 @@
   "file": "item.h",
   "marker": "MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 (antiflag)",
   "old": "\t\tDWORD\t\tGetAntiFlag()\t\t{ return m_pProto ? m_pProto->dwAntiFlags : 0; }\n",
-  "new": "\t\t// MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 (antiflag): an account-bound item (the bots' G0 package, playerbot_yohara_g0.cpp) is never dropped,\n\t\t// given, traded, sold to a merchant or put in a shop - the proto's flags and the instance's\n\t\tDWORD\t\tGetAntiFlag()\t\t{ return (m_pProto ? m_pProto->dwAntiFlags : 0) | (m_bAccountBound ? (DWORD) (ITEM_ANTIFLAG_DROP |\n\t\t\t\t\tITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_SELL | ITEM_ANTIFLAG_MYSHOP | ITEM_ANTIFLAG_PKDROP) : 0); }\n"
+  "new": "\t\t// MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 (antiflag): an account-bound item (the bots' G0 package, playerbot_yohara_g0.cpp) is never dropped,\n\t\t// given, traded or put in a shop (an NPC merchant may buy it) - the proto's flags and the instance's\n\t\tDWORD\t\tGetAntiFlag()\t\t{ return (m_pProto ? m_pProto->dwAntiFlags : 0) | (m_bAccountBound ? (DWORD) (ITEM_ANTIFLAG_DROP |\n\t\t\t\t\tITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP | ITEM_ANTIFLAG_PKDROP) : 0); }\n"
  },
  {
   "file": "item.h",

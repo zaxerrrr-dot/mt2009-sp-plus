@@ -7039,6 +7039,13 @@ namespace
 	// home) and its revival there - at the safe point by its map's arrival, a person's "restart in town" (playerbot_yohara_sungma.h).
 	bool IsPlayerBotSungmaResidentPID(DWORD pid);
 	bool MovePlayerBotSungmaRevived(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: the dust saved from level 110 and kept in the safebox (the storekeeper's visit),
+	// and a replaced bound piece no bot bought - to the merchant.
+	bool PlayerBotG0WantsSafebox(LPCHARACTER ch);
+	int RunPlayerBotG0Safebox(LPCHARACTER ch, CSafebox* box);
+	bool IsPlayerBotG0BoxDust(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotG0NpcSaleDue(LPCHARACTER ch, LPITEM item);
+	void NotePlayerBotG0SoldToNpc(LPCHARACTER ch, LPITEM item, long long price, const char* merchantName);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),

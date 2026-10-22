@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """gen_edits.py -- writes edits.json of server-patches/g0bind (README.md, MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1).
 
-Account-bound item instances: a flag on CItem (not on the proto) that adds ITEM_ANTIFLAG_DROP / GIVE / SELL / MYSHOP /
-PKDROP to the item's GetAntiFlag(), so every engine path that already asks the instance's anti flags refuses the item;
+Account-bound item instances: a flag on CItem (not on the proto) that adds ITEM_ANTIFLAG_DROP / GIVE / MYSHOP / PKDROP
+to the item's GetAntiFlag() (not SELL: the owner, 22 Oct - a bot may sell an unneeded piece to the NPC merchant), so every engine path that already asks the instance's anti flags refuses the item;
 the two shop paths that asked the proto's flags ask the instance's now, the old stall skips a bound item, and a refine
 (CopyAttributeTo) carries the flag to the new item. The flag's store (player.item_account_bound), its load and the
 carry's row are the overlay's (playerbot_yohara_g0.cpp)."""
@@ -18,9 +18,9 @@ edits = [
         "marker": M + " (antiflag)",
         "old": "\t\tDWORD\t\tGetAntiFlag()\t\t{ return m_pProto ? m_pProto->dwAntiFlags : 0; }\n",
         "new": "\t\t// " + M + " (antiflag): an account-bound item (the bots' G0 package, playerbot_yohara_g0.cpp) is never dropped,\n"
-               "\t\t// given, traded, sold to a merchant or put in a shop - the proto's flags and the instance's\n"
+               "\t\t// given, traded or put in a shop (an NPC merchant may buy it) - the proto's flags and the instance's\n"
                "\t\tDWORD\t\tGetAntiFlag()\t\t{ return (m_pProto ? m_pProto->dwAntiFlags : 0) | (m_bAccountBound ? (DWORD) (ITEM_ANTIFLAG_DROP |\n"
-               "\t\t\t\t\tITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_SELL | ITEM_ANTIFLAG_MYSHOP | ITEM_ANTIFLAG_PKDROP) : 0); }\n",
+               "\t\t\t\t\tITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP | ITEM_ANTIFLAG_PKDROP) : 0); }\n",
     },
     {
         "file": "item.h",

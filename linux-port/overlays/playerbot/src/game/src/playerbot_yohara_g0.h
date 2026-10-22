@@ -31,10 +31,20 @@
 // Alchemist at home) - a trip the forest's band (97-109) would refuse a bot of 120: a G0 hunter stays while it lacks
 // the dust (IsPlayerBotG0ZakletyStay; the forest's own stay and deaths rules as ever).
 //
-// The binding: the pieces cannot be dropped, traded, given, sold to a merchant or put on any shop (the engine's anti
-// flags of the instance); a refine carries it. A bot whose piece was replaced by a better one sells it to another bot
-// that wants it (a Champion whose slot it betters, with the gold and a free cell) - a direct move between the two bots
-// for gold (PLAYERBOT_G0_SALE_PRICE*), never on a counter people see.
+// The binding: the pieces cannot be dropped, traded, given or put on any shop (the engine's anti flags of the
+// instance); a refine carries it. A bot whose piece was replaced by a better one sells it to another bot that wants it
+// (a Champion whose slot it betters, with the gold and a free cell) - a direct move between the two bots for gold
+// (PLAYERBOT_G0_SALE_PRICE*), never on a counter people see.
+//
+// MT2009_PLUS_BOT_YOHARA_G0_V2 (the owner, 22 October: "Moze sprzedac NPC, jesli go nie potrzebuje"; "Bot zaczyna
+// zbierac pyl dopiero od 110 poziomu; gdy ma 400, zostawia je u dozorcy"): a replaced piece no bot bought in
+// PLAYERBOT_G0_NPC_AFTER_LOOKS sale looks (half an hour) goes to the merchant at the merchant's price on the next town
+// visit (SellPlayerBotJunkAtMerchant, logged sold-to-npc) - never one the bot wears or would wear. And the dust is
+// sought from level PLAYERBOT_G0_SAVE_MIN_LEVEL (a saver: the same keep, market and trips as a Champion short of it);
+// a saver with 400 that is no Champion of the top level yet puts the 400 in its safebox at the storekeeper (the town
+// visit's safebox phase, RunPlayerBotG0Safebox; the quest flag mt2009_g0.banked) and stops seeking; the box's dust of
+// such a bot never comes out for anything else (IsPlayerBotG0BoxDust). Once it qualifies, the next visit takes the 400
+// out and the package is given as before. A bot that qualifies with the 400 in the bag gets the package straight away.
 //
 // The gear's score: a Sung Ma Will line of a Champion of the top level weighs PLAYERBOT_G0_WILL_WEIGHT a point
 // (Inteligencja a tenth of it) - the jade replaces the Emerald set of a Yohara-going Champion only (nobody else counts
@@ -66,6 +76,12 @@ namespace
 	const int PLAYERBOT_G0_KIND_MAP_REQ[3] = { 25, 15, 25 };	// its sungma_table.txt row, if the table has no Namgan
 
 	const int PLAYERBOT_G0_DUST = 400;
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: the dust is sought from this level, and the 400 wait in the safebox (the flag
+	// holds how many went down; cleared when they come out)
+	const int PLAYERBOT_G0_SAVE_MIN_LEVEL = 110;
+	const char* const PLAYERBOT_G0_BANKED_FLAG = "mt2009_g0.banked";
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: a replaced piece goes to the merchant after this many sale looks without a bot buyer
+	const int PLAYERBOT_G0_NPC_AFTER_LOOKS = 3;
 	const char* const PLAYERBOT_G0_GIVEN_FLAG = "mt2009_g0.given";
 	const char* const PLAYERBOT_G0_GIVEN_AT_FLAG = "mt2009_g0.given_at";
 	const DWORD PLAYERBOT_G0_LOOK_MS = 60 * 1000;
@@ -100,19 +116,24 @@ namespace
 	{
 		DWORD dwNextLook, dwNextManage, dwNextWaitLog, dwNextSaleLook, dwTripRolled, dwTripUntil;
 		bool bNeeder;
+		bool bSaver;	// MT2009_PLUS_BOT_YOHARA_G0_V2: from level 110, the package not yet given (a needer is a saver too)
 		int iBought, iMade, iTrips;
 		long long llSpent;
 		TPlayerBotG0() : dwNextLook(0), dwNextManage(0), dwNextWaitLog(0), dwNextSaleLook(0), dwTripRolled(0), dwTripUntil(0), bNeeder(false),
-			iBought(0), iMade(0), iTrips(0), llSpent(0) {}
+			bSaver(false), iBought(0), iMade(0), iTrips(0), llSpent(0) {}
 	};
 	std::map<DWORD, TPlayerBotG0> s_mapPlayerBotG0;
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: a replaced bound piece's sale looks without a bot buyer, by item id
+	std::map<DWORD, int> s_mapPlayerBotG0NoBuyer;
 
 	struct TPlayerBotG0Stats
 	{
 		unsigned int given, sold, trips, dustBought, dustMade;
+		unsigned int soldNpc, deposited, withdrawn;	// MT2009_PLUS_BOT_YOHARA_G0_V2
 		long long spent;
 		DWORD dwLastCensus, dwLastTestLook;
-		TPlayerBotG0Stats() : given(0), sold(0), trips(0), dustBought(0), dustMade(0), spent(0), dwLastCensus(0), dwLastTestLook(0) {}
+		TPlayerBotG0Stats() : given(0), sold(0), trips(0), dustBought(0), dustMade(0), soldNpc(0), deposited(0), withdrawn(0), spent(0),
+			dwLastCensus(0), dwLastTestLook(0) {}
 	};
 	TPlayerBotG0Stats s_kPlayerBotG0Stats;
 
@@ -161,27 +182,41 @@ namespace
 		return false;
 	}
 
-	// The bot the package is for, still without it.
-	bool IsPlayerBotG0Needer(LPCHARACTER ch)
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: a bot of level 110 or more the package will be for, still without it - it saves
+	// the dust.
+	bool IsPlayerBotG0Saver(LPCHARACTER ch)
 	{
-		if (!IsPlayerBotSungmaWillUser(ch) || !ch->IsItemLoaded() || !IsPlayerBotYoharaEligible(ch) ||
-				IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
+		if (!ch || !ch->IsPC() || !ch->GetDesc() || !ch->GetDesc()->IsBot() || (int)ch->GetLevel() < PLAYERBOT_G0_SAVE_MIN_LEVEL ||
+				!ch->IsItemLoaded() || !IsPlayerBotYoharaEligible(ch) || IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
 			return false;
 		if (ch->GetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG) != 0)
 			return false;
 		return !HasPlayerBotYoharaGear(ch);
 	}
 
+	// The bot the package is for, still without it.
+	bool IsPlayerBotG0Needer(LPCHARACTER ch)
+	{
+		return IsPlayerBotSungmaWillUser(ch) && IsPlayerBotG0Saver(ch);
+	}
+
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: its 400 lie in the safebox (or what of them went down, a box short of room).
+	bool IsPlayerBotG0DustBanked(LPCHARACTER ch)
+	{
+		return ch && ch->GetQuestFlag(PLAYERBOT_G0_BANKED_FLAG) > 0;
+	}
+
 	// The bot's entry, its look refreshed once a minute (on whichever core it is).
 	TPlayerBotG0* LookPlayerBotG0(LPCHARACTER ch, DWORD dwNow)
 	{
-		if (!ch || (int)ch->GetLevel() < gPlayerMaxLevel || !ch->GetDesc() || !ch->GetDesc()->IsBot())
+		if (!ch || (int)ch->GetLevel() < PLAYERBOT_G0_SAVE_MIN_LEVEL || !ch->GetDesc() || !ch->GetDesc()->IsBot())	// MT2009_PLUS_BOT_YOHARA_G0_V2
 			return NULL;
 		TPlayerBotG0& b = s_mapPlayerBotG0[ch->GetPlayerID()];
 		if ((int)(b.dwNextLook - dwNow) <= 0)
 		{
 			b.dwNextLook = dwNow + PLAYERBOT_G0_LOOK_MS;
-			b.bNeeder = IsPlayerBotG0Needer(ch);
+			b.bSaver = IsPlayerBotG0Saver(ch);	// MT2009_PLUS_BOT_YOHARA_G0_V2
+			b.bNeeder = b.bSaver && IsPlayerBotSungmaWillUser(ch);
 		}
 		return &b;
 	}
@@ -191,10 +226,12 @@ namespace
 		return ch ? (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) : 0;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: a saver's from level 110, until its 400 lie in the safebox (a banked bot's bag dust
+	// is its own again; the 400 taken out for the package clear the flag and are kept again until given).
 	int GetPlayerBotG0DustReserve(LPCHARACTER ch)
 	{
 		const TPlayerBotG0* b = LookPlayerBotG0(ch, get_dword_time());
-		return b && b->bNeeder ? PLAYERBOT_G0_DUST : 0;
+		return b && b->bSaver && !IsPlayerBotG0DustBanked(ch) ? PLAYERBOT_G0_DUST : 0;
 	}
 
 	bool IsPlayerBotG0DustHunter(LPCHARACTER ch)
@@ -232,7 +269,7 @@ namespace
 		if (!ch || vnum != PLAYERBOT_MAGIC_DUST_VNUM)
 			return;
 		std::map<DWORD, TPlayerBotG0>::iterator it = s_mapPlayerBotG0.find(ch->GetPlayerID());
-		if (it == s_mapPlayerBotG0.end() || !it->second.bNeeder)
+		if (it == s_mapPlayerBotG0.end() || !it->second.bSaver)	// MT2009_PLUS_BOT_YOHARA_G0_V2: from level 110
 			return;
 		it->second.iBought += (int)count;
 		it->second.llSpent += price;
@@ -247,7 +284,7 @@ namespace
 		if (!ch || made <= 0)
 			return;
 		std::map<DWORD, TPlayerBotG0>::iterator it = s_mapPlayerBotG0.find(ch->GetPlayerID());
-		if (it == s_mapPlayerBotG0.end() || !it->second.bNeeder)
+		if (it == s_mapPlayerBotG0.end() || !it->second.bSaver)	// MT2009_PLUS_BOT_YOHARA_G0_V2: from level 110
 			return;
 		it->second.iMade += made;
 		s_kPlayerBotG0Stats.dustMade += made;
@@ -390,6 +427,7 @@ namespace
 		ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG, 1);
 		ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_AT_FLAG, (int)time(0));
 		b.bNeeder = false;
+		b.bSaver = false;	// MT2009_PLUS_BOT_YOHARA_G0_V2
 		b.dwTripUntil = 0;
 		++s_kPlayerBotG0Stats.given;
 		state.dwNextEquipmentCheckTime = dwNow;	// the equipment pass puts them on now
@@ -495,13 +533,209 @@ namespace
 				PlayerBotChangeGold(buyer, -price);
 				PlayerBotChangeGold(ch, price);
 				LogManager::instance().ItemLog(buyer, item, "PLAYERBOT_G0_SOLD_TO_BOT", ch->GetName());
+				s_mapPlayerBotG0NoBuyer.erase(id);	// MT2009_PLUS_BOT_YOHARA_G0_V2
 				++s_kPlayerBotG0Stats.sold;
 				sys_log(0, "PLAYERBOT_G0: sold-to-bot seller=%u name=%s buyer=%u name=%s item=%u vnum=%u price=%lld",
 						ch->GetPlayerID(), ch->GetName(), buyer->GetPlayerID(), buyer->GetName(), id, vnum, price);
 				return true;
 			}
+			// MT2009_PLUS_BOT_YOHARA_G0_V2: no bot wanted it this look - after PLAYERBOT_G0_NPC_AFTER_LOOKS of them
+			// the merchant takes it (IsPlayerBotG0NpcSaleDue).
+			int& misses = s_mapPlayerBotG0NoBuyer[item->GetID()];
+			if (++misses == PLAYERBOT_G0_NPC_AFTER_LOOKS)
+				sys_log(0, "PLAYERBOT_G0: no bot buyer pid=%u name=%s item=%u vnum=%u looks=%d - for the merchant",
+						ch->GetPlayerID(), ch->GetName(), item->GetID(), item->GetVnum(), misses);
 		}
 		return false;
+	}
+
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_YOHARA_G0_V2: the merchant
+
+	// A replaced bound piece in the bag no bot bought in PLAYERBOT_G0_NPC_AFTER_LOOKS looks, still replaced now (the
+	// bot wears a better one of its slot, or owns a higher talisman of its kind) - never a worn piece.
+	bool IsPlayerBotG0NpcSaleDue(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || s_mapPlayerBotG0NoBuyer.empty() || item->IsEquipped() || item->isLocked() || item->IsExchanging() ||
+				item->GetWindow() != INVENTORY)
+			return false;
+		std::map<DWORD, int>::const_iterator it = s_mapPlayerBotG0NoBuyer.find(item->GetID());
+		if (it == s_mapPlayerBotG0NoBuyer.end() || it->second < PLAYERBOT_G0_NPC_AFTER_LOOKS || !Mt2009AccountBound(item))
+			return false;
+		return IsPlayerBotSungmaWillUser(ch) && IsPlayerBotG0PieceReplaced(ch, item);
+	}
+
+	// SellPlayerBotJunkAtMerchant, before the item goes.
+	void NotePlayerBotG0SoldToNpc(LPCHARACTER ch, LPITEM item, long long price, const char* merchantName)
+	{
+		if (!ch || !item)
+			return;
+		const DWORD id = item->GetID();
+		std::map<DWORD, int>::iterator it = s_mapPlayerBotG0NoBuyer.find(id);
+		const int looks = it != s_mapPlayerBotG0NoBuyer.end() ? it->second : 0;
+		if (it != s_mapPlayerBotG0NoBuyer.end())
+			s_mapPlayerBotG0NoBuyer.erase(it);
+		DBManager::instance().DirectQuery("DELETE FROM item_account_bound WHERE id = %u", id);
+		LogManager::instance().ItemLog(ch, item, "PLAYERBOT_G0_SOLD_TO_NPC", merchantName ? merchantName : "merchant");
+		++s_kPlayerBotG0Stats.soldNpc;
+		sys_log(0, "PLAYERBOT_G0: sold-to-npc pid=%u name=%s item=%u vnum=%u price=%lld merchant=%s looks_without_bot=%d",
+				ch->GetPlayerID(), ch->GetName(), id, item->GetVnum(), price, merchantName ? merchantName : "merchant", looks);
+	}
+
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_YOHARA_G0_V2: the safebox
+
+	// The dust in a banked bot's box: its G0 package's, out for nothing else.
+	bool IsPlayerBotG0BoxDust(LPCHARACTER ch, LPITEM item)
+	{
+		return item && item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM && IsPlayerBotG0DustBanked(ch);
+	}
+
+	// The town visit's safebox phase is wanted: a saver short of the top level with its 400 in the bag (in), or a
+	// bot the package is for now with them in the box and room for them and the package (out).
+	bool PlayerBotG0WantsSafebox(LPCHARACTER ch)
+	{
+		const TPlayerBotG0* b = LookPlayerBotG0(ch, get_dword_time());
+		if (!b || !b->bSaver || IsPlayerBotSidekickServing(ch))
+			return false;
+		if (IsPlayerBotG0DustBanked(ch))
+			return b->bNeeder && CountPlayerBotFreeInventoryCells(ch) >= PLAYERBOT_G0_FREE_CELLS + 2;
+		return !b->bNeeder && GetPlayerBotG0DustHeld(ch) >= PLAYERBOT_G0_DUST;
+	}
+
+	int CountPlayerBotG0BoxDust(CSafebox* box)
+	{
+		int units = 0;
+		for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM; ++pos)
+		{
+			if (!box->IsValidPosition(pos))
+				continue;
+			LPITEM item = box->Get(pos);
+			if (item && item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
+				units += (int)item->GetCount();
+		}
+		return units;
+	}
+
+	// The open box (BOT_TOWN_PHASE_SAFEBOX_WAIT, after the visit's own deposit and withdrawal): the 400 down, or out.
+	// Returns the units moved.
+	int RunPlayerBotG0Safebox(LPCHARACTER ch, CSafebox* box)
+	{
+		if (!ch || !box)
+			return 0;
+		const TPlayerBotG0* b = LookPlayerBotG0(ch, get_dword_time());
+		if (!b || !b->bSaver || IsPlayerBotSidekickServing(ch))
+			return 0;
+		const DWORD pid = ch->GetPlayerID();
+		if (!IsPlayerBotG0DustBanked(ch))
+		{
+			// In: a saver short of the top level with its 400 (a needer gets the package for them instead).
+			if (b->bNeeder || GetPlayerBotG0DustHeld(ch) < PLAYERBOT_G0_DUST)
+				return 0;
+			// The bag's stacks, the last cut to what is left; first the box's room for all of them.
+			std::vector<WORD> cells;
+			int counted = 0;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && counted < PLAYERBOT_G0_DUST; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (!item || item->GetCell() != cell || item->GetVnum() != PLAYERBOT_MAGIC_DUST_VNUM || item->isLocked() ||
+						item->IsExchanging())
+					continue;
+				cells.push_back(cell);
+				counted += (int)item->GetCount();
+			}
+			int room = 0;
+			for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM; ++pos)
+				if (box->IsValidPosition(pos) && box->IsEmpty(pos, 1))
+					++room;
+			if (counted < PLAYERBOT_G0_DUST || room < (int)cells.size() || (counted > PLAYERBOT_G0_DUST && ch->GetEmptyInventory(1) < 0))
+			{
+				sys_log(0, "PLAYERBOT_G0: dust not deposited pid=%u name=%s have=%d stacks=%u box_room=%d",
+						pid, ch->GetName(), counted, (unsigned int)cells.size(), room);
+				return 0;
+			}
+			int left = PLAYERBOT_G0_DUST;
+			for (size_t i = 0; i < cells.size() && left > 0; ++i)
+			{
+				LPITEM item = ch->GetInventoryItem(cells[i]);
+				if (!item)
+					continue;
+				if ((int)item->GetCount() > left)
+				{
+					const int to = ch->GetEmptyInventory(1);
+					if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cells[i]), TItemPos(INVENTORY, (WORD)to), left))
+						break;
+					item = ch->GetInventoryItem(to);
+					if (!item || item->GetVnum() != PLAYERBOT_MAGIC_DUST_VNUM)
+						break;
+				}
+				bool placed = false;
+				for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM && !placed; ++pos)
+				{
+					if (!box->IsValidPosition(pos) || !box->IsEmpty(pos, 1))
+						continue;
+					char szHint[128];
+					snprintf(szHint, sizeof(szHint), "%s %u", item->GetName(), (unsigned int)item->GetCount());
+					LogManager::instance().ItemLog(ch, item, "SAFEBOX PUT", szHint);
+					left -= (int)item->GetCount();
+					item->RemoveFromCharacter();
+					box->Add(pos, item);
+					placed = true;
+				}
+				if (!placed)
+					break;
+			}
+			const int deposited = PLAYERBOT_G0_DUST - left;
+			if (deposited > 0)
+				ch->SetQuestFlag(PLAYERBOT_G0_BANKED_FLAG, deposited);
+			if (deposited >= PLAYERBOT_G0_DUST)
+				++s_kPlayerBotG0Stats.deposited;
+			sys_log(0, "PLAYERBOT_G0: dust deposited pid=%u name=%s level=%u champion=%d count=%d bag_left=%d box=%d",
+					pid, ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch), deposited,
+					GetPlayerBotG0DustHeld(ch), CountPlayerBotG0BoxDust(box));
+			return deposited;
+		}
+		// Out: the package is for it now.
+		if (!b->bNeeder)
+			return 0;
+		int left = PLAYERBOT_G0_DUST;
+		for (DWORD pos = 0; pos < SAFEBOX_MAX_NUM && left > 0; ++pos)
+		{
+			if (!box->IsValidPosition(pos))
+				continue;
+			LPITEM item = box->Get(pos);
+			if (!item || item->GetVnum() != PLAYERBOT_MAGIC_DUST_VNUM)
+				continue;
+			if ((int)item->GetCount() > left)
+			{
+				if (ch->GetEmptyInventory(1) < 0)
+					break;
+				item->SetCount(item->GetCount() - left);
+				ITEM_MANAGER::instance().FlushDelayedSave(item);
+				ch->AutoGiveItem(PLAYERBOT_MAGIC_DUST_VNUM, left, -1, false);
+				left = 0;
+				break;
+			}
+			const int cell = ch->GetEmptyInventory(item->GetSize());
+			if (cell < 0)
+				break;
+			char szHint[128];
+			snprintf(szHint, sizeof(szHint), "%s %u", item->GetName(), (unsigned int)item->GetCount());
+			left -= (int)item->GetCount();
+			box->Remove(pos);
+			item->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)cell));
+			FlushPlayerBotItemRow(item);
+			LogManager::instance().ItemLog(ch, item, "SAFEBOX GET", szHint);
+		}
+		const int withdrawn = PLAYERBOT_G0_DUST - left;
+		// Out as far as the box had them: the flag goes (the package waits for the rest the usual way).
+		if (left == 0 || CountPlayerBotG0BoxDust(box) == 0)
+		{
+			ch->SetQuestFlag(PLAYERBOT_G0_BANKED_FLAG, 0);
+			++s_kPlayerBotG0Stats.withdrawn;
+		}
+		sys_log(0, "PLAYERBOT_G0: dust withdrawn pid=%u name=%s level=%u champion=%d count=%d have=%d box_left=%d",
+				pid, ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch), withdrawn,
+				GetPlayerBotG0DustHeld(ch), CountPlayerBotG0BoxDust(box));
+		return withdrawn;
 	}
 
 	// ------------------------------------------------------------ the operator's test file, the census
@@ -558,20 +792,29 @@ namespace
 		if (s_kPlayerBotG0Stats.dwLastCensus != 0 && dwNow - s_kPlayerBotG0Stats.dwLastCensus < PLAYERBOT_G0_CENSUS_MS)
 			return;
 		s_kPlayerBotG0Stats.dwLastCensus = dwNow;
-		int needers = 0, ready = 0;
+		int needers = 0, ready = 0, savers = 0, banked = 0;
 		for (std::map<DWORD, TPlayerBotG0>::const_iterator it = s_mapPlayerBotG0.begin(); it != s_mapPlayerBotG0.end(); ++it)
 		{
-			if (!it->second.bNeeder)
+			if (!it->second.bSaver)	// MT2009_PLUS_BOT_YOHARA_G0_V2
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
 			if (!ch)
 				continue;
+			if (IsPlayerBotG0DustBanked(ch))
+				++banked;
+			if (!it->second.bNeeder)
+			{
+				++savers;
+				continue;
+			}
 			++needers;
 			if (GetPlayerBotG0DustHeld(ch) >= PLAYERBOT_G0_DUST)
 				++ready;
 		}
-		sys_log(0, "PLAYERBOT_G0: census waiting=%d with_dust=%d given=%u sold_to_bot=%u trips=%u dust_bought=%u spent=%lld dust_made=%u",
-				needers, ready, s_kPlayerBotG0Stats.given, s_kPlayerBotG0Stats.sold, s_kPlayerBotG0Stats.trips,
+		sys_log(0, "PLAYERBOT_G0: census waiting=%d with_dust=%d savers=%d banked=%d given=%u sold_to_bot=%u sold_to_npc=%u "
+				"deposited=%u withdrawn=%u trips=%u dust_bought=%u spent=%lld dust_made=%u",
+				needers, ready, savers, banked, s_kPlayerBotG0Stats.given, s_kPlayerBotG0Stats.sold, s_kPlayerBotG0Stats.soldNpc,
+				s_kPlayerBotG0Stats.deposited, s_kPlayerBotG0Stats.withdrawn, s_kPlayerBotG0Stats.trips,
 				s_kPlayerBotG0Stats.dustBought, s_kPlayerBotG0Stats.spent, s_kPlayerBotG0Stats.dustMade);
 	}
 
@@ -589,18 +832,21 @@ namespace
 			return false;
 		b->dwNextManage = dwNow + PLAYERBOT_G0_LOOK_MS;
 		const bool village = IsPlayerBotVillageMap(ch->GetMapIndex()) && !ch->GetExchange() && !ch->GetMyShop();
-		if (b->bNeeder)
+		if (b->bSaver)	// MT2009_PLUS_BOT_YOHARA_G0_V2: a saver from level 110 too
 		{
 			const int have = GetPlayerBotG0DustHeld(ch);
-			if (have >= PLAYERBOT_G0_DUST && village)
+			const bool banked = IsPlayerBotG0DustBanked(ch);
+			if (b->bNeeder && !banked && have >= PLAYERBOT_G0_DUST && village)
 				return GivePlayerBotG0(ch, state, *b, dwNow);
 			if ((int)(b->dwNextWaitLog - dwNow) <= 0)
 			{
 				b->dwNextWaitLog = dwNow + PLAYERBOT_G0_WAIT_LOG_MS;
-				sys_log(0, "PLAYERBOT_G0: waiting for dust pid=%u name=%s champion=%d have=%d need=%d bought=%d made_at_alchemist=%d "
-						"trips=%d map=%ld gold=%lld",
-						ch->GetPlayerID(), ch->GetName(), GetPlayerBotChampionLevel(ch), have, PLAYERBOT_G0_DUST, b->iBought,
-						b->iMade, b->iTrips, ch->GetMapIndex(), (long long)ch->GetGold());
+				sys_log(0, "PLAYERBOT_G0: waiting for dust pid=%u name=%s level=%u champion=%d stage=%s have=%d need=%d banked=%d "
+						"bought=%d made_at_alchemist=%d trips=%d map=%ld gold=%lld",
+						ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch),
+						b->bNeeder ? (banked ? "to_withdraw" : "needer") : (banked ? "banked" : (have >= PLAYERBOT_G0_DUST ? "to_deposit" : "saver")),
+						have, PLAYERBOT_G0_DUST, ch->GetQuestFlag(PLAYERBOT_G0_BANKED_FLAG), b->iBought, b->iMade, b->iTrips,
+						ch->GetMapIndex(), (long long)ch->GetGold());
 			}
 		}
 		if (village && IsPlayerBotSungmaWillUser(ch) && (int)(b->dwNextSaleLook - dwNow) <= 0)
