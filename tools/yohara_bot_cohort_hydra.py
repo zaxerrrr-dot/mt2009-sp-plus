@@ -395,10 +395,13 @@ def run(a, q, bots, excluded, cohort_pids, usable):
     S.append('ALTER TABLE common.playerbot_yohara_cohort ADD COLUMN IF NOT EXISTS applied_at DATETIME NULL, '
              'ADD COLUMN IF NOT EXISTS party TINYINT UNSIGNED NOT NULL DEFAULT 0, ADD COLUMN IF NOT EXISTS wins INT UNSIGNED NOT NULL DEFAULT 0;')
     S.append("""CREATE TABLE IF NOT EXISTS player.playerbot_yohara_cohort_bak_player (
-  id INT UNSIGNED NOT NULL PRIMARY KEY, level TINYINT UNSIGNED NOT NULL, exp INT NOT NULL, level_step TINYINT NOT NULL,
+  id INT UNSIGNED NOT NULL PRIMARY KEY, level TINYINT UNSIGNED NOT NULL, exp INT UNSIGNED NOT NULL, level_step TINYINT NOT NULL,
   st SMALLINT NOT NULL, ht SMALLINT NOT NULL, dx SMALLINT NOT NULL, iq SMALLINT NOT NULL, stat_point SMALLINT NOT NULL,
   skill_point SMALLINT NOT NULL, sub_skill_point SMALLINT NOT NULL, random_hp SMALLINT NOT NULL, random_sp SMALLINT NOT NULL,
   gold BIGINT NOT NULL, skill_level BLOB NULL, channel_old TINYINT UNSIGNED NULL, saved_at DATETIME NOT NULL) ENGINE=InnoDB;""")
+    # MT2009_PLUS_EXP_UNSIGNED_V1: player.player.exp is INT UNSIGNED (the level-120 bar is 2.5 bn); a backup table
+    # made before as INT would clamp a saved exp at 2 147 483 647.
+    S.append('ALTER TABLE player.playerbot_yohara_cohort_bak_player MODIFY exp INT UNSIGNED NOT NULL;')
     S.append('CREATE TABLE IF NOT EXISTS player.playerbot_yohara_cohort_bak_item LIKE player.item;')
     rel = release_sql(released, plist_of=lambda xs: ','.join(str(x) for x in xs))
     if released:
