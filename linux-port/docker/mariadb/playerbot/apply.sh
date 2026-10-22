@@ -1203,12 +1203,16 @@ flea_off=$(feature_off "${M2_FLEA_MARKET:-1}")
 # MT2009_PLUS_BUFFI_V1: Buffi (M2_BUFFI, default on) - the game core reads M2_BUFFI itself; the
 # quest buffi (the starter seal, the General Store's books) reads m2_buffi_off.
 buffi_off=$(feature_off "${M2_BUFFI:-1}")
+# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla Mlodych Bohaterow (M2_MLODZI_BOHATEROWIE, default on) - quest
+# mlodzi_bohaterowie and the cores (playerbot_mlodzi.cpp, the bots) read m2_mlodzi_off.
+mlodzi_off=$(feature_off "${M2_MLODZI_BOHATEROWIE:-1}")
 if db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
         (0, 'm2_autohunt_off', '', $autohunt_off),
         (0, 'm2_sidekick_off', '', $sidekick_off),
         (0, 'm2_buffi_off', '', $buffi_off),
+        (0, 'm2_mlodzi_off', '', $mlodzi_off),
         (0, 'm2_flea_market_off', '', $flea_off);"; then
-    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Buffi: $([ "$buffi_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
+    echo "[playerbot-migrate] Auto Lowy: $([ "$autohunt_off" = 1 ] && echo off || echo on), companions: $([ "$sidekick_off" = 1 ] && echo off || echo on), Buffi: $([ "$buffi_off" = 1 ] && echo off || echo on), Bronie Mlodych Bohaterow: $([ "$mlodzi_off" = 1 ] && echo off || echo on), Dom Towarowy: $([ "$flea_off" = 1 ] && echo off || echo on)"
 else
     fail_step "could not write the Auto Lowy, companion and Dom Towarowy flags; the cores keep the last ones" >&2
 fi
