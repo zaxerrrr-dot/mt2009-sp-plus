@@ -130,7 +130,8 @@ namespace mlodzi
 		bool level = false, timer = false;
 		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
 		{
-			if (p->aLimits[i].bType == LIMIT_LEVEL && p->aLimits[i].lValue == TierLevel(tier))
+			// the official tier-1 rows say level 0 (= 1)
+			if (p->aLimits[i].bType == LIMIT_LEVEL && (p->aLimits[i].lValue == TierLevel(tier) || (tier == 1 && p->aLimits[i].lValue == 0)))
 				level = true;
 			if (p->aLimits[i].bType == LIMIT_REAL_TIME && p->aLimits[i].lValue == LIFE_SECONDS)
 				timer = true;

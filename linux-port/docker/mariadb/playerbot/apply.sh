@@ -3997,6 +3997,18 @@ for yh_sql in yohara_helm100.sql; do
     fi
 done
 
+# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla Mlodych Bohaterow (the owner, 22 October 2026) - mlodzi_bohaterowie.sql
+# (tools/mlodzi/gen_mlodzi.py): the official weapons 21900-21975 (8 tiers x 6 kinds, no Lycan) with our restrictions
+# (no trade / refine / sockets / random bonus, LIMIT_REAL_TIME 15 days). Idempotent (INSERT IGNORE + a guarded UPDATE).
+for ml_sql in mlodzi_bohaterowie.sql; do
+    [ -s "/opt/playerbot/$ml_sql" ] || continue
+    if db < "/opt/playerbot/$ml_sql"; then
+        echo "[playerbot-migrate] Bronie dla Mlodych Bohaterow: $ml_sql applied"
+    else
+        fail_step "Bronie dla Mlodych Bohaterow: $ml_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (356) - the Dragon Queen Meley's lair (the owner, 15 October 2026).
 # yohara_meley.sql (tools/yohara_meley/gen_ymeley.py) - the lair's monsters, Meley, the statues, the eggs, Straznik
 # Smokow Dolnarr and Zlota Smocza Skrzynia; yohara_items_meley.sql - Pierscien Smoczego Ognia (30340) and the two

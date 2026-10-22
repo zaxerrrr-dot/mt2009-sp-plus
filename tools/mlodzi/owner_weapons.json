@@ -1,0 +1,1738 @@
+[
+  {
+    "vnum": 21900,
+    "name": "Mściciel Durendala",
+    "level": 1,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      15,
+      19,
+      13,
+      15,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 22
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 20
+      }
+    ],
+    "fixed_instance_average_damage": 10,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21901,
+    "name": "Skrytobójcza Wykałaczka",
+    "level": 1,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      8,
+      11,
+      28
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 28
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 20
+      }
+    ],
+    "fixed_instance_average_damage": 10,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21902,
+    "name": "Łowca Snów",
+    "level": 1,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      7,
+      29,
+      56
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 28
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 20
+      }
+    ],
+    "fixed_instance_average_damage": 10,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21903,
+    "name": "Rzeźnik Orków",
+    "level": 1,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      14,
+      22,
+      56
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 36
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 20
+      }
+    ],
+    "fixed_instance_average_damage": 10,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21904,
+    "name": "Pocałunek Elfa",
+    "level": 1,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      10,
+      18,
+      13,
+      15,
+      35
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 32
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 20
+      }
+    ],
+    "fixed_instance_average_damage": 10,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21905,
+    "name": "Mściciel Wdowy",
+    "level": 1,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      14,
+      22,
+      11,
+      17,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 26
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 20
+      }
+    ],
+    "fixed_instance_average_damage": 10,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21906,
+    "name": "Błyskawica i Grzmot",
+    "level": 1,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      15,
+      19,
+      13,
+      15,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 22
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 20
+      }
+    ],
+    "fixed_instance_average_damage": 10,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21910,
+    "name": "Palący Gniew",
+    "level": 10,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      20,
+      24,
+      20,
+      24,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 24
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 25
+      }
+    ],
+    "fixed_instance_average_damage": 13,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21911,
+    "name": "Elfie Łowy",
+    "level": 10,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      13,
+      15,
+      28
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 23
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 25
+      }
+    ],
+    "fixed_instance_average_damage": 13,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21912,
+    "name": "Żałobna Pieśń",
+    "level": 10,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      19,
+      57,
+      56
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 27
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 25
+      }
+    ],
+    "fixed_instance_average_damage": 13,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21913,
+    "name": "Obsydianowy Młot",
+    "level": 10,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      24,
+      42,
+      56
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 34
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 25
+      }
+    ],
+    "fixed_instance_average_damage": 13,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21914,
+    "name": "Zew Walkirii",
+    "level": 10,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      10,
+      18,
+      13,
+      15,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 32
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 25
+      }
+    ],
+    "fixed_instance_average_damage": 13,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21915,
+    "name": "Cicha Klątwa",
+    "level": 10,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      18,
+      28,
+      13,
+      19,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 23
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 25
+      }
+    ],
+    "fixed_instance_average_damage": 13,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21916,
+    "name": "Raptory",
+    "level": 10,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      15,
+      19,
+      13,
+      17,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 22
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 5
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 25
+      }
+    ],
+    "fixed_instance_average_damage": 13,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21920,
+    "name": "Ostrze Przeznaczenia",
+    "level": 20,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      20,
+      28,
+      25,
+      35,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 30
+      }
+    ],
+    "fixed_instance_average_damage": 16,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21921,
+    "name": "Włócznia Wiatru",
+    "level": 20,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      15,
+      19,
+      28
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 30
+      }
+    ],
+    "fixed_instance_average_damage": 16,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21922,
+    "name": "Tchnienie Smoka",
+    "level": 20,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      40,
+      88,
+      56
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 30
+      }
+    ],
+    "fixed_instance_average_damage": 16,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21923,
+    "name": "Pakt Krwi",
+    "level": 20,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      34,
+      52,
+      56
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 25
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 30
+      }
+    ],
+    "fixed_instance_average_damage": 16,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21924,
+    "name": "Szturmowy Okrzyk",
+    "level": 20,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      19,
+      27,
+      25,
+      35,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 30
+      }
+    ],
+    "fixed_instance_average_damage": 16,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21925,
+    "name": "Tancerz Cienia",
+    "level": 20,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      29,
+      33,
+      18,
+      24,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 30
+      }
+    ],
+    "fixed_instance_average_damage": 16,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21926,
+    "name": "Prosektor",
+    "level": 20,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      15,
+      19,
+      16,
+      23,
+      49
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 17
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 30
+      }
+    ],
+    "fixed_instance_average_damage": 16,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21930,
+    "name": "Ostrze Dusz",
+    "level": 30,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      36,
+      46,
+      38,
+      52,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 27
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 35
+      }
+    ],
+    "fixed_instance_average_damage": 19,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21931,
+    "name": "Rzeźbiarz Dusz",
+    "level": 30,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      30,
+      36,
+      30
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 23
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 35
+      }
+    ],
+    "fixed_instance_average_damage": 19,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21932,
+    "name": "Posłaniec Burzy",
+    "level": 30,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      62,
+      128,
+      58
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 26
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 35
+      }
+    ],
+    "fixed_instance_average_damage": 19,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21933,
+    "name": "Wyrok",
+    "level": 30,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      58,
+      88,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 34
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 35
+      }
+    ],
+    "fixed_instance_average_damage": 19,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21934,
+    "name": "Echo Grzmotu",
+    "level": 30,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      30,
+      38,
+      29,
+      39,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 30
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 35
+      }
+    ],
+    "fixed_instance_average_damage": 19,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21935,
+    "name": "Śpiew Wiatru",
+    "level": 30,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      33,
+      47,
+      30,
+      46,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 24
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 35
+      }
+    ],
+    "fixed_instance_average_damage": 19,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21936,
+    "name": "Rozpruwacz Dusz",
+    "level": 30,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      40,
+      44,
+      27
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 6
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 35
+      }
+    ],
+    "fixed_instance_average_damage": 19,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21940,
+    "name": "Śpiew Stali",
+    "level": 40,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      48,
+      58,
+      52,
+      68,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 40
+      }
+    ],
+    "fixed_instance_average_damage": 22,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21941,
+    "name": "Skalpel Księżyc. Światła",
+    "level": 40,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      36,
+      40,
+      30
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 40
+      }
+    ],
+    "fixed_instance_average_damage": 22,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21942,
+    "name": "Cieniolubny Liść",
+    "level": 40,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      65,
+      194,
+      58
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 40
+      }
+    ],
+    "fixed_instance_average_damage": 22,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21943,
+    "name": "Armagedon",
+    "level": 40,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      69,
+      103,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 25
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 40
+      }
+    ],
+    "fixed_instance_average_damage": 22,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21944,
+    "name": "Dźwięk Honoru",
+    "level": 40,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      42,
+      48,
+      42,
+      60,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 40
+      }
+    ],
+    "fixed_instance_average_damage": 22,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21945,
+    "name": "Szpon Kruka",
+    "level": 40,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      42,
+      60,
+      37,
+      53,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 40
+      }
+    ],
+    "fixed_instance_average_damage": 22,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21946,
+    "name": "Szpony Przeznaczenia",
+    "level": 40,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      57,
+      73,
+      10
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 40
+      }
+    ],
+    "fixed_instance_average_damage": 22,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21950,
+    "name": "Dziedzictwo Balmunga",
+    "level": 50,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      65,
+      87,
+      69,
+      91,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 22
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 45
+      }
+    ],
+    "fixed_instance_average_damage": 25,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21951,
+    "name": "Wróżka Śmierci",
+    "level": 50,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      48,
+      56,
+      23
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 24
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 45
+      }
+    ],
+    "fixed_instance_average_damage": 25,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21952,
+    "name": "Szeptacz Tytanów",
+    "level": 50,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      116,
+      216,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 22
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 45
+      }
+    ],
+    "fixed_instance_average_damage": 25,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21953,
+    "name": "Uderzenie Pioruna",
+    "level": 50,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      85,
+      139,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 35
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 45
+      }
+    ],
+    "fixed_instance_average_damage": 25,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21954,
+    "name": "Śpiewająca Furia",
+    "level": 50,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      43,
+      67,
+      59,
+      89,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 27
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 45
+      }
+    ],
+    "fixed_instance_average_damage": 25,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21955,
+    "name": "Wachlarze Bojowe Beliala",
+    "level": 50,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      68,
+      90,
+      49,
+      73,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 23
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 45
+      }
+    ],
+    "fixed_instance_average_damage": 25,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21956,
+    "name": "Szpony Udręki",
+    "level": 50,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      57,
+      73,
+      34
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 22
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 7
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 45
+      }
+    ],
+    "fixed_instance_average_damage": 25,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21960,
+    "name": "Askalahel",
+    "level": 60,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      74,
+      100,
+      72,
+      108,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 8
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 28,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21961,
+    "name": "Wściekły Cierń",
+    "level": 60,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      53,
+      65,
+      23
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 8
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 28,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21962,
+    "name": "Boska Cięciwa",
+    "level": 60,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      135,
+      251,
+      51
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 8
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 28,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21963,
+    "name": "Zmierzch Bogów",
+    "level": 60,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      102,
+      156,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 25
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 8
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 28,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21964,
+    "name": "Ostatnie Uderzenie",
+    "level": 60,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      65,
+      75,
+      76,
+      104,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 8
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 28,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21965,
+    "name": "Nexus",
+    "level": 60,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      83,
+      97,
+      55,
+      83,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 8
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 28,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21966,
+    "name": "Aksamitne Łapy",
+    "level": 60,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      69,
+      91,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 22
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 8
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 28,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21970,
+    "name": "Requiem",
+    "level": 70,
+    "type": "sword",
+    "size": 2,
+    "values": [
+      0,
+      90,
+      110,
+      46,
+      87,
+      77
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 9
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 30,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21971,
+    "name": "Zabójca Króla",
+    "level": 70,
+    "type": "dagger",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      74,
+      86,
+      63
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 24
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 9
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 30,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21972,
+    "name": "Ependrion",
+    "level": 70,
+    "type": "bow",
+    "size": 2,
+    "values": [
+      0,
+      0,
+      0,
+      190,
+      290,
+      63
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 24
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 9
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 30,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21973,
+    "name": "Brachindul",
+    "level": 70,
+    "type": "two_handed",
+    "size": 3,
+    "values": [
+      0,
+      0,
+      0,
+      126,
+      194,
+      63
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 34
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 9
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 30,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21974,
+    "name": "Pocałunek Śmierci",
+    "level": 70,
+    "type": "bell",
+    "size": 1,
+    "values": [
+      0,
+      16,
+      61,
+      91,
+      129,
+      77
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 9
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 30,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21975,
+    "name": "Kor-Glâsh",
+    "level": 70,
+    "type": "fan",
+    "size": 1,
+    "values": [
+      0,
+      52,
+      81,
+      64,
+      96,
+      77
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 9
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 30,
+    "lifetime_seconds": 1296000
+  },
+  {
+    "vnum": 21976,
+    "name": "Ślepy Gniew",
+    "level": 70,
+    "type": "claw",
+    "size": 1,
+    "values": [
+      0,
+      0,
+      0,
+      72,
+      108,
+      44
+    ],
+    "proto_applies": [
+      {
+        "type": "APPLY_ATT_SPEED",
+        "value": 15
+      },
+      {
+        "type": "APPLY_CRITICAL_PCT",
+        "value": 9
+      },
+      {
+        "type": "APPLY_MALL_ATTBONUS",
+        "value": 50
+      }
+    ],
+    "fixed_instance_average_damage": 30,
+    "lifetime_seconds": 1296000
+  }
+]
