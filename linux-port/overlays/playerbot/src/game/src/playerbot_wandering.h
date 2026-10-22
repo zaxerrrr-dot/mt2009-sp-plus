@@ -276,6 +276,9 @@ namespace
 				continue;
 			if (hub.bNeedsParty && !bLeadsParty)
 				continue;
+			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a Sung Ma spot the bot pulled too much on, for a while (playerbot_sungma_fight.h).
+			if (IsPlayerBotSungmaSpotAvoided(ch, hub.x, hub.y, dwNow))
+				continue;
 			if (ownState != s_mapPlayerBotAIStates.end() &&
 					IsPlayerBotAvoidedSpot(ownState->second, ch->GetMapIndex(), hub.x, hub.y, dwNow))
 				continue;

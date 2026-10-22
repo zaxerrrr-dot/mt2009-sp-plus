@@ -466,6 +466,27 @@
 		return -1;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: the band's Champion floor of a map (0: not a Sung Ma map).
+	int GetPlayerBotSungmaBandFloor(long mapIndex)
+	{
+		const int slot = GetPlayerBotSungmaSlot(mapIndex);
+		return slot >= 0 ? (int)PLAYERBOT_SUNGMA_MAPS[slot].bChampionMin : 0;
+	}
+
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a map's safe point (PLAYERBOT_SUNGMA_SAFE_POINTS) - the revival's and the retreat's.
+	bool GetPlayerBotSungmaSafePoint(long mapIndex, long& x, long& y)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_SAFE_POINTS) / sizeof(PLAYERBOT_SUNGMA_SAFE_POINTS[0]); ++i)
+			if (PLAYERBOT_SUNGMA_SAFE_POINTS[i].lMap == base)
+			{
+				x = PLAYERBOT_SUNGMA_SAFE_POINTS[i].x;
+				y = PLAYERBOT_SUNGMA_SAFE_POINTS[i].y;
+				return true;
+			}
+		return false;
+	}
+
 	bool IsPlayerBotSungmaMapOn(long mapIndex)
 	{
 		const std::vector<long>& maps = GetPlayerBotYoharaConfig().sungmaMaps;
@@ -556,6 +577,18 @@
 			dwErrandFallbackUntil(0), dwNextErrandLook(0), dwLastBagErrand(0), dwNextTradeLook(0) {}
 	};
 	std::map<DWORD, TPlayerBotSungmaBot> s_mapPlayerBotSungma;
+
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: what a resident does beside the hunt - 1 the walk to a portal, 2 Dongan's errand
+	// (a death's cause, NotePlayerBotSungmaFallen).
+	int GetPlayerBotSungmaActivity(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotSungmaBot>::const_iterator b = s_mapPlayerBotSungma.find(pid);
+		if (b == s_mapPlayerBotSungma.end())
+			return 0;
+		return b->second.bErrand ? 2 : (b->second.dwWalkSince != 0 ? 1 : 0);
+	}
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: the party's leader waits for its members (playerbot_yohara_sungma_party.h).
+	bool HoldPlayerBotSungmaRegroup(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: game3's trips out (the map to come back to), the last trip of a bot (kept over
 	// its stays), and the home core's bots on the errand.
 	struct TPlayerBotSungmaTradeOut
@@ -762,7 +795,9 @@
 		// (killed at last by another, log.log STONE_KILL 8625 at its spot), revived where it lay and went back to the stone,
 		// whose fight kept the travel pass (the deaths' step down) away. The higher maps have 0-6 stones each - hence
 		// "the lower maps are deadlier".
-		return ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3 ? 1 : 0;
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: three of the party BY the bot (PLAYERBOT_SUNGMA_PARTY_NEAR, alive), not three on
+		// the party's list - a leader whose members were still walking up, or had gone on an errand, took it alone.
+		return CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR) >= PLAYERBOT_SUNGMA_PARTY_MIN ? 1 : 0;
 	}
 
 	void NotePlayerBotSungmaKill(LPCHARACTER killer, LPCHARACTER victim)
@@ -862,6 +897,7 @@
 	// Out of this core (home; a member - its rest).
 	int LeavePlayerBotSungma(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow, const char* why)
 	{
+		LeavePlayerBotSungmaParty(ch, why, false);	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
 		return SendPlayerBotYoharaHome(ch, state, dwNow, why) ? 1 : 0;
 	}
 
@@ -983,17 +1019,20 @@
 		if (slot < 0 || mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
 			return false;
 		long ax = 0, ay = 0;
-		for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_SAFE_POINTS) / sizeof(PLAYERBOT_SUNGMA_SAFE_POINTS[0]); ++i)
-			if (PLAYERBOT_SUNGMA_SAFE_POINTS[i].lMap == mapIndex)
-			{
-				ax = PLAYERBOT_SUNGMA_SAFE_POINTS[i].x;
-				ay = PLAYERBOT_SUNGMA_SAFE_POINTS[i].y;
-			}
-		if (ax == 0 && !GetPlayerBotSungmaArrival(mapIndex, ax, ay))
+		if (!GetPlayerBotSungmaSafePoint(mapIndex, ax, ay) && !GetPlayerBotSungmaArrival(mapIndex, ax, ay))
 			return false;
 		// a party's fight goes on where it is (its members stand by it)
-		if (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3)
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: only with two of them alive beside it and no pack awake on the spot (the revive
+		// help); else the safe point, and the follow brings it back to its leader.
+		if (IsPlayerBotSungmaRevivedInParty(ch))
+		{
+			if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(mapIndex))
+				++st->revivesInParty;
+			sys_log(0, "PLAYERBOT_SUNGMA: revived by its party pid=%u name=%s map=%ld pos=(%ld,%ld) party_near=%d",
+					ch->GetPlayerID(), ch->GetName(), mapIndex, ch->GetX(), ch->GetY(),
+					CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_REVIVE_PARTY_RADIUS));
 			return false;
+		}
 		long ox = 0, oy = 0;
 		GetPlayerBotStableOffset(ch->GetPlayerID(), 0x53524556U, 50, 250, ox, oy);
 		sys_log(0, "PLAYERBOT_SUNGMA: revived at the safe point pid=%u name=%s map=%ld from=(%ld,%ld) to=(%ld,%ld) champion=%d",
@@ -1020,6 +1059,35 @@
 				 HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR)))
 			need |= 2;
 		return need;
+	}
+
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: where the bot stands to trade with a Dongan merchant - the pid's own place round it
+	// (GetPlayerBotNpcApproach) when the arrival's ground reaches it, else the first of sixteen round the merchant that it
+	// does. The test of 22 October (19:44-20:15): the weapon merchant's places (y 502 260-502 420, south of 9001) were
+	// walled - eight "destination given up ... unreachable" after 600 s, the errand's four minutes gone and the fallback's
+	// restock instead, and twelve of Dongan's "stuck" there.
+	bool GetPlayerBotSungmaMerchantApproach(DWORD pid, const TPlayerBotSungmaMerchant& m, int stop, long& ax, long& ay)
+	{
+		GetPlayerBotNpcApproach(pid, m.x, m.y, 0x444f4e47U + (DWORD)stop, ax, ay);
+		long fromX = 0, fromY = 0;
+		CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(PLAYERBOT_MAP_SUNGMA_DONGAN);
+		if (!GetPlayerBotSungmaArrival(PLAYERBOT_MAP_SUNGMA_DONGAN, fromX, fromY) || !navigation.Init(PLAYERBOT_MAP_SUNGMA_DONGAN) ||
+				navigation.CanReach(fromX, fromY, ax, ay))
+			return true;
+		for (int r = 200; r <= 400; r += 100)
+			for (int i = 0; i < 16; ++i)
+			{
+				float fx = 0.0f, fy = 0.0f;
+				GetDeltaByDegree((float)(i * 360 / 16 + (int)(pid % 23U)), (float)r, &fx, &fy);
+				const long x = m.x + (long)fx, y = m.y + (long)fy;
+				if (navigation.CanReach(fromX, fromY, x, y))
+				{
+					ax = x;
+					ay = y;
+					return true;
+				}
+			}
+		return false;
 	}
 
 	// The errand given up (too long, a warp refused, Dongan off): the belt kept full where it stands for a while.
@@ -1062,8 +1130,11 @@
 				return -1;
 			}
 			// Not out of a fight, nor half dead, nor off a party's stone: later - but an empty belt now is the fallback's.
+			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a party's member waits only while the party is on a stone or a boss; else it
+			// leaves the party (below) and goes - a party of three never let its members go, and they hunted with
+			// an empty belt (the fallback's restock) for the party's whole life.
 			const bool busy = state.dwTargetVID != 0 || ch->GetVictim() != NULL || state.bTacticalRetreat ||
-					ch->GetHP() * 100 < ch->GetMaxHP() * 40 || (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3) ||
+					ch->GetHP() * 100 < ch->GetMaxHP() * 40 || IsPlayerBotSungmaPartyOnObjective(ch) ||
 					IsPlayerBotOnDungeonRun(ch->GetPlayerID());
 			if (busy)
 			{
@@ -1076,6 +1147,7 @@
 				}
 				return -1;
 			}
+			LeavePlayerBotSungmaParty(ch, "errand", true);	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
 			b.bErrand = true;
 			b.iErrandStop = 0;
 			b.iErrandNeed = need;
@@ -1119,7 +1191,14 @@
 		}
 		const TPlayerBotSungmaMerchant& m = PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[b.iErrandStop];
 		long ax = 0, ay = 0;
-		GetPlayerBotNpcApproach(ch->GetPlayerID(), m.x, m.y, 0x444f4e47U + (DWORD)b.iErrandStop, ax, ay);
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a stand the arrival's ground reaches (else the merchant is passed over)
+		if (!GetPlayerBotSungmaMerchantApproach(ch->GetPlayerID(), m, b.iErrandStop, ax, ay))
+		{
+			PlayerBotLogThrottled("sungma_errand_unreachable", dwNow, "PLAYERBOT_SUNGMA: errand merchant unreachable pid=%u name=%s merchant=%u",
+					ch->GetPlayerID(), ch->GetName(), m.dwRace);
+			++b.iErrandStop;
+			return 1;
+		}
 		if (base != PLAYERBOT_MAP_SUNGMA_DONGAN)
 		{
 			s_szPlayerBotTransitionRefusal = NULL;
@@ -1266,9 +1345,11 @@
 		if (cfg.sungmaTradeMax <= 0 || !IsPlayerBotYoharaOn() || !ch->IsItemLoaded() || b.bErrand)
 			return -1;
 		// not out of a fight, half dead, a party's stone or a run (Dongan's errand's rule)
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a party's member - only while the party is on a stone or a boss (it leaves the
+		// party at the start below)
 		if (state.dwTargetVID != 0 || ch->GetVictim() != NULL || state.bTacticalRetreat || ch->IsDead() ||
 				state.bRecoveringAfterDeath || ch->GetHP() * 100 < ch->GetMaxHP() * 40 ||
-				(ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3) || IsPlayerBotOnDungeonRun(ch->GetPlayerID()))
+				IsPlayerBotSungmaPartyOnObjective(ch) || IsPlayerBotOnDungeonRun(ch->GetPlayerID()))
 			return -1;
 		int goods = -1;
 		const char* why = GetPlayerBotSungmaTradeReason(ch, state, res, dwNow, goods);
@@ -1296,6 +1377,7 @@
 		const long long gold = (long long)ch->GetGold();
 		const int free3 = ch->GetEmptyInventory(3) >= 0 ? 1 : 0;
 		const unsigned int stayS = (dwNow - res.dwArrived) / 1000;
+		LeavePlayerBotSungmaParty(ch, "trade_trip", true);	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: out of its party cleanly first
 		if (!RequestPlayerBotYoharaHandover(ch, state, home, x + ox, y + oy, YOHARA_PURPOSE_HOME, reason, dwNow))
 			return -1;
 		TPlayerBotSungmaTradeOut& out = s_mapPlayerBotSungmaTradeOut[pid];
@@ -1574,6 +1656,7 @@
 				}
 				res.lMap = pick;
 				b.dwWalkSince = 0;
+				LeavePlayerBotSungmaParty(ch, "map_move", false);	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
 				char q[160];
 				snprintf(q, sizeof(q), "UPDATE common.playerbot_core_handover SET target_map = %ld WHERE pid = %u AND state = 2", pick, pid);
 				RunPlayerBotYoharaSql(q);
@@ -1594,6 +1677,9 @@
 				dwNow - b.dwChamberSince >= PLAYERBOT_SUNGMA_CHAMBER_MS && state.dwTargetVID == 0 &&
 				HopPlayerBotSungmaChamber(ch, slot, b, dwNow, "time"))
 			return 1;
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a party's leader with nothing to fight waits for its members to come up.
+		if (HoldPlayerBotSungmaRegroup(ch, state, dwNow))
+			return 1;
 		return -1;	// the spots (the frontier's hunting)
 	}
 
@@ -1602,6 +1688,8 @@
 	void LogPlayerBotSungmaCensus(DWORD dwNow)
 	{
 		int here[9] = { 0 }, champSum[9] = { 0 };
+		int inParty[9] = { 0 }, lone[9] = { 0 };	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
+		std::set<DWORD> leaders[9];
 		int members = 0, membersResting = 0;
 		for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
 				i != s_mapPlayerBotYoharaCohort.end(); ++i)
@@ -1623,6 +1711,14 @@
 				continue;
 			++here[slot];
 			champSum[slot] += GetPlayerBotChampionLevel(ch);
+			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: in a party (its leader counted once) or alone
+			if (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 2)
+			{
+				++inParty[slot];
+				leaders[slot].insert(ch->GetParty()->GetLeaderPID());
+			}
+			else
+				++lone[slot];
 		}
 		const bool any = members > 0 || residents > 0 || !s_mapPlayerBotSungmaTradeHome.empty();
 		const DWORD span = s_dwPlayerBotSungmaLastCensus ? dwNow - s_dwPlayerBotSungmaLastCensus : 0;
@@ -1661,6 +1757,9 @@
 					st.championExp, championExpH, st.deaths, st.stuck, st.navFail, st.levelUps, st.championUps, st.movesIn,
 					st.movesOut, st.stepsDown, st.hops, st.portalWalks, st.portalWarps, st.revives, st.errands, st.errandFallbacks,
 					st.tradeTrips, st.tradeBacks);
+			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: the map's parties, retreats and deaths by cause
+			LogPlayerBotSungmaFightCensus(i, PLAYERBOT_SUNGMA_MAPS[i].lMap, PLAYERBOT_SUNGMA_MAPS[i].szKey, (int)leaders[i].size(),
+					inParty[i], lone[i]);
 			st.killsAtCensus = st.kills;
 			st.expAtCensus = st.exp;
 			st.championExpAtCensus = st.championExp;
