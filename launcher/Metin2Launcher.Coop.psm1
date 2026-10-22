@@ -95,7 +95,7 @@ function Get-M2CoopGamePorts {
     $base = 13000
     $baseText = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_GAME_PORT_BASE' -Default '13000'
     if ($baseText -match '^\s*(\d+)\s*$' -and [int]$Matches[1] -gt 0 -and [int]$Matches[1] -lt 65500) { $base = [int]$Matches[1] }
-    $range = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_GAME_PORT_RANGE' -Default ('{0}-{1}' -f $base, ($base + 2))
+    $range = Get-M2CoopEnvValue -ServerRoot $ServerRoot -Name 'M2_GAME_PORT_RANGE' -Default ('{0}-{1}' -f $base, ($base + 3))
     $ports = New-Object System.Collections.Generic.List[int]
     $ports.Add($auth)
     $first = $base
@@ -104,8 +104,9 @@ function Get-M2CoopGamePorts {
         $first = $from
         if ($to -ge $from -and ($to - $from) -le 40) {
             foreach ($p in $from..$to) {
-                # 13003-13009 sit between two channels' cores and nothing listens there.
-                if ((($p - $from) % 10) -le 2) { $ports.Add($p) }
+                # 13007-13009 sit between two channels' cores and nothing listens there;
+                # 13003-13006 are the channels' map cores (game3) (MT2009_PLUS_237_NEWCORE_V1).
+                if ((($p - $from) % 10) -le 2 -or (($p - $from) -ge 3 -and ($p - $from) -le 6)) { $ports.Add($p) }
             }
         }
     }
@@ -123,6 +124,9 @@ function Get-M2CoopGamePorts {
             $p = $first + 10 * $ch + $offset
             if (-not $ports.Contains($p)) { $ports.Add($p) }
         }
+        # MT2009_PLUS_237_NEWCORE_V1: the channel's map core (game3)
+        $p = $first + 3 + $ch
+        if (-not $ports.Contains($p)) { $ports.Add($p) }
     }
     return @($ports)
 }
@@ -877,7 +881,9 @@ function New-M2CoopInvite {
         [AllowEmptyString()][string]$Lan = '')
     $auth = $Ports[0]
     $game = @($Ports | Select-Object -Skip 1)
-    $channels = [Math]::Max(1, [int][Math]::Ceiling(($game | Measure-Object).Count / 3.0))
+    # a channel's first core sits on base+10*(N-1); the map cores (game3) in the gap (base+3..+6,
+    # MT2009_PLUS_237_NEWCORE_V1) are not channels
+    $channels = [Math]::Max(1, @($game | Where-Object { $game.Count -gt 0 -and (([int]$_ - [int]$game[0]) % 10) -eq 0 }).Count)
     $payload = [ordered]@{
         v = 1; name = $WorldName; host = $HostAddress; auth = $auth
         channel = $(if ($game.Count -gt 0) { $game[0] } else { 13000 }); channels = $channels

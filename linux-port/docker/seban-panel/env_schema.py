@@ -157,7 +157,7 @@ SCHEMA = [
        "Na których kanałach boty przechodzą między rdzeniami (lista, np. 1 albo 1,2). Każdy kanał to osobne siatki map w pamięci.",
        "boty", "string", "1,2,3,4,5,6", ["game"]),
     _e("PLAYERBOT_ZAKLETY_MAX", "Boty w Zaklętym Lesie (na kanał)",
-       "Ilu botów naraz expi w Zaklętym Lesie (mapa 353, rdzeń game2). Wchodzą przez Świątynię Ochao i portal Strażnika En-Tai. 0 = nikt.",
+       "Ilu botów naraz expi w Zaklętym Lesie (mapa 353, rdzeń game3). Wchodzą przez Świątynię Ochao i portal Strażnika En-Tai. 0 = nikt.",
        "boty", "int", "30", ["game"], min=0, max=300),
     _e("PLAYERBOT_ZAKLETY_MIN_LEVEL", "Zaklęty Las od poziomu",
        "Od jakiego poziomu boty idą expić do Zaklętego Lasu (95–109; od 110 bot z lasu wyrasta).",
@@ -172,8 +172,9 @@ SCHEMA = [
        "Ilu botów (od 95 poziomu) naraz bije tylko Metiny i bossów na mapach 90. 0 = wyłączone.",
        "boty", "int", "6", ["game"], min=0, max=200),
     _e("PLAYERBOT_LOOTRUN_MAPS", "Mapy wypadów po drop",
-       "Lista map: 301 Przylądek Smoczego Ognia, 302 Zbocze Gautama, 303 Nefrytowa Zatoka, 304 Gromiste Góry (301/302 to po ~125–160 MB pamięci).",
-       "boty", "string", "303,304", ["game"]),
+       "Lista map: 301 Przylądek Smoczego Ognia, 302 Zbocze Gautama, 303 Nefrytowa Zatoka, 304 Gromiste Góry – wszystkie na rdzeniu game3 "
+       "(siatki botów: 301 ~160 MB, 302 ~125 MB, 303 ~80 MB, 304 ~107 MB pamięci na kanał).",
+       "boty", "string", "301,302,303,304", ["game"]),
     # MT2009_PLUS_CH34_V1: the third and fourth channel, same principle as CH2.
     _e("M2_PLAYERBOT_CH3", "Trzeci kanał (CH3)",
        "Włączone: serwer uruchamia trzeci kanał – trzy kolejne rdzenie gry na własnych procesach (ok. 2,5–3 GB RAM więcej i od pół do jednego rdzenia CPU pod obciążeniem), "
@@ -194,6 +195,11 @@ SCHEMA = [
        "split = trzy rdzenie, szybsze przy bardzo dużej liczbie botów, ale dwa królestwa nie mają gdzie rosnąć.",
        "boty", "enum", "unified", ["game"],
        options=[["unified", "unified – jeden rdzeń dla całego świata"], ["split", "split – każde królestwo na swoim rdzeniu"]]),
+    # MT2009_PLUS_237_NEWCORE_V1: the fourth game core of a channel (bin/m2-render-config).
+    _e("M2_MAP_CORE", "Osobny rdzeń dla nowych map",
+       "Włączone: Zaklęty Las (353) i mapy 90 (301–304) stoją na osobnym rdzeniu game3 w każdym kanale (port 13003 na CH1, 13004–13006 na CH2–CH4). "
+       "Wyłączone: te mapy wracają na rdzeń game2, bez game3 – ok. 0,15 GB RAM na kanał mniej, dla komputera z małą ilością pamięci.",
+       "boty", "bool", "1", ["game"], dangerous=True),
     _e("M2_PLAYERBOT_DISABLE_STUDENT_CHEST", "Boty bez Skrzyni Ucznia",
        "Włączone: nowe boty nie dostają Skrzyni Ucznia (integracja panelu Seban). Ogólny przełącznik skrzyni to „Skrzynia Ucznia” w Modułach.",
        "boty", "bool", "0", GAME),
@@ -313,11 +319,11 @@ SCHEMA = [
        "siec", "int", "1", ["game"], min=1, max=4, dangerous=True,
        note="Przy zapisie aktualizator dopasuje zakresy portów gry."),
     _e("M2_GAME_PORT_RANGE", "Zakres portów gry (host)",
-       "Porty kanałów otwierane na tym komputerze. 13000-13002 = jeden kanał, 13000-13012 = dwa, 13000-13022 = trzy, 13000-13032 = cztery. Zwykle ustawiane automatycznie.",
-       "siec", "portrange", "13000-13002", ["game", "panel"], dangerous=True),
+       "Porty kanałów otwierane na tym komputerze. 13000-13003 = jeden kanał (13003 - rdzeń map 90 i Zaklętego Lasu), 13000-13012 = dwa, 13000-13022 = trzy, 13000-13032 = cztery. Zwykle ustawiane automatycznie.",
+       "siec", "portrange", "13000-13003", ["game", "panel"], dangerous=True),
     _e("M2_GAME_CONTAINER_PORT_RANGE", "Zakres portów gry (kontener)",
        "To samo po stronie kontenera – musi mieć tę samą długość co zakres hosta. Zwykle ustawiane automatycznie.",
-       "siec", "portrange", "13000-13002", ["game"], dangerous=True),
+       "siec", "portrange", "13000-13003", ["game"], dangerous=True),
     _e("M2_GAME_PORT_BASE", "Pierwszy port kanałów w kontenerze",
        "Port, od którego rdzenie gry liczą porty kanałów wewnątrz kontenera. 13000, chyba że na tym samym komputerze stoi drugi serwer.",
        "siec", "port", "13000", ["game"], dangerous=True),
@@ -617,7 +623,7 @@ def validate(key, value):
     if kind == "portrange":
         match = re.fullmatch(r"(\d{1,5})-(\d{1,5})", value)
         if not match or not 1 <= int(match.group(1)) <= int(match.group(2)) <= 65535:
-            return "zakres portów, np. 13000-13002"
+            return "zakres portów, np. 13000-13003"
         return None
     if kind == "address":
         return None if re.fullmatch(_IPV4, value) else "adres IPv4, np. 0.0.0.0 albo 127.0.0.1"

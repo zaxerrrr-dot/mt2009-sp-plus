@@ -33,10 +33,11 @@ every version here.
 - **Wejście do Świątyni Ochao jak na wiki.** Strażnik Świątyni stoi teraz tylko na Zboczu Gautama (mapa 90 poziomu), już nie w Dolinie Orków.
 - **Nowe mapy 90 poziomu.** Przylądek Smoczego Ognia, Zbocze Gautama, Nefrytowa Zatoka i Gromiste Góry mają teren z nowego klienta, działające portale między sobą i są w Teleporterze od 90 poziomu (wymaga nowego klienta).
 - Seon-Hae: Duży suplement i odłamki wypadają teraz w Zaklętym Lesie (zamiast w Zaczarowanym Lesie).
+- **Nowe mapy na osobnym rdzeniu.** Zaklęty Las i wszystkie cztery mapy 90 poziomu działają na nowym, czwartym rdzeniu gry w każdym kanale (game3). Port tego rdzenia: 13003 na pierwszym kanale (13004–13006 na kanałach 2–4) – aktualizacja sama poszerza zakres portów gry w `.env` z 13000-13002 na 13000-13003, a przy dwóch i więcej kanałach nic się nie zmienia. Kto udostępnia świat znajomym przez internet lub VPS, musi mieć otwarty także port 13003 (launcher dodaje go do reguły zapory i routera sam). Nowy rdzeń zajmuje ok. 0,2 GB RAM, a gdy boty chodzą na wszystkie nowe mapy – do ok. 0,8 GB na kanał. Na komputerze z małą ilością pamięci można go wyłączyć w panelu (Ustawienia serwera (.env) → Boty → „Osobny rdzeń dla nowych map”, `M2_MAP_CORE=0`) – wtedy te mapy działają jak dotąd na rdzeniu game2.
 
 ### Boty
 - **Boty w Zaklętym Lesie.** Boty od 100 poziomu (i co najmniej 20 000 PŻ) chodzą expić do Zaklętego Lasu jak na wyprawę: drogą przez Świątynię Ochao, około 2 godzin pobytu, mikstury uzupełniają na miejscu. Najgroźniejsze miejsca z Niszczycielami En-Tai i Metiny lasu biorą tylko w drużynie co najmniej 3 botów; po 3 zgonach w 30 minut wracają i robią 3 godziny przerwy. Od 110 poziomu bot z lasu wyrasta.
-- **Boty na mapach 90 po drop.** Boty od 95 poziomu co jakiś czas idą na Nefrytową Zatokę i Gromiste Góry bić tylko Metiny i bossów (około 40 minut), potem wracają do wioski.
+- **Boty na mapach 90 po drop.** Boty od 95 poziomu co jakiś czas idą na Przylądek Smoczego Ognia, Zbocze Gautama, Nefrytową Zatokę i Gromiste Góry bić tylko Metiny i bossów (około 40 minut), potem wracają do wioski.
 - **Boty przechodzą między rdzeniami.** Las i mapy 90 stoją na innym rdzeniu niż wioski botów, więc bot przechodzi tam i z powrotem przez przekazanie między rdzeniami. Ustawienia w panelu (Boty): PLAYERBOT_HANDOVER, PLAYERBOT_ZAKLETY_*, PLAYERBOT_LOOTRUN_*; zdarzenie m2_bot_handover_off 1 odsyła wszystkie boty do domu.
 
 ---

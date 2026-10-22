@@ -11,8 +11,9 @@
 // from the Yohara line (claude/yohara-3, as of 44bbdc76: the handover, Zaklety Las with the fixes of 21-22
 // October - MT2009_PLUS_BOT_YOHARA_FIX_V1, MT2009_PLUS_BOT_ZAKLETY_SPOTS_V2 - and the loot runs) for the
 // owner's order of 22 October 2026 ("the new Zaklety Las for bots and players; the level-90 maps"). On the
-// 2.x line Zaklety Las (353) stands on game2 beside 301/303 (there is no game3), 302/304 on the first core,
-// and the bots live on game1 - so the same handover takes them there. Left out: the Time Rift (SZC, 404 -
+// 2.x line Zaklety Las (353) and 301-304 stand on game3, a core of their own in every channel
+// (MT2009_PLUS_237_NEWCORE_V1, bin/m2-render-config; game2 with M2_MAP_CORE=0), and the bots live on game1 -
+// so the same handover takes them there. It routes by MAP_ALLOW (IsPlayerBotMapHostedHere), not by a core's name. Left out: the Time Rift (SZC, 404 -
 // no such map on 2.x), Wezowe Pole / Kraina Gigantow through the handover (Yohara's maps), the night
 // cohorts (a Yohara test tool), Hydra and the Sung Ma maps.
 //
@@ -55,7 +56,7 @@
 //     row, ready_at past the save.
 //
 // The route (the owner's):
-//   * Zaklety Las (353, game3 - game2 on the 2.x line), PLAYERBOT_ZAKLETY_MIN_LEVEL (100) to 109: the
+//   * Zaklety Las (353, game3 - on the 2.x line too since MT2009_PLUS_237_NEWCORE_V1), PLAYERBOT_ZAKLETY_MIN_LEVEL (100) to 109: the
 //     players' road - Orc Valley, the temple's guard (playerbot_ochao_bots.h),
 //     the Temple of Ochao, the En-Tai Guardian (fought) and his Portal - and
 //     the handover at the Portal; after PLAYERBOT_YOHARA_TEMPLE_WAIT_MS in the
@@ -77,7 +78,8 @@
 // ("1" on the Yohara line's test; every channel on the 2.x line), PLAYERBOT_ZAKLETY_MAX
 // (30 a channel), PLAYERBOT_ZAKLETY_MIN_LEVEL (100), PLAYERBOT_ZAKLETY_STAY_MIN (120),
 // PLAYERBOT_ZAKLETY_MIN_HP (20000), PLAYERBOT_LOOTRUN_MAX (6), PLAYERBOT_LOOTRUN_MAPS
-// ("303,304" - the grids of 301/302 are 160/125 MB). The event flag m2_bot_handover_off
+// ("301,302,303,304" since MT2009_PLUS_237_NEWCORE_V1 - the grids: 301 ~160 MB, 302 ~125, 303 ~80, 304 ~107,
+// on game3). The event flag m2_bot_handover_off
 // (a GM's /e, the panel's flags) stops every new handover and sends every resident home.
 //
 // The log: PLAYERBOT_HANDOVER (out, claimed, arrived, home, refused, cancel,
@@ -222,7 +224,8 @@ namespace
 		s_cfg.zakletyMinHp = ReadPlayerBotYoharaEnvInt("PLAYERBOT_ZAKLETY_MIN_HP", 20000, 0, 1000000);
 		s_cfg.lootMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_LOOTRUN_MAX", 6, 0, 200);
 		std::vector<long> maps;
-		ReadPlayerBotYoharaEnvList("PLAYERBOT_LOOTRUN_MAPS", "303,304", maps);
+		// MT2009_PLUS_237_NEWCORE_V1: all four (the owner, 22 October 2026) - on game3 with the forest now.
+		ReadPlayerBotYoharaEnvList("PLAYERBOT_LOOTRUN_MAPS", "301,302,303,304", maps);
 		for (size_t i = 0; i < maps.size(); ++i)
 			if (maps[i] >= 301 && maps[i] <= 304 &&
 					std::find(s_cfg.lootMaps.begin(), s_cfg.lootMaps.end(), maps[i]) == s_cfg.lootMaps.end())

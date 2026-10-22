@@ -91,7 +91,7 @@ PUBLIC_LINE="PUBLIC_IP: ${CONTAINER_IP}"
 # game1 beside Orc Valley in both layouts (MT2009_PLUS_OCHAO_BOTS_V1): the bots
 # hunt it, and a bot cannot cross cores. game1 of the unified layout then hosts
 # 33 maps, so MAP_ALLOW_LIMIT is 48 (server-patches/playerqol, MT2009_PLUS_MAP_ALLOW_48_V1).
-MAPS_first="1 3 4 5 6 107 81 111 112 113 181 182 183 200 250 302 304"
+MAPS_first="1 3 4 5 6 107 81 111 112 113 181 182 183 200 250"
 # 66, 67 and 68 - the Demon Tower, the Forest and the Red Forest - moved off
 # game2 the way 104 and 109 were moved before them: a bot cannot walk onto a map
 # its own core does not host, and every bot in this world lives on game1. The
@@ -128,7 +128,7 @@ MAPS_first="1 3 4 5 6 107 81 111 112 113 181 182 183 200 250 302 304"
 # kingdom's start at the next login (ENABLE_GOHOME_IF_MAP_NOT_EXIST, input_db.cpp)
 # and a warp there goes nowhere. No bot ever went there.
 MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 72 73 209 208 351 352"
-MAPS_game2="41 43 44 45 46 90 301 303"
+MAPS_game2="41 43 44 45 46 90"
 
 # One world on one core, when the operator asks for it.
 #
@@ -149,8 +149,8 @@ MAPS_game2="41 43 44 45 46 90 301 303"
 M2_PLAYERBOT_WORLD_LAYOUT="${M2_PLAYERBOT_WORLD_LAYOUT:-split}"
 if [ "$M2_PLAYERBOT_WORLD_LAYOUT" = "unified" ]; then
   MAPS_game1="$MAPS_game1 1 3 4 5 41 43 44 45"
-  MAPS_first="6 107 81 111 112 113 181 182 183 200 250 302 304"
-  MAPS_game2="46 90 301 303"
+  MAPS_first="6 107 81 111 112 113 181 182 183 200 250"
+  MAPS_game2="46 90"
   log "world layout: unified (all three kingdoms + frontier on game1)"
 else
   log "world layout: split (per-kingdom cores; Shinsoo/Jinno cap ~36)"
@@ -187,14 +187,35 @@ MAPS_game1="$MAPS_game1 110"
 # bots' own temple runs go there (a bot cannot cross cores).
 MAPS_game1="$MAPS_game1 358"
 # MT2009_PLUS_237_ZAKLETY_LAS_V1 (maps): Zaklety Las (353, metin2_map_dawnmist_dungeon_01, 3x4 - the open Enchanted
-# Forest past the Temple of Ochao, whose portal on game1 warps there; Erebu's instances 3530000+) on game2 under either
-# layout, always (no switch - the owner, 22 October 2026: "a default map that cannot be switched off"; it replaces the
-# Arezzo forest 362, 4x4 on game1). Not on game1: game1 is the core near the 32-bit 4 GB line (the test server,
-# 21 October: 3.86 GB of 4) and could not give the bots' navigation grids more; game2 hosts 301/303 in ~0.17 GB and
-# takes the forest's 12 sectors and ~350 spawn groups (~0.1 GB) and the bots' 53 MB grid. The bots come over by the
-# handover between the cores of a channel (playerbot_yohara_bots.h, MT2009_PLUS_BOT_YOHARA_HANDOVER_V1) - the Yohara
-# line's way into its forest on game3. game2 of the unified layout: 10 maps of MAP_ALLOW_LIMIT 48.
-MAPS_game2="$MAPS_game2 353"
+# Forest past the Temple of Ochao, whose portal on game1 warps there; Erebu's instances 3530000+), always (no switch -
+# the owner, 22 October 2026: "a default map that cannot be switched off"; it replaces the Arezzo forest 362, 4x4 on
+# game1). Not on game1: game1 is the core near the 32-bit 4 GB line (the test server, 21 October: 3.86 GB of 4).
+# MT2009_PLUS_237_NEWCORE_V1 (maps): the owner, 22 October 2026 - "all new maps run on a NEW core". game3, a fourth
+# game core in every channel (the Yohara line's game3 the same way, MT2009_PLUS_YOHARA_CORE_V1 there), hosts Zaklety
+# Las (353) and the level-90 maps: Przyladek Smoczego Ognia (301) and Nefrytowa Zatoka (303) - on game2 before -,
+# Zbocze Gautama (302) and Gromiste Gory (304) - on the first core before -, under either layout. No village is
+# there, so it spawns no bot of its own: the bots come over by the handover between the cores of a channel
+# (playerbot_yohara_bots.h, MT2009_PLUS_BOT_YOHARA_HANDOVER_V1, which routes by MAP_ALLOW and not by a core's name),
+# people by warp (the Temple of Ochao's portal, the Teleporter, the portals 10101/10103 on 301). Its port sits in the
+# gap of the first channel's ten - BASE+3 for CH1, BASE+4 / +5 / +6 for CH2 / CH3 / CH4, P2P 14003+ the same way -
+# so a world with a second channel publishes it already (BASE..BASE+12) and a one-channel world BASE..BASE+3
+# (compose, update.sh, the launcher, the installers widen the range). Memory (plan-2.37-las.md): ~0.2 GB with no
+# bot, up to ~0.8 GB a channel with the bots' navigation grids of all five maps (301 ~160 MB, 302 ~125, 303 ~80,
+# 304 ~107, 353 ~53; built at the first bot on the map and kept) - the same grids game2/first carried before, the
+# process itself (~0.15 GB) is what is new. M2_MAP_CORE=0 (a PC short of memory) puts the five maps back on game2
+# and starts no game3.
+MAPS_game3="353 301 302 303 304"
+M2_MAP_CORE="${M2_MAP_CORE:-1}"
+case "$M2_MAP_CORE" in
+  0)
+    MAPS_game2="$MAPS_game2 $MAPS_game3"
+    MAPS_game3=""
+    log "map core (game3): off (M2_MAP_CORE=0) - 353 and 301-304 on game2"
+    ;;
+  *)
+    log "map core (game3): $MAPS_game3"
+    ;;
+esac
 # The difficulty is acted on by the migrate service (event flags the quests
 # read); said here so a support bundle carries it next to the layout.
 log "difficulty: ${M2_DIFFICULTY:-easy} (Biologist and stable keeper waits; apply.sh writes the flags)"
@@ -307,7 +328,7 @@ EOF
 
 # -----------------------------------------------------------------------------
 # a channel game core
-#   render_game <channel> <role: first|game1|game2>
+#   render_game <channel> <role: first|game1|game2|game3 (the new maps, MT2009_PLUS_237_NEWCORE_V1)>
 # -----------------------------------------------------------------------------
 # The channels' first port, 13000 unless M2_GAME_PORT_BASE says otherwise: a
 # second stack on the same host (the test server beside a public one) takes
@@ -327,6 +348,8 @@ render_game() {
     first) offset=0; hostname="first"; maps="$MAPS_first" ;;
     game1) offset=1; hostname="Game1"; maps="$MAPS_game1" ;;
     game2) offset=2; hostname="Game2"; maps="$MAPS_game2" ;;
+    # MT2009_PLUS_237_NEWCORE_V1: BASE+3 for CH1 .. BASE+6 for CH4, in the gap of the first ten
+    game3) offset=$(( 3 + (ch - 1) - (ch - 1) * 10 )); hostname="Game3"; maps="$MAPS_game3" ;;
     *) echo "unknown role $role" >&2; return 1 ;;
   esac
 
@@ -408,9 +431,12 @@ render_auth
 printf 'auth|%s/auth|auth|%s|auth\n' "$VAR_DIR" "$M2_AUTH_PORT" >> "$PLAN"
 
 for ch in $(seq 1 "${M2_CHANNELS}"); do
-  for role in first game1 game2; do
+  # MT2009_PLUS_237_NEWCORE_V1: game3 only when it hosts a map (M2_MAP_CORE=0 starts none).
+  roles="first game1 game2"
+  [ -n "$MAPS_game3" ] && roles="$roles game3"
+  for role in $roles; do
     render_game "$ch" "$role"
-    case "$role" in first) off=0 ;; game1) off=1 ;; game2) off=2 ;; esac
+    case "$role" in first) off=0 ;; game1) off=1 ;; game2) off=2 ;; game3) off=$(( 3 + (ch - 1) - (ch - 1) * 10 )) ;; esac
     printf 'ch%s-%s|%s/channel%s/%s|game|%s|game\n' \
       "$ch" "$role" "$VAR_DIR" "$ch" "$role" "$(( M2_GAME_PORT_BASE + (ch - 1) * 10 + off ))" >> "$PLAN"
   done
@@ -428,6 +454,12 @@ for chdir in "$VAR_DIR"/channel*; do
       "$chdir"/*/playerbot_guild_status.tsv 2>/dev/null || true
   fi
 done
+
+# MT2009_PLUS_237_NEWCORE_V1: game3 switched off (M2_MAP_CORE=0) leaves its reports the same way.
+if [ -z "$MAPS_game3" ]; then
+  rm -f "$VAR_DIR"/channel*/game3/playerbot_status.tsv "$VAR_DIR"/channel*/game3/playerbot_events_status.tsv \
+    "$VAR_DIR"/channel*/game3/playerbot_guild_status.tsv 2>/dev/null || true
+fi
 
 log "rendered $(wc -l < "$PLAN") cores across ${M2_CHANNELS} channel(s)"
 log "listen=${M2_BIND_IP:-0.0.0.0} container=${CONTAINER_IP} advertised=${M2_PUBLIC_ADDRESS:-<unset>}"

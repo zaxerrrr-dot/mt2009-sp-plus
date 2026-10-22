@@ -53,7 +53,7 @@ quest temple_of_the_ochao begin
 		end
 
 		-- MT2009_PLUS_YOHARA_ZAKLETY_V1 (ochao portal): Zaklety Las (353, level 95+) on the Yohara core
-		-- (MT2009_PLUS_237_ZAKLETY_LAS_V1: on game2 on the 2.x line, always open - no Arezzo switch),
+		-- (MT2009_PLUS_237_ZAKLETY_LAS_V1: on game3 on the 2.x line too - MT2009_PLUS_237_NEWCORE_V1 -, always open - no Arezzo switch),
 		-- landing on its Town.txt cell (478, 970 = 768000 + 47800, 1408000 + 97000) - pl-wiki "Straznik
 		-- En-Tai": the portal leads to Zaklety Las.
 		-- MT2009_PLUS_OCHAO_GAUTAMA_V1: the second choice is Zbocze Gautama beside the guard

@@ -120,7 +120,7 @@ PLAYERBOT_EXPECT_MIN_EXISTING_BOTS=0
 M2_AUTH_PORT=11000
 
 # Channel 1 Game core port range
-M2_GAME_PORT_RANGE=13000-13002
+M2_GAME_PORT_RANGE=13000-13003
 
 # Web Admin Panel port (number only; its bind address is a separate setting)
 M2_PANEL_PUBLIC_PORT=7788
@@ -148,7 +148,7 @@ docker compose up -d --force-recreate game
 
 1. Open `serverinfo.py` or your launcher configuration and set the IP address to `127.0.0.1`.
 2. Auth port: `11000`.
-3. Channel ports: `13000`, `13001`, `13002`.
+3. Channel ports: `13000`, `13001`, `13002`, `13003` (mapy 90 i Zaklęty Las).
 4. Launch `Metin2Distribute.exe`.
 5. Create a character and start playing alongside autonomous bots in Joan (Chunjo)!
 

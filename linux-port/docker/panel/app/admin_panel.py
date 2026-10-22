@@ -320,6 +320,11 @@ PLAYERBOT_STATUS_PATHS = (
     "/opt/metin2/var/channel4/first/playerbot_status.tsv",
     "/opt/metin2/var/channel4/game1/playerbot_status.tsv",
     "/opt/metin2/var/channel4/game2/playerbot_status.tsv",
+    # MT2009_PLUS_237_NEWCORE_V1: each channel's map core (Zaklety Las, 301-304) - the bots handed over there.
+    "/opt/metin2/var/channel1/game3/playerbot_status.tsv",
+    "/opt/metin2/var/channel2/game3/playerbot_status.tsv",
+    "/opt/metin2/var/channel3/game3/playerbot_status.tsv",
+    "/opt/metin2/var/channel4/game3/playerbot_status.tsv",
 )
 _PLAYERBOT_STATUS_LOCK = threading.Lock()
 _PLAYERBOT_STATUS_CACHE_KEY = None
@@ -1602,6 +1607,7 @@ EVENTS_STATUS_FILES = [
     "/opt/metin2/var/channel1/game1/playerbot_events_status.tsv",
     "/opt/metin2/var/channel1/first/playerbot_events_status.tsv",
     "/opt/metin2/var/channel1/game2/playerbot_events_status.tsv",
+    "/opt/metin2/var/channel1/game3/playerbot_events_status.tsv",  # MT2009_PLUS_237_NEWCORE_V1
 ]
 # The bot guilds, one file per core (playerbot_guild.h writes it once a
 # minute): every core knows every guild, but counts only the bots of it
@@ -1610,6 +1616,7 @@ GUILD_STATUS_FILES = [
     "/opt/metin2/var/channel1/game1/playerbot_guild_status.tsv",
     "/opt/metin2/var/channel1/first/playerbot_guild_status.tsv",
     "/opt/metin2/var/channel1/game2/playerbot_guild_status.tsv",
+    "/opt/metin2/var/channel1/game3/playerbot_guild_status.tsv",  # MT2009_PLUS_237_NEWCORE_V1
 ]
 GUILD_TIER_KEYS = ("gl_tier_elite", "gl_tier_strong", "gl_tier_medium", "gl_tier_ordinary")
 GUILD_EMPIRE_KEYS = {1: "gl_empire_shinsoo", 2: "gl_empire_chunjo", 3: "gl_empire_jinno"}
@@ -13928,6 +13935,11 @@ def api_bot_logs(bot_name):
             "/opt/metin2/var/channel4/game1/syslog",
             "/opt/metin2/var/channel4/first/syslog",
             "/opt/metin2/var/channel4/game2/syslog",
+            # MT2009_PLUS_237_NEWCORE_V1: the map cores
+            "/opt/metin2/var/channel1/game3/syslog",
+            "/opt/metin2/var/channel2/game3/syslog",
+            "/opt/metin2/var/channel3/game3/syslog",
+            "/opt/metin2/var/channel4/game3/syslog",
         ]
         matched_lines = []
         # The whole name and not a prefix of one: "botgrom" used to match
@@ -19860,7 +19872,7 @@ def read_channels_state():
         base = re.match(r"\s*(\d+)", eff.get("PORTS", ""))
         base = base.group(1) if base else "13000"
     base = int(base)
-    ports = eff.get("PORTS", "%d-%d" % (base, base + 2))
+    ports = eff.get("PORTS", "%d-%d" % (base, base + 3))  # MT2009_PLUS_237_NEWCORE_V1: + the map core (game3)
     last = re.search(r"(\d+)\s*$", ports)
     ports_open = bool(last) and int(last.group(1)) >= base + 12
     # MT2009_PLUS_CH34_V1: CH3 (BASE+20..22) and CH4 (BASE+30..32), in a row

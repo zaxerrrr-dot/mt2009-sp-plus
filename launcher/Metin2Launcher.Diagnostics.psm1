@@ -706,7 +706,7 @@ function Get-M2StackHostPorts {
     # "13000-13002": each channel binds its own port and any one of them can be
     # the one that is taken.
     $first = 13000
-    $last = 13002
+    $last = 13003
     $range = [string]$values['M2_GAME_PORT_RANGE']
     if ($range -match '^(\d+)\s*-\s*(\d+)$') { $first = [int]$Matches[1]; $last = [int]$Matches[2] }
     elseif ($range -match '^(\d+)$') { $first = [int]$Matches[1]; $last = $first }
@@ -1147,6 +1147,7 @@ function Get-M2DockerPreflight {
             @{ Port = 13000; Name = 'kanal gry' },
             @{ Port = 13001; Name = 'kanal gry' },
             @{ Port = 13002; Name = 'kanal gry' },
+            @{ Port = 13003; Name = 'kanal gry (mapy 90 i Las)' },
             @{ Port = $dbPort; Name = 'baza danych' },
             @{ Port = [int]$panelPort; Name = 'panel' }
         )
