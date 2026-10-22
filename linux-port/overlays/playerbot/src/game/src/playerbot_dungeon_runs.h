@@ -1779,10 +1779,12 @@ namespace
 	}
 
 	// An Archer Ninja on the deck in its own shape: a marble (the engine's ItemProcess_Polymorph, as a person's use).
+	// The event flag m2_bot_hydra_polymorph_off 1 (a GM's /e) keeps them in their own shape, with their bows.
 	bool KeepPlayerBotHydraPolymorph(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, DWORD dwNow)
 	{
 		if (!IsPlayerBotHydraPolymorpher(ch) || ch->IsPolymorphed() || ch->IsDead() || state.bRecoveringAfterDeath ||
-				!ch->IsItemLoaded() || ch->IsStun())
+				!ch->IsItemLoaded() || ch->IsStun() ||
+				quest::CQuestManager::instance().GetEventFlag("m2_bot_hydra_polymorph_off") != 0)
 			return false;
 		DWORD& next = s_mapPlayerBotHydraPolyTry[ch->GetPlayerID()];
 		if (next != 0 && (int)(next - dwNow) > 0)
