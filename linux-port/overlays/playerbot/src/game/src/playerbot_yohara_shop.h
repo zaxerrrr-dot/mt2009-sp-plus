@@ -12,7 +12,7 @@
 // "Its map" is the map its elements are taken for (GetPlayerBotYoharaElementMap - its Sung Ma stay's map, never Dongan
 // on an errand) and an element of it one of PLAYERBOT_YOHARA_ELEMENT_DEFENCE_PERCENT or more (the table of
 // playerbot_yohara_elements.h - both of the two-element maps, Namgan's wind and dark). The elixir is made as the
-// cube makes it (CreateItem -> Blend_Item_set_value: 8-20% for 1-10 minutes, rolled).
+// cube makes it, then set to the cube's best: 20% for 10 minutes (MT2009_PLUS_BOT_YOHARA_SHOP_V2).
 //
 // The stock: up to PLAYERBOT_YSHOP_TARGET of each kind the map needs; Dongan's errand is called for it when a kind is
 // under PLAYERBOT_YSHOP_LOW and the bot holds the input for one (at most every PLAYERBOT_YSHOP_ERRAND_GAP_MS). The
@@ -261,6 +261,11 @@ namespace
 				ch->AutoGiveItem(input, PLAYERBOT_YSHOP_RATE, -1, false);	// no room after all: the input back
 				break;
 			}
+			// MT2009_PLUS_BOT_YOHARA_SHOP_V2: the bots' elixir at its best, always (the owner, 22 October: "dla botow tylko
+			// maksymalne wartosci, czyli 20% i 10 minut") - the rolled value and time set to the cube's top (socket 1 the
+			// percent, socket 2 the seconds; socket 0, the point, as made).
+			item->SetSocket(1, 20);
+			item->SetSocket(2, 600);
 			LogManager::instance().ItemLog(ch, item, "PLAYERBOT_SHOP2", power ? "dust" : "materials");
 			++made;
 			if (power)
