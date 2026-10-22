@@ -1,0 +1,4376 @@
+{
+ "maps": {
+  "353": {
+   "atlas_image": "d:/ymir work/ui/metin2_map_dawnmist_dungeon_01.dds",
+   "environment": "dawnmistwood_dungeon.msenv",
+   "folder": "metin2_map_dawnmist_dungeon_01",
+   "objects": {
+    "crc_used": 140,
+    "dropped": 0,
+    "ours": 61,
+    "staged": 79
+   },
+   "own_attr": [],
+   "pack": "zaklety_map",
+   "removed_objects": {},
+   "terrain": "metin2_map_dawnmist_dungeon_01",
+   "textureset": "textureset/metin2_dawnmistwood_dungeon.txt"
+  }
+ },
+ "new_packs": [
+  "zaklety_map",
+  "zaklety_obj",
+  "zaklety_mobs"
+ ],
+ "packs": {
+  "property": [
+   {
+    "name": "property/dawnmistwood_dungeon/cairn_01_00.prb",
+    "sha1": "e94738c67a023a538e96b7cb3752d3417bfe1e46",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cairn_02_00.prb",
+    "sha1": "9593b2d7b066d103ab3bc0d07359b23717aee2af",
+    "size": 169,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cairn_02_01.prb",
+    "sha1": "3728a5f19685d35aca676db0413bcf5baabe694a",
+    "size": 169,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cairn_02_02.prb",
+    "sha1": "a7b6e2f9efccca29d315bf9eec80deadf0881b44",
+    "size": 169,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cairn_02_03.prb",
+    "sha1": "22f2027de7f034e8a04d75be94dc16f066358bc5",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cairn_02_04.prb",
+    "sha1": "bb05551b26b1eee501b844d4a6f0cdb2babe2038",
+    "size": 169,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cairn_02_05.prb",
+    "sha1": "f514c652a61688fc68543751efa605537881b84f",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_coner_00.prb",
+    "sha1": "be9594dd9b7ea880ff63f0865202f6a79e002a3a",
+    "size": 175,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_coner_01.prb",
+    "sha1": "2200493a30fb5efcb61d1281253321378926ee2d",
+    "size": 176,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_coner_in_00.prb",
+    "sha1": "a3d3b4c183896875e7bfd4957e2f7cc96542c34f",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_pillar_00.prb",
+    "sha1": "906aabb3de10af6fb1874db8cd512b98739fe730",
+    "size": 178,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_side_00.prb",
+    "sha1": "f12f54006acf45a534f8dc55725ab92c9e49ce11",
+    "size": 173,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_tunnel_01.prb",
+    "sha1": "db7f4b773137791696b8f701204267adb0a6b351",
+    "size": 178,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_wall_00.prb",
+    "sha1": "feb9cea6ba0fd115c25feda1c8b6daffa5444b50",
+    "size": 174,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_wall_01.prb",
+    "sha1": "4c6c92b89bcc6fd201c8435d8bdc9d030436d158",
+    "size": 174,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/cliff_wall_02.prb",
+    "sha1": "0fcd98ad745c9bbcbfca88d6cf646fb5fcdacfcb",
+    "size": 174,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/dmw_bossroom.prd",
+    "sha1": "aa6634a953a241060cdf434f45f01de9156798db",
+    "size": 163,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/dmw_bossroom_bell.prb",
+    "sha1": "3d5978a61ebc6035493fbb3ea03242d3485d59a1",
+    "size": 182,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/dmw_bossroom_bell_02.prb",
+    "sha1": "61fba7feea757c2cf103581742098c67b219e533",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/dmw_dungeon_pillar_01.prb",
+    "sha1": "2c35da067af685eb1ea33f7329df6646a784d083",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/dmw_dungeon_pillar_02.prb",
+    "sha1": "5293be1a1f1f653e19a467d3d97d88317eb78d70",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/dmw_dungeon_pillar_03.prb",
+    "sha1": "ac93921f05e907dcc51086d8ba111da15f8e69c6",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/dmw_entrance.prb",
+    "sha1": "61b7610d0a0acda339487743e7c4f42d0151430c",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/effect/cairn_01_00.pre",
+    "sha1": "998ed086a2f0f9b884237ccee2e4b9928c10f0c3",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/effect/mush_effect.pre",
+    "sha1": "55c143fdeff9d14765b07e20fec741c2cb0dd720",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/effect/mushrooma_01.pre",
+    "sha1": "91257eb8bcc41bf5ac06da329995762b1c96f9a9",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/effect/mushrooma_03.pre",
+    "sha1": "51ac040431cc48abb7c54152dd5164b934ab9cf8",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/effect/mushrooma_04.pre",
+    "sha1": "32514859a2fb0b07f11d4043fae1af79f7c03dd0",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/effect/turtle_statue_tree_roof_light01.pre",
+    "sha1": "97d77e150d36a1e716311d0d0af4d6403686deda",
+    "size": 173,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fallentree_00.prb",
+    "sha1": "b7fa9322d14fa728c206bfbc1854e4395f2e4b45",
+    "size": 174,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_gate_00.prb",
+    "sha1": "b300cb1f267d7d5ed6d60d971ee3bcb953ac01a4",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_pillar_00.prb",
+    "sha1": "938c5570b952bd401517f3258239f1fb4fc75ea6",
+    "size": 185,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_wall_a_00.prb",
+    "sha1": "a4fad1cfe2b31326840ebffe96e372a31ebdaee4",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_wall_a_01.prb",
+    "sha1": "d003e352ef32e948496962fe1a6ca4a73247e996",
+    "size": 185,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_wall_a_02.prb",
+    "sha1": "4f6f4db3b64dbf68fd15eec9eeeb076af2579a13",
+    "size": 185,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_wall_b_00.prb",
+    "sha1": "f55ae27b33aaa2de7453c12c8d2827dda1f272c6",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_wall_b_01.prb",
+    "sha1": "a92ca239918c83d26fed1374ca30eee9c16dab74",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/fortressa_wall_bk03.prb",
+    "sha1": "493f8d964f4278293d6f0343a231d79ebe8132b0",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushrooma_01.prb",
+    "sha1": "daad84583b0e878644f41f0d8d2868f5e2eaac58",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushrooma_02.prb",
+    "sha1": "4d5f51e0764d03fccbd5b2c257cc68093ac70e53",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushrooma_03.prb",
+    "sha1": "805cab2ece311e32f694452abbffcc1781ac2d1c",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushrooma_04.prb",
+    "sha1": "ac6c95192e7fa2a660c8c46123c132b85a75be7b",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushrooma_05.prb",
+    "sha1": "8634e000947b2e673cec89d521ebe8ffb2534fe2",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushrooma_06.prb",
+    "sha1": "1cf6b8bfadd06ba8b353e233e32fcca81555b5a9",
+    "size": 171,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomb_03b.prb",
+    "sha1": "21626ec3d7cddd8658bb23ac770e52d5e69b1d66",
+    "size": 174,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomc_01.prb",
+    "sha1": "6f50a697ce240eaf03201ce12b4458d18d4ab4c2",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomc_02.prb",
+    "sha1": "1d477bbc1130cfb136687bd308255d0bedb0f3da",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomc_03.prb",
+    "sha1": "ac950324719e98d547b3c9dc7779d25057797bee",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomc_04.prb",
+    "sha1": "d29a3940ba9d92e8c505b5d00026ab1a08c133c9",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomc_05.prb",
+    "sha1": "391bde3b5ee13d6fd982f6508d52040fb2d311dd",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomc_06.prb",
+    "sha1": "0f8629236c60de7178fb47780cbb2bf20bd6399d",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomd_01.prb",
+    "sha1": "e73a972d6535f3dc0acc6c11c075154cbdbd4e29",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomd_02.prb",
+    "sha1": "ff0afe60f98d13a5aee85761a3f0d9529e454474",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomd_03.prb",
+    "sha1": "2ad9861f08be66b5604edde0462cf2a6f430e85e",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomd_05.prb",
+    "sha1": "b05a0f51db45cb8409068836fa177d648df35555",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomd_06.prb",
+    "sha1": "d7992685f63a478aa084aa491d09669c0d283ed3",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomd_07.prb",
+    "sha1": "837199328ee7da3e9c2be52298993847a793e985",
+    "size": 172,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/mushroomd_08.prb",
+    "sha1": "238e418399b889476ad8b874dca43e2fb4119ba9",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/obj_braziar_00.prb",
+    "sha1": "77a823ecbbfee9e7b60d1aab0b4e341fa5482d40",
+    "size": 176,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/prayer_gate.prb",
+    "sha1": "ef7ca265b63a8f6fd68cb2ac8b77cb987b3558cc",
+    "size": 170,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/prayer_gate_tree.prb",
+    "sha1": "53ee84f805be95218609d2b8e89ce0b39af8af48",
+    "size": 179,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/prayer_tree_roof_00.prb",
+    "sha1": "d53cd94e99a78a4c720dfa714e84a0ecb6a82bb4",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/prayer_tree_roof_01.prb",
+    "sha1": "54ea295c4c4174c0d542b88502b76d37b6f4ecc2",
+    "size": 185,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/rock_pillar_00.prb",
+    "sha1": "c35f5b100a26f07b61de16a6c4e121aa00e5e17a",
+    "size": 176,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/rock_pillar_05.prb",
+    "sha1": "55847a7fff068175e2f82264027a7a2b93d14ccd",
+    "size": 175,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/rock_pillar_06.prb",
+    "sha1": "26ba3174998fb492834d8f3059949e6e65d864d5",
+    "size": 176,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_00.prd",
+    "sha1": "186a0a737ebf8b5bf2928333bf0ede2b6a7d8d83",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_01.prd",
+    "sha1": "524ddb99e54291b9d4e54d1dfab51fe43a592508",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_02.prd",
+    "sha1": "d2e80de813ca3a2a817434bacab971cb30b187f1",
+    "size": 154,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_03.prd",
+    "sha1": "960f281eab575dfca216c75a39ef361e56141cde",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_04.prd",
+    "sha1": "162665e27ef1cedd10855f4d13b03842fd86446c",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_05.prd",
+    "sha1": "d3bf37e4b5c8f3dc1851878130c472b4af82f64d",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_p01.prd",
+    "sha1": "60f4da6bc76c64995b792d20c066d15d5b3eb579",
+    "size": 157,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_p02.prd",
+    "sha1": "1ec5d438706ee9d95b29fd2aa9ff79cddfc425fe",
+    "size": 156,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_p03.prd",
+    "sha1": "b8ead437f3ca8c6b2d179b62f51309f79167f113",
+    "size": 157,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_p04.prd",
+    "sha1": "bbaa17d38201268faa6530c3bd1f3001b39aff96",
+    "size": 157,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/spawn_p05.prd",
+    "sha1": "8a1a5cd5ecd5eb3e73f4847b555add2e6a72a5f2",
+    "size": 157,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/turtle_statue.prb",
+    "sha1": "8fdec5cb35cb0265b5fe09d23aba3d2fb83a373f",
+    "size": 173,
+    "source": "gf"
+   },
+   {
+    "name": "property/dawnmistwood_dungeon/turtle_statue_tree.prb",
+    "sha1": "700982368d413000925948b068336caf6bd06b97",
+    "size": 183,
+    "source": "gf"
+   }
+  ],
+  "zaklety_map": [
+   {
+    "name": "d:/ymir work/environment/dawnmistwood_dungeon.msenv",
+    "sha1": "e4066e6b2fcefee769ec6c9bb77b2c17200c468b",
+    "size": 2026,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/dungeon/dawnmistwood_dungeon/dmw_dungeon_field_01.dds",
+    "sha1": "fc97f2e9088dc3c14c4f3ea07310335b35c12a2a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/dungeon/dawnmistwood_dungeon/dmw_dungeon_field_02.dds",
+    "sha1": "0f843648c5244d4c511100fb38439dc08bbbf840",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_dawnmist_dungeon_01/atlas.sub",
+    "sha1": "fc1b6ea4627ead40677fcac35821690892de5c0b",
+    "size": 111,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/metin2_map_dawnmist_dungeon_01.dds",
+    "sha1": "d036c4731127a9ca497b4f51a883008fc624e47e",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/areadata.txt",
+    "sha1": "fe45e987613f9c4d4d79caa1bf0ff0ae445bb59e",
+    "size": 7299,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/attr.atr",
+    "sha1": "de9b20799336e498e7b2d9e620f4b2babd26c7b6",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/height.raw",
+    "sha1": "a8105aeccd1dbae4be0b0c5acdc69ddd1b206bd7",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/minimap.dds",
+    "sha1": "57d5cb2247dd1aa0e90a2d8994966e1e6c80359e",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/shadowmap.dds",
+    "sha1": "ae946e618a485f9d6a60c75eb3b094c56511fe18",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/shadowmap.raw",
+    "sha1": "2a8843fd5d2f5b69f00bf401e3f4a49d1a722612",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/tile.raw",
+    "sha1": "5dd24af9f40b34404e9a558c66be7ff11d4d9fc7",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000000/water.wtr",
+    "sha1": "2e37f20d2458685eb6ca7f9d3fdc12935e3539d0",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/areadata.txt",
+    "sha1": "0fc185185fc7c05c6ee458e800945d84d0483ad7",
+    "size": 15355,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/attr.atr",
+    "sha1": "321dbac602dd9604d46b17065747e9879bda4bcc",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/height.raw",
+    "sha1": "e99010cad84645a11b5305eba3b667adc7a3aa8a",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/minimap.dds",
+    "sha1": "ad8a5bb24b887437060f138e46ee42c5d4b3a46b",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/shadowmap.dds",
+    "sha1": "91ceac0a1748da8655d6e9bc5f1c644d058bde71",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/shadowmap.raw",
+    "sha1": "53fd05eb1fd9594eae6e6439e58b2452cb52ba53",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/tile.raw",
+    "sha1": "37f296ebe11ac999fb5ae027e23e8ef89b96b4cb",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/areadata.txt",
+    "sha1": "29df4784db30cf32f0a1bc81a73182c1a7eb18bf",
+    "size": 4915,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/attr.atr",
+    "sha1": "4a75f6dbd577b0ac975e3018c0d8091b77352e64",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/height.raw",
+    "sha1": "7371a9779ff21576d52dced897c0e87d515ac27d",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/minimap.dds",
+    "sha1": "07a8cd46dcac3e956d58b12428b40de98a87af1c",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/shadowmap.dds",
+    "sha1": "eae11fee08355ccdb3b3fa12332c62c2974c0ed9",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/shadowmap.raw",
+    "sha1": "992461b8130ce884c868e265e9ff81f045c60ee4",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/tile.raw",
+    "sha1": "cec2eced8341015e74ada7c7c9fb1012e71bd103",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000002/water.wtr",
+    "sha1": "abe4ea7b7943acb8630a9b5c7660f4482920835f",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/areadata.txt",
+    "sha1": "804b87286e813a4713de4329cf1b60e12d89a424",
+    "size": 5301,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/attr.atr",
+    "sha1": "abe19424be1ad5d113cfa900668a48c6e10f2024",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/height.raw",
+    "sha1": "3d34c7b755a27e09e3619dff9f7a66259dfcd813",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/minimap.dds",
+    "sha1": "c4f3e7bbee0299a214530dae7bade759e5a296ce",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/shadowmap.dds",
+    "sha1": "610cb3529308f08a41b125d98878aa0e64adab15",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/shadowmap.raw",
+    "sha1": "f2469d7a85256d874421c09664908b9090be1aad",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/tile.raw",
+    "sha1": "57d05a0d80f717067c951eb8eba51969c90158ad",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/000003/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/areadata.txt",
+    "sha1": "7d4b6b811d1f9878ae710d41a8af1b4d6e365303",
+    "size": 15737,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/areaproperty.txt",
+    "sha1": "048ccadcd01b74f473ab8595cadfeff547b2d1e6",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/attr.atr",
+    "sha1": "7fd26a0d76337c3b75dd35ecab1892651707ac52",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/height.raw",
+    "sha1": "ec6de851c64607d632661a43e9262b341c78c2ed",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/minimap.dds",
+    "sha1": "16bab7df98afbcafa60cd5aa1e79ae78ae1acdec",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/shadowmap.dds",
+    "sha1": "aba6bce89342e6546256dbdf8a280dab82f8284a",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/shadowmap.raw",
+    "sha1": "16d60ff64fc3d33098d76444026a443a6477095b",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/tile.raw",
+    "sha1": "07fa352554978d97e5891c944d39305c5d42471c",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001000/water.wtr",
+    "sha1": "0dca28a4064e0e1c0b89d183101ca2858839ff3b",
+    "size": 16399,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/areadata.txt",
+    "sha1": "05d456876a465ed5272a4f33a85fe13015cacd90",
+    "size": 8110,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/attr.atr",
+    "sha1": "a4312c89583b6545044fb3a28ca6782e6120c613",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/height.raw",
+    "sha1": "fa94edb2b1430835c960b37142321f6f51e49d0a",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/minimap.dds",
+    "sha1": "2042dc749ff3f14399c85458c00cbee9586efd41",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/shadowmap.dds",
+    "sha1": "a48a44a43cf45b2764b3f83047d14eb772943067",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/shadowmap.raw",
+    "sha1": "0dcd77b64010083fdb04ed59e3a86958d2348389",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/tile.raw",
+    "sha1": "b3b98c73e27e04b4d0215fa27dd6d631a29d4714",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001001/water.wtr",
+    "sha1": "ff6e4c9e9829273bf3a7066fa89d1471977d8800",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/areadata.txt",
+    "sha1": "136cb8588bbeb0e13f463ee68b1c04ee876c5850",
+    "size": 2963,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/attr.atr",
+    "sha1": "60304231a53ddddca52df11474441cec883acb12",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/height.raw",
+    "sha1": "223048f3f170de873d41637fb480344d1a9f14d6",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/minimap.dds",
+    "sha1": "cb252d7f47dcfc80d3297f7ad58f887255e94511",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/shadowmap.dds",
+    "sha1": "b1f2dc01e8e1291109fd2ffd0a82f3ab498a1a48",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/shadowmap.raw",
+    "sha1": "88601ce8bfe03452e58b5ef337c451fbf302b2cc",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/tile.raw",
+    "sha1": "ff03540ef6845fbc78cdc7338a5d95acd69a3bff",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001002/water.wtr",
+    "sha1": "a17f2209f1c525e73e90a37880790ec760606973",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/areaambiencedata.txt",
+    "sha1": "a25cb93c03811795058e5f988c1aa6196dcb2932",
+    "size": 155,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/areadata.txt",
+    "sha1": "2ce4680c3bf6ca9fca8a2b3995342bf0097c059f",
+    "size": 13240,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/areaproperty.txt",
+    "sha1": "048ccadcd01b74f473ab8595cadfeff547b2d1e6",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/attr.atr",
+    "sha1": "ab65d130ee12cc8897ca1d05f98e8bd66e612349",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/height.raw",
+    "sha1": "0bf5ef0e37e312903dacc1ccdc69166c2cf923a0",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/minimap.dds",
+    "sha1": "2aea4c673dc766b43b8e00cd0dad32932c46e516",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/shadowmap.dds",
+    "sha1": "231bb1b4df7aab4447a58c1345c5f1d0e38d05de",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/shadowmap.raw",
+    "sha1": "3c46d9941d1a737f540a91d4a847167ffbbea7ba",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/tile.raw",
+    "sha1": "e749a547fe014751c5ab9871866bf2889cd13144",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/001003/water.wtr",
+    "sha1": "b5637afd2a7cd760304fd985a0408a1aa34c67dc",
+    "size": 16399,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/areadata.txt",
+    "sha1": "031a9cd445f108508fcec16f7e2ab29409e76e61",
+    "size": 7553,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/attr.atr",
+    "sha1": "9616f95dcfc99dfacb080bcde87e755c038cb3f0",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/height.raw",
+    "sha1": "442d9051daf56616b11636bc74b6280faaaef865",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/minimap.dds",
+    "sha1": "3b06bf7261488a224d0e928bbe5e398b44ba08e8",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/shadowmap.dds",
+    "sha1": "c703a7007d15835dcde03d971f3086862b0a45c3",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/shadowmap.raw",
+    "sha1": "c9139e3072aa9d1a7dbcd6b964cc8f3dcd6dd317",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/tile.raw",
+    "sha1": "e4b1408a48a1b220ed02c2bd4e5e423e0d0f6b05",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/areadata.txt",
+    "sha1": "afd6cc527c5430a0002a16bd016a7f816783051a",
+    "size": 18961,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/attr.atr",
+    "sha1": "60b62a0c9d4bb10d2317792c91109501cc7d5a6d",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/height.raw",
+    "sha1": "4fb01a960e84403549a26fee4d4ea19ce6ae4a73",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/minimap.dds",
+    "sha1": "bb067ae57986be2066b07788d42a1ad19db09595",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/shadowmap.dds",
+    "sha1": "2b07a8c9c30afaab5047b8a05e9d3e25c4663b5a",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/shadowmap.raw",
+    "sha1": "9b4d975629469d762ae2c49a53c6ae2f1e50db3f",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/tile.raw",
+    "sha1": "da951d375a971864ba983623c3a56080458e12fc",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002001/water.wtr",
+    "sha1": "d1b08a75e51310107912f5004b7145cfa557e941",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/areadata.txt",
+    "sha1": "de9b4f7c2aa006b7ee54c8d966b861febbd18a72",
+    "size": 7412,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/attr.atr",
+    "sha1": "44cec123b2635759c772565940fd7c97aeb5752e",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/height.raw",
+    "sha1": "2bfcb124db476cbda70746dcb31076d103e9855c",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/minimap.dds",
+    "sha1": "0d46c822fd7fab8fdd171363658643f080f1f659",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/shadowmap.dds",
+    "sha1": "a8e8a64c4d791b4f73c22f85dfc92e52f6641579",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/shadowmap.raw",
+    "sha1": "3bfc3addce558b9366c12d627c2209bcbb29fa90",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/tile.raw",
+    "sha1": "a9ce8ee4991819c9a0a075af53306195191ae840",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002002/water.wtr",
+    "sha1": "5554aed9051e6b8cb551e184f157bddd504c401e",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/areadata.txt",
+    "sha1": "906ec106539e4da81a4ed41d13492d10e9135ea2",
+    "size": 2669,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/attr.atr",
+    "sha1": "c31094a72e60787d71b6c00ba9a0abc0cd37841d",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/height.raw",
+    "sha1": "e08473324cd00cc009d45dc06e2c03cc28efdc46",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/minimap.dds",
+    "sha1": "7df017516d509a80d6c46d5e732dd497c92d4d56",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/shadowmap.dds",
+    "sha1": "0f04a90866d79ac71cb4f3a5f407d213dffc7944",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/shadowmap.raw",
+    "sha1": "d53f3ff9e0ae89e91a2d582f8821280551be945a",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/tile.raw",
+    "sha1": "b2cbb4534b53d6e9fbfc4cfc03c65067f46ee5dd",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/002003/water.wtr",
+    "sha1": "d7b120217e311036f3624f37bb90c615b0c0c704",
+    "size": 16395,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/dawnmistwood_dungeon.msenv",
+    "sha1": "e4066e6b2fcefee769ec6c9bb77b2c17200c468b",
+    "size": 2026,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_dawnmist_dungeon_01/setting.txt",
+    "sha1": "e1ac40fa380ecf4a549477699e879090a3b2d320",
+    "size": 221,
+    "source": "gf"
+   },
+   {
+    "name": "textureset/metin2_dawnmistwood_dungeon.txt",
+    "sha1": "edba84a86dee8b471771f867c44b072e987b5615",
+    "size": 1748,
+    "source": "gf"
+   }
+  ],
+  "zaklety_mobs": [
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_aqua.mse",
+    "sha1": "978ad9f195e2e2f5b742730ecaa22979b1985bbd",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_blue.mse",
+    "sha1": "42765cddf77a0747b16066be3aa405c5e24699ec",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_orange.mse",
+    "sha1": "14d343948755a498a815d460016af0393ba9a4c9",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_pink.mse",
+    "sha1": "fb211a2cd72c1037416f32c4d0d1335f2767251e",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_purple.mse",
+    "sha1": "c6396a0991cb62fb63cd2305a77ab67de09e004f",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_whitepurple.mse",
+    "sha1": "84f428c9f11a1624c48099285e3a4eb253dad7e1",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_whitered.mse",
+    "sha1": "fcb56d9aa9940c2842a086fb06bb65aaa1412b63",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_1_yellow.mse",
+    "sha1": "56ffec57293f5b2b03fc9070155fcfc7599bd2a6",
+    "size": 9443,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_2_blue.mse",
+    "sha1": "305f0fb8cca527adb3f9b5c810f09e501d75495c",
+    "size": 9422,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_2_pink.mse",
+    "sha1": "4cb29ae20ae29354cd44ec6d53514f5ac17499d9",
+    "size": 9422,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_2_purple.mse",
+    "sha1": "99466ff3a1c401e48c9d5183b11fd646fe1c8870",
+    "size": 9422,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_2_whitepurple.mse",
+    "sha1": "230bd0dd3476aead6e267c7467287e8dd733599a",
+    "size": 9422,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_2_yellow.mse",
+    "sha1": "2b1fe1a1d82d3ff2bdaffaad4671b0cddbddf2ca",
+    "size": 9422,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_3_aqua.mse",
+    "sha1": "8c943fd2764851ab653b266658c514009f8f0902",
+    "size": 12757,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_3_pink.mse",
+    "sha1": "30bd9b9c567f87185bf0776c633f16ad8eab7003",
+    "size": 12757,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_3_purple.mse",
+    "sha1": "ea5662a2ac269863a74c604259385b4ad1fdf4f3",
+    "size": 12757,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_3_whitepurple.mse",
+    "sha1": "b157988307e15e1f26899cd96d9a1d5741d2be25",
+    "size": 12757,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_3_whitered.mse",
+    "sha1": "19fe08221934dfa4a4dd32fe67972df22ac253c3",
+    "size": 12757,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_3_yellow.mse",
+    "sha1": "9f23c1ce3922e41a138a985d8beec2b7ba3daea7",
+    "size": 12757,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_4_aqua.mse",
+    "sha1": "f297e5892645520d6cf4b87274d98cce032034a9",
+    "size": 15653,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_4_blue.mse",
+    "sha1": "439667a2ff5db66d65992aa3e573e2e3fb1cbd39",
+    "size": 15653,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_4_pink.mse",
+    "sha1": "2c9a439771ca0920b20ab7696a1d8bccf592207e",
+    "size": 15653,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_4_purple.mse",
+    "sha1": "a5594466407a13edb49a450de349d560f63d937c",
+    "size": 15653,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_4_whitepurple.mse",
+    "sha1": "b5a11f078388fc0ecbf525f818efd6282d047dd4",
+    "size": 15653,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_4_yellow.mse",
+    "sha1": "57b849cd1e570748684ef263a8d4c96674449e2d",
+    "size": 15653,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/hit/blow_electric/4.dds",
+    "sha1": "1ee0ca1964a62f6e143fbee4f97a616f944a31c3",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/hit/blow_electric/5.dds",
+    "sha1": "ed0626a441f259ec70122f66cf4c0744e8a3a72b",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/hit/blow_electric/6.dds",
+    "sha1": "3bc081b79aed03054372033c3598078f8f4b9fa8",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/ent_elder_s3.mse",
+    "sha1": "cd989d49867f58eec28d24f883f7628fda9a6203",
+    "size": 28198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/ent_elder_s4.mse",
+    "sha1": "99cda55e3fea1d4dc38c0e61db8e1eabf1fc3f04",
+    "size": 9737,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/th_impact.dds",
+    "sha1": "b6e1814c8570deea61a84d68ff35457dc392f704",
+    "size": 22000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/th_impact_blue.mse",
+    "sha1": "9d3fbd88430ff606a901647ec991c39cc803e788",
+    "size": 12126,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/th_spark.dds",
+    "sha1": "cbe6a050fcd3dd250123030e8bb050b48c936b93",
+    "size": 5504,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/thunder boss.msf",
+    "sha1": "bedcafccd82751206520f17fb0f6b174c0410b36",
+    "size": 959,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/thunder boss_04.mse",
+    "sha1": "4a4a78e6b253e6f1c177e79d04986f1cab4cc7c2",
+    "size": 6213,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/thunder boss_05.mse",
+    "sha1": "8d7cd359ac13eae3828f04a2cc5e59398fcb6d4d",
+    "size": 6180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/thunder boss_07.mse",
+    "sha1": "47c27cfe32364593227af9950c480572288db40f",
+    "size": 3174,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/thunder boss_08.mse",
+    "sha1": "b16f461987cd9f902140d5d2d45511c85ff93ed5",
+    "size": 3054,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/thunder boss_10.mse",
+    "sha1": "631c68e4878318ed3611dc16e1f643e08c9053b9",
+    "size": 6676,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/trent_magic_throw.msf",
+    "sha1": "b751c0ef4a235fc7e117a6e2174309759cd82bcc",
+    "size": 1054,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/plechito/monster/v2019_metin1_destroy.mse",
+    "sha1": "ac811d9473c0513bab7b29ca9a8f1ecb665ac3ca",
+    "size": 35094,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/attack.msa",
+    "sha1": "296b3764c7a2268cf450cc2262da963a9671e4f7",
+    "size": 617,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/cufar_event.dds",
+    "sha1": "e5cbb0b8918454e8e0d8cca19da4dc322b7bef6c",
+    "size": 131200,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/destroy.gr2",
+    "sha1": "12a3cb594cd4a45eaa40bb1072daffd042457745",
+    "size": 115980,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/destroy.msa",
+    "sha1": "fc70994f4480bebac80f5c4acfed4c2cafe2b35c",
+    "size": 1014,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_01.msm",
+    "sha1": "990426c167224883650db892f5d17ae4c811b920",
+    "size": 1482,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_02.dds",
+    "sha1": "036d25927a9acd18f41adc9b663608108ab66f82",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_02.msm",
+    "sha1": "5ff4de62d82bbd864ea89cc4012166a6b1d61e89",
+    "size": 1610,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_03.dds",
+    "sha1": "ebf32aedca2e744b25d96222a666f7f7079d5a7e",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_03.msm",
+    "sha1": "0302286e103cc256cb24618baaf329b91cfb7a39",
+    "size": 1618,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_04.dds",
+    "sha1": "1ad61e42ee7d452cefc769d9a118113711076413",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_04.msm",
+    "sha1": "48e03a986a1ff7b2d40c28f635f59c45576e5c46",
+    "size": 1610,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_05.dds",
+    "sha1": "cbbe80aca320f26c6b41d98e1f708fafcfd93b95",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_05.msm",
+    "sha1": "ad2e6b4ea5fcb98f7aa896e6fd0578d1b6b4650e",
+    "size": 1618,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_06.dds",
+    "sha1": "172f0389168d553e2f2f486bf36a313b6a894930",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_06.msm",
+    "sha1": "c50c831041aeff3b662002a85da38d35791a458d",
+    "size": 1626,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_07.dds",
+    "sha1": "e04d8257ce8076c89a343fb7b788e56b524c8048",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_07.msm",
+    "sha1": "f9f441b9892ed45c0d8e389f130d6497fc1d07aa",
+    "size": 1618,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_08.dds",
+    "sha1": "c1d5716cc3606aa00ccaa064e3324988f5a09847",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_08.msm",
+    "sha1": "4194080ab1752eef287f6acb6d5b3cba1ce604c9",
+    "size": 1638,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_09.dds",
+    "sha1": "08df9f1142fde6c981e1645dd92f3ade319fdfbc",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_09.msm",
+    "sha1": "4fe234c01b238060aeaf5753a530a7b0ea76578c",
+    "size": 1610,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_16.dds",
+    "sha1": "bc007dd114b484e98c281f010832ef583cedbeba",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_16.msm",
+    "sha1": "8ee8097a454a706807130a1d4d5d04b6840e9aec",
+    "size": 1610,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_attack.gr2",
+    "sha1": "6770a4b55797663f4711d09dd0e941aebb6541bb",
+    "size": 8917,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_attack.msa",
+    "sha1": "661fbc94bed07acbd9caa29eea4c0e96213a5fb9",
+    "size": 616,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_blow.gr2",
+    "sha1": "c6c4fbcbce1d3295e29130f6a78a4fe72cd28326",
+    "size": 161733,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_blow.msa",
+    "sha1": "f9bcfab27b2a1d824c39815d5012d985c24a57ce",
+    "size": 1000,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_drop.gr2",
+    "sha1": "092ff33cdf494e4cd4660ed3be8fc79fd56577e7",
+    "size": 9207,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_drop.msa",
+    "sha1": "c784441b89cf22d188035dd4690970a697da782f",
+    "size": 924,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_loop.gr2",
+    "sha1": "6770a4b55797663f4711d09dd0e941aebb6541bb",
+    "size": 8917,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/metinstone_loop.msa",
+    "sha1": "b977e6d6ac2df865583f23ea42398c7fec11abbb",
+    "size": 156,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/motlist.txt",
+    "sha1": "92bb3ca59cfde4371705a38d1f9c62d99a369560",
+    "size": 532,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/spawn.gr2",
+    "sha1": "a54a351d55aafd7f640c1709dffe875156c4c827",
+    "size": 9432,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/spawn.msa",
+    "sha1": "34e4dec6dab4b7a6b266945e10876bdc26101122",
+    "size": 155,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/stay00.gr2",
+    "sha1": "1723d5d8631383d57f67e8421dce41183c6b9fe3",
+    "size": 9244,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/metinstone/stay00.msa",
+    "sha1": "1a0f69aed6ea4a68c543e3aa0dbdf7a5fadbe805",
+    "size": 156,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/plechi_v2019_metin1/destroy.gr2",
+    "sha1": "12a3cb594cd4a45eaa40bb1072daffd042457745",
+    "size": 115980,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/plechi_v2019_metin1/spawn.gr2",
+    "sha1": "a54a351d55aafd7f640c1709dffe875156c4c827",
+    "size": 9432,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster/plechi_v2019_metin1/stay00.gr2",
+    "sha1": "1723d5d8631383d57f67e8421dce41183c6b9fe3",
+    "size": 9244,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_damage.gr2",
+    "sha1": "1dd32de93a1d90bb66a73ceede8a652352891ae4",
+    "size": 31325,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_damage.msa",
+    "sha1": "b97d476afff32792d371e699a2a6f5e69727be82",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_dead.gr2",
+    "sha1": "a7667cab43cccb5416ae46099a0587bc315f9f89",
+    "size": 65867,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_dead.msa",
+    "sha1": "d65154d157d8ea8ad0221d99ee390f2060c9ed5c",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_knockdown.gr2",
+    "sha1": "efc6aa1b840f5e8f2b9dce0c5615ab41c0f58997",
+    "size": 31293,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/back_knockdown.msa",
+    "sha1": "87e61487697def53f976b021ee912062065a1bd3",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_damage.gr2",
+    "sha1": "cdf0a219f95f9ef97b1bd3cdb99153b7efc3561d",
+    "size": 26472,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_damage.msa",
+    "sha1": "1bce4c23a0e4dd787d6fe12bb8a31b4ca8d74c30",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_dead.gr2",
+    "sha1": "d8c4e0f11027eb551b8780ba479123956cda2706",
+    "size": 80538,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_dead.msa",
+    "sha1": "377076dc634ae55a3dc801cd380861dd2e57f3a4",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_knockdown.gr2",
+    "sha1": "efc6aa1b840f5e8f2b9dce0c5615ab41c0f58997",
+    "size": 31293,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_knockdown.msa",
+    "sha1": "28fd99ced068a74223f795890e24a1a63888df50",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_standup.gr2",
+    "sha1": "38fc5a4e83aef7b55536b02e2d3e28fbe5930c81",
+    "size": 31974,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/front_standup.msa",
+    "sha1": "8264a96b05d0536a00476a4fc288771fac191853",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/motlist.txt",
+    "sha1": "0708d2c437f5a98dd5a751309bf1430482f38831",
+    "size": 688,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/normal_attack.gr2",
+    "sha1": "5abc480faa6a65b2c5c344477c5bf92a05e037e3",
+    "size": 49827,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/normal_attack.msa",
+    "sha1": "e0925ad160719388eb9531a68f0f07f72a169912",
+    "size": 880,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/normal_attack1.gr2",
+    "sha1": "18e2b1cb007a0e7f06306e6a0fced785ac788b40",
+    "size": 62533,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/normal_attack1.msa",
+    "sha1": "dd4891e0fbea52063b5ede7de40a43d8c5e3434e",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/run.gr2",
+    "sha1": "f9eda721371843c2989cbbf8403843f2daeebdf1",
+    "size": 29461,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/run.msa",
+    "sha1": "4692688139adb83eeb2ce1bcdf863ac8a4514fe1",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack.gr2",
+    "sha1": "2d0503a51ef29feb8e728af16e1380fbb7d0ad1b",
+    "size": 63894,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack.msa",
+    "sha1": "0b7e3f065ae6a1806495d29e65784906ef3bffee",
+    "size": 3303,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack1.gr2",
+    "sha1": "2517cae97173d96b60214d6f831cc09227f88310",
+    "size": 52267,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack1.msa",
+    "sha1": "4dc9f5b18617771b5ddfff9f6f9c362aacf3ea57",
+    "size": 7269,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack2.gr2",
+    "sha1": "3f4874ac8bcb731d61c884da2c7d12506f320440",
+    "size": 61205,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/special_attack2.msa",
+    "sha1": "1e34b7daefee23b74a1cfe2e8cc5cbb13b68b7eb",
+    "size": 6020,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss.gr2",
+    "sha1": "6872e6c4089f8bfe430555ec85d699e621e3c016",
+    "size": 117013,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss.msm",
+    "sha1": "eeb9df5c5c428e57e2653da21aead96c03dfba3e",
+    "size": 1092,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss_1.dds",
+    "sha1": "b45db3d08b464ac2fcb4e2207bff317ce67dfc9c",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss_lod_01.gr2",
+    "sha1": "713ccce30b72276e5c5c5624e6c3a1f1198ae9f7",
+    "size": 98055,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/thunder_boss_weapon_1.dds",
+    "sha1": "baef36344faa92c586dd73646ad5683845bacb9c",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait.gr2",
+    "sha1": "37b7d73a765a21c8cf9ab3d71fa8a52e217bdd39",
+    "size": 35005,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait.msa",
+    "sha1": "d9d1514c6c76ca600a9fd88136a5457549e72525",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait1.gr2",
+    "sha1": "8753509575429611e745db750d0a74eb74580cdb",
+    "size": 37726,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait1.msa",
+    "sha1": "ff998674a0b47b1dc26427effd54ee6ad37c949c",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait2.gr2",
+    "sha1": "2c3acebba8db76d428b6b440234ab321836d3129",
+    "size": 80005,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/wait2.msa",
+    "sha1": "d56f2e8c0b903f628ed3af6ebae050a890f32639",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/walk.gr2",
+    "sha1": "4551639be2540a92b788bd3d4e636380a425c86d",
+    "size": 51291,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/thunder_boss/walk.msa",
+    "sha1": "0d987d4af0e7808c4b6a2e40d7e19ec048392c3b",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_damage.gr2",
+    "sha1": "29f652088b32f9c8d06d582fe59e57678c03df9e",
+    "size": 25034,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_damage.msa",
+    "sha1": "df16051487aa5c8c23f903bcf1cfbd38b759ffa1",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_damage1.gr2",
+    "sha1": "a6a9d6684315920f263633e078dd9e73c3fad1ca",
+    "size": 24700,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_damage1.msa",
+    "sha1": "7ff3de6a2b5eb1e2e3d808b9859ecd3354260af5",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_knockdown.gr2",
+    "sha1": "94ba21a33afd8e073999172288cdcf136d530c85",
+    "size": 34506,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/back_knockdown.msa",
+    "sha1": "d45a7e767415e68a74760e9cedfe2c5c92218e0e",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_damage.gr2",
+    "sha1": "28d8b4b7ac16fe2792e6f8dbf0b954f558dcb09e",
+    "size": 24536,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_damage.msa",
+    "sha1": "9a9ad5bd4cd833d27c6995b99d102b22fec17712",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_damage1.gr2",
+    "sha1": "d9a473f331a34832c38b7f2f210b57d900a12a3e",
+    "size": 24616,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_damage1.msa",
+    "sha1": "849074de9275046fdc32d013d275c98a8af971fc",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_dead.gr2",
+    "sha1": "36a7109940bcfb50ff95f9eaecb1aa01c8119405",
+    "size": 52876,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_dead.msa",
+    "sha1": "47ccc74aca634ca33eb1fe48a70501c0f065ed39",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_knockdown.gr2",
+    "sha1": "e8717598d52f13ed220889c89c7440043d4dc55c",
+    "size": 33306,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_knockdown.msa",
+    "sha1": "2f2281c6112bdf8d9c42c0590e68779731e8775a",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_standup.gr2",
+    "sha1": "9dca011c3125d2bef376f6c5026d3fce100768c0",
+    "size": 24616,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/front_standup.msa",
+    "sha1": "1f196e730f2efac5b33f10c12b8abbff3b0013e4",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/motlist.txt",
+    "sha1": "38c937fa961436ece68e61db40f1827de57da3a7",
+    "size": 720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/normal_attack.gr2",
+    "sha1": "9d00628b026fcbed72a2bc611deee05798070ae4",
+    "size": 36302,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/normal_attack.msa",
+    "sha1": "2e5faf102b8fcab0d73c04f9144c84883088af62",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/normal_attack1.gr2",
+    "sha1": "7da8326b0aaa86b18c63fa7fae201b410610dc9a",
+    "size": 35828,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/normal_attack1.msa",
+    "sha1": "0d8ce431d4f1ae2d97768a729115d791d681e056",
+    "size": 882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/run.gr2",
+    "sha1": "6eeff89930e85a7c1d6b83a136e5202042f0f13a",
+    "size": 34410,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/run.msa",
+    "sha1": "47d3dbb049a1539657dd1e3e256e3f1cf758de82",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/special_attack.gr2",
+    "sha1": "4815718776692325175096ebf49d4af6b7fc7456",
+    "size": 51380,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/special_attack.msa",
+    "sha1": "eb8197c43404fdaecf4b2d7f5f4c44a20d624702",
+    "size": 2638,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss.dds",
+    "sha1": "cc7f9228b2cb04246deaec813921f77f1a25c03a",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss.gr2",
+    "sha1": "d8e218f0b3903ef62ee645c45c31ba7b001473be",
+    "size": 98592,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss.msm",
+    "sha1": "ed47e7b13ba2319eddffa63bbdd4c5e5f218daad",
+    "size": 1094,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/trent_boss_lod_01.gr2",
+    "sha1": "73230c20976a3565f2768ca21b5a070a796504f3",
+    "size": 75008,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait.gr2",
+    "sha1": "62f3845bbc25adc33385e647bf04ed44b6b8aa57",
+    "size": 31122,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait.msa",
+    "sha1": "035bb45d8c649991e55584d121ad2130721778a6",
+    "size": 187,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait1.gr2",
+    "sha1": "9bd49bdd3f94d8cba2aef086ccb2dfa906f15d7b",
+    "size": 52486,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait1.msa",
+    "sha1": "c8920f085aa77486fba75c01ef94a064d029dfdf",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait2.gr2",
+    "sha1": "97e4e7fcc8175cff75b337a0030de0b1bb9088b1",
+    "size": 49162,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait2.msa",
+    "sha1": "107f975a639bc799d51c4d9bd189075630864cee",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait3.gr2",
+    "sha1": "89d282a09ae1805b1215348b4fefaadab243cf1c",
+    "size": 52350,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/wait3.msa",
+    "sha1": "ae8b7e2dcca7f377319afab77ce2afeeaaef2168",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/walk.gr2",
+    "sha1": "d70cb74a21a5df23b502c894b017117e38db79c6",
+    "size": 33578,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss/walk.msa",
+    "sha1": "a2ef62a49bc343528a94b32f3209933640efcb6e",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/back_damage.msa",
+    "sha1": "df16051487aa5c8c23f903bcf1cfbd38b759ffa1",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/back_damage1.msa",
+    "sha1": "7ff3de6a2b5eb1e2e3d808b9859ecd3354260af5",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/back_knockdown.msa",
+    "sha1": "d45a7e767415e68a74760e9cedfe2c5c92218e0e",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_damage.msa",
+    "sha1": "9a9ad5bd4cd833d27c6995b99d102b22fec17712",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_damage1.msa",
+    "sha1": "849074de9275046fdc32d013d275c98a8af971fc",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_dead.msa",
+    "sha1": "47ccc74aca634ca33eb1fe48a70501c0f065ed39",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_knockdown.msa",
+    "sha1": "2f2281c6112bdf8d9c42c0590e68779731e8775a",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/front_standup.msa",
+    "sha1": "1f196e730f2efac5b33f10c12b8abbff3b0013e4",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/motlist.txt",
+    "sha1": "38c937fa961436ece68e61db40f1827de57da3a7",
+    "size": 720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/normal_attack.msa",
+    "sha1": "2e5faf102b8fcab0d73c04f9144c84883088af62",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/normal_attack1.msa",
+    "sha1": "0d8ce431d4f1ae2d97768a729115d791d681e056",
+    "size": 882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/run.msa",
+    "sha1": "b7b56f5fc1df7ee9a291da7200e51bfc5c5ddc08",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/special_attack.msa",
+    "sha1": "352bdd83ddc2e0ec459013048764b18581aba6e7",
+    "size": 2647,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2.dds",
+    "sha1": "d2b8595d0fcc47992609b37b0b050337634e2725",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2.gr2",
+    "sha1": "dd40b395ed53c515cb665e74c73fe98aaeac3d07",
+    "size": 115012,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2.msm",
+    "sha1": "c3488a21b2676d64b3386c58da22f019443c3898",
+    "size": 1499,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/trent_boss2_lod_01.gr2",
+    "sha1": "4f321f7d8926abd7167d46eae8372364ac59cc65",
+    "size": 85140,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait.msa",
+    "sha1": "035bb45d8c649991e55584d121ad2130721778a6",
+    "size": 187,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait1.msa",
+    "sha1": "c8920f085aa77486fba75c01ef94a064d029dfdf",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait2.msa",
+    "sha1": "107f975a639bc799d51c4d9bd189075630864cee",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/wait3.msa",
+    "sha1": "ae8b7e2dcca7f377319afab77ce2afeeaaef2168",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_boss2/walk.msa",
+    "sha1": "a2ef62a49bc343528a94b32f3209933640efcb6e",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_damage.gr2",
+    "sha1": "8abc0714ce795ac568e912d52c2c7da8daead26f",
+    "size": 33528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_damage.msa",
+    "sha1": "c08bdf26dc698d34a51e9b8dbf8709522f9df7b7",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_damage1.gr2",
+    "sha1": "aa9e92420e3f7db0da70105795427786078c2dc9",
+    "size": 33590,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_damage1.msa",
+    "sha1": "8b328477a6438202cd3e28f7d1b7a11ad43c3482",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_knockdown.gr2",
+    "sha1": "9b55de176b772ff567b5dcff8e8908d47bb1040f",
+    "size": 34396,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/back_knockdown.msa",
+    "sha1": "f2c06946352b64bd0edd85e92706bba7a74456ae",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_damage.gr2",
+    "sha1": "83a7d9941f55dd1e22e1a16df1d248425435c4c4",
+    "size": 35053,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_damage.msa",
+    "sha1": "52f7e2b3d539ccf4730fdcfabe82b502e84a5416",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_damage1.gr2",
+    "sha1": "afa5cd5379b8ac89876ec748ffd82f13b1f134a8",
+    "size": 33574,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_damage1.msa",
+    "sha1": "86c0229f2792e659bd73c6eb3852a0338c4e8b40",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_dead.gr2",
+    "sha1": "c6e8af27877f342b3e34822ea0c6ac70e541b225",
+    "size": 66914,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_dead.msa",
+    "sha1": "11c34a728d22f11a64602b7c9f0cadd1078c795d",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_knockdown.gr2",
+    "sha1": "814fd527a38d1cf9789f9c7e1651e00cad07fd6f",
+    "size": 34254,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_knockdown.msa",
+    "sha1": "d00254cc3ddf628501c30b7949c3c68772b6ee99",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_standup.gr2",
+    "sha1": "3cd0734215121d178854f59300cff4a4d4ed620d",
+    "size": 38774,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/front_standup.msa",
+    "sha1": "538faf189043aaf69a3dfa6f2aa4da9a1253c0ed",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/motlist.txt",
+    "sha1": "38c937fa961436ece68e61db40f1827de57da3a7",
+    "size": 720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/normal_attack.gr2",
+    "sha1": "19d4087f2e76ff7c38af4b31330c98942e062a23",
+    "size": 62638,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/normal_attack.msa",
+    "sha1": "ee47e7ceb1b66d8585aba19d8289794ebe924e53",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/normal_attack1.gr2",
+    "sha1": "887a789d55f6fa39c5df3659e2f8cde2da4d819c",
+    "size": 60257,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/normal_attack1.msa",
+    "sha1": "a12195b63824fdf4749fb443cc9676d2afd25e05",
+    "size": 882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/run.gr2",
+    "sha1": "211c39af63c57d2dbf9f325ae2484571f8d59669",
+    "size": 25290,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/run.msa",
+    "sha1": "6bc501aa135d67de63459e798ce4e46c76cd5f14",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/special_attack.gr2",
+    "sha1": "d74f11de700ac885e6f80af51678bace358c02b2",
+    "size": 63841,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/special_attack.msa",
+    "sha1": "f00fd4b85d7254e8d6719859e45f9247fae5a0a0",
+    "size": 1894,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general.dds",
+    "sha1": "f0e5b9e30fd8765b8a9d9a77dbd672f0345d6647",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general.gr2",
+    "sha1": "0e571ae8e26040b28fe078c5d9b459ff1d0a9ddb",
+    "size": 96165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general.msm",
+    "sha1": "ef363df2cf01318cf3fd3df557f23a4dd068a85b",
+    "size": 1098,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/trent_general_lod_01.gr2",
+    "sha1": "b5ef5bedabaad1409c8ecdf6bebe7c40e758520c",
+    "size": 77363,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait.gr2",
+    "sha1": "7b0bfa62c335e04109a613499a9926e9e327db2f",
+    "size": 48018,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait.msa",
+    "sha1": "c63a078fba071a592b4afe61a6ef71c808d8468b",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait1.gr2",
+    "sha1": "43d4bba121382de68044ef61da6a3e4bf0d7e5fc",
+    "size": 93349,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait1.msa",
+    "sha1": "b3331ada3447176339017bc07a5b4d11622be5ab",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait2.gr2",
+    "sha1": "0b225deeb87068be717658ea2374559985ac900b",
+    "size": 98441,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait2.msa",
+    "sha1": "4e0a5a15d276936a96649f1e93f3ef24832ad392",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait3.gr2",
+    "sha1": "f54ec58218b710d05f01e51386f12d6511275c73",
+    "size": 49350,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/wait3.msa",
+    "sha1": "962a03591017e211a0bc4e1324290c8b234d37dd",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/walk.gr2",
+    "sha1": "21a5922f94bd02a282ea0d22ecd256bdcaaeb4f6",
+    "size": 35336,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_general/walk.msa",
+    "sha1": "53d684f8619fbe0b52800a9a5f3e2cab8070ab9b",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/back_damage.gr2",
+    "sha1": "565ecb23d8358b500eac51a87bd9721bfdb503b0",
+    "size": 23719,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/back_damage.msa",
+    "sha1": "a7f36fa243b2afccc7dbed93b790426527f46995",
+    "size": 195,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/back_knockdown.gr2",
+    "sha1": "3c5f59d45775c61967e5fc621fd99bc563fa14e7",
+    "size": 25260,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/back_knockdown.msa",
+    "sha1": "56ec881dc3f3322687b8fcbe2a7971612bf454b0",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_damage.gr2",
+    "sha1": "b8660aed0c4c4fa20e788137b96fd4d3312402f2",
+    "size": 24595,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_damage.msa",
+    "sha1": "8f71295d2aebcf757ef6316b6e3ee42896c1f812",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_dead.gr2",
+    "sha1": "3021a1a551d1fd684b5656794320d21d3631e6bd",
+    "size": 47386,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_dead.msa",
+    "sha1": "9d261da0d33954f5034c7f3618c5b7fa5aa7afa5",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_knockdown.gr2",
+    "sha1": "5ed3d3c30ea6c64ca988cf011ae411b1f6cd8b16",
+    "size": 25341,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_knockdown.msa",
+    "sha1": "3fa06b177b74af830576380f92443d9de0989b27",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_standup.gr2",
+    "sha1": "4fc8af063756db89a4163df6e9912d0a0350f070",
+    "size": 29728,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/front_standup.msa",
+    "sha1": "88f616e0981a61381e935b936eaf6d3ddc7b2861",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/motlist.txt",
+    "sha1": "0d86feb87184e0bd383dbc69d181886748531798",
+    "size": 539,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/normal_attack.gr2",
+    "sha1": "48f96aafbf9d5a5013af36847e3e888c03d4e4c4",
+    "size": 23893,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/normal_attack.msa",
+    "sha1": "c403dd43b2bbff6806963223574a4ca33354d832",
+    "size": 978,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/normal_attack1.gr2",
+    "sha1": "8ca0e5c08b22b54346d1f6d95a643c39ead0fb52",
+    "size": 24824,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/normal_attack1.msa",
+    "sha1": "6fb3b3aba5b94378ab7229b04dbdb2f17172ccfb",
+    "size": 979,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/run.gr2",
+    "sha1": "04188b9c2d768e68e3599a67c7db35f014d15e84",
+    "size": 24966,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/run.msa",
+    "sha1": "a5013f817bb8c4b60e151dbd50fefeb06946d10b",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/trent_magic.gr2",
+    "sha1": "9bf5be723afcf32ebbab1781ff62f86c520b82ad",
+    "size": 66172,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/trent_magic.msm",
+    "sha1": "50d34fcb636d591051f6c52389c01f8ca51bda41",
+    "size": 1094,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/trent_magic2.msm",
+    "sha1": "bf8b932a36fe8f7644f8ec51e5de642b329ce988",
+    "size": 1346,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/trent_magic_1.dds",
+    "sha1": "7719f568338d21e586f8b9579ebe745f37ae8cf7",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/trent_magic_2.dds",
+    "sha1": "3403bc94fa1c0e1c492e5da02e1af3aa8ff0db7d",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/trent_magic_lod_01.gr2",
+    "sha1": "d1f4bcb09983e505410202b43e97d3e32db4a5a5",
+    "size": 54073,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/wait.gr2",
+    "sha1": "9c7e056ff25dd3a4debc70b8bdabcc9041187654",
+    "size": 27277,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/wait.msa",
+    "sha1": "c5438441adda32f535f0b67d8c5c04cb0a618125",
+    "size": 188,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/wait1.gr2",
+    "sha1": "273826cd4f54239fd925b9e75a72abc7db27ab09",
+    "size": 68408,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/wait1.msa",
+    "sha1": "a4a4960e2be29175aa2d1740c275ec2816d67caa",
+    "size": 189,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/walk.gr2",
+    "sha1": "534c23b10d9707c52466c028c1c25d930955801f",
+    "size": 28237,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_magic/walk.msa",
+    "sha1": "6066c8ad32b2c50029c05528e10a3bdb35b0cd23",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/back_damage.gr2",
+    "sha1": "9c647f6edcfce4b0f9b7e6f5562399882d40d089",
+    "size": 21720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/back_damage.msa",
+    "sha1": "b717a955a0ebe957867f6ed6fc76b10f2af4f09c",
+    "size": 197,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/back_knockdown.gr2",
+    "sha1": "ca966a98ea2064564455842a94762a8caab59b23",
+    "size": 23242,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/back_knockdown.msa",
+    "sha1": "669b867e5e4e22c43747ffd904c9aaf41e904155",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_damage.gr2",
+    "sha1": "0c01358df9efefc1cc326ab539770d08ee1bd509",
+    "size": 21085,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_damage.msa",
+    "sha1": "8c8ae768c4c344075b984e0c9e86e3adafa05e1f",
+    "size": 198,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_dead.gr2",
+    "sha1": "0ec89056936ac60078fe9c73db9eb97fe72c4def",
+    "size": 35728,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_dead.msa",
+    "sha1": "6da5371a7d2116865e4815e94d64ba46fc9bc72d",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_knockdown.gr2",
+    "sha1": "6c9564634b31d4a6e80dcca8d98580a3cd39cef1",
+    "size": 23516,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_knockdown.msa",
+    "sha1": "a3354e142cbc1350edb57b7d738678e7c7a37e21",
+    "size": 201,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_standup.gr2",
+    "sha1": "0b5efc6dbdf3bf9b1cf1b8184335769d0e10bec3",
+    "size": 23283,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/front_standup.msa",
+    "sha1": "453b9574bb53ecafb5f7901bb8451ca16907e55b",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/motlist.txt",
+    "sha1": "0d86feb87184e0bd383dbc69d181886748531798",
+    "size": 539,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/normal_attack.gr2",
+    "sha1": "15953c697fbbc83047250e1f37fce67b13d4d3ab",
+    "size": 23595,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/normal_attack.msa",
+    "sha1": "a06bc7f09bf8eb81aac398d0241ce465cd3b28e6",
+    "size": 881,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/normal_attack1.gr2",
+    "sha1": "e242de1e35ae07ac073f36c683c58d6e61b9ec81",
+    "size": 22992,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/normal_attack1.msa",
+    "sha1": "8014d4e70d873c10b6229f10519e6781179cfaf8",
+    "size": 882,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/run.gr2",
+    "sha1": "4287df41cc4deb8efd6e64e1189754675239210b",
+    "size": 21254,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/run.msa",
+    "sha1": "da50d247e3ad8b08ef8f2c39b8f27d5930122ec9",
+    "size": 192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/trent_soldier.gr2",
+    "sha1": "8be5e3a75da0ec0ee6720926186a770263d03e0c",
+    "size": 51303,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/trent_soldier.msm",
+    "sha1": "f6a8272ff0ab4ddb4684f1362686de362eb8fc48",
+    "size": 1092,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/trent_soldier2.msm",
+    "sha1": "b226cc1440721ab4aba266de95b62ab57e4c0bc6",
+    "size": 1356,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/trent_soldier_1.dds",
+    "sha1": "9849d7f0a8e729e6e81468f6573718ef816e8c9b",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/trent_soldier_2.dds",
+    "sha1": "7ad03ac3c41f99476377d1cf3f982b248d0e4732",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/trent_soldier_lod_01.gr2",
+    "sha1": "cad4a8dbb4aa4b38a9c54f51baf8b842a793852e",
+    "size": 44866,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/wait.gr2",
+    "sha1": "870b5ab3ac42bec9456129f93a177acae35eeac7",
+    "size": 18202,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/wait.msa",
+    "sha1": "4d6d1eb5b9770cf679883415c977a75695b406aa",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/wait1.gr2",
+    "sha1": "cadbf594c454a39b958c4872b5b1382f57bf06da",
+    "size": 47418,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/wait1.msa",
+    "sha1": "8284da2bba3ba85233fc8ccdb174a94674a4a749",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/walk.gr2",
+    "sha1": "043b3453e47a51b42255a1de5f4d12da410c10a9",
+    "size": 20919,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/trent_soldier/walk.msa",
+    "sha1": "92cb93d1886102ca47c1dd1ae90aec2e57036e68",
+    "size": 193,
+    "source": "gf"
+   },
+   {
+    "name": "sound/common/hit/hit_sword_3.wav",
+    "sha1": "0ba039d552e30905114d6928378586317badcafb",
+    "size": 18452,
+    "source": "gf"
+   },
+   {
+    "name": "sound/common/spell/spell_archer2h_ice_guard.wav",
+    "sha1": "839cc29322607ad0b1d0bd24563e296a1d11933a",
+    "size": 116406,
+    "source": "gf"
+   },
+   {
+    "name": "sound/common/spell/spell_magician3pr_holy_enegy.wav",
+    "sha1": "4419e04d303080847f73507de9d180cc4ad06e2b",
+    "size": 186680,
+    "source": "gf"
+   },
+   {
+    "name": "sound/common/spell/spell_power_attack.wav",
+    "sha1": "bea24a7009839bb264acfc28a5a3f8dc47cb8379",
+    "size": 54084,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/metinstone/metinstone_attack.mss",
+    "sha1": "0795ea19a0f15869ac37b8cf1cd1838c4e9d0399",
+    "size": 145,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/metinstone/metinstone_attack.wav",
+    "sha1": "649c818170a88f66d78faf15275e647a39c4101c",
+    "size": 125714,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/metinstone/metinstone_blow.mss",
+    "sha1": "7d4a7f9757b5b5e9aef8bd85e5c7ffbe794e9574",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/metinstone/metinstone_crash.wav",
+    "sha1": "29887f95a3dc7a791e09a23add681be71dc01815",
+    "size": 85582,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/metinstone/metinstone_drop.mss",
+    "sha1": "6f2d94410623a56e6cc77b79500a7b47becc2e02",
+    "size": 220,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/metinstone/metinstone_drop1.wav",
+    "sha1": "dd72af3740fde869251209e7c91a29d3a3b3262c",
+    "size": 50798,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/metinstone/metinstone_drop2.wav",
+    "sha1": "346bf9788cd1c95bf93420121887a4bf88a8ea98",
+    "size": 88560,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/back_damage.mss",
+    "sha1": "c6275d6dd2ad50beaf45dcb337aa16b30625f605",
+    "size": 137,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/back_knockdown.mss",
+    "sha1": "5ede26c842282cc4a38156d29aec8578f7eae31d",
+    "size": 137,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/front_damage.mss",
+    "sha1": "6411294adfec2ad2fbff1478ab6cd81522c79305",
+    "size": 137,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/front_dead.mss",
+    "sha1": "bed5377337b6f68d1200b7ad59e6fcb8edfbbe74",
+    "size": 276,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/front_knockdown.mss",
+    "sha1": "5ede26c842282cc4a38156d29aec8578f7eae31d",
+    "size": 137,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/normal_attack.mss",
+    "sha1": "55883fdc8310fb1f0b0ff64397d861af554902f6",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/normal_attack1.mss",
+    "sha1": "c121878b8b98f866df006d2a43b3eb16e11f6482",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/run.mss",
+    "sha1": "e3786133c195d6b2855fd7ffa52c06735e5faddf",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/special_attack.mss",
+    "sha1": "e30100f453b7de1a66f31040dfa9b06f9b8d77a9",
+    "size": 268,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/special_attack1.mss",
+    "sha1": "30a7638ba406a551584b53e1d10fd752baf2097a",
+    "size": 642,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/special_attack2.mss",
+    "sha1": "40823875e318a7634ce981a00d9520fd0a9aa86c",
+    "size": 456,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/thunder_boss/walk.mss",
+    "sha1": "959ef8a691aeeb0a5ae4796da8f7bd70afc741a5",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/back_damage.mss",
+    "sha1": "4cfa13d25f861d3cb6a2e6a8d127ee8472803263",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/back_knockdown.mss",
+    "sha1": "e8ca0223680e9318421884c3c491ba461f8e746e",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/front_damage.mss",
+    "sha1": "1674dd6bbe7eba588623bdf63634534552aefa55",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/front_dead.mss",
+    "sha1": "db0eced0dd90caa75e59d87e6a86b8413404fd30",
+    "size": 262,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/front_knockdown.mss",
+    "sha1": "5a62a0bd8e70e1e6119173a260c28521f1f75cc6",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/normal_attack.mss",
+    "sha1": "fcc5e43e2ce851b1983df7e8528e6fc99c88ede3",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/normal_attack1.mss",
+    "sha1": "5709b663085df7b6d6f36df7a15a205b288cca31",
+    "size": 228,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/run.mss",
+    "sha1": "23bba515578ded37291d32e0db13f7665874b9e0",
+    "size": 370,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/special_attack.mss",
+    "sha1": "930f307e7400cb32cf4bd9dd8576447c4775f1d8",
+    "size": 341,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss/walk.mss",
+    "sha1": "b52c7164e97302d5c6474faef52ed2faa6aba5ec",
+    "size": 218,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/back_damage.mss",
+    "sha1": "e6e6669b596fe0ca3187852b4a1858cef9f73df9",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/back_knockdown.mss",
+    "sha1": "f9b8b0bfc51baa7f7e9a9ad30cc4dc568a1f2989",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/front_damage.mss",
+    "sha1": "e6e6669b596fe0ca3187852b4a1858cef9f73df9",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/front_dead.mss",
+    "sha1": "f7ac940f719c88e7f8b078d018495555ac297f7d",
+    "size": 260,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/front_knockdown.mss",
+    "sha1": "2c693c3f6a184912343e4f488548af0566aa645c",
+    "size": 129,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/normal_attack.mss",
+    "sha1": "69a949194ff5794827e66e7679bbf7d459c6877a",
+    "size": 191,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/normal_attack1.mss",
+    "sha1": "f90cf5a8b1aa95e2e255b44f3dca68cef16a4a59",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/run.mss",
+    "sha1": "ccaee01fb5d99bc5199bc41cc16bda749354c406",
+    "size": 369,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/special_attack.mss",
+    "sha1": "10f996ed5264c66669236a8d99523afb6d189200",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_boss2/walk.mss",
+    "sha1": "0c433239ae0b8fd652c50d38f549e1edba7cf29d",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/back_damage.mss",
+    "sha1": "39add268845af73bd9f28af9a36f97cea99a8077",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/back_knockdown.mss",
+    "sha1": "5160a040952c4bd6eb9f0f9ac021816f8d1e8ee5",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/front_damage.mss",
+    "sha1": "165da00475720027edf3d5e252d27bd7e3311f29",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/front_dead.mss",
+    "sha1": "fe30d43de5f31af7acbd6c33468a8a947616792f",
+    "size": 204,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/front_knockdown.mss",
+    "sha1": "659ebe324d080ebeea1b05fb6d6528ec535f4559",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/normal_attack.mss",
+    "sha1": "a600f24031e8da24bf571469cbae44a6b4e91521",
+    "size": 196,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/normal_attack1.mss",
+    "sha1": "2e5e70b99977b50faae836c6d734d0d827a73a63",
+    "size": 258,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/run.mss",
+    "sha1": "7dba86c0ede90d6c4d80533bf044ea211bba5d86",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_general/walk.mss",
+    "sha1": "5eda225778c206bc229d90162bfd3002691cc0fc",
+    "size": 219,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/back_damage.mss",
+    "sha1": "1674dd6bbe7eba588623bdf63634534552aefa55",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/back_knockdown.mss",
+    "sha1": "1a9b4c49041b9a23124987d5f7a928d38e57cb9c",
+    "size": 220,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/front_damage.mss",
+    "sha1": "1674dd6bbe7eba588623bdf63634534552aefa55",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/front_dead.mss",
+    "sha1": "d1a61a0f47a54bb38fae503a503f8b7874c307a7",
+    "size": 281,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/front_knockdown.mss",
+    "sha1": "7ddb85df3051946515a182dff4cdf9424ffff18c",
+    "size": 220,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/normal_attack.mss",
+    "sha1": "6c5a001af0b140d40d45fece92558549f1a676f5",
+    "size": 222,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/normal_attack1.mss",
+    "sha1": "47cc58695a616dfbf2dea9cb762220c8c75e6fe3",
+    "size": 149,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/run.mss",
+    "sha1": "0acb0750392c9ced86e8eebd463f78d60810480e",
+    "size": 222,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_magic/walk.mss",
+    "sha1": "4d62929f7922800fae0ba6a0858ef90fd5bc6e63",
+    "size": 222,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/back_damage.mss",
+    "sha1": "f0216754a37f8c9d79486888274ae4320aea8622",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/back_knockdown.mss",
+    "sha1": "20e55318e3494561c0dc786332cfc9d1b2715115",
+    "size": 210,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/front_damage.mss",
+    "sha1": "931db1b74d5fc200348083aee429b0f09db0511a",
+    "size": 134,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/front_dead.mss",
+    "sha1": "6d111a60fa586227b25aa74756030ef809dd091d",
+    "size": 207,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/front_knockdown.mss",
+    "sha1": "ad8181cf83a8367a35ed11f0125a894b1acbb2de",
+    "size": 209,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/normal_attack.mss",
+    "sha1": "119ffd33ccdf4a7affef2f7ac30d2381ad4a4533",
+    "size": 199,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/normal_attack1.mss",
+    "sha1": "2b976f18245c151c190f58d38ac4fcfc9cbca18e",
+    "size": 262,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/run.mss",
+    "sha1": "7dc6868dcc258bbb35e061cd18f6e6f3634f3cf9",
+    "size": 222,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/trent_soldier/walk.mss",
+    "sha1": "c8cb82a5675f2c3334d566753d0526ff4a990da0",
+    "size": 222,
+    "source": "gf"
+   }
+  ],
+  "zaklety_obj": [
+   {
+    "name": "d:/ymir work/effect/background/cairn_01_00.mde",
+    "sha1": "10c29df3830aa841c7abe61c29c746fcb64e0b19",
+    "size": 85435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/cairn_01_00.mse",
+    "sha1": "95fc1feadc07e433017af34009fc2eef201f2f1e",
+    "size": 964,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/cairn_alpha_copy.dds",
+    "sha1": "15535e7c267ec222ad983968efc1e8ec43dadf70",
+    "size": 21632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/flash_bluegreenstar.dds",
+    "sha1": "1574d3fe3e19954c8c93fa4a717dd33956e6805e",
+    "size": 16512,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/metinstone_loop_2_whitered.mse",
+    "sha1": "7c2c61c224d85221bbfde9c214ebc8fe9b7e7b0e",
+    "size": 9422,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/mush_effect.mse",
+    "sha1": "2df245189fdf8879dd22d9078e402bcdd76f578a",
+    "size": 6729,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/mushrooma_01.mse",
+    "sha1": "fab63767ee275b6af3f3d518448c336468d83048",
+    "size": 968,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/mushrooma_03.mse",
+    "sha1": "1d4b843279612106c99118efe99e35254547a101",
+    "size": 965,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/mushrooma_04.mse",
+    "sha1": "e173059bd114be07d087c8891de653fd02adbb4f",
+    "size": 966,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/turtle_statue_tree_roof_light01.mse",
+    "sha1": "34d0f471df52ee4c1cf1bf0c87eb3fb848e4cae7",
+    "size": 1015,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-037-tower.dds",
+    "sha1": "e2f330fbd4feba6dc0a6603b168d3ec2beef7328",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-037-tower.gr2",
+    "sha1": "eee7d0da857423f068c30896e315b7d01bf6f406",
+    "size": 57982,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-037-tower.mdatr",
+    "sha1": "b636a36e7865ca7a7e48fdfd9027d7f0c26fce38",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1s-002-inwall-02.gr2",
+    "sha1": "b91216bbac60eee55d2c6143a4ab96bf4f266e1d",
+    "size": 19573,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1s-002-inwall-02.mdatr",
+    "sha1": "1077e436662aa222222e9dac5fa654d850aa6b2e",
+    "size": 1282,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/devils_dragon_island/dawnmist_wallpillar00.gr2",
+    "sha1": "fed43214cfd12536f01d359f3f9789befc6334a1",
+    "size": 29573,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn.dds",
+    "sha1": "9c6e4d346d5b926ce2442a60c12d889536d1a27e",
+    "size": 699192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_01_00.gr2",
+    "sha1": "a46039c5801a5480a95d24d1a3cc194f05a1c712",
+    "size": 40420,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_01_00.mdatr",
+    "sha1": "31052b625b0ddf9f583c8ca01d1ac9ecb2e8fb74",
+    "size": 670,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_00.gr2",
+    "sha1": "eb5be08a9cbb58adf1615a390d052c6faf2be9e6",
+    "size": 35632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_00.mdatr",
+    "sha1": "ff694a66754d290e2e1d9a1f1ccd472220da2334",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_01.gr2",
+    "sha1": "3c9c56da9741c58e5acaa7339522e569b2a59323",
+    "size": 36343,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_01.mdatr",
+    "sha1": "f4f7a112aa7cbf8f6730d10b50b954d56bd0e7cf",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_02.gr2",
+    "sha1": "4c402666182d6e0ffa158a385097cec90add6baf",
+    "size": 16042,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_02.mdatr",
+    "sha1": "9f41b8c875c17df289dc5ca3b0cc0d8db5a82671",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_03.gr2",
+    "sha1": "4837d866390bf8a02438add602a924f859ec3e2e",
+    "size": 34414,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_03.mdatr",
+    "sha1": "9fe9d2627ff7255f74636315367fb6448153fe74",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_04.gr2",
+    "sha1": "e8a4626a61b3cc32d51a32ccfc40584c50fc27c4",
+    "size": 32632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_04.mdatr",
+    "sha1": "a89a4abe43fd936b1ee7990ebea163eb1bcb0ba4",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_05.gr2",
+    "sha1": "dae48c2e0c0d49c57b4ec8f4032cf9583c243337",
+    "size": 33576,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cairn_02_05.mdatr",
+    "sha1": "2f9479707e76334e81866c4cee68a887f280b239",
+    "size": 742,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_coner_00.gr2",
+    "sha1": "cf55fb2c619d8573ab0fda4e3f066cd0b97b379a",
+    "size": 21247,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_coner_01.gr2",
+    "sha1": "3968ab0ef913c20a7333b75d0d9957f9be59e5d9",
+    "size": 24269,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_coner_in_00.gr2",
+    "sha1": "f31b4fc9286bf3a9a36bda14651702688ad8d937",
+    "size": 26347,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_pillar_00.gr2",
+    "sha1": "6df262898a3fa6c6dfc202d475ffda1c8835a0b1",
+    "size": 19860,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_side_00.gr2",
+    "sha1": "a2425802d3e693c3d26e1f686173993af9aa8327",
+    "size": 16388,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_tunnel_01.gr2",
+    "sha1": "962a6a0471fc68d788ef72a13613855395ff6208",
+    "size": 25921,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_wall_00.gr2",
+    "sha1": "f21b16fa888625dac137262fa37f73256fbad629",
+    "size": 20221,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_wall_01.gr2",
+    "sha1": "940f1925826d7475613fe40f7b2fae7737df38c6",
+    "size": 17841,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/cliff_wall_02.gr2",
+    "sha1": "7a1476f221cfda2eb1d0aa6e8b599aa78e80046b",
+    "size": 13707,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_boss_bell.dds",
+    "sha1": "0b0af985b2f99e2757d372557a2bc1b2b6278f5a",
+    "size": 174208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_boss_bottom_lightingmap.dds",
+    "sha1": "0fc2df826159cc04e66a2baf25be6d2041c39601",
+    "size": 43648,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_boss_platform.dds",
+    "sha1": "9ca8a8f952d1cf6375da9414c7a5ee0ba58d7fd9",
+    "size": 174208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_boss_platform_lightingmap.dds",
+    "sha1": "b24113135a43acdca8107d31f09893ded46f07e3",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_bossroom.gr2",
+    "sha1": "bdf672cccf60570073b5584ce59d5583596fc674",
+    "size": 173762,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_bossroom.mdatr",
+    "sha1": "888d8ba0fa9c2fe95d0d45b072ae84114d0b2d83",
+    "size": 2074,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_bossroom_bell.gr2",
+    "sha1": "9cd06d42dcb512659a3ba1376069260c825f48ac",
+    "size": 39894,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_bossroom_bell.mdatr",
+    "sha1": "47c4a63498f5df8cc6be3bbb21cb795c3f6efaec",
+    "size": 886,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_bossroom_bell_02.gr2",
+    "sha1": "10683b46239ef9a94bebdfc9ef9b3e19135177b1",
+    "size": 37543,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_bossroom_bell_02.mdatr",
+    "sha1": "bdf53535c7748549b2021461697fd78be72d959b",
+    "size": 886,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_gate_lightingmap.dds",
+    "sha1": "0c00c19e79ae9932ec316ada7f2fa56ddee0d79a",
+    "size": 43648,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_pillar_01.gr2",
+    "sha1": "7145596c0319a086fa9654f5fb73a0baf0c21dd1",
+    "size": 24137,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_pillar_01.mdatr",
+    "sha1": "1f97a435eb572c84e7b6ec5f1a276a1650708ac7",
+    "size": 454,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_pillar_02.gr2",
+    "sha1": "d76c4c50e3596fd932ec5237b711576bae6a72de",
+    "size": 19673,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_pillar_02.mdatr",
+    "sha1": "2abdd8aa80e4f66e5a98496bb5be87a5f0d02241",
+    "size": 454,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_pillar_03.gr2",
+    "sha1": "28976e7d5cc430ded00ca08aeb2c09701cf951bd",
+    "size": 18461,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_pillar_03.mdatr",
+    "sha1": "c0e915c34cfd065b292a037dcd95e327fbc4fc10",
+    "size": 454,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_wall00_lightingmap.dds",
+    "sha1": "644a082d59e60396f45ece9751d1ed6192fd7ea3",
+    "size": 43648,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_wall01.dds",
+    "sha1": "98b566cd8aca501778526b48616a7b506a8abb89",
+    "size": 131200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_wall01_lightingmap.dds",
+    "sha1": "a0dcaabf0cee5b6ef441a999a909363aa5b3c7da",
+    "size": 43648,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_wall02.dds",
+    "sha1": "d236f29523a9adf27477c2afdc172617728a6fc2",
+    "size": 131200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_dungeon_wall02_lightingmap.dds",
+    "sha1": "8d7453fe636472636d82e2ce744e9ae4073150b0",
+    "size": 43648,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/dmw_entrance.gr2",
+    "sha1": "241dfca6f74460de1fa12052c0d7aeecb80686f5",
+    "size": 36844,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fallentree_00.gr2",
+    "sha1": "cdf5bcf6b186deb1ff8f1ec5f15c5b5da4216288",
+    "size": 76529,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fallentree_00.mdatr",
+    "sha1": "350ceb6f065466b1d15b5bdbdcf806d99ade911c",
+    "size": 598,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fallentree_02.dds",
+    "sha1": "d2a2eaa82e3409212f8c70236f3e4fafd6ed0396",
+    "size": 696448,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_gate_00.gr2",
+    "sha1": "a028bff3ea4a0d6872e8491057cb9fadc755f6ad",
+    "size": 40768,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_gate_00.mdatr",
+    "sha1": "b64c42162d22c94e6de34d264aaeae89fb6c88d6",
+    "size": 598,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_pillar_00.gr2",
+    "sha1": "a6da5c7722fc5aa81e41751d2ed8e221c2502c1a",
+    "size": 28203,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_pillar_00.mdatr",
+    "sha1": "f2342ad7fdc02d635d0360f6bb69c2e0af505749",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_a_00.gr2",
+    "sha1": "c71794747aac109e9c681aab3144d6d2ba22d5d9",
+    "size": 23314,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_a_00.mdatr",
+    "sha1": "161fad8ce0f714106bd8abeee2fd0d9ab4ce044a",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_a_01.gr2",
+    "sha1": "22d44ff5b04d13b08f82606054906a52289b2d20",
+    "size": 20997,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_a_01.mdatr",
+    "sha1": "161fad8ce0f714106bd8abeee2fd0d9ab4ce044a",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_a_02.gr2",
+    "sha1": "c12ffd129a9fbbc0f4081967a25ae8da38d35268",
+    "size": 25279,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_a_02.mdatr",
+    "sha1": "161fad8ce0f714106bd8abeee2fd0d9ab4ce044a",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_b_00.gr2",
+    "sha1": "4337f4f14171202deeb473e03fafdf3922e3ce5d",
+    "size": 30160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_b_00.mdatr",
+    "sha1": "f60b0039d373fd667c327089f1c6eb79b31b0ea4",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_b_01.gr2",
+    "sha1": "d4eb577ad90b14f26907edafb1199f65b797c054",
+    "size": 23778,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_b_01.mdatr",
+    "sha1": "f60b0039d373fd667c327089f1c6eb79b31b0ea4",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/fortressa_wall_bk03.gr2",
+    "sha1": "2585adcac5f798750f1356adf3332450ddbf5c9e",
+    "size": 25210,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroom_alpha.dds",
+    "sha1": "4a858f670b178f8f5384ec7987cc8c2c863c36fd",
+    "size": 174208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushrooma_01.gr2",
+    "sha1": "2c79c1073ea9f07cf35e9f60c8e590f362acc505",
+    "size": 39965,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushrooma_02.gr2",
+    "sha1": "fabe27ead61bf11a2254c04384180a9a8c208ef6",
+    "size": 21913,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushrooma_03.gr2",
+    "sha1": "8d860be75fafb469f639c9e9b19238301f8b97ea",
+    "size": 42852,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushrooma_04.gr2",
+    "sha1": "fba3b1098a4f803db85979c58ee4a59ecd2bfb53",
+    "size": 32890,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushrooma_05.gr2",
+    "sha1": "5a39df196da350a0401ce4296ade3fd63f21779a",
+    "size": 48835,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushrooma_06.gr2",
+    "sha1": "8b72923049a591a7ff89551f45924ec5314b4313",
+    "size": 16622,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushrooma_a.dds",
+    "sha1": "690f68b676f1b86ce96f47a57092ba526957f363",
+    "size": 174208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomb_03b.gr2",
+    "sha1": "70e3826b71161ccf47310e02f7e02d60fe5824b7",
+    "size": 52253,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomb_b.dds",
+    "sha1": "6b255086227b65c04b2d5b1467051d9b765ec865",
+    "size": 174208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomc_01.gr2",
+    "sha1": "2f5f4a3b5167bc32bf514a37f155748b61f8e8fe",
+    "size": 37962,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomc_02.gr2",
+    "sha1": "f3688d7ba84b8f2f57497cd786b030475339f167",
+    "size": 29294,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomc_03.gr2",
+    "sha1": "fc88448e2cf6cfd2b50c1c9fda601835687c4687",
+    "size": 29031,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomc_04.gr2",
+    "sha1": "6a4a0970c9c76e4d4f63031d424660854f093f2a",
+    "size": 28994,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomc_05.gr2",
+    "sha1": "5099c5ba987ebde15765c08d3ad9c9f689cb38e6",
+    "size": 30599,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomc_06.gr2",
+    "sha1": "1721887e9f2f704a0544193b2db330700fea07db",
+    "size": 29162,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomd_01.gr2",
+    "sha1": "6c17007896f27a9ca3a854945678e129bfdfd80b",
+    "size": 38565,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomd_02.gr2",
+    "sha1": "322d3273f76f626eafc77bd8af1f5119d4ec24ce",
+    "size": 29221,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomd_03.gr2",
+    "sha1": "dccaed73f24b82f70140718ef15d9cd7bf6c2454",
+    "size": 31005,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomd_05.gr2",
+    "sha1": "a717ec3b523e59ee8c0790a8c844adb8f3bb7fe4",
+    "size": 29157,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomd_06.gr2",
+    "sha1": "30d4083a9cef6bdefedec20e09c4df09bb2acbd6",
+    "size": 30971,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomd_07.gr2",
+    "sha1": "097c5b14b9ebfe87ae2c05a55410d1241a5b77b4",
+    "size": 28887,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomd_08.gr2",
+    "sha1": "f951414b9609b37b890ebcf74ee2ee8a939e0bee",
+    "size": 28864,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/obj_braziar_00.gr2",
+    "sha1": "035aae8a7e96861f9f569bac3a2761baa04d8105",
+    "size": 22857,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/obj_braziar_00.mdatr",
+    "sha1": "55195920fd8a7057c1abd4fcc006cbe3fd6c6aff",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_gate.gr2",
+    "sha1": "8a26502f1175a5eba98026ced86aa9f857377c73",
+    "size": 33698,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_gate.mdatr",
+    "sha1": "9e28f8559f5b186078a5e8ff318fbe401183a1ba",
+    "size": 1462,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_gate_tree.gr2",
+    "sha1": "fa85b7fbf1d6e0f66e569f7c21f85b914d1000fd",
+    "size": 35682,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_gate_tree.mdatr",
+    "sha1": "d882e75a8d6c12e69bf5c7a863cb8d002279261e",
+    "size": 1318,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_tree_roof_00.gr2",
+    "sha1": "d430dee34ab8c991876bc891f9a9f56c14082673",
+    "size": 20192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_tree_roof_00.mdatr",
+    "sha1": "e45d7fc578271beb6335d4f45f7b3109ed518535",
+    "size": 1462,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_tree_roof_01.gr2",
+    "sha1": "a07938aadb84e357a415c8ddcd237a6327e56abf",
+    "size": 18167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/prayer_tree_roof_01.mdatr",
+    "sha1": "0f3965f2f2f0631a34dadcc5016a43b6ccf4ae2c",
+    "size": 1174,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/rock_pillar_00.gr2",
+    "sha1": "fd0ab720f8cf4fa4004f47897d2b199a55653426",
+    "size": 15389,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/rock_pillar_05.gr2",
+    "sha1": "e6d7f0ac1ca835d2252e21afbd096f5fa05d5b43",
+    "size": 20341,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/rock_pillar_06.gr2",
+    "sha1": "d74b6e1bc25b03d39dfcae8376093a13ec1f66c1",
+    "size": 23561,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_00.gr2",
+    "sha1": "89ce650dfa3092306e5f988ffc031f5a7e91aaf6",
+    "size": 31550,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_00.mdatr",
+    "sha1": "3c058761c78303c0197d352d2d8c3ca08221ae42",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_01.gr2",
+    "sha1": "2eb006e6e266ffd080e72e474f2dad19189ec8e1",
+    "size": 32466,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_01.mdatr",
+    "sha1": "e70dd3f550074c56079bfc30e89abf8d425d1570",
+    "size": 382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_02.gr2",
+    "sha1": "4282aae0cb4f0b9c72220772ac2ebddee0e1cd11",
+    "size": 35475,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_02.mdatr",
+    "sha1": "f4ce8179ef3623d95db76f525e3cb159dfc45e88",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_03.gr2",
+    "sha1": "5309008fc4f040746cde0bc5089a5787931790b2",
+    "size": 66921,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_03.mdatr",
+    "sha1": "ed37cdc5590063789aa2414104d43a9dcfac76ae",
+    "size": 742,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_04.gr2",
+    "sha1": "4272510479890b238995fbdd28d65d959ad63b6a",
+    "size": 47408,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_04.mdatr",
+    "sha1": "06943d6bd3d78f6d8085a1f11f8c4d193a4e592f",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_05.gr2",
+    "sha1": "f07349201577be2f3b29e43846d2f25a0a5ddada",
+    "size": 53682,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_05.mdatr",
+    "sha1": "53f152cf6814a56262624d8fc270c37f721a837a",
+    "size": 742,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_p01.gr2",
+    "sha1": "164cac545c21226d1cb3d3aecfe5256471999abd",
+    "size": 17950,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_p02.gr2",
+    "sha1": "abefd14e974fb3aecc83172cf5f742ed1ccbedcc",
+    "size": 14037,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_p03.gr2",
+    "sha1": "6e7f01cd3e3da0ddf5258ff0f15b812e73be0630",
+    "size": 17657,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_p04.gr2",
+    "sha1": "e0fe83d6927a573f83f1eecb5a43d1c4dd22f112",
+    "size": 13784,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/spawn_p05.gr2",
+    "sha1": "46c6f6b6588974253ffd04020ccb8b5d5eea1139",
+    "size": 17637,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/turtle_statue.dds",
+    "sha1": "612763ad5a6d5fe54ec9ca485a83f10a47647944",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/turtle_statue.gr2",
+    "sha1": "44496372b0bb28a3e0e23a654ab753fa7e4e0c1b",
+    "size": 26727,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/turtle_statue.mdatr",
+    "sha1": "6f662b2c15358f99d1989aff0eb401a5b1f8e41e",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/turtle_statue_tree.dds",
+    "sha1": "31b616c61f00b4fed3e40100a6b1cd2b40634660",
+    "size": 696448,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/turtle_statue_tree.gr2",
+    "sha1": "4e75d4f16b6bba49393a42d43888cb8cde1a19bf",
+    "size": 79092,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/turtle_statue_tree.mdatr",
+    "sha1": "2d07aa03a55f7dc9939d04a7afb0df615d60d42c",
+    "size": 1750,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/turtle_statue_tree_roof.dds",
+    "sha1": "e977d47df3a2e191bc1eda11606a1c9b58014085",
+    "size": 344192,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/booss3_spawn_lightingmap.dds",
+    "sha1": "121de45a25edf0dc9305c418b492c7be066a118a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spawn_yell00.dds",
+    "sha1": "9c4fb1668e0fb680e7a04298c8a00a71de30fbca",
+    "size": 172160,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "20160": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m.msm",
+   "race": "redguild_guard_m",
+   "status": "ours"
+  },
+  "20161": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m_2.msm",
+   "race": "redguild_guard_m_2",
+   "status": "ours"
+  },
+  "20162": {
+   "msm": "d:/ymir work/npc/redguild_guard_m/redguild_guard_m_3.msm",
+   "race": "redguild_guard_m_3",
+   "status": "ours"
+  },
+  "20412": {
+   "msm": "d:/ymir work/npc/jinno_patrol_spear/jinno_patrol_spear.msm",
+   "race": "jinno_patrol_spear",
+   "status": "ours"
+  },
+  "6192": {
+   "msm": "d:/ymir work/monster2/thunder_boss/thunder_boss.msm",
+   "race": "thunder_boss",
+   "status": "staged"
+  },
+  "6401": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier.msm",
+   "race": "trent_soldier",
+   "status": "staged"
+  },
+  "6402": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier2.msm",
+   "race": "trent_soldier2",
+   "status": "staged"
+  },
+  "6403": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic.msm",
+   "race": "trent_magic",
+   "status": "staged"
+  },
+  "6404": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic2.msm",
+   "race": "trent_magic2",
+   "status": "staged"
+  },
+  "6406": {
+   "msm": "d:/ymir work/monster2/trent_general/trent_general.msm",
+   "race": "trent_general",
+   "status": "staged"
+  },
+  "6407": {
+   "msm": "d:/ymir work/monster2/trent_boss/trent_boss.msm",
+   "race": "trent_boss",
+   "status": "staged"
+  },
+  "6408": {
+   "msm": "d:/ymir work/monster2/trent_boss2/trent_boss2.msm",
+   "race": "trent_boss2",
+   "status": "staged"
+  },
+  "6409": {
+   "msm": "d:/ymir work/monster2/lemures_magic/lemures_magic_2.msm",
+   "race": "lemures_magic_2",
+   "status": "ours"
+  },
+  "6410": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier.msm",
+   "race": "trent_soldier",
+   "status": "staged"
+  },
+  "6411": {
+   "msm": "d:/ymir work/monster2/trent_soldier/trent_soldier2.msm",
+   "race": "trent_soldier2",
+   "status": "staged"
+  },
+  "6412": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic.msm",
+   "race": "trent_magic",
+   "status": "staged"
+  },
+  "6413": {
+   "msm": "d:/ymir work/monster2/trent_magic/trent_magic2.msm",
+   "race": "trent_magic2",
+   "status": "staged"
+  },
+  "6414": {
+   "msm": "d:/ymir work/monster2/trent_general/trent_general.msm",
+   "race": "trent_general",
+   "status": "staged"
+  },
+  "8059": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_16.msm",
+   "race": "metinstone_16",
+   "status": "staged"
+  },
+  "8061": {
+   "msm": "d:/ymir work/monster/metinstone/metinstone_16.msm",
+   "race": "metinstone_16",
+   "status": "staged"
+  },
+  "9012": {
+   "msm": "d:/ymir work/npc/oldster/oldster.msm",
+   "race": "oldster",
+   "status": "earlier builder"
+  }
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "map": [
+   "d:/ymir work/effect/background/mushrooma_01.mde",
+   "d:/ymir work/effect/background/mushrooma_03.mde",
+   "d:/ymir work/effect/background/mushrooma_04.mde",
+   "d:/ymir work/effect/background/turtle_statue_tree_roof_light01.mde",
+   "d:/ymir work/zone/dungeon/dawnmistwood_dungeon/mushroomc_a.dds"
+  ],
+  "races": {
+   "thunder_boss": [
+    "d:/ymir work/effect/monster2/impact10_red.mde"
+   ]
+  }
+ }
+}

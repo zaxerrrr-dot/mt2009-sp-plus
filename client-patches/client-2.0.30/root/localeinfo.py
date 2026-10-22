@@ -527,7 +527,8 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_n_snow_dungeon_01" : "Lodowa Kraina",
 	# MT2009_PLUS_AREZZO_V1 (client): Arezzo maps 360/362/363 on the minimap
 	"metin2_map_exp" : "Dolina Cyklop\xf3w",
-	"natural_map" : "Zaczarowany Las",
+	# MT2009_PLUS_237_ZAKLETY_LAS_V1 (client): Zaklety Las (353) replaces the Arezzo forest (natural_map, 362)
+	"metin2_map_dawnmist_dungeon_01" : "Zakl\xeaty Las",
 	"plechito_chamber_of_wisdom" : "Biblioteka Wiedzy",
 	"metin2_map_pustynia" : "Pustkowie Faraona",
 	"plechito_wukong_dungeon" : "Wzg\xf3rze Wukonga",

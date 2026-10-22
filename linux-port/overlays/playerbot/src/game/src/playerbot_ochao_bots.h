@@ -53,7 +53,6 @@ namespace
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch);
 	bool IsPlayerBotHumanLedParty(LPPARTY party);
 	// From playerbot_arezzo_bots.h, which comes after this file.
-	bool IsPlayerBotArezzoBoundForLas(LPCHARACTER ch);
 	bool IsPlayerBotArezzoBound(LPCHARACTER ch);
 
 	// Straznik Swiatyni in Orc Valley: the point walked to is where the
@@ -421,8 +420,8 @@ namespace
 			return -1;
 		const DWORD pid = ch->GetPlayerID();
 		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: a bot with a person of its party
-		// goes in and out with the person (through the temple to the Las and
-		// the Jungle's guard), and a bot that agreed to wait at the Jungle's
+		// goes in and out with the person (through the temple to the Jungle's
+		// guard), and a bot that agreed to wait at the Jungle's
 		// entrance for a person (playerbot_dungeon_lfg.h) is put at the
 		// temple's gate the way the Guardian's warp puts one - each only from
 		// the temple's level, the quest's gate for bots as for players.
@@ -467,12 +466,8 @@ namespace
 			const bool atTeleporter = DISTANCE_APPROX(ch->GetX() - PLAYERBOT_OCHAO_EXIT_X,
 					ch->GetY() - PLAYERBOT_OCHAO_EXIT_Y) <= PLAYERBOT_OCHAO_WARP_REACH;
 			LPCHARACTER openPortal = mt2009_ochao::s_dwPortalVID ? mt2009_ochao::FindOnMap(mt2009_ochao::s_dwPortalVID) : NULL;
-			// MT2009_PLUS_AREZZO_BOTS_V1 (las): the Portal to the Las is talked to
-			// from a few steps, as a player does - the NPC stands on its own cell.
-			const int portalReach = reason && strcmp(reason, "arezzo_las_portal") == 0
-					? 800 : PLAYERBOT_OCHAO_WARP_REACH;
 			const bool atPortal = openPortal && DISTANCE_APPROX(ch->GetX() - openPortal->GetX(),
-					ch->GetY() - openPortal->GetY()) <= portalReach;
+					ch->GetY() - openPortal->GetY()) <= PLAYERBOT_OCHAO_WARP_REACH;
 			std::map<DWORD, TPlayerBotOchaoPending>::iterator pend = s_mapPlayerBotOchaoPending.find(pid);
 			// Or once it has died too often in this visit to walk anywhere: the
 			// warp is its way out of a pack it cannot get past.
@@ -565,10 +560,10 @@ namespace
 			return -1;
 		const DWORD pid = ch->GetPlayerID();
 		std::map<DWORD, TPlayerBotOchaoCrossing>::iterator c = s_mapPlayerBotOchaoCrossing.find(pid);
-		// MT2009_PLUS_AREZZO_BOTS_V1 (las): a bot sent to the Las crosses the
-		// temple on its way (playerbot_arezzo_bots.h, later in this unit).
+		// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1: a bot bound for Zaklety Las crosses the temple on its
+		// way - its Guardian's Portal leads there (playerbot_yohara_bots.h).
 		const bool wants = GetPlayerBotFrontierMapForLevel(ch) == PLAYERBOT_MAP_OCHAO ||
-				IsPlayerBotArezzoBoundForLas(ch);
+				IsPlayerBotYoharaBoundForZaklety(ch);
 		if (c == s_mapPlayerBotOchaoCrossing.end())
 		{
 			// Landed in the valley by its own road (the Portal, a raid) with the
@@ -748,7 +743,7 @@ namespace
 		if (it == s_mapPlayerBotOchaoPending.end())
 			return false;
 		// MT2009_PLUS_SIDEKICK_AREZZO_V1: nor a player's companion at its
-		// owner's side (the temple is its owner's road to the Las).
+		// owner's side (the temple is its owner's road to the Jungle's guard).
 		if (ch->GetMapIndex() != PLAYERBOT_MAP_OCHAO || IsPlayerBotSidekickLeashed(ch))
 		{
 			s_mapPlayerBotOchaoPending.erase(it);

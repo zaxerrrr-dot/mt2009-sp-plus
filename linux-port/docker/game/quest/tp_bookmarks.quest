@@ -46,7 +46,9 @@ quest tp_bookmarks begin
 				[67] = 0, [68] = 0, [69] = 0, [70] = 0, [104] = 0,
 				[301] = 90, [302] = 90, [303] = 90, [304] = 90,
 				[209] = 95,
-				[360] = 0, [361] = 0, [362] = 95,
+				[360] = 0, [361] = 0,
+				-- MT2009_PLUS_237_ZAKLETY_LAS_V1: Zaklety Las (353, game2, always open) instead of the Arezzo forest (362)
+				[353] = 95,
 			}
 		end
 
@@ -98,7 +100,7 @@ quest tp_bookmarks begin
 			if pc.get_level() < need then
 				return false, string.format("Ta mapa wymaga %d poziomu.", need)
 			end
-			if idx >= 360 and idx <= 362 and game.get_event_flag("mt2009_arezzo_closed") ~= 0 then
+			if idx >= 360 and idx <= 361 and game.get_event_flag("mt2009_arezzo_closed") ~= 0 then
 				return false, "Ta mapa jest teraz zamkniêta."
 			end
 			return true, ""

@@ -4098,19 +4098,39 @@ namespace
 	const long PLAYERBOT_OCHAO_EXIT_X = 884825;
 	const long PLAYERBOT_OCHAO_EXIT_Y = 1446525;
 	const BYTE PLAYERBOT_OCHAO_MIN_LEVEL = 95;
+	// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1: Zaklety Las (353, metin2_map_dawnmist_dungeon_01), the
+	// forest past the Temple of Ochao on the Yohara core (game3) - the owner's levelling route of
+	// 21 October 2026: "do 110 lvl exp w Zakletym Lesie". The En-Tai of 100-108 (groups 6311-6317),
+	// Wladca En-Tai and the two Metins (8059, 8061). A bot reaches it by the players' road - the
+	// temple, the En-Tai Guardian, his Portal - and a core handover (playerbot_yohara_bots.h).
+	// The points are tools/arezzo_bot_map.py's on the map's own server_attr (21 October): the
+	// arrival the quest's landing (Town.txt 478,970), the exit the forest's Teleporter (477,984).
+	const long PLAYERBOT_MAP_ZAKLETY = 353;
+	const long PLAYERBOT_ZAKLETY_ARRIVAL_X = 815850;
+	const long PLAYERBOT_ZAKLETY_ARRIVAL_Y = 1505050;
+	const long PLAYERBOT_ZAKLETY_EXIT_X = 815750;
+	const long PLAYERBOT_ZAKLETY_EXIT_Y = 1506450;
+	// The band: the quest's gate is 95, the forest pays from a few levels under its 100-108 and
+	// to 109 - from 110 the Time Rift (SZC) takes over. The floor is PLAYERBOT_ZAKLETY_MIN_LEVEL
+	// in the .env (playerbot_yohara_bots.h); this is its default.
+	const BYTE PLAYERBOT_ZAKLETY_MIN_LEVEL = 100;	// MT2009_PLUS_BOT_YOHARA_FIX_V1: 97 -> 100 (the test of 21 October)
+	const BYTE PLAYERBOT_ZAKLETY_MAX_LEVEL = 109;
+	// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: the 90-level maps for loot only - Przyladek Smoczej Glowy
+	// (301) and Nefrytowa Zatoka (303) on game2, Zbocze Gautama (302) and Gromiste Gory (304) on the
+	// first core. Metins and bosses, no experience grinding (the owner, 21 October).
+	const BYTE PLAYERBOT_YOHARA_LOOT_MIN_LEVEL = 95;
 	// MT2009_PLUS_AREZZO_BOTS_V1 (maps): the Arezzo module's three open maps
 	// (flag mt2009_arezzo_closed, playerbot_arezzo.h). Only the operator's test
 	// cohorts go there for now (playerbot_arezzo_bots.h, the test hook
 	// "playerbot_arezzo_test"); every other bot's frontier is as before, and
 	// TransitionPlayerBotMap refuses the rest. Dolina Cyklopow (360) and
-	// Pustkowie Faraona (361) are on the Teleporter's first page; Zaczarowany
-	// Las (362) is reached only through the Temple of Ochao, by Straznik
-	// En-Tai's Portal. Each arrival is the map's Town.txt, each exit its
+	// Pustkowie Faraona (361) are on the Teleporter's first page
+	// (MT2009_PLUS_YOHARA_ZAKLETY_V1: the third, Zaczarowany Las - 362, through
+	// the Temple of Ochao - is gone). Each arrival is the map's Town.txt, each exit its
 	// Teleporter (npc.txt 9012), both cell centres with open ground all round,
 	// measured on the map's server_attr by tools/arezzo_bot_map.py.
 	const long PLAYERBOT_MAP_AREZZO_CYCLOPS = 360;	// metin2_map_exp
 	const long PLAYERBOT_MAP_AREZZO_PHARAOH = 361;	// metin2_map_pustynia
-	const long PLAYERBOT_MAP_AREZZO_FOREST = 362;	// natural_map
 	const long PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X = 265050;
 	const long PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y = 305150;
 	const long PLAYERBOT_AREZZO_CYCLOPS_EXIT_X = 265450;
@@ -4119,32 +4139,22 @@ namespace
 	const long PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y = 394050;
 	const long PLAYERBOT_AREZZO_PHARAOH_EXIT_X = 241350;
 	const long PLAYERBOT_AREZZO_PHARAOH_EXIT_Y = 394350;
-	// The Las: the quest's portal lands at cell (459,106) = (378700,394600).
-	const long PLAYERBOT_AREZZO_FOREST_ARRIVAL_X = 378750;
-	const long PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y = 394650;
-	const long PLAYERBOT_AREZZO_FOREST_EXIT_X = 379150;
-	const long PLAYERBOT_AREZZO_FOREST_EXIT_Y = 394950;
-	// Three under the weakest monster of each (9601 of 43, 9680 of 53) and the
-	// Temple of Ochao's door for the Las.
+	// Three under the weakest monster of each (9601 of 43, 9680 of 53).
 	const BYTE PLAYERBOT_AREZZO_CYCLOPS_MIN_LEVEL = 40;
 	const BYTE PLAYERBOT_AREZZO_PHARAOH_MIN_LEVEL = 50;
-	const BYTE PLAYERBOT_AREZZO_FOREST_MIN_LEVEL = PLAYERBOT_OCHAO_MIN_LEVEL;
 	// MT2009_PLUS_PROGRESSION_V2: and the owner's upper limits (1 October):
-	// the Cyclops to 50, the Pharaoh to 65, the temple and the Las to 120.
+	// the Cyclops to 50, the Pharaoh to 65, the temple to 120.
 	const BYTE PLAYERBOT_AREZZO_CYCLOPS_MAX_LEVEL = 50;
 	const BYTE PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL = 65;
 	const BYTE PLAYERBOT_OCHAO_MAX_LEVEL = 120;
-	const BYTE PLAYERBOT_AREZZO_FOREST_MAX_LEVEL = PLAYERBOT_OCHAO_MAX_LEVEL;
 	BYTE GetPlayerBotArezzoMaxLevel(long mapIndex)
 	{
 		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS ? PLAYERBOT_AREZZO_CYCLOPS_MAX_LEVEL
-				: mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH ? PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL
-				: PLAYERBOT_AREZZO_FOREST_MAX_LEVEL;
+				: PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL;
 	}
 	bool IsPlayerBotArezzoMap(long mapIndex)
 	{
-		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS || mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH ||
-				mapIndex == PLAYERBOT_MAP_AREZZO_FOREST;
+		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS || mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH;
 	}
 	// The places no bot may be taken to but by the Arezzo test: the Arezzo
 	// maps and dungeons (360-366 and their instances) and the Blue Dragon's
@@ -4245,7 +4255,13 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_ARRIVAL_X; outY = PLAYERBOT_OCHAO_ARRIVAL_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X; outY = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_X; outY = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
-			case PLAYERBOT_MAP_AREZZO_FOREST: outX = PLAYERBOT_AREZZO_FOREST_ARRIVAL_X; outY = PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_ARRIVAL_X; outY = PLAYERBOT_ZAKLETY_ARRIVAL_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: each map's Town.txt snapped to open ground
+			// (tools/yohara_bot_lootrun_map.py); the way out is the same point.
+			case 301: outX = 1104850; outY = 1788850; return true;
+			case 302: outX = 1225750; outY = 1682050; return true;
+			case 303: outX = 1087950; outY = 1649850; return true;
+			case 304: outX = 1134150; outY = 1655450; return true;
 			default: return false;
 		}
 	}
@@ -4269,7 +4285,11 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_EXIT_X; outY = PLAYERBOT_OCHAO_EXIT_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_EXIT_X; outY = PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_EXIT_X; outY = PLAYERBOT_AREZZO_PHARAOH_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
-			case PLAYERBOT_MAP_AREZZO_FOREST: outX = PLAYERBOT_AREZZO_FOREST_EXIT_X; outY = PLAYERBOT_AREZZO_FOREST_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_EXIT_X; outY = PLAYERBOT_ZAKLETY_EXIT_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			case 301: outX = 1104850; outY = 1788850; return true; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 302: outX = 1225750; outY = 1682050; return true;
+			case 303: outX = 1087950; outY = 1649850; return true;
+			case 304: outX = 1134150; outY = 1655450; return true;
 			default: return false;
 		}
 	}
@@ -4294,6 +4314,8 @@ namespace
 				mapIndex == PLAYERBOT_MAP_FIRE_LAND ||
 				mapIndex == PLAYERBOT_MAP_GROTTO_V1 || mapIndex == PLAYERBOT_MAP_GROTTO_V2 ||
 				mapIndex == PLAYERBOT_MAP_OCHAO || // MT2009_PLUS_OCHAO_BOTS_V1
+				mapIndex == PLAYERBOT_MAP_ZAKLETY || // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 (on the Yohara core, by a handover)
+				(mapIndex >= 301 && mapIndex <= 304) || // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1 (loot runs, by a handover)
 				IsPlayerBotArezzoMap(mapIndex); // MT2009_PLUS_AREZZO_BOTS_V1 (only the test cohorts are sent)
 	}
 
@@ -4323,7 +4345,8 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "arezzo_cyclops"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "arezzo_pharaoh"; // MT2009_PLUS_AREZZO_BOTS_V1
-			case PLAYERBOT_MAP_AREZZO_FOREST: return "arezzo_forest"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: return "zaklety"; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			case 301: case 302: case 303: case 304: return "lootrun"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			default: return "frontier";
 		}
 	}
@@ -6818,6 +6841,14 @@ namespace
 	// Queen's hubs were never chosen in a day of logs - but by whether the boss
 	// is standing there now, asked of the sector itself.
 	struct TPlayerBotHuntingHub { long x; long y; BYTE bMinLevel; BYTE bMaxLevel; bool bNeedsParty; WORD wBossRace; };
+	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots between the game cores - Zaklety Las and the
+	// loot runs (MT2009_PLUS_237_ZAKLETY_LAS_V1: the 2.x line has no Time Rift and no cohorts) -
+	// defined in playerbot_yohara_bots.h, the last fragment.
+	const TPlayerBotHuntingHub* GetPlayerBotYoharaHubs(long mapIndex, size_t& count);
+	bool IsPlayerBotYoharaLootRunHere(LPCHARACTER ch);
+	bool IsPlayerBotYoharaBoundForZaklety(LPCHARACTER ch);
+	bool IsPlayerBotYoharaRemoteFrontier(long mapIndex);
+	DWORD GetPlayerBotYoharaStayMs(LPCHARACTER ch, long mapIndex);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),

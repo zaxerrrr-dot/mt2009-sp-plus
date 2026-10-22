@@ -1423,6 +1423,10 @@ namespace
 			// (playerbot_arezzo_bots.h); their bosses are the boss raid's.
 			else if (IsPlayerBotArezzoMap(ch->GetMapIndex()))
 				hubs = GetPlayerBotArezzoHubs(ch->GetMapIndex(), hubCount);
+			// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 / MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: Zaklety Las's spots,
+			// and the Metins' and bosses' points of the 90-level maps (playerbot_yohara_bots.h).
+			else if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY || (ch->GetMapIndex() >= 301 && ch->GetMapIndex() <= 304))
+				hubs = GetPlayerBotYoharaHubs(ch->GetMapIndex(), hubCount);
 			// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island's dropper hunts its
 			// kingdom's first island and nowhere else of the valley.
 			if (ch->GetMapIndex() == PLAYERBOT_MAP_ORC_VALLEY && IsPlayerBotL30DropperAtWork(ch))

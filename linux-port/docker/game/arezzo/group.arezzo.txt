@@ -51,33 +51,6 @@ Group	MT2009_arezzo_piramida_3
 	2	"Starozytny Skorpion"	9679
 }
 
-Group	MT2009_arezzo_lemury_1
-{
-	Vnum	36201
-	Leader	"Lemur Kat"	9614
-	1	"Lemur Wojownik"	9611
-	2	"Lemur Zolnierz"	9612
-	3	"Lemur Mag"	9613
-}
-
-Group	MT2009_arezzo_lemury_2
-{
-	Vnum	36202
-	Leader	"Lemur General"	9615
-	1	"Lemur Zolnierz"	9612
-	2	"Lemur Mag"	9613
-	3	"Lemur Wojownik"	9611
-}
-
-Group	MT2009_arezzo_lemury_3
-{
-	Vnum	36203
-	Leader	"Lemur Wojownik"	9611
-	1	"Lemur Wojownik"	9611
-	2	"Lemur Zolnierz"	9612
-	3	"Lemur Mag"	9613
-}
-
 Group	MT2009_arezzo_wukong_1
 {
 	Vnum	36401

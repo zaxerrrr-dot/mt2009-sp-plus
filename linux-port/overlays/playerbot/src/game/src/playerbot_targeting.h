@@ -554,6 +554,12 @@ namespace
 			return false;
 		if (IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()))
 			return IsPlayerBotDungeonStoneObjective(ch, stone);
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: Zaklety Las's Metins (the Silni En-Tai round them) - joined
+		// only by a party of three, or from 103 for Metin Drzewnych Stworzen (IsPlayerBotMetinWorthFighting).
+		// MT2009_PLUS_BOT_ZAKLETY_SPOTS_V2: both only by a party of three (the stone deaths of 22 October).
+		if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY &&
+				(!ch->GetParty() || ch->GetParty()->GetMemberCount() < 3))
+			return false;
 		// Under Iwakura's system the band of the stone hunter is the band of
 		// every stone, joined or not: ten levels either way.
 		if (IsPlayerBotPersonaEnabled())
@@ -1301,6 +1307,17 @@ namespace
 					DISTANCE_APPROX(ch->GetX() - candidate->GetX(),
 							ch->GetY() - candidate->GetY()) > PLAYERBOT_OUTGROWN_CHAIN_RANGE)
 				context.outgrownPrey = true;
+		}
+		// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: a loot run on a 90-level map is for the Metins and
+		// the bosses (the owner, 21 October: "tylko drop, bez expienia") - a boss is its
+		// objective, an ordinary monster only what attacks it or its party (the defence
+		// answers above SERVICE_ONLY). The Metins keep their own rule (IsPlayerBotMetinWorthFighting).
+		if (context.mode == playerbot_combat_value::OBJECTIVES && IsPlayerBotYoharaLootRunHere(ch))
+		{
+			if (candidate->IsMonster() && candidate->GetMobRank() >= MOB_RANK_BOSS)
+				context.activeQuestTarget = true;
+			else
+				context.mode = playerbot_combat_value::SERVICE_ONLY;
 		}
 		return context;
 	}

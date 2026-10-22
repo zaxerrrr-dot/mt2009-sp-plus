@@ -1021,3 +1021,27 @@ Exe: osobny build z `client-patches/exe` (pakiet GC 220, efekty, czat misji, wyc
 bez nowego exe root i paczki niczego nie psują, Zodiaku w kliencie po prostu nie ma. Klient zmienia dane przedmiotów
 (dbdata): w wydaniu ostrzeżenie o nieaktualnych plikach i nowa baza panelu (`python3 -m m2clientpack.make_base
 <klient>/pack <wersja>`).
+
+## 2.37: mapy 90 (301–304) i Zaklęty Las (353) w kliencie 2.x (`MT2009_PLUS_237_ZAKLETY_LAS_V1`)
+
+Klient 2.x (2.0.67) miał wiersze `atlasinfo`/`npclist`/`mob_proto` map 301–304, ale **nie miał ich terenu**. Trzy
+kroki budowy (po linii razgate w `client67.sh`, na tym samym OUT, w tej kolejności – dzielą Index/property/gamedata):
+
+- `tools/cape301` (z gałęzi Yohary, `MT2009_PLUS_CAPE301_V1`) – Przylądek Smoczego Ognia (301): paczki `cape_map`,
+  `cape_obj`, `cape_mobs`, jeden plik `property`. Weryfikator sprawdza tylko paczki `cape_*` (OUT 2.x ma też paczki
+  innych kroków).
+- `tools/maps302` (z gałęzi Yohary, `MT2009_PLUS_YOHARA_MAPS302_V1` / `MT2009_PLUS_OCHAO_GAUTAMA_V1`) – Zbocze Gautama
+  (302), Nefrytowa Zatoka (303), Gromiste Góry (304): `gautama_map`, `zatoka_map`, `gromiste_map`, `yohara_obj`,
+  `yohara_mobs`, nazwy map w `locale_game(_marty).txt`.
+- `tools/zaklety237` (nowe) – Zaklęty Las (353, `metin2_map_dawnmist_dungeon_01`, 3×4, baza 768000 1408000):
+  **pełny folder mapy** (bez `ParentMapName` – w 2.x nie ma lasu PB z `yiluzja`), `zaklety_map`, `zaklety_obj`,
+  `zaklety_mobs` (rasy En-Tai, Jotun Thrym, Metiny), 79 nowych plików `property`; `gamedata`/`dbdata`: 20 wierszy
+  `mob_proto` z żywiołami, wiersz `atlasinfo` (bez nakładania) i **usunięty wiersz `natural_map` (362)**, strażnicy
+  20160–20162 w `npclist`, 8 przedmiotów (Kamień Driad, przedmioty misji, Skrzynie Jotuna Thryma / Bagjanamu; ikony
+  w `root/icon/item`). Dane wierszy: `zaklety237_client.json` (kopia `tools/yohara_zaklety/yzaklety_client.json`
+  z gałęzi Yohary – trzymać równe z SQL serwera). Staging: `stage_zaklety237.py` (host, katalog roboczy z
+  `../atlantis/dump_base.py` na pełnych paczkach poprzedniego klienta).
+
+Root: nazwa minimapy „Zaklęty Las” zamiast „Zaczarowany Las” (`localeinfo.py`), 302 „Zbocze Gautama”, 303/304,
+353 zamiast 362 w `uidropwiki.py`, `uitpbookmarks.py`, `uigmpanel.py` (teleport GM do lasu 8158,15050).
+Linie do skryptu: `/opt/metin2/cache/plan-2.37-las-klient.md`.

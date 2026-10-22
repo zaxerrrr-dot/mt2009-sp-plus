@@ -1,4 +1,5 @@
-// MT2009_PLUS_AREZZO_V1: drops of the Arezzo places (Dolina Cyklopow 360, Zaczarowany Las 362).
+// MT2009_PLUS_AREZZO_V1: drops of the Arezzo places (Dolina Cyklopow 360) and of the lemures of the removed
+// Zaczarowany Las (362 - MT2009_PLUS_YOHARA_ZAKLETY_V1: they spawn nowhere now; rows and drops kept).
 // The forest lemures (9611-9615) drop what the official ones (3301-3305) do; the valley's bosses
 // (Arges 9606, Polifem 9607) level-45 goods. The library (363) gives its loot as quest chests.
 // MT2009_PLUS_AREZZO_BALANCE_V1: the valley's bosses above the M2 minibosses (which give their box and the

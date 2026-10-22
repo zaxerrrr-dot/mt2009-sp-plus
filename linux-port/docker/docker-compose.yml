@@ -244,6 +244,17 @@ services:
       # reach the second channel's ports.
       M2_PLAYERBOT_CH2: "${M2_PLAYERBOT_CH2:-0}"
       PLAYERBOT_CH2_SHARE: "${PLAYERBOT_CH2_SHARE:-40}"
+      # MT2009_PLUS_BOT_YOHARA_HANDOVER_V1 / MT2009_PLUS_237_ZAKLETY_LAS_V1: the bots between the game cores of a
+      # channel (playerbot_yohara_bots.h) - Zaklety Las 100-109 on game2, the loot runs on the 90-level maps;
+      # the limits are per channel.
+      PLAYERBOT_HANDOVER: "${PLAYERBOT_HANDOVER:-1}"
+      PLAYERBOT_HANDOVER_CHANNELS: "${PLAYERBOT_HANDOVER_CHANNELS:-1,2,3,4,5,6}"
+      PLAYERBOT_ZAKLETY_MAX: "${PLAYERBOT_ZAKLETY_MAX:-30}"
+      PLAYERBOT_ZAKLETY_MIN_LEVEL: "${PLAYERBOT_ZAKLETY_MIN_LEVEL:-100}"
+      PLAYERBOT_ZAKLETY_MIN_HP: "${PLAYERBOT_ZAKLETY_MIN_HP:-20000}"
+      PLAYERBOT_ZAKLETY_STAY_MIN: "${PLAYERBOT_ZAKLETY_STAY_MIN:-120}"
+      PLAYERBOT_LOOTRUN_MAX: "${PLAYERBOT_LOOTRUN_MAX:-6}"
+      PLAYERBOT_LOOTRUN_MAPS: "${PLAYERBOT_LOOTRUN_MAPS:-303,304}"
       M2_PLAYERBOT_CH2_SET_AT: "${M2_PLAYERBOT_CH2_SET_AT:-0}"
       # MT2009_PLUS_CH34_V1: the third and fourth channel on the same principle
       # (bots relog to CH1 for the stalls), off by default; CH3 only with CH2,

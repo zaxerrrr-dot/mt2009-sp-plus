@@ -118,8 +118,8 @@ namespace
 		{ 9607, 360, 43, 64, 6, true },		// Polifem (55), 2-3 h
 		{ 9675, 361, 52, 69, 5, true },		// Bastet (60), Pustkowie Faraona, 50-70 min
 		{ 9681, 361, 54, 71, 6, true },		// Anubis (62), 2-3 h
-		{ 3390, 362, 95, 120, 8, true },	// Lemur Hrabia (103), Zaczarowany Las, 50-70 min
-		{ 3391, 362, 95, 120, 10, true },	// Straz Przyboczna Lemur (105), 2-3 h
+		// (MT2009_PLUS_YOHARA_ZAKLETY_V1: Lemur Hrabia and Straz Przyboczna Lemur of
+		// Zaczarowany Las, 362, went with the Arezzo forest.)
 		// MT2009_PLUS_BOT_BOSS_CALL_V1, point 2 (the owner, 10 October): the
 		// bosses the raids passed by. The Monkey Dungeons' three - Skalista
 		// Malpa in each kingdom's easy dungeon (boss.txt, group 5008, every
@@ -454,8 +454,7 @@ namespace
 				if (c->GetMapIndex() != row.lMap || !boss || IsPlayerBotArezzoLeaving(c))
 					continue;
 				arezzoWalk = GetPlayerBotArezzoWalk(c, boss->GetX(), boss->GetY());
-				if (arezzoWalk > (row.lMap == PLAYERBOT_MAP_AREZZO_FOREST
-						? PLAYERBOT_AREZZO_FOREST_RAID_WALK_MAX : PLAYERBOT_AREZZO_RAID_WALK_MAX))
+				if (arezzoWalk > PLAYERBOT_AREZZO_RAID_WALK_MAX)
 					continue;
 				// A long walk weighs a tenth: the nearest first, but a strong
 				// bot across the forest still comes.
@@ -625,8 +624,7 @@ namespace
 			const char* w = GetPlayerBotBossRaidRefusal(c, it->second, row, dwNow);
 			if (!w && IsPlayerBotArezzoLeaving(c))
 				w = "leaving";
-			if (!w && boss && GetPlayerBotArezzoWalk(c, boss->GetX(), boss->GetY()) >
-					(row.lMap == PLAYERBOT_MAP_AREZZO_FOREST ? PLAYERBOT_AREZZO_FOREST_RAID_WALK_MAX : PLAYERBOT_AREZZO_RAID_WALK_MAX))
+			if (!w && boss && GetPlayerBotArezzoWalk(c, boss->GetX(), boss->GetY()) > PLAYERBOT_AREZZO_RAID_WALK_MAX)
 				w = "walk";
 			++why[w ? w : "free"];
 		}
@@ -1105,9 +1103,8 @@ namespace
 			}
 			int need = std::max(2, ((int)row.bSize + 1) / 2);
 			const bool timeUp = dwNow - raid.dwPhaseSince >= (row.lMap == PLAYERBOT_MAP_OCHAO
-					? PLAYERBOT_OCHAO_RAID_GATHER_MS : (row.lMap == PLAYERBOT_MAP_AREZZO_FOREST // MT2009_PLUS_AREZZO_BOTS_V1
-					? PLAYERBOT_AREZZO_FOREST_RAID_GATHER_MS : (IsPlayerBotArezzoMap(row.lMap)
-					? PLAYERBOT_AREZZO_RAID_GATHER_MS : PLAYERBOT_BOSS_RAID_GATHER_MS))); // MT2009_PLUS_OCHAO_BOTS_V1
+					? PLAYERBOT_OCHAO_RAID_GATHER_MS : (IsPlayerBotArezzoMap(row.lMap) // MT2009_PLUS_AREZZO_BOTS_V1
+					? PLAYERBOT_AREZZO_RAID_GATHER_MS : PLAYERBOT_BOSS_RAID_GATHER_MS)); // MT2009_PLUS_OCHAO_BOTS_V1
 			// MT2009_PLUS_OCHAO_BOTS_V1 (gather): in the labyrinth the walk is
 			// long and the packs on it many - at the end of the gathering two
 			// who have come go in, and the rest follow them to him.

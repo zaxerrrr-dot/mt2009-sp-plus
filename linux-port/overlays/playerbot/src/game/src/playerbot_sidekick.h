@@ -3436,9 +3436,9 @@ namespace
 		// owner, 30 September). It waits where it is for its owner.
 		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: except beside its owner, who stands
 		// there - the companion goes into every dungeon with its owner (the
-		// owner, 4 October), and through the Las to the Jungle's guard. On its
+		// owner, 4 October), and through the Temple of Ochao to the Jungle's guard. On its
 		// own errands it keeps out as ever.
-		// MT2009_PLUS_SIDEKICK_AREZZO_V1: the Arezzo maps (360-362) included -
+		// MT2009_PLUS_SIDEKICK_AREZZO_V1: the Arezzo maps (360, 361) included -
 		// "towarzysz nie wchodzi na doline cyklopow / pustkowie faraona" (the
 		// owner, 5 October) was the rule above, in force to 2.21: this check
 		// refused them and ManagePlayerBotSidekick held the companion where it
@@ -11809,7 +11809,7 @@ namespace
 		// MT2009_PLUS_AREZZO_BOTS_V1 (off limits) waited here for an owner in a
 		// new dungeon, the Blue Dragon's lair or on an Arezzo map.
 		// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: no more - the companion goes with its
-		// owner into every dungeon and across the Las to the Jungle's guard (the
+		// owner into every dungeon and through the temple to the Jungle's guard (the
 		// owner, 4 October); PlacePlayerBotSidekickAt keeps it out of those
 		// places only without its owner there.
 		const int dist = otherMap ? INT_MAX

@@ -27,6 +27,17 @@ every version here.
 ### Silnik/Gra
 - **Zakupy w ItemShopie, Koło Losu na stronie i kody promocyjne znowu dochodzą.** Na światach założonych z bazy startowej w tabeli nagród brakowało jednej kolumny, więc zakupy nie trafiały do gry. Aktualizacja dodaje ją sama przy starcie.
 - **Licznik EXP nie ucina się już na 2 147 483 647.** Od 100 poziomu pasek doświadczenia przekracza tę liczbę, a baza zapisywała najwyżej tyle – po zapisie lub ponownym zalogowaniu nadwyżka znikała. Aktualizacja sama poprawia kolumnę w bazie przy starcie i od tej pory pełny pasek się zapisuje.
+### Zaklęty Las i mapy 90 poziomu
+- **Zaklęty Las.** Dodałem Zaklęty Las – las Jotuna Thryma za Świątynią Ochao, jak na wiki: Wojownicy, Bojownicy, Druidzi, Uzdrowiciele i Niszczyciele En-Tai, Silni En-Tai z Metinów Lasu, Władca En-Tai, siedem misji strażników lasu (nagroda: Kamień Driad) i Erebu – wyprawa drużyny 5–8 graczy od 95 poziomu na Bagjanamu i Jotuna Thryma (Skrzynie Bagjanamu i Jotuna Thryma). Las jest zawsze włączony – nie zależy od modułu Arezzo i nie da się go wyłączyć.
+- **Zaklęty Las zastępuje Zaczarowany Las z Arezzo.** Portal Strażnika En-Tai w Świątyni Ochao prowadzi teraz do Zaklętego Lasu (albo z powrotem na Zbocze Gautama). Postacie zapisane w dawnym Zaczarowanym Lesie stają przy wejściu do Świątyni Ochao. Strażnik Starożytnej Dżungli stoi w Świątyni Ochao. Reszta Arezzo się nie zmienia.
+- **Wejście do Świątyni Ochao jak na wiki.** Strażnik Świątyni stoi teraz tylko na Zboczu Gautama (mapa 90 poziomu), już nie w Dolinie Orków.
+- **Nowe mapy 90 poziomu.** Przylądek Smoczego Ognia, Zbocze Gautama, Nefrytowa Zatoka i Gromiste Góry mają teren z nowego klienta, działające portale między sobą i są w Teleporterze od 90 poziomu (wymaga nowego klienta).
+- Seon-Hae: Duży suplement i odłamki wypadają teraz w Zaklętym Lesie (zamiast w Zaczarowanym Lesie).
+
+### Boty
+- **Boty w Zaklętym Lesie.** Boty od 100 poziomu (i co najmniej 20 000 PŻ) chodzą expić do Zaklętego Lasu jak na wyprawę: drogą przez Świątynię Ochao, około 2 godzin pobytu, mikstury uzupełniają na miejscu. Najgroźniejsze miejsca z Niszczycielami En-Tai i Metiny lasu biorą tylko w drużynie co najmniej 3 botów; po 3 zgonach w 30 minut wracają i robią 3 godziny przerwy. Od 110 poziomu bot z lasu wyrasta.
+- **Boty na mapach 90 po drop.** Boty od 95 poziomu co jakiś czas idą na Nefrytową Zatokę i Gromiste Góry bić tylko Metiny i bossów (około 40 minut), potem wracają do wioski.
+- **Boty przechodzą między rdzeniami.** Las i mapy 90 stoją na innym rdzeniu niż wioski botów, więc bot przechodzi tam i z powrotem przez przekazanie między rdzeniami. Ustawienia w panelu (Boty): PLAYERBOT_HANDOVER, PLAYERBOT_ZAKLETY_*, PLAYERBOT_LOOTRUN_*; zdarzenie m2_bot_handover_off 1 odsyła wszystkie boty do domu.
 
 ---
 

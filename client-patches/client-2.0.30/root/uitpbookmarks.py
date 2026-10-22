@@ -44,9 +44,9 @@ MAP_NAMES = {
 	64: "Dolina Seungryong", 65: "\x8cwi\xb9tynia Hwang", 67: "Las Duch\xf3w Lungsam",
 	68: "Czerwony Las", 69: "W\xea\xbfowe Pole", 70: "Kraina Gigant\xf3w",
 	104: "Kuahklo Dong", 209: "\x8cwi\xb9tynia Ochao",
-	301: "Przyl\xb9dek Smoczego Ognia", 302: "Las Porannej Mg\xb3y",
+	301: "Przyl\xb9dek Smoczego Ognia", 302: "Zbocze Gautama",
 	303: "Zatoka Czarnego Piasku", 304: "G\xf3ra Grzmot\xf3w",
-	360: "Dolina Cyklop\xf3w", 361: "Pustkowie Faraona", 362: "Zaczarowany Las",
+	360: "Dolina Cyklop\xf3w", 361: "Pustkowie Faraona", 353: "Zakl\xeaty Las",
 }
 
 # the name's letters the server keeps: ASCII letters and digits, "_", "-", "."

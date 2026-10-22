@@ -14,9 +14,18 @@ quest map_warp begin
                 table.insert(low, 360)
                 table.insert(low, 361) -- Pustkowie Faraona (MT2009_PLUS_AREZZO_V1, phase 8)
             end
+            -- MT2009_PLUS_YOHARA_MAPS302_V1 / MT2009_PLUS_237_MAPS90_V1 (the owner, 13 and 22 October): Przyladek Smoczego Ognia and the
+            -- three maps behind it on the second page, from level 90.
+            local high = {66, 67, 68, 62}
+            if pc.get_level() >= 90 then
+                table.insert(high, 301)
+                table.insert(high, 302)
+                table.insert(high, 303)
+                table.insert(high, 304)
+            end
             return {
                 low_level = low,
-                high_level = {66, 67, 68, 62},
+                high_level = high,
                 outside_city = {get_player_map1_index(), get_player_map2_index()},
             }
         end

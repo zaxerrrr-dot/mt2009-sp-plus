@@ -330,7 +330,12 @@ namespace
 						!(mapIndex >= 364 && mapIndex <= 366) && // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (the dungeon cohort's lobbies and runs)
 						!IsPlayerBotPartyDungeonMap(mapIndex) && // MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (208, 351, 352, 363: a person's party bots inside)
 						mapIndex != PLAYERBOT_MAP_CATACOMB &&
-						mapIndex != 110) // MT2009_PLUS_GUILD_WAR_ARENA_V1 (the battle arena, playerbot_guild_war.h)
+						mapIndex != 110 && // MT2009_PLUS_GUILD_WAR_ARENA_V1 (the battle arena, playerbot_guild_war.h)
+						// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: Zaklety Las (353) on game2 (MT2009_PLUS_237_ZAKLETY_LAS_V1;
+						// the Yohara core on the Yohara line), the 90-level maps 301-304 of the loot runs on game2 and
+						// the first core - built only where a handed-over bot stands (playerbot_yohara_bots.h);
+						// 353 ~53 MB, 301-304 80-160 MB.
+						mapIndex != PLAYERBOT_MAP_ZAKLETY && !(mapIndex >= 301 && mapIndex <= 304))
 					return false;
 
 				if (m_initialized && m_mapIndex == mapIndex)

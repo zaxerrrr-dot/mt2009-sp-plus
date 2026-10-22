@@ -6,7 +6,8 @@
 // The owner, 10 October: "Bot idacy expic na mocna mape (Lochy Pajakow,
 // Hwang, Sohan, Lasy, Doyyumhwaji, Groty) bierze ze soba wolnego szamana ze
 // swojej gildii i expia razem w druzynie" - and, the same day, the Temple of
-// Ochao and the Enchanted Forest (the Las) on the list too, and not every
+// Ochao and the Enchanted Forest (the Las - the Arezzo forest, gone since
+// MT2009_PLUS_YOHARA_ZAKLETY_V1) on the list too, and not every
 // bot: only one that does not manage there without the buffs. A strong bot
 // hunts alone as before.
 //
@@ -29,10 +30,9 @@
 // no Arezzo or Ochao cohort, no raid, war, duel, counter, rod or pickaxe, no
 // dropper), not in town on its errands, with its potions. The Shaman is
 // brought to the leader (the raid's way of bringing a member, a map change),
-// the two make a party and hunt as one - but in the Temple of Ochao and the
-// Las nobody is brought: their ways in and out are their own (Ochao's
-// Guardian and test group, the Las an expedition left at most every two
-// hours), so there the Shaman is one already on the map, within a short walk
+// the two make a party and hunt as one - but in the Temple of Ochao nobody
+// is brought: its ways in and out are its own (Ochao's Guardian and test
+// group), so there the Shaman is one already on the map, within a short walk
 // (PLAYERBOT_SHAMAN_ESCORT_SAME_MAP_WALK), and both stay under their map's
 // rules - the pair only hunts as a party; any arrival there counts as a
 // trip. The follower's walk to its leader
@@ -108,17 +108,18 @@ namespace
 			case PLAYERBOT_MAP_FOREST: case PLAYERBOT_MAP_RED_FOREST:
 			case PLAYERBOT_MAP_FIRE_LAND:
 			case PLAYERBOT_MAP_GROTTO_V1: case PLAYERBOT_MAP_GROTTO_V2:
-			case PLAYERBOT_MAP_OCHAO: case PLAYERBOT_MAP_AREZZO_FOREST:
+			case PLAYERBOT_MAP_OCHAO:
 				return true;
 			default:
 				return false;
 		}
 	}
 
-	// The two whose ways are their own: the Shaman is one already there.
+	// The one whose ways are its own: the Shaman is one already there
+	// (MT2009_PLUS_YOHARA_ZAKLETY_V1: the Arezzo forest, the other, is gone).
 	bool IsPlayerBotShamanSameMapOnly(long map)
 	{
-		return map == PLAYERBOT_MAP_OCHAO || map == PLAYERBOT_MAP_AREZZO_FOREST;
+		return map == PLAYERBOT_MAP_OCHAO;
 	}
 
 	// ------------------------------------------------- who needs a Shaman
@@ -371,19 +372,17 @@ namespace
 		const DWORD pid = c->GetPlayerID();
 		if (IsPlayerBotShamanDuoMember(pid) || IsPlayerBotSidekickOwnerPID(pid) || IsPlayerBotSidekickLeashed(c))
 			return "company";
-		// In the temple and the Las: one already there, near, under the map's
+		// In the temple: one already there, near, under the map's
 		// own rules - its cohort and its map are no refusal there.
 		const bool sameMapOnly = IsPlayerBotShamanSameMapOnly(map);
 		if (sameMapOnly)
 		{
 			if (c->GetMapIndex() != map)
 				return "not_on_map";
-			const int walk = map == PLAYERBOT_MAP_OCHAO ? GetPlayerBotOchaoWalk(c, leader->GetX(), leader->GetY())
-					: GetPlayerBotArezzoWalk(c, leader->GetX(), leader->GetY());
+			const int walk = GetPlayerBotOchaoWalk(c, leader->GetX(), leader->GetY());
 			if (walk > PLAYERBOT_SHAMAN_ESCORT_SAME_MAP_WALK)
 				return "walk";
-			if ((map == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaving(c)) ||
-					(map == PLAYERBOT_MAP_AREZZO_FOREST && IsPlayerBotArezzoLeaving(c)))
+			if (IsPlayerBotOchaoLeaving(c))
 				return "leaving";
 		}
 		const char* lfg = GetPlayerBotLfgRefusal(c, st, dwNow);
@@ -425,8 +424,7 @@ namespace
 		else if ((IsPlayerBotArezzoBound(ch) && !IsPlayerBotShamanSameMapOnly(map)) || state.wBossRaidRace != 0 ||
 				IsPlayerBotInDungeonBusiness(ch, state) || IsPlayerBotOnDungeonRun(pid))
 			leaderWhy = "busy";
-		else if ((map == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaving(ch)) ||
-				(map == PLAYERBOT_MAP_AREZZO_FOREST && IsPlayerBotArezzoLeaving(ch)))
+		else if (map == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaving(ch))
 			leaderWhy = "leaving";
 		else if (s_mapPlayerBotShamanDuos.size() >= PLAYERBOT_SHAMAN_ESCORT_MAX_DUOS)
 			leaderWhy = "cap";
@@ -491,8 +489,8 @@ namespace
 					list.c_str());
 			return;
 		}
-		// Brought beside the leader, on its ground - but in the temple and the
-		// Las it is there already and walks to its leader as a party member.
+		// Brought beside the leader, on its ground - but in the temple it is
+		// there already and walks to its leader as a party member.
 		const long fromMap = best->GetMapIndex();
 		const bool bring = !IsPlayerBotShamanSameMapOnly(map);
 		long x = ch->GetX(), y = ch->GetY();

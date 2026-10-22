@@ -3874,9 +3874,9 @@ T = {
  "az_open":      {"pl":"🗺️ Otwórz moduł Arezzo","en":"🗺️ Open the Arezzo module"},
  "tip_az":       {"pl":"Włącz albo wyłącz nowe mapy i lochy z Arezzo. Działa od razu, bez restartu serwera.","en":"Switch the new Arezzo maps and dungeons on or off. Takes effect immediately, no server restart."},
  "az_dash_hint": {"pl":"Czy na tym świecie są dostępne mapy i lochy z Arezzo (moduł dobrowolny).","en":"Whether the Arezzo maps and dungeons are open in this world (an optional module)."},
- "az_intro":     {"pl":"Moduł dobrowolny: Dolina Cyklopów, Pustkowie Faraona, Zaczarowany Las oraz lochy Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona i Starożytna Dżungla. Klient (2.0.30 i nowszy) ma wszystkie pliki zawsze — ten przełącznik decyduje tylko, czy serwer do nich prowadzi. Zapis działa od razu, bez restartu. Ustawienie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_AREZZO w .env.","en":"An optional module: Dolina Cyklopow, Pustkowie Faraona, Zaczarowany Las and the dungeons Biblioteka Wiedzy, Wzgorze Wukonga, Ruiny Skorpiona and Starozytna Dzungla. The client (2.0.30 and newer) always has the files - this switch only decides whether the server leads there. Saving takes effect immediately, no restart. The panel's setting survives restarts until M2_AREZZO in .env is changed."},
+ "az_intro":     {"pl":"Moduł dobrowolny: Dolina Cyklopów, Pustkowie Faraona oraz lochy Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona i Starożytna Dżungla. Klient (2.0.30 i nowszy) ma wszystkie pliki zawsze — ten przełącznik decyduje tylko, czy serwer do nich prowadzi. Zapis działa od razu, bez restartu. Ustawienie z panelu zostaje po restarcie, dopóki ktoś nie zmieni M2_AREZZO w .env.","en":"An optional module: Dolina Cyklopow, Pustkowie Faraona and the dungeons Biblioteka Wiedzy, Wzgorze Wukonga, Ruiny Skorpiona and Starozytna Dzungla. The client (2.0.30 and newer) always has the files - this switch only decides whether the server leads there. Saving takes effect immediately, no restart. The panel's setting survives restarts until M2_AREZZO in .env is changed."},
  "az_enable":    {"pl":"Moduł Arezzo włączony","en":"Arezzo module on"},
- "az_help":      {"pl":"Włączony: strony w Teleporterze i Pierścieniu, portal do Zaczarowanego Lasu po Strażniku En-Tai, strażnicy wejść do lochów i lochy Arezzo w oknie „Wyprawy” (X). Wyłączony: nic z tego nie jest widoczne, a gracz, który stoi na mapie Arezzo albo jest w jej lochu, w ciągu kilku sekund wraca do miasta (GM może zostać).","en":"On: the Teleporter and ring pages, the Enchanted Forest portal after the En-Tai Guardian, the dungeon entrance guards and the Arezzo lines in the dungeon window (X). Off: none of it is visible, and a player standing on an Arezzo map or in one of its dungeons is sent to the town within seconds (a GM may stay)."},
+ "az_help":      {"pl":"Włączony: strony w Teleporterze i Pierścieniu, strażnicy wejść do lochów i lochy Arezzo w oknie „Wyprawy” (X). Wyłączony: nic z tego nie jest widoczne, a gracz, który stoi na mapie Arezzo albo jest w jej lochu, w ciągu kilku sekund wraca do miasta (GM może zostać).","en":"On: the Teleporter and ring pages, the dungeon entrance guards and the Arezzo lines in the dungeon window (X). Off: none of it is visible, and a player standing on an Arezzo map or in one of its dungeons is sent to the town within seconds (a GM may stay)."},
  "az_saved_live":{"pl":"Zapisano i przełączono na żywo, przez pomocnika w grze. 🗺️","en":"Saved and switched live, through the in-game helper. 🗺️"},
  "seon_nav":     {"pl":"💎 Seon-Hae: 6. i 7. bonus","en":"💎 Seon-Hae: 6th and 7th bonus"},
  "seon_open":    {"pl":"💎 Otwórz Seon-Hae","en":"💎 Open Seon-Hae"},
@@ -5991,7 +5991,7 @@ additive_chance 60
 # additive_map <map> <additive vnum> <count>: Grotto of Exile V1 + V2 - 1 Medium, Enchanted Forest - 1 Large
 additive_map 72 72065 1
 additive_map 73 72065 1
-additive_map 362 72066 1
+additive_map 353 72066 1
 # mob <mob vnum> <additive vnum> <count>: one monster (any rank, any map), instead of its map's rule
 # Beran-Setaou: 2 Large (the owner, drop workbook, 1 October)
 mob 2493 72066 2
@@ -6002,7 +6002,7 @@ shard_chance 0.5
 # Grotto of Exile V2, Temple of Ochao, Enchanted Forest
 shard_map 73
 shard_map 209
-shard_map 362
+shard_map 353
 # shard <vnum> <weight>: the shard's colour
 shard 39070 1
 shard 39071 1

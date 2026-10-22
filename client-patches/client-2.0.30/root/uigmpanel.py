@@ -311,7 +311,7 @@ GMP_TEXTS = {
 	'GMP_TP_GIANTS': 'Kraina Gigantow',
 	'GMP_TP_WLPASS': 'Przelecz (wl_pass)',
 	'GMP_TP_CAPE': 'Przyladek Smoczego Ognia',
-	'GMP_TP_DAWNMIST': 'Las Porannej Mgly',
+	'GMP_TP_DAWNMIST': 'Zbocze Gautama',
 	'GMP_TP_BLACKSAND': 'Zatoka Czarnego Piasku',
 	'GMP_TP_THUNDER': 'Gora Grzmotow',
 	'GMP_TP_HWANG': 'Swiatynia Hwang',
@@ -328,7 +328,7 @@ GMP_TEXTS = {
 	'GMP_TP_RAZADOR': 'Twierdza Razadora',
 	'GMP_TP_PLUS': 'Nasze mapy',
 	'GMP_TP_OCHAO': 'Swiatynia Ochao',
-	'GMP_TP_ENCHANTED': 'Zaczarowany Las',
+	'GMP_TP_ENCHANTED': 'Zakl\xeaty Las',
 	'GMP_TP_CYCLOPS': 'Dolina Cyklopow',
 	'GMP_TP_PHARAOH': 'Pustkowie Faraona',
 	'GMP_TP_ATLANTIS': 'Ruiny Atlantydy',
@@ -466,7 +466,7 @@ TELEPORT_GROUPS = [
 	# server's /goto places (ochao, las, cyklopy, pustkowie, atlantyda, zodiac)
 	# and Nemere's lair (map 352: its base 5120 1536 + Town.txt 171 270).
 	("GMP_TP_PLUS", [
-		("GMP_TP_OCHAO", 8537, 14164), ("GMP_TP_ENCHANTED", 3787, 3946),
+		("GMP_TP_OCHAO", 8537, 14164), ("GMP_TP_ENCHANTED", 8158, 15050),
 		("GMP_TP_CYCLOPS", 2650, 3051), ("GMP_TP_PHARAOH", 2409, 3940),
 		("GMP_TP_ATLANTIS", 38343, 22769), ("GMP_TP_NEMERE", 5291, 1806),
 		("GMP_TP_ZODIAC", 3332, 14325),
@@ -534,7 +534,7 @@ MAP_NAMES = {
 # (T() returns a text that is not a key as it is).
 MAP_NAMES.update({
 	4: "Jungrang (M3)", 24: "Waryong (M3)", 44: "Imha (M3)", 209: "\x8cwi\xb9tynia Ochao",
-	360: "Dolina Cyklop\xf3w", 361: "Pustkowie Faraona", 362: "Zaczarowany Las",
+	360: "Dolina Cyklop\xf3w", 361: "Pustkowie Faraona", 353: "Zakl\xeaty Las",
 	363: "Biblioteka Wiedzy",
 })
 
