@@ -46,6 +46,11 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
   `UnlockState` (5 = nie postać), exp Czempiona, kary Sung Ma przy logowaniu, Księga Precyzji; pakiety punktów
   i komunikaty czatu dalej tylko dla ludzi (`SendInfo`/`SendMap`). Boty dalej nie wchodzą na mapy Sung Ma
   (odmowa `sungma_map` w `TransitionPlayerBotMap`) – trasa map Yohary dla botów później.
+- **Boty na mapach Sung Ma** (`MT2009_PLUS_BOT_YOHARA_MAPS_V1`, 22.10.2026): bot-Czempion 120 lvl wchodzi na 9 map
+  Sung Ma z tabeli botów (`playerbot_yohara_sungma.h`: mapa wg Poziomu Czempiona i Woli, punkty Sung Ma rozdawane
+  przez bota, przejścia portalami), reszta botów i lochy – dalej odmowa. Precyzja botów: zawsze P, ciosy bota nie
+  chybiają. Flaga `conqueror_exp_rate_bot` (procent, domyślnie 100) – exp Czempiona botów ponad `conqueror_exp_rate`.
+  Opis: `cache/yohara/boty-mapy-yohary.md`.
 - **Exp na 120** (`char.cpp`, „max level exp”): pasek rośnie do `next_exp − 1` i staje, bez awansu (wcześniej
   exp na 120 był całkowicie blokowany, więc warunku kuli nie dało się spełnić). Skutek uboczny jak w oficjalnej grze:
   śmierć na 120 zabiera exp (1%, najwyżej 800 000 – stara reguła silnika).

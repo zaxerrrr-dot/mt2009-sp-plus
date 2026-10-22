@@ -67,7 +67,8 @@ wiki”). pl-wiki „Precyzja” i „Księga Precyzji”, de-wiki „Präzision
   każde przeliczenie; klient dostaje punkt zmianą punktu i `champion::SendInfo`.
 - Reset umiejętności (zwoje, zmiana drogi – `ResetSkill`) jej **nie kasuje** (edycja `(reset)`); Księga Zapomnienia
   (`ClearSubSkill`) też nie.
-- Boty: nie (nie mają Poziomu Czempiona – jak 9. umiejętności).
+- Boty: Precyzja ich nie dotyczy (`MT2009_PLUS_BOT_YOHARA_MAPS_V1`, właściciel 22.10.2026): każdy bot ma bonus P
+  (+20, `PrecisionSkillBonus`) bez ksiąg (Księgi Precyzji bot nie czyta), a jego ciosy nigdy nie chybiają (`ChampionDamage`).
 - Klient: zakładka umiejętności pomocniczych (miejsce 111, `root/playersettingmodule.py`, `uicharacter.py`), dymek
   `root/precisionskill.py` (poziom, bonus teraz i na następnym poziomie, wymaganie Czempiona), wiersze 246
   `skilldesc.txt`/`skilltable.txt` i ikona `d:/ymir work/ui/skill/common/support/hit_attribute.sub` (atlas
