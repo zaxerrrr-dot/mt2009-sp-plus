@@ -74,9 +74,48 @@ echo "-- szc run results:"; printf '%s\n' "$ALL" | grep "szc run end" | sed 's/.
 echo "-- rest-out reasons:"; printf '%s\n' "$ALL" | grep "COHORT: rest out" | sed 's/.*why=//' | sort | uniq -c | sort -rn | head
 echo "-- deaths by map:"; printf '%s\n' "$ALL" | grep "YOHARA: died" | sed 's/.* map=\([0-9]*\).*/\1/' | sort | uniq -c
 echo
-echo "=== syserr in the window (HANDOVER / YOHARA / COHORT / NAV / BOT_DGRUN), all cores of channel 1 + db"
+# MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's fixed parties - the cohort's rows (whole night) and the window's
+# runs per party from the PLAYERBOT_HYDRA lines of game3 (run end: result, time, wave, mast, deaths, wipes,
+# polymorphs, elixirs, repairs; polymorph; died).
+echo "=== Hydra (Obrona Statku) - per fixed party"
+db <<'EOF'
+SELECT c.party, COUNT(*) AS members, MIN(pi.empire) AS kingdom,
+       COALESCE(SUM(h.state = 2 AND h.updated_at > NOW() - INTERVAL 180 SECOND), 0) AS on_core3,
+       COALESCE(SUM(h.state = 1), 0) AS on_way, SUM(IFNULL(c.rest_until > NOW(), 0)) AS resting,
+       SUM(c.runs) AS member_runs, SUM(c.wins) AS member_wins, SUM(c.deaths) AS deaths, SUM(c.rest_outs) AS rest_outs,
+       MIN(p.level) AS lv_min, MAX(p.level) AS lv_max
+  FROM common.playerbot_yohara_cohort c
+  LEFT JOIN common.playerbot_core_handover h ON h.pid = c.pid
+  LEFT JOIN player.player p ON p.id = c.pid
+  LEFT JOIN player.player_index pi ON pi.id = p.account_id
+ WHERE c.purpose = 'hydra'
+ GROUP BY c.party;
+EOF
+printf '%s\n' "$ALL" | grep "PLAYERBOT_HYDRA: run end" | awk '
+  { for (i = 1; i <= NF; ++i) { split($i, kv, "="); v[kv[1]] = kv[2] }
+    p = v["party"]; runs[p]++; res[p, v["result"]]++; if (v["won"] == 1) { won[p]++; tw[p] += v["took_s"] }
+    if (v["wave"] > wave[p]) wave[p] = v["wave"]; d[p] += v["deaths"]; w[p] += v["wipes"]; pm[p] += v["polymorphs"]
+    el[p] += v["elixirs"]; rp[p] += v["repairs"]; if (v["mast_min_pct"] >= 0) { mm[p] += v["mast_min_pct"]; mn[p]++ }
+    parties[p] = 1 }
+  END { printf "%-6s %5s %5s %8s %8s %7s %6s %10s %9s %8s %8s\n", "party", "runs", "won", "won_avg", "max_wave", "deaths",
+          "wipes", "mast_avg%", "polymorph", "elixirs", "repairs"
+        for (p in parties) printf "%-6s %5d %5d %7ds %8d %7d %6d %10d %9d %8d %8d\n", p, runs[p], won[p],
+          won[p] ? tw[p] / won[p] : 0, wave[p], d[p], w[p], mn[p] ? mm[p] / mn[p] : -1, pm[p], el[p], rp[p] }'
+echo "-- hydra results by party:"; printf '%s\n' "$ALL" | grep "PLAYERBOT_HYDRA: run end" | \
+  sed 's/.* party=\([0-9]*\) .* result=\([^ ]*\) .*/party \1 \2/' | sort | uniq -c
+cnt "hydra parties called" "PLAYERBOT_HYDRA: party called"
+cnt "hydra runs started" "PLAYERBOT_HYDRA: run start"
+cnt "hydra ships started" "PLAYERBOT_HYDRA: ship started"
+cnt "hydra polymorphs" "PLAYERBOT_HYDRA: polymorph pid"
+cnt "hydra polymorph refused / no marble" "PLAYERBOT_HYDRA: (polymorph refused|no marble)"
+cnt "hydra deaths" "PLAYERBOT_HYDRA: died"
+cnt "hydra kit given" "PLAYERBOT_HYDRA: kit"
+echo "-- hydra deaths by class/path (job group polymorphed):"; printf '%s\n' "$ALL" | grep "PLAYERBOT_HYDRA: died" | \
+  sed 's/.* wave=\([0-9]*\) job=\([0-9]*\) group=\([0-9]*\) polymorphed=\([01]\).*/wave \1 job \2 group \3 poly \4/' | sort | uniq -c | sort -rn | head
+echo
+echo "=== syserr in the window (HANDOVER / YOHARA / COHORT / NAV / BOT_DGRUN / HYDRA / ship defense), all cores of channel 1 + db"
 for c in game1 game2 game3 first; do
-  E=$(logs $c syserr | win | grep -E "PLAYERBOT_HANDOVER|PLAYERBOT_YOHARA|PLAYERBOT_COHORT|PLAYERBOT_NAV|BOT_DGRUN")
+  E=$(logs $c syserr | win | grep -E "PLAYERBOT_HANDOVER|PLAYERBOT_YOHARA|PLAYERBOT_COHORT|PLAYERBOT_NAV|BOT_DGRUN|PLAYERBOT_HYDRA|ship defense")
   n=$(printf '%s' "$E" | grep -c .)
   echo "[$c] $n lines"; [ "$n" -gt 0 ] && printf '%s\n' "$E" | sed 's/^[A-Z][a-z]* [0-9]* [0-9:]* :: //' | sed 's/pid=[0-9]*/pid=N/g' | sort | uniq -c | sort -rn | head -8
 done

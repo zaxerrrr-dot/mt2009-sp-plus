@@ -659,6 +659,15 @@ namespace
 	// A blow at it does nothing, so it is no foe - the bot takes the next.
 	bool IsPlayerBotPdgShielded(LPCHARACTER ch, LPCHARACTER c)
 	{
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: what the ship takes no blow on (the Hydra's heads, the intro, the
+		// Hydra outside its wave, the walls, the wheel - ShipDefense_DamageRule 1) is no foe: a bot of a
+		// person's party struck the heads for a whole wave.
+		if (c && c->GetMapIndex() / 10000 == 367)
+		{
+			int ShipDefense_DamageRule(LPCHARACTER victim, LPCHARACTER attacker);
+			if (ShipDefense_DamageRule(c, ch) == 1)
+				return true;
+		}
 #ifdef NEW_ICEDAMAGE_SYSTEM
 		const DWORD flag = c->GetNoDamageRaceFlag();
 		const DWORD race = ch->GetRaceNum();

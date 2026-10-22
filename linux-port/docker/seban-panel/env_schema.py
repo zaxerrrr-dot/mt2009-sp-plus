@@ -208,6 +208,13 @@ SCHEMA = [
     _e("PLAYERBOT_COHORT_DEATH_REST_MIN", "Przerwa po śmierciach (min)",
        "Ile minut bot kohorty odpoczywa, gdy zginął za często (3 w 30 min albo 5 w pobycie).",
        "boty", "int", "60", ["game"], min=1, max=1440),
+    # MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's cohort.
+    _e("PLAYERBOT_HYDRA_MAX", "Boty na Hydrę (na kanał)",
+       "Ilu botów kohorty Hydry naraz czeka na pomoście Portu Nowego Kontynentu i pływa drużynami na Obronę Statku. 0 = nikt.",
+       "boty", "int", "32", ["game"], min=0, max=200),
+    _e("PLAYERBOT_HYDRA_PARTIES", "Drużyny botów naraz na Hydrze",
+       "Ile drużyn botów naraz broni statku (stałe drużyny po 8 z kohorty Hydry; łucznicy ninja na polimorfii).",
+       "boty", "int", "4", ["game"], min=0, max=8),
     # MT2009_PLUS_CH34_V1: the third and fourth channel, same principle as CH2.
     _e("M2_PLAYERBOT_CH3", "Trzeci kanał (CH3)",
        "Włączone: serwer uruchamia trzeci kanał – trzy kolejne rdzenie gry na własnych procesach (ok. 2,5–3 GB RAM więcej i od pół do jednego rdzenia CPU pod obciążeniem), "
