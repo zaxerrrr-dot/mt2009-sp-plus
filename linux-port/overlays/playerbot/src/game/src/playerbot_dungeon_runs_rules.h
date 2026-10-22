@@ -167,7 +167,9 @@ namespace playerbot_dgrun
 		{ "jotun_szc", 110, 2, 2, 2, false },
 		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku (the Hydra) - the owner's parties of 7-8 (22 October);
 		// a fixed party of the Hydra's cohort goes in with four of its eight at the least.
-		{ "hydra", 110, 4, 4, 4, false },
+		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: the owner, 22 October (later): "Zmniejsz party do dwoch osob ... Party =
+		// jeden ninja + inna postac" - a fixed pair, both of it to call, to ask for and to go in.
+		{ "hydra", 110, 2, 2, 2, false },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

@@ -275,8 +275,9 @@ namespace
 		// in free) and no day's count (the quest counts people only). The runs at once: PLAYERBOT_HYDRA_PARTIES
 		// (GetPlayerBotDgRunDefCap); only the bots the handover brought for it, in their cohort's fixed parties
 		// (PlanPlayerBotHydraRuns). After the win a minute for the Skarb Hydry (3965) and the loot.
+		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: sixteen pairs at once (PLAYERBOT_HYDRA_PARTIES), a ship each.
 		{ "hydra", DGRUN_KIND_HYDRA, 367, NULL, NULL, NULL, 387, 359,
-			0LL, 0, 32, 60000, 4 },
+			0LL, 0, 32, 60000, 16 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: the runs of a dungeon at once - the Time Rift's from the .env.
@@ -495,6 +496,9 @@ namespace
 		int iHydraParty;
 		bool bShipStarted;
 		int iShipWave, iMastMinPct, iPolymorphs, iElixirs, iRepairs, iShipState;
+		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: a pair's partner on the mast's guard now (the mast low), and how often.
+		bool bHydraPairGuard;
+		int iPairGuards;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
@@ -503,7 +507,8 @@ namespace
 				dwFallbackSince(0), dwFallbackRestUntil(0), iFit(0), iFallbacks(0), iBreakOffs(0), dwFocusVID(0), iWipesIdle(0),
 				dwLastWipeAt(0), iExtraMin(-1), iReplacements(0),
 				iObjKey(0), dwObjMissingSince(0), iObjRespawns(0), iHydraParty(0), bShipStarted(false), iShipWave(0),
-				iMastMinPct(100), iPolymorphs(0), iElixirs(0), iRepairs(0), iShipState(0) {}
+				iMastMinPct(100), iPolymorphs(0), iElixirs(0), iRepairs(0), iShipState(0), bHydraPairGuard(false),
+				iPairGuards(0) {}
 	};
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
@@ -1736,6 +1741,49 @@ namespace
 		return ch && ch->GetJob() == JOB_ASSASSIN && ch->GetSkillGroup() == 2;
 	}
 
+	// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: the owner, 22 October (later): "Zmniejsz party do dwoch osob i puszczaj
+	// wszystkie party naraz. Party = jeden ninja + inna postac." A run of PLAYERBOT_HYDRA_PAIR_MAX or fewer has no
+	// guard by class: both strike the Hydra (the waves before her: what is on the deck), and while the mast is low
+	// - under PLAYERBOT_HYDRA_PAIR_GUARD_BELOW until it is back over PLAYERBOT_HYDRA_PAIR_GUARD_UNTIL - the
+	// partner (the member that is no Ninja; dead or off the deck: the Ninja) guards it as a Shaman of a big party
+	// does: what strikes the mast, the Hydra's spawn, a plank fetched and put on it. Anyone with a plank mends the
+	// mast under PLAYERBOT_HYDRA_REPAIR_BELOW as before; an egg in reach still comes first for both.
+	const size_t PLAYERBOT_HYDRA_PAIR_MAX = 3;
+	const int PLAYERBOT_HYDRA_PAIR_GUARD_BELOW = 70;
+	const int PLAYERBOT_HYDRA_PAIR_GUARD_UNTIL = 85;
+
+	bool IsPlayerBotHydraPairRun(const TPlayerBotDgRun& run)
+	{
+		return run.members.size() <= PLAYERBOT_HYDRA_PAIR_MAX;
+	}
+
+	// The pair's guard: the first member on the deck alive that is no Ninja, else the first one alive there.
+	DWORD GetPlayerBotHydraPairGuard(const TPlayerBotDgRun& run)
+	{
+		DWORD any = 0;
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (!c || c->IsDead() || c->GetMapIndex() != run.lInstance)
+				continue;
+			if (c->GetJob() != JOB_ASSASSIN)
+				return run.members[i];
+			if (any == 0)
+				any = run.members[i];
+		}
+		return any;
+	}
+
+	// The mast's guard now: a big party's Shamans and magic Suras always, a pair's partner while the mast is low.
+	bool IsPlayerBotHydraGuardNow(LPCHARACTER ch, const TPlayerBotDgRun& run)
+	{
+		if (!ch)
+			return false;
+		if (!IsPlayerBotHydraPairRun(run))
+			return IsPlayerBotHydraGuard(ch);
+		return run.bHydraPairGuard && GetPlayerBotHydraPairGuard(run) == ch->GetPlayerID();
+	}
+
 	void PlayerBotHydraCell(long instance, int cx, int cy, long& x, long& y)
 	{
 		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(instance);
@@ -1890,7 +1938,7 @@ namespace
 		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
 		LPCHARACTER mast = ship ? ship->GetMast() : NULL;
 		const bool won = ship && ship->GetState() == ship_defense::STATE_WON;
-		const bool guard = IsPlayerBotHydraGuard(ch);
+		const bool guard = IsPlayerBotHydraGuardNow(ch, run);	// MT2009_PLUS_BOT_HYDRA_PAIRS_V1
 		const bool hurt = ch->GetMaxHP() > 0 && (long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * 60;
 		LPCHARACTER egg = NULL, boss = NULL, treasure = NULL, plank = NULL, spawn = NULL, onMe = NULL, onMast = NULL, any = NULL;
 		int dEgg = INT_MAX, dPlank = INT_MAX, dSpawn = INT_MAX, dOnMe = INT_MAX, dOnMast = INT_MAX, dAny = INT_MAX;
@@ -2058,7 +2106,7 @@ namespace
 		const int idx = GetPlayerBotHydraMemberIndex(run, ch->GetPlayerID());
 		static const int kRing[8][2] = { { 4, 0 }, { 3, 3 }, { 0, 4 }, { -3, 3 }, { -4, 0 }, { -3, -3 }, { 0, -4 }, { 3, -3 } };
 		long x = 0, y = 0;
-		if (IsPlayerBotHydraGuard(ch) || !ship || !ship->IsStarted())
+		if (IsPlayerBotHydraGuardNow(ch, run) || !ship || !ship->IsStarted())	// MT2009_PLUS_BOT_HYDRA_PAIRS_V1
 			PlayerBotHydraCell(run.lInstance, PLAYERBOT_HYDRA_MAST_CX + kRing[idx % 8][0], PLAYERBOT_HYDRA_MAST_CY + kRing[idx % 8][1], x, y);
 		else
 			PlayerBotHydraCell(run.lInstance, PLAYERBOT_HYDRA_CX + (idx % 5) - 2, PLAYERBOT_HYDRA_MELEE_ROW + 2, x, y);
@@ -2105,6 +2153,22 @@ namespace
 		const int mast = ship->GetMastHPPct();
 		if (run.bShipStarted && st <= ship_defense::STATE_BETWEEN && mast < run.iMastMinPct)
 			run.iMastMinPct = mast;
+		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: a pair's partner to the mast while it is low.
+		if (IsPlayerBotHydraPairRun(run))
+		{
+			const bool fighting = run.bShipStarted && st <= ship_defense::STATE_BETWEEN;
+			const bool guard = fighting && (run.bHydraPairGuard ? mast < PLAYERBOT_HYDRA_PAIR_GUARD_UNTIL
+					: mast < PLAYERBOT_HYDRA_PAIR_GUARD_BELOW);
+			if (guard != run.bHydraPairGuard)
+			{
+				run.bHydraPairGuard = guard;
+				if (guard)
+					++run.iPairGuards;
+				LPCHARACTER g = CHARACTER_MANAGER::instance().FindByPID(GetPlayerBotHydraPairGuard(run));
+				sys_log(0, "PLAYERBOT_HYDRA: pair guard %s run=%d party=%d wave=%d mast_pct=%d guard=%s", guard ? "on" : "off",
+						run.iId, run.iHydraParty, wave, mast, g ? g->GetName() : "-");
+			}
+		}
 		if (wave > run.iShipWave)
 		{
 			run.iShipWave = wave;
@@ -2162,10 +2226,10 @@ namespace
 	{
 		const bool won = result && !strcmp(result, "finished");
 		sys_log(0, "PLAYERBOT_HYDRA: run end run=%d party=%d instance=%ld result=%s won=%d took_s=%u wave=%d mast_min_pct=%d "
-				"deaths=%d wipes=%d break_offs=%d polymorphs=%d elixirs=%d repairs=%d members=%u entered=%d",
+				"deaths=%d wipes=%d break_offs=%d polymorphs=%d elixirs=%d repairs=%d members=%u entered=%d pair_guards=%d",
 				run.iId, run.iHydraParty, run.lInstance, result ? result : "-", won ? 1 : 0, tookS, run.iShipWave,
 				run.bShipStarted ? run.iMastMinPct : -1, run.iDeaths, run.iWipes, run.iBreakOffs, run.iPolymorphs, run.iElixirs,
-				run.iRepairs, (unsigned int)run.members.size(), entered ? 1 : 0);
+				run.iRepairs, (unsigned int)run.members.size(), entered ? 1 : 0, run.iPairGuards);	// MT2009_PLUS_BOT_HYDRA_PAIRS_V1
 		if (entered && tookS >= 60 && result && strcmp(result, "aborted"))
 			NotePlayerBotYoharaHydraRunEnd(run.members, won);
 	}
@@ -3639,8 +3703,9 @@ namespace
 	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's parties - every PLAYERBOT_DGRUN_HYDRA_PLAN_MS on the core that
 	// hosts the ship and the port. The Hydra's residents (the handover brought them to the pier) are grouped by
 	// their cohort's fixed party and their kingdom (a party is one kingdom's); a group with no run of its own and
-	// at least its rule's four free on the pier is called whole - once all of it is free, or after
-	// PLAYERBOT_DGRUN_HYDRA_WAIT_MS of waiting for the rest - up to PLAYERBOT_HYDRA_PARTIES runs at once. The
+	// at least its rule's number free on the pier (MT2009_PLUS_BOT_HYDRA_PAIRS_V1: both of a pair) is called whole -
+	// once all of it is free, or after PLAYERBOT_DGRUN_HYDRA_WAIT_MS of waiting for the rest - up to
+	// PLAYERBOT_HYDRA_PARTIES runs at once (sixteen pairs: all of them). The
 	// leader: a Warrior, else a weapon Sura, a Ninja, a Shaman. forced (the operator's "now hydra"): no waiting.
 	std::map<int, DWORD> s_mapPlayerBotHydraWaitSince;
 

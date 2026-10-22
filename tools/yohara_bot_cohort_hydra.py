@@ -35,8 +35,18 @@ Idempotent like the night tool: the rows first (common.playerbot_yohara_cohort, 
 the character changed only while applied_at is NULL, the backup taken once (the same backup tables), the gear and
 the kit put back on each run. Writes cohort_apply.sql, cohort_dissolve.sql and cohort_restore.sql for the Hydra's
 members only, pick.tsv and pids.txt.
+
+MT2009_PLUS_BOT_HYDRA_PAIRS_V1 - the owner, 22 October 2026: "Zmniejsz party do dwoch osob i puszczaj
+wszystkie party naraz. Party = jeden ninja + inna postac." `--hydra-pairs N` (16) re-plans the cohort as N
+pairs, each one kingdom's Ninja (an Archer Ninja first - the polymorph) and one of another class (a healing
+Shaman or a Warrior first, the classes mixed). The kingdoms' numbers of pairs keep the most of the members there
+are (then the evenest split); a member that fits no pair is released - cohort_release.sql, and the head of
+cohort_apply.sql, puts it back as it was before its first apply (the backup tables, as cohort_restore.sql does)
+and drops its rows - and the pairs short of a Ninja or a partner take the pool's best of their kingdom (the same
+exclusions; a bot with a backup left by a dissolved cohort is no pick either), raised and equipped as above.
+Writes cohort_release.sql and released.tsv too.
 """
-import os, sys, math, collections
+import os, sys, math, collections, itertools
 
 CLS = ('W', 'N', 'S', 'Sh')
 TEMPLATES = [
@@ -134,6 +144,114 @@ def attrs7(lst):
     return ', '.join('%d, %d' % t for t in lst[:7])
 
 
+# MT2009_PLUS_BOT_HYDRA_PAIRS_V1: a pair's partner, the owner's "healer Shaman or Warrior" first (a kept member's
+# rank; the replacements take these in turn, the classes mixed), then the rest.
+PARTNER_KEEP = {'Sh2': 0, 'W1': 1, 'W2': 1, 'S1': 2, 'S2': 2, 'Sh1': 3}
+PARTNER_TURN = ['Sh2', 'W1', 'Sh2', 'W2', 'S1', 'Sh2', 'W1', 'S2']
+
+
+def slot_of(b):
+    return '%s%d' % (CLS[b['cls']], b['grp'])
+
+
+def plan_pairs(npairs, earlier, bots, pool):
+    """earlier: pid -> party of the Hydra's rows; pool: (emp, cls, grp) -> free bots, highest level first.
+    Returns the members (with 'party') and the released pids."""
+    cur = {e: {'N': [], 'O': []} for e in (1, 2, 3)}
+    gone = [pid for pid in earlier if pid not in bots]
+    for pid in sorted(earlier):
+        b = bots.get(pid)
+        if not b:
+            continue
+        cur[b['emp']]['N' if b['cls'] == 1 else 'O'].append(b)
+    # a kept Ninja: an Archer first; a kept partner: the owner's classes first
+    for e in cur:
+        cur[e]['N'].sort(key=lambda b: (b['grp'] != 2, -b['old'], b['pid']))
+        cur[e]['O'].sort(key=lambda b: (PARTNER_KEEP.get(slot_of(b), 9), -b['old'], b['pid']))
+    pool_n = {e: len(pool[(e, 1, 2)]) + len(pool[(e, 1, 1)]) for e in (1, 2, 3)}
+    pool_o = {e: sum(len(pool[(e, c, g)]) for c in (0, 2, 3) for g in (1, 2)) for e in (1, 2, 3)}
+    best = None
+    for p1 in range(npairs + 1):
+        for p2 in range(npairs + 1 - p1):
+            ps = {1: p1, 2: p2, 3: npairs - p1 - p2}
+            if any(max(0, ps[e] - len(cur[e]['N'])) > pool_n[e] or max(0, ps[e] - len(cur[e]['O'])) > pool_o[e]
+                   for e in ps):
+                continue
+            kept = sum(min(ps[e], len(cur[e]['N'])) + min(ps[e], len(cur[e]['O'])) for e in ps)
+            archers = sum(sum(1 for b in cur[e]['N'][:ps[e]] if b['grp'] == 2) for e in ps)
+            key = (kept, -(max(ps.values()) - min(ps.values())), archers, ps[1], ps[2])
+            if best is None or key > best[0]:
+                best = (key, ps)
+    if best is None:
+        sys.exit('hydra pairs: %d pairs of one kingdom cannot be made from the pool' % npairs)
+    ps = best[1]
+    members, released = [], list(gone)
+    party = 0
+    turn = collections.Counter()
+    for e in (1, 2, 3):
+        ninjas = cur[e]['N'][:ps[e]]
+        others = cur[e]['O'][:ps[e]]
+        released += [b['pid'] for b in cur[e]['N'][ps[e]:] + cur[e]['O'][ps[e]:]]
+        while len(ninjas) < ps[e]:
+            lst = pool[(e, 1, 2)] or pool[(e, 1, 1)]
+            ninjas.append(lst.pop(0))
+        while len(others) < ps[e]:
+            got = None
+            for k in range(len(PARTNER_TURN)):
+                slot = PARTNER_TURN[(turn[e] + k) % len(PARTNER_TURN)]
+                lst = pool[(e, CLS.index(slot[:-1]), int(slot[-1]))]
+                if lst:
+                    got = lst.pop(0)
+                    turn[e] += k + 1
+                    break
+            if got is None:
+                for c, g in itertools.product((3, 0, 2), (2, 1)):
+                    if pool[(e, c, g)]:
+                        got = pool[(e, c, g)].pop(0)
+                        break
+            others.append(got)
+        # an Archer with the healer first, the Warriors next
+        others.sort(key=lambda b: (PARTNER_KEEP.get(slot_of(b), 9), b['pid']))
+        for n, o in zip(ninjas, others):
+            party += 1
+            for b in (n, o):
+                m = dict(b)
+                m['party'] = party
+                members.append(m)
+    print('hydra pairs: kingdoms %s, kept %d of %d, released %d, new %d' % (
+        ps, best[0][0], len(earlier), len(released), len(members) - best[0][0]))
+    return members, sorted(released)
+
+
+def release_sql(pids, plist_of):
+    """MT2009_PLUS_BOT_HYDRA_PAIRS_V1: the released members back as they were before their first apply (the backup
+    tables, as cohort_restore.sql) and out of the cohort. Game stopped. A member without a backup row only leaves."""
+    if not pids:
+        return ['-- MT2009_PLUS_BOT_HYDRA_PAIRS_V1: nobody released.']
+    pl = plist_of(pids)
+    return ['-- MT2009_PLUS_BOT_HYDRA_PAIRS_V1: the members no pair keeps (%d), back as before their first apply.' % len(pids),
+            'USE player;',
+            'START TRANSACTION;',
+            """UPDATE player.player p JOIN player.playerbot_yohara_cohort_bak_player b ON b.id = p.id
+   SET p.exp = b.exp, p.level_step = b.level_step, p.st = b.st, p.ht = b.ht, p.dx = b.dx, p.iq = b.iq,
+       p.stat_point = b.stat_point, p.skill_point = b.skill_point, p.sub_skill_point = b.sub_skill_point,
+       p.random_hp = b.random_hp, p.random_sp = b.random_sp, p.gold = b.gold, p.skill_level = b.skill_level,
+       p.level = b.level
+ WHERE p.id IN (%s);""" % pl,
+            """UPDATE common.playerbot_channel_assignment ca JOIN player.playerbot_yohara_cohort_bak_player b ON b.id = ca.pid
+   SET ca.channel = b.channel_old, ca.requested_channel = 0, ca.request_reason = '', ca.request_at = NULL, ca.ready_at = NOW()
+ WHERE b.channel_old IS NOT NULL AND ca.pid IN (%s);""" % pl,
+            """DELETE i FROM player.item i JOIN player.playerbot_yohara_cohort_bak_player b ON b.id = i.owner_id
+ WHERE i.owner_id IN (%s)
+   AND ((i.window = 'EQUIPMENT' AND i.pos IN (%s)) OR (i.window = 'INVENTORY' AND i.vnum IN (%s)));""" % (pl, EQ_POS, KIT_VNUMS),
+            'INSERT IGNORE INTO player.item SELECT * FROM player.playerbot_yohara_cohort_bak_item WHERE owner_id IN (%s);' % pl,
+            'DELETE FROM common.playerbot_core_handover WHERE pid IN (%s);' % pl,
+            "DELETE FROM common.playerbot_yohara_cohort WHERE purpose = 'hydra' AND pid IN (%s);" % pl,
+            'DELETE FROM player.playerbot_yohara_cohort_bak_player WHERE id IN (%s);' % pl,
+            'DELETE FROM player.playerbot_yohara_cohort_bak_item WHERE owner_id IN (%s);' % pl,
+            'COMMIT;']
+
+
 def run(a, q, bots, excluded, cohort_pids, usable):
     # ------------------------------------------------------------ who
     earlier = {}
@@ -146,6 +264,12 @@ def run(a, q, bots, excluded, cohort_pids, usable):
             if r[0].isdigit():
                 earlier[int(r[0])] = 0
     taken = set(cohort_pids) - set(earlier)
+    if getattr(a, 'hydra_pairs', 0) > 0:
+        # MT2009_PLUS_BOT_HYDRA_PAIRS_V1: a bot a dissolved cohort left with its backup (its level and gear of then
+        # still in the backup tables) is no pick - a later restore would take it back to that night.
+        stale = set(int(r[0]) for r in q('SELECT id FROM player.playerbot_yohara_cohort_bak_player;', fatal=False) or []
+                    if r and r[0].isdigit())
+        taken |= stale - set(earlier)
     parties = {}
     for pid, party in earlier.items():
         if pid in bots:
@@ -159,6 +283,11 @@ def run(a, q, bots, excluded, cohort_pids, usable):
         pool[(b['emp'], b['cls'], b['grp'])].append(b)
     used_emp = []
     members = []
+    released = []
+    pairs = getattr(a, 'hydra_pairs', 0)
+    if pairs > 0:	# MT2009_PLUS_BOT_HYDRA_PAIRS_V1
+        members, released = plan_pairs(pairs, earlier, bots, pool)
+        nparty = 0
     for p in range(1, nparty + 1):
         tpl = TEMPLATES[p - 1] if p <= len(TEMPLATES) else TEMPLATES[-1]
         tpl = tpl[:max(0, min(8, want - 8 * (p - 1)))]
@@ -271,6 +400,9 @@ def run(a, q, bots, excluded, cohort_pids, usable):
   skill_point SMALLINT NOT NULL, sub_skill_point SMALLINT NOT NULL, random_hp SMALLINT NOT NULL, random_sp SMALLINT NOT NULL,
   gold BIGINT NOT NULL, skill_level BLOB NULL, channel_old TINYINT UNSIGNED NULL, saved_at DATETIME NOT NULL) ENGINE=InnoDB;""")
     S.append('CREATE TABLE IF NOT EXISTS player.playerbot_yohara_cohort_bak_item LIKE player.item;')
+    rel = release_sql(released, plist_of=lambda xs: ','.join(str(x) for x in xs))
+    if released:
+        S.extend(rel)
     S.append('START TRANSACTION;')
     if members:
         S.append('INSERT IGNORE INTO common.playerbot_yohara_cohort (pid, purpose, channel, level_start, created_at, party) VALUES')
@@ -384,6 +516,18 @@ HAVING MIN(n.pos) IS NOT NULL;"""
          'DELETE FROM player.playerbot_yohara_cohort_bak_item WHERE owner_id IN (%s);' % plist,
          'COMMIT;']
     open(os.path.join(a.outdir, 'cohort_restore.sql'), 'w').write('\n'.join(R) + '\n')
+    # MT2009_PLUS_BOT_HYDRA_PAIRS_V1: the release alone (cohort_apply.sql begins with it too).
+    if getattr(a, 'hydra_pairs', 0) > 0:
+        open(os.path.join(a.outdir, 'cohort_release.sql'), 'w').write(
+            '\n'.join(['SET NAMES latin1;'] + rel) + '\n')
+        with open(os.path.join(a.outdir, 'released.tsv'), 'w', encoding='latin-1') as f:
+            f.write('pid\tname\tparty_before\tempire\tclass\tpath\n')
+            for pid in released:
+                b = bots.get(pid)
+                if b:
+                    f.write('%d\t%s\t%d\t%d\t%s\t%d\n' % (pid, b['name'], earlier.get(pid, 0), b['emp'], CLS[b['cls']], b['grp']))
+                else:
+                    f.write('%d\t?\t%d\t0\t?\t0\n' % (pid, earlier.get(pid, 0)))
 
     with open(os.path.join(a.outdir, 'pick.tsv'), 'w', encoding='latin-1') as f:
         f.write('pid\tname\tparty\tempire\tclass\tpath\tlevel_before\tlevel_after\tweapon\tpolymorph_mob\n')

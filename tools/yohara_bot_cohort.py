@@ -9,10 +9,13 @@ The owner, 21 October 2026 (night): "Kohorty na noc: 100 botow Zaklety Las
     yohara_bot_cohort.py <outdir> [--zaklety 100] [--szc 100] [--snakefield 50] [--giantland 50]
                                   [--db-container mt2009plustest-db] [--channel 1]
     yohara_bot_cohort.py <outdir> --hydra 32 [--db-container ...] [--channel 1]
+    yohara_bot_cohort.py <outdir> --hydra-pairs 16 [--db-container ...] [--channel 1]
 
 MT2009_PLUS_BOT_HYDRA_COHORT_V1: --hydra N makes the Hydra's cohort instead (tools/yohara_bot_cohort_hydra.py:
 four fixed parties of eight, level 120 and a quarter of its experience, the Hydra's gear and kit) and touches
-no other cohort. Either way a member of another cohort - active, or set aside in
+no other cohort. MT2009_PLUS_BOT_HYDRA_PAIRS_V1: --hydra-pairs N re-plans the Hydra's cohort as N pairs (a Ninja
+and another class of one kingdom), keeps the members that fit, releases the rest (cohort_release.sql, also the
+head of cohort_apply.sql: back as they were before the first apply) and picks replacements. Either way a member of another cohort - active, or set aside in
 common.playerbot_yohara_cohort_paused - is never picked.
 
 Reads the world's database (read-only, `docker exec <db-container> mariadb`)
@@ -85,7 +88,11 @@ ap.add_argument('--channel', type=int, default=1)
 ap.add_argument('--min-raise', type=int, default=70, help='the lowest level raised to the forest / the Time Rift')
 ap.add_argument('--hydra', type=int, default=0, help='the Hydra\'s cohort of this many (four parties of eight: 32) - '
                 'MT2009_PLUS_BOT_HYDRA_COHORT_V1, tools/yohara_bot_cohort_hydra.py')
+ap.add_argument('--hydra-pairs', type=int, default=0, help='the Hydra\'s cohort as this many pairs (a Ninja and '
+                'another class of one kingdom; 16) - MT2009_PLUS_BOT_HYDRA_PAIRS_V1, tools/yohara_bot_cohort_hydra.py')
 a = ap.parse_args()
+if a.hydra_pairs > 0:	# MT2009_PLUS_BOT_HYDRA_PAIRS_V1
+    a.hydra = 2 * a.hydra_pairs
 os.makedirs(a.outdir, exist_ok=True)
 
 

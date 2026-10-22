@@ -272,7 +272,8 @@ namespace
 		s_cfg.cohortDeathRestMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT_DEATH_REST_MIN", 60, 1, 1440);
 		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the owner, 22 October - four parties of eight on the Hydra.
 		s_cfg.hydraMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_MAX", 32, 0, 200);
-		s_cfg.hydraParties = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_PARTIES", 4, 0, 8);
+		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: sixteen pairs, all at once (one ship each).
+		s_cfg.hydraParties = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_PARTIES", 16, 0, 32);
 		std::string chans, loot;
 		for (std::set<int>::const_iterator i = s_cfg.channels.begin(); i != s_cfg.channels.end(); ++i)
 			chans += (chans.empty() ? "" : ",") + std::to_string(*i);
