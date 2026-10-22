@@ -34,7 +34,18 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
   to, co dodadzą przedmioty/afekty (APPLY_SUNGMA_* przyjdzie z przedmiotami Yohary). Kary liczone na `GetPoint()`.
 - **Odblokowanie** (`pc.set_conqueror()`, quest posągu 20433): poziom = `max_level` serwera (120), flaga Hydry
   `obrona_statku.completed_at_120` (jedyne miejsce: `champion::HYDRA_DONE_FLAG` w `playerbot_champion.cpp`) i co
-  najmniej jedna pełna kula exp (¼ paska = 625 000 000 na 120). Boty – na razie nie (decyzja właściciela).
+  najmniej jedna pełna kula exp (¼ paska = 625 000 000 na 120).
+- **Boty-Czempioni** (`MT2009_PLUS_BOT_CHAMPION_V1`, decyzja właściciela 22.10.2026: „kończymy testowanie Hydry
+  i boty idą do posągu po poziom Czempiona”): koniec Hydry dla kohorty – flaga zdarzeń `m2_bot_hydra_end` 1,
+  `PLAYERBOT_HYDRA_END=1` albo kolumna `champion` = 1 w `common.playerbot_yohara_cohort` (`tools/yohara_bot_cohort.py
+  <katalog> --hydra-end` → `hydra_end.sql`). Członek z ≥1 wygraną (kolumna `wins`) bez Poziomu Czempiona: flagi Hydry
+  jak z `obrona_statku.quest` (`completed`, `completed_at`, `completed_at_120`), spacer w porcie (368) do posągu 20433,
+  `champion::UnlockState` + `champion::Unlock` – te same warunki i skutek co `pc.set_conqueror()` gracza; potem
+  `champion` = 2 (albo 3: brak wygranej / odmowa) i zwykłe życie bota (powrót przez przekazanie między rdzeniami).
+  Log `PLAYERBOT_CHAMPION` (start, flags, arrived, unlocked, refused, skip, census). Wykluczenia botów zniesione:
+  `UnlockState` (5 = nie postać), exp Czempiona, kary Sung Ma przy logowaniu, Księga Precyzji; pakiety punktów
+  i komunikaty czatu dalej tylko dla ludzi (`SendInfo`/`SendMap`). Boty dalej nie wchodzą na mapy Sung Ma
+  (odmowa `sungma_map` w `TransitionPlayerBotMap`) – trasa map Yohary dla botów później.
 - **Exp na 120** (`char.cpp`, „max level exp”): pasek rośnie do `next_exp − 1` i staje, bez awansu (wcześniej
   exp na 120 był całkowicie blokowany, więc warunku kuli nie dało się spełnić). Skutek uboczny jak w oficjalnej grze:
   śmierć na 120 zabiera exp (1%, najwyżej 800 000 – stara reguła silnika).
@@ -68,7 +79,7 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
 ## Questy (funkcje)
 
 `pc.get_conqueror_level`, `pc.get_conqueror_exp`, `pc.get_conqueror_next_exp`, `pc.get_conqueror_point`,
-`pc.get_conqueror_unlock_state` (0 ok, 1 już Czempion, 2 za niski poziom, 3 brak Hydry, 4 brak kuli exp, 5 bot),
+`pc.get_conqueror_unlock_state` (0 ok, 1 już Czempion, 2 za niski poziom, 3 brak Hydry, 4 brak kuli exp, 5 nie postać),
 `pc.set_conqueror`, `pc.give_conqueror_exp(2)`, `pc.get_sungma_str/vit/res/int`, `pc.reset_sungma_status(idx)`,
 `npc.get_sungma_exp` – dopisywane do istniejących tabel `pc`/`npc` (`questlua.cpp`, po Obronie Statku).
 

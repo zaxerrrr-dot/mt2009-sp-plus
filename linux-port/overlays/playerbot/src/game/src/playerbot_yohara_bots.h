@@ -625,7 +625,10 @@ namespace
 		bool bResting;
 		int iLevel;	// player.player's: the db core's last save
 		int iParty;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's fixed party (1-4), 0 for none
-		TPlayerBotYoharaCohortMember() : iPurpose(0), iChannel(0), bResting(false), iLevel(0), iParty(0) {}
+		// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra's runs won (the row's wins) and the statue's errand (the row's
+		// champion: YOHARA_CHAMPION_*).
+		int iWins, iChampion;
+		TPlayerBotYoharaCohortMember() : iPurpose(0), iChannel(0), bResting(false), iLevel(0), iParty(0), iWins(0), iChampion(0) {}
 	};
 	struct TPlayerBotYoharaCohortStats
 	{
@@ -645,6 +648,7 @@ namespace
 	std::map<DWORD, DWORD> s_mapPlayerBotYoharaCohortHomeSince;
 	bool s_bPlayerBotYoharaCohortTableReady = false;
 	bool s_bPlayerBotYoharaCohortHydraColumns = false;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: party, wins
+	bool s_bPlayerBotYoharaCohortChampionColumns = false;	// MT2009_PLUS_BOT_CHAMPION_V1: champion, champion_at
 	bool s_bPlayerBotYoharaCohortLoaded = false;
 	DWORD s_dwPlayerBotYoharaCohortNextLoad = 0;
 	DWORD s_dwPlayerBotYoharaCohortLastCensus = 0;
@@ -665,6 +669,7 @@ namespace
 				"rest_outs INT UNSIGNED NOT NULL DEFAULT 0, exp_gained BIGINT UNSIGNED NOT NULL DEFAULT 0, "
 				"last_map INT NOT NULL DEFAULT 0, last_seen DATETIME NULL, applied_at DATETIME NULL, "
 				"party TINYINT UNSIGNED NOT NULL DEFAULT 0, wins INT UNSIGNED NOT NULL DEFAULT 0, "
+				"champion TINYINT UNSIGNED NOT NULL DEFAULT 0, champion_at DATETIME NULL, "	// MT2009_PLUS_BOT_CHAMPION_V1
 				"KEY purpose (purpose)) ENGINE=InnoDB"));
 		s_bPlayerBotYoharaCohortTableReady = msg.get() && msg->uiSQLErrno == 0;
 		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's fixed party and its wins on a table of the night before (the
@@ -683,6 +688,20 @@ namespace
 			s_bPlayerBotYoharaCohortHydraColumns = crow && crow[0] && atoi(crow[0]) == 2;
 			if (!s_bPlayerBotYoharaCohortHydraColumns)
 				sys_err("PLAYERBOT_COHORT: common.playerbot_yohara_cohort has no party/wins columns - the Hydra's parties by kingdom only");
+			// MT2009_PLUS_BOT_CHAMPION_V1: the statue's errand of the Hydra's members (0 the Hydra, 1 the errand ahead,
+			// 2 a Champion, 3 done without it) - the cohort tool's --hydra-end sets 1, the core that hosts the statue
+			// writes 2/3 and champion_at.
+			std::unique_ptr<SQLMsg> alter2(AccountDB::instance().DirectQuery(
+					"ALTER TABLE common.playerbot_yohara_cohort ADD COLUMN IF NOT EXISTS champion TINYINT UNSIGNED NOT NULL DEFAULT 0, "
+					"ADD COLUMN IF NOT EXISTS champion_at DATETIME NULL"));
+			std::unique_ptr<SQLMsg> cols2(AccountDB::instance().DirectQuery(
+					"SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = 'common' AND "
+					"table_name = 'playerbot_yohara_cohort' AND column_name IN ('champion', 'champion_at')"));
+			MYSQL_ROW crow2 = cols2.get() && cols2->uiSQLErrno == 0 && cols2->Get() && cols2->Get()->pSQLResult
+					? mysql_fetch_row(cols2->Get()->pSQLResult) : NULL;
+			s_bPlayerBotYoharaCohortChampionColumns = s_bPlayerBotYoharaCohortHydraColumns && crow2 && crow2[0] && atoi(crow2[0]) == 2;
+			if (!s_bPlayerBotYoharaCohortChampionColumns)
+				sys_err("PLAYERBOT_COHORT: common.playerbot_yohara_cohort has no champion columns - the Hydra's end by the event flag only");
 		}
 		if (!s_bPlayerBotYoharaCohortTableReady)
 			sys_err("PLAYERBOT_COHORT: common.playerbot_yohara_cohort cannot be made");
@@ -704,10 +723,14 @@ namespace
 				s_aiPlayerBotYoharaCohortSize[p] = 0;
 			return;
 		}
-		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(s_bPlayerBotYoharaCohortHydraColumns
-				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party "
+		// MT2009_PLUS_BOT_CHAMPION_V1: the wins and the statue's errand too.
+		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(s_bPlayerBotYoharaCohortChampionColumns
+				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party, c.wins, c.champion "
 				  "FROM common.playerbot_yohara_cohort AS c LEFT JOIN player.player AS p ON p.id = c.pid"
-				: "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), 0 "
+				: s_bPlayerBotYoharaCohortHydraColumns
+				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party, c.wins, 0 "
+				  "FROM common.playerbot_yohara_cohort AS c LEFT JOIN player.player AS p ON p.id = c.pid"
+				: "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), 0, 0, 0 "
 				  "FROM common.playerbot_yohara_cohort AS c LEFT JOIN player.player AS p ON p.id = c.pid"));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 		{
@@ -732,6 +755,8 @@ namespace
 			m.bResting = row[3] && atoi(row[3]) != 0;
 			m.iLevel = row[4] ? atoi(row[4]) : 0;
 			m.iParty = row[5] ? atoi(row[5]) : 0;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			m.iWins = row[6] ? atoi(row[6]) : 0;	// MT2009_PLUS_BOT_CHAMPION_V1
+			m.iChampion = row[7] ? atoi(row[7]) : 0;
 			++size[purpose];
 			resting += m.bResting ? 1 : 0;
 		}
@@ -752,6 +777,49 @@ namespace
 		return cfg.on && cfg.cohortOn && quest::CQuestManager::instance().GetEventFlag("m2_bot_cohort_off") == 0;
 	}
 
+	// ------------------------------------------------------------ the Hydra's end (MT2009_PLUS_BOT_CHAMPION_V1)
+
+	// The owner, 22 October: "Kiedy beda wyniki Hydry, konczymy testowanie Hydry i teraz spraw, zeby boty poszly
+	// do posagu po poziom Czempiona." The Hydra ends for the cohort by the event flag m2_bot_hydra_end (a GM's /e,
+	// the panel's flags), PLAYERBOT_HYDRA_END=1, or a member's row (champion 1 - the cohort tool's --hydra-end SQL,
+	// read every minute). An ended member is called for no ship; one with a won run and no Champion level yet goes to
+	// the statue (ManagePlayerBotYoharaChampion) - and is the cohort's until it has been there; every other ended
+	// member is an ordinary bot again (not held, not sent, back home through the handover).
+	enum
+	{
+		YOHARA_CHAMPION_HYDRA = 0,		// the Hydra goes on
+		YOHARA_CHAMPION_PENDING = 1,	// the Hydra ended: the statue's errand ahead
+		YOHARA_CHAMPION_UNLOCKED = 2,	// a Champion (the statue's, or already one)
+		YOHARA_CHAMPION_SKIPPED = 3,	// done without it (no won run, the statue refused)
+	};
+
+	bool IsPlayerBotHydraEndSwitched()
+	{
+		static int s_iEnv = -1;
+		if (s_iEnv < 0)
+			s_iEnv = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_END", 0, 0, 1);
+		return s_iEnv != 0 || quest::CQuestManager::instance().GetEventFlag("m2_bot_hydra_end") != 0;
+	}
+
+	bool IsPlayerBotYoharaHydraMemberEnded(const TPlayerBotYoharaCohortMember& m)
+	{
+		return m.iPurpose == YOHARA_PURPOSE_HYDRA && (m.iChampion != YOHARA_CHAMPION_HYDRA || IsPlayerBotHydraEndSwitched());
+	}
+
+	// The statue's errand still ahead: the Hydra ended for it, a run won, no Champion level (its own, while it is
+	// in this world).
+	bool IsPlayerBotYoharaChampionPending(DWORD pid, const TPlayerBotYoharaCohortMember& m)
+	{
+		if (!IsPlayerBotYoharaHydraMemberEnded(m) || m.iChampion >= YOHARA_CHAMPION_UNLOCKED || m.iWins < 1)
+			return false;
+#ifdef ENABLE_CONQUEROR_LEVEL
+		LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+		if (ch && ch->GetConquerorLevel() >= 1)
+			return false;
+#endif
+		return true;
+	}
+
 	const TPlayerBotYoharaCohortMember* FindPlayerBotYoharaCohortMember(DWORD pid)
 	{
 		if (!s_bPlayerBotYoharaCohortLoaded)
@@ -761,7 +829,20 @@ namespace
 		std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator it = s_mapPlayerBotYoharaCohort.find(pid);
 		if (it == s_mapPlayerBotYoharaCohort.end() || !IsPlayerBotYoharaCohortOn())
 			return NULL;
+		// MT2009_PLUS_BOT_CHAMPION_V1: an ended Hydra member with no errand ahead is an ordinary bot again.
+		if (IsPlayerBotYoharaHydraMemberEnded(it->second) && !IsPlayerBotYoharaChampionPending(pid, it->second))
+			return NULL;
 		return &it->second;
+	}
+
+	// The Hydra ended for this bot (a member's row, or the switch): no ship for it (PlanPlayerBotHydraRuns), the
+	// statue's errand on the pier (ManagePlayerBotYoharaTravel).
+	bool IsPlayerBotYoharaHydraEndedFor(DWORD pid)
+	{
+		if (IsPlayerBotHydraEndSwitched())
+			return true;
+		std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator it = s_mapPlayerBotYoharaCohort.find(pid);
+		return it != s_mapPlayerBotYoharaCohort.end() && IsPlayerBotYoharaHydraMemberEnded(it->second);
 	}
 
 	bool IsPlayerBotYoharaCohortPID(DWORD pid)
@@ -1629,6 +1710,195 @@ namespace
 					CountPlayerBotHydraMarbles(ch));
 	}
 
+	// ------------------------------------------------------------ the statue (MT2009_PLUS_BOT_CHAMPION_V1)
+
+	// The champion's errand of a Hydra member whose Hydra ended (IsPlayerBotYoharaHydraEndedFor), on the pier of
+	// Port Nowego Kontynentu (368, this core: the Hydra's residents live there). A player's way, done for the bot:
+	//   * the Hydra's flags: obrona_statku.quest's mark_done gives a person at the Hydra's death completed (+1),
+	//     completed_at and, from level 120, completed_at_120 (champion::HYDRA_DONE_FLAG, what the statue asks) -
+	//     the quest leaves bots out, so they are set here once, completed raised by the member's won runs;
+	//   * the walk to Posag Wojownika (20433, czempion.quest; npc.txt of the port: cells 241,574), found on the map
+	//     (else its npc.txt spot); a walk that has not got there in PLAYERBOT_CHAMPION_WALK_MS is put beside it;
+	//   * the statue's own path: champion::UnlockState (level 120, the Hydra's flag, a full bubble of experience)
+	//     and champion::Unlock (pc.set_conqueror - Champion level 1, its experience and points 0, saved,
+	//     CHAMPION_UNLOCK in the log, the blue level over its head);
+	//   * the member's row: champion 2 (or 3: no won run, the statue refused) and champion_at - from then on an
+	//     ordinary bot (FindPlayerBotYoharaCohortMember), sent home by the handover; the bot keeps level and gear.
+	// The log: PLAYERBOT_CHAMPION (start, flags, arrived, unlocked, refused, skip, census).
+	const DWORD PLAYERBOT_CHAMPION_STATUE = 20433;
+	const long PLAYERBOT_CHAMPION_STATUE_X = (1280 + 241) * 100;	// the port's base 128000,563200 (Town.txt)
+	const long PLAYERBOT_CHAMPION_STATUE_Y = (5632 + 574) * 100;
+	const int PLAYERBOT_CHAMPION_STATUE_USE = 450;
+	const DWORD PLAYERBOT_CHAMPION_WALK_MS = 4 * 60 * 1000;
+
+	struct TPlayerBotChampionErrand
+	{
+		DWORD dwStart, dwWalkSince;
+		bool bArrived;
+		TPlayerBotChampionErrand() : dwStart(0), dwWalkSince(0), bArrived(false) {}
+	};
+	std::map<DWORD, TPlayerBotChampionErrand> s_mapPlayerBotChampionErrand;
+	unsigned int s_uPlayerBotChampionUnlocked = 0, s_uPlayerBotChampionRefused = 0, s_uPlayerBotChampionSkipped = 0;
+
+	struct FPlayerBotFindStatue
+	{
+		LPCHARACTER m_found;
+		FPlayerBotFindStatue() : m_found(NULL) {}
+		void operator()(LPENTITY entity)
+		{
+			if (m_found || !entity || !entity->IsType(ENTITY_CHARACTER))
+				return;
+			LPCHARACTER npc = static_cast<LPCHARACTER>(entity);
+			if (!npc->IsPC() && npc->GetRaceNum() == PLAYERBOT_CHAMPION_STATUE)
+				m_found = npc;
+		}
+	};
+
+	// The errand's end in the member's row and in this core's copy of it (ended: an ordinary bot from now on).
+	void FinishPlayerBotChampionErrand(LPCHARACTER ch, int result, const char* why)
+	{
+		const DWORD pid = ch->GetPlayerID();
+		s_mapPlayerBotChampionErrand.erase(pid);
+		std::map<DWORD, TPlayerBotYoharaCohortMember>::iterator m = s_mapPlayerBotYoharaCohort.find(pid);
+		if (m != s_mapPlayerBotYoharaCohort.end() && m->second.iPurpose == YOHARA_PURPOSE_HYDRA)
+		{
+			m->second.iChampion = result;
+			if (s_bPlayerBotYoharaCohortChampionColumns)
+			{
+				char q[192];
+				snprintf(q, sizeof(q), "UPDATE common.playerbot_yohara_cohort SET champion = %d, champion_at = NOW(), "
+						"last_seen = NOW() WHERE pid = %u", result, pid);
+				RunPlayerBotYoharaSql(q);
+			}
+		}
+		if (result == YOHARA_CHAMPION_UNLOCKED)
+			++s_uPlayerBotChampionUnlocked;
+		else if (!strcmp(why, "refused"))
+			++s_uPlayerBotChampionRefused;
+		else
+			++s_uPlayerBotChampionSkipped;
+	}
+
+	// -1 nothing here, 0/1 the travel pass's answer (ManagePlayerBotYoharaTravel's Hydra case).
+	int ManagePlayerBotYoharaChampion(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotYoharaResident& res, DWORD dwNow)
+	{
+		const DWORD pid = ch->GetPlayerID();
+		const long mapIndex = ch->GetMapIndex();
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator m = s_mapPlayerBotYoharaCohort.find(pid);
+		const int wins = m != s_mapPlayerBotYoharaCohort.end() ? m->second.iWins : 0;
+#ifndef ENABLE_CONQUEROR_LEVEL
+		sys_log(0, "PLAYERBOT_CHAMPION: skip pid=%u name=%s why=no_champion_system", pid, ch->GetName());
+		FinishPlayerBotChampionErrand(ch, YOHARA_CHAMPION_SKIPPED, "no_champion_system");
+		return SendPlayerBotYoharaHome(ch, state, dwNow, "hydra_end") ? 1 : 0;
+#else
+		// Already a Champion, or nothing to go there for: done, home.
+		const char* skip = NULL;
+		int result = YOHARA_CHAMPION_SKIPPED;
+		if (ch->GetConquerorLevel() >= 1)
+		{
+			skip = "already";
+			result = YOHARA_CHAMPION_UNLOCKED;
+		}
+		else if (m == s_mapPlayerBotYoharaCohort.end() || m->second.iPurpose != YOHARA_PURPOSE_HYDRA)
+			skip = "not_member";
+		else if (wins < 1)
+			skip = "no_win";
+		else if (ch->GetLevel() < gPlayerMaxLevel)
+			skip = "level";
+		if (skip)
+		{
+			sys_log(0, "PLAYERBOT_CHAMPION: skip pid=%u name=%s level=%u conqueror_level=%u wins=%d why=%s",
+					pid, ch->GetName(), (unsigned int)ch->GetLevel(), (unsigned int)ch->GetConquerorLevel(), wins, skip);
+			FinishPlayerBotChampionErrand(ch, result, skip);
+			return SendPlayerBotYoharaHome(ch, state, dwNow, "hydra_end") ? 1 : 0;
+		}
+		// Off the pier's map (a ship left by no run): the pier first.
+		if (base != PLAYERBOT_MAP_HYDRA_PORT)
+			return TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_HYDRA_PORT, PLAYERBOT_HYDRA_PORT_X,
+					PLAYERBOT_HYDRA_PORT_Y, dwNow, "champion_to_port") ? 1 : 0;
+		TPlayerBotChampionErrand& e = s_mapPlayerBotChampionErrand[pid];
+		if (e.dwStart == 0)
+		{
+			e.dwStart = dwNow ? dwNow : 1;
+			if (ch->GetParty())
+				LeavePlayerBotParty(ch);
+			sys_log(0, "PLAYERBOT_CHAMPION: start pid=%u name=%s level=%u wins=%d map=%ld pos=(%ld,%ld)",
+					pid, ch->GetName(), (unsigned int)ch->GetLevel(), wins, mapIndex, ch->GetX(), ch->GetY());
+		}
+		// The Hydra's flags, as obrona_statku.quest's mark_done gives them to a person (once).
+		if (ch->GetQuestFlag(champion::HYDRA_DONE_FLAG) <= 0)
+		{
+			const int completed = MAX(0, ch->GetQuestFlag("obrona_statku.completed")) + wins;
+			ch->SetQuestFlag("obrona_statku.completed", completed);
+			ch->SetQuestFlag("obrona_statku.completed_at", (int)get_global_time());
+			ch->SetQuestFlag(champion::HYDRA_DONE_FLAG, 1);
+			sys_log(0, "PLAYERBOT_CHAMPION: flags pid=%u name=%s completed=%d %s=1", pid, ch->GetName(), completed,
+					champion::HYDRA_DONE_FLAG);
+		}
+		// The statue.
+		long sx = PLAYERBOT_CHAMPION_STATUE_X, sy = PLAYERBOT_CHAMPION_STATUE_Y;
+		{
+			LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(mapIndex);
+			FPlayerBotFindStatue f;
+			if (pMap)
+				pMap->for_each(f);
+			if (f.m_found)
+			{
+				sx = f.m_found->GetX();
+				sy = f.m_found->GetY();
+			}
+		}
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		const int d = DISTANCE_APPROX(ch->GetX() - sx, ch->GetY() - sy);
+		if (d > PLAYERBOT_CHAMPION_STATUE_USE)
+		{
+			if (e.dwWalkSince == 0)
+				e.dwWalkSince = dwNow ? dwNow : 1;
+			if (dwNow - e.dwWalkSince >= PLAYERBOT_CHAMPION_WALK_MS)
+			{
+				sys_log(0, "PLAYERBOT_CHAMPION: walk too long, put beside the statue pid=%u name=%s pos=(%ld,%ld) statue=(%ld,%ld) after_s=%u",
+						pid, ch->GetName(), ch->GetX(), ch->GetY(), sx, sy, (dwNow - e.dwWalkSince) / 1000);
+				ch->Stop();
+				ch->Show(mapIndex, sx + 200, sy + 200, 0);
+				e.dwWalkSince = dwNow ? dwNow : 1;
+				return 1;
+			}
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			MovePlayerBot(ch, sx, sy, dwNow, 6, true, false, false, false);
+			return 1;
+		}
+		ch->Stop();
+		if (!e.bArrived)
+		{
+			e.bArrived = true;
+			sys_log(0, "PLAYERBOT_CHAMPION: arrived pid=%u name=%s pos=(%ld,%ld) statue=(%ld,%ld) found=%d walk_s=%u",
+					pid, ch->GetName(), ch->GetX(), ch->GetY(), sx, sy,
+					(sx != PLAYERBOT_CHAMPION_STATUE_X || sy != PLAYERBOT_CHAMPION_STATUE_Y) ? 1 : 0,
+					e.dwWalkSince ? (dwNow - e.dwWalkSince) / 1000 : 0);
+		}
+		// czempion.quest: "Zostan Czempionem" - pc.get_conqueror_unlock_state, then pc.set_conqueror.
+		const int st = champion::UnlockState(ch);
+		if (st == 0 && champion::Unlock(ch))
+		{
+			sys_log(0, "PLAYERBOT_CHAMPION: unlocked pid=%u name=%s level=%u conqueror_level=%u wins=%d took_s=%u",
+					pid, ch->GetName(), (unsigned int)ch->GetLevel(), (unsigned int)ch->GetConquerorLevel(), wins,
+					(dwNow - e.dwStart) / 1000);
+			FinishPlayerBotChampionErrand(ch, YOHARA_CHAMPION_UNLOCKED, "unlocked");
+		}
+		else
+		{
+			sys_log(0, "PLAYERBOT_CHAMPION: refused pid=%u name=%s level=%u state=%d exp=%u next_exp=%u flag=%d",
+					pid, ch->GetName(), (unsigned int)ch->GetLevel(), st, (unsigned int)ch->GetExp(),
+					(unsigned int)ch->GetNextExp(), ch->GetQuestFlag(champion::HYDRA_DONE_FLAG));
+			FinishPlayerBotChampionErrand(ch, YOHARA_CHAMPION_SKIPPED, "refused");
+		}
+		// Done: an ordinary bot again (the Yohara maps come later) - home by the handover.
+		return SendPlayerBotYoharaHome(ch, state, dwNow, "champion_done") ? 1 : 0;
+#endif
+	}
+
 	// MT2009_PLUS_BOT_YOHARA_FIX_V1: what sends a resident home before its time - no weapon or
 	// armour, the arrows; the belt only when the restock could not fill it; the bag and the rest only
 	// once it has settled in. BlocksPlayerBotTravel at the arrival sent a loot runner home in 0 s.
@@ -1748,6 +2018,9 @@ namespace
 					res.dwOffRunSince = 0;
 					return 0;
 				}
+				// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra ended for it - the statue, then home.
+				if (IsPlayerBotYoharaHydraEndedFor(pid))
+					return ManagePlayerBotYoharaChampion(ch, state, res, dwNow);
 				// the kit first: an archer short of arrows is given them here, not sent home for them
 				RestockPlayerBotYoharaHydra(ch, res, dwNow);
 				const DWORD idleFrom = res.dwLastRun ? res.dwLastRun : res.dwArrived;
@@ -2004,6 +2277,9 @@ namespace
 		{
 			const DWORD pid = pids[(s_uPlayerBotYoharaCohortCursor + k) % n];
 			const TPlayerBotYoharaCohortMember& m = s_mapPlayerBotYoharaCohort[pid];
+			// MT2009_PLUS_BOT_CHAMPION_V1: after the Hydra only a member with the statue's errand ahead goes there.
+			if (IsPlayerBotYoharaHydraMemberEnded(m) && !IsPlayerBotYoharaChampionPending(pid, m))
+				continue;
 			if (m.iChannel != (int)g_bChannel || m.bResting || live.count(pid) || s_mapPlayerBotYoharaOut.count(pid) ||
 					s_mapPlayerBotYoharaLeaving.count(pid) || s_mapPlayerBotYoharaArrival.count(pid) ||
 					s_mapPlayerBotYoharaResident.count(pid) || !mgr.IsRegisteredBotPID(pid))
@@ -2149,6 +2425,30 @@ namespace
 					st.restOuts, st.levels, st.exp, expH, st.wins);
 			st.expAtCensus = st.exp;
 		}
+		// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra's end and the statue - the rows' states, this core's errands.
+		{
+			int hydra = 0, pending = 0, unlocked = 0, skipped = 0, ended = 0;
+			for (std::map<DWORD, TPlayerBotYoharaCohortMember>::const_iterator i = s_mapPlayerBotYoharaCohort.begin();
+					i != s_mapPlayerBotYoharaCohort.end(); ++i)
+			{
+				if (i->second.iPurpose != YOHARA_PURPOSE_HYDRA)
+					continue;
+				++hydra;
+				ended += IsPlayerBotYoharaHydraMemberEnded(i->second) ? 1 : 0;
+				if (i->second.iChampion == YOHARA_CHAMPION_UNLOCKED)
+					++unlocked;
+				else if (i->second.iChampion == YOHARA_CHAMPION_SKIPPED)
+					++skipped;
+				else if (IsPlayerBotYoharaChampionPending(i->first, i->second))
+					++pending;
+			}
+			if (hydra > 0 && (ended > 0 || !s_mapPlayerBotChampionErrand.empty()))
+				sys_log(0, "PLAYERBOT_CHAMPION: census channel=%u switch=%d members=%d ended=%d pending=%d unlocked=%d skipped=%d "
+						"errands_here=%u unlocked_here=%u refused_here=%u skipped_here=%u",
+						(unsigned int)g_bChannel, IsPlayerBotHydraEndSwitched() ? 1 : 0, hydra, ended, pending, unlocked, skipped,
+						(unsigned int)s_mapPlayerBotChampionErrand.size(), s_uPlayerBotChampionUnlocked,
+						s_uPlayerBotChampionRefused, s_uPlayerBotChampionSkipped);
+		}
 		s_dwPlayerBotYoharaCohortLastCensus = dwNow;
 	}
 
@@ -2193,8 +2493,15 @@ namespace
 		int cohort = 0;
 		for (size_t i = 0; i < members.size(); ++i)
 		{
-			if (!IsPlayerBotYoharaCohortPID(members[i]))
+			// MT2009_PLUS_BOT_CHAMPION_V1: a Hydra member whose Hydra ended under it (an ordinary bot by now, with no
+			// win yet) still has this run counted - its win sends it to the statue.
+			std::map<DWORD, TPlayerBotYoharaCohortMember>::iterator m = s_mapPlayerBotYoharaCohort.find(members[i]);
+			const bool hydraRow = m != s_mapPlayerBotYoharaCohort.end() && m->second.iPurpose == YOHARA_PURPOSE_HYDRA &&
+					IsPlayerBotYoharaCohortOn();
+			if (!hydraRow && !IsPlayerBotYoharaCohortPID(members[i]))
 				continue;
+			if (hydraRow && won)
+				++m->second.iWins;
 			++cohort;
 			list += (list.empty() ? "" : ",") + std::to_string(members[i]);
 		}
@@ -2234,6 +2541,7 @@ namespace
 			{
 				s_mapPlayerBotYoharaResident.erase(i->first);
 				s_mapPlayerBotYoharaTemple.erase(i->first);
+				s_mapPlayerBotChampionErrand.erase(i->first);	// MT2009_PLUS_BOT_CHAMPION_V1
 				const bool gone = CPlayerBotManager::instance().Despawn(i->first, playerbot_session_rules::OUT_CHANNEL);
 				sys_log(0, "PLAYERBOT_HANDOVER: logged out here pid=%u to=%ld purpose=%s ok=%d", i->first, i->second.lMap,
 						PlayerBotYoharaPurposeName(i->second.iPurpose), gone ? 1 : 0);
@@ -2338,6 +2646,10 @@ namespace
 				s_mapPlayerBotYoharaOut.erase(t.pid);
 				TPlayerBotYoharaArrival& a = s_mapPlayerBotYoharaArrival[t.pid];
 				a.lMap = t.map; a.lX = t.x; a.lY = t.y; a.iPurpose = t.purpose; a.dwAt = dwNow; a.bDeaths = t.deaths;
+				// MT2009_PLUS_BOT_CHAMPION_V1: a member coming home - its row read again first (the statue's core may
+				// have just ended its errand: it must not be sent back at once on a minute-old copy).
+				if (t.purpose == YOHARA_PURPOSE_HOME && s_mapPlayerBotYoharaCohort.count(t.pid))
+					LoadPlayerBotYoharaCohort(dwNow, true);
 				CPlayerBotManager& mgr = CPlayerBotManager::instance();
 				const bool sent = mgr.Spawn(t.pid, mgr.GetRegisteredEmpire(t.pid));
 				if (t.purpose == YOHARA_PURPOSE_HOME)

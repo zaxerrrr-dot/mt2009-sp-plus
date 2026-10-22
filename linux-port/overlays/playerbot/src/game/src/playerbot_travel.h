@@ -1873,6 +1873,8 @@ namespace
 			return false;
 		// MT2009_PLUS_SUNGMA_V1 (bots): no bot onto a Sung Ma map (server-patches/czempion) - without a Champion
 		// level nobody hurts a monster there, and bots get no Champion level for now (the owner, 13 October).
+		// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra's bots are Champions now (the statue, 22 October), but the Yohara
+		// maps' route for them comes later (plan-boty-yohara.md) - the refusal stays for every bot.
 		// Every way in passes here: hunting and its trips, the sidekick's follow, a party's follow and jump,
 		// the dungeon and guild LFG, a GM's or a quest's warp (CPlayerBotManager::WarpBot).
 		if (champion::IsSungmaMap(targetMap))

@@ -60,7 +60,8 @@ namespace champion
 	int ExpRatePct();
 
 	// 0 ok; 1 already a Champion; 2 level below the server's max level; 3 the Hydra flag missing;
-	// 4 less than one full bubble of experience (a quarter of the bar); 5 a bot (bots: not for now).
+	// 4 less than one full bubble of experience (a quarter of the bar); 5 not a person.
+	// MT2009_PLUS_BOT_CHAMPION_V1: a bot as a person (the owner, 22 October) - the Hydra's bots go to the statue.
 	int UnlockState(LPCHARACTER ch);
 	bool Unlock(LPCHARACTER ch);
 	void GainExp(LPCHARACTER ch, unsigned int dwExp);

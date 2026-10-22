@@ -112,6 +112,16 @@ cnt "hydra deaths" "PLAYERBOT_HYDRA: died"
 cnt "hydra kit given" "PLAYERBOT_HYDRA: kit"
 echo "-- hydra deaths by class/path (job group polymorphed):"; printf '%s\n' "$ALL" | grep "PLAYERBOT_HYDRA: died" | \
   sed 's/.* wave=\([0-9]*\) job=\([0-9]*\) group=\([0-9]*\) polymorphed=\([01]\).*/wave \1 job \2 group \3 poly \4/' | sort | uniq -c | sort -rn | head
+# MT2009_PLUS_BOT_CHAMPION_V1: the Hydra's end - the statue's errand (PLAYERBOT_CHAMPION lines of game3).
+echo "-- champion errand (the statue, after the Hydra):"
+cnt "champion errands started" "PLAYERBOT_CHAMPION: start"
+cnt "champion flags set" "PLAYERBOT_CHAMPION: flags"
+cnt "champion arrived at the statue" "PLAYERBOT_CHAMPION: arrived"
+cnt "champion walk put beside" "PLAYERBOT_CHAMPION: walk too long"
+cnt "champion unlocked" "PLAYERBOT_CHAMPION: unlocked"
+cnt "champion refused" "PLAYERBOT_CHAMPION: refused"
+cnt "champion skipped" "PLAYERBOT_CHAMPION: skip"
+printf '%s\n' "$ALL" | grep "PLAYERBOT_CHAMPION: census" | tail -1
 echo
 echo "=== syserr in the window (HANDOVER / YOHARA / COHORT / NAV / BOT_DGRUN / HYDRA / ship defense), all cores of channel 1 + db"
 for c in game1 game2 game3 first; do

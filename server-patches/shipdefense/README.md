@@ -131,7 +131,10 @@ przy pierwszym wejściu do nowej instancji (GM i boty za darmo); „Wróć do lo
 `hydra` w `arezzo/dungeon_info.txt`) i trwała flaga przejścia ludzi drużyny na statku:
 `obrona_statku.completed` (liczba), `completed_at` (czas), `completed_at_120` = 1 przy poziomie 120+
 (pod przyszły poziom Mistrza); kto nie był w drużynie zabójcy, dostaje ją przy portalu 3949 (klik → po
-zwycięstwie wybór: Port Nowego Kontynentu 368 albo ląd 301). Boty flagi nie dostają (decyzja: na razie nie).
+zwycięstwie wybór: Port Nowego Kontynentu 368 albo ląd 301). Quest nie daje flagi botom; od 22.10.2026
+(decyzja właściciela: „boty idą do posągu po poziom Czempiona”, `MT2009_PLUS_BOT_CHAMPION_V1`) boty kohorty Hydry
+z co najmniej jednym wygranym przejściem dostają te same flagi z C++ (`completed` + liczba wygranych, `completed_at`,
+`completed_at_120`) w drodze do posągu 20433 – `playerbot_yohara_bots.h`, `ManagePlayerBotYoharaChampion`.
 
 Pułapki kompilatora `qc` (sprawdzone): napis kończący się polską literą (`"…obronę"`) wywala `qc` bez
 komunikatu, a `dw.state()` jest błędem składni (`state` to słowo kluczowe `qc`) – w queście `dw["state"]()`.

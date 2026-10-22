@@ -309,9 +309,10 @@ namespace champion
 
 	int UnlockState(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_CHAMPION_V1: a bot too (the owner, 22 October: "boty ida do posagu po poziom
+		// Czempiona") - the statue's errand of the Hydra's bots (playerbot_yohara_bots.h) asks the same
+		// conditions; 5 is left for what is not a person.
 		if (!ch || !ch->IsPC())
-			return 5;
-		if (IsBotCharacter(ch))
 			return 5;
 		if (ch->GetConquerorLevel() >= 1)
 			return 1;
@@ -382,16 +383,19 @@ namespace champion
 		ch->SetConquerorExp((DWORD)total);
 		ch->SetConquerorPoint(iPoints);
 
+		// MT2009_PLUS_BOT_CHAMPION_V1: no chat lines for a bot (its client is none).
+		const bool bBot = IsBotCharacter(ch);
 		if (bLevelUp)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, "Poziom Czempiona: %d.", iLevel);
+			if (!bBot)
+				ch->ChatPacket(CHAT_TYPE_INFO, "Poziom Czempiona: %d.", iLevel);
 			char hint[64];
 			snprintf(hint, sizeof(hint), "level %d points %d", iLevel, iPoints);
 			LogManager::instance().CharLog(ch, iLevel, "CHAMPION_LEVELUP", hint);
 			ch->Save();
 			ch->UpdatePacket();	// MT2009_PLUS_CHAMPION_V2: the new champion level over the head
 		}
-		else if (iPoints > iOldPoints)
+		else if (iPoints > iOldPoints && !bBot)
 			ch->ChatPacket(CHAT_TYPE_INFO, "Masz nowy punkt statystyk Sung Ma (wolne: %d).", iPoints);
 		SendInfo(ch);
 	}
@@ -451,7 +455,8 @@ namespace champion
 	// and the calibration flag conqueror_exp_rate; at most a tenth of the bar per kill, as ordinary experience.
 	static void GiveExp(LPCHARACTER pkVictim, LPCHARACTER to, unsigned int dwBase)
 	{
-		if (!to || !dwBase || !to->IsPC() || to->GetConquerorLevel() < 1 || IsBotCharacter(to))
+		// MT2009_PLUS_BOT_CHAMPION_V1: a bot Champion earns it as a person does.
+		if (!to || !dwBase || !to->IsPC() || to->GetConquerorLevel() < 1)
 			return;
 		if (to->FindAffect(AFFECT_EXP_BLOCK))
 			return;
@@ -612,7 +617,8 @@ bool ChampionImmuneBlocks(LPCHARACTER pkAttacker, LPCHARACTER pkVictim)
 // input_login.cpp Entergame: the Sung Ma penalties counted on this map, the client told the numbers.
 void ChampionOnLogin(LPCHARACTER ch)
 {
-	if (!ch || !ch->IsPC() || champion::IsBotCharacter(ch))
+	// MT2009_PLUS_BOT_CHAMPION_V1: a bot's Sung Ma penalties are counted too (SendInfo/SendMap pass bots by).
+	if (!ch || !ch->IsPC())
 		return;
 	if (champion::IsSungmaMap(ch->GetMapIndex()))
 	{
@@ -630,7 +636,7 @@ void ChampionOnLogin(LPCHARACTER ch)
 // LearnSkillByBook's passive one (the books' wait m2_book_wait, Zwoj Egzorcyzmu, the learn-chance potions);
 // Rada Pustelnika makes it sure, as with the class books. Its bonus is the wiki's table (GF's 0.4*k+16*k on the skill
 // power, but the wiki's +4 at level 11), part of POINT_HIT_PCT (char.cpp ComputePoints, server-patches/precyzja).
-// Bots: no Champion level, so no book (as the 9th skills).
+// Bots: only a bot Champion (MT2009_PLUS_BOT_CHAMPION_V1: the statue's errand of the Hydra's bots), as a person.
 static const int PRECISION_BOOK_PCT = 35;	// a read's chance - the class books' base (LearnSkillByBook)
 static const int s_aPrecisionBonus[SKILL_MAX_LEVEL + 1] =
 {
@@ -673,7 +679,8 @@ int PrecisionReadBook(CHARACTER* ch)
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
 		return 0;
 	}
-	if (ch->GetConquerorLevel() < 1 || champion::IsBotCharacter(ch))
+	// MT2009_PLUS_BOT_CHAMPION_V1: a bot Champion may read it too.
+	if (ch->GetConquerorLevel() < 1)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, "Ksiege Precyzji przeczytasz od 1. Poziomu Czempiona.");
 		return 0;
