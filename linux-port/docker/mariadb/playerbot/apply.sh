@@ -3565,6 +3565,25 @@ if [ "$regen_split" != "1" ]; then
     fi
 fi
 
+# MT2009_PLUS_EXP_UNSIGNED_V1: a character's exp is a DWORD in the cores (TPlayerTable.exp, CHARACTER::GetExp,
+# exp_table, the db core's "exp = %u"), but the dump's player.exp is a signed INT: this sql_mode clamps it silently at
+# 2 147 483 647, below the bars of levels 100-120 (exp_table[120] = 2 500 000 000) - a save or relog cut the rest off.
+# INT UNSIGNED (4.29 bn) in player and player_deleted (copied with SELECT *); once, a no-op after
+# (information_schema decides). Before a db core starts.
+for exp_tab in player player_deleted; do
+    exp_type=$(db -e "SELECT COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='player' AND TABLE_NAME='$exp_tab' AND COLUMN_NAME='exp';" 2>/dev/null || true)
+    case "$exp_type" in
+        ''|*unsigned*) ;;
+        *)
+            if db -e "ALTER TABLE player.$exp_tab MODIFY exp INT UNSIGNED NOT NULL DEFAULT 0;"; then
+                echo "[playerbot-migrate] exp: player.$exp_tab.exp ($exp_type) is INT UNSIGNED"
+            else
+                fail_step "exp: could not make player.$exp_tab.exp INT UNSIGNED (MT2009_PLUS_EXP_UNSIGNED_V1)"
+            fi
+            ;;
+    esac
+done
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
