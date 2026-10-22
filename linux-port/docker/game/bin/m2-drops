@@ -298,6 +298,21 @@ apply_table() {
 
 cmd_prepare() {
     [ -f "$LIVE" ] || { say "no $LIVE -- nothing to prepare"; return 0; }
+    # MT2009_PLUS_237_GLOBAL_MODE_V1: M2_BONUS_MODE picks the image's file -
+    # mob_drop_item.global.txt (global: the drops of the global server's
+    # sheet, game/Dockerfile) or mob_drop_item.mt2009.txt (the image's own);
+    # taken again whenever the mode differs from the one the kept copy was
+    # made for. An image without them keeps the old way below.
+    case "$(printf '%s' "${M2_BONUS_MODE:-mt2009}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
+        global|globalny|1) _mode=global ;;
+        *) _mode=mt2009 ;;
+    esac
+    if [ -f "$LOCALE_DIR/mob_drop_item.$_mode.txt" ] && \
+            { [ ! -f "$IMAGE" ] || [ "$(cat "$IMAGE.mode" 2>/dev/null)" != "$_mode" ]; }; then
+        cp -p "$LOCALE_DIR/mob_drop_item.$_mode.txt" "$IMAGE" && cp -p "$IMAGE" "$LIVE" || return 1
+        printf '%s\n' "$_mode" > "$IMAGE.mode"
+        say "M2_BONUS_MODE=$_mode: the image's drops are mob_drop_item.$_mode.txt"
+    fi
     # The first start of a container: the file is still the image's (a new
     # image means a new container, so an update always brings its own file).
     [ -f "$IMAGE" ] || cp -p "$LIVE" "$IMAGE" || return 1

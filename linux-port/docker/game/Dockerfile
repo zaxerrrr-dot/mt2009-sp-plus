@@ -564,6 +564,32 @@ RUN set -eu; f=/opt/metin2/share/locale/poland/dragon_soul_table.txt \
  && mv "$f.new" "$f" && rm -f /tmp/dragon_soul_applys.txt \
  && echo "share: MT2009 Plus alchemy bonuses"
 
+# MT2009_PLUS_DS_GLOBAL_TABLE_V1 (server-patches/bonusyglobal): the alchemy of
+# M2_BONUS_MODE=global - the default bonus groups (Owsap/GF, without Szafir's
+# two Wolfman lines) in the same table, as dragon_soul_table.global.txt; the
+# mt2009 table kept as dragon_soul_table.mt2009.txt. A core loads the global
+# one in place of dragon_soul_table.txt when the mode is global and keeps the
+# other two for a stone made under the other mode (DragonSoul.cpp).
+# MT2009_PLUS_237_GLOBAL_MODE_V1 (2.x): the 2.x engine has the element powers
+# (ENCHANT_*, points 178-183, as the element talismans) but no Sung Ma points
+# and no Precyzja - their rows (Ametyst: HIT_PCT, SUNGMA_HP; SUNGMA_STR/MOVE/
+# IMMUNE) are left out and every group's rows numbered again (the loader reads
+# the rows 1..n by number).
+COPY dragon_soul_applys.global.txt /tmp/dragon_soul_applys.global.txt
+RUN set -eu; L=/opt/metin2/share/locale/poland; f=$L/dragon_soul_table.txt; g=$L/dragon_soul_table.global.txt \
+ && cp -p "$f" "$L/dragon_soul_table.mt2009.txt" \
+ && sed -i 's/\r$//' /tmp/dragon_soul_applys.global.txt \
+ && awk '/^[ \t]*\{/{ n = 0 } /^[ \t]+[0-9]+[ \t]+(SUNGMA_[A-Z]+|HIT_PCT)[ \t]/{ next } /^[ \t]+[0-9]+[ \t]+[A-Z_]+[ \t]/{ n++; sub(/[0-9]+/, n) } { print }' \
+      /tmp/dragon_soul_applys.global.txt > /tmp/dragon_soul_applys.global.2x \
+ && mv /tmp/dragon_soul_applys.global.2x /tmp/dragon_soul_applys.global.txt \
+ && sed -i 's/$/\r/' /tmp/dragon_soul_applys.global.txt \
+ && awk -v add=/tmp/dragon_soul_applys.global.txt 'BEGIN{skip=0} /^Group[ \t]+BasicApplys/{ while ((getline l < add) > 0) print l; skip=1; next } skip && /^Group[ \t]+ApplyNumSettings/{ skip=0 } !skip{ print }' "$f" > "$g" \
+ && grep -q 'ENCHANT_ICE' "$g" && ! grep -q -E 'SUNGMA_|HIT_PCT' "$g" && grep -q '^Group[[:blank:]]*ApplyNumSettings' "$g" \
+ && ! grep -q 'WOLFMAN' "$g" && ! grep -q 'ATTBONUS_MILGYO' "$g" \
+ && test "$(sed -n '/^Group[[:blank:]]*ApplyNumSettings/,$p' "$g" | md5sum)" = "$(sed -n '/^Group[[:blank:]]*ApplyNumSettings/,$p' "$f" | md5sum)" \
+ && rm -f /tmp/dragon_soul_applys.global.txt \
+ && echo "share: alchemy table of M2_BONUS_MODE=global"
+
 # Maska Sabaha goes with the Hwang curse (playerbotify apply_hwang_curse_removed,
 # port/shareify.py renders this step): its drop lines and the Hwang loot box roll
 # it at nothing - a group stops reading at the first index it lacks, so a line is
@@ -1421,6 +1447,28 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/beltmat
  && ! grep -q -E '^[[:blank:]]*kill_drop[[:blank:]]+0([^0-9]|$)' "$F" \
  && rm -rf "$A" \
  && echo "share: belt materials - Beran's gems, the gold parts x3, the flame stones (MT2009_PLUS_BELT_MATS_V1)"
+
+# MT2009_PLUS_237_GLOBAL_MODE_V1: the monsters' drops of M2_BONUS_MODE=global (the Yohara line's
+# MT2009_PLUS_MOBY_GLOBAL_V1, the owner's sheet of 20 October 2026; moby_global/README.md) as a second file beside
+# the live one, made LAST of the drop steps: mob_drop_item.global.txt = this image's mob_drop_item.txt without the
+# package's rows the sheet does not list (mob_drop_item.moby_global.remove.txt, cut_rows.awk - only in the package's
+# groups, a group numbered again, an emptied group dropped; LOOSE: a row this tree lacks is only counted) plus the
+# sheet's items our monsters lacked (mob_drop_item.moby_global.2x.txt - without the items the 2.x world lacks,
+# tools/globalmode/gen_globalmode_2x.py; groups MT2009_mglobal_<mob>, Type drop). mob_drop_item.mt2009.txt is the
+# image's own file. m2-drops prepare puts the mode's file in place before the cores boot.
+COPY moby_global/ /tmp/moby-global-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/moby-global-add; F="$L/mob_drop_item.txt"; G="$L/mob_drop_item.global.txt" \
+ && cp -p "$F" "$L/mob_drop_item.mt2009.txt" \
+ && awk -v LOOSE=1 -v R="$A/mob_drop_item.moby_global.remove.txt" -f "$A/cut_rows.awk" "$F" > "$G" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.moby_global.2x.txt" \
+ && n="$(grep -c -E '^Group[[:blank:]]+MT2009_mglobal_' "$A/mob_drop_item.moby_global.2x.txt")" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_mglobal_' "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/mob_drop_item.moby_global.2x.txt" >> "$G" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_mglobal_' "$G")" = "$n" \
+ && cmp -s "$F" "$L/mob_drop_item.mt2009.txt" \
+ && rm -rf "$A" \
+ && echo "share: M2_BONUS_MODE=global drops - mob_drop_item.global.txt ($n groups added)"
 
 # The Spider Baroness (port/shareify.py renders special_spawns.baroness.txt and
 # this step): the level-75 boss who drops the Stalki, stood in the second
