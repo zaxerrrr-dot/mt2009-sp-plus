@@ -198,6 +198,8 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: playerbot_yohara_bots.h, the last fragment.
 	bool IsPlayerBotYoharaSzcResident(DWORD pid);
 	int GetPlayerBotYoharaSzcParties();
+	// MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: playerbot_yohara_bots.h's .env reader, for the core's run cap.
+	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi);
 	long long ChargePlayerBotYoharaSzcWatch(LPCHARACTER ch);
 	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the Time Rift's run start/end lines, its runs counted for the cohort.
 	void NotePlayerBotYoharaSzcRun(bool start, int runId, long instance, const std::vector<DWORD>& members,
@@ -304,6 +306,11 @@ namespace
 	const DWORD PLAYERBOT_DGRUN_FIRST_PLAN_MS = 5 * 60 * 1000;
 	// Runs at once on this core: one a PLAYERBOT_DGRUN_BOTS_PER_RUN bots of
 	// it, between the two figures.
+	// MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: these are the defaults now - the .env
+	// (the panel's Boty page) sets PLAYERBOT_DGRUN_MIN_RUNS, _MAX_RUNS (0: no
+	// top), _BOTS_PER_RUN (0: no scaling by bots) and _STARVED_OVER_CAP
+	// (GetPlayerBotDgRunCapConfig). The Time Rift and the Hydra keep their own
+	// caps (PLAYERBOT_SZC_PARTIES, PLAYERBOT_HYDRA_PARTIES), outside this one.
 	const int PLAYERBOT_DGRUN_MIN_RUNS = 4;
 	const int PLAYERBOT_DGRUN_MAX_RUNS = 12;
 	const int PLAYERBOT_DGRUN_BOTS_PER_RUN = 250;
@@ -348,7 +355,7 @@ namespace
 	// held all day by the Biblioteka, Wukong, Razador and the Ruins, and
 	// Nemere, the Dragon and the Jungle were never called.
 	const DWORD PLAYERBOT_DGRUN_STARVED_MS = 40 * 60 * 1000;
-	const int PLAYERBOT_DGRUN_STARVED_OVER_CAP = 2;
+	const int PLAYERBOT_DGRUN_STARVED_OVER_CAP = 2;	// the default - V1 below
 	const DWORD PLAYERBOT_DGRUN_PULL_RETRY_MS = 5000;
 	const DWORD PLAYERBOT_DGRUN_OUT_GRACE_MS = 3000;
 	const DWORD PLAYERBOT_DGRUN_TOWER_OUT_GRACE_MS = 20000;
@@ -3391,10 +3398,36 @@ namespace
 		return n;
 	}
 
+	// MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the core's cap from the .env, read once (logged at the first pass).
+	struct TPlayerBotDgRunCapConfig
+	{
+		int minRuns, maxRuns, botsPerRun, starvedOverCap;
+	};
+
+	const TPlayerBotDgRunCapConfig& GetPlayerBotDgRunCapConfig()
+	{
+		static TPlayerBotDgRunCapConfig s_cfg;
+		static bool s_loaded = false;
+		if (s_loaded)
+			return s_cfg;
+		s_loaded = true;
+		s_cfg.minRuns = ReadPlayerBotYoharaEnvInt("PLAYERBOT_DGRUN_MIN_RUNS", PLAYERBOT_DGRUN_MIN_RUNS, 0, 200);
+		s_cfg.maxRuns = ReadPlayerBotYoharaEnvInt("PLAYERBOT_DGRUN_MAX_RUNS", PLAYERBOT_DGRUN_MAX_RUNS, 0, 200);
+		s_cfg.botsPerRun = ReadPlayerBotYoharaEnvInt("PLAYERBOT_DGRUN_BOTS_PER_RUN", PLAYERBOT_DGRUN_BOTS_PER_RUN, 0, 100000);
+		s_cfg.starvedOverCap = ReadPlayerBotYoharaEnvInt("PLAYERBOT_DGRUN_STARVED_OVER_CAP", PLAYERBOT_DGRUN_STARVED_OVER_CAP, 0, 50);
+		sys_log(0, "BOT_DGRUN: config min_runs=%d max_runs=%d%s bots_per_run=%d%s starved_over_cap=%d",
+				s_cfg.minRuns, s_cfg.maxRuns, s_cfg.maxRuns > 0 ? "" : "(no cap)",
+				s_cfg.botsPerRun, s_cfg.botsPerRun > 0 ? "" : "(no scaling)", s_cfg.starvedOverCap);
+		return s_cfg;
+	}
+
 	int GetPlayerBotDgRunCap()
 	{
-		const int byBots = (int)(s_mapPlayerBotAIStates.size() / PLAYERBOT_DGRUN_BOTS_PER_RUN);
-		return std::min(PLAYERBOT_DGRUN_MAX_RUNS, std::max(PLAYERBOT_DGRUN_MIN_RUNS, byBots));
+		// MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: one a botsPerRun bots, at least minRuns, at most maxRuns (0: no top).
+		const TPlayerBotDgRunCapConfig& cfg = GetPlayerBotDgRunCapConfig();
+		const int byBots = cfg.botsPerRun > 0 ? (int)(s_mapPlayerBotAIStates.size() / cfg.botsPerRun) : 0;
+		const int cap = std::max(cfg.minRuns, byBots);
+		return cfg.maxRuns > 0 ? std::min(cfg.maxRuns, cap) : cap;
 	}
 
 	struct TPlayerBotDgRunSlot
@@ -3533,7 +3566,7 @@ namespace
 			if (PLAYERBOT_DGRUN_DEFS[it->second.iDef].bKind != DGRUN_KIND_SZC)
 				++runsNow;
 		const bool overCap = forced < 0 && runsNow >= GetPlayerBotDgRunCap();
-		if (forced < 0 && runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP && GetPlayerBotYoharaSzcParties() <= 0)
+		if (forced < 0 && runsNow >= GetPlayerBotDgRunCap() + GetPlayerBotDgRunCapConfig().starvedOverCap && GetPlayerBotYoharaSzcParties() <= 0)
 		{
 			if (forced != -1)
 				sys_log(0, "BOT_DGRUN: no call (%s) - %d runs already, the cap", why, runsNow);
@@ -3552,7 +3585,7 @@ namespace
 				continue;
 			if (overCap && def.bKind != DGRUN_KIND_SZC && !IsPlayerBotDgRunStarved(i, dwNow))
 				continue;
-			if (forced < 0 && def.bKind != DGRUN_KIND_SZC && runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP)
+			if (forced < 0 && def.bKind != DGRUN_KIND_SZC && runsNow >= GetPlayerBotDgRunCap() + GetPlayerBotDgRunCapConfig().starvedOverCap)
 				continue;
 			// The Demon Tower keeps its own bot raids (playerbot_demon_tower.h;
 			// the owner, 4 October: "wieza demonow tez niech zostanie przy swoich
@@ -3906,6 +3939,7 @@ namespace
 		if (s_dwStart == 0)
 		{
 			s_dwStart = dwNow ? dwNow : 1;
+			GetPlayerBotDgRunCapConfig();	// MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the config line at the core's start
 			s_dwNextPlan = dwNow + PLAYERBOT_DGRUN_FIRST_PLAN_MS;
 			s_dwNextStatus = dwNow + PLAYERBOT_DGRUN_STATUS_MS;
 		}

@@ -216,6 +216,24 @@ SCHEMA = [
     _e("PLAYERBOT_HYDRA_PARTIES", "Drużyny botów naraz na Hydrze",
        "Ile drużyn botów naraz broni statku (stałe pary z kohorty Hydry: ninja + inna postać; każda para ma własny statek).",
        "boty", "int", "16", ["game"], min=0, max=32),
+    # MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the bots' dungeon runs at once per core (GetPlayerBotDgRunCap).
+    _e("PLAYERBOT_DGRUN_MIN_RUNS", "Lochy botów naraz na rdzeń – minimum",
+       "Ile własnych wypraw botów do lochów może iść naraz na jednym rdzeniu gry co najmniej, niezależnie od liczby botów "
+       "(limit rośnie o 1 loch na każde „Botów na 1 loch” botów rdzenia, do maksimum). SZC i Hydra mają własne limity "
+       "(PLAYERBOT_SZC_PARTIES, PLAYERBOT_HYDRA_PARTIES) i się tu nie liczą. 0 = bez minimum.",
+       "boty", "int", "4", ["game"], min=0, max=200),
+    _e("PLAYERBOT_DGRUN_MAX_RUNS", "Lochy botów naraz na rdzeń – maksimum",
+       "Najwięcej wypraw botów do lochów naraz na jednym rdzeniu gry, ile by botów nie było. 0 = bez górnego limitu "
+       "(wtedy tylko 1 loch na N botów). SZC i Hydra mają własne limity.",
+       "boty", "int", "12", ["game"], min=0, max=200),
+    _e("PLAYERBOT_DGRUN_BOTS_PER_RUN", "Botów na 1 loch",
+       "Limit lochów botów naraz na rdzeń to 1 loch na tylu botów rdzenia (np. 1000 botów / 250 = 4 lochy), "
+       "ale nie mniej niż minimum i nie więcej niż maksimum. 0 = bez liczenia po botach (zawsze minimum).",
+       "boty", "int", "250", ["game"], min=0, max=100000),
+    _e("PLAYERBOT_DGRUN_STARVED_OVER_CAP", "Lochy botów ponad limit dla zapomnianych lochów",
+       "O ile lochów ponad limit rdzenia boty mogą ruszyć do lochu, do którego nikt z nich nie chodził od 40 minut "
+       "(żeby rzadziej wybierane lochy też miały wyprawy). 0 = nigdy ponad limit.",
+       "boty", "int", "2", ["game"], min=0, max=50),
     # MT2009_PLUS_CH34_V1: the third and fourth channel, same principle as CH2.
     _e("M2_PLAYERBOT_CH3", "Trzeci kanał (CH3)",
        "Włączone: serwer uruchamia trzeci kanał – trzy kolejne rdzenie gry na własnych procesach (ok. 2,5–3 GB RAM więcej i od pół do jednego rdzenia CPU pod obciążeniem), "
