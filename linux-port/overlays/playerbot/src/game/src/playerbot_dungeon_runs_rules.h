@@ -165,6 +165,9 @@ namespace playerbot_dgrun
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the owner, 21 October (night): "SZC: druzyna botow minimum 2" -
 		// two free to call, two asked for, two to go in (the dungeon's own 2-8; PartyOk below).
 		{ "jotun_szc", 110, 2, 2, 2, false },
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku (the Hydra) - the owner's parties of 7-8 (22 October);
+		// a fixed party of the Hydra's cohort goes in with four of its eight at the least.
+		{ "hydra", 110, 4, 4, 4, false },
 	};
 
 	inline const TRunRule& RuleFor(const char* key)

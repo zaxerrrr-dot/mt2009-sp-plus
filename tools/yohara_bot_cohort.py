@@ -8,6 +8,12 @@ The owner, 21 October 2026 (night): "Kohorty na noc: 100 botow Zaklety Las
 
     yohara_bot_cohort.py <outdir> [--zaklety 100] [--szc 100] [--snakefield 50] [--giantland 50]
                                   [--db-container mt2009plustest-db] [--channel 1]
+    yohara_bot_cohort.py <outdir> --hydra 32 [--db-container ...] [--channel 1]
+
+MT2009_PLUS_BOT_HYDRA_COHORT_V1: --hydra N makes the Hydra's cohort instead (tools/yohara_bot_cohort_hydra.py:
+four fixed parties of eight, level 120 and a quarter of its experience, the Hydra's gear and kit) and touches
+no other cohort. Either way a member of another cohort - active, or set aside in
+common.playerbot_yohara_cohort_paused - is never picked.
 
 Reads the world's database (read-only, `docker exec <db-container> mariadb`)
 and writes to <outdir>:
@@ -77,6 +83,8 @@ ap.add_argument('--giantland', type=int, default=50)
 ap.add_argument('--db-container', default='mt2009plustest-db')
 ap.add_argument('--channel', type=int, default=1)
 ap.add_argument('--min-raise', type=int, default=70, help='the lowest level raised to the forest / the Time Rift')
+ap.add_argument('--hydra', type=int, default=0, help='the Hydra\'s cohort of this many (four parties of eight: 32) - '
+                'MT2009_PLUS_BOT_HYDRA_COHORT_V1, tools/yohara_bot_cohort_hydra.py')
 a = ap.parse_args()
 os.makedirs(a.outdir, exist_ok=True)
 
@@ -110,6 +118,10 @@ excluded |= pidset('SELECT pid FROM common.playerbot_takeover;')
 excluded |= pidset('SELECT pid FROM common.playerbot_retire_pick;')
 excluded |= pidset('SELECT pid FROM player.arezzo_dungeon_cohort;')
 excluded |= pidset('SELECT pid FROM player.arezzo_test_cohort;')
+# MT2009_PLUS_BOT_HYDRA_COHORT_V1: the cohorts set aside (the forest's and the Time Rift's of 22 October)
+# and the Hydra's are no one else's pick.
+paused = pidset('SELECT pid FROM common.playerbot_yohara_cohort_paused;')
+hydra_rows = pidset("SELECT pid FROM common.playerbot_yohara_cohort WHERE purpose = 'hydra';")
 
 rows = q("""
 SELECT p.id, p.name, p.job, pi.empire, p.level, p.skill_group, p.random_hp, p.st, p.ht, p.dx, p.iq,
@@ -131,6 +143,16 @@ for r in rows:
     bots[pid] = dict(pid=pid, name=r[1], job=int(r[2]), cls=int(r[2]) % 4, female=int(r[2]) >= 4, emp=int(r[3]),
                      old=int(r[4]), grp=int(r[5]), rhp=int(r[6]), st=int(r[7]), ht=int(r[8]), dx=int(r[9]),
                      iq=int(r[10]), skills=r[11], master=int(r[12]), chan=int(r[13]), pinned=int(r[14]))
+
+# MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's cohort - its own tool, nothing else touched.
+if a.hydra > 0:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import yohara_bot_cohort_hydra
+    cohort_pids = pidset('SELECT pid FROM common.playerbot_yohara_cohort;') | paused
+    yohara_bot_cohort_hydra.run(a, q, bots, excluded, cohort_pids,
+                                lambda b: not b['master'] and b['grp'] in (1, 2))
+    sys.exit(0)
+excluded |= paused | hydra_rows
 
 # Members an earlier run made keep their place (and their purpose).
 earlier = {}

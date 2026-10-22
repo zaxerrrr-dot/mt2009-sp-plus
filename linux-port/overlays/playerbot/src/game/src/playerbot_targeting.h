@@ -2674,7 +2674,8 @@ namespace
 			if (!EnsurePlayerBotArrowsEquipped(ch) || ch->GetArrowAndBow(&bow, &arrow, 1) != 1)
 				return false;
 		}
-		const int combatRange = GetPlayerBotBasicAttackRange(ch);
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's Hydra, off the deck, is struck from the deck's edge.
+		const int combatRange = std::max(GetPlayerBotBasicAttackRange(ch), GetPlayerBotShipHydraReach(target));
 		if (DISTANCE_APPROX(ch->GetX() - target->GetX(), ch->GetY() - target->GetY()) > combatRange)
 			return false;
 

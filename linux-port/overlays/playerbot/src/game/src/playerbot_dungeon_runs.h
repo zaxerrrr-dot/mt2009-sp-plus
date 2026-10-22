@@ -93,6 +93,8 @@
 // directory, read every few seconds and renamed to .done:
 //     now <key|any>           a call now (biblioteka, wieza, wukong, razador,
 //                             skorpion, nemere, smok, dzungla, atlantyda, meley), off the clock;
+//                             "now hydra" calls the Hydra's free parties at once (no waiting for
+//                             their late members - MT2009_PLUS_BOT_HYDRA_COHORT_V1);
 //     abort <key|all>         those runs out now;
 //     status                  one BOT_DGRUN status line per dungeon;
 //     flag <name> <value>     a game event flag set (the test server's switches,
@@ -173,6 +175,7 @@
 // cohort and the tower, whose fights and items it uses.
 
 #include "playerbot_dungeon_runs_rules.h"
+#include "playerbot_ship_defense.h"	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship of a bots' Hydra run
 
 namespace
 {
@@ -188,7 +191,8 @@ namespace
 		DGRUN_KIND_TOWER,	// the Demon Tower: the stone, then the tower's floors
 		DGRUN_KIND_ATLANTYDA,	// MT2009_PLUS_ATLANTYDA_V1: stage flag; two floors (d.jump_all), the key to the pillars
 		DGRUN_KIND_MELEY,	// MT2009_PLUS_YOHARA_MELEY_V1: stage flag; the four statues, the eggs, Idall, the rings
-		DGRUN_KIND_SZC		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift - only the hunt, no missions, the quest's hour
+		DGRUN_KIND_SZC,		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift - only the hunt, no missions, the quest's hour
+		DGRUN_KIND_HYDRA	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku - the mast held through four waves, the Hydra
 	};
 
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: playerbot_yohara_bots.h, the last fragment.
@@ -198,6 +202,13 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the Time Rift's run start/end lines, its runs counted for the cohort.
 	void NotePlayerBotYoharaSzcRun(bool start, int runId, long instance, const std::vector<DWORD>& members,
 			const char* result, DWORD tookS);
+	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: playerbot_yohara_bots.h - the Hydra's residents, their fixed parties, the
+	// runs at once, and a run's end counted for the cohort (runs, wins).
+	bool IsPlayerBotYoharaHydraResident(DWORD pid);
+	int GetPlayerBotYoharaHydraParty(DWORD pid);
+	int GetPlayerBotYoharaHydraParties();
+	void NotePlayerBotYoharaHydraRunEnd(const std::vector<DWORD>& members, bool won);
+	void NotePlayerBotYoharaHydraDeath(LPCHARACTER ch);
 
 	struct TPlayerBotDgRunDef
 	{
@@ -256,11 +267,23 @@ namespace
 		// brought for it take part (IsPlayerBotYoharaSzcResident).
 		{ "jotun_szc", DGRUN_KIND_SZC, 404, NULL, "jotun_szc_dgrun", NULL, 478, 970,
 			0LL, 0, 60, 30000, 2 },
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku (367, obrona_statku.quest, playerbot_ship_defense.cpp) on the
+		// Yohara core. The owner, 22 October: "Przygotuj cztery party po 8 postaci ... na Hydre". The parties gather on
+		// the pier of Port Nowego Kontynentu (368, the same core - the quest's Fisherman stands on 301, game2) and a
+		// new ship takes them in at its Town.txt (387,359); the wheel's "Rozpocznij" is CShipDefense::Start here (no
+		// quest timer), and the ship's own 30 minutes after the start end it. No fee (the quest lets a party's bots
+		// in free) and no day's count (the quest counts people only). The runs at once: PLAYERBOT_HYDRA_PARTIES
+		// (GetPlayerBotDgRunDefCap); only the bots the handover brought for it, in their cohort's fixed parties
+		// (PlanPlayerBotHydraRuns). After the win a minute for the Skarb Hydry (3965) and the loot.
+		{ "hydra", DGRUN_KIND_HYDRA, 367, NULL, NULL, NULL, 387, 359,
+			0LL, 0, 32, 60000, 4 },
 	};
 	const int PLAYERBOT_DGRUN_DEF_COUNT = (int)(sizeof(PLAYERBOT_DGRUN_DEFS) / sizeof(PLAYERBOT_DGRUN_DEFS[0]));
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: the runs of a dungeon at once - the Time Rift's from the .env.
 	int GetPlayerBotDgRunDefCap(int i)
 	{
+		if (PLAYERBOT_DGRUN_DEFS[i].bKind == DGRUN_KIND_HYDRA)	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			return GetPlayerBotYoharaHydraParties();
 		return PLAYERBOT_DGRUN_DEFS[i].bKind == DGRUN_KIND_SZC ? GetPlayerBotYoharaSzcParties() : PLAYERBOT_DGRUN_DEFS[i].iCap;
 	}
 	// MT2009_PLUS_BOT_YOHARA_SZC_V1: after a Time Rift's hour the next one soon - "gdy czas minie,
@@ -466,6 +489,12 @@ namespace
 		int iObjKey;
 		DWORD dwObjMissingSince;
 		int iObjRespawns;
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: a Hydra run - its fixed party (0: none), the ship started, the highest
+		// wave, the mast's lowest health (percent), the marbles used, the elixirs drunk, the planks put on the
+		// mast, and the ship's state at the run's last look.
+		int iHydraParty;
+		bool bShipStarted;
+		int iShipWave, iMastMinPct, iPolymorphs, iElixirs, iRepairs, iShipState;
 		TPlayerBotDgRun() : iId(0), iDef(0), bEmpire(0), bPhase(DGRUN_PHASE_GATHER), dwLeader(0), dwAnchor(0), iLvMin(0),
 				iLvMax(0), dwCalledAt(0), dwPhaseSince(0), dwEnteredAt(0), dwLastProgress(0), dwFinishedAt(0),
 				dwClosedSeen(0), dwOutSince(0), dwNextStep(0), dwNextPull(0), lInstance(0), iStage(0), dwStageSince(0),
@@ -473,7 +502,8 @@ namespace
 				lPackX(0), lPackY(0), iPackN(0), szResult(NULL), bPartyMade(false), lCampX(0), lCampY(0), bFallback(false),
 				dwFallbackSince(0), dwFallbackRestUntil(0), iFit(0), iFallbacks(0), iBreakOffs(0), dwFocusVID(0), iWipesIdle(0),
 				dwLastWipeAt(0), iExtraMin(-1), iReplacements(0),
-				iObjKey(0), dwObjMissingSince(0), iObjRespawns(0) {}
+				iObjKey(0), dwObjMissingSince(0), iObjRespawns(0), iHydraParty(0), bShipStarted(false), iShipWave(0),
+				iMastMinPct(100), iPolymorphs(0), iElixirs(0), iRepairs(0), iShipState(0) {}
 	};
 
 	std::map<int, TPlayerBotDgRun> s_mapPlayerBotDgRuns;
@@ -768,6 +798,14 @@ namespace
 			// MT2009_PLUS_BOT_YOHARA_SZC_V1: one stage - the hour's hunt (jotun_szc's init()).
 			case DGRUN_KIND_SZC:
 				return d->GetFlag("init") == 1 ? 1 : 0;
+			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's wave (1-4), 5 won.
+			case DGRUN_KIND_HYDRA:
+			{
+				if (d->GetFlag("shipdef_won") == 1)
+					return 5;
+				const CShipDefense* ship = CShipDefenseManager::instance().Find(d->GetMapIndex());
+				return ship && ship->IsStarted() ? std::max<int>(1, ship->GetWave()) : 0;
+			}
 			default:
 				return previous;
 		}
@@ -856,6 +894,8 @@ namespace
 				return d->GetFlag("stage") == 7;
 			case DGRUN_KIND_MELEY:
 				return d->GetFlag("won") == 1;
+			case DGRUN_KIND_HYDRA:	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: CShipDefense::Win sets it
+				return d->GetFlag("shipdef_won") == 1;
 			default:
 				return false;
 		}
@@ -916,6 +956,13 @@ namespace
 		{
 			itemStep = true;
 			sig = (long long)d->GetFlag("init");
+		}
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's wave and state, the Hydra's health and the deck's monsters'.
+		else if (def.bKind == DGRUN_KIND_HYDRA)
+		{
+			itemStep = true;
+			const CShipDefense* ship = CShipDefenseManager::instance().Find(instance);
+			sig = ship ? (long long)ship->GetWave() * 101LL + ship->GetState() : 0LL;
 		}
 		else if (def.bKind == DGRUN_KIND_RAZADOR)
 			itemStep = d->GetFlag("active") == 1 && (d->GetFlag("step") == 2 || d->GetFlag("step") == 5);
@@ -1624,6 +1671,503 @@ namespace
 		return fought;
 	}
 
+	// ------------------------------------------------------------ the Hydra (MT2009_PLUS_BOT_HYDRA_COHORT_V1)
+	//
+	// The owner, 22 October 2026: "Przygotuj cztery party po 8 postaci. Lvl 120 + 25% expa. Daj im super EQ pod
+	// Hydre. Najwiecej Hydr na globalu robia ninje lucznicy na polimorfii w Dzikiego Sluge, Orka albo Trujacego
+	// Pajaka. Mozesz to wykorzystac tutaj, zeby boty ninja lucznicy dazyly do robienia Hydry na polimorfii. Reszta
+	// postaci w duzych 7-8 osobowych partiach. Mozesz im dac tez mikstury lodu z Yohary."
+	//
+	// On the ship (playerbot_ship_defense.cpp) a bots' run plays the people's part of obrona_statku.quest:
+	//   - the wheel: CShipDefense::Start a few seconds after the jump (UpdatePlayerBotHydraShip), the quest's
+	//     "started_at" for the dungeon panel's time;
+	//   - the Archer Ninjas take a Marmur Polimorfii (70104, socket 0: Dziki Sluga 502, Ork 601 or Trujacy Pajak
+	//     2002) as they come on deck and again whenever it runs out (KeepPlayerBotHydraPolymorph) - with the cohort's
+	//     Polymorph skill at P a transformation lasts 35 minutes, the ship's whole voyage; under it they strike hand
+	//     to hand (IsPlayerBotFightingAsMonster), the Hydra from the deck's edge (GetPlayerBotShipHydraReach);
+	//   - the Eliksir Mroznej Mocy (50831, Sila Lodu) and the Eliksir Odp. na Lod (50837) while the ship sails -
+	//     the Hydra, its spawn and its Kappas are ice (ATT_ICE) - drunk again when their effect is gone;
+	//   - the roles: the Shamans and the magic Suras guard the mast (what strikes it, the Hydra's spawn, the
+	//     planks for its repair), everyone else goes for the Hydra once its wave runs; a Hydra Egg within reach
+	//     before anything (its fall sinks the deck's monsters), the Skarb Hydry after the win;
+	//   - a plank (Deska Naprawcza 31107, from a Deska 20437) is carried to the mast and put on it
+	//     (CShipDefense::Repair, the quest's 20434.take) while the mast is under PLAYERBOT_HYDRA_REPAIR_BELOW.
+	// The log: PLAYERBOT_HYDRA (run start, ship started, wave, ship state, polymorph, elixir, repair, run end).
+
+	const DWORD PLAYERBOT_HYDRA_MARBLE = 70104;
+	const DWORD PLAYERBOT_HYDRA_POLY_MOBS[] = { 502, 601, 2002 };	// Dziki Sluga, Ork, Trujacy Pajak
+	const DWORD PLAYERBOT_HYDRA_ELIXIR_POWER = 50831;	// Eliksir Mroznej Mocy (POINT_ENCHANT_ICE)
+	const DWORD PLAYERBOT_HYDRA_ELIXIR_RESIST = 50837;	// Eliksir Odp. na Lod (POINT_RESIST_ICE)
+	const DWORD PLAYERBOT_HYDRA_PLANK = 31107;	// Deska Naprawcza
+	const DWORD PLAYERBOT_HYDRA_PLANK_MOB = 20437;	// Deska
+	const DWORD PLAYERBOT_HYDRA_EGG = 20432;
+	const DWORD PLAYERBOT_HYDRA_TREASURE = 3965;
+	const DWORD PLAYERBOT_HYDRA_POLY_RETRY_MS = 5000;
+	const DWORD PLAYERBOT_HYDRA_ELIXIR_RETRY_MS = 10000;
+	// The jump's settling before the wheel, and the clock of the parties' calls; a party's late members are
+	// waited for this long, its rest after a run.
+	const DWORD PLAYERBOT_DGRUN_HYDRA_START_MS = 8000;
+	const DWORD PLAYERBOT_DGRUN_HYDRA_PLAN_MS = 10000;
+	const DWORD PLAYERBOT_DGRUN_HYDRA_WAIT_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_DGRUN_HYDRA_REST_MIN_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_DGRUN_HYDRA_REST_SPREAD_MS = 2 * 60 * 1000;
+	// The deck (cells off the ship's base, its server_attr): the mast, the Hydra's spot (blocked ground), the deck's
+	// edge before her - 500 from her for a blow (a person's reach at a boss: 655), 700 for a bow (800).
+	const int PLAYERBOT_HYDRA_MAST_CX = 385, PLAYERBOT_HYDRA_MAST_CY = 400;
+	const int PLAYERBOT_HYDRA_CX = 385, PLAYERBOT_HYDRA_CY = 373;
+	const int PLAYERBOT_HYDRA_MELEE_ROW = 378, PLAYERBOT_HYDRA_BOW_ROW = 380;
+	const int PLAYERBOT_HYDRA_EGG_RANGE = 1600;
+	const int PLAYERBOT_HYDRA_MAST_GUARD = 1300;
+	const int PLAYERBOT_HYDRA_REPAIR_BELOW = 90;
+	const int PLAYERBOT_HYDRA_PLANK_BELOW = 80;
+
+	std::map<DWORD, DWORD> s_mapPlayerBotHydraPolyTry;
+	std::map<DWORD, DWORD> s_mapPlayerBotHydraElixirTry;
+
+	// A guard of the mast: a Shaman, a magic Sura.
+	bool IsPlayerBotHydraGuard(LPCHARACTER ch)
+	{
+		return ch && (ch->GetJob() == JOB_SHAMAN || (ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 2));
+	}
+
+	// An Archer Ninja: the one the owner wants on the ship in a monster's shape.
+	bool IsPlayerBotHydraPolymorpher(LPCHARACTER ch)
+	{
+		return ch && ch->GetJob() == JOB_ASSASSIN && ch->GetSkillGroup() == 2;
+	}
+
+	void PlayerBotHydraCell(long instance, int cx, int cy, long& x, long& y)
+	{
+		LPSECTREE_MAP pMap = SECTREE_MANAGER::instance().GetMap(instance);
+		x = (pMap ? pMap->m_setting.iBaseX : 0) + cx * 100;
+		y = (pMap ? pMap->m_setting.iBaseY : 0) + cy * 100;
+	}
+
+	int CountPlayerBotHydraMarbles(LPCHARACTER ch)
+	{
+		int n = 0;
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetVnum() == PLAYERBOT_HYDRA_MARBLE && item->GetSocket(0) != 0)
+				n += item->GetCount();
+		}
+		return n;
+	}
+
+	// The cell of a marble the bot may use: one of the three monsters first, else any its level allows.
+	int FindPlayerBotHydraMarble(LPCHARACTER ch)
+	{
+		const int limit = ch->GetLevel() + MAX(0, 20 - ch->GetLevel() * 3 / 10);
+		int any = -1;
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetVnum() != PLAYERBOT_HYDRA_MARBLE || item->isLocked())
+				continue;
+			const DWORD mob = (DWORD)item->GetSocket(0);
+			const CMob* pMob = mob != 0 ? CMobManager::instance().Get(mob) : NULL;
+			if (!pMob || (int)pMob->m_table.bLevel >= limit)
+				continue;
+			for (size_t i = 0; i < sizeof(PLAYERBOT_HYDRA_POLY_MOBS) / sizeof(PLAYERBOT_HYDRA_POLY_MOBS[0]); ++i)
+				if (PLAYERBOT_HYDRA_POLY_MOBS[i] == mob)
+					return cell;
+			if (any < 0)
+				any = cell;
+		}
+		return any;
+	}
+
+	// An Archer Ninja on the deck in its own shape: a marble (the engine's ItemProcess_Polymorph, as a person's use).
+	bool KeepPlayerBotHydraPolymorph(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, DWORD dwNow)
+	{
+		if (!IsPlayerBotHydraPolymorpher(ch) || ch->IsPolymorphed() || ch->IsDead() || state.bRecoveringAfterDeath ||
+				!ch->IsItemLoaded() || ch->IsStun())
+			return false;
+		DWORD& next = s_mapPlayerBotHydraPolyTry[ch->GetPlayerID()];
+		if (next != 0 && (int)(next - dwNow) > 0)
+			return false;
+		next = dwNow + PLAYERBOT_HYDRA_POLY_RETRY_MS;
+		const int cell = FindPlayerBotHydraMarble(ch);
+		if (cell < 0)
+		{
+			PlayerBotLogThrottled("hydra_no_marble", dwNow, "PLAYERBOT_HYDRA: no marble pid=%u name=%s run=%d party=%d - fights with its bow",
+					ch->GetPlayerID(), ch->GetName(), run.iId, run.iHydraParty);
+			return false;
+		}
+		// ItemProcess_Polymorph refuses a rider.
+		if (ch->IsRiding())
+		{
+			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "hydra_polymorph");
+			next = dwNow + 600;
+			return true;
+		}
+		LPITEM item = ch->GetInventoryItem(cell);
+		const DWORD mob = (DWORD)item->GetSocket(0);
+		const CShipDefense* ship = CShipDefenseManager::instance().Find(run.lInstance);
+		// The marble may be the last of its kind: nothing of it is read after the use.
+		if (!ch->UseItem(TItemPos(INVENTORY, cell)) || !ch->IsPolymorphed())
+		{
+			PlayerBotLogThrottled("hydra_poly_refused", dwNow, "PLAYERBOT_HYDRA: polymorph refused pid=%u name=%s run=%d mob=%u",
+					ch->GetPlayerID(), ch->GetName(), run.iId, mob);
+			return false;
+		}
+		++run.iPolymorphs;
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		sys_log(0, "PLAYERBOT_HYDRA: polymorph pid=%u name=%s run=%d party=%d mob=%u wave=%d marbles_left=%d",
+				ch->GetPlayerID(), ch->GetName(), run.iId, run.iHydraParty, mob, ship ? (int)ship->GetWave() : -1,
+				CountPlayerBotHydraMarbles(ch));
+		return true;
+	}
+
+	// The ice elixirs while the ship sails, each again when its effect is gone.
+	void DrinkPlayerBotHydraElixirs(LPCHARACTER ch, TPlayerBotDgRun& run, const CShipDefense* ship, DWORD dwNow)
+	{
+		if (!ship || !ship->IsStarted() || ship->GetState() >= ship_defense::STATE_WON || ch->IsDead() || !ch->IsItemLoaded())
+			return;
+		DWORD& next = s_mapPlayerBotHydraElixirTry[ch->GetPlayerID()];
+		if (next != 0 && (int)(next - dwNow) > 0)
+			return;
+		next = dwNow + PLAYERBOT_HYDRA_ELIXIR_RETRY_MS;
+		static const DWORD vnums[2] = { PLAYERBOT_HYDRA_ELIXIR_POWER, PLAYERBOT_HYDRA_ELIXIR_RESIST };
+		static const BYTE points[2] = { POINT_ENCHANT_ICE, POINT_RESIST_ICE };
+		for (int i = 0; i < 2; ++i)
+		{
+			if (ch->FindAffect(AFFECT_BLEND, points[i]))
+				continue;
+			LPITEM item = ch->FindSpecifyItem(vnums[i]);
+			if (!item || item->GetSocket(0) == 0)
+				continue;
+			const int value = (int)item->GetSocket(1), seconds = (int)item->GetSocket(2);
+			if (!ch->UseItem(TItemPos(INVENTORY, item->GetCell())) || !ch->FindAffect(AFFECT_BLEND, points[i]))
+				continue;
+			++run.iElixirs;
+			sys_log(0, "PLAYERBOT_HYDRA: elixir pid=%u name=%s run=%d party=%d vnum=%u value=%d seconds=%d left=%d",
+					ch->GetPlayerID(), ch->GetName(), run.iId, run.iHydraParty, vnums[i], value, seconds,
+					(int)ch->CountSpecifyItem(vnums[i]));
+		}
+	}
+
+	// A plank in the bag and the mast hurt: to the mast, and on it (obrona_statku.quest's 20434.take).
+	bool RepairPlayerBotHydraMast(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, CShipDefense* ship, DWORD dwNow)
+	{
+		const BYTE st = ship ? ship->GetState() : 0;
+		if (!ship || (st != ship_defense::STATE_COUNTDOWN && st != ship_defense::STATE_RUNNING && st != ship_defense::STATE_BETWEEN))
+			return false;
+		LPCHARACTER mast = ship->GetMast();
+		if (!mast || mast->GetHPPct() >= PLAYERBOT_HYDRA_REPAIR_BELOW || ch->CountSpecifyItem(PLAYERBOT_HYDRA_PLANK) <= 0)
+			return false;
+		const int d = DISTANCE_APPROX(ch->GetX() - mast->GetX(), ch->GetY() - mast->GetY());
+		if (d > 400)
+		{
+			state.dwTargetVID = 0;
+			ch->SetVictim(NULL);
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			if (dwNow >= state.dwNextTowerMoveTime)
+			{
+				state.dwNextTowerMoveTime = dwNow + 1000;
+				MovePlayerBot(ch, mast->GetX(), mast->GetY(), dwNow, 4, true, false);
+			}
+			return true;
+		}
+		const int before = mast->GetHPPct();
+		if (!ship->Repair(ch, ship_defense::Cfg("repair_pct")))
+			return false;
+		ch->RemoveSpecifyItem(PLAYERBOT_HYDRA_PLANK, 1);
+		++run.iRepairs;
+		sys_log(0, "PLAYERBOT_HYDRA: repair pid=%u name=%s run=%d party=%d wave=%d mast_pct=%d->%d", ch->GetPlayerID(),
+				ch->GetName(), run.iId, run.iHydraParty, (int)ship->GetWave(), before, mast->GetHPPct());
+		return true;
+	}
+
+	// The foe on the ship for this bot (hydra: it is the Hydra).
+	LPCHARACTER PickPlayerBotHydraFoe(LPCHARACTER ch, const TPlayerBotDgRun& run, CShipDefense* ship, bool& hydra, DWORD dwNow)
+	{
+		hydra = false;
+		const TPlayerBotArzDgScan& scan = ScanPlayerBotArzDg(run.lInstance, dwNow);
+		LPCHARACTER mast = ship ? ship->GetMast() : NULL;
+		const bool won = ship && ship->GetState() == ship_defense::STATE_WON;
+		const bool guard = IsPlayerBotHydraGuard(ch);
+		const bool hurt = ch->GetMaxHP() > 0 && (long long)ch->GetHP() * 100 < (long long)ch->GetMaxHP() * 60;
+		LPCHARACTER egg = NULL, boss = NULL, treasure = NULL, plank = NULL, spawn = NULL, onMe = NULL, onMast = NULL, any = NULL;
+		int dEgg = INT_MAX, dPlank = INT_MAX, dSpawn = INT_MAX, dOnMe = INT_MAX, dOnMast = INT_MAX, dAny = INT_MAX;
+		for (size_t i = 0; i < scan.foes.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().Find(scan.foes[i].dwVID);
+			if (!IsPlayerBotPdgFoe(ch, c))
+				continue;
+			const DWORD race = c->GetRaceNum();
+			const int d = DISTANCE_APPROX(ch->GetX() - c->GetX(), ch->GetY() - c->GetY());
+			if (race == PLAYERBOT_HYDRA_EGG)
+			{
+				if (d <= PLAYERBOT_HYDRA_EGG_RANGE && d < dEgg)
+				{
+					egg = c;
+					dEgg = d;
+				}
+				continue;
+			}
+			if (race >= 3960 && race <= 3962)
+			{
+				boss = c;
+				continue;
+			}
+			if (race == PLAYERBOT_HYDRA_TREASURE)
+			{
+				treasure = c;
+				continue;
+			}
+			if (race == PLAYERBOT_HYDRA_PLANK_MOB)
+			{
+				if (d < dPlank)
+				{
+					plank = c;
+					dPlank = d;
+				}
+				continue;
+			}
+			if (race >= 3957 && race <= 3959)
+			{
+				if (d < dSpawn)
+				{
+					spawn = c;
+					dSpawn = d;
+				}
+				continue;
+			}
+			if (race >= 20000)
+				continue;
+			LPCHARACTER v = c->GetVictim();
+			if (v == ch && d < dOnMe && d <= 1000)
+			{
+				onMe = c;
+				dOnMe = d;
+			}
+			const int dm = mast ? DISTANCE_APPROX(mast->GetX() - c->GetX(), mast->GetY() - c->GetY()) : d;
+			if ((v == mast || dm <= PLAYERBOT_HYDRA_MAST_GUARD) && d < dOnMast)
+			{
+				onMast = c;
+				dOnMast = d;
+			}
+			if (d < dAny)
+			{
+				any = c;
+				dAny = d;
+			}
+		}
+		if (won)
+			return treasure;
+		if (egg)
+			return egg;
+		if (onMe && hurt)
+			return onMe;
+		if (boss && !guard)
+		{
+			hydra = true;
+			return boss;
+		}
+		if (onMast)
+			return onMast;
+		if (guard && plank && mast && mast->GetHPPct() < PLAYERBOT_HYDRA_PLANK_BELOW && ch->CountSpecifyItem(PLAYERBOT_HYDRA_PLANK) <= 0)
+			return plank;
+		if (spawn)
+			return spawn;
+		if (boss)
+		{
+			hydra = true;
+			return boss;
+		}
+		return onMe ? onMe : any;
+	}
+
+	int GetPlayerBotHydraMemberIndex(const TPlayerBotDgRun& run, DWORD pid)
+	{
+		for (size_t i = 0; i < run.members.size(); ++i)
+			if (run.members[i] == pid)
+				return (int)i;
+		return 0;
+	}
+
+	// The Hydra from the deck's edge before her: a blow at 500 (a transformed Archer, a Warrior, a Sura, a
+	// Ninja), a bow at 700.
+	bool FightPlayerBotHydraBoss(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotDgRun& run, LPCHARACTER boss, DWORD dwNow)
+	{
+		const bool marbled = IsPlayerBotFightingAsMonster(ch);
+		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+		const bool isBow = !marbled && weapon && weapon->GetType() == ITEM_WEAPON && weapon->GetSubType() == WEAPON_BOW;
+		const int idx = GetPlayerBotHydraMemberIndex(run, ch->GetPlayerID());
+		long sx = 0, sy = 0;
+		if (isBow)
+			PlayerBotHydraCell(run.lInstance, PLAYERBOT_HYDRA_CX + (idx % 3) - 1, PLAYERBOT_HYDRA_BOW_ROW, sx, sy);
+		else
+			PlayerBotHydraCell(run.lInstance, PLAYERBOT_HYDRA_CX + (idx % 5) - 2, PLAYERBOT_HYDRA_MELEE_ROW, sx, sy);
+		const int reach = isBow ? GetPlayerBotBowRange(ch->GetMapIndex()) : GetPlayerBotShipHydraReach(boss);
+		const int dBoss = DISTANCE_APPROX(ch->GetX() - boss->GetX(), ch->GetY() - boss->GetY());
+		state.dwTargetVID = (DWORD)boss->GetVID();
+		ch->SetVictim(boss);
+		SetPlayerBotAction(state, BOT_ACTION_FIGHT, dwNow);
+		if (dBoss > reach - 30 || DISTANCE_APPROX(ch->GetX() - sx, ch->GetY() - sy) > 600)
+		{
+			if (dwNow >= state.dwNextTowerMoveTime)
+			{
+				state.dwNextTowerMoveTime = dwNow + 1000;
+				MovePlayerBot(ch, sx, sy, dwNow, 4, true, false);
+			}
+			return true;
+		}
+		if (ch->IsStateMove())
+			ch->Stop();
+		if (isBow)
+			ClearPlayerBotRoute(state, false);
+		ch->SetRotationToXY(boss->GetX(), boss->GetY());
+		ch->SetPosition(POS_FIGHTING);
+		if (!marbled && ManagePlayerBotCombatBuffs(ch, state, dwNow, true))
+			return true;
+		if (marbled || !CastPlayerBotDuelSkill(ch, boss, state, dwNow))
+			ExecutePlayerBotBasicAttack(ch, boss, state, dwNow);
+		return true;
+	}
+
+	// A bot of a Hydra run on the deck (ManagePlayerBotDgRunInside, after the potions, the break-off, the Cure).
+	bool ManagePlayerBotHydraInside(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, TPlayerBotDgRunBot& rb,
+			DWORD dwNow)
+	{
+		(void)rb;
+		CShipDefense* ship = CShipDefenseManager::instance().Find(run.lInstance);
+		if (KeepPlayerBotHydraPolymorph(ch, state, run, dwNow))
+			return true;
+		DrinkPlayerBotHydraElixirs(ch, run, ship, dwNow);
+		if (RepairPlayerBotHydraMast(ch, state, run, ship, dwNow))
+			return true;
+		bool isHydra = false;
+		LPCHARACTER foe = PickPlayerBotHydraFoe(ch, run, ship, isHydra, dwNow);
+		if (foe && isHydra)
+			return FightPlayerBotHydraBoss(ch, state, run, foe, dwNow);
+		if (foe)
+		{
+			if (!IsPlayerBotFightingAsMonster(ch) && BuffPlayerBotTowerFellows(ch, state, dwNow))
+				return true;
+			return FightPlayerBotTowerObjective(ch, state, foe, dwNow);
+		}
+		// Nothing to strike: the guards by the mast, the others before the Hydra's spot - each on its own cell.
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		const int idx = GetPlayerBotHydraMemberIndex(run, ch->GetPlayerID());
+		static const int kRing[8][2] = { { 4, 0 }, { 3, 3 }, { 0, 4 }, { -3, 3 }, { -4, 0 }, { -3, -3 }, { 0, -4 }, { 3, -3 } };
+		long x = 0, y = 0;
+		if (IsPlayerBotHydraGuard(ch) || !ship || !ship->IsStarted())
+			PlayerBotHydraCell(run.lInstance, PLAYERBOT_HYDRA_MAST_CX + kRing[idx % 8][0], PLAYERBOT_HYDRA_MAST_CY + kRing[idx % 8][1], x, y);
+		else
+			PlayerBotHydraCell(run.lInstance, PLAYERBOT_HYDRA_CX + (idx % 5) - 2, PLAYERBOT_HYDRA_MELEE_ROW + 2, x, y);
+		if (DISTANCE_APPROX(ch->GetX() - x, ch->GetY() - y) > 250)
+		{
+			SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+			if (dwNow >= state.dwNextTowerMoveTime)
+			{
+				state.dwNextTowerMoveTime = dwNow + 1500;
+				MovePlayerBot(ch, x, y, dwNow, 4, true, false);
+			}
+			return true;
+		}
+		if (ch->IsStateMove())
+			ch->Stop();
+		SetPlayerBotAction(state, BOT_ACTION_IDLE, dwNow);
+		return true;
+	}
+
+	// One second of the ship for a bots' run (UpdatePlayerBotDgRunInside): the wheel, the waves, the mast, the end.
+	void UpdatePlayerBotHydraShip(TPlayerBotDgRun& run, LPDUNGEON d, int inside, DWORD dwNow)
+	{
+		if (!d)
+			return;
+		CShipDefense* ship = CShipDefenseManager::instance().Attach(run.lInstance);
+		if (!ship)
+			return;
+		BYTE st = ship->GetState();
+		if (!run.bShipStarted && st == ship_defense::STATE_IDLE && inside > 0 && !run.szResult &&
+				dwNow - run.dwEnteredAt >= PLAYERBOT_DGRUN_HYDRA_START_MS)
+		{
+			if (ship->Start())
+			{
+				run.bShipStarted = true;
+				d->SetFlag("started_at", (int)get_global_time());
+				sys_log(0, "PLAYERBOT_HYDRA: ship started run=%d party=%d instance=%ld inside=%d members=%u", run.iId,
+						run.iHydraParty, run.lInstance, inside, (unsigned int)run.members.size());
+			}
+			st = ship->GetState();
+		}
+		if (st != ship_defense::STATE_IDLE)
+			run.bShipStarted = true;
+		const int wave = ship->GetWave();
+		const int mast = ship->GetMastHPPct();
+		if (run.bShipStarted && st <= ship_defense::STATE_BETWEEN && mast < run.iMastMinPct)
+			run.iMastMinPct = mast;
+		if (wave > run.iShipWave)
+		{
+			run.iShipWave = wave;
+			sys_log(0, "PLAYERBOT_HYDRA: wave run=%d party=%d wave=%d after_s=%u mast_pct=%d inside=%d deaths=%d", run.iId,
+					run.iHydraParty, wave, (dwNow - run.dwEnteredAt) / 1000, mast, inside, run.iDeaths);
+		}
+		if ((int)st != run.iShipState)
+		{
+			static const char* const names[] = { "idle", "countdown", "running", "between", "won", "lost", "closed" };
+			sys_log(0, "PLAYERBOT_HYDRA: ship %s run=%d party=%d wave=%d after_s=%u mast_pct=%d", st < 7 ? names[st] : "?",
+					run.iId, run.iHydraParty, wave, (dwNow - run.dwEnteredAt) / 1000, mast);
+			run.iShipState = (int)st;
+		}
+		// The ship lost (the mast down, or its time out): out with them now - the ship closes itself in a moment.
+		if (st == ship_defense::STATE_LOST && !run.szResult)
+			run.szResult = mast <= 0 ? "mast_lost" : "ship_timeout";
+	}
+
+	// The party's class mix for the log ("N2:6,Sh2:1,W1:1").
+	std::string DescribePlayerBotHydraParty(const TPlayerBotDgRun& run, int& archers, int& marbles)
+	{
+		static const char* const cls[4] = { "W", "N", "S", "Sh" };
+		std::map<std::string, int> mix;
+		archers = marbles = 0;
+		for (size_t i = 0; i < run.members.size(); ++i)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(run.members[i]);
+			if (!c)
+				continue;
+			char key[8];
+			snprintf(key, sizeof(key), "%s%d", cls[c->GetJob() % 4], (int)c->GetSkillGroup());
+			++mix[key];
+			if (IsPlayerBotHydraPolymorpher(c))
+			{
+				++archers;
+				marbles += CountPlayerBotHydraMarbles(c);
+			}
+		}
+		std::string out;
+		for (std::map<std::string, int>::const_iterator i = mix.begin(); i != mix.end(); ++i)
+			out += (out.empty() ? "" : ",") + i->first + ":" + std::to_string(i->second);
+		return out.empty() ? "-" : out;
+	}
+
+	void LogPlayerBotHydraRunStart(const TPlayerBotDgRun& run)
+	{
+		int archers = 0, marbles = 0;
+		const std::string mix = DescribePlayerBotHydraParty(run, archers, marbles);
+		sys_log(0, "PLAYERBOT_HYDRA: run start run=%d party=%d instance=%ld empire=%u members=%u mix=%s archers=%d marbles=%d",
+				run.iId, run.iHydraParty, run.lInstance, (unsigned int)run.bEmpire, (unsigned int)run.members.size(),
+				mix.c_str(), archers, marbles);
+	}
+
+	void LogPlayerBotHydraRunEnd(const TPlayerBotDgRun& run, const char* result, bool entered, DWORD tookS)
+	{
+		const bool won = result && !strcmp(result, "finished");
+		sys_log(0, "PLAYERBOT_HYDRA: run end run=%d party=%d instance=%ld result=%s won=%d took_s=%u wave=%d mast_min_pct=%d "
+				"deaths=%d wipes=%d break_offs=%d polymorphs=%d elixirs=%d repairs=%d members=%u entered=%d",
+				run.iId, run.iHydraParty, run.lInstance, result ? result : "-", won ? 1 : 0, tookS, run.iShipWave,
+				run.bShipStarted ? run.iMastMinPct : -1, run.iDeaths, run.iWipes, run.iBreakOffs, run.iPolymorphs, run.iElixirs,
+				run.iRepairs, (unsigned int)run.members.size(), entered ? 1 : 0);
+		if (entered && tookS >= 60 && result && strcmp(result, "aborted"))
+			NotePlayerBotYoharaHydraRunEnd(run.members, won);
+	}
+
 	// Inside the run's instance.
 	bool ManagePlayerBotDgRunInside(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotDgRun& run, TPlayerBotDgRunBot& rb,
 			DWORD dwNow)
@@ -1684,6 +2228,9 @@ namespace
 			return true;
 		if (ManagePlayerBotPdgItems(ch, state, rb.pdg, dwNow))
 			return true;
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship - its own roles, no fallback away from the mast.
+		if (def.bKind == DGRUN_KIND_HYDRA)
+			return ManagePlayerBotHydraInside(ch, state, run, rb, dwNow);
 		if (run.bFallback)
 			return FallBackPlayerBotDgRun(ch, state, run, dwNow);
 		LPCHARACTER anchor = run.dwAnchor ? CHARACTER_MANAGER::instance().FindByPID(run.dwAnchor) : NULL;
@@ -1871,6 +2418,8 @@ namespace
 				(unsigned int)run.members.size(), leader ? leader->GetName() : "-", run.iBreakOffs, run.iFallbacks);
 		if (def.bKind == DGRUN_KIND_SZC && entered)	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 			NotePlayerBotYoharaSzcRun(false, run.iId, run.lInstance, run.members, result, took / 1000);
+		if (def.bKind == DGRUN_KIND_HYDRA)	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			LogPlayerBotHydraRunEnd(run, result, entered, took / 1000);
 		FILE* fp = fopen(PLAYERBOT_DGRUN_RUNS_FILE, "a");
 		if (fp)
 		{
@@ -1896,6 +2445,10 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_SZC_V1: the Time Rift's bots are there for it - a short rest.
 		if (def.bKind == DGRUN_KIND_SZC)
 			rest = PLAYERBOT_DGRUN_SZC_REST_MIN_MS + (DWORD)number(0, (int)PLAYERBOT_DGRUN_SZC_REST_SPREAD_MS);
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's parties the same - one rest for the whole party, so it
+		// comes back together.
+		if (def.bKind == DGRUN_KIND_HYDRA)
+			rest = PLAYERBOT_DGRUN_HYDRA_REST_MIN_MS + (DWORD)number(0, (int)PLAYERBOT_DGRUN_HYDRA_REST_SPREAD_MS);
 		const std::vector<DWORD> members = run.members;
 		for (size_t i = 0; i < members.size(); ++i)
 			ReleasePlayerBotDgRunBot(members[i], run, dwNow, rest, NULL);
@@ -2098,6 +2651,9 @@ namespace
 		const TPlayerBotDgRunDef& def = PLAYERBOT_DGRUN_DEFS[run.iDef];
 		if (run.iReplacements >= PLAYERBOT_DGRUN_MAX_REPLACEMENTS || (int)run.members.size() >= playerbot_dgrun::PARTY_MAX)
 			return false;
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: a Hydra party is a cohort's fixed party - nobody called in for it.
+		if (def.bKind == DGRUN_KIND_HYDRA)
+			return false;
 		const mt2009_dpanel::Def* panel = mt2009_dpanel::FindKey(def.szKey);
 		DWORD best = 0;
 		int bestScore = -1;
@@ -2111,6 +2667,9 @@ namespace
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 			if (!ch || ch->GetEmpire() != run.bEmpire || !playerbot_dgrun::InBand(ch->GetLevel(), run.iLvMin, run.iLvMax))
+				continue;
+			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Time Rift's and the Hydra's residents only for their own runs.
+			if (IsPlayerBotYoharaHydraResident(pid) || (IsPlayerBotYoharaSzcResident(pid) != (def.bKind == DGRUN_KIND_SZC)))
 				continue;
 			const bool healer = ch->GetJob() == JOB_SHAMAN && ch->GetSkillGroup() != 0;
 			if (healerOnly && !healer)
@@ -2289,6 +2848,8 @@ namespace
 					run.llFees, names.c_str());
 			if (def.bKind == DGRUN_KIND_SZC)	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 				NotePlayerBotYoharaSzcRun(true, run.iId, run.lInstance, run.members, NULL, 0);
+			if (def.bKind == DGRUN_KIND_HYDRA)	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+				LogPlayerBotHydraRunStart(run);
 			return true;
 		}
 		// V3: a replacement for the Shaman, or for those short of the start,
@@ -2442,6 +3003,13 @@ namespace
 				++s_aPlayerBotDgRunStats[run.iDef].dwDeaths;
 				sys_log(0, "BOT_DGRUN: died pid=%u name=%s run=%d dungeon=%s stage=%d level=%u", members[i], ch->GetName(),
 						run.iId, def.szKey, run.iStage, (unsigned int)ch->GetLevel());
+				if (def.bKind == DGRUN_KIND_HYDRA)	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the cohort's count, the party's line
+				{
+					NotePlayerBotYoharaHydraDeath(ch);
+					sys_log(0, "PLAYERBOT_HYDRA: died pid=%u name=%s run=%d party=%d wave=%d job=%u group=%u polymorphed=%d",
+							members[i], ch->GetName(), run.iId, run.iHydraParty, run.iShipWave, (unsigned int)ch->GetJob(),
+							(unsigned int)ch->GetSkillGroup(), ch->IsPolymorphed() ? 1 : 0);
+				}
 			}
 			else if (!ch->IsDead() && wasDead)
 				run.dead.erase(members[i]);
@@ -2553,6 +3121,9 @@ namespace
 						inside, alive, fit, (dwNow - run.dwFallbackSince) / 1000);
 			}
 		}
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the wheel's start, the waves, the mast, the ship's end.
+		if (def.bKind == DGRUN_KIND_HYDRA)
+			UpdatePlayerBotHydraShip(run, d, inside, dwNow);
 		const int stage = GetPlayerBotDgRunStage(def, d, run.iStage);
 		if (stage != run.iStage)
 		{
@@ -2774,6 +3345,9 @@ namespace
 		}
 	};
 
+	int OpenPlayerBotDgRun(int def, BYTE empire, const std::vector<playerbot_dgrun::TCand>& picked,
+			const TPlayerBotDgRunSlot& slot, size_t candidates, DWORD dwNow, const char* why);
+
 	// The call: the party drawn, the leader's shout, the answers due.
 	bool CallPlayerBotDungeonRun(int def, BYTE empire, const std::vector<playerbot_dgrun::TCand>& bucket,
 			const TPlayerBotDgRunSlot& slot, DWORD dwNow, const char* why)
@@ -2791,9 +3365,21 @@ namespace
 						(unsigned int)picked.size());
 			return false;
 		}
+		return OpenPlayerBotDgRun(def, empire, picked, slot, bucket.size(), dwNow, why) != 0;
+	}
+
+	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the run of a drawn party (the leader first) - the shout, the answers due;
+	// its id, or 0. CallPlayerBotDungeonRun's own second half, and the Hydra's fixed parties'.
+	int OpenPlayerBotDgRun(int def, BYTE empire, const std::vector<playerbot_dgrun::TCand>& picked,
+			const TPlayerBotDgRunSlot& slot, size_t candidates, DWORD dwNow, const char* why)
+	{
+		const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
+		playerbot_conv::TRng rng = MakePlayerBotDgRunRng();
+		if (picked.empty())
+			return 0;
 		LPCHARACTER leader = CHARACTER_MANAGER::instance().FindByPID(picked[0].pid);
 		if (!leader)
-			return false;
+			return 0;
 		TPlayerBotDgRun run;
 		run.iId = s_iPlayerBotDgRunNextId++;
 		run.iDef = def;
@@ -2849,10 +3435,10 @@ namespace
 		s_adwPlayerBotDgRunLastCall[def] = dwNow ? dwNow : 1;
 		++s_aPlayerBotDgRunStats[def].dwCalled;
 		sys_log(0, "BOT_DGRUN: called run=%d dungeon=%s empire=%u levels=%d-%d candidates=%u party=%u shaman=%d gather=%ld(%ld,%ld) why=%s names=%s",
-				run.iId, info.szKey, (unsigned int)empire, slot.lvMin, slot.lvMax, (unsigned int)bucket.size(),
+				run.iId, info.szKey, (unsigned int)empire, slot.lvMin, slot.lvMax, (unsigned int)candidates,
 				(unsigned int)run.members.size(), shaman ? 1 : 0, run.place.map, run.place.x, run.place.y, why, names.c_str());
 		s_mapPlayerBotDgRuns[run.iId] = run;
-		return true;
+		return run.iId;
 	}
 
 	// One pass over this core's bots: who may go where, and one call when a
@@ -2907,6 +3493,9 @@ namespace
 			// rajdach botow, to juz dobrze dzialalo") - never a run of this pass.
 			if (def.bKind == DGRUN_KIND_TOWER)
 				continue;
+			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's fixed parties are called by PlanPlayerBotHydraRuns.
+			if (def.bKind == DGRUN_KIND_HYDRA)
+				continue;
 			TPlayerBotDgRunSlot& slot = slots[i];
 			// V2: the bots' own floor for a dungeon (RUN_RULES) - a player's
 			// entry keeps the panel's level.
@@ -2956,6 +3545,9 @@ namespace
 			// its personality's share.
 			const bool szcResident = IsPlayerBotYoharaSzcResident(pid);
 			if (!szcResident && !playerbot_dgrun::IsDungeonGoer(pid, GetPlayerBotDgRunShare(state)))
+				continue;
+			// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's residents wait for their own party's call.
+			if (IsPlayerBotYoharaHydraResident(pid))
 				continue;
 			const int level = ch->GetLevel();
 			bool fits = false;
@@ -3042,6 +3634,119 @@ namespace
 		CallPlayerBotDungeonRun(def, empire, buckets[def][empire], slots[def], dwNow, why);
 	}
 
+	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's parties - every PLAYERBOT_DGRUN_HYDRA_PLAN_MS on the core that
+	// hosts the ship and the port. The Hydra's residents (the handover brought them to the pier) are grouped by
+	// their cohort's fixed party and their kingdom (a party is one kingdom's); a group with no run of its own and
+	// at least its rule's four free on the pier is called whole - once all of it is free, or after
+	// PLAYERBOT_DGRUN_HYDRA_WAIT_MS of waiting for the rest - up to PLAYERBOT_HYDRA_PARTIES runs at once. The
+	// leader: a Warrior, else a weapon Sura, a Ninja, a Shaman. forced (the operator's "now hydra"): no waiting.
+	std::map<int, DWORD> s_mapPlayerBotHydraWaitSince;
+
+	void PlanPlayerBotHydraRuns(DWORD dwNow, bool forced)
+	{
+		int def = -1;
+		for (int i = 0; i < PLAYERBOT_DGRUN_DEF_COUNT && def < 0; ++i)
+			if (PLAYERBOT_DGRUN_DEFS[i].bKind == DGRUN_KIND_HYDRA)
+				def = i;
+		if (def < 0)
+			return;
+		const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
+		if (!IsPlayerBotMapHostedHere(info.lMap) || !SECTREE_MANAGER::instance().GetMap(info.lMap) ||
+				!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_HYDRA_PORT))
+		{
+			if (forced)
+				sys_log(0, "BOT_DGRUN: no call (test) dungeon=hydra - the ship or the port is not hosted here");
+			return;
+		}
+		const int cap = GetPlayerBotDgRunDefCap(def);
+		int running = CountPlayerBotDgRuns(def);
+		if (running >= cap)
+		{
+			if (forced)
+				sys_log(0, "BOT_DGRUN: no call (test) dungeon=hydra - %d runs, the cap %d", running, cap);
+			return;
+		}
+		const playerbot_dgrun::TRunRule& rule = playerbot_dgrun::RuleFor(info.szKey);
+		std::map<int, std::vector<playerbot_dgrun::TCand> > groups;
+		std::map<int, int> total;
+		std::set<int> busy;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			const DWORD pid = it->first;
+			if (!IsPlayerBotYoharaHydraResident(pid))
+				continue;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+			if (!ch || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
+				continue;
+			const int party = GetPlayerBotYoharaHydraParty(pid);
+			const int key = (party > 0 ? party * 10 : 1000) + ch->GetEmpire();
+			++total[key];
+			if (s_mapPlayerBotDgRunBots.count(pid))
+			{
+				busy.insert(key);
+				continue;
+			}
+			std::map<DWORD, DWORD>::const_iterator rest = s_mapPlayerBotDgRunRest.find(pid);
+			if (rest != s_mapPlayerBotDgRunRest.end() && (int)(rest->second - dwNow) > 0)
+				continue;
+			if (ch->IsDead() || ch->GetMapIndex() != PLAYERBOT_MAP_HYDRA_PORT || GetPlayerBotDgRunRefusal(ch, it->second, dwNow))
+				continue;
+			// The leader's rank: a Warrior, a weapon Sura, a Ninja, a Shaman.
+			const int job = ch->GetJob() % 4;
+			const int rank = job == 0 ? 40 : (job == 2 && ch->GetSkillGroup() == 1 ? 30 : (job == 1 ? 20 : 10));
+			groups[key].push_back(playerbot_dgrun::TCand(pid, ch->GetLevel(), job, rank, ch->GetSkillGroup() != 0));
+		}
+		for (std::map<int, std::vector<playerbot_dgrun::TCand> >::iterator g = groups.begin(); g != groups.end() && running < cap; ++g)
+		{
+			const int key = g->first;
+			std::vector<playerbot_dgrun::TCand>& free = g->second;
+			if (busy.count(key))
+				continue;	// part of it still on a ship or on its way
+			if ((int)free.size() < rule.startMin)
+			{
+				if (forced)
+					sys_log(0, "BOT_DGRUN: no call (test) dungeon=hydra party=%d empire=%d - %u free of %d", key / 10 % 100,
+							key % 10, (unsigned int)free.size(), total[key]);
+				continue;
+			}
+			DWORD& since = s_mapPlayerBotHydraWaitSince[key];
+			if (since == 0)
+				since = dwNow ? dwNow : 1;
+			if (!forced && (int)free.size() < total[key] && (int)free.size() < playerbot_dgrun::PARTY_MAX &&
+					dwNow - since < PLAYERBOT_DGRUN_HYDRA_WAIT_MS)
+				continue;
+			since = 0;
+			std::stable_sort(free.begin(), free.end(), [](const playerbot_dgrun::TCand& a, const playerbot_dgrun::TCand& b)
+					{ return a.weight > b.weight; });
+			if ((int)free.size() > playerbot_dgrun::PARTY_MAX)
+				free.resize(playerbot_dgrun::PARTY_MAX);
+			const BYTE empire = (BYTE)(key % 10);
+			TPlayerBotDgRunSlot slot;
+			slot.lvMin = rule.lvMin;
+			slot.lvMax = gPlayerMaxLevel;
+			slot.partyMin = rule.startMin;
+			slot.partyMax = playerbot_dgrun::PARTY_MAX;
+			slot.panel = mt2009_dpanel::FindKey(info.szKey);
+			slot.ok = slot.empireOk[empire] = true;
+			TPlayerBotLfgPlace& place = slot.place[empire];
+			place.key = info.szKey;
+			place.lvMin = slot.lvMin;
+			place.lvMax = slot.lvMax;
+			place.map = PLAYERBOT_MAP_HYDRA_PORT;
+			place.x = PLAYERBOT_HYDRA_PORT_X;
+			place.y = PLAYERBOT_HYDRA_PORT_Y;
+			const int id = OpenPlayerBotDgRun(def, empire, free, slot, (size_t)total[key], dwNow, forced ? "test" : "hydra_party");
+			if (id == 0)
+				continue;
+			std::map<int, TPlayerBotDgRun>::iterator r = s_mapPlayerBotDgRuns.find(id);
+			if (r != s_mapPlayerBotDgRuns.end())
+				r->second.iHydraParty = key >= 1000 ? 0 : key / 10;
+			++running;
+			sys_log(0, "PLAYERBOT_HYDRA: party called run=%d party=%d empire=%u free=%u of=%d running=%d/%d", id,
+					key >= 1000 ? 0 : key / 10, (unsigned int)empire, (unsigned int)free.size(), total[key], running, cap);
+		}
+	}
+
 	// ------------------------------------------------------------ the operator
 
 	int ParsePlayerBotDgRunKey(const char* key)
@@ -3102,6 +3807,8 @@ namespace
 				const int def = got >= 2 && strcmp(arg, "any") ? ParsePlayerBotDgRunKey(arg) : -2;
 				if (def == -1)
 					sys_log(0, "BOT_DGRUN: test now - no dungeon %s", arg);
+				else if (def >= 0 && PLAYERBOT_DGRUN_DEFS[def].bKind == DGRUN_KIND_HYDRA)	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+					PlanPlayerBotHydraRuns(dwNow, true);
 				else
 					PlanPlayerBotDungeonRun(dwNow, def, "test");
 			}
@@ -3182,6 +3889,17 @@ namespace
 			s_dwNextPlan = dwNow + PLAYERBOT_DGRUN_PLAN_MS;
 			if (IsPlayerBotDgRunOn(dwNow) && number(1, 100) <= PLAYERBOT_DGRUN_PLAN_CHANCE)
 				PlanPlayerBotDungeonRun(dwNow, -1, "clock");
+		}
+		// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra's parties, on a clock of their own (no first-minutes wait:
+		// they are there for it).
+		{
+			static DWORD s_dwNextHydra = 0;
+			if (s_dwNextHydra == 0 || (int)(dwNow - s_dwNextHydra) >= 0)
+			{
+				s_dwNextHydra = dwNow + PLAYERBOT_DGRUN_HYDRA_PLAN_MS;
+				if (IsPlayerBotDgRunOn(dwNow))
+					PlanPlayerBotHydraRuns(dwNow, false);
+			}
 		}
 		if ((int)(dwNow - s_dwNextStatus) >= 0)
 		{

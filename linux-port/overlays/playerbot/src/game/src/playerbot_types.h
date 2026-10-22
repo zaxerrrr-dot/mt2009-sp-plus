@@ -4159,6 +4159,15 @@ namespace
 	const long PLAYERBOT_SZC_PLATEAU_Y = 1801600;
 	const BYTE PLAYERBOT_SZC_MIN_LEVEL = 110;
 	const BYTE PLAYERBOT_SZC_MAX_LEVEL = 119;
+	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: Obrona Statku (the Hydra, 367) on the Yohara core - its parties
+	// gather on the pier of Port Nowego Kontynentu (368, metin2_map_defensewave_port, the same core) and
+	// a new ship instance takes them in (playerbot_dungeon_runs.h, the row "hydra"). The pier's open
+	// ground by Town.txt 405,480 (cells 412,485 off 128000,563200 - its server_attr, 22 October).
+	const long PLAYERBOT_MAP_HYDRA_SHIP = 367;
+	const long PLAYERBOT_MAP_HYDRA_PORT = 368;
+	const long PLAYERBOT_HYDRA_PORT_X = 169200;
+	const long PLAYERBOT_HYDRA_PORT_Y = 611700;
+	const BYTE PLAYERBOT_HYDRA_MIN_LEVEL = 110;
 	// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: the 90-level maps for loot only - Przyladek Smoczej Glowy
 	// (301) and Nefrytowa Zatoka (303) on game2, Zbocze Gautama (302) and Gromiste Gory (304) on the
 	// first core. Metins and bosses, no experience grinding (the owner, 21 October).
@@ -4306,6 +4315,7 @@ namespace
 			case PLAYERBOT_MAP_GIANTLAND: outX = PLAYERBOT_GIANTLAND_ARRIVAL_X; outY = PLAYERBOT_GIANTLAND_ARRIVAL_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_ARRIVAL_X; outY = PLAYERBOT_ZAKLETY_ARRIVAL_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
 			case PLAYERBOT_MAP_SZC_PLATEAU: outX = PLAYERBOT_SZC_PLATEAU_X; outY = PLAYERBOT_SZC_PLATEAU_Y; return true; // MT2009_PLUS_BOT_YOHARA_SZC_V1
+			case PLAYERBOT_MAP_HYDRA_PORT: outX = PLAYERBOT_HYDRA_PORT_X; outY = PLAYERBOT_HYDRA_PORT_Y; return true; // MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: each map's Town.txt snapped to open ground
 			// (tools/yohara_bot_lootrun_map.py); the way out is the same point.
 			case 301: outX = 1104850; outY = 1788850; return true;
@@ -4338,6 +4348,7 @@ namespace
 			case PLAYERBOT_MAP_SNAKEFIELD: outX = PLAYERBOT_SNAKEFIELD_EXIT_X; outY = PLAYERBOT_SNAKEFIELD_EXIT_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			case PLAYERBOT_MAP_GIANTLAND: outX = PLAYERBOT_GIANTLAND_EXIT_X; outY = PLAYERBOT_GIANTLAND_EXIT_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_EXIT_X; outY = PLAYERBOT_ZAKLETY_EXIT_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			case PLAYERBOT_MAP_HYDRA_PORT: outX = PLAYERBOT_HYDRA_PORT_X; outY = PLAYERBOT_HYDRA_PORT_Y; return true; // MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			case 301: outX = 1104850; outY = 1788850; return true; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 302: outX = 1225750; outY = 1682050; return true;
 			case 303: outX = 1087950; outY = 1649850; return true;
@@ -4402,6 +4413,7 @@ namespace
 			case PLAYERBOT_MAP_GIANTLAND: return "giantland"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			case PLAYERBOT_MAP_ZAKLETY: return "zaklety"; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
 			case PLAYERBOT_MAP_SZC_PLATEAU: return "szc"; // MT2009_PLUS_BOT_YOHARA_SZC_V1
+			case PLAYERBOT_MAP_HYDRA_PORT: return "hydra"; // MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			case 301: case 302: case 303: case 304: return "lootrun"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			default: return "frontier";
 		}
@@ -4806,6 +4818,17 @@ namespace
 	inline bool IsPlayerBotFightingAsMonster(LPCHARACTER ch)
 	{
 		return ch && ch->IsPolymorphed();
+	}
+	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the ship's Hydra (3960-3962) stands on blocked cells off the
+	// deck, 500 from the nearest cell a bot can stand on (the deck's server_attr) - a person's blow
+	// reaches a boss to 655 (battle_melee_attack: 405 + 250), a bot's swing was held to its own 280.
+	// The reach a bot's blow has at it (0: any other foe).
+	inline int GetPlayerBotShipHydraReach(LPCHARACTER target)
+	{
+		if (!target || target->IsPC() || target->GetMapIndex() / 10000 != 367)
+			return 0;
+		const DWORD race = target->GetRaceNum();
+		return race >= 3960 && race <= 3962 ? 620 : 0;
 	}
 	// Since 2.0.27 a booster is recognised by what the engine does with it, not
 	// by its vnum: USE_AFFECT with value0 510 is the timed stat buff (attack
@@ -6921,6 +6944,10 @@ namespace
 	const TPlayerBotHuntingHub* GetPlayerBotYoharaHubs(long mapIndex, size_t& count);
 	bool IsPlayerBotYoharaLootRunHere(LPCHARACTER ch);
 	bool IsPlayerBotYoharaSzcResident(DWORD pid);
+	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: a bot the handover brought to the port for the Hydra, and its
+	// cohort's fixed party (1-4; 0: none).
+	bool IsPlayerBotYoharaHydraResident(DWORD pid);
+	int GetPlayerBotYoharaHydraParty(DWORD pid);
 	bool IsPlayerBotYoharaBoundForZaklety(LPCHARACTER ch);
 	bool IsPlayerBotYoharaRemoteFrontier(long mapIndex);
 	DWORD GetPlayerBotYoharaStayMs(LPCHARACTER ch, long mapIndex);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the bot's own

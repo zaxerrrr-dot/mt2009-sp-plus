@@ -146,6 +146,8 @@ namespace playerbot_lfg
 			{ "atlantyda", { "atlantyd`e", "ruiny atlantydy", "atlantyd`e" }, { "ruin atlantydy", "atlantydy" } },
 			// MT2009_PLUS_YOHARA_MELEY_V1
 			{ "meley", { "meley", "schronienie meley", "meley" }, { "schronienia meley", "meley" } },
+			// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			{ "hydra", { "hydr`e", "statek", "hydr`e" }, { "hydry", "statku" } },
 			{ "malpy1", { "ma`lpy", "`latwe ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy2", { "`srednie ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },
 			{ "malpy3", { "trudne ma`lpy", "ma`lpy", "dung ma`lp" }, { "ma`lp", "lochu ma`lp" } },

@@ -284,6 +284,10 @@ services:
       PLAYERBOT_COHORT_DISPATCH: "${PLAYERBOT_COHORT_DISPATCH:-6}"
       PLAYERBOT_COHORT_REST_MIN: "${PLAYERBOT_COHORT_REST_MIN:-10}"
       PLAYERBOT_COHORT_DEATH_REST_MIN: "${PLAYERBOT_COHORT_DEATH_REST_MIN:-60}"
+      # MT2009_PLUS_BOT_HYDRA_COHORT_V1: the Hydra (Obrona Statku) - bots on the pier of the port (368) a channel,
+      # and the parties on a ship at once (tools/yohara_bot_cohort.py --hydra 32: four fixed parties of eight).
+      PLAYERBOT_HYDRA_MAX: "${PLAYERBOT_HYDRA_MAX:-32}"
+      PLAYERBOT_HYDRA_PARTIES: "${PLAYERBOT_HYDRA_PARTIES:-4}"
       M2_PLAYERBOT_CH2_SET_AT: "${M2_PLAYERBOT_CH2_SET_AT:-0}"
       # MT2009_PLUS_CH34_V1: the third and fourth channel on the same principle
       # (bots relog to CH1 for the stalls), off by default; CH3 only with CH2,

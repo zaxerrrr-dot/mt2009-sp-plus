@@ -337,7 +337,9 @@ namespace
 						// loot runs on game2 and the first core - built only where a handed-over bot stands
 						// (playerbot_yohara_bots.h); 353/404 ~53 MB each, 397 ~4 MB, 301-304 80-160 MB.
 						mapIndex != PLAYERBOT_MAP_ZAKLETY && mapIndex != PLAYERBOT_MAP_SZC_PLATEAU &&
-						mapIndex != PLAYERBOT_MAP_SZC && !(mapIndex >= 301 && mapIndex <= 304))
+						mapIndex != PLAYERBOT_MAP_SZC && !(mapIndex >= 301 && mapIndex <= 304) &&
+						// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the port's pier (368, ~40 MB) where the Hydra's parties gather.
+						mapIndex != PLAYERBOT_MAP_HYDRA_PORT)
 					return false;
 
 				if (m_initialized && m_mapIndex == mapIndex)
