@@ -36,6 +36,28 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: a family made by an NPC from a dungeon's materials or dropped in a dungeon a bot
+	// enters only with a party or a person (the Smok Mroku / Zodiac / serpent / cyanite weapons of 96-120 - the atlas's
+	// "wytwarzanie" and "loch") is the market's for a bot: a goal while a counter holds a piece of it (the ledger).
+	bool IsPlayerBotWeaponFamilyOnMarket(DWORD baseVnum)
+	{
+		for (DWORD v = baseVnum; v < baseVnum + 10; ++v)
+		{
+			const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(v);
+			if (e && e->dwSupplyUnits > 0)
+				return true;
+		}
+		return false;
+	}
+
+	bool IsPlayerBotWeaponFamilyReachable(const TPlayerBotWeaponFamily& row)
+	{
+		if ((row.wSources & PLAYERBOT_WEAPON_SOURCE_REACHABLE) != 0)
+			return true;
+		return (row.wSources & (PLAYERBOT_WEAPON_SOURCE_CRAFT | PLAYERBOT_WEAPON_SOURCE_DUNGEON)) != 0 &&
+				IsPlayerBotWeaponFamilyOnMarket(row.dwBaseVnum);
+	}
+
 	// The best family of the atlas this character may carry now and can get
 	// on a map the bots walk, by its blow at +0 - the unrefined weapon a drop
 	// or a counter hands it. NULL when the atlas has none for it.
@@ -50,7 +72,7 @@ namespace
 		{
 			const TPlayerBotWeaponFamily& row = PLAYERBOT_WEAPON_ATLAS[i];
 			if ((row.bClassMask & classBit) == 0 || (int)row.bLevel > (int)ch->GetLevel() ||
-					(row.wSources & PLAYERBOT_WEAPON_SOURCE_REACHABLE) == 0 ||
+					!IsPlayerBotWeaponFamilyReachable(row) ||	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1
 					!IsPlayerBotWeaponSubTypeFor(ch, row.bSubType))
 				continue;
 			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(row.dwBaseVnum);
