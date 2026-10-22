@@ -1525,7 +1525,19 @@ namespace
 				count = sizeof(PLAYERBOT_YOHARA_LOOT_HUBS_304) / sizeof(PLAYERBOT_YOHARA_LOOT_HUBS_304[0]);
 				return PLAYERBOT_YOHARA_LOOT_HUBS_304;
 			default:
+			{
+				// MT2009_PLUS_BOT_YOHARA_MAPS_V2: the Sung Ma maps' spots (playerbot_yohara_sungma.h). V1 wrote the table
+				// and the wandering asked here for it (IsPlayerBotSungmaBotMap), but this switch never answered: every
+				// bot on the nine maps had no spot at all and walked +-1200 round wherever it stood (the frontier's
+				// fallback for a pocket) - no Champion floors, no party-only bosses, the nearest packs for everyone.
+				const int slot = GetPlayerBotSungmaSlot(mapIndex);
+				if (slot >= 0)
+				{
+					count = PLAYERBOT_SUNGMA_MAPS[slot].uHubs;
+					return PLAYERBOT_SUNGMA_MAPS[slot].pHubs;
+				}
 				return NULL;
+			}
 		}
 	}
 

@@ -27,6 +27,15 @@ ATTR_OBJECT, as the bots' navigation reads them):
   * the bosses (boss.txt): a row for a party (the boss's race; the bots' raid rule: a boss hub is a place while the
     boss stands).
 
+MT2009_PLUS_BOT_YOHARA_MAPS_V2 (22 October, evening - the deaths on the higher maps):
+  * a spot of PARTY_LINES spawn lines or more, on a map whose monsters stand at PARTY_MIN_LEVEL or over (Schronienie:
+    124-125, four to a line, every one aggressive - 40-60 monsters round a spot), is a party's of three (the hub's
+    party column; the lone bots' hub choice leaves it out). Yilad's dense spots (122-123) stay open: 1 of its 25 deaths
+    of 22 October came while hunting, 24 on the walk to the portal;
+  * the map's safe point (the revival's "restart in town", playerbot_yohara_sungma.h): the open ground of the arrival's
+    piece within SAFE_RADIUS of it farthest from any spawn (regen, stone, boss; counted to SAFE_ENOUGH), the nearest to
+    the arrival among equals - Zejscie's arrival stands 1 856 from a pack of four aggressive soldiers, Namgan's 2 815.
+
 The rows' level columns hold 100 + the Champion level (TPlayerBotHuntingHub's BYTE; the hub choice compares them with
 100 + the bot's Champion level on a Sung Ma map - PlayerBotHubLevel in playerbot_wandering.h).
 One-shot analysis, not part of the build; the report goes to stdout.
@@ -62,6 +71,10 @@ SNAP_CLEAR = 5
 CAP = 8
 MAX_BOSSES = 4
 CHAMBER_MIN = 1500
+PARTY_LINES = 13        # MT2009_PLUS_BOT_YOHARA_MAPS_V2
+PARTY_MIN_LEVEL = 124
+SAFE_RADIUS = 100       # cells of 100 units
+SAFE_ENOUGH = 6000
 
 mob = {}
 for l in open(MOB, errors='replace'):
@@ -107,7 +120,7 @@ def members(kind, vnum):
 
 
 o = []
-o.append('\t// tools/yohara_bot_sungma_map.py (22 October 2026), the test world\'s map files - PLAYERBOT_SUNGMA_HUBS_<map>:')
+o.append('\t// tools/yohara_bot_sungma_map.py (22 October 2026, MT2009_PLUS_BOT_YOHARA_MAPS_V2), the test world\'s map files - PLAYERBOT_SUNGMA_HUBS_<map>:')
 o.append('\t// x, y, 100 + the Champion floor, 255, a party\'s, the boss\'s race.')
 summary = []
 for idx, name, lo, hi in MAPS:
@@ -282,6 +295,29 @@ for idx, name, lo, hi in MAPS:
     for i, h in enumerate(hubs):
         f = lo + max(0, h['top'] - lvmin) + (2 if h['hp'] * 2 >= hpmed * 3 else 0)
         h['floor'] = lo if i < 2 else min(hi, f)
+        # MT2009_PLUS_BOT_YOHARA_MAPS_V2: the densest of the strong maps - a party's
+        h['party'] = h['n'] >= PARTY_LINES and lvmin >= PARTY_MIN_LEVEL
+    # MT2009_PLUS_BOT_YOHARA_MAPS_V2: the safe point by the arrival
+    spawns = [(BX + int(p[1]) * 100, BY + int(p[2]) * 100) for fn in ('regen.txt', 'stone.txt', 'boss.txt')
+              for p in rd(fn) if len(p) >= 11 and p[0] in ('m', 'g', 'r', 's')]
+    seen = {arr}
+    q = deque([arr])
+    safe = None
+    while q:
+        cx, cy = q.popleft()
+        if clr[cy * W + cx] >= 3:
+            wx, wy = c2w(cx, cy)
+            md = min((math.hypot(wx - a, wy - b) for a, b in spawns), default=99999)
+            key = (min(md, SAFE_ENOUGH) // 250, -math.hypot(wx - ax, wy - ay))
+            if safe is None or key > safe[0]:
+                safe = (key, wx, wy, int(md))
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            X, Y = cx + dx, cy + dy
+            if (X, Y) not in seen and abs(X - arr[0]) <= SAFE_RADIUS and abs(Y - arr[1]) <= SAFE_RADIUS and \
+                    0 <= X < W and 0 <= Y < H and not blk[Y * W + X]:
+                seen.add((X, Y))
+                q.append((X, Y))
+    amd = int(min((math.hypot(ax - a, ay - b) for a, b in spawns), default=99999))
     bosses = []
     for p in rd('boss.txt'):
         if len(p) < 11:
@@ -299,7 +335,8 @@ for idx, name, lo, hi in MAPS:
     print('map %d %s base (%d,%d) grid %dx%d main %d cells; regen lines %d (outside the main piece %d); monsters %d-%d, '
           'median health %d; band %d-%d' % (idx, name, BX, BY, W, H, sizes[main], len(lines), lost, lvmin, lvls[-1] if lvls else 0,
                                            hpmed, lo, hi))
-    print('  arrival (Town %d,%d) -> (%d,%d)' % (town[0], town[1], ax, ay))
+    print('  arrival (Town %d,%d) -> (%d,%d), nearest spawn %d; safe point (%d,%d), nearest spawn %d' % (
+        town[0], town[1], ax, ay, amd, safe[1], safe[2], safe[3]))
     for pv, px, py, pw in portals:
         print('  portal %d at %d,%d -> %s' % (pv, px, py, pw))
     o.append('\t// map %d (%s): arrival (%d, %d); monsters %d-%d; band %d-%d; %d spots, %d bosses' % (
@@ -307,19 +344,27 @@ for idx, name, lo, hi in MAPS:
     o.append('\tconst TPlayerBotHuntingHub PLAYERBOT_SUNGMA_HUBS_%d[] = {' % idx)
     for h in hubs:
         ms = ', '.join('%d %s' % (v, mob[v]['name']) for v, _ in h['mobs'])
-        print('  spot (%d,%d) lines %d top %d hp %d floor %d  %s' % (h['x'], h['y'], h['n'], h['top'], h['hp'], h['floor'], ms))
-        o.append('\t\t{ %d, %d, %d, 255, false, 0 },\t// %d lines, to %d, %dk HP: %s' % (
-            h['x'], h['y'], 100 + h['floor'], h['n'], h['top'], h['hp'] // 1000, ms))
+        print('  spot (%d,%d) lines %d top %d hp %d floor %d%s  %s' % (h['x'], h['y'], h['n'], h['top'], h['hp'], h['floor'],
+                                                                     ' party' if h['party'] else '', ms))
+        o.append('\t\t{ %d, %d, %d, 255, %s, 0 },\t// %d lines, to %d, %dk HP: %s%s' % (
+            h['x'], h['y'], 100 + h['floor'], 'true' if h['party'] else 'false', h['n'], h['top'], h['hp'] // 1000, ms,
+            ' (V2: a party\'s - dense)' if h['party'] else ''))
     for (bx, by), v in bosses:
         print('  boss %d %s (%d,%d) level %d hp %d' % (v, mob[v]['name'], bx, by, mob[v]['level'], mob[v]['hp']))
         o.append('\t\t{ %d, %d, %d, 255, true, %d },\t// boss %s, %d, %dk HP' % (
             bx, by, 100 + min(hi, lo + 2), v, mob[v]['name'], mob[v]['level'], mob[v]['hp'] // 1000))
     o.append('\t};')
-    summary.append((idx, ax, ay, portals))
+    summary.append((idx, ax, ay, portals, safe[1], safe[2], safe[3], amd))
 if OUT:
     o.append('\t// arrivals and portals (cell centres beside them):')
-    for idx, ax, ay, portals in summary:
+    for idx, ax, ay, portals, _, _, _, _ in summary:
         o.append('\t//   %d arrival (%d, %d); portals %s' % (idx, ax, ay, ', '.join(
             '%d (%d, %d)' % (pv, pw[0], pw[1]) for pv, _, _, pw in portals if pw)))
+    # MT2009_PLUS_BOT_YOHARA_MAPS_V2: the safe points (the revival)
+    o.append('\t// the safe points by the arrivals (the revival) - map, x, y; the nearest spawn from it / from the arrival:')
+    o.append('\tconst TPlayerBotSungmaSafePoint PLAYERBOT_SUNGMA_SAFE_POINTS[] = {')
+    for idx, ax, ay, portals, sx, sy, smd, amd in summary:
+        o.append('\t\t{ %d, %d, %d },\t// %d / %d' % (idx, sx, sy, smd, amd))
+    o.append('\t};')
     open(OUT, 'w').write('\n'.join(o) + '\n')
     print('written', OUT)

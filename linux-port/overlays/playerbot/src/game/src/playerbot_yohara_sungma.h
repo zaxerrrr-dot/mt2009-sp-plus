@@ -66,7 +66,8 @@
 
 	// ------------------------------------------------------------ the spots
 	// tools/yohara_bot_sungma_map.py on the test world's map files (22 October 2026): x, y, 100 + the Champion floor, 255,
-	// a party's, the boss's race; the spots nearest the arrival first.
+	// a party's, the boss's race; the spots nearest the arrival first. MT2009_PLUS_BOT_YOHARA_MAPS_V2 (the same tool, the
+	// same files): Schronienie's five densest spots (13-16 spawn lines, 52-64 aggressive monsters round each) a party's.
 	// map 374 (metin2_map_empirecastle): arrival (537650, 494950); monsters 119-120; band 1-5; 14 spots, 4 bosses
 	const TPlayerBotHuntingHub PLAYERBOT_SUNGMA_HUBS_374[] = {
 		{ 534550, 501650, 101, 255, false, 0 },	// 12 lines, to 120, 64k HP: 6700 Hell_Hound, 6693 Jin_Bing
@@ -247,24 +248,24 @@
 	const TPlayerBotHuntingHub PLAYERBOT_SUNGMA_HUBS_393[] = {
 		{ 1018650, 1305050, 122, 255, false, 0 },	// 11 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
 		{ 1039450, 1244350, 122, 255, false, 0 },	// 10 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
-		{ 1021750, 1224550, 123, 255, false, 0 },	// 15 lines, to 125, 175k HP: 6784 Northwind_Sh._Soldier, 6786 Northwind_Sh._Warrior
+		{ 1021750, 1224550, 123, 255, true, 0 },	// 15 lines, to 125, 175k HP: 6784 Northwind_Sh._Soldier, 6786 Northwind_Sh._Warrior (V2: a party's - dense)
 		{ 1038650, 1224550, 123, 255, false, 0 },	// 12 lines, to 125, 175k HP: 6784 Northwind_Sh._Soldier, 6786 Northwind_Sh._Warrior
 		{ 1044550, 1306050, 123, 255, false, 0 },	// 10 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
-		{ 1017450, 1321950, 123, 255, false, 0 },	// 13 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
+		{ 1017450, 1321950, 123, 255, true, 0 },	// 13 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier (V2: a party's - dense)
 		{ 1054150, 1233150, 123, 255, false, 0 },	// 12 lines, to 125, 187k HP: 6784 Northwind_Sh._Soldier, 6787 Northwind_Sh._Warlock
 		{ 1069350, 1288550, 123, 255, false, 0 },	// 11 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6788 Northwind_Sh._General
-		{ 1005050, 1336350, 123, 255, false, 0 },	// 16 lines, to 125, 175k HP: 6784 Northwind_Sh._Soldier, 6787 Northwind_Sh._Warlock
+		{ 1005050, 1336350, 123, 255, true, 0 },	// 16 lines, to 125, 175k HP: 6784 Northwind_Sh._Soldier, 6787 Northwind_Sh._Warlock (V2: a party's - dense)
 		{ 1035250, 1337050, 123, 255, false, 0 },	// 10 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
 		{ 1082350, 1213450, 123, 255, false, 0 },	// 12 lines, to 125, 187k HP: 6784 Northwind_Sh._Soldier, 6786 Northwind_Sh._Warrior
 		{ 1075150, 1336350, 123, 255, false, 0 },	// 10 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
 		{ 1104050, 1239350, 123, 255, false, 0 },	// 12 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
-		{ 1087250, 1337150, 123, 255, false, 0 },	// 13 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6785 Shelter_Skirmisher
+		{ 1087250, 1337150, 123, 255, true, 0 },	// 13 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6785 Shelter_Skirmisher (V2: a party's - dense)
 		{ 1100550, 1322550, 123, 255, false, 0 },	// 11 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6788 Northwind_Sh._General
 		{ 1119950, 1300450, 123, 255, false, 0 },	// 11 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6785 Shelter_Skirmisher
 		{ 1119550, 1213650, 123, 255, false, 0 },	// 11 lines, to 125, 175k HP: 6784 Northwind_Sh._Soldier, 6787 Northwind_Sh._Warlock
 		{ 1129850, 1227350, 123, 255, false, 0 },	// 12 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6784 Northwind_Sh._Soldier
 		{ 1146650, 1212750, 123, 255, false, 0 },	// 10 lines, to 125, 175k HP: 6784 Northwind_Sh._Soldier, 6786 Northwind_Sh._Warrior
-		{ 1146450, 1337250, 123, 255, false, 0 },	// 15 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6785 Shelter_Skirmisher
+		{ 1146450, 1337250, 123, 255, true, 0 },	// 15 lines, to 125, 187k HP: 6787 Northwind_Sh._Warlock, 6785 Shelter_Skirmisher (V2: a party's - dense)
 		{ 1018450, 1320250, 124, 255, true, 6789 },	// boss Northwind_Sh._War_Chief, 130, 937k HP
 		{ 1037450, 1224050, 124, 255, true, 6789 },	// boss Northwind_Sh._War_Chief, 130, 937k HP
 		{ 1044450, 1323250, 124, 255, true, 6789 },	// boss Northwind_Sh._War_Chief, 130, 937k HP
@@ -322,6 +323,22 @@
 	};
 #undef PLAYERBOT_SUNGMA_HUBS
 	const int PLAYERBOT_SUNGMA_MAP_COUNT = (int)(sizeof(PLAYERBOT_SUNGMA_MAPS) / sizeof(PLAYERBOT_SUNGMA_MAPS[0]));
+
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V2: tools/yohara_bot_sungma_map.py - the open ground by each arrival farthest from the
+	// spawns (to 6 000), where a revived resident stands up (MovePlayerBotSungmaRevived).
+	struct TPlayerBotSungmaSafePoint { long lMap, x, y; };
+	// the safe points by the arrivals (the revival) - map, x, y; the nearest spawn from it / from the arrival:
+	const TPlayerBotSungmaSafePoint PLAYERBOT_SUNGMA_SAFE_POINTS[] = {
+		{ 374, 537350, 492750 },	// 6010 / 3868
+		{ 373, 1102450, 506850 },	// 9475 / 9475
+		{ 376, 1224350, 497450 },	// 6122 / 2196
+		{ 377, 1279450, 440550 },	// 3259 / 2815
+		{ 385, 31650, 1414850 },	// 9995 / 9995
+		{ 388, 112450, 1600050 },	// 5255 / 3611
+		{ 389, 182550, 1579650 },	// 5008 / 4474
+		{ 393, 1006450, 1267250 },	// 11828 / 11828
+		{ 394, 1159050, 1221150 },	// 4752 / 1856
+	};
 
 	// The portals (npc.txt; a cell centre beside each, tools/yohara_bot_sungma_map.py): on map lFrom, the one to lTo.
 	struct TPlayerBotSungmaPortal { long lFrom, lTo, x, y; };
