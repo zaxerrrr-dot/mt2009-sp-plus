@@ -239,6 +239,11 @@ namespace
 				return true;
 		}
 
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: Magiczny Pyl for a Champion short of the 400 its G0 package
+		// takes (playerbot_yohara_g0.h).
+		if (WantsPlayerBotG0DustOffer(ch, offer))
+			return true;
+
 		// Cor Draconis and Dragon Stones, for an alchemy bot (playerbot_alchemy.h).
 		if (IsPlayerBotCorVnum(offer->GetVnum()) || offer->IsDragonSoul())
 			return WantsPlayerBotAlchemyOffer(ch, offer);
@@ -551,6 +556,9 @@ namespace
 		// A key for a chest it carries (PlayerBotWantsKeyFromMarket).
 		if (PlayerBotWantsKeyFromMarket(ch))
 			return true;
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: the dust of a Champion's G0 package, while a counter holds some.
+		if (WantsPlayerBotG0DustFromMarket(ch))
+			return true;
 		if (PlayerBotNeedsProgressionShopping(ch)) return true;
 		// MT2009_PLUS_RANK_FRUIT_MARKET_V1: the rank fruit it eats, while a
 		// counter holds one (the ledger).
@@ -728,6 +736,9 @@ namespace
 		// caps further down refused most of them already; the ban does not
 		// hang on what any one of those caps is set to.
 		if (IsPlayerBotPriceSlipOffer(item, price)) return false;
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion's dust for its G0 package - its own cap and share of the purse.
+		if (WantsPlayerBotG0DustOffer(ch, item))
+			return CanPlayerBotPayForG0Dust(ch, item, price);
 		// MT2009_PLUS_MARKET_LIFE_V1, point 9: a line bought on a whim, not for
 		// a need, is paid for by the whim's own rules alone.
 		if (IsPlayerBotWhimCandidate(ch, item) && !WantsPlayerBotStallItemOwn(ch, item))
@@ -1097,6 +1108,7 @@ namespace
 		// A gambler's purchase is charged to the session's budget.
 		NotePlayerBotGamblePurchase(ch, paid);
 		NotePlayerBotGuildMaterialBought(ch, pick.dwVnum, paid);
+		NotePlayerBotG0DustBought(ch, pick.dwVnum, paid, pick.wCount);	// MT2009_PLUS_BOT_YOHARA_G0_V1
 		if (gambleBase)
 			NotePlayerBotGambleBaseBought(ch, pick.dwVnum, paid);
 		if (whim)

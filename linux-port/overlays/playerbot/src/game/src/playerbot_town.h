@@ -2035,6 +2035,7 @@ namespace
 			}
 			sys_log(0, "PLAYERBOT_ALCHEMIST: exchanged pid=%u name=%s stones=%d dust=%d/%d chance=%d fee=%lld gold=%lld split=%d",
 					ch->GetPlayerID(), ch->GetName(), count, made, dust, chance, fee, (long long)ch->GetGold(), split);
+			NotePlayerBotG0DustMade(ch, made);	// MT2009_PLUS_BOT_YOHARA_G0_V1: towards a Champion's G0 package
 		}
 		// MT2009_PLUS_BOT_ENERGY_SHARDS_V1: and the held scrap, into Odlamki
 		// Energii the quest's way (playerbot_energy_shards.h).
@@ -5590,7 +5591,8 @@ namespace
 			if (!item || item->IsEquipped() || item->isLocked())
 				continue;
 			const TItemTable* proto = item->GetProto();
-			if (!proto || IS_SET(proto->dwAntiFlags,
+			// MT2009_PLUS_BOT_YOHARA_G0_V1: the item's own flags (an account-bound piece's too), not its proto's alone
+			if (!proto || IS_SET(item->GetAntiFlag(),
 					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP))
 				continue;
 			// Not the vendor-trash rule: a stall should carry something a player
@@ -6819,7 +6821,8 @@ namespace
 				continue;
 			}
 			const TItemTable* proto = item->GetProto();
-			if (!proto || IS_SET(proto->dwAntiFlags,
+			// MT2009_PLUS_BOT_YOHARA_G0_V1: the item's own flags (an account-bound piece's too), not its proto's alone
+			if (!proto || IS_SET(item->GetAntiFlag(),
 					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP))
 			{
 				++uAntiFlag;

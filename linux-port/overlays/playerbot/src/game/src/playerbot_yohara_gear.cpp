@@ -269,6 +269,7 @@ void Mt2009GloveCreate(LPITEM item)
 // and the bonuses) gets its level's random value, as a new one.
 void Mt2009GloveLoad(LPITEM item, bool bIsNewItem, bool bSkipSave)
 {
+	Mt2009AccountBoundLoad(item, bIsNewItem);	// MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 (load): a G0 piece's binding (playerbot_yohara_g0.cpp)
 	BYTE bWillType;
 	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
 		return;

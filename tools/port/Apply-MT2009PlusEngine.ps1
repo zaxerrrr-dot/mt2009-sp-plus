@@ -127,7 +127,10 @@ param(
 #                      char_item.cpp, cmd.cpp; takes the old bonus switcher's lines out of cmd.cpp / cmd_general.cpp
 #                      (MT2009_PLUS_SWITCHBOT_V1; server-patches/switchbot, after ekwipunek)
 #   Seon-Pyeong        constants.cpp IsEliteRefine (+ refine_proto 39900-39999), char_item.cpp - the guild and Demon
-#                      Tower smiths refuse his steps (MT2009_PLUS_SEONPYEONG_ELITE_V1; server-patches/seonpyeong, last)
+#                      Tower smiths refuse his steps (MT2009_PLUS_SEONPYEONG_ELITE_V1; server-patches/seonpyeong)
+#   Przypisane do konta item.h, item.cpp, item_attribute.cpp, char_shop.cpp, ikarus_shop_manager.cpp, shop.cpp - an
+#                      account-bound item instance (the bots' G0 package): no drop, trade, merchant or shop, carried by
+#                      a refine (MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1; server-patches/g0bind, last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1703,6 +1706,20 @@ if ((Test-Path -LiteralPath $seonpyeongApply -PathType Leaf) -and
     if ($seonpyeongResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Seon-Pyeong edit(s).' -f $seonpyeongResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Account-bound items (server-patches/g0bind, MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1; the owner, 22 October 2026): the bots'
+# G0 package is bound to the account - CItem::IsAccountBound adds DROP / GIVE / SELL / MYSHOP / PKDROP to the item's own
+# anti flags, the shops ask the instance's flags, a refine carries it. The store and the bots' logic are
+# playerbot_yohara_g0.{h,cpp}. Anchors on the jade's refine line (obreczjadeitu2), so after it; last.
+$g0bindApply = Join-Path $repo 'server-patches/g0bind/Apply-G0BindPatch.ps1'
+if ((Test-Path -LiteralPath $g0bindApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_attribute.cpp') -PathType Leaf)) {
+    $g0bindResult = & $g0bindApply -SourceDir $engineGameSource
+    if ($g0bindResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} account-bound item edit(s).' -f $g0bindResult.Applied) -ForegroundColor DarkGray
     }
 }
 

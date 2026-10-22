@@ -2119,6 +2119,9 @@ namespace
 	// rolls at its own odds when it is used, as a player's does.
 	bool ManagePlayerBotDustMarble(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion keeps its dust for its G0 package (playerbot_yohara_g0.h).
+		if (GetPlayerBotG0DustReserve(ch) > 0)
+			return false;
 		if (!PlayerBotWantsBlessingMarble(ch) ||
 				(int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) < PLAYERBOT_DUST_PER_MARBLE ||
 				ch->GetEmptyInventory(1) < 0)
@@ -2204,6 +2207,9 @@ namespace
 	bool ManagePlayerBotDustBonusStones(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded())
+			return false;
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion keeps its dust for its G0 package (playerbot_yohara_g0.h).
+		if (GetPlayerBotG0DustReserve(ch) > 0)
 			return false;
 		const int dust = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM);
 		if (dust < std::min(PLAYERBOT_DUST_PER_ADD, PLAYERBOT_DUST_PER_CHANGE) || ch->GetEmptyInventory(1) < 0 ||
