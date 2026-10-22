@@ -17,6 +17,17 @@ every version here.
 
 ---
 
+## 2.37.0 — (szkic)
+
+### Boty – stragany i handel
+- **Szybsze łączenie ksiąg w stosy.** Boty, które mają w sklepie wiele linii pojedynczych ksiąg tej samej umiejętności, zdejmują je teraz wszystkie za jednym razem i od razu wystawiają jednym stosem. Wcześniej zdejmowały jedną linię na 10 minut, więc sklep pełen starych ksiąg porządkował się dniami.
+
+### Silnik/Gra
+- **Zakupy w ItemShopie, Koło Losu na stronie i kody promocyjne znowu dochodzą.** Na światach założonych z bazy startowej w tabeli nagród brakowało jednej kolumny, więc zakupy nie trafiały do gry. Aktualizacja dodaje ją sama przy starcie.
+- **Licznik EXP nie ucina się już na 2 147 483 647.** Od 100 poziomu pasek doświadczenia przekracza tę liczbę, a baza zapisywała najwyżej tyle – po zapisie lub ponownym zalogowaniu nadwyżka znikała. Aktualizacja sama poprawia kolumnę w bazie przy starcie i od tej pory pełny pasek się zapisuje.
+
+---
+
 ## 2.36.0 — 2026-10-20 — Sklepy botów bez przepełnienia, lochy bez zatrzymań, retencja logów w panelu
 
 ### Boty – stragany i handel
