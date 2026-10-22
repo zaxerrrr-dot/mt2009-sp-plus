@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.67",
+  "version": "2.0.68",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -163,14 +163,34 @@
       "sha256": "3A3D82F74F6B555296524FB6924A1349E16673FEC0456A6ED9436B0B9D06F54C"
     },
     {
+      "path": "pack/cape_map.index",
+      "size": 11228,
+      "sha256": "06C8B83CF68E20988CF02BAB3F522BF412D20CAA8D9D3FB8DA09B76164A03DAC"
+    },
+    {
+      "path": "pack/cape_mobs.index",
+      "size": 19084,
+      "sha256": "4362678B229F276EE8E97733682F3255BB87D61A937A27F6400D8C8B1A7BB087"
+    },
+    {
+      "path": "pack/cape_obj.index",
+      "size": 10036,
+      "sha256": "055C045DC0CCA9A72587EBC98405C97E578F2FF2E56F2965E81D93D4E3EEE34F"
+    },
+    {
       "path": "pack/catacomb_map.index",
       "size": 45540,
       "sha256": "91FFE0D65191E053B5938EB63E94426B10A34CB19DA54BE70294A8CD46CF2ED9"
     },
     {
       "path": "pack/gamedata.index",
-      "size": 4092,
-      "sha256": "5D435110CB195542FE526EF83BEB73DED02EEF7709813E41C1146C81B26BD6F1"
+      "size": 4180,
+      "sha256": "5BD41E5EA8C8611E07F0CDAB04B643C2899DE7D46E7B4C7005B4059430C63122"
+    },
+    {
+      "path": "pack/gautama_map.index",
+      "size": 9268,
+      "sha256": "838AAF134650D04C5FF1AE879A198380910E5668B504999D9D487B0FBEF83B5D"
     },
     {
       "path": "pack/gf_misc.index",
@@ -203,19 +223,24 @@
       "sha256": "B6B5149B314DBB7EC0E714E6535E2920008E3F9990FD3EC03E6D809AA2B7DA76"
     },
     {
+      "path": "pack/gromiste_map.index",
+      "size": 7324,
+      "sha256": "F863CA665F7141B654686538E79EACE8D4F26CA8512B13B63CEFD96FA7BF64A5"
+    },
+    {
       "path": "pack/icon.index",
       "size": 78548,
       "sha256": "2D5B64DB0325B098B06937AF45D7CAAE895AC19D65D0C80DA6D46045E873C6F1"
     },
     {
       "path": "pack/Index",
-      "size": 1014,
-      "sha256": "84A0F82F48B8064F9680FA2CC8C1054BD7D3CF570E43B16A995630ED56FF4321"
+      "size": 1160,
+      "sha256": "DB908D16059E865C2693CFADC1B9C1620723434F37E61C8775C973D1799514A3"
     },
     {
       "path": "pack/locale.index",
       "size": 23500,
-      "sha256": "DAA01D77CCCA6F4D30BC11261581491359D8B855249FD9A168F7D9774B04BF05"
+      "sha256": "8F3A2554C3B62898C3FFFFF710FBCBBAD80AF9EE63D9FC4592A96FEDE915E730"
     },
     {
       "path": "pack/maps.index",
@@ -239,18 +264,48 @@
     },
     {
       "path": "pack/property.index",
-      "size": 56252,
-      "sha256": "64FB923FEB9A72CB1379FF932770A0A6BE6C018A381945239B4BF90F492B2326"
+      "size": 58692,
+      "sha256": "376E3FA4E71FF46A2648C30D7D07ADD0B0398B64747F818FA70BAA25BC770B00"
     },
     {
       "path": "pack/root.index",
-      "size": 33052,
-      "sha256": "DC1F64658E80FC70597E182A0C68DA2DC9A25E9757985F9B2A90832EEF42B532"
+      "size": 33372,
+      "sha256": "B93FDDD9616AFB3693D4E52E21D6F77DF2E0E05C99DB70E17D996C96E743B26A"
     },
     {
       "path": "pack/wiki_nowe.index",
       "size": 1140,
       "sha256": "E85D9513B81A65816E2CB611B47B0C70510397112E58CC0DFAC6ACDCFC593F32"
+    },
+    {
+      "path": "pack/yohara_mobs.index",
+      "size": 24980,
+      "sha256": "61C2A29C6D2142F171EEA08E2FA84D6C5C5D124244A8E2592868C3D5EC884A5B"
+    },
+    {
+      "path": "pack/yohara_obj.index",
+      "size": 11084,
+      "sha256": "F9666A56BF136E90273CA54C07B0A486F2C45F2204D17A562B8E791A431F8DDE"
+    },
+    {
+      "path": "pack/zaklety_map.index",
+      "size": 4132,
+      "sha256": "D9E4C761B9D7ED6648FA598AF7244ADB9485ADE7B8856846F6A80C370146D987"
+    },
+    {
+      "path": "pack/zaklety_mobs.index",
+      "size": 11556,
+      "sha256": "672E4AB07088211A4DE12104E3DA979EC776A6D457D459816439178C1BBEEA9D"
+    },
+    {
+      "path": "pack/zaklety_obj.index",
+      "size": 5052,
+      "sha256": "875E8B81A4B77F3D87D0BB590E0C385EC2A805BB57F4F20CB0DBD3864571AD11"
+    },
+    {
+      "path": "pack/zatoka_map.index",
+      "size": 6092,
+      "sha256": "D7A7977559DBCAE69B6126B663633683B3655401123528D00FD173DE4A9E0370"
     },
     {
       "path": "pack/zodiak_maps.index",

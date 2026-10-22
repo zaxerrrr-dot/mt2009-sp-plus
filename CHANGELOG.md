@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.37.0 — (szkic)
+## 2.37.0 — 2026-10-22 — Zaklęty Las, mapy 90 poziomu i tryb global
 
 ### Boty – stragany i handel
 - **Kamienie Duszy +0, +1 i +2 idą w pył.** Boty nie wystawiają już Kamieni Duszy +0, +1 ani +2 na rynek – od razu zamieniają je u Alchemika w Magiczny Pył (tak jak gracz: ta sama opłata i ta sama ilość pyłu). Kamienie tych stopni, które już stoją w ich sklepach, boty stopniowo zdejmują i też oddają na pył.
@@ -40,8 +40,10 @@ every version here.
 - **Boty w Zaklętym Lesie.** Boty od 100 poziomu (i co najmniej 20 000 PŻ) chodzą expić do Zaklętego Lasu jak na wyprawę: drogą przez Świątynię Ochao, około 2 godzin pobytu, mikstury uzupełniają na miejscu. Najgroźniejsze miejsca z Niszczycielami En-Tai i Metiny lasu biorą tylko w drużynie co najmniej 3 botów; po 3 zgonach w 30 minut wracają i robią 3 godziny przerwy. Od 110 poziomu bot z lasu wyrasta.
 - **Boty na mapach 90 po drop.** Boty od 95 poziomu co jakiś czas idą na Przylądek Smoczego Ognia, Zbocze Gautama, Nefrytową Zatokę i Gromiste Góry bić tylko Metiny i bossów (około 40 minut), potem wracają do wioski.
 - **Boty przechodzą między rdzeniami.** Las i mapy 90 stoją na innym rdzeniu niż wioski botów, więc bot przechodzi tam i z powrotem przez przekazanie między rdzeniami. Ustawienia w panelu (Boty): PLAYERBOT_HANDOVER, PLAYERBOT_ZAKLETY_*, PLAYERBOT_LOOTRUN_*; zdarzenie m2_bot_handover_off 1 odsyła wszystkie boty do domu.
+- Boty, które są w Zaklętym Lesie albo na wypadzie na mapy 90, nie są w tym czasie przenoszone na inny kanał (wcześniej przeniesienie odsyłało je od razu do wioski).
 
 ### Tryb global (`M2_BONUS_MODE`)
+- **Tryb global jest eksperymentalny.** Przeniosłem go z gałęzi testowej i sprawdziłem przełączanie w obie strony, ale nie był jeszcze grany na żywym świecie – domyślnie zostaje `mt2009`. Jeśli go włączysz, zrób najpierw kopię świata i zgłaszaj mi wszystko, co wygląda dziwnie.
 - **Ustawienia serwera globalnego jednym przełącznikiem.** Dodałem w `.env` i w panelu ustawienie „Tryb global”: `mt2009` (domyślnie) zostawia świat dokładnie takim, jaki był, a `global` włącza ustawienia serwera globalnego – bonusy, żywioły, alchemię, ulepszanie i potwory. Działa po restarcie serwera, można przełączać w obie strony, a powrót do `mt2009` przywraca świat co do wartości.
 - **Bonusy jak na serwerze globalnym:** Maks. PŻ do 2000, Maks. PE do 80 (200 na naszyjniku), regeneracja do 30%, odporność na ogień, błyskawice i wiatr na zbroi, bransolecie i hełmie, szansa na bonus doświadczenia (buty, naszyjnik, tarcza) i na podwójną ilość przedmiotów (bransoleta, kolczyki – podnosi szansę dropu). Na broni, zbroi i biżuterii nie losują się już wytrzymałość, czas trwania umiejętności, odbicie strzał i stałe doświadczenie. Przedmioty zachowują wszystkie bonusy, które już mają.
 - **Stałe bonusy przedmiotów** jak na serwerze globalnym (np. Bambusowe Buty+9: szybkość ruchu 15 i odporność na ogień 10) – także w opisie przedmiotu.
@@ -52,7 +54,11 @@ every version here.
 - Boty w trybie global zbierają ulepszacze nowych kroków (także do pasów) i nie zużywają ich na sprzęt na sprzedaż, jeśli brakuje ich do sprzętu, który noszą.
 - Opisy przedmiotów, maksymalne wartości bonusów i ikony żywiołów trybu global wymagają nowego klienta; serwer liczy tryb global także ze starym klientem.
 
----
+## Klient 2.0.68 — 2026-10-22 — Zaklęty Las, mapy 90 poziomu i tryb global
+- **Zaklęty Las** – teren, obiekty i potwory lasu (En-Tai, Jotun Thrym, Metiny Lasu i Drzewnych Stworzeń z własnym wyglądem), nazwa mapy i ikony 8 nowych przedmiotów.
+- **Mapy 90 poziomu** – teren Przylądka Smoczego Ognia, Zbocza Gautama, Nefrytowej Zatoki i Gromistych Gór z ich potworami.
+- **Tryb global** – maksymalne wartości bonusów, ikona żywiołu przy celu, stałe bonusy w opisie przedmiotu i kroki ulepszania trybu global (pokazywane, gdy serwer ma `M2_BONUS_MODE=global`).
+- Zmieniły się dane przedmiotów – po aktualizacji pobierz ponownie zip z edytora bazy danych (gra przypomni o tym po zalogowaniu; MT2009-Patcher pobierze go sam).
 
 ## 2.36.0 — 2026-10-20 — Sklepy botów bez przepełnienia, lochy bez zatrzymań, retencja logów w panelu
 
