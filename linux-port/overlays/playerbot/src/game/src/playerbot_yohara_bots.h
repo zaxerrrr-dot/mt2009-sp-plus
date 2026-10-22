@@ -1127,6 +1127,8 @@ namespace
 	void RestockPlayerBotYohara(LPCHARACTER ch, TPlayerBotYoharaResident& r, DWORD dwNow);
 	void BuyPlayerBotYoharaBelt(LPCHARACTER ch, size_t redWant, size_t blueWant, int& boughtRed, int& boughtBlue);
 #include "playerbot_yohara_sungma.h"
+// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: the Sung Ma maps' parties of three to five (after the residents' state).
+#include "playerbot_yohara_sungma_party.h"
 
 	// ------------------------------------------------------------ the route
 

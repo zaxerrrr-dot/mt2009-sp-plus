@@ -1329,7 +1329,8 @@ namespace
 		if (context.mode == playerbot_combat_value::OBJECTIVES && candidate->IsMonster() &&
 				candidate->GetMobRank() >= MOB_RANK_BOSS && !candidate->IsStone() &&
 				IsPlayerBotSungmaBotMap(ch->GetMapIndex()) &&
-				(!ch->GetParty() || ch->GetParty()->GetMemberCount() < 3))
+				// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: three of the party by the bot, not three on its list
+				CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR) < PLAYERBOT_SUNGMA_PARTY_MIN)
 			context.mode = playerbot_combat_value::SERVICE_ONLY;
 		return context;
 	}
@@ -2020,6 +2021,153 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a Sung Ma fighter's pick among the collector's candidates (playerbot_sungma_fight.h).
+	// A leader with three ready members by it: the stone or the boss in reach, the nearest. Anyone else: the monster
+	// whose fight - what is on the bot already, the monster and what a blow at it wakes - its capacity takes, the edge of
+	// a pack over its middle, the band's level over the higher ones, the element its talisman bites and the one it
+	// resists; with none such the edge of the smallest pack while healthy, else nothing (and after
+	// PLAYERBOT_SUNGMA_REFUSED_MOVE_ON such picks the spot is left).
+	LPCHARACTER PickPlayerBotSungmaTarget(LPCHARACTER ch, TPlayerBotAIState& state,
+			const std::vector<TTargetCandidate>& targets, int searchRange, DWORD dwNow)
+	{
+		TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex());
+		LPPARTY party = ch->GetParty();
+		const int partyReady = CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR, PLAYERBOT_SUNGMA_PARTY_READY_HP);
+		if (partyReady >= PLAYERBOT_SUNGMA_PARTY_MIN && party && party->GetLeaderPID() == ch->GetPlayerID())
+		{
+			LPCHARACTER objective = NULL;
+			int best = INT_MAX;
+			for (size_t i = 0; i < targets.size(); ++i)
+			{
+				LPCHARACTER t = CHARACTER_MANAGER::instance().Find(targets[i].dwVID);
+				if (!t || t->IsDead() || targets[i].distance >= best || IsTargetClaimedByAnotherBot(ch, targets[i].dwVID))
+					continue;
+				if ((t->IsStone() && IsPlayerBotSungmaStoneForMe(ch, t) == 1) ||
+						(t->IsMonster() && t->GetMobRank() >= MOB_RANK_BOSS))
+				{
+					objective = t;
+					best = targets[i].distance;
+				}
+			}
+			if (objective)
+			{
+				if (st)
+					++st->partyObjectives;
+				PlayerBotLogThrottled("sungma_objective", dwNow, "PLAYERBOT_SUNGMA: party objective pid=%u name=%s map=%ld target=%s race=%u stone=%d "
+						"ready=%d members=%u dist=%d", ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), objective->GetName(),
+						objective->GetRaceNum(), objective->IsStone() ? 1 : 0, partyReady, (unsigned int)party->GetMemberCount(), best);
+				return objective;
+			}
+		}
+		std::vector<TPlayerBotSungmaMob> mobs;
+		CollectPlayerBotSungmaMobs(ch, searchRange + PLAYERBOT_SUNGMA_AGGRO_RADIUS, mobs);
+		long cx = 0, cy = 0;
+		const int engaged = CountPlayerBotSungmaAttackers(ch, mobs, cx, cy, NULL);
+		// nothing on it and not healed yet: the belt first (PLAYERBOT_SUNGMA_ENGAGE_HP)
+		if (engaged == 0 && GetPlayerBotSungmaHpPercent(ch) < PLAYERBOT_SUNGMA_ENGAGE_HP)
+			return NULL;
+		const int capacity = GetPlayerBotSungmaCapacity(ch, partyReady);
+		const int bandLevel = GetPlayerBotSungmaBandMobLevel(ch);
+		LPCHARACTER pick = NULL, over = NULL, nearest = NULL;
+		long long pickScore = LLONG_MIN, overScore = LLONG_MIN;
+		int pickWake = 0, overLoad = INT_MAX, nearestWake = 0, nearestDist = INT_MAX;
+		bool pickElement = false;
+		for (size_t i = 0; i < targets.size(); ++i)
+		{
+			if (targets[i].bIsStone || IsTargetClaimedByAnotherBot(ch, targets[i].dwVID))
+				continue;
+			LPCHARACTER mob = CHARACTER_MANAGER::instance().Find(targets[i].dwVID);
+			if (!mob || mob->IsDead() || !mob->IsMonster())
+				continue;
+			const bool onMe = mob->GetVictim() == ch;
+			// a boss is the party's objective (above); alone only what is on the bot
+			if (mob->GetMobRank() >= MOB_RANK_BOSS && !onMe)
+				continue;
+			if (!onMe && IsPlayerBotSungmaSpotAvoided(ch, mob->GetX(), mob->GetY(), dwNow))
+				continue;
+			const int wake = onMe ? 0 : 1 + CountPlayerBotSungmaWake(mobs, mob->GetX(), mob->GetY(), mob);
+			const int load = engaged + wake;
+			int power = 0, resist = 0;
+			GetPlayerBotSungmaElementEdge(ch, mob, power, resist);
+			long long score = 1000000LL - (long long)targets[i].distance * 2 -
+					(long long)std::max(0, wake - 1) * PLAYERBOT_SUNGMA_WAKE_PENALTY -
+					(long long)std::max(0, (int)mob->GetLevel() - bandLevel) * PLAYERBOT_SUNGMA_LEVEL_PENALTY +
+					(long long)std::min(power, 200) * PLAYERBOT_SUNGMA_ELEMENT_POWER_SCORE +
+					(long long)std::min(resist, 50) * PLAYERBOT_SUNGMA_ELEMENT_RESIST_SCORE;
+			if (onMe)
+				score += 500000;
+			else if (mob->GetVictim() != NULL && !(party && mob->GetVictim()->GetParty() == party))
+				score -= 180000;
+			if (targets[i].distance < nearestDist)
+			{
+				nearestDist = targets[i].distance;
+				nearestWake = wake;
+				nearest = mob;
+			}
+			if (load <= capacity)
+			{
+				if (score > pickScore)
+				{
+					pickScore = score;
+					pick = mob;
+					pickWake = wake;
+					pickElement = power > 0;
+				}
+			}
+			else if (load < overLoad || (load == overLoad && score > overScore))
+			{
+				overLoad = load;
+				overScore = score;
+				over = mob;
+			}
+		}
+		TPlayerBotSungmaFight& f = s_mapPlayerBotSungmaFight[ch->GetPlayerID()];
+		if (!pick && over && overLoad <= capacity + 1 && GetPlayerBotSungmaHpPercent(ch) >= 85)
+		{
+			pick = over;
+			pickWake = overLoad - engaged;
+		}
+		if (!pick)
+		{
+			if (!over)
+				return NULL;
+			if (st)
+				++st->packRefused;
+			if (f.iRefused == 0 || dwNow - f.dwRefusedSince > PLAYERBOT_SUNGMA_REFUSED_MS)
+			{
+				f.iRefused = 0;
+				f.dwRefusedSince = dwNow ? dwNow : 1;
+			}
+			if (++f.iRefused >= PLAYERBOT_SUNGMA_REFUSED_MOVE_ON)
+			{
+				// too much round here for it: the spot is left (the hubs skip it) and the camp moved on
+				f.iRefused = 0;
+				f.lAvoidMap = ch->GetMapIndex();
+				f.lAvoidX = ch->GetX();
+				f.lAvoidY = ch->GetY();
+				f.dwAvoidUntil = dwNow + PLAYERBOT_SUNGMA_AVOID_MS;
+				if (st)
+					++st->avoids;
+				if (!party || party->GetLeaderPID() == ch->GetPlayerID())
+					state.dwCampSince = dwNow - std::min(dwNow, PLAYERBOT_CAMP_TIMEOUT);
+				sys_log(0, "PLAYERBOT_SUNGMA: pack too big, moving on pid=%u name=%s map=%ld pos=(%ld,%ld) capacity=%d engaged=%d smallest=%d hp=%d party_ready=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(), capacity, engaged, overLoad,
+						GetPlayerBotSungmaHpPercent(ch), partyReady);
+			}
+			return NULL;
+		}
+		f.iRefused = 0;
+		if (st)
+		{
+			++st->targetsPicked;
+			if (pickElement)
+				++st->targetsElement;
+			if (pick != nearest && pickWake < nearestWake)
+				++st->targetsEdge;
+		}
+		return pick;
+	}
+
 	LPCHARACTER FindDistributedTarget(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->GetSectree() ||
@@ -2111,6 +2259,10 @@ namespace
 
 		if (targets.empty())
 			return NULL;
+
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: on a Sung Ma map the packs, the band, the elements and the party's objectives.
+		if (IsPlayerBotSungmaFighter(ch))
+			return PickPlayerBotSungmaTarget(ch, state, targets, targetSearchRange, dwNow);
 
 		// A ready leader does not roll the party challenge together with ordinary
 		// mobs. Pick the best unclaimed elite deterministically; party-to-party

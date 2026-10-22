@@ -7039,6 +7039,13 @@ namespace
 	// home) and its revival there - at the safe point by its map's arrival, a person's "restart in town" (playerbot_yohara_sungma.h).
 	bool IsPlayerBotSungmaResidentPID(DWORD pid);
 	bool MovePlayerBotSungmaRevived(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1 (playerbot_sungma_fight.h, before survival.h, asks playerbot_yohara_sungma.h): a
+	// map's slot in PLAYERBOT_SUNGMA_MAPS (-1 none), its band's Champion floor, its safe point, and what a resident is
+	// doing beside the hunt (1 the walk to a portal, 2 Dongan's errand, 0 neither).
+	int GetPlayerBotSungmaSlot(long mapIndex);
+	int GetPlayerBotSungmaBandFloor(long mapIndex);
+	bool GetPlayerBotSungmaSafePoint(long mapIndex, long& x, long& y);
+	int GetPlayerBotSungmaActivity(DWORD pid);
 	// MT2009_PLUS_BOT_YOHARA_G0_V2: the dust saved from level 110 and kept in the safebox (the storekeeper's visit),
 	// and a replaced bound piece no bot bought - to the merchant.
 	bool PlayerBotG0WantsSafebox(LPCHARACTER ch);

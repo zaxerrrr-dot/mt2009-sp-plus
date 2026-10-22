@@ -269,6 +269,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_ZODIAC_BOTS_V1 (include): a person's party bots in the Swiatynia Zodiaku - the temple's
 // membership after a warp (WarpBot), the revive on a temple floor (survival.h). Before survival.h.
 #include "playerbot_zodiac_bots.h"
+// MT2009_PLUS_BOT_YOHARA_FIGHT_V1 (include): the Sung Ma maps' packs, targets, retreats and deaths - before survival.h,
+// whose retreat and death it takes part in, and targeting.h, whose pick asks it.
+#include "playerbot_sungma_fight.h"
 #include "playerbot_survival.h"
 #include "playerbot_wandering.h"
 #include "playerbot_status.h"
@@ -2051,6 +2054,10 @@ namespace
 			return;
 		// A mercenary's contract keeps its own party, by its own rules.
 		if (IsPlayerBotOnMercContract(ch->GetPlayerID()))
+			return;
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a resident of the Sung Ma maps - parties of three to five of its map, kingdom
+		// and Champion band, for the stones and the bosses (playerbot_yohara_sungma_party.h).
+		if (ManagePlayerBotSungmaParty(ch, state, dwNow) >= 0)
 			return;
 		// And so does the Catacomb's raid: its party is what the key takes in.
 		if (IsPlayerBotCatacombRaider(ch->GetPlayerID()))
@@ -8180,7 +8187,8 @@ WritePlayerBotGuildStatus(dwNow);
 			continue;
 		}
 
-		UseHealthPotion(ch, state, dwNow, GetPlayerBotArezzoPotionPercent(ch)); // MT2009_PLUS_AREZZO_BOTS_V1 (las)
+		// MT2009_PLUS_AREZZO_BOTS_V1 (las); MT2009_PLUS_BOT_YOHARA_FIGHT_V1: 80% on a Sung Ma map
+		UseHealthPotion(ch, state, dwNow, GetPlayerBotSungmaPotionPercent(ch, GetPlayerBotArezzoPotionPercent(ch)));
 		UseManaPotion(ch, state, dwNow);
 		UseUtilityPotions(ch, state, dwNow);
 		UsePlayerBotBoosters(ch, state, dwNow);
@@ -8244,10 +8252,16 @@ WritePlayerBotGuildStatus(dwNow);
 			ClearPlayerBotRoute(state, true);
 			sys_log(0, "PLAYERBOT_AI: emergency recovery started pid=%u name=%s hp=%d/%d",
 					ch->GetPlayerID(), ch->GetName(), ch->GetHP(), ch->GetMaxHP());
+			NotePlayerBotSungmaDown(ch, dwNow);	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
 		}
 		if (HandlePostDeathRecovery(ch, state, dwNow))
 			continue;
 
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: on a Sung Ma map by the health and the number of the attackers - before the
+		// generic 35% (playerbot_sungma_fight.h).
+		if (!bFinishingStone && !state.bTacticalRetreat && !state.bRecoveringAfterDeath)
+			if (LPCHARACTER sungmaThreat = CheckPlayerBotSungmaRetreat(ch, state, dwNow))
+				StartPlayerBotTacticalRetreat(ch, state, sungmaThreat, dwNow);
 		LPCHARACTER retreatThreat = state.dwRetreatThreatVID != 0
 				? CHARACTER_MANAGER::instance().Find(state.dwRetreatThreatVID)
 				: (state.dwTargetVID != 0 ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL);

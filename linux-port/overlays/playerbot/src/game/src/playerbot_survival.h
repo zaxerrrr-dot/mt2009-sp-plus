@@ -119,6 +119,13 @@ namespace
 	{
 		if (!ch || !state.bTacticalRetreat)
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: on a Sung Ma map away from the pack toward the safe point, healed before it
+		// goes back (playerbot_sungma_fight.h).
+		{
+			const int sungma = HandlePlayerBotSungmaRetreat(ch, state, dwNow);
+			if (sungma >= 0)
+				return sungma != 0;
+		}
 		SetPlayerBotAction(state, BOT_ACTION_RECOVER, dwNow);
 
 		LPCHARACTER threat = state.dwRetreatThreatVID != 0
@@ -344,6 +351,8 @@ namespace
 
 		if (state.dwDeathDetectedTime == 0)
 		{
+			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a Sung Ma resident's death and its cause, before the state forgets it.
+			NotePlayerBotSungmaFallen(ch, state, dwNow);
 			state.bTacticalRetreat = false;
 			state.dwRetreatStartedTime = 0;
 			state.dwNextRetreatMoveTime = 0;
