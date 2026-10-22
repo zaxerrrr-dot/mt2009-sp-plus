@@ -93,6 +93,40 @@ namespace
 	// (playerbot_guild_shaman.h, which comes later).
 	void NotePlayerBotStrongMapHardship(LPCHARACTER ch, int kind);
 
+	// MT2009_PLUS_237_BOT_CHURN_FIX_V1: the ways out the planner refused, by
+	// bot, for the running retreat (the eight of HandlePlayerBotTacticalRetreat)
+	// and the running recovery (the eight away from the death spot). The
+	// reachability test that picks a way out is the components' and the walk
+	// is the planner's, and where the two disagree the same way out was asked
+	// for again on every move: 1 055 of the 2 890 "unreachable" lines of the
+	// Red Wood (map 68) on 22 October were those steps, the bot standing in
+	// front of its threat.
+	const DWORD PLAYERBOT_ESCAPE_REFUSED_MS = 60 * 1000;
+	std::map<DWORD, std::pair<DWORD, BYTE> > s_mapPlayerBotRetreatRefused;
+	std::map<DWORD, std::pair<DWORD, BYTE> > s_mapPlayerBotDeathEscapeRefused;
+
+	BYTE GetPlayerBotEscapeRefused(std::map<DWORD, std::pair<DWORD, BYTE> >& refused, DWORD pid, DWORD dwNow)
+	{
+		std::map<DWORD, std::pair<DWORD, BYTE> >::iterator it = refused.find(pid);
+		if (it == refused.end())
+			return 0;
+		if (dwNow - it->second.first >= PLAYERBOT_ESCAPE_REFUSED_MS)
+		{
+			refused.erase(it);
+			return 0;
+		}
+		return it->second.second;
+	}
+
+	void NotePlayerBotEscapeRefused(std::map<DWORD, std::pair<DWORD, BYTE> >& refused, DWORD pid, int direction,
+			DWORD dwNow)
+	{
+		std::map<DWORD, std::pair<DWORD, BYTE> >::iterator it = refused.find(pid);
+		if (it == refused.end())
+			it = refused.insert(std::make_pair(pid, std::make_pair(dwNow, (BYTE)0))).first;
+		it->second.second |= (BYTE)(1U << (direction & 7));
+	}
+
 	void StartPlayerBotTacticalRetreat(LPCHARACTER ch, TPlayerBotAIState& state,
 			LPCHARACTER threat, DWORD dwNow)
 	{
@@ -102,6 +136,7 @@ namespace
 		// MT2009_PLUS_BOT_LOOT_PACE_V1: its drops here, to come back for.
 		NotePlayerBotLootLeftBehind(ch, state, dwNow);
 		state.bTacticalRetreat = true;
+		s_mapPlayerBotRetreatRefused.erase(ch->GetPlayerID());	// MT2009_PLUS_237_BOT_CHURN_FIX_V1
 		state.dwRetreatStartedTime = dwNow;
 		state.dwNextRetreatMoveTime = 0;
 		state.dwRetreatThreatVID = threat ? threat->GetVID() : 0;
@@ -173,8 +208,12 @@ namespace
 		long bestX = ch->GetX();
 		long bestY = ch->GetY();
 		int bestScore = INT_MIN;
+		int bestDirection = -1;
+		const BYTE refused = GetPlayerBotEscapeRefused(s_mapPlayerBotRetreatRefused, ch->GetPlayerID(), dwNow);
 		for (int i = 0; i < 8; ++i)
 		{
+			if (refused & (1U << i))	// MT2009_PLUS_237_BOT_CHURN_FIX_V1
+				continue;
 			const long candidateX = ch->GetX() + escapeX[i];
 			const long candidateY = ch->GetY() + escapeY[i];
 			if (!IsPlayerBotReachable(ch->GetMapIndex(), ch->GetX(), ch->GetY(), candidateX, candidateY))
@@ -186,11 +225,17 @@ namespace
 				bestScore = threatDistance + jitter;
 				bestX = candidateX;
 				bestY = candidateY;
+				bestDirection = i;
 			}
 		}
 
 		if (bestScore != INT_MIN)
+		{
 			MovePlayerBot(ch, bestX, bestY, dwNow, 24, true);
+			// MT2009_PLUS_237_BOT_CHURN_FIX_V1: another way out on the next move.
+			if (state.bLastNavOutcome == PLAYERBOT_NAV_OUT_UNREACHABLE && bestDirection >= 0)
+				NotePlayerBotEscapeRefused(s_mapPlayerBotRetreatRefused, ch->GetPlayerID(), bestDirection, dwNow);
+		}
 		else
 			ch->Stop();
 		return true;
@@ -277,9 +322,17 @@ namespace
 				// units east of where medal droppers had died.
 				const BYTE firstDirection = (BYTE)((ch->GetPlayerID() + state.bDeathCount +
 						state.bStuckCounter) % 8);
+				// MT2009_PLUS_237_BOT_CHURN_FIX_V1: and not one the planner refused
+				// a moment ago - the stuck counter the first way out is drawn
+				// with is reset by every new goal, so the same refused way out
+				// came back on every other move.
+				const BYTE refused = GetPlayerBotEscapeRefused(s_mapPlayerBotDeathEscapeRefused,
+						ch->GetPlayerID(), dwNow);
 				for (BYTE k = 0; k < 8; ++k)
 				{
 					const BYTE escapeDirection = (BYTE)((firstDirection + k) % 8);
+					if (refused & (1U << escapeDirection))
+						continue;
 					const long targetX = state.lDeathX + kEscapeX[escapeDirection];
 					const long targetY = state.lDeathY + kEscapeY[escapeDirection];
 					if (!IsPlayerBotReachable(ch->GetMapIndex(), ch->GetX(), ch->GetY(), targetX, targetY))
@@ -287,6 +340,9 @@ namespace
 					// The walk back from the respawn point is the longest routine
 					// journey a bot makes, and it was made on foot.
 					MovePlayerBot(ch, targetX, targetY, dwNow, 16, true, true);
+					if (state.bLastNavOutcome == PLAYERBOT_NAV_OUT_UNREACHABLE)
+						NotePlayerBotEscapeRefused(s_mapPlayerBotDeathEscapeRefused, ch->GetPlayerID(),
+								escapeDirection, dwNow);
 					return true;
 				}
 				// No way out joins: the bot stays, invisible and healing, where
