@@ -69,6 +69,8 @@ param(
 #                      server-patches/rankpoints)
 #   Swiatynia Zodiaku  24 engine files, ENABLE_12ZI (MT2009_PLUS_ZODIAC_V1;
 #                      server-patches/zodiak, Autor: Digi Rasta)
+#   M2_BONUS_MODE      item_manager.cpp, item_attribute.cpp, DragonSoul.cpp, dragon_soul_table.cpp
+#                      (MT2009_PLUS_GLOBAL_BONUS_V1, MT2009_PLUS_237_GLOBAL_MODE_V1; server-patches/bonusyglobal)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1229,6 +1231,21 @@ foreach ($dropSourceName in @('item_manager.cpp', 'char_item.cpp')) {
         [IO.File]::WriteAllText($dropSource, $dropText)
         $syncedFiles++
         Write-Host "Removed broken Death Ruler sash drops from $dropSourceName." -ForegroundColor DarkGray
+    }
+}
+
+# M2_BONUS_MODE (server-patches/bonusyglobal, MT2009_PLUS_GLOBAL_BONUS_V1 / MT2009_PLUS_237_GLOBAL_MODE_V1): mt2009 or
+# the global server's bonuses - the double-item chance line in the drop (item_manager.cpp), a talisman's own resistance
+# values (item_attribute.cpp, CItem::AddAttr) and the alchemy's default table (DragonSoul.cpp, dragon_soul_table.cpp);
+# the work is the overlay's playerbot_bonus_mode.cpp (event flag m2_bonus_global), the element resistance at 30% in
+# global mode is playerbot_elements.cpp. Last: its anchors are lines no other patch touches.
+$bonusyGlobalApply = Join-Path $repo 'server-patches/bonusyglobal/Apply-BonusyGlobalPatch.ps1'
+if ((Test-Path -LiteralPath $bonusyGlobalApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_manager.cpp') -PathType Leaf)) {
+    $bonusyGlobalResult = & $bonusyGlobalApply -SourceDir $engineGameSource
+    if ($bonusyGlobalResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} bonus mode edit(s).' -f $bonusyGlobalResult.Applied) -ForegroundColor DarkGray
     }
 }
 

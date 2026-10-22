@@ -27,6 +27,7 @@ every version here.
 ### Silnik/Gra
 - **Zakupy w ItemShopie, Koło Losu na stronie i kody promocyjne znowu dochodzą.** Na światach założonych z bazy startowej w tabeli nagród brakowało jednej kolumny, więc zakupy nie trafiały do gry. Aktualizacja dodaje ją sama przy starcie.
 - **Licznik EXP nie ucina się już na 2 147 483 647.** Od 100 poziomu pasek doświadczenia przekracza tę liczbę, a baza zapisywała najwyżej tyle – po zapisie lub ponownym zalogowaniu nadwyżka znikała. Aktualizacja sama poprawia kolumnę w bazie przy starcie i od tej pory pełny pasek się zapisuje.
+
 ### Zaklęty Las i mapy 90 poziomu
 - **Zaklęty Las.** Dodałem Zaklęty Las – las Jotuna Thryma za Świątynią Ochao, jak na wiki: Wojownicy, Bojownicy, Druidzi, Uzdrowiciele i Niszczyciele En-Tai, Silni En-Tai z Metinów Lasu, Władca En-Tai, siedem misji strażników lasu (nagroda: Kamień Driad) i Erebu – wyprawa drużyny 5–8 graczy od 95 poziomu na Bagjanamu i Jotuna Thryma (Skrzynie Bagjanamu i Jotuna Thryma). Las jest zawsze włączony – nie zależy od modułu Arezzo i nie da się go wyłączyć.
 - **Zaklęty Las zastępuje Zaczarowany Las z Arezzo.** Portal Strażnika En-Tai w Świątyni Ochao prowadzi teraz do Zaklętego Lasu (albo z powrotem na Zbocze Gautama). Postacie zapisane w dawnym Zaczarowanym Lesie stają przy wejściu do Świątyni Ochao. Strażnik Starożytnej Dżungli stoi w Świątyni Ochao. Reszta Arezzo się nie zmienia.
@@ -38,6 +39,17 @@ every version here.
 - **Boty w Zaklętym Lesie.** Boty od 100 poziomu (i co najmniej 20 000 PŻ) chodzą expić do Zaklętego Lasu jak na wyprawę: drogą przez Świątynię Ochao, około 2 godzin pobytu, mikstury uzupełniają na miejscu. Najgroźniejsze miejsca z Niszczycielami En-Tai i Metiny lasu biorą tylko w drużynie co najmniej 3 botów; po 3 zgonach w 30 minut wracają i robią 3 godziny przerwy. Od 110 poziomu bot z lasu wyrasta.
 - **Boty na mapach 90 po drop.** Boty od 95 poziomu co jakiś czas idą na Nefrytową Zatokę i Gromiste Góry bić tylko Metiny i bossów (około 40 minut), potem wracają do wioski.
 - **Boty przechodzą między rdzeniami.** Las i mapy 90 stoją na innym rdzeniu niż wioski botów, więc bot przechodzi tam i z powrotem przez przekazanie między rdzeniami. Ustawienia w panelu (Boty): PLAYERBOT_HANDOVER, PLAYERBOT_ZAKLETY_*, PLAYERBOT_LOOTRUN_*; zdarzenie m2_bot_handover_off 1 odsyła wszystkie boty do domu.
+
+### Tryb global (`M2_BONUS_MODE`)
+- **Ustawienia serwera globalnego jednym przełącznikiem.** Dodałem w `.env` i w panelu ustawienie „Tryb global”: `mt2009` (domyślnie) zostawia świat dokładnie takim, jaki był, a `global` włącza ustawienia serwera globalnego – bonusy, żywioły, alchemię, ulepszanie i potwory. Działa po restarcie serwera, można przełączać w obie strony, a powrót do `mt2009` przywraca świat co do wartości.
+- **Bonusy jak na serwerze globalnym:** Maks. PŻ do 2000, Maks. PE do 80 (200 na naszyjniku), regeneracja do 30%, odporność na ogień, błyskawice i wiatr na zbroi, bransolecie i hełmie, szansa na bonus doświadczenia (buty, naszyjnik, tarcza) i na podwójną ilość przedmiotów (bransoleta, kolczyki – podnosi szansę dropu). Na broni, zbroi i biżuterii nie losują się już wytrzymałość, czas trwania umiejętności, odbicie strzał i stałe doświadczenie. Przedmioty zachowują wszystkie bonusy, które już mają.
+- **Stałe bonusy przedmiotów** jak na serwerze globalnym (np. Bambusowe Buty+9: szybkość ruchu 15 i odporność na ogień 10) – także w opisie przedmiotu.
+- **Żywioły wszystkich potworów** według danych gry; odporność na żywioł działa w 30% swojej wartości (15% odporności = 4,5% mniej obrażeń). Ikona żywiołu przy pasku życia celu pokazuje żywioł trybu global.
+- **Alchemia:** Smocze Kamienie dostają domyślne bonusy (np. Diament: inteligencja, odporność na lód i siła lodu). Kamienie zachowują swoje bonusy, a przy ulepszaniu rosną z tymi, które mają.
+- **Ulepszanie jak na serwerze globalnym:** szansa, koszt w Yangach i ulepszacze każdego kroku dla każdego przedmiotu, także przemiany „+9 → następny przedmiot” tam, gdzie oba przedmioty są w grze. Kowal, zwoje i kamienie ulepszania liczą te same szanse, a okno ulepszania i zwoje w kliencie pokazują nowe kroki.
+- **Potwory jak na serwerze globalnym:** PŻ, obrażenia, doświadczenie, poziom, obrona, statystyki, szybkości, odporności, efekty i rangi prawie 500 potworów oraz ich drop.
+- Boty w trybie global zbierają ulepszacze nowych kroków (także do pasów) i nie zużywają ich na sprzęt na sprzedaż, jeśli brakuje ich do sprzętu, który noszą.
+- Opisy przedmiotów, maksymalne wartości bonusów i ikony żywiołów trybu global wymagają nowego klienta; serwer liczy tryb global także ze starym klientem.
 
 ---
 

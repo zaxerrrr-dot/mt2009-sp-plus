@@ -148,6 +148,10 @@ services:
       # (80%) or a percent 10-300 (the launcher's difficulty window; the
       # migrator writes m2_mob_hp when .env changed, the panel's card live).
       M2_MONSTER_HP: "${M2_MONSTER_HP:-default}"
+      # The item bonuses and the monsters' elements: mt2009 (the default, as it was) or global (the global
+      # server's bonus table and every monster's element, MT2009_PLUS_GLOBAL_BONUS_V1). The migrator switches
+      # world.item_attr and the elements and writes m2_bonus_global for the cores (apply.sh).
+      M2_BONUS_MODE: "${M2_BONUS_MODE:-mt2009}"
 
     entrypoint: ["/bin/sh", "/opt/playerbot/apply.sh"]
 

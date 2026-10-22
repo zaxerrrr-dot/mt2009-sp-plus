@@ -3344,6 +3344,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["DbDataStamp"] = __import__("dbdatastamp").NOTICE.OnCommand
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
 		serverCommandList["MAPA_TAB"] = self.__TeleportMap # MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s)
+		serverCommandList["BonusMode"] = self.__BonusMode # MT2009_PLUS_GLOBAL_BONUS_V1
 		serverCommandList["BSW"] = self.__BonusSwitch # MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion)
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["RANGA"] = self.__RankPoints # MT2009_PLUS_RANK_POINTS_V1
@@ -4084,6 +4085,16 @@ class GameWindow(ui.ScriptWindow):
 	def __TeleportMap(self, *args):
 		import uiteleportmap
 		uiteleportmap.OnCommand(*args)
+
+	# MT2009_PLUS_GLOBAL_BONUS_V1: "BonusMode 0|1" at login (quest zywioly) - the server's M2_BONUS_MODE: 1 = global,
+	# the tooltip's bonus maxima of the global server and the element icons of every monster (localeinfo_point.py,
+	# uitarget.py, zywioly_global.py).
+	def __BonusMode(self, mode = "0", *args):
+		import localeinfo_point
+		localeinfo_point.SetBonusMode(str(mode).strip() == "1")
+		# MT2009_PLUS_GLOBAL_PROTO_V1: the items' fixed bonuses of global mode (protoglobal.py)
+		import protoglobal
+		protoglobal.SetBonusMode(str(mode).strip() == "1")
 
 	# MT2009_PLUS_BONUS_SWITCH_V1 (Autor: Vekirion): the bonus switcher's lines (uibonusswitch.py).
 	def __BonusSwitch(self, *args):

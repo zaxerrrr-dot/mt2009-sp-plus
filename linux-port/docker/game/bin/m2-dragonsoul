@@ -47,13 +47,22 @@ GROUPS_NEEDED="vnummapper basicapplys additionalapplys applynumsettings weightta
 
 say() { printf '%s [dragonsoul] %s\n' "$(date -u '+%Y-%m-%d %H:%M:%SZ')" "$1"; }
 
+# MT2009_PLUS_DS_GLOBAL_TABLE_V1: with M2_BONUS_MODE=global the cores load
+# dragon_soul_table.global.txt (the default bonuses, DragonSoul.cpp) in place
+# of the live file - the panel's table is kept for the mt2009 mode, and its
+# status says so.
+case "$(printf '%s' "${M2_BONUS_MODE:-mt2009}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in
+    global|globalny|1) MODE_NOTE=" (M2_BONUS_MODE=global: the cores use dragon_soul_table.global.txt, the default alchemy bonuses; this table counts in the mt2009 mode)" ;;
+    *) MODE_NOTE="" ;;
+esac
+
 write_status() { # write_status STATE GROUPS SHA MESSAGE
     _tmp="$STATUS.new.$$"
     { printf 'state=%s\n' "$1"
       printf 'time=%s\n' "$(date +%s 2>/dev/null)"
       printf 'groups=%s\n' "$2"
       printf 'sha=%s\n' "$3"
-      printf 'message=%s\n' "$4"
+      printf 'message=%s%s\n' "$4" "$MODE_NOTE"
     } > "$_tmp" 2>/dev/null || { rm -f "$_tmp"; return 1; }
     chmod 0664 "$_tmp" 2>/dev/null
     mv -f "$_tmp" "$STATUS" 2>/dev/null || rm -f "$_tmp"
@@ -142,7 +151,7 @@ cmd_apply() {
         write_status failed 0 "$_sha" "the game container could not write dragon_soul_table.txt"
         return 1
     fi
-    say "alchemy table from the panel applied ($_groups groups)"
+    say "alchemy table from the panel applied ($_groups groups)$MODE_NOTE"
     write_status ok "$_groups" "$_sha" "applied: the panel's dragon_soul_table.txt"
     return 0
 }

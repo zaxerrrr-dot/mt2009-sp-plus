@@ -64,6 +64,14 @@ linux-port/docker/mariadb/playerbot/mob_proto.mt2009plus.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes.sql
 linux-port/docker/mariadb/playerbot/zywioly_talizmany.sql
 linux-port/docker/mariadb/playerbot/zywioly_moby.sql
+# MT2009_PLUS_GLOBAL_BONUS_V1 / MT2009_PLUS_237_GLOBAL_MODE_V1: M2_BONUS_MODE=global (apply.sh switches both ways).
+linux-port/docker/mariadb/playerbot/item_proto_global.sql
+linux-port/docker/mariadb/playerbot/bonusy_global.sql
+linux-port/docker/mariadb/playerbot/bonusy_mt2009.sql
+linux-port/docker/mariadb/playerbot/zywioly_moby_global.sql
+linux-port/docker/mariadb/playerbot/refine_global_2x.sql
+linux-port/docker/mariadb/playerbot/moby_global_2x.sql
+linux-port/docker/mariadb/playerbot/moby_global_mt2009.sql
 linux-port/docker/mariadb/playerbot/zodiak.sql
 linux-port/docker/mariadb/playerbot/wiki_nowe.sql
 linux-port/docker/mariadb/playerbot/arezzo_costumes_webshop.sql
@@ -100,6 +108,9 @@ linux-port/docker/game/special_item_group.wiki_nowe.txt
 linux-port/docker/game/costume_sets.txt
 linux-port/docker/game/drop_wiki.txt
 linux-port/docker/game/dragon_soul_applys.mt2009plus.txt
+# MT2009_PLUS_237_GLOBAL_MODE_V1: the alchemy table and the monsters' drops of M2_BONUS_MODE=global (game/Dockerfile).
+linux-port/docker/game/dragon_soul_applys.global.txt
+linux-port/docker/game/moby_global/*
 linux-port/docker/game/special_spawns.baroness.txt
 # MT2009_PLUS_OCHAO_V1: Swiatynia Ochao's share files (Dockerfile step "share: Swiatynia Ochao").
 linux-port/docker/game/ochao/*

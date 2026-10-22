@@ -206,6 +206,31 @@ ATTR_MAX_VALUES = {
 	player.POINT_ATT_GRADE_BONUS: 50,
 }
 
+# MT2009_PLUS_GLOBAL_BONUS_V1: the server's M2_BONUS_MODE ("BonusMode 0|1" at login, quest zywioly, game.py).
+# global (Tieru's 2.2.31 "Bonusy jak na serwerze globalnym"): Max HP 2000, Max SP 80 (200 on a necklace - also
+# orange), regeneration 30%, fire/lightning/wind resistance 15%, the experience and double-item chances 20%; the
+# maxima above are mt2009's. BONUS_GLOBAL also switches uitarget.py's element icons to zywioly_global.py.
+BONUS_GLOBAL = 0
+ATTR_MAX_VALUES_MT2009 = dict(ATTR_MAX_VALUES)
+ATTR_MAX_VALUES_GLOBAL = dict(ATTR_MAX_VALUES)
+ATTR_MAX_VALUES_GLOBAL.update({
+	player.POINT_MAX_HP: 2000,
+	player.POINT_MAX_SP: 80,
+	player.POINT_HP_REGEN: 30,
+	player.POINT_SP_REGEN: 30,
+	player.POINT_RESIST_FIRE: 15,
+	player.POINT_RESIST_ELEC: 15,
+	player.POINT_RESIST_WIND: 15,
+	player.POINT_EXP_DOUBLE_BONUS: 20,
+	player.POINT_ITEM_DROP_BONUS: 20,
+})
+
+def SetBonusMode(isGlobal):
+	global BONUS_GLOBAL
+	BONUS_GLOBAL = 1 if isGlobal else 0
+	ATTR_MAX_VALUES.clear()
+	ATTR_MAX_VALUES.update(ATTR_MAX_VALUES_GLOBAL if BONUS_GLOBAL else ATTR_MAX_VALUES_MT2009)
+
 # MT2009_PLUS_ELEMENTS_V1 (Autor: Digi Rasta, Zywioly i talizmany, nowy-system 0.28.0): the
 # talisman's bonus names. 178-183 are the element powers - points of the server only (the points
 # packet stops at 177), so the player module has no name for them; an item's line shows them.

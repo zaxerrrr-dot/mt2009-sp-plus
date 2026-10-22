@@ -14,7 +14,8 @@
 // element the first 1% is +18% damage, every next one +0.5%, capped at 80% (X = 125); besides,
 // every full 10% of one element is +1% damage against everything (at most +20% an element) - as
 // he implemented it, so it also counts in PvP, where no element bonus applies (a player has no
-// element). Element resistance X%: a monster of that element hits for X% less (cap 80%).
+// element). Element resistance X%: a monster of that element hits for X% less (cap 80%); M2_BONUS_MODE=global:
+// 30% of X (MT2009_PLUS_GLOBAL_BONUS_V1, playerbot_bonus_mode.cpp).
 // The monsters' elements are the race flag bits 11-16 (world.mob_proto.setRaceFlag), set by the
 // owner's rules (tools/zywioly/gen_zywioly_moby.py -> mariadb/playerbot/zywioly_moby.sql).
 #include "stdafx.h"
@@ -189,6 +190,11 @@ int ElementsAttackBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iAtk)
 		for (const TElement& e : ELEMENTS)
 			if (ElementsHasFlag(pkAttacker, e.flag))
 				resist = MAX(resist, MIN(pkVictim->GetPoint(e.resist), ELEMENT_CAP_PERCENT));
+
+		// MT2009_PLUS_GLOBAL_BONUS_V1: M2_BONUS_MODE=global - 30% of it, as the original game
+		// (15% = 4.5% less); mt2009 - the full percent (playerbot_bonus_mode.cpp).
+		int BonusModeElementResist(int resist);
+		resist = BonusModeElementResist(resist);
 
 		if (resist > 0)
 		{

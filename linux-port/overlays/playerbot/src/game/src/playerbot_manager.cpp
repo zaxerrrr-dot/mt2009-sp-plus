@@ -48,6 +48,10 @@
 #include "p2p.h"
 #include "questmanager.h"
 #include "safebox.h"
+// MT2009_PLUS_237_GLOBAL_MODE_V1: the refine materials a bot holds (playerbot_elements.cpp) and the world's
+// M2_BONUS_MODE (playerbot_bonus_mode.cpp) - playerbot_economy.h's PlayerBotRefineLeavesGearMaterials.
+ITEM_COUNT ElementsRefineMaterialCount(LPCHARACTER ch, LPITEM refined, DWORD vnum);
+bool BonusModeGlobal();
 #include "questpc.h"
 #include "banword.h"
 #include "exchange.h"
