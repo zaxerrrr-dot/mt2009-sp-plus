@@ -831,6 +831,22 @@ namespace
 		if (!b || (int)(b->dwNextManage - dwNow) > 0)
 			return false;
 		b->dwNextManage = dwNow + PLAYERBOT_G0_LOOK_MS;
+		// MT2009_PLUS_BOT_YOHARA_G0_V3: a bot that got its Yohara gear another way (a cohort's, its own glove or jade)
+		// counts as having had the package (the owner, 22 October: "wtedy bot traktuje to, ze juz otrzymal pakiet") -
+		// the flag set, and the dust it banked is its own again (out of the box by the usual withdrawal, sold or used).
+		if (!b->bSaver && ch->GetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG) == 0 &&
+				(IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) || HasPlayerBotYoharaGear(ch)))
+		{
+			ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG, 1);
+			ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_AT_FLAG, (int)get_global_time());
+			const bool banked = IsPlayerBotG0DustBanked(ch);
+			if (banked)
+				ch->SetQuestFlag(PLAYERBOT_G0_BANKED_FLAG, 0);
+			sys_log(0, "PLAYERBOT_G0: counted as given pid=%u name=%s level=%u cohort=%d yohara_gear=%d banked_dust_freed=%d",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(),
+					IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ? 1 : 0, HasPlayerBotYoharaGear(ch) ? 1 : 0, banked ? 1 : 0);
+			return false;
+		}
 		const bool village = IsPlayerBotVillageMap(ch->GetMapIndex()) && !ch->GetExchange() && !ch->GetMyShop();
 		if (b->bSaver)	// MT2009_PLUS_BOT_YOHARA_G0_V2: a saver from level 110 too
 		{
