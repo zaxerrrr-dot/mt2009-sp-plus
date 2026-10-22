@@ -210,6 +210,7 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps - the channel's limit, a map's, the stay, the maps switched on.
 		int sungmaMax, sungmaMapMax, sungmaStayMin;
 		std::vector<long> sungmaMaps;
+		int sungmaTradeMax;	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the channel's Sung Ma bots away home to trade at once
 	};
 
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi)
@@ -288,6 +289,9 @@ namespace
 		s_cfg.sungmaMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_MAX", 120, 0, 600);
 		s_cfg.sungmaMapMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_MAP_MAX", 30, 0, 300);
 		s_cfg.sungmaStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_STAY_MIN", 240, 20, 1440);
+		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the owner, 22 October - "do M1 ida tylko handlowac" (0: no trade trips, the
+		// stay's end the way home as before)
+		s_cfg.sungmaTradeMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_TRADE_MAX", 6, 0, 100);
 		{
 			std::vector<long> sm;
 			ReadPlayerBotYoharaEnvList("PLAYERBOT_SUNGMA_MAPS", "374,373,376,377,385,388,389,393,394", sm);
@@ -307,12 +311,12 @@ namespace
 				"zaklety_min_hp=%d szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s snakefield_max=%d giantland_max=%d "
 				"wz_stay_min=%d cohort=%d cohort_exclusive=%d cohort_stay_min=%d cohort_dispatch=%d cohort_rest_min=%d "
 				"cohort_death_rest_min=%d hydra_max=%d hydra_parties=%d sungma_max=%d sungma_map_max=%d sungma_stay_min=%d "
-				"sungma_maps=%s channel_here=%u",
+				"sungma_maps=%s sungma_trade_max=%d channel_here=%u",
 				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin, s_cfg.zakletyMinHp,
 				s_cfg.szcMax, s_cfg.szcParties, s_cfg.lootMax, loot.c_str(), s_cfg.snakeMax, s_cfg.giantMax, s_cfg.wzStayMin,
 				s_cfg.cohortOn ? 1 : 0, s_cfg.cohortExclusive ? 1 : 0, s_cfg.cohortStayMin, s_cfg.cohortDispatch,
 				s_cfg.cohortRestMin, s_cfg.cohortDeathRestMin, s_cfg.hydraMax, s_cfg.hydraParties, s_cfg.sungmaMax,
-				s_cfg.sungmaMapMax, s_cfg.sungmaStayMin, sungma.c_str(), (unsigned int)g_bChannel);
+				s_cfg.sungmaMapMax, s_cfg.sungmaStayMin, sungma.c_str(), s_cfg.sungmaTradeMax, (unsigned int)g_bChannel);
 		return s_cfg;
 	}
 
@@ -426,7 +430,10 @@ namespace
 		int iPurpose;
 		DWORD dwAt;
 		bool bDeaths;	// MT2009_PLUS_BOT_YOHARA_FIX_V1: a way home its deaths asked for (the long rest)
-		TPlayerBotYoharaArrival() : lMap(0), lX(0), lY(0), iPurpose(0), dwAt(0), bDeaths(false) {}
+		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: a Sung Ma resident's trade trip home - the map it goes back to, and why
+		long lTradeMap;
+		char szTradeWhy[16];
+		TPlayerBotYoharaArrival() : lMap(0), lX(0), lY(0), iPurpose(0), dwAt(0), bDeaths(false), lTradeMap(0) { szTradeWhy[0] = '\0'; }
 	};
 	// A bot living on this core for a purpose (this core is not its home).
 	struct TPlayerBotYoharaResident
@@ -1279,6 +1286,9 @@ namespace
 		}
 		if (!IsPlayerBotYoharaOn() || !IsPlayerBotYoharaHomeCore(ch) || !IsPlayerBotYoharaEligible(ch))
 			return 0;
+		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: home to trade - no draw (its way back is the errand's)
+		if (IsPlayerBotSungmaTradeVisitor(pid))
+			return 0;
 		std::map<DWORD, DWORD>::iterator cd = s_mapPlayerBotYoharaCooldown.find(pid);
 		if (cd != s_mapPlayerBotYoharaCooldown.end())
 		{
@@ -2046,6 +2056,10 @@ namespace
 		// The home core: the temple's road into the forest.
 		if (!r)
 		{
+			// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: home to trade - it stays in its village (the counter, the stands) until
+			// the poll sends it back (ManagePlayerBotSungmaTradeHomes)
+			if (IsPlayerBotSungmaTradeVisitor(pid))
+				return 0;
 			if (mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotYoharaEligible(ch) && !BlocksPlayerBotTravel(ch) &&
 					!IsPlayerBotOchaoLeaveOrdered(ch) && IsPlayerBotYoharaBoundForZaklety(ch))
 				return ManagePlayerBotYoharaTemple(ch, state, dwNow);
@@ -2237,7 +2251,12 @@ namespace
 					NotePlayerBotYoharaCohortDb(a->first, "arrived", 1, ch->GetMapIndex());
 					TrackPlayerBotYoharaCohortExp(ch, res);
 				}
+				if (res.iPurpose == YOHARA_PURPOSE_SUNGMA)	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: back from its trade trip
+					NotePlayerBotSungmaTradeLanded(ch, dwNow);
 			}
+			// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: home to trade - no cooldown, its way back is the errand's own
+			else if (a->second.lTradeMap > 0)
+				StartPlayerBotSungmaTradeHome(ch, a->second.lTradeMap, a->second.szTradeWhy, dwNow);
 			else
 				s_mapPlayerBotYoharaCooldown[a->first] = dwNow + (a->second.bDeaths ? PLAYERBOT_YOHARA_DEATHS_COOLDOWN_MS
 						: PLAYERBOT_YOHARA_TRIP_COOLDOWN_MS);
@@ -2406,7 +2425,8 @@ namespace
 				continue;
 			if (m.iChannel != (int)g_bChannel || m.bResting || live.count(pid) || s_mapPlayerBotYoharaOut.count(pid) ||
 					s_mapPlayerBotYoharaLeaving.count(pid) || s_mapPlayerBotYoharaArrival.count(pid) ||
-					s_mapPlayerBotYoharaResident.count(pid) || !mgr.IsRegisteredBotPID(pid))
+					s_mapPlayerBotYoharaResident.count(pid) || !mgr.IsRegisteredBotPID(pid) ||
+					IsPlayerBotSungmaTradeVisitor(pid))	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: its errand sends it back
 				continue;
 			const BYTE empire = mgr.GetRegisteredEmpire(pid);
 			if (empire < 1 || empire > 3 || !IsPlayerBotMapHostedHere(PLAYERBOT_YOHARA_FIRST_VILLAGE[empire]))
@@ -2694,19 +2714,21 @@ namespace
 		char query[512];
 		snprintf(query, sizeof(query),
 				"SELECT pid, state, target_map, x, y, purpose, ready_at <= NOW(), "
-				"updated_at > DATE_SUB(NOW(), INTERVAL %d SECOND), reason LIKE '%%deaths%%' "
+				"updated_at > DATE_SUB(NOW(), INTERVAL %d SECOND), reason LIKE '%%deaths%%', "
+				"IF(reason LIKE 'sungma\\_trade:%%', reason, '') "	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1
 				"FROM common.playerbot_core_handover WHERE channel=%u",
 				PLAYERBOT_YOHARA_STALE_S, (unsigned int)g_bChannel);
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
 		if (!msg.get() || msg->uiSQLErrno != 0 || !msg->Get() || !msg->Get()->pSQLResult)
 			return;
-		struct TRow { DWORD pid; int state; long map, x, y; int purpose; bool ready, fresh, deaths; };
+		struct TRow { DWORD pid; int state; long map, x, y; int purpose; bool ready, fresh, deaths; long tradeMap; char tradeWhy[16]; };
 		std::vector<TRow> rows;
 		MYSQL_ROW row;
 		while (NULL != (row = mysql_fetch_row(msg->Get()->pSQLResult)))
 		{
 			TRow t;
 			t.pid = 0; t.state = 0; t.map = t.x = t.y = 0; t.ready = t.fresh = t.deaths = false;
+			t.tradeMap = 0; t.tradeWhy[0] = '\0';
 			if (row[0]) str_to_number(t.pid, row[0]);
 			if (row[1]) str_to_number(t.state, row[1]);
 			if (row[2]) str_to_number(t.map, row[2]);
@@ -2716,6 +2738,9 @@ namespace
 			t.ready = row[6] && atoi(row[6]) != 0;
 			t.fresh = row[7] && atoi(row[7]) != 0;
 			t.deaths = row[8] && atoi(row[8]) != 0;
+			// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: a Sung Ma resident's trade trip home
+			if (mysql_num_fields(msg->Get()->pSQLResult) > 9 && row[9] && *row[9])
+				ParsePlayerBotSungmaTradeReason(row[9], t.tradeMap, t.tradeWhy, sizeof(t.tradeWhy));
 			if (t.pid != 0)
 				rows.push_back(t);
 		}
@@ -2780,6 +2805,8 @@ namespace
 				s_mapPlayerBotYoharaOut.erase(t.pid);
 				TPlayerBotYoharaArrival& a = s_mapPlayerBotYoharaArrival[t.pid];
 				a.lMap = t.map; a.lX = t.x; a.lY = t.y; a.iPurpose = t.purpose; a.dwAt = dwNow; a.bDeaths = t.deaths;
+				a.lTradeMap = t.purpose == YOHARA_PURPOSE_HOME ? t.tradeMap : 0;	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1
+				strlcpy(a.szTradeWhy, t.tradeWhy, sizeof(a.szTradeWhy));
 				// MT2009_PLUS_BOT_CHAMPION_V1: a member coming home - its row read again first (the statue's core may
 				// have just ended its errand: it must not be sent back at once on a minute-old copy).
 				if (t.purpose == YOHARA_PURPOSE_HOME && s_mapPlayerBotYoharaCohort.count(t.pid))
@@ -2861,6 +2888,8 @@ namespace
 		}
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the members this core is home to, sent.
 		DispatchPlayerBotYoharaCohort(dwNow, seen, live, census);
+		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the Sung Ma bots home to trade - back when their errand is done.
+		ManagePlayerBotSungmaTradeHomes(dwNow);
 		// The residents: gone from this core without a handover (a rest, a
 		// channel move, a GM) - their rows go too.
 		std::string gone, stay;

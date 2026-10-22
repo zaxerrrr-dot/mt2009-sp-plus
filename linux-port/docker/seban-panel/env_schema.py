@@ -225,12 +225,17 @@ SCHEMA = [
        "Najwięcej botów naraz na jednej mapie Sung Ma (na kanał).",
        "boty", "int", "30", ["game"], min=0, max=300),
     _e("PLAYERBOT_SUNGMA_STAY_MIN", "Pobyt bota na Yoharze (min)",
-       "Ile minut bot-Czempion spoza kohorty zostaje na mapach Yohary, zanim wróci do domu (członek kohorty: jak kohorta).",
+       "Co ile minut bot-Czempion z map Yohary jedzie do domu (M1) na handel i wraca (członek kohorty: pobyt jak kohorta).",
        "boty", "int", "240", ["game"], min=20, max=1440),
     _e("PLAYERBOT_SUNGMA_MAPS", "Mapy Yohary dla botów",
        "Lista map: 374 Opuszczona Twierdza, 373 Dongan, 376 Seoganland, 377 Namgan, 385 Przełęcz Yilad, 388 Wąwóz Płn. Wiatru, "
        "389 Rozpadlina Dusz, 393 Schronienie Płn. Wiatru, 394 Zejście Płn. Wiatru (każda mapa to 18–160 MB pamięci rdzenia Yohary).",
        "boty", "string", "374,373,376,377,385,388,389,393,394", ["game"]),
+    # MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1
+    _e("PLAYERBOT_SUNGMA_TRADE_MAX", "Boty z Yohary naraz na handlu w domu",
+       "Ilu botów z map Yohary naraz może być w swojej pierwszej wiosce tylko na handel (sklep offline, targ) – potem wracają "
+       "same na swoją mapę. 0 = bez wyjazdów (koniec pobytu = powrót do domu).",
+       "boty", "int", "6", ["game"], min=0, max=100),
     # MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the bots' dungeon runs at once per core (GetPlayerBotDgRunCap).
     _e("PLAYERBOT_DGRUN_MIN_RUNS", "Lochy botów naraz na rdzeń – minimum",
        "Ile własnych wypraw botów do lochów może iść naraz na jednym rdzeniu gry co najmniej, niezależnie od liczby botów "

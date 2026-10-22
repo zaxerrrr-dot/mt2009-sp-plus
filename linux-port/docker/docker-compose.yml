@@ -295,6 +295,8 @@ services:
       PLAYERBOT_SUNGMA_MAP_MAX: "${PLAYERBOT_SUNGMA_MAP_MAX:-30}"
       PLAYERBOT_SUNGMA_STAY_MIN: "${PLAYERBOT_SUNGMA_STAY_MIN:-240}"
       PLAYERBOT_SUNGMA_MAPS: "${PLAYERBOT_SUNGMA_MAPS:-374,373,376,377,385,388,389,393,394}"
+      # MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the channel's Sung Ma bots home to trade at once (0: no trade trips).
+      PLAYERBOT_SUNGMA_TRADE_MAX: "${PLAYERBOT_SUNGMA_TRADE_MAX:-6}"
       # MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the bots' dungeon runs at once per core (GetPlayerBotDgRunCap): one a
       # BOTS_PER_RUN bots, at least MIN_RUNS, at most MAX_RUNS (0 = no top); a starved dungeon STARVED_OVER_CAP above.
       PLAYERBOT_DGRUN_MIN_RUNS: "${PLAYERBOT_DGRUN_MIN_RUNS:-4}"

@@ -75,6 +75,12 @@
 //   * Dongan's errand (ManagePlayerBotSungmaErrand): potions and junk at Dongan's merchants, never home; the belt kept
 //     full where it stands only as the errand's fallback.
 //
+// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1 (the owner, 22 October: "do M1 ida tylko handlowac"): home (its first village on
+// game1, by the handover) only to trade - its counter served, the stands browsed - and back to its map by a new handover
+// at once, the bot a "yohara" bot all the while (StartPlayerBotSungmaTradeTrip, ManagePlayerBotSungmaTradeHomes; the log's
+// "trade trip start / home / back / landed", the census's trade_trips). The stay's end (PLAYERBOT_SUNGMA_STAY_MIN) is that
+// trip's round now, not a way home; the deaths, no weapon or armour and the cohort's rest stay as they were.
+//
 // An implementation fragment: included by playerbot_yohara_bots.h inside its namespace, after the cohorts and the
 // way out, before the route.
 
@@ -419,6 +425,30 @@
 	const int PLAYERBOT_SUNGMA_ERRAND_REACH = 350;
 	// Dongan's merchants (npc.txt of metin2_map_eastplain_01, base 1049600,435200): 9003 (566,687), 9001 (484,677),
 	// 9002 (484,727) - beside the arrival (1102450,506850), no spawn within 9 400 units of it.
+	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1 (the owner, 22 October: supplies in Dongan, "do M1 ida tylko handlowac"): a
+	// resident goes home to its first village (game1, the handover) only to trade - its offline counter served with Yohara's
+	// loot and valuables, the market's stands browsed for what it needs (the G0 package's dust, refine materials) - and is
+	// handed over back to its map at once (no draw, no cooldown). Why (GetPlayerBotSungmaTradeReason), looked at every
+	// _LOOK_MS out of a fight: "bag" - no free column of three, nothing for Dongan's merchants, _BAG_GOODS goods (from
+	// _BAG_GAP_MS into the stay / after the last trip); "goods" - _GOODS lines a counter takes; "shop" - its counter gone,
+	// run out or under _SHOP_LINES lines, with _SHOP_GOODS goods (both from _GOODS_GAP_MS); "buy" - the G0 dust or a refine
+	// material wanted (from _BUY_GAP_MS); "routine" - every PLAYERBOT_SUNGMA_STAY_MIN (the stay's end, which sent a
+	// non-member home before). At most PLAYERBOT_SUNGMA_TRADE_MAX bots of the channel away at once (game1's memory: a bot
+	// at home holds no game3 room - its row is "home"). At home: _HOME_MIN_MS at least, its counter served (or
+	// _HOME_SERVE_MS without), _HOME_MAX_MS at most; no room back for _STRANDED_MS more - an ordinary bot at home.
+	const DWORD PLAYERBOT_SUNGMA_TRADE_LOOK_MS = 2 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_BAG_GAP_MS = 30 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_GOODS_GAP_MS = 60 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS = 3 * 60 * 60 * 1000;
+	const int PLAYERBOT_SUNGMA_TRADE_BAG_GOODS = 4;
+	const int PLAYERBOT_SUNGMA_TRADE_GOODS = 12;
+	const int PLAYERBOT_SUNGMA_TRADE_SHOP_GOODS = 4;
+	const int PLAYERBOT_SUNGMA_TRADE_SHOP_LINES = 4;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_LOST_MS = 90 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_HOME_MIN_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_HOME_SERVE_MS = 8 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS = 15 * 60 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_TRADE_STRANDED_MS = 30 * 60 * 1000;
 	struct TPlayerBotSungmaMerchant { DWORD dwRace; long x, y; EPlayerBotMerchantCategory eCategory; const char* szTag; };
 	const TPlayerBotSungmaMerchant PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[] = {
 		{ 9003, 1106200, 503900, BOT_MERCHANT_MISC, "dongan_misc" },
@@ -519,12 +549,34 @@
 		bool bErrand;
 		int iErrandStop, iErrandNeed;
 		DWORD dwErrandSince, dwErrandFallbackUntil, dwNextErrandLook, dwLastBagErrand;
+		DWORD dwNextTradeLook;	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the trade trip's next look
 		TPlayerBotSungmaBot() : dwNextPoints(0), dwNextPick(0), dwOnMapSince(0), dwWalkSince(0), dwChamberSince(0), lMapSeen(0),
 			bSeen(false), bStuck(false), iLastLevel(0), iLastChampion(0), dwLastExp(0), dwLastNeed(0), dwLastChampionExp(0),
 			bFlee(false), dwNextHpLook(0), bErrand(false), iErrandStop(0), iErrandNeed(0), dwErrandSince(0),
-			dwErrandFallbackUntil(0), dwNextErrandLook(0), dwLastBagErrand(0) {}
+			dwErrandFallbackUntil(0), dwNextErrandLook(0), dwLastBagErrand(0), dwNextTradeLook(0) {}
 	};
 	std::map<DWORD, TPlayerBotSungmaBot> s_mapPlayerBotSungma;
+	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: game3's trips out (the map to come back to), the last trip of a bot (kept over
+	// its stays), and the home core's bots on the errand.
+	struct TPlayerBotSungmaTradeOut
+	{
+		DWORD dwAt;
+		long lMap;
+		TPlayerBotSungmaTradeOut() : dwAt(0), lMap(0) {}
+	};
+	struct TPlayerBotSungmaTradeHome
+	{
+		long lBackMap;
+		DWORD dwSince;
+		bool bNudged;
+		long long llGold;
+		char szWhy[16];
+		TPlayerBotSungmaTradeHome() : lBackMap(0), dwSince(0), bNudged(false), llGold(0) { szWhy[0] = '\0'; }
+	};
+	std::map<DWORD, TPlayerBotSungmaTradeOut> s_mapPlayerBotSungmaTradeOut;
+	std::map<DWORD, DWORD> s_mapPlayerBotSungmaTradeLast;
+	std::map<DWORD, TPlayerBotSungmaTradeHome> s_mapPlayerBotSungmaTradeHome;
+	unsigned int s_uPlayerBotSungmaTradeHomeArrived = 0, s_uPlayerBotSungmaTradeHomeBack = 0, s_uPlayerBotSungmaTradeStranded = 0;
 
 	struct TPlayerBotSungmaStats
 	{
@@ -533,9 +585,10 @@
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: the walks to a portal, the warps instead of one, the revivals at the arrival,
 		// Dongan's errands from this map and their fallbacks
 		unsigned int portalWalks, portalWarps, revives, errands, errandFallbacks;
+		unsigned int tradeTrips, tradeBacks;	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: trips home from this map, landings back on it
 		TPlayerBotSungmaStats() : kills(0), killsAtCensus(0), deaths(0), stuck(0), navFail(0), levelUps(0), championUps(0),
 			movesIn(0), movesOut(0), stepsDown(0), hops(0), exp(0), expAtCensus(0), championExp(0), championExpAtCensus(0),
-			portalWalks(0), portalWarps(0), revives(0), errands(0), errandFallbacks(0) {}
+			portalWalks(0), portalWarps(0), revives(0), errands(0), errandFallbacks(0), tradeTrips(0), tradeBacks(0) {}
 	};
 	TPlayerBotSungmaStats s_aPlayerBotSungmaStats[9];
 	static_assert(sizeof(s_aPlayerBotSungmaStats) / sizeof(s_aPlayerBotSungmaStats[0]) ==
@@ -1112,6 +1165,330 @@
 		return 1;
 	}
 
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the trade trip home
+
+	// The goods of its bag a counter would take (CollectPlayerBotShopItems - what the bot can part with, best first).
+	int CountPlayerBotSungmaTradeGoods(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		std::vector<std::pair<int, WORD> > scored;
+		CollectPlayerBotShopItems(ch, scored, IsPlayerBotStallKeeper(state));
+		int lines = 0;
+		for (size_t i = 0; i < scored.size(); ++i)
+			lines += scored[i].first > 0 ? 1 : 0;
+		return lines;
+	}
+
+	// Its offline counter (the first channel's stands, on the home core's maps): none, run out, or nearly empty.
+	bool IsPlayerBotSungmaCounterStale(LPCHARACTER ch)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		auto shop = ikashop::GetManager().GetShopByOwnerID(ch->GetPlayerID());
+		return !shop || shop->GetDuration() == 0 || (int)shop->GetItems().size() < PLAYERBOT_SUNGMA_TRADE_SHOP_LINES;
+#else
+		(void)ch;
+		return false;
+#endif
+	}
+
+	bool HasPlayerBotSungmaCounter(LPCHARACTER ch)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		return HasPlayerBotOfflineShop(ch);
+#else
+		return ch && ch->GetMyShop() != NULL;
+#endif
+	}
+
+	// Why the bot goes home to trade now (NULL: not now). The gaps count from the stay's start or the last trip, whichever
+	// is later (a trip refused by its counter's room does not call the bot round in circles).
+	const char* GetPlayerBotSungmaTradeReason(LPCHARACTER ch, const TPlayerBotAIState& state, const TPlayerBotYoharaResident& res,
+			DWORD dwNow, int& goods)
+	{
+		goods = -1;
+		std::map<DWORD, DWORD>::const_iterator last = s_mapPlayerBotSungmaTradeLast.find(ch->GetPlayerID());
+		const DWORD from = last != s_mapPlayerBotSungmaTradeLast.end() && (int)(last->second - res.dwArrived) > 0
+				? last->second : res.dwArrived;
+		const DWORD gap = dwNow - from;
+		if (gap < PLAYERBOT_SUNGMA_TRADE_BAG_GAP_MS)
+			return NULL;
+		goods = CountPlayerBotSungmaTradeGoods(ch, state);
+		// The bag: no free column of three, nothing Dongan's merchants take, and goods a counter would.
+		if (goods >= PLAYERBOT_SUNGMA_TRADE_BAG_GOODS && ch->GetEmptyInventory(3) < 0 &&
+				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) && !HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) &&
+				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR))
+			return "bag";
+		if (gap < PLAYERBOT_SUNGMA_TRADE_GOODS_GAP_MS)
+			return NULL;
+		// A counter's worth of Yohara's loot and valuables.
+		if (goods >= PLAYERBOT_SUNGMA_TRADE_GOODS)
+			return "goods";
+		// Its counter gone, run out or nearly empty, and goods for it.
+		if (goods >= PLAYERBOT_SUNGMA_TRADE_SHOP_GOODS && IsPlayerBotSungmaCounterStale(ch))
+			return "shop";
+		// What it buys there: the dust of its G0 package, a refine material its gear waits for.
+		if (gap >= PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS && (IsPlayerBotG0DustHunter(ch) || PlayerBotNeedsAnyRefineMaterial(ch)))
+			return "buy";
+		// And every PLAYERBOT_SUNGMA_STAY_MIN the round: the counter's sales and stock, whatever it brings.
+		if (gap >= (DWORD)GetPlayerBotYoharaConfig().sungmaStayMin * 60000U &&
+				(goods > 0 || HasPlayerBotSungmaCounter(ch) || ch->GetGold() > 0))
+			return "routine";
+		return NULL;
+	}
+
+	// The trips of this core's residents out to their homes and not back yet (all the Sung Ma maps of a channel are on
+	// one core: the channel's count). A trip lost on the way (a log-out at home) is forgotten after a while.
+	int CountPlayerBotSungmaTradeAway(DWORD dwNow)
+	{
+		for (std::map<DWORD, TPlayerBotSungmaTradeOut>::iterator i = s_mapPlayerBotSungmaTradeOut.begin();
+				i != s_mapPlayerBotSungmaTradeOut.end();)
+		{
+			if (dwNow - i->second.dwAt >= PLAYERBOT_SUNGMA_TRADE_LOST_MS)
+			{
+				sys_log(0, "PLAYERBOT_SUNGMA: trade trip lost pid=%u back_to=%ld away_s=%u", i->first, i->second.lMap,
+						(dwNow - i->second.dwAt) / 1000);
+				s_mapPlayerBotSungmaTradeOut.erase(i++);
+				continue;
+			}
+			++i;
+		}
+		return (int)s_mapPlayerBotSungmaTradeOut.size();
+	}
+
+	// The trip out: its first village's ring of stands by the handover (purpose "home" - no Sung Ma room held while it is
+	// there), its map and reason in the row's reason for the home core ("sungma_trade:<map>:<why>"). 1 gone, -1 not now.
+	int StartPlayerBotSungmaTradeTrip(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotYoharaResident& res,
+			TPlayerBotSungmaBot& b, DWORD dwNow)
+	{
+		if ((int)(dwNow - b.dwNextTradeLook) < 0)
+			return -1;
+		b.dwNextTradeLook = dwNow + PLAYERBOT_SUNGMA_TRADE_LOOK_MS;
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		if (cfg.sungmaTradeMax <= 0 || !IsPlayerBotYoharaOn() || !ch->IsItemLoaded() || b.bErrand)
+			return -1;
+		// not out of a fight, half dead, a party's stone or a run (Dongan's errand's rule)
+		if (state.dwTargetVID != 0 || ch->GetVictim() != NULL || state.bTacticalRetreat || ch->IsDead() ||
+				state.bRecoveringAfterDeath || ch->GetHP() * 100 < ch->GetMaxHP() * 40 ||
+				(ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3) || IsPlayerBotOnDungeonRun(ch->GetPlayerID()))
+			return -1;
+		int goods = -1;
+		const char* why = GetPlayerBotSungmaTradeReason(ch, state, res, dwNow, goods);
+		if (!why)
+			return -1;
+		const int away = CountPlayerBotSungmaTradeAway(dwNow);
+		if (away >= cfg.sungmaTradeMax)
+		{
+			PlayerBotLogThrottled("sungma_trade_cap", dwNow, "PLAYERBOT_SUNGMA: trade trip waits pid=%u name=%s why=%s away=%d max=%d",
+					ch->GetPlayerID(), ch->GetName(), why, away, cfg.sungmaTradeMax);
+			return -1;
+		}
+		long home = 0, x = 0, y = 0;
+		if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1, home, x, y) || IsPlayerBotMapHostedHere(home))
+			return -1;
+		long ox = 0, oy = 0;
+		GetPlayerBotStableOffset(ch->GetPlayerID(), 0x54524144U, PLAYERBOT_SHOP_RING_MIN, PLAYERBOT_SHOP_RING_RADIUS, ox, oy);
+		if (goods < 0)
+			goods = CountPlayerBotSungmaTradeGoods(ch, state);
+		const long backMap = res.lMap;
+		const int slot = GetPlayerBotSungmaSlot(backMap);
+		char reason[48];
+		snprintf(reason, sizeof(reason), "sungma_trade:%ld:%s", backMap, why);
+		const DWORD pid = ch->GetPlayerID();
+		const long long gold = (long long)ch->GetGold();
+		const int free3 = ch->GetEmptyInventory(3) >= 0 ? 1 : 0;
+		const unsigned int stayS = (dwNow - res.dwArrived) / 1000;
+		if (!RequestPlayerBotYoharaHandover(ch, state, home, x + ox, y + oy, YOHARA_PURPOSE_HOME, reason, dwNow))
+			return -1;
+		TPlayerBotSungmaTradeOut& out = s_mapPlayerBotSungmaTradeOut[pid];
+		out.dwAt = dwNow ? dwNow : 1;
+		out.lMap = backMap;
+		s_mapPlayerBotSungmaTradeLast[pid] = out.dwAt;
+		if (slot >= 0)
+		{
+			++s_aPlayerBotSungmaStats[slot].tradeTrips;
+			--s_aiPlayerBotSungmaMapCensus[slot];	// the poll counts the rows again
+		}
+		sys_log(0, "PLAYERBOT_SUNGMA: trade trip start pid=%u name=%s map=%ld home=%ld why=%s goods=%d free3=%d gold=%lld "
+				"champion=%d member=%d stay_s=%u away=%d",
+				pid, ch->GetName(), backMap, home, why, goods, free3, gold, GetPlayerBotChampionLevel(ch),
+				IsPlayerBotYoharaCohortPID(pid) ? 1 : 0, stayS, away + 1);
+		return 1;
+	}
+
+	// The home core's reading of a row's reason: the map the trip goes back to, and why it was made.
+	bool ParsePlayerBotSungmaTradeReason(const char* reason, long& backMap, char* why, size_t whySize)
+	{
+		backMap = 0;
+		if (whySize)
+			why[0] = '\0';
+		static const char s_aPrefix[] = "sungma_trade:";
+		if (!reason || strncmp(reason, s_aPrefix, sizeof(s_aPrefix) - 1) != 0)
+			return false;
+		const char* p = reason + sizeof(s_aPrefix) - 1;
+		backMap = atol(p);
+		const char* colon = strchr(p, ':');
+		if (colon && whySize)
+			strlcpy(why, colon + 1, whySize);
+		return backMap > 0;
+	}
+
+	bool IsPlayerBotSungmaTradeVisitor(DWORD pid)
+	{
+		return s_mapPlayerBotSungmaTradeHome.count(pid) != 0;
+	}
+
+	// The home core: a trade trip's bot stands in its first village (SettlePlayerBotYoharaArrivals) - no cooldown, no draw,
+	// no dispatch; ManagePlayerBotSungmaTradeHomes sends it back.
+	void StartPlayerBotSungmaTradeHome(LPCHARACTER ch, long backMap, const char* why, DWORD dwNow)
+	{
+		const DWORD pid = ch->GetPlayerID();
+		TPlayerBotSungmaTradeHome& v = s_mapPlayerBotSungmaTradeHome[pid];
+		v = TPlayerBotSungmaTradeHome();
+		v.lBackMap = backMap;
+		v.dwSince = dwNow ? dwNow : 1;
+		v.llGold = (long long)ch->GetGold();
+		strlcpy(v.szWhy, why && *why ? why : "-", sizeof(v.szWhy));
+		++s_uPlayerBotSungmaTradeHomeArrived;
+		sys_log(0, "PLAYERBOT_SUNGMA: trade trip home pid=%u name=%s map=%ld pos=(%ld,%ld) back_to=%ld why=%s gold=%lld member=%d",
+				pid, ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(), backMap, v.szWhy, v.llGold,
+				IsPlayerBotYoharaCohortPID(pid) ? 1 : 0);
+	}
+
+	// The game3 side: a trade trip's bot is back on its Sung Ma map (SettlePlayerBotYoharaArrivals).
+	void NotePlayerBotSungmaTradeLanded(LPCHARACTER ch, DWORD dwNow)
+	{
+		std::map<DWORD, TPlayerBotSungmaTradeOut>::iterator out = s_mapPlayerBotSungmaTradeOut.find(ch->GetPlayerID());
+		if (out == s_mapPlayerBotSungmaTradeOut.end())
+			return;
+		const int slot = GetPlayerBotSungmaSlot(ch->GetMapIndex());
+		if (slot >= 0)
+			++s_aPlayerBotSungmaStats[slot].tradeBacks;
+		sys_log(0, "PLAYERBOT_SUNGMA: trade trip landed pid=%u name=%s map=%ld left=%ld away_s=%u gold=%lld",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), out->second.lMap, (dwNow - out->second.dwAt) / 1000,
+				(long long)ch->GetGold());
+		s_mapPlayerBotSungmaTradeOut.erase(out);
+	}
+
+	// The errand at home done: its counter served since it came (or none to serve), no purchase or visit under way.
+	bool IsPlayerBotSungmaTradeHomeDone(LPCHARACTER ch, const TPlayerBotAIState& state, const TPlayerBotSungmaTradeHome& v,
+			DWORD dwNow)
+	{
+		const DWORD el = dwNow - v.dwSince;
+		if (el >= PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS)
+			return true;
+		if (el < PLAYERBOT_SUNGMA_TRADE_HOME_MIN_MS || state.bVisitingShop || state.bMarketTrip)
+			return false;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		const playerbot_offline::State& o = state.offlineShop;
+		if (o.visiting || o.buyOwner || playerbot_offline::requests.count(ch->GetPlayerID()))
+			return false;
+		const bool served = o.lastServedAt != 0 && (int)(o.lastServedAt - v.dwSince) >= 0;
+		if (!served && HasPlayerBotOfflineShop(ch) && el < PLAYERBOT_SUNGMA_TRADE_HOME_SERVE_MS)
+			return false;
+#endif
+		return true;
+	}
+
+	// The home core's poll (ManagePlayerBotYoharaHandover): the errand's clocks set going once, and the way back - to the
+	// map it left (the pick's when that one has no room) by a new handover, its purpose "yohara", no draw or cooldown.
+	void ManagePlayerBotSungmaTradeHomes(DWORD dwNow)
+	{
+		for (std::map<DWORD, TPlayerBotSungmaTradeHome>::iterator i = s_mapPlayerBotSungmaTradeHome.begin();
+				i != s_mapPlayerBotSungmaTradeHome.end();)
+		{
+			const DWORD pid = i->first;
+			TPlayerBotSungmaTradeHome& v = i->second;
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
+			TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(pid);
+			if (!ch || st == s_mapPlayerBotAIStates.end() || IsPlayerBotYoharaLeaving(pid))
+			{
+				if (!ch)
+					sys_log(0, "PLAYERBOT_SUNGMA: trade trip ends at home pid=%u why=logged_out after_s=%u", pid,
+							(dwNow - v.dwSince) / 1000);
+				s_mapPlayerBotSungmaTradeHome.erase(i++);
+				continue;
+			}
+			TPlayerBotAIState& state = st->second;
+			if (!v.bNudged && ch->IsItemLoaded())
+			{
+				// the counter's service, the browse of the stands and a counter's opening - now, not on their rounds
+				// (the first thirty seconds after a load are the shop list's)
+				v.bNudged = true;
+				state.dwNextShopKeepTime = 0;
+				state.dwNextShoppingTime = dwNow;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+				if (!state.offlineShop.visiting)
+					state.offlineShop.nextService = dwNow + 30000;
+				state.offlineShop.nextBrowse = dwNow + 30000;
+#endif
+			}
+			const DWORD el = dwNow - v.dwSince;
+			if (!IsPlayerBotSungmaTradeHomeDone(ch, state, v, dwNow) || ch->IsDead() || IsPlayerBotOnDungeonRun(pid))
+			{
+				++i;
+				continue;
+			}
+			const char* stuck = NULL;
+			if (!IsPlayerBotYoharaOn())
+				stuck = "handover_off";
+			else if (GetPlayerBotChampionLevel(ch) < 1 || (int)ch->GetLevel() < gPlayerMaxLevel)
+				stuck = "not_champion";
+			if (stuck)
+			{
+				sys_log(0, "PLAYERBOT_SUNGMA: trade trip ends at home pid=%u name=%s why=%s after_s=%u", pid, ch->GetName(), stuck,
+						el / 1000);
+				s_mapPlayerBotSungmaTradeHome.erase(i++);
+				continue;
+			}
+			// the map it left, while it has room - else the pick's (from home every map is a step up)
+			long map = v.lBackMap;
+			int slot = GetPlayerBotSungmaSlot(map);
+			if (slot < 0 || !IsPlayerBotSungmaMapOn(map) || !HasPlayerBotSungmaRoom(slot, 0))
+			{
+				map = PickPlayerBotSungmaMap(ch, 0);
+				slot = GetPlayerBotSungmaSlot(map);
+			}
+			long x = 0, y = 0;
+			const bool room = slot >= 0 && HasPlayerBotSungmaRoom(slot, 0) &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SUNGMA] < GetPlayerBotYoharaCap(YOHARA_PURPOSE_SUNGMA);
+			const bool eligible = IsPlayerBotYoharaEligible(ch) || IsPlayerBotYoharaCohortPID(pid);
+			if (!room || !eligible || !GetPlayerBotFrontierArrival(map, x, y))
+			{
+				if (el >= PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS + PLAYERBOT_SUNGMA_TRADE_STRANDED_MS)
+				{
+					++s_uPlayerBotSungmaTradeStranded;
+					sys_log(0, "PLAYERBOT_SUNGMA: trade trip ends at home pid=%u name=%s why=%s back_to=%ld after_s=%u",
+							pid, ch->GetName(), !eligible ? "not_eligible" : "no_room", map, el / 1000);
+					s_mapPlayerBotSungmaTradeHome.erase(i++);
+					continue;
+				}
+				PlayerBotLogThrottled("sungma_trade_back_wait", dwNow, "PLAYERBOT_SUNGMA: trade trip back waits pid=%u name=%s back_to=%ld "
+						"room=%d eligible=%d census=%d/%d", pid, ch->GetName(), map, room ? 1 : 0, eligible ? 1 : 0,
+						s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SUNGMA], GetPlayerBotYoharaCap(YOHARA_PURPOSE_SUNGMA));
+				++i;
+				continue;
+			}
+			const long long gold = (long long)ch->GetGold();
+			int served = 0;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			served = state.offlineShop.lastServedAt != 0 && (int)(state.offlineShop.lastServedAt - v.dwSince) >= 0 ? 1 : 0;
+#endif
+			const int goods = CountPlayerBotSungmaTradeGoods(ch, state);
+			const bool counter = HasPlayerBotSungmaCounter(ch);
+			if (!RequestPlayerBotYoharaHandover(ch, state, map, x, y, YOHARA_PURPOSE_SUNGMA, "sungma_trade_back", dwNow))
+			{
+				++i;
+				continue;
+			}
+			++s_aiPlayerBotSungmaMapCensus[slot];
+			++s_uPlayerBotSungmaTradeHomeBack;
+			sys_log(0, "PLAYERBOT_SUNGMA: trade trip back pid=%u name=%s from=%ld to=%ld why=%s took_s=%u served=%d counter=%d "
+					"goods_left=%d gold=%lld->%lld done=%s",
+					pid, ch->GetName(), ch->GetMapIndex(), map, v.szWhy, el / 1000, served, counter ? 1 : 0, goods, v.llGold, gold,
+					el >= PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS ? "timeout" : "served");
+			s_mapPlayerBotSungmaTradeHome.erase(i++);
+		}
+	}
+
 	// The travel pass's part for a resident of purpose "yohara" (ManagePlayerBotYoharaTravel): -1 hunt on, 0/1 its answer.
 	int ManagePlayerBotSungmaResident(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotYoharaResident& res, DWORD dwNow)
 	{
@@ -1124,7 +1501,9 @@
 		if (res.iDeaths >= PLAYERBOT_SUNGMA_DEATHS_STAY)
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_deaths");
 		const bool member = IsPlayerBotYoharaCohortPID(pid);
-		if (!member && dwNow - res.dwArrived >= (DWORD)cfg.sungmaStayMin * 60000U)
+		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: its stay's end is no way home any more - its round of trade is (the
+		// trade trip below, "routine"); only with the trips switched off (PLAYERBOT_SUNGMA_TRADE_MAX=0) the old way home.
+		if (!member && cfg.sungmaTradeMax <= 0 && dwNow - res.dwArrived >= (DWORD)cfg.sungmaStayMin * 60000U)
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_stay_over");
 		if (member && dwNow - res.dwArrived >= (DWORD)cfg.cohortStayMin * 60000U)
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_stay_over");
@@ -1133,6 +1512,9 @@
 		SpendPlayerBotSungmaPoints(ch, b, dwNow);
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: Dongan's merchants, not home.
 		if (ManagePlayerBotSungmaErrand(ch, state, res, b, base, dwNow) > 0)
+			return 1;
+		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: home to its first village only to trade, and back.
+		if (StartPlayerBotSungmaTradeTrip(ch, state, res, b, dwNow) > 0)
 			return 1;
 		// Its deaths: a step down a map, this one "not now" for two hours.
 		if (res.iDeathsWindowed >= PLAYERBOT_YOHARA_DEATHS_WINDOWED && GetPlayerBotSungmaSlot(res.lMap) >= 0)
@@ -1242,16 +1624,20 @@
 			++here[slot];
 			champSum[slot] += GetPlayerBotChampionLevel(ch);
 		}
-		const bool any = members > 0 || residents > 0;
+		const bool any = members > 0 || residents > 0 || !s_mapPlayerBotSungmaTradeHome.empty();
 		const DWORD span = s_dwPlayerBotSungmaLastCensus ? dwNow - s_dwPlayerBotSungmaLastCensus : 0;
 		s_dwPlayerBotSungmaLastCensus = dwNow;
 		if (!any)
 			return;
 		sys_log(0, "PLAYERBOT_SUNGMA: summary channel=%u members=%d resting=%d residents_here=%d channel_census=%d/%d map_max=%d "
-				"maps_on=%u exp_rate_bot=%d",
+				"maps_on=%u trade_away=%d trade_max=%d trade_home=%u trade_home_arrived=%u trade_home_back=%u trade_stranded=%u "
+				"exp_rate_bot=%d",
 				(unsigned int)g_bChannel, members, membersResting, residents, s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SUNGMA],
 				GetPlayerBotYoharaConfig().sungmaMax, GetPlayerBotYoharaConfig().sungmaMapMax,
 				(unsigned int)GetPlayerBotYoharaConfig().sungmaMaps.size(),
+				CountPlayerBotSungmaTradeAway(dwNow), GetPlayerBotYoharaConfig().sungmaTradeMax,	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1
+				(unsigned int)s_mapPlayerBotSungmaTradeHome.size(), s_uPlayerBotSungmaTradeHomeArrived,
+				s_uPlayerBotSungmaTradeHomeBack, s_uPlayerBotSungmaTradeStranded,
 #ifdef ENABLE_CONQUEROR_LEVEL
 				champion::BotExpRatePct()
 #else
@@ -1269,11 +1655,12 @@
 			sys_log(0, "PLAYERBOT_SUNGMA: census channel=%u map=%ld name=%s here=%d channel_rows=%d avg_champion=%d kills=%u kills_h=%lld "
 					"exp=%lld exp_h=%lld champion_exp=%lld champion_exp_h=%lld deaths=%u stuck=%u nav_fail=%u level_ups=%u "
 					"champion_ups=%u moves_in=%u moves_out=%u steps_down=%u hops=%u portal_walks=%u portal_warps=%u revives=%u "
-					"errands=%u errand_fallbacks=%u",
+					"errands=%u errand_fallbacks=%u trade_trips=%u trade_backs=%u",
 					(unsigned int)g_bChannel, PLAYERBOT_SUNGMA_MAPS[i].lMap, PLAYERBOT_SUNGMA_MAPS[i].szKey, here[i],
 					s_aiPlayerBotSungmaMapCensus[i], here[i] ? champSum[i] / here[i] : 0, st.kills, killsH, st.exp, expH,
 					st.championExp, championExpH, st.deaths, st.stuck, st.navFail, st.levelUps, st.championUps, st.movesIn,
-					st.movesOut, st.stepsDown, st.hops, st.portalWalks, st.portalWarps, st.revives, st.errands, st.errandFallbacks);
+					st.movesOut, st.stepsDown, st.hops, st.portalWalks, st.portalWarps, st.revives, st.errands, st.errandFallbacks,
+					st.tradeTrips, st.tradeBacks);
 			st.killsAtCensus = st.kills;
 			st.expAtCensus = st.exp;
 			st.championExpAtCensus = st.championExp;

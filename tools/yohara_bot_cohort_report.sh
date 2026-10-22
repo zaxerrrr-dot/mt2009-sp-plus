@@ -157,6 +157,12 @@ cnt "sungma revived at the safe point" "PLAYERBOT_SUNGMA: revived at the safe po
 cnt "sungma errands to Dongan" "PLAYERBOT_SUNGMA: errand to dongan"
 cnt "sungma errands done" "PLAYERBOT_SUNGMA: errand done"
 cnt "sungma errand fallbacks (belt in place)" "PLAYERBOT_SUNGMA: errand fallback"
+# MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: home only to trade (game3 start/landed, game1 home/back)
+cnt "sungma trade trips started" "PLAYERBOT_SUNGMA: trade trip start"
+cnt "sungma trade trips at home" "PLAYERBOT_SUNGMA: trade trip home"
+cnt "sungma trade trips back" "PLAYERBOT_SUNGMA: trade trip back pid"
+cnt "sungma trade trips landed" "PLAYERBOT_SUNGMA: trade trip landed"
+cnt "sungma trade trips ended at home" "PLAYERBOT_SUNGMA: trade trip ends at home|trade trip lost"
 cnt "sungma points spent" "PLAYERBOT_SUNGMA: points pid"
 cnt "sungma champion level ups" "PLAYERBOT_SUNGMA: champion level up"
 cnt "sungma step down (deaths)" "PLAYERBOT_SUNGMA: step down"
@@ -164,6 +170,7 @@ cnt "sungma map refused (sungma_map)" "refusal=sungma_map|reason=sungma_map"
 echo "-- sungma moves (from -> to why):"; printf '%s\n' "$ALL" | grep "PLAYERBOT_SUNGMA: move pid" | \
   sed 's/.* from=\([0-9]*\) to=\([0-9]*\) why=\([a-z]*\).*/\1 -> \2 \3/' | sort | uniq -c | sort -rn | head
 echo "-- sungma deaths by map:"; printf '%s\n' "$ALL" | grep "YOHARA: died.*purpose=yohara" | sed 's/.* map=\([0-9]*\).*/\1/' | sort | uniq -c
+echo "-- sungma trade trips (why):"; printf '%s\n' "$ALL" | grep "PLAYERBOT_SUNGMA: trade trip start" | sed 's/.* why=\([a-z_]*\).*/\1/' | sort | uniq -c | sort -rn
 echo "-- sungma leaving (why):"; printf '%s\n' "$ALL" | grep -E "(goes home|rest out).*why=sungma" | sed 's/.*why=//' | sort | uniq -c | sort -rn
 echo
 echo "=== syserr in the window (HANDOVER / YOHARA / COHORT / NAV / BOT_DGRUN / HYDRA / SUNGMA / ship defense), all cores of channel 1 + db"
