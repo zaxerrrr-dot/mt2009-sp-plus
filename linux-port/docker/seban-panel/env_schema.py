@@ -216,6 +216,21 @@ SCHEMA = [
     _e("PLAYERBOT_HYDRA_PARTIES", "Drużyny botów naraz na Hydrze",
        "Ile drużyn botów naraz broni statku (stałe pary z kohorty Hydry: ninja + inna postać; każda para ma własny statek).",
        "boty", "int", "16", ["game"], min=0, max=32),
+    # MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps of Yohara for the bot Champions.
+    _e("PLAYERBOT_SUNGMA_MAX", "Boty na mapach Yohary (na kanał)",
+       "Ilu botów-Czempionów naraz poluje na mapach Sung Ma (Twierdza, Dongan, Seoganland, Namgan, Yilad, Wąwóz, Rozpadlina, "
+       "Schronienie, Zejście). 0 = nikt.",
+       "boty", "int", "120", ["game"], min=0, max=600),
+    _e("PLAYERBOT_SUNGMA_MAP_MAX", "Boty na jednej mapie Yohary",
+       "Najwięcej botów naraz na jednej mapie Sung Ma (na kanał).",
+       "boty", "int", "30", ["game"], min=0, max=300),
+    _e("PLAYERBOT_SUNGMA_STAY_MIN", "Pobyt bota na Yoharze (min)",
+       "Ile minut bot-Czempion spoza kohorty zostaje na mapach Yohary, zanim wróci do domu (członek kohorty: jak kohorta).",
+       "boty", "int", "240", ["game"], min=20, max=1440),
+    _e("PLAYERBOT_SUNGMA_MAPS", "Mapy Yohary dla botów",
+       "Lista map: 374 Opuszczona Twierdza, 373 Dongan, 376 Seoganland, 377 Namgan, 385 Przełęcz Yilad, 388 Wąwóz Płn. Wiatru, "
+       "389 Rozpadlina Dusz, 393 Schronienie Płn. Wiatru, 394 Zejście Płn. Wiatru (każda mapa to 18–160 MB pamięci rdzenia Yohary).",
+       "boty", "string", "374,373,376,377,385,388,389,393,394", ["game"]),
     # MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the bots' dungeon runs at once per core (GetPlayerBotDgRunCap).
     _e("PLAYERBOT_DGRUN_MIN_RUNS", "Lochy botów naraz na rdzeń – minimum",
        "Ile własnych wypraw botów do lochów może iść naraz na jednym rdzeniu gry co najmniej, niezależnie od liczby botów "
