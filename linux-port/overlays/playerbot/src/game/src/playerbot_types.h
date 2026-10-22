@@ -7035,6 +7035,13 @@ namespace
 	bool GetPlayerBotG0WillTalismanScore(LPCHARACTER ch, LPITEM item, long long& score);
 	long GetPlayerBotG0DustTrip(LPCHARACTER ch, DWORD dwNow);
 	bool IsPlayerBotG0ZakletyStay(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_YOHARA_G0_V2: the dust saved from level 110 and kept in the safebox (the storekeeper's visit),
+	// and a replaced bound piece no bot bought - to the merchant.
+	bool PlayerBotG0WantsSafebox(LPCHARACTER ch);
+	int RunPlayerBotG0Safebox(LPCHARACTER ch, CSafebox* box);
+	bool IsPlayerBotG0BoxDust(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotG0NpcSaleDue(LPCHARACTER ch, LPITEM item);
+	void NotePlayerBotG0SoldToNpc(LPCHARACTER ch, LPITEM item, long long price, const char* merchantName);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),

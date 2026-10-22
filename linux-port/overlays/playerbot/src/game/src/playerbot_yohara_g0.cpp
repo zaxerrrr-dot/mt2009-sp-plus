@@ -3,8 +3,9 @@
 // "Sprzet z pakietu jest przypisany do konta: bot moze go ulepszac, ale nie moze wyrzucic, przekazac w handlu ani
 // sprzedac graczom - moze sprzedac tylko innym botom").
 //
-// The binding is the engine's (server-patches/g0bind): CItem::IsAccountBound adds DROP / GIVE / SELL / MYSHOP / PKDROP
-// to the item's GetAntiFlag, so the drop, the trade window, the merchant, both shops and the death's drop refuse it,
+// The binding is the engine's (server-patches/g0bind): CItem::IsAccountBound adds DROP / GIVE / MYSHOP / PKDROP to the
+// item's GetAntiFlag (MT2009_PLUS_BOT_YOHARA_G0_V2: not SELL - the NPC merchant may buy an unneeded piece, the owner,
+// 22 October), so the drop, the trade window, both shops and the death's drop refuse it,
 // and a refine (CopyAttributeTo) makes the new item bound too (Mt2009AccountBoundCarry below). The store is this file's:
 // player.item_account_bound, a row an item id (its owner's pid for the logs and a move between bots) - read back when
 // such an item is loaded (Mt2009AccountBoundLoad, ITEM_MANAGER::CreateItem's end through Mt2009GloveLoad), only for the

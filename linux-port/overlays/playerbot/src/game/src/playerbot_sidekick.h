@@ -1807,7 +1807,8 @@ namespace
 	bool IsPlayerBotSidekickOrderedScrap(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() ||
-				item->GetWindow() != INVENTORY || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
+				item->GetWindow() != INVENTORY || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL) ||
+				Mt2009AccountBound(item))	// MT2009_PLUS_BOT_YOHARA_G0_V2: the engine no longer refuses it the merchant
 			return false;
 		// MT2009_PLUS_SIDEKICK_FIXES_V3: the "sprzedaj" order's gear.
 		if (IsPlayerBotSidekickSellOnly(ch) &&
@@ -1894,7 +1895,8 @@ namespace
 	bool IsPlayerBotSidekickFreeHandScrap(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || !item->GetProto() || item->IsEquipped() || item->isLocked() || item->IsExchanging() ||
-				item->GetWindow() != INVENTORY || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL))
+				item->GetWindow() != INVENTORY || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_SELL) ||
+				Mt2009AccountBound(item))	// MT2009_PLUS_BOT_YOHARA_G0_V2: the engine no longer refuses it the merchant
 			return false;
 		if (IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotSidekickGift(ch, item) ||
 				IsPlayerBotSidekickHeld(ch, item) || IsPlayerBotSidekickPinned(ch, item))

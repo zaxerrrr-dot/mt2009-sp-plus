@@ -2512,7 +2512,8 @@ namespace
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
 			return false;
-		// MT2009_PLUS_BOT_YOHARA_G0_V1: a piece of the G0 package is never scrap - only another bot buys it.
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a piece of the G0 package is never scrap - another bot buys it, or (V2) the
+		// merchant once no bot did (IsPlayerBotG0NpcSaleDue, SellPlayerBotJunkAtMerchant).
 		if (Mt2009AccountBound(item))
 			return false;
 		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion its owner sent to town
@@ -3294,7 +3295,8 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && IsPlayerBotJunkItem(ch, item) &&
+			// MT2009_PLUS_BOT_YOHARA_G0_V2: or a replaced bound G0 piece no bot bought (playerbot_yohara_g0.h).
+			if (item && (IsPlayerBotJunkItem(ch, item) || IsPlayerBotG0NpcSaleDue(ch, item)) &&
 					GetPlayerBotJunkMerchant(item) == category)
 				return true;
 		}
@@ -3532,6 +3534,18 @@ namespace
 				sys_log(0, "PLAYERBOT_ISHOP: hairstyle thrown away pid=%u name=%s vnum=%u",
 						ch->GetPlayerID(), ch->GetName(), item->GetVnum());
 				ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_HAIR_DISCARD");
+				continue;
+			}
+			// MT2009_PLUS_BOT_YOHARA_G0_V2: a replaced bound G0 piece no bot bought in PLAYERBOT_G0_NPC_AFTER_LOOKS
+			// looks goes to the merchant at the merchant's price - never the Alchemist's, never a junk rule's.
+			if (item && GetPlayerBotJunkMerchant(item) == category && IsPlayerBotG0NpcSaleDue(ch, item))
+			{
+				const long long boundPrice = GetPlayerBotJunkSalePrice(item);
+				totalSoldGold += boundPrice;
+				PlayerBotChangeGold(ch, boundPrice);
+				NotePlayerBotG0SoldToNpc(ch, item, boundPrice, merchantName);
+				ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_G0_SOLD_TO_NPC");
+				++soldCount;
 				continue;
 			}
 			if (!item || !IsPlayerBotJunkItem(ch, item) ||

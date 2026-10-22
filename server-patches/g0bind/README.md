@@ -1,14 +1,15 @@
 # g0bind – przedmioty przypisane do konta (pakiet G0 botów)
 
 `MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1` (właściciel, 22.10.2026: „Sprzęt z pakietu jest przypisany do konta: bot może go
-ulepszać, ale nie może wyrzucić, przekazać w handlu ani sprzedać graczom – może sprzedać tylko innym botom”).
+ulepszać, ale nie może wyrzucić, przekazać w handlu ani sprzedać graczom – może sprzedać tylko innym botom”; 22.10: „Może sprzedać NPC, jeśli go nie potrzebuje” – bez `SELL`, kupiec NPC
+przyjmuje przypisany przedmiot).
 
 Silnik nie miał działającego mechanizmu przypisania (soulbind/`IsSealed` jest tylko pod `#ifdef`, wyłączony), więc
 łatka dodaje flagę na **egzemplarzu** przedmiotu:
 
 - `item.h` / `item.cpp`: `CItem::IsAccountBound()` / `SetAccountBound()` (pole `m_bAccountBound`, zerowane
-  w `Initialize`); `GetAntiFlag()` dla takiego przedmiotu dokłada `ITEM_ANTIFLAG_DROP | GIVE | SELL | MYSHOP |
-  PKDROP` – więc wyrzucenie, okno handlu, sprzedaż u kupca, upuszczenie po śmierci i wszystkie ścieżki botów, które
+  w `Initialize`); `GetAntiFlag()` dla takiego przedmiotu dokłada `ITEM_ANTIFLAG_DROP | GIVE | MYSHOP |
+  PKDROP` – więc wyrzucenie, okno handlu, sklep/aukcja graczy, upuszczenie po śmierci i wszystkie ścieżki botów, które
   pytają `item->GetAntiFlag()`, odmawiają; `#define MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1` dla nakładki;
 - `char_shop.cpp` (`CheckItem` – sklep offline Ikarusa i stragan botów) i `ikarus_shop_manager.cpp` (aukcja): flagi
   egzemplarza zamiast flag protokołu;

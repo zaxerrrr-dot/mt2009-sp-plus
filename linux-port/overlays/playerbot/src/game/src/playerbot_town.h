@@ -587,6 +587,10 @@ namespace
 			// syserr are that round trip seen from the database (Tieru).
 			if (pJustDeposited && pJustDeposited->find(item->GetVnum()) != pJustDeposited->end())
 				continue;
+			// MT2009_PLUS_BOT_YOHARA_G0_V2: the dust kept down here for the G0 package comes out for it alone
+			// (RunPlayerBotG0Safebox) - never for a counter, the anvil or anything else.
+			if (IsPlayerBotG0BoxDust(ch, item))
+				continue;
 
 			bool wanted = false;
 			const char* why = "";
@@ -1298,7 +1302,8 @@ namespace
 				PlayerBotWantsLppRelease(ch, state, dwNow) ||
 				PlayerBotWantsMaterialRelease(ch, state, dwNow) ||
 				PlayerBotSidekickWantsBoxSweep(ch) ||	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
-				PlayerBotWantsOwnBoxGear(ch, state, dwNow);	// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1
+				PlayerBotWantsOwnBoxGear(ch, state, dwNow) ||	// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1
+				PlayerBotG0WantsSafebox(ch);	// MT2009_PLUS_BOT_YOHARA_G0_V2: the G0 dust in or out
 		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion sent to sell its scrap
 		// ("sprzedaj") calls on the merchants with scrap of theirs and nobody else.
 		if (IsPlayerBotSidekickSellOnly(ch))
@@ -7872,6 +7877,9 @@ namespace
 				// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's sweep done,
 				// or what is left told to its owner.
 				NotePlayerBotSidekickBoxSwept(ch, box);
+				// MT2009_PLUS_BOT_YOHARA_G0_V2: the 400 dust of the G0 package put down (from level 110) or
+				// taken out for the package (playerbot_yohara_g0.h).
+				RunPlayerBotG0Safebox(ch, box);
 #if defined(PLAYERBOT_ENGINE_MT2009)
 				// The box poured together and laid out the way a player's
 				// "Scal i uporzadkuj" does it (ArrangeSafebox, playerbot_arrange.cpp):
@@ -8217,6 +8225,10 @@ namespace
 			return 0;
 		if (IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotSidekickGift(ch, item) ||
 				IsPlayerBotSidekickPinned(ch, item))
+			return 0;
+		// MT2009_PLUS_BOT_YOHARA_G0_V2: a bound G0 piece is no bag room's sale nor a clearout's gift - only the
+		// merchant's visit sells one (IsPlayerBotG0NpcSaleDue), the engine no longer refusing it the merchant.
+		if (Mt2009AccountBound(item))
 			return 0;
 		// The hay goes by count at the General Store, the horse's share kept.
 		if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
