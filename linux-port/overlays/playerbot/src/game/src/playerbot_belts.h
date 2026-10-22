@@ -19,7 +19,7 @@
 //     the belt given (the window is a client's; a bot has no hands for it - the Alchemist's
 //     pattern, playerbot_town.h).
 //   * Upgrading: any bot with a belt raises the one it wears at the Blacksmith (refine_proto,
-//     yang only, DoRefine - the engine's fee and roll), to its own aim of +4..+9 (by player id):
+//     the step's recipe - yang and, since MT2009_PLUS_REFINE_GLOBAL_V1, its materials -, DoRefine - the engine's fee and roll), to its own aim of +4..+9 (by player id):
 //     the steps to +4 never fail, the ones after them may burn the belt.
 //   * Wearing: the equipment pass, as before. A better belt in the bag first empties the worn
 //     one's pouch (a belt with something in it cannot come off).
@@ -200,21 +200,47 @@ namespace
 	}
 
 	// What the maker keeps of a vnum for its target.
+	// MT2009_PLUS_REFINE_GLOBAL_V1: the worn belt's next anvil step, while the bot still takes
+	// it there (below its aim) - defined with the anvil below.
+	const TRefineTable* GetPlayerBotBeltStepRecipe(LPCHARACTER ch);
+
+	// The materials of that step the bag holds for it: two attempts' worth.
+	int GetPlayerBotBeltStepMaterialKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		const TRefineTable* recipe = GetPlayerBotBeltStepRecipe(ch);
+		if (!recipe)
+			return 0;
+		for (int m = 0; m < recipe->material_count; ++m)
+			if (recipe->materials[m].vnum == vnum)
+				return (int)recipe->materials[m].count * 2;
+		return 0;
+	}
+
 	int GetPlayerBotBeltMaterialKeep(LPCHARACTER ch, DWORD vnum)
 	{
+		const int step = GetPlayerBotBeltStepMaterialKeep(ch, vnum);	// MT2009_PLUS_REFINE_GLOBAL_V1
 		const int target = GetPlayerBotBeltTarget(ch);
 		if (target < 0)
-			return 0;
+			return step;
 		const TPlayerBotBeltRecipe& r = PLAYERBOT_BELT_RECIPES[target];
 		for (int m = 0; m < 4; ++m)
 			if (r.mats[m].vnum == vnum)
-				return r.mats[m].count * PLAYERBOT_BELT_KEEP_ATTEMPTS;
-		return 0;
+				return std::max(step, r.mats[m].count * PLAYERBOT_BELT_KEEP_ATTEMPTS);
+		return step;
 	}
 
 	// What it lacks for one attempt (not while a seed still owes it one).
 	void CollectPlayerBotBeltMissing(LPCHARACTER ch, std::map<DWORD, int>& missing)
 	{
+		// MT2009_PLUS_REFINE_GLOBAL_V1: what the worn belt's next anvil step lacks, bought and
+		// hunted like the recipe's (the global steps take Odlamki and the like).
+		if (const TRefineTable* step = GetPlayerBotBeltStepRecipe(ch))
+			for (int m = 0; m < step->material_count; ++m)
+			{
+				const int lack = (int)step->materials[m].count - (int)ch->CountSpecifyItem(step->materials[m].vnum);
+				if (step->materials[m].vnum != 0 && lack > 0)
+					missing[step->materials[m].vnum] += lack;
+			}
 		const int target = GetPlayerBotBeltTarget(ch);
 		if (target < 0 || GetPlayerBotBeltSeedLeft(ch) > 0)
 			return;
@@ -517,6 +543,17 @@ namespace
 		return 4 + (int)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x41494d42U) % 6U);
 	}
 
+	const TRefineTable* GetPlayerBotBeltStepRecipe(LPCHARACTER ch)
+	{
+		if (!::BonusModeGlobal())
+			return NULL;	// MT2009_PLUS_237_GLOBAL_MODE_V1: mt2009 - the belt steps are yang only, as they were
+		LPITEM belt = ch ? ch->GetWear(WEAR_BELT) : NULL;
+		if (!IsPlayerBotBeltItem(belt) || belt->GetRefinedVnum() == 0 ||
+				(int)(belt->GetVnum() - PLAYERBOT_BELT_FIRST_VNUM) % 10 >= GetPlayerBotBeltAim(ch))
+			return NULL;
+		return CRefineManager::instance().GetRefineRecipe(belt->GetRefineSet());
+	}
+
 	LPITEM GetPlayerBotBeltToRefine(LPCHARACTER ch)
 	{
 		LPITEM belt = ch ? ch->GetWear(WEAR_BELT) : NULL;
@@ -525,8 +562,15 @@ namespace
 				PlayerBotHasBetterBagBelt(ch) || IsPlayerBotSidekickLockedItem(ch, belt))
 			return NULL;
 		const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(belt->GetRefineSet());
-		if (!recipe || recipe->material_count > 0)
-			return NULL;	// the official belt steps are yang only
+		if (!recipe || (recipe->material_count > 0 && !::BonusModeGlobal()))
+			return NULL;	// MT2009_PLUS_237_GLOBAL_MODE_V1: mt2009 - the official belt steps are yang only, as before
+		// MT2009_PLUS_REFINE_GLOBAL_V1: the global belt steps take materials (Odlamki ...) - every
+		// one in the bag past the Biologist's share, else the belt waits (no attempt, no loop;
+		// CollectPlayerBotBeltMissing sends the bot for them).
+		for (int m = 0; m < recipe->material_count; ++m)
+			if ((long long)ch->CountSpecifyItem(recipe->materials[m].vnum) -
+					GetPlayerBotBiologistReserve(ch, recipe->materials[m].vnum) < (long long)recipe->materials[m].count)
+				return NULL;
 		const long long fee = (long long)ch->ComputeRefineFee(recipe->cost);
 		return fee <= GetPlayerBotBeltSpare(ch) * PLAYERBOT_BELT_REFINE_PURSE_PERCENT / 100 ? belt : NULL;
 	}

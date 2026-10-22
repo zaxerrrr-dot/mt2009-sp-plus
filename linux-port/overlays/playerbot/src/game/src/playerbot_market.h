@@ -175,7 +175,10 @@ namespace
 		LPITEM worn = ch->GetWear(WEAR_WEAPON);
 		if (worn && IsPlayerBotScrollFreeGear(worn))
 			worn = NULL;
-		if (worn && worn->GetRefinedVnum() != 0 &&
+		// MT2009_PLUS_REFINE_GLOBAL_V1: a +9 whose next item is another one (the global
+		// "+9 -> next item" steps) is at its end for the scroll too (MT2009_PLUS_237_GLOBAL_MODE_V1:
+		// M2_BONUS_MODE=global only - mt2009 as it was).
+		if (worn && worn->GetRefinedVnum() != 0 && (worn->GetRefineLevel() < 9 || !::BonusModeGlobal()) &&
 				(IsPlayerBotScrollOnlyWeapon(worn) || IsPlayerBotSpecialLevel30Weapon(worn)))
 			return true;
 		if (worn && worn->GetRefinedVnum() != 0 && IsPlayerBotAnvilTableWeapon(worn) &&
@@ -190,7 +193,8 @@ namespace
 			return true;
 		TPlayerBotLevel30View view;
 		ReadPlayerBotLevel30View(ch, view);
-		return view.project != NULL && view.project->GetRefinedVnum() != 0;
+		return view.project != NULL && view.project->GetRefinedVnum() != 0 &&
+				(view.project->GetRefineLevel() < 9 || !::BonusModeGlobal());	// MT2009_PLUS_REFINE_GLOBAL_V1
 	}
 
 	// Would this bot rather have the item than the money?
