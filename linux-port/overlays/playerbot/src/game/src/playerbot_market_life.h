@@ -488,6 +488,9 @@ namespace
 		if (!item || item->IsEquipped() || item->isLocked() || item->IsExchanging() ||
 				(item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR))
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a G0 piece goes to another bot only by its own sale (playerbot_yohara_g0.h).
+		if (Mt2009AccountBound(item))
+			return false;
 		// "ochrona dobrych bonusow": a piece with good lines is no barter's.
 		if (IsPlayerBotPrizeItem(item) || GetPlayerBotBonusPricePercent(item) >= PLAYERBOT_BARTER_GOOD_BONUS_PERCENT ||
 				IsPlayerBotBonusGoodsPiece(item))

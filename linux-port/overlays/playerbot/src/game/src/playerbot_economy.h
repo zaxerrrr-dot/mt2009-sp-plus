@@ -1527,9 +1527,10 @@ namespace
 		// MT2009_PLUS_BOT_DUST_BONUS_V1: and whatever more the bot will turn
 		// into a change or an add stone (GetPlayerBotDustBonusKeep): the
 		// counter takes only the dust over that.
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: and a Champion's 400 for its G0 package (playerbot_yohara_g0.h).
 		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
-			return ch ? std::max((ch->GetLevel() >= PLAYERBOT_BONUS_MIN_LEVEL || PlayerBotWantsBlessingMarble(ch))
-					? PLAYERBOT_DUST_PER_MARBLE : 0, GetPlayerBotDustBonusKeep(ch)) : 0;
+			return ch ? std::max(std::max((ch->GetLevel() >= PLAYERBOT_BONUS_MIN_LEVEL || PlayerBotWantsBlessingMarble(ch))
+					? PLAYERBOT_DUST_PER_MARBLE : 0, GetPlayerBotDustBonusKeep(ch)), GetPlayerBotG0DustReserve(ch)) : 0;
 		// MT2009_PLUS_BOT_CAPE_V1: a bot that uses Peleryna Mestwa keeps its
 		// own off the counter (IsPlayerBotCapeBuild).
 		if (IsPlayerBotValourCapeVnum(item->GetVnum()) && ch && IsPlayerBotCapeBuild(ch))
@@ -2510,6 +2511,9 @@ namespace
 	bool IsPlayerBotJunkItem(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
+			return false;
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a piece of the G0 package is never scrap - only another bot buys it.
+		if (Mt2009AccountBound(item))
 			return false;
 		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion its owner sent to town
 		// sells its scrap - the owner's own handover included - by its own

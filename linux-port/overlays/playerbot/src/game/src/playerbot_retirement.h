@@ -982,7 +982,8 @@ EPlayerBotRetireStallResult AdvancePlayerBotRetirementStall(LPCHARACTER ch,
 		if (!item || item->IsEquipped() || item->isLocked() || item->GetVnum() == 50200)
 			continue;
 		const TItemTable* proto = item->GetProto();
-		if (!proto || IS_SET(proto->dwAntiFlags, ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP))
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: the item's own flags (an account-bound piece's too), not its proto's alone
+		if (!proto || IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP))
 			continue;
 		if (IsPlayerBotRetirementPotion(item->GetVnum()) ||
 				ScorePlayerBotShopStock(ch, item, false, false) <= 0)

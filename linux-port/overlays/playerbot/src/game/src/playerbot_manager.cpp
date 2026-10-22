@@ -395,6 +395,8 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // - Zaklety Las, the Time Rift (SZC), the loot runs on the 90-level maps - last,
 // after the temple, the dungeon runs and everything they borrow.
 #include "playerbot_yohara_bots.h"
+// MT2009_PLUS_BOT_YOHARA_G0_V1: the Champions' G0 package for 400 Magiczny Pyl, its binding and the bot-to-bot sale
+#include "playerbot_yohara_g0.h"
 
 namespace
 {
@@ -7923,6 +7925,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// stand, and the travel pass walked them straight back out.
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotAlchemist(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion's G0 package for its 400 dust, in a village, and a replaced
+		// bound piece sold to another bot (playerbot_yohara_g0.h) - a look a minute, beside the Alchemist.
+		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin && !curTarget &&
+				ManagePlayerBotG0(ch, state, dwNow))
 			continue;
 
 		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and

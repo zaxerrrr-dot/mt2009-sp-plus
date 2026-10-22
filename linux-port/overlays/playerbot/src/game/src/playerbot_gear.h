@@ -620,6 +620,13 @@ namespace
 		if (bType >= POINT_ENCHANT_ELECT && bType <= POINT_ENCHANT_DARK)
 			return (long long)lValue * 60;
 #endif
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Sung Ma Will line for a Champion of the top level (playerbot_yohara_g0.h) -
+		// what puts the jade over the Emerald set of a Yohara-going bot; anybody else as ever (the catch-all below).
+		{
+			const long long willWeight = GetPlayerBotSungmaWillWeight(ch, bType);
+			if (willWeight >= 0)
+				return (long long)lValue * willWeight;
+		}
 		switch (bType)
 		{
 			case APPLY_NONE:
@@ -1249,6 +1256,13 @@ namespace
 		// equipment pass puts on the one the map wants (playerbot_talismans.h).
 		if (ch && IsPlayerBotTalismanItem(item))
 			return GetPlayerBotTalismanScore(ch, item);
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Talizman Woli over the element's while the Will of the Champion's map is short
+		// (the owner's D15, playerbot_yohara_g0.h); otherwise scored by its lines as any piece.
+		{
+			long long willTalisman = 0;
+			if (ch && GetPlayerBotG0WillTalismanScore(ch, item, willTalisman))
+				return willTalisman;
+		}
 		// MT2009_PLUS_LEGENDS_V1 (gear): a Specjalny and up weighs a piece's
 		// plus and bonuses more (playerbot_legend_tier.h).
 		return AdjustPlayerBotLegendGearScore(item, ch, GetPlayerBotEquipmentScoreTerms(item, ch, NULL));

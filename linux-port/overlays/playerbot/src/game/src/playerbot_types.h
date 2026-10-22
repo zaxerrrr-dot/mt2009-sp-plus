@@ -7021,6 +7021,20 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member of the night's cohorts (common.playerbot_yohara_cohort) -
 	// never rested, retired, renamed, borrowed; always an alchemy user.
 	bool IsPlayerBotYoharaCohortPID(DWORD pid);
+	// MT2009_PLUS_BOT_YOHARA_G0_V1 (playerbot_yohara_g0.h, after playerbot_yohara_bots.h): the Champions' G0 package for
+	// 400 Magiczny Pyl - the dust a bot without its package keeps (the counters' and the marbles' keep), hunts on a trip
+	// to Zaklety Las and buys on the market; the Will a Champion's gear is scored by, the Will talisman's rule.
+	int GetPlayerBotG0DustReserve(LPCHARACTER ch);
+	bool IsPlayerBotG0DustHunter(LPCHARACTER ch);
+	bool WantsPlayerBotG0DustOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForG0Dust(LPCHARACTER ch, LPITEM item, long long price);
+	bool WantsPlayerBotG0DustFromMarket(LPCHARACTER ch);
+	void NotePlayerBotG0DustBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
+	void NotePlayerBotG0DustMade(LPCHARACTER ch, int made);
+	long long GetPlayerBotSungmaWillWeight(LPCHARACTER ch, BYTE bType);
+	bool GetPlayerBotG0WillTalismanScore(LPCHARACTER ch, LPITEM item, long long& score);
+	long GetPlayerBotG0DustTrip(LPCHARACTER ch, DWORD dwNow);
+	bool IsPlayerBotG0ZakletyStay(LPCHARACTER ch);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),

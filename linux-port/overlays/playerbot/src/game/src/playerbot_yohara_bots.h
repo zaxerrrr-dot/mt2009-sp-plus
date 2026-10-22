@@ -1249,7 +1249,8 @@ namespace
 			switch (r->iPurpose)
 			{
 				case YOHARA_PURPOSE_ZAKLETY:
-					return level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL &&
+					// MT2009_PLUS_BOT_YOHARA_G0_V1: or a Champion there for its G0 package's dust (playerbot_yohara_g0.h)
+					return ((level >= cfg.zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL) || IsPlayerBotG0ZakletyStay(ch)) &&
 							IsPlayerBotMapHostedHere(PLAYERBOT_MAP_ZAKLETY) ? PLAYERBOT_MAP_ZAKLETY : 0;
 				case YOHARA_PURPOSE_SZC:
 					return level >= PLAYERBOT_SZC_MIN_LEVEL && level <= PLAYERBOT_SZC_MAX_LEVEL &&
@@ -1294,6 +1295,13 @@ namespace
 					return GetPlayerBotYoharaPurposeMap(p);
 				return 0;
 			}
+		}
+		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion short of the 400 dust of its G0 package - now and then a trip to
+		// Zaklety Las for soul stones (playerbot_yohara_g0.h); else its growth goes on as below.
+		{
+			const long g0 = GetPlayerBotG0DustTrip(ch, dwNow);
+			if (g0 != 0)
+				return g0;
 		}
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Champion of the top level - the Sung Ma maps (its map by its Champion level
 		// and Will), while the channel has room and no cohort holds them.
