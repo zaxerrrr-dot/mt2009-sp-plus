@@ -560,6 +560,9 @@ namespace
 		if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY &&
 				(!ch->GetParty() || ch->GetParty()->GetMemberCount() < 3))
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: and a Sung Ma map's by the same rule as its own stones.
+		if (IsPlayerBotSungmaStoneForMe(ch, stone) == 0)
+			return false;
 		// Under Iwakura's system the band of the stone hunter is the band of
 		// every stone, joined or not: ten levels either way.
 		if (IsPlayerBotPersonaEnabled())

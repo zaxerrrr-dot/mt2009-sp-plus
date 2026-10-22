@@ -64,6 +64,16 @@ namespace champion
 		return MIN(iRate, 100000);
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: conqueror_exp_rate_bot (event flag, per cent; 0 or unset = 100) - the bots'
+	// champion experience on top of conqueror_exp_rate (plan-boty-yohara.md, D4).
+	int BotExpRatePct()
+	{
+		const int iRate = quest::CQuestManager::instance().GetEventFlag("conqueror_exp_rate_bot");
+		if (iRate <= 0)
+			return 100;
+		return MIN(iRate, 100000);
+	}
+
 	// ---- data files -------------------------------------------------------------------------------------
 
 	struct TState
@@ -463,6 +473,10 @@ namespace champion
 		const int iBonus = MAX(0, 100 + CPrivManager::instance().GetPriv(to, PRIV_EXP_PCT) + to->GetPoint(POINT_EXP) +
 				to->GetPoint(POINT_MALL_EXPBONUS));
 		unsigned long long exp = (unsigned long long)dwBase * iBonus / 100 * ExpRatePct() / 100;
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a bot's own calibration on top (conqueror_exp_rate_bot, per cent; 0/unset = 100 -
+		// a bot earns as a person does; the plan's D4: the night's measure sets it).
+		if (IsBotCharacter(to))
+			exp = exp * BotExpRatePct() / 100;
 		const unsigned int dwCap = MAX(1u, to->GetConquerorNextExp() / 10);
 		if (exp > dwCap)
 			exp = dwCap;
@@ -590,7 +604,9 @@ int ChampionDamage(LPCHARACTER pkVictim, LPCHARACTER pAttacker, int iDam)
 	// MT2009_PLUS_PRECISION_V1: the map's Precyzja (pl-wiki "Precyzja": "Proboja go trafic, postac zacznie chybiac" -
 	// blows, arrows and skills alike; Owsap: (hit_pct - precision) * 100 / hit_pct per cent of them) - a stone
 	// (a Metin) is never missed.
-	if (pReq->hit > 0 && !pkVictim->IsStone())
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: every bot counts as one of the top Precyzja - the owner, 22 October: "wszystkie boty
+	// domyslnie maja miec maksymalny poziom Precyzji. Ten system ich nie dotyczy" - a bot's blow never misses.
+	if (pReq->hit > 0 && !pkVictim->IsStone() && !champion::IsBotCharacter(pAttacker))
 	{
 		const int iPrecision = MAX(0, (int) pAttacker->GetPoint(POINT_HIT_PCT));
 		if (iPrecision < pReq->hit && number(1, 100) <= (pReq->hit - iPrecision) * 100 / pReq->hit)
@@ -654,6 +670,10 @@ int PrecisionSkillBonus(const CHARACTER* ch)
 {
 	if (!ch || !ch->IsPC())
 		return 0;
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a bot has Precyzja P by default, no book needed (its blows never miss either -
+	// ChampionDamage); the bonus is P's in its POINT_HIT_PCT.
+	if (ch->GetDesc() && ch->GetDesc()->IsBot())
+		return s_aPrecisionBonus[SKILL_MAX_LEVEL];
 	return s_aPrecisionBonus[MINMAX(0, ch->GetSkillLevel(SKILL_PRECISION), (int) SKILL_MAX_LEVEL)];
 }
 
@@ -679,6 +699,9 @@ int PrecisionReadBook(CHARACTER* ch)
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot read books while transformed."));
 		return 0;
 	}
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a bot has Precyzja P already (PrecisionSkillBonus) - no book is used up on it.
+	if (ch->GetDesc() && ch->GetDesc()->IsBot())
+		return 0;
 	// MT2009_PLUS_BOT_CHAMPION_V1: a bot Champion may read it too.
 	if (ch->GetConquerorLevel() < 1)
 	{

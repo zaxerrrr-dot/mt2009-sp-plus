@@ -155,6 +155,15 @@ namespace
 			case 302: return "na Zbocze Gautama"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 303: return "do Nefrytowej Zatoki"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 304: return "w Gromiste Gory"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case PLAYERBOT_MAP_SUNGMA_TWIERDZA: return "do Opuszczonej Twierdzy"; // MT2009_PLUS_BOT_YOHARA_MAPS_V1
+			case PLAYERBOT_MAP_SUNGMA_DONGAN: return "do Dongan";
+			case PLAYERBOT_MAP_SUNGMA_SEOGANLAND: return "do Seoganland";
+			case PLAYERBOT_MAP_SUNGMA_NAMGAN: return "do Namgan";
+			case PLAYERBOT_MAP_SUNGMA_YILAD: return "na Przelecz Yilad";
+			case PLAYERBOT_MAP_SUNGMA_WAWOZ: return "do Wawozu Polnocnego Wiatru";
+			case PLAYERBOT_MAP_SUNGMA_ROZPADLINA: return "do Rozpadliny Dusz";
+			case PLAYERBOT_MAP_SUNGMA_SCHRONIENIE: return "do Schronienia Polnocnego Wiatru";
+			case PLAYERBOT_MAP_SUNGMA_ZEJSCIE: return "do Zejscia Polnocnego Wiatru";
 			default: return "";
 		}
 	}
@@ -202,6 +211,15 @@ namespace
 			case 302: return "to the Dawnmist Slope"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 303: return "to the Bay of Black Sand"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 304: return "to Thunder Mountains"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case PLAYERBOT_MAP_SUNGMA_TWIERDZA: return "to the Abandoned Fortress"; // MT2009_PLUS_BOT_YOHARA_MAPS_V1
+			case PLAYERBOT_MAP_SUNGMA_DONGAN: return "to Dongan";
+			case PLAYERBOT_MAP_SUNGMA_SEOGANLAND: return "to Seoganland";
+			case PLAYERBOT_MAP_SUNGMA_NAMGAN: return "to Namgan";
+			case PLAYERBOT_MAP_SUNGMA_YILAD: return "to the Yilad Pass";
+			case PLAYERBOT_MAP_SUNGMA_WAWOZ: return "to the North Wind Gorge";
+			case PLAYERBOT_MAP_SUNGMA_ROZPADLINA: return "to the Soul Rift";
+			case PLAYERBOT_MAP_SUNGMA_SCHRONIENIE: return "to the North Wind Shelter";
+			case PLAYERBOT_MAP_SUNGMA_ZEJSCIE: return "to the North Wind Descent";
 			default: return "";
 		}
 	}

@@ -898,6 +898,8 @@ namespace { void NoteArezzoBotKill(LPCHARACTER killer, LPCHARACTER victim); }
 // MT2009_PLUS_BOT_DAY_GOAL_V1 (kills): and a bot's Cel Dnia (playerbot_day_goal.h).
 namespace { void NotePlayerBotDayGoalKill(LPCHARACTER killer, LPCHARACTER victim); }
 namespace { void NotePlayerBotDayGoalSharedKill(LPCHARACTER killer, LPCHARACTER victim, const std::vector<LPCHARACTER>& hurt); }
+// MT2009_PLUS_BOT_YOHARA_MAPS_V1 (kills): and the Sung Ma maps' census (playerbot_yohara_sungma.h).
+namespace { void NotePlayerBotSungmaKill(LPCHARACTER killer, LPCHARACTER victim); }
 
 // MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking counts the same deeds
 // (playerbot_weekly_rank.h, included later).
@@ -912,6 +914,7 @@ void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 	NoteOchaoBotKill(killer, victim); // MT2009_PLUS_OCHAO_BOTS_V1 (kills)
 	NoteArezzoBotKill(killer, victim); // MT2009_PLUS_AREZZO_BOTS_V1 (kills)
 	NotePlayerBotDayGoalKill(killer, victim); // MT2009_PLUS_BOT_DAY_GOAL_V1 (kills)
+	NotePlayerBotSungmaKill(killer, victim); // MT2009_PLUS_BOT_YOHARA_MAPS_V1 (kills)
 	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Counts(killer))
 		return;
 	const DWORD race = victim->GetRaceNum();

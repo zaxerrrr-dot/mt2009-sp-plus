@@ -219,6 +219,20 @@ namespace
 		return 0;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the level a hub's band is read against - on a Sung Ma map of the bots
+	// 100 + the bot's Champion level (every bot there is 120; its spots are by the Champion level,
+	// PLAYERBOT_SUNGMA_HUBS_* in playerbot_yohara_sungma.h), anywhere else its level.
+	int PlayerBotHubLevel(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+#ifdef ENABLE_CONQUEROR_LEVEL
+		if (IsPlayerBotSungmaBotMap(ch->GetMapIndex()))
+			return 100 + (int)ch->GetConquerorLevel();
+#endif
+		return (int)ch->GetLevel();
+	}
+
 	bool ChoosePlayerBotHuntingHub(LPCHARACTER ch, const TPlayerBotHuntingHub* hubs,
 			size_t hubCount, DWORD dwNow, size_t excludeIndex, size_t& indexOut, int& scoreOut)
 	{
@@ -256,8 +270,9 @@ namespace
 		for (size_t i = 0; i < hubCount; ++i)
 		{
 			const TPlayerBotHuntingHub& hub = hubs[i];
-			if (i == excludeIndex || std::min(255, (int)level + hubShift) < (int)hub.bMinLevel ||
-					level > hub.bMaxLevel)
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the hub's band by PlayerBotHubLevel (the Champion level on a Sung Ma map)
+			if (i == excludeIndex || std::min(255, PlayerBotHubLevel(ch) + hubShift) < (int)hub.bMinLevel ||
+					PlayerBotHubLevel(ch) > (int)hub.bMaxLevel)
 				continue;
 			if (hub.bNeedsParty && !bLeadsParty)
 				continue;
@@ -1490,7 +1505,9 @@ namespace
 				hubs = GetPlayerBotArezzoHubs(ch->GetMapIndex(), hubCount);
 			// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 / MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: Zaklety Las's spots,
 			// and the Metins' and bosses' points of the 90-level maps (playerbot_yohara_bots.h).
-			else if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY || (ch->GetMapIndex() >= 301 && ch->GetMapIndex() <= 304))
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V1: and the Sung Ma maps' spots by the Champion level.
+			else if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY || (ch->GetMapIndex() >= 301 && ch->GetMapIndex() <= 304) ||
+					IsPlayerBotSungmaBotMap(ch->GetMapIndex()))
 				hubs = GetPlayerBotYoharaHubs(ch->GetMapIndex(), hubCount);
 			// MT2009_PLUS_L30_WEAPON_DROPPER_V1: the island's dropper hunts its
 			// kingdom's first island and nowhere else of the valley.
@@ -1589,9 +1606,9 @@ namespace
 			}
 			if (state.wHuntingHub < hubCount && state.dwHubChosenTime != 0 &&
 					dwNow - state.dwHubChosenTime < hubStick && stickBossStanding &&
-					(int)ch->GetLevel() + GetPlayerBotHubLevelShift(ch->GetMapIndex()) >=
+					PlayerBotHubLevel(ch) + GetPlayerBotHubLevelShift(ch->GetMapIndex()) >=	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 						(int)hubs[state.wHuntingHub].bMinLevel &&
-					ch->GetLevel() <= hubs[state.wHuntingHub].bMaxLevel)
+					PlayerBotHubLevel(ch) <= (int)hubs[state.wHuntingHub].bMaxLevel)
 			{
 				hubIndex = state.wHuntingHub;
 				bHubReachable = true;

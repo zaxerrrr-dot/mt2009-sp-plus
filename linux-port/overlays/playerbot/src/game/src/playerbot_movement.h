@@ -676,6 +676,13 @@ namespace
 		// whoever hits them - two bots of 97/101 died there within 20 s of their arrival (21 October).
 		// Metin Drzewnych Stworzen (100) for a bot of 108 or a party of three; Metin Lasu (120) for a
 		// party only.
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Sung Ma map's Metins and outposts (1.9-2.7 M health) - a party of three, or
+		// a bot alone well into its map's band (playerbot_yohara_sungma.h).
+		{
+			const int sungma = IsPlayerBotSungmaStoneForMe(ch, stone);
+			if (sungma >= 0)
+				return sungma != 0;
+		}
 		if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY)
 		{
 			const int partySize = ch->GetParty() ? (int)ch->GetParty()->GetMemberCount() : 1;
