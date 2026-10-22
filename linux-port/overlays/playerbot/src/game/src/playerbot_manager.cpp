@@ -406,6 +406,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_yohara_shop.h" // MT2009_PLUS_BOT_YOHARA_SHOP_V1: the bots' exchange in Dongan (elixirs for materials / dust) and the Champions' world set
 // MT2009_PLUS_BOT_YOHARA_CHI_V1: the Champions' orders at Mistrz Chi and the smith of Dongan (gloves, jade, stones, Will talisman)
 #include "playerbot_yohara_chi.h"
+// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 helmets (Jaharr), the body armours 90-115 (Kawuco, Angmur) and the
+// cyanite step (Seon-Pyeong) - the recipes kept, hunted, bought and crafted
+#include "playerbot_yohara_gear2.h"
 
 namespace
 {
@@ -7962,6 +7965,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// reason.
 		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotWorkshop(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: Jaharr, Kawuco, Angmur and Seon-Pyeong (playerbot_yohara_gear2.h) - a helmet of
+		// level 100, a body armour of 90-115 or the cyanite one made where the players make them. Beside the workshop
+		// and for its reason.
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotGear2(ch, state, dwNow))
 			continue;
 
 		// The Dozorca's exchange and the Stajenny's saddlebag rows

@@ -1209,6 +1209,9 @@ namespace
 					out.insert(vnum);
 			}
 		}
+		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: and what the helmets' / armours' recipes lack (playerbot_yohara_gear2.h) - a
+		// monster dropping one is a target (Meley's, En-Tai's, the chests' bosses).
+		CollectPlayerBotGear2WantedMaterials(ch, out);
 	}
 
 	// Whether this monster can still give this bot a material at all.

@@ -730,6 +730,13 @@ namespace
 			case APPLY_IMMUNE_SLOW:
 			case APPLY_IMMUNE_FALL:
 				return (long long)lValue * 1000;
+#ifdef PLAYERBOT_ENGINE_MT2009
+			// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 "...Smokow" helmets' Mag./krotkodys. atak (1-8%) - a multiplier
+			// on every blow and every skill (battle.cpp, char_battle.cpp), over a point of average damage; it fell to the
+			// catch-all's fifty, under a level-80 helmet's lines.
+			case POINT_MELEE_MAGIC_ATT_BONUS_PER:
+				return (long long)lValue * 600;
+#endif
 			default:
 				return (long long)lValue * 50;
 		}
