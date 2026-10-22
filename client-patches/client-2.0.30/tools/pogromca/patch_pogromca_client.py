@@ -5,7 +5,7 @@
 # other level-80 weapons (Miecz Trytona 270-279): level, attack speed /
 # strong against devils / strong against humans, attack 273-321 plus the
 # refine bonus, prices, ANTI_SELL, socket % 3, refine chain 502-510 and
-# +9 -> Ostrze Slonca (3190) by 610. Idempotent: a second run changes nothing.
+# +9 -> Ostrze Slonca (3190) by 610 - MT2009_PLUS_POGROMCA_V2: +9 is the end now. Idempotent: a second run changes nothing.
 #
 # Run on the current file (a plain copy of gamedata/item_proto out of the
 # gamedata pack), in the m2pack-lzo image for the proto's MCOZ:
@@ -43,7 +43,8 @@ def fill(r, plus):
     struct.pack_into('<BiBi', r, 114, 1, LEVEL[plus], 0, 0)
     struct.pack_into('<BiBiBi', r, 124, 17, ATT_SPEED[plus], 48, DEVIL[plus], 43, HUMAN[plus])
     struct.pack_into('<6i', r, 139, 0, 0, 0, 273, 321, BONUS[plus])
-    struct.pack_into('<IH', r, 175, 3190 if plus == 9 else 3181 + plus, 610 if plus == 9 else 502 + plus)
+    # MT2009_PLUS_POGROMCA_V2 (the owner, 22 October 2026): +9 goes no further (GF) - no next item, no recipe
+    struct.pack_into('<IH', r, 175, 0 if plus == 9 else 3181 + plus, 0 if plus == 9 else 502 + plus)
     r[183] = 3
     return bytes(r)
 

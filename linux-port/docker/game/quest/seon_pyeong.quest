@@ -1,30 +1,43 @@
--- Seon-Pyeong (20091) beside the Grotto of Exile's entrance in Orc Valley:
--- a +9 weapon or body armour of level 65-66 made into its level-80 successor
--- in the cube window, with a Broszura Szermierki from the grotto, two of each
--- pearl and two million Yang. The recipes are cube.seon_pyeong.txt, appended
--- to the share's cube.txt (port/shareify.py); Cube_open refuses an NPC that has
--- no recipe there. NerrVoVy's quest and recipes (26-27 September), the text
--- without diacritics like the rest of ours, and a word on what the anvil keeps.
+-- Seon-Pyeong (20091) beside the Grotto of Exile's entrance in Orc Valley.
+-- MT2009_PLUS_SEONPYEONG_GF_V1 (the owner, 17 October; as on the official server and the pl-wiki "Wytwarzanie
+-- Broni / Zbroi / Butow"): a +9 piece dragged onto him becomes its level-80 successor, always (100%), and keeps its
+-- stones and bonuses - item_proto refined_vnum / refine_set (char_item.cpp: BLACKSMITH2_MOB takes only the elite
+-- refine sets, the Blacksmith and the scrolls none of them):
+--   * weapons of level 65 +9, refine_proto 501: 2x Zwoj Blogoslawienstwa, 1x Broszura Szermierki, 100 000 Yang;
+--   * body armours of level 66 +9 and the boots of level 47..59 +9, refine_proto 530: 3x Smocza Luska,
+--     4x Smoczy Szpon, 200 000 Yang.
+-- MT2009_PLUS_SEONPYEONG_GF_V2 (the owner, 17 October; the pl-wiki pages "Runiczny Miecz", "Cyjanitowe Ostrze" ...):
+--   * weapons of level 80 +9 into the 87-105 ones, refine_proto 716: 3x Broszura Szermierki, 2x Zwoj Blogoslawienstwa,
+--     100x Odlamek Energii, 5 000 000 Yang;
+--   * weapons of level 87 +9 into the cyanite ones (105-115), refine_proto 717: 3x Ksiega Prawdy, 2x Zwoj
+--     Blogoslawienstwa, 2x Dusza Prawdy, 2 000 000 Yang (constants.cpp IsEliteRefine: 501, 530, 716, 717).
+-- MT2009_PLUS_ARMOR105_V1 (the owner, 17 October; the pl-wiki "Wytwarzanie Zbroi" - Seon-Pyeong, level 110): the
+--   level-105 body armours +9 into the cyanite ones (110-120) - the same refine_proto 717 (mod/32_zbroje_105.sql).
+-- MT2009_PLUS_SEONPYEONG_ELITE_V1 (22 October 2026): since the owner's sheet (refine_global.sql) these steps are its
+--   fixed recipes 39900-39903 (tools/refineglobal ELITE; IsEliteRefine, server-patches/seonpyeong), Partyzana+9 ->
+--   Pogromca Nieb. Smoka among the weapons 65 -> 80.
+-- His cube window (NerrVoVy's cube.seon_pyeong.txt, the boots of cube.buty.txt) is gone. The text without diacritics.
 quest seon_pyeong begin
 	state start begin
 		when 20091.chat."Wytwarzanie Ekwipunku" begin
 			say_title(mob_name(20091)..":")
-			say("Witaj! Potrafie przekuc na wyzsze poziomy bron")
-			say("oraz zbroje i buty w legendarny, potezniejszy ekwipunek.") -- MT2009_PLUS_BOOTS_V1: the boots (cube.buty.txt)
-			say("Czy przyniosles ze soba odpowiednie przedmioty,")
-			say("ulepszacze oraz wystarczajaca ilosc Yang?")
+			say("Przekuwam bron, zbroje i buty ulepszone na +9")
+			say("w legendarny ekwipunek. Przeciagnij przedmiot +9")
+			say("na mnie. Ulepszenie zawsze sie udaje, kamienie")
+			say("i bonusy zostaja.")
 			say("")
-			say("Bonusy i kamienie oddanego przedmiotu przepadaja.")
+			say_reward("Bron 65 > 80: 2x "..item_name(25040)..",")
+			say_reward("1x "..item_name(70031)..", 100 000 Yang")
+			say_reward("Zbroja i buty > 80: 3x "..item_name(71123)..",")
+			say_reward("4x "..item_name(71129)..", 200 000 Yang")
+			say_reward("Bron 80 > 87: 3x "..item_name(70031)..",")
+			say_reward("2x "..item_name(25040)..", 100x "..item_name(51001)..", 5 000 000 Yang")
+			say_reward("Bron 87 > Cyjanit: 3x "..item_name(30623)..",")
+			say_reward("2x "..item_name(25040)..", 2x "..item_name(30624)..", 2 000 000 Yang")
+			say_reward("Zbroja 105 > Cyjanit: to samo co bron 87")
 			say("")
-			-- MT2009_PLUS_KAWUCO_V1: Ogniste Buty / Buty Oceanu are Kawuco's (cube.buty.txt)
 			say("Ogniste Buty i Buty Oceanu szyje Kawuco")
 			say("na Przyladku Smoczego Ognia.")
-			say("")
-			local s = select("Otworz okno ulepszania", "Anuluj")
-			if s == 1 then
-				setskin(NOWINDOW)
-				command("cube open")
-			end
 		end
 	end
 end

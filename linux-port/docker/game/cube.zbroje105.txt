@@ -1,0 +1,964 @@
+# MT2009_PLUS_ARMOR105_V1 (the owner, 17 October 2026): the pl-wiki "Wytwarzanie Zbroi" - Kawuco (20413) makes the
+# level-105..115 armours from the level-90 one +5..+9 + Plan Zbroi + a dye + 5 sheets, 5/10/30/40/50% by plus,
+# 3 000 000 Yang, the bonuses are lost (the values: GF 25.2.17 cube.txt; the Lykan ones left out). Appended after
+# cube.wiki_kto.txt by the Dockerfile; quest/kawuco.quest opens the window.
+
+# Polarny Pancerz+0 <- Pancerz Diabel. Rogu+5, Plan Zbroi, 5x Zlote Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20005	1
+item	30601	1
+item	30605	5
+item	30602	1
+reward	20760	1
+gold	3000000
+percent	5
+end
+
+# Polarny Pancerz+0 <- Pancerz Diabel. Rogu+6, Plan Zbroi, 5x Zlote Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20006	1
+item	30601	1
+item	30605	5
+item	30602	1
+reward	20760	1
+gold	3000000
+percent	10
+end
+
+# Polarny Pancerz+0 <- Pancerz Diabel. Rogu+7, Plan Zbroi, 5x Zlote Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20007	1
+item	30601	1
+item	30605	5
+item	30602	1
+reward	20760	1
+gold	3000000
+percent	30
+end
+
+# Polarny Pancerz+0 <- Pancerz Diabel. Rogu+8, Plan Zbroi, 5x Zlote Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20008	1
+item	30601	1
+item	30605	5
+item	30602	1
+reward	20760	1
+gold	3000000
+percent	40
+end
+
+# Polarny Pancerz+0 <- Pancerz Diabel. Rogu+9, Plan Zbroi, 5x Zlote Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20009	1
+item	30601	1
+item	30605	5
+item	30602	1
+reward	20760	1
+gold	3000000
+percent	50
+end
+
+# Ubranie Zasadzki+0 <- Szata Smoczego Jezdzca+5, Plan Zbroi, 5x Srebrne Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20255	1
+item	30601	1
+item	30606	5
+item	30602	1
+reward	20770	1
+gold	3000000
+percent	5
+end
+
+# Ubranie Zasadzki+0 <- Szata Smoczego Jezdzca+6, Plan Zbroi, 5x Srebrne Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20256	1
+item	30601	1
+item	30606	5
+item	30602	1
+reward	20770	1
+gold	3000000
+percent	10
+end
+
+# Ubranie Zasadzki+0 <- Szata Smoczego Jezdzca+7, Plan Zbroi, 5x Srebrne Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20257	1
+item	30601	1
+item	30606	5
+item	30602	1
+reward	20770	1
+gold	3000000
+percent	30
+end
+
+# Ubranie Zasadzki+0 <- Szata Smoczego Jezdzca+8, Plan Zbroi, 5x Srebrne Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20258	1
+item	30601	1
+item	30606	5
+item	30602	1
+reward	20770	1
+gold	3000000
+percent	40
+end
+
+# Ubranie Zasadzki+0 <- Szata Smoczego Jezdzca+9, Plan Zbroi, 5x Srebrne Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20259	1
+item	30601	1
+item	30606	5
+item	30602	1
+reward	20770	1
+gold	3000000
+percent	50
+end
+
+# Diabelski Pancerz+0 <- Pancerz Koscioplytowy+5, Plan Zbroi, 5x Miedziane Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20505	1
+item	30601	1
+item	30607	5
+item	30602	1
+reward	20780	1
+gold	3000000
+percent	5
+end
+
+# Diabelski Pancerz+0 <- Pancerz Koscioplytowy+6, Plan Zbroi, 5x Miedziane Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20506	1
+item	30601	1
+item	30607	5
+item	30602	1
+reward	20780	1
+gold	3000000
+percent	10
+end
+
+# Diabelski Pancerz+0 <- Pancerz Koscioplytowy+7, Plan Zbroi, 5x Miedziane Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20507	1
+item	30601	1
+item	30607	5
+item	30602	1
+reward	20780	1
+gold	3000000
+percent	30
+end
+
+# Diabelski Pancerz+0 <- Pancerz Koscioplytowy+8, Plan Zbroi, 5x Miedziane Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20508	1
+item	30601	1
+item	30607	5
+item	30602	1
+reward	20780	1
+gold	3000000
+percent	40
+end
+
+# Diabelski Pancerz+0 <- Pancerz Koscioplytowy+9, Plan Zbroi, 5x Miedziane Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20509	1
+item	30601	1
+item	30607	5
+item	30602	1
+reward	20780	1
+gold	3000000
+percent	50
+end
+
+# Szata Wiary+0 <- Zlote Ubranie+5, Plan Zbroi, 5x Stalowe Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20755	1
+item	30601	1
+item	30608	5
+item	30602	1
+reward	20790	1
+gold	3000000
+percent	5
+end
+
+# Szata Wiary+0 <- Zlote Ubranie+6, Plan Zbroi, 5x Stalowe Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20756	1
+item	30601	1
+item	30608	5
+item	30602	1
+reward	20790	1
+gold	3000000
+percent	10
+end
+
+# Szata Wiary+0 <- Zlote Ubranie+7, Plan Zbroi, 5x Stalowe Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20757	1
+item	30601	1
+item	30608	5
+item	30602	1
+reward	20790	1
+gold	3000000
+percent	30
+end
+
+# Szata Wiary+0 <- Zlote Ubranie+8, Plan Zbroi, 5x Stalowe Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20758	1
+item	30601	1
+item	30608	5
+item	30602	1
+reward	20790	1
+gold	3000000
+percent	40
+end
+
+# Szata Wiary+0 <- Zlote Ubranie+9, Plan Zbroi, 5x Stalowe Plyty, Niebieski Barwnik
+section
+npc	20413
+item	20759	1
+item	30601	1
+item	30608	5
+item	30602	1
+reward	20790	1
+gold	3000000
+percent	50
+end
+
+# Pancerz Magmy+0 <- Pancerz Diabel. Rogu+5, Plan Zbroi, 5x Srebrne Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20005	1
+item	30601	1
+item	30606	5
+item	30603	1
+reward	20810	1
+gold	3000000
+percent	5
+end
+
+# Pancerz Magmy+0 <- Pancerz Diabel. Rogu+6, Plan Zbroi, 5x Srebrne Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20006	1
+item	30601	1
+item	30606	5
+item	30603	1
+reward	20810	1
+gold	3000000
+percent	10
+end
+
+# Pancerz Magmy+0 <- Pancerz Diabel. Rogu+7, Plan Zbroi, 5x Srebrne Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20007	1
+item	30601	1
+item	30606	5
+item	30603	1
+reward	20810	1
+gold	3000000
+percent	30
+end
+
+# Pancerz Magmy+0 <- Pancerz Diabel. Rogu+8, Plan Zbroi, 5x Srebrne Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20008	1
+item	30601	1
+item	30606	5
+item	30603	1
+reward	20810	1
+gold	3000000
+percent	40
+end
+
+# Pancerz Magmy+0 <- Pancerz Diabel. Rogu+9, Plan Zbroi, 5x Srebrne Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20009	1
+item	30601	1
+item	30606	5
+item	30603	1
+reward	20810	1
+gold	3000000
+percent	50
+end
+
+# Ubr. Krwaw. Ksiezyca+0 <- Szata Smoczego Jezdzca+5, Plan Zbroi, 5x Miedziane Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20255	1
+item	30601	1
+item	30607	5
+item	30603	1
+reward	20820	1
+gold	3000000
+percent	5
+end
+
+# Ubr. Krwaw. Ksiezyca+0 <- Szata Smoczego Jezdzca+6, Plan Zbroi, 5x Miedziane Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20256	1
+item	30601	1
+item	30607	5
+item	30603	1
+reward	20820	1
+gold	3000000
+percent	10
+end
+
+# Ubr. Krwaw. Ksiezyca+0 <- Szata Smoczego Jezdzca+7, Plan Zbroi, 5x Miedziane Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20257	1
+item	30601	1
+item	30607	5
+item	30603	1
+reward	20820	1
+gold	3000000
+percent	30
+end
+
+# Ubr. Krwaw. Ksiezyca+0 <- Szata Smoczego Jezdzca+8, Plan Zbroi, 5x Miedziane Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20258	1
+item	30601	1
+item	30607	5
+item	30603	1
+reward	20820	1
+gold	3000000
+percent	40
+end
+
+# Ubr. Krwaw. Ksiezyca+0 <- Szata Smoczego Jezdzca+9, Plan Zbroi, 5x Miedziane Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20259	1
+item	30601	1
+item	30607	5
+item	30603	1
+reward	20820	1
+gold	3000000
+percent	50
+end
+
+# Piekielny Pancerz+0 <- Pancerz Koscioplytowy+5, Plan Zbroi, 5x Stalowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20505	1
+item	30601	1
+item	30608	5
+item	30603	1
+reward	20830	1
+gold	3000000
+percent	5
+end
+
+# Piekielny Pancerz+0 <- Pancerz Koscioplytowy+6, Plan Zbroi, 5x Stalowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20506	1
+item	30601	1
+item	30608	5
+item	30603	1
+reward	20830	1
+gold	3000000
+percent	10
+end
+
+# Piekielny Pancerz+0 <- Pancerz Koscioplytowy+7, Plan Zbroi, 5x Stalowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20507	1
+item	30601	1
+item	30608	5
+item	30603	1
+reward	20830	1
+gold	3000000
+percent	30
+end
+
+# Piekielny Pancerz+0 <- Pancerz Koscioplytowy+8, Plan Zbroi, 5x Stalowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20508	1
+item	30601	1
+item	30608	5
+item	30603	1
+reward	20830	1
+gold	3000000
+percent	40
+end
+
+# Piekielny Pancerz+0 <- Pancerz Koscioplytowy+9, Plan Zbroi, 5x Stalowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20509	1
+item	30601	1
+item	30608	5
+item	30603	1
+reward	20830	1
+gold	3000000
+percent	50
+end
+
+# Szata Ognia+0 <- Zlote Ubranie+5, Plan Zbroi, 5x Brazowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20755	1
+item	30601	1
+item	30609	5
+item	30603	1
+reward	20840	1
+gold	3000000
+percent	5
+end
+
+# Szata Ognia+0 <- Zlote Ubranie+6, Plan Zbroi, 5x Brazowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20756	1
+item	30601	1
+item	30609	5
+item	30603	1
+reward	20840	1
+gold	3000000
+percent	10
+end
+
+# Szata Ognia+0 <- Zlote Ubranie+7, Plan Zbroi, 5x Brazowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20757	1
+item	30601	1
+item	30609	5
+item	30603	1
+reward	20840	1
+gold	3000000
+percent	30
+end
+
+# Szata Ognia+0 <- Zlote Ubranie+8, Plan Zbroi, 5x Brazowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20758	1
+item	30601	1
+item	30609	5
+item	30603	1
+reward	20840	1
+gold	3000000
+percent	40
+end
+
+# Szata Ognia+0 <- Zlote Ubranie+9, Plan Zbroi, 5x Brazowe Plyty, Czerwony Barwnik
+section
+npc	20413
+item	20759	1
+item	30601	1
+item	30609	5
+item	30603	1
+reward	20840	1
+gold	3000000
+percent	50
+end
+
+# Wielorybi Pancerz+0 <- Pancerz Diabel. Rogu+5, Plan Zbroi, 5x Zlote Plyty, Bialy Barwnik
+section
+npc	20413
+item	20005	1
+item	30601	1
+item	30605	5
+item	30615	1
+reward	20860	1
+gold	3000000
+percent	5
+end
+
+# Wielorybi Pancerz+0 <- Pancerz Diabel. Rogu+6, Plan Zbroi, 5x Zlote Plyty, Bialy Barwnik
+section
+npc	20413
+item	20006	1
+item	30601	1
+item	30605	5
+item	30615	1
+reward	20860	1
+gold	3000000
+percent	10
+end
+
+# Wielorybi Pancerz+0 <- Pancerz Diabel. Rogu+7, Plan Zbroi, 5x Zlote Plyty, Bialy Barwnik
+section
+npc	20413
+item	20007	1
+item	30601	1
+item	30605	5
+item	30615	1
+reward	20860	1
+gold	3000000
+percent	30
+end
+
+# Wielorybi Pancerz+0 <- Pancerz Diabel. Rogu+8, Plan Zbroi, 5x Zlote Plyty, Bialy Barwnik
+section
+npc	20413
+item	20008	1
+item	30601	1
+item	30605	5
+item	30615	1
+reward	20860	1
+gold	3000000
+percent	40
+end
+
+# Wielorybi Pancerz+0 <- Pancerz Diabel. Rogu+9, Plan Zbroi, 5x Zlote Plyty, Bialy Barwnik
+section
+npc	20413
+item	20009	1
+item	30601	1
+item	30605	5
+item	30615	1
+reward	20860	1
+gold	3000000
+percent	50
+end
+
+# Ubranie Morfa+0 <- Szata Smoczego Jezdzca+5, Plan Zbroi, 5x Srebrne Plyty, Bialy Barwnik
+section
+npc	20413
+item	20255	1
+item	30601	1
+item	30606	5
+item	30615	1
+reward	20870	1
+gold	3000000
+percent	5
+end
+
+# Ubranie Morfa+0 <- Szata Smoczego Jezdzca+6, Plan Zbroi, 5x Srebrne Plyty, Bialy Barwnik
+section
+npc	20413
+item	20256	1
+item	30601	1
+item	30606	5
+item	30615	1
+reward	20870	1
+gold	3000000
+percent	10
+end
+
+# Ubranie Morfa+0 <- Szata Smoczego Jezdzca+7, Plan Zbroi, 5x Srebrne Plyty, Bialy Barwnik
+section
+npc	20413
+item	20257	1
+item	30601	1
+item	30606	5
+item	30615	1
+reward	20870	1
+gold	3000000
+percent	30
+end
+
+# Ubranie Morfa+0 <- Szata Smoczego Jezdzca+8, Plan Zbroi, 5x Srebrne Plyty, Bialy Barwnik
+section
+npc	20413
+item	20258	1
+item	30601	1
+item	30606	5
+item	30615	1
+reward	20870	1
+gold	3000000
+percent	40
+end
+
+# Ubranie Morfa+0 <- Szata Smoczego Jezdzca+9, Plan Zbroi, 5x Srebrne Plyty, Bialy Barwnik
+section
+npc	20413
+item	20259	1
+item	30601	1
+item	30606	5
+item	30615	1
+reward	20870	1
+gold	3000000
+percent	50
+end
+
+# Panc. Blednego Ognika+0 <- Pancerz Koscioplytowy+5, Plan Zbroi, 5x Miedziane Plyty, Bialy Barwnik
+section
+npc	20413
+item	20505	1
+item	30601	1
+item	30607	5
+item	30615	1
+reward	20880	1
+gold	3000000
+percent	5
+end
+
+# Panc. Blednego Ognika+0 <- Pancerz Koscioplytowy+6, Plan Zbroi, 5x Miedziane Plyty, Bialy Barwnik
+section
+npc	20413
+item	20506	1
+item	30601	1
+item	30607	5
+item	30615	1
+reward	20880	1
+gold	3000000
+percent	10
+end
+
+# Panc. Blednego Ognika+0 <- Pancerz Koscioplytowy+7, Plan Zbroi, 5x Miedziane Plyty, Bialy Barwnik
+section
+npc	20413
+item	20507	1
+item	30601	1
+item	30607	5
+item	30615	1
+reward	20880	1
+gold	3000000
+percent	30
+end
+
+# Panc. Blednego Ognika+0 <- Pancerz Koscioplytowy+8, Plan Zbroi, 5x Miedziane Plyty, Bialy Barwnik
+section
+npc	20413
+item	20508	1
+item	30601	1
+item	30607	5
+item	30615	1
+reward	20880	1
+gold	3000000
+percent	40
+end
+
+# Panc. Blednego Ognika+0 <- Pancerz Koscioplytowy+9, Plan Zbroi, 5x Miedziane Plyty, Bialy Barwnik
+section
+npc	20413
+item	20509	1
+item	30601	1
+item	30607	5
+item	30615	1
+reward	20880	1
+gold	3000000
+percent	50
+end
+
+# Szata Harmonii+0 <- Zlote Ubranie+5, Plan Zbroi, 5x Stalowe Plyty, Bialy Barwnik
+section
+npc	20413
+item	20755	1
+item	30601	1
+item	30608	5
+item	30615	1
+reward	20890	1
+gold	3000000
+percent	5
+end
+
+# Szata Harmonii+0 <- Zlote Ubranie+6, Plan Zbroi, 5x Stalowe Plyty, Bialy Barwnik
+section
+npc	20413
+item	20756	1
+item	30601	1
+item	30608	5
+item	30615	1
+reward	20890	1
+gold	3000000
+percent	10
+end
+
+# Szata Harmonii+0 <- Zlote Ubranie+7, Plan Zbroi, 5x Stalowe Plyty, Bialy Barwnik
+section
+npc	20413
+item	20757	1
+item	30601	1
+item	30608	5
+item	30615	1
+reward	20890	1
+gold	3000000
+percent	30
+end
+
+# Szata Harmonii+0 <- Zlote Ubranie+8, Plan Zbroi, 5x Stalowe Plyty, Bialy Barwnik
+section
+npc	20413
+item	20758	1
+item	30601	1
+item	30608	5
+item	30615	1
+reward	20890	1
+gold	3000000
+percent	40
+end
+
+# Szata Harmonii+0 <- Zlote Ubranie+9, Plan Zbroi, 5x Stalowe Plyty, Bialy Barwnik
+section
+npc	20413
+item	20759	1
+item	30601	1
+item	30608	5
+item	30615	1
+reward	20890	1
+gold	3000000
+percent	50
+end
+
+# Panc. Deszczu Popiolu+0 <- Pancerz Diabel. Rogu+5, Plan Zbroi, 5x Srebrne Plyty, Czarny Barwnik
+section
+npc	20413
+item	20005	1
+item	30601	1
+item	30606	5
+item	30614	1
+reward	20910	1
+gold	3000000
+percent	5
+end
+
+# Panc. Deszczu Popiolu+0 <- Pancerz Diabel. Rogu+6, Plan Zbroi, 5x Srebrne Plyty, Czarny Barwnik
+section
+npc	20413
+item	20006	1
+item	30601	1
+item	30606	5
+item	30614	1
+reward	20910	1
+gold	3000000
+percent	10
+end
+
+# Panc. Deszczu Popiolu+0 <- Pancerz Diabel. Rogu+7, Plan Zbroi, 5x Srebrne Plyty, Czarny Barwnik
+section
+npc	20413
+item	20007	1
+item	30601	1
+item	30606	5
+item	30614	1
+reward	20910	1
+gold	3000000
+percent	30
+end
+
+# Panc. Deszczu Popiolu+0 <- Pancerz Diabel. Rogu+8, Plan Zbroi, 5x Srebrne Plyty, Czarny Barwnik
+section
+npc	20413
+item	20008	1
+item	30601	1
+item	30606	5
+item	30614	1
+reward	20910	1
+gold	3000000
+percent	40
+end
+
+# Panc. Deszczu Popiolu+0 <- Pancerz Diabel. Rogu+9, Plan Zbroi, 5x Srebrne Plyty, Czarny Barwnik
+section
+npc	20413
+item	20009	1
+item	30601	1
+item	30606	5
+item	30614	1
+reward	20910	1
+gold	3000000
+percent	50
+end
+
+# Ubr. Smiertelnej Nocy+0 <- Szata Smoczego Jezdzca+5, Plan Zbroi, 5x Miedziane Plyty, Czarny Barwnik
+section
+npc	20413
+item	20255	1
+item	30601	1
+item	30607	5
+item	30614	1
+reward	20920	1
+gold	3000000
+percent	5
+end
+
+# Ubr. Smiertelnej Nocy+0 <- Szata Smoczego Jezdzca+6, Plan Zbroi, 5x Miedziane Plyty, Czarny Barwnik
+section
+npc	20413
+item	20256	1
+item	30601	1
+item	30607	5
+item	30614	1
+reward	20920	1
+gold	3000000
+percent	10
+end
+
+# Ubr. Smiertelnej Nocy+0 <- Szata Smoczego Jezdzca+7, Plan Zbroi, 5x Miedziane Plyty, Czarny Barwnik
+section
+npc	20413
+item	20257	1
+item	30601	1
+item	30607	5
+item	30614	1
+reward	20920	1
+gold	3000000
+percent	30
+end
+
+# Ubr. Smiertelnej Nocy+0 <- Szata Smoczego Jezdzca+8, Plan Zbroi, 5x Miedziane Plyty, Czarny Barwnik
+section
+npc	20413
+item	20258	1
+item	30601	1
+item	30607	5
+item	30614	1
+reward	20920	1
+gold	3000000
+percent	40
+end
+
+# Ubr. Smiertelnej Nocy+0 <- Szata Smoczego Jezdzca+9, Plan Zbroi, 5x Miedziane Plyty, Czarny Barwnik
+section
+npc	20413
+item	20259	1
+item	30601	1
+item	30607	5
+item	30614	1
+reward	20920	1
+gold	3000000
+percent	50
+end
+
+# Pancerz Czarnego Ognia+0 <- Pancerz Koscioplytowy+5, Plan Zbroi, 5x Stalowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20505	1
+item	30601	1
+item	30608	5
+item	30614	1
+reward	20930	1
+gold	3000000
+percent	5
+end
+
+# Pancerz Czarnego Ognia+0 <- Pancerz Koscioplytowy+6, Plan Zbroi, 5x Stalowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20506	1
+item	30601	1
+item	30608	5
+item	30614	1
+reward	20930	1
+gold	3000000
+percent	10
+end
+
+# Pancerz Czarnego Ognia+0 <- Pancerz Koscioplytowy+7, Plan Zbroi, 5x Stalowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20507	1
+item	30601	1
+item	30608	5
+item	30614	1
+reward	20930	1
+gold	3000000
+percent	30
+end
+
+# Pancerz Czarnego Ognia+0 <- Pancerz Koscioplytowy+8, Plan Zbroi, 5x Stalowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20508	1
+item	30601	1
+item	30608	5
+item	30614	1
+reward	20930	1
+gold	3000000
+percent	40
+end
+
+# Pancerz Czarnego Ognia+0 <- Pancerz Koscioplytowy+9, Plan Zbroi, 5x Stalowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20509	1
+item	30601	1
+item	30608	5
+item	30614	1
+reward	20930	1
+gold	3000000
+percent	50
+end
+
+# Szata Ksiezyca+0 <- Zlote Ubranie+5, Plan Zbroi, 5x Brazowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20755	1
+item	30601	1
+item	30609	5
+item	30614	1
+reward	20940	1
+gold	3000000
+percent	5
+end
+
+# Szata Ksiezyca+0 <- Zlote Ubranie+6, Plan Zbroi, 5x Brazowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20756	1
+item	30601	1
+item	30609	5
+item	30614	1
+reward	20940	1
+gold	3000000
+percent	10
+end
+
+# Szata Ksiezyca+0 <- Zlote Ubranie+7, Plan Zbroi, 5x Brazowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20757	1
+item	30601	1
+item	30609	5
+item	30614	1
+reward	20940	1
+gold	3000000
+percent	30
+end
+
+# Szata Ksiezyca+0 <- Zlote Ubranie+8, Plan Zbroi, 5x Brazowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20758	1
+item	30601	1
+item	30609	5
+item	30614	1
+reward	20940	1
+gold	3000000
+percent	40
+end
+
+# Szata Ksiezyca+0 <- Zlote Ubranie+9, Plan Zbroi, 5x Brazowe Plyty, Czarny Barwnik
+section
+npc	20413
+item	20759	1
+item	30601	1
+item	30609	5
+item	30614	1
+reward	20940	1
+gold	3000000
+percent	50
+end

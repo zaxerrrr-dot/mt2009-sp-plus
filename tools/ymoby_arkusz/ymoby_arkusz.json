@@ -3005,6 +3005,14 @@
 "name": "Wojownik En-Tai",
 "rows": [
 [
+30609,
+1,
+0.5,
+"Brązowe Płyty",
+30609,
+"default:material"
+],
+[
 50723,
 1,
 1.0,
@@ -3043,6 +3051,14 @@
 "Zbroja Boga Smoków+5",
 11285,
 "default:gear+0-5"
+],
+[
+30605,
+1,
+0.5,
+"Złote Płyty",
+30605,
+"default:material"
 ]
 ]
 },
@@ -3113,12 +3129,28 @@
 "default:gear+0-5"
 ],
 [
+30607,
+1,
+0.5,
+"Miedziane Płyty",
+30607,
+"default:material"
+],
+[
 12401,
 1,
 0.5,
 "Pajęczy Kaptur+1",
 12401,
 "default:gear+0-5"
+],
+[
+30605,
+1,
+0.5,
+"Złote Płyty",
+30605,
+"default:material"
 ],
 [
 50120,
@@ -3189,6 +3221,14 @@
 "name": "Niszczyciel En-Tai",
 "rows": [
 [
+30609,
+1,
+0.5,
+"Brązowe Płyty",
+30609,
+"default:material"
+],
+[
 50726,
 3,
 2.0,
@@ -3221,6 +3261,22 @@
 "ours"
 ],
 [
+30607,
+1,
+0.5,
+"Miedziane Płyty",
+30607,
+"default:material"
+],
+[
+30601,
+1,
+0.5,
+"Plan Zbroi",
+30601,
+"default:material"
+],
+[
 30504,
 1,
 0.5,
@@ -3245,6 +3301,14 @@
 "default:material"
 ],
 [
+30605,
+1,
+0.5,
+"Złote Płyty",
+30605,
+"default:material"
+],
+[
 50122,
 1,
 0.2,
@@ -3258,6 +3322,14 @@
 "kind": "boss",
 "name": "Władca En-Tai",
 "rows": [
+[
+30619,
+1,
+10.0,
+"Barwnik złoty metalik",
+30619,
+"default:material"
+],
 [
 90017,
 1,
@@ -14194,415 +14266,104 @@
 "SungMa EXP": 0
 }
 },
-"skipped": {
-"21075 Zbroja Nocnego Cienia+5": [
-"the Lycan's (no such class here)",
-1
+"skipped": [
+"21075 Zbroja Nocnego Cienia+5",
+"27124 Opatrunek",
+"27213 Eliksir: W. SungMa(SIŁA)",
+"27214 Eliksir: W. SungMa (WIT)",
+"27215 Eliksir: W. SungMa (ODP)",
+"27216 Eliksir: W. SungMa (INT)",
+"28444 Kamień Antymagii+4",
+"28445 Kamień Antymagii+4",
+"30168 Notatka Przywódcy",
+"30675 Mnisi Len",
+"30676 Odłamek Miecza Kao",
+"31096 Szlachetne Drewno",
+"31097 Rosa En-Tai",
+"31099 Drzewny Szmaragd",
+"31100 Apteczka",
+"31143 Skrzynia Przebudzenia",
+"31180 Kręty Klucz (PB)",
+"31182 Szlachetne Drzewo (PB)",
+"31183 Rosa En-Tai (PB)",
+"31185 Drzewny Szmaragd (PB)",
+"31186 Apteczka (PB)",
+"31202 PB: Plan Pazura",
+"31208 PB: Plan Zbroi Likana",
+"31213 PB: Plan Hełmu Likana",
+"31231 Kryształ Metin",
+"31232 Mroczna Paproć",
+"31256 Skrzynia Labiryntowa",
+"50046 Szlachetna Trawa",
+"50124 Spróchniała Skrzynia",
+"50331 Księga Misji (Książę 2)",
+"50332 Księga Misji (Książę 3)",
+"50335 Księga Misji (P. Yilad)",
+"50337 Księga Misji (R. Dusz)",
+"50514 Podręcznik: Dopalacz",
+"50515 Podręcznik: Riposta",
+"50576 Burza Szponów (9.skill)",
+"54704 Skrzynia Jotuna Thryma",
+"55004 Księga Dzikiego Zwierza",
+"55005 Księga Dzielnego Zwierza",
+"55006 Bohat. Księga Zwierza",
+"55070 S. Umiejętności Konnych",
+"6025 Żelazny Szpon+5",
+"6044 Szpon Gryfa+4",
+"6045 Szpon Gryfa+5",
+"6046 Szpon Gryfa+6",
+"6065 Jastrzębi Szpon+5",
+"6066 Jastrzębi Szpon+6",
+"6067 Jastrzębi Szpon+7",
+"6068 Jastrzębi Szpon+8",
+"6076 Kolczasty Szpon+6",
+"6077 Kolczasty Szpon+7",
+"6078 Kolczasty Szpon+8",
+"70433 Zwój Skarbu (Stopień B)",
+"72749 Powolne Leczenia Najem.",
+"79740 PB: Grota Wygn., część 1",
+"79741 PB: Grota Wygn., część 2",
+"79742 PB: Grota Wygn., część 3",
+"79743 PB: Grota Wygn., część 4",
+"79744 PB: Grota Wygn., część 5",
+"79745 Jaskinie Gnolli, część 1",
+"79746 Jaskinie Gnolli, część 2",
+"79747 Jaskinie Gnolli, część 3",
+"79748 Jaskinie Gnolli, część 4",
+"79749 Jaskinie Gnolli, część 5",
+"79750 Jaskinie Gnolli 2, cz. 1",
+"79751 Jaskinie Gnolli 2, cz. 2",
+"79752 Jaskinie Gnolli 2, cz. 3",
+"79753 Jaskinie Gnolli 2, cz. 4",
+"79754 Jaskinie Gnolli 2, cz. 5",
+"79755 Jaskinie Gnolli 3, cz. 1",
+"79756 Jaskinie Gnolli 3, cz. 2",
+"79757 Jaskinie Gnolli 3, cz. 3",
+"79758 Jaskinie Gnolli 3, cz. 4",
+"79759 Jaskinie Gnolli 3, cz. 5",
+"79760 Świątynia Węży, część 1",
+"79761 Świątynia Węży, część 2",
+"79762 Świątynia Węży, część 3",
+"79763 Świątynia Węży, część 4",
+"79764 Świątynia Węży, część 5",
+"79765 Sch. Półn. Wiatru, cz. 1",
+"79766 Sch. Półn. Wiatru, cz. 2",
+"79767 Sch. Półn. Wiatru, cz. 3",
+"79768 Sch. Półn. Wiatru, cz. 4",
+"79769 Sch. Półn. Wiatru, cz. 5",
+"79770 Zej. Półn. Wiatru, cz. 1",
+"79771 Zej. Półn. Wiatru, cz. 2",
+"79772 Zej. Półn. Wiatru, cz. 3",
+"79773 Zej. Półn. Wiatru, cz. 4",
+"79774 Zej. Półn. Wiatru, cz. 5",
+"83057 Skrzynia Skarbów Namgan",
+"83058 Klucz do Skrz. Sk. Namg.",
+"83059 Skrzynia Skarbów Yilad",
+"83060 Klucz do Skrz. Sk. Yilad",
+"83061 Skrzynia Skarbów Dongan",
+"83062 Klucz do Skrz. Sk. Dong.",
+"83063 Skrzynia Skarbów Seogan",
+"83064 Klucz do Skrz. Sk. Seog."
 ],
-"27124 Opatrunek": [
-"not in our world",
-1
-],
-"27213 Eliksir: W. SungMa(SIŁA)": [
-"not in our world",
-4
-],
-"27214 Eliksir: W. SungMa (WIT)": [
-"not in our world",
-4
-],
-"27215 Eliksir: W. SungMa (ODP)": [
-"not in our world",
-4
-],
-"27216 Eliksir: W. SungMa (INT)": [
-"not in our world",
-4
-],
-"28444 Kamień Antymagii+4": [
-"not in our world",
-4
-],
-"28445 Kamień Antymagii+4": [
-"not in our world",
-4
-],
-"30168 Notatka Przywódcy": [
-"quest item",
-2
-],
-"30601 Plan Zbroi": [
-"not in our world",
-1
-],
-"30605 Złote Płyty": [
-"not in our world",
-3
-],
-"30607 Miedziane Płyty": [
-"not in our world",
-2
-],
-"30609 Brązowe Płyty": [
-"not in our world",
-2
-],
-"30619 Barwnik złoty metalik": [
-"not in our world",
-1
-],
-"30675 Mnisi Len": [
-"not in our world",
-2
-],
-"30676 Odłamek Miecza Kao": [
-"not in our world",
-2
-],
-"31096 Szlachetne Drewno": [
-"quest item",
-1
-],
-"31097 Rosa En-Tai": [
-"quest item",
-1
-],
-"31099 Drzewny Szmaragd": [
-"quest item",
-1
-],
-"31100 Apteczka": [
-"quest item",
-1
-],
-"31143 Skrzynia Przebudzenia": [
-"Skrzynia Przebudzenia - the awakened bosses' quest gives it",
-8
-],
-"31180 Kręty Klucz (PB)": [
-"quest item (PB)",
-1
-],
-"31182 Szlachetne Drzewo (PB)": [
-"quest item (PB)",
-1
-],
-"31183 Rosa En-Tai (PB)": [
-"quest item (PB)",
-1
-],
-"31185 Drzewny Szmaragd (PB)": [
-"quest item (PB)",
-1
-],
-"31186 Apteczka (PB)": [
-"quest item (PB)",
-1
-],
-"31202 PB: Plan Pazura": [
-"not in our world",
-3
-],
-"31208 PB: Plan Zbroi Likana": [
-"not in our world",
-4
-],
-"31213 PB: Plan Hełmu Likana": [
-"not in our world",
-4
-],
-"31231 Kryształ Metin": [
-"not in our world",
-5
-],
-"31232 Mroczna Paproć": [
-"not in our world",
-21
-],
-"31256 Skrzynia Labiryntowa": [
-"the labyrinth chest of its quest",
-4
-],
-"50046 Szlachetna Trawa": [
-"not in our world",
-6
-],
-"50124 Spróchniała Skrzynia": [
-"Sprochniala Skrzynia - out of every drop (the owner, 15 October 2026)",
-15
-],
-"50331 Księga Misji (Książę 2)": [
-"not in our world",
-6
-],
-"50332 Księga Misji (Książę 3)": [
-"not in our world",
-6
-],
-"50335 Księga Misji (P. Yilad)": [
-"not in our world",
-7
-],
-"50337 Księga Misji (R. Dusz)": [
-"not in our world",
-5
-],
-"50514 Podręcznik: Dopalacz": [
-"not in our world",
-2
-],
-"50515 Podręcznik: Riposta": [
-"not in our world",
-4
-],
-"50576 Burza Szponów (9.skill)": [
-"the Lycan's (no such class here)",
-7
-],
-"54704 Skrzynia Jotuna Thryma": [
-"not in our world",
-1
-],
-"55004 Księga Dzikiego Zwierza": [
-"not in our world",
-8
-],
-"55005 Księga Dzielnego Zwierza": [
-"not in our world",
-2
-],
-"55006 Bohat. Księga Zwierza": [
-"not in our world",
-4
-],
-"55070 S. Umiejętności Konnych": [
-"not in our world",
-2
-],
-"6025 Żelazny Szpon+5": [
-"not in our world",
-1
-],
-"6044 Szpon Gryfa+4": [
-"not in our world",
-1
-],
-"6045 Szpon Gryfa+5": [
-"the Lycan's (no such class here)",
-13
-],
-"6046 Szpon Gryfa+6": [
-"the Lycan's (no such class here)",
-14
-],
-"6065 Jastrzębi Szpon+5": [
-"not in our world",
-6
-],
-"6066 Jastrzębi Szpon+6": [
-"not in our world",
-6
-],
-"6067 Jastrzębi Szpon+7": [
-"not in our world",
-4
-],
-"6068 Jastrzębi Szpon+8": [
-"not in our world",
-4
-],
-"6076 Kolczasty Szpon+6": [
-"not in our world",
-4
-],
-"6077 Kolczasty Szpon+7": [
-"not in our world",
-2
-],
-"6078 Kolczasty Szpon+8": [
-"not in our world",
-6
-],
-"70433 Zwój Skarbu (Stopień B)": [
-"not in our world",
-1
-],
-"72749 Powolne Leczenia Najem.": [
-"not in our world",
-3
-],
-"79740 PB: Grota Wygn., część 1": [
-"not in our world",
-1
-],
-"79741 PB: Grota Wygn., część 2": [
-"not in our world",
-1
-],
-"79742 PB: Grota Wygn., część 3": [
-"not in our world",
-1
-],
-"79743 PB: Grota Wygn., część 4": [
-"not in our world",
-1
-],
-"79744 PB: Grota Wygn., część 5": [
-"not in our world",
-1
-],
-"79745 Jaskinie Gnolli, część 1": [
-"not in our world",
-1
-],
-"79746 Jaskinie Gnolli, część 2": [
-"not in our world",
-1
-],
-"79747 Jaskinie Gnolli, część 3": [
-"not in our world",
-1
-],
-"79748 Jaskinie Gnolli, część 4": [
-"not in our world",
-1
-],
-"79749 Jaskinie Gnolli, część 5": [
-"not in our world",
-1
-],
-"79750 Jaskinie Gnolli 2, cz. 1": [
-"not in our world",
-1
-],
-"79751 Jaskinie Gnolli 2, cz. 2": [
-"not in our world",
-1
-],
-"79752 Jaskinie Gnolli 2, cz. 3": [
-"not in our world",
-1
-],
-"79753 Jaskinie Gnolli 2, cz. 4": [
-"not in our world",
-1
-],
-"79754 Jaskinie Gnolli 2, cz. 5": [
-"not in our world",
-1
-],
-"79755 Jaskinie Gnolli 3, cz. 1": [
-"not in our world",
-1
-],
-"79756 Jaskinie Gnolli 3, cz. 2": [
-"not in our world",
-1
-],
-"79757 Jaskinie Gnolli 3, cz. 3": [
-"not in our world",
-1
-],
-"79758 Jaskinie Gnolli 3, cz. 4": [
-"not in our world",
-1
-],
-"79759 Jaskinie Gnolli 3, cz. 5": [
-"not in our world",
-1
-],
-"79760 Świątynia Węży, część 1": [
-"not in our world",
-1
-],
-"79761 Świątynia Węży, część 2": [
-"not in our world",
-1
-],
-"79762 Świątynia Węży, część 3": [
-"not in our world",
-1
-],
-"79763 Świątynia Węży, część 4": [
-"not in our world",
-1
-],
-"79764 Świątynia Węży, część 5": [
-"not in our world",
-1
-],
-"79765 Sch. Półn. Wiatru, cz. 1": [
-"not in our world",
-1
-],
-"79766 Sch. Półn. Wiatru, cz. 2": [
-"not in our world",
-1
-],
-"79767 Sch. Półn. Wiatru, cz. 3": [
-"not in our world",
-1
-],
-"79768 Sch. Półn. Wiatru, cz. 4": [
-"not in our world",
-1
-],
-"79769 Sch. Półn. Wiatru, cz. 5": [
-"not in our world",
-1
-],
-"79770 Zej. Półn. Wiatru, cz. 1": [
-"not in our world",
-1
-],
-"79771 Zej. Półn. Wiatru, cz. 2": [
-"not in our world",
-1
-],
-"79772 Zej. Półn. Wiatru, cz. 3": [
-"not in our world",
-1
-],
-"79773 Zej. Półn. Wiatru, cz. 4": [
-"not in our world",
-1
-],
-"79774 Zej. Półn. Wiatru, cz. 5": [
-"not in our world",
-1
-],
-"83057 Skrzynia Skarbów Namgan": [
-"not in our world",
-1
-],
-"83058 Klucz do Skrz. Sk. Namg.": [
-"not in our world",
-1
-],
-"83059 Skrzynia Skarbów Yilad": [
-"not in our world",
-2
-],
-"83060 Klucz do Skrz. Sk. Yilad": [
-"not in our world",
-2
-],
-"83061 Skrzynia Skarbów Dongan": [
-"not in our world",
-2
-],
-"83062 Klucz do Skrz. Sk. Dong.": [
-"not in our world",
-2
-],
-"83063 Skrzynia Skarbów Seogan": [
-"not in our world",
-1
-],
-"83064 Klucz do Skrz. Sk. Seog.": [
-"not in our world",
-1
-]
-},
 "source": "Metin2_Moby_statystyki_EXP_i_drop.xlsx"
 }

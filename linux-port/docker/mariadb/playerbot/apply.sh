@@ -737,6 +737,9 @@ db -e "UPDATE world.item_proto SET flag = flag | 4 WHERE vnum = 70031 AND (flag 
 # package's skeleton (limit level 0, attack 0), so a later hand edit stays;
 # the client's item_proto carries the same rows
 # (client-patches/client-2.0.30/tools/pogromca). PROTO_FROM_DB. Idempotent.
+# MT2009_PLUS_POGROMCA_V2 (the owner, 22 October 2026): Pogromca+9 (3189) goes no further, as on GF - no next
+# item, no recipe (a world filled by V1 loses its +9 -> Ostrze Slonca in gf_wartosci.sql, tools/gfwartosci);
+# Pogromca+0 comes from Partyzana+9 dragged onto Seon-Pyeong (refine_global.sql, tools/refineglobal ELITE).
 db -e "UPDATE world.item_proto SET
     limittype0 = 1, limitvalue0 = ELT(vnum - 3179, 80, 80, 82, 82, 84, 84, 86, 86, 88, 90),
     applytype0 = 17, applyvalue0 = ELT(vnum - 3179, 15, 15, 16, 17, 18, 20, 22, 24, 27, 30),
@@ -746,7 +749,7 @@ db -e "UPDATE world.item_proto SET
     gold = ELT(vnum - 3179, 360000, 395000, 435000, 500000, 600000, 750000, 975000, 1320000, 1845000, 2770000),
     shop_buy_price = ELT(vnum - 3179, 360000, 395000, 435000, 500000, 600000, 750000, 975000, 1320000, 1845000, 2770000),
     antiflag = antiflag | 256, socket_pct = 3,
-    refined_vnum = IF(vnum = 3189, 3190, vnum + 1), refine_set = IF(vnum = 3189, 610, vnum - 3180 + 502)
+    refined_vnum = IF(vnum = 3189, 0, vnum + 1), refine_set = IF(vnum = 3189, 0, vnum - 3180 + 502)
 WHERE vnum BETWEEN 3180 AND 3189 AND limitvalue0 = 0 AND value3 = 0;" || fail_step "could not fill Pogromca Nieb. Smoka" >&2
 # fish_log came from r40250's dump and has that engine's eight columns,
 # while this one writes six - so every catch failed with errno 1136 and the
@@ -3447,12 +3450,10 @@ db -e "DELETE FROM player.quest WHERE dwPID > 0 AND szName = 'dungeon_panel' AND
 # that the bots' vein keeper stands in the Red Forest and the Grotto of Exile (playerbot_mining.h).
 # MT2009_PLUS_JEWELS75_V2 (the owner, 8 October, later): all four - Rubin, Granat, Szmaragd, Szafir -
 # at level 80 (V1 had 75, and Granat Gameforge's 90; a level the operator set to anything else stays).
-# Idempotent.
-db -e "UPDATE world.item_proto SET limitvalue0 = 80
-WHERE limittype0 = 1 AND limitvalue0 IN (75, 85, 90, 95, 100)
-  AND (vnum BETWEEN 14500 AND 14569 OR vnum BETWEEN 16500 AND 16569 OR vnum BETWEEN 17500 AND 17569)
-  AND vnum % 20 < 10 AND (vnum % 100) DIV 20 BETWEEN 0 AND 3;
-UPDATE world.item_proto SET applyvalue1 = ELT(vnum % 10 + 1, 4, 5, 6, 8, 10, 12, 15, 18, 22, 28)
+# MT2009_PLUS_JEWELS75_V3 (the owner, 22 October 2026: GF's values accepted): the level goes back to GF's -
+# Rubin 85, Granat 90, Szmaragd 95, Szafir 100 - by gf_wartosci.sql (tools/gfwartosci, below, from 80 only); the
+# level-80 UPDATE is gone. The regeneration, the recipes and the gems stay. Idempotent.
+db -e "UPDATE world.item_proto SET applyvalue1 = ELT(vnum % 10 + 1, 4, 5, 6, 8, 10, 12, 15, 18, 22, 28)
 WHERE ((vnum BETWEEN 17540 AND 17549 AND applytype1 = 33) OR (vnum BETWEEN 17560 AND 17569 AND applytype1 = 32))
   AND applyvalue1 = ELT(vnum % 10 + 1, 1, 1, 2, 3, 4, 6, 8, 10, 12, 15);
 INSERT IGNORE INTO world.refine_proto (id, vnum0, count0, vnum1, count1, vnum2, count2, vnum3, count3, vnum4, count4, cost, src_vnum, result_vnum, prob) VALUES
@@ -3478,7 +3479,7 @@ WHERE vnum % 10 < 9 AND refine_set = 316 + vnum % 10
     OR vnum BETWEEN 16520 AND 16529 OR vnum BETWEEN 17520 AND 17529
     OR vnum BETWEEN 16500 AND 16509 OR vnum BETWEEN 16540 AND 16549 OR vnum BETWEEN 16560 AND 16569
     OR vnum BETWEEN 17500 AND 17509 OR vnum BETWEEN 17540 AND 17549 OR vnum BETWEEN 17560 AND 17569);" \
-  || fail_step "could not move the Rubin / Szmaragd / Szafir jewellery to level 75 or add the jewellery recipes and gems (MT2009_PLUS_JEWELS75_V1)" >&2
+  || fail_step "could not set the Rubin / Szmaragd / Szafir jewellery's regeneration or add the jewellery recipes and gems (MT2009_PLUS_JEWELS75_V1)" >&2
 
 # MT2009_PLUS_ZODIAC_V1: Swiatynia Zodiaku (Autor: Digi Rasta, nowy-system 0.35.0;
 # server-patches/zodiak/README.md). zodiak.sql is idempotent (INSERT IGNORE, ADD COLUMN IF
@@ -4376,6 +4377,32 @@ WHERE vnum IN (50270, 50271, 54700, 54705) AND ((flag & 4) <> 0 OR (antiflag & 3
 db -e "UPDATE world.item_proto SET flag = flag | 4, antiflag = antiflag & ~32768, stack = 200
 WHERE vnum = 50325 AND ((flag & 4) = 0 OR (antiflag & 32768) <> 0 OR stack <> 200);" \
   || fail_step "could not make Ksiega Precyzji stack (MT2009_PLUS_PRECISION_BOOK_STACK_V1)" >&2
+
+# MT2009_PLUS_ARMOR105_V1: the level-105..115 body armours, the cyanite ones (110-120) and their nine materials (the
+# owner, 17 / 22 October 2026) - zbroje105.sql (tools/zbroje105/gen_zbroje105.py, GF 25.2.17's rows): 209 items and
+# refine_proto 30091-30109, INSERT IGNORE. Before refine_global.sql, which puts the sheet's recipes on their steps and
+# Seon-Pyeong's on the +9 -> cyanite one. Kawuco's recipes and the drops: game/Dockerfile. Every start, idempotent.
+if [ -s /opt/playerbot/zbroje105.sql ]; then
+    if db < /opt/playerbot/zbroje105.sql; then
+        echo "[playerbot-migrate] level-105 armours: zbroje105.sql applied"
+    else
+        fail_step "level-105 armours: zbroje105.sql failed" >&2
+    fi
+fi
+
+# MT2009_PLUS_GF_VALUES_V1 / MT2009_PLUS_GF_REFINE_V1: GF 25.2.17's values in the vnums our world shares with it (the
+# owner, 22 October 2026) - gf_wartosci.sql (tools/gfwartosci/gen_gfwartosci.py): items' magic_pct, value0-5 and
+# level (the jewellery at GF's 85-100), monsters' dam_multiply / battle_type / ai_flag / attack_range / immunities,
+# the fans' and Czarna Okragla Tarcza's recipes, Pogromca+9 without a next item. Our generators' own vnums, the
+# owner's sheets' columns and the Blue Dragon's stones are left out. After every other item / monster step (wiki_nowe,
+# JEWELS75, moby_global ...), before refine_global.sql. Guarded (from our old value only), every start, idempotent.
+if [ -s /opt/playerbot/gf_wartosci.sql ]; then
+    if db < /opt/playerbot/gf_wartosci.sql; then
+        echo "[playerbot-migrate] GF values: gf_wartosci.sql applied"
+    else
+        fail_step "GF values: gf_wartosci.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_REFINE_GLOBAL_V1: refining as on the global server for every item (the owner, 20 October 2026) -
 # refine_global.sql (tools/refineglobal/gen_refineglobal.py, from the owner's upgrade sheet): the sheet's recipes

@@ -2155,8 +2155,9 @@ Group	MT2009_mglobal_6301
 	3	2184	1	0.5	-- Luk Niebieskiego Smoka+4
 	4	8005	1	0.5	-- Srebrna Strzala
 	5	30509	1	0.5	-- Niebieska Smocza Stal
-	6	30610	1	0.5	-- Mithril
-	7	50723	1	2	-- Kwiat Kaki
+	6	30605	1	0.5	-- Zlote Plyty
+	7	30610	1	0.5	-- Mithril
+	8	50723	1	2	-- Kwiat Kaki
 }
 Group	MT2009_mglobal_6302
 {
@@ -2183,10 +2184,11 @@ Group	MT2009_mglobal_6303
 	4	27100	1	1	-- Zielona Mikstura(M)
 	5	30511	1	0.5	-- Czerwony Material
 	6	30516	1	0.5	-- Antyczny Naramiennik
-	7	50122	1	0.2	-- Zelazna Skrzynia
-	8	50725	1	2	-- Bez
-	9	50726	1	1.5	-- Grzyb Tue
-	10	95601	1	0.5	-- Stabilne Sznury
+	7	30607	1	0.5	-- Miedziane Plyty
+	8	50122	1	0.2	-- Zelazna Skrzynia
+	9	50725	1	2	-- Bez
+	10	50726	1	1.5	-- Grzyb Tue
+	11	95601	1	0.5	-- Stabilne Sznury
 }
 Group	MT2009_mglobal_6304
 {
@@ -2214,11 +2216,13 @@ Group	MT2009_mglobal_6305
 	4	30513	1	0.5	-- Szlachetny Naramiennik
 	5	30514	1	0.5	-- Fioletowy Material
 	6	30604	1	0.5	-- Szary Barwnik
-	7	30610	1	0.5	-- Mithril
-	8	50120	1	0.2	-- Zelazna Szkatulka
-	9	50300	1	2	-- Ksiega Umiejetnosci
-	10	55003	1	0.5	-- Ksiega Mlodego Zwierza
-	11	95601	1	0.5	-- Stabilne Sznury
+	7	30609	1	0.5	-- Brazowe Plyty
+	8	30610	1	0.5	-- Mithril
+	9	30619	1	0.5	-- Barwnik zloty metalik
+	10	50120	1	0.2	-- Zelazna Szkatulka
+	11	50300	1	2	-- Ksiega Umiejetnosci
+	12	55003	1	0.5	-- Ksiega Mlodego Zwierza
+	13	95601	1	0.5	-- Stabilne Sznury
 }
 Group	MT2009_mglobal_8001
 {

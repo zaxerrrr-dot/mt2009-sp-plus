@@ -125,7 +125,9 @@ param(
 #                      db ClientManagerPlayer.cpp (MT2009_PLUS_EKWIPUNEK_V1; server-patches/ekwipunek, after buffi)
 #   Bonus Switcher     common length.h, packet.h, packet_info.cpp, input_main.cpp, input_p2p.cpp, char.cpp,
 #                      char_item.cpp, cmd.cpp; takes the old bonus switcher's lines out of cmd.cpp / cmd_general.cpp
-#                      (MT2009_PLUS_SWITCHBOT_V1; server-patches/switchbot, after ekwipunek - last)
+#                      (MT2009_PLUS_SWITCHBOT_V1; server-patches/switchbot, after ekwipunek)
+#   Seon-Pyeong        constants.cpp IsEliteRefine (+ refine_proto 39900-39999), char_item.cpp - the guild and Demon
+#                      Tower smiths refuse his steps (MT2009_PLUS_SEONPYEONG_ELITE_V1; server-patches/seonpyeong, last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1687,6 +1689,20 @@ if ((Test-Path -LiteralPath $switchbotApply -PathType Leaf) -and
     if ($switchbotResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} switchbot edit(s), took out {1} old bonus switcher line(s).' -f $switchbotResult.Applied, $switchbotResult.Reverted) -ForegroundColor DarkGray
+    }
+}
+
+# Seon-Pyeong (server-patches/seonpyeong, MT2009_PLUS_SEONPYEONG_ELITE_V1; the owner, 22 October 2026): his refine sets
+# (IsEliteRefine) are 501 / 530 and the fixed recipes 39900-39999 of refine_global.sql (tools/refineglobal ELITE) - a +9
+# piece dragged onto him becomes the next item; the guild smiths (20044-20046) and the Demon Tower's (20074-20076) refuse
+# them as the Blacksmith and the scrolls do.
+$seonpyeongApply = Join-Path $repo 'server-patches/seonpyeong/Apply-SeonPyeongPatch.ps1'
+if ((Test-Path -LiteralPath $seonpyeongApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'constants.cpp') -PathType Leaf)) {
+    $seonpyeongResult = & $seonpyeongApply -SourceDir $engineGameSource
+    if ($seonpyeongResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Seon-Pyeong edit(s).' -f $seonpyeongResult.Applied) -ForegroundColor DarkGray
     }
 }
 

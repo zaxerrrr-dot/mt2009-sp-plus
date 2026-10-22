@@ -5899,6 +5899,13 @@
 "default:material"
 ],
 [
+30605,
+1,
+0.5,
+"Złote Płyty",
+"default:material"
+],
+[
 30610,
 1,
 0.5,
@@ -6034,6 +6041,13 @@
 1,
 0.5,
 "Antyczny Naramiennik",
+"default:material"
+],
+[
+30607,
+1,
+0.5,
+"Miedziane Płyty",
 "default:material"
 ],
 [
@@ -6196,10 +6210,24 @@
 "default:material"
 ],
 [
+30609,
+1,
+0.5,
+"Brązowe Płyty",
+"default:material"
+],
+[
 30610,
 1,
 0.5,
 "Mithril",
+"default:material"
+],
+[
+30619,
+1,
+0.5,
+"Barwnik złoty metalik",
 "default:material"
 ],
 [
@@ -20738,18 +20766,6 @@
 1
 ],
 [
-30605,
-"Złote Płyty",
-"not in our world",
-1
-],
-[
-30607,
-"Miedziane Płyty",
-"not in our world",
-1
-],
-[
 79730,
 "Świątynia Ochao, część 1",
 "not in our world",
@@ -20758,18 +20774,6 @@
 [
 79731,
 "Świątynia Ochao, część 2",
-"not in our world",
-1
-],
-[
-30619,
-"Barwnik złoty metalik",
-"not in our world",
-1
-],
-[
-30609,
-"Brązowe Płyty",
 "not in our world",
 1
 ],

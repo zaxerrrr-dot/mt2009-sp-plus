@@ -1,0 +1,137 @@
+-- MT2009_PLUS_ANGMUR_V1 (the owner, 17 October 2026; the pl-wiki "Wytwarzanie Zbroi", "Szata Smoczego Jezdzca",
+-- "Pancerz Koscioplytowy", "Zlote Ubranie", "Pancerz Diabel. Rogu"; "Admiral Angmur": Przyladek Smoczego Ognia 665,1242
+-- and Opuszczona Twierdza): Admiral Angmur (20378 on the cape, 20812 in the fortress) makes a level-90 body armour from
+-- the level-66 one +9 dragged onto him, always (100%), and it keeps its bonuses and stones (item.copy_and_give_before_remove):
+--   Zbroja Z Czarnej Stali+9 11299 > Pancerz Diabel. Rogu 20000, Zbr. Plyt. Czar. Magii+9 11699 > Pancerz Koscioplytowy 20500,
+--   Ubranie Czarn. Wiatru+9 11499 > Szata Smoczego Jezdzca 20250, Czarna Szata+9 11899 > Zlote Ubranie 20750;
+--   2x Zwoj Blogoslawienstwa 25040, 3x Broszura Szermierki 70031, 100x Odlamek Energii 51001, 5 000 000 Yang.
+-- MT2009_PLUS_ARMOR105_V1 (the owner, 17 October 2026; "Wytwarzanie Zbroi" - Admiral Angmur, level 105-115; "Ubranie
+-- Morfa" ...: the bonuses and soul stones stay): the level-90 one +9 into a level-105 one, two per armour - the white
+-- (5x Bialy Barwnik 30615, 10x Zlote Plyty 30605, 10x Srebrne Plyty 30606) or the black (5x Czarny Barwnik 30614,
+-- 10x Brazowe Plyty 30609, 10x Stalowe Plyty 30608), both with 5x Broszura Szermierki 70031, 5x Barwnik zloty metalik
+-- 30619 and 10 000 000 Yang, 100%:
+--   Pancerz Diabel. Rogu+9 20009 > Wielorybi 20860 / Panc. Deszczu Popiolu 20910, Pancerz Koscioplytowy+9 20509 >
+--   Panc. Bled. Ognika 20880 / Pancerz Czarnego Ognia 20930, Szata Smoczego Jezdzca+9 20259 > Ubranie Morfa 20870 /
+--   Ubr. Smiertelnej Nocy 20920, Zlote Ubranie+9 20759 > Szata Harmonii 20890 / Szata Ksiezyca 20940.
+-- The same armours from +5..+9 in Jae-Seon Kim's / Kawuco's window (5-50%, the bonuses lost) stay. The Lycan's left out.
+-- The armour is chosen again by its id after the dialog (item.select) and must still lie in the same bag cell.
+-- cp1250; no literal ends with a Polish letter (qc).
+quest angmur begin
+	state start begin
+		function recipes(vnum)
+			local m90 = { {25040, 2}, {70031, 3}, {51001, 100} }
+			local white = { {70031, 5}, {30619, 5}, {30615, 5}, {30605, 10}, {30606, 10} }
+			local black = { {70031, 5}, {30619, 5}, {30614, 5}, {30609, 10}, {30608, 10} }
+			local t = {
+				[11299] = { {20000, m90, 5000000} },
+				[11699] = { {20500, m90, 5000000} },
+				[11499] = { {20250, m90, 5000000} },
+				[11899] = { {20750, m90, 5000000} },
+				[20009] = { {20860, white, 10000000}, {20910, black, 10000000} },
+				[20509] = { {20880, white, 10000000}, {20930, black, 10000000} },
+				[20259] = { {20870, white, 10000000}, {20920, black, 10000000} },
+				[20759] = { {20890, white, 10000000}, {20940, black, 10000000} },
+			}
+			return t[vnum] or {}
+		end
+
+		function count(vnum)
+			return table.getn(angmur.recipes(vnum))
+		end
+
+		function yang(n)
+			local s = tostring(n)
+			local out = ""
+			while string.len(s) > 3 do
+				out = " "..string.sub(s, -3)..out
+				s = string.sub(s, 1, -4)
+			end
+			return s..out.." Yang"
+		end
+
+		function have_all(r)
+			local m = r[2]
+			for i = 1, table.getn(m) do
+				if pc.count_item(m[i][1]) < m[i][2] then
+					return false
+				end
+			end
+			return pc.get_money() >= r[3]
+		end
+
+		function show_mats(r)
+			local m = r[2]
+			for i = 1, table.getn(m) do
+				say_reward(m[i][2].."x "..item_name(m[i][1]))
+			end
+			say_reward(angmur.yang(r[3]))
+		end
+
+		function info()
+			say_title("Admiral Angmur:")
+			say("Zbroje 66. poziomu ulepszone na +9 przekuje")
+			say("w zbroje 90. poziomu, a zbroje 90. poziomu +9")
+			say("w zbroje 105. poziomu. Przeciagnij zbroje na mnie.")
+			say("Zawsze sie udaje, bonusy i kamienie zostaja.")
+			say("")
+			say_reward("66 > 90: 2x "..item_name(25040)..", 3x "..item_name(70031)..",")
+			say_reward("100x "..item_name(51001)..", 5 000 000 Yang")
+			say_reward("90 > 105: 5x "..item_name(70031)..", 5x "..item_name(30619)..",")
+			say_reward("barwnik i plyty wedlug wybranej zbroi, 10 000 000 Yang")
+		end
+
+		when 20378.chat."Przekuwanie zbroi" or 20812.chat."Przekuwanie zbroi" begin
+			angmur.info()
+		end
+
+		when 20378.take or 20812.take with angmur.count(item.get_vnum()) != 0 begin
+			local id, cell, src = item.get_id(), item.get_cell(), item.get_vnum()
+			local list = angmur.recipes(src)
+			local r = list[1]
+			if table.getn(list) > 1 then
+				say_title("Admiral Angmur:")
+				say("Ktora zbroje mam z niej zrobic?")
+				local c = select(item_name(list[1][1]), item_name(list[2][1]), "Anuluj")
+				if c != 1 and c != 2 then
+					return
+				end
+				r = list[c]
+			end
+			say_title("Admiral Angmur:")
+			say("Z tej zbroi zrobie: "..item_name(r[1]))
+			say("Bonusy i kamienie zostana przeniesione.")
+			say("")
+			angmur.show_mats(r)
+			if not angmur.have_all(r) then
+				say("")
+				say("Brakuje ci materialow albo Yang.")
+				return
+			end
+			if select("Przekuj zbroje", "Anuluj") != 1 then
+				return
+			end
+			if not item.select(id) or item.get_vnum() != src or item.get_cell() != cell then
+				say_title("Admiral Angmur:")
+				say("Zbroja nie lezy juz tam, gdzie byla.")
+				return
+			end
+			if not angmur.have_all(r) then
+				say_title("Admiral Angmur:")
+				say("Brakuje ci materialow albo Yang.")
+				return
+			end
+			local m = r[2]
+			for i = 1, table.getn(m) do
+				pc.remove_item(m[i][1], m[i][2])
+			end
+			pc.change_money(-r[3])
+			if item.copy_and_give_before_remove(r[1]) then
+				say_title("Admiral Angmur:")
+				say("Gotowe - oto "..item_name(r[1])..".")
+			else
+				say_title("Admiral Angmur:")
+				say("Cos poszlo nie tak.")
+			end
+		end
+	end
+end

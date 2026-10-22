@@ -7,8 +7,8 @@
 # necklaces, 17500/17540/17560 earrings, +0..+9) and the icons (icon pack: icon/item/<+0>.tga; with
 # no item_list.txt line the exe falls back to icon/item/<vnum>.tga, then <vnum - vnum % 10>.tga -
 # GameLib/ItemManager.cpp - so they showed already). This script:
-#   item_proto    the nine families and Granat: level limit 80 (MT2009_PLUS_JEWELS75_V2; Gameforge:
-#                 Rubin 85, Granat 90, Szmaragd 95, Szafir 100), the earrings' regeneration as Gameforge's today (Szmaragdowe: SP
+#   item_proto    the nine families and Granat: level limit 80 (MT2009_PLUS_JEWELS75_V2) - since V3 GF's again:
+#                 Rubin 85, Granat 90, Szmaragd 95, Szafir 100, the earrings' regeneration as Gameforge's today (Szmaragdowe: SP
 #                 regeneration, Szafirowe: HP regeneration, 4/5/6/8/10/12/15/18/22/28 % - the
 #                 old record had 1..15), the refine chain on their own Blacksmith recipes
 #                 7320-7328 (the Granat family 14520/16520/17520 too) - all as linux-port/docker/mariadb/playerbot/apply.sh
@@ -37,6 +37,10 @@ sys.path.insert(0, '/opt/metin2/cache/cli')
 import patch_monstercard_client as base  # noqa: E402  (the record layout and MCOZ keys)
 
 LEVEL = 80                   # MT2009_PLUS_JEWELS75_V2: all four at 80 (V1: 75, Granat 90)
+# MT2009_PLUS_JEWELS75_V3 (the owner, 22 October 2026: GF's values accepted): GF's levels again - Rubin 85, Granat 90,
+# Szmaragd 95, Szafir 100 (by the family's +0 vnum % 100: 0 Rubin, 20 Granat, 40 Szmaragd, 60 Szafir), as the server's
+# gf_wartosci.sql (tools/gfwartosci) and the client's tools/gfint
+LEVEL_OF = {0: 85, 20: 90, 40: 95, 60: 100}
 LIMIT_LEVEL = 1
 REFINE_FIRST = 7320          # refine_proto 7320 + n: the step +n -> +n+1 (apply.sh)
 # The +0 vnums of the nine families that move to level 75.
@@ -75,7 +79,7 @@ def item_proto(b):
         before = bytes(r)
         if r[74] != 2 or r[75] not in (3, 5, 6):
             raise SystemExit('item_proto: %d is not a bracelet, necklace or earring (%d/%d)' % (vnum, r[74], r[75]))
-        struct.pack_into('<Bi', r, 114, LIMIT_LEVEL, LEVEL)                       # limit 0
+        struct.pack_into('<Bi', r, 114, LIMIT_LEVEL, LEVEL_OF[first % 100])       # limit 0 (V3: GF's level)
         if first in EARRING_REGEN:
             kind, values = EARRING_REGEN[first]
             if r[129] != kind:

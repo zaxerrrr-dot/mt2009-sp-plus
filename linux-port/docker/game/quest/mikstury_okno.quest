@@ -1,0 +1,38 @@
+-- MT2009_PLUS_WIKI_NPC_RECIPES_V1 (the owner, 17 October 2026; the pl-wiki "Wytwarzanie Mikstur", "Wytwarzanie Pasow",
+-- "Wytwarzanie Przedmiotow"): the crafting window of the potion makers - their recipes are the package's cube.txt (GF's)
+-- and cube.wiki_kto.txt, but no quest opened it (Cube_open answers only command("cube open")). From the level the wiki
+-- gives for the juices:
+--   Rybak (9009) from 1 - juices;
+--   Baek-Go (20018) from 15 - juices, Charyzma / Inspiracja Eksperta;
+--   Yu-Hwan (20017) from 35 - juices, waters, belts (the belts at Mistrz 20082 are gone - not on the wiki);
+--   Huahn-So (20022) from 55 - juices, waters, dews (the elixirs need items this world lacks).
+-- The text without diacritics; no literal ends with a Polish letter (qc).
+quest mikstury_okno begin
+	state start begin
+		function open(npc, what)
+			say_title(mob_name(npc)..":")
+			say(what)
+			say("")
+			if select("Otworz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+
+		when 9009.chat."Wytwarzanie mikstur" begin
+			mikstury_okno.open(9009, "Z kwiatow i ziol zrobie ci soki.")
+		end
+
+		when 20018.chat."Wytwarzanie" with pc.get_level() >= 15 begin
+			mikstury_okno.open(20018, "Robie soki z kwiatow i ziol, a z ksiag Adepta - ksiegi Eksperta.")
+		end
+
+		when 20017.chat."Wytwarzanie" with pc.get_level() >= 35 begin
+			mikstury_okno.open(20017, "Robie soki, wody i pasy.")
+		end
+
+		when 20022.chat."Wytwarzanie mikstur" with pc.get_level() >= 55 begin
+			mikstury_okno.open(20022, "Robie soki, wody i rosy.")
+		end
+	end
+end
