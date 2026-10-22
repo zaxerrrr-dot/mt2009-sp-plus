@@ -11115,7 +11115,9 @@ namespace
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
 		if (!weapon)
 			return true;
-		return (int)GetPlayerBotPersonaLevelLimit(weapon) + weapon->GetRefineLevel() + PLAYERBOT_SIDEKICK_PLAN_WEAK_WEAPON_LEVELS <
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: a valid young heroes' weapon counts as +9.
+		return (int)GetPlayerBotPersonaLevelLimit(weapon) + std::max(0, GetPlayerBotReadyWeaponPlus(weapon)) +
+				PLAYERBOT_SIDEKICK_PLAN_WEAK_WEAPON_LEVELS <
 				(int)ch->GetLevel();
 	}
 

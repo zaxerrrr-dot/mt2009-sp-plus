@@ -758,11 +758,13 @@ namespace
 			return false;
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
 		LPITEM armor = ch->GetWear(WEAR_BODY);
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: a valid young heroes' weapon is a weapon of its level at +9
+		// (GetPlayerBotReadyWeaponPlus), whatever the real weapon prepared behind it.
 		if (!weapon || weapon->GetType() != ITEM_WEAPON || !armor || !ch->GetWear(WEAR_HEAD) ||
-				NeedsPlayerBotProperWeapon(ch))
+				(!IsPlayerBotMlodziWeaponValid(weapon) && NeedsPlayerBotProperWeapon(ch)))
 			return false;
 		const bool v2 = map == PLAYERBOT_MAP_SPIDER_V2;
-		if ((int)weapon->GetRefineLevel() < (v2 ? PLAYERBOT_SPIDER_V2_WEAPON_PLUS : PLAYERBOT_SPIDER_V1_WEAPON_PLUS) ||
+		if (GetPlayerBotReadyWeaponPlus(weapon) < (v2 ? PLAYERBOT_SPIDER_V2_WEAPON_PLUS : PLAYERBOT_SPIDER_V1_WEAPON_PLUS) ||
 				(int)armor->GetRefineLevel() < (v2 ? PLAYERBOT_SPIDER_V2_ARMOUR_PLUS : PLAYERBOT_SPIDER_V1_ARMOUR_PLUS))
 			return false;
 		size_t red = 0, blue = 0;

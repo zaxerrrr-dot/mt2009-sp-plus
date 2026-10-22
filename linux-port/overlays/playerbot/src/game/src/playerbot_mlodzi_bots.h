@@ -17,6 +17,20 @@
 //     (IsPlayerBotMlodziKept at the bot code's choke points; the engine refuses the players' paths).
 // System off (mlodzi::Enabled() false): no grant and no hold; a weapon given earlier is worn until it goes.
 //
+// MT2009_PLUS_MLODZI_BOHATEROWIE_V2 (the owner, 22 October 2026, the second word):
+//   - every readiness check (the Spider Dungeon's gear, the cape puller, the Metinolog's and the Executor's
+//     weapon, a companion's weak-weapon plan) counts a valid young heroes' weapon as +9
+//     (GetPlayerBotReadyWeaponPlus) - it read the weapon's +0;
+//   - the seven days' preparation of a real weapon is only for (a) a dropper or a spot farmer whose experience
+//     is locked (AFFECT_EXP_BLOCK) - "dropper_locked" - and (b) a character of 70 or more that gets no further
+//     young heroes' weapon (the last tier taken; or the system off) - "last_tier";
+//   - every other bot keeps levelling to the next tier's level and takes the new weapon at once (the claim's
+//     clock); only on the weapon's LAST day, and only when it cannot reach that level in time - its experience
+//     locked, or the experience it still needs over its own exp/h of the last hours
+//     (PLAYERBOT_MLODZI_RATE_*) is more than the time left - does it get a real weapon of its level as ever:
+//     "last_day_cant_level", kept for that weapon once decided (GetPlayerBotMlodziPrepReason).
+//   Each decision is logged once: "PLAYERBOT_MLODZI: prep reason=dropper_locked|last_tier|last_day_cant_level".
+//
 // An implementation fragment in the sense playerbot_types.h describes: included once, from
 // playerbot_manager.cpp, right after playerbot_gear.h (which forward-declares what it asks of this file).
 
@@ -34,6 +48,14 @@ namespace
 	const DWORD PLAYERBOT_MLODZI_CLAIM_BACKOFF_MS = 10 * 60 * 1000;
 	// How long the hold's answer and the prepared weapon are kept per bot (they walk the bag).
 	const DWORD PLAYERBOT_MLODZI_CACHE_MS = 5 * 1000;
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: the last day - the levelling bot's preparation is decided only then.
+	const long PLAYERBOT_MLODZI_LAST_DAY_SECONDS = 24L * 60L * 60L;
+	// The bot's exp/h: a sample of its total experience every PLAYERBOT_MLODZI_RATE_SAMPLE_SECONDS, the rate over
+	// the oldest kept (at most PLAYERBOT_MLODZI_RATE_SAMPLES, three hours); none said before
+	// PLAYERBOT_MLODZI_RATE_MIN_SECONDS of them (a fresh start keeps levelling until it knows).
+	const long PLAYERBOT_MLODZI_RATE_SAMPLE_SECONDS = 10L * 60L;
+	const size_t PLAYERBOT_MLODZI_RATE_SAMPLES = 19;
+	const long PLAYERBOT_MLODZI_RATE_MIN_SECONDS = 30L * 60L;
 
 	bool IsPlayerBotMlodziWeapon(LPITEM item)
 	{
@@ -46,6 +68,32 @@ namespace
 		return IsPlayerBotMlodziWeapon(item) && mlodzi::SecondsLeft(item) > PLAYERBOT_MLODZI_SWITCH_SECONDS;
 	}
 
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: why the bot prepares a real weapon (none: it keeps levelling).
+	enum EPlayerBotMlodziPrep
+	{
+		PLAYERBOT_MLODZI_PREP_NONE = 0,
+		PLAYERBOT_MLODZI_PREP_DROPPER_LOCKED,
+		PLAYERBOT_MLODZI_PREP_LAST_TIER,
+		PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL,
+	};
+
+	const char* GetPlayerBotMlodziPrepName(int prep)
+	{
+		switch (prep)
+		{
+			case PLAYERBOT_MLODZI_PREP_DROPPER_LOCKED: return "dropper_locked";
+			case PLAYERBOT_MLODZI_PREP_LAST_TIER: return "last_tier";
+			case PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL: return "last_day_cant_level";
+			default: return "none";
+		}
+	}
+
+	struct TPlayerBotMlodziExpSample
+	{
+		long lAt;			// get_global_time()
+		unsigned long long qwTotal;	// the experience of all its levels (GetPlayerBotMlodziTotalExp)
+	};
+
 	struct TPlayerBotMlodziMemo
 	{
 		DWORD dwHoldAt;
@@ -56,10 +104,136 @@ namespace
 		DWORD dwWornID;		// the young heroes' weapon last seen in the hand
 		bool bSwitchLogged;
 		bool bHoldSeen;		// the hold held at the last pass (the prep start is said once)
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2
+		int iPrep;		// the last answer's reason (EPlayerBotMlodziPrep)
+		DWORD dwCantLevelID;	// the held weapon the last day's "cannot make it" was decided for (kept)
+		long lNeedExp;		// the last day's figures, for the log: the experience to the next tier's level,
+		long lExpPerHour;	// the exp/h (-1 unknown) and that level
+		int iNextLevel;
+		std::deque<TPlayerBotMlodziExpSample> samples;
 		TPlayerBotMlodziMemo() : dwHoldAt(0), bHold(false), dwPreparedAt(0), dwPreparedID(0), dwNextClaimAt(0),
-				dwWornID(0), bSwitchLogged(false), bHoldSeen(false) {}
+				dwWornID(0), bSwitchLogged(false), bHoldSeen(false), iPrep(PLAYERBOT_MLODZI_PREP_NONE),
+				dwCantLevelID(0), lNeedExp(0), lExpPerHour(-1), iNextLevel(0) {}
 	};
 	std::map<DWORD, TPlayerBotMlodziMemo> s_mapPlayerBotMlodzi;
+
+	// The level a spot farmer is held at, or 0 (playerbot_farmer_link.h, included later).
+	BYTE GetPlayerBotFarmerSpotLock(DWORD pid);
+
+	// The valid young heroes' weapon counts as +9 wherever a check asks whether the bot is ready (a dungeon's
+	// gear, the cape pull, the rare personas' weapon); any other weapon its own plus, -1 for none.
+	int GetPlayerBotReadyWeaponPlus(LPITEM weapon)
+	{
+		if (!weapon || weapon->GetType() != ITEM_WEAPON)
+			return -1;
+		if (IsPlayerBotMlodziWeaponValid(weapon))
+			return 9;
+		return (int)weapon->GetRefineLevel();
+	}
+
+	bool IsPlayerBotMlodziExpLocked(LPCHARACTER ch)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return ch && ch->FindAffect(AFFECT_EXP_BLOCK) != NULL;
+#else
+		return false;
+#endif
+	}
+
+	// All the experience of a character's levels below its own plus what it has of this one.
+	unsigned long long GetPlayerBotMlodziTotalExp(LPCHARACTER ch)
+	{
+		if (!ch)
+			return 0;
+		unsigned long long total = ch->GetExp();
+		const int level = std::min<int>((int)ch->GetLevel(), PLAYER_MAX_LEVEL_CONST + 1);
+		for (int l = 1; l < level; ++l)
+			total += exp_table[l];
+		return total;
+	}
+
+	// The experience it still needs to reach the level (0 when it has it).
+	unsigned long long GetPlayerBotMlodziExpToLevel(LPCHARACTER ch, int targetLevel)
+	{
+		if (!ch || (int)ch->GetLevel() >= targetLevel)
+			return 0;
+		const DWORD next = ch->GetNextExp();
+		unsigned long long need = next > ch->GetExp() ? (unsigned long long)(next - ch->GetExp()) : 0;
+		for (int l = (int)ch->GetLevel() + 1; l < targetLevel && l <= PLAYER_MAX_LEVEL_CONST; ++l)
+			need += exp_table[l];
+		return need;
+	}
+
+	// A sample of the bot's experience, every PLAYERBOT_MLODZI_RATE_SAMPLE_SECONDS.
+	void SamplePlayerBotMlodziExp(LPCHARACTER ch, TPlayerBotMlodziMemo& memo)
+	{
+		const long now = (long)get_global_time();
+		if (!memo.samples.empty() && now - memo.samples.back().lAt < PLAYERBOT_MLODZI_RATE_SAMPLE_SECONDS)
+			return;
+		TPlayerBotMlodziExpSample sample;
+		sample.lAt = now;
+		sample.qwTotal = GetPlayerBotMlodziTotalExp(ch);
+		// A level lost or a character reset: the old samples say nothing of this one.
+		if (!memo.samples.empty() && sample.qwTotal < memo.samples.back().qwTotal)
+			memo.samples.clear();
+		memo.samples.push_back(sample);
+		while (memo.samples.size() > PLAYERBOT_MLODZI_RATE_SAMPLES)
+			memo.samples.pop_front();
+	}
+
+	// Its exp/h over the kept samples and now; -1 while they cover less than PLAYERBOT_MLODZI_RATE_MIN_SECONDS.
+	long long GetPlayerBotMlodziExpPerHour(LPCHARACTER ch, const TPlayerBotMlodziMemo& memo)
+	{
+		if (memo.samples.empty())
+			return -1;
+		const long span = (long)get_global_time() - memo.samples.front().lAt;
+		if (span < PLAYERBOT_MLODZI_RATE_MIN_SECONDS)
+			return -1;
+		const unsigned long long total = GetPlayerBotMlodziTotalExp(ch);
+		const unsigned long long gained = total > memo.samples.front().qwTotal ? total - memo.samples.front().qwTotal : 0;
+		return (long long)(gained * 3600ULL / (unsigned long long)span);
+	}
+
+	// The owner's rule of 22 October: whether - and why - a bot holding the young heroes' weapon `held` with
+	// `left` seconds gets its real weapon now (PLAYERBOT_MLODZI_PREP_NONE: it keeps levelling, the planning waits).
+	int GetPlayerBotMlodziPrepReason(LPCHARACTER ch, TPlayerBotMlodziMemo& memo, LPITEM held, long left)
+	{
+		if (!ch || !held || left > PLAYERBOT_MLODZI_PLAN_HOLD_SECONDS)
+			return PLAYERBOT_MLODZI_PREP_NONE;
+		const bool locked = IsPlayerBotMlodziExpLocked(ch);
+		const DWORD pid = ch->GetPlayerID();
+		// (a) a dropper or a spot farmer held at its level for good.
+		if (locked && (IsPlayerBotDropper(GetPlayerBotPersonalityByPID(pid)) || GetPlayerBotFarmerSpotLock(pid) != 0))
+			return PLAYERBOT_MLODZI_PREP_DROPPER_LOCKED;
+		// A tier offered now is taken on the claim's clock, not prepared against.
+		const int offer = mlodzi::CurrentOffer(ch);
+		// (b) 70 and over with the last tier taken: no young heroes' weapon comes after this one.
+		if (offer <= 0 && mlodzi::TierForLevel((int)ch->GetLevel()) >= (int)mlodzi::TIER_COUNT)
+			return PLAYERBOT_MLODZI_PREP_LAST_TIER;
+		// (c) everybody else levels to the next tier - and only on the weapon's last day, unable to get there in
+		// time, gets the real one.
+		if (left > PLAYERBOT_MLODZI_LAST_DAY_SECONDS || offer > 0)
+			return PLAYERBOT_MLODZI_PREP_NONE;
+		if (memo.dwCantLevelID == held->GetID())
+			return PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL;
+		const int nextTier = mlodzi::TierForLevel((int)ch->GetLevel()) + 1;
+		memo.iNextLevel = mlodzi::TierLevel(nextTier);
+		const unsigned long long need = GetPlayerBotMlodziExpToLevel(ch, memo.iNextLevel);
+		const long long rate = GetPlayerBotMlodziExpPerHour(ch, memo);
+		memo.lNeedExp = (long)std::min<unsigned long long>(need, 2000000000ULL);
+		memo.lExpPerHour = (long)std::max<long long>(-1, std::min<long long>(rate, 2000000000LL));
+		bool cant = locked;
+		if (!cant && rate >= 0)
+		{
+			const long long usable = std::max<long long>(0, (long long)left - PLAYERBOT_MLODZI_SWITCH_SECONDS);
+			// rate * usable / 3600 is the experience it would still make: too little, or none at all.
+			cant = rate == 0 || (unsigned long long)rate * (unsigned long long)usable / 3600ULL < need;
+		}
+		if (!cant)
+			return PLAYERBOT_MLODZI_PREP_NONE;
+		memo.dwCantLevelID = held->GetID();
+		return PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL;
+	}
 
 	// The young heroes' weapon this bot holds - worn or in the bag, of its class and build, a level it has reached - with
 	// the most time left, and that time; NULL for none.
@@ -97,6 +271,7 @@ namespace
 
 	// The owner's seven days: the bot's own weapon planning waits while the system is on and the bot holds a
 	// young heroes' weapon with more than PLAYERBOT_MLODZI_PLAN_HOLD_SECONDS left.
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: and below that too, unless GetPlayerBotMlodziPrepReason gives a reason.
 	bool IsPlayerBotWeaponPlanSuspended(LPCHARACTER ch)
 	{
 		if (!ch || !ch->IsItemLoaded() || !mlodzi::Enabled())
@@ -106,7 +281,9 @@ namespace
 		if (memo.dwHoldAt != 0 && now - memo.dwHoldAt < PLAYERBOT_MLODZI_CACHE_MS)
 			return memo.bHold;
 		long left = 0;
-		memo.bHold = FindPlayerBotMlodziHeld(ch, &left) != NULL && left > PLAYERBOT_MLODZI_PLAN_HOLD_SECONDS;
+		LPITEM held = FindPlayerBotMlodziHeld(ch, &left);
+		memo.iPrep = held ? GetPlayerBotMlodziPrepReason(ch, memo, held, left) : PLAYERBOT_MLODZI_PREP_NONE;
+		memo.bHold = held != NULL && memo.iPrep == PLAYERBOT_MLODZI_PREP_NONE;
 		memo.dwHoldAt = now != 0 ? now : 1;
 		return memo.bHold;
 	}
@@ -277,7 +454,11 @@ namespace
 			memo.bSwitchLogged = false;
 		}
 
-		// The seven days: said once when the hold ends while a young weapon is still held.
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: the exp/h the last day's decision reads, sampled while one is held.
+		if (wornYoung || memo.bHoldSeen)
+			SamplePlayerBotMlodziExp(ch, memo);
+
+		// The preparation: said once, with its reason, when the hold ends while a young weapon is still held.
 		const bool hold = IsPlayerBotWeaponPlanSuspended(ch);
 		if (memo.bHoldSeen && !hold)
 		{
@@ -286,8 +467,13 @@ namespace
 			if (held)
 			{
 				LPITEM prepared = GetPlayerBotMlodziPreparedWeapon(ch);
-				sys_log(0, "PLAYERBOT_MLODZI: prep start pid=%u name=%s level=%u young=%u left_h=%ld prepared=%u+%u",
-						pid, ch->GetName(), (unsigned int)ch->GetLevel(), held->GetVnum(), left / 3600,
+				sys_log(0, "PLAYERBOT_MLODZI: prep reason=%s pid=%u name=%s level=%u young=%u left_h=%ld locked=%d "
+						"next_level=%d need_exp=%ld exp_h=%ld prepared=%u+%u",
+						GetPlayerBotMlodziPrepName(memo.iPrep), pid, ch->GetName(), (unsigned int)ch->GetLevel(),
+						held->GetVnum(), left / 3600, IsPlayerBotMlodziExpLocked(ch) ? 1 : 0,
+						memo.iPrep == PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL ? memo.iNextLevel : 0,
+						memo.iPrep == PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL ? memo.lNeedExp : 0,
+						memo.iPrep == PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL ? memo.lExpPerHour : -1,
 						prepared ? prepared->GetVnum() : 0, prepared ? (unsigned int)prepared->GetRefineLevel() : 0);
 			}
 		}
@@ -313,6 +499,7 @@ namespace
 		const int result = mlodzi::Claim(ch, tier, choice, &vnum);
 		if (result == mlodzi::CLAIM_OK)
 		{
+			memo.dwCantLevelID = 0;	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: the new weapon is levelled with again
 			memo.dwHoldAt = 0;
 			memo.dwPreparedAt = 0;
 			memo.bHoldSeen = true;

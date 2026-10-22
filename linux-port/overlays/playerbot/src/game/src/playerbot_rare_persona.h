@@ -71,8 +71,8 @@ namespace
 
 	int GetPlayerBotWornWeaponPlus(LPCHARACTER ch)
 	{
-		LPITEM weapon = ch ? ch->GetWear(WEAR_WEAPON) : NULL;
-		return weapon && weapon->GetType() == ITEM_WEAPON ? weapon->GetRefineLevel() : -1;
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: a valid young heroes' weapon counts as +9.
+		return GetPlayerBotReadyWeaponPlus(ch ? ch->GetWear(WEAR_WEAPON) : NULL);
 	}
 
 	// "Dowolny przedmiot z bonusem 10% na ludzi": any worn piece.
