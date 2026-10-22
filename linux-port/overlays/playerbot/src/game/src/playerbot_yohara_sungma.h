@@ -1602,6 +1602,9 @@
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: Dongan's merchants, not home.
 		if (ManagePlayerBotSungmaErrand(ch, state, res, b, base, dwNow) > 0)
 			return 1;
+		// MT2009_PLUS_BOT_YOHARA_CHI_V1: the orders at Mistrz Chi and the smith of Dongan (playerbot_yohara_chi.h).
+		if (ManagePlayerBotYoharaChi(ch, state, base, dwNow) > 0)
+			return 1;
 		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: home to its first village only to trade, and back.
 		if (StartPlayerBotSungmaTradeTrip(ch, state, res, b, dwNow) > 0)
 			return 1;

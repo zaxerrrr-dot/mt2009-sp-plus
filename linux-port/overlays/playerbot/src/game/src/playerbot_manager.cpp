@@ -404,6 +404,8 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the elements' part that reads the Sung Ma state (the map, the elixirs, the census)
 #include "playerbot_yohara_elements_late.h"
 #include "playerbot_yohara_shop.h" // MT2009_PLUS_BOT_YOHARA_SHOP_V1: the bots' exchange in Dongan (elixirs for materials / dust) and the Champions' world set
+// MT2009_PLUS_BOT_YOHARA_CHI_V1: the Champions' orders at Mistrz Chi and the smith of Dongan (gloves, jade, stones, Will talisman)
+#include "playerbot_yohara_chi.h"
 
 namespace
 {

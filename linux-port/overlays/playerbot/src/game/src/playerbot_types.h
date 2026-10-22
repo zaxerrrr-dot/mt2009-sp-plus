@@ -10114,6 +10114,17 @@ namespace
 	const DWORD PLAYERBOT_LEGEND_NOTICE_GAP_MS = 45 * 1000;
 	const DWORD PLAYERBOT_LEGEND_NOTICE_SAME_MS = 20 * 60 * 1000;
 	const int PLAYERBOT_LEGEND_EVENT_KEEP_DAYS = 30;
+
+	// MT2009_PLUS_BOT_YOHARA_CHI_V1 (playerbot_yohara_chi.h, after playerbot_yohara_g0.h): the Champions' orders at
+	// Mistrz Chi and the smith of Dongan - the visit from the Sung Ma stay, the Yohara gear the generic anvil leaves to
+	// it, and what the crafts' keep and the market's wants ask of it (playerbot_workshop.h).
+	int ManagePlayerBotYoharaChi(LPCHARACTER ch, TPlayerBotAIState& state, long base, DWORD dwNow);
+	bool IsPlayerBotChiGear(LPITEM item);
+	int GetPlayerBotChiMaterialKeep(LPCHARACTER ch, DWORD vnum);
+	bool WantsPlayerBotChiOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForChiOffer(LPCHARACTER ch, LPITEM offer, long long price);
+	void CollectPlayerBotChiMissing(LPCHARACTER ch, std::map<DWORD, int>& missing);
+	void NotePlayerBotChiBought(LPCHARACTER ch, DWORD vnum, long long price);
 }
 
 #endif

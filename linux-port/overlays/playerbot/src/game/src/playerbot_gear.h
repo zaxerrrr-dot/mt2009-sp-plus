@@ -3850,6 +3850,10 @@ namespace
 		// weakest gear.
 		if (IsPlayerBotMatureLowGear(ch, item))
 			return item->GetRefineLevel();
+		// MT2009_PLUS_BOT_YOHARA_CHI_V1: the Yohara gear (the gloves, the jade, the Will talismans) is raised by the
+		// Champions' orders in Dongan (playerbot_yohara_chi.h) - not at the generic anvil.
+		if (IsPlayerBotChiGear(item))
+			return item->GetVnum() % 10;
 		BYTE target = GetPlayerBotRefineTargetOwnBase(ch, item);
 		// The helmet worn from level fifty goes to +6 at least, past the
 		// persona's cap on the small pieces: it was the outdated gear's slot
