@@ -4168,6 +4168,46 @@ namespace
 	const long PLAYERBOT_HYDRA_PORT_X = 169200;
 	const long PLAYERBOT_HYDRA_PORT_Y = 611700;
 	const BYTE PLAYERBOT_HYDRA_MIN_LEVEL = 110;
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps open to the bots (the owner, 22 October 2026: "wpusc je na
+	// mapy Yohary ... naucz je, jak sie po nich poruszac, jakie sa mapy, na jakich poziomach Czempiona maja byc na
+	// jakich mapach, jakie statystyki musza miec na kazda mape") - all on the Yohara core (game3), reached by a core
+	// handover and walked between by their portals; the table (bands, requirements, arrivals, portals, spots) is
+	// playerbot_yohara_sungma.h. The arrivals: each map's Town.txt (the players' landing by the portal from the map
+	// before) snapped to open ground of its main piece by tools/yohara_bot_sungma_map.py on the map's server_attr.
+	const long PLAYERBOT_MAP_SUNGMA_TWIERDZA = 374;	// Opuszczona Twierdza (metin2_map_empirecastle)
+	const long PLAYERBOT_MAP_SUNGMA_DONGAN = 373;		// Dongan (metin2_map_eastplain_01)
+	const long PLAYERBOT_MAP_SUNGMA_SEOGANLAND = 376;	// Seoganland (metin2_map_eastplain_02)
+	const long PLAYERBOT_MAP_SUNGMA_NAMGAN = 377;		// Namgan (metin2_map_eastplain_03)
+	const long PLAYERBOT_MAP_SUNGMA_YILAD = 385;		// Przelecz Yilad (metin2_map_snakevalley)
+	const long PLAYERBOT_MAP_SUNGMA_WAWOZ = 388;		// Wawoz Polnocnego Wiatru (metin2_map_icecrystalcave)
+	const long PLAYERBOT_MAP_SUNGMA_ROZPADLINA = 389;	// Rozpadlina Dusz (metin2_map_whitdragonvalley)
+	const long PLAYERBOT_MAP_SUNGMA_SCHRONIENIE = 393;	// Schronienie Polnocnego Wiatru (metin2_map_whitedragoncave_01)
+	const long PLAYERBOT_MAP_SUNGMA_ZEJSCIE = 394;		// Zejscie Polnocnego Wiatru (metin2_map_whitedragoncave_02)
+	bool IsPlayerBotSungmaBotMap(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		return base == PLAYERBOT_MAP_SUNGMA_TWIERDZA || base == PLAYERBOT_MAP_SUNGMA_DONGAN ||
+				base == PLAYERBOT_MAP_SUNGMA_SEOGANLAND || base == PLAYERBOT_MAP_SUNGMA_NAMGAN ||
+				base == PLAYERBOT_MAP_SUNGMA_YILAD || base == PLAYERBOT_MAP_SUNGMA_WAWOZ ||
+				base == PLAYERBOT_MAP_SUNGMA_ROZPADLINA || base == PLAYERBOT_MAP_SUNGMA_SCHRONIENIE ||
+				base == PLAYERBOT_MAP_SUNGMA_ZEJSCIE;
+	}
+	bool GetPlayerBotSungmaArrival(long mapIndex, long& outX, long& outY)
+	{
+		switch (mapIndex)
+		{
+			case PLAYERBOT_MAP_SUNGMA_TWIERDZA: outX = 537650; outY = 494950; return true;
+			case PLAYERBOT_MAP_SUNGMA_DONGAN: outX = 1102450; outY = 506850; return true;
+			case PLAYERBOT_MAP_SUNGMA_SEOGANLAND: outX = 1223350; outY = 491750; return true;
+			case PLAYERBOT_MAP_SUNGMA_NAMGAN: outX = 1279650; outY = 440950; return true;
+			case PLAYERBOT_MAP_SUNGMA_YILAD: outX = 31650; outY = 1414850; return true;
+			case PLAYERBOT_MAP_SUNGMA_WAWOZ: outX = 110650; outY = 1599750; return true;
+			case PLAYERBOT_MAP_SUNGMA_ROZPADLINA: outX = 183050; outY = 1579450; return true;
+			case PLAYERBOT_MAP_SUNGMA_SCHRONIENIE: outX = 1006450; outY = 1267250; return true;
+			case PLAYERBOT_MAP_SUNGMA_ZEJSCIE: outX = 1159050; outY = 1218250; return true;
+			default: return false;
+		}
+	}
 	// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: the 90-level maps for loot only - Przyladek Smoczej Glowy
 	// (301) and Nefrytowa Zatoka (303) on game2, Zbocze Gautama (302) and Gromiste Gory (304) on the
 	// first core. Metins and bosses, no experience grinding (the owner, 21 October).
@@ -4316,6 +4356,11 @@ namespace
 			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_ARRIVAL_X; outY = PLAYERBOT_ZAKLETY_ARRIVAL_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
 			case PLAYERBOT_MAP_SZC_PLATEAU: outX = PLAYERBOT_SZC_PLATEAU_X; outY = PLAYERBOT_SZC_PLATEAU_Y; return true; // MT2009_PLUS_BOT_YOHARA_SZC_V1
 			case PLAYERBOT_MAP_HYDRA_PORT: outX = PLAYERBOT_HYDRA_PORT_X; outY = PLAYERBOT_HYDRA_PORT_Y; return true; // MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps (GetPlayerBotSungmaArrival)
+			case PLAYERBOT_MAP_SUNGMA_TWIERDZA: case PLAYERBOT_MAP_SUNGMA_DONGAN: case PLAYERBOT_MAP_SUNGMA_SEOGANLAND:
+			case PLAYERBOT_MAP_SUNGMA_NAMGAN: case PLAYERBOT_MAP_SUNGMA_YILAD: case PLAYERBOT_MAP_SUNGMA_WAWOZ:
+			case PLAYERBOT_MAP_SUNGMA_ROZPADLINA: case PLAYERBOT_MAP_SUNGMA_SCHRONIENIE: case PLAYERBOT_MAP_SUNGMA_ZEJSCIE:
+				return GetPlayerBotSungmaArrival(mapIndex, outX, outY);
 			// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: each map's Town.txt snapped to open ground
 			// (tools/yohara_bot_lootrun_map.py); the way out is the same point.
 			case 301: outX = 1104850; outY = 1788850; return true;
@@ -4349,6 +4394,12 @@ namespace
 			case PLAYERBOT_MAP_GIANTLAND: outX = PLAYERBOT_GIANTLAND_EXIT_X; outY = PLAYERBOT_GIANTLAND_EXIT_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_EXIT_X; outY = PLAYERBOT_ZAKLETY_EXIT_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
 			case PLAYERBOT_MAP_HYDRA_PORT: outX = PLAYERBOT_HYDRA_PORT_X; outY = PLAYERBOT_HYDRA_PORT_Y; return true; // MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Sung Ma map is left by a handover (home) or by its portal walk
+			// (playerbot_yohara_sungma.h) - the landing is the point to stand on
+			case PLAYERBOT_MAP_SUNGMA_TWIERDZA: case PLAYERBOT_MAP_SUNGMA_DONGAN: case PLAYERBOT_MAP_SUNGMA_SEOGANLAND:
+			case PLAYERBOT_MAP_SUNGMA_NAMGAN: case PLAYERBOT_MAP_SUNGMA_YILAD: case PLAYERBOT_MAP_SUNGMA_WAWOZ:
+			case PLAYERBOT_MAP_SUNGMA_ROZPADLINA: case PLAYERBOT_MAP_SUNGMA_SCHRONIENIE: case PLAYERBOT_MAP_SUNGMA_ZEJSCIE:
+				return GetPlayerBotSungmaArrival(mapIndex, outX, outY);
 			case 301: outX = 1104850; outY = 1788850; return true; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 302: outX = 1225750; outY = 1682050; return true;
 			case 303: outX = 1087950; outY = 1649850; return true;
@@ -4380,6 +4431,7 @@ namespace
 				mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND || // MT2009_PLUS_MAPS_WZ_BOTS_V1
 				mapIndex == PLAYERBOT_MAP_ZAKLETY || // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 (on the Yohara core, by a handover)
 				(mapIndex >= 301 && mapIndex <= 304) || // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1 (loot runs, by a handover)
+				IsPlayerBotSungmaBotMap(mapIndex) || // MT2009_PLUS_BOT_YOHARA_MAPS_V1 (the Champions, by a handover)
 				IsPlayerBotArezzoMap(mapIndex); // MT2009_PLUS_AREZZO_BOTS_V1 (only the test cohorts are sent)
 	}
 
@@ -4415,6 +4467,15 @@ namespace
 			case PLAYERBOT_MAP_SZC_PLATEAU: return "szc"; // MT2009_PLUS_BOT_YOHARA_SZC_V1
 			case PLAYERBOT_MAP_HYDRA_PORT: return "hydra"; // MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			case 301: case 302: case 303: case 304: return "lootrun"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case PLAYERBOT_MAP_SUNGMA_TWIERDZA: return "sungma_twierdza"; // MT2009_PLUS_BOT_YOHARA_MAPS_V1
+			case PLAYERBOT_MAP_SUNGMA_DONGAN: return "sungma_dongan";
+			case PLAYERBOT_MAP_SUNGMA_SEOGANLAND: return "sungma_seoganland";
+			case PLAYERBOT_MAP_SUNGMA_NAMGAN: return "sungma_namgan";
+			case PLAYERBOT_MAP_SUNGMA_YILAD: return "sungma_yilad";
+			case PLAYERBOT_MAP_SUNGMA_WAWOZ: return "sungma_wawoz";
+			case PLAYERBOT_MAP_SUNGMA_ROZPADLINA: return "sungma_rozpadlina";
+			case PLAYERBOT_MAP_SUNGMA_SCHRONIENIE: return "sungma_schronienie";
+			case PLAYERBOT_MAP_SUNGMA_ZEJSCIE: return "sungma_zejscie";
 			default: return "frontier";
 		}
 	}
@@ -6942,6 +7003,9 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots between the game cores - Zaklety Las, the Time
 	// Rift, the loot runs - defined in playerbot_yohara_bots.h, the last fragment.
 	const TPlayerBotHuntingHub* GetPlayerBotYoharaHubs(long mapIndex, size_t& count);
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Metin (or an outpost) of a Sung Ma map - -1 not such a stone, 0/1 whether this
+	// bot takes it on (playerbot_yohara_sungma.h).
+	int IsPlayerBotSungmaStoneForMe(LPCHARACTER ch, LPCHARACTER stone);
 	bool IsPlayerBotYoharaLootRunHere(LPCHARACTER ch);
 	bool IsPlayerBotYoharaSzcResident(DWORD pid);
 	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: a bot the handover brought to the port for the Hydra, and its

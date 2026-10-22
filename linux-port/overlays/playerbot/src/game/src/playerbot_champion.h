@@ -58,6 +58,8 @@ namespace champion
 	unsigned int NextExp(int iLevel);
 	// conqueror_exp_rate (event flag, per cent; 0 or unset = 100): the calibration of champion experience.
 	int ExpRatePct();
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: conqueror_exp_rate_bot (per cent; 0 or unset = 100): the bots' on top of it.
+	int BotExpRatePct();
 
 	// 0 ok; 1 already a Champion; 2 level below the server's max level; 3 the Hydra flag missing;
 	// 4 less than one full bubble of experience (a quarter of the bar); 5 not a person.

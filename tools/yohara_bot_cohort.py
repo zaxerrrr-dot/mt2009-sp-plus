@@ -11,6 +11,12 @@ The owner, 21 October 2026 (night): "Kohorty na noc: 100 botow Zaklety Las
     yohara_bot_cohort.py <outdir> --hydra 32 [--db-container ...] [--channel 1]
     yohara_bot_cohort.py <outdir> --hydra-pairs 16 [--db-container ...] [--channel 1]
     yohara_bot_cohort.py <outdir> --hydra-end
+    yohara_bot_cohort.py <outdir> --yohara 100 [--db-container ...] [--channel 1]
+
+MT2009_PLUS_BOT_YOHARA_MAPS_V1: --yohara N makes the Yohara maps' cohort (tools/yohara_bot_cohort_sungma.py: the Hydra's
+Champions first, then the pool; level 120, a Champion level and the Sung Ma Will of one of the nine Sung Ma maps
+of the bots, the Hydra's gear, Sung Ma gloves where the points cannot carry the map; its own backup tables) and
+touches no other cohort.
 
 MT2009_PLUS_BOT_CHAMPION_V1: --hydra-end writes, and touches nothing else (no database read):
   hydra_end.sql            the Hydra's test over (the owner, 22 October): every Hydra member's row gets
@@ -104,6 +110,9 @@ ap.add_argument('--hydra', type=int, default=0, help='the Hydra\'s cohort of thi
                 'MT2009_PLUS_BOT_HYDRA_COHORT_V1, tools/yohara_bot_cohort_hydra.py')
 ap.add_argument('--hydra-end', action='store_true', help='the Hydra\'s test over: the statue\'s errand and the '
                 'backup/dissolve SQL - MT2009_PLUS_BOT_CHAMPION_V1')
+ap.add_argument('--yohara', type=int, default=0, help='the Yohara maps\' cohort of this many (100): the Hydra\'s '
+                'Champions first, level 120, a Champion level and the Sung Ma Will of one of the nine Sung Ma maps, the '
+                'Hydra\'s gear - MT2009_PLUS_BOT_YOHARA_MAPS_V1, tools/yohara_bot_cohort_sungma.py')
 ap.add_argument('--hydra-pairs', type=int, default=0, help='the Hydra\'s cohort as this many pairs (a Ninja and '
                 'another class of one kingdom; 16) - MT2009_PLUS_BOT_HYDRA_PAIRS_V1, tools/yohara_bot_cohort_hydra.py')
 a = ap.parse_args()
@@ -222,6 +231,15 @@ if a.hydra > 0:
     cohort_pids = pidset('SELECT pid FROM common.playerbot_yohara_cohort;') | paused
     yohara_bot_cohort_hydra.run(a, q, bots, excluded, cohort_pids,
                                 lambda b: not b['master'] and b['grp'] in (1, 2))
+    sys.exit(0)
+# MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Yohara maps' cohort - its own tool, nothing else touched.
+if a.yohara > 0:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import yohara_bot_cohort_sungma
+    cohort_pids = pidset('SELECT pid FROM common.playerbot_yohara_cohort;') | paused
+    yohara_bot_cohort_sungma.run(a, q, bots, excluded, cohort_pids,
+                                 lambda b: not b['master'] and b['grp'] in (1, 2),
+                                 os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     sys.exit(0)
 excluded |= paused | hydra_rows
 

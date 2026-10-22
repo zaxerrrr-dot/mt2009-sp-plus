@@ -70,6 +70,9 @@
 //     PLAYERBOT_YOHARA_LOOT_STAY_MS.
 //   * Hydra and the Sung Ma maps stay closed (TransitionPlayerBotMap's
 //     sungma_map refusal is before this file's route).
+//     MT2009_PLUS_BOT_YOHARA_MAPS_V1 (22 October): the Hydra's cohort, and the
+//     Sung Ma maps for a bot Champion of level 120 - purpose "yohara",
+//     playerbot_yohara_sungma.h (the refusal lets such a bot through).
 //
 // The switches (.env / the Seban panel's env page; docker-compose passes them
 // to the game container): PLAYERBOT_HANDOVER (1), PLAYERBOT_HANDOVER_CHANNELS
@@ -159,6 +162,7 @@ namespace
 		YOHARA_PURPOSE_SNAKEFIELD,
 		YOHARA_PURPOSE_GIANTLAND,
 		YOHARA_PURPOSE_HYDRA,	// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the pier of the port (368), the ship (367)
+		YOHARA_PURPOSE_SUNGMA,	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps of the Champions (playerbot_yohara_sungma.h)
 		YOHARA_PURPOSE_MAX
 	};
 
@@ -173,6 +177,7 @@ namespace
 			case YOHARA_PURPOSE_SNAKEFIELD: return "snakefield";	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
 			case YOHARA_PURPOSE_GIANTLAND: return "giantland";
 			case YOHARA_PURPOSE_HYDRA: return "hydra";	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			case YOHARA_PURPOSE_SUNGMA: return "yohara";	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 			default: return "none";
 		}
 	}
@@ -202,6 +207,9 @@ namespace
 		bool cohortOn, cohortExclusive;
 		int cohortStayMin, cohortDispatch, cohortRestMin, cohortDeathRestMin;
 		int hydraMax, hydraParties;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps - the channel's limit, a map's, the stay, the maps switched on.
+		int sungmaMax, sungmaMapMax, sungmaStayMin;
+		std::vector<long> sungmaMaps;
 	};
 
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi)
@@ -274,19 +282,37 @@ namespace
 		s_cfg.hydraMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_MAX", 32, 0, 200);
 		// MT2009_PLUS_BOT_HYDRA_PAIRS_V1: sixteen pairs, all at once (one ship each).
 		s_cfg.hydraParties = ReadPlayerBotYoharaEnvInt("PLAYERBOT_HYDRA_PARTIES", 16, 0, 32);
-		std::string chans, loot;
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the owner, 22 October - 100 bots onto the Yohara maps (the cohort "yohara" and
+		// the Champions of the population). PLAYERBOT_SUNGMA_MAPS: the maps of the table switched on (a grid each, built
+		// where a bot stands - 18-160 MB, playerbot_navigation.h).
+		s_cfg.sungmaMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_MAX", 120, 0, 600);
+		s_cfg.sungmaMapMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_MAP_MAX", 30, 0, 300);
+		s_cfg.sungmaStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_STAY_MIN", 240, 20, 1440);
+		{
+			std::vector<long> sm;
+			ReadPlayerBotYoharaEnvList("PLAYERBOT_SUNGMA_MAPS", "374,373,376,377,385,388,389,393,394", sm);
+			for (size_t i = 0; i < sm.size(); ++i)
+				if (IsPlayerBotSungmaBotMap(sm[i]) && sm[i] < PLAYERBOT_INSTANCE_MAP_INDEX_MIN &&
+						std::find(s_cfg.sungmaMaps.begin(), s_cfg.sungmaMaps.end(), sm[i]) == s_cfg.sungmaMaps.end())
+					s_cfg.sungmaMaps.push_back(sm[i]);
+		}
+		std::string chans, loot, sungma;
 		for (std::set<int>::const_iterator i = s_cfg.channels.begin(); i != s_cfg.channels.end(); ++i)
 			chans += (chans.empty() ? "" : ",") + std::to_string(*i);
 		for (size_t i = 0; i < s_cfg.lootMaps.size(); ++i)
 			loot += (loot.empty() ? "" : ",") + std::to_string(s_cfg.lootMaps[i]);
+		for (size_t i = 0; i < s_cfg.sungmaMaps.size(); ++i)	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+			sungma += (sungma.empty() ? "" : ",") + std::to_string(s_cfg.sungmaMaps[i]);
 		sys_log(0, "PLAYERBOT_HANDOVER: config on=%d channels=%s zaklety_max=%d zaklety_min_level=%d zaklety_stay_min=%d "
 				"zaklety_min_hp=%d szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s snakefield_max=%d giantland_max=%d "
 				"wz_stay_min=%d cohort=%d cohort_exclusive=%d cohort_stay_min=%d cohort_dispatch=%d cohort_rest_min=%d "
-				"cohort_death_rest_min=%d hydra_max=%d hydra_parties=%d channel_here=%u",
+				"cohort_death_rest_min=%d hydra_max=%d hydra_parties=%d sungma_max=%d sungma_map_max=%d sungma_stay_min=%d "
+				"sungma_maps=%s channel_here=%u",
 				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin, s_cfg.zakletyMinHp,
 				s_cfg.szcMax, s_cfg.szcParties, s_cfg.lootMax, loot.c_str(), s_cfg.snakeMax, s_cfg.giantMax, s_cfg.wzStayMin,
 				s_cfg.cohortOn ? 1 : 0, s_cfg.cohortExclusive ? 1 : 0, s_cfg.cohortStayMin, s_cfg.cohortDispatch,
-				s_cfg.cohortRestMin, s_cfg.cohortDeathRestMin, s_cfg.hydraMax, s_cfg.hydraParties, (unsigned int)g_bChannel);
+				s_cfg.cohortRestMin, s_cfg.cohortDeathRestMin, s_cfg.hydraMax, s_cfg.hydraParties, s_cfg.sungmaMax,
+				s_cfg.sungmaMapMax, s_cfg.sungmaStayMin, sungma.c_str(), (unsigned int)g_bChannel);
 		return s_cfg;
 	}
 
@@ -337,6 +363,10 @@ namespace
 			return YOHARA_PURPOSE_HYDRA;
 		if (IsPlayerBotYoharaLootMap(base))
 			return YOHARA_PURPOSE_LOOT;
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Sung Ma map of the bots' table that is switched on
+		if (IsPlayerBotSungmaBotMap(base) && std::find(GetPlayerBotYoharaConfig().sungmaMaps.begin(),
+				GetPlayerBotYoharaConfig().sungmaMaps.end(), base) != GetPlayerBotYoharaConfig().sungmaMaps.end())
+			return YOHARA_PURPOSE_SUNGMA;
 		return YOHARA_PURPOSE_NONE;
 	}
 
@@ -351,6 +381,7 @@ namespace
 			case YOHARA_PURPOSE_SNAKEFIELD: return cfg.snakeMax;
 			case YOHARA_PURPOSE_GIANTLAND: return cfg.giantMax;
 			case YOHARA_PURPOSE_HYDRA: return cfg.hydraMax;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+			case YOHARA_PURPOSE_SUNGMA: return cfg.sungmaMax;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 			default: return 0;
 		}
 	}
@@ -371,6 +402,8 @@ namespace
 				return level >= PLAYERBOT_YOHARA_LOOT_MIN_LEVEL;
 			case YOHARA_PURPOSE_HYDRA:	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
 				return level >= PLAYERBOT_HYDRA_MIN_LEVEL;
+			case YOHARA_PURPOSE_SUNGMA:	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the server's top level (and a Champion - the map's pick)
+				return level >= gPlayerMaxLevel;
 			default:
 				return false;
 		}
@@ -517,6 +550,8 @@ namespace
 		else if ((mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND) && ch &&
 				FindPlayerBotYoharaResident(ch->GetPlayerID()))
 			ms = (DWORD)cfg.wzStayMin * 60000U;
+		else if (IsPlayerBotSungmaBotMap(mapIndex) && ch && FindPlayerBotYoharaResident(ch->GetPlayerID()))	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+			ms = (DWORD)cfg.sungmaStayMin * 60000U;
 		if (ms != 0 && ch && IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
 			ms = std::max<DWORD>(ms, (DWORD)cfg.cohortStayMin * 60000U);
 		return ms;
@@ -535,7 +570,8 @@ namespace
 			return false;
 		return mapIndex == PLAYERBOT_MAP_ZAKLETY || mapIndex == PLAYERBOT_MAP_SZC_PLATEAU || IsPlayerBotYoharaLootMap(mapIndex) ||
 				mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND ||	// MT2009_PLUS_BOT_YOHARA_COHORT_V1
-				mapIndex == PLAYERBOT_MAP_HYDRA_PORT;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+				mapIndex == PLAYERBOT_MAP_HYDRA_PORT ||	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
+				GetPlayerBotYoharaMapPurpose(mapIndex) == YOHARA_PURPOSE_SUNGMA;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 	}
 
 	// Who may cross: the population's ordinary bots, not with a person.
@@ -628,7 +664,9 @@ namespace
 		// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra's runs won (the row's wins) and the statue's errand (the row's
 		// champion: YOHARA_CHAMPION_*).
 		int iWins, iChampion;
-		TPlayerBotYoharaCohortMember() : iPurpose(0), iChannel(0), bResting(false), iLevel(0), iParty(0), iWins(0), iChampion(0) {}
+		int iChampionLevel;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: player.player's conqueror_level (the dispatcher's band)
+		TPlayerBotYoharaCohortMember() : iPurpose(0), iChannel(0), bResting(false), iLevel(0), iParty(0), iWins(0), iChampion(0),
+			iChampionLevel(0) {}
 	};
 	struct TPlayerBotYoharaCohortStats
 	{
@@ -725,7 +763,8 @@ namespace
 		}
 		// MT2009_PLUS_BOT_CHAMPION_V1: the wins and the statue's errand too.
 		std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(s_bPlayerBotYoharaCohortChampionColumns
-				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party, c.wins, c.champion "
+				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party, c.wins, c.champion, "
+				  "IFNULL(p.conqueror_level, 0) "	// MT2009_PLUS_BOT_YOHARA_MAPS_V1 (czempion.sql's column)
 				  "FROM common.playerbot_yohara_cohort AS c LEFT JOIN player.player AS p ON p.id = c.pid"
 				: s_bPlayerBotYoharaCohortHydraColumns
 				? "SELECT c.pid, c.purpose, c.channel, IFNULL(c.rest_until > NOW(), 0), IFNULL(p.level, 0), c.party, c.wins, 0 "
@@ -757,6 +796,7 @@ namespace
 			m.iParty = row[5] ? atoi(row[5]) : 0;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			m.iWins = row[6] ? atoi(row[6]) : 0;	// MT2009_PLUS_BOT_CHAMPION_V1
 			m.iChampion = row[7] ? atoi(row[7]) : 0;
+			m.iChampionLevel = mysql_num_fields(msg->Get()->pSQLResult) > 8 && row[8] ? atoi(row[8]) : 0;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 			++size[purpose];
 			resting += m.bResting ? 1 : 0;
 		}
@@ -765,10 +805,10 @@ namespace
 		for (int p = 0; p < YOHARA_PURPOSE_MAX; ++p)
 			s_aiPlayerBotYoharaCohortSize[p] = size[p];
 		if (changed)
-			sys_log(0, "PLAYERBOT_COHORT: loaded members=%u (zaklety=%d szc=%d snakefield=%d giantland=%d hydra=%d) resting=%d channel_here=%u",
+			sys_log(0, "PLAYERBOT_COHORT: loaded members=%u (zaklety=%d szc=%d snakefield=%d giantland=%d hydra=%d yohara=%d) resting=%d channel_here=%u",
 					(unsigned int)s_mapPlayerBotYoharaCohort.size(), size[YOHARA_PURPOSE_ZAKLETY], size[YOHARA_PURPOSE_SZC],
-					size[YOHARA_PURPOSE_SNAKEFIELD], size[YOHARA_PURPOSE_GIANTLAND], size[YOHARA_PURPOSE_HYDRA], resting,
-					(unsigned int)g_bChannel);
+					size[YOHARA_PURPOSE_SNAKEFIELD], size[YOHARA_PURPOSE_GIANTLAND], size[YOHARA_PURPOSE_HYDRA],
+					size[YOHARA_PURPOSE_SUNGMA], resting, (unsigned int)g_bChannel);
 	}
 
 	bool IsPlayerBotYoharaCohortOn()
@@ -1073,6 +1113,10 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps - their table, the pick, the points, the stay, the census.
+	bool IsPlayerBotYoharaFightStopped(LPCHARACTER ch, const TPlayerBotYoharaResident& r, DWORD dwNow);
+#include "playerbot_yohara_sungma.h"
+
 	// ------------------------------------------------------------ the route
 
 	int RoutePlayerBotYoharaTransition(LPCHARACTER ch, TPlayerBotAIState& state, long targetMap,
@@ -1131,6 +1175,20 @@ namespace
 				return -1;
 			return TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_OCHAO, PLAYERBOT_OCHAO_ARRIVAL_X,
 					PLAYERBOT_OCHAO_ARRIVAL_Y, dwNow, "zaklety_via_ochao") ? 1 : 0;
+		}
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Sung Ma map's own room too
+		if (purpose == YOHARA_PURPOSE_SUNGMA)
+		{
+			const int slot = GetPlayerBotSungmaSlot(base);
+			if (slot < 0 || !HasPlayerBotSungmaRoom(slot, 0))
+			{
+				s_mapPlayerBotYoharaCooldown[pid] = dwNow + PLAYERBOT_YOHARA_REFUSED_COOLDOWN_MS;
+				PlayerBotLogThrottled("handover_sungma_cap", dwNow, "PLAYERBOT_HANDOVER: refused pid=%u name=%s to=%ld purpose=yohara why=map_cap",
+						pid, ch->GetName(), base);
+				s_szPlayerBotTransitionRefusal = "yohara_cap";
+				return 0;
+			}
+			++s_aiPlayerBotSungmaMapCensus[slot];
 		}
 		long x = targetX, y = targetY;
 		GetPlayerBotFrontierArrival(base, x, y);
@@ -1207,6 +1265,9 @@ namespace
 					const long m = GetPlayerBotYoharaPurposeMap(r->iPurpose);
 					return IsPlayerBotYoharaInBand(r->iPurpose, level) && IsPlayerBotMapHostedHere(m) ? m : 0;
 				}
+				// MT2009_PLUS_BOT_YOHARA_MAPS_V1: its Sung Ma map (ManagePlayerBotSungmaResident moves it between them)
+				case YOHARA_PURPOSE_SUNGMA:
+					return IsPlayerBotYoharaInBand(r->iPurpose, level) && IsPlayerBotMapHostedHere(r->lMap) ? r->lMap : 0;
 				default:
 					return 0;
 			}
@@ -1227,10 +1288,21 @@ namespace
 			if (cohort != YOHARA_PURPOSE_NONE)
 			{
 				const int p = GetPlayerBotYoharaCohortPurposeAt(cohort, level);
+				if (p == YOHARA_PURPOSE_SUNGMA)	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the map by its Champion level and Will
+					return s_aiPlayerBotYoharaCensus[p] < GetPlayerBotYoharaCap(p) ? PickPlayerBotSungmaMap(ch, 0) : 0;
 				if (p != YOHARA_PURPOSE_NONE && s_aiPlayerBotYoharaCensus[p] < GetPlayerBotYoharaCap(p))
 					return GetPlayerBotYoharaPurposeMap(p);
 				return 0;
 			}
+		}
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Champion of the top level - the Sung Ma maps (its map by its Champion level
+		// and Will), while the channel has room and no cohort holds them.
+		if (IsPlayerBotSungmaCandidate(ch) && s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SUNGMA] < cfg.sungmaMax &&
+				!IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_SUNGMA))
+		{
+			const long sungma = PickPlayerBotSungmaMap(ch, 0);
+			if (sungma != 0)
+				return sungma;
 		}
 		// A loot run now and then (in a village, at most every half hour a bot).
 		const long loot = GetPlayerBotYoharaLootPlan(ch, dwNow);
@@ -2048,6 +2120,9 @@ namespace
 				return TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_HYDRA_PORT, PLAYERBOT_HYDRA_PORT_X,
 						PLAYERBOT_HYDRA_PORT_Y, dwNow, "hydra_to_pier") ? 1 : 0;
 			}
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps (playerbot_yohara_sungma.h)
+			case YOHARA_PURPOSE_SUNGMA:
+				return ManagePlayerBotSungmaResident(ch, state, res, dwNow);
 			case YOHARA_PURPOSE_LOOT:
 			{
 				const char* why = NULL;
@@ -2161,7 +2236,8 @@ namespace
 	//     home <n|all>                      residents of this core sent home
 	//     status                            the census and every resident here, one line each
 	//     cohort                            common.playerbot_yohara_cohort read again (MT2009_PLUS_BOT_YOHARA_COHORT_V1)
-	//     (send takes snakefield|giantland too, and hydra - MT2009_PLUS_BOT_HYDRA_COHORT_V1)
+	//     (send takes snakefield|giantland too, and hydra - MT2009_PLUS_BOT_HYDRA_COHORT_V1; and yohara - the Champions,
+	//      each to its Sung Ma map - MT2009_PLUS_BOT_YOHARA_MAPS_V1)
 	const char* const PLAYERBOT_YOHARA_TEST_FILE = "playerbot_yohara_test";
 
 	void RunPlayerBotYoharaTestFile(DWORD dwNow)
@@ -2191,6 +2267,10 @@ namespace
 							(GetPlayerBotYoharaConfig().lootMaps.empty() ? 303 : GetPlayerBotYoharaConfig().lootMaps[0]))
 						: GetPlayerBotYoharaPurposeMap(purpose);	// MT2009_PLUS_BOT_YOHARA_COHORT_V1 (snakefield, giantland)
 				int sent = 0, looked = 0;
+				// MT2009_PLUS_BOT_YOHARA_MAPS_V1: "send <n> yohara" - each Champion to its own Sung Ma map
+				const bool sungma = purpose == YOHARA_PURPOSE_SUNGMA;
+				if (sungma)
+					map = 1;
 				for (TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.begin();
 						map != 0 && st != s_mapPlayerBotAIStates.end() && sent < n; ++st)
 				{
@@ -2204,9 +2284,12 @@ namespace
 					++looked;
 					if (!band)
 						continue;
+					const long target = sungma ? PickPlayerBotSungmaMap(ch, 0) : map;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+					if (target == 0)
+						continue;
 					long x = 0, y = 0;
-					GetPlayerBotFrontierArrival(map, x, y);
-					if (RequestPlayerBotYoharaHandover(ch, st->second, map, x, y, purpose, "test_send", dwNow))
+					GetPlayerBotFrontierArrival(target, x, y);
+					if (RequestPlayerBotYoharaHandover(ch, st->second, target, x, y, purpose, "test_send", dwNow))
 						++sent;
 				}
 				sys_log(0, "PLAYERBOT_YOHARA: test send purpose=%s map=%ld asked=%d sent=%d looked=%d",
@@ -2305,7 +2388,10 @@ namespace
 			}
 			if (census[purpose] >= GetPlayerBotYoharaCap(purpose))
 				continue;
-			const long map = GetPlayerBotYoharaPurposeMap(purpose);
+			// MT2009_PLUS_BOT_YOHARA_MAPS_V1: a Sung Ma member's map - by its Champion level and Will online, by the
+			// band offline (the cohort tool gave it the Will of its band's map).
+			const long map = purpose != YOHARA_PURPOSE_SUNGMA ? GetPlayerBotYoharaPurposeMap(purpose)
+					: (ch ? PickPlayerBotSungmaMap(ch, 0) : PickPlayerBotSungmaMapByBand(m.iChampionLevel));
 			long x = 0, y = 0;
 			if (map == 0 || !GetPlayerBotFrontierArrival(map, x, y))
 				continue;
@@ -2354,6 +2440,8 @@ namespace
 				++s_uPlayerBotYoharaOutCount;
 			}
 			++census[purpose];
+			if (purpose == YOHARA_PURPOSE_SUNGMA && GetPlayerBotSungmaSlot(map) >= 0 && !ch)	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+				++s_aiPlayerBotSungmaMapCensus[GetPlayerBotSungmaSlot(map)];
 			++sent;
 			++s_aPlayerBotYoharaCohortStats[purpose].sent;
 			NotePlayerBotYoharaCohortDb(pid, "sent", 1, map);
@@ -2542,6 +2630,7 @@ namespace
 				s_mapPlayerBotYoharaResident.erase(i->first);
 				s_mapPlayerBotYoharaTemple.erase(i->first);
 				s_mapPlayerBotChampionErrand.erase(i->first);	// MT2009_PLUS_BOT_CHAMPION_V1
+				s_mapPlayerBotSungma.erase(i->first);	// MT2009_PLUS_BOT_YOHARA_MAPS_V1 (its "not now" maps go with the stay)
 				const bool gone = CPlayerBotManager::instance().Despawn(i->first, playerbot_session_rules::OUT_CHANNEL);
 				sys_log(0, "PLAYERBOT_HANDOVER: logged out here pid=%u to=%ld purpose=%s ok=%d", i->first, i->second.lMap,
 						PlayerBotYoharaPurposeName(i->second.iPurpose), gone ? 1 : 0);
@@ -2591,6 +2680,7 @@ namespace
 		}
 		int census[YOHARA_PURPOSE_MAX] = { 0 };
 		int residentsHere[YOHARA_PURPOSE_MAX] = { 0 };
+		int sungmaMaps[PLAYERBOT_SUNGMA_MAP_COUNT] = { 0 };	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the rows a Sung Ma map
 		for (std::map<DWORD, TPlayerBotYoharaResident>::const_iterator r = s_mapPlayerBotYoharaResident.begin();
 				r != s_mapPlayerBotYoharaResident.end(); ++r)
 			if (r->second.iPurpose > 0 && r->second.iPurpose < YOHARA_PURPOSE_MAX)
@@ -2618,6 +2708,9 @@ namespace
 				++census[t.purpose];
 			else if (t.state == 2 && t.fresh && t.purpose > 0 && t.purpose < YOHARA_PURPOSE_MAX)
 				++census[t.purpose];
+			if (t.purpose == YOHARA_PURPOSE_SUNGMA && (t.state == 1 || (t.state == 2 && t.fresh)) &&
+					GetPlayerBotSungmaSlot(t.map) >= 0)	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+				++sungmaMaps[GetPlayerBotSungmaSlot(t.map)];
 			// A claim for this core.
 			if (t.state == 1 && hostedHere && t.ready && !s_mapPlayerBotYoharaLeaving.count(t.pid) &&
 					!s_mapPlayerBotYoharaArrival.count(t.pid))
@@ -2682,6 +2775,8 @@ namespace
 		s_setPlayerBotYoharaAway.swap(away);
 		for (int p = 0; p < YOHARA_PURPOSE_MAX; ++p)
 			s_aiPlayerBotYoharaCensus[p] = census[p];
+		for (int i = 0; i < PLAYERBOT_SUNGMA_MAP_COUNT; ++i)	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+			s_aiPlayerBotSungmaMapCensus[i] = sungmaMaps[i];
 		// This core's requests: claimed (a stay row, or gone with the bot in
 		// another core's world), or taken back.
 		for (std::map<DWORD, TPlayerBotYoharaOut>::iterator o = s_mapPlayerBotYoharaOut.begin(); o != s_mapPlayerBotYoharaOut.end();)
@@ -2758,6 +2853,8 @@ namespace
 						++s_aPlayerBotYoharaCohortStats[r->second.iPurpose].deaths;
 						NotePlayerBotYoharaCohortDb(r->first, "deaths", 1, rc->GetMapIndex());
 					}
+					if (r->second.iPurpose == YOHARA_PURPOSE_SUNGMA)	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
+						NotePlayerBotSungmaDeath(rc);
 					sys_log(0, "PLAYERBOT_YOHARA: died pid=%u name=%s level=%u map=%ld pos=(%ld,%ld) purpose=%s deaths=%d windowed=%d max_hp=%d",
 							r->first, rc->GetName(), (unsigned int)rc->GetLevel(), rc->GetMapIndex(), rc->GetX(), rc->GetY(),
 							PlayerBotYoharaPurposeName(r->second.iPurpose), r->second.iDeaths, r->second.iDeathsWindowed,
@@ -2766,6 +2863,9 @@ namespace
 				r->second.bDead = dead;
 				// MT2009_PLUS_BOT_YOHARA_COHORT_V1: its experience since the last poll.
 				TrackPlayerBotYoharaCohortExp(rc, r->second);
+				// MT2009_PLUS_BOT_YOHARA_MAPS_V1: and a Sung Ma map's census (experience, champion experience, level-ups, stuck).
+				if (r->second.iPurpose == YOHARA_PURPOSE_SUNGMA)
+					TrackPlayerBotSungma(rc);
 			}
 			stay += (stay.empty() ? "" : ",") + std::to_string(r->first);
 			++r;
@@ -2788,19 +2888,22 @@ namespace
 			RunPlayerBotYoharaSql("DELETE FROM common.playerbot_core_handover WHERE state=2 AND updated_at < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
 			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow in it, and the cohorts' lines.
 			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d szc=%d/%d loot=%d/%d snakefield=%d/%d "
-					"giantland=%d/%d hydra=%d/%d residents_here=%u (zaklety=%d szc=%d loot=%d snakefield=%d giantland=%d hydra=%d) "
-					"away=%u requests=%u out=%u in=%u home=%u refused=%u cancel=%u",
+					"giantland=%d/%d hydra=%d/%d yohara=%d/%d residents_here=%u (zaklety=%d szc=%d loot=%d snakefield=%d giantland=%d "
+					"hydra=%d yohara=%d) away=%u requests=%u out=%u in=%u home=%u refused=%u cancel=%u",
 					(unsigned int)g_bChannel, IsPlayerBotYoharaOn() ? 1 : 0,
 					census[YOHARA_PURPOSE_ZAKLETY], cfg.zakletyMax, census[YOHARA_PURPOSE_SZC], cfg.szcMax,
 					census[YOHARA_PURPOSE_LOOT], cfg.lootMax, census[YOHARA_PURPOSE_SNAKEFIELD], cfg.snakeMax,
 					census[YOHARA_PURPOSE_GIANTLAND], cfg.giantMax, census[YOHARA_PURPOSE_HYDRA], cfg.hydraMax,
+					census[YOHARA_PURPOSE_SUNGMA], cfg.sungmaMax,	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 					(unsigned int)s_mapPlayerBotYoharaResident.size(),
 					residentsHere[YOHARA_PURPOSE_ZAKLETY], residentsHere[YOHARA_PURPOSE_SZC], residentsHere[YOHARA_PURPOSE_LOOT],
 					residentsHere[YOHARA_PURPOSE_SNAKEFIELD], residentsHere[YOHARA_PURPOSE_GIANTLAND], residentsHere[YOHARA_PURPOSE_HYDRA],
+					residentsHere[YOHARA_PURPOSE_SUNGMA],
 					(unsigned int)s_setPlayerBotYoharaAway.size(), (unsigned int)s_mapPlayerBotYoharaOut.size(),
 					s_uPlayerBotYoharaOutCount, s_uPlayerBotYoharaInCount, s_uPlayerBotYoharaHomeCount,
 					s_uPlayerBotYoharaRefusedCount, s_uPlayerBotYoharaCancelCount);
 			LogPlayerBotYoharaCohortCensus(dwNow, cohortStaying, cohortOnWay);
+			LogPlayerBotSungmaCensus(dwNow);	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 		}
 	}
 }

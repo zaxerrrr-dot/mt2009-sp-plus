@@ -289,6 +289,12 @@ services:
       # MT2009_PLUS_BOT_HYDRA_PAIRS_V1: --hydra-pairs 16 - sixteen pairs (a Ninja and another class), all at once.
       PLAYERBOT_HYDRA_MAX: "${PLAYERBOT_HYDRA_MAX:-32}"
       PLAYERBOT_HYDRA_PARTIES: "${PLAYERBOT_HYDRA_PARTIES:-16}"
+      # MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps of Yohara for the bot Champions (playerbot_yohara_sungma.h) - a
+      # channel's limit, a map's, the stay (min), the maps switched on (374,373,376,377,385,388,389,393,394).
+      PLAYERBOT_SUNGMA_MAX: "${PLAYERBOT_SUNGMA_MAX:-120}"
+      PLAYERBOT_SUNGMA_MAP_MAX: "${PLAYERBOT_SUNGMA_MAP_MAX:-30}"
+      PLAYERBOT_SUNGMA_STAY_MIN: "${PLAYERBOT_SUNGMA_STAY_MIN:-240}"
+      PLAYERBOT_SUNGMA_MAPS: "${PLAYERBOT_SUNGMA_MAPS:-374,373,376,377,385,388,389,393,394}"
       # MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the bots' dungeon runs at once per core (GetPlayerBotDgRunCap): one a
       # BOTS_PER_RUN bots, at least MIN_RUNS, at most MAX_RUNS (0 = no top); a starved dungeon STARVED_OVER_CAP above.
       PLAYERBOT_DGRUN_MIN_RUNS: "${PLAYERBOT_DGRUN_MIN_RUNS:-4}"

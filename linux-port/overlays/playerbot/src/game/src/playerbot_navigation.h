@@ -339,7 +339,10 @@ namespace
 						mapIndex != PLAYERBOT_MAP_ZAKLETY && mapIndex != PLAYERBOT_MAP_SZC_PLATEAU &&
 						mapIndex != PLAYERBOT_MAP_SZC && !(mapIndex >= 301 && mapIndex <= 304) &&
 						// MT2009_PLUS_BOT_HYDRA_COHORT_V1: the port's pier (368, ~40 MB) where the Hydra's parties gather.
-						mapIndex != PLAYERBOT_MAP_HYDRA_PORT)
+						mapIndex != PLAYERBOT_MAP_HYDRA_PORT &&
+						// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Sung Ma maps of the Champions (game3; built where a bot stands:
+						// 374 ~18 MB, 373 ~89, 376 ~80, 377 ~36, 385 ~80, 388 ~89, 389 ~40, 393 ~160, 394 ~40 MB).
+						!IsPlayerBotSungmaBotMap(mapIndex))
 					return false;
 
 				if (m_initialized && m_mapIndex == mapIndex)

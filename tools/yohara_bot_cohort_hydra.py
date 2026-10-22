@@ -252,6 +252,85 @@ def release_sql(pids, plist_of):
             'COMMIT;']
 
 
+
+# MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Hydra's gear builder, shared with the Yohara maps' cohort
+# (tools/yohara_bot_cohort_sungma.py): the item table checked, the weapon kind a class and path wear, the talisman.
+def gear_context(q):
+    proto = {}
+    for r in q('SELECT vnum, type, subtype, limittype0, limitvalue0, limittype1, limitvalue1, size FROM player.item_proto;'):
+        v = int(r[0]); lv = 0
+        if r[3] == '1':
+            lv = int(r[4])
+        elif r[5] == '1':
+            lv = int(r[6])
+        proto[v] = dict(type=int(r[1]), sub=int(r[2]), lv=lv, size=int(r[7]))
+    for v in list(ARMOUR.values()) + list(HELMET.values()) + list(WEAPON_BY_SUBTYPE.values()) + \
+            [SHIELD, EARRINGS, NECKLACE, BRACELET, BELT, SHOES, SASH, ARROW, MARBLE, ELIXIRS[0][0], ELIXIRS[1][0]] + \
+            [t * 10000 + 5460 for t in DS]:
+        if v not in proto:
+            sys.exit('item %d is not in item_proto' % v)
+    # the weapon kind the bots of a class and path wear most (a Warrior's two-handed or one-handed, a
+    # Shaman's bell or fan)
+    kind = collections.defaultdict(collections.Counter)
+    for r in q("""SELECT p.job % 4, p.skill_group, ip.subtype, COUNT(*) FROM player.player p
+                   JOIN account.account ac ON ac.id = p.account_id
+                   JOIN player.item i ON i.owner_id = p.id AND i.window = 'EQUIPMENT' AND i.pos = 4
+                   JOIN player.item_proto ip ON ip.vnum = i.vnum
+                  WHERE LEFT(ac.login, 10) = 'playerbot_' AND p.level >= 50 AND p.skill_group IN (1, 2) GROUP BY 1, 2, 3;"""):
+        kind[(int(r[0]), int(r[1]))][int(r[2])] += int(r[3])
+
+    def weapon(cls, grp):
+        subs = [s for (c, s) in WEAPON_BY_SUBTYPE if c == cls]
+        if len(subs) == 1:
+            return WEAPON_BY_SUBTYPE[(cls, subs[0])]
+        if cls == 1:
+            return WEAPON_BY_SUBTYPE[(1, 2 if grp == 2 else 1)]
+        best = max(subs, key=lambda s: (kind[(cls, grp)][s], -s))
+        return WEAPON_BY_SUBTYPE[(cls, best)]
+
+    tal = None
+    for plus in range(0, 151):
+        p = proto.get(ICE_TALISMAN + plus)
+        if p and p['lv'] <= LEVEL:
+            tal = ICE_TALISMAN + plus
+    return dict(proto=proto, weapon=weapon, tal=tal)
+
+
+def gear_inserts(ctx, m):
+    """The EQUIPMENT rows (SQL value tuples) of the Hydra's gear for a member; returns (rows, weapon vnum)."""
+    cls, grp, pid = m['cls'], m['grp'], m['pid']
+    wv = ctx['weapon'](cls, grp)
+    wat = bonuses(4, cls, grp)
+    gear = [(0, ARMOUR[cls], ARMOUR_SOCKETS, bonuses(0, cls, grp)), (1, HELMET[cls], (0, 0, 0), bonuses(1, cls, grp)),
+            (2, SHOES, (0, 0, 0), bonuses(2, cls, grp)), (3, BRACELET, (0, 0, 0), bonuses(3, cls, grp)),
+            (4, wv, WEAPON_SOCKETS, wat), (5, NECKLACE, (0, 0, 0), bonuses(5, cls, grp)),
+            (6, EARRINGS, (0, 0, 0), bonuses(6, cls, grp)), (10, SHIELD, (0, 0, 0), bonuses(10, cls, grp)),
+            (22, SASH, (25, wv, 0), wat), (23, BELT, (0, 0, 0), [])]
+    if ctx['tal']:
+        gear.append((25, ctx['tal'], (0, 0, 0), []))
+    ins = []
+    for pos, v, sock, at in gear:
+        ins.append("  (%d, 'EQUIPMENT', %d, 1, %d, %d, %d, %d, %s)" % (pid, pos, v, sock[0], sock[1], sock[2], attrs7(at)))
+    for t, at in sorted(DS.items()):
+        ins.append("  (%d, 'EQUIPMENT', %d, 1, %d, 86400, 0, 0, %s)" % (pid, 32 + t - 11, t * 10000 + 5460, attrs7(at)))
+    if cls == 1 and grp == 2:
+        ins.append("  (%d, 'EQUIPMENT', 9, 200, %d, 0, 0, 0, %s)" % (pid, ARROW, attrs7([])))
+    return ins, wv
+
+
+def skills_for(b):
+    blob = bytearray.fromhex(b['skills']) if b['skills'] else bytearray()
+    if len(blob) < 1590:
+        blob += bytearray(1590 - len(blob))
+    for v in SKILLS[(b['cls'], b['grp'])]:
+        blob[v * 6] = 3
+        blob[v * 6 + 1] = 40
+    if b['cls'] == 1 and b['grp'] == 2:
+        blob[POLYMORPH_SKILL * 6] = 3
+        blob[POLYMORPH_SKILL * 6 + 1] = 40
+    return blob.hex().upper()
+
+
 def run(a, q, bots, excluded, cohort_pids, usable):
     # ------------------------------------------------------------ who
     earlier = {}
@@ -328,55 +407,9 @@ def run(a, q, bots, excluded, cohort_pids, usable):
         print('WARNING: hydra - only %d of %d members found' % (len(members), want))
 
     # ------------------------------------------------------------ items
-    proto = {}
-    for r in q('SELECT vnum, type, subtype, limittype0, limitvalue0, limittype1, limitvalue1, size FROM player.item_proto;'):
-        v = int(r[0]); lv = 0
-        if r[3] == '1':
-            lv = int(r[4])
-        elif r[5] == '1':
-            lv = int(r[6])
-        proto[v] = dict(type=int(r[1]), sub=int(r[2]), lv=lv, size=int(r[7]))
-    for v in list(ARMOUR.values()) + list(HELMET.values()) + list(WEAPON_BY_SUBTYPE.values()) + \
-            [SHIELD, EARRINGS, NECKLACE, BRACELET, BELT, SHOES, SASH, ARROW, MARBLE, ELIXIRS[0][0], ELIXIRS[1][0]] + \
-            [t * 10000 + 5460 for t in DS]:
-        if v not in proto:
-            sys.exit('item %d is not in item_proto' % v)
-    # the weapon kind the bots of a class and path wear most (a Warrior's two-handed or one-handed, a
-    # Shaman's bell or fan)
-    kind = collections.defaultdict(collections.Counter)
-    for r in q("""SELECT p.job % 4, p.skill_group, ip.subtype, COUNT(*) FROM player.player p
-                   JOIN account.account ac ON ac.id = p.account_id
-                   JOIN player.item i ON i.owner_id = p.id AND i.window = 'EQUIPMENT' AND i.pos = 4
-                   JOIN player.item_proto ip ON ip.vnum = i.vnum
-                  WHERE LEFT(ac.login, 10) = 'playerbot_' AND p.level >= 50 AND p.skill_group IN (1, 2) GROUP BY 1, 2, 3;"""):
-        kind[(int(r[0]), int(r[1]))][int(r[2])] += int(r[3])
-
-    def weapon(cls, grp):
-        subs = [s for (c, s) in WEAPON_BY_SUBTYPE if c == cls]
-        if len(subs) == 1:
-            return WEAPON_BY_SUBTYPE[(cls, subs[0])]
-        if cls == 1:
-            return WEAPON_BY_SUBTYPE[(1, 2 if grp == 2 else 1)]
-        best = max(subs, key=lambda s: (kind[(cls, grp)][s], -s))
-        return WEAPON_BY_SUBTYPE[(cls, best)]
-
-    tal = None
-    for plus in range(0, 151):
-        p = proto.get(ICE_TALISMAN + plus)
-        if p and p['lv'] <= LEVEL:
-            tal = ICE_TALISMAN + plus
-
-    def skills_for(b):
-        blob = bytearray.fromhex(b['skills']) if b['skills'] else bytearray()
-        if len(blob) < 1590:
-            blob += bytearray(1590 - len(blob))
-        for v in SKILLS[(b['cls'], b['grp'])]:
-            blob[v * 6] = 3
-            blob[v * 6 + 1] = 40
-        if b['cls'] == 1 and b['grp'] == 2:
-            blob[POLYMORPH_SKILL * 6] = 3
-            blob[POLYMORPH_SKILL * 6 + 1] = 40
-        return blob.hex().upper()
+    ctx = gear_context(q)
+    tal = ctx['tal']
+    weapon = ctx['weapon']
 
     # ------------------------------------------------------------ SQL
     pids = sorted(m['pid'] for m in members)
@@ -445,22 +478,8 @@ ON DUPLICATE KEY UPDATE channel = VALUES(channel), requested_channel = 0, reques
     ins = []
     rows = []
     for m in sorted(members, key=lambda x: x['pid']):
-        cls, grp, pid = m['cls'], m['grp'], m['pid']
-        wv = weapon(cls, grp)
-        wat = bonuses(4, cls, grp)
-        gear = [(0, ARMOUR[cls], ARMOUR_SOCKETS, bonuses(0, cls, grp)), (1, HELMET[cls], (0, 0, 0), bonuses(1, cls, grp)),
-                (2, SHOES, (0, 0, 0), bonuses(2, cls, grp)), (3, BRACELET, (0, 0, 0), bonuses(3, cls, grp)),
-                (4, wv, WEAPON_SOCKETS, wat), (5, NECKLACE, (0, 0, 0), bonuses(5, cls, grp)),
-                (6, EARRINGS, (0, 0, 0), bonuses(6, cls, grp)), (10, SHIELD, (0, 0, 0), bonuses(10, cls, grp)),
-                (22, SASH, (25, wv, 0), wat), (23, BELT, (0, 0, 0), [])]
-        if tal:
-            gear.append((25, tal, (0, 0, 0), []))
-        for pos, v, sock, at in gear:
-            ins.append("  (%d, 'EQUIPMENT', %d, 1, %d, %d, %d, %d, %s)" % (pid, pos, v, sock[0], sock[1], sock[2], attrs7(at)))
-        for t, at in sorted(DS.items()):
-            ins.append("  (%d, 'EQUIPMENT', %d, 1, %d, 86400, 0, 0, %s)" % (pid, 32 + t - 11, t * 10000 + 5460, attrs7(at)))
-        if cls == 1 and grp == 2:
-            ins.append("  (%d, 'EQUIPMENT', 9, 200, %d, 0, 0, 0, %s)" % (pid, ARROW, attrs7([])))
+        g, wv = gear_inserts(ctx, m)
+        ins.extend(g)
         rows.append((m, wv))
     S.append('INSERT INTO player.item (owner_id, window, pos, count, vnum, socket0, socket1, socket2, '
              'attrtype0, attrvalue0, attrtype1, attrvalue1, attrtype2, attrvalue2, attrtype3, attrvalue3, '

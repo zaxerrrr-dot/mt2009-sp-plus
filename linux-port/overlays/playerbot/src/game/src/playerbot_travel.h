@@ -1865,6 +1865,9 @@ namespace
 	int RoutePlayerBotYoharaTransition(LPCHARACTER ch, TPlayerBotAIState& state, long targetMap,
 			long targetX, long targetY, DWORD dwNow, const char* reason);
 	int ManagePlayerBotYoharaTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	// MT2009_PLUS_BOT_YOHARA_MAPS_V1: playerbot_yohara_sungma.h - a Sung Ma map a bot may enter (a Champion of the
+	// server's top level, onto a map of the bots' table that is switched on, or after a person of its party).
+	bool IsPlayerBotSungmaEntryAllowed(LPCHARACTER ch, long targetMap, const char* reason);
 
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
@@ -1877,7 +1880,10 @@ namespace
 		// maps' route for them comes later (plan-boty-yohara.md) - the refusal stays for every bot.
 		// Every way in passes here: hunting and its trips, the sidekick's follow, a party's follow and jump,
 		// the dungeon and guild LFG, a GM's or a quest's warp (CPlayerBotManager::WarpBot).
-		if (champion::IsSungmaMap(targetMap))
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the owner, 22 October ("wpusc je na mapy Yohary") - a bot Champion of level
+		// 120 onto the Sung Ma maps of the bots' table (playerbot_yohara_sungma.h: the map by its Champion level and
+		// its Sung Ma stats), or after a person of its party; every other bot and map still refused.
+		if (champion::IsSungmaMap(targetMap) && !IsPlayerBotSungmaEntryAllowed(ch, targetMap, reason))
 		{
 			if (!s_szPlayerBotTransitionRefusal)
 				s_szPlayerBotTransitionRefusal = "sungma_map";
