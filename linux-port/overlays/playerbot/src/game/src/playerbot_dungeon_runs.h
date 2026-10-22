@@ -209,6 +209,10 @@ namespace
 	int GetPlayerBotYoharaHydraParties();
 	void NotePlayerBotYoharaHydraRunEnd(const std::vector<DWORD>& members, bool won);
 	void NotePlayerBotYoharaHydraDeath(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra ended (m2_bot_hydra_end / PLAYERBOT_HYDRA_END, or the member's row) - no
+	// new ship for it; the statue's errand instead (playerbot_yohara_bots.h).
+	bool IsPlayerBotHydraEndSwitched();
+	bool IsPlayerBotYoharaHydraEndedFor(DWORD pid);
 
 	struct TPlayerBotDgRunDef
 	{
@@ -3718,6 +3722,13 @@ namespace
 		if (def < 0)
 			return;
 		const TPlayerBotDgRunDef& info = PLAYERBOT_DGRUN_DEFS[def];
+		// MT2009_PLUS_BOT_CHAMPION_V1: the Hydra's test is over - no new call (the runs under way finish).
+		if (IsPlayerBotHydraEndSwitched())
+		{
+			if (forced)
+				sys_log(0, "BOT_DGRUN: no call (test) dungeon=hydra - the Hydra ended (m2_bot_hydra_end / PLAYERBOT_HYDRA_END)");
+			return;
+		}
 		if (!IsPlayerBotMapHostedHere(info.lMap) || !SECTREE_MANAGER::instance().GetMap(info.lMap) ||
 				!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_HYDRA_PORT))
 		{
@@ -3740,7 +3751,7 @@ namespace
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			const DWORD pid = it->first;
-			if (!IsPlayerBotYoharaHydraResident(pid))
+			if (!IsPlayerBotYoharaHydraResident(pid) || IsPlayerBotYoharaHydraEndedFor(pid))	// MT2009_PLUS_BOT_CHAMPION_V1
 				continue;
 			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(pid);
 			if (!ch || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)

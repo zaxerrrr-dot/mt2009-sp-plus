@@ -10,6 +10,20 @@ The owner, 21 October 2026 (night): "Kohorty na noc: 100 botow Zaklety Las
                                   [--db-container mt2009plustest-db] [--channel 1]
     yohara_bot_cohort.py <outdir> --hydra 32 [--db-container ...] [--channel 1]
     yohara_bot_cohort.py <outdir> --hydra-pairs 16 [--db-container ...] [--channel 1]
+    yohara_bot_cohort.py <outdir> --hydra-end
+
+MT2009_PLUS_BOT_CHAMPION_V1: --hydra-end writes, and touches nothing else (no database read):
+  hydra_end.sql            the Hydra's test over (the owner, 22 October): every Hydra member's row gets
+                           champion = 1 (a won run, no Champion level: the statue's errand ahead) or 3 (nothing to
+                           go there for); the cores read it within a minute - no new ship, the members on the pier
+                           (and the ones at home, sent there) walk to Posag Wojownika (20433) and become Champions
+                           (playerbot_yohara_bots.h, ManagePlayerBotYoharaChampion), then go home as ordinary bots.
+                           Safe with the game running. (The same switch live: event flag m2_bot_hydra_end 1.)
+  hydra_champion_status.sql  the errand's progress: champion 1 pending, 2 a Champion, 3 done without it, and the
+                           characters' conqueror_level.
+  hydra_dissolve_ended.sql the cohort's rows into common.playerbot_yohara_cohort_ended (the backup, as the other
+                           cohorts') and out of the cohort table, with their open handover requests; the bots keep
+                           level, gear and Champion level. Run it when the status shows no 1 left.
 
 MT2009_PLUS_BOT_HYDRA_COHORT_V1: --hydra N makes the Hydra's cohort instead (tools/yohara_bot_cohort_hydra.py:
 four fixed parties of eight, level 120 and a quarter of its experience, the Hydra's gear and kit) and touches
@@ -88,12 +102,61 @@ ap.add_argument('--channel', type=int, default=1)
 ap.add_argument('--min-raise', type=int, default=70, help='the lowest level raised to the forest / the Time Rift')
 ap.add_argument('--hydra', type=int, default=0, help='the Hydra\'s cohort of this many (four parties of eight: 32) - '
                 'MT2009_PLUS_BOT_HYDRA_COHORT_V1, tools/yohara_bot_cohort_hydra.py')
+ap.add_argument('--hydra-end', action='store_true', help='the Hydra\'s test over: the statue\'s errand and the '
+                'backup/dissolve SQL - MT2009_PLUS_BOT_CHAMPION_V1')
 ap.add_argument('--hydra-pairs', type=int, default=0, help='the Hydra\'s cohort as this many pairs (a Ninja and '
                 'another class of one kingdom; 16) - MT2009_PLUS_BOT_HYDRA_PAIRS_V1, tools/yohara_bot_cohort_hydra.py')
 a = ap.parse_args()
 if a.hydra_pairs > 0:	# MT2009_PLUS_BOT_HYDRA_PAIRS_V1
     a.hydra = 2 * a.hydra_pairs
 os.makedirs(a.outdir, exist_ok=True)
+
+# MT2009_PLUS_BOT_CHAMPION_V1: the Hydra's end - three SQL files, nothing read or changed here.
+if a.hydra_end:
+    COLS = ("ALTER TABLE common.playerbot_yohara_cohort ADD COLUMN IF NOT EXISTS champion TINYINT UNSIGNED NOT NULL DEFAULT 0, "
+            "ADD COLUMN IF NOT EXISTS champion_at DATETIME NULL;")
+    E = ['-- MT2009_PLUS_BOT_CHAMPION_V1: the Hydra\'s test over - the statue\'s errand. Safe with the game running.',
+         'SET NAMES latin1;',
+         COLS,
+         "UPDATE common.playerbot_yohara_cohort c LEFT JOIN player.player p ON p.id = c.pid\n"
+         "   SET c.champion = IF(IFNULL(p.conqueror_level, 0) > 0, 2, IF(c.wins >= 1, 1, 3)),\n"
+         "       c.champion_at = IF(IFNULL(p.conqueror_level, 0) > 0 OR c.wins < 1, NOW(), NULL)\n"
+         " WHERE c.purpose = 'hydra' AND c.champion = 0;",
+         "SELECT c.champion, COUNT(*) AS members, SUM(c.wins) AS wins FROM common.playerbot_yohara_cohort c "
+         "WHERE c.purpose = 'hydra' GROUP BY c.champion;"]
+    open(os.path.join(a.outdir, 'hydra_end.sql'), 'w').write('\n'.join(E) + '\n')
+    open(os.path.join(a.outdir, 'hydra_champion_status.sql'), 'w').write('\n'.join([
+        '-- MT2009_PLUS_BOT_CHAMPION_V1: the statue\'s errand (champion 1 pending, 2 a Champion, 3 done without it).',
+        'SET NAMES latin1;',
+        "SELECT c.champion, COUNT(*) AS members, SUM(p.conqueror_level > 0) AS champions FROM common.playerbot_yohara_cohort c "
+        "LEFT JOIN player.player p ON p.id = c.pid WHERE c.purpose = 'hydra' GROUP BY c.champion;",
+        "SELECT c.pid, p.name, p.level, c.wins, c.champion, c.champion_at, p.conqueror_level, c.last_map, h.target_map AS handover_to, "
+        "h.state AS handover_state FROM common.playerbot_yohara_cohort c LEFT JOIN player.player p ON p.id = c.pid "
+        "LEFT JOIN common.playerbot_core_handover h ON h.pid = c.pid WHERE c.purpose = 'hydra' ORDER BY c.champion, c.party, c.pid;",
+    ]) + '\n')
+    open(os.path.join(a.outdir, 'hydra_dissolve_ended.sql'), 'w').write('\n'.join([
+        '-- MT2009_PLUS_BOT_CHAMPION_V1: the Hydra\'s cohort dissolved, its rows kept in common.playerbot_yohara_cohort_ended',
+        '-- (as the other cohorts\'). The bots keep level, gear and Champion level. Safe with the game running.',
+        'SET NAMES latin1;',
+        COLS,
+        'CREATE TABLE IF NOT EXISTS common.playerbot_yohara_cohort_ended LIKE common.playerbot_yohara_cohort;',
+        COLS.replace('playerbot_yohara_cohort ', 'playerbot_yohara_cohort_ended '),
+        'START TRANSACTION;',
+        'REPLACE INTO common.playerbot_yohara_cohort_ended (pid, purpose, channel, rest_until, created_at, level_start, '
+        'exp_start, sent, arrived, deaths, runs, rest_outs, exp_gained, last_map, last_seen, applied_at, party, wins, '
+        'champion, champion_at)\n'
+        '  SELECT pid, purpose, channel, rest_until, created_at, level_start, exp_start, sent, arrived, deaths, runs, '
+        'rest_outs, exp_gained, last_map, last_seen, applied_at, party, wins, champion, champion_at\n'
+        "    FROM common.playerbot_yohara_cohort WHERE purpose = 'hydra';",
+        "DELETE h FROM common.playerbot_core_handover h JOIN common.playerbot_yohara_cohort c ON c.pid = h.pid "
+        "WHERE h.state = 1 AND c.purpose = 'hydra';",
+        "DELETE FROM common.playerbot_yohara_cohort WHERE purpose = 'hydra';",
+        'COMMIT;',
+        "SELECT purpose, COUNT(*) AS rows_ended, SUM(champion = 2) AS champions FROM common.playerbot_yohara_cohort_ended "
+        "GROUP BY purpose;",
+    ]) + '\n')
+    print('wrote hydra_end.sql, hydra_champion_status.sql, hydra_dissolve_ended.sql to', a.outdir)
+    sys.exit(0)
 
 
 def q(sql, fatal=True):
