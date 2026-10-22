@@ -40,6 +40,7 @@ import uiEquipmentDialog
 import uiGameButton
 import uiTip
 import uiCube
+import uiCubeOkno # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
 import miniMap
 # ACCESSORY_REFINE_ADD_METIN_STONE
 import uiSelectItem
@@ -4678,9 +4679,14 @@ class Interface(object):
 			self.wndWeb.Hide()
 
 	def __MakeCubeWindow(self):
-		self.wndCube = uiCube.CubeWindow()
-		self.wndCube.LoadWindow()
-		self.wndCube.Hide()
+		# MT2009_PLUS_NPC_CRAFT_WINDOW_V1: the NPCs' crafting window (uicubeokno.py); the set blacksmiths keep the old one
+		self.wndCubeClassic = uiCube.CubeWindow()
+		self.wndCubeClassic.LoadWindow()
+		self.wndCubeClassic.Hide()
+		self.wndCubeOkno = uiCubeOkno.CubeOknoWindow()
+		self.wndCubeOkno.LoadWindow()
+		self.wndCubeOkno.Hide()
+		self.wndCube = self.wndCubeOkno
 
 	def __MakeCubeResultWindow(self):
 		self.wndCubeResult = uiCube.CubeResultWindow()
@@ -4823,7 +4829,8 @@ class Interface(object):
 			self.wndDragonSoul.SetItemToolTip(self.tooltipItem)
 			self.wndDragonSoulRefine.SetItemToolTip(self.tooltipItem)
 		self.wndSafebox.SetItemToolTip(self.tooltipItem)
-		self.wndCube.SetItemToolTip(self.tooltipItem)
+		self.wndCubeClassic.SetItemToolTip(self.tooltipItem) # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+		self.wndCubeOkno.SetItemToolTip(self.tooltipItem)
 		self.wndCubeResult.SetItemToolTip(self.tooltipItem)
 
 		if app.ENABLE_ACCE_COSTUME_SYSTEM:
@@ -5008,8 +5015,9 @@ class Interface(object):
 		if self.wndHelp:
 			self.wndHelp.Destroy()
 
-		if self.wndCube:
-			self.wndCube.Destroy()
+		if self.wndCube: # MT2009_PLUS_NPC_CRAFT_WINDOW_V1: both crafting windows
+			self.wndCubeClassic.Destroy()
+			self.wndCubeOkno.Destroy()
 
 		if app.ENABLE_ACCE_COSTUME_SYSTEM and self.wndAcceCombine:
 			self.wndAcceCombine.Destroy()
@@ -5190,6 +5198,8 @@ class Interface(object):
 		del self.wndParty
 		del self.wndHelp
 		del self.wndCube
+		del self.wndCubeClassic
+		del self.wndCubeOkno
 		del self.wndCubeResult
 		del self.wndPlayerbotAdmin
 		del self.offlineShopBuilder
@@ -6065,8 +6075,14 @@ class Interface(object):
 	def CloseWbWindow(self):
 		self.wndWeb.Close()
 
-	def OpenCubeWindow(self):
-		self.wndCube.Open()
+	def OpenCubeWindow(self, npcVnum = 0):
+		# MT2009_PLUS_NPC_CRAFT_WINDOW_V1: the set blacksmiths' rows are the player's own pieces - their old window; every other NPC the new one
+		if 20475 <= int(npcVnum) <= 20479:
+			self.wndCube = self.wndCubeClassic
+			self.wndCube.Open()
+		else:
+			self.wndCube = self.wndCubeOkno
+			self.wndCube.Open(int(npcVnum))
 
 		if False == self.wndInventory.IsShow():
 			self.wndInventory.Show()
@@ -6078,9 +6094,15 @@ class Interface(object):
 		self.wndCube.Close()
 
 	def FailedCubeWork(self):
+		if hasattr(self.wndCube, "OnCubeResult"): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+			self.wndCube.OnCubeResult(False)
+			return
 		self.wndCube.Refresh()
 
 	def SucceedCubeWork(self, itemVnum, count):
+		if hasattr(self.wndCube, "OnCubeResult"): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+			self.wndCube.OnCubeResult(True, itemVnum, count)
+			return
 		self.wndCube.Clear()
 
 		if 0:

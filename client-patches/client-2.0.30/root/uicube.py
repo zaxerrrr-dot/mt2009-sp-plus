@@ -239,11 +239,13 @@ class CubeWindow(ui.ScriptWindow):
 	def AddMaterialInfo(self, itemIndex, orderIndex, itemVnum, itemCount):
 		if itemIndex not in self.cubeMaterialInfos:
 			self.cubeMaterialInfos[itemIndex] = [[], [], [], [], []]
+		if orderIndex >= 5: # MT2009_PLUS_NPC_CRAFT_WINDOW_V1: a sixth material (Angmur) is not shown in the old window
+			return
 
 		self.cubeMaterialInfos[itemIndex][orderIndex].append((itemVnum, itemCount))
 		#print "AddMaterialInfo", itemIndex, orderIndex, itemVnum, itemCount, self.cubeMaterialInfos
 
-	def SetResultExtra(self, itemIndex, gold, chance, gaya): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+	def SetResultExtra(self, itemIndex, gold, chance, gaya, category = -1): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
 		self.cubeResultExtra[itemIndex] = (gold, chance, gaya)
 
 	def __PickRow(self, resultIndex): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
