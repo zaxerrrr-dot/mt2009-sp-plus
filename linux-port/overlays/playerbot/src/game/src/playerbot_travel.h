@@ -3717,7 +3717,9 @@ namespace
 			// bag now sends it home only once it has settled in and played.
 			const bool fightStops = ch->IsItemLoaded() &&
 					(ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
-					 NeedsPlayerBotEmergencyPotions(ch) || NeedsPlayerBotArrows(ch));
+					 // MT2009_PLUS_BOT_YOHARA_COHORT_POTIONS_V1: a cohort member's belt is filled where it stands.
+					 (NeedsPlayerBotEmergencyPotions(ch) && !IsPlayerBotYoharaCohortPID(ch->GetPlayerID())) ||
+					 NeedsPlayerBotArrows(ch));
 			bool blocked = onBattleTrialHere ? fightStops
 					: (fightStops || (settledIn && BlocksPlayerBotTravel(ch)));
 			// The Biologist hand-in a trial bot carries sent it home for the

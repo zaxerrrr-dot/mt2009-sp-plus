@@ -2873,9 +2873,15 @@ namespace
 		// MT2009_PLUS_ATLANTYDA_TEST_V1: an operator's call of one dungeon ("now <key>") is not held by the
 		// core's cap - only by the dungeon's own (8 October: the Atlantyda test calls refused for twenty
 		// minutes while the clock's runs of the others held the cap).
-		const int runsNow = CountPlayerBotDgRuns(-1);
+		// MT2009_PLUS_BOT_YOHARA_COHORT_SZC_CAP_V1: the Time Rift's runs keep to their own cap
+		// (PLAYERBOT_SZC_PARTIES), outside the core's - on the first cohort night the cap of 4 held
+		// the SZC cohort to 4 parties of the 14 and sent the rest to rest for want of a party.
+		int runsNow = 0;
+		for (std::map<int, TPlayerBotDgRun>::const_iterator it = s_mapPlayerBotDgRuns.begin(); it != s_mapPlayerBotDgRuns.end(); ++it)
+			if (PLAYERBOT_DGRUN_DEFS[it->second.iDef].bKind != DGRUN_KIND_SZC)
+				++runsNow;
 		const bool overCap = forced < 0 && runsNow >= GetPlayerBotDgRunCap();
-		if (forced < 0 && runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP)
+		if (forced < 0 && runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP && GetPlayerBotYoharaSzcParties() <= 0)
 		{
 			if (forced != -1)
 				sys_log(0, "BOT_DGRUN: no call (%s) - %d runs already, the cap", why, runsNow);
@@ -2892,7 +2898,9 @@ namespace
 			if (!panel || mt2009_dpanel::Hidden(*panel) || !IsPlayerBotMapHostedHere(def.lMap) ||
 					!SECTREE_MANAGER::instance().GetMap(def.lMap) || CountPlayerBotDgRuns(i) >= GetPlayerBotDgRunDefCap(i))
 				continue;
-			if (overCap && !IsPlayerBotDgRunStarved(i, dwNow))
+			if (overCap && def.bKind != DGRUN_KIND_SZC && !IsPlayerBotDgRunStarved(i, dwNow))
+				continue;
+			if (forced < 0 && def.bKind != DGRUN_KIND_SZC && runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP)
 				continue;
 			// The Demon Tower keeps its own bot raids (playerbot_demon_tower.h;
 			// the owner, 4 October: "wieza demonow tez niech zostanie przy swoich

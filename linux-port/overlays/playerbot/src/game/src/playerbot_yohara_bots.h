@@ -1432,6 +1432,43 @@ namespace
 		}
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
+		// MT2009_PLUS_BOT_YOHARA_COHORT_POTIONS_V1: a member short of potions with no free cell for them makes
+		// one - its junk first, then the cheapest thing in the bag (never worn, locked, a potion, a quest item
+		// or a watch), sold where it stands. On the first cohort night 76 of the forest's 198 rest-outs in two
+		// hours were bots that arrived with a full bag and few reds: the restock could not buy and the potion
+		// check sent them to rest at once (stay 0-22 s).
+		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) && red < PLAYERBOT_YOHARA_BELT_RED && ch->GetEmptyInventory(1) < 0)
+		{
+			SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_MISC, "cohort_misc");
+			SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_WEAPON, "cohort_weapon");
+			SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_ARMOR, "cohort_armor");
+			for (int freed = 0; freed < 2 && ch->GetEmptyInventory(1) < 0; ++freed)
+			{
+				LPITEM cheapest = NULL;
+				long long cheapestPrice = 0;
+				for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+				{
+					LPITEM item = ch->GetInventoryItem(cell);
+					if (!item || item->IsEquipped() || item->isLocked() || item->GetType() == ITEM_QUEST ||
+							item->GetVnum() == PLAYERBOT_YOHARA_SZC_WATCH ||
+							(item->GetVnum() >= 27001 && item->GetVnum() <= 27008) ||
+							GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE)
+						continue;
+					const long long price = GetPlayerBotJunkSalePrice(item);
+					if (!cheapest || price < cheapestPrice)
+					{
+						cheapest = item;
+						cheapestPrice = price;
+					}
+				}
+				if (!cheapest)
+					break;
+				sys_log(0, "PLAYERBOT_COHORT: cell freed for potions pid=%u name=%s vnum=%u count=%u gold=%lld",
+						ch->GetPlayerID(), ch->GetName(), cheapest->GetVnum(), (unsigned int)cheapest->GetCount(), cheapestPrice);
+				PlayerBotChangeGold(ch, cheapestPrice);
+				ITEM_MANAGER::instance().RemoveItem(cheapest, "PLAYERBOT_COHORT_SELL");
+			}
+		}
 		const bool big = ch->GetLevel() >= PLAYERBOT_BIG_POTION_MIN_LEVEL;
 		const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
 		int boughtRed = 0, boughtBlue = 0;
