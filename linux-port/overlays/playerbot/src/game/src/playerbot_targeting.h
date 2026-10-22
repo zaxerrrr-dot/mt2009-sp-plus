@@ -2068,7 +2068,7 @@ namespace
 			return NULL;
 		const int capacity = GetPlayerBotSungmaCapacity(ch, partyReady);
 		const int bandLevel = GetPlayerBotSungmaBandMobLevel(ch);
-		LPCHARACTER pick = NULL, over = NULL, nearest = NULL;
+		LPCHARACTER pick = NULL, over = NULL, nearest = NULL, defend = NULL;
 		long long pickScore = LLONG_MIN, overScore = LLONG_MIN;
 		int pickWake = 0, overLoad = INT_MAX, nearestWake = 0, nearestDist = INT_MAX;
 		bool pickElement = false;
@@ -2095,7 +2095,11 @@ namespace
 					(long long)std::min(power, 200) * PLAYERBOT_SUNGMA_ELEMENT_POWER_SCORE +
 					(long long)std::min(resist, 50) * PLAYERBOT_SUNGMA_ELEMENT_RESIST_SCORE;
 			if (onMe)
+			{
 				score += 500000;
+				if (!defend || targets[i].distance < DISTANCE_APPROX(defend->GetX() - ch->GetX(), defend->GetY() - ch->GetY()))
+					defend = mob;
+			}
 			else if (mob->GetVictim() != NULL && !(party && mob->GetVictim()->GetParty() == party))
 				score -= 180000;
 			if (targets[i].distance < nearestDist)
@@ -2127,6 +2131,9 @@ namespace
 			pick = over;
 			pickWake = overLoad - engaged;
 		}
+		// more on it already than it takes: it answers the nearest of them (the retreat is the survival pass's)
+		if (!pick && defend)
+			return defend;
 		if (!pick)
 		{
 			if (!over)

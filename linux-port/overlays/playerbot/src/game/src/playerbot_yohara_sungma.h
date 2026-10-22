@@ -1061,6 +1061,35 @@
 		return need;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: where the bot stands to trade with a Dongan merchant - the pid's own place round it
+	// (GetPlayerBotNpcApproach) when the arrival's ground reaches it, else the first of sixteen round the merchant that it
+	// does. The test of 22 October (19:44-20:15): the weapon merchant's places (y 502 260-502 420, south of 9001) were
+	// walled - eight "destination given up ... unreachable" after 600 s, the errand's four minutes gone and the fallback's
+	// restock instead, and twelve of Dongan's "stuck" there.
+	bool GetPlayerBotSungmaMerchantApproach(DWORD pid, const TPlayerBotSungmaMerchant& m, int stop, long& ax, long& ay)
+	{
+		GetPlayerBotNpcApproach(pid, m.x, m.y, 0x444f4e47U + (DWORD)stop, ax, ay);
+		long fromX = 0, fromY = 0;
+		CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(PLAYERBOT_MAP_SUNGMA_DONGAN);
+		if (!GetPlayerBotSungmaArrival(PLAYERBOT_MAP_SUNGMA_DONGAN, fromX, fromY) || !navigation.Init(PLAYERBOT_MAP_SUNGMA_DONGAN) ||
+				navigation.CanReach(fromX, fromY, ax, ay))
+			return true;
+		for (int r = 200; r <= 400; r += 100)
+			for (int i = 0; i < 16; ++i)
+			{
+				float fx = 0.0f, fy = 0.0f;
+				GetDeltaByDegree((float)(i * 360 / 16 + (int)(pid % 23U)), (float)r, &fx, &fy);
+				const long x = m.x + (long)fx, y = m.y + (long)fy;
+				if (navigation.CanReach(fromX, fromY, x, y))
+				{
+					ax = x;
+					ay = y;
+					return true;
+				}
+			}
+		return false;
+	}
+
 	// The errand given up (too long, a warp refused, Dongan off): the belt kept full where it stands for a while.
 	void FailPlayerBotSungmaErrand(LPCHARACTER ch, TPlayerBotYoharaResident& res, TPlayerBotSungmaBot& b, DWORD dwNow, const char* why)
 	{
@@ -1162,7 +1191,14 @@
 		}
 		const TPlayerBotSungmaMerchant& m = PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[b.iErrandStop];
 		long ax = 0, ay = 0;
-		GetPlayerBotNpcApproach(ch->GetPlayerID(), m.x, m.y, 0x444f4e47U + (DWORD)b.iErrandStop, ax, ay);
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a stand the arrival's ground reaches (else the merchant is passed over)
+		if (!GetPlayerBotSungmaMerchantApproach(ch->GetPlayerID(), m, b.iErrandStop, ax, ay))
+		{
+			PlayerBotLogThrottled("sungma_errand_unreachable", dwNow, "PLAYERBOT_SUNGMA: errand merchant unreachable pid=%u name=%s merchant=%u",
+					ch->GetPlayerID(), ch->GetName(), m.dwRace);
+			++b.iErrandStop;
+			return 1;
+		}
 		if (base != PLAYERBOT_MAP_SUNGMA_DONGAN)
 		{
 			s_szPlayerBotTransitionRefusal = NULL;

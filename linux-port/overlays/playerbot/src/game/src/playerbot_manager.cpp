@@ -8226,6 +8226,10 @@ WritePlayerBotGuildStatus(dwNow);
 					? s_setPlayerBotEmergencyRest.count(ch->GetPlayerID()) != 0
 					: ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT))
 			heldBy = FindPlayerBotHoldingMonster(ch);
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: on a Sung Ma map no invisible rest beside a pack - a retreat (playerbot_sungma_fight.h).
+		if (!heldBy && !bFinishingStone && !state.bTacticalRetreat && !state.bRecoveringAfterDeath && ch->GetMaxHP() > 0 &&
+				ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT)
+			heldBy = FindPlayerBotSungmaDanger(ch, dwNow);
 		if (heldBy)
 		{
 			if (state.bRecoveringAfterDeath)

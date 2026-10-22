@@ -35,8 +35,11 @@ namespace
 	const int PLAYERBOT_SUNGMA_PARTY_NEAR = 3000;		// a party member "by" the bot (the stones, the bosses, the capacity)
 	const int PLAYERBOT_SUNGMA_PARTY_READY_HP = 55;		// ...and ready for an objective
 	// How many monsters a bot takes at once: alone 3 (2 under 70% health, 1 under 50% or with under
-	// PLAYERBOT_SUNGMA_CAPACITY_LOW_RED potions), and 2 more for each ready member by it, to PLAYERBOT_SUNGMA_CAPACITY_MAX.
+	// PLAYERBOT_SUNGMA_CAPACITY_LOW_RED potions), and 2 more for each ready member by it, to PLAYERBOT_SUNGMA_CAPACITY_MAX;
+	// one fewer alone where the weakest monsters are PLAYERBOT_SUNGMA_CAPACITY_HARD_LEVEL or more (Yilad on: aggressive,
+	// 125-190 k health, against 64-147 k of the four maps before).
 	const int PLAYERBOT_SUNGMA_CAPACITY_LONE = 3;
+	const int PLAYERBOT_SUNGMA_CAPACITY_HARD_LEVEL = 122;
 	const int PLAYERBOT_SUNGMA_CAPACITY_MEMBER = 2;
 	const int PLAYERBOT_SUNGMA_CAPACITY_MAX = 11;
 	const size_t PLAYERBOT_SUNGMA_CAPACITY_LOW_RED = 15;
@@ -347,11 +350,23 @@ namespace
 		return n;
 	}
 
+	// The weakest monsters' level of a Sung Ma map (0: none).
+	int GetPlayerBotSungmaMobFloor(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_MOB_FLOORS) / sizeof(PLAYERBOT_SUNGMA_MOB_FLOORS[0]); ++i)
+			if (PLAYERBOT_SUNGMA_MOB_FLOORS[i].lMap == base)
+				return PLAYERBOT_SUNGMA_MOB_FLOORS[i].iLevel;
+		return 0;
+	}
+
 	// How many monsters at once the bot takes (see PLAYERBOT_SUNGMA_CAPACITY_*).
 	int GetPlayerBotSungmaCapacity(LPCHARACTER ch, int partyNear)
 	{
 		const int hp = GetPlayerBotSungmaHpPercent(ch);
-		int cap = hp >= 70 ? PLAYERBOT_SUNGMA_CAPACITY_LONE : (hp >= 50 ? PLAYERBOT_SUNGMA_CAPACITY_LONE - 1 : 1);
+		const int lone = PLAYERBOT_SUNGMA_CAPACITY_LONE - (GetPlayerBotSungmaMobFloor(ch->GetMapIndex()) >= PLAYERBOT_SUNGMA_CAPACITY_HARD_LEVEL ? 1 : 0);
+		int cap = hp >= 70 ? lone : (hp >= 50 ? lone - 1 : 1);
+		cap = std::max(cap, 1);
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
 		if (red < PLAYERBOT_SUNGMA_CAPACITY_LOW_RED)
@@ -364,10 +379,7 @@ namespace
 	int GetPlayerBotSungmaBandMobLevel(LPCHARACTER ch)
 	{
 		const long base = ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? ch->GetMapIndex() / 10000 : ch->GetMapIndex();
-		int floorLevel = 0;
-		for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_MOB_FLOORS) / sizeof(PLAYERBOT_SUNGMA_MOB_FLOORS[0]); ++i)
-			if (PLAYERBOT_SUNGMA_MOB_FLOORS[i].lMap == base)
-				floorLevel = PLAYERBOT_SUNGMA_MOB_FLOORS[i].iLevel;
+		const int floorLevel = GetPlayerBotSungmaMobFloor(base);
 		if (!floorLevel)
 			return (int)ch->GetLevel();
 		int champion = 0;
@@ -462,7 +474,9 @@ namespace
 		if (attackers == 0 || !nearest)
 			return NULL;
 		const int partyNear = CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR, 30);
-		const int fullCap = PLAYERBOT_SUNGMA_CAPACITY_LONE + std::max(0, partyNear - 1) * PLAYERBOT_SUNGMA_CAPACITY_MEMBER;
+		const int fullCap = PLAYERBOT_SUNGMA_CAPACITY_LONE -
+				(GetPlayerBotSungmaMobFloor(ch->GetMapIndex()) >= PLAYERBOT_SUNGMA_CAPACITY_HARD_LEVEL ? 1 : 0) +
+				std::max(0, partyNear - 1) * PLAYERBOT_SUNGMA_CAPACITY_MEMBER;
 		const char* why = NULL;
 		if (hp <= (partyNear >= 2 ? PLAYERBOT_SUNGMA_RETREAT_PARTY_HP : PLAYERBOT_SUNGMA_RETREAT_LONE_HP))
 			why = "hp";
@@ -504,6 +518,43 @@ namespace
 				(unsigned int)red, ch->GetX(), ch->GetY(), cx, cy);
 		f.dwHpSeenAt = 0;
 		return nearest;
+	}
+
+	// The emergency rest (20% health, no monster holding the bot) on a Sung Ma map: with a monster awake or an aggressive
+	// one in sight it is a retreat instead (the threat - the nearest), not an invisible rest on the spot. The test of
+	// 22 October (19:44-20:15, game3): of 217 deaths 89 came in a retreat and 31 within a minute of an emergency rest -
+	// on Dongan, Wawoz, Rozpadlina and Schronienie the usual death was "retreat, emergency rest, dead" (51 of 152), the
+	// aggressive packs waiting out the five invisible seconds beside it.
+	LPCHARACTER FindPlayerBotSungmaDanger(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!IsPlayerBotSungmaFighter(ch) || ch->IsDead())
+			return NULL;
+		std::vector<TPlayerBotSungmaMob> mobs;
+		CollectPlayerBotSungmaMobs(ch, PLAYERBOT_SUNGMA_AGGRO_RADIUS + PLAYERBOT_SUNGMA_PACK_RADIUS, mobs);
+		LPCHARACTER best = NULL;
+		int bestDist = INT_MAX;
+		for (size_t i = 0; i < mobs.size(); ++i)
+		{
+			const TPlayerBotSungmaMob& m = mobs[i];
+			const int d = DISTANCE_APPROX(m.x - ch->GetX(), m.y - ch->GetY());
+			if ((m.onMe || (m.idle && m.aggressive && d <= PLAYERBOT_SUNGMA_AGGRO_RADIUS)) && d < bestDist)
+			{
+				best = m.mob;
+				bestDist = d;
+			}
+		}
+		if (!best)
+			return NULL;
+		TPlayerBotSungmaFight& f = s_mapPlayerBotSungmaFight[ch->GetPlayerID()];
+		f.bRetreat = true;
+		strlcpy(f.szRetreatWhy, "low", sizeof(f.szRetreatWhy));
+		if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+			++st->retreatsHp;
+		f.dwLastDown = dwNow ? dwNow : 1;
+		sys_log(0, "PLAYERBOT_SUNGMA: retreat pid=%u name=%s map=%ld why=low hp=%d/%d danger=%s dist=%d pos=(%ld,%ld)",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetHP(), ch->GetMaxHP(), best->GetName(), bestDist,
+				ch->GetX(), ch->GetY());
+		return best;
 	}
 
 	// HandlePlayerBotTacticalRetreat's part for a Sung Ma fighter (any retreat it is in): -1 not its, 0 the retreat over,
