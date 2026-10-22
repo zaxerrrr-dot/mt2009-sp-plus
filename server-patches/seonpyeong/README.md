@@ -29,3 +29,11 @@ Reszta: `quest/seon_pyeong.quest` (rozmowa – co na niego przeciągnąć; okna 
 
 Linux/VPS: `python3 apply_seonpyeong.py <game/src>`; Windows: `Apply-SeonPyeongPatch.ps1 -SourceDir <game/src>`
 (wołane przez `tools/port/Apply-MT2009PlusEngine.ps1`, na końcu).
+
+`MT2009_PLUS_SEONPYEONG_FIX_V1` (właściciel, 22.10.2026: „po OK nic się nie dzieje”): jak na globalu przedmiot idzie
+przez okno ulepszania (to samo, co po przeciągnięciu na niego). Rozmowa nie jest już ślepym zaułkiem: „Przekuj
+przedmiot +9” pokazuje przedmioty z plecaka z jego przepisem i otwiera dla wybranego okno ulepszania; „Przepisy” –
+lista. Silnik (`questlua_pc.cpp`, trzy edycje): `pc.seonpyeong_cells()` (komórki plecaka z przepisem elitarnym) i
+`pc.seonpyeong_refine(komórka)` (tylko przy Seon-Pyeongu, w zasięgu – `CanReceiveItem`; `SetRefineNPC` +
+`RefineInformation(REFINE_TYPE_NORMAL)`, dalej zwykłe `CInputMain::Refine`). Obie funkcje są na liście
+`quest_functions` w Dockerfile.
