@@ -64,6 +64,8 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
 - **Kary na mapie Sung Ma** (gdy statystyka poniżej wymagania mapy):
   Siła – obrażenia gracza w potwory /2; Witalność – maks. PŻ /2; Odporność – prędkość ruchu /2;
   Inteligencja – trucizna/podpalenie/krwawienie gracza na potworach wchodzą o połowę rzadziej (zwykłe ciosy i umiejętności).
+  Witalność liczona po Woli z przedmiotów (`MT2009_PLUS_SUNGMA_HP_ORDER_V1`): każda zmiana `POINT_SUNGMA_HP`/`_PER_HP`
+  przelicza maks. PŻ, więc Wola rękawic (i kamieni, jadeitu, zestawów) nie przychodzi już po decyzji o karze w `ComputePoints`.
   Bez Poziomu Czempiona: brak ataku na potwory (`battle_is_attackable`) i 0 obrażeń.
 - **Mapy**: `sungma_table.txt` wymienia mapy po **nazwach** (19 map Yohary z klienta GF). Silnik porównuje je z
   `map/index` rdzenia – nazwa, której nie mamy, nic nie zmienia. Na dziś **żadna nasza mapa** nie jest mapą Sung Ma
