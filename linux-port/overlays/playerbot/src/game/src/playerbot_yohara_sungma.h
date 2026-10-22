@@ -684,8 +684,9 @@
 		// penalty (ChampionMaxHP: half while Witalnosc is short) is judged at each POINT_MAX_HP change, and ComputePoints
 		// makes the last of those before a glove's Will (the cohort's Witalnosc is the glove's stone) is in - a bot
 		// revived or just landed stood at half until some later change (Namgan, 22 October: 11 995 of 23 990 after a
-		// revive in a pack, 11 290 on landing three seconds before its death). The engine's order is a person's as well
-		// (left for the engine patch); for a bot the poll's look puts it right.
+		// revive in a pack, 11 290 on landing three seconds before its death). Since MT2009_PLUS_SUNGMA_HP_ORDER_V1
+		// (server-patches/czempion: each Witalnosc change counts the max HP again) the engine does it for persons and bots
+		// alike; this look stays as a harmless safety net (PointChange(POINT_MAX_HP, 0) only recounts).
 		const DWORD dwNow = get_dword_time();
 		if (!ch->IsDead() && (int)(dwNow - b.dwNextHpLook) >= 0)
 		{

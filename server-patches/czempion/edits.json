@@ -220,5 +220,11 @@
   "marker": "MT2009_PLUS_CHAMPION_V2 (equip limit)",
   "old": "\t\t\tcase LIMIT_STR:\n\t\t\t\tif (GetPoint(POINT_ST) < limit)\n",
   "new": "#ifdef ENABLE_CONQUEROR_LEVEL\n\t\t\tcase LIMIT_CONQUEROR_LEVEL: // MT2009_PLUS_CHAMPION_V2 (equip limit)\n\t\t\t\tif (GetConquerorLevel() < limit)\n\t\t\t\t{\n\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, \"Tw\\xf3j Poziom Czempiona jest za niski, aby za\\xb3o\\xbfy\\xe6 ten przedmiot (wymagany: %ld).\", limit);\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\tbreak;\n#endif\n\n\t\t\tcase LIMIT_STR:\n\t\t\t\tif (GetPoint(POINT_ST) < limit)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_HP_ORDER_V1",
+  "old": "\tswitch (type)\n\t{\n\t\tcase POINT_LEVEL:\n\t\tcase POINT_ST:\n\t\tcase POINT_DX:\n\t\tcase POINT_IQ:\n\t\tcase POINT_HT:\n\t\t\tComputeBattlePoints();\n\t\t\tbreak;\n\t\tcase POINT_MAX_HP:\n\t\tcase POINT_MAX_SP:\n\t\tcase POINT_MAX_STAMINA:\n\t\t\tbreak;\n\t}\n",
+  "new": "\tswitch (type)\n\t{\n\t\tcase POINT_LEVEL:\n\t\tcase POINT_ST:\n\t\tcase POINT_DX:\n\t\tcase POINT_IQ:\n\t\tcase POINT_HT:\n\t\t\tComputeBattlePoints();\n\t\t\tbreak;\n\t\tcase POINT_MAX_HP:\n\t\tcase POINT_MAX_SP:\n\t\tcase POINT_MAX_STAMINA:\n\t\t\tbreak;\n\t\t// MT2009_PLUS_SUNGMA_HP_ORDER_V1: the Sung Ma HP penalty (ChampionMaxHP: max HP halved while Witalnosc is short\n\t\t// of the map's requirement) is judged when POINT_MAX_HP is counted, and ComputePoints counts it before the worn\n\t\t// items add their Will (a Sung Ma glove's base Will and stones, jade, sets, affects) - a person or bot meeting\n\t\t// Witalnosc only with them stood at half max HP after a revive, a login or a map change. Each change of the\n\t\t// Witalnosc (flat or per cent) counts the max HP again. Sila, Odpornosc and Inteligencja are judged when used\n\t\t// (a blow, GetLimitPoint, a poison), so their order is right already.\n\t\tcase POINT_SUNGMA_HP:\n\t\tcase POINT_SUNGMA_PER_HP:\n\t\t\tif (amount && IsPC())\n\t\t\t\tPointChange(POINT_MAX_HP, 0);\n\t\t\tbreak;\n\t}\n"
  }
 ]
