@@ -153,9 +153,9 @@ MAP_NAMES = {
 	110: 'Arena (3)', 111: 'Arena (4)', 112: 'Arena Pojedynk\xf3w', 113: 'Mapa OX',
 	181: 'Wojna Kr\xf3lestw', 182: 'Wojna Kr\xf3lestw', 183: 'Wojna Kr\xf3lestw',
 	208: 'Le\xbfe Smoka', 209: '\x8cwi\xb9tynia Ochao', 216: 'Katakumby Diab\xb3a', 217: 'Loch Paj\xb9k\xf3w (3)',
-	301: 'Przyl\xb9dek Smoczego Ognia', 302: 'Las Porannej Mg\xb3y', 303: 'Zatoka Czarnego Piasku', 304: 'G\xf3ra Grzmot\xf3w',
+	301: 'Przyl\xb9dek Smoczego Ognia', 302: 'Zbocze Gautama', 303: 'Nefrytowa Zatoka', 304: 'Gromiste G\xf3ry',
 	351: 'Czy\x9cciec Ognia', 352: 'Lodowa Kraina', 358: '\x8cwi\xb9tynia Zodiaku',
-	360: 'Dolina Cyklop\xf3w', 361: 'Pustkowie Faraona', 362: 'Zaczarowany Las', 363: 'Biblioteka Wiedzy',
+	360: 'Dolina Cyklop\xf3w', 361: 'Pustkowie Faraona', 353: 'Zakl\xeaty Las', 363: 'Biblioteka Wiedzy',
 	364: 'Wzg\xf3rze Wukonga', 365: 'Ruiny Skorpiona', 366: 'Staro\xbfytna D\xbfungla', 158: 'Ruiny Atlantydy',
 	419: 'Poszukiwanie Skarb\xf3w',
 }
