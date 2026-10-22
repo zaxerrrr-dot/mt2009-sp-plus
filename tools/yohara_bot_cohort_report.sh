@@ -123,9 +123,46 @@ cnt "champion refused" "PLAYERBOT_CHAMPION: refused"
 cnt "champion skipped" "PLAYERBOT_CHAMPION: skip"
 printf '%s\n' "$ALL" | grep "PLAYERBOT_CHAMPION: census" | tail -1
 echo
-echo "=== syserr in the window (HANDOVER / YOHARA / COHORT / NAV / BOT_DGRUN / HYDRA / ship defense), all cores of channel 1 + db"
+# MT2009_PLUS_BOT_YOHARA_MAPS_V1: the Yohara maps' cohort ("yohara") - the rows by map and Champion level (DB), the
+# last PLAYERBOT_SUNGMA census of game3 (a line a map, every 5 min: here, kills/h, exp/h, champion exp/h, deaths,
+# stuck, navigation failures, level-ups, champion level-ups, moves) and the window's moves, points, step-downs.
+echo "=== Yohara maps (Sung Ma) - the cohort 'yohara' and the bot Champions"
+db <<'EOF'
+SELECT IFNULL(h.target_map, c.last_map) AS map, COUNT(*) AS members,
+       COALESCE(SUM(h.state = 2 AND h.updated_at > NOW() - INTERVAL 180 SECOND), 0) AS on_core3,
+       COALESCE(SUM(h.state = 1), 0) AS on_way, SUM(IFNULL(c.rest_until > NOW(), 0)) AS resting,
+       MIN(p.conqueror_level) AS champ_min, MAX(p.conqueror_level) AS champ_max, ROUND(AVG(p.conqueror_level), 1) AS champ_avg,
+       SUM(p.conqueror_point) AS points_free, ROUND(AVG(p.sungma_str + p.sungma_hp + p.sungma_move + p.sungma_immune), 1) AS points_spent_avg,
+       SUM(c.deaths) AS deaths, SUM(c.rest_outs) AS rest_outs, SUM(c.exp_gained) AS exp_gained
+  FROM common.playerbot_yohara_cohort c
+  LEFT JOIN common.playerbot_core_handover h ON h.pid = c.pid
+  LEFT JOIN player.player p ON p.id = c.pid
+ WHERE c.purpose = 'yohara'
+ GROUP BY 1 ORDER BY 1;
+SELECT p.conqueror_level AS champion, COUNT(*) AS bot_champions_all FROM player.player p
+  JOIN account.account ac ON ac.id = p.account_id WHERE LEFT(ac.login, 10) = 'playerbot_' AND p.conqueror_level > 0
+ GROUP BY 1 ORDER BY 1;
+EOF
+logs game3 syslog | grep "PLAYERBOT_SUNGMA: summary" | tail -1 | sed 's/^/[game3] /'
+logs game3 syslog | grep "PLAYERBOT_SUNGMA: census" | tail -9 | sed 's/^.*PLAYERBOT_SUNGMA: census //; s/^/[game3] /'
+cnt "sungma handover arrived" "PLAYERBOT_HANDOVER: arrived .*purpose=yohara"
+cnt "sungma moves between maps" "PLAYERBOT_SUNGMA: move pid"
+cnt "sungma portal walks" "PLAYERBOT_SUNGMA: to the portal"
+cnt "sungma portal walk too long" "PLAYERBOT_SUNGMA: portal walk too long"
+cnt "sungma move failed (navigation)" "PLAYERBOT_SUNGMA: move failed"
+cnt "sungma chamber hops (Zejscie)" "PLAYERBOT_SUNGMA: chamber hop"
+cnt "sungma points spent" "PLAYERBOT_SUNGMA: points pid"
+cnt "sungma champion level ups" "PLAYERBOT_SUNGMA: champion level up"
+cnt "sungma step down (deaths)" "PLAYERBOT_SUNGMA: step down"
+cnt "sungma map refused (sungma_map)" "refusal=sungma_map|reason=sungma_map"
+echo "-- sungma moves (from -> to why):"; printf '%s\n' "$ALL" | grep "PLAYERBOT_SUNGMA: move pid" | \
+  sed 's/.* from=\([0-9]*\) to=\([0-9]*\) why=\([a-z]*\).*/\1 -> \2 \3/' | sort | uniq -c | sort -rn | head
+echo "-- sungma deaths by map:"; printf '%s\n' "$ALL" | grep "YOHARA: died.*purpose=yohara" | sed 's/.* map=\([0-9]*\).*/\1/' | sort | uniq -c
+echo "-- sungma leaving (why):"; printf '%s\n' "$ALL" | grep -E "(goes home|rest out).*why=sungma" | sed 's/.*why=//' | sort | uniq -c | sort -rn
+echo
+echo "=== syserr in the window (HANDOVER / YOHARA / COHORT / NAV / BOT_DGRUN / HYDRA / SUNGMA / ship defense), all cores of channel 1 + db"
 for c in game1 game2 game3 first; do
-  E=$(logs $c syserr | win | grep -E "PLAYERBOT_HANDOVER|PLAYERBOT_YOHARA|PLAYERBOT_COHORT|PLAYERBOT_NAV|BOT_DGRUN|PLAYERBOT_HYDRA|ship defense")
+  E=$(logs $c syserr | win | grep -E "PLAYERBOT_HANDOVER|PLAYERBOT_YOHARA|PLAYERBOT_COHORT|PLAYERBOT_NAV|BOT_DGRUN|PLAYERBOT_HYDRA|PLAYERBOT_SUNGMA|ship defense")
   n=$(printf '%s' "$E" | grep -c .)
   echo "[$c] $n lines"; [ "$n" -gt 0 ] && printf '%s\n' "$E" | sed 's/^[A-Z][a-z]* [0-9]* [0-9:]* :: //' | sed 's/pid=[0-9]*/pid=N/g' | sort | uniq -c | sort -rn | head -8
 done
