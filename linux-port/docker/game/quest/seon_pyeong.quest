@@ -17,15 +17,14 @@
 --   fixed recipes 39900-39903 (tools/refineglobal ELITE; IsEliteRefine, server-patches/seonpyeong), Partyzana+9 ->
 --   Pogromca Nieb. Smoka among the weapons 65 -> 80.
 -- His cube window (NerrVoVy's cube.seon_pyeong.txt, the boots of cube.buty.txt) is gone. The text without diacritics.
+-- MT2009_PLUS_SEONPYEONG_FIX_V1 (the owner, 22 October: "after OK nothing happens"): as on the global servers the piece
+--   goes through his refine window - dragged onto him, or now picked from the talk: "Przekuj przedmiot +9" lists the
+--   bag's pieces with one of his recipes (pc.seonpyeong_cells) and opens the same refine window for the one chosen
+--   (pc.seonpyeong_refine, server-patches/seonpyeong); "Przepisy" shows what he takes.
 quest seon_pyeong begin
 	state start begin
-		when 20091.chat."Wytwarzanie Ekwipunku" begin
+		function recipes()
 			say_title(mob_name(20091)..":")
-			say("Przekuwam bron, zbroje i buty ulepszone na +9")
-			say("w legendarny ekwipunek. Przeciagnij przedmiot +9")
-			say("na mnie. Ulepszenie zawsze sie udaje, kamienie")
-			say("i bonusy zostaja.")
-			say("")
 			say_reward("Bron 65 > 80: 2x "..item_name(25040)..",")
 			say_reward("1x "..item_name(70031)..", 100 000 Yang")
 			say_reward("Zbroja i buty > 80: 3x "..item_name(71123)..",")
@@ -38,6 +37,52 @@ quest seon_pyeong begin
 			say("")
 			say("Ogniste Buty i Buty Oceanu szyje Kawuco")
 			say("na Przyladku Smoczego Ognia.")
+		end
+
+		function pick()
+			local cells = pc.seonpyeong_cells()
+			local n = table.getn(cells)
+			say_title(mob_name(20091)..":")
+			if n == 0 then
+				say("Nie masz w plecaku broni, zbroi ani butow +9,")
+				say("ktore moge przekuc. Zalozonego przedmiotu")
+				say("nie przyjme - zdejmij go najpierw.")
+				return
+			end
+			if n > 12 then
+				n = 12
+			end
+			say("Ktory przedmiot mam przekuc? Mozesz go tez")
+			say("po prostu przeciagnac na mnie.")
+			local names = {}
+			for i = 1, n do
+				item.select_cell(cells[i])
+				names[i] = item_name(item.get_vnum())
+			end
+			names[n + 1] = "Zamknij"
+			local s = select_table(names)
+			if s == nil or s < 1 or s > n then
+				return
+			end
+			if not pc.seonpyeong_refine(cells[s]) then
+				say_title(mob_name(20091)..":")
+				say("Tego przedmiotu teraz nie przekuje.")
+				say("Podejdz blizej i sprobuj jeszcze raz.")
+			end
+		end
+
+		when 20091.chat."Wytwarzanie Ekwipunku" begin
+			say_title(mob_name(20091)..":")
+			say("Przekuwam bron, zbroje i buty ulepszone na +9")
+			say("w legendarny ekwipunek. Ulepszenie zawsze sie")
+			say("udaje, kamienie i bonusy zostaja.")
+			say("Wybierz przedmiot albo przeciagnij go na mnie.")
+			local s = select("Przekuj przedmiot +9", "Przepisy", "Zamknij")
+			if s == 1 then
+				seon_pyeong.pick()
+			elseif s == 2 then
+				seon_pyeong.recipes()
+			end
 		end
 	end
 end

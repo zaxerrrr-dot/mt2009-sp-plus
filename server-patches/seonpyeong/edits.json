@@ -22,5 +22,23 @@
   "marker": "MT2009_PLUS_SEONPYEONG_ELITE_V1 (accessory smiths)",
   "old": "\t\tcase DEVILTOWER_BLACKSMITH_ACCESSORY_MOB:\n\t\t\tif (item->GetType() == ITEM_ARMOR &&\n\t\t\t\t\t!(item->GetSubType() == ARMOR_BODY || item->GetSubType() == ARMOR_SHIELD || item->GetSubType() == ARMOR_HEAD) &&\n\t\t\t\t\titem->GetRefinedVnum())\n",
   "new": "\t\tcase DEVILTOWER_BLACKSMITH_ACCESSORY_MOB:\n\t\t\tif (item->GetType() == ITEM_ARMOR &&\n\t\t\t\t\t!(item->GetSubType() == ARMOR_BODY || item->GetSubType() == ARMOR_SHIELD || item->GetSubType() == ARMOR_HEAD) &&\n\t\t\t\t\titem->GetRefinedVnum() && !IsEliteRefine(item->GetRefineSet())) // MT2009_PLUS_SEONPYEONG_ELITE_V1 (accessory smiths): Seon-Pyeong's steps only at him\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_SEONPYEONG_FIX_V1 (include)",
+  "old": "#include \"mob_manager.h\"\n",
+  "new": "#include \"mob_manager.h\"\n#include \"refine.h\" // MT2009_PLUS_SEONPYEONG_FIX_V1 (include): BLACKSMITH2_MOB, IsEliteRefine\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_SEONPYEONG_FIX_V1 (lua)",
+  "old": "\tvoid RegisterPCFunctionTable()\n",
+  "new": "\t// MT2009_PLUS_SEONPYEONG_FIX_V1 (lua): Seon-Pyeong's talk (quest seon_pyeong) opens the same refine window as a +9\n\t// piece dragged onto him (CHARACTER::ReceiveItem, BLACKSMITH2_MOB), so his \"OK\" is no dead end.\n\t//   pc.seonpyeong_cells()      the bag cells of the pieces with one of his (elite) recipes, in bag order\n\t//   pc.seonpyeong_refine(cell) the refine window for that piece at the NPC talked to (only Seon-Pyeong, in reach)\n\tALUA(pc_seonpyeong_cells)\n\t{\n\t\tLPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();\n\t\tlua_newtable(L);\n\t\tif (!ch)\n\t\t\treturn 1;\n\t\tint n = 0;\n\t\tconst int iMax = MIN((int) ch->GetInventoryMaxCount(), (int) INVENTORY_MAX_NUM);\n\t\tfor (int i = 0; i < iMax; ++i)\n\t\t{\n\t\t\tLPITEM item = ch->GetInventoryItem(i);\n\t\t\tif (!item || item->GetCell() != i || item->IsExchanging())\n\t\t\t\tcontinue;\n\t\t\tif (!item->GetRefinedVnum() || !IsEliteRefine(item->GetRefineSet()))\n\t\t\t\tcontinue;\n\t\t\tlua_pushnumber(L, i);\n\t\t\tlua_rawseti(L, -2, ++n);\n\t\t}\n\t\treturn 1;\n\t}\n\n\tALUA(pc_seonpyeong_refine)\n\t{\n\t\tCQuestManager& q = CQuestManager::instance();\n\t\tLPCHARACTER ch = q.GetCurrentCharacterPtr();\n\t\tLPCHARACTER npc = q.GetCurrentNPCCharacterPtr();\n\t\tif (!ch || !npc || npc->GetRaceNum() != BLACKSMITH2_MOB || !lua_isnumber(L, 1))\n\t\t{\n\t\t\tlua_pushboolean(L, 0);\n\t\t\treturn 1;\n\t\t}\n\t\tconst int cell = (int) lua_tonumber(L, 1);\n\t\tLPITEM item = (cell >= 0 && cell < (int) ch->GetInventoryMaxCount() && cell < INVENTORY_MAX_NUM) ? ch->GetInventoryItem(cell) : NULL;\n\t\tif (!item || item->IsExchanging() || !npc->CanReceiveItem(ch, item)) // his elite recipes only, within 20 m\n\t\t{\n\t\t\tlua_pushboolean(L, 0);\n\t\t\treturn 1;\n\t\t}\n\t\tch->SetRefineNPC(npc);\n\t\tlua_pushboolean(L, ch->RefineInformation(cell, REFINE_TYPE_NORMAL) ? 1 : 0);\n\t\treturn 1;\n\t}\n\n\tvoid RegisterPCFunctionTable()\n"
+ },
+ {
+  "file": "questlua_pc.cpp",
+  "marker": "MT2009_PLUS_SEONPYEONG_FIX_V1 (table)",
+  "old": "\t\t\t{ \"is_playerbot\",\t\tpc_is_playerbot\t},\n",
+  "new": "\t\t\t{ \"seonpyeong_cells\",\tpc_seonpyeong_cells\t}, // MT2009_PLUS_SEONPYEONG_FIX_V1 (table)\n\t\t\t{ \"seonpyeong_refine\",\tpc_seonpyeong_refine\t},\n\t\t\t{ \"is_playerbot\",\t\tpc_is_playerbot\t},\n"
  }
 ]
