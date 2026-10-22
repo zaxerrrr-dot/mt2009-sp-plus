@@ -498,6 +498,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiusunmisje").DestroyWindow()
 		# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: Portowy Sklep Gaya (uiygaya.py).
 		__import__("uiygaya").DestroyWindow()
+		# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: the young heroes' weapon choice (uimlodzibohaterowie.py).
+		__import__("uimlodzibohaterowie").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
 		__import__("uiflowerevent").DestroyWindow()
 		# MT2009_PLUS_RUMI_V1: Owsap's Rumi (Okey) window (uiminigamerumi.py).
@@ -3443,6 +3445,9 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["DbDataStamp"] = __import__("dbdatastamp").NOTICE.OnCommand
 		serverCommandList["TPBM"] = self.__TpBookmarks # MT2009_PLUS_TP_BOOKMARKS_V1
 		serverCommandList["MAPA_TAB"] = self.__TeleportMap # MT2009_PLUS_TELEPORT_MAP_V1 (Autor: Mur4s)
+		# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: the quest letter's weapon choice (uimlodzibohaterowie.py)
+		serverCommandList["MLODZI_OPEN"] = self.__MlodziOpen
+		serverCommandList["MLODZI_CLOSE"] = self.__MlodziClose
 		serverCommandList["BonusMode"] = self.__BonusMode # MT2009_PLUS_GLOBAL_BONUS_V1
 		serverCommandList["WRANK"] = self.__WeeklyRank # MT2009_PLUS_WEEKLY_RANKING_V1
 		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
@@ -4207,6 +4212,17 @@ class GameWindow(ui.ScriptWindow):
 	def __TeleportMap(self, *args):
 		import uiteleportmap
 		uiteleportmap.OnCommand(*args)
+
+	# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: "MLODZI_OPEN <tier> <level> <vnum1> <vnum2> <vnum3>" / "MLODZI_CLOSE"
+	# (quest mlodzi_bohaterowie) - the weapon choice window, answered with "/mlodzi_wybor <tier> <choice>".
+	def __MlodziOpen(self, *args):
+		import uimlodzibohaterowie
+		uimlodzibohaterowie.SetInterface(self.interface)
+		uimlodzibohaterowie.OnOpen(*args)
+
+	def __MlodziClose(self, *args):
+		import uimlodzibohaterowie
+		uimlodzibohaterowie.OnClose(*args)
 
 	# MT2009_PLUS_GLOBAL_BONUS_V1: "BonusMode 0|1" at login (quest zywioly) - the server's M2_BONUS_MODE: 1 = global,
 	# the tooltip's bonus maxima of the global server and the element icons of every monster (localeinfo_point.py,
