@@ -41,6 +41,8 @@
 // anonymous namespace playerbot_economy.h is read into - a block-scope declaration there names a
 // function of that namespace, which nothing defines.
 ITEM_COUNT ElementsRefineMaterialCount(LPCHARACTER ch, LPITEM refined, DWORD vnum);
+// MT2009_PLUS_BOT_HYDRA_COHORT_V1: playerbot_ship_defense.cpp (global), declared here for the same reason.
+int ShipDefense_DamageRule(LPCHARACTER victim, LPCHARACTER attacker);
 // CMobManager: the conversation names the mob a hunting mission is after.
 #include "mob_manager.h"
 #include "log.h"

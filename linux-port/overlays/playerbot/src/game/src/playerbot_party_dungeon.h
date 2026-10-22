@@ -664,7 +664,6 @@ namespace
 		// person's party struck the heads for a whole wave.
 		if (c && c->GetMapIndex() / 10000 == 367)
 		{
-			int ShipDefense_DamageRule(LPCHARACTER victim, LPCHARACTER attacker);
 			if (ShipDefense_DamageRule(c, ch) == 1)
 				return true;
 		}
