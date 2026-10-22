@@ -102,8 +102,9 @@ namespace
 		if (!ch || vnum == 0 || IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			return 0;
 		// MT2009_PLUS_BOT_YOHARA_CHI_V1: and a Champion's for its orders at Mistrz Chi and the smith of Dongan
-		return std::max(std::max(GetPlayerBotBeltMaterialKeep(ch, vnum), GetPlayerBotTalismanMaterialKeep(ch, vnum)),
-				GetPlayerBotChiMaterialKeep(ch, vnum));
+		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: and the helmets' / armours' recipes (playerbot_yohara_gear2.h)
+		return std::max(std::max(std::max(GetPlayerBotBeltMaterialKeep(ch, vnum), GetPlayerBotTalismanMaterialKeep(ch, vnum)),
+				GetPlayerBotChiMaterialKeep(ch, vnum)), GetPlayerBotGear2MaterialKeep(ch, vnum));
 	}
 
 	// Not the merchant's and not the counter's: the talisman worn best or worked on, and the
@@ -130,7 +131,8 @@ namespace
 			return true;
 		if (IsPlayerBotWorkshopOff())
 			return false;
-		return WantsPlayerBotBeltOffer(ch, offer) || WantsPlayerBotTalismanOffer(ch, offer);
+		return WantsPlayerBotBeltOffer(ch, offer) || WantsPlayerBotTalismanOffer(ch, offer) ||
+				WantsPlayerBotGear2Offer(ch, offer);	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1
 	}
 
 	bool CanPlayerBotPayForCraftOffer(LPCHARACTER ch, LPITEM offer, long long price)
@@ -139,7 +141,9 @@ namespace
 			return CanPlayerBotPayForChiOffer(ch, offer, price);
 		if (WantsPlayerBotBeltOffer(ch, offer) && CanPlayerBotPayForBeltOffer(ch, offer, price))
 			return true;
-		return WantsPlayerBotTalismanOffer(ch, offer) && CanPlayerBotPayForTalismanOffer(ch, offer, price);
+		if (WantsPlayerBotTalismanOffer(ch, offer) && CanPlayerBotPayForTalismanOffer(ch, offer, price))
+			return true;
+		return WantsPlayerBotGear2Offer(ch, offer) && CanPlayerBotPayForGear2Offer(ch, offer, price);	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1
 	}
 
 	// Every material the two crafts lack, for the walk over the stands; the cap is what one
@@ -154,6 +158,7 @@ namespace
 			return budget * 40 / 100;
 		CollectPlayerBotBeltMissing(ch, missing);
 		CollectPlayerBotTalismanMissing(ch, missing);
+		CollectPlayerBotGear2Missing(ch, missing);	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1
 		return budget * 40 / 100;
 	}
 
@@ -178,6 +183,7 @@ namespace
 		NotePlayerBotBeltBought(ch, vnum, price);
 		NotePlayerBotTalismanBought(ch, vnum, price);
 		NotePlayerBotChiBought(ch, vnum, price);	// MT2009_PLUS_BOT_YOHARA_CHI_V1
+		NotePlayerBotGear2Bought(ch, vnum, price);	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1
 	}
 
 	// ---- the errand -----------------------------------------------------------------------

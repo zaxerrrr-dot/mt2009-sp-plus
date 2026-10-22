@@ -1304,6 +1304,10 @@
 			return "bag";
 		if (gap < PLAYERBOT_SUNGMA_TRADE_GOODS_GAP_MS)
 			return NULL;
+		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: a helmet for Jaharr or a +9 for Seon-Pyeong ready - both on game1
+		// (playerbot_yohara_gear2.h; the errand keeps it at home while it lasts).
+		if (WantsPlayerBotGear2TradeTrip(ch))
+			return "craft";
 		// A counter's worth of Yohara's loot and valuables.
 		if (goods >= PLAYERBOT_SUNGMA_TRADE_GOODS)
 			return "goods";
@@ -1311,8 +1315,10 @@
 		if (goods >= PLAYERBOT_SUNGMA_TRADE_SHOP_GOODS && IsPlayerBotSungmaCounterStale(ch))
 			return "shop";
 		// What it buys there: the dust of its G0 package, a refine material its gear waits for.
+		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: and a craft's material a counter holds (the helmets' / armours' recipes too).
 		if (gap >= PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS && (IsPlayerBotG0DustHunter(ch) || PlayerBotNeedsAnyRefineMaterial(ch) ||
-				PlayerBotYoharaShopWantsMarket(ch)))	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: inputs of Dongan's exchange
+				PlayerBotYoharaShopWantsMarket(ch) ||	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: inputs of Dongan's exchange
+				PlayerBotWantsCraftFromMarket(ch)))
 			return "buy";
 		// And every PLAYERBOT_SUNGMA_STAY_MIN the round: the counter's sales and stock, whatever it brings.
 		if (gap >= (DWORD)GetPlayerBotYoharaConfig().sungmaStayMin * 60000U &&
@@ -1465,6 +1471,9 @@
 		if (el >= PLAYERBOT_SUNGMA_TRADE_HOME_MAX_MS)
 			return true;
 		if (el < PLAYERBOT_SUNGMA_TRADE_HOME_MIN_MS || state.bVisitingShop || state.bMarketTrip)
+			return false;
+		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: at Jaharr or Seon-Pyeong (playerbot_yohara_gear2.h), or still to go there.
+		if (IsPlayerBotGear2ErrandBusy(ch->GetPlayerID()) || WantsPlayerBotGear2TradeTrip(ch))
 			return false;
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
 		const playerbot_offline::State& o = state.offlineShop;

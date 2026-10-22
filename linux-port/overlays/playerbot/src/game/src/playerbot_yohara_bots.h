@@ -335,6 +335,10 @@ namespace
 	bool IsPlayerBotYoharaLootMap(long mapIndex)
 	{
 		const std::vector<long>& maps = GetPlayerBotYoharaConfig().lootMaps;
+		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the cape for the craft trips to Kawuco and Angmur (PLAYERBOT_GEAR2_CAPE) - the
+		// draw's loot runs still go to PLAYERBOT_LOOTRUN_MAPS only (GetPlayerBotYoharaLootPlan picks from the list).
+		if (mapIndex == 301 && IsPlayerBotGear2CapeOn())
+			return true;
 		return std::find(maps.begin(), maps.end(), mapIndex) != maps.end();
 	}
 
