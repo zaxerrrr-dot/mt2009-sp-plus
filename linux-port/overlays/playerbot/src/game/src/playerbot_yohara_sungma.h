@@ -1094,6 +1094,19 @@
 			BuyPlayerBotYoharaBelt(ch, PLAYERBOT_SUNGMA_ERRAND_FILL, PLAYERBOT_SUNGMA_ERRAND_FILL, boughtRed, boughtBlue);
 			sys_log(0, "PLAYERBOT_SUNGMA: errand bought pid=%u name=%s merchant=%u bought_red=%d bought_blue=%d gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), m.dwRace, boughtRed, boughtBlue, (long long)ch->GetGold());
+			// no cell for them even after its junk went (a bag of keepsakes): not the errand's again for a while - the
+			// fallback makes a cell for a cohort's member where it stands
+			if (b.iErrandNeed & 1)
+			{
+				size_t red = 0, blue = 0;
+				CountPlayerBotPotions(ch, red, blue);
+				const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
+				if (red < PLAYERBOT_SUNGMA_ERRAND_RED || (caster && blue < PLAYERBOT_SUNGMA_ERRAND_BLUE))
+				{
+					FailPlayerBotSungmaErrand(ch, res, b, dwNow, "no_room");
+					return -1;
+				}
+			}
 		}
 		++b.iErrandStop;
 		return 1;
@@ -1118,6 +1131,9 @@
 		if (IsPlayerBotYoharaFightStopped(ch, res, dwNow))
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_blocked");
 		SpendPlayerBotSungmaPoints(ch, b, dwNow);
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: Dongan's merchants, not home.
+		if (ManagePlayerBotSungmaErrand(ch, state, res, b, base, dwNow) > 0)
+			return 1;
 		// Its deaths: a step down a map, this one "not now" for two hours.
 		if (res.iDeathsWindowed >= PLAYERBOT_YOHARA_DEATHS_WINDOWED && GetPlayerBotSungmaSlot(res.lMap) >= 0)
 		{

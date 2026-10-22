@@ -3726,7 +3726,9 @@ namespace
 			const bool fightStops = ch->IsItemLoaded() &&
 					(ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL ||
 					 // MT2009_PLUS_BOT_YOHARA_COHORT_POTIONS_V1: a cohort member's belt is filled where it stands.
-					 (NeedsPlayerBotEmergencyPotions(ch) && !IsPlayerBotYoharaCohortPID(ch->GetPlayerID())) ||
+					 // MT2009_PLUS_BOT_YOHARA_MAPS_V2: a Sung Ma resident's is the Dongan errand's.
+					 (NeedsPlayerBotEmergencyPotions(ch) && !IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) &&
+					  !IsPlayerBotSungmaResidentPID(ch->GetPlayerID())) ||
 					 NeedsPlayerBotArrows(ch));
 			bool blocked = onBattleTrialHere ? fightStops
 					: (fightStops || (settledIn && BlocksPlayerBotTravel(ch)));

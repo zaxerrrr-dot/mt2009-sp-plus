@@ -2010,7 +2010,8 @@ namespace
 		if (ch->GetWear(WEAR_WEAPON) == NULL || ch->GetWear(WEAR_BODY) == NULL || NeedsPlayerBotArrows(ch))
 			return true;
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member - only what stops the fight (the bag is no reason).
-		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: nor for a Sung Ma resident - its bag and belt are Dongan's errand.
+		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) || r.iPurpose == YOHARA_PURPOSE_SUNGMA)
 			return false;
 		if (dwNow - r.dwArrived < PLAYERBOT_YOHARA_SETTLE_MS)
 			return false;
@@ -2048,7 +2049,10 @@ namespace
 			return SendPlayerBotYoharaHome(ch, state, dwNow, "yohara_switched_off") ? 1 : 0;
 		if (ch->IsDead() || state.bRecoveringAfterDeath)
 			return -1;
-		RestockPlayerBotYohara(ch, res, dwNow);
+		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a Sung Ma resident buys and sells at Dongan's merchants (the errand,
+		// playerbot_yohara_sungma.h) - the belt kept full where it stands only when the errand cannot be made.
+		if (res.iPurpose != YOHARA_PURPOSE_SUNGMA)
+			RestockPlayerBotYohara(ch, res, dwNow);
 		const int level = ch->GetLevel();
 		switch (res.iPurpose)
 		{
