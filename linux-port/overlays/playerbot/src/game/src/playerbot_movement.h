@@ -668,6 +668,25 @@ namespace
 		// Breaking one warps every PC on the killer's map into a new tower.
 		if (IsPlayerBotDungeonTriggerStone(stone->GetRaceNum()))
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: a loot run breaks every Metin of its 90-level map -
+		// it came for them (playerbot_yohara_bots.h).
+		if (IsPlayerBotYoharaLootRunHere(ch))
+			return true;
+		// MT2009_PLUS_BOT_YOHARA_FIX_V1: Zaklety Las's Metins call the Silni En-Tai (117-120) round
+		// whoever hits them - two bots of 97/101 died there within 20 s of their arrival (21 October).
+		// Metin Drzewnych Stworzen (100) for a bot of 108 or a party of three; Metin Lasu (120) for a
+		// party only.
+		if (ch->GetMapIndex() == PLAYERBOT_MAP_ZAKLETY)
+		{
+			const int partySize = ch->GetParty() ? (int)ch->GetParty()->GetMemberCount() : 1;
+			if (stone->GetLevel() >= 110)
+				return partySize >= 3;
+			// MT2009_PLUS_BOT_ZAKLETY_SPOTS_V2: Metin Drzewnych Stworzen for a party of three only - 155 of
+			// the 924 deaths of the night of 21/22 October came within 90 s of a stone fight, 137 of them
+			// bots of 108-109 alone at the three western stones.
+			if (partySize < 3)
+				return false;
+		}
 		// MT2009_PLUS_BP_BOTS_V1: a stone its Battle Pass mission names, and
 		// one it can break, is worth it however far the bot has outgrown it.
 		if (playerbot_bpbots::WantsStone(ch, stone))

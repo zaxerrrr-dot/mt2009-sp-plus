@@ -4095,6 +4095,27 @@ namespace
 	const long PLAYERBOT_OCHAO_EXIT_X = 884825;
 	const long PLAYERBOT_OCHAO_EXIT_Y = 1446525;
 	const BYTE PLAYERBOT_OCHAO_MIN_LEVEL = 95;
+	// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1: Zaklety Las (353, metin2_map_dawnmist_dungeon_01), the
+	// forest past the Temple of Ochao on the Yohara core (game3) - the owner's levelling route of
+	// 21 October 2026: "do 110 lvl exp w Zakletym Lesie". The En-Tai of 100-108 (groups 6311-6317),
+	// Wladca En-Tai and the two Metins (8059, 8061). A bot reaches it by the players' road - the
+	// temple, the En-Tai Guardian, his Portal - and a core handover (playerbot_yohara_bots.h).
+	// The points are tools/arezzo_bot_map.py's on the map's own server_attr (21 October): the
+	// arrival the quest's landing (Town.txt 478,970), the exit the forest's Teleporter (477,984).
+	const long PLAYERBOT_MAP_ZAKLETY = 353;
+	const long PLAYERBOT_ZAKLETY_ARRIVAL_X = 815850;
+	const long PLAYERBOT_ZAKLETY_ARRIVAL_Y = 1505050;
+	const long PLAYERBOT_ZAKLETY_EXIT_X = 815750;
+	const long PLAYERBOT_ZAKLETY_EXIT_Y = 1506450;
+	// The band: the quest's gate is 95, the forest pays from a few levels under its 100-108 and
+	// to 109 - from 110 the Time Rift (SZC) takes over. The floor is PLAYERBOT_ZAKLETY_MIN_LEVEL
+	// in the .env (playerbot_yohara_bots.h); this is its default.
+	const BYTE PLAYERBOT_ZAKLETY_MIN_LEVEL = 100;	// MT2009_PLUS_BOT_YOHARA_FIX_V1: 97 -> 100 (the test of 21 October)
+	const BYTE PLAYERBOT_ZAKLETY_MAX_LEVEL = 109;
+	// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: the 90-level maps for loot only - Przyladek Smoczej Glowy
+	// (301) and Nefrytowa Zatoka (303) on game2, Zbocze Gautama (302) and Gromiste Gory (304) on the
+	// first core. Metins and bosses, no experience grinding (the owner, 21 October).
+	const BYTE PLAYERBOT_YOHARA_LOOT_MIN_LEVEL = 95;
 	// MT2009_PLUS_AREZZO_BOTS_V1 (maps): the Arezzo module's three open maps
 	// (flag mt2009_arezzo_closed, playerbot_arezzo.h). Only the operator's test
 	// cohorts go there for now (playerbot_arezzo_bots.h, the test hook
@@ -4231,6 +4252,13 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_ARRIVAL_X; outY = PLAYERBOT_OCHAO_ARRIVAL_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X; outY = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_X; outY = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_ARRIVAL_X; outY = PLAYERBOT_ZAKLETY_ARRIVAL_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			// MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1: each map's Town.txt snapped to open ground
+			// (tools/yohara_bot_lootrun_map.py); the way out is the same point.
+			case 301: outX = 1104850; outY = 1788850; return true;
+			case 302: outX = 1225750; outY = 1682050; return true;
+			case 303: outX = 1087950; outY = 1649850; return true;
+			case 304: outX = 1134150; outY = 1655450; return true;
 			default: return false;
 		}
 	}
@@ -4254,6 +4282,11 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_EXIT_X; outY = PLAYERBOT_OCHAO_EXIT_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_EXIT_X; outY = PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_EXIT_X; outY = PLAYERBOT_AREZZO_PHARAOH_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: outX = PLAYERBOT_ZAKLETY_EXIT_X; outY = PLAYERBOT_ZAKLETY_EXIT_Y; return true; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			case 301: outX = 1104850; outY = 1788850; return true; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 302: outX = 1225750; outY = 1682050; return true;
+			case 303: outX = 1087950; outY = 1649850; return true;
+			case 304: outX = 1134150; outY = 1655450; return true;
 			default: return false;
 		}
 	}
@@ -4278,6 +4311,8 @@ namespace
 				mapIndex == PLAYERBOT_MAP_FIRE_LAND ||
 				mapIndex == PLAYERBOT_MAP_GROTTO_V1 || mapIndex == PLAYERBOT_MAP_GROTTO_V2 ||
 				mapIndex == PLAYERBOT_MAP_OCHAO || // MT2009_PLUS_OCHAO_BOTS_V1
+				mapIndex == PLAYERBOT_MAP_ZAKLETY || // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 (on the Yohara core, by a handover)
+				(mapIndex >= 301 && mapIndex <= 304) || // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1 (loot runs, by a handover)
 				IsPlayerBotArezzoMap(mapIndex); // MT2009_PLUS_AREZZO_BOTS_V1 (only the test cohorts are sent)
 	}
 
@@ -4307,6 +4342,8 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "arezzo_cyclops"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "arezzo_pharaoh"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: return "zaklety"; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			case 301: case 302: case 303: case 304: return "lootrun"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			default: return "frontier";
 		}
 	}
@@ -6801,6 +6838,14 @@ namespace
 	// Queen's hubs were never chosen in a day of logs - but by whether the boss
 	// is standing there now, asked of the sector itself.
 	struct TPlayerBotHuntingHub { long x; long y; BYTE bMinLevel; BYTE bMaxLevel; bool bNeedsParty; WORD wBossRace; };
+	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots between the game cores - Zaklety Las and the
+	// loot runs (MT2009_PLUS_237_ZAKLETY_LAS_V1: the 2.x line has no Time Rift and no cohorts) -
+	// defined in playerbot_yohara_bots.h, the last fragment.
+	const TPlayerBotHuntingHub* GetPlayerBotYoharaHubs(long mapIndex, size_t& count);
+	bool IsPlayerBotYoharaLootRunHere(LPCHARACTER ch);
+	bool IsPlayerBotYoharaBoundForZaklety(LPCHARACTER ch);
+	bool IsPlayerBotYoharaRemoteFrontier(long mapIndex);
+	DWORD GetPlayerBotYoharaStayMs(LPCHARACTER ch, long mapIndex);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),

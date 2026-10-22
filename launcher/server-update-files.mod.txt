@@ -368,3 +368,5 @@ linux-port/docker/panel/app/register_assets/*
 # MT2009_PLUS_HERB_BUSY_V1 (server-patches/enginefixes): the busy action's type and the stun's half.
 linux-port/docker/game/src/server/game/src/char_player.h
 linux-port/docker/game/src/server/game/src/battle.h
+# MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots' handovers between the game cores (playerbot_yohara_bots.h)
+linux-port/docker/mariadb/playerbot/playerbot_core_handover.sql

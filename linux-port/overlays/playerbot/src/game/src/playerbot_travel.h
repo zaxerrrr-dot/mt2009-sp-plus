@@ -895,6 +895,9 @@ namespace
 		state.dwSpiderSessionRoll = 0;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h.
+	long GetPlayerBotYoharaFrontier(LPCHARACTER ch, bool stoneHunter);
+
 	long GetPlayerBotFrontierMapForLevelRaw(LPCHARACTER ch)
 	{
 		if (!ch)
@@ -1019,6 +1022,14 @@ namespace
 		// between the Forest's and the Red Forest's, on a map richer than both
 		// together, and it keeps its stones, so a Metin hunter may go too.
 		// Past eighty its monsters are too far under the bot to pay.
+		// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 / _LOOTRUN_V1 (draw): the owner's route of 21 October -
+		// Zaklety Las to 110, a loot run on a 90-level map now and then - over another core, within
+		// the .env's limits (playerbot_yohara_bots.h; MT2009_PLUS_237_ZAKLETY_LAS_V1: no Time Rift on 2.x).
+		{
+			const long yohara = GetPlayerBotYoharaFrontier(ch, stoneHunter);
+			if (yohara != 0)
+				return yohara;
+		}
 		// MT2009_PLUS_OCHAO_BOTS_V1 (draw): ninety-five and up, the Temple of
 		// Ochao's 98-102 - the only ground past the Grotto's Setaou - takes two
 		// draws in three; the Grotto keeps the third and every stone hunter.
@@ -1234,7 +1245,8 @@ namespace
 		// takes the next ground down for a while.
 		if (map != 0 && IsPlayerBotSidekickTripBlocked(ch, map))
 			return GetPlayerBotFrontierFallback(ch, map);
-		return IsPlayerBotMapHostedHere(map) ? map : 0;
+		// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: or a map of another core a handover reaches.
+		return IsPlayerBotMapHostedHere(map) || IsPlayerBotYoharaRemoteFrontier(map) ? map : 0;
 	}
 
 	// A kingdom whose core hosts no frontier at all. Its bots have four maps and
@@ -1822,11 +1834,27 @@ namespace
 	// MT2009_PLUS_SIDEKICK_ZODIAC_V1: playerbot_zodiac_bots.h, later.
 	void SyncPlayerBotZodiac(LPCHARACTER bot, long mapIndex);
 
+	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: playerbot_yohara_bots.h, the last fragment - a map
+	// another core hosts (Zaklety Las, the Time Rift, the loot runs, and from those cores the
+	// way home) is reached by a core handover. -1: not its business; 0/1: the answer.
+	int RoutePlayerBotYoharaTransition(LPCHARACTER ch, TPlayerBotAIState& state, long targetMap,
+			long targetX, long targetY, DWORD dwNow, const char* reason);
+	int ManagePlayerBotYoharaTravel(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+
 	bool TransitionPlayerBotMap(LPCHARACTER ch, TPlayerBotAIState& state,
 			long targetMap, long targetX, long targetY, DWORD dwNow, const char* reason)
 	{
 		if (!ch)
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: onto a map of another core - the handover, or the
+		// road to it (the Temple of Ochao for Zaklety Las).
+		{
+			const int yohara = RoutePlayerBotYoharaTransition(ch, state, targetMap, targetX, targetY, dwNow, reason);
+			if (yohara == 0 && !s_szPlayerBotTransitionRefusal)
+				s_szPlayerBotTransitionRefusal = "yohara_route";
+			if (yohara >= 0)
+				return yohara != 0;
+		}
 		if (IsPlayerBotOwnMapChoiceReason(reason) && IsPlayerBotDuoShaman(ch->GetPlayerID()))
 		{
 			// MT2009_PLUS_BOT_GUILD_SHAMAN_V2 (10 October: a Shaman back from the
@@ -3075,6 +3103,14 @@ namespace
 			if (ochao >= 0)
 				return ochao != 0;
 		}
+		// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1 (travel): the Temple's Guardian and Portal on the way
+		// into Zaklety Las, and a handed-over bot's life on the other core - its stay, the Time
+		// Rift's plateau, a loot run's end, the way home (playerbot_yohara_bots.h).
+		{
+			const int yohara = ManagePlayerBotYoharaTravel(ch, state, dwNow);
+			if (yohara >= 0)
+				return yohara != 0;
+		}
 
 		// MT2009_PLUS_L30_WEAPON_DROPPER_V1: back in a village with a level-30
 		// weapon, the island's dropper waits for its counter to take it
@@ -3601,8 +3637,12 @@ namespace
 					GetPlayerBotProgressionFarmGoal(ch, dwNow) == PLAYERBOT_PROGRESS_FARM_METINS;
 			// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion's plan has a clock of
 			// its own (playerbot_sidekick.h); the visit clock is not it.
+			// MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 (stay): Zaklety Las is an expedition - the owner's
+			// rule for the Arezzo forest it replaces (1 October): once in, a bot stays some two
+			// hours (PLAYERBOT_ZAKLETY_STAY_MIN), its belt kept full on the map.
+			const DWORD yoharaStay = GetPlayerBotYoharaStayMs(ch, mapIndex);
 			const bool visitExpired = (!onBattleTrialHere && !heldStoneWork && !IsPlayerBotSidekickOnPlan(ch) && stayed >=
-					GetPlayerBotFrontierVisitTime(state.bPersonality)) ||
+					std::max<DWORD>(yoharaStay, GetPlayerBotFrontierVisitTime(state.bPersonality))) ||
 					(mapIndex == PLAYERBOT_MAP_OCHAO && IsPlayerBotOchaoLeaveOrdered(ch)) || // MT2009_PLUS_OCHAO_BOTS_V1 (test)
 					(IsPlayerBotArezzoMap(mapIndex) && IsPlayerBotArezzoLeaveOrdered(ch)); // MT2009_PLUS_AREZZO_BOTS_V1 (test)
 			// Two minutes of actually playing here before anything but a real
@@ -3612,7 +3652,7 @@ namespace
 			// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion on its plan's ground
 			// hunts PLAYERBOT_SIDEKICK_PLAN_SETTLE_MS before a need that does not
 			// stop the fight takes it to town.
-			const bool settledIn = stayed >= std::max<DWORD>(GetPlayerBotSidekickPlanSettleMs(ch),
+			const bool settledIn = stayed >= std::max<DWORD>(std::max<DWORD>(GetPlayerBotSidekickPlanSettleMs(ch), yoharaStay),
 					mapIndex == PLAYERBOT_MAP_OCHAO
 					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME);
 			// Outgrowing the map matters as much as running out of potions: neither

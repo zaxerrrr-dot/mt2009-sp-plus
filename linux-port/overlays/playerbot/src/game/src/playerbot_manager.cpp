@@ -381,6 +381,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // as a party. After the guild finder and the dungeon finder, whose refusal
 // it borrows.
 #include "playerbot_guild_shaman.h"
+// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1 (include): the bots between the game cores
+// - Zaklety Las, the loot runs on the 90-level maps - last,
+// after the temple, the dungeon runs and everything they borrow.
+#include "playerbot_yohara_bots.h"
 
 namespace
 {
@@ -3422,6 +3426,10 @@ namespace
 		// Tanaka and Zuo run where their map is, bots or none
 		// (playerbot_world_events.h).
 		ManagePlayerBotWorldEvents(dwNow);
+		// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: a core with no bot of its own (game2, game3, the
+		// first core) claims the handovers of its maps here; the first bot in starts Update,
+		// which goes on with it (playerbot_yohara_bots.h).
+		ManagePlayerBotYoharaHandover(dwNow);
 		// A player's companion, on a core no bot has woken yet: the first of
 		// them starts Update and ends this clock (playerbot_sidekick.h).
 		ManagePlayerBotSidekicks(dwNow);
@@ -3509,6 +3517,14 @@ bool CPlayerBotManager::Spawn(DWORD dwPlayerID, BYTE bEmpire)
 	// for its new name (playerbot_legends.h).
 	if (IsPlayerBotLegendNameHold(dwPlayerID))
 		return false;
+	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: on another core of this channel, or on its way
+	// there (playerbot_yohara_bots.h) - that core has it.
+	if (!bSidekick && IsPlayerBotYoharaAway(dwPlayerID))
+	{
+		PlayerBotLogThrottled("spawn_yohara_away", get_dword_time(),
+				"PLAYERBOT_HANDOVER: spawn refused pid=%u, on another core of the channel", dwPlayerID);
+		return false;
+	}
 	// MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (spawn): the Arezzo dungeon cohort lives
 	// on the core that hosts the dungeons; every other core leaves it alone.
 	if (IsPlayerBotArezzoDungeonReservedPID(dwPlayerID))
@@ -4497,7 +4513,8 @@ void CPlayerBotManager::TopUpMissingBots(DWORD dwNow)
 		// the top-up from asking for it every minute only for SpawnPendingBatch
 		// to drop it again.
 		else if (m_setBannedBots.find(*it) == m_setBannedBots.end() && !IsRestingBot(*it) && !IsPlayerBotRetirementHold(*it) &&
-				!IsPlayerBotSidekickPID(*it) && !IsPlayerBotTakeoverHold(*it))
+				!IsPlayerBotSidekickPID(*it) && !IsPlayerBotTakeoverHold(*it) &&
+				!IsPlayerBotYoharaAway(*it))	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1
 			missing.push_back(*it);
 	}
 	if (missing.empty())
@@ -5337,6 +5354,11 @@ void CPlayerBotManager::OnGuildBotOrder(LPCHARACTER ch, const char* szArgument)
 // core loads at the owner's side, on the owner's map.
 bool CPlayerBotManager::PlaceLoadingSidekick(DWORD dwPlayerID, long& lMapIndex, long& x, long& y)
 {
+	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: a bot this core claimed from another core of the channel
+	// loads on the spot its handover row names (playerbot_yohara_bots.h) - the same hook, the same
+	// "saved on a map this core does not host".
+	if (!IsPlayerBotSidekickPID(dwPlayerID) && PlacePlayerBotYoharaArrival(dwPlayerID, lMapIndex, x, y))
+		return true;
 	LPCHARACTER owner = GetPlayerBotSidekickOwnerHere(dwPlayerID);
 	if (!owner || owner->IsDead() || !owner->GetSectree())
 		return false;
@@ -6770,6 +6792,10 @@ void CPlayerBotManager::Update()
 	// and the next round queued. Nothing here waits for the database.
 	RunChannelMachinery(dwNow);
 #endif
+	// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots leaving this core for another,
+	// the channel's handover rows read, the claims spawned (playerbot_yohara_bots.h).
+	// Before the spawns, which ask who is away.
+	ManagePlayerBotYoharaHandover(dwNow);
 	// Bots a person has taken over from the advanced panel: out, and back when
 	// the time is up (playerbot_takeover.h). Before the spawns, which ask it.
 	ProcessPlayerBotTakeovers(dwNow);
@@ -7021,6 +7047,10 @@ WritePlayerBotGuildStatus(dwNow);
 			continue;
 
 		TPlayerBotAIState& state = s_mapPlayerBotAIStates[it->first];
+
+		// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: on its way to another core - out at the next Update.
+		if (IsPlayerBotYoharaLeaving(it->first))
+			continue;
 
 		// A human duel owns both halves of the tick, before errands and PvE targeting.
 		if (d->IsPhase(PHASE_GAME) && ManagePlayerBotDuelFlow(ch, state, dwNow))

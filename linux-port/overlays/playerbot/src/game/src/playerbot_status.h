@@ -146,6 +146,11 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "do Swiatyni Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "do Doliny Cyklopow"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "na Pustkowie Faraona"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: return "do Zakletego Lasu"; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			case 301: return "na Przyladek Smoczej Glowy"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 302: return "na Zbocze Gautama"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 303: return "do Nefrytowej Zatoki"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 304: return "w Gromiste Gory"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			default: return "";
 		}
 	}
@@ -184,6 +189,11 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "to the Temple of Ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "to the Cyclops Valley"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "to the Pharaoh's Wasteland"; // MT2009_PLUS_AREZZO_BOTS_V1
+			case PLAYERBOT_MAP_ZAKLETY: return "to the Enchanted Forest"; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
+			case 301: return "to Cape Dragon Head"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 302: return "to the Dawnmist Slope"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 303: return "to the Bay of Black Sand"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case 304: return "to Thunder Mountains"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			default: return "";
 		}
 	}
