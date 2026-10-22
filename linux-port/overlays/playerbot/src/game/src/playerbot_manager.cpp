@@ -5971,6 +5971,16 @@ namespace
 	// Easing back takes only a bot with no live stand (cost 0 or 1): an owner
 	// sent away would ask to come back for its next service, and the two
 	// would chase each other.
+	// MT2009_PLUS_237_HANDOVER_PIN_V1: the coordinator's own moves (swap out, roam in/out, balance) pass by a
+	// bot with a live core handover row (1 = on its way, 2 = away on the map core: Zaklety Las or a loot
+	// run). A move logged it out of game3 and its new channel loaded it at home - the forest left after a
+	// minute; on the Yohara line's first night the coordinator sent forest bots away by the dozen and they
+	// churned (its cohort pin, MT2009_PLUS_BOT_YOHARA_COHORT_PIN_V1). The bot's own request (a shop) still goes.
+	std::string PlayerBotHandoverChannelPin()
+	{
+		return " AND pid NOT IN (SELECT pid FROM common.playerbot_core_handover WHERE state IN (1,2))";
+	}
+
 	std::string PlayerBotChannelSwapOutQuery(unsigned int want, int maxCost)
 	{
 		const std::string shop = std::to_string(playerbot_channel_rules::SHOP_CHANNEL);
@@ -5982,7 +5992,8 @@ namespace
 				"WHERE channel=" + shop + " AND shop_busy<=" + std::to_string(maxCost) +
 				" AND requested_channel=0 AND " + PlayerBotChannelSeen() +
 				" AND (moved_at IS NULL OR moved_at<DATE_SUB(NOW(),INTERVAL " +
-				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) "
+				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) " +
+				PlayerBotHandoverChannelPin() + " " + // MT2009_PLUS_237_HANDOVER_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
@@ -6018,7 +6029,8 @@ namespace
 				" SECOND),moved_at=NOW(),updated_at=NOW() "
 				"WHERE channel<>" + shop + " AND requested_channel=0 AND shop_busy<" +
 				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND " +
-				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " "
+				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " " +
+				PlayerBotHandoverChannelPin() + " " + // MT2009_PLUS_237_HANDOVER_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
@@ -6038,7 +6050,8 @@ namespace
 				" SECOND),moved_at=NOW(),updated_at=NOW() "
 				"WHERE channel=" + shop + " AND shop_busy<" +
 				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND requested_channel=0 AND " +
-				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " "
+				PlayerBotChannelSeen() + " AND " + PlayerBotChannelStayedLongEnough() + " " +
+				PlayerBotHandoverChannelPin() + " " + // MT2009_PLUS_237_HANDOVER_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
@@ -6055,7 +6068,8 @@ namespace
 				std::to_string(playerbot_channel_rules::MOVE_COST_PINNED) + " AND requested_channel=0 AND " +
 				PlayerBotChannelSeen() +
 				" AND (moved_at IS NULL OR moved_at<DATE_SUB(NOW(),INTERVAL " +
-				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) "
+				std::to_string(PLAYERBOT_CHANNEL_MOVE_COOLDOWN_SECONDS) + " SECOND)) " +
+				PlayerBotHandoverChannelPin() + " " + // MT2009_PLUS_237_HANDOVER_PIN_V1
 				"ORDER BY shop_busy,CRC32(CONCAT(pid,UNIX_TIMESTAMP())) LIMIT " + std::to_string(want);
 	}
 
