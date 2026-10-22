@@ -1,0 +1,94 @@
+# MT2009_PLUS_WIKI_NPC_RECIPES_V1 (the owner, 17 October 2026: "everything is on the wiki - what from what and at whom"):
+# recipes the pl-wiki / GF 25.2.17 cube.txt give the NPCs and this world lacked (the items exist). Appended to cube.txt by the
+# Dockerfile; the windows of Rybak / Baek-Go open by quest/mikstury_okno.quest, Jae-Seon Kim and Statua Wezy have theirs.
+
+# Sok z Kwiatu Brzoskwini <- Kwiat Brzoskwini (Rybak, wiki "Wytwarzanie Mikstur": od 1 poziomu)
+section
+npc	9009
+item	50721	1
+reward	50801	1
+percent	100
+end
+
+# Sok Z Pokrzywy <- Pokrzywa
+section
+npc	9009
+item	50722	1
+reward	50802	1
+percent	100
+end
+
+# Sok Z Kwiatu Kaki <- Kwiat Kaki
+section
+npc	9009
+item	50723	1
+reward	50803	100
+percent	100
+end
+
+# Sok Z Korzenia Gango <- Korzen Gango
+section
+npc	9009
+item	50724	1
+reward	50804	100
+percent	100
+end
+
+# Charyzma Eksperta <- 5x Charyzma Adepta (Baek-Go, wiki "Wytwarzanie Przedmiotow", 20%)
+section
+npc	20018
+item	50339	5
+reward	50340	1
+percent	20
+end
+
+# Inspiracja Eksperta <- 5x Inspiracja Adepta (Baek-Go, 20%)
+section
+npc	20018
+item	50342	5
+reward	50343	1
+percent	20
+end
+
+# Bransoleta z Turmalinu+0 <- 3x Turmalin, 10x Zlota Przedza, 10x Zloty Hak (Jae-Seon Kim, 30%, 100 000)
+section
+npc	20383
+item	50639	3
+item	30518	10
+item	30519	10
+reward	14570	1
+gold	100000
+percent	30
+end
+
+# Naszyjnik z Turmalinu+0 <- 3x Turmalin, 10x Zloty Hak, 10x Ogniwa Lancucha (Jae-Seon Kim, 30%, 100 000)
+section
+npc	20383
+item	50639	3
+item	30519	10
+item	30522	10
+reward	16570	1
+gold	100000
+percent	30
+end
+
+# Kamien Czerw. Plomienia <- 50x Odlamek Energii, Biala / Niebieska / Krwawa Perla (Jae-Seon Kim, 10%, 50 000)
+section
+npc	20383
+item	51001	50
+item	27992	1
+item	27993	1
+item	27994	1
+reward	18900	1
+gold	50000
+percent	10
+end
+
+# Jedwab Wezowy <- 30x Wzor Wezowy (Statua Wezy, wiki "Jedwab Wezowy", 100%, 50 000)
+section
+npc	20807
+item	31257	30
+reward	31258	1
+gold	50000
+percent	100
+end

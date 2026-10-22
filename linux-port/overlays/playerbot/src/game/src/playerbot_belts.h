@@ -63,7 +63,9 @@ namespace
 		struct { DWORD vnum; int count; } mats[4];
 	};
 
-	// cube.pasy.txt, as the Dockerfile appends it to cube.txt (npc 20082). A change there is a
+	// The nine belt recipes of the share's cube.txt (Yu-Hwan 20017 / Jae-Seon Kim 20383; until
+	// MT2009_PLUS_WIKI_NPC_RECIPES_V1, 22 October 2026, also cube.pasy.txt at Mistrz 20082 - the bots
+	// still visit Mistrz, the players make them at Yu-Hwan or Jae-Seon Kim). A change there is a
 	// change here.
 	const TPlayerBotBeltRecipe PLAYERBOT_BELT_RECIPES[] = {
 		{ 18000, 50,  10000, 50, { { 50624, 10 }, { 27992, 2 }, { 51001, 30 },  { 0, 0 } } },	// Pas Lniany

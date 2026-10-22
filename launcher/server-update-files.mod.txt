@@ -100,8 +100,8 @@ linux-port/docker/game/mob_drop_item.dtdrops.append.txt
 linux-port/docker/game/mob_drop_item.ornaments.append.txt
 linux-port/docker/game/mob_drop_item.beltmats.append.txt
 linux-port/docker/game/mob_drop_item.beltmats.awk
-linux-port/docker/game/cube.seon_pyeong.txt
-linux-port/docker/game/cube.pasy.txt
+linux-port/docker/game/cube.wiki_kto.txt
+linux-port/docker/game/cube.zbroje105.txt
 linux-port/docker/game/cube.wiki_nowe.txt
 linux-port/docker/game/cube.helm100.txt
 linux-port/docker/game/special_item_group.wiki_nowe.txt
@@ -477,3 +477,12 @@ linux-port/docker/game/src/server/game/src/questpc.h
 # the engine files it changes are above (length.h, packet.h, packet_info.cpp, input_main.cpp, input_p2p.cpp, char.cpp,
 # char_item.cpp, cmd.cpp; cmd_general.cpp loses the old command); the logic is playerbot_switchbot.cpp (the playerbot_*
 # lines); player.switchbot in apply.sh (above).
+
+# MT2009_PLUS_ARMOR105_V1 / MT2009_PLUS_GF_VALUES_V1 / MT2009_PLUS_GF_REFINE_V1 / MT2009_PLUS_SEONPYEONG_ELITE_V1 /
+# MT2009_PLUS_ANGMUR_V1 / MT2009_PLUS_WIKI_NPC_RECIPES_V1 (the owner's package p-gf-po-3.0.1, 22 October 2026): the
+# level-105 armours zbroje105.sql (tools/zbroje105; Kawuco's recipes cube.zbroje105.txt above, Admiral Angmur's quest
+# angmur in quest/*), GF's values and refining gf_wartosci.sql (tools/gfwartosci); Seon-Pyeong's fixed recipes are in
+# refine_global.sql (above), the engine files server-patches/seonpyeong changes are above (constants.cpp, char_item.cpp);
+# the NPCs' recipes cube.wiki_kto.txt (above) and quest mikstury_okno (quest/*).
+linux-port/docker/mariadb/playerbot/zbroje105.sql
+linux-port/docker/mariadb/playerbot/gf_wartosci.sql

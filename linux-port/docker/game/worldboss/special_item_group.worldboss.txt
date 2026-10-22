@@ -18,4 +18,5 @@ Group	worldboss_skrzynka_tajemnic
 	13	30616	1	10 -- Dwutlenek Tytanu
 	14	30617	1	10 -- Agat
 	15	30618	1	10 -- Kamien Ksiezycowy
+	16	30619	1	10 -- Barwnik zloty metalik
 }

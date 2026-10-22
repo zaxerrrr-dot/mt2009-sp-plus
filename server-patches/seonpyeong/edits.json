@@ -1,0 +1,26 @@
+[
+ {
+  "file": "constants.cpp",
+  "marker": "MT2009_PLUS_SEONPYEONG_ELITE_V1 (elite sets)",
+  "old": "bool IsEliteRefine(DWORD refineSet)\n{\n\treturn refineSet == 501 || refineSet == 530;\n}\n",
+  "new": "bool IsEliteRefine(DWORD refineSet)\n{\n\t// MT2009_PLUS_SEONPYEONG_ELITE_V1 (elite sets): Seon-Pyeong's (BLACKSMITH2_MOB) refine sets - a +9 piece dragged onto him becomes the next\n\t// item (the pl-wiki). 501 / 530 the package's; 39900-39999 the fixed recipes of refine_global.sql (the owner's\n\t// sheet: weapons 65 -> 80, armours / boots -> 80, weapons 80 -> 87-105, weapons / armours 105 -> cyanite,\n\t// tools/refineglobal/gen_refineglobal.py ELITE - keep the range in step with it). No other smith, no scroll.\n\treturn refineSet == 501 || refineSet == 530 || (refineSet >= 39900 && refineSet <= 39999);\n}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SEONPYEONG_ELITE_V1 (weapon smiths)",
+  "old": "\t\tcase BLACKSMITH_WEAPON_MOB:\n\t\tcase DEVILTOWER_BLACKSMITH_WEAPON_MOB:\n\t\t\tif (item->GetType() == ITEM_WEAPON &&\n\t\t\t\t\titem->GetRefinedVnum())\n",
+  "new": "\t\tcase BLACKSMITH_WEAPON_MOB:\n\t\tcase DEVILTOWER_BLACKSMITH_WEAPON_MOB:\n\t\t\tif (item->GetType() == ITEM_WEAPON &&\n\t\t\t\t\titem->GetRefinedVnum() && !IsEliteRefine(item->GetRefineSet())) // MT2009_PLUS_SEONPYEONG_ELITE_V1 (weapon smiths): Seon-Pyeong's steps only at him\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SEONPYEONG_ELITE_V1 (armour smiths)",
+  "old": "\t\tcase DEVILTOWER_BLACKSMITH_ARMOR_MOB:\n\t\t\tif (item->GetType() == ITEM_ARMOR &&\n\t\t\t\t\t(item->GetSubType() == ARMOR_BODY || item->GetSubType() == ARMOR_SHIELD || item->GetSubType() == ARMOR_HEAD) &&\n\t\t\t\t\titem->GetRefinedVnum())\n",
+  "new": "\t\tcase DEVILTOWER_BLACKSMITH_ARMOR_MOB:\n\t\t\tif (item->GetType() == ITEM_ARMOR &&\n\t\t\t\t\t(item->GetSubType() == ARMOR_BODY || item->GetSubType() == ARMOR_SHIELD || item->GetSubType() == ARMOR_HEAD) &&\n\t\t\t\t\titem->GetRefinedVnum() && !IsEliteRefine(item->GetRefineSet())) // MT2009_PLUS_SEONPYEONG_ELITE_V1 (armour smiths): Seon-Pyeong's steps only at him\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SEONPYEONG_ELITE_V1 (accessory smiths)",
+  "old": "\t\tcase DEVILTOWER_BLACKSMITH_ACCESSORY_MOB:\n\t\t\tif (item->GetType() == ITEM_ARMOR &&\n\t\t\t\t\t!(item->GetSubType() == ARMOR_BODY || item->GetSubType() == ARMOR_SHIELD || item->GetSubType() == ARMOR_HEAD) &&\n\t\t\t\t\titem->GetRefinedVnum())\n",
+  "new": "\t\tcase DEVILTOWER_BLACKSMITH_ACCESSORY_MOB:\n\t\t\tif (item->GetType() == ITEM_ARMOR &&\n\t\t\t\t\t!(item->GetSubType() == ARMOR_BODY || item->GetSubType() == ARMOR_SHIELD || item->GetSubType() == ARMOR_HEAD) &&\n\t\t\t\t\titem->GetRefinedVnum() && !IsEliteRefine(item->GetRefineSet())) // MT2009_PLUS_SEONPYEONG_ELITE_V1 (accessory smiths): Seon-Pyeong's steps only at him\n"
+ }
+]

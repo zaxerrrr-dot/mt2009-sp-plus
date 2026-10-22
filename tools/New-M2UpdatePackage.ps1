@@ -287,6 +287,7 @@ try {
             'linux-port/docker/game/src/server/game/src/guild.cpp' = @('MT2009_PLUS_DIGI_SERVER_QOL_V1 (guild block)')
             'linux-port/docker/game/src/server/game/src/cmd_emotion.cpp' = @('MT2009_PLUS_DIGI_SERVER_QOL_V1 (emote block)')
             'linux-port/docker/game/src/server/game/src/DragonSoul.cpp' = @('MT2009_PLUS_WEEKLY_RANKING_V1 (grade)', 'MT2009_PLUS_WEEKLY_RANKING_V1 (step)', 'MT2009_PLUS_WEEKLY_RANKING_V1 (strength)')
+            'linux-port/docker/game/src/server/game/src/constants.cpp' = @('MT2009_PLUS_SEONPYEONG_ELITE_V1 (elite sets)')
         }
         foreach ($enginePublished in $engineMarks.Keys) {
             if (-not ($published -contains $enginePublished)) { continue }

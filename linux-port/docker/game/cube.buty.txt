@@ -1,58 +1,15 @@
 # MT2009_PLUS_BOOTS_V1 (the owner, 15 October 2026): the boots' crafting as on the pl-wiki. Appended to cube.txt by
 # the Dockerfile.
-#  * Buty Zimorodka / Buty Euforii (and their siblings Buty Qilina / Kozaki Glorii, the same wiki recipe) +0 from the
-#    level-47..59 boots +9, 3x Smocza Luska, 4x Smoczy Szpon and 200 000 Yang at Seon-Pyeong (20091,
-#    quest/seon_pyeong.quest opens his window) - "Ulepszenie zawsze sie powiedzie": 100%.
+#  * MT2009_PLUS_SEONPYEONG_GF_V1 (the owner, 17 October): Buty Zimorodka / Euforii / Qilina / Kozaki Glorii +0 from the
+#    level-47..59 boots +9 are no cube recipe any more - the boots are dragged onto Seon-Pyeong (20091) as on the
+#    official server (item_proto refine_set 530: 3x Smocza Luska, 4x Smoczy Szpon, 200 000 Yang, 100%, the stones
+#    and bonuses stay; quest/seon_pyeong.quest says so).
 #  * Ogniste Buty from Buty Zimorodka +5..+9, Buty Oceanu from Buty Euforii +5..+9 (Wzor Kroju, Niebieski / Czerwony
 #    Barwnik, 5x Ciezkie Pasy, 400 000 Yang). MT2009_PLUS_KAWUCO_V1 (the owner, 15 October): at Kawuco (20413,
 #    Przyladek Smoczego Ognia 662,1224 as on the pl-wiki; quest/kawuco.quest opens his window), was Seon-Pyeong as
 #    Digi Rasta's cube.wiki_nowe.txt had them (moved from there, MT2009_PLUS_NS_WIKI_ITEMS_V1). The wiki says it may
 #    fail ("Ulepszanie moze sie nie udac") but gives no chance: the official chances by the input's plus, Owsap's
 #    data - +5 5%, +6 10%, +7 30%, +8 40%, +9 50% (the owner, 15 October; was 80%, before that 100%).
-
-# Buty Zimorodka+0 <- Buty Ognistego Ptaka+9, 3x Smocza Luska, 4x Smoczy Szpon
-section
-npc	20091
-item	15229	1
-item	71123	3
-item	71129	4
-reward	15430	1
-gold	200000
-percent	100
-end
-
-# Buty Euforii+0 <- Ekstazyjne Buty+9, 3x Smocza Luska, 4x Smoczy Szpon
-section
-npc	20091
-item	15169	1
-item	71123	3
-item	71129	4
-reward	15370	1
-gold	200000
-percent	100
-end
-
-# Buty Qilina+0 <- Buty Feniksa+9, 3x Smocza Luska, 4x Smoczy Szpon
-section
-npc	20091
-item	15209	1
-item	71123	3
-item	71129	4
-reward	15410	1
-gold	200000
-percent	100
-end
-
-# Kozaki Glorii+0 <- Deszczowe Buty+9, 3x Smocza Luska, 4x Smoczy Szpon
-section
-npc	20091
-item	15189	1
-item	71123	3
-item	71129	4
-reward	15390	1
-gold	200000
-percent	100
-end
 
 # Ogniste Buty+0 <- Buty Zimorodka+5, Wzor Kroju, Niebieski Barwnik, 5x Ciezkie Pasy
 section

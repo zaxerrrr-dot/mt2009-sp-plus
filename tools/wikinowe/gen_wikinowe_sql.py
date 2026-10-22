@@ -15,6 +15,11 @@ Idempotent, every start: a row of ours (the same vnum and the same name) is dele
 of that vnum with another name (the mod made the item its own) stays and ours does not go in (INSERT IGNORE).
 The client's records come from the same json (client-patches/client-2.0.30/tools/wikinowe).
 
+MT2009_PLUS_GF_VALUES_V1 (the owner, 22 October 2026): the json's cyanite weapons (value1-5 of 500-508, 1500-1509,
+2500-2508, 3500-3509, 5500-5509, 7500-7509 - GF puts the attack's refine bonus into value5 from +0) and the boots'
+magic_pct (15440-15459) are GF 25.2.17's, as tools/gfwartosci/gf_wartosci.json has them (78 items, 252 values), so
+this file and gf_wartosci.sql write the same.
+
     python3 tools/wikinowe/gen_wikinowe_sql.py [<out .sql>]
 """
 import json

@@ -13,6 +13,9 @@ klient w `client-patches`.
 - **Wytwarzanie u Mistrza (20082)** – nowy NPC przy Kowalu w M1 i M3 każdego królestwa, opcja „Wytwarzanie pasów”
   → okno kostki z 9 recepturami (`cube.pasy.txt`, przepisane z oficjalnego `cube.txt`, gdzie stały u Yu-Hwana i
   Jae-Seon Kima, których kostki żaden quest nie otwiera).
+  **Od 22.10.2026 (`MT2009_PLUS_WIKI_NPC_RECIPES_V1`, decyzja właściciela – „jak na wiki”):** pasy robi się tylko
+  u Yu-Hwana (okno otwiera `quest/mikstury_okno.quest`) i Jae-Seon Kima; `cube.pasy.txt` i `quest/pasy.quest` usunięte,
+  Mistrz stoi dalej (Kwiaty Żywiołu i talizmany – `quest/zywioly.quest`), boty robią te same 9 receptur.
 - **Odłamki Energii (51001)** – u Alchemika (20001): przedmiot od 35 poziomu (broń bez strzał, zbroja, biżuteria)
   przeciągnięty na NPC przez gracza od 35 poziomu rozkłada się na 0–15 odłamków (oficjalne tabele,
   `quest/energia_alchemik.quest`).

@@ -82,15 +82,8 @@ SKIP = {
     39067: 'not in our world',
     72350: 'not in our world',
     # 50514 / 50515 (Podreczniki: Dopalacz / Riposta) are ours since MT2009_PLUS_RIPOSTY_V1 (tools/yohara_items)
-    30601: 'not in our world',
-    30605: 'not in our world',
-    30607: 'not in our world',
-    30609: 'not in our world',
-    30614: 'not in our world',
-    30615: 'not in our world',
-    30619: 'not in our world',
-    30625: 'not in our world',
-    30628: 'not in our world',
+    # MT2009_PLUS_ARMOR105_V1 (22 October 2026): the level-105 armours' materials 30601, 30605, 30607, 30609, 30614,
+    # 30615, 30619, 30625, 30628 are ours (tools/zbroje105) - back in the chests
     55004: 'not in our world',
     55005: 'not in our world',
     28045: 'the engine draws no such stone',

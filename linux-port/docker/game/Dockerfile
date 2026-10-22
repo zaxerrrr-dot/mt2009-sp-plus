@@ -286,9 +286,8 @@ RUN set -eux; \
     # Bloodstone, from quest/_unused (2.2.21).
     # tanaka_ears is Yonah's exchange of Pirate Tanaka's ear for a Purple Ebony
     # Chest, the Tanaka event's reward (playerbot_world_events.h).
-    # seon_pyeong opens Seon-Pyeong's cube window by the Grotto of Exile: a +9
-    # piece of level 65-66 into its level-80 successor (cube.seon_pyeong.txt,
-    # appended to the share's cube.txt below; NerrVoVy, 27 September).
+    # seon_pyeong is Seon-Pyeong's talk by the Grotto of Exile: what to drag onto him
+    # (a +9 piece of level 65-66 into its level-80 successor, MT2009_PLUS_SEONPYEONG_GF_V1).
     # wytwarzanie_jae_seon_kim opens Jae-Seon Kim's (20383) cube window: the share's
     # 72 recipes of his (level-75 weapons and armours, the level-80 jewellery, belts)
     # that no quest opened (MT2009_PLUS_JAE_SEON_CUBE_V1).
@@ -335,9 +334,9 @@ RUN set -eux; \
     # kolekcjoner_item answers the use of the ItemShop's "Kolekcjoner" (70115): the
     # collector's storage anywhere, "/kolekcjoner przedmiot" (MT2009_PLUS_COLLECTOR_ITEM_V1,
     # playerbot_collector.cpp).
-    # pasy (Mistrz 20082: the belt recipes' cube window) and energia_alchemik (the Alchemist
-    # dismantles items of level 35+ into Odlamki Energii) are the belt system
-    # (MT2009_PLUS_BELTS_V1, Autor: Digi Rasta; cube.pasy.txt below).
+    # mikstury_okno (MT2009_PLUS_WIKI_NPC_RECIPES_V1: the windows of Rybak, Baek-Go, Yu-Hwan, Huahn-So; pasy is no longer
+    # compiled - the belts only at Yu-Hwan and Jae-Seon Kim, as on the wiki) and energia_alchemik (the Alchemist
+    # dismantles items of level 35+ into Odlamki Energii; the belt system, MT2009_PLUS_BELTS_V1, Autor: Digi Rasta).
     # zywioly (Mistrz 20082: the Kwiat Zywiolu shop and the elements' explanation) is the
     # elements and talismans (MT2009_PLUS_ELEMENTS_V1, Autor: Digi Rasta).
     # mapa_tab is the teleport map under TAB: "/tabteleport <key>" from the client's window
@@ -384,6 +383,8 @@ RUN set -eux; \
     # dragged on him, dragon horns, scales, plans (and wings) and 1 000 000 Yang (MT2009_PLUS_HELM100_V1, tools/yhelm100).
     # szata_aury is Szata Aury (MT2009_PLUS_AURA_V1, server-patches/aura): Theowahdan's (60003) three windows - bonuses
     # absorbed, runes for the level, the evolution - and Baek-Go's (20018) Zwyczajna Szata Aury (20%, the pl-wiki).
+    # angmur is Admiral Angmur's (20378 cape, 20812 fortress) level-90 body armour from a level-66 one +9 dragged onto
+    # him, the bonuses and stones kept (MT2009_PLUS_ANGMUR_V1, the pl-wiki).
     # kawuco opens Kawuco's (20413, Przyladek Smoczego Ognia) cube window: Ogniste Buty / Buty Oceanu from Buty Zimorodka /
     # Euforii +5..+9 (cube.buty.txt, 5-50% by plus; MT2009_PLUS_KAWUCO_V1).
     # eliksiry_yohary opens Huahn-So's (20022, Bokjung / Bakra / Jayang) cube window: the elixirs of Yohara from the
@@ -396,7 +397,7 @@ RUN set -eux; \
     # scroll, the books and soul stones at the General Store (MT2009_PLUS_BUFFI_V1, server-patches/buffi, playerbot_buffi.cpp).
     # labirynth and black_steel_crafting are the package's, with Min-Sun (20402) on Pustynia Yongbi since Przelecz (69)
     # is gone (MT2009_PLUS_PASS69_OFF_V1) - their objects replace the stock ones.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -941,20 +942,11 @@ COPY costume_sets.txt /opt/metin2/share/locale/poland/costume_sets.txt
 # reads from the tables themselves.
 COPY drop_wiki.txt /opt/metin2/share/locale/poland/drop_wiki.txt
 
-# Seon-Pyeong's recipes (port/shareify.py renders cube.seon_pyeong.txt and this
-# step; the quest that opens his window is quest/seon_pyeong.quest above): a +9
-# piece of level 65-66 into its level-80 successor. The package's cube.txt has
-# no recipe for him, and Cube_open refuses an NPC with none.
-COPY cube.seon_pyeong.txt /tmp/cube-add/
-RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-add/cube.seon_pyeong.txt \
- && ! grep -q -E '^npc[[:blank:]]+20091[[:space:]]*$' "$C" \
- && n=$(grep -c -E '^npc[[:blank:]]+20091[[:space:]]*$' "$A") \
- && sed -i 's/\r$//; s/$/\r/' "$A" \
- && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
- && cat "$A" >> "$C" \
- && rm -rf /tmp/cube-add \
- && test "$(grep -c -E '^npc[[:blank:]]+20091[[:space:]]*$' "$C")" -eq "$n" \
- && echo "share: Seon-Pyeong's recipes appended to cube.txt ($n)"
+# MT2009_PLUS_SEONPYEONG_GF_V1 (the owner, 17 October): Seon-Pyeong (20091) has no cube recipe any more - a +9
+# piece of level 65-66 (and the boots of 47..59) is dragged onto him as on the official server (item_proto
+# refine_set 501 / 530 - since MT2009_PLUS_SEONPYEONG_ELITE_V1 refine_global.sql's fixed 39900-39903, tools/refineglobal
+# ELITE, constants.cpp IsEliteRefine - server-patches/seonpyeong); NerrVoVy's cube.seon_pyeong.txt is gone (Partyzana+9 ->
+# Pogromca Nieb. Smoka, its one recipe the sheet lacks, is an ELITE step now).
 
 # MT2009_PLUS_NS_WIKI_ITEMS_V1 (share): the official PL wiki's item families and materials the world
 # did not have (Autor: Digi Rasta, nowy-system 0.33.0; the items are mariadb/playerbot/wiki_nowe.sql):
@@ -983,9 +975,9 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; G=$L/special_item
  && echo "share: wiki items - $n recipes at Seon-Pyeong, chest groups 951201 / 951202 (MT2009_PLUS_NS_WIKI_ITEMS_V1)"
 
 # MT2009_PLUS_BOOTS_V1 (share): the boots' crafting of the pl-wiki (the owner, 15 October) - cube.buty.txt: Buty
-# Zimorodka / Euforii / Qilina / Kozaki Glorii +0 from the level-47..59 boots +9 at Seon-Pyeong (20091), after his own
-# above; Ogniste Buty / Buty Oceanu from Buty Zimorodka / Euforii +5..+9 at Kawuco (20413, 5-50% by plus; MT2009_PLUS_KAWUCO_V1)
-# - 14 recipes.
+# Zimorodka / Euforii / Qilina / Kozaki Glorii +0 are dragged onto Seon-Pyeong since MT2009_PLUS_SEONPYEONG_GF_V1
+# (not here); Ogniste Buty / Buty Oceanu from Buty Zimorodka / Euforii +5..+9 at Kawuco (20413, 5-50% by plus; MT2009_PLUS_KAWUCO_V1)
+# - 10 recipes.
 COPY cube.buty.txt /tmp/cube-buty/
 RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-buty/cube.buty.txt \
  && ! grep -q 'MT2009_PLUS_BOOTS_V1 (the owner, 15 October 2026)' "$C" \
@@ -993,25 +985,19 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-buty/cube.b
  && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
  && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
  && cat "$A" >> "$C" \
- && test "$n" -eq 14 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$n" -eq 10 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
  && test "$(grep -c -E '^npc[[:blank:]]+20413' "$A")" -eq 10 \
  && rm -rf /tmp/cube-buty \
- && echo "share: boots recipes at Seon-Pyeong and Kawuco ($n, MT2009_PLUS_BOOTS_V1 / MT2009_PLUS_KAWUCO_V1)"
+ && echo "share: boots recipes at Kawuco ($n, MT2009_PLUS_BOOTS_V1 / MT2009_PLUS_KAWUCO_V1)"
 
-# MT2009_PLUS_BELTS_V1 (share): the belt system (Pasy; Autor: Digi Rasta, nowy-system v0.27.0).
-# cube.pasy.txt - the nine belt recipes of the package's cube.txt (at Yu-Hwan and Jae-Seon Kim,
-# whose cube no quest opens) at Mistrz (20082) - appended to cube.txt; Mistrz himself (in
-# mob_proto, the client knows him as "gm", no npc.txt line in the package) beside the
-# Blacksmith in M1 and M3 of every kingdom, on the cells Digi Rasta measured free; the
-# window is quest/pasy.quest. The materials are in special_item_group.dungeons.txt (groups
-# 951101 / 951102, the Razador and Nemere chests) and quest/energia_alchemik.quest.
-COPY cube.pasy.txt /tmp/cube-add/
-RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/cube-add/cube.pasy.txt \
+# MT2009_PLUS_BELTS_V1 (share): the belt system (Pasy; Autor: Digi Rasta, nowy-system v0.27.0). Mistrz (20082; in
+# mob_proto, the client knows him as "gm", no npc.txt line in the package) beside the Blacksmith in M1 and M3 of every
+# kingdom, on the cells Digi Rasta measured free - quest/zywioly.quest's Kwiaty Zywiolu and talismans.
+# MT2009_PLUS_WIKI_NPC_RECIPES_V1 (the owner, 17 October 2026): the belts are made only where the pl-wiki makes them -
+# Yu-Hwan and Jae-Seon Kim (their recipes are the package's cube.txt) - cube.pasy.txt and quest/pasy.quest are gone
+# (the bots still make the same nine recipes, playerbot_belts.h). The materials: special_item_group.dungeons.txt (951101 / 951102), energia_alchemik.
+RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt \
  && ! grep -q -E '^npc[[:blank:]]+20082[[:space:]]*$' "$C" \
- && sed -i 's/\r$//; s/$/\r/' "$A" \
- && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
- && cat "$A" >> "$C" \
- && test "$(grep -c -E '^npc[[:blank:]]+20082[[:space:]]*$' "$C")" -eq 9 \
  && for p in "metin2_map_a1 675 560 8" "metin2_map_b1 598 695 4" "metin2_map_c1 394 702 5" \
              "metin2_map_a3 422 613 3" "metin2_map_b3 392 350 2" "metin2_map_c3 487 393 8"; do \
       set -- $p; F="$L/map/$1/npc.txt"; \
@@ -1019,8 +1005,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; C=$L/cube.txt; A=/tmp/cube-add/c
       grep -q -E '[[:blank:]]20082[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t1m\t100\t1\t20082\n' "$2" "$3" "$4" >> "$F"; \
       test "$(grep -c -E '[[:blank:]]20082[[:space:]]*$' "$F")" -eq 1 || exit 1; \
     done \
- && rm -rf /tmp/cube-add \
- && echo "share: belts - 9 recipes at Mistrz (20082), Mistrz in M1/M3 of the three kingdoms"
+ && echo "share: Mistrz (20082) in M1/M3 of the three kingdoms - no belt recipes (MT2009_PLUS_WIKI_NPC_RECIPES_V1)"
 
 # MT2009_PLUS_OCHAO_V1 (share): Swiatynia Ochao, the Temple of Ochao of the
 # "Version 16.2" package - map 209, metin2_map_mt_th_dungeon_01, an open map
@@ -2033,6 +2018,54 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-iluzja-add \
     done \
  && rm -rf "$A" \
  && echo "share: Plaskowyz Iluzji (397), Grota Wygnancow 2 (PB) (398), Zaklety Las (PB) (371): maps, rooms, groups, drops, chests, the statues' recipes, the dungeon panel"
+# MT2009_PLUS_WIKI_NPC_RECIPES_V1 (share; the owner, 17 October 2026: "everything is on the wiki - what from what and at
+# whom"): cube.wiki_kto.txt - 10 recipes the pl-wiki / GF give the NPCs and this world lacked: Rybak (9009) the four
+# juices, Baek-Go (20018) Charyzma / Inspiracja Eksperta, Jae-Seon Kim (20383) Bransoleta / Naszyjnik z Turmalinu and
+# Kamien Czerw. Plomienia, Statua Wezy (20807) Jedwab Wezowy. Rybak / Baek-Go / Yu-Hwan / Huahn-So open their windows by
+# quest/mikstury_okno.quest.
+# After every other cube step (the share, boots, helmets, the Yohara sets and the Illusion statues): those check that
+# their NPCs have no recipe yet, and Statua Wezy (20807) is one of them.
+COPY cube.wiki_kto.txt /tmp/cube-kto/
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-kto/cube.wiki_kto.txt \
+ && ! grep -q 'MT2009_PLUS_WIKI_NPC_RECIPES_V1' "$C" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
+ && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$n" -eq 10 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+9009[[:space:]]*$' "$C")" -eq 4 \
+ && rm -rf /tmp/cube-kto \
+ && echo "share: wiki NPC recipes ($n, MT2009_PLUS_WIKI_NPC_RECIPES_V1)"
+
+# MT2009_PLUS_WIKI_NPC_AMOUNTS_V1 (share; the owner, 22 October 2026 - the package p-gf-po-3.0.1's cube.txt, the pl-wiki
+# "Wytwarzanie Mikstur"): the share's own recipes as the wiki gives them - Woda Dok (50814) x100 from Sok z Pokrzywy +
+# Bez at Yu-Hwan (20017) and Huahn-So (20022), not x1 (both recipes: the only "reward 50814 1" lines), and Biala Rosa
+# (50826) from 10 Wody Sam-Bo (50818), not 20 (the only "item 50818 20" line). Each line must be there exactly as
+# counted, or the build stops.
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; T="$(printf '\t')"; R="$(printf '\r')" \
+ && test "$(grep -c "^reward${T}50814${T}1${R}\?\$" "$C")" -eq 2 \
+ && test "$(grep -c "^item${T}50818${T}20${R}\?\$" "$C")" -eq 1 \
+ && sed -i -E "s/^(reward${T}50814${T})1(${R}?)\$/\1100\2/; s/^(item${T}50818${T})20(${R}?)\$/\110\2/" "$C" \
+ && test "$(grep -c "^reward${T}50814${T}100${R}\?\$" "$C")" -eq 2 \
+ && test "$(grep -c "^item${T}50818${T}10${R}\?\$" "$C")" -eq 1 \
+ && echo "share: Woda Dok x100, Biala Rosa from 10 Wody Sam-Bo (MT2009_PLUS_WIKI_NPC_AMOUNTS_V1)"
+
+# MT2009_PLUS_ARMOR105_V1 (share; the owner, 17 October 2026): cube.zbroje105.txt - Kawuco (20413) makes the 16
+# level-105..115 armours of the pl-wiki "Wytwarzanie Zbroi" from the level-90 one +5..+9 + Plan Zbroi + a dye + 5
+# sheets (80 recipes, 5-50% by plus, 3 000 000 Yang; GF 25.2.17 cube.txt, the Lykan ones left out). The items and
+# their refining: mariadb/playerbot/zbroje105.sql (tools/zbroje105). After cube.wiki_kto.txt, the last cube step before it.
+COPY cube.zbroje105.txt /tmp/cube-105/
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-105/cube.zbroje105.txt \
+ && ! grep -q 'MT2009_PLUS_ARMOR105_V1' "$C" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
+ && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$n" -eq 80 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+20413' "$A")" -eq 80 \
+ && rm -rf /tmp/cube-105 \
+ && echo "share: level-105 armours at Kawuco ($n, MT2009_PLUS_ARMOR105_V1)"
+
 # MT2009_PLUS_YOHARA_CRACK_V1 (share): Statua Szczeliny Czasu and the first Time Rift dungeon (the owner, 14 October
 # 2026: only Zaklety Las for now; pl-wiki "Statua Szczeliny Czasu", "Zaklety Las (SZC)", "Erebu (SZC)", the six SZC
 # missions; Owsap v6.2.6 crack_dawnmist_dungeon for the spawns and the stages) - Zaklety Las (SZC) (404,
@@ -2943,6 +2976,12 @@ RUN set -eu; A=/tmp/worldboss-add; L=/opt/metin2/share/locale/poland; f=$L/speci
  && rm -rf "$A" \
  && echo "share: Boss Swiata - worldboss.txt and Skrzynka Tajemnic (38015)"
 
+# MT2009_PLUS_ARMOR105_V1 (the owner, 22 October 2026): the level-105 armours' materials (tools/zbroje105) drop from
+# our generators' files, appended by their own steps above - the owner's monster sheet (yohara_arkusz: the En-Tai,
+# moby_global: the Ochao), the pl-wiki's lists (yohara_zaklety: Bojownik En-Tai, Bagjanamu, Jotun Thrym) and the chests
+# (tools/yohara_chestdrops: Razador / Nemere in special_item_group.dungeons.txt, Jotun Thrym / Bagjanamu in
+# yohara_zaklety, worldboss's Skrzynka Tajemnic) - the package's mob_drop_item / special_item_group.zbroje105.txt are not
+# needed.
 COPY --from=quests /out-quest/ /opt/metin2/share/locale/
 
 # Seed for a core's mark/ directory (guild symbols): copied into the state

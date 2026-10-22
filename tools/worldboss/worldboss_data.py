@@ -140,13 +140,13 @@ SEASON_GUILD = [
 SEASON_WEEKS = 8
 
 # Skrzynka Tajemnic: "Zawiera losowy rzadki przedmiot." - one of the wiki's list, equal shares. Barwnik złoty
-# metalik is not in our world (left out).
+# metalik (30619) is ours since MT2009_PLUS_ARMOR105_V1 (tools/zbroje105, 22 October 2026).
 MYSTERY = [
     (50271, 'Skrzynia Nemere'), (54701, 'Skrzynia Bagjanamu'), (50270, 'Skrzynia Razadora'),
     (50266, 'Skrzynia Jotuna Thryma'), (54700, 'Skrzynia Berana-Setaou'), (54705, 'Skrzynia Hydry'),
     (54706, 'Skrzynia Królowej Meley'), (54707, 'Skrzynia Sm. Strażników'), (18900, 'Kamień Czerw. Płomienia'),
     (27992, 'Biała Perła'), (27994, 'Krwawa Perła'), (27993, 'Niebieska Perła'), (30616, 'Dwutlenek Tytanu'),
-    (30617, 'Agat'), (30618, 'Kamień Księżycowy'),
+    (30617, 'Agat'), (30618, 'Kamień Księżycowy'), (30619, 'Barwnik złoty metalik'),
 ]
 ITEMS_NEW = [
     dict(vnum=SKRZYNKA_TAJEMNIC, src=ZAGADKOWA, name='Skrzynka Tajemnic',
