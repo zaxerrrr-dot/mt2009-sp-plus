@@ -192,6 +192,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_battle_horse.h"
 #include "playerbot_item_extra_apply.h" // MT2009_PLUS_ITEM_EXTRA_APPLY_V1: bonus lines beyond item_proto's three, counted by the gear scoring
 #include "playerbot_yohara_gear.h" // MT2009_PLUS_GLOVE_BASE_V1: a Sung Ma glove's Will (its base attribute), counted by the gear scoring
+#include "playerbot_yohara_elements.h" // MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the Sung Ma maps' elements - the talisman, the resistances, the elixirs
 #include "playerbot_gear.h"
 #include "playerbot_horse30.h" // Digi Rasta's horse to level 30: paid training, the Black Steed trial, the horse bonus (MT2009_PLUS_HORSE30_V1)
 #include "playerbot_shaman_buff_set.h" // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: a Shaman's INT set for its buffs
@@ -397,6 +398,8 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_yohara_bots.h"
 // MT2009_PLUS_BOT_YOHARA_G0_V1: the Champions' G0 package for 400 Magiczny Pyl, its binding and the bot-to-bot sale
 #include "playerbot_yohara_g0.h"
+// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the elements' part that reads the Sung Ma state (the map, the elixirs, the census)
+#include "playerbot_yohara_elements_late.h"
 
 namespace
 {

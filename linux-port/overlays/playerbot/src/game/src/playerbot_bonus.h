@@ -184,12 +184,14 @@ namespace
 			// hits of about half of one map. The player's table wanted a
 			// resistance chosen per map; measured, the whole axis is too small
 			// to plan a piece of gear around.
+			// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1 (D14): on a Sung Ma map its own elements' twice that, and the same
+			// for the "+x%" and the hit buff's resistances below (playerbot_yohara_elements.h).
 			case APPLY_RESIST_FIRE:
 			case APPLY_RESIST_ELEC:
 			case APPLY_RESIST_WIND:
 			case APPLY_RESIST_ICE:
 			case APPLY_RESIST_EARTH:
-			case APPLY_RESIST_DARK:
+			case APPLY_RESIST_DARK:             return value * 3 * GetPlayerBotYoharaResistFactor(ch, type);
 			case APPLY_RESIST_MAGIC:            return value * 3;
 			case APPLY_REFLECT_MELEE:           return value * 6;
 
@@ -254,7 +256,7 @@ namespace
 			case POINT_RESIST_PER_ICE:
 			case POINT_RESIST_PER_WIND:
 			case POINT_RESIST_PER_EARTH:
-			case POINT_RESIST_PER_DARK:                     return value * 2;
+			case POINT_RESIST_PER_DARK:                     return value * 2 * GetPlayerBotYoharaResistFactor(ch, type);
 			case POINT_HIT_BUFF_ENCHANT_FIRE:
 			case POINT_HIT_BUFF_ENCHANT_ICE:
 			case POINT_HIT_BUFF_ENCHANT_ELEC:
@@ -266,7 +268,7 @@ namespace
 			case POINT_HIT_BUFF_RESIST_ELEC:
 			case POINT_HIT_BUFF_RESIST_WIND:
 			case POINT_HIT_BUFF_RESIST_DARK:
-			case POINT_HIT_BUFF_RESIST_EARTH:               return value * 4;
+			case POINT_HIT_BUFF_RESIST_EARTH:               return value * 4 * GetPlayerBotYoharaResistFactor(ch, type);
 			case POINT_FIRST_ATTRIBUTE_BONUS:
 			case POINT_SECOND_ATTRIBUTE_BONUS:
 			case POINT_THIRD_ATTRIBUTE_BONUS:
