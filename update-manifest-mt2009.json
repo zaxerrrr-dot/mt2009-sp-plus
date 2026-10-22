@@ -1,18 +1,18 @@
 {
   "schema": 1,
   "channel": "stable",
-  "publishedAt": "2026-10-20T16:40:00Z",
-  "statusMessage": "MT2009 PLUS 2.36.0: sklepy botow bez przepelnienia, lochy bez zatrzyman, retencja logow w panelu. Klient 2.0.67.",
+  "publishedAt": "2026-10-22T18:00:00Z",
+  "statusMessage": "MT2009 PLUS 2.37.0: Zaklety Las, mapy 90 poziomu na nowym rdzeniu, tryb global (eksperymentalny). Klient 2.0.68.",
   "server": {
-    "version": "2.36.0",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.36.0/metin2-server-update-2.36.0.zip",
-    "sha256": "9D64466528633DFF6D3C5D282691926E2BABDD597F8487D438D5D6CB30A37C1E",
-    "size": 113903481
+    "version": "2.37.0",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.37.0/metin2-server-update-2.37.0.zip",
+    "sha256": "5578F6695D80E0384F0D3A2CA8C22B02258EEBF9009055108715DD6FD1C3F138",
+    "size": 115182329
   },
   "client": {
-    "version": "2.0.67",
-    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.67/metin2-client-update-2.0.67.zip",
-    "sha256": "112097357CD896CEEE990F5768F33B55B0BEFA3E6680CEBD6E19DFA286F8507E",
-    "size": 617471350
+    "version": "2.0.68",
+    "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.68/metin2-client-update-2.0.68.zip",
+    "sha256": "C365047A4E0C65DAF533D574160C198F7DFAA6C0E0C58C44D248A2FF05A6DB2E",
+    "size": 702523444
   }
 }
