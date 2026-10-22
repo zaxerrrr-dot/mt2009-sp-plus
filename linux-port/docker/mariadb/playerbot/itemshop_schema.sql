@@ -89,6 +89,11 @@ CREATE TABLE IF NOT EXISTS player.item_award (
   KEY pid (pid), KEY given_time (given_time), KEY taken_time (taken_time)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- MT2009_PLUS_ITEM_AWARD_PID_V1: the base dump makes item_award without pid, so the CREATE above never
+-- adds it and every shop INSERT naming pid (zakup, Kolo Losu na stronie, kupony /kod) failed with
+-- "Unknown column 'pid'". The db core never reads pid - it is the buyer's account id, for the record.
+ALTER TABLE player.item_award ADD COLUMN IF NOT EXISTS pid INT UNSIGNED NOT NULL DEFAULT 0 AFTER id;
+
 -- Zasiew: tylko gdy sklep jest pusty, zeby operator mogl go potem urzadzic
 -- po swojemu bez walki z kazdym startem.
 INSERT IGNORE INTO itemshop.ishop_category (id, name) VALUES

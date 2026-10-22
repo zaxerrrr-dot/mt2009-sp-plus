@@ -144,6 +144,9 @@ struct State {
     // of chained steps (a counter far over its fill target takes several a
     // visit), and when this keeper last took a line home to stack it again.
     uint32_t mgmtBurst = 0, restackAt = 0, restackVnum = 0;
+    // MT2009_PLUS_BOT_BOOK_RESTACK_FAST_V1: the skill (restackVnum) whose
+    // partial book lines come home one after another, two seconds apart.
+    bool restackBook = false;
     // MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 5): the buyer's pick is this many
     // pieces of the line's stack (0: the whole line) - the shop window's part
     // purchase (MT2009_PLUS_SHOP_QOL_V2, /ikashop_buy_part).

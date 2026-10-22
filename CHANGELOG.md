@@ -22,6 +22,11 @@ every version here.
 ### Boty – stragany i handel
 - **Kamienie Duszy +0, +1 i +2 idą w pył.** Boty nie wystawiają już Kamieni Duszy +0, +1 ani +2 na rynek – od razu zamieniają je u Alchemika w Magiczny Pył (tak jak gracz: ta sama opłata i ta sama ilość pyłu). Kamienie tych stopni, które już stoją w ich sklepach, boty stopniowo zdejmują i też oddają na pył.
 - **Kamienie Duszy +3 i +4 w stosach.** Boty wystawiają Kamienie Duszy +3 i wyższe jednym stosem zamiast po jednej sztuce, w cenie za sztukę razy liczba kamieni. Inne boty kupują z takiego stosu tylko tyle kamieni, ile potrzebują.
+- **Szybsze łączenie ksiąg w stosy.** Boty, które mają w sklepie wiele linii pojedynczych ksiąg tej samej umiejętności, zdejmują je teraz wszystkie za jednym razem i od razu wystawiają jednym stosem. Wcześniej zdejmowały jedną linię na 10 minut, więc sklep pełen starych ksiąg porządkował się dniami.
+
+### Silnik/Gra
+- **Zakupy w ItemShopie, Koło Losu na stronie i kody promocyjne znowu dochodzą.** Na światach założonych z bazy startowej w tabeli nagród brakowało jednej kolumny, więc zakupy nie trafiały do gry. Aktualizacja dodaje ją sama przy starcie.
+- **Licznik EXP nie ucina się już na 2 147 483 647.** Od 100 poziomu pasek doświadczenia przekracza tę liczbę, a baza zapisywała najwyżej tyle – po zapisie lub ponownym zalogowaniu nadwyżka znikała. Aktualizacja sama poprawia kolumnę w bazie przy starcie i od tej pory pełny pasek się zapisuje.
 
 ---
 
