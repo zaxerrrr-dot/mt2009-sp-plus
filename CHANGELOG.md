@@ -17,6 +17,14 @@ every version here.
 
 ---
 
+## 2.37.1 — (szkic)
+
+### Boty
+- **Mapy botów zajmują dużo mniej pamięci.** Wszystkie mapy korzystają teraz z jednego wspólnego bufora do wyszukiwania tras (wcześniej każda mapa miała własny, choć naraz używany był tylko jeden), a dane samej mapy spakowałem z 11 do 5 bajtów na pole. Na kanale z dużymi mapami (Sohan, Ognista Ziemia, Pustynia, Dolina, Groty) to ok. 0,8 GB mniej, gdy wszystkie siatki są zbudowane, a na pozostałych kanałach odpowiednio mniej. Trasy botów są dokładnie takie same jak wcześniej.
+- **Brak pamięci na mapę nie wyłącza już kanału.** Jeśli siatka którejś mapy nie zmieści się w pamięci, kanał działa dalej – boty na tej mapie przez 10 minut chodzą bez planowania tras, a potem siatka buduje się ponownie.
+
+---
+
 ## 2.37.0 — 2026-10-22 — Zaklęty Las, mapy 90 poziomu i tryb global
 
 ### Boty – stragany i handel
