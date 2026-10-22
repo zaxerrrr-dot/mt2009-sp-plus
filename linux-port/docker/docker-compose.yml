@@ -289,6 +289,12 @@ services:
       # MT2009_PLUS_BOT_HYDRA_PAIRS_V1: --hydra-pairs 16 - sixteen pairs (a Ninja and another class), all at once.
       PLAYERBOT_HYDRA_MAX: "${PLAYERBOT_HYDRA_MAX:-32}"
       PLAYERBOT_HYDRA_PARTIES: "${PLAYERBOT_HYDRA_PARTIES:-16}"
+      # MT2009_PLUS_BOT_DGRUN_CAP_ENV_V1: the bots' dungeon runs at once per core (GetPlayerBotDgRunCap): one a
+      # BOTS_PER_RUN bots, at least MIN_RUNS, at most MAX_RUNS (0 = no top); a starved dungeon STARVED_OVER_CAP above.
+      PLAYERBOT_DGRUN_MIN_RUNS: "${PLAYERBOT_DGRUN_MIN_RUNS:-4}"
+      PLAYERBOT_DGRUN_MAX_RUNS: "${PLAYERBOT_DGRUN_MAX_RUNS:-12}"
+      PLAYERBOT_DGRUN_BOTS_PER_RUN: "${PLAYERBOT_DGRUN_BOTS_PER_RUN:-250}"
+      PLAYERBOT_DGRUN_STARVED_OVER_CAP: "${PLAYERBOT_DGRUN_STARVED_OVER_CAP:-2}"
       M2_PLAYERBOT_CH2_SET_AT: "${M2_PLAYERBOT_CH2_SET_AT:-0}"
       # MT2009_PLUS_CH34_V1: the third and fourth channel on the same principle
       # (bots relog to CH1 for the stalls), off by default; CH3 only with CH2,
