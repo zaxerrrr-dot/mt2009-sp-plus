@@ -8,7 +8,8 @@
 --   * Tajemnicza Instancja (396): Tajemniczy O³tarz (20850) w Namgan (377) - 1. Poziom Czempiona i Tajemniczy
 --     Bilet (70408) za ka¿de wejœcie; Wyjœcie (10204) wraca do o³tarza; o³tarz wytwarza te¿ Esencjê Talizmanu
 --     (4 Talizmany Woli: SI£A, WIT, ODP, INT + 5 000 000 Yang, 90%) i Tajemniczy Talizman (Esencja + 200 Tajemniczych
---     Kamieni + 10 000 000 Yang) - i Gaya (100 / 200; przedmiot 95927, MT2009_PLUS_GAYA_V1);
+--     Kamieni + 10 000 000 Yang) - i Gaya (100 / 200; przedmiot 95927, MT2009_PLUS_GAYA_V1); od
+--     MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (22.10) w oknie wytwarzania o³tarza (game/cube.npc_okno.txt);
 --   * Królestwo ¯ywio³ów (378-380) i P³askowy¿ Si³ Natury (381): portal Królestwo ¯ywio³ów (3998) i Staruszek (20009,
 --     MT2009_PLUS_YOHARA_REALM_V2, b³¹d 3.0 #13) w Porcie Nowego Kontynentu (368) - od poziomu 90 za 50 000 000 Yang
 --     (w³aœciciel 14.10; wiki: "5000,0000"), bez wymogu dru¿yny (wiki: "¿adna grupa nie jest wymagana"); teleport do
@@ -46,11 +47,6 @@ quest yohara_mapy3 begin
 				},
 				plateau = {3840 + 126, 9216 + 310},          -- Town.txt P³askowy¿u (381)
 				ticket = 70408,
-				talismans = {81000, 81300, 81250, 81550},    -- Talizman Woli SI£A, WIT, ODP, INT (+0)
-				essence = 31270, stone = 31261, mystic = 81560,
-				essence_fee = 5000000, essence_pct = 90,
-				mystic_fee = 10000000, mystic_stones = 200,
-				gaya = 95927, essence_gaya = 100, mystic_gaya = 200,   -- wiki "Tajemniczy O³tarz": KosztGaya
 				medal = 39113, ring = 39114, ring_sure = 39116,
 				medal_sec = 600, drain_pct = 5, drain_sec = 10,
 			}
@@ -335,82 +331,20 @@ quest yohara_mapy3 begin
 			pc.warp(c.instancja[1] * 100, c.instancja[2] * 100)
 		end
 
-		when 20850.chat."Esencja Talizmanu" with pc.get_map_index() == 377 begin
-			local c = yohara_mapy3.cfg()
+		-- MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (w³aœciciel 22.10.2026): Esencja Talizmanu i Tajemniczy Talizman robi okno
+		-- wytwarzania o³tarza (game/cube.npc_okno.txt - te same przedmioty, Yang, Gaya i szanse), jak na serwerach globalnych
+		when 20850.chat."Wytwarzanie" with pc.get_map_index() == 377 begin
 			say_title(mob_name(20850)..":")
 			say("Z czterech Talizmanów Woli (SI£A, WIT, ODP, INT)")
-			say("wydobêdê Esencjê Talizmanu.")
+			say("wydobêdê Esencjê Talizmanu, a z Esencji i Tajemniczych")
+			say("Kamieni stworzê Tajemniczy Talizman. W oknie wytwarzania")
+			say("zobaczysz materia³y, Yang i szansê (najedŸ na przedmiot).")
 			say("")
-			say_reward("Potrzeba: po 1 Talizmanie Woli SI£A, WIT, ODP i INT (+0),")
-			say_reward(yohara_mapy3.fee_text(c.essence_fee).." Yang i "..c.essence_gaya.." Gaya. Szansa: "..c.essence_pct.."%.")
-			say_reward("Gdy siê nie uda, przedmioty przepadaj¹.")
-			if select("Wytwórz", "Nie teraz") ~= 1 then
-				return
+			say_reward("Gaya biorê sam z twojego ekwipunku.")
+			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
 			end
-			for i = 1, table.getn(c.talismans) do
-				if pc.count_item(c.talismans[i]) < 1 then
-					say_title(mob_name(20850)..":")
-					say("Brakuje ci: "..item_name(c.talismans[i])..".")
-					return
-				end
-			end
-			if pc.get_money() < c.essence_fee then
-				say_title(mob_name(20850)..":")
-				say("Masz za ma³o Yang.")
-				return
-			end
-			if pc.count_item(c.gaya) < c.essence_gaya then
-				say_title(mob_name(20850)..":")
-				say("Masz za ma³o Gaya (potrzeba "..c.essence_gaya..").")
-				return
-			end
-			for i = 1, table.getn(c.talismans) do
-				pc.remove_item(c.talismans[i], 1)
-			end
-			pc.remove_item(c.gaya, c.essence_gaya)
-			pc.change_money(-c.essence_fee)
-			say_title(mob_name(20850)..":")
-			if number(1, 100) <= c.essence_pct then
-				pc.give_item2(c.essence, 1)
-				say("Uda³o siê! Oto Esencja Talizmanu.")
-			else
-				say("Nie uda³o siê. Talizmany rozsypa³y siê w proch.")
-			end
-		end
-
-		when 20850.chat."Tajemniczy Talizman" with pc.get_map_index() == 377 begin
-			local c = yohara_mapy3.cfg()
-			say_title(mob_name(20850)..":")
-			say("Z Esencji Talizmanu i Tajemniczych Kamieni")
-			say("stworzê Tajemniczy Talizman.")
-			say("")
-			say_reward("Potrzeba: Esencja Talizmanu, "..c.mystic_stones.." Tajemniczych Kamieni,")
-			say_reward(yohara_mapy3.fee_text(c.mystic_fee).." Yang i "..c.mystic_gaya.." Gaya. Zawsze siê udaje.")
-			if select("Wytwórz", "Nie teraz") ~= 1 then
-				return
-			end
-			if pc.count_item(c.essence) < 1 or pc.count_item(c.stone) < c.mystic_stones then
-				say_title(mob_name(20850)..":")
-				say("Brakuje ci Esencji albo Tajemniczych Kamieni.")
-				return
-			end
-			if pc.get_money() < c.mystic_fee then
-				say_title(mob_name(20850)..":")
-				say("Masz za ma³o Yang.")
-				return
-			end
-			if pc.count_item(c.gaya) < c.mystic_gaya then
-				say_title(mob_name(20850)..":")
-				say("Masz za ma³o Gaya (potrzeba "..c.mystic_gaya..").")
-				return
-			end
-			pc.remove_item(c.essence, 1)
-			pc.remove_item(c.stone, c.mystic_stones)
-			pc.remove_item(c.gaya, c.mystic_gaya)
-			pc.change_money(-c.mystic_fee)
-			pc.give_item2(c.mystic, 1)
-			say_title(mob_name(20850)..":")
-			say("Oto Tajemniczy Talizman.")
 		end
 
 		when 10204.click with pc.get_map_index() == 396 begin

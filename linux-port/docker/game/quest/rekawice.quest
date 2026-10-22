@@ -10,130 +10,26 @@
 --   * MT2009_PLUS_DEMON_STONES_V1 (w³aœciciel 14.10.2026; wiki "Wytwarzanie Kamieni Mocy Demonów"): Mistrz Chi
 --     wytwarza Kamieñ Mocy Demonów +N (28047 + 100N) z Kamienia Demonów +N (28046 + 100N) i N+1 Jadeitu S³oñca
 --     (50661) za 300 000 / 500 000 / 700 000 / 900 000 / 1 200 000 Yang - szansa zawsze 30%.
+-- MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (w³aœciciel 22.10.2026: "u ka¿dego NPC z wytwarzaniem ma siê otworzyæ okno i pokazaæ,
+--   co trzeba daæ" - jak na serwerach globalnych, gdzie Mistrz Chi ma okno wytwarzania): rêkawice, Kamienie Mocy
+--   Demonów i bi¿uteria z jadeitu (wczeœniej yohara_mapy4) to receptury okna wytwarzania (game/cube.npc_okno.txt,
+--   te same iloœci, Yang, Gaya i szanse); rozmowa "Wytwarzanie" tylko je opisuje i otwiera okno.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest rekawice begin
 	state start begin
-		function cfg()
-			return {
-				fee = 10000000, fee_text = "10 000 000", pct = 75,
-				leather = 31245, leather_n = 25,               -- Twarda Skóra
-				pattern = 31246, pattern_n = 5,                -- Wzór Rêkawicy
-				runestone = 31225, runestone_n = 1,            -- Kamieñ Runiczny
-				gaya = 95927, gaya_n = 100,                    -- wiki: KosztGaya
-				rune_n = 10,
-				gloves = {
-					{vnum = 23000, rune = 31247},              -- Rêkawice Mocy (Wola SungMa SI£A)
-					{vnum = 23010, rune = 31248},              -- Zwinne Rêkawice (ODP)
-					{vnum = 23020, rune = 31249},              -- Pancerne Rêkawice (WIT)
-					{vnum = 23030, rune = 31250},              -- Ochronne Rêkawice (INT)
-				},
-			}
-		end
-
-		function stones()
-			return {
-				jade = 50661, pct = 30,
-				fee = {300000, 500000, 700000, 900000, 1200000},
-				fee_text = {"300 000", "500 000", "700 000", "900 000", "1 200 000"},
-			}
-		end
-
-		when 20823.chat."Kamienie Mocy Demonów" with pc.get_map_index() == 373 begin
-			local c = rekawice.stones()
+		when 20823.chat."Wytwarzanie" with pc.get_map_index() == 373 begin
 			say_title(mob_name(20823)..":")
-			say("Z Kamienia Demonów i Jadeitu S³oñca zrobiê ci")
-			say("Kamieñ Mocy Demonów tego samego poziomu.")
-			say("Osadzony w rêkawicy mo¿e daæ podwójn¹ wolê SungMa.")
+			say("Uszyjê ci rêkawice SungMa, z jadeitu zrobiê obrêcze,")
+			say("kolie i klipsy, a z Kamienia Demonów - Kamieñ Mocy")
+			say("Demonów. W oknie wytwarzania zobaczysz ka¿dy przepis:")
+			say("materia³y, Yang i szansê (najedŸ na przedmiot).")
 			say("")
-			say_reward("Kamieñ Demonów +N, (N+1)x "..item_name(c.jade)..", Yang wg poziomu,")
-			say_reward("szansa zawsze "..c.pct.."%. Gdy siê nie uda, materia³y przepadaj¹.")
-			local s = select("+0 ("..c.fee_text[1].." Yang)", "+1 ("..c.fee_text[2].." Yang)", "+2 ("..c.fee_text[3].." Yang)",
-				"+3 ("..c.fee_text[4].." Yang)", "+4 ("..c.fee_text[5].." Yang)", "Nie teraz")
-			if s < 1 or s > 5 then
-				return
-			end
-			local lvl = s - 1
-			local src = 28046 + 100 * lvl
-			local dst = 28047 + 100 * lvl
-			local jade_n = lvl + 1
-			say_title(mob_name(20823)..":")
-			if pc.count_item(src) < 1 then
-				say("Brakuje ci: "..item_name(src)..".")
-				return
-			end
-			if pc.count_item(c.jade) < jade_n then
-				say("Potrzebujesz "..jade_n.."x "..item_name(c.jade)..".")
-				return
-			end
-			if pc.get_money() < c.fee[s] then
-				say("Masz za ma³o Yang.")
-				return
-			end
-			if not pc.enough_inventory(dst) then
-				say("Zrób miejsce w ekwipunku.")
-				return
-			end
-			pc.remove_item(src, 1)
-			pc.remove_item(c.jade, jade_n)
-			pc.change_money(-c.fee[s])
-			if number(1, 100) <= c.pct then
-				pc.give_item2(dst, 1)
-				say("Uda³o siê! Oto "..item_name(dst)..".")
-			else
-				say("Nie uda³o siê. Materia³y przepad³y.")
-			end
-		end
-
-		when 20823.chat."Rêkawice SungMa" with pc.get_map_index() == 373 begin
-			local c = rekawice.cfg()
-			say_title(mob_name(20823)..":")
-			say("Ze skóry, run i wzorów uszyjê ci rêkawice")
-			say("przepe³nione wol¹ SungMa. Za³ó¿ je od 105. poziomu.")
-			say("")
-			say_reward("Ka¿da para: "..c.rune_n.."x Runa SungMa jej koloru, "..c.leather_n.."x "..item_name(c.leather)..",")
-			say_reward(c.pattern_n.."x "..item_name(c.pattern)..", "..c.runestone_n.."x "..item_name(c.runestone)..", "..c.gaya_n.." Gaya,")
-			say_reward(c.fee_text.." Yang, szansa "..c.pct.."%. Gdy siê nie uda, przedmioty przepadaj¹.")
-			local s = select(item_name(23000), item_name(23010), item_name(23020), item_name(23030), "Nie teraz")
-			if s < 1 or s > table.getn(c.gloves) then
-				return
-			end
-			local g = c.gloves[s]
-			local miss = nil
-			if pc.count_item(g.rune) < c.rune_n then
-				miss = item_name(g.rune)
-			elseif pc.count_item(c.leather) < c.leather_n then
-				miss = item_name(c.leather)
-			elseif pc.count_item(c.pattern) < c.pattern_n then
-				miss = item_name(c.pattern)
-			elseif pc.count_item(c.runestone) < c.runestone_n then
-				miss = item_name(c.runestone)
-			elseif pc.count_item(c.gaya) < c.gaya_n then
-				miss = c.gaya_n.." Gaya"
-			end
-			say_title(mob_name(20823)..":")
-			if miss then
-				say("Brakuje ci: "..miss..".")
-				return
-			end
-			if pc.get_money() < c.fee then
-				say("Masz za ma³o Yang.")
-				return
-			end
-			if not pc.enough_inventory(g.vnum) then
-				say("Zrób miejsce w ekwipunku.")
-				return
-			end
-			pc.remove_item(g.rune, c.rune_n)
-			pc.remove_item(c.leather, c.leather_n)
-			pc.remove_item(c.pattern, c.pattern_n)
-			pc.remove_item(c.runestone, c.runestone_n)
-			pc.remove_item(c.gaya, c.gaya_n)
-			pc.change_money(-c.fee)
-			if number(1, 100) <= c.pct then
-				pc.give_item2(g.vnum, 1)
-				say("Uda³o siê! Oto "..item_name(g.vnum)..".")
-			else
-				say("Nie uda³o siê. Materia³y przepad³y.")
+			say_reward("Gaya biorê sam z twojego ekwipunku. Kliknij przepis,")
+			say_reward("który chcesz wykonaæ - obrêcz, kolia i klipsy")
+			say_reward("jednego jadeitu potrzebuj¹ tych samych materia³ów.")
+			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
 			end
 		end
 	end
