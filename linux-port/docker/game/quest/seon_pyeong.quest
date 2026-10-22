@@ -76,11 +76,19 @@ quest seon_pyeong begin
 			say("Przekuwam bron, zbroje i buty ulepszone na +9")
 			say("w legendarny ekwipunek. Ulepszenie zawsze sie")
 			say("udaje, kamienie i bonusy zostaja.")
-			say("Wybierz przedmiot albo przeciagnij go na mnie.")
-			local s = select("Przekuj przedmiot +9", "Przepisy", "Zamknij")
+			say("W oknie wytwarzania zobaczysz wszystkie przepisy:")
+			say("materialy, Yang i szanse (najedz na przedmiot).")
+			say("Mozesz tez wybrac przedmiot albo przeciagnac go na mnie.")
+			-- MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (the owner, 22 October 2026): the crafting window first - every row of
+			-- his (cube.cpp makes them from the elite refine sets: the +9 piece, its materials, Yang, chance; the stones
+			-- and bonuses go to the new item, as when it is dragged onto him)
+			local s = select("Okno wytwarzania", "Przekuj przedmiot +9", "Przepisy", "Zamknij")
 			if s == 1 then
-				seon_pyeong.pick()
+				setskin(NOWINDOW)
+				command("cube open")
 			elseif s == 2 then
+				seon_pyeong.pick()
+			elseif s == 3 then
 				seon_pyeong.recipes()
 			end
 		end

@@ -82,6 +82,14 @@ quest angmur begin
 
 		when 20378.chat."Przekuwanie zbroi" or 20812.chat."Przekuwanie zbroi" begin
 			angmur.info()
+			-- MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (the owner, 22 October 2026): his crafting window - the same recipes
+			-- (game/cube.npc_okno.txt, copy_attr: the stones and bonuses go to the new armour, 100%)
+			say("")
+			say("Wszystkie przepisy zobaczysz w oknie wytwarzania.")
+			if select("Otworz okno wytwarzania", "Zamknij") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
 		end
 
 		when 20378.take or 20812.take with angmur.count(item.get_vnum()) != 0 begin

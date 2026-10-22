@@ -2072,22 +2072,27 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-105/cube.zb
 # show what you need to give", as the global servers - their client's cube.txt gives these NPCs the window):
 # cube.npc_okno.txt - the crafts that were quest talks: Mistrz Chi (20823, Dongan) the four SungMa gloves, the twelve
 # jade jewellery pieces and the five Kamienie Mocy Demonow; Tajemniczy Oltarz (20850, Namgan) Esencja Talizmanu and
-# Tajemniczy Talizman; Baek-Go (20018) Lekarstwo Iluzji and Zwyczajna Szata Aury - this world's amounts, Yang, Gaya and
-# chances. Quests rekawice, yohara_mapy3, yohara_mapy4, przebudzeni_bossowie and szata_aury open the windows instead of
-# crafting in the talk. Mistrz Chi and the altar must have no recipe before; the last cube step.
+# Tajemniczy Talizman; Baek-Go (20018) Lekarstwo Iluzji and Zwyczajna Szata Aury; Admiral Angmur (20378 / 20812) his
+# armours 66 > 90 > 105 with the stones and bonuses kept (copy_attr) - this world's amounts, Yang, Gaya and chances.
+# Quests rekawice, yohara_mapy3, yohara_mapy4, przebudzeni_bossowie, szata_aury and angmur open the windows instead of
+# crafting in the talk; Seon-Pyeong's (20091) rows the core makes from the elite refine sets (server-patches/gaya),
+# so he may have none here. Mistrz Chi, the altar and Angmur must have no recipe before; the last cube step.
+# cube_improve.txt: the window's chance-raising items (vnum, bonus, category) - read by the core (server-patches/gaya).
+COPY cube_improve.txt /opt/metin2/share/locale/poland/cube_improve.txt
 COPY cube.npc_okno.txt /tmp/cube-okno/
 RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-okno/cube.npc_okno.txt \
  && ! grep -q 'MT2009_PLUS_NPC_CRAFT_WINDOW_V1' "$C" \
- && ! grep -q -E '^npc[[:blank:]]+(20823|20850)[[:space:]]*$' "$C" \
+ && ! grep -q -E '^npc[[:blank:]]+(20823|20850|20378|20812|20091)[[:space:]]*$' "$C" \
  && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
  && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
  && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
  && cat "$A" >> "$C" \
- && test "$n" -eq 25 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$n" -eq 49 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^npc[[:blank:]]+(20378|20812)[[:space:]]*$' "$C")" -eq 24 \
  && test "$(grep -c -E '^npc[[:blank:]]+20823[[:space:]]*$' "$C")" -eq 21 \
  && test "$(grep -c -E '^npc[[:blank:]]+20850[[:space:]]*$' "$C")" -eq 2 \
  && rm -rf /tmp/cube-okno \
- && echo "share: NPC crafting windows ($n recipes: Mistrz Chi, Tajemniczy Oltarz, Baek-Go; MT2009_PLUS_NPC_CRAFT_WINDOW_V1)"
+ && echo "share: NPC crafting windows ($n recipes: Mistrz Chi, Tajemniczy Oltarz, Baek-Go, Admiral Angmur; MT2009_PLUS_NPC_CRAFT_WINDOW_V1)"
 
 # MT2009_PLUS_YOHARA_CRACK_V1 (share): Statua Szczeliny Czasu and the first Time Rift dungeon (the owner, 14 October
 # 2026: only Zaklety Las for now; pl-wiki "Statua Szczeliny Czasu", "Zaklety Las (SZC)", "Erebu (SZC)", the six SZC

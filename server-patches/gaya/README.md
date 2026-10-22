@@ -26,20 +26,26 @@ tam, gdy leżał w oknie, zostawiłby w oknie wskaźnik na usunięty przedmiot.
 Siedem edycji, każda ze swoim znacznikiem. Po `ysets` (edycja „cube set” stoi w jego funkcji `Mt2009YSetsCubeMake`).
 
 `MT2009_PLUS_NPC_CRAFT_WINDOW_V1` (22.10.2026, właściciel: „u każdego NPC z wytwarzaniem ma się otworzyć okno
-i pokazać, co trzeba dać” – jak na serwerach globalnych). Dwanaście edycji (`cube.h`, `cube.cpp`, `cmd_general.cpp`):
+i pokazać, co trzeba dać” – jak na serwerach globalnych). Siedemnaście edycji (`cube.h`, `cube.cpp`, `cmd_general.cpp`):
 
-- lista materiałów okna (`cube m_info`) ma w każdym wierszu po Yang także szansę i Gaya:
-  `materiały/Yang/szansa[/Gaya]` – szansa `30` albo `5-50` (wiersz scalony z receptur +5…+9 – najniższa i najwyższa),
-  Gaya tylko gdy receptura ją bierze; wiersz kowala zestawów: `.../Yang/szansa` (Gaya jest tam materiałem). Stary
-  klient czyta tylko Yang (drugie pole) i resztę pomija;
-- `cube pick <vnum nagrody>` (klient wysyła przed `cube make` – wiersz, który gracz kliknął): `Cube_make` i podgląd
-  Yang biorą najpierw recepturę z tą nagrodą, do której pasują materiały w oknie, inaczej – jak dotąd – pierwszą
-  pasującą. Bez tego receptury o tych samych materiałach (obręcz / kolia / klipsy jednego jadeitu u Mistrza Chi, Pył
-  i Jedwab Wężowy u Statui Węży) dawały zawsze pierwszą z `cube.txt`. Wybór znika przy otwarciu i zamknięciu okna;
-  stary klient go nie wysyła (zachowanie jak dotąd).
+- lista materiałów okna (`cube m_info`): każdy wiersz `materiały/Yang/szansa/Gaya/kategoria` – szansa `30` albo `5-50`
+  (wiersz scalony z receptur +5…+9), Gaya 0 gdy nie trzeba; wiersz kowala zestawów `…/Yang/szansa/0/kategoria`
+  (jego Gaya jest materiałem). Stary klient czyta tylko Yang (drugie pole);
+- `cube pick <vnum nagrody>` (klient przed `cube make`): najpierw receptura z tą nagrodą, do której pasują materiały
+  w oknie, inaczej – jak dotąd – pierwsza pasująca. Receptury o tych samych materiałach (obręcz / kolia / klipsy
+  jednego jadeitu, Pył i Jedwab Wężowy) dawały zawsze pierwszą z `cube.txt`;
+- `cube improve <komórka ekwipunku>` (−1: brak) – przedmiot „Podwyższ szansę”: tabela `locale/cube_improve.txt`
+  (`vnum premia kategoria [npc,npc…]`, czytana przy pierwszym otwarciu okna i `/reload c`); działa na recepturę swojej
+  kategorii (u wskazanych NPC), dodaje premię (do 100%), przy każdej próbie znika jedna sztuka (`Cube_make_window`,
+  `cube make`). Odpowiedź do klienta: `CubeImprove vnum premia kategoria`. Runy Wykuwania (79605–79659) – ich
+  przedmiotów jeszcze nie ma, linie w tabeli są zakomentowane;
+- kategoria receptury: linia `category N` (0 zbroje … 13 alchemia, jak globalne okno) albo z przedmiotu-wyniku;
+- `copy_attr 1` (receptura): wynik dostaje kamienie i bonusy pierwszego przedmiotu receptury (`CopyAllAttrTo`, jak
+  ulepszenie) – Admirał Angmur (`game/cube.npc_okno.txt`); Seon-Pyeong (20091): jego wiersze rdzeń robi sam z zestawów
+  ulepszeń elitarnych (`IsEliteRefine`: przedmiot +9, materiały, Yang i szansa receptury, przedmiot po ulepszeniu),
+  przy pierwszym otwarciu okna (i po `/reload c`) – te same kroki, co przeciągnięcie przedmiotu na niego.
 
-Klient: `client-patches/client-2.0.30/root/game.py`, `uicube.py` (ten sam znacznik) – dymek wiersza: Yang, Gaya,
-szansa; kliknięcie wiersza go wybiera (komunikat na czacie, Yang w polu okna). Receptury: `game/cube.npc_okno.txt`.
+Klient: `client-patches/client-2.0.30/root/game.py`, `uicube.py`, `uicubeokno.py` (ten sam znacznik).
 
 Linux/VPS: `python3 apply_gaya.py <game/src>`; Windows: `Apply-GayaPatch.ps1 -SourceDir <game/src>` (wołane przez
 `tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `cube.h`, `cube.cpp`, `cmd_general.cpp`.
