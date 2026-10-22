@@ -101,7 +101,9 @@ namespace
 	{
 		if (!ch || vnum == 0 || IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			return 0;
-		return std::max(GetPlayerBotBeltMaterialKeep(ch, vnum), GetPlayerBotTalismanMaterialKeep(ch, vnum));
+		// MT2009_PLUS_BOT_YOHARA_CHI_V1: and a Champion's for its orders at Mistrz Chi and the smith of Dongan
+		return std::max(std::max(GetPlayerBotBeltMaterialKeep(ch, vnum), GetPlayerBotTalismanMaterialKeep(ch, vnum)),
+				GetPlayerBotChiMaterialKeep(ch, vnum));
 	}
 
 	// Not the merchant's and not the counter's: the talisman worn best or worked on, and the
@@ -122,13 +124,19 @@ namespace
 
 	bool WantsPlayerBotCraftOffer(LPCHARACTER ch, LPITEM offer)
 	{
-		if (!ch || !offer || IsPlayerBotSidekickPID(ch->GetPlayerID()) || IsPlayerBotWorkshopOff())
+		if (!ch || !offer || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return false;
+		if (WantsPlayerBotChiOffer(ch, offer))	// MT2009_PLUS_BOT_YOHARA_CHI_V1
+			return true;
+		if (IsPlayerBotWorkshopOff())
 			return false;
 		return WantsPlayerBotBeltOffer(ch, offer) || WantsPlayerBotTalismanOffer(ch, offer);
 	}
 
 	bool CanPlayerBotPayForCraftOffer(LPCHARACTER ch, LPITEM offer, long long price)
 	{
+		if (WantsPlayerBotChiOffer(ch, offer))	// MT2009_PLUS_BOT_YOHARA_CHI_V1
+			return CanPlayerBotPayForChiOffer(ch, offer, price);
 		if (WantsPlayerBotBeltOffer(ch, offer) && CanPlayerBotPayForBeltOffer(ch, offer, price))
 			return true;
 		return WantsPlayerBotTalismanOffer(ch, offer) && CanPlayerBotPayForTalismanOffer(ch, offer, price);
@@ -139,8 +147,11 @@ namespace
 	long long CollectPlayerBotCraftMissing(LPCHARACTER ch, std::map<DWORD, int>& missing, long long budget)
 	{
 		missing.clear();
-		if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()) || IsPlayerBotWorkshopOff())
+		if (!ch || IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			return 0;
+		CollectPlayerBotChiMissing(ch, missing);	// MT2009_PLUS_BOT_YOHARA_CHI_V1
+		if (IsPlayerBotWorkshopOff())
+			return budget * 40 / 100;
 		CollectPlayerBotBeltMissing(ch, missing);
 		CollectPlayerBotTalismanMissing(ch, missing);
 		return budget * 40 / 100;
@@ -166,6 +177,7 @@ namespace
 	{
 		NotePlayerBotBeltBought(ch, vnum, price);
 		NotePlayerBotTalismanBought(ch, vnum, price);
+		NotePlayerBotChiBought(ch, vnum, price);	// MT2009_PLUS_BOT_YOHARA_CHI_V1
 	}
 
 	// ---- the errand -----------------------------------------------------------------------
