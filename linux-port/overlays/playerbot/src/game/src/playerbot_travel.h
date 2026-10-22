@@ -1844,8 +1844,7 @@ namespace
 		// written down (playerbot_ochao_bots.h).
 		// MT2009_PLUS_AREZZO_BOTS_V1 (route): the Arezzo maps and dungeons and
 		// the Blue Dragon's lair take no bot but the operator's test cohorts,
-		// the Las only through the temple's Portal, and each Arezzo map is
-		// left by its Teleporter (playerbot_arezzo_bots.h).
+		// and each Arezzo map is left by its Teleporter (playerbot_arezzo_bots.h).
 		{
 			const int arezzo = RoutePlayerBotArezzoTransition(ch, state, targetMap, targetX, targetY, dwNow, reason);
 			if (arezzo == 0 && !s_szPlayerBotTransitionRefusal)
@@ -2128,8 +2127,7 @@ namespace
 			return true;
 		// MT2009_PLUS_AREZZO_BOTS_V1 (fee): the Arezzo maps' Teleporters.
 		if ((x == PLAYERBOT_AREZZO_CYCLOPS_EXIT_X && y == PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y) ||
-				(x == PLAYERBOT_AREZZO_PHARAOH_EXIT_X && y == PLAYERBOT_AREZZO_PHARAOH_EXIT_Y) ||
-				(x == PLAYERBOT_AREZZO_FOREST_EXIT_X && y == PLAYERBOT_AREZZO_FOREST_EXIT_Y))
+				(x == PLAYERBOT_AREZZO_PHARAOH_EXIT_X && y == PLAYERBOT_AREZZO_PHARAOH_EXIT_Y))
 			return true;
 		if ((x == PLAYERBOT_M1_TELEPORTER_X && y == PLAYERBOT_M1_TELEPORTER_Y) ||
 				(x == PLAYERBOT_M2_TO_M3_TELEPORTER_X && y == PLAYERBOT_M2_TO_M3_TELEPORTER_Y))
@@ -3064,8 +3062,7 @@ namespace
 		}
 
 		// MT2009_PLUS_AREZZO_BOTS_V1 (travel): an Arezzo map closing under the
-		// bot, and the way into the Las through the temple's Guardian and his
-		// Portal.
+		// bot.
 		{
 			const int arezzo = ManagePlayerBotArezzoTravel(ch, state, dwNow);
 			if (arezzo >= 0)
@@ -3612,14 +3609,12 @@ namespace
 			// emergency may send the bot home again.
 			// MT2009_PLUS_OCHAO_BOTS_V1 (stay): the temple is a long way in and out,
 			// so only what stops the fight takes a bot out of it sooner.
-			// MT2009_PLUS_AREZZO_BOTS_V1 (stay): and the Las, reached the same way.
 			// MT2009_PLUS_SIDEKICK_PLAN_V1: a companion on its plan's ground
 			// hunts PLAYERBOT_SIDEKICK_PLAN_SETTLE_MS before a need that does not
 			// stop the fight takes it to town.
 			const bool settledIn = stayed >= std::max<DWORD>(GetPlayerBotSidekickPlanSettleMs(ch),
 					mapIndex == PLAYERBOT_MAP_OCHAO
-					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : (mapIndex == PLAYERBOT_MAP_AREZZO_FOREST
-						? PLAYERBOT_AREZZO_FOREST_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME));
+					? PLAYERBOT_OCHAO_MIN_VISIT_TIME : PLAYERBOT_FRONTIER_MIN_VISIT_TIME);
 			// Outgrowing the map matters as much as running out of potions: neither
 			// Orc Valley nor the Desert has a merchant, a blacksmith or a trainer.
 			const bool outOfBand = GetPlayerBotFrontierMapForLevel(ch) != mapIndex;

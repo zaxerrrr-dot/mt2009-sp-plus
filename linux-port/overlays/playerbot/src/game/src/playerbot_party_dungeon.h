@@ -122,7 +122,7 @@ namespace
 		{ 363, 64, 2560 + 292, 6656 + 1452 },	// biblioteka_wiedzy
 		{ 364, 65, 5537, 1450 },		// wzgorze_wukonga
 		{ 365, 62, 5989, 7058 },		// ruiny_skorpiona
-		{ 366, 362, 3783, 3954 },		// starozytna_dzungla (the Las)
+		{ 366, 209, 8448 + 92, 14080 + 80 },	// starozytna_dzungla (MT2009_PLUS_YOHARA_ZAKLETY_V1: the Temple of Ochao, its guard's side)
 		{ 158, 64, 2848, 8096 },		// ruiny_atlantydy (MT2009_PLUS_ATLANTYDA_V1: Orc Valley, Mag Atlantydy)
 		{ 358, 358, 3332, 14310 },		// zodiac_temples (MT2009_PLUS_ZODIAC_BOTS_V1: the temple's courtyard, its own way out)
 	};

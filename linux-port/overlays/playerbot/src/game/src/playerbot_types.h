@@ -4100,14 +4100,13 @@ namespace
 	// cohorts go there for now (playerbot_arezzo_bots.h, the test hook
 	// "playerbot_arezzo_test"); every other bot's frontier is as before, and
 	// TransitionPlayerBotMap refuses the rest. Dolina Cyklopow (360) and
-	// Pustkowie Faraona (361) are on the Teleporter's first page; Zaczarowany
-	// Las (362) is reached only through the Temple of Ochao, by Straznik
-	// En-Tai's Portal. Each arrival is the map's Town.txt, each exit its
+	// Pustkowie Faraona (361) are on the Teleporter's first page
+	// (MT2009_PLUS_YOHARA_ZAKLETY_V1: the third, Zaczarowany Las - 362, through
+	// the Temple of Ochao - is gone). Each arrival is the map's Town.txt, each exit its
 	// Teleporter (npc.txt 9012), both cell centres with open ground all round,
 	// measured on the map's server_attr by tools/arezzo_bot_map.py.
 	const long PLAYERBOT_MAP_AREZZO_CYCLOPS = 360;	// metin2_map_exp
 	const long PLAYERBOT_MAP_AREZZO_PHARAOH = 361;	// metin2_map_pustynia
-	const long PLAYERBOT_MAP_AREZZO_FOREST = 362;	// natural_map
 	const long PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X = 265050;
 	const long PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y = 305150;
 	const long PLAYERBOT_AREZZO_CYCLOPS_EXIT_X = 265450;
@@ -4116,32 +4115,22 @@ namespace
 	const long PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y = 394050;
 	const long PLAYERBOT_AREZZO_PHARAOH_EXIT_X = 241350;
 	const long PLAYERBOT_AREZZO_PHARAOH_EXIT_Y = 394350;
-	// The Las: the quest's portal lands at cell (459,106) = (378700,394600).
-	const long PLAYERBOT_AREZZO_FOREST_ARRIVAL_X = 378750;
-	const long PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y = 394650;
-	const long PLAYERBOT_AREZZO_FOREST_EXIT_X = 379150;
-	const long PLAYERBOT_AREZZO_FOREST_EXIT_Y = 394950;
-	// Three under the weakest monster of each (9601 of 43, 9680 of 53) and the
-	// Temple of Ochao's door for the Las.
+	// Three under the weakest monster of each (9601 of 43, 9680 of 53).
 	const BYTE PLAYERBOT_AREZZO_CYCLOPS_MIN_LEVEL = 40;
 	const BYTE PLAYERBOT_AREZZO_PHARAOH_MIN_LEVEL = 50;
-	const BYTE PLAYERBOT_AREZZO_FOREST_MIN_LEVEL = PLAYERBOT_OCHAO_MIN_LEVEL;
 	// MT2009_PLUS_PROGRESSION_V2: and the owner's upper limits (1 October):
-	// the Cyclops to 50, the Pharaoh to 65, the temple and the Las to 120.
+	// the Cyclops to 50, the Pharaoh to 65, the temple to 120.
 	const BYTE PLAYERBOT_AREZZO_CYCLOPS_MAX_LEVEL = 50;
 	const BYTE PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL = 65;
 	const BYTE PLAYERBOT_OCHAO_MAX_LEVEL = 120;
-	const BYTE PLAYERBOT_AREZZO_FOREST_MAX_LEVEL = PLAYERBOT_OCHAO_MAX_LEVEL;
 	BYTE GetPlayerBotArezzoMaxLevel(long mapIndex)
 	{
 		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS ? PLAYERBOT_AREZZO_CYCLOPS_MAX_LEVEL
-				: mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH ? PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL
-				: PLAYERBOT_AREZZO_FOREST_MAX_LEVEL;
+				: PLAYERBOT_AREZZO_PHARAOH_MAX_LEVEL;
 	}
 	bool IsPlayerBotArezzoMap(long mapIndex)
 	{
-		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS || mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH ||
-				mapIndex == PLAYERBOT_MAP_AREZZO_FOREST;
+		return mapIndex == PLAYERBOT_MAP_AREZZO_CYCLOPS || mapIndex == PLAYERBOT_MAP_AREZZO_PHARAOH;
 	}
 	// The places no bot may be taken to but by the Arezzo test: the Arezzo
 	// maps and dungeons (360-366 and their instances) and the Blue Dragon's
@@ -4242,7 +4231,6 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_ARRIVAL_X; outY = PLAYERBOT_OCHAO_ARRIVAL_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_X; outY = PLAYERBOT_AREZZO_CYCLOPS_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_X; outY = PLAYERBOT_AREZZO_PHARAOH_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
-			case PLAYERBOT_MAP_AREZZO_FOREST: outX = PLAYERBOT_AREZZO_FOREST_ARRIVAL_X; outY = PLAYERBOT_AREZZO_FOREST_ARRIVAL_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return false;
 		}
 	}
@@ -4266,7 +4254,6 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: outX = PLAYERBOT_OCHAO_EXIT_X; outY = PLAYERBOT_OCHAO_EXIT_Y; return true; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: outX = PLAYERBOT_AREZZO_CYCLOPS_EXIT_X; outY = PLAYERBOT_AREZZO_CYCLOPS_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: outX = PLAYERBOT_AREZZO_PHARAOH_EXIT_X; outY = PLAYERBOT_AREZZO_PHARAOH_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
-			case PLAYERBOT_MAP_AREZZO_FOREST: outX = PLAYERBOT_AREZZO_FOREST_EXIT_X; outY = PLAYERBOT_AREZZO_FOREST_EXIT_Y; return true; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return false;
 		}
 	}
@@ -4320,7 +4307,6 @@ namespace
 			case PLAYERBOT_MAP_OCHAO: return "ochao"; // MT2009_PLUS_OCHAO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_CYCLOPS: return "arezzo_cyclops"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "arezzo_pharaoh"; // MT2009_PLUS_AREZZO_BOTS_V1
-			case PLAYERBOT_MAP_AREZZO_FOREST: return "arezzo_forest"; // MT2009_PLUS_AREZZO_BOTS_V1
 			default: return "frontier";
 		}
 	}

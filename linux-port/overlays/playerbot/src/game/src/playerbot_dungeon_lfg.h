@@ -63,7 +63,7 @@
 // since MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (m2-render-config), so each is
 // answered; the Jungle is waited for at the Temple of Ochao's gate, where the
 // panel puts a person (a bot of its level gets in as the Guardian's warp puts
-// one), and the person takes it through the temple and the Las to the guard.
+// one), and the guard stands right there (MT2009_PLUS_YOHARA_ZAKLETY_V1: in the temple, not in the Arezzo forest).
 // An entrance on a map this core does not host, or on an Arezzo map - where a
 // bot on its own may only go by the operator's own routes - is answered by
 // nobody.
