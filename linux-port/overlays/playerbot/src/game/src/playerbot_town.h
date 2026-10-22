@@ -1871,7 +1871,9 @@ namespace
 				});
 				const int perStone = GetPlayerBotSoulStoneGrade(it->first) + 1;
 				const long long unitCost = (long long)perStone * PLAYERBOT_MAGIC_DUST_FEE;
-				int keep = PLAYERBOT_SOUL_STONE_STALL_KEEP;
+				// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: none kept for the counter
+				// any more - a +0..+2 is never a counter line, all of it is dust.
+				int keep = 0;
 				for (size_t i = 0; i < stacks.size(); ++i)
 				{
 					const int count = std::max<int>(1, (int)stacks[i]->GetCount());
@@ -5333,13 +5335,10 @@ namespace
 			// counter's surplus while the market has room (playerbot_stone4.h).
 			if (IsPlayerBotStone4HeldBack(ch, item))
 				return -1;
-#if defined(PLAYERBOT_ENGINE_MT2009)
-			if (IsPlayerBotSoulStoneVnum(item->GetVnum()) &&
-					GetPlayerBotSoulStoneGrade(item->GetVnum()) <= PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE)
-				return PlayerBotGoods(PLAYERBOT_SHOP_LOW_SOUL_STONE_SCORE +
-						GetPlayerBotSoulStoneGrade(item->GetVnum()) * 5, per::GOODS_SOUL_STONE_LOW_MARKET,
-						GetPlayerBotSoulStoneGrade(item->GetVnum()), GetPlayerBotSoulStoneKind(item->GetVnum()));
-#endif
+			// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a +0..+2 is no counter's
+			// goods at all - the Alchemist turns every one into dust.
+			if (IsPlayerBotDustGradeSoulStone(item->GetVnum()))
+				return -1;
 			return PlayerBotGoods(700 + GetPlayerBotSoulStoneGrade(item->GetVnum()) * 100, per::GOODS_SOUL_STONE,
 					GetPlayerBotSoulStoneGrade(item->GetVnum()), GetPlayerBotSoulStoneKind(item->GetVnum()));
 		}

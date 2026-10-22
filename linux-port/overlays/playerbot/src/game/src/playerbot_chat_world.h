@@ -358,7 +358,8 @@ namespace
 				continue;
 			const BYTE type = item->GetType();
 			if (((type == ITEM_WEAPON || type == ITEM_ARMOR) && item->GetRefineLevel() >= 4) || type == ITEM_SKILLBOOK ||
-					type == ITEM_METIN || (type == ITEM_MATERIAL && item->GetCount() >= 3))
+					(type == ITEM_METIN && !IsPlayerBotDustGradeSoulStone(item->GetVnum())) ||	// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a +0..+2 is the Alchemist's dust
+					(type == ITEM_MATERIAL && item->GetCount() >= 3))
 				goods.push_back(item);
 		}
 		if (goods.empty())

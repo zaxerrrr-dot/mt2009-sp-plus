@@ -1049,7 +1049,17 @@ namespace {
             // MT2009_PLUS_DIGI_STACK_V1: nor a soul stone line of more than one
             // stone (they stack to 200 now; a buyer takes one for a socket) - it
             // comes home to go up a stone at a time.
+            // MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a +3 and up goes up as a stack
+            // now (IsPlayerBotSoulStoneStackLine) and stays; a +0..+2 comes home
+            // whatever its count - the Alchemist's dust, never a counter line.
+            if (preview->GetType() == ITEM_METIN && IsPlayerBotDustGradeSoulStone(preview->GetVnum()) &&
+                    GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
+                if (!unwanted) { unwanted = id; reason = "soul_stone_dust"; }
+                M2_DELETE(preview);
+                continue;
+            }
             if (preview->GetType() == ITEM_METIN && (int)preview->GetCount() > 1 &&
+                    !IsPlayerBotSoulStoneStackLine(preview) &&
                     GetPlayerBotItemPolicy(preview) != PLAYERBOT_ITEM_POLICY_STALL) {
                 if (!unwanted) { unwanted = id; reason = "soul_stone_stack"; }
                 M2_DELETE(preview);
@@ -2205,6 +2215,43 @@ namespace {
             sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u keep=%d kind=%u total=%d",
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount(), keep,
                 (unsigned int)(GetPlayerBotStallKindKey(item) & 0x7fffffffU), total);
+            return to;
+        }
+        // MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a soul stone of +3 and up goes up
+        // as the stack it is (up to its 200), priced a stone times the count as
+        // every stack is (GetPlayerBotShopAskingPriceRaw); the buyers take one
+        // off it (PlayerBotPartBuyCount). A +4 no further than the world's
+        // counters' room for the kind (STONE4_MARKET_*, none at the default 0),
+        // and no line dearer than a counter takes (PLAYERBOT_GOLD_MAX) - cut
+        // so, the rest stays in the bag for the next line.
+        if (IsPlayerBotSoulStoneStackLine(item)) {
+            const int count = std::max<int>(1, (int)item->GetCount());
+            int take = std::min(count, std::max(1, units));
+            if (IsPlayerBotStone4Vnum(item->GetVnum()) && IsPlayerBotStone4On())
+                take = std::min(take, GetPlayerBotStone4MarketRoom(item->GetVnum()));
+            {
+                // The asking price of one stone, doubled for the kind's
+                // markup (GetPlayerBotListingPrice) and the slip. A look that
+                // moves no price memory (as the panel's market export's).
+                const bool wasReadOnly = s_bPlayerBotAskStepReadOnly;
+                s_bPlayerBotAskStepReadOnly = true;
+                const long long unit = std::max<long long>(1, (long long)GetPlayerBotShopAskingPrice(item) / count);
+                s_bPlayerBotAskStepReadOnly = wasReadOnly;
+                const long long room = (long long)PLAYERBOT_GOLD_MAX - 1 - (shop ? (long long)shop->GetTotalYangValue() : 0LL);
+                const long long fits = room > 0 ? room / (unit * 2) : 0;
+                if (fits < take)
+                    take = (int)std::max<long long>(0, fits);
+            }
+            cutNote.shape = per::SHAPE_NATURAL_LINE;
+            cutNote.keep = 0;
+            if (take <= 0) return -1;
+            if (take >= count) { cutNote.from = 0; return cell; }
+            if (CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_SHOP_SPLIT_KEEP_FREE_CELLS) return -1;
+            const int to = ch->GetEmptyInventory(item->GetSize());
+            if (to < 0 || !ch->MoveItem(TItemPos(INVENTORY, cell), TItemPos(INVENTORY, (WORD)to), take))
+                return -1;
+            sys_log(0, "PLAYERBOT_OFFLINE: cut a line pid=%u name=%s vnum=%u units=%d left=%u soul_stone_stack=1",
+                ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
         // MT2009_PLUS_DIGI_STACK_V1: a soul stone (a stack of up to 200 now)
