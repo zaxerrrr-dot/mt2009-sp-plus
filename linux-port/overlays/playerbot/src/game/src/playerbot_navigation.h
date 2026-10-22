@@ -186,6 +186,39 @@ namespace
 	// budget still applies.
 	bool s_bPlayerBotNavPortalPlan = false;
 
+	// MT2009_PLUS_BOT_NAV_SHARED_SCRATCH_V1: the working arrays of a path search
+	// (the cell stamps, g-costs and parents of the fine A*/BFS, ten bytes a cell,
+	// and the same for the abstract region search) used to sit in every map's
+	// grid - 94 MB on each 3072x3072 map, idle whenever another map planned. The
+	// core is single-threaded and plans one route at a time, so every map now
+	// shares one set, grown on demand to the largest grid that has searched.
+	// What a map owns stays its own: walkability, water, clearance, component
+	// and region ids (PLAYERBOT_NAV_GRID_BYTES_PER_CELL) and the HPA graph.
+	// The stamps are global too, so a stamp left by another map's search never
+	// matches the running one.
+	const unsigned int PLAYERBOT_NAV_GRID_BYTES_PER_CELL = 11;
+	const unsigned int PLAYERBOT_NAV_SCRATCH_BYTES_PER_CELL = 10;
+	// A grid (or a scratch growth) that did not fit in the 32-bit address space
+	// is not retried before this: the map's bots walk without route planning.
+	const DWORD PLAYERBOT_NAV_NOGRID_RETRY_MS = 10 * 60 * 1000;
+	struct TPlayerBotNavScratch
+	{
+		std::vector<uint16_t> nodeToken;
+		std::vector<int> nodeCost;
+		std::vector<int> parent;
+		uint16_t searchToken;
+		std::vector<DWORD> regionToken;
+		std::vector<int> regionCost;
+		std::vector<int> regionParent;
+		std::vector<int> regionParentEdge;
+		DWORD regionSearchToken;
+		// Set while a search runs: a search started from inside another one
+		// would overwrite its stamps, so it is refused instead (none does today).
+		bool bBusy;
+		bool bReentryLogged;
+	};
+	TPlayerBotNavScratch s_playerBotNavScratch = TPlayerBotNavScratch();
+
 	enum EPlayerBotNavPlanResult
 	{
 		PLAYERBOT_NAV_PLAN_FOUND,
@@ -293,9 +326,7 @@ namespace
 				m_baseX(0),
 				m_baseY(0),
 				m_width(0),
-				m_height(0),
-				m_searchToken(0),
-				m_regionSearchToken(0)
+				m_height(0)
 			{
 			}
 
@@ -339,6 +370,10 @@ namespace
 
 				if (m_initialized && m_mapIndex == mapIndex)
 					return true;
+				// MT2009_PLUS_BOT_NAV_SHARED_SCRATCH_V1: a grid that did not fit is not
+				// retried on every call - its bots walk without route planning for a while.
+				if (m_dwNavOffUntil && (long)(get_dword_time() - m_dwNavOffUntil) < 0)
+					return false;
 
 				LPSECTREE_MAP map = SECTREE_MANAGER::instance().GetMap(mapIndex);
 				if (!map)
@@ -358,72 +393,71 @@ namespace
 				const size_t cellCount = (size_t)m_width * (size_t)m_height;
 				// MT2009_PLUS_NAV_GRID_NOMEM_V1: the 32-bit core runs close to its
 				// address-space limit; a failed grid allocation must not abort it.
+				// MT2009_PLUS_BOT_NAV_SHARED_SCRATCH_V1: the whole build is guarded now,
+				// not only the first four arrays - the components, the HPA regions and
+				// their temporary queues allocate too, and any of them used to abort.
+				size_t walkableCount = 0;
+				DWORD componentCount = 0;
+				DWORD abstractRegionCount = 0;
 				try
 				{
 					m_blocked.assign(cellCount, 1);
 					m_water.assign(cellCount, 0);
 					m_clearance.assign(cellCount, 0);
 					m_component.assign(cellCount, 0);
+
+					for (int gy = 0; gy < m_height; ++gy)
+					{
+						for (int gx = 0; gx < m_width; ++gx)
+						{
+							bool blocked = false;
+							bool wet = false;
+							const long cellX = m_baseX + gx * PLAYERBOT_NAV_CELL;
+							const long cellY = m_baseY + gy * PLAYERBOT_NAV_CELL;
+
+							// A planning cell is safe only if every native 50x50 cell
+							// inside it is safe.  This prevents thin walls and shorelines
+							// from disappearing through downsampling.
+							for (int oy = PLAYERBOT_NAV_NATIVE_SAMPLE / 2;
+									oy < PLAYERBOT_NAV_CELL && !blocked;
+									oy += PLAYERBOT_NAV_NATIVE_SAMPLE)
+							{
+								for (int ox = PLAYERBOT_NAV_NATIVE_SAMPLE / 2;
+										ox < PLAYERBOT_NAV_CELL;
+										ox += PLAYERBOT_NAV_NATIVE_SAMPLE)
+								{
+									if (IsPlayerBotPositionBlocked(mapIndex, cellX + ox, cellY + oy))
+									{
+										blocked = true;
+										break;
+									}
+									if (IsPlayerBotPositionWater(mapIndex, cellX + ox, cellY + oy))
+										wet = true;
+								}
+							}
+
+							const int index = Index(gx, gy);
+							m_blocked[index] = blocked ? 1 : 0;
+							m_water[index] = (!blocked && wet) ? 1 : 0;
+							if (!blocked)
+								++walkableCount;
+						}
+					}
+					m_walkableCells = (DWORD)walkableCount;
+
+					BuildClearance();
+					componentCount = BuildComponents();
+					abstractRegionCount = BuildAbstractRegions();
 				}
 				catch (const std::bad_alloc&)
 				{
-					std::vector<BYTE>().swap(m_blocked);
-					std::vector<BYTE>().swap(m_water);
-					std::vector<BYTE>().swap(m_clearance);
-					m_component.clear(); m_component.shrink_to_fit();
+					ReleaseGrid();
 					m_mapIndex = 0;
-					sys_err("PLAYERBOT_NAV: grid allocation failed map=%ld cells=%u", mapIndex, (unsigned)cellCount);
+					OnNavAllocFailed(mapIndex, (unsigned long long)cellCount * PLAYERBOT_NAV_GRID_BYTES_PER_CELL,
+							"grid");
 					return false;
 				}
-
-				size_t walkableCount = 0;
-				for (int gy = 0; gy < m_height; ++gy)
-				{
-					for (int gx = 0; gx < m_width; ++gx)
-					{
-						bool blocked = false;
-						bool wet = false;
-						const long cellX = m_baseX + gx * PLAYERBOT_NAV_CELL;
-						const long cellY = m_baseY + gy * PLAYERBOT_NAV_CELL;
-
-						// A planning cell is safe only if every native 50x50 cell
-						// inside it is safe.  This prevents thin walls and shorelines
-						// from disappearing through downsampling.
-						for (int oy = PLAYERBOT_NAV_NATIVE_SAMPLE / 2;
-								oy < PLAYERBOT_NAV_CELL && !blocked;
-								oy += PLAYERBOT_NAV_NATIVE_SAMPLE)
-						{
-							for (int ox = PLAYERBOT_NAV_NATIVE_SAMPLE / 2;
-									ox < PLAYERBOT_NAV_CELL;
-									ox += PLAYERBOT_NAV_NATIVE_SAMPLE)
-							{
-								if (IsPlayerBotPositionBlocked(mapIndex, cellX + ox, cellY + oy))
-								{
-									blocked = true;
-									break;
-								}
-								if (IsPlayerBotPositionWater(mapIndex, cellX + ox, cellY + oy))
-									wet = true;
-							}
-						}
-
-						const int index = Index(gx, gy);
-						m_blocked[index] = blocked ? 1 : 0;
-						m_water[index] = (!blocked && wet) ? 1 : 0;
-						if (!blocked)
-							++walkableCount;
-					}
-				}
-				m_walkableCells = (DWORD)walkableCount;
-
-				BuildClearance();
-				const DWORD componentCount = BuildComponents();
-
-				m_nodeToken.assign(cellCount, 0);
-				m_nodeCost.assign(cellCount, 0);
-				m_parent.assign(cellCount, -1);
-				m_searchToken = 0;
-				const DWORD abstractRegionCount = BuildAbstractRegions();
+				m_dwNavOffUntil = 0;
 				m_initialized = true;
 
 				sys_log(0, "PLAYERBOT_NAV: initialized map=%ld base=(%ld,%ld) grid=%dx%d cell=%d walkable=%u components=%u abstract_regions=%u",
@@ -913,11 +947,11 @@ namespace
 #if 0
 				// Retired fine-grid A*.  Kept temporarily beside the HPA rollout so a
 				// runtime comparison can be made without restoring an old source file.
-				++m_searchToken;
-				if (m_searchToken == 0)
+				++s_playerBotNavScratch.searchToken;
+				if (s_playerBotNavScratch.searchToken == 0)
 				{
-					std::fill(m_nodeToken.begin(), m_nodeToken.end(), 0);
-					m_searchToken = 1;
+					std::fill(s_playerBotNavScratch.nodeToken.begin(), s_playerBotNavScratch.nodeToken.end(), 0);
+					s_playerBotNavScratch.searchToken = 1;
 				}
 
 				struct TOpenNode
@@ -939,9 +973,9 @@ namespace
 				};
 
 				std::priority_queue<TOpenNode, std::vector<TOpenNode>, TOpenNodeGreater> open;
-				m_nodeToken[startIndex] = m_searchToken;
-				m_nodeCost[startIndex] = 0;
-				m_parent[startIndex] = -1;
+				s_playerBotNavScratch.nodeToken[startIndex] = s_playerBotNavScratch.searchToken;
+				s_playerBotNavScratch.nodeCost[startIndex] = 0;
+				s_playerBotNavScratch.parent[startIndex] = -1;
 				TOpenNode first;
 				first.g = 0;
 				// Weighted A*: terrain safety is binary and revalidated later, so a
@@ -964,7 +998,7 @@ namespace
 					const TOpenNode current = open.top();
 					open.pop();
 					const int currentIndex = Index(current.x, current.y);
-					if (m_nodeToken[currentIndex] != m_searchToken || current.g != m_nodeCost[currentIndex])
+					if (s_playerBotNavScratch.nodeToken[currentIndex] != s_playerBotNavScratch.searchToken || current.g != s_playerBotNavScratch.nodeCost[currentIndex])
 						continue;
 					++expanded;
 
@@ -1003,12 +1037,12 @@ namespace
 						const int newCost = current.g + moveCost[direction] + wallPenalty +
 								waterPenalty + laneJitter;
 
-						if (m_nodeToken[nextIndex] == m_searchToken && newCost >= m_nodeCost[nextIndex])
+						if (s_playerBotNavScratch.nodeToken[nextIndex] == s_playerBotNavScratch.searchToken && newCost >= s_playerBotNavScratch.nodeCost[nextIndex])
 							continue;
 
-						m_nodeToken[nextIndex] = m_searchToken;
-						m_nodeCost[nextIndex] = newCost;
-						m_parent[nextIndex] = currentIndex;
+						s_playerBotNavScratch.nodeToken[nextIndex] = s_playerBotNavScratch.searchToken;
+						s_playerBotNavScratch.nodeCost[nextIndex] = newCost;
+						s_playerBotNavScratch.parent[nextIndex] = currentIndex;
 
 						TOpenNode next;
 						next.g = newCost;
@@ -1039,7 +1073,7 @@ namespace
 					rawPath.push_back(cursor);
 					if (cursor == startIndex)
 						break;
-					cursor = m_parent[cursor];
+					cursor = s_playerBotNavScratch.parent[cursor];
 				}
 				if (rawPath.empty() || rawPath.back() != startIndex)
 					return PLAYERBOT_NAV_PLAN_UNREACHABLE;
@@ -1536,23 +1570,18 @@ namespace
 					}
 				}
 
-				m_regionToken.assign(m_regions.size(), 0);
-				m_regionCost.assign(m_regions.size(), 0);
-				m_regionParent.assign(m_regions.size(), -1);
-				m_regionParentEdge.assign(m_regions.size(), -1);
-				m_regionSearchToken = 0;
 				return (DWORD)(m_regions.size() - 1);
 			}
 
 			uint16_t NextCellSearchToken()
 			{
-				++m_searchToken;
-				if (m_searchToken == 0)
+				++s_playerBotNavScratch.searchToken;
+				if (s_playerBotNavScratch.searchToken == 0)
 				{
-					std::fill(m_nodeToken.begin(), m_nodeToken.end(), 0);
-					m_searchToken = 1;
+					std::fill(s_playerBotNavScratch.nodeToken.begin(), s_playerBotNavScratch.nodeToken.end(), 0);
+					s_playerBotNavScratch.searchToken = 1;
 				}
-				return m_searchToken;
+				return s_playerBotNavScratch.searchToken;
 			}
 
 			bool AppendLocalRegionPath(int startCell, int targetCell, DWORD regionID,
@@ -1573,8 +1602,8 @@ namespace
 				std::vector<int> queue;
 				queue.reserve(PLAYERBOT_NAV_CLUSTER_CELLS * PLAYERBOT_NAV_CLUSTER_CELLS);
 				queue.push_back(startCell);
-				m_nodeToken[startCell] = token;
-				m_parent[startCell] = -1;
+				s_playerBotNavScratch.nodeToken[startCell] = token;
+				s_playerBotNavScratch.parent[startCell] = -1;
 
 				const int moveX[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
 				const int moveY[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
@@ -1596,10 +1625,10 @@ namespace
 								 IsBlockedCell(currentX, currentY + moveY[direction])))
 							continue;
 						const int nextCell = Index(nextX, nextY);
-						if (m_cellRegion[nextCell] != regionID || m_nodeToken[nextCell] == token)
+						if (m_cellRegion[nextCell] != regionID || s_playerBotNavScratch.nodeToken[nextCell] == token)
 							continue;
-						m_nodeToken[nextCell] = token;
-						m_parent[nextCell] = queue[head];
+						s_playerBotNavScratch.nodeToken[nextCell] = token;
+						s_playerBotNavScratch.parent[nextCell] = queue[head];
 						queue.push_back(nextCell);
 						if (nextCell == targetCell)
 						{
@@ -1613,7 +1642,7 @@ namespace
 					return false;
 
 				std::vector<int> localPath;
-				for (int cursor = targetCell; cursor >= 0; cursor = m_parent[cursor])
+				for (int cursor = targetCell; cursor >= 0; cursor = s_playerBotNavScratch.parent[cursor])
 				{
 					localPath.push_back(cursor);
 					if (cursor == startCell)
@@ -1676,9 +1705,9 @@ namespace
 				int targetX, targetY;
 				CellFromIndex(targetCell, targetX, targetY);
 				std::priority_queue<TFineOpenNode, std::vector<TFineOpenNode>, TFineOpenGreater> open;
-				m_nodeToken[startCell] = token;
-				m_nodeCost[startCell] = 0;
-				m_parent[startCell] = -1;
+				s_playerBotNavScratch.nodeToken[startCell] = token;
+				s_playerBotNavScratch.nodeCost[startCell] = 0;
+				s_playerBotNavScratch.parent[startCell] = -1;
 				int startX, startY;
 				CellFromIndex(startCell, startX, startY);
 				TFineOpenNode first;
@@ -1701,12 +1730,12 @@ namespace
 				{
 					const TFineOpenNode current = open.top();
 					open.pop();
-					if (m_nodeToken[current.cell] != token || m_nodeCost[current.cell] != current.g)
+					if (s_playerBotNavScratch.nodeToken[current.cell] != token || s_playerBotNavScratch.nodeCost[current.cell] != current.g)
 						continue;
 					// Closed. A negative cost is one no later, cheaper arrival can
 					// beat, so the neighbour test below never reopens the cell, and
 					// the stale test above drops any entry still on the heap for it.
-					m_nodeCost[current.cell] = -current.g - 1;
+					s_playerBotNavScratch.nodeCost[current.cell] = -current.g - 1;
 					++expanded;
 					if (current.cell == targetCell)
 					{
@@ -1749,12 +1778,12 @@ namespace
 						const int laneJitter = (int)(PlayerBotNavHash(seed ^ (DWORD)nextCell) & 1U);
 						const int newCost = current.g + moveCost[direction] + wallPenalty +
 								waterPenalty + laneJitter;
-						if (m_nodeToken[nextCell] == token && newCost >= m_nodeCost[nextCell])
+						if (s_playerBotNavScratch.nodeToken[nextCell] == token && newCost >= s_playerBotNavScratch.nodeCost[nextCell])
 							continue;
 
-						m_nodeToken[nextCell] = token;
-						m_nodeCost[nextCell] = newCost;
-						m_parent[nextCell] = current.cell;
+						s_playerBotNavScratch.nodeToken[nextCell] = token;
+						s_playerBotNavScratch.nodeCost[nextCell] = newCost;
+						s_playerBotNavScratch.parent[nextCell] = current.cell;
 						TFineOpenNode next;
 						next.g = newCost;
 						next.f = newCost + OctileDistance(nextX, nextY, targetX, targetY) * heuristicWeight;
@@ -1778,7 +1807,7 @@ namespace
 					endCell = bestCell;
 					outPartial = true;
 				}
-				for (int cursor = endCell; cursor >= 0; cursor = m_parent[cursor])
+				for (int cursor = endCell; cursor >= 0; cursor = s_playerBotNavScratch.parent[cursor])
 				{
 					path.push_back(cursor);
 					if (cursor == startCell)
@@ -1790,7 +1819,137 @@ namespace
 				return true;
 			}
 
+			// MT2009_PLUS_BOT_NAV_SHARED_SCRATCH_V1: every search goes through here -
+			// the shared scratch is sized for this map, held for the search and
+			// a failed allocation inside it ends the plan, not the core.
 			bool FindHierarchicalRawPath(int startCell, int targetCell, DWORD seed,
+					std::vector<int>& path)
+			{
+				path.clear();
+				if (m_dwNavOffUntil && (long)(get_dword_time() - m_dwNavOffUntil) < 0)
+					return false;
+				TPlayerBotNavScratch& scratch = s_playerBotNavScratch;
+				if (scratch.bBusy)
+				{
+					if (!scratch.bReentryLogged)
+					{
+						scratch.bReentryLogged = true;
+						sys_err("PLAYERBOT_NAV: nested search refused map=%ld (the shared scratch is in use)", m_mapIndex);
+					}
+					return false;
+				}
+				if (!EnsureSharedScratch())
+					return false;
+
+				struct TScratchHold
+				{
+					TPlayerBotNavScratch& r;
+					explicit TScratchHold(TPlayerBotNavScratch& s) : r(s) { r.bBusy = true; }
+					~TScratchHold() { r.bBusy = false; }
+				} hold(scratch);
+				try
+				{
+					return FindHierarchicalRawPathShared(startCell, targetCell, seed, path);
+				}
+				catch (const std::bad_alloc&)
+				{
+					path.clear();
+					std::vector<int>().swap(path);
+					OnNavAllocFailed(m_mapIndex, (unsigned long long)scratch.nodeToken.size() *
+							PLAYERBOT_NAV_SCRATCH_BYTES_PER_CELL, "search");
+					return false;
+				}
+			}
+
+			bool EnsureSharedScratch()
+			{
+				TPlayerBotNavScratch& scratch = s_playerBotNavScratch;
+				const size_t cells = (size_t)m_width * (size_t)m_height;
+				const size_t regions = m_regions.size();
+				if (scratch.nodeToken.size() >= cells && scratch.regionToken.size() >= regions)
+					return true;
+				try
+				{
+					if (scratch.nodeToken.size() < cells)
+					{
+						// Freed before the bigger one is taken: growing in place
+						// would hold both at once, at the worst moment for it.
+						std::vector<uint16_t>().swap(scratch.nodeToken);
+						std::vector<int>().swap(scratch.nodeCost);
+						std::vector<int>().swap(scratch.parent);
+						scratch.searchToken = 0;
+						scratch.nodeToken.assign(cells, 0);
+						scratch.nodeCost.assign(cells, 0);
+						scratch.parent.assign(cells, -1);
+					}
+					if (scratch.regionToken.size() < regions)
+					{
+						std::vector<DWORD>().swap(scratch.regionToken);
+						std::vector<int>().swap(scratch.regionCost);
+						std::vector<int>().swap(scratch.regionParent);
+						std::vector<int>().swap(scratch.regionParentEdge);
+						scratch.regionSearchToken = 0;
+						scratch.regionToken.assign(regions, 0);
+						scratch.regionCost.assign(regions, 0);
+						scratch.regionParent.assign(regions, -1);
+						scratch.regionParentEdge.assign(regions, -1);
+					}
+				}
+				catch (const std::bad_alloc&)
+				{
+					// All of it goes: a smaller map re-grows only what it needs.
+					std::vector<uint16_t>().swap(scratch.nodeToken);
+					std::vector<int>().swap(scratch.nodeCost);
+					std::vector<int>().swap(scratch.parent);
+					std::vector<DWORD>().swap(scratch.regionToken);
+					std::vector<int>().swap(scratch.regionCost);
+					std::vector<int>().swap(scratch.regionParent);
+					std::vector<int>().swap(scratch.regionParentEdge);
+					scratch.searchToken = 0;
+					scratch.regionSearchToken = 0;
+					OnNavAllocFailed(m_mapIndex, (unsigned long long)cells * PLAYERBOT_NAV_SCRATCH_BYTES_PER_CELL +
+							(unsigned long long)regions * 16, "search scratch");
+					return false;
+				}
+				sys_log(0, "PLAYERBOT_NAV: shared search scratch map=%ld cells=%u regions=%u bytes=%llu",
+						m_mapIndex, (unsigned int)scratch.nodeToken.size(), (unsigned int)scratch.regionToken.size(),
+						(unsigned long long)scratch.nodeToken.size() * PLAYERBOT_NAV_SCRATCH_BYTES_PER_CELL +
+						(unsigned long long)scratch.regionToken.size() * 16);
+				return true;
+			}
+
+			void OnNavAllocFailed(long mapIndex, unsigned long long bytes, const char* what)
+			{
+				m_dwNavOffUntil = get_dword_time() + PLAYERBOT_NAV_NOGRID_RETRY_MS;
+				if (!m_dwNavOffUntil)
+					m_dwNavOffUntil = 1;
+				if (!m_bAllocFailLogged)
+				{
+					m_bAllocFailLogged = true;
+					sys_err("PLAYERBOT_NAV: grid allocation failed map=%ld bytes=%llu (%s); no route planning on it for %u min",
+							mapIndex, bytes, what, (unsigned int)(PLAYERBOT_NAV_NOGRID_RETRY_MS / 60000));
+				}
+				else
+					sys_log(1, "PLAYERBOT_NAV: grid allocation failed again map=%ld bytes=%llu (%s)",
+							mapIndex, bytes, what);
+			}
+
+			void ReleaseGrid()
+			{
+				m_initialized = false;
+				std::vector<BYTE>().swap(m_blocked);
+				std::vector<BYTE>().swap(m_water);
+				std::vector<BYTE>().swap(m_clearance);
+				std::vector<DWORD>().swap(m_component);
+				std::vector<DWORD>().swap(m_componentCells);
+				std::vector<DWORD>().swap(m_cellRegion);
+				std::vector<TAbstractRegion>().swap(m_regions);
+				m_routeCache.clear();
+				m_routeCacheCount = 0;
+				m_walkableCells = 0;
+			}
+
+			bool FindHierarchicalRawPathShared(int startCell, int targetCell, DWORD seed,
 					std::vector<int>& path)
 			{
 				path.clear();
@@ -1804,11 +1963,11 @@ namespace
 					return AppendLocalRegionPath(startCell, targetCell, startRegion, seed, path);
 
 				const DWORD abstractStartUs = PlayerBotClockUs();
-				++m_regionSearchToken;
-				if (m_regionSearchToken == 0)
+				++s_playerBotNavScratch.regionSearchToken;
+				if (s_playerBotNavScratch.regionSearchToken == 0)
 				{
-					std::fill(m_regionToken.begin(), m_regionToken.end(), 0);
-					m_regionSearchToken = 1;
+					std::fill(s_playerBotNavScratch.regionToken.begin(), s_playerBotNavScratch.regionToken.end(), 0);
+					s_playerBotNavScratch.regionSearchToken = 1;
 				}
 
 				struct TRegionOpenNode
@@ -1829,10 +1988,10 @@ namespace
 				};
 
 				std::priority_queue<TRegionOpenNode, std::vector<TRegionOpenNode>, TRegionOpenGreater> open;
-				m_regionToken[startRegion] = m_regionSearchToken;
-				m_regionCost[startRegion] = 0;
-				m_regionParent[startRegion] = -1;
-				m_regionParentEdge[startRegion] = -1;
+				s_playerBotNavScratch.regionToken[startRegion] = s_playerBotNavScratch.regionSearchToken;
+				s_playerBotNavScratch.regionCost[startRegion] = 0;
+				s_playerBotNavScratch.regionParent[startRegion] = -1;
+				s_playerBotNavScratch.regionParentEdge[startRegion] = -1;
 				TRegionOpenNode first;
 				first.g = 0;
 				first.f = AbstractHeuristic(startRegion, targetRegion);
@@ -1845,8 +2004,8 @@ namespace
 				{
 					const TRegionOpenNode current = open.top();
 					open.pop();
-					if (m_regionToken[current.region] != m_regionSearchToken ||
-							m_regionCost[current.region] != current.g)
+					if (s_playerBotNavScratch.regionToken[current.region] != s_playerBotNavScratch.regionSearchToken ||
+							s_playerBotNavScratch.regionCost[current.region] != current.g)
 						continue;
 					if (current.region == targetRegion)
 					{
@@ -1860,13 +2019,13 @@ namespace
 						const TAbstractEdge& edge = region.edges[edgeIndex];
 						const int laneJitter = (int)(PlayerBotNavHash(seed ^ (DWORD)edge.fromCell) & 3U);
 						const int newCost = current.g + 10 + laneJitter;
-						if (m_regionToken[edge.toRegion] == m_regionSearchToken &&
-								newCost >= m_regionCost[edge.toRegion])
+						if (s_playerBotNavScratch.regionToken[edge.toRegion] == s_playerBotNavScratch.regionSearchToken &&
+								newCost >= s_playerBotNavScratch.regionCost[edge.toRegion])
 							continue;
-						m_regionToken[edge.toRegion] = m_regionSearchToken;
-						m_regionCost[edge.toRegion] = newCost;
-						m_regionParent[edge.toRegion] = (int)current.region;
-						m_regionParentEdge[edge.toRegion] = (int)edgeIndex;
+						s_playerBotNavScratch.regionToken[edge.toRegion] = s_playerBotNavScratch.regionSearchToken;
+						s_playerBotNavScratch.regionCost[edge.toRegion] = newCost;
+						s_playerBotNavScratch.regionParent[edge.toRegion] = (int)current.region;
+						s_playerBotNavScratch.regionParentEdge[edge.toRegion] = (int)edgeIndex;
 						TRegionOpenNode next;
 						next.g = newCost;
 						next.f = newCost + AbstractHeuristic(edge.toRegion, targetRegion);
@@ -1885,7 +2044,7 @@ namespace
 					corridor.push_back(cursor);
 					if (cursor == startRegion)
 						break;
-					const int parent = m_regionParent[cursor];
+					const int parent = s_playerBotNavScratch.regionParent[cursor];
 					if (parent <= 0)
 						return false;
 					cursor = (DWORD)parent;
@@ -1921,10 +2080,12 @@ namespace
 			// IsPocketComponent measures by.
 			std::vector<DWORD> m_componentCells;
 			DWORD m_walkableCells = 0;
-			std::vector<uint16_t> m_nodeToken;
-			std::vector<int> m_nodeCost;
-			std::vector<int> m_parent;
-			uint16_t m_searchToken;
+			// MT2009_PLUS_BOT_NAV_SHARED_SCRATCH_V1: the search stamps, costs and
+			// parents live in s_playerBotNavScratch, shared by every map.
+			// A grid that could not be allocated (or a search scratch that could
+			// not grow) switches the map's route planning off until this stamp.
+			DWORD m_dwNavOffUntil = 0;
+			bool m_bAllocFailLogged = false;
 			std::vector<DWORD> m_cellRegion;
 			struct TCachedRoute
 			{
@@ -1936,11 +2097,6 @@ namespace
 			std::map<int, std::vector<TCachedRoute> > m_routeCache;
 			size_t m_routeCacheCount = 0;
 			std::vector<TAbstractRegion> m_regions;
-			std::vector<DWORD> m_regionToken;
-			std::vector<int> m_regionCost;
-			std::vector<int> m_regionParent;
-			std::vector<int> m_regionParentEdge;
-			DWORD m_regionSearchToken;
 			// What the last plan spent where, for the far/slow plan line.
 			DWORD m_lastAbstractUs = 0;
 			DWORD m_lastFineUs = 0;
