@@ -803,19 +803,103 @@ namespace
 		return best;
 	}
 
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V2: who called which boss last, and when
+	// each map's kingdom last heard a call. A bot that chose among its map's
+	// hubs used to call every standing boss it weighed, in the same second
+	// (Argos (mrok), Argos (ogien) and Natanan on Dongan: two Argoses are two
+	// mobs, 6706 dark and 6717 fire, the labels are right); now it calls the
+	// one boss it went for, once, and only when it needs the help.
+	struct TPlayerBotBossCaller
+	{
+		long lMap;
+		WORD wRace;
+		DWORD dwAt;
+		TPlayerBotBossCaller() : lMap(0), wRace(0), dwAt(0) {}
+	};
+	std::map<DWORD, TPlayerBotBossCaller> s_mapPlayerBotBossCallers;
+	std::map<std::pair<long, BYTE>, DWORD> s_mapPlayerBotBossMapShoutAt;
+	unsigned int s_uPlayerBotBossCallsHeld = 0;
+
+	bool IsPlayerBotOwnBossCall(LPCHARACTER ch, long lMap, WORD wRace)
+	{
+		if (!ch)
+			return false;
+		std::map<DWORD, TPlayerBotBossCaller>::const_iterator it = s_mapPlayerBotBossCallers.find(ch->GetPlayerID());
+		return it != s_mapPlayerBotBossCallers.end() && it->second.dwAt != 0 &&
+				it->second.lMap == lMap && it->second.wRace == wRace;
+	}
+
+	// Whether this bot may call for this boss now: not while its party has
+	// PLAYERBOT_SUNGMA_PARTY_MIN ready members by it (it has its helpers),
+	// and a boss other than its last call only once that call is over - BOT_GAP_MS
+	// on, or the boss down and BOT_MIN_GAP_MS on. The boss it already
+	// called is its own objective still (the boss's and the map's gaps rule
+	// the shout).
+	bool CanPlayerBotCallForBoss(LPCHARACTER ch, long lMap, WORD wRace, DWORD dwNow)
+	{
+		if (!ch)
+			return false;
+		if (CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR, PLAYERBOT_SUNGMA_PARTY_READY_HP) >=
+				PLAYERBOT_SUNGMA_PARTY_MIN)
+			return false;
+		std::map<DWORD, TPlayerBotBossCaller>::const_iterator it = s_mapPlayerBotBossCallers.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotBossCallers.end() || it->second.dwAt == 0)
+			return true;
+		const TPlayerBotBossCaller& last = it->second;
+		if (last.lMap == lMap && last.wRace == wRace)
+			return true;
+		const DWORD since = dwNow - last.dwAt;
+		if (since >= PLAYERBOT_BOSS_CALL_BOT_GAP_MS)
+			return true;
+		if (since < PLAYERBOT_BOSS_CALL_BOT_MIN_GAP_MS)
+			return false;
+		return FindPlayerBotWorldBoss(last.lMap, last.wRace) == NULL;
+	}
+
+	void NotePlayerBotBossCaller(LPCHARACTER ch, long lMap, WORD wRace, DWORD dwNow)
+	{
+		if (!ch || IsPlayerBotOwnBossCall(ch, lMap, wRace))
+			return;
+		TPlayerBotBossCaller& caller = s_mapPlayerBotBossCallers[ch->GetPlayerID()];
+		caller.lMap = lMap;
+		caller.wRace = wRace;
+		caller.dwAt = dwNow ? dwNow : 1;
+	}
+
 	// The call itself: one line on the kingdom's shout, in the bot's name as
 	// every bot shout is, and one in its guild's chat - once per boss and map
 	// in PLAYERBOT_BOSS_CALL_SHOUT_GAP_MS, whoever asks (this raid's call or
 	// the boss hubs' sighting, playerbot_wandering.h).
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V2: and only a call CanPlayerBotCallForBoss
+	// lets through, once per map and kingdom in PLAYERBOT_BOSS_CALL_MAP_GAP_MS;
+	// a held shout still tells the bot's guild of a boss new to it.
 	bool ShoutPlayerBotBossSighting(LPCHARACTER ch, long lMap, WORD wRace, const char* bossName, DWORD dwNow)
 	{
 		if (!ch || ch->GetEmpire() < 1 || ch->GetEmpire() > 3)
 			return false;
-		DWORD& at = s_mapPlayerBotBossShoutAt[std::make_pair(lMap, wRace)];
-		if (at != 0 && dwNow - at < PLAYERBOT_BOSS_CALL_SHOUT_GAP_MS)
+		if (!CanPlayerBotCallForBoss(ch, lMap, wRace, dwNow))
 			return false;
-		at = dwNow ? dwNow : 1;
 		const char* name = bossName && *bossName ? bossName : GetPlayerBotWorldBossName(wRace);
+		const bool fresh = !IsPlayerBotOwnBossCall(ch, lMap, wRace);
+		DWORD& at = s_mapPlayerBotBossShoutAt[std::make_pair(lMap, wRace)];
+		DWORD& mapAt = s_mapPlayerBotBossMapShoutAt[std::make_pair(lMap, ch->GetEmpire())];
+		if ((at != 0 && dwNow - at < PLAYERBOT_BOSS_CALL_SHOUT_GAP_MS) ||
+				(mapAt != 0 && dwNow - mapAt < PLAYERBOT_BOSS_CALL_MAP_GAP_MS))
+		{
+			if (fresh && ch->GetGuild())
+			{
+				char guildMsg[CHAT_MAX_LEN + 1];
+				snprintf(guildMsg, sizeof(guildMsg), "%s stoi! Zbieramy sie na niego.", name);
+				ch->GetGuild()->Chat(guildMsg);
+			}
+			if (fresh)
+				++s_uPlayerBotBossCallsHeld;
+			NotePlayerBotBossCaller(ch, lMap, wRace, dwNow);
+			return false;
+		}
+		at = dwNow ? dwNow : 1;
+		mapAt = at;
+		NotePlayerBotBossCaller(ch, lMap, wRace, dwNow);
 		const char* where = GetPlayerBotMapDestinationPl(lMap);
 		char body[CHAT_MAX_LEN + 1];
 		if (where && *where)
@@ -1331,9 +1415,10 @@ namespace
 		if (s_dwNextPlayerBotBossRaidCensus == 0 || dwNow >= s_dwNextPlayerBotBossRaidCensus)
 		{
 			s_dwNextPlayerBotBossRaidCensus = dwNow + PLAYERBOT_BOSS_RAID_CENSUS_MS;
-			sys_log(0, "PLAYERBOT_RAID: census formed=%u killed=%u outpaced=%u too_few=%u active=%u kingdom_calls=%u",
+			sys_log(0, "PLAYERBOT_RAID: census formed=%u killed=%u outpaced=%u too_few=%u active=%u kingdom_calls=%u calls_held=%u",
 					s_uPlayerBotBossRaidsFormed, s_uPlayerBotBossRaidsKilled, s_uPlayerBotBossRaidsOutpaced,
-					s_uPlayerBotBossRaidsTooFew, (unsigned int)s_mapPlayerBotBossRaids.size(), s_uPlayerBotBossCalls);
+					s_uPlayerBotBossRaidsTooFew, (unsigned int)s_mapPlayerBotBossRaids.size(), s_uPlayerBotBossCalls,
+					s_uPlayerBotBossCallsHeld); // MT2009_PLUS_BOT_YOHARA_FIGHT_V2
 		}
 	}
 
