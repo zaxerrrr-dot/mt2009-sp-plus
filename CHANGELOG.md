@@ -29,6 +29,7 @@ every version here.
 - **Bot bez grupy umiejętności w drugiej wiosce nie krąży już co 25 sekund.** Pomijanie przerwy między wizytami w mieście (żeby szybko wybrać grupę umiejętności u trenera) działa teraz tylko tam, gdzie trener stoi. Wcześniej taki bot z pełną torbą chodził cały dzień między kupcem a magazynem.
 - **Zioła w miejscach bez dojścia.** Zielarz nie wybiera krzaka, do którego nie da się dojść z miejsca, w którym stoi, a gdy wyznaczanie trasy odmówi, od razu idzie do następnego zamiast stać 2 minuty w miejscu.
 - **Ucieczka i odejście od miejsca śmierci.** Gdy wyznaczanie trasy odrzuci kierunek ucieczki, bot przez minutę wybiera inne kierunki zamiast próbować w kółko tego samego (najczęściej w Czerwonym Lesie).
+- **Magazyn bota nie otwiera się już podwójnie.** Gdy odpowiedź bazy się spóźniała, bot prosił o magazyn drugi raz i dostawał drugą, nieaktualną kopię – część przedmiotów się w niej nie wczytywała (błąd „cannot create item” w logach), a odłożone chwilę wcześniej rzeczy w niej nie widniały. Poprawiłem to: bot czeka teraz na pierwszą odpowiedź, a spóźniony magazyn zamyka bez zmian. Przedmioty, które się nie wczytały, nie znikały z bazy.
 
 ---
 

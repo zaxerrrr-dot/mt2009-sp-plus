@@ -170,6 +170,59 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: one load of a bot's safebox in
+	// flight at a time, and no box used that its visit did not ask for.
+	//
+	// "LoadSafebox: cannot create item ... ITEM_ID_DUP" on the supporters'
+	// world (2.37.0, 497 lines a day, three bots). Every bot has an account of
+	// its own (login playerbot_N, pid1 only - the registry query refuses any
+	// other shape), so it was never two characters on one box: the rows'
+	// owner_id is the bot's own account, which is its pid minus one. The wait
+	// phase gave up after eight seconds and the next visit cleared the
+	// engine's m_bOpeningSafebox (CancelSafeboxLoad) before asking again -
+	// the one guard the engine has against two loads at once. On a busy DB
+	// core both answers came: the first opened the box the visit used,
+	// emptied and closed, the second opened another one afterwards from a
+	// table read taken before that visit. What the visit had taken out was
+	// alive in the bag (ITEM_ID_DUP, owner = the bot), what it had put down
+	// was missing, a stack it had poured away was back, and the box stayed
+	// open with nobody waiting for it - the next visit worked in it, on cells
+	// other rows already held.
+	// Now: a request that has not been answered stays the only one until
+	// PLAYERBOT_SAFEBOX_ANSWER_GRACE_MS (a visit meanwhile goes on without
+	// the box), and a box open outside the wait phase - an answer that came
+	// late - is closed untouched (CloseSafebox writes no item row; the table
+	// keeps every item of it).
+	const DWORD PLAYERBOT_SAFEBOX_ANSWER_GRACE_MS = 10 * 60 * 1000;
+	std::map<DWORD, DWORD> s_mapPlayerBotSafeboxAskedAt;	// pid -> when the load was asked
+
+	// True while an earlier load may still be answered.
+	bool IsPlayerBotSafeboxLoadPending(DWORD pid, DWORD dwNow)
+	{
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotSafeboxAskedAt.find(pid);
+		if (it == s_mapPlayerBotSafeboxAskedAt.end())
+			return false;
+		if (dwNow - it->second < PLAYERBOT_SAFEBOX_ANSWER_GRACE_MS)
+			return true;
+		s_mapPlayerBotSafeboxAskedAt.erase(it);
+		return false;
+	}
+
+	// A box open while the bot is not in the storekeeper's wait phase came
+	// from an answer nobody waits for: closed as it is, before anything works
+	// in it or it keeps the bot "busy" (IsBusy) for every other window.
+	void ClosePlayerBotStraySafebox(LPCHARACTER ch, const TPlayerBotAIState& state)
+	{
+		if (!ch || !ch->GetSafebox())
+			return;
+		if (state.bVisitingShop && state.bTownVisitPhase == BOT_TOWN_PHASE_SAFEBOX_WAIT)
+			return;
+		s_mapPlayerBotSafeboxAskedAt.erase(ch->GetPlayerID());
+		ch->CloseSafebox();
+		sys_log(0, "PLAYERBOT_TOWN: stray safebox closed pid=%u name=%s phase=%d visiting=%d",
+				ch->GetPlayerID(), ch->GetName(), (int)state.bTownVisitPhase, state.bVisitingShop ? 1 : 0);
+	}
+
 	void NotePlayerBotBoxMove(std::map<DWORD, std::map<DWORD, DWORD> >& moves, DWORD pid, DWORD vnum, DWORD dwNow)
 	{
 		std::map<DWORD, DWORD>& kinds = moves[pid];
@@ -7896,6 +7949,38 @@ namespace
 				// walk back here on every visit it restarts.
 				if (IsPlayerBotGambling(state, dwNow))
 					state.persona.bGambleSafeboxChecked = true;
+				// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: no second load while the
+				// first may still be answered, and none on account 0 (a bot whose
+				// descriptor never got its account would share that box with
+				// every other such bot). The visit goes on without the box.
+				if (!ch->GetDesc() || ch->GetDesc()->GetAccountTable().id == 0 ||
+						IsPlayerBotSafeboxLoadPending(ch->GetPlayerID(), dwNow))
+				{
+					PlayerBotLogThrottled("safebox_load_pending", dwNow,
+							"PLAYERBOT_TOWN: safebox skipped, earlier load unanswered or no account pid=%u name=%s account=%u",
+							ch->GetPlayerID(), ch->GetName(),
+							ch->GetDesc() ? (unsigned int)ch->GetDesc()->GetAccountTable().id : 0U);
+					state.bTownNeedSafebox = false;
+					state.persona.dwLppReleaseVisitAt = dwNow + PLAYERBOT_LPP_RELEASE_VISIT_GAP_MS;
+					state.persona.dwMaterialReleaseVisitAt = dwNow + PLAYERBOT_MATERIAL_RELEASE_VISIT_GAP_MS;
+					state.bTownVisitPhase = bDirect
+							? GetPlayerBotFirstDirectTownPhase(state)
+							: ((state.bTownNeedMisc || state.bTownNeedBlacksmith)
+								? BOT_TOWN_PHASE_GATE_IN : BOT_TOWN_PHASE_NONE);
+					ClearPlayerBotRoute(state, true);
+					if (state.bTownVisitPhase == BOT_TOWN_PHASE_NONE)
+						FinishPlayerBotTownVisit(ch, state, dwNow, true);
+					return true;
+				}
+				// The engine refuses a load within ten seconds of the last one
+				// (ReqSafeboxLoad) without a word to the caller, which the wait
+				// phase then took for an answer that never came: the bot stands
+				// at the keeper until the ten seconds are over.
+				if (ch->GetSafebox() || thecore_pulse() - ch->GetSafeboxLoadTime() < PASSES_PER_SEC(10))
+				{
+					ClosePlayerBotStraySafebox(ch, state);
+					return true;
+				}
 				// The first visit pays for the page the way a player does at
 				// the keeper's dialog: 500 yang, and the DB core opens a
 				// safebox row of one page for the account.
@@ -7945,9 +8030,16 @@ namespace
 				// server-patches/safeboxmerge); on an engine without that patch the
 				// two pages are at least set again on every visit.
 				ch->SetSafeboxSize(PLAYERBOT_SAFEBOX_PAGES);
+				// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: cleared only here, with no
+				// earlier load pending (IsPlayerBotSafeboxLoadPending above); one
+				// past its grace is taken for lost.
 				ch->CancelSafeboxLoad();
 				ch->SetSafeboxOpenPosition();
+				const int iLoadPulseBefore = ch->GetSafeboxLoadTime();
 				ch->ReqSafeboxLoad(PLAYERBOT_SAFEBOX_PASSWORD);
+				// ReqSafeboxLoad stamps the pulse only when the packet went out.
+				if (ch->GetSafeboxLoadTime() != iLoadPulseBefore)
+					s_mapPlayerBotSafeboxAskedAt[ch->GetPlayerID()] = dwNow;
 				state.dwTownWaitUntil = dwNow + PLAYERBOT_SAFEBOX_LOAD_WAIT_MS;
 				state.bTownVisitPhase = BOT_TOWN_PHASE_SAFEBOX_WAIT;
 				sys_log(0, "PLAYERBOT_TOWN: safebox requested pid=%u name=%s map=%ld pos=(%ld,%ld) books=%d free_cells=%d",
@@ -7971,12 +8063,20 @@ namespace
 			// uxietoszef's bots showed, 74 books for good). Treat that as "not
 			// ready" and keep the errand rather than reporting a phantom
 			// deposit; the next visit finds the page and fills it, no fee again.
-			if (box && !box->IsValidPosition(0))
+			// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: the load is answered. A box
+			// the bot cannot work in now (an exchange or a counter open beside
+			// it: CSafebox::Add and Remove refuse while IsBusy, and the
+			// withdrawal would put a piece in the bag that the box still holds)
+			// is closed as it is, like a page not ready.
+			if (box)
+				s_mapPlayerBotSafeboxAskedAt.erase(ch->GetPlayerID());
+			if (box && (!box->IsValidPosition(0) || ch->IsBusy(BUSY_SAFEBOX)))
 			{
+				const int busy = ch->IsBusy(BUSY_SAFEBOX) ? 1 : 0;
 				ch->CloseSafebox();
 				PlayerBotLogThrottled("safebox_not_ready", dwNow,
-						"PLAYERBOT_TOWN: safebox page not ready pid=%u name=%s books=%d",
-						ch->GetPlayerID(), ch->GetName(), CountPlayerBotSkillBooks(ch));
+						"PLAYERBOT_TOWN: safebox page not ready pid=%u name=%s books=%d busy=%d",
+						ch->GetPlayerID(), ch->GetName(), CountPlayerBotSkillBooks(ch), busy);
 				// leave bTownNeedSafebox set; back off a little and try next visit.
 				state.persona.dwLppReleaseVisitAt = dwNow + PLAYERBOT_LPP_RELEASE_VISIT_GAP_MS;
 				state.persona.dwMaterialReleaseVisitAt = dwNow + PLAYERBOT_MATERIAL_RELEASE_VISIT_GAP_MS;
@@ -8062,7 +8162,10 @@ namespace
 			}
 			else if (dwNow >= state.dwTownWaitUntil)
 			{
-				ch->CancelSafeboxLoad();
+				// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: the engine's "a load is on
+				// its way" stays set - the answer may still come, and is then
+				// closed untouched (ClosePlayerBotStraySafebox); clearing it here let
+				// the next visit ask again while this one was still in flight.
 				sys_err("PLAYERBOT_TOWN: safebox never opened pid=%u name=%s map=%ld pos=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY());
 				// Not straight back for the release alone (PlayerBotWantsLppRelease).

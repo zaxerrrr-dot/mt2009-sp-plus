@@ -7066,6 +7066,11 @@ WritePlayerBotGuildStatus(dwNow);
 
 		TPlayerBotAIState& state = s_mapPlayerBotAIStates[it->first];
 
+		// MT2009_PLUS_BOT_SAFEBOX_ACCOUNT_LOCK_V1: a safebox answer nobody waits
+		// for is closed before anything works in it (playerbot_town.h).
+		if (d->IsPhase(PHASE_GAME))
+			ClosePlayerBotStraySafebox(ch, state);
+
 		// MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: on its way to another core - out at the next Update.
 		if (IsPlayerBotYoharaLeaving(it->first))
 			continue;
