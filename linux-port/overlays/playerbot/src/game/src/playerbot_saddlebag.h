@@ -215,7 +215,8 @@ namespace
 	int GetPlayerBotCraftMaterialsWanted(LPCHARACTER ch, bool nextOnly)
 	{
 		return GetPlayerBotSaddlebagMaterialsWanted(ch, nextOnly) +
-				GetPlayerBotHorseGoodsMaterialsWanted(ch, nextOnly); // MT2009_PLUS_HORSE_GOODS_MARKET_V1
+				GetPlayerBotHorseGoodsMaterialsWanted(ch, nextOnly) + // MT2009_PLUS_HORSE_GOODS_MARKET_V1
+				GetPlayerBotYoharaShopMaterialsWanted(ch); // MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's elixirs of resistance (Dongan's exchange)
 	}
 
 	bool IsPlayerBotCraftExchangeVnum(DWORD vnum)
@@ -504,7 +505,9 @@ namespace
 	{
 		// MT2009_PLUS_HORSE30_V1: the materials of the horse's next training
 		// for every bot, the rows' for a saddlebag bot.
-		if (!IsPlayerBotSaddlebagKeeper(ch) && GetPlayerBotHorseTrainingMaterialsWanted(ch) <= 0)
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: and a Champion's materials for Dongan's exchange.
+		if (!IsPlayerBotSaddlebagKeeper(ch) && GetPlayerBotHorseTrainingMaterialsWanted(ch) <= 0 &&
+				GetPlayerBotYoharaShopMaterialsWanted(ch) <= 0)
 			return false;
 		if (PlayerBotSaddlebagWantsMedal(ch))
 		{

@@ -112,6 +112,10 @@ namespace
 			return false;
 		if (IsPlayerBotKeptTalisman(ch, item))
 			return true;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's world set and jade, its Yohara elixirs and the exchange's materials
+		// (playerbot_yohara_shop.h).
+		if (IsPlayerBotYoharaShopKept(ch, item))
+			return true;
 		const int keep = GetPlayerBotCraftMaterialKeep(ch, item->GetVnum());
 		return keep > 0 && CountPlayerBotVnumUnitsAhead(ch, item) < keep;
 	}

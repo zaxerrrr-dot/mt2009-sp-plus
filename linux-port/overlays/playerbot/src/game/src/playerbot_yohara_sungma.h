@@ -525,7 +525,8 @@
 	{
 #ifdef ENABLE_CONQUEROR_LEVEL
 		static const BYTE s_aPoint[4] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE, POINT_SUNGMA_IMMUNE };
-		return ch && what >= 0 && what < 4 ? yohara_gear::SungmaEffective(ch, s_aPoint[what]) : 0;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: dressed for the world, plus what its jade in the bag gives back (playerbot_yohara_shop.h)
+		return ch && what >= 0 && what < 4 ? yohara_gear::SungmaEffective(ch, s_aPoint[what]) + GetPlayerBotYoharaWorldSetWillDelta(ch, what) : 0;
 #else
 		return 0;
 #endif
@@ -1058,6 +1059,9 @@
 				(HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) || HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) ||
 				 HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR)))
 			need |= 2;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: 4 - elixirs at Handlarka Roznosci's exchange (playerbot_yohara_shop.h)
+		if (PlayerBotYoharaShopWantsErrand(ch, dwNow))
+			need |= 4;
 		return need;
 	}
 
@@ -1159,8 +1163,9 @@
 				++s_aPlayerBotSungmaStats[slot].errands;
 			size_t red = 0, blue = 0;
 			CountPlayerBotPotions(ch, red, blue);
-			sys_log(0, "PLAYERBOT_SUNGMA: errand to dongan pid=%u name=%s map=%ld need=%s%s red=%u blue=%u free3=%d pos=(%ld,%ld)",
+			sys_log(0, "PLAYERBOT_SUNGMA: errand to dongan pid=%u name=%s map=%ld need=%s%s%s red=%u blue=%u free3=%d pos=(%ld,%ld)",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (need & 1) ? "potions" : "", (need & 2) ? "+bag" : "",
+					(need & 4) ? "+shop" : "",
 					(unsigned int)red, (unsigned int)blue, ch->GetEmptyInventory(3) >= 0 ? 1 : 0, ch->GetX(), ch->GetY());
 		}
 		if (ch->IsDead() || state.bRecoveringAfterDeath)
@@ -1174,7 +1179,7 @@
 		while (b.iErrandStop < PLAYERBOT_SUNGMA_DONGAN_MERCHANT_COUNT)
 		{
 			const TPlayerBotSungmaMerchant& m = PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[b.iErrandStop];
-			if ((m.eCategory == BOT_MERCHANT_MISC && (b.iErrandNeed & 1)) || HasPlayerBotJunkForMerchant(ch, m.eCategory))
+			if ((m.eCategory == BOT_MERCHANT_MISC && (b.iErrandNeed & 5)) || HasPlayerBotJunkForMerchant(ch, m.eCategory))	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: 4
 				break;
 			++b.iErrandStop;
 		}
@@ -1224,6 +1229,7 @@
 		{
 			int boughtRed = 0, boughtBlue = 0;
 			BuyPlayerBotYoharaBelt(ch, PLAYERBOT_SUNGMA_ERRAND_FILL, PLAYERBOT_SUNGMA_ERRAND_FILL, boughtRed, boughtBlue);
+			RunPlayerBotYoharaShopExchange(ch, m.dwRace);	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the bots' exchange (playerbot_yohara_shop.h)
 			sys_log(0, "PLAYERBOT_SUNGMA: errand bought pid=%u name=%s merchant=%u bought_red=%d bought_blue=%d gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), m.dwRace, boughtRed, boughtBlue, (long long)ch->GetGold());
 			// no cell for them even after its junk went (a bag of keepsakes): not the errand's again for a while - the
@@ -1305,7 +1311,8 @@
 		if (goods >= PLAYERBOT_SUNGMA_TRADE_SHOP_GOODS && IsPlayerBotSungmaCounterStale(ch))
 			return "shop";
 		// What it buys there: the dust of its G0 package, a refine material its gear waits for.
-		if (gap >= PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS && (IsPlayerBotG0DustHunter(ch) || PlayerBotNeedsAnyRefineMaterial(ch)))
+		if (gap >= PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS && (IsPlayerBotG0DustHunter(ch) || PlayerBotNeedsAnyRefineMaterial(ch) ||
+				PlayerBotYoharaShopWantsMarket(ch)))	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: inputs of Dongan's exchange
 			return "buy";
 		// And every PLAYERBOT_SUNGMA_STAY_MIN the round: the counter's sales and stock, whatever it brings.
 		if (gap >= (DWORD)GetPlayerBotYoharaConfig().sungmaStayMin * 60000U &&

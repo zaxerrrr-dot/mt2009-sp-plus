@@ -2124,8 +2124,9 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion keeps its dust for its G0 package (playerbot_yohara_g0.h).
 		if (GetPlayerBotG0DustReserve(ch) > 0)
 			return false;
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: nor the dust its elixirs of power take (playerbot_yohara_shop.h).
 		if (!PlayerBotWantsBlessingMarble(ch) ||
-				(int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) < PLAYERBOT_DUST_PER_MARBLE ||
+				(int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotYoharaShopDustKeep(ch) < PLAYERBOT_DUST_PER_MARBLE ||
 				ch->GetEmptyInventory(1) < 0)
 			return false;
 		ch->RemoveSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM, PLAYERBOT_DUST_PER_MARBLE);
@@ -2213,7 +2214,8 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion keeps its dust for its G0 package (playerbot_yohara_g0.h).
 		if (GetPlayerBotG0DustReserve(ch) > 0)
 			return false;
-		const int dust = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM);
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the dust its elixirs of power take is not the stones' (playerbot_yohara_shop.h).
+		const int dust = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotYoharaShopDustKeep(ch);
 		if (dust < std::min(PLAYERBOT_DUST_PER_ADD, PLAYERBOT_DUST_PER_CHANGE) || ch->GetEmptyInventory(1) < 0 ||
 				PlayerBotWantsBlessingMarble(ch))
 			return false;

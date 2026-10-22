@@ -11,6 +11,10 @@ namespace
 	const DWORD PLAYERBOT_YOHARA_RESIST_ELIXIRS[PLAYERBOT_YOHARA_ELEMENTS] = { 50838, 50836, 50837, 50839, 50840, 50841 };
 	const BYTE PLAYERBOT_YOHARA_RESIST_POINTS[PLAYERBOT_YOHARA_ELEMENTS] = {
 		POINT_RESIST_ELEC, POINT_RESIST_FIRE, POINT_RESIST_ICE, POINT_RESIST_WIND, POINT_RESIST_EARTH, POINT_RESIST_DARK };
+	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the elixirs of power (Piorunowej, Ognistej, Mroznej, Pln. Wiatru, Ziemi, Mrocznej Mocy)
+	// - the element's power (POINT_ENCHANT_ELECT..DARK, the talismans' points), drunk the same way; made at Dongan's
+	// exchange (playerbot_yohara_shop.h).
+	const DWORD PLAYERBOT_YOHARA_POWER_ELIXIRS[PLAYERBOT_YOHARA_ELEMENTS] = { 50832, 50830, 50831, 50833, 50834, 50835 };
 	const DWORD PLAYERBOT_YOHARA_ELEMENTS_CENSUS_MS = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_YOHARA_ELEMENTS_SEEN_MS = 4 * 60 * 1000;
 
@@ -181,6 +185,25 @@ namespace
 					ch->GetPlayerID(), ch->GetName(), map, PLAYERBOT_YOHARA_ELEMENT_NAMES[i], PLAYERBOT_YOHARA_RESIST_ELIXIRS[i],
 					value, seconds, (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[i]));
 		}
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(MT2009_PLUS_ELEMENTS_V1)
+		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: and the elixirs of power of the same elements, the same way.
+		for (int i = 0; i < PLAYERBOT_YOHARA_ELEMENTS; ++i)
+		{
+			const BYTE point = (BYTE)(POINT_ENCHANT_ELECT + i);
+			if (share[i] < PLAYERBOT_YOHARA_ELEMENT_DEFENCE_PERCENT || ch->FindAffect(AFFECT_BLEND, point))
+				continue;
+			LPITEM item = ch->FindSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[i]);
+			if (!item || item->GetSocket(0) == 0)
+				continue;
+			const int value = (int)item->GetSocket(1), seconds = (int)item->GetSocket(2);
+			if (!ch->UseItem(TItemPos(INVENTORY, item->GetCell())) || !ch->FindAffect(AFFECT_BLEND, point))
+				continue;
+			++s_uPlayerBotYoharaElixirs;
+			sys_log(0, "PLAYERBOT_ELEMENTS: elixir pid=%u name=%s map=%ld element=%s kind=power vnum=%u value=%d seconds=%d left=%d",
+					ch->GetPlayerID(), ch->GetName(), map, PLAYERBOT_YOHARA_ELEMENT_NAMES[i], PLAYERBOT_YOHARA_POWER_ELIXIRS[i],
+					value, seconds, (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[i]));
+		}
+#endif
 	}
 }
 

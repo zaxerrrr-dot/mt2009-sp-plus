@@ -7053,6 +7053,23 @@ namespace
 	bool IsPlayerBotG0BoxDust(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotG0NpcSaleDue(LPCHARACTER ch, LPITEM item);
 	void NotePlayerBotG0SoldToNpc(LPCHARACTER ch, LPITEM item, long long price, const char* merchantName);
+	// MT2009_PLUS_BOT_YOHARA_SHOP_V1 (playerbot_yohara_shop.h, after playerbot_yohara_elements_late.h): the bots' exchange
+	// at Dongan's Handlarka Roznosci (10 Materialy Rzemieslnicze -> an elixir of resistance, 10 Magiczny Pyl over the G0
+	// reserve -> an elixir of power, the elements of the bot's map), its inputs' keep and market, and a Champion's
+	// world set (its old jewellery kept and worn off the Sung Ma maps, the jade on them).
+	int GetPlayerBotYoharaShopMaterialsWanted(LPCHARACTER ch);
+	int GetPlayerBotYoharaShopDustKeep(LPCHARACTER ch);
+	bool WantsPlayerBotYoharaShopDustOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForYoharaShopDust(LPCHARACTER ch, LPITEM item, long long price);
+	bool PlayerBotYoharaShopWantsDustFromMarket(LPCHARACTER ch);
+	bool PlayerBotYoharaShopWantsMarket(LPCHARACTER ch);
+	void NotePlayerBotYoharaShopBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
+	int RunPlayerBotYoharaShopExchange(LPCHARACTER ch, DWORD npc);
+	bool PlayerBotYoharaShopWantsErrand(LPCHARACTER ch, DWORD dwNow);
+	bool IsPlayerBotDressedForSungma(LPCHARACTER ch);
+	bool IsPlayerBotYoharaShopKept(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotYoharaWorldSetKeptJade(LPCHARACTER ch, LPITEM item);
+	int GetPlayerBotYoharaWorldSetWillDelta(LPCHARACTER ch, int what);
 	// MT2009_PLUS_L30_WEAPON_DROPPER_V1: each kingdom's first island of Orc
 	// Valley - the ground the Teleporter puts that kingdom down on - as spots
 	// round its Bestial's spawn (boss.txt cells x100 on base (256000,665600)),
