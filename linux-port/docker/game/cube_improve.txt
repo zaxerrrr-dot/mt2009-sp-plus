@@ -1,0 +1,66 @@
+# MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (the owner, 22 October 2026): the crafting window's chance-raising items ("Podwyzsz
+# szanse"). One line an item:  vnum  bonus%  category  [npc,npc,...]   - no NPC list: every crafting NPC.
+# The item put in the window's slot raises the chance of a recipe of its category by the bonus (up to 100%); one piece
+# goes with every attempt. Categories (cube.cpp; a recipe without a "category" line takes it from its result):
+#   0 zbroje/helmy  1 bronie  2 akcesoria (bizuteria, buty, tarcze, talizmany)  3 pasy  4 event  5 pozostale
+#   6 praca  7 zestaw broni  8 zestaw zbroi  9 zestaw helmu  10 zwierzaki  11 ksiegi umiejetnosci  12 rekawice
+#   13 alchemia
+# Read at the first opening of a crafting window and on /reload c.
+#
+# Runy Wykuwania (pl-wiki "Runy Wykuwania"; 1* in the Gaya shop, 2*-5* made at Yu-Hwan from two of the lower one).
+# Their items (79605-79659) are not in this world's item_proto yet - when they are added, take the '#' off their lines.
+#79605	1	3		# 1* Runa Wykuwania Pasow
+#79606	2	3		# 2* Runa Wykuwania Pasow
+#79607	5	3		# 3* Runa Wykuwania Pasow
+#79608	10	3		# 4* Runa Wykuwania Pasow
+#79609	20	3		# 5* Runa Wykuwania Pasow
+#79610	1	1		# 1* Runa Wykuwania Broni
+#79611	2	1		# 2* Runa Wykuwania Broni
+#79612	5	1		# 3* Runa Wykuwania Broni
+#79613	10	1		# 4* Runa Wykuwania Broni
+#79614	20	1		# 5* Runa Wykuwania Broni
+#79615	1	0		# 1* Runa Wykuwania Zbroi
+#79616	2	0		# 2* Runa Wykuwania Zbroi
+#79617	5	0		# 3* Runa Wykuwania Zbroi
+#79618	10	0		# 4* Runa Wykuwania Zbroi
+#79619	20	0		# 5* Runa Wykuwania Zbroi
+#79620	1	5		# 1* Runa Wykuwania Poz. Prz. (pozostale)
+#79621	2	5		# 2* Runa Wykuwania Poz. Prz. (pozostale)
+#79622	5	5		# 3* Runa Wykuwania Poz. Prz. (pozostale)
+#79623	10	5		# 4* Runa Wykuwania Poz. Prz. (pozostale)
+#79624	20	5		# 5* Runa Wykuwania Poz. Prz. (pozostale)
+#79625	1	2		# 1* Runa Wykuwania Akcesoriow
+#79626	2	2		# 2* Runa Wykuwania Akcesoriow
+#79627	5	2		# 3* Runa Wykuwania Akcesoriow
+#79628	10	2		# 4* Runa Wykuwania Akcesoriow
+#79629	20	2		# 5* Runa Wykuwania Akcesoriow
+#79630	1	11		# 1* Runa Wykuwania Ks. Um.
+#79631	2	11		# 2* Runa Wykuwania Ks. Um.
+#79632	5	11		# 3* Runa Wykuwania Ks. Um.
+#79633	10	11		# 4* Runa Wykuwania Ks. Um.
+#79634	20	11		# 5* Runa Wykuwania Ks. Um.
+#79635	1	7		# 1* Runa Wykuwania Zest. Broni
+#79636	2	7		# 2* Runa Wykuwania Zest. Broni
+#79637	5	7		# 3* Runa Wykuwania Zest. Broni
+#79638	10	7		# 4* Runa Wykuwania Zest. Broni
+#79639	20	7		# 5* Runa Wykuwania Zest. Broni
+#79640	1	9		# 1* Runa Wykuwania Zest. Helm.
+#79641	2	9		# 2* Runa Wykuwania Zest. Helm.
+#79642	5	9		# 3* Runa Wykuwania Zest. Helm.
+#79643	10	9		# 4* Runa Wykuwania Zest. Helm.
+#79644	20	9		# 5* Runa Wykuwania Zest. Helm.
+#79645	1	8		# 1* Runa Wykuwania Zest. Zbroi
+#79646	2	8		# 2* Runa Wykuwania Zest. Zbroi
+#79647	5	8		# 3* Runa Wykuwania Zest. Zbroi
+#79648	10	8		# 4* Runa Wykuwania Zest. Zbroi
+#79649	20	8		# 5* Runa Wykuwania Zest. Zbroi
+#79650	1	12		# 1* Runa Wykuwania Rekawiczek
+#79651	2	12		# 2* Runa Wykuwania Rekawiczek
+#79652	5	12		# 3* Runa Wykuwania Rekawiczek
+#79653	10	12		# 4* Runa Wykuwania Rekawiczek
+#79654	20	12		# 5* Runa Wykuwania Rekawiczek
+#79655	1	10		# 1* Runa Wykuwania Prz. d. Zw.
+#79656	2	10		# 2* Runa Wykuwania Prz. d. Zw.
+#79657	5	10		# 3* Runa Wykuwania Prz. d. Zw.
+#79658	10	10		# 4* Runa Wykuwania Prz. d. Zw.
+#79659	20	10		# 5* Runa Wykuwania Prz. d. Zw.

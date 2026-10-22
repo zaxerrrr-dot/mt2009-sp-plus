@@ -25,5 +25,27 @@ tam, gdy leżał w oknie, zostawiłby w oknie wskaźnik na usunięty przedmiot.
 
 Siedem edycji, każda ze swoim znacznikiem. Po `ysets` (edycja „cube set” stoi w jego funkcji `Mt2009YSetsCubeMake`).
 
+`MT2009_PLUS_NPC_CRAFT_WINDOW_V1` (22.10.2026, właściciel: „u każdego NPC z wytwarzaniem ma się otworzyć okno
+i pokazać, co trzeba dać” – jak na serwerach globalnych). Siedemnaście edycji (`cube.h`, `cube.cpp`, `cmd_general.cpp`):
+
+- lista materiałów okna (`cube m_info`): każdy wiersz `materiały/Yang/szansa/Gaya/kategoria` – szansa `30` albo `5-50`
+  (wiersz scalony z receptur +5…+9), Gaya 0 gdy nie trzeba; wiersz kowala zestawów `…/Yang/szansa/0/kategoria`
+  (jego Gaya jest materiałem). Stary klient czyta tylko Yang (drugie pole);
+- `cube pick <vnum nagrody>` (klient przed `cube make`): najpierw receptura z tą nagrodą, do której pasują materiały
+  w oknie, inaczej – jak dotąd – pierwsza pasująca. Receptury o tych samych materiałach (obręcz / kolia / klipsy
+  jednego jadeitu, Pył i Jedwab Wężowy) dawały zawsze pierwszą z `cube.txt`;
+- `cube improve <komórka ekwipunku>` (−1: brak) – przedmiot „Podwyższ szansę”: tabela `locale/cube_improve.txt`
+  (`vnum premia kategoria [npc,npc…]`, czytana przy pierwszym otwarciu okna i `/reload c`); działa na recepturę swojej
+  kategorii (u wskazanych NPC), dodaje premię (do 100%), przy każdej próbie znika jedna sztuka (`Cube_make_window`,
+  `cube make`). Odpowiedź do klienta: `CubeImprove vnum premia kategoria`. Runy Wykuwania (79605–79659) – ich
+  przedmiotów jeszcze nie ma, linie w tabeli są zakomentowane;
+- kategoria receptury: linia `category N` (0 zbroje … 13 alchemia, jak globalne okno) albo z przedmiotu-wyniku;
+- `copy_attr 1` (receptura): wynik dostaje kamienie i bonusy pierwszego przedmiotu receptury (`CopyAllAttrTo`, jak
+  ulepszenie) – Admirał Angmur (`game/cube.npc_okno.txt`); Seon-Pyeong (20091): jego wiersze rdzeń robi sam z zestawów
+  ulepszeń elitarnych (`IsEliteRefine`: przedmiot +9, materiały, Yang i szansa receptury, przedmiot po ulepszeniu),
+  przy pierwszym otwarciu okna (i po `/reload c`) – te same kroki, co przeciągnięcie przedmiotu na niego.
+
+Klient: `client-patches/client-2.0.30/root/game.py`, `uicube.py`, `uicubeokno.py` (ten sam znacznik).
+
 Linux/VPS: `python3 apply_gaya.py <game/src>`; Windows: `Apply-GayaPatch.ps1 -SourceDir <game/src>` (wołane przez
-`tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `cube.h`, `cube.cpp`.
+`tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `cube.h`, `cube.cpp`, `cmd_general.cpp`.

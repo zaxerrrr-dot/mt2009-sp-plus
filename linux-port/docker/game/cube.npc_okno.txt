@@ -1,0 +1,643 @@
+# MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (the owner, 22 October 2026: "at every NPC with crafting a window must open and show
+# what you need to give" - as the global servers: their client's cube.txt gives these NPCs the crafting window). These
+# crafts were quest talks (the player read the text, the quest took the items); now they are the NPCs' cube windows,
+# with this world's amounts, Yang, Gaya and chances (unchanged from the quests they replace). Appended to cube.txt by the
+# Dockerfile after every other cube step; the windows open by quest/rekawice.quest (Mistrz Chi), yohara_mapy3.quest
+# (Tajemniczy Oltarz), mikstury_okno.quest (Baek-Go) and angmur.quest (Admiral Angmur, below). Rows with the same
+# materials (the jade jewellery) - the row the player clicks is made (server-patches/gaya, "cube pick"). Seon-Pyeong's
+# (20091) rows are not here: the core makes them from the elite refine sets (server-patches/gaya, copy_attr).
+
+# Rekawice Mocy+0 <- 10 Run SungMa, 25 Twardej Skory, 5 Wzorow Rekawicy, Kamien Runiczny (Mistrz Chi, wiki "Rekawice")
+section
+npc	20823
+item	31247	10
+item	31245	25
+item	31246	5
+item	31225	1
+reward	23000	1
+percent	75
+gold	10000000
+gaya	100
+end
+
+# Zwinne Rekawice+0 <- 10 Run SungMa, 25 Twardej Skory, 5 Wzorow Rekawicy, Kamien Runiczny (Mistrz Chi, wiki "Rekawice")
+section
+npc	20823
+item	31248	10
+item	31245	25
+item	31246	5
+item	31225	1
+reward	23010	1
+percent	75
+gold	10000000
+gaya	100
+end
+
+# Pancerne Rekawice+0 <- 10 Run SungMa, 25 Twardej Skory, 5 Wzorow Rekawicy, Kamien Runiczny (Mistrz Chi, wiki "Rekawice")
+section
+npc	20823
+item	31249	10
+item	31245	25
+item	31246	5
+item	31225	1
+reward	23020	1
+percent	75
+gold	10000000
+gaya	100
+end
+
+# Ochronne Rekawice+0 <- 10 Run SungMa, 25 Twardej Skory, 5 Wzorow Rekawicy, Kamien Runiczny (Mistrz Chi, wiki "Rekawice")
+section
+npc	20823
+item	31250	10
+item	31245	25
+item	31246	5
+item	31225	1
+reward	23030	1
+percent	75
+gold	10000000
+gaya	100
+end
+
+# Obrecz Jadeitu Mgly+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50664	10
+item	31216	25
+reward	14580	1
+percent	30
+gold	1000000
+gaya	100
+end
+
+# Klipsy Jadeitu Mgly+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50664	10
+item	31216	25
+reward	17570	1
+percent	30
+gold	1000000
+gaya	100
+end
+
+# Kolia Jadeitu Mgly+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50664	10
+item	31216	25
+reward	16580	1
+percent	30
+gold	1000000
+gaya	100
+end
+
+# Obrecz Jadeitu Slonca+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50661	10
+item	31216	30
+item	31226	2
+reward	14590	1
+percent	30
+gold	1000000
+gaya	200
+end
+
+# Klipsy Jadeitu Slonca+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50661	10
+item	31216	30
+item	31226	2
+reward	17580	1
+percent	30
+gold	1000000
+gaya	200
+end
+
+# Kolia Jadeitu Slonca+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50661	10
+item	31216	30
+item	31226	2
+reward	16590	1
+percent	30
+gold	1000000
+gaya	200
+end
+
+# Obrecz Jadeitu Nocy+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50662	10
+item	31216	25
+item	31227	5
+reward	14600	1
+percent	30
+gold	1000000
+gaya	300
+end
+
+# Klipsy Jadeitu Nocy+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50662	10
+item	31216	25
+item	31227	5
+reward	17590	1
+percent	30
+gold	1000000
+gaya	300
+end
+
+# Kolia Jadeitu Nocy+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50662	10
+item	31216	25
+item	31227	5
+reward	16600	1
+percent	30
+gold	1000000
+gaya	300
+end
+
+# Obrecz Jadeitu Dymu+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50663	10
+item	31216	30
+item	31228	10
+reward	14610	1
+percent	30
+gold	1000000
+gaya	400
+end
+
+# Klipsy Jadeitu Dymu+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50663	10
+item	31216	30
+item	31228	10
+reward	17600	1
+percent	30
+gold	1000000
+gaya	400
+end
+
+# Kolia Jadeitu Dymu+0 (Mistrz Chi, wiki "Wytwarzanie Bransolet / Naszyjnikow / Kolczykow")
+section
+npc	20823
+item	50663	10
+item	31216	30
+item	31228	10
+reward	16610	1
+percent	30
+gold	1000000
+gaya	400
+end
+
+# Kamien Mocy Demonow+0 <- Kamien Demonow+0, 1 Jadeitu Slonca (Mistrz Chi, wiki "Wytwarzanie Kamieni Mocy Demonow")
+section
+npc	20823
+item	28046	1
+item	50661	1
+reward	28047	1
+percent	30
+gold	300000
+end
+
+# Kamien Mocy Demonow+1 <- Kamien Demonow+1, 2 Jadeitu Slonca (Mistrz Chi, wiki "Wytwarzanie Kamieni Mocy Demonow")
+section
+npc	20823
+item	28146	1
+item	50661	2
+reward	28147	1
+percent	30
+gold	500000
+end
+
+# Kamien Mocy Demonow+2 <- Kamien Demonow+2, 3 Jadeitu Slonca (Mistrz Chi, wiki "Wytwarzanie Kamieni Mocy Demonow")
+section
+npc	20823
+item	28246	1
+item	50661	3
+reward	28247	1
+percent	30
+gold	700000
+end
+
+# Kamien Mocy Demonow+3 <- Kamien Demonow+3, 4 Jadeitu Slonca (Mistrz Chi, wiki "Wytwarzanie Kamieni Mocy Demonow")
+section
+npc	20823
+item	28346	1
+item	50661	4
+reward	28347	1
+percent	30
+gold	900000
+end
+
+# Kamien Mocy Demonow+4 <- Kamien Demonow+4, 5 Jadeitu Slonca (Mistrz Chi, wiki "Wytwarzanie Kamieni Mocy Demonow")
+section
+npc	20823
+item	28446	1
+item	50661	5
+reward	28447	1
+percent	30
+gold	1200000
+end
+
+# Esencja Talizmanu <- Talizman Woli SILA, ODP, WIT, INT +0 (Tajemniczy Oltarz, wiki "Tajemniczy Oltarz")
+section
+npc	20850
+item	81000	1
+item	81250	1
+item	81300	1
+item	81550	1
+reward	31270	1
+percent	90
+gold	5000000
+gaya	100
+end
+
+# Tajemniczy Talizman+0 <- Esencja Talizmanu, 200 Tajemniczych Kamieni (Tajemniczy Oltarz)
+section
+npc	20850
+item	31270	1
+item	31261	200
+reward	81560	1
+percent	100
+gold	10000000
+gaya	200
+end
+
+# Lekarstwo Iluzji <- 20 Lisci Zycia (Baek-Go, wiki "Lekarstwo Iluzji")
+section
+npc	20018
+item	31145	20
+reward	31144	1
+percent	100
+end
+
+# Zwyczajna Szata Aury <- Ladny Kamien Chaosu, 200 Odlamkow Energii, Wyjatkowy Barwnik (Baek-Go, wiki "System Szat Aury")
+section
+npc	20018
+item	31137	1
+item	51001	200
+item	31135	1
+reward	49101	1
+percent	20
+gold	25000000
+end
+
+# Admiral Angmur (20378 on Przyladek Smoczego Ognia, 20812 in Opuszczona Twierdza; quest angmur, MT2009_PLUS_ANGMUR_V1 /
+# MT2009_PLUS_ARMOR105_V1): the level-66 armour +9 into the level-90 one and the level-90 one +9 into a level-105 one, 100%;
+# "copy_attr 1" - the stones and bonuses go to the new armour, as when the armour is dragged onto him (server-patches/gaya).
+# Each recipe twice - the window lists the recipes of the first "npc" line only.
+
+# Zbroja Z Czarnej Stali+9 > Pancerz Diabel. Rogu (Admiral Angmur 20378)
+section
+npc	20378
+item	11299	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20000	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Zbr. Plyt. Czar. Magii+9 > Pancerz Koscioplytowy (Admiral Angmur 20378)
+section
+npc	20378
+item	11699	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20500	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Ubranie Czarn. Wiatru+9 > Szata Smoczego Jezdzca (Admiral Angmur 20378)
+section
+npc	20378
+item	11499	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20250	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Czarna Szata+9 > Zlote Ubranie (Admiral Angmur 20378)
+section
+npc	20378
+item	11899	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20750	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Pancerz Diabel. Rogu+9 > Wielorybi Pancerz (Admiral Angmur 20378)
+section
+npc	20378
+item	20009	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20860	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Pancerz Diabel. Rogu+9 > Panc. Deszczu Popiolu (Admiral Angmur 20378)
+section
+npc	20378
+item	20009	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20910	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Pancerz Koscioplytowy+9 > Panc. Bled. Ognika (Admiral Angmur 20378)
+section
+npc	20378
+item	20509	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20880	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Pancerz Koscioplytowy+9 > Pancerz Czarnego Ognia (Admiral Angmur 20378)
+section
+npc	20378
+item	20509	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20930	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Szata Smoczego Jezdzca+9 > Ubranie Morfa (Admiral Angmur 20378)
+section
+npc	20378
+item	20259	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20870	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Szata Smoczego Jezdzca+9 > Ubr. Smiertelnej Nocy (Admiral Angmur 20378)
+section
+npc	20378
+item	20259	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20920	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Zlote Ubranie+9 > Szata Harmonii (Admiral Angmur 20378)
+section
+npc	20378
+item	20759	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20890	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Zlote Ubranie+9 > Szata Ksiezyca (Admiral Angmur 20378)
+section
+npc	20378
+item	20759	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20940	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Zbroja Z Czarnej Stali+9 > Pancerz Diabel. Rogu (Admiral Angmur 20812)
+section
+npc	20812
+item	11299	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20000	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Zbr. Plyt. Czar. Magii+9 > Pancerz Koscioplytowy (Admiral Angmur 20812)
+section
+npc	20812
+item	11699	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20500	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Ubranie Czarn. Wiatru+9 > Szata Smoczego Jezdzca (Admiral Angmur 20812)
+section
+npc	20812
+item	11499	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20250	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Czarna Szata+9 > Zlote Ubranie (Admiral Angmur 20812)
+section
+npc	20812
+item	11899	1
+item	25040	2
+item	70031	3
+item	51001	100
+reward	20750	1
+percent	100
+gold	5000000
+copy_attr	1
+end
+
+# Pancerz Diabel. Rogu+9 > Wielorybi Pancerz (Admiral Angmur 20812)
+section
+npc	20812
+item	20009	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20860	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Pancerz Diabel. Rogu+9 > Panc. Deszczu Popiolu (Admiral Angmur 20812)
+section
+npc	20812
+item	20009	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20910	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Pancerz Koscioplytowy+9 > Panc. Bled. Ognika (Admiral Angmur 20812)
+section
+npc	20812
+item	20509	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20880	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Pancerz Koscioplytowy+9 > Pancerz Czarnego Ognia (Admiral Angmur 20812)
+section
+npc	20812
+item	20509	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20930	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Szata Smoczego Jezdzca+9 > Ubranie Morfa (Admiral Angmur 20812)
+section
+npc	20812
+item	20259	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20870	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Szata Smoczego Jezdzca+9 > Ubr. Smiertelnej Nocy (Admiral Angmur 20812)
+section
+npc	20812
+item	20259	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20920	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Zlote Ubranie+9 > Szata Harmonii (Admiral Angmur 20812)
+section
+npc	20812
+item	20759	1
+item	70031	5
+item	30619	5
+item	30615	5
+item	30605	10
+item	30606	10
+reward	20890	1
+percent	100
+gold	10000000
+copy_attr	1
+end
+
+# Zlote Ubranie+9 > Szata Ksiezyca (Admiral Angmur 20812)
+section
+npc	20812
+item	20759	1
+item	70031	5
+item	30619	5
+item	30614	5
+item	30609	10
+item	30608	10
+reward	20940	1
+percent	100
+gold	10000000
+copy_attr	1
+end

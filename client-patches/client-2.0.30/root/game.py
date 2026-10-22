@@ -2847,7 +2847,7 @@ class GameWindow(ui.ScriptWindow):
 	def BINARY_Cube_Open(self, npcVNUM):
 		self.currentCubeNPC = npcVNUM
 
-		self.interface.OpenCubeWindow()
+		self.interface.OpenCubeWindow(npcVNUM) # MT2009_PLUS_NPC_CRAFT_WINDOW_V1: the window by the NPC
 
 		# MT2009_PLUS_YOHARA_SETS_V2 (fix 3.0 #3): a set blacksmith lists the player's own pieces (+7 and more) -
 		# asked again at every opening, never kept
@@ -2862,6 +2862,9 @@ class GameWindow(ui.ScriptWindow):
 			i = 0
 			for cubeInfo in cubeInfoList:
 				self.interface.wndCube.AddCubeResultItem(cubeInfo["vnum"], cubeInfo["count"])
+				if "extra" in cubeInfo: # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+					(gold, chance, gaya, category) = cubeInfo["extra"]
+					self.interface.wndCube.SetResultExtra(i, gold, chance, gaya, category)
 
 				j = 0
 				for materialList in cubeInfo["materialList"]:
@@ -2873,6 +2876,10 @@ class GameWindow(ui.ScriptWindow):
 				i = i + 1
 
 			self.interface.wndCube.Refresh()
+
+	def __CubeImprove(self, vnum, bonus, category): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1: the server's answer to "/cube improve"
+		if hasattr(self.interface.wndCube, "SetImproveInfo"):
+			self.interface.wndCube.SetImproveInfo(int(vnum), int(bonus), int(category))
 
 	def __CubeReload(self):  # MT2009_PLUS_DIGI_FIXES_V1 (Autor: Digi Rasta): /reload c - the recipe lists are asked again
 		self.cubeInformation = {}
@@ -2950,7 +2957,7 @@ class GameWindow(ui.ScriptWindow):
 
 			itemIndex = 0
 			for eachResultText in eachResultList:
-				cubeInfo[startIndex + itemIndex]["materialList"] = [[], [], [], [], []]
+				cubeInfo[startIndex + itemIndex]["materialList"] = [[], [], [], [], [], [], [], []] # MT2009_PLUS_NPC_CRAFT_WINDOW_V1: up to 8 columns (was 5)
 				materialList = cubeInfo[startIndex + itemIndex]["materialList"]
 
 				gold = 0
@@ -2961,6 +2968,18 @@ class GameWindow(ui.ScriptWindow):
 					# the next rows had materials (KeyError in uicube's Refresh) and left rows 2-3 empty; shown after the loop
 					if self.currentCubeNPC in (20475, 20476, 20477, 20478, 20479) and gold > 0:
 						smithGold = gold
+				# MT2009_PLUS_NPC_CRAFT_WINDOW_V1: "materials/Yang/chance/Gaya/category" - the row's chance, Gaya and category
+				chance = ""
+				gaya = 0
+				category = -1
+				if 2 < len(splitResult):
+					chance = splitResult[2]
+				if 3 < len(splitResult) and splitResult[3].isdigit():
+					gaya = int(splitResult[3])
+				if 4 < len(splitResult) and splitResult[4].lstrip("-").isdigit():
+					category = int(splitResult[4])
+				cubeInfo[startIndex + itemIndex]["extra"] = (gold, chance, gaya, category)
+				self.interface.wndCube.SetResultExtra(startIndex + itemIndex, gold, chance, gaya, category)
 
 				#print "splitResult : ", splitResult
 				eachMaterialList = splitResult[0].split("&")
@@ -3180,6 +3199,7 @@ class GameWindow(ui.ScriptWindow):
 
 	def __ServerCommand_Build(self):
 		serverCommandList={
+			"CubeImprove": self.__CubeImprove,  # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
 			"CubeReload": self.__CubeReload,  # MT2009_PLUS_DIGI_FIXES_V1 (Autor: Digi Rasta)
 			"AutoTargetAggro": self.__AutoTargetAggro,
 			"AutoTargetAggroReady": self.__AutoTargetAggroReady,

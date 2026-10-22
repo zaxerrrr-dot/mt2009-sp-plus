@@ -3,7 +3,8 @@
 -- and cube.wiki_kto.txt, but no quest opened it (Cube_open answers only command("cube open")). From the level the wiki
 -- gives for the juices:
 --   Rybak (9009) from 1 - juices;
---   Baek-Go (20018) from 15 - juices, Charyzma / Inspiracja Eksperta;
+--   Baek-Go (20018) from 15 - juices, Charyzma / Inspiracja Eksperta; Lekarstwo Iluzji and Zwyczajna Szata Aury
+--     (MT2009_PLUS_NPC_CRAFT_WINDOW_V1, cube.npc_okno.txt - before, quest talks);
 --   Yu-Hwan (20017) from 35 - juices, waters, belts (the belts at Mistrz 20082 are gone - not on the wiki);
 --   Huahn-So (20022) from 55 - juices, waters, dews (the elixirs need items this world lacks).
 -- The text without diacritics; no literal ends with a Polish letter (qc).
@@ -12,6 +13,7 @@ quest mikstury_okno begin
 		function open(npc, what)
 			say_title(mob_name(npc)..":")
 			say(what)
+			say("Materialy, Yang i szanse - w oknie (najedz na przedmiot).") -- MT2009_PLUS_NPC_CRAFT_WINDOW_V1
 			say("")
 			if select("Otworz okno wytwarzania", "Anuluj") == 1 then
 				setskin(NOWINDOW)
@@ -24,7 +26,7 @@ quest mikstury_okno begin
 		end
 
 		when 20018.chat."Wytwarzanie" with pc.get_level() >= 15 begin
-			mikstury_okno.open(20018, "Robie soki z kwiatow i ziol, a z ksiag Adepta - ksiegi Eksperta.")
+			mikstury_okno.open(20018, "Robie soki, ksiegi Eksperta, Lekarstwo Iluzji i Szate Aury.")
 		end
 
 		when 20017.chat."Wytwarzanie" with pc.get_level() >= 35 begin

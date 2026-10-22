@@ -16,7 +16,8 @@
 --     po czasie ka¿dy wraca na P³askowy¿ Iluzji. "Wróæ do lochu" - do trwaj¹cej wyprawy. Statua Fabryki Broni (20473)
 --     i Statua Kowala Zbroi (20474): okna wytwarzania ekwipunku Smoka Mroku; Handlarka Iluzji (20469): sklep;
 --     Teleporter (9012): quest map_warp. Statua Szczeliny Czasu (20472, 103,90): quest szczelina_czasu.
---   * Baek-Go (20018): Lekarstwo Iluzji (31144) za 20 Liœci ¯ycia (31145) - wiki.
+--   * Baek-Go (20018): Lekarstwo Iluzji (31144) za 20 Liœci ¯ycia (31145) - wiki; od MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+--     (22.10) w jego oknie wytwarzania (game/cube.npc_okno.txt).
 -- Mapy lochów s¹ na rdzeniu Yohary (game3): boty tam nie wchodz¹ - licz¹ siê ludzie z grupy (GM mo¿e wejœæ sam).
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest przebudzeni_bossowie begin
@@ -368,26 +369,18 @@ quest przebudzeni_bossowie begin
 			npc.open_shop()
 		end
 
-		-- Baek-Go: Lekarstwo Iluzji
+		-- Baek-Go: Lekarstwo Iluzji - MT2009_PLUS_NPC_CRAFT_WINDOW_V1 (w³aœciciel 22.10.2026): w jego oknie wytwarzania
+		-- (game/cube.npc_okno.txt: 20 Liœci ¯ycia, 100%), jak na serwerach globalnych - rozmowa tylko je otwiera
 		when 20018.chat."Lekarstwo Iluzji" with pc.count_item(31145) > 0 begin
-			local c = przebudzeni_bossowie.cfg()
 			say_title(mob_name(20018)..":")
 			say("Z 20 Liœci ¯ycia przygotujê ci Lekarstwo Iluzji -")
 			say("od razu przywraca 500 P¯ i 500 PE.")
-			say_item_vnum(c.medicine)
-			local n = math.floor(pc.count_item(c.leaves) / c.leaves_count)
-			if n < 1 then
-				say_orange("Potrzebujê 20 Liœci ¯ycia (masz "..pc.count_item(c.leaves)..").")
-				return
+			say_item_vnum(31144)
+			say("Po³ó¿ liœcie w oknie wytwarzania.")
+			if select("Otwórz okno wytwarzania", "Nie teraz") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
 			end
-			if select("Przygotuj (20 Liœci ¯ycia)", "Nie teraz") ~= 1 then
-				return
-			end
-			if pc.count_item(c.leaves) < c.leaves_count then
-				return
-			end
-			pc.remove_item(c.leaves, c.leaves_count)
-			pc.give_item2(c.medicine, 1)
 		end
 	end
 end
