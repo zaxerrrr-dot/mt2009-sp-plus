@@ -1033,6 +1033,9 @@ namespace
 	// grade and the kind, what PLAYERBOT_SHOP_SAME_VNUM_LINES caps a counter
 	// at) for its counter, and the rest goes to the Alchemist, a stack cut if
 	// it has to be. What stands on a counter already stays there.
+	// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2 (the owner, 22 October): no more -
+	// a +0..+2 is never a counter line, every one goes to the Alchemist
+	// (CollectPlayerBotDustStones keeps none; IsPlayerBotDustGradeSoulStone).
 	const int PLAYERBOT_SOUL_STONE_STALL_KEEP = 3;
 	// MT2009_PLUS_BOT_SOULSTONE_STALL_KEEP3_V1: Magiczny Pyl over this many in
 	// the bag is counter goods at PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE, not

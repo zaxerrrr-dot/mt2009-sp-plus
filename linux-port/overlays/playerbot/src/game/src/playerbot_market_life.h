@@ -306,6 +306,12 @@ namespace
 				(vnum >= PLAYERBOT_ISHOP_VOUCHER_MIN_VNUM && vnum <= PLAYERBOT_ISHOP_VOUCHER_MAX_VNUM) ||
 				vnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			return false;
+		// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a soul stone one at a time (a
+		// whim takes one off a stack line, PlayerBotPartBuyCount), never a
+		// +0..+2 - the Alchemist's dust, not goods.
+		if (offer->GetType() == ITEM_METIN &&
+				(offer->GetCount() > 1 || IsPlayerBotDustGradeSoulStone(vnum)))
+			return false;
 		return IsPlayerBotTradeableMaterial(offer) || offer->GetType() == ITEM_SKILLBOOK ||
 				offer->GetType() == ITEM_METIN || IsPlayerBotMarketIndexedVnum(vnum) ||
 				IsPlayerBotSafeRefineScroll(vnum);

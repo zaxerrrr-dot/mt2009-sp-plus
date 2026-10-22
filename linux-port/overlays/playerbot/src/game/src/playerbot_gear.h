@@ -4509,6 +4509,43 @@ namespace
 						(DWORD)item->GetValue(5));
 	}
 
+	// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2 (the owner, 22 October: "Boty nie
+	// wystawiaja KD +1 ani +2 na rynek - od razu zamieniaja je w pyl. KD +3 i
+	// +4 wystawiaja w stackach, nie po jednym"): a soul stone of the grades the
+	// Alchemist's dust is for (+0, +1, +2 - PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE)
+	// is never a counter line, a chat offer or a whim purchase of a bot any
+	// more; every one the bot cannot seat goes to the Alchemist
+	// (CollectPlayerBotDustStones keeps none back), and one still standing on
+	// a counter comes home for him (BotOfflineUnwantedLine). The operator's
+	// policy on the item still wins. mt2009 only: r40250 has no Alchemist.
+	bool IsPlayerBotDustGradeSoulStone(DWORD vnum)
+	{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		return IsPlayerBotSoulStoneVnum(vnum) &&
+				GetPlayerBotSoulStoneGrade(vnum) <= PLAYERBOT_SOUL_STONE_DUST_MAX_GRADE;
+#else
+		(void)vnum;
+		return false;
+#endif
+	}
+
+	// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a soul stone of +3 and up goes on a
+	// counter as one stack line (the stack, up to its 200 and to the +4's
+	// market room), not a stone a line - while the counters stack
+	// (SHOP_MGMT_STACK) and the buyers take a part of a stack
+	// (SHOP_MGMT_PART_BUY): a bot wants one stone for one socket and buys one
+	// off the stack. With either off, a line is one stone as before.
+	bool IsPlayerBotSoulStoneStackLines()
+	{
+		return IsPlayerBotShopMgmtStacking() && GetPlayerBotShopMgmt(PLAYERBOT_SM_PART_BUY) != 0;
+	}
+
+	bool IsPlayerBotSoulStoneStackLine(LPITEM item)
+	{
+		return item && item->GetType() == ITEM_METIN && IsPlayerBotSoulStoneVnum(item->GetVnum()) &&
+				!IsPlayerBotDustGradeSoulStone(item->GetVnum()) && IsPlayerBotSoulStoneStackLines();
+	}
+
 	// Does this bot have a socket that a stone worth having could still fill?
 	// The market question, asked before a trip.
 	bool PlayerBotHasOpenSoulStoneSocket(LPCHARACTER ch)

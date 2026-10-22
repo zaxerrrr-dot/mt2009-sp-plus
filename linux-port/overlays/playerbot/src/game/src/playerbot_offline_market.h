@@ -251,8 +251,13 @@ namespace {
         long long price = (long long)line->GetPrice().GetTotalYangAmount();
         // MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 5): a stack dearer than the
         // budget may still sell the bot a part of it, below.
-        const bool partCandidate = partOut && partTries && *partTries > 0 && IsPlayerBotPartBuyOn() &&
-                line->GetInfo().count > 1;
+        // MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a soul stone line is a stack
+        // now (BotOfflinePrepareLine) and a bot wants one stone of it - looked
+        // at always, the eight looks of a browse left to the other stacks.
+        const bool stoneStack = IsPlayerBotPartBuyOn() && line->GetInfo().count > 1 && line->GetTable() &&
+                line->GetTable()->bType == ITEM_METIN;
+        const bool partCandidate = (partOut && partTries && *partTries > 0 && IsPlayerBotPartBuyOn() &&
+                line->GetInfo().count > 1) || stoneStack;
         if (price <= 0 || (price > budget && !partCandidate)) return -1;
         auto preview = BotOfflinePreview(*line);
         if (!preview) return -1;
@@ -264,8 +269,13 @@ namespace {
         // MT2009_PLUS_BOT_SHOP_MGMT_V1 (point 5): the whole stack is not for
         // this bot, the part it needs and can pay for is (a few such looks a
         // browse, partTries).
-        if (!want && partCandidate) {
-            --*partTries;
+        // MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a stone stack's free look is
+        // for a bot with a socket for the stone (WantsPlayerBotSoulStone).
+        const bool stoneLook = !want && stoneStack &&
+                WantsPlayerBotSoulStone(ch, preview->GetVnum(), (DWORD)preview->GetValue(5));
+        if (!want && partCandidate && (stoneLook || (partOut && partTries && *partTries > 0))) {
+            if (!stoneLook)
+                --*partTries;
             long long partYang = 0;
             const int part = PlayerBotPartBuyCount(ch, preview, price, shop->GetOwnerPID(), 0, partYang);
             if (part > 0 && partYang <= budget) {
@@ -273,7 +283,8 @@ namespace {
                 price = partYang;
                 own = WantsPlayerBotStallItemOwn(ch, preview);
                 want = true;
-                *partOut = part;
+                if (partOut)
+                    *partOut = part;
             }
         }
         int priority = (IsPlayerBotProgressionOffer(ch, preview) ? 200 : 0) + (own ? 1 : 0);

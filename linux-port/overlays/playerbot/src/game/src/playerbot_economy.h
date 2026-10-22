@@ -892,6 +892,10 @@ namespace
 		// the offline cut takes the largest pack the spare fills.
 		if (IsPlayerBotPackedPotion(item))
 			return PLAYERBOT_SHOP_POTION_PACK_MIN;
+		// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a soul stone of +3 and up by
+		// its stack (the buyers take one off it), not a stone a line.
+		if (IsPlayerBotSoulStoneStackLine(item))
+			return std::max<int>(1, (int)item->GetMaxStack());
 		if (item->GetType() == ITEM_USE || item->GetType() == ITEM_METIN ||
 				item->GetType() == ITEM_TREASURE_KEY ||
 				(item->GetVnum() >= 27992 && item->GetVnum() <= 27994))
@@ -1466,8 +1470,9 @@ namespace
 		// stones stack to 200 now, and a buyer wants one for one socket - a
 		// stone line is one stone (GetPlayerBotStallLineUnits); a stack is no
 		// line, it is cut (SplitPlayerBotStallSingles, BotOfflinePrepareLine).
+		// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a +3 and up is a stack line now.
 		if (item->GetType() == ITEM_METIN)
-			return count == 1;
+			return count == 1 || IsPlayerBotSoulStoneStackLine(item);
 		return true;
 	}
 
