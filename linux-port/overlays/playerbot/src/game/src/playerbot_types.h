@@ -2023,6 +2023,14 @@ namespace
 	const int PLAYERBOT_BOSS_CALL_SIGHT = 4000;
 	const DWORD PLAYERBOT_BOSS_CALL_UNSEEN_MS = 3 * 60 * 1000;
 	const DWORD PLAYERBOT_BOSS_CALL_SHOUT_GAP_MS = 10 * 60 * 1000;
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V2 (the owner, 22 October: one bot shouted
+	// three bosses in one second): one call per bot at a time - a new boss
+	// only BOT_GAP_MS after its last call, or once that boss is down and
+	// BOT_MIN_GAP_MS have passed - and one call on a map's kingdom shout in
+	// MAP_GAP_MS, whichever boss and bot (CanPlayerBotCallForBoss).
+	const DWORD PLAYERBOT_BOSS_CALL_BOT_GAP_MS = 12 * 60 * 1000;
+	const DWORD PLAYERBOT_BOSS_CALL_BOT_MIN_GAP_MS = 3 * 60 * 1000;
+	const DWORD PLAYERBOT_BOSS_CALL_MAP_GAP_MS = 5 * 60 * 1000;
 	const int PLAYERBOT_BOSS_MAX_ATTACKERS = 8;
 	// The Demon Tower raid (playerbot_demon_tower.h): one bot guild at a
 	// time on this core, the first a few minutes after a start and the next

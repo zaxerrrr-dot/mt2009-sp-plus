@@ -122,7 +122,11 @@ namespace
 	std::map<WORD, TPlayerBotRaidCall> s_mapPlayerBotRaidCalls;
 
 	bool ShoutPlayerBotBossSighting(LPCHARACTER ch, long lMap, WORD wRace, const char* bossName, DWORD dwNow);
+	bool CanPlayerBotCallForBoss(LPCHARACTER ch, long lMap, WORD wRace, DWORD dwNow); // MT2009_PLUS_BOT_YOHARA_FIGHT_V2
 
+	// MT2009_PLUS_BOT_YOHARA_FIGHT_V2: called for the one boss hub the bot
+	// chose (ChoosePlayerBotHuntingHub), never for every boss it weighed, and
+	// only when the bot may call (one boss at a time, not with its party by it).
 	void NotePlayerBotRaidSighting(LPCHARACTER ch, WORD wRace, const char* bossName,
 			DWORD dwNow)
 	{
@@ -131,17 +135,14 @@ namespace
 		TPlayerBotRaidCall& call = s_mapPlayerBotRaidCalls[wRace];
 		if (call.dwStamp != 0 && dwNow - call.dwStamp < PLAYERBOT_RAID_CALL_TIME)
 			return;
+		if (!CanPlayerBotCallForBoss(ch, ch->GetMapIndex(), wRace, dwNow))
+			return;
 		call.dwGuild = ch->GetGuild() ? ch->GetGuild()->GetID() : 0;
 		call.dwStamp = dwNow;
 		call.bEmpire = ch->GetEmpire();
-		// The guild's chat line is the shout's own (one wording for both).
-		if (!ShoutPlayerBotBossSighting(ch, ch->GetMapIndex(), wRace, bossName, dwNow) && ch->GetGuild())
-		{
-			char msg[128];
-			snprintf(msg, sizeof(msg), "%s stoi! Zbieramy sie na niego.",
-					bossName && *bossName ? bossName : "Boss");
-			ch->GetGuild()->Chat(msg);
-		}
+		// The guild's chat line is the shout's own (one wording for both; a
+		// held shout tells the guild on its own - MT2009_PLUS_BOT_YOHARA_FIGHT_V2).
+		ShoutPlayerBotBossSighting(ch, ch->GetMapIndex(), wRace, bossName, dwNow);
 		sys_log(0, "PLAYERBOT_RAID: called pid=%u name=%s guild=%u empire=%u race=%u boss=%s",
 				ch->GetPlayerID(), ch->GetName(), (unsigned int)call.dwGuild, (unsigned int)call.bEmpire,
 				(unsigned int)wRace, bossName ? bossName : "?");
@@ -267,9 +268,11 @@ namespace
 		int bestScore = INT_MIN;
 		size_t best = 0;
 		bool bFound = false;
+		char bestBossName[32] = ""; // MT2009_PLUS_BOT_YOHARA_FIGHT_V2
 		for (size_t i = 0; i < hubCount; ++i)
 		{
 			const TPlayerBotHuntingHub& hub = hubs[i];
+			char bossName[32] = ""; // MT2009_PLUS_BOT_YOHARA_FIGHT_V2: the chosen boss hub's, for its call
 			// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the hub's band by PlayerBotHubLevel (the Champion level on a Sung Ma map)
 			if (i == excludeIndex || std::min(255, PlayerBotHubLevel(ch) + hubShift) < (int)hub.bMinLevel ||
 					PlayerBotHubLevel(ch) > (int)hub.bMaxLevel)
@@ -287,11 +290,10 @@ namespace
 			if (hub.wBossRace != 0)
 			{
 				long bossX = hub.x, bossY = hub.y;
-				char bossName[32] = "";
 				if (!IsPlayerBotBossAlive(ch->GetMapIndex(), hub.x, hub.y, hub.wBossRace,
 						dwNow, &bossX, &bossY, bossName, sizeof(bossName)))
 					continue;
-				NotePlayerBotRaidSighting(ch, hub.wBossRace, bossName, dwNow);
+				// MT2009_PLUS_BOT_YOHARA_FIGHT_V2: the call waits for the choice (after the loop).
 				// Where the boss actually stands is walkable by definition; the
 				// question is whether it is this bot's terrain.
 				const DWORD bossGround = navigation.GetComponentAtWorld(bossX, bossY, 12);
@@ -388,8 +390,12 @@ namespace
 				bestScore = score;
 				best = i;
 				bFound = true;
+				snprintf(bestBossName, sizeof(bestBossName), "%s", bossName); // MT2009_PLUS_BOT_YOHARA_FIGHT_V2
 			}
 		}
+		// MT2009_PLUS_BOT_YOHARA_FIGHT_V2: the bot calls for the boss it goes for, and no other.
+		if (bFound && hubs[best].wBossRace != 0)
+			NotePlayerBotRaidSighting(ch, hubs[best].wBossRace, bestBossName, dwNow);
 		indexOut = best;
 		scoreOut = bestScore;
 		return bFound;
