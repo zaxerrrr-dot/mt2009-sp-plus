@@ -77,6 +77,11 @@ STONE_WILL = 15                           # Kamien Demonow +4
 POT_RED, POT_BLUE = 27003, 27006
 EQ_POS = H.EQ_POS + ',26'
 KIT_VNUMS = '%d,%d' % (POT_RED, POT_BLUE)
+# MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: the Hydra's gear is an ice gear (Talizman Lodu +150: +80% against an ice monster,
+# playerbot_elements.cpp), and only Wawoz / Rozpadlina / Schronienie / Zejscie are ice maps. The other elements' talismans
+# of the same plus in the bag - Ognia (Dongan), Wiatru (Namgan), Ziemi (Seoganland, Yilad), Mroku (Twierdza, Dongan,
+# Yilad) - and the bots' talisman pass (playerbot_talismans.h, WearPlayerBotBestTalisman) wears the one of the map.
+TALISMAN_BASES = (94000, 94750, 95000, 95250)
 
 
 def requirements(repo):
@@ -191,6 +196,11 @@ def run(a, q, bots, excluded, cohort_pids, usable, repo):
 
     # ------------------------------------------------------------ SQL
     ctx = H.gear_context(q)
+    # MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: the element talismans (the bag) - in the kit, so a run puts them back and the
+    # restore takes them (and the ice one a swap left in the bag) away
+    tal_plus = (ctx['tal'] - H.ICE_TALISMAN) if ctx['tal'] else 0
+    talismans = [t + tal_plus for t in TALISMAN_BASES if ctx['tal'] and (t + tal_plus) in ctx['proto']]
+    kit = ','.join([KIT_VNUMS] + ['%d' % v for v in talismans + ([ctx['tal']] if ctx['tal'] else [])])
     for v in (GLOVE_STR, GLOVE_STR + 9, GLOVE_MOVE, POT_RED, POT_BLUE):
         if v not in ctx['proto']:
             sys.exit('item %d is not in item_proto' % v)
@@ -234,7 +244,7 @@ SELECT p.id, p.level, p.exp, p.level_step, p.st, p.ht, p.dx, p.iq, p.stat_point,
     S.append("""INSERT IGNORE INTO player.playerbot_yohara_sungma_bak_item
 SELECT i.* FROM player.item i JOIN common.playerbot_yohara_cohort c ON c.pid = i.owner_id AND c.applied_at IS NULL AND c.purpose = '%s'
  WHERE ((i.window = 'EQUIPMENT' AND i.pos IN (%s)) OR (i.window = 'INVENTORY' AND i.vnum IN (%s)))
-   AND i.owner_id NOT IN (SELECT DISTINCT owner_id FROM player.playerbot_yohara_sungma_bak_item);""" % (PURPOSE, EQ_POS, KIT_VNUMS))
+   AND i.owner_id NOT IN (SELECT DISTINCT owner_id FROM player.playerbot_yohara_sungma_bak_item);""" % (PURPOSE, EQ_POS, kit))
     S.append('-- the characters (only while applied_at is NULL; level last - MariaDB assigns left to right) and their Champion')
     L, G, E = H.LEVEL, H.GOLD, H.EXP
     for p in pids:
@@ -260,7 +270,7 @@ ON DUPLICATE KEY UPDATE channel = VALUES(channel), requested_channel = 0, reques
              "c.level_start = p.level, c.exp_start = p.exp WHERE c.applied_at IS NULL AND c.purpose = '%s';" % PURPOSE)
     S.append('-- the equipment (the Hydra\'s, and the Sung Ma gloves where the points cannot carry the map) and the potions (every run)')
     S.append("DELETE FROM player.item WHERE window = 'EQUIPMENT' AND pos IN (%s) AND owner_id IN (%s);" % (EQ_POS, plist))
-    S.append("DELETE FROM player.item WHERE window = 'INVENTORY' AND vnum IN (%s) AND owner_id IN (%s);" % (KIT_VNUMS, plist))
+    S.append("DELETE FROM player.item WHERE window = 'INVENTORY' AND vnum IN (%s) AND owner_id IN (%s);" % (kit, plist))
     ins = []
     rows = []
     for p in pids:
@@ -275,7 +285,8 @@ ON DUPLICATE KEY UPDATE channel = VALUES(channel), requested_channel = 0, reques
     S.append('INSERT INTO player.item (owner_id, window, pos, count, vnum, socket0, socket1, socket2, '
              'attrtype0, attrvalue0, attrtype1, attrvalue1, attrtype2, attrvalue2, attrtype3, attrvalue3, '
              'attrtype4, attrvalue4, attrtype5, attrvalue5, attrtype6, attrvalue6) VALUES\n' + ',\n'.join(ins) + ';')
-    S.append('-- the bag: 200 red potions, a caster\'s 200 blue - each in the first free cell of the bag\'s four pages')
+    S.append('-- the bag: 200 red potions, a caster\'s 200 blue, the element talismans %s - each in the first free cell of the '
+             'bag\'s four pages' % talismans)
     cell = """INSERT INTO player.item (owner_id, window, pos, count, vnum, socket0, socket1, socket2)
 WITH RECURSIVE n(pos) AS (SELECT 0 UNION ALL SELECT pos + 1 FROM n WHERE pos < 179)
 SELECT %(pid)d, 'INVENTORY', MIN(n.pos), %(count)d, %(vnum)d, 0, 0, 0 FROM n
@@ -287,6 +298,8 @@ HAVING MIN(n.pos) IS NOT NULL;"""
         S.append(cell % dict(pid=b['pid'], count=200, vnum=POT_RED))
         if H.caster(b['cls'], b['grp']):
             S.append(cell % dict(pid=b['pid'], count=200, vnum=POT_BLUE))
+        for v in talismans:  # MT2009_PLUS_BOT_SUNGMA_DEATHS_V1
+            S.append(cell % dict(pid=b['pid'], count=1, vnum=v))
     S.append('COMMIT;')
     S.append("SELECT c.last_map AS map, COUNT(*) AS members, MIN(p.conqueror_level) AS champion_min, MAX(p.conqueror_level) AS champion_max, "
              "MIN(p.level) AS lv_min, SUM(c.applied_at IS NOT NULL) AS applied FROM common.playerbot_yohara_cohort c "
@@ -332,7 +345,7 @@ HAVING MIN(n.pos) IS NOT NULL;"""
          """UPDATE common.playerbot_channel_assignment ca JOIN player.playerbot_yohara_sungma_bak_player b ON b.id = ca.pid
    SET ca.channel = b.channel_old WHERE b.channel_old IS NOT NULL AND ca.pid IN (%s);""" % plist,
          """DELETE FROM player.item WHERE owner_id IN (%s)
-   AND ((window = 'EQUIPMENT' AND pos IN (%s)) OR (window = 'INVENTORY' AND vnum IN (%s)));""" % (plist, EQ_POS, KIT_VNUMS),
+   AND ((window = 'EQUIPMENT' AND pos IN (%s)) OR (window = 'INVENTORY' AND vnum IN (%s)));""" % (plist, EQ_POS, kit),
          'INSERT IGNORE INTO player.item SELECT * FROM player.playerbot_yohara_sungma_bak_item WHERE owner_id IN (%s);' % plist,
          'DELETE FROM common.playerbot_core_handover WHERE pid IN (%s);' % plist,
          "DELETE FROM common.playerbot_yohara_cohort WHERE purpose = '%s';" % PURPOSE,

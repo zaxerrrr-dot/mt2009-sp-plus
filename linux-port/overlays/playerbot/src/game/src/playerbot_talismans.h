@@ -545,6 +545,14 @@ namespace
 		const TPlayerBotTalismanPlan& p = GetPlayerBotTalismanPlan(ch);
 		if (p.projectId != 0 && item->GetID() == p.projectId)
 			return true;
+		// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: a talisman of another element at least as strong as the worn one is the
+		// talisman of another map (the Yohara maps' cohort carries one an element - tools/yohara_bot_cohort_sungma.py),
+		// not goods for the merchant or a counter.
+		LPITEM worn = ch->GetWear(WEAR_PENDANT);
+		if (worn && worn != item && IsPlayerBotTalismanItem(worn) && GetPlayerBotTalismanPlus(item) > 0 &&
+				GetPlayerBotTalismanPlus(item) >= GetPlayerBotTalismanPlus(worn) &&
+				GetPlayerBotTalismanElementOf(item->GetVnum()) != GetPlayerBotTalismanElementOf(worn->GetVnum()))
+			return true;
 		return item == FindPlayerBotBestTalisman(ch);
 	}
 
