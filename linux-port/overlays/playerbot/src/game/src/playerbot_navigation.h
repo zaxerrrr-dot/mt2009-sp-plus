@@ -196,7 +196,13 @@ namespace
 	// and region ids (PLAYERBOT_NAV_GRID_BYTES_PER_CELL) and the HPA graph.
 	// The stamps are global too, so a stamp left by another map's search never
 	// matches the running one.
-	const unsigned int PLAYERBOT_NAV_GRID_BYTES_PER_CELL = 11;
+	// MT2009_PLUS_BOT_NAV_PACKED_CELLS_V1: the flags byte (1) and the 16-bit
+	// component and region ids (2 + 2); 11 before.
+	const unsigned int PLAYERBOT_NAV_GRID_BYTES_PER_CELL = 5;
+	const BYTE PLAYERBOT_NAV_CELL_BLOCKED = 1 << 0;
+	const BYTE PLAYERBOT_NAV_CELL_WATER = 1 << 1;
+	const int PLAYERBOT_NAV_CELL_CLEARANCE_SHIFT = 2;
+	const int PLAYERBOT_NAV_CELL_CLEARANCE_MASK = 7;
 	const unsigned int PLAYERBOT_NAV_SCRATCH_BYTES_PER_CELL = 10;
 	// A grid (or a scratch growth) that did not fit in the 32-bit address space
 	// is not retried before this: the map's bots walk without route planning.
@@ -401,9 +407,9 @@ namespace
 				DWORD abstractRegionCount = 0;
 				try
 				{
-					m_blocked.assign(cellCount, 1);
-					m_water.assign(cellCount, 0);
-					m_clearance.assign(cellCount, 0);
+					// MT2009_PLUS_BOT_NAV_PACKED_CELLS_V1: one byte of flags and 16-bit ids.
+					m_cell.assign(cellCount, PLAYERBOT_NAV_CELL_BLOCKED);
+					std::vector<DWORD>().swap(m_componentWide);
 					m_component.assign(cellCount, 0);
 
 					for (int gy = 0; gy < m_height; ++gy)
@@ -437,8 +443,8 @@ namespace
 							}
 
 							const int index = Index(gx, gy);
-							m_blocked[index] = blocked ? 1 : 0;
-							m_water[index] = (!blocked && wet) ? 1 : 0;
+							m_cell[index] = blocked ? PLAYERBOT_NAV_CELL_BLOCKED :
+									(wet ? PLAYERBOT_NAV_CELL_WATER : 0);
 							if (!blocked)
 								++walkableCount;
 						}
@@ -467,6 +473,67 @@ namespace
 				return true;
 			}
 
+			// MT2009_PLUS_BOT_NAV_PACKED_CELLS_V1: the packed cell and the 16-bit ids.
+			bool IsBlockedIndex(int index) const
+			{
+				return (m_cell[index] & PLAYERBOT_NAV_CELL_BLOCKED) != 0;
+			}
+
+			bool IsWaterIndex(int index) const
+			{
+				return (m_cell[index] & PLAYERBOT_NAV_CELL_WATER) != 0;
+			}
+
+			BYTE Clearance(int index) const
+			{
+				return (BYTE)((m_cell[index] >> PLAYERBOT_NAV_CELL_CLEARANCE_SHIFT) & PLAYERBOT_NAV_CELL_CLEARANCE_MASK);
+			}
+
+			void SetClearance(int index, BYTE clearance)
+			{
+				m_cell[index] = (BYTE)((m_cell[index] & ~(PLAYERBOT_NAV_CELL_CLEARANCE_MASK << PLAYERBOT_NAV_CELL_CLEARANCE_SHIFT)) |
+						((clearance & PLAYERBOT_NAV_CELL_CLEARANCE_MASK) << PLAYERBOT_NAV_CELL_CLEARANCE_SHIFT));
+			}
+
+			DWORD ComponentAt(int index) const
+			{
+				return m_componentWide.empty() ? (DWORD)m_component[index] : m_componentWide[index];
+			}
+
+			void SetComponent(int index, DWORD component)
+			{
+				if (m_componentWide.empty() && component > 0xffffU)
+					WidenIds(m_component, m_componentWide, "component");
+				if (m_componentWide.empty())
+					m_component[index] = (uint16_t)component;
+				else
+					m_componentWide[index] = component;
+			}
+
+			DWORD CellRegion(int index) const
+			{
+				return m_cellRegionWide.empty() ? (DWORD)m_cellRegion[index] : m_cellRegionWide[index];
+			}
+
+			void SetCellRegion(int index, DWORD region)
+			{
+				if (m_cellRegionWide.empty() && region > 0xffffU)
+					WidenIds(m_cellRegion, m_cellRegionWide, "region");
+				if (m_cellRegionWide.empty())
+					m_cellRegion[index] = (uint16_t)region;
+				else
+					m_cellRegionWide[index] = region;
+			}
+
+			// The 32-bit fallback: copies the ids built so far and drops the
+			// 16-bit array (a bad_alloc here ends the build like any other).
+			void WidenIds(std::vector<uint16_t>& narrow, std::vector<DWORD>& wide, const char* what)
+			{
+				wide.assign(narrow.begin(), narrow.end());
+				std::vector<uint16_t>().swap(narrow);
+				sys_log(0, "PLAYERBOT_NAV: map=%ld %s ids exceed 16 bits, using 32-bit ids for it", m_mapIndex, what);
+			}
+
 			bool IsInitializedFor(long mapIndex) const
 			{
 				return m_initialized && m_mapIndex == mapIndex;
@@ -491,7 +558,7 @@ namespace
 
 			bool IsBlockedCell(int gx, int gy) const
 			{
-				return !IsInsideCell(gx, gy) || m_blocked[Index(gx, gy)] != 0;
+				return !IsInsideCell(gx, gy) || IsBlockedIndex(Index(gx, gy)) != 0;
 			}
 
 			// Is the character standing somewhere no step can be taken from?
@@ -631,7 +698,7 @@ namespace
 				WorldToCell(targetX, targetY, tx, ty);
 				if (!FindNearestWalkableCell(sx, sy, 4, 0, 0))
 					return false;
-				const DWORD component = m_component[Index(sx, sy)];
+				const DWORD component = ComponentAt(Index(sx, sy));
 				if (component == 0)
 					return false;
 				// Resolve the target on its own terrain first and only then compare
@@ -639,7 +706,7 @@ namespace
 				// would incorrectly bridge a lake or wall.
 				if (!FindNearestWalkableCell(tx, ty, 2, 0, 0))
 					return false;
-				return m_component[Index(tx, ty)] == component;
+				return ComponentAt(Index(tx, ty)) == component;
 			}
 
 			// A component under PLAYERBOT_NAV_POCKET_PERMILLE of the map's
@@ -678,7 +745,7 @@ namespace
 									IsBlockedCell(gx, gy))
 								continue;
 							const int index = Index(gx, gy);
-							if (m_component[index] == 0 || IsPocketComponent(m_component[index]))
+							if (ComponentAt(index) == 0 || IsPocketComponent(ComponentAt(index)))
 								continue;
 							const DWORD tie = PlayerBotNavHash(seed ^ (DWORD)index);
 							if (!found || tie < bestTie)
@@ -707,7 +774,7 @@ namespace
 				WorldToCell(x, y, gx, gy);
 				if (!FindNearestWalkableCell(gx, gy, maxRadiusCells, 0, 0))
 					return 0;
-				return m_component[Index(gx, gy)];
+				return ComponentAt(Index(gx, gy));
 			}
 
 			bool FindNearestWalkableWorld(long x, long y, int maxRadiusCells,
@@ -885,7 +952,7 @@ namespace
 				if (!FindNearestWalkableCell(sx, sy, 4, 0, seed))
 					return PLAYERBOT_NAV_PLAN_UNREACHABLE;
 
-				const DWORD component = m_component[Index(sx, sy)];
+				const DWORD component = ComponentAt(Index(sx, sy));
 				if (component == 0)
 					return PLAYERBOT_NAV_PLAN_UNREACHABLE;
 				if (flexibleTargetSnap)
@@ -908,11 +975,11 @@ namespace
 								m_mapIndex, startX, startY, targetX, targetY, targetSnapRadius);
 						return PLAYERBOT_NAV_PLAN_UNREACHABLE;
 					}
-					if (m_component[Index(tx, ty)] != component)
+					if (ComponentAt(Index(tx, ty)) != component)
 					{
 						sys_log(1, "PLAYERBOT_NAV: disconnected goal map=%ld from=(%ld,%ld) to=(%ld,%ld) start_component=%u target_component=%u",
 								m_mapIndex, startX, startY, targetX, targetY,
-								(unsigned int)component, (unsigned int)m_component[Index(tx, ty)]);
+								(unsigned int)component, (unsigned int)ComponentAt(Index(tx, ty)));
 						return PLAYERBOT_NAV_PLAN_UNREACHABLE;
 					}
 				}
@@ -939,8 +1006,8 @@ namespace
 				{
 					sys_log(1, "PLAYERBOT_NAV: hierarchical route failed map=%ld from=(%ld,%ld) to=(%ld,%ld) start_region=%u target_region=%u",
 							m_mapIndex, startX, startY, targetX, targetY,
-							(unsigned int)m_cellRegion[startIndex],
-							(unsigned int)m_cellRegion[targetIndex]);
+							(unsigned int)CellRegion(startIndex),
+							(unsigned int)CellRegion(targetIndex));
 					return PLAYERBOT_NAV_PLAN_UNREACHABLE;
 				}
 
@@ -1024,15 +1091,15 @@ namespace
 							continue;
 
 						const int nextIndex = Index(nx, ny);
-						if (m_component[nextIndex] != component)
+						if (ComponentAt(nextIndex) != component)
 							continue;
 
 						int wallPenalty = 0;
-						if (m_clearance[nextIndex] <= 1) wallPenalty = 8;
-						else if (m_clearance[nextIndex] == 2) wallPenalty = 3;
-						else if (m_clearance[nextIndex] == 3) wallPenalty = 1;
+						if (Clearance(nextIndex) <= 1) wallPenalty = 8;
+						else if (Clearance(nextIndex) == 2) wallPenalty = 3;
+						else if (Clearance(nextIndex) == 3) wallPenalty = 1;
 						const int waterPenalty =
-								m_water[nextIndex] ? PLAYERBOT_NAV_WATER_PENALTY : 0;
+								IsWaterIndex(nextIndex) ? PLAYERBOT_NAV_WATER_PENALTY : 0;
 						const int laneJitter = (int)(PlayerBotNavHash(seed ^ (DWORD)nextIndex) & 1U);
 						const int newCost = current.g + moveCost[direction] + wallPenalty +
 								waterPenalty + laneJitter;
@@ -1199,7 +1266,7 @@ namespace
 			}
 
 			// The engine's own answer for the cell's centre point - the same point,
-			// and the same bits, that m_blocked was built from when the grid was made.
+			// and the same bits, that the blocked bit was built from when the grid was made.
 			// The planner therefore never asks this: a corridor search put the
 			// question to the sectree tree up to twenty-four times for every node it
 			// expanded, and a thousand plans a minute spent thirty-one seconds of
@@ -1315,7 +1382,7 @@ namespace
 									IsBlockedCell(x, y))
 								continue;
 							const int index = Index(x, y);
-							if (requiredComponent != 0 && m_component[index] != requiredComponent)
+							if (requiredComponent != 0 && ComponentAt(index) != requiredComponent)
 								continue;
 							// MT2009_PLUS_NAV_LIVE_OBJECT_V1: and free in the live world
 							// too. A guild building (ATTR_OBJECT, placed long after this
@@ -1344,6 +1411,8 @@ namespace
 				return false;
 			}
 
+			// MT2009_PLUS_BOT_NAV_PACKED_CELLS_V1: same two passes, the value now
+			// lives in three bits of the packed cell (it never exceeds 4).
 			void BuildClearance()
 			{
 				for (int y = 0; y < m_height; ++y)
@@ -1351,11 +1420,15 @@ namespace
 					for (int x = 0; x < m_width; ++x)
 					{
 						const int index = Index(x, y);
-						m_clearance[index] = m_blocked[index] ? 0 : 4;
-						if (m_blocked[index])
+						if (IsBlockedIndex(index))
+						{
+							SetClearance(index, 0);
 							continue;
-						if (x > 0) m_clearance[index] = std::min<BYTE>(m_clearance[index], (BYTE)(m_clearance[Index(x - 1, y)] + 1));
-						if (y > 0) m_clearance[index] = std::min<BYTE>(m_clearance[index], (BYTE)(m_clearance[Index(x, y - 1)] + 1));
+						}
+						BYTE clearance = 4;
+						if (x > 0) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x - 1, y)) + 1));
+						if (y > 0) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x, y - 1)) + 1));
+						SetClearance(index, clearance);
 					}
 				}
 				for (int y = m_height - 1; y >= 0; --y)
@@ -1363,10 +1436,12 @@ namespace
 					for (int x = m_width - 1; x >= 0; --x)
 					{
 						const int index = Index(x, y);
-						if (m_blocked[index])
+						if (IsBlockedIndex(index))
 							continue;
-						if (x + 1 < m_width) m_clearance[index] = std::min<BYTE>(m_clearance[index], (BYTE)(m_clearance[Index(x + 1, y)] + 1));
-						if (y + 1 < m_height) m_clearance[index] = std::min<BYTE>(m_clearance[index], (BYTE)(m_clearance[Index(x, y + 1)] + 1));
+						BYTE clearance = Clearance(index);
+						if (x + 1 < m_width) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x + 1, y)) + 1));
+						if (y + 1 < m_height) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x, y + 1)) + 1));
+						SetClearance(index, clearance);
 					}
 				}
 			}
@@ -1384,13 +1459,13 @@ namespace
 					for (int x = 0; x < m_width; ++x)
 					{
 						const int firstIndex = Index(x, y);
-						if (m_blocked[firstIndex] || m_component[firstIndex] != 0)
+						if (IsBlockedIndex(firstIndex) || ComponentAt(firstIndex) != 0)
 							continue;
 
 						++component;
 						queue.clear();
 						queue.push_back(firstIndex);
-						m_component[firstIndex] = component;
+						SetComponent(firstIndex, component);
 						for (size_t head = 0; head < queue.size(); ++head)
 						{
 							int cx, cy;
@@ -1405,9 +1480,9 @@ namespace
 										(IsBlockedCell(cx + moveX[direction], cy) || IsBlockedCell(cx, cy + moveY[direction])))
 									continue;
 								const int nextIndex = Index(nx, ny);
-								if (m_component[nextIndex] != 0)
+								if (ComponentAt(nextIndex) != 0)
 									continue;
-								m_component[nextIndex] = component;
+								SetComponent(nextIndex, component);
 								queue.push_back(nextIndex);
 							}
 						}
@@ -1425,7 +1500,7 @@ namespace
 					return;
 
 				TAbstractRegion& region = m_regions[fromRegion];
-				const BYTE clearance = std::min(m_clearance[fromCell], m_clearance[toCell]);
+				const BYTE clearance = std::min(Clearance(fromCell), Clearance(toCell));
 				int candidateX, candidateY;
 				CellFromIndex(fromCell, candidateX, candidateY);
 				int sameNeighbourCount = 0;
@@ -1471,6 +1546,7 @@ namespace
 			DWORD BuildAbstractRegions()
 			{
 				const size_t cellCount = (size_t)m_width * (size_t)m_height;
+				std::vector<DWORD>().swap(m_cellRegionWide);
 				m_cellRegion.assign(cellCount, 0);
 				m_regions.clear();
 				TAbstractRegion unused;
@@ -1500,7 +1576,7 @@ namespace
 							for (int x = minX; x < maxX; ++x)
 							{
 								const int firstCell = Index(x, y);
-								if (m_blocked[firstCell] || m_cellRegion[firstCell] != 0)
+								if (IsBlockedIndex(firstCell) || CellRegion(firstCell) != 0)
 									continue;
 
 								const DWORD regionID = (DWORD)m_regions.size();
@@ -1510,7 +1586,7 @@ namespace
 								m_regions.push_back(region);
 								queue.clear();
 								queue.push_back(firstCell);
-								m_cellRegion[firstCell] = regionID;
+								SetCellRegion(firstCell, regionID);
 
 								for (size_t head = 0; head < queue.size(); ++head)
 								{
@@ -1528,9 +1604,9 @@ namespace
 												 IsBlockedCell(currentX, currentY + moveY[direction])))
 											continue;
 										const int nextCell = Index(nextX, nextY);
-										if (m_cellRegion[nextCell] != 0)
+										if (CellRegion(nextCell) != 0)
 											continue;
-										m_cellRegion[nextCell] = regionID;
+										SetCellRegion(nextCell, regionID);
 										queue.push_back(nextCell);
 									}
 								}
@@ -1547,24 +1623,24 @@ namespace
 					for (int x = 0; x < m_width; ++x)
 					{
 						const int cell = Index(x, y);
-						if (m_blocked[cell])
+						if (IsBlockedIndex(cell))
 							continue;
 						if (x + 1 < m_width && (x + 1) % PLAYERBOT_NAV_CLUSTER_CELLS == 0)
 						{
 							const int other = Index(x + 1, y);
-							if (!m_blocked[other])
+							if (!IsBlockedIndex(other))
 							{
-								AddAbstractPortal(m_cellRegion[cell], m_cellRegion[other], cell, other);
-								AddAbstractPortal(m_cellRegion[other], m_cellRegion[cell], other, cell);
+								AddAbstractPortal(CellRegion(cell), CellRegion(other), cell, other);
+								AddAbstractPortal(CellRegion(other), CellRegion(cell), other, cell);
 							}
 						}
 						if (y + 1 < m_height && (y + 1) % PLAYERBOT_NAV_CLUSTER_CELLS == 0)
 						{
 							const int other = Index(x, y + 1);
-							if (!m_blocked[other])
+							if (!IsBlockedIndex(other))
 							{
-								AddAbstractPortal(m_cellRegion[cell], m_cellRegion[other], cell, other);
-								AddAbstractPortal(m_cellRegion[other], m_cellRegion[cell], other, cell);
+								AddAbstractPortal(CellRegion(cell), CellRegion(other), cell, other);
+								AddAbstractPortal(CellRegion(other), CellRegion(cell), other, cell);
 							}
 						}
 					}
@@ -1588,7 +1664,7 @@ namespace
 					DWORD seed, std::vector<int>& path)
 			{
 				if (startCell < 0 || targetCell < 0 || regionID == 0 ||
-						m_cellRegion[startCell] != regionID || m_cellRegion[targetCell] != regionID)
+						CellRegion(startCell) != regionID || CellRegion(targetCell) != regionID)
 					return false;
 
 				if (startCell == targetCell)
@@ -1625,7 +1701,7 @@ namespace
 								 IsBlockedCell(currentX, currentY + moveY[direction])))
 							continue;
 						const int nextCell = Index(nextX, nextY);
-						if (m_cellRegion[nextCell] != regionID || s_playerBotNavScratch.nodeToken[nextCell] == token)
+						if (CellRegion(nextCell) != regionID || s_playerBotNavScratch.nodeToken[nextCell] == token)
 							continue;
 						s_playerBotNavScratch.nodeToken[nextCell] = token;
 						s_playerBotNavScratch.parent[nextCell] = queue[head];
@@ -1765,16 +1841,16 @@ namespace
 								 IsBlockedCell(currentX, currentY + moveY[direction])))
 							continue;
 						const int nextCell = Index(nextX, nextY);
-						const DWORD nextRegion = m_cellRegion[nextCell];
+						const DWORD nextRegion = CellRegion(nextCell);
 						if (nextRegion == 0 || nextRegion >= allowed.size() || !allowed[nextRegion])
 							continue;
 
 						int wallPenalty = 0;
-						if (m_clearance[nextCell] <= 1) wallPenalty = 8;
-						else if (m_clearance[nextCell] == 2) wallPenalty = 3;
-						else if (m_clearance[nextCell] == 3) wallPenalty = 1;
+						if (Clearance(nextCell) <= 1) wallPenalty = 8;
+						else if (Clearance(nextCell) == 2) wallPenalty = 3;
+						else if (Clearance(nextCell) == 3) wallPenalty = 1;
 						const int waterPenalty =
-								m_water[nextCell] ? PLAYERBOT_NAV_WATER_PENALTY : 0;
+								IsWaterIndex(nextCell) ? PLAYERBOT_NAV_WATER_PENALTY : 0;
 						const int laneJitter = (int)(PlayerBotNavHash(seed ^ (DWORD)nextCell) & 1U);
 						const int newCost = current.g + moveCost[direction] + wallPenalty +
 								waterPenalty + laneJitter;
@@ -1937,12 +2013,12 @@ namespace
 			void ReleaseGrid()
 			{
 				m_initialized = false;
-				std::vector<BYTE>().swap(m_blocked);
-				std::vector<BYTE>().swap(m_water);
-				std::vector<BYTE>().swap(m_clearance);
-				std::vector<DWORD>().swap(m_component);
+				std::vector<BYTE>().swap(m_cell);
+				std::vector<uint16_t>().swap(m_component);
+				std::vector<DWORD>().swap(m_componentWide);
 				std::vector<DWORD>().swap(m_componentCells);
-				std::vector<DWORD>().swap(m_cellRegion);
+				std::vector<uint16_t>().swap(m_cellRegion);
+				std::vector<DWORD>().swap(m_cellRegionWide);
 				std::vector<TAbstractRegion>().swap(m_regions);
 				m_routeCache.clear();
 				m_routeCacheCount = 0;
@@ -1955,8 +2031,8 @@ namespace
 				path.clear();
 				if (startCell < 0 || targetCell < 0)
 					return false;
-				const DWORD startRegion = m_cellRegion[startCell];
-				const DWORD targetRegion = m_cellRegion[targetCell];
+				const DWORD startRegion = CellRegion(startCell);
+				const DWORD targetRegion = CellRegion(targetCell);
 				if (startRegion == 0 || targetRegion == 0)
 					return false;
 				if (startRegion == targetRegion)
@@ -2070,12 +2146,17 @@ namespace
 			long m_baseY;
 			int m_width;
 			int m_height;
-			std::vector<BYTE> m_blocked;
-			// Walkable, but water: a bridge deck or a shallow. Costs extra to cross
-			// so that dry ground wins wherever there is a choice.
-			std::vector<BYTE> m_water;
-			std::vector<BYTE> m_clearance;
-			std::vector<DWORD> m_component;
+			// MT2009_PLUS_BOT_NAV_PACKED_CELLS_V1: a cell is one byte - blocked,
+			// water (walkable, but a bridge deck or a shallow: costs extra to cross
+			// so that dry ground wins wherever there is a choice) and the clearance
+			// (0-4) - where it was three bytes; the component and region ids are
+			// 16-bit (largest on any map of either line: 95 components, 28307
+			// regions on the desert). A map whose ids outgrow 16 bits is moved to
+			// the 32-bit copy (m_componentWide / m_cellRegionWide) as it is built,
+			// with a log line - an id is never wrapped.
+			std::vector<BYTE> m_cell;
+			std::vector<uint16_t> m_component;
+			std::vector<DWORD> m_componentWide;
 			// Cells in each component (by label, 0 unused), and on the map: what
 			// IsPocketComponent measures by.
 			std::vector<DWORD> m_componentCells;
@@ -2086,7 +2167,8 @@ namespace
 			// not grow) switches the map's route planning off until this stamp.
 			DWORD m_dwNavOffUntil = 0;
 			bool m_bAllocFailLogged = false;
-			std::vector<DWORD> m_cellRegion;
+			std::vector<uint16_t> m_cellRegion;
+			std::vector<DWORD> m_cellRegionWide;
 			struct TCachedRoute
 			{
 				long startX;
