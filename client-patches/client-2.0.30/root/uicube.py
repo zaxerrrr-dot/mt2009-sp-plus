@@ -8,6 +8,7 @@ import item
 import grp
 import uiScriptLocale
 import uiToolTip
+import chat # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
 
 # MT2009_PLUS_EKWIPUNEK_V1: an item of the extra inventory (uiekwipunek.py) in the crafting window. Its place is
 # EKW_POS_BASE * window + cell here (the bag's cells stay as they were) and "/ekwipunek kostka" puts it in; the
@@ -206,6 +207,16 @@ class CubeWindow(ui.ScriptWindow):
 		self.CUBE_SLOT_COUNTX = 8
 		self.CUBE_SLOT_COUNTY = 3
 
+		# MT2009_PLUS_NPC_CRAFT_WINDOW_V1: the row's Yang, chance and Gaya (the server's "cube m_info") for its tooltip, and a click on
+		# a row's result or material chooses that recipe ("/cube pick <vnum>") - rows with the same materials (the jade
+		# jewellery) are made as the player chose, not the first in cube.txt
+		self.cubeResultExtra = {}
+		self.pickedResultIndex = -1
+		row = 0
+		for resultSlot in self.resultSlots:
+			resultSlot.SetSelectItemSlotEvent(lambda trash = 0, rowIndex = row: self.__OnSelectResultSlot(trash, rowIndex))
+			row = row + 1
+
 	def SetItemToolTip(self, itemTooltip):
 		self.tooltipItem = itemTooltip
 
@@ -231,6 +242,30 @@ class CubeWindow(ui.ScriptWindow):
 
 		self.cubeMaterialInfos[itemIndex][orderIndex].append((itemVnum, itemCount))
 		#print "AddMaterialInfo", itemIndex, orderIndex, itemVnum, itemCount, self.cubeMaterialInfos
+
+	def SetResultExtra(self, itemIndex, gold, chance, gaya): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+		self.cubeResultExtra[itemIndex] = (gold, chance, gaya)
+
+	def __PickRow(self, resultIndex): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+		if resultIndex < 0 or resultIndex >= len(self.cubeResultInfos):
+			return
+		isNew = resultIndex != self.pickedResultIndex
+		self.pickedResultIndex = resultIndex
+		(itemVnum, itemCount) = self.cubeResultInfos[resultIndex]
+		(gold, chance, gaya) = self.cubeResultExtra.get(resultIndex, (0, "", 0))
+		net.SendChatPacket("/cube pick %d" % itemVnum)
+		if self.needMoney:
+			self.needMoney.SetText(localeInfo.NumberToMoneyString(gold))
+		if not isNew:
+			return
+		item.SelectItem(itemVnum)
+		text = "Wybrany przepis: %s" % item.GetItemName()
+		if chance:
+			text += " (szansa %s%%)" % chance
+		chat.AppendChat(chat.CHAT_TYPE_INFO, text)
+
+	def __OnSelectResultSlot(self, trash, resultIndex): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+		self.__PickRow(resultIndex + self.firstSlotIndex)
 
 	def ClearCubeResultItem(self):
 		self.cubeResultInfos = []
@@ -268,11 +303,26 @@ class CubeWindow(ui.ScriptWindow):
 
 		self.tooltipItem.AddItemData(itemVnum, metinSlot, attrSlot)
 
+		# MT2009_PLUS_NPC_CRAFT_WINDOW_V1: what the recipe takes besides the materials, and its chance
+		extra = self.cubeResultExtra.get(resultIndex)
+		if extra:
+			(gold, chance, gaya) = extra
+			self.tooltipItem.AppendSpace(5)
+			if gold > 0:
+				self.tooltipItem.AppendTextLine("Koszt: %s" % localeInfo.NumberToMoneyString(gold), grp.GenerateColor(1.0, 0.85, 0.4, 1.0))
+			if gaya > 0:
+				self.tooltipItem.AppendTextLine("Gaya: %d" % gaya, grp.GenerateColor(0.6, 0.85, 1.0, 1.0))
+			if chance:
+				self.tooltipItem.AppendTextLine("Szansa powodzenia: %s%%" % chance, grp.GenerateColor(0.5411, 0.7254, 0.5568, 1.0))
+			self.tooltipItem.AppendTextLine("Kliknij, aby wybra\xe6 ten przepis.")
+			self.tooltipItem.ResizeToolTip()
+
 
 	def __OnSelectMaterialSlot(self, trash, resultIndex, materialIndex):
 		resultIndex = resultIndex + self.firstSlotIndex
 		if resultIndex not in self.cubeMaterialInfos:
 			return
+		self.__PickRow(resultIndex) # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
 
 		materialInfo = self.cubeMaterialInfos[resultIndex]
 		materialCount = len(materialInfo[materialIndex])
@@ -388,6 +438,8 @@ class CubeWindow(ui.ScriptWindow):
 		self.cubeItemInfo = {}
 		self.cubeResultInfos = []
 		self.cubeMaterialInfos = {}
+		self.cubeResultExtra = {} # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+		self.pickedResultIndex = -1
 
 		self.Refresh()
 		self.Show()
@@ -413,6 +465,8 @@ class CubeWindow(ui.ScriptWindow):
 		self.cubeItemInfo = {}
 		self.cubeMaterialInfos = {}
 		self.cubeResultInfos = {}
+		self.cubeResultExtra = {} # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+		self.pickedResultIndex = -1
 		self.firstSlotIndex = 0
 		self.contentScrollbar.SetPos(0)
 
@@ -515,6 +569,8 @@ class CubeWindow(ui.ScriptWindow):
 		print "큐브 제작 시작"
 		#for invenPos in self.cubeItemInfo.values():
 		#	net.SendChatPacket("/cube add " + str(invenPos))
+		if 0 <= self.pickedResultIndex < len(self.cubeResultInfos): # MT2009_PLUS_NPC_CRAFT_WINDOW_V1: the chosen row once more
+			net.SendChatPacket("/cube pick %d" % self.cubeResultInfos[self.pickedResultIndex][0])
 		net.SendChatPacket("/cube make")
 
 	def __OnSelectEmptySlot(self, selectedSlotPos):

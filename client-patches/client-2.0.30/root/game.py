@@ -2862,6 +2862,9 @@ class GameWindow(ui.ScriptWindow):
 			i = 0
 			for cubeInfo in cubeInfoList:
 				self.interface.wndCube.AddCubeResultItem(cubeInfo["vnum"], cubeInfo["count"])
+				if "extra" in cubeInfo: # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+					(gold, chance, gaya) = cubeInfo["extra"]
+					self.interface.wndCube.SetResultExtra(i, gold, chance, gaya)
 
 				j = 0
 				for materialList in cubeInfo["materialList"]:
@@ -2961,6 +2964,15 @@ class GameWindow(ui.ScriptWindow):
 					# the next rows had materials (KeyError in uicube's Refresh) and left rows 2-3 empty; shown after the loop
 					if self.currentCubeNPC in (20475, 20476, 20477, 20478, 20479) and gold > 0:
 						smithGold = gold
+				# MT2009_PLUS_NPC_CRAFT_WINDOW_V1: "materials/Yang/chance[/Gaya]" - the row's chance and Gaya for its tooltip
+				chance = ""
+				gaya = 0
+				if 2 < len(splitResult):
+					chance = splitResult[2]
+				if 3 < len(splitResult) and splitResult[3].isdigit():
+					gaya = int(splitResult[3])
+				cubeInfo[startIndex + itemIndex]["extra"] = (gold, chance, gaya)
+				self.interface.wndCube.SetResultExtra(startIndex + itemIndex, gold, chance, gaya)
 
 				#print "splitResult : ", splitResult
 				eachMaterialList = splitResult[0].split("&")
