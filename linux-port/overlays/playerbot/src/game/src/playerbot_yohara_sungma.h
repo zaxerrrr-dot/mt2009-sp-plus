@@ -44,11 +44,12 @@
 // On a map: the spots (PLAYERBOT_SUNGMA_HUBS_<map>, tools/yohara_bot_sungma_map.py on the map's files and
 // server_attr) carry 100 + the Champion floor in their level columns (PlayerBotHubLevel, playerbot_wandering.h) -
 // the two by the arrival from the map's floor, the stronger packs a level or two over it; the bosses are a party's
-// (their raid hubs); the Metins and the outposts (1.9-2.7 M health) for a party of three or a bot three Champion levels
-// into its map's band (IsPlayerBotSungmaStoneForMe). The stay is an expedition (PLAYERBOT_SUNGMA_STAY_MIN, a cohort's
+// (their raid hubs); the Metins and the outposts for a party of three only (IsPlayerBotSungmaStoneForMe -
+// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1). The stay is an expedition (PLAYERBOT_SUNGMA_STAY_MIN, a cohort's
 // member its cohort's): the belt kept full on the map (RestockPlayerBotYohara), a member's bag tidied where it stands.
 // Deaths: PLAYERBOT_YOHARA_DEATHS_WINDOWED (3) in half an hour - a step down a map for two hours ("not now" on this
-// one); PLAYERBOT_SUNGMA_DEATHS_STAY (10) in a stay - home (a member: its rest).
+// one), warped there at once (MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: no walk to the portal through the packs that killed
+// it); PLAYERBOT_SUNGMA_DEATHS_STAY (10) in a stay - home (a member: its rest).
 //
 // The Champion's growth: a bot's champion experience comes as a person's (champion::GiveExp; conqueror_exp_rate_bot
 // on top - 100 by default); its Sung Ma points are spent at once, on the stat its next map lacks most (Sila,
@@ -350,7 +351,7 @@
 	const DWORD PLAYERBOT_SUNGMA_CHAMBER_MS = 12 * 60 * 1000;
 	const DWORD PLAYERBOT_SUNGMA_NOT_NOW_MS = 2 * 60 * 60 * 1000;
 	const int PLAYERBOT_SUNGMA_DEATHS_STAY = 10;
-	const int PLAYERBOT_SUNGMA_STONE_ALONE_LEVELS = 3;	// a bot this many Champion levels into its map's band takes a Metin alone
+	const DWORD PLAYERBOT_SUNGMA_HP_LOOK_MS = 10 * 1000;	// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1
 
 	int GetPlayerBotSungmaSlot(long mapIndex)
 	{
@@ -425,8 +426,11 @@
 		bool bSeen, bStuck;
 		int iLastLevel, iLastChampion;
 		DWORD dwLastExp, dwLastNeed, dwLastChampionExp;
+		bool bFlee;			// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: stepped down after its deaths - the next move warps
+		DWORD dwNextHpLook;	// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: the maximum health's look (TrackPlayerBotSungma)
 		TPlayerBotSungmaBot() : dwNextPoints(0), dwNextPick(0), dwOnMapSince(0), dwWalkSince(0), dwChamberSince(0), lMapSeen(0),
-			bSeen(false), bStuck(false), iLastLevel(0), iLastChampion(0), dwLastExp(0), dwLastNeed(0), dwLastChampionExp(0) {}
+			bSeen(false), bStuck(false), iLastLevel(0), iLastChampion(0), dwLastExp(0), dwLastNeed(0), dwLastChampionExp(0),
+			bFlee(false), dwNextHpLook(0) {}
 	};
 	std::map<DWORD, TPlayerBotSungmaBot> s_mapPlayerBotSungma;
 
@@ -593,9 +597,17 @@
 		const int slot = GetPlayerBotSungmaSlot(ch->GetMapIndex());
 		if (slot < 0)
 			return -1;
-		if (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3)
-			return 1;
-		return GetPlayerBotChampionLevel(ch) >= (int)PLAYERBOT_SUNGMA_MAPS[slot].bChampionMin + PLAYERBOT_SUNGMA_STONE_ALONE_LEVELS ? 1 : 0;
+		// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: a party of three only. A Sung Ma map's stone - the outposts (Posterunek Trolli /
+		// Myr 8625-8627, 0.58-0.9 M health; 25 on Dongan, 23 on Seoganland, 19 on Namgan) and the Metins (1.9-2.5 M) -
+		// calls 22 groups of its map's monsters (char_state.cpp __StateIdle_Stone: 1+1+2+2+2+2+3+3+3+3 at 99..10%, four or
+		// five monsters of 87-147 k health a group, berserk, archers and shamans among them) onto whoever hits it. The
+		// first test (22 October, 12:37-12:55, game3 ch1) let a bot three Champion levels into its band take one alone:
+		// the bots stepped down from Seoganland / Namgan (Champion 6-11) were exactly those on Dongan and Seoganland, and
+		// 51 of Dongan's 73 deaths and 34 of Seoganland's 53 came within 25 m of an outpost - one bot died 17 times at one
+		// (killed at last by another, log.log STONE_KILL 8625 at its spot), revived where it lay and went back to the stone,
+		// whose fight kept the travel pass (the deaths' step down) away. The higher maps have 0-6 stones each - hence
+		// "the lower maps are deadlier".
+		return ch->GetParty() && ch->GetParty()->GetMemberCount() >= 3 ? 1 : 0;
 	}
 
 	void NotePlayerBotSungmaKill(LPCHARACTER killer, LPCHARACTER victim)
@@ -668,6 +680,25 @@
 		if (stuck && !b.bStuck)
 			++st.stuck;
 		b.bStuck = stuck;
+		// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: the maximum health counted again once the Will is all there. The Sung Ma HP
+		// penalty (ChampionMaxHP: half while Witalnosc is short) is judged at each POINT_MAX_HP change, and ComputePoints
+		// makes the last of those before a glove's Will (the cohort's Witalnosc is the glove's stone) is in - a bot
+		// revived or just landed stood at half until some later change (Namgan, 22 October: 11 995 of 23 990 after a
+		// revive in a pack, 11 290 on landing three seconds before its death). The engine's order is a person's as well
+		// (left for the engine patch); for a bot the poll's look puts it right.
+		const DWORD dwNow = get_dword_time();
+		if (!ch->IsDead() && (int)(dwNow - b.dwNextHpLook) >= 0)
+		{
+			b.dwNextHpLook = dwNow + PLAYERBOT_SUNGMA_HP_LOOK_MS;
+			if (GetPlayerBotSungmaWill(ch, 1) >= GetPlayerBotSungmaReq(slot, 1))
+			{
+				const int before = ch->GetMaxHP();
+				ch->PointChange(POINT_MAX_HP, 0);
+				if (ch->GetMaxHP() > before)
+					PlayerBotLogThrottled("sungma_max_hp", dwNow, "PLAYERBOT_SUNGMA: max hp counted again pid=%u name=%s map=%ld max_hp=%d->%d",
+							ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), before, ch->GetMaxHP());
+			}
+		}
 	}
 
 	// ------------------------------------------------------------ the stay
@@ -688,7 +719,10 @@
 			return 0;
 		const int from = GetPlayerBotSungmaSlot(here), to = GetPlayerBotSungmaSlot(toMap);
 		const TPlayerBotSungmaPortal* portal = NULL;
-		if (from >= 0 && to >= 0 && from != to)
+		// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: a step down after its deaths warps from where it stands. The walk to the portal
+		// went back through the packs that had killed it: 9 of Seoganland's deaths, 11 of Namgan's and 28 of Zejscie's 46
+		// (its rooms are joined by portals only - four minutes of a walk that cannot arrive) came on that walk (22 October).
+		if (from >= 0 && to >= 0 && from != to && !b.bFlee)
 		{
 			// the portal toward it: the next map of the order up or down
 			const long step = PLAYERBOT_SUNGMA_MAPS[to > from ? from + 1 : from - 1].lMap;
@@ -718,7 +752,10 @@
 				++s_aPlayerBotSungmaStats[from].navFail;
 		}
 		b.dwWalkSince = 0;
-		const bool ok = TransitionPlayerBotMap(ch, state, toMap, ax, ay, dwNow, portal ? "sungma_portal" : "sungma_move");
+		const bool ok = TransitionPlayerBotMap(ch, state, toMap, ax, ay, dwNow,
+				portal ? "sungma_portal" : (b.bFlee ? "sungma_flee" : "sungma_move"));
+		if (ok)
+			b.bFlee = false;
 		if (!ok)
 		{
 			if (from >= 0)
@@ -777,6 +814,7 @@
 		if (res.iDeathsWindowed >= PLAYERBOT_YOHARA_DEATHS_WINDOWED && GetPlayerBotSungmaSlot(res.lMap) >= 0)
 		{
 			b.mapNotNow[res.lMap] = dwNow + PLAYERBOT_SUNGMA_NOT_NOW_MS;
+			b.bFlee = true;	// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1
 			res.iDeathsWindowed = 0;
 			res.dwWindowStart = 0;
 			b.dwNextPick = 0;
@@ -831,6 +869,8 @@
 				snprintf(q, sizeof(q), "UPDATE common.playerbot_core_handover SET target_map = %ld WHERE pid = %u AND state = 2", pick, pid);
 				RunPlayerBotYoharaSql(q);
 			}
+			else
+				b.bFlee = false;	// MT2009_PLUS_BOT_SUNGMA_DEATHS_V1: nowhere lower - a later move walks
 		}
 		if (base != res.lMap)
 		{
