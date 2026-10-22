@@ -113,6 +113,14 @@ linux-port/docker/game/special_spawns.baroness.txt
 linux-port/docker/game/ochao/*
 linux-port/docker/game/ochao/map/metin2_map_mt_th_dungeon_01/*
 linux-port/docker/game/ochao/data/monster/trent_officer/*
+linux-port/docker/game/yohara_zaklety/*
+linux-port/docker/game/yohara_zaklety/data/monster/thunder_boss/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_boss/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_boss2/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_general/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_magic/*
+linux-port/docker/game/yohara_zaklety/data/monster/trent_soldier/*
+linux-port/docker/game/yohara_zaklety/map/metin2_map_dawnmist_dungeon_01/*
 linux-port/docker/game/dungeons/*
 linux-port/docker/game/dungeons/data/dungeon/nemere_mt/*
 linux-port/docker/game/dungeons/data/dungeon/razador_mt/*
@@ -434,6 +442,9 @@ linux-port/docker/mariadb/playerbot/kola_items.sql
 # MT2009_PLUS_YELIXIRS_V1: the elixirs of Yohara (tools/yohara_eliksiry) - the items, Huahn-So's recipes and the blend rows
 # (game/Dockerfile appends them; quest eliksiry_yohary in quest/*).
 linux-port/docker/mariadb/playerbot/yohara_eliksiry.sql
+linux-port/docker/mariadb/playerbot/yohara_zaklety.sql
+linux-port/docker/mariadb/playerbot/yohara_items_zaklety.sql
+linux-port/docker/mariadb/playerbot/yohara_zaklety_zywioly.sql
 linux-port/docker/game/cube.eliksiry.txt
 linux-port/docker/game/blend.eliksiry.txt
 # MT2009_PLUS_HERB_BUSY_V1 (server-patches/enginefixes): the busy action's type and the stun's half.
