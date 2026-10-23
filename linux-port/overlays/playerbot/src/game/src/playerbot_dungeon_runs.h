@@ -473,6 +473,8 @@ namespace
 	// runs to every other pass as well.
 	bool IsPlayerBotOnZodiacRun(DWORD pid);
 	bool IsPlayerBotZodiacRunMove(LPCHARACTER ch, long targetMap);
+	// MT2009_PLUS_ZODIAC_RUNS_V7: the bots' own (paid) Zodiac runs count against the core's cap of runs.
+	int CountOwnZruns();
 
 	bool IsPlayerBotOnDungeonRun(DWORD pid)
 	{
@@ -2781,7 +2783,7 @@ namespace
 		// MT2009_PLUS_ATLANTYDA_TEST_V1: an operator's call of one dungeon ("now <key>") is not held by the
 		// core's cap - only by the dungeon's own (8 October: the Atlantyda test calls refused for twenty
 		// minutes while the clock's runs of the others held the cap).
-		const int runsNow = CountPlayerBotDgRuns(-1);
+		const int runsNow = CountPlayerBotDgRuns(-1) + CountOwnZruns();	// MT2009_PLUS_ZODIAC_RUNS_V7
 		const bool overCap = forced < 0 && runsNow >= GetPlayerBotDgRunCap();
 		if (forced < 0 && runsNow >= GetPlayerBotDgRunCap() + PLAYERBOT_DGRUN_STARVED_OVER_CAP)
 		{
