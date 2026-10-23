@@ -56,3 +56,19 @@ ale rdzeń pomijał całe `Reward()` – razem ze zdarzeniem `kill` questów. Li
 Wukonga, 16.10) stał. Teraz w tej gałęzi idzie samo `CQuestManager::Kill` (z zaliczeniem zabójstwa towarzysza jego
 właścicielowi, jak w `Reward()`); doświadczenie, drop, karty, owoce rang i Przepustka Bojowa – dalej nie.
 - `MT2009_PLUS_BOT_SHOP_PAGES4_V1` (slot), (person) (`ikarus_shop_manager.cpp`): sklep offline bota ma 4 strony (320 pól, `playerbot_offline::BOT_SHOP_PAGES` w nakładce, czytane też przez silnik). Sklep gracza dalej najwyżej 2 strony (przełącznik większych sklepów) – linia gracza na polu 160+ jest odrzucana. Test pola premium/zablokowanego (`CanAddItemToShop`, argument BYTE) dla pola za pierwszą stroną pyta o pole 80 – czwarta strona (240–319) zawijała się na pierwszą. `pos` przedmiotu to WORD, pakiet otwarcia sklepu (320 × `TShopItem`) mieści się w rozmiarze WORD. Okno gościa: `client-patches/client-2.0.30/root/offlineshopguest.py` (strony 2×2) – potrzebny nowy klient 2.x.
+
+## Budynki gildii: mapa botów, potwory, powód odmowy (2.37.2)
+
+- `MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1` (declare, define, show, destroy) (`building.h`, `building.cpp`): `CObject::Show`
+  (po oznaczeniu ATTR_OBJECT) i `CObject::Destroy` (po zdjęciu) wołają `g_pfnMt2009ObjectAreaChanged` z prostokątem,
+  który obejmuje wszystkie komórki budynku (suma czterech wartości regionu z `object_proto` + 100 – `ForAttrRegion`
+  przy obrocie o 90° zaczepia ślad w rogu, nie w środku). Nakładka botów (`playerbot_navigation.h`) ustawia ten
+  wskaźnik i odświeża w tym prostokącie siatkę tras (komórki, odstęp od ścian, składowe, regiony i przejścia HPA
+  dotkniętych klastrów). Wcześniej siatka znała tylko budynki stojące przy jej zbudowaniu.
+- `MT2009_PLUS_GUILD_BUILDING_CLEAR_V1` (move, show) (`building.cpp`): potwór stojący na komórce, którą nowy budynek
+  właśnie zablokował, jest przestawiany (`Show`) na najbliższe wolne miejsce (pierścienie co 50 jednostek, 16 kierunków).
+  `RequestCreateObject` nie liczy potworów jako przeszkody, więc wcześniej zostawały zamknięte w ścianach.
+- `MT2009_PLUS_GUILD_BUILD_REFUSE_MSG_V1` (declare, who, globals, reasons, tell) (`building.h`, `building.cpp`, `cmd_gm.cpp`):
+  `RequestCreateObject` zapisuje powód odmowy (poza terenem, inny budynek, ktoś stoi w miejscu budynku – z imieniem),
+  a `/build c` mówi go liderowi (wcześniej tylko serwer testowy dostawał komunikat) i zapisuje w syslog
+  (`BUILD: ... refused ... reason`). Boty (bot sam schodzi z budynku), zwierzaki i wierzchowce nie blokują już budowy.
