@@ -17,6 +17,13 @@ every version here.
 
 ---
 
+## 2.37.2 — (szkic)
+
+### Gildie
+- **Budynki gildii znów można postawić za Yang ze skarbca gildii.** Serwer już wcześniej płacił za budynek najpierw ze skarbca, a resztę brał od lidera, ale okno budowy w kliencie sprawdzało tylko Yang w ekwipunku lidera i od razu pokazywało „za mało Yang”, więc prośba o budowę w ogóle nie docierała do serwera. Poprawiłem okno: liczy teraz Yang lidera razem ze skarbcem gildii (cena świeci się na biało, gdy razem wystarcza). Poprawka jest w kliencie, więc wymaga nowej łatki klienta.
+
+---
+
 ## 2.37.1 — 2026-10-23 — Boty: mniej pamięci, mniej krążenia, samodzielny Zodiak
 
 ### Boty
