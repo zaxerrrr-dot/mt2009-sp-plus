@@ -554,6 +554,8 @@ namespace
 	// runs to every other pass as well.
 	bool IsPlayerBotOnZodiacRun(DWORD pid);
 	bool IsPlayerBotZodiacRunMove(LPCHARACTER ch, long targetMap);
+	// MT2009_PLUS_ZODIAC_RUNS_V7: the bots' own (paid) Zodiac runs count against the core's cap of runs.
+	int CountOwnZruns();
 
 	bool IsPlayerBotOnDungeonRun(DWORD pid)
 	{
@@ -3569,6 +3571,7 @@ namespace
 		for (std::map<int, TPlayerBotDgRun>::const_iterator it = s_mapPlayerBotDgRuns.begin(); it != s_mapPlayerBotDgRuns.end(); ++it)
 			if (PLAYERBOT_DGRUN_DEFS[it->second.iDef].bKind != DGRUN_KIND_SZC)
 				++runsNow;
+		runsNow += CountOwnZruns();	// MT2009_PLUS_ZODIAC_RUNS_V7
 		const bool overCap = forced < 0 && runsNow >= GetPlayerBotDgRunCap();
 		if (forced < 0 && runsNow >= GetPlayerBotDgRunCap() + GetPlayerBotDgRunCapConfig().starvedOverCap && GetPlayerBotYoharaSzcParties() <= 0)
 		{
