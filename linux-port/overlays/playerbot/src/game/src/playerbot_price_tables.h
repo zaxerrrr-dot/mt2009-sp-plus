@@ -367,7 +367,7 @@ namespace
 		{ 30047,   1500000 },	// Ksiega Klatw (the owner, 23 October 2026)
 		{ 30048,    68017 },	// Kawalek Lodu
 		{ 30049,    44214 },	// Lodowy Rog Wieloryba
-		{ 30050,   205217 },	// Matowy Lod
+		{ 30050,   2600000 },	// Matowy Lod (the owner, 23 October 2026)
 		{ 30051,   116783 },	// Nieznany Talizman
 		{ 30052,    50456 },	// Flaga
 		{ 30053,    64624 },	// Niedzwiedzia Skora

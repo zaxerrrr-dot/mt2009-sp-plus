@@ -28,7 +28,7 @@ every version here.
 - **Potwory nie zostają w środku nowego budynku.** Budynek mógł stanąć na potworach (np. bezpańskich psach), które potem zostawały zamknięte w jego ścianach. Poprawiłem to: każdy taki potwór jest od razu przenoszony na najbliższe wolne miejsce obok budynku.
 
 ### Ceny
-- Zmieniłem ceny w cenniku botów: Pamiątka po Demonie – 2 500 000 Yang, Księga Klątw – 1 500 000 Yang.
+- Zmieniłem ceny w cenniku botów: Pamiątka po Demonie – 2 500 000 Yang, Księga Klątw – 1 500 000 Yang, Matowy Lód – 2 600 000 Yang.
 
 ---
 
