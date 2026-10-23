@@ -4,9 +4,8 @@
 // The migrator (mariadb/playerbot/apply.sh) switches world.item_attr and the monsters' elements and writes the
 // world event flag m2_bonus_global (1 = global) at every start; the cores read it here:
 //   * BonusModeElementResist - a player's element resistance against a monster of that element
-//     (playerbot_elements.cpp): in BOTH modes (the owner, 14 October 2026) as the original game's code
-//     (battle.cpp's commented apply_elemental_resistances, which Tieru and Ameria switched on): 30% of it -
-//     15% resistance = 4.5% less damage (was the full percent, cap 80%, in mt2009);
+//     (playerbot_elements.cpp): in BOTH modes the full percent, cap 80% (the owner, 23 October 2026 - 1% of
+//     resistance = 1% less damage; from 14 October to 23 October it was 30% of it);
 //   * BonusModeItemDropBonus - the double-item chance line (POINT_ITEM_DROP_BONUS of a bracelet or earrings) adds
 //     to the drop chance as the thief's gloves and the premium do (item_manager.cpp, Tieru's 2.2.31); 0 in mt2009;
 //   * BonusModeAttrValue - one item_attr row holds one set of values for every item: global gives the armour's
@@ -28,7 +27,10 @@ int BonusModeElementResist(int resist)
 {
 	if (resist <= 0)
 		return 0;
-	return resist * 30 / 100;	// MT2009_PLUS_ELEMENT_RESIST_30_V1: both modes
+	// MT2009_PLUS_ELEMENT_RESIST_FULL_V1 (the owner, 23 October 2026: "kazdy procent odpornosci zmniejsza obrazenia
+	// o 1%"): the full percent again, in both modes (the cap of 80% stays in playerbot_elements.cpp); the element
+	// power (the attacker's side) is unchanged. Was MT2009_PLUS_ELEMENT_RESIST_30_V1: 30% of it.
+	return resist;
 }
 
 int BonusModeItemDropBonus(LPCHARACTER killer)

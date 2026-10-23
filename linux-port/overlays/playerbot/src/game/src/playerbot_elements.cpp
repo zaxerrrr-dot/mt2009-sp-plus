@@ -193,8 +193,8 @@ int ElementsAttackBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iAtk)
 			if (ElementsHasFlag(pkAttacker, e.flag))
 				resist = MAX(resist, MIN(Bonus67Total(pkVictim, e.resist), ELEMENT_CAP_PERCENT)); // MT2009_PLUS_BONUS67_V1 (elements)
 
-		// MT2009_PLUS_GLOBAL_BONUS_V1: M2_BONUS_MODE=global - 30% of it, as the original game
-		// (15% = 4.5% less); mt2009 - the full percent (playerbot_bonus_mode.cpp).
+		// MT2009_PLUS_ELEMENT_RESIST_FULL_V1: the full percent in both modes (the owner, 23 October 2026;
+		// 30% of it from 14 to 23 October) - playerbot_bonus_mode.cpp.
 		int BonusModeElementResist(int resist);
 		resist = BonusModeElementResist(resist);
 

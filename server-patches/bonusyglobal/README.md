@@ -15,7 +15,7 @@ global żywioły na wszystkich potworach. Jedna zmienna, **`M2_BONUS_MODE`** (`l
 | Wytrzymałość, reg. wytrzymałości, czas trwania umiejętności, odbicie strzał, stałe PD | losują się | nie losują się na broni, zbroi i biżuterii (kostiumy i talizman bez zmian) |
 | Szybkość ruchu | buty, kolczyki | buty, kolczyki (bez zmian) |
 | Żywioły potworów | zasady właściciela z 7.10 (`zywioly_moby.sql` + pliki Yohary) | to samo **plus** żywioł każdego potwora z oryginalnych danych |
-| Odporność na żywioł gracza wobec potwora tego żywiołu | odejmuje cały swój procent (strop 80%) – Digi Rasta | 30% swojej wartości (15% = 4,5% mniej obrażeń), jak w oryginalnym kodzie gry |
+| Odporność na żywioł gracza wobec potwora tego żywiołu | odejmuje cały swój procent (strop 80%) – Digi Rasta | pełny procent (1% = 1% mniej obrażeń, strop 80%) – decyzja właściciela 23.10.2026 (wcześniej 30%) |
 | Alchemia (Smocze Kamienie) | nasz balans z 24.09 (`dragon_soul_applys.mt2009plus.txt`) | domyślna tabela (Owsap = paczka = klient GF 26.1.11, bez 2 linii Wilkołaka): `MT2009_PLUS_DS_GLOBAL_TABLE_V1` |
 
 Przedmioty **zachowują wszystkie bonusy**, które mają – w obu kierunkach zmienia się tylko pula losowania
