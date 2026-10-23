@@ -26,6 +26,16 @@
 -- - a handler under 70058/use is never looked at (found by Mur4s, 22 Sept).
 -- Bots never come through here: they recall home with the ring through
 -- TransitionPlayerBotMap on their own 30-minute clock (playerbot_travel.h).
+-- MT2009_PLUS_TELEPORT_RING_GLOBAL_V2 (the owner, 23 October): Grota Wygnancow
+-- lands at the grotto's entrance, not inside it - Town.txt of map 72 is in
+-- the grotto and skipped Koe-Pung's (20093) level 75 + Krwisty Kamien
+-- (30190/30191) check (check_trans_ticket.quest). The place is the cave mouth
+-- in Dolina Seungryong (64, map_n_threeway, base 256000 665600) a few steps
+-- north of Koe-Pung (npc.txt 282 1455): cell 284 1450, walkable with 2 m of
+-- free ground around it in server_attr. The other dungeon-like places keep
+-- Town.txt: Loch Pajakow 1 (104) has no entry check, Swiatynia Ochao (209)
+-- asks only level 95 (the ring's own limit for it), Grota Wygnancow 2 (73)
+-- only from inside 72.
 -- Polish letters as cp1250 escapes (decimal).
 quest teleport_ring begin
     state start begin
@@ -118,7 +128,7 @@ quest teleport_ring begin
                 {61, "G\243ra Sohan"},
                 {62, "Doyyumhwan"},
                 {104, "Loch Paj\185k\243w 1 (Kuahklo Dong)"},
-                {72, "Grota Wygna\241c\243w"},
+                {72, "Grota Wygna\241c\243w (wej\156cie)"},
             }
             if lv >= 90 then
                 table.insert(l, {301, "Przyl\185dek Smoczego Ognia"})
@@ -237,6 +247,12 @@ quest teleport_ring begin
             end
             item.set_socket(0, get_global_time())
             sys_log(0, string.format("QUEST_ITEM: teleport_ring warp name=%s map=%d -> %d ring=%d", pc.get_name(), pc.get_map_index(), place[1], ring))
+            -- MT2009_PLUS_TELEPORT_RING_GLOBAL_V2: to Koe-Pung's cave mouth
+            -- (Dolina Seungryong 284 1450), the entry check stays his
+            if place[1] == 72 then
+                pc.warp(256000 + 28400, 665600 + 145000)
+                return
+            end
             pc.teleport(place[1])
         end
     end
