@@ -2601,7 +2601,7 @@
 76006	Wykrywacz Kamieni Metin	Wykrywacz pokazuje po³o¿enie i odleg³oœæ do najbli¿szego Kamienia Metin. Im jaœniejsza strza³ka kierunku, tym bli¿ej jesteœ. Mo¿e byæ uaktywniony 6 razy. Niezdatny do handlu.
 76007	Peleryna Mêstwa	Staro¿ytni wojownicy okazywali swoje mêstwo poprzez noszenie kolorowych peleryn. By³ to sposób na zwabienie wszystkich potworów z okolicy. Niezdatna do handlu.
 76008	Medal Smoka	Chroni przed utrat¹ Punktów Doœwiadczenia po œmierci postaci. Niezdatny do handlu.
-76009	Zwój Boga Smoków	Zwiêksza szansê na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakoœæ przedmiotu jest redukowana o 1 poziom. Niezdatny do handlu.
+76009	Zwój Boga Smoków	Zwiêksza szansê na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu, gdy ulepszenie zawiedzie. W przypadku niepowodzenia jakoœæ przedmiotu jest redukowana o 1 poziom. Niezdatny do handlu.
 76010	Krwisty Kamieñ	Ten kamieñ zrobiony jest z krwi Bahar-Taraji i umo¿liwia Ci wejœcie do Groty Wygnañców. Niezdatny do handlu.
 76011	Ksi¹¿ka Lidera	Kiedy przedmiot ten noszony jest przez lidera grupy, Punkty Doœwiadczenia zdobywane przez grupê s¹ zwiêkszone o 30%. Przedmiot niezdatny do handlu.
 76012	Mikstura Szybkoœci	Zwiêksza Szybkoœæ Ruchu o 60 na okres 30 minut. Przedmiot niezdatny do handlu.
@@ -2609,8 +2609,8 @@
 76014	Zaczarowanie Przedm.(n)	Usuwa wszystkie bonusy w jednym z Twoich przedmiotów, po czym dodaje nowe. Przedmiot ze skrzyni poziomów, niezdatny do handlu.
 76015	Marmur B³ogos³awieñstwa	Legendarny, b³ogos³awiony marmur. Je¿eli przedmiot ma 4 atrybuty, dodaje kolejny atrybut. Przedmiot niezdatny do handlu.
 76016	Zwój B³ogos³awieñstwa	Usuwa ryzyko zniszczenia przedmiotu podczas jego ulepszania. Je¿eli ulepszanie siê nie powiedzie, to jakoœæ przedmiotu jest redukowana o 1 poziom. Przedmiot niezdatny do handlu.
-76017	Mikstura Ataku +10	Zwiêksza Twoj¹ Szybkoœæ Ataku o 10% na okres 30 minut. Niezdatna do handlu.
-76018	Mikstura Ataku +15	Zwiêksza Twoj¹ Szybkoœæ Ataku o 15% na okres 30 minut. Niezdatna do handlu.
+76017	Mikstura Ataku +15	Zwiêksza twoj¹ szybkoœæ ataku o 15% na okres 30 minut. Niezdatna do handlu.
+76018	Mikstura Ataku +20	Zwiêksza twoj¹ szybkoœæ ataku o 20% na okres 30 minut. Niezdatna do handlu.
 76019	Przepustka	Bilet ten umo¿liwia dostanie siê na nowy poziom w Lochu Paj¹ków, jak równie¿ w Twierdzy Czerwonego Smoka. Wystarczy pokazaæ go odpowiedniemu stra¿nikowi. Przedmiot ten jest niezdatny do handlu.
 76020	Eliksir Poszukiwacza	Poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie. Przedmiot ten jest niezdatny do handlu.
 76021	Eliksir S³oñca (M)	Automatycznie regeneruje Twoje P¯. Zawiera 100.000 P¯. Przedmiot ten jest niezdatny do handlu.
@@ -5631,6 +5631,15 @@
 21973	Brachindul	Walczy w imieniu upad³ych anio³ów. Broñ dla M³odych Bohaterów: znika 15 dni po otrzymaniu (tak¿e za³o¿ona). Nie mo¿na jej ulepszaæ, zmieniaæ ani dodawaæ bonusów, wk³adaæ kamieni duszy, wymieniaæ, sprzedawaæ ani odk³adaæ do magazynu.
 21974	Poca³unek Œmierci	Uderz i komuœ zabije dzwon! Broñ dla M³odych Bohaterów: znika 15 dni po otrzymaniu (tak¿e za³o¿ona). Nie mo¿na jej ulepszaæ, zmieniaæ ani dodawaæ bonusów, wk³adaæ kamieni duszy, wymieniaæ, sprzedawaæ ani odk³adaæ do magazynu.
 21975	Kor-Glâsh	Tylko nieliczni rozumiej¹ ten staro¿ytny jêzyk, od którego pochodzi nazwa tej broni. ¯aden z nich jednak nie odwa¿y³ siê przet³umaczyæ tej nazwy. Broñ dla M³odych Bohaterów: znika 15 dni po otrzymaniu (tak¿e za³o¿ona). Nie mo¿na jej ulepszaæ, zmieniaæ ani dodawaæ bonusów, wk³adaæ kamieni duszy, wymieniaæ, sprzedawaæ ani odk³adaæ do magazynu.
+38103	Przek¹ska Appaloosa	Przed³u¿a ¿ycie twojego Appaloosa o 7 dni.
+56000	Appaloosa	Pieczêæ ta przywo³uje twojego ³agodnego kucyka Appaloosa. Obdarza swoich jeŸdŸców +10 szybkoœci¹ ruchu.
+56001	Bilet Podró¿niczy	Zwój teleportuje ciê tam i z powrotem miêdzy dwoma wioskami twojego królestwa. Mo¿na go u¿yæ 5 razy i jest dostêpny od poziomu 10.
+76026	Zwój Egzorcyzmu	Uwalnia ciê od kl¹twy z³ego ducha, jeœli nauka siê nie powiedzie. Za pomoc¹ tego zwoju mo¿esz przeczytaæ w ci¹gu jednego dnia kolejny dokument umiejêtnoœci. Niezdatny do handlu.
+76034	Rada Pustelnika	Podnosi szansê na pomyœlne przeczytanie nastêpnej Ksiêgi Umiejêtnoœci (lub Kamienia Duchowego). Niezdatna do handlu.
+76035	¯ycie Boga Smoków	Zwiêksza maksymaln¹ iloœæ P¯ o 20% na 30 minut. Niezdatne do handlu.
+76036	Atak Boga Smoków	Zwiêksza twoj¹ si³ê ataku o 20% na 30 minut. Niezdatny do handlu.
+76037	Rêkawica Z³odzieja	Zwiêkszaj¹ o 50% twoj¹ szansê na zdobycie przedmiotów. Po aktywowaniu nie mo¿na ju¿ zdezaktywowaæ ich dzia³ania. Czas trwania: 7 dni. Niezdatne do handlu.
+76038	Medal Szczêœcia	Podwaja szansê na zdobycie Yang. Czas trwania: 7 dni. Niezdatny do handlu.
 30625	Padparad¿a	Kryszta³y padparad¿y to rzadkie i niezwykle wykwintne czerwone szafiry. S³u¿¹ do ulepszania ekwipunku.
 30628	Boski Kwiat	Œwiêty kwiat z ogrodu Smoczego Boga. S³u¿y do ulepszania ekwipunku.
 61025	Buffi (7 dni)	Przywo³uje Buffi - szamankê, która chodzi za tob¹ i co 3 sekundy rzuca na ciebie brakuj¹ce wzmocnienie: B³ogos³awieñstwo i Pomoc Smoka, a gdy ma imiê (Zwój Imienia Buffi) tak¿e Szybkoœæ i Zwiêkszenie Ataku. U¿yj ponownie, aby j¹ odwo³aæ. Okno Buffi: klawisz P. Buffi dostêpna od 55 poziomu postaci. Wa¿na 7 dni.
