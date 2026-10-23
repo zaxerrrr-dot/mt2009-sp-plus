@@ -139,8 +139,19 @@ potem potwory i bossów, na końcu posągi (nigdy działa), reszta walczy przy l
 świątyni, piętro końcowe albo 15 min bez nowego piętra; potem boty wracają na swoje miejsca, afekty i nadmiar Pryzmatów znikają.
 Log: `ZODIAC_RUN:` w syslogu (called, gathered, entered, floor, next, pulled, out, closed, status), wiersz na przejście
 w `playerbot_zodiac_runs.tsv` (czas, nr, znak, instancja, królestwo, ilu, poziomy, wynik, najwyższe piętro, sekundy,
-„piętro:sekundy,…”, śmierci, wskrzeszenia Pryzmatem / bez, lider, nazwy). Samodzielne wyjścia botów „z zegara” (z płaceniem
-Animosferami i Pryzmatami) – po teście.
+„piętro:sekundy,…”, śmierci, wskrzeszenia Pryzmatem / bez, lider, nazwy).
+
+Własne przejścia botów „z zegara” – `MT2009_PLUS_ZODIAC_RUNS_V7` (ten sam plik): co 3 min (gdy włączone „Dungeony botów”,
+flaga `zrun_own` ≠ -1, najwyżej `zrun_own_max` = 2 naraz i w limicie przejść rdzenia `PLAYERBOT_DGRUN_*`) znak, którego portal
+stoi dziś na 358 (pliki `days/*`), drużyna 4–8 z jednego królestwa: wolne boty gotowe na piętro (poziom ograniczony sprzętem:
+broń/zbroja + plus + 15; piętro 6 od 45 … 39 od 110), z 12 Animosferami (licznik `player.bead`, odnawianie jak przy logowaniu,
+Pergamin Sfer 72329/72327 użyty, gdy brak). Przy portalu każdy płaci 12 Animosfer (bez nich wraca), bez afektów i darmowych
+Pryzmatów; śmierć – własne Pryzmaty (1/2/4/8/10), bez nich bot wychodzi ze świątyni. Koniec: piętro 39 zaliczone = świątynia
+ukończona („finished”), piętro 40 – Kupiec Zodiaku (1 Pergamin Sfer, Pryzmaty (Q) do 30, ceny sklepu 41) i wyjście; niższe
+piętro gotowości – wyjście po nim („target”). Po wyjściu na 358 część Mnicha Milbona: Pryzmaty (Q) z misji (200 raz, 20
+dziennie) i wymiana 10 Insygniów jednego rodzaju na Kwiat Żywiołu (95500). Plik testowy dodatkowo: `own <znak|any> [ile]`,
+`own on|off`, `ownmax <n>`; wiersz `.tsv` ma na końcu: rodzaj, piętro docelowe, Animosfery, kupione Pryzmaty i Pergaminy,
+Pryzmaty Milbona, Kwiaty, wyjścia po śmierci.
 
 ## Żywioły (`MT2009_PLUS_ZODIAC_ELEMENTS_V1`, decyzja właściciela 9.10, jak wiki PL)
 

@@ -50,6 +50,9 @@ namespace
 	unsigned int s_uPlayerBotZodiacFreeRevives = 0;
 	// MT2009_PLUS_ZODIAC_RUNS_V1: the bots' own runs count their deaths (playerbot_zodiac_runs.h, later).
 	void NotePlayerBotZodiacRunRevive(DWORD pid, bool prisms);
+	// MT2009_PLUS_ZODIAC_RUNS_V7: a bot of its own (paid) run pays its revives as a player does.
+	bool IsPlayerBotZodiacPaidRun(DWORD pid);
+	void NotePlayerBotZodiacRunDeathOut(DWORD pid);
 	unsigned int s_uPlayerBotZodiacPrismRevives = 0;
 
 	bool IsPlayerBotZodiacInstance(long mapIndex)
@@ -238,6 +241,24 @@ namespace
 						(unsigned int)ch->GetDeadCount(), s_uPlayerBotZodiacPrismRevives);
 				return true;
 			}
+		}
+		// MT2009_PLUS_ZODIAC_RUNS_V7: a bot of its own (paid) run has no free
+		// stand-up in the temple - without the Prisms it is out, as a player
+		// who cannot pay: up and to the temple's way out (the courtyard of 358,
+		// where FZodiacExitAll sends everybody).
+		if (IsPlayerBotZodiacPaidRun(ch->GetPlayerID()))
+		{
+			ch->ChatPacket(CHAT_TYPE_COMMAND, "CloseRestartWindow");
+			ch->SetPosition(POS_STANDING);
+			ch->StartRecoveryEvent();
+			ch->RestartAtSamePos();
+			ch->PointChange(POINT_HP, 50 - ch->GetHP());
+			ch->SetQuestFlag("12zi_temple.IsDead", 0);
+			NotePlayerBotZodiacRunDeathOut(ch->GetPlayerID());
+			sys_log(0, "PLAYERBOT_ZODIAC: out without prisms pid=%u name=%s map=%ld prisms_needed=%d had=%d deaths=%u",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), need, have, (unsigned int)ch->GetDeadCount());
+			ch->WarpSet(333200, 1431000, 0);
+			return true;
 		}
 		// No prisms (or the revive refused): the bot's own stand-up, as
 		// restart_here does it anywhere else.
