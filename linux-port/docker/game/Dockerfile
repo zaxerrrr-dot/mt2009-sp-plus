@@ -605,6 +605,24 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && ! grep -q '{72731, 1}' "$L/quest/libs/other/reward_data.lua" \
  && echo "share: Maska Sabaha removed"
 
+# MT2009_PLUS_TEMPLE_CURSE_REMOVED_V1: what the Hwang curse left behind. The
+# package's temple_map quest put the curse's affect (AFFECT_TEMPLE_CURSE, 306:
+# "Klatwa Swiatyni ... Efekt nigdy sie nie konczy", an icon and nothing else
+# since the curse went) on everybody logging in on map 65, and hwang_introduction
+# (Nabira's "Ucieczka Nabiry", whose reward and shop were the Maska Sabaha) still
+# dropped its List Gonczy (35004) off the temple's monsters 702-707 and handed
+# out a Kamien Tygrysa (35003) for nothing (owner, 23 October: "usun ikonke
+# Klatwy Swiatyni ... usun tez caly quest i system dropu z tym zwiazany"). Their
+# handlers go, their state tables stay for the flags characters already carry;
+# apply.sh takes the two quest items out of the bags once.
+RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
+ && test -f "$O/notarget/login/temple_map.start" \
+ && n=$(find "$O" -path "$O/state" -prune -o -type f \( -name 'temple_map.*' -o -name 'hwang_introduction.*' \) -print | wc -l) \
+ && find "$O" -path "$O/state" -prune -o -type f \( -name 'temple_map.*' -o -name 'hwang_introduction.*' \) -exec rm -f {} + \
+ && ! find "$O" -path "$O/state" -prune -o -type f \( -name 'temple_map.*' -o -name 'hwang_introduction.*' \) -print | grep -q . \
+ && ! grep -rl 'AFFECT_TEMPLE_CURSE' "$O" --exclude-dir=state | grep -q . \
+ && echo "share: Temple curse quests removed ($n handlers)"
+
 # Costumes, mounts, pets and weapon skins come from the ItemShop only
 # (operator, 26 September 2026: players found mounts in Metin stones and
 # chests). The world's item table gave two vnums of the old drop lines to

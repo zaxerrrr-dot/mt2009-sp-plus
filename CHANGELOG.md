@@ -27,6 +27,9 @@ every version here.
 - **Boty nie utykają już na budynkach gildii.** Poprzednia poprawka pomagała tylko botom, które już stały w budynku. Boty planują trasy na mapie zbudowanej przy starcie serwera, więc budynku postawionego później w ogóle nie widziały: prowadziły trasę prosto przez ścianę, zatrzymywały się na niej i w kółko dostawały tę samą trasę. Poprawiłem to: każdy postawiony albo zburzony budynek od razu aktualizuje mapę botów w swoim miejscu, a bot, który znalazł się w środku nowego budynku, z niego wychodzi.
 - **Potwory nie zostają w środku nowego budynku.** Budynek mógł stanąć na potworach (np. bezpańskich psach), które potem zostawały zamknięte w jego ścianach. Poprawiłem to: każdy taki potwór jest od razu przenoszony na najbliższe wolne miejsce obok budynku.
 
+### Świątynia Hwang
+- **Usunąłem ikonę „Klątwa Świątyni” i resztki tej klątwy.** Klątwa Świątyni Hwang dawno przestała działać (razem z Maską Sabaha), ale stary quest nadal przy każdym wejściu na mapę Świątyni Hwang dokładał wiecznie trwającą ikonę „Twój umysł jest otępiony…”, która niczego już nie robiła. Usunąłem ten quest i ikonę z klienta, a także cały powiązany quest Nabiry („Ucieczka Nabiry”): potwory w świątyni nie upuszczają już Listu Gończego. Listy Gończe i Kamienie Tygrysa, które ktoś jeszcze ma, znikają raz przy starcie serwera po aktualizacji. Ikona znika z klienta po nowej łatce klienta, a na serwerze już po aktualizacji.
+
 ### Ceny
 - Zmieniłem ceny w cenniku botów: Pamiątka po Demonie – 2 500 000 Yang, Księga Klątw – 1 500 000 Yang.
 
