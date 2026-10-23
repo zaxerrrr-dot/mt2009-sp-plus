@@ -339,7 +339,7 @@ namespace
 		{ 30010,    78231 },	// Zolc Niedzwiedzia
 		{ 30011,    20410 },	// Klab
 		{ 30014,    79373 },	// Futro Yeti
-		{ 30015,   8487085 },	// Pamiatka Po Demonie
+		{ 30015,   2500000 },	// Pamiatka Po Demonie (the owner, 23 October 2026)
 		{ 30016,    90712 },	// Klejnot Demona
 		{ 30017,    48749 },	// Ozdobna Spinka Do Wlosow
 		{ 30018,   113390 },	// Czerwona Wstega
@@ -364,7 +364,7 @@ namespace
 		{ 30042,    51017 },	// Pazur Tygrysa
 		{ 30045,    45356 },	// Igla Skorpiona
 		{ 30046,    73695 },	// Ogon Skorpiona
-		{ 30047,   3190495 },	// Ksiega Klatw
+		{ 30047,   1500000 },	// Ksiega Klatw (the owner, 23 October 2026)
 		{ 30048,    68017 },	// Kawalek Lodu
 		{ 30049,    44214 },	// Lodowy Rog Wieloryba
 		{ 30050,   205217 },	// Matowy Lod

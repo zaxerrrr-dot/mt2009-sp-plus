@@ -22,6 +22,9 @@ every version here.
 ### Gildie
 - **Budynki gildii znów można postawić za Yang ze skarbca gildii.** Serwer już wcześniej płacił za budynek najpierw ze skarbca, a resztę brał od lidera, ale okno budowy w kliencie sprawdzało tylko Yang w ekwipunku lidera i od razu pokazywało „za mało Yang”, więc prośba o budowę w ogóle nie docierała do serwera. Poprawiłem okno: liczy teraz Yang lidera razem ze skarbcem gildii (cena świeci się na biało, gdy razem wystarcza). Poprawka jest w kliencie, więc wymaga nowej łatki klienta.
 
+### Ceny
+- Zmieniłem ceny w cenniku botów: Pamiątka po Demonie – 2 500 000 Yang, Księga Klątw – 1 500 000 Yang.
+
 ---
 
 ## 2.37.1 — 2026-10-23 — Boty: mniej pamięci, mniej krążenia, samodzielny Zodiak
