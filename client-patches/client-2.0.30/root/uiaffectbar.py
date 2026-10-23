@@ -326,10 +326,8 @@ AFFECT_SHOW_DATA = {
 		"icon" : flamewindPath.GetAffect("heaven_protection_debuff"),
 	},
 
-	chr.AFFECT_TEMPLE_CURSE : {
-		"description" : localeInfo.TOOLTIP_AFFECT_TEMPLE,
-		"icon" : flamewindPath.GetAffect("temple"),
-	},
+	# MT2009_PLUS_TEMPLE_CURSE_REMOVED_V1: no "Klatwa Swiatyni" (AFFECT_TEMPLE_CURSE) - the Hwang
+	# Temple has no curse any more and an affect missing here is never shown.
 
 	chr.AFFECT_DEVILTOWER_DAMAGE : {
 		"description" : localeInfo.TOOLTIP_AFFECT_DEVILTOWER_DAMAGE,
@@ -432,7 +430,6 @@ AFFECT_CATEGORIES = {
 		chr.AFFECT_FIRE,
 		skill.SKILL_DISPEL,
 		chr.AFFECT_DEBUFF_HEAVEN_PROTECTION,
-		chr.AFFECT_TEMPLE_CURSE,
 		chr.AFFECT_DEVILTOWER_DAMAGE
 	],
 }
