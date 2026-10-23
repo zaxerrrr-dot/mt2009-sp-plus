@@ -6,7 +6,7 @@
 //   - while the system is on, every bot - the droppers and farmers too - takes the young heroes' weapon of its
 //     class and build at every tier (the kind its own equipment score would pick: the Archer's bow, the Dagger
 //     Ninja's dagger, the Mental Warrior's two-hander, the Shaman's by its school's damage model) and wears it
-//     at once (ManagePlayerBotMlodzi, the equipment pass's PlayerBotMlodziHandRule);
+//     at once (ManagePlayerBotMlodzi, the equipment pass's PlayerBotMlodziHandRule) - V3 below: only when it beats its real weapon;
 //   - its own weapon planning - the weapon goal, the market's and the merchants' weapons, the anvil's weapon
 //     steps, the level-30 weapon hunt - waits while it holds one with more than seven days left
 //     (IsPlayerBotWeaponPlanSuspended); from seven days on it gets and refines the real weapon of its level as
@@ -31,6 +31,22 @@
 //     "last_day_cant_level", kept for that weapon once decided (GetPlayerBotMlodziPrepReason).
 //   Each decision is logged once: "PLAYERBOT_MLODZI: prep reason=dropper_locked|last_tier|last_day_cant_level".
 //
+// MT2009_PLUS_MLODZI_BOHATEROWIE_V3 (the test server, 23 October 2026: bots of every level took the weapons - 57 level-120
+// Champions in Zodiac +9 / Hydra gear wore the level-70 one, a thousand of them sat in 617 bags, and the claim's
+// "no_space" filled the log):
+//   - a bot claims a tier only when the offered weapon - scored as the equipment pass scores a weapon: its attack,
+//     average damage, fixed lines and "Wartosc ataku" (GetPlayerBotMlodziProtoScore) - beats the best real weapon it
+//     wears or has in the bag by PLAYERBOT_MLODZI_CLAIM_MARGIN_PERCENT; in practice the young characters, who level
+//     with it and take the next tier as before. Weaker: no claim, a look again in PLAYERBOT_MLODZI_WEAKER_RECHECK_MS;
+//   - nor while it holds an unexpired young heroes' weapon of the offered tier or higher (no second one in the bag);
+//   - the hand: no more "a young heroes' weapon over any other" - the score decides (PlayerBotMlodziHandRule), so a
+//     bot wearing a weaker young weapon puts its best real weapon back on at the next equipment pass. The young one
+//     stays in the bag until it expires (it cannot be dropped, sold or destroyed by any bot path);
+//   - the hold of the weapon planning (and the 7-day / last-day preparation) counts only a young weapon the bot
+//     wears or would wear (FindPlayerBotMlodziHeld): one lying in the bag under a better real weapon holds nothing;
+//   - "no_space": said once per tier, the claim waits for a free cell (looked at on the claim's clock, no claim
+//     call), and the bag-room pass is asked at most every PLAYERBOT_MLODZI_NO_SPACE_BACKOFF_MS.
+//
 // An implementation fragment in the sense playerbot_types.h describes: included once, from
 // playerbot_manager.cpp, right after playerbot_gear.h (which forward-declares what it asks of this file).
 
@@ -48,6 +64,13 @@ namespace
 	const DWORD PLAYERBOT_MLODZI_CLAIM_BACKOFF_MS = 10 * 60 * 1000;
 	// How long the hold's answer and the prepared weapon are kept per bot (they walk the bag).
 	const DWORD PLAYERBOT_MLODZI_CACHE_MS = 5 * 1000;
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: an offered weapon is claimed only when it scores this much over the best real
+	// weapon (the equipment pass's swap margin is 1%; a little more, so a tier is not spent on a point).
+	const long long PLAYERBOT_MLODZI_CLAIM_MARGIN_PERCENT = 5;
+	// A bot whose real weapon is better looks at the offer again this late (it levels, its weapon may burn).
+	const DWORD PLAYERBOT_MLODZI_WEAKER_RECHECK_MS = 30 * 60 * 1000;
+	// With the bag full the bag-room pass is asked at most this often; the claim waits for a free cell.
+	const DWORD PLAYERBOT_MLODZI_NO_SPACE_BACKOFF_MS = 30 * 60 * 1000;
 	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: the last day - the levelling bot's preparation is decided only then.
 	const long PLAYERBOT_MLODZI_LAST_DAY_SECONDS = 24L * 60L * 60L;
 	// The bot's exp/h: a sample of its total experience every PLAYERBOT_MLODZI_RATE_SAMPLE_SECONDS, the rate over
@@ -111,9 +134,15 @@ namespace
 		long lExpPerHour;	// the exp/h (-1 unknown) and that level
 		int iNextLevel;
 		std::deque<TPlayerBotMlodziExpSample> samples;
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V3
+		int iWeakerTier;	// the tier "weaker than its weapon" was last said for (once a tier)
+		int iNoSpaceTier;	// the tier waiting for a free cell, 0 none
+		BYTE bNoSpaceSize;	// the cells that weapon needs
+		DWORD dwRoomAt;		// the bag-room pass's next turn while it waits
 		TPlayerBotMlodziMemo() : dwHoldAt(0), bHold(false), dwPreparedAt(0), dwPreparedID(0), dwNextClaimAt(0),
 				dwWornID(0), bSwitchLogged(false), bHoldSeen(false), iPrep(PLAYERBOT_MLODZI_PREP_NONE),
-				dwCantLevelID(0), lNeedExp(0), lExpPerHour(-1), iNextLevel(0) {}
+				dwCantLevelID(0), lNeedExp(0), lExpPerHour(-1), iNextLevel(0), iWeakerTier(0), iNoSpaceTier(0),
+				bNoSpaceSize(0), dwRoomAt(0) {}
 	};
 	std::map<DWORD, TPlayerBotMlodziMemo> s_mapPlayerBotMlodzi;
 
@@ -235,8 +264,89 @@ namespace
 		return PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL;
 	}
 
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: the equipment score of the best real weapon the bot has - the one in the hand
+	// (not a young heroes' one, not a rod or a pickaxe) or the best in the bag (FindPlayerBotBestBagWeapon) - and that
+	// weapon; 0 and NULL for none.
+	long long GetPlayerBotMlodziRealBestScore(LPCHARACTER ch, LPITEM* bestOut)
+	{
+		if (bestOut)
+			*bestOut = NULL;
+		if (!ch || !ch->IsItemLoaded())
+			return 0;
+		long long bagScore = 0;
+		LPITEM best = FindPlayerBotBestBagWeapon(ch, NULL, &bagScore);
+		long long bestScore = best ? bagScore : 0;
+		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (worn && IsPlayerBotWeapon(ch, worn) && worn->GetSubType() != WEAPON_ARROW && !IsPlayerBotMlodziWeapon(worn))
+		{
+			const long long wornScore = GetPlayerBotEquipmentScore(worn, ch);
+			if (!best || wornScore > bestScore)
+			{
+				best = worn;
+				bestScore = wornScore;
+			}
+		}
+		if (bestOut)
+			*bestOut = best;
+		return bestScore;
+	}
+
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: an offered weapon nobody holds yet, scored as GetPlayerBotEquipmentScore
+	// would score it in this bot's hands: the blow with the tier's average damage (the attribute the grant sets),
+	// the family's tier, the class preferences, the fixed lines outside the hit model, and the legend tier's weight
+	// of its one attribute.
+	long long GetPlayerBotMlodziProtoScore(LPCHARACTER ch, const TItemTable* proto, int tier)
+	{
+		if (!ch || !proto || proto->bType != ITEM_WEAPON)
+			return 0;
+		long long score = 1;
+		long long blow = GetPlayerBotWeaponHitDamageAt(NULL, proto, ch, mlodzi::AverageDamage(tier)) * 1000;
+		const int familyTier = GetPlayerBotItemTier(proto->dwVnum, (int)ch->GetJob(), false);
+		if (familyTier > 0)
+		{
+			blow = blow * (100 + (familyTier - 3) * PLAYERBOT_WEAPON_TIER_BLOW_PERCENT) / 100;
+			score += familyTier;
+		}
+		score += blow;
+		score += GetPlayerBotWeaponClassPreference(ch, proto->bSubType, score);
+		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
+			if (!IsPlayerBotHitModelApply(proto->aApplies[i].bType, ch))
+				score += ScorePlayerBotApplyTiered(proto->aApplies[i].bType, proto->aApplies[i].lValue, ch);
+		if (const std::vector<TItemApply>* extraApplies = GetMt2009ItemExtraApplies(proto->dwVnum))
+			for (const TItemApply& extra : *extraApplies)
+				if (!IsPlayerBotHitModelApply(extra.bType, ch))
+					score += ScorePlayerBotApplyTiered(extra.bType, extra.lValue, ch);
+		if (proto->dwImmuneFlag != 0)
+			score += 1000;
+		const BYTE legend = ClampPlayerBotLegendTier(GetPlayerBotLegendTierOf(ch));
+		if (legend >= BOT_LEGEND_SPECIAL && score > 0)
+			score += score / 1000 * PLAYERBOT_LEGEND_GEAR_BONUS_PERMILLE[legend];
+		return score;
+	}
+
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: an unexpired young heroes' weapon of this tier or higher, worn or in the bag
+	// (any class or level - it is a bag cell either way).
+	bool HoldsPlayerBotMlodziTierOrHigher(LPCHARACTER ch, int tier)
+	{
+		if (!ch)
+			return false;
+		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (IsPlayerBotMlodziWeapon(worn) && mlodzi::TierOfVnum(worn->GetVnum()) >= tier && mlodzi::SecondsLeft(worn) > 0)
+			return true;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && IsPlayerBotMlodziWeapon(item) &&
+					mlodzi::TierOfVnum(item->GetVnum()) >= tier && mlodzi::SecondsLeft(item) > 0)
+				return true;
+		}
+		return false;
+	}
+
 	// The young heroes' weapon this bot holds - worn or in the bag, of its class and build, a level it has reached - with
 	// the most time left, and that time; NULL for none.
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: one in the bag counts only while the equipment pass would put it on - valid and
+	// scoring over the best real weapon by the pass's swap margin; one lying under a better real weapon holds nothing.
 	LPITEM FindPlayerBotMlodziHeld(LPCHARACTER ch, long* leftOut)
 	{
 		if (leftOut)
@@ -251,11 +361,22 @@ namespace
 			best = worn;
 			bestLeft = mlodzi::SecondsLeft(worn);
 		}
+		bool realKnown = false;
+		long long realScore = 0;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetCell() != cell || !IsPlayerBotMlodziWeapon(item) ||
-					item->GetLevelLimit() > ch->GetLevel() || !item->CanUsedBy(ch) || !IsPlayerBotWeapon(ch, item))
+					item->GetLevelLimit() > ch->GetLevel() || !item->CanUsedBy(ch) || !IsPlayerBotWeapon(ch, item) ||
+					!IsPlayerBotMlodziWeaponValid(item))
+				continue;
+			if (!realKnown)
+			{
+				realScore = GetPlayerBotMlodziRealBestScore(ch, NULL);
+				realKnown = true;
+			}
+			if (realScore > 0 && GetPlayerBotEquipmentScore(item, ch) * 100 <=
+					realScore * (100 + PLAYERBOT_WEAPON_SWAP_MARGIN_PERCENT))
 				continue;
 			const long left = mlodzi::SecondsLeft(item);
 			if (!best || left > bestLeft)
@@ -336,30 +457,32 @@ namespace
 	}
 
 	// The equipment pass's word on a weapon for the hand: -1 the candidate is not put on, 1 the piece in the
-	// hand counts for nothing against it, 0 the score decides. A valid young heroes' weapon beats any other
-	// (a higher tier beats a lower), and one in its last two minutes gives way to anything.
+	// hand counts for nothing against it, 0 the score decides. One in its last two minutes never goes on and
+	// gives way to anything.
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: otherwise the score decides - a young heroes' weapon is worn only while it
+	// scores over the best real weapon (V1 put a valid one over any other: level-120 Champions wore the level-70 one).
 	int PlayerBotMlodziHandRule(LPITEM item, LPITEM old)
 	{
-		const bool itemYoung = IsPlayerBotMlodziWeapon(item);
-		if (itemYoung && !IsPlayerBotMlodziWeaponValid(item))
+		if (IsPlayerBotMlodziWeapon(item) && !IsPlayerBotMlodziWeaponValid(item))
 			return -1;
-		if (!old || !IsPlayerBotMlodziWeapon(old))
-			return itemYoung && old ? 1 : 0;
-		if (!IsPlayerBotMlodziWeaponValid(old))
+		if (old && IsPlayerBotMlodziWeapon(old) && !IsPlayerBotMlodziWeaponValid(old))
 			return 1;
-		return itemYoung && mlodzi::TierOfVnum(item->GetVnum()) > mlodzi::TierOfVnum(old->GetVnum()) ? 1 : -1;
+		return 0;
 	}
 
 	// The choice of the offered tier this bot takes: the kind its equipment score would put in the hand - the
 	// blow of its school (the Shamans' magic, GetPlayerBotWeaponHitDamageAt) and the class preferences of
 	// GetPlayerBotEquipmentScoreTerms (the Archer's bow, the Dagger Ninja's dagger, the Mental Warrior's
 	// two-hander, the Body Warrior's sword). 0 when none of the class's choices is a weapon it fights with.
-	int ChoosePlayerBotMlodziChoice(LPCHARACTER ch, int tier)
+	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: scored by GetPlayerBotMlodziProtoScore (the equipment score's own terms), that
+	// score in *scoreOut.
+	int ChoosePlayerBotMlodziChoice(LPCHARACTER ch, int tier, long long* scoreOut)
 	{
+		if (scoreOut)
+			*scoreOut = 0;
 		if (!ch)
 			return 0;
 		const int job = ch->GetJob();
-		const int group = ch->GetSkillGroup();
 		int bestChoice = 0;
 		long long bestScore = 0;
 		for (int choice = 1; choice <= mlodzi::ChoiceCount(job); ++choice)
@@ -368,21 +491,15 @@ namespace
 			const TItemTable* proto = vnum ? ITEM_MANAGER::instance().GetTable(vnum) : NULL;
 			if (!proto || proto->bType != ITEM_WEAPON || !IsPlayerBotWeaponSubTypeFor(ch, proto->bSubType))
 				continue;
-			long long score = 1 + GetPlayerBotWeaponHitDamageAt(NULL, proto, ch) * 1000;
-			if (job == JOB_ASSASSIN && group == 2 && proto->bSubType == WEAPON_BOW)
-				score += 500000;
-			else if (job == JOB_ASSASSIN && group != 2 && proto->bSubType == WEAPON_DAGGER)
-				score += 300000;
-			else if (job == JOB_WARRIOR && group == 2 && proto->bSubType == WEAPON_TWO_HANDED)
-				score += 500000;
-			else if (job == JOB_WARRIOR && group == 1 && proto->bSubType == WEAPON_SWORD)
-				score += 200000;
+			const long long score = GetPlayerBotMlodziProtoScore(ch, proto, tier);
 			if (!bestChoice || score > bestScore)
 			{
 				bestChoice = choice;
 				bestScore = score;
 			}
 		}
+		if (scoreOut)
+			*scoreOut = bestScore;
 		return bestChoice;
 	}
 
@@ -488,11 +605,50 @@ namespace
 			return;
 		const int tier = mlodzi::CurrentOffer(ch);
 		if (tier <= 0)
+		{
+			memo.iNoSpaceTier = 0;
 			return;
-		const int choice = ChoosePlayerBotMlodziChoice(ch, tier);
+		}
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: a full bag waits for a free cell - looked at on this clock, no claim
+		// call and no line in the log; the bag-room pass is asked at most every PLAYERBOT_MLODZI_NO_SPACE_BACKOFF_MS.
+		if (memo.iNoSpaceTier == tier && ch->GetEmptyInventory(std::max<BYTE>(1, memo.bNoSpaceSize)) < 0)
+		{
+			if ((int)(dwNow - memo.dwRoomAt) >= 0)
+			{
+				memo.dwRoomAt = dwNow + PLAYERBOT_MLODZI_NO_SPACE_BACKOFF_MS;
+				MakePlayerBotBagColumnRoom(ch, state, dwNow);
+			}
+			return;
+		}
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: never a second one of this tier or higher in the bag.
+		if (HoldsPlayerBotMlodziTierOrHigher(ch, tier))
+		{
+			memo.dwNextClaimAt = dwNow + PLAYERBOT_MLODZI_WEAKER_RECHECK_MS;
+			return;
+		}
+		long long youngScore = 0;
+		const int choice = ChoosePlayerBotMlodziChoice(ch, tier, &youngScore);
 		if (choice <= 0)
 		{
 			memo.dwNextClaimAt = dwNow + PLAYERBOT_MLODZI_CLAIM_BACKOFF_MS;
+			return;
+		}
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: only a weapon better than the best real one it has (the young characters in
+		// practice); a stronger bot never claims it and looks again in PLAYERBOT_MLODZI_WEAKER_RECHECK_MS.
+		LPITEM real = NULL;
+		const long long realScore = GetPlayerBotMlodziRealBestScore(ch, &real);
+		if (real && youngScore * 100 <= realScore * (100 + PLAYERBOT_MLODZI_CLAIM_MARGIN_PERCENT))
+		{
+			memo.dwNextClaimAt = dwNow + PLAYERBOT_MLODZI_WEAKER_RECHECK_MS;
+			if (memo.iWeakerTier != tier)
+			{
+				memo.iWeakerTier = tier;
+				PlayerBotLogThrottled("mlodzi_claim_weaker", dwNow,
+						"PLAYERBOT_MLODZI: claim skipped, own weapon better pid=%u name=%s level=%u tier=%d choice=%d "
+						"young_score=%lld real=%u+%u real_score=%lld",
+						pid, ch->GetName(), (unsigned int)ch->GetLevel(), tier, choice, youngScore,
+						real->GetVnum(), (unsigned int)real->GetRefineLevel(), realScore);
+			}
 			return;
 		}
 		unsigned int vnum = 0;
@@ -500,10 +656,12 @@ namespace
 		if (result == mlodzi::CLAIM_OK)
 		{
 			memo.dwCantLevelID = 0;	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: the new weapon is levelled with again
+			memo.iNoSpaceTier = 0;	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3
 			memo.dwHoldAt = 0;
 			memo.dwPreparedAt = 0;
 			memo.bHoldSeen = true;
-			// On at once: the equipment pass right after this one prefers it (PlayerBotMlodziHandRule).
+			// On at once: the equipment pass right after this one puts it on (it was claimed for scoring over the real
+			// weapon by more than the pass's swap margin - MT2009_PLUS_MLODZI_BOHATEROWIE_V3).
 			state.dwNextEquipmentCheckTime = dwNow;
 			state.bEquipPending = true;
 			sys_log(0, "PLAYERBOT_MLODZI: taken pid=%u name=%s level=%u job=%u group=%u tier=%d choice=%d vnum=%u hand=%u",
@@ -512,8 +670,23 @@ namespace
 			return;
 		}
 		if (result == mlodzi::CLAIM_NO_SPACE)
+		{
+			// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: said once for the tier; then it waits for a free cell (above).
+			const TItemTable* proto = vnum ? ITEM_MANAGER::instance().GetTable(vnum) : NULL;
+			if (!proto)
+				proto = ITEM_MANAGER::instance().GetTable(mlodzi::WeaponVnum(tier, ch->GetJob(), choice));
+			memo.bNoSpaceSize = proto ? proto->bSize : 3;
+			memo.dwRoomAt = dwNow + PLAYERBOT_MLODZI_NO_SPACE_BACKOFF_MS;
 			MakePlayerBotBagColumnRoom(ch, state, dwNow);
-		else if (result != mlodzi::CLAIM_BUSY)
+			if (memo.iNoSpaceTier != tier)
+			{
+				memo.iNoSpaceTier = tier;
+				sys_log(0, "PLAYERBOT_MLODZI: claim waits for a free cell pid=%u name=%s level=%u tier=%d choice=%d size=%u",
+						pid, ch->GetName(), (unsigned int)ch->GetLevel(), tier, choice, (unsigned int)memo.bNoSpaceSize);
+			}
+			return;
+		}
+		if (result != mlodzi::CLAIM_BUSY)
 			memo.dwNextClaimAt = dwNow + PLAYERBOT_MLODZI_CLAIM_BACKOFF_MS;
 		PlayerBotLogThrottled("mlodzi_claim_refused", dwNow,
 				"PLAYERBOT_MLODZI: claim refused pid=%u name=%s level=%u tier=%d choice=%d result=%s",
