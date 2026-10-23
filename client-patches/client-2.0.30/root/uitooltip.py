@@ -1787,6 +1787,18 @@ class ItemToolTip(ToolTip):
 					self.AppendMallItemLastTime(metinSlot[0])
 				elif item.LIMIT_LEVEL == limitType:
 					self.__AppendLimitInformation()
+			if 70058 == itemVnum and metinSlot: # MT2009_PLUS_TELEPORT_RING_GLOBAL_V1: socket 0 = the ring's last use, 30 min per ring
+				ringPause = 1800 # the quest's pause (teleport_ring.quest, item value 1)
+				ringLeft = 0
+				if metinSlot[0] > 0:
+					ringLeft = metinSlot[0] + ringPause - app.GetGlobalTimeStamp()
+					if ringLeft < 0 or ringLeft > ringPause:
+						ringLeft = 0
+				self.AppendSpace(5)
+				if ringLeft > 0:
+					self.AppendTextLine("Ponowne u\xbfycie za: %d min %d s" % (ringLeft / 60, ringLeft % 60), self.NEGATIVE_COLOR)
+				else:
+					self.AppendTextLine("Gotowy do u\xbfycia", self.POSITIVE_COLOR)
 		elif item.ITEM_TYPE_DS == itemType:
 			self.AppendTextLine(self.__DragonSoulInfoString(itemVnum))
 			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
