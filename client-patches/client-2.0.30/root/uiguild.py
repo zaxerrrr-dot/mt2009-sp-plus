@@ -2466,7 +2466,14 @@ class BuildGuildBuildingWindow(ui.ScriptWindow):
 		if app.IsEnableTestServerFlag():
 			return True
 
+		# MT2009_PLUS_GUILD_BUILD_TREASURY_V1: the server pays a building from the
+		# guild's treasury first and takes only the rest from the master's bag
+		# (MT2009_PLUS_GUILD_TREASURY_V1), so the bag and the treasury together.
 		curMoney = player.GetMoney()
+		try:
+			curMoney += max(0, long(guild.GetGuildMoney()))
+		except:
+			pass
 		if curMoney < self.needMoney:
 			return False
 		return True
