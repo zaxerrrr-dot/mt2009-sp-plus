@@ -28,7 +28,7 @@ int BonusModeElementResist(int resist)
 {
 	if (resist <= 0)
 		return 0;
-	return BonusModeGlobal() ? resist * 30 / 100 : resist;
+	return resist;	// MT2009_PLUS_ELEMENT_RESIST_FULL_V1 (the owner, 23 October 2026): the full percent in both modes - 1% = 1% less damage, cap 80%; was 30% in global
 }
 
 int BonusModeItemDropBonus(LPCHARACTER killer)

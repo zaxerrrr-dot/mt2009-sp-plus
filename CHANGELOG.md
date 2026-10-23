@@ -31,6 +31,9 @@ every version here.
 - **Ucieczka i odejście od miejsca śmierci.** Gdy wyznaczanie trasy odrzuci kierunek ucieczki, bot przez minutę wybiera inne kierunki zamiast próbować w kółko tego samego (najczęściej w Czerwonym Lesie).
 - **Magazyn bota nie otwiera się już podwójnie.** Gdy odpowiedź bazy się spóźniała, bot prosił o magazyn drugi raz i dostawał drugą, nieaktualną kopię – część przedmiotów się w niej nie wczytywała (błąd „cannot create item” w logach), a odłożone chwilę wcześniej rzeczy w niej nie widniały. Poprawiłem to: bot czeka teraz na pierwszą odpowiedź, a spóźniony magazyn zamyka bez zmian. Przedmioty, które się nie wczytały, nie znikały z bazy.
 
+### Tryb global
+- **Odporność na żywioły działa w pełni także w trybie global.** Każdy procent odporności zmniejsza obrażenia od potwora tego żywiołu o 1% (najwyżej 80%), tak jak w trybie mt2009 – wcześniej tryb global liczył tylko 30% odporności. Siła żywiołów się nie zmienia.
+
 ---
 
 ## 2.37.0 — 2026-10-22 — Zaklęty Las, mapy 90 poziomu i tryb global
