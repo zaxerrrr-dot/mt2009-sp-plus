@@ -796,6 +796,9 @@ namespace
 			case APPLY_CRITICAL_PCT:
 			case APPLY_PENETRATE_PCT:
 			case APPLY_ATTBONUS_MONSTER:
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			case POINT_MALL_ATTBONUS:	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: the hit model's mallPct
+#endif
 				return true;
 			default:
 				break;
@@ -969,6 +972,10 @@ namespace
 		LPITEM kept = inHand ? item : NULL;
 		const long assumed = item ? 0 : assumedAverage;
 		long long grade = 0, attPct = 0, avgPct = 0, skillPct = 0, critPct = 0, penPct = 0;
+		// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: "Wartosc ataku +X%" (POINT_MALL_ATTBONUS) - a young heroes' weapon's
+		// fixed line (+20..50%), else only affects: CHARACTER::Damage adds X% of the final damage, at most 300 a hit.
+		// It fell to the flat scorer's fifty a point, so a weapon carrying it was underrated by the blow.
+		long long mallPct = 0;
 		if (ch)
 		{
 			grade = PlayerBotPointWithoutWornWeapon(ch, POINT_ATT_GRADE, APPLY_ATT_GRADE_BONUS, kept);
@@ -982,6 +989,11 @@ namespace
 			skillPct = PlayerBotPointWithoutWornWeapon(ch, POINT_SKILL_DAMAGE_BONUS, APPLY_SKILL_DAMAGE_BONUS, kept);
 			critPct = PlayerBotPointWithoutWornWeapon(ch, POINT_CRITICAL_PCT, APPLY_CRITICAL_PCT, kept);
 			penPct = PlayerBotPointWithoutWornWeapon(ch, POINT_PENETRATE_PCT, APPLY_PENETRATE_PCT, kept);
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			mallPct = PlayerBotPointWithoutWornWeapon(ch, POINT_MALL_ATTBONUS, POINT_MALL_ATTBONUS, kept);
+			if (!inHand)
+				mallPct += SumPlayerBotLinesAt(item, proto, POINT_MALL_ATTBONUS);
+#endif
 			if (!inHand)
 			{
 				if (worn)
@@ -1002,6 +1014,9 @@ namespace
 			skillPct = SumPlayerBotLinesAt(item, proto, APPLY_SKILL_DAMAGE_BONUS);
 			critPct = SumPlayerBotLinesAt(item, proto, APPLY_CRITICAL_PCT);
 			penPct = SumPlayerBotLinesAt(item, proto, APPLY_PENETRATE_PCT);
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			mallPct = SumPlayerBotLinesAt(item, proto, POINT_MALL_ATTBONUS);
+#endif
 		}
 		long long racePct = SumPlayerBotLinesAt(item, proto, APPLY_ATTBONUS_MONSTER);
 		int racePercent = 0;
@@ -1037,7 +1052,9 @@ namespace
 		const int style = GetPlayerBotSchoolStyle(ch);
 		const long long hitShare = style > 0 ? PLAYERBOT_WEAPON_OTHER_LINE_PERCENT : PLAYERBOT_WEAPON_OWN_LINE_PERCENT;
 		const long long skillShare = style < 0 ? PLAYERBOT_WEAPON_OTHER_LINE_PERCENT : PLAYERBOT_WEAPON_OWN_LINE_PERCENT;
-		const long long total = (hit * hitShare + skill * skillShare) / (hitShare + skillShare);
+		long long total = (hit * hitShare + skill * skillShare) / (hitShare + skillShare);
+		if (mallPct > 0)	// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: the engine's MIN(300, dam * pct / 100)
+			total += std::min<long long>(300, total * mallPct / 100);
 		// The blow's parts, for an explained equipment decision (playerbot_explain.h).
 		if (parts)
 		{
@@ -1274,6 +1291,43 @@ namespace
 	bool PlayerBotWantsCraftFromMarket(LPCHARACTER ch);
 	void NotePlayerBotCraftBought(LPCHARACTER ch, DWORD vnum, long long price);
 
+	// The class preferences of a weapon's score (GetPlayerBotEquipmentScoreTerms): what a weapon of this kind adds
+	// for this character to `score` (one plus its blow so far). MT2009_PLUS_MLODZI_BOHATEROWIE_V3: one function,
+	// so the young heroes' claim (GetPlayerBotMlodziProtoScore) weighs an offered weapon as the pass will.
+	long long GetPlayerBotWeaponClassPreference(LPCHARACTER ch, BYTE subType, long long score)
+	{
+		const long long before = score;
+		if (ch)
+		{
+			if (ch->GetJob() == JOB_ASSASSIN)
+			{
+				if (ch->GetSkillGroup() == 2 && subType == WEAPON_BOW)
+					score += 500000; // Prefer bows for Archer Ninja
+				else if (ch->GetSkillGroup() == 1 && subType == WEAPON_DAGGER)
+					score += 300000; // Prefer daggers for Dagger Ninja
+			}
+			else if (ch->GetJob() == JOB_WARRIOR)
+			{
+				// The two-handed weapon is worth the preference once the bot
+				// fights from the battle horse (level 11): that is where a
+				// Mental Warrior breaks Metin stones with it. Before that the
+				// flat bonus made a +4 spike win over a +6 sword with a
+				// thirty-percent bonus against monsters.
+				// A share of its own blow, not a flat two hundred points of it:
+				// at 75 two hundred is most of what a level-ten two-hander hits
+				// for, so the flat bonus let one outscore a far better sword
+				// (a Gilotynowe Ostrze +7 in the hand of a warrior of 75,
+				// Tieru, 15 September). score is one plus the blow here.
+				if (ch->GetSkillGroup() == 2 && subType == WEAPON_TWO_HANDED &&
+						ch->GetHorseLevel() >= PLAYERBOT_BATTLE_HORSE_LEVEL)
+					score += (score - 1) * PLAYERBOT_TWO_HANDED_PREFERENCE_PERCENT / 100;
+				else if (ch->GetSkillGroup() == 1 && subType == WEAPON_SWORD)
+					score += 200000; // Prefer sword for Body Warrior
+			}
+		}
+		return score - before;
+	}
+
 	long long GetPlayerBotEquipmentScore(LPITEM item, LPCHARACTER ch = NULL)
 	{
 		// MT2009_PLUS_BOT_TALISMANS_V1: a talisman scores by its expected damage bonus on the
@@ -1341,34 +1395,10 @@ namespace
 			// level-30 weapon is never junk - but protecting them is not the same
 			// as pretending nothing can beat them.
 
+			// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: the class preferences moved to GetPlayerBotWeaponClassPreference, which
+			// the young heroes' claim scores an offered weapon by too.
 			if (ch)
-			{
-				if (ch->GetJob() == JOB_ASSASSIN)
-				{
-					if (ch->GetSkillGroup() == 2 && item->GetSubType() == WEAPON_BOW)
-						score += 500000; // Prefer bows for Archer Ninja
-					else if (ch->GetSkillGroup() == 1 && item->GetSubType() == WEAPON_DAGGER)
-						score += 300000; // Prefer daggers for Dagger Ninja
-				}
-				else if (ch->GetJob() == JOB_WARRIOR)
-				{
-					// The two-handed weapon is worth the preference once the bot
-					// fights from the battle horse (level 11): that is where a
-					// Mental Warrior breaks Metin stones with it. Before that the
-					// flat bonus made a +4 spike win over a +6 sword with a
-					// thirty-percent bonus against monsters.
-					// A share of its own blow, not a flat two hundred points of it:
-					// at 75 two hundred is most of what a level-ten two-hander hits
-					// for, so the flat bonus let one outscore a far better sword
-					// (a Gilotynowe Ostrze +7 in the hand of a warrior of 75,
-					// Tieru, 15 September). score is one plus the blow here.
-					if (ch->GetSkillGroup() == 2 && item->GetSubType() == WEAPON_TWO_HANDED &&
-							ch->GetHorseLevel() >= PLAYERBOT_BATTLE_HORSE_LEVEL)
-						score += (score - 1) * PLAYERBOT_TWO_HANDED_PREFERENCE_PERCENT / 100;
-					else if (ch->GetSkillGroup() == 1 && item->GetSubType() == WEAPON_SWORD)
-						score += 200000; // Prefer sword for Body Warrior
-				}
-			}
+				score += GetPlayerBotWeaponClassPreference(ch, item->GetSubType(), score);
 			if (terms)
 				terms->Set(per::TERM_CLASS_PREF, score - beforePreference);
 		}
@@ -2096,9 +2126,10 @@ namespace
 			const bool oldDoesNotFit = oldItem && wearCell == WEAR_WEAPON && !PlayerBotWeaponFitsNow(ch, state, oldItem);
 			const bool oldBanned = oldItem && wearCell == WEAR_WEAPON && !oldDoesNotFit && !stoneMode &&
 					IsPlayerBotBannedLowWeapon(ch, oldItem);
-			// MT2009_PLUS_BOT_MLODZI_V1: a valid young heroes' weapon goes on over any other and stays on until
-			// its last two minutes (PlayerBotMlodziHandRule); the Archer's stone swap keeps its own rule, and one the
-			// build no longer fights with (a Ninja's dagger of level one, an Archer from level five) gives way.
+			// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon in its last two minutes never goes on and gives way
+			// to anything (PlayerBotMlodziHandRule); the Archer's stone swap keeps its own rule, and one the build no
+			// longer fights with (a Ninja's dagger of level one, an Archer from level five) gives way.
+			// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: otherwise the score decides, a young one is no longer put over any other.
 			const int mlodziRule = wearCell == WEAR_WEAPON && !stoneMode
 					? PlayerBotMlodziHandRule(item, oldDoesNotFit ? NULL : oldItem) : 0;
 			if (mlodziRule < 0)
