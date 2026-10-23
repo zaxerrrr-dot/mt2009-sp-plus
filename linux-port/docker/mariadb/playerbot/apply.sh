@@ -665,6 +665,35 @@ if [ "$lands_done" = "0" ]; then
         fail_step "could not clear the package's guild lands" >&2
     fi
 fi
+# MT2009_PLUS_TEMPLE_CURSE_REMOVED_V1: the Hwang Temple's curse went with
+# playerbotify apply_hwang_curse_removed and the Maska Sabaha above, but the
+# package's temple_map quest still put the curse's affect (AFFECT_TEMPLE_CURSE,
+# 306, "Klatwa Swiatyni ... Efekt nigdy sie nie konczy") on everybody logging
+# in on map 65, and hwang_introduction (Nabira, whose reward was the mask)
+# still dropped its List Gonczy (35004) in the temple. Both lose their handlers
+# in the game Dockerfile (owner, 23 October: "usun ikonke Klatwy Swiatyni ...
+# usun tez caly quest i system dropu z tym zwiazany"). Once: an affect row of
+# the curse (the engine never saves one, an older core may have) and the two
+# quest items still held (List Gonczy, Kamien Tygrysa 35003) go; item_proto
+# keeps both rows.
+curse_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'temple_curse_removed_2372';" 2>/dev/null || echo x)
+if [ "$curse_done" = "0" ]; then
+    if curse_out=$(db -e "
+        START TRANSACTION;
+        DELETE FROM player.affect WHERE bType = 306;
+        SELECT ROW_COUNT();
+        DELETE FROM player.item WHERE vnum IN (35003, 35004);
+        SELECT ROW_COUNT();
+        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('temple_curse_removed_2372', NOW());
+        COMMIT;
+    "); then
+        curse_affects=$(printf '%s\n' "$curse_out" | awk 'NR == 1')
+        curse_items=$(printf '%s\n' "$curse_out" | awk 'NR == 2')
+        echo "[playerbot-migrate] Temple curse removed: ${curse_affects:-0} affect(s), ${curse_items:-0} quest item(s)"
+    else
+        fail_step "could not remove the Temple curse's affects and quest items" >&2
+    fi
+fi
 # 2.2.20 opened the Grotto of Exile (72, 73) and the Devil's Catacomb (216)
 # and no client of that time could stand on any of them: the grotto's maps
 # stood in the season2 pack without the maps/ the client looks under, and the
