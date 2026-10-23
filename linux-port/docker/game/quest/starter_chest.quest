@@ -35,5 +35,75 @@ quest starter_chest begin
 			pc.give_item2(vnum, 1)
 			pc.setqf("given", 1)
 		end
+
+		-- MT2009_PLUS_SKRZYNIE_UCZNIA_WIKI_V1: two items of the chain (the pl-wiki's
+		-- Skrzynia Ucznia II, III and Eksperta I) that work through this quest.
+		-- Bilet Podrozniczy (56001): five trips to the 1st or the 2nd village of
+		-- the owner's kingdom (mapa_tab.quest's town points), from level 10 (its
+		-- item_proto limit); the trips made are the ticket's socket 0, and the
+		-- fifth one uses it up.
+		when 56001.use begin
+			if not pc.can_warp() or pc.is_busy() then
+				syschat("Zamknij handel, sklep i magazyn; odczekaj chwile.")
+				return
+			end
+			local dest = {
+				[1] = { {474300, 954800}, {353100, 882900} },
+				[2] = { {63800, 166400}, {145500, 240000} },
+				[3] = { {959900, 269200}, {863900, 246000} },
+			}
+			local d = dest[pc.get_empire()]
+			if d == nil then
+				return
+			end
+			local id = item.get_id()
+			local used = item.get_socket(0)
+			say_title("Bilet Podrozniczy")
+			say("Dokad chcesz sie udac?")
+			say("Pozostalo podrozy: " .. (5 - used))
+			local s = select("Pierwsza wioska", "Druga wioska", "Anuluj")
+			if s ~= 1 and s ~= 2 then
+				return
+			end
+			if not item.select(id) or item.get_vnum() ~= 56001 then
+				return
+			end
+			used = item.get_socket(0) + 1
+			if used >= 5 then
+				item.remove()
+			else
+				item.set_socket(0, used)
+			end
+			pc.warp(d[s][1], d[s][2])
+		end
+
+		-- Przekaska Appaloosa (38103): seven more days to the Appaloosa (56000,
+		-- LIMIT_REAL_TIME: socket 0 is the end) - the one worn (the mount
+		-- costume slot) or else the first in the bag.
+		when 38103.use begin
+			local found = false
+			if item.select_wear(21) and item.get_vnum() == 56000 then
+				found = true
+			else
+				for cell = 0, 224 do
+					if item.select_cell(cell) and item.get_vnum() == 56000 then
+						found = true
+						break
+					end
+				end
+			end
+			if not found then
+				syschat("Nie masz Appaloosa, ktorego mozna nakarmic.")
+				return
+			end
+			local now = get_global_time()
+			local left = item.get_socket(0)
+			if left < now then
+				left = now
+			end
+			item.set_socket(0, left + 7 * 24 * 60 * 60)
+			pc.remove_item(38103, 1)
+			syschat("Appaloosa bedzie z toba o 7 dni dluzej.")
+		end
 	end
 end

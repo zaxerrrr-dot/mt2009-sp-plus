@@ -1,0 +1,15 @@
+# our world.item_proto rows the new chest items are cloned from (and 56000/76017/76018 for the client records): the test world mt2009plustest-db, dumped 23 October 2026 (HEX(name) = the cp949 bytes)
+vnum	name_hex	locale_name	type	subtype	stack	weight	size	antiflag	flag	wearflag	immuneflag	gold	shop_buy_price	refined_vnum	refine_set	magic_pct	specular	socket_pct	addon_type	limittype0	limitvalue0	limittype1	limitvalue1	applytype0	applyvalue0	applytype1	applyvalue1	applytype2	applyvalue2	value0	value1	value2	value3	value4	value5	socket0	socket1	socket2	socket3	socket4	socket5
+25040	3235303430	Zwój Błogosławieństwa	3	2	20	0	1	0	4	0		5000	5000	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	-1	-1	-1	-1	-1	-1
+38100	C0CCC6C4C0C720BBF3C0DA	Mega Przekąska (7 dni)	18	0	200	0	1	106880	0	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	-1	-1	-1	-1	-1	-1
+56000	417070616C6F6F7361	Appaloosa	28	2	1	0	1	254080	8192	0		0	0	0	0	0	0	0	0	7	604800	0	0	0	0	19	10	0	0	0	20253	0	0	0	0	-1	-1	-1	-1	-1	-1
+71001	C1D6BEC8BCFABCAD	Zwój Egzorcyzmu	3	8	200	0	1	74112	8196	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	513	0	0	536870911	0	0	-1	-1	-1	-1	-1	-1
+71016	B5B5B5CFC0C720C0E5B0A9	Rękawica Złodzieja	3	8	200	0	1	106880	8196	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	510	117	50	1800	0	0	-1	-1	-1	-1	-1	-1
+71017	C7E0BFEEC0C720B1DDC8AD	Medal Szczęścia	3	8	200	0	1	106880	8196	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	510	118	50	1800	0	0	-1	-1	-1	-1	-1	-1
+71027	BFEBBDC5C0C720BBFDB8ED	Życie Boga Smoków	3	8	200	0	1	74112	8196	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	510	119	20	1800	0	0	-1	-1	-1	-1	-1	-1
+71028	BFEBBDC5C0C720B0F8B0DD	Atak Boga Smoków	3	8	200	0	1	74112	8196	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	510	114	15	1800	0	0	-1	-1	-1	-1	-1	-1
+71032	BFEBBDC5C0C720C3E0BAB9BCAD	Zwój Boga Smoków	3	2	20	0	1	74112	8196	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	10	0	0	0	0	-1	-1	-1	-1	-1	-1
+71033	BFADC1A4C0C720B0A1B8E9	Maska Uczuć	16	0	200	0	1	106880	8192	128		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1296000	0	1	0	0	0	-1	-1	-1	-1	-1	-1
+71094	BCB1C0CEC0C720B1B3C8C6	Rada Pustelnika	3	8	200	0	1	74112	8196	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	512	159	150	536870911	0	0	-1	-1	-1	-1	-1	-1
+76017	C4E8BCD3C1D628BCB1B9B0BFEB29	Mikstura Ataku +10	3	8	200	0	1	204928	8212	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	510	17	15	1800	0	0	-1	-1	-1	-1	-1	-1
+76018	C4E8BCD3C1D62B28BCB1B9B0BFEB29	Mikstura Ataku +15	3	8	200	0	1	204928	8212	0		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	510	17	20	1800	0	0	-1	-1	-1	-1	-1	-1

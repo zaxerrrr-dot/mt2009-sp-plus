@@ -4013,6 +4013,19 @@ for ml_sql in mlodzi_bohaterowie.sql; do
     fi
 done
 
+# MT2009_PLUS_SKRZYNIE_UCZNIA_WIKI_V1: the level chests Skrzynia Ucznia I .. Skrzynia Arcymistrza with the pl-wiki contents
+# (the owner, 23 October 2026) - skrzynie_ucznia.sql (tools/skrzynie_ucznia/gen_skrzynie_ucznia.py): the chain's items our
+# world had not got (76009, 76016, 76026, 76034-76038 of the gift series, 56001 Bilet Podrozniczy, 38103 Przekaska
+# Appaloosa) and the right names of 76017 / 76018; the groups are special_item_group.starter.txt's. Idempotent.
+for sk_sql in skrzynie_ucznia.sql; do
+    [ -s "/opt/playerbot/$sk_sql" ] || continue
+    if db < "/opt/playerbot/$sk_sql"; then
+        echo "[playerbot-migrate] level chests (wiki): $sk_sql applied"
+    else
+        fail_step "level chests (wiki): $sk_sql failed" >&2
+    fi
+done
+
 # MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley (356) - the Dragon Queen Meley's lair (the owner, 15 October 2026).
 # yohara_meley.sql (tools/yohara_meley/gen_ymeley.py) - the lair's monsters, Meley, the statues, the eggs, Straznik
 # Smokow Dolnarr and Zlota Smocza Skrzynia; yohara_items_meley.sql - Pierscien Smoczego Ognia (30340) and the two
