@@ -14,6 +14,9 @@
 // is the route. That is why it is the one subsystem that can be lifted out
 // whole -- it calls nothing above it.
 
+// MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1: g_pfnMt2009ObjectAreaChanged (enginefixes).
+#include "building.h"
+
 namespace
 {
 	// ------------------------------------------------------------------------
@@ -1254,7 +1257,358 @@ namespace
 				return PLAYERBOT_NAV_PLAN_FOUND;
 			}
 
+			// MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1: a guild building (any
+			// building::CObject) put up or taken down after this grid was built.
+			// The engine marks its footprint ATTR_OBJECT (CObject::Show) or clears
+			// it (CObject::Destroy) and calls this through
+			// g_pfnMt2009ObjectAreaChanged with a box round it. The planner reads
+			// only this grid, so before this it routed straight through every
+			// building raised since the core started; the walk's live check
+			// refused the step into the wall, the stuck counter asked for a new
+			// plan and the same plan came back - bots stood against the pagoda
+			// of a guild land for good (the owner's report of 23 October, the
+			// supporters' server; MT2009_PLUS_NAV_LIVE_OBJECT_V1 only kept the
+			// rescue of a bot already inside off the footprint). The box is read
+			// again cell by cell from the live sectree, as Init reads it, and only
+			// what hangs on those cells is redone: the clearance round them, the
+			// components of cells that opened, the HPA regions and portals of the
+			// clusters the box touches. The packed cell keeps its layout: the
+			// blocked and water bits are rewritten, the clearance bits recomputed.
+			void RefreshLiveArea(long worldSX, long worldSY, long worldEX, long worldEY)
+			{
+				if (!m_initialized)
+					return;
+				if (worldEX < worldSX)
+					std::swap(worldSX, worldEX);
+				if (worldEY < worldSY)
+					std::swap(worldSY, worldEY);
+				if (worldEX < m_baseX || worldEY < m_baseY ||
+						worldSX >= m_baseX + (long)m_width * PLAYERBOT_NAV_CELL ||
+						worldSY >= m_baseY + (long)m_height * PLAYERBOT_NAV_CELL)
+					return;
+				int gx0, gy0, gx1, gy1;
+				WorldToCell(worldSX, worldSY, gx0, gy0);
+				WorldToCell(worldEX, worldEY, gx1, gy1);
+				gx0 = std::max(0, gx0 - 1);
+				gy0 = std::max(0, gy0 - 1);
+				gx1 = std::min(m_width - 1, gx1 + 1);
+				gy1 = std::min(m_height - 1, gy1 + 1);
+
+				int closed = 0;
+				std::vector<int> opened;
+				try
+				{
+					for (int gy = gy0; gy <= gy1; ++gy)
+					{
+						for (int gx = gx0; gx <= gx1; ++gx)
+						{
+							bool blocked = false;
+							bool wet = false;
+							SampleLiveCell(gx, gy, blocked, wet);
+							const int index = Index(gx, gy);
+							const bool wasBlocked = IsBlockedIndex(index);
+							if (blocked == wasBlocked)
+							{
+								if (!blocked && wet != IsWaterIndex(index))
+									m_cell[index] = (BYTE)((m_cell[index] & ~PLAYERBOT_NAV_CELL_WATER) |
+											(wet ? PLAYERBOT_NAV_CELL_WATER : 0));
+								continue;
+							}
+							if (blocked)
+							{
+								// Clearance 0, no component, no region: what Init leaves on a wall.
+								const DWORD component = ComponentAt(index);
+								if (component != 0 && component < m_componentCells.size() &&
+										m_componentCells[component] > 0)
+									--m_componentCells[component];
+								SetComponent(index, 0);
+								m_cell[index] = PLAYERBOT_NAV_CELL_BLOCKED;
+								if (m_walkableCells > 0)
+									--m_walkableCells;
+								++closed;
+							}
+							else
+							{
+								m_cell[index] = wet ? PLAYERBOT_NAV_CELL_WATER : 0;
+								SetComponent(index, 0);
+								++m_walkableCells;
+								opened.push_back(index);
+							}
+						}
+					}
+					if (closed == 0 && opened.empty())
+						return;
+
+					// A cell that opened joins the component of the open ground beside
+					// it (a land is one piece with its map), again and again inwards
+					// from the edge of the old footprint until nothing more joins.
+					const int moveX[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+					const int moveY[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+					bool joined = true;
+					while (joined)
+					{
+						joined = false;
+						for (size_t i = 0; i < opened.size(); ++i)
+						{
+							if (ComponentAt(opened[i]) != 0)
+								continue;
+							int cx, cy;
+							CellFromIndex(opened[i], cx, cy);
+							for (int direction = 0; direction < 8; ++direction)
+							{
+								const int nx = cx + moveX[direction];
+								const int ny = cy + moveY[direction];
+								if (IsBlockedCell(nx, ny))
+									continue;
+								const DWORD component = ComponentAt(Index(nx, ny));
+								if (component == 0)
+									continue;
+								SetComponent(opened[i], component);
+								if (component < m_componentCells.size())
+									++m_componentCells[component];
+								joined = true;
+								break;
+							}
+						}
+					}
+
+					// The clearance never exceeds 4, so nothing farther than that from
+					// a changed cell moves: the two passes run over the box and a
+					// margin, reading the unchanged values just outside it.
+					RecomputeClearance(gx0 - 6, gy0 - 6, gx1 + 6, gy1 + 6);
+					RebuildAbstractClusters(gx0, gy0, gx1, gy1);
+				}
+				catch (const std::bad_alloc&)
+				{
+					// Half-updated is not safe to plan on: the map goes without
+					// planning for a while and is then built again from the live world.
+					const long mapIndex = m_mapIndex;
+					ReleaseGrid();
+					m_mapIndex = 0;
+					OnNavAllocFailed(mapIndex, 0, "building refresh");
+					return;
+				}
+
+				// A remembered route may run through the new walls.
+				m_routeCache.clear();
+				m_routeCacheCount = 0;
+				sys_log(0, "PLAYERBOT_NAV: building area refreshed map=%ld box=(%ld,%ld)-(%ld,%ld) closed=%d opened=%u regions=%u",
+						m_mapIndex, worldSX, worldSY, worldEX, worldEY, closed, (unsigned int)opened.size(),
+						(unsigned int)m_regions.size());
+			}
+
 		private:
+			// MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1: one cell from the live world,
+			// sampled exactly as Init samples it.
+			void SampleLiveCell(int gx, int gy, bool& blocked, bool& wet) const
+			{
+				blocked = false;
+				wet = false;
+				const long cellX = m_baseX + gx * PLAYERBOT_NAV_CELL;
+				const long cellY = m_baseY + gy * PLAYERBOT_NAV_CELL;
+				for (int oy = PLAYERBOT_NAV_NATIVE_SAMPLE / 2;
+						oy < PLAYERBOT_NAV_CELL && !blocked;
+						oy += PLAYERBOT_NAV_NATIVE_SAMPLE)
+				{
+					for (int ox = PLAYERBOT_NAV_NATIVE_SAMPLE / 2;
+							ox < PLAYERBOT_NAV_CELL;
+							ox += PLAYERBOT_NAV_NATIVE_SAMPLE)
+					{
+						if (IsPlayerBotPositionBlocked(m_mapIndex, cellX + ox, cellY + oy))
+						{
+							blocked = true;
+							break;
+						}
+						if (IsPlayerBotPositionWater(m_mapIndex, cellX + ox, cellY + oy))
+							wet = true;
+					}
+				}
+			}
+
+			// MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1: BuildClearance's two passes
+			// over a window only; the cells just outside it are read as they are.
+			void RecomputeClearance(int x0, int y0, int x1, int y1)
+			{
+				x0 = std::max(0, x0);
+				y0 = std::max(0, y0);
+				x1 = std::min(m_width - 1, x1);
+				y1 = std::min(m_height - 1, y1);
+				for (int y = y0; y <= y1; ++y)
+				{
+					for (int x = x0; x <= x1; ++x)
+					{
+						const int index = Index(x, y);
+						if (IsBlockedIndex(index))
+						{
+							SetClearance(index, 0);
+							continue;
+						}
+						BYTE clearance = 4;
+						if (x > 0) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x - 1, y)) + 1));
+						if (y > 0) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x, y - 1)) + 1));
+						SetClearance(index, clearance);
+					}
+				}
+				for (int y = y1; y >= y0; --y)
+				{
+					for (int x = x1; x >= x0; --x)
+					{
+						const int index = Index(x, y);
+						if (IsBlockedIndex(index))
+							continue;
+						BYTE clearance = Clearance(index);
+						if (x + 1 < m_width) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x + 1, y)) + 1));
+						if (y + 1 < m_height) clearance = std::min<BYTE>(clearance, (BYTE)(Clearance(Index(x, y + 1)) + 1));
+						SetClearance(index, clearance);
+					}
+				}
+			}
+
+			// MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1: BuildAbstractRegions for the
+			// clusters a changed box touches. Their regions are flooded again (the
+			// old ids first; one left over keeps no cell and no edge, so no search
+			// reaches it), every edge into or out of them is dropped, and the
+			// portals on all four borders of each are added again as the full
+			// build adds them.
+			void RebuildAbstractClusters(int gx0, int gy0, int gx1, int gy1)
+			{
+				const int cx0 = gx0 / PLAYERBOT_NAV_CLUSTER_CELLS;
+				const int cy0 = gy0 / PLAYERBOT_NAV_CLUSTER_CELLS;
+				const int cx1 = gx1 / PLAYERBOT_NAV_CLUSTER_CELLS;
+				const int cy1 = gy1 / PLAYERBOT_NAV_CLUSTER_CELLS;
+
+				std::vector<BYTE> touched(m_regions.size(), 0);
+				std::vector<DWORD> reuse;
+				for (size_t r = 1; r < m_regions.size(); ++r)
+				{
+					const TAbstractRegion& region = m_regions[r];
+					if (region.clusterX >= cx0 && region.clusterX <= cx1 &&
+							region.clusterY >= cy0 && region.clusterY <= cy1)
+					{
+						touched[r] = 1;
+						reuse.push_back((DWORD)r);
+					}
+				}
+				for (size_t r = 1; r < m_regions.size(); ++r)
+				{
+					std::vector<TAbstractEdge>& edges = m_regions[r].edges;
+					if (touched[r])
+					{
+						edges.clear();
+						continue;
+					}
+					for (size_t e = edges.size(); e-- > 0; )
+						if (edges[e].toRegion < touched.size() && touched[edges[e].toRegion])
+							edges.erase(edges.begin() + e);
+				}
+				for (size_t i = 0; i < reuse.size(); ++i)
+				{
+					m_regions[reuse[i]].clusterX = -1;
+					m_regions[reuse[i]].clusterY = -1;
+				}
+
+				const int moveX[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+				const int moveY[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+				std::vector<int> queue;
+				size_t nextReuse = 0;
+				for (int clusterY = cy0; clusterY <= cy1; ++clusterY)
+				{
+					const int minY = clusterY * PLAYERBOT_NAV_CLUSTER_CELLS;
+					const int maxY = std::min(m_height, minY + PLAYERBOT_NAV_CLUSTER_CELLS);
+					for (int clusterX = cx0; clusterX <= cx1; ++clusterX)
+					{
+						const int minX = clusterX * PLAYERBOT_NAV_CLUSTER_CELLS;
+						const int maxX = std::min(m_width, minX + PLAYERBOT_NAV_CLUSTER_CELLS);
+						for (int y = minY; y < maxY; ++y)
+							for (int x = minX; x < maxX; ++x)
+								SetCellRegion(Index(x, y), 0);
+						for (int y = minY; y < maxY; ++y)
+						{
+							for (int x = minX; x < maxX; ++x)
+							{
+								const int firstCell = Index(x, y);
+								if (IsBlockedIndex(firstCell) || CellRegion(firstCell) != 0)
+									continue;
+								DWORD regionID;
+								if (nextReuse < reuse.size())
+									regionID = reuse[nextReuse++];
+								else
+								{
+									regionID = (DWORD)m_regions.size();
+									TAbstractRegion fresh;
+									fresh.clusterX = clusterX;
+									fresh.clusterY = clusterY;
+									m_regions.push_back(fresh);
+								}
+								m_regions[regionID].clusterX = clusterX;
+								m_regions[regionID].clusterY = clusterY;
+								queue.clear();
+								queue.push_back(firstCell);
+								SetCellRegion(firstCell, regionID);
+								for (size_t head = 0; head < queue.size(); ++head)
+								{
+									int currentX, currentY;
+									CellFromIndex(queue[head], currentX, currentY);
+									for (int direction = 0; direction < 8; ++direction)
+									{
+										const int nextX = currentX + moveX[direction];
+										const int nextY = currentY + moveY[direction];
+										if (nextX < minX || nextX >= maxX || nextY < minY || nextY >= maxY ||
+												IsBlockedCell(nextX, nextY))
+											continue;
+										if (moveX[direction] != 0 && moveY[direction] != 0 &&
+												(IsBlockedCell(currentX + moveX[direction], currentY) ||
+												 IsBlockedCell(currentX, currentY + moveY[direction])))
+											continue;
+										const int nextCell = Index(nextX, nextY);
+										if (CellRegion(nextCell) != 0)
+											continue;
+										SetCellRegion(nextCell, regionID);
+										queue.push_back(nextCell);
+									}
+								}
+							}
+						}
+					}
+				}
+
+				// The portals on every border of the touched clusters, outer and
+				// inner (AddAbstractPortal keeps one per spot, so a border met twice
+				// is not doubled).
+				for (int clusterY = cy0; clusterY <= cy1; ++clusterY)
+				{
+					const int minY = clusterY * PLAYERBOT_NAV_CLUSTER_CELLS;
+					const int maxY = std::min(m_height, minY + PLAYERBOT_NAV_CLUSTER_CELLS) - 1;
+					for (int clusterX = cx0; clusterX <= cx1; ++clusterX)
+					{
+						const int minX = clusterX * PLAYERBOT_NAV_CLUSTER_CELLS;
+						const int maxX = std::min(m_width, minX + PLAYERBOT_NAV_CLUSTER_CELLS) - 1;
+						for (int y = minY; y <= maxY; ++y)
+						{
+							AddBorderPortals(minX - 1, y, minX, y);
+							AddBorderPortals(maxX, y, maxX + 1, y);
+						}
+						for (int x = minX; x <= maxX; ++x)
+						{
+							AddBorderPortals(x, minY - 1, x, minY);
+							AddBorderPortals(x, maxY, x, maxY + 1);
+						}
+					}
+				}
+			}
+
+			// MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1: one cardinal crossing of a
+			// cluster border, both ways, as BuildAbstractRegions adds it.
+			void AddBorderPortals(int ax, int ay, int bx, int by)
+			{
+				if (IsBlockedCell(ax, ay) || IsBlockedCell(bx, by))
+					return;
+				const int a = Index(ax, ay);
+				const int b = Index(bx, by);
+				AddAbstractPortal(CellRegion(a), CellRegion(b), a, b);
+				AddAbstractPortal(CellRegion(b), CellRegion(a), b, a);
+			}
+
 			int Index(int gx, int gy) const
 			{
 				return gy * m_width + gx;
@@ -2186,6 +2540,31 @@ namespace
 			int m_lastFineExpanded = 0;
 			bool m_bLastPartial = false;
 	};
+
+	// MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1: the engine's word that a building
+	// went up or came down (building.cpp, CObject::Show / CObject::Destroy,
+	// server-patches/enginefixes). A map whose grid is not built yet reads the
+	// building when it is; a dungeon instance has none.
+	void OnPlayerBotObjectAreaChanged(long lMapIndex, long sx, long sy, long ex, long ey)
+	{
+		if (lMapIndex <= 0 || lMapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN)
+			return;
+		CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(lMapIndex);
+		if (navigation.IsInitializedFor(lMapIndex))
+			navigation.RefreshLiveArea(sx, sy, ex, ey);
+	}
+
+	// Set while this unit's statics are made; the engine's pointer is zero
+	// until then (constant-initialised), and the buildings of the boot are
+	// shown long before any grid exists.
+	struct TPlayerBotObjectAreaHook
+	{
+		TPlayerBotObjectAreaHook()
+		{
+			g_pfnMt2009ObjectAreaChanged = &OnPlayerBotObjectAreaChanged;
+		}
+	};
+	TPlayerBotObjectAreaHook s_playerBotObjectAreaHook;
 }
 
 #endif

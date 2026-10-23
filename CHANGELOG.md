@@ -21,6 +21,11 @@ every version here.
 
 ### Gildie
 - **Budynki gildii znów można postawić za Yang ze skarbca gildii.** Serwer już wcześniej płacił za budynek najpierw ze skarbca, a resztę brał od lidera, ale okno budowy w kliencie sprawdzało tylko Yang w ekwipunku lidera i od razu pokazywało „za mało Yang”, więc prośba o budowę w ogóle nie docierała do serwera. Poprawiłem okno: liczy teraz Yang lidera razem ze skarbcem gildii (cena świeci się na biało, gdy razem wystarcza). Poprawka jest w kliencie, więc wymaga nowej łatki klienta.
+- **Odmowa postawienia budynku ma teraz powód.** Gdy budynek nie mógł stanąć, serwer milczał – komunikat dostawał tylko serwer testowy, więc budynek po prostu się nie pojawiał. Dodałem komunikat dla lidera, który mówi, co przeszkadza: budynek wychodzi poza teren gildii, w tym miejscu stoi już inny budynek albo ktoś stoi tam, gdzie budynek ma stanąć (z imieniem tej osoby). Boty, zwierzaki i wierzchowce nie blokują już budowy – bot sam schodzi z miejsca nowego budynku. Za odrzucony budynek nic nie jest pobierane.
+
+### Boty
+- **Boty nie utykają już na budynkach gildii.** Poprzednia poprawka pomagała tylko botom, które już stały w budynku. Boty planują trasy na mapie zbudowanej przy starcie serwera, więc budynku postawionego później w ogóle nie widziały: prowadziły trasę prosto przez ścianę, zatrzymywały się na niej i w kółko dostawały tę samą trasę. Poprawiłem to: każdy postawiony albo zburzony budynek od razu aktualizuje mapę botów w swoim miejscu, a bot, który znalazł się w środku nowego budynku, z niego wychodzi.
+- **Potwory nie zostają w środku nowego budynku.** Budynek mógł stanąć na potworach (np. bezpańskich psach), które potem zostawały zamknięte w jego ścianach. Poprawiłem to: każdy taki potwór jest od razu przenoszony na najbliższe wolne miejsce obok budynku.
 
 ### Ceny
 - Zmieniłem ceny w cenniku botów: Pamiątka po Demonie – 2 500 000 Yang, Księga Klątw – 1 500 000 Yang.
