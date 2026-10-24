@@ -6529,6 +6529,26 @@ def MakeImageBox(parent, name, x, y):
 	image.Show()
 	return image
 
+# MT2009_PLUS_ITEMSHOP_V3_V2: an image that will not load (a file missing from the packs, or a
+# texture the device could not create at that moment) must not take the window down with it -
+# wndMgr.LoadImage raises RuntimeError then. Tries the fallback, else leaves the box as it was
+# and writes the name to syserr once. True when an image was loaded.
+SAFE_IMAGE_FALLBACK = "icon/item/00010.tga"
+_safeImageReported = {}
+
+def SafeLoadImage(imageBox, name, fallback=None):
+	for fileName in (name, fallback):
+		if not fileName:
+			continue
+		try:
+			imageBox.LoadImage(fileName)
+			return True
+		except RuntimeError:
+			if not _safeImageReported.has_key(fileName):
+				_safeImageReported[fileName] = True
+				dbg.TraceError("SafeLoadImage: cannot load %s" % fileName)
+	return False
+
 def MakeTextLine(parent):
 	textLine = TextLine()
 	textLine.SetParent(parent)
