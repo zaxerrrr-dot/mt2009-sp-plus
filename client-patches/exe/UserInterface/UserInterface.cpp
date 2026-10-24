@@ -24,6 +24,34 @@ volatile int _AVOID_FLOATING_POINT_LIBRARY_BUG = _fltused;
 
 #pragma comment(linker, "/NODEFAULTLIB:libci.lib")
 
+#ifdef ENABLE_MT2009_INGAME_BROWSER
+// MT2009_PLUS_ITEMSHOP_V3_V1: the embedded browser (CWebBrowser, app.ShowWebPage) in IE11 mode. The WebBrowser
+// control renders as IE7 unless the process is named under FEATURE_BROWSER_EMULATION; per user (HKCU, no admin),
+// for the exe's own file name, so a renamed client is covered too. 11001 = IE11 edge mode.
+#pragma comment(lib, "advapi32.lib")
+// File scope: the goto Clean jumps of WinMain must not cross an initialisation.
+static bool s_bMt2009WebBrowserStarted = false;
+
+static void Mt2009SetBrowserEmulation()
+{
+	char szPath[MAX_PATH] = {};
+	if (!GetModuleFileNameA(NULL, szPath, sizeof(szPath)))
+		return;
+	const char* szExe = strrchr(szPath, '\\');
+	szExe = szExe ? szExe + 1 : szPath;
+
+	HKEY hKey = NULL;
+	if (RegCreateKeyExA(HKEY_CURRENT_USER, "Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION",
+		0, NULL, 0, KEY_QUERY_VALUE | KEY_SET_VALUE, NULL, &hKey, NULL) != ERROR_SUCCESS)
+		return;
+	DWORD dwMode = 11001;
+	DWORD dwOld = 0, dwType = 0, dwSize = sizeof(dwOld);
+	if (RegQueryValueExA(hKey, szExe, NULL, &dwType, (LPBYTE)&dwOld, &dwSize) != ERROR_SUCCESS || dwType != REG_DWORD || dwOld != dwMode)
+		RegSetValueExA(hKey, szExe, 0, REG_DWORD, (const BYTE*)&dwMode, sizeof(dwMode));
+	RegCloseKey(hKey);
+}
+#endif
+
 #pragma comment( lib, "version.lib" )
 
 #pragma comment( lib, "imagehlp.lib" )
@@ -1204,7 +1232,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 #endif
 
+#ifdef ENABLE_MT2009_INGAME_BROWSER
+	// MT2009_PLUS_ITEMSHOP_V3_V1: was commented out - ShowWebPage then had no window class to create (error 1407).
+	Mt2009SetBrowserEmulation();
+	s_bMt2009WebBrowserStarted = WebBrowser_Startup(hInstance) != 0;
+#else
 	//WebBrowser_Startup(hInstance);
+#endif
 
 //#ifndef ENABLE_PYLIB_CHECK
 //	if (!
@@ -1217,7 +1251,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	Main(hInstance, lpCmdLine);
 
+#ifdef ENABLE_MT2009_INGAME_BROWSER
+	if (s_bMt2009WebBrowserStarted)
+		WebBrowser_Cleanup();
+#else
 	//WebBrowser_Cleanup();
+#endif
 
 	::CoUninitialize();
 

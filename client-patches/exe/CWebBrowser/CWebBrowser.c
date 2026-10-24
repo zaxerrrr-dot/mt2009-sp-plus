@@ -1301,6 +1301,11 @@ badalloc:	webBrowser2->lpVtbl->Release(webBrowser2);
 			return(-6);
 		}
 
+		// MT2009_PLUS_ITEMSHOP_V3_V1: no "An error has occurred in the script on this page" boxes over
+		// the game - a page's script error stays the page's (the shop's scripts are written for
+		// newer browsers than the control). Set before every navigation; it is per control.
+		webBrowser2->lpVtbl->put_Silent(webBrowser2, VARIANT_TRUE);
+
 		// Call the Navigate2() function to actually display the page.
 		webBrowser2->lpVtbl->Navigate2(webBrowser2, &myURL, 0, 0, 0, 0);
 
@@ -1690,7 +1695,9 @@ void WebBrowser_Destroy()
 
 int WebBrowser_Startup(HINSTANCE hInstance)
 {
-	if (OleInitialize(NULL) != S_OK)
+	// MT2009_PLUS_ITEMSHOP_V3_V1: S_FALSE (COM already initialised on this thread, single-threaded) is a
+	// success too - the class must be registered then as well, or ShowWebPage fails with error 1407.
+	if (FAILED(OleInitialize(NULL)))
 	{
 		return 0;
 	}
