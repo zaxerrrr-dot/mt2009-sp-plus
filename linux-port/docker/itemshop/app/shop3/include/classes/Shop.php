@@ -1091,6 +1091,8 @@ class Shop {
 				return ["auction" => 1, "auction_visible" => 1];
 			case 'items':
 				return ["category" => (int)$id, "auction" => 0];
+			case 'sets':	// MT2009_PLUS_ITEMSHOP_V3_V6: every piece of a costume set with a bonus, and the sets' chests
+				return ["in_sets" => 1, "auction" => 0, "category[>]" => 0];
 		}
 		return ["category" => -1];
 	}
@@ -1100,6 +1102,8 @@ class Shop {
 			return ["coins" => "ASC", "id" => "ASC"];
 		if($id === null || $this->categoryKind($id)=='group')	// MT2009_PLUS_ITEMSHOP_V3_V4: a group by its subcategories
 			return ["category" => "ASC", "vnum" => "ASC", "id" => "ASC"];
+		if($this->categoryKind($id)=='sets')	// MT2009_PLUS_ITEMSHOP_V3_V6: set by set, its chest first, then its pieces
+			return ["set_sort" => "ASC", "chest" => "DESC", "id" => "ASC"];
 		return ["vnum" => "ASC", "id" => "ASC"];
 	}
 	private function searchItems($string, $countOnly) {
@@ -1928,15 +1932,45 @@ class Shop {
 	}
 	// The costume sets of tools/zestawy/gen_zestawy.py (include/db/costume_sets.json): every set the item is a
 	// part of - the parts (lists of vnums) and the bonuses of each grade (2..6 parts worn).
+	// MT2009_PLUS_ITEMSHOP_V3_V6: the costume set chests (itemshop3.chests, chest_drops, chest_items_view -
+	// tools/itemshop3/gen_global_catalog.py): the chest of a line, its results with their chances (parts per million)
+	// and, per result, its items - each item_no one of its alternatives (alt_no).
+	public function getChest($chest_id) {
+		$row = $this->db->get("chests", "*", ["id" => (int)$chest_id]);
+		return $row ? $row : null;
+	}
+	public function getChestDrops($chest_id) {
+		$drops = [];
+		$rows = $this->db->select("chest_drops", "*", ["chest_id" => (int)$chest_id, "ORDER" => ["drop_no" => "ASC"]]);
+		foreach(is_array($rows) ? $rows : [] as $row)
+		{
+			$row['items'] = [];
+			$drops[(int)$row['drop_no']] = $row;
+		}
+		$rows = $this->db->select("chest_items_view", "*", ["chest_id" => (int)$chest_id, "ORDER" => ["drop_no" => "ASC", "item_no" => "ASC", "alt_no" => "ASC"]]);
+		foreach(is_array($rows) ? $rows : [] as $row)
+			if(isset($drops[(int)$row['drop_no']]))
+				$drops[(int)$row['drop_no']]['items'][(int)$row['item_no']][] = $row;
+		return $drops;
+	}
+	// The costume set by its id (include/db/costume_sets.json), for a chest's window.
+	public function getCostumeSetById($id) {
+		$this->getCostumeSets(0);
+		foreach(self::$setData['sets'] as $set)
+			if((int)$set['id'] == (int)$id)
+				return $set;
+		return null;
+	}
+	private static $setData = null;
 	public function getCostumeSets($vnum) {
-		static $data = null;
-		if($data === null)
+		if(self::$setData === null)
 		{
 			$file = dirname(__DIR__).'/db/costume_sets.json';
-			$data = is_file($file) ? json_decode(file_get_contents($file), true) : [];
-			if(!is_array($data) || !isset($data['by_vnum']))
-				$data = ['sets' => [], 'by_vnum' => []];
+			self::$setData = is_file($file) ? json_decode(file_get_contents($file), true) : [];
+			if(!is_array(self::$setData) || !isset(self::$setData['by_vnum']))
+				self::$setData = ['sets' => [], 'by_vnum' => []];
 		}
+		$data = self::$setData;
 		if(!isset($data['by_vnum'][(string)$vnum]))
 			return [];
 		$ids = $data['by_vnum'][(string)$vnum];

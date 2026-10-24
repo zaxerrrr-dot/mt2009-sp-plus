@@ -4,7 +4,20 @@
 	// ("Informacje" - the description, the costume set with its bonuses; "Zawartość" for a package), and the
 	// purchase box below: for whom, how many (stackable items), the price now, "Kup", how the price is made.
 	require_once 'include/functions/tile.php';
-	$icon_src = mt2009_item_image($item);
+	// MT2009_PLUS_ITEMSHOP_V3_V6: a costume set chest - its results with their chances (tab "Szanse", as the big servers'
+	// "Olasılıklar"), its set's parts and bonuses; the big picture
+	$is_chest = !empty($item['chest']);
+	$chest = $is_chest ? $shop->getChest((int)$item['chest']) : null;
+	$chest_drops = $chest ? $shop->getChestDrops((int)$chest['id']) : [];
+	$icon_src = mt2009_item_image($item, $is_chest);
+	// MT2009_PLUS_ITEMSHOP_V3_V6: this window's purchase token - "Kup" sends it, a purchase with it happens once
+	// (pages/java/buy_chest.php: a double click or a reload shows the first purchase's result, nothing paid twice)
+	if(!isset($_SESSION['mt_buy_tokens']) || !is_array($_SESSION['mt_buy_tokens']))
+		$_SESSION['mt_buy_tokens'] = [];
+	$buy_token = bin2hex(random_bytes(16));
+	$_SESSION['mt_buy_tokens'][$buy_token] = (int)$item['id'];
+	while(count($_SESSION['mt_buy_tokens']) > 30)
+		array_shift($_SESSION['mt_buy_tokens']);
 	// a Smocze Monety purchase: the price back as Smocze Znaki; a Kupon SM (80014-80019) the price less its value (BuyItem)
 	$coupon_value = ($item['vnum'] >= 80014 && $item['vnum'] <= 80019) ? (int)$item['value0'] : 0;
 	$marks_back = ($item['pay_type']==1 && $jcoins_back) ? max(0, (int)round($final_price*$jcoins_back/100) - $coupon_value) : 0;
@@ -59,6 +72,8 @@
 
 	// The costume sets this item is a part of (tools/zestawy/gen_zestawy.py): the parts and the bonuses per grade.
 	$sets = $shop->getCostumeSets($item['vnum']);
+	if($chest && ($chest_set = $shop->getCostumeSetById($chest['set_id'])))
+		$sets = [$chest_set];
 	$set_names = [];
 	if(count($sets))
 	{
@@ -123,6 +138,9 @@
 						<?php if(count($bundle)) { ?>
 						<li><a href="#contents" data-toggle="tab"><?php print $lang_shop['mt-contents']; ?></a></li>
 						<?php } ?>
+						<?php if(count($chest_drops)) { ?>
+						<li><a href="#probability" data-toggle="tab"><?php print $lang_shop['mt-chances']; ?></a></li>
+						<?php } ?>
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane scrollable_container_fancy grey-box active" id="info">
@@ -155,6 +173,27 @@
 							</div>
 							<?php } ?>
 						</div>
+						<?php if(count($chest_drops)) { ?>
+						<div class="tab-pane scrollable_container_fancy grey-box" id="probability">
+							<table class="table mt-contents mt-chances">
+								<thead><tr><th><?php print $lang_shop['mt-name']; ?></th><th><?php print $lang_shop['mt-chance']; ?></th></tr></thead>
+								<tbody>
+								<?php foreach($chest_drops as $d) {
+									$names = [];
+									foreach($d['items'] as $alts)
+									{
+										$first = $alts[0];
+										$n = count($alts) > 1 ? $lang_shop['mt-chest-fits'].' ('.htmlspecialchars($first['name']).' …)' : htmlspecialchars($first['name']);
+										$names[] = ((int)$first['count'] > 1 ? (int)$first['count'].'x ' : '1x ').$n;
+									}
+									$pct = rtrim(rtrim(number_format((int)$d['ppm'] / 10000, 2, ',', ''), '0'), ',');
+								?>
+									<tr class="<?php print $d['kind'] != 'common' ? 'mt-chest-rare' : ''; ?>"><td><?php if($d['kind'] != 'common') print '<strong>'.htmlspecialchars($d['label']).'</strong><br>'; print implode('<br>', $names); ?></td><td><?php print $pct; ?>%</td></tr>
+								<?php } ?>
+								</tbody>
+							</table>
+						</div>
+						<?php } ?>
 						<?php if(count($bundle)) { ?>
 						<div class="tab-pane scrollable_container_fancy grey-box" id="contents">
 							<table class="table mt-contents">
@@ -205,7 +244,7 @@
 							<?php if($can_pay) { ?>
 							<?php // MT2009_PLUS_ITEMSHOP_V3_V4: "Kup" buys at once and shows "Dziękujemy za zakup!" - no second "Kup teraz"
 							      // click after it (the owner's round 2); the quantity buttons set its link. ?>
-							<button type="button" id="purchaseLink1" class="btn-price mt-buy-now js_currency fancybox fancybox.ajax" data-currency="<?php print (int)$item['pay_type']; ?>" href="<?php print $buy_link.'?q='.$qty; ?>" style="display: inline-block;"><?php print $lang_shop['buy']; ?></button>
+							<button type="button" id="purchaseLink1" class="btn-price mt-buy-now js_currency fancybox fancybox.ajax" data-currency="<?php print (int)$item['pay_type']; ?>" href="<?php print $buy_link.'?q='.$qty.'&t='.$buy_token; ?>" style="display: inline-block;"><?php print $lang_shop['buy']; ?></button>
 							<?php } else { ?>
 							<button class="btn-disabled ttip" style="display: inline-block;" href="javascript:void(0);" tooltip-content="<?php print htmlspecialchars($block); ?>"><?php print $lang_shop['buy']; ?></button>
 							<p class="mt-buy-block"><?php print htmlspecialchars($block); ?></p>
@@ -241,7 +280,7 @@
 	$('.ttip').tipTip(zs.data.ttip);
 	(function () {
 		var price = <?php print (int)$final_price; ?>, back = <?php print (int)$jcoins_back; ?>, payType = <?php print (int)$item['pay_type']; ?>, coupon = <?php print (int)$coupon_value; ?>;
-		var link = '<?php print $buy_link; ?>';
+		var link = '<?php print $buy_link; ?>', token = '<?php print $buy_token; ?>';
 		function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 		$('#js_button_container .btn-discount').on('click', function () {
 			var n = parseInt($(this).val(), 10);
@@ -251,7 +290,7 @@
 			$('#itemBuy .mt-total').text(fmt(n * price));
 			if (payType == 1)
 				$('#itemBuy .mt-marks').text(fmt(Math.max(0, Math.round(n * price * back / 100) - coupon)));
-			$('#buy .mt-buy-now').attr('href', link + '?q=' + n);
+			$('#buy .mt-buy-now').attr('href', link + '?q=' + n + '&t=' + token);
 		});
 	})();
 </script>

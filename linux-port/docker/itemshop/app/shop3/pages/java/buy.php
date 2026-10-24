@@ -9,6 +9,13 @@
 	// less its value); logged as the game logs it (log.itemshop). Paid in one guarded UPDATE first; whatever cannot be
 	// written gives the money back.
 	require_once 'include/functions/tile.php';
+	// MT2009_PLUS_ITEMSHOP_V3_V6: a costume set chest is rolled at the purchase (pages/java/buy_chest.php); it comes back
+	// here only for the "not enough Smocze Monety" window ($mt_chest_fallback)
+	if(!empty($item['chest']) && empty($mt_chest_fallback))
+	{
+		include 'pages/java/buy_chest.php';
+		return;
+	}
 	$error = $no_space = false;
 	$error_text = '';
 	$available_bonuses = [];
@@ -55,7 +62,25 @@
 	}
 
 	$money_before = $item['pay_type']==2 ? $amount_jcoins : $amount_coins;
-	if($error_text=='' && $can_pay)
+	if(!empty($item['chest']))
+		$can_pay = false;	// MT2009_PLUS_ITEMSHOP_V3_V6: a chest is never paid here (buy_chest.php)
+	// MT2009_PLUS_ITEMSHOP_V3_V6: the item window's token (info.php) - a purchase with it happens once; the same request
+	// again (a double click, two at once, a reload) shows the thanks window without paying a second time
+	$repeat = false;
+	$buy_token = isset($_GET['t']) ? strtolower(preg_replace('/[^a-fA-F0-9]/', '', (string)$_GET['t'])) : '';
+	if($error_text=='' && $can_pay && strlen($buy_token)==32)
+	{
+		$sth = $player_db->pdo->prepare("INSERT IGNORE INTO itemshop3.purchase_tokens (token, account, line, qty) VALUES (?, ?, ?, ?)");
+		$repeat = $sth->execute([$buy_token, (int)$_SESSION['id'], (int)$item['id'], $qty]) && $sth->rowCount()==0;
+		if($repeat)
+		{
+			$sth = $player_db->pdo->prepare("SELECT line FROM itemshop3.purchase_tokens WHERE token = ? AND account = ?");
+			$sth->execute([$buy_token, (int)$_SESSION['id']]);
+			if((int)$sth->fetchColumn() != (int)$item['id'])
+				$error_text = $lang_shop['mt-buy-token'];
+		}
+	}
+	if($error_text=='' && $can_pay && !$repeat)
 	{
 		if(!$account->payCoins($item['pay_type'], $final_price))
 			$can_pay = false;
