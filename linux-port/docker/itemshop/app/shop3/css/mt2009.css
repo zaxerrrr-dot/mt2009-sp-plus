@@ -1,6 +1,70 @@
 /* MT2009_PLUS_ITEMSHOP_V3_V2: what our shop needs on top of the big servers' stylesheets (shop-base.css,
-   shop-theme.css): the category icons in Font Awesome where the shop has no picture of its own, and the game's
-   32 px item icons drawn larger in the place of the shop's 98 px pictures. */
+   shop-theme.css): the category icons in Font Awesome where the shop has no picture of its own. */
 .category-link img.icon { vertical-align: -3px; }
-.list-item .item-thumb img.mt-icon { width: auto; height: auto; max-width: none; max-height: none; zoom: 2; -ms-interpolation-mode: nearest-neighbor; image-rendering: pixelated; }
-#pictureShowcase #image img.mt-icon { width: auto; height: auto; zoom: 4; image-rendering: pixelated; -ms-interpolation-mode: nearest-neighbor; }
+
+/* MT2009_PLUS_ITEMSHOP_V3_V3 (the owner's fix list of 24.10.2026) */
+
+/* The page fits the in-game window (1016 x 655, smaller on a small screen): no fixed 655 px page whose bottom the
+   window cut off; the lists scroll natively (mt2009.js sizes them to the window - no bottom bar over the last row). */
+html, body { height: 100%; }
+#page { height: 100% !important; min-height: 0; }
+.mt-native-scroll { overflow-x: hidden !important; overflow-y: auto !important; position: relative; -moz-box-sizing: border-box; box-sizing: border-box;
+	scrollbar-face-color: #8a6a3a; scrollbar-track-color: #3c1e10; scrollbar-arrow-color: #f2e69f;
+	scrollbar-shadow-color: #3c1e10; scrollbar-highlight-color: #8a6a3a; scrollbar-3dlight-color: #3c1e10; scrollbar-darkshadow-color: #3c1e10; }
+.content .scrollable_container.mt-native-scroll { padding-right: 2px; padding-bottom: 12px; }
+.content .scrollable_container.mt-native-scroll .item-list.card { margin-bottom: 10px; }
+
+/* The item's picture at its own size (32 x 32 .. 32 x 96), centred in a column of its own; the text beside it,
+   never over it (the icons were drawn twice their size and ran into the description). */
+.card .item-description .item-shortdesc.mt-shortdesc { position: relative; }
+.mt-shortdesc a.mt-thumb { display: table; float: left; width: 98px; height: 98px; max-width: 98px; max-height: 98px; margin: 0 8px 0 0; }
+.mt-shortdesc .mt-thumb-cell { display: table-cell; vertical-align: middle; text-align: center; width: 98px; height: 98px; }
+.list-item .mt-shortdesc img.mt-icon { width: auto; height: auto; max-width: 98px; max-height: 98px; zoom: 1; border: 0;
+	-ms-interpolation-mode: nearest-neighbor; image-rendering: pixelated; }
+.mt-shortdesc .mt-shorttext { margin-left: 106px; padding: 4px 6px 0 0; height: 94px; overflow: hidden; }
+.card .item-description .item-shortdesc .mt-shorttext div.fancybox { height: auto; max-height: 76px; overflow: hidden; }
+.card .item-description .item-shortdesc .mt-shorttext p { height: auto; margin: 2px 0 0; }
+.mt-shorttext .category-link { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mt-auction-line { color: #8d1d0c; font-weight: bold; }
+.mt-old-price { display: inline-block; margin-top: 10px; text-decoration: line-through; opacity: .7; }
+
+/* The item's window: the picture at its own size in the middle of the frame (no 4 x pixel blow-up). */
+#pictureShowcase #image { display: table; width: 100%; height: 242px; }
+#pictureShowcase #image .mt-picture, #itemConfirmation #image .mt-picture, #notEnoughCash #image .mt-picture { display: table-cell; vertical-align: middle; text-align: center; }
+#pictureShowcase #image img.mt-icon, #itemConfirmation img.mt-icon, #notEnoughCash img.mt-icon { width: auto !important; height: auto !important; max-width: 242px; zoom: 1;
+	-ms-interpolation-mode: nearest-neighbor; image-rendering: pixelated; }
+#pictureShowcase #image .mt-picture { background: radial-gradient(circle at center, rgba(255,240,190,.55) 0, rgba(255,240,190,0) 70px); }
+#itemConfirmation #image, #notEnoughCash #image { display: table; width: 100%; height: 120px; }
+.mt-buy-block { color: #8d1d0c; font-size: .9em; line-height: 14px; margin: 4px 0 0; }
+.mt-buy-refused { font-size: 1.1em; margin: 10px 0; }
+
+/* The categories: all of the in-game window's buttons (17), one or two short lines each in the shop's narrow left
+   column (the cards keep their three columns); the list scrolls when the window is low. */
+#subnavi.mt-subnavi { overflow-x: hidden; overflow-y: auto; margin-right: 12px; }
+#subnavi.mt-subnavi.nav-tabs > li { width: 112px; font-size: 11px; letter-spacing: 0; }
+#subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-catitem { display: table; width: 100%; height: auto; min-width: 0; padding: 2px 4px 2px 5px; margin: 0;
+	text-align: left; line-height: 11px; border-bottom: 1px solid rgba(0,0,0,.25); -moz-box-sizing: border-box; box-sizing: border-box; }
+#subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-catitem img { display: table-cell; width: 16px; height: 16px; margin: 0; vertical-align: middle; }
+#subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-catitem span { display: table-cell; width: 100%; vertical-align: middle; text-align: left; padding-left: 6px; height: 20px; }
+#subnavi.mt-subnavi > li > .btn-catitem-active { border-left-width: 4px !important; }
+#subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-cat-auctions span { color: #6fb7ff; }
+#subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-cat-premium span, #subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-cat-topup span { color: #ffc948; }
+/* three cards a row beside it also with the native scrollbar (267 + 20 px each did not fit next to it) */
+.content .scrollable_container.mt-native-scroll .card .list-item { width: 265px; margin-right: 12px; margin-bottom: 14px; }
+.content .scrollable_container.mt-native-scroll .card .list-item.last-in-line { margin-right: 0; }
+
+/* Polecane / Kupony SM: the in-game window's cards. */
+.mt-feature-card { margin: 0 0 12px; padding: 10px 12px; background: #d2c78e; }
+.mt-feature-card img { float: left; margin: 0 12px 0 0; }
+.mt-feature-card p { margin: 6px 0 0; display: inline-block; max-width: 70%; }
+.mt-feature-card .btn-default { float: right; margin-top: 2px; }
+
+/* Konto Premium, Wykorzystaj voucher */
+.mt-premium-box h3 { margin: 6px 0 4px; }
+.mt-benefits { list-style: none; margin: 6px 0 10px; padding: 0; }
+.mt-benefits li { display: inline-block; width: 48%; vertical-align: top; margin: 0 0 6px; }
+.mt-benefits li img { vertical-align: middle; margin: 0 8px 0 0; }
+.mt-benefits li span { display: inline-block; width: 75%; vertical-align: middle; }
+.mt-premium-price { margin: 10px 0; }
+.mt-note { font-size: .85em; opacity: .8; }
+.mt-voucher-answer { clear: both; font-weight: bold; padding: 8px 0 0; }

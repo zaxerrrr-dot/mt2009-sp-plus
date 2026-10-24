@@ -14,6 +14,10 @@ An icon the packs lack is looked up as a plain file under <loose client dir> (th
 
 vnums.txt: one vnum per line - the catalogue's icons, e.g.
   docker exec -i <db> mariadb ... -N -e "SELECT DISTINCT vnum_icon FROM itemshop.ishop_items" > vnums.txt
+MT2009_PLUS_ITEMSHOP_V3_V3: the second shop sells the in-game shop's lines - their vnums too:
+  ... -N -e "SELECT DISTINCT vnum FROM common.itemshop_items"
+Take item_list.txt from the built client's gamedata pack (pack/gamedata, gamedata/item_list.txt) - cY/data/item_list.txt
+lacks the newer items (70430 ...).
 Runs in the m2pack-lzo image (the pack readers m2pack/packlib, python-lzo); the TGA -> PNG step is plain Python.
 Example (vps1, the Yohara client):
   docker run --rm -i -v /opt/metin2:/opt/metin2 m2pack-lzo python3 tools/itemshop3/gen_shop_icons.py \\

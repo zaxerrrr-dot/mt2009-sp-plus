@@ -5,37 +5,52 @@
 	// purchase box below: for whom, how many (stackable items), the price now, "Kup", how the price is made.
 	require_once 'include/functions/tile.php';
 	$icon_src = mt2009_item_image($item);
-	$marks_back = ($item['pay_type']==1 && $jcoins_back) ? (int)round($final_price*$jcoins_back/100) : 0;
-	$stackable = !empty($item['stackable']) && $item['type']==1;
-	$amounts = $stackable ? [1, 5, 10] : [1];
+	// a Smocze Monety purchase: the price back as Smocze Znaki; a Kupon SM (80014-80019) the price less its value (BuyItem)
+	$coupon_value = ($item['vnum'] >= 80014 && $item['vnum'] <= 80019) ? (int)$item['value0'] : 0;
+	$marks_back = ($item['pay_type']==1 && $jcoins_back) ? max(0, (int)round($final_price*$jcoins_back/100) - $coupon_value) : 0;
+	// MT2009_PLUS_ITEMSHOP_V3_V3: the in-game window's quantities (1, 5, 10 within the stack size) and why it cannot be
+	// bought now (level floor, VIP while premium, flash offer, currency) - include/functions/tile.php.
+	$amounts = mt2009_quantities($item);
+	$block = mt2009_buy_block($item, $final_price);
+	$can_pay = $block=='';
 	$buy_link = $shop_url.'javascript/buy/'.$item['id'].'/';
 	$char_label = $shop_char ? $shop_char['name'] : $account->getAccountData('login', $_SESSION['id']);
 	$balance = $item['pay_type']==2 ? $amount_jcoins : $amount_coins;
 
-	// The description: the catalogue's text (or the item's), then what the item is.
+	// The description: the catalogue's text (or the client's tooltip text), one line each, then what the item is.
+	// MT2009_PLUS_ITEMSHOP_V3_V3: the duration once - not again when the text says it ("Czas: 30 dni." and
+	// "Czas trwania: 30 dni" were both there).
 	$info_lines = [];
-	$text = $item['description']!='' ? $item['description'] : $description;
-	$text = trim(str_replace(["<p>", "</p>"], ["", "<br>"], (string)$text));
-	if($text!='')
-		$info_lines[] = '•	'.strip_tags($text, '<br><b><strong><a>');
+	$desc_lines = mt2009_item_desc_lines($item);
+	foreach($desc_lines as $line)
+		$info_lines[] = '•	'.htmlspecialchars($line);
 	if($item['count']>1)
 		$info_lines[] = '•	'.$lang_shop['mt-count'].': '.$item['count'];
-	if($item['limit_account']>0)
-		$info_lines[] = '•	'.$lang_shop['purchase_limit'].': '.max(0, $item['limit_account']-$count_account);
-	if($item['expire']!=null && isset($time_left) && $time_left>0)
-		$info_lines[] = '•	'.$lang_shop['offer-expires'].' '.$shop->secondsToTime($time_left, $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes']);
-	if($shop->getItem($item['vnum'], 'limit_type0')=='LEVEL')
-		$info_lines[] = '•	'.$lang_shop['required-level'].' '.max(1, (int)$shop->getItem($item['vnum'], 'limit_value0'));
+	if(!empty($item['min_level']))
+		$info_lines[] = '•	'.sprintf($lang_shop['mt-min-level'], (int)$item['min_level']);
+	else if($shop->getItem($item['vnum'], 'limit_type0')=='LEVEL' && (int)$shop->getItem($item['vnum'], 'limit_value0') > 1)
+		$info_lines[] = '•	'.$lang_shop['required-level'].' '.(int)$shop->getItem($item['vnum'], 'limit_value0');
+	if(!empty($item['vip']))
+		$info_lines[] = '•	'.$lang_shop['mt-vip-info'];
+	if(!empty($item['promo']) && !empty($item['promo_end']))
+		$info_lines[] = '•	'.$lang_shop['items-with-discount'].' ('.$lang_shop['mt-until'].' '.date('d.m.Y H:i', strtotime($item['promo_end'])).')';
+	if(!empty($item['auction']))
+	{
+		$info_lines[] = '•	'.htmlspecialchars(mt2009_auction_line($item));
+		if((int)$item['auction_account_limit'] > 0)
+			$info_lines[] = '•	'.sprintf($lang_shop['mt-auction-limit-info'], (int)$item['auction_account_limit']);
+		if((int)$item['auction_max'] > 0)
+			$info_lines[] = '•	'.sprintf($lang_shop['mt-auction-stock'], max(0, 100 - (int)floor(100 * (int)$item['auction_bought'] / max(1, (int)$item['auction_max']))));
+	}
 	if($item['type']==3 && isset($account_bonuses[$item['vnum']]))
 		$info_lines[] = '•	'.$account_bonuses[$item['vnum']];
-	if($item['book_type']=='RANDOM_ALL_CHARS')
-		$info_lines[] = '•	'.$lang_shop['get-random-skill'];
-	else if($item['book_type']!='FIX')
-		$info_lines[] = '•	'.$lang_shop['get-random-skill-for'].' '.$shop->getLocaleGameByType($item['book_type']);
-	if($item['time']>0)
-		$info_lines[] = '•	'.$lang_shop['duration'].': '.$shop->secondsToTime($item['time']*60, $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes']);
-	else if($item_proto && $item_proto['item_type']=='ITEM_COSTUME')
-		$info_lines[] = '•	'.$lang_shop['duration'].': '.$lang_shop['permanent'];
+	if(!mt2009_desc_has_time($desc_lines))
+	{
+		if($item['time']>0)
+			$info_lines[] = '•	'.$lang_shop['duration'].': '.$shop->secondsToTime($item['time']*60, $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes']);
+		else if($item_proto && $item_proto['item_type']=='ITEM_COSTUME')
+			$info_lines[] = '•	'.$lang_shop['duration'].': '.$lang_shop['permanent'];
+	}
 	foreach(array_merge($addon, $bonuses) as $bonus)
 		if(isset($bonuses_name[$bonus[0]]))
 			$info_lines[] = '•	'.sprintf($bonuses_name[$bonus[0]], $bonus[1]);
@@ -95,7 +110,7 @@
 			<div class="item-info clearfix">
 				<div class="item-showcase grey-box span4">
 					<div id="image" class="picture_wrapper">
-						<img id="selectionImageMain" class="image mt-icon" src="<?php print $icon_src; ?>" alt="<?php print htmlspecialchars($item_name); ?>" onerror="this.onerror=null;this.src='<?php print $shop_url; ?>images/this/noicon.png';">
+						<span class="mt-picture"><img id="selectionImageMain" class="image mt-icon" src="<?php print $icon_src; ?>" alt="<?php print htmlspecialchars($item_name); ?>" onerror="this.onerror=null;this.src='<?php print $shop_url; ?>images/this/noicon.png';"></span>
 					</div>
 				</div>
 				<div class="tabbable item-description span8">
@@ -187,7 +202,8 @@
 							<button type="button" class="btn-price" name="changer" style="display: inline-block;"><?php print $lang_shop['buy']; ?></button>
 							<button id="purchaseLink1" class="js_currency fancybox fancybox.ajax btn-buy" data-currency="<?php print (int)$item['pay_type']; ?>" href="<?php print $buy_link.'?q=1'; ?>" style="display: none;"><?php print $lang_shop['buy-now']; ?></button>
 							<?php } else { ?>
-							<button class="btn-disabled ttip" style="display: inline-block;" href="javascript:void(0);" tooltip-content="<?php print $item['pay_type']==2 ? $lang_shop['mt-not-enough-marks'] : $lang_shop['not-enough-coins']; ?>"><?php print $lang_shop['buy']; ?></button>
+							<button class="btn-disabled ttip" style="display: inline-block;" href="javascript:void(0);" tooltip-content="<?php print htmlspecialchars($block); ?>"><?php print $lang_shop['buy']; ?></button>
+							<p class="mt-buy-block"><?php print htmlspecialchars($block); ?></p>
 							<?php } ?>
 						</div>
 					</div>
@@ -206,7 +222,7 @@
 			<img class="ttip" src="<?php print $shop_url.'images/this/'.($item['pay_type']==2 ? 'jcoins.png' : 'coins.png'); ?>" alt="">
 			<strong class="bill_price mt-total"><?php print number_format($final_price, 0, '', '.'); ?></strong>
 			<?php if($marks_back) { ?>
-			<span class="bill_mileage text-success">
+			<span class="bill_mileage text-success mt-marks-sum">
 				<span class="block-price"><img class="ttip" src="<?php print $shop_url; ?>images/this/jcoins.png" alt=""> <span class="end-price mt-marks"><?php print number_format($marks_back, 0, '', '.'); ?></span></span> <?php print $lang_shop['mt-marks-back']; ?>
 			</span>
 			<?php } ?>
@@ -219,7 +235,7 @@
 	initFocusClear();
 	$('.ttip').tipTip(zs.data.ttip);
 	(function () {
-		var price = <?php print (int)$final_price; ?>, back = <?php print (int)$jcoins_back; ?>, payType = <?php print (int)$item['pay_type']; ?>;
+		var price = <?php print (int)$final_price; ?>, back = <?php print (int)$jcoins_back; ?>, payType = <?php print (int)$item['pay_type']; ?>, coupon = <?php print (int)$coupon_value; ?>;
 		var link = '<?php print $buy_link; ?>';
 		function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 		$('#buy .btn-price').on('click', function (e) {
@@ -234,7 +250,7 @@
 			$('.unitCount, #itemBuy .bill_amount').text(n);
 			$('#itemBuy .mt-total').text(fmt(n * price));
 			if (payType == 1)
-				$('#itemBuy .mt-marks').text(fmt(Math.round(n * price * back / 100)));
+				$('#itemBuy .mt-marks').text(fmt(Math.max(0, Math.round(n * price * back / 100) - coupon)));
 			$('#buy .btn-buy').attr('href', link + '?q=' + n).hide();
 			$('#buy .btn-price').show();
 		});

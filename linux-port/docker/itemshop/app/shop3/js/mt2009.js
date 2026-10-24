@@ -1,16 +1,65 @@
 /* MT2009_PLUS_ITEMSHOP_V3_V2: the card's quantity choice (the price on the button and the purchase link follow
    it) and the list's sort choice, as on the big servers' shop. */
 (function ($) {
+	/* MT2009_PLUS_ITEMSHOP_V3_V3: native scrolling instead of the shop's scrollbar plugin (mCustomScrollbar). In the
+	   game's browser (IE11) the plugin moved the list a few pixels per wheel turn and animated every step over the
+	   whole page; the browser's own scrolling is fast and smooth. Every call of the plugin lands here: options ->
+	   the box scrolls natively; "scrollTo" / "update" / "stop" / "destroy" are answered the native way. */
+	$.fn.mCustomScrollbar = function (opt, to) {
+		if (typeof opt === 'string') {
+			if (opt === 'scrollTo')
+				this.each(function () {
+					if (to === 'top') this.scrollTop = 0;
+					else if (to === 'bottom') this.scrollTop = this.scrollHeight;
+					else if (typeof to === 'number') this.scrollTop = Math.abs(to);
+				});
+			return this;
+		}
+		return this.addClass('mt-native-scroll');
+	};
+
+	// the lists (and the categories beside them) fill the window down to its bottom edge - the shop's fixed height
+	// left a band under the last row in a 655 px window and cut the row off in a smaller one
+	function fit() {
+		var winH = $(window).height();
+		$('.content .scrollable_container, #accountContent .scrollable_container, #landing.scrollable_container').each(function () {
+			var box = $(this), top = box.offset().top;
+			box.addClass('mt-native-scroll').css('height', Math.max(140, winH - top - 8) + 'px');
+		});
+		$('#subnavi.mt-subnavi').each(function () {
+			var nav = $(this);
+			nav.css('max-height', Math.max(140, winH - nav.offset().top - 8) + 'px');
+		});
+	}
+	$(fit);
+	$(window).on('load resize', fit);
+
 	// the stylesheet hides the home page's carousel until the slider is built (the big servers' script shows it)
 	$(window).on('load', function () { $('.carousell').css('visibility', 'visible'); });
+
+	// a quantity menu opened near the bottom of the list scrolls the list so the whole menu shows
+	$(document).on('click', '.list-item .zs-dropdown .dropdown-toggle', function () {
+		var menu = $(this).siblings('.dropdown-menu'), box = $(this).closest('.scrollable_container');
+		setTimeout(function () {
+			if (!menu.is(':visible') || !box.length)
+				return;
+			var over = (menu.offset().top + menu.outerHeight()) - (box.offset().top + box.innerHeight()) + 8;
+			if (over > 0)
+				box.scrollTop(box.scrollTop() + over);
+		}, 0);
+	});
+
 	$(document).on('click', '.list-item .dropdown-option.mt-qty', function (e) {
 		e.preventDefault();
 		var opt = $(this), item = opt.closest('.list-item'), price = parseInt(opt.attr('data-price'), 10);
 		item.find('.dropdown-selection').text(opt.attr('data-text')).attr('data-count', opt.attr('data-count'));
-		item.find('.btn-price .end-price').text(price.toLocaleString('de-DE')).attr('data-value', price);
+		item.find('.btn-price .end-price').text(String(price).replace(/\B(?=(\d{3})+(?!\d))/g, '.')).attr('data-value', price);
 		item.find('.btn-buy').attr('href', opt.attr('data-href'));
-		item.find('.btn-buy').hide();
-		item.find('.btn-price').show();
+		// MT2009_PLUS_ITEMSHOP_V3_V3: back to the price button by the shop's own classes - the inline display:none
+		// this put on "Kup" before won over the stylesheet's .buy-now, so after a quantity the price button vanished
+		// and no "Kup" came (the owner: 20 Zwojow Blogoslawienstwa, nothing happened).
+		item.find('.buy-now').removeClass('buy-now');
+		item.find('.btn-buy, .btn-price').css('display', '');
 		opt.closest('.zs-dropdown').removeClass('open');
 	});
 	$(document).on('click', '#formArticlesSort .sort-option', function (e) {

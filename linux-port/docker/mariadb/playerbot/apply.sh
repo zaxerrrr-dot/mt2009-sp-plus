@@ -3694,7 +3694,10 @@ if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (72326, 72344
 ishop_once transmutacja_tickets "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
 (950, 72326, 1, 100, 'DRAGON_COIN', 0),
 (951, 72344, 1, 100, 'DRAGON_COIN', 0);" "could not add the transmutation tickets to the ItemShop"
-db -e "INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+# MT2009_PLUS_ITEMSHOP_V3_V3: SET NAMES - db() talks latin1, and these UTF-8 texts were stored double-encoded
+# ("opÅ‚aty" in both web shops); the rows already written are repaired after the aura block below.
+db -e "SET NAMES utf8mb4;
+INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
 SELECT 1072326, 10, 'Bilet Transmutacji', 'Transmutacja u Theowahdana bez opłaty 50 mln Yang.', 100, 'cash', 72326, 1, 0, 0, 0, '72326', NOW()
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 72326);
 INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
@@ -4218,13 +4221,23 @@ if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (49101, 89999
 ishop_once aura_952 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES
 (952, 49101, 1, 650, 'DRAGON_COIN', 0),
 (953, 89999, 1, 50, 'DRAGON_COIN', 0);" "could not add the aura outfit and certificate to the ItemShop"
-db -e "INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
+db -e "SET NAMES utf8mb4;
+INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
 SELECT 1049101, 10, 'Zwyczajna Szata Aury', 'Szata aury - przenieś na nią parametry biżuterii i ulepszaj ją u Theowahdana.', 650, 'cash', 49101, 1, 0, 0, 0, '49101', NOW()
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 49101);
 INSERT IGNORE INTO itemshop.ishop_items (id, category, name_item, \`desc\`, price, currency, vnum, count, socket0, socket1, socket2, vnum_icon, date_added)
 SELECT 1089999, 10, 'Świadectwo Aury+', 'Usuwa parametry przeniesione na szatę aury (poziom zostaje).', 50, 'cash', 89999, 1, 0, 0, 0, '89999', NOW()
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM itemshop.ishop_items WHERE vnum = 89999);" 2>/dev/null || echo "[playerbot-migrate] note: no web ItemShop tables for the aura items" >&2
 fi
+# MT2009_PLUS_ITEMSHOP_V3_V3: the web catalogue's texts written double-encoded before (the two blocks above ran without
+# SET NAMES: "wyglÄ…du", "opÅ‚aty", "Åšwiadectwo") - undone once on every row that has the tell-tale UTF-8 of
+# "Ã"/"Ä"/"Å" (never in Polish text), whatever wrote it. Idempotent: a repaired row no longer matches.
+db -e "SET NAMES utf8mb4;
+UPDATE itemshop.ishop_items SET \`desc\` = CONVERT(CAST(CONVERT(\`desc\` USING latin1) AS BINARY) USING utf8mb4)
+ WHERE HEX(\`desc\`) REGEXP '^(..)*C3(83|84|85)' AND CONVERT(CAST(CONVERT(\`desc\` USING latin1) AS BINARY) USING utf8mb4) IS NOT NULL;
+UPDATE itemshop.ishop_items SET name_item = CONVERT(CAST(CONVERT(name_item USING latin1) AS BINARY) USING utf8mb4)
+ WHERE HEX(name_item) REGEXP '^(..)*C3(83|84|85)' AND CONVERT(CAST(CONVERT(name_item USING latin1) AS BINARY) USING utf8mb4) IS NOT NULL;" 2>/dev/null \
+    || echo "[playerbot-migrate] note: the web ItemShop's double-encoded texts were not repaired" >&2
 # MT2009_PLUS_AURA_RUNES_SHOP_V1 (the owner, 21 October 2026: "Ogniste Runy Aury 250/500 have no source - as on the
 # global server"): the pl-wiki's sources of Ognista Runa Aury (250) / (500) are the ItemShop (Item-Shop, the ItemShop
 # boxes Pudelko Uszlachetniania Aury / Pudlo Chaosu SungMa / Tajemnicze Pudelko Najemnika, Aukcja Blyskawiczna) and the

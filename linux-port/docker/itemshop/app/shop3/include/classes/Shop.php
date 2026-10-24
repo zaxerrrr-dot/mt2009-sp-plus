@@ -977,7 +977,8 @@ class Shop {
 	}
 
 	public function getLatestObjects() {
-		return $this->db->select("shop", "*", $this->wearWhere(["available" => 1], ["LIMIT" => 10, "ORDER" => ["date" => "DESC"]]));
+		// MT2009_PLUS_ITEMSHOP_V3_V3: the in-game lines have no date - the highest indexes (the last added) first
+		return $this->db->select("shop", "*", $this->wearWhere(["available" => 1, "category[>]" => 0, "auction" => 0], ["LIMIT" => 10, "ORDER" => ["id" => "DESC"]]));
 	}
 
 	public function getItemPrice($price, $discount) {
@@ -1037,91 +1038,64 @@ class Shop {
 		return false;
 	}
 
-	public function getItemShopCount($id, $specific_category, $searchString=null) {
-		if($searchString && !$specific_category)
+	// MT2009_PLUS_ITEMSHOP_V3_V3: the in-game shop's categories (the view itemshop3.categories, kind): a category of
+	// index ranges lists its lines (the view's category), "Smocze Znaki" every line in marks, "Polecane" the running
+	// promotions, "Oferty Blyskawiczne" the flash offers from a day before their start until an hour after the end;
+	// "all" every line the in-game window lists in a category (not the flash offers, not the hidden ones).
+	public function categoryKind($id) {
+		static $kinds = null;
+		if($kinds === null)
 		{
-			$lang = $this->getNameLang();
-			
-			$string = '%'.strtolower($searchString).'%';
-			$sth = $this->db->pdo->prepare(
-			"SELECT 
-				count(*)
-			FROM
-				shop p
-					INNER JOIN
-				item_names o ON p.vnum = o.vnum
-					AND o.lang = ?
-					AND p.available = 1".$this->wearSql("p")."
-					WHERE LOWER(CONVERT(o.name USING utf8)) LIKE ?
-					ORDER BY p.category ASC, p.date DESC;");
-			
-			$sth->bindParam(1, $lang, PDO::PARAM_STR);
-			$sth->bindParam(2, $string, PDO::PARAM_STR);
-			
-			$sth->execute();
-			$count = $sth->fetchColumn(); 
-			
-			return $count;
+			$kinds = [];
+			foreach($this->db->select("categories", ["id", "kind"]) as $row)
+				$kinds[(int)$row['id']] = $row['kind'];
 		}
-		else if($specific_category && $searchString==null)
-			return $this->db->count("shop", $this->wearWhere(["category" => $id, "available" => 1]));
-		else if($searchString)
-		{
-			$lang = $this->getNameLang();
-			
-			$string = '%'.strtolower($searchString).'%';
-			$sth = $this->db->pdo->prepare(
-			"SELECT 
-				count(*)
-			FROM
-				shop p
-					INNER JOIN
-				item_names o ON p.vnum = o.vnum
-					AND o.lang = ?
-					AND p.available = 1".$this->wearSql("p")."
-					AND p.category = ?
-					WHERE LOWER(CONVERT(o.name USING utf8)) LIKE ?
-					ORDER BY p.category ASC, p.date DESC;");
-			
-			$sth->bindParam(1, $lang, PDO::PARAM_STR);
-			$sth->bindParam(2, $id, PDO::PARAM_STR);
-			$sth->bindParam(3, $string, PDO::PARAM_STR);
-			
-			$sth->execute();
-			$count = $sth->fetchColumn(); 
-			
-			return $count;
-		}
-		return $this->db->count("shop", $this->wearWhere(["available" => 1]));
+		return isset($kinds[(int)$id]) ? $kinds[(int)$id] : '';
 	}
+	private function categoryWhere($id) {
+		switch($this->categoryKind($id))
+		{
+			case 'marks':
+				return ["pay_type" => 2, "auction" => 0];
+			case 'featured':
+				return ["promo" => 1, "auction" => 0];
+			case 'auctions':
+				return ["auction" => 1, "auction_visible" => 1];
+			case 'items':
+				return ["category" => (int)$id, "auction" => 0];
+		}
+		return ["category" => -1];
+	}
+	private function listOrder($id) {
+		// the in-game window: by vnum, Kupony SM by price (uiitemshop.py ITEMSHOP_SORT_TYPE_PRICE)
+		if($id !== null && $this->categoryKind($id)=='items' && (int)$id==13)
+			return ["coins" => "ASC", "id" => "ASC"];
+		if($id === null)
+			return ["category" => "ASC", "vnum" => "ASC", "id" => "ASC"];
+		return ["vnum" => "ASC", "id" => "ASC"];
+	}
+	private function searchItems($string, $countOnly) {
+		$string = '%'.mb_strtolower($string).'%';
+		$sth = $this->db->pdo->prepare("SELECT ".($countOnly ? "COUNT(*)" : "p.*")." FROM shop p WHERE p.category > 0 AND p.auction = 0"
+			.$this->wearSql("p")." AND LOWER(p.name) LIKE ?".($countOnly ? "" : " ORDER BY p.category ASC, p.vnum ASC, p.id ASC"));
+		$sth->execute([$string]);
+		return $countOnly ? (int)$sth->fetchColumn() : $sth->fetchAll();
+	}
+
+	public function getItemShopCount($id, $specific_category, $searchString=null) {
+		if($searchString)
+			return $this->searchItems($searchString, true);
+		if($specific_category)
+			return $this->db->count("shop", $this->wearWhere($this->categoryWhere($id)));
+		return $this->db->count("shop", $this->wearWhere(["category[>]" => 0, "auction" => 0]));
+	}
+
 	public function getItemShopItems($cat, $specific_category, $searchString=null) {
 		if($searchString)
-		{
-			$lang = $this->getNameLang();
-			
-			$string = '%'.strtolower($searchString).'%';
-			$sth = $this->db->pdo->prepare(
-			"SELECT 
-				p.*
-			FROM
-				shop p
-					INNER JOIN
-				item_names o ON p.vnum = o.vnum
-					AND o.lang = ?
-					AND p.available = 1".$this->wearSql("p")."
-					WHERE LOWER(CONVERT(o.name USING utf8)) LIKE ?
-					ORDER BY p.category ASC, p.date DESC;");
-			
-			$sth->bindParam(1, $lang, PDO::PARAM_STR);
-			$sth->bindParam(2, $string, PDO::PARAM_STR);
-			$sth->execute();
-			
-			return $sth->fetchAll();
-		}
-		else if(!$specific_category)
-			return $this->db->select("shop", "*", $this->wearWhere(["available" => 1], ["ORDER" => ["category" => "ASC", "date" => "DESC"]]));
-		else
-			return $this->db->select("shop", "*", $this->wearWhere(["available" => 1, "category" => $cat], ["ORDER" => ["date" => "DESC"]]));
+			return $this->searchItems($searchString, false);
+		if($specific_category)
+			return $this->db->select("shop", "*", $this->wearWhere($this->categoryWhere($cat), ["ORDER" => $this->listOrder($cat)]));
+		return $this->db->select("shop", "*", $this->wearWhere(["category[>]" => 0, "auction" => 0], ["ORDER" => $this->listOrder(null)]));
 	}
 
 	public function getHistoryItem($account, $page_number) {
@@ -1161,48 +1135,22 @@ class Shop {
 	
 	public function getSearchResults($string) {
 		global $shop_url;
-		
-		$lang = $this->getNameLang();
-		
-		$searchString = '%'.strtolower($string).'%';
-		$sth = $this->db->pdo->prepare(
-		"SELECT 
-			p.id, 
-			p.vnum,
-			o.name
-		FROM
-			shop p
-				INNER JOIN
-			item_names o ON p.vnum = o.vnum
-				AND o.lang = ?
-				AND p.available = 1
-				WHERE LOWER(CONVERT(o.name USING utf8)) LIKE ? GROUP BY o.name
-				ORDER BY p.category ASC, p.date DESC;");
-		
-		$sth->bindParam(1, $lang, PDO::PARAM_STR);
-		$sth->bindParam(2, $searchString, PDO::PARAM_STR);
-
-		$sth->execute();
-
+		// MT2009_PLUS_ITEMSHOP_V3_V3: the lines of the in-game shop by their name (with the window's suffixes).
+		$searchString = '%'.mb_strtolower($string).'%';
+		$sth = $this->db->pdo->prepare("SELECT p.id, p.vnum, p.name FROM shop p WHERE p.category > 0 AND p.auction = 0"
+			.$this->wearSql("p")." AND LOWER(p.name) LIKE ? GROUP BY p.name ORDER BY p.category ASC, p.vnum ASC LIMIT 30");
+		$sth->execute([$searchString]);
 		$result = $sth->fetchAll();
 		foreach($result as $key=>$row)
 		{
 			$result[$key]['value'] = $row['name'];
-			
-			$name = $row['name'];
-			$pos = strpos(strtolower($name), strtolower($string));
-			
-			if ($pos !== false)
-			{
-				$name = substr_replace($name, '</strong>', $pos+strlen($string), 0);
-				$name = substr_replace($name, '<strong>', $pos, 0);
-				
-				$result[$key]['name'] = $name;
-			}
-			
+			$name = htmlspecialchars($row['name']);
+			$pos = mb_stripos($name, $string);
+			if($pos !== false)
+				$name = mb_substr($name, 0, $pos).'<strong>'.mb_substr($name, $pos, mb_strlen($string)).'</strong>'.mb_substr($name, $pos + mb_strlen($string));
+			$result[$key]['name'] = $name;
 			$result[$key]['image'] = $shop_url.'images/'.$this->getIcon($row['vnum']);
 		}
-		
 		return $result;
 	}
 
@@ -1910,7 +1858,9 @@ class Shop {
 	// "Nowości": the newest offers (the catalogue's date_added); "Popularne": the most bought in this shop's
 	// history (the last 90 days first, then all time; filled up with the newest while little was bought).
 	public function getNewItems($limit = 60) {
-		return $this->db->select("shop", "*", $this->wearWhere(["available" => 1], ["LIMIT" => $limit, "ORDER" => ["date" => "DESC", "id" => "DESC"]]));
+		// MT2009_PLUS_ITEMSHOP_V3_V3: no dates in the in-game catalogue - the cheapest everyday lines (Wyposazenie,
+		// Uszlachetnianie, Zwoje i ksiegi) fill "Popularne" while little was bought.
+		return $this->db->select("shop", "*", $this->wearWhere(["available" => 1, "category" => [2, 3, 11], "auction" => 0], ["LIMIT" => $limit, "ORDER" => ["category" => "ASC", "vnum" => "ASC"]]));
 	}
 	public function getPopularItems($limit = 60) {
 		$ids = [];
@@ -1926,7 +1876,7 @@ class Shop {
 		if(count($ids))
 		{
 			$byId = [];
-			foreach($this->db->select("shop", "*", $this->wearWhere(["available" => 1, "id" => $ids])) as $row)
+			foreach($this->db->select("shop", "*", $this->wearWhere(["available" => 1, "id" => $ids, "category[>]" => 0, "auction" => 0])) as $row)
 				$byId[(int)$row['id']] = $row;
 			foreach($ids as $id)
 				if(isset($byId[$id]) && count($items) < $limit)

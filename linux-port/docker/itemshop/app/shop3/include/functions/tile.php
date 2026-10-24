@@ -4,29 +4,35 @@
 	// short description, and at the bottom the price button (green; grey when it cannot be paid) that turns
 	// into "Kup", for stackable items with the quantity choice on the left. Used by the home page carousel and
 	// the item lists (pages/shop/home.php, items.php).
+	// MT2009_PLUS_ITEMSHOP_V3_V3: the lines are the in-game shop's (itemshop3.shop onto common.itemshop_items): its
+	// name with the window's suffix, its quantities (1, 5, 10 within the stack size), its level floor, the VIP
+	// effects (refused while the premium account runs), promotions and flash offers; the picture at its own size in
+	// a column of its own (no stretched, pixelated icon over the text); the description cut at a word.
 
-	// Our ten categories (itemshop.ishop_category) and their icons: the shop's own pictures where it has one
-	// for the same kind of offer, Font Awesome otherwise.
+	// The category icons (itemshop3.categories icon): images/gf/cat_<icon>.png - the shop's own pictures and, in
+	// their colour, Font Awesome's (made once from css/fontawesome).
 	function mt2009_category_icon($category_id, $size = 32)
 	{
-		global $shop_url;
-		// images/gf/cat_*.png: the shop's three own (refine, service, star) and, in its colour, Font Awesome's
-		// magic, scissors, shirt, khanda, paw, horse, shield (made once from css/fontawesome).
-		$images = [1 => 'refine', 2 => 'magic', 3 => 'service', 4 => 'star', 5 => 'cut', 6 => 'tshirt', 7 => 'khanda',
-			8 => 'paw', 9 => 'horse', 10 => 'shield-alt', 'more' => 'more'];
-		$name = isset($images[$category_id]) ? $images[$category_id] : 'gem';
+		global $shop_url, $categoriesbyid;
+		if($category_id === 'more')
+			$name = 'more';
+		else
+			$name = isset($categoriesbyid[$category_id]['icon']) && $categoriesbyid[$category_id]['icon']!='' ? $categoriesbyid[$category_id]['icon'] : 'gem';
 		return '<img width="'.$size.'" height="'.$size.'" src="'.$shop_url.'images/gf/cat_'.$name.'.png" class="icon" alt="">';
 	}
 
-	// The item picture: the old shop's icon (img/item/<icon>.png, 32 px wide) or, when that file is missing, the
-	// shop's empty picture - never a broken image (the owner's screenshot: Buffi showed a crossed box).
+	// The item picture: img/item/<vnum>.png (tools/itemshop3/gen_shop_icons.py), else the web catalogue's icon, else
+	// the shop's empty picture - never a broken image.
 	function mt2009_item_image($item)
 	{
 		global $shop_url, $server_item, $icons, $shop;
 		if($item['type']==3)
 			return $shop_url.'images/icons/bonuses/'.$server_item['buff'][$item['vnum']][0].'.png';
+		$dir = dirname(__DIR__, 2).'/images/';
+		if(is_file($dir.'item/'.(int)$item['vnum'].'.png'))
+			return $shop_url.'images/item/'.(int)$item['vnum'].'.png';
 		$src = isset($icons[$item['vnum']]['src']) ? $icons[$item['vnum']]['src'] : $shop->getIcon($item['vnum']);
-		if(!is_file(dirname(__DIR__, 2).'/images/'.$src))
+		if(!is_file($dir.$src))
 			return $shop_url.'images/this/noicon.png';
 		return $shop_url.'images/'.$src;
 	}
@@ -34,7 +40,10 @@
 	function mt2009_item_name($item)
 	{
 		global $names, $shop, $account_bonuses, $lang_shop;
-		$item_name = isset($names[$item['vnum']]) ? $names[$item['vnum']] : $shop->getName($item['vnum']);
+		if(isset($item['name']) && $item['name']!='')
+			$item_name = $item['name'];
+		else
+			$item_name = isset($names[$item['vnum']]) ? $names[$item['vnum']] : $shop->getName($item['vnum']);
 		if($item['type']==3)
 			$item_name = $account_bonuses[$item['vnum']];
 		if($item['book']>0)
@@ -46,37 +55,96 @@
 		return $item_name;
 	}
 
-	// The short description of a card: a few lines, cut with "..." like the big servers' shop.
+	// The description of a line as plain lines: the web catalogue's text for the vnum (the view's description), else
+	// the client's tooltip text (include/db/client_itemdesc.json, tools/itemshop3/gen_client_desc.py). "<br>" and
+	// new lines are separate lines (the cards ran "30 dni.Tylko dla postaci" together).
+	function mt2009_item_desc_lines($item)
+	{
+		global $descriptions;
+		static $client = null;
+		$text = isset($item['description']) ? (string)$item['description'] : '';
+		if(trim(strip_tags($text))=='' && isset($descriptions[$item['vnum']]))
+			$text = (string)$descriptions[$item['vnum']];
+		if(trim(strip_tags($text))=='')
+		{
+			if($client === null)
+			{
+				$file = dirname(__DIR__).'/db/client_itemdesc.json';
+				$client = is_file($file) ? json_decode(file_get_contents($file), true) : [];
+				if(!is_array($client))
+					$client = [];
+			}
+			$text = isset($client[(string)(int)$item['vnum']]) ? $client[(string)(int)$item['vnum']] : '';
+		}
+		$text = preg_replace('#<\s*br\s*/?\s*>|</p>|\r?\n#i', "\n", $text);
+		$lines = [];
+		foreach(explode("\n", strip_tags($text)) as $line)
+		{
+			$line = trim(preg_replace('/\s+/u', ' ', html_entity_decode($line, ENT_QUOTES, 'UTF-8')));
+			if($line!='')
+				$lines[] = $line;
+		}
+		return $lines;
+	}
+
+	// Does the description already say how long the item lasts (the web catalogue's "Czas: 30 dni.")?
+	function mt2009_desc_has_time($lines)
+	{
+		foreach($lines as $line)
+			if(preg_match('/^(•\s*)?Czas( trwania)?\s*:/iu', $line))
+				return true;
+		return false;
+	}
+
+	// Cut at a word, never in the middle of one.
+	function mt2009_cut_words($text, $max)
+	{
+		if(mb_strlen($text) <= $max)
+			return $text;
+		$cut = mb_substr($text, 0, $max);
+		$sp = mb_strrpos($cut, ' ');
+		if($sp !== false && $sp > $max * 0.6)
+			$cut = mb_substr($cut, 0, $sp);
+		return rtrim($cut, " ,.;:-").'…';
+	}
+
+	// The short description of a card: up to three lines of about 110 characters in all, cut at a word with "…"
+	// (the whole text is in the item's window).
 	function mt2009_short_desc($item, $item_proto)
 	{
-		global $descriptions, $shop, $player, $lang_shop;
-		$lines = [];
-		$text = strip_tags((string)$item['description']);
-		if($text=='' && isset($descriptions[$item['vnum']]))
-			$text = strip_tags((string)$descriptions[$item['vnum']]);
-		$text = trim(preg_replace('/\s+/u', ' ', $text));
-		if($text!='')
-			$lines[] = $text;
+		global $shop, $lang_shop;
+		$lines = mt2009_item_desc_lines($item);
+		if(!empty($item['auction']))
+		{
+			// a flash offer: its time and limit first (the card's few lines would cut them off)
+			$first = [mt2009_auction_line($item)];
+			if((int)$item['auction_account_limit'] > 0)
+				$first[] = sprintf($lang_shop['mt-auction-limit-info'], (int)$item['auction_account_limit']);
+			$lines = array_merge($first, $lines);
+		}
 		if($item['count']>1)
 			$lines[] = $lang_shop['mt-count'].': '.$item['count'];
+		if(!empty($item['min_level']))
+			$lines[] = sprintf($lang_shop['mt-min-level'], (int)$item['min_level']);
 		if(count($shop->getCostumeSets($item['vnum'])))
 			$lines[] = $lang_shop['mt-set-part'];
-		$out = '';
-		$left = 118;
+		$out = [];
+		$left = 110;
 		foreach($lines as $line)
 		{
-			if($left <= 0)
-				break;
-			if(mb_strlen($line) > $left)
+			if($left < 12 || count($out) >= 3)
 			{
-				$line = rtrim(mb_substr($line, 0, $left)).'...';
-				$left = 0;
+				if(mb_substr($out[count($out) - 1], -1)!='…')
+					$out[count($out) - 1] .= ' …';
+				break;
 			}
-			else
-				$left -= mb_strlen($line) + 12;
-			$out .= '•	'.htmlspecialchars($line).'<br>';
+			$short = mt2009_cut_words($line, $left);
+			$out[] = htmlspecialchars($short);
+			$left -= mb_strlen($short) + 14;
+			if(mb_substr($short, -1)=='…')
+				break;
 		}
-		return $out;
+		return count($out) ? '•	'.implode('<br>•	', $out) : '';
 	}
 
 	function mt2009_price_html($pay_type, $price)
@@ -88,15 +156,66 @@
 			.'<span class="end-price" data-value="'.(int)$price.'">'.number_format($price, 0, '', '.').'</span></span>';
 	}
 
+	// The quantities the in-game window offers (ItemShopQuestion.SetButtons): 1, 5 with a stack of 5, 10 with 10.
+	function mt2009_quantities($item)
+	{
+		if(empty($item['stackable']) || $item['type']!=1)
+			return [1];
+		$max = isset($item['max_stack']) ? (int)$item['max_stack'] : 1;
+		$q = [1];
+		if($max >= 5)
+			$q[] = 5;
+		if($max >= 10)
+			$q[] = 10;
+		return $q;
+	}
+
+	// Why the line cannot be bought now ('' = it can): the Arezzo module off, a flash offer not running, the level
+	// floor, a VIP effect while the premium account runs (CItemShopManager::BuyItem), too little currency.
+	function mt2009_buy_block($item, $final_price, $qty = 1)
+	{
+		global $lang_shop, $shop_char, $amount_coins, $amount_jcoins, $premium_active;
+		if(!empty($item['arezzo_locked']))
+			return $lang_shop['mt-arezzo-off'];
+		if(!empty($item['auction']) && $item['available']!=1)
+			return (!empty($item['auction_start']) && strtotime($item['auction_start']) > time()) ? $lang_shop['mt-auction-not-started'] : $lang_shop['mt-auction-ended'];
+		if($item['available']!=1)
+			return $lang_shop['mt-not-available'];
+		if(!empty($item['min_level']) && (!$shop_char || (int)$shop_char['level'] < (int)$item['min_level']))
+			return sprintf($lang_shop['mt-min-level'], (int)$item['min_level']);
+		if(!empty($item['vip']) && !empty($premium_active))
+			return $lang_shop['mt-vip-premium'];
+		$balance = $item['pay_type']==2 ? $amount_jcoins : $amount_coins;
+		if($final_price * $qty > $balance)
+			return $item['pay_type']==2 ? $lang_shop['mt-not-enough-marks'] : $lang_shop['not-enough-coins'];
+		return '';
+	}
+
+	// The time a flash offer still runs / starts in, for the card and the window.
+	function mt2009_auction_line($item)
+	{
+		global $shop, $lang_shop;
+		if(empty($item['auction']))
+			return '';
+		$now = time();
+		$start = strtotime($item['auction_start']);
+		$end = strtotime($item['expire']);
+		if($now < $start)
+			return sprintf($lang_shop['mt-auction-starts'], strip_tags($shop->secondsToTime($start - $now, $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes'])));
+		if($now < $end)
+			return sprintf($lang_shop['mt-auction-ends'], strip_tags($shop->secondsToTime(max(60, $end - $now), $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes'])));
+		return $lang_shop['mt-auction-ended'];
+	}
+
 	function mt2009_render_tile($item, $position = 0, $extra_class = '', $tag = 'li')
 	{
-		global $shop, $player, $shop_url, $lang_shop, $categoriesbyid, $amount_coins, $amount_jcoins, $jcoins_back;
+		global $shop, $player, $shop_url, $lang_shop, $categoriesbyid;
 
 		$item_name = mt2009_item_name($item);
 		$item_proto = $shop->getItem($item['vnum']);
 		$final_price = $shop->getItemPrice($item['coins'], $item['discount']);
-		$balance = $item['pay_type']==2 ? $amount_jcoins : $amount_coins;
-		$can_pay = $final_price <= $balance;
+		$block = mt2009_buy_block($item, $final_price);
+		$can_pay = $block=='';
 		$info = $shop_url.'javascript/info/'.$item['id'];
 		$buy = $shop_url.'javascript/buy/'.$item['id'];
 		$cat = $item['category'];
@@ -106,15 +225,14 @@
 			$item['time'] = $player->getItemProtoDuration($item_proto);
 
 		$status = '';
-		if($item['discount']>0)
+		if(!empty($item['auction']))
+			$status = '<i class="zicon-hd-time-real ttip" tooltip-content="'.htmlspecialchars(mt2009_auction_line($item)).'"></i>';
+		else if(!empty($item['promo']))
 			$status = '<i class="zicon-hd-discount ttip" tooltip-content="'.$lang_shop['items-with-discount'].'"></i>';
 		else if($item['time']>0)
-			$status = '<i class="zicon-hd-time-real ttip" tooltip-content="'.$lang_shop['duration'].': '.$shop->secondsToTime($item['time']*60, $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes']).'"></i>';
-		else if(time() - strtotime($item['date']) <= 7*24*3600)
-			$status = '<i class="zicon-hd-new2 ttip" tooltip-content="'.$lang_shop['new-object'].'"></i>';
+			$status = '<i class="zicon-hd-time-real ttip" tooltip-content="'.$lang_shop['duration'].': '.strip_tags($shop->secondsToTime($item['time']*60, $lang_shop['days'], $lang_shop['hours'], $lang_shop['minutes'])).'"></i>';
 
-		$stackable = !empty($item['stackable']) && $item['type']==1;
-		$counts = $stackable ? [1, 5, 10, 20, 50] : [];
+		$counts = $can_pay ? mt2009_quantities($item) : [1];
 
 		ob_start();
 ?>
@@ -128,24 +246,24 @@
 				<h4>
 					<a class="card-heading fancybox fancybox.ajax" href="<?php print $info; ?>" title="<?php print htmlspecialchars($item_name); ?>"><?php print htmlspecialchars($item_name); ?></a>
 				</h4>
-				<div class="item-shortdesc clearfix">
-					<a class="item-thumb fancybox fancybox.ajax" href="<?php print $info; ?>" title="">
-						<div class="item-thumb">
-							<img class="item-thumb-63 mt-icon" src="<?php print mt2009_item_image($item); ?>" alt="<?php print htmlspecialchars($item_name); ?>" onerror="this.onerror=null;this.src='<?php print $shop_url; ?>images/this/noicon.png';">
-						</div>
+				<div class="item-shortdesc mt-shortdesc clearfix">
+					<a class="item-thumb mt-thumb fancybox fancybox.ajax" href="<?php print $info; ?>" title="">
+						<span class="mt-thumb-cell"><img class="mt-icon" src="<?php print mt2009_item_image($item); ?>" alt="<?php print htmlspecialchars($item_name); ?>" onerror="this.onerror=null;this.src='<?php print $shop_url; ?>images/this/noicon.png';"></span>
 					</a>
-					<span class="category-link">
-						<?php print mt2009_category_icon($cat, 15); ?>
-						<a href="<?php print $shop_url.'items/'.$cat.'/'; ?>" title="<?php print htmlspecialchars($cat_name); ?>"><?php print htmlspecialchars($cat_name); ?></a>
-					</span>
-					<div class="fancybox fancybox.ajax" href="<?php print $info; ?>">
-						<p><?php print mt2009_short_desc($item, $item_proto); ?></p>
+					<div class="mt-shorttext">
+						<span class="category-link">
+							<?php print mt2009_category_icon($cat, 15); ?>
+							<a href="<?php print $shop_url.'items/'.$cat.'/'; ?>" title="<?php print htmlspecialchars($cat_name); ?>"><?php print htmlspecialchars($cat_name); ?></a>
+						</span>
+						<div class="fancybox fancybox.ajax" href="<?php print $info; ?>">
+							<p><?php print mt2009_short_desc($item, $item_proto); ?></p>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div class="item-footer price_desc row-fluid js_currency_default" data-currency="<?php print (int)$item['pay_type']; ?>">
 				<div class="action-box left">
-					<?php if(count($counts) && $can_pay) { ?>
+					<?php if(count($counts) > 1) { ?>
 					<div class="zs-dropdown">
 						<button class="dropdown-toggle" type="button" data-toggle="dropdown">
 							<span class="dropdown-selection" data-count="1" data-price="<?php print (int)$final_price; ?>">1</span>
@@ -157,14 +275,16 @@
 							<?php } ?>
 						</ul>
 					</div>
+					<?php } else if(!empty($item['promo']) && (int)$item['base_price'] > (int)$final_price) { ?>
+					<span class="mt-old-price"><?php print mt2009_price_html($item['pay_type'], $item['base_price']); ?></span>
 					<?php } ?>
 				</div>
 				<div class="action-box right">
-					<?php if($can_pay && $item['available']==1) { ?>
+					<?php if($can_pay) { ?>
 					<button class="span5 right btn-price"><?php print mt2009_price_html($item['pay_type'], $final_price); ?></button>
 					<button class="span5 right btn-buy fancybox fancybox.ajax" href="<?php print $buy.'/?q=1'; ?>"><?php print $lang_shop['buy']; ?></button>
 					<?php } else { ?>
-					<button class="span5 right btn-disabled not-available ttip fancybox fancybox.ajax" href="<?php print $info; ?>" tooltip-content="<?php print $item['pay_type']==2 ? $lang_shop['mt-not-enough-marks'] : $lang_shop['not-enough-coins']; ?>"><?php print mt2009_price_html($item['pay_type'], $final_price); ?></button>
+					<button class="span5 right btn-disabled not-available ttip fancybox fancybox.ajax" href="<?php print $info; ?>" tooltip-content="<?php print htmlspecialchars($block); ?>"><?php print mt2009_price_html($item['pay_type'], $final_price); ?></button>
 					<?php } ?>
 				</div>
 			</div>
@@ -174,4 +294,3 @@
 <?php
 		return ob_get_clean();
 	}
-?>

@@ -22,7 +22,11 @@
 					<?php
 						foreach($history as $item) {
 							$i = $shop->getItemShop($item['item']);
-							$item_name = $shop->getName($i['vnum']);
+							// MT2009_PLUS_ITEMSHOP_V3_V3: a purchase of the web catalogue's offers (before V3) has no line here
+							// any more - its name is not known, the rest of the row is
+							if(!$i)
+								$i = ['vnum' => 0, 'type' => 1, 'book' => 0, 'book_type' => 'FIX', 'polymorph' => 0, 'name' => '#'.(int)$item['item']];
+							$item_name = isset($i['name']) && $i['name']!='' ? $i['name'] : $shop->getName($i['vnum']);
 							if($i['type']==3)
 								$item_name = $account_bonuses[$i['vnum']];
 							
