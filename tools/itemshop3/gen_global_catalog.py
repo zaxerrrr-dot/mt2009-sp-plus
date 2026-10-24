@@ -81,6 +81,16 @@ COMMON = {
 	'Wino z Kwiatu Brzosk. XL': None, 'Czerw. Skrzyneczka Losu': None,
 	'Skrzynka na Zwierzaka': None, 'Opt. Skrz. Ksiąg Zwierza': None, 'Zaczaruj zwierzaka': None,
 }
+# MT2009_PLUS_ITEMSHOP_V3_V6 (the owner's rule "what can easily be replaced by another item, replace it at once"): a
+# chest item we lack -> the same kind of item we have; it keeps the lacking item's chance. Every other lacking item
+# (dragon-soul beans - no refine aid here, guild deposit coupons - no deposits, mercenaries - no such system, Spirala
+# Czasu, Wstęp do Świątyni Smoka - our Beran's lair needs no ticket) has its chance split over the others.
+SUBST = {
+	'Lśniąca Sk. z Odłamkiem': (39068, 'skrzynia z odłamkiem, niższa'),
+	'Lśniąca Skrzynia z Odłamkiem': (39068, 'skrzynia z odłamkiem, niższa'),
+	'Książka Lidera+': (71012, 'ta sama księga lidera bez „+”'),
+	'Wino z Kwiatu Brzosk. XL': (70020, 'to samo wino, zwykła butelka'),
+}
 # The amulets / rings the owner took out of the ItemShop (apply.sh kola_no_amulets) are not given by a chest either.
 OWNER_REMOVED = {71202, 71188, 71199, 70607, 72713, 86064}
 # A set's parts a chest gives (not the ring / amulet part, see OWNER_REMOVED).
@@ -248,6 +258,9 @@ class Build:
 		self.lines = OrderedDict()	# key -> line
 		self.diff, self.missing, self.replaced, self.added_src = [], [], [], {}
 		self.compared = set()		# our line ids the list mentions
+		self.chest_subs = OrderedDict()	# (wiki item, our vnum) -> a chest item replaced
+		self.fixed = OrderedDict()	# our line index -> the owner's fixed price / 30 days in this shop
+		self.untimed = []		# look lines that cannot be made 30 days
 
 	def line_id(self, key):
 		if key not in self.ids['lines']:
@@ -348,10 +361,49 @@ class Build:
 			return RULE_LOOK
 		return None
 
+	def untimed_note(self, idx):
+		for u in self.untimed:
+			if u['idx'] == idx:
+				return 'Zasady 299/699 SM / 30 dni nie da się zastosować: ' + u['why'] + ' - do decyzji.'
+		return ''
+
+	def fixed_prices(self):
+		"""MT2009_PLUS_ITEMSHOP_V3_V6 (the owner, after round 3: "wszystkie pety bez łupu 299 sm na 30 dni ... wszystkie
+		kostiumy i fryzury 299 sm na 30 dni"): every look line of ours (pets 299 / with loot 699, mounts, skins and sashes,
+		costumes, hairstyles 299 SM) becomes a 30-day line in this shop (itemshop3.line_overrides; the in-game catalogue
+		stays). A timed item (real time / from the first use) gets the line's own 30 days; an item without a timer its
+		30-day variant (the same name and antiflags) when there is one not sold yet; else it is left for the owner."""
+		sold = set(self.d.shop_vnums)
+		for idx, l in self.d.lines.items():
+			if l['cat'] not in (CAT_HAIR, CAT_COSTUME, CAT_SKIN, CAT_PET, CAT_MOUNT):
+				continue
+			p = self.d.proto.get(l['vnum'])
+			if not p or (p['type'] == 37 and p['sub'] != 12):
+				continue	# the new pet system's eggs and supplies are no pets
+			rule = self.rule_price(l)
+			if rule is None:
+				continue
+			vnum, why = l['vnum'], ''
+			if not self.d.timed(vnum):
+				var = [v for v in self.d.byname.get(norm(p['name']), []) if v != vnum and self.d.proto[v]['anti'] == p['anti'] and self.d.proto[v]['type'] == p['type']
+					and abs(self.d.days(v) - 30) < 0.01]
+				free = [v for v in var if v not in sold]
+				if not free:
+					self.untimed.append(dict(idx=idx, l=l, why=('wariant 30 dni (%s) jest już osobną linią sklepu' % ', '.join(map(str, var))) if var else 'przedmiot bez czasu i bez wariantu 30 dni'))
+					continue
+				vnum, why = free[0], 'wariant 30 dni %d zamiast %d (bez czasu)' % (free[0], l['vnum'])
+			if l['price'] == rule and vnum == l['vnum'] and abs(self.d.days(vnum) - 30) < 0.01:
+				continue	# already the rule
+			self.fixed[idx] = dict(idx=idx, vnum=vnum, price=rule, minutes=D30, old_vnum=l['vnum'], old_price=l['price'], old_days=self.d.days_label(l['vnum']),
+				name=l['name'] or self.d.name(l['vnum']), cat=CAT_NAMES.get(l['cat'], l['cat']), why=why)
+
 	def compare(self, idx, r, dec):
 		l = self.d.lines.get(idx)
 		if not l:
 			raise SystemExit('row %r: our in-game shop has no line %d' % (r['name'], idx))
+		if idx in self.fixed:
+			self.compared.add(idx)
+			return	# the owner's fixed price now (sheet "Zmienione ceny (stałe)")
 		if idx in self.compared:
 			# a second row of the list for the same line of ours (e.g. "Hity" and its own section): one row, both prices
 			for d in self.diff:
@@ -370,7 +422,7 @@ class Build:
 		self.diff.append(dict(id=l['id'], vnum=l['vnum'], name=l['name'] or self.d.name(l['vnum']), cat=CAT_NAMES.get(l['cat'], l['cat']), count=l['count'],
 			price='%d %s' % (l['price'], cur), days=self.d.days_label(l['vnum']),
 			wiki=r['name'], link=r['link'] or r['name'], gprice=price_text(r), rule=('%d SM / 30 dni (zasada właściciela)' % rule) if rule else '',
-			note=dec['note'] if dec else ''))
+			note=((dec['note'] if dec else '') + ' ' + self.untimed_note(idx)).strip()))
 
 	def hair_row(self, r):
 		"""A classic hairstyle (19 SM / 29 SM with attributes): ours by name; the owner's rule 299 SM / 30 days."""
@@ -392,14 +444,14 @@ class Build:
 	def not_listed(self):
 		"""Our visible lines the list does not mention: listed for the owner (with the fixed price where one applies)."""
 		for idx, l in self.d.lines.items():
-			if idx in self.compared or l['cat'] in (0, ):
+			if idx in self.compared or l['cat'] in (0, ) or idx in self.fixed:
 				continue
 			rule = self.rule_price(l)
 			if rule is not None and l['price'] == rule and abs(self.d.days(l['vnum']) - 30) < 0.01:
 				continue
 			self.diff.append(dict(id=idx, vnum=l['vnum'], name=l['name'] or self.d.name(l['vnum']), cat=CAT_NAMES.get(l['cat'], l['cat']), count=l['count'],
 				price='%d %s' % (l['price'], 'SM' if l['cur'] == 1 else 'SZ'), days=self.d.days_label(l['vnum']),
-				wiki='— (brak na liście)', link='', gprice='', rule=('%d SM / 30 dni (zasada właściciela)' % rule) if rule else '', note=''))
+				wiki='— (brak na liście)', link='', gprice='', rule=('%d SM / 30 dni (zasada właściciela)' % rule) if rule else '', note=self.untimed_note(idx)))
 
 	# B: the sets and their chests
 	def sets(self):
@@ -549,7 +601,8 @@ class Build:
 		for n, cnt, days, sub in src['items']:
 			if sub or norm(n) in names:
 				continue
-			v = COMMON.get(n, 'look')
+			subst = SUBST.get(n)
+			v = subst[0] if subst else COMMON.get(n, 'look')
 			if v == 'look':
 				vs = self.d.byname.get(norm(n), [])
 				p = self.d.proto.get(vs[0]) if vs else None
@@ -567,18 +620,22 @@ class Build:
 			if v in OWNER_REMOVED:
 				gone.append(n + ' (usunięte ze sklepu przez właściciela)')
 				continue
-			if any(c['items'][0]['alts'][0] == v for c in common):
+			if not subst and any(c['items'][0]['alts'][0] == v and not c.get('subst') for c in common):
 				continue
 			w = self.trw.get(norm(n))
+			if w is None and subst and n.startswith('Lśniąca'):
+				w = self.trw.get(norm('Lśniąca Sk. z Odłamkiem'))
 			if w is None and n.startswith('Spirala Czasu'):
 				w = self.trw.get(norm('Spirala Czasu (30%)'))
 			if w is None and norm(n) == norm('Zdobna Skrzynia z Odłamkiem'):
 				w = self.trw.get(norm('Zdobna Skrz. z Odłamkiem'))
 			if w is None and norm(n) == norm('Książka Lidera'):
 				w = self.trw.get(norm('Księga Lidera'))
-			common.append(dict(label=('%dx %s' % (cnt, self.d.name(v))) if cnt > 1 else self.d.name(v), kind='common', weight=w if w is not None else DEFAULT_WEIGHT,
+			common.append(dict(label=(('%dx %s' % (cnt, self.d.name(v))) if cnt > 1 else self.d.name(v)) + ((' (zamiast: %s)' % n) if subst else ''), subst=bool(subst), kind='common', weight=w if w is not None else DEFAULT_WEIGHT,
 				weight_src='skrzynia z zapisanej strony' if w is not None else 'brak na zapisanej stronie - przyjęte %g' % DEFAULT_WEIGHT,
 				wiki=n, items=[dict(alts=[v], count=cnt, minutes=0, label=n)]))
+			if subst:
+				self.chest_subs.setdefault((n, v), dict(wiki=n, vnum=v, why=subst[1], chests=[], pct=w if w is not None else DEFAULT_WEIGHT))['chests'].append(s['name'])
 		share = 100.0 - sum(x['weight'] for x in drops)
 		tot = sum(x['weight'] for x in common)
 		for x in common:
@@ -622,7 +679,8 @@ class Build:
 			dict(id=c['id'], line=c['line'], set_id=c['set_id'], name=c['name'], price=c['price'], image=c['image'],
 				drops=[dict(no=i + 1, ppm=x['ppm'], label=x['label'], kind=x['kind'],
 					items=[dict(no=j + 1, alts=it['alts'], count=it['count'], minutes=it['minutes']) for j, it in enumerate(x['items'])])
-					for i, x in enumerate(c['drops'])]) for c in self.chests], set_items=set_items)
+					for i, x in enumerate(c['drops'])]) for c in self.chests], set_items=set_items,
+			overrides=[dict(idx=f['idx'], vnum=f['vnum'], price=f['price'], minutes=f['minutes']) for f in self.fixed.values()])
 		json.dump(res, open(os.path.join(G, 'v3_extra.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 		json.dump(self.ids, open(os.path.join(G, 'ids.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1, sort_keys=True)
 		imgs = dict(chests=[dict(id=c['id'], wiki_file=c['image_src'], model=c['model']) for c in self.chests],
@@ -630,6 +688,7 @@ class Build:
 				| {v for c in self.chests for x in c['drops'] for it in x['items'] for v in it['alts'] if not os.path.exists(os.path.join(IMG_ITEM, '%d.png' % v))}))
 		imgs['item_names'] = {str(v): self.d.name(v) for v in imgs['items']}
 		json.dump(imgs, open(os.path.join(G, 'images.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+		print('fixed prices %d (not possible %d), ' % (len(self.fixed), len(self.untimed)), end='')
 		print('lines %d (chests %d), diffs %d, missing %d, replaced %d, item pictures missing %d' % (len(lines), len(self.chests), len(self.diff), len(self.missing), len(self.replaced), len(imgs['items'])))
 
 	# ---------------------------------------------------------------- the sheet
@@ -677,9 +736,15 @@ class Build:
 		sheet('Brak w plikach', ['Przedmiot (lista globalna)', 'Dział listy', 'Co robi', 'Cena na liście globalnej', 'Dlaczego nie dodany', 'Strona wiki', 'Decyzja (dodać? cena SM)'],
 			[[m['wiki'], m['sub'], m['info'], m['price'], m['note'], wl(m['link']), ''] for m in self.missing],
 			[30, 22, 60, 26, 50, 30, 20], decision_col=7)
-		sheet('Zastąpione', ['Przedmiot (lista globalna)', 'Cena na liście globalnej', 'Nasz odpowiednik (vnum)', 'Nasz odpowiednik (nazwa)', 'Co zrobione', 'Uwagi', 'Strona wiki'],
-			[[r['wiki'], r['price'], r['ours'][0], r['ours'][1], r['how'], r['note'], wl(r['link'])] for r in self.replaced],
-			[30, 22, 12, 28, 34, 50, 30])
+		sheet('Zastąpione', ['Przedmiot (lista globalna / skrzynia)', 'Cena na liście globalnej', 'Nasz odpowiednik (vnum)', 'Nasz odpowiednik (nazwa)', 'Co zrobione', 'Skrzynia', 'Uwagi', 'Strona wiki'],
+			[[r['wiki'], r['price'], r['ours'][0], r['ours'][1], r['how'], '', r['note'], wl(r['link'])] for r in self.replaced]
+			+ [[s['wiki'], '', s['vnum'], self.d.name(s['vnum']), 'w skrzyni zamiast brakującego przedmiotu, z jego szansą (%g%% z zapisanej skrzyni, przed przeliczeniem)' % s['pct'],
+				'%d skrzyń: %s' % (len(s['chests']), ', '.join(s['chests'])), s['why'], wl(s['wiki'])] for s in self.chest_subs.values()],
+			[30, 22, 12, 28, 34, 50, 40, 30])
+		sheet('Zmienione ceny (stałe)', ['Nr linii (u nas)', 'Vnum', 'Przedmiot', 'Kategoria', 'Stara cena', 'Stary czas', 'Nowa cena', 'Nowy czas', 'Uwagi'],
+			[[f['idx'], f['vnum'] if f['vnum'] == f['old_vnum'] else '%d (było %d)' % (f['vnum'], f['old_vnum']), f['name'], f['cat'], '%d SM' % f['old_price'], f['old_days'],
+				'%d SM' % f['price'], '30 dni', f['why'] or 'tylko w sklepie V3 (Shift+F12); sklep w grze bez zmian'] for f in self.fixed.values()],
+			[10, 16, 30, 22, 11, 22, 11, 10, 50])
 		rows = []
 		for l in self.lines.values():
 			if l['chest']:
@@ -712,14 +777,14 @@ class Build:
 		for line in [
 			'Porównanie sklepu ItemShop V3 z listą sklepu serwerów globalnych (pl-wiki „Item-Shop”, odczyt 24.10.2026) - runda 3.',
 			'Waluta: ich moneta premium = 1 SM, ich znaki = 1 SZ (lista podaje ceny w SM i SZ, więc 1:1).',
-			'Zasady właściciela (zastępują ceny z listy dla dodawanych linii): pety bez łupu 299 SM, pety z łupem 699 SM, wierzchowce 299 SM, nakładki / szarfy 299 SM, kostiumy i fryzury 299 SM - zawsze 30 dni.',
+			'Zasady właściciela (zastępują ceny z listy): pety bez łupu 299 SM, pety z łupem 699 SM, wierzchowce 299 SM, nakładki / szarfy 299 SM, kostiumy i fryzury 299 SM - zawsze 30 dni. Dotyczą wszystkich linii sklepu V3, także dotychczasowych (arkusz „Zmienione ceny (stałe)”); sklep w grze bez zmian. Linie bez czasu, których nie da się zrobić 30-dniowymi, są w „Różnice u nas” z uwagą „do decyzji”.',
 			'Czas: sklep w grze nie ustawia czasu na linii (serwer bierze go z item_proto). W sklepie V3 linia może mieć własny czas (kolumna minutes) - dla przedmiotów z limitem czasu rzeczywistego (kostiumy, fryzury, nakładki, pety, wierzchowce) serwer bierze go z gniazda (socket0) z item_award. Przedmiotów unikatowych (pierścienie, Powiększony Skład) tak zmienić się nie da.',
 			'VIP (Rękawica, Trzecia Ręka, Pierścień Doświadczenia, Szczęśliwa Moneta, Rybie Wnętrzności) - jak w sklepie w grze: czas premium na koncie; dodane warianty 30/15/7 dni.',
 			'Nic z naszego sklepu nie zostało zmienione ani usunięte - różnice są w arkuszu „Różnice u nas” (kolumna „Decyzja / Cena SM” do uzupełnienia).',
 			'Nowe linie są tylko w sklepie V3 (Shift+F12) - sklep w grze (okno „Sklep z przedmiotami”) ich nie pokazuje.',
 			'Pominięte: „Oferty specjalne” (lizaki, pierścienie, kupony z rabatem - u nas „oferty błyskawiczne”), pakiet yang, transfer serwerów, Sklep Tygrysi, przedmioty Likana.',
 			'Szanse skrzyń: zapisana strona sklepu globalnego (skrzynia „Renkli palyaço sandığı”, zakładka „Olasılıklar”): pakiet zestawu 1%, fryzura 15 dni 2,5%, kostium 15 dni 2,5%, fryzura 30 dni 1,5%, kostium 30 dni 1,5%, pozostałe 18 przedmiotów razem 91% (Ekspresowe Leczenie Najemnika 10%, Zwój Błogosławieństwa / Księga Obróbki Kamienia / Różowa Smocza Fasola po 7%, ...). Strony wiki skrzyń nie podają szans - użyte szanse z zapisanej strony.',
-			'Przedmioty skrzyni, których nie mamy (fasole smoczych kamieni, kupony wpłaty, najemnicy, Spirala Czasu, Lśniąca Skrzynia z Odłamkiem, Wstęp do Świątyni Smoka) - ich szansa rozdzielona proporcjonalnie na resztę „pozostałych”; szanse kostiumów / pakietu bez zmian.',
+			'Przedmioty skrzyni, których nie mamy: łatwe zamienniki z ich szansą (Lśniąca Skrzynia z Odłamkiem -> Zdobna Skrzynia z Odłamkiem, Książka Lidera+ -> Książka Lidera, Wino XL -> Wino z Kwiatu Brzoskwini; arkusz „Zastąpione”). Bez sensownego odpowiednika (fasole smoczych kamieni - u nas brak pomocy do ulepszania, kupony wpłaty - brak wpłat do gildii, najemnicy - brak systemu, Spirala Czasu, Wstęp do Świątyni Smoka - nasza Świątynia nie wymaga biletu) - szansa rozdzielona proporcjonalnie na resztę „pozostałych”; szanse kostiumów / pakietu bez zmian.',
 		]:
 			info.append([line])
 			info.cell(row=info.max_row, column=1).alignment = Alignment(wrap_text=True, vertical='top')
@@ -735,6 +800,7 @@ def main():
 	ap.add_argument('--xlsx')
 	a = ap.parse_args()
 	b = Build(Data(a.db, a.client_list))
+	b.fixed_prices()
 	b.catalogue()
 	b.not_listed()
 	b.sets()

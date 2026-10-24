@@ -242,6 +242,9 @@ def shop_view(az_vnums):
 	promo = '(pm.item_index IS NOT NULL AND NOW() >= pm.start_time AND NOW() < pm.end_time)'
 	suffix = 'CASE i.`index` %s ELSE \'\' END' % ' '.join('WHEN %d THEN %s' % (k, q(' ' + v)) for k, v in sorted(NAME_SUFFIX.items()))
 	arezzo = ('(i.vnum IN (%s) AND COALESCE((SELECT qf.lValue FROM player.quest qf WHERE qf.dwPID = 0 AND qf.szName = \'mt2009_arezzo_closed\' LIMIT 1), 1) > 0)' % az_vnums)
+	# MT2009_PLUS_ITEMSHOP_V3_V6: the owner's fixed prices in this shop (itemshop3.line_overrides: price, 30 days, the 30-day
+	# variant of an item without a timer) - the in-game catalogue keeps its own
+	GV = 'COALESCE(o.vnum, i.vnum)'
 	webdesc = lambda v: '(SELECT d.`desc` FROM itemshop.ishop_items d WHERE d.vnum = %s AND d.`desc` IS NOT NULL AND d.`desc` <> \'\' ORDER BY d.id LIMIT 1)' % v
 	# MT2009_PLUS_ITEMSHOP_V3_V6: a piece of a costume set with a bonus (itemshop3.set_items) is also listed in "Sety
 	# Bonusowe", in the order of its set
@@ -255,17 +258,17 @@ def shop_view(az_vnums):
 		# under it, else Smocze Znaki for a line in marks; 0 = the in-game window does not show it either
 		'CASE WHEN %s THEN %d ELSE COALESCE(NULLIF(%s, 0), IF(i.currency + 0 = 2, %d, 0)) END AS category' % (auction, CAT_AUCTIONS, in_range, CAT_MARKS),
 		"'2026-01-01 00:00:00' AS date", '1 AS type',
-		'%s AS description' % webdesc('i.vnum'),
+		'%s AS description' % webdesc(GV),
 		'i.currency + 0 AS pay_type',
-		'IF(%s, pm.price, i.price) AS coins' % promo,
-		'i.price AS base_price', 'IF(%s, 1, 0) AS promo' % promo, 'IF(%s, pm.end_time, NULL) AS promo_end' % promo,
-		'i.count AS count', 'i.vnum AS vnum',
+		'IF(%s, pm.price, COALESCE(o.price, i.price)) AS coins' % promo,
+		'COALESCE(o.price, i.price) AS base_price', 'IF(%s, 1, 0) AS promo' % promo, 'IF(%s, pm.end_time, NULL) AS promo_end' % promo,
+		'i.count AS count', '%s AS vnum' % GV,
 		# the engine never hands the line's sockets over (GiveItem: vnum and count only)
 	] + common_tail()
 	cols += [
 		'IF(%s, 0, IF(%s, IF(NOW() >= ta.start_time AND NOW() < ta.end_time AND (ta.max_amount = 0 OR COALESCE(tc.buy_count, 0) < ta.max_amount), 1, 0), 1)) AS available' % (arezzo, auction),
 		'NULL AS last_bought', 'IF(%s, ta.end_time, NULL) AS expire' % auction, '0 AS discount', 'NULL AS discount_expire',
-		"0 AS polymorph", "'FIX' AS book_type", '0 AS book', '0 AS time', '0 AS limit_all', '0 AS limit_account',
+		"0 AS polymorph", "'FIX' AS book_type", '0 AS book', 'COALESCE(o.minutes, 0) AS time', '0 AS limit_all', '0 AS limit_account',
 		'NULL AS bonuses', '0 AS bonuses_count', '0 AS friend', '0 AS wheel_level', '0 AS jackpot',
 	]
 	cols += ['IF(COALESCE(pr.antiflag, 0) & %d, 1, 0) AS anti_%s' % (bit, name) for name, bit in ANTI_FLAGS]
@@ -273,7 +276,7 @@ def shop_view(az_vnums):
 		# the in-game window's quantity choice: stackable and not ANTIFLAG_STACK (1, and 5 / 10 within the stack size)
 		'IF(COALESCE(pr.flag, 0) & %d AND NOT COALESCE(pr.antiflag, 0) & %d, 1, 0) AS stackable' % (ITEM_FLAG_STACKABLE, ITEM_ANTIFLAG_STACK),
 		'GREATEST(COALESCE(pr.stack, 1), 1) AS max_stack',
-		'CONCAT(COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT(\'Vnum: \', i.vnum)), %s) AS name' % suffix,
+		'CONCAT(COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT(\'Vnum: \', %s)), %s) AS name' % (GV, suffix),
 		'i.minLevel AS min_level',
 		'IF(pr.type = 3 AND pr.subtype = %d AND i.vnum <> %d, 1, 0) AS vip' % (USE_VIP, PREMIUM_TOKEN_VNUM),
 		'COALESCE(pr.value0, 0) AS vip_type', 'COALESCE(pr.value1, 0) AS vip_hours', 'COALESCE(pr.value0, 0) AS value0',
@@ -287,12 +290,13 @@ def shop_view(az_vnums):
 		'IF(%s, 1, 0) AS arezzo_locked' % arezzo,
 		# MT2009_PLUS_ITEMSHOP_V3_V6: where the line comes from, its chest (0 = none), its own picture
 		"'game' AS source", '0 AS chest', "'' AS image",
-	] + setcols('i.vnum')
+	] + setcols(GV)
 	game = ('SELECT %s FROM common.itemshop_items i'
 		' LEFT JOIN common.itemshop_promotions pm ON pm.item_index = i.`index`'
 		' LEFT JOIN common.itemshop_time_auctions ta ON ta.item_index = i.`index`'
 		' LEFT JOIN player.itemshop_time_auction tc ON tc.item_index = i.`index`'
-		' LEFT JOIN world.item_proto pr ON pr.vnum = i.vnum' % ', '.join(cols))
+		' LEFT JOIN itemshop3.line_overrides o ON o.idx = i.`index`'
+		' LEFT JOIN world.item_proto pr ON pr.vnum = %s' % (', '.join(cols), GV))
 	# MT2009_PLUS_ITEMSHOP_V3_V6: the second shop's own lines (itemshop3.v3_lines): the same columns; a line's minutes are
 	# its duration (header.php keeps time > 0; Player::CreateItem writes the expiry into socket0, the db core keeps a
 	# non-zero socket0 of an award - ClientManager RESULT_SAFEBOX_LOAD), a VIP line's minutes its premium time; a chest
@@ -348,7 +352,15 @@ def v3_extra_sql(w):
 	w('-- one row a purchase (the token the item window hands out): a second request with the same token (a double click,')
 	w('-- a reload) is not paid again - it shows the first one\'s result')
 	w('CREATE TABLE IF NOT EXISTS itemshop3.purchase_tokens (token CHAR(32) NOT NULL PRIMARY KEY, account INT NOT NULL, line INT NOT NULL, qty INT NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, result MEDIUMTEXT NULL, KEY account (account)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- MT2009_PLUS_ITEMSHOP_V3_V6: the owner\'s fixed prices for the look lines of the in-game catalogue in THIS shop (pets 299 /')
+	w('-- with loot 699, mounts, skins and sashes, costumes, hairstyles 299 SM, 30 days): the line\'s price, minutes, and the')
+	w('-- 30-day variant of an item without a timer; the in-game window keeps common.itemshop_items as it is')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.line_overrides (idx INT NOT NULL PRIMARY KEY, vnum INT NOT NULL, price INT NOT NULL, minutes INT NOT NULL DEFAULT 0) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
 	w('START TRANSACTION;')
+	w('DELETE FROM itemshop3.line_overrides;')
+	rows = ['(%d, %d, %d, %d)' % (o['idx'], o['vnum'], o['price'], o['minutes']) for o in x.get('overrides', [])]
+	for i in range(0, len(rows), 300):
+		w('INSERT INTO itemshop3.line_overrides (idx, vnum, price, minutes) VALUES %s;' % ', '.join(rows[i:i + 300]))
 	w('DELETE FROM itemshop3.v3_lines;')
 	w('DELETE FROM itemshop3.set_items;')
 	w('DELETE FROM itemshop3.chests;')
