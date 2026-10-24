@@ -570,7 +570,8 @@ class Build:
 		title = src['title'] if from_wiki else 'Skrzynia zestawu %s' % s['name']
 		cid = self.chest_id('set:%d' % s['id'])
 		price = (src['price'] or CHEST_PRICE_DEFAULT) if from_wiki else CHEST_PRICE_DEFAULT
-		image = 'images/chests/%d.png' % cid
+		# a chest of the model: one picture for all of them (the saved shop chest's)
+		image = 'images/chests/%d.png' % cid if from_wiki else 'images/chests/model.png'
 		desc = ('Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu '
 			'„%s”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla '
 			'której kupujesz. Szanse - zakładka „Szanse”.' % s['name'])

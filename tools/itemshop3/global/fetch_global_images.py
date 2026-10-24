@@ -44,14 +44,15 @@ def wiki_file(name):
 
 
 def save_chest(img, cid):
+	"""<cid>.png (242 px) and <cid>_98.png; cid 'model' = the picture of every chest of the model."""
 	img = img.convert('RGBA')
 	if img.size != (242, 242):
 		img.thumbnail((242, 242), Image.LANCZOS)
 		canvas = Image.new('RGBA', (242, 242), (0, 0, 0, 0))
 		canvas.paste(img, ((242 - img.width) // 2, (242 - img.height) // 2))
 		img = canvas
-	img.save(os.path.join(CHESTS, '%d.png' % cid), optimize=True)
-	img.resize((98, 98), Image.LANCZOS).save(os.path.join(CHESTS, '%d_98.png' % cid), optimize=True)
+	img.save(os.path.join(CHESTS, '%s.png' % cid), optimize=True)
+	img.resize((98, 98), Image.LANCZOS).save(os.path.join(CHESTS, '%s_98.png' % cid), optimize=True)
 
 
 def main():
@@ -66,15 +67,17 @@ def main():
 	x = json.load(open(os.path.join(HERE, 'images.json'), encoding='utf-8'))
 	os.makedirs(CHESTS, exist_ok=True)
 	done = kept = 0
+	if model is not None and not os.path.exists(os.path.join(CHESTS, 'model.png')):
+		save_chest(model, 'model')
 	for c in x['chests']:
+		if c['model']:
+			continue
 		if os.path.exists(os.path.join(CHESTS, '%d.png' % c['id'])):
 			kept += 1
 			continue
-		blob = None if c['model'] else wiki_file(c['wiki_file'])
+		blob = wiki_file(c['wiki_file'])
 		if blob:
 			save_chest(Image.open(io.BytesIO(blob)), c['id'])
-		elif model is not None:
-			save_chest(model, c['id'])
 		else:
 			print('chest %d: no picture' % c['id'])
 			continue

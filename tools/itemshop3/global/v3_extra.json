@@ -1499,7 +1499,7 @@
    ],
    "chest": 2,
    "name": "Skrzynia zestawu Czerwony Smoczy Rycerz+",
-   "image": "images/chests/2.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Czerwony Smoczy Rycerz+”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -1803,7 +1803,7 @@
    ],
    "chest": 4,
    "name": "Skrzynia zestawu Świąt. Zim. Zbroja+ (m)",
-   "image": "images/chests/4.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Świąt. Zim. Zbroja+ (m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -1860,7 +1860,7 @@
    ],
    "chest": 7,
    "name": "Skrzynia zestawu Zbr. Mroku Księżyca+ (m)",
-   "image": "images/chests/7.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Zbr. Mroku Księżyca+ (m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -1879,7 +1879,7 @@
    ],
    "chest": 8,
    "name": "Skrzynia zestawu Zbroja Avalonu+ (srebr.)",
-   "image": "images/chests/8.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Zbroja Avalonu+ (srebr.)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -1974,7 +1974,7 @@
    ],
    "chest": 9,
    "name": "Skrzynia zestawu Czer. Sweter Świąt.+ (m)",
-   "image": "images/chests/9.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Czer. Sweter Świąt.+ (m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -1993,7 +1993,7 @@
    ],
    "chest": 10,
    "name": "Skrzynia zestawu Gwardia Ognistego Smoka+",
-   "image": "images/chests/10.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Gwardia Ognistego Smoka+”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2050,7 +2050,7 @@
    ],
    "chest": 13,
    "name": "Skrzynia zestawu Czerw. Galowy Strój+ (m)",
-   "image": "images/chests/13.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Czerw. Galowy Strój+ (m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2126,7 +2126,7 @@
    ],
    "chest": 17,
    "name": "Skrzynia zestawu B. Mundur Morski+ (m)",
-   "image": "images/chests/17.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „B. Mundur Morski+ (m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2145,7 +2145,7 @@
    ],
    "chest": 18,
    "name": "Skrzynia zestawu Cz. Królik K. Czarów+(m)",
-   "image": "images/chests/18.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Cz. Królik K. Czarów+(m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2354,7 +2354,7 @@
    ],
    "chest": 25,
    "name": "Skrzynia zestawu Cz. Wojownik P.Księżyca+",
-   "image": "images/chests/25.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Cz. Wojownik P.Księżyca+”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2525,7 +2525,7 @@
    ],
    "chest": 32,
    "name": "Skrzynia zestawu B. Mundur Marynarski+(m)",
-   "image": "images/chests/32.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „B. Mundur Marynarski+(m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2563,7 +2563,7 @@
    ],
    "chest": 34,
    "name": "Skrzynia zestawu Mundur Strażaka+(m)",
-   "image": "images/chests/34.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Mundur Strażaka+(m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2582,7 +2582,7 @@
    ],
    "chest": 35,
    "name": "Skrzynia zestawu Samuraj Cieni+ (m)",
-   "image": "images/chests/35.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Samuraj Cieni+ (m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2658,7 +2658,7 @@
    ],
    "chest": 39,
    "name": "Skrzynia zestawu Czar. Szata Dokkaebi+(m)",
-   "image": "images/chests/39.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Czar. Szata Dokkaebi+(m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2696,7 +2696,7 @@
    ],
    "chest": 41,
    "name": "Skrzynia zestawu Czerw. Zbr. Azraela+ (m)",
-   "image": "images/chests/41.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Czerw. Zbr. Azraela+ (m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2810,7 +2810,7 @@
    ],
    "chest": 43,
    "name": "Skrzynia zestawu Wampir+ (szary)",
-   "image": "images/chests/43.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Wampir+ (szary)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2829,7 +2829,7 @@
    ],
    "chest": 44,
    "name": "Skrzynia zestawu Pancerz Horroru+ (złoty)",
-   "image": "images/chests/44.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Pancerz Horroru+ (złoty)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
@@ -2848,7 +2848,7 @@
    ],
    "chest": 45,
    "name": "Skrzynia zestawu Brązowa Wilcza Szata+(m)",
-   "image": "images/chests/45.png",
+   "image": "images/chests/model.png",
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Brązowa Wilcza Szata+(m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   }
  ],
@@ -3150,7 +3150,7 @@
    "set_id": 2,
    "name": "Skrzynia zestawu Czerwony Smoczy Rycerz+",
    "price": 39,
-   "image": "images/chests/2.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -3672,7 +3672,7 @@
    "set_id": 4,
    "name": "Skrzynia zestawu Świąt. Zim. Zbroja+ (m)",
    "price": 39,
-   "image": "images/chests/4.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -4471,7 +4471,7 @@
    "set_id": 8,
    "name": "Skrzynia zestawu Zbr. Mroku Księżyca+ (m)",
    "price": 39,
-   "image": "images/chests/7.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -4740,7 +4740,7 @@
    "set_id": 9,
    "name": "Skrzynia zestawu Zbroja Avalonu+ (srebr.)",
    "price": 39,
-   "image": "images/chests/8.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -5009,7 +5009,7 @@
    "set_id": 10,
    "name": "Skrzynia zestawu Czer. Sweter Świąt.+ (m)",
    "price": 39,
-   "image": "images/chests/9.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -5278,7 +5278,7 @@
    "set_id": 11,
    "name": "Skrzynia zestawu Gwardia Ognistego Smoka+",
    "price": 39,
-   "image": "images/chests/10.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -6135,7 +6135,7 @@
    "set_id": 14,
    "name": "Skrzynia zestawu Czerw. Galowy Strój+ (m)",
    "price": 39,
-   "image": "images/chests/13.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -7179,7 +7179,7 @@
    "set_id": 19,
    "name": "Skrzynia zestawu B. Mundur Morski+ (m)",
    "price": 39,
-   "image": "images/chests/17.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -7448,7 +7448,7 @@
    "set_id": 20,
    "name": "Skrzynia zestawu Cz. Królik K. Czarów+(m)",
    "price": 39,
-   "image": "images/chests/18.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -9331,7 +9331,7 @@
    "set_id": 28,
    "name": "Skrzynia zestawu Cz. Wojownik P.Księżyca+",
    "price": 39,
-   "image": "images/chests/25.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -11266,7 +11266,7 @@
    "set_id": 35,
    "name": "Skrzynia zestawu B. Mundur Marynarski+(m)",
    "price": 39,
-   "image": "images/chests/32.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -11802,7 +11802,7 @@
    "set_id": 37,
    "name": "Skrzynia zestawu Mundur Strażaka+(m)",
    "price": 39,
-   "image": "images/chests/34.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -12070,7 +12070,7 @@
    "set_id": 38,
    "name": "Skrzynia zestawu Samuraj Cieni+ (m)",
    "price": 39,
-   "image": "images/chests/35.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -13154,7 +13154,7 @@
    "set_id": 42,
    "name": "Skrzynia zestawu Czar. Szata Dokkaebi+(m)",
    "price": 39,
-   "image": "images/chests/39.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -13721,7 +13721,7 @@
    "set_id": 44,
    "name": "Skrzynia zestawu Czerw. Zbr. Azraela+ (m)",
    "price": 39,
-   "image": "images/chests/41.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -14243,7 +14243,7 @@
    "set_id": 46,
    "name": "Skrzynia zestawu Wampir+ (szary)",
    "price": 39,
-   "image": "images/chests/43.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -14512,7 +14512,7 @@
    "set_id": 47,
    "name": "Skrzynia zestawu Pancerz Horroru+ (złoty)",
    "price": 39,
-   "image": "images/chests/44.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
@@ -14781,7 +14781,7 @@
    "set_id": 48,
    "name": "Skrzynia zestawu Brązowa Wilcza Szata+(m)",
    "price": 39,
-   "image": "images/chests/45.png",
+   "image": "images/chests/model.png",
    "drops": [
     {
      "no": 1,
