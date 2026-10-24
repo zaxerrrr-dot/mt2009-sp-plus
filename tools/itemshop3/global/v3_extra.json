@@ -1160,7 +1160,7 @@
    "chest": 46,
    "name": "Szkatuła na Biżuterię",
    "image": "images/chests/46.png",
-   "desc": "Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
+   "desc": "Szkatuła otworzy się zaraz po zakupie i da jeden losowy przedmiot: miksturę, lizak, amulet, medal lub pierścień (szanse - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
   },
   {
    "id": 100176,
@@ -1177,7 +1177,7 @@
    "chest": 46,
    "name": "Szkatuła na Biżuterię (10+1 gratis)",
    "image": "images/chests/46.png",
-   "desc": "Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
+   "desc": "Szkatuła otworzy się zaraz po zakupie i da jeden losowy przedmiot: miksturę, lizak, amulet, medal lub pierścień (szanse - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
   },
   {
    "id": 100177,
@@ -1194,7 +1194,7 @@
    "chest": 46,
    "name": "Szkatuła na Biżuterię (20+3 gratis)",
    "image": "images/chests/46.png",
-   "desc": "Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
+   "desc": "Szkatuła otworzy się zaraz po zakupie i da jeden losowy przedmiot: miksturę, lizak, amulet, medal lub pierścień (szanse - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
   },
   {
    "id": 100000,
@@ -16574,8 +16574,24 @@
    "drops": [
     {
      "no": 1,
-     "ppm": 90910,
-     "label": "Lizak Potęgi (7 dni)",
+     "ppm": 200201,
+     "label": "Mikstura Mądrości (3h)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71155
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 2,
+     "ppm": 200200,
+     "label": "Lizak Potęgi (3 dni)",
      "kind": "common",
      "items": [
       {
@@ -16584,77 +16600,45 @@
         71136
        ],
        "count": 1,
-       "minutes": 10080
-      }
-     ]
-    },
-    {
-     "no": 2,
-     "ppm": 90909,
-     "label": "Lizak Magii (7 dni)",
-     "kind": "common",
-     "items": [
-      {
-       "no": 1,
-       "alts": [
-        71188
-       ],
-       "count": 1,
-       "minutes": 10080
+       "minutes": 4320
       }
      ]
     },
     {
      "no": 3,
-     "ppm": 90909,
-     "label": "Amulet Nazara (7 dni)",
+     "ppm": 130130,
+     "label": "Mikstura Zarania (3h)",
      "kind": "common",
      "items": [
       {
        "no": 1,
        "alts": [
-        71202
+        71154
        ],
        "count": 1,
-       "minutes": 10080
+       "minutes": 0
       }
      ]
     },
     {
      "no": 4,
-     "ppm": 90909,
-     "label": "Czekoladowy Amulet (7 dni)",
+     "ppm": 100100,
+     "label": "Medal Bohatera (1 dzień)",
      "kind": "common",
      "items": [
       {
        "no": 1,
        "alts": [
-        71199
+        71158
        ],
        "count": 1,
-       "minutes": 10080
+       "minutes": 1440
       }
      ]
     },
     {
      "no": 5,
-     "ppm": 90909,
-     "label": "Pierścień Radości (7 dni)",
-     "kind": "common",
-     "items": [
-      {
-       "no": 1,
-       "alts": [
-        71143
-       ],
-       "count": 1,
-       "minutes": 10080
-      }
-     ]
-    },
-    {
-     "no": 6,
-     "ppm": 90909,
+     "ppm": 67067,
      "label": "Amulet Wiecznej Miłości (7 dni)",
      "kind": "common",
      "items": [
@@ -16669,8 +16653,40 @@
      ]
     },
     {
+     "no": 6,
+     "ppm": 67067,
+     "label": "Pierścień Radości (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71143
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
      "no": 7,
-     "ppm": 90909,
+     "ppm": 67067,
+     "label": "Amulet Nazara (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71202
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 33033,
      "label": "Pierścień Siły Woli (7 dni)",
      "kind": "common",
      "items": [
@@ -16685,8 +16701,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 90909,
+     "no": 9,
+     "ppm": 33033,
      "label": "Pierścień Śmier. Mocy (7 dni)",
      "kind": "common",
      "items": [
@@ -16701,31 +16717,15 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 90909,
-     "label": "Medal Bohatera (7 dni)",
-     "kind": "common",
-     "items": [
-      {
-       "no": 1,
-       "alts": [
-        71158
-       ],
-       "count": 1,
-       "minutes": 10080
-      }
-     ]
-    },
-    {
      "no": 10,
-     "ppm": 90909,
-     "label": "Mistrzowski Emblemat (7 dni)",
+     "ppm": 17017,
+     "label": "Pierścień Półksiężyca (7 dni)",
      "kind": "common",
      "items": [
       {
        "no": 1,
        "alts": [
-        70607
+        71135
        ],
        "count": 1,
        "minutes": 10080
@@ -16734,14 +16734,78 @@
     },
     {
      "no": 11,
-     "ppm": 90909,
-     "label": "Błogosławieństwo Mocy (7 dni)",
+     "ppm": 17017,
+     "label": "Lizak Potęgi (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71136
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 17017,
+     "label": "Lizak Magii (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71188
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 13,
+     "ppm": 17017,
+     "label": "Czekoladowy Amulet (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71199
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 14,
+     "ppm": 17017,
+     "label": "Błogosławieństwo Mocy (7 dni) - zamiast Amuletu Strażników",
      "kind": "common",
      "items": [
       {
        "no": 1,
        "alts": [
         72713
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 15,
+     "ppm": 17017,
+     "label": "Lizak Potęgi (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71136
        ],
        "count": 1,
        "minutes": 10080
@@ -23961,6 +24025,10 @@
   },
   {
    "idx": 6,
+   "hidden": 1
+  },
+  {
+   "idx": 40920,
    "hidden": 1
   }
  ],

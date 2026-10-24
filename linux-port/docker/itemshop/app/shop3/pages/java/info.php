@@ -180,6 +180,14 @@
 								<tbody>
 								<?php foreach($chest_drops as $d) {
 									$names = [];
+									// MT2009_PLUS_ITEMSHOP_V3_V9: a chest of no set (the jewellery box) names each result as the big
+									// servers' box does - its own label with the duration ("Lizak Potęgi (3 dni)")
+									if(empty($chest['set_id']))
+									{
+										$pct = rtrim(rtrim(number_format((int)$d['ppm'] / 10000, 2, ',', ''), '0'), ',');
+										print '<tr><td>1x '.htmlspecialchars($d['label']).'</td><td>'.$pct.'%</td></tr>';
+										continue;
+									}
 									foreach($d['items'] as $alts)
 									{
 										$first = $alts[0];

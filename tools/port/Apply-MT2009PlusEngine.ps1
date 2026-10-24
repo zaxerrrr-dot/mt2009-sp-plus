@@ -1753,4 +1753,16 @@ if ((Test-Path -LiteralPath $szkloHandluApply -PathType Leaf) -and
     }
 }
 
+# Auto Lowy 7 / 14 dni (server-patches/autohuntpass, MT2009_PLUS_AUTOHUNT_PASS_V1; the owner, 24 October 2026): calendar
+# days - the real-time items 72800 / 72801 in the bag let the auto hunt run (cmd_general.cpp, target and loot).
+$autoHuntPassApply = Join-Path $repo 'server-patches/autohuntpass/Apply-AutoHuntPassPatch.ps1'
+if ((Test-Path -LiteralPath $autoHuntPassApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $autoHuntPassResult = & $autoHuntPassApply -SourceDir $engineGameSource
+    if ($autoHuntPassResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Auto Lowy pass edit(s).' -f $autoHuntPassResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

@@ -2,7 +2,7 @@
 # the items linux-port/docker/mariadb/playerbot/apply.sh adds to world.item_proto (keep them equal) and the global
 # list's names of five of ours, the dragon beans' Polish names.
 #
-#   72800 / 72801  Auto Łowy (7 / 14 dni)     ITEM_QUEST, stack 200 (quest ishop_v3_przedmioty)
+#   72800 / 72801  Auto Łowy (7 / 14 dni)     ITEM_QUEST, real time 7 / 14 days, not stackable (server-patches/autohuntpass)
 #   72802          Szkło Handlu               ITEM_QUEST, real time 7 days (the shop's line 7 / 15 / 30), not stackable
 #   72803          Buff Premium SungMa        ITEM_QUEST, real time 1 day (the shop's line 1 / 7 / 15 / 30)
 #   72804-72807    Eliksir W. SungMa (SIŁA / WIT / ODP / INT)   ITEM_QUEST, stack 200
@@ -28,10 +28,11 @@ import patch_monstercard_client as base  # noqa: E402
 LIMIT_REAL_TIME = 7
 # (vnum, name, Polish name, stack, antiflag, flag, real-time seconds, icon, description)
 ITEMS = (
-	(72800, u'Autohunt Ticket 7d', u'Auto Łowy (7 dni)', 200, 74112, 4, 0, u'icon/item/71095.tga',
-	 u'Dodaje 7 dni Auto Łowów (liczy się tylko czas w grze). Użyj, aby dodać czas.'),
-	(72801, u'Autohunt Ticket 14d', u'Auto Łowy (14 dni)', 200, 74112, 4, 0, u'icon/item/71095.tga',
-	 u'Dodaje 14 dni Auto Łowów (liczy się tylko czas w grze). Użyj, aby dodać czas.'),
+	# MT2009_PLUS_ITEMSHOP_V3_V9: calendar days - a real-time item; in the bag it lets the auto hunt run
+	(72800, u'Autohunt Ticket 7d', u'Auto Łowy (7 dni)', 1, 106880, 0, 604800, u'icon/item/71095.tga',
+	 u'Auto Łowy przez 7 dni kalendarzowych od zakupu - działają, dopóki bilet jest w ekwipunku.'),
+	(72801, u'Autohunt Ticket 14d', u'Auto Łowy (14 dni)', 1, 106880, 0, 1209600, u'icon/item/71095.tga',
+	 u'Auto Łowy przez 14 dni kalendarzowych od zakupu - działają, dopóki bilet jest w ekwipunku.'),
 	(72802, u'Trade Glass', u'Szkło Handlu', 1, 106880, 0, 604800, u'icon/item/71113.tga',
 	 u'Dopóki masz je w ekwipunku, Dom Aukcyjny działa na każdej mapie. Użyj, aby otworzyć Dom Aukcyjny.'),
 	(72803, u'Premium Buff SungMa', u'Buff Premium SungMa', 1, 106880, 0, 86400, u'icon/item/premium_token.tga',
