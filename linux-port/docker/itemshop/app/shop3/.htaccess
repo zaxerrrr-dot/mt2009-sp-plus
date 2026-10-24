@@ -1,0 +1,86 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^search/(.*)/(.*)/ search.php?searchString=$1&max=$2
+RewriteRule ^search/(.*)/(.*) search.php?searchString=$1&max=$2
+
+RewriteRule ^search/(.*)/ index.php?p=items&searchString=$1
+RewriteRule ^search/(.*) index.php?p=items&searchString=$1
+
+RewriteRule ^items/(.*)/ index.php?p=items&id=$1
+RewriteRule ^items/(.*) index.php?p=items&id=$1
+
+RewriteRule ^items/ index.php?p=items
+RewriteRule ^items index.php?p=items
+
+RewriteRule ^user/(.*)/(.*)/ index.php?p=$1&n=$2
+RewriteRule ^user/(.*)/(.*) index.php?p=$1&n=$2
+
+RewriteRule ^user/(.*)/ index.php?p=$1
+RewriteRule ^user/(.*) index.php?p=$1
+
+RewriteRule ^home/ index.php
+RewriteRule ^home index.php
+
+RewriteRule ^logout/ index.php?p=logout
+RewriteRule ^logout index.php?p=logout
+
+RewriteRule ^wheel/(.*)/(.*)/ index.php?p=wheel&action=$1&key=$2
+RewriteRule ^wheel/(.*)/(.*) index.php?p=wheel&action=$1&key=$2
+RewriteRule ^wheel/(.*)/ index.php?p=wheel&action=$1
+RewriteRule ^wheel/(.*) index.php?p=wheel&action=$1
+RewriteRule ^wheel/ index.php?p=wheel
+RewriteRule ^wheel index.php?p=wheel
+
+RewriteRule ^javascript/(.*)/(.*)/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2&new=$3&friend=$4
+RewriteRule ^javascript/(.*)/(.*)/(.*)/(.*) index.php?p=javascript&type=$1&id=$2&new=$3&friend=$4
+RewriteRule ^javascript/(.*)/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2&new=$3
+RewriteRule ^javascript/(.*)/(.*)/(.*) index.php?p=javascript&type=$1&id=$2&new=$3
+RewriteRule ^javascript/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2
+RewriteRule ^javascript/(.*)/(.*) index.php?p=javascript&type=$1&id=$2
+
+RewriteRule ^admin/add/item/(.*)/(.*)/(.*)/ admin.php?a=item&id=$1&type=$2&wheel_level=$3
+RewriteRule ^admin/add/item/(.*)/(.*)/(.*) admin.php?a=item&id=$1&type=$2&wheel_level=$3
+RewriteRule ^admin/add/item/(.*)/(.*)/ admin.php?a=item&id=$1&type=$2
+RewriteRule ^admin/add/item/(.*)/(.*) admin.php?a=item&id=$1&type=$2
+RewriteRule ^admin/add/item/ admin.php?a=item
+RewriteRule ^admin/add/item admin.php?a=item
+
+RewriteRule ^admin/items/edit/(.*)/ admin.php?a=edit&id=$1
+RewriteRule ^admin/items/edit/(.*) admin.php?a=edit&id=$1
+
+RewriteRule ^admin/history/(.*)/(.*)/ admin.php?a=history&n=$1&s=$2
+RewriteRule ^admin/history/(.*)/(.*) admin.php?a=history&n=$1&s=$2
+RewriteRule ^admin/history/(.*)/ admin.php?a=history&n=$1
+RewriteRule ^admin/history/(.*) admin.php?a=history&n=$1
+RewriteRule ^admin/history/ admin.php?a=history
+RewriteRule ^admin/history admin.php?a=history
+
+RewriteRule ^admin/payments/list/(.*)/(.*)/ admin.php?a=list&n=$1&s=$2
+RewriteRule ^admin/payments/list/(.*)/(.*) admin.php?a=list&n=$1&s=$2
+RewriteRule ^admin/payments/list/(.*)/ admin.php?a=list&n=$1
+RewriteRule ^admin/payments/list/(.*) admin.php?a=list&n=$1
+RewriteRule ^admin/payments/list/ admin.php?a=list
+RewriteRule ^admin/payments/list admin.php?a=list
+
+RewriteRule ^admin/wheel/items/(.*)/(.*)/ admin.php?a=w_items&remove=$1&tab=$2
+RewriteRule ^admin/wheel/items/(.*)/(.*) admin.php?a=w_items&remove=$1&tab=$2
+RewriteRule ^admin/wheel/items/(.*)/ admin.php?a=w_items&remove=$1
+RewriteRule ^admin/wheel/items/(.*) admin.php?a=w_items&remove=$1
+RewriteRule ^admin/wheel/items/ admin.php?a=w_items
+RewriteRule ^admin/wheel/items admin.php?a=w_items
+RewriteRule ^admin/wheel/settings/ admin.php?a=w_settings
+RewriteRule ^admin/wheel/settings admin.php?a=w_settings
+
+RewriteRule ^admin/payments/settings/ admin.php?a=payments
+RewriteRule ^admin/payments/settings admin.php?a=payments
+
+RewriteRule ^admin/(.*)/(.*)/ admin.php?a=$1&n=$2
+RewriteRule ^admin/(.*)/(.*) admin.php?a=$1&n=$2
+RewriteRule ^admin/(.*)/ admin.php?a=$1
+RewriteRule ^admin/(.*) admin.php?a=$1
+RewriteRule ^admin/ admin.php
+RewriteRule ^admin admin.php
