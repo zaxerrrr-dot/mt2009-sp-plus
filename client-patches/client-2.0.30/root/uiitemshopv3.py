@@ -153,6 +153,14 @@ class ItemShopV3Window(ui.BoardWithTitleBar):
 			self.browserOpen = False
 
 
+def TakesKeys():
+	# MT2009_PLUS_ITEMSHOP_V3_V4: while the page is open the keys are the page's - game.py OnKeyDown / OnKeyUp and
+	# updateable.py act on no hotkey then (the game reads the keyboard by DirectInput, so a letter typed in the
+	# shop's search box also reached the game). Esc and the shop's own key still close it.
+	wnd = _data['window']
+	return bool(wnd and wnd.browserOpen and wnd.IsShow())
+
+
 def GetWindow():
 	if not _data['window']:
 		_data['window'] = ItemShopV3Window()

@@ -48,5 +48,8 @@ class PickUpOnDownKey(UpdatableAbstract):
 		# no pick-up).
 		if ime.IsCaptureInput():
 			return False
+		# MT2009_PLUS_ITEMSHOP_V3_V4: no pick-up for a Z typed in the second ItemShop's page
+		if __import__("uiitemshopv3").TakesKeys():
+			return False
 		import keybind
 		return keybind.IsHeld("pickup") or keybind.IsHeld("pickup_near")
