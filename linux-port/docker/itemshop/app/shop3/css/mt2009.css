@@ -1,0 +1,6 @@
+/* MT2009_PLUS_ITEMSHOP_V3_V2: what our shop needs on top of the big servers' stylesheets (shop-base.css,
+   shop-theme.css): the category icons in Font Awesome where the shop has no picture of its own, and the game's
+   32 px item icons drawn larger in the place of the shop's 98 px pictures. */
+.category-link img.icon { vertical-align: -3px; }
+.list-item .item-thumb img.mt-icon { width: auto; height: auto; max-width: none; max-height: none; zoom: 2; -ms-interpolation-mode: nearest-neighbor; image-rendering: pixelated; }
+#pictureShowcase #image img.mt-icon { width: auto; height: auto; zoom: 4; image-rendering: pixelated; -ms-interpolation-mode: nearest-neighbor; }

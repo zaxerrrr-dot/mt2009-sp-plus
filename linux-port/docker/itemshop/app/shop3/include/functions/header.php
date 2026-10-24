@@ -77,7 +77,12 @@
 	// game (the "item" mode writes straight into a bag the running core does not read back).
 	$add_type = 'item_award';
 	$wolfman_character = $settingsDB['wolfman_character']['value'] ? true:false;
-	$jcoins_back = $settingsDB['jcoins_back']['value'];
+	// MT2009_PLUS_ITEMSHOP_V3_V2: the owner's rule (24.10.2026) - a Smocze Monety purchase gives 100 % of the price
+	// back as Smocze Znaki (the in-game shop does the same); the package's setting (10) is not read any more.
+	$jcoins_back = 100;
+	// "Doładuj SM" (the header button, "not enough coins"): the owner's support page, opened by the client in
+	// the system's browser (the exe sends links to other hosts there - client-patches/exe CWebBrowser.c).
+	$topup_url = 'https://buycoffee.to/mt2009plus';
 	
 	$happy_hour_discount = $settingsDB['discount']['value'];
 	$happy_hour_expire = strtotime($settingsDB['discount']['date'])-$shop->currentTime();
@@ -138,6 +143,26 @@
 			$shop->stopHappyHour();
 		}
 
+		// MT2009_PLUS_ITEMSHOP_V3_V2: the character of the in-game link (Account::AutoLoginShop) - its name for the
+		// purchase box, and the wear filter: a man does not see women's costumes, a class no item of another
+		// class only (the item's antiflags; races 0..8: warrior, ninja, sura, shaman, then the other sex, lycan).
+		$shop_char = null;
+		if(!empty($_SESSION['pid']))
+		{
+			$shop_char = $player_db->get("player", ["id", "name", "job", "account_id"], ["id" => (int)$_SESSION['pid']]);
+			if(!$shop_char || (int)$shop_char['account_id'] != (int)$_SESSION['id'])
+				$shop_char = null;
+		}
+		if($shop_char)
+		{
+			$job = (int)$shop_char['job'];
+			$female = in_array($job, [1, 3, 4, 6]);
+			$classes = ['warrior', 'assassin', 'sura', 'shaman'];
+			$wear = [$female ? 'anti_female' : 'anti_male'];
+			$wear[] = 'anti_'.($job == 8 ? 'wolfman' : $classes[$job % 4]);
+			$shop->setWearFilter($wear);
+		}
+
 		// MT2009_PLUS_ITEMSHOP_V3_V1: Smocze Monety (cash) and Smocze Znaki (mileage).
 		$amount_coins = $account->getCoins(1, $_SESSION['id']);
 		$amount_jcoins = $account->getCoins(2, $_SESSION['id']);
@@ -168,6 +193,15 @@
 			$specific_category = false;
 			$count_all = $shop->getItemShopCount(null, false, $searchString);
 			
+			// MT2009_PLUS_ITEMSHOP_V3_V2: the top bar's "Nowości" and "Popularne" (items/new/, items/popular/).
+			$list_mode = ($searchString==null && in_array($id, ['new', 'popular'], true)) ? $id : null;
+			if($list_mode)
+			{
+				$all_items = $list_mode=='new' ? $shop->getNewItems(60) : $shop->getPopularItems(60);
+				$count_cat = count($all_items);
+			}
+			else
+			{
 			if($id && $id==intval($id) && $shop->checkCategoryShop($id) && $searchString==null)
 			{
 				$specific_category = true;
@@ -175,13 +209,14 @@
 			}
 
 			$all_items = $shop->getItemShopItems($id, $specific_category, $searchString);
+			}
 			
 			// MT2009_PLUS_ITEMSHOP_V3_V1: pages of 60 - the package put every offer on one page,
 			// and our catalogue (2500 offers, 900 in Fryzury +) made that 5 MB of HTML for the
 			// client's embedded browser. items/<category or 0>/<page>/ (.htaccess).
 			$items_per_page = 60;
 			$items_total = count($all_items);
-			$items_pages = $searchString ? 1 : max(1, (int)ceil($items_total / $items_per_page));
+			$items_pages = ($searchString || $list_mode) ? 1 : max(1, (int)ceil($items_total / $items_per_page));
 			$items_page = isset($_GET['n']) ? (int)$_GET['n'] : 1;
 			if($items_page < 1 || $items_page > $items_pages)
 				$items_page = 1;
@@ -202,6 +237,9 @@
 			$id = isset($_GET['id']) ? $_GET['id'] : null;
 			$bonus_selected = isset($_GET['new']) ? $_GET['new'] : null;
 			$friend = isset($_GET['friend']) ? $_GET['friend'] : null;
+			// MT2009_PLUS_ITEMSHOP_V3_V2: how many to buy (?q=, the card's or the window's choice; 1 for an item
+			// that does not stack - pages/java/buy.php checks it against the offer).
+			$buy_qty = isset($_GET['q']) ? max(1, min(50, (int)$_GET['q'])) : 1;
 			$account_id = $_SESSION['id'];
 			$from_account = $to_player = 0;
 			

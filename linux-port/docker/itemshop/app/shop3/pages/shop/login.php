@@ -4,26 +4,11 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width">
-		<title>Item Shop | <?php print $shop_title; ?></title>
+		<title>Sklep z przedmiotami | <?php print $shop_title; ?></title>
 		<link rel="shortcut icon" type="image/x-icon" href="<?php print $shop_url; ?>images/favicon.ico?">
 		
-		<link rel="stylesheet" href="<?php print $shop_url; ?>css/bootstrap.css" type="text/css" />
-		<link rel="stylesheet" id="gameStyle" href="<?php print $shop_url; ?>css/design.css" type="text/css" />
-		<script type="text/javascript">
-			(function (wd, doc) {
-				var w = wd.innerWidth || doc.documentElement.clientWidth;
-				var h = wd.innerHeight || doc.documentElement.clientHeight;
-				var screenSize = {w: w, h: h};
-				if (screenSize.w > 0 && screenSize.w < 801) {
-					var cssTag = doc.createElement("link"),
-						cssFile = 'css/update.css';
-					cssTag.setAttribute("rel", "stylesheet");
-					cssTag.setAttribute("type", "text/css");
-					cssTag.setAttribute("href", cssFile);
-					doc.getElementsByTagName("head")[0].appendChild(cssTag);
-				}
-			})(window, document);
-		</script>
+		<link rel="stylesheet" href="<?php print $shop_url; ?>css/shop-base.css" type="text/css" /><!-- MT2009_PLUS_ITEMSHOP_V3_V2 -->
+		<link rel="stylesheet" id="gameStyle" href="<?php print $shop_url; ?>css/shop-theme.css" type="text/css" />
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width">
     </head>
