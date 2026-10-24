@@ -4,9 +4,10 @@
 # klawiszowe); the old shop, its taskbar coin and the Kolo Losu (F12) stay as they are.
 #
 # The page is the web shop of the itemshop container under /shop3/ (linux-port/docker/itemshop/
-# app/shop3): the same catalogue (itemshop.ishop_items), the same Smocze Monety / Smocze Znaki and
-# the same delivery (player.item_award) as the old web shop, in the look of the big servers' shop
-# (1016 x 655, its own CSS and scripts).
+# app/shop3): since MT2009_PLUS_ITEMSHOP_V3_V3 the in-game shop's catalogue (common.itemshop_items, its
+# categories, promotions, flash offers, vouchers and premium page), the same Smocze Monety / Smocze Znaki
+# and the ItemShop storage (player.item_award), in the look of the big servers' shop (1016 x 655, its own
+# CSS and scripts; the wheel over the page scrolls it - exe CWebBrowser WebBrowser_ForwardMouseWheel).
 #
 # The link has to be signed by the server for the account (sas = md5(pid . account id . key)), and
 # only the server knows the account id: Open() asks it with /in_game_mall, the same command the old
