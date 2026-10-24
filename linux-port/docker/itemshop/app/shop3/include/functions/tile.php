@@ -175,7 +175,7 @@
 	{
 		// MT2009_PLUS_ITEMSHOP_V3_V6: a set chest - 1, 3, 5 or 10 at once (each one rolled on its own)
 		if(!empty($item['chest']))
-			return [1, 3, 5, 10];
+			return (int)$item['count'] > 1 ? [1] : [1, 3, 5, 10];	// MT2009_PLUS_ITEMSHOP_V3_V8: a pack (10+1, 20+3) once at a time
 		if(empty($item['stackable']) || $item['type']!=1)
 			return [1];
 		$max = isset($item['max_stack']) ? (int)$item['max_stack'] : 1;

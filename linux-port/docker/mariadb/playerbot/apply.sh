@@ -4291,6 +4291,46 @@ if [ -s /opt/playerbot/zestawy_items.sql ]; then
     else
         fail_step "costume sets: zestawy_items.sql failed" >&2
     fi
+# MT2009_PLUS_ITEMSHOP_V3_V8 (the owner's round 5 on the second ItemShop's sheet, 24 October 2026): the items of the big
+# servers' list the second shop sells and the game lacked - each a copy of an item we have (31073 Auto Lowy, the ticket):
+#   72800 / 72801 Auto Lowy (7 / 14 dni)   the ticket's 7 / 14 days (quest ishop_v3_przedmioty, as autohunt_time)
+#   72802 Szklo Handlu                     real time (7 days here; the shop's line sets 7 / 15 / 30), opens the Dom
+#                                          Aukcyjny anywhere while in the bag (server-patches/szklohandlu)
+#   72803 Buff Premium SungMa              real time (1 day here; the line 1 / 7 / 15 / 30): +10 to the four Sung Ma stats
+#   72804-72807 Eliksir W. SungMa          +5 to one Sung Ma stat for 30 minutes
+# and the global list's names of five of ours (the owner: "zmien nazwe naszego przedmiotu"), the dragon beans' Polish
+# names (their client names; the server had the English ones). The client's records: client-patches/client-2.0.30/
+# tools/ishop5. Every start (INSERT IGNORE, UPDATE to the same value); the db core reads the protos at boot.
+db -e "SET NAMES utf8mb4;
+DROP TEMPORARY TABLE IF EXISTS world.ishop5_item;
+CREATE TEMPORARY TABLE world.ishop5_item AS SELECT * FROM world.item_proto WHERE vnum = 31073 LIMIT 1;
+UPDATE world.ishop5_item SET vnum = 72800, name = 'Autohunt Ticket 7d', locale_name = 'Auto Łowy (7 dni)', type = 18, subtype = 0, stack = 200, antiflag = 74112, flag = 4, limittype0 = 0, limitvalue0 = 0, value0 = 0, value1 = 0, value2 = 0, value3 = 0;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.ishop5_item SET vnum = 72801, name = 'Autohunt Ticket 14d', locale_name = 'Auto Łowy (14 dni)';
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.ishop5_item SET vnum = 72802, name = 'Trade Glass', locale_name = 'Szkło Handlu', stack = 1, antiflag = 106880, flag = 0, limittype0 = 7, limitvalue0 = 604800;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.ishop5_item SET vnum = 72803, name = 'Premium Buff SungMa', locale_name = 'Buff Premium SungMa', limitvalue0 = 86400;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.ishop5_item SET vnum = 72804, name = 'SungMa Will Elixir (STR)', locale_name = 'Eliksir W. SungMa (SIŁA)', stack = 200, antiflag = 74112, flag = 4, limittype0 = 0, limitvalue0 = 0;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.ishop5_item SET vnum = 72805, name = 'SungMa Will Elixir (VIT)', locale_name = 'Eliksir W. SungMa (WIT)';
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.ishop5_item SET vnum = 72806, name = 'SungMa Will Elixir (RES)', locale_name = 'Eliksir W. SungMa (ODP)';
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.ishop5_item SET vnum = 72807, name = 'SungMa Will Elixir (INT)', locale_name = 'Eliksir W. SungMa (INT)';
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+DROP TEMPORARY TABLE world.ishop5_item;
+UPDATE world.item_proto SET locale_name = 'Klatka Transportowa' WHERE vnum = 55002;
+UPDATE world.item_proto SET locale_name = 'Karta Resetu' WHERE vnum = 72322;
+UPDATE world.item_proto SET locale_name = 'Karta Przetasowania' WHERE vnum = 72323;
+UPDATE world.item_proto SET locale_name = 'Pergamin Nazwy Zwierzaka' WHERE vnum = 55008;
+UPDATE world.item_proto SET locale_name = 'Reverti Zwierza' WHERE vnum = 55033;
+UPDATE world.item_proto SET locale_name = 'Revertus Zwierza' WHERE vnum = 55034;
+UPDATE world.item_proto SET locale_name = 'Zielona Smocza Fasola' WHERE vnum = 100300;
+UPDATE world.item_proto SET locale_name = 'Niebieska Smocza Fasola' WHERE vnum = 100400;
+UPDATE world.item_proto SET locale_name = 'Różowa Smocza Fasola' WHERE vnum = 100500;" \
+    || fail_step "could not add the second ItemShop's round-5 items (Auto Lowy 7/14 dni, Szklo Handlu, Buff / Eliksir SungMa)"
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (71202, 71188, 71199, 70607, 72713, 86064);" 2>/dev/null || echo x)" = "6" ]; then
 # MT2009_PLUS_KOLA_SHOP_V1 (the owner, 21 October 2026: "z itemshopu nalezy usunac wszystkie amulety, amulety sa dostepne
 # tylko w kolach do losowania"; the sash too): the sets' amulets (71202, 71188, 71199, 70607, 72713) and the Szarfa

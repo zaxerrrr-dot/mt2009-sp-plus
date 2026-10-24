@@ -1,0 +1,101 @@
+-- MT2009_PLUS_ITEMSHOP_V3_V8: przedmioty drugiego ItemShopu z listy serwerow globalnych (decyzje wlasciciela, runda 5,
+-- tools/itemshop3/global/owner_decisions.py; przedmioty: apply.sh ishop_v3_items, klient: tools/ishop5):
+--   72800 / 72801 Auto Lowy (7 / 14 dni) - jak bilet 31073 (autohunt_time.quest): czas auto lowow (afekt 560), liczony
+--                 tylko w grze, +7 / +14 dni;
+--   72802 Szklo Handlu - przedmiot z czasem rzeczywistym (7 / 15 / 30 dni w sklepie): uzycie otwiera Dom Aukcyjny, a
+--                 dopoki szklo jest w ekwipunku, Dom Aukcyjny dziala na kazdej mapie (server-patches/szklohandlu,
+--                 IsFleaMarketMap);
+--   72803 Buff Premium SungMa - +10 do wszystkich czterech statystyk Sung Ma na tyle dni, ile ma przedmiot (czas
+--                 rzeczywisty: koniec w fladze, po zalogowaniu afekty wracaja na reszte czasu); afekty 565-568;
+--   72804-72807 Eliksir W. SungMa (SILA / WIT / ODP / INT) - +5 do jednej statystyki na 30 min (afekty 561-564).
+-- Punkty Sung Ma: 184 SILA, 185 WIT (PZ), 186 ODP (ruch), 187 INT (odpornosc) - common/length.h, kolejnosc jak Nowa
+-- Wola (czempion_nowa_wola.quest). cp1250; zaden napis nie konczy sie polska litera (qc).
+quest ishop_v3_przedmioty begin
+	state start begin
+		function autohunt_add(vnum, days)
+			if game.get_event_flag("m2_autohunt_off") > 0 then
+				syschat("Auto £owy s¹ na tym œwiecie wy³¹czone - zachowaj bilet.")
+				return
+			end
+			if game.get_event_flag("m2_autohunt_item") == 0 then
+				syschat("Auto £owy s¹ teraz dostêpne dla ka¿dego - zachowaj bilet na póŸniej.")
+				return
+			end
+			local left = affect.get_duration(560)
+			if left < 0 then
+				left = 0
+			end
+			if left > 30 * 86400 then
+				syschat("Auto £owy: masz ju¿ ponad 30 dni czasu.")
+				return
+			end
+			pc.remove_item(vnum, 1)
+			left = left + days * 86400
+			affect.add_new(560, 0, 0, left, 0, true)
+			syschat(string.format("Auto £owy: +%d dni, razem %d h (liczy siê tylko czas w grze).", days, math.floor(left / 3600)))
+		end
+
+		function sungma_buff_apply(left)
+			for i = 0, 3 do
+				affect.remove_new(565 + i)
+				if left > 0 then
+					affect.add_new(565 + i, 184 + i, 10, left, 0, true)
+				end
+			end
+		end
+
+		when 72800.use begin
+			ishop_v3_przedmioty.autohunt_add(72800, 7)
+		end
+		when 72801.use begin
+			ishop_v3_przedmioty.autohunt_add(72801, 14)
+		end
+
+		when 72802.use begin
+			if game.get_event_flag("m2_flea_market_off") > 0 then
+				syschat("Dom Aukcyjny jest na tym œwiecie wy³¹czony.")
+				return
+			end
+			cmdchat("FleaMarketOpen")
+		end
+
+		when 72803.use begin
+			local fin = item.get_socket(0)
+			local now = get_time()
+			if fin <= now then
+				syschat("Buff Premium SungMa: czas tego przedmiotu ju¿ min¹³.")
+				return
+			end
+			local base = pc.getqf("sungma_buff_end")
+			if base < now then
+				base = now
+			end
+			local stop = base + (fin - now)
+			pc.remove_item(72803, 1)
+			pc.setqf("sungma_buff_end", stop)
+			ishop_v3_przedmioty.sungma_buff_apply(stop - now)
+			syschat(string.format("Buff Premium SungMa: +10 do Woli SungMa (si³a, witalnoœæ, odpornoœæ, inteligencja) jeszcze przez %d h.", math.floor((stop - now) / 3600)))
+		end
+
+		when login begin
+			local stop = pc.getqf("sungma_buff_end")
+			if stop > 0 then
+				local left = stop - get_time()
+				if left <= 0 then
+					pc.setqf("sungma_buff_end", 0)
+					left = 0
+				end
+				ishop_v3_przedmioty.sungma_buff_apply(left)
+			end
+		end
+
+		when 72804.use or 72805.use or 72806.use or 72807.use begin
+			local vnum = item.get_vnum()
+			local idx = vnum - 72804
+			local names = { "SI£A", "WIT", "ODP", "INT" }
+			pc.remove_item(vnum, 1)
+			affect.add_new(561 + idx, 184 + idx, 5, 30 * 60, 0, true)
+			syschat(string.format("Eliksir Woli SungMa: +5 (%s) na 30 min.", names[idx + 1]))
+		end
+	end
+end

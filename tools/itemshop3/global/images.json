@@ -224,6 +224,11 @@
    "id": 45,
    "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
    "model": true
+  },
+  {
+   "id": 46,
+   "wiki_file": "Szkatuła na Biżuterię.png",
+   "model": false
   }
  ],
  "items": [],

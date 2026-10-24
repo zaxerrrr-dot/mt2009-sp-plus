@@ -1,0 +1,8 @@
+[
+ {
+  "file": "ikarus_shop_manager.cpp",
+  "marker": "MT2009_PLUS_SZKLO_HANDLU_V1",
+  "old": "bool IsFleaMarketMap(LPCHARACTER ch)\n{\n\tif (!ch)\n\t\treturn false;\n",
+  "new": "bool IsFleaMarketMap(LPCHARACTER ch)\n{\n\tif (!ch)\n\t\treturn false;\n\n\t// MT2009_PLUS_SZKLO_HANDLU_V1 (server-patches/szklohandlu, the owner, 24 October 2026): Szklo Handlu (72802, sold in the\n\t// second ItemShop for 7 / 15 / 30 days, a real-time item) - while it is in the bag the Dom Aukcyjny works on any map\n\t// (its use opens the window: quest ishop_v3_przedmioty).\n\tif (ch->CountSpecifyItem(72802) > 0)\n\t\treturn true;\n"
+ }
+]
