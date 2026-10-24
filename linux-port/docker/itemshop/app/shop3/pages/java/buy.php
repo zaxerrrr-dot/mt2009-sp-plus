@@ -177,18 +177,20 @@ if($can_pay && !$error) {
 					<?php } ?>
 					<p><?php print !empty($item['vip']) ? $lang_shop['mt-vip-bought'] : $lang_shop['find-in-warehouse']; ?></p>
 				</div>
-                <button class="right btn-default" onclick="javascript:$.fancybox.close();"><?php print $lang_shop['continue-shopping'];?></button>
+                <button class="right btn-default" onclick="javascript:$.fancybox.close(true);"><?php print $lang_shop['continue-shopping'];?></button>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
+	// MT2009_PLUS_ITEMSHOP_V3_V7: the new balances in the header at once - no page reload when the window closes (the
+	// package marked the overlay "reload": closing it reloaded the whole shop, and a click on another item meanwhile was
+	// lost to that reload - the owner had to click twice)
 	$(document).ready(function () {
 		cardMargin();
-		$('.btn-buy.fancybox, .btn-default.fancybox, .item-thumb.fancybox, .card-heading.fancybox, .btn-price.fancybox').click(function () {
-			$('.fancybox-overlay').removeClass('reload');
-		});
-		$('.fancybox-overlay').addClass('reload');
+		$('.fancybox-overlay').removeClass('reload');
+		if (typeof mt2009SetBalances == 'function')
+			mt2009SetBalances(<?php print (int)$account->getCoins(1, $_SESSION['id']); ?>, <?php print (int)$account->getCoins(2, $_SESSION['id']); ?>);
 	});
 </script>
 <?php } else if(!$can_pay) { ?>

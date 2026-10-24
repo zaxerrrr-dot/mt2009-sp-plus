@@ -296,7 +296,9 @@ def shop_view(az_vnums):
 		' LEFT JOIN common.itemshop_time_auctions ta ON ta.item_index = i.`index`'
 		' LEFT JOIN player.itemshop_time_auction tc ON tc.item_index = i.`index`'
 		' LEFT JOIN itemshop3.line_overrides o ON o.idx = i.`index`'
-		' LEFT JOIN world.item_proto pr ON pr.vnum = %s' % (', '.join(cols), GV))
+		' LEFT JOIN world.item_proto pr ON pr.vnum = %s'
+		# MT2009_PLUS_ITEMSHOP_V3_V7: a set piece any chest gives is sold only through the chests
+		' WHERE NOT EXISTS (SELECT 1 FROM itemshop3.chest_only co WHERE co.vnum = %s)' % (', '.join(cols), GV, GV))
 	# MT2009_PLUS_ITEMSHOP_V3_V6: the second shop's own lines (itemshop3.v3_lines): the same columns; a line's minutes are
 	# its duration (header.php keeps time > 0; Player::CreateItem writes the expiry into socket0, the db core keeps a
 	# non-zero socket0 of an award - ClientManager RESULT_SAFEBOX_LOAD), a VIP line's minutes its premium time; a chest
@@ -327,7 +329,8 @@ def shop_view(az_vnums):
 		'IF(e.chest > 0, e.set_id * 1000, COALESCE((SELECT MIN(si.sort) FROM itemshop3.set_items si WHERE si.vnum = e.vnum), 0)) AS set_sort',
 		'IF(e.chest > 0, e.set_id, COALESCE((SELECT MIN(si.set_id) FROM itemshop3.set_items si WHERE si.vnum = e.vnum), 0)) AS set_id',
 	]
-	extra = 'SELECT %s FROM itemshop3.v3_lines e LEFT JOIN world.item_proto pr ON pr.vnum = e.vnum' % ', '.join(v3)
+	extra = ('SELECT %s FROM itemshop3.v3_lines e LEFT JOIN world.item_proto pr ON pr.vnum = e.vnum'
+		' WHERE e.chest > 0 OR NOT EXISTS (SELECT 1 FROM itemshop3.chest_only co WHERE co.vnum = e.vnum)' % ', '.join(v3))
 	return 'CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.shop AS %s UNION ALL %s;' % (game, extra)
 
 
@@ -356,7 +359,17 @@ def v3_extra_sql(w):
 	w('-- with loot 699, mounts, skins and sashes, costumes, hairstyles 299 SM, 30 days): the line\'s price, minutes, and the')
 	w('-- 30-day variant of an item without a timer; the in-game window keeps common.itemshop_items as it is')
 	w('CREATE TABLE IF NOT EXISTS itemshop3.line_overrides (idx INT NOT NULL PRIMARY KEY, vnum INT NOT NULL, price INT NOT NULL, minutes INT NOT NULL DEFAULT 0) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- MT2009_PLUS_ITEMSHOP_V3_V7: the set pieces (and their sex / class / duration variants) only the chests give - the')
+	w('-- shop view leaves their lines out (the owner: set pieces only from the chests)')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.chest_only (vnum INT NOT NULL PRIMARY KEY) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- MT2009_PLUS_ITEMSHOP_V3_V7: the shop view reads a line\'s description from the web catalogue by vnum - without this')
+	w('-- index each of the ~1500 lines scanned the whole table (a category page took 3-5 s)')
+	w('ALTER TABLE itemshop.ishop_items ADD INDEX IF NOT EXISTS mt2009_vnum (vnum);')
 	w('START TRANSACTION;')
+	w('DELETE FROM itemshop3.chest_only;')
+	rows = ['(%d)' % v for v in x.get('chest_only', [])]
+	for i in range(0, len(rows), 500):
+		w('INSERT INTO itemshop3.chest_only (vnum) VALUES %s;' % ', '.join(rows[i:i + 500]))
 	w('DELETE FROM itemshop3.line_overrides;')
 	rows = ['(%d, %d, %d, %d)' % (o['idx'], o['vnum'], o['price'], o['minutes']) for o in x.get('overrides', [])]
 	for i in range(0, len(rows), 300):

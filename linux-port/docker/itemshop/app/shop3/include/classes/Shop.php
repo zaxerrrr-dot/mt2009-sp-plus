@@ -1091,8 +1091,8 @@ class Shop {
 				return ["auction" => 1, "auction_visible" => 1];
 			case 'items':
 				return ["category" => (int)$id, "auction" => 0];
-			case 'sets':	// MT2009_PLUS_ITEMSHOP_V3_V6: every piece of a costume set with a bonus, and the sets' chests
-				return ["in_sets" => 1, "auction" => 0, "category[>]" => 0];
+			case 'sets':	// MT2009_PLUS_ITEMSHOP_V3_V7: the sets' chests only (their pieces come only from the chests)
+				return ["chest[>]" => 0, "auction" => 0];
 		}
 		return ["category" => -1];
 	}
@@ -1103,7 +1103,7 @@ class Shop {
 		if($id === null || $this->categoryKind($id)=='group')	// MT2009_PLUS_ITEMSHOP_V3_V4: a group by its subcategories
 			return ["category" => "ASC", "vnum" => "ASC", "id" => "ASC"];
 		if($this->categoryKind($id)=='sets')	// MT2009_PLUS_ITEMSHOP_V3_V6: set by set, its chest first, then its pieces
-			return ["set_sort" => "ASC", "chest" => "DESC", "id" => "ASC"];
+			return ["set_sort" => "ASC", "id" => "ASC"];
 		return ["vnum" => "ASC", "id" => "ASC"];
 	}
 	private function searchItems($string, $countOnly) {
@@ -1114,12 +1114,44 @@ class Shop {
 		return $countOnly ? (int)$sth->fetchColumn() : $sth->fetchAll();
 	}
 
+	// MT2009_PLUS_ITEMSHOP_V3_V7: the menu's counts from one grouped query a page (every category of index ranges, the
+	// groups and "Sety Bonusowe" are sums of it) - a page asked the shop view ~10 times for them (a few seconds in all)
+	private $catCounts = null;
+	private function categoryCounts() {
+		if($this->catCounts === null)
+		{
+			$this->catCounts = [];
+			$sth = $this->db->pdo->query("SELECT category, COUNT(*) c FROM shop WHERE auction = 0".$this->wearSql("shop")." GROUP BY category");
+			if($sth)
+				foreach($sth->fetchAll() as $row)
+					$this->catCounts[(int)$row['category']] = (int)$row['c'];
+		}
+		return $this->catCounts;
+	}
 	public function getItemShopCount($id, $specific_category, $searchString=null) {
 		if($searchString)
 			return $this->searchItems($searchString, true);
+		$counts = $this->categoryCounts();
 		if($specific_category)
+		{
+			switch($this->categoryKind($id))
+			{
+				case 'items':
+				case 'sets':	// the chests are the lines of category 19
+					return isset($counts[(int)$id]) ? $counts[(int)$id] : 0;
+				case 'group':
+					$n = 0;
+					foreach($this->categoryChildren($id) as $child)
+						$n += isset($counts[$child]) ? $counts[$child] : 0;
+					return $n;
+			}
 			return $this->db->count("shop", $this->wearWhere($this->categoryWhere($id)));
-		return $this->db->count("shop", $this->wearWhere(["category[>]" => 0, "auction" => 0]));
+		}
+		$n = 0;
+		foreach($counts as $cat => $c)
+			if($cat > 0)
+				$n += $c;
+		return $n;
 	}
 
 	public function getItemShopItems($cat, $specific_category, $searchString=null) {

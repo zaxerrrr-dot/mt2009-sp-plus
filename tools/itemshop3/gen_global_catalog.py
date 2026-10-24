@@ -361,6 +361,36 @@ class Build:
 			return RULE_LOOK
 		return None
 
+	def chest_only(self):
+		"""MT2009_PLUS_ITEMSHOP_V3_V7 (the owner: "anything that drops from any set chest is sold only through the chests"):
+		every costume / hair / skin / sash / pet / mount a chest can give, and every variant of it (the same name, type and
+		subtype - another sex, class or duration), comes off every list of this shop and cannot be bought on its own. The
+		chests' general items (blessing scrolls, books, shard chests ...) stay."""
+		pieces = set()
+		for c in self.chests:
+			for x in c['drops']:
+				if x['kind'] == 'common':
+					continue
+				for it in x['items']:
+					pieces |= set(it['alts'])
+		only = set(pieces)
+		for v in pieces:
+			p = self.d.proto[v]
+			only |= {w for w in self.d.byname.get(norm(p['name']), []) if self.d.proto[w]['type'] == p['type'] and self.d.proto[w]['sub'] == p['sub']}
+		self.only_vnums = only
+		self.only_lines = OrderedDict((idx, l) for idx, l in self.d.lines.items() if l['vnum'] in only)
+		print('chest-only vnums %d (pieces %d), our lines taken off %d' % (len(only), len(pieces), len(self.only_lines)))
+
+	def chests_of(self, v):
+		name = norm(self.d.name(v))
+		out = []
+		for c in self.chests:
+			for x in c['drops']:
+				if x['kind'] != 'common' and any(norm(self.d.name(a)) == name for it in x['items'] for a in it['alts']):
+					out.append(c['name'])
+					break
+		return out
+
 	def untimed_note(self, idx):
 		for u in self.untimed:
 			if u['idx'] == idx:
@@ -375,7 +405,7 @@ class Build:
 		30-day variant (the same name and antiflags) when there is one not sold yet; else it is left for the owner."""
 		sold = set(self.d.shop_vnums)
 		for idx, l in self.d.lines.items():
-			if l['cat'] not in (CAT_HAIR, CAT_COSTUME, CAT_SKIN, CAT_PET, CAT_MOUNT):
+			if l['cat'] not in (CAT_HAIR, CAT_COSTUME, CAT_SKIN, CAT_PET, CAT_MOUNT) or idx in self.only_lines:
 				continue
 			p = self.d.proto.get(l['vnum'])
 			if not p or (p['type'] == 37 and p['sub'] != 12):
@@ -401,9 +431,9 @@ class Build:
 		l = self.d.lines.get(idx)
 		if not l:
 			raise SystemExit('row %r: our in-game shop has no line %d' % (r['name'], idx))
-		if idx in self.fixed:
+		if idx in self.fixed or idx in self.only_lines:
 			self.compared.add(idx)
-			return	# the owner's fixed price now (sheet "Zmienione ceny (stałe)")
+			return	# the owner's fixed price now / only in the chests (sheet "Zmienione ceny (stałe)")
 		if idx in self.compared:
 			# a second row of the list for the same line of ours (e.g. "Hity" and its own section): one row, both prices
 			for d in self.diff:
@@ -444,7 +474,7 @@ class Build:
 	def not_listed(self):
 		"""Our visible lines the list does not mention: listed for the owner (with the fixed price where one applies)."""
 		for idx, l in self.d.lines.items():
-			if idx in self.compared or l['cat'] in (0, ) or idx in self.fixed:
+			if idx in self.compared or l['cat'] in (0, ) or idx in self.fixed or idx in self.only_lines:
 				continue
 			rule = self.rule_price(l)
 			if rule is not None and l['price'] == rule and abs(self.d.days(l['vnum']) - 30) < 0.01:
@@ -485,18 +515,8 @@ class Build:
 				check.append('brak w costume_set_bonus.py klienta')
 				ok = False
 			bonus = dict(ok=ok, check='; '.join(check) if check else 'tak: części w item_proto serwera i w kliencie, linie #Z serwera (server-patches/zestawy), opis w kliencie (costume_set_bonus.py)')
-			# every piece of the set is sold in "Sety Bonusowe": the lines we have and, for a piece not sold yet, a new
-			# line at the owner's price (costume / hair / skin / sash / mount 299, pet 299 or 699 with loot), 30 days
-			for label in CHEST_PARTS:
-				for v in parts.get(label, []):
-					if v in OWNER_REMOVED:
-						continue
-					if v in self.d.shop_vnums:
-						continue
-					cat = {'Kostium': CAT_COSTUME, 'Fryzura': CAT_HAIR, 'Nakładka na broń': CAT_SKIN, 'Szarfa': CAT_SKIN, 'Zwierzak': CAT_PET, 'Wierzchowiec': CAT_MOUNT}[label]
-					price = RULE_PET_LOOT if (label == 'Zwierzak' and self.d.loot_pet(v)) else (RULE_PET if label == 'Zwierzak' else RULE_LOOK)
-					minutes = D30 if self.d.timed(v) and abs(self.d.days(v) - 30) > 0.01 else 0
-					self.add_line(v, 1, price, 1, cat, minutes, '', 'Sety Bonusowe: %s (%s)' % (s['name'], label), 'Część zestawu z bonusem, której nie było w sklepie - cena wg zasady właściciela.', [s['id']])
+			# MT2009_PLUS_ITEMSHOP_V3_V7 (the owner, after round 3): the set pieces are not sold on their own any more - only
+			# the set chests give them (chest_only below); round 3's 37 piece lines are gone.
 			has_look = any(parts.get(x) for x in ('Kostium', 'Fryzura'))
 			if not has_look:
 				self.set_rows.append(dict(set=s, chest=None, bonus=bonus, why='Zestaw bez kostiumu i fryzury (tylko pet / wierzchowiec / amulet) - bez skrzyni; jego części są w „Sety Bonusowe”.'))
@@ -662,7 +682,7 @@ class Build:
 		return ch
 
 	def out(self):
-		lines = list(self.lines.values())
+		lines = [l for l in self.lines.values() if l['chest'] or l['vnum'] not in self.only_vnums]
 		# set order for "Sety Bonusowe": the set's chest first, then its pieces (ours and the new ones)
 		set_items = []
 		for s in self.setlist:
@@ -680,7 +700,8 @@ class Build:
 				drops=[dict(no=i + 1, ppm=x['ppm'], label=x['label'], kind=x['kind'],
 					items=[dict(no=j + 1, alts=it['alts'], count=it['count'], minutes=it['minutes']) for j, it in enumerate(x['items'])])
 					for i, x in enumerate(c['drops'])]) for c in self.chests], set_items=set_items,
-			overrides=[dict(idx=f['idx'], vnum=f['vnum'], price=f['price'], minutes=f['minutes']) for f in self.fixed.values()])
+			overrides=[dict(idx=f['idx'], vnum=f['vnum'], price=f['price'], minutes=f['minutes']) for f in self.fixed.values()],
+			chest_only=sorted(self.only_vnums))
 		json.dump(res, open(os.path.join(G, 'v3_extra.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 		json.dump(self.ids, open(os.path.join(G, 'ids.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1, sort_keys=True)
 		imgs = dict(chests=[dict(id=c['id'], wiki_file=c['image_src'], model=c['model']) for c in self.chests],
@@ -741,6 +762,10 @@ class Build:
 			+ [[s['wiki'], '', s['vnum'], self.d.name(s['vnum']), 'w skrzyni zamiast brakującego przedmiotu, z jego szansą (%g%% z zapisanej skrzyni, przed przeliczeniem)' % s['pct'],
 				'%d skrzyń: %s' % (len(s['chests']), ', '.join(s['chests'])), s['why'], wl(s['wiki'])] for s in self.chest_subs.values()],
 			[30, 22, 12, 28, 34, 50, 40, 30])
+		sheet('Tylko w skrzyniach', ['Nr linii (u nas)', 'Vnum', 'Przedmiot', 'Kategoria', 'Cena (była)', 'Czas', 'Skrzynie, które go dają'],
+			[[idx, l['vnum'], l['name'] or self.d.name(l['vnum']), CAT_NAMES.get(l['cat'], l['cat']), '%d SM' % l['price'], self.d.days_label(l['vnum']),
+				', '.join(self.chests_of(l['vnum']))] for idx, l in self.only_lines.items()],
+			[10, 9, 30, 22, 11, 16, 60])
 		sheet('Zmienione ceny (stałe)', ['Nr linii (u nas)', 'Vnum', 'Przedmiot', 'Kategoria', 'Stara cena', 'Stary czas', 'Nowa cena', 'Nowy czas', 'Uwagi'],
 			[[f['idx'], f['vnum'] if f['vnum'] == f['old_vnum'] else '%d (było %d)' % (f['vnum'], f['old_vnum']), f['name'], f['cat'], '%d SM' % f['old_price'], f['old_days'],
 				'%d SM' % f['price'], '30 dni', f['why'] or 'tylko w sklepie V3 (Shift+F12); sklep w grze bez zmian'] for f in self.fixed.values()],
@@ -777,7 +802,7 @@ class Build:
 		for line in [
 			'Porównanie sklepu ItemShop V3 z listą sklepu serwerów globalnych (pl-wiki „Item-Shop”, odczyt 24.10.2026) - runda 3.',
 			'Waluta: ich moneta premium = 1 SM, ich znaki = 1 SZ (lista podaje ceny w SM i SZ, więc 1:1).',
-			'Zasady właściciela (zastępują ceny z listy): pety bez łupu 299 SM, pety z łupem 699 SM, wierzchowce 299 SM, nakładki / szarfy 299 SM, kostiumy i fryzury 299 SM - zawsze 30 dni. Dotyczą wszystkich linii sklepu V3, także dotychczasowych (arkusz „Zmienione ceny (stałe)”); sklep w grze bez zmian. Linie bez czasu, których nie da się zrobić 30-dniowymi, są w „Różnice u nas” z uwagą „do decyzji”.',
+			'Zasady właściciela (zastępują ceny z listy): pety bez łupu 299 SM, pety z łupem 699 SM, wierzchowce 299 SM, nakładki / szarfy 299 SM, kostiumy i fryzury 299 SM - zawsze 30 dni. Dotyczą wszystkich linii sklepu V3, także dotychczasowych (arkusz „Zmienione ceny (stałe)”); sklep w grze bez zmian. Części zestawów, które daje którakolwiek skrzynia (z wariantami płci, klasy i czasu), są tylko w skrzyniach - zdjęte ze wszystkich list V3 (arkusz „Tylko w skrzyniach”). Linie bez czasu, których nie da się zrobić 30-dniowymi, są w „Różnice u nas” z uwagą „do decyzji”.',
 			'Czas: sklep w grze nie ustawia czasu na linii (serwer bierze go z item_proto). W sklepie V3 linia może mieć własny czas (kolumna minutes) - dla przedmiotów z limitem czasu rzeczywistego (kostiumy, fryzury, nakładki, pety, wierzchowce) serwer bierze go z gniazda (socket0) z item_award. Przedmiotów unikatowych (pierścienie, Powiększony Skład) tak zmienić się nie da.',
 			'VIP (Rękawica, Trzecia Ręka, Pierścień Doświadczenia, Szczęśliwa Moneta, Rybie Wnętrzności) - jak w sklepie w grze: czas premium na koncie; dodane warianty 30/15/7 dni.',
 			'Nic z naszego sklepu nie zostało zmienione ani usunięte - różnice są w arkuszu „Różnice u nas” (kolumna „Decyzja / Cena SM” do uzupełnienia).',
@@ -800,10 +825,11 @@ def main():
 	ap.add_argument('--xlsx')
 	a = ap.parse_args()
 	b = Build(Data(a.db, a.client_list))
+	b.sets()
+	b.chest_only()
 	b.fixed_prices()
 	b.catalogue()
 	b.not_listed()
-	b.sets()
 	b.out()
 	if a.xlsx:
 		b.xlsx(a.xlsx)
