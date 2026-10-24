@@ -2798,9 +2798,9 @@
 55410	Jajo Nessie	Kliknij prawym przyciskiem, aby wykluæ peta (Nessie, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
 55411	Jajo Exedyara	Kliknij prawym przyciskiem, aby wykluæ peta (Pisklê Exedyara, 100.000 yang). Pet przywo³any obok peta z ItemShopu zdobywa doœwiadczenie razem z tob¹, ewoluuje i daje ci bonusy. Okno peta: /newpet albo przycisk na pasku.
 55001	Proteinowa Przek¹ska	Dodaje aktywnemu petowi 7 dni energii ¿yciowej (najwy¿ej 84). Pet bez energii nie mo¿e zostaæ przywo³any.
-55002	Transporter Peta	Pakuje wybranego peta (okno peta, klawisz U) do transportera, który mo¿na sprzedaæ, oddaæ w handlu albo schowaæ do magazynu. Kto u¿yje pe³nego transportera, dostaje peta z jego poziomem, ewolucj¹, bonusami i umiejêtnoœciami.
+55002	Klatka Transportowa	Pakuje wybranego peta (okno peta, klawisz U) do transportera, który mo¿na sprzedaæ, oddaæ w handlu albo schowaæ do magazynu. Kto u¿yje pe³nego transportera, dostaje peta z jego poziomem, ewolucj¹, bonusami i umiejêtnoœciami.
 55007	Transporter z Petem	Kliknij prawym przyciskiem, aby przyj¹æ peta z transportera (najwy¿ej 3 pety na postaæ). Nie sprzedawaj go w sklepie NPC - pet by przepad³.
-55008	Zwój Imienia Peta	Zmienia imiê aktywnego peta (dodatkowo 100.000 yang).
+55008	Pergamin Nazwy Zwierzaka	Zmienia imiê aktywnego peta (dodatkowo 100.000 yang).
 55009	Skrzynia Ksi¹g Peta	Zawiera losow¹ ksiêgê umiejêtnoœci peta.
 55010	Sztuka £owcy Metinów	Ksiêga umiejêtnoœci peta: silny przeciwko kamieniom Metin do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
 55011	Sztuka £owcy Bossów	Ksiêga umiejêtnoœci peta: silny przeciwko bossom do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
@@ -2825,8 +2825,8 @@
 55030	Sztuka Œwiêtej Wody	Ksiêga umiejêtnoœci peta: odpornoœæ na truciznê do 10%. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
 55031	Sztuka ¯ycia	Ksiêga umiejêtnoœci peta: witalnoœæ do 10. Pierwsza ksiêga uczy umiejêtnoœci (poziom 1), ka¿da nastêpna podnosi jej poziom (najwy¿ej 20). Nowe miejsca na umiejêtnoœci otwiera ewolucja peta.
 55032	Smako³yk	Daje aktywnemu petowi 800.000 punktów doœwiadczenia.
-55033	Pet Reverti	Aktywny pet zapomina wszystkie umiejêtnoœci (miejsca zostaj¹ otwarte).
-55034	Pet Revertus	Pozwala zapomnieæ jedn¹ umiejêtnoœæ peta: kliknij j¹ prawym przyciskiem w oknie peta.
+55033	Reverti Zwierza	Aktywny pet zapomina wszystkie umiejêtnoœci (miejsca zostaj¹ otwarte).
+55034	Revertus Zwierza	Pozwala zapomnieæ jedn¹ umiejêtnoœæ peta: kliknij j¹ prawym przyciskiem w oknie peta.
 55035	Smako³yk+	Daje aktywnemu petowi 5% doœwiadczenia potrzebnego na nastêpny poziom.
 55036	Klucz Miejsca Umiejêtnoœci	Otwiera nowe miejsce na umiejêtnoœæ heroicznego peta od 100 poziomu.
 55101	Eliksir Witalnoœci (S)	Podnosi bonus peta: maks. P¯ (do 4000) o jeden poziom (poziomy 0-5, pet od 1 poziomu).
@@ -2907,8 +2907,8 @@
 40233	Œwiêty Miecz Bogów+	Nak³adka na broñ jednorêczn¹ (miecz) - wojownik, ninja, sura. Dzia³a 30 dni od zakupu.
 50283	Karta Potwora	Po u¿yciu dodaje kartê potwora do kolekcji (Karty Potworów w menu pod Esc). Nie mo¿na ni¹ handlowaæ.
 50284	Karta Potwora (handlowalna)	Po u¿yciu dodaje kartê potwora do kolekcji (Karty Potworów w menu pod Esc). Mo¿na ni¹ handlowaæ.
-72322	Karta Nowego Pocz¹tku	Pozwala zresetowaæ misjê Kart Potworów ponad darmowy reset (raz na 24 godziny).
-72323	Karta Nowego Uk³adu	Pozwala wylosowaæ nowe cele misji Kart Potworów.
+72322	Karta Resetu	Pozwala zresetowaæ misjê Kart Potworów ponad darmowy reset (raz na 24 godziny).
+72323	Karta Przetasowania	Pozwala wylosowaæ nowe cele misji Kart Potworów.
 70115	Kolekcjoner	Otwiera okno Kolekcjonera z dowolnego miejsca.
 80050	Jab³ko	Owoc rangi: +200 Punktów Rangi (zwyk³a ranga). Dzia³a od 0 do 20 000 punktów. Pierwsza ranga (Waleczny) od 21 000. Komenda /ranga.
 80051	Gruszka	Owoc rangi: +200 Punktów Rangi ponad zwyk³¹ rangê. Dzia³a od 20 000 (pe³na zwyk³a ranga) do 40 000 punktów. Komenda /ranga.
@@ -5640,6 +5640,14 @@
 76036	Atak Boga Smoków	Zwiêksza twoj¹ si³ê ataku o 20% na 30 minut. Niezdatny do handlu.
 76037	Rêkawica Z³odzieja	Zwiêkszaj¹ o 50% twoj¹ szansê na zdobycie przedmiotów. Po aktywowaniu nie mo¿na ju¿ zdezaktywowaæ ich dzia³ania. Czas trwania: 7 dni. Niezdatne do handlu.
 76038	Medal Szczêœcia	Podwaja szansê na zdobycie Yang. Czas trwania: 7 dni. Niezdatny do handlu.
+72800	Auto £owy (7 dni)	Auto £owy przez 7 dni kalendarzowych od zakupu - dzia³aj¹, dopóki bilet jest w ekwipunku.
+72801	Auto £owy (14 dni)	Auto £owy przez 14 dni kalendarzowych od zakupu - dzia³aj¹, dopóki bilet jest w ekwipunku.
+72802	Szk³o Handlu	Dopóki masz je w ekwipunku, Dom Aukcyjny dzia³a na ka¿dej mapie. U¿yj, aby otworzyæ Dom Aukcyjny.
+72803	Buff Premium SungMa	Po u¿yciu daje +10 do wszystkich czterech statystyk Woli SungMa (si³a, witalnoœæ, odpornoœæ, inteligencja) na czas przedmiotu.
+72804	Eliksir W. SungMa (SI£A)	Wzmacnia twoj¹ Wolê SungMa (SI£A) o +5 na 30 min.
+72805	Eliksir W. SungMa (WIT)	Wzmacnia twoj¹ Wolê SungMa (WIT) o +5 na 30 min.
+72806	Eliksir W. SungMa (ODP)	Wzmacnia twoj¹ Wolê SungMa (ODP) o +5 na 30 min.
+72807	Eliksir W. SungMa (INT)	Wzmacnia twoj¹ Wolê SungMa (INT) o +5 na 30 min.
 30625	Padparad¿a	Kryszta³y padparad¿y to rzadkie i niezwykle wykwintne czerwone szafiry. S³u¿¹ do ulepszania ekwipunku.
 30628	Boski Kwiat	Œwiêty kwiat z ogrodu Smoczego Boga. S³u¿y do ulepszania ekwipunku.
 61025	Buffi (7 dni)	Przywo³uje Buffi - szamankê, która chodzi za tob¹ i co 3 sekundy rzuca na ciebie brakuj¹ce wzmocnienie: B³ogos³awieñstwo i Pomoc Smoka, a gdy ma imiê (Zwój Imienia Buffi) tak¿e Szybkoœæ i Zwiêkszenie Ataku. U¿yj ponownie, aby j¹ odwo³aæ. Okno Buffi: klawisz P. Buffi dostêpna od 55 poziomu postaci. Wa¿na 7 dni.
