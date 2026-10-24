@@ -1,0 +1,14 @@
+[
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_PASS_V1 (target)",
+  "old": "\t// playerbot: Auto Lowy only with the ItemShop's time (target).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\tif (!ch->FindAffect(560))\n",
+  "new": "\t// playerbot: Auto Lowy only with the ItemShop's time (target).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\t// MT2009_PLUS_AUTOHUNT_PASS_V1 (target) (server-patches/autohuntpass, the owner, 24 October 2026): Auto Lowy 7 / 14 dni\n\t\t// (72800 / 72801, the second ItemShop) count calendar days - a real-time item; while it is in the bag the auto\n\t\t// hunt is on, the engine deletes it when its time is up. The 8-hour ticket keeps its play-time affect 560.\n\t\tif (!ch->FindAffect(560) && ch->CountSpecifyItem(72800) + ch->CountSpecifyItem(72801) <= 0)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_PASS_V1 (loot)",
+  "old": "\t// playerbot: Auto Lowy only with the ItemShop's time (loot).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\tif (!ch->FindAffect(560))\n",
+  "new": "\t// playerbot: Auto Lowy only with the ItemShop's time (loot).\n\tif (quest::CQuestManager::instance().GetEventFlag(\"m2_autohunt_item\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\t// MT2009_PLUS_AUTOHUNT_PASS_V1 (loot) (server-patches/autohuntpass, the owner, 24 October 2026): Auto Lowy 7 / 14 dni\n\t\t// (72800 / 72801, the second ItemShop) count calendar days - a real-time item; while it is in the bag the auto\n\t\t// hunt is on, the engine deletes it when its time is up. The 8-hour ticket keeps its play-time affect 560.\n\t\tif (!ch->FindAffect(560) && ch->CountSpecifyItem(72800) + ch->CountSpecifyItem(72801) <= 0)\n"
+ }
+]

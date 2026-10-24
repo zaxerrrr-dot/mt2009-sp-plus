@@ -1,7 +1,8 @@
 -- MT2009_PLUS_ITEMSHOP_V3_V8: przedmioty drugiego ItemShopu z listy serwerow globalnych (decyzje wlasciciela, runda 5,
 -- tools/itemshop3/global/owner_decisions.py; przedmioty: apply.sh ishop_v3_items, klient: tools/ishop5):
---   72800 / 72801 Auto Lowy (7 / 14 dni) - jak bilet 31073 (autohunt_time.quest): czas auto lowow (afekt 560), liczony
---                 tylko w grze, +7 / +14 dni;
+--   72800 / 72801 Auto Lowy (7 / 14 dni) - MT2009_PLUS_ITEMSHOP_V3_V9: dni kalendarzowe - przedmiot z czasem
+--                 rzeczywistym (od zakupu); dopoki jest w ekwipunku, Auto Lowy dzialaja (server-patches/autohuntpass);
+--                 uzycie tylko podaje, ile czasu zostalo;
 --   72802 Szklo Handlu - przedmiot z czasem rzeczywistym (7 / 15 / 30 dni w sklepie): uzycie otwiera Dom Aukcyjny, a
 --                 dopoki szklo jest w ekwipunku, Dom Aukcyjny dziala na kazdej mapie (server-patches/szklohandlu,
 --                 IsFleaMarketMap);
@@ -12,29 +13,6 @@
 -- Wola (czempion_nowa_wola.quest). cp1250; zaden napis nie konczy sie polska litera (qc).
 quest ishop_v3_przedmioty begin
 	state start begin
-		function autohunt_add(vnum, days)
-			if game.get_event_flag("m2_autohunt_off") > 0 then
-				syschat("Auto £owy s¹ na tym œwiecie wy³¹czone - zachowaj bilet.")
-				return
-			end
-			if game.get_event_flag("m2_autohunt_item") == 0 then
-				syschat("Auto £owy s¹ teraz dostêpne dla ka¿dego - zachowaj bilet na póŸniej.")
-				return
-			end
-			local left = affect.get_duration(560)
-			if left < 0 then
-				left = 0
-			end
-			if left > 30 * 86400 then
-				syschat("Auto £owy: masz ju¿ ponad 30 dni czasu.")
-				return
-			end
-			pc.remove_item(vnum, 1)
-			left = left + days * 86400
-			affect.add_new(560, 0, 0, left, 0, true)
-			syschat(string.format("Auto £owy: +%d dni, razem %d h (liczy siê tylko czas w grze).", days, math.floor(left / 3600)))
-		end
-
 		function sungma_buff_apply(left)
 			for i = 0, 3 do
 				affect.remove_new(565 + i)
@@ -44,11 +22,14 @@ quest ishop_v3_przedmioty begin
 			end
 		end
 
-		when 72800.use begin
-			ishop_v3_przedmioty.autohunt_add(72800, 7)
-		end
-		when 72801.use begin
-			ishop_v3_przedmioty.autohunt_add(72801, 14)
+		when 72800.use or 72801.use begin
+			local left = item.get_socket(0) - get_time()
+			if left < 0 then
+				left = 0
+			end
+			local days = math.floor(left / 86400)
+			local hours = math.floor((left - days * 86400) / 3600)
+			syschat(string.format("Auto £owy: jeszcze %d dni %d h (dni kalendarzowe) - dzia³aj¹, dopóki bilet jest w ekwipunku.", days, hours))
 		end
 
 		when 72802.use begin

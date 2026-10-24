@@ -72,6 +72,10 @@ V3_REMOVE = {'39064:2:1:0', '39064:4:1:0', '39064:9:1:0', '30319:5:1:0', '30319:
 D1, D7, D15, D30 = 1440, 10080, 21600, 43200
 # "Zrób bilety jak na globalu": the 8-hour ticket gives way to the 7 / 14-day ones (72800 / 72801, apply.sh)
 LINES[6] = dict(hide=True, why='zrób bilety jak na globalu: zamiast biletu 8 h - bilety 7 dni (49 SM) i 14 dni (95 SM)')
+# MT2009_PLUS_ITEMSHOP_V3_V9 (round 5b): the 10-pack of Proteinowa Przekąska (9 SM) goes; the single "Odżywka" lines stay
+LINES[40920] = dict(hide=True, why='usuń paczkę 10 szt. (9 SM) - zostaje pojedyncza Odżywka 19 SM / 30 SZ')
+# MT2009_PLUS_ITEMSHOP_V3_V9 (round 5b): Szkło Intuicji and Medal Konny leave the in-game catalogue as well (apply.sh
+# ishop5_glass_medal_off) - their V3 rows above stay for a world where that block has not run yet
 # V3 lines of the new items: (vnum, count, price, currency, category, minutes, suffix, source)
 NEW_LINES = [
 	(72800, 1, 49, 1, 2, 0, '', 'Auto Łowy 7 dni (decyzja: bilety jak na globalu)'),
@@ -94,12 +98,31 @@ NEW_LINES = [
 ]
 # "Dodaj jako szkatułkę tak jak kostiumy, że można losować dowolny amulet na 7 dni": a chest rolled at the purchase,
 # each piece of jewellery of the unique slots equally, 7 days; the list's three offers (1, 10+1, 20+3).
-JEWEL_BOX = dict(name='Szkatuła na Biżuterię', wiki_file='Szkatuła na Biżuterię.png', category=2, minutes=D7,
-	vnums=[71136, 71188, 71202, 71199, 71143, 71145, 71148, 71149, 71158, 70607, 72713],
+JEWEL_BOX = dict(name='Szkatuła na Biżuterię', wiki_file='Szkatuła na Biżuterię.png', category=2,
+	# MT2009_PLUS_ITEMSHOP_V3_V9 (round 5b): exactly the global box of the owner's screenshot - (vnum, minutes, chance %,
+	# label); an entry without a duration tag lasts 7 days ("na 7 dni"); the chances (99.9 % in all) normalised.
+	# Amulet Strażników is not in our files - Błogosławieństwo Mocy (72713), the other 7-day amulet, in its place.
+	entries=[
+		(71155, 0, 20, 'Mikstura Mądrości (3h)'),
+		(71136, 3 * 1440, 20, 'Lizak Potęgi (3 dni)'),
+		(71154, 0, 13, 'Mikstura Zarania (3h)'),
+		(71158, 1440, 10, 'Medal Bohatera (1 dzień)'),
+		(71145, D7, 6.7, 'Amulet Wiecznej Miłości (7 dni)'),
+		(71143, D7, 6.7, 'Pierścień Radości (7 dni)'),
+		(71202, D7, 6.7, 'Amulet Nazara (7 dni)'),
+		(71148, D7, 3.3, 'Pierścień Siły Woli (7 dni)'),
+		(71149, D7, 3.3, 'Pierścień Śmier. Mocy (7 dni)'),
+		(71135, D7, 1.7, 'Pierścień Półksiężyca (7 dni)'),
+		(71136, D7, 1.7, 'Lizak Potęgi (7 dni)'),
+		(71188, D7, 1.7, 'Lizak Magii (7 dni)'),
+		(71199, D7, 1.7, 'Czekoladowy Amulet (7 dni)'),
+		(72713, D7, 1.7, 'Błogosławieństwo Mocy (7 dni) - zamiast Amuletu Strażników'),
+		(71136, D7, 1.7, 'Lizak Potęgi (7 dni)'),
+	],
 	offers=[(1, 379, ''), (11, 990, '(10+1 gratis)'), (23, 1980, '(20+3 gratis)')])
 # the "Brak w plikach" rows these decisions answer (wiki row -> what was done)
 BRAK_DONE = {
-	3: 'dodane: skrzynia „Szkatuła na Biżuterię” (losowanie przy zakupie, dowolna biżuteria na 7 dni)',
+	3: 'dodane: skrzynia „Szkatuła na Biżuterię” (losowanie przy zakupie, zawartość i szanse jak w skrzyni globalnej - runda 5b)',
 	26: 'dodane: nasza Skrzynia Ksiąg Peta (55009) za 129 SM', 363: 'dodane: nasza Skrzynia Ksiąg Peta (55009) za 129 SM',
 	27: 'dodane: nasza Proteinowa Przekąska (55001) za 19 SM / 30 SZ', 232: 'dodane: nasza Proteinowa Przekąska (55001) za 30 SZ',
 	358: 'dodane: nasza Proteinowa Przekąska (55001) za 19 SM',

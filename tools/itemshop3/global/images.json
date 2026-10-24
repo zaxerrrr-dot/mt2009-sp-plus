@@ -231,6 +231,14 @@
    "model": false
   }
  ],
- "items": [],
- "item_names": {}
+ "items": [
+  71135,
+  71154,
+  71155
+ ],
+ "item_names": {
+  "71135": "Pierścień Półksiężyca",
+  "71154": "Mikstura Zarania (3h)",
+  "71155": "Mikstura Mądrości (3h)"
+ }
 }

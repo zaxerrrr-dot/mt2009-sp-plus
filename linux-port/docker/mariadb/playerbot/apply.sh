@@ -4291,9 +4291,14 @@ if [ -s /opt/playerbot/zestawy_items.sql ]; then
     else
         fail_step "costume sets: zestawy_items.sql failed" >&2
     fi
+# MT2009_PLUS_ITEMSHOP_V3_V9 (the owner, round 5b, 24 October 2026): Szklo Intuicji (72161) and Medal Konny (50050) leave
+# the in-game shop too (the second shop left them out in round 5). The bots get horse medals on the market, never here.
+# Once per install (ishop_once) - the operator may put them back in the Seban panel.
+ishop_once ishop5_glass_medal_off "DELETE FROM common.itemshop_items WHERE vnum IN (72161, 50050);" "could not take Szklo Intuicji and Medal Konny out of the ItemShop"
 # MT2009_PLUS_ITEMSHOP_V3_V8 (the owner's round 5 on the second ItemShop's sheet, 24 October 2026): the items of the big
 # servers' list the second shop sells and the game lacked - each a copy of an item we have (31073 Auto Lowy, the ticket):
-#   72800 / 72801 Auto Lowy (7 / 14 dni)   the ticket's 7 / 14 days (quest ishop_v3_przedmioty, as autohunt_time)
+#   72800 / 72801 Auto Lowy (7 / 14 dni)   MT2009_PLUS_ITEMSHOP_V3_V9: calendar days - real-time items (7 / 14 days from
+#                                          the purchase); in the bag they let the auto hunt run (server-patches/autohuntpass)
 #   72802 Szklo Handlu                     real time (7 days here; the shop's line sets 7 / 15 / 30), opens the Dom
 #                                          Aukcyjny anywhere while in the bag (server-patches/szklohandlu)
 #   72803 Buff Premium SungMa              real time (1 day here; the line 1 / 7 / 15 / 30): +10 to the four Sung Ma stats
@@ -4304,10 +4309,11 @@ if [ -s /opt/playerbot/zestawy_items.sql ]; then
 db -e "SET NAMES utf8mb4;
 DROP TEMPORARY TABLE IF EXISTS world.ishop5_item;
 CREATE TEMPORARY TABLE world.ishop5_item AS SELECT * FROM world.item_proto WHERE vnum = 31073 LIMIT 1;
-UPDATE world.ishop5_item SET vnum = 72800, name = 'Autohunt Ticket 7d', locale_name = 'Auto Łowy (7 dni)', type = 18, subtype = 0, stack = 200, antiflag = 74112, flag = 4, limittype0 = 0, limitvalue0 = 0, value0 = 0, value1 = 0, value2 = 0, value3 = 0;
+UPDATE world.ishop5_item SET vnum = 72800, name = 'Autohunt Ticket 7d', locale_name = 'Auto Łowy (7 dni)', type = 18, subtype = 0, stack = 1, antiflag = 106880, flag = 0, limittype0 = 7, limitvalue0 = 604800, value0 = 0, value1 = 0, value2 = 0, value3 = 0;
 INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
-UPDATE world.ishop5_item SET vnum = 72801, name = 'Autohunt Ticket 14d', locale_name = 'Auto Łowy (14 dni)';
+UPDATE world.ishop5_item SET vnum = 72801, name = 'Autohunt Ticket 14d', locale_name = 'Auto Łowy (14 dni)', limitvalue0 = 1209600;
 INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
+UPDATE world.item_proto SET stack = 1, antiflag = 106880, flag = 0, limittype0 = 7, limitvalue0 = IF(vnum = 72800, 604800, 1209600) WHERE vnum IN (72800, 72801);
 UPDATE world.ishop5_item SET vnum = 72802, name = 'Trade Glass', locale_name = 'Szkło Handlu', stack = 1, antiflag = 106880, flag = 0, limittype0 = 7, limitvalue0 = 604800;
 INSERT IGNORE INTO world.item_proto SELECT * FROM world.ishop5_item;
 UPDATE world.ishop5_item SET vnum = 72803, name = 'Premium Buff SungMa', locale_name = 'Buff Premium SungMa', limitvalue0 = 86400;

@@ -147,6 +147,9 @@ BOOT_ONCE = {
     "yohara_scrolls_622": {"adds": (622, 623, 624, 625, 626),
                            "note": "Nowa Wola (4 rodzaje) i Wejście do Świątyni Węży"},
     # MT2009_PLUS_COSTUME_SET_V2 (tools/zestawy): the costume sets' rings, amulets and sash the server lacked
+    # MT2009_PLUS_ITEMSHOP_V3_V9: the owner's round 5b - Szklo Intuicji and Medal Konny out of the in-game shop
+    "ishop5_glass_medal_off": {"adds": (), "remove_vnums": (72161, 50050),
+                               "note": "Szkło Intuicji i Medal Konny znikają ze sklepu"},
     "zestawy_60": {"adds": (60, 61, 62, 63, 64, 65),
                    "note": "Zestawy kostiumów: Amulet Nazara, Lizak Magii, Czekoladowy Amulet, Mistrzowski Emblemat, Błogosławieństwo Mocy, Szarfa Serca"},
 }

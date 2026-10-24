@@ -377,16 +377,16 @@ class Build:
 		j = owner_decisions.JEWEL_BOX
 		cid = self.chest_id('jewel_box')
 		image = 'images/chests/%d.png' % cid
-		n = len(j['vnums'])
+		total = sum(e[2] for e in j['entries'])
 		drops = []
-		for i, v in enumerate(j['vnums']):
-			drops.append(dict(label='%s (7 dni)' % self.d.name(v), kind='common', weight=100.0 / n,
-				items=[dict(alts=[v], count=1, minutes=j['minutes'], label=self.d.name(v))]))
-		for x in drops:
-			x['ppm'] = 1000000 // n
+		for vnum, minutes, pct, label in j['entries']:
+			if vnum not in self.d.proto:
+				raise SystemExit('jewel box: vnum %d not in item_proto' % vnum)
+			drops.append(dict(label=label, kind='common', weight=pct * 100.0 / total, ppm=int(round(pct * 1000000.0 / total)),
+				items=[dict(alts=[vnum], count=1, minutes=minutes, label=label)]))
 		drops[0]['ppm'] += 1000000 - sum(x['ppm'] for x in drops)
-		desc = ('Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub '
-			'pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu.')
+		desc = ('Szkatuła otworzy się zaraz po zakupie i da jeden losowy przedmiot: miksturę, lizak, amulet, medal lub '
+			'pierścień (szanse - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu.')
 		first = None
 		for count, price, suffix in j['offers']:
 			l = self.add_line(0, count, price, 1, j['category'], 0, suffix, 'Szkatuła na Biżuterię (decyzja właściciela)', '', [],
@@ -406,7 +406,9 @@ class Build:
 			out[f['idx']] = dict(idx=f['idx'], vnum=f['vnum'], price=f['price'], minutes=f['minutes'])
 		for idx, d in owner_decisions.LINES.items():
 			if idx not in self.d.lines:
-				raise SystemExit('owner_decisions: no line %d in the in-game catalogue' % idx)
+				# MT2009_PLUS_ITEMSHOP_V3_V9: a line apply.sh took out of the in-game catalogue (Szkło Intuicji, Medal Konny)
+				print('owner_decisions: line %d is not in the in-game catalogue any more - skipped' % idx)
+				continue
 			o = out.setdefault(idx, dict(idx=idx))
 			for k, col in (('price', 'price'), ('count', 'count'), ('cat', 'category'), ('name', 'name')):
 				if k in d:
@@ -819,6 +821,8 @@ class Build:
 			[30, 22, 12, 28, 34, 50, 40, 30])
 		rows = []
 		for idx, d in owner_decisions.LINES.items():
+			if idx not in self.d.lines:
+				continue
 			l = self.d.lines[idx]
 			ch = []
 			if 'price' in d:
