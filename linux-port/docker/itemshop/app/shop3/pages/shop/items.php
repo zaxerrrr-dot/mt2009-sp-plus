@@ -281,7 +281,16 @@
 						}
 					?>
 				</ul>
-				<?php } ?>
+				<?php
+					// MT2009_PLUS_ITEMSHOP_V3_V1: the pages of header.php, with the package's own links.
+					if($items_pages > 1)
+					{
+						$pagination_saved = $pagination;
+						$pagination = $items_per_page;
+						print '<div class="pagination">'.$shop->createLinksPagination($items_link, $items_page, $items_total).'</div>';
+						$pagination = $pagination_saved;
+					}
+				} ?>
                 <br class="clearfloat">
             </div>
         </div>

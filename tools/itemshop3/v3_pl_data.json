@@ -1,0 +1,1081 @@
+{
+"locale_game": [
+[
+"CATEGORY_SKILL",
+307,
+"Umiejętności"
+],
+[
+"JOB_ASSASSIN",
+315,
+"Ninja"
+],
+[
+"JOB_ASSASSIN1",
+316,
+"Ninja Ostrza"
+],
+[
+"JOB_ASSASSIN2",
+317,
+"Ninja Łuku"
+],
+[
+"JOB_SHAMAN",
+318,
+"Szaman"
+],
+[
+"JOB_SHAMAN1",
+319,
+"Szaman Mocy Smoka"
+],
+[
+"JOB_SHAMAN2",
+320,
+"Szaman Mocy Leczenia"
+],
+[
+"JOB_SURA",
+321,
+"Sura"
+],
+[
+"JOB_SURA1",
+322,
+"Sura Broni"
+],
+[
+"JOB_SURA2",
+323,
+"Sura Magii"
+],
+[
+"JOB_WARRIOR",
+324,
+"Wojownik"
+],
+[
+"JOB_WARRIOR1",
+325,
+"Wojownik Mocy Ciała"
+],
+[
+"JOB_WARRIOR2",
+326,
+"Wojownik Mocy Duchowej"
+],
+[
+"JOB_WOLFMAN",
+327,
+"Likan"
+],
+[
+"JOB_WOLFMAN1",
+328,
+"Instynkt"
+],
+[
+"TOOLTIP_ANTI_CRITICAL_PCT",
+90,
+"Odporność na cios krytyczny +%d%%"
+],
+[
+"TOOLTIP_ANTI_PENETRATE_PCT",
+91,
+"Odporność na przeszywający cios +%d%%"
+],
+[
+"TOOLTIP_APPLY_ACCEDRAIN_RATE",
+306,
+"Stopień absorpcji: %d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_ANIMAL",
+18,
+"Silny przeciwko Zwierzętom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_ASSASSIN",
+60,
+"Silny przeciwko Ninja +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_DEVIL",
+22,
+"Silny przeciwko Diabłom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_HUMAN",
+17,
+"Silny przeciwko Ludziom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_MILGYO",
+20,
+"Silny przeciwko Mistykom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_MONSTER",
+63,
+"Silny przeciwko Potworom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_ORC",
+19,
+"Silny przeciwko Orkom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_SHAMAN",
+62,
+"Silny przeciwko Szamanom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_SURA",
+61,
+"Silny przeciwko Sura +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_UNDEAD",
+21,
+"Silny przeciwko Nieumarłym +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_WARRIOR",
+59,
+"Silny przeciwko Wojownikom +%d%%"
+],
+[
+"TOOLTIP_APPLY_ATTBONUS_WOLFMAN",
+94,
+"Silny przeciwko Likanom + %d%%"
+],
+[
+"TOOLTIP_APPLY_BLEEDING_PCT",
+93,
+"Atak krwawienia + %d%%"
+],
+[
+"TOOLTIP_APPLY_BLEEDING_REDUCE",
+92,
+"Odporność na Atak Krwawienia + %d%%"
+],
+[
+"TOOLTIP_APPLY_BLOCK",
+27,
+"Szansa na blok ciosów %d%%"
+],
+[
+"TOOLTIP_APPLY_CRITICAL_PCT",
+15,
+"Szansa na cios krytyczny +%d%%"
+],
+[
+"TOOLTIP_APPLY_DAMAGE_SP_RECOVER",
+26,
+"Szansa na odzyskanie PE: %d%%"
+],
+[
+"TOOLTIP_APPLY_DODGE",
+28,
+"Szansa na uniknięcie Strzały: %d%%"
+],
+[
+"TOOLTIP_APPLY_EXP_DOUBLE_BONUS",
+43,
+"Szansa na Bonus DOŚ: %d%%"
+],
+[
+"TOOLTIP_APPLY_GOLD_DOUBLE_BONUS",
+44,
+"Szansa na podwójną ilość Yang: %d%%"
+],
+[
+"TOOLTIP_APPLY_IMMUNE_FALL",
+50,
+"Niewrażliwy na Upadek"
+],
+[
+"TOOLTIP_APPLY_IMMUNE_SLOW",
+49,
+"Odporność na Spowolnienia"
+],
+[
+"TOOLTIP_APPLY_IMMUNE_STUN",
+48,
+"Odporność na Omdlenia"
+],
+[
+"TOOLTIP_APPLY_ITEM_DROP_BONUS",
+45,
+"Szansa na podwójną ilość Przedmiotów: %d%%"
+],
+[
+"TOOLTIP_APPLY_KILL_HP_RECOVER",
+47,
+"Szansa na odzyskanie PŻ: %d%%"
+],
+[
+"TOOLTIP_APPLY_KILL_SP_RECOVER",
+42,
+"Szansa na odzyskanie PE: %d%%"
+],
+[
+"TOOLTIP_APPLY_MANA_BURN_PCT",
+25,
+"%d%% Szansa na kradzież PE"
+],
+[
+"TOOLTIP_APPLY_MAX_HP_PCT",
+69,
+"Maks. PŻ +%d%%"
+],
+[
+"TOOLTIP_APPLY_MAX_SP_PCT",
+70,
+"Maks. PE +%d%%"
+],
+[
+"TOOLTIP_APPLY_PENETRATE_PCT",
+16,
+"Szansa na przeszywające Uderzenie: %d%%"
+],
+[
+"TOOLTIP_APPLY_POISON_PCT",
+12,
+"Szansa na Otrucie %d%%"
+],
+[
+"TOOLTIP_APPLY_POISON_REDUCE",
+41,
+"Odporność na Trucizny: %d%%"
+],
+[
+"TOOLTIP_APPLY_POTION_BONUS",
+46,
+"Mikstury %d%% efekt podniesiony"
+],
+[
+"TOOLTIP_APPLY_REFLECT_CURSE",
+40,
+"Szansa na odbicie Klątwy: %d%%"
+],
+[
+"TOOLTIP_APPLY_REFLECT_MELEE",
+39,
+"%d%% Szansa na odbicie Ciosu"
+],
+[
+"TOOLTIP_APPLY_RESIST_ASSASSIN",
+79,
+"Odporność na Ninja: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_BELL",
+32,
+"Odporność na Dzwony: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_CLAW",
+96,
+"Odporność na Szpony +%d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_DAGGER",
+31,
+"Odporność na Sztylety: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_FAN",
+33,
+"Odporność na Wachlarze: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_SHAMAN",
+81,
+"Odporność na Szamanów: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_SURA",
+80,
+"Odporność na Sura: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_SWORD",
+29,
+"Odporność na Miecze: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_TWOHAND",
+30,
+"Odporność na Broń Dwuręczną: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_WARRIOR",
+78,
+"Odporność na Wojowników: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_WIND",
+38,
+"Odporność na Wiatr: %d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_WOLFMAN",
+95,
+"Odporność na Atak Likanów + %d%%"
+],
+[
+"TOOLTIP_APPLY_SLOW_PCT",
+14,
+"Szansa na Spowolnienie %d%%"
+],
+[
+"TOOLTIP_APPLY_STEAL_HP",
+23,
+"%d%% obrażeń będzie dodanych do PŻ"
+],
+[
+"TOOLTIP_APPLY_STEAL_SP",
+24,
+"%d%% obrażeń będzie dodanych do PE"
+],
+[
+"TOOLTIP_APPLY_STUN_PCT",
+13,
+"Szansa na Omdlenie %d%%"
+],
+[
+"TOOLTIP_ATT_GRADE",
+53,
+"Wartość Ataku +%d"
+],
+[
+"TOOLTIP_ATT_SPEED",
+7,
+"Szybkość Ataku +%d%%"
+],
+[
+"TOOLTIP_BOW_DISTANCE",
+52,
+"Zasięg Łuku +%dm"
+],
+[
+"TOOLTIP_CAST_SPEED",
+9,
+"Szybkość Zaklęcia +%d%%"
+],
+[
+"TOOLTIP_CON",
+3,
+"Witalność +%d"
+],
+[
+"TOOLTIP_COSTUME_ATTR_BONUS",
+84,
+"Bonus kostiumu %d%%"
+],
+[
+"TOOLTIP_DEF_GRADE",
+54,
+"Obrona +%d"
+],
+[
+"TOOLTIP_DEX",
+6,
+"Zręczność +%d"
+],
+[
+"TOOLTIP_ENERGY",
+82,
+"Energia %d"
+],
+[
+"TOOLTIP_HP_REGEN",
+10,
+"Regeneracja PŻ: +%d%%"
+],
+[
+"TOOLTIP_INT",
+4,
+"Inteligencja +%d"
+],
+[
+"TOOLTIP_MAGIC_ATTBONUS_PER",
+85,
+"Magiczny atak +%d%%"
+],
+[
+"TOOLTIP_MAGIC_ATT_GRADE",
+55,
+"Wartość Magicznego Ataku: +%d"
+],
+[
+"TOOLTIP_MAGIC_DEF_GRADE",
+56,
+"Magiczna Obrona: +%d"
+],
+[
+"TOOLTIP_MALL_ATTBONUS",
+64,
+"Wartość Ataku: +%d%%"
+],
+[
+"TOOLTIP_MALL_AUTOLOOT",
+311,
+"Ręka, która automatycznie podnosi upuszczone Yang."
+],
+[
+"TOOLTIP_MALL_DEFBONUS",
+65,
+"Obrona: +%d%%"
+],
+[
+"TOOLTIP_MALL_EXPBONUS",
+66,
+"Punkty Doświadczenia: +%d%%"
+],
+[
+"TOOLTIP_MALL_EXPBONUS_P_STATIC",
+75,
+"iCafe DOŚ Bonus +%d%%"
+],
+[
+"TOOLTIP_MALL_EXPBONUS_STATIC",
+309,
+"Zwiększa zdobywanie PD o 50%"
+],
+[
+"TOOLTIP_MALL_FISH_MIND",
+312,
+"Szansa schwytania rzadkiej ryby zostanie podwojona."
+],
+[
+"TOOLTIP_MALL_GOLDBONUS",
+68,
+"Szansa na drop Yang zwiększona o %.1f%%."
+],
+[
+"TOOLTIP_MALL_GOLDBONUS_STATIC",
+314,
+"Szansa znalezienia Yang zostanie podwojona"
+],
+[
+"TOOLTIP_MALL_ITEMBONUS",
+67,
+"Szansa na zdobycie przedmiotów (%.1f)"
+],
+[
+"TOOLTIP_MALL_ITEMBONUS_P_STATIC",
+76,
+"iCafe Szansa na zdobycie Przedmiotów plus %.1f%%"
+],
+[
+"TOOLTIP_MALL_ITEMBONUS_STATIC",
+308,
+"Podwojona szansa na zdobycie przedmiotu"
+],
+[
+"TOOLTIP_MALL_MARRIAGE_FAST",
+313,
+"Punkty Miłości szybciej się regenerują."
+],
+[
+"TOOLTIP_MALL_SAFEBOX",
+310,
+"Zwiększona pojemność Magazynu"
+],
+[
+"TOOLTIP_MAX_HP",
+1,
+"Maks PŻ: +%d"
+],
+[
+"TOOLTIP_MAX_SP",
+2,
+"Maks PE: +%d"
+],
+[
+"TOOLTIP_MAX_STAMINA",
+58,
+"Maks Wytrzymałość: +%d"
+],
+[
+"TOOLTIP_MELEE_MAGIC_ATTBONUS_PER",
+86,
+"Magiczny/krótkodystansowy atak +%d%%"
+],
+[
+"TOOLTIP_MOV_SPEED",
+8,
+"Szybkość Ruchu %d%%"
+],
+[
+"TOOLTIP_NORMAL_HIT_DAMAGE_BONUS",
+72,
+"Średnie Obrażenia: %d%%"
+],
+[
+"TOOLTIP_NORMAL_HIT_DEFEND_BONUS",
+74,
+"Odporność na Obrażenia: %d%%"
+],
+[
+"TOOLTIP_RESIST_BOW",
+34,
+"Odporność na Strzały %d%%"
+],
+[
+"TOOLTIP_RESIST_DARK",
+89,
+"Odporność na mrok +%d%%"
+],
+[
+"TOOLTIP_RESIST_EARTH",
+88,
+"Odporność na ziemię +%d%%"
+],
+[
+"TOOLTIP_RESIST_ELEC",
+36,
+"Odporność na Błyskawice: %d%%"
+],
+[
+"TOOLTIP_RESIST_FIRE",
+35,
+"Odporność na Ogień: %d%%"
+],
+[
+"TOOLTIP_RESIST_ICE",
+87,
+"Odporność na lód +%d%%"
+],
+[
+"TOOLTIP_RESIST_MAGIC",
+37,
+"Odporność na Magię: %d%%"
+],
+[
+"TOOLTIP_RESIST_MAGIC_REDUCTION",
+98,
+"Antymagia o %d%%"
+],
+[
+"TOOLTIP_SKILL_DAMAGE_BONUS",
+71,
+"Obrażenie Umiejętności: %d%%"
+],
+[
+"TOOLTIP_SKILL_DEFEND_BONUS",
+73,
+"Odporność na Obrażenia Umiejętności %d%%"
+],
+[
+"TOOLTIP_SP_REGEN",
+11,
+"Regeneracja PE: +%d%%"
+],
+[
+"TOOLTIP_STR",
+5,
+"Siła: +%d"
+],
+[
+"TOOLTIP_APPLY_TARE_RASE",
+103,
+"Silny przeciwko ludziom +%d%%"
+],
+[
+"TOOLTIP_APPLY_RESIST_RASE",
+102,
+"Odporność na ludzi +%d%%"
+],
+[
+"TOOLTIP_APPLY_SEF",
+100,
+"Silny przeciwko boosom +%d%%"
+],
+[
+"TOOLTIP_APPLY_METIN",
+101,
+"Silny przeciwko metinom +%d%%"
+]
+],
+"skills": [
+[
+1,
+"WARRIOR",
+"Trzystronne Cięcie"
+],
+[
+106,
+"SHAMAN",
+"Rzut Piorunem"
+],
+[
+107,
+"SHAMAN",
+"Przywołanie Błyskawicy"
+],
+[
+108,
+"SHAMAN",
+"Burzowy Szpon"
+],
+[
+109,
+"SHAMAN",
+"Leczenie"
+],
+[
+110,
+"SHAMAN",
+"Zwinność"
+],
+[
+111,
+"SHAMAN",
+"Atak+"
+],
+[
+121,
+"SUPPORT",
+"Dowodzenie"
+],
+[
+122,
+"SUPPORT",
+"Kombinacja"
+],
+[
+123,
+"SUPPORT",
+"Łowienie"
+],
+[
+124,
+"SUPPORT",
+"Górnictwo"
+],
+[
+125,
+"SUPPORT",
+"Tworzenie Przedmiotu"
+],
+[
+126,
+"SUPPORT",
+"Język Shinsoo"
+],
+[
+127,
+"SUPPORT",
+"Język Chunjo"
+],
+[
+128,
+"SUPPORT",
+"Język Jinno"
+],
+[
+129,
+"SUPPORT",
+"Polimorfia"
+],
+[
+130,
+"SUPPORT",
+"Jeździectwo"
+],
+[
+131,
+"SUPPORT",
+"Przywołaj Konia"
+],
+[
+132,
+"SUPPORT",
+"Auto Atak"
+],
+[
+137,
+"HORSE",
+"Cięcie z Siodła"
+],
+[
+138,
+"HORSE",
+"Stąpnięcie Konia"
+],
+[
+139,
+"HORSE",
+"Fala Mocy"
+],
+[
+140,
+"HORSE",
+"Grad Strzał"
+],
+[
+151,
+"GUILD",
+"Smocze Oczy"
+],
+[
+152,
+"GUILD",
+"Krew Boga Smoków"
+],
+[
+153,
+"GUILD",
+"Błogosławieństwo Boga Smoków"
+],
+[
+154,
+"GUILD",
+"Święta Zbroja"
+],
+[
+155,
+"GUILD",
+"Akceleracja"
+],
+[
+156,
+"GUILD",
+"Furia Boga Smoków"
+],
+[
+157,
+"GUILD",
+"Magiczna Pomoc"
+],
+[
+16,
+"WARRIOR",
+"Duchowe Uderzenie"
+],
+[
+17,
+"WARRIOR",
+"Walnięcie"
+],
+[
+170,
+"WOLFMAN",
+"Rozedrzeć"
+],
+[
+171,
+"WOLFMAN",
+"Wilczy Dech"
+],
+[
+172,
+"WOLFMAN",
+"Wilczy Skok"
+],
+[
+173,
+"WOLFMAN",
+"Wilczy Pazur"
+],
+[
+174,
+"WOLFMAN",
+"Dusza Purpurowego Wilka"
+],
+[
+175,
+"WOLFMAN",
+"Dusza Wilka Indygo"
+],
+[
+18,
+"WARRIOR",
+"Tąpnięcie"
+],
+[
+19,
+"WARRIOR",
+"Silne Ciało"
+],
+[
+2,
+"WARRIOR",
+"Wir Miecza"
+],
+[
+20,
+"WARRIOR",
+"Uderzenie Miecza"
+],
+[
+21,
+"WARRIOR",
+"Krąg Mieczy"
+],
+[
+221,
+"PASSIVE",
+"Riposta: Wir Miecza"
+],
+[
+222,
+"PASSIVE",
+"Riposta: Zasadzka"
+],
+[
+223,
+"PASSIVE",
+"Riposta: Uderzenie Palcem"
+],
+[
+224,
+"PASSIVE",
+"Riposta: Strzelający Smok"
+],
+[
+225,
+"PASSIVE",
+"Riposta: Duchowe Uderzenie"
+],
+[
+226,
+"PASSIVE",
+"Riposta: Ognista Strzała"
+],
+[
+227,
+"PASSIVE",
+"Riposta: Mroczne Uderzenie"
+],
+[
+228,
+"PASSIVE",
+"Riposta: Przywołanie Błyskawicy"
+],
+[
+229,
+"PASSIVE",
+"Riposta: Wilczy Dech"
+],
+[
+236,
+"PASSIVE",
+"Dopalacz: Wir Miecza"
+],
+[
+237,
+"PASSIVE",
+"Dopalacz: Zasadzka"
+],
+[
+238,
+"PASSIVE",
+"Dopalacz: Uderzenie Palcem"
+],
+[
+239,
+"PASSIVE",
+"Dopalacz: Strzelający Smok"
+],
+[
+240,
+"PASSIVE",
+"Dopalacz: Duchowe Uderzenie"
+],
+[
+241,
+"PASSIVE",
+"Dopalacz: Ognista Strzała"
+],
+[
+242,
+"PASSIVE",
+"Dopalacz: Mroczne Uderzenie"
+],
+[
+243,
+"PASSIVE",
+"Dopalacz: Przywołanie Błyskawicy"
+],
+[
+244,
+"PASSIVE",
+"Dopalacz: Wilczy Dech"
+],
+[
+3,
+"WARRIOR",
+"Berserk"
+],
+[
+31,
+"ASSASSIN",
+"Zasadzka"
+],
+[
+32,
+"ASSASSIN",
+"Szybki atak"
+],
+[
+33,
+"ASSASSIN",
+"Wirujący Sztylet"
+],
+[
+34,
+"ASSASSIN",
+"Krycie Się"
+],
+[
+35,
+"ASSASSIN",
+"Trująca Chmura"
+],
+[
+36,
+"ASSASSIN",
+"Wolno działająca trucizna"
+],
+[
+4,
+"WARRIOR",
+"Aura Miecza"
+],
+[
+46,
+"ASSASSIN",
+"Powtarzalny Strzał"
+],
+[
+47,
+"ASSASSIN",
+"Deszcz Strzał"
+],
+[
+48,
+"ASSASSIN",
+"Ognista Strzała"
+],
+[
+49,
+"ASSASSIN",
+"Bezszelestny Chód"
+],
+[
+5,
+"WARRIOR",
+"Szarża"
+],
+[
+50,
+"ASSASSIN",
+"Trująca Strzała"
+],
+[
+51,
+"ASSASSIN",
+"Iskrzące Uderzenie"
+],
+[
+6,
+"WARRIOR",
+"Wola Życia"
+],
+[
+61,
+"SURA",
+"Uderzenie Palcem"
+],
+[
+62,
+"SURA",
+"Smoczy Wir"
+],
+[
+63,
+"SURA",
+"Czarowane Ostrze"
+],
+[
+64,
+"SURA",
+"Strach"
+],
+[
+65,
+"SURA",
+"Czarowana Zbroja"
+],
+[
+66,
+"SURA",
+"Rozproszenie Magii"
+],
+[
+76,
+"SURA",
+"Mroczne Uderzenie"
+],
+[
+77,
+"SURA",
+"Ogniste Uderzenie"
+],
+[
+78,
+"SURA",
+"Ognisty Duch"
+],
+[
+79,
+"SURA",
+"Mroczna Ochrona"
+],
+[
+80,
+"SURA",
+"Duchowy Cios"
+],
+[
+81,
+"SURA",
+"Mroczna Sfera"
+],
+[
+91,
+"SHAMAN",
+"Latający Talizman"
+],
+[
+92,
+"SHAMAN",
+"Strzelający Smok"
+],
+[
+93,
+"SHAMAN",
+"Smoczy Skowyt"
+],
+[
+94,
+"SHAMAN",
+"Błogosławieństwo"
+],
+[
+95,
+"SHAMAN",
+"Odbicie"
+],
+[
+96,
+"SHAMAN",
+"Pomoc Smoka"
+]
+]
+}

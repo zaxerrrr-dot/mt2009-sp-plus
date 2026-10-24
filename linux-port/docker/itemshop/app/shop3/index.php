@@ -104,7 +104,7 @@
 					</div>
 				
 					<ul class="nav nav-tabs nav-stacked">
-						<?php if($account->getAccountData('web_admin', $_SESSION['id'])>=9) { ?>
+						<?php if(false) { /* MT2009_PLUS_ITEMSHOP_V3_V1: no admin panel */ ?>
 						<li>
 							<a class="btn-sideitem" href="<?php print $shop_url; ?>admin/" target="_blank"> <i class="icon-cogs"></i> <?php print $lang_shop['administration']; ?></a>
 						</li>

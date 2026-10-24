@@ -1,4 +1,9 @@
 <?php
+	// MT2009_PLUS_ITEMSHOP_V3_V1: a session of its own - the old shop next door (/itemshop/) keeps
+	// the login in $_SESSION['id'] too, as a name where this one keeps the account id, and on the
+	// shared PHPSESSID each would have logged the other out.
+	session_name('MT2009SHOP3');
+	session_set_cookie_params(['path' => '/shop3/', 'httponly' => true]);
 	session_start();
 	
 	header('Cache-control: private');
@@ -19,7 +24,9 @@
 		'database_name' => $shop_mysql['database'],
 		'server' => $shop_mysql['host'],
 		'username' => $shop_mysql['user'],
-		'password' => $shop_mysql['password']
+		'password' => $shop_mysql['password'],
+		'port' => $shop_mysql['port'],
+		'charset' => 'utf8mb4'	// MT2009_PLUS_ITEMSHOP_V3_V1
 	]);
 	$shop = new Shop($shop_db);
 	

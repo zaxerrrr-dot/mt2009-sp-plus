@@ -374,18 +374,45 @@ class Player {
 		return false;
 	}
 	
-	public function CreateItem($item_shop, $account, $add_type='item_award', $selected_bonuses)
+	public function CreateItem($item_shop, $account, $add_type='item_award', $selected_bonuses=[])
 	{
 		global $wolfman_character;
 		
 		$vnum = $item_shop['vnum'];
 		
+		// MT2009_PLUS_ITEMSHOP_V3_V1: a package offer of our catalogue (itemshop.ishop_bundle_items,
+		// e.g. Duzy Pakiet Startowy) hands over each of its items, as the old shop's buy.php does.
+		if($add_type=='item_award')
+		{
+			$bundle = $this->shop->getBundleItems($item_shop['id']);
+			if(count($bundle))
+			{
+				$login = $this->account->getAccountData('login', $account);
+				$this->db->pdo->beginTransaction();
+				foreach($bundle as $b)
+				{
+					$sth = $this->db->pdo->prepare("INSERT INTO item_award (pid, login, vnum, count, given_time, why, socket0, socket1, socket2, mall) VALUES (?, ?, ?, ?, NOW(), 'ItemShop V3', ?, ?, ?, 1)");
+					if(!$sth->execute([(int)$account, $login, (int)$b['vnum'], (int)$b['count'], (int)$b['socket0'], (int)$b['socket1'], (int)$b['socket2']]))
+					{
+						$this->db->pdo->rollBack();
+						return false;
+					}
+				}
+				$this->db->pdo->commit();
+				return true;
+			}
+		}
+
 		if($add_type=='item_award')
 			$item = [
+				// MT2009_PLUS_ITEMSHOP_V3_V1 / MT2009_PLUS_ITEM_AWARD_PID_V1: our item_award has pid (the
+				// buyer's account id, for the record - the db core reads login), the old shop fills it too.
+				'pid' => (int)$account,
 				'login' => $this->account->getAccountData('login', $account),
 				'vnum' => $item_shop['vnum'],
 				'count' => $item_shop['count'],
-				'why' => "Item Shop",
+				'why' => "ItemShop V3",
+				'given_time' => date('Y-m-d H:i:s'),
 				'socket0' => 0,
 				'socket1' => 0,
 				'socket2' => 0,

@@ -18,22 +18,12 @@
 		"tr" => "Türk"
 	);
 	
-	if(isSet($_GET['lang']))
-		$language_code = $_GET['lang'];
-	else if(isSet($_SESSION['lang']))
-		$language_code = $_SESSION['lang'];
-	else if(isSet($_COOKIE['lang']))
-		$language_code = $_COOKIE['lang'];
-	else if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-		$language_code = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-	else
-		$language_code = 'en';
-	
-	if(!isset($languages[$language_code]))
-		$language_code = 'en';
+	// MT2009_PLUS_ITEMSHOP_V3_V1: the server is Polish - one language, whatever the browser asks for
+	// (the item names, descriptions and bonus names of itemshop3 are Polish only).
+	$languages = array("pl" => "Polski");
+	$language_code = 'pl';
 	
 	$_SESSION['lang'] = $language_code;
-	setcookie('lang', $language_code, time() + (3600 * 24 * 30));
 	
 	include 'include/languages/'.$language_code.'.php';
 ?>

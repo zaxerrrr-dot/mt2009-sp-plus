@@ -1,5 +1,10 @@
 Options +FollowSymLinks
 RewriteEngine On
+# MT2009_PLUS_ITEMSHOP_V3_V1: served under /shop3/ (the Dockerfile allows this file's overrides there only).
+RewriteBase /shop3/
+
+# The shop's code and data files are no pages.
+RewriteRule ^(include|pages)/ - [F,L]
 
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
@@ -10,6 +15,8 @@ RewriteRule ^search/(.*)/(.*) search.php?searchString=$1&max=$2
 RewriteRule ^search/(.*)/ index.php?p=items&searchString=$1
 RewriteRule ^search/(.*) index.php?p=items&searchString=$1
 
+# MT2009_PLUS_ITEMSHOP_V3_V1: items/<category, 0 = all>/<page>/ (header.php pages of 60)
+RewriteRule ^items/([0-9]+)/([0-9]+)/ index.php?p=items&id=$1&n=$2
 RewriteRule ^items/(.*)/ index.php?p=items&id=$1
 RewriteRule ^items/(.*) index.php?p=items&id=$1
 
@@ -42,45 +49,4 @@ RewriteRule ^javascript/(.*)/(.*)/(.*) index.php?p=javascript&type=$1&id=$2&new=
 RewriteRule ^javascript/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2
 RewriteRule ^javascript/(.*)/(.*) index.php?p=javascript&type=$1&id=$2
 
-RewriteRule ^admin/add/item/(.*)/(.*)/(.*)/ admin.php?a=item&id=$1&type=$2&wheel_level=$3
-RewriteRule ^admin/add/item/(.*)/(.*)/(.*) admin.php?a=item&id=$1&type=$2&wheel_level=$3
-RewriteRule ^admin/add/item/(.*)/(.*)/ admin.php?a=item&id=$1&type=$2
-RewriteRule ^admin/add/item/(.*)/(.*) admin.php?a=item&id=$1&type=$2
-RewriteRule ^admin/add/item/ admin.php?a=item
-RewriteRule ^admin/add/item admin.php?a=item
-
-RewriteRule ^admin/items/edit/(.*)/ admin.php?a=edit&id=$1
-RewriteRule ^admin/items/edit/(.*) admin.php?a=edit&id=$1
-
-RewriteRule ^admin/history/(.*)/(.*)/ admin.php?a=history&n=$1&s=$2
-RewriteRule ^admin/history/(.*)/(.*) admin.php?a=history&n=$1&s=$2
-RewriteRule ^admin/history/(.*)/ admin.php?a=history&n=$1
-RewriteRule ^admin/history/(.*) admin.php?a=history&n=$1
-RewriteRule ^admin/history/ admin.php?a=history
-RewriteRule ^admin/history admin.php?a=history
-
-RewriteRule ^admin/payments/list/(.*)/(.*)/ admin.php?a=list&n=$1&s=$2
-RewriteRule ^admin/payments/list/(.*)/(.*) admin.php?a=list&n=$1&s=$2
-RewriteRule ^admin/payments/list/(.*)/ admin.php?a=list&n=$1
-RewriteRule ^admin/payments/list/(.*) admin.php?a=list&n=$1
-RewriteRule ^admin/payments/list/ admin.php?a=list
-RewriteRule ^admin/payments/list admin.php?a=list
-
-RewriteRule ^admin/wheel/items/(.*)/(.*)/ admin.php?a=w_items&remove=$1&tab=$2
-RewriteRule ^admin/wheel/items/(.*)/(.*) admin.php?a=w_items&remove=$1&tab=$2
-RewriteRule ^admin/wheel/items/(.*)/ admin.php?a=w_items&remove=$1
-RewriteRule ^admin/wheel/items/(.*) admin.php?a=w_items&remove=$1
-RewriteRule ^admin/wheel/items/ admin.php?a=w_items
-RewriteRule ^admin/wheel/items admin.php?a=w_items
-RewriteRule ^admin/wheel/settings/ admin.php?a=w_settings
-RewriteRule ^admin/wheel/settings admin.php?a=w_settings
-
-RewriteRule ^admin/payments/settings/ admin.php?a=payments
-RewriteRule ^admin/payments/settings admin.php?a=payments
-
-RewriteRule ^admin/(.*)/(.*)/ admin.php?a=$1&n=$2
-RewriteRule ^admin/(.*)/(.*) admin.php?a=$1&n=$2
-RewriteRule ^admin/(.*)/ admin.php?a=$1
-RewriteRule ^admin/(.*) admin.php?a=$1
-RewriteRule ^admin/ admin.php
-RewriteRule ^admin admin.php
+# MT2009_PLUS_ITEMSHOP_V3_V1: the package's admin panel is not shipped (our catalogue is itemshop.ishop_items).

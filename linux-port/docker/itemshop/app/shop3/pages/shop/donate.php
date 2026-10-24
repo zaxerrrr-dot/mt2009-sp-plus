@@ -1,31 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns:exsl="http://exslt.org/common">
-<head>
-<title>Payment <?php print $shop_title; ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link type="text/css" rel="stylesheet" href="<?php print $shop_url; ?>css/donate.css">
-<link rel="shortcut icon" href="<?php print $shop_url; ?>images/favicon.ico?v=">
-<script language="javascript" type="text/javascript" src="<?php print $shop_url; ?>js/payment.js"></script><script type="text/javascript">
-        var xmlUrl = '<?php print $shop_url.'pmfeserver.php?login='.$account->getAccountData('login', $_SESSION['id']); ?>';
-
-        $(document).ready(function(){
-          new Payment(
-            xmlUrl,
-            {caching:225,fadeInTime:100,xmlErrorUrl:'errorxml/error.xml',xmlCache:true,enableErrorPage:true,enableLog:false,google_GTM:true,iovation:false,iovationTimeout:300,game_id:'metin2',styleparam:'website',modules:{backButton:'metin2.ingame',paysafecard:true,counter:true,couponButton:false,checkoutNotice:true}}
-          );
-        });
-      </script><script type="text/javascript">
-      var sessionId='0';
-      dataLayer = [{
-      'game': 'metin2',
-      'language': 'en',
-      'eventProcessId': '0',
-      'sessionId' : sessionId
-      }];
-      </script>
-</head>
-<body class="loading">
-<noscript></noscript>
-<div id="container"></div>
-</body>
+<?php
+	// MT2009_PLUS_ITEMSHOP_V3_V1: the package's payment page (PayPal / e-payouts through its own
+	// pmfeserver.php) is not shipped - nothing on this server is bought for money. The header's
+	// "charge your account" button lands here.
+?>
+<!DOCTYPE html>
+<html lang="pl">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Item Shop | <?php print $shop_title; ?></title>
+		<link rel="stylesheet" href="<?php print $shop_url; ?>css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" id="gameStyle" href="<?php print $shop_url; ?>css/design.css" type="text/css" />
+	</head>
+	<body class="website metin2 ro">
+		<div id="page" class="row-fluid">
+			<div class="content clearfix" style="padding: 40px; text-align: center;">
+				<h2><?php print $lang_shop['coins']; ?></h2>
+				<p>Smocze Monety (SM) zdobywasz grając na serwerze (zadania, wydarzenia, kupony).<br />
+				Smocze Znaki (SZ) dostajesz z powrotem przy każdym zakupie za Smocze Monety.</p>
+				<p><a class="btn-default premium" href="<?php print $shop_url; ?>">Wróć do sklepu</a></p>
+			</div>
+		</div>
+	</body>
 </html>

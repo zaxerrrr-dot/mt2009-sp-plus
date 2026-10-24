@@ -1,4 +1,9 @@
 <?php
+	// MT2009_PLUS_ITEMSHOP_V3_V1: a session of its own - the old shop next door (/itemshop/) keeps
+	// the login in $_SESSION['id'] too, as a name where this one keeps the account id, and on the
+	// shared PHPSESSID each would have logged the other out.
+	session_name('MT2009SHOP3');
+	session_set_cookie_params(['path' => '/shop3/', 'httponly' => true]);
 	session_start();
 	
 	header('Cache-control: private');
@@ -23,7 +28,8 @@
 			'server' => $game_mysql['host'],
 			'username' => $game_mysql['user'],
 			'password' => $game_mysql['password'],
-			'port' => $game_mysql['port']
+			'port' => $game_mysql['port'],
+			'charset' => 'utf8mb4'	// MT2009_PLUS_ITEMSHOP_V3_V1
 		]);
 
     	} catch (Exception $e) {
@@ -37,7 +43,8 @@
 			'server' => $game_mysql['host'],
 			'username' => $game_mysql['user'],
 			'password' => $game_mysql['password'],
-			'port' => $game_mysql['port']
+			'port' => $game_mysql['port'],
+			'charset' => 'utf8mb4'	// MT2009_PLUS_ITEMSHOP_V3_V1
 		]);
     	} catch (Exception $e) {
 		//echo 'Caught exception: ',  $e->getMessage(), "\n";
@@ -49,7 +56,9 @@
     		'database_name' => $shop_mysql['database'],
     		'server' => $shop_mysql['host'],
     		'username' => $shop_mysql['user'],
-    		'password' => $shop_mysql['password']
+    		'password' => $shop_mysql['password'],
+    		'port' => $shop_mysql['port'],
+    		'charset' => 'utf8mb4'	// MT2009_PLUS_ITEMSHOP_V3_V1
     	]);
     	} catch (Exception $e) {
 		//echo 'Caught exception: ',  $e->getMessage(), "\n";
@@ -64,7 +73,9 @@
 	$settingsDB = $shop->getSettings();
 	$paypal_email = $settingsDB['paypal']['value'];
 	$pagination = intval($settingsDB['pagination']['value']);
-	$add_type = $settingsDB['add_type']['value'];
+	// MT2009_PLUS_ITEMSHOP_V3_V1: always player.item_award - the db core hands it over in the
+	// game (the "item" mode writes straight into a bag the running core does not read back).
+	$add_type = 'item_award';
 	$wolfman_character = $settingsDB['wolfman_character']['value'] ? true:false;
 	$jcoins_back = $settingsDB['jcoins_back']['value'];
 	
@@ -85,86 +96,10 @@
 	if(isset($_GET['pid']) && isset($_GET['sas']))
 		$account->AutoLoginShop($_GET['pid'], $_GET['sas']);
 	
-	if($current_page=='paypal')
-	{
-		if (isset($_POST["txn_id"]) && isset($_POST["txn_type"]) && isset($_POST["item_number"]) && isset($_POST["payment_status"]) && isset($_POST["mc_gross"])&& isset($_POST["mc_currency"])&& isset($_POST["receiver_email"])&& isset($_POST["custom"]) && strtolower($_POST['receiver_email']) == strtolower($paypal_email) && strtolower($_POST["mc_currency"]) == "eur")
-		{
-			$req = 'cmd=_notify-validate';
-			foreach ($_POST as $key => $value) {
-				$value = urlencode(stripslashes($value));
-				$value = preg_replace('/(.*[^%^0^D])(%0A)(.*)/i','${1}%0D%0A${3}',$value);// IPN fix
-				$req .= "&$key=$value";
-			}
+	// MT2009_PLUS_ITEMSHOP_V3_V1: the package's PayPal IPN and e-payouts callbacks (?p=paypal,
+	// ?p=epayouts) are gone - a singleplayer server sells nothing for money, and both credited
+	// coins to whatever login the request named.
 
-			$curl_result='';
-			$ch = curl_init();
-			//curl_setopt($ch, CURLOPT_URL,'https://www.sandbox.paypal.com/cgi-bin/webscr'); - DevMode
-			curl_setopt($ch, CURLOPT_URL,'https://www.paypal.com/cgi-bin/webscr');
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
-			curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded", "Content-Length: " . strlen($req)));
-			curl_setopt($ch, CURLOPT_HEADER , 1);
-			curl_setopt($ch, CURLOPT_VERBOSE, 1);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
-			$curl_result = curl_exec($ch);
-
-			curl_close($ch);
-			
-			if (strpos($curl_result, "VERIFIED")!==false) {
-				$coins = $shop->getDonateValues(intval($_POST['mc_gross']), 0);
-				
-				if($happy_hour_discount && $happy_hour_expire<0)
-				{
-					$happy_hour_discount = 0;
-					$shop->stopHappyHour();
-				} else if($happy_hour_discount)
-					$coins = $coins + round($coins*$happy_hour_discount/100);
-				
-				if($coins)
-				{
-					$account_id = $account->getAccountDataByLogin('id', $_POST['custom']);
-					$shop->addTransaction($account_id, 0, intval($_POST['mc_gross']), $coins, $_POST['txn_id'], $_POST['payer_email']);
-					$account->addCoinsByLogin(1, $coins, $_POST['custom']);
-				}
-			}
-		}
-		die();
-	} else if($current_page=='epayouts' && $_SERVER["REMOTE_ADDR"]==$epayouts_ip)
-	{
-		$type = isset($_GET['type']) ? $_GET['type'] : null;
-	
-		$all_payments = array_column($payment_names, 0);
-		$type = array_search($type, $all_payments);
-		
-		if($type) {
-			$price = isset($_GET['price']) ? $_GET['price'] : null;
-			$ucode = isset($_GET['ucode']) ? $_GET['ucode'] : null;
-			$currency = isset($_GET['currency']) ? $_GET['currency'] : null;
-			$result = isset($_GET['result']) ? $_GET['result'] : null;
-			$code = isset($_GET['code']) ? $_GET['code'] : '';
-			$email = isset($_GET['email']) ? $_GET['email'] : '';
-			
-			$coins = $shop->getDonateValues(intval($price), $type);
-			if($happy_hour_discount && $happy_hour_expire<0)
-			{
-				$happy_hour_discount = 0;
-				$shop->stopHappyHour();
-			} else if($happy_hour_discount)
-				$coins = $coins + round($coins*$happy_hour_discount/100);
-			
-			if($currency && $price && strtolower($currency)=='eur' && strtolower($result)=='ok' && $coins)
-			{
-				$shop->addTransaction($account->getAccountDataByLogin('id', $ucode), $type, $price, $coins, $code, $email);
-				$account->addCoinsByLogin(1, $coins, $ucode);
-			}
-		}
-		die();
-	}
-	
 	if($account->is_loggedin())
 	{
 		if(!$account->checkStatus($_SESSION['id']))
@@ -203,8 +138,9 @@
 			$shop->stopHappyHour();
 		}
 
-		$amount_coins = $account->getAccountData('coins', $_SESSION['id']);
-		$amount_jcoins = $account->getAccountData('jcoins', $_SESSION['id']);
+		// MT2009_PLUS_ITEMSHOP_V3_V1: Smocze Monety (cash) and Smocze Znaki (mileage).
+		$amount_coins = $account->getCoins(1, $_SESSION['id']);
+		$amount_jcoins = $account->getCoins(2, $_SESSION['id']);
 		$count_not_taken_items = $shop->countNotTakenItems($_SESSION['id']);
 		$searchString = null;
 
@@ -214,17 +150,7 @@
 		
 		$account_bonuses = $shop->getAccountBonuses($account_bonuses);
 		
-		if($account->getAccountData('web_admin', $_SESSION['id'])>=9)
-		{
-			$delete = isset($_GET['delete']) ? $_GET['delete'] : null;
-			
-			if($delete)
-			{
-				$shop->deleteItem($delete);
-				header("Location: ".$shop_url);
-				die();
-			}
-		}
+		// MT2009_PLUS_ITEMSHOP_V3_V1: the admin's ?delete=<id> is gone with the admin panel.
 		
 		if($current_page=="items")
 		{
@@ -249,6 +175,19 @@
 			}
 
 			$all_items = $shop->getItemShopItems($id, $specific_category, $searchString);
+			
+			// MT2009_PLUS_ITEMSHOP_V3_V1: pages of 60 - the package put every offer on one page,
+			// and our catalogue (2500 offers, 900 in Fryzury +) made that 5 MB of HTML for the
+			// client's embedded browser. items/<category or 0>/<page>/ (.htaccess).
+			$items_per_page = 60;
+			$items_total = count($all_items);
+			$items_pages = $searchString ? 1 : max(1, (int)ceil($items_total / $items_per_page));
+			$items_page = isset($_GET['n']) ? (int)$_GET['n'] : 1;
+			if($items_page < 1 || $items_page > $items_pages)
+				$items_page = 1;
+			$items_link = $shop_url.'items/'.($specific_category ? intval($id) : 0).'/';
+			if($items_pages > 1)
+				$all_items = array_slice($all_items, ($items_page - 1) * $items_per_page, $items_per_page);
 			
 			if(count($all_items))
 			{

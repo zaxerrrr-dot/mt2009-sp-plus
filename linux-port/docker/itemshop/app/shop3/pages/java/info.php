@@ -186,7 +186,7 @@
 							</span>.       
 						</span>
 					</span>
-					<?php } if($account->getAccountData('web_admin', $_SESSION['id'])>=9) { ?>
+					<?php } if(false) { /* MT2009_PLUS_ITEMSHOP_V3_V1: no admin panel */ ?>
 					<br><span class="unitCount"> &nbsp;&nbsp; <i class="far fa-trash-alt"></i> <span class="bill_mileage text-danger"><a href="<?php print $shop_url.'?delete='.$item['id']; ?>" onclick="return confirm('<?php print $lang_shop['check-delete']; ?>')"><?php print $lang_shop['delete']; ?></a></span></span>
 					<span class="unitCount"> &nbsp;&nbsp; <i class="far fa-edit"></i> <span class="bill_mileage text-info"><a href="<?php print $shop_url.'admin/items/edit/'.$item['id']; ?>" target="_blank"><?php print $lang_shop['edit']; ?></a></span></span>
 					<?php } ?>

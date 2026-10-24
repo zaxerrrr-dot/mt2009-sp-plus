@@ -11,7 +11,8 @@
 # here needs a Debian package - the healthcheck asks PHP itself.
 FROM php:8.2-apache-bookworm
 
-RUN docker-php-ext-install mysqli
+# MT2009_PLUS_ITEMSHOP_V3_V1: pdo_mysql for the second shop (app/shop3), whose Medoo layer is PDO.
+RUN docker-php-ext-install mysqli pdo_mysql
 
 # The official image ships no php.ini at all, which means display_errors
 # on: a fatal error came back as HTTP 200 with the stack trace as the page,
@@ -46,6 +47,13 @@ RUN find /var/www/html -type d -exec chmod 0755 {} +  && find /var/www/html -typ
 RUN a2enmod rewrite \
  && sed -i '/<VirtualHost \*:80>/a\    RewriteEngine On\n    RewriteRule ^/ishop$ /ishop/index.php [L]' \
     /etc/apache2/sites-enabled/000-default.conf
+
+# MT2009_PLUS_ITEMSHOP_V3_V1: the second shop (app/shop3, Shift+F12 in the game) routes its pages
+# through its own .htaccess (RewriteBase /shop3/) - allowed for that directory only, the old shop
+# keeps AllowOverride None. Its item pictures are the old shop's (images/item -> itemshop/img/item),
+# made here and not as a symlink in the repository, which a Windows checkout turns into a text file.
+RUN printf '<Directory /var/www/html/shop3>\n    AllowOverride All\n</Directory>\n' > /etc/apache2/conf-enabled/mt2009-shop3.conf \
+ && ln -sfn ../../itemshop/img/item /var/www/html/shop3/images/item
 
 EXPOSE 80/tcp
 

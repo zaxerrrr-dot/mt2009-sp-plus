@@ -64,7 +64,11 @@
 					$shop->deleteItem($item['id']);
 			}
 			$no_space = true;
-		} else $error = true;
+		} else {
+			// MT2009_PLUS_ITEMSHOP_V3_V1: paid but nothing written (the package kept the coins) - back.
+			$account->addCoinsByID($item['pay_type'], $final_price, $_SESSION['id']);
+			$error = true;
+		}
 	} else $error = true;
 	
 if($can_pay && !$error) {

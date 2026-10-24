@@ -23,7 +23,7 @@ class Account {
 	public function getAccountDataByLogin($column, $login)
 	{
 		return $this->db->get("account", $column, [
-			"login[~]" => $login
+			"login" => $login
 		]);
 	}
 	
@@ -69,7 +69,7 @@ class Account {
 		
 		if ($this->db->has("account", [
 			"AND" => [
-				"login[~]" => $login,
+				"login" => $login,
 				"password" => $password
 			]
 		]))
@@ -77,11 +77,10 @@ class Account {
 			$user = $this->db->get("account", [
 				"id",
 				"status",
-				"password",
-				"web_admin"
+				"password"
 			], [
 				"AND" => [
-					"login[~]" => $login,
+					"login" => $login,
 					"password" => $password
 				]
 			]);
@@ -94,7 +93,7 @@ class Account {
 				$_SESSION['password'] = $this->securityPassword($user['password']);
 				$_SESSION['fingerprint'] = md5($_SERVER['HTTP_USER_AGENT'] . 'x' . $_SERVER['REMOTE_ADDR']);
 				
-				if($admin && $user['web_admin']>=9)
+				if(false)	// MT2009_PLUS_ITEMSHOP_V3_V1: no web_admin column, no admin panel
 				{
 					$adminAvatar = $this->player->getAdminAvatar($_SESSION['id']);
 					$_SESSION['admin'] = $adminAvatar[0];
@@ -124,8 +123,7 @@ class Account {
 			$user = $this->db->get("account", [
 				"id",
 				"status",
-				"password",
-				"web_admin"
+				"password"
 			], ["id" => $account_id]);
 
 			if($user['status']=='OK')
@@ -190,68 +188,42 @@ class Account {
 		else return false;
 	}
 	
+	// MT2009_PLUS_ITEMSHOP_V3_V1: the package's "coins" / "jcoins" are our Smocze Monety (account.cash,
+	// "SM") and Smocze Znaki (account.mileage, "SZ") - the same balances the old shop, the Kolo Losu and
+	// the in-game shop spend. Taken in one UPDATE that only passes with enough on the account (the
+	// package read, subtracted and read again, and two purchases at once could both pass).
+	public static function currencyColumn($type)
+	{
+		return $type==1 ? 'cash' : 'mileage';
+	}
+
+	public function getCoins($type, $id)
+	{
+		return (int)$this->getAccountData(self::currencyColumn($type), $id);
+	}
+
 	public function payCoins($type, $coins)
 	{
+		$coins = (int)$coins;
 		if($coins==0)
 			return true;
-		
-		$amount_coins = $this->getAccountData('coins', $_SESSION['id']);
-		$amount_jcoins = $this->getAccountData('jcoins', $_SESSION['id']);
-		
-		if($type==1)
-		{
-			if($coins>$amount_coins)
-				return false;
-			$data = $this->db->update("account", ["coins[-]" => $coins], ["id" => $_SESSION['id']]);
-			
-			if(!$data->rowCount())
-				return false;
-			
-			$amount_coins_after = $this->getAccountData('coins', $_SESSION['id']);
-			if($amount_coins_after != $amount_coins - $coins)
-			{
-				if($amount_coins_after<0)
-					$this->db->update("account", ["coins" => 0], ["id" => $_SESSION['id']]);
-				return false;
-			}
-		}
-		else
-		{
-			if($coins>$amount_jcoins)
-				return false;
-			$data = $this->db->update("account", ["jcoins[-]" => $coins], ["id" => $_SESSION['id']]);
-			
-			if(!$data->rowCount())
-				return false;
-			
-			$amount_jcoins_after = $this->getAccountData('jcoins', $_SESSION['id']);
-			if($amount_jcoins_after != $amount_jcoins - $coins)
-			{
-				if($amount_jcoins_after<0)
-					$this->db->update("account", ["jcoins" => 0], ["id" => $_SESSION['id']]);
-				return false;
-			}
-		}
-		
-		if($data->rowCount())
-			return true;
-		else return false;
+		if($coins<0)
+			return false;
+
+		$column = self::currencyColumn($type);
+		$sth = $this->db->pdo->prepare("UPDATE account SET `".$column."` = `".$column."` - ? WHERE id = ? AND `".$column."` >= ?");
+		$sth->execute([$coins, (int)$_SESSION['id'], $coins]);
+		return $sth->rowCount()==1;
 	}
-	
+
 	public function addCoinsByLogin($type, $coins, $login)
 	{
-		if($type==1)
-			return $this->db->update("account", ["coins[+]" => $coins], ["login" => $login]);
-		else
-			return $this->db->update("account", ["jcoins[+]" => $coins], ["login" => $login]);
+		return $this->db->update("account", [self::currencyColumn($type)."[+]" => (int)$coins], ["login" => $login]);
 	}
-	
+
 	public function addCoinsByID($type, $coins, $login)
 	{
-		if($type==1)
-			return $this->db->update("account", ["coins[+]" => $coins], ["id" => $login]);
-		else
-			return $this->db->update("account", ["jcoins[+]" => $coins], ["id" => $login]);
+		return $this->db->update("account", [self::currencyColumn($type)."[+]" => (int)$coins], ["id" => $login]);
 	}
 	
 	public function addBuff($item_shop, $account)
