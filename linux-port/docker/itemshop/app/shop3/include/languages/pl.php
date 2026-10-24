@@ -364,6 +364,7 @@ $lang_shop = array_merge($lang_shop, [
 	"mt-wheel-text" => "Koło Losu kręcisz w oknie gry. Zamknij sklep i otwórz je klawiszem F12 (albo tym, który ustawiłeś w Skrótach klawiszowych).",
 	"mt-wheel-old-client" => "W nowej wersji klienta ta zakładka sama zamyka sklep i otwiera Koło Losu.",
 	"mt-wheel-back" => "Wróć do sklepu",
+	"mt-group-all" => "Wszystkie",	// MT2009_PLUS_ITEMSHOP_V3_V5: the subcategory panel's first row (the whole group)
 ]);
 
 ?>
