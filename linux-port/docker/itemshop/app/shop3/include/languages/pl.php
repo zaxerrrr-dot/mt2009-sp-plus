@@ -323,6 +323,7 @@ $lang_shop = array_merge($lang_shop, [
 	"mt-no-auctions" => "Obecnie nie ma żadnych ofert błyskawicznych.",
 	"mt-until" => "do",
 	"mt-check" => "Sprawdź",
+	"mt-happy-hour-card" => "Obecnie trwa <strong>Happy Hour</strong>! Przy doładowaniu otrzymasz <strong>+%d%%</strong> więcej SM. Wydarzenie trwa do %s.",
 	"mt-premium" => "Konto Premium",
 	"mt-premium-active" => "Twoje Konto Premium jest aktywne jeszcze:",
 	"mt-premium-card" => "Sprawdź ofertę <strong>konta premium</strong>, to najlepszy wybór dla większości graczy.",

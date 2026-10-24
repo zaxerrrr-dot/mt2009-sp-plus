@@ -74,6 +74,21 @@
 					<p><?php print $lang_shop['mt-premium-card']; ?></p>
 					<a class="btn-default" href="<?php print $shop_url; ?>user/premium/"><?php print $lang_shop['mt-check']; ?></a>
 				</div>
+				<?php
+					// the window's Happy Hour card (event flags happy_hour_value / happy_hour_end_time, as SendHappyHour)
+					$hh = [];
+					$sth = $player_db->pdo->query("SELECT szName, lValue FROM quest WHERE dwPID = 0 AND szName IN ('happy_hour_value', 'happy_hour_end_time')");
+					if($sth)
+						foreach($sth->fetchAll(PDO::FETCH_ASSOC) as $row)
+							$hh[$row['szName']] = (int)$row['lValue'];
+					if(!empty($hh['happy_hour_value']) && !empty($hh['happy_hour_end_time']) && $hh['happy_hour_end_time'] > time()) {
+				?>
+				<div class="mt-feature-card contrast-box clearfix">
+					<img src="<?php print $shop_url; ?>images/item/premium.png" alt="">
+					<p><?php print sprintf($lang_shop['mt-happy-hour-card'], $hh['happy_hour_value'], date('d.m.Y H:i', $hh['happy_hour_end_time'])); ?></p>
+					<a class="btn-default" href="javascript:void(0)" onclick="openPaymentLink()"><?php print $lang_shop['mt-check']; ?></a>
+				</div>
+				<?php } ?>
 				<?php if($shop->getItemShopCount(15, true) > 0) { ?>
 				<div class="mt-feature-card mt-feature-auction contrast-box clearfix">
 					<img src="<?php print $shop_url; ?>images/item/auctions.png" alt="">
