@@ -36,6 +36,213 @@ static const TCHAR	ClassName[] = "Browser Example";
 // This is used by DisplayHTMLStr(). It can be global because we never change it.
 static const SAFEARRAYBOUND ArrayBound = {1, 0};
 
+// MT2009_PLUS_ITEMSHOP_V3_V2: links that leave the shop (the "Doladuj SM" top-up page, any other site) open in the
+// system's default browser, never inside the game (the control cannot run those pages, and a target=_blank/window.open
+// would open a bare IE window over the game). DWebBrowserEvents2 sink: BeforeNavigate2 of the top page to another host
+// -> ShellExecute + cancel; NewWindow3 -> cancel, another host goes to the system browser, the shop's own page is
+// shown in place. Only http/https/mailto ever go to ShellExecute.
+#include <shellapi.h>
+#include <exdispid.h>
+#include <ocidl.h>
+#pragma comment(lib, "shell32.lib")
+
+static WCHAR				s_wszMt2009Host[256];		// host of the page WebBrowser_Show opened (the shop)
+static IConnectionPoint*	s_pMt2009EventsCp = NULL;
+static DWORD				s_dwMt2009EventsCookie = 0;
+static IOleObject*			s_pMt2009EventsBrowser = NULL;	// not AddRef'd - lives as long as the advise
+static char*				s_pMt2009DeferredFree = NULL;	// the last site block, freed on the next open / at exit
+
+static void Mt2009UrlHost(const WCHAR* url, WCHAR* out, int outLen)
+{
+	const WCHAR* p = wcsstr(url, L"://");
+	int n = 0;
+	out[0] = 0;
+	if (!p)
+		return;
+	p += 3;
+	// user:pass@host
+	{
+		const WCHAR* at = p;
+		while (*at && *at != L'/' && *at != L'?' && *at != L'#' && *at != L'@')
+			++at;
+		if (*at == L'@')
+			p = at + 1;
+	}
+	while (*p && *p != L'/' && *p != L':' && *p != L'?' && *p != L'#' && n < outLen - 1)
+		out[n++] = *p++;
+	out[n] = 0;
+}
+
+static int Mt2009IsWebScheme(const WCHAR* url)
+{
+	return !_wcsnicmp(url, L"http://", 7) || !_wcsnicmp(url, L"https://", 8);
+}
+
+// 1 = the URL is a web page of another host than the shop (or mailto:) -> system browser.
+static int Mt2009IsExternalUrl(const WCHAR* url)
+{
+	WCHAR host[256];
+	if (!url)
+		return 0;
+	if (!_wcsnicmp(url, L"mailto:", 7))
+		return 1;
+	if (!Mt2009IsWebScheme(url))
+		return 0;
+	Mt2009UrlHost(url, host, 256);
+	if (!host[0] || !s_wszMt2009Host[0])
+		return 0;
+	return _wcsicmp(host, s_wszMt2009Host) != 0;
+}
+
+static void Mt2009OpenInSystemBrowser(const WCHAR* url)
+{
+	if (url && (Mt2009IsWebScheme(url) || !_wcsnicmp(url, L"mailto:", 7)))
+		ShellExecuteW(NULL, L"open", url, NULL, NULL, SW_SHOWNORMAL);
+}
+
+static const WCHAR* Mt2009VariantStr(VARIANT* v)
+{
+	if (!v)
+		return NULL;
+	if (v->vt == (VT_BYREF | VT_VARIANT) && v->pvarVal)
+		v = v->pvarVal;
+	if (v->vt == VT_BSTR)
+		return v->bstrVal;
+	if (v->vt == (VT_BYREF | VT_BSTR) && v->pbstrVal)
+		return *v->pbstrVal;
+	return NULL;
+}
+
+static void Mt2009SetCancel(VARIANT* v)
+{
+	if (v && v->vt == (VT_BYREF | VT_BOOL) && v->pboolVal)
+		*v->pboolVal = VARIANT_TRUE;
+}
+
+static int Mt2009IsTopBrowser(IDispatch* pDisp)
+{
+	IUnknown* a = NULL;
+	IUnknown* b = NULL;
+	int same = 1;	// unknown -> treat as the top page
+	if (pDisp && s_pMt2009EventsBrowser &&
+		!pDisp->lpVtbl->QueryInterface(pDisp, &IID_IUnknown, (void**)&a) &&
+		!s_pMt2009EventsBrowser->lpVtbl->QueryInterface(s_pMt2009EventsBrowser, &IID_IUnknown, (void**)&b))
+		same = (a == b);
+	if (a) a->lpVtbl->Release(a);
+	if (b) b->lpVtbl->Release(b);
+	return same;
+}
+
+static HRESULT STDMETHODCALLTYPE Mt2009Ev_QueryInterface(IDispatch* This, REFIID riid, void** ppv)
+{
+	if (!memcmp(riid, &IID_IUnknown, sizeof(GUID)) || !memcmp(riid, &IID_IDispatch, sizeof(GUID)) ||
+		!memcmp(riid, &DIID_DWebBrowserEvents2, sizeof(GUID)))
+	{
+		*ppv = This;
+		return S_OK;
+	}
+	*ppv = NULL;
+	return E_NOINTERFACE;
+}
+static ULONG STDMETHODCALLTYPE Mt2009Ev_AddRef(IDispatch* This) { return 1; }
+static ULONG STDMETHODCALLTYPE Mt2009Ev_Release(IDispatch* This) { return 1; }
+static HRESULT STDMETHODCALLTYPE Mt2009Ev_GetTypeInfoCount(IDispatch* This, UINT* pctinfo) { if (pctinfo) *pctinfo = 0; return S_OK; }
+static HRESULT STDMETHODCALLTYPE Mt2009Ev_GetTypeInfo(IDispatch* This, UINT i, LCID l, ITypeInfo** pp) { if (pp) *pp = NULL; return E_NOTIMPL; }
+static HRESULT STDMETHODCALLTYPE Mt2009Ev_GetIDsOfNames(IDispatch* This, REFIID r, LPOLESTR* n, UINT c, LCID l, DISPID* d) { return E_NOTIMPL; }
+static HRESULT STDMETHODCALLTYPE Mt2009Ev_Invoke(IDispatch* This, DISPID id, REFIID riid, LCID lcid, WORD wFlags,
+	DISPPARAMS* p, VARIANT* pResult, EXCEPINFO* pExc, UINT* puArgErr)
+{
+	if (!p || !p->rgvarg)
+		return S_OK;
+	switch (id)
+	{
+		case DISPID_BEFORENAVIGATE2:	// (pDisp, URL, Flags, TargetFrameName, PostData, Headers, Cancel) - reversed
+			if (p->cArgs == 7)
+			{
+				const WCHAR* url = Mt2009VariantStr(&p->rgvarg[5]);
+				IDispatch* pDisp = (p->rgvarg[6].vt == VT_DISPATCH) ? p->rgvarg[6].pdispVal : NULL;
+				if (Mt2009IsExternalUrl(url) && Mt2009IsTopBrowser(pDisp))
+				{
+					Mt2009OpenInSystemBrowser(url);
+					Mt2009SetCancel(&p->rgvarg[0]);
+				}
+			}
+			break;
+
+		case DISPID_NEWWINDOW3:		// (ppDisp, Cancel, dwFlags, bstrUrlContext, bstrUrl) - reversed
+			if (p->cArgs == 5)
+			{
+				const WCHAR* url = Mt2009VariantStr(&p->rgvarg[0]);
+				Mt2009SetCancel(&p->rgvarg[3]);
+				if (Mt2009IsExternalUrl(url))
+					Mt2009OpenInSystemBrowser(url);
+				else if (url && Mt2009IsWebScheme(url) && s_pMt2009EventsBrowser)
+				{
+					IWebBrowser2* wb = NULL;
+					if (!s_pMt2009EventsBrowser->lpVtbl->QueryInterface(s_pMt2009EventsBrowser, &IID_IWebBrowser2, (void**)&wb))
+					{
+						VARIANT v;
+						VariantInit(&v);
+						v.vt = VT_BSTR;
+						v.bstrVal = SysAllocString(url);
+						if (v.bstrVal)
+							wb->lpVtbl->Navigate2(wb, &v, 0, 0, 0, 0);
+						VariantClear(&v);
+						wb->lpVtbl->Release(wb);
+					}
+				}
+			}
+			break;
+	}
+	return S_OK;
+}
+
+static IDispatchVtbl s_kMt2009EventsVtbl = {
+	Mt2009Ev_QueryInterface, Mt2009Ev_AddRef, Mt2009Ev_Release,
+	Mt2009Ev_GetTypeInfoCount, Mt2009Ev_GetTypeInfo, Mt2009Ev_GetIDsOfNames, Mt2009Ev_Invoke
+};
+static IDispatch s_kMt2009Events = { &s_kMt2009EventsVtbl };
+
+static void Mt2009AdviseEvents(IOleObject* browserObject)
+{
+	IConnectionPointContainer* cpc = NULL;
+	if (s_pMt2009EventsCp)
+		return;
+	if (browserObject->lpVtbl->QueryInterface(browserObject, &IID_IConnectionPointContainer, (void**)&cpc))
+		return;
+	if (!cpc->lpVtbl->FindConnectionPoint(cpc, &DIID_DWebBrowserEvents2, &s_pMt2009EventsCp))
+	{
+		if (s_pMt2009EventsCp->lpVtbl->Advise(s_pMt2009EventsCp, (IUnknown*)&s_kMt2009Events, &s_dwMt2009EventsCookie))
+		{
+			s_pMt2009EventsCp->lpVtbl->Release(s_pMt2009EventsCp);
+			s_pMt2009EventsCp = NULL;
+		}
+		else
+			s_pMt2009EventsBrowser = browserObject;
+	}
+	else
+		s_pMt2009EventsCp = NULL;
+	cpc->lpVtbl->Release(cpc);
+}
+
+static void Mt2009UnadviseEvents()
+{
+	if (!s_pMt2009EventsCp)
+		return;
+	s_pMt2009EventsCp->lpVtbl->Unadvise(s_pMt2009EventsCp, s_dwMt2009EventsCookie);
+	s_pMt2009EventsCp->lpVtbl->Release(s_pMt2009EventsCp);
+	s_pMt2009EventsCp = NULL;
+	s_dwMt2009EventsCookie = 0;
+	s_pMt2009EventsBrowser = NULL;
+}
+
+static void Mt2009FreeDeferred()
+{
+	if (s_pMt2009DeferredFree)
+		GlobalFree(s_pMt2009DeferredFree);
+	s_pMt2009DeferredFree = NULL;
+}
+
 
 
 
@@ -384,7 +591,9 @@ HRESULT STDMETHODCALLTYPE UI_GetHostInfo(IDocHostUIHandler FAR* This, DOCHOSTUII
 	// disable any script running when the page is loaded (DOCHOSTUIFLAG_DISABLE_SCRIPT_INACTIVE),
 	// open a site in a new browser window when the user clicks on some link (DOCHOSTUIFLAG_OPENNEWWIN),
 	// and lots of other things. See the MSDN docs on the DOCHOSTUIINFO struct passed to us.
-	pInfo->dwFlags = DOCHOSTUIFLAG_NO3DBORDER;
+	// MT2009_PLUS_ITEMSHOP_V3_V2: no outer 3D border either, and themed scroll bars and controls like a
+	// normal browser window.
+	pInfo->dwFlags = DOCHOSTUIFLAG_NO3DBORDER | DOCHOSTUIFLAG_NO3DOUTERBORDER | DOCHOSTUIFLAG_THEME;
 
 	// Set what happens when the user double-clicks on the object. Here we use the default.
 	pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
@@ -984,10 +1193,33 @@ void UnEmbedBrowserObject(HWND hwnd)
 	{
 		// Unembed the browser object, and release its resources.
 		browserObject = *browserHandle;
+		// MT2009_PLUS_ITEMSHOP_V3_V2: the closing crash - teardown in the order the control expects, while its
+		// windows still exist (WebBrowser_Hide calls this BEFORE DestroyWindow): stop the page, leave in-place
+		// activation, drop our client site (the control must not call back into a freed site block), close,
+		// release. The site block is freed only on the next open / at exit, in case the control still calls
+		// Site_Release on its way out; GWL_USERDATA is cleared so WM_DESTROY does not do this twice.
+		SetWindowLong(hwnd, GWL_USERDATA, 0);
+		Mt2009UnadviseEvents();
+		{
+			IWebBrowser2* wb = NULL;
+			IOleInPlaceObject* ip = NULL;
+			if (!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&wb))
+			{
+				wb->lpVtbl->Stop(wb);
+				wb->lpVtbl->Release(wb);
+			}
+			if (!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IOleInPlaceObject, (void**)&ip))
+			{
+				ip->lpVtbl->InPlaceDeactivate(ip);
+				ip->lpVtbl->Release(ip);
+			}
+		}
 		browserObject->lpVtbl->Close(browserObject, OLECLOSE_NOSAVE);
+		browserObject->lpVtbl->SetClientSite(browserObject, NULL);
 		browserObject->lpVtbl->Release(browserObject);
 
-		GlobalFree(browserHandle);
+		Mt2009FreeDeferred();
+		s_pMt2009DeferredFree = (char*)browserHandle;
 
 		return;
 	}
@@ -1560,6 +1792,11 @@ long EmbedBrowserObject(HWND hwnd)
 					webBrowser2->lpVtbl->put_Width(webBrowser2, rect.right);
 					webBrowser2->lpVtbl->put_Height(webBrowser2, rect.bottom);
 
+					// MT2009_PLUS_ITEMSHOP_V3_V2: no "script error" boxes from the first page on, and links that
+					// leave the shop go to the system browser (Mt2009AdviseEvents above).
+					webBrowser2->lpVtbl->put_Silent(webBrowser2, VARIANT_TRUE);
+					Mt2009AdviseEvents(browserObject);
+
 					// We no longer need the IWebBrowser2 object (ie, we don't plan to call any more functions in it
 					// right now, so we can release our hold on it). Note that we'll still maintain our hold on the
 					// browser object until we're done with that object.
@@ -1626,8 +1863,10 @@ LRESULT CALLBACK WebBrowser_WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 		case WM_DESTROY:
 		{
 			// Detach the browser object from this window, and free resources.
-			UnEmbedBrowserObject(hwnd);
-			return(TRUE);
+			// MT2009_PLUS_ITEMSHOP_V3_V2: WebBrowser_Hide has done it already (GWL_USERDATA 0 then).
+			if (GetWindowLong(hwnd, GWL_USERDATA))
+				UnEmbedBrowserObject(hwnd);
+			return(0);
 		}
 
 
@@ -1648,7 +1887,24 @@ int WebBrowser_Show(HWND hParent, const char* addr, const RECT* rc)
 		return 0;
 
 	gs_hWndParent = hParent;
-	gs_hWndWebBrowser = CreateWindowEx(0, WEBBROWSER_CLASSNAME, "web browser", WS_CHILD|WS_VISIBLE,
+
+	// MT2009_PLUS_ITEMSHOP_V3_V2: the game no longer resets the D3D device into a COPY swap chain for the browser
+	// (GrpDevice.cpp EnableWebBrowserMode - that Reset failed with the game's D3DPOOL_DEFAULT resources alive and
+	// left the device lost: the whole game froze, and the second Reset on closing crashed). The game keeps presenting
+	// the whole back buffer; WS_CLIPCHILDREN keeps that present off the browser's child window.
+	SetWindowLong(hParent, GWL_STYLE, GetWindowLong(hParent, GWL_STYLE) | WS_CLIPCHILDREN);
+	Mt2009FreeDeferred();
+	{
+		WCHAR wurl[1024];
+		s_wszMt2009Host[0] = 0;
+		if (MultiByteToWideChar(CP_ACP, 0, addr, -1, wurl, 1024))
+		{
+			wurl[1023] = 0;
+			Mt2009UrlHost(wurl, s_wszMt2009Host, 256);
+		}
+	}
+
+	gs_hWndWebBrowser = CreateWindowEx(0, WEBBROWSER_CLASSNAME, "web browser", WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS,
 					rc->left, rc->top, rc->right - rc->left, rc->bottom - rc->top,
 					hParent, NULL, gs_hInstance, 0);
 
@@ -1671,16 +1927,25 @@ void WebBrowser_Move(const RECT* rc)
 
 void WebBrowser_Hide()
 {
+	HWND hWnd;
 	if (!gs_hWndWebBrowser)
 		return;
 
-	ShowWindow(gs_hWndWebBrowser, SW_HIDE);
-
-	if (IsWindow(gs_hWndWebBrowser))
-		DestroyWindow(gs_hWndWebBrowser);
+	// MT2009_PLUS_ITEMSHOP_V3_V2: the handle is cleared first (nothing re-enters with a dying window), the focus goes
+	// back to the game before the browser's windows go away, and the control is torn down while its windows still
+	// exist (UnEmbedBrowserObject), only then the host window is destroyed.
+	hWnd = gs_hWndWebBrowser;
 	gs_hWndWebBrowser = NULL;
 
 	SetFocus(gs_hWndParent);
+	ShowWindow(hWnd, SW_HIDE);
+
+	if (IsWindow(hWnd))
+	{
+		if (GetWindowLong(hWnd, GWL_USERDATA))
+			UnEmbedBrowserObject(hWnd);
+		DestroyWindow(hWnd);
+	}
 }
 
 int WebBrowser_IsVisible()
@@ -1719,6 +1984,7 @@ void WebBrowser_Cleanup()
 {
 	if (gs_hInstance)
 		UnregisterClass(WEBBROWSER_CLASSNAME, gs_hInstance);
+	Mt2009FreeDeferred();	// MT2009_PLUS_ITEMSHOP_V3_V2
 
 	OleUninitialize();
 }
