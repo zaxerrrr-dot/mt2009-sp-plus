@@ -1,0 +1,62 @@
+{{Item/Layout
+
+|image = Luksusowe Pudełko Księcia Atlantydy.png
+
+|Opis = Jaki skarb czeka na Ciebie w tej magicznej skrzyni z morskich głębin? Otwórz ją i sprawdź, czy będziesz władać Atlantydą!
+Skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Zestaw Księcia Atlantydy składający się z:
+** {{ti|Korona Atlantydy+ (m)|Korona Atlantydy+}} (60d)
+** {{ti|height=2|Książę Atlantydy+}} (60d)
+** {{ti|Skubcio (pieczęć)|Skubcio}} (30d)
+*LUB:
+** {{ti|Korona Atlantydy+ (k)|Korona Atlantydy+}} (60d)
+** {{ti|height=2|Księżniczka Atlantydy+}} (60d)
+** {{ti|Skubcio (pieczęć)|Skubcio}} (30d)
+*Poza zestawem:
+* {{ti|Korona Atlantydy+ (m)|Korona Atlantydy+}} (15/30d)
+* {{ti|height=2|Książę Atlantydy+}} (15/30d)
+* {{ti|Korona Atlantydy+ (k)|Korona Atlantydy+}} (15/30d)
+* {{ti|height=2|Księżniczka Atlantydy+}} (15/30d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

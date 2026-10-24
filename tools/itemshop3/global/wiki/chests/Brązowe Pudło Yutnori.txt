@@ -1,0 +1,29 @@
+{{Item/Layout
+
+|Opis = Uzupełnij 7 pniami brzozy z tego pudła swoje zasoby zebranego już materiału budowlanego i wykonaj plansze Yutnori.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Pień Brzozy}} (7 szt.)
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 6 [[Smocze Monety|SM]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Materiał budowlany do {{ti|Plansza do Yutnori|plansz Yutnori}}.
+}}

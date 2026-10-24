@@ -1,0 +1,42 @@
+{{Item/Layout
+
+|image = Skrzynia Korsarza Lata.png
+
+|Opis = Zakładając ten letni zestaw kostiumu korsarza udowodnisz, że posiadasz modny styl i że jesteś miłośnikiem wody.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = '''Dla mężczyzn:'''
+* {{ti|Trójróg Korsarza (m)}} (7 dni)
+* {{ti|height=2|Korsarz (m)}} (7 dni)
+* {{ti|Mini Krab Wojownik (pieczęć)}} (7 dni)
+'''Dla kobiet:'''
+* {{ti|Trójróg Korsarza (k)}} (7 dni)
+* {{ti|height=2|Korsarz (k)}} (7 dni)
+* {{ti|Mini Krab Wojownik (pieczęć)}} (7 dni)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 49 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zestaw kostiumu z [[Bonus Zestawu#Trzeci Zestaw Letni|Bonusem Zestawu]].
+* Otrzymujesz automatycznie odpowiedni kostium pasujący do rodzaju płci postaci.
+* Czas użytkowania rozpoczyna się wraz z zakupem przedmiotu.
+
+}}

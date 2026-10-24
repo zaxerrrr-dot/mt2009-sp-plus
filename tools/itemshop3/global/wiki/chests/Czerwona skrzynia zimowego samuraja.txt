@@ -1,0 +1,61 @@
+{{Item/Layout
+
+|image = Czerwona skrzynia zimowego samuraja.png
+
+|Opis = Z tego pudełka możesz wydobyć wspaniałe skarby na najpiękniejszy czas roku! Zgarnij przy odrobinie szczęścia czerwony zestaw zimowego samuraja z towarzyszami lub jedna z wielu bożonarodzeniowych niespodzianek.Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = *Czerwony zestaw zimowego samuraja:
+*{{ti|height=2|Cz. zimowy samuraj+ (m)}} (30dni)
+albo
+*{{ti|height=2|Cz. zimowy samuraj+ (k)}} (30dni)
+*{{ti|Cz. hełm z porożem+ (m)}} (30dni)
+albo
+*{{ti|Cz. hełm z porożem+ (k)}} (30dni)
+*{{ti|Piernikowy Dasher (pieczęć)}}(30dni)
+LUB:
+*{{ti|height=2|Cz. zimowy samuraj+ (m)}} (15 lub 7 dni)
+*{{ti|height=2|Cz. zimowy samuraj+ (k)}} (15 lub 7 dni)
+*{{ti|Cz. hełm z porożem+ (m)}} (15 lub 7 dni)
+*{{ti|Cz. hełm z porożem+ (k)}} (15 lub 7 dni)
+*{{ti|Księga Lidera}}
+*{{ti|Średni Kupon Wpłaty}}
+*{{ti|Różowa Smocza Fasola}}
+*{{ti|Księga Obróbki Kamienia}}
+*{{ti|Zwój Błogosławieństwa}}
+*{{ti|Zielona Smocza Fasola}}
+*{{ti|Kamyki}} (x200)
+*{{ti|Pakiet Kamieni Duszy}}
+*{{ti|Zdobna Skrzynia z Odłamkiem}}
+*{{ti|Spirala Czasu (30%)}}
+*{{ti|Licencja Najemnika}}
+*{{ti|Ekspres. Leczenie Najem.}}
+*{{ti|Wstęp do Świątyni Smoka}} (x100)
+*{{ti|Eliksir Księżyca (S)}}
+*{{ti|Eliksir Słońca (S)}}
+
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* [[Bonus Zestawu#Siódmy Zestaw Bożonarodzeniowy|Bonus Zestawu]].
+
+}}

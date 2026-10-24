@@ -1,0 +1,63 @@
+{{Item/Layout
+
+|image = Luźna Skrzynia Plażowa.png
+
+|Opis = Ta skrzynia zawiera liczne przedmioty dla perfekcyjnego dnia na plaży! Co jest w środku? Przy odrobinie szczęścia otrzymasz luźny zestaw plażowy lub inną wspaniałą niespodziankę. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * Luźny Zestaw Plażowy (m lub k, 30 dni):
+:* {{ti|height=2|Luźny Strój Plażowy+ (m)}}
+:* {{ti|height=2|Luźny Strój Plażowy+ (k)}}
+:* {{ti|Luźny Kapelusz Plaż.+ (m)}}
+:* {{ti|Luźny Kapelusz Plaż.+ (k)}}
+:* {{ti|Mini Krab Wojownik (pieczęć)}}
+* Luźny Zestaw Plażowy+ (m lub k, 15 lub 7 dni):
+:* {{ti|height=2|Luźny Strój Plażowy+ (m)}}
+:* {{ti|height=2|Luźny Strój Plażowy+ (k)}}
+* Luźny Kapelusz Plażowy+ (m lub k, 15 lub 7 dni):
+:* {{ti|Luźny Kapelusz Plaż.+ (m)}}
+:* {{ti|Luźny Kapelusz Plaż.+ (k)}}
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x200)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* [[Bonus Zestawu#Piąty Zestaw Letni|Bonus Zestawu]].
+
+}}
+
+[[hu:Szellős strand láda]]

@@ -1,0 +1,46 @@
+{{Item/Layout
+
+|image = Duże Pudło Łupu-Capu.png
+
+|Opis = Przygarnij masę słodkich zwierzaków z umiejętnością "Łupu-Capu", a będą zbierać twój łup zgodnie z twoimi instrukcjami. Możesz znaleźć także mnóstwo innych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Ognisty Feniks (Łup) (pieczęć)}} (3d/1d)
+* {{ti|Śnieżny Leonidas (Łup) (pieczęć)}} (3d/1d)
+* {{ti|Astrabell (Łup) (pieczęć)}} (3d/1d)
+* {{ti|Znak Strażnika}}
+* {{ti|Ognista Runa Aury (10)}} (x5)
+* {{ti|Peleryna Męstwa}} (x50)
+* {{ti|Mikstura Pośpiechu}} (x2)
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Kamyki}} (x50)
+* {{ti|Mikstura Ataku +15}} (x15)
+* {{ti|Mikstura Szybkości}} (x15)
+* {{ti|Cor Draconis (surowe)}} (x5)
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Zielona Smocza Fasola}} (x3)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] - za 45 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+* Losowe pudełko.
+* Zawiera 1 przedmiot.
+}}

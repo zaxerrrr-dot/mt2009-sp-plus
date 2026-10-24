@@ -1,0 +1,41 @@
+{{Item/Layout
+
+|image = Skrzynka z Kamieniami Przebudzenia.png
+
+|Opis = Dusza przebudzenia czy jeden z 5 możliwych kamieni przebudzenia potrzebnych, by zwiększyć twoją szansą na wyprodukowanie przedmiotów wypełnionych mocą smoka – co ukrywa się w środku tej skrzynki? Sprawdź
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+* {{ti|Mały Kamień Przebudzenia}}
+* {{ti|Drobny Kam. Przebudzenia}}
+* {{ti|Ładny Kam. Przebudzenia}}
+* {{ti|Zacny Kam. Przebudzenia}}
+* {{ti|Silny Kam. Przebudzenia}}
+* {{ti|Dusza Przebudzenia}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 179 [[Smocze Monety|SM]]
+
+
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Losowa Skrzynia.
+* Zawiera 1 przedmiot.
+* Szansa na silny kamień przebudzenia.
+
+}}

@@ -1,0 +1,67 @@
+{{Item/Layout
+
+|image = Czarna jak Noc Wampirza Skrzynia.png
+
+|Opis = Znajdź w tej skrzyni niesamowite skarby na mroczne noce: być może nawet czarny jak noc zestaw wampira?
+Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Czarny jak Noc Zestaw Wampira zawierający:
+** {{ti|Cz. Fryzura Wampira+ (m)|Czarna Fryzura Wampira+ (m)}} (60d)
+** {{ti|height=2|Czarny jak noc Ks. Wam.+|Czarny jak Noc Książę Wampirów+}} (60d)
+** {{ti|Krwistocz. Trumna Grozy (pieczęć)|Krwistoczerwona Trumna Grozy}} (60d)
+* LUB:
+** {{ti|Cz. Fryzura Wampira+ (k)|Czarna Fryzura Wampira+ (k)}} (60d)
+** {{ti|height=2|Czarna jak noc Ks. Wa.+|Czarna jak Noc Księżna Wampirów+}} (60d)
+** {{ti|Krwistocz. Trumna Grozy (pieczęć)|Krwistoczerwona Trumna Grozy}} (60d)
+
+* {{ti|Cz. Fryzura Wampira+ (m)|Czarna Fryzura Wampira+ (m)}} (15/30d)
+* {{ti|Cz. Fryzura Wampira+ (k)|Czarna Fryzura Wampira+ (k)}} (15/30d)
+* {{ti|height=2|Czarny jak noc Ks. Wam.+|Czarny jak Noc Książę Wampirów+}} (15/30d)
+* {{ti|height=2|Czarna jak noc Ks. Wa.+|Czarna jak Noc Księżna Wampirów+}} (15/30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* Szansa na nowy halloweenowy przedmiot.
+* [[Bonus Zestawu]]
+
+}}

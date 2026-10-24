@@ -1,0 +1,81 @@
+{{Item/Layout
+
+|image = Losowa Skrzynia "Tajemniczych Świąt".png
+
+|Opis = Zgarnij z tej skrzyni cudowną niespodziankę świąteczną! Przy odrobinie szczęścia znajdziesz nocny lub tajemniczy zestaw świąteczny, fantastyczny element zbroi lub świątecznego wierzchowca. A możesz otrzymasz jedną z wielu wspaniałych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+ '''Pakiet 2019 (kostium + pet):'''
+* {{ti2|Hełm Mroku Księżyca+ (k)|px=22}}{{ti2|Hełm Mroku Księżyca+ (m)|px=22}} [[Fryzury Świąteczne 2019|Hełm Mroku Księżyca+]] (k/m)(30d)  
+* {{ti2|height=2|Zbroja Mroku Księżyca+ (k)|px=22}}{{ti2|height=2|Zbroja Mroku Księżyca+ (m)|px=22}} [[Kostiumy Świąteczne 2019|Zbroja Mroku Księżyca+]] (k/m)(30d) 
+* {{ti|Skrzat Nosek+ (czerw.) (pieczęć)}} (30d)
+
+'''lub:'''
+
+'''Pakiet 2017 (kostium + pet):'''
+* {{ti2|Hełm Avalonu+ K (czerw.)|px=22}}{{ti2|Hełm Avalonu+ M (czerw.)|px=22}} [[Fryzury Świąteczne 2017|Hełm Avalonu+ (czerw.)]] (k/m)(30d)  
+* {{ti2|height=2|Zbroja Avalonu+ K (czerw.)|px=22}}{{ti2|height=2|Zbroja Avalonu+ M (czerw.)|px=22}} [[Kostiumy Świąteczne 2017|Zbroja Avalonu+ (czerw.)]](k/m)(30d) 
+* {{ti|Sir Oswald (pieczęć)}} (30d)
+
+'''albo:'''
+
+* {{ti2|Hełm Srebrnej Gwiazdy+ (k)|px=22}}{{ti2|Hełm Srebrnej Gwiazdy+ (m)|px=22}} [[Fryzury Świąteczne 2019|Hełm Srebr. Gwiazdy+]] (k/m)(15d)
+* {{ti2|height=2|Zbroja Srebrnej Gwiazdy+ (k)|px=22}}{{ti2|height=2|Zbroja Srebrnej Gwiazdy+ (m)|px=22}} [[Kostiumy Świąteczne 2019|Zbroja Srebr. Gwiazdy+]] (k/m)(15d)
+* {{ti2|Hełm Avalonu+ K (srebr.)|px=22}}{{ti2|Hełm Avalonu+ M (srebr.)|px=22}} [[Fryzury Świąteczne 2017|Hełm Avalonu+ (srebr.)]] (k/m)(15d)
+* {{ti2|height=2|Zbroja Avalonu+ K (srebr.)|px=22}}{{ti2|height=2|Zbroja Avalonu+ M (srebr.)|px=22}} [[Kostiumy Świąteczne 2017|Zbroja Avalonu+ (srebr.)]] (k/m)(15d)
+* {{ti|Biała Zimowa Lama (pieczęć)}} (15d)
+* {{ti|Brązowa Zimowa Lama (pieczęć)}} (15d)
+* {{ti|Mrok Księżyca (pieczęć)}} (15d)
+* {{ti|Srebrna Gwiazda (pieczęć)}} (7d)
+* {{ti|Bernie (pieczęć)}} (15d)
+* {{ti|Blue Barry (pieczęć)}} (7d)
+* {{ti|Profesorek (pieczęć)}} (15d)
+* {{ti|Błyskawiczny (pieczęć)}} (7d)
+* {{ti|smoczy Płomień}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}} (x3)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Szansa na [[Bonus Zestawu]].
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+
+}}

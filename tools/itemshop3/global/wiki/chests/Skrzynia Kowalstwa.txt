@@ -1,0 +1,43 @@
+{{Item/Layout
+
+|image = Skrzynia Kowalstwa.png
+
+|Opis = Nawet najdzielniejszy bohater niewiele zdziała, mając do dyspozycji wyszczerbiony miecz i powgniataną zbroję. Chwalebne czyny wymagają porządnego wyposażenia! W tej skrzyni znajdziesz przedmiot, który na pewno przyda ci się podczas następnej wizyty u kowala. 
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-SHop
+
+|Zawartość = * {{ti|Kamień Rytualny}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Biała Perła}}
+* {{ti|Kamień Kowala}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Krwawa Perła}} (x3)
+* {{ti|Niebieska Perła}} (x3)
+* {{ti|Zwój Wojny}}
+* {{ti|Magiczny Metal}}
+* {{ti|Magiczna Ruda Miedzi}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Odłamek Energii}} (x150)
+* {{ti|Zwój Błogosławieństwa}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

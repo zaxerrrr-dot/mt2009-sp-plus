@@ -1,0 +1,54 @@
+{{Item/Layout
+
+|image = Biała Skrzynia Azraela.png
+
+|Opis = W tej skrzyni czekają na Ciebie skarby demona! Zdobądź przy odrobinie szczęścia Biały Zestaw Azraela z kostiumem lub zwierzakiem lub jedną z wielu piekielnie dobrych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = *Biały Pakiet Azraela (k lub m, 30 dni) wraz z
+*{{ti|Mały Huashin (biały) (pieczęć)}} (30d)
+LUB:
+*{{ti|Biały Hełm Azraela+ (k)}} (7 lub 15d)
+*{{ti|Biały Hełm Azraela+ (m)}} (7 lub 15d)
+*{{ti|height=2|Biała Zbroja Azraela+ (k)}} (7 lub 15d)
+*{{ti|height=2|Biała Zbroja Azraela+ (m)}} (7 lub 15d)
+*{{ti|Księga Lidera}}
+*{{ti|Średni Kupon Wpłaty}}
+*{{ti|Różowa Smocza Fasola}}
+*{{ti|Księga Obróbki Kamienia}}
+*{{ti|Zwój Błogosławieństwa}}
+*{{ti|Zielona Smocza Fasola}}
+*{{ti|Kamyki}} (x200)
+*{{ti|Pakiet Kamieni Duszy}}
+*{{ti|Zdobna Skrzynia z Odłamkiem}}
+*{{ti|Spirala Czasu (30%)}}
+*{{ti|Licencja Najemnika}}
+*{{ti|Ekspres. Leczenie Najem.}}
+*{{ti|Wstęp do Świątyni Smoka}} (x50)
+*{{ti|Eliksir Księżyca (S)}}
+*{{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* [[Bonus Zestawu#Drugi Zestaw Letni|Bonus Zestawu]].
+
+}}

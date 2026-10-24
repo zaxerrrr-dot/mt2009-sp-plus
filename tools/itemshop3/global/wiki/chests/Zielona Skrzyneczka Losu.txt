@@ -1,0 +1,107 @@
+{{Item/Layout
+
+|Opis = Kliknij dwukrotnie, aby otworzyć.<br>Teraz masz 2 możliwości:<br>1. Kliknij "Przyjmij przedmiot", by otrzymać widoczny przedmiot.<br>2. Użyj "Szczęśliwego Trafu", by otrzymać inny losowy przedmiot. Możesz wykonać maks. 15 prób, płacąc za nie Yang.<br>Jeżeli nie masz wystarczająco dużo Yang na koncie, nie możesz wybrać nowego przedmiotu.<br>Otwartej skrzynki nie można zresetować ani zamknąć. Jeśli gra zostanie zamknięta, otrzymasz wyświetlony przedmiot.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Amulet Strażników}} (7d)
+* {{ti|Anulacja Transmutacji}}
+* {{ti|Atak Boga Smoków}}
+* {{ti|Bilet Transmutacji}}
+* {{ti|Błękitna Mikstura}}
+* {{ti|Błogosławieństwo (przedmiot)}}
+* {{ti|Błogosławieństwo Smoka}}
+* {{ti|Brans. z kości smoka}} (2h)
+* {{ti|Brans. z kości tygrysa}} (2h)
+* {{ti|Buty Wiatru}} (3d)
+* {{ti|Cor Draconis (zwyczajne)}}
+* {{ti|Dłoń Krytyka}}
+* {{ti|Duży Suplement}}
+* {{ti|Eliksir Księżyca (M)}} 
+* {{ti|Eliksir Księżyca (Ś)}}
+* {{ti|Eliksir Słońca (M)}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Kamień Metin Słaby}}
+* {{ti|Karta Przetasowania}}
+* {{ti|Karta Resetu}}
+* {{ti|Kolczyk z kości smoka}} (2h)
+* {{ti|Kolczyk z kości tygrysa}} (2h)
+* {{ti|Księga Lidera}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Lizak Potęgi (3 dni)}}
+* {{ti|Magiczna Ruda Miedzi}}
+* {{ti|Magiczny Metal}}
+* {{ti|Mały Suplement}}
+* {{ti|Maska Uczuć}}
+* {{ti|Medal Smoka}}
+* {{ti|Medal Smoka+}}
+* {{ti|Obrona Boga Smoków}}
+* {{ti|Odżywka}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Peleryna Męstwa}}
+* {{ti|Pergamin Nazwy Zwierzaka}}
+* {{ti|Pergamin Sfer}}
+* {{ti|Pierścień Doświadczenia}} (1h)
+* {{ti|Pierścień Tajemnic}} (7d)
+* {{ti|Powiększony Skład}}
+* {{ti|Przepustka}}
+* {{ti|Rada Pustelnika}}
+* {{ti|px=2|Rozszerzenie Ekwipunku}}
+* {{ti|Rybie Wnętrzności}} (3h)
+* {{ti|Silny Suplement}}
+* {{ti|Skrzynka Gaya}}
+* {{ti|Skrzynka na Zwierzaka}}
+* {{ti|Sok z Owoca Granatu}}
+* {{ti|Spirala Czasu (10%)}}
+* {{ti|Spirala Czasu (20%)}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Szkło Intuicji}}
+* {{ti|Średni Suplement}}
+* {{ti|Torba Emocji}}
+* {{ti|Traktat Gildii}}
+* {{ti|Trzecia Ręka}} (3d)
+* {{ti|Wino z Kwiatu Brzosk. XL}}
+* {{ti|Wykrywacz Kamieni Metin}}
+* {{ti|Wzmocnienie Przedmiotu(n)}}
+* {{ti|Znak Strażnika}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Zwój Przywołania GY}}
+* {{ti|Zwój Przywołania SLW}}
+* {{ti|Żelazna Pieczęć}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] - za 12 [[Smocze Monety|SM]] lub 50 [[Tygrysie Monety|TM]], [[System przepustki bojowej]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Przedmiot należy do grupy [[Skrzynie]]
+* Po zakupie w [[Item-Shop]] przedmiot trafia bezpośrednio do Twojego [[Plik:Przycisk Magazyn Item-Shop.jpg|20px]] magazynu Item-Shop.
+
+* Po otwarciu prawym przyciskiem myszy ukaże się panel:
+<br>
+[[File:Skrzyneczka Losu.png|center]]
+<br>
+* Wybierając:<ul>
+* <b>Przyjmij przedmiot</b> - otrzymasz aktualnie wyświetlony przedmiot.
+* <b>Szczęśliwy Traf</b> - za odpowiednią opłatą {{ti|Yang}} zostanie wylosowany kolejny przedmiot</ul>
+* Opłata za pierwsze losowanie: 60.000 {{ti|Yang}}. Każdy kolejny ''Szczęśliwy Traf'' podwaja opłatę.
+* Można losować maks. 15 razy.
+* Otwartej ''Skrzyneczki'' nie da się zamknąć. Po wylogowaniu lub przerwaniu połączenia z serwerem otrzymasz ostatnio wyświetlony przedmiot.
+
+}}
+
+[[de:Grünes Glückskistchen]]

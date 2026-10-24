@@ -1,0 +1,85 @@
+{{Item/Layout
+
+|image = Olbrzymie Zimowe Pudełko.png
+
+|Opis = Na jaką bożonarodzeniową niespodziankę możesz liczyć w tym roku? Otwórz szybko pudełko i przekonaj się! Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* <b>Ciepły Zestaw Przebiśniegu:</b>
+**{{ti|Ciepła Czapa Zimowa+ (k)}} (60d)
+**{{ti|Ciepła Czapa Zimowa+ (m)}} (60d)  
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (k)}} (60d)
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (m)}} (60d) 
+**{{ti|Przebiśnieg (pieczęć)}} (60d)
+* <b>Ciepły Zestaw Śnieżki:</b>
+**{{ti|Ciepła Czapa Zimowa+ (k)}} (30d)
+**{{ti|Ciepła Czapa Zimowa+ (m)}} (30d)  
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (k)}} (30d)
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (m)}} (30d) 
+**{{ti|Śnieżka (pieczęć)}} (30d)
+* <b>Nocny Zestaw Świąteczny:</b>
+**{{ti|Hełm Mroku Księżyca+ (k)}} (30d)
+**{{ti|Hełm Mroku Księżyca+ (m)}} (30d) 
+**{{ti|height=2|Zbroja Mroku Księżyca+ (k)}} (30d)
+**{{ti|height=2|Zbroja Mroku Księżyca+ (m)}} (30d)
+**{{ti|Skrzat Nosek+ (czerw.) (pieczęć)}} (30d)
+* <b>Tajemniczy Zestaw Świąteczny:</b>
+**{{ti|Hełm Avalonu+ K (czerw.)}} (30d)
+**{{ti|Hełm Avalonu+ M (czerw.)}} (30d) 
+**{{ti|height=2|Zbroja Avalonu+ K (czerw.)}} (30d)
+**{{ti|height=2|Zbroja Avalonu+ M (czerw.)}} (30d)
+**{{ti|Sir Oswald (pieczęć)}} (30d)
+* {{ti|Magiczny Kamień}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Opt. Skrz. Ksiąg Zwierza|Optymalna Skrzynia Ksiąg Zwierza}}
+* {{ti|Zaczaruj zwierzaka}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}} (x3)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* Wszystkie 4 zestawy zawierają jednego towarzysza oraz jeden kostium bożonarodzeniowy dla postaci męskich i żeńskich, które zapewniają potężne bonusy i stanowią część [[Bonus Zestawu|bonusu zestawu]].
+
+
+}}
+
+[[hu:Kolosszális_téli_doboz]]

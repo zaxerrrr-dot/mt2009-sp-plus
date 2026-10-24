@@ -1,0 +1,67 @@
+{{Item/Layout
+
+|image = Wielkie Losowe Pudełko Yohara.png
+
+|Opis = Zgarnij teraz wszystko, czego potrzebujesz do swojej wyprawy przez Yohara! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* {{ti|Złote Zioło}} (x5)
+* {{ti|Ognisty Liść}} (x10)
+* {{ti|Mroźny Korzonek}} (x10)
+* {{ti|Piorunowe Zioło}} (x10)
+* {{ti|Kwiat Północnego Wiatru}} (x10)
+* {{ti|Mroczny Cierń}} (x10)
+* {{ti|Pusty Eliksir Mocy}} (x20)
+* {{ti|Pusty Eliksir Odp.|Pusty Eliksir Odprności}} (x20)
+* {{ti2|Eliksir W. SungMa(SIŁA)|px=22}}[[Eliksir: W. SungMa(SIŁA)]]
+* {{ti2|Eliksir W. SungMa (WIT)|px=22}}[[Eliksir: W. SungMa (WIT)]]
+* {{ti2|Eliksir W. SungMa (ODP)|px=22}}[[Eliksir: W. SungMa (ODP)]]
+* {{ti2|Eliksir W. SungMa (INT)|px=22}}[[Eliksir: W. SungMa (INT)]]
+* {{ti2|Buff Premium SungMa (1d)|px=22}}[[Buff Premium SungMa]] (1d/3d/7d)
+* {{ti|Pierścień Dośw. +200}}
+* {{ti|Mikstura Zarania}}
+* {{ti|Pieczony Rak Niebieski}}
+* {{ti|Pierścień Hydry}}
+* {{ti|Kamyki}} (x100)
+* {{ti|Atak Boga Smoków}} (x5)
+* {{ti|Obrona Boga Smoków}} (x5)
+* {{ti|Inteligencja Boga Smoków}} (x5)
+* {{ti|Życie Boga Smoków}} (x5)
+* {{ti|Błogosławieństwo Smoka}}
+* {{ti|Błogosławieństwo Magii}}
+* {{ti|Błogosławieństwo Życia}}
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Krwawa Perła}}
+* {{ti|Niebieska Perła}}
+* {{ti|Biała Perła}}
+* {{ti|Cor Draconis (surowe)}}
+* {{ti|Różowa Smocza Fasola}}
+
+
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 19 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+* Wielkie pudełko z losową zawartością w sam raz na Yohara.
+* Przedmiot ten otwiera się automatycznie zaraz po zakupie.
+
+}}

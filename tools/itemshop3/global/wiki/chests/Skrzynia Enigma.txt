@@ -1,0 +1,43 @@
+{{Item/Layout
+
+|image = Enigma Box.png
+
+|Opis = Zawiera losowy przedmiot.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Skrzynia Wiecznej Zimy}}
+* {{ti|Skrzynia Mocy}}
+* {{ti|Skrzynia Północy}}
+* {{ti|Skrzynia Świąt}}
+* {{ti|Skrzynia Burzy Pustynnej}}
+* {{ti|Skrzynia Szczeniaka}}
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 32 [[Smocze Monety|SM]], [[Koło Dżinna 2020]], [[Koło Halloween]], [[Loteria Tombola]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[File:Przycisk Magazyn Item-Shop.jpg|25px]] [[Item-Shop]].
+
+}}
+
+[[de:Enigma Box]]
+[[en:Enigma Box]]
+[[fr:Boîte énigmatique]]
+[[hu:Enigma doboz]]
+[[it:Scatola dell'Enigma]]
+[[ro:Cutie Enigma]]

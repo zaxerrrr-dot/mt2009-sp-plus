@@ -1,0 +1,65 @@
+{{Item/Layout
+
+|image = Słoneczna Skrzynia Wukong.png
+
+|Opis = Co skrywa ta skrzynia pełna tajemnic i inspirowana legendarnym Królem Małp? Otwórz ją i sprawdź, jakie niespodzianki na Ciebie czekają! 
+Skrzynia otwiera się automatycznie po zakupie, a zawartość trafia bezpośrednio do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+|Pochodzenie=
+
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+
+|Zawartość = * Słoneczny pakiet Wukong składający się z:
+** {{ti|Słon. Szata Wukong+ (m)|height=2|Słoneczna Szata Wukong+}} (60d)
+** {{ti|Słon. Brans. Wukong+ (m)|Słoneczna Bransoleta Wukong+}} (60d)
+** {{ti|Srebrny Long (pieczęć)}} (60d)
+*LUB:
+** {{ti|Słon. Szata Wukong+ (k)|height=2|Słoneczna Szata Wukong+}} (60d)
+** {{ti|Słon. Brans. Wukong+ (k)|Słoneczna Bransoleta Wukong+}} (60d)
+** {{ti|Srebrny Long (pieczęć)}} (60d)
+*Poza zestawem:
+* {{ti|Słon. Szata Wukong+ (m)|height=2|Słoneczna Szata Wukong+}} (15/30d)
+* {{ti|Słon. Brans. Wukong+ (m)|Słoneczna Bransoleta Wukong+}} (15/30d)
+* {{ti|Słon. Szata Wukong+ (k)|height=2|Słoneczna Szata Wukong+}} (15/30d)
+* {{ti|Słon. Brans. Wukong+ (k)|Słoneczna Bransoleta Wukong+}} (15/30d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

@@ -1,0 +1,40 @@
+{{Item/Layout
+
+|Opis = Lazurowa skrzynia zawiera szlachetne Cor Draconis w każdym kolorze oraz Zieloną Smoczą Fasolę.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Alchemia
+
+|Zawartość = * {{ti|Cor Diamas (szlachetne)}}
+* {{ti|Cor Rubinum (szlachetne)}}
+* {{ti|Cor Saphirum (szlachetne)}}
+* {{ti|Cor Jadeit (szlachetne)}}
+* {{ti|Cor Granatum (szlachetne)}}
+* {{ti|Cor Atrum (szlachetne)}}
+* {{ti|Zielona Smocza Fasola}}
+
+|ZawieraWszystko = tak
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]], [[Handlarz Jubileuszowy]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni w [[File:W grze - Item-Shop.gif|25px]] [[Item-Shop]] losowa zawartość trafia bezpośrednio do Twojego [[File:Przycisk Magazyn Item-Shop.jpg|25px]] magazynu Item-Shop.
+* Można kupić u {{tm|Handlarz Jubileuszowy|Handlarza Jubileuszowego}} za ? {{ti|Moneta Jubileuszowa|Monet Jubileuszowych}}
+
+}}
+
+[[de:Drachentruhe]]

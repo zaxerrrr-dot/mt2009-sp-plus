@@ -1,0 +1,63 @@
+{{Item/Layout
+
+|image = Jasna Skrzynia Proroka.png
+
+|Opis = Spójrz przez świetlane zasłony przeznaczenia i uchyl rąbka wszystkich tajemnic! Lub otrzymaj jedną z wielu innych brzemiennych w skutki niespodzianek.
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Jasny Zestaw Proroka składający się z:
+** {{ti|height=2|Jasna Szata Proroka+ (k)}} (30d)
+** {{ti|Zielone Oko Proroka+ (k)}} (30d)
+** {{ti|Wszystkowidzący Kot Lodu (pieczęć)|Wszystkowidzący Kot Lodu}} (30d)
+* LUB:
+** {{ti|height=2|Jasna Szata Proroka+ (m)}} (30d)
+** {{ti|Jasny Kaptur Proroka+ (m)}} (30d)
+** {{ti|Wszystkowidzący Kot Lodu (pieczęć)|Wszystkowidzący Kot Lodu}} (30d)
+
+* {{ti|Zielone Oko Proroka+ (k)}} (7/15d)
+* {{ti|Jasny Kaptur Proroka+ (m)}} (7/15d)
+* {{ti|height=2|Jasna Szata Proroka+ (k)}} (7/15d)
+* {{ti|height=2|Jasna Szata Proroka+ (m)}} (7/15d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki|Kamyk}} (x200)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Czwarty Zestaw Halloweenowy|Bonus Zestawu]].
+
+}}

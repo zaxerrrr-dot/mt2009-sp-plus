@@ -1,0 +1,52 @@
+{{Item/Layout
+
+|Opis = Ta Skrzynia jest podejrzanie lekka, jakby była pusta...
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Księga Lidera}} (3 godz.)
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Dzik Wojenny (pieczęć)}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Przepustka}} (można handlować) x3
+* {{ti|Błogosławieństwo Życia}} x2
+* {{ti|Medal Smoka}} x10
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Zł. Skrzy. Strefy Walki]], [[Skrzynia z Pawiem Eostre]]
+* '''Inne:''' W [[Item-Shop]] za 35 [[Smocze Monety|SM]] (tylko podczas oferty promocyjnej).
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}
+
+[[ae:الصندوق العجيب]]
+[[cz:Tajemná bedna]]
+[[de:Mysteriöse Truhe]]
+[[en:Mysterious Chest (Item-Shop)]]
+[[fr:Coffre mystérieux]]
+[[gr:Μυστηριώδες Μπαούλο]]
+[[hu:Titokzatos láda piros]]
+[[it:Gizemli Sandık]]
+[[pt:Cofre Misterioso]]
+[[ro:Cufărul Misterios]]
+[[tr:Gizemli Sandık]]

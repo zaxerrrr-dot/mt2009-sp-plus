@@ -1,0 +1,32 @@
+{{Item/Layout
+
+|Opis = Lazurowa skrzynia zawiera jedenaście potężnych Cor Draconis (szlachetne) oraz Zielona Smocza Fasola. 
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Cor Draconis (szlachetne)}} (11 szt.)
+* {{ti|Zielona Smocza Fasola}}
+
+|ZawieraWszystko = tak 
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 99  [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

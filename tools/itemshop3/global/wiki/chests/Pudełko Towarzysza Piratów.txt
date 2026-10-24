@@ -1,0 +1,49 @@
+{{Item/Layout
+
+|image = Pudełko Towarzysza Piratów.png
+
+|Opis = Przygotować się do abordażu! Przy odrobinie szczęścia znajdziesz w tym pudełku nie tylko rezolutnych towarzyszy, którzy pomogą ci wypłynąć na szerokie morza, lecz także inne wspaniałe niespodzianki. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* {{ti|Mini Krab Wojownik (pieczęć)}} (60d/30d/15d)
+* {{ti|Niebieski Anubis (pieczęć)}} (60d/30d/15d)
+* {{ti|Minidall (pieczęć)}} (60d/30d/15d)
+* {{ti|Nogaj (pieczęć)}} (60d/30d/15d)
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}} (x2)
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Ognista Runa Aury (50)}}
+* {{ti|Ognista Runa Aury (10)}} (x2)
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Zdobna Skrz. z Odłamkiem}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}} (x3)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 40 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Losowe pudełko.
+* Potężne zwierzaki.
+
+}}

@@ -1,0 +1,63 @@
+{{Item/Layout
+
+|image = Biała Skrzynia Ratownika Plażowego.png
+
+|Opis = W tej nieskazitelnie białej skrzyni znajdziesz przy odrobinie szczęścia wszystko, czego potrzebujesz, aby stać się dzielną ratowniczką plażową. Sprawdź szybko, co czeka na Ciebie!
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Biały Zestaw Ratownika Plażowego składający się z:
+** {{ti|height=2|B. Ratownik Plażowy+|Biały Ratownik Plażowy+}} (30d)
+** {{ti|B. Czapka Plażowa+ (m)|Biała Czapka Plażowa+ (m)}} (30d)
+** {{ti|Wierny Lod. Wiel. Zab. (pieczęć)|Wierny Lodowy Wieloryb Zabójca}} (30d)
+* LUB:
+** {{ti|height=2|B. Ratowniczka Plażowa+|Biała Ratowniczka Plażowa+}} (30d)
+** {{ti|B. Czapka Plażowa+ (k)|Biała Czapka Plażowa+ (k)}} (30d)
+** {{ti|Wierny Lod. Wiel. Zab. (pieczęć)|Wierny Lodowy Wieloryb Zabójca}} (30d)
+
+* {{ti|height=2|B. Ratownik Plażowy+|Biały Ratownik Plażowy+}} (30d)
+* {{ti|height=2|B. Ratowniczka Plażowa+|Biała Ratowniczka Plażowa+}} (30d)
+* {{ti|B. Czapka Plażowa+ (k)|Biała Czapka Plażowa+ (k)}} (30d)
+* {{ti|B. Czapka Plażowa+ (m)|Biała Czapka Plażowa+ (m)}} (30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki|Kamyk}} (x200)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Sz.C3.B3sty_Zestaw_Letni|Bonus Zestawu]].
+
+}}

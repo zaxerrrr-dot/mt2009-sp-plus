@@ -1,0 +1,45 @@
+{{Item/Layout
+
+|image = Skrzynia Mądrego Tygrysa.png
+
+|Opis = Dzięki pelerynie maskującej, pierścieniowi Lucy lub przedmiotom Króla Przepowiedni szybciutko zwiększysz swoje punkty rangi. 
+Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot w określonej ilości. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Peleryna Maskująca}} x1
+* {{ti|Pierścień Lucy}} x1
+* {{ti|Symbol Króla Przepowiedni}} x1
+* {{ti|Rękawica Króla Przepowiedni}} x1
+* {{ti|Owoc Życia}} x1
+* {{ti|Fasolka Zen}} x1
+* {{ti|Kamień Duchowy}} x1
+* {{ti|Rada Pustelnika}} x1
+* {{ti|Dłoń Krytyka}} x3
+* {{ti|Dłoń Przebicia}} x3
+* {{ti|Eliksir Słońca (Ś)}} x1
+* {{ti|Eliksir Księżyca (Ś)}} x1
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' w [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Skrzynia z niespodzianką.
+* Szansa na potężne przedmioty punktów rangi i więcej.
+* Przedmiot trafia bezpośrednio do magazynu [[Item-Shop|Item-Shopu]].
+
+}}

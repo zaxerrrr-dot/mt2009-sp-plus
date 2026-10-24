@@ -1,0 +1,44 @@
+{{Item/Layout
+
+|image = Skrzynia Dzikiego Polowania.png
+
+|Opis = Ten wielki pakiet zawiera wszystko, czego potrzebujesz na długie i udane polowanie na potwory: zbieraj więcej PD i więcej łupów, przechowuj swoje przedmioty w powiększonym składzie i wykorzystaj 15 dni Auto Łowów.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Pojemniki
+|Kategoria3 = Skrzynie
+
+|Zawartość = 
+* {{ti|Rękawica Złodzieja}} (30 dni)
+* {{ti|Trzecia Ręka}} (30 dni)
+* {{ti|Powiększony Skład}} (30 dni)
+* {{ti|Pierścień Doświadczenia}} (15 dni)
+* {{ti|Auto Łowy}} (15 dni)
+* {{ti|Eliksir Słońca (D)}} (x3)
+* {{ti|Peleryna Męstwa}} (x50)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 293 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =  *'''UWAGA!''' Pakiety bonusowe będą niedostępne na serwerach, na których opcja Auto Łowów została wyłączona!
+* Jeśli posiadasz aktywne: [[Rękawica Złodzieja|Rękawice Złodzieja]],  [[Trzecia Ręka|Trzecią Rękę]], [[Powiększony Skład]], [[Auto Łowy]] i [[Pierścień Doświadczenia]] czas ich trwania zostanie odpowiednio wydłużony o 30 i 15 dni.
+* Zawiera mnóstwo przedmiotów na polowanie.
+* Zwiększa PD, pojemność magazynu i więcej.
+* Czas trwania: 15 do 30 dni.
+
+}}

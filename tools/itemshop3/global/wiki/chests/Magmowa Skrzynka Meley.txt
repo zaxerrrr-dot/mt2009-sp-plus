@@ -1,0 +1,36 @@
+{{Item/Layout
+
+|image = Magmowa Skrzynka Meley.png
+
+|Opis = Dzięki zawartości tej skrzyni zdobędziesz ognioodporne wyposażenie! Otrzymasz wierzchowca smok magmy oraz małego strażnika smoków Minidall i przepustkę do Schronienia Meley. Każda załączona mikstura obdarzy cię na 10 min. mocą smoka.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Pojemniki
+|Kategoria3 = Skrzynie
+
+|Zawartość = * {{ti|Smok Magmy (pieczęć)}} (7 dni) (x1)
+* {{ti|Minidall (pieczęć)}} (15 dni) (x1)
+* {{ti|Przepustka (Meley)}} (x1)
+* {{ti|Mikstura Mocy Smoka}} (x10)
+
+|ZawieraWszystko = tak 
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 199 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

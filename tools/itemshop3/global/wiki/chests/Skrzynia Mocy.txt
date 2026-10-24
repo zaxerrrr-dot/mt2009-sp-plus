@@ -1,0 +1,52 @@
+{{Item/Layout
+
+|Opis = Skrzynia ta jest dziwnie lekka, tak jakby była pusta...
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Biała Perła}}
+* {{ti|Eliksir Księżyca (Ś)}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Kryształ Tygrysa Bengalskiego}}
+* {{ti|Krwawa Perła}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Niebieska Perła}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Szkło Intuicji}} x40
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Życie Boga Smoków}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Skrzynia Enigma]]
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]] (tylko podczas oferty promocyjnej), [[Walentynkowe Koło Losu]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}
+
+[[ae:صندوق القوة]]
+[[cz:Bedna síly]]
+[[de:Truhe der Macht]]
+[[en:Power Chest]]
+[[es:Baúl del Poder]]
+[[fr:Coffre du Pouvoir]]
+[[hu:Erő ládája]]
+[[it:Baule del Potere]]
+[[tr:Güç Sandıgı]]

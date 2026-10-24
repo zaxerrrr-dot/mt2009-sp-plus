@@ -1,0 +1,61 @@
+{{Item/Layout
+
+|Opis = Zawiera losowo wybraną Księgę Zwierza.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Pojemniki
+|Kategoria3 =
+
+|Funkcja = * Zawiera losowy przedmiot:
+** {{ti|Odporność (ninja)}}
+** {{ti|Odporność (sura)}}
+** {{ti|Odporność (szaman)}}
+** {{ti|Odporność (wojownik)}}
+** {{ti|Odporność (likan)}}
+** {{ti|Księga Ducha}}
+** {{ti|Księga Zasięgu}}
+** {{ti|Księga Dropu Yang}}
+** {{ti|Księga Berserka}}
+** {{ti|Księga Antymagii}}
+** {{ti|Księga Wampira}}
+** {{ti|Księga Zwierciadła}}
+** {{ti|Księga Przeszkody}}
+** {{ti|Księga Przebicia}}
+** {{ti|Księga Przyspieszenia}}
+** {{ti|Księga Spostrzegawczości}}
+** {{ti|Księga Łowcy Potworów}}
+** {{ti|Księga Browarnika}}
+** {{ti|Księga Absorpcji Życia}}
+** {{ti|Księga Odnowy}}
+** {{ti|Księga Nieśmiertelności}}
+** {{ti|Księga Uzdrowienia}}
+** {{ti|Księga Lekkie jak Piórko}}
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' [[Skalista Małpa]], [[Chodząca Małpa]], [[Lord Małp]], [[Baronówna Pająków]], [[Wódz Wojenny Schronienia (lód)]], [[Wódz Wojenny Schronienia (lód, błyskawice)]], [[Rzeźnik Kalgaroth]]
+* '''Skrzynie:''' [[Skrzynia z Bonusem Transferu]], [[Skrzynia Towarzysza Orientu]], [[Skrzynia z Pawiem Eostre]], [[Skrzynia Zadziornych Małpiszonów]], [[Złoty Łup Królewski]], [[Pud. Potwor. Trio Srebro]], [[Złota Skrzynia Proroka]], [[Skrzynia Razadora]], [[Skrzynia Nemere]], [[Skrzynka Skarbu (St. B)]], [[Nagroda Przełęczy Yilad]], [[Nagroda Jaskiń Gnolli P1]], [[Skrzynka Skarbu (St. C)]], [[Nagroda Schron. Płn. W.]], [[Nagroda Świątyni Węży]]
+* '''Inne:''' [[Item-Shop]], [[Skarb Babilonu]], [[Koło Nowego Poszukiwacza Przygód]], [[Loteria Tombola]], [[Kalendarz Adwentowy]], [[Sklep Gaya]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Tak
+|Poczta = Tak
+
+|Inne = * Przedmiot związany z [[System Zwierząt Domowych|Systemem Zwierząt Domowych]].
+
+}}
+
+[[ae:صندوق كتب الرفاق]]
+[[cz:Truhla knihy zvířete]]
+[[de:Pet-Bücherkiste]]
+[[en:Pet Book Chest]]
+[[es:Cofre Manual de Mascota]]
+[[it:Cassa con Libri del Pet]]
+[[pt:Cofre do Livro do Pet]]
+[[ro:Cufăr Carte Însoțitor]]

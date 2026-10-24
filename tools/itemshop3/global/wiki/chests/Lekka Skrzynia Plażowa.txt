@@ -1,0 +1,66 @@
+{{Item/Layout
+
+|image = Lekka Skrzynia Plażowa.png
+
+|Opis = Ta skrzynia zawiera liczne przedmioty dla perfekcyjnego dnia na plaży! Co jest w środku? Przy odrobinie szczęścia otrzymasz lekki zestaw plażowy lub inną wspaniałą niespodziankę. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * Lekki Zestaw Plażowy (m lub k, 60 dni):
+:* {{ti|height=2|Lekki Strój Plażowy+ (m)}}
+:* {{ti|height=2|Lekki Strój Plażowy+ (k)}}
+:* {{ti|Lekki Kapelusz Plaż.+ (m)}}
+:* {{ti|Lekki Kapelusz Plaż.+ (k)}}
+:* {{ti|Mini Krab Wojownik (pieczęć)}}
+* Lekki Zestaw Plażowy+ (m lub k, 30 lub 15 dni):
+:* {{ti|height=2|Lekki Strój Plażowy+ (m)}}
+:* {{ti|height=2|Lekki Strój Plażowy+ (k)}}
+* Luźny Kapelusz Plażowy+ (m lub k, 30 lub 15 dni):
+:* {{ti|Lekki Kapelusz Plaż.+ (m)}}
+:* {{ti|Lekki Kapelusz Plaż.+ (k)}}
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* [[Bonus Zestawu#Piąty Zestaw Letni|Bonus Zestawu]].
+
+}}
+
+[[hu:Könnyű strand láda]]

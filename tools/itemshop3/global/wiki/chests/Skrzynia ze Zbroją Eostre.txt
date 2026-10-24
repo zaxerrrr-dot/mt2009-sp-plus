@@ -1,0 +1,51 @@
+{{Item/Layout
+|image = Skrzynia ze Zbroją Eostre.png
+
+|Opis = Bogini wiosny Eostre napełniła tę magiczną skrzynię. Jaką niespodziankę wielkanocną znajdziesz w niej? Możliwe są zbroja Ajolosa lub Astrajosa z bonusem i różnym czasem trwania, czerwona skrzyneczka losu oraz wiele innych pożytecznych przedmiotów użytkowych.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|height=2|Zbroja Ajolosa+ (m)}} (30/15/7 dni)
+* {{ti|height=2|Zbroja Ajolosa+ (k)}} (30/15/7 dni)
+* {{ti|height=2|Zbroja Astrajosa+ (m)}} (30/15/7 dni)
+* {{ti|height=2|Zbroja Astrajosa+ (k)}} (30/15/7 dni)
+* {{ti|Biała Perła}} x3
+* {{ti|Niebieska Perła}} x2
+* {{ti|Krwawa Perła}}
+* {{ti|Smoczy Płomień (B)}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Czerw. Skrzyneczka Losu}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Błogosławieństwo Życia}} x3
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Magiczny Metal}}
+* {{ti|Dwutlenek Tytanu}}
+* {{ti|Lizak Magii}} (7 dni)
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Skrzynia z niespodzianką.
+* Szansa na Zbroję Ajolosa+ i więcej.
+* Dla postaci rodzaju żeńskiego i męskiego.
+
+}}

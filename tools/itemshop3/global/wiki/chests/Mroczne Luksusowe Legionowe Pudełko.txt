@@ -1,0 +1,62 @@
+{{Item/Layout
+
+|image = Mroczne Luksusowe Legionowe Pudełko.png
+
+|Opis = Zostań mroczną dumą legionu: przy odrobinie szczęścia w tej skrzyni znajdziesz mroczny legionowy zestaw z kostiumem i zwierzakiem, które zapewnią Ci wiele potężnych bonusów. Albo otrzymasz jedną z wielu innych wspaniałych niespodzianek!
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Mroczny Legionowy Zestaw składający się z:
+** {{ti|height=2|Mroczny Legionista+|Mroczny Legionista}} (30d)
+** {{ti|Mr. Hełm Legionisty+ (m)|Mroczny Hełm Legionisty (m)}} (30d)
+** {{ti|Śnieżny Krampus (pieczęć)|Śnieżny Krampus}} (30d)
+* LUB:
+** {{ti|height=2|Mroczna Legionistka+|Mroczna Legionistka}} (30d)
+** {{ti|Mr. Hełm Legionisty+ (k)|Mroczny Hełm Legnionistki (k)}} (30d)
+** {{ti|Śnieżny Krampus (pieczęć)|Śnieżny Krampus}} (30d)
+
+* {{ti|height=2|Mroczny Legionista+|Mroczny Legionista}} (7/15d)
+* {{ti|height=2|Mroczna Legionistka+|Mroczna Legionistka}} (7/15d)
+* {{ti|Mr. Hełm Legionisty+ (k)|Mroczny Hełm Legnionistki (k)}} (7/15d)
+* {{ti|Mr. Hełm Legionisty+ (m)|Mroczny Hełm Legionisty (m)}} (7/15d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki|Kamyk}} (x200)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]], [[Oferty Błyskawiczne]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Ósmy Zestaw Bożonarodzeniowy|Bonus Zestawu]].
+
+}}

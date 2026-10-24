@@ -137,15 +137,23 @@
 					$in_line = 0;
 					// MT2009_PLUS_ITEMSHOP_V3_V4: a group's list is in parts by its subcategories, each with its heading
 					$by_parts = !$list_mode && (!$specific_category || $active_kind=='group');
+					// MT2009_PLUS_ITEMSHOP_V3_V6: "Sety Bonusowe" set by set, each with its name (the chest first, then the pieces)
+					$by_sets = $specific_category && $active_kind=='sets';
 					foreach($all_items as $key => $item)
 					{
 						$new_group = $by_parts && ($key==0 || $all_items[$key-1]['category']!=$item['category']);
-						if($new_group || $key==0)
+						$new_set = $by_sets && ($key==0 || (int)$all_items[$key-1]['set_id']!=(int)$item['set_id']);
+						if($new_group || $new_set || $key==0)
 						{
 							if($open)
 								print '</ul>';
 							if($new_group && ($key>0 || $active_kind=='group') && isset($categoriesbyid[$item['category']]))
 								print '<h3 class="clearfix">'.$categoriesbyid[$item['category']]['name'].' <span class="item_count">('.$shop->getItemShopCount($item['category'], true).')</span></h3>';
+							if($new_set && ($set_row = $shop->getCostumeSetById((int)$item['set_id'])) && count($set_row['grades']))
+							{
+								$max_grade = max(array_keys($set_row['grades']));
+								print '<h3 class="clearfix mt-set-head">'.htmlspecialchars($set_row['name']).' <span class="item_count">'.htmlspecialchars(sprintf($lang_shop['mt-set-max'], $max_grade, implode(', ', $set_row['grades'][$max_grade]))).'</span></h3>';
+							}
 							print '<ul class="item-list card clearfix">';
 							$open = true;
 							$in_line = 0;

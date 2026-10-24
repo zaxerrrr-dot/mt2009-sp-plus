@@ -1,0 +1,44 @@
+{{Item/Layout
+
+|image = Skrzynia Transferu Bonusu.png
+
+|Opis = Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Transfer Szarfy}} x1
+* {{ti|Transformuj Kostium}} x1
+* {{ti|Transfer bonusów}} x1/x2/x4
+* {{ti|Zaczaruj Kostium}} x5
+* {{ti|Fasolka Zen}} x1
+* {{ti|Magiczna Ruda Miedzi}} x1
+* {{ti|Rybie Wnętrzności}} x1
+* {{ti|Trzecia Ręka}} x1
+* {{ti|Maska Uczuć}} x1 
+* {{ti|Rękawica Złodzieja}} x1
+* {{ti|Księga Lidera}} x1
+* {{ti|Fajerwerki}} x2
+* {{ti|Mikstura Ataku +10}} x3
+* {{ti|Pierścień Doświadczenia}} x1
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 30 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu Item-Shop.
+
+}}

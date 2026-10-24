@@ -1,0 +1,47 @@
+{{Item/Layout
+
+|image = Skrzynia z Bonusem Transferu.png
+
+|Opis = Bogini wiosny Eostre napełniła tę magiczną skrzynię. Jaką niespodziankę wielkanocną znajdziesz w niej? Możliwe są transfer bonusów, kupon SM, smocza skrzynia+ (kolorowa) i dużo więcej przydatnych przedmiotów użytkowych.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Transfer Bonusów}} 5x/1x
+* {{ti|Skrzynia Ksiąg Zwierza}}
+* {{ti|Kupon SM (50)}}
+* {{ti|Smocza Skrzynia+ (kol.)}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Zasuszona Głowa}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Magiczna Ruda Miedzi}} x3
+* {{ti|Kamień Duchowy}} x2
+* {{ti|Ogon Węża +}} x2
+* {{ti|Zwój Egzorcyzmu}}
+* {{ti|Wino z Kwiatu Brzoskwini}} x5
+* {{ti|Eliksir Poszukiwacza}} x2
+* {{ti|Chińska Ognista Petarda}} x2
+* {{ti|Zielona Smocza Fasola}} x2
+* {{ti|Zielona Mikstura(D)}} x5
+* {{ti|Fioletowa Mikstura(D)}} x5
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 30 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

@@ -1,0 +1,45 @@
+{{Item/Layout
+
+|image = Skrzynia Szat z Tysiąca i Jedna Nocy.png
+
+|Opis = Odkryj czar tysiąca i jednej nocy! Sułtan czy Dżinn – czyją szatę wybierzesz? Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti2|height=2|Szata Dżinna+ (k)|px=22}}{{ti2|height=2|Szata Dżinna+ (m)|px=22}}[[Kostiumy Ramadanu 2020|Szata Dżinna]] (k/m) (15d/30d/60d)
+* {{ti2|height=2|Szata Sułtana+ (k)|px=22}}{{ti2|height=2|Szata Sułtana+ (m)|px=22}}[[Kostiumy Ramadanu 2020|Szata Sułtana]] (k/m) (15d/30d/60d)
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Biała Perła}} (x3)
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 30 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera 1 losowy przedmiot.
+* Szansa na szatę Dżinna lub Sułtana.
+
+}}

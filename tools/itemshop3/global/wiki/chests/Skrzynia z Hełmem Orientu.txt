@@ -1,0 +1,51 @@
+{{Item/Layout
+
+|image = Skrzynia z Hełmem Orientu.png
+
+|Opis = Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Czerwona Arafatka+ (m)}}
+* {{ti|Niebieska Arafatka+ (m)}}
+* {{ti|Czerwona Arafatka+ (k)}}
+* {{ti|Niebieska Arafatka+ (k)}}
+* {{ti|Zielona Smocza Fasola}} 3x
+* {{ti|Niebieska Smocza Fasola}} 2x 
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Eliksir Księżyca (D)}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Przepustka}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Błogosławieństwo Życia}} 3x 
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Magiczna Ruda Miedzi}} 5x 
+* {{ti|Agat}}
+* {{ti|Amulet Nazara}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Skrzynia z niespodzianką.
+* Szansa na Arafatkę+ i więcej.
+* Dla postaci rodzaju żeńskiego i męskiego.
+}}

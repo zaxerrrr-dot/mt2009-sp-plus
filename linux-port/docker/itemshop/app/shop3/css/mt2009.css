@@ -89,3 +89,18 @@ html, body { height: 100%; }
 .mt-premium-price { margin: 10px 0; }
 .mt-note { font-size: .85em; opacity: .8; }
 .mt-voucher-answer { clear: both; font-weight: bold; padding: 8px 0 0; }
+/* MT2009_PLUS_ITEMSHOP_V3_V6: the costume set chests - the "Szanse" tab (the big servers' "Olasılıklar"), the result
+   window ("Dziękujemy za zakup!": the chest's picture left, every roll right), the set headings of "Sety Bonusowe" */
+table.mt-chances td:last-child { width: 70px; text-align: right; white-space: nowrap; }
+table.mt-chances tr.mt-chest-rare td { color: #b8860b; }
+#itemConfirmation img.mt-chest-big { max-width: 242px; max-height: 242px; }
+.mt-chest-confirmation .item-confirmation .scrollable_container.mt-chest-reward { height: 150px; overflow-y: auto; background: #cbbe7c; padding: 5px 8px 0 5px; }
+.mt-chest-reward p.mt-chest-won-title { font-weight: bold; margin: 6px 0 2px; }
+ol.mt-chest-won { margin: 0 0 8px 22px; padding: 0; }
+ol.mt-chest-won li.mt-chest-roll { margin: 0 0 4px; padding: 2px 0; border-bottom: 1px solid rgba(0,0,0,.08); }
+ol.mt-chest-won li.mt-chest-rare { color: #b8860b; font-weight: bold; }
+ol.mt-chest-won span.mt-chest-item { display: block; line-height: 28px; }
+ol.mt-chest-won span.mt-chest-item img { width: auto; height: auto; max-width: 28px; max-height: 28px; vertical-align: middle; margin-right: 6px; }
+ol.mt-chest-won span.mt-chest-item em { font-weight: normal; color: #777; }
+h3.mt-set-head .item_count { font-size: 11px; font-weight: normal; }
+.mt-chest-confirmation #itemConfirmation #image { height: 242px; }

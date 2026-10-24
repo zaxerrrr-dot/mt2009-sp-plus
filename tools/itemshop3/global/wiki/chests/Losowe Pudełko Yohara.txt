@@ -1,0 +1,63 @@
+{{Item/Layout
+
+|image = Losowe Pudełko Yohara.png
+
+|Opis = Ten pakiet skrywa w sobie jeden z arcy-przydatnych przedmiotów - w sam raz na tułaczkę po kontynencie Yohara!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+'''Zestaw Pirata:'''<br>
+'''Dla mężczyzn:'''
+* {{ti|height=2|Pirat+ (m)}} (30 dni)
+* {{ti|Trójróg Pirata+ (m)}} (30 dni)
+'''Dla kobiet:'''
+* {{ti|height=2|Pirat+ (k)}} (30 dni)
+* {{ti|Trójróg Pirata+ (k)}} (30 dni)
+
+'''Lub jeden z następujących przedmiotów:'''
+* {{ti2|Eliksir W. SungMa(SIŁA)|px=22}}[[Eliksir: W. SungMa(SIŁA)]]
+* {{ti2|Eliksir W. SungMa (WIT)|px=22}}[[Eliksir: W. SungMa (WIT)]]
+* {{ti2|Eliksir W. SungMa (ODP)|px=22}}[[Eliksir: W. SungMa (ODP)]]
+* {{ti2|Eliksir W. SungMa (INT)|px=22}}[[Eliksir: W. SungMa (INT)]]
+* {{ti2|Buff Premium SungMa (1d)|px=22}}[[Buff Premium SungMa]] (7d/3d/1d)
+* {{ti|Ognista Runa Aury (250)}}
+* {{ti|Ognista Runa Aury (100)}}
+* {{ti|Ognista Runa Aury (50)}}
+* {{ti|Ognista Runa Aury (10)}}
+* {{ti|Pierścień Hydry}}
+* {{ti|Atak Boga Smoków}}
+* {{ti|Inteligencja Boga Smoków}}
+* {{ti|Obrona Boga Smoków}}
+* {{ti|Życie Boga Smoków}}
+* {{ti|Mikstura Zarania}} (3h)
+* {{ti|Pierścień Dośw. +200}} (3h)
+* {{ti|Pierścień Doświadczenia}} (30m)
+* {{ti|Grzaniec}} (20h)
+* {{ti|Pieczony Rak Niebieski}} (30m)
+* {{ti|Pieczona Aju}} (30m)
+* {{ti|Nugget (granatowy) (pieczęć)}} (2d)
+* {{ti|Donnie (pieczęć)}} (1d)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 12 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Duże losowe pudełko.
+* W sam raz na Yohara.
+
+}}

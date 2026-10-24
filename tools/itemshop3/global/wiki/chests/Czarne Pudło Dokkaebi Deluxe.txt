@@ -1,0 +1,53 @@
+{{Item/Layout
+
+|image = Czarne Pudło Dokkaebi Deluxe.png
+
+|Opis = Przy odrobinie szczęścia możesz zgarnąć z pudełka czarny zestaw Dokkaebi i przybrać również na zewnątrz wygląd niesamowitego burzyciela. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* {{ti2|height=2|Czarna Szata Dokkaebi+ (m)|px=22}}{{ti2|height=2|Czarna Szata Dokkaebi+ (k)|px=22}}[[Kostiumy Halloween 2021|Czarna Szata Dokkaebi+]] (k/m) (30d)
+* {{ti2|Czarne Rogi Dokkaebi+ (m)|px=22}}{{ti2|Czarne Rogi Dokkaebi+ (k)|px=22}}[[Kostiumy Halloween 2021|Czarne Rogi Dokkaebi+]] (k/m) (30d)
+* {{ti|Książka Lidera+}}
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 25 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+* Szansa na nowy halloweenowy przedmiot.
+
+}}

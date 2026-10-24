@@ -1,0 +1,62 @@
+{{Item/Layout
+
+|image = Czarna Skrzynia Nurka.png
+
+|Opis = Z tej wodoszczelnej skrzyni możesz zgarnąć mnóstwo morskich skarbów - może nawet czarny pakiet nurka?
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Czarny pakiet nurka składa się z:
+** {{ti|Czar. Maska do Nur.+ (m)|Czarna Maska do Nurkowania+ (m)}} (60d)
+** {{ti|height=2|Czar. Skaf. Nurkowy+ (m)|Czarny Skafander Nurkowy+ (m)}} (60d)
+** {{ti|Pebble (pieczęć)|Pebble}} (60d)
+*LUB:
+** {{ti|Czar. Maska do Nur.+ (k)|Czarna Maska do Nurkowania+ (k)}} (60d)
+** {{ti|height=2|Czar. Skaf. Nurkowy+ (k)|Czarny Skafander Nurkowy+ (k)}} (60d)
+** {{ti|Pebble (pieczęć)|Pebble}} (60d)
+*Poza zestawem:
+* {{ti|Czar.Maska do Nur.+(m)|Czarna Maska do Nurkowania+ (m)}} (15/30d)
+* {{ti|height=2|Czar. Skaf. Nurkowy+ (m)|Czarny Skafander Nurkowy+ (m)}} (15/30d)
+* {{ti|Czar. Maska do Nur.+(k)|Czarna Maska do Nurkowania+ (k)}} (15/30d)
+* {{ti|height=2|Czar. Skaf. Nurkowy+ (k)|Czarny Skafander Nurkowy+ (k)}} (15/30d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

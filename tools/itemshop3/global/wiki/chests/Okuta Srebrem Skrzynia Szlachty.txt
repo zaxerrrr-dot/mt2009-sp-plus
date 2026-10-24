@@ -1,0 +1,57 @@
+{{Item/Layout
+
+|image = Okuta Srebrem Skrzynia Szlachty.png
+
+|Opis = Bucha parą i tłucze, terkocze i tyka – steampunk powrócił! Ciekawe, jaka szlachetna niespodzianka z mechanicznej epoki skrywa się dla Ciebie w tej skrzyni? Przekonaj się!
+Skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+* Pakiet dla Lorda i Damy (30 dni) 
+*{{ti|Kapelusz lorda+}} (15 lub 7 dni)
+*{{ti|Kapelusz damy+}} (15 lub 7 dni)
+*{{ti|height=2|Lord steampunk+}} (15 lub 7 dni)
+*{{ti|height=2|Dama steampunk+}} (15 lub 7 dni)
+*{{ti|Księga Lidera}}
+*{{ti|Średni Kupon Wpłaty}}
+*{{ti|Różowa Smocza Fasola}}
+*{{ti|Księga Obróbki Kamienia}}
+*{{ti|Zwój Błogosławieństwa}}
+*{{ti|Zielona Smocza Fasola}}
+*{{ti|Kamyki}} (x200)
+*{{ti|Pakiet Kamieni Duszy}}
+*{{ti|Zdobna Skrzynia z Odłamkiem}}
+*{{ti|Spirala Czasu (30%)}}
+*{{ti|Licencja Najemnika}}
+*{{ti|Ekspres. Leczenie Najem.}}
+*{{ti|Wstęp do Świątyni Smoka}} (x100)
+*{{ti|Eliksir Księżyca (S)}}
+*{{ti|Eliksir Słońca (S)}}
+
+Pakiet dla lorda i damy składa się z:
+* Lord Steampunk+ lub Dama Steampunk+ (30 dni)
+* Kapelusz Lorda+ lub Kapelusz Damy+ (30 dni)
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 25 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* [[Bonus Zestawu#Drugi Zestaw Proroka|Bonus Zestawu]].
+
+}}

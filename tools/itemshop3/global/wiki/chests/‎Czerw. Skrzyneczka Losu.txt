@@ -1,0 +1,85 @@
+{{Item/Layout
+
+|Opis = Kliknij dwukrotnie, aby otworzyć. <br> Terasz masz dwie możliwości: <br> 1. Kliknij "Przyjmij przedmiot", by otrzymać widoczny przedmiot. <br> 2. Użyj "Szczęśliwego trafu, by otrzymać inny, losowy przedmiot. Możesz wykonać maks. 15 prób płacąc za nie Yang. Jeżeli nie masz wystarczająco dużo yang na koncie, nie możesz wybrać nowego przedmiotu. Otwartej skrzynki nie można zresetować ani zamknąć.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Amulet Strażników}}
+* {{ti|Anulacja Transmutacji}}
+* {{ti|Bilet Transmutacji}}
+* {{ti|Brans. z kości smoka}} (2h)
+* {{ti|Brans. z kości tygrysa}} (2h)
+* {{ti|Cor Draconis (zwyczajne)}}
+* {{ti|Dłoń Krytyka}}
+* {{ti|Eliksir Księżyca (M)}} 
+* {{ti|Eliksir Księżyca (S)}} 
+* {{ti|Eliksir Słońca (M)}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Fasolka Zen}}
+* {{ti|Kolczyk z kości smoka}} (2h)
+* {{ti|Kolczyk z kości tygrysa}} (2h)
+* {{ti|Księga Lidera}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Lizak Potęgi (3 dni)}}
+* {{ti|Lizak Potęgi (7 dni)}}
+* {{ti|Magiczna Ruda Miedzi}}
+* {{ti|Magiczny Metal}}
+* {{ti|Maska Uczuć}}
+* {{ti|Medal Smoka+}}
+* {{ti|Mobilna Skrzynka Poczt.|Mobilna Skrzynka Pocztowa}}
+* {{ti|Odżywka}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Pergamin Sfer}}
+* {{ti|Powiększony Skład}}
+* {{ti|Przepustka (Meley)}}
+* {{ti|Przepustka}}
+* {{ti|Rada Pustelnika}}
+* {{ti|px=2|Rozszerzenie Ekwipunku}}
+* {{ti|Rybie Wnętrzności}}
+* {{ti|Skrzynka Gaya}}
+* {{ti|Skrzynka na Zwierzaka}}
+* {{ti|Sok z Owoca Granatu}}
+* {{ti|Traktat Gildii}}
+* {{ti|Wzmocnienie Przedmiotu(n)}}
+* {{ti|Znak Strażnika}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Zwój Przywołania GY}}
+* {{ti|Zwój Przywołania SLW}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Skrzynia ze Zbroją Eostre]] 
+* '''Inne:''' [[Item-Shop]], [[Sklep Gaya]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Przedmiot należy do grupy [[Skrzynie]]
+* Po zakupie w [[Item-Shop]] przedmiot trafia bezpośrednio do Twojego [[Plik:Przycisk Magazyn Item-Shop.jpg|20px]] magazynu Item-Shop.
+* Po otwarciu prawym przyciskiem myszy ukaże się panel:
+<br>
+[[File:Skrzyneczka Losu.png|center]]
+<br>
+* Wybierając:<ul>
+* <b>Przyjmij przedmiot</b> - otrzymasz aktualnie wyświetlony przedmiot.
+* <b>Szczęśliwy Traf</b> - za odpowiednią opłatą {{ti|Yang}} zostanie wylosowany kolejny przedmiot</ul>
+* Opłata za pierwsze losowanie: 60.000 {{ti|Yang}}. Każdy kolejny ''Szczęśliwy Traf'' podwaja opłatę.
+* Można losować maks. 15 razy.
+* Otwartej ''Skrzyneczki'' nie da się zamknąć. Po wylogowaniu lub przerwaniu połączenia z serwerem otrzymasz ostatnio wyświetlony przedmiot.
+* Można kupić w [[Plik:W grze - Item-Shop.gif|25px]] Item-Shop za ? [[Smocze Monety|SM]] (okazjonalnie)
+
+}}
+
+[[de:Rotes Glückskistchen]]
+[[it:Cassetta Fortuna Rossa]]

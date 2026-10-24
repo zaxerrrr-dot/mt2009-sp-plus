@@ -1,0 +1,42 @@
+{{Item/Layout
+
+|image = Losowe Pudełko Sklepiku Premium.png
+
+|Opis = Losowe pudełko. Szansa na osobisty sklepik premium.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * [[Osobisty Sklepik Premium]] na 6 Godzin
+* [[Osobisty Sklepik Premium]] na 12 Godzin
+* [[Osobisty Sklepik Premium]] na 24 Godziny
+* [[Osobisty Sklepik Premium]] na 40 Godzin
+* [[Osobisty Sklepik Premium]] na 48 Godzin
+* [[Osobisty Sklepik Premium]] na 60 Godzin
+* [[Osobisty Sklepik Premium]] na 3 Dni
+* [[Osobisty Sklepik Premium]] na 4 Dni
+* [[Osobisty Sklepik Premium]] na 7 Dni
+* [[Osobisty Sklepik Premium]] na 10 Dni
+* [[Osobisty Sklepik Premium]] na 15 Dni
+* [[Osobisty Sklepik Premium]] na 28 Dni
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] 19 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Tak
+|Poczta = Nie
+
+|Inne =
+
+}}

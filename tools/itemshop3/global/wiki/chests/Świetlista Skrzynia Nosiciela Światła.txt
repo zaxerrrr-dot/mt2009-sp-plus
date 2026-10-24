@@ -1,0 +1,61 @@
+{{Item/Layout
+
+|image = Świetlista Skrzynia Nosiciela Światła.png
+
+|Opis = Z tej połyskującej skrzyni możesz zdobyć wiele legendarnych skarbów - może nawet świetlisty pakiet Nosiciela Światła?
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do twojego magazynu ItemShopu
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Świetlisty pakiet Nosiciela Światła składa się z::
+** {{ti|height=2|Św. Nosiciel Światła+|Świetlisty Nosiciel Światła+}} (30d)
+** {{ti|Świetlisty Diadem+ (m)}} (30d)
+** {{ti|Gallus (pieczęć)|Gallus}} (30d)
+* LUB:
+** {{ti|height=2|Św. Nosicielka Światła+|Świetlista Nosicielka Światła+}} (30d)
+** {{ti|Świetlisty Diadem+ (k)}} (30d)
+** {{ti|Gallus (pieczęć)|Gallus}} (30d)
+* {{ti|Świetlisty Diadem+ (k)}} (15/30d)
+* {{ti|Świetlisty Diadem+ (m)}} (15/30d)
+* {{ti|height=2|Św. Nosiciel Światła+|Świetlisty Nosiciel Światła+}} (7/15d)
+* {{ti|height=2|Św. Nosicielka Światła+|Świetlista Nosicielka Światła+}} (7/15d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Ósmy Zestaw Wielkanocny|Bonus Zestawu]].
+}}

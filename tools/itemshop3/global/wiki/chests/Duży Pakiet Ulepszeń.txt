@@ -1,0 +1,35 @@
+{{Item/Layout
+
+|image = Duży Pakiet Ulepszeń.png
+
+|Opis = Zafunduj swojemu wyposażeniu nowe potężne bonusy – ten wspaniały pakiet oszczędnościowy zawiera wszystko, czego potrzebujesz: 4x Zaczarowanie Przedmiotu+ oraz 1x Wzmocnienie Przedmiotu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Zaczarowanie Przedmiotu+}} (x4)
+* {{ti|Wzmocnienie Przedmiotu}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] 390 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Potężne bonusy.
+* Praktyczny oszczędnościowy pakiet.
+
+}}

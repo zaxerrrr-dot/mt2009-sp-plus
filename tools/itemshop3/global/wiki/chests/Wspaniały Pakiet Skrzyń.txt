@@ -1,0 +1,42 @@
+{{Item/Layout
+
+|image = Wspaniały Pakiet Skrzyń.png
+
+|Opis = Skrzynia ta zawiera – jeszcze więcej skrzyń! I dwa losowe wspaniałe skarby. Czekają na Ciebie śliczny polarny niedźwiadek, potężne Cor Draconis oraz mnóstwo innych atrakcji!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+* {{ti|Skrzynka Cor Draconis}}
+* {{ti|Skrzynka Tajemnic}}
+* {{ti|Skrzynia Północy}}
+
+'''Ponadto każda z następujących skrzyń zawiera 1 losową niespodziankę:'''
+* {{ti|Skrzynia Kamienia Księżycowego}}
+* {{ti|Skrzynia doświadczenia}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 199 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+* Duży pakiet.
+* Zawiera 3 skrzynie i 2 losowe niespodzianki.
+
+}}

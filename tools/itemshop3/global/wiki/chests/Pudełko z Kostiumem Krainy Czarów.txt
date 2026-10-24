@@ -1,0 +1,47 @@
+{{Item/Layout
+
+|image = Pudełko z Kostiumem Krainy Czarów.png
+
+|Opis = Udaj się w czarodziejską podróż! W tej magicznej skrzyni znajdziesz eleganckie kostiumy królika z Krainy Czarów oraz mnóstwo innych niespodzianek. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti2|height=2|Cz.Królik K.Czarów+ (k)|px=22}}{{ti2|height=2|Cz.Królik K.Czarów+ (m)|px=22}}[[Kostiumy Wielkanocne 2021|Cz.Królik K.Czarów]] (k/m) (60d/30d/15d) 
+* {{ti2|height=2|Cza.Królik K.Czarów+ (k)|px=22}}{{ti2|height=2|Cza.Królik K.Czarów+ (m)|px=22}}[[Kostiumy Wielkanocne 2021|Cza.Królik K.Czarów]] (k/m) (60d/30d/15d) 
+* {{ti|Lizak Magii}} (15d/7d)
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Zdobna Skrz. z Odłamkiem}}
+* {{ti|Biała Perła}} (x3)
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Losowe pudełko.
+* Zawiera 1 przedmiot.
+* Elegancki kostium królika Krainy Czarów.
+
+}}

@@ -1,0 +1,285 @@
+{{Subpage|[[Strona główna|Metin2Wiki]]|[[Kostiumy|Przegląd Kostiumów]]}}
+[[Kategoria:Informacje]]
+[[Kategoria:Kostiumy]]
+
+== Bonusy w Kostiumach+ ==
+Można wylosować od 1 do 3 bonusów w Kostiumach+ za pomocą przedmiotu [[Transformuj Kostium]]. Item [[Zaczaruj Kostium]] zastępuje wylosowane bonusy nowymi (nie zmieniając ich liczby). Poniżej są przedstawione możliwe bonusy:
+{| style="width: 100%; table-layout: fixed;"
+|-
+| style="vertical-align: top;" |
+* [[Odporność na Dzwony]]
+* [[Odporność na Wachlarze]]
+* [[Odporność na Szpony]]
+* [[Odporność na Sztylety]]
+* [[Odporność na Strzały]]
+* [[Odporność na Broń Dwuręczną]]
+* [[Odporność na Miecze]]
+* [[Wartość Ataku]]
+* [[Odporność na Błyskawice]]
+| style="vertical-align: top;" |
+* [[Odporność na Wiatr]]
+* [[Odporność na Ogień]]
+* [[% obrażeń będzie dodanych do PE]]
+* [[% obrażeń będzie dodanych do PŻ]]
+* [[Szansa na odbicie Ciosu]]
+* [[Max. PŻ]]
+* [[Max. PE]]
+* [[Szybkość Zaklęcia]]
+* [[Odporność na Magię]]
+|}
+
+==Kostiumy Świąteczne==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"|[[Kostiumy Świąteczne 2023]]
+|align="center"|[[Plik:Szlachetny Legionista+.png|link=Szlachetny Legionista+]][[Plik:Szlachetna Legionistka+.png|link=Szlachetna Legionistka+]][[Plik:Mroczny Legionista+.png|link=Mroczny Legionista+]][[Plik:Mroczna Legionistka+.png|link=Mroczna Legionistka+]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2022]]
+|align="center"|[[Plik:B. zimowy samuraj+ (m).png|link=B. zimowy samuraj+ (m)]][[Plik:Biały zimowy samuraj (k).png|link=Biały zimowy samuraj (k)]][[Plik:Cz. zimowy samuraj+ (m).png|link=Cz. zimowy samuraj+ (m)]][[Plik:Cz. zimowy samuraj+ (k).png|link=Cz. zimowy samuraj+ (k)]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2021]]
+|align="center"|[[Plik:Ciepły Kaftan Zimowy+ (k).png|link=Ciepły Kaftan Zimowy+ (k)]][[Plik:Ciepły Kaftan Zimowy+ (m).png|link=Ciepły Kaftan Zimowy+ (m)]][[Plik:Piękny Kaftan Zimowy+ (k).png|link=Piękny Kaftan Zimowy+ (k)]][[Plik:Piękny Kaftan Zimowy+ (m).png|link=Piękny Kaftan Zimowy+ (m)]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2020]]
+|align="center"|[[Plik:Ziel. Sweter Świąt.+ (k).png|link=Ziel. Sweter Świąt.+ (k)]][[Plik:Ziel. Sweter Świąt.+ (m).png|link=Ziel. Sweter Świąt.+ (m)]][[Plik:czer. Sweter Świąt.+ (k).png|link=Czer. Sweter Świąt.+ (k)]][[Plik:Czer. Sweter Świąt.+ (m).png|link=Czer. Sweter Świąt.+ (m)]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2019]]
+|align="center"|[[Plik:Zbroja Mroku Księżyca+ (k).png|link=Zbroja Mroku Księżyca+ (k)]][[Plik:Zbroja Mroku Księżyca+ (m).png|link=Zbroja Mroku Księżyca+ (m)]][[Plik:Zbroja Srebrnej Gwiazdy+ (k).png|link=Zbroja Srebrnej Gwiazdy+ (k)]][[Plik:Zbroja Srebrnej Gwiazdy+ (m).png|link=Zbroja Srebrnej Gwiazdy+ (m)]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2018]]
+|align="center"|[[Plik:Gwardia Lodowego Smoka+ (k).png|link=Gwardia Lodowego Smoka+ (k)]][[Plik:Gwardia Lodowego Smoka+ (m).png|link=Gwardia Lodowego Smoka+ (m)]][[Plik:Gwardia Ognistego Smoka+ (k).png|link=Gwardia Ognistego Smoka+ (k)]][[Plik:Gwardia Ognistego Smoka+ (m).png|link=Gwardia Ognistego Smoka+ (m)]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2017]]
+|align="center"|[[Plik:Zbroja Avalonu K (srebr.).png|link=Zbroja Avalonu K (srebr.)]][[Plik:Zbroja Avalonu M (srebr.).png|link=Zbroja Avalonu M (srebr.)]][[Plik:Zbroja Avalonu K (czerw.).png|link=Zbroja Avalonu K (czerw.)]][[Plik:Zbroja Avalonu M (czerw.).png|link=Zbroja Avalonu M (czerw.)]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2016]]
+|align="center"|[[Plik:Czerw. Galowy Strój (k).png|link=Czerw. Galowy Strój (k)]][[Plik:Czerw. Galowy Strój (m).png|link=Czerw. Galowy Strój (m)]][[Plik:Zielony Galowy Strój (k).png|link=Zielony Galowy Strój (k)]][[Plik:Zielony Galowy Strój (m).png|link=Zielony Galowy Strój (m)]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2015]]
+|align="center"|[[Plik:Czerwona suknia zimy1.png|link=Czerwona suknia zimy1]][[Plik:Czerwona szata zimy1.png|link=Czerwona szata zimy1]][[Plik:Niebieska suknia zimy1.png|link=Niebieska suknia zimy1]][[Plik:Niebieska szata zimy1.png|link=Niebieska szata zimy1]]
+|-
+|align="center"|[[Kostiumy Świąteczne 2014]]
+|align="center"|[[Plik:Sukienka Bożon. (czerw.).png|link=Sukienka Bożon. (czerw.)]][[Plik:Kostium Dziadka Mroza.png|link=Kostium Dziadka Mroza]][[Plik:Sukienka Bożon. (biała).png|link=Sukienka Bożon. (biała)]][[Plik:Kostium Bałwana.png|link=Kostium Bałwana]][[Plik:Kostium Świąteczny (czerwony) ż.png|link=Kostium Świąteczny (czerwony) ż]][[Plik:Kostium Świąteczny (czerwony) m.png|link=Kostium Świąteczny (czerwony) m]][[Plik:Kostium Świąteczny (zielony) ż.png|link=Kostium Świąteczny (zielony) ż]][[Plik:Kostium Świąteczny (zielony) m.png|link=Kostium Świąteczny (zielony) m]][[Plik:Kostium Świąteczny (czarny) ż.png|link=Kostium Świąteczny (czarny) ż]][[Plik:Kostium Świąteczny (czarny) m.png|link=Kostium Świąteczny (czarny) m]]
+|-
+|align="center"|[[Kostiumy Renifera]]
+|align="center"|[[Plik:Kostium Renifera (k).png|link=Kostium Renifera (k)]][[Plik:Kostium Renifera (m).png|link=Kostium Renifera (m)]]
+|}
+
+==Kostiumy Halloween'owe==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"|[[Kostiumy Halloween 2025]]
+!width="60%" align="center"|
+|-
+|align="center"|[[Kostiumy Halloween 2024]]
+!width="60%" align="center"|[[Plik:Sukkub Płomieni+.png|link=Sukkub Płomieni+]] [[Plik:Inkub Płomieni+.png|link=Inkub Płomieni+]] [[Plik:Sukkub Nocy+.png|link=Sukkub Nocy+]] [[Plik:Inkub Nocy+.png|link=Inkub Nocy+]]
+|-
+|align="center"|[[Kostiumy Halloween 2023]]
+!width="60%" align="center"|[[Plik:Czerwona Szamanka+.png|link=Czerwona Szamanka+]] [[Plik:Czerwony Szaman+.png|link=Czerwony Szaman+]] [[Plik:Zielona Szamanka+.png|link=Zielona Szamanka+]] [[Plik:Zielony Szaman+.png|link=Zielony Szaman+]]
+|-
+|align="center"|[[Kostiumy Halloween 2022]]
+!width="60%" align="center"|[[Plik:Krwistoczerwona Ks. Wa.+.png|link=Krwistoczerwona Ks. Wa.+]] [[Plik:Krwistoczerwony Ks. Wa.+.png|link=Krwistoczerwony Ks. Wa.+]] [[Plik:Czarny jak noc Ks. Wam.+.png|link=Czarny jak noc Ks. Wam.+]] [[Plik:Czarna jak noc Ks. Wa.+.png|link=Czarna jak noc Ks. Wa.+]]
+|-
+|align="center"|[[Kostiumy Halloween 2021]]
+!width="60%" align="center"|[[Plik:Czarna Szata Dokkaebi+ (k).png|link=Czarna Szata Dokkaebi+ (k)]][[Plik:Czarna Szata Dokkaebi+ (m).png|link=Czarna Szata Dokkaebi+ (m)]][[Plik:Niebieska Szata Dokkaebi+ (k).png|link=Niebieska Szata Dokkaebi+ (k)]][[Plik:Niebieska Szata Dokkaebi+ (m).png|link=Niebieska Szata Dokkaebi+ (m)]]
+|-
+|align="center"|[[Kostiumy Halloween 2020]]
+!width="60%" align="center"|[[Plik:Zbroja Zmarłych+ (k).png|link=Zbroja Zmarłych+ (k)]][[Plik:Zbroja Zmarłych+ (m).png|link=Zbroja Zmarłych+ (m)]][[Plik:Zbroja Zaświatu+ (k).png|link=Zbroja Zaświatu+ (k)]][[Plik:Zbroja Zaświatu+ (m).png|link=Zbroja Zaświatu+ (m)]]
+|-
+|align="center"|[[Kostiumy Halloween 2019]]
+!width="60%" align="center"|[[Plik:Jasna Szata Proroka+ (k).png|link=Jasna Szata Proroka+ (k)]][[Plik:Jasna Szata Proroka+ (m).png|link=Jasna Szata Proroka+ (m)]][[Plik:Ciemna Szata Proroka+ (k).png|link=Ciemna Szata Proroka+ (k)]][[Plik:Ciemna Szata Proroka+ (m).png|link=Ciemna Szata Proroka+ (m)]]
+|-
+|align="center"|[[Kostiumy Halloween 2018]]
+!width="60%" align="center"|[[Plik:Brązowa Wilcza Szata+ (k).png|link=Brązowa Wilcza Szata+ (k)]][[Plik:Brązowa Wilcza Szata+ (m).png|link=Brązowa Wilcza Szata+ (m)]][[Plik:Szara Wilcza Szata+ (k).png|link=Szara Wilcza Szata+ (k)]][[Plik:Szara Wilcza Szata+ (m).png|link=Szara Wilcza Szata+ (m)]]
+|- 
+|align="center"|[[Kostiumy Halloween 2017]]
+!width="60%" align="center"|[[Plik:Pancerz Horroru K (nieb.).png|link=Pancerz Horroru K (nieb.)]][[Plik:Pancerz Horroru M (nieb.).png|link=Pancerz Horroru M (nieb.)]][[Plik:Pancerz Horroru K (złoty).png|link=Pancerz Horroru K (złoty)]][[Plik:Pancerz Horroru M (złoty).png|link=Pancerz Horroru M (złoty)]]
+|-
+|align="center"|[[Kostiumy Halloween 2016]]
+!width="60%" align="center"|[[Plik:Wampirzyca (szary).png|link=Wampirzyca (szary)]][[Plik:Wampir (szary).png|link=Wampir (szary)]][[Plik:Wampirzyca (czerwony).png|link=Wampirzyca (czerwony)]][[Plik:Wampir (czerwony).png|link=Wampir (czerwony)]]
+|-
+|align="center"|[[Kostiumy Halloween 2015]]
+!width="60%" align="center"|[[Plik:Zębaty Kostium K. (miedź).png|link=Zębaty Kostium K. (miedź)]][[Plik:Zębaty Kostium (miedź).png|link=Zębaty Kostium (miedź)]][[Plik:Zębaty Kostium (stal) K.png|link=Zębaty Kostium (stal) K]][[Plik:Zębaty Kostium (stal).png|link=Zębaty Kostium (stal)]]
+|-
+|align="center"|[[Kostiumy Halloween 2014]] 
+|align="center"|[[Plik:Sukienka Czarownicy.png|link=Sukienka Czarownicy]][[Plik:Strój Czarodzieja.png|link=Strój Czarodzieja]][[Plik:Sukienka Zombie.png|link=Sukienka Zombie]][[Plik:Strój Zombie.png|link=Strój Zombie]]
+|-
+|align="center"|[[Kostiumy Halloween 2013]] 
+|align="center"|[[Plik:Dyniowa Suknia.png|link=Dyniowa Suknia]][[Plik:Dyniowy Smoking.png|link=Dyniowy Smoking]]
+|-
+|align="center"|[[Kostium Jacka Pumpkina]]
+|align="center"|[[Plik:Kostium Jacka Pumpkina.png|link=Kostium Jacka Pumpkina]]
+|}
+
+==Kostiumy Sportowe==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"|[[Kostiumy Mistrzostw Świata]]
+|align="center"|[[Plik:Koszulka MŚ ALG (k).png|link=Koszulka MŚ ALG (k)]][[Plik:Koszulka MŚ ALG (m).png|link=Koszulka MŚ ALG (m)]][[Plik:Koszulka MŚ ARG (k).png|link=Koszulka MŚ ARG (k)]][[Plik:Koszulka MŚ ARG (m).png|link=Koszulka MŚ ARG (m)]][[Plik:Koszulka MŚ AUS (k).png|link=Koszulka MŚ AUS (k)]][[Plik:Koszulka MŚ AUS (m).png|link=Koszulka MŚ AUS (m)]][[Plik:Koszulka MŚ BEL (k).png|link=Koszulka MŚ BEL (k)]][[Plik:Koszulka MŚ BEL (m).png|link=Koszulka MŚ BEL (m)]][[Plik:Koszulka MŚ BIH (k).png|link=Koszulka MŚ BIH (k)]][[Plik:Koszulka MŚ BIH (m).png|link=Koszulka MŚ BIH (m)]][[Plik:Koszulka MŚ BRA (k).png|link=Koszulka MŚ BRA (k)]][[Plik:Koszulka MŚ BRA (m).png|link=Koszulka MŚ BRA (m)]][[Plik:Koszulka MŚ CHI (k).png|link=Koszulka MŚ CHI (k)]][[Plik:Koszulka MŚ CHI (m).png|link=Koszulka MŚ CHI (m)]][[Plik:Koszulka MŚ CMR (k).png|link=Koszulka MŚ CMR (k)]][[Plik:Koszulka MŚ CMR (m).png|link=Koszulka MŚ CMR (m)]][[Plik:Koszulka MŚ COL (k).png|link=Koszulka MŚ COL (k)]][[Plik:Koszulka MŚ COL (m).png|link=Koszulka MŚ COL (m)]][[Plik:Koszulka MŚ CRC (k).png|link=Koszulka MŚ CRC (k)]][[Plik:Koszulka MŚ CRC (m).png|link=Koszulka MŚ CRC (m)]][[Plik:Koszulka MŚ CRO (k).png|link=Koszulka MŚ CRO (k)]][[Plik:Koszulka MŚ CRO (m).png|link=Koszulka MŚ CRO (m)]][[Plik:Koszulka MŚ ECU (k).png|link=Koszulka MŚ ECU (k)]][[Plik:Koszulka MŚ ECU (m).png|link=Koszulka MŚ ECU (m)]][[Plik:Koszulka MŚ ENG (k).png|link=Koszulka MŚ ENG (k)]][[Plik:Koszulka MŚ ENG (m).png|link=Koszulka MŚ ENG (m)]][[Plik:Koszulka MŚ ESP (k).png|link=Koszulka MŚ ESP (k)]][[Plik:Koszulka MŚ ESP (m).png|link=Koszulka MŚ ESP (m)]][[Plik:Koszulka MŚ FRA (k).png|link=Koszulka MŚ FRA (k)]][[Plik:Koszulka MŚ FRA (m).png|link=Koszulka MŚ FRA (m)]][[Plik:Koszulka MŚ GER (k).png|link=Koszulka MŚ GER (k)]][[Plik:Koszulka MŚ GER (m).png|link=Koszulka MŚ GER (m)]][[Plik:Koszulka MŚ GHA (k).png|link=Koszulka MŚ GHA (k)]][[Plik:Koszulka MŚ GHA (m).png|link=Koszulka MŚ GHA (m)]][[Plik:Koszulka MŚ GRE (k).png|link=Koszulka MŚ GRE (k)]][[Plik:Koszulka MŚ GRE (m).png|link=Koszulka MŚ GRE (m)]][[Plik:Koszulka MŚ HON (k).png|link=Koszulka MŚ HON (k)]][[Plik:Koszulka MŚ HON (m).png|link=Koszulka MŚ HON (m)]][[Plik:Koszulka MŚ IRN (k).png|link=Koszulka MŚ IRN (k)]][[Plik:Koszulka MŚ IRN (m).png|link=Koszulka MŚ IRN (m)]][[Plik:Koszulka MŚ ITA (k).png|link=Koszulka MŚ ITA (k)]][[Plik:Koszulka MŚ ITA (m).png|link=Koszulka MŚ ITA (m)]][[Plik:Koszulka MŚ JPN (k).png|link=Koszulka MŚ JPN (k)]][[Plik:Koszulka MŚ JPN (m).png|link=Koszulka MŚ JPN (m)]][[Plik:Koszulka MŚ KOR (k).png|link=Koszulka MŚ KOR (k)]][[Plik:Koszulka MŚ KOR (m).png|link=Koszulka MŚ KOR (m)]][[Plik:Koszulka MŚ MEX (k).png|link=Koszulka MŚ MEX (k)]][[Plik:Koszulka MŚ MEX (m).png|link=Koszulka MŚ MEX (m)]][[Plik:Koszulka MŚ NED (k).png|link=Koszulka MŚ NED (k)]][[Plik:Koszulka MŚ NED (m).png|link=Koszulka MŚ NED (m)]][[Plik:Koszulka MŚ NGA (k).png|link=Koszulka MŚ NGA (k)]][[Plik:Koszulka MŚ NGA (m).png|link=Koszulka MŚ NGA (m)]][[Plik:Koszulka MŚ POR (k).png|link=Koszulka MŚ POR (k)]][[Plik:Koszulka MŚ POR (m).png|link=Koszulka MŚ POR (m)]][[Plik:Koszulka MŚ RUS (k).png|link=Koszulka MŚ RUS (k)]][[Plik:Koszulka MŚ RUS (m).png|link=Koszulka MŚ RUS (m)]][[Plik:Koszulka MŚ SUI (k).png|link=Koszulka MŚ SUI (k)]][[Plik:Koszulka MŚ SUI (m).png|link=Koszulka MŚ SUI (m)]][[Plik:Koszulka MŚ URU (k).png|link=Koszulka MŚ URU (k)]][[Plik:Koszulka MŚ URU (m).png|link=Koszulka MŚ URU (m)]][[Plik:Koszulka MŚ USA (k).png|link=Koszulka MŚ USA (k)]][[Plik:Koszulka MŚ USA (m).png|link=Koszulka MŚ USA (m)]][[Plik:Koszulka MŚ DEN (k).png|link=Koszulka MŚ DEN (k)]][[Plik:Koszulka MŚ DEN (m).png|link=Koszulka MŚ DEN (m)]][[Plik:Koszulka MŚ HUN (k).png|link=Koszulka MŚ HUN (k)]][[Plik:Koszulka MŚ HUN (m).png|link=Koszulka MŚ HUN (m)]][[Plik:Koszulka MŚ KSA (k).png|link=Koszulka MŚ KSA (k)]][[Plik:Koszulka MŚ KSA (m).png|link=Koszulka MŚ KSA (m)]][[Plik:Koszulka MŚ POL (k).png|link=Koszulka MŚ POL (k)]][[Plik:Koszulka MŚ POL (m).png|link=Koszulka MŚ POL (m)]][[Plik:Koszulka MŚ ROU (k).png|link=Koszulka MŚ ROU (k)]][[Plik:Koszulka MŚ ROU (m).png|link=Koszulka MŚ ROU (m)]][[Plik:Koszulka MŚ SVK (k).png|link=Koszulka MŚ SVK (k)]][[Plik:Koszulka MŚ SVK (m).png|link=Koszulka MŚ SVK (m)]][[Plik:Koszulka MŚ TUR (k).png|link=Koszulka MŚ TUR (k)]][[Plik:Koszulka MŚ TUR (m).png|link=Koszulka MŚ TUR (m)]]
+|-
+|align="center"|[[Kostiumy Mistrzostw Europy]]
+|align="center"|[[Plik:Koszulka MŚ CZE (k).png|link=Koszulka MŚ CZE (k)]][[Plik:Koszulka MŚ CZE (m).png|link=Koszulka MŚ CZE (m)]][[Plik:Koszulka MŚ DEN (k).png|link=Koszulka MŚ DEN (k)]][[Plik:Koszulka MŚ DEN (m).png|link=Koszulka MŚ DEN (m)]][[Plik:Koszulka MŚ ENG (k).png|link=Koszulka MŚ ENG (k)]][[Plik:Koszulka MŚ ENG (m).png|link=Koszulka MŚ ENG (m)]][[Plik:Koszulka MŚ ESP (k).png|link=Koszulka MŚ ESP (k)]][[Plik:Koszulka MŚ ESP (m).png|link=Koszulka MŚ ESP (m)]][[Plik:Koszulka MŚ FRA (k).png|link=Koszulka MŚ FRA (k)]][[Plik:Koszulka MŚ FRA (m).png|link=Koszulka MŚ FRA (m)]][[Plik:Koszulka MŚ GER (k).png|link=Koszulka MŚ GER (k)]][[Plik:Koszulka MŚ GER (m).png|link=Koszulka MŚ GER (m)]][[Plik:Koszulka MŚ GRE (k).png|link=Koszulka MŚ GRE (k)]][[Plik:Koszulka MŚ GRE (m).png|link=Koszulka MŚ GRE (m)]][[Plik:Koszulka MŚ HUN (k).png|link=Koszulka MŚ HUN (k)]][[Plik:Koszulka MŚ HUN (m).png|link=Koszulka MŚ HUN (m)]][[Plik:Koszulka MŚ ITA (k).png|link=Koszulka MŚ ITA (k)]][[Plik:Koszulka MŚ ITA (m).png|link=Koszulka MŚ ITA (m)]][[Plik:Koszulka MŚ KSA (k).png|link=Koszulka MŚ KSA (k)]][[Plik:Koszulka MŚ KSA (m).png|link=Koszulka MŚ KSA (m)]][[Plik:Koszulka MŚ NED (k).png|link=Koszulka MŚ NED (k)]][[Plik:Koszulka MŚ NED (m).png|link=Koszulka MŚ NED (m)]][[Plik:Koszulka MŚ POL (k).png|link=Koszulka MŚ POL (k)]][[Plik:Koszulka MŚ POL (m).png|link=Koszulka MŚ POL (m)]][[Plik:Koszulka MŚ POR (k).png|link=Koszulka MŚ POR (k)]][[Plik:Koszulka MŚ POR (m).png|link=Koszulka MŚ POR (m)]][[Plik:Koszulka MŚ ROU (k).png|link=Koszulka MŚ ROU (k)]][[Plik:Koszulka MŚ ROU (m).png|link=Koszulka MŚ ROU (m)]][[Plik:Koszulka MŚ RUS (k).png|link=Koszulka MŚ RUS (k)]][[Plik:Koszulka MŚ RUS (m).png|link=Koszulka MŚ RUS (m)]][[Plik:Koszulka MŚ TUR (k).png|link=Koszulka MŚ TUR (k)]][[Plik:Koszulka MŚ TUR (m).png|link=Koszulka MŚ TUR (m)]]
+|-
+|align="center"|[[Kostiumy Bokserskie]]
+|align="center"| [[Plik:Kostium Bokserski BRA (k).png|link=Kostium Bokserski BRA (k)]][[Plik:Kostium Bokserski BRA (m).png|link=Kostium Bokserski BRA (m)]][[Plik:Kostium Bokserski FR (k).png|link=Kostium Bokserski FR (k)]][[Plik:Kostium Bokserski FR (m).png|link=Kostium Bokserski FR (m)]][[Plik:Kostium Bokserski ESP (k).png|link=Kostium Bokserski ESP (k)]][[Plik:Kostium Bokserski ESP (m).png|link=Kostium Bokserski ESP (m)]][[Plik:Kostium Bokserski GER (k).png|link=Kostium Bokserski GER (k)]][[Plik:Kostium Bokserski GER (m).png|link=Kostium Bokserski GER (m)]][[Plik:Kostium Bokserski Olimpia (k).png|link=Kostium Bokserski Olimpia (k)]][[Plik:Kostium Bokserski Olimpia (m).png|link=Kostium Bokserski Olimpia (m)]][[Plik:Kostium Bokserski PL (k).png|link=Kostium Bokserski PL (k)]][[Plik:Kostium Bokserski PL (m).png|link=Kostium Bokserski PL (m)]][[Plik:Kostium Bokserski RO (k).png|link=Kostium Bokserski RO (k)]][[Plik:Kostium Bokserski RO (m).png|link=Kostium Bokserski RO (m)]][[Plik:Kostium Bokserski TUR (k).png|link=Kostium Bokserski TUR (k)]][[Plik:Kostium Bokserski TUR (m).png|link=Kostium Bokserski TUR (m)]][[Plik:Kostium Bokserski ITA (k).png|link=Kostium Bokserski ITA (k)]][[Plik:Kostium Bokserski ITA (m).png|link=Kostium Bokserski ITA (m)]]
+|-
+|align="center"|[[Kostiumy Klubowe]]
+|align="center"|[[Plik:Kostium Klubowy Borussia Chunjo (k).png|link=Kostium Klubowy Borussia Chunjo (k)]][[Plik:Kostium Klubowy Borussia Chunjo (m).png|link=Kostium Klubowy Borussia Chunjo (m)]][[Plik:Kostium Klubowy FC Bakra (k).png|link=Kostium Klubowy FC Bakra (k)]][[Plik:Kostium Klubowy FC Bakra (m).png|link=Kostium Klubowy FC Bakra (m)]][[Plik:Kostium Klubowy FC Bavaria Hwang (k).png|link=Kostium Klubowy FC Bavaria Hwang (k)]][[Plik:Kostium Klubowy FC Bavaria Hwang (m).png|link=Kostium Klubowy FC Bavaria Hwang (m)]][[Plik:Kostium Klubowy FC Daeyami (k).png|link=Kostium Klubowy FC Daeyami (k)]][[Plik:Kostium Klubowy FC Daeyami (m).png|link=Kostium Klubowy FC Daeyami (m)]][[Plik:Kostium Klubowy Galawaryong (k).png|link=Kostium Klubowy Galawaryong (k)]][[Plik:Kostium Klubowy Galawaryong (m).png|link=Kostium Klubowy Galawaryong (m)]][[Plik:Kostium Klubowy Real Sohan (k).png|link=Kostium Klubowy Real Sohan (k)]][[Plik:Kostium Klubowy Real Sohan (m).png|link=Kostium Klubowy Real Sohan (m)]][[Plik:Kostium Klubowy SL Jungsun Dong (k).png|link=Kostium Klubowy SL Jungsun Dong (k)]][[Plik:Kostium Klubowy SL Jungsun Dong (m).png|link=Kostium Klubowy SL Jungsun Dong (m)]][[Plik:Kostium Klubowy Shinsoo United (k).png|link=Kostium Klubowy Shinsoo United (k)]][[Plik:Kostium Klubowy Shinsoo United (m).png|link=Kostium Klubowy Shinsoo United (m)]]
+|-
+|align="center"|[[Kostiumy Piłkarskie]]
+|align="center"|[[Plik:Kostium Piłkarski BRA (k).png|link=Kostium Piłkarski BRA (k)]][[Plik:Kostium Piłkarski BRA (m).png|link=Kostium Piłkarski BRA (m)]][[Plik:Kostium Piłkarski FR (k).png|link=Kostium Piłkarski FR (k)]][[Plik:Kostium Piłkarski FR (m).png|link=Kostium Piłkarski FR (m)]][[Plik:Kostium Piłkarski ESP (k).png|link=Kostium Piłkarski ESP (k)]][[Plik:Kostium Piłkarski ESP (m).png|link=Kostium Piłkarski ESP (m)]][[Plik:Kostium Piłkarski GER (k).png|link=Kostium Piłkarski GER (k)]][[Plik:Kostium Piłkarski GER (m).png|link=Kostium Piłkarski GER (m)]][[Plik:Kostium Piłkarski Olimpia (k).png|link=Kostium Piłkarski Olimpia (k)]][[Plik:Kostium Piłkarski Olimpia (m).png|link=Kostium Piłkarski Olimpia (m)]][[Plik:Kostium Piłkarski PL (k).png|link=Kostium Piłkarski PL (k)]][[Plik:Kostium Piłkarski PL (m).png|link=Kostium Piłkarski PL (m)]][[Plik:Kostium Piłkarski RO (k).png|link=Kostium Piłkarski RO (k)]][[Plik:Kostium Piłkarski RO (m).png|link=Kostium Piłkarski RO (m)]][[Plik:Kostium Piłkarski TUR (k).png|link=Kostium Piłkarski TUR (k)]][[Plik:Kostium Piłkarski TUR (m).png|link=Kostium Piłkarski TUR (m)]][[Plik:Kostium Piłkarski ITA (k).png|link=Kostium Piłkarski ITA (k)]][[Plik:Kostium Piłkarski ITA (m).png|link=Kostium Piłkarski ITA (m)]]
+|-
+|align="center"|[[Kostiumy Szermierskie]]
+|align="center"|[[Plik:Kostium Szermierski BRA (k).png|link=Kostium Szermierski BRA (k)]][[Plik:Kostium Szermierski BRA (m).png|link=Kostium Szermierski BRA (m)]][[Plik:Kostium Szermierski FR (k).png|link=Kostium Szermierski FR (k)]][[Plik:Kostium Szermierski FR (m).png|link=Kostium Szermierski FR (m)]][[Plik:Kostium Szermierski ESP (k).png|link=Kostium Szermierski ESP (k)]][[Plik:Kostium Szermierski ESP (m).png|link=Kostium Szermierski ESP (m)]][[Plik:Kostium Szermierski GER (k).png|link=Kostium Szermierski GER (k)]][[Plik:Kostium Szermierski GER (m).png|link=Kostium Szermierski GER (m)]][[Plik:Kostium Szermierski Olimpia (k).png|link=Kostium Szermierski Olimpia (k)]][[Plik:Kostium Szermierski Olimpia (m).png|link=Kostium Szermierski Olimpia (m)]][[Plik:Kostium Szermierski PL (k).png|link=Kostium Szermierski PL (k)]][[Plik:Kostium Szermierski PL (m).png|link=Kostium Szermierski PL (m)]][[Plik:Kostium Szermierski RO (k).png|link=Kostium Szermierski RO (k)]][[Plik:Kostium Szermierski RO (m).png|link=Kostium Szermierski RO (m)]][[Plik:Kostium Szermierski TUR (k).png|link=Kostium Szermierski TUR (k)]][[Plik:Kostium Szermierski TUR (m).png|link=Kostium Szermierski TUR (m)]][[Plik:Kostium Szermierski ITA (k).png|link=Kostium Szermierski ITA (k)]][[Plik:Kostium Szermierski ITA (m).png|link=Kostium Szermierski ITA (m)]]
+|-
+|}
+
+==Kostiumy Wielkanocne==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"|[[Kostiumy Wielkanocne 2026]]
+!width="60%" align="center"|[[Plik:Maj. Nosiciel Światła+.png|link=Maj. Nosiciel Światła+]][[Plik:Maj. Nosicielka Światła+.png|link=Maj. Nosicielka Światła+]][[Plik:Św. Nosiciel Światła+.png|link=Św. Nosiciel Światła+]][[Plik:Św. Nosicielka Światła+.png|link=Św. Nosicielka Światła+]]
+|-
+|align="center"|[[Kostiumy Wielkanocne 2023]]
+!width="60%" align="center"|[[Plik:Szara Wzorowa Uczennica+.png|link=Szara Wzorowa Uczennica+]][[Plik:Szary Wzorowy Uczeń+.png|link=Szary Wzorowy Uczeń+]][[Plik:Nieb. Wzorowa Uczennica+.png|link=Nieb. Wzorowa Uczennica+]][[Plik:Niebieski Wzorowy Uczeń+.png|link=Niebieski Wzorowy Uczeń+]]
+|-
+|align="center"|[[Kostiumy Wielkanocne 2022]]
+!width="60%" align="center"|[[Plik:Biały Mundur Morski+ (k).png|link=Biały Mundur Morski+ (k)]][[Plik:Biały Mundur Morski+ (m).png|link=Biały Mundur Morski+ (m)]][[Plik:Czerwony Mundur Morski+ (k).png|link=Czerwony Mundur Morski+ (k)]][[Plik:Czerwony Mundur Morski+ (m).png|link=Czerwony Mundur Morski+ (m)]]
+|-
+|align="center"|[[Kostiumy Wielkanocne 2021]]
+!width="60%" align="center"|[[Plik:Cz.Królik K.Czarów+ (k).png|link=Cz.Królik K.Czarów+ (k)]][[Plik:Cz.Królik K.Czarów+ (m).png|link=Cz.Królik K.Czarów+ (m)]][[Plik:Cza.Królik K.Czarów+ (k).png|link=Cza.Królik K.Czarów+ (k)]][[Plik:Cza.Królik K.Czarów+ (m).png|link=Cza.Królik K.Czarów+ (m)]]
+|- 
+|align="center"|[[Kostiumy Wielkanocne 2020]]
+!width="60%" align="center"|[[Plik:Pancerz Czar. Szp.+ (k).png|link=Pancerz Czar. Szp.+ (k)]][[Plik:Pancerz Czar. Szp.+ (m).png|link=Pancerz Czar. Szp.+ (m)]][[Plik:Pancerz Sreb. Szp.+ (k).png|link=Pancerz Sreb. Szp.+ (k)]][[Plik:Pancerz Sreb. Szp.+ (m).png|link=Pancerz Sreb. Szp.+ (m)]]
+|- 
+|align="center"|[[Kostiumy Wielkanocne 2019]]
+!width="60%" align="center"|[[Plik:Zbroja Ajolosa+ (k).png|link=Zbroja Ajolosa+ (k)]][[Plik:Zbroja Ajolosa+ (m).png|link=Zbroja Ajolosa+ (m)]][[Plik:Zbroja Astrajosa+ (k).png|link=Zbroja Astrajosa+ (k)]][[Plik:Zbroja Astrajosa+ (m).png|link=Zbroja Astrajosa+ (m)]]
+|- 
+|align="center"|[[Kostiumy Wielkanocne 2018]]
+!width="60%" align="center"|[[Plik:Sukienka Sungura (nieb.).png|link=Sukienka Sungura (nieb.)]][[Plik:Szata Sungura (nieb.).png|link=Szata Sungura (nieb.)]][[Plik:Sukienka Sungura (szara).png|link=Sukienka Sungura (szara)]][[Plik:Szata Sungura (morski).png|link=Szata Sungura (morski)]]
+|- 
+|align="center"|[[Kostiumy Wielkanocne 2017]]
+!width="60%" align="center"|  [[Plik:Zbroja Samuraja (nieb.) K.png|link=Zbroja Samuraja (nieb.) K]][[Plik:Zbroja Samuraja (nieb.) M.png|link=Zbroja Samuraja (nieb.) M]][[Plik:Zbroja Samuraja (czerw.) K.png|link=Zbroja Samuraja (czerw.) K]][[Plik:Zbroja Samuraja (czerw.) M.png|link=Zbroja Samuraja (czerw.) M]]
+|- 
+|align="center"|[[Kostiumy Wielkanocne 2016]]
+!width="60%" align="center"|[[Plik:Kostium Zajączka (granatowy).png|link=Kostium Zajączka (granatowy)]][[Plik:Kostium Zająca (biały).png|link=Kostium Zająca (biały)]][[Plik:Kostium Zajączka (fuksja).png|link=Kostium Zajączka (fuksja)]][[Plik:Kostium Zająca (różowy).png|link=Kostium Zająca (różowy)]]
+|-
+|align="center"|[[Kostiumy Wielkanocne 2015]]
+|align="center"|[[Plik:Wielkanocna Sukienka (niebieska).png|link=Wielkanocna Sukienka (niebieska)]][[Plik:Kostium Królika (szary).png|link=Kostium Królika (szary)]][[Plik:Wielkanocna Sukienka (kolorowa).png|link=Wielkanocna Sukienka (kolorowa)]][[Plik:Kostium Królika (brązowy).png|link=Kostium Królika (brązowy)]]
+|-
+|align="center"|[[Kostiumy Wielkanocne 2013]]
+|align="center"|[[Plik:Kostium Zajączka (brąz.).png|link=Kostium Zajączka (brąz.)]][[Plik:Kostium Zająca (brąz.).png|link=Kostium Zająca (brąz.)]][[Plik:Kostium Zajączka (czar.).png|link=Kostium Zajączka (czar.)]][[Plik:Kostium Zająca (czar.).png|link=Kostium Zająca (czar.)]][[Plik:Kostium Zajączka (ziel.).png|link=Kostium Zajączka (ziel.)]][[Plik:Kostium Zająca (ziel.).png|link=Kostium Zająca (ziel.)]]
+|}
+
+==Kostiumy Ramadanu==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"| [[Kostiumy Ramadanu 2022]]
+|align="center"| [[Plik:Niebieska Wojowniczka Pustynnego Księżyca+ (k).png]][[Plik:Niebieski Wojownik Pustynnego Księżyca+ (m).png]][[Plik:Czerwona Wojowniczka Pustynnego Księżyca+ (k).png]][[Plik:Czerwony Wojownik Pustynnego Księżyca+ (m).png]]
+|-
+|align="center"| [[Kostiumy Ramadanu 2020]]
+|align="center"| [[Plik:Szata Dżinna (k).png|link=Szata Dżinna (k)]][[Plik:Szata Dżinna (m).png|link=Szata Dżinna (m)]][[Plik:Szata Sułtana (k).png|link=Szata Sułtana (k)]][[Plik:Szata Sułtana (m).png|link=Szata Sułtana (m)]]
+|-
+|align="center"| [[Kostiumy Ramadanu 2019]]
+|align="center"| [[Plik:Księżniczka Orientu+ (brązowy).png|link=Księżniczka Orientu+ (brązowy)]][[Plik:Książę Orientu+ (brązowy).png|link=Książę Orientu+ (brązowy)]][[Plik:Księżniczka Orientu+ (czarny).png|link=Księżniczka Orientu+ (czarny)]][[Plik:Książę Orientu+ (czarny).png|link=Książę Orientu+ (czarny)]]
+|}
+
+==Kostiumy Imprezowe==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"|[[Kostiumy Imprezowe]]
+|align="center"|[[Plik:Kostium Pokojówki.png|link=Kostium Pokojówki]][[Plik:Kostium Muszkietera.png|link=Kostium Muszkietera]][[Plik:Sukienka Koktajlowa.png|link=Sukienka Koktajlowa]][[Plik:Strój Dżentelmena.png|link=Strój Dżentelmena]][[Plik:Sukienka Salsa.png|link=Sukienka Salsa]][[Plik:Strój Salsa.png|link=Strój Salsa]][[Plik:Anioł Uriela (biały).png|link=Anioł Uriela (biały)]][[Plik:Kostium Faraona (turkus).png|link=Kostium Faraona (turkus)]][[Plik:Anioł Uriela (czerwony).png|link=Anioł Uriela (czerwony)]][[Plik:Kostium Faraona (czerw.).png|link=Kostium Faraona (czerw.)]]
+|-
+|}
+
+==Kostiumy Letnie==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"| [[Kostiumy Pirata]]
+|align="center"| [[Plik:Pirat (k).png|link=Pirat (k)]][[Plik:Pirat (m).png|link=Pirat (m)]][[Plik:Pirat+ (k).png|link=Pirat+ (k)]][[Plik:Pirat+ (m).png|link=Pirat+ (m)]][[Plik:Korsarz (k).png|link=Korsarz (k)]][[Plik:Korsarz (m).png|link=Korsarz (m)]][[Plik:Korsarz+ (k).png|link=Korsarz+ (k)]][[Plik:Korsarz+ (m).png|link=Korsarz+ (m)]]
+|-
+|align="center"| [[Zbroje Azraela]]
+|align="center"| [[Plik:Zbroja Azraela (k).png|link=Zbroja Azraela (k)]][[Plik:Zbroja Azraela (m).png|link=Zbroja Azraela (m)]][[Plik:Czerwona Zbroja Azraela+ (k).png|link=Czerwona Zbroja Azraela+ (k)]][[Plik:Czerwona Zbroja Azraela+ (m).png|link=Czerwona Zbroja Azraela+ (m)]][[Plik:Biała Zbroja Azraela+ (k).png|link=Biała Zbroja Azraela+ (k)]][[Plik:Biała Zbroja Azraela+ (m).png|link=Biała Zbroja Azraela+ (m)]]
+|-
+|align="center"| [[Kostiumy Strażackie]]
+|align="center"| [[Plik:Mundur Strażaka+ (czar.) (k).png|link=Mundur Strażaka+ (czar.) (k)]][[Plik:Mundur Strażaka+ (czar.) (m).png|link=Mundur Strażaka+ (czar.) (m)]][[Plik:Mundur Strażaka+ (żółty) (k).png|link=Mundur Strażaka+ (żółty) (k)]][[Plik:Mundur Strażaka+ (żółty) (m).png|link=Mundur Strażaka+ (żółty) (m)]]
+|-
+|align="center"| [[Mundury Marynarskie]]
+|align="center"| [[Plik:N. Mundur Marynarski (k).png|link=N. Mundur Marynarski (k)]][[Plik:N. Mundur Marynarski (m).png|link=N. Mundur Marynarski (m)]][[Plik:N. Mundur Marynarski+ (k).png|link=N. Mundur Marynarski+ (k)]][[Plik:N. Mundur Marynarski+ (m).png|link=N. Mundur Marynarski+ (m)]][[Plik:B. Mundur Marynarski+ (k).png|link=B. Mundur Marynarski+ (k)]][[Plik:B. Mundur Marynarski+ (m).png|link=B. Mundur Marynarski+ (m)]]
+|-
+|align="center"| [[Stroje Plażowe]]
+|align="center"| [[Plik:Lekki Strój Plażowy+ (k).png|link=Lekki Strój Plażowy+ (k)]][[Plik:Lekki Strój Plażowy+ (m).png|link=Lekki Strój Plażowy+ (m)]][[Plik:Luźny Strój Plażowy+ (k).png|link=Luźny Strój Plażowy+ (k)]][[Plik:Luźny Strój Plażowy+ (m).png|link=Luźny Strój Plażowy+ (m)]]
+|-
+|align="center"| [[Kostiumy Ratownika Plażowego]]
+|align="center"| [[Plik:C. Ratowniczka Plażowa+.png|link=C. Ratowniczka Plażowa+]][[Plik:C. Ratownik Plażowy+.png|link=C. Ratownik Plażowy+]][[Plik:B. Ratowniczka Plażowa+.png|link=B. Ratowniczka Plażowa+]][[Plik:B. Ratownik Plażowy+.png|link=B. Ratownik Plażowy+]]
+
+|}
+
+==Kostiumy Inne==
+{| width=100% {{Prettytable}} 
+|-
+!{{Hl3}}|Nazwa
+!{{Hl3}}|Wygląd
+|-
+|align="center"| [[Szaty Faraona]]
+|align="center"| [[Plik:Sz. Szata Faraona+ (k).png|link=Sz. Szata Faraona+ (k)]][[Plik:Sz. Szata Faraona+ (m).png|link=Sz. Szata Faraona+ (m)]][[Plik:Cz. Szata Faraona+ (k).png|link=Cz. Szata Faraona+ (k)]][[Plik:Cz. Szata Faraona+ (m).png|link=Cz. Szata Faraona+ (m)]]
+|-
+|align="center"|[[Szaty Kobry]]
+|align="center"|[[Plik:Szata Kobry (k).png|link=Szata Kobry (k)]][[Plik:Szata Kobry (m).png|link=Szata Kobry (m)]]
+|-
+|align="center"|[[Steampunkowe Kostiumy]]
+|align="center"| [[Plik:Steamp. Strój (czerw.).png|link=Steamp. Strój (czerw.)]][[Plik:Steamp. Uniform (czerw.).png|link=Steamp. Uniform (czerw.)]][[Plik:Steamp. Strój (czarny).png|link=Steamp. Strój (czarny)]][[Plik:Steamp. Uniform (czarny).png|link=Steamp. Uniform (czarny)]]
+|-
+|align="center"|[[Kostiumy Pustynne]]
+|align="center"|[[Plik:Pustynna Bojowniczka.png|link=Pustynna Bojowniczka]][[Plik:Pustynny Bojownik.png|link=Pustynny Bojownik]][[Plik:Pustynna Bojowniczka+ (czar.).png|link=Pustynna Bojowniczka+ (czar.)]][[Plik:Pustynny Bojownik+ (czar.).png|link=Pustynny Bojownik+ (czar.)]][[Plik:Pustynna Księżniczka+ (nieb.).png|link=Pustynna Księżniczka+ (nieb.)]][[Plik:Pustynny Książę+ (nieb.).png|link=Pustynny Książę+ (nieb.)]][[Plik:Pustynna Księżniczka+ (czerw.).png|link=Pustynna Księżniczka+ (czerw.)]][[Plik:Pustynny Książę+(czerw.).png|link=Pustynny Książę+(czerw.)]][[Plik:Pustynna Księżniczka+ (brąz.).png|link=Pustynna Księżniczka+ (brąz.)]][[Plik:Pustynny Książę+ (brąz.).png|link=Pustynny Książę+ (brąz.)]][[Plik:Pustynna Księżniczka+ (biała).png|link=Pustynna Księżniczka+ (biała)]][[Plik:Pustynny Książę+ (biały).png|link=Pustynny Książę+ (biały)]]
+|-
+|align="center"| [[Azjatycka Moda]]
+|align="center"| [[Plik:Sukienka Qipao (czerw.).png|link=Sukienka Qipao (czerw.)]][[Plik:Toga Kobry (m).png|link=Toga Kobry (m)]][[Plik:Sukienka Qipao (biała).png|link=Sukienka Qipao (biała)]][[Plik:Toga Feniksa (m).png|link=Toga Feniksa (m)]]
+|-
+|align="center"| [[Zbroje Oyoroi]]
+|align="center"| [[Plik:Złoty Oyoroi (k).png|link=Złoty Oyoroi (k)]][[Plik:Złoty Oyoroi (m).png|link=Złoty Oyoroi (m)]][[Plik:Srebrny Oyoroi (k).png|link=Srebrny Oyoroi (k)]][[Plik:Srebrny Oyoroi (m).png|link=Srebrny Oyoroi (m)]]
+|-
+|align="center"|[[Kostiumy Księżycowe]]
+|align="center"|[[Plik:Księżycowa Wojowniczka.png|link=Księżycowa Wojowniczka]][[Plik:Księżycowy Wojownik.png|link=Księżycowy Wojownik]]
+|-
+|}
+
+
+=Zobacz także:=
+* [[System Kostiumów]]
+* [[Fryzury]]
+
+[[ae:الأزياء]]
+[[cz:Kostýmový systém]]
+[[de:Kostüme]]
+[[en:Costumes]]
+[[es:Disfraces]]
+[[fr:Costumes]]
+[[gr:Κουστούμια]]
+[[hu:Öltözék rendszer]]
+[[it:Costumi]]
+[[nl:Kostuums]]
+[[pt:Disfarces]]
+[[ro:Costume]]
+[[tr:Kostümler]]

@@ -1,0 +1,58 @@
+{{Item/Layout
+
+|image = Skrzynia Szczęścia Sułtana.png
+
+|Opis = Z tego pudełka możesz otrzymać wspaniałe skarby z tysiąca i jednej nocy! Zgarnij przy odrobinie szczęścia luksusowy zestaw sułtana z wierzchowcem albo jedną z wielu innych niespodzianek.
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Luksusowy Zestaw Sułtana składający się z:
+** {{ti|height=2|Szata Sułtana+ (m)}} (30d)
+** {{ti|Turban Sułtana+ (m)}} (30d)
+** {{ti|Kamienny Sfinks (pieczęć)|Biały Sfinks}} (15d)
+*LUB:
+** {{ti|height=2|Szata Sułtana+ (k)}} (30d)
+** {{ti|Tiara Sułtana+ (k)}} (30d)
+** {{ti|Kamienny Sfinks (pieczęć)|Biały Sfinks}} (15d)
+* {{ti|height=2|Szata Sułtana+ (m)}} (7/15d)
+* {{ti|height=2|Szata Sułtana+ (k)}} (7/15d)
+* {{ti|Turban Sułtana+ (m)}} (7/15d)
+* {{ti|Tiara Sułtana+ (k)}} (7/15d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x200)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

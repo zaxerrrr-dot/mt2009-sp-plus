@@ -1,0 +1,61 @@
+{{Item/Layout
+
+|image = Niebieska Skrzynia Byka.png
+
+|Opis = Z tej wspaniałej skrzyni możesz otrzymać wiele cudownych skarbów! Zgarnij przy odrobinie szczęścia niebieski pakiet byka z towarzyszem lub jedną z wielu innych niespodzianek.
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość =
+* Niebieski pakiet byka
+* {{ti|Niebieska Montera+ (m)}} (15/30d)
+* {{ti|Niebieska Montera+ (k)}} (15/30d)
+* {{ti|height=2|Niebieski Toreador+}} (15/30d)
+* {{ti|height=2|Niebieska Toreadorka+}} (15/30d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Niebieski pakiet byka zawiera:
+** {{ti|Niebieska Montera+ (k)}} (60d)
+** {{ti|height=2|Niebieska Toreadorka+}} (60d)
+** {{ti|Brązowy Byk (pieczęć)|Brązowy Byk}} (30d)
+*LUB:
+** {{ti|Niebieska Montera+ (m)}} (60d)
+** {{ti|height=2|Niebieski Toreador+}} (60d)
+** {{ti|Brązowy Byk (pieczęć)|Brązowy Byk}} (30d)
+
+}}

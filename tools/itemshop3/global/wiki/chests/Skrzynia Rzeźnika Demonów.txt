@@ -1,0 +1,49 @@
+{{Item/Layout
+
+|Opis = 
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|height=2|Zbroja Azraela (m)}} (15/30/365 dni) 
+* {{ti|height=2|Zbroja Azraela+ (m)}}(15/30 dni)
+* {{ti|height=2|Zbroja Azraela (k)}} (15/30/365 dni) 
+* {{ti|height=2|Zbroja Azraela+ (k)}}(15/30 dni)
+* {{ti|Hełm Azraela (m)}} (15/30/365 dni) 
+* {{ti|Hełm Azraela+ (m)}}(15/30 dni)
+* {{ti|Hełm Azraela (k)}} (15/30/365 dni) 
+* {{ti|Hełm Azraela+ (k)}}(15/30 dni)
+* {{ti|Błogosławieństwo Życia}} x2
+* {{ti|Księga Obróbki Kamienia}} x2
+* {{ti|Zielona Smocza Fasola}} x2
+* {{ti|Cor Draconis+ (zwyczajne)}} x3
+* {{ti|Cor Draconis (surowe)}} x3
+* {{ti|Medal Smoka}} x10
+* {{ti|Przepustka}} x3
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Mikstura Pośpiechu}} x2
+* {{ti|Odłamek Energii}} x15
+* {{ti|Wino z Kwiatu Brzoskwini}} x3
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]] (tylko podczas oferty promocyjnej).
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* '''Można trafić kostium  na 365 dni ale bez bonusów!'''
+
+}}

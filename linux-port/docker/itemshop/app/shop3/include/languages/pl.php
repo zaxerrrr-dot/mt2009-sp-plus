@@ -367,4 +367,16 @@ $lang_shop = array_merge($lang_shop, [
 	"mt-group-all" => "Wszystkie",	// MT2009_PLUS_ITEMSHOP_V3_V5: the subcategory panel's first row (the whole group)
 ]);
 
+// MT2009_PLUS_ITEMSHOP_V3_V6: the costume set chests (rolled at the purchase, pages/java/buy_chest.php) and "Sety Bonusowe".
+$lang_shop = array_merge($lang_shop, [
+	"mt-chances" => "Szanse",
+	"mt-chance" => "Szansa",
+	"mt-chest-short" => "Skrzynia z losową zawartością: kostium, fryzura lub cały pakiet zestawu z bonusem albo inny przydatny przedmiot.",
+	"mt-chest-fits" => "pasujący do postaci",
+	"mt-chest-won" => "Wylosowane przedmioty (%d):",
+	"mt-chest-failed" => "Zakup się nie udał - nic nie zostało pobrane. Spróbuj jeszcze raz.",
+	"mt-set-max" => "pełny bonus (%d części): %s",
+	"mt-buy-token" => "To okno jest już nieaktualne - otwórz przedmiot jeszcze raz i kup ponownie.",
+]);
+
 ?>

@@ -1,0 +1,36 @@
+{{Item/Layout
+
+|image = Srebrne Pudełko.png
+
+|Opis = 4 magiczne środki pomocnicze, które wspierają cię w levelowaniu, zapełniają twoją kieszeń i twój magazyn!
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Pojemniki
+|Kategoria3 =
+
+|Zawartość = * {{ti|Medal Szczęścia}}
+* {{ti|Pierścień Doświadczenia}}
+* {{ti|Rękawica Złodzieja}}
+* {{ti|Trzecia Ręka}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 59 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawartość ''Srebrnego Pudełka'' jest aktywna przez 3 dni.
+
+}}

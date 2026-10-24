@@ -1,0 +1,37 @@
+{{Item/Layout
+
+|image = Losowe Pudełko Auto Łowów.png
+
+|Opis = Podczas automatycznych łowów Twoja postać nie tylko atakuje potwory, lecz również bez Twojej pomocy korzysta z umiejętności i mikstur! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * [[Auto Łowy]] na 7 dni
+* [[Auto Łowy]] na 14 dni
+* [[Auto Łowy]] na 30 dni
+* [[Auto Łowy]] na 60 dni
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Oferty Błyskawiczne]] za 49 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Losowe pudełko.
+* Usiądź wygodnie i rozkoszuj się widokiem!
+* Otrzymasz jeden z następujących przedmiotów: Auto Łowy (7 / 14 / 30 / 60 dni).
+
+}}

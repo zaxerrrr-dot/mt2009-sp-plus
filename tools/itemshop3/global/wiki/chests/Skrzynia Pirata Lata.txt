@@ -1,0 +1,42 @@
+{{Item/Layout
+
+|image = Skrzynia Pirata Lata.png
+
+|Opis = Zakładając ten letni zestaw kostiumu pirata udowodnisz, że posiadasz modny gust i że nie jesteś szczurem lądowym.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = '''Dla mężczyzn:'''
+* {{ti|Trójróg Pirata (m)}} (7 dni)
+* {{ti|height=2|Pirat (m)}} (7 dni)
+* {{ti|Mini Krab Wojownik (pieczęć)}} (7 dni)
+'''Dla kobiet:'''
+* {{ti|Trójróg Pirata (k)}} (7 dni)
+* {{ti|height=2|Pirat (k)}} (7 dni)
+* {{ti|Mini Krab Wojownik (pieczęć)}} (7 dni)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 49 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zestaw kostiumu z [[Bonus Zestawu#Trzeci Zestaw Letni|Bonusem Zestawu]].
+* Otrzymujesz automatycznie odpowiedni kostium pasujący do rodzaju płci postaci.
+* Czas użytkowania rozpoczyna się wraz z zakupem przedmiotu.
+
+}}

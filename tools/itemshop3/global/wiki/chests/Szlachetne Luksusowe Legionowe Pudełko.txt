@@ -1,0 +1,65 @@
+{{Item/Layout
+
+|image = Szlachetne Luksusowe Legionowe Pudełko.png
+
+|Opis = Zostań szlachetną dumą legionu: przy odrobinie szczęścia w tej skrzyni znajdziesz szlachetny legionowy zestaw z kostiumem i zwierzakiem, które zapewnią Ci wiele potężnych bonusów. Albo otrzymasz jedną z wielu innych wspaniałych niespodzianek!
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Zestaw składaja się z:
+** {{ti|height=2|Szlachetny Legionista+|Szlachetny Legionista}} (60d)
+** {{ti|Sz. Hełm Legionisty+ (m)|Szlachetny Hełm Legnionisty (m)}} (60d)
+** {{ti|Węglowy Krampus (pieczęć)|Węglowy Krampus}} (60d)
+* LUB:
+** {{ti|height=2|Szlachetna Legionistka+| Szlachetna Legionistka }} (60d)
+** {{ti|Sz. Hełm Legionisty+ (k)|Szlachetny Hełm Legnionistki (k)}} (60d)
+** {{ti|Węglowy Krampus (pieczęć)|Węglowy Krampus}} (60d)
+
+* {{ti|height=2|Szlachetny Legionista+|Szlachetny Legionista}} (30d)
+* {{ti|height=2|Szlachetna Legionistka+| Szlachetna Legionistka }} (30d)
+* {{ti|Sz. Hełm Legionisty+ (k)|Szlachetny Hełm Legnionistki (k)}} (30d)
+* {{ti|Sz. Hełm Legionisty+ (m)|Szlachetny Hełm Legnionisty (m)}} (30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki|Kamyk}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem}}
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Sz.C3.B3sty_Zestaw_Letni|Bonus Zestawu]].
+
+}}

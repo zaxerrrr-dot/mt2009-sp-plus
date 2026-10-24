@@ -1,0 +1,45 @@
+{{Item/Layout
+
+|image = Świąteczny Pakiet.png
+
+|Opis = Otul się w czarujący świąteczny strój, wskocz na grzbiet odświętnego renifera i wyrusz w zimową dal.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = '''Dla kobiety:'''
+* {{ti|height=2|Świąt. Suknia+ (czarna)}}
+* {{ti|Elficki Kapelusz+}}
+* {{ti|Świadectwo Renifera (ż)}}
+
+'''Dla mężczyzny:'''
+* {{ti|height=2|Świąt. Kostium+ (czarny)}}
+* {{ti|Świąt. Czapa+ (czarna)}}
+* {{ti|Świadectwo Renifera (m)}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Świąteczne Koło]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Pakiet z zestawem świątecznym i świadectwem renifera.
+* Dla postaci rodzaju żeńskiego i męskiego.
+* Kostium i hełm obdarzą cię min. jednym losowym bonusem.
+* Świadectwo można wymienić u stajennego na renifera.
+* Ograniczenie czasowe.
+
+}}

@@ -1,0 +1,39 @@
+{{Item/Layout
+
+|image = Pakiet Noworoczny.png
+
+|Opis = Zgarnij teraz wszystko, czego potrzebujesz, by z werwą wystartować w nowym roku! Pakiet ten zawiera wszystko, czego potrzebujesz: zdobywaj więcej łupów, Yang i doświadczenia, powiększaj swój ekwipunek oraz wypróbuj Auto Łowy.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Trzecia Ręka}} (30 dni)
+* {{ti|Pierścień Doświadczenia}} (30 dni)
+* {{ti|Rękawica Złodzieja}} (30 dni)
+* {{ti|Medal Szczęścia}} (30 dni)
+* {{ti|Auto Łowy}} (30 dni)
+* {{ti|Powiększony Skład}} (x2) (30 dni)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 300[[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Duży pakiet.
+* Wszystko na nowy rok.
+
+}}

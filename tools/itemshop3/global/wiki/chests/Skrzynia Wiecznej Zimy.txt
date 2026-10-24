@@ -1,0 +1,54 @@
+{{Item/Layout
+
+|Opis = Skrzynia ta jest wyciosana z litego lodu. Gdy unosisz jej wieko, z wnętrza wydobywa się lodowaty mróz.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Biała Perła}}
+* {{ti|Buty Wiatru+}}
+* {{ti|Dłoń Krytyka}}
+* {{ti|Dłoń Przebicia}}
+* {{ti|Eliksir Księżyca (D)}}
+* {{ti|Eliksir Słońca (D)}}
+* {{ti|Kamień Duchowy}}
+* {{ti|Krwawa Perła}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Niebieska Perła}}
+* {{ti|Piasek Kwarcowy}}
+* {{ti|Lodowy Feniks (pieczęć)}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Życie Boga Smoków}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Skrzynia Enigma]], [[Skrzynia Kamienia Księżycowego]]
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}
+
+[[ae:صندوق الشتاء الأبدي]]
+[[cz:Truhla věčné zimy]]
+[[de:Truhe des ewigen Winters]]
+[[en:Eternal Winter Chest]]
+[[fr:Coffre d'hiver éternel]]
+[[hu:Örök tél ládája]]
+[[nl:Truhe des ewigen Winters]]
+[[tr:Sonsuz Kış Sandığı]]

@@ -1,0 +1,45 @@
+{{Item/Layout
+
+|Opis = Upadek Kamieni Metin sparaliżował całą gospodarkę oraz skaził urodzajne gleby, równocześnie rozgorzała wojna, która przerwała wszelkie stosunki handlowe między królestwami. Wkrótce zapanował głód i rozpacz na kontynencie.
+Sprytni poszukiwacze skarbów używają magicznych środków, aby zdobywać więcej kosztownych przedmiotów i w ten sposób szybciej napełniać swoje kieszenie i skarbce.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Pojemniki
+|Kategoria3 =
+
+|Zawartość = * {{ti|Medal Szczęścia}}
+* {{ti|Pierścień Doświadczenia}} 
+* {{ti|Powiększony Skład}}
+* {{ti|Rękawica Złodzieja}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 366 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Czas trwania bonusów: 30dni (bez względu na to czy postać jest zalogowana).
+
+}}
+
+[[de:Premium-Box]]
+[[en:Premium Box]]
+[[es:Caja Premium]]
+[[gr:Πακέτο πολυτελείας]]
+[[hu:Prémium doboz]]
+[[it:Scatola Premium]]
+[[nl:Premium-Box]]
+[[ro:Cutia Premium]]
+[[tr:Premium Kutusu]]

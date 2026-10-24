@@ -1,0 +1,64 @@
+{{Item/Layout
+
+|image = Wielka Ciepła Zimowa Skrzynia.png
+
+|Opis = Skrzynia ta zawiera wszystko, czego potrzebujesz na przejmująco zimne dni świąteczne! Przy odrobinie szczęścia znajdziesz w niej ciepły zestaw Przebiśniegu, luksusowe ubranie zimowe oraz inną wspaniałą świąteczną niespodziankę.Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+ '''Pakiet (kostium + pet):'''
+* {{ti2|Ciepła Czapa Zimowa+ (k)|px=22}}{{ti2|Ciepła Czapa Zimowa+ (m)|px=22}} [[Fryzury Świąteczne 2021|Ciepła Czapa Zimowa +]] (k/m)(60d)  
+* {{ti2|height=2|Ciepły Kaftan Zimowy+ (k)|px=22}}{{ti2|height=2|Ciepły Kaftan Zimowy+ (m)|px=22}} [[Kostiumy Świąteczne 2021|Ciepły Kaftan Zimowy+]] (k/m)(60d) 
+* {{ti|Przebiśnieg (pieczęć)}} (30d)
+
+'''lub:'''
+* {{ti2|Ciepła Czapa Zimowa+ (k)|px=22}}{{ti2|Ciepła Czapa Zimowa+ (m)|px=22}} [[Fryzury Świąteczne 2021|Ciepła Czapa Zimowa +]] (k/m)(15d)
+* {{ti2|height=2|Ciepły Kaftan Zimowy+ (k)|px=22}}{{ti2|height=2|Ciepły Kaftan Zimowy+ (m)|px=22}} [[Kostiumy Świąteczne 2021|Ciepły Kaftan Zimowy+]] (k/m)(15d)
+* {{ti2|Piękna Czapa Zimowa+ (k)|px=22}}{{ti2|Piękna Czapa Zimowa+ (m)|px=22}} [[Fryzury Świąteczne 2021|Piękna Czapa Zimowa +]] (k/m)(30d)
+* {{ti2|height=2|Piękny Kaftan Zimowy+ (k)|px=22}}{{ti2|height=2|Piękny Kaftan Zimowy+ (m)|px=22}} [[Kostiumy Świąteczne 2021|Piękny Kaftan Zimowy+]] (k/m)(30d)
+* {{ti|Księga Lidera}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Lśniąca Sk. z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Szansa na [[Bonus Zestawu|Ciepły Zestaw Przebiśniegu]].
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+
+}}

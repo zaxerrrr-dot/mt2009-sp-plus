@@ -1,0 +1,69 @@
+{{Item/Layout
+
+|image = Niebieskie Pudełko Marynarskie Deluxe.png
+
+|Opis = Wypłyń na szerokie morze: przy odrobinie szczęścia znajdziesz w tym wspaniałym pudełku marynarskim niebieski zestaw oficera marynarki z kostiumem i zwierzakiem, które odarzą cię potężnymi bonusami. A możesz otrzymasz jedną z wielu wspaniałych niespodzianek!
+Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+'''Niebieski Zestaw Oficera Marynarki:'''<br>
+'''Dla mężczyzn:'''
+* {{ti|height=2|N. Mundur Marynarski+ (m)}} (30 dni)
+* {{ti|N. Czapka Marynarska+ (m)}} (30 dni)
+* {{ti|Potęż. Lod. Wielor. Zab. (pieczęć)}} (30 dni)
+'''Dla kobiet:'''
+* {{ti|height=2|N. Mundur Marynarski+ (k)}} (30 dni)
+* {{ti|N. Czapka Marynarska+ (k)}} (30 dni) 
+* {{ti|Potęż. Lod. Wielor. Zab. (pieczęć)}} (30 dni) 
+
+'''Lub jeden z następujących przedmiotów:'''
+* {{ti|Książka Lidera+}}
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} x30
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} x2
+* {{ti|Spirala Czasu (10%)}} x3
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Zaczarowanie Przedmiotu}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Losowe pudełko.
+* Połączenie 3 przedmiotów daje ci bonus zestawu. Z medalem bohatera otrzymasz dodatkowe bonusy zestawu.
+'''Niebieski zestaw oficera marynarki składa się z:'''
+* Potężny Lodowy Wieloryb Zabójca (30 dni)
+* Niebieski Mundur Marynarski+ (m lub k, 30 dni)
+* Niebieska Czapka Marynarska+ (m lub k, 30 dni)
+
+'''Maksymalny bonus zestawu:'''
+* Siła w walce z potworami +5%
+* Siła w walce z wszystkimi żywiołami +5%
+* Szansa na drop przedmiotu +10%
+
+}}

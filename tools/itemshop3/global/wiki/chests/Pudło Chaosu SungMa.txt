@@ -1,0 +1,52 @@
+{{Item/Layout
+
+|image = Pudło Chaosu SungMa.png
+
+|Opis = Pudło to zawiera chaotyczną energię Yohara. Po jego otwarciu, zostanie ona uwolniona i objawi się w postaci losowego potężnego przedmiotu, ale nikt nie wie dokładnie, co to będzie za przedmiot. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* {{ti|Złote Zioło}} (x5)
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti2|Eliksir W. SungMa(SIŁA)|px=22}}[[Eliksir: W. SungMa(SIŁA)]]
+* {{ti2|Eliksir W. SungMa (WIT)|px=22}}[[Eliksir: W. SungMa (WIT)]]
+* {{ti2|Eliksir W. SungMa (ODP)|px=22}}[[Eliksir: W. SungMa (ODP)]]
+* {{ti2|Eliksir W. SungMa (INT)|px=22}}[[Eliksir: W. SungMa (INT)]]
+* {{ti|Ognista Runa Aury (50)}}
+* {{ti|Ognista Runa Aury (100)}}
+* {{ti|Ognista Runa Aury (250)}}
+* {{ti|Ognista Runa Aury (500)}}
+* {{ti|Agat}}
+* {{ti|Prosty Kamień Chaosu}}
+* {{ti|Ładny Kamień Chaosu}}
+* {{ti|Wspaniały Kamień Chaosu}}
+* {{ti|Mikstura Zarania}} (3h)
+* {{ti|Pierścień Hydry}}
+* {{ti|Cor Draconis (surowe)}} (x2)
+* {{ti|Różowa Smocza Fasola}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za - 24 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+
+}}

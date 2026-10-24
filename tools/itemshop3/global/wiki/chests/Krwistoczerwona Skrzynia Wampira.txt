@@ -1,0 +1,63 @@
+{{Item/Layout
+
+|image = Krwistoczerwona Skrzynia Wampira.png
+
+|Opis = Znajdź w tej skrzyni niesamowite skarby na mroczne noce: a może nawet krwistoczerwony zestaw wampira? Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Krwistoczerwony Zestaw Wampira zawierający:
+** {{ti|Sz. Fryzura Wampira+ (m)|Szara Fryzura Wampira+ (m)}} (30d)
+** {{ti|height=2|Krwistoczerwony Ks. Wa.+|Krwistoczerwony Książę Wampirów+}} (30d)
+** {{ti|Lodowata Trumna Grozy (pieczęć)|Lodowata Trumna Grozy}} (30d)
+* LUB:
+** {{ti|Sz. Fryzura Wampira+ (k)|Szara Fryzura Wampira+ (k)}} (30d)
+** {{ti|height=2|Krwistoczerwona Ks. Wa.+|Krwistoczerwona Księżna Wampirów+}} (30d)
+** {{ti|Lodowata Trumna Grozy (pieczęć)|Lodowata Trumna Grozy}} (30d)
+
+* {{ti|Sz. Fryzura Wampira+ (m)|Szara Fryzura Wampira+ (m)}} (7/15d)
+* {{ti|Sz. Fryzura Wampira+ (k)|Szara Fryzura Wampira+ (k)}} (7/15d)
+* {{ti|height=2|Krwistoczerwony Ks. Wa.+|Krwistoczerwony Książę Wampirów+}} (7/15d)
+* {{ti|height=2|Krwistoczerwona Ks. Wa.+|Krwistoczerwona Księżna Wampirów+}} (7/15d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x200)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* Szansa na nowy halloweenowy przedmiot.
+* [[Bonus Zestawu]]
+
+}}

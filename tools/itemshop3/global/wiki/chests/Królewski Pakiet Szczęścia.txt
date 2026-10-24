@@ -1,0 +1,61 @@
+{{Item/Layout
+
+|image = Królewski Pakiet Szczęścia.png
+
+|Opis = Zgarnij teraz królewski pakiet lub jedną z innych wspaniałych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+'''Królewski Pakiet:'''<br>
+''Dla mężczyzn:''
+* {{ti|Księży. Latarnia (pom.) (pieczęć)}} (30d)
+* {{ti|Rumak Nocturnus (pieczęć)}} (15d)
+* {{ti|height=2|Pustynny Książę+(czerw.)}} (30d)
+* {{ti|Niebieski Turban+}} (30d)
+''Dla kobiet:''
+* {{ti|Księży. Latarnia (pom.) (pieczęć)}} (30d)
+* {{ti|Rumak Nocturnus (pieczęć)}} (15d)
+* {{ti|height=2|Pustynna Księżniczka+ (czerw.)}} (30d)
+* {{ti|Brązowa Chusta+}} (30d)
+
+'''LUB jeden z następujących przedmiotów:'''
+* {{ti|Książka Lidera+}}
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Eliksir Księżyca (Ś)}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Zaczarowanie Przedmiotu}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Królewski Pakiet, Książka Lidera+ i dużo więcej!
+* Losowa skrzynia.
+
+}}

@@ -1,0 +1,231 @@
+{
+ "chests": [
+  {
+   "id": 1,
+   "wiki_file": "Skrzynia Wikinga Nocy.png",
+   "model": false
+  },
+  {
+   "id": 2,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 3,
+   "wiki_file": "Świetlista Skrzynia Nosiciela Światła.png",
+   "model": false
+  },
+  {
+   "id": 4,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 5,
+   "wiki_file": "Księżycowa Skrzynia Wukong.png",
+   "model": false
+  },
+  {
+   "id": 6,
+   "wiki_file": "Mroczne Luksusowe Legionowe Pudełko.png",
+   "model": false
+  },
+  {
+   "id": 7,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 8,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 9,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 10,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 11,
+   "wiki_file": "Biała skrzynia zimowego samuraja.png",
+   "model": false
+  },
+  {
+   "id": 12,
+   "wiki_file": "Wielka Ciepła Zimowa Skrzynia.png",
+   "model": false
+  },
+  {
+   "id": 13,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 14,
+   "wiki_file": "Czarna Skrzynia Zająca.png",
+   "model": false
+  },
+  {
+   "id": 15,
+   "wiki_file": "Czerwona Skrzynia Byka.png",
+   "model": false
+  },
+  {
+   "id": 16,
+   "wiki_file": "Szara Skrzynia Wzorowego Ucznia.png",
+   "model": false
+  },
+  {
+   "id": 17,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 18,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 19,
+   "wiki_file": "Skrzynia Czarnych Szponów.png",
+   "model": false
+  },
+  {
+   "id": 20,
+   "wiki_file": "Skrzynia z Hełmem Eostre.png",
+   "model": false
+  },
+  {
+   "id": 21,
+   "wiki_file": "Skrzynia Strażnika Czerwonego Piasku.png",
+   "model": false
+  },
+  {
+   "id": 22,
+   "wiki_file": "Duże Pudło Faraona Deluxe.png",
+   "model": false
+  },
+  {
+   "id": 23,
+   "wiki_file": "Skrzynia Szczodrości.png",
+   "model": false
+  },
+  {
+   "id": 24,
+   "wiki_file": "Okuta Złotem Skrzynia Szlachty.png",
+   "model": false
+  },
+  {
+   "id": 25,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 26,
+   "wiki_file": "Skrzynia Szczęścia Dżinna.png",
+   "model": false
+  },
+  {
+   "id": 27,
+   "wiki_file": "Skrzynia z Hełmem Orientu.png",
+   "model": false
+  },
+  {
+   "id": 28,
+   "wiki_file": "Czarna Skrzynia Nurka.png",
+   "model": false
+  },
+  {
+   "id": 29,
+   "wiki_file": "Luksusowe Pudełko Księcia Atlantydy.png",
+   "model": false
+  },
+  {
+   "id": 30,
+   "wiki_file": "Biała Skrzynia Ratownika Plażowego.png",
+   "model": false
+  },
+  {
+   "id": 31,
+   "wiki_file": "Lekka Skrzynia Plażowa.png",
+   "model": false
+  },
+  {
+   "id": 32,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 33,
+   "wiki_file": "Główna Skrzynia Lata.png",
+   "model": false
+  },
+  {
+   "id": 34,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 35,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 36,
+   "wiki_file": "Kruczoczarna Skrzynia Piekieł.png",
+   "model": false
+  },
+  {
+   "id": 37,
+   "wiki_file": "Czerwona Skrzynia Szamana.png",
+   "model": false
+  },
+  {
+   "id": 38,
+   "wiki_file": "Czarna jak Noc Wampirza Skrzynia.png",
+   "model": false
+  },
+  {
+   "id": 39,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 40,
+   "wiki_file": "Skrzynia Zaświatu.png",
+   "model": false
+  },
+  {
+   "id": 41,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 42,
+   "wiki_file": "Jasna Skrzynia Proroka.png",
+   "model": false
+  },
+  {
+   "id": 43,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 44,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  },
+  {
+   "id": 45,
+   "wiki_file": "Majestatyczna Skrzynia Nosiciela Światła.png",
+   "model": true
+  }
+ ],
+ "items": [],
+ "item_names": {}
+}

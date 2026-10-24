@@ -1,0 +1,65 @@
+{{Item/Layout
+
+|image = Królewski Luksusowy Pakiet Szczęścia.png
+
+|Opis = Zgarnij teraz wielki królewski pakiet lub jedną z innych wspaniałych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+'''Wielki Królewski Pakiet:'''<br>
+''Dla mężczyzn:''
+* {{ti|Księży. Latarnia (nieb.) (pieczęć)}} (60d)
+* {{ti|Spektralny Rumak (pieczęć)}} (30d)
+* {{ti|height=2|Pustynny Książę+ (nieb.)}} (60d)
+* {{ti|Czerwony Turban+}} (60d)
+''Dla kobiet:''
+* {{ti|Księży. Latarnia (nieb.) (pieczęć)}} (60d)
+* {{ti|Spektralny Rumak (pieczęć)}} (30d)
+* {{ti|height=2|Pustynna Księżniczka+ (nieb.)}} (60d)
+* {{ti|Zielona Chusta+}} (30d)
+
+'''LUB jeden z następujących przedmiotów:'''
+* {{ti|Magiczny Kamień}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Książka Lidera+}}
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Eliksir Księżyca (Ś)}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Zaczarowanie Przedmiotu+}}
+* {{ti|Zaczarowanie Przedmiotu}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Wielki Królewski Pakiet, Magiczny Kamień i dużo więcej!
+* Losowa skrzynia.
+
+}}

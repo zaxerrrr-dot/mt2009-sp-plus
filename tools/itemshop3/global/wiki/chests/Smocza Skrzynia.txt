@@ -1,0 +1,37 @@
+{{Item/Layout
+
+|Opis = Lazurowa skrzynia zawiera jedenaście zwyczajnych Cor Draconis (surowe).
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Alchemia Smoczych Kamieni
+
+|Zawartość = * {{ti|Cor Draconis (surowe)}} (x11)
+
+|ZawieraWszystko = tak
+
+|Misje = * Lv. 120 - [[Opętane zwierzęta]]
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Skrzynia Mistrza III]], [[Skrzynia Arcymistrza]], [[Złoty Łup Królewski]], [[Skarb Babilonu]], [[Pud. Potwor. Trio Srebro]], [[Pud. Potwor. Trio Złoto]]
+* '''Inne:''' [[Loteria Tombola]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Otwieramy prawym przyciskiem myszy.
+
+}}
+
+[[cz:Dračí truhla]]
+[[de:Drachentruhe]]
+[[en:Dragon Chest]]
+[[fr:Coffre Dragon]]
+[[ro:Cufăr Dragon]]

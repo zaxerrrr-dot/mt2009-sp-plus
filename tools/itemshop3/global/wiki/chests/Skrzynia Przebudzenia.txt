@@ -1,0 +1,59 @@
+{{Item/Layout
+
+|image = Skrzynia Przebudzenia.png
+
+|Opis = Cóż takiego tajemniczego ukrywa się w skrzyni? Rzuć okiem do środka, by się tego dowiedzieć!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* {{ti|Biała Perła}}
+* {{ti|Cienka Skóra}} (x2)
+* {{ti|Czerwona Mikstura(D)}} (x50)
+* {{ti|Drobny Kam. Przebudzenia}}
+* {{ti|Kamień Duchowy}}
+* {{ti|Lekarstwo Iluzji}}
+* {{ti|Ładny Kam. Przebudzenia}}
+* {{ti|Mały Kamień Przebudzenia}} (x2)
+* {{ti|Miedziane Płyty}}
+* {{ti|Mocny Sznur}} (x2)
+* {{ti|Peleryna Maskująca}}
+* {{ti|Peleryna Męstwa}} (x20)
+* {{ti|Płótno}} (x2)
+* {{ti|Przepustka}}
+* {{ti|Silny Kam. Przebudzenia}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Zacny Kam. Przebudzenia}}
+* {{ti|Złote Płyty}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Żelazna Szkatułka}}
+*'''{{ti|Yang}}:'''
+** 400.000 
+*'''[[Doświadczenie|EXP]]:'''
+** 800.000
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' [[Beran-Setaou (PB)]], [[Jotun Thrym (PB)]], [[Razador (PB)]], [[Władca En-Tai (PB)]]
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 179 [[Smocze Monety|SM]], [[Loteria Tombola]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Tak
+|Poczta = Nie
+
+|Inne = * Losowa Skrzynia.
+* Szansa na materiał do uszlachetniania lub kamienie przebudzenia.
+* Peleryny Męstwa z tej skrzyni są zdatne do handlu.
+
+}}
+
+[[it:Baule del Risveglio]]

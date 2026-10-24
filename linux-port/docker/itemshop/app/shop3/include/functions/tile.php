@@ -4,6 +4,8 @@
 	// short description, and at the bottom the price button (green; grey when it cannot be paid) that turns
 	// into "Kup", for stackable items with the quantity choice on the left. Used by the home page carousel and
 	// the item lists (pages/shop/home.php, items.php).
+	// MT2009_PLUS_ITEMSHOP_V3_V6: also the second shop's own lines (itemshop3.v3_lines - the big servers' list, the set
+	// pieces, the set chests with their own picture and 1/3/5/10 at once).
 	// MT2009_PLUS_ITEMSHOP_V3_V3: the lines are the in-game shop's (itemshop3.shop onto common.itemshop_items): its
 	// name with the window's suffix, its quantities (1, 5, 10 within the stack size), its level floor, the VIP
 	// effects (refused while the premium account runs), promotions and flash offers; the picture at its own size in
@@ -23,9 +25,19 @@
 
 	// The item picture: img/item/<vnum>.png (tools/itemshop3/gen_shop_icons.py), else the web catalogue's icon, else
 	// the shop's empty picture - never a broken image.
-	function mt2009_item_image($item)
+	// MT2009_PLUS_ITEMSHOP_V3_V6: a line with its own picture (a set chest: images/chests/<id>.png, 242 px as the big
+	// servers' detail picture; the cards take the 98 px one, <id>_98.png).
+	function mt2009_item_image($item, $big = false)
 	{
 		global $shop_url, $server_item, $icons, $shop;
+		if(!empty($item['image']))
+		{
+			$small = preg_replace('/\.png$/', '_98.png', $item['image']);
+			$dir = dirname(__DIR__, 2).'/';
+			if(!$big && is_file($dir.$small))
+				return $shop_url.$small;
+			return is_file($dir.$item['image']) ? $shop_url.$item['image'] : $shop_url.'images/this/noicon.png';
+		}
 		if($item['type']==3)
 			return $shop_url.'images/icons/bonuses/'.$server_item['buff'][$item['vnum']][0].'.png';
 		$dir = dirname(__DIR__, 2).'/images/';
@@ -128,6 +140,8 @@
 			$lines[] = sprintf($lang_shop['mt-min-level'], (int)$item['min_level']);
 		if(count($shop->getCostumeSets($item['vnum'])))
 			$lines[] = $lang_shop['mt-set-part'];
+		if(!empty($item['chest']))
+			$lines = [$lang_shop['mt-chest-short']];	// MT2009_PLUS_ITEMSHOP_V3_V6
 		$out = [];
 		$left = 110;
 		foreach($lines as $line)
@@ -159,6 +173,9 @@
 	// The quantities the in-game window offers (ItemShopQuestion.SetButtons): 1, 5 with a stack of 5, 10 with 10.
 	function mt2009_quantities($item)
 	{
+		// MT2009_PLUS_ITEMSHOP_V3_V6: a set chest - 1, 3, 5 or 10 at once (each one rolled on its own)
+		if(!empty($item['chest']))
+			return [1, 3, 5, 10];
 		if(empty($item['stackable']) || $item['type']!=1)
 			return [1];
 		$max = isset($item['max_stack']) ? (int)$item['max_stack'] : 1;

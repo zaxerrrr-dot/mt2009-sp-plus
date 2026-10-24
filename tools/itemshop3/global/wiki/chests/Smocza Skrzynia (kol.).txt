@@ -1,0 +1,37 @@
+{{Item/Layout
+
+|Opis = Lazurowa skrzynia zawiera zwyczajne Cor Draconis (surowe) w każdym kolorze oraz Zielona Smocza Fasola. 
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Alchemia
+
+|Zawartość = * {{ti|Zielona Smocza Fasola}}
+* {{ti|Cor Saphirum (zwyczajne)}}
+* {{ti|Cor Diamas (zwyczajne)}}
+* {{ti|Cor Granatum (zwyczajne)}}
+* {{ti|Cor Atrum (zwyczajne)}}
+* {{ti|Cor Jadeit (zwyczajne)}}
+* {{ti|Cor Rubinum (zwyczajne)}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 89 [[Smocze Monety|SM]].
+
+|ZawieraWszystko = tak
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

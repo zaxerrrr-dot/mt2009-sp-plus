@@ -1,0 +1,41 @@
+{{Item/Layout
+
+|image = Zestaw Potępienia.png
+
+|Opis = Z zestawem składającym się z kolczastej zbroi i hełmu, pakietowi pełnemu kluczy potępienia oraz szansy na przywołanie własnych wrogów będziesz znakomicie przygotowany, by wkroczyć w Zaświaty! Połączenie zbroi potępienia, hełmu potępienia oraz broni potępienia obdarzy cię w Zaświatach bonusem zestawu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* {{ti2|height=2|Zbroja Zaświatu (m)|px=22}}{{ti2|height=2|Zbroja Zaświatu (k)|px=22}} [[Kostiumy Halloween 2020|Zbroja Zaświatu]] (m/k) (1 godz.)
+* {{ti2|Fryzura Zaświatu+ (m)|px=22}}{{ti2|Fryzura Zaświatu+ (k)|px=22}} [[Fryzury Halloween 2020|Fryzura Zaświatu]] (m/k) (1 godz.)
+* {{ti|Klucz Potępienia+}} (10x)
+* {{ti|Zwój Metina Zbawienia}} (5x)
+
+|ZawieraWszystko = tak 
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 599 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Zestaw - kostium z [[Bonus Zestawu|bonusem zestawu]].
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+
+}}

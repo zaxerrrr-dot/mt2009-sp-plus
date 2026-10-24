@@ -1,0 +1,63 @@
+{{Item/Layout
+
+|image = Skrzynia Szczęścia Dżinna.png
+
+|Opis = Z tego pudełka możesz otrzymać wspaniałe skarby z tysiąca i jednej nocy! Zgarnij przy odrobinie szczęścia luksusowy zestaw dżinna z wierzchowcem albo jedną z wielu innych niespodzianek.
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Luksusowy Zestaw Dżinna składający się z:
+** {{ti|height=2|Szata Dżinna+ (m)}} (60d)
+** {{ti|Turban Dżinna+ (m)}} (60d)
+** {{ti|Biały Sfinks (pieczęć)|Biały Sfinks}} (30d)
+*LUB:
+** {{ti|height=2|Szata Dżinna+ (k)}} (60d)
+** {{ti|Tiara Dżinna+ (k)}} (60d)
+** {{ti|Biały Sfinks (pieczęć)|Biały Sfinks}} (30d)
+* {{ti|height=2|Szata Dżinna+ (m)}} (15/30d)
+* {{ti|height=2|Szata Dżinna+ (k)}} (15/30d)
+* {{ti|Turban Dżinna+ (m)}} (15/30d)
+* {{ti|Tiara Dżinna+ (k)}} (15/30d)
+* {{ti|Księga Lidera}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

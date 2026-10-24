@@ -11,7 +11,8 @@ the "V3 Itemshop Premium" web package).
       writes linux-port/docker/mariadb/playerbot/itemshop3_schema.sql from v3_pl_data.json, the
       package's EApplyTypes (app/shop3/include/functions/items.php) and the Arezzo costume list of
       the old shop (app/itemshop/arezzo_costumes.php, made by tools/azcostume) - run again when that
-      list changes.
+      list changes. MT2009_PLUS_ITEMSHOP_V3_V6: and from global/v3_extra.json (tools/itemshop3/gen_global_catalog.py) -
+      the V3-only lines, the costume set pieces and the set chests; run it again after that one.
 
 The package's own tables (history, settings, redeem codes, ...) are real tables in itemshop3; its
 catalogue tables are VIEWS onto ours, so the second shop always sells what the old one sells, at the
@@ -202,6 +203,7 @@ CATEGORIES = [
 	(7, 'Nakładki na broń i szarfy', 'items', 'khanda', [(30000, 39999)], 18),
 	(8, 'Pety', 'items', 'paw', [(40000, 49999)], 18),
 	(9, 'Mounty', 'items', 'horse', [(50000, 59999)], 18),
+	(19, 'Sety Bonusowe', 'sets', 'gem', [], 18),
 	(10, 'Małżeństwo', 'items', 'heart', [(201, 299)], 0),
 	(11, 'Zwoje i księgi', 'items', 'magic', [(601, 699)], 0),
 	(12, 'Smocze Znaki', 'marks', 'marks', [], 0),
@@ -213,6 +215,11 @@ CATEGORIES = [
 ]
 CAT_MARKS = 12
 CAT_AUCTIONS = 15
+# MT2009_PLUS_ITEMSHOP_V3_V6: the owner's round 3 - "Sety Bonusowe" under "Wygląd postaci" (kind sets: every line that is a
+# piece of a costume set with a bonus by the parts worn - itemshop3.set_items - and the sets' chests, which are V3 lines
+# of category 19); the V3-only lines (itemshop3.v3_lines, tools/itemshop3/gen_global_catalog.py -> global/v3_extra.json):
+# what the big servers' list has and ours did not, the set pieces not sold yet, and the chests rolled at purchase.
+V3_EXTRA = os.path.join(HERE, 'global', 'v3_extra.json')
 
 # root/uiitemshop.py ITEMSHOP_CUSTOM_ITEM_DATA: the in-game window adds this to the name of the line at that index.
 NAME_SUFFIX = {1: '(30 godzin)', 5: '(7 dni)', 101: '(1 dzień)', 102: '(3 dni)', 103: '(1 dzień)', 104: '(3 dni)',
@@ -235,25 +242,33 @@ def shop_view(az_vnums):
 	promo = '(pm.item_index IS NOT NULL AND NOW() >= pm.start_time AND NOW() < pm.end_time)'
 	suffix = 'CASE i.`index` %s ELSE \'\' END' % ' '.join('WHEN %d THEN %s' % (k, q(' ' + v)) for k, v in sorted(NAME_SUFFIX.items()))
 	arezzo = ('(i.vnum IN (%s) AND COALESCE((SELECT qf.lValue FROM player.quest qf WHERE qf.dwPID = 0 AND qf.szName = \'mt2009_arezzo_closed\' LIMIT 1), 1) > 0)' % az_vnums)
+	# MT2009_PLUS_ITEMSHOP_V3_V6: the owner's fixed prices in this shop (itemshop3.line_overrides: price, 30 days, the 30-day
+	# variant of an item without a timer) - the in-game catalogue keeps its own
+	GV = 'COALESCE(o.vnum, i.vnum)'
+	webdesc = lambda v: '(SELECT d.`desc` FROM itemshop.ishop_items d WHERE d.vnum = %s AND d.`desc` IS NOT NULL AND d.`desc` <> \'\' ORDER BY d.id LIMIT 1)' % v
+	# MT2009_PLUS_ITEMSHOP_V3_V6: a piece of a costume set with a bonus (itemshop3.set_items) is also listed in "Sety
+	# Bonusowe", in the order of its set
+	setcols = lambda v: ['IF(EXISTS(SELECT 1 FROM itemshop3.set_items si WHERE si.vnum = %s), 1, 0) AS in_sets' % v,
+		'COALESCE((SELECT MIN(si.sort) FROM itemshop3.set_items si WHERE si.vnum = %s), 0) AS set_sort' % v,
+		'COALESCE((SELECT MIN(si.set_id) FROM itemshop3.set_items si WHERE si.vnum = %s), 0) AS set_id' % v]
+	common_tail = lambda: ['0 AS socket0', '0 AS socket1', '0 AS socket2', '0 AS socket3', '0 AS socket4', '0 AS socket5'] + ['0 AS attrtype%d, 0 AS attrvalue%d' % (n, n) for n in range(7)]
 	cols = [
 		'i.`index` AS id',
 		# the category the line is listed under: a flash offer only under the flash offers, a line in an index range
 		# under it, else Smocze Znaki for a line in marks; 0 = the in-game window does not show it either
 		'CASE WHEN %s THEN %d ELSE COALESCE(NULLIF(%s, 0), IF(i.currency + 0 = 2, %d, 0)) END AS category' % (auction, CAT_AUCTIONS, in_range, CAT_MARKS),
 		"'2026-01-01 00:00:00' AS date", '1 AS type',
-		'(SELECT d.`desc` FROM itemshop.ishop_items d WHERE d.vnum = i.vnum AND d.`desc` IS NOT NULL AND d.`desc` <> \'\' ORDER BY d.id LIMIT 1) AS description',
+		'%s AS description' % webdesc(GV),
 		'i.currency + 0 AS pay_type',
-		'IF(%s, pm.price, i.price) AS coins' % promo,
-		'i.price AS base_price', 'IF(%s, 1, 0) AS promo' % promo, 'IF(%s, pm.end_time, NULL) AS promo_end' % promo,
-		'i.count AS count', 'i.vnum AS vnum',
+		'IF(%s, pm.price, COALESCE(o.price, i.price)) AS coins' % promo,
+		'COALESCE(o.price, i.price) AS base_price', 'IF(%s, 1, 0) AS promo' % promo, 'IF(%s, pm.end_time, NULL) AS promo_end' % promo,
+		'i.count AS count', '%s AS vnum' % GV,
 		# the engine never hands the line's sockets over (GiveItem: vnum and count only)
-		'0 AS socket0', '0 AS socket1', '0 AS socket2', '0 AS socket3', '0 AS socket4', '0 AS socket5',
-	]
-	cols += ['0 AS attrtype%d, 0 AS attrvalue%d' % (n, n) for n in range(7)]
+	] + common_tail()
 	cols += [
 		'IF(%s, 0, IF(%s, IF(NOW() >= ta.start_time AND NOW() < ta.end_time AND (ta.max_amount = 0 OR COALESCE(tc.buy_count, 0) < ta.max_amount), 1, 0), 1)) AS available' % (arezzo, auction),
 		'NULL AS last_bought', 'IF(%s, ta.end_time, NULL) AS expire' % auction, '0 AS discount', 'NULL AS discount_expire',
-		"0 AS polymorph", "'FIX' AS book_type", '0 AS book', '0 AS time', '0 AS limit_all', '0 AS limit_account',
+		"0 AS polymorph", "'FIX' AS book_type", '0 AS book', 'COALESCE(o.minutes, 0) AS time', '0 AS limit_all', '0 AS limit_account',
 		'NULL AS bonuses', '0 AS bonuses_count', '0 AS friend', '0 AS wheel_level', '0 AS jackpot',
 	]
 	cols += ['IF(COALESCE(pr.antiflag, 0) & %d, 1, 0) AS anti_%s' % (bit, name) for name, bit in ANTI_FLAGS]
@@ -261,7 +276,7 @@ def shop_view(az_vnums):
 		# the in-game window's quantity choice: stackable and not ANTIFLAG_STACK (1, and 5 / 10 within the stack size)
 		'IF(COALESCE(pr.flag, 0) & %d AND NOT COALESCE(pr.antiflag, 0) & %d, 1, 0) AS stackable' % (ITEM_FLAG_STACKABLE, ITEM_ANTIFLAG_STACK),
 		'GREATEST(COALESCE(pr.stack, 1), 1) AS max_stack',
-		'CONCAT(COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT(\'Vnum: \', i.vnum)), %s) AS name' % suffix,
+		'CONCAT(COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT(\'Vnum: \', %s)), %s) AS name' % (GV, suffix),
 		'i.minLevel AS min_level',
 		'IF(pr.type = 3 AND pr.subtype = %d AND i.vnum <> %d, 1, 0) AS vip' % (USE_VIP, PREMIUM_TOKEN_VNUM),
 		'COALESCE(pr.value0, 0) AS vip_type', 'COALESCE(pr.value1, 0) AS vip_hours', 'COALESCE(pr.value0, 0) AS value0',
@@ -273,13 +288,111 @@ def shop_view(az_vnums):
 		# CItemShopManager::CanSendTimeAuction: shown from a day before its start until an hour after its end
 		'IF(%s AND NOW() > ta.start_time - INTERVAL 1 DAY AND NOW() < ta.end_time + INTERVAL 1 HOUR, 1, 0) AS auction_visible' % auction,
 		'IF(%s, 1, 0) AS arezzo_locked' % arezzo,
-	]
-	return ('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.shop AS SELECT %s'
-		' FROM common.itemshop_items i'
+		# MT2009_PLUS_ITEMSHOP_V3_V6: where the line comes from, its chest (0 = none), its own picture
+		"'game' AS source", '0 AS chest', "'' AS image",
+	] + setcols(GV)
+	game = ('SELECT %s FROM common.itemshop_items i'
 		' LEFT JOIN common.itemshop_promotions pm ON pm.item_index = i.`index`'
 		' LEFT JOIN common.itemshop_time_auctions ta ON ta.item_index = i.`index`'
 		' LEFT JOIN player.itemshop_time_auction tc ON tc.item_index = i.`index`'
-		' LEFT JOIN world.item_proto pr ON pr.vnum = i.vnum;' % ', '.join(cols))
+		' LEFT JOIN itemshop3.line_overrides o ON o.idx = i.`index`'
+		' LEFT JOIN world.item_proto pr ON pr.vnum = %s' % (', '.join(cols), GV))
+	# MT2009_PLUS_ITEMSHOP_V3_V6: the second shop's own lines (itemshop3.v3_lines): the same columns; a line's minutes are
+	# its duration (header.php keeps time > 0; Player::CreateItem writes the expiry into socket0, the db core keeps a
+	# non-zero socket0 of an award - ClientManager RESULT_SAFEBOX_LOAD), a VIP line's minutes its premium time; a chest
+	# (chest > 0) is no item - pages/java/buy.php rolls it (itemshop3.chests / chest_drops / chest_items).
+	v3 = [
+		'e.id AS id', 'e.category AS category', "'2026-10-24 00:00:00' AS date", '1 AS type',
+		"COALESCE(NULLIF(e.description, ''), %s) AS description" % webdesc('e.vnum'),
+		'e.pay_type AS pay_type', 'e.price AS coins', 'e.price AS base_price', '0 AS promo', 'NULL AS promo_end',
+		'e.count AS count', 'e.vnum AS vnum',
+	] + common_tail() + [
+		'1 AS available', 'NULL AS last_bought', 'NULL AS expire', '0 AS discount', 'NULL AS discount_expire',
+		"0 AS polymorph", "'FIX' AS book_type", '0 AS book', 'e.minutes AS time', '0 AS limit_all', '0 AS limit_account',
+		'NULL AS bonuses', '0 AS bonuses_count', '0 AS friend', '0 AS wheel_level', '0 AS jackpot',
+	]
+	v3 += ['IF(COALESCE(pr.antiflag, 0) & %d, 1, 0) AS anti_%s' % (bit, name) for name, bit in ANTI_FLAGS]
+	v3 += [
+		# a chest: 1, 3, 5 or 10 at once - each one rolled on its own
+		'IF(e.chest > 0, 1, IF(COALESCE(pr.flag, 0) & %d AND NOT COALESCE(pr.antiflag, 0) & %d, 1, 0)) AS stackable' % (ITEM_FLAG_STACKABLE, ITEM_ANTIFLAG_STACK),
+		'IF(e.chest > 0, 10, GREATEST(COALESCE(pr.stack, 1), 1)) AS max_stack',
+		"IF(e.chest > 0, e.name, CONCAT(COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT('Vnum: ', e.vnum)), IF(e.suffix <> '', CONCAT(' ', e.suffix), ''))) AS name",
+		'e.min_level AS min_level',
+		'IF(pr.type = 3 AND pr.subtype = %d AND e.vnum <> %d, 1, 0) AS vip' % (USE_VIP, PREMIUM_TOKEN_VNUM),
+		'COALESCE(pr.value0, 0) AS vip_type', 'IF(e.minutes > 0, e.minutes DIV 60, COALESCE(pr.value1, 0)) AS vip_hours', 'COALESCE(pr.value0, 0) AS value0',
+		'0 AS auction', 'NULL AS auction_start', '0 AS auction_max', '0 AS auction_account_limit', '0 AS auction_bought',
+		'0 AS auction_visible', '0 AS arezzo_locked',
+		"'v3' AS source", 'e.chest AS chest', 'e.image AS image',
+		'IF(e.chest > 0 OR EXISTS(SELECT 1 FROM itemshop3.set_items si WHERE si.vnum = e.vnum), 1, 0) AS in_sets',
+		'IF(e.chest > 0, e.set_id * 1000, COALESCE((SELECT MIN(si.sort) FROM itemshop3.set_items si WHERE si.vnum = e.vnum), 0)) AS set_sort',
+		'IF(e.chest > 0, e.set_id, COALESCE((SELECT MIN(si.set_id) FROM itemshop3.set_items si WHERE si.vnum = e.vnum), 0)) AS set_id',
+	]
+	extra = 'SELECT %s FROM itemshop3.v3_lines e LEFT JOIN world.item_proto pr ON pr.vnum = e.vnum' % ', '.join(v3)
+	return 'CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.shop AS %s UNION ALL %s;' % (game, extra)
+
+
+def v3_extra_sql(w):
+	"""MT2009_PLUS_ITEMSHOP_V3_V6: the second shop's own lines, the costume set pieces and the set chests (generated
+	tables: written again at every start from global/v3_extra.json; the rolls and the purchase tokens are kept)."""
+	x = json.load(open(V3_EXTRA, encoding='utf-8'))
+	w('')
+	w('-- MT2009_PLUS_ITEMSHOP_V3_V6: the V3-only lines (tools/itemshop3/gen_global_catalog.py -> global/v3_extra.json): what')
+	w('-- the big servers\' list has and the in-game shop does not, the set pieces not sold yet, the set chests. Only this')
+	w('-- shop lists them (the in-game window reads common.itemshop_items). Ids from 100000, never reused (global/ids.json).')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.v3_lines (id INT NOT NULL PRIMARY KEY, vnum INT NOT NULL DEFAULT 0, count INT NOT NULL DEFAULT 1, price INT NOT NULL, pay_type TINYINT NOT NULL DEFAULT 1, category INT NOT NULL, minutes INT NOT NULL DEFAULT 0, suffix VARCHAR(32) NOT NULL DEFAULT \'\', name VARCHAR(96) NOT NULL DEFAULT \'\', image VARCHAR(96) NOT NULL DEFAULT \'\', description TEXT NULL, chest INT NOT NULL DEFAULT 0, set_id INT NOT NULL DEFAULT 0, min_level INT NOT NULL DEFAULT 0, source VARCHAR(255) NOT NULL DEFAULT \'\', KEY vnum (vnum)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.set_items (vnum INT NOT NULL, set_id INT NOT NULL, sort INT NOT NULL, PRIMARY KEY (vnum, set_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.chests (id INT NOT NULL PRIMARY KEY, line INT NOT NULL, set_id INT NOT NULL, name VARCHAR(96) NOT NULL, price INT NOT NULL, image VARCHAR(96) NOT NULL, UNIQUE KEY line (line)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- a chest\'s possible results: chance in parts per million (they sum to 1 000 000); a result gives every item_no once,')
+	w('-- one of its alternatives (alt_no) - the one the buying character can wear (sex / class), at random among those')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.chest_drops (chest_id INT NOT NULL, drop_no INT NOT NULL, ppm INT NOT NULL, label VARCHAR(160) NOT NULL, kind VARCHAR(16) NOT NULL, PRIMARY KEY (chest_id, drop_no)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.chest_items (chest_id INT NOT NULL, drop_no INT NOT NULL, item_no INT NOT NULL, alt_no INT NOT NULL, vnum INT NOT NULL, count INT NOT NULL DEFAULT 1, minutes INT NOT NULL DEFAULT 0, PRIMARY KEY (chest_id, drop_no, item_no, alt_no)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- every roll of a chest bought (audit): the purchase token, the roll of the quantity, the result and its chance, the')
+	w('-- random number drawn (1..1 000 000), the items and their player.item_award ids')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.chest_rolls (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, token CHAR(32) NOT NULL, account INT NOT NULL, pid INT NOT NULL DEFAULT 0, line INT NOT NULL, chest_id INT NOT NULL, roll_no INT NOT NULL, drop_no INT NOT NULL, ppm INT NOT NULL, rnd INT NOT NULL, label VARCHAR(160) NOT NULL, vnums VARCHAR(255) NOT NULL, award_ids VARCHAR(255) NOT NULL, price INT NOT NULL, pay_type TINYINT NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, KEY account (account), KEY token (token), KEY chest (chest_id, date)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- one row a purchase (the token the item window hands out): a second request with the same token (a double click,')
+	w('-- a reload) is not paid again - it shows the first one\'s result')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.purchase_tokens (token CHAR(32) NOT NULL PRIMARY KEY, account INT NOT NULL, line INT NOT NULL, qty INT NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, result MEDIUMTEXT NULL, KEY account (account)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('-- MT2009_PLUS_ITEMSHOP_V3_V6: the owner\'s fixed prices for the look lines of the in-game catalogue in THIS shop (pets 299 /')
+	w('-- with loot 699, mounts, skins and sashes, costumes, hairstyles 299 SM, 30 days): the line\'s price, minutes, and the')
+	w('-- 30-day variant of an item without a timer; the in-game window keeps common.itemshop_items as it is')
+	w('CREATE TABLE IF NOT EXISTS itemshop3.line_overrides (idx INT NOT NULL PRIMARY KEY, vnum INT NOT NULL, price INT NOT NULL, minutes INT NOT NULL DEFAULT 0) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	w('START TRANSACTION;')
+	w('DELETE FROM itemshop3.line_overrides;')
+	rows = ['(%d, %d, %d, %d)' % (o['idx'], o['vnum'], o['price'], o['minutes']) for o in x.get('overrides', [])]
+	for i in range(0, len(rows), 300):
+		w('INSERT INTO itemshop3.line_overrides (idx, vnum, price, minutes) VALUES %s;' % ', '.join(rows[i:i + 300]))
+	w('DELETE FROM itemshop3.v3_lines;')
+	w('DELETE FROM itemshop3.set_items;')
+	w('DELETE FROM itemshop3.chests;')
+	w('DELETE FROM itemshop3.chest_drops;')
+	w('DELETE FROM itemshop3.chest_items;')
+	chest_set = {c['line']: c['set_id'] for c in x['chests']}
+	rows = ['(%d, %d, %d, %d, %d, %d, %d, %s, %s, %s, %s, %d, %d, 0, %s)' % (l['id'], l['vnum'], l['count'], l['price'], l['cur'], l['cat'], l['minutes'],
+		q(l['suffix']), q(l['name']), q(l['image']), q(l['desc']), l['chest'], chest_set.get(l['id'], 0), q(l['source'][:255])) for l in x['lines']]
+	for i in range(0, len(rows), 100):
+		w('INSERT INTO itemshop3.v3_lines (id, vnum, count, price, pay_type, category, minutes, suffix, name, image, description, chest, set_id, min_level, source) VALUES %s;' % ', '.join(rows[i:i + 100]))
+	rows = ['(%d, %d, %d)' % (s['vnum'], s['set_id'], s['sort']) for s in x['set_items']]
+	for i in range(0, len(rows), 300):
+		w('INSERT IGNORE INTO itemshop3.set_items (vnum, set_id, sort) VALUES %s;' % ', '.join(rows[i:i + 300]))
+	drops, items = [], []
+	w('INSERT INTO itemshop3.chests (id, line, set_id, name, price, image) VALUES %s;' % ', '.join(
+		'(%d, %d, %d, %s, %d, %s)' % (c['id'], c['line'], c['set_id'], q(c['name']), c['price'], q(c['image'])) for c in x['chests']))
+	for c in x['chests']:
+		assert sum(d['ppm'] for d in c['drops']) == 1000000, c['name']
+		for d in c['drops']:
+			drops.append('(%d, %d, %d, %s, %s)' % (c['id'], d['no'], d['ppm'], q(d['label'][:160]), q(d['kind'])))
+			for it in d['items']:
+				for a, v in enumerate(it['alts'], 1):
+					items.append('(%d, %d, %d, %d, %d, %d, %d)' % (c['id'], d['no'], it['no'], a, v, it['count'], it['minutes']))
+	for i in range(0, len(drops), 200):
+		w('INSERT INTO itemshop3.chest_drops (chest_id, drop_no, ppm, label, kind) VALUES %s;' % ', '.join(drops[i:i + 200]))
+	for i in range(0, len(items), 300):
+		w('INSERT INTO itemshop3.chest_items (chest_id, drop_no, item_no, alt_no, vnum, count, minutes) VALUES %s;' % ', '.join(items[i:i + 300]))
+	w('COMMIT;')
+	w('-- a chest\'s items with what the shop needs to pick the one that fits the character (the wear filter\'s antiflags)')
+	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.chest_items_view AS SELECT c.chest_id, c.drop_no, c.item_no, c.alt_no, c.vnum, c.count, c.minutes, %s, COALESCE(CONVERT(p.locale_name USING utf8mb4), CONCAT(\'Vnum: \', c.vnum)) AS name FROM itemshop3.chest_items c LEFT JOIN world.item_proto p ON p.vnum = c.vnum;'
+		% ', '.join('IF(COALESCE(p.antiflag, 0) & %d, 1, 0) AS anti_%s' % (bit, name) for name, bit in ANTI_FLAGS))
+	return len(x['lines']), len(x['chests'])
 
 
 def build():
@@ -350,6 +463,7 @@ def build():
 		for n, (cid, name, kind, icon, ranges, parent) in enumerate(CATEGORIES)))
 	w('-- The flash offers\' counters (the game\'s base dump has the table; a world without it gets an empty one).')
 	w('CREATE TABLE IF NOT EXISTS player.itemshop_time_auction (item_index INT(10) NOT NULL, buy_count INT(10) NOT NULL DEFAULT 0, PRIMARY KEY (item_index)) ENGINE=InnoDB DEFAULT CHARSET=latin1;')
+	n_lines, n_chests = v3_extra_sql(w)
 	w(shop_view(az_vnums))
 	w('-- No package offers in the in-game catalogue (the view keeps its columns for the shop\'s code).')
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.bundle_items AS SELECT b.id AS id, b.item_id AS item_id, b.vnum AS vnum, b.count AS count, b.socket0 AS socket0, b.socket1 AS socket1, b.socket2 AS socket2 FROM itemshop.ishop_bundle_items b WHERE 1 = 0;')
@@ -357,7 +471,7 @@ def build():
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.itemdesc AS SELECT i.id AS id, i.vnum AS vnum, \'pl\' AS lang, i.`desc` AS description FROM itemshop.ishop_items i WHERE i.`desc` IS NOT NULL AND i.`desc` <> \'\';')
 	w('-- The picture of a vnum: img/item/<vnum>.png (tools/itemshop3/gen_shop_icons.py makes the missing ones from the')
 	w('-- client\'s icons); the web catalogue\'s own icon name where it has one for the vnum.')
-	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.item_list AS SELECT g.vnum AS id, g.vnum AS vnum, CONCAT(\'item/\', COALESCE((SELECT MIN(i.vnum_icon) FROM itemshop.ishop_items i WHERE i.vnum = g.vnum), g.vnum), \'.png\') AS src FROM (SELECT DISTINCT vnum FROM common.itemshop_items) g;')
+	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.item_list AS SELECT g.vnum AS id, g.vnum AS vnum, CONCAT(\'item/\', COALESCE((SELECT MIN(i.vnum_icon) FROM itemshop.ishop_items i WHERE i.vnum = g.vnum), g.vnum), \'.png\') AS src FROM (SELECT vnum FROM common.itemshop_items UNION SELECT vnum FROM itemshop3.v3_lines WHERE vnum > 0 UNION SELECT vnum FROM itemshop3.chest_items) g;')
 	w('-- What the shop wrote: the quantity of a purchase (the flash offers\' account limit counts pieces).')
 	w('ALTER TABLE itemshop3.history ADD COLUMN IF NOT EXISTS quantity INT NOT NULL DEFAULT 1;')
 	w('-- The voucher tab\'s tries (5 a minute an account, as the game counts them per character).')
@@ -372,7 +486,7 @@ def build():
 	cols += ['p.socket_pct AS gain_socket', 'p.addon_type AS attu_addon']
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.item_proto AS SELECT %s FROM world.item_proto p;' % ', '.join(cols))
 	open(OUT, 'w', encoding='utf-8', newline='\n').write('\n'.join(L) + '\n')
-	print('wrote %s (%d bonus names, %d skills, %d Arezzo vnums)' % (OUT, len(data['locale_game']), len(data['skills']), az_vnums.count(',') + 1))
+	print('wrote %s (%d bonus names, %d skills, %d Arezzo vnums, %d V3 lines, %d set chests)' % (OUT, len(data['locale_game']), len(data['skills']), az_vnums.count(',') + 1, n_lines, n_chests))
 
 
 if __name__ == '__main__':

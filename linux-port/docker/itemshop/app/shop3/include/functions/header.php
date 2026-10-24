@@ -327,10 +327,11 @@
 				
 				$item_proto = $shop->getItem($item['vnum']);
 				
-				if($item['time']<=0)
+				// MT2009_PLUS_ITEMSHOP_V3_V6: a set chest is no item (no proto) - no duration, no bonuses
+				if($item['time']<=0 && $item_proto)
 					$item['time'] = $player->getItemProtoDuration($item_proto);
 				
-				$addon = $player->getItemBonusesAddon($item_proto, $item['vnum']);
+				$addon = $item_proto ? $player->getItemBonusesAddon($item_proto, $item['vnum']) : [];
 				
 				$bonuses = [];
 				for($i=0;$i<=6;$i++)

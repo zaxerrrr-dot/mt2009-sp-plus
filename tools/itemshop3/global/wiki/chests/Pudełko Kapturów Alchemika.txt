@@ -1,0 +1,46 @@
+{{Item/Layout
+
+|image = Pudełko Kapturów Alchemika.png
+
+|Opis = To eleganckie pudełko zawiera różne potężne kaptury lub inne wspaniałe niespodzianki. Ciekawe, co otrzymasz? Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti2|Zielone Oko Proroka+ (k)|px=22}}{{ti2|Jasny Kaptur Proroka+ (m)|px=22}}[[Fryzury Halloween 2019|Jasny Kaptur Proroka+]] (k/m) (60d/30d/15d)
+* {{ti2|Fioletowe Oko Proroka+ (k)|px=22}}{{ti2|Ciemny Kaptur Proroka+ (m)|px=22}}[[Fryzury Halloween 2019|Ciemny Kaptur Proroka+]] (k/m) (60d/30d/15d)
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Biała Perła}} (x3)
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Szansa na potężne kaptury i wiele więcej.
+* Zawiera losowy przedmiot.
+* Przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+
+}}

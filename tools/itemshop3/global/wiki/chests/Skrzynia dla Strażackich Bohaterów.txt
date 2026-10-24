@@ -1,0 +1,46 @@
+{{Item/Layout
+|image = Skrzynia dla Strażackich Bohaterów.png
+
+|Opis = Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot. 
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti2|height=2|Mundur Strażaka+ (żółty) (m)|px=22}} {{ti2|height=2|Mundur Strażaka+ (czar.) (m)|px=22}}[[Kostiumy Strażackie|Mundur Strażaka (żółty/czar.)]] (m) (30d/60d)
+* {{ti2|Hełm Strażaka+ (żółty) (m)|px=22}}{{ti2|Hełm Strażaka+ (czar.) (m)|px=22}}[[Fryzury Strażackie|Hełm Strażaka (żółty/czar.)]] (m) (30d/60d)
+* {{ti|Książka Przebudzenia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}}
+* {{ti|Krwawa Perła}}
+* {{ti|Błogosławieństwo Życia}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Silny Suplement}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Eliksir Słońca (Ś)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Skrzynia z niespodzianką
+* Szansa na mundury strażaków+ i więcej
+* Dla postaci rodzaju męskiego
+* Przedmiot trafia bezpośrednio do magazynu [[Item-Shop|Item-Shopu]]
+
+}}

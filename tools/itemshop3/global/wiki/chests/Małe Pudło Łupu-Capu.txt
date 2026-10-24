@@ -1,0 +1,44 @@
+{{Item/Layout
+
+|image = Małe Pudło Łupu-Capu.png
+
+|Opis = Przy odrobinie szczęścia znajdziesz tutaj małego ognistego feniksa, który posiada umiejętność "Łupu-Capu" i będzie zbierać twój łup zgodnie z twoimi instrukcjami. Możesz znaleźć także mnóstwo innych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Ognisty Feniks (Łup) (pieczęć)}} (1d)
+* {{ti|Znak Strażnika}}
+* {{ti|Ognista Runa Aury (10)}} (x2)
+* {{ti|Peleryna Męstwa}} (x35)
+* {{ti|Mikstura Pośpiechu}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Kamyki}} (x15)
+* {{ti|Mikstura Ataku +15}} (x5)
+* {{ti|Mikstura Szybkości}} (x5)
+* {{ti|Cor Draconis (surowe)}} (x3)
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Zielona Smocza Fasola}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 25 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Losowe pudełko.
+* Zawiera 1 przedmiot.
+
+}}
