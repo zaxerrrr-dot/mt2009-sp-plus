@@ -1953,6 +1953,47 @@ int WebBrowser_IsVisible()
 	return (gs_hWndWebBrowser != NULL);
 }
 
+// MT2009_PLUS_ITEMSHOP_V3_V3: the mouse wheel over the shop. WebBrowser_Show gives the focus to our host window, not to
+// the control's own "Internet Explorer_Server" window inside it, so a wheel turn went to the host, bubbled up to the
+// game window and was dropped there (PythonApplicationProcedure.cpp swallows WM_MOUSEWHEEL while a page is shown) - the
+// page scrolled only after a click into it. The game window hands the turn over here: with the cursor over the
+// browser it goes to the control's IE window (the page scrolls as in a normal browser); 1 = taken.
+static HWND Mt2009FindIeServer(HWND parent)
+{
+	HWND child = NULL;
+	while ((child = FindWindowExA(parent, child, NULL, NULL)) != NULL)
+	{
+		char cls[64];
+		HWND found;
+		if (GetClassNameA(child, cls, sizeof(cls)) && !lstrcmpA(cls, "Internet Explorer_Server"))
+			return child;
+		if ((found = Mt2009FindIeServer(child)) != NULL)
+			return found;
+	}
+	return NULL;
+}
+
+int WebBrowser_ForwardMouseWheel(WPARAM wParam, LPARAM lParam)
+{
+	static int s_iInside = 0;
+	POINT pt;
+	RECT rc;
+	HWND ie;
+	if (!gs_hWndWebBrowser || s_iInside)
+		return 0;
+	pt.x = (short)LOWORD(lParam);	// screen coordinates (WM_MOUSEWHEEL)
+	pt.y = (short)HIWORD(lParam);
+	if (!GetWindowRect(gs_hWndWebBrowser, &rc) || !PtInRect(&rc, pt))
+		return 0;
+	ie = Mt2009FindIeServer(gs_hWndWebBrowser);
+	if (!ie)
+		return 0;
+	s_iInside = 1;	// a wheel the page did not use comes back up to its parents - never round again
+	SendMessageA(ie, WM_MOUSEWHEEL, wParam, lParam);
+	s_iInside = 0;
+	return 1;
+}
+
 void WebBrowser_Destroy()
 {
 	WebBrowser_Hide();
