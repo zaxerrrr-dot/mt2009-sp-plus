@@ -123,5 +123,17 @@ def main():
 		print('%s: %d change(s)%s' % (os.path.basename(path), changed, '' if target == path else ' -> ' + target))
 
 
+# the pack builder's jobs (build_ishop5_packs.py): an entry's name -> fn(bytes) -> (new bytes, changes)
+def _list_job(b):
+	return base.set_rows(b, [u'%d\tETC\t%s' % (i[0], i[7]) for i in ITEMS])
+
+
+def _desc_job(b):
+	return base.set_rows(b, desc_rows(b))
+
+
+JOBS = {'gamedata/item_list.txt': _list_job, 'gamedata/item_proto': item_proto, 'locale/pl/itemdesc.txt': _desc_job}
+
+
 if __name__ == '__main__':
 	main()
