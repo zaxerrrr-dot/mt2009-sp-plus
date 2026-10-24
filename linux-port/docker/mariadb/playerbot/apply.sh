@@ -850,6 +850,25 @@ if [ -s "$itemshop_schema" ]; then
     fi
 fi
 
+# MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (app/shop3, Shift+F12 in the game) - its own tables
+# in itemshop3 and views onto the catalogue above (generated: tools/itemshop3/gen_itemshop3_sql.py).
+# After itemshop_schema.sql, whose tables the views read; root for CREATE DATABASE / GRANT, as above.
+itemshop3_schema=/opt/playerbot/itemshop3_schema.sql
+if [ -s "$itemshop3_schema" ]; then
+    if [ -n "${M2_DB_ROOT_PASSWORD:-}" ]; then
+        if MYSQL_PWD="$M2_DB_ROOT_PASSWORD" mariadb --protocol=tcp --host="$M2_DB_HOST" \
+                --port="$M2_DB_PORT" --user=root --default-character-set=utf8mb4 \
+                < "$itemshop3_schema" 2>/tmp/itemshop3.err; then
+            echo "[playerbot-migrate] itemshop3 schema applied"
+        else
+            fail_step "itemshop3 schema failed:" >&2
+            head -3 /tmp/itemshop3.err >&2
+        fi
+    else
+        echo "[playerbot-migrate] WARNING: M2_DB_ROOT_PASSWORD not set; itemshop3 schema skipped" >&2
+    fi
+fi
+
 # A developer may keep more persistent bots than the public 350-row seed. When
 # that world matters, make its minimum size explicit in .env. This catches the
 # easy-to-miss case where Docker is pointed at another daemon or a fresh volume:

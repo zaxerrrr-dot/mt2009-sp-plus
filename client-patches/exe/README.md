@@ -5,7 +5,7 @@ Pełne kopie zmienionych plików źródła klienta, w układzie katalogów kopii
 exe z tymi zmianami, skopiuj zawartość tego katalogu na drzewo źródeł (nadpisując pliki):
 
 ```
-for d in UserInterface EterLib EterPythonLib GameLib EterGrnLib EffectLib; do
+for d in UserInterface EterLib EterPythonLib GameLib EterGrnLib EffectLib CWebBrowser; do
   cp -a "client-patches/exe/$d/." "<Source Client>/$d/"
 done
 cp -a client-patches/exe/Server/. "<Source>/Server/"   # od Zodiaku: Server/common/length.h klienta
@@ -17,6 +17,21 @@ Katalog `Server/` **nie** idzie do `Source Client/` (pętla po `*/` musi go pomi
 
 Każda zmiana ma znacznik w komentarzu i jest za `#ifdef` z `Locale_inc.h`, więc wyłączenie
 definicji przywraca stary exe.
+
+## Wbudowana przeglądarka (drugi ItemShop) – `MT2009_PLUS_ITEMSHOP_V3_V1` (`ENABLE_MT2009_INGAME_BROWSER`)
+
+`app.ShowWebPage` (okno Item Mall, czat botów, drugi ItemShop pod Shift+F12 – root `uiitemshopv3.py`) nie
+działało w żadnym exe z tych źródeł: `WebBrowser_Startup` był zakomentowany w `UserInterface.cpp`, więc klasa
+okna „WEBBROWSER” nie istniała i każde otwarcie kończyło się `CREATE_WEBBROWSER_ERROR:1407`.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_INGAME_BROWSER` |
+| `UserInterface/UserInterface.cpp` | `WebBrowser_Startup`/`WebBrowser_Cleanup` znowu wołane; przed startem `FEATURE_BROWSER_EMULATION` = 11001 (IE11) dla nazwy pliku exe w `HKCU` (bez uprawnień administratora) – kontrolka domyślnie rysuje jak IE7 |
+| `CWebBrowser/CWebBrowser.c` | **nowy w nakładce** (katalog `CWebBrowser` w pętli kopiowania wyżej): `put_Silent` przed każdą nawigacją (bez okienek błędów skryptu nad grą), `OleInitialize` zwracające `S_FALSE` też uznane za sukces |
+
+Sprawdzone: `clang-cl /Zs` obu plików na kopii źródeł z tą nakładką (24.10.2026); pełny build `build.sh msvc --smoke`
+robi lead.
 
 ## Mini gry Owsapa – `MT2009_PLUS_MINIGAMES_V1`
 

@@ -271,5 +271,12 @@
 // older exe already keeps the items of these cells (c_Wear_Max 32); root then takes the cells from
 // player.EQUIPMENT_SLOT_START.
 #define ENABLE_MT2009_BUFFI_COSTUME
+// MT2009_PLUS_ITEMSHOP_V3_V1 (the second ItemShop, root's uiitemshopv3.py, Shift+F12): the embedded browser behind
+// app.ShowWebPage works again - WebBrowser_Startup (OleInitialize + the "WEBBROWSER" window class) was commented out in
+// UserInterface.cpp, so every ShowWebPage ended in CREATE_WEBBROWSER_ERROR:1407 (no such window class), the mall
+// window and the bots' chat page included. Started now, in IE11 mode (FEATURE_BROWSER_EMULATION 11001 for this exe
+// under HKCU - the control defaults to IE7, which cannot draw the shop), and without script-error boxes
+// (CWebBrowser.c put_Silent). Without the define the exe is as before.
+#define ENABLE_MT2009_INGAME_BROWSER
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

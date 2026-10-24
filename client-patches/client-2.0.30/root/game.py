@@ -466,6 +466,8 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_WHEEL_V1: Kolo Fortuny (uiwheel.py).
 		import uiwheel
 		uiwheel.DestroyWindow()
+		# MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop's window and its browser (uiitemshopv3.py).
+		__import__("uiitemshopv3").DestroyWindow()
 		# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata's window and ranking (uiworldboss.py).
 		__import__("uiworldboss").DestroyWindow()
 		# MT2009_PLUS_BUFFI_V1: the Buffi window (uibuffi.py).
@@ -801,6 +803,8 @@ class GameWindow(ui.ScriptWindow):
 			"event_calendar"	: (lambda : Window("uieventcalendar"), None),
 			# MT2009_PLUS_WHEEL_V1: Kolo Fortuny (uiwheel.py).
 			"wheel"				: (lambda : Window("uiwheel"), None),
+			# MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (uiitemshopv3.py), Shift+F12.
+			"itemshop_v3"		: (lambda : Window("uiitemshopv3"), None),
 			# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek (uiekwipunek.py), Shift+I.
 			"extra_inventory"	: (lambda : Window("uiekwipunek"), None),
 			# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (uiworldboss.py), no key by default.
@@ -4808,6 +4812,10 @@ class GameWindow(ui.ScriptWindow):
 		uiSafebox.OnArrangeResult(code, moved, merged, units)
 
 	def __InGameShop_Show(self, url):
+		# MT2009_PLUS_ITEMSHOP_V3_V1: the answer to the second ItemShop's request (Shift+F12,
+		# uiitemshopv3.py) opens that one; any other "mall" goes on to the old window.
+		if __import__("uiitemshopv3").TakeMallUrl(url):
+			return
 		if constInfo.IN_GAME_SHOP_ENABLE:
 			self.interface.OpenWebWindow(url)
 
