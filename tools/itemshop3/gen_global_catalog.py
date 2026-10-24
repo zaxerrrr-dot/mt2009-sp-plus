@@ -135,6 +135,14 @@ class Data:
 				return val / 86400.0
 		return 0
 
+	def days_label(self, v):
+		p = self.proto.get(v)
+		if p and p['type'] == 16 and not self.days(v):
+			return 'czas w przedmiocie (unikat)'
+		if p and p['type'] == 3 and p['sub'] == 31:
+			return '%d godz. premium (VIP)' % p['v1']
+		return days_text(self.days(v))
+
 	def timed(self, v):
 		p = self.proto.get(v)
 		return bool(p) and any(t in (7, 8) for t, val in p['lim'])
@@ -293,17 +301,25 @@ class Build:
 					self.check_vnum(ln['vnum'], r)
 					self.add_line(ln['vnum'], ln['count'], ln['price'], ln['cur'], ln['cat'], ln['minutes'], ln['suffix'], src, dec['note'])
 				if dec.get('sub'):
-					self.replaced.append(dict(wiki=r['name'], link=r['link'] or r['name'], info=r['info'], ours=dec['sub'], how='dodane do sklepu', note=dec['note'], price=price_text(r)))
+					self.replace_row(r, dec, 'dodane do sklepu')
 			elif dec['st'] == 'have':
 				for idx in dec['ours']:
 					self.compare(idx, r, dec)
 				if dec.get('sub'):
-					self.replaced.append(dict(wiki=r['name'], link=r['link'] or r['name'], info=r['info'], ours=dec['sub'], how='już w naszym sklepie (porównane w „Różnice u nas”)', note=dec['note'], price=price_text(r)))
+					self.replace_row(r, dec, 'już w naszym sklepie (porównane w „Różnice u nas”)')
 			elif dec['st'] == 'miss':
 				self.missing.append(dict(wiki=r['name'], link=r['link'] or r['name'], sub=r['sub'], info=r['info'], price=price_text(r), note=dec['note']))
 		extra = [k for (k, n) in decisions.ROWS if k not in seen]
 		if extra:
 			raise SystemExit('decisions.py rows the wiki does not have: %s' % extra)
+
+	def replace_row(self, r, dec, how):
+		for x in self.replaced:
+			if x['ours'][0] == dec['sub'][0]:
+				if price_text(r) not in x['price']:
+					x['price'] += ' | ' + price_text(r)
+				return
+		self.replaced.append(dict(wiki=r['name'], link=r['link'] or r['name'], info=r['info'], ours=dec['sub'], how=how, note=dec['note'], price=price_text(r)))
 
 	def check_vnum(self, v, r):
 		if v not in self.d.proto:
@@ -336,6 +352,12 @@ class Build:
 		l = self.d.lines.get(idx)
 		if not l:
 			raise SystemExit('row %r: our in-game shop has no line %d' % (r['name'], idx))
+		if idx in self.compared:
+			# a second row of the list for the same line of ours (e.g. "Hity" and its own section): one row, both prices
+			for d in self.diff:
+				if d['id'] == idx and r['name'] not in d['wiki'] and price_text(r) not in d['gprice']:
+					d['gprice'] += ' | ' + price_text(r)
+			return
 		self.compared.add(idx)
 		gp, gcur = self.global_price(r, l['count'])
 		cur = 'SM' if l['cur'] == 1 else 'SZ'
@@ -346,7 +368,7 @@ class Build:
 		if same:
 			return
 		self.diff.append(dict(id=l['id'], vnum=l['vnum'], name=l['name'] or self.d.name(l['vnum']), cat=CAT_NAMES.get(l['cat'], l['cat']), count=l['count'],
-			price='%d %s' % (l['price'], cur), days=days_text(self.d.days(l['vnum'])),
+			price='%d %s' % (l['price'], cur), days=self.d.days_label(l['vnum']),
 			wiki=r['name'], link=r['link'] or r['name'], gprice=price_text(r), rule=('%d SM / 30 dni (zasada właściciela)' % rule) if rule else '',
 			note=dec['note'] if dec else ''))
 
@@ -376,7 +398,7 @@ class Build:
 			if rule is not None and l['price'] == rule and abs(self.d.days(l['vnum']) - 30) < 0.01:
 				continue
 			self.diff.append(dict(id=idx, vnum=l['vnum'], name=l['name'] or self.d.name(l['vnum']), cat=CAT_NAMES.get(l['cat'], l['cat']), count=l['count'],
-				price='%d %s' % (l['price'], 'SM' if l['cur'] == 1 else 'SZ'), days=days_text(self.d.days(l['vnum'])),
+				price='%d %s' % (l['price'], 'SM' if l['cur'] == 1 else 'SZ'), days=self.d.days_label(l['vnum']),
 				wiki='— (brak na liście)', link='', gprice='', rule=('%d SM / 30 dni (zasada właściciela)' % rule) if rule else '', note=''))
 
 	# B: the sets and their chests
