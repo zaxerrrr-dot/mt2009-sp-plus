@@ -29,6 +29,17 @@
 		'charset' => 'utf8mb4'	// MT2009_PLUS_ITEMSHOP_V3_V1
 	]);
 	$shop = new Shop($shop_db);
+	// MT2009_PLUS_ITEMSHOP_V3_V4: the wear filter of the pages (include/functions/header.php) for the character of the
+	// in-game link - the suggestions are the lines the list shows (a shaman was offered a sword's skin, and the list
+	// it led to had none: "brak przedmiotu")
+	if(!empty($_SESSION['pid']))
+	{
+		$sth = $shop_db->pdo->prepare("SELECT job, account_id FROM player.player WHERE id = ?");
+		$sth->execute([(int)$_SESSION['pid']]);
+		$char = $sth->fetch(PDO::FETCH_ASSOC);
+		if($char && (int)$char['account_id'] == (int)$_SESSION['id'])
+			$shop->setWearFilter(Shop::wearNames($char['job']));
+	}
 	
 	$searchString = isset($_GET['searchString']) ? $_GET['searchString'] : null;
 	$max = isset($_GET['max']) ? $_GET['max'] : null;

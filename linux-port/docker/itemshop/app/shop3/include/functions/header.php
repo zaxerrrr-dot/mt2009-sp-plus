@@ -115,6 +115,10 @@
 			die();
 		}
 		$categories = $shop->getAllCategories();
+		// MT2009_PLUS_ITEMSHOP_V3_V4: in the menu's order (the view's sort), each with its parent (0 = a top one)
+		usort($categories, function($a, $b) {
+			return (isset($a['sort']) ? (int)$a['sort'] : (int)$a['id']) - (isset($b['sort']) ? (int)$b['sort'] : (int)$b['id']);
+		});
 		$categoriesbyid = array();
 		foreach($categories as $category)
 		{
@@ -122,6 +126,7 @@
 			// MT2009_PLUS_ITEMSHOP_V3_V3: what the category is (itemshop3.categories: items, featured, marks, auctions,
 			// voucher, premium, topup - the in-game window's buttons)
 			$categoriesbyid[$category['id']]['kind'] = isset($category['kind']) ? $category['kind'] : 'items';
+			$categoriesbyid[$category['id']]['parent'] = isset($category['parent']) ? (int)$category['parent'] : 0;
 			
 			if($category[$_SESSION['lang']]!=null && $category[$_SESSION['lang']]!='')
 				$categoriesbyid[$category['id']]['name'] = $category[$_SESSION['lang']];
@@ -157,14 +162,7 @@
 				$shop_char = null;
 		}
 		if($shop_char)
-		{
-			$job = (int)$shop_char['job'];
-			$female = in_array($job, [1, 3, 4, 6]);
-			$classes = ['warrior', 'assassin', 'sura', 'shaman'];
-			$wear = [$female ? 'anti_female' : 'anti_male'];
-			$wear[] = 'anti_'.($job == 8 ? 'wolfman' : $classes[$job % 4]);
-			$shop->setWearFilter($wear);
-		}
+			$shop->setWearFilter(Shop::wearNames($shop_char['job']));	// MT2009_PLUS_ITEMSHOP_V3_V4: shared with search.php
 
 		// MT2009_PLUS_ITEMSHOP_V3_V1: Smocze Monety (cash) and Smocze Znaki (cash_mark - MT2009_PLUS_SZ_UNIFIED_V1).
 		$amount_coins = $account->getCoins(1, $_SESSION['id']);
