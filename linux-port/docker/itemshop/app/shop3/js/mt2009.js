@@ -69,6 +69,56 @@
 		$('body').undelegate('.list-item .btn-price', 'click.buynow');
 	});
 
+	// MT2009_PLUS_ITEMSHOP_V3_V5: a group's subcategories in the panel right of the category strip (the big servers'
+	// shop): opens on hover and on a click of the group's tile (hover alone is not sure in the game's browser), closes a
+	// moment after the mouse leaves tile and panel, on a click elsewhere, on scrolling or resizing. The panel is fixed
+	// (the strip's own scrolling would cut it off), placed here beside the tile and kept inside the window.
+	var flyTimer = null;
+	function flyClose(li) {
+		(li || $('#subnavi li.mt-fly-open')).removeClass('mt-fly-open');
+	}
+	function flyOpen(li) {
+		clearTimeout(flyTimer);
+		flyClose($('#subnavi li.mt-fly-open').not(li));
+		var tile = li.children('.btn-catitem'), panel = li.children('.mt-flyout'), off = tile.offset(),
+			top = off.top - $(window).scrollTop(), left = off.left - $(window).scrollLeft() + tile.outerWidth();
+		li.addClass('mt-fly-open');
+		var h = panel.outerHeight(), winH = $(window).height();
+		if (top + h > winH - 4)
+			top = Math.max(4, winH - h - 4);
+		panel.css({ top: top + 'px', left: left + 'px' });
+	}
+	$(document).on('mouseenter', '#subnavi li.mt-has-sub', function () {
+		flyOpen($(this));
+	});
+	$(document).on('mouseleave', '#subnavi li.mt-has-sub', function () {
+		var li = $(this);
+		clearTimeout(flyTimer);
+		flyTimer = setTimeout(function () { flyClose(li); }, 300);
+	});
+	$(document).on('click', '#subnavi li.mt-has-sub > .btn-catitem', function (e) {
+		e.preventDefault();
+		var li = $(this).parent();
+		if (li.hasClass('mt-fly-open') && !li.data('mtJustOpened'))
+			flyClose(li);
+		else
+			flyOpen(li);
+	});
+	// a click right after the hover opened it keeps it open (the hover and the click of one movement)
+	$(document).on('mouseenter', '#subnavi li.mt-has-sub', function () {
+		var li = $(this);
+		li.data('mtJustOpened', true);
+		setTimeout(function () { li.data('mtJustOpened', false); }, 400);
+	});
+	$(document).on('click', function (e) {
+		if (!$(e.target).closest('#subnavi li.mt-has-sub').length)
+			flyClose();
+	});
+	$(window).on('resize', function () { flyClose(); });
+	$(function () {
+		$('#subnavi.mt-subnavi').on('scroll', function () { flyClose(); });
+	});
+
 	$(document).on('click', '#formArticlesSort .sort-option', function (e) {
 		e.preventDefault();
 		var mode = $(this).attr('data-value');

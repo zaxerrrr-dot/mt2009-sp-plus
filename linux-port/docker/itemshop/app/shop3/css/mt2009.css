@@ -49,21 +49,25 @@ html, body { height: 100%; }
 #subnavi.mt-subnavi > li > .btn-catitem-active { border-left-width: 4px !important; }
 #subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-cat-auctions span { color: #6fb7ff; }
 #subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-cat-premium span, #subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-cat-topup span { color: #ffc948; }
-/* MT2009_PLUS_ITEMSHOP_V3_V4: a group ("Wygląd postaci") with its subcategories nested under it, open while it or one of
-   them is chosen (an arrow on the group: right = closed, down = open), each with its number of offers. */
+/* MT2009_PLUS_ITEMSHOP_V3_V4 / MT2009_PLUS_ITEMSHOP_V3_V5: a group ("Wygląd postaci") - the ▸ arrow at the tile's right
+   edge, and its subcategories in a panel to the right of the strip, over the cards, as the big servers' shop has it (its
+   dropdown-menu colours: #680603, light serif rows, the orange hover). position: fixed (placed by js/mt2009.js from the
+   tile) - the strip scrolls (overflow) and would cut off a panel inside it. Plain CSS 2.1 (the game's IE-based browser). */
 #subnavi.mt-subnavi.nav-tabs > li > .btn-catitem.mt-catitem i.mt-sub-arrow { display: table-cell; vertical-align: middle; width: 8px; padding: 0 1px 0 2px; }
 #subnavi.mt-subnavi i.mt-sub-arrow:after { content: ''; display: inline-block; width: 0; height: 0; border-style: solid; border-width: 4px 0 4px 6px;
 	border-color: transparent transparent transparent #eade9e; }
-#subnavi.mt-subnavi li.mt-sub-open i.mt-sub-arrow:after { border-width: 6px 4px 0 4px; border-color: #eade9e transparent transparent transparent; }
-#subnavi.mt-subnavi ul.mt-subcats { list-style: none; margin: 0; padding: 0; background: rgba(27,13,6,.55); border-left: 4px solid #E8A314; }
-#subnavi.mt-subnavi ul.mt-subcats li { margin: 0; padding: 0; }
-#subnavi.mt-subnavi ul.mt-subcats a.mt-subcatitem { display: table; width: 100%; padding: 2px 3px 2px 6px; margin: 0; color: #f2e69f; font-size: 10px; line-height: 11px;
-	text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.25); -moz-box-sizing: border-box; box-sizing: border-box; }
-#subnavi.mt-subnavi ul.mt-subcats a.mt-subcatitem img { display: table-cell; width: 16px; height: 16px; margin: 0; vertical-align: middle; }
-#subnavi.mt-subnavi ul.mt-subcats a.mt-subcatitem .mt-subcat-name { display: table-cell; width: 100%; vertical-align: middle; padding-left: 5px; height: 18px; }
-#subnavi.mt-subnavi ul.mt-subcats a.mt-subcatitem .quant { display: table-cell; vertical-align: middle; white-space: nowrap; padding-left: 2px; color: #d9c27a; }
-#subnavi.mt-subnavi ul.mt-subcats a.mt-subcatitem:hover, #subnavi.mt-subnavi ul.mt-subcats a.mt-subcatitem:focus { background: #680603; color: #f2e69f; }
-#subnavi.mt-subnavi ul.mt-subcats a.mt-subcatitem.mt-subcat-active { background: #680603; color: #e8a314; font-weight: bold; }
+#subnavi.mt-subnavi li.mt-fly-open > .btn-catitem { background-color: #680603; }
+#subnavi.mt-subnavi ul.mt-flyout { display: none; position: fixed; z-index: 1000; top: 0; left: 0; min-width: 230px; margin: 0; padding: 6px 0;
+	list-style: none; background: #680603; border: 1px solid #3c1e10; box-shadow: 3px 3px 8px rgba(0,0,0,.55); }
+#subnavi.mt-subnavi li.mt-fly-open > ul.mt-flyout { display: block; }
+#subnavi.mt-subnavi ul.mt-flyout li { margin: 0; padding: 0; width: auto; float: none; }
+#subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem { display: block; position: relative; padding: 7px 60px 6px 16px; margin: 0; color: #f2e69f; background: none;
+	font-family: "Droid Serif", georgia, "Times New Roman", palatino, serif; font-size: 13px; line-height: 16px; white-space: nowrap; text-decoration: none; border: 0; }
+#subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem .quant { position: absolute; right: 14px; top: 7px; color: #d9c27a; font-size: 12px; }
+#subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem:hover, #subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem:focus { background: #e8a314; color: #680603; }
+#subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem:hover .quant, #subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem:focus .quant { color: #270301; }
+#subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem.mt-subcat-active { color: #e8a314; font-weight: bold; }
+#subnavi.mt-subnavi ul.mt-flyout a.mt-flyitem.mt-subcat-active:hover { color: #680603; }
 /* the path of a subcategory (three steps, "Nakładki na broń i szarfy") was cut at the shop's 600 px */
 #category h2 .breadcrumb.mt-crumb-3 { max-width: 785px; font-size: .76em; }
 /* three cards a row beside it also with the native scrollbar (267 + 20 px each did not fit next to it) */

@@ -63,26 +63,29 @@
 	<div class="tabbable tabs-left">
 		<ul id="subnavi" class="nav nav-tabs mt-subnavi">
 			<?php
-				// MT2009_PLUS_ITEMSHOP_V3_V4: a group ("Wygląd postaci") with its subcategories nested under it, as the big
-				// servers' shop has them - open (with the number of offers of each) while the group or one of them is
-				// chosen; the subcategories are not top items of their own.
+				// MT2009_PLUS_ITEMSHOP_V3_V4: a group ("Wygląd postaci") over its subcategories; they are not top items of their own.
+				// MT2009_PLUS_ITEMSHOP_V3_V5: the owner's round 2b - as on the big servers' shop the subcategories open in a
+				// panel to the RIGHT of the strip, over the cards (js/mt2009.js: on hover and on a click of the group, closed by
+				// leaving it or a click elsewhere), not inline under the group; the group's tile has the ▸ arrow and is marked
+				// active while it or one of its subcategories is chosen. The panel's first row is the whole group.
 				foreach($categoriesbyid as $key => $category) {
 					if(!$key || !empty($category['parent']))
 						continue;
 					$children = $category['kind']=='group' ? $shop->categoryChildren($key) : [];
-					$group_open = count($children) && ($key==$active_cat || in_array($active_cat, $children));
+					$group_active = count($children) && ($key==$active_cat || in_array($active_cat, $children));
 			?>
-			<li<?php if(count($children)) print ' class="mt-has-sub'.($group_open ? ' mt-sub-open' : '').'"'; ?>>
-				<a class="btn-catitem mt-catitem cat-<?php print $key; if($key==$active_cat) print ' btn-catitem-active'; if(in_array($category['kind'], ['auctions', 'premium', 'topup'])) print ' mt-cat-'.$category['kind']; ?>" <?php print $cat_link($key); ?><?php if($category['kind']=='topup') print ' title="'.$lang_shop['mt-open-url'].'"'; ?>>
+			<li<?php if(count($children)) print ' class="mt-has-sub'.($group_active ? ' mt-sub-active' : '').'"'; ?>>
+				<a class="btn-catitem mt-catitem cat-<?php print $key; if($key==$active_cat || $group_active) print ' btn-catitem-active'; if(in_array($category['kind'], ['auctions', 'premium', 'topup'])) print ' mt-cat-'.$category['kind']; ?>" <?php print $cat_link($key); ?><?php if($category['kind']=='topup') print ' title="'.$lang_shop['mt-open-url'].'"'; ?>>
 					<?php print mt2009_category_icon($key, 20); ?><span><?php print htmlspecialchars($category['name']); ?></span><?php if(count($children)) print '<i class="mt-sub-arrow"></i>'; ?>
 				</a>
-				<?php if($group_open) { ?>
-				<ul class="mt-subcats">
+				<?php if(count($children)) { ?>
+				<ul class="mt-flyout">
+					<li>
+						<a class="mt-flyitem<?php if($key==$active_cat) print ' mt-subcat-active'; ?>" <?php print $cat_link($key); ?>><?php print $lang_shop['mt-group-all']; ?><span class="quant">(<?php print $shop->getItemShopCount($key, true); ?>)</span></a>
+					</li>
 					<?php foreach($children as $child) { if(!isset($categoriesbyid[$child])) continue; ?>
 					<li>
-						<a class="mt-subcatitem cat-<?php print $child; if($child==$active_cat) print ' mt-subcat-active'; ?>" <?php print $cat_link($child); ?>>
-							<?php print mt2009_category_icon($child, 16); ?><span class="mt-subcat-name"><?php print htmlspecialchars($categoriesbyid[$child]['name']); ?></span><span class="quant">(<?php print $shop->getItemShopCount($child, true); ?>)</span>
-						</a>
+						<a class="mt-flyitem cat-<?php print $child; if($child==$active_cat) print ' mt-subcat-active'; ?>" <?php print $cat_link($child); ?>><?php print htmlspecialchars($categoriesbyid[$child]['name']); ?><span class="quant">(<?php print $shop->getItemShopCount($child, true); ?>)</span></a>
 					</li>
 					<?php } ?>
 				</ul>
