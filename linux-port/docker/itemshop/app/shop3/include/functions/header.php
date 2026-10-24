@@ -119,6 +119,9 @@
 		foreach($categories as $category)
 		{
 			$categoriesbyid[$category['id']]['icon'] = $category['icon'];
+			// MT2009_PLUS_ITEMSHOP_V3_V3: what the category is (itemshop3.categories: items, featured, marks, auctions,
+			// voucher, premium, topup - the in-game window's buttons)
+			$categoriesbyid[$category['id']]['kind'] = isset($category['kind']) ? $category['kind'] : 'items';
 			
 			if($category[$_SESSION['lang']]!=null && $category[$_SESSION['lang']]!='')
 				$categoriesbyid[$category['id']]['name'] = $category[$_SESSION['lang']];
@@ -149,7 +152,7 @@
 		$shop_char = null;
 		if(!empty($_SESSION['pid']))
 		{
-			$shop_char = $player_db->get("player", ["id", "name", "job", "account_id"], ["id" => (int)$_SESSION['pid']]);
+			$shop_char = $player_db->get("player", ["id", "name", "job", "level", "account_id"], ["id" => (int)$_SESSION['pid']]);
 			if(!$shop_char || (int)$shop_char['account_id'] != (int)$_SESSION['id'])
 				$shop_char = null;
 		}
@@ -166,6 +169,10 @@
 		// MT2009_PLUS_ITEMSHOP_V3_V1: Smocze Monety (cash) and Smocze Znaki (cash_mark - MT2009_PLUS_SZ_UNIFIED_V1).
 		$amount_coins = $account->getCoins(1, $_SESSION['id']);
 		$amount_jcoins = $account->getCoins(2, $_SESSION['id']);
+		// MT2009_PLUS_ITEMSHOP_V3_V3: the premium account (account.premium_expire, the game's subscription) - while it
+		// runs the in-game shop sells no VIP effect (CItemShopManager::BuyItem).
+		$premium_until = $account->getAccountData('premium_expire', $_SESSION['id']);
+		$premium_active = $premium_until && strtotime($premium_until) > $shop->currentTime();
 		$count_not_taken_items = $shop->countNotTakenItems($_SESSION['id']);
 		$searchString = null;
 
@@ -193,11 +200,29 @@
 			$specific_category = false;
 			$count_all = $shop->getItemShopCount(null, false, $searchString);
 			
-			// MT2009_PLUS_ITEMSHOP_V3_V2: the top bar's "Nowości" and "Popularne" (items/new/, items/popular/).
-			$list_mode = ($searchString==null && in_array($id, ['new', 'popular'], true)) ? $id : null;
+			// MT2009_PLUS_ITEMSHOP_V3_V2: the top bar's "Popularne" (items/popular/). MT2009_PLUS_ITEMSHOP_V3_V3: no
+			// "Nowości" any more (the in-game lines have no date) - an old link goes to "Polecane".
+			if($id==='new')
+			{
+				header("Location: ".$shop_url."items/1/");
+				die();
+			}
+			// MT2009_PLUS_ITEMSHOP_V3_V3: the in-game window's buttons that are no list - the voucher tab, the premium
+			// account page; the top-up link opens the system's browser (index.php) and lands here only without script.
+			if($id && $id==intval($id) && isset($categoriesbyid[(int)$id]))
+			{
+				$kind = $categoriesbyid[(int)$id]['kind'];
+				$target = ['voucher' => 'user/redeem/', 'premium' => 'user/premium/', 'topup' => 'user/premium/'];
+				if(isset($target[$kind]))
+				{
+					header("Location: ".$shop_url.$target[$kind]);
+					die();
+				}
+			}
+			$list_mode = ($searchString==null && in_array($id, ['popular'], true)) ? $id : null;
 			if($list_mode)
 			{
-				$all_items = $list_mode=='new' ? $shop->getNewItems(60) : $shop->getPopularItems(60);
+				$all_items = $shop->getPopularItems(60);
 				$count_cat = count($all_items);
 			}
 			else
@@ -239,7 +264,9 @@
 			$friend = isset($_GET['friend']) ? $_GET['friend'] : null;
 			// MT2009_PLUS_ITEMSHOP_V3_V2: how many to buy (?q=, the card's or the window's choice; 1 for an item
 			// that does not stack - pages/java/buy.php checks it against the offer).
-			$buy_qty = isset($_GET['q']) ? max(1, min(50, (int)$_GET['q'])) : 1;
+			// MT2009_PLUS_ITEMSHOP_V3_V3: as many as the in-game shop lets buy at once (BuyItem: 1..10); more is refused
+			// in pages/java/buy.php, not cut down.
+			$buy_qty = isset($_GET['q']) ? (int)$_GET['q'] : 1;
 			$account_id = $_SESSION['id'];
 			$from_account = $to_player = 0;
 			
@@ -262,17 +289,17 @@
 			{
 				$item = $shop->getItemShop($id);
 				$final_price = $shop->getItemPrice($item['coins'], $item['discount']);
-				$item_name = $shop->getName($item['vnum']);
+				// MT2009_PLUS_ITEMSHOP_V3_V3: the line's name as the in-game window shows it (with its suffix)
+				$item_name = isset($item['name']) && $item['name']!='' ? $item['name'] : $shop->getName($item['vnum']);
 				$bonus_selection = [[], []];
 				
 				if($item['expire']!=null)
 				{
+					// MT2009_PLUS_ITEMSHOP_V3_V3: a flash offer's end (the view's available says if it sells now);
+					// the package deleted an expired offer here - our lines are the in-game shop's, never deleted.
 					$time_left = strtotime($item['expire'])-$shop->currentTime();
 					if($time_left<0)
-					{
 						$time_left = $item['available'] = 0;
-						$shop->deleteItem($item['id']);
-					}
 				}
 				if($item['discount']>0)
 				{
@@ -381,32 +408,19 @@
 			
 			$transactions = $shop->getTransactionsItem($_SESSION['id'], $page_number);
 		} else if($current_page=='redeem') {
+			// MT2009_PLUS_ITEMSHOP_V3_V3: "Wykorzystaj voucher" of the in-game shop - our promo codes and the cash
+			// vouchers, as the game redeems them (include/functions/voucher.php); POST, then back here with the answer.
 			if(isset($_POST['code']))
 			{
-				$redeem_item = $shop->getRedeemCode($_POST['code']);
-				if($shop->checkRedeemCode($_POST['code']))
-				{
-					$shop->deleteRedeemCode($_POST['code']);
-					if(!$shop->checkRedeemCode($_POST['code']))
-					{
-						if($redeem_item['type']==1 || $redeem_item['type']==2)
-						{
-							$account->addCoinsByID($redeem_item['type'], $redeem_item['item'], $_SESSION['id']);
-							
-							header("Location: ".$shop_url."user/redeem/");
-							die();
-						}
-						else {
-							$shop->addItemHistory($redeem_item['item'], $_SESSION['id'], 0, 1, 0, 3, 0, 0);
-							
-							header("Location: ".$shop_url."user/deposit/");
-							die();
-						}
-					}
-				}
+				require_once 'include/functions/voucher.php';
+				$_SESSION['voucher_answer'] = mt2009_redeem_voucher((string)$_POST['code']);
+				header("Location: ".$shop_url."user/redeem/");
+				die();
 			}
+			$voucher_answer = isset($_SESSION['voucher_answer']) ? $_SESSION['voucher_answer'] : null;
+			unset($_SESSION['voucher_answer']);
 		}
-		else if($current_page=='logout') {
+				else if($current_page=='logout') {
 			$account->doLogout();
 			
 			header("Location: ".$shop_url);

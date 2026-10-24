@@ -78,7 +78,10 @@
 							<a class="btn-sideitem" href="<?php print $shop_url; ?>user/deposit/"><i class="icon-stack"></i> <?php print $lang_shop['my-objects']; ?></a>
 						</li>
 						<li>
-							<a class="btn-sideitem" href="<?php print $shop_url; ?>user/redeem/"><i class="icon-barcode"></i> <?php print $lang_shop['redeem-code']; ?></a>
+							<a class="btn-sideitem" href="<?php print $shop_url; ?>user/redeem/"><i class="icon-barcode"></i> <?php print $lang_shop['mt-use-voucher']; ?></a>
+						</li>
+						<li>
+							<a class="btn-sideitem" href="<?php print $shop_url; ?>user/premium/"><i class="icon-star"></i> <?php print $lang_shop['mt-premium']; ?></a>
 						</li>
 						<li>
 							<a class="btn-sideitem" href="<?php print $shop_url; ?>logout/"><i class="icon-signup"></i> <?php print $lang_shop['logout']; ?></a>
@@ -92,12 +95,14 @@
 								<a class="btn-navitem icon-home<?php if($current_page=='home') print ' btn-navitem-active'; ?>" href="<?php print $shop_url; ?>"></a>
 							</li>
 							<?php
-								$nav_mode = ($current_page=='items') ? ($list_mode ? $list_mode : ($id==4 && $specific_category ? 'mileage' : ($searchString ? 'search' : 'all'))) : '';
+								// MT2009_PLUS_ITEMSHOP_V3_V3: "Polecane" (the in-game window's first button) in the place of "Nowości"
+								// (the in-game lines have no date), "Za Smocze Znaki" = its "Smocze Znaki" (category 12).
+								$nav_mode = ($current_page=='items') ? ($list_mode ? $list_mode : ($specific_category && $id==12 ? 'mileage' : ($specific_category && $id==1 ? 'featured' : ($searchString ? 'search' : 'all')))) : '';
 								$nav = [
 									['all', $shop_url.'items/', $lang_shop['all_objects'], ''],
-									['new', $shop_url.'items/new/', $lang_shop['mt-new'], ''],
+									['featured', $shop_url.'items/1/', $lang_shop['mt-featured'], ''],
 									['popular', $shop_url.'items/popular/', $lang_shop['mt-popular'], ''],
-									['mileage', $shop_url.'items/4/', $lang_shop['mt-for-marks'], 'special-category'],
+									['mileage', $shop_url.'items/12/', $lang_shop['mt-for-marks'], 'special-category'],
 								];
 								foreach($nav as $n) {
 							?>
@@ -134,6 +139,9 @@
 								break;
 							case 'redeem':
 								include 'pages/shop/redeem.php';
+								break;
+							case 'premium':	// MT2009_PLUS_ITEMSHOP_V3_V3: "Konto Premium" of the in-game shop
+								include 'pages/shop/premium.php';
 								break;
 							case 'wheel':
 								include 'pages/shop/wheel.php';
