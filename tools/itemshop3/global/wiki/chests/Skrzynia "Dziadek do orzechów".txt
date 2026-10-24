@@ -1,0 +1,43 @@
+{{Item/Layout
+
+|image = Skrzynia "Dziadek do orzechów".png
+
+|Opis = Towarzysze, którzy znakomicie rodzą sobie z rozłupywaniem orzechów oraz pożyteczne przedmioty dla zwierzaków. To wszystko można znaleźć w nadzwyczajnej skrzyni zimowej. Otwórz ją i sprawdź, co zawiera.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Stefek Orzeszek (pieczęć)}} (30, 15 lub 7 dni)
+* {{ti|Franiu Fistaszek (pieczęć)}} (30, 15 lub 7 dni)
+* {{ti|Płatek Śniegu (pieczęć) }} (30, 15 lub 7 dni)
+* {{ti|Skrzynia Ksiąg Zwierza}}
+* {{ti|Odżywka}}
+* {{ti|Świąteczna Skrzynia}}
+* {{ti|Cukier dla Konia}} 
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Księga Lidera}}
+* {{ti|Medal Smoka}} x10
+* {{ti|Pierścień Teleportacji}}
+* {{ti|Wino z Kwiatu Brzoskwini}} x3
+* {{ti|Mega Przekąska}} (30, 15 lub 7 dni)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 35 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

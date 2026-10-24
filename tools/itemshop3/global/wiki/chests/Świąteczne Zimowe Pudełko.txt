@@ -1,0 +1,92 @@
+{{Item/Layout
+
+|image = Świąteczne Zimowe Pudełko.png
+
+|Opis = To pudełko jest wypełnione po brzegi wspaniałymi świątecznymi skarbami. Ciekawe, co otrzymasz? Zajrzyj do niej, by się tego dowiedzieć! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* <b>Ciepły Zestaw Przebiśniegu:</b>
+**{{ti|Ciepła Czapa Zimowa+ (k)}} (60d)
+**{{ti|Ciepła Czapa Zimowa+ (m)}} (60d)  
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (k)}} (60d)
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (m)}} (60d) 
+**{{ti|Przebiśnieg (pieczęć)}} (60d)
+* <b>Ciepły Zestaw Śnieżki:</b>
+**{{ti|Ciepła Czapa Zimowa+ (k)}} (30d)
+**{{ti|Ciepła Czapa Zimowa+ (m)}} (30d)  
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (k)}} (30d)
+**{{ti|height=2|Ciepły Kaftan Zimowy+ (m)}} (30d) 
+**{{ti|Śnieżka (pieczęć)}} (30d)
+* <b>Czerwony Świąteczny Pakiet:</b>
+**{{ti|Czer. Czapka Świąt.+ (k)}} (30d)
+**{{ti|Czer. Czapka Świąt.+ (m)}} (30d)  
+**{{ti|height=2|Czer. Sweter Świąt.+ (k)}} (30d)
+**{{ti|height=2|Czer. Sweter Świąt.+ (m)}} (30d) 
+**{{ti|Zielony Świąteczny Ent (pieczęć)}} (30d)
+* <b>Odświętny Pakiet Ognistego Smoka:</b>
+**{{ti|Hełm Gwardii Ognistego Smoka+ (k)}} (30d)
+**{{ti|Hełm Gwardii Ognistego Smoka+ (m)}} (30d)  
+**{{ti|height=2|Gwardia Ognistego Smoka+ (k)}} (30d)
+**{{ti|height=2|Gwardia Ognistego Smoka+ (m)}} (30d) 
+**{{ti|Stefek Orzeszek (pieczęć)}} (30d)
+* <b>Czerwony Zimowy Pakiet:</b>
+**{{ti|Świąt. Beret+ (czerwony)}} (30d)
+**{{ti|Świąt. Kaptur+ (czer.)}} (30d)  
+**{{ti|height=2|Czerw. Galowy Strój+ (k)}} (30d)
+**{{ti|height=2|Czerw. Galowy Strój+ (m)}} (30d) 
+**{{ti|Czer. Elf (Maksi) (pieczęć)}} (30d)
+* {{ti|Magiczny Kamień}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Opt. Skrz. Ksiąg Zwierza|Optymalna Skrzynia Ksiąg Zwierza}}
+* {{ti|Zaczaruj zwierzaka}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}} (x3)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}} (x2)
+* {{ti|Spirala Czasu (20%)}} (x3)
+* {{ti|Spirala Czasu (10%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]] lub 10 sztuk za 319 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* Wszystkie 5 zestawów zawiera jednego towarzysza oraz jeden kostium bożonarodzeniowy dla postaci męskich i żeńskich, które zapewniają potężne bonusy i stanowią część [[Bonus Zestawu|bonusu zestawu]].
+
+
+}}
+
+[[hu:Ünnepi_téli_doboz]]

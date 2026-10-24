@@ -1,0 +1,48 @@
+{{Item/Layout
+
+|Opis = Ta tajemnicza skrzynia zawiera losowy przedmiot.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|height=2|Pustynny Bojownik+}} (14/30 dni) 
+* {{ti|height=2|Pustynna Bojowniczka+}} (14/30 dni)
+* {{ti|Magiczny Kamień}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Księga Lidera}} (3 godz.)
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Przepustka}} x3 ''(można handlować)''
+* {{ti|Medal Smoka}} x10
+* {{ti|Błogosławieństwo Życia}} x2
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Skrzynia Enigma]] , [[Skrzynia Kamienia Księżycowego]], [[Skrzynia Towarzysza Orientu]]
+* '''Inne:''' [[Item-Shop]] za 39 [[Smocze Monety|SM]], [[Walentynkowe Koło Losu]], [[Koło Halloween]]
+
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}
+
+[[cz:Truhla pouštní bouře]]
+[[de:Wüstensturm-Truhe]]
+[[en:Desert Storm Chest]]
+[[hu:Sivatagi vihar láda]]
+[[ro:Cufăr Furtună de Nisip]]

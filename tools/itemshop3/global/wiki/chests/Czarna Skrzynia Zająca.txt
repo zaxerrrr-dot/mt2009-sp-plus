@@ -1,0 +1,66 @@
+{{Item/Layout
+
+|image = Czarna Skrzynia Zająca.png
+
+|Opis = Z tej ciemnej skrzyni możesz zgarnąć mnóstwo królewskich skarbów - może nawet czarny pakiet zająca?
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Czarny Pakiet Zająca:
+** {{ti|Czar. Maska Zaj. Lorda+|Czarna Maska Zajęczego Lorda+}} (60d)
+** {{ti|height=2|Czarna Lampa Lorda+}} (60d)
+** {{ti|Niebieski Oldtimer (pieczęć)|Niebieski Oldtimer}} (30d)
+* LUB:
+** {{ti|Czar. Maska Zaj. Damy+|Czarna Maska Zajęczej Damy+}} (60d)
+** {{ti|height=2|Czarna Lampa Damy+}} (60d)
+** {{ti|Niebieski Oldtimer (pieczęć)|Niebieski Oldtimer}} (30d)
+* {{ti|height=2|Czarna Lampa Lorda+}} (15/30d)
+* {{ti|height=2|Czarna Lampa Damy+}} (15/30d)
+* {{ti|Czar. Maska Zaj. Damy+|Czarna Maska Zajęczej Damy+}} (15/30d)
+* {{ti|Czar. Maska Zaj. Lorda+|Czarna Maska Zajęczego Lorda+}} (15/30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Siódmy Zestaw Wielkanocny|Bonus Zestawu]].
+}}
+
+[[ro:Cufăr Iepure Negru]]

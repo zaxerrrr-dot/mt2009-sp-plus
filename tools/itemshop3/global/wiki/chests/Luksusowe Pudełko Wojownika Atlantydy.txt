@@ -1,0 +1,58 @@
+{{Item/Layout
+
+|image = Luksusowe Pudełko Wojownika Atlantydy.png
+
+|Opis = Jaki skarb czeka na Ciebie w tej magicznej skrzyni z morskich głębin? Otwórz ją i sprawdź, czy zostaniesz potężnym wojownikiem Atlantydy!
+Skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Zestaw Wojownika Atlantydy składający się z:
+** {{ti|Hełm Atlantydy+ (m)|Hełm Atlantydy+}} (30d)
+** {{ti|height=2|Wojownik Atlantydy+}} (30d)
+** {{ti|Skubcio (pieczęć)|Skubcio}} (15d)
+*LUB:
+** {{ti|Hełm Atlantydy+ (k)|Hełm Atlantydy+}} (30d)
+** {{ti|height=2|Wojowniczka Atlantydy+}} (30d)
+** {{ti|Skubcio (pieczęć)|Skubcio}} (15d)
+*Poza zestawem:
+* {{ti|Hełm Atlantydy+ (m)|Hełm Atlantydy+}} (7/15d)
+* {{ti|height=2|Wojownik Atlantydy+}} (7/15d)
+* {{ti|Hełm Atlantydy+ (k)|Hełm Atlantydy+}} (7/15d)
+* {{ti|height=2|Wojowniczka Atlantydy+}} (7/15d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

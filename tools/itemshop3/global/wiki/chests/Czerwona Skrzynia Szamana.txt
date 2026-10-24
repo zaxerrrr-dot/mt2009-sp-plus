@@ -1,0 +1,62 @@
+{{Item/Layout
+
+|image = Czerwona Skrzynia Szamana.png
+
+|Opis = Z tego pudełka możesz zgarnąć potężne czarnomagiczne skarby! Zgarnij przy odrobinie szczęścia zestaw czerwonego szamana z towarzyszem lub jedną z wielu innych przerażających niespodzianek.
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Zestaw Czerwonego Szamana składający się z:
+** {{ti|Czerw. Szam. Korona+ (k)|Czerwona Szamańska Korona+ (k)}} (30d)
+** {{ti|height=2|Czerwona Szamanka+}} (30d)
+** {{ti|Dzielne Straszydło Tiki (pieczęć)|Dzielne Straszydło Tiki}} (30d)
+* LUB:
+** {{ti|Czerw. Szam. Korona+ (m)|Czerwona Szamańska Korona+ (m)}} (30d)
+** {{ti|height=2|Czerwony Szaman+}} (30d)
+** {{ti|Dzielne Straszydło Tiki (pieczęć)|Dzielne Straszydło Tiki}} (30d)
+
+* {{ti|height=2|Czerwona Szamanka+}} (7/15d)
+* {{ti|height=2|Czerwony Szaman+}} (7/15d)
+* {{ti|Czerw. Szam. Korona+ (k)|Czerwona Szamańska Korona+ (k)}} (7/15d)
+* {{ti|Czerw. Szam. Korona+ (m)|Czerwona Szamańska Korona+ (m)}} (7/15d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki|Kamyk}} (x200)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Ósmy Zestaw Halloweenowy|Bonus Zestawu]].
+
+}}

@@ -1,0 +1,40 @@
+{{Item/Layout
+
+|image = Przecudowny Pakiet Skrzyń.png
+
+|Opis = Czy chcesz ponownie wyhodować urocze zwierzątko? Z tego pakietu otrzymasz Skrzynię Szczeniaka, w której może znajdować się twój nowy lojalny towarzysz. A może masz bzika na punkcie rzadkich przedmiotów? Tak? To zainteresuje cię właśnie ta Skrzynia Tajemnic. Pakiet ten zawiera jeszcze 3 inne skrzynie!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+* {{ti|Skrzynia Szczeniaka}}
+* {{ti|Skrzynka Tajemnic}}
+
+'''Dodatkowo otrzymacie losowy przedmiot spośród jednej z 3 skrzyń:'''
+* {{ti|Wielka Skrzynia Kowalstwa|Wielkiej Skrzyni Kowalstwa}}
+* {{ti|Skrzynia Kamienia Księżycowego|Skrzyni Kamienia Księżycowego}}
+* {{ti|Nadzwyczajna Purpurowa Skrzynia|Nadzwyczajnej Purpurowej Skrzyni}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 195 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Pakiet ten obdarzy cię pięcioma przecudnymi skrzyniami.
+
+}}

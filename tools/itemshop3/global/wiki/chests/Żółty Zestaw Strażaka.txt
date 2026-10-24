@@ -1,0 +1,43 @@
+{{Item/Layout
+
+|image = Żółty Zestaw Strażaka.png
+
+|Opis = Jesteś na zawołanie, gdy instancja płonie! Każda część kostiumu daje ci 1 do 3 losowych bonusów. Mroźny Chrząszcz daje ci dodatkowo +5% odporności na lód oraz +1500 PŻ. Łącznie przedmioty dają ci bonus zestawu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+'''Dla mężczyzn:'''
+* {{ti|Mroźny Chrząszcz (pieczęć)}} (60 dni)
+* {{ti|height=2|Mundur Strażaka+ (żółty) (m)}} (60  dni)
+* {{ti|Hełm Strażaka+ (żółty) (m)}} (60 dni)
+'''Dla kobiet:'''
+* {{ti|Mroźny Chrząszcz (pieczęć)}} (60 dni)
+* {{ti|height=2|Mundur Strażaka+ (żółty) (k)}} (60 dni)
+* {{ti|Hełm Strażaka+ (żółty) (k)}} (60 dni)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 999 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zestaw kostiumu z [[Bonus Zestawu#Pierwszy Zestaw Letni|Bonusem Zestawu]].
+* Od 1 do 3 losowych bonusów każdy (mundur, hełm).
+* Ograniczenie czasowe od zakupu.
+
+}}

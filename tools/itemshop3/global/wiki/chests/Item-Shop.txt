@@ -1,0 +1,3770 @@
+{{Subpage|[[Strona główna|Metin2Wiki]]}}
+
+==Item-Shop==
+{| align="right"
+| 
+<gallery widths=50 heights=40 perrow=4>
+W grze - Item-Shop.gif|IS - normalna ikona
+W grze - Item-Shop - Walentynki.gif|IS - ikona na Walentynki
+W grze - Item-Shop - Wielkanoc.gif|IS - ikona na Wielkanoc
+W grze - Item-Shop - Halloween.gif|IS - ikona na Halloween
+</gallery>
+|}
+
+W sklepie można zaopatrzyć się w różne przedmioty, których w grze zwykle nie można zdobyć (z drobnymi wyjątkami). Przedmioty te kupuje się za [[Smocze Monety|SM]] lub [[Smocze Znaki|SZ]], które nabywa się za prawdziwe pieniądze (PLN). W większości przedmioty zakupione w [[Item-Shop]] nie mogą być wymieniane, ani odsprzedawane w grze.
+
+Poniżej zaprezentowane zostały wszystkie przedmioty jakie można nabyć w [[Item-Shop]]. By zapoznać się z aktualną ofertą, zapraszamy na stronę główną gry [http://www.metin2.pl Metin2 PL]
+<br>Aby wejść do [[Item-Shop]] na stronie głównej gry, musimy kliknąć link.
+{| {{Prettytable}}
+|-{{Hl3}}
+|style="text-align:center" | [[Grafika:Link strony głównej.png|100px]]
+|-
+|style="text-align:center" | [http://www.metin2.pl Metin2]
+|-
+|}
+
+Aby wejść do [[Item-Shop]] w grze, musimy kliknąć na obracającą się monetę [[Plik:W grze - Item-Shop.gif]] w lewym dolnym rogu.
+
+'''Nowość:''' 30.09.2010 dodano do [[Ekwipunek|Ekwipunku]] przycisk [[Plik:Magazyn Item Shop.png]] Magazyn Item Shop, za pomocą, którego można w każdym miejscu wziąć przedmiot z Item Shopu, po uprzednim wprowadzeniu hasła.
+
+== Hity ==
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align: center;" | {{ti2|Szkatuła na Biżuterię}}
+| [[Szkatuła na Biżuterię]]
+| Zawiera losowo pierścień, amulet, lizak lub miksturę.
+| style="text-align: center;" | -
+| style="white-space: nowrap;" | 
+* x20+3 gratis<br>
+* x10+1 gratis<br>
+* x1
+| style="white-space: nowrap;" |
+* 1980 SM<br>
+* 990 SM<br>
+* 379 SM 
+|-
+| style="text-align: center;" | {{ti2|Zwój Badacza}}
+| [[Zwój Badacza]]
+| Zresetuj misję "Badanie Seona-Pyeonga" dla poziomu 92 lub 94, byś mógł ją ponownie ukończyć.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 249 SM
+|-
+| style="text-align: center;" | {{ti2|Zwój Zapomnienia}}
+| [[Zwój Zapomnienia]]
+| Usuwa czas regeneracji po osiągnięciu kolejnego poziomu ujeżdżania. Udaj się do stajennego, aby użyć tego przedmiotu.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x25
+* x10
+* x1
+| style="white-space: nowrap;" |
+* 500 SM 
+* 240 SM 
+* 25 SM 
+|-
+| style="text-align: center;" | {{ti2|Zdobna Skrzynia z Odłamkiem}}
+| [[Zdobna Skrzynia z Odłamkiem]]
+| Zawiera księgę umiejętności lub przy odrobienie szczęścia odłamek w losowym kolorze. Szansa na odłamek jest większa niż w zwyczajnej skrzyni z odłamkiem.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 12 SM 
+|-
+| style="text-align: center;" | {{ti2|Buty Wiatru}}
+| [[Buty Wiatru]]
+| Buty stworzone przez Boga Smoków, które wykorzystując niesamowitą moc wiatru, ułatwiają podróżowanie po świecie.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 59 SM
+|-
+| style="text-align: center;" | {{ti2|Szarfa Władcy (prosta)}}
+| [[Szarfa Władcy (prosta)]]
+| Szarfa ta absorbuje 1% bonusów wykorzystanej w tym celu broni lub zbroi.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 49 SM 
+|-
+| style="text-align: center;" | {{ti2|Średni Suplement}}
+| [[Średni Suplement]]
+| Zwiększa szansę na dodanie bonusu do 10%. Wymóg do maksymalnego zwiększenia: 5x Średni Suplement
+10x Odłamek.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 5 SM
+|-
+| style="text-align: center;" | {{ti2|Duży Suplement}}
+| [[Duży Suplement]]
+| Zwiększa szansę na dodanie bonusu do 20%. Wymóg do maksymalnego zwiększenia: 5x Duży Suplement
+10x Odłamek.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 9 SM 
+|-
+| style="text-align: center;" | {{ti2|Silny Suplement}}
+| [[Silny Suplement]]
+| Zwiększa szansę na dodanie bonusu do 50%. Wymóg do maksymalnego zwiększenia: 5x Silny Suplement.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 18 SM 
+|-
+| style="text-align: center;" | {{ti2|Błogosławieństwo (przedmiot)}}
+| [[Błogosławieństwo (przedmiot)]]
+| Służy do zmiany 6. i 7. bonusu.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 129 SM 
+|-
+| style="text-align: center;" | {{ti2|Kompas Strażnika}}
+| [[Kompas Strażnika]]
+| Wieczne poszukiwanie strażników Świątyni Ochao jest dla ciebie zbyt uciążliwe? Tak? To zgarnij ten elegancki kompas strażnika i podążaj za jego igłą!
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 2 SM 
+|-
+| style="text-align: center;" | {{ti2|Magmowa Skrzynka Meley}}
+| [[Magmowa Skrzynka Meley]]
+| Dzięki zawartości tej skrzyni zdobędziesz ognioodporne wyposażenie! Otrzymasz wierzchowca smok magmy oraz małego strażnika smoków Minidall i przepustkę do Schronienia Meley. Każda załączona mikstura obdarzy cię na 10 min. mocą smoka.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 199 SM 
+|-
+| style="text-align: center;" | {{ti2|Duża Magmowa Skrzynka Meley}}
+| [[Duża Magmowa Skrzynka Meley]]
+| Dzięki zawartości tej skrzyni zdobędziesz ognioodporne wyposażenie! Otrzymasz wierzchowca smok magmy oraz małego strażnika smoków Minidall i trzy przepustki do Schronienia Meley. Każda załączona mikstura mocy smoka obdarzy cię na 10 min. mocą smoka. Ponadto możesz zwiększyć swoją szansę na przeszywający cios 3 razy po 10 minut. Dzięki książce lidera każdy z członków grupy może zebrać przez 3 godz. 30% więcej punktów doświadczenia.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 499 SM 
+|-
+| style="text-align: center;" | {{ti2|Boska Odżywka}}
+| [[Boska Odżywka]]
+| W tym przysmaku drzemie boska moc! Służy do wskrzeszenia twojego martwego zwierzaka. Liczba wymaganych do tego przedmiotów zależy od poziomu twojego zwierzaka.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 179 SM 
+|-
+| style="text-align: center;" | {{ti2|Zwój Badacza}}
+| [[Zwój Badacza]]
+| Zresetuj misję "Badanie Seona-Pyeonga" dla poziomu 92 lub 94, byś mógł ją ponownie ukończyć.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 379 SM 
+|-
+| style="text-align: center;" | {{ti2|Power Booster Pack}}
+| [[Power Booster Pack]]
+| Za pomocą Power Booster Pack można przywołać Mroźnego Rufusa na 30 dni.
+Zdobyć: 
+*10x [[Rada Pustelnika|Rad Pustelnika]],
+*30x [[Zwój Egzorcyzmu|Zwojów Egzorcyzmu]],
+*50x [[Eliksir Poszukiwacza|Eliksirów Poszukiwacza]].
+| style="text-align: center;" | Mroźny Rufus 30 dni
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 799 SM
+|-
+| style="text-align: center;" | {{ti2|Znak Strażnika}}
+| [[Znak Strażnika]]
+| Talizman ten daje ci na trzy godziny dostęp do Świątyni Zodiaku, bez zużycia Animosfer.
+| style="text-align: center;" | 3 godziny
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 87 SM
+|-
+| style="text-align: center;" | {{ti2|Pergamin Sfer}}
+| [[Pergamin Sfer]]
+| Naładuj 30 Animosfer, aby otrzymać wstęp do Świątyni Zodiaku.
+| style="text-align: center;" | Ładuje 30 Animosfer
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 29 SM  
+|-
+| style="text-align: center;" | {{ti2|Auto Łowy}}
+| [[Auto Łowy]]
+| Przedmiot premium, który umożliwia automatyczny atak na potwory, użycie umiejętności i mikstur
+| style="white-space: nowrap;" | 
+* 14 dni 
+* 7 dni
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 95 SM 
+* 49 SM 
+|-
+| style="text-align: center;" | {{ti2|Zaczarowanie Przedmiotu+}}
+| [[Zaczarowanie Przedmiotu+]]
+| Za pomocą tego przedmiotu, można zobaczyć podgląd nowych bonusów, a następnie zdecydować, czy chcemy na nie zmienić, czy też nie.
+| style="text-align: center" | -
+| style="white-space: nowrap;" |
+* x1
+| style="white-space: nowrap;" |
+* 129 SM
+|-
+| style="text-align: center;" | {{ti2|Zmiana nazwy}}
+| [[Zmiana nazwy]]
+| Za pomocą Zmiany Nazwy możesz zmienić imię wybranej postaci.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 199 SM
+|-
+| style="text-align: center;" | {{ti2|Klatka Transportowa}}
+| [[Klatka Transportowa]]
+| Miej swojego towarzysza zawsze przy sobie - dzięki tej praktycznej klatce. Gdy go do niej wsadzić, będzie on przez 30 dni zdatny do handlu. Dotyczy jedynie zwierzaków, które można levelować.
+| style="text-align: center;" | 30 dni
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" | 
+* 79 SM
+|-
+| style="text-align: center;" | {{ti2|Szpula Kaszmiru}}
+| [[Szpula Kaszmiru]]
+| Dzięki teamu przedmiotowi możesz nadać swojemu prywatnemu sklepowi indywidualny wygląd.
+| style="text-align: center;" | 7 dni
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" | 
+* 9 SM
+|-
+| style="text-align: center;" | {{ti2|Skrzynia Ksiąg Zwierza}}
+| [[Skrzynia Ksiąg Zwierza]]
+| W tej skrzyni z księgami znajduje się losowa księga zwierza. Znajdziesz w niej cenne wskazówki i tabelki z instrukcjami o rozwoju twojego zwierzaka. Ponadto stronice zdobią liczne fotografie i graficznie wyrafinowana czcionka - miłej lektury!
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" | 
+* 129 SM
+|-
+| style="text-align: center;" | {{ti2|Odżywka}}
+| [[Odżywka]]
+| Każdy zwierzak chce być traktowany jak najlepiej, co wymaga nie byle jakiej karmy. Te odżywcze smakołyki są tak pyszne i zdrowe, że regenerują nawet siły żywotne! Nakarm zmęczonego zwierzaka tym smakołykiem, a od razu zregeneruje siły. Jeśli nakarmisz nim martwego zwierzaka, to powróci do życia i odnowi siły w 50%.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" | 
+* 19 SM
+|-
+| style="text-align: center;" | {{ti2|Karta Resetu}}
+| [[Karta Resetu]]
+| Karta resetu umożliwia ci cofnięcie poziomu misji twojej kolekcji kart potwora.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 9 SM
+|-
+| style="text-align: center;" | {{ti2|Karta Przetasowania}}
+| [[Karta Przetasowania]]
+| Kartę resetu możesz użyć w sytuacji, jeśli chcesz na nowo przetasować misję z systemu kart potwora.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 58 SM
+|-
+| style="text-align: center;" | {{ti2|Pergamin Nazwy Zwierzaka}}
+| [[Pergamin Nazwy Zwierzaka]]
+| Teraz możesz użyć tego pergaminu, aby nadać nowe imię swojemu zwierzakowi.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 49 SM
+|-
+| style="text-align: center;" | {{ti2|Pierścień Tajemnic}}
+| [[Pierścień Tajemnic]]
+| Uniemożliwia zbieranie punktów doświadczenia podczas polowania na potwory przez 15 dni.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 19 SM
+|-
+| style="text-align: center;" | {{ti2|Średni Kupon Wpłaty}}
+| [[Średni Kupon Wpłaty]]
+| Stare przysłowie mówi, że gildia jest tak silna jak jej członkowie. Bądź i ty silny i rośnij w potęgę wraz ze swoją gildią: dzięki twoim wpłatom poprzez interfejs gildii pomagasz awansować gildii i równocześnie otrzymujesz dodatkowe medale męstwa.
+| style="text-align: center" | -
+| style="white-space: nowrap;" | 
+* x1
+| style="white-space: nowrap;" |
+* 19 SM
+|-
+|}
+
+=== Pakiety ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | [[Plik:Pakiet Przetrwania na Lodowej Ziemi.png|32px]]
+| [[Pakiet Przetrwania na Lodowej Ziemi]]
+| Wieczny lód i przenikliwe zimno sprawiają, że nawet najtwardsi wojownicy opadają z sił. Dzięki temu użytecznemu ekwipunkowi przetrwania na Lodowej Ziemi poradzisz sobie z przeciwnościami natury!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 449 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Woj. M. Ciała (D)‎}}
+| [[Skrzynia Woj. M. Ciała (D)‎]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Woj. M. Ciała (M)}}
+| [[Skrzynia Woj. M. Ciała (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Woj. M. Ducho. (D)‎}}
+| [[Skrzynia Woj. M. Ducho. (D)‎]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Woj. M. Ducho. (M)}}
+| [[Skrzynia Woj. M. Ducho. (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Ninja M. Łuku (D)‎}}
+| [[Skrzynia Ninja M. Łuku (D)‎]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Ninja M. Łuku (M)}}
+| [[Skrzynia Ninja M. Łuku (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Ninja M. Ostrza (D)}}
+| [[Skrzynia Ninja M. Ostrza (D)‎]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Ninja M. Ostrza (M)}}
+| [[Skrzynia Ninja M. Ostrza (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Sura Broni (D)‎}}
+| [[Skrzynia Sura Broni (D)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Sura Broni (M)}}
+| [[Skrzynia Sura Broni (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Sura Magii (D)‎}}
+| [[Skrzynia Sura Magii (D)‎]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Sura Magii (M)}}
+| [[Skrzynia Sura Magii (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Szam. M. Smoka (D)}}
+| [[Skrzynia Szam. M. Smoka (D)‎]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Szam. M. Smoka (M)}}
+| [[Skrzynia Szam. M. Smoka (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Szam. M. Lecz. (D)}}
+| [[Skrzynia Szam. M. Lecz. (D)‎]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Szam. M. Lecz. (M)}}
+| [[Skrzynia Szam. M. Lecz. (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Likanów (D)}}
+| [[Skrzynia Likanów (D)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 999 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Likanów (M)}}
+| [[Skrzynia Likanów (M)]]
+| W tej wspaniałej skrzyni znajdziesz wiele praktycznych przedmiotów dla swojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+| style="text-align:center;" | [[Plik:Diamentowe Pudełko.png|32px]]
+| [[Diamentowe Pudełko]]
+| 4 magiczne środki pomocnicze, które wspierają cię w levelowaniu, zapełniają twoją kieszeń i twój magazyn!
+| style="text-align:center;" | 30 dni
+| style="text-align:center;" | 
+* x1
+|
+* 349 SM
+|-
+| style="text-align:center;" | [[Plik:Złote Pudełko.png|32px]]
+| [[Złote Pudełko]]
+| 4 magiczne środki pomocnicze, które wspierają cię w levelowaniu, zapełniają twoją kieszeń i twój magazyn!
+| style="text-align:center;" | 15 dni
+| style="text-align:center;" | 
+* x1
+|
+* 219 SM
+|-
+| style="text-align:center;" | [[Plik:Srebrne Pudełko.png|32px]]
+| [[Srebrne Pudełko]]
+| 4 magiczne środki pomocnicze, które wspierają cię w levelowaniu, zapełniają twoją kieszeń i twój magazyn!
+| style="text-align:center;" | 3 dni
+| style="text-align:center;" | 
+* x1
+|
+* 59 SM
+|-
+| style="text-align:center;" | [[Plik:Brązowe Pudełko.png|32px]]
+| [[Brązowe Pudełko]]
+| 4 magiczne środki pomocnicze, które wspierają cię w levelowaniu, zapełniają twoją kieszeń i twój magazyn!
+| style="text-align:center;" | 1 dzień
+| style="text-align:center;" | 
+* x1
+|
+* 24 SM
+|-
+| style="text-align:center;" | [[Plik:Ekonomiczna_paczka_dziesięciu_Zwojów_Egzorcyzmu.jpg|32px]]
+| [[Ekonomiczna paczka dziesięciu Zwojów Egzorcyzmu]]
+| Uwalnia Cię od klątwy złego ducha, jeśli proces nauki się nie powiedzie.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x10
+|
+* 166 SM
+|-
+| style="text-align:center;" | [[Plik:Wzmocnienie Przedmiotu 3+1.png|32px]]
+| [[Wzmocnienie Przedmiotu 3+1]]
+| Dodaje bonus do jednego z twoich przedmiotów, maksymalna ilość bonusów to 4.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x4
+|
+* 299 SM
+|-
+| style="text-align:center;" | [[Plik:Zaczarowanie Przedmiotu 3+1.png|32px]]
+| [[Zaczarowanie Przedmiotu 3+1 Pakiet Oszczędny]]
+| Usuwa wszystkie bonusy z twojego jednego przedmiotu, po czym dodaje nowe - losowe.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x4
+|
+* 177 SM
+|-
+| style="text-align:center;" | [[Plik:Pakiet Zwój Błogosławieństwa 2+1.png|32px]]
+| [[Pakiet Zwój Błogosławieństwa 2+1]]
+| Usuwa ryzyko zniszczenia przedmiotu podczas jego ulepszania. Jeżeli ulepszanie się nie powiedzie, to jakość przedmiotu jest redukowana o 1 poziom.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x3
+|
+* 1440 SZ
+|-
+| style="text-align:center;" | [[Plik:Pakiet Startowy Mały.png|32px]]
+| [[Pakiet Startowy Mały]]
+| Dzięki Pakietowi Startowemu otrzymasz jeszcze szybciej Punkty Doświadczenia i zdobędziesz wysoki poziom!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 69 SM
+|-
+| style="text-align:center;" | [[Plik:Pakiet Startowy Średni.png|32px]]
+| [[Pakiet Startowy Średni]]
+| Ze Średnim Pakietem Startowym możesz od samego początku osiągnąć jeszcze więcej.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 99 SM
+|-
+| style="text-align:center;" | [[Plik:Pakiet Startowy Duży.png|32px]]
+| [[Pakiet Startowy Duży]]
+| Ten wyjątkowy Pakiet dla poszukiwaczów przygód oferuje zawartość Pakietu Średniego... a nawet więcej!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 129 SM
+|-
+| style="text-align:center;" | [[Plik:Pakiet Biologa.png|32px]]
+| [[Pakiet Biologa]]
+| Dla ambitnych naukowców, którzy chcą skuteczniej pomagać Biologowi.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 119 SM
+|-
+| style="text-align:center;" | [[Plik:Pudełko_Premium.png|32px]]
+| [[Pudełko Premium]]
+| Ekskluzywny Premium Pakiet - wszystko w jednym- umożliwi Ci szybsze osiągniecie celu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 366 SM
+|-
+|  style="text-align:center;" | [[Plik:Pakiet Przetrwania na Lodowej Ziemi.png|32px]]
+| [[Pakiet Przetrwania na Lodowej Ziemi]]
+| Wieczny lód i przenikliwe zimno sprawiają, że nawet najtwardsi wojownicy opadają z sił. Dzięki temu użytecznemu ekwipunkowi przetrwania na Lodowej Ziemi poradzisz sobie z przeciwnościami natury!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 449 SM
+|-
+|  style="text-align:center;" | [[Plik:Duża Magmowa Skrzynka Meley.png|32px]]
+| [[Duża Magmowa Skrzynka Meley]]
+| Dzięki zawartości tej skrzyni zdobędziesz ognioodporne wyposażenie! Otrzymasz wierzchowca smok magmy oraz małego strażnika smoków Minidall i trzy przepustki do Schronienia Meley.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 499 SM
+|-
+|  style="text-align:center;" | [[Plik:Magmowa Skrzynka Meley.png|32px]]
+| [[Magmowa Skrzynka Meley]]
+| Dzięki zawartości tej skrzyni zdobędziesz ognioodporne wyposażenie! Otrzymasz wierzchowca smok magmy oraz małego strażnika smoków Minidall i przepustkę do Schronienia Meley. 
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 199 SM
+|-
+|  style="text-align:center;" | [[Plik:Power Booster Pack.png|32px]]
+| [[Power Booster Pack]]
+| Power Booster Pack pomoże ci szybciej ulepszać umiejętności oraz obdarzy cię wiernym zwierzakiem z potężnymi bonusami. Katapultuj się na sam szczyt!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 799 SM
+|-
+|  style="text-align:center;" | [[Plik:Azraeluś (pakiet).png|32px]]
+| [[Azraeluś]]
+| Azraeluś i Pakiet Zasuszonych Głów (10 szt.)
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 299 SM
+|}
+
+=== Kupony ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | [[Plik:Kupon SM (50).png|32px]]
+| [[Kupon SM (50)]]
+| Oferując ten kupon o wartości 50 Smoczych Monet w swoim prywatnym sklepie, możesz zwiększyć ilość swoich Yang do astronomicznych sum. Nadaje się on również znakomicie jako prezent dla Twoich dobrych przyjaciół.
+| style="text-align:center;" | 30 dni
+| style="text-align:center;" | 
+* x1
+|
+* 80 SM
+|-
+|}
+
+=== Oferty specjalne ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk 
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Pierścień Półksiężyca}}
+| [[Pierścień Półksiężyca]]
+| Pierścień z kunsztownie wykonanym grawerunkiem w kształcie półksiężyca,
+| 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 149 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Pierścień Śmiercionośnej Mocy}}
+| [[Pierścień Śmiercionośnej Mocy]]
+| Pierścień Śmiercionośnej Mocy
+| 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 179 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Pierścień Siły Woli}}
+| [[Pierścień Siły Woli]]
+| Pierścień Siły Woli
+| 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 179 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Lizak Potęgi}}
+| [[Lizak Potęgi]]
+| Ten oto lizak nie jest tylko pysznym smakołykiem, jego ściśle strzeżona receptura doda Ci 
+również nadludzkich sił oraz więcej doświadczenia.
+| 168h
+| style="text-align:center;" | 
+* x1
+|
+* 150 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Lizak Magii}}
+| [[Lizak Magii]]
+| Ten oto lizak nie jest tylko pysznym smakołykiem, jego ściśle strzeżona receptura doda Ci również nadludzkich sił oraz więcej doświadczenia.
+| 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 150 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Upiorny Lizak}}
+| [[Upiorny Lizak]]
+| Jest to lizak o tajemniczym składzie, doda ci siły oraz doświadczenia w walce.
+| 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 150 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Amulet Wiecznej Miłości}}
+| [[Amulet Wiecznej Miłości]]
+| Jest to srebrny wisiorek w kształcie serca, wysadzany magicznymi klejnotami 
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 99 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Amulet Strażników}}
+| [[Amulet Strażników]]
+| -
+| 168h
+| style="text-align:center;" | 
+* x1
+|
+* 159 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Amulet Nazara}}
+| [[Amulet Nazara]]
+| Ten magiczny amulet chroni cię przed "złowrogim spojrzeniem" i obdarza cię potężnymi bonusami!
+| 168h
+| style="text-align:center;" | 
+* x1
+|
+* 159 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Medal Bohatera}}
+| [[Medal Bohatera]]
+| -
+| 168h
+| style="text-align:center;" | 
+* x1
+|
+* 149 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Czekoladowy Amulet}}
+| [[Czekoladowy Amulet]]
+| Ten przepiękny Czekoladowy Amulet wzmocni cię w walce.
+| 168h
+| style="text-align:center;" | 
+* x1
+|
+* 150 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Pierścień Radości}}
+| [[Pierścień Radości]]
+| Drogocenny pierścień przyozdobiony nefrytem i turkusem.
+| 168h
+| style="text-align:center;" |
+* x1
+|
+* 150 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Smocza Skrzynia+}}
+| [[Smocza Skrzynia+]]
+| Lazurowa skrzynia zawiera jedenaście potężnych Cor Draconis (surowe) rangi "zwyczajna" oraz Zieloną Smoczą Fasolę.
+| -
+| style="text-align:center;" |
+* x1
+|
+* 149 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Pancerna Panda (pieczęć)}}
+| [[Pancerna Panda (pieczęć)]]
+| -
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 149 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Szczeniaka}}
+| [[Skrzynia Szczeniaka]]
+| W tej skrzyni może znajdować się słitaśne zwierzątko. Otwórz ją i odkryj losowy przedmiot.
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 35 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Kupon SM (50)}}
+| [[Kupon SM (50)]]
+| Kupon o wartości 50 Smoczych Monet
+| 30 dni
+| style="text-align:center;" | 
+* x1
+|
+* 65 SM
+|-
+| style="text-align:center;" | {{ti2|Kupon SM (100)}}
+| [[Kupon SM (100)]]
+| Kupon o wartości 100 Smoczych Monet
+| 30 dni
+| style="text-align:center;" | 
+* x1
+|
+* 150 SM
+|-
+| style="text-align:center;" | {{ti2|Kupon SM (500)}}
+| [[Kupon SM (500)]]
+| Kupon o wartości 500 Smoczych Monet
+| 30 dni
+| style="text-align:center;" | 
+* x1
+|
+* 700 SM
+|-
+| style="text-align:center;" | {{ti2|Kupon SM (1000)}}
+| [[Kupon SM (1000)]]
+| Kupon o wartości 1000 Smoczych Monet
+| 30 dni
+| style="text-align:center;" | 
+* x1
+|
+* 1300 SM
+|-
+| style="text-align:center;" | {{ti2|Pierścionek Zaręczynowy}}
+| [[Pierścionek Zaręczynowy]]
+| Pierścionek Zaręczynowy służy do zawarcia Ślubu. 
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Amora}}
+| [[Skrzynia Amora]]
+| Ta skrzynia w kształcie serca zawiera 5 niespodzianek. Można ją otwierać 5 razy co 30 min.
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 59 SM
+|-
+| style="text-align:center;" | {{ti2|Pakiet Petard}}
+| [[Pakiet Petard]]
+| Pakiet Petard zawiera 5 Skaczących Petard, 5 Fajerwerków i 5 Świąt. Ogniste Petardy.
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 11 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Burzy Pustynnej}}
+| [[Skrzynia Burzy Pustynnej]]
+| Ta tajemnicza skrzynia zawiera losowy przedmiot.
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+|-
+| style="text-align:center;" | {{ti2|Brązowe Pudło Okey}}
+| [[Brązowe Pudło Okey]]
+| Zawiera 6 kart kolekcjonerskich Okey
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 5 SM
+|-
+| style="text-align:center;" | {{ti2|Srebrne Pudło Okey}}
+| [[Srebrne Pudło Okey]]
+| Zawiera 24 karty kolekcjonerskie Okey
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Złote Pudło Okey}}
+| [[Złote Pudło Okey]]
+|Zawiera 120 karty kolekcjonerskie Okey
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 89 SM
+|-
+| style="text-align:center;" | {{ti2|Arystokratyczna Skrzynia}}
+| [[Arystokratyczna Skrzynia]]
+|Przy odrobinie szczęścia możesz uwolnić jednego z dwóch człapiących arystokratów Sir Oswalda lub Sir Chesterfielda z tajemniczego pudła!
+| -
+| style="text-align:center;" | 
+* x1
+|
+* 35 SM
+|}
+
+=== Pakiety Yang ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Sztuk za daną cenę
+|-
+| style="text-align:center;" | [[Plik:Yang.png|32px|link=Pakiet Yang]]
+| [[Pakiet Yang]]
+| Ciągłe wojny pożarły wszystkie twe oszczędności? Już teraz uzupełnij twój budżet za pomocą Pakietu Yang!
+| 
+* Aktualnie brak oferty sprzedaży.
+|-
+|}
+
+== Uszlachetnij i ulepsz ==
+
+=== Ulepszenie konta ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Auto Łowy}}
+| [[Auto Łowy]]
+| Usiądź i zrelaksuj się. Teraz możesz automatycznie polować na potwory.
+| 
+* 14 dni
+* 7 dni
+| style="text-align:center;" | x1
+| 
+* 95 SM
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Powiększony Skład}}
+| [[Powiększony Skład]]
+| Do twojego magazynu zostaną dodane dwie dodatkowe zakładki.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | x1
+| 
+* 45 SM
+* 24 SM
+* 13 SM
+|-
+| style="text-align:center;" | {{ti2|Rękawica Złodzieja}}
+| [[Rękawica Złodzieja]]
+| Podwajają szansę zdobycia przedmiotu.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | x1
+|
+* 89 SM
+* 51 SM
+* 32 SM
+|-
+| style="text-align:center;" | {{ti2|Trzecia Ręka}}
+| [[Trzecia Ręka]]
+| Ręka, która automatycznie podnosi [[Yang]].
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | x1
+|
+* 45 SM
+* 24 SM
+* 13 SM
+|-
+| style="text-align:center;" | {{ti2|Pierścień Doświadczenia}}
+| [[Pierścień Doświadczenia]]
+| Zwiększa ilość zdobywanych Punktów Doświadczenia o 50%.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | x1
+|
+* 199 SM
+* 114 SM
+* 61 SM
+|-
+| style="text-align:center;" | {{ti2|Medal Szczęścia}}
+| [[Medal Szczęścia]]
+| Szansa znalezienia Yang zostanie podwojona.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | x1
+|
+* 86 SM
+* 62 SM
+* 36 SM
+|-
+| style="text-align:center;" |{{ti2|Rybie Wnętrzności}}
+| [[Rybie Wnętrzności]]
+| Szansa schwytania rzadkiej ryby zostanie podwojona.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | x1
+|
+* 42 SM
+* 30 SM
+* 18 SM
+|-
+| style="text-align:center;" |{{ti2|Buff Premium SungMa}}
+| [[Buff Premium SungMa]]
+| Daje +10 na wszystkie twoje parametry SungMa.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+* 1 dni
+| style="text-align:center;" | x1
+|
+* 999 SM
+* 599 SM
+* 299 SM
+* 39 SM
+|-
+|}
+
+=== Ulepszenie postaci ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Pakiet Dusz}}
+| [[Pakiet Dusz]]
+| Ten praktyczny pakiet zawiera mnóstwo dusz, dzięki którym możesz doładować swoje relikty duszy i korzystać z potężnych bonusów reliktu.
+| style="text-align:center;" | -
+| style="text-align:center;" |
+* x1
+|
+* 100 SM
+|-
+| style="text-align:center;" | {{ti2|Dusza Światła}}
+| [[Dusza Światła]]
+| Dusza ta można dodać lub przedłużyć bonus reliktu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Dusza Ozdoby}}
+| [[Dusza Ozdoby]]
+| Dusza ta można dodać lub przedłużyć bonus reliktu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Dusza Ochrony}}
+| [[Dusza Ochrony]]
+| Dusza ta można dodać lub przedłużyć bonus reliktu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Dusza Miecza}}
+| [[Dusza Miecza]]
+| Dusza ta można dodać lub przedłużyć bonus reliktu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Losowe Pudełko Sklepiku Premium}}
+| [[Losowe Pudełko Sklepiku Premium]]
+| Szansa na osobisty sklepik premium
+| style="text-align:center;" | 6h/12h/24h/<br>40h/48h/60h/<br>3d/4d/7d/<br>10d/15d/28d
+| style="text-align:center;" | 
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Eliksir Ochrony Żywiołów}}
+| [[Eliksir Ochrony Żywiołów]]
+| Eliksir po użyciu dodaje 5% ataków walki wręcz/magicznych oraz 10% odporności na żywioły.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Wino z Kwiatu Brzoskwini}}
+| [[Wino z Kwiatu Brzoskwini]]
+| Mikstura, która natychmiast regeneruje 500 PŻ.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 3 SM
+|-
+| style="text-align:center;" | {{ti2|Szkło Handlu}}
+| [[Szkło Handlu]]
+| Umożliwia szukanie i bezpośredni zakup konkretnego przedmiotu w pobliżu.
+|
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 135 SM
+* 75 SM
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Świadectwo_Zmiany}}
+| [[Świadectwo Zmiany]]
+| Usuwa absorbowane bonusy z szarfy.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Peleryna_Męstwa}}
+| [[Peleryna Męstwa]]
+| Starożytni wojownicy okazywali swoje męstwo poprzez noszenie kolorowych peleryn. Był to sposób na zwabienie wszystkich potworów z okolicy.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 1 SM
+|-
+| style="text-align:center;" | {{ti2|Buty Wiatru}}
+| [[Buty Wiatru]]
+| Gdy ich używasz, Szybkość Ruchu twojej postaci jest zwiększona o 30.
+| style="text-align:center;" | 25 godzin
+| style="text-align:center;" | 
+* x1
+|
+* 59 SM
+|-
+| style="text-align:center;" | {{ti2|Szpula_Jedwabiu}}
+| [[Szpula Jedwabiu]]
+| Dzięki temu przedmiotowi możesz za darmo otwierać swój Sklep przez 10 dni.
+| style="text-align:center;" | 10 dni
+| style="text-align:center;" | 
+* x1
+|
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Pierścień_Języka}}
+| [[Pierścień Języka]]
+| Masz możliwość porozumiewania się we wszystkich językach królestw.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | x1
+|
+* 49 SM
+* 29 SM
+* 15 SM
+|-
+| style="text-align:center;" | {{ti2|Szkło Intuicji}}
+| [[Szkło Intuicji]]
+| To wyjątkowe Szkło pozwala Ci na pokazanie innemu graczowi przedmiotu z twojego ekwipunku.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 1 SM
+|-
+| style="text-align:center;" | {{ti2|Eliksir Słońca (Ś)}}
+| [[Eliksir Słońca (Ś)]]
+| Automatycznie regeneruje twoje PŻ.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 15 SM
+|-
+| style="text-align:center;" | {{ti2|Eliksir Księżyca (Ś)}}
+| [[Eliksir Księżyca (Ś)]]
+| Automatycznie regeneruje twoje PE.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 11 SM
+|-
+| style="text-align:center;" | {{ti2|Mikstura Szybkości}}
+| [[Mikstura Szybkości]]
+| Zwiększa Szybkość Ruchu o 60 na 30 min.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 4 SM
+|-
+| style="text-align:center;" | {{ti2|Mikstura Ataku +15}}
+| [[Zielona Mikstura(D)|Mikstura Ataku +15]]
+| Zwiększa Twoją szybkość ataku o 15%.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 4 SM
+|-
+| style="text-align:center;" | {{ti2|Mikstura Ataku +10}}
+| [[Zielona Mikstura(D)|Mikstura Ataku +10]]
+| Zwiększa Twoją szybkość ataku o 10%.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 4 SM
+|-
+| style="text-align:center;" | {{ti2|Mikstura Pośpiechu}}
+| [[Mikstura Pośpiechu]]
+| Mikstura ta zwiększa szybkość regeneracji twoich umiejętności o 20 procent.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 24 SM
+|-
+| style="text-align:center;" | {{ti2|Błogosławieństwo Życia}}
+| [[Błogosławieństwo Życia]]
+| Mikstura, która natychmiast regeneruje Punktów Życia. (PŻ 100%)
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 15 SM
+|-
+| style="text-align:center;" | {{ti2|Błogosławieństwo Magii}}
+| [[Błogosławieństwo Magii]]
+| Mikstura, która natychmiast regeneruje Punkty Magii do 100%.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 15 SM
+|-
+| style="text-align:center;" | {{ti2|Błogosławieństwo Smoka}}
+| [[Błogosławieństwo Smoka]]
+| Mikstura, która natychmiast regeneruje Punkty Magii oraz Punkty Życia do 100%.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 20 SM
+|-
+| style="text-align:center;" | {{ti2|Owoc Życia}}
+| [[Owoc Życia]]
+| Zwiększa Punkty Rang o 2000 pkt. (czas regeneracji: 8 godz.).
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 129 SM
+|-
+| style="text-align:center;" | {{ti2|Księga Lidera}}
+| [[Księga Lidera]]
+| Kiedy przedmiot noszony jest przez lidera grupy, Punkty Doświadczenia zdobywane przez całą grupę są zwiększone o 30%
+| style="text-align:center;" | 3 godziny
+| style="text-align:center;" | 
+* x1
+|
+* 29 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój_Powrotu}}
+| [[Zwój Powrotu]]
+| Zwój pozwala Ci wrócić do miasta i potem powrócić do obecnej lokalizacji.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 2 SM
+|-
+| style="text-align:center;" | {{ti2|Wykrywacz Kamieni Metin}}
+| [[Wykrywacz Kamieni Metin]]
+| Wykrywacz pokazuje położenie i odległość do najbliższego Kamienia Metin poprzez intensywność strzałki kierunku.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x6
+|
+* 79 SM
+|-
+|}
+
+=== Uszlachetnienie ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Żółta Lśniąca Skrzynia z Odłamkiem}}
+| [[Żółta Lśniąca Skrzynia z Odłamkiem]]
+| Pakiet ten zawiera losową liczbę żółtych lśniących odłamków, za pomocą których możesz dodać 6. lub 7. bonus.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 69 SM
+|-
+| style="text-align:center;" | {{ti2|Zielona Lśniąca Skrzynia z Odłamkiem}}
+| [[Zielona Lśniąca Skrzynia z Odłamkiem]]
+| Pakiet ten zawiera losową liczbę zielonych lśniących odłamków, za pomocą których możesz dodać 6. lub 7. bonus.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 39 SM
+|-
+
+| style="text-align:center;" | {{ti2|Szara Lśniąca Skrzynia z Odłamkiem}}
+| [[Szara Lśniąca Skrzynia z Odłamkiem]]
+| Pakiet ten zawiera losową liczbę szarych lśniących odłamków, za pomocą których możesz dodać 6. lub 7. bonus.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 29 SM
+|-
+| style="text-align:center;" | {{ti2|Ognista Runa Aury (10)}}
+| [[Ognista Runa Aury (10)]]
+| Takie runy są potrzebne do ulepszania twojej szaty aury. Udaj się po nie do Theowahdana.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Ognista Runa Aury (50)}}
+| [[Ognista Runa Aury (50)]]
+| Takie runy są potrzebne do ulepszania twojej szaty aury. Udaj się po nie do Theowahdana.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 45 SM
+|-
+| style="text-align:center;" | {{ti2|Ognista Runa Aury (100)}}
+| [[Ognista Runa Aury (100)]]
+| Takie runy są potrzebne do ulepszania twojej szaty aury. Udaj się po nie do Theowahdana.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 80 SM
+|-
+| style="text-align:center;" | {{ti2|Lśniąca Sk. z Odłamkiem}}
+| [[Lśniąca Sk. z Odłamkiem]]
+| W tej skrzyni znajdziesz 5 lśniących odłamków o losowym kolorze.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 60 SM
+|-
+| style="text-align:center;" | {{ti2|Zdobna Skrz. z Odłamkiem}}
+| [[Zdobna Skrz. z Odłamkiem]]
+| Skrzynia ta zawiera księgę umiejętności lub przy odrobinie szczęścia odłamek w losowym kolorze. Szansa na odłamek jest większa niż w zwyczajnej skrzyni z odłamkiem.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 12 SM
+|-
+| style="text-align:center;" | {{ti2|Błogosławieństwo (przedmiot)|Błogosławieństwo}}
+| [[Błogosławieństwo (przedmiot)|Błogosławieństwo]]
+| Nie jesteś zbyto zadowolony ze swoich obecnych bonusów? Tak? To obdarz swój przedmiot magicznym błogosławieństwem, które usunie bonusy z twojego przedmiotu i doda nowe. Dotyczy tylko bonusów 6. i 7.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x25
+* x10
+* x5
+* x1
+| 
+* 3225 SM
+* 1290 SM
+* 645 SM
+* 129 SM
+|-
+| style="text-align:center;" | {{ti2|Silny Suplement}}
+| [[Silny Suplement]]
+| Wzmocnij swoje wyposażenie silnymi bonusami! Silny suplement zwiększa do 50% szansę na dodanie do przedmiotu wyposażenia 6. lub 7. bonusu (aby otrzymać maksymalne zwiększenie, potrzebujesz łącznie następujące przedmioty: 5x Silny Suplement, 10x Odłamek).
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x25
+* x10
+* x5
+* x1
+| 
+* 450 SM
+* 180 SM
+* 90 SM
+* 18 SM
+
+|-
+| style="text-align:center;" | {{ti2|Duży Suplement}}
+| [[Duży Suplement]]
+| Wzmocnij swoje wyposażenie silnymi bonusami! Duży suplement zwiększa do 20% szansę na dodanie do przedmiotu wyposażenia 6. lub 7. bonusu (aby otrzymać maksymalne zwiększenie, potrzebujesz łącznie następujące przedmioty: 5x Duży Suplement, 10x Odłamek).
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x25
+* x10
+* x5
+* x1
+| 
+* 225 SM
+* 90 SM
+* 45 SM
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Średni Suplement}}
+| [[Średni Suplement]]
+| Wzmocnij swoje wyposażenie silnymi bonusami! Duży suplement zwiększa do 20% szansę na dodanie do przedmiotu wyposażenia 6. lub 7. bonusu (aby otrzymać maksymalne zwiększenie, potrzebujesz łącznie następujące przedmioty: 5x Duży Suplement, 10x Odłamek).
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x25
+* x10
+* x5
+* x1
+| 
+* 125 SM
+* 50 SM
+* 25 SM
+* 5 SM
+|-
+| style="text-align:center;" | {{ti2|Świadectwo Zmiany}}
+| [[Świadectwo Zmiany]]
+| Przedmiot ten umożliwia usunięcie absorbowanych bonusów z szarfy.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Zaczarowanie Przedmiotu+}}
+| [[Zaczarowanie Przedmiotu+]]
+| Za pomocą tego przedmiotu, można zobaczyć podgląd nowych bonusów, a następnie zdecydować, czy chcemy na nie zmienić, czy też nie.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 129 SM
+|-
+| style="text-align:center;" | {{ti2|Cor Draconis (surowe)}}
+| [[Cor Draconis (surowe)]]
+| To kryształowe smocze serce skrywa w sobie duszę, Smoczy Kamień.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 10 SM
+|-
+| style="text-align:center;" | {{ti2|Zielona Smocza Fasola}}
+| [[Zielona Smocza Fasola]]
+| Ta magiczna fasola zwiększa poziom Smoczego Kamienia. Zabieg ten może się jednak zakończyć niepowodzeniem.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Kula Błogosławieństwa}}
+| [[Kula Błogosławieństwa]]
+| Legendarny, błogosławiony marmur. Jeżeli przedmiot ma 4 atrybuty, dodaje kolejny atrybut.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 50 SM
+|-
+| style="text-align:center;" | {{ti2|Zaczarowanie_Przedmiotu}}
+| [[Zaczarowanie Przedmiotu]]
+| Zaczarowanie przedmiotu - inaczej mówiąc zmiana bonusów.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 59 SM
+|-
+| style="text-align:center;" | {{ti2|Wzmocnienie Przedmiotu}}
+| [[Wzmocnienie Przedmiotu]]
+| Z odrobiną szczęścia dodaje do jednego z twoich przedmiotów nowy bonus. (maks. 4 bonusy).
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 99 SM
+|-
+| style="text-align:center;" | {{ti2|Księga_Obróbki_Kamienia}}
+| [[Księga Obróbki Kamienia]]
+| Usuwa wszystkie pęknięte kamienie z danego przedmiotu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 20 SM
+|-
+| style="text-align:center;" | {{ti2|Kamień Kowala}}
+| [[Kamień Kowala]]
+| Z tego kamienia, i [[Zwój Błogosławieństwa]] wytwarza się [[Podręcznik Kowala]]. Jest nawet większa szansa na powodzenie niż [[Zwój Boga Smoków]]. W przypadku niepowodzenia , przedmiot nie jest zniszczony, lecz redukuje się o jeden poziom w dół.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 79 SM
+|-
+| style="text-align:center;" | {{ti2|Magiczny Metal}}
+| [[Magiczny Metal]]
+| Metal potrzebny do wytworzenia Zwoju Smoka - wraz ze Zwojem Błogosławieństwa u Kowala.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 59 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Korekcji}}
+| [[Zwój Korekcji]]
+| Zwój ten umożliwia usunięcie ostatnio pomyślnie dodanego [[Kamień Duszy|Kamienia Duszy]] ze wskazanego przedmiotu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 49 SM
+
+|}
+
+=== Małżeństwo ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Bransoleta Miłości}}
+| [[Bransoleta Miłości]]
+| Zwiększa ilość otrzymywanych Punktów Doświadczenia małżeństwa na 3 godz. maksymalnie o 20%, gdy jest noszona przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.
+| style="text-align:center;" | 3 godziny
+| style="text-align:center;" | 
+* x1
+|
+* 21 SM
+|-
+| style="text-align:center;" | {{ti2|Bransoletka Harmonii}}
+| [[Bransoleta Harmonii]]
+| Zmniejsza siłę ataku potworów na małżeństwo przez 3 godziny maksymalnie o 15%, gdy jest noszona przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.
+| style="text-align:center;" | 3 godziny
+| style="text-align:center;" | 
+* x1
+|
+* 21 SM
+|-
+| style="text-align:center;" | {{ti2|Naszyjnik Miłości}}
+| [[Naszyjnik Miłości]]
+| Zwiększa siłę ataku małżeństwa na 3 godz. maksymalnie o 40, gdy jest noszony przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.
+| style="text-align:center;" | 3 godziny
+| style="text-align:center;" | 
+* x1
+|
+* 21 SM
+|-
+| style="text-align:center;" | {{ti2|Naszyjnik Harmonii}}
+| [[Naszyjnik Harmonii]]
+| Zwiększa siłę obrony małżeństwa na 3 godziny maksymalnie o 30, gdy jest noszony przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.
+| style="text-align:center;" | 3 godziny
+| style="text-align:center;" | 
+* x1
+|
+* 21 SM
+|-
+| style="text-align:center;" | {{ti2|Kolczyki Miłości}}
+| [[Kolczyki Miłości]]
+| Zwiększa szansę małżeństwa na zadanie ciosów krytycznych na 3 godz. maksymalnie o 8%, gdy są noszone przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.
+| style="text-align:center;" | 3 godziny
+| style="text-align:center;" | 
+* x1
+|
+* 21 SM
+|-
+| style="text-align:center;" | {{ti2|Kolczyki Harmonii}}
+| [[Kolczyki Harmonii]]
+| Zwiększają szansę małżeństwa na zadanie Przeszywającego Uderzenia na 3 godz., maksymalnie o 8%, gdy są noszone przez jednego z partnerów. Efekt przedmiotu zależy od procentu Punktów Miłości. Jeśli para posiada np. 50% Punktów Miłości, to maksymalny efekt zmniejsza się o połowę.
+| style="text-align:center;" | 3 godziny
+| style="text-align:center;" | 
+* x1
+|
+* 21 SM
+|-
+| style="text-align:center;" | {{ti2|Pióro Ptaka Miłości}}
+| [[Pióro Ptaka Miłości]]
+| Jeżeli Pióro Ptaka Miłości jest noszone przez jedną osobę z pary, Punkty Miłości są regenerowane dwa razy szybciej.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 40 SM
+* 22 SM
+* 12 SM
+|-
+|}
+
+== Serwis ==
+
+=== Indywidualizacja ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Złote Pud. Kart Potwora}}
+| [[Złote Pud. Kart Potwora]]
+| To złote pudełko to zawiera losową kartę potwora. Srebrne czy złote? Które pudełko?
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 35 SM
+|-
+| style="text-align:center;" | {{ti2|Srebrne Pu. Kart Potwora}}
+| [[Srebrne Pu. Kart Potwora]]
+| To srebrne pudełko zawiera losową kartę potwora lub 1000 Yang. Spróbuj swojego szczęścia!
+| style="text-align:center;" | -
+| style="text-align:center;" | x1
+|
+* 25 SM
+|-
+| style="text-align:center;" | {{ti2|Nowa Wola (WIT)}}
+| [[Nowa Wola (WIT)]]
+| Resetuje twoją wolę SungMa (WIT), dzięki czemu możesz zainwestować odzyskane punkty w inne parametry.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 50 SM
+|-
+| style="text-align:center;" | {{ti2|Nowa Wola (ODP)}}
+| [[Nowa Wola (ODP)]]
+| Resetuje twoją wolę SungMa (ODP), dzięki czemu możesz zainwestować odzyskane punkty w inne parametry..
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 50 SM
+|-
+| style="text-align:center;" | {{ti2|Nowa Wola (SIŁA)}}
+| [[Nowa Wola (SIŁA)]]
+| Resetuje twoją wolę SungMa (SIŁA), dzięki czemu możesz zainwestować odzyskane punkty w inne parametry..
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 50 SM
+|-
+| style="text-align:center;" | {{ti2|Nowa Wola (INT)}}
+| [[Nowa Wola (INT)]]
+| Resetuje twoją wolę SungMa (INT), dzięki czemu możesz zainwestować odzyskane punkty w inne parametry..
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 50 SM
+|-
+| style="text-align:center;" | {{ti2|Anulacja Transmutacji}}
+| [[Anulacja Transmutacji]]
+| Przedmiot anuluje transmutację przedmiotu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Bilet Transmutacji}}
+| [[Bilet Transmutacji]]
+| Zmień teraz za pomocą biletu transmutacji wygląd jednego ze swoich przedmiotów wyposażenia - i to bez wydawania Yang!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Maska_Uczuć}}
+| [[Maska Uczuć]]
+| Maska pozwala na okazywanie uczuć.
+| 
+* 30 dni
+* 15 dni
+| style="text-align:center;" | 
+* x1
+|
+* 48 SM
+* 26 SM
+|-
+| style="text-align:center;" |{{ti2|Zwój Cofania Umiejętności}}
+| [[Zwój Cofania Umiejętności]]
+| Zastosowanie tego przedmiotu umożliwia Ci ponowne wydanie punktów jednej z umiejętności. Tak więc możesz rozwijać postać w innym kierunku.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Olejek Wygnania}}
+| [[Olejek Wygnania]]
+| Przedmiot ten umożliwia jednorazowe przeniesienie postaci do innego Królestwa.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 111 SM
+|-
+| style="text-align:center;" | {{ti2|Zaklęcie Modyfikacji}}
+| [[Zaklęcie Modyfikacji]]
+| Zaklęcie pozwala zmienić płeć twojej postaci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 199 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Zmiany Profesji}}
+| [[Zwój Zmiany Profesji]]
+| Przedmiot ten umożliwia wybranie innej profesji postaci. Aby móc skorzystać z tego przedmiotu, twoja postać musi mieć co najmniej 31. poziom.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Medal Smoka}}
+| [[Medal Smoka]]
+| Chroni przed utratą Punktów Doświadczenia podczas rozpoczynania w miejscu śmierci.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 3 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Egzorcyzmu}}
+| [[Zwój Egzorcyzmu]]
+| Uwalnia Cię od klątwy złego ducha. (Brak możliwości przekazywania!).
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Powrotu Statusu}}
+| [[Zwój Powrotu Statusu]]
+| Zastosowanie tego przedmiotu umożliwia Ci ponowne wydanie twoich Punktów Statystyk. Tak więc możesz rozwijać postać w inny sposób.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 79 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Redystrybucji (SIŁ)}}
+| [[Zwój Redystrybucji (SIŁ)]]
+| Nauka nowych umiejętności może trwać całe życie. Starsi ludzie często dochodzą do wniosku, że mogli nauczyć się danej umiejętności o wiele szybciej, co pomogłoby im szybciej osiągnąć życiowy cel.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Redystrybucji (ZRĘ)}}
+| [[Zwój Redystrybucji (ZRĘ)]]
+| Nauka nowych umiejętności może trwać całe życie. Starsi ludzie często dochodzą do wniosku, że mogli nauczyć się danej umiejętności o wiele szybciej, co pomogłoby im szybciej osiągnąć życiowy cel.
+Dlatego w ciągu ostatnich lat wytworzono Zwój Redystrybucji. Ten niezwykły egzemplarz resetuje Punkty Zręcznośći do 1 i pozwala na ich ponowne rozdanie.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Redystrybucji (INT)}}
+| [[Zwój Redystrybucji (INT)]]
+| Nauka nowych umiejętności może trwać całe życie. Starsi ludzie często dochodzą do wniosku, że mogli nauczyć się danej umiejętności o wiele szybciej, co pomogłoby im szybciej osiągnąć życiowy cel.
+Dlatego w ciągu ostatnich lat wytworzono Zwój Redystrybucji. Zwój ten pozwala na reset punktów inteligencji do 1 oraz ich ponowne rozdanie.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Redystrybucji (WIT)}}
+| [[Zwój Redystrybucji (WIT)]]
+| Nauka nowych umiejętności może trwać całe życie. Starsi ludzie często dochodzą do wniosku, że mogli nauczyć się danej umiejętności o wiele szybciej, co pomogłoby im szybciej osiągnąć życiowy cel.
+Dlatego w ciągu ostatnich lat wytworzono Zwój Redystrybucji. Zwój ten pozwala na reset punktów witalnych do 1 oraz ich ponowne rozdanie.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Zwój Zmiany Treningu}}
+| [[Zwój Zmiany Treningu]]
+| Przedmiot ten umożliwia usunięcie wszystkich ripost i dopalaczy (7. i 8. umiejętność).
+Za pomocą ksiąg umiejętności (riposta i dopalacz) możesz nauczyć się ich ponownie.
+Nie możesz władać kilkoma ripostami jednocześnie.
+Zapomnij zatem wszystko, co wiesz. Tylko w ten sposób możesz wybrać nową umiejętność.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Zmiana nazwy}}
+| [[Zmiana nazwy]]
+| Każde imię ma jakieś znaczenie. Nasze imiona nierzadko wpływają nawet na nasz los. W wielu kulturach nadanie imienia jest powodem do świętowania. No ale co zrobić, jeśli stwierdzisz, że imię twojego bohatera już do niego nie pasuje? 
+Za pomocą Zmiany Nazwy możesz zmienić imię wybranej postaci. Będzie to po następnej konserwacji serwera. 
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 199 SM
+|-
+| style="text-align:center;" | {{ti2|Rozszerzenie Ekwipunku}}
+| [[Rozszerzenie Ekwipunku]]
+|Masz zbyt mało miejsca na swoje przedmioty? Nadszedł czas, aby to zmienić!
+Użyj tego przedmiotu, aby dodać dodatkowe sloty w swoim ekwipunku. 
+Liczba wymaganych kluczy zależy od tego, ile już odblokowałeś dodatkowych slotów w ekwipunku.
+Każda aktywacja odblokowuje 5 slotów w ekwipunku na stałe.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 15 SM
+|-
+| style="text-align:center;" | {{ti2|Reset Sklepu Gaya}}
+| [[Reset Sklepu Gaya]]
+| Skorzystaj z nowej oferty przedmiotów w Sklepie Gaya bez czekania na automatyczną rotację towarów!
+| 
+| style="text-align:center;" |
+* x50
+* x20
+* x10
+* x5
+* x1
+|
+* 950 SM
+* 380 SM
+* 190 SM
+* 95 SM
+* 5 SM
+|-
+| style="text-align:center;" | {{ti2|Rozszerzenie Sklepu Gaya}}
+| [[Rozszerzenie Sklepu Gaya]]
+| Odblokuj dodatkowy slot w Sklepie Gaya i skorzystaj z większej oferty przedmiotów!
+| 
+| style="text-align:center;" |
+* x9
+* x4
+* x2
+* x1
+|
+* 72 SM
+* 48 SM
+* 30 SM
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Redukcja Wytrzymałości (30%)}}
+| [[Redukcja Wytrzymałości (30%)]]
+| Używając redukcji możesz zmniejszyć o 30% ilość wytrzymałości, która jest wymagana, by móc wysłać najemników do wykonywania zdań.
+| 
+| style="text-align:center;" |
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Ładowanie Wytrzymałości (100)}}
+| [[Ładowanie Wytrzymałości (100)]]
+| Używając ładowania możesz uzupełnić swoją wytrzymałość, by móc wysyłać do zadań jeszcze więcej najemników!
+| 
+| style="text-align:center;" |
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Wzmocnienie Wytrzymałości (1000)}}
+| [[Wzmocnienie Wytrzymałości (1000)]]
+| Używając wzmocnienia możesz zwiększyć swoją maksymalną wytrzymałość o 1000 i tym samym jeszcze efektywniej korzystać z systemu najemników!
+| 
+| style="text-align:center;" |
+* x1
+|
+* 199 SM
+|-
+| style="text-align:center;" | {{ti2|Esencja Komendanta Legionu}}
+| [[Esencja Komendanta Legionu]]
+| Używając tej esencji otrzymasz dodatkowe nagrody, gdy twoi najemnicy ukończą zadania.
+| 
+| style="text-align:center;" |
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Pakiet Zadań Najemnika}}
+| [[Pakiet Zadań Najemnika]]
+| Dzięki temu pakietowi każde zadanie opłaca się jeszcze bardziej! Zgarnij dodatkowe nagrody, zmniejsz wymaganą ilość wytrzymałości lub obdarz swoich najemników bezpośrednim dopalacz wytrzymałości.
+| 
+| style="text-align:center;" |
+* x1
+|
+* 399 SM
+|-
+| style="text-align:center;" | {{ti2|Ekspres. Leczenie Najem.}}
+| [[Ekspres. Leczenie Najem.]]
+| Przygotuj ponownie swoich najemników do walki! Za pomocą tego kuponu możesz wyleczyć swojego kontuzjowanego najemnika.
+| 
+| style="text-align:center;" |
+* x1
+|
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Licencja Rozszerzenia}}
+| [[Licencja Rozszerzenia]]
+| Używając tej licencji możesz rozszerzyć słoty na najemników, by jeszcze więcej najemników mogło cię wspierać!
+| 
+| style="text-align:center;" |
+* x1
+|
+* 30 SM
+|-
+| style="text-align:center;" | {{ti2|Licencja Najemnika}}
+| [[Licencja Najemnika]]
+| Użyj tej licencji, by rekrutować nowego najemnika, który będzie cię wspierał z wszystkich sił!
+| 
+| style="text-align:center;" |
+* x1
+|
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Dod. St. Wyposażenia (h)}}
+| [[Dod. St. Wyposażenia (h)|Dodatkowa strona wyposażenia]]
+| Użyj tego przedmiotu i odblokuj drugą stronę wyposażenia, by zaskoczyć swoich przeciwników szybką zmianą wyposażenia!
+Po użyciu tego przedmiotu znajdziesz odpowiednią umiejętność do zmiany w swoich dodatkowych umiejętnościach.
+| 
+| style="text-align:center;" |
+* x1
+|
+* 999 SM
+|}
+
+=== Transfer serwerów ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Bilet Podróżnika}}
+| [[Bilet Podróżnika]]
+| Jest to bilet pozwalający na zmianę serwera przez postać, na której został zakupiony.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 790 SM Diumar (55)
+* 1490 SM Etolin (52)
+|-
+| style="text-align:center;" | [[Plik:Bilet Podróżnika (Česko).jpg|40px]]
+| [[Bilet Podróżnika (Česko)]]
+| Jest to bilet pozwalający na zmianę serwera przez postać, na której został zakupiony.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 150 SM 
+* <font color=red>'''Uwaga!''' Ceny biletów są różne na innych serwerach.</font>
+|-
+| style="text-align:center;" | [[Plik:Bilet Podróżnika (Magyarország).png|40px]]
+| [[Bilet Podróżnika (Magyarország)]]
+| Jest to bilet pozwalający na zmianę serwera przez postać, na której został zakupiony.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 60 SM 
+* <font color=red>'''Uwaga!''' Ceny biletów są różne na innych serwerach.</font>
+|-
+| style="text-align:center;" | [[Plik:Bilet Podróżnika (Țara Românească).jpg|40px]]
+| [[Bilet Podróżnika (Țara Românească)]]
+| Jest to bilet pozwalający na zmianę serwera przez postać, na której został zakupiony.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 480 SM 
+* <font color=red>'''Uwaga!''' Ceny biletów są różne na innych serwerach.</font>
+|-
+| style="text-align:center;" | [[Plik:Bilet Podróżnika (România).jpg|40px]]
+| [[Bilet Podróżnika (România)]]
+| Jest to bilet pozwalający na zmianę serwera przez postać, na której został zakupiony.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 150 SM 
+* <font color=red>'''Uwaga!''' Ceny biletów są różne na innych serwerach.</font>
+|}
+
+=== Przepustki ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Sztandar Czaszki}}
+| [[Sztandar Czaszki]]
+| Sprostaj wyzwaniom Piekielnej Wieży Sunga Mahi i dowiedź swojej mocy!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x 25
+* x 1
+|
+* 899 SM
+* 50 SM
+|-
+| style="text-align:center;" | {{ti2|Tajemniczy Bilet}}
+| [[Tajemniczy Bilet]]
+| Jakie wyzwania czekają na Ciebie w tajemniczej instancji? Czy uda Ci się odkryć jego tajemnice i powrócić zwycięsko? Sprawdź teraz!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x20
+* x1
+|
+* 449 SM
+* 29 SM
+|-
+| style="text-align:center;" | {{ti2|Bilet Nowego Wejścia}}
+| [[Wejście do Świątyni Węży]]
+| Zresetuj swoje wejścia do Świątyni Węży na 5 i ponownie staw czoło wyzwaniu!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 99 SM
+|-
+| style="text-align:center;" | {{ti2|Książka Przebudzenia}}
+| [[Książka Przebudzenia]]
+| Potrzebna, by wejść do lochu Przebudzenia.
+| style="text-align:center;" | -
+| style="text-align:center;" |
+* x1
+|
+* 29 SM
+|-
+| style="text-align:center;" | {{ti2|Znak Strażnika}}
+| [[Znak Strażnika]]
+| Talizman ten daje ci na trzy godziny dostęp do Świątyni Zodiaku, bez zużycia Animosfer.
+| style="text-align:center;" | 3 godz.
+| style="text-align:center;" |
+* x1
+|
+* 69 SM
+|-
+| style="text-align:center;" | {{ti2|Pergamin Sfer}}
+| [[Pergamin Sfer]]
+| Naładuj 30 Animosfer, aby otrzymać wstęp do Świątyni Zodiaku.
+| style="text-align:center;" | -
+| style="text-align:center;" |  
+* x1
+|
+* 29 SM
+|-
+| style="text-align:center;" | {{ti2|Zasuszona Głowa}}
+| [[Zasuszona Głowa]]
+| Ta zasuszona głowa demona otwiera pieczęć 3. poziomu Piekielnych Katakumb.
+| style="text-align:center;" | -
+| style="text-align:center;" |
+* x1
+|
+* 12 SM
+|-
+| style="text-align:center;" | {{ti2|Zasuszona Głowa 2}}
+| [[Zasuszona Głowa]]
+| Ta zasuszona głowa demona otwiera pieczęć 3. poziomu Piekielnych Katakumb.
+| style="text-align:center;" | -
+| style="text-align:center;" |
+* x25
+* x5
+* x1
+|
+* 169 SM
+* 39 SM
+* 10 SM
+|-
+| style="text-align:center;" | {{ti2|Przepustka}}
+| [[Przepustka]]
+| Bilet ten umożliwia dostanie się na nowy poziom w [[2 loch pająków|Lochu Pająków]], jak również w Twierdzy Czerwonego Smoka. Wystarczy pokazać go odpowiedniemu [[Chuk-Sal|strażnikowi]].
+| style="text-align:center;" | -
+| style="text-align:center;" |
+* x25
+* x1
+|
+* 59 SM
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Krwisty Kamień}}
+| [[Krwisty Kamień]]
+| Dzięki temu przedmiotowi można wejść do [[Grota Wygnańców|Groty Wygnańców]].
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 12 SM
+|-
+| style="text-align:center;" | {{ti2|Przepustka (Meley)}}
+| [[Przepustka (Meley)]]
+| Dzięki tej przepustce uzyskasz dostęp do wersji gildii [[Schronienie Meley|Schronienia Meley]] bez czasu oczekiwania i bez straty punktów gildii!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 9 SM
+|-
+| style="text-align:center;" | {{ti2|Wstęp do Świątyni Smoka}}
+| [[Wstęp do Świątyni Smoka]]
+| Za pomocą tego przedmiotu można udać się do [[Beran-Setaou|Świątyni Berana-Setaou.]]
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x70
+| 
+* 35 TM
+|}
+
+=== Przedmioty za Znaki ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Eliksir W. SungMa(SIŁA)}}
+| [[Eliksir: W. SungMa(SIŁA)]]
+| Ten pożyteczny eliksir wzmacnia twoją wolę SungMa (SIŁA) o +5 na 30 min.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 300 SZ
+|-
+| style="text-align:center;" | {{ti2|Eliksir W. SungMa (INT)}}
+| [[Eliksir: W. SungMa (INT)]]
+| Ten pożyteczny eliksir wzmacnia twoją wolę SungMa (INT) o +5 na 30 min.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 300 SZ
+|-
+| style="text-align:center;" | {{ti2|Eliksir W. SungMa (ODP)}}
+| [[Eliksir: W. SungMa (ODP)]]
+| Ten pożyteczny eliksir wzmacnia twoją wolę SungMa (ODP) o +5 na 30 min.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 300 SZ
+|-
+| style="text-align:center;" | {{ti2|Eliksir W. SungMa (WIT)}}
+| [[Eliksir: W. SungMa (WIT)]]
+| Ten pożyteczny eliksir wzmacnia twoją wolę SungMa (ODP) o +5 na 30 min.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 300 SZ
+|-
+| style="text-align:center;" | {{ti2|Peleryna Męstwa}}
+| [[Peleryna Męstwa]]
+| Starożytni wojownicy okazywali swoje męstwo poprzez noszenie kolorowych peleryn. Był to sposób na zwabienie wszystkich potworów z okolicy.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x50
+* x1
+|
+* 420 SZ
+* 9 SZ
+|-
+| style="text-align:center;" | {{ti2|Szkło Intuicji}}
+| [[Szkło Intuicji]]
+| To wyjątkowe Szkło pozwala Ci na pokazanie innemu graczowi przedmiotu z twojego ekwipunku. Podczas tego procesu Szkło ulega zniszczeniu. Aby go użyć, przytrzymaj `alt` w oknie pisania i kliknij na przedmiot, który chciałbyś pokazać.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 9 SZ
+|-
+| style="text-align:center;" | {{ti2|Mikstura Szybkości}}
+| [[Mikstura Szybkości]]
+| -
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 25 SZ
+|-
+| style="text-align:center;" | {{ti2|Mikstura Ataku +10}}
+| [[Mikstura Ataku +10]]
+| Mikstura Ataku +10 (Zielona Mikstura(D))
+| style="text-align:center;" | -
+| style="text-align:center;" |
+* x1
+|
+* 20 SZ
+|-
+| style="text-align:center;" | {{ti2|Mikstura Ataku +15}}
+| [[Mikstura Ataku +15]]
+| -
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 20 SZ
+|-
+| style="text-align:center;" | {{ti2|Zwój Powrotu}}
+| [[Zwój Powrotu]]
+| -
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 9 SZ
+|-
+| style="text-align:center;" | {{ti2|Medal Smoka}}
+| [[Medal Smoka]]
+| -
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 19 SZ
+|-
+| style="text-align:center;" | {{ti2|Pierścień Tajemnic}}
+| [[Pierścień Tajemnic]]
+| Uniemożliwia zbieranie punktów doświadczenia podczas polowania na potwory.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 75 SZ
+|-
+| style="text-align:center;" | {{ti2|Błogosławieństwo Życia}}
+| [[Błogosławieństwo Życia]]
+| Regeneruje punkty życia do pełna od razu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 95 SZ
+|-
+| style="text-align:center;" | {{ti2|Błogosławieństwo Magii}}
+| [[Błogosławieństwo Magii]]
+| Regeneruje punkty magii do pełna od razu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 95 SZ
+|-
+| style="text-align:center;" | {{ti2|Błogosławieństwo Smoka}}
+| [[Błogosławieństwo Smoka]]
+| Regeneruje PŻ i PE do 100%.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 125 SZ
+|-
+| style="text-align:center;" | {{ti2|Szpula Kaszmiru}}
+| [[Szpula Kaszmiru]]
+| Dzięki teamu przedmiotowi możesz nadać swojemu prywatnemu sklepowi indywidualny wygląd.
+| style="text-align:center;" | 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 50 SZ
+|-
+| style="text-align:center;" | {{ti2|Odżywka}}
+| [[Odżywka]]
+| Każdy zwierzak chce być traktowany jak najlepiej, co wymaga nie byle jakiej karmy. Te odżywcze smakołyki są tak pyszne i zdrowe, że regenerują nawet siły żywotne! Nakarm zmęczonego zwierzaka tym smakołykiem, a od razu zregeneruje siły. Jeśli nakarmisz nim martwego zwierzaka, to powróci do życia i odnowi siły w 50%.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 30 SZ
+|-
+| style="text-align:center;" | {{ti2|Magiczny Metal}}
+| [[Magiczny Metal]]
+| Metal potrzebny do wytworzenia Zwoju Smoka - wraz ze Zwojem Błogosławieństwa u Kowala.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 350 SZ
+|-
+| style="text-align:center;" | {{ti2|Zwój Błogosławieństwa}}
+| [[Zwój Błogosławieństwa]]
+| Usuwa ryzyko zniszczenia przedmiotu podczas jego ulepszania. Jeżeli ulepszanie się nie powiedzie, jakość przedmiotu jest redukowana o 1 poziom. Np.: Chcemy ulepszyć Miecz Bojowy na +8 (mamy +7), ale obawiamy się, że go stracimy, bierzemy zwój, jeśli nam ulepszy zostanie podniesiony poziom na +8 oraz pęknięte kamienie znikną, jeśli nie ulepszy jest +6 i w tym przypadku też pęknięte kamienie znikają.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 350 SZ
+|-
+| style="text-align:center;" | {{ti2|Rada Pustelnika}}
+| [[Rada Pustelnika]]
+| Podnosi szansę na pomyślne przeczytanie następnej Księgi Umiejętności (lub Kamienia Duchowego) o 2,5.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 300 SZ
+|-
+| style="text-align:center;" | {{ti2|Dłoń Krytyka}}
+| [[Dłoń Krytyka]]
+| Stoczywszy pierwszą bitwę, młody wojownik stanął na krańcu pola walki, nadaremnie próbując powstrzymać drżenie nóg. Następnej nocy wykradł się, aby już nigdy więcej nie oglądać okropności wojny.
+Biegnąc natknął się na widmo starca, które znikając udzieliło mu błogosławieństwa. Zaklęcie oszołomiło wojownika, jednak od tamtej chwili walczył mężniej niż kiedykolwiek przedtem.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 125 SZ
+|-
+| style="text-align:center;" | {{ti2|Dłoń Przebicia}}
+| [[Dłoń Przebicia]]
+| Aby obronić swoje córki przed atakiem, matka wymykała się z dworku i modliła się o ich pomyślność. Kiedy nagle nadszedł moment w którym dziewczęta musiały zmierzyć się z napastnikiem, po chwili zaskoczenia starsza siostra dźgnęła go krótkim nożem.
+Modlitwa ich matki, wypowiadana z miłością i gorliwością, przywołała ochronę siły wyższej.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 125 SZ
+|-
+| style="text-align:center;" | {{ti2|Atak_Boga_Smoków}}
+| [[Atak Boga Smoków]]
+| Zwiększa obrażenie jakie zadajesz podczas walki o 12-15%.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 95 SZ
+|-
+| style="text-align:center;" | {{ti2|Inteligencja Boga Smoków}}
+| [[Inteligencja Boga Smoków]]
+| Zwiększa ilość Punktów Energii o 20%.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 75 SZ
+|-
+| style="text-align:center;" | {{ti2|Obrona Boga Smoków}}
+| [[Obrona Boga Smoków]]
+| Zmniejsza obrażenia jakie otrzymujesz podczas walki o 12-15%.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 95 SZ
+|-
+| style="text-align:center;" | {{ti2|Życie Boga Smoków}}
+| [[Życie Boga Smoków]]
+| Zwiększa ilość Punktów Życia o 20%.
+| style="text-align:center;" | 30 minut
+| style="text-align:center;" | 
+* x1
+|
+* 95 SZ
+|-
+| style="text-align:center;" | {{ti2|Magiczna Ruda Miedzi}}
+| [[Magiczna Ruda Miedzi]]
+| Jeśli go użyjesz go na polepszonym [[Zwój Błogosławieństwa]], możesz stworzyć [[Zwój Boga Wojny]].
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 420 SZ
+|-
+| style="text-align:center;" | {{ti2|Olejek Piżmowy}}
+| [[Olejek Piżmowy]]
+| Olejek Piżmowy jest używany przez Sprzedawcę Broni podczas misji. Przedmiot ten nie ma innego zastosowania.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 1 SZ
+|-
+| style="text-align:center;" | {{ti2|Pakiet Zwój Błogosławieństwa 2+1}}
+| [[Pakiet Zwój Błogosławieństwa 2+1]]
+| Usuwa ryzyko zniszczenia przedmiotu podczas jego ulepszania. Jeżeli ulepszanie się nie powiedzie, to jakość przedmiotu jest redukowana o 1 poziom.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x3
+|
+* 720 SZ
+|-
+|}
+
+== Styl ==
+
+=== Fryzury bez i z atrybutami ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+|- {{Hl3}}
+! class="unsortable" | Obrazek
+! width=150px | Przedmiot
+! class="unsortable" width=300px | Informacja
+! width=100px | Wymagany poziom
+! width=120px | Można handlować?
+! class="unsortable" width=180px | Cena
+|-
+| [[Grafika:Modna Fryzura (czerw.) w grze.png|32px]]
+| [[Modna Fryzura (czerw.)]]<br>'''Wojownik'''
+| Fryzura dająca Ci niepowtarzalny wygląd 
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Modna Fryzura (jasna) w grze.png|32px]]
+| [[Modna Fryzura (jasna)]]<br>'''Wojownik'''
+| Fryzura dająca Ci niepowtarzalny wygląd
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Modna Fryzura (nieb.) w grze.png|32px]]
+| [[Modna Fryzura (nieb.)]]<br>'''Wojownik'''
+| Fryzura dająca Ci niepowtarzalny wygląd
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Modna Fryzura (brąz.) w grze.png|32px]]
+| [[Modna Fryzura (brąz.)]]<br>'''Wojownik'''
+| Fryzura dająca Ci niepowtarzalny wygląd
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (czerw.) w grze.png|32px]]
+| [[Chusta (czerw.)]]<br>'''Wojownik'''
+| Schludna fryzura zrobiona przy użyciu chusty do włosów
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (kratk.) w grze.png|32px]]
+| [[Chusta (kratk.)]]<br>'''Wojownik'''
+| Schludna fryzura zrobiona przy użyciu chusty do włosów 
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (nieb.) w grze.png|32px]]
+| [[Chusta (nieb.)]]<br>'''Wojownik'''
+| Schludna fryzura zrobiona przy użyciu chusty do włosów
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (ziel.) w grze.png|32px]]
+| [[Chusta (ziel.)]]<br>'''Wojownik'''
+| Schludna fryzura zrobiona przy użyciu chusty do włosów
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (czarne) w grze.png|32px]]
+| [[Długie Włosy (czarne)]]''' Wojownik'''
+| Dobrze znana fryzura starożytnych wojowników 
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika: Długie.Włosy (czerw.) w grze.png|32px]]
+| [[Długie Włosy (czerw.)]]<br>'''Wojownik'''
+| Dobrze znana fryzura starożytnych wojowników
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (brąz.) w grze.png|32px]]
+| [[Długie Włosy (brąz.)]]<br>'''Wojownik'''
+| Dobrze znana fryzura starożytnych wojowników
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (ziel.) w grze.png|32px]]
+| [[Długie Włosy (ziel.)]]<br>'''Wojownik'''
+| Dobrze znana fryzura starożytnych wojowników
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Modna Fryzura (czerw.)(K) w grze.png|32px]]
+| [[Modna Fryzura (czerw.)(K)]]<br> '''Wojowniczka'''
+| Modne czerwone włosy z opaską 
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Modna Fryzura (jasna)(K) w grze.png|32px]]
+| [[Modna Fryzura (jasna)(K)]]<br> '''Wojowniczka'''
+| Modne jasne włosy z opaską
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Modna Fryzura (nieb.)(K) w grze.png|32px]]
+| [[Modna Fryzura (nieb.)(K)]]<br> '''Wojowniczka'''
+| Modne niebieskie włosy z opaską 
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Modna Fryzura (brąz.)(K) w grze.png|32px]]
+| [[Modna Fryzura (brąz.)(K)]]<br> '''Wojowniczka'''
+| Modne brązowe włosy z opaską
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (brąz.)(K) w grze.png|32px]]
+| [[Chusta (brąz.)(K)]]<br> '''Wojowniczka'''
+| Krótkie brązowe włosy z czerwoną opaską
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (jasne)(K) w grze.png|32px]]
+| [[Chusta (jasne)(K)]]<br> '''Wojowniczka'''
+| Krótkie włosy blond z jasną opaską
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (nieb.)(K) w grze.png|32px]]
+| [[Chusta (nieb.)(K)]]<br> '''Wojowniczka'''
+| Krótkie niebieskie włosy z brązową opaską
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Chusta (ziel.)(K) w grze.png|32px]]
+| [[Chusta (ziel.)(K)]]<br> '''Wojowniczka'''
+| Krótkie zielone włosy z zieloną opaską
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (czar.)(K) w grze.png|32px]]
+| [[Długie Włosy (czar.)(K)]]<br> '''Wojowniczka'''
+| Wspaniała czarna fryzura przeznaczona dla wojowników 
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (czerw.)(K) w grze.png|32px]]
+| [[Długie Włosy (czerw.)(K)]]<br> '''Wojowniczka'''
+| Wspaniała czerwona fryzura przeznaczona dla wojowników
+|35
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (brąz.)(K) w grze.png|32px]]
+| [[Długie Włosy (brąz.)(K)]]<br> '''Wojowniczka'''
+| Wspaniała brązowa fryzura przeznaczona dla wojowników
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (ziel.)(K) w grze.png|32px]]
+| [[Długie Włosy (ziel.)(K)]]<br> '''Wojowniczka'''
+| Wspaniała zielona fryzura przeznaczona dla wojowników 
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (jasne) w grze.png|32px]]
+| [[Spięte (jasne)]]<br> '''Sura'''
+| Militarny styl strzyżenia
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (brąz.) w grze.png|32px]]
+| [[Spięte (brąz.)]]<br> '''Sura'''
+| Militarny styl strzyżenia
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (blond) w grze.png|32px]]
+| [[Spięte (blond)]]<br> '''Sura'''
+| Militarny styl strzyżenia
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (ziel.) w grze.png|32px]]
+| [[Spięte (ziel.)]]<br> '''Sura'''
+| Militarny styl strzyżenia
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (białe) w grze.png|32px]]
+| [[Charyzm. Włosy (białe)]]<br> '''Sura'''
+| Styl włosów pokazujący silny indywidualizm postaci
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (czerw.) w grze.png|32px]]
+| [[Charyzm. Włosy (czerw.)]]<br> '''Sura'''
+| Styl włosów pokazujący silny indywidualizm postaci
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (czar.) w grze.png|32px]]
+| [[Charyzm. Włosy (czar.)]]<br> '''Sura'''
+| Styl włosów pokazujący silny indywidualizm postaci
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (purp.) w grze.png|32px]]
+| [[Charyzm. Włosy (purp.)]]<br> '''Sura'''
+| Styl włosów pokazujący silny indywidualizm postaci
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (białe) w grze.png|32px]]
+| [[Zawinięte (białe)]]<br> '''Sura'''
+| Popularna fryzura, w której włosy są zaczesane do tyłu
+|35
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (nieb.) w grze.png|32px]]
+| [[Zawinięte (nieb.)]]<br> '''Sura'''
+| Popularna fryzura, w której włosy są zaczesane do tyłu
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (czar.) w grze.png|32px]]
+| [[Zawinięte (czar.)]]<br> '''Sura'''
+| Popularna fryzura, w której włosy są zaczesane do tyłu
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (brąz.) w grze.png|32px]]
+| [[Zawinięte (brąz.)]]<br> '''Sura'''
+| Popularna fryzura, w której włosy są zaczesane do tyłu
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (jasne)(K) w grze.png|32px]]
+| [[Spięte (jasne)(K)]]<br> '''Sura Kobieta'''
+| Ekstrawagancka fryzura - typowa dla kobiet Sura
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (brąz.)(K) w grze.png|32px]]
+| [[Spięte (brąz.)(K)]]<br> '''Sura Kobieta'''
+| Ekstrawagancka fryzura - typowa dla kobiet Sura 
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (blond)(K) w grze.png|32px]]
+| [[Spięte (blond)(K)]]<br> '''Sura Kobieta'''
+| Ekstrawagancka fryzura - typowa dla kobiet Sura 
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spięte (ziel.)(K) w grze.png|32px]]
+| [[Spięte (ziel.)(K)]]<br> '''Sura Kobieta'''
+| Ekstrawagancka fryzura - typowa dla kobiet Sura
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (białe)(K) w grze.png|32px]]
+| [[Charyzm. Włosy (białe)(K)]]<br> '''Sura Kobieta'''
+| Długie, jasne włosy - prezentują naprawdę demoniczny styl
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (czerw.)(K) w grze.png|32px]]
+| [[Charyzm. Włosy (czerw.)(K)]]<br> '''Sura Kobieta'''
+| Długie, czerwone włosy - prezentują naprawdę demoniczny styl
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (czar.)(K) w grze.png|32px]]
+| [[Charyzm. Włosy (czar.)(K)]]<br> '''Sura Kobieta'''
+| Długie, czarne włosy - prezentują naprawdę demoniczny styl
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Charyzm. Włosy (purp.)(K) w grze.png|32px]]
+| [[Charyzm. Włosy (purp.)(K)]]<br> '''Sura Kobieta'''
+| Długie, fioletowe włosy - prezentują naprawdę demoniczny styl
+|25
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (białe)(K) w grze.png|32px]]
+| [[Zawinięte (białe)(K)]]<br> '''Sura Kobieta'''
+| Staromodny kucyk, kiedyś symbolizował bogactwo
+|35
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (nieb.)(K) w grze.png|32px]]
+| [[Zawinięte (nieb.)(K)]]<br> '''Sura Kobieta'''
+| Staromodny kucyk, kiedyś symbolizował bogactwo 
+|35
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (czar.)(K) w grze.png|32px]]
+| [[Zawinięte (czar.)(K)]]<br> '''Sura Kobieta'''
+| Staromodny kucyk, kiedyś symbolizował bogactwo
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Zawinięte (brąz.)(K) w grze.png|32px]]
+| [[Zawinięte (brąz.)(K)]]<br> '''Sura Kobieta'''
+| Staromodny kucyk, kiedyś symbolizował bogactwo
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (brąz.) w grze.png|32px]]
+| [[Kucyk (brąz.)]]<br> '''Ninja'''
+| Włosy związane w kucyk
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (ziel.) w grze.png|32px]]
+| [[Kucyk (ziel.)]]<br> '''Ninja'''
+| Włosy związane w kucyk 
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (nieb.) w grze.png|32px]]
+| [[Kucyk (nieb.)]]<br> '''Ninja'''
+| Włosy związane w kucyk
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (jasny) w grze.png|32px]]
+| [[Kucyk (jasny)]]<br> '''Ninja'''
+| Włosy związane w kucyk
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (czerw.) w grze.png|32px]]
+| [[Krótkie Włosy (czerw.)]]<br> '''Ninja'''
+| Stylizowana aerodynamiczna fryzura
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (brąz.) w grze.png|32px]]
+| [[Krótkie Włosy (brąz.)]]<br> '''Ninja'''
+| Stylizowana aerodynamiczna fryzura
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (jasne) w grze.png|32px]]
+| [[Krótkie Włosy (jasne)]]<br> '''Ninja'''
+| Stylizowana aerodynamiczna fryzura 
+|25
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (fiol.) w grze.png|32px]]
+| [[Krótkie Włosy (fiol.)]]<br> '''Ninja'''
+| Stylizowana aerodynamiczna fryzura
+|25 
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (czerw.) w grze.png|32px]]
+| [[Krótkie (czerw.)]]<br> '''Ninja'''
+| Fryzura nadająca Ci złowrogi wygląd
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (nieb.) w grze.png|32px]]
+| [[Krótkie (nieb.)]]<br> '''Ninja'''
+| Fryzura nadająca Ci złowrogi wygląd 
+|35
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (czar.) w grze.png|32px]]
+| [[Krótkie (czar.)]]<br> '''Ninja'''
+| Fryzura nadająca Ci złowrogi wygląd
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (blond) w grze.png|32px]]
+| [[Krótkie (blond)]]<br> '''Ninja'''
+| Fryzura nadająca Ci złowrogi wygląd
+|35
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (brąz.)(K) w grze.png|32px]]
+| [[Kucyk (brąz.)(K)]]<br> '''Ninja Kobieta'''
+| Brązowe włosy z długim kucykiem, fryzura ta cieszy się dużą popularnością wśród zabójców
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (ziel.)(K) w grze.png|32px]]
+| [[Kucyk (ziel.)(K)]]<br> '''Ninja Kobieta'''
+| Zielone włosy z długim kucykiem, fryzura ta cieszy się dużą popularnością wśród zabójców
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (nieb.)(K) w grze.png|32px]]
+| [[Kucyk (nieb.)(K)]]<br> '''Ninja Kobieta'''
+| Niebieskie włosy z długim kucykiem, fryzura ta cieszy się dużą popularnością wśród zabójców 
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Kucyk (jasny)(K) w grze.png|32px]]
+| [[Kucyk (jasny)(K)]]<br> '''Ninja Kobieta'''
+| Jasne włosy z długim kucykiem, fryzura ta cieszy się dużą popularnością wśród zabójców
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (czerw.)(K) w grze.png|32px]]
+| [[Krótkie Włosy (czerw.)(K)]]<br> '''Ninja Kobieta'''
+| Dłuższe włosy opadające na ramiona rozświetlą każdą twarz i nadadzą jej wyrazisty charakter. Uczesanie to jest bardzo uniwersalne, nadaje się na każdą okazję
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (brąz.)(K) w grze.png|32px]]
+| [[Krótkie Włosy (brąz.)(K)]]<br> '''Ninja Kobieta'''
+| Dłuższe włosy opadające na ramiona rozświetlą każdą twarz i nadadzą jej wyrazisty charakter. Uczesanie to jest bardzo uniwersalne, nadaje się na każdą okazję
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (blond)(K) w grze.png|32px]]
+| [[Krótkie Włosy (blond)(K)]]<br> '''Ninja Kobieta'''
+| Dłuższe włosy opadające na ramiona rozświetlą każdą twarz i nadadzą jej wyrazisty charakter. Uczesanie to jest bardzo uniwersalne, nadaje się na każdą okazję
+|25
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie Włosy (fiol.)(K) w grze.png|32px]]
+| [[Krótkie Włosy (fiol.)(K)]]<br> '''Ninja Kobieta'''
+| Dłuższe włosy opadające na ramiona rozświetlą każdą twarz i nadadzą jej wyrazisty charakter. Uczesanie to jest bardzo uniwersalne, nadaje się na każdą okazję
+|25
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (czerw.)(K) w grze.png|32px]]
+| [[Krótkie (czerw.)(K)]]<br> '''Ninja Kobieta'''
+| Czerwone, kudłate włosy
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (nieb.)(K) w grze.png|32px]]
+| [[Krótkie (nieb.)(K)]]<br> '''Ninja Kobieta'''
+| Niebieskie, kudłate włosy 
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (czar.)(K) w grze.png|32px]]
+| [[Krótkie (czar.)(K)]]<br> '''Ninja Kobieta'''
+| Czarne, kudłate włosy
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Krótkie (blond)(K) w grze.png|32px]]
+| [[Krótkie (blond)(K)]]<br> '''Ninja Kobieta'''
+| Blond, kudłate włosy
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (brąz.) w grze.png|32px]]
+| [[Spinka Motyl (brąz.)]]<br>  '''Szaman'''
+| Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (czar.) w grze.png|32px]]
+| [[Spinka Motyl (czar.)]]<br>  '''Szaman'''
+| Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (nieb.) w grze.png|32px]]
+| [[Spinka Motyl (nieb.)]]<br>  '''Szaman'''
+| Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (biały) w grze.png|32px]]
+| [[Spinka Motyl (biały)]]<br>  '''Szaman'''
+| Modnie przycięte włosy, zapewniające szamanom możliwość wyrażania swojego usposobienia
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (brązowe) w grze.png|32px]]
+| [[Długie Włosy (brąz.)Szaman]]<br>  '''Szaman'''
+| Długie, brązowe włosy
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (czar.) w grze.png|32px]]
+| [[Długie Włosy (czar.)Szaman]]<br>  '''Szaman'''
+| Długie, czarne włosy
+|25
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (blond) w grze.png|32px]]
+| [[Długie Włosy (blond)Szaman]]<br>  '''Szaman'''
+| Długie, blond włosy
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (fiol.) w grze.png|32px]]
+| [[Długie Włosy (fiol.)Szaman]]<br>  '''Szaman'''
+| Długie, fioletowe włosy
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (brąz.) w grze.png|32px]]
+| [[Dawna Fryzura (brąz.)]]<br>  '''Szaman'''
+| Staromodna fryzura szamanów, brązowe włosy są spięte w kucyk
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (jasna) w grze.png|32px]]
+| [[Dawna Fryzura (jasna)]]<br>  '''Szaman'''
+| Staromodna fryzura szamanów, jasne włosy są spięte w kucyk
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (fiol.) w grze.png|32px]]
+| [[Dawna Fryzura (fiol.)]]<br>  '''Szaman'''
+| Staromodna fryzura szamanów, fioletowe włosy są spięte w kucyk
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (czerw.) w grze.png|32px]]
+| [[Dawna Fryzura (czerw.)]]<br>  '''Szaman'''
+| Staromodna fryzura szamanów, czerwone  włosy są spięte w kucyk
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (brąz.)(K) w grze.png|32px]]
+| [[Spinka Motyl (brąz.)Szamanka]]<br>  '''Szamanka'''
+| Elegancko spięte włosy spinką w kształcie motyla
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (czar.)(K) w grze.png|32px]]
+| [[Spinka Motyl (czar.)Szamanka]]<br>  '''Szamanka'''
+| Elegancko spięte włosy spinką w kształcie motyla
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (nieb.)(K) w grze.png|32px]]
+| [[Spinka Motyl (nieb.)Szamanka]]<br>  '''Szamanka'''
+| Elegancko spięte włosy spinką w kształcie motyla
+|15
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Spinka Motyl (biała)(K) w grze.png|32px]]
+| [[Spinka Motyl (biała)Szamanka]]<br>  '''Szamanka'''
+| Elegancko spięte włosy spinką w kształcie motyla
+|15
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (brązowe)(K) w grze.png|32px]]
+| [[Długie Włosy (brąz.)(K)]]<br>  '''Szamanka'''
+| Elegancka fryzura dla Szamanów
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (czarne)(K) w grze.png|32px]]
+| [[Długie Włosy (czar.)(K)]]<br>  '''Szamanka'''
+| Elegancka fryzura dla Szamanów
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (blond)(K) w grze.png|32px]]
+| [[Długie Włosy (blond)Szamanka]]<br>  '''Szamanka'''
+| Elegancka fryzura dla Szamanów 
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Długie Włosy (fiol.)(K) w grze.png|32px]]
+| [[Długie Włosy (fiol.)Szamanka]]<br>  '''Szamanka'''
+| Elegancka fryzura dla Szamanów
+|25
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (brąz.)(K) w grze.png|32px]]
+| [[Dawna Fryzura (brąz.)Szamanka]]<br>  '''Szamanka'''
+| Żeńska fryzura z długimi, układanymi warstwowo włosami
+|35
+| style="text-align:center;" |Tak
+|
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (blond)(K) w grze.png|32px]]
+| [[Dawna Fryzura (blond)Szamanka]]<br>  '''Szamanka'''
+| Żeńska fryzura z długimi, układanymi warstwowo włosami
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (fiol.)(K) w grze.png|32px]]
+| [[Dawna Fryzura (fiol.)Szamanka]]<br>  '''Szamanka'''
+| Żeńska fryzura z długimi, układanymi warstwowo włosami
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Dawna Fryzura (czerw.)(K) w grze.png|32px]]
+| [[Dawna Fryzura (czerw.)Szamanka]]<br>  '''Szamanka'''
+| Żeńska fryzura z długimi, układanymi warstwowo włosami 
+|35
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Warkocze Plemienne (ziel.) w grze.png|32px]]
+| [[Warkocze Plemienne (zielone)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Warkocze Plemienne (czerw.) w grze.png|32px]]
+| [[Warkocze Plemienne (czerwone)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Warkocze Plemienne (żółte) w grze.png|32px]]
+| [[Warkocze Plemienne (żółte)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Warkocze Plemienne (nieb.) w grze.png|32px]]
+| [[Warkocze Plemienne (niebieskie)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Warkocze Plemienne (fiol.) w grze.png|32px]]
+| [[Warkocze Plemienne (fioletowe)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Ochrona Na Czoło (czerw.) w grze.png|32px]]
+| [[Ochrona Na Czoło (czerwona)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Ochrona Na Czoło (biała) w grze.png|32px]]
+| [[Ochrona Na Czoło (biała)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|-
+| [[Grafika:Ochrona Na Czoło (nieb.) w grze.png|32px]]
+| [[Ochrona Na Czoło (niebieska)]]<br>  '''Likan'''
+| 
+|
+| style="text-align:center;" |Tak
+| 
+*19 SM (bez atrybutów)
+*29 SM (z atrybutami)
+|}
+
+=== Wierzchowce i Zwierzaki ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|Azraeluś (pieczęć)}}
+| [[Azraeluś (pieczęć)]]
+| Mini-wersja władcy demonów wymaga wyjątkowo dużo miłości, a w zamian da Ci od 2. poziomu [[Wieża Demonów|Wieży Demonów]] oraz [[Piekielne Katakumby|Piekielnych Katakumb]] bonus w postaci 1500 PŻ oraz +15 % do zadawanych obrażeń.
+| 
+* 200 dni
+* 30 dni
+* 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 799 SM
+* 299 SM
+* 99 SM
+|-
+| style="text-align:center;" | {{ti2|Blue Barry (pieczęć)}}
+| [[Blue Barry (pieczęć)|Blue Barry]]
+| Bez względu, jak trudna jest sytuacja, pies ratowniczy zjawia się w mgnieniu oka i zapewnia ci wsparcie potężnymi bonusami!
+|
+* 3 dni
+| style="text-align:center;" | 
+* x1
+|
+* 45 SM
+|-
+| style="text-align:center;" | {{ti2|Boska Odżywka}}
+| [[Boska Odżywka]]
+| W tym przysmaku drzemie boska moc! Służy do wskrzeszenia twojego martwego zwierzaka. Liczba wymaganych do tego przedmiotów zależy od poziomu twojego zwierzaka.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 179 SM
+|-
+
+| style="text-align:center;" | {{ti2|Cukier dla Konia}}
+| [[Cukier dla Konia]]
+| Wojskowi dowódcy stworzyli cukier by zapewnić lepsze stosunki między końmi i ich jeźdźcami, a tym samym zwiększyć posłuszeństwo zwierząt, co jest istotnym czynnikiem sukcesu.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Duża Magmowa Skrzynka Meley}}
+| [[Duża Magmowa Skrzynka Meley]]
+| Dzięki zawartości tej skrzyni zdobędziesz ognioodporne wyposażenie! Otrzymasz wierzchowca smok magmy oraz małego strażnika smoków Minidall i trzy przepustki do Schronienia Meley. Każda załączona mikstura mocy smoka obdarzy cię na 10 min. mocą smoka. Ponadto możesz zwiększyć swoją szansę na przeszywający cios 3 razy po 10 minut. Dzięki książce lidera każdy z członków grupy może zebrać przez 3 godz. 30% więcej punktów doświadczenia.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 499 SM
+|-
+| style="text-align:center;" | {{ti2|Klatka_Transportowa}}
+| [[Klatka Transportowa]]
+| Miej swojego towarzysza zawsze przy sobie - dzięki tej praktycznej klatce. Gdy go do niej wsadzić, będzie on przez 30 dni zdatny do handlu. Dotyczy jedynie zwierzaków, które można levelować.
+|  
+* 30 dni
+| style="text-align:center;" | 
+* x1
+|
+* 79 SM
+|-
+| style="text-align:center;" | {{ti2|Magmowa Skrzynka Meley}}
+| [[Magmowa Skrzynka Meley]]
+| Dzięki zawartości tej skrzyni zdobędziesz ognioodporne wyposażenie! Otrzymasz wierzchowca smok magmy oraz małego strażnika smoków Minidall i przepustkę do Schronienia Meley. Każda załączona mikstura obdarzy cię na 10 min. mocą smoka.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 199 SM
+|-
+| style="text-align:center;" | {{ti2|Mega Przekąska}}
+| [[Mega Przekąska]]
+| Ta pożywna przekąska dostarcza Twojemu Mega Wierzchowcowi czystą energię, dzięki której będzie on mógł walczyć u Twego boku dłużej.
+| 
+* 30 dni
+* 15 dni
+* 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 80 SM
+* 45 SM
+* 25 SM
+|-
+| style="text-align:center;" | {{ti2|Muffin (brąz.) (pieczęć)}}
+| [[Muffin (brąz.) (pieczęć)|Muffin z Brązowymi Akcesoriami]]
+| Uciekające kurczaki...! Muffin, przerażający kogut bojowy, nie przepuści żadnemu jajku.
+|
+* 3 dni
+| style="text-align:center;" | 
+* x1
+|
+* 45 SM
+|-
+| style="text-align:center;" | {{ti2|Odżywka}}
+| [[Odżywka]]
+| Każdy zwierzak chce być traktowany jak najlepiej, co wymaga nie byle jakiej karmy. Te odżywcze smakołyki są tak pyszne i zdrowe, że regenerują nawet siły żywotne! Nakarm zmęczonego zwierzaka tym smakołykiem, a od razu zregeneruje siły. Jeśli nakarmisz nim martwego zwierzaka, to powróci do życia i odnowi siły w 50%.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 19 SM
+|-
+| style="text-align:center;" | {{ti2|Pancerna Panda (pieczęć)}}
+| [[Pancerna Panda (pieczęć)|Pancerna Panda]]
+| Wygodnictwo należy do przeszłości: rzuć się do boju na opancerzonej pandzie!
+|
+* 3 dni
+| style="text-align:center;" | 
+* x1
+|
+* 35 SM
+|-
+| style="text-align:center;" | {{ti2|Pergamin Nazwy Zwierzaka}}
+| [[Pergamin Nazwy Zwierzaka]]
+| Znudziła ci się nazwa twojego zwierzaka albo wpadła ci do głowy o wiele lepsza nazwa? To wspaniale! Teraz możesz użyć tego pergaminu, aby nadać nowe imię swojemu zwierzakowi. Przeciągnij pergamin na swojego zwierzaka i już możesz zmienić jego nazwę. Jakie to proste!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+| 
+* 49 SM
+|-
+| style="text-align:center;" | {{ti2|Reverti Zwierza}}
+| [[Reverti Zwierza]]
+| Zakręć kołem czasu i używając tego żetonu zresetuj wszystkie umiejętności swojego zwierzaka.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 79 SM
+|-
+| style="text-align:center;" | {{ti2|Revertus Zwierza}}
+| [[Revertus Zwierza]]
+| Zakręć kołem czasu i używając tego żetonu zresetuj jedną wybraną umiejętności swojego zwierzaka.
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 59 SM
+|-
+| style="text-align:center;" | {{ti2|Skrzynia Ksiąg Zwierza}}
+| [[Skrzynia Ksiąg Zwierza]]
+| W tej skrzyni z księgami znajduje się losowa księga zwierza. Znajdziesz w niej cenne wskazówki i tabelki z instrukcjami o rozwoju twojego zwierzaka. Ponadto stronice zdobią liczne fotografie i graficznie wyrafinowana czcionka - miłej lektury!
+| style="text-align:center;" | -
+| style="text-align:center;" | 
+* x1
+|
+* 129 SM
+|-
+| style="text-align:center;" | {{ti2|Certyfikat_Wierzchowca}}
+| [[Świadectwo Lwa]]
+| Świadectwo posiadania Młodego Lwa.
+| 
+* 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 99 SM
+|-
+| style="text-align:center;" | {{ti2|Certyfikat_Wierzchowca}}
+| [[Świadectwo Wilka]]
+| Świadectwo posiadania Młodego Wilka.
+| 
+* 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 99 SM
+|-
+| style="text-align:center;" | {{ti2|Certyfikat_Wierzchowca}}
+| [[Świadectwo Dzika]]
+| Świadectwo posiadania Młodego Dzika.
+|  
+* 7 dni
+| style="text-align:center;" | 
+* x1
+|
+* 99 SM
+|-
+| style="text-align:center;" | {{ti2| Zestaw Opieki nad Koniem}}
+| [[ Zestaw Opieki nad Koniem ]]
+| Ten zestaw zawiera wszystko, czego potrzebuje troskliwy właściciel konia: paszę, czerwony żeń-szeń (premium) oraz coś do ożywienia, na wypadek, gdyby twój rumak poległ na polu bitwy.
+| style="text-align:center;" | 
+|
+* x1
+|
+* 399 SM
+|-
+|}
+
+=== Wizerunki broni ===
+
+{| {{Prettytable}}
+|- {{Hl3}}
+! Ikona
+! width=150px | Przedmiot
+! width=400px | Informacja
+! Czas trwania
+! Sztuk
+! Cena
+|-
+| style="text-align:center;" | {{ti2|height=2|Ostrze Wodnika+}}
+| [[Ostrze Wodnika+]]
+| Dzięki temu wizerunkowi trzymasz w ręku potęgę oceanu! Pociągnij swoją broń iryzującym błękitem, nadając jej min. jeden losowy bonus.
+| 
+* 5 dni
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|height=3|Glewia Wodnika+}}
+| [[Glewia Wodnika+]]
+| Dzięki temu wizerunkowi trzymasz w ręku potęgę oceanu! Pociągnij swoją broń iryzującym błękitem, nadając jej min. jeden losowy bonus.
+| 
+* 5 dni
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Sztylet Wodnika+}}
+| [[Sztylet Wodnika+]]
+| Dzięki temu wizerunkowi trzymasz w ręku potęgę oceanu! Pociągnij swoją broń iryzującym błękitem, nadając jej min. jeden losowy bonus.
+| 
+* 5 dni
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|height=2|Łuk Wodnika+}}
+| [[Łuk Wodnika+]]
+| Dzięki temu wizerunkowi trzymasz w ręku potęgę oceanu! Pociągnij swoją broń iryzującym błękitem, nadając jej min. jeden losowy bonus.
+| 
+* 5 dni
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Dzwon Wodnika+}}
+| [[Dzwon Wodnika+]]
+| Dzięki temu wizerunkowi trzymasz w ręku potęgę oceanu! Pociągnij swoją broń iryzującym błękitem, nadając jej min. jeden losowy bonus.
+| 
+* 5 dni
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Wachlarz Wodnika+}}
+| [[Wachlarz Wodnika+]]
+| Dzięki temu wizerunkowi trzymasz w ręku potęgę oceanu! Pociągnij swoją broń iryzującym błękitem, nadając jej min. jeden losowy bonus.
+| 
+* 5 dni
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+| style="text-align:center;" | {{ti2|Szpony Wodnika+}}
+| [[Szpony Wodnika+]]
+| Dzięki temu wizerunkowi trzymasz w ręku potęgę oceanu! Pociągnij swoją broń iryzującym błękitem, nadając jej min. jeden losowy bonus.
+| 
+* 5 dni
+| style="text-align:center;" | 
+* x1
+|
+* 39 SM
+|-
+|}
+
+== Sklep Tygrysi ==
+Po raz pierwszy [[Sklep Tygrysi]] pojawił się 3 grudnia 2019 roku w związku z ofertą eventowego serwera [[Grunwald]]. Wtedy sklep posiadał czasową ofertę, która była aktualizowana jeszcze dwa razy. Dzień przed otworzeniem kolejnego takiego serwera [[Polyphemos]] została dodana stała oferta Sklepu Tygrysiego. Można w nim kupować różne przedmioty za [[Tygrysie Monety]].
+
+[[Kategoria:Informacje]]
+{{Pomocne strony}}

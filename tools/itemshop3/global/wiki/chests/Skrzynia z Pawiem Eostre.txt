@@ -1,0 +1,45 @@
+{{Item/Layout
+
+|image = Skrzynia z Pawiem Eostre.png
+
+|Opis = Bogini wiosny Eostre napełniła tę magiczną skrzynię. Jaką niespodziankę wielkanocną znajdziesz w niej? Możliwe są błękitny lub różowy błyszczący paw, przydatne przedmioty zwierzaka i dużo innych przedmiotów użytkowych.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Błękitny Błyszczący Paw (pieczęć)}} 30/15/7 Dni
+* {{ti|Różowy Błyszczący Paw (pieczęć)}} 30/15/7 Dni
+* {{ti|Odżywka}}
+* {{ti|Cukier dla Konia}}
+* {{ti|Mega Przekąska}} 30/15/7 Dni
+* {{ti|Skrzynia Ksiąg Zwierza}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Tajemnicza Skrzynia}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Książka Lidera+ (B)}}
+* {{ti|Pierścień Teleportacji}}
+* {{ti|Medal Smoka}} x10
+* {{ti|Wino z Kwiatu Brzoskwini}} x3
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

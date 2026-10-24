@@ -1,0 +1,39 @@
+{{Item/Layout
+
+|image = Pakiet Przetrwania na Lodowej Ziemi.png
+
+|Opis = Wieczny lód i przenikliwe zimno sprawiają, że nawet najtwardsi wojownicy opadają z sił. Dzięki temu użytecznemu ekwipunkowi przetrwania na Lodowej Ziemi poradzisz sobie z przeciwnościami natury!
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Pojemniki
+|Kategoria3 =
+
+|Zawartość = * {{ti|Jednorożec (pieczęć)}} (30 dni)
+* {{ti|Dłoń Krytyka}} (x3)
+* {{ti|Dłoń Przebicia}} (x3)
+* {{ti|Życie Boga Smoków}} (x3)
+* {{ti|Błogosławieństwo Życia}} (x5)
+* {{ti|Błogosławieństwo Smoka}} (x5)
+* {{ti|Wino z Kwiatu Brzoskwini}} (x50)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmioty trafiają bezpośrednio do Twojego magazynu Item-Shop.
+
+}}

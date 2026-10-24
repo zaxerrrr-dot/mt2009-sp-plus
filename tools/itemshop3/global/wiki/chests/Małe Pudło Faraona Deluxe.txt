@@ -1,0 +1,60 @@
+{{Item/Layout
+
+|image = Małe Pudło Faraona Deluxe.png
+
+|Opis = Zgarnij pakiet i zostań władcą pustyni: przy odrobienie szczęścia otrzymasz mały zestaw zielonego faraona z kostiumem i zwierzakiem, które obdarzą cię potężnymi bonusami. A możesz otrzymasz jedną z wielu wspaniałych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+ '''Pakiet (kostium + pet):'''
+* {{ti2|Sz. Stroik Faraona+ (k)|px=22}}{{ti2|Sz. Stroik Faraona+ (m)|px=22}}[[Stroiki Faraona|Sz. Stroik Faraona+]] (k/m) (30d)  
+* {{ti2|height=2|Sz. Szata Faraona+ (k)|px=22}}{{ti2|height=2|Sz. Szata Faraona+ (m)|px=22}}[[Szaty Faraona|Sz. Kostium Faraona+]] (k/m) (30d) 
+* {{ti|Niebieski Anubis (pieczęć)}} (30d)
+
+'''lub:'''
+* {{ti2|Cz. Stroik Faraona+ (k)|px=22}}{{ti2|Cz. Stroik Faraona+ (m)|px=22}}[[Stroiki Faraona|Cz. Stroik Faraona+]] (k/m) (15d) 
+* {{ti2|height=2|Cz. Szata Faraona+ (k)|px=22}}{{ti2|height=2|Cz. Szata Faraona+ (m)|px=22}}[[Szaty Faraona|Cz. Kostium Faraona+]] (k/m) (15d)
+* {{ti2|Sz. Stroik Faraona+ (k)|px=22}}{{ti2|Sz. Stroik Faraona+ (m)|px=22}}[[Stroiki Faraona|Sz. Stroik Faraona+]] (k/m) (15d) 
+* {{ti2|height=2|Sz. Szata Faraona+ (k)|px=22}}{{ti2|height=2|Sz. Szata Faraona+ (m)|px=22}}[[Szaty Faraona|Sz. Kostium Faraona+]] (k/m) (15d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Szansa na [[Bonus Zestawu]].
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+
+}}

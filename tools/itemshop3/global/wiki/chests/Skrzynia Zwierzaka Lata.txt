@@ -1,0 +1,45 @@
+{{Item/Layout
+
+|image = Skrzynia Zwierzaka Lata.png
+
+|Opis =Z tej skrzyni możesz otrzymać ekscytujące przedmioty – np. Małego Kraba Wojownika! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Mini Krab Wojownik (pieczęć)}} (60d/30d/15d)
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Biała Perła}} (x3)
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 45 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* [[Bonus Zestawu#Trzeci Zestaw Letni|Bonus Zestawu]].
+
+}}

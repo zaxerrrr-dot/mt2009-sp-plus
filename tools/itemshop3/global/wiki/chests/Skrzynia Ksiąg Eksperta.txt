@@ -1,0 +1,45 @@
+{{Item/Layout
+
+|image = Skrzynia Ksiąg Eksperta.png
+
+|Opis = Księgę inspiracji lub charyzmy, książkę lidera lub może księgę umiejętności – cóż takiego znajdziesz w tej skrzyni? Sprawdź! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Inspiracja Nowicjusza}}
+* {{ti|Inspiracja Adepta}}
+* {{ti|Inspiracja Eksperta}}
+* {{ti|Charyzma Nowicjusza}}
+* {{ti|Charyzma Adepta}}
+* {{ti|Charyzma Eksperta}}
+* {{ti|Księga Umiejętności}}
+* {{ti|Księga Lidera}} (3h)
+* {{ti|Kamień Duchowy}}
+* {{ti|Kamień Duchowy+}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Zwój Egzorcyzmu}}
+* {{ti|Owoc Życia}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie 
+|Poczta = Nie
+
+|Inne = * Losowa Skrzynia.
+* Zawiera 1 przedmiot.
+* Szansa na Księgę Inspiracji lub Charyzmy Eksperta.
+
+}}

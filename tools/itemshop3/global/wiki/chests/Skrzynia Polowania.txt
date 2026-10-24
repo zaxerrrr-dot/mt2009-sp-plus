@@ -1,0 +1,44 @@
+{{Item/Layout
+
+|image = Skrzynia Polowania.png
+
+|Opis = Pakiet ten zawiera wszystko, czego potrzebujesz na udane polowanie na potwory: zbieraj więcej PD i więcej łupów, przechowuj swoje przedmioty w powiększonym składzie i wykorzystaj 3 dni Auto Łowów.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Pojemniki
+|Kategoria3 = Skrzynie
+
+|Zawartość = 
+* {{ti|Rękawica Złodzieja}} (7 dni)
+* {{ti|Trzecia Ręka}} (7 dni)
+* {{ti|Powiększony Skład}} (7 dni)
+* {{ti|Pierścień Doświadczenia}} (7 dni)
+* {{ti|Auto Łowy}} (3 dni)
+* {{ti|Eliksir Słońca (D)}}
+* {{ti|Peleryna Męstwa}} (x10)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 80 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * '''UWAGA!''' Pakiety bonusowe będą niedostępne na serwerach, na których opcja Auto Łowów została wyłączona!
+* Jeśli posiadasz aktywne: [[Rękawica Złodzieja|Rękawice Złodzieja]],  [[Trzecia Ręka|Trzecią Rękę]], [[Powiększony Skład]], [[Pierścień Doświadczenia]] i [[Auto Łowy]] czas ich trwania zostanie odpowiednio wydłużony o 7 i 3 dni.
+* Zawiera mnóstwo przedmiotów na polowanie.
+* Zwiększa PD, pojemność magazynu i więcej.
+* Czas trwania: 3 do 7 dni.
+
+}}

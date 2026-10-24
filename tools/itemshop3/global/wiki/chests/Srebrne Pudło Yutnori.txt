@@ -1,0 +1,29 @@
+{{Item/Layout
+
+|Opis = Wykonaj z 28 pni brzozy 1 planszę Yutnori i wygraj fantastyczne nagrody w popularnej koreańskiej grze planszowej!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Pień Brzozy}} (28 szt.)
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 19 [[Smocze Monety|SM]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Materiał budowlany do jednej {{ti|Plansza do Yutnori|planszy Yutnori}}.
+}}

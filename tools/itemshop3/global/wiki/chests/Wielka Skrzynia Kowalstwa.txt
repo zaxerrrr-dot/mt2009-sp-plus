@@ -1,0 +1,61 @@
+{{Item/Layout
+
+|image = Wielka Skrzynia Kowalstwa.png
+
+|Opis = Chwalebne czyny wymagają porządnego wyposażenia! Skrzynia ta zawiera losowy przedmiot jak kamień rytualny, magiczny kamień lub inną rzecz, która na pewno przyda ci się podczas następnej wizyty u Kowala. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Kamień Rytualny}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Biała Perła}}
+* {{ti|Kamień Kowala}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Krwawa Perła}} (x3)
+* {{ti|Niebieska Perła}} (x3)
+* {{ti|Zwój Wojny}}
+* {{ti|Magiczny Metal}}
+* {{ti|Magiczna Ruda Miedzi}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Odłamek Energii}} (x150)
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Błogosławieństwo (przedmiot)|Błogosławieństwo}}
+* {{ti|Silny Suplement}}
+* {{ti|Duży Suplement}} (x2)
+* {{ti|Średni Suplement}} (x3)
+* {{ti|Szary Odłamek}}
+* {{ti|Biały Odłamek}}
+* {{ti|Zielony Odłamek}}
+* {{ti|Żółty Odłamek}}
+* {{ti|Niebieski Odłamek}}
+* {{ti|Fioletowy Odłamek}}
+* {{ti|Czerwony Odłamek}}
+* {{ti|Tęczowy Odłamek}}
+* {{ti|Szary Lśniący Odłamek}}
+* {{ti|Zielony Lśniący Odłamek}}
+* {{ti|Żółty Lśniący Odłamek}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:'''  [[Przecudowny Pakiet Skrzyń]]
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Skrzynia z niespodzianką.
+* Szansa na Kamień Rytualny.
+* Większa szansa na pomyślne ulepszenie.
+* Przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+
+}}

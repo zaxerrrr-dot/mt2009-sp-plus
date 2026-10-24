@@ -1,0 +1,39 @@
+{{Item/Layout
+
+|image = Książęca Losowa Księga Misji.png
+
+|Opis = Otrzymaj losowo nadzwyczaj trudną misję. Po jej pomyślnym zaliczeniu otrzymasz nagrodę. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość =
+* {{ti|Księga Misji (Książę 1)}}
+* {{ti|Księga Misji (Książę 2)}}
+* {{ti|Księga Misji (Książę 3)}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za darmo
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Losowa misja.
+* Stopień trudności: książę
+* Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Księgi dostępne na kontach, gdzie została ukończona misja Biologa 30 z oddanymi [[Ząb Orka|Zębami Orka]].
+* Dostępne do odebrania w dniach od 10 do 16 sierpnia 2022 roku, w związku z pre-eventami serwera [[Ruby]].
+
+}}

@@ -1,0 +1,57 @@
+{{Item/Layout
+
+|image = Klasyczna Skrzynia Ramadanu.png
+
+|Opis = Zamień się w księcia z orientu, załóż szatę kobry lub wykorzystaj moc smoczej fasoli – który z przedmiotów otrzymasz? Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+* {{ti2|height=2|Księżniczka Orientu+ (czarny)|px=22}}{{ti2|height=2|Książę Orientu+ (czarny)|px=22}}[[Kostiumy Ramadanu 2019|Kostium Orientu]] (k/m) (30d)
+* {{ti2|Niebieska Arafatka+ (k)|px=22}}{{ti2|Niebieska Arafatka+ (m)|px=22}}[[Fryzury Ramadanu 2019|Niebieska Arafatka]] (k/m) (30d)
+* {{ti2|height=2|Złoty Oyoroi+ (k)|px=22}}{{ti2|height=2|Złoty Oyoroi+ (m)|px=22}}[[Zbroje Oyoroi|Złoty Oyoroi]] (k/m) (30d)
+* {{ti2|Złoty Kabuto+ (k)|px=22}}{{ti2|Złoty Kabuto+ (m)|px=22}}[[Fryzury Oyoroi|Złoty Kabuto]] (k/m) (30d)
+* {{ti2|height=2|Pustynna Księżniczka+ (czerw.)|px=22}}{{ti2|height=2|Pustynny Książę+(czerw.)|px=22}}[[Kostiumy Pustynne|Kostium Pustynny (czerw.)]] (k/m) (30d)
+* {{ti2|Zielona Chusta+|px=22}}{{ti2|Niebieski Turban+|px=22}}[[Fryzury Pustynne]] (k/m) (30d)
+* {{ti2|height=2|Szata Kobry+ (k)|px=22}}{{ti2|height=2|Szata Kobry+ (m)|px=22}}[[Szaty Kobry|Szata Kobry]] (k/m) (30d)
+* {{ti2|Fryzura Kobry+ (k)|px=22}}{{ti2|Fryzura Kobry+ (m)|px=22}}[[Fryzury Kobry|Fryzura Kobry]] (k/m) (30d)
+* {{ti2|height=2|Pustynna Księżniczka+ (brąz.)|px=22}}{{ti2|height=2|Pustynny Książę+ (brąz.)|px=22}}[[Kostiumy Pustynne|Kostium Pustynny (brąz.)]] (k/m) (30d)
+* {{ti2|Brązowa Chusta+|px=22}}{{ti2|Brązowy Turban+|px=22}}[[Fryzury Pustynne|Brązowy Turban]] (k/m) (30d)
+* {{ti2|height=2|Pustynna Bojowniczka+ (czar.)|px=22}}{{ti2|height=2|Pustynny Bojownik+ (czar.)|px=22}}[[Kostiumy Pustynne|Pustynny Bojownik (czar.)]] (k/m) (30d)
+* {{ti2|Czarny Turban+ (k)|px=22}}{{ti2|Czarny Turban+ (m)|px=22}}[[Fryzury Pustynne|Czarny Turban]] (k/m) (30d)
+* {{ti|Skrzynia Sierpu (niebieski)}} (30 dni)
+* {{ti|Skrzynia Sierpu (czerwony)}} (30 dni)
+* {{ti|Skrz. K. Latarni (nieb.)}} (30 dni)
+* {{ti|Skrz. K. Latarni (pom.)}} (30 dni)
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera 1 losowy przedmiot.
+* Szansa na klasykę Ramadanu z ubiegłego roku.
+
+}}

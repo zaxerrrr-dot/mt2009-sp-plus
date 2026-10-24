@@ -1,0 +1,67 @@
+{{Item/Layout
+
+|image = Czerwona Skrzynia Ratownika Plażowego.png
+
+|Opis = W tej skrzyni w kolorach sygnałowych znajdziesz przy odrobinie szczęścia wszystko, czego potrzebujesz, aby stać się dzielnym ratownikiem plażowym. Sprawdź szybko, co czeka na Ciebie!
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Czerwony Zestaw Ratownika Plażowego składający się z:
+** {{ti|height=2|C. Ratownik Plażowy+|Czerwony Ratownik Plażowy+}} (60d)
+** {{ti|C. Czapka Plażowa+ (m)|Czerwona Czapka Plażowa+ (m)}} (60d)
+** {{ti|Wierny Lod. Wiel. Zab. (pieczęć)|Wierny Lodowy Wieloryb Zabójca}} (60d)
+* LUB:
+** {{ti|height=2|C. Ratowniczka Plażowa+|Czerwona Ratowniczka Plażowa+}} (60d)
+** {{ti|C. Czapka Plażowa+ (k)|Czerwona Czapka Plażowa+ (k)}} (60d)
+** {{ti|Wierny Lod. Wiel. Zab. (pieczęć)|Wierny Lodowy Wieloryb Zabójca}} (60d)
+
+* {{ti|height=2|C. Ratownik Plażowy+|Czerwony Ratownik Plażowy+}} (15/30d)
+* {{ti|height=2|C. Ratowniczka Plażowa+|Czerwona Ratowniczka Plażowa+}} (15/30d)
+* {{ti|C. Czapka Plażowa+ (k)|Czerwona Czapka Plażowa+ (k)}} (15/30d)
+* {{ti|C. Czapka Plażowa+ (m)|Czerwona Czapka Plażowa+ (m)}} (15/30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki|Kamyk}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Sz.C3.B3sty_Zestaw_Letni|Bonus Zestawu]].
+
+}}

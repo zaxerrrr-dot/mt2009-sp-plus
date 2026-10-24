@@ -1,0 +1,1551 @@
+'''Bonus Zestawu''' - dodatkowe bonusy, które są aktywne, gdy w lewym górnym rogu pojawia się ikona: [[Plik:+ 20 % lub + 50 % Exp.png|link=|Bonus Zestawu]].
+* Bonus Zestawu różni się nieco od innych bonusów, istnieje w różnych kombinacjach i może być aktywowany tylko pod pewnymi warunkami.
+* Warunkiem aktywowania Bonusu Zestawu jest posiadanie określonych przedmiotów ekwipunku, należących do tego samego "zestawu".
+* W tym momencie przedmiotami ekwipunku, które mogą aktywować zestaw bonusów są niektóre: [[Fryzury]], [[Kostiumy]], [[Zwierzątka]], [[Wierzchowce]], [[Szarfy]] i inne przedmioty z [[Item-Shop]]u.
+* Bonusy można uznać za czasowe, gdyż wszystkie przedmioty, które je zapewniają mają określony czas trwania (wyjątkiem są Szarfy).
+* Bonus Zestawu pozostaje aktywny przez cały czas, pod warunkiem że wymagane przedmioty są używane na postaci.
+
+== Zestaw Walentynkowy ==
+
+=== Pierwszy Zestaw Walentynkowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Walentynkowy 2016|Eventu Walentynkowego 2016]].
+
+{{BonusZestawu/Layout <!-- v1.0 -->
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Czekoladowy Amulet}}<br>[[Czekoladowy Amulet]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Walentyn (pieczęć)}}{{ti2|Walentynka (pieczęć)}}<br>[[Walentyn (pieczęć)|Walentyn]] lub [[Walentynka (pieczęć)|Walentynka]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +20% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout <!-- v1.0 -->
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Czekoladowy Amulet}}<br>[[Czekoladowy Amulet]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Walentyn+ (pieczęć)}}{{ti2|Walentynka+ (pieczęć)}}<br>[[Walentyn+ (pieczęć)|Walentyn+]] lub [[Walentynka+ (pieczęć)|Walentynka+]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+=== Drugi Zestaw Walentynkowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Walentynkowy 2020|Eventu Walentynkowego 2020]].
+
+{{BonusZestawu/Layout <!-- v1.0 -->
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Czekoladowy Amulet}}{{ti2|Amulet Wiecznej Miłości}}<br>[[Czekoladowy Amulet]] lub [[Amulet Wiecznej Miłości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Ospały Posłaniec Miłości (pieczęć)}}{{ti2|Wesoły Posłaniec Miłości (pieczęć)}}<br>[[Ospały Posłaniec Miłości (pieczęć)|Ospały Posłaniec Miłości]] lub [[Wesoły Posłaniec Miłości (pieczęć)|Wesoły Posłaniec Miłości]]
+
+<!-- Lista szarf w zestawie -->
+|Szarfa = {{ti2|Szarfa Serca (unikat.)}}<br>[[Szarfa Serca (unikat.)]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]]
+
+}}
+
+=== Trzeci Zestaw Walentynkowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Walentynkowy 2022|Eventu Walentynkowego 2022]].
+
+{{BonusZestawu/Layout <!-- v1.0 -->
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Czekoladowy Amulet}}{{ti2|Amulet Wiecznej Miłości}}<br>[[Czekoladowy Amulet]] lub [[Amulet Wiecznej Miłości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Wesoły Smok Miłości (pieczęć)}}{{ti2|Uroczy Smok Miłości (pieczęć)}}<br>[[Wesoły Smok Miłości (pieczęć)|Wesoły Smok Miłości]] lub [[Uroczy Smok Miłości (pieczęć)|Uroczy Smok Miłości]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout <!-- v1.0 -->
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Czekoladowy Amulet}}{{ti2|Amulet Wiecznej Miłości}}<br>[[Czekoladowy Amulet]] lub [[Amulet Wiecznej Miłości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Mały Smok Miłości (pieczęć)}}<br>[[Mały Smok Miłości (pieczęć)|Mały Smok Miłości]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +20% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+==Zestaw Wielkanocny==
+
+===Pierwszy Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2019|Eventu Wielkanocnego 2019]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Zbroja Ajolosa+ (k)|height=2}}{{ti2|Zbroja Ajolosa+ (m)|height=2}}{{ti2|Zbroja Astrajosa+ (k)|height=2}}{{ti2|Zbroja Astrajosa+ (m)|height=2}}<br>[[Kostiumy Wielkanocne 2019|Zbroje Ajolosa i Astrajosa]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Ajolosa+ (k)}}{{ti2|Hełm Ajolosa+ (m)}}{{ti2|Hełm Astrajosa+ (k)}}{{ti2|Hełm Astrajosa+ (m)}}<br>[[Fryzury Wielkanocne 2019|Fryzury Ajolosa i Astrajosa]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Różowy Błyszczący Paw (pieczęć)}}{{ti2|Błękitny Błyszczący Paw (pieczęć)}}<br>[[Różowy Błyszczący Paw (pieczęć)|Różowy Błyszcz. Paw]] lub [[Błękitny Błyszczący Paw (pieczęć)|Błękitny Błyszcz. Paw]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Silny przeciwko Potworom]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Silny przeciwko Potworom]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+===Drugi Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2020|Eventu Wielkanocnego 2020]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Pancerz Czar. Szp.+ (k)|height=2}}{{ti2|Pancerz Czar. Szp.+ (m)|height=2}}{{ti2|Pancerz Sreb. Szp.+ (k)|height=2}}{{ti2|Pancerz Sreb. Szp.+ (m)|height=2}}<br>[[Kostiumy Wielkanocne 2020|Pancerze Szponów]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Czar. Szp.+ (k)}}{{ti2|Hełm Czar. Szp.+ (m)}}{{ti2|Hełm Sreb. Szp.+ (k)}}{{ti2|Hełm Sreb.+ Szp. (m)}}<br>[[Fryzury Wielkanocne 2020|Hełmy Szponów]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Złoty Byk Bojowy (pieczęć)}}{{ti2|Srebrny Byk Bojowy (pieczęć)}}<br>[[Złoty Byk Bojowy (pieczęć)|Złoty Byk Bojowy]] lub [[Srebrny Byk Bojowy (pieczęć)|Srebrny Byk Bojowy]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Magiczny/krótkodystansowy atak]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Magiczny/krótkodystansowy atak]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Magiczny/krótkodystansowy atak]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Siła w walce z kamieniami Metin]]
+
+}}
+
+===Trzeci Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2021|Eventu Wielkanocnego 2021]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Cz.Królik K.Czarów+ (k)|height=2}}{{ti2|Cz.Królik K.Czarów+ (m)|height=2}}{{ti2|Cza.Królik K.Czarów+ (k)|height=2}}{{ti2|Cza.Królik K.Czarów+ (m)|height=2}}<br>[[Kostiumy Wielkanocne 2021|Kostiumy Krainy Czarów]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Cz.Cylinder Królika+ (k)}}{{ti2|Cz.Cylinder Królika+ (m)}}{{ti2|Cza.Cylinder Królika+ (k)}}{{ti2|Cza.Cylinder Królika+ (m)}}<br>[[Fryzury Wielkanocne 2021|Fryzury Krainy Czarów]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Pośpieszny Królik (nie.) (pieczęć)}}{{ti2|Pośpieszny Królik (róż.) (pieczęć)}}<br>[[Pośpieszny Królik (nie.) (pieczęć)|Pośpieszny Królik (nie.)]] lub [[Pośpieszny Królik (róż.) (pieczęć)|Pośpieszny Królik (róż.)]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Siła w walce z kamieniami Metin]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Siła w walce z kamieniami Metin]], +5% [[Szansa na dropy przedmiotów]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Siła w walce z kamieniami Metin]], +10% [[Szansa na dropy przedmiotów]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+===Czwarty Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2022|Eventu Wielkanocnego 2022]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Biały Mundur Morski+ (k)|height=2}}{{ti2|Biały Mundur Morski+ (m)|height=2}}{{ti2|Czerwony Mundur Morski+ (k)|height=2}}{{ti2|Czerwony Mundur Morski+ (m)|height=2}}<br>[[Kostiumy Wielkanocne 2022|Kostiumy Morskie]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Biały Dwuróg Morski+ (k)}}{{ti2|Biały Dwuróg Morski+ (m)}}{{ti2|Czerwony Dwuróg Morski+ (k)}}{{ti2|Czerwony Dwuróg Morski+ (m)}}<br>[[Fryzury Wielkanocne 2022|Fryzury Morskie]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Słoneczny Koń Morski (pieczęć)}}{{ti2|Księżycowy Koń Morski (pieczęć)}}<br>[[Słoneczny Koń Morski (pieczęć)|Słoneczny Koń Morski]] lub [[Księżycowy Koń Morski (pieczęć)|Słoneczny Koń Morski]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]], +5% [[Szansa na podwójną ilość Przedmiotów|szansa na drop przedmiotu]]
+
+}}
+
+===Piąty Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2023|Eventu Wielkanocnego 2023]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Niebieski Wzorowy Uczeń+|height=2}}{{ti2|Niebieska Wzorowa Uczennica+|height=2}}{{ti2|Szary Wzorowy Uczeń+|height=2}}{{ti2|Szara Wzorowa Uczennica+|height=2}}<br>[[Kostiumy Wielkanocne 2023|Kostiumy Wzorowych Uczniów]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Nieb. Okulary W. Ucznia+}}{{ti2|Nieb. Spinka Wz. Ucznia+}}{{ti2|Czerw. Okul. Wz. Ucznia+}}{{ti2|Czerw. Spinka W. Ucznia+}}<br>[[Fryzury Wielkanocne 2023|Fryzury Wzorowych Uczniów]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Pośpieszny Królik (czerwony) (pieczęć)}}{{ti2|Pośpieszny Królik (czarny) (pieczęć)}}<br>[[Pośpieszny Królik (czerwony) (pieczęć)|Pośpieszny Królik (czerwony)]] lub [[Pośpieszny Królik (czarny) (pieczęć)|Pośpieszny Królik (czarny)]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Silny przeciwko Potworom]], +75% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Silny przeciwko Potworom]], +5% [[Szansa na podwójną ilość Przedmiotów|szansa na drop przedmiotu]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+===Szósty Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2024|Eventu Wielkanocnego 2024]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Niebieski Toreador+|height=2}}{{ti2|Niebieska Toreadorka+|height=2}}{{ti2|Czerwony Toreador+|height=2}}{{ti2|Czerwona Toreadorka+|height=2}}<br>[[Kostiumy Wielkanocne 2024|Kostiumy Toreadorów]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Niebieska Montera+ (m)}}{{ti2|Niebieska Montera+ (k)}}{{ti2|Czerwona Montera+ (m)}}{{ti2|Czerwona Montera+ (k)}}<br>[[Fryzury Wielkanocne 2024|Fryzury Toreadorów]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Brązowy Byk (pieczęć)}}{{ti2|Czarny Byk (pieczęć)}}<br>[[Brązowy Byk (pieczęć)|Brązowy Byk]] lub [[Czarny Byk (pieczęć)|Czarny Byk]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Magiczny/krótkodystansowy atak]], +75% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +7% [[Magiczny/krótkodystansowy atak]], +5% [[Szansa na podwójną ilość Przedmiotów|szansa na drop przedmiotu]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+===Siódmy Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2025|Eventu Wielkanocnego 2025]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Fioletowa Lampa Lorda+|height=2}}{{ti2|Fioletowa Lampa Damy+|height=2}}{{ti2|Czarna Lampa Lorda+|height=2}}{{ti2|Czarna Lampa Damy+|height=2}}<br>[[Kostiumy Wielkanocne 2025]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Fiol. Maska Zaj. Lorda+}}{{ti2|Fiol. Maska Zaj. Damy+}}{{ti2|Czar. Maska Zaj. Lorda+}}{{ti2|Czar. Maska Zaj. Damy+}}<br>[[Fryzury Wielkanocne 2025]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Niebieski Oldtimer (pieczęć)}}{{ti2|Zielony Oldtimer (pieczęć)}}<br>[[Niebieski Oldtimer (pieczęć)|Niebieski Oldtimer]] lub [[Zielony Oldtimer (pieczęć)|Zielony Oldtimer]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]], +5% [[Siła w walce z kamieniami Metin]]
+
+}}
+
+===Ósmy Zestaw Wielkanocny===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Wielkanocny 2026|Eventu Wielkanocnego 2026]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Św. Nosiciel Światła+|height=2}}{{ti2|Św. Nosicielka Światła+|height=2}}{{ti2|Maj. Nosiciel Światła+|height=2}}{{ti2|Maj. Nosicielka Światła+|height=2}}<br>[[Kostiumy Wielkanocne 2026]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Świetlisty Diadem+ (m)}}{{ti2|Świetlisty Diadem+ (k)}}{{ti2|Majestat. Diadem+ (m)}}{{ti2|Majestat. Diadem+ (k)}}<br>[[Fryzury Wielkanocne 2026]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Lizak Potęgi}}<br>[[Lizak Magii]] lub [[Lizak Potęgi]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Pavo (pieczęć)}}{{ti2|Gallus (pieczęć)}}<br>[[Pavo (pieczęć)|Pavo]] lub [[Gallus (pieczęć)|Gallus]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]], +5% [[Magiczny/krótkodystansowy atak]]
+
+}}
+
+==Zestaw Ramadan==
+
+===Pierwszy Zestaw Ramadan===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Ramadan 2019|Eventu Ramadan 2019]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Księżniczka Orientu+ (brązowy)|height=2}}{{ti2|Książę Orientu+ (brązowy)|height=2}}{{ti2|Księżniczka Orientu+ (czarny)|height=2}}{{ti2|Książę Orientu+ (czarny)|height=2}}<br>[[Kostiumy Ramadanu 2019|Zbroje Orientu]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Czerwona Arafatka+ (k)}}{{ti2|Czerwona Arafatka+ (m)}}{{ti2|Niebieska Arafatka+ (k)}}{{ti2|Niebieska Arafatka+ (m)}}<br>[[Fryzury Ramadanu 2019|Fryzury Orientu]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Amulet Nazara}}<br>[[Amulet Nazara]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Wieldziało (pieczęć)}}{{ti2|Wielzooka (pieczęć)}}<br>[[Wieldziało (pieczęć)|Wieldziało]] lub [[Wielzooka (pieczęć)|Wielzooka]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Silny przeciwko Potworom]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Silny przeciwko Potworom]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+===Drugi Zestaw Ramadan===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Ramadan 2020|Eventu Ramadan 2020]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Szata Dżinna (k)|height=2}}{{ti2|Szata Dżinna (m)|height=2}}{{ti2|Szata Sułtana (k)|height=2}}{{ti2|Szata Sułtana (m)|height=2}}<br>[[Kostiumy Ramadanu 2020|Szaty z Tysiąca i Jednej Nocy]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Tiara Dżinna (k)}}{{ti2|Turban Dżinna (m)}}{{ti2|Tiara Sułtana (k)}}{{ti2|Turban Sułtana (m)}}<br>[[Fryzury Ramadanu 2020|Fryzury z Tysiąca i Jednej Nocy]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +30% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Szata Dżinna+ (k)|height=2}}{{ti2|Szata Dżinna+ (m)|height=2}}{{ti2|Szata Sułtana+ (k)|height=2}}{{ti2|Szata Sułtana+ (m)|height=2}}<br>[[Kostiumy Ramadanu 2020|Szaty z Tysiąca i Jednej Nocy+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Tiara Dżinna+ (k)}}{{ti2|Turban Dżinna+ (m)}}{{ti2|Tiara Sułtana+ (k)}}{{ti2|Turban Sułtana+ (m)}}<br>[[Fryzury Ramadanu 2020|Fryzury z Tysiąca i Jednej Nocy+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Amulet Nazara}}<br>[[Amulet Nazara]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Biały Sfinks (pieczęć)}}{{ti2|Kamienny Sfinks (pieczęć)}}<br>[[Biały Sfinks (pieczęć)|Biały Sfinks]] lub [[Kamienny Sfinks (pieczęć)|Kamienny Sfinks]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Silny przeciwko Potworom]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Silny przeciwko Potworom]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+===Trzeci Zestaw Ramadan===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Ramadan 2022|Eventu Ramadan 2022]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Niebieska Wojowniczka Pustynnego Księżyca+ (k)|height=2}}{{ti2|Niebieski Wojownik Pustynnego Księżyca+ (m)|height=2}}{{ti2|Czerwona Wojowniczka Pustynnego Księżyca+ (k)|height=2}}{{ti2|Czerwony Wojownik Pustynnego Księżyca+ (m)|height=2}}<br>[[Kostiumy Ramadanu 2022|Wojownik Pustynnego Księżyca+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Niebieski Turban ze Złotem+ (k)}}{{ti2|Niebieski Turban ze Złotem+ (m)}}{{ti2|Czerwony Turban ze Złotem+ (k)}}{{ti2|Czerwony Turban ze Złotem+ (m)}}<br>[[Fryzury Ramadanu 2022|Turban ze Złotem+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Amulet Nazara}}<br>[[Amulet Nazara]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Biały Kot Angorski (pieczęć)}}{{ti2|Brązowy Kot Angorski (pieczęć)}}<br>[[Biały Kot Angorski (pieczęć)|Biały Kot Angorski]] lub [[Brązowy Kot Angorski (pieczęć)|Brązowy Kot Angorski]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5 [[Magiczny/krótkodystansowy atak]]
+
+}}
+
+===Czwarty Zestaw Ramadan===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Ramadan 2026|Eventu Ramadan 2026]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Czerwona Smocza Rycerka+|height=2}}{{ti2|Czerwony Smoczy Rycerz+|height=2}}{{ti2|Czarna Smocza Rycerka+|height=2}}{{ti2|Czarny Smoczy Rycerz+|height=2}}<br>[[Kostiumy Smoczego Rycerza]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Czer. Hełm Sm. Ryc.+ (k)}}{{ti2|Czer. Hełm Sm. Ryc.+ (m)}}{{ti2|Czar. Hełm Sm. Ryc.+ (k)}}{{ti2|Czar. Hełm Sm. Ryc.+ (m)}}<br>[[Fryzury Smoczego Rycerza]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Amulet Nazara}}<br>[[Amulet Nazara]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Wierzchowiec = {{ti2|Feniks Zmierzchu (pieczęć)}}{{ti2|Feniks Wieczornej Zorzy (pieczęć)}}<br>[[Feniks Zmierzchu (pieczęć)|Feniks Zmierzchu]] lub [[Feniks Wieczornej Zorzy (pieczęć)|Feniks Wieczornej Zorzy]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Szansa na Omdlenie|Szansy na Omdlenie]], +2% [[Silny przeciwko Potworom|Siły w walce z potworami]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Szansa na Omdlenie|Szansy na Omdlenie]], +5% [[Silny przeciwko Potworom|Siły w walce z potworami]], +5% [[Szansa na cios krytyczny|Szansy na cios krytyczny]]
+
+}}
+
+== Zestaw Proroka ==
+===Pierwszy Zestaw Proroka ===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Bitwa Proroków|Bitwy Proroków 2021]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Sz. Szata Faraona+ (k)|height=2}}{{ti2|Sz. Szata Faraona+ (m)|height=2}}{{ti2|Cz. Szata Faraona+ (k)|height=2}}{{ti2|Cz. Szata Faraona+ (m)|height=2}}<br>[[Szaty Faraona]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Sz. Stroik Faraona+ (k)}}{{ti2|Sz. Stroik Faraona+ (m)}}{{ti2|Cz. Stroik Faraona+ (k)}}{{ti2|Cz. Stroik Faraona+ (m)}}<br>[[Stroiki Faraona]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Amulet Nazara}}<br>[[Amulet Nazara]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Czerwony Anubis (pieczęć)}}{{ti2|Niebieski Anubis (pieczęć)}}<br>[[Czerwony Anubis (pieczęć)|Czerwony Anubis]] lub [[Niebieski Anubis (pieczęć)|Niebieski Anubis]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Silny przeciwko Potworom]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Silny przeciwko Potworom]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Szansa na Omdlenie]]
+
+}}
+
+===Drugi Zestaw Proroka ===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Bitwa Proroków|Bitwy Proroków 2023]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Hrabina steampunk+|height=2}}{{ti2|Hrabia steampunk+|height=2}}{{ti2|Dama steampunk+|height=2}}{{ti2|Lord steampunk+|height=2}}<br>[[Steampunkowe Kostiumy|Steampunkowe Kostiumy (2023)]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Kapelusz hrabiny+}}{{ti2|Kapelusz hrabiego+}}{{ti2|Kapelusz damy+}}{{ti2|Kapelusz lorda+}}<br>[[Fryzury Steampunk'owe|Fryzury Steampunk'owe (2023)]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Amulet Nazara}}<br>[[Amulet Nazara]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Towarzysz Whistle (pieczęć)}}{{ti2|Towarzysz Wrench (pieczęć)}}<br>[[Towarzysz Whistle (pieczęć)|Towarzysz Whistle]] lub [[Towarzysz Wrench (pieczęć)|Towarzysz Wrench]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +20% [[Szansa na podwójną ilość Przedmiotów|szansa na drop przedmiotu]], +20% [[Regeneracja PŻ]]
+
+}}
+
+==Zestaw Letni==
+
+===Pierwszy Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Letni 2019|Eventu Letniego 2019]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Mundur Strażaka+ (czar.) (k)|height=2}}{{ti2|Mundur Strażaka+ (czar.) (m)|height=2}}{{ti2|Mundur Strażaka+ (żółty) (k)|height=2}}{{ti2|Mundur Strażaka+ (żółty) (m)|height=2}}<br>[[Kostiumy Strażackie]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Strażaka+ (czar.) (k)}}{{ti2|Hełm Strażaka+ (czar.) (m)}}{{ti2|Hełm Strażaka+ (żółty) (k)}}{{ti2|Hełm Strażaka+ (żółty) (m)}}<br>[[Fryzury Strażackie]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Mroźny Chrząszcz (pieczęć)}}<br>[[Mroźny Chrząszcz (pieczęć)|Mroźny Chrząszcz]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Odporność na Ogień]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Siła Lodu]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Odporność na Ogień]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Siła Lodu]]
+
+}}
+
+===Drugi Zestaw Letni===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Rytuał Krwi|Eventu Rytuał Krwi 2019]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Czerwona Zbroja Azraela+ (k)|height=2}}{{ti2|Czerwona Zbroja Azraela+ (m)|height=2}}{{ti2|Biała Zbroja Azraela+ (k)|height=2}}{{ti2|Biała Zbroja Azraela+ (m)|height=2}}<br>[[Zbroje Azraela|Zbroje Azraela+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Czerwony Hełm Azraela+ (m)}}{{ti2|Biały Hełm Azraela+ (m)}}{{ti2|Czerwony Hełm Azraela+ (k)}}{{ti2|Biały Hełm Azraela+ (k)}}<br>[[Fryzury Azraela|Fryzury Azraela+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Siły Woli}}{{ti2|Pierścień Śmiercionośnej Mocy}}<br>[[Pierścień Siły Woli]] lub [[Pierścień Śmiercionośnej Mocy]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Mały Huashin (czerwony) (pieczęć)}}{{ti2|Mały Huashin (biały) (pieczęć)}}<br>[[Mały Huashin (czerwony) (pieczęć)|Mały Huashin (czerw.)]] lub [[Mały Huashin (biały) (pieczęć)|Mały Huashin (biały)]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Średnie Obrażenia]]
+
+}}
+
+===Trzeci Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Letni 2020|Eventu Letniego 2020]]
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Pirat (k)|height=2}}{{ti2|Pirat (m)|height=2}}{{ti2|Korsarz (k)|height=2}}{{ti2|Korsarz (m)|height=2}}<br>[[Kostiumy Pirata|Kostiumy Pirata]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Trójróg Pirata (k)}}{{ti2|Trójróg Pirata (m)}}{{ti2|Trójróg Korsarza (k)}}{{ti2|Trójróg Korsarza (m)}}<br>[[Fryzury Pirata|Fryzury Pirata]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Mini Krab (pieczęć)}}<br>[[Mini Krab (pieczęć)|Mini Krab]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = -
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Pirat+ (k)|height=2}}{{ti2|Pirat+ (m)|height=2}}{{ti2|Korsarz+ (k)|height=2}}{{ti2|Korsarz+ (m)|height=2}}<br>[[Kostiumy Pirata|Kostiumy Pirata +]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Trójróg Pirata+ (k)}}{{ti2|Trójróg Pirata+ (m)}}{{ti2|Trójróg Korsarza+ (k)}}{{ti2|Trójróg Korsarza+ (m)}}<br>[[Fryzury Pirata|Fryzury Pirata+]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Mini Krab Wojownik (pieczęć)}}<br>[[Mini Krab Wojownik (pieczęć)|Mini Krab Wojownik]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Silny przeciwko Potworom]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+===Czwarty Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Letni 2021|Eventu Letniego 2021]]
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|N. Mundur Marynarski+ (k)|height=2}}{{ti2|N. Mundur Marynarski+ (m)|height=2}}{{ti2|B. Mundur Marynarski+ (k)|height=2}}{{ti2|B. Mundur Marynarski+ (m)|height=2}}<br>[[Mundury Marynarskie|Mundury Marynarskie+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|N. Czapka Marynarska+ (k)}}{{ti2|N. Czapka Marynarska+ (m)}}{{ti2|B. Czapka Marynarska+ (k)}}{{ti2|B. Czapka Marynarska+ (m)}}<br>[[Czapki Marynarskie|Czapki Marynarskie+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Medal Bohatera}}<br>[[Medal Bohatera]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Potęż. Lod. Wielor. Zab. (pieczęć)}}<br>[[Potęż. Lod. Wielor. Zab. (pieczęć)|Potężny Lodowy Wieloryb Zabójca]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Silny przeciwko Potworom]], +5% [[Siła Błyskawic]], +5% [[Siła Ognia]], +5% [[Siła Lodu]], +5% [[Siła Wiatru]], +5% [[Siła Ziemi]], +5% [[Siła Mroku]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Silny przeciwko Potworom]], +5% [[Siła Błyskawic]], +5% [[Siła Ognia]], +5% [[Siła Lodu]], +5% [[Siła Wiatru]], +5% [[Siła Ziemi]], +5% [[Siła Mroku]], +10% [[Szansa na dropy przedmiotów]]
+
+}}
+
+===Piąty Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Letni 2022|Eventu Letniego 2022]]
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Lekki Strój Plażowy+ (k)|height=2}}{{ti2|Lekki Strój Plażowy+ (m)|height=2}}{{ti2|Luźny Strój Plażowy+ (k)|height=2}}{{ti2|Luźny Strój Plażowy+ (m)|height=2}} <br>[[Stroje Plażowe|Stroje Plażowe+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Lekki Kapelusz Plaż.+ (k)}}{{ti2|Lekki Kapelusz Plaż.+ (m)}}{{ti2|Luźny Kapelusz Plaż.+ (k)}}{{ti2|Luźny Kapelusz Plaż.+ (m)}}<br>[[Kapelusze Plażowe|Kapelusze Plażowe+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti|Medal Bohatera}}
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti|Mini Krab Wojownik (pieczęć)|Mini Krab Wojownik}}
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Drop|Szansa na drop przedmiotów]]
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Drop|Szansa na drop przedmiotów]], +10% [[Silny przeciwko Potworom]]
+
+}}
+
+===Szósty Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Letni 2023|Eventu Letniego 2023]]
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|B. Ratowniczka Plażowa+|height=2}}{{ti2|B. Ratownik Plażowy+|height=2}}{{ti2|C. Ratowniczka Plażowa+|height=2}}{{ti2|C. Ratownik Plażowy+|height=2}} <br>[[Kostiumy Ratownika Plażowego|Kostiumy Ratownika Plażowego+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|B. Czapka Plażowa+ (k)}}{{ti2|B. Czapka Plażowa+ (m)}}{{ti2|C. Czapka Plażowa+ (k)}}{{ti2|C. Czapka Plażowa+ (m)}}<br>[[Czapki Plażowe|Czapki Plażowe+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti|Medal Bohatera}}
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti|Wierny Lod. Wiel. Zab. (pieczęć)|Wierny Lodowy Zabójca Wieloryb}}
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti|Turbodeska Surfingowa (pieczęć)|Turbodeska Surfingowa}}
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Magiczny/krótkodystansowy atak]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Magiczny/krótkodystansowy atak]], +10% [[Drop|Szansy na drop przedmiotu]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Magiczny/krótkodystansowy atak]], +10% [[Drop|Szansy na drop przedmiotu]], +20 [[Szybkość Ruchu|Szybkości Ruchu]]
+
+}}
+
+===Siódmy Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Letni 2024|Eventu Letniego 2024]]
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium =  <br>[[Kostiumy Atlantydy]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = <br>[[Hełmy Atlantydy]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti|Medal Bohatera}}
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti|Skubcio (pieczęć)|Skubcio}}
+
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +7% [[Średnie Obrażenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Średnie Obrażenia]], +5% [[Drop|Szansy na drop przedmiotu]], +5% [[Odporność na Lód]]
+
+
+}}
+
+===Ósmy Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Letni 2025|Eventu Letniego 2025]]
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Biały Skaf. Nurkowy+ (k)|height=2}}{{ti2|Biały Skaf. Nurkowy+ (m)|height=2}}{{ti2|Czar. Skaf. Nurkowy+ (k)|height=2}}{{ti2|Czar. Skaf. Nurkowy+ (m)|height=2}}<br>[[Kostiumy Nurków]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Biała Maska do Nur.+ (k)}}{{ti2|Biała Maska do Nur.+ (m)}}{{ti2|Czar. Maska do Nur.+ (k)}}{{ti2|
+Czar. Maska do Nur.+ (m)}}<br>[[Hełmy Nurków]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti|Medal Bohatera}}
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti|Pebble (pieczęć)|Pebble}}
+
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Średnie Obrażenia]], +3% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +7% [[Średnie Obrażenia]], +7% [[Obrażenia Umiejętności]], +5% [[Drop|Szansy na drop przedmiotu]]
+
+}}
+
+===Dziewiąty Zestaw Letni===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Letni Festiwal|Eventu Letniego 2026]]
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium =  {{ti2|Wiking Światła+|height=2}}{{ti2|Walkiria Światła+|height=2}}{{ti2|Wiking Nocy+|height=2}}{{ti2|Walkiria Nocy+|height=2}}<br>[[Kostiumy Wikingów]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Walkirii Nocy+}}{{ti2|Hełm Wikinga Nocy+}}{{ti2|Hełm Wikinga Światła+}}{{ti2|Hełm Walkirii Światła+}}<br>[[Hełmy Wikingów]]
+
+<!-- Lista nakładek w zestawie -->
+|Nakładka = {{ti2|Sztylet Smoka Północy+}}{{ti2|Dzwon Smoka Północy+}}{{ti2|Wachlarz Smoka Północy+}}{{ti2|Pazur Smoka Północy+}}{{ti2|Łuk Smoka Północy+|height=2}}{{ti2|Miecz Smoka Północy+|height=2}}{{ti2|Miecz Ob. Smoka Północy+|height=3}}<br>[[Wizerunki broni#Wizerunki broni - Lato 2026|Wizerunki broni - Lato 2026]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti|Medal Bohatera}}
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Niebieski Drakkar (pieczęć)}}{{ti2|Czerwony Drakkar (pieczęć)}}<br>[[Niebieski Drakkar (pieczęć)|Niebieski Drakkar]] lub [[Czerwony Drakkar (pieczęć)|Czerwony Drakkar]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Hati (pieczęć)}}{{ti2|Skalli (pieczęć)}}<br>[[Hati (pieczęć)|Hati]] lub [[Skalli (pieczęć)|Skalli]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +135% otrzymywanego [[Doświadczenie|Doświadczenia]], +7% [[Obrażenia Umiejętności]], +3% [[Drop|Szansy na drop przedmiotu]], +10% [[Szybkość Ruchu|Szybkości Ruchu]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Obrażenia Umiejętności]], +5% [[Drop|Szansy na drop przedmiotu]], +20% [[Szybkość Ruchu|Szybkości Ruchu]]
+
+<!-- Lista bonus(ów) przy aktywnych 6 przedmiotach -->
+|Bonus6 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Obrażenia Umiejętności]], +5% [[Drop|Szansy na drop przedmiotu]], +20% [[Szybkość Ruchu|Szybkości Ruchu]], +5% [[Silny przeciwko Potworom|Siła w walce z potworami]]
+
+}}
+
+== Zestaw Halloweenowy ==
+
+=== Pierwszy Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2016|Eventu Halloween 2016]].
+
+{{BonusZestawu/Layout<!-- v1.0 -->
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Wampirzyca (szary)|height=2}}{{ti2|Wampir (szary)|height=2}}{{ti2|Wampirzyca (czerwony)|height=2}}{{ti2|Wampir (czerwony)|height=2}}<br>[[Kostiumy Halloween 2016|Kostiumy Wampira]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Wampirzycy (szary)}}{{ti2|Hełm Wampira (szary)}}{{ti2|Hełm Wampirzycy (czer.)}}{{ti2|Hełm Wampira (czerwony)}}<br>[[Fryzury Halloween 2016|Fryzury Wampira]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Pani Jiangshi (pieczęć)}}<br>[[Pani Jiangshi (pieczęć)|Pani Jiangshi]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = -
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +20% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout<!-- v1.0 -->
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Wampirzyca+ (szary)|height=2}}{{ti2|Wampir+ (szary)|height=2}}{{ti2|Wampirzyca+ (czerwony)|height=2}}{{ti2|Wampir+ (czerwony)|height=2}}<br>[[Kostiumy Halloween 2016|Kostiumy Wampira]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Wampirzycy+ (szary)}}{{ti2|Hełm Wampira+ (szary)}}{{ti2|Hełm Wampirzycy+ (czer.)}}{{ti2|Hełm Wampira+ (czerwony)}}<br>[[Fryzury Halloween 2016|Fryzury Wampira+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Upiorny Lizak}}<br>[[Lizak Magii]] lub [[Upiorny Lizak]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Pan Jiangshi (pieczęć)}}{{ti2|Pani Jiangshi (pieczęć)}}<br>[[Pan Jiangshi (pieczęć)|Pan Jiangshi]] lub [[Pani Jiangshi (pieczęć)|Pani Jiangshi]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +20% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +5% [[Średnie Obrażenia]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+=== Drugi Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2017|Eventu Halloween 2017]].
+
+{{BonusZestawu/Layout<!-- v1.0 -->
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Pancerz Horroru K (złoty)|height=2}}{{ti2|Pancerz Horroru M (złoty)|height=2}}{{ti2|Pancerz Horroru K (nieb.)|height=2}}{{ti2|Pancerz Horroru M (nieb.)|height=2}}<br>[[Kostiumy Halloween 2017|Kostiumy Horroru]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Rogi Horroru K (złote)}}{{ti2|Rogi Horroru M (złote)}}{{ti2|Rogi Horroru K (nieb.)}}{{ti2|Rogi Horroru M (nieb.)}}<br>[[Fryzury Halloween 2017|Fryzury Horroru]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Postraszka (pieczęć)}}<br>[[Postraszka (pieczęć)|Postraszka]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = -
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Pancerz Horroru+ K (złoty)|height=2}}{{ti2|Pancerz Horroru+ M (złoty)|height=2}}{{ti2|Pancerz Horroru+ K (nieb.)|height=2}}{{ti2|Pancerz Horroru+ M (nieb.)|height=2}}<br>[[Kostiumy Halloween 2017|Kostiumy Horroru+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Rogi Horroru+ K (złote)}}{{ti2|Rogi Horroru+ M (złote)}}{{ti2|Rogi Horroru+ K (nieb.)}}{{ti2|Rogi Horroru+ M (nieb.)}}<br>[[Fryzury Halloween 2017|Fryzury Horroru+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Upiorny Lizak}}<br>[[Lizak Magii]] lub [[Upiorny Lizak]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Huhu (pieczęć)}}{{ti2|Buhu (pieczęć)}}<br>[[Huhu (pieczęć)|Huhu]] lub [[Buhu (pieczęć)|Buhu]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Magiczny/krótkodystansowy atak]]
+ 
+}}
+
+=== Trzeci Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2018|Eventu Halloween 2018]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Brązowa Wilcza Szata (k)|height=2}}{{ti2|Brązowa Wilcza Szata (m)|height=2}}{{ti2|Szara Wilcza Szata (k)|height=2}}{{ti2|Szara Wilcza Szata (m)|height=2}}<br>[[Kostiumy Halloween 2018|Szaty Wilka]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Brązowa Czapka Wilka (k)}}{{ti2|Brązowa Czapka Wilka (m)}}{{ti2|Szara Czapka Wilka (k)}}{{ti2|Szara Czapka Wilka (m)}}<br>[[Fryzury Halloween 2018|Fryzury Wilka]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Chaotika (pieczęć)}}<br>[[Chaotika (pieczęć)|Chaotika]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = -
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Brązowa Wilcza Szata+ (k)|height=2}}{{ti2|Brązowa Wilcza Szata+ (m)|height=2}}{{ti2|Szara Wilcza Szata+ (k)|height=2}}{{ti2|Szara Wilcza Szata+ (m)|height=2}}<br>[[Kostiumy Halloween 2018|Szaty Wilka+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Brązowa Czapka Wilka+ (k)}}{{ti2|Brązowa Czapka Wilka+ (m)}}{{ti2|Szara Czapka Wilka+ (k)}}{{ti2|Szara Czapka Wilka+ (m)}}<br>[[Fryzury Halloween 2018|Fryzury Wilka+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Upiorny Lizak}}<br>[[Lizak Magii]] lub [[Upiorny Lizak]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Astrabell (pieczęć)}}{{ti2|Helexna (pieczęć)}}<br>[[Astrabell (pieczęć)|Astrabell]] lub [[Helexna (pieczęć)|Helexena]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Magiczny/krótkodystansowy atak]]
+
+}}
+
+=== Czwarty Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2019|Eventu Halloween 2019]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Jasna Szata Proroka+ (k)|height=2}}{{ti2|Jasna Szata Proroka+ (m)|height=2}}{{ti2|Ciemna Szata Proroka+ (k)|height=2}}{{ti2|Ciemna Szata Proroka+ (m)|height=2}}<br>[[Kostiumy Halloween 2019|Szaty Proroka+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Fioletowe Oko Proroka+ (k)}}{{ti2|Jasny Kaptur Proroka+ (m)}}{{ti2|Zielone Oko Proroka+ (k)}}{{ti2|Ciemny Kaptur Proroka+ (m)}}<br>[[Fryzury Halloween 2019|Fryzury Proroka+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Magii}}{{ti2|Upiorny Lizak}}<br>[[Lizak Magii]] lub [[Upiorny Lizak]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Wszystkowidzący Kot Lodu (pieczęć)}}{{ti2|Wszystkowidzą. Kot Ognia (pieczęć)}}<br>[[Wszystkowidzący Kot Lodu (pieczęć)|Wszystkowidzący Kot Lodu]] lub [[Wszystkowidzą. Kot Ognia (pieczęć)|Wszystkowidzący Kot Ognia]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Magiczny/krótkodystansowy atak]]
+
+}}
+
+=== Piąty Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2020|Eventu Halloween 2020]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Zbroja Zaświatu+ (k)|height=2}}{{ti2|Zbroja Zaświatu+ (m)|height=2}}{{ti2|Zbroja Zmarłych+ (k)|height=2}}{{ti2|Zbroja Zmarłych+ (m)|height=2}}<br>[[Kostiumy Halloween 2020|Zbroje Zaświatu i Zmarłych+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Fryzura Zaświatu+ (k)}}{{ti2|Fryzura Zaświatu+ (m)}}{{ti2|Fryzura Zmarłych+ (k)}}{{ti2|Fryzura Zmarłych+ (m)}}<br>[[Fryzury Halloween 2020|Fryzury Zaświatu i Zmarłych+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Potęgi}}<br>[[Lizak Potęgi]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Mumia Szamotka+ (pieczęć)}}{{ti2|Mumia Kiwaczek+ (pieczęć)}}<br>[[Mumia Szamotka+ (pieczęć)|Mumia Szamotka+]] lub [[Mumia Kiwaczek+ (pieczęć)|Mumia Kiwaczek+]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Magiczny/krótkodystansowy atak]]
+
+}}
+
+
+=== Szósty Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2021|Eventu Halloween 2021]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Czarna Szata Dokkaebi+ (k)|height=2}}{{ti2|Czarna Szata Dokkaebi+ (m)|height=2}}{{ti2|Niebieska Szata Dokkaebi+ (k)|height=2}}{{ti2|Niebieska Szata Dokkaebi+ (m)|height=2}}<br>[[Kostiumy Halloween 2021|Szaty Dokkaebi +]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Czarne Rogi Dokkaebi+ (k)}}{{ti2|Czarne Rogi Dokkaebi+ (m)}}{{ti2|Niebieskie Rogi Dokkaebi+ (k)}}{{ti2|Niebieskie Rogi Dokkaebi+ (m)}}<br>[[Fryzury Halloween 2021|Rogi Dokkaebi+]]
+
+<!-- Lista nakładek w zestawie -->
+|Nakładka = {{ti2|Sztylet Dokkaebi+}}{{ti2|Dzwonek Dokkaebi+}}{{ti2|Wachlarz Dokkaebi+}}{{ti2|Szpony Dokkaebi+}}{{ti2|Łuk Dokkaebi+|height=2}}{{ti2|Miecz Dokkaebi+|height=2}}{{ti2|Glewia Dokkaebi+|height=3}}<br>[[Wizerunki broni#Wizerunki broni - Halloween 2021|Wizerunki broni Halloween 2021]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Potęgi}}{{ti2|Lizak Magii}}<br>[[Lizak Potęgi]] lub [[Lizak Magii]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Lodowaty Burzyciel (pieczęć)}}{{ti2|Jadowity Burzyciel (pieczęć)}}<br>[[Lodowaty Burzyciel (pieczęć)|Lodowaty Burzyciel]] lub [[Jadowity Burzyciel (pieczęć)|Jadowity Burzyciel]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +75% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 =  +150% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Magiczny/krótkodystansowy atak]]
+
+}}
+
+=== Siódmy Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2022|Eventu Halloween 2022]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Krwistoczerwona Ks. Wa.+|height=2}}{{ti2|Krwistoczerwony Ks. Wa.+|height=2}}{{ti2|Czarna jak noc Ks. Wa.+|height=2}}{{ti2|Czarny jak noc Ks. Wam.+|height=2}}<br>[[Kostiumy Halloween 2022|Kostiumy Wampira]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Sz. Fryzura Wampira+ (k)}}{{ti2|Sz. Fryzura Wampira+ (m)}}{{ti2|Cz. Fryzura Wampira+ (k)}}{{ti2|Cz. Fryzura Wampira+ (m)}}<br>[[Fryzury Halloween 2022|Fryzury Wampira]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Potęgi}}{{ti2|Lizak Magii}}<br>[[Lizak Potęgi]] lub [[Lizak Magii]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Krwistocz. Trumna Grozy (pieczęć)|Krwistoczerwona Trumna Grozy}}{{ti2|Lodowata Trumna Grozy (pieczęć)|Lodowata Trumna Grozy}}<br>[[Krwistocz. Trumna Grozy (pieczęć)|Krwistoczerwona Trumna Grozy]] lub [[Lodowata Trumna Grozy (pieczęć)|Lodowata Trumna Grozy]]
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 =  +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +30% [[Regeneracja PŻ]], +3% [[Siła w walce z potworami]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +30% [[Regeneracja PŻ]], +5% [[Siła w walce z potworami]]
+
+}}
+
+=== Ósmy Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2023|Eventu Halloween 2023]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Czerwona Szamanka+|height=2}}{{ti2|Czerwony Szaman+|height=2}}{{ti2|Zielona Szamanka+|height=2}}{{ti2|Zielony Szaman+|height=2}}<br>[[Kostiumy Halloween 2023|Kostiumy Szamańskie]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Czerw. Szam. Korona+ (k)|Czerwona Szamańska Korona+ (k)}}{{ti2|Czerw. Szam. Korona+ (m)|Czerwona Szamańska Korona+ (m)}}{{ti2|Ziel. Szam. Korona+ (k)|Zielona Szamańska Korona+}}{{ti2|Ziel. Szam. Korona+ (m)|Zielona Szamańska Korona+ (m)}}<br>[[Fryzury Halloween 2023|Korony Szamańskie]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Przeklęta Miotła (pieczęć)}}{{ti2|Zaczarowana Miotła (pieczęć)}}<br>[[Przeklęta Miotła (pieczęć)|Przeklęta Miotła]] lub [[Zaczarowana Miotła (pieczęć)|Zaczarowana Miotła]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Dzielne Straszydło Tiki (pieczęć)}}{{ti2|Zuchwałe Straszydło Tiki (pieczęć)}}<br>[[Dzielne Straszydło Tiki (pieczęć)|Dzielne Straszydło Tiki]] lub [[Zuchwałe Straszydło Tiki (pieczęć)|Zuchwałe Straszydło]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Potęgi}}{{ti2|Lizak Magii}}<br>[[Lizak Potęgi]] lub [[Lizak Magii]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 =  +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]], +2% [[Siła w walce z kamieniami Metin]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +7% [[Silny przeciwko Potworom]], +5% [[Siła w walce z kamieniami Metin]], +5% [[Szansa na drop przedmiotu]]
+
+}}
+
+=== Dziewiąty Zestaw Halloweenowy ===
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event Halloween#2024|Eventu Halloween 2024]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Sukkub Płomieni+|height=2}}{{ti2|Inkub Płomieni+|height=2}}{{ti2|Sukkub Nocy+|height=2}}{{ti2|Inkub Nocy+|height=2}}<br>[[Kostiumy Halloween 2024|Kostiumy Halloweenowe 2024]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Płonące Rogi+ (k)}}{{ti2|Płonące Rogi+ (m)}}{{ti2|Rogi Skrzydła Nocy+ (k)}}{{ti2|Rogi Skrzydła Nocy+ (m)}}<br>[[Fryzury Halloween 2024|Fryzury Halloweenowe 2024]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Mroczny Rumak Piekieł (pieczęć)}}{{ti2|Okrutny Rumak Piekieł (pieczęć)}}<br>[[Mroczny Rumak Piekieł (pieczęć)|Mroczny Rumak Piekieł]] lub [[Okrutny Rumak Piekieł (pieczęć)|Okrutny Rumak Piekieł]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Lilith (pieczęć)}}{{ti2|Helena (pieczęć)}}<br>[[Lilith (pieczęć)|Lilith]] lub [[Helena (pieczęć)|Helena]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Lizak Potęgi}}{{ti2|Lizak Magii}}<br>[[Lizak Potęgi]] lub [[Lizak Magii]]
+
+<!-- Lista szarf w zestawie -->
+|Nakładka = {{ti|Nakładki Nosiciela Klątwy+}}
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 =  +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]], +3% [[Siła w walce z kamieniami Metin]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +7% [[Silny przeciwko Potworom]], +5% [[Siła w walce z kamieniami Metin]], +5% [[% obrażeń będzie dodanych do PŻ]]
+
+<!-- Lista bonus(ów) przy aktywnych 6 przedmiotach -->
+|Bonus6 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +7% [[Silny przeciwko Potworom]], +5% [[Siła w walce z kamieniami Metin]], +5% [[% obrażeń będzie dodanych do PŻ]], +5% [[Szansa na drop przedmiotu]]
+
+}}
+
+== Zestaw Bożonarodzeniowy ==
+
+=== Pierwszy Zestaw Bożonarodzeniowy ===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2016|Eventu Świątecznego 2016]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Czerw. Galowy Strój (k)|height=2}}{{ti2|Czerw. Galowy Strój (m)|height=2}}{{ti2|Zielony Galowy Strój (k)|height=2}}{{ti2|Zielony Galowy Strój (m)|height=2}}<br>[[Kostiumy Świąteczne 2016|Galowy Strój]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Świąteczny Beret (czer.)}}{{ti2|Świąt. Kaptur (czerwony)}}{{ti2|Świąteczny Beret (ziel.)}}{{ti2|Świąt. Kaptur (zielony)}}<br>[[Fryzury Świąteczne 2016|Fryzury Świąteczne]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Czer. Elf (Mini) (pieczęć)}}<br>[[Czer. Elf (Mini) (pieczęć)|Czer. Elf (Mini)]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = -
+
+|Bonus3 = +20% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Czerw. Galowy Strój+ (k)|height=2}}{{ti2|Czerw. Galowy Strój+ (m)|height=2}}{{ti2|Zielony Galowy Strój+ (k)|height=2}}{{ti2|Zielony Galowy Strój+ (m)|height=2}}<br>[[Kostiumy Świąteczne 2016|Galowy Strój+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Świąt. Beret+ (czerwony)}}{{ti2|Świąt. Kaptur+ (czer.)}}{{ti2|Świąt. Beret+ (zielony)}}{{ti2|Świąt. Kaptur+ (ziel.)}}<br>[[Fryzury Świąteczne 2016|Fryzury Świąteczne]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Ziel. Elf (Maksi) (pieczęć)}}{{ti2|Czer. Elf (Maksi) (pieczęć)}}<br>[[Ziel. Elf (Maksi) (pieczęć)|Ziel. Elf (Maksi)]] lub [[Czer. Elf (Maksi) (pieczęć)|Czer. Elf (Maksi)]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +20% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Średnie Obrażenia]]
+
+}}
+
+=== Drugi Zestaw Bożonarodzeniowy ===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2017|Eventu Świątecznego 2017]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Zbroja Avalonu K (czerw.)|height=2}}{{ti2|Zbroja Avalonu M (czerw.)|height=2}}{{ti2|Zbroja Avalonu K (srebr.)|height=2}}{{ti2|Zbroja Avalonu M (srebr.)|height=2}}<br>[[Kostiumy Świąteczne 2017|Zbroja Avalonu]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Avalonu K (czerw.)}}{{ti2|Hełm Avalonu M (czerw.)}}{{ti2|Hełm Avalonu K (srebr.)}}{{ti2|Hełm Avalonu M (srebr.)}}<br>[[Fryzury Świąteczne 2017|Hełmy Avalonu]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = 
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Sir Chesterfield (pieczęć)}}<br>[[Sir Chesterfield (pieczęć)|Sir Chesterfield]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = -
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+}}
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Zbroja Avalonu+ K (czerw.)|height=2}}{{ti2|Zbroja Avalonu+ M (czerw.)|height=2}}{{ti2|Zbroja Avalonu+ K (srebr.)|height=2}}{{ti2|Zbroja Avalonu+ M (srebr.)|height=2}}<br>[[Kostiumy Świąteczne 2017|Zbroja Avalonu+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Avalonu+ K (czerw.)}}{{ti2|Hełm Avalonu+ M (czerw.)}}{{ti2|Hełm Avalonu+ K (srebr.)}}{{ti2|Hełm Avalonu+ M (srebr.)}}<br>[[Fryzury Świąteczne 2017|Hełmy Avalonu+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Sir Oswald (pieczęć)}}{{ti2|Sir Cobblepot (pieczęć)}}<br>[[Sir Oswald (pieczęć)|Sir Oswald]] lub [[Sir Cobblepot (pieczęć)|Sir Cobblepot]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Średnie Obrażenia]]
+
+}}
+
+===Trzeci Zestaw Bożonarodzeniowy ===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2018|Eventu Świątecznego 2018]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Gwardia Ognistego Smoka+ (k)|height=2}}{{ti2|Gwardia Ognistego Smoka+ (m)|height=2}}{{ti2|Gwardia Lodowego Smoka+ (k)|height=2}}{{ti2|Gwardia Lodowego Smoka+ (m)|height=2}}<br>[[Kostiumy Świąteczne 2018|Kostium Zimowy+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Gwardii Ognistego Smoka+ (k)}}{{ti2|Hełm Gwardii Ognistego Smoka+ (m)}}{{ti2|Hełm Gwardii Lodowego Smoka+ (k)}}{{ti2|Hełm Gwardii Lodowego Smoka+ (m)}}<br>[[Fryzury Świąteczne 2018|Fryzury Zimowe+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Stefek Orzeszek (pieczęć)}}{{ti2|Franiu Fistaszek (pieczęć)}}<br>[[Stefek Orzeszek (pieczęć)|Stefek Orzeszek]] lub [[Franiu Fistaszek (pieczęć)|Franiu Fistaszek]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Średnie Obrażenia]]
+
+}}
+
+===Czwarty Zestaw Bożonarodzeniowy===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2019|Eventu Świątecznego 2019]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Zbroja Mroku Księżyca+ (k)|height=2}}{{ti2|Zbroja Mroku Księżyca+ (m)|height=2}}{{ti2|Zbroja Srebrnej Gwiazdy+ (k)|height=2}}{{ti2|Zbroja Srebrnej Gwiazdy+ (m)|height=2}}<br>[[Kostiumy Świąteczne 2019|Kostiumy Świąteczne+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Mroku Księżyca+ (k)}}{{ti2|Hełm Mroku Księżyca+ (m)}}{{ti2|Hełm Srebrnej Gwiazdy+ (k)}}{{ti2|Hełm Srebrnej Gwiazdy+ (m)}}<br>[[Fryzury Świąteczne 2019|Fryzury Świąteczne+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Skrzat Nosek+ (czerw.) (pieczęć)}}{{ti2|Skrzat Nosek+ (ziel.) (pieczęć)}}<br>[[Skrzat Nosek+ (czerw.) (pieczęć)|Skrzat Nosek (czerw.)]] lub [[Skrzat Nosek+ (ziel.) (pieczęć)|Skrzat Nosek (ziel.)]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +5% [[Obrażenia Umiejętności]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +5% [[Obrażenia Umiejętności]], +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +5% [[Obrażenia Umiejętności]], +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Magiczny/krótkodystansowy atak]]
+
+}}
+
+===Piąty Zestaw Bożonarodzeniowy===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2020|Eventu Świątecznego 2020]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Ziel. Sweter Świąt.+ (k)|height=2}}{{ti2|Ziel. Sweter Świąt.+ (m)|height=2}}{{ti2|Czer. Sweter Świąt.+ (k)|height=2}}{{ti2|Czer. Sweter Świąt.+ (m)|height=2}}<br>[[Kostiumy Świąteczne 2020|Swetry Świąteczne+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Ziel. Czapka Świąt.+ (k)}}{{ti2|Ziel. Czapka Świąt.+ (m)}}{{ti2|Czer. Czapka Świąt.+ (k)}}{{ti2|Czer. Czapka Świąt.+ (m)}}<br>[[Fryzury Świąteczne 2020|Czapki Świąteczne+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Zielony Świąteczny Ent (pieczęć)}}{{ti2|Sękaty Świąteczny Ent (pieczęć)}}<br>[[Zielony Świąteczny Ent (pieczęć)|Zielony Świąteczny Ent]] lub [[Sękaty Świąteczny Ent (pieczęć)|Sękaty Świąteczny Ent]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +3% [[Magiczny/krótkodystansowy atak]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +3% [[Magiczny/krótkodystansowy atak]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +3% [[Magiczny/krótkodystansowy atak]], +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Siła przeciwko Kamieniom Metin]]
+
+}}
+
+===Szósty Zestaw Bożonarodzeniowy===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2021|Eventu Świątecznego 2021]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Ciepły Kaftan Zimowy+ (k)|height=2}}{{ti2|Ciepły Kaftan Zimowy+ (m)|height=2}}{{ti2|Piękny Kaftan Zimowy+ (k)|height=2}}{{ti2|Piękny Kaftan Zimowy+ (m)|height=2}}<br>[[Kostiumy Świąteczne 2021|Kaftany Świąteczne+]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Ciepła Czapa Zimowa+ (k)}}{{ti2|Ciepła Czapa Zimowa+ (m)}}{{ti2|Piękna Czapa Zimowa+ (k)}}{{ti2|Piękna Czapa Zimowa+ (m)}}<br>[[Fryzury Świąteczne 2021|Czapki Świąteczne+]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Przebiśnieg (pieczęć)}}{{ti2|Śnieżka (pieczęć)}}<br>[[Przebiśnieg (pieczęć)|Przebiśnieg]] lub [[Śnieżka (pieczęć)|Śnieżka]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Niebieski Zimowy Wilk (pieczęć)}}{{ti2|Czerwony Zimowy Wilk (pieczęć)}}<br>[[Niebieski Zimowy Wilk (pieczęć)|Niebieski Zimowy Wilk]] lub [[Czerwony Zimowy Wilk (pieczęć)|Czerwony Zimowy Wilk]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]], +3% [[Obrażenia od ataku przeciwko bossom|Obrażeń od ataku przeciwko bossom]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +15% [[Silny przeciwko Potworom]], +5% [[Obrażenia od ataku przeciwko bossom|Obrażeń od ataku przeciwko bossom]]
+
+}}
+
+===Siódmy Zestaw Bożonarodzeniowy===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2022|Eventu Świątecznego 2022]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|B. zimowy samuraj+ (m)|height=2}}{{ti2|Biały zimowy samuraj (k)|height=2}}{{ti2|Cz. zimowy samuraj+ (m)|height=2}}{{ti2|Cz. zimowy samuraj+ (k)|height=2}}<br>[[Kostiumy Świąteczne 2022]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|B. hełm z porożem+ (m)}}{{ti2|B. hełm z porożem+ (k)}}{{ti2|Cz. hełm z porożem+ (m)}}{{ti2|Cz. hełm z porożem+ (k)}}<br>[[Fryzury Świąteczne 2022]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Piernikowy Rudolf (pieczęć)}}{{ti2|Piernikowy Dasher (pieczęć)}}<br>[[Piernikowy Rudolf (pieczęć)|Piernikowy Rudolf]] lub [[Piernikowy Dasher (pieczęć)|Piernikowy Dasher]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Renifer śnieżycy (pieczęć)}}{{ti2|Renifer zimowej nocy (pieczęć)}}<br>[[Renifer śnieżycy (pieczęć)|Renifer śnieżycy]] lub [[Renifer zimowej nocy (pieczęć)|Renifer zimowej nocy]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +5% [[Silny przeciwko Potworom]], +3% [[Obrażenia od ataku przeciwko bossom|Obrażeń od ataku przeciwko bossom]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|doświadczenia]], +7% [[Silny przeciwko Potworom]], +5% [[Obrażenia od ataku przeciwko bossom|Obrażeń od ataku przeciwko bossom]]
+
+}}
+
+===Ósmy Zestaw Bożonarodzeniowy===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2023|Eventu Świątecznego 2023]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Szlachetny Legionista+|height=2}}{{ti2|Szlachetna Legionistka+|height=2}}{{ti2|Mroczny Legionista+|height=2}}{{ti2|Mroczna Legionistka+|height=2}}<br>[[Kostiumy Świąteczne 2023]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Sz. Hełm Legionisty+ (m)}}{{ti2|Sz. Hełm Legionisty+ (k)}}{{ti2|Mr. Hełm Legionisty+ (m)}}{{ti2|Mr. Hełm Legionisty+ (k)}}<br>[[Fryzury Świąteczne 2023]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Śnieżny Krampus (pieczęć)}}{{ti2|Węglowy Krampus (pieczęć)}}<br>[[Śnieżny Krampus (pieczęć)|Śnieżny Krampus]] lub [[Węglowy Krampus (pieczęć)|Węglowy Krampus]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Szlachetny Legionowy Koń (pieczęć)}}{{ti2|Mroczny Legionowy Koń (pieczęć)}}<br>[[Szlachetny Legionowy Koń (pieczęć)|Szlachetny Legionowy Koń]] lub [[Mroczny Legionowy Koń (pieczęć)|Mroczny Legionowy Koń]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +5% [[Silny przeciwko Potworom]], +3% [[Obrażenia od ataku przeciwko bossom|Obrażeń od ataku przeciwko bossom]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|doświadczenia]], +7% [[Silny przeciwko Potworom]], +5% [[Obrażenia od ataku przeciwko bossom|Obrażeń od ataku przeciwko bossom]], +5% [[Szansa na podwójną ilość Przedmiotów|szansa na drop przedmiotu]]
+
+}}
+
+===Dziewiąty Zestaw Bożonarodzeniowy===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2024|Eventu Świątecznego 2024]].
+
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Księż. Szata Wukong+ (m)|height=2}}{{ti2|Księż. Szata Wukong+ (k)|height=2}}{{ti2|Słon. Szata Wukong+ (m)|height=2}}{{ti2|Słon. Szata Wukong+ (k)|height=2}}<br>[[Kostiumy Świąteczne 2024]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Księż. Bran. Wukong+ (m)}}{{ti2|Księż. Bran. Wukong+ (k)}}{{ti2|Słon. Brans. Wukong+ (m)}}{{ti2|Słon. Brans. Wukong+ (k)}}<br>[[Fryzury Świąteczne 2024]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Srebrny Long (pieczęć)}}{{ti2|Złoty Long (pieczęć)}}<br>[[Srebrny Long (pieczęć)|Srebrny Long]] lub [[Złoty Long (pieczęć)|Złoty Long]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Burza Wukong (pieczęć)}}{{ti2|Grzmot Wukong (pieczęć)}}<br>[[Burza Wukong (pieczęć)|Burza Wukong]] lub [[Grzmot Wukong (pieczęć)|Grzmot Wukong]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +5% [[Silny przeciwko Potworom]], +5% [[Szansa na cios krytyczny]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|doświadczenia]], +7% [[Silny przeciwko Potworom]], +7% [[Szansa na cios krytyczny]], +30 [[Wartość Ataku]], +30 [[Wartość Magicznego Ataku]]
+
+}}
+
+=== Dziesiąty Zestaw Bożonarodzeniowy ===
+Zestaw ten pojawił się po raz pierwszy w grze podczas [[Event Świąteczny 2025|Eventu Świątecznego 2025]].
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Świąt. Zim. Zbroja+ (m)|height=2}}{{ti2|Świąt. Zim. Zbroja+ (k)|height=2}}{{ti2|Piękna Zim. Zbroja+ (m)|height=2}}{{ti2|Piękna Zim. Zbroja+ (k)|height=2}}<br>[[Kostiumy Świąteczne 2025|Kostiumy Świąteczne 2025]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Świąt. Zim. Czapka+ (k)}}{{ti2|Świąt. Zim. Czapka+ (m)}}{{ti2|Piękna Zim. Czapka+ (m)}}{{ti2|Piękna Zim. Czapka+ (k)}}<br>[[Fryzury Świąteczne 2025|Fryzury Świąteczne 2025]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Śnieżny Bożonar. Baran (pieczęć)}}{{ti2|Węglowy Bożonar. Baran (pieczęć)}}<br>[[Śnieżny Bożonar. Baran (pieczęć)|Śnieżny Bożonar. Baran]] lub [[Węglowy Bożonar. Baran (pieczęć)|Węglowy Bożonar. Baran]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Niebieski Zimowy Skrzat (pieczęć)}}{{ti2|Różowy Zimowy Skrzat (pieczęć)}}<br>[[Niebieski Zimowy Skrzat (pieczęć)|Niebieski Zimowy Skrzat]] lub [[Różowy Zimowy Skrzat (pieczęć)|Różowy Zimowy Skrzat]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Pierścień Radości}}<br>[[Pierścień Radości]]
+
+<!-- Lista szarf w zestawie -->
+|Nakładka = {{ti2|Miecz Dw. Zim. Ciernia+|height=3}}{{ti2|Miecz Zimowego Ciernia+|height=2}}{{ti2|Szpon Zimowego Ciernia+}}{{ti2|Wachlarz Zim. Ciernia+}}{{ti2|Dzwon Zimowego Ciernia+}}{{ti2|Sztylet Zim. Ciernia+}}{{ti2|Łuk Zimowego Ciernia+|height=2}}
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 =  +75% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% [[Silny przeciwko Potworom]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|Doświadczenia]], +5% [[Silny przeciwko Potworom]], +2% [[Szansa na przeszywające Uderzenie]], +2% [[Szansa na cios krytyczny]]
+
+<!-- Lista bonus(ów) przy aktywnych 5 przedmiotach -->
+|Bonus5 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +7% [[Silny przeciwko Potworom]], +5% [[Szansa na przeszywające Uderzenie]], +5% [[Szansa na cios krytyczny]]
+
+<!-- Lista bonus(ów) przy aktywnych 6 przedmiotach -->
+|Bonus6 = +150% otrzymywanego [[Doświadczenie|Doświadczenia]], +10% [[Silny przeciwko Potworom]], +8% [[Szansa na przeszywające Uderzenie]], +8% [[Szansa na cios krytyczny]]
+
+}}
+
+== Zestaw Mistrzowski ==
+
+Zestaw ten pojawił się pierwszy raz w grze podczas [[Event na Mistrzostwa|Eventu na Mistrzostwa 2022]].
+
+{{BonusZestawu/Layout <!-- v1.0 -->
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Mistrzowski emblemat}}<br>[[Mistrzowski emblemat]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Mist. p. nożna (nagroda) (pieczęć)}}<br>[[Mist. p. nożna (nagroda) (pieczęć)|Mistrzowska piłka nożna]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|Doświadczenia]], +3% siły przeciwko kamieniom Metin
+
+}}
+
+== Pozostałe zestawy ==
+===1===
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Zbroja Zwycięskiego+|height=2}}{{ti2|Zbroja Zwycięskiej+|height=2}}{{ti2|Zbroja Szczodrego+|height=2}}{{ti2|Zbroja Szczodrej+|height=2}}<br>[[Zbroje Szczodrości i Zwycięstwa]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Korona Zwycięskiego+}}{{ti2|Korona Zwycięskiej+}}{{ti2|Korona Szczodrego+}}{{ti2|Korona Szczodrej+}}<br>[[Fryzury Szczodrości i Zwycięstwa]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Amulet Nazara}}<br>[[Amulet Nazara]]
+
+<!-- Lista wierzchowców w zestawie -->
+|Wierzchowiec = {{ti2|Halia (pieczęć)}}{{ti2|Aquilos (pieczęć)}}<br>[[Halia (pieczęć)|Halia]] lub [[Aquilos (pieczęć)|Aquilos]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = +75% otrzymywanego [[Doświadczenie|doświadczenia]], +3% [[Siła w walce z kamieniami Metin]]
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +8% [[Siła w walce z kamieniami Metin]], +5% [[Szansa na drop przedmiotów]]
+
+}}
+
+===2===
+{{BonusZestawu/Layout
+
+<!-- Lista kostiumów w zestawie -->
+|Kostium = {{ti2|Strażnik Srebr. Piasku+|height=2}}{{ti2|Strażniczka Sr. Piasku+|height=2}}{{ti2|Strażnik Czer. Piasku+|height=2}}{{ti2|Strażniczka Cz. Piasku+|height=2}}<br>[[Zbroje Strażników Piasku]]
+
+<!-- Lista fryzur w zestawie -->
+|Fryzura = {{ti2|Hełm Srebr. Piasku+ (m)}}{{ti2|Hełm Srebr. Piasku+ (k)}}{{ti2|Hełm Czerw. Piasku+ (m)}}{{ti2|Hełm Czerw. Piasku (k)}}<br>[[Fryzury Strażników Piasku]]
+
+<!-- Lista amuletów/naszyjników/pierścieni w zestawie -->
+|Amulet = {{ti2|Błogosławieństwo Mocy}}<br>[[Błogosławieństwo Mocy]]
+
+<!-- Lista zwierzaków w zestawie -->
+|Zwierzak = {{ti2|Sowa Strażniczka Słońca (pieczęć)}}{{ti2|Sowa Strażn. Księżyca (pieczęć)}}<br>[[Sowa Strażniczka Słońca (pieczęć)|Sowa Strażniczka Słońca]] lub [[Sowa Strażn. Księżyca (pieczęć)|Sowa Strażniczka Księżyca]]
+
+<!-- Lista bonus(ów) przy aktywnych 2 przedmiotach -->
+|Bonus2 = +50% otrzymywanego [[Doświadczenie|doświadczenia]]
+
+<!-- Lista bonus(ów) przy aktywnych 3 przedmiotach -->
+|Bonus3 = 
+
+<!-- Lista bonus(ów) przy aktywnych 4 przedmiotach -->
+|Bonus4 = +100% otrzymywanego [[Doświadczenie|doświadczenia]], +5% [[Szybkość Ataku]], +5% [[obrażeń od uderzeń]], +5% [[Szansa na Omdlenie]]
+
+}}
+
+[[Kategoria:Informacje]]
+{{Pomocne strony}}
+
+[[de:Set-Bonus]]
+[[fr:Bonus de set]]
+[[hu:Szett bónusz]]
+[[it:Set Bonus]]
+[[ro:Set Bonus]]
+[[tr:Set Bonus]]

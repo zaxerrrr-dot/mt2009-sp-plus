@@ -1,0 +1,41 @@
+{{Item/Layout
+
+|image = Pudełko Uszlachetniania Aury.png
+
+|Opis = Z tego pakietu możesz otrzymać materiały do uszlachetnienia wyposażenia lub runy do ulepszenia szaty aury. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Eventy
+
+|Zawartość = * {{ti|Ognista Runa Aury (50)}}
+* {{ti|Ognista Runa Aury (100)}}
+* {{ti|Ognista Runa Aury (250)}}
+* {{ti|Ognista Runa Aury (500)}}
+* {{ti|Agat}}
+* {{ti|Prosty Kamień Chaosu}}
+* {{ti|Ładny Kamień Chaosu}}
+* {{ti|Wspaniały Kamień Chaosu}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Loteria Tombola]], [[Item-Shop]] za 55 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+* Zawiera jeden losowy przedmiot.
+* Otwiera się od razu po otrzymaniu.
+* Szansa na ognistą runę aury lub kamień chaosu.
+
+}}

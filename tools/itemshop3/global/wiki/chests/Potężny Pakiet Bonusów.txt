@@ -1,0 +1,37 @@
+{{Item/Layout
+
+|image = Potężny Pakiet Bonusów.png
+
+|Opis = W tym wspaniałym pakiecie znajdziesz wszystko, czego potrzebujesz, by zafundować swojemu wyposażeniu jeszcze więcej potężnych bonusów i stać się jeszcze silniejszym.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Błogosławieństwo (przedmiot)|Błogosławieństwo}} (x6)
+* {{ti|Silny Suplement}} (x10)
+* {{ti|Lśniąca Sk. z Odłamkiem}} (x10)
+* {{ti|Zdobna Skrzynia z Odłamkiem}} (x10)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] 1456 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Jeszcze więcej potężnych bonusów.
+* Praktyczny oszczędnościowy pakiet.
+
+}}

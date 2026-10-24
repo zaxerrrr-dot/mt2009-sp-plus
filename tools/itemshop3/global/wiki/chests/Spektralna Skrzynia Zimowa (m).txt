@@ -1,0 +1,46 @@
+{{Item/Layout
+
+|image=Spektralna Skrzynia Zimowa.png
+
+|Opis = Spektralny rumak, mundur Gwardii Ognistego lub Lodowego Smoka z potężnymi bonusami oraz mnóstwo innych fantastycznych przedmiotów ukrywa się w nadzwyczajnej skrzyni zimowej. Któryś z tych przedmiotów może być twój, ale który?
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Spektralny Rumak (pieczęć)}} (30 dni)
+* {{ti2|height=2|Gwardia Ognistego Smoka+ (m)|px=22}}{{ti2|height=2|Gwardia Lodowego Smoka+ (m)|px=22}}[[Kostiumy Świąteczne 2018|Kostium Gwardii]] (m) (7d/15d/30d)
+* {{ti|Dwutlenek Tytanu}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Świąteczna Skrzynia}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Wzmocnienie Przedmiotu}} 
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Magiczny Metal}}
+* {{ti|Błogosławieństwo Życia}} (x3)
+* {{ti|Krwawa Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Biała Perła}} (x3)
+* {{ti|Magiczny Kamień}}
+* {{ti|Zwój Błogosławieństwa}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 35 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot. '''Przedmiot ten automatycznie trafi do twojego magazynu Item-Shopu'''.
+
+}}

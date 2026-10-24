@@ -1,0 +1,64 @@
+{{Item/Layout
+
+|image = Majestatyczna Skrzynia Nosiciela Światła.png
+
+|Opis = Z tej świetlistej skrzyni możesz zdobyć wiele legendarnych skarbów - może nawet majestatyczny pakiet Nosiciela Światła?
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Majestatyczny pakiet Nosiciela Światła składa się z:
+** {{ti|height=2|Maj. Nosiciel Światła+|Majestatyczny Nosiciel Światła+}} (60d)
+** {{ti|Majestat. Diadem+ (m)|Majestatyczny Diadem (m)}} (60d)
+** {{ti|Pavo (pieczęć)|Pavo}} (60d)
+* LUB:
+** {{ti|height=2|Maj. Nosicielka Światła+|Majestatyczna Nosicielka Światła+}} (60d)
+** {{ti|Majestat. Diadem+ (k)|Majestatyczny Diadem (k)}} (60d)
+** {{ti|Pavo (pieczęć)|Pavo}} (60d)
+* {{ti|Majestat. Diadem+ (m)|Majestatyczny Diadem (m)}} (15/30d)
+* {{ti|Majestat. Diadem+ (k)|Majestatyczny Diadem (k)}} (15/30d)
+* {{ti|height=2|Maj. Nosiciel Światła+|Majestatyczny Nosiciel Światła+}} (15/30d)
+* {{ti|height=2|Maj. Nosicielka Światła+|Majestatyczna Nosicielka Światła+}} (15/30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Ósmy Zestaw Wielkanocny|Bonus Zestawu]].
+}}

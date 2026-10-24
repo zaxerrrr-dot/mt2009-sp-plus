@@ -1,0 +1,39 @@
+{{Item/Layout
+
+|image = Duży Pakiet Progresu.png
+
+|Opis = Ten pakiet zawiera przedmioty, dzięki którym możesz zafundować sobie prawdziwy tydzień progresu: podwyższ swoje parametry SungMa, znajduj więcej Yang i łupu, zbieraj więcej doświadczenia i korzystaj z wygodnej funkcji automatycznego podnoszenia Yang!
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie 
+|Kategoria3 = Pojemniki
+
+|Zawartość = 
+* {{ti2|Buff Premium SungMa (7d)|px=22}}[[Buff Premium SungMa]] (7d)
+* {{ti|Rękawica Złodzieja}} (7d)
+* {{ti|Medal Szczęścia}} (7d)
+* {{ti|Pierścień Doświadczenia}} (7d)
+* {{ti|Trzecia Ręka}} (7d)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 299 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zafunduj sobie tydzień progresu.
+* Więcej doświadczenia, więcej łupu, więcej frajdy.
+
+}}

@@ -1,0 +1,59 @@
+{{Item/Layout
+
+|image = Losowe Pudełko Walentynkowe.png
+
+|Opis = W tym romantycznym pudełku czekają na ciebie uroczy posłaniec miłości, potężne amulety i dużo więcej. Otwórz je i sprawdź, co zawiera. Magiczne pudełko, zawierające jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Wesoły Posłaniec Miłości (pieczęć)}} (15d/30d)
+* {{ti|Ospały Posłaniec Miłości (pieczęć)}} (15d/30d)
+* {{ti|Czekoladowy Amulet}} (7d/15d/30d)
+* {{ti|Amulet Wiecznej Miłości}} (7d/15d/30d)
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (10%)}} (x2) 
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Kamień Księżycowy}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Książka Lidera+}}
+* {{ti|Księga Lidera}}
+* {{ti|Odłamek Energii}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Zaczarowanie Przedmiotu+}}
+* {{ti|Zaczarowanie Przedmiotu}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Wino z Kwiatu Brzosk. XL}} (x5)
+* {{ti|Skrzynia Amora (różowa)}}
+* {{ti|Skrzynia Amora (niebieska)}}
+* {{ti|Pierścień Doświadczenia}} (10h)
+* {{ti|Pierścień Doświadczenia}} (3h)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] 1 szt. za 49 [[Smocze Monety|SM]] lub 10 szt. za 420 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Losowe pudełko
+* Zawiera 1 przedmiot
+* Szansa na zwierzaka "Posłańca miłości"
+* Przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+
+}}

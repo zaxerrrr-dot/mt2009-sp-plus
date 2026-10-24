@@ -1,0 +1,37 @@
+{{Item/Layout
+
+|image = Pakiet Mądrości.png
+
+|Opis = Wiedza to potęga – ten promocyjny pakiet to Twoja przepustka do prawdziwej mądrości! Pakiet ten otworzy przed tobą wrota do prawdziwej mądrości. Ucz się nowych umiejętności i poszerzaj wiedzę, górując w ten sposób nad swoimi przeciwnikami, gdyż wiedza to czysta potęga! 
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie 
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Zwój Egzorcyzmu}} (x20)
+* {{ti|Rada Pustelnika}} (x15)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 649 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Nauka bez czasu oczekiwania.
+* Więcej sukcesów podczas treningu umiejętności.
+* 20x Zwój Egzorcyzmu – Użyj nowej Księgi Umiejętności lub kolejnego Kamienia Duchowego bez uciążliwego czekania.
+* 15x Rada Pustelnika – Zwiększa szanse na pomyślny trening umiejętności podczas czytania księgi lub Kamienia Duchowego o 250%.
+
+}}

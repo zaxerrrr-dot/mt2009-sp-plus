@@ -1,0 +1,43 @@
+{{Item/Layout
+
+|image = Beztroski Pakiet Przygodowy.png
+
+|Opis = Beztroski pakiet przygodowy uszczęśliwia każdego poszukiwacza przygód! Znajdziesz w nim mnóstwo przydatnych przedmiotów, jak zwój egzorcyzmu, pelerynę męstwa oraz magiczny metal. I to nie wszystko: z pakietem możesz sporo zaoszczędzić, ponieważ otrzymasz jeszcze wysoki kupon wpłaty, atak Boga Smoków oraz obydwa eliksiry gratis. Obdaruj się!
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Zwój Egzorcyzmu}} (x1)
+* {{ti|Magiczny Metal}} (x1)
+* {{ti|Rada Pustelnika}} (x1)
+* {{ti|Zwój Błogosławieństwa}} (x1)
+* {{ti|Peleryna Męstwa}} (x25)
+I te oto prezenty:
+* {{ti|Wysoki Kupon Wpłaty}} (x1)
+* {{ti|Atak Boga Smoków}} (x1)
+* {{ti|Eliksir Księżyca (D)}} (x1)
+* {{ti|Eliksir Słońca (D)}} (x1)
+
+|ZawieraWszystko= tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 175 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Pakiet z pożytecznymi przedmiotami.
+* '''Gratis:''' wysoki kupon wpłaty, 2 eliksiry i Atak Boga Smoków.
+
+}}

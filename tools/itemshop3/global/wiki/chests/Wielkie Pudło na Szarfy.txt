@@ -1,0 +1,42 @@
+{{Item/Layout
+
+|image = Wielkie Pudło na Szarfy.png
+
+|Opis = W tym pudle znajduje się dodatkowa szarfa dla ciebie. W zależności od stopnia absorbuje ona określony procent bonusów użytej w tym celu broni lub zbroi! W ten sposób staniesz się jeszcze bardziej potężniejszy!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = *{{ti|Szarfa Władcy (prosta)}}
+* {{ti|Szarfa Władcy (dostojna)}}
+* {{ti|Szarfa Władcy (zacna)}}
+* {{ti|Szarfa Księcia (prosta)}}
+* {{ti|Szarfa Księcia (dostojna)}}
+* {{ti|Szarfa Księcia (zacna)}}
+* {{ti|Szarfa Króla (prosta)}}
+* {{ti|Szarfa Króla (dostojna)}}
+* {{ti|Szarfa Króla (zacna)}}
+* {{ti|Szarfa Serca (prosta)}}
+* {{ti|Szarfa Serca (dostojna)}}
+* {{ti|Szarfa Serca (zacna)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 99 [[Smocze Monety|SM]] lub 175 [[Tygrysie Monety|TM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Skrzynia otwiera się natychmiast po jej zakupie i zawiera losowy przedmiot, który automatycznie znajdzie się w magazynie [[Item-Shop]].
+
+}}

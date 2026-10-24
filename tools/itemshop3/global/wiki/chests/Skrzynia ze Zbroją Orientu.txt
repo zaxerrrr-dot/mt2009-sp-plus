@@ -1,0 +1,49 @@
+{{Item/Layout
+
+|image = Skrzynia ze Zbroją Orientu.png
+
+|Opis = Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|height=2|Książę Orientu+ (brązowy)}} (60/30/14 dni)
+* {{ti|height=2|Księżniczka Orientu+ (brązowy)}} (60/30/14 dni)
+* {{ti|height=2|Książę Orientu+ (czarny)}} (60/30/14 dni)
+* {{ti|height=2|Księżniczka Orientu+ (czarny)}} (60/30/14 dni)
+* {{ti|Biała Perła}} (3x)
+* {{ti|Niebieska Perła}} (2x)
+* {{ti|Krwawa Perła}}
+* {{ti|Smoczy Płomień (B)}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Przepustka}} (2x)
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Błogosławieństwo Życia}} (3x)
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Magiczny Metal}}
+* {{ti|Dwutlenek Tytanu}}
+* {{ti|Amulet Nazara}} (15 dni)
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

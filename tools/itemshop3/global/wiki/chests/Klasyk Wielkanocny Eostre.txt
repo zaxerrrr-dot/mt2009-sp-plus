@@ -1,0 +1,65 @@
+{{Item/Layout
+|image = Klasyk Wielkanocny Eostre.png
+
+|Opis = Bogini wiosny Eostre napełniła tę magiczną skrzynię jej wielkanocnymi klasykami ostatnich lat. Jaką niespodziankę wielkanocną znajdziesz w niej? Możliwe są popularne zwierzaki, jak Donnie lub Frank, kostiumy zajączka lub samuraja i dużo więcej!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|height=1|Zajęcza Klatka Donniego}}
+* {{ti|height=1|Zajęcza Klatka Franka}}
+* {{ti|height=1|Gniazdo Sheldona}}
+* {{ti|height=1|Zajęcza Klatka}}
+* {{ti|height=1|Muffin (brąz.) (pieczęć)}}
+* {{ti|height=1|Nugget (brąz.) (pieczęć)}}
+* {{ti|height=1|Muffin (nieb.) (pieczęć)}}
+* {{ti|height=1|Nugget (nieb.) (pieczęć)}}
+* {{ti|height=1|Muffin (ziel.) (pieczęć)}}
+* {{ti|height=1|Nugget (ziel.) (pieczęć)}}
+* {{ti|height=2|Zbroja Samuraja+ (nieb.) K}} 15dni
+* {{ti|height=2|Zbroja Samuraja+ (czer.) K}} 15dni
+* {{ti|height=2|Zbroja Samuraja+ (nieb.) M}} 15dni
+* {{ti|height=2|Zbroja Samuraja+ (czer.) M}} 15dni
+* {{ti|height=1|Kok Samuraja+ (złoty) K}} 15 dni
+* {{ti|height=1|Kok Samuraja+ (srebrny) K}} 15 dni
+* {{ti|height=1|Kok Samuraja+ (złoty) M}} 15 dni
+* {{ti|height=1|Kok Samuraja+ (srebrny) M}} 15 dni
+* {{ti|height=2|Kostium Zajączka+ (granatowy)}} 15 dni
+* {{ti|height=2|Kostium Zajączka+ (fuksja)}} 15 dni
+* {{ti|height=2|Kostium Zająca+ (biały)}} 15 dni
+* {{ti|height=2|Kostium Zająca+ (różowy)}} 15 dni
+* {{ti|height=1|Uszy Zajączka+ (granatowe)}} 15 dni
+* {{ti|height=1|Uszy Zajączka+ (fuksja)}} 15 dni
+* {{ti|height=1|Uszy Zająca+ (białe)}} 15 dni
+* {{ti|height=1|Uszy Zająca+ (różowe)}} 15 dni
+* {{ti|height=1|Różowa Smocza Fasola}}
+* {{ti|height=1|Księga Obróbki Kamienia}}
+* {{ti|height=1|Kula Błogosławieństwa}}
+* {{ti|height=1|Wzmocnienie Przedmiotu}}
+* {{ti|height=1| Magiczna Ruda Miedzi}} x3
+* {{ti|height=1|Zwój Błogosławieństwa}}
+* {{ti|height=1|Zielona Smocza Fasola}} x2
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Skrzynia z niespodzianką
+* Szansa na Donniego, Sheldona, zajęcze kostiumy i więcej
+* Dla postaci rodzaju żeńskiego i męskiego. 
+** Kupując skrzynie postacią męską możemy zdobyć kostium tylko dla mężczyzny, kupując postacią damską możemy zdobyć kostium tylko kobiety.
+}}

@@ -1,0 +1,50 @@
+{{Item/Layout
+
+|image = Pakiet Torciku Pi.png
+
+|Opis = Z okazji Dnia Pi upichciliśmy Ci legendarny torcik Pi, a w nim: torcik fasolowy i mnóstwo innych wspaniałych przedmiotów, jak np. zaczarowanie przedmiotu+ i suplementy. Łącznie aż 15 przedmiotów.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = 
+* {{ti|Zaczarowanie Przedmiotu+}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Silny Suplement}}
+* {{ti|Duży Suplement}}
+* {{ti|Średni Suplement}}
+* {{ti|Torcik Fasolowy}}
+* {{ti|Cor Draconis (surowe)}}
+* {{ti|Kompas Strażnika}}
+* {{ti|Spirala Czasu (10%)}}
+* {{ti|Spirala Czasu (20%)}}
+* {{ti|Mikstura Pośpiechu}}
+* {{ti|Mikstura Ataku +15}}
+* {{ti|Błogosławieństwo Smoka}}
+* {{ti|Eliksir Słońca (Ś)}}
+* {{ti|Eliksir Księżyca (Ś)}}
+
+|ZawieraWszystko = tak
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 314 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmioty trafiają bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Można kupić tylko jedną sztukę na konto.
+* Niedostępne dla nowych kont.
+
+}}

@@ -1,0 +1,51 @@
+{{Item/Layout
+
+|image = Skrzynia Mega Wierzchowca Dragora.png
+
+|Opis = Zostań dumnym właścicielem potężnego Dragora lub Moa, którzy obdarzą cię jedną z 5 potężnych specjalizacji.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Certyfikat Dragora}} (x1)
+* {{ti|Świadectwo Moa|Świadectwo Moy}} (x1)
+* {{ti|Zwój Ewolucji}} (x1)
+* {{ti|Zwój Mutacji}} (x1)
+* {{ti|Mega Przekąska}} (7d/15d/30d) (x1)
+* {{ti|Instr. Jazdy Konnej}} (x1)
+* {{ti|Instr. Oswajania Konia}} (x1)
+* {{ti|Medal Konny}} (x1)
+* {{ti|Cukier dla Konia}} (x1)
+* {{ti|Eliksir Księżyca (S)}} (x1)
+* {{ti|Eliksir Słońca (S)}} (x1)
+* {{ti|Zwój Egzorcyzmu}} (x1)
+* {{ti|Zwój Błogosławieństwa}} (x1)
+* {{ti|Kamień Kowala}} (x1)
+* {{ti|Niebieska Perła}} (x1)
+* {{ti|Biała Perła}} (x1)
+* {{ti|Krwawa Perła}} (x1)
+* {{ti|Magiczny Kamień}} (x1)
+* {{ti|Odłamek Energii}} (x200)
+* {{ti|Zaczarowanie Przedmiotu+}} (x1)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' w [[Item-Shop]] za 49 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot w określonej ilości.
+* Przedmiot ten automatycznie trafi do twojego magazynu Item-Shopu.
+
+}}

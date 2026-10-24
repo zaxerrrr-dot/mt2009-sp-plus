@@ -1,0 +1,55 @@
+{{Item/Layout
+
+|image = Antyczna Skrzynia Pustyni.png
+
+|Opis = Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot. 
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti2|height=2|Pustynna Księżniczka+ (biała)|px=22}}{{ti2|height=2|Pustynny Książę+ (biały)|px=22}}[[Kostiumy Pustynne|Kostiumy Pustynne (białe)]] (k/m) 
+* {{ti2|height=2|Pustynna Księżniczka+ (brąz.)|px=22}}{{ti2|height=2|Pustynny Książę+ (brąz.)|px=22}}[[Kostiumy Pustynne|Kostiumy Pustynne (brąz.)]] (k/m) 
+* {{ti2|height=2|Pustynna Księżniczka+ (czerw.)|px=22}}{{ti2|height=2|Pustynny Książę+(czerw.)|px=22}}[[Kostiumy Pustynne|Kostiumy Pustynne (czerw.)]] (k/m) 
+* {{ti2|height=2|Pustynna Księżniczka+ (nieb.)|px=22}}{{ti2|height=2|Pustynny Książę+ (nieb.)|px=22}}[[Kostiumy Pustynne|Kostiumy Pustynne (nieb.)]] (k/m) 
+* {{ti2|height=2|Pustynna Bojowniczka+|px=22}}{{ti2|height=2|Pustynny Bojownik+|px=22}}[[Kostiumy Pustynne|Pustynny Bojownik]] (k/m) 
+* {{ti2|height=2|Pustynna Bojowniczka+ (czar.)|px=22}}{{ti2|height=2|Pustynny Bojownik+ (czar.)|px=22}}[[Kostiumy Pustynne|Pustynny Bojownik (czar.)]] (k/m)  
+* {{ti2|height=1|Biała Chusta+|px=22}}{{ti2|height=1|Biały Turban+|px=22}}[[Fryzury Pustynne|Białe Turbany]] (k/m) 
+* {{ti2|height=1|Brązowa Chusta+|px=22}}{{ti2|height=1|Brązowy Turban+|px=22}}[[Fryzury Pustynne|Brązowe Turbany]] (k/m) 
+* {{ti2|height=1|Czarny Turban+ (k)|px=22}}{{ti2|height=1|Czarny Turban+ (m)|px=22}}[[Fryzury Pustynne|Czarne Turbany]] (k/m)
+* {{ti2|height=1|Zielona Chusta+|px=22}}{{ti2|height=1|Niebieski Turban+|px=22}}[[Fryzury Pustynne|Zielone Turbany]] (k/m)
+* {{ti2|height=1|Czerwony Turban+|px=22}}[[Fryzury Pustynne|Czerwony Turban]] (m) 
+* {{ti2|height=1|Chusta+ (k)|px=22}}{{ti2|height=1|Chusta+ (m)|px=22}}[[Fryzury Pustynne|Chusty]] (k/m)
+* {{ti|height=1|Różowa Smocza Fasola}}
+* {{ti|height=1|Księga Obróbki Kamienia}}
+* {{ti|height=1|Kula Błogosławieństwa}}
+* {{ti|height=1|Wzmocnienie Przedmiotu}}
+* {{ti|height=1|Magiczna Ruda Miedzi}} x3
+* {{ti|height=1|Zwój Błogosławieństwa}}
+* {{ti|height=1|Zielona Smocza Fasola}} x2
+* {{ti|height=1|Skrzynia Sierpu (niebieski)}}
+* {{ti|height=1|Skrzynia Sierpu (czerwony)}}
+* {{ti|height=1|Skrz. K. Latarni (nieb.)|Skrzynia Księżycowej Latarni (niebieska)}}
+* {{ti|height=1|Skrz. K. Latarni (pom.)|Skrzynia Księżycowej Latarni (pomarańczowa)}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 45 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Skrzynia z niespodzianką.
+* Szansa na pustynne kostiumy+ i więcej.
+* Dla postaci rodzaju żeńskiego i męskiego.
+}}

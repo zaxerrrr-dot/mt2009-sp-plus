@@ -1,0 +1,51 @@
+{{Item/Layout
+|image = Skrzynia z Hełmem Eostre.png
+
+|Opis = Bogini wiosny Eostre napełniła tę magiczną skrzynię. Jaką niespodziankę wielkanocną znajdziesz w niej? Możliwe są hełm Ajolosa lub Astrajosa z bonusem i różnym czasem trwania, smocze fasolki, smocza skrzynia+ oraz wiele innych pożytecznych przedmiotów użytkowych.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Hełm Ajolosa+ (m)}} (30/15/7 dni)
+* {{ti|Hełm Ajolosa+ (k)}} (30/15/7 dni)
+* {{ti|Hełm Astrajosa+ (m)}} (30/15/7 dni)
+* {{ti|Hełm Astrajosa+ (k)}} (30/15/7 dni)
+* {{ti|Zielona Smocza Fasola}} x3
+* {{ti|Niebieska Smocza Fasola}} x2
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Eliksir Księżyca (D)}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Smocza Skrzynia+}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Błogosławieństwo Życia}} x3
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Magiczna Ruda Miedzi}} x5
+* {{ti|Agat}}
+* {{ti|Lizak Magii}} (7 dni)
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Skrzynia z niespodzianką
+* Szansa na Hełm Astrajosa i więcej
+* Dla postaci rodzaju żeńskiego i męskiego
+
+}}

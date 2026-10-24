@@ -1,0 +1,65 @@
+{{Item/Layout
+
+|image = Luksusowe Pudełko Płatków Śniegu.png
+
+|Opis = Który styl wybierzesz? Nieważne czy zimowy samuraj, Mrok Księżyca, czy też zupełnie inna niespodzianka, jedno jest pewne – na pewno będziesz wyglądać olśniewająco podczas swojej wędrówki zaśnieżonymi ulicami.
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Biały Zestaw Zimowego Samuraja (60 dni)
+* Czerwony Zestaw Zimowego Samuraja (30 dni)
+* Ciepły Zestaw Śnieżki (30 dni)
+* Czerwony Świąteczny Pakiet (30 dni)
+* Nocny Zestaw Świąteczny (30 dni)
+* Odświętny Pakiet Ognistego Smoka (30 dni)
+* Czerwony Zimowy Pakiet (30 dni)
+* {{ti|Magiczny Kamień}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Opt. Skrz. Ksiąg Zwierza|Optymalna Skrzynia Ksiąg Zwierza}}
+* {{ti|Zaczaruj zwierzaka}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}} (x3)
+* {{ti|Księga Lidera}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Cor Daemonis (surowe)}} (x1) / (x2)
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+
+}}

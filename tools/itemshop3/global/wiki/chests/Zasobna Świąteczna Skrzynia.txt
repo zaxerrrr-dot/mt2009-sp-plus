@@ -1,0 +1,66 @@
+{{Item/Layout
+
+|image = Zasobna Świąteczna Skrzynia.png
+
+|Opis = W tej wspaniałej skrzyni znajdziesz mnóstwo świątecznych niespodzianek! Sprawdź, co jest w niej dla ciebie? Może świąteczny kostium, broń lub może coś zupełnie innego? Sprawdź! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti2|Czer. Czapka Świąt.+ (k)|px=22}}{{ti2|Czer. Czapka Świąt.+ (m)|px=22}}[[Fryzury Świąteczne 2020|Czerwone Czapki Świąteczne+]] (k/m) (30d)
+* {{ti2|Czer. Sweter Świąt.+ (k)|height=2|px=22}}{{ti2|Czer. Sweter Świąt.+ (m)|height=2|px=22}}[[Kostiumy Świąteczne 2020|Czerwone Swetry Świąteczne+]] (k/m) (30d)
+* {{ti2|Hełm Mroku Księżyca+ (k)|px=22}}{{ti2|Hełm Mroku Księżyca+ (m)|px=22}}[[Fryzury Świąteczne 2019|Hełmy Mroku Księżyca+]] (k/m) (15d)
+* {{ti2|Zbroja Mroku Księżyca+ (k)|height=2|px=22}}{{ti2|Zbroja Mroku Księżyca+ (m)|height=2|px=22}}[[Kostiumy Świąteczne 2019|Zbroje Mroku Księżyca+]] (k/m) (15d)
+* {{ti2|Hełm Avalonu+ K (czerw.)|px=22}}{{ti2|Hełm Avalonu+ M (czerw.)|px=22}}[[Fryzury Świąteczne 2017|Hełmy Avalonu+ (czerw.)]] (k/m) (15d)
+* {{ti2|Zbroja Avalonu+ K (czerw.)|height=2|px=22}}{{ti2|Zbroja Avalonu+ M (czerw.)|height=2|px=22}}[[Kostiumy Świąteczne 2017|Zbroje Avalonu+ (czerw.)]] (k/m) (15d)
+* {{ti|Cukrowe Ostrze+|height=2}} (30d)
+* {{ti|Cukrowy Sztylet+}} (30d)
+* {{ti|Elfi Łuk+|height=2}} (30d)
+* {{ti|Piernikowa Glewia+|height=3}} (30d)
+* {{ti|Cukrowy Dzwon+}} (30d)
+* {{ti|Mroźny Wachlarz+}} (30d)
+* {{ti|Pazury Rudolfa+}} (30d)
+* {{ti|Skrzynka na Zwierzaka}} 
+* {{ti|Opt. Skrz. Ksiąg Zwierza}}
+* {{ti|Zaczaruj zwierzaka}}
+* {{ti|Ognista Runa Aury (10)}} (x2) 
+* {{ti|Ognista Runa Aury (50)}}
+* {{ti|Sztandar Czaszki}} (hand.)
+* {{ti|Książka Przebudzenia}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}}
+* {{ti|Spirala Czasu (10%)}} (x2)
+* {{ti|Zdobna Skrzynia z Odłamkiem}} (x2)
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}} (x3)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] 1 szt. za 27 [[Smocze Monety|SM]] lub 10 szt. za 243 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Szansa na potężne kostiumy i wizerunki.
+* Zawiera losowy przedmiot.
+* Przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+
+}}

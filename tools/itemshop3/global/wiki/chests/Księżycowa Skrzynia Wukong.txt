@@ -1,0 +1,58 @@
+{{Item/Layout
+
+|image = Księżycowa Skrzynia Wukong.png
+
+|Opis = Z tej srebrnej skrzyni możesz zgarnąć mnóstwo mistycznych skarbów - może nawet księżycowy pakiet Wukong?
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Księżycowy Pakiet Wukong składający się z:
+** {{ti|Księż. Bran. Wukong+ (m)|Księżycowa Bransoleta Wukong+ (m)}} (30d)
+** {{ti|height=2|Księż. Szata Wukong+ (m)|Księżycowa Szata Wukong+ (m)}} (30d)
+** {{ti|Złoty Long (pieczęć)|Złoty Long}} (30d)
+*LUB:
+** {{ti|Księż. Bran. Wukong+ (k)|Księżycowa Bransoleta Wukong+ (k)}} (30d)
+** {{ti|height=2|Księż. Szata Wukong+ (k)|Księżycowa Szata Wukong+ (k)}} (30d)
+** {{ti|Złoty Long (pieczęć)|Złoty Long}} (30d)
+*Poza zestawem:
+* {{ti|Księż. Bran. Wukong+ (m)|Księżycowa Bransoleta Wukong+ (m)}} (7/15d)
+* {{ti|height=2|Księż. Szata Wukong+ (m)|Księżycowa Szata Wukong+ (m)}} (7/15d)
+* {{ti|Księż. Bran. Wukong+ (k)|Księżycowa Bransoleta Wukong+ (k)}} (7/15d)
+* {{ti|height=2|Księż. Szata Wukong+ (k)|Księżycowa Szata Wukong+ (k)}} (7/15d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

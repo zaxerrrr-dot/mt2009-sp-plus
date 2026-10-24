@@ -1,0 +1,65 @@
+{{Item/Layout
+
+|image = Okuta Złotem Skrzynia Szlachty.png
+
+|Opis = Bucha parą i tłucze, terkocze i tyka – steampunk powrócił! Ciekawe, jaka szlachetna niespodzianka z mechanicznej epoki skrywa się dla Ciebie w tej skrzyni? Przekonaj się!
+Skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Pakiet dla hrabiego i hrabiny składający się z:
+** {{ti|height=2|Hrabia steampunk+}} (60d)
+** {{ti|Kapelusz hrabiego+}} (60d)
+* LUB:
+** {{ti|height=2|Hrabina steampunk+}} (60d)
+** {{ti|Kapelusz hrabiny+}} (60d)
+
+* {{ti|Kapelusz hrabiego+}} (15/30d)
+* {{ti|Kapelusz hrabiny+}} (15/30d)
+* {{ti|height=2|Hrabia steampunk+}} (15/30d)
+* {{ti|height=2|Hrabina steampunk+}} (15/30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki|Kamyk}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Drugi Zestaw Proroka|Bonus Zestawu]].
+
+}}

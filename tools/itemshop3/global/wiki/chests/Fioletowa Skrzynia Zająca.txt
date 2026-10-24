@@ -1,0 +1,60 @@
+{{Item/Layout
+
+|image = Fioletowa Skrzynia Zająca.png
+
+|Opis = Z tej szlachetnej skrzyni możesz zgarnąć mnóstwo królewskich skarbów - może nawet fioletowy pakiet zająca?
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Fioletowy Pakiet Zająca składający się z:
+** {{ti|Fiol. Maska Zaj. Lorda+|Fioletowa Maska Zajęczego Lorda}} (30d)
+** {{ti|height=2|Fioletowa Lampa Lorda+|Fioletowy Lord Lampy}} (30d)
+** {{ti|Zielony Oldtimer (pieczęć)|Zielony Oldtimer}} (15d)
+*LUB:
+** {{ti|Fiol. Maska Zaj. Damy+|Fioletowa Maska Zajęczej Damy+}} (30d)
+** {{ti|height=2|Fioletowa Lampa Damy+|Fioletowa Dama Lampy+}} (30d)
+** {{ti|Zielony Oldtimer (pieczęć)|Zielony Oldtimer}} (15d)
+*Poza zestawem:
+* {{ti|Fiol. Maska Zaj. Lorda+|Fioletowa Maska Zajęczego Lorda}} (7/15d)
+* {{ti|height=2|Fioletowa Lampa Lorda+|Fioletowy Lord Lampy}} (7/15d)
+* {{ti|Fiol. Maska Zaj. Damy+|Fioletowa Maska Zajęczej Damy+}} (7/15d)
+* {{ti|height=2|Fioletowa Lampa Damy+|Fioletowa Dama Lampy+}} (7/15d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}
+
+[[ro:Cufăr Iepure Mov]]

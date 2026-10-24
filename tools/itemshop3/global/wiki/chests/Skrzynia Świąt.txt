@@ -1,0 +1,48 @@
+{{Item/Layout
+
+|Opis = Odświętnie udekorowana jodłowymi gałązkami skrzynia zawiera świąteczną niespodziankę.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Magiczny Kamień}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Księga Lidera}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Przepustka}} x3
+* {{ti|Błogosławieństwo Życia}} x2
+* {{ti|Medal Smoka}} x10
+* [[Kostiumy#Kostium_.C5.9Awi.C4.85teczny|Kostium Świąteczny]]
+* [[Przedmioty#.C5.9Awi.C4.85teczne|Fryzura Świąteczna]]
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:'''  [[Skrzynia Enigma]]
+* '''Inne:''' [[Item-Shop]] za 32 [[Smocze Monety|SM]] (tylko podczas oferty świątecznej).
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}
+
+[[cz:Prázdninová truhla]]
+[[de:Festtagstruhe]]
+[[en:Holiday Chest]]
+[[fr:Coffre de fête]]
+[[hu:Ünnepi láda]]
+[[nl:Festtagstruhe]]

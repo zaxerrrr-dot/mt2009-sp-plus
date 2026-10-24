@@ -1,0 +1,39 @@
+{{Item/Layout
+
+|image = Duże Losowe Pudełko Zaświatów.png
+
+|Opis = W tej tajemniczej skrzyni znajdziesz mnóstwo przydatnych przedmiotów do swoich przygód w Zaświatach: klucz potępienia+, pakiet trupich płomieni i wiele innych atrakcji! <br> Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* {{ti|Klucz Potępienia}} (1/2/3/5/10 szt.)
+* {{ti|Klucz Potępienia+}} (1/2/3 szt.)
+* {{ti|Pakiet Trupich Płomieni}} (1/2/3 szt.)
+* {{ti|Zwój Metina Zbawienia}} (1/2/3 szt.)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Szansa na Klucz Potępienia + Zwój Metina Zbawienia.
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+
+}}

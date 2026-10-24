@@ -1,0 +1,37 @@
+{{Item/Layout
+
+|Opis = Lazurowa skrzynia zawiera jedenaście potężnych Cor Draconis (surowe) rangi "zwyczajna" oraz Zielona Smocza Fasola. 
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Alchemia
+
+|Zawartość = * {{ti|Cor Draconis (zwyczajne)}} x11 
+* {{ti|Zielona Smocza Fasola}}
+
+|ZawieraWszystko = tak
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Skrzynia z Hełmem Eostre]]
+* '''Inne:''' [[Loteria Tombola]] (8. Edycja), [[Item-Shop|Item Shop]] za 129 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Zanim otworzysz Cor, musisz zakończyć misję Smoczego Kamienia.
+
+}}
+
+[[cz:Dračí truhla+]]
+[[de:Drachentruhe+]]
+[[ro:Cufăr Dragon+]]

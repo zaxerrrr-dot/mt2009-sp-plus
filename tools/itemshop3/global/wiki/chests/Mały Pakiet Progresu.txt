@@ -1,0 +1,39 @@
+{{Item/Layout
+
+|image = Mały Pakiet Progresu.png
+
+|Opis = Ten pakiet zawiera przedmioty, dzięki którym możesz zafundować sobie prawdziwy dzień progresu: podwyższ swoje parametry SungMa, znajduj więcej Yang i łupu, zbieraj więcej doświadczenia i korzystaj z wygodnej funkcji automatycznego podnoszenia Yang!
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie 
+|Kategoria3 = Pojemniki
+
+|Zawartość = 
+* {{ti2|Buff Premium SungMa (1d)|px=22}}[[Buff Premium SungMa]] (1d)
+* {{ti|Rękawica Złodzieja}} (1d)
+* {{ti|Medal Szczęścia}} (1d)
+* {{ti|Pierścień Doświadczenia}} (1d)
+* {{ti|Trzecia Ręka}} (1d)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 49 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zafunduj sobie dzień progresu.
+* Więcej doświadczenia, więcej łupu, więcej frajdy.
+
+}}

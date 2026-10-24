@@ -1,0 +1,35 @@
+{{Item/Layout
+
+|image = Pudełko Walentynkowe.png
+
+|Opis = Jak co roku świętujemy najcudowniejszy dzień dla zakochanych:
+Walentynki! Podaruj swojej drugiej połówce jak również sobie Oszczędnościowy Pakiet dla Zakochanych!
+
+|Kategoria1 = Pojemniki 
+|Kategoria2 = Skrzynie
+|Kategoria3 = Event
+
+|Zawartość = *{{ti|Maska Uczuć|Maskę Uczuć}} 
+*{{ti|Pióro Ptaka Miłości}} 
+*{{ti|Bransoleta Miłości}} 
+*{{ti|Kolczyki Miłości}} 
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  W [[Item-Shop]] za 65 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+
+}}

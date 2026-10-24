@@ -1,0 +1,41 @@
+{{Item/Layout
+
+|image = Biały Walentynkowy Anioł.png
+
+|Opis = Spraw sobie anielski wygląd wraz ze słodkim zwierzakiem i potężnymi bonusami! Za pomocą transferu bonusów możesz przenieść bonusy kostiumu na inny kostium. Ponadto otrzymasz legendarną skrzynię zwierzaka, która może zawierać zaczaruj zwierzaka, optymalną skrzynię ksiąg zwierza lub skrzynkę na zwierzaka.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|height=2|Anioł Uriela+ (biały)}}
+* {{ti|Tiara Feniksa+ (biała)}}
+* {{ti|Walentynka+ (pieczęć)|Walentynka+}}
+* {{ti|Transfer bonusów}}
+* {{ti|Legendarna Skrzynia Zwierzaka}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 295 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = '''Zestaw kostiumu, zwierzak i więcej :'''
+* Dla postaci rodzaju żeńskiego.
+* Min. 1 losowy bonus na część kostiumu.
+* Czas trwania: 15 dni od zakupu (części kostiumu, zwierzak).
+* [[Walentynka+ (pieczęć)|Walentynka+]] daje ci +5% szansy na cios krytyczny i +1500 [[Punkty Życia (PŻ)|PŻ]]. Do tego otrzymasz biały kostium anioła z tiarą, [[Transfer bonusów|transfer bonusów]] oraz jedną z wielu niespodzianek ze [[Legendarna Skrzynia Zwierzaka|skrzyni zwierzaka]].
+
+}}

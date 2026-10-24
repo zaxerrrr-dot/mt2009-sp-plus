@@ -1,0 +1,47 @@
+{{Item/Layout
+
+|image = Skrzynia Zimowa Nocturnus (m).png
+
+|Opis = Mroczny spektralny rumak, wzniosły hełm Gwardii Ognistego lub Lodowego Smoka z potężnymi bonusami oraz mnóstwo innych fantastycznych przedmiotów ukrywa się w nadzwyczajnej skrzyni zimowej. Otwórz ją i sprawdź, co zawiera.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Rumak Nocturnus (pieczęć)}} (30 dni)
+* {{ti|Hełm Gwardii Lodowego Smoka+ (m)}} (30, 15 lub 7 dni)
+* {{ti|Hełm Gwardii Ognistego Smoka+ (m)}} (30, 15 lub 7 dni)
+* {{ti|Agat}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Eliksir Księżyca (D)}}
+* {{ti|Świąteczna Skrzynia}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Wzmocnienie Przedmiotu}} 
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Błogosławieństwo Życia}} x3
+* {{ti|Magiczna Ruda Miedzi}} x5
+* {{ti|Magiczny Kamień}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Niebieska Smocza Fasola}} x2
+* {{ti|Zielona Smocza Fasola}} x3
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 35 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot. '''Przedmiot ten automatycznie trafi do twojego magazynu Item-Shopu'''.
+
+}}

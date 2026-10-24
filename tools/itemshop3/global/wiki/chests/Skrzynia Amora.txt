@@ -1,0 +1,57 @@
+{{Item/Layout
+
+|image=Skrzynia Amora.png
+
+|Opis = Ta skrzynia w kształcie serca zawiera 5 niespodzianek. Można ją otwierać 5 razy co 30 min.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Eventy
+
+|Zawartość = * {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Zaczarowanie Przedmiotu}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}}
+* {{ti|Krwawa Perła}}
+* {{ti|Księga Lidera}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Fasolka Zen}}
+* {{ti|Cor Draconis (surowe)}}
+* {{ti|Eliksir Księżyca (M)}}
+* {{ti|Eliksir Słońca (M)}}
+* {{ti|Peleryna Męstwa|Peleryny Męstwa}} x10
+* {{ti|Mikstura Pośpiechu}} x3
+* {{ti|Yang}}: 10.000, 20.000
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 59 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Skrzynię można otworzyć 5 razy w odstępach co 30 min.
+* Skrzynia występuje w dwóch kolorach: [[Skrzynia Amora (niebieska)]] niebieska ''(dla mężczyzn)'' i [[Skrzynia Amora (różowa)]] różowa ''(dla kobiet)'', obie płci mogą otwierać zarówno niebieską jak i różową skrzynie.
+* Dawniej podczas [[Event Walentynkowy|Eventu Walentynkowego]] można było pozyskać te skrzynie z [[Metin]]ów i [[Bossy|Bossów]].
+
+}}
+
+[[ae:صندوق ملاك الحُب (وردي)]]
+[[cz:Amorkův košík]]
+[[de:Amors Truhe]]
+[[en:Cupid's Chest (old)]]
+[[fr:Coffre d'Amor]]
+[[hu:Ámor kincse]]
+[[it:Mavi Amor’un Sandığı]]
+[[ro:Cufărul lui Cupidon]]

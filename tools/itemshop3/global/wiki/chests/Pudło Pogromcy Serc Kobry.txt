@@ -1,0 +1,43 @@
+{{Item/Layout
+
+|image = Pudło Pogromcy Serc Kobry.png
+
+|Opis = W tym eleganckim kostiumie złamiesz każde serce! Pomoże ci w tym Gniewne Serce ze swoimi potężnymi bonusami. Za pomocą transferu bonusów możesz przenieść bonusy kostiumu na inny kostium.
+
+Ponadto otrzymasz legendarną skrzynię zwierzaka, która może zawierać zaczaruj zwierzaka, optymalną skrzynię ksiąg zwierza lub skrzynkę na zwierzaka.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|height=2|Toga Kobry+ (m)}}
+* {{ti|Kapelusz Stożkowy+ (m)}}
+* {{ti|Gniewne Serce (pieczęć)}}
+* {{ti|Transfer bonusów}}
+* {{ti|Legendarna Skrzynia Zwierzaka}}
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 295 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = '''Zestaw kostiumu, zwierzak i więcej :'''
+* Dla postaci rodzaju męskiego.
+* Min. 1 losowy bonus na część kostiumu.
+* Czas trwania: 15 dni od zakupu (części kostiumu, zwierzak).
+* Niech twój zwierzak złamie serca przeciwników! Gniewne Serce daje ci +5% [[Szansa na cios krytyczny|szansy na cios krytyczny]] i +1500 [[Punkty Życia (PŻ)|PŻ]]. Do tego otrzymasz togę kobry z pasującym do niej kapeluszem, transfer bonusów oraz jedną z wielu niespodzianek ze skrzyni zwierzaka.
+
+}}

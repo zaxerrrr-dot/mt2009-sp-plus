@@ -1,0 +1,146 @@
+{
+ "source": "the saved shop page (ishop-global, 24.10.2026), tab \"Olasılıklar\"",
+ "chest": "Renkli palyaço sandığı",
+ "price_dragon_coins": 39,
+ "sum_pct": 100.0,
+ "rows": [
+  {
+   "tr": "Yeşil Ejderha Fasulyesi",
+   "pl": "Zielona Smocza Fasola",
+   "kind": "common",
+   "pct": 5.0
+  },
+  {
+   "tr": "Parlak parça sandnığı",
+   "pl": "Lśniąca Sk. z Odłamkiem",
+   "kind": "common",
+   "pct": 4.0
+  },
+  {
+   "tr": "Güneş Özütü (Ö)",
+   "pl": "Eliksir Słońca (S)",
+   "kind": "common",
+   "pct": 5.0
+  },
+  {
+   "tr": "Ay Özütü (Ö)",
+   "pl": "Eliksir Księżyca (S)",
+   "kind": "common",
+   "pct": 5.0
+  },
+  {
+   "tr": "Ejderha tapınağı girişi",
+   "pl": "Wstęp do Świątyni Smoka",
+   "kind": "common",
+   "pct": 4.0
+  },
+  {
+   "tr": "Anında paralı asker şif.",
+   "pl": "Ekspres. Leczenie Najem.",
+   "kind": "common",
+   "pct": 10.0
+  },
+  {
+   "tr": "Paralı asker lisansı",
+   "pl": "Licencja Najemnika",
+   "kind": "common",
+   "pct": 5.0
+  },
+  {
+   "tr": "Hızlandırıcı (%30)",
+   "pl": "Spirala Czasu (30%)",
+   "kind": "common",
+   "pct": 4.0
+  },
+  {
+   "tr": "Süslü parça sandığı",
+   "pl": "Zdobna Skrz. z Odłamkiem",
+   "kind": "common",
+   "pct": 6.0
+  },
+  {
+   "tr": "Büyük bağış belgesi",
+   "pl": "Wysoki Kupon Wpłaty",
+   "kind": "common",
+   "pct": 4.0
+  },
+  {
+   "tr": "Ejderha alevi",
+   "pl": "Smoczy Płomień",
+   "kind": "common",
+   "pct": 1.0
+  },
+  {
+   "tr": "Zihin Taşı Destesi",
+   "pl": "Pakiet Kamieni Duszy",
+   "kind": "common",
+   "pct": 6.0
+  },
+  {
+   "tr": "Kutsama Kağıdı",
+   "pl": "Zwój Błogosławieństwa",
+   "kind": "common",
+   "pct": 7.0
+  },
+  {
+   "tr": "Taş Sanatı Kitabı",
+   "pl": "Księga Obróbki Kamienia",
+   "kind": "common",
+   "pct": 7.0
+  },
+  {
+   "tr": "Pembe Ejderha Fasulyesi",
+   "pl": "Różowa Smocza Fasola",
+   "kind": "common",
+   "pct": 7.0
+  },
+  {
+   "tr": "Büyülü Metal",
+   "pl": "Magiczny Kamień",
+   "kind": "common",
+   "pct": 1.0
+  },
+  {
+   "tr": "Orta bağış belgesi",
+   "pl": "Średni Kupon Wpłaty",
+   "kind": "common",
+   "pct": 5.0
+  },
+  {
+   "tr": "Liderin Kitabı (3 s)",
+   "pl": "Księga Lidera",
+   "kind": "common",
+   "pct": 5.0
+  },
+  {
+   "tr": "Renkli palyaço şpk.+ (e) (15 g)",
+   "pl": "fryzura zestawu, 15 dni",
+   "kind": "hair15",
+   "pct": 2.5
+  },
+  {
+   "tr": "Renkli palyaço+ (e) (15 g)",
+   "pl": "kostium zestawu, 15 dni",
+   "kind": "body15",
+   "pct": 2.5
+  },
+  {
+   "tr": "Renkli palyaço şpk.+ (e) (30 g)",
+   "pl": "fryzura zestawu, 30 dni",
+   "kind": "hair30",
+   "pct": 1.5
+  },
+  {
+   "tr": "Renkli palyaço+ (e) (30 g)",
+   "pl": "kostium zestawu, 30 dni",
+   "kind": "body30",
+   "pct": 1.5
+  },
+  {
+   "tr": "Renkli palyaço paketi",
+   "pl": "pakiet zestawu",
+   "kind": "package",
+   "pct": 1.0
+  }
+ ]
+}

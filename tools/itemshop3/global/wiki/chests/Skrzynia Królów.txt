@@ -1,0 +1,49 @@
+{{Item/Layout
+
+|Opis = Ta pięknie ozdobiona skrzynia zawiera zaiste królewski skarb.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Błogosławieństwo Życia}} x2
+* {{ti|Przepustka}} x3
+* {{ti|Medal Smoka}} x10
+* {{ti|Biały Lew (pieczęć)}}
+* {{ti|Księga Lidera}} (3 godz.)
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Kula Błogosławieństwa}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zwój Boga Smoków}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Skrzynia Kamienia Księżycowego]]
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]] (tylko podczas oferty promocyjnej), [[Walentynkowe Koło Losu]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}
+
+[[ae:صندوق الملوك]]
+[[cz:Truhla králů]]
+[[de:Truhe der Könige]]
+[[en:Chest of Kings]]
+[[fr:Coffre des rois]]
+[[hu:Királyok ládája]]
+[[nl:Truhe der Könige]]
+[[tr:Krallar Sandığı]]

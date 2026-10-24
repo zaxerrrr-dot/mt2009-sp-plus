@@ -1,0 +1,75 @@
+{{Item/Layout
+
+|image = Olbrzymie Świąteczne Pudło.png
+
+|Opis = Jaka świąteczna niespodzianka czeka na Ciebie w tym roku? Otwórz szybko pudełko i przekonaj się! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+'''Czerwony Pakiet Świąteczny:'''
+* {{ti2|Czer. Czapka Świąt.+ (k)|px=22}}{{ti2|Czer. Czapka Świąt.+ (m)|px=22}}[[Fryzury Świąteczne 2020|Czerwone Czapki Świąteczne+]] (k/m) (30d)
+* {{ti2|Czer. Sweter Świąt.+ (k)|height=2|px=22}}{{ti2|Czer. Sweter Świąt.+ (m)|height=2|px=22}}[[Kostiumy Świąteczne 2020|Czerwone Swetry Świąteczne+]] (k/m) (30d)
+* {{ti|Zielony Świąteczny Ent (pieczęć)}} (30d)
+'''Odświętny Pakiet Ognistego Smoka:'''
+* {{ti2|Hełm Gwardii Ognistego Smoka+ (k)|px=22}}{{ti2|Hełm Gwardii Ognistego Smoka+ (m)|px=22}}[[Fryzury Świąteczne 2018|Hełmy Gwardii Smoka+]] (k/m) (30d)
+* {{ti2|Gwardia Ognistego Smoka+ (k)|height=2|px=22}}{{ti2|Gwardia Ognistego Smoka+ (m)|height=2|px=22}}[[Kostiumy Świąteczne 2018|Zbroje Ognistego Smoka+]] (k/m) (30d)
+* {{ti|Stefek Orzeszek (pieczęć)}} (30d)
+'''Czerwony Zimowy Pakiet:'''
+* {{ti2|Świąt. Beret+ (czerwony)|px=22}}{{ti2|Świąt. Kaptur+ (czer.)|px=22}}[[Fryzury Świąteczne 2016|Świąteczne Czapki+ (czerw.)]] (k/m) (30d)
+* {{ti2|Czerw. Galowy Strój (k)|height=2|px=22}}{{ti2|Czerw. Galowy Strój (m)|height=2|px=22}}[[Kostiumy Świąteczne 2016|Czerw. Galowe Stroje+]] (k/m) (30d)
+* {{ti|Czer. Elf (Maksi) (pieczęć)}} (30d)
+'''Lub jeden z następujących przedmiotów:'''
+* {{ti2|Ziel. Czapka Świąt.+ (k)|px=22}}{{ti2|Ziel. Czapka Świąt.+ (m)|px=22}}[[Fryzury Świąteczne 2020|Zielone Czapki Świąteczne+]] (k/m) (15d)
+* {{ti2|Ziel. Sweter Świąt.+ (k)|height=2|px=22}}{{ti2|Ziel. Sweter Świąt.+ (m)|height=2|px=22}}[[Kostiumy Świąteczne 2020|Zielone Swetry Świąteczne+]] (k/m) (15d)
+* {{ti2|Hełm Gwardii Lodowego Smoka+ (k)|px=22}}{{ti2|Hełm Gwardii Lodowego Smoka+ (m)|px=22}}[[Fryzury Świąteczne 2018|Hełmy Gwardii Smoka+]] (k/m) (15d)
+* {{ti2|Gwardia Lodowego Smoka+ (k)|height=2|px=22}}{{ti2|Gwardia Lodowego Smoka+ (m)|height=2|px=22}}[[Kostiumy Świąteczne 2018|Zbroje Lodowego Smoka+]] (k/m) (15d)
+* {{ti2|Świąt. Beret+ (zielony)|px=22}}{{ti2|Świąt. Kaptur+ (ziel.)|px=22}}[[Fryzury Świąteczne 2016|Świąteczne Czapki+ (ziel.)]] (k/m) (15d)
+* {{ti2|Zielony Galowy Strój+ (k)|height=2|px=22}}{{ti2|Zielony Galowy Strój+ (m)|height=2|px=22}}[[Kostiumy Świąteczne 2016|Ziel. Galowe Stroje+]] (k/m) (15d)
+* {{ti|Skrzynka na Zwierzaka}}
+* {{ti|Opt. Skrz. Ksiąg Zwierza}}
+* {{ti|Zaczaruj zwierzaka}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Biała Perła}}
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}} (x3)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] 1 szt. za 35 [[Smocze Monety|SM]] lub 10 szt. za 298 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Losowa skrzynia.
+* Mnóstwo odświętnych skarbów.
+
+}}

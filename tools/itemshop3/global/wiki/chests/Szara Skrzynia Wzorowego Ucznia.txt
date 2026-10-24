@@ -1,0 +1,66 @@
+{{Item/Layout
+
+|image = Szara Skrzynia Wzorowego Ucznia.png
+
+|Opis = Z tego pudełka możesz wydobyć wspaniałe skarby dla bystrzaków! Zgarnij przy odrobinie szczęścia szary zestaw wzorowego ucznia lub jedną z wielu innych niespodzianek dla wszystkich z dużą mózgownicą.
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Szary Zestaw Wzorowego Ucznia zawierający:
+** {{ti|Czerw. Okul. Wz. Ucznia+|Czerwone Okulary Wzorowego Ucznia+}} (60d)
+** {{ti|height=2|Szary Wzorowy Uczeń+}} (60d)
+** {{ti|Pośpieszny Królik (czarny) (pieczęć)|Pośpieszny Królik (czarny)}} (30d)
+* LUB:
+** {{ti|Czerw. Spinka W. Ucznia+|Czerwona Spinka Wzorowej Uczennicy+}} (60d)
+** {{ti|height=2|Szara Wzorowa Uczennica+}} (60d)
+** {{ti|Pośpieszny Królik (czarny) (pieczęć)|Pośpieszny Królik (czarny)}} (30d)
+
+* {{ti|Czerw. Okul. Wz. Ucznia+|Czerwone Okulary Wzorowego Ucznia+}} (15/30d)
+* {{ti|Czerw. Spinka W. Ucznia+|Czerwona Spinka Wzorowej Uczennicy+}} (15/30d)
+* {{ti|height=2|Szary Wzorowy Uczeń+}} (15/30d)
+* {{ti|height=2|Szara Wzorowa Uczennica+}} (15/30d)
+* {{ti|Księga Lidera|Książka Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki|Kamyk}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem|Lśniąca Skrzynia z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* [[Bonus Zestawu#Piąty Zestaw Wielkanocny|Bonus Zestawu]].
+
+}}

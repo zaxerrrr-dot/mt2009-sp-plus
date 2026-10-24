@@ -1,0 +1,48 @@
+{{Item/Layout
+
+|Opis = Skrzynia zawiera losowy przedmiot jako nagrodę dla olimpijczyków.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Eliksir Księżyca (M)}}
+* {{ti|Eliksir Słońca (M)}}
+* {{ti|Fioletowa Mikstura(D)}}
+* {{ti|Zielona Mikstura(D)}}
+* {{ti|Fasolka Zen}}
+* [[System_Kostiumów#Kostiumy|Kostium Bokserski]]
+* [[System_Kostiumów#Kostiumy|Kostium Piłkarski]]
+* [[System_Kostiumów#Kostiumy|Kostium Szermierski]]
+* {{ti|Medal Smoka}}
+* {{ti|Rada Pustelnika}}
+* {{ti|Sok z Owocu Granatu}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Tak
+|Handel przez sklep = Tak
+|Upuszczanie = Tak
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Tak
+
+|Inne = * Można kupić w [[Plik:W grze - Item-Shop.gif|25px]] [[Item-Shop]] za 25 [[Smocze Monety|SM]]
+* Przedmiot trafia bezpośrednio do Twojego [[File:Przycisk Magazyn Item-Shop.jpg|25px]] magazynu Item-Shop.
+*  ''Kostiumy Olimpijskie'' można znaleźć w skrzyni tylko podczas [[Event Olimpijski|Eventu Olimpijskiego]].
+}}
+
+[[de:Wettkampf-Truhe]]
+[[en:Olympic Chest]]
+[[fr:Coffre du Jeux d'été]]
+[[hu:Olimpiai láda]]
+[[nl:Olympische Kist]]
+[[ro:Cutie Topaz Misterioasă]]
+[[tr:Olimpik Sandık]]

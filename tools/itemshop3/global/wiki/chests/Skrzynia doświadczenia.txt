@@ -1,0 +1,49 @@
+{{Item/Layout
+
+|image = Skrzynia doświadczenia.png
+
+|Opis = Osiąganie kolejnych poziomów zabiera Ci zbyt dużo czasu? Następnie zapewnij sobie jeden z wielu przedmiotów, które zwiększają całe twoje zebrane doświadczenie! Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie 
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Książka Lidera+}}
+* {{ti|Księga Lidera}} (3h/2h/1h/30min)
+* {{ti|Pierścień Doświad. (10h)}}
+* {{ti|Pierścień Doświadczenia}} (3h/30min)
+* {{ti|Pierścień Dośw. +200}}
+* {{ti|Mikstura Zarania}}
+* {{ti|Mikstura Mądrości}}
+* {{ti|Grzaniec}} (x5)
+* {{ti|Biały Lew (pieczęć)}} (2d)
+* {{ti|Tygrys Bengalski (pieczęć)}} (niebieski) (2d)
+* {{ti|Feniks Jadeitu (pieczęć)}} (1d)
+* {{ti|Błyskawiczny (pieczęć)}} (2d)
+* {{ti|Nugget (granatowy) (pieczęć)}} (2d)
+* {{ti|+Bonsai+ (pieczęć)}} (1d)
+* {{ti|Frank (pieczęć)}} (1d)
+* {{ti|Cerber (złoty) (pieczęć)}} (2d)
+* {{ti|Błękitny Błyszczący Paw (pieczęć)}} (1d)
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:'''  [[Wspaniały Pakiet Skrzyń]]
+* '''Inne:''' w [[Item-Shop]] za 19 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Skrzynia z niespodzianką.
+* Szansa na wierzchowce PD, Książkę Lidera i nie tylko.
+* Przedmiot trafia bezpośrednio do magazynu [[Item-Shop|Item-Shopu]].
+
+}}

@@ -1,0 +1,42 @@
+{{Item/Layout
+|image = Smoczy Skarb.png
+
+|Opis = Otwórz ten skarb i otrzymaj losowy przedmiot, który zazwyczaj można nabyć jedynie za Smocze Znaki!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Magiczny Metal}}
+* {{ti|Magiczna Ruda Miedzi}}
+* {{ti|Zwój Błogosławieństwa }}
+* {{ti|Rada Pustelnika}}
+* {{ti|Odżywka}} x2
+* {{ti|Atak Boga Smoków}} x2
+* {{ti|Obrona Boga Smoków}} x2
+* {{ti|Życie Boga Smoków}} x2
+* {{ti|Dłoń Krytyka}} x2
+* {{ti|Dłoń Przebicia}} x2
+* {{ti|Inteligencja Boga Smoków}} x2
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 49 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+* Płać SM zamiast SZ.
+* Zawartość: 1 losowy przedmioty za Smocze Znaki.
+* Zaoszczędź Smocze Znaki.
+}}

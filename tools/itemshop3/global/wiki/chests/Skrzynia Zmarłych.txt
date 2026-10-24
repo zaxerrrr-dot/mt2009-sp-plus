@@ -1,0 +1,57 @@
+{{Item/Layout
+
+|image = Skrzynia Zmarłych.png
+
+|Opis = W tej skrzyni znajdziesz jeden z wielu mistycznych skarbów. Z odrobiną szczęścia otrzymasz zestaw kostiumu Zmarłych, który zawiera upiorny strój oraz dodatkowego przydatnego towarzysza! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+'''Dla mężczyzn:'''
+* {{ti|height=2|Zbroja Zmarłych+ (m)}} (30 dni)
+* {{ti|Fryzura Zmarłych+ (m)}} (30 dni)
+* {{ti|Mumia Kiwaczek+ (pieczęć)}} (30 dni)
+'''Dla kobiet:'''
+* {{ti|height=2|Zbroja Zmarłych+ (k)}} (30 dni)
+* {{ti|Fryzura Zmarłych+ (k)}} (30 dni)
+* {{ti|Mumia Kiwaczek+ (pieczęć)}} (30 dni)
+'''Lub jeden z następujących przedmiotów:'''
+* {{ti|Książka Lidera+}}
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Spirala Czasu (20%)}} (x2)
+* {{ti|Spirala Czasu (10%)}} (x3)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+* Losowa skrzynia.
+* Szansa na zestaw kostiumu Zmarłych.
+
+}}

@@ -1,0 +1,56 @@
+{{Item/Layout
+
+|Opis = Zawiera losowy przedmiot do trenowania i ulepszania zwierzaków.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Eventy
+
+|Zawartość = * {{ti|Zaczaruj zwierzaka}}
+* {{ti|Revertus Zwierza}}
+* {{ti|Reverti Zwierza}}
+* {{ti|Odporność (ninja)}}
+* {{ti|Odporność (sura)}}
+* {{ti|Odporność (szaman)}}
+* {{ti|Odporność (wojownik)}}
+* {{ti|Odporność (likan)}}
+* {{ti|Księga Ducha}}
+* {{ti|Księga Zasięgu}}
+* {{ti|Księga Dropu Yang}}
+* {{ti|Księga Odnowy}}
+* {{ti|Księga Berserka}}
+* {{ti|Księga Nieśmiertelności}}
+* {{ti|Księga Antymagii}}
+* {{ti|Księga Wampira}}
+* {{ti|Księga Uzdrowienia}}
+* {{ti|Księga Zwierciadła}}
+* {{ti|Księga Przeszkody}}
+* {{ti|Księga Przebicia}}
+* {{ti|Księga Przyspieszenia}}
+* {{ti|Księga Spostrzegawczości}}
+* {{ti|Księga Łowcy Potworów}}
+* {{ti|Księga Lekkie jak Piórko}}
+* {{ti|Księga Browarnika}}
+* {{ti|Księga Absorpcji Życia}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Wielka Świąteczna Skrzynia]], [[Zasobna Świąteczna Skrzynia]], [[Ozdobna Świąteczna Skrzynia]], [[Legendarna Skrzynia Zwierzaka]], [[Olbrzymie Zimowe Pudełko]], [[Świąteczne Zimowe Pudełko]], [[Wytworne Zimowe Pudełko]], [[Luksusowe Pudełko Płatków Śniegu]]
+* '''Inne:''' [[Stół do Yutnori]] po dostarczeniu 14x [[Tajemniczy Odłamek]], 1x [[Plan Księga Zwierza]], [[Item-Shop]] za 149 [[Smocze Monety|SM]].
+
+|Handel z NPC = Tak
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Tak
+|Poczta = Nie
+
+|Inne = * Przedmiot związany z [[Mini-gra: Yutnori|Mini-Grą: Yutnori]]
+* Naciśnij Prawym Przyciskiem Myszy aby otworzyć.
+* Po otwarciu przedmiot znika.
+
+}}

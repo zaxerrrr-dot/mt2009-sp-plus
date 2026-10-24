@@ -1,0 +1,58 @@
+{{Item/Layout
+
+|image = Czerwona Skrzynia Azraela.png
+
+|Opis = W tej skrzyni czekają na Ciebie potężne skarby demona! Zdobądź przy odrobinie szczęścia Czerwony Zestaw Azraela z kostiumem lub zwierzakiem lub jedną z wielu piekielnie dobrych niespodzianek! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = *Czerwony Pakiet Azraela (k lub m, 60 dni) wraz z
+*{{ti|Mały Huashin (czerwony) (pieczęć)}} (60d)
+LUB:
+*{{ti|Czerwony Hełm Azraela+ (k)}} (15 lub 30d)
+*{{ti|Czerwony Hełm Azraela+ (m)}} (15 lub 30d)
+*{{ti|height=2|Czerwona Zbroja Azraela+ (k)}} (15 lub 30d)
+*{{ti|height=2|Czerwona Zbroja Azraela+ (m)}} (15 lub 30d)
+*{{ti|Księga Lidera}}
+*{{ti|Średni Kupon Wpłaty}}
+*{{ti|Magiczny Kamień}}
+*{{ti|Różowa Smocza Fasola}}
+*{{ti|Księga Obróbki Kamienia}}
+*{{ti|Zwój Błogosławieństwa}}
+*{{ti|Zielona Smocza Fasola}}
+*{{ti|Kamyki}} (x600)
+*{{ti|Pakiet Kamieni Duszy}}
+*{{ti|Smoczy Płomień}}
+*{{ti|Wysoki Kupon Wpłaty}}
+*{{ti|Zdobna Skrzynia z Odłamkiem}}
+*{{ti|Spirala Czasu (30%)}}
+*{{ti|Licencja Najemnika}}
+*{{ti|Ekspres. Leczenie Najem.}}
+*{{ti|Wstęp do Świątyni Smoka}} (x100)
+*{{ti|Eliksir Księżyca (S)}}
+*{{ti|Eliksir Słońca (S)}}
+*{{ti|Lśniąca Sk. z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* [[Bonus Zestawu#Drugi Zestaw Letni|Bonus Zestawu]].
+
+}}

@@ -1,0 +1,61 @@
+{{Item/Layout
+
+|image = Czerwona Skrzynia Jeźdźcy Konia Morskiego.png
+
+|Opis = Z tego pudełka możesz wydobyć wspaniałe skarby morza. Zgarnij przy odrobinie szczęścia czerwony zestaw jeźdźca konia morskiego włącznie z wierzchowcem lub jedną z wielu niespodzianek morskich. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+ '''Pakiet (kostium + pet):'''
+* {{ti2|Czerwony Dwuróg Morski+ (k)|px=22}}{{ti2|Biały Dwuróg Morski+ (m)|px=22}} [[Fryzury Wielkanocne 2022|Czerw. Dwuróg Morski+ (k/m)(60d)]]  
+* {{ti2|height=2|Czerwony Mundur Morski+ (k)|px=22}}{{ti2|height=2|Biały Mundur Morski+ (m)|px=22}} [[Kostiumy Wielkanocne 2022|Czerw. Mundur Morski+ (k/m)(60d)]]
+* {{ti|Słoneczny Koń Morski (pieczęć)}} (30d)
+
+'''lub:'''
+* {{ti2|Czerwony Dwuróg Morski+ (k)|px=22}}{{ti2|Czerwony Dwuróg Morski+ (m)|px=22}} [[Fryzury Wielkanocne 2022|Cz. Dwuróg Morski+ (k/m)(7/15d)]]
+* {{ti2|height=2|Czerwony Mundur Morski+ (k)|px=22}}{{ti2|height=2|Czerwony Mundur Morski+ (m)|px=22}} [[Kostiumy Wielkanocne 2022|Cz. Mundur Morski+ (k/m)(7/15d)]]
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Kamyki}} (x900)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] - za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Pudło otwiera się automatycznie zaraz po zakupie.
+* Szansa na [[Bonus Zestawu#Czwarty Zestaw Wielkanocny|czerwony zestaw jeźdźca konia morskiego]].
+* Wylosowany przedmiot trafia od razu do magazynu Item-Shopu.
+
+}}

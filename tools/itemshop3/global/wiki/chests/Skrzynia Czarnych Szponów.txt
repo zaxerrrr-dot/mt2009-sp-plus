@@ -1,0 +1,51 @@
+{{Item/Layout
+
+|image = Skrzynia Czarnych Szponów.png
+
+|Opis = Pancerz czarnych lub srebrnych szponów, imponujący byk bojowy lub wzmacniający lizak – cóż takiego znajdziesz w tej skrzyni? Sprawdź! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti2|height=2|Pancerz Czar. Szp.+ (k)|px=22}}{{ti2|height=2|Pancerz Czar. Szp.+ (m)|px=22}}[[Kostiumy Wielkanocne 2020|Pancerz Czar. Szp.]] (k/m) (30d)
+* {{ti2|height=2|Pancerz Sreb. Szp.+ (k)|px=22}}{{ti2|height=2|Pancerz Sreb. Szp.+ (m)|px=22}}[[Kostiumy Wielkanocne 2020|Pancerz Sreb. Szp.]] (k/m) (30d)
+* {{ti2|Hełm Czar. Szp.+ (k)|px=22}}{{ti2|Hełm Czar. Szp.+ (m)|px=22}}[[Fryzury Wielkanocne 2020|Hełm Czar.Szp.]] (k/m) (30d)
+* {{ti2|Hełm Sreb. Szp.+ (k)|px=22}}{{ti2|Hełm Sreb.+ Szp. (m)|px=22}}[[Fryzury Wielkanocne 2020|Hełm Sreb. Szp.]] (k/m) (30d)
+* {{ti|Złoty Byk Bojowy (pieczęć)}} (15d)
+* {{ti|Srebrny Byk Bojowy (pieczęć)}} (15d)
+* {{ti|Magiczny Kamień}}
+* {{ti|Lodowa Runa Aury}}
+* {{ti|Lizak Magii}} (7d)
+* {{ti|Lizak Potęgi}} (7d)
+* {{ti|Kamień Mocy Żywiołów}}
+* {{ti|Kamień Ochrony Żywiołów}}
+* {{ti|Zaczarowanie Przedmiotu}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Pierścień Doświadczenia}} (3h)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Spirala Czasu (10%)}}
+* {{ti|Spirala Czasu (20%)}}
+* {{ti|Wino z Kwiatu Brzosk. XL}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Skrzynia, zawierająca jeden losowy przedmiot, który otworzy się zaraz po zakupie. 
+* Przedmiot ten automatycznie trafia do twojego magazynu [[Item-Shop]].
+
+}}

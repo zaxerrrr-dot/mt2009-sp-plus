@@ -1,0 +1,53 @@
+{{Item/Layout
+
+|image = Skrzynia Doświadczenia Ajolosa.png
+
+|Opis = Dzięki skrzyni Boga Wiatru Ajolosa awansujesz na szczyt w mgnieniu oka! Znajdziesz tutaj między innymi dopalacz do doświadczenia lub dodatkową siłę ataku, które pomogą ci poczynić szybkie postępy. Przy odrobinie szczęścia może wyciągniesz ze skrzyni kompletny zestaw kostiumu Ajolosa wraz z błękitnym błyszczącym pawiem.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * Zestaw Kostiumu Ajolosa
+**	{{ti2|height=2|Zbroja Ajolosa+ (k)|px=22}}{{ti2|height=2|Zbroja Ajolosa+ (m)|px=22}}[[Kostiumy Wielkanocne 2019|Zbroja Ajolosa]] (k/m) (30 dni)
+**	{{ti2|Hełm Ajolosa+ (k)|px=22}}{{ti2|Hełm Ajolosa+ (m)|px=22}}[[Fryzury Wielkanocne 2019|Fryzura Ajolosa]] (k/m) (30 dni)
+**	{{ti|Błękitny Błyszczący Paw (pieczęć)}} (30 dni)
+* {{ti|Pierścień Doświadczenia}} (30m)
+* {{ti|Pierścień Dośw. +200}}
+* {{ti|Mikstura Zarania}} (3h)
+* {{ti|Grzaniec}} (x5)
+* {{ti|Księga Lidera}}
+* {{ti|Książka Lidera+}}
+* {{ti|Donnie (pieczęć)}}
+* {{ti|Pieczony Rak Niebieski}}
+* {{ti|Pieczona Aju}}
+* {{ti|Dłoń Przebicia}} (x5/x1)
+* {{ti|Dłoń Krytyka}} (x5/x1)
+* {{ti|Atak Boga Smoków}} (x5/x1)
+* {{ti|Obrona Boga Smoków}} (x5/x1)
+* {{ti|Inteligencja Boga Smoków}} (x5/x1)
+* {{ti|Życie Boga Smoków}} (x5/x1)
+* {{ti|Muffin (różowy) (pieczęć)}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' W [[Item-Shop]] za 9 [[Smocze Monety|SM]] lub za 99 [[Smocze Znaki|SZ]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Losowa Skrzynia
+* Zawiera 1 przedmiot
+* Szansa na zestaw Ajolosa
+* Do kupienia za [[Smocze Monety|SM]] lub [[Smocze Znaki|SZ]]
+
+}}

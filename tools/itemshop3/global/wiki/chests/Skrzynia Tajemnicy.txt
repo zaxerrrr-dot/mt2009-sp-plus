@@ -1,0 +1,41 @@
+{{Item/Layout
+
+|Opis = Największa tajemnica wszech czasów - szykuje się niespodzianka! Tylko przez krótki czas dostępna w ItemShopie! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = 
+* {{ti|Skrzynia Mocy}}
+* {{ti|Skrzynia Wiecznej Zimy}}
+* {{ti|Skrzynia Burzy Pustynnej}}
+* {{ti|Skrzynia Szczeniaka}}
+* {{ti|Skrzynia Świąt}}
+* {{ti|Skrzynia Północy}}
+* {{ti|Skrzynia Królów}}
+* {{ti|Szkatuła na Biżuterię}}
+* {{ti|Zielona Skrzyneczka Losu}}
+* {{ti|Tajemnicza Skrzynia}}
+* {{ti|Pudło na Szarfy}}
+* {{ti|Skrzynka Cor Draconis}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie, skrzynia otwiera się automatycznie a przedmiot trafia do magazynu ItemShop.
+
+}}

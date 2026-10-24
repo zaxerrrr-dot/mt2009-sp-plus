@@ -1,0 +1,43 @@
+{{Item/Layout
+
+|image = Czerwone Pudło Uwodzicielek.png
+
+|Opis = W tym eleganckim kostiumie złamiesz każde serce! Pomoże ci w tym zwierzak Cupido ze swoimi strzałami miłości i potężnymi bonusami. Za pomocą transferu bonusów możesz przenieść bonusy kostiumu na inny kostium.
+
+Ponadto otrzymasz legendarną skrzynię zwierzaka, która może zawierać zaczaruj zwierzaka, optymalną skrzynię ksiąg zwierza lub skrzynkę na zwierzaka.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|height=2|Sukienka Qipao+ (czerw.) (k)}} 
+* {{ti|Azjatycki Kok+ (k)}}
+* {{ti|Cupido (pieczęć)}}
+* {{ti|Transfer bonusów}}
+* {{ti|Legendarna Skrzynia Zwierzaka}}
+
+|ZawieraWszystko = tak 
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 295 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = '''Zestaw kostiumu, zwierzak i więcej:'''
+* Dla postaci rodzaju żeńskiego.
+* Min. 1 losowy bonus na część kostiumu.
+* Czas trwania: 15 dni od zakupu (części kostiumu, zwierzak).
+* Daj się oczarować Cupido, który obdarzy cię +5% szansą na przeszywający cios i +1500 PŻ! Do tego otrzymasz elegancką sukienkę qipao z pasującą do niej fryzurą, transfer bonusów oraz jedną z wielu niespodzianek ze skrzyni zwierzaka.
+
+}}

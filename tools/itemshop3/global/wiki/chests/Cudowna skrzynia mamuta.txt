@@ -1,0 +1,58 @@
+{{Item/Layout
+
+|image = Cudowna skrzynia mamuta.png
+
+|Opis = Przy odrobinie szczęścia przeciągnij na swoją stronę Manniego jako wiernego przyjaciela i dodatkowo korzystaj z licznych solidnych bonusów obydwu magicznych pierścieni – albo otrzymasz jedną z wielu innych wspaniałych niespodzianek!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Manni (pieczęć)}} (15d)
+* {{ti|Manu (pieczęć)}} (15d)
+* {{ti|Klatka Arktycznego Khana}}
+* {{ti|Pierścień Śmiercionośnej Mocy}} (7d)
+* {{ti|Pierścień Dośw. +200}}
+* {{ti|Pierścień Siły Woli}} (7d)
+* {{ti|Lizak Potęgi}} (7d)
+* {{ti|Lizak Magii}} (7d)
+* {{ti|Amulet Strażników}} (7d)
+* {{ti|Pierścień Doświadczenia}} (30m)
+* {{ti|Pierścień Doświadczenia}} (1h)
+* {{ti|Pierścień Doświadczenia}} (3h)
+* {{ti|Pierścień Doświadczenia}} (10h)
+* {{ti|Mikstura Zarania}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Kamień Rytualny}}
+* {{ti|Kamień Kowala}}
+* {{ti|Podręcznik Kowala}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Niebieska Smocza Fasola}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Księga Lidera|Książka Lidera}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 29 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu [[Item-Shop]]u.
+
+}}
+
+[[de:Mammut-Wundertruhe]]
+[[fr:Coffre miraculeux mammouth]]
+[[hu:Mamut csodaláda]]
+[[ro:Cufăr Miracol Mamut]]

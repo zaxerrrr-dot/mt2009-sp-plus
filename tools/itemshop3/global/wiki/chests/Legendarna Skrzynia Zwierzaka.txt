@@ -1,0 +1,36 @@
+{{Item/Layout
+
+|Opis = Czy kochasz zwierzaki? Tak? To zgarnij skrzynię zwierzaka, która jest zapełniona przedmiotami twojego wiernego towarzysza!
+
+|image = Legendarna Skrzynia Zwierzaka.png
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti|Zaczaruj zwierzaka}}
+* {{ti|Skrzynka na Zwierzaka}}
+* {{ti|Opt. Skrz. Ksiąg Zwierza}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Czerwone Pudło Uwodzicielek]], [[Białe Pudło Uwodzicielek]], [[Pudło Pogromcy Serc Feniksa]], [[Pudło Pogromcy Serc Kobry]], [[Biały Walentynkowy Anioł]], [[Czerwony Walentynkowy Anioł]], [[Czerwony Walentynkowy Faraon]], [[Turkusowy Walentynkowy Faraon]]
+* '''Inne:''' [[Item-Shop]] za 39 [[Smocze Monety|SM]], [[Oferty Błyskawiczne]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+* Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu Item-Shop.
+
+}}
+
+[[de:Legendäre Pet-Truhe]]

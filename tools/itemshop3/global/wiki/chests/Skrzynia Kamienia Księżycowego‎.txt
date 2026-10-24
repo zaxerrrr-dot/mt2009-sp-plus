@@ -1,0 +1,55 @@
+{{Item/Layout
+
+|image = Skrzynia Kamienia Księżycowego.png
+
+|Opis = Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot. Przedmiot ten automatycznie trafi do Twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = *{{ti|Kamień Księżycowy}}
+*{{ti|Dwutlenek Tytanu}}
+*{{ti|Niebieskie Jajo Smoka}}
+*{{ti|Czerwone Jajo Smoka}}
+*{{ti|Jajo Mini Azraela}}
+*{{ti|Jajo Nessie}}
+*{{ti|Zwój Błogosławieństwa}}
+*{{ti|Magiczny Kamień}}
+*{{ti|Kamień Rytualny}}
+*{{ti|Skrzynia Szczeniaka}}
+*{{ti|Skrzynia Królów}}
+*{{ti|Skrzynia Wiecznej Zimy}}
+*{{ti|Skrzynia Burzy Pustynnej}}
+*{{ti|Błogosławieństwo Życia}}
+*{{ti|Magiczna Ruda Miedzi}} (x6)
+*{{ti|Peleryna Męstwa}} (x30)
+*{{ti|Podręcznik Kowala}}
+*{{ti|Zwój Egzorcyzmu}} (x2)
+*{{ti|Życie Boga Smoków}} (x2)
+*{{ti|Atak Boga Smoków}} (x2)
+*{{ti|Inteligencja Boga Smoków}} (x2)
+*{{ti|Obrona Boga Smoków}} (x2)
+*{{ti|Eliksir Poszukiwacza}} (x3)
+*{{ti|Dłoń Krytyka}} (x2)
+*{{ti|Dłoń Przebicia}} (x2)
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Przecudowny Pakiet Skrzyń]], [[Wspaniały Pakiet Skrzyń]]
+* '''Inne:''' [[Item-Shop]] za 47 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

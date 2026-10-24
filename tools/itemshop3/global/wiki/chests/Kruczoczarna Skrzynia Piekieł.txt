@@ -1,0 +1,59 @@
+{{Item/Layout
+
+|image = Kruczoczarna Skrzynia Piekieł.png
+
+|Opis = Z tej skrzyni możesz zgarnąć mnóstwo upiornych skarbów - może nawet kruczoczarny pakiet piekieł?
+Ta magiczna skrzynia otworzy się zaraz po zakupie i zawiera jeden losowy przedmiot. Ten przedmiot trafi automatycznie do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = 
+
+|Zawartość = * Kruczoczarny Pakiet Piekieł składający się z:
+** {{ti|Rogi Skrzydła Nocy+ (m)}} (30d)
+** {{ti|height=2|Inkub Nocy+}} (30d)
+** {{ti|Lilith (pieczęć)}} (15d)
+*LUB:
+** {{ti|Rogi Skrzydła Nocy+ (k)}} (30d)
+** {{ti|height=2|Sukkub Nocy+}} (30d)
+** {{ti|Lilith (pieczęć)}} (15d)
+*Poza zestawem:
+* {{ti|Rogi Skrzydła Nocy+ (m)}} (7/15d)
+* {{ti|height=2|Inkub Nocy+}} (7/15d)
+* {{ti|Rogi Skrzydła Nocy+ (k)}} (7/15d)
+* {{ti|height=2|Sukkub Nocy+}} (7/15d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Zdobna Skrz. z Odłamkiem|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Licencja Najemnika}}
+* {{ti|Ekspres. Leczenie Najem.|Ekspresowe Leczenie Najemnika}}
+* {{ti|Wstęp do Świątyni Smoka}} (x50)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Tak
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = 
+
+}}

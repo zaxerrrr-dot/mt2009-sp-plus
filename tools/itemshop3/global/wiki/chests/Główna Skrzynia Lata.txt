@@ -1,0 +1,46 @@
+{{Item/Layout
+
+|image = Główna Skrzynia Lata.png
+
+|Opis = Tutaj znajdziesz mnóstwo przydatnych przedmiotów. Co czeka na ciebie w skrzyni? Sprawdź! Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = * {{ti2|Trójróg Pirata+ (k)|px=22}}{{ti2|Trójróg Pirata+ (m)|px=22}}[[Fryzury Pirata|Trójróg Pirata]] (k/m) (60d/30d/15d)
+* {{ti2|Trójróg Korsarza+ (k)|px=22}}{{ti2|Trójróg Korsarza+ (m)|px=22}}[[Fryzury Pirata|Trójróg Korsarza]] (k/m) (60d/30d/15d)
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x30)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Spirala Czasu (30%)}}
+* {{ti|Zdobna Skrzynia z Odłamkiem}}
+* {{ti|Biała Perła}} (x3)
+* {{ti|Niebieska Perła}} (x2)
+* {{ti|Krwawa Perła}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie 
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Zawiera jeden losowy przedmiot.
+* Nagroda trafia bezpośrednio do magazynu Item-Shop.
+* Fryzury z [[Bonus Zestawu#Trzeci Zestaw Letni|Bonusem Zestawu]].
+
+}}

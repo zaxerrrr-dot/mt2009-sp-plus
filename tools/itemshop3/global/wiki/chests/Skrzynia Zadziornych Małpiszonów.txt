@@ -1,0 +1,36 @@
+{{Item/Layout
+
+|image = Skrzynia Zadziornych Małpiszonów.png
+
+|Opis = Cała gromada małpiszonów wrzeszczy: kto ukradł nasze jajo? Nie przegap szansy i odkryj w skrzyni jajo małpiszona lub nawet jajo Nemere oraz mnóstwo innych pożytecznych przedmiotów dla swojego zwierzaka, którego możesz levelować!
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Jajo Małpiszona}}
+* {{ti|Jajo Nemere}}
+* {{ti|Klatka Transportowa}}
+* {{ti|Odżywka}}
+* {{ti|Pergamin Nazwy Zwierzaka}}
+* {{ti|Skrzynia Ksiąg Zwierza}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

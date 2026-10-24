@@ -1,0 +1,53 @@
+{{Item/Layout
+
+|Opis = Ten ślicznie zapakowany prezent świąteczny skrywa pyszną niespodziankę.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Eventy
+
+|Zawartość = * {{ti|Zaczarowanie Przedmiotu}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Zwój Kamienia Duszy}}
+* {{ti|Zwój Korekcji}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Owoc Życia}}
+* {{ti|Kamień Duchowy}}
+* {{ti|Mikstura Pośpiechu}} x5
+* {{ti|Yang}}:
+** 10.000
+** 20.000
+** 50.000
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' [[Spektralna Skrzynia Zimowa (m)]], [[Spektralna Skrzynia Zimowa (k)]]
+* '''Inne:''' [[Święty Mikołaj]] za 5 [[Skarpetka|Skarpetek]], [[Item-Shop]] za 19 [[Smocze Monety|SM]].
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie =  Nie
+|Łączenie = Tak
+|Poczta = Nie
+
+|Inne = * Przedmiot związany z [[Event Świąteczny|Eventem Świątecznym]].
+* Wymiany u [[Święty Mikołaj|Świętego Mikołaja]] można dokonać raz na 24 godziny.
+* Naciśnij prawym przyciskiem myszki na skrzyni, aby ją otworzyć.
+* Można otworzyć tylko raz.
+
+}}
+
+[[ae:صندوق العام الجديد]]
+[[de:Weihnachtstruhe]]
+[[en:Christmas Chest]]
+[[fr:Coffre de Noël]]
+[[gr:Σεντούκι Χριστουγέννων]]
+[[hu:Karácsonyi láda]]
+[[it:Forziere di Natale]]
+[[nl:Kerstmis Kist]]
+[[tr:Noel Sandığı]]

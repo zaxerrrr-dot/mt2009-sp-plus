@@ -1,0 +1,46 @@
+{{Item/Layout
+
+|image = Skrzynia Towarzysza Orientu.png
+
+|Opis = Zaraz po zakupie otworzy się skrzynia z niespodzianką, zawierająca jeden losowy przedmiot.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Item-Shop
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Wielzooka (pieczęć)}} 
+* {{ti|Wieldziało (pieczęć)}} 
+* {{ti|Podręcznik Kowala}}
+* {{ti|Wzmocnienie Przedmiotu}}
+* {{ti|Skrzynia Burzy Pustynnej}}
+* {{ti|Zwój Boga Smoków}}
+* {{ti|Odżywka}}
+* {{ti|Cukier dla Konia}}
+* {{ti|Brąz.Tulu Boj. (pieczęć)}}
+* {{ti|Czar.Tulu Boj. (pieczęć)}}
+* {{ti|Rękawica Złodzieja}} 4x
+* {{ti|Medal Smoka}} 10x
+* {{ti|Wino z Kwiatu Brzoskwini}} 3x
+* {{ti|Księga Lidera}}
+* {{ti|Pierścień Teleportacji}}
+* {{ti|Skrzynia Ksiąg Zwierza}}
+
+|Misje = 
+
+|Pochodzenie=
+* '''Metiny:''' - 
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 35 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu [[Item-Shop]].
+
+}}

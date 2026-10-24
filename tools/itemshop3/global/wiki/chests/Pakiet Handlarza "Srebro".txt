@@ -1,0 +1,37 @@
+{{Item/Layout
+
+|image = Pakiet Handlarza Srebro.png
+
+|Opis = Zapewnij sobie wszystko, co potrzebujesz do kariery w handlu hurtowym: przechowuj więcej przedmiotów dzięki powiększonemu składowi oraz nadaj swojemu prywatnemu sklepu indywidualny wygląd z pomocą szpuli kaszmiru! A dzięki szkle handlu możesz szybciej i prościej znaleźć i kupić poszukiwane przedmioty w pobliżu.
+
+|Kategoria1 = Skrzynie 
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość = 
+* {{ti|Powiększony Skład}} (15 dni)
+* {{ti|Szkło Handlu}} (15 dni)
+* {{ti|Szpula Kaszmiru}} (15 dni)
+
+|ZawieraWszystko = tak
+
+|Misje =
+
+|Pochodzenie =
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 119 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Pakiet handlarza
+* Czas trwania: 15 dni
+
+}}

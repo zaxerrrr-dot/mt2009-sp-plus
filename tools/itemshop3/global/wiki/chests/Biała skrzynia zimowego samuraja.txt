@@ -1,0 +1,65 @@
+{{Item/Layout
+
+|image = Biała skrzynia zimowego samuraja.png
+
+|Opis = Z tego pudełka możesz wydobyć wspaniałe skarby na najpiękniejszy czas roku! Zgarnij przy odrobinie szczęścia biały zestaw zimowego samuraja z towarzyszami lub jedną z wielu bożonarodzeniowych niespodzianek. Magiczna skrzynia, zawierająca jeden losowy przedmiot, otworzy się zaraz po zakupie. Przedmiot ten automatycznie trafi do twojego magazynu ItemShopu.
+
+|Kategoria1 = Skrzynie
+|Kategoria2 = Pojemniki
+|Kategoria3 = Item-Shop
+
+|Zawartość =
+* Biały zestaw zimowego samuraja zawierający:
+** {{ti|B. hełm z porożem+ (m)}} (60d)
+** {{ti|height=2|B. zimowy samuraj+ (m)}} (60d)
+** {{ti|Piernikowy Rudolf (pieczęć)|Piernikowy Rudolf}} (60d)
+* LUB:
+** {{ti|B. hełm z porożem+ (k)}} (60d)
+** {{ti|height=2|Biały zimowy samuraj (k)}} (60d)
+** {{ti|Piernikowy Rudolf (pieczęć)|Piernikowy Rudolf}} (60d)
+
+* {{ti|B. hełm z porożem+ (m)}} (15/30d)
+* {{ti|B. zimowy samuraj+ (m)}} (15/30d)
+* {{ti|B. hełm z porożem+ (k)}} (15/30d)
+* {{ti|Biały zimowy samuraj (k)}} (15/30d)
+* {{ti|Księga Lidera}}
+* {{ti|Średni Kupon Wpłaty}}
+* {{ti|Magiczny Kamień}}
+* {{ti|Różowa Smocza Fasola}}
+* {{ti|Księga Obróbki Kamienia}}
+* {{ti|Zwój Błogosławieństwa}}
+* {{ti|Zielona Smocza Fasola}}
+* {{ti|Kamyki}} (x600)
+* {{ti|Pakiet Kamieni Duszy}}
+* {{ti|Smoczy Płomień}}
+* {{ti|Wysoki Kupon Wpłaty}}
+* {{ti|Zdobna Skrz. z Odłamkiem}}
+* {{ti|Ekspres. Leczenie Najem.}}
+* {{ti|Wstęp do Świątyni Smoka}} (x100)
+* {{ti|Eliksir Księżyca (S)}}
+* {{ti|Eliksir Słońca (S)}}
+* {{ti|Lśniąca Sk. z Odłamkiem}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:'''  [[Item-Shop]] za 39 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne =
+* Skrzynia z losową zawartością.
+* Wylosowany przedmiot trafia bezpośrednio do magazynu Item-Shopu.
+* Szansa na biały zestaw zimowego samuraja.
+* [[Bonus Zestawu#Siódmy Zestaw Bożonarodzeniowy|Bonus Zestawu]].
+
+}}

@@ -1,0 +1,41 @@
+{{Item/Layout
+
+|image = Skrzynka na Zwierzaka (IS).png
+
+|Opis = Jeden z 10 towarzyszy, których możesz levelować, czeka, by go uwolnić ze skrzynki. Udało ci się wyhodować odważnego zwierzaka, możesz go teraz trenować i wzmocnić. W ten sposób twój zwierzak będzie wiernym towarzyszem i będzie cię wspierał w każdej walce!
+
+|Kategoria1 = Item-Shop
+|Kategoria2 =
+|Kategoria3 =
+
+|Zawartość = * {{ti|Jajo Małpiszona}}
+* {{ti|Jajo Pająka}}
+* {{ti|Jajo Razadora}}
+* {{ti|Jajo Nemere}}
+* {{ti|Niebieskie Jajo Smoka}}
+* {{ti|Czerwone Jajo Smoka}}
+* {{ti|Jajo Baashido}}
+* {{ti|Jajo Grubego Mini Kata}}
+* {{ti|Jajo Nessie}}
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' [[Item-Shop]] za 39 SM
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Kupując skrzynię, losowy przedmiot trafia do magazynu przedmiotu .
+* Dostępne tylko w "specjalnych promocjach".
+* Zawiera losowe jajo.
+
+}}

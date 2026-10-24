@@ -1,0 +1,38 @@
+{{Item/Layout
+
+|image = Losowa Skrzynia Królestwa Żywiołów.png
+
+|Opis = Zdobna Skrzynia z Odłamkiem, Eliksir Ochrony Żywiołów lub uroczy zwierzak żywiołów twojego wyboru – w tej skrzyni znajdziesz drogocenne przedmioty do swoich przygód w Królestwie Żywiołów.
+
+|Kategoria1 = Item-Shop
+|Kategoria2 = Skrzynie
+|Kategoria3 = Pojemniki
+
+|Zawartość = * {{ti|Zdobna Skrzynia z Odłamkiem}} x1
+* {{ti|Pierścień Hydry}} x3
+* {{ti|Pierścień Siły Natury (100%)}} x1
+* {{ti|Eliksir Ochrony Żywiołów}} x5/x10
+* {{ti|Kamień Mocy Żywiołów}} x1
+* {{ti|Kamień Ochrony Żywiołów}} x1
+* {{ti|Kupon Zwierzaka Żywiołu}} x1
+
+|Misje =
+
+|Pochodzenie=
+* '''Metiny:''' -
+* '''Potwory:''' -
+* '''Skrzynie:''' -
+* '''Inne:''' w [[Item-Shop]] za 59 [[Smocze Monety|SM]]
+
+|Handel z NPC = Nie
+|Handlowanie z Graczem = Nie
+|Handel przez sklep = Nie
+|Upuszczanie = Nie
+|Magazynowanie = Nie
+|Łączenie = Nie
+|Poczta = Nie
+
+|Inne = * Skrzynia ta przygotuje cię na wyzwania w Królestwie Żywiołów! Otrzymasz 1 drogocenny przedmiot z tej listy.
+* Po zakupie skrzyni przedmiot trafia bezpośrednio do Twojego magazynu Item-Shop.
+
+}}
