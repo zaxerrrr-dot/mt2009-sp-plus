@@ -11,7 +11,7 @@
 	<?php if (!$isPreview) { ?>
 	<div class="boxSigns">
 		<span class="heading">Smocze Znaki (SZ):</span>
-		<span class="marksValue"><?php echo (int)$info['mileage'];?></span>
+		<span class="marksValue"><?php echo (int)$info['cash_mark']; /* MT2009_PLUS_SZ_UNIFIED_V1 */ ?></span>
 	</div>
 	<div class="boxCoins">
 		<span class="heading">Smocze Monety (SM):</span>

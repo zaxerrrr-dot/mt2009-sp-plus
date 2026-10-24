@@ -16,7 +16,8 @@ the "V3 Itemshop Premium" web package).
 The package's own tables (history, settings, redeem codes, ...) are real tables in itemshop3; its
 catalogue tables are VIEWS onto ours, so the second shop always sells what the old one sells, at the
 same price, in the same currency:
-  shop        <- itemshop.ishop_items (pay_type 1 = cash "SM", 2 = mileage "SZ"; an Arezzo costume
+  shop        <- itemshop.ishop_items (pay_type 1 = cash "SM", 2 = the catalogue's currency 'mileage' =
+                 Smocze Znaki "SZ", paid from account.cash_mark - MT2009_PLUS_SZ_UNIFIED_V1; an Arezzo costume
                  offer is unavailable while the Arezzo module is off, as in the old shop); with
                  world.item_proto's wear restrictions as 0/1 columns anti_female .. anti_wolfman (the
                  shop hides what the character cannot wear) and stackable (ITEM_FLAG_STACKABLE: the

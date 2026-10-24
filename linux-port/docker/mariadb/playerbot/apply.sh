@@ -271,6 +271,37 @@ fi
 # cash alone. IF NOT EXISTS keeps it a no-op after the first time.
 db -e "ALTER TABLE account.account ADD COLUMN IF NOT EXISTS mileage INT NOT NULL DEFAULT 0;"
 db -e "ALTER TABLE account.account ADD COLUMN IF NOT EXISTS jackpot INT NOT NULL DEFAULT 0;"
+# MT2009_PLUS_SZ_UNIFIED_V1: one Smocze Znaki balance - account.cash_mark, the
+# one the game (the in-game shop, itemshop_manager.cpp) and the panel show
+# (owner, 24 October 2026). The web shops (/itemshop/ and /shop3/) kept their
+# marks in mileage until now; they read, spend and credit cash_mark from this
+# release on. Once per install every account's mileage is added to its
+# cash_mark and mileage set to 0, in one transaction with the marker, so no
+# mark is lost; each moved balance is kept in player.mt2009_sz_unified_log
+# (the account, what moved, cash_mark before) and the totals go to the log.
+# The column stays (an older web shop beside this world would still find it).
+db -e "ALTER TABLE account.account ADD COLUMN IF NOT EXISTS cash_mark INT(10) DEFAULT 0;"
+db -e "CREATE TABLE IF NOT EXISTS player.playerbot_migrations (name VARCHAR(64) NOT NULL PRIMARY KEY, done_at DATETIME NOT NULL) ENGINE=InnoDB;"
+sz_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'MT2009_PLUS_SZ_UNIFIED_V1';" 2>/dev/null || echo x)
+if [ "$sz_done" = "0" ]; then
+    if sz_moved=$(db -e "
+        CREATE TABLE IF NOT EXISTS player.mt2009_sz_unified_log (account_id INT NOT NULL PRIMARY KEY, mileage_moved INT NOT NULL, cash_mark_before INT NOT NULL, moved_at DATETIME NOT NULL) ENGINE=InnoDB;
+        START TRANSACTION;
+        INSERT INTO player.mt2009_sz_unified_log (account_id, mileage_moved, cash_mark_before, moved_at)
+        SELECT id, mileage, COALESCE(cash_mark, 0), NOW() FROM account.account WHERE mileage <> 0 FOR UPDATE;
+        SELECT COUNT(*), COALESCE(SUM(mileage_moved), 0) FROM player.mt2009_sz_unified_log;
+        UPDATE account.account AS a JOIN player.mt2009_sz_unified_log AS l ON l.account_id = a.id
+           SET a.cash_mark = COALESCE(a.cash_mark, 0) + a.mileage, a.mileage = 0
+         WHERE a.mileage <> 0;
+        INSERT INTO player.playerbot_migrations (name, done_at) VALUES ('MT2009_PLUS_SZ_UNIFIED_V1', NOW());
+        COMMIT;
+    "); then
+        set -- $sz_moved
+        echo "[playerbot-migrate] Smocze Znaki unified (MT2009_PLUS_SZ_UNIFIED_V1): ${1:-0} account(s), ${2:-0} mark(s) moved from mileage into cash_mark"
+    else
+        fail_step "could not move the web shops' Smocze Znaki (mileage) into cash_mark (MT2009_PLUS_SZ_UNIFIED_V1)" >&2
+    fi
+fi
 # Fishing from thirty, which is what the wiki says and what the operator
 # asked for. This line shipped fifty in three places and moving two was not
 # enough: CHARACTER::fishing() (playerbotify.py lowers it), the AI gate, and

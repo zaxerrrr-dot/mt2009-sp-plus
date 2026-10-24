@@ -16,7 +16,7 @@
 	$failReason = 'no pid/sas';
 	if ($pid > 0 && $sas !== '') {
 		$pidEsc = mysqli_real_escape_string($sqlServ, (string)$pid);
-		$res = mysqli_query($sqlServ, "SELECT p.account_id, a.login, a.cash, a.mileage "
+		$res = mysqli_query($sqlServ, "SELECT p.account_id, a.login, a.cash, a.cash_mark " /* MT2009_PLUS_SZ_UNIFIED_V1 */
 			. "FROM player.player p INNER JOIN account.account a ON a.id = p.account_id "
 			. "WHERE p.id = '$pidEsc'");
 		if (!$res) {

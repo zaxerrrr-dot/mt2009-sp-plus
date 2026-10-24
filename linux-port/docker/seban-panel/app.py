@@ -7315,7 +7315,8 @@ def api_player_inventory_fragment(pid):
 # AddVIP (server/game/src/itemshop_manager.cpp) extends one of nine
 # account.account "*_expire" columns, and account.cash is the exact balance
 # the already-running ItemShop (docker-compose.yml's own comment: "Dragon
-# Coins (account.cash) and Dragon Marks (account.mileage)") already spends
+# Coins (account.cash) and Dragon Marks (account.mileage)"; the marks are
+# account.cash_mark everywhere since MT2009_PLUS_SZ_UNIFIED_V1) already spends
 # in-game. Granting through the panel writes the same columns the same way
 # the game itself does, instead of a parallel panel-only ledger nothing else
 # would ever honor.

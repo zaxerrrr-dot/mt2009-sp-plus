@@ -629,7 +629,8 @@ services:
     networks: [backend]
 
   # The ItemShop (OskarPWA): a PHP shop for Dragon Coins (account.cash) and
-  # Dragon Marks (account.mileage), opened from the coin on the game's
+  # Dragon Marks (account.cash_mark since MT2009_PLUS_SZ_UNIFIED_V1, as in
+  # the game; mileage before), opened from the coin on the game's
   # taskbar in the client's built-in browser. A purchase writes
   # player.item_award; the db core delivers it at the player's next login.
   # Its own tables live in the itemshop database, created and seeded by

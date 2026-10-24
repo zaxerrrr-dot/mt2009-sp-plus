@@ -9,7 +9,7 @@
 		exit;
 	} else {
 		if ($isPreview) {
-			$info = array('cash' => 0, 'mileage' => 0);
+			$info = array('cash' => 0, 'cash_mark' => 0);
 		} else {
 			$coninfo = mysqli_query($sqlServ, "SELECT * FROM account.account where login='".$_SESSION['id']."'");
 			$info = mysqli_fetch_array($coninfo);
@@ -24,8 +24,10 @@
 <div id="fancybox-content" style="border-width: 0px; width: 540px; height: 500px;">
 	<div style="width:540px;height:500px;overflow: hidden;position:relative;">
 		<?php
-			$currency = ($item['currency'] === 'mileage') ? 'mileage' : 'cash';
-			$currencyLabel = ($currency === 'mileage') ? 'Smocze Znaki' : 'Smocze Monety';
+			// MT2009_PLUS_SZ_UNIFIED_V1: Smocze Znaki to jedno saldo - account.cash_mark (to samo co w grze i w panelu);
+			// katalog nadal oznacza oferty za SZ jako currency='mileage'.
+			$currency = ($item['currency'] === 'mileage') ? 'cash_mark' : 'cash';
+			$currencyLabel = ($currency === 'cash_mark') ? 'Smocze Znaki' : 'Smocze Monety';
 			$balance = (int)$info[$currency];
 		?>
 		<h1>Zakup <?echo $items; ?></h1>
@@ -40,10 +42,10 @@
 			mysqli_query($sqlServ, "UPDATE account.account SET `$currency` = `$currency` - ".$item['price']." WHERE `id` = '".$_SESSION['acc_id']."'");
 			// MT2009_PLUS_ITEMSHOP_V3_V2: kazdy zakup za Smocze Monety zwraca 100% ceny w Smoczych Znakach
 			// (wlasciciel, 24.10.2026; wczesniej 10%) - jak drugi sklep i sklep w grze -
-			// to samo zrodlo dla kategorii "Przedmioty za Znaki".
+			// to samo zrodlo dla kategorii "Przedmioty za Znaki" (account.cash_mark - MT2009_PLUS_SZ_UNIFIED_V1).
 			if ($currency === 'cash') {
 				$reward = (int)$item['price'];
-				mysqli_query($sqlServ, "UPDATE account.account SET `mileage` = `mileage` + ".$reward." WHERE `id` = '".$_SESSION['acc_id']."'");
+				mysqli_query($sqlServ, "UPDATE account.account SET `cash_mark` = `cash_mark` + ".$reward." WHERE `id` = '".$_SESSION['acc_id']."'");
 			}
 			// Paczki (np. Duzy Pakiet Startowy) daja kilka roznych przedmiotow za
 			// jeden zakup - jesli ishop_bundle_items ma wiersze dla tego itemu,
