@@ -40,6 +40,10 @@ TEXT_NO_BROWSER = ('Je\x9cli sklep si\xea nie pokazuje, ten klient nie ma jeszcz
 
 _data = {'window': None, 'pending': 0.0}
 
+# MT2009_PLUS_ITEMSHOP_V3_V4: the game windows the page may ask for (game/<name>/): name -> (module, function)
+GAME_WINDOWS = {'wheel': ('uiwheel', 'OpenWindow')}
+_TakeWebPageCommand = getattr(app, 'TakeWebPageCommand', None)
+
 
 def _ShopUrl(url):
 	# "http://host:port/ishop?pid=..&c=..&sid=..&sas=.." -> "http://host:port/shop3/?pid=..&sas=.."
@@ -126,6 +130,11 @@ class ItemShopV3Window(ui.BoardWithTitleBar):
 			pass
 		self.browserOpen = False
 		self.lastPos = self.GetGlobalPosition()
+		if _TakeWebPageCommand:	# MT2009_PLUS_ITEMSHOP_V3_V4: no request left over from a page closed before it was taken
+			try:
+				_TakeWebPageCommand()
+			except:
+				pass
 		try:
 			app.ShowWebPage(url, self.__Rect())
 			self.browserOpen = True
@@ -143,6 +152,22 @@ class ItemShopV3Window(ui.BoardWithTitleBar):
 	def OnUpdate(self):
 		if not self.browserOpen:
 			return
+		# MT2009_PLUS_ITEMSHOP_V3_V4: the page's "Kolo Losu" tab (a link to the shop's game/wheel/) - the exe keeps the
+		# name instead of loading it (CWebBrowser.c, app.TakeWebPageCommand); the shop closes (the browser would lie over
+		# any game window) and the wheel's window opens. An older exe has no such function and loads the shop's page
+		# for the link, which names the window's key.
+		if _TakeWebPageCommand:
+			try:
+				command = _TakeWebPageCommand()
+			except:
+				command = ''
+			if command in GAME_WINDOWS:
+				self.Close()
+				try:
+					getattr(__import__(GAME_WINDOWS[command][0]), GAME_WINDOWS[command][1])()
+				except:
+					pass
+				return
 		pos = self.GetGlobalPosition()
 		if pos == self.lastPos:
 			return
