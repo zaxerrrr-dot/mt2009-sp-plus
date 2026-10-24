@@ -163,7 +163,7 @@
 			$shop->setWearFilter($wear);
 		}
 
-		// MT2009_PLUS_ITEMSHOP_V3_V1: Smocze Monety (cash) and Smocze Znaki (mileage).
+		// MT2009_PLUS_ITEMSHOP_V3_V1: Smocze Monety (cash) and Smocze Znaki (cash_mark - MT2009_PLUS_SZ_UNIFIED_V1).
 		$amount_coins = $account->getCoins(1, $_SESSION['id']);
 		$amount_jcoins = $account->getCoins(2, $_SESSION['id']);
 		$count_not_taken_items = $shop->countNotTakenItems($_SESSION['id']);

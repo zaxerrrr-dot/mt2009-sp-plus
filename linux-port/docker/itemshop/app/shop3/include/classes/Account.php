@@ -192,12 +192,14 @@ class Account {
 	}
 	
 	// MT2009_PLUS_ITEMSHOP_V3_V1: the package's "coins" / "jcoins" are our Smocze Monety (account.cash,
-	// "SM") and Smocze Znaki (account.mileage, "SZ") - the same balances the old shop, the Kolo Losu and
+	// "SM") and Smocze Znaki (account.cash_mark, "SZ") - the same balances the old shop, the Kolo Losu and
 	// the in-game shop spend. Taken in one UPDATE that only passes with enough on the account (the
 	// package read, subtracted and read again, and two purchases at once could both pass).
+	// MT2009_PLUS_SZ_UNIFIED_V1: one Smocze Znaki balance everywhere - account.cash_mark, the one the game
+	// (in-game shop) and the panel show (owner, 24.10.2026); mileage was moved into it once.
 	public static function currencyColumn($type)
 	{
-		return $type==1 ? 'cash' : 'mileage';
+		return $type==1 ? 'cash' : 'cash_mark';
 	}
 
 	public function getCoins($type, $id)

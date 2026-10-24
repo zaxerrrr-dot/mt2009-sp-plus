@@ -10,7 +10,7 @@
 		exit;
 	} else {
 		if ($isPreview) {
-			$info = array('cash' => 0, 'mileage' => 0);
+			$info = array('cash' => 0, 'cash_mark' => 0);
 		} else {
 			$coninfo = mysqli_query($sqlServ, "SELECT * FROM account.account where login='".$_SESSION['id']."'");
 			$info = mysqli_fetch_array($coninfo);
@@ -59,8 +59,10 @@
 			</div>
 			<div class="box boxRight buy onlyItem">
 				<?php
-					$currency = ($item['currency'] === 'mileage') ? 'mileage' : 'cash';
-					$currencyLabel = ($currency === 'mileage') ? 'Smocze Znaki' : 'Smocze Monety';
+					// MT2009_PLUS_SZ_UNIFIED_V1: Smocze Znaki to jedno saldo - account.cash_mark (to samo co w grze i w panelu);
+					// katalog nadal oznacza oferty za SZ jako currency='mileage'.
+					$currency = ($item['currency'] === 'mileage') ? 'cash_mark' : 'cash';
+					$currencyLabel = ($currency === 'cash_mark') ? 'Smocze Znaki' : 'Smocze Monety';
 					$balance = (int)$info[$currency];
 				?>
 				<?php if ($isPreview) { ?>
