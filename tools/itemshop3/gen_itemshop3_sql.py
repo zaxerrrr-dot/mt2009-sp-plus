@@ -17,7 +17,10 @@ The package's own tables (history, settings, redeem codes, ...) are real tables 
 catalogue tables are VIEWS onto ours, so the second shop always sells what the old one sells, at the
 same price, in the same currency:
   shop        <- itemshop.ishop_items (pay_type 1 = cash "SM", 2 = mileage "SZ"; an Arezzo costume
-                 offer is unavailable while the Arezzo module is off, as in the old shop)
+                 offer is unavailable while the Arezzo module is off, as in the old shop); with
+                 world.item_proto's wear restrictions as 0/1 columns anti_female .. anti_wolfman (the
+                 shop hides what the character cannot wear) and stackable (ITEM_FLAG_STACKABLE: the
+                 quantity choice) - MT2009_PLUS_ITEMSHOP_V3_V2
   categories  <- itemshop.ishop_category
   bundle_items<- itemshop.ishop_bundle_items (package offers)
   item_names  <- world.item_proto locale_name (shop names for a vnum the proto lacks)
@@ -171,6 +174,12 @@ def elt(expr, names, other="''"):
 	return 'COALESCE(ELT(%s + 1, %s), %s)' % (expr, ', '.join(q(n) for n in names), other)
 
 
+# MT2009_PLUS_ITEMSHOP_V3_V2: ITEM_ANTIFLAG_* (common/item_length.h) the shop filters the offers by - the character
+# of the signed in-game link (header.php): a man does not see women's costumes, a sura no shaman-only item.
+ANTI_FLAGS = [('female', 1 << 0), ('male', 1 << 1), ('warrior', 1 << 2), ('assassin', 1 << 3), ('sura', 1 << 4),
+	('shaman', 1 << 5), ('wolfman', 1 << 18)]
+
+
 def build():
 	data = json.load(open(DATA, encoding='utf-8'))
 	applies = php_list(os.path.join(APP, 'shop3', 'include', 'functions', 'items.php'), 'EApplyTypes')
@@ -212,9 +221,10 @@ def build():
 		w('CREATE TABLE IF NOT EXISTS itemshop3.%s (%s) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;' % (name, cols))
 	w('')
 	w('-- Settings the package reads (header.php). Payments, the happy hour and the package\'s own wheel off')
-	w('-- (our Kolo Losu is F12); 10 % of a Smocze Monety price back as Smocze Znaki, like the old shop.')
+	w('-- (our Kolo Losu is F12). jcoins_back is not read any more: a Smocze Monety purchase gives 100 % back as')
+	w('-- Smocze Znaki (the owner, 24.10.2026 - MT2009_PLUS_ITEMSHOP_V3_V2, include/functions/header.php).')
 	settings = [('add_type', 'item_award'), ('pagination', '15'), ('paypal', ''), ('wolfman_character', '0'),
-		('discount', '0'), ('jcoins_back', '10'), ('epayouts_ip', ''), ('epayouts_uid', '0'), ('epayouts_mid', '0'),
+		('discount', '0'), ('jcoins_back', '100'), ('epayouts_ip', ''), ('epayouts_uid', '0'), ('epayouts_mid', '0'),
 		('wheel_status', '0'), ('wheel_levels', '3'), ('wheel_lv1', '10'), ('wheel_lv2', '20'), ('wheel_lv3', '30'),
 		('wheel_lv2_time', '30'), ('wheel_lv3_time', '30'), ('wheel_web', '0')]
 	w('INSERT IGNORE INTO itemshop3.settings (name, value) VALUES %s;' % ', '.join('(%s, %s)' % (q(n), q(v)) for n, v in settings))
@@ -232,10 +242,12 @@ def build():
 		' i.`desc` AS description, IF(i.currency = \'mileage\', 2, 1) AS pay_type, i.price AS coins, i.count AS count, i.vnum AS vnum,'
 		' i.socket0 AS socket0, i.socket1 AS socket1, i.socket2 AS socket2, 0 AS socket3, 0 AS socket4, 0 AS socket5,'
 		+ ''.join(' 0 AS attrtype%d, 0 AS attrvalue%d,' % (n, n) for n in range(7)) +
-		' IF(i.vnum IN (%s) AND COALESCE((SELECT q.lValue FROM player.quest q WHERE q.dwPID = 0 AND q.szName = \'mt2009_arezzo_closed\' LIMIT 1), 1) > 0, 0, 1) AS available,'
+		(' IF(i.vnum IN (%s) AND COALESCE((SELECT q.lValue FROM player.quest q WHERE q.dwPID = 0 AND q.szName = \'mt2009_arezzo_closed\' LIMIT 1), 1) > 0, 0, 1) AS available,' % az_vnums) +
 		' NULL AS last_bought, NULL AS expire, 0 AS discount, NULL AS discount_expire, 0 AS polymorph, \'FIX\' AS book_type, 0 AS book,'
-		' 0 AS time, 0 AS limit_all, 0 AS limit_account, NULL AS bonuses, 0 AS bonuses_count, 0 AS friend, 0 AS wheel_level, 0 AS jackpot'
-		' FROM itemshop.ishop_items i;' % az_vnums)
+		' 0 AS time, 0 AS limit_all, 0 AS limit_account, NULL AS bonuses, 0 AS bonuses_count, 0 AS friend, 0 AS wheel_level, 0 AS jackpot,'
+		+ ''.join(' IF(COALESCE(pr.antiflag, 0) & %d, 1, 0) AS anti_%s,' % (bit, name) for name, bit in ANTI_FLAGS) +
+		' IF(COALESCE(pr.flag, 0) & 4, 1, 0) AS stackable'
+		' FROM itemshop.ishop_items i LEFT JOIN world.item_proto pr ON pr.vnum = i.vnum;')
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.categories AS SELECT c.id AS id, c.name AS pl, c.name AS en, c.name AS ro, \'\' AS icon, 1 AS active FROM itemshop.ishop_category c;')
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.bundle_items AS SELECT b.id AS id, b.item_id AS item_id, b.vnum AS vnum, b.count AS count, b.socket0 AS socket0, b.socket1 AS socket1, b.socket2 AS socket2 FROM itemshop.ishop_bundle_items b;')
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.item_names AS SELECT p.vnum AS id, p.vnum AS vnum, \'pl\' AS lang, p.locale_name AS name FROM world.item_proto p'

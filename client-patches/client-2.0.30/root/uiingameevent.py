@@ -246,7 +246,8 @@ class EventRow(ui.Window):
 		iconName = entry.get('icon', DEFAULT_ICON)
 		if not pack.Exist(iconName):
 			iconName = DEFAULT_ICON
-		self.icon.LoadImage(iconName)
+		# MT2009_PLUS_ITEMSHOP_V3_V2: an image that will not load must not raise out of OnUpdate (ui.SafeLoadImage)
+		ui.SafeLoadImage(self.icon, iconName, DEFAULT_ICON)
 		self.button.SetText(EventName(self.key))
 		self.rewards = list(entry.get('rewards', ()))[:3]
 		if self.rewards:

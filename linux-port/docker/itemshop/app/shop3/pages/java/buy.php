@@ -32,11 +32,33 @@
 			$error = true;
 	}
 
+	// MT2009_PLUS_ITEMSHOP_V3_V2: a quantity (?q=, header.php $buy_qty) for an item that stacks (the view's
+	// stackable, as the window offers it), else 1: paid at once, delivered one award per piece; a piece that
+	// cannot be written gives its price back. A Smocze Monety purchase gives 100 % back as Smocze Znaki.
+	$qty = (!empty($item['stackable']) && $item['type']==1) ? $buy_qty : 1;
+	$unit_price = $final_price;
+	$final_price = $unit_price * $qty;
+	if($final_price > ($item['pay_type']==2 ? $amount_jcoins : $amount_coins))
+		$can_pay = false;
+	$delivered = 0;
+
 	if(!$error && $can_pay && $account->payCoins($item['pay_type'], $final_price))
 	{
-		if(($item['type']!=3 && $player->CreateItem($item, $account_id, $add_type, $available_bonuses)) || ($item['type']==3 && $account->addBuff($item, $account_id)))
+		if($item['type']!=3)
+			for($n = 0; $n < $qty; $n++)
+				if($player->CreateItem($item, $account_id, $add_type, $available_bonuses))
+					$delivered++;
+				else
+					break;
+		if($delivered > 0 && $delivered < $qty)
 		{
-			$shop->addItemHistory($item['id'], $account_id, 1, $item['pay_type'], $final_price, 1, $from_account, 0);
+			$account->addCoinsByID($item['pay_type'], $unit_price * ($qty - $delivered), $_SESSION['id']);
+			$final_price = $unit_price * $delivered;
+		}
+		if(($item['type']!=3 && $delivered > 0) || ($item['type']==3 && $account->addBuff($item, $account_id)))
+		{
+			for($n = 0; $n < max(1, $delivered); $n++)
+				$shop->addItemHistory($item['id'], $account_id, 1, $item['pay_type'], $unit_price, 1, $from_account, 0);
 			if($friend!=null)
 				$shop->addItemHistory($item['id'], $from_account, 1, $item['pay_type'], $final_price, 1, 0, $to_player);
 			
@@ -84,7 +106,10 @@ if($can_pay && !$error) {
             <div class="item-confirmation grey-box clearfix span8">
                 <h3><?php print $lang_shop['thanks-for-purchase']; ?></h3>
                 <div class="scrollable_container reward mCustomScrollbar">
-					<p class="confirmed"><?php print $item_name; ?></p>
+					<p class="confirmed"><?php if($qty > 1) print $delivered.' x '; print $item_name; ?></p>
+					<?php if($item['pay_type']==1 && $jcoins_back) { ?>
+					<p class="bill_mileage text-success"><span class="block-price"><img src="<?php print $shop_url; ?>images/this/jcoins.png" alt=""> <span class="end-price"><?php print number_format(round($final_price*$jcoins_back/100), 0, '', '.'); ?></span></span> <?php print $lang_shop['mt-marks-got']; ?></p>
+					<?php } ?>
 					<p><?php if(!$no_space) print $lang_shop['find-in-warehouse']; else print $lang_shop['no-space'].' <a href="'.$shop_url.'user/deposit/">'.$lang_shop['my-objects'].'</a>'; ?></p>
 				</div>
                 <button class="right btn-default" onclick="javascript:$.fancybox.close();"><?php print $lang_shop['continue-shopping'];?></button>
@@ -132,11 +157,11 @@ if($can_pay && !$error) {
 			<script type="text/javascript">
 				function openPaymentLink()
 				{
-					location.href=("<?php print $shop_url; ?>user/donate");
+					window.open("<?php print $topup_url; ?>", "_blank");	// MT2009_PLUS_ITEMSHOP_V3_V2
 				}
 			</script>    
 			<button class="btn-price premium happyhour" href="javascript:void(0)" onClick="openPaymentLink()" title="">
-				<img class="ttip" tooltip-content="<?php print $lang_shop['coins']; ?>" src="<?php print $shop_url."images/this/coins.png"; ?>" /> <?php print $lang_shop['charge-your-account']; ?>
+				<img class="ttip" tooltip-content="<?php print $lang_shop['coins']; ?>" src="<?php print $shop_url."images/this/coins.png"; ?>" /> <?php print $lang_shop['mt-topup']; ?>
 			</button>
 			<p><?php print $lang_shop['coins-can-be-purchased']; ?></p>
 		</div>

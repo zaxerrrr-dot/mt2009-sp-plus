@@ -38,10 +38,11 @@
 			$data = date('Y-m-d H:i:s');
 			mysqli_query($sqlServ, "INSERT INTO itemshop.ishop_log (buyer_name, item_name, date_of_buy, vnum_icon) VALUES ('".$_SESSION['id']."', '".$item['name_item']."', '$data', '".$item['vnum_icon']."')");
 			mysqli_query($sqlServ, "UPDATE account.account SET `$currency` = `$currency` - ".$item['price']." WHERE `id` = '".$_SESSION['acc_id']."'");
-			// Kazdy zakup za Smocze Monety zwraca 10% ceny w Smoczych Znakach -
+			// MT2009_PLUS_ITEMSHOP_V3_V2: kazdy zakup za Smocze Monety zwraca 100% ceny w Smoczych Znakach
+			// (wlasciciel, 24.10.2026; wczesniej 10%) - jak drugi sklep i sklep w grze -
 			// to samo zrodlo dla kategorii "Przedmioty za Znaki".
 			if ($currency === 'cash') {
-				$reward = max(1, (int)floor($item['price'] / 10));
+				$reward = (int)$item['price'];
 				mysqli_query($sqlServ, "UPDATE account.account SET `mileage` = `mileage` + ".$reward." WHERE `id` = '".$_SESSION['acc_id']."'");
 			}
 			// Paczki (np. Duzy Pakiet Startowy) daja kilka roznych przedmiotow za

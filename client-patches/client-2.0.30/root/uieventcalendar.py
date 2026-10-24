@@ -394,7 +394,8 @@ class IconCycler(ui.ImageBox):
 			self.icon.Hide()
 
 	def LoadIcon(self, name):
-		self.icon.LoadImage(IMG + name)
+		# MT2009_PLUS_ITEMSHOP_V3_V2: an image that will not load must not raise out of OnUpdate (ui.SafeLoadImage)
+		ui.SafeLoadImage(self.icon, IMG + name, IMG + DEFAULT_ICON)
 		self.alphaValue = self.MIN_ALPHA
 		self.alphaStatus = False
 
@@ -431,7 +432,7 @@ class DayCell(IconCycler):
 		IconCycler.__init__(self)
 		self.day = None
 		self.background = 'black_bg.tga'
-		self.LoadImage(IMG + self.background)
+		ui.SafeLoadImage(self, IMG + self.background)
 		numberLine = ui.TextLine()
 		numberLine.SetParent(self)
 		numberLine.AddFlag('not_pick')
@@ -446,7 +447,7 @@ class DayCell(IconCycler):
 	def SetBackground(self, name):
 		if name != self.background:
 			self.background = name
-			self.LoadImage(IMG + name)
+			ui.SafeLoadImage(self, IMG + name)
 
 	def OnMouseOverIn(self):
 		if self.day is not None:
@@ -475,7 +476,7 @@ class EventCalendarWindow(ui.BoardWithTitleBar):
 		board = ui.ImageBox()
 		board.SetParent(self)
 		board.AddFlag('not_pick')
-		board.LoadImage(IMG + 'board.tga')
+		ui.SafeLoadImage(board, IMG + 'board.tga')
 		board.SetPosition(8, 28)
 		board.Show()
 		self.board = board

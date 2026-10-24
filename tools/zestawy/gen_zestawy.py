@@ -19,6 +19,9 @@ Writes (all GENERATED - edit this file or the JSON, run it again):
   tools/zestawy/zestawy_items.json                     the client's records, item_list and itemdesc rows
                                                        (client-patches/client-2.0.30/tools/zestawy)
   client-patches/client-2.0.30/root/icon/item/<vnum>.tga   the GF icons of the added items
+  linux-port/docker/itemshop/app/shop3/include/db/costume_sets.json   the second ItemShop's copy (an item's
+                                                       detail shows its sets: parts and the bonuses per grade;
+                                                       MT2009_PLUS_ITEMSHOP_V3_V2) - the old two-part V1 sets too
 
 Example: python3 tools/zestawy/gen_zestawy.py
 """
@@ -36,6 +39,7 @@ ITEMS_JSON = os.path.join(HERE, 'zestawy_items.json')
 SETS_TXT = os.path.join(REPO, 'linux-port', 'docker', 'game', 'costume_sets.txt')
 UNIQUE_ATTR = os.path.join(REPO, 'linux-port', 'docker', 'game', 'special_item_group.unique_attr.txt')
 SQL_OUT = os.path.join(REPO, 'linux-port', 'docker', 'mariadb', 'playerbot', 'zestawy_items.sql')
+SHOP_JSON = os.path.join(REPO, 'linux-port', 'docker', 'itemshop', 'app', 'shop3', 'include', 'db', 'costume_sets.json')
 PY_OUT = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'root', 'costume_set_bonus.py')
 ICON_OUT = os.path.join(REPO, 'client-patches', 'client-2.0.30', 'root', 'icon', 'item')
 GF = '/opt/metin2/cache/gf/Gameforge_26.1.11/_client'
@@ -318,6 +322,48 @@ def write_items(sets):
         f.write(u'\n')
 
 
+def write_shop_json(sets):
+    # MT2009_PLUS_ITEMSHOP_V3_V2: the second ItemShop's item detail ("Zestaw" - what is in the set, the bonuses for
+    # 2..6 parts). The same sets the server reads: the "#Z" ones, then the V1 lines of costume_sets.txt no "#Z" set
+    # claims, as two-part sets with +800 HP / +15 attack (server-patches/zestawy gen_edits.py, ids from 100).
+    out, claimed = [], set()
+    for s in sets:
+        out.append(dict(id=s['id'], name=s['name'],
+                        parts=[dict(label=PART_LABEL.get(p['slot'], p['slot']), vnums=p['vnums']) for p in s['parts']],
+                        grades=dict((str(g), [b['text'] for b in s['grades'][g]]) for g in sorted(s['grades']))))
+        for p in s['parts']:
+            claimed.update(p['vnums'])
+    index = 0
+    for line in io.open(SETS_TXT, encoding='utf-8').read().replace('\r\n', '\n').split('\n'):
+        if not line or line.startswith('#'):
+            continue
+        f = line.split('\t')
+        if len(f) < 3:
+            continue
+        set_id = 100 + index
+        index += 1
+        bodies = [int(v) for v in f[1].split(',') if v.strip() and int(v) not in claimed]
+        hairs = [int(v) for v in f[2].split(',') if v.strip() and int(v) not in claimed]
+        if not bodies or not hairs:
+            continue
+        out.append(dict(id=set_id, name=f[0].replace('_', ' '),
+                        parts=[dict(label=u'Kostium', vnums=bodies), dict(label=u'Fryzura', vnums=hairs)],
+                        grades={'2': [u'Maks. PŻ +800', u'Wartość ataku +15']}))
+    by_vnum = {}
+    for s in out:
+        for p in s['parts']:
+            for v in p['vnums']:
+                ids = by_vnum.setdefault(str(v), [])
+                if s['id'] not in ids:
+                    ids.append(s['id'])
+    os.makedirs(os.path.dirname(SHOP_JSON), exist_ok=True)
+    with io.open(SHOP_JSON, 'w', encoding='utf-8', newline='\n') as f:
+        json.dump(dict(generated_by='tools/zestawy/gen_zestawy.py', sets=out, by_vnum=by_vnum), f, ensure_ascii=False,
+                  separators=(',', ':'))
+        f.write(u'\n')
+    return len(out)
+
+
 def main():
     if '--xlsx' in sys.argv:
         read_xlsx(sys.argv[sys.argv.index('--xlsx') + 1])
@@ -325,6 +371,8 @@ def main():
     write_sets_txt(sets)
     write_client_py(sets)
     write_items(sets)
+    shop_sets = write_shop_json(sets)
+    print('itemshop: %d sets' % shop_sets)
     print('%d sets, %d parts, %d bonus lines; %d new items' % (
         len(sets), sum(len(s['parts']) for s in sets), sum(len(b) for s in sets for b in s['grades'].values()),
         len(NEW_ITEMS)))

@@ -133,6 +133,9 @@ class Account {
 				
 				$_SESSION['id'] = $user['id'];
 				$_SESSION['game'] = true;
+				// MT2009_PLUS_ITEMSHOP_V3_V2: the character of the link - the shop shows what it can wear
+				// (header.php) and names it at the purchase.
+				$_SESSION['pid'] = (int)$PID;
 				$_SESSION['password'] = $this->securityPassword($user['password']);
 				$_SESSION['fingerprint'] = md5($_SERVER['HTTP_USER_AGENT'] . 'x' . $_SERVER['REMOTE_ADDR']);
 				

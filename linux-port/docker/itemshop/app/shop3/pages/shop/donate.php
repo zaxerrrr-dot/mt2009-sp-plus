@@ -8,9 +8,9 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Item Shop | <?php print $shop_title; ?></title>
-		<link rel="stylesheet" href="<?php print $shop_url; ?>css/bootstrap.css" type="text/css" />
-		<link rel="stylesheet" id="gameStyle" href="<?php print $shop_url; ?>css/design.css" type="text/css" />
+		<title>Sklep z przedmiotami | <?php print $shop_title; ?></title>
+		<link rel="stylesheet" href="<?php print $shop_url; ?>css/shop-base.css" type="text/css" /><!-- MT2009_PLUS_ITEMSHOP_V3_V2 -->
+		<link rel="stylesheet" id="gameStyle" href="<?php print $shop_url; ?>css/shop-theme.css" type="text/css" />
 	</head>
 	<body class="website metin2 ro">
 		<div id="page" class="row-fluid">

@@ -9,11 +9,13 @@ RewriteRule ^(include|pages)/ - [F,L]
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 
-RewriteRule ^search/(.*)/(.*)/ search.php?searchString=$1&max=$2
-RewriteRule ^search/(.*)/(.*) search.php?searchString=$1&max=$2
+# MT2009_PLUS_ITEMSHOP_V3_V2: [B] - a search of two words ("Miecz Dokkaebi") has a space, which Apache refuses
+# (403) in a rewritten query unless escaped.
+RewriteRule ^search/(.*)/(.*)/ search.php?searchString=$1&max=$2 [B]
+RewriteRule ^search/(.*)/(.*) search.php?searchString=$1&max=$2 [B]
 
-RewriteRule ^search/(.*)/ index.php?p=items&searchString=$1
-RewriteRule ^search/(.*) index.php?p=items&searchString=$1
+RewriteRule ^search/(.*)/ index.php?p=items&searchString=$1 [B]
+RewriteRule ^search/(.*) index.php?p=items&searchString=$1 [B]
 
 # MT2009_PLUS_ITEMSHOP_V3_V1: items/<category, 0 = all>/<page>/ (header.php pages of 60)
 RewriteRule ^items/([0-9]+)/([0-9]+)/ index.php?p=items&id=$1&n=$2
@@ -42,11 +44,12 @@ RewriteRule ^wheel/(.*) index.php?p=wheel&action=$1
 RewriteRule ^wheel/ index.php?p=wheel
 RewriteRule ^wheel index.php?p=wheel
 
-RewriteRule ^javascript/(.*)/(.*)/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2&new=$3&friend=$4
-RewriteRule ^javascript/(.*)/(.*)/(.*)/(.*) index.php?p=javascript&type=$1&id=$2&new=$3&friend=$4
-RewriteRule ^javascript/(.*)/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2&new=$3
-RewriteRule ^javascript/(.*)/(.*)/(.*) index.php?p=javascript&type=$1&id=$2&new=$3
-RewriteRule ^javascript/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2
-RewriteRule ^javascript/(.*)/(.*) index.php?p=javascript&type=$1&id=$2
+# MT2009_PLUS_ITEMSHOP_V3_V2: [QSA] - the purchase link carries the quantity (?q=, pages/java/buy.php).
+RewriteRule ^javascript/(.*)/(.*)/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2&new=$3&friend=$4 [QSA]
+RewriteRule ^javascript/(.*)/(.*)/(.*)/(.*) index.php?p=javascript&type=$1&id=$2&new=$3&friend=$4 [QSA]
+RewriteRule ^javascript/(.*)/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2&new=$3 [QSA]
+RewriteRule ^javascript/(.*)/(.*)/(.*) index.php?p=javascript&type=$1&id=$2&new=$3 [QSA]
+RewriteRule ^javascript/(.*)/(.*)/ index.php?p=javascript&type=$1&id=$2 [QSA]
+RewriteRule ^javascript/(.*)/(.*) index.php?p=javascript&type=$1&id=$2 [QSA]
 
 # MT2009_PLUS_ITEMSHOP_V3_V1: the package's admin panel is not shipped (our catalogue is itemshop.ishop_items).

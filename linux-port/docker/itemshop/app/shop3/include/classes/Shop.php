@@ -4,6 +4,9 @@ use Medoo\Medoo;
 class Shop {
 
 	private $db = NULL;
+	// MT2009_PLUS_ITEMSHOP_V3_V2: the wear filter of the signed-in character (setWearFilter): the view's 0/1
+	// columns anti_female .. anti_wolfman that must be 0 for an offer to be listed.
+	private $wear = [];
 
 	public function __construct($db) {
 		$this->db = $db; 
@@ -974,7 +977,7 @@ class Shop {
 	}
 
 	public function getLatestObjects() {
-		return $this->db->select("shop", "*", ["available" => 1, "LIMIT" => 10, "ORDER" => ["date" => "DESC"]]);
+		return $this->db->select("shop", "*", $this->wearWhere(["available" => 1], ["LIMIT" => 10, "ORDER" => ["date" => "DESC"]]));
 	}
 
 	public function getItemPrice($price, $discount) {
@@ -1048,7 +1051,7 @@ class Shop {
 					INNER JOIN
 				item_names o ON p.vnum = o.vnum
 					AND o.lang = ?
-					AND p.available = 1
+					AND p.available = 1".$this->wearSql("p")."
 					WHERE LOWER(CONVERT(o.name USING utf8)) LIKE ?
 					ORDER BY p.category ASC, p.date DESC;");
 			
@@ -1061,7 +1064,7 @@ class Shop {
 			return $count;
 		}
 		else if($specific_category && $searchString==null)
-			return $this->db->count("shop", ["AND" => ["category" => $id, "available" => 1]]);
+			return $this->db->count("shop", $this->wearWhere(["category" => $id, "available" => 1]));
 		else if($searchString)
 		{
 			$lang = $this->getNameLang();
@@ -1075,7 +1078,7 @@ class Shop {
 					INNER JOIN
 				item_names o ON p.vnum = o.vnum
 					AND o.lang = ?
-					AND p.available = 1
+					AND p.available = 1".$this->wearSql("p")."
 					AND p.category = ?
 					WHERE LOWER(CONVERT(o.name USING utf8)) LIKE ?
 					ORDER BY p.category ASC, p.date DESC;");
@@ -1089,9 +1092,8 @@ class Shop {
 			
 			return $count;
 		}
-		return $this->db->count("shop", ["available" => 1]);
+		return $this->db->count("shop", $this->wearWhere(["available" => 1]));
 	}
-
 	public function getItemShopItems($cat, $specific_category, $searchString=null) {
 		if($searchString)
 		{
@@ -1106,7 +1108,7 @@ class Shop {
 					INNER JOIN
 				item_names o ON p.vnum = o.vnum
 					AND o.lang = ?
-					AND p.available = 1
+					AND p.available = 1".$this->wearSql("p")."
 					WHERE LOWER(CONVERT(o.name USING utf8)) LIKE ?
 					ORDER BY p.category ASC, p.date DESC;");
 			
@@ -1117,9 +1119,9 @@ class Shop {
 			return $sth->fetchAll();
 		}
 		else if(!$specific_category)
-			return $this->db->select("shop", "*", ["available" => 1, "ORDER" => ["category" => "ASC", "date" => "DESC"]]);
+			return $this->db->select("shop", "*", $this->wearWhere(["available" => 1], ["ORDER" => ["category" => "ASC", "date" => "DESC"]]));
 		else
-			return $this->db->select("shop", "*", ["AND" => ["available" => 1, "category" => $cat], "ORDER" => ["date" => "DESC"]]);
+			return $this->db->select("shop", "*", $this->wearWhere(["available" => 1, "category" => $cat], ["ORDER" => ["date" => "DESC"]]));
 	}
 
 	public function getHistoryItem($account, $page_number) {
@@ -1863,5 +1865,100 @@ class Shop {
 
 	public function updateJackpotItem($id, $jackpot) {
 		return $this->db->update("shop", ["jackpot" => $jackpot], ["id" => $id]);
+	}
+	// MT2009_PLUS_ITEMSHOP_V3_V2 ------------------------------------------------------------------------------
+	// The wear filter: the character of the signed in-game link (header.php) sees only what it can wear. Each
+	// name is a column of the shop view (tools/itemshop3/gen_itemshop3_sql.py); a database whose view is older
+	// (no such columns yet) gets no filter instead of an error.
+	public function setWearFilter($names) {
+		$this->wear = [];
+		if(!count($names) || !$this->hasShopColumn('anti_male'))
+			return;
+		foreach($names as $name)
+			if(preg_match('/^anti_[a-z]+$/', $name))
+				$this->wear[] = $name;
+	}
+	public function hasShopColumn($column) {
+		static $columns = null;
+		if($columns === null)
+		{
+			$columns = [];
+			$sth = $this->db->pdo->query("SHOW COLUMNS FROM shop");
+			if($sth)
+				foreach($sth->fetchAll() as $row)
+					$columns[$row['Field']] = true;
+		}
+		return isset($columns[$column]);
+	}
+	private function wearWhere($and, $extra = []) {
+		foreach($this->wear as $name)
+			$and[$name] = 0;
+		return array_merge(["AND" => $and], $extra);
+	}
+	private function wearSql($alias) {
+		$sql = '';
+		foreach($this->wear as $name)
+			$sql .= ' AND '.$alias.'.'.$name.' = 0';
+		return $sql;
+	}
+	public function isWearable($item) {
+		foreach($this->wear as $name)
+			if(!empty($item[$name]))
+				return false;
+		return true;
+	}
+	// "Nowości": the newest offers (the catalogue's date_added); "Popularne": the most bought in this shop's
+	// history (the last 90 days first, then all time; filled up with the newest while little was bought).
+	public function getNewItems($limit = 60) {
+		return $this->db->select("shop", "*", $this->wearWhere(["available" => 1], ["LIMIT" => $limit, "ORDER" => ["date" => "DESC", "id" => "DESC"]]));
+	}
+	public function getPopularItems($limit = 60) {
+		$ids = [];
+		foreach([" AND h.date > NOW() - INTERVAL 90 DAY", ""] as $since)
+		{
+			$sth = $this->db->pdo->query("SELECT h.item, COUNT(*) c FROM history h WHERE h.type = 1".$since." GROUP BY h.item ORDER BY c DESC LIMIT 200");
+			if($sth)
+				foreach($sth->fetchAll() as $row)
+					if(!in_array((int)$row['item'], $ids))
+						$ids[] = (int)$row['item'];
+		}
+		$items = [];
+		if(count($ids))
+		{
+			$byId = [];
+			foreach($this->db->select("shop", "*", $this->wearWhere(["available" => 1, "id" => $ids])) as $row)
+				$byId[(int)$row['id']] = $row;
+			foreach($ids as $id)
+				if(isset($byId[$id]) && count($items) < $limit)
+					$items[] = $byId[$id];
+		}
+		if(count($items) < $limit)
+		{
+			$have = array_column($items, 'id');
+			foreach($this->getNewItems($limit * 2) as $row)
+				if(count($items) < $limit && !in_array($row['id'], $have))
+					$items[] = $row;
+		}
+		return $items;
+	}
+	// The costume sets of tools/zestawy/gen_zestawy.py (include/db/costume_sets.json): every set the item is a
+	// part of - the parts (lists of vnums) and the bonuses of each grade (2..6 parts worn).
+	public function getCostumeSets($vnum) {
+		static $data = null;
+		if($data === null)
+		{
+			$file = dirname(__DIR__).'/db/costume_sets.json';
+			$data = is_file($file) ? json_decode(file_get_contents($file), true) : [];
+			if(!is_array($data) || !isset($data['by_vnum']))
+				$data = ['sets' => [], 'by_vnum' => []];
+		}
+		if(!isset($data['by_vnum'][(string)$vnum]))
+			return [];
+		$ids = $data['by_vnum'][(string)$vnum];
+		$sets = [];
+		foreach($data['sets'] as $set)
+			if(in_array($set['id'], $ids))
+				$sets[] = $set;
+		return $sets;
 	}
 }

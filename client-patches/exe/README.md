@@ -33,6 +33,22 @@ okna „WEBBROWSER” nie istniała i każde otwarcie kończyło się `CREATE_WE
 Sprawdzone: `clang-cl /Zs` obu plików na kopii źródeł z tą nakładką (24.10.2026); pełny build `build.sh msvc --smoke`
 robi lead.
 
+### Poprawka 24.10.2026 – `MT2009_PLUS_ITEMSHOP_V3_V2` (zawieszenie gry i crash przy zamykaniu)
+
+Przyczyna: `CGraphicDevice::EnableWebBrowserMode` robił `Reset` urządzenia D3D na łańcuch `D3DSWAPEFFECT_COPY`, nie
+zwalniając zasobów `D3DPOOL_DEFAULT` gry (tekstury cieni i render targetów, bufory wierzchołków, render targety mini
+gier). Taki `Reset` zawsze się nie udaje, urządzenie zostaje „utracone” – nic się już nie rysuje (zawieszona gra, w
+syserr „texture not found”, „cannot create the render target”), a drugi `Reset` przy zamykaniu kończył się crashem.
+
+| Plik | Zmiana |
+|---|---|
+| `EterLib/GrpDevice.cpp` (**nowy w nakładce**) | `Enable/DisableWebBrowserMode` bez `Reset` – tylko prostokąt przeglądarki |
+| `EterLib/GrpScreen.cpp` (**nowy w nakładce**) | częściowe `Present` wokół przeglądarki tylko przy łańcuchu COPY; normalnie cała klatka jak zawsze |
+| `CWebBrowser/CWebBrowser.c` | okno gry dostaje `WS_CLIPCHILDREN` (Present nie zamalowuje przeglądarki); zamykanie w bezpiecznej kolejności (Stop → InPlaceDeactivate → Close → `SetClientSite(NULL)` → Release, dopiero potem `DestroyWindow`; blok strony zwalniany przy następnym otwarciu); `put_Silent` od pierwszej strony; zdarzenia `DWebBrowserEvents2`: link na inny serwer (np. „Doładuj SM” → buycoffee.to) i `target=_blank`/`window.open` otwierają się w domyślnej przeglądarce systemu (`ShellExecute`, tylko http/https/mailto), nie w grze |
+
+Klawiatura gry działa przez DirectInput (nie przez okno), więc Esc i skróty (Shift+F12) zamykają sklep także wtedy,
+gdy kursor jest w przeglądarce. Sprawdzone `clang-cl /Zs` trzech plików na kopii źródeł z całą nakładką.
+
 ## Mini gry Owsapa – `MT2009_PLUS_MINIGAMES_V1`
 
 Rumi (Okey), Yut Nori (3D w render target), Złap Króla i Dzieci Kwiatów + widżety `wndMgr` z `ui.py`
