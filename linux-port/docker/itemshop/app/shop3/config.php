@@ -1,5 +1,6 @@
 <?php
-	// MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (the "V3 Itemshop Premium" web package, opened
+	// MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (the "V3 Itemshop Premium" web package by Metin2CMS,
+	// metin2cms.cf, 2019 - its DB layer is Medoo 1.7.3, MIT), opened
 	// in the client's built-in browser with Shift+F12). Everything comes from the container's
 	// environment (docker-compose.yml, the same M2_DB_* the old shop next door uses), never from this
 	// file: the package shipped a root login, a PayPal address and a licence key here.
