@@ -36,6 +36,7 @@ REPO = os.path.normpath(os.path.join(HERE, '..', '..'))
 G = os.path.join(HERE, 'global')
 sys.path.insert(0, G)
 import decisions  # noqa: E402
+import owner_decisions  # noqa: E402  MT2009_PLUS_ITEMSHOP_V3_V8
 
 MARK = 'MT2009_PLUS_ITEMSHOP_V3_V6'
 WIKI = 'https://pl-wiki.metin2.gameforge.com/index.php?title='
@@ -361,6 +362,23 @@ class Build:
 			return RULE_LOOK
 		return None
 
+	def overrides(self):
+		"""MT2009_PLUS_ITEMSHOP_V3_V8: one row a line of the in-game catalogue: the owner's fixed price / 30 days and his
+		decisions on the sheet (owner_decisions.LINES: price, count, category, name, hidden)."""
+		out = OrderedDict()
+		for f in self.fixed.values():
+			out[f['idx']] = dict(idx=f['idx'], vnum=f['vnum'], price=f['price'], minutes=f['minutes'])
+		for idx, d in owner_decisions.LINES.items():
+			if idx not in self.d.lines:
+				raise SystemExit('owner_decisions: no line %d in the in-game catalogue' % idx)
+			o = out.setdefault(idx, dict(idx=idx))
+			for k, col in (('price', 'price'), ('count', 'count'), ('cat', 'category'), ('name', 'name')):
+				if k in d:
+					o[col] = d[k]
+			if d.get('hide'):
+				o['hidden'] = 1
+		return [o for o in out.values() if len(o) > 1]
+
 	def chest_only(self):
 		"""MT2009_PLUS_ITEMSHOP_V3_V7 (the owner: "anything that drops from any set chest is sold only through the chests"):
 		every costume / hair / skin / sash / pet / mount a chest can give, and every variant of it (the same name, type and
@@ -431,7 +449,7 @@ class Build:
 		l = self.d.lines.get(idx)
 		if not l:
 			raise SystemExit('row %r: our in-game shop has no line %d' % (r['name'], idx))
-		if idx in self.fixed or idx in self.only_lines:
+		if idx in self.fixed or idx in self.only_lines or idx in owner_decisions.LINES:
 			self.compared.add(idx)
 			return	# the owner's fixed price now / only in the chests (sheet "Zmienione ceny (stałe)")
 		if idx in self.compared:
@@ -474,7 +492,7 @@ class Build:
 	def not_listed(self):
 		"""Our visible lines the list does not mention: listed for the owner (with the fixed price where one applies)."""
 		for idx, l in self.d.lines.items():
-			if idx in self.compared or l['cat'] in (0, ) or idx in self.fixed or idx in self.only_lines:
+			if idx in self.compared or l['cat'] in (0, ) or idx in self.fixed or idx in self.only_lines or idx in owner_decisions.LINES:
 				continue
 			rule = self.rule_price(l)
 			if rule is not None and l['price'] == rule and abs(self.d.days(l['vnum']) - 30) < 0.01:
@@ -682,7 +700,8 @@ class Build:
 		return ch
 
 	def out(self):
-		lines = [l for l in self.lines.values() if l['chest'] or l['vnum'] not in self.only_vnums]
+		lines = [l for l in self.lines.values() if (l['chest'] or l['vnum'] not in self.only_vnums)
+			and '%d:%d:%d:%d' % (l['vnum'], l['count'], l['cur'], l['minutes']) not in owner_decisions.V3_REMOVE]
 		# set order for "Sety Bonusowe": the set's chest first, then its pieces (ours and the new ones)
 		set_items = []
 		for s in self.setlist:
@@ -700,7 +719,7 @@ class Build:
 				drops=[dict(no=i + 1, ppm=x['ppm'], label=x['label'], kind=x['kind'],
 					items=[dict(no=j + 1, alts=it['alts'], count=it['count'], minutes=it['minutes']) for j, it in enumerate(x['items'])])
 					for i, x in enumerate(c['drops'])]) for c in self.chests], set_items=set_items,
-			overrides=[dict(idx=f['idx'], vnum=f['vnum'], price=f['price'], minutes=f['minutes']) for f in self.fixed.values()],
+			overrides=self.overrides(),
 			chest_only=sorted(self.only_vnums))
 		json.dump(res, open(os.path.join(G, 'v3_extra.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 		json.dump(self.ids, open(os.path.join(G, 'ids.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1, sort_keys=True)
@@ -762,6 +781,24 @@ class Build:
 			+ [[s['wiki'], '', s['vnum'], self.d.name(s['vnum']), 'w skrzyni zamiast brakującego przedmiotu, z jego szansą (%g%% z zapisanej skrzyni, przed przeliczeniem)' % s['pct'],
 				'%d skrzyń: %s' % (len(s['chests']), ', '.join(s['chests'])), s['why'], wl(s['wiki'])] for s in self.chest_subs.values()],
 			[30, 22, 12, 28, 34, 50, 40, 30])
+		rows = []
+		for idx, d in owner_decisions.LINES.items():
+			l = self.d.lines[idx]
+			ch = []
+			if 'price' in d:
+				ch.append('cena %d -> %d %s' % (l['price'], d['price'], 'SM' if l['cur'] == 1 else 'SZ'))
+			if 'count' in d:
+				ch.append('sztuk %d -> %d' % (l['count'], d['count']))
+			if 'cat' in d:
+				ch.append('kategoria -> %s' % CAT_NAMES.get(d['cat'], d['cat']))
+			if 'name' in d:
+				ch.append('nazwa -> %s' % d['name'])
+			if d.get('hide'):
+				ch.append('usunięte ze sklepu V3')
+			rows.append([idx, l['vnum'], l['name'] or self.d.name(l['vnum']), CAT_NAMES.get(l['cat'], l['cat']), '%d %s' % (l['price'], 'SM' if l['cur'] == 1 else 'SZ'),
+				d.get('why', ''), '; '.join(ch) or 'bez zmian'])
+		sheet('Decyzje (runda 5)', ['Nr linii (u nas)', 'Vnum', 'Przedmiot', 'Kategoria', 'Cena była', 'Decyzja właściciela', 'Co zrobione w sklepie V3'],
+			rows, [10, 9, 30, 22, 11, 40, 50])
 		sheet('Tylko w skrzyniach', ['Nr linii (u nas)', 'Vnum', 'Przedmiot', 'Kategoria', 'Cena (była)', 'Czas', 'Skrzynie, które go dają'],
 			[[idx, l['vnum'], l['name'] or self.d.name(l['vnum']), CAT_NAMES.get(l['cat'], l['cat']), '%d SM' % l['price'], self.d.days_label(l['vnum']),
 				', '.join(self.chests_of(l['vnum']))] for idx, l in self.only_lines.items()],

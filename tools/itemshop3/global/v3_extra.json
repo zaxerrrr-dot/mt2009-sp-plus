@@ -1758,57 +1758,6 @@
    "desc": ""
   },
   {
-   "id": 100053,
-   "vnum": 39064,
-   "count": 2,
-   "price": 30,
-   "cur": 1,
-   "cat": 11,
-   "minutes": 0,
-   "suffix": "(x2)",
-   "source": "Serwis / Indywidualizacja: Rozszerzenie Sklepu Gaya",
-   "note": "1 szt. mamy (19 SM = lista); dodane paczki x2/x4/x9 z rabatem z listy.",
-   "sets": [],
-   "chest": 0,
-   "name": "",
-   "image": "",
-   "desc": ""
-  },
-  {
-   "id": 100054,
-   "vnum": 39064,
-   "count": 4,
-   "price": 48,
-   "cur": 1,
-   "cat": 11,
-   "minutes": 0,
-   "suffix": "(x4)",
-   "source": "Serwis / Indywidualizacja: Rozszerzenie Sklepu Gaya",
-   "note": "1 szt. mamy (19 SM = lista); dodane paczki x2/x4/x9 z rabatem z listy.",
-   "sets": [],
-   "chest": 0,
-   "name": "",
-   "image": "",
-   "desc": ""
-  },
-  {
-   "id": 100055,
-   "vnum": 39064,
-   "count": 9,
-   "price": 72,
-   "cur": 1,
-   "cat": 11,
-   "minutes": 0,
-   "suffix": "(x9)",
-   "source": "Serwis / Indywidualizacja: Rozszerzenie Sklepu Gaya",
-   "note": "1 szt. mamy (19 SM = lista); dodane paczki x2/x4/x9 z rabatem z listy.",
-   "sets": [],
-   "chest": 0,
-   "name": "",
-   "image": "",
-   "desc": ""
-  },
-  {
    "id": 100056,
    "vnum": 70401,
    "count": 1,
@@ -1904,40 +1853,6 @@
    "suffix": "",
    "source": "Serwis / Przepustki: Zasuszona Głowa",
    "note": "Lista: 12 SM i 10 SM (dwa wiersze) - przyjęte 10 SM z wiersza z paczkami.",
-   "sets": [],
-   "chest": 0,
-   "name": "",
-   "image": "",
-   "desc": ""
-  },
-  {
-   "id": 100062,
-   "vnum": 30319,
-   "count": 5,
-   "price": 39,
-   "cur": 1,
-   "cat": 11,
-   "minutes": 0,
-   "suffix": "(Paczka 5)",
-   "source": "Serwis / Przepustki: Zasuszona Głowa",
-   "note": "",
-   "sets": [],
-   "chest": 0,
-   "name": "",
-   "image": "",
-   "desc": ""
-  },
-  {
-   "id": 100063,
-   "vnum": 30319,
-   "count": 25,
-   "price": 169,
-   "cur": 1,
-   "cat": 11,
-   "minutes": 0,
-   "suffix": "(Paczka 25)",
-   "source": "Serwis / Przepustki: Zasuszona Głowa",
-   "note": "",
    "sets": [],
    "chest": 0,
    "name": "",
@@ -21475,6 +21390,640 @@
    "vnum": 71288,
    "price": 299,
    "minutes": 43200
+  },
+  {
+   "idx": 1,
+   "price": 59
+  },
+  {
+   "idx": 40928,
+   "name": "Klatka Transportowa"
+  },
+  {
+   "idx": 617,
+   "name": "Karta Resetu"
+  },
+  {
+   "idx": 618,
+   "name": "Karta Przetasowania"
+  },
+  {
+   "idx": 40924,
+   "name": "Pergamin Nazwy Zwierzaka"
+  },
+  {
+   "idx": 608,
+   "name": "Zaczarowanie Przedmiotu 3+1 Pakiet Oszczędny"
+  },
+  {
+   "idx": 40925,
+   "price": 79,
+   "name": "Reverti Zwierza"
+  },
+  {
+   "idx": 40926,
+   "price": 59,
+   "name": "Revertus Zwierza"
+  },
+  {
+   "idx": 901,
+   "price": 80
+  },
+  {
+   "idx": 607,
+   "price": 59
+  },
+  {
+   "idx": 604,
+   "price": 20
+  },
+  {
+   "idx": 206,
+   "price": 21
+  },
+  {
+   "idx": 207,
+   "price": 21
+  },
+  {
+   "idx": 208,
+   "price": 21
+  },
+  {
+   "idx": 209,
+   "price": 21
+  },
+  {
+   "idx": 210,
+   "price": 21
+  },
+  {
+   "idx": 211,
+   "price": 21
+  },
+  {
+   "idx": 611,
+   "price": 111
+  },
+  {
+   "idx": 606,
+   "price": 19
+  },
+  {
+   "idx": 626,
+   "price": 99
+  },
+  {
+   "idx": 609,
+   "price": 9
+  },
+  {
+   "idx": 610,
+   "price": 59
+  },
+  {
+   "idx": 710,
+   "price": 350
+  },
+  {
+   "idx": 701,
+   "price": 350
+  },
+  {
+   "idx": 702,
+   "price": 300
+  },
+  {
+   "idx": 703,
+   "price": 125,
+   "count": 1
+  },
+  {
+   "idx": 704,
+   "price": 125,
+   "count": 1
+  },
+  {
+   "idx": 705,
+   "price": 95,
+   "count": 1
+  },
+  {
+   "idx": 706,
+   "price": 95,
+   "count": 1
+  },
+  {
+   "idx": 708,
+   "price": 95,
+   "count": 1
+  },
+  {
+   "idx": 709,
+   "price": 420
+  },
+  {
+   "idx": 906,
+   "price": 79,
+   "count": 6,
+   "category": 2
+  },
+  {
+   "idx": 950,
+   "price": 49,
+   "category": 11
+  },
+  {
+   "idx": 112,
+   "hidden": 1
+  },
+  {
+   "idx": 205,
+   "hidden": 1
+  },
+  {
+   "idx": 201,
+   "hidden": 1
+  },
+  {
+   "idx": 202,
+   "hidden": 1
+  },
+  {
+   "idx": 203,
+   "hidden": 1
+  },
+  {
+   "idx": 204,
+   "hidden": 1
+  },
+  {
+   "idx": 13,
+   "hidden": 1
+  },
+  {
+   "idx": 40901,
+   "hidden": 1
+  },
+  {
+   "idx": 40902,
+   "hidden": 1
+  },
+  {
+   "idx": 40903,
+   "hidden": 1
+  },
+  {
+   "idx": 40904,
+   "hidden": 1
+  },
+  {
+   "idx": 40905,
+   "hidden": 1
+  },
+  {
+   "idx": 40906,
+   "hidden": 1
+  },
+  {
+   "idx": 40907,
+   "hidden": 1
+  },
+  {
+   "idx": 40908,
+   "hidden": 1
+  },
+  {
+   "idx": 40909,
+   "hidden": 1
+  },
+  {
+   "idx": 301,
+   "price": 299
+  },
+  {
+   "idx": 302,
+   "price": 299
+  },
+  {
+   "idx": 303,
+   "price": 299
+  },
+  {
+   "idx": 304,
+   "price": 299
+  },
+  {
+   "idx": 309,
+   "price": 299
+  },
+  {
+   "idx": 310,
+   "price": 299
+  },
+  {
+   "idx": 311,
+   "price": 299
+  },
+  {
+   "idx": 312,
+   "price": 299
+  },
+  {
+   "idx": 314,
+   "price": 299
+  },
+  {
+   "idx": 315,
+   "price": 299
+  },
+  {
+   "idx": 325,
+   "price": 299
+  },
+  {
+   "idx": 326,
+   "price": 299
+  },
+  {
+   "idx": 327,
+   "price": 299
+  },
+  {
+   "idx": 328,
+   "price": 299
+  },
+  {
+   "idx": 329,
+   "price": 299
+  },
+  {
+   "idx": 330,
+   "price": 299
+  },
+  {
+   "idx": 331,
+   "price": 299
+  },
+  {
+   "idx": 332,
+   "price": 299
+  },
+  {
+   "idx": 333,
+   "price": 299
+  },
+  {
+   "idx": 334,
+   "price": 299
+  },
+  {
+   "idx": 335,
+   "price": 299
+  },
+  {
+   "idx": 336,
+   "price": 299
+  },
+  {
+   "idx": 337,
+   "price": 299
+  },
+  {
+   "idx": 339,
+   "price": 299
+  },
+  {
+   "idx": 340,
+   "price": 299
+  },
+  {
+   "idx": 341,
+   "price": 299
+  },
+  {
+   "idx": 342,
+   "price": 299
+  },
+  {
+   "idx": 349,
+   "price": 299
+  },
+  {
+   "idx": 350,
+   "price": 299
+  },
+  {
+   "idx": 351,
+   "price": 299
+  },
+  {
+   "idx": 352,
+   "price": 299
+  },
+  {
+   "idx": 353,
+   "price": 299
+  },
+  {
+   "idx": 354,
+   "price": 299
+  },
+  {
+   "idx": 355,
+   "price": 299
+  },
+  {
+   "idx": 356,
+   "price": 299
+  },
+  {
+   "idx": 357,
+   "price": 299
+  },
+  {
+   "idx": 358,
+   "price": 299
+  },
+  {
+   "idx": 359,
+   "price": 299
+  },
+  {
+   "idx": 360,
+   "price": 299
+  },
+  {
+   "idx": 361,
+   "price": 299
+  },
+  {
+   "idx": 362,
+   "price": 299
+  },
+  {
+   "idx": 363,
+   "price": 299
+  },
+  {
+   "idx": 364,
+   "price": 299
+  },
+  {
+   "idx": 366,
+   "price": 299
+  },
+  {
+   "idx": 367,
+   "price": 299
+  },
+  {
+   "idx": 368,
+   "price": 299
+  },
+  {
+   "idx": 373,
+   "price": 299
+  },
+  {
+   "idx": 374,
+   "price": 299
+  },
+  {
+   "idx": 375,
+   "price": 299
+  },
+  {
+   "idx": 376,
+   "price": 299
+  },
+  {
+   "idx": 378,
+   "price": 299
+  },
+  {
+   "idx": 379,
+   "price": 299
+  },
+  {
+   "idx": 380,
+   "price": 299
+  },
+  {
+   "idx": 381,
+   "price": 299
+  },
+  {
+   "idx": 382,
+   "price": 299
+  },
+  {
+   "idx": 383,
+   "price": 299
+  },
+  {
+   "idx": 384,
+   "price": 299
+  },
+  {
+   "idx": 390,
+   "price": 299
+  },
+  {
+   "idx": 391,
+   "price": 299
+  },
+  {
+   "idx": 392,
+   "price": 299
+  },
+  {
+   "idx": 393,
+   "price": 299
+  },
+  {
+   "idx": 394,
+   "price": 299
+  },
+  {
+   "idx": 395,
+   "price": 299
+  },
+  {
+   "idx": 396,
+   "price": 299
+  },
+  {
+   "idx": 10230,
+   "hidden": 1
+  },
+  {
+   "idx": 10231,
+   "hidden": 1
+  },
+  {
+   "idx": 10232,
+   "hidden": 1
+  },
+  {
+   "idx": 10233,
+   "hidden": 1
+  },
+  {
+   "idx": 10238,
+   "hidden": 1
+  },
+  {
+   "idx": 10239,
+   "hidden": 1
+  },
+  {
+   "idx": 10240,
+   "hidden": 1
+  },
+  {
+   "idx": 10241,
+   "hidden": 1
+  },
+  {
+   "idx": 10242,
+   "hidden": 1
+  },
+  {
+   "idx": 10243,
+   "hidden": 1
+  },
+  {
+   "idx": 10244,
+   "hidden": 1
+  },
+  {
+   "idx": 10245,
+   "hidden": 1
+  },
+  {
+   "idx": 10246,
+   "hidden": 1
+  },
+  {
+   "idx": 10247,
+   "hidden": 1
+  },
+  {
+   "idx": 10248,
+   "hidden": 1
+  },
+  {
+   "idx": 10249,
+   "hidden": 1
+  },
+  {
+   "idx": 10250,
+   "hidden": 1
+  },
+  {
+   "idx": 10251,
+   "hidden": 1
+  },
+  {
+   "idx": 10252,
+   "hidden": 1
+  },
+  {
+   "idx": 10253,
+   "hidden": 1
+  },
+  {
+   "idx": 10254,
+   "hidden": 1
+  },
+  {
+   "idx": 10255,
+   "hidden": 1
+  },
+  {
+   "idx": 10256,
+   "hidden": 1
+  },
+  {
+   "idx": 10257,
+   "hidden": 1
+  },
+  {
+   "idx": 10258,
+   "hidden": 1
+  },
+  {
+   "idx": 10259,
+   "hidden": 1
+  },
+  {
+   "idx": 10260,
+   "hidden": 1
+  },
+  {
+   "idx": 10261,
+   "hidden": 1
+  },
+  {
+   "idx": 10262,
+   "hidden": 1
+  },
+  {
+   "idx": 10263,
+   "hidden": 1
+  },
+  {
+   "idx": 10264,
+   "hidden": 1
+  },
+  {
+   "idx": 10265,
+   "hidden": 1
+  },
+  {
+   "idx": 10266,
+   "hidden": 1
+  },
+  {
+   "idx": 10267,
+   "hidden": 1
+  },
+  {
+   "idx": 10268,
+   "hidden": 1
+  },
+  {
+   "idx": 10269,
+   "hidden": 1
+  },
+  {
+   "idx": 10271,
+   "hidden": 1
+  },
+  {
+   "idx": 10272,
+   "hidden": 1
+  },
+  {
+   "idx": 10273,
+   "hidden": 1
+  },
+  {
+   "idx": 10274,
+   "hidden": 1
+  },
+  {
+   "idx": 10275,
+   "hidden": 1
+  },
+  {
+   "idx": 10276,
+   "hidden": 1
+  },
+  {
+   "idx": 10277,
+   "hidden": 1
   }
  ],
  "chest_only": [

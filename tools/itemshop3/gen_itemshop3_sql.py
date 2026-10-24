@@ -256,13 +256,13 @@ def shop_view(az_vnums):
 		'i.`index` AS id',
 		# the category the line is listed under: a flash offer only under the flash offers, a line in an index range
 		# under it, else Smocze Znaki for a line in marks; 0 = the in-game window does not show it either
-		'CASE WHEN %s THEN %d ELSE COALESCE(NULLIF(%s, 0), IF(i.currency + 0 = 2, %d, 0)) END AS category' % (auction, CAT_AUCTIONS, in_range, CAT_MARKS),
+		'CASE WHEN %s THEN %d WHEN o.category IS NOT NULL THEN o.category ELSE COALESCE(NULLIF(%s, 0), IF(i.currency + 0 = 2, %d, 0)) END AS category' % (auction, CAT_AUCTIONS, in_range, CAT_MARKS),
 		"'2026-01-01 00:00:00' AS date", '1 AS type',
 		'%s AS description' % webdesc(GV),
 		'i.currency + 0 AS pay_type',
 		'IF(%s, pm.price, COALESCE(o.price, i.price)) AS coins' % promo,
 		'COALESCE(o.price, i.price) AS base_price', 'IF(%s, 1, 0) AS promo' % promo, 'IF(%s, pm.end_time, NULL) AS promo_end' % promo,
-		'i.count AS count', '%s AS vnum' % GV,
+		'COALESCE(o.count, i.count) AS count', '%s AS vnum' % GV,
 		# the engine never hands the line's sockets over (GiveItem: vnum and count only)
 	] + common_tail()
 	cols += [
@@ -276,7 +276,7 @@ def shop_view(az_vnums):
 		# the in-game window's quantity choice: stackable and not ANTIFLAG_STACK (1, and 5 / 10 within the stack size)
 		'IF(COALESCE(pr.flag, 0) & %d AND NOT COALESCE(pr.antiflag, 0) & %d, 1, 0) AS stackable' % (ITEM_FLAG_STACKABLE, ITEM_ANTIFLAG_STACK),
 		'GREATEST(COALESCE(pr.stack, 1), 1) AS max_stack',
-		'CONCAT(COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT(\'Vnum: \', %s)), %s) AS name' % (GV, suffix),
+		'IF(o.name IS NOT NULL, o.name, CONCAT(COALESCE(CONVERT(pr.locale_name USING utf8mb4), CONCAT(\'Vnum: \', %s)), %s)) AS name' % (GV, suffix),
 		'i.minLevel AS min_level',
 		'IF(pr.type = 3 AND pr.subtype = %d AND i.vnum <> %d, 1, 0) AS vip' % (USE_VIP, PREMIUM_TOKEN_VNUM),
 		'COALESCE(pr.value0, 0) AS vip_type', 'COALESCE(pr.value1, 0) AS vip_hours', 'COALESCE(pr.value0, 0) AS value0',
@@ -298,7 +298,7 @@ def shop_view(az_vnums):
 		' LEFT JOIN itemshop3.line_overrides o ON o.idx = i.`index`'
 		' LEFT JOIN world.item_proto pr ON pr.vnum = %s'
 		# MT2009_PLUS_ITEMSHOP_V3_V7: a set piece any chest gives is sold only through the chests
-		' WHERE NOT EXISTS (SELECT 1 FROM itemshop3.chest_only co WHERE co.vnum = %s)' % (', '.join(cols), GV, GV))
+		' WHERE NOT EXISTS (SELECT 1 FROM itemshop3.chest_only co WHERE co.vnum = %s) AND COALESCE(o.hidden, 0) = 0' % (', '.join(cols), GV, GV))
 	# MT2009_PLUS_ITEMSHOP_V3_V6: the second shop's own lines (itemshop3.v3_lines): the same columns; a line's minutes are
 	# its duration (header.php keeps time > 0; Player::CreateItem writes the expiry into socket0, the db core keeps a
 	# non-zero socket0 of an award - ClientManager RESULT_SAFEBOX_LOAD), a VIP line's minutes its premium time; a chest
@@ -359,6 +359,9 @@ def v3_extra_sql(w):
 	w('-- with loot 699, mounts, skins and sashes, costumes, hairstyles 299 SM, 30 days): the line\'s price, minutes, and the')
 	w('-- 30-day variant of an item without a timer; the in-game window keeps common.itemshop_items as it is')
 	w('CREATE TABLE IF NOT EXISTS itemshop3.line_overrides (idx INT NOT NULL PRIMARY KEY, vnum INT NOT NULL, price INT NOT NULL, minutes INT NOT NULL DEFAULT 0) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
+	# MT2009_PLUS_ITEMSHOP_V3_V8: the owner's decisions on the sheet - a line's count, category, name, hidden; any value NULL = the
+	# in-game line's own
+	w('ALTER TABLE itemshop3.line_overrides MODIFY vnum INT NULL, MODIFY price INT NULL, MODIFY minutes INT NULL, ADD COLUMN IF NOT EXISTS count INT NULL, ADD COLUMN IF NOT EXISTS category INT NULL, ADD COLUMN IF NOT EXISTS name VARCHAR(96) NULL, ADD COLUMN IF NOT EXISTS hidden TINYINT NOT NULL DEFAULT 0;')
 	w('-- MT2009_PLUS_ITEMSHOP_V3_V7: the set pieces (and their sex / class / duration variants) only the chests give - the')
 	w('-- shop view leaves their lines out (the owner: set pieces only from the chests)')
 	w('CREATE TABLE IF NOT EXISTS itemshop3.chest_only (vnum INT NOT NULL PRIMARY KEY) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;')
@@ -371,9 +374,11 @@ def v3_extra_sql(w):
 	for i in range(0, len(rows), 500):
 		w('INSERT INTO itemshop3.chest_only (vnum) VALUES %s;' % ', '.join(rows[i:i + 500]))
 	w('DELETE FROM itemshop3.line_overrides;')
-	rows = ['(%d, %d, %d, %d)' % (o['idx'], o['vnum'], o['price'], o['minutes']) for o in x.get('overrides', [])]
+	n = lambda o, k: str(int(o[k])) if o.get(k) is not None else 'NULL'
+	rows = ['(%d, %s, %s, %s, %s, %s, %s, %d)' % (o['idx'], n(o, 'vnum'), n(o, 'price'), n(o, 'minutes'), n(o, 'count'), n(o, 'category'),
+		q(o['name']) if o.get('name') else 'NULL', int(o.get('hidden', 0))) for o in x.get('overrides', [])]
 	for i in range(0, len(rows), 300):
-		w('INSERT INTO itemshop3.line_overrides (idx, vnum, price, minutes) VALUES %s;' % ', '.join(rows[i:i + 300]))
+		w('INSERT INTO itemshop3.line_overrides (idx, vnum, price, minutes, count, category, name, hidden) VALUES %s;' % ', '.join(rows[i:i + 300]))
 	w('DELETE FROM itemshop3.v3_lines;')
 	w('DELETE FROM itemshop3.set_items;')
 	w('DELETE FROM itemshop3.chests;')
