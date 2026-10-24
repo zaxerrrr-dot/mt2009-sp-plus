@@ -97,12 +97,15 @@
 							<?php
 								// MT2009_PLUS_ITEMSHOP_V3_V3: "Polecane" (the in-game window's first button) in the place of "Nowości"
 								// (the in-game lines have no date), "Za Smocze Znaki" = its "Smocze Znaki" (category 12).
-								$nav_mode = ($current_page=='items') ? ($list_mode ? $list_mode : ($specific_category && $id==12 ? 'mileage' : ($specific_category && $id==1 ? 'featured' : ($searchString ? 'search' : 'all')))) : '';
+								$nav_mode = ($current_page=='game') ? 'wheel' : (($current_page=='items') ? ($list_mode ? $list_mode : ($specific_category && $id==12 ? 'mileage' : ($specific_category && $id==1 ? 'featured' : ($searchString ? 'search' : 'all')))) : '');
 								$nav = [
 									['all', $shop_url.'items/', $lang_shop['all_objects'], ''],
 									['featured', $shop_url.'items/1/', $lang_shop['mt-featured'], ''],
 									['popular', $shop_url.'items/popular/', $lang_shop['mt-popular'], ''],
 									['mileage', $shop_url.'items/12/', $lang_shop['mt-for-marks'], 'special-category'],
+									// MT2009_PLUS_ITEMSHOP_V3_V4: "Koło Losu" - the game's window (the client takes the link game/wheel/
+									// and opens uiwheel.py instead of the page; pages/shop/game.php without that)
+									['wheel', $shop_url.'game/wheel/', $lang_shop['mt-wheel-tab'], 'special-category mt-wheel-tab'],
 								];
 								foreach($nav as $n) {
 							?>
@@ -142,6 +145,9 @@
 								break;
 							case 'premium':	// MT2009_PLUS_ITEMSHOP_V3_V3: "Konto Premium" of the in-game shop
 								include 'pages/shop/premium.php';
+								break;
+							case 'game':	// MT2009_PLUS_ITEMSHOP_V3_V4: a game window the client did not open itself
+								include 'pages/shop/game.php';
 								break;
 							case 'wheel':
 								include 'pages/shop/wheel.php';

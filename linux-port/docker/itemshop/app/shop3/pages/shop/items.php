@@ -24,7 +24,7 @@
 ?>
 <div id="category">
 	<h2>
-		<ul class="breadcrumb">
+		<ul class="breadcrumb<?php if($specific_category && !empty($categoriesbyid[$id]['parent'])) print ' mt-crumb-3'; /* MT2009_PLUS_ITEMSHOP_V3_V4 */ ?>">
 			<?php if($searchString==null) { ?>
 			<li><a href="<?php print $shop_url.'items/'; ?>" title="<?php print $lang_shop['all_objects']; ?>"><?php print $lang_shop['all_objects']; ?></a><span class="item_count">(<?php print $count_all; ?>)</span></li>
 			<?php } else { ?>
@@ -33,6 +33,10 @@
 			<li>&rsaquo;</li>
 			<li><a href="<?php print $shop_url.'items/'.$list_mode.'/'; ?>"><?php print $list_titles[$list_mode]; ?></a><span class="item_count">(<?php print $count_cat; ?>)</span></li>
 			<?php } else if($specific_category) { ?>
+			<?php $parent_cat = $categoriesbyid[$id]['parent']; if($parent_cat && isset($categoriesbyid[$parent_cat])) { /* MT2009_PLUS_ITEMSHOP_V3_V4: the group over a subcategory */ ?>
+			<li>&rsaquo;</li>
+			<li><a href="<?php print $shop_url.'items/'.$parent_cat.'/'; ?>" title="<?php print $categoriesbyid[$parent_cat]['name']; ?>"><?php print $categoriesbyid[$parent_cat]['name']; ?></a><span class="item_count">(<?php print $shop->getItemShopCount($parent_cat, true); ?>)</span></li>
+			<?php } ?>
 			<li>&rsaquo;</li>
 			<li><a href="<?php print $shop_url.'items/'.$id.'/'; ?>" title="<?php print $categoriesbyid[$id]['name']; ?>"><?php print $categoriesbyid[$id]['name']; ?></a><span class="item_count">(<?php print $count_cat; ?>)</span></li>
 			<?php } ?>
@@ -58,11 +62,31 @@
 	</h2>
 	<div class="tabbable tabs-left">
 		<ul id="subnavi" class="nav nav-tabs mt-subnavi">
-			<?php foreach($categoriesbyid as $key => $category) { if(!$key) continue; ?>
-			<li>
+			<?php
+				// MT2009_PLUS_ITEMSHOP_V3_V4: a group ("Wygląd postaci") with its subcategories nested under it, as the big
+				// servers' shop has them - open (with the number of offers of each) while the group or one of them is
+				// chosen; the subcategories are not top items of their own.
+				foreach($categoriesbyid as $key => $category) {
+					if(!$key || !empty($category['parent']))
+						continue;
+					$children = $category['kind']=='group' ? $shop->categoryChildren($key) : [];
+					$group_open = count($children) && ($key==$active_cat || in_array($active_cat, $children));
+			?>
+			<li<?php if(count($children)) print ' class="mt-has-sub'.($group_open ? ' mt-sub-open' : '').'"'; ?>>
 				<a class="btn-catitem mt-catitem cat-<?php print $key; if($key==$active_cat) print ' btn-catitem-active'; if(in_array($category['kind'], ['auctions', 'premium', 'topup'])) print ' mt-cat-'.$category['kind']; ?>" <?php print $cat_link($key); ?><?php if($category['kind']=='topup') print ' title="'.$lang_shop['mt-open-url'].'"'; ?>>
-					<?php print mt2009_category_icon($key, 20); ?><span><?php print htmlspecialchars($category['name']); ?></span>
+					<?php print mt2009_category_icon($key, 20); ?><span><?php print htmlspecialchars($category['name']); ?></span><?php if(count($children)) print '<i class="mt-sub-arrow"></i>'; ?>
 				</a>
+				<?php if($group_open) { ?>
+				<ul class="mt-subcats">
+					<?php foreach($children as $child) { if(!isset($categoriesbyid[$child])) continue; ?>
+					<li>
+						<a class="mt-subcatitem cat-<?php print $child; if($child==$active_cat) print ' mt-subcat-active'; ?>" <?php print $cat_link($child); ?>>
+							<?php print mt2009_category_icon($child, 16); ?><span class="mt-subcat-name"><?php print htmlspecialchars($categoriesbyid[$child]['name']); ?></span><span class="quant">(<?php print $shop->getItemShopCount($child, true); ?>)</span>
+						</a>
+					</li>
+					<?php } ?>
+				</ul>
+				<?php } ?>
 			</li>
 			<?php } ?>
 		</ul>
@@ -108,14 +132,16 @@
 				<?php } else {
 					$open = false;
 					$in_line = 0;
+					// MT2009_PLUS_ITEMSHOP_V3_V4: a group's list is in parts by its subcategories, each with its heading
+					$by_parts = !$list_mode && (!$specific_category || $active_kind=='group');
 					foreach($all_items as $key => $item)
 					{
-						$new_group = !$list_mode && !$specific_category && ($key==0 || $all_items[$key-1]['category']!=$item['category']);
+						$new_group = $by_parts && ($key==0 || $all_items[$key-1]['category']!=$item['category']);
 						if($new_group || $key==0)
 						{
 							if($open)
 								print '</ul>';
-							if($new_group && $key>0 && isset($categoriesbyid[$item['category']]))
+							if($new_group && ($key>0 || $active_kind=='group') && isset($categoriesbyid[$item['category']]))
 								print '<h3 class="clearfix">'.$categoriesbyid[$item['category']]['name'].' <span class="item_count">('.$shop->getItemShopCount($item['category'], true).')</span></h3>';
 							print '<ul class="item-list card clearfix">';
 							$open = true;

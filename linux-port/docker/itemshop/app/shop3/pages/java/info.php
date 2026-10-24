@@ -11,6 +11,8 @@
 	// MT2009_PLUS_ITEMSHOP_V3_V3: the in-game window's quantities (1, 5, 10 within the stack size) and why it cannot be
 	// bought now (level floor, VIP while premium, flash offer, currency) - include/functions/tile.php.
 	$amounts = mt2009_quantities($item);
+	// MT2009_PLUS_ITEMSHOP_V3_V4: the quantity chosen on the card (?q=, the card's price button opens this window)
+	$qty = in_array((int)$buy_qty, $amounts) ? (int)$buy_qty : 1;
 	$block = mt2009_buy_block($item, $final_price);
 	$can_pay = $block=='';
 	$buy_link = $shop_url.'javascript/buy/'.$item['id'].'/';
@@ -100,7 +102,9 @@
 			<div class="breadcrumb">
 				<span><a href="<?php print $shop_url; ?>"><?php print $lang_shop['mt-home']; ?></a>&rsaquo;</span>
 				<span><a href="<?php print $shop_url.'items/'; ?>"><?php print $lang_shop['all_objects']; ?></a>&rsaquo;</span>
-				<?php if(isset($categoriesbyid[$item['category']]['name'])) { ?>
+				<?php $parent_cat = isset($categoriesbyid[$item['category']]['parent']) ? $categoriesbyid[$item['category']]['parent'] : 0; if($parent_cat && isset($categoriesbyid[$parent_cat]['name'])) { /* MT2009_PLUS_ITEMSHOP_V3_V4: the group */ ?>
+				<span><a href="<?php print $shop_url.'items/'.$parent_cat.'/'; ?>"><?php print $categoriesbyid[$parent_cat]['name']; ?></a>&rsaquo;</span>
+				<?php } if(isset($categoriesbyid[$item['category']]['name'])) { ?>
 				<span><a href="<?php print $shop_url.'items/'.$item['category'].'/'; ?>"><?php print $categoriesbyid[$item['category']]['name']; ?></a>&rsaquo;</span>
 				<?php } ?>
 				<span class="active"><?php print htmlspecialchars($item_name); ?></span>
@@ -175,7 +179,7 @@
 			<div class="contrast-box 1">
 				<form class="clearfix" onsubmit="return false;">
 					<label class="js_currency" data-currency="<?php print (int)$item['pay_type']; ?>" style="display: block;">
-						<span class="unitCount">1</span> <?php print $lang_shop['mt-pieces-buy']; ?>
+						<span class="unitCount"><?php print $qty; ?></span> <?php print $lang_shop['mt-pieces-buy']; ?>
 					</label>
 					<span class="one_char current_purchase_char"> <?php print htmlspecialchars($char_label); ?></span>
 				</form>
@@ -184,7 +188,7 @@
 					<label><?php print $lang_shop['mt-choose-amount']; ?></label>
 					<ul id="js_button_container" class="clearfix">
 						<?php foreach($amounts as $n) { ?>
-						<li><button type="button" class="btn-discount btn-default<?php if($n==1) print ' btn-active'; ?>" data-variant="<?php print $n; ?>" value="<?php print $n; ?>"><?php print $n; ?></button></li>
+						<li><button type="button" class="btn-discount btn-default<?php if($n==$qty) print ' btn-active'; ?>" data-variant="<?php print $n; ?>" value="<?php print $n; ?>"><?php print $n; ?></button></li>
 						<?php } ?>
 					</ul>
 				</div>
@@ -195,12 +199,13 @@
 				<?php if($item['available']==1) { ?>
 				<form action="" method="get" onsubmit="return false;">
 					<p><?php print $lang_shop['mt-now-for']; ?></p>
-					<p class="bill_price block-price"><img class="ttip" src="<?php print $shop_url.'images/this/'.($item['pay_type']==2 ? 'jcoins.png' : 'coins.png'); ?>" alt=""> <span class="end-price mt-total"><?php print number_format($final_price, 0, '', '.'); ?></span></p>
+					<p class="bill_price block-price"><img class="ttip" src="<?php print $shop_url.'images/this/'.($item['pay_type']==2 ? 'jcoins.png' : 'coins.png'); ?>" alt=""> <span class="end-price mt-total"><?php print number_format($final_price * $qty, 0, '', '.'); ?></span></p>
 					<div class="buy-btn-box clearfix">
 						<div class="btn-group">
 							<?php if($can_pay) { ?>
-							<button type="button" class="btn-price" name="changer" style="display: inline-block;"><?php print $lang_shop['buy']; ?></button>
-							<button id="purchaseLink1" class="js_currency fancybox fancybox.ajax btn-buy" data-currency="<?php print (int)$item['pay_type']; ?>" href="<?php print $buy_link.'?q=1'; ?>" style="display: none;"><?php print $lang_shop['buy-now']; ?></button>
+							<?php // MT2009_PLUS_ITEMSHOP_V3_V4: "Kup" buys at once and shows "Dziękujemy za zakup!" - no second "Kup teraz"
+							      // click after it (the owner's round 2); the quantity buttons set its link. ?>
+							<button type="button" id="purchaseLink1" class="btn-price mt-buy-now js_currency fancybox fancybox.ajax" data-currency="<?php print (int)$item['pay_type']; ?>" href="<?php print $buy_link.'?q='.$qty; ?>" style="display: inline-block;"><?php print $lang_shop['buy']; ?></button>
 							<?php } else { ?>
 							<button class="btn-disabled ttip" style="display: inline-block;" href="javascript:void(0);" tooltip-content="<?php print htmlspecialchars($block); ?>"><?php print $lang_shop['buy']; ?></button>
 							<p class="mt-buy-block"><?php print htmlspecialchars($block); ?></p>
@@ -218,12 +223,12 @@
 		<?php if($item['available']==1 && $final_price>0) { ?>
 		<p class="bill_sum js_currency" data-currency="<?php print (int)$item['pay_type']; ?>" style="display: block;">
 			<i class="icon-info"></i> <?php print $lang_shop['mt-final-price']; ?>
-			<strong class="bill_amount">1</strong> <?php print $lang_shop['mt-pieces']; ?> <span class="coin15px">&times;<?php print number_format($final_price, 0, '', '.'); ?></span> =
+			<strong class="bill_amount"><?php print $qty; ?></strong> <?php print $lang_shop['mt-pieces']; ?> <span class="coin15px">&times;<?php print number_format($final_price, 0, '', '.'); ?></span> =
 			<img class="ttip" src="<?php print $shop_url.'images/this/'.($item['pay_type']==2 ? 'jcoins.png' : 'coins.png'); ?>" alt="">
-			<strong class="bill_price mt-total"><?php print number_format($final_price, 0, '', '.'); ?></strong>
+			<strong class="bill_price mt-total"><?php print number_format($final_price * $qty, 0, '', '.'); ?></strong>
 			<?php if($marks_back) { ?>
 			<span class="bill_mileage text-success mt-marks-sum">
-				<span class="block-price"><img class="ttip" src="<?php print $shop_url; ?>images/this/jcoins.png" alt=""> <span class="end-price mt-marks"><?php print number_format($marks_back, 0, '', '.'); ?></span></span> <?php print $lang_shop['mt-marks-back']; ?>
+				<span class="block-price"><img class="ttip" src="<?php print $shop_url; ?>images/this/jcoins.png" alt=""> <span class="end-price mt-marks"><?php print number_format(max(0, (int)round($qty * $final_price * $jcoins_back / 100) - $coupon_value), 0, '', '.'); ?></span></span> <?php print $lang_shop['mt-marks-back']; ?>
 			</span>
 			<?php } ?>
 		</p>
@@ -238,11 +243,6 @@
 		var price = <?php print (int)$final_price; ?>, back = <?php print (int)$jcoins_back; ?>, payType = <?php print (int)$item['pay_type']; ?>, coupon = <?php print (int)$coupon_value; ?>;
 		var link = '<?php print $buy_link; ?>';
 		function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
-		$('#buy .btn-price').on('click', function (e) {
-			if ($(this).hasClass('btn-disabled')) { e.preventDefault(); return; }
-			$(this).hide();
-			$('#buy .btn-buy').show('fade');
-		});
 		$('#js_button_container .btn-discount').on('click', function () {
 			var n = parseInt($(this).val(), 10);
 			$('#js_button_container .btn-discount').removeClass('btn-active');
@@ -251,8 +251,7 @@
 			$('#itemBuy .mt-total').text(fmt(n * price));
 			if (payType == 1)
 				$('#itemBuy .mt-marks').text(fmt(Math.max(0, Math.round(n * price * back / 100) - coupon)));
-			$('#buy .btn-buy').attr('href', link + '?q=' + n).hide();
-			$('#buy .btn-price').show();
+			$('#buy .mt-buy-now').attr('href', link + '?q=' + n);
 		});
 	})();
 </script>

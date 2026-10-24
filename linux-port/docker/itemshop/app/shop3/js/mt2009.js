@@ -54,7 +54,8 @@
 		var opt = $(this), item = opt.closest('.list-item'), price = parseInt(opt.attr('data-price'), 10);
 		item.find('.dropdown-selection').text(opt.attr('data-text')).attr('data-count', opt.attr('data-count'));
 		item.find('.btn-price .end-price').text(String(price).replace(/\B(?=(\d{3})+(?!\d))/g, '.')).attr('data-value', price);
-		item.find('.btn-buy').attr('href', opt.attr('data-href'));
+		// MT2009_PLUS_ITEMSHOP_V3_V4: the price button opens the item's window with this quantity chosen
+		item.find('.btn-price.mt-price-info').attr('href', opt.attr('data-href'));
 		// MT2009_PLUS_ITEMSHOP_V3_V3: back to the price button by the shop's own classes - the inline display:none
 		// this put on "Kup" before won over the stylesheet's .buy-now, so after a quantity the price button vanished
 		// and no "Kup" came (the owner: 20 Zwojow Blogoslawienstwa, nothing happened).
@@ -62,6 +63,12 @@
 		item.find('.btn-buy, .btn-price').css('display', '');
 		opt.closest('.zs-dropdown').removeClass('open');
 	});
+	// MT2009_PLUS_ITEMSHOP_V3_V4: the card's price button opens the item's window (fancybox) - not the shop's own
+	// "price turns into Kup" step (javascript_.js setItemHover, bound on the body when the page is ready).
+	$(function () {
+		$('body').undelegate('.list-item .btn-price', 'click.buynow');
+	});
+
 	$(document).on('click', '#formArticlesSort .sort-option', function (e) {
 		e.preventDefault();
 		var mode = $(this).attr('data-value');

@@ -1043,18 +1043,46 @@ class Shop {
 	// promotions, "Oferty Blyskawiczne" the flash offers from a day before their start until an hour after the end;
 	// "all" every line the in-game window lists in a category (not the flash offers, not the hidden ones).
 	public function categoryKind($id) {
-		static $kinds = null;
-		if($kinds === null)
+		$this->loadCategoryTree();
+		return isset($this->catKinds[(int)$id]) ? $this->catKinds[(int)$id] : '';
+	}
+	// MT2009_PLUS_ITEMSHOP_V3_V4: the subcategories (itemshop3.categories parent - "Wyglad postaci" over Fryzury,
+	// Kostiumy, Nakladki na bron i szarfy, Pety, Mounty), in the menu's order; a view without the column has none.
+	public function categoryChildren($id) {
+		$this->loadCategoryTree();
+		return isset($this->catChildren[(int)$id]) ? $this->catChildren[(int)$id] : [];
+	}
+	public function categoryParent($id) {
+		$this->loadCategoryTree();
+		return isset($this->catParents[(int)$id]) ? $this->catParents[(int)$id] : 0;
+	}
+	private $catKinds = null, $catChildren = [], $catParents = [];
+	private function loadCategoryTree() {
+		if($this->catKinds !== null)
+			return;
+		$this->catKinds = [];
+		$rows = $this->db->select("categories", "*");
+		if(!is_array($rows))
+			$rows = [];
+		usort($rows, function($a, $b) {
+			return (isset($a['sort']) ? (int)$a['sort'] : (int)$a['id']) - (isset($b['sort']) ? (int)$b['sort'] : (int)$b['id']);
+		});
+		foreach($rows as $row)
 		{
-			$kinds = [];
-			foreach($this->db->select("categories", ["id", "kind"]) as $row)
-				$kinds[(int)$row['id']] = $row['kind'];
+			$this->catKinds[(int)$row['id']] = $row['kind'];
+			if(!empty($row['parent']))
+			{
+				$this->catParents[(int)$row['id']] = (int)$row['parent'];
+				$this->catChildren[(int)$row['parent']][] = (int)$row['id'];
+			}
 		}
-		return isset($kinds[(int)$id]) ? $kinds[(int)$id] : '';
 	}
 	private function categoryWhere($id) {
 		switch($this->categoryKind($id))
 		{
+			case 'group':	// MT2009_PLUS_ITEMSHOP_V3_V4: every line of its subcategories
+				$children = $this->categoryChildren($id);
+				return count($children) ? ["category" => $children, "auction" => 0] : ["category" => -1];
 			case 'marks':
 				return ["pay_type" => 2, "auction" => 0];
 			case 'featured':
@@ -1070,7 +1098,7 @@ class Shop {
 		// the in-game window: by vnum, Kupony SM by price (uiitemshop.py ITEMSHOP_SORT_TYPE_PRICE)
 		if($id !== null && $this->categoryKind($id)=='items' && (int)$id==13)
 			return ["coins" => "ASC", "id" => "ASC"];
-		if($id === null)
+		if($id === null || $this->categoryKind($id)=='group')	// MT2009_PLUS_ITEMSHOP_V3_V4: a group by its subcategories
 			return ["category" => "ASC", "vnum" => "ASC", "id" => "ASC"];
 		return ["vnum" => "ASC", "id" => "ASC"];
 	}
@@ -1818,6 +1846,13 @@ class Shop {
 	// The wear filter: the character of the signed in-game link (header.php) sees only what it can wear. Each
 	// name is a column of the shop view (tools/itemshop3/gen_itemshop3_sql.py); a database whose view is older
 	// (no such columns yet) gets no filter instead of an error.
+	// MT2009_PLUS_ITEMSHOP_V3_V4: the filter's columns for a character's race (0..8: warrior, ninja, sura, shaman, then
+	// the other sex, lycan) - the pages (header.php) and the search box's suggestions (search.php) alike.
+	public static function wearNames($job) {
+		$job = (int)$job;
+		$classes = ['warrior', 'assassin', 'sura', 'shaman'];
+		return [in_array($job, [1, 3, 4, 6]) ? 'anti_female' : 'anti_male', 'anti_'.($job == 8 ? 'wolfman' : $classes[$job % 4])];
+	}
 	public function setWearFilter($names) {
 		$this->wear = [];
 		if(!count($names) || !$this->hasShopColumn('anti_male'))

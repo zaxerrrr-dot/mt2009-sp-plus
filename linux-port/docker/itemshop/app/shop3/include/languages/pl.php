@@ -356,5 +356,14 @@ $lang_shop = array_merge($lang_shop, [
 	"mt-sub-shop" => "Dodatkowe 20 slotów w sklepie, sklep do 48h, edycja nazwy otwartego sklepu, bez darmowego limitu sklepów na kanale",
 	"mt-buy-max" => "Najwięcej %d sztuk naraz.",
 ]);
+// MT2009_PLUS_ITEMSHOP_V3_V4: the top bar's "Koło Losu" tab - it opens the game's own window (exe CWebBrowser.c ->
+// root uiitemshopv3.py); this page only shows when the client cannot do that (an older exe, an outside browser).
+$lang_shop = array_merge($lang_shop, [
+	"mt-wheel-tab" => "Koło Losu",
+	"mt-wheel-title" => "Koło Losu",
+	"mt-wheel-text" => "Koło Losu kręcisz w oknie gry. Zamknij sklep i otwórz je klawiszem F12 (albo tym, który ustawiłeś w Skrótach klawiszowych).",
+	"mt-wheel-old-client" => "W nowej wersji klienta ta zakładka sama zamyka sklep i otwiera Koło Losu.",
+	"mt-wheel-back" => "Wróć do sklepu",
+]);
 
 ?>

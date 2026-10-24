@@ -2180,6 +2180,14 @@ class GameWindow(ui.ScriptWindow):
 		if self.interface and self.interface.wndWeb and self.interface.wndWeb.IsShow():
 			return
 
+		# MT2009_PLUS_ITEMSHOP_V3_V4: while the second ItemShop's page is open the keys are the page's (its
+		# search box, its inputs): the game's keyboard is DirectInput and saw every letter typed there as a
+		# hotkey. Only the shop's own key (Shift+F12 by default) goes on, to close it; Esc closes it before
+		# this (RunPressEscapeKey -> uiitemshopv3 OnPressEscapeKey).
+		import keybind
+		if __import__("uiitemshopv3").TakesKeys() and keybind.Resolve(key) != "itemshop_v3":
+			return True
+
 		if key == app.DIK_ESC:
 			self.RequestDropItem(False)
 			constInfo.SET_ITEM_QUESTION_DIALOG_STATUS(0)
@@ -2244,6 +2252,18 @@ class GameWindow(ui.ScriptWindow):
 		# klawiszowe waits for a key is that key.
 		import keybind
 		if keybind.CaptureKeyUp(key):
+			return True
+
+		# MT2009_PLUS_ITEMSHOP_V3_V4: a key let go while the second ItemShop's page takes the keys ends what it
+		# held (a walk started before the shop opened) and nothing else - no Shift tap (the sprint) for a Shift
+		# held to type a capital letter there.
+		if __import__("uiitemshopv3").TakesKeys():
+			if key == app.DIK_LALT:
+				self.HideName()
+			elif key == app.DIK_LCONTROL:
+				self.HideMouseImage()
+			self.__ReleaseKeyAction(key)
+			keybind.NoteOtherInput()
 			return True
 
 		if key == app.DIK_LALT:

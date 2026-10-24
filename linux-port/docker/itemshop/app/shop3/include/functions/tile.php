@@ -217,7 +217,6 @@
 		$block = mt2009_buy_block($item, $final_price);
 		$can_pay = $block=='';
 		$info = $shop_url.'javascript/info/'.$item['id'];
-		$buy = $shop_url.'javascript/buy/'.$item['id'];
 		$cat = $item['category'];
 		$cat_name = isset($categoriesbyid[$cat]['name']) ? $categoriesbyid[$cat]['name'] : '';
 
@@ -271,7 +270,7 @@
 						</button>
 						<ul class="dropdown-menu">
 							<?php foreach($counts as $n) { ?>
-							<li><a class="dropdown-option mt-qty" data-count="<?php print $n; ?>" data-text="<?php print $n; ?>" data-price="<?php print $n*$final_price; ?>" data-href="<?php print $buy.'/?q='.$n; ?>"><span><?php print $n; ?></span></a></li>
+							<li><a class="dropdown-option mt-qty" data-count="<?php print $n; ?>" data-text="<?php print $n; ?>" data-price="<?php print $n*$final_price; ?>" data-href="<?php print $info.'/?q='.$n; ?>"><span><?php print $n; ?></span></a></li>
 							<?php } ?>
 						</ul>
 					</div>
@@ -281,8 +280,9 @@
 				</div>
 				<div class="action-box right">
 					<?php if($can_pay) { ?>
-					<button class="span5 right btn-price"><?php print mt2009_price_html($item['pay_type'], $final_price); ?></button>
-					<button class="span5 right btn-buy fancybox fancybox.ajax" href="<?php print $buy.'/?q=1'; ?>"><?php print $lang_shop['buy']; ?></button>
+					<?php // MT2009_PLUS_ITEMSHOP_V3_V4: the price opens the item's window (picture, Informacje, for whom, how many,
+					      // "Kup" there buys at once) with the card's quantity - no "Kup" on the card any more (the owner's round 2) ?>
+					<button class="span5 right btn-price mt-price-info fancybox fancybox.ajax" href="<?php print $info.'/?q=1'; ?>"><?php print mt2009_price_html($item['pay_type'], $final_price); ?></button>
 					<?php } else { ?>
 					<button class="span5 right btn-disabled not-available ttip fancybox fancybox.ajax" href="<?php print $info; ?>" tooltip-content="<?php print htmlspecialchars($block); ?>"><?php print mt2009_price_html($item['pay_type'], $final_price); ?></button>
 					<?php } ?>

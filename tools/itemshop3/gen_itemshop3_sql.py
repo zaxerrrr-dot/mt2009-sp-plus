@@ -184,27 +184,32 @@ ANTI_FLAGS = [('female', 1 << 0), ('male', 1 << 1), ('warrior', 1 << 2), ('assas
 
 
 # MT2009_PLUS_ITEMSHOP_V3_V3: the in-game window's categories, in its order (root/uiitemshop.py
-# ITEMSHOP_CATEGORIES_SORT): (our id, name, kind, icon of images/gf/cat_<icon>.png, index ranges).
+# ITEMSHOP_CATEGORIES_SORT): (our id, name, kind, icon of images/gf/cat_<icon>.png, index ranges, parent).
 # kind: items (by index), featured (running promotions + the premium and flash offer cards), marks (every line in
 # Smocze Znaki), auctions (the flash offers), voucher / premium / topup (pages and the top-up link, no items).
+# MT2009_PLUS_ITEMSHOP_V3_V4: the owner's round 2 - "Wyglad postaci" (kind group: its own list is every line of its
+# subcategories) over Fryzury, Kostiumy, "Nakladki na bron i szarfy" (the sashes' skins 30800.. were there already),
+# Pety and Mounty; parent = the group's id (0 = a top category). The index ranges stay the in-game window's, so
+# every line of the in-game shop is still listed exactly once.
 CATEGORIES = [
-	(1, 'Polecane', 'featured', 'star', []),
-	(2, 'Wyposażenie', 'items', 'shield-alt', [(1, 99)]),
-	(3, 'Uszlachetnianie', 'items', 'refine', [(451, 459)]),
-	(4, 'VIPy', 'items', 'gem', [(101, 113)]),
-	(5, 'Fryzury +', 'items', 'cut', [(301, 450), (10000, 19999)]),
-	(6, 'Kostiumy', 'items', 'tshirt', [(20000, 29999)]),
-	(7, 'Nakładki na broń', 'items', 'khanda', [(30000, 39999)]),
-	(8, 'Pety', 'items', 'paw', [(40000, 49999)]),
-	(9, 'Mounty', 'items', 'horse', [(50000, 59999)]),
-	(10, 'Małżeństwo', 'items', 'heart', [(201, 299)]),
-	(11, 'Zwoje i księgi', 'items', 'magic', [(601, 699)]),
-	(12, 'Smocze Znaki', 'marks', 'marks', []),
-	(13, 'Kupony SM', 'items', 'service', [(901, 905)]),
-	(14, 'Wykorzystaj voucher', 'voucher', 'ticket', []),
-	(15, 'Oferty Błyskawiczne', 'auctions', 'bolt', []),
-	(16, 'Konto Premium', 'premium', 'crown', []),
-	(17, 'Doładuj SM!', 'topup', 'coins', []),
+	(1, 'Polecane', 'featured', 'star', [], 0),
+	(2, 'Wyposażenie', 'items', 'shield-alt', [(1, 99)], 0),
+	(3, 'Uszlachetnianie', 'items', 'refine', [(451, 459)], 0),
+	(4, 'VIPy', 'items', 'gem', [(101, 113)], 0),
+	(18, 'Wygląd postaci', 'group', 'look', [], 0),
+	(5, 'Fryzury', 'items', 'cut', [(301, 450), (10000, 19999)], 18),
+	(6, 'Kostiumy', 'items', 'tshirt', [(20000, 29999)], 18),
+	(7, 'Nakładki na broń i szarfy', 'items', 'khanda', [(30000, 39999)], 18),
+	(8, 'Pety', 'items', 'paw', [(40000, 49999)], 18),
+	(9, 'Mounty', 'items', 'horse', [(50000, 59999)], 18),
+	(10, 'Małżeństwo', 'items', 'heart', [(201, 299)], 0),
+	(11, 'Zwoje i księgi', 'items', 'magic', [(601, 699)], 0),
+	(12, 'Smocze Znaki', 'marks', 'marks', [], 0),
+	(13, 'Kupony SM', 'items', 'service', [(901, 905)], 0),
+	(14, 'Wykorzystaj voucher', 'voucher', 'ticket', [], 0),
+	(15, 'Oferty Błyskawiczne', 'auctions', 'bolt', [], 0),
+	(16, 'Konto Premium', 'premium', 'crown', [], 0),
+	(17, 'Doładuj SM!', 'topup', 'coins', [], 0),
 ]
 CAT_MARKS = 12
 CAT_AUCTIONS = 15
@@ -222,7 +227,7 @@ PREMIUM_TOKEN_VNUM = 72199		# ... except Przepustka Triumfu, which is an item
 
 def shop_view(az_vnums):
 	ranges = []
-	for cid, name, kind, icon, rr in CATEGORIES:
+	for cid, name, kind, icon, rr, parent in CATEGORIES:
 		for lo, hi in rr:
 			ranges.append('WHEN i.`index` BETWEEN %d AND %d THEN %d' % (lo, hi, cid))
 	in_range = 'CASE %s ELSE 0 END' % ' '.join(ranges)
@@ -341,8 +346,8 @@ def build():
 	w('-- Blyskawiczne"; a line outside all of them is not shown). The web catalogue (itemshop.ishop_items) gives only')
 	w('-- the descriptions and pictures of the same vnums.')
 	w('CREATE OR REPLACE SQL SECURITY DEFINER VIEW itemshop3.categories AS %s;' % ' UNION ALL '.join(
-		'SELECT %d AS id, %s AS pl, %s AS en, %s AS ro, %s AS icon, 1 AS active, %s AS kind, %d AS sort' % (cid, q(name), q(name), q(name), q(icon), q(kind), n)
-		for n, (cid, name, kind, icon, ranges) in enumerate(CATEGORIES)))
+		'SELECT %d AS id, %s AS pl, %s AS en, %s AS ro, %s AS icon, 1 AS active, %s AS kind, %d AS sort, %d AS parent' % (cid, q(name), q(name), q(name), q(icon), q(kind), n, parent)
+		for n, (cid, name, kind, icon, ranges, parent) in enumerate(CATEGORIES)))
 	w('-- The flash offers\' counters (the game\'s base dump has the table; a world without it gets an empty one).')
 	w('CREATE TABLE IF NOT EXISTS player.itemshop_time_auction (item_index INT(10) NOT NULL, buy_count INT(10) NOT NULL DEFAULT 0, PRIMARY KEY (item_index)) ENGINE=InnoDB DEFAULT CHARSET=latin1;')
 	w(shop_view(az_vnums))
