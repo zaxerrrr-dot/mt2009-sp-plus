@@ -1740,4 +1740,17 @@ if ((Test-Path -LiteralPath $mlodziApply -PathType Leaf) -and
     }
 }
 
+# Szklo Handlu (server-patches/szklohandlu, MT2009_PLUS_SZKLO_HANDLU_V1; the owner, 24 October 2026): while the item 72802
+# (the second ItemShop, 7 / 15 / 30 days) is in the bag the Dom Aukcyjny works on any map - ikarus_shop_manager.cpp
+# IsFleaMarketMap; the item's use (quest ishop_v3_przedmioty) opens the window.
+$szkloHandluApply = Join-Path $repo 'server-patches/szklohandlu/Apply-SzkloHandluPatch.ps1'
+if ((Test-Path -LiteralPath $szkloHandluApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'ikarus_shop_manager.cpp') -PathType Leaf)) {
+    $szkloHandluResult = & $szkloHandluApply -SourceDir $engineGameSource
+    if ($szkloHandluResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Szklo Handlu edit(s).' -f $szkloHandluResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

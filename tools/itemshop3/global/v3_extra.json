@@ -857,6 +857,346 @@
    "desc": "Ta magiczna skrzynia otworzy się zaraz po zakupie i da jeden losowy przedmiot - może cały pakiet zestawu „Brązowa Wilcza Szata+(m)”? Przedmiot trafi od razu do magazynu ItemShopu. Kostium, fryzura i nakładka pasują do postaci, dla której kupujesz. Szanse - zakładka „Szanse”."
   },
   {
+   "id": 100158,
+   "vnum": 72800,
+   "count": 1,
+   "price": 49,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Auto Łowy 7 dni (decyzja: bilety jak na globalu)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100159,
+   "vnum": 72801,
+   "count": 1,
+   "price": 95,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Auto Łowy 14 dni (decyzja: bilety jak na globalu)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100160,
+   "vnum": 72802,
+   "count": 1,
+   "price": 39,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 10080,
+   "suffix": "(7 dni)",
+   "source": "Szkło Handlu (decyzja: Dom Aukcyjny zdalnie)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100161,
+   "vnum": 72802,
+   "count": 1,
+   "price": 75,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 21600,
+   "suffix": "(15 dni)",
+   "source": "Szkło Handlu (decyzja: Dom Aukcyjny zdalnie)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100162,
+   "vnum": 72802,
+   "count": 1,
+   "price": 135,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 43200,
+   "suffix": "(30 dni)",
+   "source": "Szkło Handlu (decyzja: Dom Aukcyjny zdalnie)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100163,
+   "vnum": 72803,
+   "count": 1,
+   "price": 39,
+   "cur": 1,
+   "cat": 4,
+   "minutes": 1440,
+   "suffix": "(1 dzień)",
+   "source": "Buff Premium SungMa (decyzja: dodaj taki buff)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100164,
+   "vnum": 72803,
+   "count": 1,
+   "price": 299,
+   "cur": 1,
+   "cat": 4,
+   "minutes": 10080,
+   "suffix": "(7 dni)",
+   "source": "Buff Premium SungMa (decyzja: dodaj taki buff)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100165,
+   "vnum": 72803,
+   "count": 1,
+   "price": 599,
+   "cur": 1,
+   "cat": 4,
+   "minutes": 21600,
+   "suffix": "(15 dni)",
+   "source": "Buff Premium SungMa (decyzja: dodaj taki buff)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100166,
+   "vnum": 72803,
+   "count": 1,
+   "price": 999,
+   "cur": 1,
+   "cat": 4,
+   "minutes": 43200,
+   "suffix": "(30 dni)",
+   "source": "Buff Premium SungMa (decyzja: dodaj taki buff)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100167,
+   "vnum": 72804,
+   "count": 1,
+   "price": 300,
+   "cur": 2,
+   "cat": 12,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Eliksir W. SungMa (decyzja: dodaj eliksiry)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100168,
+   "vnum": 72805,
+   "count": 1,
+   "price": 300,
+   "cur": 2,
+   "cat": 12,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Eliksir W. SungMa (decyzja: dodaj eliksiry)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100169,
+   "vnum": 72806,
+   "count": 1,
+   "price": 300,
+   "cur": 2,
+   "cat": 12,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Eliksir W. SungMa (decyzja: dodaj eliksiry)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100170,
+   "vnum": 72807,
+   "count": 1,
+   "price": 300,
+   "cur": 2,
+   "cat": 12,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Eliksir W. SungMa (decyzja: dodaj eliksiry)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100171,
+   "vnum": 100300,
+   "count": 1,
+   "price": 19,
+   "cur": 1,
+   "cat": 3,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Zielona Smocza Fasola (decyzja: mamy smocze fasole)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100172,
+   "vnum": 55009,
+   "count": 1,
+   "price": 129,
+   "cur": 1,
+   "cat": 8,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Skrzynia Ksiąg Zwierza = nasza Skrzynia Ksiąg Peta (decyzja: dodaj)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100173,
+   "vnum": 55001,
+   "count": 1,
+   "price": 19,
+   "cur": 1,
+   "cat": 8,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Odżywka = nasza Proteinowa Przekąska (życie peta; decyzja: dodaj)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100174,
+   "vnum": 55001,
+   "count": 1,
+   "price": 30,
+   "cur": 2,
+   "cat": 12,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Odżywka = nasza Proteinowa Przekąska (decyzja: dodaj, za SZ)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
+   "id": 100175,
+   "vnum": 0,
+   "count": 1,
+   "price": 379,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Szkatuła na Biżuterię (decyzja właściciela)",
+   "note": "",
+   "sets": [],
+   "chest": 46,
+   "name": "Szkatuła na Biżuterię",
+   "image": "images/chests/46.png",
+   "desc": "Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
+  },
+  {
+   "id": 100176,
+   "vnum": 0,
+   "count": 11,
+   "price": 990,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 0,
+   "suffix": "(10+1 gratis)",
+   "source": "Szkatuła na Biżuterię (decyzja właściciela)",
+   "note": "",
+   "sets": [],
+   "chest": 46,
+   "name": "Szkatuła na Biżuterię (10+1 gratis)",
+   "image": "images/chests/46.png",
+   "desc": "Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
+  },
+  {
+   "id": 100177,
+   "vnum": 0,
+   "count": 23,
+   "price": 1980,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 0,
+   "suffix": "(20+3 gratis)",
+   "source": "Szkatuła na Biżuterię (decyzja właściciela)",
+   "note": "",
+   "sets": [],
+   "chest": 46,
+   "name": "Szkatuła na Biżuterię (20+3 gratis)",
+   "image": "images/chests/46.png",
+   "desc": "Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu."
+  },
+  {
    "id": 100000,
    "vnum": 39068,
    "count": 1,
@@ -2212,7 +2552,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -2228,7 +2568,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -2244,7 +2584,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -2259,8 +2615,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -2275,8 +2631,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -2291,8 +2663,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -2307,8 +2679,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -2323,8 +2695,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -2339,8 +2711,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -2355,8 +2727,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -2497,7 +2869,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -2513,7 +2885,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -2529,7 +2901,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -2544,8 +2932,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -2560,8 +2948,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -2576,8 +2980,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -2592,8 +2996,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -2608,8 +3012,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -2624,8 +3028,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -2640,8 +3044,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -2782,7 +3186,7 @@
     },
     {
      "no": 6,
-     "ppm": 108333,
+     "ppm": 84259,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -2798,7 +3202,7 @@
     },
     {
      "no": 7,
-     "ppm": 21667,
+     "ppm": 16852,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -2814,7 +3218,23 @@
     },
     {
      "no": 8,
-     "ppm": 151667,
+     "ppm": 117964,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 117963,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -2829,8 +3249,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 151667,
+     "no": 10,
+     "ppm": 117963,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -2845,8 +3265,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 130000,
+     "no": 11,
+     "ppm": 84259,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 101111,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -2861,8 +3297,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 130000,
+     "no": 13,
+     "ppm": 101111,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -2877,8 +3313,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 108333,
+     "no": 14,
+     "ppm": 84259,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -2893,8 +3329,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 108333,
+     "no": 15,
+     "ppm": 84259,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -3057,7 +3493,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -3073,7 +3509,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -3089,7 +3525,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -3104,8 +3556,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -3120,8 +3572,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -3136,8 +3604,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -3152,8 +3620,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -3168,8 +3636,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -3184,8 +3652,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -3200,8 +3668,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -3351,7 +3819,7 @@
     },
     {
      "no": 6,
-     "ppm": 110976,
+     "ppm": 85849,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -3367,7 +3835,23 @@
     },
     {
      "no": 7,
-     "ppm": 155364,
+     "ppm": 120188,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 120189,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -3382,8 +3866,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 155366,
+     "no": 9,
+     "ppm": 120189,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -3398,8 +3882,24 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 133171,
+     "no": 10,
+     "ppm": 85849,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 103019,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -3414,8 +3914,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 133171,
+     "no": 12,
+     "ppm": 103019,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -3430,8 +3930,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 110976,
+     "no": 13,
+     "ppm": 85849,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -3446,8 +3946,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 110976,
+     "no": 14,
+     "ppm": 85849,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -3597,7 +4097,7 @@
     },
     {
      "no": 6,
-     "ppm": 98913,
+     "ppm": 78448,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -3613,7 +4113,23 @@
     },
     {
      "no": 7,
-     "ppm": 138478,
+     "ppm": 109828,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 109828,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -3628,8 +4144,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 138478,
+     "no": 9,
+     "ppm": 109828,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -3644,8 +4160,24 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 98913,
+     "no": 10,
+     "ppm": 78448,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 78448,
      "label": "200x Kamyki",
      "kind": "common",
      "items": [
@@ -3660,8 +4192,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 118696,
+     "no": 12,
+     "ppm": 94138,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -3676,8 +4208,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 118696,
+     "no": 13,
+     "ppm": 94138,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -3692,8 +4224,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 98913,
+     "no": 14,
+     "ppm": 78448,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -3708,8 +4240,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 98913,
+     "no": 15,
+     "ppm": 78448,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -3850,7 +4382,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -3866,7 +4398,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -3882,7 +4414,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -3897,8 +4445,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -3913,8 +4461,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -3929,8 +4493,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -3945,8 +4509,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -3961,8 +4525,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -3977,8 +4541,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -3993,8 +4557,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -4135,7 +4699,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -4151,7 +4715,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -4167,7 +4731,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -4182,8 +4762,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -4198,8 +4778,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -4214,8 +4810,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -4230,8 +4826,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -4246,8 +4842,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -4262,8 +4858,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -4278,8 +4874,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -4420,7 +5016,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -4436,7 +5032,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -4452,7 +5048,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -4467,8 +5079,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -4483,8 +5095,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -4499,8 +5127,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -4515,8 +5143,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -4531,8 +5159,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -4547,8 +5175,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -4563,8 +5191,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -4705,7 +5333,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -4721,7 +5349,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -4737,7 +5365,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -4752,8 +5396,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -4768,8 +5412,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -4784,8 +5444,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -4800,8 +5460,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -4816,8 +5476,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -4832,8 +5492,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -4848,8 +5508,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -4999,7 +5659,7 @@
     },
     {
      "no": 6,
-     "ppm": 87500,
+     "ppm": 71094,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -5015,7 +5675,7 @@
     },
     {
      "no": 7,
-     "ppm": 17500,
+     "ppm": 14219,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -5031,7 +5691,23 @@
     },
     {
      "no": 8,
-     "ppm": 122500,
+     "ppm": 99531,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 99531,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -5046,8 +5722,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 122500,
+     "no": 10,
+     "ppm": 99531,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -5062,8 +5738,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 87500,
+     "no": 11,
+     "ppm": 71094,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 71094,
      "label": "600x Kamyki",
      "kind": "common",
      "items": [
@@ -5078,8 +5770,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 105000,
+     "no": 13,
+     "ppm": 85312,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -5094,8 +5786,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 17500,
+     "no": 14,
+     "ppm": 14219,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -5110,8 +5802,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 105000,
+     "no": 15,
+     "ppm": 85312,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -5126,8 +5818,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 87500,
+     "no": 16,
+     "ppm": 71094,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -5142,8 +5834,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 87500,
+     "no": 17,
+     "ppm": 71094,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -5158,8 +5850,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 70000,
+     "no": 18,
+     "ppm": 56875,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -5309,7 +6001,7 @@
     },
     {
      "no": 6,
-     "ppm": 87500,
+     "ppm": 71094,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -5325,7 +6017,7 @@
     },
     {
      "no": 7,
-     "ppm": 17500,
+     "ppm": 14219,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -5341,7 +6033,39 @@
     },
     {
      "no": 8,
-     "ppm": 122500,
+     "ppm": 99531,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 71094,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 10,
+     "ppm": 99531,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -5356,8 +6080,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 122500,
+     "no": 11,
+     "ppm": 99531,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -5372,8 +6096,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 87500,
+     "no": 12,
+     "ppm": 71094,
      "label": "30x Kamyki",
      "kind": "common",
      "items": [
@@ -5388,8 +6112,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 105000,
+     "no": 13,
+     "ppm": 85312,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -5404,8 +6128,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 17500,
+     "no": 14,
+     "ppm": 14219,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -5420,8 +6144,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 105000,
+     "no": 15,
+     "ppm": 85312,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -5436,8 +6160,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 70000,
+     "no": 16,
+     "ppm": 56875,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -5452,8 +6176,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 87500,
+     "no": 17,
+     "ppm": 71094,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -5468,8 +6192,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 87500,
+     "no": 18,
+     "ppm": 71094,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -5610,7 +6334,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -5626,7 +6350,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -5642,7 +6366,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -5657,8 +6397,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -5673,8 +6413,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -5689,8 +6445,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -5705,8 +6461,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -5721,8 +6477,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -5737,8 +6493,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -5753,8 +6509,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -5895,7 +6651,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -5911,7 +6667,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -5927,7 +6683,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -5942,8 +6714,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -5958,8 +6730,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -5974,8 +6762,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -5990,8 +6778,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -6006,8 +6794,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -6022,8 +6810,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -6038,8 +6826,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -6180,7 +6968,7 @@
     },
     {
      "no": 6,
-     "ppm": 110976,
+     "ppm": 85849,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -6196,7 +6984,23 @@
     },
     {
      "no": 7,
-     "ppm": 155364,
+     "ppm": 120188,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 120189,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -6211,8 +7015,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 155366,
+     "no": 9,
+     "ppm": 120189,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -6227,8 +7031,24 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 133171,
+     "no": 10,
+     "ppm": 85849,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 103019,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -6243,8 +7063,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 133171,
+     "no": 12,
+     "ppm": 103019,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -6259,8 +7079,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 110976,
+     "no": 13,
+     "ppm": 85849,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -6275,8 +7095,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 110976,
+     "no": 14,
+     "ppm": 85849,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -6417,7 +7237,7 @@
     },
     {
      "no": 6,
-     "ppm": 89216,
+     "ppm": 72222,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -6433,7 +7253,23 @@
     },
     {
      "no": 7,
-     "ppm": 124900,
+     "ppm": 101112,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 101111,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -6448,8 +7284,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 124902,
+     "no": 9,
+     "ppm": 101111,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -6464,8 +7300,24 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 89216,
+     "no": 10,
+     "ppm": 72222,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 72222,
      "label": "600x Kamyki",
      "kind": "common",
      "items": [
@@ -6480,8 +7332,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 107059,
+     "no": 12,
+     "ppm": 86667,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -6496,8 +7348,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 17843,
+     "no": 13,
+     "ppm": 14444,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -6512,8 +7364,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 107059,
+     "no": 14,
+     "ppm": 86667,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -6528,8 +7380,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 89216,
+     "no": 15,
+     "ppm": 72222,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -6544,8 +7396,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 89216,
+     "no": 16,
+     "ppm": 72222,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -6560,8 +7412,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 71373,
+     "no": 17,
+     "ppm": 57778,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -6702,7 +7554,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -6718,7 +7570,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -6734,7 +7586,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -6749,8 +7617,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -6765,8 +7633,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -6781,8 +7665,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -6797,8 +7681,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -6813,8 +7697,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -6829,8 +7713,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -6845,8 +7729,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -6987,7 +7871,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -7003,7 +7887,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -7019,7 +7903,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -7034,8 +7934,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -7050,8 +7950,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -7066,8 +7982,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -7082,8 +7998,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -7098,8 +8014,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -7114,8 +8030,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -7130,8 +8046,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -7525,7 +8441,55 @@
     },
     {
      "no": 6,
-     "ppm": 16545,
+     "ppm": 63194,
+     "label": "3x Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 3,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 7,
+     "ppm": 63194,
+     "label": "2x Niebieska Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100400
+       ],
+       "count": 2,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 88477,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 12639,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -7540,8 +8504,8 @@
      ]
     },
     {
-     "no": 7,
-     "ppm": 82727,
+     "no": 10,
+     "ppm": 63194,
      "label": "Eliksir Księżyca (D)",
      "kind": "common",
      "items": [
@@ -7556,8 +8520,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 82727,
+     "no": 11,
+     "ppm": 63194,
      "label": "Wzmocnienie Przedmiotu",
      "kind": "common",
      "items": [
@@ -7572,8 +8536,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 82727,
+     "no": 12,
+     "ppm": 63194,
      "label": "Smocza Skrzynia+",
      "kind": "common",
      "items": [
@@ -7588,8 +8552,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 115821,
+     "no": 13,
+     "ppm": 88472,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -7604,8 +8568,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 82727,
+     "no": 14,
+     "ppm": 63194,
      "label": "Marmur Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -7620,8 +8584,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 82727,
+     "no": 15,
+     "ppm": 63194,
      "label": "3x Błogosławieństwo Życia",
      "kind": "common",
      "items": [
@@ -7636,8 +8600,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 115818,
+     "no": 16,
+     "ppm": 88472,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -7652,8 +8616,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 82727,
+     "no": 17,
+     "ppm": 63194,
      "label": "Rada Pustelnika",
      "kind": "common",
      "items": [
@@ -7668,8 +8632,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 82727,
+     "no": 18,
+     "ppm": 63194,
      "label": "5x Magiczna Ruda Miedzi",
      "kind": "common",
      "items": [
@@ -7684,8 +8648,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 82727,
+     "no": 19,
+     "ppm": 63194,
      "label": "Agat",
      "kind": "common",
      "items": [
@@ -7826,7 +8790,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -7842,7 +8806,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -7858,7 +8822,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -7873,8 +8853,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -7889,8 +8869,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -7905,8 +8901,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -7921,8 +8917,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -7937,8 +8933,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -7953,8 +8949,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -7969,8 +8965,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -8111,7 +9107,7 @@
     },
     {
      "no": 6,
-     "ppm": 89216,
+     "ppm": 72222,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -8127,7 +9123,7 @@
     },
     {
      "no": 7,
-     "ppm": 17843,
+     "ppm": 14444,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -8143,7 +9139,23 @@
     },
     {
      "no": 8,
-     "ppm": 124900,
+     "ppm": 101112,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 101111,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -8158,8 +9170,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 124902,
+     "no": 10,
+     "ppm": 101111,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -8174,8 +9186,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 89216,
+     "no": 11,
+     "ppm": 72222,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 72222,
      "label": "30x Kamyki",
      "kind": "common",
      "items": [
@@ -8190,8 +9218,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 107059,
+     "no": 13,
+     "ppm": 86667,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -8206,8 +9234,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 107059,
+     "no": 14,
+     "ppm": 86667,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -8222,8 +9250,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 89216,
+     "no": 15,
+     "ppm": 72222,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -8238,8 +9266,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 89216,
+     "no": 16,
+     "ppm": 72222,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -8254,8 +9282,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 71373,
+     "no": 17,
+     "ppm": 57778,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -8396,7 +9424,7 @@
     },
     {
      "no": 6,
-     "ppm": 98913,
+     "ppm": 78448,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -8412,7 +9440,7 @@
     },
     {
      "no": 7,
-     "ppm": 19783,
+     "ppm": 15690,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -8428,7 +9456,23 @@
     },
     {
      "no": 8,
-     "ppm": 138478,
+     "ppm": 109827,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 109828,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -8443,8 +9487,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 138478,
+     "no": 10,
+     "ppm": 109828,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -8459,8 +9503,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 118696,
+     "no": 11,
+     "ppm": 78448,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 94138,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -8475,8 +9535,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 118696,
+     "no": 13,
+     "ppm": 94138,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -8491,8 +9551,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 98913,
+     "no": 14,
+     "ppm": 78448,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -8507,8 +9567,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 98913,
+     "no": 15,
+     "ppm": 78448,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -8523,8 +9583,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 79130,
+     "no": 16,
+     "ppm": 62759,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -8665,7 +9725,7 @@
     },
     {
      "no": 6,
-     "ppm": 87500,
+     "ppm": 71094,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -8681,7 +9741,7 @@
     },
     {
      "no": 7,
-     "ppm": 17500,
+     "ppm": 14219,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -8697,7 +9757,23 @@
     },
     {
      "no": 8,
-     "ppm": 122500,
+     "ppm": 99531,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 99531,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -8712,8 +9788,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 122500,
+     "no": 10,
+     "ppm": 99531,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -8728,8 +9804,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 87500,
+     "no": 11,
+     "ppm": 71094,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 71094,
      "label": "600x Kamyki",
      "kind": "common",
      "items": [
@@ -8744,8 +9836,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 105000,
+     "no": 13,
+     "ppm": 85312,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -8760,8 +9852,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 17500,
+     "no": 14,
+     "ppm": 14219,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -8776,8 +9868,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 105000,
+     "no": 15,
+     "ppm": 85312,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -8792,8 +9884,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 87500,
+     "no": 16,
+     "ppm": 71094,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -8808,8 +9900,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 87500,
+     "no": 17,
+     "ppm": 71094,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -8824,8 +9916,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 70000,
+     "no": 18,
+     "ppm": 56875,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -8966,7 +10058,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -8982,7 +10074,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -8998,7 +10090,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -9013,8 +10121,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -9029,8 +10137,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -9045,8 +10169,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -9061,8 +10185,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -9077,8 +10201,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -9093,8 +10217,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -9109,8 +10233,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -9251,7 +10375,7 @@
     },
     {
      "no": 6,
-     "ppm": 87500,
+     "ppm": 71094,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -9267,7 +10391,7 @@
     },
     {
      "no": 7,
-     "ppm": 17500,
+     "ppm": 14219,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -9283,7 +10407,23 @@
     },
     {
      "no": 8,
-     "ppm": 122500,
+     "ppm": 99531,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 99531,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -9298,8 +10438,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 122500,
+     "no": 10,
+     "ppm": 99531,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -9314,8 +10454,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 87500,
+     "no": 11,
+     "ppm": 71094,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 71094,
      "label": "600x Kamyki",
      "kind": "common",
      "items": [
@@ -9330,8 +10486,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 105000,
+     "no": 13,
+     "ppm": 85312,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -9346,8 +10502,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 17500,
+     "no": 14,
+     "ppm": 14219,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -9362,8 +10518,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 105000,
+     "no": 15,
+     "ppm": 85312,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -9378,8 +10534,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 87500,
+     "no": 16,
+     "ppm": 71094,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -9394,8 +10550,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 87500,
+     "no": 17,
+     "ppm": 71094,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -9410,8 +10566,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 70000,
+     "no": 18,
+     "ppm": 56875,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -9552,7 +10708,55 @@
     },
     {
      "no": 6,
-     "ppm": 16545,
+     "ppm": 63194,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 7,
+     "ppm": 63194,
+     "label": "Niebieska Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100400
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 88477,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 12639,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -9567,8 +10771,8 @@
      ]
     },
     {
-     "no": 7,
-     "ppm": 82727,
+     "no": 10,
+     "ppm": 63194,
      "label": "Eliksir Księżyca (D)",
      "kind": "common",
      "items": [
@@ -9583,8 +10787,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 82727,
+     "no": 11,
+     "ppm": 63194,
      "label": "Wzmocnienie Przedmiotu",
      "kind": "common",
      "items": [
@@ -9599,8 +10803,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 82727,
+     "no": 12,
+     "ppm": 63194,
      "label": "Przepustka",
      "kind": "common",
      "items": [
@@ -9615,8 +10819,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 115821,
+     "no": 13,
+     "ppm": 88472,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -9631,8 +10835,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 82727,
+     "no": 14,
+     "ppm": 63194,
      "label": "Marmur Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -9647,8 +10851,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 82727,
+     "no": 15,
+     "ppm": 63194,
      "label": "Błogosławieństwo Życia",
      "kind": "common",
      "items": [
@@ -9663,8 +10867,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 115818,
+     "no": 16,
+     "ppm": 88472,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -9679,8 +10883,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 82727,
+     "no": 17,
+     "ppm": 63194,
      "label": "Rada Pustelnika",
      "kind": "common",
      "items": [
@@ -9695,8 +10899,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 82727,
+     "no": 18,
+     "ppm": 63194,
      "label": "Magiczna Ruda Miedzi",
      "kind": "common",
      "items": [
@@ -9711,8 +10915,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 82727,
+     "no": 19,
+     "ppm": 63194,
      "label": "Agat",
      "kind": "common",
      "items": [
@@ -9852,7 +11056,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -9868,7 +11072,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -9884,7 +11088,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -9899,8 +11119,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -9915,8 +11135,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -9931,8 +11167,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -9947,8 +11183,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -9963,8 +11199,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -9979,8 +11215,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -9995,8 +11231,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -10136,7 +11372,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -10152,7 +11388,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -10168,7 +11404,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -10183,8 +11435,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -10199,8 +11451,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -10215,8 +11483,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -10231,8 +11499,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -10247,8 +11515,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -10263,8 +11531,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -10279,8 +11547,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -10428,7 +11696,7 @@
     },
     {
      "no": 6,
-     "ppm": 98913,
+     "ppm": 78448,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -10444,7 +11712,23 @@
     },
     {
      "no": 7,
-     "ppm": 138478,
+     "ppm": 109828,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 109828,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -10459,8 +11743,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 138478,
+     "no": 9,
+     "ppm": 109828,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -10475,8 +11759,24 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 98913,
+     "no": 10,
+     "ppm": 78448,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 78448,
      "label": "200x Kamyki",
      "kind": "common",
      "items": [
@@ -10491,8 +11791,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 118696,
+     "no": 12,
+     "ppm": 94138,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -10507,8 +11807,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 118696,
+     "no": 13,
+     "ppm": 94138,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -10523,8 +11823,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 98913,
+     "no": 14,
+     "ppm": 78448,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -10539,8 +11839,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 98913,
+     "no": 15,
+     "ppm": 78448,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -10680,7 +11980,7 @@
     },
     {
      "no": 6,
-     "ppm": 87500,
+     "ppm": 71094,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -10696,7 +11996,7 @@
     },
     {
      "no": 7,
-     "ppm": 17500,
+     "ppm": 14219,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -10712,7 +12012,23 @@
     },
     {
      "no": 8,
-     "ppm": 122500,
+     "ppm": 99531,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 99531,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -10727,8 +12043,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 122500,
+     "no": 10,
+     "ppm": 99531,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -10743,8 +12059,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 87500,
+     "no": 11,
+     "ppm": 71094,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 71094,
      "label": "600x Kamyki",
      "kind": "common",
      "items": [
@@ -10759,8 +12091,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 105000,
+     "no": 13,
+     "ppm": 85312,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -10775,8 +12107,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 17500,
+     "no": 14,
+     "ppm": 14219,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -10791,8 +12123,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 105000,
+     "no": 15,
+     "ppm": 85312,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -10807,8 +12139,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 87500,
+     "no": 16,
+     "ppm": 71094,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -10823,8 +12155,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 87500,
+     "no": 17,
+     "ppm": 71094,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -10839,8 +12171,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 70000,
+     "no": 18,
+     "ppm": 56875,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -10980,7 +12312,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -10996,7 +12328,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -11012,7 +12344,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -11027,8 +12375,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -11043,8 +12391,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -11059,8 +12423,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -11075,8 +12439,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -11091,8 +12455,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -11107,8 +12471,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -11123,8 +12487,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -11264,7 +12628,23 @@
     },
     {
      "no": 6,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 7,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -11279,8 +12659,8 @@
      ]
     },
     {
-     "no": 7,
-     "ppm": 135532,
+     "no": 8,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -11295,8 +12675,24 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 96809,
+     "no": 9,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 10,
+     "ppm": 77119,
      "label": "30x Kamyki",
      "kind": "common",
      "items": [
@@ -11311,8 +12707,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -11327,8 +12723,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 19362,
+     "no": 12,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -11343,8 +12739,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 116170,
+     "no": 13,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -11359,8 +12755,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 96809,
+     "no": 14,
+     "ppm": 77119,
      "label": "3x Biała Perła",
      "kind": "common",
      "items": [
@@ -11375,8 +12771,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "2x Niebieska Perła",
      "kind": "common",
      "items": [
@@ -11391,8 +12787,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Krwawa Perła",
      "kind": "common",
      "items": [
@@ -11532,7 +12928,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -11548,7 +12944,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -11564,7 +12960,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -11579,8 +12991,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -11595,8 +13007,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -11611,8 +13039,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -11627,8 +13055,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -11643,8 +13071,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -11659,8 +13087,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -11675,8 +13103,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -11826,7 +13254,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -11842,7 +13270,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -11858,7 +13286,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -11873,8 +13317,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -11889,8 +13333,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -11905,8 +13365,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -11921,8 +13381,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -11937,8 +13397,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -11953,8 +13413,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -11969,8 +13429,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -12133,7 +13593,7 @@
     },
     {
      "no": 6,
-     "ppm": 110976,
+     "ppm": 85849,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -12149,7 +13609,23 @@
     },
     {
      "no": 7,
-     "ppm": 155364,
+     "ppm": 120188,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 120189,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -12164,8 +13640,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 155366,
+     "no": 9,
+     "ppm": 120189,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -12180,8 +13656,24 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 133171,
+     "no": 10,
+     "ppm": 85849,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 103019,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -12196,8 +13688,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 133171,
+     "no": 12,
+     "ppm": 103019,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -12212,8 +13704,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 110976,
+     "no": 13,
+     "ppm": 85849,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -12228,8 +13720,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 110976,
+     "no": 14,
+     "ppm": 85849,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -12379,7 +13871,7 @@
     },
     {
      "no": 6,
-     "ppm": 98913,
+     "ppm": 85849,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -12395,7 +13887,23 @@
     },
     {
      "no": 7,
-     "ppm": 138478,
+     "ppm": 120188,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 120189,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -12410,8 +13918,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 138478,
+     "no": 9,
+     "ppm": 120189,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -12426,8 +13934,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 98913,
+     "no": 10,
+     "ppm": 85849,
      "label": "200x Kamyki",
      "kind": "common",
      "items": [
@@ -12442,8 +13950,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 118696,
+     "no": 11,
+     "ppm": 103019,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -12458,8 +13966,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 118696,
+     "no": 12,
+     "ppm": 103019,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -12474,8 +13982,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 98913,
+     "no": 13,
+     "ppm": 85849,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -12490,8 +13998,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 98913,
+     "no": 14,
+     "ppm": 85849,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -12632,7 +14140,7 @@
     },
     {
      "no": 6,
-     "ppm": 87500,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -12648,7 +14156,7 @@
     },
     {
      "no": 7,
-     "ppm": 17500,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -12664,7 +14172,23 @@
     },
     {
      "no": 8,
-     "ppm": 122500,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -12679,8 +14203,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 122500,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -12695,8 +14219,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 87500,
+     "no": 11,
+     "ppm": 77119,
      "label": "600x Kamyki",
      "kind": "common",
      "items": [
@@ -12711,8 +14235,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 105000,
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -12727,8 +14251,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 17500,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -12743,8 +14267,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 105000,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -12759,8 +14283,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 87500,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -12775,8 +14299,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 87500,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -12791,8 +14315,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 70000,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -12946,7 +14470,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -12962,7 +14486,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -12978,7 +14502,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -12993,8 +14533,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -13009,8 +14549,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -13025,8 +14581,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -13041,8 +14597,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -13057,8 +14613,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -13073,8 +14629,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -13089,8 +14645,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -13231,7 +14787,7 @@
     },
     {
      "no": 6,
-     "ppm": 15965,
+     "ppm": 13188,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -13247,7 +14803,7 @@
     },
     {
      "no": 7,
-     "ppm": 15965,
+     "ppm": 13188,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -13263,7 +14819,7 @@
     },
     {
      "no": 8,
-     "ppm": 79825,
+     "ppm": 65942,
      "label": "Książka Lidera (zamiast: Książka Lidera+)",
      "kind": "common",
      "items": [
@@ -13279,7 +14835,7 @@
     },
     {
      "no": 9,
-     "ppm": 79825,
+     "ppm": 65942,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -13295,7 +14851,39 @@
     },
     {
      "no": 10,
-     "ppm": 111753,
+     "ppm": 92320,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 65942,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92319,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -13310,8 +14898,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 111754,
+     "no": 13,
+     "ppm": 92319,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -13326,8 +14914,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 79825,
+     "no": 14,
+     "ppm": 65942,
      "label": "30x Kamyki",
      "kind": "common",
      "items": [
@@ -13342,8 +14930,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 95789,
+     "no": 15,
+     "ppm": 79130,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -13358,8 +14946,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 95789,
+     "no": 16,
+     "ppm": 79130,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -13374,8 +14962,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 79825,
+     "no": 17,
+     "ppm": 65942,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -13390,8 +14978,8 @@
      ]
     },
     {
-     "no": 16,
-     "ppm": 79825,
+     "no": 18,
+     "ppm": 65942,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -13406,8 +14994,8 @@
      ]
     },
     {
-     "no": 17,
-     "ppm": 63860,
+     "no": 19,
+     "ppm": 52754,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -13548,7 +15136,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -13564,7 +15152,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -13580,7 +15168,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -13595,8 +15199,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -13611,8 +15215,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -13627,8 +15247,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -13643,8 +15263,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -13659,8 +15279,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -13675,8 +15295,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -13691,8 +15311,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -13833,7 +15453,7 @@
     },
     {
      "no": 6,
-     "ppm": 98913,
+     "ppm": 78448,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -13849,7 +15469,23 @@
     },
     {
      "no": 7,
-     "ppm": 138478,
+     "ppm": 109828,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 109828,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -13864,8 +15500,8 @@
      ]
     },
     {
-     "no": 8,
-     "ppm": 138478,
+     "no": 9,
+     "ppm": 109828,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -13880,8 +15516,24 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 98913,
+     "no": 10,
+     "ppm": 78448,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 78448,
      "label": "200x Kamyki",
      "kind": "common",
      "items": [
@@ -13896,8 +15548,8 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 118696,
+     "no": 12,
+     "ppm": 94138,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -13912,8 +15564,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 118696,
+     "no": 13,
+     "ppm": 94138,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -13928,8 +15580,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 98913,
+     "no": 14,
+     "ppm": 78448,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -13944,8 +15596,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 98913,
+     "no": 15,
+     "ppm": 78448,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -14086,7 +15738,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -14102,7 +15754,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -14118,7 +15770,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -14133,8 +15801,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -14149,8 +15817,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -14165,8 +15849,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -14181,8 +15865,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -14197,8 +15881,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -14213,8 +15897,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -14229,8 +15913,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -14371,7 +16055,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -14387,7 +16071,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -14403,7 +16087,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -14418,8 +16118,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -14434,8 +16134,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -14450,8 +16166,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -14466,8 +16182,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -14482,8 +16198,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -14498,8 +16214,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -14514,8 +16230,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -14656,7 +16372,7 @@
     },
     {
      "no": 6,
-     "ppm": 96809,
+     "ppm": 77119,
      "label": "Książka Lidera",
      "kind": "common",
      "items": [
@@ -14672,7 +16388,7 @@
     },
     {
      "no": 7,
-     "ppm": 19362,
+     "ppm": 15424,
      "label": "Magiczny Kamień",
      "kind": "common",
      "items": [
@@ -14688,7 +16404,23 @@
     },
     {
      "no": 8,
-     "ppm": 135530,
+     "ppm": 107965,
+     "label": "Różowa Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100500
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 107966,
      "label": "Księga Obróbki Kamienia",
      "kind": "common",
      "items": [
@@ -14703,8 +16435,8 @@
      ]
     },
     {
-     "no": 9,
-     "ppm": 135532,
+     "no": 10,
+     "ppm": 107966,
      "label": "Zwój Błogosławieństwa",
      "kind": "common",
      "items": [
@@ -14719,8 +16451,24 @@
      ]
     },
     {
-     "no": 10,
-     "ppm": 116170,
+     "no": 11,
+     "ppm": 77119,
+     "label": "Zielona Smocza Fasola",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        100300
+       ],
+       "count": 1,
+       "minutes": 0
+      }
+     ]
+    },
+    {
+     "no": 12,
+     "ppm": 92542,
      "label": "Pakiet Kamieni Duszy",
      "kind": "common",
      "items": [
@@ -14735,8 +16483,8 @@
      ]
     },
     {
-     "no": 11,
-     "ppm": 19362,
+     "no": 13,
+     "ppm": 15424,
      "label": "Smoczy Płomień",
      "kind": "common",
      "items": [
@@ -14751,8 +16499,8 @@
      ]
     },
     {
-     "no": 12,
-     "ppm": 116170,
+     "no": 14,
+     "ppm": 92542,
      "label": "Zdobna Skrz. z Odłamkiem",
      "kind": "common",
      "items": [
@@ -14767,8 +16515,8 @@
      ]
     },
     {
-     "no": 13,
-     "ppm": 96809,
+     "no": 15,
+     "ppm": 77119,
      "label": "Eliksir Księżyca (S)",
      "kind": "common",
      "items": [
@@ -14783,8 +16531,8 @@
      ]
     },
     {
-     "no": 14,
-     "ppm": 96809,
+     "no": 16,
+     "ppm": 77119,
      "label": "Eliksir Słońca (S)",
      "kind": "common",
      "items": [
@@ -14799,8 +16547,8 @@
      ]
     },
     {
-     "no": 15,
-     "ppm": 77447,
+     "no": 17,
+     "ppm": 61695,
      "label": "Zdobna Skrz. z Odłamkiem (zamiast: Lśniąca Sk. z Odłamkiem)",
      "kind": "common",
      "items": [
@@ -14811,6 +16559,192 @@
        ],
        "count": 1,
        "minutes": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 46,
+   "line": 100175,
+   "set_id": 0,
+   "name": "Szkatuła na Biżuterię",
+   "price": 379,
+   "image": "images/chests/46.png",
+   "drops": [
+    {
+     "no": 1,
+     "ppm": 90910,
+     "label": "Lizak Potęgi (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71136
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 2,
+     "ppm": 90909,
+     "label": "Lizak Magii (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71188
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 3,
+     "ppm": 90909,
+     "label": "Amulet Nazara (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71202
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 4,
+     "ppm": 90909,
+     "label": "Czekoladowy Amulet (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71199
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 5,
+     "ppm": 90909,
+     "label": "Pierścień Radości (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71143
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 6,
+     "ppm": 90909,
+     "label": "Amulet Wiecznej Miłości (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71145
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 7,
+     "ppm": 90909,
+     "label": "Pierścień Siły Woli (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71148
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 8,
+     "ppm": 90909,
+     "label": "Pierścień Śmier. Mocy (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71149
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 9,
+     "ppm": 90909,
+     "label": "Medal Bohatera (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        71158
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 10,
+     "ppm": 90909,
+     "label": "Mistrzowski Emblemat (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        70607
+       ],
+       "count": 1,
+       "minutes": 10080
+      }
+     ]
+    },
+    {
+     "no": 11,
+     "ppm": 90909,
+     "label": "Błogosławieństwo Mocy (7 dni)",
+     "kind": "common",
+     "items": [
+      {
+       "no": 1,
+       "alts": [
+        72713
+       ],
+       "count": 1,
+       "minutes": 10080
       }
      ]
     }
@@ -22023,6 +23957,10 @@
   },
   {
    "idx": 10277,
+   "hidden": 1
+  },
+  {
+   "idx": 6,
    "hidden": 1
   }
  ],

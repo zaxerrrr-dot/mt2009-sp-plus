@@ -75,7 +75,9 @@
 			}
 			else
 			{
-				for($n = 1; $n <= $qty; $n++)
+				// MT2009_PLUS_ITEMSHOP_V3_V8: a chest line's count is its rolls (the jewellery box's 10+1 / 20+3 offers)
+				$rolls_total = $qty * max(1, (int)$item['count']);
+				for($n = 1; $n <= $rolls_total; $n++)
 				{
 					// one roll: 1..1 000 000 against the results' chances in their order
 					$rnd = random_int(1, 1000000);

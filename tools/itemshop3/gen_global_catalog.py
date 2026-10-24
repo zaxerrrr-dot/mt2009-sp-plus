@@ -64,7 +64,8 @@ MODEL_CHEST = 'Majestatyczna Skrzynia Nosiciela Światła'	# the pl-wiki's chest
 COMMON = {
 	'Księga Lidera': 71012, 'Książka Lidera': 71012, 'Książka Lidera+': None,
 	'Średni Kupon Wpłaty': None, 'Wysoki Kupon Wpłaty': None,
-	'Magiczny Kamień': 25042, 'Różowa Smocza Fasola': None, 'Zielona Smocza Fasola': None, 'Niebieska Smocza Fasola': None,
+	# MT2009_PLUS_ITEMSHOP_V3_V8 (the owner: "mamy smocze fasole do ulepszania alchemii"): 100300 / 100400 / 100500
+	'Magiczny Kamień': 25042, 'Różowa Smocza Fasola': 100500, 'Zielona Smocza Fasola': 100300, 'Niebieska Smocza Fasola': 100400,
 	'Księga Obróbki Kamienia': 71083, 'Zwój Błogosławieństwa': 25041, 'Pakiet Kamieni Duszy': 72058,
 	'Smoczy Płomień': 100701, 'smoczy Płomień': 100701, 'Smoczy Płomień (B)': 100700,
 	'Zdobna Skrz. z Odłamkiem': 39068, 'Zdobna Skrzynia z Odłamkiem': 39068,
@@ -262,6 +263,7 @@ class Build:
 		self.chest_subs = OrderedDict()	# (wiki item, our vnum) -> a chest item replaced
 		self.fixed = OrderedDict()	# our line index -> the owner's fixed price / 30 days in this shop
 		self.untimed = []		# look lines that cannot be made 30 days
+		self.r5_done = []		# MT2009_PLUS_ITEMSHOP_V3_V8: "Brak w plikach" rows the owner's round 5 answered
 
 	def line_id(self, key):
 		if key not in self.ids['lines']:
@@ -275,8 +277,8 @@ class Build:
 			self.ids['chests'][key] = max(used) + 1 if used else FIRST_CHEST_ID
 		return self.ids['chests'][key]
 
-	def add_line(self, vnum, count, price, cur, cat, minutes=0, suffix='', source='', note='', set_ids=(), chest=0, name='', image='', desc=''):
-		key = 'chest:%d' % chest if chest else '%d:%d:%d:%d' % (vnum, count, cur, minutes)
+	def add_line(self, vnum, count, price, cur, cat, minutes=0, suffix='', source='', note='', set_ids=(), chest=0, name='', image='', desc='', key=None):
+		key = key or ('chest:%d' % chest if chest else '%d:%d:%d:%d' % (vnum, count, cur, minutes))
 		if key in self.lines:
 			l = self.lines[key]
 			if source and source not in l['source']:
@@ -321,6 +323,8 @@ class Build:
 					self.compare(idx, r, dec)
 				if dec.get('sub'):
 					self.replace_row(r, dec, 'już w naszym sklepie (porównane w „Różnice u nas”)')
+			elif dec['st'] == 'miss' and k in owner_decisions.BRAK_DONE:
+				self.r5_done.append(dict(wiki=r['name'], sub=r['sub'], price=price_text(r), done=owner_decisions.BRAK_DONE[k]))
 			elif dec['st'] == 'miss':
 				self.missing.append(dict(wiki=r['name'], link=r['link'] or r['name'], sub=r['sub'], info=r['info'], price=price_text(r), note=dec['note']))
 		extra = [k for (k, n) in decisions.ROWS if k not in seen]
@@ -361,6 +365,38 @@ class Build:
 		if cat in (CAT_HAIR, CAT_COSTUME, CAT_SKIN, CAT_MOUNT):
 			return RULE_LOOK
 		return None
+
+	def round5(self):
+		"""MT2009_PLUS_ITEMSHOP_V3_V8: the owner's new things - the V3 lines of the items apply.sh / the client add, and the
+		jewellery box (a chest like the set chests, rolled at the purchase; its offers of 10+1 / 20+3 are chest lines with
+		that many rolls)."""
+		for vnum, count, price, cur, cat, minutes, suffix, source in owner_decisions.NEW_LINES:
+			if vnum not in self.d.proto:
+				raise SystemExit('round 5: vnum %d not in item_proto (apply.sh ishop_v3_items not run on this DB?)' % vnum)
+			self.add_line(vnum, count, price, cur, cat, minutes, suffix, source, 'Runda 5 - decyzja właściciela.')
+		j = owner_decisions.JEWEL_BOX
+		cid = self.chest_id('jewel_box')
+		image = 'images/chests/%d.png' % cid
+		n = len(j['vnums'])
+		drops = []
+		for i, v in enumerate(j['vnums']):
+			drops.append(dict(label='%s (7 dni)' % self.d.name(v), kind='common', weight=100.0 / n,
+				items=[dict(alts=[v], count=1, minutes=j['minutes'], label=self.d.name(v))]))
+		for x in drops:
+			x['ppm'] = 1000000 // n
+		drops[0]['ppm'] += 1000000 - sum(x['ppm'] for x in drops)
+		desc = ('Szkatuła otworzy się zaraz po zakupie i da jedną losową biżuterię na 7 dni: lizak, amulet, medal lub '
+			'pierścień (każdy z tą samą szansą - zakładka „Szanse”). Przedmiot trafi od razu do magazynu ItemShopu.')
+		first = None
+		for count, price, suffix in j['offers']:
+			l = self.add_line(0, count, price, 1, j['category'], 0, suffix, 'Szkatuła na Biżuterię (decyzja właściciela)', '', [],
+				chest=cid, name=j['name'] + (' ' + suffix if suffix else ''), image=image, desc=desc,
+				key=('chest:%d' % cid) if count == 1 else ('chest:%d:x%d' % (cid, count)))
+			first = first or l
+		self.chests.append(dict(id=cid, line=first['id'], set_id=0, set_name='', name=j['name'], price=j['offers'][0][1], image=image,
+			image_src=j['wiki_file'], wiki='Szkatuła na Biżuterię', model=False, drops=drops, gone=[],
+			durations=dict(body=[7], hair=[7], package=7)))
+		self.jewel_lines = [l for l in self.lines.values() if l['image'] == image]
 
 	def overrides(self):
 		"""MT2009_PLUS_ITEMSHOP_V3_V8: one row a line of the in-game catalogue: the owner's fixed price / 30 days and his
@@ -797,6 +833,8 @@ class Build:
 				ch.append('usunięte ze sklepu V3')
 			rows.append([idx, l['vnum'], l['name'] or self.d.name(l['vnum']), CAT_NAMES.get(l['cat'], l['cat']), '%d %s' % (l['price'], 'SM' if l['cur'] == 1 else 'SZ'),
 				d.get('why', ''), '; '.join(ch) or 'bez zmian'])
+		for r in self.r5_done:
+			rows.append(['—', '', r['wiki'], r['sub'], r['price'], 'Brak w plikach: dodaj', r['done']])
 		sheet('Decyzje (runda 5)', ['Nr linii (u nas)', 'Vnum', 'Przedmiot', 'Kategoria', 'Cena była', 'Decyzja właściciela', 'Co zrobione w sklepie V3'],
 			rows, [10, 9, 30, 22, 11, 40, 50])
 		sheet('Tylko w skrzyniach', ['Nr linii (u nas)', 'Vnum', 'Przedmiot', 'Kategoria', 'Cena (była)', 'Czas', 'Skrzynie, które go dają'],
@@ -810,7 +848,9 @@ class Build:
 		rows = []
 		for l in self.lines.values():
 			if l['chest']:
-				rows.append([l['id'], '-', l['name'], CAT_NAMES[l['cat']], 1, '%d SM' % l['price'], 'skrzynia (losowanie przy zakupie)', l['source'], 'Skrzynia zestawu - zawartość i szanse w arkuszu „Skrzynie setów”.'])
+				rows.append([l['id'], '-', l['name'], CAT_NAMES[l['cat']], l['count'], '%d SM' % l['price'], 'skrzynia (losowanie przy zakupie)', l['source'],
+					'Skrzynia zestawu - zawartość i szanse w arkuszu „Skrzynie setów”.' if l['cat'] == CAT_SETS else
+					'Skrzynia - zawartość i szanse w oknie przedmiotu (zakładka „Szanse”); %d losowań za tę cenę.' % l['count']])
 				continue
 			nm = self.d.name(l['vnum']) + (' ' + l['suffix'] if l['suffix'] else '')
 			t = days_text(l['minutes'] / 1440.0) + ' (czas linii)' if l['minutes'] else days_text(self.d.days(l['vnum']))
@@ -863,6 +903,7 @@ def main():
 	a = ap.parse_args()
 	b = Build(Data(a.db, a.client_list))
 	b.sets()
+	b.round5()
 	b.chest_only()
 	b.fixed_prices()
 	b.catalogue()

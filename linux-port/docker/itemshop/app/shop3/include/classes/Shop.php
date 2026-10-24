@@ -1091,8 +1091,9 @@ class Shop {
 				return ["auction" => 1, "auction_visible" => 1];
 			case 'items':
 				return ["category" => (int)$id, "auction" => 0];
-			case 'sets':	// MT2009_PLUS_ITEMSHOP_V3_V7: the sets' chests only (their pieces come only from the chests)
-				return ["chest[>]" => 0, "auction" => 0];
+			case 'sets':	// MT2009_PLUS_ITEMSHOP_V3_V7: the sets' chests only (their pieces come only from the chests);
+				// MT2009_PLUS_ITEMSHOP_V3_V8: they are the lines of this category (the jewellery box is a chest of Wyposazenie)
+				return ["category" => (int)$id, "auction" => 0];
 		}
 		return ["category" => -1];
 	}

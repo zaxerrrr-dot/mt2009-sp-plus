@@ -67,3 +67,45 @@ for _i in HAIR_DROP:
 
 # "Dodane" rows marked "usuń": the V3 line keys (vnum:count:currency:minutes)
 V3_REMOVE = {'39064:2:1:0', '39064:4:1:0', '39064:9:1:0', '30319:5:1:0', '30319:25:1:0'}
+
+# --- round 5, part 2: new things ("Brak w plikach" decisions) -----------------------------------------------------
+D1, D7, D15, D30 = 1440, 10080, 21600, 43200
+# "Zrób bilety jak na globalu": the 8-hour ticket gives way to the 7 / 14-day ones (72800 / 72801, apply.sh)
+LINES[6] = dict(hide=True, why='zrób bilety jak na globalu: zamiast biletu 8 h - bilety 7 dni (49 SM) i 14 dni (95 SM)')
+# V3 lines of the new items: (vnum, count, price, currency, category, minutes, suffix, source)
+NEW_LINES = [
+	(72800, 1, 49, 1, 2, 0, '', 'Auto Łowy 7 dni (decyzja: bilety jak na globalu)'),
+	(72801, 1, 95, 1, 2, 0, '', 'Auto Łowy 14 dni (decyzja: bilety jak na globalu)'),
+	(72802, 1, 39, 1, 2, D7, '(7 dni)', 'Szkło Handlu (decyzja: Dom Aukcyjny zdalnie)'),
+	(72802, 1, 75, 1, 2, D15, '(15 dni)', 'Szkło Handlu (decyzja: Dom Aukcyjny zdalnie)'),
+	(72802, 1, 135, 1, 2, D30, '(30 dni)', 'Szkło Handlu (decyzja: Dom Aukcyjny zdalnie)'),
+	(72803, 1, 39, 1, 4, D1, '(1 dzień)', 'Buff Premium SungMa (decyzja: dodaj taki buff)'),
+	(72803, 1, 299, 1, 4, D7, '(7 dni)', 'Buff Premium SungMa (decyzja: dodaj taki buff)'),
+	(72803, 1, 599, 1, 4, D15, '(15 dni)', 'Buff Premium SungMa (decyzja: dodaj taki buff)'),
+	(72803, 1, 999, 1, 4, D30, '(30 dni)', 'Buff Premium SungMa (decyzja: dodaj taki buff)'),
+	(72804, 1, 300, 2, 12, 0, '', 'Eliksir W. SungMa (decyzja: dodaj eliksiry)'),
+	(72805, 1, 300, 2, 12, 0, '', 'Eliksir W. SungMa (decyzja: dodaj eliksiry)'),
+	(72806, 1, 300, 2, 12, 0, '', 'Eliksir W. SungMa (decyzja: dodaj eliksiry)'),
+	(72807, 1, 300, 2, 12, 0, '', 'Eliksir W. SungMa (decyzja: dodaj eliksiry)'),
+	(100300, 1, 19, 1, 3, 0, '', 'Zielona Smocza Fasola (decyzja: mamy smocze fasole)'),
+	(55009, 1, 129, 1, 8, 0, '', 'Skrzynia Ksiąg Zwierza = nasza Skrzynia Ksiąg Peta (decyzja: dodaj)'),
+	(55001, 1, 19, 1, 8, 0, '', 'Odżywka = nasza Proteinowa Przekąska (życie peta; decyzja: dodaj)'),
+	(55001, 1, 30, 2, 12, 0, '', 'Odżywka = nasza Proteinowa Przekąska (decyzja: dodaj, za SZ)'),
+]
+# "Dodaj jako szkatułkę tak jak kostiumy, że można losować dowolny amulet na 7 dni": a chest rolled at the purchase,
+# each piece of jewellery of the unique slots equally, 7 days; the list's three offers (1, 10+1, 20+3).
+JEWEL_BOX = dict(name='Szkatuła na Biżuterię', wiki_file='Szkatuła na Biżuterię.png', category=2, minutes=D7,
+	vnums=[71136, 71188, 71202, 71199, 71143, 71145, 71148, 71149, 71158, 70607, 72713],
+	offers=[(1, 379, ''), (11, 990, '(10+1 gratis)'), (23, 1980, '(20+3 gratis)')])
+# the "Brak w plikach" rows these decisions answer (wiki row -> what was done)
+BRAK_DONE = {
+	3: 'dodane: skrzynia „Szkatuła na Biżuterię” (losowanie przy zakupie, dowolna biżuteria na 7 dni)',
+	26: 'dodane: nasza Skrzynia Ksiąg Peta (55009) za 129 SM', 363: 'dodane: nasza Skrzynia Ksiąg Peta (55009) za 129 SM',
+	27: 'dodane: nasza Proteinowa Przekąska (55001) za 19 SM / 30 SZ', 232: 'dodane: nasza Proteinowa Przekąska (55001) za 30 SZ',
+	358: 'dodane: nasza Proteinowa Przekąska (55001) za 19 SM',
+	106: 'dodane: Buff Premium SungMa (72803) 1/7/15/30 dni za 39/299/599/999 SM',
+	115: 'dodane: Szkło Handlu (72802) 7/15/30 dni za 39/75/135 SM - Dom Aukcyjny z każdej mapy',
+	150: 'dodane: Zielona Smocza Fasola (100300) za 19 SM',
+	216: 'dodane: Eliksir W. SungMa (SIŁA) 72804 za 300 SZ', 217: 'dodane: Eliksir W. SungMa (INT) 72807 za 300 SZ',
+	218: 'dodane: Eliksir W. SungMa (ODP) 72806 za 300 SZ', 219: 'dodane: Eliksir W. SungMa (WIT) 72805 za 300 SZ',
+}
