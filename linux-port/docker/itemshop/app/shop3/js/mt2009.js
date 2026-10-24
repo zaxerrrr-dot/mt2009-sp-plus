@@ -147,3 +147,11 @@
 		});
 	});
 })(jQuery);
+
+// MT2009_PLUS_ITEMSHOP_V3_V7: the header's Smocze Monety / Smocze Znaki after a purchase (pages/java/buy*.php) - in place,
+// without reloading the shop.
+function mt2009SetBalances(coins, marks) {
+	function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+	$('#balances1').text(fmt(coins)).attr('data-currency', coins);
+	$('#balances2').text(fmt(marks)).attr('data-currency', marks);
+}

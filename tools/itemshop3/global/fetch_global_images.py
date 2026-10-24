@@ -51,8 +51,10 @@ def save_chest(img, cid):
 		canvas = Image.new('RGBA', (242, 242), (0, 0, 0, 0))
 		canvas.paste(img, ((242 - img.width) // 2, (242 - img.height) // 2))
 		img = canvas
-	img.save(os.path.join(CHESTS, '%s.png' % cid), optimize=True)
-	img.resize((98, 98), Image.LANCZOS).save(os.path.join(CHESTS, '%s_98.png' % cid), optimize=True)
+	# MT2009_PLUS_ITEMSHOP_V3_V7: 256 colours (a 98 px card picture 21 kB -> 7 kB; the in-game browser loads 45 at once)
+	q = lambda im: im.quantize(colors=256, method=Image.Quantize.FASTOCTREE)
+	q(img).save(os.path.join(CHESTS, '%s.png' % cid), optimize=True)
+	q(img.resize((98, 98), Image.LANCZOS)).save(os.path.join(CHESTS, '%s_98.png' % cid), optimize=True)
 
 
 def main():
