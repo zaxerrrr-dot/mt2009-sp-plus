@@ -49,6 +49,21 @@ syserr „texture not found”, „cannot create the render target”), a drugi 
 Klawiatura gry działa przez DirectInput (nie przez okno), więc Esc i skróty (Shift+F12) zamykają sklep także wtedy,
 gdy kursor jest w przeglądarce. Sprawdzone `clang-cl /Zs` trzech plików na kopii źródeł z całą nakładką.
 
+### Poprawka 24.10.2026 – `MT2009_PLUS_ITEMSHOP_V3_V4` (zakładka „Koło Losu” w sklepie)
+
+Strona sklepu prosi grę o okno gry: link na własny host sklepu `…/shop3/game/<nazwa>/` (zakładka „Koło Losu” →
+`game/wheel/`) nie jest ładowany – `BeforeNavigate2` go anuluje i zapamiętuje nazwę (a–z, 0–9, `_`), a gra ją odbiera.
+
+| Plik | Zmiana |
+|---|---|
+| `CWebBrowser/CWebBrowser.c` | `Mt2009TakeGameUrl` w `BeforeNavigate2` strony głównej, `WebBrowser_TakeGameCommand(out, len)` (nazwa raz, potem pusto) |
+| `CWebBrowser/CWebBrowser.h` | deklaracja `WebBrowser_TakeGameCommand` |
+| `UserInterface/PythonApplicationModule.cpp` | `app.TakeWebPageCommand()` → `'wheel'` / `''` (za `ENABLE_MT2009_INGAME_BROWSER`) |
+
+Root `uiitemshopv3.py` pyta co klatkę, gdy sklep jest otwarty: `wheel` → zamyka sklep i otwiera `uiwheel.OpenWindow()`.
+Stary exe (bez funkcji) ładuje link – sklep pokazuje wtedy stronę z informacją o klawiszu F12. Sprawdzone `clang-cl /Zs`
+obu plików na kopii źródeł z całą nakładką.
+
 ## Mini gry Owsapa – `MT2009_PLUS_MINIGAMES_V1`
 
 Rumi (Okey), Yut Nori (3D w render target), Złap Króla i Dzieci Kwiatów + widżety `wndMgr` z `ui.py`

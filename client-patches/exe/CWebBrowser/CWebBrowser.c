@@ -133,6 +133,44 @@ static int Mt2009IsTopBrowser(IDispatch* pDisp)
 	return same;
 }
 
+// MT2009_PLUS_ITEMSHOP_V3_V4: the page asks the game for one of the game's windows - a link of the shop's own host to
+// .../shop3/game/<name>/ (the shop's "Kolo Losu" tab: game/wheel/) is not loaded; the name (a-z 0-9 _) is kept until
+// the game takes it (WebBrowser_TakeGameCommand <- app.TakeWebPageCommand <- root uiitemshopv3.py, which opens the
+// window). An exe without this loads the link, and the shop's page for it says to use the window's key instead.
+static char					s_szMt2009GameCommand[32];
+
+static int Mt2009TakeGameUrl(const WCHAR* url)
+{
+	WCHAR host[256];
+	const WCHAR* p;
+	const WCHAR* q;
+	int n = 0;
+	if (!url || !Mt2009IsWebScheme(url))
+		return 0;
+	Mt2009UrlHost(url, host, 256);
+	if (!host[0] || !s_wszMt2009Host[0] || _wcsicmp(host, s_wszMt2009Host) != 0)
+		return 0;
+	p = wcsstr(url, L"/shop3/game/");
+	q = wcschr(url, L'?');
+	if (!p || (q && q < p))
+		return 0;
+	p += 12;
+	while (n < (int)sizeof(s_szMt2009GameCommand) - 1 &&
+		((*p >= L'a' && *p <= L'z') || (*p >= L'0' && *p <= L'9') || *p == L'_'))
+		s_szMt2009GameCommand[n++] = (char)*p++;
+	s_szMt2009GameCommand[n] = 0;
+	return 1;
+}
+
+int WebBrowser_TakeGameCommand(char* out, int outLen)
+{
+	if (!out || outLen <= 0 || !s_szMt2009GameCommand[0])
+		return 0;
+	lstrcpynA(out, s_szMt2009GameCommand, outLen);
+	s_szMt2009GameCommand[0] = 0;
+	return 1;
+}
+
 static HRESULT STDMETHODCALLTYPE Mt2009Ev_QueryInterface(IDispatch* This, REFIID riid, void** ppv)
 {
 	if (!memcmp(riid, &IID_IUnknown, sizeof(GUID)) || !memcmp(riid, &IID_IDispatch, sizeof(GUID)) ||
@@ -161,7 +199,9 @@ static HRESULT STDMETHODCALLTYPE Mt2009Ev_Invoke(IDispatch* This, DISPID id, REF
 			{
 				const WCHAR* url = Mt2009VariantStr(&p->rgvarg[5]);
 				IDispatch* pDisp = (p->rgvarg[6].vt == VT_DISPATCH) ? p->rgvarg[6].pdispVal : NULL;
-				if (Mt2009IsExternalUrl(url) && Mt2009IsTopBrowser(pDisp))
+				if (Mt2009IsTopBrowser(pDisp) && Mt2009TakeGameUrl(url))	// MT2009_PLUS_ITEMSHOP_V3_V4
+					Mt2009SetCancel(&p->rgvarg[0]);
+				else if (Mt2009IsExternalUrl(url) && Mt2009IsTopBrowser(pDisp))
 				{
 					Mt2009OpenInSystemBrowser(url);
 					Mt2009SetCancel(&p->rgvarg[0]);

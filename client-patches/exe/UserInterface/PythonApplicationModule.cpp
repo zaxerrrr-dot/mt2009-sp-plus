@@ -4,6 +4,9 @@
 #include "../EterLib/Camera.h"
 #include "Locale.h"
 #include "../GameLib/GameLibDefines.h"
+#ifdef ENABLE_MT2009_INGAME_BROWSER
+#include "../CWebBrowser/CWebBrowser.h"	// MT2009_PLUS_ITEMSHOP_V3_V4
+#endif
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -63,6 +66,18 @@ PyObject* appHideWebPage(PyObject* poSelf, PyObject* poArgs)
 	CPythonApplication::Instance().HideWebPage();
 	return Py_BuildNone();
 }
+
+#ifdef ENABLE_MT2009_INGAME_BROWSER
+// MT2009_PLUS_ITEMSHOP_V3_V4: the game window the shop's page asked for ("wheel" = Kolo Losu; '' = none) - root
+// uiitemshopv3.py asks every frame while the shop is open (CWebBrowser.c WebBrowser_TakeGameCommand).
+PyObject* appTakeWebPageCommand(PyObject* poSelf, PyObject* poArgs)
+{
+	char szCommand[32];
+	if (!WebBrowser_TakeGameCommand(szCommand, sizeof(szCommand)))
+		szCommand[0] = 0;
+	return Py_BuildValue("s", szCommand);
+}
+#endif
 
 PyObject * appIsWebPageMode(PyObject * poSelf, PyObject * poArgs)
 {
@@ -1543,6 +1558,9 @@ void initapp()
 		{ "ShowWebPage",				appShowWebPage,					METH_VARARGS },
 		{ "MoveWebPage",				appMoveWebPage,					METH_VARARGS },
 		{ "HideWebPage",				appHideWebPage,					METH_VARARGS },
+#ifdef ENABLE_MT2009_INGAME_BROWSER
+		{ "TakeWebPageCommand",			appTakeWebPageCommand,			METH_VARARGS },	// MT2009_PLUS_ITEMSHOP_V3_V4
+#endif
 		{ "IsPressed",					appIsPressed,					METH_VARARGS },
 		{ "SetCursor",					appSetCursor,					METH_VARARGS },
 		{ "GetCursor",					appGetCursor,					METH_VARARGS },
