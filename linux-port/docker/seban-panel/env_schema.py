@@ -176,12 +176,13 @@ SCHEMA = [
        "(siatki botów: 301 ~160 MB, 302 ~125 MB, 303 ~80 MB, 304 ~107 MB pamięci na kanał).",
        "boty", "string", "301,302,303,304", ["game"]),
     # MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole / Kraina Gigantow (game3) through the handover.
+    # MT2009_PLUS_MAPS_WZ_NOCAP_V1: -1 (the default) = no limit (the owner, 26 October 2026).
     _e("PLAYERBOT_SNAKEFIELD_MAX", "Boty na Wężowym Polu (na kanał)",
-       "Ilu botów 63–78 naraz expi na Wężowym Polu (mapa 80, rdzeń game3). 0 = żaden.",
-       "boty", "int", "50", ["game"], min=0, max=300),
+       "Ilu botów 63–78 naraz expi na Wężowym Polu (mapa 80, rdzeń game3). -1 = bez limitu (domyślnie), 0 = żaden, więcej = najwyżej tylu na kanał.",
+       "boty", "int", "-1", ["game"], min=-1, max=300),
     _e("PLAYERBOT_GIANTLAND_MAX", "Boty w Krainie Gigantów (na kanał)",
-       "Ilu botów 63–80 naraz expi w Krainie Gigantów (mapa 70, rdzeń game3). 0 = żaden.",
-       "boty", "int", "50", ["game"], min=0, max=300),
+       "Ilu botów 63–80 naraz expi w Krainie Gigantów (mapa 70, rdzeń game3). -1 = bez limitu (domyślnie), 0 = żaden, więcej = najwyżej tylu na kanał.",
+       "boty", "int", "-1", ["game"], min=-1, max=300),
     _e("PLAYERBOT_WZ_STAY_MIN", "Wyprawa na Wężowe Pole / do Krainy (min)",
        "Ile minut bot zostaje na Wężowym Polu albo w Krainie Gigantów, zanim wróci do wioski.",
        "boty", "int", "120", ["game"], min=20, max=600),

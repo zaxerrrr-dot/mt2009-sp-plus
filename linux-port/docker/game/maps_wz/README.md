@@ -47,5 +47,5 @@ teren tych map w nowej paczce (`wzmaps_map`) pod nazwą, której żaden klient n
   `_status.h`, `_yohara_bots.h`): boty żyją na game1, a mapy stoją na game3 – przechodzą tam przekazaniem między
   rdzeniami (jak do Zaklętego Lasu): przedziały 63–78 (Wężowe Pole, bez Metinów – nie dla łowców Metinów) i 63–80
   (Kraina), po ćwiartce losowania w tych przedziałach, limity `PLAYERBOT_SNAKEFIELD_MAX` / `PLAYERBOT_GIANTLAND_MAX`
-  (50 na kanał), pobyt `PLAYERBOT_WZ_STAY_MIN` (120 min), 24 / 17 miejsc polowania, przybycie przy Teleporterze
+  (domyślnie -1 = bez limitu, MT2009_PLUS_MAPS_WZ_NOCAP_V1; 0 wyłącza), pobyt `PLAYERBOT_WZ_STAY_MIN` (120 min), 24 / 17 miejsc polowania, przybycie przy Teleporterze
   (część 2 Wężowego Pola) / w Town Krainy, wyjście, siatka nawigacji tylko na rdzeniu, który mapy hostuje.

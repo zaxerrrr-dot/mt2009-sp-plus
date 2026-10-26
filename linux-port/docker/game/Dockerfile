@@ -527,6 +527,19 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_dro
  && rm -f "$A" \
  && echo "share: Sworn Archers' ornaments - 2 drop groups"
 
+# MT2009_PLUS_SEEDS_MT2009_V1: Magiczne Nasiona (30197) in the default mt2009 mode too (the owner, 26 October 2026):
+# the Red Forest's 2311-2314 at the global mode's chance (0.5, Type drop). The global step below takes these
+# groups out of mob_drop_item.global.txt again - its own MT2009_mglobal_2311..2314 rows give the seeds there.
+COPY mob_drop_item.seeds.append.txt /tmp/mob_drop_item.seeds.append.txt
+RUN set -eu; F=/opt/metin2/share/locale/poland/mob_drop_item.txt; A=/tmp/mob_drop_item.seeds.append.txt \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_seeds_' "$F" \
+ && sed -i 's/\r$//; s/$/\r/' "$A" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_seeds_231[1-4]([^0-9]|$)' "$F")" = 4 \
+ && rm -f "$A" \
+ && echo "share: Magiczne Nasiona in the mt2009 mode - 4 drop groups (MT2009_PLUS_SEEDS_MT2009_V1)"
+
 # MT2009_PLUS_FLOWER_V1: the Flower Event's five gift boxes (83023-83027, Pudelko z Chryzantema ..
 # ze Slonecznikiem; playerbot_flower.h gives them for 10 shoots of a flower), opened by their
 # special_item_group groups. Appended once; the Seban panel's "Szkatulki" page edits them like any
@@ -1687,6 +1700,8 @@ COPY moby_global/ /tmp/moby-global-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/moby-global-add; F="$L/mob_drop_item.txt"; G="$L/mob_drop_item.global.txt" \
  && cp -p "$F" "$L/mob_drop_item.mt2009.txt" \
  && awk -v LOOSE=1 -v R="$A/mob_drop_item.moby_global.remove.txt" -f "$A/cut_rows.awk" "$F" > "$G" \
+ && awk '/^Group[[:blank:]]+MT2009_seeds_/{skip=1} !skip{print} skip&&/^}/{skip=0}' "$G" > "$G.new" && mv "$G.new" "$G" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_seeds_' "$G" \
  && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.moby_global.2x.txt" \
  && n="$(grep -c -E '^Group[[:blank:]]+MT2009_mglobal_' "$A/mob_drop_item.moby_global.2x.txt")" \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_mglobal_' "$G" \

@@ -286,6 +286,8 @@ try {
             'linux-port/docker/game/src/server/game/src/exchange.cpp' = @('MT2009_PLUS_DIGI_SERVER_QOL_V1 (trade block)')
             'linux-port/docker/game/src/server/game/src/guild.cpp' = @('MT2009_PLUS_DIGI_SERVER_QOL_V1 (guild block)')
             'linux-port/docker/game/src/server/game/src/cmd_emotion.cpp' = @('MT2009_PLUS_DIGI_SERVER_QOL_V1 (emote block)')
+            'linux-port/docker/game/src/server/game/src/building.cpp' = @('MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1 (define)', 'MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1 (show)', 'MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1 (destroy)', 'MT2009_PLUS_GUILD_BUILDING_CLEAR_V1 (move)', 'MT2009_PLUS_GUILD_BUILDING_CLEAR_V1 (show)', 'MT2009_PLUS_GUILD_BUILD_REFUSE_MSG_V1 (who)', 'MT2009_PLUS_GUILD_BUILD_REFUSE_MSG_V1 (reasons)', 'MT2009_PLUS_GUILD_ROTATE_V1 (footprint)', 'MT2009_PLUS_GUILD_ROTATE_V1 (show)', 'MT2009_PLUS_GUILD_ROTATE_V1 (destroy)', 'MT2009_PLUS_GUILD_ROTATE_V1 (check)')
+            'linux-port/docker/game/src/server/game/src/building.h' = @('MT2009_PLUS_GUILD_BUILD_REFUSE_MSG_V1 (declare)', 'MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1 (declare)')
             'linux-port/docker/game/src/server/game/src/DragonSoul.cpp' = @('MT2009_PLUS_WEEKLY_RANKING_V1 (grade)', 'MT2009_PLUS_WEEKLY_RANKING_V1 (step)', 'MT2009_PLUS_WEEKLY_RANKING_V1 (strength)', 'MT2009_PLUS_DS_GLOBAL_TABLE_V1 (load)')
         }
         foreach ($enginePublished in $engineMarks.Keys) {

@@ -153,6 +153,9 @@ BOOT_RULES = [
                "resist_fire", "resist_poison"), "Loch Pająków (Arezzo)"),
     ((9706,), ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max",
                "ai_flag", "attack_speed", "move_speed", "attack_range"), "Loch Pająków (Arezzo)"),
+    # MT2009_PLUS_MAPS_WZ_V1: mariadb/playerbot/maps_wz.sql (run by apply.sh at every start) puts the Giants'
+    # and ogres' wiki levels back.
+    ((1401, 1402, 1403, 1601, 1602, 1603), ("level",), "Wężowe Pole i Kraina Gigantów"),
 ]
 BOOT_WARNING = "Te pola skrypt startowy bazy ustawia na nowo przy KAŻDYM starcie serwera – Twoja zmiana zniknie po restarcie"
 
