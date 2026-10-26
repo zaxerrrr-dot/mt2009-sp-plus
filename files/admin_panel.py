@@ -1510,11 +1510,13 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                "goblin",  # MT2009_PLUS_GOBLIN_V1: the Treasure Hunt (playerbot_goblin.h)
                # MT2009_PLUS_EVENT_MANAGER_V1: the in-game event manager's mini games and
                # the Easter event (playerbot_ingame_events.h).
-               "catchking", "rumi", "yutnori", "flower", "easter")
+               "catchking", "rumi", "yutnori", "flower", "easter",
+               "halloween")  # MT2009_PLUS_HALLOWEEN_V1 (playerbot_halloween.h; Autor: Owsap)
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1).
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
-                    "catchking", "rumi", "yutnori", "flower", "easter")  # MT2009_PLUS_EVENT_MANAGER_V1
+                    "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
+                    "halloween")  # MT2009_PLUS_HALLOWEEN_V1
 # Tanaka and Zuo put something into the world (playerbot_world_events.h): their
 # value is a count - pirates at once, Metin stones a wave - and they carry a
 # map, 0 letting the event pick. The core holds the same bounds
@@ -4656,6 +4658,7 @@ T.update({
  "ev_kind_yutnori":{"en":"Yut Nori","pl":"Yut Nori","de":"Yut Nori","tr":"Yut Nori"},
  "ev_kind_flower":{"en":"Flower Event","pl":"Dzieci Kwiaty","de":"Blumen-Event","tr":"\u00c7i\u00e7ek Etkinli\u011fi"},
  "ev_kind_easter":{"en":"Easter event","pl":"Event wielkanocny","de":"Oster-Event","tr":"Paskalya etkinli\u011fi"},
+ "ev_kind_halloween":{"en":"Halloween (pumpkins, Jack Pumpkin)","pl":"Halloween (dynie i Jack Pumpkin)","de":"Halloween (K\u00fcrbisse, Jack Pumpkin)","tr":"Cad\u0131lar Bayram\u0131 (bal kaba\u011f\u0131, Jack Pumpkin)"},
  "ev_kind_exp":  {"en":"Experience","pl":"Do\u015bwiadczenie","de":"Erfahrung","tr":"Tecr\u00fcbe"},
  "ev_kind_drop": {"en":"Item drop","pl":"Drop przedmiot\u00f3w","de":"Item-Drop","tr":"E\u015fya d\u00fc\u015fmesi"},
  "ev_kind_yang": {"en":"Yang","pl":"Yang","de":"Yang","tr":"Yang"},

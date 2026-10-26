@@ -1,0 +1,141 @@
+-- MT2009_PLUS_HALLOWEEN_V1 - the Halloween event ("Halloween Hair", 2011-2014). Autor: Owsap
+-- (event_halloween_hair.quest, v6.2.6), ported into MT2009 PLUS with his Polish texts.
+-- Jack Pumpkin (33008) trades a Jack O'Lantern Mask Card (30323) for the Pumpkin Mask of the
+-- character's race and sex (74020 ... 75620) with one random bonus and a random duration
+-- (Owsap's table: 7 days for the four classes' or the monsters' 10 %, 6 hours for 1 % HP,
+-- 24 hours for 1 % SP); the Magic Wand (30322) turns a Halloween Pumpkin (30321) into a
+-- Halloween Chest (50215, special_item_group.halloween.txt).
+-- What is not here, unlike Owsap's: Jack Pumpkin's spawn (the in-game event manager stands
+-- him in the three first villages while the event "halloween" runs and for its 7-day window,
+-- playerbot_ingame_events.h), the drops (playerbot_halloween.h) and the masks' old "use"
+-- handlers (the masks are costumes - worn, never used - and the engine has no affect.add_hair).
+-- cp1250; no literal ends with a Polish letter (qc).
+quest event_halloween_hair begin
+	state start begin
+		function setting()
+			return {
+				["pumpkin"] = 30321,	-- Upiorna Dynia
+				["wand"] = 30322,		-- Czarodziejska Ró¿d¿ka
+				["coupon"] = 30323,		-- Karta Maski Dyni
+				["box"] = 50215,		-- Upiorna Skrzynia
+				["pumpkin_head"] = 33008	-- Jack Pumpkin
+			}
+		end
+
+		function get_hair_option(index)
+			local option_list = {
+				{ ["apply"] = apply.ATTBONUS_MONSTER, ["value"] = 10, ["duration"] = 604800 },	-- 7 dni
+				{ ["apply"] = apply.ATTBONUS_SURA, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = apply.ATTBONUS_SHAMAN, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = apply.ATTBONUS_WARRIOR, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = apply.ATTBONUS_ASSASSIN, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = apply.MAX_HP_PCT, ["value"] = 1, ["duration"] = 21600 },	-- 6 godzin
+				{ ["apply"] = apply.MAX_SP_PCT, ["value"] = 1, ["duration"] = 86400 },	-- 24 godziny
+			}
+			return option_list[index]
+		end
+
+		-- Owsap's odds: [1] .. [5] 1 % each, [6] 15 %, [7] 80 %.
+		function get_random_hair_option_index()
+			local rand = number(1, 100)
+			if rand <= 5 then
+				return rand
+			elseif rand <= 85 then
+				return 7
+			end
+			return 6
+		end
+
+		-- pc.get_race() + 1; the Lycan (9) has no mask.
+		function get_hair_vnum_by_race(race)
+			local hair_by_race = { 74020, 74270, 74520, 74770, 75020, 75220, 75420, 75620 }
+			return hair_by_race[race]
+		end
+
+		when 33008.chat."Hej, dyniog³owy! " with pc.getqf("first_notice") < 1 begin
+			say_title("Jack Pumpkin:")
+			say("Gdzie ja jestem? A ty kim jesteœ? ")
+			wait()
+			say_title("Jack Pumpkin:")
+			say("Uwa¿aj na swoje s³owa! Nie jestem ¿adnym")
+			say("dyniog³owym! Nazywam siê Jack Pumpkin, a to jest")
+			say("po prostu mój kostium. Jestem nieco rozkojarzony,")
+			say("bo jeszcze chwilê temu by³em na imprezie")
+			say("Halloween, nagle zawirowa³ ca³y œwiat i w u³amku")
+			say("sekundy znalaz³em siê w³aœnie tutaj... ")
+			wait()
+			say_title("Jack Pumpkin:")
+			say("A teraz odczep siê i pozwól mi w spokoju")
+			say("œwiêtowaæ Halloween! ")
+			pc.setqf("first_notice", 1)
+		end
+
+		when 33008.chat."Zamieñ Kartê Maski Dyni " with pc.getqf("first_notice") == 1 begin
+			local setting = event_halloween_hair.setting()
+			say_title("Jack Pumpkin:")
+			say("Znowu ty? S³uchaj, zdradzê ci pewn¹ tajemnicê.")
+			say("Przy odrobinie szczêœcia w Upiornej Skrzyni")
+			say("mo¿esz znaleŸæ Kartê Maski Dyni. ")
+			wait()
+			say_title("Jack Pumpkin:")
+			say("Za pomoc¹ tej karty mo¿esz otrzymaæ w³aœnie")
+			say("tak¹ upiorn¹ maskê. Chcesz? ")
+			wait()
+			if pc.count_item(setting.coupon) == 0 then
+				say_title("Jack Pumpkin:")
+				say("Nie masz Karty Maski Dyni? W takim razie nie")
+				say("dostaniesz ode mnie maski! He he! ")
+				wait()
+				say_title("Jack Pumpkin:")
+				say("Upiorne Dynie wypadaj¹ z potworów, a Czarodziejskie")
+				say("Ró¿d¿ki z kamieni Metin. Dotknij dyni ró¿d¿k¹,")
+				say("a zamieni siê w Upiorn¹ Skrzyniê. Spróbuj! ")
+				return
+			end
+			local race = pc.get_race() + 1
+			local vnum = event_halloween_hair.get_hair_vnum_by_race(race)
+			if vnum == nil then
+				say_title("Jack Pumpkin:")
+				say("Hmm... Nie mam maski, która pasowa³aby")
+				say("na twoj¹ g³owê. Zachowaj kartê na lepsze czasy. ")
+				return
+			end
+			say_title("Jack Pumpkin:")
+			say("Maska dyni wytrzyma 6 godzin, 1 dzieñ lub 7 dni")
+			say("od pierwszego za³o¿enia. Zale¿y to od twojego")
+			say("szczêœcia! Jej atrybut te¿ jest losowy, wiêc")
+			say("ka¿da maska jest inna. ")
+			wait()
+			say_title("Jack Pumpkin:")
+			say("Chcesz teraz wymieniæ Kartê Maski Dyni")
+			say("na Maskê Dyni? ")
+			local s = select("Tak ", "Nie ")
+			if s ~= 1 then
+				return
+			end
+			if pc.count_item(setting.coupon) == 0 then
+				return
+			end
+			pc.remove_item(setting.coupon, 1)
+			local option = event_halloween_hair.get_hair_option(event_halloween_hair.get_random_hair_option_index())
+			pc.give_item2_select(vnum)
+			item.set_socket(0, option.duration)
+			item.set_value(0, option.apply, option.value)
+			say_title("Jack Pumpkin:")
+			say("Proszê, oto ona. Za³ó¿ j¹ w oknie kostiumów -")
+			say("przedniej zabawy ¿yczê! ")
+		end
+
+		-- the Magic Wand on a Halloween Pumpkin
+		when 30322.use begin
+			local setting = event_halloween_hair.setting()
+			if pc.count_item(setting.pumpkin) < 1 then
+				syschat("Potrzebujesz Upiornej Dyni, aby u¿yæ Czarodziejskiej Ró¿d¿ki. ")
+				return
+			end
+			pc.remove_item(setting.pumpkin, 1)
+			pc.remove_item(setting.wand, 1)
+			pc.give_item2(setting.box, 1)
+		end
+	end
+end

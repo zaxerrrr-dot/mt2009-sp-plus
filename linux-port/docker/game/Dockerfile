@@ -339,7 +339,9 @@ RUN set -eux; \
     # MT2009_PLUS_YOHARA_ZAKLETY_V1 quests unchanged.
     # labirynth and black_steel_crafting are the package's, with Min-Sun (20402) on Pustynia Yongbi since Przelecz (69)
     # is gone (MT2009_PLUS_PASS69_OFF_V1) - their objects replace the stock ones.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join zaklety_las erebu labirynth black_steel_crafting; do \
+    # event_halloween_hair is Owsap's Halloween event (MT2009_PLUS_HALLOWEEN_V1, Autor: Owsap) in
+    # place of the package's copy, whose handlers the runtime stage removes first.
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join zaklety_las erebu labirynth black_steel_crafting event_halloween_hair; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -553,6 +555,19 @@ RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/sp
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+8302[3-7]([^0-9]|$)' "$f")" = 5 \
  && rm -f "$a" \
  && echo "share: Flower Event gift boxes 83023-83027"
+
+# MT2009_PLUS_HALLOWEEN_V1: the Halloween Chest (50215, Upiorna Skrzynia; Autor: Owsap - the event,
+# quest/event_halloween_hair.quest), which neither the package nor Owsap has a group for. Appended
+# once, after any group of the same vnum is cut out; the Seban panel's "Szkatulki" page edits it.
+COPY special_item_group.halloween.txt /tmp/special_item_group.halloween.txt
+RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/special_item_group.halloween.txt \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$a" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+50215([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && { [ -z "$(tail -c 1 "$f.new")" ] || printf '\r\n' >> "$f.new"; } \
+ && cat "$a" >> "$f.new" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+50215([^0-9]|$)' "$f.new")" = 1 \
+ && mv "$f.new" "$f" && rm -f "$a" \
+ && echo "share: Halloween Chest 50215"
 
 # MT2009_PLUS_YUTNORI_V1: the Yut Nori trophies and bundles (83030-83034,
 # special_item_group.yutnori.txt; playerbot_yutnori.h hands them out). Appended
@@ -1737,6 +1752,16 @@ RUN set -eu; \
       echo "FATAL: still not readable by the server account:"; echo "$bad"; exit 1; \
     fi; \
     echo "share tree is readable by the server account"
+
+# MT2009_PLUS_HALLOWEEN_V1: the package's own event_halloween_hair (quest/events/halloween) is
+# replaced by Owsap's port compiled above. Its handlers go first - the login/enter spawn of
+# Jack Pumpkin (the event manager stands him now) and the masks' "use" handlers, which call
+# affect.add_hair, a function this engine does not have - so none of them outlives the copy.
+RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
+ && n=$(find "$O" -path "$O/state" -prune -o -type f -name 'event_halloween_hair.*' -print | wc -l) \
+ && find "$O" -path "$O/state" -prune -o -type f -name 'event_halloween_hair.*' -exec rm -f {} + \
+ && ! find "$O" -path "$O/state" -prune -o -type f -name 'event_halloween_hair.*' -print | grep -q . \
+ && echo "share: the package's event_halloween_hair handlers removed ($n)"
 
 # The three quests compiled in the quests stage, as a pure addition on top of
 # the package's own object tree (new files under quest/object/, the sources

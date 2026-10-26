@@ -253,6 +253,7 @@ namespace {
 			case playerbot_events::KIND_YUTNORI:
 			case playerbot_events::KIND_FLOWER:
 			case playerbot_events::KIND_EASTER:
+			case playerbot_events::KIND_HALLOWEEN:	// MT2009_PLUS_HALLOWEEN_V1
 				return 2 * 60 * 60 * 1000;
 		}
 		return PLAYERBOT_EVENTS_REMINDER_INTERVAL;
@@ -269,6 +270,8 @@ namespace {
 			case playerbot_events::KIND_YUTNORI: return "Yut Nori";
 			case playerbot_events::KIND_FLOWER: return "Dzieci Kwiaty";
 			case playerbot_events::KIND_EASTER: return "Event wielkanocny (metiny wielkanocne i Wielkanocny Zajac)";
+			// MT2009_PLUS_HALLOWEEN_V1 (playerbot_halloween.h).
+			case playerbot_events::KIND_HALLOWEEN: return "Halloween: Upiorne Dynie i Jack Pumpkin";
 		}
 		return NULL;
 	}
@@ -325,6 +328,10 @@ namespace {
 			else if (kind == playerbot_events::KIND_RUMI || kind == playerbot_events::KIND_YUTNORI || kind == playerbot_events::KIND_CATCHKING)
 				snprintf(text, sizeof(text), "Event zakonczony: %s. Nagrody za ranking mozna odebrac przy stole przez 7 dni.",
 						PlayerBotMiniGameEventName(kind));
+			// MT2009_PLUS_HALLOWEEN_V1: Jack Pumpkin stays through the 7-day window
+			// (playerbot_ingame_events.h, halloween_hair_reward).
+			else if (kind == playerbot_events::KIND_HALLOWEEN)
+				snprintf(text, sizeof(text), "Event zakonczony: Halloween. Jack Pumpkin zostaje w miastach jeszcze 7 dni - wymien u niego Karte Maski Dyni na maske.");
 			else if (PlayerBotMiniGameEventName(kind))
 				snprintf(text, sizeof(text), "Event zakonczony: %s.", PlayerBotMiniGameEventName(kind));
 			else
@@ -744,8 +751,12 @@ namespace {
 // window is open drops with its chance (per mille) from a monster or a Metin
 // stone killed by a character at most 15 levels above it - the bots as the
 // players. A vnum the item table does not know drops nothing.
+void Mt2009PlusHalloweenDrops(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item);
 void Mt2009PlusChestDrops(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& vec_item)
 {
+	// MT2009_PLUS_HALLOWEEN_V1: the Halloween Pumpkin and the Magic Wand ride on
+	// this hook (playerbot_halloween.h) - no engine change of their own.
+	Mt2009PlusHalloweenDrops(victim, killer, vec_item);
 	if (!victim || !killer || !killer->IsPC() || !(victim->IsMonster() || victim->IsStone()) || s_vecPlayerBotChestDrops.empty())
 		return;
 	if (killer->GetLevel() > victim->GetLevel() + 15)

@@ -51,6 +51,11 @@ EVENTS = {
 			'rewards': ((83030, 1), (83031, 1), (83034, 1))},
 	'easter': {'name': 'Event wielkanocny', 'icon': CAL + 'bonus_event.tga', 'open': 'info',
 			'desc': 'Metiny wielkanocne dropi\xb9 jajka - wymie\xf1 je u Wielkanocnego Zaj\xb9ca w mie\x9ccie.'},
+	# MT2009_PLUS_HALLOWEEN_V1 (Autor: Owsap): Jack Pumpkin, the pumpkins and the wands (the server's
+	# playerbot_halloween.h); the rewards shown are the pumpkin, the wand and the Mask Card.
+	'halloween': {'name': 'Halloween', 'icon': CAL + 'halloween_event.tga', 'open': 'info',
+			'desc': 'Potwory dropi\xb9 Upiorne Dynie, a Metiny Czarodziejskie R\xf3\xbfd\xbfki - u\xbfyj r\xf3\xbfd\xbfki, a dynia zamieni si\xea w Upiorn\xb9 Skrzyni\xea. Kart\xea Maski Dyni wymienisz u Jacka Pumpkina w mie\x9ccie.',
+			'rewards': ((30321, 1), (30322, 1), (30323, 1))},
 	'goblin': {'name': 'Poszukiwanie skarb\xf3w', 'icon': CAL + 'goblin_event.tga', 'open': 'goblin'},
 	'chest': {'name': 'Szkatu\xb3ki Blasku Ksi\xea\xbfyca', 'icon': CAL + 'moonlight_event.tga', 'open': 'calendar'},
 	'exp': {'name': 'Do\x9cwiadczenie +%d%%', 'icon': CAL + 'exp_event.tga', 'open': 'calendar'},
@@ -62,7 +67,7 @@ EVENTS = {
 	'metinloot': {'name': 'Podw\xf3jny loot z Metin\xf3w', 'icon': CAL + 'double_metin_loot_event.tga', 'open': 'calendar'},
 }
 # The hub's order; keys not listed come after, as the server sends them.
-ORDER = ('catchking', 'rumi', 'rumi_xmas', 'yutnori', 'flower', 'easter', 'goblin',
+ORDER = ('catchking', 'rumi', 'rumi_xmas', 'yutnori', 'flower', 'easter', 'halloween', 'goblin',
 		'chest', 'bossloot', 'metinloot', 'tanaka', 'zuo', 'exp', 'drop', 'yang')
 DEFAULT_ICON = CAL + 'bonus_event.tga'
 
