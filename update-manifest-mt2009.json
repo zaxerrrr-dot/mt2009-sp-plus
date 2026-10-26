@@ -1,18 +1,18 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-23T12:58:49Z",
- "statusMessage": "MT2009 PLUS 2.37.1: boty zuzywaja mniej pamieci, mniej krazenia po magazynie, same robia Swiatynie Zodiaku. Klient 2.0.68 (bez zmian).",
+ "publishedAt": "2026-10-26T13:58:56Z",
+ "statusMessage": "MT2009 PLUS 2.38.0: Wezowe Pole i Kraina Gigantow, Piasek Kwarcowy z golemow, budynki gildii, boty na wojnie gildii. Klient 2.0.69.",
  "server": {
-  "version": "2.37.1",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.37.1/metin2-server-update-2.37.1.zip",
-  "sha256": "8616DF719FADCE14B1C46E0C91F1CCB1DCE5FC42322153BDFEA86364052EF714",
-  "size": 115216086
+  "version": "2.38.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.38.0/metin2-server-update-2.38.0.zip",
+  "sha256": "BF2D7341A922971B932C31C8CF8C10D9EAFC8B66249E15D57DA61C4A4D0D3A45",
+  "size": 115357774
  },
  "client": {
-  "version": "2.0.68",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.68/metin2-client-update-2.0.68.zip",
-  "sha256": "C365047A4E0C65DAF533D574160C198F7DFAA6C0E0C58C44D248A2FF05A6DB2E",
-  "size": 702523444
+  "version": "2.0.69",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.69/metin2-client-update-2.0.69.zip",
+  "sha256": "3DD5EA5474A83074B1B5ACAAF00675E8F8AB7CBA0B6D8276D31A48EBCCE6AB34",
+  "size": 723503670
  }
 }

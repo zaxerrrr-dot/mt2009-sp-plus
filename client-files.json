@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.68",
+  "version": "2.0.69",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -185,7 +185,7 @@
     {
       "path": "pack/gamedata.index",
       "size": 4180,
-      "sha256": "5BD41E5EA8C8611E07F0CDAB04B643C2899DE7D46E7B4C7005B4059430C63122"
+      "sha256": "68FD5B5EA740F08931CFC42B2B8E3CF29BB96A8BD3D44C21FF2438387AF36910"
     },
     {
       "path": "pack/gautama_map.index",
@@ -234,8 +234,8 @@
     },
     {
       "path": "pack/Index",
-      "size": 1160,
-      "sha256": "DB908D16059E865C2693CFADC1B9C1620723434F37E61C8775C973D1799514A3"
+      "size": 1200,
+      "sha256": "607AB7795383C51DB7DC9AA202988EB3EA9CD84AE0D20254C883291BBDB94148"
     },
     {
       "path": "pack/locale.index",
@@ -264,18 +264,33 @@
     },
     {
       "path": "pack/property.index",
-      "size": 58692,
-      "sha256": "376E3FA4E71FF46A2648C30D7D07ADD0B0398B64747F818FA70BAA25BC770B00"
+      "size": 59188,
+      "sha256": "F04BEDE48C5818B40BF4F532E39FD58E81E07B2F2524722F87F66DF977F021D5"
     },
     {
       "path": "pack/root.index",
       "size": 33372,
-      "sha256": "B93FDDD9616AFB3693D4E52E21D6F77DF2E0E05C99DB70E17D996C96E743B26A"
+      "sha256": "BD62E00B88616564D87C7F055E73E14919432B68D40619222803FFE60532A72E"
     },
     {
       "path": "pack/wiki_nowe.index",
       "size": 1140,
       "sha256": "E85D9513B81A65816E2CB611B47B0C70510397112E58CC0DFAC6ACDCFC593F32"
+    },
+    {
+      "path": "pack/wzmaps_map.index",
+      "size": 6948,
+      "sha256": "A8485DC867165DF3B0BB12CC7E41DB7C60DE1CE9566C7FC2E92B49D6C2350508"
+    },
+    {
+      "path": "pack/wzmaps_mobs.index",
+      "size": 11108,
+      "sha256": "5466B0CBCB21A6DED5B4E0C5ECBC44F1CC692744FDE16DD992E98B24ED1C88C1"
+    },
+    {
+      "path": "pack/wzmaps_obj.index",
+      "size": 5100,
+      "sha256": "1EE679CD4FF122930B580E17894A1519715EAC99F5E250BA1FCEF264FD934360"
     },
     {
       "path": "pack/yohara_mobs.index",
