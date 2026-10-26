@@ -2069,8 +2069,10 @@ namespace
 			return true;
 		// A transport horse never fights; a battle horse's rider is asked about
 		// the foe itself (FightPlayerBotTowerObjective), a stone keeping it in
-		// the saddle.
-		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
+		// the saddle. MT2009_PLUS_BOT_WAR_MOUNT_V1: a standing mount's rider
+		// (an archer on a cloud has no battle horse) stays up, since "tower"
+		// keeps that saddle and the dismount here only returned every tick.
+		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch) && !IsPlayerBotOnStandingMount(ch))
 		{
 			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "tower");
 			return true;
@@ -2319,7 +2321,7 @@ namespace
 		// A transport horse never fights; a battle horse's rider is asked about
 		// the foe itself (FightPlayerBotTowerObjective), a stone keeping it in
 		// the saddle.
-		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
+		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch) && !IsPlayerBotOnStandingMount(ch))
 		{
 			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "tower");
 			return true;
@@ -2411,7 +2413,7 @@ namespace
 		// A transport horse never fights; a battle horse's rider is asked about
 		// the foe itself (FightPlayerBotTowerObjective), a stone keeping it in
 		// the saddle.
-		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch))
+		if (ch->IsRiding() && !HasPlayerBotBattleHorse(ch) && !IsPlayerBotOnStandingMount(ch))
 		{
 			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "tower");
 			return true;
