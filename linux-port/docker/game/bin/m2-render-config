@@ -127,7 +127,13 @@ MAPS_first="1 3 4 5 6 107 81 111 112 113 181 182 183 200 250"
 # (blasty, 1 October). Not hosted, the engine sends such a character to its
 # kingdom's start at the next login (ENABLE_GOHOME_IF_MAP_NOT_EXIST, input_db.cpp)
 # and a warp there goes nowhere. No bot ever went there.
-MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 69 70 71 104 108 109 79 216 72 73 209 208 351 352"
+# MT2009_PLUS_MAPS_WZ_V1: Kraina Gigantow (70) is hosted by game3 below with Wezowe Pole (80) - on game1 before,
+# where it was the base share's metin2_map_nusluck01 with no way in. MT2009_PLUS_PASS69_OFF_V1: Przelecz (69,
+# metin2_map_wl_pass) is hosted by no core (the owner on the Yohara line, 15 October 2026: "Przelecz 69 usun"; the
+# 2.x line takes it over with Wezowe Pole, whose portal 10029 stands where the desert's way to Przelecz was) - no
+# map index names it; Min-Sun (20402: Labirynt 79, the Black Steel crafting, his shop) stands on Pustynia Yongbi
+# (63) by the portal to Wezowe Pole.
+MAPS_game1="21 23 24 25 26 61 62 63 64 65 66 67 68 71 104 108 109 79 216 72 73 209 208 351 352"
 MAPS_game2="41 43 44 45 46 90"
 
 # One world on one core, when the operator asks for it.
@@ -202,15 +208,22 @@ MAPS_game1="$MAPS_game1 358"
 # (compose, update.sh, the launcher, the installers widen the range). Memory (plan-2.37-las.md): ~0.2 GB with no
 # bot, up to ~0.8 GB a channel with the bots' navigation grids of all five maps (301 ~160 MB, 302 ~125, 303 ~80,
 # 304 ~107, 353 ~53; built at the first bot on the map and kept) - the same grids game2/first carried before, the
-# process itself (~0.15 GB) is what is new. M2_MAP_CORE=0 (a PC short of memory) puts the five maps back on game2
+# process itself (~0.15 GB) is what is new. M2_MAP_CORE=0 (a PC short of memory) puts the maps back on game2
 # and starts no game3.
-MAPS_game3="353 301 302 303 304"
+# MT2009_PLUS_MAPS_WZ_V1 (maps): Wezowe Pole (80, metin2_map_snakefield, 4x4) and Kraina Gigantow (70,
+# metin2_map_giantland, 2x2) - the Yohara line's two old maps, taken over for the 2.x line (the owner, 26 October
+# 2026: "do 2.x dodaj wezowe pole i kraine gigantow") - on game3 with the other new maps, in every channel (the
+# rule of 2.37: all new maps on the new core; game2 with M2_MAP_CORE=0). People walk in from the desert (63,
+# game1) through its portal 10029 - a warp to game3; the bots of their bands (63-78 / 63-80) come over by the
+# handover (playerbot_yohara_bots.h, MT2009_PLUS_MAPS_WZ_BOTS_V1). Memory: 20 sectors of terrain and some 1 000
+# monsters, the bots' navigation grids ~71 MB (80) + ~18 MB (70), built at the first bot on the map.
+MAPS_game3="353 301 302 303 304 70 80"
 M2_MAP_CORE="${M2_MAP_CORE:-1}"
 case "$M2_MAP_CORE" in
   0)
     MAPS_game2="$MAPS_game2 $MAPS_game3"
     MAPS_game3=""
-    log "map core (game3): off (M2_MAP_CORE=0) - 353 and 301-304 on game2"
+    log "map core (game3): off (M2_MAP_CORE=0) - 353, 301-304, 70 and 80 on game2"
     ;;
   *)
     log "map core (game3): $MAPS_game3"

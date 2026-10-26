@@ -1,0 +1,4749 @@
+{
+ "environment": {
+  "key": "d:/ymir work/environment/milgyo.msenv",
+  "ours": false
+ },
+ "maps": {
+  "70": {
+   "atlas_image": "d:/ymir work/ui/atlas_resize/metin2_map_nusluck01_atlas.dds",
+   "environment": "milgyo.msenv",
+   "folder": "metin2_map_giantland",
+   "objects": {
+    "crc_used": 49,
+    "dropped": 0,
+    "ours": 49,
+    "staged": 0
+   },
+   "pack": "wzmaps_map",
+   "removed_objects": {},
+   "source": "ameria season1/metin2_map_nusluck01",
+   "textureset": "textureset/metin2_snakefield.txt"
+  },
+  "80": {
+   "atlas_image": "d:/ymir work/ui/atlas_resize/metin2_map_wl_01_atlas.dds",
+   "environment": "milgyo.msenv",
+   "folder": "metin2_map_snakefield",
+   "objects": {
+    "crc_used": 205,
+    "dropped": 14,
+    "ours": 177,
+    "staged": 14
+   },
+   "pack": "wzmaps_map",
+   "removed_objects": {
+    "1337000001": {
+     "objects": 9,
+     "why": "model d:/ymir work/tree/shye/bush/shrubazaleafa.spt in no client we have"
+    },
+    "1337000003": {
+     "objects": 1,
+     "why": "model d:/ymir work/tree/shye/bush/shrubboxwood.spt in no client we have"
+    },
+    "1337000004": {
+     "objects": 31,
+     "why": "model d:/ymir work/tree/shye/bush/shrubboxwoodfa.spt in no client we have"
+    },
+    "1337000007": {
+     "objects": 1,
+     "why": "model d:/ymir work/tree/shye/bush/shrubelderberry.spt in no client we have"
+    },
+    "1337000013": {
+     "objects": 2,
+     "why": "model d:/ymir work/tree/shye/bush/shrubgenericbuckthornsu.spt in no client we have"
+    },
+    "1337000014": {
+     "objects": 24,
+     "why": "model d:/ymir work/tree/shye/bush/shrubgenericdaphnesu.spt in no client we have"
+    },
+    "1337000015": {
+     "objects": 6,
+     "why": "model d:/ymir work/tree/shye/bush/shrubgenericdaphnesu.spt in no client we have"
+    },
+    "1337000016": {
+     "objects": 1,
+     "why": "model d:/ymir work/tree/shye/bush/shrubgenericelderberrysu.spt in no client we have"
+    },
+    "1337000017": {
+     "objects": 12,
+     "why": "model d:/ymir work/tree/shye/bush/shrubgenericelderberryfa.spt in no client we have"
+    },
+    "1337000018": {
+     "objects": 30,
+     "why": "model d:/ymir work/tree/shye/bush/shrubgenericinkberryfa.spt in no client we have"
+    },
+    "1337000020": {
+     "objects": 1,
+     "why": "model d:/ymir work/tree/shye/bush/shrubhydrangeabluesu.spt in no client we have"
+    },
+    "1337000021": {
+     "objects": 4,
+     "why": "model d:/ymir work/tree/shye/bush/shrubinkberrysu.spt in no client we have"
+    },
+    "1337000022": {
+     "objects": 6,
+     "why": "model d:/ymir work/tree/shye/bush/shrubjaphoneysucklesu.spt in no client we have"
+    },
+    "1337000024": {
+     "objects": 4,
+     "why": "model d:/ymir work/tree/shye/bush/shrubmugopinefa.spt in no client we have"
+    }
+   },
+   "source": "ameria season1/metin2_map_wl_01",
+   "textureset": "textureset/metin2_snakefield.txt"
+  }
+ },
+ "new_packs": [
+  "wzmaps_map",
+  "wzmaps_obj",
+  "wzmaps_mobs"
+ ],
+ "packs": {
+  "property": [
+   {
+    "name": "property/wom/ot/treeeasthemlockfa.prt",
+    "sha1": "634ca12585f48dfa8511dc0ad857f4ae1d626f14",
+    "size": 184,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treeenglishoakforest01fa.prt",
+    "sha1": "9b6afcfae109b1155c8bd86237d0d06a47ad7e7c",
+    "size": 198,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treeenglishoakforest01su.prt",
+    "sha1": "c2a012df0cae0bfe3f8f5b541d493488249b4537",
+    "size": 198,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treeenglishoakforestfa.prt",
+    "sha1": "b3bfeb611e3ec574363c27ddb5f82e3b5c477238",
+    "size": 194,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treeenglishoaksaplingfa.prt",
+    "sha1": "a5ba9bdbb7dfc9255d9f3c68a1fd2daa360b7249",
+    "size": 196,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treeenglishoaksaplingsu.prt",
+    "sha1": "76dc1448502efc43497b3f06abbd456fef7c13b8",
+    "size": 196,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treeenglishoakyoungfa.prt",
+    "sha1": "f62860518b622be2a287fa7948d2c4d9e8740cb7",
+    "size": 192,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treeenglishoakyoungsu.prt",
+    "sha1": "de309f052223e496b5e7776466ad426ddaa4aa87",
+    "size": 192,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treegcsycamoresu.prt",
+    "sha1": "d6155c112791769e4f6abc831a5a227d72634714",
+    "size": 182,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treejapanesemaple.prt",
+    "sha1": "4dc86aeb4cf4ba53a0a36945e3fa3421184c3f64",
+    "size": 184,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treejuniper01.prt",
+    "sha1": "fd5e4a9d5f5410e44503fa0fa3eec420cc91acc5",
+    "size": 176,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treesugarmapleforestfa.prt",
+    "sha1": "3d18269a0e68c83410d31e00a9f629e896897cc5",
+    "size": 194,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treesugarmaplesaplingfa.prt",
+    "sha1": "173f773d926227956f1edbfd51ab0e846a31b823",
+    "size": 196,
+    "source": "ameria"
+   },
+   {
+    "name": "property/wom/ot/treesugarmapleyoungsu.prt",
+    "sha1": "aed5eacfbf8ed5466b90407c67b26755085eab4c",
+    "size": 192,
+    "source": "ameria"
+   }
+  ],
+  "wzmaps_map": [
+   {
+    "name": "d:/ymir work/terrainmaps/a/beach/beach sand 02.dds",
+    "sha1": "72d3793de7bf050567d6af2e44759aa70360552e",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/c/stone/c_stone04_bb.dds",
+    "sha1": "da336bcb0b6bf7d21082b9c6d9a2d5d1219fe60f",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/ema1/beach/beach sand 03.dds",
+    "sha1": "29f781d1f58328ae82bdfff47fc97d5bec3b24ad",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/ema1/stone/stone03.dds",
+    "sha1": "1bf9812cd6fd988ee45a300b1b82b251d1fe403c",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/guildzone/field10.dds",
+    "sha1": "a9001f15f2f108d29d6d5b3664d0322b24ed2ee9",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/guildzone/field3.dds",
+    "sha1": "b88f34dacc69de737a11ba32e1b13251a3b89644",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/guildzone/field7.dds",
+    "sha1": "8a8c9cd3201e1eb3c0ff976fa15f6569c01a48e6",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/guildzone/field8.dds",
+    "sha1": "5b9ca1cbda7369e2ce19fe37177959d335742dba",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/guildzone/grass4.dds",
+    "sha1": "ab5ecea6a868cebd0d151be388c37ab7c3f32f04",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/studio/grass/green02.dds",
+    "sha1": "c16d43ff989f92d8d345152cc1489bb8f195f83c",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/studio/grass/groundplants01.dds",
+    "sha1": "51b72cbfca8db0a00d24f01555bc6cf82871fa70",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/wom/wom_cliff01.dds",
+    "sha1": "b5844ac0edf4461bf85b73f48ae80f9c8c09bf6d",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/wom/wom_cliff02.dds",
+    "sha1": "4513eb0b1dd96077028b8221b63836ae542fde6b",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/wom/wom_cracked_surface.dds",
+    "sha1": "645582cc2cfe7770f37200bd4ce7fefd8a81311c",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/wom/wom_grass_01.dds",
+    "sha1": "b85a9c6a6b7f37f5efc36b554aaf5ea577d64f8a",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/wom/wom_grass_worn.dds",
+    "sha1": "f7748fcd93fac10cfb2376942134e1fad954a867",
+    "size": 699192,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_giantland/atlas.sub",
+    "sha1": "9d727e08149140d5336e9131d0ad6be7ca8fc1b8",
+    "size": 120,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_snakefield/atlas.sub",
+    "sha1": "839d353c8241e1a7d6c8502d1915843ec70e0f48",
+    "size": 116,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas_resize/metin2_map_nusluck01_atlas.dds",
+    "sha1": "415f7363c714c767698a4b271985d8a49ea2694d",
+    "size": 125056,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas_resize/metin2_map_wl_01_atlas.dds",
+    "sha1": "087e5d92dd30ffc931bba2d681e8f63347d323e8",
+    "size": 125056,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/areadata.txt",
+    "sha1": "6ca50d229dedaa2151ea863ee67f84261336c3f2",
+    "size": 15275,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/attr.atr",
+    "sha1": "cc7608e2745b85fef0c3b29ec0134ab769f21f4b",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/height.raw",
+    "sha1": "cb885664018816ff538524e1cb88c2fc512ba4cf",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/minimap.dds",
+    "sha1": "850c834da10d5bd7399608be37d57d39f298c65e",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/shadowmap.dds",
+    "sha1": "68fe792302130691b66633fcff4f29ba1b7c1734",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/shadowmap.raw",
+    "sha1": "507a3394f92958ce455c2c639b0918dab7ea801a",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/tile.raw",
+    "sha1": "a7d3fadd59bf9572c5a1d9bef722ca515f4ec022",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/areadata.txt",
+    "sha1": "5126d896b7577ea1a8b68b51b9c1aad2d78f048f",
+    "size": 11990,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/attr.atr",
+    "sha1": "7b01cf42b6eab11716979a2988b1a44793f4510e",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/height.raw",
+    "sha1": "b542ef7292ea48ac8eb2c479aa2bc40e30ec6b1f",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/minimap.dds",
+    "sha1": "4c8fcdb56f6d3f271700813bb6c22048151c6d18",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/shadowmap.dds",
+    "sha1": "5a137832efa256eb27425c731d03d7a63b43cadb",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/shadowmap.raw",
+    "sha1": "3e5baefe56de92a2848c7fed0746c9d8404ff53e",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/tile.raw",
+    "sha1": "b4ef20d77df941241141209c2282c44929d4ef30",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/000001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/areadata.txt",
+    "sha1": "c4dfea0263e3a8af21baf355856ed87a158c6e81",
+    "size": 11333,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/attr.atr",
+    "sha1": "26fe7114fae80553e860c1434078d3061e886f3b",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/height.raw",
+    "sha1": "a7baf8da9562f1dbbb05b0f5b45eb06ab049bb48",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/minimap.dds",
+    "sha1": "add31898d33cf1acc5baac89cf4932fc931b2673",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/shadowmap.dds",
+    "sha1": "e1dfe60c1b5ea229b2c1b946719e142c6c689082",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/shadowmap.raw",
+    "sha1": "b3a0d76bcf7c1855924e4ea28271756ed592a111",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/tile.raw",
+    "sha1": "87d26f6322274f55af4db465c162e642fe0c7b89",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/areadata.txt",
+    "sha1": "8625501160abdef14532b69cbfa8be0b220ef753",
+    "size": 5847,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/attr.atr",
+    "sha1": "2913428fdba60d502971263a23a083c3d0445300",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/height.raw",
+    "sha1": "d99b6f74799f025d42c391760f1d208cf964df99",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/minimap.dds",
+    "sha1": "3cf30b6154ad42e6a452cfeaf6916f642bc727b4",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/shadowmap.dds",
+    "sha1": "855c115e6afc20cd3edfc45a48602d3c64c231bf",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/shadowmap.raw",
+    "sha1": "cc00d648d011b9155cba17067d3157a6d02b3a4d",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/tile.raw",
+    "sha1": "dab0aef15b22052e97b1742cee1e727d43622501",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/001001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_giantland/setting.txt",
+    "sha1": "3930695e312c1020f811813b3217cab9baa9ea2c",
+    "size": 194,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/areadata.txt",
+    "sha1": "200657cc22f16886776a121f24b48e01fadb1e62",
+    "size": 7545,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/areaproperty.txt",
+    "sha1": "ece505738f680fcb24ca984c38766a8ada519d93",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/attr.atr",
+    "sha1": "e4eccd815b1544557a9fc257db790d0f1939870d",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/height.raw",
+    "sha1": "16e66471f067b8e0eb622c5b7b81c70f0220f4e3",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/minimap.dds",
+    "sha1": "9f2328d77dfbb76832769156f4741c0dd7d89c3a",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/shadowmap.dds",
+    "sha1": "6c0ea907441f0a34bfdeba9215e984bd7ba040e9",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/shadowmap.raw",
+    "sha1": "df52bdd4bfa786a36df5548a632c7fd48ffd93f3",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/tile.raw",
+    "sha1": "0a71b13944d55c9dd20ede3ae1ba5c20ed3f8782",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000000/water.wtr",
+    "sha1": "d9828cc58929ef6f538dd4081828632f41a31f1a",
+    "size": 16403,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/areadata.txt",
+    "sha1": "f349222b3ee3ebd13ee8244c2745f66595ad159a",
+    "size": 38249,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/areaproperty.txt",
+    "sha1": "048ccadcd01b74f473ab8595cadfeff547b2d1e6",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/attr.atr",
+    "sha1": "65026718da0ffb572491225ccf0dbbe130f45ba1",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/height.raw",
+    "sha1": "78bdf392dc4a72c52166356b6abcbe5022ef6698",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/minimap.dds",
+    "sha1": "50a5e34f2a035d3046ffc0579276bb52e2fd4559",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/shadowmap.dds",
+    "sha1": "582981073246e861c8b931be02d2268e030a3d5d",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/shadowmap.raw",
+    "sha1": "921194013b3710430cb30a40c6ca1b9439d4f7e1",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/tile.raw",
+    "sha1": "77e324a7dd282fcc18f111b2fe5e25d7bd7b727a",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000001/water.wtr",
+    "sha1": "cf6dff6812218548e8543477b7d9c334f787e168",
+    "size": 16399,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/areadata.txt",
+    "sha1": "d99ddec1ab13f1d92e458f790707205264074034",
+    "size": 9701,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/attr.atr",
+    "sha1": "1d8302a160b1c7595386838ed6744ff2fb37289f",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/height.raw",
+    "sha1": "4f69c2e10a89b7c031dbdd70fb3da90021164d0a",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/minimap.dds",
+    "sha1": "ddd487c78bf2a1314cae8ef08cf4d4b3867a1829",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/shadowmap.dds",
+    "sha1": "fd20f4728e809e26656e51052599dfc09878ae98",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/shadowmap.raw",
+    "sha1": "d3ba1c9ab8c30125dc5d29addfd4fd7de1de0aa2",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/tile.raw",
+    "sha1": "4d7619a961f58fcd28463c7ee0b6c41211cc66e2",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/areadata.txt",
+    "sha1": "4e3800118ad18e7ac2e0458514f4211fc2758b2e",
+    "size": 22198,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/attr.atr",
+    "sha1": "4d324a90d287f775122cc4488bf82cc4330d97f7",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/height.raw",
+    "sha1": "2a5aa4103b2cc41a315b5b0066a1abeaf7d45265",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/minimap.dds",
+    "sha1": "329460f43c09f5663886970c6463a08d2f6b0a00",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/shadowmap.dds",
+    "sha1": "9c077b3053645877b2d1667edb4e4e0b441fbf26",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/shadowmap.raw",
+    "sha1": "b6bf37a7688ec419e20ec91396b09d7509eff12f",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/tile.raw",
+    "sha1": "2e5048100a2de3b05c774bd7cc76d7de1a96028e",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/000003/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/areadata.txt",
+    "sha1": "899e5d131938a5169902d34296856200a002b6a3",
+    "size": 9778,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/attr.atr",
+    "sha1": "3d8a2eb81eace8951ca72d8d2ef9b840eb408ee0",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/height.raw",
+    "sha1": "9b8cb1c9c908216c61201c38601207ce22210934",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/minimap.dds",
+    "sha1": "d4293dde9dd9d0039036252ade4999c77c2b442b",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/shadowmap.dds",
+    "sha1": "c37b8d0f4757934f298f44e336a61fa727f080e0",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/shadowmap.raw",
+    "sha1": "3de6e665ef2cdb650e541e8f98824b2c946bc66e",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/tile.raw",
+    "sha1": "0bc6f04336556e15fa92ad9f0e776ffd017674e0",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001000/water.wtr",
+    "sha1": "9076b44bf6abe511de77c04815a1b72fe6fc2940",
+    "size": 16395,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/areadata.txt",
+    "sha1": "868e93bbb0e52d43d849c342b3c5dda6967d1783",
+    "size": 12666,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/attr.atr",
+    "sha1": "8d75eae790ce387cfd3c614d80c3e77e4a7a1f50",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/height.raw",
+    "sha1": "146464ac1784098a0e6f01d4ed872a38ea406750",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/minimap.dds",
+    "sha1": "f79c2d8a62d7066b36efeb66cb6b044a47c81e78",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/shadowmap.dds",
+    "sha1": "f14bd055d2a3f50c21096b5ef69fec12956817e7",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/shadowmap.raw",
+    "sha1": "053caf8b63115ddd2aba142340efc4c95659bd64",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/tile.raw",
+    "sha1": "f7af4958ce72023cb970e7d5935a691c19ec9da3",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001001/water.wtr",
+    "sha1": "86d57e7791a14a31d91f5c0c02ccd5ad5ec93adf",
+    "size": 16395,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/areadata.txt",
+    "sha1": "1ce215077b2d888dbc6f8f36943d3c9d2f7dc821",
+    "size": 6335,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/attr.atr",
+    "sha1": "22deea00378b57c2faf0db3e2b339399c3a9dbab",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/height.raw",
+    "sha1": "1bf7cfe0106a89381df515516198e5565d2170f9",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/minimap.dds",
+    "sha1": "0e2cdf7ea0319e10937b5c86eb80219154062fdb",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/shadowmap.dds",
+    "sha1": "70647a5cee351c101e3b2ea920395bc0225b36ab",
+    "size": 196736,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/shadowmap.raw",
+    "sha1": "28c6d068d7edb75e284112b62e154d11cbb8fa0a",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/tile.raw",
+    "sha1": "49892edd115befc47e006353855fbc7042a203f5",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001002/water.wtr",
+    "sha1": "b50c9dd131104a00efbe342f4583e9ca4590136d",
+    "size": 16395,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/areadata.txt",
+    "sha1": "7ba577f9088ddc033f431a8bfa703207197aa65d",
+    "size": 8664,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/areaproperty.txt",
+    "sha1": "512d0c7e5e6680e0490f8c2757aefb888ce4a51c",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/attr.atr",
+    "sha1": "0e731d51683d3cc60c262788bcb1ebd89913a6c0",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/height.raw",
+    "sha1": "fe795993a45cb4e370434f3a89b6b76048f77ad3",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/minimap.dds",
+    "sha1": "7bfd1a3aa4b8ea6b4fd76d27846521a4d5871a43",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/shadowmap.dds",
+    "sha1": "53c7dad12bee3ca369a30f03546b3d8ef53861b9",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/shadowmap.raw",
+    "sha1": "3e69d145bb139fe34f781a07a0d6b215c8577ff8",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/tile.raw",
+    "sha1": "1b5ec3269f45b31690354da8a2c3c11ed4fb648b",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/001003/water.wtr",
+    "sha1": "545e79d77aedf3c489469d5f3cd7ab50d3dc7fe8",
+    "size": 16395,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/areadata.txt",
+    "sha1": "7906897c029669bfdd76046ea4f03398b3a8b763",
+    "size": 26525,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/attr.atr",
+    "sha1": "f617fe524f861583d89444c636b953a45bc1ba33",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/height.raw",
+    "sha1": "c95911a3320d63af9f37268392d4491ce0f0a13b",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/minimap.dds",
+    "sha1": "b5fedc700c567b5de950cb77625544f414be4f12",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/shadowmap.dds",
+    "sha1": "acee2a8dca5e7718ce0907cda27ef021a11c70c5",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/shadowmap.raw",
+    "sha1": "136cbdc958f17edc8e938dc8c390e6536bd6ddd9",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/tile.raw",
+    "sha1": "bd6d9dc88b3147d83d2e95ba2e0673cd95b23c5d",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/areadata.txt",
+    "sha1": "9bae8c69163d0c6661bf9bb673a41a6cd61baa02",
+    "size": 1680,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/attr.atr",
+    "sha1": "835f21a36094780221b2702ad714f91463d88643",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/height.raw",
+    "sha1": "aa24247262f8a60cf23d71ee4065535b9f31137b",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/minimap.dds",
+    "sha1": "5fa53f13a06d021ed0614ce813fe70f7e9a40d4e",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/shadowmap.dds",
+    "sha1": "528865cb72aae280269da68ac3b06ae6c165ff96",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/shadowmap.raw",
+    "sha1": "e87ef95b7e7622915c7144d53f8d0d3e1fc3c2d2",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/tile.raw",
+    "sha1": "4ef0efe690257b4b908465e7da96a83c24554528",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/areadata.txt",
+    "sha1": "b2f05befa1a7b818f76c8a1fb27c6185fbdb0cf1",
+    "size": 4966,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/attr.atr",
+    "sha1": "d6623d9937e558814cfafcd3151e2b07408b6889",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/height.raw",
+    "sha1": "435e9eab24619ff3df209b9fb5c330bec9cc48e5",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/minimap.dds",
+    "sha1": "446a6f892bf90ce6fb4f8ab9f105cc6bef0f75de",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/shadowmap.dds",
+    "sha1": "17125f6f5472f3af38920ec35454c414e6104203",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/shadowmap.raw",
+    "sha1": "ede23b5ff22e88c21c1f9fa7ff79ac17712c7c49",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/tile.raw",
+    "sha1": "29a38b73e7630cd67c229c29be6d2fdb47fc6890",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/areadata.txt",
+    "sha1": "15377632b4280449e07cbb883916981d302bd46c",
+    "size": 5083,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/attr.atr",
+    "sha1": "cc7bf0b5f3920cee4738292282b90a408ae77871",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/height.raw",
+    "sha1": "3e9a83b4f095e360411993443f4f18400e87313a",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/minimap.dds",
+    "sha1": "0205d014c2d3374c798088915f43c99e3d745167",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/shadowmap.dds",
+    "sha1": "17125f6f5472f3af38920ec35454c414e6104203",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/shadowmap.raw",
+    "sha1": "ede23b5ff22e88c21c1f9fa7ff79ac17712c7c49",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/tile.raw",
+    "sha1": "b6683fa07b37b18eb52a6736090c517bbda4a656",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/002003/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/areadata.txt",
+    "sha1": "d78132e54506589166e255a0e17b74f9fc09232b",
+    "size": 5506,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/attr.atr",
+    "sha1": "3602a161dd83013fd6a7f9a7c0d1ca8e9274da85",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/height.raw",
+    "sha1": "5a25cd31996ee9b0fc65c0d756f106b14dbb71f7",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/minimap.dds",
+    "sha1": "5bcde8978f95480661e4b914a1ae303a97a53a71",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/shadowmap.dds",
+    "sha1": "051e8ea1b6ed5204fc90c28b3643a373705115d5",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/shadowmap.raw",
+    "sha1": "a80fbb9206caa141113aaf5a4816e9483909e8df",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/tile.raw",
+    "sha1": "78fd6ab2ae302c496a369798635ade80f7673bc6",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/areadata.txt",
+    "sha1": "208c9c20bf0df586d347a345c881bb88488c7957",
+    "size": 2639,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/attr.atr",
+    "sha1": "ebb60a24d2a85045564ffafd1aea8478eb8c5f32",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/height.raw",
+    "sha1": "95a7e650f78620db35120c0a8f08dd5873b3751b",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/minimap.dds",
+    "sha1": "555f9c9d64305006bd130c081321d91f614c00a6",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/shadowmap.dds",
+    "sha1": "39523feed068b2f4062514b1118b492c0a6fa2f4",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/shadowmap.raw",
+    "sha1": "7cd5ce5140c2a37351efc62bb550674be75f69dc",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/tile.raw",
+    "sha1": "47edaf90b9d96dc495625a5854def0afe4ec6964",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/areadata.txt",
+    "sha1": "be9498284f5bb1040e29eb95f20731bba6d042e6",
+    "size": 8683,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/attr.atr",
+    "sha1": "fb7a430a86bf386ddcf94de4ed98f97907ca6171",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/height.raw",
+    "sha1": "60c74a51df0855334857ff11d81415083beb5635",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/minimap.dds",
+    "sha1": "b428badb9510891aefc175c78d3efc04926c06da",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/shadowmap.dds",
+    "sha1": "e0abfc148f544f66b3ceb3326fa2752e6941e6c7",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/shadowmap.raw",
+    "sha1": "06c7183f55de4003ef7bd1c9cb0ea63822f582af",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/tile.raw",
+    "sha1": "8ee9300e23fb03a55be273f8a03da79a27f68883",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/areadata.txt",
+    "sha1": "9b1577eb9c7d3a58d95399830be9e5dc0dfb65e2",
+    "size": 6489,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/attr.atr",
+    "sha1": "451842eed750e8fd80e562d7b646db6dd9d8b9fa",
+    "size": 65542,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/height.raw",
+    "sha1": "3d0bb5afed9fd1176e855d06e0116c24d4caec53",
+    "size": 34322,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/minimap.dds",
+    "sha1": "d4d1722468228accf9b17ce88ee93b64975a967a",
+    "size": 32896,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/shadowmap.dds",
+    "sha1": "1095ec2ce9de8c9a8916f0947ffbbd1dea3125e3",
+    "size": 43832,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/shadowmap.raw",
+    "sha1": "80e03b8407d7c444e2d76265e64e652dc45fc62e",
+    "size": 131072,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/tile.raw",
+    "sha1": "7dc18e65624ac06ef517aa391b91a846303a3441",
+    "size": 66564,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/003003/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/mapproperty.txt",
+    "sha1": "6df74184b6d2c2775a51e3621b835f35c76030b4",
+    "size": 45,
+    "source": "ameria"
+   },
+   {
+    "name": "maps/metin2_map_snakefield/setting.txt",
+    "sha1": "ab2de23def363a79d9a5032c3de02fb688512120",
+    "size": 195,
+    "source": "gen"
+   },
+   {
+    "name": "textureset/metin2_snakefield.txt",
+    "sha1": "f5e4527ea439be344c5cc4391aaf89b33f573bc9",
+    "size": 3207,
+    "source": "gen"
+   }
+  ],
+  "wzmaps_mobs": [
+   {
+    "name": "d:/ymir work/monster2/golem_1/00.gr2",
+    "sha1": "7298ff657acf75a2d8aa261ece16962bf571cdf8",
+    "size": 18460,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/00.msa",
+    "sha1": "9d846de2943ad6d2df2f31f4a7d6e0686eda84c9",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/00_1.gr2",
+    "sha1": "f34b81beff30c5a87e89542b1f23c38cbb2e1b54",
+    "size": 19255,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/00_1.msa",
+    "sha1": "d7cb7cc48caf5f1b273c32781a06249323899ce3",
+    "size": 182,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/00_2.gr2",
+    "sha1": "bc6906cb5e8cfef1c3ef3588e476efbb2fb8e936",
+    "size": 29382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/00_2.msa",
+    "sha1": "4a81d64839c10533e561d2086e50fc7ecb1a5c07",
+    "size": 182,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/03.gr2",
+    "sha1": "940889cf4dde2b75cbf00f0d48bcf26e6bafa06e",
+    "size": 20917,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/03.msa",
+    "sha1": "1a717e6a520204941751afd22860570e7ac2076a",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/20.gr2",
+    "sha1": "9e30e56dc55c1aa202025277a762eeb4d4203c99",
+    "size": 23406,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/20.msa",
+    "sha1": "45e647eb2342e29643f51d1579d5cd07e1fb2776",
+    "size": 1331,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/20_1.gr2",
+    "sha1": "366cfc3d495ebd63f39ba2f961d63700c0a3e842",
+    "size": 25976,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/20_1.msa",
+    "sha1": "8db92e4ac44e9595fd5c7736beb7aacfbfd49cb3",
+    "size": 2052,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/30.gr2",
+    "sha1": "4bbd740ce96081d72a0c398af2de86cf39726d60",
+    "size": 16067,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/30.msa",
+    "sha1": "101674ecde7347adc47a42752dbc629930ba42cc",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/31.gr2",
+    "sha1": "e5099b9f7c98603e00f1b2a631c5da4500388de3",
+    "size": 31596,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/31.msa",
+    "sha1": "3f9d064bab0bc1e99daaf9f13d0bc8620e74554c",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/32.gr2",
+    "sha1": "f643e1f01dfb38be6f3599b92ff119aa2f155622",
+    "size": 23850,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/32.msa",
+    "sha1": "4f0d7df2fa974d72068e3ed3ffd16f85203ade3d",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/33.gr2",
+    "sha1": "57ca3fa5ae962ab808fac8aaaa9f6b5eedb65283",
+    "size": 21588,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/33.msa",
+    "sha1": "de83f3a5d123f08e446e313aa7bf59c03a14e9f3",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/34.gr2",
+    "sha1": "3b4529a0eca7284d83f5a6c923006b8b342b1c06",
+    "size": 16157,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/34.msa",
+    "sha1": "df9d1330d9df81cebd79d2d89bc1b32513aeef3c",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/35.gr2",
+    "sha1": "784634454509e930a3ee061ed663408835305463",
+    "size": 22184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/35.msa",
+    "sha1": "4185d1b3d7dc0487059c52d345e6a24fb884caa4",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/36.gr2",
+    "sha1": "9260dbd5012afac5c3b8f4bd625466b33552582d",
+    "size": 36823,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/36.msa",
+    "sha1": "be9e1155e5d493860262b7de9ba7e3e68ae5dc1b",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/37.gr2",
+    "sha1": "e10d51417ec2fe74c42246738326a8f19be0c6cd",
+    "size": 38416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/37.msa",
+    "sha1": "f48f0a746c4eb29b386c32e18ffc7bf3e56128a3",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/golem_1.dds",
+    "sha1": "912c87686a8e1a10f5d6f5d0066784f0f62fd792",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/golem_1.gr2",
+    "sha1": "25f33753f6ea9cf7e48e3bbe1d56654d05047d55",
+    "size": 39501,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/golem_1.msm",
+    "sha1": "29cc11c75ee23362c4c4ce6a6432a36c0d583ca1",
+    "size": 1081,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/golem_1_lod_01.gr2",
+    "sha1": "3dac701301887325ebe6df9c428916c5edcab9c1",
+    "size": 32732,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_1/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/00.gr2",
+    "sha1": "7298ff657acf75a2d8aa261ece16962bf571cdf8",
+    "size": 18460,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/00.msa",
+    "sha1": "2637819e70816099c594172ed16429c83fc4889c",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/00_1.gr2",
+    "sha1": "f34b81beff30c5a87e89542b1f23c38cbb2e1b54",
+    "size": 19255,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/00_1.msa",
+    "sha1": "45d9855ed92bbc313f454d64f42c1e4a7a18bf32",
+    "size": 182,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/00_2.gr2",
+    "sha1": "bc6906cb5e8cfef1c3ef3588e476efbb2fb8e936",
+    "size": 29382,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/00_2.msa",
+    "sha1": "cf613dd0ba43a06b82393bf31d883050534ba17d",
+    "size": 182,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/03.gr2",
+    "sha1": "940889cf4dde2b75cbf00f0d48bcf26e6bafa06e",
+    "size": 20917,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/03.msa",
+    "sha1": "fbffdcec00602a2765ea89af4624f0a97cd10f56",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/20.gr2",
+    "sha1": "9e30e56dc55c1aa202025277a762eeb4d4203c99",
+    "size": 23406,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/20.msa",
+    "sha1": "45e647eb2342e29643f51d1579d5cd07e1fb2776",
+    "size": 1331,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/20_1.gr2",
+    "sha1": "366cfc3d495ebd63f39ba2f961d63700c0a3e842",
+    "size": 25976,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/20_1.msa",
+    "sha1": "8db92e4ac44e9595fd5c7736beb7aacfbfd49cb3",
+    "size": 2052,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/30.gr2",
+    "sha1": "4bbd740ce96081d72a0c398af2de86cf39726d60",
+    "size": 16067,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/30.msa",
+    "sha1": "139d8fd7d8c157f7961175c081e9bdc5453f70ed",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/31.gr2",
+    "sha1": "e10d51417ec2fe74c42246738326a8f19be0c6cd",
+    "size": 38416,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/31.msa",
+    "sha1": "1ee9d21f973c11e183e9a2a92e6c24e8083a56e3",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/32.gr2",
+    "sha1": "784634454509e930a3ee061ed663408835305463",
+    "size": 22184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/32.msa",
+    "sha1": "2418b4eab7a4422d399e472ec884b2176a8dec99",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/33.gr2",
+    "sha1": "57ca3fa5ae962ab808fac8aaaa9f6b5eedb65283",
+    "size": 21588,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/33.msa",
+    "sha1": "65564809e39264b4422d6d903edbc462d6bb9739",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/34.gr2",
+    "sha1": "3b4529a0eca7284d83f5a6c923006b8b342b1c06",
+    "size": 16157,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/34.msa",
+    "sha1": "503db36490cec24125127abf3a6f888e69966b11",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/35.gr2",
+    "sha1": "f643e1f01dfb38be6f3599b92ff119aa2f155622",
+    "size": 23850,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/35.msa",
+    "sha1": "ddd7c8c9df635d64aadc7c234477746ba3c91931",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/36.gr2",
+    "sha1": "9260dbd5012afac5c3b8f4bd625466b33552582d",
+    "size": 36823,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/36.msa",
+    "sha1": "b5549a9fb120234698d502453d41ebbde64f98ea",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/37.gr2",
+    "sha1": "e5099b9f7c98603e00f1b2a631c5da4500388de3",
+    "size": 31596,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/37.msa",
+    "sha1": "efb4d7516eac1dcdc3ece5b25025a5523f8fb559",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/golem_2.dds",
+    "sha1": "6bd95148ce1b52a4e4be0e4e0d90575da86f838b",
+    "size": 43776,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/golem_2.gr2",
+    "sha1": "ae9a190a864b58cad524935bb1f313b9541a57f3",
+    "size": 90013,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/golem_2.msm",
+    "sha1": "2319bb4b5b95b75f4f97ed980d764638ce38efb9",
+    "size": 1081,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_2/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/00.gr2",
+    "sha1": "6613b48de3ca935f7242c15124112b5c819f5be8",
+    "size": 18752,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/00.msa",
+    "sha1": "3ed1db5f46e9b8fa5e05dae3d2543671011d80a4",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/00_1.gr2",
+    "sha1": "6ff5941c4f35463d011661bfa5b50585bf355a5f",
+    "size": 18931,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/00_1.msa",
+    "sha1": "1326bf3c84a3412b990e1ef2c77d66a7e12d7f02",
+    "size": 182,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/00_2.gr2",
+    "sha1": "1939e5ca503e0cbb08c7715dd600451be7e65ef2",
+    "size": 28746,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/00_2.msa",
+    "sha1": "92701505bc2a3a2b068cbb87d6e8d4d78c102cf0",
+    "size": 182,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/03.gr2",
+    "sha1": "5ae0454b2b3488b2580653589c1b4549ac573811",
+    "size": 20441,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/03.msa",
+    "sha1": "9a1d2639eee75db13a7293cf66e2e98ed97cd563",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/20.gr2",
+    "sha1": "91259bb6a59bd55dd3fed02c2a1ac8a0cec71f05",
+    "size": 23579,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/20.msa",
+    "sha1": "45e647eb2342e29643f51d1579d5cd07e1fb2776",
+    "size": 1331,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/20_1.gr2",
+    "sha1": "3d32df555ccfa64ca5a308e6ec2bd01c98683c9e",
+    "size": 26200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/20_1.msa",
+    "sha1": "8db92e4ac44e9595fd5c7736beb7aacfbfd49cb3",
+    "size": 2052,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/30.gr2",
+    "sha1": "d84c6ed268c8e8e55e4681639e6b74b3af2f177d",
+    "size": 16178,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/30.msa",
+    "sha1": "8b74d78bd70a0861efc01a5d86389ba5cc462b0d",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/31.gr2",
+    "sha1": "b306bea0cdeb3987c6a2d304b54329405a4a0938",
+    "size": 38673,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/31.msa",
+    "sha1": "96e580599733db63486380c7a3d5381764a806d5",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/32.gr2",
+    "sha1": "be79c9d79640c59253d3a9793b102088b8e9db98",
+    "size": 22461,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/32.msa",
+    "sha1": "aab5adbc82e9855050ac0ab908b53b3c87215388",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/33.gr2",
+    "sha1": "536793bb14cfc4f08ff7459bc549ebf6eea3ba87",
+    "size": 21828,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/33.msa",
+    "sha1": "33455e5179c5cb80fe9fb09d042d235c3529d89a",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/34.gr2",
+    "sha1": "2586e0b2476ff56aa40072ae8ea4655d32018667",
+    "size": 16131,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/34.msa",
+    "sha1": "dff7aae068350e67e8f44c45d5878e763912c6da",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/35.gr2",
+    "sha1": "f153cab9f8ca02bfbbb1187f462b667e8635eff3",
+    "size": 25566,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/35.msa",
+    "sha1": "835a1351ece8be3c672def2191b9bc2a7aa653d5",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/36.gr2",
+    "sha1": "49a391bffab08ac24726bd57c62e992ecab7acc7",
+    "size": 40841,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/36.msa",
+    "sha1": "3ee07a9edae7859f3355c12b00e8d88f8a9821fe",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/37.gr2",
+    "sha1": "e15b849f425323fb9d019a91baae1a3d0299d230",
+    "size": 31522,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/37.msa",
+    "sha1": "357a52e029547411583afc686dfb29699e32d9c7",
+    "size": 180,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/golem_3.gr2",
+    "sha1": "31f54702e50987efa1d298280342bec3cecbde23",
+    "size": 107618,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/golem_3.msm",
+    "sha1": "e7a47886402b858e7b9a95d3dbd82999f0f9fe6c",
+    "size": 1082,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/gorem_3.dds",
+    "sha1": "f7ff8cd513194a1a1bab06489963480ed828b7e0",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/golem_3/motlist.txt",
+    "sha1": "35f335935f5bc9bc031435bcd7d292f22e7b8c45",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/00.gr2",
+    "sha1": "0494e3a0b2fdce8e50fb8c1378ff374b32096ae6",
+    "size": 20341,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/00.msa",
+    "sha1": "dd654b2911ae2951a680ebc8a578ff1ab16696cf",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/00_1.gr2",
+    "sha1": "193fec4895359143181696fb1f00dbe2a2d5cf78",
+    "size": 21166,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/00_1.msa",
+    "sha1": "d25d286c042a6a472dd0fa1d23b42e1af1641670",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/00_2.gr2",
+    "sha1": "ad97dae7c1ef9663889692956c8b0745a9c65cdb",
+    "size": 19873,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/00_2.msa",
+    "sha1": "56485c04a7954e0b4d2f429c5a53c6aa70227890",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/03.gr2",
+    "sha1": "672185738d10782c02e57d018027d810c55d58b5",
+    "size": 18757,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/03.msa",
+    "sha1": "17499900ea544e715aadb285e58c93ba6553a747",
+    "size": 184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/20.gr2",
+    "sha1": "e15863cd9c40232f8f8323047a39565aefa1f45c",
+    "size": 38817,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/20.msa",
+    "sha1": "136c2b0d0b2c36f76d759aaf7d192f0a3c4b8d78",
+    "size": 869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/20_1.gr2",
+    "sha1": "a141944d87cde682e2961f982cb4ec595173f66b",
+    "size": 38832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/20_1.msa",
+    "sha1": "664e5361aa3d0a706a6614492c8771fefb9c7b64",
+    "size": 869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/30.gr2",
+    "sha1": "7be0605c86a8958f283d155bf3495f0ae22ee113",
+    "size": 15235,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/30.msa",
+    "sha1": "9a744964113c17401a84f2c66c487d7ff7529690",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/31.gr2",
+    "sha1": "9c94c49904efcf913677c0ce8ac5d74c5acf75a8",
+    "size": 37326,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/31.msa",
+    "sha1": "f8afe7c952f0e3371966ac5a4b167c0da6d18bea",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/32.gr2",
+    "sha1": "93f115dcf62454ef39cf61302e4c5f3ca4da0439",
+    "size": 24410,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/32.msa",
+    "sha1": "f231443fdf2c8c72999ab7d80c51f2915460c1c1",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/33.gr2",
+    "sha1": "7e3f0e6b2512ed0754ae30f52956f1a65efe4937",
+    "size": 23976,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/33.msa",
+    "sha1": "0b5591d26bb140e0f442c15852657501f3a4cc36",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/34.gr2",
+    "sha1": "1bbf072455bf3f96334f651f8c1c6094b2610268",
+    "size": 25628,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/34.msa",
+    "sha1": "2bd2407545f982f480416318de343dd583732772",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/35.gr2",
+    "sha1": "ea7f44bebb986353358a023151bb010ab733112a",
+    "size": 23305,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/35.msa",
+    "sha1": "0bac92942b67c2701d67dd14bb89a9a0e85fc3fa",
+    "size": 184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/36.gr2",
+    "sha1": "942faec842feba0a8bf24c0891f78d8b3b986198",
+    "size": 37200,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/36.msa",
+    "sha1": "aa853c9399262eb00d691078a04ab531189afd05",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/37.gr2",
+    "sha1": "6e8ea4f5df123703e992112345af533f760e199d",
+    "size": 36438,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/37.msa",
+    "sha1": "5acd97f7d520a685051e57b32d92f6ae994e17d2",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/mutant.dds",
+    "sha1": "045f6c8e80955267cabfee813867d316c41107ec",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/mutant_1.gr2",
+    "sha1": "cfec9740343063294b70f5943b8967bee40b647f",
+    "size": 51227,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/mutant_1.msm",
+    "sha1": "ecbd69309dadca11d9012edea42def7241391966",
+    "size": 1086,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_1/mutant_1_lod_01.gr2",
+    "sha1": "27ff55cf9e52afc528929f02ac5c20bba311b161",
+    "size": 45594,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/00.gr2",
+    "sha1": "ab74eb16571855938c241ee2409106d0172068a1",
+    "size": 21225,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/00.msa",
+    "sha1": "7ac2291292833ede87d1515686222fd9bc48cec9",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/00_1.gr2",
+    "sha1": "72470e84248af1d87d01b4c5a3eb188b140b46fe",
+    "size": 21959,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/00_1.msa",
+    "sha1": "88b7ee4c0fd22bdabb43588a8e0112c7a96045de",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/00_2.gr2",
+    "sha1": "2892c1f1ec61acd3f6815efb7514decc178d98d3",
+    "size": 50983,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/00_2.msa",
+    "sha1": "1dd13da9397b9b33eafd533415a2a92584ae4e0e",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/03.gr2",
+    "sha1": "4b24ba9273626e4d59126ca6a250c77a4afcb779",
+    "size": 23516,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/03.msa",
+    "sha1": "018407a5db5e8e47b93735673e26b922df72ccdb",
+    "size": 184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/20.gr2",
+    "sha1": "c2f694fa4117b6c71553128099679f0a6333dfa4",
+    "size": 40218,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/20.msa",
+    "sha1": "2cfe0051712c9ce71f4309b01cfd6b67f186366a",
+    "size": 1154,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/20_1.gr2",
+    "sha1": "1cce35cd07ac09d206312eaf3233eacd568b7cee",
+    "size": 40208,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/20_1.msa",
+    "sha1": "35d27016adb2c07af27b582d48457a30685c7191",
+    "size": 1245,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/30.gr2",
+    "sha1": "ff3a0acf9bc6c560b19ed2248d03220961758721",
+    "size": 15998,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/30.msa",
+    "sha1": "c0419146162f7a4e4ae2270137ea27261a3f5aee",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/31.gr2",
+    "sha1": "c935537f3a6170ef916dbb3cec7f7d971cd96baf",
+    "size": 39547,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/31.msa",
+    "sha1": "c044de58f7017687bc78ce82e2398d0388fabe5f",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/32.gr2",
+    "sha1": "75a92807b4a1ad2dd16ffcb175b5348137700741",
+    "size": 25737,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/32.msa",
+    "sha1": "c36b21e0fe82b330ad1501faa6b3d36db1ff6a75",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/33.gr2",
+    "sha1": "d993fd79a82b30c371a2c86d1605fbd4386f8060",
+    "size": 24975,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/33.msa",
+    "sha1": "5f7255b1458748d4f9fba8001c669c716b8e91eb",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/34.gr2",
+    "sha1": "0bdccf02757dbad043bed79e551cd06ab7cfd765",
+    "size": 26739,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/34.msa",
+    "sha1": "f11c64a2560c12fb9a3272f5f407037fd942f14e",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/35.gr2",
+    "sha1": "69a6339f9997c46e1cead2166f4691b3abc40550",
+    "size": 24508,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/35.msa",
+    "sha1": "cb5c21ec99dbbea0476194d7baf9376160d1549e",
+    "size": 184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/36.gr2",
+    "sha1": "fe1ad9875fb1873084764151c6d830192b402508",
+    "size": 25273,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/36.msa",
+    "sha1": "421e862d6c15eaff10c919d26784e444f99be9a9",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/37.gr2",
+    "sha1": "0483e22c188a3e71f0e612343957e9912305dd42",
+    "size": 38635,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/37.msa",
+    "sha1": "61fb47a2f7e1a6c03669e35d42fb6400ead5424e",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/mutant_2.dds",
+    "sha1": "de31fd9a76a2626a5b321efc5a10ca8eae1c3415",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/mutant_2.gr2",
+    "sha1": "cc2c40b39a61a2b3f27f1c2dc35b595234a388c6",
+    "size": 64093,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/mutant_2.msm",
+    "sha1": "a4cd1970c0b6bb0a77a5dac759e01e732a233edd",
+    "size": 1087,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_2/mutant_2_lod_01.gr2",
+    "sha1": "6b58ddee9d230382dba1ba1bdbdb5e4f9281c930",
+    "size": 51514,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/00.gr2",
+    "sha1": "2d421c59fb66e41928df2d97957f370328ed4c5e",
+    "size": 20974,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/00.msa",
+    "sha1": "1e6cb0d9d200db2b6563674c8b11a1afb7c8839f",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/00_1.gr2",
+    "sha1": "96b9e113d30d5397ba931a00d65a999e458cad4e",
+    "size": 21568,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/00_1.msa",
+    "sha1": "9af813c5c3374c935f99514f7c29007992129122",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/00_2.gr2",
+    "sha1": "538b919ed3d7e889acfa44351ad4bdfeb1a1d5a1",
+    "size": 32613,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/00_2.msa",
+    "sha1": "77d390b5855d2ecafe85288fa08448cabce321f2",
+    "size": 183,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/03.gr2",
+    "sha1": "1021605e66195e94c7e4cc5ec705a42874672b74",
+    "size": 19817,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/03.msa",
+    "sha1": "6f2da62426673d61bae45292e409525a03a8fb9f",
+    "size": 184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/20.gr2",
+    "sha1": "9101fa8a33f0ba8b3ff958cd29e6ab71c5d6bb1f",
+    "size": 49372,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/20.msa",
+    "sha1": "8a392f319794bf42846269adb8bcec7454522e6e",
+    "size": 867,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/20_1.gr2",
+    "sha1": "e81e9196904ca3d4a0013cf07d7ee6fb520c26b1",
+    "size": 48936,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/20_1.msa",
+    "sha1": "0e121d4473042e48526388cc6944fe1e637d1555",
+    "size": 869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/30.gr2",
+    "sha1": "b12cefb13b4fed4ab2f7e306010d5cb642895197",
+    "size": 26529,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/30.msa",
+    "sha1": "70314e62a260e0dcdcead00397117eefda7b33d8",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/31.gr2",
+    "sha1": "5ef3b49e7267ec526bcac369f43a63b18ac678c9",
+    "size": 38010,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/31.msa",
+    "sha1": "966b00c23fcc640de42815cdb6a7da75950c8d07",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/32.gr2",
+    "sha1": "1abc67cf0a3afb8791b1660f0779cd9524450a40",
+    "size": 25933,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/32.msa",
+    "sha1": "c5aa6d81eafa2f3a14fdcae745e63064a5554c31",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/33.gr2",
+    "sha1": "8d334900e25b66b904ed421b6bd0421159eda108",
+    "size": 24694,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/33.msa",
+    "sha1": "e6d6e758a235914d26abb0de7c891796fb96f262",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/34.gr2",
+    "sha1": "6af1834a3c5fbc264bfb69bb0bf7805a06c22a42",
+    "size": 15678,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/34.msa",
+    "sha1": "62f6a12cb1a2749055011d7f994df504a3a3cfd4",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/35.gr2",
+    "sha1": "2173ef6f8bb9fbb8cf385831faa5891ac8e6d384",
+    "size": 25589,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/35.msa",
+    "sha1": "7e6c5cb8d08e29d43d7e10d2b58ffd07b80e8af8",
+    "size": 184,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/36.gr2",
+    "sha1": "643c63c5c6da4155c48ef4ef1a53d86fee106aaf",
+    "size": 37883,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/36.msa",
+    "sha1": "62931b9b8a321ac18b13d7235f48e345d380589a",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/37.gr2",
+    "sha1": "b5c0bfe30ada9612a2174e20c8fb7b03baf8e48c",
+    "size": 38026,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/37.msa",
+    "sha1": "2f8d0a0b739decf3e8395948847adb88dbaa22e7",
+    "size": 181,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/mutant_03.dds",
+    "sha1": "788e3364af0ca0e8f006414ccbe4bac64433ec8a",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/mutant_03.gr2",
+    "sha1": "78eece412346373ef815a05e3ee37f74d2fe78bc",
+    "size": 82040,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/mutant_03_lod_01.gr2",
+    "sha1": "e99b077042170409f62235b6b0782d36769e034a",
+    "size": 63486,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/mutant_3.gr2",
+    "sha1": "78eece412346373ef815a05e3ee37f74d2fe78bc",
+    "size": 82040,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/mutant_3/mutant_3.msm",
+    "sha1": "dd10a20ec88d97a180078ef517704d570b41b2fb",
+    "size": 1083,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/00.gr2",
+    "sha1": "c8f5b531c53a481e9557344b175b9bae6f4a27ea",
+    "size": 28666,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/00.msa",
+    "sha1": "52503bdb83c68f14c3df03b73efc5787be454869",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/00_1.gr2",
+    "sha1": "cbd03dde4a595496380c73beb74dca9bcdff1f97",
+    "size": 33892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/00_1.msa",
+    "sha1": "96f9023139cf31c14be19bb10503c4ae6a2fc367",
+    "size": 167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/00_2.gr2",
+    "sha1": "29bcf206850507107661a888a5506c5792bebb7f",
+    "size": 33172,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/00_2.msa",
+    "sha1": "8f7e86065f46d5e8941305f999cc50c54ab3aa3c",
+    "size": 167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/03.gr2",
+    "sha1": "9b95d122ab7272201e9ae86a42788cbdd7e30f44",
+    "size": 18113,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/03.msa",
+    "sha1": "7d9f3af71e33ccc89b76845f17bfd4d3b97b7f6e",
+    "size": 168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/20.gr2",
+    "sha1": "b45f02003ab9c3bb1a4d55ca2050c4fa712ef89b",
+    "size": 32276,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/20.msa",
+    "sha1": "8e7fb07dd71db0ca7495dfc9d6e76dbfe93fb028",
+    "size": 1852,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/20_1.gr2",
+    "sha1": "904c6a11a389f7192d29c726965f1700d74f8916",
+    "size": 49804,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/20_1.msa",
+    "sha1": "17562760ab610dea2b401ea0f912ca83049005d5",
+    "size": 1869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/30.gr2",
+    "sha1": "62fc0d67d2dfb639ec6f220d37352bdfce60777f",
+    "size": 16784,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/30.msa",
+    "sha1": "68d6742a4008461443f63ccbab373a92630c245f",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/31.gr2",
+    "sha1": "cec4d47c8dbdb964c5f2a328e209b0f6f4103717",
+    "size": 43819,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/31.msa",
+    "sha1": "c360fb9f2e6ec6bfaaa0c3d59badff7af0d74b19",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/32.gr2",
+    "sha1": "aaf836d2d6c929f1482578172d1225db954efe26",
+    "size": 27498,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/32.msa",
+    "sha1": "5164adff90fc65ee2595370573d81117c15394c4",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/33.gr2",
+    "sha1": "326ed9bb03304cb88c3a32b16aeac171c6b3a63c",
+    "size": 44541,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/33.msa",
+    "sha1": "cc2b1e8f9c88521490e02eff8619deb6742e5c54",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/34.gr2",
+    "sha1": "4377df129a7e91fe41af191d25f6fa0e1c66c6b1",
+    "size": 18002,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/34.msa",
+    "sha1": "3a80d2c2b1c18cff21811d29708ece0844c51852",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/35.gr2",
+    "sha1": "bdd1dd8b87602b38d5d434fbb3463c26119f18ae",
+    "size": 27498,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/35.msa",
+    "sha1": "c9bc25cf4c17a97b1ff967871f99b35b45fe6914",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/36.gr2",
+    "sha1": "172fc5179d56d4d5b05600ab5dcc7e5e92e2560e",
+    "size": 44227,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/36.msa",
+    "sha1": "fa352daf46a32f472b0f4f3da6499e8e97836904",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/37.gr2",
+    "sha1": "e1526f92acbd6f5b9c882c2537c94307c1176d26",
+    "size": 43968,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/37.msa",
+    "sha1": "5296eeae6a4fc2687a941823c00bbc93d26c6fbc",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/nersluck1.dds",
+    "sha1": "0d5877d55cd2b019729f8e39fab146e59b59494f",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/nersluck_1.gr2",
+    "sha1": "645a1cfafe4c775c12fa08f77a43622720cc504a",
+    "size": 56736,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/nersluck_1.msm",
+    "sha1": "ac0dede09aff588f19842c5d8ac3c9e2d159a8aa",
+    "size": 1087,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/nersluck_lod_01.gr2",
+    "sha1": "645a1cfafe4c775c12fa08f77a43622720cc504a",
+    "size": 56736,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/nusluck_armor.dds",
+    "sha1": "c7a68010e670effa68cdcff64b8eacb55c757ed1",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_1/nusluck_weapons.dds",
+    "sha1": "77eacfec00108f263785a92d79ac96ae16c781c3",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/00.gr2",
+    "sha1": "c8f5b531c53a481e9557344b175b9bae6f4a27ea",
+    "size": 28666,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/00.msa",
+    "sha1": "52503bdb83c68f14c3df03b73efc5787be454869",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/00_1.gr2",
+    "sha1": "cbd03dde4a595496380c73beb74dca9bcdff1f97",
+    "size": 33892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/00_1.msa",
+    "sha1": "96f9023139cf31c14be19bb10503c4ae6a2fc367",
+    "size": 167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/00_2.gr2",
+    "sha1": "29bcf206850507107661a888a5506c5792bebb7f",
+    "size": 33172,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/00_2.msa",
+    "sha1": "8f7e86065f46d5e8941305f999cc50c54ab3aa3c",
+    "size": 167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/03.gr2",
+    "sha1": "9b95d122ab7272201e9ae86a42788cbdd7e30f44",
+    "size": 18113,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/03.msa",
+    "sha1": "7d9f3af71e33ccc89b76845f17bfd4d3b97b7f6e",
+    "size": 168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/20.gr2",
+    "sha1": "9acbdbbcea9bef9b880adedee3ae92e5139e1069",
+    "size": 27658,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/20.msa",
+    "sha1": "01feaebf013ebaf0ae9ae892a27172a29900f4d9",
+    "size": 869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/20_1.gr2",
+    "sha1": "c668b52843836b56f26c2273343cff2326ec90d3",
+    "size": 44083,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/20_1.msa",
+    "sha1": "6b869759a498e36fdcb653972a4e7e0cdf7b54ab",
+    "size": 871,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/30.gr2",
+    "sha1": "62fc0d67d2dfb639ec6f220d37352bdfce60777f",
+    "size": 16784,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/30.msa",
+    "sha1": "68d6742a4008461443f63ccbab373a92630c245f",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/31.gr2",
+    "sha1": "cec4d47c8dbdb964c5f2a328e209b0f6f4103717",
+    "size": 43819,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/31.msa",
+    "sha1": "c360fb9f2e6ec6bfaaa0c3d59badff7af0d74b19",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/32.gr2",
+    "sha1": "aaf836d2d6c929f1482578172d1225db954efe26",
+    "size": 27498,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/32.msa",
+    "sha1": "5164adff90fc65ee2595370573d81117c15394c4",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/33.gr2",
+    "sha1": "326ed9bb03304cb88c3a32b16aeac171c6b3a63c",
+    "size": 44541,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/33.msa",
+    "sha1": "cc2b1e8f9c88521490e02eff8619deb6742e5c54",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/34.gr2",
+    "sha1": "4377df129a7e91fe41af191d25f6fa0e1c66c6b1",
+    "size": 18002,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/34.msa",
+    "sha1": "3a80d2c2b1c18cff21811d29708ece0844c51852",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/35.gr2",
+    "sha1": "bdd1dd8b87602b38d5d434fbb3463c26119f18ae",
+    "size": 27498,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/35.msa",
+    "sha1": "c9bc25cf4c17a97b1ff967871f99b35b45fe6914",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/36.gr2",
+    "sha1": "172fc5179d56d4d5b05600ab5dcc7e5e92e2560e",
+    "size": 44227,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/36.msa",
+    "sha1": "fa352daf46a32f472b0f4f3da6499e8e97836904",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/37.gr2",
+    "sha1": "e1526f92acbd6f5b9c882c2537c94307c1176d26",
+    "size": 43968,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/37.msa",
+    "sha1": "5296eeae6a4fc2687a941823c00bbc93d26c6fbc",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/nersluck_2.dds",
+    "sha1": "4fd8bb893e1ebce41073bde5d090f9bfc628fb40",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/nersluck_2.gr2",
+    "sha1": "2347da045961fc180e3a129b9d58fb850f937d72",
+    "size": 59444,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/nersluck_2.msm",
+    "sha1": "71c26dcce83bc932cae3991fafb2fda6213f6ffe",
+    "size": 1087,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/nersluck_2_lod_01.gr2",
+    "sha1": "4cebead6ea6c103cff7755d0ab6e902bac78de90",
+    "size": 50690,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/nusluck_armor.dds",
+    "sha1": "c7a68010e670effa68cdcff64b8eacb55c757ed1",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_2/nusluck_weapons.dds",
+    "sha1": "77eacfec00108f263785a92d79ac96ae16c781c3",
+    "size": 87528,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/00.gr2",
+    "sha1": "c8f5b531c53a481e9557344b175b9bae6f4a27ea",
+    "size": 28666,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/00.msa",
+    "sha1": "52503bdb83c68f14c3df03b73efc5787be454869",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/00_1.gr2",
+    "sha1": "cbd03dde4a595496380c73beb74dca9bcdff1f97",
+    "size": 33892,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/00_1.msa",
+    "sha1": "96f9023139cf31c14be19bb10503c4ae6a2fc367",
+    "size": 167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/00_2.gr2",
+    "sha1": "29bcf206850507107661a888a5506c5792bebb7f",
+    "size": 33172,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/00_2.msa",
+    "sha1": "8f7e86065f46d5e8941305f999cc50c54ab3aa3c",
+    "size": 167,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/03.gr2",
+    "sha1": "9b95d122ab7272201e9ae86a42788cbdd7e30f44",
+    "size": 18113,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/03.msa",
+    "sha1": "7d9f3af71e33ccc89b76845f17bfd4d3b97b7f6e",
+    "size": 168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/20.gr2",
+    "sha1": "9acbdbbcea9bef9b880adedee3ae92e5139e1069",
+    "size": 27658,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/20.msa",
+    "sha1": "9c79181cb79231765ef07284efbe546471767bf9",
+    "size": 869,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/20_1.gr2",
+    "sha1": "c668b52843836b56f26c2273343cff2326ec90d3",
+    "size": 44083,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/20_1.msa",
+    "sha1": "e0a6fa339cd327e7b98db07e3887516493cf3997",
+    "size": 871,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/30.gr2",
+    "sha1": "62fc0d67d2dfb639ec6f220d37352bdfce60777f",
+    "size": 16784,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/30.msa",
+    "sha1": "68d6742a4008461443f63ccbab373a92630c245f",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/31.gr2",
+    "sha1": "cec4d47c8dbdb964c5f2a328e209b0f6f4103717",
+    "size": 43819,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/31.msa",
+    "sha1": "c360fb9f2e6ec6bfaaa0c3d59badff7af0d74b19",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/32.gr2",
+    "sha1": "aaf836d2d6c929f1482578172d1225db954efe26",
+    "size": 27498,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/32.msa",
+    "sha1": "5164adff90fc65ee2595370573d81117c15394c4",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/33.gr2",
+    "sha1": "326ed9bb03304cb88c3a32b16aeac171c6b3a63c",
+    "size": 44541,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/33.msa",
+    "sha1": "cc2b1e8f9c88521490e02eff8619deb6742e5c54",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/34.gr2",
+    "sha1": "4377df129a7e91fe41af191d25f6fa0e1c66c6b1",
+    "size": 18002,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/34.msa",
+    "sha1": "3a80d2c2b1c18cff21811d29708ece0844c51852",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/35.gr2",
+    "sha1": "bdd1dd8b87602b38d5d434fbb3463c26119f18ae",
+    "size": 27498,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/35.msa",
+    "sha1": "c9bc25cf4c17a97b1ff967871f99b35b45fe6914",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/36.gr2",
+    "sha1": "172fc5179d56d4d5b05600ab5dcc7e5e92e2560e",
+    "size": 44227,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/36.msa",
+    "sha1": "fa352daf46a32f472b0f4f3da6499e8e97836904",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/37.gr2",
+    "sha1": "e1526f92acbd6f5b9c882c2537c94307c1176d26",
+    "size": 43968,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/37.msa",
+    "sha1": "5296eeae6a4fc2687a941823c00bbc93d26c6fbc",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/motlist.txt",
+    "sha1": "18d337e77a58548663880641660b033bc596c1fc",
+    "size": 435,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/nersluck_2.dds",
+    "sha1": "4fd8bb893e1ebce41073bde5d090f9bfc628fb40",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/nersluck_3.gr2",
+    "sha1": "416572aedcd1bf8978f95d1c687fc4784bea7d5b",
+    "size": 75836,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/nersluck_3.msm",
+    "sha1": "461659b4bc43bbaaa6bef964d3763e6915696752",
+    "size": 1087,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/monster2/nersluck_3/nersluck_3_lod_01.gr2",
+    "sha1": "186bb4c33b5355f554f6020cbec224d2e122ee79",
+    "size": 68936,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/03.mss",
+    "sha1": "627a9d49ebd55abbffe17aa5b7ce9f746cdc9c47",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/20.mss",
+    "sha1": "4e0016b4e8ac90eed8158c2f2b18eca8ff188a8a",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/20_1.mss",
+    "sha1": "8785462decd01ad88bbf73922df5ac5eab6ae5b2",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/30.mss",
+    "sha1": "679e5a5956461a04d9ce2cde36b971634f757eee",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/31.mss",
+    "sha1": "58dd657ceaed2123d496b568f8f4fb57ec00e4b9",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/32.mss",
+    "sha1": "e4b756d11f57544d3b97db0fdcb8d0b74afdc71c",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/34.mss",
+    "sha1": "6ccd1d7e43851f48b26bbad8dd3cb2a1eab47e49",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_1/35.mss",
+    "sha1": "72b70790b1f82a7ac067aa38bd37015769d81c1e",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/03.mss",
+    "sha1": "be114b103d063397e555f9ecfebd974c5022fb92",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/20.mss",
+    "sha1": "0a8290b32439b9ad7d2ed864bd4e0230da7e84cf",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/20_1.mss",
+    "sha1": "a535bfe300b1ce1c6eb906d6564bc4330fb39164",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/30.mss",
+    "sha1": "b847929c1d6acc48915eec37f44c03b3af2e83bc",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/31.mss",
+    "sha1": "4a272aa31fcea23d2be387ea11c37294a1aaf53b",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/32.mss",
+    "sha1": "e50f7157809c8ffd3b822d686c39460e1cace8e2",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/34.mss",
+    "sha1": "6ccd1d7e43851f48b26bbad8dd3cb2a1eab47e49",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_2/35.mss",
+    "sha1": "98af3e14d070a92de6ea93d28840821bc0aedfd7",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/03.mss",
+    "sha1": "e648795828a3d2f2a2cc4d8b8cc36a28a6a70cfa",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/20.mss",
+    "sha1": "97c39c88ede0bc38c67c9c0189ab846b6844a886",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/20_1.mss",
+    "sha1": "09480d8855468834fcca506e1ada5328d6c7b588",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/30.mss",
+    "sha1": "6ccd1d7e43851f48b26bbad8dd3cb2a1eab47e49",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/31.mss",
+    "sha1": "3a0347c27e37da154c0ec973dad81c65631a6d5b",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/32.mss",
+    "sha1": "73582d747423a66baea198243d4722301d7f7110",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/34.mss",
+    "sha1": "6ccd1d7e43851f48b26bbad8dd3cb2a1eab47e49",
+    "size": 141,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_3/35.mss",
+    "sha1": "b7051f26547486329e89e6d1b28f490515676da0",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/attack_act_1.wav",
+    "sha1": "48fb7deca6525e211b1d32eccf78e31a6e95965c",
+    "size": 75906,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/attack_act_2.wav",
+    "sha1": "c09230d69a385ccfa7eaa8df4bc379f7af71adb2",
+    "size": 71736,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/damage_act_1.wav",
+    "sha1": "99e456db78d1b350b087386098b99fb7995d3d88",
+    "size": 41244,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/dead_act_1.wav",
+    "sha1": "29bb8118ddade2067a32f7f6ef5ad2f8107ea3f9",
+    "size": 78668,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/drop_1.wav",
+    "sha1": "c2b3a3f24ce982c42819662e3340e0dfafeeca58",
+    "size": 33054,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/drop_2.wav",
+    "sha1": "5d8a8001a53aaca7f911a2a429ec04459302da4c",
+    "size": 35454,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/fall_act_1.wav",
+    "sha1": "1ef6719dc70aa3631c32bc02de72c2db7e559eeb",
+    "size": 76938,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/golem_pawn/walk_1.wav",
+    "sha1": "9d44851a96ee7d5e2387afbf0da98883b9d7ea03",
+    "size": 55786,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant/attack_1.wav",
+    "sha1": "ea2d36ba7f1b8c92ccc03634a6c95d67b578fdf2",
+    "size": 30516,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant/damage_1.wav",
+    "sha1": "57f9836f9036999703e0996ee6d6e581e12241d5",
+    "size": 12874,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant/dead_1.wav",
+    "sha1": "978c7403e37375142a7a993fcd3956f94df19fe4",
+    "size": 152656,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant/fall_1.wav",
+    "sha1": "fd0a441b3f020ee4621af6a7f9406ffc6cc6dabe",
+    "size": 40810,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_1/03.mss",
+    "sha1": "2c3263d27d1ae9116f42b49d871b0e6a3bf77a66",
+    "size": 194,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_1/20.mss",
+    "sha1": "70cdfc2309c22df30122c9480e95e37ca404d529",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_1/20_1.mss",
+    "sha1": "70cdfc2309c22df30122c9480e95e37ca404d529",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_1/31.mss",
+    "sha1": "99d1a47994a68952c3216415e34d5ada170b52c8",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_1/32.mss",
+    "sha1": "29ceb7c968fdcd4e6fda5b59e5a09e23316fd15a",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_1/35.mss",
+    "sha1": "008372ce7910119c1da4c861cbadef58cb93fbe7",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_2/03.mss",
+    "sha1": "7cb03ccea16858e1e44c984418b89eeece5a8934",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_2/20.mss",
+    "sha1": "b381065bb8442f7e3c42de84986672fff401ebf8",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_2/20_1.mss",
+    "sha1": "1716231a8e2f0056543f7dab7bc54f6fcb9d6a00",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_2/31.mss",
+    "sha1": "99d1a47994a68952c3216415e34d5ada170b52c8",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_2/32.mss",
+    "sha1": "5d14e4f3249612759c7a92e111b5d58eeab22eb2",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_2/35.mss",
+    "sha1": "fe2d60d676cd2aa467ac1005705c3caffddcd68d",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/03.mss",
+    "sha1": "945dc1493ec099113d8e9ad5de511204d334b5b8",
+    "size": 190,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/20.mss",
+    "sha1": "70cdfc2309c22df30122c9480e95e37ca404d529",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/20_1.mss",
+    "sha1": "1d019f3dbf46ef14e9bdfc520a6af37cec795b54",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/30.mss",
+    "sha1": "d25ad422d9605bb45ff56b0ef13f9c00cdad2720",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/31.mss",
+    "sha1": "2d2dc919d892e276fd9e88a042d4645ceff10f3f",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/32.mss",
+    "sha1": "29ceb7c968fdcd4e6fda5b59e5a09e23316fd15a",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/34.mss",
+    "sha1": "7bfd8f583e393bcf8719ce1f28972c3a6ef20dc7",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/mutant_3/35.mss",
+    "sha1": "59b6708b05d8bc792165762dd9e97b56c928a3a7",
+    "size": 131,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck/damage_1.wav",
+    "sha1": "571aab86296c95c5d29dbb03edb3b215cf144ca9",
+    "size": 30586,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck/dead_1.wav",
+    "sha1": "052be200a8f1b1cfbfc27739e66d3cd1f4e69656",
+    "size": 99238,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck/fall_1.wav",
+    "sha1": "a2896302224e60e8733e1a573a690466cb116abd",
+    "size": 38574,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/03.mss",
+    "sha1": "72573e15a66ceda3b87c083376a9986e40409ae9",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/20.mss",
+    "sha1": "8f948f60158585922cc5a44dd4af7830f1a44b8c",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/20_1.mss",
+    "sha1": "15d40bf21c1fb4f4e72c583ab90f411a954af381",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/30.mss",
+    "sha1": "34efb010801928f05f2133d8c16b6c8a833c767d",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/31.mss",
+    "sha1": "27f696070acd933192dddebba9929e3d76054efe",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/32.mss",
+    "sha1": "6be60605bcdc5317f8429f7a0a347b705770e6c3",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/34.mss",
+    "sha1": "83af44ed741cf238939d0e60f918bea8b002fa1e",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_1/35.mss",
+    "sha1": "740040ac8dfe94ce21f6176be8696b4002b4082d",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/03.mss",
+    "sha1": "7cb03ccea16858e1e44c984418b89eeece5a8934",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/20.mss",
+    "sha1": "13e0f324fc1069c9474c01d3b69e06132bda9439",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/20_1.mss",
+    "sha1": "13e0f324fc1069c9474c01d3b69e06132bda9439",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/30.mss",
+    "sha1": "83af44ed741cf238939d0e60f918bea8b002fa1e",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/31.mss",
+    "sha1": "cff50ad0385c83e1741e4955a46c77a31518641c",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/32.mss",
+    "sha1": "63b7b696d46289e0a732c24c79ebbfce273a5f5b",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/34.mss",
+    "sha1": "34efb010801928f05f2133d8c16b6c8a833c767d",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_2/35.mss",
+    "sha1": "6be60605bcdc5317f8429f7a0a347b705770e6c3",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/03.mss",
+    "sha1": "b8b2af348873fd2dfd8a585d6dabc9f496b3469b",
+    "size": 186,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/20.mss",
+    "sha1": "8f948f60158585922cc5a44dd4af7830f1a44b8c",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/20_1.mss",
+    "sha1": "2a88e284b2ba3f00f0671ac5683ce8962c203bbe",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/30.mss",
+    "sha1": "83af44ed741cf238939d0e60f918bea8b002fa1e",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/31.mss",
+    "sha1": "27f696070acd933192dddebba9929e3d76054efe",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/32.mss",
+    "sha1": "fd4f1430089044bc8d1bd1802653ac2a7fdc3427",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/34.mss",
+    "sha1": "cf8fb7335cc58a0c5782f3013b69b56e84c1fe6c",
+    "size": 135,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/nersluck_3/35.mss",
+    "sha1": "3cf78c0784f4694a4f193bbd53ee18e6778c88e5",
+    "size": 133,
+    "source": "gf"
+   }
+  ],
+  "wzmaps_obj": [
+   {
+    "name": "d:/ymir work/effect/background/chip.dds",
+    "sha1": "4604783e4300b0794b6587955459fd102e10123c",
+    "size": 5504,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/fire_general_obj_lamp.mde",
+    "sha1": "832aa4b3a57a53957d03f90e85e9e27fed39a6e0",
+    "size": 82075,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/fire_general_obj_lamp.mse",
+    "sha1": "f70238c5fd4ed38be78122a1b0652a7d26923f4e",
+    "size": 6657,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/fire_ob-b1-013-lamp02.mde",
+    "sha1": "8cd524db8faa5da2e3fcea46def01f517cb6620a",
+    "size": 17307,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/fire_ob-b1-013-lamp02.mse",
+    "sha1": "a2ca8aee03c0ae2b3cbbd0e2f9b860151cd75117",
+    "size": 3851,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/fire_obj-0010.mse",
+    "sha1": "e05bf8977fd08faacd193aa8ce007f5502f7b325",
+    "size": 3850,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/tent_ss_lamp.mse",
+    "sha1": "15c1536afe1ad2fbe9ce36a428e06b96ee321647",
+    "size": 9841,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/tree/b2_japanesemaple_rt_fall2.spt",
+    "sha1": "cc7280327873c027c6494c770a6b88912788c41c",
+    "size": 6616,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/tree/b3_beech_rt_fall2.spt",
+    "sha1": "e94f9c0dd2eda69b19f0e8b186f2a3a3a2e7c99a",
+    "size": 15211,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/tree/b3_shingleoak_rt4.spt",
+    "sha1": "c6479dcd81ab3742c9ed9eaabef1fc840b4e582d",
+    "size": 6550,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/tree/b3_umbrellathorn_rt_flowers4.spt",
+    "sha1": "9f354efe7b59c7bad58a45e9bf850c0afca590d2",
+    "size": 8351,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeeasthemlockfa.spt",
+    "sha1": "1255564506d3a788210b9b98671a522c3e8b5f65",
+    "size": 5498,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeenglishoakforest01fa.spt",
+    "sha1": "797f0f376f3b721ea8366f2470b585fe201670bc",
+    "size": 7654,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeenglishoakforest01su.spt",
+    "sha1": "0a0b0276ca924add410d2ca2ccdaebcd0946506e",
+    "size": 7674,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeenglishoakforestfa.spt",
+    "sha1": "ef36ae9d8544f8759509bdbca848cc406ec5d20e",
+    "size": 6865,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeenglishoaksaplingfa.spt",
+    "sha1": "f197160a91581ca13a02a68e36d40d96696a21b1",
+    "size": 6528,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeenglishoaksaplingsu.spt",
+    "sha1": "61573e807acdf7e3dce5447af937daca1be53eb2",
+    "size": 6538,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeenglishoakyoungfa.spt",
+    "sha1": "9db1d7f0e79bda3d45ddc51e643034c82f4d9d19",
+    "size": 7037,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treeenglishoakyoungsu.spt",
+    "sha1": "487c457cec9af81409babfc44733d30fb0f789b0",
+    "size": 6797,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treegcsycamoresu.spt",
+    "sha1": "1c4cad62b5e8d0da28fe6f8ee44d1a19100e7bfc",
+    "size": 7714,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treejapanesemaple.spt",
+    "sha1": "91c47dd150a4cb9063283fd04d296c2dcc800493",
+    "size": 6822,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treejuniper01.spt",
+    "sha1": "305942b32533e3f5840d05be6c15b9937ecd5be3",
+    "size": 5637,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treesugarmapleforestfa.spt",
+    "sha1": "acfa65972b9b0f2818c1acd6aafe3e11958d46f0",
+    "size": 6836,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treesugarmaplesaplingfa.spt",
+    "sha1": "94c6076c39d234b00d1748e0ccad80043575f511",
+    "size": 6517,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/tree/wom/ot/treesugarmapleyoungsu.spt",
+    "sha1": "5cd8ebbd3a4a7d88084ce01f4addf752b6e94fbb",
+    "size": 6859,
+    "source": "ameria"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-004-house2.dds",
+    "sha1": "6a1a0bc5e8cefb5eef6882633389855162f6e85d",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-004-house2.gr2",
+    "sha1": "3c2eb756bd95a3f8c3b05074435ad70306d944e6",
+    "size": 28219,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-004-house2.mdatr",
+    "sha1": "d86a4b0dd8be514cc0ad7f2142ee3dc5d9d01742",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-007-itemshop-01.dds",
+    "sha1": "afcc6527ea8594235003a1ca87d8f19c54582ec5",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-007-itemshop-02.dds",
+    "sha1": "71dec491654908610ac1987b0cf5e683da40fa47",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-007-itemshop.gr2",
+    "sha1": "e9aca1ed44511d064940e6ef294606063df6d015",
+    "size": 50234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-007-itemshop.mdatr",
+    "sha1": "6ed24e6d5f59cd9ce7b4f68ad3f7d167de7085b4",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-008-house5-02.dds",
+    "sha1": "7483f5a1e32382ce83a96cb80aafaeea37ea211d",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-008-house5-03.dds",
+    "sha1": "da2ca129add775e808bf2b866d2c1ebac7ca5bb7",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-008-house5-1.dds",
+    "sha1": "9d29ab4f52f76ee15193d92f053326e9053f4ec3",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-008-house5.gr2",
+    "sha1": "b6be3b7ce1f664a38f60a215bd0e37dae5aae066",
+    "size": 48700,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-008-house5.mdatr",
+    "sha1": "050aa1d82fd86246efddfcea3979badab1dbac6f",
+    "size": 1678,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-011-workhouse-01.dds",
+    "sha1": "a4bfe776d27ccbd5ddacdd9af8c92960b5b51c2c",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-011-workhouse-02.dds",
+    "sha1": "03cd354dc8d5f9994273c93bfb3ca3a7d29c4365",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-011-workhouse-03.dds",
+    "sha1": "d3a45bd020ae7d2b5ffbc4e7bfa994750b34da69",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-011-workhouse.gr2",
+    "sha1": "3d6ff75a4184822e7a6e846b658d07c552c5e8ae",
+    "size": 63860,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-011-workhouse.mdatr",
+    "sha1": "5815bc59bd1cf875bae94f058deb7d302f6740ea",
+    "size": 886,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-016-house9.dds",
+    "sha1": "1a81328a32142af800f09b7a22675a443f56b88f",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-016-house9.gr2",
+    "sha1": "a255d7d012fefe3034ab24722dd3ae7c8a549646",
+    "size": 15483,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-016-house9.mdatr",
+    "sha1": "7c6b8ca1b1f8e4c4bfd32ea7b34f3768e2e5a269",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-032-shamanhouse-1.dds",
+    "sha1": "0946d65f5a88043d4d9f008b0a3001482e79c534",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-032-shamanhouse-2.dds",
+    "sha1": "8b07c5386e45e5562f940bb97bf08bff625ea8df",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-032-shamanhouse-3.dds",
+    "sha1": "1aad505d7514728e1da70d3917f301db4a5caef5",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-032-shamanhouse.gr2",
+    "sha1": "126e13c3e418610a45ea4d59c8b03864cb0042f0",
+    "size": 51433,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-032-shamanhouse.mdatr",
+    "sha1": "f2072c983b639432fd6511208d567fa2ce105cf6",
+    "size": 706,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-033-guesthouse-01.dds",
+    "sha1": "9ea491846b241d959d1742cd106af302a46f2abc",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-033-guesthouse-02.dds",
+    "sha1": "4022e4f1ecf4a650ed5adf5c0dcf84f43ae770ee",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-033-guesthouse-02.gr2",
+    "sha1": "e9a3a77d047ac92e2b3e29fdc75580d6fe10d767",
+    "size": 39403,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/a/building/a1-033-guesthouse-02.mdatr",
+    "sha1": "859c5ced6b96d31ad370b375614e7d4f7f4d4062",
+    "size": 778,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_32.gr2",
+    "sha1": "29dfc30e1fa43817abaee2baa842338243996b6d",
+    "size": 13989,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_32.mdatr",
+    "sha1": "34602e6922eb441d146d4f698a0a11bdec9e2304",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_34.gr2",
+    "sha1": "b3588f24e16db1165988fd5d497ebee20f1a25c1",
+    "size": 12629,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_34.mdatr",
+    "sha1": "a71e9348ec2e88fd90eb025b8dec9f5da0f831e0",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_42.gr2",
+    "sha1": "882b95564fd4fb455991c9f37c88509c9610bd5f",
+    "size": 14288,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/b_general_obj_42.mdatr",
+    "sha1": "a2de09a5354110f6781756d9298b646c2703b971",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone01.gr2",
+    "sha1": "c0463166b7a4866da49da56b71527917aa4d6f52",
+    "size": 10221,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone01.mdatr",
+    "sha1": "5f07a42767ce1277875a05ddd1b4bd4521e10c70",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone05.gr2",
+    "sha1": "ac87dc7378432f1a823b1256c01368fa04ab20e3",
+    "size": 10258,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone05.mdatr",
+    "sha1": "c2fdddcf068bd2ed91782f5900cf8dfda4695191",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone08.gr2",
+    "sha1": "79e449af6ea0320debc829182febf1dedfb03bac",
+    "size": 9893,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone08.mdatr",
+    "sha1": "e1a01211f9c4a8d5acae606f413e041e6a7efd1a",
+    "size": 886,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone09.gr2",
+    "sha1": "5db93398f0ed4c0574cf6254b35645a33696527d",
+    "size": 11016,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone09.mdatr",
+    "sha1": "135b40f90fc947c0c7a1e78e268625fe6edefa98",
+    "size": 598,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone10.gr2",
+    "sha1": "a9bf2dc86ec46f96451e7b5f4c4aabb50ca383d2",
+    "size": 11406,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstone10.mdatr",
+    "sha1": "de261c088009b18b837c8d810edc8e80219e7cfe",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstonegate02.gr2",
+    "sha1": "8b683a3c54e52b0cdfe0eda543d91bf60b5bcf67",
+    "size": 12117,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_bigstonegate02.mdatr",
+    "sha1": "343d77a1691a6c2d9102500a1b8d072bbe2b49b0",
+    "size": 670,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_brazier.gr2",
+    "sha1": "57dace2c76b5a0b62390ab7c5c66dccf7aa359e0",
+    "size": 11049,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_brazier.mdatr",
+    "sha1": "58622478220506487e8663e1f071992a4462fcf6",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_fence05.gr2",
+    "sha1": "2bc0f23c687051f2b272076e29388dc77f7cd1ec",
+    "size": 8255,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_fence05.mdatr",
+    "sha1": "ce17769aa0550efad353c690ebf0cc99689fe400",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_pieceofstone01 .gr2",
+    "sha1": "689132d8dfee020aa9a48a759e676e16973a0921",
+    "size": 8055,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_pieceofstone02.gr2",
+    "sha1": "4e4dd4ae23fa4580721983dd6957b2a550e28519",
+    "size": 7804,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_pieceofstone03.gr2",
+    "sha1": "4f6fd8a363bef3d2194837d412d296ef6583e7a5",
+    "size": 7769,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_pieceofstone04.gr2",
+    "sha1": "5164ec49ba183205fab85d223f26f261635aef7e",
+    "size": 7773,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_stone11.gr2",
+    "sha1": "babe916cd761f848839ef562bc4b656f2108cc69",
+    "size": 8680,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_stone11.mdatr",
+    "sha1": "b15a8150fe884fb8254704378ca83782bb9dfabe",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_stone15.dds",
+    "sha1": "95d92ae9119bb04b207627f9f3c3edad025dbe0f",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_stone15.gr2",
+    "sha1": "581b29bd13e3d34403ce8bff7731a1f6fdd150cb",
+    "size": 10561,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/general_obj_stone15.mdatr",
+    "sha1": "a0a09d9359ffa6e8130fc8c2b1a72acf1206e4ab",
+    "size": 166,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-11-building01.gr2",
+    "sha1": "5096378c9ba1d73833c10d86bbfb5d55d42c9dd7",
+    "size": 19487,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-11-building01.mdatr",
+    "sha1": "674ef5be303c42c75d743c891880230ccdc110b5",
+    "size": 958,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-12-building02.gr2",
+    "sha1": "2aaa395199b1513f1c6501558fe15565845bbcee",
+    "size": 16249,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-12-building02.mdatr",
+    "sha1": "6ce59169e1fcb15298b4acf1c8f9239d29066217",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-13-building03.gr2",
+    "sha1": "a33e69180c06f97ebcf50eabb910cb22af3f0ca8",
+    "size": 17427,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-13-building03.mdatr",
+    "sha1": "c3c9dfb4ae4bf848092d07cd49e874636cd9ec85",
+    "size": 670,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-13-building04.gr2",
+    "sha1": "a7c881b27f2c9152fe07d14e192a6d957b40eaf5",
+    "size": 15057,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-13-building04.mdatr",
+    "sha1": "9903744cdde88f437381b041d25db4df417d824f",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-all-02.dds",
+    "sha1": "d8bd0bd1793ff2f83f2b9415201ed7422595d4cb",
+    "size": 698496,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/ob-7-all-03.dds",
+    "sha1": "93c3297a0089ca3bd3579762a45a6ca74c8eb3c0",
+    "size": 698496,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/obj-0003.gr2",
+    "sha1": "9a800205d7c9c815be37c547818f421abb2723b1",
+    "size": 12590,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/b/obj/obj-0003.mdatr",
+    "sha1": "a8e645d4db5a3a5e3c5d5f428780909f113da5b7",
+    "size": 310,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/aa_1.dds",
+    "sha1": "3719aaadbb23d940ff5e5ba889c81a5fb4a710a1",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_01.gr2",
+    "sha1": "e71a038831ac0512cf4fc5c5a91fb0dc46fd0dd1",
+    "size": 20725,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_01.mdatr",
+    "sha1": "86b85136e727166c9364ab6d82ab146e8d29378c",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_02.gr2",
+    "sha1": "eb1c110ffc90cab9911af11ca24fe88a23bccbc7",
+    "size": 20734,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_02.mdatr",
+    "sha1": "225c8b6e1625dca96ca053bcae2f8b0c28589678",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_03.gr2",
+    "sha1": "d168885247f6c2ec51b77b2c48d0b180a895a65b",
+    "size": 13511,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_03.mdatr",
+    "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+    "size": 22,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_04.gr2",
+    "sha1": "595a84efdadaaef125f6a20167ad18957d3b2e3e",
+    "size": 8387,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_04.mdatr",
+    "sha1": "21e087521c29c15466fc5a0774731b4c5cc5a818",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_05.dds",
+    "sha1": "08467b89326b38afdf3cadf7f2433d5bc3d51070",
+    "size": 21632,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_05.gr2",
+    "sha1": "4933d40f6d7f3b10b83b96451abf954378acfc79",
+    "size": 8415,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_05.mdatr",
+    "sha1": "b25e8643bfba0a168419a81918408f0de179cb2a",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/desert/cactus_ok_01.dds",
+    "sha1": "3719aaadbb23d940ff5e5ba889c81a5fb4a710a1",
+    "size": 43136,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/obj/map_n_desert_01/b_general_obj_02.gr2",
+    "sha1": "9f192264518433f1303959c0cb97d143f83bd1da",
+    "size": 9250,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/n/obj/map_n_desert_01/b_general_obj_02.mdatr",
+    "sha1": "78dfd42c72690b0c5c0028bb11c53b4a0305bfc4",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/bone.dds",
+    "sha1": "83becdfcad5bac6e962ed5f1355e321c3b0fa3c3",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/bone_01.gr2",
+    "sha1": "c90370f6aa92536a98e1c61c9847bcb2d6e745c2",
+    "size": 8589,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/bone_01.mdatr",
+    "sha1": "25aa5ba5512420850b7aa53f9333bdcff0913493",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/corpse.gr2",
+    "sha1": "79104877ff6099be2aacf49392feb7f251e0e427",
+    "size": 21301,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/corpse.mdatr",
+    "sha1": "f768521c9cbcab0ab04e0befdf47a5d00c6a1b9c",
+    "size": 22,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/door_01.dds",
+    "sha1": "c6eaf7263548a0194e41cd9eb1eb0b06e491a7a6",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/door_02.dds",
+    "sha1": "4911acae73c330fac1ec6d8967870db59a37a3b5",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/gate.dds",
+    "sha1": "4f54415178aeba2f2ae7685a2ec7eba7a3e39225",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/nusluck_flag01.dds",
+    "sha1": "bcdf1d48fc17f28d542068f6f6ed4b8ad72d9055",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/nusluck_flag01.gr2",
+    "sha1": "2fceea61ccf10dfb356795ad308f27831c679f27",
+    "size": 12149,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/skull.dds",
+    "sha1": "b01a97723901f704b24587e83a97994df38c38e2",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/skull_02.dds",
+    "sha1": "172bcb4bba2f3ab885f745e40c1b8cadf7a80459",
+    "size": 87536,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_01.dds",
+    "sha1": "63f6cb01d3c1706ab2e0625a6579984fdd0d6566",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_01.gr2",
+    "sha1": "48b0a649c168148895c848763c8f5b04b4e1b933",
+    "size": 41844,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_01.mdatr",
+    "sha1": "185d1569138572125cba9c1e946ee09e7ecb749f",
+    "size": 1606,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_01_lamp02.gr2",
+    "sha1": "41d9a2a9c4b88924af115d8cdb1255d89d93fb47",
+    "size": 13836,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_01_lamp02.mdatr",
+    "sha1": "86c96efc6a5100cb8757cfaf286f027da301e25f",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_01_lamp1.gr2",
+    "sha1": "36d000c1f6f8a0e94685cad984030f7deaeb4447",
+    "size": 13824,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_01_lamp1.mdatr",
+    "sha1": "67d2a051352f76660398660a95910bb311b228ff",
+    "size": 94,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_02.dds",
+    "sha1": "08e66fda1f06636b2a458f02659a78c9a92c5009",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_02.gr2",
+    "sha1": "8d6b34efb5c82e3338e5f9fcfd4ecdc188f3ab25",
+    "size": 39925,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_02.mdatr",
+    "sha1": "f0b97347842b8ca5fbbebc9813cff0dba52976d2",
+    "size": 1318,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_s.dds",
+    "sha1": "a296d7c18e2384ef543ad68f2569f92000c9816e",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_small.gr2",
+    "sha1": "b24bcbbd2c96040b7fa71e46620b94e04bc1e099",
+    "size": 37996,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/tent_small.mdatr",
+    "sha1": "1fb94e51eb058eac6090495eecff4e44f96d0fa8",
+    "size": 2470,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/top.gr2",
+    "sha1": "dde4bc11cd97cc8406ce572393d4428160908225",
+    "size": 29585,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/top.mdatr",
+    "sha1": "e45cb1ce464d8e67cf47c24e8491c0a0c5603688",
+    "size": 166,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/torch.dds",
+    "sha1": "24d4c10bad62afb7c530514e27064d2e14ea360a",
+    "size": 21992,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/torch_2.gr2",
+    "sha1": "f76480554d4074b8be3489f6546a4d94cf7a7141",
+    "size": 13927,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/nusluck/torch_2.mdatr",
+    "sha1": "448713b23ec75d78261d58ea31e3630b964a480d",
+    "size": 94,
+    "source": "gf"
+   }
+  ]
+ },
+ "races": {
+  "1401": {
+   "msm": "d:/ymir work/monster2/mutant_1/mutant_1.msm",
+   "race": "mutant_1",
+   "status": "staged"
+  },
+  "1402": {
+   "msm": "d:/ymir work/monster2/mutant_2/mutant_2.msm",
+   "race": "mutant_2",
+   "status": "staged"
+  },
+  "1403": {
+   "msm": "d:/ymir work/monster2/mutant_3/mutant_3.msm",
+   "race": "mutant_3",
+   "status": "staged"
+  },
+  "1501": {
+   "msm": "d:/ymir work/monster2/golem_1/golem_1.msm",
+   "race": "golem_1",
+   "status": "staged"
+  },
+  "1502": {
+   "msm": "d:/ymir work/monster2/golem_2/golem_2.msm",
+   "race": "golem_2",
+   "status": "staged"
+  },
+  "1503": {
+   "msm": "d:/ymir work/monster2/golem_3/golem_3.msm",
+   "race": "golem_3",
+   "status": "staged"
+  },
+  "1601": {
+   "msm": "d:/ymir work/monster2/nersluck_1/nersluck_1.msm",
+   "race": "nersluck_1",
+   "status": "staged"
+  },
+  "1602": {
+   "msm": "d:/ymir work/monster2/nersluck_2/nersluck_2.msm",
+   "race": "nersluck_2",
+   "status": "staged"
+  },
+  "1603": {
+   "msm": "d:/ymir work/monster2/nersluck_3/nersluck_3.msm",
+   "race": "nersluck_3",
+   "status": "staged"
+  }
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "map": [
+   "d:/ymir work/zone/b/obj/512.jpg"
+  ],
+  "races": {}
+ }
+}

@@ -146,7 +146,7 @@ MAP_NAMES = {
 	41: 'Pyungmoo', 43: 'Bakra', 44: 'Imha', 45: 'Ma\xb3pi Loch', 46: 'Wioska Gildii',
 	61: 'G\xf3ra Sohan', 62: 'Doyyumhwaji', 63: 'Pustynia Yongbi', 64: 'Dolina Seungryong',
 	65: '\x8cwi\xb9tynia Hwang', 66: 'Wie\xbfa Demon\xf3w', 67: 'Las Duch\xf3w Lungsam', 68: 'Czerwony Las',
-	69: 'W\xea\xbfowe Pole', 70: 'Kraina Gigant\xf3w', 71: 'Loch Paj\xb9k\xf3w (2)', 72: 'Grota Wygna\xf1c\xf3w (1)',
+	70: 'Kraina Gigant\xf3w', 80: 'W\xea\xbfowe Pole', 71: 'Loch Paj\xb9k\xf3w (2)', 72: 'Grota Wygna\xf1c\xf3w (1)',
 	73: 'Grota Wygna\xf1c\xf3w (2)', 79: 'Labirynt', 81: 'Mapa \x8clubna', 90: 'Lodowy Loch',
 	100: 'Loch Polowy', 101: 'Strefa Surowc\xf3w', 103: 'Arena (1)', 104: 'Loch Paj\xb9k\xf3w (1)',
 	105: 'Arena (2)', 107: 'Ma\xb3pi Loch (\xb3atwy)', 108: 'Ma\xb3pi Loch (\x9credni)', 109: 'Ma\xb3pi Loch (trudny)',

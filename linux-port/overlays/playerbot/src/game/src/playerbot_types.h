@@ -4119,6 +4119,38 @@ namespace
 	// (301), Zbocze Gautama (302), Nefrytowa Zatoka (303) and Gromiste Gory (304), on game3 with Zaklety Las
 	// (MT2009_PLUS_237_NEWCORE_V1). Metins and bosses, no experience grinding (the owner, 21 October).
 	const BYTE PLAYERBOT_YOHARA_LOOT_MIN_LEVEL = 95;
+	// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80, metin2_map_snakefield) and
+	// Kraina Gigantow (70, metin2_map_giantland) - MT2009_PLUS_MAPS_WZ_V1. On the
+	// 2.x line both stand on game3 with the other new maps (bin/m2-render-config,
+	// MT2009_PLUS_237_NEWCORE_V1), the bots live on game1: they go there by the
+	// handover between the cores (playerbot_yohara_bots.h, the purposes
+	// snakefield / giantland - the Yohara line's MT2009_PLUS_BOT_YOHARA_COHORT_V1
+	// parts) and hunt them as a frontier like Doyyumhwaji. The in-core draw below
+	// asks IsPlayerBotMapHostedHere first (a layout hosting them on the bots'
+	// core, M2_MAP_CORE=0 does not: game2). The points are
+	// cell centres with open ground all round, measured on each map's own
+	// server_attr by tools/arezzo_bot_map.py (15 October): Wezowe Pole's arrival
+	// by its Teleporter (9012, 245,580) in the second part, where the Giants, the
+	// ogres and the golems are (66-76; the first part's cursed animals are 8-29),
+	// and the Teleporter's cell the exit; Kraina's arrival its Town.txt (91,467),
+	// the exit five cells from its portal back.
+	const long PLAYERBOT_MAP_SNAKEFIELD = 80;
+	const long PLAYERBOT_MAP_GIANTLAND = 70;
+	const long PLAYERBOT_SNAKEFIELD_ARRIVAL_X = 1074650;
+	const long PLAYERBOT_SNAKEFIELD_ARRIVAL_Y = 775350;
+	const long PLAYERBOT_SNAKEFIELD_EXIT_X = 1074150;
+	const long PLAYERBOT_SNAKEFIELD_EXIT_Y = 774850;
+	const long PLAYERBOT_GIANTLAND_ARRIVAL_X = 828350;
+	const long PLAYERBOT_GIANTLAND_ARRIVAL_Y = 763550;
+	const long PLAYERBOT_GIANTLAND_EXIT_X = 828850;
+	const long PLAYERBOT_GIANTLAND_EXIT_Y = 763850;
+	// Three under the weakest monster of each (Niszczyciel, 66 - the pl-wiki's
+	// levels, maps_wz.sql); the top where Doyyumhwaji's band ends and the
+	// Grotto's begins.
+	const BYTE PLAYERBOT_SNAKEFIELD_MIN_LEVEL = 63;
+	const BYTE PLAYERBOT_SNAKEFIELD_MAX_LEVEL = 78;
+	const BYTE PLAYERBOT_GIANTLAND_MIN_LEVEL = 63;
+	const BYTE PLAYERBOT_GIANTLAND_MAX_LEVEL = 80;
 	// MT2009_PLUS_AREZZO_BOTS_V1 (maps): the Arezzo module's three open maps
 	// (flag mt2009_arezzo_closed, playerbot_arezzo.h). Only the operator's test
 	// cohorts go there for now (playerbot_arezzo_bots.h, the test hook
@@ -4262,6 +4294,8 @@ namespace
 			case 302: outX = 1225750; outY = 1682050; return true;
 			case 303: outX = 1087950; outY = 1649850; return true;
 			case 304: outX = 1134150; outY = 1655450; return true;
+			case PLAYERBOT_MAP_SNAKEFIELD: outX = PLAYERBOT_SNAKEFIELD_ARRIVAL_X; outY = PLAYERBOT_SNAKEFIELD_ARRIVAL_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: outX = PLAYERBOT_GIANTLAND_ARRIVAL_X; outY = PLAYERBOT_GIANTLAND_ARRIVAL_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return false;
 		}
 	}
@@ -4290,6 +4324,8 @@ namespace
 			case 302: outX = 1225750; outY = 1682050; return true;
 			case 303: outX = 1087950; outY = 1649850; return true;
 			case 304: outX = 1134150; outY = 1655450; return true;
+			case PLAYERBOT_MAP_SNAKEFIELD: outX = PLAYERBOT_SNAKEFIELD_EXIT_X; outY = PLAYERBOT_SNAKEFIELD_EXIT_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: outX = PLAYERBOT_GIANTLAND_EXIT_X; outY = PLAYERBOT_GIANTLAND_EXIT_Y; return true; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return false;
 		}
 	}
@@ -4316,6 +4352,7 @@ namespace
 				mapIndex == PLAYERBOT_MAP_OCHAO || // MT2009_PLUS_OCHAO_BOTS_V1
 				mapIndex == PLAYERBOT_MAP_ZAKLETY || // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1 (on the Yohara core, by a handover)
 				(mapIndex >= 301 && mapIndex <= 304) || // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1 (loot runs, by a handover)
+				mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND || // MT2009_PLUS_MAPS_WZ_BOTS_V1
 				IsPlayerBotArezzoMap(mapIndex); // MT2009_PLUS_AREZZO_BOTS_V1 (only the test cohorts are sent)
 	}
 
@@ -4347,6 +4384,8 @@ namespace
 			case PLAYERBOT_MAP_AREZZO_PHARAOH: return "arezzo_pharaoh"; // MT2009_PLUS_AREZZO_BOTS_V1
 			case PLAYERBOT_MAP_ZAKLETY: return "zaklety"; // MT2009_PLUS_BOT_YOHARA_ZAKLETY_V1
 			case 301: case 302: case 303: case 304: return "lootrun"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: return "snakefield"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: return "giantland"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return "frontier";
 		}
 	}
@@ -6370,10 +6409,11 @@ namespace
 				30224, 2301, POINT_MOV_SPEED, 11, 50113, "Kamien Duszy Gyimok", POINT_DEF_BONUS, 10, 0 },
 		// Certyfikat Tugyisa (30166): the hook on the Giants 1401-1403 and the
 		// Ogres 1601-1603, five in a hundred and one at a time, and they stand
-		// only on metin2_map_nusluck01 (70) - a map no bot travels to, so 1401
-		// has no row in PLAYERBOT_HUNTING_MOB_HOMES and this row is stepped
-		// over (GetActivePlayerBotBiologistMission) the way the Demon Souvenir
-		// once was. It is here so that it starts by itself the day the bots go
+		// only on Kraina Gigantow (70) and Wezowe Pole (80) - maps on game3
+		// (MT2009_PLUS_MAPS_WZ_V1), where a bot only stays by a handover, so
+		// 1401's row in PLAYERBOT_HUNTING_MOB_HOMES counts only on a core that
+		// hosts them and this row is stepped over (GetActivePlayerBotBiologistMission)
+		// the way the Demon Souvenir once was. It starts by itself the day the bots go
 		// there. lv85 and lv90 follow it in the chain and have no rows: a bot
 		// can never open them while this one stands.
 		{ 80, "collect_quest_lv80", 30166, 1401, 30, 60, 0, 0, "Certyfikat Tugyisa",
@@ -6799,8 +6839,21 @@ namespace
 		// family on Sohan, and Konar Zelkova's trees in the Ghost Wood and the
 		// Red Forest (read off the maps' regen and group files). No row for
 		// the Giants' 1401: their map (70) is not one the bots go to.
-		{ 1107, 61, 72 }, { 1102, 61, 0 }, { 2301, 67, 68 }
+		{ 1107, 61, 72 }, { 1102, 61, 0 }, { 2301, 67, 68 },
+		// MT2009_PLUS_MAPS_WZ_BOTS_V1: the Giants' and ogres' maps, Kraina
+		// Gigantow (70, all six) and Wezowe Pole (80, 1401/1601/1602) - the
+		// Biologist's level-80 row (Certyfikat Tugyisa, named by 1401). They
+		// count only while this core hosts the map (IsPlayerBotHuntingMobHosted):
+		// on game1 (the maps on game3) the row is stepped over as before.
+		{ 1401, 70, 80 }
 	};
+
+	// MT2009_PLUS_MAPS_WZ_BOTS_V1: defined in playerbot_travel.h.
+	bool IsPlayerBotMapHostedHere(long mapIndex);
+	bool IsPlayerBotWzMap(long mapIndex)
+	{
+		return mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND;
+	}
 
 	// The map a listed monster stands on (its first home), or zero for a
 	// village monster and for one the table does not know.
@@ -6826,6 +6879,11 @@ namespace
 			const TPlayerBotMobHome& home = PLAYERBOT_HUNTING_MOB_HOMES[i];
 			if (home.vnum != vnum)
 				continue;
+			// MT2009_PLUS_MAPS_WZ_BOTS_V1: a home on a map no bot here can walk to
+			// (Kraina Gigantow / Wezowe Pole on game3 - a handover's stay only) is no home.
+			if (lMapIndex == 0 && IsPlayerBotWzMap(home.map1) && !IsPlayerBotMapHostedHere(home.map1) &&
+					!IsPlayerBotMapHostedHere(home.map2))
+				return false;
 			return lMapIndex == 0 || home.map1 == lMapIndex || home.map2 == lMapIndex;
 		}
 		return false;
@@ -9702,7 +9760,8 @@ namespace
 				mapIndex != PLAYERBOT_MAP_FOREST &&
 				mapIndex != PLAYERBOT_MAP_DEMON_TOWER &&
 				mapIndex != PLAYERBOT_MAP_GROTTO_V1 && mapIndex != PLAYERBOT_MAP_GROTTO_V2 &&
-				mapIndex != PLAYERBOT_MAP_OCHAO; // MT2009_PLUS_OCHAO_BOTS_V1: its stone.txt is empty
+				mapIndex != PLAYERBOT_MAP_OCHAO && // MT2009_PLUS_OCHAO_BOTS_V1: its stone.txt is empty
+				mapIndex != PLAYERBOT_MAP_SNAKEFIELD; // MT2009_PLUS_MAPS_WZ_BOTS_V1: no stone.txt (Kraina has Pung-Ma / Ma-An)
 				// MT2009_PLUS_AREZZO_BOTS_V1: the Arezzo maps keep their stones (stone.txt).
 	}
 

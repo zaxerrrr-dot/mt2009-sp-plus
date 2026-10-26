@@ -1,0 +1,11 @@
+80 Wezowe Pole (metin2_map_snakefield = the official metin2_map_WL_01), 4x4 at 1049600 716800
+  regen: 529 lines (Ameria's 1587 / 3), group_group {1101: 28, 1102: 32, 1103: 28, 1104: 35, 1401: 90, 1402: 90, 1501: 49, 1502: 95, 1503: 57, 1504: 25}; 98 centre(s) on blocked ground moved to the nearest free metre (25-80 m 36, <=10 m 37, <=25 m 25)
+  NPCs: Teleporter 9012 (245, 580), 10030 (Pustynia Yongbi) (92, 89), 10032 (Kraina Gigantow) (92, 349); Town 94,94 (the arrival from the desert and from Kraina, 5.4 m from 10030)
+  0 of 529 spawn lines on ground not walkable from the arrival (the wiki: the second part lies behind the river and the hills - its bridge in the south)
+70 Kraina Gigantow (metin2_map_giantland = the official metin2_map_nusluck01), 2x2 at 819200 716800
+  regen: 155 lines (Ameria's 465 / 3), group_group {1451: 59, 1452: 47, 1453: 49}; 0 centre(s) on blocked ground moved to the nearest free metre (-)
+  herb bushes 20611: 315,214 is blocked -> 307,204
+  NPC: 10031 (Wezowe Pole) 82,467; Town 91,467 (the arrival from Wezowe Pole, 9.0 m from 10031); Metins: Pung-Ma 8024 / Ma-An 8025 (1800s), the herb bushes 20611 x3; 0 of 155 spawn lines not walkable from the arrival
+desert (63): 10029 at 1477,1357 in place of our base share's 10108 (Przelecz) - 6.3 m from where 10030 puts a player down (1471,1359), both on the town's ground (GF's attr.atr)
+drops: 9 groups, 40 rows; materials: Orkowa Maczuga 30194 (1601,1602); Piasek Kwarcowy 30195 (1501,1502,1503)
+maps_wz.sql: 6 level rows; maps_wz_mobs.json for the client

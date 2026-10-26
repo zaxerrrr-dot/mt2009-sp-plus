@@ -14,8 +14,14 @@
 // 2.x line Zaklety Las (353) and 301-304 stand on game3, a core of their own in every channel
 // (MT2009_PLUS_237_NEWCORE_V1, bin/m2-render-config; game2 with M2_MAP_CORE=0), and the bots live on game1 -
 // so the same handover takes them there. It routes by MAP_ALLOW (IsPlayerBotMapHostedHere), not by a core's name. Left out: the Time Rift (SZC, 404 -
-// no such map on 2.x), Wezowe Pole / Kraina Gigantow through the handover (Yohara's maps), the night
-// cohorts (a Yohara test tool), Hydra and the Sung Ma maps.
+// no such map on 2.x), the night cohorts (a Yohara test tool), Hydra and the Sung Ma maps.
+//
+// MT2009_PLUS_MAPS_WZ_BOTS_V1 (the 2.x line, 26 October 2026 - the owner: "do 2.x dodaj wezowe pole i kraine
+// gigantow"): Wezowe Pole (80) and Kraina Gigantow (70) on game3 are purposes too (snakefield, giantland), the Yohara
+// line's MT2009_PLUS_BOT_YOHARA_COHORT_V1 parts without its cohorts: their frontier bands 63-78 / 63-80, a quarter of
+// the draw each (the hash of playerbot_travel.h's in-core draw), PLAYERBOT_SNAKEFIELD_MAX / PLAYERBOT_GIANTLAND_MAX
+// (50 a channel) and a stay of PLAYERBOT_WZ_STAY_MIN (120); the arrival / exit / hubs / grid of MT2009_PLUS_MAPS_WZ_BOTS_V1
+// (playerbot_types.h, playerbot_wandering.h, playerbot_navigation.h).
 //
 // What there was: a bot lived on the core that logged it in (game1, the one
 // that hosts the kingdoms' villages) and changed maps with ch->Show, which
@@ -141,6 +147,8 @@ namespace
 		YOHARA_PURPOSE_HOME,
 		YOHARA_PURPOSE_ZAKLETY,
 		YOHARA_PURPOSE_LOOT,
+		YOHARA_PURPOSE_SNAKEFIELD,	// MT2009_PLUS_MAPS_WZ_BOTS_V1
+		YOHARA_PURPOSE_GIANTLAND,
 		YOHARA_PURPOSE_MAX
 	};
 
@@ -151,6 +159,8 @@ namespace
 			case YOHARA_PURPOSE_HOME: return "home";
 			case YOHARA_PURPOSE_ZAKLETY: return "zaklety";
 			case YOHARA_PURPOSE_LOOT: return "loot";
+			case YOHARA_PURPOSE_SNAKEFIELD: return "snakefield";	// MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case YOHARA_PURPOSE_GIANTLAND: return "giantland";
 			default: return "none";
 		}
 	}
@@ -174,6 +184,7 @@ namespace
 		int zakletyMax, zakletyMinLevel, zakletyStayMin, zakletyMinHp;
 		int lootMax;
 		std::vector<long> lootMaps;
+		int snakeMax, giantMax, wzStayMin;	// MT2009_PLUS_MAPS_WZ_BOTS_V1
 	};
 
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi)
@@ -230,15 +241,19 @@ namespace
 			if (maps[i] >= 301 && maps[i] <= 304 &&
 					std::find(s_cfg.lootMaps.begin(), s_cfg.lootMaps.end(), maps[i]) == s_cfg.lootMaps.end())
 				s_cfg.lootMaps.push_back(maps[i]);
+		// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole / Kraina Gigantow (game3), a channel's limits and the stay.
+		s_cfg.snakeMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SNAKEFIELD_MAX", 50, 0, 300);
+		s_cfg.giantMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_GIANTLAND_MAX", 50, 0, 300);
+		s_cfg.wzStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_WZ_STAY_MIN", 120, 20, 600);
 		std::string chans, loot;
 		for (std::set<int>::const_iterator i = s_cfg.channels.begin(); i != s_cfg.channels.end(); ++i)
 			chans += (chans.empty() ? "" : ",") + std::to_string(*i);
 		for (size_t i = 0; i < s_cfg.lootMaps.size(); ++i)
 			loot += (loot.empty() ? "" : ",") + std::to_string(s_cfg.lootMaps[i]);
 		sys_log(0, "PLAYERBOT_HANDOVER: config on=%d channels=%s zaklety_max=%d zaklety_min_level=%d zaklety_stay_min=%d "
-				"zaklety_min_hp=%d loot_max=%d loot_maps=%s channel_here=%u",
+				"zaklety_min_hp=%d loot_max=%d loot_maps=%s snakefield_max=%d giantland_max=%d wz_stay_min=%d channel_here=%u",
 				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin, s_cfg.zakletyMinHp,
-				s_cfg.lootMax, loot.c_str(), (unsigned int)g_bChannel);
+				s_cfg.lootMax, loot.c_str(), s_cfg.snakeMax, s_cfg.giantMax, s_cfg.wzStayMin, (unsigned int)g_bChannel);
 		return s_cfg;
 	}
 
@@ -267,6 +282,8 @@ namespace
 		switch (purpose)
 		{
 			case YOHARA_PURPOSE_ZAKLETY: return PLAYERBOT_MAP_ZAKLETY;
+			case YOHARA_PURPOSE_SNAKEFIELD: return PLAYERBOT_MAP_SNAKEFIELD;	// MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case YOHARA_PURPOSE_GIANTLAND: return PLAYERBOT_MAP_GIANTLAND;
 			default: return 0;
 		}
 	}
@@ -275,6 +292,10 @@ namespace
 	{
 		if (base == PLAYERBOT_MAP_ZAKLETY)
 			return YOHARA_PURPOSE_ZAKLETY;
+		if (base == PLAYERBOT_MAP_SNAKEFIELD)	// MT2009_PLUS_MAPS_WZ_BOTS_V1
+			return YOHARA_PURPOSE_SNAKEFIELD;
+		if (base == PLAYERBOT_MAP_GIANTLAND)
+			return YOHARA_PURPOSE_GIANTLAND;
 		if (IsPlayerBotYoharaLootMap(base))
 			return YOHARA_PURPOSE_LOOT;
 		return YOHARA_PURPOSE_NONE;
@@ -287,6 +308,8 @@ namespace
 		{
 			case YOHARA_PURPOSE_ZAKLETY: return cfg.zakletyMax;
 			case YOHARA_PURPOSE_LOOT: return cfg.lootMax;
+			case YOHARA_PURPOSE_SNAKEFIELD: return cfg.snakeMax;	// MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case YOHARA_PURPOSE_GIANTLAND: return cfg.giantMax;
 			default: return 0;
 		}
 	}
@@ -299,6 +322,10 @@ namespace
 				return level >= GetPlayerBotYoharaConfig().zakletyMinLevel && level <= PLAYERBOT_ZAKLETY_MAX_LEVEL;
 			case YOHARA_PURPOSE_LOOT:
 				return level >= PLAYERBOT_YOHARA_LOOT_MIN_LEVEL;
+			case YOHARA_PURPOSE_SNAKEFIELD:	// MT2009_PLUS_MAPS_WZ_BOTS_V1
+				return level >= PLAYERBOT_SNAKEFIELD_MIN_LEVEL && level <= PLAYERBOT_SNAKEFIELD_MAX_LEVEL;
+			case YOHARA_PURPOSE_GIANTLAND:
+				return level >= PLAYERBOT_GIANTLAND_MIN_LEVEL && level <= PLAYERBOT_GIANTLAND_MAX_LEVEL;
 			default:
 				return false;
 		}
@@ -409,9 +436,16 @@ namespace
 	}
 
 	// Zaklety Las is an expedition: its stay (the frontier visit's clock, playerbot_travel.h).
+	// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole and Kraina Gigantow too, for a bot the handover brought.
 	DWORD GetPlayerBotYoharaStayMs(LPCHARACTER ch, long mapIndex)
 	{
-		return mapIndex == PLAYERBOT_MAP_ZAKLETY ? (DWORD)GetPlayerBotYoharaConfig().zakletyStayMin * 60000U : 0;
+		const TPlayerBotYoharaConfig& cfg = GetPlayerBotYoharaConfig();
+		if (mapIndex == PLAYERBOT_MAP_ZAKLETY)
+			return (DWORD)cfg.zakletyStayMin * 60000U;
+		if ((mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND) && ch &&
+				FindPlayerBotYoharaResident(ch->GetPlayerID()))
+			return (DWORD)cfg.wzStayMin * 60000U;
+		return 0;
 	}
 
 	// A map of another core this core's bots go to (GetPlayerBotFrontierMapForLevel's filter).
@@ -419,7 +453,8 @@ namespace
 	{
 		if (!IsPlayerBotYoharaOn() || IsPlayerBotMapHostedHere(mapIndex))
 			return false;
-		return mapIndex == PLAYERBOT_MAP_ZAKLETY || IsPlayerBotYoharaLootMap(mapIndex);
+		return mapIndex == PLAYERBOT_MAP_ZAKLETY || IsPlayerBotYoharaLootMap(mapIndex) ||
+				mapIndex == PLAYERBOT_MAP_SNAKEFIELD || mapIndex == PLAYERBOT_MAP_GIANTLAND;	// MT2009_PLUS_MAPS_WZ_BOTS_V1
 	}
 
 	// Who may cross: the population's ordinary bots, not with a person.
@@ -658,6 +693,13 @@ namespace
 				case YOHARA_PURPOSE_LOOT:
 					return IsPlayerBotMapHostedHere(r->lMap) && dwNow - r->dwArrived < PLAYERBOT_YOHARA_LOOT_STAY_MS
 							? r->lMap : 0;
+				// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole / Kraina Gigantow, while the band lasts.
+				case YOHARA_PURPOSE_SNAKEFIELD:
+				case YOHARA_PURPOSE_GIANTLAND:
+				{
+					const long m = GetPlayerBotYoharaPurposeMap(r->iPurpose);
+					return IsPlayerBotYoharaInBand(r->iPurpose, level) && IsPlayerBotMapHostedHere(m) ? m : 0;
+				}
 				default:
 					return 0;
 			}
@@ -687,6 +729,20 @@ namespace
 				(inTemple || s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_ZAKLETY] < cfg.zakletyMax) &&
 				PlayerBotNavHash(pid ^ 0x5a4b4c53U) % 3U != 0)
 			return PLAYERBOT_MAP_ZAKLETY;
+		// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) and Kraina Gigantow (70) on game3 - the quarter of the
+		// draw each that playerbot_travel.h gives them on a core hosting them (the same hash), here through the
+		// handover, within PLAYERBOT_SNAKEFIELD_MAX / PLAYERBOT_GIANTLAND_MAX.
+		{
+			const DWORD wz = PlayerBotNavHash(pid ^ 0x575a4d50U) % 4U;
+			if (wz == 1 && !stoneHunter && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_SNAKEFIELD, level) && cfg.snakeMax > 0 &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SNAKEFIELD] < cfg.snakeMax &&
+					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SNAKEFIELD))
+				return PLAYERBOT_MAP_SNAKEFIELD;
+			if (wz == 2 && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_GIANTLAND, level) && cfg.giantMax > 0 &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_GIANTLAND] < cfg.giantMax &&
+					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GIANTLAND))
+				return PLAYERBOT_MAP_GIANTLAND;
+		}
 		return 0;
 	}
 
@@ -1071,6 +1127,19 @@ namespace
 					return -1;
 				return TransitionPlayerBotMap(ch, state, PLAYERBOT_MAP_ZAKLETY, PLAYERBOT_ZAKLETY_ARRIVAL_X,
 						PLAYERBOT_ZAKLETY_ARRIVAL_Y, dwNow, "zaklety_back") ? 1 : 0;
+			// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole / Kraina Gigantow - frontiers of game3, as the forest.
+			case YOHARA_PURPOSE_SNAKEFIELD:
+			case YOHARA_PURPOSE_GIANTLAND:
+			{
+				if (IsPlayerBotYoharaDeathsOver(res))
+					return SendPlayerBotYoharaHome(ch, state, dwNow, "wz_deaths") ? 1 : 0;
+				if (base == res.lMap)
+					return -1;
+				long x = 0, y = 0;
+				if (!GetPlayerBotFrontierArrival(res.lMap, x, y))
+					return SendPlayerBotYoharaHome(ch, state, dwNow, "wz_no_arrival") ? 1 : 0;
+				return TransitionPlayerBotMap(ch, state, res.lMap, x, y, dwNow, "wz_back") ? 1 : 0;
+			}
 			case YOHARA_PURPOSE_LOOT:
 			{
 				const char* why = NULL;
@@ -1152,7 +1221,8 @@ namespace
 
 	// The test hook: a file "playerbot_yohara_test" in the core's directory, read at the poll and
 	// renamed to .done (the Ochao/Arezzo tests' way):
-	//     send <n> zaklety|loot [map]       n bots of this core of the purpose's band straight to the
+	//     send <n> zaklety|loot|snakefield|giantland [map]
+	//                                       n bots of this core of the purpose's band straight to the
 	//                                       other core (the temple's road left out: a test of the handover)
 	//     home <n|all>                      residents of this core sent home
 	//     status                            the census and every resident here, one line each
@@ -1468,12 +1538,15 @@ namespace
 			s_dwPlayerBotYoharaNextCensusLog = dwNow + PLAYERBOT_YOHARA_CENSUS_LOG_MS;
 			// The old rows of a stay nobody refreshes (the core gone with them).
 			RunPlayerBotYoharaSql("DELETE FROM common.playerbot_core_handover WHERE state=2 AND updated_at < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
-			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d loot=%d/%d "
-					"residents_here=%u (zaklety=%d loot=%d) away=%u requests=%u out=%u in=%u home=%u refused=%u cancel=%u",
+			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d loot=%d/%d snakefield=%d/%d giantland=%d/%d "
+					"residents_here=%u (zaklety=%d loot=%d snakefield=%d giantland=%d) away=%u requests=%u out=%u in=%u home=%u "
+					"refused=%u cancel=%u",
 					(unsigned int)g_bChannel, IsPlayerBotYoharaOn() ? 1 : 0,
 					census[YOHARA_PURPOSE_ZAKLETY], cfg.zakletyMax, census[YOHARA_PURPOSE_LOOT], cfg.lootMax,
+					census[YOHARA_PURPOSE_SNAKEFIELD], cfg.snakeMax, census[YOHARA_PURPOSE_GIANTLAND], cfg.giantMax,
 					(unsigned int)s_mapPlayerBotYoharaResident.size(),
 					residentsHere[YOHARA_PURPOSE_ZAKLETY], residentsHere[YOHARA_PURPOSE_LOOT],
+					residentsHere[YOHARA_PURPOSE_SNAKEFIELD], residentsHere[YOHARA_PURPOSE_GIANTLAND],
 					(unsigned int)s_setPlayerBotYoharaAway.size(), (unsigned int)s_mapPlayerBotYoharaOut.size(),
 					s_uPlayerBotYoharaOutCount, s_uPlayerBotYoharaInCount, s_uPlayerBotYoharaHomeCount,
 					s_uPlayerBotYoharaRefusedCount, s_uPlayerBotYoharaCancelCount);

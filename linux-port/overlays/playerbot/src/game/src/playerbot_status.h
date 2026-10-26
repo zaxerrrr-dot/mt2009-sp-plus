@@ -151,6 +151,8 @@ namespace
 			case 302: return "na Zbocze Gautama"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 303: return "do Nefrytowej Zatoki"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 304: return "w Gromiste Gory"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: return "na Wezowe Pole"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: return "do Krainy Gigantow"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return "";
 		}
 	}
@@ -194,6 +196,8 @@ namespace
 			case 302: return "to the Dawnmist Slope"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 303: return "to the Bay of Black Sand"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
 			case 304: return "to Thunder Mountains"; // MT2009_PLUS_BOT_YOHARA_LOOTRUN_V1
+			case PLAYERBOT_MAP_SNAKEFIELD: return "to the Snakefield"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case PLAYERBOT_MAP_GIANTLAND: return "to the Land of Giants"; // MT2009_PLUS_MAPS_WZ_BOTS_V1
 			default: return "";
 		}
 	}

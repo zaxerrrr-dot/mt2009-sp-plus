@@ -1217,6 +1217,58 @@ namespace
 				{  201900, 1269000, 86, 255, false, 0 },
 				{  261200, 1289500, 86, 255, false, 0 }
 			};
+			// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) - its second part only
+			// (the Giants, the ogres and the golems; the first part's cursed animals
+			// are for level 8-29) - and Kraina Gigantow (70): the spawn lines
+			// clustered by tools/arezzo_bot_map.py on each map's own regen and
+			// server_attr (15 October), each spot on the arrival's walkable piece
+			// with five open cells all round, densest first. Used on the core that
+			// hosts the maps (game3), by the bots the handover brought there.
+			const TPlayerBotHuntingHub snakefieldHubs[] = {
+				{ 1082250,  795250, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 15 spawn lines
+				{ 1107150,  776350, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 15 spawn lines
+				{ 1123150,  773850, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 14 spawn lines
+				{ 1059650,  785850, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 12 spawn lines
+				{ 1119050,  780950, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 11 spawn lines
+				{ 1059750,  768850, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 10 spawn lines
+				{ 1083450,  767450, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 10 spawn lines
+				{ 1133250,  788550, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 10 spawn lines
+				{ 1128650,  763250, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 10 spawn lines
+				{ 1105550,  784750, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{ 1121550,  798450, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{ 1064950,  798250, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{ 1073750,  788750, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{ 1114450,  790450, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{ 1136450,  774750, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{ 1143950,  780050, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{ 1097550,  794150, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
+				{ 1095350,  805550, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
+				{ 1074350,  776550, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
+				{ 1076950,  807050, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 7 spawn lines
+				{ 1105450,  807850, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{ 1071750,  763250, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{ 1080650,  780050, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{ 1128550,  784650, PLAYERBOT_SNAKEFIELD_MIN_LEVEL, 255, false, 0 }	// 6 spawn lines
+			};
+			const TPlayerBotHuntingHub giantlandHubs[] = {
+				{  855350,  724850, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 15 spawn lines
+				{  847450,  741750, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 15 spawn lines
+				{  829850,  734450, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 12 spawn lines
+				{  841550,  746950, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 11 spawn lines
+				{  846850,  729250, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 10 spawn lines
+				{  854450,  743550, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 10 spawn lines
+				{  828250,  747950, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 8 spawn lines
+				{  853450,  732250, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{  848450,  749050, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{  837050,  761150, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{  841650,  735750, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{  858850,  739050, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 6 spawn lines
+				{  837850,  727750, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
+				{  863350,  731750, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
+				{  834950,  742950, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 5 spawn lines
+				{  834350,  749050, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 },	// 3 spawn lines
+				{  830850,  728150, PLAYERBOT_GIANTLAND_MIN_LEVEL, 255, false, 0 }	// 3 spawn lines
+			};
 			// The Demon Tower (66). Only two clusters carry 1001-1004 at all, and
 			// this is a map a bot visits for one specimen rather than lives on,
 			// so two hubs is the whole table.
@@ -1414,6 +1466,16 @@ namespace
 			{
 				hubs = grottoV2Hubs;
 				hubCount = sizeof(grottoV2Hubs) / sizeof(grottoV2Hubs[0]);
+			}
+			else if (ch->GetMapIndex() == PLAYERBOT_MAP_SNAKEFIELD) // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			{
+				hubs = snakefieldHubs;
+				hubCount = sizeof(snakefieldHubs) / sizeof(snakefieldHubs[0]);
+			}
+			else if (ch->GetMapIndex() == PLAYERBOT_MAP_GIANTLAND) // MT2009_PLUS_MAPS_WZ_BOTS_V1
+			{
+				hubs = giantlandHubs;
+				hubCount = sizeof(giantlandHubs) / sizeof(giantlandHubs[0]);
 			}
 			// MT2009_PLUS_OCHAO_BOTS_V1 (hubs): the Temple of Ochao's spots and
 			// its three bosses (playerbot_ochao_bots.h).

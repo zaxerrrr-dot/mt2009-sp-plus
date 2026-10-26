@@ -503,6 +503,9 @@ GUILDWAR_WARP_DESCLIST = [GUILD_WAR_USE_BATTLE_MAP, GUILD_WAR_WIN_WIPE_OUT_GUILD
 GUILDWAR_CTF_DESCLIST = [GUILD_WAR_USE_BATTLE_MAP, GUILD_WAR_WIN_TAKE_AWAY_FLAG1, GUILD_WAR_WIN_TAKE_AWAY_FLAG2]
 
 MINIMAP_ZONE_NAME_DICT = {
+	# MT2009_PLUS_MAPS_WZ_V1 (client): Wê¿owe Pole (80) and Kraina Gigantów (70) - their own folders
+	"metin2_map_snakefield" : "Wê¿owe Pole",
+	"metin2_map_giantland" : "Kraina Gigantów",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,
