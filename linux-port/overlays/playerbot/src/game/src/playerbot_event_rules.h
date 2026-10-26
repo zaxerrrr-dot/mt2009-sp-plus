@@ -22,7 +22,8 @@
 //   bossloot	*	20:00	22:00	0		every boss drops its loot twice
 //   metinloot	6	18:00	20:00	0		Saturday: every Metin drops its loot twice
 //   goblin	5,6,7	12:00	23:00	0		the Treasure Hunt (MT2009_PLUS_GOBLIN_V1)
-//   rumi	6	12:00	23:59	0		Rumi (Okey); also catchking, yutnori, flower, easter
+//   rumi	6	12:00	23:59	0		Rumi (Okey); also catchking, yutnori, flower, easter,
+//   					halloween (MT2009_PLUS_HALLOWEEN_V1)
 //   					(MT2009_PLUS_EVENT_MANAGER_V1, playerbot_ingame_events.h)
 //   bots	50				half of the bots that could come to an event do
 //   #off	yang	*	12:00	13:00	25	a row the operator switched off
@@ -73,7 +74,12 @@ enum Kind
 	// monsters while the window is open - the map column holds its vnum, the
 	// value the chance a kill in per mille (the panel's "Drop szkatulek").
 	KIND_CHESTDROP = 14,
-	KIND_MAX = 15
+	// MT2009_PLUS_HALLOWEEN_V1: the Halloween event (Owsap's event_halloween_hair,
+	// playerbot_halloween.h) - Jack Pumpkin in the three first villages, the
+	// Halloween Pumpkins from monsters and the Magic Wands from Metin stones.
+	// On or off; the manager writes its switch, the event flag halloween_hair.
+	KIND_HALLOWEEN = 15,
+	KIND_MAX = 16
 };
 
 inline const char* KindName(int kind)
@@ -95,6 +101,7 @@ inline const char* KindName(int kind)
 		case KIND_FLOWER: return "flower";
 		case KIND_EASTER: return "easter";
 		case KIND_CHESTDROP: return "chestdrop";
+		case KIND_HALLOWEEN: return "halloween";
 	}
 	return "";
 }

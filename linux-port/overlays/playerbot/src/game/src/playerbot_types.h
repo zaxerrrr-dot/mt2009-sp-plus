@@ -6043,6 +6043,11 @@ namespace
 		// real one is carried to Sa-Soe, this one is worth nothing to anybody.
 		if (vnum == PLAYERBOT_TOWER_FAKE_KEY)
 			return true;
+		// MT2009_PLUS_HALLOWEEN_V1: the Halloween event's items (playerbot_halloween.h) -
+		// the pumpkin, the wand, the Mask Card and the chest are the players'; a bot
+		// never earns one and never lifts one a player left behind.
+		if (vnum == 30321 || vnum == 30322 || vnum == 30323 || vnum == 50215)
+			return true;
 		return vnum == 70048 || vnum == 70050;
 	}
 	// The uniques a bot never wears (playerbot_unique_slots.h). Pierscien

@@ -95,6 +95,9 @@ linux-port/docker/game/special_item_group.catchking.txt
 linux-port/docker/game/special_item_group.unique_attr.txt
 linux-port/docker/game/special_item_group.yutnori.txt
 linux-port/docker/game/special_item_group.flower.txt
+# MT2009_PLUS_HALLOWEEN_V1 (Autor: Owsap): the Halloween Chest 50215 (game/Dockerfile); the quest is in quest/* above,
+# the overlay's playerbot_halloween.h in playerbot_* above.
+linux-port/docker/game/special_item_group.halloween.txt
 linux-port/docker/game/mob_drop_item.dropedit.append.txt
 linux-port/docker/game/mob_drop_item.metinbeans.append.txt
 linux-port/docker/game/mob_drop_item.dtdrops.append.txt

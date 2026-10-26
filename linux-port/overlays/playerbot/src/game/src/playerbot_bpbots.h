@@ -1064,6 +1064,13 @@ namespace playerbot_bpbots
 				snprintf(out, size, "%s", PickLine(k));
 				return true;
 			}
+			// MT2009_PLUS_HALLOWEEN_V1: only talk - a bot never earns the event's items.
+			case playerbot_events::KIND_HALLOWEEN:
+			{
+				static const char* const k[] = { "halloween trwa, dynie leca z mobow", "ktos juz ma maske dyni?", "Jack Pumpkin stoi w miescie, widzieliscie?" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
 			case playerbot_events::KIND_FLOWER: case playerbot_events::KIND_EASTER:
 			{
 				static const char* const k[] = { "event trwa, zbieram co sie da", "kwiaty dzis wszedzie xd", "kto robi event? ile macie?" };

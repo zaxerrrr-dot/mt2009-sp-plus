@@ -2533,7 +2533,10 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                "catchking", "rumi", "yutnori", "flower", "easter",
                # MT2009_PLUS_CHEST_DROP_EVENT_V1: Drop szkatułek - any chest by
                # vnum, its chance a kill in per mille (playerbot_events.h).
-               "chestdrop")
+               "chestdrop",
+               # MT2009_PLUS_HALLOWEEN_V1: Halloween - Jack Pumpkin, the pumpkins and
+               # the wands (playerbot_halloween.h; Autor: Owsap).
+               "halloween")
 EVENT_WORLD_KINDS = ("tanaka", "zuo")
 # MT2009_PLUS_CHEST_DROP_EVENT_V1: the kinds whose lines carry a sixth column
 # and whose "now" lines are kept one per that column - Tanaka's and Zuo's map,
@@ -2545,7 +2548,8 @@ EVENT_AUTOGEN_EXCLUDED = (EVENT_CHESTDROP_KIND,)
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1, playerbot_events.h).
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
-                    "catchking", "rumi", "yutnori", "flower", "easter")  # MT2009_PLUS_EVENT_MANAGER_V1
+                    "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
+                    "halloween")  # MT2009_PLUS_HALLOWEEN_V1
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
 EVENT_BOTS_DEFAULT = 50
@@ -2575,11 +2579,13 @@ EVENT_LABELS = {
     "flower": "Dzieci Kwiaty",
     "easter": "Event wielkanocny",
     "chestdrop": "Drop szkatułek",  # MT2009_PLUS_CHEST_DROP_EVENT_V1
+    "halloween": "Halloween (dynie i Jack Pumpkin)",  # MT2009_PLUS_HALLOWEEN_V1
 }
 EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "tanaka": "🏴‍☠️", "zuo": "☄️", "bossloot": "👹", "metinloot": "🪨",
                "goblin": "🪙",  # goblin: MT2009_PLUS_GOBLIN_V1
                "catchking": "👑", "rumi": "🃏", "yutnori": "🎲", "flower": "🌸", "easter": "🐇",  # MT2009_PLUS_EVENT_MANAGER_V1
-               "chestdrop": "🧰"}  # MT2009_PLUS_CHEST_DROP_EVENT_V1
+               "chestdrop": "🧰",  # MT2009_PLUS_CHEST_DROP_EVENT_V1
+               "halloween": "🎃"}  # MT2009_PLUS_HALLOWEEN_V1
 EVENT_DAY_NAMES = ("Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd")
 EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360, 720, 1440, 2880, 4320, 7200, 10080)  # MT2009_PLUS_EVENTS_7_DAYS_V1: up to 7 days
 
