@@ -181,12 +181,13 @@ SCHEMA = [
        "Lista map: 301 Przylądek Smoczej Głowy, 302 Zbocze Gautama, 303 Nefrytowa Zatoka, 304 Gromiste Góry (301/302 to po ~125–160 MB pamięci).",
        "boty", "string", "303,304", ["game"]),
     # MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow through the handover, and the cohorts.
+    # MT2009_PLUS_MAPS_WZ_NOCAP_V1: -1 (the default) = no limit (the owner, 26 October 2026).
     _e("PLAYERBOT_SNAKEFIELD_MAX", "Boty na Wężowym Polu (na kanał)",
-       "Ilu botów 63–78 naraz expi na Wężowym Polu (mapa 80, rdzeń game2). 0 = nikt.",
-       "boty", "int", "50", ["game"], min=0, max=300),
+       "Ilu botów 63–78 naraz expi na Wężowym Polu (mapa 80, rdzeń game2). -1 = bez limitu (domyślnie), 0 = nikt, więcej = najwyżej tylu na kanał.",
+       "boty", "int", "-1", ["game"], min=-1, max=300),
     _e("PLAYERBOT_GIANTLAND_MAX", "Boty w Krainie Gigantów (na kanał)",
-       "Ilu botów 63–80 naraz expi w Krainie Gigantów (mapa 70, rdzeń game2). 0 = nikt.",
-       "boty", "int", "50", ["game"], min=0, max=300),
+       "Ilu botów 63–80 naraz expi w Krainie Gigantów (mapa 70, rdzeń game2). -1 = bez limitu (domyślnie), 0 = nikt, więcej = najwyżej tylu na kanał.",
+       "boty", "int", "-1", ["game"], min=-1, max=300),
     _e("PLAYERBOT_WZ_STAY_MIN", "Wyprawa na Wężowe Pole / do Krainy (min)",
        "Ile minut bot zostaje na Wężowym Polu albo w Krainie Gigantów, zanim wróci do wioski.",
        "boty", "int", "120", ["game"], min=20, max=600),
