@@ -109,6 +109,13 @@ def IsWE_KOREA():
 # SUPPORT_NEW_KOREA_SERVER
 def LoadLocaleData():
 	app.LoadLocaleData(app.GetLocalePath())
+	# MT2009_PLUS_GLOBAL_PROTO_V2: the item table is the base (mt2009) one again - the next "BonusMode 1" loads
+	# the global records back over it (protoglobal.py)
+	try:
+		import protoglobal
+		protoglobal.BaseTableReloaded()
+	except Exception:
+		pass
 
 def IsCHEONMA():
 	return IsYMIR()
