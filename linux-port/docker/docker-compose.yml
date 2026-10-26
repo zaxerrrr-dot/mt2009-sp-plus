@@ -259,8 +259,13 @@ services:
       PLAYERBOT_ZAKLETY_STAY_MIN: "${PLAYERBOT_ZAKLETY_STAY_MIN:-120}"
       PLAYERBOT_LOOTRUN_MAX: "${PLAYERBOT_LOOTRUN_MAX:-6}"
       PLAYERBOT_LOOTRUN_MAPS: "${PLAYERBOT_LOOTRUN_MAPS:-301,302,303,304}"
-      # MT2009_PLUS_237_NEWCORE_V1: game3, the fourth core of every channel - Zaklety Las (353) and the
-      # level-90 maps (301-304), on BASE+3 (CH1) .. BASE+6 (CH4). 0 puts the five maps back on game2 and
+      # MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) / Kraina Gigantow (70) on game3 by the handover.
+      PLAYERBOT_SNAKEFIELD_MAX: "${PLAYERBOT_SNAKEFIELD_MAX:-50}"
+      PLAYERBOT_GIANTLAND_MAX: "${PLAYERBOT_GIANTLAND_MAX:-50}"
+      PLAYERBOT_WZ_STAY_MIN: "${PLAYERBOT_WZ_STAY_MIN:-120}"
+      # MT2009_PLUS_237_NEWCORE_V1: game3, the fourth core of every channel - Zaklety Las (353), the
+      # level-90 maps (301-304), Wezowe Pole (80) and Kraina Gigantow (70), on BASE+3 (CH1) .. BASE+6 (CH4). 0 puts
+      # the maps back on game2 and
       # starts no game3 (a PC short of memory; bin/m2-render-config).
       M2_MAP_CORE: "${M2_MAP_CORE:-1}"
       M2_PLAYERBOT_CH2_SET_AT: "${M2_PLAYERBOT_CH2_SET_AT:-0}"

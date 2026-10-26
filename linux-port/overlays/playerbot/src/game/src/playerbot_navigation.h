@@ -366,6 +366,7 @@ namespace
 						mapIndex != PLAYERBOT_MAP_GROTTO_V1 &&
 						mapIndex != PLAYERBOT_MAP_GROTTO_V2 &&
 						mapIndex != PLAYERBOT_MAP_OCHAO && // MT2009_PLUS_OCHAO_BOTS_V1
+						!IsPlayerBotWzMap(mapIndex) && // MT2009_PLUS_MAPS_WZ_BOTS_V1 (Wezowe Pole / Kraina Gigantow, when hosted)
 						!IsPlayerBotArezzoMap(mapIndex) && // MT2009_PLUS_AREZZO_BOTS_V1 (TransitionPlayerBotMap lets only the test cohorts in)
 						!(mapIndex >= 364 && mapIndex <= 366) && // MT2009_PLUS_AREZZO_DUNGEON_BOTS_V1 (the dungeon cohort's lobbies and runs)
 						!IsPlayerBotPartyDungeonMap(mapIndex) && // MT2009_PLUS_BOT_DUNGEONS_ALL_V1 (208, 351, 352, 363: a person's party bots inside)

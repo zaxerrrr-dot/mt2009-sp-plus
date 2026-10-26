@@ -1059,6 +1059,20 @@ namespace
 		if (level >= MapFrom(MAP_FIRE_LAND) && level <= MapTo(MAP_FIRE_LAND) &&
 				PlayerBotNavHash(ch->GetPlayerID() ^ 0x464c414dU) % 3U == 0)
 			return PLAYERBOT_MAP_FIRE_LAND;
+		// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) and Kraina Gigantow (70)
+		// take a quarter of the draw each in their bands, by a hash of their own,
+		// on a core that hosts them (game3 - the bots there came by the handover,
+		// whose draw in playerbot_yohara_bots.h uses the same hash) - Wezowe Pole
+		// has no stone, so not for a stone hunter; Kraina keeps Pung-Ma and Ma-An.
+		{
+			const DWORD wz = PlayerBotNavHash(ch->GetPlayerID() ^ 0x575a4d50U) % 4U;
+			if (wz == 1 && !stoneHunter && level >= PLAYERBOT_SNAKEFIELD_MIN_LEVEL &&
+					level <= PLAYERBOT_SNAKEFIELD_MAX_LEVEL && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SNAKEFIELD))
+				return PLAYERBOT_MAP_SNAKEFIELD;
+			if (wz == 2 && level >= PLAYERBOT_GIANTLAND_MIN_LEVEL && level <= PLAYERBOT_GIANTLAND_MAX_LEVEL &&
+					IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GIANTLAND))
+				return PLAYERBOT_MAP_GIANTLAND;
+		}
 		// Seventy-eight and up: the Grotto of Exile, the only ground past the
 		// Red Forest's 74-82 (26 September). V1's ice and Setaou run 81-89,
 		// V2's Setaou 87-97. From eighty-four V2 takes two draws in three and
