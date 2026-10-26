@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.37.2 — (szkic)
+## 2.38.0 — 2026-10-26 — Wężowe Pole i Kraina Gigantów, budynki gildii, boty na wojnie
 
 ### Wężowe Pole i Kraina Gigantów
 - **Nowe mapy: Wężowe Pole i Kraina Gigantów.** Dodałem dwie mapy tak, jak opisuje je wiki. Na Wężowe Pole wchodzi się z Pustyni Yongbi portalem w prawym dolnym rogu pustyni, a z Wężowego Pola portal prowadzi dalej do Krainy Gigantów (i z powrotem). Na Wężowym Polu żyją przeklęte wilki, dziki, niedźwiedzie i tygrysy, a za rzeką Niszczyciele, Ogry i golemy; w Krainie Gigantów Giganci i Ogry, Metiny Pung-Ma i Ma-An oraz krzaki ziół. Teren map wymaga nowej łatki klienta.
@@ -52,6 +52,14 @@ every version here.
 
 ### Ceny
 - Zmieniłem ceny w cenniku botów: Pamiątka po Demonie – 2 500 000 Yang, Księga Klątw – 1 500 000 Yang, Matowy Lód – 2 600 000 Yang.
+
+
+## Klient 2.0.69 — 2026-10-26 — Wężowe Pole i Kraina Gigantów
+- **Wężowe Pole i Kraina Gigantów** – teren, obiekty i potwory obu map (Giganci, Ogry i golemy), nazwy map na minimapie.
+- **Okno budowy gildii** liczy Yang lidera razem ze skarbcem gildii.
+- **Usunięta ikona „Klątwa Świątyni”.**
+- **Tryb global** – stałe bonusy przedmiotów nie wracają do wartości mt2009 po zmianie postaci.
+- Panel GM i zapisane teleporty prowadzą na Wężowe Pole zamiast na Przełęcz.
 
 ---
 
