@@ -1,0 +1,33 @@
+// MT2009_PLUS_SEEDS_MT2009_V1: Magiczne Nasiona (30197) in the default mt2009 mode too (the owner,
+// 26 October 2026), from the same Red Forest monsters and at the same chance as M2_BONUS_MODE=global
+// (moby_global/mob_drop_item.moby_global.2x.txt, groups MT2009_mglobal_2311..2314): Type drop 0.5 = 0.125%
+// a kill at the server's 100% drop. The global step (MT2009_PLUS_237_GLOBAL_MODE_V1) takes these groups
+// back out of mob_drop_item.global.txt, so the global mode keeps only its own rows - no double chance.
+
+Group	MT2009_seeds_2311
+{
+	mob	2311	-- Czerw. Duch Drzewa
+	Type	drop
+	1	30197	1	0.5	-- Magiczne Nasiona
+}
+
+Group	MT2009_seeds_2312
+{
+	mob	2312	-- Czerw. Duch Pniaka
+	Type	drop
+	1	30197	1	0.5	-- Magiczne Nasiona
+}
+
+Group	MT2009_seeds_2313
+{
+	mob	2313	-- Czerwona Driada
+	Type	drop
+	1	30197	1	0.5	-- Magiczne Nasiona
+}
+
+Group	MT2009_seeds_2314
+{
+	mob	2314	-- Czerw. Duch Wierzby
+	Type	drop
+	1	30197	1	0.5	-- Magiczne Nasiona
+}

@@ -42,6 +42,9 @@ every version here.
 ### Świątynia Hwang
 - **Usunąłem ikonę „Klątwa Świątyni” i resztki tej klątwy.** Klątwa Świątyni Hwang dawno przestała działać (razem z Maską Sabaha), ale stary quest nadal przy każdym wejściu na mapę Świątyni Hwang dokładał wiecznie trwającą ikonę „Twój umysł jest otępiony…”, która niczego już nie robiła. Usunąłem ten quest i ikonę z klienta, a także cały powiązany quest Nabiry („Ucieczka Nabiry”): potwory w świątyni nie upuszczają już Listu Gończego. Listy Gończe i Kamienie Tygrysa, które ktoś jeszcze ma, znikają raz przy starcie serwera po aktualizacji. Ikona znika z klienta po nowej łatce klienta, a na serwerze już po aktualizacji.
 
+### Drop
+- **Magiczne Nasiona wypadają też w trybie mt2009.** Do tej pory dawał je tylko tryb global. Dodałem je w domyślnym trybie mt2009 tym samym potworom z Czerwonego Lasu i z tą samą szansą co w trybie global: Czerw. Duch Drzewa, Czerw. Duch Pniaka, Czerwona Driada i Czerw. Duch Wierzby, 0,125% na zabicie. W trybie global nic się nie zmienia (nasiona nie wypadają tam podwójnie).
+
 ### Ceny
 - Zmieniłem ceny w cenniku botów: Pamiątka po Demonie – 2 500 000 Yang, Księga Klątw – 1 500 000 Yang, Matowy Lód – 2 600 000 Yang.
 
