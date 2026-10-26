@@ -3,21 +3,22 @@
 -- has no group for it (the stock file neither), so these are ours: the Jack O'Lantern Mask Card
 -- Jack Pumpkin trades for a Pumpkin Mask, and the consumables the other event chests give. One
 -- line per chest, by weight (the weights add up to 100, so each is its percent). The operator
--- edits it on the Seban panel's "Szkatulki" page like any other chest.
+-- edits it on the Seban panel's "Szkatulki" page like any other chest. The owner (26 Oct): Zaczarowanie 2%,
+-- Wzmocnienie 1%, Szkatulka Blasku Ksiezyca 10%; the 13 freed points went to the two potions (17 / 16).
 Group	mt2009_halloween_chest
 {
 	Vnum	50215 -- Upiorna Skrzynia
 	1	30323	1	10 -- Karta Maski Dyni
-	2	71084	1	12 -- Zaczarowanie Przedmiotu
-	3	71085	1	8 -- Wzmocnienie Przedmiotu
-	4	27102	5	10 -- Zielona Mikstura (D)
-	5	27105	5	10 -- Fioletowa Mikstura (D)
+	2	71084	1	2 -- Zaczarowanie Przedmiotu
+	3	71085	1	1 -- Wzmocnienie Przedmiotu
+	4	27102	5	17 -- Zielona Mikstura (D)
+	5	27105	5	16 -- Fioletowa Mikstura (D)
 	6	71044	2	7 -- Dlon Krytyka
 	7	71045	2	7 -- Dlon Przebicia
 	8	71027	1	6 -- Zycie Boga Smokow
 	9	71028	1	6 -- Atak Boga Smokow
 	10	25040	1	6 -- Zwoj Blogoslawienstwa
-	11	50011	1	6 -- Szkatulka Blasku Ksiezyca
+	11	50011	1	10 -- Szkatulka Blasku Ksiezyca
 	12	70102	1	4 -- Fasolka Zen
 	13	gold	200000	8 -- 200 000 yang
 }
