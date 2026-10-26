@@ -79,8 +79,8 @@ MAP_IMAGES = {21: "chunjo-m1", 23: "chunjo-m2", 24: "guild-map-02", 25: "easy-mo
               366: "arezzo-ancient-jungle"}
 # Names of the maps app.MAP_NAMES does not list (the panel's table wins).
 EXTRA_MAP_NAMES = {
-    6: "Wioska gildii Shinsoo", 26: "Wioska gildii Chunjo", 46: "Wioska gildii Jinno", 69: "Przełęcz",
-    70: "Wyspa Nusluck", 79: "Labirynt", 81: "Mapa ślubna", 90: "Lodowy loch", 100: "Loch polowy",
+    6: "Wioska gildii Shinsoo", 26: "Wioska gildii Chunjo", 46: "Wioska gildii Jinno",
+    70: "Kraina Gigantów", 79: "Labirynt", 80: "Wężowe Pole", 81: "Mapa ślubna", 90: "Lodowy loch", 100: "Loch polowy",
     101: "Strefa surowców", 107: "Loch Małp (stary)", 112: "Arena pojedynków", 113: "Mapa OX",
     181: "Wojna królestw 1", 182: "Wojna królestw 2", 183: "Wojna królestw 3", 200: "Budowa gildii (GM)",
     208: "Smocza Grota (Błękitny Smok)", 216: "Katakumby Diabła", 217: "Loch Pająków V3",

@@ -64,8 +64,8 @@ MAX_SECONDS = 7 * 24 * 3600
 EXTRA_MAP_NAMES = {
     4: "Shinsoo – Dolina Gildii", 24: "Chunjo – Dolina Gildii", 44: "Jinno – Dolina Gildii",
     6: "Shinsoo – Wioska Gildii", 26: "Chunjo – Wioska Gildii", 46: "Jinno – Wioska Gildii",
-    62: "Ognista Ziemia", 65: "Świątynia Hwang", 67: "Las", 68: "Czerwony Las", 69: "Przełęcz",
-    70: "Ognista Pustynia (nusluck)", 107: "Loch Małp", 301: "Przylądek Smoczej Głowy", 302: "Las Mglistego Świtu",
+    62: "Ognista Ziemia", 65: "Świątynia Hwang", 67: "Las", 68: "Czerwony Las",
+    70: "Kraina Gigantów", 80: "Wężowe Pole", 107: "Loch Małp", 301: "Przylądek Smoczej Głowy", 302: "Las Mglistego Świtu",
     303: "Zatoka Czarnego Piasku", 304: "Góra Grzmotów",
 }
 # The panel's map pictures (static/maps, as static/heatmap.js names them).

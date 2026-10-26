@@ -64,8 +64,10 @@ BIOLOGIST_UNREACHABLE = frozenset()
 BIOLOGIST_REACHABLE = tuple(
     m for m in BIOLOGIST_MISSIONS if m[0] not in BIOLOGIST_UNREACHABLE)
 # What a person can do and what a bot's AI will do are two sets past seventy.
-# Tugyi's Tablet comes only from the Giants of metin2_map_nusluck01 (70), a map
-# no bot travels to, so the core has no home for that row and steps over it
+# Tugyi's Tablet comes only from the Giants of Kraina Gigantow (70) and Wezowe
+# Pole (80), maps on game3 (MT2009_PLUS_MAPS_WZ_V1) - a bot hunts there only for
+# a handover's stay, never from its home core, so the core has no home for that
+# row on the bots' core and steps over it
 # (PLAYERBOT_BIOLOGIST_MISSIONS, playerbot_types.h); lv85 and lv90 follow it in
 # the chain and the core has no rows for them. A person is counted against
 # every row; a bot against the rows its AI can finish, or every bot of eighty

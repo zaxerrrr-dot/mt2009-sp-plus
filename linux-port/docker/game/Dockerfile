@@ -337,7 +337,9 @@ RUN set -eux; \
     # zaklety_las (the seven missions of the forest's guards, Kamien Driad) and erebu (Jotun Thrym's dungeon at
     # Przywodca Strazy Lasu) are Zaklety Las (353) - MT2009_PLUS_237_ZAKLETY_LAS_V1, the Yohara line's
     # MT2009_PLUS_YOHARA_ZAKLETY_V1 quests unchanged.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join zaklety_las erebu; do \
+    # labirynth and black_steel_crafting are the package's, with Min-Sun (20402) on Pustynia Yongbi since Przelecz (69)
+    # is gone (MT2009_PLUS_PASS69_OFF_V1) - their objects replace the stock ones.
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item pasy energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join zaklety_las erebu labirynth black_steel_crafting; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -1308,6 +1310,91 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/maps302-add/map \
  && LC_ALL=C grep -a -q 'map_names\[304\]' "$L/quest/libs/translate/translate.lua" \
  && rm -rf /tmp/maps302-add \
  && echo "share: Zbocze Gautama / Nefrytowa Zatoka / Gromiste Gory (302-304: server_attr of the GF terrain), the maps' names"
+
+# MT2009_PLUS_MAPS_WZ_V1 (share): Wezowe Pole (80, metin2_map_snakefield = the official metin2_map_WL_01, 4x4 at
+# 1049600 716800 - the official index 69 was our Przelecz, metin2_map_wl_pass) and Kraina Gigantow (70,
+# metin2_map_giantland = the official metin2_map_nusluck01, 2x2 at 819200 716800 - in place of the base share's
+# "70 metin2_map_nusluck01" line) as the pl-wiki has them - the Yohara line's step (the owner, 15 October 2026), taken
+# over for the 2.x line (the owner, 26 October 2026: "do 2.x dodaj wezowe pole i kraine gigantow"), on game3 with the
+# other new maps (bin/m2-render-config, MT2009_PLUS_237_NEWCORE_V1; game2 with M2_MAP_CORE=0). Every file made by
+# tools/maps_wz/gen_maps_wz.py (maps_wz/README.md): the official server_attr, spawns (group_group 1101-1104 / 1401 /
+# 1402 / 1501-1504 and 1451-1453 of the base share, checked here), NPCs and Metins, Town = where a player comes in; the
+# wiki's drops our groups lacked (mob_drop_item.maps_wz.txt, "drop" groups the reader merges with the mobs' own -
+# Orkowa Maczuga 30194, Piasek Kwarcowy 30195 ...; before the global mode's drop step, so mob_drop_item.global.txt
+# carries them too). The way in (the wiki): the desert's bottom-right portal - the base share's 10108 to Przelecz at
+# 1477,1357 - becomes 10029 to Wezowe Pole (links.maps_wz.txt); Wezowe Pole's 10030 / 10032 lead to the desert /
+# Kraina, Kraina's 10031 back. Przelecz is gone since (MT2009_PLUS_PASS69_OFF_V1 below). /goto sneak (it named 69),
+# wezowe, giant (its map corner -> the arrival), gigantow. The monsters' levels: mariadb/playerbot/maps_wz.sql.
+COPY maps_wz/ /tmp/maps-wz-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/maps-wz-add \
+ && find "$A" -type f -name '*.txt' -exec sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' {} + \
+ && for v in 1101 1102 1103 1104 1401 1402 1451 1452 1453 1501 1502 1503 1504 20611; do \
+      grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$v[[:space:]]*\$" "$L/group_group.txt" \
+        || { echo "FATAL: group_group $v (Wezowe Pole / Kraina Gigantow) is not in group_group.txt"; exit 1; }; \
+    done \
+ && for m in "80 metin2_map_snakefield 1000000010000000 1049600 716800" "70 metin2_map_giantland 0800000008000000 819200 716800"; do \
+      set -- $m; \
+      { rm -rf "$L/map/$2" && cp -a "$A/map/$2" "$L/map/" \
+        && test "$(od -An -tx1 -N8 "$L/map/$2/server_attr" | tr -d ' \n')" = "$3" \
+        && grep -q -E "^BasePosition[[:blank:]]+$4[[:blank:]]+$5" "$L/map/$2/Setting.txt" \
+        && test -s "$L/map/$2/Town.txt" && test -s "$L/map/$2/npc.txt" && test -s "$L/map/$2/regen.txt" \
+        && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\n' >> "$L/map/index"; } \
+        && sed -i -E "/^$1[[:blank:]]/d" "$L/map/index" \
+        && printf '%s %s\n' "$1" "$2" >> "$L/map/index" \
+        && test "$(grep -c -E "^$1[[:blank:]]+$2[[:space:]]*\$" "$L/map/index")" = 1; } \
+        || { echo "FATAL: map $1 $2"; exit 1; }; \
+    done \
+ && test -s "$L/map/metin2_map_giantland/stone.txt" \
+ && N="$L/map/metin2_map_n_desert_01/npc.txt" \
+ && W=$(grep -E '^63[[:blank:]]+metin2_map_n_desert_01[[:blank:]]' "$A/links.maps_wz.txt" | tr -d '\r') \
+ && NEW=$(printf '%s\n' "$W" | cut -f3-13) && OLD=$(printf '%s\n' "$W" | cut -f14) \
+ && test "$OLD" = 10108 && test "$(printf '%s\n' "$NEW" | cut -f11)" = 10029 \
+ && test "$(grep -c -E "^m[[:blank:]].*[[:blank:]]$OLD[[:space:]]*\$" "$N")" = 1 \
+ && ! grep -q -E "^m[[:blank:]].*[[:blank:]]10029[[:space:]]*\$" "$N" \
+ && sed -i -E "/^m[[:blank:]].*[[:blank:]]$OLD[[:space:]]*\$/d" "$N" \
+ && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+ && printf '%s\r\n' "$NEW" >> "$N" \
+ && test "$(grep -c -E "^m[[:blank:]].*[[:blank:]]10029[[:space:]]*\$" "$N")" = 1 \
+ && F="$L/mob_drop_item.txt" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_maps_wz_' "$F" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.maps_wz.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_maps_wz_' "$F")" = 9 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[80\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_MAPS_WZ_V1\r\ntranslate.general.map_names[80] = "W\352\277owe Pole"\r\n' >> "$f"; \
+    done \
+ && S="$L/settings.lua" \
+ && sed -i -E 's/^add_goto_info\("sneak", 0, 69, /add_goto_info("sneak", 0, 80, /; s/^add_goto_info\("giant", 0, 70, 8192, 7168\)/add_goto_info("giant", 0, 70, 8283, 7635)/' "$S" \
+ && { LC_ALL=C grep -a -q 'add_goto_info("wezowe"' "$S" || printf 'add_goto_info("wezowe", 0, 80, 10590, 7262)\r\nadd_goto_info("gigantow", 0, 70, 8283, 7635)\r\n' >> "$S"; } \
+ && ! LC_ALL=C grep -a -q -E '^add_goto_info\("sneak", 0, 69,' "$S" \
+ && rm -rf "$A" \
+ && echo "share: Wezowe Pole (80) and Kraina Gigantow (70): the official terrain / spawns / NPCs / Metins, the wiki's drops, the desert's portal 10029"
+# MT2009_PLUS_PASS69_OFF_V1 (share): Przelecz (69, metin2_map_wl_pass) removed (the owner on the Yohara line, 15 October
+# 2026: "Przelecz 69 usun" - the 2.x line takes it over with Wezowe Pole, whose portal replaces the way there). No portal led there any more (the desert's 10108 became 10029 above; 10109 stood on the base share's
+# metin2_map_nusluck01, which no index names since Kraina Gigantow is metin2_map_giantland). Out: its map/index line,
+# its folder, its music line in settings.lua (its /goto sneak names 80 above), the map name (the step above no
+# longer writes one) - bin/m2-render-config hosts it on no core, apply.sh moves whoever was saved there to Wezowe
+# Pole's arrival once. Min-Sun (20402) lived only there - Labirynt (79), the Black Steel crafting and his shop: he
+# stands on Pustynia Yongbi (63, game1 as Labirynt) at 1467,1365 now, 6 m south-west of where 10030 puts a player
+# down and 12 m from the portal 10029 (GF's attr.atr: free 2 m round, walkable from the town - the old way to
+# Przelecz); quest labirynth / black_steel_crafting (quest/, compiled above) return and warp to 1465,1360 beside him.
+RUN set -eu; L=/opt/metin2/share/locale/poland \
+ && sed -i -E '/^69[[:blank:]]/d' "$L/map/index" \
+ && ! grep -q -E '^69[[:blank:]]' "$L/map/index" \
+ && ! grep -q -E 'wl_pass' "$L/map/index" \
+ && rm -rf "$L/map/metin2_map_wl_pass" \
+ && S="$L/settings.lua" \
+ && sed -i -E '/^add_bgm_info\(69,/d' "$S" \
+ && ! LC_ALL=C grep -a -q -E '^add_bgm_info\(69,|^add_goto_info\("[^"]*", *0, *69,' "$S" \
+ && N="$L/map/metin2_map_n_desert_01/npc.txt" \
+ && ! grep -q -E '^m[[:blank:]].*[[:blank:]]20402[[:space:]]*$' "$N" \
+ && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+ && printf 'm\t1467\t1365\t0\t0\t0\t4\t1m\t100\t1\t20402\r\n' >> "$N" \
+ && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]20402[[:space:]]*$' "$N")" = 1 \
+ && echo "share: Przelecz (69) removed - Min-Sun (20402) on Pustynia Yongbi (63) at 1467,1365"
 
 # MT2009_PLUS_ATLANTYDA_V1 (share): Ruiny Atlantydy - plechito_summer2022_dungeon, 158, 3x3 at 3814400 2252800,
 # the Plechito summer 2022 dungeon "Ruins of Atlantis" at the Grotto of Exile's band (entry 75, solo or a party;

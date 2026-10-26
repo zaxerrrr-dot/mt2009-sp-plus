@@ -880,7 +880,7 @@ stranded=$(db -e "
       JOIN account.account a ON a.id = p.account_id
      WHERE LEFT(a.login, 10) = 'playerbot_'
        AND p.map_index NOT IN (1, 3, 4, 5, 6, 107, 81, 110, 111, 112, 113, 181, 182, 183, 200, 250, 302, 304,
-                               21, 23, 24, 25, 26, 61, 63, 64, 65, 69, 70, 71, 104, 108, 109, 79, 216, 217, 73,
+                               21, 23, 24, 25, 26, 61, 63, 64, 65, 70, 71, 104, 108, 109, 79, 216, 217, 73,
                                41, 43, 44, 45, 46, 62, 66, 67, 68, 72, 90, 208, 301, 303, 351,
                                364, 365, 366);
 ")
@@ -899,7 +899,7 @@ if [ -n "$stranded" ] && [ "$stranded" -gt 0 ] 2>/dev/null; then
                p.y = CASE pi.empire WHEN 1 THEN 899500 WHEN 3 THEN 221400 ELSE 240000 END
          WHERE LEFT(a.login, 10) = 'playerbot_'
            AND p.map_index NOT IN (1, 3, 4, 5, 6, 107, 81, 110, 111, 112, 113, 181, 182, 183, 200, 250, 302, 304,
-                               21, 23, 24, 25, 26, 61, 63, 64, 65, 69, 70, 71, 104, 108, 109, 79, 216, 217, 73,
+                               21, 23, 24, 25, 26, 61, 63, 64, 65, 70, 71, 104, 108, 109, 79, 216, 217, 73,
                                41, 43, 44, 45, 46, 62, 66, 67, 68, 72, 90, 208, 301, 303, 351,
                                364, 365, 366);
     "
@@ -3623,6 +3623,48 @@ if [ "$forest_done" = "0" ]; then
         echo "[playerbot-migrate] the Arezzo forest (362) removed: ${forest_chars:-0} character(s) and ${forest_exits:-0} way(s) out moved to the Temple of Ochao"
     else
         fail_step "could not move the characters out of the removed Arezzo forest (362)" >&2
+    fi
+fi
+
+# MT2009_PLUS_MAPS_WZ_V1: Wezowe Pole (80) and Kraina Gigantow (70) - the Yohara line's maps, taken over for the 2.x
+# line (the owner, 26 October 2026). maps_wz.sql (tools/maps_wz/gen_maps_wz.py): the pl-wiki's levels of the Giants
+# and ogres (1401-1403, 1603; the ogres 1601 / 1602 at the global sheet's 71 / 73 - only the level column; the global
+# mode's moby_global_2x.sql changes no level of these six). Every vnum the maps spawn and drop is ours already.
+# Idempotent (guarded UPDATE).
+for wz_sql in maps_wz.sql; do
+    [ -s "/opt/playerbot/$wz_sql" ] || continue
+    if db < "/opt/playerbot/$wz_sql"; then
+        echo "[playerbot-migrate] maps wz: $wz_sql applied"
+    else
+        fail_step "maps wz: $wz_sql failed" >&2
+    fi
+done
+
+# MT2009_PLUS_PASS69_OFF_V1: once - Przelecz (69, metin2_map_wl_pass) is in no map index and on no core any more (the
+# owner on the Yohara line, 15 October 2026; the 2.x line with Wezowe Pole, 26 October 2026). Every character saved
+# there, or whose way out leads there - people and bots - stands at Wezowe Pole's arrival (80, 1059000 726200 - its
+# Town.txt 94,94, where the desert's portal 10029 and /goto wezowe put a player down; tools/maps_wz/gen_maps_wz.py).
+# A bot is caught first by the stranded-bots step near the top (69 left its list of hosted maps): it goes to its
+# own kingdom's second map - so this moves people (and any bot's way out). The Yohara line's step of the same name.
+pass_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'wl_pass_69_removed';" 2>/dev/null || echo x)
+if [ "$pass_done" = "0" ]; then
+    if pass_out=$(db -e "
+        START TRANSACTION;
+        UPDATE player.player
+           SET map_index = 80, x = 1059000, y = 726200, exit_map_index = 80, exit_x = 1059000, exit_y = 726200
+         WHERE map_index = 69;
+        SELECT ROW_COUNT();
+        UPDATE player.player SET exit_map_index = 80, exit_x = 1059000, exit_y = 726200
+         WHERE exit_map_index = 69;
+        SELECT ROW_COUNT();
+        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('wl_pass_69_removed', NOW());
+        COMMIT;
+    "); then
+        pass_chars=$(printf '%s\n' "$pass_out" | awk 'NR == 1')
+        pass_exits=$(printf '%s\n' "$pass_out" | awk 'NR == 2')
+        echo "[playerbot-migrate] Przelecz (69) removed: ${pass_chars:-0} character(s) and ${pass_exits:-0} way(s) out moved to Wezowe Pole (80)"
+    else
+        fail_step "could not move the characters out of the removed Przelecz (69)" >&2
     fi
 fi
 

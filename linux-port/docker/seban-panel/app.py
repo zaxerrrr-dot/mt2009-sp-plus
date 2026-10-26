@@ -78,6 +78,8 @@ MAP_NAMES = {
     # MT2009_PLUS_SEBAN_MAPS_V1: the Temple of Ochao and the Arezzo places.
     209: "Świątynia Ochao", 360: "Dolina Cyklopów", 361: "Pustkowie Faraona", 353: "Zaklęty Las",
     363: "Biblioteka Wiedzy", 364: "Wzgórze Wukonga", 365: "Ruiny Skorpiona", 366: "Starożytna Dżungla",
+    # MT2009_PLUS_MAPS_WZ_V1: the bots of 63-80 go there by the handover (game3).
+    70: "Kraina Gigantów", 80: "Wężowe Pole",
 }
 MAP_BOUNDS = {
     1: (409600, 896000, 102400, 128000), 3: (307200, 819200, 102400, 102400),
@@ -106,6 +108,8 @@ MAP_BOUNDS = {
     353: (768000, 1408000, 76800, 102400), 363: (947200, 614400, 51200, 51200),  # MT2009_PLUS_237_ZAKLETY_LAS_V1: 353 for 362
     364: (844800, 537600, 51200, 51200), 365: (844800, 588800, 51200, 51200),
     366: (768000, 537600, 76800, 76800),
+    # MT2009_PLUS_MAPS_WZ_V1: maps_wz/map/<folder>/Setting.txt (2x2 / 4x4).
+    70: (819200, 716800, 51200, 51200), 80: (1049600, 716800, 102400, 102400),
 }
 # "Boty CH1/CH2 na mapach" tile (dashboard-charts.js) used to draw the full
 # map name under each bar in 9px text -- fine for "M1"/"M2"/"M3" (matched by

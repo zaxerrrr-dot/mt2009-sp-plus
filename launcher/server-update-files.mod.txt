@@ -159,6 +159,12 @@ linux-port/docker/game/maps302/*
 linux-port/docker/game/maps302/map/metin2_map_dawnmistwood/*
 linux-port/docker/game/maps302/map/metin2_map_BayBlackSand/*
 linux-port/docker/game/maps302/map/metin2_map_Mt_Thunder/*
+# MT2009_PLUS_MAPS_WZ_V1: Wezowe Pole (80) and Kraina Gigantow (70) - Dockerfile step "share: Wezowe Pole (80) and
+# Kraina Gigantow (70)", apply.sh's maps_wz.sql; MT2009_PLUS_PASS69_OFF_V1's quests are in quest/* above.
+linux-port/docker/game/maps_wz/*
+linux-port/docker/game/maps_wz/map/metin2_map_snakefield/*
+linux-port/docker/game/maps_wz/map/metin2_map_giantland/*
+linux-port/docker/mariadb/playerbot/maps_wz.sql
 # MT2009_PLUS_ZODIAC_V1: Swiatynia Zodiaku's share files (Dockerfile step "share: Swiatynia Zodiaku").
 linux-port/docker/game/zodiak/*
 linux-port/docker/game/zodiak/data/dungeon/zodiac/*
