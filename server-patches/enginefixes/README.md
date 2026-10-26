@@ -72,3 +72,20 @@ właścicielowi, jak w `Reward()`); doświadczenie, drop, karty, owoce rang i Pr
   `RequestCreateObject` zapisuje powód odmowy (poza terenem, inny budynek, ktoś stoi w miejscu budynku – z imieniem),
   a `/build c` mówi go liderowi (wcześniej tylko serwer testowy dostawał komunikat) i zapisuje w syslog
   (`BUILD: ... refused ... reason`). Boty (bot sam schodzi z budynku), zwierzaki i wierzchowce nie blokują już budowy.
+
+## Obrócone budynki gildii (MT2009_PLUS_GUILD_ROTATE_V1)
+
+- `MT2009_PLUS_GUILD_ROTATE_V1` (footprint, destroy, show, who, who test, land, check, people) (`building.cpp`):
+  teren pod obróconym budynkiem liczony tak, jak klient go rysuje (obrót wokół punktu budynku, ten sam
+  kierunek co `RegenNPC` i stara kontrola terenu). `SECTREE_MANAGER::ForAttrRegion` obracał ślad źle:
+  przy 90° i 270° kładł obrócony prostokąt od rogu nieobróconego (pół budynku w bok), przy innym kącie
+  zamieniał szerokość z wysokością i brał tylko część budynku (kamień przy 43°: 8 z 25 komórek, Insygnia –
+  nic). Skutek: Kowal Zbroi obrócony o 90° 60 jednostek od Kwatery Głównej (z lewej albo od góry) był
+  odrzucany („W tym miejscu stoi juz inny budynek”), a obrócony kamień zostawiał większość swojej
+  powierzchni wolną dla następnych budynków i przejścia. Teraz komórka należy do budynku, gdy jej środek,
+  obrócony z powrotem o `zRot`, leży w `lRegion` powiększonym o pół komórki; to samo przy sprawdzaniu
+  (`RequestCreateObject`), oznaczaniu (`Show`) i zdejmowaniu (`Destroy`). Kontrola osób (`FIsIn`) pyta
+  o obrócony budynek, kontrola terenu gildii bierze wszystkie cztery obrócone rogi (dwa dawne pozwalały
+  obróconemu budynkowi wystawać poza teren). Budynek bez obrotu (`zRot` = 0) idzie dokładnie starą drogą
+  (`ForAttrRegion`), komórka w komórkę. Po restarcie `FinalizeBoot` pokazuje każdy budynek nową metodą,
+  więc `Destroy` zdejmuje te same komórki, które `Show` oznaczył. Klient bez zmian.
