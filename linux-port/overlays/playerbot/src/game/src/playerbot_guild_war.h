@@ -2804,7 +2804,14 @@ namespace
 		// trot behind the fight: the operator's rule for a war ("niech boty
 		// odwoluja konie i walcza tylko na pieszo", Tieru, 17 September),
 		// which the battle horse's own fitness to fight used to exempt.
-		if (ch->IsRiding())
+		// MT2009_PLUS_BOT_WAR_MOUNT_V1: a standing mount (the surfboard, the
+		// Wukong clouds, the drakkars) is no horse - its rider casts every
+		// skill from it, and SetPlayerBotRidingForTravel keeps it on for
+		// "guild_war" (IsPlayerBotSaddleOnlyReason). This pass still asked
+		// IsRiding alone, so it called the dismount, got the refusal, and
+		// returned every tick: the bot stood at its camp by the portal for
+		// the whole war. It fights from that saddle now, as a player does.
+		if (ch->IsRiding() && !IsPlayerBotOnStandingMount(ch))
 		{
 			SetPlayerBotRidingForTravel(ch, state, false, dwNow, "guild_war");
 			if (ch->GetHorse())
