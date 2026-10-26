@@ -19,6 +19,18 @@ every version here.
 
 ## 2.37.2 — (szkic)
 
+### Wężowe Pole i Kraina Gigantów
+- **Nowe mapy: Wężowe Pole i Kraina Gigantów.** Dodałem dwie mapy tak, jak opisuje je wiki. Na Wężowe Pole wchodzi się z Pustyni Yongbi portalem w prawym dolnym rogu pustyni, a z Wężowego Pola portal prowadzi dalej do Krainy Gigantów (i z powrotem). Na Wężowym Polu żyją przeklęte wilki, dziki, niedźwiedzie i tygrysy, a za rzeką Niszczyciele, Ogry i golemy; w Krainie Gigantów Giganci i Ogry, Metiny Pung-Ma i Ma-An oraz krzaki ziół. Teren map wymaga nowej łatki klienta.
+- **Piasek Kwarcowy wypada z golemów.** Skalny Golem, Kamienny Golem i Olbrzymi Skalny Golem z Wężowego Pola upuszczają teraz Piasek Kwarcowy – tak jak na globalu. Do tej pory nic go nie dawało, a jest potrzebny do ulepszenia zbroi 80 poziomu z +5 na +6. Szansa wynosi 0,5% na zabicie (wiki jej nie podaje, więc ustawiłem ją tymczasowo).
+- Z potworów obu map wypada też to, co podaje wiki, a czego u nas brakowało: Orkowa Maczuga (Ogr Wojownik i Ogr Rzeźnik), zioła, Marmur Polimorfii, Srebrna Szkatułka, Kamienne Strzały oraz broń, zbroje i biżuteria +0 z listy wiki.
+- Poziomy Gigantów i Ogrów są teraz takie jak na wiki i globalu: Niszczyciel 66, Wojownik z Toporem 73, Tysięczny Wojownik 77, Ogr Wojownik 71, Ogr Rzeźnik 73, Ogr Szaleniec 75. Ich PŻ, obrażenia i doświadczenie się nie zmieniają.
+- **Obie mapy działają na osobnym rdzeniu** razem z Zaklętym Lasem i mapami 90 poziomu (game3, w każdym kanale; przy `M2_MAP_CORE=0` – na rdzeniu game2). Nie trzeba otwierać żadnych nowych portów.
+- **Usunąłem Przełęcz.** Jej portal na pustyni prowadzi teraz na Wężowe Pole. Postacie zapisane na Przełęczy trafiają raz, przy starcie serwera po aktualizacji, na Wężowe Pole. Min-Sun (Labirynt, wytwarzanie Czarnej Stali, jego sklep) stoi teraz na Pustyni Yongbi obok portalu na Wężowe Pole.
+- Wężowe Pole zastąpiło Przełęcz w zapisanych teleportach i w panelu GM; nazwy obu map widać na minimapie (wymaga nowej łatki klienta). Dla GM: `/goto wezowe` i `/goto gigantow`.
+
+### Boty – Wężowe Pole i Kraina Gigantów
+- **Boty expią na Wężowym Polu i w Krainie Gigantów.** Boty 63–78 poziomu chodzą na Wężowe Pole (do golemów, Ogrów i Niszczycieli), a boty 63–80 do Krainy Gigantów – mniej więcej co czwarty bot z tego przedziału na każdą mapę. Przechodzą tam przez przekazanie między rdzeniami, tak jak do Zaklętego Lasu, zostają ok. 2 godzin, a mikstury uzupełniają na miejscu. Ustawienia w panelu (Boty): `PLAYERBOT_SNAKEFIELD_MAX` i `PLAYERBOT_GIANTLAND_MAX` (najwyżej 50 botów na kanał na każdej mapie, 0 wyłącza) oraz `PLAYERBOT_WZ_STAY_MIN` (długość wyprawy w minutach).
+
 ### Gildie
 - **Budynki gildii znów można postawić za Yang ze skarbca gildii.** Serwer już wcześniej płacił za budynek najpierw ze skarbca, a resztę brał od lidera, ale okno budowy w kliencie sprawdzało tylko Yang w ekwipunku lidera i od razu pokazywało „za mało Yang”, więc prośba o budowę w ogóle nie docierała do serwera. Poprawiłem okno: liczy teraz Yang lidera razem ze skarbcem gildii (cena świeci się na biało, gdy razem wystarcza). Poprawka jest w kliencie, więc wymaga nowej łatki klienta.
 - **Odmowa postawienia budynku ma teraz powód.** Gdy budynek nie mógł stanąć, serwer milczał – komunikat dostawał tylko serwer testowy, więc budynek po prostu się nie pojawiał. Dodałem komunikat dla lidera, który mówi, co przeszkadza: budynek wychodzi poza teren gildii, w tym miejscu stoi już inny budynek albo ktoś stoi tam, gdzie budynek ma stanąć (z imieniem tej osoby). Boty, zwierzaki i wierzchowce nie blokują już budowy – bot sam schodzi z miejsca nowego budynku. Za odrzucony budynek nic nie jest pobierane.
