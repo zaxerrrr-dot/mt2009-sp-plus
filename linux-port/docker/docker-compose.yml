@@ -260,8 +260,8 @@ services:
       PLAYERBOT_LOOTRUN_MAX: "${PLAYERBOT_LOOTRUN_MAX:-6}"
       PLAYERBOT_LOOTRUN_MAPS: "${PLAYERBOT_LOOTRUN_MAPS:-301,302,303,304}"
       # MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole (80) / Kraina Gigantow (70) on game3 by the handover.
-      PLAYERBOT_SNAKEFIELD_MAX: "${PLAYERBOT_SNAKEFIELD_MAX:-50}"
-      PLAYERBOT_GIANTLAND_MAX: "${PLAYERBOT_GIANTLAND_MAX:-50}"
+      PLAYERBOT_SNAKEFIELD_MAX: "${PLAYERBOT_SNAKEFIELD_MAX:--1}"  # MT2009_PLUS_MAPS_WZ_NOCAP_V1: -1 no limit, 0 off
+      PLAYERBOT_GIANTLAND_MAX: "${PLAYERBOT_GIANTLAND_MAX:--1}"
       PLAYERBOT_WZ_STAY_MIN: "${PLAYERBOT_WZ_STAY_MIN:-120}"
       # MT2009_PLUS_237_NEWCORE_V1: game3, the fourth core of every channel - Zaklety Las (353), the
       # level-90 maps (301-304), Wezowe Pole (80) and Kraina Gigantow (70), on BASE+3 (CH1) .. BASE+6 (CH4). 0 puts

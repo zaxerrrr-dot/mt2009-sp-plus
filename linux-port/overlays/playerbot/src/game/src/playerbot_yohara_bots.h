@@ -20,7 +20,7 @@
 // gigantow"): Wezowe Pole (80) and Kraina Gigantow (70) on game3 are purposes too (snakefield, giantland), the Yohara
 // line's MT2009_PLUS_BOT_YOHARA_COHORT_V1 parts without its cohorts: their frontier bands 63-78 / 63-80, a quarter of
 // the draw each (the hash of playerbot_travel.h's in-core draw), PLAYERBOT_SNAKEFIELD_MAX / PLAYERBOT_GIANTLAND_MAX
-// (50 a channel) and a stay of PLAYERBOT_WZ_STAY_MIN (120); the arrival / exit / hubs / grid of MT2009_PLUS_MAPS_WZ_BOTS_V1
+// (no limit by default since MT2009_PLUS_MAPS_WZ_NOCAP_V1; 0 = off) and a stay of PLAYERBOT_WZ_STAY_MIN (120); the arrival / exit / hubs / grid of MT2009_PLUS_MAPS_WZ_BOTS_V1
 // (playerbot_types.h, playerbot_wandering.h, playerbot_navigation.h).
 //
 // What there was: a bot lived on the core that logged it in (game1, the one
@@ -187,6 +187,14 @@ namespace
 		int snakeMax, giantMax, wzStayMin;	// MT2009_PLUS_MAPS_WZ_BOTS_V1
 	};
 
+	// MT2009_PLUS_MAPS_WZ_NOCAP_V1: Wezowe Pole / Kraina Gigantow without a limit (PLAYERBOT_*_MAX -1).
+	const int PLAYERBOT_YOHARA_NO_CAP = 0x7fffffff;
+
+	std::string PlayerBotYoharaCapText(int cap)
+	{
+		return cap < 0 ? std::string("nolimit") : std::to_string(cap);
+	}
+
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi)
 	{
 		const char* v = std::getenv(name);
@@ -242,8 +250,10 @@ namespace
 					std::find(s_cfg.lootMaps.begin(), s_cfg.lootMaps.end(), maps[i]) == s_cfg.lootMaps.end())
 				s_cfg.lootMaps.push_back(maps[i]);
 		// MT2009_PLUS_MAPS_WZ_BOTS_V1: Wezowe Pole / Kraina Gigantow (game3), a channel's limits and the stay.
-		s_cfg.snakeMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SNAKEFIELD_MAX", 50, 0, 300);
-		s_cfg.giantMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_GIANTLAND_MAX", 50, 0, 300);
+		// MT2009_PLUS_MAPS_WZ_NOCAP_V1 (the owner, 26 October 2026: "nie ograniczaj liczby botow na nowych
+		// mapach"): -1 (the default) = no limit, 0 = off, more = a channel's cap.
+		s_cfg.snakeMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SNAKEFIELD_MAX", -1, -1, 300);
+		s_cfg.giantMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_GIANTLAND_MAX", -1, -1, 300);
 		s_cfg.wzStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_WZ_STAY_MIN", 120, 20, 600);
 		std::string chans, loot;
 		for (std::set<int>::const_iterator i = s_cfg.channels.begin(); i != s_cfg.channels.end(); ++i)
@@ -251,9 +261,9 @@ namespace
 		for (size_t i = 0; i < s_cfg.lootMaps.size(); ++i)
 			loot += (loot.empty() ? "" : ",") + std::to_string(s_cfg.lootMaps[i]);
 		sys_log(0, "PLAYERBOT_HANDOVER: config on=%d channels=%s zaklety_max=%d zaklety_min_level=%d zaklety_stay_min=%d "
-				"zaklety_min_hp=%d loot_max=%d loot_maps=%s snakefield_max=%d giantland_max=%d wz_stay_min=%d channel_here=%u",
+				"zaklety_min_hp=%d loot_max=%d loot_maps=%s snakefield_max=%s giantland_max=%s wz_stay_min=%d channel_here=%u",
 				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin, s_cfg.zakletyMinHp,
-				s_cfg.lootMax, loot.c_str(), s_cfg.snakeMax, s_cfg.giantMax, s_cfg.wzStayMin, (unsigned int)g_bChannel);
+				s_cfg.lootMax, loot.c_str(), PlayerBotYoharaCapText(s_cfg.snakeMax).c_str(), PlayerBotYoharaCapText(s_cfg.giantMax).c_str(), s_cfg.wzStayMin, (unsigned int)g_bChannel);
 		return s_cfg;
 	}
 
@@ -308,8 +318,8 @@ namespace
 		{
 			case YOHARA_PURPOSE_ZAKLETY: return cfg.zakletyMax;
 			case YOHARA_PURPOSE_LOOT: return cfg.lootMax;
-			case YOHARA_PURPOSE_SNAKEFIELD: return cfg.snakeMax;	// MT2009_PLUS_MAPS_WZ_BOTS_V1
-			case YOHARA_PURPOSE_GIANTLAND: return cfg.giantMax;
+			case YOHARA_PURPOSE_SNAKEFIELD: return cfg.snakeMax < 0 ? PLAYERBOT_YOHARA_NO_CAP : cfg.snakeMax;	// MT2009_PLUS_MAPS_WZ_NOCAP_V1	// MT2009_PLUS_MAPS_WZ_BOTS_V1
+			case YOHARA_PURPOSE_GIANTLAND: return cfg.giantMax < 0 ? PLAYERBOT_YOHARA_NO_CAP : cfg.giantMax;
 			default: return 0;
 		}
 	}
@@ -734,12 +744,12 @@ namespace
 		// handover, within PLAYERBOT_SNAKEFIELD_MAX / PLAYERBOT_GIANTLAND_MAX.
 		{
 			const DWORD wz = PlayerBotNavHash(pid ^ 0x575a4d50U) % 4U;
-			if (wz == 1 && !stoneHunter && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_SNAKEFIELD, level) && cfg.snakeMax > 0 &&
-					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SNAKEFIELD] < cfg.snakeMax &&
+			if (wz == 1 && !stoneHunter && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_SNAKEFIELD, level) &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SNAKEFIELD] < GetPlayerBotYoharaCap(YOHARA_PURPOSE_SNAKEFIELD) &&	// MT2009_PLUS_MAPS_WZ_NOCAP_V1
 					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SNAKEFIELD))
 				return PLAYERBOT_MAP_SNAKEFIELD;
-			if (wz == 2 && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_GIANTLAND, level) && cfg.giantMax > 0 &&
-					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_GIANTLAND] < cfg.giantMax &&
+			if (wz == 2 && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_GIANTLAND, level) &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_GIANTLAND] < GetPlayerBotYoharaCap(YOHARA_PURPOSE_GIANTLAND) &&
 					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GIANTLAND))
 				return PLAYERBOT_MAP_GIANTLAND;
 		}
@@ -1538,12 +1548,12 @@ namespace
 			s_dwPlayerBotYoharaNextCensusLog = dwNow + PLAYERBOT_YOHARA_CENSUS_LOG_MS;
 			// The old rows of a stay nobody refreshes (the core gone with them).
 			RunPlayerBotYoharaSql("DELETE FROM common.playerbot_core_handover WHERE state=2 AND updated_at < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
-			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d loot=%d/%d snakefield=%d/%d giantland=%d/%d "
+			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d loot=%d/%d snakefield=%d/%s giantland=%d/%s "
 					"residents_here=%u (zaklety=%d loot=%d snakefield=%d giantland=%d) away=%u requests=%u out=%u in=%u home=%u "
 					"refused=%u cancel=%u",
 					(unsigned int)g_bChannel, IsPlayerBotYoharaOn() ? 1 : 0,
 					census[YOHARA_PURPOSE_ZAKLETY], cfg.zakletyMax, census[YOHARA_PURPOSE_LOOT], cfg.lootMax,
-					census[YOHARA_PURPOSE_SNAKEFIELD], cfg.snakeMax, census[YOHARA_PURPOSE_GIANTLAND], cfg.giantMax,
+					census[YOHARA_PURPOSE_SNAKEFIELD], PlayerBotYoharaCapText(cfg.snakeMax).c_str(), census[YOHARA_PURPOSE_GIANTLAND], PlayerBotYoharaCapText(cfg.giantMax).c_str(),
 					(unsigned int)s_mapPlayerBotYoharaResident.size(),
 					residentsHere[YOHARA_PURPOSE_ZAKLETY], residentsHere[YOHARA_PURPOSE_LOOT],
 					residentsHere[YOHARA_PURPOSE_SNAKEFIELD], residentsHere[YOHARA_PURPOSE_GIANTLAND],
