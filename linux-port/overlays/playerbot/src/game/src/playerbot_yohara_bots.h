@@ -213,6 +213,14 @@ namespace
 		int sungmaTradeMax;	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the channel's Sung Ma bots away home to trade at once
 	};
 
+	// MT2009_PLUS_MAPS_WZ_NOCAP_V1: Wezowe Pole / Kraina Gigantow without a limit (PLAYERBOT_*_MAX -1).
+	const int PLAYERBOT_YOHARA_NO_CAP = 0x7fffffff;
+
+	std::string PlayerBotYoharaCapText(int cap)
+	{
+		return cap < 0 ? std::string("nolimit") : std::to_string(cap);
+	}
+
 	int ReadPlayerBotYoharaEnvInt(const char* name, int def, int lo, int hi)
 	{
 		const char* v = std::getenv(name);
@@ -270,8 +278,10 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: the owner, 21 October (night): "Wezowe Pole i Kraina
 		// Gigantow: wlaczyc" - their bands are the frontier's (63-78, 63-80), through the handover to
 		// game2; and the night's cohorts (common.playerbot_yohara_cohort, tools/yohara_bot_cohort.py).
-		s_cfg.snakeMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SNAKEFIELD_MAX", 50, 0, 300);
-		s_cfg.giantMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_GIANTLAND_MAX", 50, 0, 300);
+		// MT2009_PLUS_MAPS_WZ_NOCAP_V1 (the owner, 26 October 2026: "nie ograniczaj liczby botow na nowych
+		// mapach"): -1 (the default) = no limit, 0 = off, more = a channel's cap.
+		s_cfg.snakeMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SNAKEFIELD_MAX", -1, -1, 300);
+		s_cfg.giantMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_GIANTLAND_MAX", -1, -1, 300);
 		s_cfg.wzStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_WZ_STAY_MIN", 120, 20, 600);
 		s_cfg.cohortOn = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT", 1, 0, 1) != 0;
 		s_cfg.cohortExclusive = ReadPlayerBotYoharaEnvInt("PLAYERBOT_COHORT_EXCLUSIVE", 1, 0, 1) != 0;
@@ -308,12 +318,12 @@ namespace
 		for (size_t i = 0; i < s_cfg.sungmaMaps.size(); ++i)	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 			sungma += (sungma.empty() ? "" : ",") + std::to_string(s_cfg.sungmaMaps[i]);
 		sys_log(0, "PLAYERBOT_HANDOVER: config on=%d channels=%s zaklety_max=%d zaklety_min_level=%d zaklety_stay_min=%d "
-				"zaklety_min_hp=%d szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s snakefield_max=%d giantland_max=%d "
+				"zaklety_min_hp=%d szc_max=%d szc_parties=%d loot_max=%d loot_maps=%s snakefield_max=%s giantland_max=%s "
 				"wz_stay_min=%d cohort=%d cohort_exclusive=%d cohort_stay_min=%d cohort_dispatch=%d cohort_rest_min=%d "
 				"cohort_death_rest_min=%d hydra_max=%d hydra_parties=%d sungma_max=%d sungma_map_max=%d sungma_stay_min=%d "
 				"sungma_maps=%s sungma_trade_max=%d channel_here=%u",
 				s_cfg.on ? 1 : 0, chans.c_str(), s_cfg.zakletyMax, s_cfg.zakletyMinLevel, s_cfg.zakletyStayMin, s_cfg.zakletyMinHp,
-				s_cfg.szcMax, s_cfg.szcParties, s_cfg.lootMax, loot.c_str(), s_cfg.snakeMax, s_cfg.giantMax, s_cfg.wzStayMin,
+				s_cfg.szcMax, s_cfg.szcParties, s_cfg.lootMax, loot.c_str(), PlayerBotYoharaCapText(s_cfg.snakeMax).c_str(), PlayerBotYoharaCapText(s_cfg.giantMax).c_str(), s_cfg.wzStayMin,
 				s_cfg.cohortOn ? 1 : 0, s_cfg.cohortExclusive ? 1 : 0, s_cfg.cohortStayMin, s_cfg.cohortDispatch,
 				s_cfg.cohortRestMin, s_cfg.cohortDeathRestMin, s_cfg.hydraMax, s_cfg.hydraParties, s_cfg.sungmaMax,
 				s_cfg.sungmaMapMax, s_cfg.sungmaStayMin, sungma.c_str(), s_cfg.sungmaTradeMax, (unsigned int)g_bChannel);
@@ -386,8 +396,8 @@ namespace
 			case YOHARA_PURPOSE_ZAKLETY: return cfg.zakletyMax;
 			case YOHARA_PURPOSE_SZC: return cfg.szcMax;
 			case YOHARA_PURPOSE_LOOT: return cfg.lootMax;
-			case YOHARA_PURPOSE_SNAKEFIELD: return cfg.snakeMax;
-			case YOHARA_PURPOSE_GIANTLAND: return cfg.giantMax;
+			case YOHARA_PURPOSE_SNAKEFIELD: return cfg.snakeMax < 0 ? PLAYERBOT_YOHARA_NO_CAP : cfg.snakeMax;	// MT2009_PLUS_MAPS_WZ_NOCAP_V1
+			case YOHARA_PURPOSE_GIANTLAND: return cfg.giantMax < 0 ? PLAYERBOT_YOHARA_NO_CAP : cfg.giantMax;
 			case YOHARA_PURPOSE_HYDRA: return cfg.hydraMax;	// MT2009_PLUS_BOT_HYDRA_COHORT_V1
 			case YOHARA_PURPOSE_SUNGMA: return cfg.sungmaMax;	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 			default: return 0;
@@ -1360,13 +1370,13 @@ namespace
 		// hash), here through the handover, within PLAYERBOT_SNAKEFIELD_MAX / PLAYERBOT_GIANTLAND_MAX.
 		{
 			const DWORD wz = PlayerBotNavHash(pid ^ 0x575a4d50U) % 4U;
-			if (wz == 1 && !stoneHunter && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_SNAKEFIELD, level) && cfg.snakeMax > 0 &&
-					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SNAKEFIELD] < cfg.snakeMax &&
+			if (wz == 1 && !stoneHunter && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_SNAKEFIELD, level) &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_SNAKEFIELD] < GetPlayerBotYoharaCap(YOHARA_PURPOSE_SNAKEFIELD) &&	// MT2009_PLUS_MAPS_WZ_NOCAP_V1
 					!IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_SNAKEFIELD) &&
 					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SNAKEFIELD))
 				return PLAYERBOT_MAP_SNAKEFIELD;
-			if (wz == 2 && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_GIANTLAND, level) && cfg.giantMax > 0 &&
-					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_GIANTLAND] < cfg.giantMax &&
+			if (wz == 2 && IsPlayerBotYoharaInBand(YOHARA_PURPOSE_GIANTLAND, level) &&
+					s_aiPlayerBotYoharaCensus[YOHARA_PURPOSE_GIANTLAND] < GetPlayerBotYoharaCap(YOHARA_PURPOSE_GIANTLAND) &&
 					!IsPlayerBotYoharaPurposeReserved(YOHARA_PURPOSE_GIANTLAND) &&
 					!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_GIANTLAND))
 				return PLAYERBOT_MAP_GIANTLAND;
@@ -2964,13 +2974,13 @@ namespace
 			// The old rows of a stay nobody refreshes (the core gone with them).
 			RunPlayerBotYoharaSql("DELETE FROM common.playerbot_core_handover WHERE state=2 AND updated_at < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
 			// MT2009_PLUS_BOT_YOHARA_COHORT_V1: Wezowe Pole / Kraina Gigantow in it, and the cohorts' lines.
-			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d szc=%d/%d loot=%d/%d snakefield=%d/%d "
-					"giantland=%d/%d hydra=%d/%d yohara=%d/%d residents_here=%u (zaklety=%d szc=%d loot=%d snakefield=%d giantland=%d "
+			sys_log(0, "PLAYERBOT_HANDOVER: census channel=%u on=%d zaklety=%d/%d szc=%d/%d loot=%d/%d snakefield=%d/%s "
+					"giantland=%d/%s hydra=%d/%d yohara=%d/%d residents_here=%u (zaklety=%d szc=%d loot=%d snakefield=%d giantland=%d "
 					"hydra=%d yohara=%d) away=%u requests=%u out=%u in=%u home=%u refused=%u cancel=%u",
 					(unsigned int)g_bChannel, IsPlayerBotYoharaOn() ? 1 : 0,
 					census[YOHARA_PURPOSE_ZAKLETY], cfg.zakletyMax, census[YOHARA_PURPOSE_SZC], cfg.szcMax,
-					census[YOHARA_PURPOSE_LOOT], cfg.lootMax, census[YOHARA_PURPOSE_SNAKEFIELD], cfg.snakeMax,
-					census[YOHARA_PURPOSE_GIANTLAND], cfg.giantMax, census[YOHARA_PURPOSE_HYDRA], cfg.hydraMax,
+					census[YOHARA_PURPOSE_LOOT], cfg.lootMax, census[YOHARA_PURPOSE_SNAKEFIELD], PlayerBotYoharaCapText(cfg.snakeMax).c_str(),
+					census[YOHARA_PURPOSE_GIANTLAND], PlayerBotYoharaCapText(cfg.giantMax).c_str(), census[YOHARA_PURPOSE_HYDRA], cfg.hydraMax,
 					census[YOHARA_PURPOSE_SUNGMA], cfg.sungmaMax,	// MT2009_PLUS_BOT_YOHARA_MAPS_V1
 					(unsigned int)s_mapPlayerBotYoharaResident.size(),
 					residentsHere[YOHARA_PURPOSE_ZAKLETY], residentsHere[YOHARA_PURPOSE_SZC], residentsHere[YOHARA_PURPOSE_LOOT],
