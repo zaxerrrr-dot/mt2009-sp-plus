@@ -99,6 +99,8 @@ linux-port/docker/game/mob_drop_item.dropedit.append.txt
 linux-port/docker/game/mob_drop_item.metinbeans.append.txt
 linux-port/docker/game/mob_drop_item.dtdrops.append.txt
 linux-port/docker/game/mob_drop_item.ornaments.append.txt
+# MT2009_PLUS_SEEDS_MT2009_V1: Magiczne Nasiona from the Red Forest in the mt2009 mode (game/Dockerfile).
+linux-port/docker/game/mob_drop_item.seeds.append.txt
 linux-port/docker/game/mob_drop_item.beltmats.append.txt
 linux-port/docker/game/mob_drop_item.beltmats.awk
 linux-port/docker/game/cube.seon_pyeong.txt
@@ -387,3 +389,7 @@ linux-port/docker/game/src/server/game/src/char_player.h
 linux-port/docker/game/src/server/game/src/battle.h
 # MT2009_PLUS_BOT_YOHARA_HANDOVER_V1: the bots' handovers between the game cores (playerbot_yohara_bots.h)
 linux-port/docker/mariadb/playerbot/playerbot_core_handover.sql
+# MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1 / MT2009_PLUS_GUILD_BUILDING_CLEAR_V1 / MT2009_PLUS_GUILD_BUILD_REFUSE_MSG_V1 /
+# MT2009_PLUS_GUILD_ROTATE_V1 (server-patches/enginefixes, 2.37.2): the guild buildings' engine files (cmd_gm.cpp above).
+linux-port/docker/game/src/server/game/src/building.cpp
+linux-port/docker/game/src/server/game/src/building.h
