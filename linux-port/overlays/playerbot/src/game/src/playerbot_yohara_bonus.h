@@ -308,6 +308,19 @@ namespace
 					break;
 			}
 		}
+		// MT2009_PLUS_BOT_EKWIPUNEK_V1: the change stones the bag lent the extra inventory (the bag keeps a stack of
+		// them, playerbot_ekwipunek_bots.h) count for the plan too - 800 of them are four stacks, three of which may wait
+		// there; the stones themselves are still used from the bag's cell.
+		if (ch && bag.changeCell >= 0)
+			for (WORD cell = 0; cell < SPECIAL_INVENTORY_MAX_NUM; ++cell)
+			{
+				LPITEM stone = ch->Mt2009SpecialGetItem(CHANGE_INVENTORY, cell);
+				if (!stone || stone->GetCell() != cell || stone->GetType() != ITEM_USE ||
+						stone->GetSubType() != USE_CHANGE_ATTRIBUTE || stone->GetCount() == 0 || stone->isLocked() ||
+						IsPlayerBotGreenBonusStone(stone->GetVnum()) || IsPlayerBotTradeableBonusVnum(stone->GetVnum()))
+					continue;
+				bag.changeUnits += (int)stone->GetCount();
+			}
 	}
 
 	struct TPlayerBotYoharaBonusPiece
