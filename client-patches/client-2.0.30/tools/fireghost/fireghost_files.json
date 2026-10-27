@@ -1,0 +1,195 @@
+{
+ "files": {
+  "d:/ymir work/effect/monster2/fire_ghost_body_gf.mse": {
+   "ctype": 1,
+   "sha256": "f746bff11abd7f02390bc2af9c6c387dd3daa5da850e9fab1d2b2f3c2759e9b6",
+   "size": 3786
+  },
+  "d:/ymir work/monster2/fire_ghost/00.gr2": {
+   "ctype": 0,
+   "sha256": "003e3fea5a3c8f93779c2b763299232f2bf07c6bcb231d1879166b12b815e6ba",
+   "size": 19896
+  },
+  "d:/ymir work/monster2/fire_ghost/00.msa": {
+   "ctype": 2,
+   "sha256": "7115e86a63187c62542faaed30d79e5c4596fd543c693c164d96ae171e212d3e",
+   "size": 604
+  },
+  "d:/ymir work/monster2/fire_ghost/00_1.gr2": {
+   "ctype": 0,
+   "sha256": "e73312479f9770f212e7d8d3bb464a2dd70def23accc02c087684e74de5aec08",
+   "size": 26710
+  },
+  "d:/ymir work/monster2/fire_ghost/00_1.msa": {
+   "ctype": 2,
+   "sha256": "a252b09d570d2216906f4cc15cb1a5f5a7681c837577360b911cf060a203335e",
+   "size": 596
+  },
+  "d:/ymir work/monster2/fire_ghost/03.gr2": {
+   "ctype": 0,
+   "sha256": "9ddd96330e6f3675933898fbbc32ad579940e3c666f0a484ca80e7256d7f8ea8",
+   "size": 19422
+  },
+  "d:/ymir work/monster2/fire_ghost/03.msa": {
+   "ctype": 2,
+   "sha256": "825038ef2b8fede4ce1bf1603d3f8bfb7c943b9c4c7fc4398efea7b1b7521c3f",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/20.gr2": {
+   "ctype": 0,
+   "sha256": "b59d0f7c8540c3c09a9c487e24a204b137ac21703394188f9c2755104fa01ca2",
+   "size": 27950
+  },
+  "d:/ymir work/monster2/fire_ghost/20.msa": {
+   "ctype": 2,
+   "sha256": "d689bc2db9c2394c1e2e0b3d04ff0dab9a078665de5689e03b4770b59ab86cbf",
+   "size": 1313
+  },
+  "d:/ymir work/monster2/fire_ghost/20_1.gr2": {
+   "ctype": 0,
+   "sha256": "d57043a4b046814dd10ad9eeeff9d5b3ec511863336feee40588e79d2450b414",
+   "size": 26184
+  },
+  "d:/ymir work/monster2/fire_ghost/20_1.msa": {
+   "ctype": 2,
+   "sha256": "e0441e9d91fa2a89c53a11c85b3678af03a2db6bc4220f7bcfb42c66beef2aea",
+   "size": 1317
+  },
+  "d:/ymir work/monster2/fire_ghost/30.gr2": {
+   "ctype": 0,
+   "sha256": "c1c51d2c8e3afef3fe9e1a254716d988f3c426194697619a7464ed1037a38a73",
+   "size": 19218
+  },
+  "d:/ymir work/monster2/fire_ghost/30.msa": {
+   "ctype": 2,
+   "sha256": "e56e29beb3dc0cdfa248848af8393cbe0d03f3f68de8300e8353cd23781e66ec",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/30_1.gr2": {
+   "ctype": 0,
+   "sha256": "f4e870261303c4561d0b5793d0ab060e0629e05483be914d274c2feb7b146411",
+   "size": 19134
+  },
+  "d:/ymir work/monster2/fire_ghost/30_1.msa": {
+   "ctype": 2,
+   "sha256": "e302c4c6f1ab9bb2414db4fc05aa04731560eeeae69e9b45fce39c11a7ca721a",
+   "size": 144
+  },
+  "d:/ymir work/monster2/fire_ghost/31.gr2": {
+   "ctype": 0,
+   "sha256": "f9f422b50ba169f3a13ce9bfbcf0a01319a7328ce6269fc0579112bbb14ce2ca",
+   "size": 42750
+  },
+  "d:/ymir work/monster2/fire_ghost/31.msa": {
+   "ctype": 2,
+   "sha256": "cacd42de1d88b1bf100fad494d9becf5e2afb9de7118c38eac2461b508cdf6c1",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/31_1.gr2": {
+   "ctype": 0,
+   "sha256": "5d2d7452f9fedd792a74bceaca68ea6506f15cbfefd8271cd359a2248b6d2115",
+   "size": 28278
+  },
+  "d:/ymir work/monster2/fire_ghost/31_1.msa": {
+   "ctype": 2,
+   "sha256": "ab0d07ecf53d439dc9ee4dd57d8e42ba05d6857bc22e7c10146391fb40a066dc",
+   "size": 144
+  },
+  "d:/ymir work/monster2/fire_ghost/32.gr2": {
+   "ctype": 0,
+   "sha256": "1d30e7cc47ba145e1d8f4edc17da023c24125520af3fb7a43a1deaebf3ea9dab",
+   "size": 28112
+  },
+  "d:/ymir work/monster2/fire_ghost/32.msa": {
+   "ctype": 2,
+   "sha256": "183e678cdc8cbb75414dc9c4c9bf09a57c5050bbbb00a0c3ce2defeff6cd1a39",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/33.gr2": {
+   "ctype": 0,
+   "sha256": "759496db8848fa505622fcf1875ffc7c79f7d05beb4d1ac7067f29c21012198b",
+   "size": 25636
+  },
+  "d:/ymir work/monster2/fire_ghost/33.msa": {
+   "ctype": 2,
+   "sha256": "5b7a07ab7444789cccde3ea2331041410dab11ba7226ae97f4d7d8f2c4acee92",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/34.gr2": {
+   "ctype": 0,
+   "sha256": "d72fbf04d0d6b49935e0062141f98e5af88bf73def4d0cc8714edc8cd479ddaf",
+   "size": 27081
+  },
+  "d:/ymir work/monster2/fire_ghost/34.msa": {
+   "ctype": 2,
+   "sha256": "4cf7c957bfca39cd4b6dffa07556062a745a134e798dec4d78d46365d21c0874",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/34_1.gr2": {
+   "ctype": 0,
+   "sha256": "150572dd0839611f68f545149b516b2c6cf1cae790c62617830849bb0edc41de",
+   "size": 27090
+  },
+  "d:/ymir work/monster2/fire_ghost/34_1.msa": {
+   "ctype": 2,
+   "sha256": "b00f878369ae726eef28eb5365a381e64ae5eeb32e434f705ea0c154841d32ea",
+   "size": 144
+  },
+  "d:/ymir work/monster2/fire_ghost/35.gr2": {
+   "ctype": 0,
+   "sha256": "d29f0c37374de94e161690f194534bfef1dc20e7c52d148d27efc4c6af572596",
+   "size": 45470
+  },
+  "d:/ymir work/monster2/fire_ghost/35.msa": {
+   "ctype": 2,
+   "sha256": "81fecb89b65bf15cf89c172c34ae03c76b1ac23001e92c1e15ba3524fbad42ef",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/37.gr2": {
+   "ctype": 0,
+   "sha256": "0ade65969d551198055a4030a96cdea9686ed3e9f0553b24901af219b2d71a1b",
+   "size": 77302
+  },
+  "d:/ymir work/monster2/fire_ghost/37.msa": {
+   "ctype": 2,
+   "sha256": "ad40042ac5f4f91d0e6ae8c263f18de2d437c643924fc4dd417e9f6efd937caa",
+   "size": 594
+  },
+  "d:/ymir work/monster2/fire_ghost/fire_ghost.dds": {
+   "ctype": 1,
+   "sha256": "58fe68d83007fbdfb7bdfdce6aa0445e20e554f8c7dffe46a649e45a0eabb40d",
+   "size": 174720
+  },
+  "d:/ymir work/monster2/fire_ghost/fire_ghost.gr2": {
+   "ctype": 0,
+   "sha256": "7ff3f80e1649782f09a3d5ca0b196e324385baed3982bd2b81b5408e165124a9",
+   "size": 50952
+  },
+  "d:/ymir work/monster2/fire_ghost/fire_ghost.msm": {
+   "ctype": 2,
+   "sha256": "a61cc5d5f62a2ea51b32b65537e17c791d1e14e59f5d0dea69d0482fb10f7b21",
+   "size": 1022
+  },
+  "d:/ymir work/monster2/fire_ghost/fire_ghost1.dds": {
+   "ctype": 1,
+   "sha256": "2116a846504b35a77396b8ae4ada6e6e1ded4e047844a1edb211be06c9239ddc",
+   "size": 174904
+  },
+  "d:/ymir work/monster2/fire_ghost/fire_ghost1.msm": {
+   "ctype": 2,
+   "sha256": "71ce0afb9acf3b1122f3e138a008a1729ab6500d7fd3ac775a93bd579aa18ae2",
+   "size": 1333
+  },
+  "d:/ymir work/monster2/fire_ghost/fire_ghost_lod_01.gr2": {
+   "ctype": 0,
+   "sha256": "b9ddc17b90420818ab9e2af0bd0215242a8177fba943eb7e3e02eefeb576a47b",
+   "size": 43964
+  },
+  "d:/ymir work/monster2/fire_ghost/motlist.txt": {
+   "ctype": 2,
+   "sha256": "ab927fb0f149024d327bc28202f90ca114e94b3bf1f7dc4672a079d97a261e0a",
+   "size": 478
+  }
+ },
+ "source": "p-ognisty-duch (owner, 22 Oct 2026): pack/mt_duch.index + mt_duch.data, entries read back"
+}

@@ -822,6 +822,10 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 		// Attached Effect
 		std::list<TAttachingEffect> m_AttachingEffectList;
 		bool						m_bEffectInitialized;
+#ifdef ENABLE_MT2009_FIRE_GHOST_FIX
+		// MT2009_PLUS_FIRE_GHOST_V1: the effect ids SetShape attached from the race's AttachingData (ActorInstanceData.cpp)
+		std::vector<DWORD>			m_kVct_dwShapeEffectID;
+#endif
 
 		// material color
 		DWORD						m_dwMtrlColor;
