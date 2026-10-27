@@ -585,3 +585,26 @@ katalog, casefix) – `PythonSwitchbot.cpp`, `PythonPlayer.cpp`, `PythonPlayerMo
 `PythonNetworkStream.cpp`, `PythonNetworkStreamPhaseGame.cpp`, `PythonNetworkStreamPhaseGameItem.cpp`, `UserInterface.cpp`,
 `PythonApplication.cpp` bez błędów (`static_assert` okna 16 i rozmiarów przechodzą). Exe nie budowane (wspólna budowa
 później: `build.sh msvc --smoke`).
+
+## Ognisty Duch – efekty modelu bez duplikatów – `MT2009_PLUS_FIRE_GHOST_V1` (`ENABLE_MT2009_FIRE_GHOST_FIX`)
+
+`CActorInstance::SetShape` przyczepiał efekty z `AttachingData` modelu (`.msm`, `AttachingDataType 2`) przy każdym
+wywołaniu, nie zdejmując tych z poprzedniego (czyścił je tylko `SetRace`). Gdy `SetShape` wraca na żywym aktorze, każda
+kopia zostaje – a efekt zapętlony (`fire_ghost_body.mse` w `fire_ghost.msm` Ognistego Ducha 2202/2232, ten sam wzorzec w
+`2009_recycle_monster` 2281) nigdy nie gaśnie: mob rośnie w kulę ognia, klient zjada cały rdzeń.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_FIRE_GHOST_FIX` |
+| `GameLib/ActorInstance.h` | `std::vector<DWORD> m_kVct_dwShapeEffectID` – id efektów, które przyczepił `SetShape` |
+| `GameLib/ActorInstanceData.cpp` (**nowy w nakładce**) | `SetShape` najpierw `DettachEffect` na swoich poprzednich id, potem przyczepia i zapamiętuje nowe; `SetRace` czyści listę razem z `__ClearAttachingEffect` |
+
+Zdejmowane są tylko efekty z `AttachingData` – efekty affectów i przedmiotów (też w `m_AttachingEffectList`) zostają.
+Id, którego lista już nie ma (wyczyścił je `Destroy`), `DettachEffect` pomija; `CEffectManager::GetEmptyIndex` tylko rośnie,
+więc stare id nie trafi w cudzy efekt. Strona danych (paczka `fireghost`, `client-2.0.30/tools/fireghost`) działa też ze
+starym exe.
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` + ten
+katalog) – `ActorInstanceData.cpp`, `ActorInstance.cpp`, `ActorInstanceAttach.cpp`, `ActorInstanceMotion.cpp`,
+`InstanceBase.cpp`, `InstanceBaseEffect.cpp` bez błędów, `/E` potwierdza, że kod jest za włączoną definicją (27.10.2026).
+Exe nie budowane.

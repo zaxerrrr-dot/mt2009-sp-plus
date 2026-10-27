@@ -278,5 +278,11 @@
 // under HKCU - the control defaults to IE7, which cannot draw the shop), and without script-error boxes
 // (CWebBrowser.c put_Silent). Without the define the exe is as before.
 #define ENABLE_MT2009_INGAME_BROWSER
+// MT2009_PLUS_FIRE_GHOST_V1 (Ognisty Duch 2202/2232 and every race whose .msm attaches an effect for good): a re-run
+// CActorInstance::SetShape removes the effects its previous run attached from the race's AttachingData before it
+// attaches them again (GameLib/ActorInstanceData.cpp, the ids in ActorInstance.h). Before, each re-run added one more
+// copy - with a looping effect (fire_ghost_body.mse) the copies never died, the mob grew into a fireball and the
+// client stalled. Without the define the exe is as before; the data side (pack fireghost, GF's set) works either way.
+#define ENABLE_MT2009_FIRE_GHOST_FIX
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
