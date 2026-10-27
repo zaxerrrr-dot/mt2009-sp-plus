@@ -2278,6 +2278,22 @@ namespace
 	// character (ePulse::ItemShopBuy), and the charge of the last one goes
 	// through the db core before BuyItem reads the account again.
 	const DWORD PLAYERBOT_ISHOP_SESSION_STEP = 5 * 1000;
+	// MT2009_PLUS_BOT_ISHOP_FRESH_V1 (the 800 Yohara bots with 2000 Dragon
+	// Coins each, 27 October 2026): a bot's first look after login waits a
+	// spread of up to PLAYERBOT_ISHOP_FIRST_LOOK_SPREAD (by pid), so a world
+	// that logs hundreds of bots in at once does not send hundreds of balance
+	// reads and purchases in the same second. While the balance is at least
+	// PLAYERBOT_ISHOP_FRESH_BALANCE, a need (a Kamien Duchowy, a change
+	// stone...) is bought PLAYERBOT_ISHOP_FRESH_BUY_INTERVAL apart, not an
+	// hour. A look piece is chosen among the lines that last at least
+	// PLAYERBOT_ISHOP_LOOK_MIN_SECONDS (or are permanent) when the shop has
+	// one for the bot: a 10-minute or 3-hour mount for the same 100 coins as
+	// a 30-day one was bought again and again (Leopard 71177, test world).
+	const DWORD PLAYERBOT_ISHOP_FIRST_LOOK_DELAY = 30 * 1000;
+	const DWORD PLAYERBOT_ISHOP_FIRST_LOOK_SPREAD = 5 * 60 * 1000;
+	const int PLAYERBOT_ISHOP_FRESH_BALANCE = 1000;
+	const DWORD PLAYERBOT_ISHOP_FRESH_BUY_INTERVAL = 4 * 60 * 1000;
+	const long PLAYERBOT_ISHOP_LOOK_MIN_SECONDS = 30L * 24 * 60 * 60;
 	const DWORD PLAYERBOT_ISHOP_BALANCE_INTERVAL = 60 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_CATALOGUE_INTERVAL = 60 * 60 * 1000;
 	const DWORD PLAYERBOT_ISHOP_CENSUS_INTERVAL = 10 * 60 * 1000;
