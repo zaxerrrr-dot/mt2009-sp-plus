@@ -1768,9 +1768,13 @@ namespace
 	// under PLAYERBOT_BONUS_MIN_REFINE, or a piece that takes no lines at all,
 	// is never worked on there, and a stone in the bag for it would have held
 	// a bought +0 armour back from its owner for good.
+	// MT2009_PLUS_BOT_YOHARA_BONUS_V1 (playerbot_yohara_bonus.h): a Yohara bot's stones go on what it wears, by its
+	// own pass - no new piece is held in the bag for them.
+	bool IsPlayerBotYoharaBonusMember(LPCHARACTER ch);
+	int ManagePlayerBotYoharaBonus(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	bool PlayerBotHoldsBonusStoneFor(LPCHARACTER ch, LPITEM item)
 	{
-		if (!ch || !item)
+		if (!ch || !item || IsPlayerBotYoharaBonusMember(ch))
 			return false;
 		const int slot = item->FindEquipCell(ch);
 		if (slot < 0 || slot >= WEAR_MAX_NUM || !CanPlayerBotRerollItemFor(ch, item, (BYTE)slot))
@@ -2386,6 +2390,11 @@ namespace
 		if (!ch || !ch->IsItemLoaded() || dwNow < state.dwNextBonusCheckTime)
 			return false;
 		state.dwNextBonusCheckTime = dwNow + PLAYERBOT_BONUS_INTERVAL;
+		// MT2009_PLUS_BOT_YOHARA_BONUS_V1: a Yohara bot holding the ordinary stones bonuses its gear by its own pass
+		// (playerbot_yohara_bonus.h) - none of the categories, the dust's stones or the goods below.
+		const int yoharaStones = ManagePlayerBotYoharaBonus(ch, state, dwNow);
+		if (yoharaStones >= 0)
+			return yoharaStones > 0;
 		// MT2009_PLUS_BOT_DUST_BONUS_V1: the marble first, else an add or a
 		// change stone the pass below spends at once.
 		if (!ManagePlayerBotDustMarble(ch))
