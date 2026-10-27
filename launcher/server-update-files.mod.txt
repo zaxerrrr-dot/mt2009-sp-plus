@@ -96,6 +96,9 @@ linux-port/docker/game/special_item_group.catchking.txt
 linux-port/docker/game/special_item_group.unique_attr.txt
 linux-port/docker/game/special_item_group.yutnori.txt
 linux-port/docker/game/special_item_group.flower.txt
+# MT2009_PLUS_HALLOWEEN_V1 (Autor: Owsap): the Halloween Chest 50215 (game/Dockerfile); the quest is in quest/* above,
+# the overlay's playerbot_halloween.h in playerbot_* above.
+linux-port/docker/game/special_item_group.halloween.txt
 linux-port/docker/game/mob_drop_item.dropedit.append.txt
 linux-port/docker/game/mob_drop_item.metinbeans.append.txt
 linux-port/docker/game/mob_drop_item.dtdrops.append.txt
@@ -513,3 +516,8 @@ linux-port/docker/mariadb/playerbot/gf_wartosci.sql
 # bots' G0 package bound to the account - the engine files it changes are above (item.h, item.cpp, item_attribute.cpp,
 # char_shop.cpp, ikarus_shop_manager.cpp, shop.cpp); the logic is playerbot_yohara_g0.{h,cpp} (the playerbot_* lines);
 # player.item_account_bound is made by the game core itself (CREATE TABLE IF NOT EXISTS).
+
+# MT2009_PLUS_BOT_NAV_GUILD_BUILDINGS_V1 / MT2009_PLUS_GUILD_BUILDING_CLEAR_V1 / MT2009_PLUS_GUILD_BUILD_REFUSE_MSG_V1 /
+# MT2009_PLUS_GUILD_ROTATE_V1 (server-patches/enginefixes, 2.37.2): the guild buildings' engine files (cmd_gm.cpp above).
+linux-port/docker/game/src/server/game/src/building.cpp
+linux-port/docker/game/src/server/game/src/building.h

@@ -49,11 +49,19 @@ RUN a2enmod rewrite \
     /etc/apache2/sites-enabled/000-default.conf
 
 # MT2009_PLUS_ITEMSHOP_V3_V1: the second shop (app/shop3, Shift+F12 in the game) routes its pages
-# through its own .htaccess (RewriteBase /shop3/) - allowed for that directory only, the old shop
-# keeps AllowOverride None. Its item pictures are the old shop's (images/item -> itemshop/img/item),
-# made here and not as a symlink in the repository, which a Windows checkout turns into a text file.
+# through its own .htaccess (RewriteBase /shop3/) - allowed for that directory only.
+# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1 (Yohara line, the owner 27 Oct 2026): the old web shop is closed. Its
+# item pictures - the new shop's (shop3/images/item, tile.php) - move into the new shop (the repository
+# keeps them at app/itemshop/img/item, where tools/itemshop3, tools/azcostume and the rest write them),
+# then the old shop's pages and its database login (app/user) leave the image, and any /itemshop/ address
+# redirects to /shop3/. The game's server-side catalogue (common.itemshop_items: the in-game "/itemshop",
+# the bots, the vouchers, the Dragon Coin scrolls) never went through these pages and is untouched.
 RUN printf '<Directory /var/www/html/shop3>\n    AllowOverride All\n</Directory>\n' > /etc/apache2/conf-enabled/mt2009-shop3.conf \
- && ln -sfn ../../itemshop/img/item /var/www/html/shop3/images/item
+ && rm -rf /var/www/html/shop3/images/item \
+ && mv /var/www/html/itemshop/img/item /var/www/html/shop3/images/item \
+ && test -f /var/www/html/shop3/images/item/71084.png \
+ && rm -rf /var/www/html/itemshop /var/www/html/user \
+ && printf 'RedirectMatch 302 "^/itemshop(/.*)?$" "/shop3/"\n' > /etc/apache2/conf-enabled/mt2009-itemshop-closed.conf
 
 EXPOSE 80/tcp
 
@@ -61,5 +69,8 @@ EXPOSE 80/tcp
 # PHP fatal is a 500 - so this fails on a broken application, not only on
 # a dead web server. The body test is the belt to those braces: a warning
 # printed into an otherwise successful page is still a broken shop.
+# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1: the shop is /shop3/ (the old /itemshop/ only redirects there). Like the
+# old page's check, a database it cannot reach yet is no fault of this container (shop3's header.php then
+# answers "... is not available." with 200).
 HEALTHCHECK --interval=20s --timeout=5s --start-period=20s --retries=3 \
-    CMD php -r '$b=@file_get_contents("http://127.0.0.1/itemshop/"); exit($b===false || strpos($b,"Fatal error")!==false || strpos($b,"Warning:")!==false ? 1 : 0);'
+    CMD php -r '$b=@file_get_contents("http://127.0.0.1/shop3/"); exit($b===false || strpos($b,"Fatal error")!==false || strpos($b,"Warning:")!==false ? 1 : 0);'

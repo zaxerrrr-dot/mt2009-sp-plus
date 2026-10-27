@@ -1625,7 +1625,9 @@ class ItemToolTip(ToolTip):
 		elif item.ITEM_TYPE_USE == itemType:
 			self.__AppendLimitInformation()
 
-			if item.USE_POTION == itemSubType or item.USE_POTION_NODELAY == itemSubType:
+			# MT2009_PLUS_HALLOWEEN_V1: no "P¯ +300 / PE +100" lines on the Halloween pumpkin (30321) - its description
+			# already says what it does (the owner, 27 Oct 2026); every other potion keeps them.
+			if (item.USE_POTION == itemSubType or item.USE_POTION_NODELAY == itemSubType) and itemVnum != 30321:
 				self.__AppendPotionInformation()
 
 			elif item.USE_ABILITY_UP == itemSubType:

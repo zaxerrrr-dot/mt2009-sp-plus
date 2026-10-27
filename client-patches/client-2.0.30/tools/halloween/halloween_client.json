@@ -1,0 +1,52 @@
+{
+ "_comment": "MT2009_PLUS_HALLOWEEN_V1 (Autor: Owsap): the client half of the Halloween event - the itemdesc lines the client lacks (Owsap's official Polish texts, the wand's origin as our drop rule) and the NPC model the client packs lack. Read by patch_halloween_client.py, build_halloween_pack.py and verify_halloween.py.",
+ "itemdesc": {
+  "30321": "30321\tUpiorna Dynia\tDynia ta regeneruje PŻ lub PE. Jeśli dotkniesz ją Czarodziejską Różdżką, zamieni się w Upiorną Skrzynię. Wypada z potworów w czasie Halloween.",
+  "30322": "30322\tCzarodziejska Różdżka\tTa czarodziejska różdżka, kunsztownie wyciosana z magicznego drewna olchowego, potrafi zamienić każdą Upiorną Dynię w Upiorną Skrzynię. Wypada z kamieni Metin w czasie Halloween.",
+  "30323": "30323\tKarta Maski Dyni\tTę kartę możesz zamienić u Jacka Pumpkina na Maskę Dyni dla swojej postaci. Maska dyni zastąpi jednak twoją obecną fryzurę.",
+  "50215": "50215\tUpiorna Skrzynia\tJest to skrzynia z grawerunkiem upiornego oblicza dyni. Otwórz ją, aby poznać jej cenną zawartość - przy odrobinie szczęścia znajdziesz w niej Kartę Maski Dyni.",
+  "74020": "74020\tMaska Dyni Wojownik (m)\tMaska dla Wojownika. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę.",
+  "74270": "74270\tMaska Dyni Ninja (k)\tMaska dla wojowniczki Ninja. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę.",
+  "74520": "74520\tMaska Dyni Sura (m)\tMaska dla wojownika Sura. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę.",
+  "74770": "74770\tMaska Dyni Szaman (k)\tMaska dla Szamanki. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę.",
+  "75020": "75020\tMaska Dyni Wojownik (k)\tMaska dla Wojowniczki. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę.",
+  "75220": "75220\tMaska Dyni Ninja (m)\tMaska dla wojownika Ninja. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę.",
+  "75420": "75420\tMaska Dyni Sura (k)\tMaska dla wojowniczki Sura. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę.",
+  "75620": "75620\tMaska Dyni Szaman (m)\tMaska dla Szamana. Działa 7 dni, atrybut jest ustalany losowo. Zastępuje obecną fryzurę."
+ },
+ "pack": "halloween",
+ "model_dir": "d:/ymir work/npc2/halloween1/",
+ "model_files": [
+  "fire_red1.mse",
+  "fr2.dds",
+  "fr3.dds",
+  "halloween1.gr2",
+  "halloween1.msm",
+  "halloween1_01.dds",
+  "halloween1_02.dds",
+  "motlist.txt",
+  "wait.gr2",
+  "wait.msa",
+  "wait1.gr2",
+  "wait1.msa",
+  "walk1.gr2",
+  "walk1.msa"
+ ],
+ "npclist": {
+  "33008": "halloween1"
+ },
+ "items_present": {
+  "30321": "icon/item/50095.tga",
+  "30322": "icon/item/30322.tga",
+  "30323": "icon/item/30323.tga",
+  "50215": "icon/item/50215.tga",
+  "74020": "icon/item/73001.tga",
+  "74270": "icon/item/73251.tga",
+  "74520": "icon/item/73501.tga",
+  "74770": "icon/item/73751.tga",
+  "75020": "icon/item/73001.tga",
+  "75220": "icon/item/73251.tga",
+  "75420": "icon/item/73501.tga",
+  "75620": "icon/item/73751.tga"
+ }
+}

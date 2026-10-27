@@ -105,11 +105,24 @@ namespace
 	bool IsPlayerBotWeaponPlanSuspended(LPCHARACTER ch);
 	LPITEM GetPlayerBotMlodziPreparedWeapon(LPCHARACTER ch);
 	int PlayerBotMlodziHandRule(LPITEM item, LPITEM old);
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: a two-handed weapon a Body Warrior owns
+	// that hits far harder than any sword it owns (defined below the damage
+	// model). fresh reads the swords again.
+	bool IsPlayerBotBodyTwoHanderAllowed(LPCHARACTER ch, LPITEM item, bool fresh = false);
+	// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: a dagger an Archer owns that hits
+	// harder than every bow it owns, or any dagger when it owns no bow
+	// (defined below the damage model). fresh reads the bows again.
+	bool IsPlayerBotArcherDaggerAllowed(LPCHARACTER ch, LPITEM item, bool fresh = false);
 
+	// The item rules: what this bot may wear. The kind it buys and plays for
+	// is IsPlayerBotWeaponSubTypeFor's alone - the Body Warrior's two-hander
+	// and the Archer's dagger are worn when owned, never bought or chased.
 	bool IsPlayerBotWeapon(LPCHARACTER ch, LPITEM item)
 	{
 		return item && item->GetType() == ITEM_WEAPON &&
-				IsPlayerBotWeaponSubTypeFor(ch, item->GetSubType());
+				(IsPlayerBotWeaponSubTypeFor(ch, item->GetSubType()) ||
+				 IsPlayerBotBodyTwoHanderAllowed(ch, item) ||
+				 IsPlayerBotArcherDaggerAllowed(ch, item));
 	}
 
 	// Defined further down, with the ladders and the merchants' stock.
@@ -1088,6 +1101,207 @@ namespace
 		return GetPlayerBotWeaponHitDamageAt(item, item->GetProto(), ch, 0, parts);
 	}
 
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: the Body Warrior and the two-hander.
+	// IsPlayerBotWeaponSubTypeFor keeps a Warrior of the Body group (and one
+	// with no group yet) on the one-handed sword - this overlay's design since
+	// update 0.2, with the sword preference in the equipment score - though
+	// the engine lets every Warrior carry a two-hander and the Body skills ask
+	// nothing of the weapon's kind. So a two-hander was no weapon at all for
+	// such a bot: PrepareWeapon took a worn one off as a "profession
+	// mismatch", the empty hand bought the merchant's sword it could pay for,
+	// and the two-hander lay in the bag for good (Christofer, 99: Pogromca
+	// Nieb. Smoka+9 of level 90 off, Stozkowy Miecz+0 of level 15 on, on 22
+	// October; 26 Body Warriors of 60 and up so on the test world; the ones
+	// with no yang stood unarmed - "idle without weapon bag_weapons=0").
+	// The design stays: a sword is still the Body Warrior's weapon and the
+	// only kind it buys or plays for. But a two-hander it can wear now whose
+	// blow beats the best sword it owns (worn or in the bag) by
+	// PLAYERBOT_BODY_TWO_HANDER_GAIN_PERCENT is a weapon of its kind too, and
+	// the equipment pass ranks it with the sword's preference as before. The
+	// rule reads what the bot owns, not where the two-hander is, so wearing
+	// it does not change the answer and the two do not take turns.
+	struct TPlayerBotBodySwordRead
+	{
+		DWORD dwTime;
+		long long llBestSwordBlow;
+		DWORD dwItemID;
+		bool bAllowed;
+		TPlayerBotBodySwordRead() : dwTime(0), llBestSwordBlow(0), dwItemID(0), bAllowed(false) {}
+	};
+	std::map<DWORD, TPlayerBotBodySwordRead> s_mapPlayerBotBodySwordRead;
+
+	bool IsPlayerBotOwnedWeaponWearableNow(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetType() != ITEM_WEAPON || item->IsExchanging() || !item->CanUsedBy(ch) ||
+				item->GetLevelLimit() > ch->GetLevel() || IsPlayerBotSidekickUnwanted(ch, item))
+			return false;
+		// Yohara: a young heroes' weapon (21900-21975, MT2009_PLUS_BOT_MLODZI_V1) is no owned weapon of these
+		// reads - not the best sword or bow a two-hander or a dagger must beat, nor itself the two-hander or the
+		// dagger: PlayerBotMlodziHandRule decides when it is worn, and it is never the real weapon behind it.
+		if (IsPlayerBotMlodziWeapon(item))
+			return false;
+		if ((item->GetAntiFlag() & ITEM_ANTIFLAG_MALE) && GET_SEX(ch) == SEX_MALE)
+			return false;
+		if ((item->GetAntiFlag() & ITEM_ANTIFLAG_FEMALE) && GET_SEX(ch) == SEX_FEMALE)
+			return false;
+		return true;
+	}
+
+	long long ReadPlayerBotBestOwnedSwordBlow(LPCHARACTER ch)
+	{
+		long long best = 0;
+		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (worn && worn->GetSubType() == WEAPON_SWORD && IsPlayerBotOwnedWeaponWearableNow(ch, worn))
+			best = GetPlayerBotWeaponHitDamage(worn, ch);
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->IsEquipped() || item->GetType() != ITEM_WEAPON ||
+					item->GetSubType() != WEAPON_SWORD || !IsPlayerBotOwnedWeaponWearableNow(ch, item))
+				continue;
+			best = std::max(best, GetPlayerBotWeaponHitDamage(item, ch));
+		}
+		return best;
+	}
+
+	bool IsPlayerBotBodyTwoHanderAllowed(LPCHARACTER ch, LPITEM item, bool fresh)
+	{
+		if (!ch || !item || item->GetType() != ITEM_WEAPON || item->GetSubType() != WEAPON_TWO_HANDED ||
+				ch->GetJob() != JOB_WARRIOR || ch->GetSkillGroup() == 2 || !ch->IsItemLoaded() ||
+				!IsPlayerBotOwnedWeaponWearableNow(ch, item))
+			return false;
+		TPlayerBotBodySwordRead& read = s_mapPlayerBotBodySwordRead[ch->GetPlayerID()];
+		const DWORD now = get_dword_time();
+		if (fresh || read.dwTime == 0 || now - read.dwTime >= PLAYERBOT_BODY_TWO_HANDER_CACHE_MS)
+		{
+			read.dwTime = now != 0 ? now : 1;
+			read.llBestSwordBlow = ReadPlayerBotBestOwnedSwordBlow(ch);
+			read.dwItemID = 0;
+		}
+		// Most asks are of the same piece, many times a second: its answer is
+		// kept with the swords' reading.
+		if (item->GetID() != 0 && read.dwItemID == item->GetID())
+			return read.bAllowed;
+		const long long blow = GetPlayerBotWeaponHitDamage(item, ch);
+		const bool allowed = blow > 0 &&
+				blow * 100 >= read.llBestSwordBlow * (100 + PLAYERBOT_BODY_TWO_HANDER_GAIN_PERCENT);
+		if (item->GetID() != 0)
+		{
+			read.dwItemID = item->GetID();
+			read.bAllowed = allowed;
+		}
+		return allowed;
+	}
+
+	// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: the Archer and the dagger. An Archer
+	// fights with a bow by this overlay's design (IsPlayerBotWeaponSubTypeFor),
+	// and the dagger was only its stone tool. So twenty Archers of the test
+	// world swung - shot - a level-15 bow with the level-90 dagger (4049) in
+	// the bag, and those with no bow at all stood unarmed ("idle without
+	// weapon bag_weapons=0", BoskiTyran19, 27 October). The owner's word: "if
+	// the dagger does more damage, let them use the dagger, and meanwhile save
+	// up for a better bow". So a dagger the Archer owns and can wear now whose
+	// blow (GetPlayerBotWeaponHitDamage, the measure every weapon is compared
+	// by) beats the best bow it owns - or any, when it owns no bow - is a
+	// weapon of its kind and is worn, the bow's preference with it. It stays
+	// what it is everywhere else: the weapon goal, the merchant and the
+	// counters ask IsPlayerBotWeaponSubTypeFor and look for a bow only, which
+	// is now measured against the dagger's blow; a bow that beats the dagger
+	// takes it out of the rule and goes on in its place. Only a dagger the bot
+	// holds counts - a counter's offer is never one - and the rule reads what
+	// it owns, not where the dagger is, so the two do not take turns.
+	struct TPlayerBotArcherBowRead
+	{
+		DWORD dwTime;
+		long long llBestBowBlow;
+		DWORD dwItemID;
+		bool bAllowed;
+		TPlayerBotArcherBowRead() : dwTime(0), llBestBowBlow(0), dwItemID(0), bAllowed(false) {}
+	};
+	std::map<DWORD, TPlayerBotArcherBowRead> s_mapPlayerBotArcherBowRead;
+
+	long long ReadPlayerBotBestOwnedBowBlow(LPCHARACTER ch)
+	{
+		long long best = 0;
+		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (worn && worn->GetType() == ITEM_WEAPON && worn->GetSubType() == WEAPON_BOW &&
+				IsPlayerBotOwnedWeaponWearableNow(ch, worn))
+			best = GetPlayerBotWeaponHitDamage(worn, ch);
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->IsEquipped() || item->GetType() != ITEM_WEAPON ||
+					item->GetSubType() != WEAPON_BOW || !IsPlayerBotOwnedWeaponWearableNow(ch, item))
+				continue;
+			best = std::max(best, GetPlayerBotWeaponHitDamage(item, ch));
+		}
+		return best;
+	}
+
+	bool IsPlayerBotArcherDaggerAllowed(LPCHARACTER ch, LPITEM item, bool fresh)
+	{
+		if (!ch || !item || item->GetType() != ITEM_WEAPON || item->GetSubType() != WEAPON_DAGGER ||
+				ch->GetJob() != JOB_ASSASSIN || ch->GetSkillGroup() != 2 || !ch->IsItemLoaded() ||
+				item->GetOwner() != ch || (!item->IsEquipped() && item->GetWindow() != INVENTORY) ||
+				!IsPlayerBotOwnedWeaponWearableNow(ch, item))
+			return false;
+		TPlayerBotArcherBowRead& read = s_mapPlayerBotArcherBowRead[ch->GetPlayerID()];
+		const DWORD now = get_dword_time();
+		if (fresh || read.dwTime == 0 || now - read.dwTime >= PLAYERBOT_ARCHER_DAGGER_CACHE_MS)
+		{
+			read.dwTime = now != 0 ? now : 1;
+			read.llBestBowBlow = ReadPlayerBotBestOwnedBowBlow(ch);
+			read.dwItemID = 0;
+		}
+		if (item->GetID() != 0 && read.dwItemID == item->GetID())
+			return read.bAllowed;
+		const long long blow = GetPlayerBotWeaponHitDamage(item, ch);
+		const bool allowed = blow > 0 && blow > read.llBestBowBlow;
+		if (item->GetID() != 0)
+		{
+			read.dwItemID = item->GetID();
+			read.bAllowed = allowed;
+		}
+		return allowed;
+	}
+
+	// The dagger such an Archer fights with: the one in the hand, else the
+	// strongest allowed one in the bag (lowest id among equals). It is kept
+	// from every merchant and counter with the stone weapon
+	// (IsPlayerBotArcherStoneWeapon).
+	bool IsPlayerBotArcherFightingDagger(LPCHARACTER ch, LPITEM item)
+	{
+		if (!IsPlayerBotArcherDaggerAllowed(ch, item))
+			return false;
+		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (worn == item)
+			return true;
+		if (worn && IsPlayerBotArcherDaggerAllowed(ch, worn))
+			return false;
+		const long long blow = GetPlayerBotWeaponHitDamage(item, ch);
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM other = ch->GetInventoryItem(cell);
+			if (!other || other == item || other->GetCell() != cell || other->IsEquipped() ||
+					other->GetType() != ITEM_WEAPON || other->GetSubType() != WEAPON_DAGGER ||
+					!IsPlayerBotArcherDaggerAllowed(ch, other))
+				continue;
+			const long long otherBlow = GetPlayerBotWeaponHitDamage(other, ch);
+			if (otherBlow > blow || (otherBlow == blow && other->GetID() < item->GetID()))
+				return false;
+		}
+		return true;
+	}
+
+	// Whether the Archer fights with its dagger now: one allowed by the rule
+	// in the hand. It melees - the reach, the approach and the duel's stance
+	// all read the hand already - and its bow skills wait for the bow.
+	bool IsPlayerBotArcherOnDagger(LPCHARACTER ch)
+	{
+		LPITEM worn = ch ? ch->GetWear(WEAR_WEAPON) : NULL;
+		return worn && IsPlayerBotArcherDaggerAllowed(ch, worn);
+	}
+
 	// Iwakura's PvE tier of this piece's family for this character, or 0
 	// when his list does not rate the family (body armour, helmets, shields,
 	// everything he judges by level and lines). The family is the +0 vnum,
@@ -1398,7 +1612,15 @@ namespace
 			// MT2009_PLUS_MLODZI_BOHATEROWIE_V3: the class preferences moved to GetPlayerBotWeaponClassPreference, which
 			// the young heroes' claim scores an offered weapon by too.
 			if (ch)
+			{
 				score += GetPlayerBotWeaponClassPreference(ch, item->GetSubType(), score);
+				// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: the Archer's dagger that out-hits every bow it owns gets the bow's
+				// preference here, at the call site - GetPlayerBotWeaponClassPreference reads the kind alone (the young
+				// heroes' claim weighs an offered weapon by it, and an offer is never a dagger the bot holds).
+				if (ch->GetJob() == JOB_ASSASSIN && ch->GetSkillGroup() == 2 && item->GetSubType() == WEAPON_DAGGER &&
+						IsPlayerBotArcherDaggerAllowed(ch, item))
+					score += 500000;
+			}
 			if (terms)
 				terms->Set(per::TERM_CLASS_PREF, score - beforePreference);
 		}
@@ -1811,8 +2033,9 @@ namespace
 	{
 		if (!item || !IsPlayerBotArcherBuild(ch) || !IsPlayerBotStoneMeleeWeapon(ch, item))
 			return false;
+		// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: and the dagger it fights with.
 		return FindPlayerBotStoneWeapon(ch, false) == item ||
-				ch->GetWear(WEAR_WEAPON) == item;
+				ch->GetWear(WEAR_WEAPON) == item || IsPlayerBotArcherFightingDagger(ch, item);
 	}
 
 	// Whether the Archer holds a dagger good enough to break a stone: at least
@@ -4436,6 +4659,12 @@ namespace
 	// hunt, fifteen seconds a round trip.
 	bool PlayerBotWantsShield(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: nor ever for an Archer, whose
+		// dagger - on a stone, or the one it fights with until a better bow -
+		// gives way to the bow, and a shield bought for it would only send it
+		// to town and be in the way of that bow.
+		if (IsPlayerBotArcherBuild(ch))
+			return false;
 		LPITEM weapon = ch ? ch->GetWear(WEAR_WEAPON) : NULL;
 		return !(weapon && weapon->GetType() == ITEM_WEAPON &&
 				(weapon->GetSubType() == WEAPON_BOW || weapon->GetSubType() == WEAPON_TWO_HANDED));
@@ -5313,8 +5542,14 @@ namespace
 		// on a stone is the right weapon for the moment, not a profession
 		// mismatch to be taken off. Nor is what a companion's owner put in its
 		// hand, whatever the companion's path would choose.
+		// MT2009_PLUS_BOT_WEAPON_BAG_V1: nor a Body Warrior's two-hander that
+		// out-hits every sword it owns, asked afresh before it comes off.
+		// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: nor an Archer's dagger that
+		// out-hits every bow it owns, asked afresh the same way.
 		if (equippedWeapon && (PlayerBotWeaponFitsNow(ch, state, equippedWeapon) ||
-				IsPlayerBotSidekickPinned(ch, equippedWeapon)))
+				IsPlayerBotSidekickPinned(ch, equippedWeapon) ||
+				IsPlayerBotBodyTwoHanderAllowed(ch, equippedWeapon, true) ||
+				IsPlayerBotArcherDaggerAllowed(ch, equippedWeapon, true)))
 		{
 			state.dwEmergencyScavengeUntil = 0;
 			if (equippedWeapon->GetSubType() == WEAPON_BOW)

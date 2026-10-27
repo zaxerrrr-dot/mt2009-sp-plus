@@ -238,6 +238,7 @@ namespace
 				case playerbot_events::KIND_FLOWER: name = "Dzieci Kwiaty"; break;
 				case playerbot_events::KIND_EASTER: name = "event wielkanocny"; break;
 				case playerbot_events::KIND_CHESTDROP: name = "skrzynki z mobow"; break;
+				case playerbot_events::KIND_HALLOWEEN: name = "Halloween (dynie z mobow)"; break;	// MT2009_PLUS_HALLOWEEN_V1
 				default: break;
 			}
 			if (!name)

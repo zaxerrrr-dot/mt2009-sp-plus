@@ -31,6 +31,7 @@
 # Python 2.7 as the client has it; the texts are CP1250 escapes.
 
 import app
+import chat
 import net
 import ui
 import wndMgr
@@ -45,6 +46,8 @@ PENDING_SECONDS = 15.0
 TITLE = 'ItemShop'	# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: the main shop, no longer "(nowy)"
 TEXT_WAIT = '\xa3adowanie sklepu...'
 TEXT_NO_BROWSER = ('Je\x9cli sklep si\xea nie pokazuje, ten klient nie ma jeszcze', 'wbudowanej przegl\xb9darki (potrzebny nowy plik exe klienta).')
+# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1: what an exe without the shop's browser (no app.TakeWebPageCommand) gets instead of a shop.
+TEXT_NEED_EXE = 'Potrzebny jest nowy plik exe klienta \x96 zaktualizuj klienta.'
 
 _data = {'window': None, 'pending': 0.0}
 
@@ -187,9 +190,20 @@ class ItemShopV3Window(ui.BoardWithTitleBar):
 
 
 def IsMain():
-	# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: this window replaces the old in-game ItemShop when the exe can draw its page
-	# (the exe with app.TakeWebPageCommand also has the working embedded browser, MT2009_PLUS_ITEMSHOP_V3_V4).
-	return bool(_TakeWebPageCommand)
+	# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: this window replaces the old in-game ItemShop.
+	# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1 (the owner, 27 Oct 2026): always - the old shop is closed on the Yohara line. An exe
+	# that cannot draw the page (no app.TakeWebPageCommand, MT2009_PLUS_ITEMSHOP_V3_V4) gets TEXT_NEED_EXE instead of
+	# the old shop (CanShow, Open, TakeMallUrl).
+	return True
+
+
+def CanShow():
+	# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1: whether this exe draws the shop's page (the exe with app.TakeWebPageCommand has
+	# the working embedded browser too); otherwise the player is told to update the client.
+	if _TakeWebPageCommand:
+		return True
+	chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NEED_EXE)
+	return False
 
 
 def TakesKeys():
@@ -208,6 +222,9 @@ def GetWindow():
 
 def Open():
 	# The server answers with "mall <signed url>" (game.py __InGameShop_Show -> TakeMallUrl).
+	if not CanShow():	# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1: an old exe asks the server for nothing
+		_data['pending'] = 0.0
+		return
 	_data['pending'] = app.GetTime() + PENDING_SECONDS
 	net.SendChatPacket('/in_game_mall')
 
@@ -231,6 +248,10 @@ def TakeMallUrl(url, unasked=False):
 	shopUrl = _ShopUrl(url)
 	if not shopUrl:
 		return False
+	# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1: with an exe that cannot draw the page the answer is taken (no old web window)
+	# and the player is told to update the client.
+	if not CanShow():
+		return True
 	GetWindow().OpenUrl(shopUrl)
 	return True
 

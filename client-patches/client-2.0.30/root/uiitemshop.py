@@ -779,8 +779,9 @@ class ItemShopWindow(ui.ScriptWindow):
 	def __OnOpenItemShop(self):
 		# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: every ItemShop button (taskbar coin uitaskbar.py, system menu uisystem.py,
 		# minimap uiminimap.py, Dodatkowy ekwipunek uiekwipunek.py - all send EVENT_OPEN_ITEMSHOP) opens / closes the
-		# main ItemShop (uiitemshopv3.py, the same window as Shift+F12) on the Yohara line. With an exe that cannot
-		# draw its page (uiitemshopv3.IsMain() False) this old window stays the shop.
+		# main ItemShop (uiitemshopv3.py, the same window as Shift+F12) on the Yohara line.
+		# MT2009_PLUS_ITEMSHOP_V3_ONLY_V1: IsMain() is always True now - an exe that cannot draw its page gets
+		# "Potrzebny jest nowy plik exe klienta" (uiitemshopv3.CanShow), never this old window.
 		uiitemshopv3 = __import__("uiitemshopv3")
 		if uiitemshopv3.IsMain():
 			if self.IsShow():

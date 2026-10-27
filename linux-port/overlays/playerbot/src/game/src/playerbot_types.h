@@ -652,6 +652,22 @@ namespace
 	// What a Mental Warrior on a battle horse adds to a two-handed weapon's
 	// score, as a share of its own blow (GetPlayerBotEquipmentScore).
 	const int PLAYERBOT_TWO_HANDED_PREFERENCE_PERCENT = 20;
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: a Body Warrior (or one with no group yet)
+	// fights with a one-handed sword by this overlay's design, but a
+	// two-handed weapon it owns is worn when its blow beats the best sword it
+	// owns by this share (IsPlayerBotBodyTwoHanderAllowed). Christofer, 99,
+	// had a Pogromca Nieb. Smoka+9 (level 90) taken off as a "profession
+	// mismatch" and swung a Stozkowy Miecz+0 (level 15) for days; 26 Body
+	// Warriors of 60 and up on the test world held a level-90 two-hander in
+	// the bag that way (27 October). The best sword owned is read again this
+	// often.
+	const int PLAYERBOT_BODY_TWO_HANDER_GAIN_PERCENT = 50;
+	const DWORD PLAYERBOT_BODY_TWO_HANDER_CACHE_MS = 60000;
+	// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: an Archer wears a dagger it owns whose
+	// blow beats every bow it owns (IsPlayerBotArcherDaggerAllowed) - twenty
+	// Archers of the test world shot a level-15 bow with a level-90 dagger in
+	// the bag (27 October). The best bow owned is read again this often.
+	const DWORD PLAYERBOT_ARCHER_DAGGER_CACHE_MS = 60000;
 	// The weapon a bot plays for (playerbot_weapon_goal.h): the best family of
 	// the atlas its class may carry at its level and can get on a map the bots
 	// walk. A goal whose blow at +0 beats the hand's by the first share sends a
@@ -674,6 +690,15 @@ namespace
 	// next census carries on from the pid this one stopped at.
 	const int PLAYERBOT_WEAPON_CENSUS_REFRESHES = 400;
 	const DWORD PLAYERBOT_WEAPON_GOAL_FALLBACK_PRICE = 500000;
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: a goal the hand has stood outclassed by
+	// this long without its blow rising is stuck (IsPlayerBotWeaponGoalStuck):
+	// a goal whose only source is a drop on a map the bot never hunts (Miecz
+	// Nimfy, mob 2313 on map 68) held a bot of 99 with 4 932 yang for days.
+	// A stuck bot then pays for the best weapon it can afford out of its whole
+	// purse over its reserve and this much - the merchant's or a counter's -
+	// instead of half of what it holds over 10 000 or 100 000.
+	const DWORD PLAYERBOT_WEAPON_GOAL_STUCK_MS = 2 * 60 * 60 * 1000;
+	const long long PLAYERBOT_WEAPON_GOAL_STUCK_GOLD_FLOOR = 500;
 	// MT2009_PLUS_BOT_GEAR_UPGRADE_V1 (playerbot_gear_upgrade.h): a counter
 	// weapon at any plus is bought when its blow beats the best weapon the
 	// bot owns by the first share - the market's +6 rule had kept every one
@@ -6154,6 +6179,11 @@ namespace
 		// The Demon Tower's fake Bong-In key (playerbot_demon_tower.h): the
 		// real one is carried to Sa-Soe, this one is worth nothing to anybody.
 		if (vnum == PLAYERBOT_TOWER_FAKE_KEY)
+			return true;
+		// MT2009_PLUS_HALLOWEEN_V1: the Halloween event's items (playerbot_halloween.h) -
+		// the pumpkin, the wand, the Mask Card and the chest are the players'; a bot
+		// never earns one and never lifts one a player left behind.
+		if (vnum == 30321 || vnum == 30322 || vnum == 30323 || vnum == 50215)
 			return true;
 		return vnum == 70048 || vnum == 70050;
 	}
