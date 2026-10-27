@@ -22,15 +22,19 @@ quest event_halloween_hair begin
 			}
 		end
 
+		-- MT2009_PLUS_HALLOWEEN_V1: our engine's apply types are its POINT_ numbers (item_attr.apply), not questlib's
+		-- apply table: apply.MAX_SP_PCT (70) is POINT_RESIST_TWOHAND here, so every mask came out as 'Odpornosc na Bron
+		-- Dwureczna 1%' (the owner's test, 27 Oct). 53-57 = silny przeciw potworom / Wojownikom / Ninja / Surom / Szamanom,
+		-- 119 / 120 = maks. PZ / PE w %.
 		function get_hair_option(index)
 			local option_list = {
-				{ ["apply"] = apply.ATTBONUS_MONSTER, ["value"] = 10, ["duration"] = 604800 },	-- 7 dni
-				{ ["apply"] = apply.ATTBONUS_SURA, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = apply.ATTBONUS_SHAMAN, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = apply.ATTBONUS_WARRIOR, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = apply.ATTBONUS_ASSASSIN, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = apply.MAX_HP_PCT, ["value"] = 1, ["duration"] = 21600 },	-- 6 godzin
-				{ ["apply"] = apply.MAX_SP_PCT, ["value"] = 1, ["duration"] = 86400 },	-- 24 godziny
+				{ ["apply"] = 53, ["value"] = 10, ["duration"] = 604800 },	-- 7 dni
+				{ ["apply"] = 56, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = 57, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = 54, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = 55, ["value"] = 10, ["duration"] = 604800 },
+				{ ["apply"] = 119, ["value"] = 1, ["duration"] = 21600 },	-- 6 godzin
+				{ ["apply"] = 120, ["value"] = 1, ["duration"] = 86400 },	-- 24 godziny
 			}
 			return option_list[index]
 		end
