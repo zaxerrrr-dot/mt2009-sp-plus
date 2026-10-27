@@ -803,7 +803,8 @@ class GameWindow(ui.ScriptWindow):
 			"event_calendar"	: (lambda : Window("uieventcalendar"), None),
 			# MT2009_PLUS_WHEEL_V1: Kolo Fortuny (uiwheel.py).
 			"wheel"				: (lambda : Window("uiwheel"), None),
-			# MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (uiitemshopv3.py), Shift+F12.
+			# MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (uiitemshopv3.py), Shift+F12 - the main ItemShop since
+			# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1 (the ItemShop buttons open it too, uiitemshop.py __OnOpenItemShop).
 			"itemshop_v3"		: (lambda : Window("uiitemshopv3"), None),
 			# MT2009_PLUS_EKWIPUNEK_V1: Dodatkowy ekwipunek (uiekwipunek.py), Shift+I.
 			"extra_inventory"	: (lambda : Window("uiekwipunek"), None),
@@ -3590,6 +3591,11 @@ class GameWindow(ui.ScriptWindow):
 		if interface.wndItemShop.IsShow():
 			interface.wndItemShop.Close()
 
+		# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: the main ItemShop (uiitemshopv3.py) closes as the old window did.
+		wndShopV3 = __import__("uiitemshopv3")._data['window']
+		if wndShopV3 and wndShopV3.IsShow():
+			wndShopV3.Close()
+
 		if interface.wndCrafting.IsShow():
 			interface.wndCrafting.Close()
 
@@ -4834,7 +4840,12 @@ class GameWindow(ui.ScriptWindow):
 	def __InGameShop_Show(self, url):
 		# MT2009_PLUS_ITEMSHOP_V3_V1: the answer to the second ItemShop's request (Shift+F12,
 		# uiitemshopv3.py) opens that one; any other "mall" goes on to the old window.
-		if __import__("uiitemshopv3").TakeMallUrl(url):
+		uiitemshopv3 = __import__("uiitemshopv3")
+		if uiitemshopv3.TakeMallUrl(url):
+			return
+		# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: the main ItemShop on the Yohara line - an unasked "mall" (a typed
+		# /in_game_mall, a quest's game.web_mall) opens it too, not the old web shop's window.
+		if uiitemshopv3.IsMain() and uiitemshopv3.TakeMallUrl(url, True):
 			return
 		if constInfo.IN_GAME_SHOP_ENABLE:
 			self.interface.OpenWebWindow(url)

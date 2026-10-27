@@ -147,7 +147,8 @@ CATEGORIES = (
 		('event_calendar', 'Kalendarz event\xf3w', ((0, 'DIK_F11'),), False),
 		('wheel', 'Ko\xb3o Fortuny', ((0, 'DIK_F12'),), False),
 		# MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop (uiitemshopv3.py), next to the old one.
-		('itemshop_v3', 'ItemShop (nowy)', ((SHIFT, 'DIK_F12'),), False),
+		# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: the main ItemShop on the Yohara line - the id stays (saved key maps).
+		('itemshop_v3', 'ItemShop', ((SHIFT, 'DIK_F12'),), False),
 		('new_pet', 'Zwierzak', ((0, 'DIK_U'),), False),
 		('dungeon_info', 'Wyprawy', ((0, 'DIK_X'),), False),
 		('battle_pass', 'Battle Pass', (), False),

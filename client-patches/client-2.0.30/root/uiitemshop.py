@@ -613,6 +613,19 @@ class ItemShopWindow(ui.ScriptWindow):
 		ITEMSHOP_CATEGORIES[categoryIndex]["action"]["items"] = []
 
 	def Open(self):
+		# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: the server's "itemshop_open" (the answer to "/itemshop open", or any
+		# other way the server opens this window) opens the main ItemShop (uiitemshopv3.py) on the Yohara line;
+		# the server's browse flag set for this window is cleared again.
+		uiitemshopv3 = __import__("uiitemshopv3")
+		if uiitemshopv3.IsMain():
+			net.SendChatPacket("/itemshop close")
+			if self.IsShow():
+				self.Hide()
+			wnd = uiitemshopv3.GetWindow()
+			if not wnd.IsShow():
+				uiitemshopv3.Open()
+			return
+
 		self.Show()
 
 		if self.selectedCategoryIndex == ITEMSHOP_CATEGORY_TIMED_INDEX:
@@ -764,6 +777,17 @@ class ItemShopWindow(ui.ScriptWindow):
 			self.__SelectCategory(self.selectedCategoryIndex)
 
 	def __OnOpenItemShop(self):
+		# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: every ItemShop button (taskbar coin uitaskbar.py, system menu uisystem.py,
+		# minimap uiminimap.py, Dodatkowy ekwipunek uiekwipunek.py - all send EVENT_OPEN_ITEMSHOP) opens / closes the
+		# main ItemShop (uiitemshopv3.py, the same window as Shift+F12) on the Yohara line. With an exe that cannot
+		# draw its page (uiitemshopv3.IsMain() False) this old window stays the shop.
+		uiitemshopv3 = __import__("uiitemshopv3")
+		if uiitemshopv3.IsMain():
+			if self.IsShow():
+				self.Close()
+			uiitemshopv3.ToggleWindow()
+			return
+
 		if self.IsShow():
 			self.Close()
 			return
