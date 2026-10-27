@@ -139,6 +139,17 @@ SELECT IFNULL(h.target_map, c.last_map) AS map, COUNT(*) AS members,
   LEFT JOIN player.player p ON p.id = c.pid
  WHERE c.purpose = 'yohara'
  GROUP BY 1 ORDER BY 1;
+-- MT2009_PLUS_BOT_YOHARA800_V1: the 800 new Yohara bots (purpose 'yohara800', tools/yohara_bot_cohort_800.py)
+SELECT IFNULL(h.target_map, c.last_map) AS map, COUNT(*) AS members_800,
+       COALESCE(SUM(h.state = 2 AND h.updated_at > NOW() - INTERVAL 180 SECOND), 0) AS on_core3,
+       COALESCE(SUM(h.state = 1), 0) AS on_way, SUM(IFNULL(c.rest_until > NOW(), 0)) AS resting,
+       MIN(p.conqueror_level) AS champ_min, MAX(p.conqueror_level) AS champ_max,
+       SUM(c.deaths) AS deaths, SUM(c.rest_outs) AS rest_outs, SUM(c.exp_gained) AS exp_gained
+  FROM common.playerbot_yohara_cohort c
+  LEFT JOIN common.playerbot_core_handover h ON h.pid = c.pid
+  LEFT JOIN player.player p ON p.id = c.pid
+ WHERE c.purpose = 'yohara800'
+ GROUP BY 1 ORDER BY 1;
 SELECT p.conqueror_level AS champion, COUNT(*) AS bot_champions_all FROM player.player p
   JOIN account.account ac ON ac.id = p.account_id WHERE LEFT(ac.login, 10) = 'playerbot_' AND p.conqueror_level > 0
  GROUP BY 1 ORDER BY 1;

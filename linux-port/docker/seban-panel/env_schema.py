@@ -222,7 +222,8 @@ SCHEMA = [
     _e("PLAYERBOT_SUNGMA_MAX", "Boty na mapach Yohary (na kanał)",
        "Ilu botów-Czempionów naraz poluje na mapach Sung Ma (Twierdza, Dongan, Seoganland, Namgan, Yilad, Wąwóz, Rozpadlina, "
        "Schronienie, Zejście). 0 = nikt.",
-       "boty", "int", "120", ["game"], min=0, max=600),
+       # MT2009_PLUS_BOT_YOHARA800_V1: up to 1000 (the 100 + the 800 new Yohara bots on one channel)
+       "boty", "int", "120", ["game"], min=0, max=1000),
     _e("PLAYERBOT_SUNGMA_MAP_MAX", "Boty na jednej mapie Yohary",
        "Najwięcej botów naraz na jednej mapie Sung Ma (na kanał).",
        "boty", "int", "30", ["game"], min=0, max=300),

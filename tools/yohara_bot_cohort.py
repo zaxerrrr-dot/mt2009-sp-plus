@@ -12,6 +12,11 @@ The owner, 21 October 2026 (night): "Kohorty na noc: 100 botow Zaklety Las
     yohara_bot_cohort.py <outdir> --hydra-pairs 16 [--db-container ...] [--channel 1]
     yohara_bot_cohort.py <outdir> --hydra-end
     yohara_bot_cohort.py <outdir> --yohara 100 [--db-container ...] [--channel 1]
+    yohara_bot_cohort.py <outdir> --yohara800 800 [--channels 1] [--active 800] [--pid-base 6001] [--cor-vnum 51510]
+
+MT2009_PLUS_BOT_YOHARA800_V1: --yohara800 N makes N NEW bot identities for the Yohara maps (tools/yohara_bot_cohort_800.py:
+made as the seed makes a bot, PIDs 6001.., names from the nickname pool; level 120, Champion 1-30 over the nine Sung Ma
+maps, G0 gear and some better, no bonuses, the bonus / alchemy bag; purpose 'yohara800') and touches no registry bot.
 
 MT2009_PLUS_BOT_YOHARA_MAPS_V1: --yohara N makes the Yohara maps' cohort (tools/yohara_bot_cohort_sungma.py: the Hydra's
 Champions first, then the pool; level 120, a Champion level and the Sung Ma Will of one of the nine Sung Ma maps
@@ -115,6 +120,18 @@ ap.add_argument('--yohara', type=int, default=0, help='the Yohara maps\' cohort 
                 'Hydra\'s gear - MT2009_PLUS_BOT_YOHARA_MAPS_V1, tools/yohara_bot_cohort_sungma.py')
 ap.add_argument('--hydra-pairs', type=int, default=0, help='the Hydra\'s cohort as this many pairs (a Ninja and '
                 'another class of one kingdom; 16) - MT2009_PLUS_BOT_HYDRA_PAIRS_V1, tools/yohara_bot_cohort_hydra.py')
+# MT2009_PLUS_BOT_YOHARA800_V1: the 800 new Yohara bots (tools/yohara_bot_cohort_800.py)
+ap.add_argument('--yohara800', type=int, default=0, help='this many NEW bot identities for the Yohara maps (800): level '
+                '120, Champion 1-30, G0 gear (some better), no bonuses, the bonus/alchemy bag - MT2009_PLUS_BOT_YOHARA800_V1, '
+                'tools/yohara_bot_cohort_800.py')
+ap.add_argument('--channels', default='1', help='--yohara800: the channels the members go to in turn ("1" or "1,2")')
+ap.add_argument('--active', type=int, default=-1, help='--yohara800: this many work at once, the rest rest until '
+                'cohort_activate.sql (-1: all)')
+ap.add_argument('--pid-base', type=int, default=6001, help='--yohara800: the first PID (6001: past the seed, under the '
+                'companions\' 8000)')
+ap.add_argument('--cor-vnum', type=int, default=51510, help='--yohara800: the legendary Cor Draconis (51510 or 50259)')
+ap.add_argument('--better-pct', type=float, default=22.0, help='--yohara800: per cent of the bots better than G0 at least')
+ap.add_argument('--seed', type=int, default=800, help='--yohara800: the random seed (the same seed, the same plan)')
 a = ap.parse_args()
 if a.hydra_pairs > 0:	# MT2009_PLUS_BOT_HYDRA_PAIRS_V1
     a.hydra = 2 * a.hydra_pairs
@@ -184,6 +201,13 @@ def pidset(sql):
     rows = q(sql, fatal=False)
     return set(int(r[0]) for r in rows or [] if r and r[0].isdigit())
 
+
+# MT2009_PLUS_BOT_YOHARA800_V1: the 800 new identities - their own tool, no registry bot touched.
+if a.yohara800 > 0:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import yohara_bot_cohort_800
+    yohara_bot_cohort_800.run(a, q, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    sys.exit(0)
 
 PURPOSES = ('zaklety', 'szc', 'snakefield', 'giantland')
 WANT = {'zaklety': a.zaklety, 'szc': a.szc, 'snakefield': a.snakefield, 'giantland': a.giantland}
