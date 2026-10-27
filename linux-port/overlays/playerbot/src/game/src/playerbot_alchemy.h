@@ -45,6 +45,13 @@ namespace
 	const int PLAYERBOT_COR_LINE_MIN_UNITS = 5;
 	const DWORD PLAYERBOT_DS_TIME_ELIXIR_VNUM = 100002;
 	const DWORD PLAYERBOT_DS_GREEN_BEAN_VNUM = 100300;
+	// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: the blue and pink beans (MATERIAL_DS_REFINE_BLESSED / _HOLLY,
+	// RefineStrengthTables 100/88/77/55/33/22 and 100/90/80/60/40/30, fee 20 000 / 30 000; no shop sells them) and
+	// the Alchemist's Tongs of Time (100200, EXTRACT_DRAGON_HEART, 500 000) with the Dragon Heart they make (100000).
+	const DWORD PLAYERBOT_DS_BLUE_BEAN_VNUM = 100400;
+	const DWORD PLAYERBOT_DS_PINK_BEAN_VNUM = 100500;
+	const DWORD PLAYERBOT_DS_TIME_TONGS_VNUM = 100200;
+	const DWORD PLAYERBOT_DS_DRAGON_HEART_VNUM = 100000;
 	const DWORD PLAYERBOT_DS_ALCHEMIST_VNUM = 20001;
 	// A worn stone with less than this left gets an elixir.
 	const int PLAYERBOT_DS_ELIXIR_BELOW_SEC = 2 * 60 * 60;
@@ -309,8 +316,35 @@ namespace
 	//   * a Champion's fight is long and against monsters and bosses: HP (%), steal HP, defence against normal
 	//     hits, crit and pierce for the physical classes, magic attack for the magic ones (Sura of the black
 	//     magic, the Shamans); the PvP lines (strong against / resistance to a class) are worth nothing there.
-	// The Change Stone (100600, DoChangeAttribute) is not used: the bots get none, and a reroll of a Mythic stone's
-	// lines costs a stone the ItemShop sells - the choice is made among the stones the refining gives.
+	// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1 (the owner, 27 October 2026: "Naucz botow nastepujacych informacji:
+	// m2-helper.com/en/dragon-alchemy" - cache/yohara/m2helper-dragon-alchemy.md; its kinds are our 'global' table,
+	// dragon_soul_applys.global.txt), checked against this world, per kind (basic | additional lines):
+	//   Ametyst  Strong vs Devils, Precision, Sung Ma Vitality | Sung Ma Strength/Resistance/Intelligence, vs Metin -
+	//            the first kind on Yohara: Devils are the Sung Ma maps' main race and the Will gates the maps
+	//            (Strength under the map's halves the blows, ChampionDamage). Precision (HIT_PCT) is NOTHING to a
+	//            bot: every bot counts as one of the top Precision ("Ten system ich nie dotyczy", the owner, 22
+	//            October; ChampionDamage skips the miss for bots) - 0 here;
+	//   Jadeit   SP, wind | max HP, HP %, HP absorb (steal), HP regen, HP restore on a kill - the Champion's
+	//            survival, second after the Amethyst for every class;
+	//   Granat   max HP, lightning | SP lines - its basic HP counts, its additional lines little (bots drink);
+	//   Rubin    STR, fire | attack value, average (normal hit) damage, defence, normal hit resistance - the
+	//            physical classes' damage stone;
+	//   Diament  INT, ice | skill damage, magic attack, skill resistance, magic defence - the casters' (black
+	//            magic Sura, Shamans) and every skill user's; the bots fight with their skills, so skill damage
+	//            is high for all, magic attack for the casters only;
+	//   Onyks    VIT, dark | block, arrow dodge, crit/pierce resistance, melee reflect - defensive, middle;
+	//   Szafir   DEX, earth | strong against / resistance to a class - PvP only, nothing on the Sung Ma maps.
+	//   The elements of a kind's basic lines (power and resistance) by the Sung Ma maps' shares above.
+	// The 'mt2009' mode's lines (race bonuses on the basic lines, crit/pierce on the Amethyst) keep their values.
+	// Not taught (not in this world or worth nothing to a bot): the set bonus - the engine gives an all-7-of-one-
+	// grade (Legendary or Mythic) deck only an affect with no point (char_dragonsoul.cpp DragonSoul_SetBonus,
+	// AFFECT_DS_SET, POINT_NONE), so no stone is chosen for a set; the Dragon Flame (100700, a Mythic stone's lines
+	// rerolled for 1/3/9/27/81 flames) - no shop sells it, a bot gets one from a goblin's box now and then, and a
+	// Highest stone's reroll takes 81; the Dragon Tongs (100100: no shop sells them; 100101 Tongs+ at the
+	// Alchemist, 100 000 000 a pull-out) - a bulk alchemist pulls out only a stand-in or a stone a strictly better
+	// one replaces, which is no loss worth that; the Change Stone (100600) - the ItemShop's.
+	// Taught besides the lines: the blue and pink beans (PickPlayerBotDsBean), the bean break-even
+	// (IsPlayerBotDsStrengthWorthTrying) and the Tongs of Time (MakePlayerBotDragonHeart).
 	int GetPlayerBotDsYoharaLinePref(BYTE type, LPCHARACTER ch)
 	{
 		const BYTE job = ch ? ch->GetJob() : JOB_WARRIOR;
@@ -322,12 +356,12 @@ namespace
 			case POINT_SUNGMA_STR: return 10;
 			case POINT_SUNGMA_HP: return 9;
 			case POINT_SUNGMA_MOVE: return 9;
-			case POINT_SUNGMA_IMMUNE: return 5;
+			case POINT_SUNGMA_IMMUNE: return 6;
 			case POINT_ATTBONUS_MONSTER: return 8;
-			case POINT_ATTBONUS_DEVIL: return 8;
+			case POINT_ATTBONUS_DEVIL: return 9;
 			case POINT_ATTBONUS_HUMAN: return 7;
 			case POINT_ATTBONUS_ANIMAL: return 5;
-			case POINT_ATTBONUS_STONE: return 3;
+			case POINT_ATTBONUS_STONE: return 4;
 			case POINT_ATTBONUS_ORC: return 1;
 			case POINT_ATTBONUS_UNDEAD: return 1;
 			case POINT_ATTBONUS_MILGYO: return 1;
@@ -346,24 +380,24 @@ namespace
 			case POINT_CRITICAL_PCT: return magic ? 4 : 8;
 			case POINT_PENETRATE_PCT: return magic ? 4 : 8;
 			case POINT_ATT_GRADE_BONUS: return magic ? 3 : 8;
-			case POINT_MAGIC_ATT_GRADE_BONUS: return magic ? 8 : 1;
-			case POINT_SKILL_DAMAGE_BONUS: return 8;
-			case POINT_NORMAL_HIT_DAMAGE_BONUS: return magic ? 2 : (archer ? 8 : 7);
-			case POINT_MAX_HP_PCT: return 8;
-			case POINT_MAX_HP: return 6;
-			case POINT_STEAL_HP: return 6;
+			case POINT_MAGIC_ATT_GRADE_BONUS: return magic ? 9 : 1;
+			case POINT_SKILL_DAMAGE_BONUS: return magic ? 9 : 7;
+			case POINT_NORMAL_HIT_DAMAGE_BONUS: return magic ? 1 : (archer ? 8 : 7);
+			case POINT_MAX_HP_PCT: return 9;
+			case POINT_MAX_HP: return 7;
+			case POINT_STEAL_HP: return 7;
 			case POINT_KILL_HP_RECOVERY: return 4;
-			case POINT_HP_REGEN: return 3;
+			case POINT_HP_REGEN: return 4;
 			case POINT_NORMAL_HIT_DEFEND_BONUS: return 6;
 			case POINT_DEF_GRADE_BONUS: return 5;
 			case POINT_SKILL_DEFEND_BONUS: return 4;
 			case POINT_MAGIC_DEF_GRADE_BONUS: return 3;
 			case POINT_BLOCK: return 5;
-			case POINT_DODGE: return 5;
+			case POINT_DODGE: return 3;	// arrows only (the guide: "unik strzal")
 			case POINT_REFLECT_MELEE: return 4;
-			case POINT_RESIST_CRITICAL: return 3;
-			case POINT_RESIST_PENETRATE: return 3;
-			case POINT_HIT_PCT: return 4;
+			case POINT_RESIST_CRITICAL: return 4;
+			case POINT_RESIST_PENETRATE: return 4;
+			case POINT_HIT_PCT: return 0;	// Precision: a bot never misses (above)
 			case POINT_ST: return (job == JOB_WARRIOR || (job == JOB_SURA && group != 2)) ? 6 : 1;
 			case POINT_DX: return job == JOB_ASSASSIN ? 6 : 1;
 			case POINT_IQ: return magic ? 6 : 1;
@@ -473,8 +507,12 @@ namespace
 		const DWORD vnum = item->GetVnum();
 		if (IsPlayerBotOpenableCorVnum(vnum))
 			return IsPlayerBotKeptCor(ch, item);
-		if (vnum == PLAYERBOT_DS_GREEN_BEAN_VNUM)
+		if (vnum == PLAYERBOT_DS_GREEN_BEAN_VNUM || vnum == PLAYERBOT_DS_BLUE_BEAN_VNUM ||
+				vnum == PLAYERBOT_DS_PINK_BEAN_VNUM)	// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: the blue and pink too
 			return IsPlayerBotAlchemyUser(ch);
+		// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: a bulk alchemist's Tongs of Time and Dragon Hearts (its stones' time).
+		if (vnum == PLAYERBOT_DS_TIME_TONGS_VNUM || vnum == PLAYERBOT_DS_DRAGON_HEART_VNUM)
+			return IsPlayerBotDsBulk(ch);
 		if (vnum == PLAYERBOT_BONUS_CHANGE_VNUM || vnum == PLAYERBOT_BONUS_ADD_VNUM)
 			return IsPlayerBotDsBulk(ch);
 		return false;
@@ -1445,6 +1483,49 @@ namespace
 				GetPlayerBotDsStrength(item);
 	}
 
+	// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: the beans of the bag - green, blue, pink - and the one a strength refine
+	// from this strength takes: the best (pink, then blue) for +3 and over, where their odds help most (+3->+4 50/55/60,
+	// +4->+5 30/33/40, +5->+6 20/22/30), the plain green under it (100/80/70 - all but the same), whatever there is
+	// else. -1: none.
+	int CountPlayerBotDsBeans(LPCHARACTER ch)
+	{
+		return ch ? (int)ch->CountSpecifyItem(PLAYERBOT_DS_GREEN_BEAN_VNUM) + (int)ch->CountSpecifyItem(PLAYERBOT_DS_BLUE_BEAN_VNUM) +
+				(int)ch->CountSpecifyItem(PLAYERBOT_DS_PINK_BEAN_VNUM) : 0;
+	}
+
+	int PickPlayerBotDsBean(LPCHARACTER ch, BYTE strength)
+	{
+		static const DWORD s_high[3] = { PLAYERBOT_DS_PINK_BEAN_VNUM, PLAYERBOT_DS_BLUE_BEAN_VNUM, PLAYERBOT_DS_GREEN_BEAN_VNUM };
+		static const DWORD s_low[3] = { PLAYERBOT_DS_GREEN_BEAN_VNUM, PLAYERBOT_DS_BLUE_BEAN_VNUM, PLAYERBOT_DS_PINK_BEAN_VNUM };
+		const DWORD* order = strength >= 3 ? s_high : s_low;
+		for (int o = 0; o < 3; ++o)
+			for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (item && item->GetCell() == cell && item->GetVnum() == order[o] && !item->isLocked())
+					return cell;
+			}
+		return -1;
+	}
+
+	// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: a failed strength refine takes the stone a level down (DoRefineStrength;
+	// the guide's "Porazka: poziom -1"). With beans enough to climb back (the expected beans of the step, green
+	// odds: 1, 1.5, 2.1, 4.1, 12.8, 56.3 from +0..+5) the try pays; with fewer it is a single throw, made only while
+	// its expected power is not negative: p x (the level's gain) >= (1 - p) x (the level's loss) in the WeightTables
+	// percent - e.g. a Mythic Highest +5 with the last green bean: 0.2 x 25 < 0.8 x 15, kept at +5.
+	bool IsPlayerBotDsStrengthWorthTrying(BYTE grade, BYTE step, BYTE strength, int beans, bool pinkOrBlue)
+	{
+		static const double s_expected[6] = { 1.0, 1.5, 2.07, 4.07, 12.83, 56.3 };
+		if (strength >= 6)
+			return false;
+		if (strength == 0 || beans >= (int)(s_expected[strength] + 0.999))
+			return true;
+		const double p = PLAYERBOT_DS_STRENGTH_PCT[strength] + (pinkOrBlue ? 0.1 : 0.0);
+		const int gain = GetPlayerBotDsWeight(grade, step, strength + 1) - GetPlayerBotDsWeight(grade, step, strength);
+		const int loss = GetPlayerBotDsWeight(grade, step, strength) - GetPlayerBotDsWeight(grade, step, strength - 1);
+		return p * gain >= (1.0 - p) * loss;
+	}
+
 	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the next refine of a kind for a bulk alchemist (the comment at
 	// PLAYERBOT_COR_LEGENDARY_VNUM): grade pairs up to Mythic (where the next grade's page has room), then the
 	// Mythic step pairs from the highest down - none of the two once the kind has a Mythic Highest stone - then
@@ -1508,7 +1589,10 @@ namespace
 			return PLAYERBOT_DS_WORK_NONE;
 		if (strength >= GetPlayerBotDsStrengthCap(grade, step) || spare < 10000 + PLAYERBOT_DS_REFINE_SPARE)
 			return PLAYERBOT_DS_WORK_NONE;
-		const bool beans = ch->CountSpecifyItem(PLAYERBOT_DS_GREEN_BEAN_VNUM) > 0;
+		// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: any bean of the bag, while the try pays (a bought one is no limit).
+		const int beanCount = CountPlayerBotDsBeans(ch);
+		const bool better = ch->CountSpecifyItem(PLAYERBOT_DS_PINK_BEAN_VNUM) + ch->CountSpecifyItem(PLAYERBOT_DS_BLUE_BEAN_VNUM) > 0;
+		const bool beans = beanCount > 0 && IsPlayerBotDsStrengthWorthTrying(grade, step, strength, beanCount, better && strength >= 3);
 		const bool buy = strength < GetPlayerBotDsTarget(ch).strength && spare >= PLAYERBOT_DS_BEAN_COST * 3;
 		if (!beans && !buy)
 			return PLAYERBOT_DS_WORK_NONE;
@@ -1615,7 +1699,7 @@ namespace
 		LPITEM item = ch->AutoGiveItem(vnum, 1, -1, false);
 		if (vnum == PLAYERBOT_DS_TIME_ELIXIR_VNUM)
 			++s_kPlayerBotAlchemyStats.elixirs;
-		else
+		else if (vnum == PLAYERBOT_DS_GREEN_BEAN_VNUM)
 			++s_kPlayerBotAlchemyStats.beans;
 		return item;
 	}
@@ -1643,6 +1727,49 @@ namespace
 		return n;
 	}
 
+	// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: the guide's "Eliksir Czasu z kamienia Szczypcami Czasu". The Alchemist's
+	// Tongs of Time (100200, 500 000) on a stone of the bag turn it into a Dragon Heart (DSManager::ExtractDragonHeart,
+	// DragonHeartExtTables): a Legendary or Mythic stone always gives one of 100% - a whole day of the stone it is used
+	// on (USE_TIME_CHARGE_PER, up to the stone's full duration), against the Time Elixir (D)'s 30 000 s for
+	// 5 000 000. A bulk alchemist's spare stone - Legendary or over, of a kind with no refine left to do, not the
+	// kind's stone (GetPlayerBotDsIntended) - is worth that more than lying in the bag; the worst spare goes first.
+	// Returns the bag cell of a Dragon Heart, made now if need be, or -1.
+	int MakePlayerBotDragonHeart(LPCHARACTER ch)
+	{
+		int heart = FindPlayerBotBagItem(ch, PLAYERBOT_DS_DRAGON_HEART_VNUM);
+		if (heart >= 0 || !IsPlayerBotDsBulk(ch) || ch->GetEmptyInventory(1) < 0)
+			return heart;
+		LPITEM spare = NULL;
+		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+		{
+			LPITEM a = NULL, b = NULL;
+			if (FindPlayerBotDsRefine(ch, kind, a, b) != PLAYERBOT_DS_WORK_NONE)
+				continue;
+			LPITEM intended = GetPlayerBotDsIntended(ch, kind);
+			std::vector<LPITEM> stones;
+			CollectPlayerBotDragonSouls(ch, stones, kind);
+			for (size_t i = 0; i < stones.size(); ++i)
+				if (stones[i] != intended && GetPlayerBotDsGrade(stones[i]) >= 4 && !IsPlayerBotSidekickLockedItem(ch, stones[i]) &&
+						(!spare || RankPlayerBotDs(ch, stones[i]) < RankPlayerBotDs(ch, spare)))
+					spare = stones[i];
+		}
+		if (!spare)
+			return -1;
+		int tongs = FindPlayerBotBagItem(ch, PLAYERBOT_DS_TIME_TONGS_VNUM);
+		if (tongs < 0 && BuyPlayerBotAlchemistItem(ch, PLAYERBOT_DS_TIME_TONGS_VNUM))
+			tongs = FindPlayerBotBagItem(ch, PLAYERBOT_DS_TIME_TONGS_VNUM);
+		if (tongs < 0)
+			return -1;
+		const DWORD spareVnum = spare->GetVnum();
+		const bool ok = ch->UseItem(TItemPos(INVENTORY, (WORD)tongs), TItemPos(spare->GetWindow(), spare->GetCell()));
+		heart = FindPlayerBotBagItem(ch, PLAYERBOT_DS_DRAGON_HEART_VNUM);
+		LPITEM h = heart >= 0 ? ch->GetInventoryItem((WORD)heart) : NULL;
+		sys_log(0, "PLAYERBOT_ALCHEMY: dragon heart pid=%u name=%s from=%u ok=%d charge=%ld gold=%lld", ch->GetPlayerID(),
+				ch->GetName(), spareVnum, ok ? 1 : 0, h ? (long)h->GetSocket(ITEM_SOCKET_CHARGING_AMOUNT_IDX) : 0L,
+				(long long)ch->GetGold());
+		return heart;
+	}
+
 	// One step at the Alchemist: an elixir for a stone running out, else one
 	// refine. True when something was done.
 	bool DoPlayerBotAlchemistStep(LPCHARACTER ch)
@@ -1653,7 +1780,10 @@ namespace
 			LPITEM stone = GetPlayerBotDsRechargeTarget(ch, kind);
 			if (!stone)
 				continue;
-			int cell = FindPlayerBotBagItem(ch, PLAYERBOT_DS_TIME_ELIXIR_VNUM);
+			// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: a Dragon Heart from a spare stone first (a bulk alchemist).
+			int cell = MakePlayerBotDragonHeart(ch);
+			if (cell < 0)
+				cell = FindPlayerBotBagItem(ch, PLAYERBOT_DS_TIME_ELIXIR_VNUM);
 			if (cell < 0 && BuyPlayerBotAlchemistItem(ch, PLAYERBOT_DS_TIME_ELIXIR_VNUM))
 				cell = FindPlayerBotBagItem(ch, PLAYERBOT_DS_TIME_ELIXIR_VNUM);
 			if (cell < 0)
@@ -1713,7 +1843,8 @@ namespace
 			const long long goldBefore = ch->GetGold();
 			if (work == PLAYERBOT_DS_WORK_STRENGTH)
 			{
-				int bean = FindPlayerBotBagItem(ch, PLAYERBOT_DS_GREEN_BEAN_VNUM);
+				// MT2009_PLUS_BOT_DS_ALCHEMY_GUIDE_V1: a bulk alchemist's best bean for the level.
+				int bean = bulk ? PickPlayerBotDsBean(ch, strengthA) : FindPlayerBotBagItem(ch, PLAYERBOT_DS_GREEN_BEAN_VNUM);
 				if (bean < 0 && BuyPlayerBotAlchemistItem(ch, PLAYERBOT_DS_GREEN_BEAN_VNUM))
 					bean = FindPlayerBotBagItem(ch, PLAYERBOT_DS_GREEN_BEAN_VNUM);
 				if (bean < 0)
@@ -1845,7 +1976,7 @@ namespace
 				IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ? 1 : 0, CountPlayerBotOpenableCors(ch),
 				CountPlayerBotLegendaryCors(ch), ch->GetQuestFlag(PLAYERBOT_DS_OPENED_FLAG), legendary, mythic, highest,
 				capped, done, (int)DS_SLOT_MAX, strengths.c_str(), worn.empty() ? "none" : worn.c_str(),
-				(int)ch->CountSpecifyItem(PLAYERBOT_DS_GREEN_BEAN_VNUM), (long long)ch->GetGold(), ch->GetMapIndex());
+				CountPlayerBotDsBeans(ch), (long long)ch->GetGold(), ch->GetMapIndex());
 	}
 
 	// The tick: the local work (qualification, Cors, stones, deck) on a short
