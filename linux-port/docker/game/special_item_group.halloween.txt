@@ -5,12 +5,13 @@
 -- line per chest, by weight (the weights add up to 100, so each is its percent). The operator
 -- edits it on the Seban panel's "Szkatulki" page like any other chest. The owner (26 Oct): Zaczarowanie 2%,
 -- Wzmocnienie 1%, Szkatulka Blasku Ksiezyca 10%; the 13 freed points went to the two potions (17 / 16).
+-- 27 Oct: Zaczarowanie +3 (5%), Wzmocnienie +3 (4%), the Mask Card down by those 6 (4%).
 Group	mt2009_halloween_chest
 {
 	Vnum	50215 -- Upiorna Skrzynia
-	1	30323	1	10 -- Karta Maski Dyni
-	2	71084	1	2 -- Zaczarowanie Przedmiotu
-	3	71085	1	1 -- Wzmocnienie Przedmiotu
+	1	30323	1	4 -- Karta Maski Dyni
+	2	71084	1	5 -- Zaczarowanie Przedmiotu
+	3	71085	1	4 -- Wzmocnienie Przedmiotu
 	4	27102	5	17 -- Zielona Mikstura (D)
 	5	27105	5	16 -- Fioletowa Mikstura (D)
 	6	71044	2	7 -- Dlon Krytyka
