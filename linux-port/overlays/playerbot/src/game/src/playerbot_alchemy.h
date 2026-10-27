@@ -1731,8 +1731,10 @@ namespace
 	// Tongs of Time (100200, 500 000) on a stone of the bag turn it into a Dragon Heart (DSManager::ExtractDragonHeart,
 	// DragonHeartExtTables): a Legendary or Mythic stone always gives one of 100% - a whole day of the stone it is used
 	// on (USE_TIME_CHARGE_PER, up to the stone's full duration), against the Time Elixir (D)'s 30 000 s for
-	// 5 000 000. A bulk alchemist's spare stone - Legendary or over, of a kind with no refine left to do, not the
-	// kind's stone (GetPlayerBotDsIntended) - is worth that more than lying in the bag; the worst spare goes first.
+	// 5 000 000. MT2009_PLUS_BOT_DS_TONGS_WEAK_V1 (the owner, 27.10.2026): the tongs go on the weakest stones only -
+	// Zwykly / Blyszczacy (grade 0-1), of a kind with no refine left to do, not the kind's stone
+	// (GetPlayerBotDsIntended); never a Rare or better - a Legendary or Mythic stone is worth more than the
+	// 5 000 000 elixir. With no such stone the bot buys the elixir. The worst spare goes first.
 	// Returns the bag cell of a Dragon Heart, made now if need be, or -1.
 	int MakePlayerBotDragonHeart(LPCHARACTER ch)
 	{
@@ -1749,7 +1751,7 @@ namespace
 			std::vector<LPITEM> stones;
 			CollectPlayerBotDragonSouls(ch, stones, kind);
 			for (size_t i = 0; i < stones.size(); ++i)
-				if (stones[i] != intended && GetPlayerBotDsGrade(stones[i]) >= 4 && !IsPlayerBotSidekickLockedItem(ch, stones[i]) &&
+				if (stones[i] != intended && GetPlayerBotDsGrade(stones[i]) <= 1 && !IsPlayerBotSidekickLockedItem(ch, stones[i]) &&
 						(!spare || RankPlayerBotDs(ch, stones[i]) < RankPlayerBotDs(ch, spare)))
 					spare = stones[i];
 		}
