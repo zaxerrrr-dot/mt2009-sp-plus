@@ -23,31 +23,20 @@ quest event_halloween_hair begin
 		end
 
 		-- MT2009_PLUS_HALLOWEEN_V1: our engine's apply types are its POINT_ numbers (item_attr.apply), not questlib's
-		-- apply table: apply.MAX_SP_PCT (70) is POINT_RESIST_TWOHAND here, so every mask came out as 'Odpornosc na Bron
-		-- Dwureczna 1%' (the owner's test, 27 Oct). 53-57 = silny przeciw potworom / Wojownikom / Ninja / Surom / Szamanom,
-		-- 119 / 120 = maks. PZ / PE w %.
+		-- apply table (apply.MAX_SP_PCT 70 is POINT_RESIST_TWOHAND here). The owner (27 Oct): only these five bonuses,
+		-- each equally likely - silny przeciw potworom (53), Wojownikom (54), Ninja (55), Surom (56), Szamanom (57) -
+		-- +5% (60%) or +10% (40%), for 7 days.
 		function get_hair_option(index)
-			local option_list = {
-				{ ["apply"] = 53, ["value"] = 10, ["duration"] = 604800 },	-- 7 dni
-				{ ["apply"] = 56, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = 57, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = 54, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = 55, ["value"] = 10, ["duration"] = 604800 },
-				{ ["apply"] = 119, ["value"] = 1, ["duration"] = 21600 },	-- 6 godzin
-				{ ["apply"] = 120, ["value"] = 1, ["duration"] = 86400 },	-- 24 godziny
-			}
-			return option_list[index]
+			local applies = { 53, 54, 55, 56, 57 }
+			local value = 10
+			if number(1, 100) <= 60 then
+				value = 5
+			end
+			return { ["apply"] = applies[index], ["value"] = value, ["duration"] = 604800 }
 		end
 
-		-- Owsap's odds: [1] .. [5] 1 % each, [6] 15 %, [7] 80 %.
 		function get_random_hair_option_index()
-			local rand = number(1, 100)
-			if rand <= 5 then
-				return rand
-			elseif rand <= 85 then
-				return 7
-			end
-			return 6
+			return number(1, 5)
 		end
 
 		-- pc.get_race() + 1; the Lycan (9) has no mask.
@@ -105,10 +94,10 @@ quest event_halloween_hair begin
 				return
 			end
 			say_title("Jack Pumpkin:")
-			say("Maska dyni wytrzyma 6 godzin, 1 dzieñ lub 7 dni")
-			say("od pierwszego za³o¿enia. Zale¿y to od twojego")
-			say("szczêœcia! Jej atrybut te¿ jest losowy, wiêc")
-			say("ka¿da maska jest inna. ")
+			say("Maska dyni wytrzyma 7 dni od pierwszego")
+			say("za³o¿enia. Jej atrybut jest losowy: silny przeciw")
+			say("potworom, Wojownikom, Ninja, Surom albo Szamanom,")
+			say("+5% albo +10%. Ka¿da maska jest inna. ")
 			wait()
 			say_title("Jack Pumpkin:")
 			say("Chcesz teraz wymieniæ Kartê Maski Dyni")
