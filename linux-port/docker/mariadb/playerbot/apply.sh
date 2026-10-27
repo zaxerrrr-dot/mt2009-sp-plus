@@ -311,6 +311,13 @@ if [ -s /opt/playerbot/item_proto.mt2009plus.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_HALLOWEEN_V1: the Halloween Pumpkin (30321) is a plain event item, not a potion - the package
+# has it as USE / POTION_NODELAY (300 HP, 100 SP), so a right-click ate it (the owner's test, 27 Oct 2026).
+# Quest type like the Magic Wand and the Mask Card; the wand's use (event_halloween_hair) still takes it.
+# After the item rows above, so a world that just got the row gets this too. Every start; idempotent.
+db -e "UPDATE world.item_proto SET type = 18, subtype = 0, value0 = 0, value1 = 0 WHERE vnum = 30321 AND type <> 18;" \
+    || fail_step "could not make the Halloween Pumpkin a plain item" >&2
+
 # MT2009 Plus: the monsters the same way (mob_proto.mt2009plus.sql, the full
 # package's world.mob_proto). A world from another dump had the costume
 # pack's mount and pet seals from the file above and not their monsters, so
