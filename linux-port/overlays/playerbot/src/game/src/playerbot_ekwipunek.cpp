@@ -135,6 +135,12 @@ BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum)
 		return STONE_INVENTORY;
 	if (bType == ITEM_USE && bSubType == USE_CHANGE_ATTRIBUTE)
 		return CHANGE_INVENTORY;
+	// MT2009_PLUS_EKWIPUNEK_STARTER_V1 (the owner, 27 October 2026): the level chests of a new character (Skrzynia
+	// Ucznia I-III, Eksperta I-III, Mistrza I-III, Arcymistrza: 50187-50196, 50212, 50213 - special_item_group.starter.txt)
+	// stay in the bag, where the player sees the next one come and opens it at its level. Kept with
+	// root/uiekwipunek.py (STARTER_CHESTS) in step.
+	if ((dwVnum >= 50187 && dwVnum <= 50196) || dwVnum == 50212 || dwVnum == 50213)
+		return 0;
 	if (bType == ITEM_GIFTBOX)
 		return CHEST_INVENTORY;
 	return 0;

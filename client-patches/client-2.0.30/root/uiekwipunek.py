@@ -238,9 +238,17 @@ def CategoryOf(vnum):
 		return player.STONE_INVENTORY
 	if itemType == getattr(item, "ITEM_TYPE_USE", -1) and item.GetUseType(vnum) == "USE_CHANGE_ATTRIBUTE":
 		return player.CHANGE_INVENTORY
+	if vnum in STARTER_CHESTS:	# MT2009_PLUS_EKWIPUNEK_STARTER_V1: they stay in the bag
+		return 0
 	if itemType == getattr(item, "ITEM_TYPE_GIFTBOX", -1):
 		return player.CHEST_INVENTORY
 	return 0
+
+
+# MT2009_PLUS_EKWIPUNEK_STARTER_V1 (the owner, 27 October 2026): the level chests of a new character - Skrzynia Ucznia
+# I-III, Eksperta I-III, Mistrza I-III, Arcymistrza - never go into the chests' storage (playerbot_ekwipunek.cpp,
+# Mt2009EkwCategoryOf - keep both in step).
+STARTER_CHESTS = set(range(50187, 50197) + [50212, 50213])
 
 
 # ---------------------------------------------------------------- the cursor
