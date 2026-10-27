@@ -133,6 +133,14 @@ void CleanupPlayerBotDuelOnLeave(LPCHARACTER ch,TPlayerBotAIState& state) {
     if(playerbot_pvp::duels.count(ch->GetPlayerID()))
         FinishPlayerBotPreparedDuel(ch,state,get_dword_time(),"despawn duel");
 }
+// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: an Archer with no bow in the hand - the
+// dagger it fights with until a better bow (IsPlayerBotArcherOnDagger) -
+// duels as a Dagger Ninja: the Archer's profile kept it at the bow's nine
+// hundred, where a blade swings at the air.
+playerbot_duel::Profile PlayerBotDuelProfile(LPCHARACTER ch) {
+    if(IsPlayerBotArcherBuild(ch) && !IsPlayerBotArcher(ch)) return playerbot_duel::GetProfile(JOB_ASSASSIN,1);
+    return playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup());
+}
 // Spatial gates use the engine's pathfinder, never Show/Warp/teleport.
 bool MovePlayerBotDuelRange(LPCHARACTER ch,LPCHARACTER foe,DWORD now,int range,int angleOffset=0) {
     const double dx=ch->GetX()-foe->GetX(),dy=ch->GetY()-foe->GetY();
@@ -174,7 +182,7 @@ DWORD SelectPlayerBotDuelSkill(LPCHARACTER ch,LPCHARACTER foe,TPlayerBotAIState&
         if(!listed) for(DWORD& skill:build.dwOffensiveSkills) if(!skill) {skill=SKILL_DISPEL;break;}
     }
     const int distance=DISTANCE_APPROX(ch->GetX()-foe->GetX(),ch->GetY()-foe->GetY());
-    const auto profile=playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup());
+    const auto profile=PlayerBotDuelProfile(ch);
     if(!PlayerBotDuelClearLine(ch,foe)) return 0;
     const bool valuableBuff=PlayerBotDuelValuableBuff(foe);
     auto active=playerbot_pvp::duels.find(ch->GetPlayerID());
@@ -189,6 +197,10 @@ DWORD SelectPlayerBotDuelSkill(LPCHARACTER ch,LPCHARACTER foe,TPlayerBotAIState&
             (!approachCandidate && !PlayerBotDuelSkillReaches(skill,distance))) continue;
         CSkillProto* proto=CSkillManager::instance().Get(skill);
         if(!proto || (skill==SKILL_DISPEL && (!valuableBuff || !dispelObserved))) continue;
+        // MT2009_PLUS_BOT_ARCHER_DAGGER_V1: an arrow skill without a bow in the
+        // hand hits for nothing (the engine's atk is 0) and the cast refuses it
+        // (ExecutePlayerBotAttackSkill) - not chosen, so the blade swings.
+        if(IS_SET(proto->dwFlag,SKILL_FLAG_USE_ARROW_DAMAGE) && !IsPlayerBotArcher(ch)) continue;
         playerbot_duel::SkillSituation situation;
         situation.level=ch->GetSkillLevel(skill);
         situation.affordable=playerbot_duel::HasSkillResources(ch->GetSP(),GetPlayerBotSkillSPCost(ch,skill),healCost);
@@ -355,7 +367,7 @@ bool ManagePlayerBotDuelCharge(LPCHARACTER ch,LPCHARACTER foe,TPlayerBotAIState&
     if(!PlayerBotUseSkill(ch,state,SKILL_CHARGE,contact?foe:ch,now)) return false;
     state.dwLastBotSkillTime=now;
     duel.weaponChain=0;duel.lastWeaponAt=0;state.bComboMotion=MOTION_COMBO_ATTACK_1;
-    state.dwNextSkillCastTime=now+playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).skillGap;
+    state.dwNextSkillCastTime=now+PlayerBotDuelProfile(ch).skillGap;
     if(contact) {
         SendPlayerBotSkillPacket(ch,SKILL_CHARGE);
         state.dwNextAttackTime=now+PLAYERBOT_SKILL_ANIMATION_LOCK;
@@ -413,7 +425,7 @@ bool ManagePlayerBotPreparedCombat(LPCHARACTER ch,LPCHARACTER foe,TPlayerBotAISt
         }
     }
     state.dwTargetVID=foe->GetVID();ch->SetVictim(foe);SetPlayerBotAction(state,BOT_ACTION_FIGHT,now);
-    const auto profile=playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup());
+    const auto profile=PlayerBotDuelProfile(ch);
     if(duel.lastWeaponAt && playerbot_duel::ComboTimedOut(now,state.dwNextAttackTime)) {
         duel.weaponChain=0;duel.lastWeaponAt=0;state.bComboMotion=MOTION_COMBO_ATTACK_1;
     }
@@ -550,14 +562,14 @@ bool ManagePlayerBotDuelAiChallenger(LPCHARACTER ch,TPlayerBotAIState& state,DWO
     auto& their=theirs->second;
     if(!side.seenAt) {
         side.seenAt=now;side.reactAt=now+number(playerbot_duel::reactionMin,playerbot_duel::reactionMax);
-        side.desiredRange=playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).startRange+number(-40,40);
+        side.desiredRange=PlayerBotDuelProfile(ch).startRange+number(-40,40);
         auto result=playerbot_pvp::history.find(std::make_pair(pid,side.challengerPid));
         side.threat=playerbot_duel::Threat(ch->GetLevel(),foe->GetLevel(),result==playerbot_pvp::history.end()?0:result->second.streak);
         side.budget=playerbot_duel::Budget(side.threat);
         state.dwTargetVID=0;ch->SetVictim(NULL);ch->SetTarget(NULL);ch->Stop();ClearPlayerBotRoute(state,true);
         state.bVisitingShop=false;state.bTacticalRetreat=false;state.bMultiPullActive=false;
         sys_log(0,"PLAYERBOT_DUEL_BB: challenger prep pid=%u foe=%u threat=%d profile=%s",pid,side.challengerPid,side.threat,
-            playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).name);
+            PlayerBotDuelProfile(ch).name);
     }
     if(now-side.seenAt>PLAYERBOT_DUEL_AI_SIDE_TIMEOUT) {DropPlayerBotDuelAiSide(ch,"timeout");return false;}
     state.dwTargetVID=0;ch->SetVictim(NULL);state.dwLastMeaningfulActivityTime=now;state.dwLastCombatActionTime=now;
@@ -627,7 +639,7 @@ void StartPlayerBotDuelAiChallengerFight(LPCHARACTER ch,LPCHARACTER foe,DWORD no
     fstate.dwTargetVID=ch->GetVID();foe->SetVictim(ch);foe->SetTarget(ch);
     fstate.bComboMotion=MOTION_COMBO_ATTACK_1;
     sys_log(0,"PLAYERBOT_DUEL_BB: start pid=%u foe=%u profile=%s foe_profile=%s level=%u foe_level=%u map=%ld",
-        ch->GetPlayerID(),foePid,playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).name,
+        ch->GetPlayerID(),foePid,PlayerBotDuelProfile(ch).name,
         playerbot_duel::GetProfile(foe->GetJob(),foe->GetSkillGroup()).name,(unsigned)ch->GetLevel(),(unsigned)foe->GetLevel(),ch->GetMapIndex());
 }
 
@@ -686,7 +698,7 @@ bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) 
     if(!prep.seenAt) {
         prep.seenAt=now;prep.reactAt=now+number(playerbot_duel::reactionMin,playerbot_duel::reactionMax);
         prep.originX=ch->GetX();prep.originY=ch->GetY();prep.map=ch->GetMapIndex();
-        prep.desiredRange=playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).startRange+number(-40,40);
+        prep.desiredRange=PlayerBotDuelProfile(ch).startRange+number(-40,40);
         if(ch->GetJob()==JOB_ASSASSIN && ch->GetSkillGroup()==1 && ch->GetSkillLevel(SKILL_STEALTH)>0) {
             prep.stealthPlan=playerbot_duel::DaggerStealthPlan(number(0,99));
             if(prep.stealthPlan==playerbot_duel::StealthPlan::Opening) prep.desiredRange=playerbot_duel::daggerOpeningRange+number(-75,75);
@@ -697,7 +709,7 @@ bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) 
         state.dwTargetVID=0;ch->SetVictim(NULL);ch->SetTarget(NULL);ch->Stop();ClearPlayerBotRoute(state,true);
         if(ch->IsAffectFlag(AFF_MUYEONG)) ch->StopMuyeongEvent();
         state.bVisitingShop=false;state.bTacticalRetreat=false;state.bMultiPullActive=false;
-        if(playerbot_duel::debug) sys_log(0,"PLAYERBOT_DUEL: challenge pid=%u foe=%u threat=%d profile=%s",pid,prep.challengerPid,prep.threat,playerbot_duel::GetProfile(ch->GetJob(),ch->GetSkillGroup()).name);
+        if(playerbot_duel::debug) sys_log(0,"PLAYERBOT_DUEL: challenge pid=%u foe=%u threat=%d profile=%s",pid,prep.challengerPid,prep.threat,PlayerBotDuelProfile(ch).name);
     }
     if(playerbot_pvp::PreparationExpired(prep,now) || prep.map!=ch->GetMapIndex() ||
         DISTANCE_APPROX(ch->GetX()-prep.originX,ch->GetY()-prep.originY)>playerbot_duel::maxTravel) {
@@ -719,7 +731,10 @@ bool ManagePlayerBotDuelFlow(LPCHARACTER ch,TPlayerBotAIState& state,DWORD now) 
     if(IsPlayerBotSafeZone(foe->GetMapIndex(),foe->GetX(),foe->GetY())) {
         ch->Stop();ClearPlayerBotRoute(state,true);return true;
     }
-    if(IsPlayerBotArcherBuild(ch)) {
+    // MT2009_PLUS_BOT_ARCHER_DAGGER_V1: the dagger it fights with is ready
+    // too; waiting for a bow the equipment pass will not put on ran the
+    // preparation out ("nvm").
+    if(IsPlayerBotArcherBuild(ch) && !IsPlayerBotArcherOnDagger(ch)) {
         LPITEM held=ch->GetWear(WEAR_WEAPON);
         if(!held || held->GetSubType()!=WEAPON_BOW) {
             if(!prep.nextItem || (int32_t)(now-prep.nextItem)>=0) {
