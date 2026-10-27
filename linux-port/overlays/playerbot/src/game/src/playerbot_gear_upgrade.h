@@ -88,6 +88,10 @@ namespace
 		return best;
 	}
 
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: a weapon goal the hand has not moved
+	// towards for hours (playerbot_weapon_goal.h, included after this file).
+	bool IsPlayerBotWeaponGoalStuck(LPCHARACTER ch);
+
 	// The gain of a blow over the best weapon owned, in percent; a bot with no
 	// weapon at all gains everything.
 	long long GetPlayerBotWeaponGainPercent(long long blow, long long ownedBlow)
@@ -103,8 +107,14 @@ namespace
 	{
 		if (!ch)
 			return 0;
-		const long long spare = (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch) -
-				PLAYERBOT_WEAPON_UPGRADE_GOLD_FLOOR;
+		const long long overReserve = (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch);
+		// MT2009_PLUS_BOT_WEAPON_BAG_V1: a bot stuck behind its goal pays out of
+		// all it holds over the reserve and a few hundred for the road - a
+		// purse of 5 000 never reached the floor of 100 000, and nothing else
+		// moves a bot whose goal only drops on a map it never hunts.
+		if (overReserve > PLAYERBOT_WEAPON_GOAL_STUCK_GOLD_FLOOR && IsPlayerBotWeaponGoalStuck(ch))
+			return overReserve - PLAYERBOT_WEAPON_GOAL_STUCK_GOLD_FLOOR;
+		const long long spare = overReserve - PLAYERBOT_WEAPON_UPGRADE_GOLD_FLOOR;
 		if (spare <= 0)
 			return 0;
 		return spare * (gainPercent >= PLAYERBOT_WEAPON_UPGRADE_BIG_GAIN_PERCENT
@@ -257,6 +267,9 @@ namespace
 		static const DWORD merchants[] = { 9001, 9002, 9003 };
 		TPlayerBotOwnedWeapon owned;
 		bool ownedRead = false;
+		// MT2009_PLUS_BOT_WEAPON_BAG_V1: stuck behind its goal, the whole purse
+		// over the reserve and PLAYERBOT_WEAPON_GOAL_STUCK_GOLD_FLOOR pays.
+		int stuck = -1;
 		DWORD bestVnum = 0;
 		long long bestBlow = 0;
 		for (size_t i = 0; i < sizeof(merchants) / sizeof(merchants[0]); ++i)
@@ -285,9 +298,14 @@ namespace
 				// the counters' floor would keep a bot of twenty, whose purse is a
 				// few hundred thousand, from a sword of 5 000.
 				const long long price = GetPlayerBotMerchantOfferPrice(offers[k], proto);
-				if (price * 2 > (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch) -
-						PLAYERBOT_WEAPON_UPGRADE_MERCHANT_FLOOR)
-					continue;
+				const long long overReserve = (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch);
+				if (price * 2 > overReserve - PLAYERBOT_WEAPON_UPGRADE_MERCHANT_FLOOR)
+				{
+					if (stuck < 0)
+						stuck = IsPlayerBotWeaponGoalStuck(ch) ? 1 : 0;
+					if (stuck == 0 || price > overReserve - PLAYERBOT_WEAPON_GOAL_STUCK_GOLD_FLOOR)
+						continue;
+				}
 				bestVnum = offers[k].vnum;
 				bestBlow = blow;
 				if (priceOut)
