@@ -65,6 +65,9 @@
 // InGameEventValue(key) at the end of this file.
 #include "mob_manager.h"
 
+// MT2009_PLUS_HALLOWEEN_V1 (auto): playerbot_halloween.h, included after this file.
+bool HalloweenAutoWindow(long now, long& start, long& end);
+
 namespace mt2009_ingame_event
 {
 	enum EFlagMeaning
@@ -107,6 +110,12 @@ namespace mt2009_ingame_event
 		// MT2009_PLUS_WORLDBOSS_V1: Boss Swiata - the flag is the event's switch, written by the core that runs the
 		// boss (worldboss_config.mode: 1 always, 2 the scheduler's window, 0 off; playerbot_worldboss.h).
 		{ "worldboss",	playerbot_events::KIND_WORLDBOSS,	"worldboss_event",			FLAG_VALUE,		1, NULL,			NULL,						NULL,						0, false },
+		// MT2009_PLUS_HALLOWEEN_V1: Owsap's event_halloween_hair switch. While it is on,
+		// Jack Pumpkin (33008) stands in the three first villages and the monsters drop
+		// the pumpkins and wands (playerbot_halloween.h); after a scheduled run he stays
+		// 7 more days (halloween_hair_reward) for the Mask Cards still in the bags. No
+		// "<flag> <value>" line: no client python listens for it.
+		{ "halloween",	playerbot_events::KIND_HALLOWEEN,	"halloween_hair",			FLAG_VALUE,		1, NULL,			NULL,						"halloween_hair_reward",	33008, false },
 	};
 	const int DEFS = sizeof(s_defs) / sizeof(s_defs[0]);
 
@@ -152,6 +161,11 @@ namespace mt2009_ingame_event
 		{ 20506,  1, 608, 623, 0 },	// Catch the King
 		{ 20506, 21, 596, 614, 0 },
 		{ 20506, 41, 350, 738, 0 },
+		// MT2009_PLUS_HALLOWEEN_V1: Jack Pumpkin on Owsap's quest cells
+		// (event_halloween_hair.quest), walkable on our server_attr (26 October).
+		{ 33008,  1, 608, 617, 0 },
+		{ 33008, 21, 596, 610, 0 },
+		{ 33008, 41, 357, 743, 0 },
 	};
 	const int SPOTS = sizeof(s_spots) / sizeof(s_spots[0]);
 	const int NPC_ROTATION = 90;
@@ -299,6 +313,18 @@ namespace mt2009_ingame_event
 			sched = st.active;
 			schedUntil = st.until;
 			schedSince = st.since;
+		}
+		// MT2009_PLUS_HALLOWEEN_V1 (auto): the optional calendar window - off unless
+		// the event flag m2_halloween_auto is set (playerbot_halloween.h).
+		if (!sched && d.kind == playerbot_events::KIND_HALLOWEEN)
+		{
+			long autoStart = 0, autoEnd = 0;
+			if (::HalloweenAutoWindow(now, autoStart, autoEnd))
+			{
+				sched = true;
+				schedSince = autoStart;
+				schedUntil = autoEnd;
+			}
 		}
 		const int flag = d.meaning == FLAG_NONE ? 0 : Flag(d.flag);
 		bool flagOn = false;
