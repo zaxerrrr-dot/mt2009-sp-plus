@@ -2528,6 +2528,11 @@ namespace
 		// merchant once no bot did (IsPlayerBotG0NpcSaleDue, SellPlayerBotJunkAtMerchant).
 		if (Mt2009AccountBound(item))
 			return false;
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: nor what an alchemy user still needs - its Cors, its Green Dragon Beans,
+		// a bulk alchemist's 71084/71085 (playerbot_alchemy.h, IsPlayerBotKeptAlchemyGoods), the operator's word
+		// included.
+		if (IsPlayerBotKeptAlchemyGoods(ch, item))
+			return false;
 		// MT2009_PLUS_SIDEKICK_SELL_SCRAP_V2: a companion its owner sent to town
 		// sells its scrap - the owner's own handover included - by its own
 		// rule alone, at once; none of an ordinary bot's keeps below holds it.
@@ -3528,6 +3533,7 @@ namespace
 			if (item && !item->IsEquipped() && !item->isLocked() &&
 					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_DROP &&
 					!IsPlayerBotMlodziKept(ch, item) &&	// MT2009_PLUS_BOT_MLODZI_V1
+					!IsPlayerBotKeptAlchemyGoods(ch, item) &&	// MT2009_PLUS_BOT_DS_YOHARA800_V1
 					!IsPlayerBotSidekickLockedItem(ch, item) &&	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 					// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: nor a companion's
 					// valuables, which are its owner's.
