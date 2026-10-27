@@ -73,6 +73,12 @@ namespace
 		long long handBlow;
 		DWORD handVnum;
 		DWORD when;
+		// MT2009_PLUS_BOT_WEAPON_BAG_V1: since when the hand has stood
+		// outclassed without its blow rising, 0 while it is not, and the blow
+		// that clock started at (IsPlayerBotWeaponGoalStuck).
+		DWORD behindSince;
+		long long behindBlow;
+		bool stuckSaid;
 	};
 	std::map<DWORD, TPlayerBotWeaponGoal> s_mapPlayerBotWeaponGoals;
 
@@ -96,6 +102,42 @@ namespace
 		LPITEM hand = GetPlayerBotHandWeapon(ch);
 		goal.handVnum = hand ? hand->GetVnum() : 0;
 		goal.handBlow = hand ? GetPlayerBotWeaponHitDamage(hand, ch) : 0;
+		// MT2009_PLUS_BOT_WEAPON_BAG_V1: the hand is the best weapon the bot
+		// owns, the bag's included - the equipment pass puts a better one from
+		// the bag on, and a goal read against the worn one alone sent a bot to
+		// the market for a weapon it already carried.
+		LPITEM bagBest = FindPlayerBotBestBagWeapon(ch, hand, NULL);
+		if (bagBest)
+		{
+			const long long bagBlow = GetPlayerBotWeaponHitDamage(bagBest, ch);
+			if (bagBlow > goal.handBlow)
+			{
+				goal.handVnum = bagBest->GetVnum();
+				goal.handBlow = bagBlow;
+			}
+		}
+		// A goal is stuck when the hand stays outclassed and its blow does not
+		// rise for PLAYERBOT_WEAPON_GOAL_STUCK_MS: a family whose only source
+		// is a drop on a map the bot never hunts is never reached by waiting.
+		if (!IsPlayerBotWeaponOutclassed(goal))
+		{
+			goal.behindSince = 0;
+			goal.stuckSaid = false;
+		}
+		else if (goal.behindSince == 0 || goal.handBlow > goal.behindBlow)
+		{
+			goal.behindSince = goal.when;
+			goal.behindBlow = goal.handBlow;
+			goal.stuckSaid = false;
+		}
+		else if (!goal.stuckSaid && goal.when - goal.behindSince >= PLAYERBOT_WEAPON_GOAL_STUCK_MS)
+		{
+			goal.stuckSaid = true;
+			sys_log(0, "PLAYERBOT_WEAPON: goal stuck pid=%u name=%s level=%u hand=%u blow=%lld goal=%u level=%u sources=0x%02x hours=%u gold=%lld - buying the best weapon it can afford",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), goal.handVnum, goal.handBlow,
+					goal.family->dwBaseVnum, (unsigned int)goal.family->bLevel, (unsigned int)goal.family->wSources,
+					(unsigned int)((goal.when - goal.behindSince) / 3600000U), (long long)ch->GetGold());
+		}
 		if (goal.family != NULL && goal.family != previous && IsPlayerBotWeaponOutclassed(goal))
 		{
 			const TItemTable* goalProto = ITEM_MANAGER::instance().GetTable(goal.family->dwBaseVnum);
@@ -106,6 +148,20 @@ namespace
 					goal.family->dwSourceMob, (unsigned int)goal.family->wSourceMap);
 		}
 		return goal;
+	}
+
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: whether this bot's goal is stuck - the
+	// hand outclassed and not rising for PLAYERBOT_WEAPON_GOAL_STUCK_MS. Such a
+	// bot buys the best weapon it can afford over the hand, the merchant's or
+	// a counter's, out of its whole purse over its reserve
+	// (GetPlayerBotWeaponUpgradeBudget, FindPlayerBotMerchantWeaponUpgrade).
+	bool IsPlayerBotWeaponGoalStuck(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		const TPlayerBotWeaponGoal& goal = GetPlayerBotWeaponGoal(ch, get_dword_time());
+		return IsPlayerBotWeaponOutclassed(goal) && goal.behindSince != 0 &&
+				goal.when - goal.behindSince >= PLAYERBOT_WEAPON_GOAL_STUCK_MS;
 	}
 
 	// A weapon on a counter worth this bot's savings: one it can wear now whose
@@ -146,7 +202,7 @@ namespace
 	// and the three furthest behind.
 	void ReportPlayerBotWeaponGoals(DWORD dwNow)
 	{
-		DWORD bots = 0, outclassed = 0, gap10 = 0, gap20 = 0, noWeapon = 0, unread = 0;
+		DWORD bots = 0, outclassed = 0, gap10 = 0, gap20 = 0, noWeapon = 0, unread = 0, stuck = 0;
 		int refreshes = PLAYERBOT_WEAPON_CENSUS_REFRESHES;
 		DWORD lastRefreshed = 0;
 		std::map<DWORD, DWORD> chased;
@@ -183,6 +239,8 @@ namespace
 			if (!IsPlayerBotWeaponOutclassed(goal))
 				continue;
 			++outclassed;
+			if (goal.behindSince != 0 && goal.when - goal.behindSince >= PLAYERBOT_WEAPON_GOAL_STUCK_MS)
+				++stuck;
 			const TItemTable* handProto = goal.handVnum ? ITEM_MANAGER::instance().GetTable(goal.handVnum) : NULL;
 			const int gap = (int)goal.family->bLevel - (handProto ? GetPlayerBotProtoLevelLimit(handProto) : 0);
 			if (gap >= 20)
@@ -224,8 +282,8 @@ namespace
 					(unsigned int)g->second.family->wSources, (unsigned int)g->second.family->wSourceMap);
 			behind += buf;
 		}
-		sys_log(0, "PLAYERBOT_WEAPON: census bots=%u unread=%u outclassed=%u goal_10_levels_up=%u goal_20_levels_up=%u no_weapon=%u top:%s furthest:%s",
-				bots, unread, outclassed, gap10, gap20, noWeapon, top.c_str(), behind.c_str());
+		sys_log(0, "PLAYERBOT_WEAPON: census bots=%u unread=%u outclassed=%u stuck=%u goal_10_levels_up=%u goal_20_levels_up=%u no_weapon=%u top:%s furthest:%s",
+				bots, unread, outclassed, stuck, gap10, gap20, noWeapon, top.c_str(), behind.c_str());
 	}
 }
 

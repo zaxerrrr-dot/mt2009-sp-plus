@@ -38,6 +38,9 @@ every version here.
 - **W lochach nie da się przywołać kamienia Metin ani żyły.** W każdym lochu (także w Wieży Demonów) takie przedmioty się nie otwierają – gra pisze „Nie mozesz przywolac kamienia Metin w lochu.” (albo „…zyly w lochu.”), a przedmiot zostaje w ekwipunku. Wcześniej przywołany w lochu kamień dawał drop bez względu na poziom postaci, bo drop w lochach celowo nie patrzy na różnicę poziomów.
 - Kamienie Metin z respawnu, kamienie samych lochów i zwoje przywołania bossów działają tak jak dotąd. Nie wymaga nowego klienta.
 
+### Boty – broń
+- **Wojownik (Ciało) zakłada broń dwuręczną z plecaka, jeśli jest dużo lepsza.** Poprawiłem błąd, przez który wojownicy z grupą Ciało (i bez wybranej grupy) zdejmowali broń dwuręczną jako „niepasującą do profesji” i walczyli mieczem kupionym u kupca – np. bot na 99 poziomie z Pogromcą Nieb. Smoka+9 w plecaku nosił Stożkowy Miecz+0 z 15 poziomu, a biedniejsi stali zupełnie bez broni. Miecz jednoręczny dalej jest ich podstawową bronią, ale dwuręczna, którą bot już ma i która bije co najmniej o połowę mocniej niż jego najlepszy miecz, jest teraz zakładana (i nie trafia na sprzedaż). Bot nie goni już też celu broni, który ma w plecaku, a jeśli przez 2 godziny nie zbliża się do celu (np. broń wypada tylko na mapie, na której nie poluje), kupuje najlepszą broń, na jaką go stać – u kupca albo na rynku – całym zapasem yang ponad rezerwę. Nie wymaga nowego klienta.
+
 ## 2.38.0 — 2026-10-26 — Wężowe Pole i Kraina Gigantów, budynki gildii, boty na wojnie
 
 ### Wężowe Pole i Kraina Gigantów

@@ -99,10 +99,16 @@ namespace
 		return false;
 	}
 
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: a two-handed weapon a Body Warrior owns
+	// that hits far harder than any sword it owns (defined below the damage
+	// model). fresh reads the swords again.
+	bool IsPlayerBotBodyTwoHanderAllowed(LPCHARACTER ch, LPITEM item, bool fresh = false);
+
 	bool IsPlayerBotWeapon(LPCHARACTER ch, LPITEM item)
 	{
 		return item && item->GetType() == ITEM_WEAPON &&
-				IsPlayerBotWeaponSubTypeFor(ch, item->GetSubType());
+				(IsPlayerBotWeaponSubTypeFor(ch, item->GetSubType()) ||
+				 IsPlayerBotBodyTwoHanderAllowed(ch, item));
 	}
 
 	// Defined further down, with the ladders and the merchants' stock.
@@ -1032,6 +1038,93 @@ namespace
 		if (!item || !item->GetProto() || item->GetType() != ITEM_WEAPON)
 			return 0;
 		return GetPlayerBotWeaponHitDamageAt(item, item->GetProto(), ch, 0, parts);
+	}
+
+	// MT2009_PLUS_BOT_WEAPON_BAG_V1: the Body Warrior and the two-hander.
+	// IsPlayerBotWeaponSubTypeFor keeps a Warrior of the Body group (and one
+	// with no group yet) on the one-handed sword - this overlay's design since
+	// update 0.2, with the sword preference in the equipment score - though
+	// the engine lets every Warrior carry a two-hander and the Body skills ask
+	// nothing of the weapon's kind. So a two-hander was no weapon at all for
+	// such a bot: PrepareWeapon took a worn one off as a "profession
+	// mismatch", the empty hand bought the merchant's sword it could pay for,
+	// and the two-hander lay in the bag for good (Christofer, 99: Pogromca
+	// Nieb. Smoka+9 of level 90 off, Stozkowy Miecz+0 of level 15 on, on 22
+	// October; 26 Body Warriors of 60 and up so on the test world; the ones
+	// with no yang stood unarmed - "idle without weapon bag_weapons=0").
+	// The design stays: a sword is still the Body Warrior's weapon and the
+	// only kind it buys or plays for. But a two-hander it can wear now whose
+	// blow beats the best sword it owns (worn or in the bag) by
+	// PLAYERBOT_BODY_TWO_HANDER_GAIN_PERCENT is a weapon of its kind too, and
+	// the equipment pass ranks it with the sword's preference as before. The
+	// rule reads what the bot owns, not where the two-hander is, so wearing
+	// it does not change the answer and the two do not take turns.
+	struct TPlayerBotBodySwordRead
+	{
+		DWORD dwTime;
+		long long llBestSwordBlow;
+		DWORD dwItemID;
+		bool bAllowed;
+		TPlayerBotBodySwordRead() : dwTime(0), llBestSwordBlow(0), dwItemID(0), bAllowed(false) {}
+	};
+	std::map<DWORD, TPlayerBotBodySwordRead> s_mapPlayerBotBodySwordRead;
+
+	bool IsPlayerBotOwnedWeaponWearableNow(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetType() != ITEM_WEAPON || item->IsExchanging() || !item->CanUsedBy(ch) ||
+				item->GetLevelLimit() > ch->GetLevel() || IsPlayerBotSidekickUnwanted(ch, item))
+			return false;
+		if ((item->GetAntiFlag() & ITEM_ANTIFLAG_MALE) && GET_SEX(ch) == SEX_MALE)
+			return false;
+		if ((item->GetAntiFlag() & ITEM_ANTIFLAG_FEMALE) && GET_SEX(ch) == SEX_FEMALE)
+			return false;
+		return true;
+	}
+
+	long long ReadPlayerBotBestOwnedSwordBlow(LPCHARACTER ch)
+	{
+		long long best = 0;
+		LPITEM worn = ch->GetWear(WEAR_WEAPON);
+		if (worn && worn->GetSubType() == WEAPON_SWORD && IsPlayerBotOwnedWeaponWearableNow(ch, worn))
+			best = GetPlayerBotWeaponHitDamage(worn, ch);
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->IsEquipped() || item->GetType() != ITEM_WEAPON ||
+					item->GetSubType() != WEAPON_SWORD || !IsPlayerBotOwnedWeaponWearableNow(ch, item))
+				continue;
+			best = std::max(best, GetPlayerBotWeaponHitDamage(item, ch));
+		}
+		return best;
+	}
+
+	bool IsPlayerBotBodyTwoHanderAllowed(LPCHARACTER ch, LPITEM item, bool fresh)
+	{
+		if (!ch || !item || item->GetType() != ITEM_WEAPON || item->GetSubType() != WEAPON_TWO_HANDED ||
+				ch->GetJob() != JOB_WARRIOR || ch->GetSkillGroup() == 2 || !ch->IsItemLoaded() ||
+				!IsPlayerBotOwnedWeaponWearableNow(ch, item))
+			return false;
+		TPlayerBotBodySwordRead& read = s_mapPlayerBotBodySwordRead[ch->GetPlayerID()];
+		const DWORD now = get_dword_time();
+		if (fresh || read.dwTime == 0 || now - read.dwTime >= PLAYERBOT_BODY_TWO_HANDER_CACHE_MS)
+		{
+			read.dwTime = now != 0 ? now : 1;
+			read.llBestSwordBlow = ReadPlayerBotBestOwnedSwordBlow(ch);
+			read.dwItemID = 0;
+		}
+		// Most asks are of the same piece, many times a second: its answer is
+		// kept with the swords' reading.
+		if (item->GetID() != 0 && read.dwItemID == item->GetID())
+			return read.bAllowed;
+		const long long blow = GetPlayerBotWeaponHitDamage(item, ch);
+		const bool allowed = blow > 0 &&
+				blow * 100 >= read.llBestSwordBlow * (100 + PLAYERBOT_BODY_TWO_HANDER_GAIN_PERCENT);
+		if (item->GetID() != 0)
+		{
+			read.dwItemID = item->GetID();
+			read.bAllowed = allowed;
+		}
+		return allowed;
 	}
 
 	// Iwakura's PvE tier of this piece's family for this character, or 0
@@ -5201,8 +5294,11 @@ namespace
 		// on a stone is the right weapon for the moment, not a profession
 		// mismatch to be taken off. Nor is what a companion's owner put in its
 		// hand, whatever the companion's path would choose.
+		// MT2009_PLUS_BOT_WEAPON_BAG_V1: nor a Body Warrior's two-hander that
+		// out-hits every sword it owns, asked afresh before it comes off.
 		if (equippedWeapon && (PlayerBotWeaponFitsNow(ch, state, equippedWeapon) ||
-				IsPlayerBotSidekickPinned(ch, equippedWeapon)))
+				IsPlayerBotSidekickPinned(ch, equippedWeapon) ||
+				IsPlayerBotBodyTwoHanderAllowed(ch, equippedWeapon, true)))
 		{
 			state.dwEmergencyScavengeUntil = 0;
 			if (equippedWeapon->GetSubType() == WEAPON_BOW)
