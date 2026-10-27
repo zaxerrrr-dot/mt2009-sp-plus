@@ -17,10 +17,10 @@ every version here.
 
 ---
 
-## 2.38.1 — (szkic)
+## 2.39.0 — (szkic)
 
 ### Halloween
-**Nowy event: Halloween** (Autor: Owsap). Przeniosłem event halloweenowy z Jackiem Pumpkinem. Domyślnie jest wyłączony – włączasz go sam.
+**Nowy event: Halloween.** Dodałem event halloweenowy z Jackiem Pumpkinem. Domyślnie jest wyłączony – włączasz go sam.
 
 **Jak włączyć i wyłączyć**
 - W panelu (Eventy) wybierz rodzaj „Halloween (dynie i Jack Pumpkin)” i kliknij „Włącz teraz” albo dodaj go do harmonogramu.
@@ -55,7 +55,6 @@ every version here.
 8. **Maska ma jeden losowy bonus na 7 dni** (czas liczy się od pierwszego założenia):
    - rodzaj (każdy po 20%): silny przeciwko potworom, Wojownikom, Ninja, Surom albo Szamanom;
    - wartość: +5% (60%) albo +10% (40%).
-   Lykan nie dostaje maski – jego karta zostaje w ekwipunku.
 
 **Dla administratora**
 - Zawartość Upiornej Skrzyni zmienisz w panelu (Szkatułki).
@@ -74,7 +73,6 @@ every version here.
 
 ## Klient 2.0.70 — (szkic) — Halloween
 - **Halloween** – model Jacka Pumpkina, opisy Upiornej Dyni, Czarodziejskiej Różdżki, Karty Maski Dyni, Upiornej Skrzyni i Masek Dyni oraz Halloween na liście wydarzeń przy minimapie.
-- Upiorna Dynia nie pokazuje już w opisie linii „PŻ +300 / PE +100”.
 - Zmieniły się dane przedmiotów – po aktualizacji pobierz ponownie zip z edytora bazy danych (gra przypomni o tym po zalogowaniu; MT2009-Patcher pobierze go sam).
 
 ---
