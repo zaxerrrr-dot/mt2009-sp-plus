@@ -663,6 +663,11 @@ namespace
 	// often.
 	const int PLAYERBOT_BODY_TWO_HANDER_GAIN_PERCENT = 50;
 	const DWORD PLAYERBOT_BODY_TWO_HANDER_CACHE_MS = 60000;
+	// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: an Archer wears a dagger it owns whose
+	// blow beats every bow it owns (IsPlayerBotArcherDaggerAllowed) - twenty
+	// Archers of the test world shot a level-15 bow with a level-90 dagger in
+	// the bag (27 October). The best bow owned is read again this often.
+	const DWORD PLAYERBOT_ARCHER_DAGGER_CACHE_MS = 60000;
 	// The weapon a bot plays for (playerbot_weapon_goal.h): the best family of
 	// the atlas its class may carry at its level and can get on a map the bots
 	// walk. A goal whose blow at +0 beats the hand's by the first share sends a

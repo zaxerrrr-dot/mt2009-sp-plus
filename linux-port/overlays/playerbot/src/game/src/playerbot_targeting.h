@@ -585,7 +585,10 @@ namespace
 			return false;
 		if (!IsPlayerBotArcherBuild(ch))
 			return true;
-		if (HasPlayerBotUsableStoneDagger(ch))
+		// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: an Archer fighting with its dagger
+		// until a better bow is a blade like a Dagger Ninja's, and takes a
+		// stone as one does.
+		if (HasPlayerBotUsableStoneDagger(ch) || IsPlayerBotArcherOnDagger(ch))
 			return true;
 		// No usable dagger: only join a stone others are already breaking. Count
 		// the other attackers, never this bot, or its own first bow shot would

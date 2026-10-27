@@ -2891,8 +2891,10 @@ namespace
 			return false;
 
 		// The Archer's one stone weapon (playerbot_gear.h) is kept.
+		// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: and so is the dagger it fights with
+		// (IsPlayerBotArcherStoneWeapon counts it).
 		if (IsPlayerBotArcherBuild(ch) && IsPlayerBotStoneMeleeWeapon(ch, item) &&
-				FindPlayerBotStoneWeapon(ch, false) == item)
+				(FindPlayerBotStoneWeapon(ch, false) == item || IsPlayerBotArcherFightingDagger(ch, item)))
 			return false;
 		// So is the weapon kept for the day the one in the hand burns
 		// (FindPlayerBotBackupWeapon), and the armour kept for the day the one
