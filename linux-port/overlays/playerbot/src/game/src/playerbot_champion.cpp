@@ -505,7 +505,38 @@ namespace champion
 	};
 }
 
-// ---- engine hooks (server-patches/czempion/edits.json) ----------------------------------------------------
+// ---- MT2009_PLUS_SUNGMA_BONUS_V1: the Will above a map's requirement ------------------------------------------------
+// The owner, 27 October 2026 - as on the global servers (the m2-helper FAQ of the Sung Ma stats): on a Sung Ma map
+// (sungma_table.txt) the effective Will (yohara_gear::SungmaEffective, the one the penalties judge) above the map's
+// requirement is worth: Sila +0.01% damage at the map's monsters a point; Witalnosc +5.33 max HP a point; Odpornosc +1
+// movement speed every 100; Inteligencja +1% stun and +1% slow chance (a normal hit's AttackAffect) every 100. Below the
+// requirement the penalties stay as they are (Inteligencja's is the poison / fire / bleeding one, untouched).
+// Recounted as the penalties are: the damage and the stun/slow at each blow, the max HP at each POINT_MAX_HP count
+// (MT2009_PLUS_SUNGMA_HP_ORDER_V1 recounts it at each Witalnosc change), the speed at each GetLimitPoint (and the
+// client told at each Odpornosc change: edits.json MT2009_PLUS_SUNGMA_BONUS_V1 (move speed packet)); a map change
+// goes through the login (ChampionOnLogin: ComputePoints).
+namespace champion
+{
+	const int SUNGMA_BONUS_DAMAGE_PER_10000 = 1;	// Sila: a point = 0.01%
+	const int SUNGMA_BONUS_HP_PER_100 = 533;		// Witalnosc: a point = 5.33 HP
+	const int SUNGMA_BONUS_MOVE_STEP = 100;		// Odpornosc: +1 speed every 100
+	const int SUNGMA_BONUS_AFFECT_STEP = 100;		// Inteligencja: +1% stun / slow every 100
+
+	// The effective Will above this map's requirement (0 off a Sung Ma map or at / below it). what: 0 str, 1 hp,
+	// 2 move, 3 immune.
+	int SungmaSurplus(const CHARACTER* ch, int what)
+	{
+		if (!ch || !ch->IsPC() || what < 0 || what > 3)
+			return 0;
+		const SungmaRequirement* pReq = MapRequirement(ch->GetMapIndex());
+		if (!pReq)
+			return 0;
+		const int aReq[4] = { pReq->str, pReq->hp, pReq->move, pReq->immune };
+		const int iSurplus = yohara_gear::SungmaEffective(ch, (unsigned char)(POINT_SUNGMA_STR + what)) - aReq[what];
+		return iSurplus > 0 ? iSurplus : 0;
+	}
+}
+
 
 // char_battle.cpp CHARACTER::DistributeExp, before the ordinary experience (a Yohara monster has none): the
 // champion experience of a monster killed on a Sung Ma map, shared by damage like the ordinary one - a party's
@@ -566,6 +597,9 @@ int ChampionMaxHP(const CHARACTER* ch, int iMaxHP)
 	const champion::SungmaRequirement* pReq = champion::MapRequirement(ch->GetMapIndex());
 	if (pReq && yohara_gear::SungmaEffective(ch, POINT_SUNGMA_HP) < pReq->hp)
 		return iMaxHP / 2;
+	// MT2009_PLUS_SUNGMA_BONUS_V1: Witalnosc above the requirement - +5.33 max HP a point.
+	if (pReq)
+		iMaxHP += champion::SungmaSurplus(ch, 1) * champion::SUNGMA_BONUS_HP_PER_100 / 100;
 	return iMaxHP;
 }
 
@@ -577,6 +611,9 @@ int ChampionMoveSpeed(const CHARACTER* ch, int iSpeed)
 	const champion::SungmaRequirement* pReq = champion::MapRequirement(ch->GetMapIndex());
 	if (pReq && yohara_gear::SungmaEffective(ch, POINT_SUNGMA_MOVE) < pReq->move)
 		return iSpeed / 2;
+	// MT2009_PLUS_SUNGMA_BONUS_V1: Odpornosc above the requirement - +1 speed every 100 (GetLimitPoint's cap after it).
+	if (pReq)
+		iSpeed += champion::SungmaSurplus(ch, 2) / champion::SUNGMA_BONUS_MOVE_STEP;
 	return iSpeed;
 }
 
@@ -614,7 +651,21 @@ int ChampionDamage(LPCHARACTER pkVictim, LPCHARACTER pAttacker, int iDam)
 	}
 	if (yohara_gear::SungmaEffective(pAttacker, POINT_SUNGMA_STR) < pReq->str)
 		return iDam / 2;
+	// MT2009_PLUS_SUNGMA_BONUS_V1: Sila above the requirement - +0.01% damage a point.
+	const int iSurplus = champion::SungmaSurplus(pAttacker, 0);
+	if (iSurplus > 0 && iDam > 0)
+		iDam = (int)((long long)iDam * (10000 + iSurplus * champion::SUNGMA_BONUS_DAMAGE_PER_10000) / 10000);
 	return iDam;
+}
+
+// MT2009_PLUS_SUNGMA_BONUS_V1: battle.h AttackAffect (a normal hit's stun / slow): a person's chance at a monster of a
+// Sung Ma map grows by 1% every 100 of Inteligencja above the requirement.
+int ChampionAffectBonus(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, BYTE bAttPoint)
+{
+	if ((bAttPoint != POINT_STUN_PCT && bAttPoint != POINT_SLOW_PCT) || !pkAttacker || !pkVictim ||
+			!pkAttacker->IsPC() || pkVictim->IsPC())
+		return 0;
+	return champion::SungmaSurplus(pkAttacker, 3) / champion::SUNGMA_BONUS_AFFECT_STEP;
 }
 
 // char_resist.cpp AttackedByPoison / AttackedByFire / AttackedByBleeding: a person's poison, fire and bleeding

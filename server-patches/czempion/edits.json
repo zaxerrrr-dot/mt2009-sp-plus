@@ -226,5 +226,17 @@
   "marker": "MT2009_PLUS_SUNGMA_HP_ORDER_V1",
   "old": "\tswitch (type)\n\t{\n\t\tcase POINT_LEVEL:\n\t\tcase POINT_ST:\n\t\tcase POINT_DX:\n\t\tcase POINT_IQ:\n\t\tcase POINT_HT:\n\t\t\tComputeBattlePoints();\n\t\t\tbreak;\n\t\tcase POINT_MAX_HP:\n\t\tcase POINT_MAX_SP:\n\t\tcase POINT_MAX_STAMINA:\n\t\t\tbreak;\n\t}\n",
   "new": "\tswitch (type)\n\t{\n\t\tcase POINT_LEVEL:\n\t\tcase POINT_ST:\n\t\tcase POINT_DX:\n\t\tcase POINT_IQ:\n\t\tcase POINT_HT:\n\t\t\tComputeBattlePoints();\n\t\t\tbreak;\n\t\tcase POINT_MAX_HP:\n\t\tcase POINT_MAX_SP:\n\t\tcase POINT_MAX_STAMINA:\n\t\t\tbreak;\n\t\t// MT2009_PLUS_SUNGMA_HP_ORDER_V1: the Sung Ma HP penalty (ChampionMaxHP: max HP halved while Witalnosc is short\n\t\t// of the map's requirement) is judged when POINT_MAX_HP is counted, and ComputePoints counts it before the worn\n\t\t// items add their Will (a Sung Ma glove's base Will and stones, jade, sets, affects) - a person or bot meeting\n\t\t// Witalnosc only with them stood at half max HP after a revive, a login or a map change. Each change of the\n\t\t// Witalnosc (flat or per cent) counts the max HP again. Sila, Odpornosc and Inteligencja are judged when used\n\t\t// (a blow, GetLimitPoint, a poison), so their order is right already.\n\t\tcase POINT_SUNGMA_HP:\n\t\tcase POINT_SUNGMA_PER_HP:\n\t\t\tif (amount && IsPC())\n\t\t\t\tPointChange(POINT_MAX_HP, 0);\n\t\t\tbreak;\n\t}\n"
+ },
+ {
+  "file": "battle.h",
+  "marker": "MT2009_PLUS_SUNGMA_BONUS_V1 (stun slow)",
+  "old": "\tint pct_value = pkAttacker ? pkAttacker->GetPoint(att_point) : 100;\n",
+  "new": "\tint pct_value = pkAttacker ? pkAttacker->GetPoint(att_point) : 100;\n#ifdef ENABLE_CONQUEROR_LEVEL\n\t// MT2009_PLUS_SUNGMA_BONUS_V1 (stun slow): +1% stun / slow at a monster of a Sung Ma map every 100 of Inteligencja\n\t// Sung Ma above the map's requirement (playerbot_champion.cpp).\n\t{ int ChampionAffectBonus(LPCHARACTER, LPCHARACTER, BYTE); if (pkAttacker) pct_value += ChampionAffectBonus(pkAttacker, pkVictim, att_point); }\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_SUNGMA_BONUS_V1 (move speed packet)",
+  "old": "\t\tcase POINT_SUNGMA_HP:\n\t\tcase POINT_SUNGMA_PER_HP:\n\t\t\tif (amount && IsPC())\n\t\t\t\tPointChange(POINT_MAX_HP, 0);\n\t\t\tbreak;\n\t}\n",
+  "new": "\t\tcase POINT_SUNGMA_HP:\n\t\tcase POINT_SUNGMA_PER_HP:\n\t\t\tif (amount && IsPC())\n\t\t\t\tPointChange(POINT_MAX_HP, 0);\n\t\t\tbreak;\n\t\t// MT2009_PLUS_SUNGMA_BONUS_V1 (move speed packet): Odpornosc changes the speed on a Sung Ma map (the penalty below the\n\t\t// requirement, +1 every 100 above it - ChampionMoveSpeed in GetLimitPoint); the client hears the speed again when\n\t\t// an item or affect changes it (the spent points and a map change go through ComputePoints already).\n\t\tcase POINT_SUNGMA_MOVE:\n\t\tcase POINT_SUNGMA_PER_MOVE:\n\t\t\tif (amount && IsPC() && GetDesc())\n\t\t\t\tUpdatePacket();\n\t\t\tbreak;\n\t}\n"
  }
 ]

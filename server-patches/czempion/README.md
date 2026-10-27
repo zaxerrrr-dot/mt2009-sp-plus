@@ -123,3 +123,20 @@ liczony we wszystkich karach: `yohara_gear::SungmaEffective`), Precyzja `POINT_H
 (6. kolumna `sungma_table.txt`, Owsap `new_world.txt`), `FLY_CONQUEROR_EXP` przy exp Czempiona, `sungma_map` z 5.
 liczbą. Root: pasek exp Czempiona na pasku zadań, ikony buffa/debuffów Sung Ma na pasku afektów (`sungmastate.py`).
 `HIT_BUFF_SUNGMA_*` i pakiet `HEADER_GC_SUNGMA_ATTR_UPDATE` – dalej nie (żadnych przedmiotów z nimi; komenda wystarcza).
+
+## Premia ponad wymaganie mapy (`MT2009_PLUS_SUNGMA_BONUS_V1`, 27.10.2026)
+
+Decyzja właściciela: jak na serwerach globalnych (FAQ m2-helper) – na mapie Sung Ma (`sungma_table.txt`) Wola
+efektywna (`yohara_gear::SungmaEffective`, ta sama co dla kar) **ponad** wymaganie mapy daje:
+Siła +0,01% obrażeń w potwory za punkt; Witalność +5,33 maks. PŻ za punkt; Odporność +1 prędkości ruchu co 100;
+Inteligencja +1% szansy na omdlenie i spowolnienie (zwykły cios, `AttackAffect`) co 100. Kary poniżej wymagania bez
+zmian (kara Inteligencji to dalej trucizna/ogień/krwawienie).
+
+| Co | Gdzie |
+|---|---|
+| Liczenie | `playerbot_champion.cpp`: `champion::SungmaSurplus`, `ChampionDamage`, `ChampionMaxHP`, `ChampionMoveSpeed`, nowe `ChampionAffectBonus` |
+| Omdlenie/spowolnienie | `edits.json` `MT2009_PLUS_SUNGMA_BONUS_V1 (stun slow)` – `battle.h` `AttackAffect` |
+| Prędkość do klienta | `edits.json` `MT2009_PLUS_SUNGMA_BONUS_V1 (move speed packet)` – `char.cpp` `PointChange`: zmiana `POINT_SUNGMA_MOVE`/`_PER_MOVE` (przedmiot, afekt) wysyła `UpdatePacket()` |
+| Maks. PŻ | przeliczane przez `MT2009_PLUS_SUNGMA_HP_ORDER_V1` przy każdej zmianie Witalności; mapa – `ChampionOnLogin` |
+| Klient (root) | `sungmastate.py` (`Surplus`, `BonusText`, linie premii w ikonie buffa Sung Ma), `uicharacter.py` (dymek statystyki na stronie Sung Ma) |
+| Boty | `playerbot_yohara_sungma.h`: punkty najpierw na wymagania map do najbliższej mapy poza zasięgiem poziomu, potem Witalność do wymagania najwyższej mapy, dalsze mapy, Inteligencja szczytu, Witalność do 90; Wola bota liczy linie Sung Ma założonych Smoczych Kamieni także przy wyłączonej talii |

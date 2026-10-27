@@ -546,8 +546,38 @@
 	{
 #ifdef ENABLE_CONQUEROR_LEVEL
 		static const BYTE s_aPoint[4] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE, POINT_SUNGMA_IMMUNE };
+		if (!ch || what < 0 || what >= 4)
+			return 0;
+		// MT2009_PLUS_SUNGMA_BONUS_V1 (dragon stones): a bot's deck is on only for a fight (playerbot_alchemy.h), so out of
+		// one GetPoint lacks the Sung Ma lines of its worn stones (the Amethyst's) and the map choice / the points judged
+		// the bot short of Will it has once it fights - counted here as the deck would add them (the first deck, the one
+		// the bots switch on, stones with time left, a qualified bot).
+		int iWill = yohara_gear::SungmaEffective(ch, s_aPoint[what]);
+		if (ch->DragonSoul_GetActiveDeck() < 0 && ch->DragonSoul_IsQualified())
+		{
+			int iFlat = 0, iPct = 0;
+			for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+			{
+				LPITEM stone = GetPlayerBotWornDs(ch, kind);
+				if (!stone || !HasPlayerBotDsTime(stone))
+					continue;
+				for (int a = 0; a < ITEM_ATTRIBUTE_MAX_NUM; ++a)
+				{
+					const BYTE bType = stone->GetAttributeType(a);
+					if (bType == s_aPoint[what])
+						iFlat += stone->GetAttributeValue(a);
+					else if (bType == POINT_SUNGMA_PER_STR + what)
+						iPct += stone->GetAttributeValue(a);
+				}
+			}
+			if (iFlat || iPct)
+			{
+				const int iPctAll = MAX(-100, (int)ch->GetPoint(POINT_SUNGMA_PER_STR + what) + iPct);
+				iWill = ((int)ch->GetPoint(s_aPoint[what]) + iFlat) * (100 + iPctAll) / 100;
+			}
+		}
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: dressed for the world, plus what its jade in the bag gives back (playerbot_yohara_shop.h)
-		return ch && what >= 0 && what < 4 ? yohara_gear::SungmaEffective(ch, s_aPoint[what]) + GetPlayerBotYoharaWorldSetWillDelta(ch, what) : 0;
+		return iWill + GetPlayerBotYoharaWorldSetWillDelta(ch, what);
 #else
 		return 0;
 #endif
@@ -763,8 +793,52 @@
 	// A free point on the stat the bot's next map lacks most (plan 5.3): the lowest map of the table whose Sila /
 	// Witalnosc / Odpornosc the bot does not meet; all three met everywhere - Inteligencja to the top map's; then the
 	// lowest of the four. Nothing to spend with no point, or every stat at the top (90).
+	// MT2009_PLUS_SUNGMA_BONUS_V1: the Will above a map's requirement is worth something now (playerbot_champion.cpp: Sila
+	// +0.01% damage, Witalnosc +5.33 max HP a point, Odpornosc / Inteligencja every 100). The maps are met in order up to
+	// the next one the bot cannot step onto yet (bChampionMin + PLAYERBOT_SUNGMA_STEP_UP_LEVELS over its Champion level) -
+	// the map-reaching as before; then Witalnosc up to the top map's requirement (the survival bonus where it fights, and
+	// never a lost point: every later map asks that Witalnosc too); then the further maps as before, Inteligencja of the
+	// top map, Witalnosc to the cap (90), the lowest of the four.
+	int GetPlayerBotSungmaGapStat(LPCHARACTER ch, int slot)
+	{
+		int best = -1, bestGap = 0;
+		static const int order[4] = { 0, 2, 1, 3 };
+		for (int k = 0; k < 4; ++k)
+		{
+			const int i = order[k];
+			const int gap = GetPlayerBotSungmaReq(slot, i) - GetPlayerBotSungmaWill(ch, i);
+			if (gap > bestGap)
+			{
+				best = i;
+				bestGap = gap;
+			}
+		}
+		return best;
+	}
+
 	int ChoosePlayerBotSungmaStat(LPCHARACTER ch)
 	{
+		{
+			const int champion = GetPlayerBotChampionLevel(ch);
+			int horizon = PLAYERBOT_SUNGMA_MAP_COUNT - 1;
+			for (int slot = 0; slot < PLAYERBOT_SUNGMA_MAP_COUNT; ++slot)
+				if (champion < (int)PLAYERBOT_SUNGMA_MAPS[slot].bChampionMin + PLAYERBOT_SUNGMA_STEP_UP_LEVELS)
+				{
+					horizon = slot;
+					break;
+				}
+			for (int slot = 0; slot <= horizon; ++slot)
+			{
+				const int best = GetPlayerBotSungmaGapStat(ch, slot);
+				if (best >= 0)
+					return best;
+			}
+#ifdef ENABLE_CONQUEROR_LEVEL
+			if (GetPlayerBotSungmaWill(ch, 1) < GetPlayerBotSungmaReq(PLAYERBOT_SUNGMA_MAP_COUNT - 1, 1) &&
+					ch->GetRealPoint(POINT_SUNGMA_HP) < (int)champion::STAT_MAX)
+				return 1;
+#endif
+		}
 		for (int slot = 0; slot < PLAYERBOT_SUNGMA_MAP_COUNT; ++slot)
 		{
 			int best = -1, bestGap = 0;
@@ -788,6 +862,9 @@
 			return 3;
 		int low = -1;
 #ifdef ENABLE_CONQUEROR_LEVEL
+		// MT2009_PLUS_SUNGMA_BONUS_V1: every map met - Witalnosc to the cap first (+5.33 max HP a point above).
+		if (ch->GetRealPoint(POINT_SUNGMA_HP) < (int)champion::STAT_MAX)
+			return 1;
 		static const BYTE s_aPoint[4] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE, POINT_SUNGMA_IMMUNE };
 		for (int i = 0; i < 4; ++i)
 			if (ch->GetRealPoint(s_aPoint[i]) < (int)champion::STAT_MAX &&

@@ -764,6 +764,9 @@ class CharacterWindow(ui.ScriptWindow):
 					self.toolTip.AppendTextLine(TEXT_MAP_SHORT % shortage, COLOR_SUNGMA_SHORT)
 				else:
 					self.toolTip.AppendTextLine(TEXT_MAP_REQUIRED % _SUNGMA_MAP[i])
+			# MT2009_PLUS_SUNGMA_BONUS_V1: the Will above the map's requirement and what it gives here
+			if self.__IsChampion() and sungmastate.IsSungmaMap() and sungmastate.Surplus(i) > 0:
+				self.toolTip.AppendTextLine(sungmastate.BonusText(i), COLOR_SUNGMA_OK)
 			# MT2009_PLUS_YOHARA_EXE2_V1: the per cent bonus of items ("Wola SungMa +x%")
 			if self.__IsChampion() and hasattr(player, sungmastate.STAT_PER_NAMES[i]):
 				pct = player.GetStatus(getattr(player, sungmastate.STAT_PER_NAMES[i]))
