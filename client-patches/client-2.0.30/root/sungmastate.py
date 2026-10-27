@@ -59,6 +59,33 @@ def Effective(i):
 	return base * (100 + pct) / 100
 
 
+# MT2009_PLUS_SUNGMA_BONUS_V1: what the Will above the map's requirement gives there (the server's playerbot_champion.cpp):
+# Sila +0.01% damage at the monsters a point, Witalnosc +5.33 max HP a point, Odpornosc +1 movement speed every 100,
+# Inteligencja +1% stun and slow chance every 100. No '%' in the texts: the affect bar formats its descriptions with '%'.
+def Surplus(i):
+	if not IsSungmaMap():
+		return 0
+	return max(0, Effective(i) - MAP[i])
+
+
+def BonusText(i):
+	"""The i-th stat's bonus above the requirement on this map ("" when none)."""
+	surplus = Surplus(i)
+	if surplus <= 0:
+		return ""
+	if 0 == i:
+		return "Premia: +%.2f proc. obra\xbfe\xf1 zadawanych potworom" % (surplus / 100.0)
+	if 1 == i:
+		return "Premia: +%d maks. P\xaf" % (surplus * 533 / 100)
+	if 2 == i:
+		if surplus < 100:
+			return "Nadwy\xbfka %d (pr\xeadko\x9c\xe6 ruchu +1 co 100)" % surplus
+		return "Premia: +%d pr\xeadko\x9cci ruchu" % (surplus / 100)
+	if surplus < 100:
+		return "Nadwy\xbfka %d (omdlenie i spowolnienie +1 proc. co 100)" % surplus
+	return "Premia: +%d proc. szansy na omdlenie i spowolnienie" % (surplus / 100)
+
+
 def Precision():
 	return max(0, _Point("HIT_PCT"))
 
@@ -82,10 +109,14 @@ def _Wanted():
 			"Ziemia Sung Ma;Bez Poziomu Czempiona nie zranisz tutejszych potwor\xf3w.", True)
 		return wanted
 	lines = ["Wola Sung Ma tej mapy", " "]
+	bonuses = []
 	for i in xrange(4):
 		value = Effective(i)
 		need = MAP[i]
 		lines.append("%s: %d / %d" % (STAT_NAMES[i], value, need))
+		bonus = BonusText(i)	# MT2009_PLUS_SUNGMA_BONUS_V1
+		if bonus and Surplus(i) >= (100 if i >= 2 else 1):
+			bonuses.append(bonus)
 		if need > 0 and value < need:
 			wanted[AFFECT_SUNGMA_DEBUFF[i]] = (_Icon(STAT_ICON[i] + "_debuff", STAT_ICON[i]),
 				"%s poni\xbfej wymaga\xf1 mapy;(%d / %d);Na tej mapie %s." % (STAT_NAMES[i], value, need, STAT_COSTS[i]), True)
@@ -99,6 +130,9 @@ def _Wanted():
 	if len(wanted) == 0:
 		lines.append(" ")
 		lines.append("Spe\xb3niasz wszystkie wymagania mapy.")
+	if bonuses:	# MT2009_PLUS_SUNGMA_BONUS_V1
+		lines.append(" ")
+		lines.extend(bonuses)
 	wanted[AFFECT_SUNGMA_BUFF] = (_Icon("buff", "str"), ";".join(lines), False)
 	return wanted
 
