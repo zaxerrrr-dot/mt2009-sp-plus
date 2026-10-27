@@ -614,7 +614,11 @@ services:
       M2_MALL_SAS_KEY: "${M2_MALL_SAS_KEY:-GF9001}"
       TZ: "${M2_TZ:-UTC}"
     ports:
-      - "${M2_PANEL_BIND_ADDRESS:-${M2_HOST_BIND_ADDRESS:-0.0.0.0}}:${M2_ITEMSHOP_PUBLIC_PORT:-7791}:80/tcp"
+      # MT2009_PLUS_ITEMSHOP_PUBLIC_V1: the ItemShop is the players' page (the in-game coin opens it on the
+      # address M2_MALL_URL gives the client), so it follows the game's ports (M2_HOST_BIND_ADDRESS), not the
+      # admin panels' 127.0.0.1 of a VPS install - there the players' clients could not reach it at all
+      # ("Nawigacja do strony sieci Web zostala anulowana"). It has no admin page.
+      - "${M2_ITEMSHOP_BIND_ADDRESS:-${M2_HOST_BIND_ADDRESS:-0.0.0.0}}:${M2_ITEMSHOP_PUBLIC_PORT:-7791}:80/tcp"
     networks: [backend]
 
   # The panel's two helpers run the image the seban-panel service builds.

@@ -733,8 +733,8 @@ cmd_install() {
     _from=$(log_lines)
     start_job install
     say ""
-    say "Gracze lacza sie z adresem $(env_get M2_PUBLIC_ADDRESS), porty 11000 i $(env_get M2_GAME_PORT_RANGE) (TCP) - jesli dostawca VPS ma wlasna zapore, otworz je tam."
-    say "Panele (7788, 7790, 7791) sluchaja tylko na tym serwerze: otwiera je launcher (tunel SSH) albo:"
+    say "Gracze lacza sie z adresem $(env_get M2_PUBLIC_ADDRESS), porty 11000, $(env_get M2_GAME_PORT_RANGE) i ItemShop $(env_get M2_ITEMSHOP_PUBLIC_PORT) (TCP) - jesli dostawca VPS ma wlasna zapore, otworz je tam."
+    say "Panele (7788, 7790) sluchaja tylko na tym serwerze: otwiera je launcher (tunel SSH) albo:"
     say "    ssh -L 7788:127.0.0.1:7788 -L 7790:127.0.0.1:7790 uzytkownik@$(env_get M2_PUBLIC_ADDRESS)"
     say "Stan budowy:  sh $SELF status"
     say "Hasla kont:   sh $SELF passwords"
