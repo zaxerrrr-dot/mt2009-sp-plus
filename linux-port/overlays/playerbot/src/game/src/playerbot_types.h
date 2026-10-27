@@ -3240,7 +3240,9 @@ namespace
 	// 29: MT2009_PLUS_HELM100_V1 - the level-100 helmets (Smokow / Dragona) and their four materials.
 	// 30: MT2009_PLUS_BOT_HERB_SURPLUS_V1 - Jaskiniowy Grzyb (50736) at 19 000 like the other four
 	// late herbs; herbs go up in lines of 200 (27 on the 2.x line).
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 30;
+	// 31: MT2009_PLUS_YOHARA_PRICES_TEMP_V1 - the temporary Yohara block (tools/yohara_prices): 152 materials,
+	// ores, jade, herbs and elixirs, and the Sung Ma gloves, Talizmany Woli and jade jewellery +0..+9.
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 31;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in

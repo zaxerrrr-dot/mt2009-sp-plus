@@ -1,0 +1,6802 @@
+{
+"at_once": {
+"27992": 2,
+"27993": 2,
+"27994": 2,
+"30601": 1,
+"30602": 1,
+"30605": 10,
+"30606": 10,
+"30607": 5,
+"30608": 10,
+"30609": 10,
+"30614": 5,
+"30615": 5,
+"30618": 2,
+"30619": 5,
+"30625": 3,
+"30627": 3,
+"30628": 3,
+"31108": 5,
+"31109": 3,
+"31110": 2,
+"31111": 1,
+"31112": 1,
+"31113": 1,
+"31114": 10,
+"31115": 10,
+"31117": 5,
+"31118": 5,
+"31120": 5,
+"31121": 5,
+"31122": 15,
+"31123": 15,
+"31124": 5,
+"31125": 5,
+"31126": 2,
+"31127": 2,
+"31128": 2,
+"31129": 2,
+"31130": 5,
+"31131": 5,
+"31132": 5,
+"31133": 3,
+"31134": 3,
+"31135": 3,
+"31136": 1,
+"31137": 1,
+"31138": 1,
+"31149": 15,
+"31196": 5,
+"31197": 5,
+"31198": 5,
+"31199": 5,
+"31200": 5,
+"31201": 5,
+"31203": 5,
+"31204": 5,
+"31205": 5,
+"31206": 5,
+"31207": 5,
+"31209": 5,
+"31210": 5,
+"31211": 5,
+"31212": 5,
+"31216": 30,
+"31217": 10,
+"31218": 25,
+"31224": 10,
+"31225": 1,
+"31226": 2,
+"31227": 5,
+"31228": 10,
+"31233": 80,
+"31234": 70,
+"31235": 2,
+"31236": 2,
+"31237": 2,
+"31239": 1,
+"31240": 1,
+"31241": 1,
+"31242": 80,
+"31243": 70,
+"31245": 25,
+"31246": 5,
+"31247": 10,
+"31248": 10,
+"31249": 10,
+"31250": 10,
+"31251": 200,
+"31252": 5,
+"31257": 50,
+"31258": 50,
+"31259": 5,
+"31261": 200,
+"31262": 5,
+"31263": 5,
+"31270": 1,
+"39085": 200,
+"39086": 200,
+"39087": 200,
+"39088": 10,
+"39089": 30,
+"39090": 50,
+"39091": 200,
+"39092": 200,
+"39093": 200,
+"39094": 10,
+"39095": 30,
+"39096": 50,
+"39097": 200,
+"39098": 200,
+"39099": 200,
+"39100": 10,
+"39101": 30,
+"39102": 50,
+"39103": 30,
+"39104": 30,
+"39105": 30,
+"39106": 30,
+"39107": 30,
+"39108": 30,
+"39110": 1,
+"39111": 1,
+"39112": 1,
+"50639": 3,
+"50661": 10,
+"50662": 10,
+"50663": 10,
+"50664": 10,
+"50737": 10,
+"50738": 10,
+"50739": 20,
+"50740": 20,
+"70428": 20,
+"72353": 54,
+"81000": 1,
+"81001": 1,
+"81002": 1,
+"81003": 1,
+"81004": 1,
+"81005": 1,
+"81006": 1,
+"81007": 1,
+"81008": 1,
+"81250": 1,
+"81251": 1,
+"81252": 1,
+"81253": 1,
+"81254": 1,
+"81255": 1,
+"81256": 1,
+"81257": 1,
+"81258": 1,
+"81300": 1,
+"81301": 1,
+"81302": 1,
+"81303": 1,
+"81304": 1,
+"81305": 1,
+"81306": 1,
+"81307": 1,
+"81308": 1,
+"81550": 1,
+"81551": 1,
+"81552": 1,
+"81553": 1,
+"81554": 1,
+"81555": 1,
+"81556": 1,
+"81557": 1,
+"81558": 1,
+"95733": 10,
+"95734": 10,
+"95735": 10,
+"95736": 10
+},
+"avail": {
+"14580": 0.006756,
+"14581": 0.001973,
+"14590": 0.004198,
+"14591": 0.001973,
+"14600": 0.002631,
+"14601": 0.001973,
+"14610": 0.002631,
+"14611": 0.001316,
+"16580": 0.004972,
+"16590": 0.002414,
+"16600": 0.000847,
+"17570": 0.004958,
+"17580": 0.0024,
+"17590": 0.000833,
+"27992": 0.262476,
+"27993": 0.167575,
+"27994": 0.100218,
+"30601": 0.029,
+"30602": 0.002635,
+"30605": 0.01925,
+"30606": 0.053679,
+"30607": 0.01425,
+"30608": 0.036429,
+"30609": 0.03925,
+"30615": 0.0275,
+"30618": 0.033249,
+"30619": 0.02525,
+"30627": 0.000344,
+"31108": 0.708826,
+"31109": 0.10268,
+"31113": 0.029467,
+"31114": 0.156268,
+"31115": 0.538278,
+"31117": 0.291521,
+"31118": 0.338,
+"31120": 0.293,
+"31121": 0.338578,
+"31122": 0.475046,
+"31123": 0.367546,
+"31124": 0.482578,
+"31125": 0.276578,
+"31126": 0.00182,
+"31127": 0.00182,
+"31128": 0.000988,
+"31129": 0.000985,
+"31130": 0.000985,
+"31131": 0.021842,
+"31132": 0.188848,
+"31133": 0.0149,
+"31134": 0.004297,
+"31135": 0.001352,
+"31136": 0.019914,
+"31137": 0.002457,
+"31138": 0.001106,
+"31149": 0.342046,
+"31196": 0.014,
+"31197": 0.0195,
+"31198": 0.02,
+"31199": 0.019,
+"31200": 0.02,
+"31201": 0.015,
+"31203": 0.012,
+"31204": 0.0085,
+"31205": 0.016,
+"31206": 0.012,
+"31207": 0.0195,
+"31209": 0.0125,
+"31210": 0.0465,
+"31211": 0.0255,
+"31212": 0.0195,
+"31216": 0.404135,
+"31217": 0.428078,
+"31218": 0.352662,
+"31224": 0.309432,
+"31226": 0.011723,
+"31227": 0.036723,
+"31228": 0.01,
+"31233": 0.049256,
+"31234": 0.032936,
+"31235": 0.001338,
+"31236": 0.009609,
+"31237": 0.01711,
+"31239": 0.006764,
+"31240": 0.007566,
+"31241": 0.00873,
+"31242": 0.069418,
+"31243": 0.064388,
+"31244": 0.041833,
+"31245": 0.122838,
+"31246": 0.115232,
+"31247": 0.105325,
+"31248": 0.115341,
+"31249": 0.108082,
+"31250": 0.107988,
+"31251": 0.101951,
+"31252": 0.0512,
+"31257": 0.123428,
+"31258": 0.104121,
+"31259": 0.00923,
+"31261": 0.542,
+"31262": 0.017678,
+"31263": 0.012783,
+"39078": 0.051903,
+"39079": 0.17766,
+"39080": 0.115104,
+"39085": 0.02265,
+"39086": 0.02265,
+"39087": 0.02265,
+"39088": 0.054,
+"39089": 0.054,
+"39090": 0.054,
+"39091": 0.02265,
+"39092": 0.02265,
+"39093": 0.02265,
+"39094": 0.054,
+"39095": 0.054,
+"39096": 0.054,
+"39097": 0.02265,
+"39098": 0.02265,
+"39099": 0.02265,
+"39100": 0.054,
+"39101": 0.054,
+"39102": 0.054,
+"39103": 0.018,
+"39104": 0.018,
+"39105": 0.018,
+"39106": 0.018,
+"39107": 0.018,
+"39108": 0.018,
+"39110": 0.07065,
+"39111": 0.07065,
+"39112": 0.07065,
+"49991": 0.105169,
+"49992": 0.0025,
+"49993": 0.001614,
+"50661": 0.111209,
+"50662": 0.090367,
+"50663": 0.076947,
+"50664": 0.104209,
+"50737": 0.0705,
+"50738": 0.06175,
+"50739": 0.0566,
+"50740": 0.0566,
+"70428": 0.3978,
+"72353": 1.02841,
+"81000": 0.041364,
+"81250": 0.045267,
+"81300": 0.045267,
+"81550": 0.045387,
+"95733": 0.028,
+"95734": 0.2019,
+"95735": 0.061,
+"95736": 0.0265
+},
+"items": {
+"14580": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+0",
+"next": 14581,
+"sell": 3000,
+"set": 22701,
+"sub": 3,
+"type": 2
+},
+"14581": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+1",
+"next": 14582,
+"sell": 4800,
+"set": 22702,
+"sub": 3,
+"type": 2
+},
+"14582": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+2",
+"next": 14583,
+"sell": 8000,
+"set": 22703,
+"sub": 3,
+"type": 2
+},
+"14583": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+3",
+"next": 14584,
+"sell": 16000,
+"set": 22704,
+"sub": 3,
+"type": 2
+},
+"14584": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+4",
+"next": 14585,
+"sell": 32000,
+"set": 22705,
+"sub": 3,
+"type": 2
+},
+"14585": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+5",
+"next": 14586,
+"sell": 64000,
+"set": 22706,
+"sub": 3,
+"type": 2
+},
+"14586": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+6",
+"next": 14587,
+"sell": 120000,
+"set": 22707,
+"sub": 3,
+"type": 2
+},
+"14587": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+7",
+"next": 14588,
+"sell": 250000,
+"set": 22708,
+"sub": 3,
+"type": 2
+},
+"14588": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+8",
+"next": 14589,
+"sell": 500000,
+"set": 22709,
+"sub": 3,
+"type": 2
+},
+"14589": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Obrecz Jadeitu Mgly+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 3,
+"type": 2
+},
+"14590": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+0",
+"next": 14591,
+"sell": 3000,
+"set": 22701,
+"sub": 3,
+"type": 2
+},
+"14591": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+1",
+"next": 14592,
+"sell": 4800,
+"set": 22702,
+"sub": 3,
+"type": 2
+},
+"14592": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+2",
+"next": 14593,
+"sell": 8000,
+"set": 22703,
+"sub": 3,
+"type": 2
+},
+"14593": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+3",
+"next": 14594,
+"sell": 16000,
+"set": 22704,
+"sub": 3,
+"type": 2
+},
+"14594": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+4",
+"next": 14595,
+"sell": 32000,
+"set": 22705,
+"sub": 3,
+"type": 2
+},
+"14595": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+5",
+"next": 14596,
+"sell": 64000,
+"set": 22706,
+"sub": 3,
+"type": 2
+},
+"14596": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+6",
+"next": 14597,
+"sell": 120000,
+"set": 22707,
+"sub": 3,
+"type": 2
+},
+"14597": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+7",
+"next": 14598,
+"sell": 250000,
+"set": 22708,
+"sub": 3,
+"type": 2
+},
+"14598": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+8",
+"next": 14599,
+"sell": 500000,
+"set": 22709,
+"sub": 3,
+"type": 2
+},
+"14599": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Obrecz Jadeitu Slonca+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 3,
+"type": 2
+},
+"14600": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+0",
+"next": 14601,
+"sell": 3000,
+"set": 22701,
+"sub": 3,
+"type": 2
+},
+"14601": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+1",
+"next": 14602,
+"sell": 4800,
+"set": 22702,
+"sub": 3,
+"type": 2
+},
+"14602": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+2",
+"next": 14603,
+"sell": 8000,
+"set": 22703,
+"sub": 3,
+"type": 2
+},
+"14603": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+3",
+"next": 14604,
+"sell": 16000,
+"set": 22704,
+"sub": 3,
+"type": 2
+},
+"14604": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+4",
+"next": 14605,
+"sell": 32000,
+"set": 22705,
+"sub": 3,
+"type": 2
+},
+"14605": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+5",
+"next": 14606,
+"sell": 64000,
+"set": 22706,
+"sub": 3,
+"type": 2
+},
+"14606": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+6",
+"next": 14607,
+"sell": 120000,
+"set": 22707,
+"sub": 3,
+"type": 2
+},
+"14607": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+7",
+"next": 14608,
+"sell": 250000,
+"set": 22708,
+"sub": 3,
+"type": 2
+},
+"14608": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+8",
+"next": 14609,
+"sell": 500000,
+"set": 22709,
+"sub": 3,
+"type": 2
+},
+"14609": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Obrecz Jadeitu Nocy+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 3,
+"type": 2
+},
+"14610": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+0",
+"next": 14611,
+"sell": 3000,
+"set": 22701,
+"sub": 3,
+"type": 2
+},
+"14611": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+1",
+"next": 14612,
+"sell": 4800,
+"set": 22702,
+"sub": 3,
+"type": 2
+},
+"14612": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+2",
+"next": 14613,
+"sell": 8000,
+"set": 22703,
+"sub": 3,
+"type": 2
+},
+"14613": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+3",
+"next": 14614,
+"sell": 16000,
+"set": 22704,
+"sub": 3,
+"type": 2
+},
+"14614": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+4",
+"next": 14615,
+"sell": 32000,
+"set": 22705,
+"sub": 3,
+"type": 2
+},
+"14615": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+5",
+"next": 14616,
+"sell": 64000,
+"set": 22706,
+"sub": 3,
+"type": 2
+},
+"14616": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+6",
+"next": 14617,
+"sell": 120000,
+"set": 22707,
+"sub": 3,
+"type": 2
+},
+"14617": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+7",
+"next": 14618,
+"sell": 250000,
+"set": 22708,
+"sub": 3,
+"type": 2
+},
+"14618": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+8",
+"next": 14619,
+"sell": 500000,
+"set": 22709,
+"sub": 3,
+"type": 2
+},
+"14619": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Obrecz Jadeitu Dymu+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 3,
+"type": 2
+},
+"16580": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+0",
+"next": 16581,
+"sell": 3000,
+"set": 22701,
+"sub": 5,
+"type": 2
+},
+"16581": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+1",
+"next": 16582,
+"sell": 4800,
+"set": 22702,
+"sub": 5,
+"type": 2
+},
+"16582": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+2",
+"next": 16583,
+"sell": 8000,
+"set": 22703,
+"sub": 5,
+"type": 2
+},
+"16583": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+3",
+"next": 16584,
+"sell": 16000,
+"set": 22704,
+"sub": 5,
+"type": 2
+},
+"16584": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+4",
+"next": 16585,
+"sell": 32000,
+"set": 22705,
+"sub": 5,
+"type": 2
+},
+"16585": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+5",
+"next": 16586,
+"sell": 64000,
+"set": 22706,
+"sub": 5,
+"type": 2
+},
+"16586": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+6",
+"next": 16587,
+"sell": 120000,
+"set": 22707,
+"sub": 5,
+"type": 2
+},
+"16587": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+7",
+"next": 16588,
+"sell": 250000,
+"set": 22708,
+"sub": 5,
+"type": 2
+},
+"16588": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+8",
+"next": 16589,
+"sell": 500000,
+"set": 22709,
+"sub": 5,
+"type": 2
+},
+"16589": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Kolia Jadeitu Mgly+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 5,
+"type": 2
+},
+"16590": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+0",
+"next": 16591,
+"sell": 3000,
+"set": 22701,
+"sub": 5,
+"type": 2
+},
+"16591": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+1",
+"next": 16592,
+"sell": 4800,
+"set": 22702,
+"sub": 5,
+"type": 2
+},
+"16592": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+2",
+"next": 16593,
+"sell": 8000,
+"set": 22703,
+"sub": 5,
+"type": 2
+},
+"16593": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+3",
+"next": 16594,
+"sell": 16000,
+"set": 22704,
+"sub": 5,
+"type": 2
+},
+"16594": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+4",
+"next": 16595,
+"sell": 32000,
+"set": 22705,
+"sub": 5,
+"type": 2
+},
+"16595": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+5",
+"next": 16596,
+"sell": 64000,
+"set": 22706,
+"sub": 5,
+"type": 2
+},
+"16596": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+6",
+"next": 16597,
+"sell": 120000,
+"set": 22707,
+"sub": 5,
+"type": 2
+},
+"16597": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+7",
+"next": 16598,
+"sell": 250000,
+"set": 22708,
+"sub": 5,
+"type": 2
+},
+"16598": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+8",
+"next": 16599,
+"sell": 500000,
+"set": 22709,
+"sub": 5,
+"type": 2
+},
+"16599": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Kolia Jadeitu Slonca+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 5,
+"type": 2
+},
+"16600": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+0",
+"next": 16601,
+"sell": 3000,
+"set": 22701,
+"sub": 5,
+"type": 2
+},
+"16601": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+1",
+"next": 16602,
+"sell": 4800,
+"set": 22702,
+"sub": 5,
+"type": 2
+},
+"16602": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+2",
+"next": 16603,
+"sell": 8000,
+"set": 22703,
+"sub": 5,
+"type": 2
+},
+"16603": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+3",
+"next": 16604,
+"sell": 16000,
+"set": 22704,
+"sub": 5,
+"type": 2
+},
+"16604": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+4",
+"next": 16605,
+"sell": 32000,
+"set": 22705,
+"sub": 5,
+"type": 2
+},
+"16605": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+5",
+"next": 16606,
+"sell": 64000,
+"set": 22706,
+"sub": 5,
+"type": 2
+},
+"16606": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+6",
+"next": 16607,
+"sell": 120000,
+"set": 22707,
+"sub": 5,
+"type": 2
+},
+"16607": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+7",
+"next": 16608,
+"sell": 250000,
+"set": 22708,
+"sub": 5,
+"type": 2
+},
+"16608": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+8",
+"next": 16609,
+"sell": 500000,
+"set": 22709,
+"sub": 5,
+"type": 2
+},
+"16609": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Kolia Jadeitu Nocy+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 5,
+"type": 2
+},
+"16610": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+0",
+"next": 16611,
+"sell": 3000,
+"set": 22701,
+"sub": 5,
+"type": 2
+},
+"16611": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+1",
+"next": 16612,
+"sell": 4800,
+"set": 22702,
+"sub": 5,
+"type": 2
+},
+"16612": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+2",
+"next": 16613,
+"sell": 8000,
+"set": 22703,
+"sub": 5,
+"type": 2
+},
+"16613": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+3",
+"next": 16614,
+"sell": 16000,
+"set": 22704,
+"sub": 5,
+"type": 2
+},
+"16614": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+4",
+"next": 16615,
+"sell": 32000,
+"set": 22705,
+"sub": 5,
+"type": 2
+},
+"16615": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+5",
+"next": 16616,
+"sell": 64000,
+"set": 22706,
+"sub": 5,
+"type": 2
+},
+"16616": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+6",
+"next": 16617,
+"sell": 120000,
+"set": 22707,
+"sub": 5,
+"type": 2
+},
+"16617": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+7",
+"next": 16618,
+"sell": 250000,
+"set": 22708,
+"sub": 5,
+"type": 2
+},
+"16618": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+8",
+"next": 16619,
+"sell": 500000,
+"set": 22709,
+"sub": 5,
+"type": 2
+},
+"16619": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Kolia Jadeitu Dymu+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 5,
+"type": 2
+},
+"17570": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+0",
+"next": 17571,
+"sell": 3000,
+"set": 22701,
+"sub": 6,
+"type": 2
+},
+"17571": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+1",
+"next": 17572,
+"sell": 4800,
+"set": 22702,
+"sub": 6,
+"type": 2
+},
+"17572": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+2",
+"next": 17573,
+"sell": 8000,
+"set": 22703,
+"sub": 6,
+"type": 2
+},
+"17573": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+3",
+"next": 17574,
+"sell": 16000,
+"set": 22704,
+"sub": 6,
+"type": 2
+},
+"17574": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+4",
+"next": 17575,
+"sell": 32000,
+"set": 22705,
+"sub": 6,
+"type": 2
+},
+"17575": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+5",
+"next": 17576,
+"sell": 64000,
+"set": 22706,
+"sub": 6,
+"type": 2
+},
+"17576": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+6",
+"next": 17577,
+"sell": 120000,
+"set": 22707,
+"sub": 6,
+"type": 2
+},
+"17577": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+7",
+"next": 17578,
+"sell": 250000,
+"set": 22708,
+"sub": 6,
+"type": 2
+},
+"17578": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+8",
+"next": 17579,
+"sell": 500000,
+"set": 22709,
+"sub": 6,
+"type": 2
+},
+"17579": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Klipsy Jadeitu Mgly+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 6,
+"type": 2
+},
+"17580": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+0",
+"next": 17581,
+"sell": 3000,
+"set": 22701,
+"sub": 6,
+"type": 2
+},
+"17581": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+1",
+"next": 17582,
+"sell": 4800,
+"set": 22702,
+"sub": 6,
+"type": 2
+},
+"17582": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+2",
+"next": 17583,
+"sell": 8000,
+"set": 22703,
+"sub": 6,
+"type": 2
+},
+"17583": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+3",
+"next": 17584,
+"sell": 16000,
+"set": 22704,
+"sub": 6,
+"type": 2
+},
+"17584": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+4",
+"next": 17585,
+"sell": 32000,
+"set": 22705,
+"sub": 6,
+"type": 2
+},
+"17585": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+5",
+"next": 17586,
+"sell": 64000,
+"set": 22706,
+"sub": 6,
+"type": 2
+},
+"17586": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+6",
+"next": 17587,
+"sell": 120000,
+"set": 22707,
+"sub": 6,
+"type": 2
+},
+"17587": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+7",
+"next": 17588,
+"sell": 250000,
+"set": 22708,
+"sub": 6,
+"type": 2
+},
+"17588": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+8",
+"next": 17589,
+"sell": 500000,
+"set": 22709,
+"sub": 6,
+"type": 2
+},
+"17589": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Klipsy Jadeitu Slonca+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 6,
+"type": 2
+},
+"17590": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+0",
+"next": 17591,
+"sell": 3000,
+"set": 22701,
+"sub": 6,
+"type": 2
+},
+"17591": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+1",
+"next": 17592,
+"sell": 4800,
+"set": 22702,
+"sub": 6,
+"type": 2
+},
+"17592": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+2",
+"next": 17593,
+"sell": 8000,
+"set": 22703,
+"sub": 6,
+"type": 2
+},
+"17593": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+3",
+"next": 17594,
+"sell": 16000,
+"set": 22704,
+"sub": 6,
+"type": 2
+},
+"17594": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+4",
+"next": 17595,
+"sell": 32000,
+"set": 22705,
+"sub": 6,
+"type": 2
+},
+"17595": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+5",
+"next": 17596,
+"sell": 64000,
+"set": 22706,
+"sub": 6,
+"type": 2
+},
+"17596": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+6",
+"next": 17597,
+"sell": 120000,
+"set": 22707,
+"sub": 6,
+"type": 2
+},
+"17597": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+7",
+"next": 17598,
+"sell": 250000,
+"set": 22708,
+"sub": 6,
+"type": 2
+},
+"17598": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+8",
+"next": 17599,
+"sell": 500000,
+"set": 22709,
+"sub": 6,
+"type": 2
+},
+"17599": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Klipsy Jadeitu Nocy+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 6,
+"type": 2
+},
+"17600": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+0",
+"next": 17601,
+"sell": 3000,
+"set": 22701,
+"sub": 6,
+"type": 2
+},
+"17601": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+1",
+"next": 17602,
+"sell": 4800,
+"set": 22702,
+"sub": 6,
+"type": 2
+},
+"17602": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+2",
+"next": 17603,
+"sell": 8000,
+"set": 22703,
+"sub": 6,
+"type": 2
+},
+"17603": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+3",
+"next": 17604,
+"sell": 16000,
+"set": 22704,
+"sub": 6,
+"type": 2
+},
+"17604": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+4",
+"next": 17605,
+"sell": 32000,
+"set": 22705,
+"sub": 6,
+"type": 2
+},
+"17605": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+5",
+"next": 17606,
+"sell": 64000,
+"set": 22706,
+"sub": 6,
+"type": 2
+},
+"17606": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+6",
+"next": 17607,
+"sell": 120000,
+"set": 22707,
+"sub": 6,
+"type": 2
+},
+"17607": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+7",
+"next": 17608,
+"sell": 250000,
+"set": 22708,
+"sub": 6,
+"type": 2
+},
+"17608": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+8",
+"next": 17609,
+"sell": 500000,
+"set": 22709,
+"sub": 6,
+"type": 2
+},
+"17609": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Klipsy Jadeitu Dymu+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 6,
+"type": 2
+},
+"23000": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Rekawice Mocy+0",
+"next": 23001,
+"sell": 3000,
+"set": 22720,
+"sub": 8,
+"type": 2
+},
+"23001": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Rekawice Mocy+1",
+"next": 23002,
+"sell": 4800,
+"set": 22721,
+"sub": 8,
+"type": 2
+},
+"23002": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Rekawice Mocy+2",
+"next": 23003,
+"sell": 8000,
+"set": 22722,
+"sub": 8,
+"type": 2
+},
+"23003": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Rekawice Mocy+3",
+"next": 23004,
+"sell": 16000,
+"set": 22723,
+"sub": 8,
+"type": 2
+},
+"23004": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Rekawice Mocy+4",
+"next": 23005,
+"sell": 32000,
+"set": 22724,
+"sub": 8,
+"type": 2
+},
+"23005": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Rekawice Mocy+5",
+"next": 23006,
+"sell": 64000,
+"set": 22725,
+"sub": 8,
+"type": 2
+},
+"23006": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Rekawice Mocy+6",
+"next": 23007,
+"sell": 120000,
+"set": 22726,
+"sub": 8,
+"type": 2
+},
+"23007": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Rekawice Mocy+7",
+"next": 23008,
+"sell": 250000,
+"set": 22727,
+"sub": 8,
+"type": 2
+},
+"23008": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Rekawice Mocy+8",
+"next": 23009,
+"sell": 500000,
+"set": 22728,
+"sub": 8,
+"type": 2
+},
+"23009": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Rekawice Mocy+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 8,
+"type": 2
+},
+"23010": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Zwinne Rekawice+0",
+"next": 23011,
+"sell": 3000,
+"set": 22720,
+"sub": 8,
+"type": 2
+},
+"23011": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Zwinne Rekawice+1",
+"next": 23012,
+"sell": 4800,
+"set": 22721,
+"sub": 8,
+"type": 2
+},
+"23012": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Zwinne Rekawice+2",
+"next": 23013,
+"sell": 8000,
+"set": 22722,
+"sub": 8,
+"type": 2
+},
+"23013": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Zwinne Rekawice+3",
+"next": 23014,
+"sell": 16000,
+"set": 22723,
+"sub": 8,
+"type": 2
+},
+"23014": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Zwinne Rekawice+4",
+"next": 23015,
+"sell": 32000,
+"set": 22724,
+"sub": 8,
+"type": 2
+},
+"23015": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Zwinne Rekawice+5",
+"next": 23016,
+"sell": 64000,
+"set": 22725,
+"sub": 8,
+"type": 2
+},
+"23016": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Zwinne Rekawice+6",
+"next": 23017,
+"sell": 120000,
+"set": 22726,
+"sub": 8,
+"type": 2
+},
+"23017": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Zwinne Rekawice+7",
+"next": 23018,
+"sell": 250000,
+"set": 22727,
+"sub": 8,
+"type": 2
+},
+"23018": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Zwinne Rekawice+8",
+"next": 23019,
+"sell": 500000,
+"set": 22728,
+"sub": 8,
+"type": 2
+},
+"23019": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Zwinne Rekawice+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 8,
+"type": 2
+},
+"23020": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Pancerne Rekawice+0",
+"next": 23021,
+"sell": 3000,
+"set": 22720,
+"sub": 8,
+"type": 2
+},
+"23021": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Pancerne Rekawice+1",
+"next": 23022,
+"sell": 4800,
+"set": 22721,
+"sub": 8,
+"type": 2
+},
+"23022": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Pancerne Rekawice+2",
+"next": 23023,
+"sell": 8000,
+"set": 22722,
+"sub": 8,
+"type": 2
+},
+"23023": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Pancerne Rekawice+3",
+"next": 23024,
+"sell": 16000,
+"set": 22723,
+"sub": 8,
+"type": 2
+},
+"23024": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Pancerne Rekawice+4",
+"next": 23025,
+"sell": 32000,
+"set": 22724,
+"sub": 8,
+"type": 2
+},
+"23025": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Pancerne Rekawice+5",
+"next": 23026,
+"sell": 64000,
+"set": 22725,
+"sub": 8,
+"type": 2
+},
+"23026": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Pancerne Rekawice+6",
+"next": 23027,
+"sell": 120000,
+"set": 22726,
+"sub": 8,
+"type": 2
+},
+"23027": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Pancerne Rekawice+7",
+"next": 23028,
+"sell": 250000,
+"set": 22727,
+"sub": 8,
+"type": 2
+},
+"23028": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Pancerne Rekawice+8",
+"next": 23029,
+"sell": 500000,
+"set": 22728,
+"sub": 8,
+"type": 2
+},
+"23029": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Pancerne Rekawice+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 8,
+"type": 2
+},
+"23030": {
+"af": 0,
+"gold": 3000,
+"level": 105,
+"name": "Ochronne Rekawice+0",
+"next": 23031,
+"sell": 3000,
+"set": 22720,
+"sub": 8,
+"type": 2
+},
+"23031": {
+"af": 0,
+"gold": 4800,
+"level": 105,
+"name": "Ochronne Rekawice+1",
+"next": 23032,
+"sell": 4800,
+"set": 22721,
+"sub": 8,
+"type": 2
+},
+"23032": {
+"af": 0,
+"gold": 8000,
+"level": 105,
+"name": "Ochronne Rekawice+2",
+"next": 23033,
+"sell": 8000,
+"set": 22722,
+"sub": 8,
+"type": 2
+},
+"23033": {
+"af": 0,
+"gold": 16000,
+"level": 105,
+"name": "Ochronne Rekawice+3",
+"next": 23034,
+"sell": 16000,
+"set": 22723,
+"sub": 8,
+"type": 2
+},
+"23034": {
+"af": 0,
+"gold": 32000,
+"level": 105,
+"name": "Ochronne Rekawice+4",
+"next": 23035,
+"sell": 32000,
+"set": 22724,
+"sub": 8,
+"type": 2
+},
+"23035": {
+"af": 0,
+"gold": 64000,
+"level": 105,
+"name": "Ochronne Rekawice+5",
+"next": 23036,
+"sell": 64000,
+"set": 22725,
+"sub": 8,
+"type": 2
+},
+"23036": {
+"af": 0,
+"gold": 120000,
+"level": 105,
+"name": "Ochronne Rekawice+6",
+"next": 23037,
+"sell": 120000,
+"set": 22726,
+"sub": 8,
+"type": 2
+},
+"23037": {
+"af": 0,
+"gold": 250000,
+"level": 105,
+"name": "Ochronne Rekawice+7",
+"next": 23038,
+"sell": 250000,
+"set": 22727,
+"sub": 8,
+"type": 2
+},
+"23038": {
+"af": 0,
+"gold": 500000,
+"level": 105,
+"name": "Ochronne Rekawice+8",
+"next": 23039,
+"sell": 500000,
+"set": 22728,
+"sub": 8,
+"type": 2
+},
+"23039": {
+"af": 0,
+"gold": 800000,
+"level": 105,
+"name": "Ochronne Rekawice+9",
+"next": 0,
+"sell": 800000,
+"set": 0,
+"sub": 8,
+"type": 2
+},
+"27992": {
+"af": 0,
+"gold": 12000,
+"level": 0,
+"name": "Biala Perla",
+"next": 0,
+"sell": 12000,
+"set": 0,
+"sub": 5,
+"type": 14
+},
+"27993": {
+"af": 0,
+"gold": 12000,
+"level": 0,
+"name": "Niebieska Perla",
+"next": 0,
+"sell": 12000,
+"set": 0,
+"sub": 4,
+"type": 14
+},
+"27994": {
+"af": 0,
+"gold": 24000,
+"level": 0,
+"name": "Krwawa Perla",
+"next": 0,
+"sell": 24000,
+"set": 0,
+"sub": 3,
+"type": 14
+},
+"30601": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Plan Zbroi",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30602": {
+"af": 0,
+"gold": 500,
+"level": 0,
+"name": "Niebieski Barwnik",
+"next": 0,
+"sell": 500,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30605": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Zlote Plyty",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30606": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Srebrne Plyty",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30607": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Miedziane Plyty",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30608": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Stalowe Plyty",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30609": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Brazowe Plyty",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30614": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Czarny Barwnik",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30615": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Bialy Barwnik",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30618": {
+"af": 0,
+"gold": 500,
+"level": 0,
+"name": "Kamien Ksiezycowy",
+"next": 0,
+"sell": 500,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30619": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Barwnik zloty metalik",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30625": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Padparadza",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30627": {
+"af": 0,
+"gold": 500,
+"level": 0,
+"name": "Owoc Bogow",
+"next": 0,
+"sell": 500,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"30628": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Boski Kwiat",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31108": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Maly Kamien Przebudzenia",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31109": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Drobny Kam. Przebudzenia",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31110": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ladny Kam. Przebudzenia",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31111": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Zacny Kam. Przebudzenia",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31112": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Silny Kam. Przebudzenia",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31113": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Dusza Przebudzenia",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31114": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Zwykla Skora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31115": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kowadlo",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31117": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Cienka Przedza",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31118": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Oznaka Slawy",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31120": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Srodek Scierny",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31121": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Stal",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31122": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Plotno",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31123": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Cienka Skora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31124": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Cienka Nic",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31125": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Gruba Nic",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31126": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Czaszka Smoka",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31127": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Smoczy Zab",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31128": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Rog Razadora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31129": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Rog Nemere",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31130": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ostre Kolce",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31131": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Jedwab",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31132": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Odlamki",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31133": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Zwykly Barwnik",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31134": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ulepszony Barwnik",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31135": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Wyjatkowy Barwnik",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31136": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Prosty Kamien Chaosu",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31137": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ladny Kamien Chaosu",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31138": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Wspanialy Kamien Chaosu",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31149": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Mocny Sznur",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31196": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Miecza",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31197": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Brzeszczota",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31198": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Sztyletu",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31199": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Luku",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31200": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Ostrza",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31201": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Dzwonu",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31203": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Wachlarza",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31204": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Zbroi Wojownika",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31205": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Zbroi Ninja",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31206": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Zbroi Sura",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31207": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Zbroi Szamana",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31209": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Helmu Wojownika",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31210": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Helmu Ninja",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31211": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Helmu Sura",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31212": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "PB: Plan Helmu Szamana",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31216": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Plyta z Surowego Metalu",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31217": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Rog Trolla",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31218": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Plyta ze Stali Kuzniczej",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31224": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Plyta ze Stali Ozdobnej",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31225": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Runiczny",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31226": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Skazony Rdzen",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31227": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kiel Argosa",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31228": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Luska Argosa",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31233": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Wezowy",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31234": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Wezowy+",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31235": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Biala Glowa Smoka",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31236": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Biala Smocza Luska",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31237": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Duchowy Pln. W.",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31239": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Polyskujaca Biala Perla",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31240": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Polyskujaca Nieb. Perla",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31241": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Polyskujaca Krwawa Perla",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31242": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Broni Pln. Wiatru",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31243": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Broni Pln. W+",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31244": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Rekawic Pln. W.",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31245": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Twarda Skora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31246": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Wzor Rekawicy",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31247": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Czerwona Runa SungMa",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31248": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Liliowa Runa SungMa",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31249": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Niebieska Runa SungMa",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31250": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Zielona Runa SungMa",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31251": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Utwardzacz Skory",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31252": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Utwardzacz Skory+",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31257": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Wzor Wezowy",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31258": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Jedwab Wezowy",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31259": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kowadlo Pln. Wiatru",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31261": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Tajemniczy Kamien",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31262": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Politura Wezowa",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31263": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Kamien Szlif. Pln. W.",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"31270": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Esencja Talizmanu",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39078": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Szary Lsniacy Odlamek",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39079": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Zielony Lsniacy Odlamek",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39080": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Zolty Lsniacy Odlamek",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39085": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Sw. Odlamek Helmu I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39086": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Okaz. Odlamek Helmu I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39087": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ryc. Odlamek Helmu I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39088": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Sw. Odlamek Helmu II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39089": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Okaz. Odlamek Helmu II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39090": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ryc. Odlamek Helmu II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39091": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Sw. Odlamek Zbroi I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39092": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Okaz. Odlamek Zbroi I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39093": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ryc. Odlamek Zbroi I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39094": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Sw. Odlamek Zbroi II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39095": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Okaz. Odlamek Zbroi II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39096": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ryc. Odlamek Zbroi II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39097": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Sw. Odlamek Broni I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39098": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Okaz. Odlamek Broni I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39099": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ryc. Odlamek Broni I",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39100": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Sw. Odlamek Broni II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39101": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Okaz. Odlamek Broni II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39102": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ryc. Odlamek Broni II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39103": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ksiaz. Odlamek Helmu II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39104": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ksiaz. Odlamek Zbroi II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39105": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ksiaz. Odlamek Broni II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39106": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Majest. Odlamek Helmu II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39107": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Majest. Odlamek Zbroi II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39108": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Majest. Odlamek Broni II",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39110": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Projekt Zestawu Helmu",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39111": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Projekt Zestawu Zbroi",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"39112": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Projekt Zestawu Broni",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"49991": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ognista Runa Aury (10)",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"49992": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ognista Runa Aury (50)",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"49993": {
+"af": 16384,
+"gold": 0,
+"level": 0,
+"name": "Ognista Runa Aury (100)",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"50639": {
+"af": 0,
+"gold": 500,
+"level": 0,
+"name": "Turmalin",
+"next": 0,
+"sell": 500,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"50641": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ruda Jadeitu Slonca",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 6
+},
+"50642": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ruda Jadeitu Nocy",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 6
+},
+"50643": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ruda Jadeitu Dymu",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 6
+},
+"50644": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Ruda Jadeitu Mgly",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 6
+},
+"50661": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Jadeit Slonca",
+"next": 0,
+"sell": 1000,
+"set": 0,
+"sub": 21,
+"type": 3
+},
+"50662": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Jadeit Nocy",
+"next": 0,
+"sell": 1000,
+"set": 0,
+"sub": 21,
+"type": 3
+},
+"50663": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Jadeit Dymu",
+"next": 0,
+"sell": 1000,
+"set": 0,
+"sub": 21,
+"type": 3
+},
+"50664": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Jadeit Mgly",
+"next": 0,
+"sell": 1000,
+"set": 0,
+"sub": 21,
+"type": 3
+},
+"50737": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Ziemne Pnacze",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"50738": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Mroczny Ciern",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"50739": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Pusty Eliksir Mocy",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"50740": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Pusty Eliksir Odp.",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"50830": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Ognistej Mocy",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50831": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Mroznej Mocy",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50832": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Piorunowej Mocy",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50833": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Mocy Pln. Wiatru",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50834": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Mocy Ziemi",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50835": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Mrocznej Mocy",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50836": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Odp. na Ogien",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50837": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Odp. na Lod",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50838": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Odp. na Pioruny",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50839": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Odp. na Pln. W.",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50840": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Odp. na Ziemie",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"50841": {
+"af": 0,
+"gold": 0,
+"level": 120,
+"name": "Eliksir Odp. na Mrok",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 27
+},
+"70428": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Pyl Wezowy",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"72353": {
+"af": 204928,
+"gold": 1000,
+"level": 0,
+"name": "Topaz Woli",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"81000": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+0",
+"next": 81001,
+"sell": 5000,
+"set": 22501,
+"sub": 7,
+"type": 2
+},
+"81001": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+1",
+"next": 81002,
+"sell": 5000,
+"set": 22502,
+"sub": 7,
+"type": 2
+},
+"81002": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+2",
+"next": 81003,
+"sell": 5000,
+"set": 22503,
+"sub": 7,
+"type": 2
+},
+"81003": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+3",
+"next": 81004,
+"sell": 5000,
+"set": 22504,
+"sub": 7,
+"type": 2
+},
+"81004": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+4",
+"next": 81005,
+"sell": 5000,
+"set": 22505,
+"sub": 7,
+"type": 2
+},
+"81005": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+5",
+"next": 81006,
+"sell": 5000,
+"set": 22506,
+"sub": 7,
+"type": 2
+},
+"81006": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+6",
+"next": 81007,
+"sell": 5000,
+"set": 22507,
+"sub": 7,
+"type": 2
+},
+"81007": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+7",
+"next": 81008,
+"sell": 5000,
+"set": 22508,
+"sub": 7,
+"type": 2
+},
+"81008": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+8",
+"next": 81009,
+"sell": 5000,
+"set": 22509,
+"sub": 7,
+"type": 2
+},
+"81009": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli SILA+9",
+"next": 0,
+"sell": 5000,
+"set": 0,
+"sub": 7,
+"type": 2
+},
+"81250": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+0",
+"next": 81251,
+"sell": 5000,
+"set": 22510,
+"sub": 7,
+"type": 2
+},
+"81251": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+1",
+"next": 81252,
+"sell": 5000,
+"set": 22511,
+"sub": 7,
+"type": 2
+},
+"81252": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+2",
+"next": 81253,
+"sell": 5000,
+"set": 22512,
+"sub": 7,
+"type": 2
+},
+"81253": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+3",
+"next": 81254,
+"sell": 5000,
+"set": 22513,
+"sub": 7,
+"type": 2
+},
+"81254": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+4",
+"next": 81255,
+"sell": 5000,
+"set": 22514,
+"sub": 7,
+"type": 2
+},
+"81255": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+5",
+"next": 81256,
+"sell": 5000,
+"set": 22515,
+"sub": 7,
+"type": 2
+},
+"81256": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+6",
+"next": 81257,
+"sell": 5000,
+"set": 22516,
+"sub": 7,
+"type": 2
+},
+"81257": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+7",
+"next": 81258,
+"sell": 5000,
+"set": 22517,
+"sub": 7,
+"type": 2
+},
+"81258": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+8",
+"next": 81259,
+"sell": 5000,
+"set": 22518,
+"sub": 7,
+"type": 2
+},
+"81259": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli ODP+9",
+"next": 0,
+"sell": 5000,
+"set": 0,
+"sub": 7,
+"type": 2
+},
+"81300": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+0",
+"next": 81301,
+"sell": 5000,
+"set": 22519,
+"sub": 7,
+"type": 2
+},
+"81301": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+1",
+"next": 81302,
+"sell": 5000,
+"set": 22520,
+"sub": 7,
+"type": 2
+},
+"81302": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+2",
+"next": 81303,
+"sell": 5000,
+"set": 22521,
+"sub": 7,
+"type": 2
+},
+"81303": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+3",
+"next": 81304,
+"sell": 5000,
+"set": 22522,
+"sub": 7,
+"type": 2
+},
+"81304": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+4",
+"next": 81305,
+"sell": 5000,
+"set": 22523,
+"sub": 7,
+"type": 2
+},
+"81305": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+5",
+"next": 81306,
+"sell": 5000,
+"set": 22524,
+"sub": 7,
+"type": 2
+},
+"81306": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+6",
+"next": 81307,
+"sell": 5000,
+"set": 22525,
+"sub": 7,
+"type": 2
+},
+"81307": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+7",
+"next": 81308,
+"sell": 5000,
+"set": 22526,
+"sub": 7,
+"type": 2
+},
+"81308": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+8",
+"next": 81309,
+"sell": 5000,
+"set": 22527,
+"sub": 7,
+"type": 2
+},
+"81309": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli WIT+9",
+"next": 0,
+"sell": 5000,
+"set": 0,
+"sub": 7,
+"type": 2
+},
+"81550": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+0",
+"next": 81551,
+"sell": 5000,
+"set": 22528,
+"sub": 7,
+"type": 2
+},
+"81551": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+1",
+"next": 81552,
+"sell": 5000,
+"set": 22529,
+"sub": 7,
+"type": 2
+},
+"81552": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+2",
+"next": 81553,
+"sell": 5000,
+"set": 22530,
+"sub": 7,
+"type": 2
+},
+"81553": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+3",
+"next": 81554,
+"sell": 5000,
+"set": 22531,
+"sub": 7,
+"type": 2
+},
+"81554": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+4",
+"next": 81555,
+"sell": 5000,
+"set": 22532,
+"sub": 7,
+"type": 2
+},
+"81555": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+5",
+"next": 81556,
+"sell": 5000,
+"set": 22533,
+"sub": 7,
+"type": 2
+},
+"81556": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+6",
+"next": 81557,
+"sell": 5000,
+"set": 22534,
+"sub": 7,
+"type": 2
+},
+"81557": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+7",
+"next": 81558,
+"sell": 5000,
+"set": 22535,
+"sub": 7,
+"type": 2
+},
+"81558": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+8",
+"next": 81559,
+"sell": 5000,
+"set": 22536,
+"sub": 7,
+"type": 2
+},
+"81559": {
+"af": 0,
+"gold": 360000,
+"level": 105,
+"name": "Talizman Woli INT+9",
+"next": 0,
+"sell": 5000,
+"set": 0,
+"sub": 7,
+"type": 2
+},
+"81560": {
+"af": 0,
+"gold": 360000,
+"level": 120,
+"name": "Tajemniczy Talizman+0",
+"next": 0,
+"sell": 5000,
+"set": 0,
+"sub": 7,
+"type": 2
+},
+"95733": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Ognisty Lisc",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"95734": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Mrozny Korzonek",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"95735": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Piorunowe Ziolo",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+},
+"95736": {
+"af": 0,
+"gold": 0,
+"level": 0,
+"name": "Kwiat Polnocnego Wiatru",
+"next": 0,
+"sell": 0,
+"set": 0,
+"sub": 0,
+"type": 5
+}
+},
+"sources": {
+"14580": "chest Skrzynia z Bransol 5.3%x1; chest Skrzynia Labirynto 4.2%x1 (+1 more)",
+"14581": "chest Skrzynia z Bransol 3.9%x1",
+"14590": "chest Skrzynia z Bransol 5.3%x1; chest Skrzynia Labirynto 3.1%x1",
+"14591": "chest Skrzynia z Bransol 3.9%x1",
+"14600": "chest Skrzynia z Bransol 5.3%x1",
+"14601": "chest Skrzynia z Bransol 3.9%x1",
+"14610": "chest Skrzynia z Bransol 5.3%x1",
+"14611": "chest Skrzynia z Bransol 2.6%x1",
+"16580": "chest Skrzynia Labirynto 4.2%x1; chest Szkatulka Yohara 4.1%x1 (+1 more)",
+"16590": "chest Skrzynia Labirynto 3.1%x1; chest Id. Skrzynia Naszy 1.7%x1",
+"16600": "chest Id. Skrzynia Naszy 1.7%x1",
+"17570": "chest Skrzynia Labirynto 4.2%x1; chest Szkatulka Yohara 4.1%x1 (+1 more)",
+"17580": "chest Skrzynia Labirynto 3.1%x1; chest Id. Skrzynia Kolcz 1.7%x1",
+"17590": "chest Id. Skrzynia Kolcz 1.7%x1",
+"27992": "? 100%x1; ? 100%x1 (+25 more)",
+"27993": "? 60%x1; ? 60%x1 (+27 more)",
+"27994": "chest 10933 33.3%x1; ? 30%x1 (+26 more)",
+"30601": "Jotun Thrym 20%x1; Bagjanamu 15%x1 (+1 more)",
+"30602": "chest Skrzynia Jotuna Th 3.8%x1; chest Skrzynia Bagjanamu 1.1%x1 (+1 more)",
+"30605": "Bagjanamu 15%x1; Wojownik En-Tai 0.5%x1 (+3 more)",
+"30606": "Metin Drzewnych St 15%x1; Wojownik En-Tai 0.5%x1 (+21 more)",
+"30607": "Bagjanamu 15%x1; Druid En-Tai 0.5%x1 (+2 more)",
+"30608": "Druid En-Tai 0.5%x1; ? 10%x1 (+21 more)",
+"30609": "Jotun Thrym 20%x1; Bagjanamu 15%x1 (+4 more)",
+"30615": "Jotun Thrym 20%x1; Bagjanamu 15%x1",
+"30618": "? 20%x1; chest 951202 15.6%x1 (+6 more)",
+"30619": "Jotun Thrym 20%x1; Wladca En-Tai 10%x1 (+1 more)",
+"30627": "chest 950275 0.7%x1",
+"31108": "PB: Jotun Thrym 40%x3; PB: Beran-Setaou 40%x3 (+25 more)",
+"31109": "PB: Jotun Thrym 20%x1; PB: Beran-Setaou 20%x1 (+13 more)",
+"31113": "chest Skrzynia Razadora  7.4%x2; chest Skrzynia Nemere (P 7.4%x2 (+2 more)",
+"31114": "PB: Metin Lasu 10%x1; chest Skrzynia Razadora  7.4%x2 (+35 more)",
+"31115": "PB: Wladca En-Tai 25%x2; PB: General Yongha 25%x2 (+34 more)",
+"31117": "PB: Beran-Setaou 30%x2; PB: Wladca En-Tai 30%x2 (+16 more)",
+"31118": "PB: Jotun Thrym 40%x3; PB: Szel 40%x3 (+7 more)",
+"31120": "PB: Jotun Thrym 30%x2; PB: Beran-Setaou 30%x2 (+10 more)",
+"31121": "PB: Jotun Thrym 30%x2; PB: Beran-Setaou 30%x2 (+12 more)",
+"31122": "PB: Zolnierz Setao 2%x1; PB: Wojownik Setao 2%x1 (+35 more)",
+"31123": "PB: Beran-Setaou 30%x2; PB: Metin Lasu 25%x2 (+19 more)",
+"31124": "PB: Metin Lasu 30%x2; PB: Jotun Thrym 30%x2 (+18 more)",
+"31125": "PB: Metin Lasu 30%x2; PB: Jotun Thrym 30%x2 (+10 more)",
+"31126": "chest Skrzynia Berana-Se 3.6%x1",
+"31127": "chest Skrzynia Berana-Se 3.6%x1",
+"31128": "chest Skrzynia Razadora  2.0%x1",
+"31129": "chest Skrzynia Nemere (P 2.0%x1",
+"31130": "chest Skrzynia Jotuna Th 2.0%x1",
+"31131": "PB: Jotun Thrym 10%x1; PB: Wladca En-Tai 10%x1 (+3 more)",
+"31132": "PB: Jotun Thrym 25%x2; PB: Beran-Setaou 25%x2 (+6 more)",
+"31133": "PB: Szel 10%x1; PB: Nemere 10%x1 (+4 more)",
+"31134": "chest Skrzynia Razadora  1.2%x2; chest Skrzynia Nemere (P 1.2%x2 (+2 more)",
+"31135": "chest Skrzynia Jotuna Th 0.5%x2; chest Skrzynia Nemere (P 0.7%x1 (+2 more)",
+"31136": "PB: Jotun Thrym 10%x1; PB: Bagjanamu 10%x1 (+4 more)",
+"31137": "chest Skrzynia Razadora  1.2%x1; chest Skrzynia Nemere (P 1.2%x1 (+2 more)",
+"31138": "chest Skrzynia Jotuna Th 0.7%x1; chest Skrzynia Razadora  0.5%x1 (+2 more)",
+"31149": "PB: Beran-Setaou 30%x2; PB: Wladca En-Tai 30%x2 (+24 more)",
+"31196": "PB: Nemere 12%x1; PB: Zolnierz Setao 0.5%x1 (+2 more)",
+"31197": "PB: Jotun Thrym 12%x1; PB: Nemere 12%x1 (+1 more)",
+"31198": "PB: Jotun Thrym 12%x1; PB: Beran-Setaou 8%x1",
+"31199": "PB: Lucznik Setaou 2%x1; PB: Nemere 12%x1 (+1 more)",
+"31200": "PB: Jotun Thrym 12%x1; PB: Razador 12%x1 (+1 more)",
+"31201": "PB: Beran-Setaou 8%x1; PB: Nemere 8%x1 (+2 more)",
+"31203": "PB: Razador 12%x1; PB: Druid En-Tai 0.3%x1 (+2 more)",
+"31204": "PB: Bagjanamu 10%x1; PB: Zolnierz Setao 0.2%x1 (+1 more)",
+"31205": "PB: Beran-Setaou 12%x1; PB: Lucznik Setaou 0.5%x1 (+1 more)",
+"31206": "PB: Bagjanamu 10%x1; PB: Bojownik En-Ta 0.4%x1 (+2 more)",
+"31207": "PB: Beran-Setaou 12%x1; PB: Metin Lasu 3%x1 (+2 more)",
+"31209": "PB: Razador 12%x1; PB: Wojownik Setao 0.5%x1 (+1 more)",
+"31210": "PB: Lowca Setaou 2%x1; PB: Jotun Thrym 12%x1 (+2 more)",
+"31211": "PB: Jotun Thrym 12%x1; PB: Razador 12%x1 (+2 more)",
+"31212": "PB: Beran-Setaou 12%x1; PB: Mistyk Setaou 0.3%x1 (+2 more)",
+"31216": "chest Id. Skrzynia Naszy 13.6%x5; Potezny Kappa 8%x1 (+95 more)",
+"31217": "chest Id. Skrzynia Naszy 13.6%x5; Natanan (ogien) 20%x2 (+112 more)",
+"31218": "chest Id. Skrzynia Naszy 13.6%x5; Natanan (ogien) 20%x2 (+74 more)",
+"31224": "Natanan (ogien) 20%x2; Natanan (mrok) 20%x2 (+72 more)",
+"31226": "Krol Bao 10%x1; chest Id. Skrzynia Naszy 6.8%x1 (+1 more)",
+"31227": "Natanan (ogien) 15%x1; Natanan (mrok) 15%x1 (+4 more)",
+"31228": "Myr Weteran (ziemi 5%x1; Myr Weteran (wiatr 5%x1 (+2 more)",
+"31233": "chest Skarb Wezy 5.1%x10; Zamarzniety Lis 0.25%x1 (+19 more)",
+"31234": "chest Skarb Wezy 5.1%x10; Zamarzniety Lis 0.08%x1 (+19 more)",
+"31235": "chest B. Smocza Skrz. (l 1.4%x1; chest B. Smocza Skrz. (c 1.3%x1",
+"31236": "Wodz Wojenny Schro 8%x1; chest B. Smocza Skrz. (c 4.2%x1 (+2 more)",
+"31237": "Wodz Wojenny Schro 8%x1; Wodz Wojenny Pln.  6.5%x1 (+4 more)",
+"31239": "Wodz Wojenny Schro 8%x1; Wodz Wojenny Schro 2%x1 (+6 more)",
+"31240": "Wodz Wojenny Schro 8%x1; chest Polyskujaca Muszla 2.0%x1 (+6 more)",
+"31241": "Wodz Wojenny Schro 8%x1; chest Polyskujaca Muszla 2.0%x1 (+10 more)",
+"31242": "chest B. Smocza Skrz. (c 4.4%x15; chest B. Smocza Skrz. (l 5.3%x10 (+8 more)",
+"31243": "chest B. Smocza Skrz. (c 4.4%x15; chest B. Smocza Skrz. (l 5.3%x10 (+2 more)",
+"31244": "chest B. Smocza Skrz. (c 5.0%x7; chest B. Smocza Skrz. (l 5.3%x5 (+12 more)",
+"31245": "Mistrz Ahtrin 15%x1; Ahtrin Wielki Mist 15%x1 (+44 more)",
+"31246": "Mistrz Ahtrin 15%x1; Ahtrin Wielki Mist 15%x1 (+49 more)",
+"31247": "Potezny Kappa 5%x1; Natanan (ogien) 10%x1 (+36 more)",
+"31248": "Potezny Kappa 5%x1; Natanan (ogien) 10%x1 (+42 more)",
+"31249": "Potezny Kappa 5%x1; Natanan (ogien) 10%x1 (+39 more)",
+"31250": "Potezny Kappa 5%x1; Natanan (ogien) 10%x1 (+38 more)",
+"31251": "Natanan (ogien) 10%x1; Natanan (mrok) 10%x1 (+55 more)",
+"31252": "chest Skrzynia Mistrza A 13.0%x1; Natanan (ogien) 5%x1 (+54 more)",
+"31257": "Potezny Kappa 8%x1; chest Skarb Wezy 7.1%x5 (+54 more)",
+"31258": "Potezny Kappa 8%x1; chest Skarb Wezy 7.1%x2 (+30 more)",
+"31259": "Zamarzniety Wodz W 3%x1; Wodz Wojenny Pln.  3%x1 (+9 more)",
+"31261": "Tajemniczy Mnich 30%x5; Tajemniczy Mnich 30%x5 (+10 more)",
+"31262": "chest Skarb Wezy 7.1%x5",
+"31263": "chest B. Smocza Skrz. (c 2.1%x5; Wodz Wojenny Schro 8%x1 (+2 more)",
+"39078": "Potezny Kappa 5%x1; Straz Przyboczna L 10%x1 (+46 more)",
+"39079": "Straz Przyboczna L 40%x1; Beran-Setaou 40%x1 (+17 more)",
+"39080": "Potezny Kappa 5%x1; PB: Jotun Thrym 15%x1 (+37 more)",
+"39085": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39086": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39087": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39088": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39089": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39090": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39091": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39092": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39093": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39094": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39095": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39096": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39097": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39098": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39099": "Metin Ziemi 3%x1; Metin Wiatru 3%x1 (+17 more)",
+"39100": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39101": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39102": "Wladca Ziemi 3%x1; Wladca Wichury 3%x1 (+4 more)",
+"39103": "Wladca Ziemi 1%x1; Wladca Wichury 1%x1 (+4 more)",
+"39104": "Wladca Ziemi 1%x1; Wladca Wichury 1%x1 (+4 more)",
+"39105": "Wladca Ziemi 1%x1; Wladca Wichury 1%x1 (+4 more)",
+"39106": "Wladca Ziemi 1%x1; Wladca Wichury 1%x1 (+4 more)",
+"39107": "Wladca Ziemi 1%x1; Wladca Wichury 1%x1 (+4 more)",
+"39108": "Wladca Ziemi 1%x1; Wladca Wichury 1%x1 (+4 more)",
+"39110": "Wladca Ziemi 2%x1; Wladca Wichury 2%x1 (+23 more)",
+"39111": "Wladca Ziemi 2%x1; Wladca Wichury 2%x1 (+23 more)",
+"39112": "Wladca Ziemi 2%x1; Wladca Wichury 2%x1 (+23 more)",
+"49991": "Zamarzniety Wodz W 10%x3; Zamarzniety Wodz W 10%x3 (+25 more)",
+"49992": "Wodz Wojenny Schro 3%x1; Wodz Wojenny Schro 2%x1",
+"49993": "Wodz Wojenny Schro 1%x1; Wodz Wojenny Schro 1%x1 (+2 more)",
+"50661": "Mistrz Wloczni Mao 2%x1; Mistrz Wloczni Mao 2%x1 (+12 more)",
+"50662": "Potezny Kappa 5%x3; Metin Swiadomosc 10%x1 (+22 more)",
+"50663": "Potezny Kappa 5%x1; Metin z Gumar 5%x1 (+27 more)",
+"50664": "Mistrz Wloczni Mao 2%x1; Mistrz Wloczni Mao 2%x1 (+10 more)",
+"50737": "Skazony Wodz Wojen 10%x1; Skazony Wodz 10%x1 (+22 more)",
+"50738": "Piekielny Pies (mr 0.5%x1; Jin Bing (mrok) 0.5%x1 (+33 more)",
+"50739": "Zamarzniety Wodz 10%x2; Zamarzniety Wodz 10%x2 (+42 more)",
+"50740": "Zamarzniety Wodz 10%x2; Zamarzniety Wodz 10%x2 (+42 more)",
+"70428": "Potezny Kappa 10%x5; Potezny Wojownik W 30%x1 (+13 more)",
+"72353": "Natanan (ogien) 40%x2; Natanan (mrok) 40%x2 (+111 more)",
+"81000": "Potezny Kappa 2%x1; chest Id. Skrzynia Taliz 10.6%x1 (+98 more)",
+"81250": "Potezny Kappa 2%x1; chest Id. Skrzynia Taliz 10.6%x1 (+98 more)",
+"81300": "Potezny Kappa 2%x1; chest Id. Skrzynia Taliz 10.6%x1 (+98 more)",
+"81550": "Potezny Kappa 2%x1; chest Id. Skrzynia Taliz 10.6%x1 (+99 more)",
+"95733": "Natanan (ogien) 15%x1; Argos (ogien) 15%x1 (+5 more)",
+"95734": "Krol Bao 15%x5; Krol Bao (misja) 15%x5 (+37 more)",
+"95735": "Zolnierz Schron. P 0.5%x1; Zamarzniety Wodz W 10%x1 (+18 more)",
+"95736": "Myr Weteran (wiatr 10%x1; Myr Prymus (wiatr) 10%x1 (+9 more)"
+},
+"steps": {
+"14580": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"14581": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"14582": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"14583": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"14584": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"14585": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"14586": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"14587": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"14588": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"14590": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"14591": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"14592": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"14593": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"14594": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"14595": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"14596": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"14597": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"14598": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"14600": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"14601": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"14602": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"14603": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"14604": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"14605": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"14606": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"14607": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"14608": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"14610": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"14611": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"14612": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"14613": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"14614": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"14615": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"14616": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"14617": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"14618": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"16580": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"16581": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"16582": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"16583": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"16584": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"16585": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"16586": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"16587": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"16588": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"16590": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"16591": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"16592": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"16593": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"16594": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"16595": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"16596": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"16597": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"16598": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"16600": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"16601": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"16602": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"16603": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"16604": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"16605": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"16606": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"16607": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"16608": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"16610": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"16611": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"16612": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"16613": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"16614": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"16615": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"16616": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"16617": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"16618": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"17570": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"17571": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"17572": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"17573": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"17574": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"17575": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"17576": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"17577": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"17578": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"17580": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"17581": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"17582": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"17583": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"17584": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"17585": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"17586": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"17587": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"17588": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"17590": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"17591": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"17592": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"17593": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"17594": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"17595": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"17596": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"17597": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"17598": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"17600": {
+"cost": 250000,
+"mats": [],
+"prob": 80
+},
+"17601": {
+"cost": 300000,
+"mats": [],
+"prob": 70
+},
+"17602": {
+"cost": 350000,
+"mats": [],
+"prob": 60
+},
+"17603": {
+"cost": 400000,
+"mats": [
+[
+31216,
+15
+],
+[
+31217,
+5
+]
+],
+"prob": 50
+},
+"17604": {
+"cost": 450000,
+"mats": [
+[
+31216,
+20
+],
+[
+31217,
+7
+]
+],
+"prob": 40
+},
+"17605": {
+"cost": 500000,
+"mats": [
+[
+31216,
+25
+],
+[
+31217,
+10
+]
+],
+"prob": 30
+},
+"17606": {
+"cost": 550000,
+"mats": [
+[
+31218,
+15
+],
+[
+31224,
+5
+],
+[
+27992,
+1
+]
+],
+"prob": 20
+},
+"17607": {
+"cost": 600000,
+"mats": [
+[
+31218,
+20
+],
+[
+31224,
+7
+],
+[
+27993,
+1
+]
+],
+"prob": 10
+},
+"17608": {
+"cost": 650000,
+"mats": [
+[
+31218,
+25
+],
+[
+31224,
+10
+],
+[
+27994,
+1
+]
+],
+"prob": 5
+},
+"23000": {
+"cost": 250000,
+"mats": [
+[
+31251,
+10
+]
+],
+"prob": 80
+},
+"23001": {
+"cost": 300000,
+"mats": [
+[
+31251,
+20
+]
+],
+"prob": 70
+},
+"23002": {
+"cost": 350000,
+"mats": [
+[
+31251,
+30
+]
+],
+"prob": 60
+},
+"23003": {
+"cost": 400000,
+"mats": [
+[
+31251,
+40
+]
+],
+"prob": 50
+},
+"23004": {
+"cost": 450000,
+"mats": [
+[
+31251,
+50
+],
+[
+31252,
+2
+]
+],
+"prob": 40
+},
+"23005": {
+"cost": 500000,
+"mats": [
+[
+31251,
+50
+],
+[
+27992,
+1
+],
+[
+31252,
+2
+]
+],
+"prob": 30
+},
+"23006": {
+"cost": 550000,
+"mats": [
+[
+31251,
+100
+],
+[
+30618,
+1
+],
+[
+31252,
+3
+]
+],
+"prob": 20
+},
+"23007": {
+"cost": 600000,
+"mats": [
+[
+31251,
+100
+],
+[
+27993,
+1
+],
+[
+31252,
+4
+]
+],
+"prob": 10
+},
+"23008": {
+"cost": 650000,
+"mats": [
+[
+31251,
+200
+],
+[
+27994,
+1
+],
+[
+31252,
+5
+]
+],
+"prob": 5
+},
+"23010": {
+"cost": 250000,
+"mats": [
+[
+31251,
+10
+]
+],
+"prob": 80
+},
+"23011": {
+"cost": 300000,
+"mats": [
+[
+31251,
+20
+]
+],
+"prob": 70
+},
+"23012": {
+"cost": 350000,
+"mats": [
+[
+31251,
+30
+]
+],
+"prob": 60
+},
+"23013": {
+"cost": 400000,
+"mats": [
+[
+31251,
+40
+]
+],
+"prob": 50
+},
+"23014": {
+"cost": 450000,
+"mats": [
+[
+31251,
+50
+],
+[
+31252,
+2
+]
+],
+"prob": 40
+},
+"23015": {
+"cost": 500000,
+"mats": [
+[
+31251,
+50
+],
+[
+27992,
+1
+],
+[
+31252,
+2
+]
+],
+"prob": 30
+},
+"23016": {
+"cost": 550000,
+"mats": [
+[
+31251,
+100
+],
+[
+30618,
+1
+],
+[
+31252,
+3
+]
+],
+"prob": 20
+},
+"23017": {
+"cost": 600000,
+"mats": [
+[
+31251,
+100
+],
+[
+27993,
+1
+],
+[
+31252,
+4
+]
+],
+"prob": 10
+},
+"23018": {
+"cost": 650000,
+"mats": [
+[
+31251,
+200
+],
+[
+27994,
+1
+],
+[
+31252,
+5
+]
+],
+"prob": 5
+},
+"23020": {
+"cost": 250000,
+"mats": [
+[
+31251,
+10
+]
+],
+"prob": 80
+},
+"23021": {
+"cost": 300000,
+"mats": [
+[
+31251,
+20
+]
+],
+"prob": 70
+},
+"23022": {
+"cost": 350000,
+"mats": [
+[
+31251,
+30
+]
+],
+"prob": 60
+},
+"23023": {
+"cost": 400000,
+"mats": [
+[
+31251,
+40
+]
+],
+"prob": 50
+},
+"23024": {
+"cost": 450000,
+"mats": [
+[
+31251,
+50
+],
+[
+31252,
+2
+]
+],
+"prob": 40
+},
+"23025": {
+"cost": 500000,
+"mats": [
+[
+31251,
+50
+],
+[
+27992,
+1
+],
+[
+31252,
+2
+]
+],
+"prob": 30
+},
+"23026": {
+"cost": 550000,
+"mats": [
+[
+31251,
+100
+],
+[
+30618,
+1
+],
+[
+31252,
+3
+]
+],
+"prob": 20
+},
+"23027": {
+"cost": 600000,
+"mats": [
+[
+31251,
+100
+],
+[
+27993,
+1
+],
+[
+31252,
+4
+]
+],
+"prob": 10
+},
+"23028": {
+"cost": 650000,
+"mats": [
+[
+31251,
+200
+],
+[
+27994,
+1
+],
+[
+31252,
+5
+]
+],
+"prob": 5
+},
+"23030": {
+"cost": 250000,
+"mats": [
+[
+31251,
+10
+]
+],
+"prob": 80
+},
+"23031": {
+"cost": 300000,
+"mats": [
+[
+31251,
+20
+]
+],
+"prob": 70
+},
+"23032": {
+"cost": 350000,
+"mats": [
+[
+31251,
+30
+]
+],
+"prob": 60
+},
+"23033": {
+"cost": 400000,
+"mats": [
+[
+31251,
+40
+]
+],
+"prob": 50
+},
+"23034": {
+"cost": 450000,
+"mats": [
+[
+31251,
+50
+],
+[
+31252,
+2
+]
+],
+"prob": 40
+},
+"23035": {
+"cost": 500000,
+"mats": [
+[
+31251,
+50
+],
+[
+27992,
+1
+],
+[
+31252,
+2
+]
+],
+"prob": 30
+},
+"23036": {
+"cost": 550000,
+"mats": [
+[
+31251,
+100
+],
+[
+30618,
+1
+],
+[
+31252,
+3
+]
+],
+"prob": 20
+},
+"23037": {
+"cost": 600000,
+"mats": [
+[
+31251,
+100
+],
+[
+27993,
+1
+],
+[
+31252,
+4
+]
+],
+"prob": 10
+},
+"23038": {
+"cost": 650000,
+"mats": [
+[
+31251,
+200
+],
+[
+27994,
+1
+],
+[
+31252,
+5
+]
+],
+"prob": 5
+},
+"81000": {
+"cost": 1000000,
+"mats": [
+[
+72353,
+6
+],
+[
+81000,
+1
+]
+],
+"prob": 70
+},
+"81001": {
+"cost": 1500000,
+"mats": [
+[
+72353,
+12
+],
+[
+81001,
+1
+]
+],
+"prob": 60
+},
+"81002": {
+"cost": 2000000,
+"mats": [
+[
+72353,
+18
+],
+[
+81002,
+1
+]
+],
+"prob": 60
+},
+"81003": {
+"cost": 2500000,
+"mats": [
+[
+72353,
+24
+],
+[
+81003,
+1
+]
+],
+"prob": 50
+},
+"81004": {
+"cost": 3000000,
+"mats": [
+[
+72353,
+30
+],
+[
+81004,
+1
+]
+],
+"prob": 50
+},
+"81005": {
+"cost": 3500000,
+"mats": [
+[
+72353,
+36
+],
+[
+81005,
+1
+]
+],
+"prob": 50
+},
+"81006": {
+"cost": 4000000,
+"mats": [
+[
+72353,
+42
+],
+[
+81006,
+1
+]
+],
+"prob": 40
+},
+"81007": {
+"cost": 4500000,
+"mats": [
+[
+72353,
+48
+],
+[
+81007,
+1
+]
+],
+"prob": 30
+},
+"81008": {
+"cost": 5000000,
+"mats": [
+[
+72353,
+54
+],
+[
+81008,
+1
+]
+],
+"prob": 20
+},
+"81250": {
+"cost": 1000000,
+"mats": [
+[
+72353,
+6
+],
+[
+81250,
+1
+]
+],
+"prob": 70
+},
+"81251": {
+"cost": 1500000,
+"mats": [
+[
+72353,
+12
+],
+[
+81251,
+1
+]
+],
+"prob": 60
+},
+"81252": {
+"cost": 2000000,
+"mats": [
+[
+72353,
+18
+],
+[
+81252,
+1
+]
+],
+"prob": 60
+},
+"81253": {
+"cost": 2500000,
+"mats": [
+[
+72353,
+24
+],
+[
+81253,
+1
+]
+],
+"prob": 50
+},
+"81254": {
+"cost": 3000000,
+"mats": [
+[
+72353,
+30
+],
+[
+81254,
+1
+]
+],
+"prob": 50
+},
+"81255": {
+"cost": 3500000,
+"mats": [
+[
+72353,
+36
+],
+[
+81255,
+1
+]
+],
+"prob": 50
+},
+"81256": {
+"cost": 4000000,
+"mats": [
+[
+72353,
+42
+],
+[
+81256,
+1
+]
+],
+"prob": 40
+},
+"81257": {
+"cost": 4500000,
+"mats": [
+[
+72353,
+48
+],
+[
+81257,
+1
+]
+],
+"prob": 30
+},
+"81258": {
+"cost": 5000000,
+"mats": [
+[
+72353,
+54
+],
+[
+81258,
+1
+]
+],
+"prob": 20
+},
+"81300": {
+"cost": 1000000,
+"mats": [
+[
+72353,
+6
+],
+[
+81300,
+1
+]
+],
+"prob": 70
+},
+"81301": {
+"cost": 1500000,
+"mats": [
+[
+72353,
+12
+],
+[
+81301,
+1
+]
+],
+"prob": 60
+},
+"81302": {
+"cost": 2000000,
+"mats": [
+[
+72353,
+18
+],
+[
+81302,
+1
+]
+],
+"prob": 60
+},
+"81303": {
+"cost": 2500000,
+"mats": [
+[
+72353,
+24
+],
+[
+81303,
+1
+]
+],
+"prob": 50
+},
+"81304": {
+"cost": 3000000,
+"mats": [
+[
+72353,
+30
+],
+[
+81304,
+1
+]
+],
+"prob": 50
+},
+"81305": {
+"cost": 3500000,
+"mats": [
+[
+72353,
+36
+],
+[
+81305,
+1
+]
+],
+"prob": 50
+},
+"81306": {
+"cost": 4000000,
+"mats": [
+[
+72353,
+42
+],
+[
+81306,
+1
+]
+],
+"prob": 40
+},
+"81307": {
+"cost": 4500000,
+"mats": [
+[
+72353,
+48
+],
+[
+81307,
+1
+]
+],
+"prob": 30
+},
+"81308": {
+"cost": 5000000,
+"mats": [
+[
+72353,
+54
+],
+[
+81308,
+1
+]
+],
+"prob": 20
+},
+"81550": {
+"cost": 1000000,
+"mats": [
+[
+72353,
+6
+],
+[
+81550,
+1
+]
+],
+"prob": 70
+},
+"81551": {
+"cost": 1500000,
+"mats": [
+[
+72353,
+12
+],
+[
+81551,
+1
+]
+],
+"prob": 60
+},
+"81552": {
+"cost": 2000000,
+"mats": [
+[
+72353,
+18
+],
+[
+81552,
+1
+]
+],
+"prob": 60
+},
+"81553": {
+"cost": 2500000,
+"mats": [
+[
+72353,
+24
+],
+[
+81553,
+1
+]
+],
+"prob": 50
+},
+"81554": {
+"cost": 3000000,
+"mats": [
+[
+72353,
+30
+],
+[
+81554,
+1
+]
+],
+"prob": 50
+},
+"81555": {
+"cost": 3500000,
+"mats": [
+[
+72353,
+36
+],
+[
+81555,
+1
+]
+],
+"prob": 50
+},
+"81556": {
+"cost": 4000000,
+"mats": [
+[
+72353,
+42
+],
+[
+81556,
+1
+]
+],
+"prob": 40
+},
+"81557": {
+"cost": 4500000,
+"mats": [
+[
+72353,
+48
+],
+[
+81557,
+1
+]
+],
+"prob": 30
+},
+"81558": {
+"cost": 5000000,
+"mats": [
+[
+72353,
+54
+],
+[
+81558,
+1
+]
+],
+"prob": 20
+}
+}
+}
