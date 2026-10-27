@@ -310,13 +310,54 @@ fi
 # of world.item_proto here (PROTO_FROM_DB = 1), which is why this sticks;
 # idempotent, and it touches only rods still carrying the old fifty.
 db -e "UPDATE world.item_proto SET limitvalue0 = 30 WHERE type = 13 AND limittype0 = 1 AND limitvalue0 = 50;"
-# And the pass the rod needs. Karta Wedkarska (27620), which CHARACTER::fishing()
-# wants worn, is sold in one place, the Fisherman's special shop (9009, opened
-# by fishing_pass_shop.quest), and the package asks level fifty for it - so a
-# player of thirty to forty-nine could wear the rod the line above allows and
-# never fish (Tieru, 17 September). The db core reads shop_special_proto at
-# boot, so this is live on the next start; idempotent, and only a fifty moves.
-db -e "UPDATE world.shop_special_proto SET limitvalue0 = 30 WHERE item_vnum = 27620 AND limittype0 = 'LEVEL' AND limitvalue0 = 50; UPDATE world.shop_special_proto SET limitvalue1 = 30 WHERE item_vnum = 27620 AND limittype1 = 'LEVEL' AND limitvalue1 = 50;"
+# MT2009_PLUS_FISHING_FREE_V1: fishing is free from level thirty - no Karta
+# Wedkarska (27620) and no Fisherman's introduction (owner, 27 October: "Z
+# yohary usun calkowicie quest wedkarski, wraz z karta wedkarska, teraz mozna
+# lowic od 30 poziomu kiedy sie chce i ile sie chce, bez ograniczen").
+# CHARACTER::fishing() asks neither (server-patches/enginefixes), the game
+# Dockerfile drops fishing_onboarding's handlers and fishing_pass_shop is gone.
+# Every start: the Fisherman's special shop (9009), whose only line was the
+# card, sells it no more (the db core reads the tables at boot). Once: the
+# cards players and bots hold (worn, bag, storeroom, mall, an unclaimed award,
+# a guild bank) and the introduction's own quest items - Esencja Natury
+# (30361), Esencja Wody (30362), Oczyszczajacy Amulet Wod (30363) - go, no
+# refund; item_proto keeps the rows. A deadlock (1213) or a lock wait (1205)
+# is tried again, three times.
+db -e "DELETE FROM world.shop_special WHERE item_vnum IN (SELECT vnum FROM world.shop_special_proto WHERE item_vnum = 27620); DELETE FROM world.shop_special_proto WHERE item_vnum = 27620;" \
+    || fail_step "could not take Karta Wedkarska out of the Fisherman's special shop (MT2009_PLUS_FISHING_FREE_V1)" >&2
+fishfree_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'fishing_free_cards_gone_v1';" 2>/dev/null || echo x)
+if [ "$fishfree_done" = "0" ]; then
+    fishfree_try=0
+    while :; do
+        fishfree_try=$((fishfree_try + 1))
+        fishfree_err=/tmp/playerbot-fishfree.err
+        if fishfree_out=$(db -e "
+            START TRANSACTION;
+            DELETE FROM player.item WHERE vnum = 27620;
+            SELECT ROW_COUNT();
+            DELETE FROM player.item WHERE vnum IN (30361, 30362, 30363);
+            SELECT ROW_COUNT();
+            DELETE FROM player.item_award WHERE vnum IN (27620, 30361, 30362, 30363) AND taken_time IS NULL;
+            INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('fishing_free_cards_gone_v1', NOW());
+            COMMIT;
+        " 2>"$fishfree_err"); then
+            db -e "DELETE FROM player.guild_duty_bank WHERE vnum IN (27620, 30361, 30362, 30363);" 2>/dev/null || true
+            fishfree_cards=$(printf '%s\n' "$fishfree_out" | awk 'NR == 1')
+            fishfree_items=$(printf '%s\n' "$fishfree_out" | awk 'NR == 2')
+            echo "[playerbot-migrate] fishing free (MT2009_PLUS_FISHING_FREE_V1): ${fishfree_cards:-0} Karta Wedkarska, ${fishfree_items:-0} introduction quest item(s) removed"
+            break
+        fi
+        if [ "$fishfree_try" -lt 3 ] && grep -Eq 'ERROR 12(13|05)' "$fishfree_err"; then
+            echo "[playerbot-migrate] fishing free: $(head -c 200 "$fishfree_err") - trying again" >&2
+            sleep 2
+            continue
+        fi
+        cat "$fishfree_err" >&2
+        fail_step "could not remove Karta Wedkarska and the fishing introduction's items (MT2009_PLUS_FISHING_FREE_V1)" >&2
+        break
+    done
+    rm -f "$fishfree_err"
+fi
 # Pierscien Teleportacji (70058) carries ITEM_FLAG_APPLICABLE (8192) in this
 # package, and under ENABLE_QUEST_DND_EVENT that flag makes UseItemEx treat an
 # ITEM_QUEST as "drop it onto another item": a plain use finds no target cell

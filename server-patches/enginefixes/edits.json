@@ -664,5 +664,23 @@
   "marker": "MT2009_PLUS_SUMMON_STONE_V1 (quest table)",
   "old": "\t\t\t{\t\"spawn_mob\",\t\t\t\t\t_spawn_mob\t\t\t\t\t\t},\n",
   "new": "\t\t\t{\t\"spawn_mob\",\t\t\t\t\t_spawn_mob\t\t\t\t\t\t},\n\t\t\t{\t\"set_summon_lifetime\",\t\t\t_set_summon_lifetime\t\t\t},\t// MT2009_PLUS_SUMMON_STONE_V1 (quest table)\n\t\t\t{\t\"summon_blocked_here\",\t\t\t_summon_blocked_here\t\t\t},\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_FISHING_FREE_V1 (level)",
+  "old": "\t// Fishing from thirty - see PLAYERBOT_FISHING_MIN_LEVEL.\n\tif (GetLevel() < 30)\n\t\treturn;\n\n\tif (!CanFishOnMapIndex(GetMapIndex()))\n",
+  "new": "\t// MT2009_PLUS_FISHING_FREE_V1 (level) (server-patches/enginefixes): fishing from\n\t// thirty, any time and as long as one likes - the Fisherman's introduction\n\t// (fishing_onboarding) and Karta Wedkarska (27620) are no longer asked (owner,\n\t// 27 October). The rod, the bait, the water and the three villages' banks are.\n\tif (GetLevel() < 30)\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, \"Mo\\xbf\" \"esz \\xb3owi\\xe6 ryby od 30 poziomu.\");\n\t\treturn;\n\t}\n\n\tif (!CanFishOnMapIndex(GetMapIndex()))\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_FISHING_FREE_V1 (no introduction)",
+  "old": "\tif (GetQuestFlag(\"fishing_onboarding.completed\") < 1)\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"FISHING_NEED_ONBOARDING\"));\n\t\treturn;\n\t}\n\n",
+  "new": "\t// MT2009_PLUS_FISHING_FREE_V1 (no introduction): fishing_onboarding is not asked.\n\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_FISHING_FREE_V1 (no card)",
+  "old": "\tif (!IsEquipUniqueItem(UNIQUE_ITEM_FISHING_PASS))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You need to have a fishing pass.\"));\n\t\treturn;\n\t}\n\n",
+  "new": "\t// MT2009_PLUS_FISHING_FREE_V1 (no card): Karta Wedkarska is not asked.\n\n"
  }
 ]

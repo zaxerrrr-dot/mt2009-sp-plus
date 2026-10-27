@@ -5711,28 +5711,8 @@ namespace
 	// WEAR_WEAPON, the bait lives in the rod's socket 2 rather than in the pouch,
 	// a cast bites after 10-40 s and then leaves a 6 s window to pull.
 	const DWORD PLAYERBOT_FISHING_ROD_VNUM = 27400;   // Wedka+1
-	// What a bot pays for the mt2009 fishing pass (unique item 27620, a day
-	// of real time) - nothing sells one, it comes out of a quest a bot cannot
-	// talk through, so it is created for the price of a rod and a bundle of
-	// wood together. Unused on r40250, which has no pass.
-	const DWORD PLAYERBOT_FISHING_PASS_PRICE = 50000;
-#if defined(PLAYERBOT_ENGINE_MT2009)
-	// When the fishing last asked for its pass (EnsurePlayerBotFishingPass), by
-	// pid, and how long the equipment pass leaves a worn pass alone after that.
-	// The equipment pass put a better unique item into the pass's slot, the
-	// fishing put the pass back on its next tick, and the two took turns every
-	// second or two: seventy swaps in eleven minutes, and the engine's
-	// FAST_ITEM_SWAP check threw the bot out of the game every two minutes
-	// (KimTyJestes, Karta Wedkarska against Maska Sabaha, 14 September).
-	const DWORD PLAYERBOT_FISHING_PASS_HOLD_MS = 600000;
-	std::map<DWORD, DWORD> s_mapPlayerBotFishingPassAskedAt;
-	bool IsPlayerBotFishingPassHeld(DWORD dwPID, DWORD dwNow)
-	{
-		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotFishingPassAskedAt.find(dwPID);
-		return it != s_mapPlayerBotFishingPassAskedAt.end() &&
-				dwNow - it->second < PLAYERBOT_FISHING_PASS_HOLD_MS;
-	}
-#endif
+	// MT2009_PLUS_FISHING_FREE_V1: the fishing pass's price and its hold
+	// (IsPlayerBotFishingPassHeld) went with the pass; fishing asks none.
 	// The level a bot may start fishing at. The mt2009 engine's own
 	// CHARACTER::fishing() refused under fifty, and the two gates here refused
 	// with it so that nobody walked to a bank it would turn away; the operator

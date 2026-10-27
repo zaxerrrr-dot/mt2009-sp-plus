@@ -121,3 +121,12 @@ właścicielowi, jak w `Reward()`); doświadczenie, drop, karty, owoce rang i Pr
   Jadeitu): odmowa w lochu przed `spawn_mob`, `set_summon_lifetime(vid)` zaraz po nim.
 - Kamienie z respawnu, kamienie lochów (`d.spawn_mob`), żyły botów, zwoje bossów (71036–71043) i przedmioty
   Wielkanocy 50180/50181 bez zmian. Klient bez zmian.
+
+## Łowienie bez questu i karty (MT2009_PLUS_FISHING_FREE_V1, linia Yohary)
+
+- `MT2009_PLUS_FISHING_FREE_V1` (level, no introduction, no card) (`char.cpp`, `CHARACTER::fishing()`): łowienie od
+  30 poziomu, bez ograniczeń czasu i liczby. Poniżej 30 poziomu komunikat „Możesz łowić ryby od 30 poziomu.” (wcześniej
+  cicha odmowa). Nie jest już sprawdzana flaga `fishing_onboarding.completed` (quest wprowadzający Rybaka, którego
+  obsługa znika w Dockerfile gry) ani założona Karta Wędkarska (27620). Wędka, przynęta, woda i łowiska w trzech
+  pierwszych wioskach (1, 21, 41) bez zmian. `apply.sh` usuwa kartę ze sklepu specjalnego Rybaka (9009) i jednorazowo
+  z ekwipunków (`fishing_free_cards_gone_v1`), boty (`playerbot_activities.h`) i towarzysz już jej nie kupują/nie wymagają.

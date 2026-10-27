@@ -389,8 +389,8 @@ namespace
 	}
 
 	// The bottles are Baek-Go's shop, which is a quest window like the board.
-	// Bought the way EnsurePlayerBotFishingPass buys the fishing pass: the item
-	// is created for the price the shop asks, so nothing is had for free.
+	// The item is created for the price the shop asks, so nothing is had for
+	// free.
 	bool BuyPlayerBotCraftBottles(LPCHARACTER ch, DWORD vnum, int needed)
 	{
 		if (!ch || needed <= 0)
