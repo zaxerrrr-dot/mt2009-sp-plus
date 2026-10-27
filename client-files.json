@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.69",
+  "version": "2.0.70",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -228,14 +228,19 @@
       "sha256": "F863CA665F7141B654686538E79EACE8D4F26CA8512B13B63CEFD96FA7BF64A5"
     },
     {
+      "path": "pack/halloween.index",
+      "size": 588,
+      "sha256": "5DF4327CD0290621728E3EC1842A6922372D63B0E63E3042F42726A7C391E48C"
+    },
+    {
       "path": "pack/icon.index",
       "size": 78548,
       "sha256": "2D5B64DB0325B098B06937AF45D7CAAE895AC19D65D0C80DA6D46045E873C6F1"
     },
     {
       "path": "pack/Index",
-      "size": 1200,
-      "sha256": "607AB7795383C51DB7DC9AA202988EB3EA9CD84AE0D20254C883291BBDB94148"
+      "size": 1212,
+      "sha256": "8664E9867BBD070CA880713934F8AAF659023E3BD21A189C5F3AC14AD4A0A1B4"
     },
     {
       "path": "pack/locale.index",
@@ -269,8 +274,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 33372,
-      "sha256": "BD62E00B88616564D87C7F055E73E14919432B68D40619222803FFE60532A72E"
+      "size": 33364,
+      "sha256": "394673FF2A0EA483DF3243044114AD309744C64E5E606120DF11F7E800452621"
     },
     {
       "path": "pack/wiki_nowe.index",

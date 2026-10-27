@@ -1,18 +1,18 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-26T13:58:56Z",
- "statusMessage": "MT2009 PLUS 2.38.0: Wezowe Pole i Kraina Gigantow, Piasek Kwarcowy z golemow, budynki gildii, boty na wojnie gildii. Klient 2.0.69.",
+ "publishedAt": "2026-10-27T14:49:57Z",
+ "statusMessage": "MT2009 PLUS 2.39.0: event Halloween (Jack Pumpkin, dynie, maski), przywolane Metiny znikaja po 15 min, poprawki broni botow. Klient 2.0.70.",
  "server": {
-  "version": "2.38.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.38.0/metin2-server-update-2.38.0.zip",
-  "sha256": "BF2D7341A922971B932C31C8CF8C10D9EAFC8B66249E15D57DA61C4A4D0D3A45",
-  "size": 115357774
+  "version": "2.39.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.39.0/metin2-server-update-2.39.0.zip",
+  "sha256": "77EB9FA665445C7EEDCB868199204FC51ECA44675EE1639100222A07294E55AA",
+  "size": 116097938
  },
  "client": {
-  "version": "2.0.69",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.69/metin2-client-update-2.0.69.zip",
-  "sha256": "3DD5EA5474A83074B1B5ACAAF00675E8F8AB7CBA0B6D8276D31A48EBCCE6AB34",
-  "size": 723503670
+  "version": "2.0.70",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.70/metin2-client-update-2.0.70.zip",
+  "sha256": "FBD71F8A89CEE029B7922C54A077D4A51A268916F1A0AE88FE8ED6D042A289FC",
+  "size": 723856629
  }
 }
