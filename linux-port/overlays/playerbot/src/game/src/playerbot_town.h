@@ -5797,8 +5797,9 @@ namespace
 				if (IsPlayerBotWearableUpgrade(ch, item, cell))
 					continue;
 				// The Archer's stone weapon (playerbot_gear.h) is not goods.
+				// MT2009_PLUS_BOT_ARCHER_DAGGER_V1: nor the dagger it fights with.
 				if (IsPlayerBotArcherBuild(ch) && IsPlayerBotStoneMeleeWeapon(ch, item) &&
-						FindPlayerBotStoneWeapon(ch, false) == item)
+						(FindPlayerBotStoneWeapon(ch, false) == item || IsPlayerBotArcherFightingDagger(ch, item)))
 					continue;
 				// Nor the weapon kept for the day the one in the hand burns, nor
 				// the armour kept for the day the one on the back does.
