@@ -163,27 +163,32 @@
 		{ 1204050, 516250, 108, 255, true, 6724 },	// boss Quag_Primus, 125, 767k HP
 	};
 	// map 377 (metin2_map_eastplain_03): arrival (1279650, 440950); monsters 119-120; band 8-15; 20 spots, 4 bosses
+	// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the spots of 13 spawn lines and more a party's (as Schronienie's, V2). Namgan never
+	// gave the bots a kill (census 27 October: kills 0 at 19:02, 19:58 and 21:06 - 268 deaths): its two spots by the
+	// arrival (18 and 16 lines, 3-6 k from it, Myr sorcerers aggressive among them) were every lone bot's first, and
+	// Hydra's bots of 22-24 k health were "pulled" there by 5-12 monsters within a minute of landing (20:16-20:18). The
+	// lone bots' floor now: the 6 and 8 line spots 10 and 21 k from the arrival.
 	const TPlayerBotHuntingHub PLAYERBOT_SUNGMA_HUBS_377[] = {
-		{ 1285850, 443350, 108, 255, false, 0 },	// 18 lines, to 120, 93k HP: 6700 Hell_Hound, 6712 Troll_Soldier
-		{ 1273550, 444650, 108, 255, false, 0 },	// 16 lines, to 120, 147k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer
-		{ 1277850, 450750, 109, 255, false, 0 },	// 6 lines, to 120, 147k HP: 6725 Quag_Kovix, 6726 Quag_Worker
-		{ 1262850, 453550, 109, 255, false, 0 },	// 8 lines, to 120, 147k HP: 6729 Quag_Sorcerer, 6727 Quag_Golem
+		{ 1285850, 443350, 108, 255, true, 0 },	// 18 lines, to 120, 93k HP: 6700 Hell_Hound, 6712 Troll_Soldier (NEST_V1: a party's - dense)
+		{ 1273550, 444650, 108, 255, true, 0 },	// 16 lines, to 120, 147k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer (NEST_V1: a party's - dense)
+		{ 1277850, 450750, 108, 255, false, 0 },	// 6 lines, to 120, 147k HP: 6725 Quag_Kovix, 6726 Quag_Worker (NEST_V1: the band's floor - the lone bots' first spots)
+		{ 1262850, 453550, 108, 255, false, 0 },	// 8 lines, to 120, 147k HP: 6729 Quag_Sorcerer, 6727 Quag_Golem (NEST_V1: the band's floor - the lone bots' first spots)
 		{ 1293250, 459950, 109, 255, false, 0 },	// 7 lines, to 120, 147k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer
 		{ 1287550, 463450, 109, 255, false, 0 },	// 9 lines, to 120, 147k HP: 6729 Quag_Sorcerer, 6727 Quag_Golem
 		{ 1301350, 452950, 109, 255, false, 0 },	// 5 lines, to 120, 147k HP: 6722 Quag_Sorcerer, 6725 Quag_Kovix
 		{ 1255550, 447250, 109, 255, false, 0 },	// 5 lines, to 120, 147k HP: 6725 Quag_Kovix, 6726 Quag_Worker
-		{ 1300250, 461750, 109, 255, false, 0 },	// 15 lines, to 120, 147k HP: 6729 Quag_Sorcerer, 6727 Quag_Golem
-		{ 1250350, 444150, 109, 255, false, 0 },	// 13 lines, to 120, 147k HP: 6727 Quag_Golem, 6726 Quag_Worker
-		{ 1293750, 468050, 109, 255, false, 0 },	// 14 lines, to 120, 147k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer
+		{ 1300250, 461750, 109, 255, true, 0 },	// 15 lines, to 120, 147k HP: 6729 Quag_Sorcerer, 6727 Quag_Golem (NEST_V1: a party's - dense)
+		{ 1250350, 444150, 109, 255, true, 0 },	// 13 lines, to 120, 147k HP: 6727 Quag_Golem, 6726 Quag_Worker (NEST_V1: a party's - dense)
+		{ 1293750, 468050, 109, 255, true, 0 },	// 14 lines, to 120, 147k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer (NEST_V1: a party's - dense)
 		{ 1313550, 449750, 109, 255, false, 0 },	// 7 lines, to 120, 106k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer
 		{ 1297150, 472650, 109, 255, false, 0 },	// 6 lines, to 120, 147k HP: 6727 Quag_Golem, 6725 Quag_Kovix
 		{ 1307750, 464050, 109, 255, false, 0 },	// 7 lines, to 120, 147k HP: 6725 Quag_Kovix, 6726 Quag_Worker
 		{ 1254350, 467250, 109, 255, false, 0 },	// 7 lines, to 120, 147k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer
-		{ 1243150, 443350, 109, 255, false, 0 },	// 18 lines, to 120, 114k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer
+		{ 1243150, 443350, 109, 255, true, 0 },	// 18 lines, to 120, 114k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer (NEST_V1: a party's - dense)
 		{ 1318250, 456250, 109, 255, false, 0 },	// 10 lines, to 120, 93k HP: 6726 Quag_Worker, 6727 Quag_Golem
-		{ 1247950, 470550, 109, 255, false, 0 },	// 15 lines, to 120, 147k HP: 6726 Quag_Worker, 6727 Quag_Golem
+		{ 1247950, 470550, 109, 255, true, 0 },	// 15 lines, to 120, 147k HP: 6726 Quag_Worker, 6727 Quag_Golem (NEST_V1: a party's - dense)
 		{ 1318050, 463350, 109, 255, false, 0 },	// 6 lines, to 120, 114k HP: 6727 Quag_Golem, 6729 Quag_Sorcerer
-		{ 1323750, 452250, 109, 255, false, 0 },	// 16 lines, to 120, 93k HP: 6700 Hell_Hound, 6710 Mistreated_Ghost
+		{ 1323750, 452250, 109, 255, true, 0 },	// 16 lines, to 120, 93k HP: 6700 Hell_Hound, 6710 Mistreated_Ghost (NEST_V1: a party's - dense)
 		{ 1293650, 463650, 110, 255, true, 6731 },	// boss Quag_Primus, 125, 767k HP
 		{ 1245850, 470250, 110, 255, true, 6730 },	// boss Quag_Veteran, 123, 514k HP
 		{ 1288850, 458250, 110, 255, true, 6730 },	// boss Quag_Veteran, 123, 514k HP
@@ -359,6 +364,22 @@
 		{ 393, 1006450, 1267250 },	// 11828 / 11828
 		{ 394, 1159050, 1221150 },	// 4752 / 1856
 	};
+
+	// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the health a bot needs for a map (its maximum, the Sung Ma penalty counted - what
+	// it fights with): a step up only with the floor, a stay with PLAYERBOT_SUNGMA_HP_STAY_PERCENT of it; under it - a
+	// map lower (the move's why "unfit"), and up again once its bonuses and its alchemy have raised it. The test of
+	// 27 October (20:15-21:06): the cohort's fallen stood at a median of 10 860 (Namgan) - 14 670 (Dongan) maximum health,
+	// Hydra's bots at 22 380-24 750; the cohort's 13 790 did on Yilad (35 deaths against ~1 000 kills of the map) and its
+	// 15 150 on the Twierdza, while its 13 450-14 190 on Wawoz-Zejscie fell 406, 373, 265 and 118 times; a blow of a
+	// berserk 123-125 takes 4-6 k (15-25% of 23-33 k), three at once 25-30% of 23.6 k a second (the test of 22 October).
+	// The floors keep the weakest third of the cohort off the maps whose packs are all aggressive (Namgan's sorcerers;
+	// Wawoz on: four to a spawn line, 170-190 k each) - Hydra's bots and the cohort's bonused pass them.
+	struct TPlayerBotSungmaHpFloor { long lMap; int iMaxHp; };
+	const TPlayerBotSungmaHpFloor PLAYERBOT_SUNGMA_HP_FLOORS[] = {
+		{ 374, 0 }, { 373, 0 }, { 376, 12000 }, { 377, 15000 }, { 385, 13000 }, { 388, 16000 }, { 389, 16000 },
+		{ 393, 20000 }, { 394, 20000 },
+	};
+	const int PLAYERBOT_SUNGMA_HP_STAY_PERCENT = 90;
 
 	// The portals (npc.txt; a cell centre beside each, tools/yohara_bot_sungma_map.py): on map lFrom, the one to lTo.
 	struct TPlayerBotSungmaPortal { long lFrom, lTo, x, y; };
@@ -553,6 +574,21 @@
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the bot's maximum health is enough for a slot's map (PLAYERBOT_SUNGMA_HP_FLOORS):
+	// stay - the stay's share of the floor, else the whole floor.
+	bool IsPlayerBotSungmaHpEnough(LPCHARACTER ch, int slot, bool stay)
+	{
+		if (!ch || slot < 0 || slot >= PLAYERBOT_SUNGMA_MAP_COUNT)
+			return true;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_HP_FLOORS) / sizeof(PLAYERBOT_SUNGMA_HP_FLOORS[0]); ++i)
+			if (PLAYERBOT_SUNGMA_HP_FLOORS[i].lMap == PLAYERBOT_SUNGMA_MAPS[slot].lMap)
+			{
+				const long long need = (long long)PLAYERBOT_SUNGMA_HP_FLOORS[i].iMaxHp * (stay ? PLAYERBOT_SUNGMA_HP_STAY_PERCENT : 100) / 100;
+				return (long long)ch->GetMaxHP() >= need;
+			}
+		return true;
+	}
+
 	// ------------------------------------------------------------ the state
 
 	struct TPlayerBotSungmaBot
@@ -641,7 +677,9 @@
 	}
 
 	// The bot's map now (0: none switched on). currentMap: the map it stays on (its room is its own).
-	long PickPlayerBotSungmaMap(LPCHARACTER ch, long currentMap)
+	// MT2009_PLUS_BOT_SUNGMA_NEST_V1: judgeHp - its maximum health is the one it fights with (not at the Alchemist, whose
+	// visit takes the dragon stones off; not just loaded).
+	long PickPlayerBotSungmaMap(LPCHARACTER ch, long currentMap, bool judgeHp = true)
 	{
 		if (!ch)
 			return 0;
@@ -663,6 +701,13 @@
 				continue;
 			if (i > currentSlot && !IsPlayerBotSungmaStepUpReady(ch, i, champion))
 				continue;
+			// MT2009_PLUS_BOT_SUNGMA_NEST_V1: its health (the items in: a bot just loaded is judged later, by the caller)
+			if (judgeHp && ch->IsItemLoaded() && !IsPlayerBotSungmaHpEnough(ch, i, i <= currentSlot))
+			{
+				if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(m.lMap))
+					++st->hpRefused;
+				continue;
+			}
 			if (b != s_mapPlayerBotSungma.end())
 			{
 				std::map<long, DWORD>::const_iterator nn = b->second.mapNotNow.find(m.lMap);
@@ -961,6 +1006,20 @@
 				++s_aPlayerBotSungmaStats[from].navFail;
 		}
 		b.dwWalkSince = 0;
+		// MT2009_PLUS_BOT_SUNGMA_NEST_V1: landed on the cleanest ground by the map's safe point when the arrival is crowded
+		// (the arrival and the safe point stand 0-3 000 apart; Wawoz's arrival 3 611 from a spawn, Namgan's 2 815).
+		{
+			long cx = 0, cy = 0;
+			int ground = 0;
+			const int arrivalGround = IsPlayerBotMapHostedHere(toMap) ? ScorePlayerBotSungmaGround(toMap, ax, ay) : 0;
+			if (arrivalGround > 0 && GetPlayerBotSungmaCleanPoint(toMap, cx, cy, &ground) && ground < arrivalGround)
+			{
+				ax = cx;
+				ay = cy;
+				if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(toMap))
+					++st->nestMoves;
+			}
+		}
 		const bool ok = TransitionPlayerBotMap(ch, state, toMap, ax, ay, dwNow,
 				portal ? "sungma_portal" : (b.bFlee ? "sungma_flee" : "sungma_move"));
 		if (ok)
@@ -1034,10 +1093,23 @@
 					CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_REVIVE_PARTY_RADIUS));
 			return false;
 		}
+		// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the cleanest ground by the safe point (playerbot_sungma_fight.h) - the safe point
+		// itself while nothing stands round it.
+		int ground = 0, safeGround = 0;
+		long cx = 0, cy = 0;
+		if (GetPlayerBotSungmaCleanPoint(mapIndex, cx, cy, &ground, &safeGround))
+		{
+			if (cx != ax || cy != ay)
+				if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(mapIndex))
+					++st->nestMoves;
+			ax = cx;
+			ay = cy;
+		}
 		long ox = 0, oy = 0;
 		GetPlayerBotStableOffset(ch->GetPlayerID(), 0x53524556U, 50, 250, ox, oy);
-		sys_log(0, "PLAYERBOT_SUNGMA: revived at the safe point pid=%u name=%s map=%ld from=(%ld,%ld) to=(%ld,%ld) champion=%d",
-				ch->GetPlayerID(), ch->GetName(), mapIndex, ch->GetX(), ch->GetY(), ax + ox, ay + oy, GetPlayerBotChampionLevel(ch));
+		sys_log(0, "PLAYERBOT_SUNGMA: revived at the safe point pid=%u name=%s map=%ld from=(%ld,%ld) to=(%ld,%ld) champion=%d ground=%d safe_ground=%d",
+				ch->GetPlayerID(), ch->GetName(), mapIndex, ch->GetX(), ch->GetY(), ax + ox, ay + oy, GetPlayerBotChampionLevel(ch),
+				ground, safeGround);
 		++s_aPlayerBotSungmaStats[slot].revives;
 		ch->Stop();
 		ch->Show(mapIndex, ax + ox, ay + oy, 0);
@@ -1640,9 +1712,13 @@
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: the Will and the band judged once the items are in and the bot has stood here
 		// PLAYERBOT_SUNGMA_FIT_SETTLE_MS (its glove's Will read 0 at the load); the deaths' "not now" at once.
 		const bool judged = ch->IsItemLoaded() && dwNow - b.dwOnMapSince >= PLAYERBOT_SUNGMA_FIT_SETTLE_MS;
+		// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the health judged on its own map only, out of the Alchemist's visit (its dragon
+		// stones off there) - the cohort's bulk alchemists stand in Dongan a minute or two every few minutes.
+		const bool judgeHp = judged && base == res.lMap && !state.bVisitingDsAlchemist;
 		const bool fitsNow = slotNow >= 0 && IsPlayerBotSungmaMapOn(res.lMap) && b.mapNotNow.count(res.lMap) == 0 &&
 				(!judged || (IsPlayerBotSungmaWillEnough(ch, slotNow) &&
-				 GetPlayerBotChampionLevel(ch) >= (int)PLAYERBOT_SUNGMA_MAPS[slotNow].bChampionMin));
+				 GetPlayerBotChampionLevel(ch) >= (int)PLAYERBOT_SUNGMA_MAPS[slotNow].bChampionMin &&
+				 (!judgeHp || IsPlayerBotSungmaHpEnough(ch, slotNow, true))));	// MT2009_PLUS_BOT_SUNGMA_NEST_V1
 		if (!fitsNow || ((int)(dwNow - b.dwNextPick) >= 0 && dwNow - b.dwOnMapSince >= PLAYERBOT_SUNGMA_SETTLE_MS))
 		{
 			b.dwNextPick = dwNow + PLAYERBOT_SUNGMA_PICK_MS;
@@ -1653,7 +1729,7 @@
 				else
 					++nn;
 			}
-			const long pick = PickPlayerBotSungmaMap(ch, res.lMap);
+			const long pick = PickPlayerBotSungmaMap(ch, res.lMap, judgeHp);
 			if (pick == 0)
 				return LeavePlayerBotSungma(ch, state, dwNow, "sungma_no_map");
 			if (pick != res.lMap)

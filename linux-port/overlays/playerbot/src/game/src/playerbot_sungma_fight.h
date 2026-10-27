@@ -22,6 +22,12 @@
 //     after the last, a stone, a boss, a pack, a lone or a party's fight - for the census (PLAYERBOT_SUNGMA: fight).
 // The parties themselves (who joins whom, the regroup, the errands' clean leave) are playerbot_yohara_sungma_party.h's.
 //
+// MT2009_PLUS_BOT_SUNGMA_NEST_V1 (the owner, 27 October 2026: "Czy boty daja sobie rade na yoharze?" - only the Twierdza
+// and Yilad did): the safe point had become a nest of the packs the retreats led to it (the clean ground, below); the
+// revival, the retreat and the landing go to the cleanest ground by it; a retreat leads no pack toward it; a lost
+// retreat ends in an escape (the teleport a person takes); the aggressive monsters are counted out to their real 2 000;
+// a map asks a maximum health (playerbot_yohara_sungma.h, PLAYERBOT_SUNGMA_HP_FLOORS); Namgan's dense spots a party's.
+//
 // An implementation fragment: included by playerbot_manager.cpp before playerbot_survival.h, in the anonymous
 // namespace.
 
@@ -29,7 +35,14 @@ namespace
 {
 	// ------------------------------------------------------------ the numbers
 	const int PLAYERBOT_SUNGMA_PACK_RADIUS = 900;		// a monster's group round it (the regen's groups spread 300-700)
-	const int PLAYERBOT_SUNGMA_AGGRO_RADIUS = 1400;		// an aggressive idle monster this near the fight joins it
+	// An aggressive idle monster this near the fight joins it. MT2009_PLUS_BOT_SUNGMA_NEST_V1: 2000, the engine's own
+	// reach (StateIdle -> FindVictim(this, mob_proto.aggressive_sight)) - aggressive_sight is 2000 for every aggressive
+	// monster the nine maps spawn (player.mob_proto, 27 October: 100 such rows of 6684-6900; the 15 of 60000 are the
+	// snake temple's and Alastor's); 1400 left a ring of 600 units of aggressive monsters out
+	// of every pack count, and the "pulled" retreats (attackers >= capacity + 2: 1 611 of 6 407 retreats on 27 October
+	// 20:15-21:06, Wawoz 283, Rozpadlina 270, Schronienie 315) were the packs the count had called small.
+	const int PLAYERBOT_SUNGMA_AGGRO_RADIUS = 2000;
+	const int PLAYERBOT_SUNGMA_NEAR_LOG_RADIUS = 1400;	// the "near" of the fallen line (kept, the logs compare)
 	const int PLAYERBOT_SUNGMA_SCAN_RADIUS = 4500;		// the monsters a bot looks at round itself
 	const int PLAYERBOT_SUNGMA_ATTACKER_RADIUS = 2500;	// a monster hitting the bot
 	const int PLAYERBOT_SUNGMA_PARTY_NEAR = 3000;		// a party member "by" the bot (the stones, the bosses, the capacity)
@@ -71,6 +84,12 @@ namespace
 	const DWORD PLAYERBOT_SUNGMA_RETREAT_LOOK_MS = 700;
 	const int PLAYERBOT_SUNGMA_RETREAT_STEP = 1500;
 	const int PLAYERBOT_SUNGMA_SAFE_REACHED = 1500;
+	// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the escape out of a lost retreat (HandlePlayerBotSungmaRetreat).
+	const int PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS = 2;
+	const int PLAYERBOT_SUNGMA_ESCAPE_HP = 30;
+	const DWORD PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS = 3000;
+	const DWORD PLAYERBOT_SUNGMA_ESCAPE_GAP_MS = 3 * 60 * 1000;	// a ring's cooldown - not every retreat
+	const int PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST = 5000;			// past the 4 000 a monster chases to
 	const int PLAYERBOT_SUNGMA_SAFE_MAX = 40000;		// farther than this the safe point is no direction (the way crosses the map)
 	// The spot a lone bot pulled too much on: no target, no hub within PLAYERBOT_SUNGMA_AVOID_RADIUS for this long.
 	const DWORD PLAYERBOT_SUNGMA_AVOID_MS = 10 * 60 * 1000;
@@ -121,8 +140,10 @@ namespace
 		DWORD dwRefusedSince;
 		int iHpSeen;				// its health (per cent) at the last look, and when (the fall's speed)
 		DWORD dwHpSeenAt;
+		DWORD dwLastEscape;			// MT2009_PLUS_BOT_SUNGMA_NEST_V1: its last escape out of a lost retreat
 		TPlayerBotSungmaFight() : bRetreat(false), iRetreatAttackers(0), lAvoidMap(0), lAvoidX(0), lAvoidY(0), dwAvoidUntil(0),
-			dwLastDown(0), dwNextRetreatLook(0), iRefused(0), dwRefusedSince(0), iHpSeen(100), dwHpSeenAt(0) { szRetreatWhy[0] = '\0'; }
+			dwLastDown(0), dwNextRetreatLook(0), iRefused(0), dwRefusedSince(0), iHpSeen(100), dwHpSeenAt(0), dwLastEscape(0)
+		{ szRetreatWhy[0] = '\0'; }
 	};
 	std::map<DWORD, TPlayerBotSungmaFight> s_mapPlayerBotSungmaFight;
 
@@ -142,9 +163,13 @@ namespace
 		unsigned int retreatsHp, retreatsPack, retreatsPulled, retreatsSafe, avoids;
 		unsigned int targetsPicked, targetsElement, targetsEdge, packRefused, partyObjectives;
 		unsigned int partyForms, partyJoins, partyLeaves, partyErrandLeaves, regroups, revivesInParty;
+		// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the escapes out of a lost retreat, the revivals and landings moved off a
+		// crowded safe point, the moves refused for the bot's health (PLAYERBOT_SUNGMA_HP_FLOORS)
+		unsigned int escapes, nestMoves, hpRefused;
 		TPlayerBotSungmaFightStats() : deathsLone(0), deathsParty(0), retreatsHp(0), retreatsPack(0), retreatsPulled(0),
 			retreatsSafe(0), avoids(0), targetsPicked(0), targetsElement(0), targetsEdge(0), packRefused(0), partyObjectives(0),
-			partyForms(0), partyJoins(0), partyLeaves(0), partyErrandLeaves(0), regroups(0), revivesInParty(0)
+			partyForms(0), partyJoins(0), partyLeaves(0), partyErrandLeaves(0), regroups(0), revivesInParty(0),
+			escapes(0), nestMoves(0), hpRefused(0)
 		{
 			for (int i = 0; i < SUNGMA_DEATH_CAUSES; ++i)
 				deaths[i] = 0;
@@ -301,6 +326,118 @@ namespace
 			return;
 		FCollectPlayerBotSungmaMobs f(ch, ch->GetX(), ch->GetY(), radius, out);
 		ch->GetSectree()->ForEachAround(f);
+	}
+
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_SUNGMA_NEST_V1: the clean ground
+
+	// The test of 27 October (20:15-21:06, game3, 400 cohort bots and the 100 of Hydra's gear): 2 424 deaths, 1 539 of
+	// them "again" (a fall within 90 s of the last one). On Namgan, Wawoz, Rozpadlina, Schronienie and Zejscie 70-100% of
+	// the deaths came within 3 000 units of the map's safe point (Wawoz 322 of 406 of the cohort and 59 of 59 of
+	// Hydra's bots, Rozpadlina 290/373 and 65/69, Schronienie 205/265 and 32/33, Namgan 154/220 and 44/48), with 20-49
+	// monsters within 1 400 of the body. The safe point had become a nest: a retreat ran to it with its pack behind
+	// (the step's score pulled toward it twice as hard as away from the pack), a monster that loses or kills its victim
+	// stays where it stands (StateBattle: SetVictim(NULL), no way home without AIFLAG_RETURN; KILL_AND_GO only wanders
+	// 400-1 500 round the body), and every revival stood up into the pack the last one had brought. So the point a
+	// revived or retreating bot (and a bot landing on the map) is sent to is the cleanest ground by the safe point at
+	// the moment: the safe point itself while nothing stands round it, else the least crowded of the rings round it
+	// (PLAYERBOT_SUNGMA_CLEAN_RINGS x 8 directions), reachable from it; looked at once a map every _CLEAN_CACHE_MS.
+	const int PLAYERBOT_SUNGMA_CLEAN_RADIUS = 2500;		// the monsters counted round a candidate
+	const int PLAYERBOT_SUNGMA_CLEAN_RINGS[] = { 3000, 6000, 9000, 12000 };
+	const DWORD PLAYERBOT_SUNGMA_CLEAN_CACHE_MS = 10 * 1000;
+	// a monster's weight: awake (on somebody) 6, aggressive and idle 3, any other 1; a ring's distance 1 a ring
+	const int PLAYERBOT_SUNGMA_CLEAN_AWAKE = 6;
+	const int PLAYERBOT_SUNGMA_CLEAN_AGGRESSIVE = 3;
+
+	class FScorePlayerBotSungmaGround
+	{
+		public:
+			FScorePlayerBotSungmaGround(long mapIndex, long x, long y) : m_map(mapIndex), m_x(x), m_y(y), m_score(0), m_count(0) {}
+			void operator()(LPENTITY entity)
+			{
+				if (!entity || !entity->IsType(ENTITY_CHARACTER))
+					return;
+				LPCHARACTER mob = static_cast<LPCHARACTER>(entity);
+				if (!mob->IsMonster() || mob->IsDead() || mob->GetMapIndex() != m_map ||
+						DISTANCE_APPROX(mob->GetX() - m_x, mob->GetY() - m_y) > PLAYERBOT_SUNGMA_CLEAN_RADIUS)
+					return;
+				++m_count;
+				if (mob->GetVictim() != NULL)
+					m_score += PLAYERBOT_SUNGMA_CLEAN_AWAKE;
+				else if (IS_SET(mob->GetMobTable().dwAIFlag, AIFLAG_AGGRESSIVE))
+					m_score += PLAYERBOT_SUNGMA_CLEAN_AGGRESSIVE;
+				else
+					++m_score;
+			}
+			long m_map, m_x, m_y;
+			int m_score, m_count;
+	};
+
+	// The crowd round (x, y) of a map of this core (the weights above; -1: no ground there).
+	int ScorePlayerBotSungmaGround(long mapIndex, long x, long y, int* count = NULL)
+	{
+		LPSECTREE tree = SECTREE_MANAGER::instance().Get(mapIndex, x, y);
+		if (!tree)
+			return -1;
+		FScorePlayerBotSungmaGround f(mapIndex, x, y);
+		tree->ForEachAround(f);
+		if (count)
+			*count = f.m_count;
+		return f.m_score;
+	}
+
+	struct TPlayerBotSungmaCleanPoint
+	{
+		long x, y;
+		int score, safeScore;
+		DWORD dwAt;
+		TPlayerBotSungmaCleanPoint() : x(0), y(0), score(0), safeScore(0), dwAt(0) {}
+	};
+	std::map<long, TPlayerBotSungmaCleanPoint> s_mapPlayerBotSungmaCleanPoint;
+
+	// The cleanest ground by a Sung Ma map's safe point now (see above); the safe point's own crowd in safeScore.
+	bool GetPlayerBotSungmaCleanPoint(long mapIndex, long& x, long& y, int* score = NULL, int* safeScore = NULL)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		long sx = 0, sy = 0;
+		if (base != mapIndex || !GetPlayerBotSungmaSafePoint(base, sx, sy))
+			return false;
+		const DWORD dwNow = get_dword_time();
+		TPlayerBotSungmaCleanPoint& c = s_mapPlayerBotSungmaCleanPoint[base];
+		if (c.dwAt == 0 || dwNow - c.dwAt >= PLAYERBOT_SUNGMA_CLEAN_CACHE_MS)
+		{
+			c.dwAt = dwNow ? dwNow : 1;
+			c.x = sx;
+			c.y = sy;
+			c.safeScore = c.score = std::max(0, ScorePlayerBotSungmaGround(base, sx, sy));
+			CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(base);
+			if (c.score > 0 && navigation.Init(base))
+			{
+				static const int dirX[8] = { 1000, 707, 0, -707, -1000, -707, 0, 707 };
+				static const int dirY[8] = { 0, 707, 1000, 707, 0, -707, -1000, -707 };
+				const int rings = (int)(sizeof(PLAYERBOT_SUNGMA_CLEAN_RINGS) / sizeof(PLAYERBOT_SUNGMA_CLEAN_RINGS[0]));
+				for (int r = 0; r < rings; ++r)
+					for (int d = 0; d < 8; ++d)
+					{
+						const long px = sx + (long)dirX[d] * PLAYERBOT_SUNGMA_CLEAN_RINGS[r] / 1000;
+						const long py = sy + (long)dirY[d] * PLAYERBOT_SUNGMA_CLEAN_RINGS[r] / 1000;
+						if (!SECTREE_MANAGER::instance().IsMovablePosition(base, px, py) || !navigation.CanReach(sx, sy, px, py))
+							continue;
+						const int g = ScorePlayerBotSungmaGround(base, px, py);
+						if (g < 0 || g + r + 1 >= c.score)
+							continue;
+						c.score = g + r + 1;
+						c.x = px;
+						c.y = py;
+					}
+			}
+		}
+		x = c.x;
+		y = c.y;
+		if (score)
+			*score = c.score;
+		if (safeScore)
+			*safeScore = c.safeScore;
+		return true;
 	}
 
 	// The idle monsters a blow at (x, y) wakes besides the one struck: its neighbours (the group) and the aggressive ones
@@ -571,11 +708,40 @@ namespace
 		long cx = 0, cy = 0;
 		const int attackers = CountPlayerBotSungmaAttackers(ch, mobs, cx, cy, NULL);
 		const int hp = GetPlayerBotSungmaHpPercent(ch);
+		// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the cleanest ground by the safe point, not the safe point itself (the nest)
 		long sx = 0, sy = 0;
-		const bool safe = GetPlayerBotSungmaSafePoint(ch->GetMapIndex(), sx, sy) &&
+		const bool safe = GetPlayerBotSungmaCleanPoint(ch->GetMapIndex(), sx, sy) &&
 				DISTANCE_APPROX(ch->GetX() - sx, ch->GetY() - sy) <= PLAYERBOT_SUNGMA_SAFE_MAX;
 		const int toSafe = safe ? DISTANCE_APPROX(ch->GetX() - sx, ch->GetY() - sy) : INT_MAX;
 		const DWORD el = state.dwRetreatStartedTime ? dwNow - state.dwRetreatStartedTime : 0;
+		// MT2009_PLUS_BOT_SUNGMA_NEST_V1: a lost retreat - still held by two or more after _ESCAPE_AFTER_MS, at
+		// _ESCAPE_HP% or under - ends the way a person ends it, by the teleport (the scroll / the ring home): onto the clean
+		// ground, out of the pack's chase (StateBattle gives a victim up at 4 000 units), the pack left where it stood. The
+		// test of 27 October: 589 of 2 424 deaths came in a retreat (the cause "retreat"), most of the "again" ones after
+		// a retreat that had led the pack to the safe point; a step of 1 500 units every 1.5 s does not outrun monsters of
+		// move_speed 100 that hit for 25-30% of a cohort bot a second.
+		long ex = 0, ey = 0;
+		if (attackers >= PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS && hp <= PLAYERBOT_SUNGMA_ESCAPE_HP && el >= PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS &&
+				(f.dwLastEscape == 0 || dwNow - f.dwLastEscape >= PLAYERBOT_SUNGMA_ESCAPE_GAP_MS) &&
+				GetPlayerBotSungmaCleanPoint(ch->GetMapIndex(), ex, ey) &&
+				DISTANCE_APPROX(ch->GetX() - ex, ch->GetY() - ey) >= PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST)
+		{
+			long ox = 0, oy = 0;
+			GetPlayerBotStableOffset(ch->GetPlayerID(), 0x45534350U, 50, 300, ox, oy);
+			f.dwLastEscape = dwNow ? dwNow : 1;
+			if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+				++st->escapes;
+			sys_log(0, "PLAYERBOT_SUNGMA: escape pid=%u name=%s map=%ld why=%s hp=%d/%d attackers=%d took_s=%u from=(%ld,%ld) to=(%ld,%ld)",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), f.szRetreatWhy[0] ? f.szRetreatWhy : "generic", ch->GetHP(),
+					ch->GetMaxHP(), attackers, el / 1000, ch->GetX(), ch->GetY(), ex + ox, ey + oy);
+			state.dwTargetVID = 0;
+			ch->SetVictim(NULL);
+			ch->Stop();
+			ClearPlayerBotRoute(state, true);
+			ch->Show(ch->GetMapIndex(), ex + ox, ey + oy, 0);
+			state.dwNextRetreatMoveTime = dwNow + PLAYERBOT_SUNGMA_RETREAT_MOVE_MS;
+			return 1;
+		}
 		if ((attackers == 0 && hp >= PLAYERBOT_SUNGMA_RETREAT_END_HP) || el >= PLAYERBOT_SUNGMA_RETREAT_MAX_MS)
 		{
 			sys_log(0, "PLAYERBOT_SUNGMA: retreat over pid=%u name=%s map=%ld why=%s hp=%d/%d attackers=%d took_s=%u at_safe=%d reason=%s",
@@ -630,7 +796,8 @@ namespace
 			if (!IsPlayerBotReachable(ch->GetMapIndex(), ch->GetX(), ch->GetY(), x, y))
 				continue;
 			long long score = attackers ? (long long)DISTANCE_APPROX(x - cx, y - cy) : 0;
-			if (safe)
+			// MT2009_PLUS_BOT_SUNGMA_NEST_V1: toward the safe ground only with nobody on it - a pack led there stays there
+			if (safe && attackers == 0)
 				score += (long long)(toSafe - DISTANCE_APPROX(x - sx, y - sy)) * 2;
 			for (size_t m = 0; m < mobs.size(); ++m)
 				if (mobs[m].idle && mobs[m].aggressive &&
@@ -667,9 +834,9 @@ namespace
 		for (size_t i = 0; i < mobs.size(); ++i)
 		{
 			const int d = DISTANCE_APPROX(mobs[i].x - ch->GetX(), mobs[i].y - ch->GetY());
-			if (d <= PLAYERBOT_SUNGMA_AGGRO_RADIUS)
+			if (d <= PLAYERBOT_SUNGMA_NEAR_LOG_RADIUS)
 				++near;
-			if (mobs[i].boss && d <= PLAYERBOT_SUNGMA_AGGRO_RADIUS)
+			if (mobs[i].boss && d <= PLAYERBOT_SUNGMA_NEAR_LOG_RADIUS)
 				++boss;
 		}
 		LPCHARACTER target = state.dwTargetVID ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
@@ -736,11 +903,11 @@ namespace
 		sys_log(0, "PLAYERBOT_SUNGMA: fight channel=%u map=%ld name=%s parties=%d in_party=%d lone=%d party_forms=%u party_joins=%u "
 				"party_leaves=%u party_errand_leaves=%u regroups=%u revives_in_party=%u party_objectives=%u picks=%u element_picks=%u "
 				"edge_picks=%u pack_refused=%u retreats_hp=%u retreats_pack=%u retreats_pulled=%u retreats_safe=%u avoids=%u "
-				"deaths_lone=%u deaths_party=%u %s",
+				"deaths_lone=%u deaths_party=%u %s escapes=%u nest_moves=%u hp_refused=%u",
 				(unsigned int)g_bChannel, mapIndex, key, parties, inParty, lone, st.partyForms, st.partyJoins, st.partyLeaves,
 				st.partyErrandLeaves, st.regroups, st.revivesInParty, st.partyObjectives, st.targetsPicked, st.targetsElement,
 				st.targetsEdge, st.packRefused, st.retreatsHp, st.retreatsPack, st.retreatsPulled, st.retreatsSafe, st.avoids,
-				st.deathsLone, st.deathsParty, causes);
+				st.deathsLone, st.deathsParty, causes, st.escapes, st.nestMoves, st.hpRefused);
 	}
 }
 
