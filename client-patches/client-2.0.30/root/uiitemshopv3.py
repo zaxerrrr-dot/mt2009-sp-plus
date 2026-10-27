@@ -20,6 +20,14 @@
 # puts it in IE11 mode (client-patches/exe, MT2009_PLUS_ITEMSHOP_V3_V1); an older exe draws
 # nothing, and the board then says so.
 #
+# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1 (Yohara line, the owner 27 Oct 2026: "Na yohara ustaw nowy itemshop look like
+# global, jako glowny itemshop"): this is THE ItemShop now. Every way into the old in-game window (the taskbar coin,
+# the system menu's ItemShop button, the minimap's ItemShop button, the Dodatkowy ekwipunek's ItemShop button - all
+# send uiItemShop.EVENT_OPEN_ITEMSHOP), the server's "itemshop_open" and an unasked "mall <url>" open this window
+# (uiitemshop.py, game.py) when IsMain() - the exe can draw the page (app.TakeWebPageCommand, exe of
+# MT2009_PLUS_ITEMSHOP_V3_V4). An older exe keeps the old in-game window, which would otherwise be no shop at all.
+# Shift+F12 (keybind "itemshop_v3") still opens it.
+#
 # Python 2.7 as the client has it; the texts are CP1250 escapes.
 
 import app
@@ -34,7 +42,7 @@ BORDER_TOP = 30
 BORDER_BOTTOM = 10
 PENDING_SECONDS = 15.0
 
-TITLE = 'ItemShop (nowy)'
+TITLE = 'ItemShop'	# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: the main shop, no longer "(nowy)"
 TEXT_WAIT = '\xa3adowanie sklepu...'
 TEXT_NO_BROWSER = ('Je\x9cli sklep si\xea nie pokazuje, ten klient nie ma jeszcze', 'wbudowanej przegl\xb9darki (potrzebny nowy plik exe klienta).')
 
@@ -178,6 +186,12 @@ class ItemShopV3Window(ui.BoardWithTitleBar):
 			self.browserOpen = False
 
 
+def IsMain():
+	# MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: this window replaces the old in-game ItemShop when the exe can draw its page
+	# (the exe with app.TakeWebPageCommand also has the working embedded browser, MT2009_PLUS_ITEMSHOP_V3_V4).
+	return bool(_TakeWebPageCommand)
+
+
 def TakesKeys():
 	# MT2009_PLUS_ITEMSHOP_V3_V4: while the page is open the keys are the page's - game.py OnKeyDown / OnKeyUp and
 	# updateable.py act on no hotkey then (the game reads the keyboard by DirectInput, so a letter typed in the
@@ -206,10 +220,11 @@ def ToggleWindow():
 		Open()
 
 
-def TakeMallUrl(url):
+def TakeMallUrl(url, unasked=False):
 	# True when the answer was this window's request (and it is open now); False leaves it to
-	# the old mall window.
-	if _data['pending'] <= 0.0 or app.GetTime() > _data['pending']:
+	# the old mall window. MT2009_PLUS_ITEMSHOP_V3_MAIN_V1: unasked=True takes any "mall" answer (a typed
+	# /in_game_mall, a quest's game.web_mall) - the old web shop is no player's way in on the Yohara line.
+	if not unasked and (_data['pending'] <= 0.0 or app.GetTime() > _data['pending']):
 		_data['pending'] = 0.0
 		return False
 	_data['pending'] = 0.0
