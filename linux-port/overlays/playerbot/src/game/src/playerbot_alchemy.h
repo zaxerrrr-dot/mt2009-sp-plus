@@ -87,6 +87,81 @@ namespace
 	const char* PLAYERBOT_DS_DAY_FLAG = "playerbot.ds_day";
 	const char* PLAYERBOT_DS_LEFT_FLAG = "playerbot.ds_left";
 
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1 - the bulk alchemists (the owner, 27 October 2026: "Daj im rowniez cor
+	// draconis legendarne 400 sztuk - naucz je otwierac legendarne cory ... Niech z tych 400 sztuk zrobia mityczna
+	// wyborna alchemie ... Naucz je perf bonusow na yohare w alchemii. Daj im rowniez po 400 zielonych smoczych
+	// fasol"). A bot is a bulk alchemist while it is a member of a Yohara cohort (common.playerbot_yohara_cohort,
+	// any purpose) or once it held PLAYERBOT_DS_BULK_COR_MIN legendary Cors (50259/51510) - the flag stays, so its
+	// stones stay material and are never goods. A bulk alchemist:
+	//   * opens every Cor that opens into stones (IsPlayerBotOpenableCorVnum), while the page of the stone's kind and
+	//     grade has room (the alchemy bag is 32 cells a kind and grade - a stone with no room falls on the ground);
+	//   * refines within a kind: every grade pair up to Mythic (2 stones, 50/50 in the live table), then the Mythic
+	//     steps two by two up to Highest ("wyborny"; 70/30 a step), the highest pairs first - and stops a kind's
+	//     grade and step work once the kind has a Mythic Highest stone (worn or in the bag): a second one would only
+	//     be a duplicate of a filled slot, the rest stays as spare material;
+	//   * then puts the Green Dragon Beans into the kind's final stone (the best by grade and step, then by its
+	//     Yohara lines) up to the cap the WeightTables allow (Mythic/Legendary Highest +6, High +5, the rest +4) -
+	//     the beans spread over the kinds lowest strength first (a +5->+6 is 20% and costs ~56 beans on average,
+	//     so every kind gets its cheap levels before any gets the dear ones); a bean is bought only for the level
+	//     target of an ordinary user (GetPlayerBotDsTarget), never for the gamble over it;
+	//   * wears a kind's stone only when the kind's work is done (a worn stone cannot be refined and a pull-out
+	//     keeps a Mythic one 15% of the time), a Mythic one too, and ranks by the stone's real power - the
+	//     WeightTables' percent (Mythic Highest +6 = 160, Mythic High +5 = Legendary Highest +6 = 120, Mythic
+	//     Highest +0 = 75) - then by its lines for Yohara (GetPlayerBotDsYoharaLinePref);
+	//   * sells nothing of it: no stone is surplus, and its Cors, beans and bonus stones (71084/71085) are never
+	//     the merchant's or a counter's (IsPlayerBotKeptAlchemyGoods);
+	//   * goes to the Alchemist more often and does more a visit (PLAYERBOT_DS_BULK_*): ~270 grade tries, ~100 step
+	//     tries and up to 400 beans a bot take a few hours, in visits of PLAYERBOT_DS_BULK_VISIT_MAX_STEPS refines
+	//     PLAYERBOT_DS_BULK_STEP_MIN_MS..MAX_MS apart - a refine every couple of seconds a bot at most.
+	// The material, from 400 legendary Cors (~57 a kind): a grade try takes 2 legendary and gives 1 legendary or 1
+	// Mythic, so ~3 legendary a Mythic (~19 a kind); a step takes ~2.43 stones of the step under it, so a Mythic
+	// Highest takes ~35 Mythic Lowest - so a kind gets one about one time in twelve, the others end at Mythic High
+	// or Mid and take their beans to +5/+4. A grade refine ignores the step, so no legendary stone is stepped first.
+	// The route was chosen by simulation (27 October 2026, 4000 bots of 400 Cors over the 7 kinds and 400 beans,
+	// the live odds; power = the worn stones' WeightTables percent summed over the 7 kinds):
+	//   every kind the Mythic way (this)                     810  (0.57 Mythic Highest a bot)
+	//   every kind the Legendary way (steps to Highest, +6)  769  (0)
+	//   Legendary under 50 stones of a kind, Mythic over     814  (0.55) - within the noise, fewer Mythic Highest
+	//   beans by best gain a bean instead of lowest first    810 vs 808 - the same
+	// so: the Mythic way everywhere, the most Mythic Highest for the same power; a kind that does not reach Highest
+	// wears what it reaches (Mythic High +5 = 120, Mid +4 = 80, or its best Legendary) - every kind's slot is filled
+	// when its work is done, and a stand-in fills it meanwhile (PlacePlayerBotDsInterim).
+	// The Alchemist of Dongan (373, npc.txt cell 569,714) serves the Yohara maps of the core (game3 hosts no first
+	// village); the progress line is PLAYERBOT_ALCHEMY: progress (every PLAYERBOT_DS_PROGRESS_LOG_MS a bot).
+	const DWORD PLAYERBOT_COR_LEGENDARY_VNUM = 50259;
+	const DWORD PLAYERBOT_COR_LEGENDARY_515_VNUM = 51510;
+	const int PLAYERBOT_DS_BULK_COR_MIN = 20;
+	const char* PLAYERBOT_DS_BULK_FLAG = "playerbot.ds_bulk";
+	const char* PLAYERBOT_DS_OPENED_FLAG = "playerbot.ds_opened";
+	const int PLAYERBOT_DS_BULK_COR_OPEN_PER_PASS = 20;
+	const int PLAYERBOT_DS_BULK_VISIT_MAX_STEPS = 30;
+	const DWORD PLAYERBOT_DS_BULK_STEP_MIN_MS = 1500;
+	const DWORD PLAYERBOT_DS_BULK_STEP_MAX_MS = 3000;
+	const DWORD PLAYERBOT_DS_BULK_CHECK_MIN_MS = 60 * 1000;
+	const DWORD PLAYERBOT_DS_BULK_CHECK_MAX_MS = 120 * 1000;
+	// A bulk alchemist the fight kept from the Alchemist looks again this soon (Dongan is a hunting map).
+	const DWORD PLAYERBOT_DS_BULK_BUSY_RETRY_MIN_MS = 10 * 1000;
+	const DWORD PLAYERBOT_DS_BULK_BUSY_RETRY_MAX_MS = 20 * 1000;
+	const DWORD PLAYERBOT_DS_PROGRESS_LOG_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_DS_BULK_HOLDER_LOOK_MS = 5 * 60 * 1000;
+	// The Alchemist of Dongan (metin2_map_eastplain_01, base 1049600/435200, npc.txt 20001 at cell 569,714) and the
+	// map's arrival (Town.txt) a bot of another Yohara map travels to.
+	const long PLAYERBOT_DS_DONGAN_ALCHEMIST_X = 1106500;
+	const long PLAYERBOT_DS_DONGAN_ALCHEMIST_Y = 506600;
+	const long PLAYERBOT_DS_DONGAN_ARRIVAL_X = 1102450;
+	const long PLAYERBOT_DS_DONGAN_ARRIVAL_Y = 506850;
+	// WeightTables of dragon_soul_table.txt (the same in both bonus modes, 27 October 2026): a stone's power in
+	// percent of its kind's base values, by grade, step and strength; 0 - the strength cannot be had
+	// (DoRefineStrength refuses it).
+	const BYTE PLAYERBOT_DS_WEIGHT[6][5][7] = {
+		{ { 1, 2, 3, 0, 0, 0, 0 }, { 2, 3, 4, 0, 0, 0, 0 }, { 3, 4, 5, 6, 0, 0, 0 }, { 4, 5, 6, 7, 0, 0, 0 }, { 5, 6, 7, 8, 10, 0, 0 } },
+		{ { 3, 4, 5, 6, 0, 0, 0 }, { 4, 5, 6, 8, 0, 0, 0 }, { 5, 6, 8, 10, 0, 0, 0 }, { 6, 8, 10, 12, 15, 0, 0 }, { 8, 10, 12, 15, 20, 0, 0 } },
+		{ { 6, 7, 9, 11, 15, 0, 0 }, { 7, 9, 11, 15, 20, 0, 0 }, { 9, 11, 15, 20, 25, 0, 0 }, { 11, 15, 20, 25, 30, 0, 0 }, { 15, 20, 25, 30, 40, 0, 0 } },
+		{ { 10, 12, 15, 18, 20, 0, 0 }, { 12, 15, 18, 20, 25, 0, 0 }, { 15, 18, 20, 25, 35, 0, 0 }, { 18, 20, 25, 35, 40, 0, 0 }, { 20, 25, 35, 40, 60, 80, 0 } },
+		{ { 30, 35, 40, 45, 50, 0, 0 }, { 35, 40, 45, 50, 55, 0, 0 }, { 40, 45, 50, 55, 65, 0, 0 }, { 45, 50, 55, 65, 75, 90, 0 }, { 50, 55, 65, 75, 90, 105, 120 } },
+		{ { 35, 40, 45, 50, 55, 0, 0 }, { 45, 50, 55, 60, 65, 0, 0 }, { 50, 55, 60, 70, 80, 0, 0 }, { 65, 75, 85, 95, 105, 120, 0 }, { 75, 85, 95, 105, 120, 135, 160 } },
+	};
+
 	// ------------------------------------------------------------ prices
 	//
 	// A stone's price is what it costs to make, on average, from Cors at
@@ -187,8 +262,116 @@ namespace
 			return false;
 		const DWORD pid = ch->GetPlayerID();
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member of the night's cohorts wears its stones, always.
-		return (IsPlayerBotAlchemyUserPID(pid) || IsPlayerBotYoharaCohortPID(pid)) && !IsPlayerBotSidekickPID(pid) &&
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: and so does a bulk alchemist (a holder of legendary Cors).
+		return (IsPlayerBotAlchemyUserPID(pid) || IsPlayerBotYoharaCohortPID(pid) ||
+				ch->GetQuestFlag(PLAYERBOT_DS_BULK_FLAG) != 0) && !IsPlayerBotSidekickPID(pid) &&
 				!CPlayerBotManager::instance().IsMedalDropperCohortPID(pid);
+	}
+
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist (the comment at PLAYERBOT_COR_LEGENDARY_VNUM) - any member of
+	// a Yohara cohort (the 'yohara' hundred, the 'yohara800' ones, the Hydra's), or a bot that held legendary Cors.
+	bool IsPlayerBotDsBulk(LPCHARACTER ch)
+	{
+		return ch && ch->IsPC() && (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ||
+				ch->GetQuestFlag(PLAYERBOT_DS_BULK_FLAG) != 0);
+	}
+
+	// A stone's power (the WeightTables' percent), its strength cap, and the Mythic Highest test.
+	int GetPlayerBotDsWeight(BYTE grade, BYTE step, BYTE strength)
+	{
+		return (grade < 6 && step < 5 && strength < 7) ? PLAYERBOT_DS_WEIGHT[grade][step][strength] : 0;
+	}
+
+	BYTE GetPlayerBotDsStrengthCap(BYTE grade, BYTE step)
+	{
+		BYTE cap = 0;
+		for (BYTE s = 1; s < 7; ++s)
+			if (GetPlayerBotDsWeight(grade, step, s) > 0)
+				cap = s;
+		return cap;
+	}
+
+	// The preference of a Dragon Stone line for the Yohara maps, 0-10 a line (MT2009_PLUS_BOT_DS_YOHARA800_V1,
+	// "perf bonusy na Yohare"). What the choice rests on (27 October 2026):
+	//   * the bonus mode is a switch (M2_BONUS_MODE; the test world runs 'global': dragon_soul_applys.global.txt -
+	//     the elements, the stats and Sung Ma on the basic lines; 'mt2009': dragon_soul_applys.mt2009plus.txt - race
+	//     bonuses on the basic lines, crit/pierce on the Amethyst), so the table covers the lines of both;
+	//   * the basic lines are the kind's own (every stone of a kind has them), so they only order the KINDS (which
+	//     kind's stone gets the beans first on a tie); the choice between two stones of a kind is their
+	//     additional lines, rolled when the stone is made (a grade or step refine makes a new stone; a strength
+	//     refine keeps the lines);
+	//   * the Sung Ma maps ask Sung Ma Strength / Vitality / Resistance / Intelligence of whoever enters
+	//     (sungma_table.txt; playerbot_yohara_sungma.h) - a line of them is worth the most;
+	//   * the ordinary monsters of the Sung Ma maps (mob_proto 6686-6900, level 115+): races DEVIL 37, HUMAN 24,
+	//     ANIMAL 13 (the rest DESERT/SAVAGE, which no stone line hits), elements ice 44, dark 39, earth 29,
+	//     lightning (SAVAGE) 21, wind (TEMPLE) 16, fire 8 - ATTBONUS_MONSTER hits them all, ORC/UNDEAD/MILGYO
+	//     next to none; an element's power (ENCHANT_*) and resistance by those shares (MT2009_PLUS_ELEMENTS_V1);
+	//   * a Champion's fight is long and against monsters and bosses: HP (%), steal HP, defence against normal
+	//     hits, crit and pierce for the physical classes, magic attack for the magic ones (Sura of the black
+	//     magic, the Shamans); the PvP lines (strong against / resistance to a class) are worth nothing there.
+	// The Change Stone (100600, DoChangeAttribute) is not used: the bots get none, and a reroll of a Mythic stone's
+	// lines costs a stone the ItemShop sells - the choice is made among the stones the refining gives.
+	int GetPlayerBotDsYoharaLinePref(BYTE type, LPCHARACTER ch)
+	{
+		const BYTE job = ch ? ch->GetJob() : JOB_WARRIOR;
+		const BYTE group = ch ? ch->GetSkillGroup() : 0;
+		const bool magic = (job == JOB_SURA && group == 2) || job == JOB_SHAMAN;
+		const bool archer = job == JOB_ASSASSIN && group == 2;
+		switch (type)
+		{
+			case POINT_SUNGMA_STR: return 10;
+			case POINT_SUNGMA_HP: return 9;
+			case POINT_SUNGMA_MOVE: return 9;
+			case POINT_SUNGMA_IMMUNE: return 5;
+			case POINT_ATTBONUS_MONSTER: return 8;
+			case POINT_ATTBONUS_DEVIL: return 8;
+			case POINT_ATTBONUS_HUMAN: return 7;
+			case POINT_ATTBONUS_ANIMAL: return 5;
+			case POINT_ATTBONUS_STONE: return 3;
+			case POINT_ATTBONUS_ORC: return 1;
+			case POINT_ATTBONUS_UNDEAD: return 1;
+			case POINT_ATTBONUS_MILGYO: return 1;
+			case POINT_ENCHANT_ICE: return 7;
+			case POINT_ENCHANT_DARK: return 7;
+			case POINT_ENCHANT_EARTH: return 5;
+			case POINT_ENCHANT_ELECT: return 4;
+			case POINT_ENCHANT_WIND: return 3;
+			case POINT_ENCHANT_FIRE: return 2;
+			case POINT_RESIST_ICE: return 5;
+			case POINT_RESIST_DARK: return 5;
+			case POINT_RESIST_EARTH: return 4;
+			case POINT_RESIST_ELEC: return 3;
+			case POINT_RESIST_WIND: return 2;
+			case POINT_RESIST_FIRE: return 1;
+			case POINT_CRITICAL_PCT: return magic ? 4 : 8;
+			case POINT_PENETRATE_PCT: return magic ? 4 : 8;
+			case POINT_ATT_GRADE_BONUS: return magic ? 3 : 8;
+			case POINT_MAGIC_ATT_GRADE_BONUS: return magic ? 8 : 1;
+			case POINT_SKILL_DAMAGE_BONUS: return 8;
+			case POINT_NORMAL_HIT_DAMAGE_BONUS: return magic ? 2 : (archer ? 8 : 7);
+			case POINT_MAX_HP_PCT: return 8;
+			case POINT_MAX_HP: return 6;
+			case POINT_STEAL_HP: return 6;
+			case POINT_KILL_HP_RECOVERY: return 4;
+			case POINT_HP_REGEN: return 3;
+			case POINT_NORMAL_HIT_DEFEND_BONUS: return 6;
+			case POINT_DEF_GRADE_BONUS: return 5;
+			case POINT_SKILL_DEFEND_BONUS: return 4;
+			case POINT_MAGIC_DEF_GRADE_BONUS: return 3;
+			case POINT_BLOCK: return 5;
+			case POINT_DODGE: return 5;
+			case POINT_REFLECT_MELEE: return 4;
+			case POINT_RESIST_CRITICAL: return 3;
+			case POINT_RESIST_PENETRATE: return 3;
+			case POINT_HIT_PCT: return 4;
+			case POINT_ST: return (job == JOB_WARRIOR || (job == JOB_SURA && group != 2)) ? 6 : 1;
+			case POINT_DX: return job == JOB_ASSASSIN ? 6 : 1;
+			case POINT_IQ: return magic ? 6 : 1;
+			case POINT_HT: return 4;
+			case POINT_MAX_SP: case POINT_SP_REGEN: case POINT_STEAL_SP: case POINT_KILL_SP_RECOVER: case POINT_MAX_SP_PCT:
+				return job == JOB_SHAMAN ? 3 : 2;
+			default: return 0;	// the PvP lines and anything else: nothing on Yohara
+		}
 	}
 
 	struct TPlayerBotAlchemyStats
@@ -205,6 +388,9 @@ namespace
 		// MT2009_PLUS_BOT_DS_KEEP_WORN_V1: pull-outs (only for a strict
 		// upgrade) and the ones the engine's odds destroyed.
 		unsigned pulledOut, pullOutDestroyed;
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: the bulk alchemists - Cors opened, Mythic stones made (a legendary
+		// pair that took), Mythic Highest made, stones taken to their cap (+6 on a Highest), beans spent.
+		unsigned bulkOpened, bulkMythMade, bulkHighestMade, bulkCapMade, bulkBeans;
 	};
 	TPlayerBotAlchemyStats s_kPlayerBotAlchemyStats = { 0 };
 
@@ -258,11 +444,68 @@ namespace
 		return vnum == PLAYERBOT_COR_ROUGH_VNUM || vnum == 50260;
 	}
 
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: every Cor that opens into Dragon Stones (special_item_group.txt 50255 and
+	// special_item_group.cors.txt): the 5025x grades (cut, rare, antique, legendary) and the 515xx series - the plain,
+	// ranked, coloured and "+" ones (51501-51638). Not the Smocza Skrzynia chests (51639-51646, Cors into the bag)
+	// nor 50252. IsPlayerBotCorVnum stays the rough Cor of the market's lines.
+	bool IsPlayerBotOpenableCorVnum(DWORD vnum)
+	{
+		return (vnum >= PLAYERBOT_COR_ROUGH_VNUM && vnum <= 50260) || (vnum >= 51501 && vnum <= 51638);
+	}
+
 	// A user's Cors are its own; everybody else's are goods, a line of at
 	// least PLAYERBOT_COR_LINE_MIN_UNITS.
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: every Cor it opens (not only the rough one).
 	bool IsPlayerBotKeptCor(LPCHARACTER ch, LPITEM item)
 	{
-		return ch && item && IsPlayerBotCorVnum(item->GetVnum()) && IsPlayerBotAlchemyUser(ch);
+		return ch && item && IsPlayerBotOpenableCorVnum(item->GetVnum()) && IsPlayerBotAlchemyUser(ch);
+	}
+
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1 (point 4 of the order): what an alchemy user still needs is never the
+	// merchant's or a counter's - its Cors (above), its Green Dragon Beans, and, for a bulk alchemist (the Yohara
+	// cohorts the owner handed 400 Wzmocnienie and 800 Zaczarowanie Przedmiotu), the bonus stones 71084/71085
+	// (ANTI_SELL/ANTI_MYSHOP anyway; this holds them against an operator's "merchant" word too). Asked first by
+	// IsPlayerBotJunkItem (playerbot_economy.h) and ScorePlayerBotShopStockRules (playerbot_town.h).
+	bool IsPlayerBotKeptAlchemyGoods(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item)
+			return false;
+		const DWORD vnum = item->GetVnum();
+		if (IsPlayerBotOpenableCorVnum(vnum))
+			return IsPlayerBotKeptCor(ch, item);
+		if (vnum == PLAYERBOT_DS_GREEN_BEAN_VNUM)
+			return IsPlayerBotAlchemyUser(ch);
+		if (vnum == PLAYERBOT_BONUS_CHANGE_VNUM || vnum == PLAYERBOT_BONUS_ADD_VNUM)
+			return IsPlayerBotDsBulk(ch);
+		return false;
+	}
+
+	int CountPlayerBotLegendaryCors(LPCHARACTER ch)
+	{
+		return ch ? (int)ch->CountSpecifyItem(PLAYERBOT_COR_LEGENDARY_VNUM) + (int)ch->CountSpecifyItem(PLAYERBOT_COR_LEGENDARY_515_VNUM) : 0;
+	}
+
+	// A bot that is no alchemy user yet but holds PLAYERBOT_DS_BULK_COR_MIN legendary Cors becomes a bulk alchemist
+	// for good (the flag), looked at every PLAYERBOT_DS_BULK_HOLDER_LOOK_MS.
+	void NotePlayerBotDsBulkHolder(LPCHARACTER ch, DWORD dwNow)
+	{
+		static std::map<DWORD, DWORD> s_next;
+		if (!ch || !ch->IsPC() || ch->GetLevel() < PLAYERBOT_ALCHEMY_MIN_LEVEL || ArePlayerBotAlchemyOff() ||
+				!ch->IsItemLoaded() || ch->GetQuestFlag(PLAYERBOT_DS_BULK_FLAG) != 0)
+			return;
+		DWORD& next = s_next[ch->GetPlayerID()];
+		if (next != 0 && (int)(dwNow - next) < 0)
+			return;
+		next = dwNow + PLAYERBOT_DS_BULK_HOLDER_LOOK_MS;
+		const DWORD pid = ch->GetPlayerID();
+		if (IsPlayerBotSidekickPID(pid) || CPlayerBotManager::instance().IsMedalDropperCohortPID(pid))
+			return;
+		const int legendary = CountPlayerBotLegendaryCors(ch);
+		if (legendary < PLAYERBOT_DS_BULK_COR_MIN)
+			return;
+		ch->SetQuestFlag(PLAYERBOT_DS_BULK_FLAG, 1);
+		sys_log(0, "PLAYERBOT_ALCHEMY: bulk alchemist pid=%u name=%s lv=%d legendary_cors=%d cohort=%d",
+				pid, ch->GetName(), ch->GetLevel(), legendary, IsPlayerBotYoharaCohortPID(pid) ? 1 : 0);
 	}
 
 	bool IsPlayerBotCorStackShort(LPCHARACTER ch, LPITEM item)
@@ -324,12 +567,45 @@ namespace
 		return score;
 	}
 
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the stone's lines for Yohara (GetPlayerBotDsYoharaLinePref): the sum of its
+	// lines' preferences - the line's kind, not its size, which only the grade, step and strength set (and those
+	// rank first).
+	long long ScorePlayerBotDsYoharaLines(LPCHARACTER ch, LPITEM item)
+	{
+		long long score = 0;
+		for (int i = 0; item && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeType(i) != 0 && item->GetAttributeValue(i) > 0)
+				score += GetPlayerBotDsYoharaLinePref(item->GetAttributeType(i), ch);
+		return score;
+	}
+
+	// What a stone's lines are worth to this bot: a bulk alchemist's by Yohara's preference, anybody else's by the
+	// gear's scale (MT2009_PLUS_BOT_DS_YOHARA800_V1).
+	long long ScorePlayerBotDsWorth(LPCHARACTER ch, LPITEM item)
+	{
+		return IsPlayerBotDsBulk(ch) ? ScorePlayerBotDsYoharaLines(ch, item) : ScorePlayerBotDsLines(ch, item);
+	}
+
+	bool IsPlayerBotDsMythHighest(LPITEM item)
+	{
+		return item && GetPlayerBotDsGrade(item) >= PLAYERBOT_DS_MYTH_GRADE && GetPlayerBotDsStep(item) >= 4;
+	}
+
 	// Which of two stones of a kind to wear: grade, then step, then strength,
 	// then the lines.
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist's by the stone's power first (the WeightTables' percent:
+	// a Mythic High +5 is a Mythic Highest +0 and a half), then grade, step, strength and the Yohara lines.
 	long long RankPlayerBotDs(LPCHARACTER ch, LPITEM item)
 	{
 		if (!item)
 			return -1;
+		if (IsPlayerBotDsBulk(ch))
+		{
+			const BYTE grade = GetPlayerBotDsGrade(item), step = GetPlayerBotDsStep(item), strength = GetPlayerBotDsStrength(item);
+			return (long long)GetPlayerBotDsWeight(grade, step, strength) * 10000000000LL + (long long)grade * 1000000000LL +
+					(long long)step * 100000000LL + (long long)strength * 10000000LL +
+					std::min<long long>(std::max<long long>(ScorePlayerBotDsYoharaLines(ch, item), 0), 9999999);
+		}
 		const long long lines = std::min<long long>(std::max<long long>(ScorePlayerBotDsLines(ch, item), 0), 99999);
 		return (long long)GetPlayerBotDsGrade(item) * 10000000000LL + (long long)GetPlayerBotDsStep(item) * 1000000000LL +
 				(long long)GetPlayerBotDsStrength(item) * 100000000LL + lines;
@@ -427,7 +703,7 @@ namespace
 			LPITEM s = stones[i];
 			// The worn stone always counts (MT2009_PLUS_BOT_DS_KEEP_WORN_V1:
 			// it stays on until a strictly better one is ready).
-			if (s != worn && (GetPlayerBotDsGrade(s) < PLAYERBOT_DS_MIN_WORN_GRADE || ScorePlayerBotDsLines(ch, s) <= 0 ||
+			if (s != worn && (GetPlayerBotDsGrade(s) < PLAYERBOT_DS_MIN_WORN_GRADE || ScorePlayerBotDsWorth(ch, s) <= 0 ||
 					(!HasPlayerBotDsTime(s) && !IsPlayerBotDsRechargeWorthy(s))))
 				continue;
 			if (!best || RankPlayerBotDs(ch, s) > RankPlayerBotDs(ch, best) ||
@@ -465,6 +741,9 @@ namespace
 			return false;
 		if (!IsPlayerBotAlchemyUser(ch))
 			return true;
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist's stones are all material or spares, never goods.
+		if (IsPlayerBotDsBulk(ch))
+			return false;
 		const int kind = item->GetSubType();
 		// MT2009_PLUS_BOT_DS_EXTEND_V1: the kind's stone, expired or not,
 		// is never goods.
@@ -523,7 +802,7 @@ namespace
 		const TPlayerBotDsTarget t = GetPlayerBotDsTarget(ch);
 		const BYTE grade = GetPlayerBotDsGrade(offer);
 		if (grade < PLAYERBOT_DS_MIN_WORN_GRADE || (grade > t.grade && grade < PLAYERBOT_DS_MYTH_GRADE) ||
-				ScorePlayerBotDsLines(ch, offer) <= 0)
+				ScorePlayerBotDsWorth(ch, offer) <= 0)
 			return false;
 		LPITEM worn = GetPlayerBotWornDs(ch, offer->GetSubType());
 		return !worn || RankPlayerBotDs(ch, offer) > RankPlayerBotDs(ch, worn);
@@ -591,15 +870,78 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the alchemy bag's page of one kind and grade has a free cell.
+	bool PlayerBotDsPageHasRoom(LPCHARACTER ch, int kind, int grade)
+	{
+		if (!ch || kind < 0 || kind >= DS_SLOT_MAX || grade < 0 || grade >= DRAGON_SOUL_GRADE_MAX)
+			return false;
+		const int base = kind * DRAGON_SOUL_GRADE_MAX * DRAGON_SOUL_BOX_SIZE + grade * DRAGON_SOUL_BOX_SIZE;
+		for (int i = 0; i < DRAGON_SOUL_BOX_SIZE; ++i)
+			if (ch->IsEmptyItemGrid(TItemPos(DRAGON_SOUL_INVENTORY, (WORD)(base + i)), 1))
+				return true;
+		return false;
+	}
+
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: room for whatever this Cor may give - every page (kind, grade) of a stone of
+	// its group (special_item_group: a 5025x/51510 Cor one grade of a random kind, a ranked 515xx one several grades,
+	// a coloured one its own kind). A group the table does not know: the rough rule.
+	bool PlayerBotHasRoomForCor(LPCHARACTER ch, DWORD corVnum)
+	{
+		if (!ch || !ch->DragonSoul_IsQualified())
+			return false;
+		const CSpecialItemGroup* group = ITEM_MANAGER::instance().GetSpecialItemGroup(corVnum);
+		if (!group)
+			return PlayerBotHasRoomForEveryRoughKind(ch);
+		const std::vector<CSpecialItemGroup::CSpecialItemInfo> items = group->GetItems();
+		bool any = false;
+		for (size_t i = 0; i < items.size(); ++i)
+		{
+			const DWORD v = items[i].vnum;
+			if (v < 110000 || v > 179999)
+				continue;
+			any = true;
+			if (!PlayerBotDsPageHasRoom(ch, (int)((v / 10000) % 10) - 1, (int)((v / 1000) % 10)))
+				return false;
+		}
+		return any || PlayerBotHasRoomForEveryRoughKind(ch);
+	}
+
+	int CountPlayerBotOpenableCors(LPCHARACTER ch)
+	{
+		int n = 0;
+		for (int cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem((WORD)cell);
+			if (item && item->GetCell() == cell && IsPlayerBotOpenableCorVnum(item->GetVnum()))
+				n += (int)item->GetCount();
+		}
+		return n;
+	}
+
 	// Its Cors opened while the alchemy bag has room: the Cor's group is one
 	// rough stone of a random kind (special_item_group.txt, 50255).
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: every Cor that opens into stones (IsPlayerBotOpenableCorVnum), by the
+	// engine's own use (UseItem: the giftbox path, its own 60-in-500-ms budget), each while the pages it may
+	// fill have room - a full legendary page waits for the Alchemist to turn its pairs into Mythic stones.
 	int OpenPlayerBotCors(LPCHARACTER ch)
 	{
 		int opened = 0;
-		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && opened < PLAYERBOT_DS_COR_OPEN_PER_PASS; ++cell)
+		const bool bulk = IsPlayerBotDsBulk(ch);
+		const int perPass = bulk ? PLAYERBOT_DS_BULK_COR_OPEN_PER_PASS : PLAYERBOT_DS_COR_OPEN_PER_PASS;
+		// A user that holds legendary Cors in number is a bulk alchemist from now on.
+		if (!bulk && ch->GetQuestFlag(PLAYERBOT_DS_BULK_FLAG) == 0 && CountPlayerBotLegendaryCors(ch) >= PLAYERBOT_DS_BULK_COR_MIN)
+		{
+			ch->SetQuestFlag(PLAYERBOT_DS_BULK_FLAG, 1);
+			sys_log(0, "PLAYERBOT_ALCHEMY: bulk alchemist pid=%u name=%s lv=%d legendary_cors=%d cohort=%d", ch->GetPlayerID(),
+					ch->GetName(), ch->GetLevel(), CountPlayerBotLegendaryCors(ch), IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ? 1 : 0);
+		}
+		std::set<DWORD> noRoom;
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && opened < perPass; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem((WORD)cell);
-			if (!item || item->GetCell() != cell || !IsPlayerBotCorVnum(item->GetVnum()) || item->isLocked())
+			if (!item || item->GetCell() != cell || !IsPlayerBotOpenableCorVnum(item->GetVnum()) || item->isLocked())
+				continue;
+			if (noRoom.count(item->GetVnum()))
 				continue;
 			// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion opens only a
 			// Cor its owner handed it; the ones off the owner's kills are the
@@ -610,21 +952,29 @@ namespace
 			CollectPlayerBotDragonSouls(ch, stones);
 			if ((int)stones.size() >= DRAGON_SOUL_INVENTORY_MAX_NUM - 8)
 				break;
-			if (!PlayerBotHasRoomForEveryRoughKind(ch)) // MT2009_PLUS_BOT_COR_ROOM_V1
+			// MT2009_PLUS_BOT_COR_ROOM_V1; MT2009_PLUS_BOT_DS_YOHARA800_V1: the pages this Cor may fill.
+			if (!PlayerBotHasRoomForCor(ch, item->GetVnum()))
 			{
 				PlayerBotLogThrottled("alchemy_cor_room", get_dword_time(),
-						"PLAYERBOT_ALCHEMY: cor kept, a rough page is full pid=%u name=%s", ch->GetPlayerID(), ch->GetName());
-				break;
+						"PLAYERBOT_ALCHEMY: cor kept, its page is full pid=%u name=%s vnum=%u", ch->GetPlayerID(), ch->GetName(),
+						item->GetVnum());
+				noRoom.insert(item->GetVnum());
+				continue;
 			}
 			if (!ch->UseItem(TItemPos(INVENTORY, (WORD)cell)))
 				break;
 			++opened;
 			++s_kPlayerBotAlchemyStats.opened;
+			if (bulk)
+				++s_kPlayerBotAlchemyStats.bulkOpened;
 			--cell;	// the stack may still be there
 		}
 		if (opened)
+		{
+			ch->SetQuestFlag(PLAYERBOT_DS_OPENED_FLAG, ch->GetQuestFlag(PLAYERBOT_DS_OPENED_FLAG) + opened);
 			sys_log(0, "PLAYERBOT_ALCHEMY: opened pid=%u name=%s cors=%d left=%d", ch->GetPlayerID(), ch->GetName(),
-					opened, (int)ch->CountSpecifyItem(PLAYERBOT_COR_ROUGH_VNUM));
+					opened, CountPlayerBotOpenableCors(ch));
+		}
 		return opened;
 	}
 
@@ -659,6 +1009,34 @@ namespace
 
 	int FindPlayerBotDsRefine(LPCHARACTER ch, int kind, LPITEM& a, LPITEM& b);
 
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: while a bulk alchemist's kind is still refined (hours), its empty deck slot
+	// holds a stand-in: the best non-Mythic stone of the kind (Rare, Ancient or Legendary) that is not in the refine
+	// at hand. A stand-in costs one stone of material (a pull-out keeps a Legendary one 20%, an Ancient or Rare one
+	// 30% - DragonSoulExtTables), about 1% of the ~104 legendary stones a Mythic Highest takes, for 30-50% of the
+	// kind's power meanwhile (a Legendary at 30-50 of the WeightTables' percent against nothing). A Mythic stone is
+	// never a stand-in: a Mythic Lowest is ~3% of a Mythic Highest's material and comes back 15% of the time; the
+	// Mythic step work of a kind is a few minutes once its legendary pairs are done. When the kind is finished,
+	// the final stone takes the slot as a strict upgrade (EquipPlayerBotBestDragonSouls).
+	bool PlacePlayerBotDsInterim(LPCHARACTER ch, int kind, const std::vector<LPITEM>& stones, LPITEM a, LPITEM b)
+	{
+		LPITEM pick = NULL;
+		for (size_t i = 0; i < stones.size(); ++i)
+		{
+			LPITEM s = stones[i];
+			if (s == a || s == b || !HasPlayerBotDsTime(s) || GetPlayerBotDsGrade(s) < PLAYERBOT_DS_MIN_WORN_GRADE ||
+					GetPlayerBotDsGrade(s) >= PLAYERBOT_DS_MYTH_GRADE || IsPlayerBotSidekickLockedItem(ch, s))
+				continue;
+			if (!pick || RankPlayerBotDs(ch, s) > RankPlayerBotDs(ch, pick))
+				pick = s;
+		}
+		if (!pick || !PlayerBotEquipItem(ch, pick))
+			return false;
+		++s_kPlayerBotAlchemyStats.equipped;
+		sys_log(0, "PLAYERBOT_ALCHEMY: wear interim pid=%u name=%s vnum=%u kind=%d", ch->GetPlayerID(), ch->GetName(),
+				pick->GetVnum(), kind);
+		return true;
+	}
+
 	// The best stone with time left of every kind into deck 0: of the rare
 	// grade and over, and only once the kind has no refine left to do (the
 	// Alchemist does it first) - but a mythic stone goes on as it is.
@@ -680,15 +1058,22 @@ namespace
 			CollectPlayerBotDragonSouls(ch, stones, kind);
 			LPITEM best = NULL;
 			for (size_t i = 0; i < stones.size(); ++i)
-				if (HasPlayerBotDsTime(stones[i]) && ScorePlayerBotDsLines(ch, stones[i]) > 0 &&
+				if (HasPlayerBotDsTime(stones[i]) && ScorePlayerBotDsWorth(ch, stones[i]) > 0 &&
 						GetPlayerBotDsGrade(stones[i]) >= PLAYERBOT_DS_MIN_WORN_GRADE &&
 						(!best || RankPlayerBotDs(ch, stones[i]) > RankPlayerBotDs(ch, best)))
 					best = stones[i];
-			if (best && GetPlayerBotDsGrade(best) < PLAYERBOT_DS_MYTH_GRADE)
+			// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist's Mythic stone waits for the kind's work too (its
+			// steps and beans; a pull-out keeps a Mythic stone 15% of the time) - but an empty slot does not wait
+			// empty: PlacePlayerBotDsInterim.
+			if (best && (GetPlayerBotDsGrade(best) < PLAYERBOT_DS_MYTH_GRADE || IsPlayerBotDsBulk(ch)))
 			{
 				LPITEM a = NULL, b = NULL;
 				if (FindPlayerBotDsRefine(ch, kind, a, b) != 0)	// PLAYERBOT_DS_WORK_NONE
+				{
+					if (!worn && IsPlayerBotDsBulk(ch) && PlacePlayerBotDsInterim(ch, kind, stones, a, b))
+						++changed;
 					continue;
+				}
 			}
 			if (worn && !HasPlayerBotDsTime(worn) && (!best || RankPlayerBotDs(ch, worn) >= RankPlayerBotDs(ch, best)))
 			{
@@ -1046,9 +1431,96 @@ namespace
 	// MT2009_PLUS_BOT_DS_KEEP_WORN_V1: never the worn one - the refine
 	// window wants it pulled out, which may destroy it (PullOutPlayerBotDs);
 	// a better stone made in the bag replaces it as a strict upgrade.
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist's final stone of a kind - the one the beans go into and that
+	// goes on: the most power it can reach (the WeightTables' percent at its strength cap - a Legendary Highest,
+	// cap +6 = 120, before a Mythic Mid, cap +4 = 80), then grade and step, then the Yohara lines, then the strength
+	// it already has. So the beans go to the stone the kind will wear (EquipPlayerBotBestDragonSouls ranks by the
+	// power it has).
+	long long GetPlayerBotDsFinalKey(LPCHARACTER ch, LPITEM item)
+	{
+		const BYTE grade = GetPlayerBotDsGrade(item), step = GetPlayerBotDsStep(item);
+		return (long long)GetPlayerBotDsWeight(grade, step, GetPlayerBotDsStrengthCap(grade, step)) * 100000000000LL +
+				((long long)grade * 10 + step) * 1000000000LL +
+				std::min<long long>(std::max<long long>(ScorePlayerBotDsYoharaLines(ch, item), 0), 999999) * 100 +
+				GetPlayerBotDsStrength(item);
+	}
+
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the next refine of a kind for a bulk alchemist (the comment at
+	// PLAYERBOT_COR_LEGENDARY_VNUM): grade pairs up to Mythic (where the next grade's page has room), then the
+	// Mythic step pairs from the highest down - none of the two once the kind has a Mythic Highest stone - then
+	// the final stone's strength up to its cap with the beans of its bag (one bought only under the ordinary
+	// user's strength target). Never the worn stone; the final stone only when it would beat the worn one.
+	int FindPlayerBotDsRefineBulk(LPCHARACTER ch, int kind, LPITEM& a, LPITEM& b)
+	{
+		a = b = NULL;
+		std::vector<LPITEM> stones;
+		CollectPlayerBotDragonSouls(ch, stones, kind);
+		for (size_t i = stones.size(); i-- > 0;)
+			if (IsPlayerBotSidekickLockedItem(ch, stones[i]))
+				stones.erase(stones.begin() + i);
+		LPITEM worn = GetPlayerBotWornDs(ch, kind);
+		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch);
+		bool done = IsPlayerBotDsMythHighest(worn);
+		for (size_t i = 0; i < stones.size() && !done; ++i)
+			done = IsPlayerBotDsMythHighest(stones[i]);
+		if (!done)
+		{
+			for (BYTE grade = 0; grade < PLAYERBOT_DS_MYTH_GRADE; ++grade)
+			{
+				std::vector<LPITEM> pick;
+				for (size_t i = 0; i < stones.size(); ++i)
+					if (GetPlayerBotDsGrade(stones[i]) == grade)
+						pick.push_back(stones[i]);
+				// The fee, and the page a success fills (a failure gives one stone back into the page it took two from).
+				if (pick.size() < 2 || spare < PLAYERBOT_DS_GRADE_FEES[grade] + PLAYERBOT_DS_REFINE_SPARE ||
+						!PlayerBotDsPageHasRoom(ch, kind, grade + 1))
+					continue;
+				std::sort(pick.begin(), pick.end(), [&](LPITEM x, LPITEM y) { return RankPlayerBotDs(ch, x) < RankPlayerBotDs(ch, y); });
+				a = pick[0];
+				b = pick[1];
+				return PLAYERBOT_DS_WORK_GRADE;
+			}
+			for (int step = 3; step >= 0; --step)
+			{
+				std::vector<LPITEM> pick;
+				for (size_t i = 0; i < stones.size(); ++i)
+					if (GetPlayerBotDsGrade(stones[i]) == PLAYERBOT_DS_MYTH_GRADE && GetPlayerBotDsStep(stones[i]) == step)
+						pick.push_back(stones[i]);
+				if (pick.size() < 2 || spare < PLAYERBOT_DS_STEP_FEES[step] + PLAYERBOT_DS_REFINE_SPARE)
+					continue;
+				std::sort(pick.begin(), pick.end(), [&](LPITEM x, LPITEM y) { return RankPlayerBotDs(ch, x) < RankPlayerBotDs(ch, y); });
+				a = pick[0];
+				b = pick[1];
+				return PLAYERBOT_DS_WORK_STEP;
+			}
+		}
+		LPITEM best = NULL;
+		for (size_t i = 0; i < stones.size(); ++i)
+			if (GetPlayerBotDsGrade(stones[i]) >= PLAYERBOT_DS_MIN_WORN_GRADE &&
+					(!best || GetPlayerBotDsFinalKey(ch, stones[i]) > GetPlayerBotDsFinalKey(ch, best)))
+				best = stones[i];
+		if (!best)
+			return PLAYERBOT_DS_WORK_NONE;
+		const BYTE grade = GetPlayerBotDsGrade(best), step = GetPlayerBotDsStep(best), strength = GetPlayerBotDsStrength(best);
+		// The worn stone stays unless this one, at its cap, beats it (a pull-out may destroy the worn one, and a
+		// stone that will never go on gets no beans).
+		if (worn && GetPlayerBotDsWeight(grade, step, GetPlayerBotDsStrengthCap(grade, step)) <= RankPlayerBotDs(ch, worn) / 10000000000LL)
+			return PLAYERBOT_DS_WORK_NONE;
+		if (strength >= GetPlayerBotDsStrengthCap(grade, step) || spare < 10000 + PLAYERBOT_DS_REFINE_SPARE)
+			return PLAYERBOT_DS_WORK_NONE;
+		const bool beans = ch->CountSpecifyItem(PLAYERBOT_DS_GREEN_BEAN_VNUM) > 0;
+		const bool buy = strength < GetPlayerBotDsTarget(ch).strength && spare >= PLAYERBOT_DS_BEAN_COST * 3;
+		if (!beans && !buy)
+			return PLAYERBOT_DS_WORK_NONE;
+		a = best;
+		return PLAYERBOT_DS_WORK_STRENGTH;
+	}
+
 	int FindPlayerBotDsRefine(LPCHARACTER ch, int kind, LPITEM& a, LPITEM& b)
 	{
 		a = b = NULL;
+		if (IsPlayerBotDsBulk(ch))	// MT2009_PLUS_BOT_DS_YOHARA800_V1
+			return FindPlayerBotDsRefineBulk(ch, kind, a, b);
 		const TPlayerBotDsTarget t = GetPlayerBotDsTarget(ch);
 		std::vector<LPITEM> stones;
 		CollectPlayerBotDragonSouls(ch, stones, kind);
@@ -1159,6 +1631,18 @@ namespace
 		return -1;
 	}
 
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the stones of one vnum in a kind's pages of the alchemy bag.
+	int CountPlayerBotDsVnum(LPCHARACTER ch, int kind, DWORD vnum)
+	{
+		std::vector<LPITEM> stones;
+		CollectPlayerBotDragonSouls(ch, stones, kind);
+		int n = 0;
+		for (size_t i = 0; i < stones.size(); ++i)
+			if (stones[i]->GetVnum() == vnum)
+				++n;
+		return n;
+	}
+
 	// One step at the Alchemist: an elixir for a stone running out, else one
 	// refine. True when something was done.
 	bool DoPlayerBotAlchemistStep(LPCHARACTER ch)
@@ -1189,12 +1673,37 @@ namespace
 			}
 			return ok;
 		}
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist does any kind's grade or step work first, then spreads
+		// its beans - the kind whose final stone has the lowest strength, the better Yohara lines on a tie.
+		const bool bulk = IsPlayerBotDsBulk(ch);
+		int chosenKind = -1, chosenWork = PLAYERBOT_DS_WORK_NONE;
+		LPITEM chosenA = NULL, chosenB = NULL;
 		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
 		{
 			LPITEM a = NULL, b = NULL;
 			const int work = FindPlayerBotDsRefine(ch, kind, a, b);
 			if (work == PLAYERBOT_DS_WORK_NONE)
 				continue;
+			if (!bulk || work != PLAYERBOT_DS_WORK_STRENGTH)
+			{
+				chosenKind = kind; chosenWork = work; chosenA = a; chosenB = b;
+				break;
+			}
+			if (chosenKind < 0 || GetPlayerBotDsStrength(a) < GetPlayerBotDsStrength(chosenA) ||
+					(GetPlayerBotDsStrength(a) == GetPlayerBotDsStrength(chosenA) &&
+					 ScorePlayerBotDsYoharaLines(ch, a) > ScorePlayerBotDsYoharaLines(ch, chosenA)))
+			{
+				chosenKind = kind; chosenWork = work; chosenA = a; chosenB = b;
+			}
+		}
+		if (chosenKind >= 0)
+		{
+			const int kind = chosenKind;
+			const int work = chosenWork;
+			LPITEM a = chosenA, b = chosenB;
+			const BYTE gradeA = GetPlayerBotDsGrade(a), stepA = GetPlayerBotDsStep(a), strengthA = GetPlayerBotDsStrength(a);
+			// A strength refine returns true either way: whether it took is the next strength's count going up.
+			const int upBefore = work == PLAYERBOT_DS_WORK_STRENGTH ? CountPlayerBotDsVnum(ch, kind, a->GetVnum() + 10) : 0;
 			// MT2009_PLUS_BOT_DS_KEEP_WORN_V1: a worn stone is never refine
 			// material (FindPlayerBotDsRefine); nothing is pulled out here.
 			if (a->IsEquipped() || (b && b->IsEquipped()))
@@ -1226,22 +1735,117 @@ namespace
 			if (work == PLAYERBOT_DS_WORK_GRADE) ++s_kPlayerBotAlchemyStats.refinesGrade;
 			else if (work == PLAYERBOT_DS_WORK_STEP) ++s_kPlayerBotAlchemyStats.refinesStep;
 			else ++s_kPlayerBotAlchemyStats.refinesStrength;
-			if (!ok)
+			// MT2009_PLUS_BOT_DS_YOHARA800_V1: whether it took (a strength refine by the count above).
+			const bool took = work == PLAYERBOT_DS_WORK_STRENGTH ? CountPlayerBotDsVnum(ch, kind, vnumA + 10) > upBefore : ok;
+			if (!took)
 				++s_kPlayerBotAlchemyStats.refineFails;
-			sys_log(0, "PLAYERBOT_ALCHEMY: refine %s pid=%u name=%s lv=%d kind=%d vnum=%u done=%d paid=%lld", what,
-					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), kind, vnumA, ok ? 1 : 0,
-					goldBefore - (long long)ch->GetGold());
+			if (bulk)
+			{
+				if (work == PLAYERBOT_DS_WORK_GRADE && took && gradeA + 1 == PLAYERBOT_DS_MYTH_GRADE)
+					++s_kPlayerBotAlchemyStats.bulkMythMade;
+				else if (work == PLAYERBOT_DS_WORK_STEP && took && gradeA == PLAYERBOT_DS_MYTH_GRADE && stepA == 3)
+					++s_kPlayerBotAlchemyStats.bulkHighestMade;
+				else if (work == PLAYERBOT_DS_WORK_STRENGTH)
+				{
+					++s_kPlayerBotAlchemyStats.bulkBeans;
+					if (took && strengthA + 1 == GetPlayerBotDsStrengthCap(gradeA, stepA))
+						++s_kPlayerBotAlchemyStats.bulkCapMade;
+				}
+			}
+			sys_log(0, "PLAYERBOT_ALCHEMY: refine %s pid=%u name=%s lv=%d kind=%d vnum=%u done=%d took=%d paid=%lld bulk=%d", what,
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), kind, vnumA, ok ? 1 : 0, took ? 1 : 0,
+					goldBefore - (long long)ch->GetGold(), bulk ? 1 : 0);
 			return ok || goldBefore != (long long)ch->GetGold();
 		}
 		return false;
 	}
 
-	void EndPlayerBotAlchemistVisit(TPlayerBotAIState& state, DWORD dwNow)
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist looks for the Alchemist's work more often.
+	DWORD GetPlayerBotDsCheckDelay(LPCHARACTER ch)
+	{
+		return IsPlayerBotDsBulk(ch) ? (DWORD)number(PLAYERBOT_DS_BULK_CHECK_MIN_MS, PLAYERBOT_DS_BULK_CHECK_MAX_MS)
+				: (DWORD)number(PLAYERBOT_ALCHEMY_CHECK_MIN_MS, PLAYERBOT_ALCHEMY_CHECK_MAX_MS);
+	}
+
+	void EndPlayerBotAlchemistVisit(TPlayerBotAIState& state, DWORD dwNow, LPCHARACTER ch = NULL)
 	{
 		state.bVisitingDsAlchemist = false;
 		state.dwNextDsActionTime = 0;
-		state.dwNextDsCheckTime = dwNow + number(PLAYERBOT_ALCHEMY_CHECK_MIN_MS, PLAYERBOT_ALCHEMY_CHECK_MAX_MS);
+		state.dwNextDsCheckTime = dwNow + GetPlayerBotDsCheckDelay(ch);
 		ClearPlayerBotRoute(state, true);
+	}
+
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the Alchemist of a map - a first village's, or Dongan's for the Yohara maps.
+	// Dongan's for a bulk alchemist only: an ordinary user keeps the first villages' Alchemists, as before.
+	bool GetPlayerBotDsAlchemist(LPCHARACTER ch, long mapIndex, playerbot_empire_rules::TPoint& out)
+	{
+		if (playerbot_empire_rules::GetAlchemist(mapIndex, out))
+			return true;
+		if (mapIndex != PLAYERBOT_MAP_SUNGMA_DONGAN || !IsPlayerBotDsBulk(ch))
+			return false;
+		out.x = PLAYERBOT_DS_DONGAN_ALCHEMIST_X;
+		out.y = PLAYERBOT_DS_DONGAN_ALCHEMIST_Y;
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the progress line of a bulk alchemist, for the coordinator - every
+	// PLAYERBOT_DS_PROGRESS_LOG_MS a bot (and at the end of a visit that did something, as often):
+	//   cors_left (every Cor that opens), opened (all its life), legendary / mythic stones it holds (bag and worn),
+	//   highest - Mythic Highest ones, capped - stones at their strength cap, str - the worn stones' strengths
+	//   (one digit a kind, '-' none), worn - a kind's letter (D Diament, R Rubin, J Jadeit, S Szafir, G Granat,
+	//   O Onyks, A Ametyst) and grade.step+strength ("D5.4+6"), done - kinds with nothing left to refine.
+	void LogPlayerBotDsProgress(LPCHARACTER ch, DWORD dwNow, const char* why, bool force)
+	{
+		static std::map<DWORD, DWORD> s_last;
+		if (!ch || !IsPlayerBotDsBulk(ch))
+			return;
+		DWORD& last = s_last[ch->GetPlayerID()];
+		if (!force && last != 0 && dwNow - last < PLAYERBOT_DS_PROGRESS_LOG_MS)
+			return;
+		if (force && last != 0 && dwNow - last < 60000)
+			return;
+		last = dwNow;
+		static const char s_kindLetter[] = "DRJSGOA";
+		int legendary = 0, mythic = 0, highest = 0, capped = 0, done = 0;
+		std::string worn, strengths;
+		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+		{
+			std::vector<LPITEM> stones;
+			CollectPlayerBotDragonSouls(ch, stones, kind);
+			LPITEM w = GetPlayerBotWornDs(ch, kind);
+			if (w)
+				stones.push_back(w);
+			for (size_t i = 0; i < stones.size(); ++i)
+			{
+				const BYTE g = GetPlayerBotDsGrade(stones[i]);
+				if (g == 4) ++legendary;
+				if (g >= PLAYERBOT_DS_MYTH_GRADE) ++mythic;
+				if (IsPlayerBotDsMythHighest(stones[i])) ++highest;
+				if (g >= PLAYERBOT_DS_MIN_WORN_GRADE &&
+						GetPlayerBotDsStrength(stones[i]) >= GetPlayerBotDsStrengthCap(g, GetPlayerBotDsStep(stones[i])))
+					++capped;
+			}
+			LPITEM a = NULL, b = NULL;
+			if (FindPlayerBotDsRefine(ch, kind, a, b) == PLAYERBOT_DS_WORK_NONE)
+				++done;
+			char buf[32];
+			if (w)
+			{
+				snprintf(buf, sizeof(buf), "%s%c%u.%u+%u", worn.empty() ? "" : ",", kind < 7 ? s_kindLetter[kind] : '?',
+						(unsigned)GetPlayerBotDsGrade(w), (unsigned)GetPlayerBotDsStep(w), (unsigned)GetPlayerBotDsStrength(w));
+				worn += buf;
+				strengths += (char)('0' + std::min<int>(9, GetPlayerBotDsStrength(w)));
+			}
+			else
+				strengths += '-';
+		}
+		sys_log(0, "PLAYERBOT_ALCHEMY: progress pid=%u name=%s lv=%d job=%d why=%s cohort=%d cors_left=%d legendary_cors=%d "
+				"opened=%d legendary=%d mythic=%d highest=%d capped=%d done_kinds=%d/%d str=%s worn=%s beans=%d gold=%lld map=%ld",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (int)ch->GetJob(), why,
+				IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ? 1 : 0, CountPlayerBotOpenableCors(ch),
+				CountPlayerBotLegendaryCors(ch), ch->GetQuestFlag(PLAYERBOT_DS_OPENED_FLAG), legendary, mythic, highest,
+				capped, done, (int)DS_SLOT_MAX, strengths.c_str(), worn.empty() ? "none" : worn.c_str(),
+				(int)ch->CountSpecifyItem(PLAYERBOT_DS_GREEN_BEAN_VNUM), (long long)ch->GetGold(), ch->GetMapIndex());
 	}
 
 	// The tick: the local work (qualification, Cors, stones, deck) on a short
@@ -1252,9 +1856,13 @@ namespace
 		if (!ch || !IsPlayerBotAlchemyUser(ch))
 		{
 			if (ch && state.bVisitingDsAlchemist)
-				EndPlayerBotAlchemistVisit(state, dwNow);
+				EndPlayerBotAlchemistVisit(state, dwNow, ch);
+			// MT2009_PLUS_BOT_DS_YOHARA800_V1: a holder of legendary Cors becomes a bulk alchemist.
+			if (ch && !ch->IsDead())
+				NotePlayerBotDsBulkHolder(ch, dwNow);
 			return false;
 		}
+		const bool bulk = IsPlayerBotDsBulk(ch);
 		if (dwNow >= state.dwNextDsLocalTime && !ch->IsDead() && !ch->GetExchange())
 		{
 			state.dwNextDsLocalTime = dwNow + PLAYERBOT_ALCHEMY_LOCAL_MS;
@@ -1270,6 +1878,8 @@ namespace
 				EquipPlayerBotBestDragonSouls(ch);
 			// The deck: ManagePlayerBotDsDeckTick, every bot's tick
 			// (MT2009_PLUS_BOT_DS_EXTEND_V1).
+			if (bulk)
+				LogPlayerBotDsProgress(ch, dwNow, "pass", false);
 		}
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingHerbalist || state.bVisitingStable ||
 				state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0 ||
@@ -1281,22 +1891,38 @@ namespace
 				ch->GetMyShop() != NULL)
 		{
 			if (state.bVisitingDsAlchemist)
-				EndPlayerBotAlchemistVisit(state, dwNow);
+				EndPlayerBotAlchemistVisit(state, dwNow, ch);
 			else
-				state.dwNextDsCheckTime = dwNow + number(PLAYERBOT_ALCHEMY_CHECK_MIN_MS, PLAYERBOT_ALCHEMY_CHECK_MAX_MS);
+				state.dwNextDsCheckTime = dwNow + GetPlayerBotDsCheckDelay(ch);
 			return false;
 		}
 
 		playerbot_empire_rules::TPoint alchemist;
 		if (!state.bVisitingDsAlchemist)
 		{
-			state.dwNextDsCheckTime = dwNow + number(PLAYERBOT_ALCHEMY_CHECK_MIN_MS, PLAYERBOT_ALCHEMY_CHECK_MAX_MS);
-			if (ch->GetVictim() != NULL || state.dwTargetVID != 0 || !HasPlayerBotAlchemistWork(ch))
+			state.dwNextDsCheckTime = dwNow + GetPlayerBotDsCheckDelay(ch);
+			if (ch->GetVictim() != NULL || state.dwTargetVID != 0)
+			{
+				// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist hunts where it refines (Dongan): it looks again
+				// between two pulls, not a minute or two later.
+				if (bulk)
+					state.dwNextDsCheckTime = dwNow + number(PLAYERBOT_DS_BULK_BUSY_RETRY_MIN_MS, PLAYERBOT_DS_BULK_BUSY_RETRY_MAX_MS);
 				return false;
-			if (!playerbot_empire_rules::GetAlchemist(ch->GetMapIndex(), alchemist))
+			}
+			if (!HasPlayerBotAlchemistWork(ch))
+				return false;
+			if (!GetPlayerBotDsAlchemist(ch, ch->GetMapIndex(), alchemist))
 			{
 				long homeMap = 0, homeX = 0, homeY = 0;
-				if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1, homeMap, homeX, homeY) ||
+				// MT2009_PLUS_BOT_DS_YOHARA800_V1: from a Yohara map, Dongan's Alchemist (its core hosts no first
+				// village); from anywhere else the first village's, as before.
+				if (bulk && IsPlayerBotSungmaBotMap(ch->GetMapIndex()) && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SUNGMA_DONGAN))
+				{
+					homeMap = PLAYERBOT_MAP_SUNGMA_DONGAN;
+					homeX = PLAYERBOT_DS_DONGAN_ARRIVAL_X;
+					homeY = PLAYERBOT_DS_DONGAN_ARRIVAL_Y;
+				}
+				else if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1, homeMap, homeX, homeY) ||
 						!IsPlayerBotMapHostedHere(homeMap) || !playerbot_empire_rules::GetAlchemist(homeMap, alchemist))
 					return false;
 				SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
@@ -1316,9 +1942,9 @@ namespace
 			sys_log(0, "PLAYERBOT_ALCHEMY: going to the Alchemist pid=%u name=%s lv=%d gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (long long)ch->GetGold());
 		}
-		if (!playerbot_empire_rules::GetAlchemist(ch->GetMapIndex(), alchemist))
+		if (!GetPlayerBotDsAlchemist(ch, ch->GetMapIndex(), alchemist))
 		{
-			EndPlayerBotAlchemistVisit(state, dwNow);
+			EndPlayerBotAlchemistVisit(state, dwNow, ch);
 			return false;
 		}
 		SetPlayerBotAction(state, BOT_ACTION_SHOP, dwNow);
@@ -1333,7 +1959,7 @@ namespace
 			{
 				sys_err("PLAYERBOT_ALCHEMY: route failed pid=%u name=%s map=%ld from=(%ld,%ld)",
 						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY());
-				EndPlayerBotAlchemistVisit(state, dwNow);
+				EndPlayerBotAlchemistVisit(state, dwNow, ch);
 				return false;
 			}
 			return true;
@@ -1349,17 +1975,22 @@ namespace
 			return true;
 		if (ch->DragonSoul_GetActiveDeck() >= 0)
 			ch->DragonSoul_DeactivateAll();
-		if (state.bDsVisitSteps < PLAYERBOT_ALCHEMY_VISIT_MAX_STEPS && DoPlayerBotAlchemistStep(ch))
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist does more a visit, a little faster.
+		const int maxSteps = bulk ? PLAYERBOT_DS_BULK_VISIT_MAX_STEPS : PLAYERBOT_ALCHEMY_VISIT_MAX_STEPS;
+		if (state.bDsVisitSteps < maxSteps && DoPlayerBotAlchemistStep(ch))
 		{
 			++state.bDsVisitSteps;
-			state.dwNextDsActionTime = dwNow + number(2500, 5000);
+			state.dwNextDsActionTime = dwNow + (bulk ? number(PLAYERBOT_DS_BULK_STEP_MIN_MS, PLAYERBOT_DS_BULK_STEP_MAX_MS)
+					: number(2500, 5000));
 			return true;
 		}
 		EquipPlayerBotBestDragonSouls(ch);
 		sys_log(0, "PLAYERBOT_ALCHEMY: visit over pid=%u name=%s lv=%d steps=%d worn=%d gold=%lld", ch->GetPlayerID(),
 				ch->GetName(), ch->GetLevel(), (int)state.bDsVisitSteps, CountPlayerBotWornDs(ch, false),
 				(long long)ch->GetGold());
-		EndPlayerBotAlchemistVisit(state, dwNow);
+		if (bulk && state.bDsVisitSteps > 0)
+			LogPlayerBotDsProgress(ch, dwNow, "visit", true);
+		EndPlayerBotAlchemistVisit(state, dwNow, ch);
 		return false;
 	}
 
@@ -1388,6 +2019,9 @@ namespace
 				s.refineFails, s.elixirs, s.beans, s.listed, s.trips, s.corLinesBought, s.corUnitsBought, s.corYang,
 				(unsigned int)GetPlayerBotOperatorGoodsSupply(PLAYERBOT_COR_ROUGH_VNUM),
 				IsPlayerBotCorMarketPlentiful() ? 1 : 0);
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: the bulk alchemists, since the core's start.
+		sys_log(0, "PLAYERBOT_ALCHEMY: census bulk opened=%u myth_made=%u highest_made=%u capped_made=%u beans_used=%u",
+				s.bulkOpened, s.bulkMythMade, s.bulkHighestMade, s.bulkCapMade, s.bulkBeans);
 	}
 }
 

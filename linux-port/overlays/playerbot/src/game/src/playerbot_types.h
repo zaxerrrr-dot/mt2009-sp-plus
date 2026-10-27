@@ -8277,6 +8277,7 @@ namespace
 	// Alchemy and the daily Cors (playerbot_alchemy.h).
 	void NotePlayerBotDragonShardKill(LPCHARACTER ch, LPCHARACTER victim);
 	bool IsPlayerBotKeptCor(LPCHARACTER ch, LPITEM item);
+	bool IsPlayerBotKeptAlchemyGoods(LPCHARACTER ch, LPITEM item);	// MT2009_PLUS_BOT_DS_YOHARA800_V1
 	bool IsPlayerBotCorStackShort(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotCorVnum(DWORD vnum);
 	DWORD GetPlayerBotDragonSoulPrice(LPITEM item);

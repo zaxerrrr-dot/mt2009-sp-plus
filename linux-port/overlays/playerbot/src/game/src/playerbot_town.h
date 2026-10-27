@@ -4930,6 +4930,10 @@ namespace
 		// They never become private-shop stock; only units over 200 go to an NPC.
 		if (IsPlayerBotPersonalBuffPotion(item->GetVnum()))
 			return -1;
+		// MT2009_PLUS_BOT_DS_YOHARA800_V1: nor an alchemy user's Cors and Green Dragon Beans, nor a bulk
+		// alchemist's 71084/71085 (playerbot_alchemy.h, IsPlayerBotKeptAlchemyGoods) - before the operator's word.
+		if (ch && IsPlayerBotKeptAlchemyGoods(ch, item))
+			return -1;
 		// The operator's word first: stall goes up ahead of everything, the
 		// other three never do.
 		{
