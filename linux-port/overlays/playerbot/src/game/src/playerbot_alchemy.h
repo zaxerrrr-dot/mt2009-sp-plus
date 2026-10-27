@@ -115,8 +115,17 @@ namespace
 	//     PLAYERBOT_DS_BULK_STEP_MIN_MS..MAX_MS apart - a refine every couple of seconds a bot at most.
 	// The material, from 400 legendary Cors (~57 a kind): a grade try takes 2 legendary and gives 1 legendary or 1
 	// Mythic, so ~3 legendary a Mythic (~19 a kind); a step takes ~2.43 stones of the step under it, so a Mythic
-	// Highest takes ~35 Mythic Lowest - about one kind in two gets one, the others end at Mythic High or Mid and
-	// take their beans to +5/+4. A grade refine ignores the step, so no legendary stone is stepped first.
+	// Highest takes ~35 Mythic Lowest - so a kind gets one about one time in twelve, the others end at Mythic High
+	// or Mid and take their beans to +5/+4. A grade refine ignores the step, so no legendary stone is stepped first.
+	// The route was chosen by simulation (27 October 2026, 4000 bots of 400 Cors over the 7 kinds and 400 beans,
+	// the live odds; power = the worn stones' WeightTables percent summed over the 7 kinds):
+	//   every kind the Mythic way (this)                     810  (0.57 Mythic Highest a bot)
+	//   every kind the Legendary way (steps to Highest, +6)  769  (0)
+	//   Legendary under 50 stones of a kind, Mythic over     814  (0.55) - within the noise, fewer Mythic Highest
+	//   beans by best gain a bean instead of lowest first    810 vs 808 - the same
+	// so: the Mythic way everywhere, the most Mythic Highest for the same power; a kind that does not reach Highest
+	// wears what it reaches (Mythic High +5 = 120, Mid +4 = 80, or its best Legendary) - every kind's slot is filled
+	// when its work is done, and a stand-in fills it meanwhile (PlacePlayerBotDsInterim).
 	// The Alchemist of Dongan (373, npc.txt cell 569,714) serves the Yohara maps of the core (game3 hosts no first
 	// village); the progress line is PLAYERBOT_ALCHEMY: progress (every PLAYERBOT_DS_PROGRESS_LOG_MS a bot).
 	const DWORD PLAYERBOT_COR_LEGENDARY_VNUM = 50259;
@@ -1000,6 +1009,34 @@ namespace
 
 	int FindPlayerBotDsRefine(LPCHARACTER ch, int kind, LPITEM& a, LPITEM& b);
 
+	// MT2009_PLUS_BOT_DS_YOHARA800_V1: while a bulk alchemist's kind is still refined (hours), its empty deck slot
+	// holds a stand-in: the best non-Mythic stone of the kind (Rare, Ancient or Legendary) that is not in the refine
+	// at hand. A stand-in costs one stone of material (a pull-out keeps a Legendary one 20%, an Ancient or Rare one
+	// 30% - DragonSoulExtTables), about 1% of the ~104 legendary stones a Mythic Highest takes, for 30-50% of the
+	// kind's power meanwhile (a Legendary at 30-50 of the WeightTables' percent against nothing). A Mythic stone is
+	// never a stand-in: a Mythic Lowest is ~3% of a Mythic Highest's material and comes back 15% of the time; the
+	// Mythic step work of a kind is a few minutes once its legendary pairs are done. When the kind is finished,
+	// the final stone takes the slot as a strict upgrade (EquipPlayerBotBestDragonSouls).
+	bool PlacePlayerBotDsInterim(LPCHARACTER ch, int kind, const std::vector<LPITEM>& stones, LPITEM a, LPITEM b)
+	{
+		LPITEM pick = NULL;
+		for (size_t i = 0; i < stones.size(); ++i)
+		{
+			LPITEM s = stones[i];
+			if (s == a || s == b || !HasPlayerBotDsTime(s) || GetPlayerBotDsGrade(s) < PLAYERBOT_DS_MIN_WORN_GRADE ||
+					GetPlayerBotDsGrade(s) >= PLAYERBOT_DS_MYTH_GRADE || IsPlayerBotSidekickLockedItem(ch, s))
+				continue;
+			if (!pick || RankPlayerBotDs(ch, s) > RankPlayerBotDs(ch, pick))
+				pick = s;
+		}
+		if (!pick || !PlayerBotEquipItem(ch, pick))
+			return false;
+		++s_kPlayerBotAlchemyStats.equipped;
+		sys_log(0, "PLAYERBOT_ALCHEMY: wear interim pid=%u name=%s vnum=%u kind=%d", ch->GetPlayerID(), ch->GetName(),
+				pick->GetVnum(), kind);
+		return true;
+	}
+
 	// The best stone with time left of every kind into deck 0: of the rare
 	// grade and over, and only once the kind has no refine left to do (the
 	// Alchemist does it first) - but a mythic stone goes on as it is.
@@ -1026,12 +1063,17 @@ namespace
 						(!best || RankPlayerBotDs(ch, stones[i]) > RankPlayerBotDs(ch, best)))
 					best = stones[i];
 			// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist's Mythic stone waits for the kind's work too (its
-			// steps and beans; a pull-out keeps a Mythic stone 15% of the time).
+			// steps and beans; a pull-out keeps a Mythic stone 15% of the time) - but an empty slot does not wait
+			// empty: PlacePlayerBotDsInterim.
 			if (best && (GetPlayerBotDsGrade(best) < PLAYERBOT_DS_MYTH_GRADE || IsPlayerBotDsBulk(ch)))
 			{
 				LPITEM a = NULL, b = NULL;
 				if (FindPlayerBotDsRefine(ch, kind, a, b) != 0)	// PLAYERBOT_DS_WORK_NONE
+				{
+					if (!worn && IsPlayerBotDsBulk(ch) && PlacePlayerBotDsInterim(ch, kind, stones, a, b))
+						++changed;
 					continue;
+				}
 			}
 			if (worn && !HasPlayerBotDsTime(worn) && (!best || RankPlayerBotDs(ch, worn) >= RankPlayerBotDs(ch, best)))
 			{
@@ -1390,10 +1432,15 @@ namespace
 	// window wants it pulled out, which may destroy it (PullOutPlayerBotDs);
 	// a better stone made in the bag replaces it as a strict upgrade.
 	// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist's final stone of a kind - the one the beans go into and that
-	// goes on: the best grade and step, then the best Yohara lines, then the strength it already has.
+	// goes on: the most power it can reach (the WeightTables' percent at its strength cap - a Legendary Highest,
+	// cap +6 = 120, before a Mythic Mid, cap +4 = 80), then grade and step, then the Yohara lines, then the strength
+	// it already has. So the beans go to the stone the kind will wear (EquipPlayerBotBestDragonSouls ranks by the
+	// power it has).
 	long long GetPlayerBotDsFinalKey(LPCHARACTER ch, LPITEM item)
 	{
-		return ((long long)GetPlayerBotDsGrade(item) * 10 + GetPlayerBotDsStep(item)) * 100000000LL +
+		const BYTE grade = GetPlayerBotDsGrade(item), step = GetPlayerBotDsStep(item);
+		return (long long)GetPlayerBotDsWeight(grade, step, GetPlayerBotDsStrengthCap(grade, step)) * 100000000000LL +
+				((long long)grade * 10 + step) * 1000000000LL +
 				std::min<long long>(std::max<long long>(ScorePlayerBotDsYoharaLines(ch, item), 0), 999999) * 100 +
 				GetPlayerBotDsStrength(item);
 	}
@@ -1729,11 +1776,12 @@ namespace
 	}
 
 	// MT2009_PLUS_BOT_DS_YOHARA800_V1: the Alchemist of a map - a first village's, or Dongan's for the Yohara maps.
-	bool GetPlayerBotDsAlchemist(long mapIndex, playerbot_empire_rules::TPoint& out)
+	// Dongan's for a bulk alchemist only: an ordinary user keeps the first villages' Alchemists, as before.
+	bool GetPlayerBotDsAlchemist(LPCHARACTER ch, long mapIndex, playerbot_empire_rules::TPoint& out)
 	{
 		if (playerbot_empire_rules::GetAlchemist(mapIndex, out))
 			return true;
-		if (mapIndex != PLAYERBOT_MAP_SUNGMA_DONGAN)
+		if (mapIndex != PLAYERBOT_MAP_SUNGMA_DONGAN || !IsPlayerBotDsBulk(ch))
 			return false;
 		out.x = PLAYERBOT_DS_DONGAN_ALCHEMIST_X;
 		out.y = PLAYERBOT_DS_DONGAN_ALCHEMIST_Y;
@@ -1863,12 +1911,12 @@ namespace
 			}
 			if (!HasPlayerBotAlchemistWork(ch))
 				return false;
-			if (!GetPlayerBotDsAlchemist(ch->GetMapIndex(), alchemist))
+			if (!GetPlayerBotDsAlchemist(ch, ch->GetMapIndex(), alchemist))
 			{
 				long homeMap = 0, homeX = 0, homeY = 0;
 				// MT2009_PLUS_BOT_DS_YOHARA800_V1: from a Yohara map, Dongan's Alchemist (its core hosts no first
 				// village); from anywhere else the first village's, as before.
-				if (IsPlayerBotSungmaBotMap(ch->GetMapIndex()) && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SUNGMA_DONGAN))
+				if (bulk && IsPlayerBotSungmaBotMap(ch->GetMapIndex()) && IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SUNGMA_DONGAN))
 				{
 					homeMap = PLAYERBOT_MAP_SUNGMA_DONGAN;
 					homeX = PLAYERBOT_DS_DONGAN_ARRIVAL_X;
@@ -1894,7 +1942,7 @@ namespace
 			sys_log(0, "PLAYERBOT_ALCHEMY: going to the Alchemist pid=%u name=%s lv=%d gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), (long long)ch->GetGold());
 		}
-		if (!GetPlayerBotDsAlchemist(ch->GetMapIndex(), alchemist))
+		if (!GetPlayerBotDsAlchemist(ch, ch->GetMapIndex(), alchemist))
 		{
 			EndPlayerBotAlchemistVisit(state, dwNow, ch);
 			return false;
