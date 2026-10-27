@@ -1327,20 +1327,17 @@ namespace
 		if (!IsPlayerBotAngler(ch, state))
 			return false;
 #if defined(PLAYERBOT_ENGINE_MT2009)
-		// CHARACTER::fishing() here wants a level, the fishing pass (unique
-		// item 27620) worn and water in front of the rod. The level is asked
-		// here so a bot under it never walks to the water; the pass is bought
-		// and worn on the spot (EnsurePlayerBotFishingPass), because nothing
-		// sells one and refusing without it meant no bot ever fished here.
+		// CHARACTER::fishing() here wants a level and water in front of the
+		// rod. The level is asked here so a bot under it never walks to the
+		// water (MT2009_PLUS_FISHING_FREE_V1: no fishing pass any more).
 		// MT2009_PLUS_BOT_FISH_BAG_ROOM_V1: and the bag's room for the weapon
-		// the rod replaces is asked before the pass is bought.
+		// the rod replaces.
 		if (ch->GetLevel() < PLAYERBOT_FISHING_MIN_LEVEL ||
-				(!IsPlayerBotSidekickFishing(ch->GetPlayerID()) && !PlayerBotHasRodRoom(ch)) ||
-				!EnsurePlayerBotFishingPass(ch, dwNow))
+				(!IsPlayerBotSidekickFishing(ch->GetPlayerID()) && !PlayerBotHasRodRoom(ch)))
 			return false;
 #endif
 		// A trip to a village with no measured bank is a walk to nowhere: the
-		// fishing pass would refuse on arrival and the bot would stand there.
+		// bot would stand there on arrival.
 		if (GetPlayerBotFishingBank(playerbot_empire_rules::GetHomeMap(
 					(int)ch->GetEmpire(), playerbot_empire_rules::MAP_ROLE_M1)) == NULL)
 			return false;

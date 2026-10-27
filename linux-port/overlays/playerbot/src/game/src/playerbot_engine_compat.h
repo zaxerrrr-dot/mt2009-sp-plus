@@ -109,7 +109,7 @@
 #define AFF_GICHEON     AFF_SKILL_DRAGON_HELP
 #define AFF_JEUNGRYEOK  AFF_SKILL_ATTACK_UP
 
-// unique_item.h for UNIQUE_ITEM_FISHING_PASS, which fishing() insists on.
+// unique_item.h for the engine's unique item vnums.
 #include "unique_item.h"
 #include "../../common/PulseManager.h"
 

@@ -93,7 +93,7 @@ CRITICAL_NAMES = {
     "minigame_rumi", "minigame_catchking", "minigame_yutnori", "deviltower_zone", "devilcatacomb_zone",
     "razador_dungeon", "nemere_dungeon", "blue_dragon_lair", "biblioteka_wiedzy", "temple_of_the_ochao",
     "wzgorze_wukonga", "ruiny_skorpiona", "starozytna_dzungla", "spider_dungeon_2floor", "heavens_cave_escape",
-    "heavens_cave_keyquest", "check_trans_ticket", "fishing_pass_shop", "autohunt_time", "antiexp_ring",
+    "heavens_cave_keyquest", "check_trans_ticket", "autohunt_time", "antiexp_ring",
 }
 CATEGORIES = (
     ("biolog", "Biolog i zielarstwo"),
@@ -112,7 +112,7 @@ OWN_TITLES = {
     "horse_inventory": "Sakwy konia", "gm_profile": "Profil GM", "new_quest_lv19": "Skóry niedźwiedzi (poz. 19)",
     "teleport_ring": "Pierścień Teleportacji", "pony_buy": "Kupno kucyka", "horse_upgrade": "Ulepszenie konia",
     "horse_upgrade2": "Ulepszenie konia (2)", "deviltower_zone": "Wieża Demonów",
-    "fishing_pass_shop": "Sklep rybaka (Karta Wędkarska)", "collect_quest_lv85": "Biolog – Czerwony Konar (85)",
+    "collect_quest_lv85": "Biolog – Czerwony Konar (85)",
     "towarzysz": "Towarzysz (list)", "devilcatacomb_zone": "Katakumby Diabła",
     "check_trans_ticket": "Grota Wygnańców – przepustka", "heavens_cave_keyquest": "Seon-Hae – dzienna misja",
     "tanaka_ears": "Uszy Tanaki (Yonah)", "acce_costume_uriel": "Szarfy (Theowahdan)", "ah_yu_shop": "Sklep Ah-Yu",

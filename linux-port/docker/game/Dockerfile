@@ -221,7 +221,7 @@ RUN set -eux; \
     # Functions the engine has and the package's list forgot, which qc would
     # otherwise refuse (gm_profile.quest: equipping, bonus lines, stack size,
     # the item's use path).
-    # pc.open_special_shop for fishing_pass_shop (2.0.68); affect.add_new and
+    # pc.open_special_shop for labirynth (fishing_pass_shop's until MT2009_PLUS_FISHING_FREE_V1); affect.add_new and
     # affect.remove_new for the panel's speed in web_admin (2.0.76).
     # pc.is_playerbot for the Devil's Catacomb's bot branches (2.2.21).
     # affect.get_duration and pc.has_affect for the ItemShop's Auto Lowy ticket
@@ -274,8 +274,6 @@ RUN set -eux; \
     # pony_buy, horse_upgrade and horse_upgrade2 are the package's
     # stable-keeper quests with the wait for the horse taken out: twelve hours
     # for the pony and each upgrade (16 September, 2.0.56).
-    # fishing_pass_shop opens the Fisherman's special shop, the only seller
-    # of Karta Wedkarska, which no stock quest ever opened (2.0.68).
     # collect_quest_lv85 is the Biologist's red-branch row with its hand-in
     # asking for the right item: the stock quest counted 30166, the level-80
     # row's, so nobody could hand in a single 30167 (2.0.95).
@@ -407,7 +405,7 @@ RUN set -eux; \
     # ishop_v3_przedmioty is the second ItemShop's items of the big servers' list: Auto Lowy 7 / 14 days, Szklo Handlu
     # (the Dom Aukcyjny from anywhere, server-patches/szklohandlu), Buff Premium SungMa, Eliksir W. SungMa
     # (MT2009_PLUS_ITEMSHOP_V3_V8, tools/itemshop3/global/owner_decisions.py).
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone fishing_pass_shop collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -723,6 +721,23 @@ RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
  && ! find "$O" -path "$O/state" -prune -o -type f \( -name 'temple_map.*' -o -name 'hwang_introduction.*' \) -print | grep -q . \
  && ! grep -rl 'AFFECT_TEMPLE_CURSE' "$O" --exclude-dir=state | grep -q . \
  && echo "share: Temple curse quests removed ($n handlers)"
+
+# MT2009_PLUS_FISHING_FREE_V1: fishing without the Fisherman's introduction or
+# Karta Wedkarska (owner, 27 October: "Z yohary usun calkowicie quest wedkarski,
+# wraz z karta wedkarska, teraz mozna lowic od 30 poziomu kiedy sie chce i ile
+# sie chce, bez ograniczen"). The package's fishing_onboarding (the Fisherman,
+# Baek-Go, Uriel, Esencja Natury / Wody and the Oczyszczajacy Amulet Wod) loses
+# its handlers; its state table stays for the flags characters already carry.
+# fishing_quest (the catch itself) and fisher (his shop, the rod upgrade) stay.
+# The engine's fishing() asks neither the quest's flag nor the card any more
+# (server-patches/enginefixes) and apply.sh takes the card and the quest's
+# items out of the bags once.
+RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
+ && test -f "$O/state/fishing_quest" \
+ && n=$(find "$O" -path "$O/state" -prune -o -type f -name 'fishing_onboarding.*' -print | wc -l) \
+ && find "$O" -path "$O/state" -prune -o -type f -name 'fishing_onboarding.*' -exec rm -f {} + \
+ && ! find "$O" -path "$O/state" -prune -o -type f -name 'fishing_onboarding.*' -print | grep -q . \
+ && echo "share: fishing introduction removed ($n handlers)"
 
 # Costumes, mounts, pets and weapon skins come from the ItemShop only
 # (operator, 26 September 2026: players found mounts in Metin stones and

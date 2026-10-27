@@ -2089,13 +2089,6 @@ namespace
 				continue;
 			if (oldItem && IsPlayerBotSidekickPinned(ch, oldItem))
 				continue;
-#if defined(PLAYERBOT_ENGINE_MT2009)
-			// A fishing pass the fishing asked for a moment ago stays on; see
-			// IsPlayerBotFishingPassHeld for the loop that taking it off made.
-			if (oldItem && oldItem->GetVnum() == UNIQUE_ITEM_FISHING_PASS &&
-					IsPlayerBotFishingPassHeld(ch->GetPlayerID(), dwNow))
-				continue;
-#endif
 			// A ring or a glove on its clock comes off only through the
 			// unique-slot pass, which knows whether the bot is hunting.
 			// MT2009_PLUS_BOT_RANK_GLOVE_V1: and so does the Prophecy King's

@@ -237,8 +237,8 @@ namespace
 
 		// A free slot if there is one; otherwise the one whose unique pays a bot
 		// nothing - the Prophet King's glove or symbol, the horse's tail - but
-		// never a ring or glove already on its clock, a fishing pass the session
-		// has just asked for, or what the engine will not let go of.
+		// never a ring or glove already on its clock, or what the engine will not
+		// let go of.
 		LPITEM displaced = NULL;
 		if (ch->GetWear(WEAR_UNIQUE1) && ch->GetWear(WEAR_UNIQUE2))
 		{
@@ -257,11 +257,6 @@ namespace
 						!(pass_ == 1 && IsPlayerBotExpRing(worn->GetVnum())) &&
 						!(pass_ == 2 && IsPlayerBotThiefGlove(worn->GetVnum())))
 					continue;
-#if defined(PLAYERBOT_ENGINE_MT2009)
-				if (worn->GetVnum() == UNIQUE_ITEM_FISHING_PASS &&
-						IsPlayerBotFishingPassHeld(ch->GetPlayerID(), dwNow))
-					continue;
-#endif
 				displaced = worn;
 			}
 			if (!displaced || ch->GetEmptyInventory(displaced->GetSize()) < 0 ||

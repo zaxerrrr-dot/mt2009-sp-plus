@@ -1431,94 +1431,10 @@ namespace
 		return true;
 	}
 
-#if defined(PLAYERBOT_ENGINE_MT2009)
-	// CHARACTER::fishing() on this engine also insists on the fishing pass
-	// (unique item 27620, a day of real time) being worn, and nothing sells
-	// one: it comes out of the package's fishing quest, which a bot cannot
-	// talk through. Until 2.0.16 the trip rule simply refused a bot without
-	// it, so no bot on an mt2009 world ever fished ("Boty nie lowia ryb",
-	// sizowski, 12 September). A bot of fifty that is due for a trip pays for
-	// one the way it pays for the Forgetting Scroll - created on the spot and
-	// worn at once - and buys the next when this one has run out. A pass that
-	// could not be worn (EquipItem refuses within 1.5 s of an attack) waits
-	// in the bag and is worn on the next ask rather than bought again.
-	bool EnsurePlayerBotFishingPass(LPCHARACTER ch, DWORD dwNow)
-	{
-		if (!ch || IsPlayerBotGearFrozen(ch))
-			return false;
-		// Asked for now: the equipment pass leaves a worn pass alone for a while
-		// (IsPlayerBotFishingPassHeld).
-		s_mapPlayerBotFishingPassAskedAt[ch->GetPlayerID()] = dwNow;
-		if (ch->IsEquipUniqueItem(UNIQUE_ITEM_FISHING_PASS))
-			return true;
-		LPITEM pass = NULL;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && !pass; ++cell)
-		{
-			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && item->GetVnum() == UNIQUE_ITEM_FISHING_PASS)
-				pass = item;
-		}
-		if (!pass)
-		{
-			// One card a trip for a companion sent fishing: the owner's, never
-			// a bought one.
-			if (IsPlayerBotSidekickFishing(ch->GetPlayerID()))
-				return false;
-			if (ch->GetGold() < (int)(PLAYERBOT_FISHING_PASS_PRICE + GetPlayerBotReservedGold(ch)))
-				return false;
-			// AutoGiveItem drops what the bag cannot take at the bot's feet.
-			if (ch->GetEmptyInventory(1) < 0)
-				return false;
-			pass = ch->AutoGiveItem(UNIQUE_ITEM_FISHING_PASS, 1, -1, false);
-			// On the ground is not in the bag (IsPlayerBotWornItemSound).
-			if (!pass || pass->GetOwner() != ch || pass->GetWindow() != INVENTORY)
-				return false;
-			PlayerBotChangeGold(ch, -(int)PLAYERBOT_FISHING_PASS_PRICE);
-			sys_log(0, "PLAYERBOT_FISHING: fishing pass bought pid=%u name=%s price=%u gold=%lld",
-					ch->GetPlayerID(), ch->GetName(), PLAYERBOT_FISHING_PASS_PRICE, (long long)ch->GetGold());
-		}
-		// Both unique slots taken: FindEquipCell answers WEAR_UNIQUE2 and
-		// EquipItem refuses the occupied cell, so the pass stayed in the bag
-		// for good and the next ask was an hour away - every FISHING line of
-		// seban latino's 1013-bot world was "not worn yet" and nobody fished.
-		// One slot is freed the way the unique-slots pass frees one for a
-		// ring: what pays the bot nothing first, a ring or glove on its clock
-		// last (it comes off at the water anyway), never what the engine
-		// will not let go of, nor what a companion's owner put on.
-		if (ch->GetWear(WEAR_UNIQUE1) && ch->GetWear(WEAR_UNIQUE2))
-		{
-			LPITEM displaced = NULL;
-			for (int pass_ = 0; pass_ < 2 && !displaced; ++pass_)
-				for (int wear = WEAR_UNIQUE1; wear <= WEAR_UNIQUE2 && !displaced; ++wear)
-				{
-					LPITEM worn = ch->GetWear(wear);
-					if (!worn || !IsPlayerBotWornItemSound(ch, worn, wear) ||
-							IS_SET(worn->GetFlag(), ITEM_FLAG_IRREMOVABLE) || IsPlayerBotSidekickPinned(ch, worn))
-						continue;
-					// MT2009_PLUS_BOT_RANK_GLOVE_V1: the Prophecy King's Glove
-					// or Symbol at a negative rank goes last too.
-					if (pass_ == 0 && (IsPlayerBotTimedUnique(worn->GetVnum()) ||
-							(IsPlayerBotRankUnique(worn->GetVnum()) && ch->GetRealAlignment() < 0)))
-						continue;
-					displaced = worn;
-				}
-			if (displaced && ch->GetEmptyInventory(displaced->GetSize()) >= 0 &&
-					ch->UnequipItem(displaced))
-				sys_log(0, "PLAYERBOT_FISHING: unique taken off for the pass pid=%u name=%s vnum=%u",
-						ch->GetPlayerID(), ch->GetName(), displaced->GetVnum());
-		}
-		if (!ch->EquipItem(pass))
-		{
-			PlayerBotLogThrottled("fishing_pass_wear", dwNow,
-					"PLAYERBOT_FISHING: fishing pass in the bag but not worn yet pid=%u name=%s unique1=%u unique2=%u",
-					ch->GetPlayerID(), ch->GetName(),
-					ch->GetWear(WEAR_UNIQUE1) ? ch->GetWear(WEAR_UNIQUE1)->GetVnum() : 0,
-					ch->GetWear(WEAR_UNIQUE2) ? ch->GetWear(WEAR_UNIQUE2)->GetVnum() : 0);
-			return false;
-		}
-		return true;
-	}
-#endif
+	// MT2009_PLUS_FISHING_FREE_V1: CHARACTER::fishing() asks no fishing pass (Karta
+	// Wedkarska, 27620) and no Fisherman's introduction any more - fishing is free
+	// from level thirty for everybody, bots included - so EnsurePlayerBotFishingPass,
+	// which bought and wore one for every angler, is gone with it.
 
 	bool RestockPlayerBotTackle(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -1622,13 +1538,11 @@ namespace
 			if (WaitPlayerBotRodFromCounter(ch, state, dwNow))
 				return false;
 #if defined(PLAYERBOT_ENGINE_MT2009)
-			// This engine's fishing() wants a level and the pass worn; a session
-			// begun without them walked to the stand and stood there two minutes
-			// to "never_cast" (measured on the test world the day the pass was
-			// added). Under the floor there is nothing to wait for; without the
-			// gold for a pass the next ask is in an hour. The floor is the
-			// engine's own - playerbotify.py moves fishing() to the same number,
-			// so this gate and the engine can never disagree.
+			// This engine's fishing() wants a level; a session begun under it
+			// walked to the stand and stood there two minutes to "never_cast".
+			// The floor is the engine's own - playerbotify.py moves fishing() to
+			// the same number, so this gate and the engine can never disagree.
+			// MT2009_PLUS_FISHING_FREE_V1: no pass is bought or worn any more.
 			if (ch->GetLevel() < PLAYERBOT_FISHING_MIN_LEVEL)
 				return false;
 			// MT2009_PLUS_BOT_FISH_BAG_ROOM_V1: no room for the weapon (and its
@@ -1639,11 +1553,6 @@ namespace
 				state.dwNextFishingCheckTime = dwNow + PLAYERBOT_FISHING_NO_ROOM_WAIT_MS;
 				sys_log(0, "PLAYERBOT_FISHING: no bag room for the rod pid=%u name=%s free=%d",
 						ch->GetPlayerID(), ch->GetName(), CountPlayerBotFreeInventoryCells(ch));
-				return false;
-			}
-			if (!EnsurePlayerBotFishingPass(ch, dwNow))
-			{
-				state.dwNextFishingCheckTime = dwNow + 60 * 60 * 1000;
 				return false;
 			}
 #endif
@@ -1996,17 +1905,11 @@ namespace
 					waterX, waterY);
 			ch->SetRotationToXY(waterX, waterY != 0 ? waterY : ch->GetY());
 #if defined(PLAYERBOT_ENGINE_MT2009)
-			// The onboarding quest's flag is what fishing() checks; a bot never
-			// talks to the fisherman, so it is set here once.
+			// MT2009_PLUS_FISHING_FREE_V1: fishing() no longer asks the Fisherman's
+			// introduction nor the pass. The old introduction flag is still set once:
+			// it is the bot's "has fished" mark (PlayerBotHasFishedBefore).
 			if (ch->GetQuestFlag("fishing_onboarding.completed") < 1)
 				ch->SetQuestFlag("fishing_onboarding.completed", 1);
-			// The pass again on every cast: the ask refreshes the hold that keeps
-			// the equipment and unique-slot passes off it for the session, and a
-			// pass that came off is put back rather than cast without - fishing()
-			// answered "You need to have a fishing pass" 730 times in two minutes
-			// and 24 sessions ended never_cast with a rod and bait (17 September).
-			if (!EnsurePlayerBotFishingPass(ch, dwNow))
-				return EndPlayerBotFishingSession(ch, state, dwNow, "no_pass");
 			ch->fishing();
 			if (!ch->m_pkPreFishingEvent)
 			{
@@ -2016,10 +1919,8 @@ namespace
 				LPITEM rod = ch->GetWear(WEAR_WEAPON);
 				LPSECTREE tree = ch->GetSectree();
 				PlayerBotLogThrottled("fishing_refused", dwNow,
-						"PLAYERBOT_FISHING: fishing() refused pid=%u name=%s level=%d map=%ld pass=%d onboarding=%d rod=%d bait_socket=%ld water=%d blocked=%d",
+						"PLAYERBOT_FISHING: fishing() refused pid=%u name=%s level=%d map=%ld rod=%d bait_socket=%ld water=%d blocked=%d",
 						ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), ch->GetMapIndex(),
-						ch->IsEquipUniqueItem(UNIQUE_ITEM_FISHING_PASS) ? 1 : 0,
-						ch->GetQuestFlag("fishing_onboarding.completed"),
 						(rod && rod->GetType() == ITEM_ROD) ? 1 : 0,
 						rod ? rod->GetSocket(2) : -1L,
 						(tree && tree->IsNearAttr(ch->GetX(), ch->GetY(), ATTR_WATER)) ? 1 : 0,

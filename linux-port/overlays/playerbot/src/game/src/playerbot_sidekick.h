@@ -639,7 +639,7 @@ namespace
 		// mnie"; StartPlayerBotSidekickAlone).
 		bool bAlone;
 		// Sent fishing ("Na ryby"; SendPlayerBotSidekickFishing): at the water
-		// for as long as its Fishing Card lasts, and since when.
+		// until it is called back, and since when.
 		bool bFishing;
 		DWORD dwFishingSince;
 		// MT2009_PLUS_SIDEKICK_REDRESS_V1: when it is shown to its viewers again
@@ -5295,21 +5295,6 @@ namespace
 		return sk;
 	}
 
-	bool PlayerBotSidekickHasFishingPass(LPCHARACTER sk)
-	{
-		if (!sk)
-			return false;
-		if (sk->IsEquipUniqueItem(UNIQUE_ITEM_FISHING_PASS))
-			return true;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
-		{
-			LPITEM item = sk->GetInventoryItem(cell);
-			if (item && item->GetVnum() == UNIQUE_ITEM_FISHING_PASS)
-				return true;
-		}
-		return false;
-	}
-
 	bool IsPlayerBotSidekickFishing(DWORD pid)
 	{
 		std::map<DWORD, TPlayerBotSidekickRuntime>::const_iterator it = s_mapPlayerBotSidekickRuntime.find(pid);
@@ -5317,11 +5302,10 @@ namespace
 	}
 
 	// "Na ryby" (the operator, 28 September: "towarzysz ... na lowienie ryb i
-	// lowi wtedy ryby przez jeden karnet rybacki"). It goes to the water with
-	// the Fishing Card it carries - the owner hands one over through its bag
-	// window; it buys none for this - and fishes as an angler bot does
-	// (ManagePlayerBotFishing) until the card runs out, then comes back.
-	// Called back earlier with "Przywolaj". The bank is the one of the map it
+	// lowi wtedy ryby przez jeden karnet rybacki"). MT2009_PLUS_FISHING_FREE_V1:
+	// fishing needs no card any more (owner, 27 October), so it goes to the
+	// water and fishes as an angler bot does (ManagePlayerBotFishing) until it
+	// is called back with "Przywolaj". The bank is the one of the map it
 	// stands on, or of its kingdom's first village when this core hosts it.
 	void SendPlayerBotSidekickFishing(LPCHARACTER owner, TPlayerBotSidekick& rec, DWORD dwNow)
 	{
@@ -5345,11 +5329,6 @@ namespace
 			char text[128];
 			snprintf(text, sizeof(text), "Na ryby potrzebuje %d poziomu.", PLAYERBOT_FISHING_MIN_LEVEL);
 			SayPlayerBotSidekick(owner, text);
-			return;
-		}
-		if (!PlayerBotSidekickHasFishingPass(sk))
-		{
-			SayPlayerBotSidekick(owner, "Daj mi Karte Wedkarska (w oknie mojej torby) - bez niej nie moge lowic.");
 			return;
 		}
 		if (!GetPlayerBotFishingBank(sk->GetMapIndex()))
@@ -5378,16 +5357,19 @@ namespace
 		sk->SetVictim(NULL);
 		state->bFishingSession = false;
 		state->dwNextFishingCheckTime = 0;
-		SayPlayerBotSidekick(owner, "Ide na ryby. Lowie, dopoki Karta Wedkarska nie wygasnie - zawolaj mnie (Przywolaj), jesli bede potrzebny.");
+		SayPlayerBotSidekick(owner, "Ide na ryby. Lowie, dopoki mnie nie zawolasz (Przywolaj).");
 		sys_log(0, "PLAYERBOT_SIDEKICK: sent fishing owner=%u pid=%u map=%ld", rec.dwOwnerPID, rec.dwSidekickPID,
 				sk->GetMapIndex());
 	}
 
-	// At the water: the next session straight after the last, and home when
-	// the card is gone. True when it came back this tick.
+	// At the water: the next session straight after the last, until it is
+	// called back (MT2009_PLUS_FISHING_FREE_V1: no card runs out any more).
+	// True when it came back this tick - which it no longer does on its own.
 	bool KeepPlayerBotSidekickFishing(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSidekick& rec,
 			TPlayerBotSidekickRuntime& rt, DWORD dwNow)
 	{
+		(void)ch;
+		(void)dwNow;
 		if (!rt.bFishing)
 			return false;
 		if (rec.bMode == PLAYERBOT_SIDEKICK_FOLLOW)
@@ -5397,24 +5379,7 @@ namespace
 		}
 		if (!state.bFishingSession)
 			state.dwNextFishingCheckTime = 0;
-		// A card that expired is taken out of the bag by the engine; the first
-		// half minute is the walk to the bank with the card still in the bag.
-		if (PlayerBotSidekickHasFishingPass(ch) || dwNow - rt.dwFishingSince < 30000)
-			return false;
-		rt.bFishing = false;
-		sys_log(0, "PLAYERBOT_SIDEKICK: fishing over, the card ran out owner=%u pid=%u", rec.dwOwnerPID,
-				rec.dwSidekickPID);
-		LPCHARACTER owner = GetPlayerBotSidekickOwnerChar(rec.dwOwnerPID);
-		if (owner)
-		{
-			TellPlayerBotSidekick(owner, PLAYERBOT_SIDEKICK_NOTICE_FISHING, "Karta Wedkarska sie skonczyla - wracam do ciebie.");
-			SummonPlayerBotSidekick(owner, rec, dwNow);
-			return true;
-		}
-		rec.bMode = PLAYERBOT_SIDEKICK_FOLLOW;
-		DBManager::instance().Query("UPDATE player.playerbot_sidekick SET mode=0 WHERE owner_pid=%u", rec.dwOwnerPID);
-		state.bFishingSession = false;
-		return true;
+		return false;
 	}
 
 	// "Czekaj tutaj": it stays where its owner stands now - put there first
