@@ -6,7 +6,8 @@
 --     Sztandar Czaszki (70401) za ka¿d¹ wspinaczkê, sam albo z dru¿yn¹ (bez wymogu dru¿yny); Wyjœcie (10126) wraca
 --     do Seoganland; Handlarka (9014) stoi w hali i sprzedaje mikstury wie¿y (sklep 9552, yohara_items_d4.sql);
 --   * piêtro = trzy etapy: 1. fale potworów (losowo 2-4) - zabij wszystkie, 4 min; 2. jedna z siedmiu misji
---     (losowo): kamieñ demonów z ³ucznikami, prawid³owy kamieñ metin, unikanie ataków (Niszczyciele wybuchaj¹:
+--     (z worka - ka¿da po razie, nigdy dwa razy z rzêdu, pick_task): kamieñ demonów z ³ucznikami, prawid³owy
+--     kamieñ metin, unikanie ataków (Niszczyciele wybuchaj¹:
 --     pierwszy wybuch zostawia 1% P¯, drugi zabija), szachy potworów, zagadkowy klucz, pieczêcie, kl¹twa z
 --     antidotum; 3. fale (4 + piêtro/10) i boss piêtra - 8 min, co 20 s ga³êzie z ziemi (pêtaj¹; na 10., 20. ...
 --     50. piêtrze podwójne obra¿enia); po bossie schody i portal na nastêpne piêtro - wspinaczka trwa, póki
@@ -375,8 +376,55 @@ quest wieza_sung_mahi begin
 				d.setf("wave_every", 15)
 				d.notice("Piêtro "..f..", etap 3: pokonaj fale potworów, a¿ pojawi siê boss!")
 			else
-				wieza_sung_mahi.start_task(number(1, 7))
+				wieza_sung_mahi.start_task(wieza_sung_mahi.pick_task())
 			end
+		end
+
+		-- MT2009_PLUS_SMH_TOWER_FIX_V1 (w³aœciciel 27.10: "Ci¹gle losowanie metek z ³ucznikami albo totemy ... po 10
+		-- piêtrze nie ma nic innego"): misja 2. etapu losowana z worka - wszystkie siedem misji (kamieñ demonów z
+		-- ³ucznikami, prawid³owy kamieñ metin, unikanie ataków, szachownica, zagadkowy klucz, pieczêcie, kl¹twa z
+		-- antidotum) wypada po razie, zanim któraœ wróci, i nigdy ta sama dwa razy z rzêdu. Dot¹d number(1, 7) przy
+		-- ka¿dym piêtrze - przy jednym piêtrze na wspinaczkê te same misje mog³y wypadaæ raz po raz. Worek (tk_used -
+		-- bity misji, które ju¿ by³y; tk_last - ostatnia) trzyma instancja, a przy ka¿dym losowaniu zapisuje siê te¿
+		-- u graczy wspinaczki, wiêc przechodzi na nastêpn¹ wspinaczkê (start: worek przywódcy).
+		function pick_task()
+			local bits = {1, 2, 4, 8, 16, 32, 64}
+			local n = table.getn(bits)
+			local used = d.getf("tk_used")
+			local last = d.getf("tk_last")
+			local pool = {}
+			for t = 1, n do
+				if math.mod(math.floor(used / bits[t]), 2) == 0 and t ~= last then
+					table.insert(pool, t)
+				end
+			end
+			if table.getn(pool) == 0 then
+				used = 0
+				for t = 1, n do
+					if t ~= last then
+						table.insert(pool, t)
+					end
+				end
+			end
+			local t = pool[number(1, table.getn(pool))]
+			if math.mod(math.floor(used / bits[t]), 2) == 0 then
+				used = used + bits[t]
+			end
+			d.setf("tk_used", used)
+			d.setf("tk_last", t)
+			local qn = "wieza_sung_mahi"
+			for i = 1, 8 do
+				local pid = d.getf("p"..i)
+				if pid > 0 then
+					q.begin_other_pc_block(pid)
+					if pc.get_player_id() == pid and wieza_sung_mahi.inside() then
+						pc.setf(qn, "tk_used", used)
+						pc.setf(qn, "tk_last", t)
+					end
+					q.end_other_pc_block()
+				end
+			end
+			return t
 		end
 
 		-- 2. etap: siedem misji (wiki)
@@ -638,7 +686,14 @@ quest wieza_sung_mahi begin
 		end
 
 		-- hala: portal wie¿y - wybór piêtra
+		-- MT2009_PLUS_SMH_TOWER_FIX_V1 (w³aœciciel 27.10: "Handlarka/Przepustka nie dzia³a"): rozmowa portalu jest
+		-- funkcj¹ (enter_dialog) - tê sam¹ rozmowê otwiera Sztandar Czaszki u¿yty w hali (dot¹d mówi³ tylko "podejdŸ do
+		-- portalu wie¿y" i nic nie robi³); sztandar schodzi przed przeniesieniem i wraca, gdy wie¿a nie przyjmie.
 		when 4020.chat."Wie¿a Sung Mahi" with pc.get_map_index() == 386 begin
+			wieza_sung_mahi.enter_dialog()
+		end
+
+		function enter_dialog()
 			local c = wieza_sung_mahi.cfg()
 			local best = wieza_sung_mahi.best_floor()
 			local top = math.min(best + 1, c.max_floor)
@@ -649,58 +704,20 @@ quest wieza_sung_mahi begin
 			say("")
 			say_reward("Ukoñczone w tym sezonie: "..best.." / "..c.max_floor..".")
 			say_reward("Wspinaczka: 1 Sztandar Czaszki (masz: "..pc.count_item(c.banner)..").")
-			local s = select("Piêtro "..top, "Wybierz piêtro", "Moje czasy", "Nie teraz")
+			local s = select("Piêtro "..top.." (nastêpne)", "Wybierz piêtro", "Moje czasy", "Nie teraz")
 			if s == 4 then
 				return
 			end
 			if s == 3 then
-				say_title(mob_name(4020)..":")
-				local any = false
-				for f = 1, best do
-					if pc.getqf("ts"..f) == wieza_sung_mahi.season() and pc.getqf("t"..f) > 0 then
-						say("Piêtro "..f..": "..wieza_sung_mahi.fmt_time(pc.getqf("t"..f)))
-						any = true
-					end
-				end
-				if not any then
-					say("W tym sezonie nie ukoñczy³eœ jeszcze piêtra.")
-				end
+				wieza_sung_mahi.show_times(best)
 				return
 			end
 			local f = top
 			if s == 2 then
-				-- MT2009_PLUS_SMH_FLOORS_V1: wybór z listy (dziesi¹tki, potem piêtro) zamiast wpisywania numeru -
-				-- ka¿de ukoñczone piêtro i nastêpne do zdobycia
-				local tens = {}
-				for b = 1, math.ceil(top / 10) do
-					table.insert(tens, "Piêtra "..(b * 10 - 9).."-"..math.min(b * 10, top))
-				end
-				table.insert(tens, "Nie teraz")
-				local b = 1
-				if top > 10 then
-					say_title(mob_name(4020)..":")
-					say("Wybierz piêtra (ukoñczone: "..best..").")
-					b = select_table(tens)
-					if b >= table.getn(tens) then
-						return
-					end
-				end
-				local list = {}
-				for n = b * 10 - 9, math.min(b * 10, top) do
-					if n <= best then
-						table.insert(list, "Piêtro "..n.." (ukoñczone)")
-					else
-						table.insert(list, "Piêtro "..n.." (nowe)")
-					end
-				end
-				table.insert(list, "Nie teraz")
-				say_title(mob_name(4020)..":")
-				say("Na które piêtro chcesz wejœæ?")
-				local k = select_table(list)
-				if k >= table.getn(list) then
+				f = wieza_sung_mahi.choose_floor(best, top)
+				if f < 1 then
 					return
 				end
-				f = b * 10 - 10 + k
 			end
 			if party.is_party() and not party.is_leader() and not wieza_sung_mahi.bot_leads() then
 				say_title(mob_name(4020)..":")
@@ -710,6 +727,9 @@ quest wieza_sung_mahi begin
 			if pc.count_item(c.banner) < 1 and not pc.is_gm() then
 				say_title(mob_name(4020)..":")
 				say("Potrzebujesz Sztandaru Czaszki.")
+				say("Wypada z Gnolla Kapitana, Ahtrina Kapitana i Wodza")
+				say("Wojennego Schronienia, jest te¿ w ItemShopie.")
+				say("Za 1., 11., 21., 31. i 41. piêtro dostajesz kolejne.")
 				return
 			end
 			if not pc.can_warp() or pc.is_busy() then
@@ -748,14 +768,115 @@ quest wieza_sung_mahi begin
 				return
 			end
 			pc.setqf("start_floor", f)
+			local paid = false
+			if not pc.is_gm() then
+				pc.remove_item(c.banner, 1)
+				paid = true
+			end
 			local x, y = (c.base_x + c.room_a[1]) * 100, (c.base_y + c.room_a[2]) * 100
 			if d.new_jump_pids(c.map, x, y, humans) < 0 then
+				if paid then
+					pc.give_item2(c.banner, 1)
+				end
 				say_title(mob_name(4020)..":")
 				say("Wie¿a nie przyjmie was teraz. Spróbuj za chwilê.")
 				return
 			end
-			if not pc.is_gm() then
-				pc.remove_item(c.banner, 1)
+		end
+
+		-- MT2009_PLUS_SMH_TOWER_FIX_V1 (w³aœciciel 27.10: "le uk³ada wybór piêter"): okno zadania klienta mieœci 8
+		-- przycisków, d³u¿sz¹ listê dzieli na strony przyciskami wbitymi w œrodek listy - 10 piêter + "Nie teraz"
+		-- rozje¿d¿a³o siê. Teraz: najpierw dziesi¹tka piêter (najwy¿ej 5 + "Nie teraz"), potem po 5 piêter rosn¹co
+		-- z "<< Piêtra a-b" na górze i "Piêtra c-d >>" na dole - nigdy wiêcej ni¿ 8 przycisków. Zwraca piêtro albo 0.
+		function choose_floor(best, top)
+			local lo, hi = 1, top
+			if top > 10 then
+				local nb = math.ceil(top / 10)
+				local tens = {}
+				for b = 1, nb do
+					local a, z = b * 10 - 9, math.min(b * 10, top)
+					if a == z then
+						table.insert(tens, "Piêtro "..a)
+					else
+						table.insert(tens, "Piêtra "..a.." - "..z)
+					end
+				end
+				table.insert(tens, "Nie teraz")
+				say_title(mob_name(4020)..":")
+				say("Ukoñczone w tym sezonie: "..best..".")
+				say("Wybierz dziesi¹tkê piêter:")
+				local b = select_table(tens)
+				if b == nil or b < 1 or b > nb then
+					return 0
+				end
+				lo, hi = b * 10 - 9, math.min(b * 10, top)
+			end
+			local from = lo
+			while true do
+				local to = math.min(from + 4, hi)
+				local list, val = {}, {}
+				if from > lo then
+					table.insert(list, "<< Piêtra "..math.max(lo, from - 5).." - "..(from - 1))
+					table.insert(val, -1)
+				end
+				for n = from, to do
+					if n <= best then
+						table.insert(list, "Piêtro "..n.." - ukoñczone")
+					else
+						table.insert(list, "Piêtro "..n.." - nowe")
+					end
+					table.insert(val, n)
+				end
+				if to < hi then
+					table.insert(list, "Piêtra "..(to + 1).." - "..math.min(to + 5, hi).." >>")
+					table.insert(val, -2)
+				end
+				table.insert(list, "Nie teraz")
+				table.insert(val, 0)
+				say_title(mob_name(4020)..":")
+				say("Na które piêtro chcesz wejœæ?")
+				local k = select_table(list)
+				local v = val[k]
+				if v == nil or v == 0 then
+					return 0
+				end
+				if v == -1 then
+					from = math.max(lo, from - 5)
+				elseif v == -2 then
+					from = to + 1
+				else
+					return v
+				end
+			end
+		end
+
+		-- MT2009_PLUS_SMH_TOWER_FIX_V1: "Moje czasy" - po cztery piêtra w wierszu (by³o: wiersz na piêtro, do 50
+		-- wierszy w jednym oknie)
+		function show_times(best)
+			local season = wieza_sung_mahi.season()
+			say_title(mob_name(4020)..":")
+			say("Najlepsze czasy piêter w tym sezonie (min:s):")
+			local line, n, any = "", 0, false
+			for f = 1, best do
+				if pc.getqf("ts"..f) == season and pc.getqf("t"..f) > 0 then
+					local cell = f..". "..wieza_sung_mahi.fmt_time(pc.getqf("t"..f))
+					if n > 0 then
+						line = line.."     "
+					end
+					line = line..cell
+					n = n + 1
+					any = true
+					if n == 4 then
+						say(line)
+						line, n = "", 0
+					end
+				end
+			end
+			if n > 0 then
+				say(line)
+			end
+			if not any then
+				say("W tym sezonie nie ukoñczy³eœ jeszcze piêtra.")
 			end
 		end
 
@@ -780,6 +901,16 @@ quest wieza_sung_mahi begin
 					f = 1
 				end
 				d.setf("init", 1)
+				-- MT2009_PLUS_SMH_TOWER_FIX_V1: worek misji 2. etapu przywódcy (pick_task)
+				local used, last = pc.getqf("tk_used"), pc.getqf("tk_last")
+				if used < 0 or used > 127 then
+					used = 0
+				end
+				if last < 0 or last > 7 then
+					last = 0
+				end
+				d.setf("tk_used", used)
+				d.setf("tk_last", last)
 				d.setf("start", now)
 				d.setf("floor", f - 1)
 				d.setf("mt2009_keep_until", now + 3 * 3600)
@@ -1258,20 +1389,22 @@ quest wieza_sung_mahi begin
 		-- s³u¿y, i prowadzi do hali wie¿y (te same warunki co Wejœcie Piekielnej Wie¿y), sam nie znika.
 		when 70401.use begin
 			local c = wieza_sung_mahi.cfg()
+			if pc.get_map_index() == c.hall_map then
+				-- MT2009_PLUS_SMH_TOWER_FIX_V1: w hali sztandar otwiera wybór piêtra portalu (dot¹d tylko "podejdŸ do
+				-- portalu wie¿y", wiêc sztandar "nie dzia³a³")
+				wieza_sung_mahi.enter_dialog()
+				return
+			end
 			say_title(item_name(c.banner)..":")
 			if wieza_sung_mahi.inside() then
 				say("Wspinaczka ju¿ trwa - sztandar powiewa nad tob¹.")
 				return
 			end
 			say("Pod tym sztandarem mo¿esz wejœæ do Piekielnej Wie¿y")
-			say("Sunga Mahi. Ka¿da wspinaczka (portal w hali wie¿y)")
-			say("zabiera jeden sztandar.")
+			say("Sunga Mahi. Ka¿da wspinaczka (portal w hali wie¿y")
+			say("albo sztandar u¿yty w hali) zabiera jeden sztandar.")
 			say("")
 			say_reward("Od poziomu "..c.min_level.." i 1. Poziomu Czempiona.")
-			if pc.get_map_index() == c.hall_map then
-				say("Jesteœ w hali - podejdŸ do portalu wie¿y.")
-				return
-			end
 			if select("Przenieœ mnie do hali wie¿y", "Nie teraz") ~= 1 then
 				return
 			end
