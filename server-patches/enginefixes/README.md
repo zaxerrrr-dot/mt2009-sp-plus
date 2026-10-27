@@ -91,3 +91,33 @@ właścicielowi, jak w `Reward()`); doświadczenie, drop, karty, owoce rang i Pr
   obróconemu budynkowi wystawać poza teren). Budynek bez obrotu (`zRot` = 0) idzie dokładnie starą drogą
   (`ForAttrRegion`), komórka w komórkę. Po restarcie `FinalizeBoot` pokazuje każdy budynek nową metodą,
   więc `Destroy` zdejmuje te same komórki, które `Show` oznaczył. Klient bez zmian.
+
+## Kamienie Metin i żyły z przedmiotów (MT2009_PLUS_SUMMON_STONE_V1, linia Yohary)
+
+- `MT2009_PLUS_SUMMON_STONE_V1` (helpers, dungeon, spawn) (`char_item.cpp`): te same trzy zmiany co w 2.38.1
+  (gałąź 2.x, commit e00d1c1c). Dotyczą wpisów `mob` z `special_item_group`, czyli potworów przywołanych z
+  przedmiotu (`ITEM_GIFTBOX`: 71080–71082 Kamień Metin (Słaby/Średni/Silny), także z pudełek Dzieci Kwiaty
+  83023–83027; 71057–71067 zwoje przywołania żył i Sterty Muszli). Rodzaj potwora: kamień = `mob_proto` typu
+  `CHAR_TYPE_STONE`, żyła = `mining::IsVeinOfOre` (na Yoharze także żyły jadeitu 30310–30313).
+  - **spawn**: po `SpawnMob` kamień albo żyła dostaje własne zdarzenie (`mt2009_summon_lifetime_event`, VID + rasa,
+    bez wskaźnika) i po 15 minutach jest usuwana (`M2_DESTROY_CHARACTER`), o ile wciąż istnieje i żyje. Żyle
+    anulowany jest losowy koniec silnika po 7–15 minutach (`kill_ore_load_event`), więc stoi dokładnie 15 minut;
+    żyły z respawnu zachowują 7–15 minut.
+  - **dungeon**: przed otwarciem pudełka – jeśli grupa (także zagnieżdżone `s<grupa>`) przywołuje kamień albo
+    żyłę, a postać jest w lochu (`GetDungeon()`, indeks mapy ≥ 10000 albo wspólna mapa lochu), przedmiot się nie
+    otwiera i nie znika: „Nie mozesz przywolac kamienia Metin w lochu.” / „Nie mozesz przywolac zyly w lochu.”.
+    Wspólne mapy lochów: lista `Mt2009PlusDungeonNoFade` (66 – parter Wieży Demonów, 208, 216, 351, 352,
+    363–366) i na Yoharze dodatkowo Jaskinie Gnolli (382–384, wspólne piętra labiryntu) oraz hala wejściowa
+    Wieży Sung Mahi (386). Pozostałe lochy Yohary (Hydra 367, Erebu, Meley, Atlantyda, wieża 387, Świątynia
+    Węży, Głębie, PB / SZC) są wyłącznie instancjami (≥ 10000). Drop w lochach dalej celowo nie patrzy na
+    różnicę poziomów.
+- `MT2009_PLUS_SUMMON_STONE_V1` (quest lifetime) (`char_item.cpp`) i (quest decl, quest, quest table)
+  (`questlua_global.cpp`): dwie funkcje questów dla przedmiotów Yohary, które stawiają kamień albo żyłę przez
+  `spawn_mob`:
+  - `set_summon_lifetime(vid)` – to samo 15-minutowe zdarzenie dla kamienia albo żyły o tym VID (żyle anuluje
+    losowe 7–15 minut); dla innego potwora nic nie robi i zwraca `false`;
+  - `summon_blocked_here()` – `true` w lochu według tej samej reguły co pudełka.
+  Używają ich `yohara_mapy4.quest` (72339 Kamień Metin z Yohara) i `yohara_mapy2.quest` (72354 Przenośna Żyła
+  Jadeitu): odmowa w lochu przed `spawn_mob`, `set_summon_lifetime(vid)` zaraz po nim.
+- Kamienie z respawnu, kamienie lochów (`d.spawn_mob`), żyły botów, zwoje bossów (71036–71043) i przedmioty
+  Wielkanocy 50180/50181 bez zmian. Klient bez zmian.

@@ -11,6 +11,8 @@
 -- MT2009_PLUS_YOHARA_ITEMS4_V1 (decyzja z 14.10: przedmioty z wiki):
 --   * Kamieñ Metin z Yohara (72339): przywo³uje obok gracza Metina z Yohary (poziom 120+) - tylko na mapach Yohary
 --     z Wol¹ SungMa i od 1. Poziomu Czempiona (wiki); Metin - jeden z tych, które stoj¹ na tej mapie;
+--     MT2009_PLUS_SUMMON_STONE_V1 (w³aœciciel, 27.10.2026): przywo³any Metin znika 15 minut po przywo³aniu, jeœli nikt
+--     go nie zniszczy (set_summon_lifetime - server-patches/enginefixes), a w lochu kamieñ nie dzia³a (summon_blocked_here);
 --   * Mistrz Chi (20823, Dongan): wytwarza Obrêcze Jadeitu +0 (wiki "Wytwarzanie Bransolet": 10 Jadeitu, 25/30 P³yt
 --     z Surowego Metalu, Mg³y nic wiêcej / S³oñca 2 Ska¿one Rdzenie / Nocy 5 K³ów Argosa / Dymu 10 £usek Argosa,
 --     1 000 000 Yang, 100 / 200 / 300 / 400 Gaya - przedmiot 95927, MT2009_PLUS_GAYA_V1 - szansa 30%, przy
@@ -75,7 +77,7 @@ quest yohara_mapy4 begin
 		when 72339.use begin
 			local c = yohara_mapy4.cfg()
 			local list = c.metins[pc.get_map_index()]
-			if list == nil or pc.in_dungeon() then
+			if list == nil or pc.in_dungeon() or summon_blocked_here() then
 				syschat("Kamieñ Metin z Yohara dzia³a tylko na mapach Yohary z Wol¹ SungMa.")
 				return
 			end
@@ -91,8 +93,9 @@ quest yohara_mapy4 begin
 				syschat("Tutaj nie da siê przywo³aæ Metina. Spróbuj w innym miejscu.")
 				return
 			end
+			set_summon_lifetime(vid)
 			pc.remove_item(c.stone, 1)
-			syschat("Obok ciebie pojawi³ siê Metin z Yohary.")
+			syschat("Obok ciebie pojawi³ siê Metin z Yohary. Zniknie po 15 minutach, jeœli go nie zniszczysz.")
 		end
 	end
 end

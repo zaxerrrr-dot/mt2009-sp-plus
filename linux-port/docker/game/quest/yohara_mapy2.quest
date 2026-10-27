@@ -8,6 +8,9 @@
 -- MT2009_PLUS_PORTABLE_VEIN_V1 (w³aœciciel, 21.10.2026; wiki "Przenoœna ¯y³a Jadeitu"): Przenoœna ¯y³a Jadeitu (72354)
 --   przywo³uje obok gracza losow¹ z czterech ¿y³ (S³oñca, Nocy, Dymu, Mg³y) w dowolnym miejscu poza lochami; ¿y³a
 --   znika jak ka¿da (silnik: 7-15 min), przedmiot jednorazowy.
+-- MT2009_PLUS_SUMMON_STONE_V1 (w³aœciciel, 27.10.2026): przywo³ana ¿y³a znika dok³adnie 15 minut po przywo³aniu
+--   (set_summon_lifetime - server-patches/enginefixes; zamiast losowych 7-15 minut), a w ¿adnym lochu, tak¿e na
+--   wspólnych mapach lochów (summon_blocked_here), przedmiot nie dzia³a i zostaje w ekwipunku.
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest yohara_mapy2 begin
 	state start begin
@@ -41,7 +44,7 @@ quest yohara_mapy2 begin
 
 		-- MT2009_PLUS_PORTABLE_VEIN_V1: Przenoœna ¯y³a Jadeitu
 		when 72354.use begin
-			if pc.in_dungeon() or pc.get_map_index() >= 10000 then
+			if pc.in_dungeon() or pc.get_map_index() >= 10000 or summon_blocked_here() then
 				syschat("Przenoœnej ¯y³y Jadeitu nie u¿yjesz w lochu.")
 				return
 			end
@@ -54,8 +57,9 @@ quest yohara_mapy2 begin
 				syschat("Tutaj ¿y³a siê nie pojawi. Spróbuj w innym miejscu.")
 				return
 			end
+			set_summon_lifetime(vid)
 			pc.remove_item(72354, 1)
-			syschat("Obok ciebie pojawi³a siê ¯y³a Jadeitu. Wydob¹dŸ z niej rudê kilofem, zanim zniknie.")
+			syschat("Obok ciebie pojawi³a siê ¯y³a Jadeitu. Wydob¹dŸ z niej rudê kilofem - zniknie po 15 minutach.")
 		end
 	end
 end
