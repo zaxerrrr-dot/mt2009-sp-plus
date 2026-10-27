@@ -1546,7 +1546,9 @@ class ItemToolTip(ToolTip):
 		elif item.ITEM_TYPE_USE == itemType:
 			self.__AppendLimitInformation()
 
-			if item.USE_POTION == itemSubType or item.USE_POTION_NODELAY == itemSubType:
+			# MT2009_PLUS_HALLOWEEN_V1: no "P¯ +300 / PE +100" lines on the Halloween pumpkin (30321) - its description
+			# already says what it does (the owner, 27 Oct 2026); every other potion keeps them.
+			if (item.USE_POTION == itemSubType or item.USE_POTION_NODELAY == itemSubType) and itemVnum != 30321:
 				self.__AppendPotionInformation()
 
 			elif item.USE_ABILITY_UP == itemSubType:
@@ -2077,12 +2079,10 @@ class ItemToolTip(ToolTip):
 		healPercentageHP = item.GetValue(3)
 		healPercentageSP = item.GetValue(4)
 
-		# MT2009_PLUS_POTION_TOOLTIP_V1: "Przywraca 300 P¯" instead of the locale's "P¯ +300", which read as a max HP
-		# bonus (the owner, 27 Oct 2026, on the Halloween pumpkin).
 		if healHP > 0:
-			self.AppendTextLine("Przywraca %d P¯" % healHP, self.GetChangeTextLineColor(healHP))
+			self.AppendTextLine(localeInfo.TOOLTIP_POTION_PLUS_HP_POINT % healHP, self.GetChangeTextLineColor(healHP))
 		if healSP > 0:
-			self.AppendTextLine("Przywraca %d PE" % healSP, self.GetChangeTextLineColor(healSP))
+			self.AppendTextLine(localeInfo.TOOLTIP_POTION_PLUS_SP_POINT % healSP, self.GetChangeTextLineColor(healSP))
 		if healStatus != 0:
 			self.AppendTextLine(localeInfo.TOOLTIP_POTION_CURE)
 		if healPercentageHP > 0:
