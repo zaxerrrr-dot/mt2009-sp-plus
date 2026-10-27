@@ -2077,10 +2077,12 @@ class ItemToolTip(ToolTip):
 		healPercentageHP = item.GetValue(3)
 		healPercentageSP = item.GetValue(4)
 
+		# MT2009_PLUS_POTION_TOOLTIP_V1: "Przywraca 300 P¯" instead of the locale's "P¯ +300", which read as a max HP
+		# bonus (the owner, 27 Oct 2026, on the Halloween pumpkin).
 		if healHP > 0:
-			self.AppendTextLine(localeInfo.TOOLTIP_POTION_PLUS_HP_POINT % healHP, self.GetChangeTextLineColor(healHP))
+			self.AppendTextLine("Przywraca %d P¯" % healHP, self.GetChangeTextLineColor(healHP))
 		if healSP > 0:
-			self.AppendTextLine(localeInfo.TOOLTIP_POTION_PLUS_SP_POINT % healSP, self.GetChangeTextLineColor(healSP))
+			self.AppendTextLine("Przywraca %d PE" % healSP, self.GetChangeTextLineColor(healSP))
 		if healStatus != 0:
 			self.AppendTextLine(localeInfo.TOOLTIP_POTION_CURE)
 		if healPercentageHP > 0:

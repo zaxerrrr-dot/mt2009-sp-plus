@@ -70,7 +70,7 @@ quest event_halloween_hair begin
 			pc.setqf("first_notice", 1)
 		end
 
-		when 33008.chat."Zamieñ Kartê Maski Dyni " with pc.getqf("first_notice") == 1 begin
+		when 33008.chat."Zamieñ Kartê Maski Dyni " begin
 			local setting = event_halloween_hair.setting()
 			say_title("Jack Pumpkin:")
 			say("Znowu ty? S³uchaj, zdradzê ci pewn¹ tajemnicê.")
