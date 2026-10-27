@@ -1706,11 +1706,17 @@ namespace
 
 	int FindPlayerBotBagItem(LPCHARACTER ch, DWORD vnum)
 	{
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		// MT2009_PLUS_BOT_EKWIPUNEK_V1: a second look after the kind came back from the extra inventory
+		for (int pass = 0; pass < 2; ++pass)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && item->GetCell() == cell && item->GetVnum() == vnum && !item->isLocked())
-				return cell;
+			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem(cell);
+				if (item && item->GetCell() == cell && item->GetVnum() == vnum && !item->isLocked())
+					return cell;
+			}
+			if (pass == 0 && !PlayerBotEkwFetchVnum(ch, vnum))
+				break;
 		}
 		return -1;
 	}

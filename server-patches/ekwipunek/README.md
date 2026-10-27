@@ -33,7 +33,13 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
 - **Tylko prawdziwy gracz z nowym exe**: klient z oknami (exe 3.0 + `uiekwipunek.py`) wysyła `/ekwipunek hello` po
   wejściu do gry i po każdym teleporcie; dopiero wtedy serwer kieruje przedmioty do magazynów. Stary exe ich nie
   pokazuje, więc bez hello wszystko zostaje w torbie. **Boty nigdy** – ich AI (sprzedaż, magazyn, crafting) czyta
-  tylko `INVENTORY`.
+  tylko `INVENTORY`. Boty same nie dostają przekierowania, ale od `MT2009_PLUS_BOT_EKWIPUNEK_V1`
+  (`playerbot_ekwipunek_bots.h`, 27.10.2026) **pożyczają magazynom nadmiar torby**: przy mniej niż 10 wolnych polach
+  odkładają dodatkowe stosy tego samego przedmiotu (w torbie zostaje największy stos, dopełniony), potem całe stosy
+  „towaru” (materiały, księgi cudzych umiejętności, kamienie duszy, których nie osadzą, skrzynie poza Corami alchemii)
+  do 16 wolnych pól; zapas roboczy (zwoje ulepszania, zaczarowania, własne księgi, kamienie do osadzenia, Cory) wraca
+  do torby od razu, gdy go w niej brak, a towar – gdy torba ma ponad 22 wolne pola. Flaga `m2_ekw_bots_off` wyłącza,
+  log `PLAYERBOT_EKW`.
 - **Wyjście**: przeciągnięcie do torby (`MoveItem`: do magazynu tylko jego kategoria, z torby albo z niego samego;
   z magazynu tylko do torby), użycie prosto z magazynu (`UseItem` – księgi, skrzynie, kamień na przedmiot,
   zaczarowanie na przedmiot), `CountSpecifyItem` / `RemoveSpecifyItem` liczą i biorą z magazynów (materiały

@@ -331,6 +331,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_SIDEKICK_SHOP_ERRAND_V1: the owner's "Kup" errand - potions and
 // arrows at the merchants, capes and the like off the stands.
 #include "playerbot_sidekick_shop.h"
+// MT2009_PLUS_BOT_EKWIPUNEK_V1: the bots lend the extra inventory their bag's overflow (after alchemy.h, gear.h,
+// economy.h and sidekick.h, whose rules say what is a bot's working stock).
+#include "playerbot_ekwipunek_bots.h"
 // Iwakura's social personalities: the companion's phase and its invitations
 // to people, a companion Shaman's party buffs, and the mercenary's contracts.
 #include "playerbot_companions.h"
@@ -7134,6 +7137,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// its floors, and on a floor after a while (playerbot_zodiac_bots.h).
 		if (d->IsPhase(PHASE_GAME))
 			ManagePlayerBotZodiacPetrify(ch, dwNow);
+		// MT2009_PLUS_BOT_EKWIPUNEK_V1: the bag's overflow into the extra inventory and back (its own clock).
+		if (d->IsPhase(PHASE_GAME))
+			ManagePlayerBotEkwipunek(ch, state, dwNow);
 
 		// Keep expensive decisions staggered over two ticks, but let an already
 		// engaged bot continue its basic combo on the intervening tick.  This makes

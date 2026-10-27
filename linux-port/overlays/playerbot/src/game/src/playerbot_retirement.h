@@ -613,7 +613,9 @@ bool ResetRetiredPlayerBotRow(DWORD dwPlayerID)
 	static const char* const wipes[] = {
 		"DELETE FROM player.item WHERE owner_id=%u AND `window` IN ("
 			"'INVENTORY','EQUIPMENT','DRAGON_SOUL_INVENTORY','BELT_INVENTORY',"
-			"'IKASHOP_OFFLINESHOP','IKASHOP_SAFEBOX')",
+			"'IKASHOP_OFFLINESHOP','IKASHOP_SAFEBOX',"
+			// MT2009_PLUS_BOT_EKWIPUNEK_V1: the extra inventory's five windows (ekwipunek.sql), as PLAYER_DELETE's list
+			"'UPGRADE_INVENTORY','BOOK_INVENTORY','STONE_INVENTORY','CHANGE_INVENTORY','CHEST_INVENTORY')",
 		"DELETE FROM player.ikashop_offlineshop WHERE owner=%u",
 		"DELETE FROM player.ikashop_safebox WHERE owner=%u",
 		"DELETE FROM player.ikashop_notification WHERE owner=%u",
@@ -793,6 +795,14 @@ void WipePlayerBotForRetirement(LPCHARACTER ch)
 		if (item)
 			item->SetCount(0);
 	}
+	// MT2009_PLUS_BOT_EKWIPUNEK_V1: the extra inventory the bot lent its bag's overflow goes with the bag.
+	for (BYTE w = UPGRADE_INVENTORY; w <= CHEST_INVENTORY; ++w)
+		for (WORD cell = 0; cell < SPECIAL_INVENTORY_MAX_NUM; ++cell)
+		{
+			LPITEM item = ch->Mt2009SpecialGetItem(w, cell);
+			if (item && item->GetCell() == cell)
+				item->SetCount(0);
+		}
 }
 
 // ---------------------------------------------------------------------------

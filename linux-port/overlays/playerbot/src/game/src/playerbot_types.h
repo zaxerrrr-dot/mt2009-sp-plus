@@ -7913,6 +7913,8 @@ namespace
 	bool IsPlayerBotSidekickPinned(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotSidekickUnwanted(LPCHARACTER ch, LPITEM item);
 	LPITEM FindPlayerBotSidekickPinnedInBag(LPCHARACTER ch, int& wearCell, bool askEngine);
+	// MT2009_PLUS_BOT_EKWIPUNEK_V1 (playerbot_ekwipunek_bots.h): a kind back from the extra inventory into the bag.
+	bool PlayerBotEkwFetchVnum(LPCHARACTER ch, DWORD vnum);
 	bool IsPlayerBotSidekickManualSkills(LPCHARACTER ch);
 	bool IsPlayerBotSidekickManualStats(LPCHARACTER ch);
 	// The companion has fallen (HandleDeath, on the tick it is seen): what was
