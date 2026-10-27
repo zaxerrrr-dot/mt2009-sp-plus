@@ -2412,7 +2412,7 @@
 74017	Fez Wojownika	Czerwone nakrycie g³owy dla mêskich wojowników. (czas trwania: 7 dni)
 74018	Kefija Wojownika	Chusta na g³owê dla mêskich wojowników. (czas trwania: 7 dni)
 74019	Turban Wojownika	Nakrycie g³owy ze szlachetnego materia³u dla mêskich wojowników. (czas trwania: 7 dni)
-74020	Maska Dyni Wojownik (m)	Maska dla Wojownika. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+74020	Maska Dyni Wojownik (m)	Maska dla Wojownika. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 74251	Kucyk (br¹z.)	D³ugi br¹zowy warkocz, bardzo popularny wœród kobiet
 74252	Kucyk (ziel.)	D³ugi zielony warkocz, bardzo popularny wœród kobiet
 74253	Kucyk (niebieski)	D³ugi niebieski warkocz, bardzo popularny wœród kobiet
@@ -2432,7 +2432,7 @@
 74267	Pustynna Maska Ninja (k)	Starannie wykonana chusta na g³owê dla ¿eñskich ninja. (czas trwania: 7 dni)
 74268	Pustynny Szal Ninja (k)	Pustynny szal ze szlachetnego materia³u dla ¿eñskich ninja. (czas trwania: 7 dni)
 74269	Turban Ninja (k)	Turban dla ¿eñskich ninja z bardzo cennego materia³u. (czas trwania: 7 dni)
-74270	Maska Dyni Ninja (k)	Maska dla wojowniczki Ninja. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+74270	Maska Dyni Ninja (k)	Maska dla wojowniczki Ninja. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 74501	Sport. Przystrz. (bia³e)	Krótka wojskowa fryzura
 74502	Sport. Przystrz. (br¹z.)	Krótka wojskowa fryzura
 74503	Sportowa (blond)	Krótka wojskowa fryzura
@@ -2452,7 +2452,7 @@
 74517	Fez Sura (m)	Czerwone nakrycie g³owy dla mêskich sura. (czas trwania: 7 dni)
 74518	Kefija Sura (m)	Chusta na g³owê dla mêskich sura. (czas trwania: 7 dni)
 74519	Turban Sura (m)	Nakrycie g³owy ze szlachetnego materia³u dla mêskich sura. (czas trwania: 7 dni)
-74520	Maska Dyni Sura (m)	Maska dla wojownika Sura. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+74520	Maska Dyni Sura (m)	Maska dla wojownika Sura. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 74521	Modna Fryzura (siwa)	Fryzura zapewniaj¹ca ci charakterystyczny wygl¹d
 74522	Chusta	Schludna fryzura zrobiona przy u¿yciu chusty do w³osów.
 74523	D³ugie W³osy (blond)	Piêkna blond fryzura o imponuj¹cej objêtoœci.
@@ -2511,7 +2511,7 @@
 74767	Pustynna Maska Szamanki	Starannie wykonana chusta na g³owê dla ¿eñskich szamanów. (czas trwania: 7 dni)
 74768	Pustynny Szal Szamanki	Pustynny szal ze szlachetnego materia³u dla ¿eñskich szamanów. (czas trwania: 7 dni)
 74769	Turban Szamanki	Turban dla ¿eñskich szamanów z bardzo cennego materia³u. (czas trwania: 7 dni)
-74770	Maska Dyni Szaman (k)	Maska dla Szamanki. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+74770	Maska Dyni Szaman (k)	Maska dla Szamanki. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 73051	Modna Fryzura (czerwona)	Modna czerwona fryzura z piêkn¹ wst¹¿k¹. Na sta³e zmienia fryzurê Twojej postaci.
 73052	Modna Fryzura (jasna)	Modna jasna fryzura z piêkn¹ wst¹¿k¹. Na sta³e zmienia fryzurê Twojej postaci.
 73053	Modna Fryzura (nieb.)	Modna niebieska fryzura z piêkn¹ wst¹¿k¹. Na sta³e zmienia fryzurê Twojej postaci.
@@ -2531,7 +2531,7 @@
 75017	Pust. Maska Wojowniczki	Starannie wykonana chusta na g³owê dla ¿eñskich wojowników. (czas trwania: 7 dni)
 75018	Pust. Szal Wojowniczki	Pustynny szal ze szlachetnego materia³u dla ¿eñskich wojowników. (czas trwania: 7 dni)
 75019	Turban Wojowniczki	Nakrycie g³owy ze szlachetnego materia³u dla ¿eñskich wojowników. (czas trwania: 7 dni)
-75020	Maska Dyni Wojownik (k)	Maska dla Wojowniczki. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+75020	Maska Dyni Wojownik (k)	Maska dla Wojowniczki. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 73301	Kucyk (br¹z.)	Fryzura z d³ugim kucykiem. Na sta³e zmienia fryzurê Twojej postaci.
 73302	Kucyk (zielony)	Fryzura z d³ugim kucykiem. Na sta³e zmienia fryzurê Twojej postaci.
 73303	Kucyk (nieb.)	Fryzura z d³ugim kucykiem. Na sta³e zmienia fryzurê Twojej postaci.
@@ -2551,7 +2551,7 @@
 75217	Fez Ninja (m)	Czerwone nakrycie g³owy dla mêskich ninja. (czas trwania: 7 dni)
 75218	Kefija Ninja (m)	Chusta na g³owê dla mêskich ninja. Chroni przed burzami piaskowymi. (czas trwania: 7 dni)
 75219	Turban Ninja (m)	Nakrycie g³owy ze szlachetnego materia³u dla mêskich ninja. (czas trwania: 7 dni)
-75220	Maska Dyni Ninja (m)	Maska dla wojownika Ninja. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+75220	Maska Dyni Ninja (m)	Maska dla wojownika Ninja. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 73601	Spiête (jasne)	Ekstrawagancka fryzura - typowa dla kobiet sura. Na sta³e zmienia fryzurê Twojej postaci.
 73602	Spiête (br¹z.)	Ekstrawagancka fryzura - typowa dla kobiet sura. Na sta³e zmienia fryzurê Twojej postaci.
 73603	Spiête (blond)	Ekstrawagancka fryzura - typowa dla kobiet sura. Na sta³e zmienia fryzurê Twojej postaci.
@@ -2571,7 +2571,7 @@
 75417	Pustynna Maska Sura (k)	Starannie wykonana chusta na g³owê dla ¿eñskich sura. (czas trwania: 7 dni)
 75418	Pustynny Szal Sura (k)	Pustynny szal ze szlachetnego materia³u dla ¿eñskich sura. (czas trwania: 7 dni)
 75419	Turban Sura (k)	Nakrycie g³owy ze szlachetnego materia³u dla ¿eñskich sura. (czas trwania: 7 dni)
-75420	Maska Dyni Sura (k)	Maska dla wojowniczki Sura. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+75420	Maska Dyni Sura (k)	Maska dla wojowniczki Sura. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 73801	Modnie Œciête (br¹z.)	Modnie przyciête w³osy, zapewniaj¹ce szamanom mo¿liwoœæ wyra¿ania swojego usposobienia. Na sta³e zmienia fryzurê Twojej postaci.
 73802	Modnie Œciête (czar.)	Modnie przyciête w³osy, zapewniaj¹ce szamanom mo¿liwoœæ wyra¿ania swojego usposobienia. Na sta³e zmienia fryzurê Twojej postaci.
 73803	Modnie Œciête (nieb.)	Modnie przyciête w³osy, zapewniaj¹ce szamanom mo¿liwoœæ wyra¿ania swojego usposobienia. Na sta³e zmienia fryzurê Twojej postaci.
@@ -2591,7 +2591,7 @@
 75617	Fez Szamana	Czerwone nakrycie g³owy dla mêskich szamanów. (czas trwania: 7 dni)
 75618	Kefija Szamana	Chusta na g³owê dla mêskich szamanów. Chroni przed burzami piaskowymi. (czas trwania: 7 dni)
 75619	Turban Szamana	Nakrycie g³owy ze szlachetnego materia³u dla mêskich szamanów. (czas trwania: 7 dni)
-75620	Maska Dyni Szaman (m)	Maska dla Szamana. Atrybut oraz czas trwania s¹ ustalane losowo. Zastêpuje obecn¹ fryzurê.
+75620	Maska Dyni Szaman (m)	Maska dla Szamana. Dzia³a 7 dni, atrybut jest ustalany losowo. Zastêpuje obecn¹ fryzurê.
 76000	Wino z Kwiatu Brzoskwini	Mikstura, która natychmiast regeneruje 500 P¯. Niezdatna do handlu.
 76001	Zwój Powrotu Statusu	Przedmiot ten umo¿liwia Ci ponowne wydanie Twoich Punktów Statystyk. Tak wiêc mo¿esz rozwijaæ postaæ w inny sposób. Niezdatny do handlu.
 76002	Zasuszona G³owa	Ta zasuszona g³owa demona otwiera pieczêæ 3. poziomu Diabelskich Katakumb. Przedmiot ten jest niezdatny do handlu.

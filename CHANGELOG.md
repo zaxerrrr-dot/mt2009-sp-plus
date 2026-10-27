@@ -17,7 +17,7 @@ every version here.
 
 ---
 
-## 2.39.0 — (szkic)
+## 2.39.0 — 2026-10-27 — Halloween, kamienie Metin z przedmiotów, broń botów
 
 ### Halloween
 **Nowy event: Halloween.** Dodałem event halloweenowy z Jackiem Pumpkinem. Domyślnie jest wyłączony – włączasz go sam.
@@ -72,7 +72,7 @@ every version here.
 - **Wojownik (Ciało) zakłada broń dwuręczną z plecaka, jeśli jest dużo lepsza.** Poprawiłem błąd, przez który wojownicy z grupą Ciało (i bez wybranej grupy) zdejmowali broń dwuręczną jako „niepasującą do profesji” i walczyli mieczem kupionym u kupca – np. bot na 99 poziomie z Pogromcą Nieb. Smoka+9 w plecaku nosił Stożkowy Miecz+0 z 15 poziomu, a biedniejsi stali zupełnie bez broni. Miecz jednoręczny dalej jest ich podstawową bronią, ale dwuręczna, którą bot już ma i która bije co najmniej o połowę mocniej niż jego najlepszy miecz, jest teraz zakładana (i nie trafia na sprzedaż). Bot nie goni już też celu broni, który ma w plecaku, a jeśli przez 2 godziny nie zbliża się do celu (np. broń wypada tylko na mapie, na której nie poluje), kupuje najlepszą broń, na jaką go stać – u kupca albo na rynku – całym zapasem yang ponad rezerwę. Nie wymaga nowego klienta.
 - **Ninja łucznik walczy sztyletem, jeśli ten bije mocniej niż jego łuk.** Poprawiłem błąd, przez który łucznicy nosili słaby łuk z 15 poziomu, mając w plecaku sztylet z 90 poziomu, a ci bez łuku stali w ogóle bez broni. Teraz łucznik zakłada sztylet, który ma, jeśli zadaje on więcej obrażeń niż jego najlepszy łuk (albo gdy łuku nie ma wcale), i walczy nim wręcz – zwykłymi ciosami, bez umiejętności łuczniczych, które bez łuku nic nie zadają; w pojedynku walczy jak ninja ze sztyletem, a nie z dystansu. Dalej odkłada yang i poluje tylko na lepszy łuk (nigdy na sztylet), a gdy zdobędzie łuk bijący mocniej niż sztylet, wraca do łuku. Sztylet, którym walczy, nie trafia do sprzedaży. Nie wymaga nowego klienta.
 
-## Klient 2.0.70 — (szkic) — Halloween
+## Klient 2.0.70 — 2026-10-27 — Halloween
 - **Halloween** – model Jacka Pumpkina, opisy Upiornej Dyni, Czarodziejskiej Różdżki, Karty Maski Dyni, Upiornej Skrzyni i Masek Dyni oraz Halloween na liście wydarzeń przy minimapie.
 - Zmieniły się dane przedmiotów – po aktualizacji pobierz ponownie zip z edytora bazy danych (gra przypomni o tym po zalogowaniu; MT2009-Patcher pobierze go sam).
 
