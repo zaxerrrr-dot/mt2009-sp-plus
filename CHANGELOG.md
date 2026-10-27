@@ -33,6 +33,11 @@ every version here.
 - Stary quest halloweenowy z paczki serwera nie działał (bez tekstów, skrzynia się nie otwierała) – zastąpiłem go.
 - **Wymaga nowej łatki klienta:** model Jacka Pumpkina (bez niego NPC jest niewidoczny), nowe opisy dyni, różdżki, karty, skrzyni i masek oraz Halloween na liście wydarzeń przy minimapie.
 
+### Kamienie Metin i żyły z przedmiotów
+- **Przywołany kamień Metin znika po 15 minutach.** Kamień Metin przywołany z przedmiotu – Kamień Metin (Słaby), (Średni) i (Silny), także ten z pudełek eventu Dzieci Kwiaty – znika 15 minut po przywołaniu, jeśli nikt go wcześniej nie zniszczy. Tak samo żyły i Sterta Muszli przywołane Zwojami Przywołania (Żyła Skamieniałego Drzewa, Miedzi, Srebra, Złota, Jadeitu, Ebonitu, Białego Złota, Kryształu, Ametystu i Niebiańskich Łez). Czas liczy się od przywołania, więc zmiana mapy czy wyjście z gry niczego nie przedłuża. Po przywołaniu gra przypomina o tym na czacie.
+- **W lochach nie da się przywołać kamienia Metin ani żyły.** W każdym lochu (także w Wieży Demonów) takie przedmioty się nie otwierają – gra pisze „Nie mozesz przywolac kamienia Metin w lochu.” (albo „…zyly w lochu.”), a przedmiot zostaje w ekwipunku. Wcześniej przywołany w lochu kamień dawał drop bez względu na poziom postaci, bo drop w lochach celowo nie patrzy na różnicę poziomów.
+- Kamienie Metin z respawnu, kamienie samych lochów i zwoje przywołania bossów działają tak jak dotąd. Nie wymaga nowego klienta.
+
 ## 2.38.0 — 2026-10-26 — Wężowe Pole i Kraina Gigantów, budynki gildii, boty na wojnie
 
 ### Wężowe Pole i Kraina Gigantów

@@ -89,3 +89,24 @@ właścicielowi, jak w `Reward()`); doświadczenie, drop, karty, owoce rang i Pr
   obróconemu budynkowi wystawać poza teren). Budynek bez obrotu (`zRot` = 0) idzie dokładnie starą drogą
   (`ForAttrRegion`), komórka w komórkę. Po restarcie `FinalizeBoot` pokazuje każdy budynek nową metodą,
   więc `Destroy` zdejmuje te same komórki, które `Show` oznaczył. Klient bez zmian.
+
+## Kamienie Metin i żyły z przedmiotów (MT2009_PLUS_SUMMON_STONE_V1, 2.38.1)
+
+- `MT2009_PLUS_SUMMON_STONE_V1` (helpers, dungeon, spawn) (`char_item.cpp`): dotyczy tylko wpisów `mob`
+  z `special_item_group`, czyli potworów przywołanych z przedmiotu (`ITEM_GIFTBOX`: 71080–71082 Kamień Metin
+  (Słaby/Średni/Silny), także z pudełek Dzieci Kwiaty 83023–83027; 71057–71067 zwoje przywołania żył i Sterty
+  Muszli). Rodzaj potwora: kamień = `mob_proto` typu `CHAR_TYPE_STONE`, żyła = `mining::IsVeinOfOre`.
+  - **spawn**: po `SpawnMob` kamień albo żyła dostaje własne zdarzenie (`mt2009_summon_lifetime_event`, VID + rasa,
+    bez wskaźnika) i po 15 minutach jest usuwana (`M2_DESTROY_CHARACTER`), o ile wciąż istnieje i żyje. Zdarzenie
+    należy do potwora, nie do gracza – teleport, wylogowanie ani koniec lochu (potwór już nie istnieje) niczego
+    nie psują. Gracz dostaje linię na czacie. Żyła ma w silniku własny losowy koniec po 7–15 minutach
+    (`kill_ore_load_event`, `char.cpp`) – przywołanej żyle jest on anulowany, więc stoi dokładnie 15 minut; żyły
+    z respawnu zachowują 7–15 minut.
+  - **dungeon**: przed otwarciem pudełka – jeśli grupa (także zagnieżdżone `s<grupa>`) przywołuje kamień albo
+    żyłę, a postać jest w lochu (`GetDungeon()`, indeks mapy ≥ 10000 albo wspólna mapa lochu z listy
+    `Mt2009PlusDungeonNoFade`: 66 – parter Wieży Demonów, 208, 216, 351, 352, 363–366), przedmiot się nie otwiera
+    i nie znika: „Nie mozesz przywolac kamienia Metin w lochu.” / „Nie mozesz przywolac zyly w lochu.” (raz na
+    sekundę, `MT2009_PLUS_PULSE_CHEST_NOTICE`). Ten sam warunek w gałęzi `MOB` zatrzymuje przywołanie z grupy
+    otwartej przez quest. Drop w lochach dalej celowo nie patrzy na różnicę poziomów.
+  - Kamienie z respawnu, kamienie lochów (`d.spawn_mob`), żyły botów (`playerbot_mining.h`) i zwoje bossów
+    (71036–71043) bez zmian.
