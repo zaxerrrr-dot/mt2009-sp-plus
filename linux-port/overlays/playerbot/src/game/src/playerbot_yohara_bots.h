@@ -186,6 +186,11 @@ namespace
 	{
 		if (!s)
 			return YOHARA_PURPOSE_NONE;
+		// MT2009_PLUS_BOT_YOHARA800_V1: the 800 new Yohara bots (tools/yohara_bot_cohort.py --yohara800, the owner, 27
+		// October 2026) are the Sung Ma maps' cohort under a name of their own - their rows, backups and SQL stay apart
+		// from the 100 of "yohara"; to the cores they are the same purpose (the handover rows say "yohara").
+		if (!strcmp(s, "yohara800"))
+			return YOHARA_PURPOSE_SUNGMA;
 		for (int i = YOHARA_PURPOSE_HOME; i < YOHARA_PURPOSE_MAX; ++i)
 			if (!strcmp(s, PlayerBotYoharaPurposeName(i)))
 				return i;
@@ -296,7 +301,8 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V1: the owner, 22 October - 100 bots onto the Yohara maps (the cohort "yohara" and
 		// the Champions of the population). PLAYERBOT_SUNGMA_MAPS: the maps of the table switched on (a grid each, built
 		// where a bot stands - 18-160 MB, playerbot_navigation.h).
-		s_cfg.sungmaMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_MAX", 120, 0, 600);
+		// MT2009_PLUS_BOT_YOHARA800_V1: up to 1000 a channel (the 100 + the 800 on one channel's game3)
+		s_cfg.sungmaMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_MAX", 120, 0, 1000);
 		s_cfg.sungmaMapMax = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_MAP_MAX", 30, 0, 300);
 		s_cfg.sungmaStayMin = ReadPlayerBotYoharaEnvInt("PLAYERBOT_SUNGMA_STAY_MIN", 240, 20, 1440);
 		// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the owner, 22 October - "do M1 ida tylko handlowac" (0: no trade trips, the
