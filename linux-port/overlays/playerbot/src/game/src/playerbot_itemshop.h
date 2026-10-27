@@ -530,6 +530,24 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_ISHOP_FRESH_V1: how long a bought look lasts, in
+	// seconds; 0 for a permanent one. A REAL_TIME limit of 0 is the engine's
+	// seven days (ITEM_MANAGER::CreateItem).
+	long GetPlayerBotLookSeconds(const TItemTable* proto)
+	{
+		if (!proto)
+			return 0;
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+		{
+			const BYTE type = proto->aLimits[i].bType;
+			if (type == LIMIT_REAL_TIME)
+				return proto->aLimits[i].lValue > 0 ? proto->aLimits[i].lValue : 7L * 24 * 60 * 60;
+			if (type == LIMIT_REAL_TIME_START_FIRST_USE || type == LIMIT_TIMER_BASED_ON_WEAR)
+				return proto->aLimits[i].lValue > 0 ? proto->aLimits[i].lValue : 1;
+		}
+		return 0;
+	}
+
 	// The first piece missing, in the operator's order; 0 when the bot is
 	// dressed or its piece is not for sale. The strict order is the point: a
 	// bot saves for the costume before it spends on a hairstyle. Which item
@@ -562,6 +580,18 @@ namespace
 				if (!matching.empty())
 					mine.swap(matching);
 			}
+			// MT2009_PLUS_BOT_ISHOP_FRESH_V1: a line that lasts (30 days or
+			// for good) when the shop has one for this bot - the price is the
+			// same for ten minutes and for a month.
+			std::vector<DWORD> lasting;
+			for (size_t i = 0; i < mine.size(); ++i)
+			{
+				const long seconds = GetPlayerBotLookSeconds(ITEM_MANAGER::instance().GetTable(mine[i]));
+				if (seconds == 0 || seconds >= PLAYERBOT_ISHOP_LOOK_MIN_SECONDS)
+					lasting.push_back(mine[i]);
+			}
+			if (!lasting.empty())
+				mine.swap(lasting);
 			*pLook = look;
 			// Any of them, drawn anew each time (operator: variety), so a
 			// piece that runs out is followed by another.
@@ -928,6 +958,7 @@ namespace
 		const bool bought = CItemShopManager::instance().BuyItem(ch, (int)entry.dwIndex, 1);
 		ch->playerData->SetItemShopBrowse(false);
 		state.dwNextItemShopBuyTime = dwNow + PLAYERBOT_ISHOP_BUY_INTERVAL;
+		const int coinsBefore = state.iDragonCoins;
 		if (!bought)
 		{
 			++s_uPlayerBotItemShopRefusals;
@@ -948,9 +979,25 @@ namespace
 		}
 		++s_uPlayerBotItemShopBuys;
 		++s_mapPlayerBotItemShopBought[wish.dwVnum];
-		sys_log(0, "PLAYERBOT_ISHOP: bought pid=%u name=%s vnum=%u x%u index=%u price=%u %s reason=%s coins_left=%d marks_left=%d",
-				ch->GetPlayerID(), ch->GetName(), wish.dwVnum, entry.dwCount, entry.dwIndex, entry.dwPrice,
-				wish.bMarks ? "marks" : "coins", wish.szReason, state.iDragonCoins, state.iDragonMarks);
+		// MT2009_PLUS_BOT_ISHOP_FRESH_V1: one line a purchase for the monitor -
+		// the level, the balance before and after, how long the piece lasts
+		// (days, 0 = for good) and whether the fresh-balance pace applies.
+		const long lookSeconds = GetPlayerBotLookSeconds(ITEM_MANAGER::instance().GetTable(wish.dwVnum));
+		const bool fresh = !wish.bMarks && state.iDragonCoins >= PLAYERBOT_ISHOP_FRESH_BALANCE;
+		sys_log(0, "PLAYERBOT_ISHOP: bought pid=%u name=%s lv=%d vnum=%u x%u index=%u price=%u %s reason=%s days=%ld coins_before=%d coins_left=%d marks_left=%d fresh=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), wish.dwVnum, entry.dwCount, entry.dwIndex, entry.dwPrice,
+				wish.bMarks ? "marks" : "coins", wish.szReason, lookSeconds > 0 ? std::max(1L, lookSeconds / 86400) : 0L,
+				coinsBefore, state.iDragonCoins, state.iDragonMarks, (int)fresh);
+		// A fresh balance (the 800 Yohara bots' 2000 coins): the next need in a
+		// few minutes, not an hour; the look session below may make it sooner.
+		if (fresh)
+		{
+			const DWORD next = dwNow + PLAYERBOT_ISHOP_FRESH_BUY_INTERVAL +
+					PlayerBotNavHash(ch->GetPlayerID() ^ 0x46524553U) % 60000U;
+			state.dwNextItemShopBuyTime = next;
+			if (state.dwNextItemShopCheckTime > next)
+				state.dwNextItemShopCheckTime = next;
+		}
 		WearPlayerBotBoughtLook(ch, state);
 		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			NotePlayerBotSidekickItemShopBuy(ch, wish.dwVnum, entry.dwCount, entry.dwPrice, wish.bMarks, wish.szReason,
@@ -1006,6 +1053,14 @@ namespace
 			WearPlayerBotBoughtLook(ch, state);
 		}
 #endif
+		// MT2009_PLUS_BOT_ISHOP_FRESH_V1: the first look after login, spread
+		// by pid over a few minutes (hundreds of bots log in together).
+		if (state.dwNextItemShopCheckTime == 0)
+		{
+			state.dwNextItemShopCheckTime = dwNow + PLAYERBOT_ISHOP_FIRST_LOOK_DELAY +
+					PlayerBotNavHash(ch->GetPlayerID() ^ 0x46495253U) % PLAYERBOT_ISHOP_FIRST_LOOK_SPREAD;
+			return;
+		}
 		if (dwNow < state.dwNextItemShopCheckTime)
 			return;
 		state.dwNextItemShopCheckTime = dwNow + PLAYERBOT_ISHOP_CHECK_INTERVAL +
@@ -1019,6 +1074,18 @@ namespace
 		WearPlayerBotBoughtLook(ch, state);
 
 		const bool voucher = FindPlayerBotVoucher(ch) != NULL;
+		// MT2009_PLUS_BOT_ISHOP_FRESH_V1: coins put on the account directly (the
+		// 800 Yohara bots' 2000, the panel) and no voucher or need to make the
+		// bot read it: the look is wanted only from a known balance, so a piece
+		// missing reads the account - once after login, then hourly while one
+		// is still missing.
+		if (!IsPlayerBotSidekickPID(ch->GetPlayerID()) &&
+				(!state.bDragonBalanceKnown || dwNow >= state.dwNextItemShopBalanceTime))
+		{
+			int missing = 0;
+			if (PickPlayerBotLook(ch, &missing) != 0)
+				RefreshPlayerBotDragonBalance(ch, state, dwNow);
+		}
 		TPlayerBotItemShopWish wishes[PLAYERBOT_ISHOP_MAX_WISHES];
 		const int wants = CollectPlayerBotItemShopWishes(ch, state, wishes);
 		if (!voucher && wants == 0)
