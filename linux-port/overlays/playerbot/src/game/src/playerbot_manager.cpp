@@ -16,6 +16,7 @@
 #include "playerbot_item_link_rules.h"
 #include "playerbot_price_rules.h"
 #include "playerbot_bonus_rules.h"
+#include "playerbot_yohara_bonus_rules.h" // MT2009_PLUS_BOT_YOHARA_BONUS_V1: which stone a Yohara bot puts on which piece next
 #include "playerbot_refine_rules.h"
 #include "playerbot_moonlight_rules.h"
 #include "playerbot_stalki_rules.h"
@@ -217,6 +218,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_progression_needs.h"
 #include "playerbot_upstream_botlogic.h" // MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the surplus level-30 weapon to the anvil, the next tier made ready, the own box before the market
 #include "playerbot_bonus.h"
+#include "playerbot_yohara_bonus.h" // MT2009_PLUS_BOT_YOHARA_BONUS_V1: a Yohara bot bonuses its own gear with its 71085/71084
 #include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the temple's map and clock, before the bots' knowledge of it
 #include "playerbot_ochao_bots.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the bots in the Temple of Ochao
 #include "playerbot_arezzo_bots.h" // MT2009_PLUS_AREZZO_BOTS_V1 (include): the test cohorts on the Arezzo maps

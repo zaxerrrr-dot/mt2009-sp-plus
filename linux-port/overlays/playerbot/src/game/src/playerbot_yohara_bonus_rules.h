@@ -1,0 +1,229 @@
+#ifndef PLAYERBOT_YOHARA_BONUS_RULES_H
+#define PLAYERBOT_YOHARA_BONUS_RULES_H
+// MT2009_PLUS_BOT_YOHARA_BONUS_V1 - the pure half of a Yohara bot bonusing its own gear with the stones it holds
+// (Wzmocnienie Przedmiotu 71085 adds a line, Zaczarowanie Przedmiotu 71084 rerolls them all, the Marmur
+// Blogoslawienstwa the fifth): which piece the next stone goes on, which stone, and when a piece is done. No engine
+// types: playerbot_yohara_bonus.h reads the pieces, the bag and the lines, asks here, and spends the stone named.
+//
+// The owner, 27 October 2026: "Nie bonuj EQ, daj im po 400 wzmocnien przedmiotow i po 800 zaczarowan przedmiotow,
+// tak aby samodzielnie wybonowaly sobie potrzebny im EQ na Yohare."
+//
+//   1. Fill first: an empty line is free power, and a change keeps the count - so every piece takes adds (in the
+//      priority order) until it has four lines (the engine's add stops at four: USE_ADD_ATTRIBUTE), then a marble
+//      gives the fifth where the bag holds one (USE_ADD_ATTRIBUTE2, on a piece of exactly four).
+//   2. Then the changes, one piece at a time in the priority order (weapon, armour, helmet, the jewellery, the
+//      earrings, the shield, the glove), each to its target (TIER_STRONG) and never again once it is there - a change
+//      rerolls every line and can lose what a piece has.
+//   3. A budget per piece, so one piece cannot burn the stock: the pool (the change stones held plus those already
+//      spent on the pieces worn now, less a reserve kept for the next pieces the bot will wear) shared by the slots'
+//      weights. Over half of its share a piece settles for the fair tier; at its share it stops.
+//   4. The leftover: once no piece wants a change within its share, what is left over the reserve goes first to a
+//      piece below the fair tier, then - only while the bag holds a safety margin over the reserve, since a reroll
+//      can drop a fair piece back below fair - to the fair piece that has had the fewest stones for its weight, up
+//      to three of its shares in all (LEFTOVER_SHARES).
+namespace playerbot_yohara_bonus_rules {
+
+enum ETier { TIER_NONE = 0, TIER_FAIR = 1, TIER_STRONG = 2 };
+enum ERole { ROLE_OTHER = 0, ROLE_MUST = 1, ROLE_WANTED = 2 };
+enum EStep { STEP_NONE, STEP_ADD, STEP_MARBLE, STEP_CHANGE };
+enum EWant { WANT_NONE, WANT_FAIR, WANT_STRONG };
+
+// A tier: this many lines of the slot's list, the slot's must line (if one can roll on the slot) at mustLevel or
+// higher and the others at otherLevel or higher. A level is the item_attr table's (1-5), normalised so that a slot's
+// own top level counts as 5 (playerbot_yohara_bonus.h).
+struct TTier
+{
+	int lines;
+	int mustLevel;
+	int otherLevel;
+};
+
+struct TLine
+{
+	int role;
+	int level;
+};
+
+// Whether a piece's lines meet a tier. available: how many kinds of the slot's list (must and wanted) can roll on
+// the piece at all - a tier never asks more lines than that; mustRolls: a must kind can roll on it.
+inline bool Meets(const TLine* lines, int count, const TTier& tier, bool mustRolls, int available)
+{
+	int need = tier.lines < available ? tier.lines : available;
+	bool must = false;
+	int others = 0;
+	for (int i = 0; i < count; ++i)
+	{
+		if (lines[i].role == ROLE_MUST && !must && lines[i].level >= tier.mustLevel)
+			must = true;
+		else if (lines[i].role != ROLE_OTHER && lines[i].level >= tier.otherLevel)
+			++others;
+	}
+	if (mustRolls && !must)
+		return false;
+	return (must ? 1 : 0) + others >= need;
+}
+
+inline int TierOf(const TLine* lines, int count, const TTier& strong, const TTier& fair, bool mustRolls, int available)
+{
+	if (count <= 0)
+		return TIER_NONE;
+	if (Meets(lines, count, strong, mustRolls, available))
+		return TIER_STRONG;
+	if (Meets(lines, count, fair, mustRolls, available))
+		return TIER_FAIR;
+	return TIER_NONE;
+}
+
+// A piece's share of the pool.
+inline int PieceCap(int weight, int sumWeights, int pool)
+{
+	if (weight <= 0 || sumWeights <= 0 || pool <= 0)
+		return 0;
+	return (int)((long long)pool * weight / sumWeights);
+}
+
+// Within its share: the strong tier while under half of it, the fair tier up to all of it.
+inline EWant MainWant(int tier, int spent, int cap)
+{
+	if (tier >= TIER_STRONG || cap <= 0)
+		return WANT_NONE;
+	if (spent * 2 < cap)
+		return WANT_STRONG;
+	if (spent < cap && tier < TIER_FAIR)
+		return WANT_FAIR;
+	return WANT_NONE;
+}
+
+// Past its share (the leftover, see the head of the file).
+inline EWant LeftoverWant(int tier, int changeUnits, int reserve, int safety)
+{
+	if (tier >= TIER_STRONG)
+		return WANT_NONE;
+	if (tier < TIER_FAIR)
+		return changeUnits > reserve ? WANT_FAIR : WANT_NONE;
+	return changeUnits > reserve + safety ? WANT_STRONG : WANT_NONE;
+}
+
+// How many of its shares a fair piece may take in all, the leftover included.
+const int LEFTOVER_SHARES = 3;
+
+struct TPiece
+{
+	int lines;
+	int maxStoneLines;	// the add stone's ceiling (4)
+	bool lineRolls;	// a new line can still land on it (the engine draws among lines it does not carry yet)
+	int tier;
+	int spent;	// changes spent on it (this world's memory of the pass)
+	int weight;
+};
+
+struct TBag
+{
+	int addUnits;
+	int changeUnits;
+	bool marble;
+};
+
+struct TChoice
+{
+	int piece;
+	EStep step;
+	EWant want;
+	bool leftover;
+	int cap;
+};
+
+// The pool the shares are cut from: the change stones held, plus those spent on the pieces listed, less the reserve.
+inline int Pool(const TPiece* pieces, int count, int changeUnits, int reserve)
+{
+	long long pool = changeUnits - reserve;
+	for (int i = 0; i < count; ++i)
+		pool += pieces[i].spent;
+	return pool > 0 ? (int)pool : 0;
+}
+
+// The next stone. The pieces come in the priority order.
+inline TChoice Pick(const TPiece* pieces, int count, const TBag& bag, int reserve, int safety)
+{
+	TChoice c = { -1, STEP_NONE, WANT_NONE, false, 0 };
+	// 1. the adds, then the marble's fifth line
+	if (bag.addUnits > 0)
+		for (int i = 0; i < count; ++i)
+			if (pieces[i].lines < pieces[i].maxStoneLines && pieces[i].lineRolls)
+			{
+				c.piece = i;
+				c.step = STEP_ADD;
+				return c;
+			}
+	if (bag.marble)
+		for (int i = 0; i < count; ++i)
+			if (pieces[i].lines == pieces[i].maxStoneLines && pieces[i].lineRolls)
+			{
+				c.piece = i;
+				c.step = STEP_MARBLE;
+				return c;
+			}
+	// the reserve is the next pieces' (a new weapon, a new armour), never spent on these
+	if (bag.changeUnits <= reserve)
+		return c;
+	int sumWeights = 0;
+	for (int i = 0; i < count; ++i)
+		if (pieces[i].lines > 0)
+			sumWeights += pieces[i].weight;
+	const int pool = Pool(pieces, count, bag.changeUnits, reserve);
+	// 2. the changes within each piece's share
+	for (int i = 0; i < count; ++i)
+	{
+		if (pieces[i].lines <= 0)
+			continue;
+		const int cap = PieceCap(pieces[i].weight, sumWeights, pool);
+		const EWant want = MainWant(pieces[i].tier, pieces[i].spent, cap);
+		if (want != WANT_NONE)
+		{
+			c.piece = i;
+			c.step = STEP_CHANGE;
+			c.want = want;
+			c.cap = cap;
+			return c;
+		}
+	}
+	// 3. the leftover: a piece below fair first, then the fair piece with the fewest stones for its weight
+	int best = -1;
+	long long bestRatio = 0;
+	for (int i = 0; i < count; ++i)
+	{
+		if (pieces[i].lines <= 0)
+			continue;
+		const EWant want = LeftoverWant(pieces[i].tier, bag.changeUnits, reserve, safety);
+		if (want == WANT_FAIR)
+		{
+			best = i;
+			break;
+		}
+		// a fair piece takes the leftover up to LEFTOVER_SHARES of its share, no more: the rest waits for the next
+		// pieces the bot will wear
+		if (want == WANT_STRONG &&
+				pieces[i].spent < LEFTOVER_SHARES * PieceCap(pieces[i].weight, sumWeights, pool))
+		{
+			const long long ratio = (long long)pieces[i].spent * 1000 / (pieces[i].weight > 0 ? pieces[i].weight : 1);
+			if (best < 0 || ratio < bestRatio)
+			{
+				best = i;
+				bestRatio = ratio;
+			}
+		}
+	}
+	if (best >= 0)
+	{
+		c.piece = best;
+		c.step = STEP_CHANGE;
+		c.want = LeftoverWant(pieces[best].tier, bag.changeUnits, reserve, safety);
+		c.leftover = true;
+		c.cap = PieceCap(pieces[best].weight, sumWeights, pool);
+	}
+	return c;
+}
+
+} // namespace playerbot_yohara_bonus_rules
+
+#endif
