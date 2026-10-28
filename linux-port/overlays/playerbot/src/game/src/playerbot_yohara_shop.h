@@ -125,10 +125,12 @@ namespace
 		n.lMap = map;
 		int share[PLAYERBOT_YOHARA_ELEMENTS];
 		GetPlayerBotYoharaMapShares(map, share);
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a bot with a hunt element stocks that element's elixirs only.
+		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
 		int resistShort = 0, powerShort = 0;
 		for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS; ++e)
 		{
-			if (share[e] < PLAYERBOT_YOHARA_ELEMENT_DEFENCE_PERCENT)
+			if (hunt >= 0 ? e != hunt : share[e] < PLAYERBOT_YOHARA_ELEMENT_DEFENCE_PERCENT)
 				continue;
 			n.abResist[e] = true;
 			const int resist = (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]);

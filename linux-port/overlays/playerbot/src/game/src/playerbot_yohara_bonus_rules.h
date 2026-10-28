@@ -24,7 +24,11 @@
 namespace playerbot_yohara_bonus_rules {
 
 enum ETier { TIER_NONE = 0, TIER_FAIR = 1, TIER_STRONG = 2 };
-enum ERole { ROLE_OTHER = 0, ROLE_MUST = 1, ROLE_WANTED = 2 };
+// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: ROLE_MUST2 - a second must kind of its own (the resistance to the bot's hunt
+// element next to the armour's and the bracelet's Max HP): a tier asks each must kind that can roll on the piece.
+enum ERole { ROLE_OTHER = 0, ROLE_MUST = 1, ROLE_WANTED = 2, ROLE_MUST2 = 3 };
+// The must kinds that can roll on a piece (Meets' mustMask).
+enum { MUST_ROLLS_1 = 1, MUST_ROLLS_2 = 2 };
 enum EStep { STEP_NONE, STEP_ADD, STEP_MARBLE, STEP_CHANGE };
 enum EWant { WANT_NONE, WANT_FAIR, WANT_STRONG };
 
@@ -45,31 +49,34 @@ struct TLine
 };
 
 // Whether a piece's lines meet a tier. available: how many kinds of the slot's list (must and wanted) can roll on
-// the piece at all - a tier never asks more lines than that; mustRolls: a must kind can roll on it.
-inline bool Meets(const TLine* lines, int count, const TTier& tier, bool mustRolls, int available)
+// the piece at all - a tier never asks more lines than that; mustMask: which must kinds (MUST_ROLLS_1 for ROLE_MUST,
+// MUST_ROLLS_2 for ROLE_MUST2) can roll on it - each of those must be there at mustLevel or higher.
+inline bool Meets(const TLine* lines, int count, const TTier& tier, int mustMask, int available)
 {
 	int need = tier.lines < available ? tier.lines : available;
-	bool must = false;
+	int found = 0;
 	int others = 0;
 	for (int i = 0; i < count; ++i)
 	{
-		if (lines[i].role == ROLE_MUST && !must && lines[i].level >= tier.mustLevel)
-			must = true;
+		const int bit = lines[i].role == ROLE_MUST ? MUST_ROLLS_1 : (lines[i].role == ROLE_MUST2 ? MUST_ROLLS_2 : 0);
+		if (bit && !(found & bit) && lines[i].level >= tier.mustLevel)
+			found |= bit;
 		else if (lines[i].role != ROLE_OTHER && lines[i].level >= tier.otherLevel)
 			++others;
 	}
-	if (mustRolls && !must)
+	if ((found & mustMask) != mustMask)
 		return false;
-	return (must ? 1 : 0) + others >= need;
+	const int musts = ((found & MUST_ROLLS_1) ? 1 : 0) + ((found & MUST_ROLLS_2) ? 1 : 0);
+	return musts + others >= need;
 }
 
-inline int TierOf(const TLine* lines, int count, const TTier& strong, const TTier& fair, bool mustRolls, int available)
+inline int TierOf(const TLine* lines, int count, const TTier& strong, const TTier& fair, int mustMask, int available)
 {
 	if (count <= 0)
 		return TIER_NONE;
-	if (Meets(lines, count, strong, mustRolls, available))
+	if (Meets(lines, count, strong, mustMask, available))
 		return TIER_STRONG;
-	if (Meets(lines, count, fair, mustRolls, available))
+	if (Meets(lines, count, fair, mustMask, available))
 		return TIER_FAIR;
 	return TIER_NONE;
 }

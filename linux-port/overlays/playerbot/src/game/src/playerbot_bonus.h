@@ -1772,6 +1772,9 @@ namespace
 	// own pass - no new piece is held in the bag for them.
 	bool IsPlayerBotYoharaBonusMember(LPCHARACTER ch);
 	int ManagePlayerBotYoharaBonus(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a Yohara bot rolls its costume and hairstyle from the bag where it stands
+	// (ManagePlayerBotBonusReroll) - the reagents a player uses anywhere.
+	bool ManagePlayerBotCostumeBonus(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	bool PlayerBotHoldsBonusStoneFor(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || IsPlayerBotYoharaBonusMember(ch))
@@ -2392,9 +2395,12 @@ namespace
 		state.dwNextBonusCheckTime = dwNow + PLAYERBOT_BONUS_INTERVAL;
 		// MT2009_PLUS_BOT_YOHARA_BONUS_V1: a Yohara bot holding the ordinary stones bonuses its gear by its own pass
 		// (playerbot_yohara_bonus.h) - none of the categories, the dust's stones or the goods below.
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: its costume and hairstyle for Yohara (IsPlayerBotYoharaCostumeLineGood) from
+		// the 70063/70064 it bought at Handlarka Roznosci - out of a fight, as this pass is.
+		const bool costumeRolled = IsPlayerBotYoharaBonusMember(ch) && ManagePlayerBotCostumeBonus(ch, state, dwNow);
 		const int yoharaStones = ManagePlayerBotYoharaBonus(ch, state, dwNow);
 		if (yoharaStones >= 0)
-			return yoharaStones > 0;
+			return yoharaStones > 0 || costumeRolled;
 		// MT2009_PLUS_BOT_DUST_BONUS_V1: the marble first, else an add or a
 		// change stone the pass below spends at once.
 		if (!ManagePlayerBotDustMarble(ch))
@@ -2540,10 +2546,17 @@ namespace
 	{
 		int good = 0;
 		for (int i = 0; item && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
-			if (item->GetAttributeValue(i) > 0 &&
+		{
+			if (item->GetAttributeValue(i) <= 0)
+				continue;
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a Yohara bot's costume and hairstyle by the Yohara list
+			// (playerbot_element_resist.h).
+			const int yohara = IsPlayerBotYoharaCostumeLineGood(ch, item, item->GetAttributeType(i), item->GetAttributeValue(i));
+			if (yohara >= 0 ? yohara > 0 :
 					ScorePlayerBotCostumeLine(ch, item, item->GetAttributeType(i), item->GetAttributeValue(i)) >=
 					PLAYERBOT_COSTUME_GOOD_LINE_SCORE)
 				++good;
+		}
 		return good;
 	}
 

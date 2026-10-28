@@ -351,6 +351,28 @@ namespace
 		const BYTE group = ch ? ch->GetSkillGroup() : 0;
 		const bool magic = (job == JOB_SURA && group == 2) || job == JOB_SHAMAN;
 		const bool archer = job == JOB_ASSASSIN && group == 2;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1 (the owner, 28 October 2026): a bot with a hunt element wants that element's
+		// power and resistance lines and no other element's; the Onyx's lines (melee block, arrow dodge, crit and pierce
+		// resistance - "the most important dragon stone on Yohara") over the old middle.
+		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
+		if (hunt >= 0)
+		{
+			const int resistE = GetPlayerBotResistLineElement(type);
+			if (resistE >= 0)
+				return resistE == hunt ? 10 : 1;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(MT2009_PLUS_ELEMENTS_V1)
+			if (type >= POINT_ENCHANT_ELECT && type <= POINT_ENCHANT_DARK)
+				return type - POINT_ENCHANT_ELECT == hunt ? 9 : 1;
+#endif
+			switch (type)
+			{
+				case POINT_BLOCK: return 9;
+				case POINT_DODGE: return 8;
+				case POINT_RESIST_PENETRATE: return 8;
+				case POINT_RESIST_CRITICAL: return 7;
+				default: break;
+			}
+		}
 		switch (type)
 		{
 			case POINT_SUNGMA_STR: return 10;
