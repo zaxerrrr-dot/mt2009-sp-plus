@@ -35,3 +35,13 @@ Linux/VPS: `python3 apply_wiezasm.py <game/src>`; Windows: `Apply-WiezaSmPatch.p
 tylko mikstury wieżowe (W) 70390–70395 – zwykłe mikstury (USE_POTION, USE_POTION_NODELAY, USE_POTION_CONTINUE) i
 autoeliksiry (Eliksir Słońca/Księżyca 72723–72730, 39037–39042) są odrzucane, a włączony wcześniej autoeliksir nie leczy
 w wieży (`AutoRecoveryItemProcess`). Edycje `(other potions)` i `(auto potions)` w `char_item.cpp`.
+
+## Wieża w pojedynkę, okno wieży, ranking (`MT2009_PLUS_SMH_TOWER_V3`, 28.10.2026)
+
+Bez zmian silnika – wszystko w queście `wieza_sung_mahi` (opis: `linux-port/docker/game/yohara_dung4/README.md`) i w
+kliencie (`client-patches/client-2.0.30/root/uiwiezasm.py`, uiscripty GF `sungmaheetowerenter.py` /
+`sungmaheetowerinformationboard.py`, obrazy GF w paczce `wieza` – `client-patches/client-2.0.30/tools/wieza`).
+Quest używa tylko funkcji, które już są: `d.zone_attack`, `d.zone_hurt`, `d.kick_dead` (`server-patches/strefy`),
+`affect.add_new` z flagą `AFF_STUN` (zamęt = ogłuszenie, afekt 1850; Wola SungMa SIŁA −32 – afekt 1851),
+`mysql_direct_query` (ranking `player.wieza_smh_rank`, nagrody do `player.item_award`; w zapytaniach tylko liczby).
+Afekty 1850/1851 nie są na liście `IS_NO_CLEAR_ON_DEATH_AFFECT` – śmierć i tak kończy wspinaczkę.

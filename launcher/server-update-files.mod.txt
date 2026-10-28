@@ -461,6 +461,9 @@ linux-port/docker/mariadb/playerbot/yohara_eliksiry.sql
 # lines each (apply.sh); the one-at-a-time rule and the Yohara bots' stone are playerbot_element_stones.{h,cpp} (the
 # playerbot_* lines), the ItemShop lines (apply.sh, indexes 70-71) and the web pictures (linux-port/docker/itemshop/* above).
 linux-port/docker/mariadb/playerbot/kamienie_zywiolow.sql
+# MT2009_PLUS_SMH_RANKING_V1: Wieza Sung Mahi's floor ranking and its monthly season (quest wieza_sung_mahi in quest/*;
+# apply.sh creates the tables).
+linux-port/docker/mariadb/playerbot/wieza_smh_ranking.sql
 linux-port/docker/mariadb/playerbot/yohara_zaklety.sql
 linux-port/docker/mariadb/playerbot/yohara_items_zaklety.sql
 linux-port/docker/mariadb/playerbot/yohara_zaklety_zywioly.sql

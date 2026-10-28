@@ -4347,6 +4347,18 @@ if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (39119, 39120
 ishop_once element_stones_70 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (70, 39120, 1, 65, 'DRAGON_COIN', 0), (71, 39119, 1, 65, 'DRAGON_COIN', 0);" "could not add Kamien Ochrony / Mocy Zywiolow to the ItemShop"
 fi
 
+# MT2009_PLUS_SMH_RANKING_V1: Wieza Sung Mahi's floor ranking (the owner, 28 October 2026) - wieza_smh_ranking.sql:
+# player.wieza_smh_rank (season, floor, pid, best_time; the quest wieza_sung_mahi writes a floor's best time and shows
+# the place in the tower window) and player.wieza_smh_season (the monthly seasons already paid: the first place of
+# every floor gets Skrzynia Triumfu 50249 into the ItemShop storage). Idempotent (CREATE TABLE IF NOT EXISTS).
+if [ -s /opt/playerbot/wieza_smh_ranking.sql ]; then
+    if db < /opt/playerbot/wieza_smh_ranking.sql; then
+        echo "[playerbot-migrate] Wieza Sung Mahi: wieza_smh_ranking.sql applied (MT2009_PLUS_SMH_RANKING_V1)"
+    else
+        fail_step "Wieza Sung Mahi: wieza_smh_ranking.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
 # Nazara 71202, Lizak Magii 71188, Czekoladowy Amulet 71199, Mistrzowski Emblemat 70607, Blogoslawienstwo Mocy 72713,

@@ -500,6 +500,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiusunmisje").DestroyWindow()
 		# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: Portowy Sklep Gaya (uiygaya.py).
 		__import__("uiygaya").DestroyWindow()
+		# MT2009_PLUS_SMH_TOWER_V3: Wieza Sung Mahi's window, floor board and defeat popup (uiwiezasm.py).
+		__import__("uiwiezasm").DestroyWindow()
 		# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: the young heroes' weapon choice (uimlodzibohaterowie.py).
 		__import__("uimlodzibohaterowie").DestroyWindow()
 		# MT2009_PLUS_FLOWER_V1: the Flower Event's window (uiflowerevent.py).
@@ -1358,6 +1360,9 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: the quest input of a Sklep Gaya click is answered there, not shown
 		if __import__("uiygaya").ConsumeQuestWindow(skin, idx):
 			return
+		# MT2009_PLUS_SMH_TOWER_V3: the same for a Wieza Sung Mahi click (uiwiezasm.py)
+		if __import__("uiwiezasm").ConsumeQuestWindow(skin, idx):
+			return
 		self.interface.OpenQuestWindow(skin, idx)
 
 	def AskGuildName(self):
@@ -1661,6 +1666,9 @@ class GameWindow(ui.ScriptWindow):
 
 	def OnGameOver(self):
 		self.CloseTargetBoard()
+		# MT2009_PLUS_SMH_TOWER_V3: a death in Wieza Sung Mahi ends the climb - the defeat popup (uiwiezasm.py)
+		if __import__("uiwiezasm").OnGameOver(self):
+			return
 		self.OpenRestartDialog()
 
 	def OpenRestartDialog(self):
@@ -3518,6 +3526,8 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_DIGI_SERVER_QOL_V1 (Autor: Digi Rasta): RefineFailedType, KillBar, KillSound,
 		# SkillCoolTimeReset, DeadTime, NOWY_KSIEGI (digiserverqol.py).
 		__import__("digiserverqol").Register(self)
+		# MT2009_PLUS_SMH_TOWER_V3: Wieza Sung Mahi's "WSM" lines (uiwiezasm.py).
+		__import__("uiwiezasm").Register(self)
 
 	def BINARY_ServerCommand_Run(self, line):
 		try:
