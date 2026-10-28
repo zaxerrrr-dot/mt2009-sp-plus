@@ -67,6 +67,14 @@ namespace
 		DWORD dwPrice;
 		DWORD dwCount;
 		BYTE bMinLevel;
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		// MT2009_PLUS_BOT_ISHOP_V3_V1: a line of the ItemShop V3 (itemshop3.shop) - its time in minutes (the expiry put
+		// into the item as the shop's buy.php does, Player::CreateItem; 0 = the proto's own), whether it stacks, and the
+		// sockets the line sets. dwIndex is the V3 line id then.
+		DWORD dwMinutes;
+		bool bStackable;
+		long alSockets[ITEM_SOCKET_MAX_NUM];
+#endif
 	};
 
 	// The catalogue as the bots read it: every line per vnum for each
@@ -112,6 +120,304 @@ namespace
 	std::map<DWORD, unsigned int> s_mapPlayerBotItemShopBought;
 	DWORD s_dwNextPlayerBotItemShopCensus = 0;
 
+	// One line of the catalogue into the tables the wishes and the looks read.
+	void AddPlayerBotItemShopLine(DWORD vnum, const TItemTable* proto, const TPlayerBotItemShopEntry& entry, bool marks)
+	{
+		TPlayerBotItemShopTable& table = marks ? s_mapPlayerBotItemShopMarks : s_mapPlayerBotItemShopCoins;
+		std::vector<TPlayerBotItemShopEntry>& lines = table[vnum];
+		const bool first = lines.empty();
+		lines.push_back(entry);
+		// the look lists name a vnum once (a second line of it - another time - is the same look)
+		if (!first)
+			return;
+		// MT2009_PLUS_BOT_HAIR_V1: only a costume set's hairstyle is a
+		// bot's to buy (IsPlayerBotSetHairVnum, playerbot_economy.h).
+		if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_HAIR &&
+				IsPlayerBotSetHairVnum(vnum))
+			s_vecPlayerBotItemShopHair.push_back(vnum);
+		if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_BODY)
+			s_vecPlayerBotItemShopBody.push_back(vnum);
+		if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_WEAPON)
+			s_vecPlayerBotItemShopWeaponSkin.push_back(vnum);
+		if (!marks && proto->bType == ITEM_PET && proto->bSubType == PET_PAY && proto->alValues[0] != 0 &&
+				proto->alValues[2] == 0)
+			s_vecPlayerBotItemShopPet.push_back(vnum);
+#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
+		if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_MOUNT && proto->alValues[1] != 0)
+			s_vecPlayerBotItemShopMount.push_back(vnum);
+#endif
+	}
+
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+	// ------------------------------------------------- MT2009_PLUS_BOT_ISHOP_V3_V1
+	//
+	// The bots buy in the ItemShop V3 only (the owner, 28 October 2026): the lines and prices the players see there
+	// (the view itemshop3.shop - common.itemshop_items with itemshop3.line_overrides, the V3-only lines of
+	// itemshop3.v3_lines, the set chests), read every PLAYERBOT_ISHOP_CATALOGUE_INTERVAL per core. Never a Kupon SM
+	// (80014-80019), a VIP line, a flash offer, Auto Lowy (72800/72801), Szklo Handlu (72802), Kolekcjoner (70115) or
+	// Kamien Duchowy (50513, hidden in V3 - line 907, category 0); never an Arezzo line while the module is off.
+	//
+	// The purchase is the bots' own, as buy.php makes it for a player: the balance read fresh, the bag's room for every
+	// piece, the charge (CItemShopManager::AddCash through the db core - a Smocze Monety line gives the price back as
+	// Smocze Znaki in the same UPDATE, ClientManager::ChargeCash, as V3 gives 100% back), the goods (AutoGiveItem, the
+	// line's time put into the item as Player::CreateItem puts it), log.itemshop with the bots' currency marker
+	// (PLAYERBOT_ISHOP3_LOG_CURRENCY_*: 11 Smocze Monety, 12 Smocze Znaki - never V3's history, so nothing a bot buys
+	// counts for "Popularne"), and the money back for whatever could not be given. The source switch: ISHOP_SOURCE
+	// (playerbot_config.h; 2 V3, 1 the old in-game catalogue, 0 nothing). The goals that buy through it are
+	// playerbot_ishop3_goals.h.
+	const int PLAYERBOT_ISHOP3_LOG_CURRENCY_COINS = 11;
+	const int PLAYERBOT_ISHOP3_LOG_CURRENCY_MARKS = 12;
+	const int PLAYERBOT_ISHOP3_MAX_QTY = 10;		// buy.php: 1..10 a purchase
+	const DWORD PLAYERBOT_ISHOP3_FRESH_MS = 60 * 1000;	// a balance older than this is read again before a purchase
+	const DWORD PLAYERBOT_ISHOP3_CHARGE_SETTLE_MS = 10 * 1000;	// no read on the heels of a charge (async, db core)
+
+	int GetPlayerBotItemShopSource();
+
+	bool IsPlayerBotIshop3ExcludedVnum(DWORD vnum)
+	{
+		return (vnum >= 80014 && vnum <= 80019) || vnum == 72800 || vnum == 72801 || vnum == 72802 || vnum == 70115 ||
+				vnum == PLAYERBOT_GRAND_MASTER_STONE_VNUM || vnum == playerbot_collector::ITEM_VNUM;
+	}
+
+	// A set chest of the "Sety Bonusowe" category (itemshop3.chests / chest_drops / chest_items): its results with
+	// their chances (parts per million) and, per result, its items - each the alternatives by sex and class.
+	struct TPlayerBotIshop3ChestAlt
+	{
+		DWORD dwVnum;
+		DWORD dwCount;
+		DWORD dwMinutes;
+	};
+
+	struct TPlayerBotIshop3ChestDrop
+	{
+		int iDropNo;
+		int iPpm;
+		std::vector<std::vector<TPlayerBotIshop3ChestAlt> > items;
+	};
+
+	struct TPlayerBotIshop3Chest
+	{
+		DWORD dwLine;
+		DWORD dwChestId;
+		DWORD dwPrice;
+		DWORD dwRolls;	// the line's count: rolls a purchase (buy_chest.php)
+		BYTE bMinLevel;
+		std::vector<TPlayerBotIshop3ChestDrop> drops;
+	};
+
+	std::vector<TPlayerBotIshop3Chest> s_vecPlayerBotIshop3Chests;
+
+	// The census by category (PLAYERBOT_ISHOP3: census, hourly).
+	struct TPlayerBotIshop3Census
+	{
+		unsigned int uBuys, uPieces, uNoCoins, uNotListed, uBagFull, uRefunds;
+		long long llCoins, llMarks;
+	};
+	std::map<std::string, TPlayerBotIshop3Census> s_mapPlayerBotIshop3Census;
+	std::map<DWORD, DWORD> s_mapPlayerBotIshop3LastCharge;
+
+	TPlayerBotIshop3Census& GetPlayerBotIshop3Census(const char* category)
+	{
+		std::map<std::string, TPlayerBotIshop3Census>::iterator it = s_mapPlayerBotIshop3Census.find(category);
+		if (it == s_mapPlayerBotIshop3Census.end())
+		{
+			TPlayerBotIshop3Census zero = TPlayerBotIshop3Census();
+			it = s_mapPlayerBotIshop3Census.insert(std::make_pair(std::string(category), zero)).first;
+		}
+		return it->second;
+	}
+
+	// The census category of a purchase's reason (the goals' own reasons are their categories).
+	const char* GetPlayerBotIshop3Category(const char* reason)
+	{
+		if (!reason)
+			return "other";
+		static const char* const s_looks[] = { "look", "hairstyle", "secondset", "counter_hairstyle" };
+		for (size_t i = 0; i < sizeof(s_looks) / sizeof(s_looks[0]); ++i)
+			if (strncmp(reason, s_looks[i], strlen(s_looks[i])) == 0)
+				return "look";
+		if (strncmp(reason, "element", 7) == 0)
+			return "element";
+		if (strcmp(reason, "change_stone") == 0)
+			return "bonus_change";
+		if (strcmp(reason, "blessing_scroll") == 0)
+			return "refine";
+		if (strncmp(reason, "bonus_", 6) == 0 || strcmp(reason, "cor") == 0 || strcmp(reason, "bean") == 0 ||
+				strcmp(reason, "sash") == 0 || strcmp(reason, "refine") == 0 || strcmp(reason, "chest") == 0)
+			return reason;
+		return "wish";
+	}
+
+	long long PlayerBotIshop3Num(MYSQL_ROW row, int i)
+	{
+		return row[i] ? atoll(row[i]) : 0;
+	}
+
+	// The set chests' results, once a catalogue read: the chances must add up to the million (buy_chest.php refuses
+	// a chest whose do not).
+	void LoadPlayerBotIshop3ChestDrops()
+	{
+		if (s_vecPlayerBotIshop3Chests.empty())
+			return;
+		std::map<DWORD, size_t> byId;
+		for (size_t i = 0; i < s_vecPlayerBotIshop3Chests.size(); ++i)
+			byId[s_vecPlayerBotIshop3Chests[i].dwChestId] = i;
+		{
+			std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
+					"SELECT chest_id, drop_no, ppm FROM itemshop3.chest_drops ORDER BY chest_id, drop_no"));
+			if (!msg || !msg->Get() || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row;
+			while ((row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			{
+				std::map<DWORD, size_t>::const_iterator it = byId.find((DWORD)PlayerBotIshop3Num(row, 0));
+				if (it == byId.end())
+					continue;
+				TPlayerBotIshop3ChestDrop drop;
+				drop.iDropNo = (int)PlayerBotIshop3Num(row, 1);
+				drop.iPpm = (int)PlayerBotIshop3Num(row, 2);
+				s_vecPlayerBotIshop3Chests[it->second].drops.push_back(drop);
+			}
+		}
+		{
+			std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
+					"SELECT chest_id, drop_no, item_no, vnum, count, minutes FROM itemshop3.chest_items "
+					"ORDER BY chest_id, drop_no, item_no, alt_no"));
+			if (!msg || !msg->Get() || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row;
+			while ((row = mysql_fetch_row(msg->Get()->pSQLResult)))
+			{
+				std::map<DWORD, size_t>::const_iterator it = byId.find((DWORD)PlayerBotIshop3Num(row, 0));
+				if (it == byId.end())
+					continue;
+				std::vector<TPlayerBotIshop3ChestDrop>& drops = s_vecPlayerBotIshop3Chests[it->second].drops;
+				const int dropNo = (int)PlayerBotIshop3Num(row, 1);
+				const int itemNo = (int)PlayerBotIshop3Num(row, 2);
+				for (size_t d = 0; d < drops.size(); ++d)
+				{
+					if (drops[d].iDropNo != dropNo)
+						continue;
+					if (itemNo < 1 || itemNo > 16)
+						break;
+					if ((int)drops[d].items.size() < itemNo)
+						drops[d].items.resize(itemNo);
+					TPlayerBotIshop3ChestAlt alt;
+					alt.dwVnum = (DWORD)PlayerBotIshop3Num(row, 3);
+					alt.dwCount = (DWORD)std::max<long long>(1, PlayerBotIshop3Num(row, 4));
+					alt.dwMinutes = (DWORD)std::max<long long>(0, PlayerBotIshop3Num(row, 5));
+					if (ITEM_MANAGER::instance().GetTable(alt.dwVnum))
+						drops[d].items[itemNo - 1].push_back(alt);
+					break;
+				}
+			}
+		}
+		// a chest whose chances are not the million, or with a result of no item, is not bought
+		std::vector<TPlayerBotIshop3Chest> sound;
+		for (size_t i = 0; i < s_vecPlayerBotIshop3Chests.size(); ++i)
+		{
+			const TPlayerBotIshop3Chest& c = s_vecPlayerBotIshop3Chests[i];
+			long long ppm = 0;
+			bool ok = !c.drops.empty();
+			for (size_t d = 0; d < c.drops.size(); ++d)
+			{
+				ppm += c.drops[d].iPpm;
+				for (size_t k = 0; k < c.drops[d].items.size(); ++k)
+					if (c.drops[d].items[k].empty())
+						ok = false;
+				if (c.drops[d].items.empty())
+					ok = false;
+			}
+			if (ok && ppm == 1000000)
+				sound.push_back(c);
+		}
+		s_vecPlayerBotIshop3Chests.swap(sound);
+	}
+
+	// The V3 catalogue into the tables; the lines kept. 0: the view could not be read (asked again soon).
+	unsigned int RefreshPlayerBotIshop3Catalogue(bool arezzoClosed)
+	{
+		s_vecPlayerBotIshop3Chests.clear();
+		std::unique_ptr<SQLMsg> msg(DBManager::instance().DirectQuery(
+				"SELECT s.id, s.category, s.pay_type, s.coins, s.discount, s.count, s.vnum, s.socket0, s.socket1, s.socket2, "
+				"s.time, s.min_level, s.stackable, COALESCE(s.vip, 0), COALESCE(s.auction, 0), s.arezzo_locked, s.chest, "
+				"COALESCE(s.available, 0), COALESCE(c.kind, '') "
+				"FROM itemshop3.shop s LEFT JOIN itemshop3.categories c ON c.id = s.category"));
+		if (!msg || !msg->Get() || !msg->Get()->pSQLResult)
+			return 0;
+		unsigned int kept = 0, rows = 0, chests = 0;
+		MYSQL_ROW row;
+		while ((row = mysql_fetch_row(msg->Get()->pSQLResult)))
+		{
+			++rows;
+			const DWORD id = (DWORD)PlayerBotIshop3Num(row, 0);
+			const long long category = PlayerBotIshop3Num(row, 1);
+			const int payType = (int)PlayerBotIshop3Num(row, 2);
+			const long long coins = PlayerBotIshop3Num(row, 3);
+			const long long discount = PlayerBotIshop3Num(row, 4);
+			const long long count = PlayerBotIshop3Num(row, 5);
+			const DWORD vnum = (DWORD)PlayerBotIshop3Num(row, 6);
+			const long long minutes = PlayerBotIshop3Num(row, 10);
+			const long long minLevel = PlayerBotIshop3Num(row, 11);
+			const bool vip = PlayerBotIshop3Num(row, 13) != 0;
+			const bool auction = PlayerBotIshop3Num(row, 14) != 0;
+			const bool arezzoLocked = PlayerBotIshop3Num(row, 15) != 0;
+			const DWORD chest = (DWORD)PlayerBotIshop3Num(row, 16);
+			const bool available = PlayerBotIshop3Num(row, 17) == 1;
+			const char* kind = row[18] ? row[18] : "";
+			// Shop::getItemPrice: the discount's whole per cent off
+			const long long price = coins - (long long)((double)discount / 100.0 * (double)coins);
+			if (category <= 0 || vip || auction || arezzoLocked || !available || price <= 0 || price > INT_MAX ||
+					count <= 0 || (payType != 1 && payType != 2))
+				continue;
+			if (chest != 0)
+			{
+				// MT2009_PLUS_BOT_ISHOP_V3_V1 (phase 2): the costume set chests only, for Smocze Monety
+				if (strcmp(kind, "sets") == 0 && payType == 1)
+				{
+					TPlayerBotIshop3Chest c;
+					c.dwLine = id;
+					c.dwChestId = chest;
+					c.dwPrice = (DWORD)price;
+					c.dwRolls = (DWORD)std::min<long long>(count, 100);
+					c.bMinLevel = (BYTE)std::min<long long>(std::max<long long>(minLevel, 0), 255);
+					s_vecPlayerBotIshop3Chests.push_back(c);
+					++chests;
+				}
+				continue;
+			}
+			if (IsPlayerBotIshop3ExcludedVnum(vnum))
+				continue;
+			const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+			if (!proto)
+				continue;
+			// the Arezzo costume sets while the module is off (the view says it too - arezzo_locked)
+			if (arezzoClosed && mt2009_arezzo_costumes::IsItem(vnum))
+				continue;
+			TPlayerBotItemShopEntry entry = TPlayerBotItemShopEntry();
+			entry.dwIndex = id;
+			entry.dwPrice = (DWORD)price;
+			entry.dwCount = (DWORD)std::min<long long>(count, 10000);
+			entry.bMinLevel = (BYTE)std::min<long long>(std::max<long long>(minLevel, 0), 255);
+			entry.dwMinutes = (DWORD)std::max<long long>(0, minutes);
+			entry.bStackable = PlayerBotIshop3Num(row, 12) != 0 && IS_SET(proto->dwFlags, ITEM_FLAG_STACKABLE) &&
+					!IS_SET(proto->dwAntiFlags, ITEM_ANTIFLAG_STACK);
+			for (int i = 0; i < ITEM_SOCKET_MAX_NUM && i < 3; ++i)
+				entry.alSockets[i] = (long)PlayerBotIshop3Num(row, 7 + i);
+			AddPlayerBotItemShopLine(vnum, proto, entry, payType == 2);
+			++kept;
+		}
+		LoadPlayerBotIshop3ChestDrops();
+		sys_log(0, "PLAYERBOT_ISHOP3: catalogue rows=%u lines=%u coins=%u marks=%u chests=%u/%u hairstyles=%u costumes=%u "
+				"weapon_skins=%u pets=%u mounts=%u",
+				rows, kept, (unsigned int)s_mapPlayerBotItemShopCoins.size(), (unsigned int)s_mapPlayerBotItemShopMarks.size(),
+				(unsigned int)s_vecPlayerBotIshop3Chests.size(), chests, (unsigned int)s_vecPlayerBotItemShopHair.size(),
+				(unsigned int)s_vecPlayerBotItemShopBody.size(), (unsigned int)s_vecPlayerBotItemShopWeaponSkin.size(),
+				(unsigned int)s_vecPlayerBotItemShopPet.size(), (unsigned int)s_vecPlayerBotItemShopMount.size());
+		return kept;
+	}
+#endif
+
 	void RefreshPlayerBotItemShopCatalogue(DWORD dwNow)
 	{
 		// MT2009_PLUS_AREZZO_COSTUME_SETS_V2: the Arezzo module switched on or off (the panel, live) -
@@ -123,6 +429,16 @@ namespace
 			s_iPlayerBotItemShopArezzoClosed = arezzoClosed;
 			s_dwNextPlayerBotItemShopScan = 0;
 		}
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		// MT2009_PLUS_BOT_ISHOP_V3_V1: the source switched (the panel, live) - the other catalogue at once.
+		static int s_iPlayerBotItemShopSourceRead = -1;
+		const int source = GetPlayerBotItemShopSource();
+		if (source != s_iPlayerBotItemShopSourceRead)
+		{
+			s_iPlayerBotItemShopSourceRead = source;
+			s_dwNextPlayerBotItemShopScan = 0;
+		}
+#endif
 		if (s_dwNextPlayerBotItemShopScan != 0 && dwNow < s_dwNextPlayerBotItemShopScan)
 			return;
 		s_dwNextPlayerBotItemShopScan = dwNow + PLAYERBOT_ISHOP_CATALOGUE_INTERVAL;
@@ -133,6 +449,15 @@ namespace
 		s_vecPlayerBotItemShopWeaponSkin.clear();
 		s_vecPlayerBotItemShopPet.clear();
 		s_vecPlayerBotItemShopMount.clear();
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		if (source == 2)
+		{
+			if (RefreshPlayerBotIshop3Catalogue(arezzoClosed != 0) == 0)
+				s_dwNextPlayerBotItemShopScan = dwNow + 5 * 60 * 1000;
+			return;
+		}
+		s_vecPlayerBotIshop3Chests.clear();
+#endif
 
 		CItemShopManager& shop = CItemShopManager::instance();
 		unsigned int entries = 0;
@@ -156,30 +481,13 @@ namespace
 			// Arezzo module is off (the engine's BuyItem refuses them too).
 			if (arezzoClosed && mt2009_arezzo_costumes::IsItem(item.dwVnum))
 				continue;
-			TPlayerBotItemShopEntry entry;
+			TPlayerBotItemShopEntry entry = TPlayerBotItemShopEntry();
 			entry.dwIndex = item.dwIndex;
 			entry.dwPrice = shop.GetItemPrice(item);
 			entry.dwCount = item.dwCount;
 			entry.bMinLevel = item.bMinLevel;
 			const bool marks = shop.GetItemCurrency(item) == CItemShopManager::CURRENCY_DRAGON_MARK;
-			TPlayerBotItemShopTable& table = marks ? s_mapPlayerBotItemShopMarks : s_mapPlayerBotItemShopCoins;
-			table[item.dwVnum].push_back(entry);
-			// MT2009_PLUS_BOT_HAIR_V1: only a costume set's hairstyle is a
-			// bot's to buy (IsPlayerBotSetHairVnum, playerbot_economy.h).
-			if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_HAIR &&
-					IsPlayerBotSetHairVnum(item.dwVnum))
-				s_vecPlayerBotItemShopHair.push_back(item.dwVnum);
-			if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_BODY)
-				s_vecPlayerBotItemShopBody.push_back(item.dwVnum);
-			if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_WEAPON)
-				s_vecPlayerBotItemShopWeaponSkin.push_back(item.dwVnum);
-			if (!marks && proto->bType == ITEM_PET && proto->bSubType == PET_PAY && proto->alValues[0] != 0 &&
-					proto->alValues[2] == 0)
-				s_vecPlayerBotItemShopPet.push_back(item.dwVnum);
-#if defined(ENABLE_MOUNT_COSTUME_SYSTEM)
-			if (!marks && proto->bType == ITEM_COSTUME && proto->bSubType == COSTUME_MOUNT && proto->alValues[1] != 0)
-				s_vecPlayerBotItemShopMount.push_back(item.dwVnum);
-#endif
+			AddPlayerBotItemShopLine(item.dwVnum, proto, entry, marks);
 		}
 		if (entries == 0)
 		{
@@ -202,6 +510,330 @@ namespace
 		state.bDragonBalanceKnown = true;
 		state.dwNextItemShopBalanceTime = dwNow + PLAYERBOT_ISHOP_BALANCE_INTERVAL;
 	}
+
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+	// MT2009_PLUS_BOT_ISHOP_V3_V1: the balance read fresh before a purchase session - the weekly grants
+	// (account.sm_grant_tier) and the panel put coins on the account outside the core - unless it was read within
+	// PLAYERBOT_ISHOP3_FRESH_MS, or a charge of this bot's is still on its way through the db core (a read then would
+	// show the coins it already spent).
+	void EnsurePlayerBotIshop3FreshBalance(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		std::map<DWORD, DWORD>::const_iterator charge = s_mapPlayerBotIshop3LastCharge.find(ch->GetPlayerID());
+		if (state.bDragonBalanceKnown && charge != s_mapPlayerBotIshop3LastCharge.end() &&
+				(int)(dwNow - charge->second) < (int)PLAYERBOT_ISHOP3_CHARGE_SETTLE_MS)
+			return;
+		const DWORD readAt = state.dwNextItemShopBalanceTime - PLAYERBOT_ISHOP_BALANCE_INTERVAL;
+		if (state.bDragonBalanceKnown && state.dwNextItemShopBalanceTime != 0 &&
+				(int)(dwNow - readAt) < (int)PLAYERBOT_ISHOP3_FRESH_MS)
+			return;
+		RefreshPlayerBotDragonBalance(ch, state, dwNow);
+	}
+
+	// The line's time into a new item, as Player::CreateItem (shop3/include/classes/Player.php) writes it for the
+	// ItemShop storage: a unique item's remaining time (or its end), a real-time item's end, a first-use item's and a
+	// worn-time item's seconds.
+	void ApplyPlayerBotIshop3Time(LPITEM item, const TItemTable* proto, DWORD minutes)
+	{
+		if (!item || !proto || minutes == 0)
+			return;
+		const long secs = (long)minutes * 60;
+		const long now = (long)get_global_time();
+		if (proto->bType == ITEM_UNIQUE)
+		{
+			item->SetSocket(ITEM_SOCKET_UNIQUE_REMAIN_TIME, proto->alValues[2] == 0 ? secs : now + secs);
+			return;
+		}
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+		{
+			const BYTE type = proto->aLimits[i].bType;
+			if (type == LIMIT_REAL_TIME)
+				item->SetSocket(0, now + secs);
+			else if (type == LIMIT_REAL_TIME_START_FIRST_USE)
+				item->SetSocket(0, proto->aLimits[i].lValue ? secs : now + secs);
+			else if (type == LIMIT_TIMER_BASED_ON_WEAR)
+				item->SetSocket(0, secs);
+		}
+	}
+
+	// The charge (negative) or the refund (positive) of a purchase. A Smocze Monety charge gives the price back as
+	// Smocze Znaki in the same UPDATE (ClientManager::ChargeCash: cash_mark + |second|), so its refund takes them back.
+	void ChargePlayerBotIshop3(LPCHARACTER ch, bool marks, long long amount)
+	{
+		if (amount == 0)
+			return;
+		CItemShopManager& shop = CItemShopManager::instance();
+		if (marks)
+		{
+			shop.AddCash(ch, ERequestCharge_Marks, (long)amount, false);
+			return;
+		}
+		shop.AddCash(ch, ERequestCharge_Cash, (long)amount, false);
+		if (amount > 0)
+			shop.AddCash(ch, ERequestCharge_Marks, -(long)amount, false);
+	}
+
+	// The log.itemshop row of a bot's V3 purchase (V3's own history and so "Popularne" never see it).
+	void LogPlayerBotIshop3(LPCHARACTER ch, DWORD line, DWORD vnum, int qty, long long price, bool marks, DWORD itemId,
+			int before)
+	{
+		LogManager::instance().Query("INSERT INTO itemshop (pid, aid, item_index, vnum, quantity, price, currency, item_id, "
+				"time, money_before) VALUES (%u, %u, %u, %u, %d, %lld, %d, %u, NOW(), %u)",
+				ch->GetPlayerID(), ch->GetDesc()->GetAccountTable().id, line, vnum, qty, price,
+				marks ? PLAYERBOT_ISHOP3_LOG_CURRENCY_MARKS : PLAYERBOT_ISHOP3_LOG_CURRENCY_COINS, itemId,
+				(unsigned int)std::max(0, before));
+	}
+
+	// One purchase of a V3 line, qty times (1..10; one of what does not stack): the balance fresh, the bag's room for
+	// every piece, the charge, the goods, the log, the money back for what could not be given. The state's balance
+	// follows (a Smocze Monety purchase adds its price in Smocze Znaki).
+	bool BuyPlayerBotIshop3Line(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotItemShopEntry& line, DWORD vnum,
+			bool marks, int qty, const char* reason, DWORD dwNow)
+	{
+		TPlayerBotIshop3Census& census = GetPlayerBotIshop3Census(GetPlayerBotIshop3Category(reason));
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		if (!ch || !ch->GetDesc() || !proto || line.dwCount == 0 || ch->GetLevel() < line.bMinLevel)
+		{
+			++census.uNotListed;
+			return false;
+		}
+		if (!line.bStackable)
+			qty = 1;
+		qty = std::max(1, std::min(qty, PLAYERBOT_ISHOP3_MAX_QTY));
+		EnsurePlayerBotIshop3FreshBalance(ch, state, dwNow);
+		const long long price = (long long)line.dwPrice * qty;
+		const int before = marks ? state.iDragonMarks : state.iDragonCoins;
+		if (price <= 0 || price > INT_MAX || (long long)before < price)
+		{
+			++census.uNoCoins;
+			return false;
+		}
+		const DWORD pieces = line.dwCount * (DWORD)qty;
+		const DWORD stack = line.bStackable ? std::max<DWORD>(1, std::min<DWORD>(proto->dwMaxStack, 200)) : 1;
+		const DWORD chunks = (pieces + stack - 1) / stack;
+		const int size = std::max<int>(1, proto->bSize);
+		if (chunks == 1 ? ch->GetEmptyInventory((BYTE)size) < 0
+				: CountPlayerBotFreeInventoryCells(ch) < (int)(chunks * size) + 1)
+		{
+			++census.uBagFull;
+			PlayerBotLogThrottled("ishop3_bag_full", dwNow,
+					"PLAYERBOT_ISHOP3: bag full pid=%u name=%s line=%u vnum=%u pieces=%u reason=%s", ch->GetPlayerID(),
+					ch->GetName(), line.dwIndex, vnum, pieces, reason ? reason : "-");
+			return false;
+		}
+		ChargePlayerBotIshop3(ch, marks, -price);
+		s_mapPlayerBotIshop3LastCharge[ch->GetPlayerID()] = dwNow;
+		// a timed piece, or one with the line's sockets, is a new item of its own (never merged into a stack)
+		bool ownSockets = false;
+		for (int i = 0; i < ITEM_SOCKET_MAX_NUM && i < 3; ++i)
+			if (line.alSockets[i] > 0)
+				ownSockets = true;
+		const bool fresh = line.dwMinutes > 0 || ownSockets;
+		DWORD delivered = 0, lastId = 0;
+		for (DWORD left = pieces; left > 0;)
+		{
+			const DWORD n = std::min(left, stack);
+			LPITEM item = ch->AutoGiveItem(vnum, (ITEM_COUNT)n, -1, false, fresh);
+			if (!item)
+				break;
+			if (fresh)
+			{
+				for (int i = 0; i < ITEM_SOCKET_MAX_NUM && i < 3; ++i)
+					if (line.alSockets[i] > 0)
+						item->SetSocket(i, line.alSockets[i]);
+				ApplyPlayerBotIshop3Time(item, proto, line.dwMinutes);
+			}
+			lastId = item->GetID();
+			delivered += n;
+			left -= n;
+		}
+		long long refund = 0;
+		if (delivered < pieces)
+		{
+			refund = price * (long long)(pieces - delivered) / (long long)pieces;
+			ChargePlayerBotIshop3(ch, marks, refund);
+			++census.uRefunds;
+		}
+		const long long paid = price - refund;
+		if (marks)
+			state.iDragonMarks = (int)std::max<long long>(0, (long long)state.iDragonMarks - paid);
+		else
+		{
+			state.iDragonCoins = (int)std::max<long long>(0, (long long)state.iDragonCoins - paid);
+			state.iDragonMarks = (int)std::min<long long>((long long)state.iDragonMarks + paid, INT_MAX);
+		}
+		if (delivered == 0)
+		{
+			sys_log(0, "PLAYERBOT_ISHOP3: not given, refunded pid=%u name=%s line=%u vnum=%u price=%lld %s reason=%s",
+					ch->GetPlayerID(), ch->GetName(), line.dwIndex, vnum, price, marks ? "SZ" : "SM", reason ? reason : "-");
+			return false;
+		}
+		LogPlayerBotIshop3(ch, line.dwIndex, vnum, qty, paid, marks, lastId, before);
+		++census.uBuys;
+		census.uPieces += delivered;
+		(marks ? census.llMarks : census.llCoins) += paid;
+		++s_uPlayerBotItemShopBuys;
+		s_mapPlayerBotItemShopBought[vnum] += delivered;
+		sys_log(0, "PLAYERBOT_ISHOP3: bought pid=%u name=%s lv=%d line=%u vnum=%u qty=%d pieces=%u price=%lld %s goal=%s "
+				"before=%d after=%d coins=%d marks=%d refund=%lld",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), line.dwIndex, vnum, qty, delivered, paid, marks ? "SZ" : "SM",
+				reason ? reason : "-", before, marks ? state.iDragonMarks : state.iDragonCoins, state.iDragonCoins,
+				state.iDragonMarks, refund);
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_ISHOP_V3_V1 (phase 2): a set chest bought and rolled as buy_chest.php rolls it - each roll one of
+	// the chest's results by its chance (1..1 000 000 against the results in their order), each item of the result
+	// the alternative this bot can wear (sex, class - any when none fits), given with its minutes; every roll logged
+	// in itemshop3.chest_rolls (token: the bots' own, ending in b07b07) and the purchase in log.itemshop.
+	unsigned int s_uPlayerBotIshop3ChestToken = 0;
+
+	bool BuyPlayerBotIshop3Chest(LPCHARACTER ch, TPlayerBotAIState& state, const TPlayerBotIshop3Chest& chest, int qty,
+			DWORD dwNow)
+	{
+		TPlayerBotIshop3Census& census = GetPlayerBotIshop3Census("chest");
+		if (!ch || !ch->GetDesc() || chest.drops.empty() || ch->GetLevel() < chest.bMinLevel)
+		{
+			++census.uNotListed;
+			return false;
+		}
+		size_t widest = 1;
+		for (size_t d = 0; d < chest.drops.size(); ++d)
+			widest = std::max(widest, chest.drops[d].items.size());
+		const int rollsPer = (int)std::max<DWORD>(1, chest.dwRolls);
+		const int room = CountPlayerBotFreeInventoryCells(ch) - 2;
+		qty = std::max(1, std::min(qty, PLAYERBOT_ISHOP3_MAX_QTY));
+		while (qty > 0 && qty * rollsPer * (int)widest * 3 > room)	// a costume / a skin may take three cells
+			--qty;
+		if (qty <= 0)
+		{
+			++census.uBagFull;
+			return false;
+		}
+		EnsurePlayerBotIshop3FreshBalance(ch, state, dwNow);
+		const long long price = (long long)chest.dwPrice * qty;
+		const int before = state.iDragonCoins;
+		if (price <= 0 || price > INT_MAX || (long long)before < price)
+		{
+			++census.uNoCoins;
+			return false;
+		}
+		ChargePlayerBotIshop3(ch, false, -price);
+		s_mapPlayerBotIshop3LastCharge[ch->GetPlayerID()] = dwNow;
+		char token[40];
+		snprintf(token, sizeof(token), "%08x%08x%08x%08x", ch->GetPlayerID(), (unsigned int)get_global_time(),
+				++s_uPlayerBotIshop3ChestToken, 0x00b07b07U);
+		const DWORD aid = ch->GetDesc()->GetAccountTable().id;
+		const int rolls = qty * rollsPer;
+		int given = 0, failed = 0;
+		std::string won;
+		for (int n = 1; n <= rolls; ++n)
+		{
+			const int rnd = number(1, 1000000);
+			int acc = 0;
+			const TPlayerBotIshop3ChestDrop* drop = &chest.drops.back();
+			for (size_t d = 0; d < chest.drops.size(); ++d)
+			{
+				acc += chest.drops[d].iPpm;
+				if (rnd <= acc)
+				{
+					drop = &chest.drops[d];
+					break;
+				}
+			}
+			std::string vnums, ids;
+			for (size_t k = 0; k < drop->items.size(); ++k)
+			{
+				const std::vector<TPlayerBotIshop3ChestAlt>& alts = drop->items[k];
+				std::vector<const TPlayerBotIshop3ChestAlt*> fit;
+				for (size_t a = 0; a < alts.size(); ++a)
+					if (IsPlayerBotProtoForCharacter(ch, ITEM_MANAGER::instance().GetTable(alts[a].dwVnum)))
+						fit.push_back(&alts[a]);
+				if (fit.empty())
+					for (size_t a = 0; a < alts.size(); ++a)
+						fit.push_back(&alts[a]);
+				const TPlayerBotIshop3ChestAlt* pick = fit[number(0, (int)fit.size() - 1)];
+				const TItemTable* proto = ITEM_MANAGER::instance().GetTable(pick->dwVnum);
+				LPITEM item = proto ? ch->AutoGiveItem(pick->dwVnum, (ITEM_COUNT)pick->dwCount, -1, false, true) : NULL;
+				if (!item)
+				{
+					++failed;
+					continue;
+				}
+				ApplyPlayerBotIshop3Time(item, proto, pick->dwMinutes);
+				char buf[24];
+				snprintf(buf, sizeof(buf), "%s%u", vnums.empty() ? "" : ",", pick->dwVnum);
+				vnums += buf;
+				snprintf(buf, sizeof(buf), "%s%u", ids.empty() ? "" : ",", item->GetID());
+				ids += buf;
+				++given;
+			}
+			if (vnums.size() > 250)
+				vnums.resize(250);
+			if (ids.size() > 250)
+				ids.resize(250);
+			DBManager::instance().Query("INSERT INTO itemshop3.chest_rolls (token, account, pid, line, chest_id, roll_no, "
+					"drop_no, ppm, rnd, label, vnums, award_ids, price, pay_type) SELECT '%s', %u, %u, %u, %u, %d, drop_no, ppm, "
+					"%d, label, '%s', '%s', %u, 1 FROM itemshop3.chest_drops WHERE chest_id = %u AND drop_no = %d",
+					token, aid, ch->GetPlayerID(), chest.dwLine, chest.dwChestId, n, rnd, vnums.c_str(), ids.c_str(),
+					chest.dwPrice, chest.dwChestId, drop->iDropNo);
+			if (!vnums.empty() && won.size() < 200)
+				won += (won.empty() ? "" : "|") + vnums;
+		}
+		// nothing given at all: the money back (a piece or two short: kept, as a roll of the common results)
+		if (given == 0)
+		{
+			ChargePlayerBotIshop3(ch, false, price);
+			++census.uRefunds;
+			sys_log(0, "PLAYERBOT_ISHOP3: chest not given, refunded pid=%u name=%s line=%u price=%lld", ch->GetPlayerID(),
+					ch->GetName(), chest.dwLine, price);
+			return false;
+		}
+		state.iDragonCoins = (int)std::max<long long>(0, (long long)state.iDragonCoins - price);
+		state.iDragonMarks = (int)std::min<long long>((long long)state.iDragonMarks + price, INT_MAX);
+		LogPlayerBotIshop3(ch, chest.dwLine, 0, qty, price, false, 0, before);
+		++census.uBuys;
+		census.uPieces += (unsigned int)given;
+		census.llCoins += price;
+		++s_uPlayerBotItemShopBuys;
+		sys_log(0, "PLAYERBOT_ISHOP3: chest pid=%u name=%s lv=%d line=%u chest=%u qty=%d rolls=%d price=%lld before=%d "
+				"after=%d given=%d failed=%d won=%s",
+				ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), chest.dwLine, chest.dwChestId, qty, rolls, price, before,
+				state.iDragonCoins, given, failed, won.empty() ? "-" : won.c_str());
+		return true;
+	}
+
+	// The census, hourly: per category the coins and marks spent, the purchases and pieces, and why none was made -
+	// no_coins (the balance), not_listed (V3 sells no such line for the bot), bag_full, refunds.
+	DWORD s_dwNextPlayerBotIshop3Census = 0;
+
+	void WritePlayerBotIshop3Census(DWORD dwNow)
+	{
+		if (s_dwNextPlayerBotIshop3Census == 0)
+		{
+			s_dwNextPlayerBotIshop3Census = dwNow + 60 * 60 * 1000;
+			return;
+		}
+		if (dwNow < s_dwNextPlayerBotIshop3Census)
+			return;
+		s_dwNextPlayerBotIshop3Census = dwNow + 60 * 60 * 1000;
+		if (s_mapPlayerBotIshop3Census.empty())
+			return;
+		std::string out;
+		char buf[192];
+		for (std::map<std::string, TPlayerBotIshop3Census>::const_iterator it = s_mapPlayerBotIshop3Census.begin();
+				it != s_mapPlayerBotIshop3Census.end(); ++it)
+		{
+			const TPlayerBotIshop3Census& c = it->second;
+			snprintf(buf, sizeof(buf), "%s%s=spent_sm:%lld,spent_sz:%lld,count:%u,pieces:%u,no_coins:%u,not_listed:%u,"
+					"bag_full:%u,refunds:%u", out.empty() ? "" : " ", it->first.c_str(), c.llCoins, c.llMarks, c.uBuys,
+					c.uPieces, c.uNoCoins, c.uNotListed, c.uBagFull, c.uRefunds);
+			out += buf;
+		}
+		sys_log(0, "PLAYERBOT_ISHOP3: census source=%s %s", GetPlayerBotItemShopSource() == 2 ? "v3" :
+				(GetPlayerBotItemShopSource() == 1 ? "game" : "off"), out.c_str());
+		s_mapPlayerBotIshop3Census.clear();
+	}
+#endif
 
 	// The saddlebag page too (INVENTORY_MAX_NUM, not PLAYERBOT_BAG_CELLS): a
 	// coupon the panel hands a bot with a full bag lands in its open rows.
@@ -719,6 +1351,11 @@ namespace
 			if (PlayerBotSavesForWish(ch, state, price))
 				reserve += price;
 		}
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		// MT2009_PLUS_BOT_ISHOP_V3_V1: a look only from the coins the open gear goals do not need (their next batch)
+		if (GetPlayerBotItemShopSource() == 2)
+			reserve += GetPlayerBotIshop3GoalReserve(ch, state);
+#endif
 		return reserve;
 	}
 
@@ -979,6 +1616,38 @@ namespace
 			return false;
 		}
 
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		// MT2009_PLUS_BOT_ISHOP_V3_V1: the ItemShop V3's line (the catalogue is V3's then), bought by the bots' own path;
+		// nothing at all with the source off. The engine's BuyItem below only for the old in-game catalogue.
+		const int source = GetPlayerBotItemShopSource();
+		if (source == 0)
+			return false;
+		if (source == 2)
+		{
+			const int coinsBeforeV3 = state.iDragonCoins;
+			const bool boughtV3 = BuyPlayerBotIshop3Line(ch, state, entry, wish.dwVnum, wish.bMarks, 1, wish.szReason, dwNow);
+			state.dwNextItemShopBuyTime = dwNow + PLAYERBOT_ISHOP_BUY_INTERVAL;
+			if (!boughtV3)
+			{
+				++s_uPlayerBotItemShopRefusals;
+				return false;
+			}
+			if (!wish.bMarks && state.iDragonCoins >= PLAYERBOT_ISHOP_FRESH_BALANCE)
+			{
+				const DWORD next = dwNow + PLAYERBOT_ISHOP_FRESH_BUY_INTERVAL +
+						PlayerBotNavHash(ch->GetPlayerID() ^ 0x46524553U) % 60000U;
+				state.dwNextItemShopBuyTime = next;
+				if (state.dwNextItemShopCheckTime > next)
+					state.dwNextItemShopCheckTime = next;
+			}
+			(void)coinsBeforeV3;
+			WearPlayerBotBoughtLook(ch, state);
+			if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
+				NotePlayerBotSidekickItemShopBuy(ch, wish.dwVnum, entry.dwCount, entry.dwPrice, wish.bMarks, wish.szReason,
+						wish.bMarks ? state.iDragonMarks : state.iDragonCoins);
+			return true;
+		}
+#endif
 		ch->playerData->SetItemShopBrowse(true);
 		const bool bought = CItemShopManager::instance().BuyItem(ch, (int)entry.dwIndex, 1);
 		ch->playerData->SetItemShopBrowse(false);
@@ -1086,6 +1755,11 @@ namespace
 					PlayerBotNavHash(ch->GetPlayerID() ^ 0x46495253U) % PLAYERBOT_ISHOP_FIRST_LOOK_SPREAD;
 			return;
 		}
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		// MT2009_PLUS_BOT_ISHOP_V3_V1: the gear goals on their own clock (playerbot_ishop3_goals.h) - a few minutes
+		// apart while one is open, whatever the look's hour says.
+		ManagePlayerBotIshop3Goals(ch, state, dwNow);
+#endif
 		if (dwNow < state.dwNextItemShopCheckTime)
 			return;
 		state.dwNextItemShopCheckTime = dwNow + PLAYERBOT_ISHOP_CHECK_INTERVAL +
@@ -1126,6 +1800,10 @@ namespace
 			return;
 		if (dwNow < state.dwNextItemShopBuyTime)
 			return;
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		if (GetPlayerBotItemShopSource() == 0)
+			return;
+#endif
 		// Within a session only the look is bought: a stone the bot still
 		// wants after buying one would be bought again every few seconds.
 		const bool session = state.bItemShopLookSession;
@@ -1146,6 +1824,9 @@ namespace
 
 	void WritePlayerBotItemShopCensus(DWORD dwNow)
 	{
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		WritePlayerBotIshop3Census(dwNow);
+#endif
 		if (s_dwNextPlayerBotItemShopCensus != 0 && dwNow < s_dwNextPlayerBotItemShopCensus)
 			return;
 		s_dwNextPlayerBotItemShopCensus = dwNow + PLAYERBOT_ISHOP_CENSUS_INTERVAL;

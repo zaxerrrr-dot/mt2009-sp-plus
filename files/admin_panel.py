@@ -1206,6 +1206,9 @@ def read_ai_weights():
     vals["CATACOMB"] = 1
     # The bots' ItemShop purchases (playerbot_itemshop.h). On.
     vals["ISHOP"] = 1
+    # MT2009_PLUS_BOT_ISHOP_V3_V1: where they buy - 2 the ItemShop V3 (the lines
+    # and prices the players see; the default), 1 the old in-game catalogue, 0 nowhere.
+    vals["ISHOP_SOURCE"] = 2
     # Whether a bot's stand may stand in a second village too. Off: the stands
     # belong in the first villages (Iwakura's idea, 22 September).
     vals["SHOP_M2"] = 0
@@ -1297,6 +1300,15 @@ def read_ai_weights():
                     continue
                 if name == "ISHOP":
                     vals["ISHOP"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
+                    continue
+                if name == "ISHOP_SOURCE":
+                    v = parts[1].strip().lower()
+                    vals["ISHOP_SOURCE"] = {"v3": 2, "game": 1, "off": 0}.get(v, None)
+                    if vals["ISHOP_SOURCE"] is None:
+                        try:
+                            vals["ISHOP_SOURCE"] = max(0, min(2, int(v)))
+                        except ValueError:
+                            vals["ISHOP_SOURCE"] = 2
                     continue
                 if name == "SHOP_M2":
                     vals["SHOP_M2"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
@@ -1428,6 +1440,8 @@ def write_ai_weights(vals):
     body.append("CATACOMB\t%d" % (1 if vals.get("CATACOMB", 1) else 0))
     # Not a weight: whether the bots cash their vouchers and buy in the ItemShop.
     body.append("ISHOP\t%d" % (1 if vals.get("ISHOP", 1) else 0))
+    # Not a weight: where the bots buy (2 ItemShop V3, 1 the old in-game catalogue, 0 nowhere).
+    body.append("ISHOP_SOURCE\t%d" % max(0, min(2, int(vals.get("ISHOP_SOURCE", 2) if vals.get("ISHOP_SOURCE") is not None else 2))))
     # Not a weight: whether a bot's stand may stand in a second village too.
     body.append("SHOP_M2\t%d" % (1 if vals.get("SHOP_M2", 0) else 0))
     # Not a weight: Iwakura's personalities, moods and the Grinder's locks.
@@ -4430,10 +4444,14 @@ T.update({
  "ai_tower_now_done": {"en":"Requested: the core calls a raid on its next check (within a minute) if none is under way.","pl":"Zlecone: rdzeń zwoła wyprawę przy najbliższym sprawdzeniu (do minuty), jeśli żadna nie trwa.","de":"Angefordert: der Kern ruft beim nächsten Check (binnen einer Minute) eine Expedition, wenn keine läuft.","tr":"İstendi: hiçbiri sürmüyorsa çekirdek bir sonraki kontrolde (bir dakika içinde) bir sefer çağırır."},
  "gl_tower":     {"en":"in the Demon Tower","pl":"w Wieży Demonów","de":"im Dämonenturm","tr":"Şeytan Kulesi'nde"},
  "ai_ishop":     {"en":"Bots buy in the ItemShop","pl":"Boty kupują w ItemShopie","de":"Bots kaufen im ItemShop","tr":"Botlar ItemShop'tan alır"},
- "ai_ishop_help":{"en":"A bot cashes the Kupon SM vouchers it finds (Metin stones and bosses drop them, M2_DRAGON_COIN_*_PERMILLE) into its account's Dragon Coins and buys, at most once an hour, only what its own rules would use: a Kamień Duchowy for a Grand Master skill, a change stone for a worn weapon still worth rerolling, with Dragon Marks a Blessing Scroll or the Dragon God's attack potions, and one bot in four a hairstyle, once. No VIP items and no pass: every bot already holds the premium subscription. Off: the vouchers stay in the bags.",
-                  "pl":"Bot wymienia znalezione Kupony SM (dropią z metinów i bossów, M2_DRAGON_COIN_*_PERMILLE) na Smocze Monety swojego konta i kupuje, najwyżej raz na godzinę, tylko to, z czego jego własne reguły korzystają: Kamień Duchowy do umiejętności Wielkiego Mistrza, kamień zmiany bonusów do noszonej broni wartej jeszcze losowania, za Smocze Znaki Zwój Błogosławieństwa albo mikstury ataku Boga Smoków, a jeden bot na czterech fryzurę, raz. Bez przedmiotów VIP i bez przepustki: każdy bot ma już subskrypcję premium. Wyłączone: kupony zostają w torbach.",
-                  "de":"Ein Bot löst die gefundenen Kupon-SM-Gutscheine (Metinsteine und Bosse lassen sie fallen, M2_DRAGON_COIN_*_PERMILLE) in Drachenmünzen seines Kontos ein und kauft höchstens einmal pro Stunde nur, was seine eigenen Regeln nutzen: einen Kamień Duchowy für eine Großmeister-Fertigkeit, einen Bonus-Wechselstein für die getragene Waffe, wenn sie noch neu gewürfelt würde, mit Drachenmarken eine Segensrolle oder die Angriffstränke des Drachengottes, und jeder vierte Bot einmal eine Frisur. Keine VIP-Gegenstände und kein Pass: jeder Bot hat das Premium-Abo bereits. Aus: die Gutscheine bleiben im Inventar.",
-                  "tr":"Bot bulduğu Kupon SM kuponlarını (Metin taşları ve boss'lar düşürür, M2_DRAGON_COIN_*_PERMILLE) hesabının Ejderha Parasına çevirir ve saatte en fazla bir kez, yalnızca kendi kurallarının kullanacağı şeyi alır: Büyük Usta becerisi için Kamień Duchowy, hâlâ yeniden atılmaya değer takılı silah için bonus değiştirme taşı, Ejderha İşaretleriyle Kutsama Parşömeni ya da Ejderha Tanrısı saldırı iksirleri ve dört bottan biri bir kez bir saç modeli. VIP eşya ve geçiş kartı yok: her bot zaten premium aboneliğe sahip. Kapalı: kuponlar çantada kalır."},
+ "ai_ishop_help":{"en":"A bot cashes the Kupon SM vouchers it finds into its account's Dragon Coins (the weekly grants by level add to them) and buys in the ItemShop V3 - the same lines and prices players see - what its gear needs now: Wzmocnienie and Zaczarowanie Przedmiotu while its bonus pass would use them (a Yohara bot for its musts and the hunt element's resistance), Marmur for the fifth line, raw Cor Draconis by the hundred and green beans for the Alchemist, a Szarfa Władcy +0 as a combine partner, Blessing Scrolls with Dragon Marks; a batch at a time, again a few minutes later until the goal is reached or the coins run out - no daily caps. The magic dust, the refiner exchange, the Alchemist, the market and the drops stay the first sources. Books, boosters and the look (costume, hairstyle, weapon skin, pet; now and then a set chest) only from coins the gear does not need. Never coupons, VIP items, flash offers, Auto Łowy, Szkło Handlu or Kolekcjoner; nothing a bot buys shows in V3's history or Popular. Source: V3, the old in-game catalogue, or none. Off: the vouchers stay in the bags.",
+                  "pl":"Bot wymienia znalezione Kupony SM na Smocze Monety swojego konta (dochodzą do nich tygodniowe przydziały wg poziomu) i kupuje w ItemShopie V3 - te same pozycje i ceny, co gracze - to, czego jego ekwipunek teraz potrzebuje: Wzmocnienia i Zaczarowania Przedmiotu, póki jego bonowanie by ich użyło (bot Yohary pod swoje obowiązkowe bonusy i odporność na żywioł polowania), Marmur na 5. bonus, surowe Cor Draconis setkami i zielone fasolki do Alchemika, Szarfę Władcy +0 do połączenia, za Smocze Znaki Zwoje Błogosławieństwa; partia za partią, co kilka minut, aż cel zostanie osiągnięty albo skończą się monety - bez dziennych limitów. Pył, wymiana u kowala, Alchemik, rynek i dropy zostają pierwszymi źródłami. Księgi, wzmacniacze i wygląd (kostium, fryzura, nakładka, pet; czasem skrzynia setu) tylko z monet, których nie potrzebuje ekwipunek. Nigdy kupony, VIP, oferty błyskawiczne, Auto Łowy, Szkło Handlu ani Kolekcjoner; zakupy botów nie trafiają do historii ani „Popularnych” V3. Źródło: V3, stary sklep w grze albo żadne. Wyłączone: kupony zostają w torbach.",
+                  "de":"Ein Bot löst gefundene Kupon-SM-Gutscheine in Drachenmünzen seines Kontos ein (die wöchentlichen Zuteilungen nach Stufe kommen hinzu) und kauft im ItemShop V3 - dieselben Angebote und Preise wie die Spieler - was seine Ausrüstung jetzt braucht: Bonus-Steine, solange sein Bonusdurchgang sie nutzen würde, Marmor für den 5. Bonus, rohe Cor Draconis zu Hunderten und grüne Bohnen für den Alchemisten, eine Schärpe +0 als Kombinationspartner, mit Drachenmarken Segensrollen; Partie für Partie, alle paar Minuten, bis das Ziel erreicht ist oder die Münzen ausgehen - ohne Tageslimits. Bücher, Verstärker und das Aussehen nur aus Münzen, die die Ausrüstung nicht braucht. Nie Gutscheine, VIP, Blitzangebote, Auto Łowy, Szkło Handlu oder Kolekcjoner; Bot-Käufe erscheinen nicht in der Historie oder unter Beliebt. Quelle: V3, der alte Spielshop oder keine. Aus: die Gutscheine bleiben im Inventar.",
+                  "tr":"Bot bulduğu Kupon SM kuponlarını hesabının Ejderha Parasına çevirir (seviyeye göre haftalık paylar eklenir) ve ItemShop V3'ten - oyuncularla aynı ürün ve fiyatlarla - ekipmanının şu an ihtiyacını alır: bonus geçişi kullanacaksa bonus taşları, 5. bonus için mermer, Simyacı için yüzlerce ham Cor Draconis ve yeşil fasulye, birleştirme için Kuşak +0, Ejderha İşaretleriyle Kutsama Parşömeni; parti parti, birkaç dakikada bir, hedefe ulaşana ya da para bitene kadar - günlük sınır yok. Kitaplar, güçlendiriciler ve görünüm yalnızca ekipmanın ihtiyaç duymadığı paradan. Asla kupon, VIP, flaş teklif, Auto Łowy, Szkło Handlu veya Kolekcjoner; bot alımları geçmişte ve Popülerde görünmez. Kaynak: V3, eski oyun içi mağaza veya hiçbiri. Kapalı: kuponlar çantada kalır."},
+ "ai_ishop_source": {"en":"Source:","pl":"Źródło:","de":"Quelle:","tr":"Kaynak:"},
+ "ai_ishop_source_v3": {"en":"ItemShop V3","pl":"ItemShop V3","de":"ItemShop V3","tr":"ItemShop V3"},
+ "ai_ishop_source_game": {"en":"old in-game shop","pl":"stary sklep w grze","de":"alter Spielshop","tr":"eski oyun içi mağaza"},
+ "ai_ishop_source_off": {"en":"none (no purchases)","pl":"żadne (bez zakupów)","de":"keine (keine Käufe)","tr":"hiçbiri (alım yok)"},
  "ai_ishop_on":  {"en":"Enabled","pl":"Włączone","de":"Eingeschaltet","tr":"Açık"},
  "ai_haggle":    {"en":"Bots haggle at people's shops","pl":"Boty targują się na sklepach graczy","de":"Bots feilschen an den Läden der Spieler","tr":"Botlar oyuncu dükkânlarında pazarlık yapar"},
  "ai_haggle_help":{"en":"A bot that wants a finished piece of gear (+6 and up) on a person's offline shop, but finds it dearer than it would pay (the bots' cap on a person's price included: at most 1.5 to 2 times the market's price for the piece), whispers the owner - once, with the piece linked - its offer, and goes up to its last price, the most it would pay, if the owner asks more. The owner answers \"ok\", \"nie\"/\"no\" or a price of his own (\"5kk\"), or simply lowers the price on the shop; once the piece asks the price agreed (or less), the bot comes and buys it, within ten minutes. Only an owner online on the bot's core is asked, one haggle at a time with a person, three offers an hour to one person, one offer about the same piece in three hours (twelve after a no), three haggles at once on a core. What a bot buys at once is unchanged. Off: no bot whispers an offer, and every deal is forgotten.",
@@ -8044,6 +8062,13 @@ TPL_AI = BASE.replace("__BODY__", """
   <h3 style="margin:0 0 2px">🛒 {{t('ai_ishop')}}</h3>
   <p class="muted" style="margin:0 0 6px">{{t('ai_ishop_help')}}</p>
   <label><input type="checkbox" name="ISHOP" value="1" {% if cur.get('ISHOP', 1) %}checked{% endif %}> {{t('ai_ishop_on')}}</label>
+  <label style="margin-left:14px">{{t('ai_ishop_source')}}
+    <select name="ISHOP_SOURCE">
+      <option value="2" {% if cur.get('ISHOP_SOURCE', 2) == 2 %}selected{% endif %}>{{t('ai_ishop_source_v3')}}</option>
+      <option value="1" {% if cur.get('ISHOP_SOURCE', 2) == 1 %}selected{% endif %}>{{t('ai_ishop_source_game')}}</option>
+      <option value="0" {% if cur.get('ISHOP_SOURCE', 2) == 0 %}selected{% endif %}>{{t('ai_ishop_source_off')}}</option>
+    </select>
+  </label>
 </div>
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">🤝 {{t('ai_haggle')}}</h3>
@@ -20111,11 +20136,16 @@ def ai_weights():
             vals["TOWER"] = 1 if request.form.get("TOWER") else 0
             vals["CATACOMB"] = 1 if request.form.get("CATACOMB") else 0
             vals["ISHOP"] = 1 if request.form.get("ISHOP") else 0
+            try:
+                vals["ISHOP_SOURCE"] = max(0, min(2, int(request.form.get("ISHOP_SOURCE", old.get("ISHOP_SOURCE", 2)))))
+            except (TypeError, ValueError):
+                vals["ISHOP_SOURCE"] = old.get("ISHOP_SOURCE", 2)
             vals["HAGGLE"] = 1 if request.form.get("HAGGLE") else 0
         else:
             vals["TOWER"] = old.get("TOWER", 1)
             vals["CATACOMB"] = old.get("CATACOMB", 1)
             vals["ISHOP"] = old.get("ISHOP", 1)
+            vals["ISHOP_SOURCE"] = old.get("ISHOP_SOURCE", 2)
             vals["HAGGLE"] = old.get("HAGGLE", 1)
         vals["SHOP_M2"] = 1 if request.form.get("SHOP_M2") else 0
         vals["PERSONA"] = 1 if request.form.get("PERSONA") else 0
