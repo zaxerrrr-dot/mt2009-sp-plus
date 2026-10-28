@@ -568,6 +568,11 @@ FAMILIES = [
     ("bron_weza", "Serpent weapons (Swiatynia Wezy, lv 120; +10..+15 stay unpriced)", "gear", True,
      [360, 380, 1210, 2230, 3250, 5200, 7330]),
     ("zbroje_weza", "Serpent armours (lv 120)", "gear", True, [21310, 21330, 21350, 21370]),
+    # MT2009_PLUS_SERPENT_HOOD_V1 (tools/czepiec): the level-120 helmet of Krypta Balathora and its chest materials;
+    # Zroszony Mlot (31265) is a Gaya-shop good (52 Gaya) - left out like the others
+    ("czepiec", "Wezowy Czepiec (Jaharr, lv 120; +10..+15 stay unpriced)", "gear", False, [12880]),
+    ("balathor_mat", "Balathor's materials (Wezowy Czepiec; Krypta Balathora's chests)", "mat", True,
+     [31264, 31266, 31267, 31268, 31269]),
     ("rekawice", "Sung Ma gloves", "gear", True, [23000, 23010, 23020, 23030]),
     ("jadeit_biz", "Jade jewellery", "gear", True,
      [14580, 14590, 14600, 14610, 16580, 16590, 16600, 16610, 17570, 17580, 17590, 17600]),
@@ -643,6 +648,16 @@ ANALOGY = {
     12800: (21230, 0.5, "half its set's armour"),
     12820: (21250, 0.5, "half its set's armour"),
     12840: (21270, 0.5, "half its set's armour"),
+    # MT2009_PLUS_SERPENT_HOOD_V1: no offer on the reference market yet
+    # its recipe: 20 mln + 200 Gaya (5 mln) + 2 Sciegna, 7 Mlotow (52 Gaya each), 2 Skrzydla, 10 Jadeitow Nocy,
+    # 40 Wzorow ~ 67 mln an attempt, 50% (^0.5) ~ 95 mln - five serpent armours (a helmet at half its armour would be
+    # under its own materials)
+    12880: (21310, 5.0, "its recipe at Jaharr: ~67 mln an attempt at 50%"),
+    31268: (50662, 0.5, "the hood's refine material by the dozen (254 to +15): half a Jadeit Nocy of the same chest"),
+    31267: (50662, 0.5, "the hood's +1..+6 material (45 to +6): half a Jadeit Nocy of the same chest"),
+    31264: (50662, 1.5, "2 a hood: one and a half Jadeit Nocy (the recipe takes 10 of those)"),
+    31266: (50662, 1.5, "2 a hood: one and a half Jadeit Nocy (the recipe takes 10 of those)"),
+    31269: (50662, 2.0, "the chest+ only, the hood's +7..+15: twice a Jadeit Nocy"),
     28047: (28046, "28447/28446", "Kamien Demonow of the grade x (Mocy+4 / Demonow+4)"),
     28147: (28146, "28447/28446", "Kamien Demonow of the grade x (Mocy+4 / Demonow+4)"),
     28247: (28246, "28447/28446", "Kamien Demonow of the grade x (Mocy+4 / Demonow+4)"),

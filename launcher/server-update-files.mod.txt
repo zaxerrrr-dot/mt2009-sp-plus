@@ -124,6 +124,7 @@ linux-port/docker/game/cube.wiki_kto.txt
 linux-port/docker/game/cube.zbroje105.txt
 linux-port/docker/game/cube.wiki_nowe.txt
 linux-port/docker/game/cube.helm100.txt
+linux-port/docker/game/cube.czepiec.txt
 linux-port/docker/game/cube.npc_okno.txt
 linux-port/docker/game/cube_improve.txt
 linux-port/docker/game/special_item_group.wiki_nowe.txt
@@ -450,6 +451,9 @@ linux-port/docker/mariadb/playerbot/yohara_gloves.sql
 # MT2009_PLUS_HELM100_V1: the level-100 helmets, their materials and Straznik Smokow Jaharr (tools/yhelm100); quest
 # helm100 (quest/*), Jaharr's places in the towns (game/Dockerfile).
 linux-port/docker/mariadb/playerbot/yohara_helm100.sql
+# MT2009_PLUS_SERPENT_HOOD_V1: Wezowy Czepiec 12880-12895, its materials 31264-31269 and refine_proto 40500-40514
+# (tools/czepiec); Jaharr's recipe cube.czepiec.txt (above), the random second bonus item.cpp (above, server-patches/czepiec).
+linux-port/docker/mariadb/playerbot/yohara_czepiec.sql
 # MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla Mlodych Bohaterow - the weapons 21900-21975 (tools/mlodzi); the logic is
 # playerbot_mlodzi.{h,cpp} (the playerbot_* lines), quest mlodzi_bohaterowie (quest/*), the engine files server-patches/mlodzi
 # changes are above.

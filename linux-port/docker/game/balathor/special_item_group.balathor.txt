@@ -1,9 +1,12 @@
 # MT2009_PLUS_BALATHOR_V1: Krypta Balathora's chests (balathor.json: fail_rewards 83075, success_rewards 83075 + 83076).
 # Contents from the pl-wiki ("Mrozna Skrz. Balathora" and "Mrozna Skrz. Balathora+"); the wiki gives no chances or
 # counts - the weights / percentages are ours. Items the line does not have are left out (server-patches/balathor/
-# README.md): Oko / Rog / Sciegno / Skrzydlo / Luska Balathora, the five Runy Wykuwania, Kula
-# Polimorfii Hwachy. Umiejetnosc Balathora = the three guild skill books 50344-50346 of the guild system
-# (server-patches/guildsys, guildsys.sql; rows 12-14 of 83076, 20 % each). Wino z Kwiatu Brzosk. XL is the plain one
+# README.md): the five Runy Wykuwania, Kula Polimorfii Hwachy.
+# Umiejetnosc Balathora = the three guild skill books 50344-50346 of the guild system
+# (server-patches/guildsys, guildsys.sql; rows 12-14 of 83076, 20 % each).
+# MT2009_PLUS_SERPENT_HOOD_V1 (tools/czepiec, yohara_czepiec.sql): the materials of Wezowy Czepiec as the wiki lists
+# them - the chest Skrzydlo / Oko / Rog / Sciegno, the chest+ Skrzydlo / Oko / Luska / Sciegno (the counts ours: a
+# hood +15 takes 254 Oko, 45 Rog, 21 Luska; the hood itself 2 Sciegna and 2 Skrzydla). Wino z Kwiatu Brzosk. XL is the plain one
 # (70020, x5). Kula Blogoslawienstwa is our Marmur Blogoslawienstwa (70024).
 Group	MT2009_balathor_83075
 {
@@ -23,6 +26,10 @@ Group	MT2009_balathor_83075
 	13	gold	20000000	30 -- 20 000 000 yang
 	14	gold	30000000	15 -- 30 000 000 yang
 	15	gold	60000000	5 -- 60 000 000 yang
+	16	31268	5	60 -- Oko Balathora x5
+	17	31267	3	50 -- Rog Balathora x3
+	18	31264	1	25 -- Sciegno Balathora
+	19	31266	1	25 -- Skrzydlo Balathora
 }
 Group	MT2009_balathor_83076
 {
@@ -42,4 +49,8 @@ Group	MT2009_balathor_83076
 	12	50344	1	20 -- Ksiega: Burza Balathora (Umiejetnosc Balathora; MT2009_PLUS_GUILDSYS_V1, server-patches/guildsys)
 	13	50345	1	20 -- Ksiega: Wola Balathora
 	14	50346	1	20 -- Ksiega: Nieugietosc Balathora
+	15	31268	5	40 -- Oko Balathora x5
+	16	31269	1	25 -- Luska Balathora
+	17	31264	1	25 -- Sciegno Balathora
+	18	31266	1	25 -- Skrzydlo Balathora
 }

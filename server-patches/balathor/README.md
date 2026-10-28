@@ -49,11 +49,17 @@ tak jak Schronienie Meley (356) – nie game3.
 Z „Mroźna Skrz. Balathora” / „Mroźna Skrz. Balathora+” (pl-wiki) nie ma w naszym świecie (`world.item_proto`, 28.10.2026):
 
 - materiały na **Wężowy Czepiec**: Oko, Róg, Ścięgno, Skrzydło, Łuska Balathora (i sam hełm),
+- **Umiejętność Balathora** – księgi Burza / Wola / Nieugiętość Balathora (umiejętności gildii),
 - **Runy Wykuwania**: poz. przedmiotu, zestawu broni, przedmiotów do zwierząt, pasów, akcesoriów,
 - **Kula Polimorfii Hwachy**,
 - **Bilet Przejścia (Balathor)** – dlatego `register_ticket_vnum` 0 (tylko punkty rankingu),
 - Wino z Kwiatu Brzosk. **XL** – zamiast niego zwykłe (70020, ×5); Kula Błogosławieństwa = nasz Marmur
   Błogosławieństwa (70024).
+
+**Wężowy Czepiec** i jego materiały są już w grze (`MT2009_PLUS_SERPENT_HOOD_V1`, `server-patches/czepiec`,
+`tools/czepiec`): Ścięgno 31264, Skrzydło 31266, Róg 31267, Oko 31268, Łuska 31269 Balathora są w skrzyniach jak na
+wiki (zwykła: Skrzydło, Oko ×5, Róg ×3, Ścięgno; skrzynia+: Skrzydło, Oko ×5, Łuska, Ścięgno – ilości nasze), hełm
+robi Strażnik Smoków Jaharr (20421).
 
 Wiki nie podaje szans ani ilości: zwykła skrzynia daje 1 przedmiot (wagi nasze), skrzynia+ losuje każdy wiersz osobno
 (`Type Pct`, procenty nasze).

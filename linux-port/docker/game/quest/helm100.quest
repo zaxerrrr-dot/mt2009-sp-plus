@@ -15,6 +15,10 @@
 --   game/cube.helm100.txt (tools/yhelm100/gen_yhelm100.py, 40 receptur, w oknie 8 wierszy: he³m +5 lub ... +9),
 --   "fail_keep" receptur Dragona zostawia he³m przy pora¿ce (server-patches/yhelm100). Receptury Dragona s¹ pierwsze:
 --   okno ze Skrzyd³ami Smoka robi he³m Dragona, bez nich - he³m Smoków.
+-- MT2009_PLUS_SERPENT_HOOD_V1 (w³aœciciel 29.10.2026; wiki "Wê¿owy Czepiec"): Jaharr robi te¿ Wê¿owy Czepiec
+--   (12880, he³m 120. poziomu) w tym samym oknie - 2x Œciêgno Balathora, 7x Zroszony M³ot, 2x Skrzyd³o Balathora,
+--   10x Jadeit Nocy, 40x Wzór Wê¿owy, 200 Gaya, 20 000 000 Yang, szansa 50% (game/cube.czepiec.txt, tools/czepiec);
+--   drugi bonus czepca jest losowany przy wytworzeniu i zostaje przy ulepszaniu (server-patches/czepiec).
 -- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
 quest helm100 begin
 	state start begin
@@ -41,6 +45,32 @@ quest helm100 begin
 				setskin(NOWINDOW)
 				command("cube open")
 			end
+		end
+
+		function czepiec()
+			say_title(mob_name(20421)..":")
+			say("Z ³usek i rogów Balathora zrobiê "..item_name(12880)..",")
+			say("he³m 120. poziomu dla ka¿dej klasy. Po³ó¿ materia³y")
+			say("w oknie wytwarzania:")
+			say("")
+			say_reward("2x "..item_name(31264)..", 7x "..item_name(31265)..",")
+			say_reward("2x "..item_name(31266)..", 10x "..item_name(50662)..",")
+			say_reward("40x "..item_name(31257)..", 200 Gaya i 20 000 000 Yang.")
+			say_reward("Szansa 50%, gdy siê nie uda, materia³y przepadaj¹.")
+			say("")
+			say("Sta³y bonus czepca to atak magiczny i w zwarciu. Drugi")
+			say("bonus losujê przy wytworzeniu - zostaje przy ulepszaniu.")
+			say("Materia³y Balathora daje Krypta Balathora, Zroszony M³ot")
+			say("kupisz w Sklepie Gaya.")
+			say("")
+			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
+				setskin(NOWINDOW)
+				command("cube open")
+			end
+		end
+
+		when 20421.chat."Wê¿owy Czepiec" begin
+			helm100.czepiec()
 		end
 
 		when 20421.chat."He³my na 100 poziom" begin
