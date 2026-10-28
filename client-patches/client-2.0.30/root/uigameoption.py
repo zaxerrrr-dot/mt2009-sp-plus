@@ -12,9 +12,49 @@ import uiPrivateShopBuilder
 import interfaceModule
 import uiScriptLocale
 import eventManager
+import wndMgr
 
 blockMode = 0
 viewChatMode = 0
+
+# MT2009_PLUS_SLOT_TEXT_SIZE_V1 (Autor: EREMIT STUDIO): holding Ctrl draws the item counts in the slots twice as big
+# (exe, ENABLE_SLOT_TEXT_SIZE). The "Liczby (Ctrl)" row switches it off; the choice is kept in slottext.cfg beside the
+# client and applied when this module is imported (game start). An older exe has no wndMgr.SetSlotTextZoom - the row
+# is hidden then.
+SLOT_TEXT_ZOOM_FILE = 'slottext.cfg'
+
+def HasSlotTextZoom():
+	return hasattr(wndMgr, 'SetSlotTextZoom')
+
+def LoadSlotTextZoom():
+	try:
+		f = open(SLOT_TEXT_ZOOM_FILE, 'r')
+		try:
+			for line in f.read().splitlines():
+				key, sep, value = line.strip().partition('=')
+				if sep and key.strip() == 'zoom':
+					return value.strip() != '0'
+		finally:
+			f.close()
+	except (IOError, OSError):
+		pass
+	return True
+
+def SetSlotTextZoom(enable):
+	enable = bool(enable)
+	if HasSlotTextZoom():
+		wndMgr.SetSlotTextZoom(1 if enable else 0)
+	try:
+		f = open(SLOT_TEXT_ZOOM_FILE, 'w')
+		try:
+			f.write('zoom=%d\n' % (1 if enable else 0))
+		finally:
+			f.close()
+	except (IOError, OSError):
+		pass
+
+if HasSlotTextZoom():
+	wndMgr.SetSlotTextZoom(1 if LoadSlotTextZoom() else 0)
 
 class OptionDialog(ui.ScriptWindow):
 
@@ -34,6 +74,7 @@ class OptionDialog(ui.ScriptWindow):
 		self.RefreshQuestTextButtons()
 		self.RefreshFloatingTextButtons()
 		self.RefreshAutoTargetButtons()
+		self.RefreshSlotTextZoomButtons()
 
 	def __del__(self):
 		ui.ScriptWindow.__del__(self)
@@ -42,6 +83,7 @@ class OptionDialog(ui.ScriptWindow):
 	def __Initialize(self):
 		self.titleBar = 0
 		self.nameColorModeButtonList = []
+		self.slotTextZoomButtonList = []
 		self.viewTargetBoardButtonList = []
 		self.pvpModeButtonDict = {}
 		self.blockButtonList = []
@@ -209,6 +251,20 @@ class OptionDialog(ui.ScriptWindow):
 			import dbg
 			dbg.TraceError("autotarget: no Kolejny cel row in the game options")
 			self.autoTargetButtonList = []
+
+		# MT2009_PLUS_SLOT_TEXT_SIZE_V1: "Liczby (Ctrl)" row - bigger slot counts under Ctrl, or off.
+		try:
+			self.slotTextZoomButtonList = [self.GetChild("slot_text_zoom_on_button"), self.GetChild("slot_text_zoom_off_button")]
+			self.slotTextZoomButtonList[0].SAFE_SetEvent(self.__OnClickSlotTextZoomButton, True)
+			self.slotTextZoomButtonList[1].SAFE_SetEvent(self.__OnClickSlotTextZoomButton, False)
+			if not HasSlotTextZoom():
+				self.GetChild("slot_text_zoom_text").Hide()
+				for button in self.slotTextZoomButtonList:
+					button.Hide()
+		except Exception:
+			import dbg
+			dbg.TraceError("slottext: no Liczby (Ctrl) row in the game options")
+			self.slotTextZoomButtonList = []
 
 		for i in range(len(self.nightButtonList)):
 			self.nightButtonList[i].SAFE_SetEvent(self.__OnClickNightModeButton, i)
@@ -570,6 +626,25 @@ class OptionDialog(ui.ScriptWindow):
 				button.Down()
 			else:
 				button.SetUp()
+
+	# MT2009_PLUS_SLOT_TEXT_SIZE_V1
+	def __OnClickSlotTextZoomButton(self, enable):
+		SetSlotTextZoom(enable)
+		self.RefreshSlotTextZoomButtons()
+
+	def RefreshSlotTextZoomButtons(self):
+		if not self.slotTextZoomButtonList:
+			return
+		if HasSlotTextZoom():
+			enable = wndMgr.IsSlotTextZoom()
+		else:
+			enable = LoadSlotTextZoom()
+		if enable:
+			self.slotTextZoomButtonList[0].Down()
+			self.slotTextZoomButtonList[1].SetUp()
+		else:
+			self.slotTextZoomButtonList[0].SetUp()
+			self.slotTextZoomButtonList[1].Down()
 
 	def RefreshNightModeButtons(self):
 		for btn in self.nightButtonList:

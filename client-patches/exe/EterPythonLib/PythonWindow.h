@@ -352,10 +352,27 @@ namespace UI
 		protected:
 			std::string m_strPath;
 			std::string m_strNumber;
+#ifdef ENABLE_SLOT_TEXT_SIZE
+			// MT2009_PLUS_SLOT_TEXT_SIZE_V1 (Autor: EREMIT STUDIO): Ctrl held = the slot counts drawn twice as big.
+			// Expanded instances (scaling); ClearNumber gives them back to their own pool.
+			std::vector<CGraphicExpandedImageInstance *> m_ImageInstanceVector;
+#else
 			std::vector<CGraphicImageInstance *> m_ImageInstanceVector;
+#endif
 
 			int m_iHorizontalAlign;
 			DWORD m_dwWidthSummary;
+#ifdef ENABLE_SLOT_TEXT_SIZE
+			bool m_bIsZoomed;
+
+		public:
+			// wndMgr.SetSlotTextZoom / IsSlotTextZoom (game options); on by default.
+			static void SetZoomEnabled(bool bEnable) { ms_bZoomEnabled = bEnable; }
+			static bool IsZoomEnabled() { return ms_bZoomEnabled; }
+
+		protected:
+			static bool ms_bZoomEnabled;
+#endif
 	};
 
 	// Image

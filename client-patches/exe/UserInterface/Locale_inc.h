@@ -299,5 +299,10 @@
 // zoom/pan of the atlas, the selected NPC's mark and the arrow under the character, teleport to the NPC (packets
 // CG/GC 196), module npcLocationHelper (PythonNPCLocationHelper.cpp). Without the define the exe is as before.
 #define ENABLE_NPC_LOCATION_HELPER
+// MT2009_PLUS_SLOT_TEXT_SIZE_V1 (Autor: EREMIT STUDIO): holding Ctrl draws the item counts in the slots (CNumberLine)
+// twice as big - expanded image instances scaled 2x, width and alignment corrected (EterPythonLib/PythonWindow.cpp).
+// wndMgr.SetSlotTextZoom(0/1) / IsSlotTextZoom() for the game options' switch (on by default). Without the define the
+// exe is as before.
+#define ENABLE_SLOT_TEXT_SIZE
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
