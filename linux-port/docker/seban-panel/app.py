@@ -4749,6 +4749,16 @@ def bot_ranking(kind, sort_by="avg", people_only=False, weapon_type=None):
             CAST(i.window='IKASHOP_OFFLINESHOP' AS UNSIGNED) AS is_shop
             FROM player.item i JOIN player.player p ON p.id=i.owner_id LEFT JOIN player.item_proto ip ON ip.vnum=i.vnum
             WHERE {base} AND i.window IN ('EQUIPMENT','INVENTORY','IKASHOP_OFFLINESHOP') AND ip.type IN (1,2) AND MOD(i.vnum,10)=9 ORDER BY i.vnum DESC,p.level DESC {limit_clause}""")
+    # MT2009_PLUS_CHAMPION_PANEL_V1: "Poziom Czempiona" - those with one, by Champion level and its experience;
+    # the level ranking puts a higher Champion level first among characters of the same level.
+    if kind == "champion":
+        if not champion_columns_exist():
+            return []
+        return rows(f"""SELECT p.id,p.name,p.level,p.gold,p.conqueror_level AS score,
+            CONCAT('Czempion ',p.conqueror_level,' · ',FORMAT(p.conqueror_exp,0),' EXP') AS detail FROM player.player p
+            WHERE {base} AND p.conqueror_level>0 ORDER BY p.conqueror_level DESC,p.conqueror_exp DESC,p.level DESC {limit_clause}""")
+    if champion_columns_exist():
+        return rows(f"SELECT p.id,p.name,p.level,p.gold,p.level AS score,'Poziom' AS detail FROM player.player p WHERE {base} ORDER BY p.level DESC,p.conqueror_level DESC,p.conqueror_exp DESC,p.exp DESC {limit_clause}")
     return rows(f"SELECT p.id,p.name,p.level,p.gold,p.level AS score,'Poziom' AS detail FROM player.player p WHERE {base} ORDER BY p.level DESC,p.exp DESC {limit_clause}")
 
 
@@ -4864,6 +4874,40 @@ def write_shop_explain_enabled(enabled):
         ON DUPLICATE KEY UPDATE value=VALUES(value)""", ("1" if enabled else "0",))
 
 
+# MT2009_PLUS_CHAMPION_PANEL_V1: Poziom Czempiona (player.conqueror_level, czempion.sql / MT2009_PLUS_CHAMPION_V1).
+# One small query per page (only the characters that have one), so every level_badge() in every list shows it
+# without each list's query naming the column. A database without the column (czempion.sql not run yet) shows none.
+def champion_level_map():
+    cached = getattr(g, "_champion_level_map", None)
+    if cached is not None:
+        return cached
+    try:
+        cached = {int(r["id"]): int(r["conqueror_level"]) for r in
+                  rows("SELECT id,conqueror_level FROM player.player WHERE conqueror_level>0")}
+    except pymysql.MySQLError:
+        cached = {}
+    g._champion_level_map = cached
+    return cached
+
+
+_champion_columns_cache = {"at": 0.0, "value": False}
+
+
+def champion_columns_exist():
+    """Whether player.player has the Champion columns. Cached for the process (a "yes" for good, a "no" for five
+    minutes - the columns arrive with the next start), so a ranking built outside a request can ask too."""
+    cache = _champion_columns_cache
+    if cache["value"] or time.time() - cache["at"] < 300:
+        return cache["value"]
+    try:
+        cache["value"] = bool(rows("SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='player' "
+                                   "AND TABLE_NAME='player' AND COLUMN_NAME='conqueror_level'"))
+    except pymysql.MySQLError:
+        cache["value"] = False
+    cache["at"] = time.time()
+    return cache["value"]
+
+
 @app.context_processor
 def globals_for_templates():
     tieru_url = os.environ.get("TIERU_PANEL_URL", "http://127.0.0.1:7788")
@@ -4898,9 +4942,13 @@ def globals_for_templates():
     def level_badge(pid, level, prefix=""):
         label = f"{prefix}{int(level or 0)}"
         rank = top_level_badge_rank_map().get(int(pid or 0))
-        if not rank:
-            return escape(label)
-        return Markup('<span class="top-level-badge" title="Top 10 poziomu · #%d">%s</span>') % (rank, escape(label))
+        badge = escape(label) if not rank else (
+            Markup('<span class="top-level-badge" title="Top 10 poziomu · #%d">%s</span>') % (rank, escape(label)))
+        # MT2009_PLUS_CHAMPION_PANEL_V1: the Champion level beside the level, everywhere a level is shown.
+        champion = champion_level_map().get(int(pid or 0))
+        if champion:
+            badge += Markup(' <span class="champion-level" title="Poziom Czempiona">C %d</span>') % champion
+        return badge
     return {"tieru_url": tieru_url, "discord_url": MT2009_PLUS_DISCORD_URL, "website_url": MT2009_PLUS_WEBSITE_URL, "panel_brand": brand, "settings": current_settings, "map_name": map_name, "item_icon": item_icon, "job_name": job_name, "class_profile": class_profile, "class_portrait": class_portrait, "empire_info": empire_info, "empire_flag": empire_flag, "static_asset_url": static_asset_url, "level_badge": level_badge, "top_level_rank": lambda pid: top_level_rank_map().get(int(pid or 0)), "feature_enabled": lambda name: panel_feature_enabled(name, current_settings), "panel_features": panel_feature_states(current_settings), "class_label": class_label, "ui_language": "pl", "i18n_payload": None, "ds_kind_count": 7 if ENGINE_MT2009 else 6}
 
 
@@ -6994,6 +7042,14 @@ def player(pid):
       + EMPIRE_EXPR + " AS empire FROM player.player p LEFT JOIN account.account a ON a.id=p.account_id LEFT JOIN player.player_index pi ON pi.id=p.account_id WHERE p.id=%s", (pid,))
     if not character:
         abort(404)
+    # MT2009_PLUS_CHAMPION_PANEL_V1: Poziom Czempiona and the Sung Ma points (czempion.sql), when the database has them.
+    character["champion"] = None
+    if champion_columns_exist():
+        try:
+            character["champion"] = one("SELECT conqueror_level AS level,conqueror_level_step AS step,conqueror_exp AS exp,"
+                "conqueror_point AS points,sungma_str,sungma_hp,sungma_move,sungma_immune FROM player.player WHERE id=%s", (pid,)) or None
+        except pymysql.MySQLError:
+            pass
     live = live_statuses().get(pid)
     if live:
         character.update(live)
@@ -9354,7 +9410,7 @@ def api_system_current():
 @login_required
 def rankings():
     kinds = {
-        "level": "Poziom", "armor": "Zbroja", "weapon": "Broń", "weapon30": "Broń 30 Lv",
+        "level": "Poziom", "champion": "Poziom Czempiona", "armor": "Zbroja", "weapon": "Broń", "weapon30": "Broń 30 Lv",
         # Bez "Polowanie": na tej linii silnika levelup.quest lezy w
         # quest/_unused, zaden hook zabicia nie strzela i licznik stoi na zero
         # dla kazdego bota - ranking miał wiec 100 pozycji z "Ukonczone do Lv 0"
@@ -12497,6 +12553,10 @@ def drop_file_view():
 
 from item_grants import install as install_item_grants
 install_item_grants(app, db, login_required, game_text)
+
+# MT2009_PLUS_SM_GRANTS_V1: "Smocze Monety - nadawanie" (sm_grants.py); the payments run in seban-item-grants.
+from sm_grants import install as install_sm_grants
+install_sm_grants(app, db, login_required, update_csrf_token)
 
 # MT2009_PLUS_DB_EDITOR_V1: "Edytor bazy danych" (dbeditor/).
 import dbeditor
