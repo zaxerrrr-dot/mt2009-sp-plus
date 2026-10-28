@@ -694,5 +694,23 @@
   "marker": "MT2009_PLUS_STEAL_CAP_V1 (GetLimitPoint)",
   "old": "\tif (val > max_val)\n\t\tsys_err(\"POINT_ERROR: %s type %d val %d (max: %d)\", GetName(), val, max_val);\n\n\tif (val > limit)\n",
   "new": "\t// MT2009_PLUS_STEAL_CAP_V1 (GetLimitPoint): the absorption above 50% is cut below (limit), not an error.\n\tif (val > max_val && type != POINT_STEAL_HP && type != POINT_STEAL_SP)\n\t\tsys_err(\"POINT_ERROR: %s type %d val %d (max: %d)\", GetName(), type, val, max_val);\n\n\tif (val > limit)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (detour)",
+  "old": "\t\tconst bool blocked = Mt2009PlusAutoHuntBlocked(m_ch, victim);\n\t\tif (blocked)\n\t\t{\n\t\t\tscore += 250000;\n\t\t\tif (score >= m_iBestScore)\n\t\t\t\treturn;\n\t\t}\n",
+  "new": "\t\tconst bool blocked = Mt2009PlusAutoHuntBlocked(m_ch, victim);\n\t\tif (blocked)\n\t\t{\n\t\t\t// MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (detour) (server-patches/enginefixes, the owner,\n\t\t\t// 28 October 2026: Auto Lowy went for monsters far away while one stood near): a\n\t\t\t// target behind a wall, a rock, a tree or a fence counts as twice its distance and\n\t\t\t// 500 more - the way round it - instead of 250000, which put any monster in the open,\n\t\t\t// however far within the range, before one a few steps away behind a tree. Still far\n\t\t\t// less than the steps between the kinds (500000 and more).\n\t\t\tscore += Mt2009PlusDistance(m_ch, victim) + 500;\n\t\t\tif (score >= m_iBestScore)\n\t\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (score)",
+  "old": "\t\tint score = DISTANCE_APPROX(victim->GetX() - m_ch->GetX(), victim->GetY() - m_ch->GetY());\n\t\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (score)",
+  "new": "\t\t// MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (score): the true distance - DISTANCE_APPROX is off\n\t\t// by up to an eighth, enough to name the farther of two monsters the nearest.\n\t\tint score = Mt2009PlusDistance(m_ch, victim);\n\t\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (score)"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (distance)",
+  "old": "\tbool\t\tm_bBestBlocked = false;\n\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n",
+  "new": "\tbool\t\tm_bBestBlocked = false;\n\t// MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (distance): the straight distance between two\n\t// characters, rounded down.\n\tstatic int Mt2009PlusDistance(LPCHARACTER a, LPCHARACTER b)\n\t{\n\t\tconst double dx = (double) (b->GetX() - a->GetX());\n\t\tconst double dy = (double) (b->GetY() - a->GetY());\n\t\treturn (int) sqrt(dx * dx + dy * dy);\n\t}\n\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n"
  }
 ]

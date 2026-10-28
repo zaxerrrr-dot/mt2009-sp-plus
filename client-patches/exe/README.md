@@ -608,3 +608,20 @@ Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang
 katalog) – `ActorInstanceData.cpp`, `ActorInstance.cpp`, `ActorInstanceAttach.cpp`, `ActorInstanceMotion.cpp`,
 `InstanceBase.cpp`, `InstanceBaseEffect.cpp` bez błędów, `/E` potwierdza, że kod jest za włączoną definicją (27.10.2026).
 Exe nie budowane.
+
+## Auto Łowy biegną pod strzałami – `MT2009_PLUS_AUTOHUNT_RUN_ON_HIT_V1` (`ENABLE_MT2009_RUN_THROUGH_ARROWS`)
+
+Strzała (lub pocisk czaru) potwora, która trafia biegnącą postać, odgrywała „drgnięcie” (`CActorInstance::OnShootDamage`:
+`InterceptOnceMotion(DAMAGE)`, potem `WAIT`). To kasowało animację biegu, od której zależy ruch postaci, więc Auto Łowy
+stawały do następnego rozkazu kroku (do 0,35 s), a marsz kliknięciem myszy zatrzymywał się całkiem.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_RUN_THROUGH_ARROWS` |
+| `GameLib/ActorInstanceBattle.cpp` | `OnShootDamage`: postać gracza (`m_isMain` albo `TYPE_PC`) w ruchu (`__IsMoveMotion`) tylko się trzęsie (`__Shake`), bez animacji obrażeń; stojąca postać i potwory jak dotąd |
+
+Serwer animacji nie widzi, więc nic poza wyglądem się nie zmienia. Ciosy wręcz bez zmian. Root (`uiautohunt.py`,
+`WALK_KEEP_*`) i tak od razu wznawia zatrzymany marsz, także na starym exe.
+
+Sprawdzone: `clang-cl /Zs` pliku `ActorInstanceBattle.cpp` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`)
+z definicją i bez, `/E` potwierdza kod za definicją (28.10.2026). Exe nie budowane.
