@@ -413,6 +413,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_yohara_shop.h" // MT2009_PLUS_BOT_YOHARA_SHOP_V1: the bots' exchange in Dongan (elixirs for materials / dust) and the Champions' world set
 #include "playerbot_element_resist.h" // MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a Yohara bot's hunt element - its gear, costume, elixir, the move's preparation
 #include "playerbot_element_second_set.h" // MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second set for a lower map's element - pieces, bonusing, storage, swap
+#include "playerbot_g0_dust_rule.h" // MT2009_PLUS_BOT_G0_DUST_RULE_V1: dust held back only for the first G0, or a second G0 of a bot struggling with its set; the power elixir's dust
 // MT2009_PLUS_BOT_YOHARA_CHI_V1: the Champions' orders at Mistrz Chi and the smith of Dongan (gloves, jade, stones, Will talisman)
 #include "playerbot_yohara_chi.h"
 // MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 helmets (Jaharr), the body armours 90-115 (Kawuco, Angmur) and the

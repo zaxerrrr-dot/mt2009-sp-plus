@@ -45,6 +45,16 @@
 //   * an exchange at Handlarka that makes nothing while the hunt element's elixirs are low says why ("exchange none",
 //     throttled): no materials, no room, no map.
 //
+// MT2009_PLUS_BOT_G0_DUST_RULE_V1 (the census of 28 October: power_made=0, dust_paid=0, dust_bought=0, every errand's
+// dust_free=0 - 144 second-set bots kept 400 for a second G0 and sought nothing else, the rest held almost no dust):
+// a bot with its G0 holds no reserve unless it struggles with its set in the second-set mode (playerbot_yohara_g0.h,
+// playerbot_g0_dust_rule.h), so its dust is free for the hunt element's power elixir at the targets above; the power
+// elixir's dust on the market is bought at most PLAYERBOT_G0_DUST_PRICE_CAP_PCT of the bots' dust price, out of
+// PLAYERBOT_YSHOP_DUST_PURSE_PCT of the spare purse, at most PLAYERBOT_G0DR_POWER_DUST_DAY units a bot in a day, and
+// only while the core's counters hold more than PLAYERBOT_G0DR_POWER_DUST_FLOOR (AllowsPlayerBotPowerDustMarket) - the
+// elixir burns 60 dust an hour on the map, and 900 Champions on an unbounded line would empty the counters the lower
+// bots' marbles and the players buy from.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_yohara_elements_late.h.
 
 namespace
@@ -227,6 +237,10 @@ namespace
 			return false;
 		const int want = GetPlayerBotYoharaShopDustKeep(ch);
 		const int have = GetPlayerBotYoharaShopDustFree(ch);
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+		if (!AllowsPlayerBotPowerDustMarket(ch, (int)offer->GetCount()))	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the budget
+			return false;
+#endif
 		return want > 0 && have < want && (int)offer->GetCount() <= want - have + PLAYERBOT_YSHOP_LINE_SLACK;
 	}
 
@@ -235,7 +249,14 @@ namespace
 		if (!ch || !item || price <= 0)
 			return false;
 		const long long units = std::max<long long>(1, (long long)item->GetCount());
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+		// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the G0 dust's price cap, and the day's units and the counters' floor
+		if (!AllowsPlayerBotPowerDustMarket(ch, (int)units))
+			return false;
+		const long long cap = (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_PRIOR_MAGIC_DUST) * PLAYERBOT_G0_DUST_PRICE_CAP_PCT / 100;
+#else
 		const long long cap = (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_PRIOR_MAGIC_DUST) * PLAYERBOT_YSHOP_DUST_PRICE_CAP_PCT / 100;
+#endif
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
 		return price <= cap * units && price <= spare * PLAYERBOT_YSHOP_DUST_PURSE_PCT / 100;
 	}
@@ -244,6 +265,10 @@ namespace
 	{
 		if (IsPlayerBotG0DustHunter(ch) || GetPlayerBotYoharaShopDustFree(ch) >= GetPlayerBotYoharaShopDustKeep(ch))
 			return false;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+		if (!AllowsPlayerBotPowerDustMarket(ch, 1))	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the budget and the floor
+			return false;
+#endif
 		const TPlayerBotMarketLedgerEntry* dust = GetPlayerBotMarketLedgerEntry(PLAYERBOT_MAGIC_DUST_VNUM);
 		return dust && dust->dwSupplyUnits > 0;
 	}
@@ -272,7 +297,16 @@ namespace
 		if (!n || (vnum == PLAYERBOT_MAGIC_DUST_VNUM ? n->iDust : n->iMaterials) <= 0)
 			return;
 		if (vnum == PLAYERBOT_MAGIC_DUST_VNUM)
+		{
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+			// MT2009_PLUS_BOT_G0_DUST_RULE_V1: a G0 saver's dust is the G0's line (NotePlayerBotG0DustBought), not the
+			// power elixir's budget
+			if (GetPlayerBotG0DustReserve(ch) > 0)
+				return;
+			NotePlayerBotPowerDustMarket(ch, (int)count);
+#endif
 			s_kPlayerBotYoharaShopStats.dustBought += count;
+		}
 		else
 			s_kPlayerBotYoharaShopStats.materialsBought += count;
 		sys_log(0, "PLAYERBOT_SHOP2: %s bought pid=%u name=%s count=%u price=%lld have=%d want=%d",

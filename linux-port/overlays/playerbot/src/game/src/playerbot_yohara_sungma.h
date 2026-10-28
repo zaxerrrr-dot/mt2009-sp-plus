@@ -764,6 +764,11 @@
 		if (skipped)
 		{
 			IsPlayerBotSungmaElementMoveAllowed(ch, 0, true);	// the census's count of a pick held by the element
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+			// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the maps above (its own too) did not fit and the one below is another
+			// element's - a step down refused for want of the second set
+			NotePlayerBotG0DownBlocked(ch, "pick");
+#endif
 			if (currentSlot >= 0 && IsPlayerBotSungmaMapOn(currentMap))
 				return currentMap;
 			if (lowestAllowed != 0)
@@ -953,14 +958,24 @@
 			return;
 		const int slot = GetPlayerBotSungmaSlot(killer->GetMapIndex());
 		if (slot >= 0)
+		{
 			++s_aPlayerBotSungmaStats[slot].kills;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+			NotePlayerBotG0StruggleKill(killer);	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the bot's own window
+#endif
+		}
 	}
 
 	void NotePlayerBotSungmaDeath(LPCHARACTER ch)
 	{
 		const int slot = ch ? GetPlayerBotSungmaSlot(ch->GetMapIndex()) : -1;
 		if (slot >= 0)
+		{
 			++s_aPlayerBotSungmaStats[slot].deaths;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+			NotePlayerBotG0StruggleDeath(ch);	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the bot's own window
+#endif
+		}
 	}
 
 	// ------------------------------------------------------------ the poll's look at a resident

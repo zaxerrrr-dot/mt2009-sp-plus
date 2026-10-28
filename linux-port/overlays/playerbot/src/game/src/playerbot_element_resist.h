@@ -268,6 +268,9 @@ namespace
 					{
 						h.lBlockedMap = base;
 						++s_kPlayerBotElementMoves.blockedDown;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+						NotePlayerBotG0DownBlocked(ch, "element");	// MT2009_PLUS_BOT_G0_DUST_RULE_V1
+#endif
 						sys_log(0, "PLAYERBOT_ELEMENT: change refused pid=%u name=%s from_map=%ld map=%ld element=%s wanted=%s why=down",
 								ch->GetPlayerID(), ch->GetName(), h.lMap, base, PLAYERBOT_YOHARA_ELEMENT_NAMES[h.iElement],
 								PLAYERBOT_YOHARA_ELEMENT_NAMES[e]);
@@ -1019,16 +1022,27 @@ namespace
 				GetPlayerBotYoharaElementSlot(here) != GetPlayerBotYoharaElementSlot(map))
 		{
 			++looks[PLAYERBOT_ELIXIR_OFF_MAP];	// a village, Dongan's errand, a trip, the way
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+			NotePlayerBotPowerElixirLook(e, PLAYERBOT_ELIXIR_OFF_MAP);	// MT2009_PLUS_BOT_G0_DUST_RULE_V1
+#endif
 			return;
 		}
 		if (ch->IsDead() || ch->GetHP() <= 0)
 		{
 			++looks[PLAYERBOT_ELIXIR_DEAD];
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+			NotePlayerBotPowerElixirLook(e, PLAYERBOT_ELIXIR_DEAD);	// MT2009_PLUS_BOT_G0_DUST_RULE_V1
+#endif
 			return;
 		}
 		++looks[DrinkPlayerBotElixirKind(ch, PLAYERBOT_YOHARA_RESIST_ELIXIRS[e], PLAYERBOT_YOHARA_RESIST_POINTS[e], map, e, false)];
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(MT2009_PLUS_ELEMENTS_V1)
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+		// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the power elixir's outcome counted too (its uptime in the dust rule's census)
+		NotePlayerBotPowerElixirLook(e, DrinkPlayerBotElixirKind(ch, PLAYERBOT_YOHARA_POWER_ELIXIRS[e], (BYTE)(POINT_ENCHANT_ELECT + e), map, e, true));
+#else
 		DrinkPlayerBotElixirKind(ch, PLAYERBOT_YOHARA_POWER_ELIXIRS[e], (BYTE)(POINT_ENCHANT_ELECT + e), map, e, true);
+#endif
 #endif
 	}
 #endif

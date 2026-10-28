@@ -10332,6 +10332,24 @@ namespace
 	void NotePlayerBotSecondSetG0Piece(LPCHARACTER ch, LPITEM item);
 	// The AI's tick (playerbot_manager.cpp, beside the world set): the set's look, swap and census on its own clocks.
 	void ManagePlayerBotSecondSet(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+#define MT2009_PLUS_BOT_G0_DUST_RULE_V1 1
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V1 (playerbot_g0_dust_rule.h, after playerbot_element_second_set.h; the owner, 28
+	// October 2026: a bot with its G0 saves dust only when it cannot cope with its G0 set and wants a second one): the
+	// Sung Ma fight's per-bot window (kills, deaths, retreat time; playerbot_yohara_sungma.h, playerbot_sungma_fight.h),
+	// a refused step down to another element (playerbot_element_resist.h, playerbot_yohara_sungma.h's pick), the second
+	// G0 saver's gate and its reason (playerbot_yohara_g0.h), the power elixir's market budget (playerbot_yohara_shop.h),
+	// the power elixir's looks (the elixir tick) and the census.
+	void NotePlayerBotG0StruggleKill(LPCHARACTER ch);
+	void NotePlayerBotG0StruggleDeath(LPCHARACTER ch);
+	void NotePlayerBotG0StruggleRetreat(LPCHARACTER ch, DWORD ms);
+	void NotePlayerBotG0DownBlocked(LPCHARACTER ch, const char* where);
+	bool IsPlayerBotG0SecondSetMode(LPCHARACTER ch);
+	bool IsPlayerBotG0Struggling(LPCHARACTER ch, const char** why);
+	void NotePlayerBotG0DustReason(LPCHARACTER ch, int oldReason, int newReason);
+	bool AllowsPlayerBotPowerDustMarket(LPCHARACTER ch, int units);
+	void NotePlayerBotPowerDustMarket(LPCHARACTER ch, int units);
+	void NotePlayerBotPowerElixirLook(int e, int outcome);
+	void LogPlayerBotG0DustRuleCensus(DWORD dwNow);
 }
 
 #endif
