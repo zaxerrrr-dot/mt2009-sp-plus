@@ -1,7 +1,8 @@
 -- MT2009_PLUS_NPC_LOCATION_HELPER_V1: Lokalizator NPC (the improved map; Autor: Best Studio) - the three items of the
 -- system. Every start (apply.sh), idempotent: INSERT IGNORE - a row the operator changed (the Seban panel) is kept.
---   79667 Lokalizator NPC        - ITEM_USE / USE_SPECIAL: used once, it switches the system on for that character
---                                  for good (quest flag npc_location_helper.active); a second one is not used up.
+--   79667 Lokalizator NPC        - ITEM_USE / USE_SPECIAL: not needed any more (MT2009_PLUS_NPC_LOCATION_HELPER_V2,
+--                                  28 October 2026: every character has the improved map); using one only says so
+--                                  and keeps it. Not sold anywhere.
 --   79669 Kamien Teleportacji    - the stone the map's "teleport to the NPC" spends (bound to the character).
 --   79668 Kamien Teleportacji+   - the same stone, tradeable; the bound one is spent first.
 -- A teleport costs 1 stone on the same map, 2 in the same region (map index / 10), 3 elsewhere; 5 minutes cooldown

@@ -13,8 +13,9 @@ Znacznik: `MT2009_PLUS_COMMUNITY_V1`. Przełączniki silnika: `__MESSENGER_RENEW
 
 Jedno okno „Społeczność” (przycisk messengera na pasku i jego klawisz) zamiast starego messengera:
 
-- **Znajomi** – trzy listy: znajomi, zablokowani, zaproszenia do znajomych (zaproszenie nie wyskakuje już
-  okienkiem, tylko trafia na listę + linijka na czacie; zakładka mruga). Przy znajomym: stan (kolorowa
+- **Znajomi** – trzy listy: znajomi, zablokowani, zaproszenia do znajomych (zaproszenie trafia na listę + linijka na
+  czacie, zakładka mruga, i – jak w starym messengerze – wyskakuje okienko z pytaniem; odpowiedź w okienku usuwa
+  wpis z listy, odpowiedź na liście zamyka okienko). Przy znajomym: stan (kolorowa
   kropka), poziom, opis pod nickiem, ikony: położenie (kanał + mapa w dymku), ulubiony (gwiazdka – ulubieni
   na górze), zaproszenie do grupy (gracz na tej samej mapie). Przyciski: dodaj, zablokuj, szept, usuń.
   Dwuklik = szept.

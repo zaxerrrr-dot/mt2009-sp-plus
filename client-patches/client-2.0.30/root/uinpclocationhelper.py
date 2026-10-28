@@ -37,9 +37,9 @@ _PL_LOCALE_TEXTS = (
 	("NPC_LOCATION_HELPER_CANNOT_WARP_TO_NPC_NOW", "Nie mo\xbfesz si\xea teraz teleportowa\xe6."),
 	("NPC_LOCATION_HELPER_CAN_WARP_TO_NPC_STATE_FALSE_COOLTIME", "Kolejna teleportacja mo\xbfliwa za %d min."),
 	("NPC_LOCATION_HELPER_CAN_WARP_TO_NPC_STATE_FALSE_COOLTIME_LESS_THAN_1M", "Kolejna teleportacja mo\xbfliwa za nieca\xb3\xb9 minut\xea."),
-	("NPC_LOCATION_HELPER_CAN_WARP_TO_NPC_STATE_FALSE_DIFFERENT_EMPIRE", "Nie mo\xbfesz si\xea teleportowa\xe6 do NPC innego kr\xf3lestwa."),
+	("NPC_LOCATION_HELPER_CAN_WARP_TO_NPC_STATE_FALSE_DIFFERENT_EMPIRE", "Nie mo\xbfesz si\xea teleportowa\xe6 do NPC wrogiego kr\xf3lestwa."),
 	("NPC_LOCATION_HELPER_CAN_WARP_TO_NPC_STATE_FALSE_GOLD", "Masz za ma\xb3o Yang."),
-	("NPC_LOCATION_HELPER_CAN_WARP_TO_NPC_STATE_FALSE_LEVEL_LIMIT", "Tw\xf3j poziom jest za niski na t\xea map\xea."),
+	("NPC_LOCATION_HELPER_CAN_WARP_TO_NPC_STATE_FALSE_LEVEL_LIMIT", "Tw\xf3j poziom (lub Poziom Czempiona) jest za niski na t\xea map\xea."),
 	("NPC_LOCATION_HELPER_MAP_CATEGORY_EMPIRE_DUNGEON", "Lochy"),
 	("NPC_LOCATION_HELPER_MAP_CATEGORY_EMPIRE_FIELD", "Kr\xf3lestwa"),
 	("NPC_LOCATION_HELPER_MAP_CATEGORY_EVIL_DRAGON_TERRITORY", "Ziemie Mrocznego Smoka"),
@@ -4201,7 +4201,7 @@ class NPCListNode(ui.ImageBox):
 
 		try:
 
-			if npcLocationHelper.IsActive():
+			if _HelperIsActive(): # MT2009_PLUS_NPC_LOCATION_HELPER_V2
 
 				showBtn = True
 
@@ -4259,7 +4259,7 @@ class NPCListNode(ui.ImageBox):
 
 		try:
 
-			if npcLocationHelper.IsActive() == 0:
+			if not _HelperIsActive(): # MT2009_PLUS_NPC_LOCATION_HELPER_V2
 
 				self.__TicketDlg()
 
@@ -8430,10 +8430,9 @@ BTN_CHANGE_DOWN = "d:/ymir work/ui/pattern/btn_change_03.tga"
 
 
 def _HelperIsActive():
-	try:
-		return int(npcLocationHelper.IsActive()) != 0
-	except Exception:
-		return False
+	# MT2009_PLUS_NPC_LOCATION_HELPER_V2 (the owner, 28 October 2026): every character has the improved map - no
+	# Lokalizator NPC item, no wait for the server's STATUS (the server checks every teleport itself)
+	return True
 
 
 def _CurMapIndex():
@@ -8478,9 +8477,14 @@ def _SelectNPC(mapIndex, vnum, x, y):
 
 
 # the server's rule (CNpcLocationHelperManager::IsOpenTargetMap / ROLE_PORTAL) - change both together
-_OPEN_TARGET_CATEGORIES = (1, 2, 6)
+_OPEN_TARGET_CATEGORIES = (1, 2)	# no Yohara from another map (the owner, 28 Oct 2026)
 _OPEN_TARGET_MAPS = (104, 209, 301, 302, 303, 304, 368)
 _TXT_PORTAL = "Do portalu nie mo\xbfna si\xea teleportowa\xe6 - wybierz NPC obok niego."
+# MT2009_PLUS_NPC_LOCATION_HELPER_V2 (the wiki): the target map's level, the Champion level for Yohara, no NPC of
+# an enemy kingdom - the server's checks (npc_location_helper.cpp), said before the question
+_TXT_LEVEL = "Na t\xea map\xea mo\xbfna si\xea teleportowa\xe6 od %d poziomu."
+_TXT_CHAMPION = "Na ziemie Yohary mo\xbfna si\xea teleportowa\xe6 od 1. Poziomu Czempiona."
+_TXT_EMPIRE = "Nie mo\xbfesz si\xea teleportowa\xe6 do NPC wrogiego kr\xf3lestwa."
 _TXT_CLOSED_MAP = "Na t\xea map\xea nie mo\xbfna si\xea teleportowa\xe6 z innej mapy - wejd\x9f tam zwyk\xb3\xb9 drog\xb9 (wej\x9ccie, bilet, op\xb3ata)."
 
 
@@ -8492,14 +8496,39 @@ def _WarpBlockedReason(npcData):
 	except Exception:
 		return ""
 	cur = _CurMapIndex()
-	if target <= 0 or cur <= 0 or target == cur:
+	if target <= 0:
 		return ""
 	mx = NPCLocationHelperUtil.FindMapInfoByIndex(target)
 	if not mx:
 		return ""
-	if int(mx.get("category", 0)) in _OPEN_TARGET_CATEGORIES or target in _OPEN_TARGET_MAPS:
-		return ""
-	return _TXT_CLOSED_MAP
+	if cur > 0 and target != cur and not (int(mx.get("category", 0)) in _OPEN_TARGET_CATEGORIES or target in _OPEN_TARGET_MAPS):
+		return _TXT_CLOSED_MAP
+	return _WikiBlockedReason(mx)
+
+
+def _WikiBlockedReason(mx):
+	# MT2009_PLUS_NPC_LOCATION_HELPER_V2: as the server - the level, the Champion level (Yohara: categories 6 / 7)
+	try:
+		minLevel = int(mx.get("min_level", 0))
+		if minLevel > 0 and player.GetStatus(player.LEVEL) < minLevel:
+			return _TXT_LEVEL % minLevel
+	except Exception:
+		pass
+	try:
+		minC = int(mx.get("min_c_level", 0))
+		if int(mx.get("category", 0)) in (6, 7):
+			minC = max(1, minC)
+		if minC > 0 and hasattr(player, "CONQUEROR_LEVEL") and player.GetStatus(player.CONQUEROR_LEVEL) < minC:
+			return _TXT_CHAMPION
+	except Exception:
+		pass
+	try:
+		empire = int(mx.get("empire", 0))
+		if empire != 0 and empire != int(net.GetMainActorEmpire()):
+			return _TXT_EMPIRE
+	except Exception:
+		pass
+	return ""
 
 
 def _StoneCost(targetMapIndex):

@@ -21,8 +21,10 @@ lochów…), zaznaczenie wybranego NPC na mapie, strzałka pod postacią w jego 
 
 ### Teleport do NPC – kontrole (`WarpToNPC`)
 
-- Lokalizator włączony (flaga questowa `npc_location_helper.active`), 5 minut przerwy między teleportami
-  (`npc_location_helper.last_warp_time`).
+- **V2 (właściciel, 28 października 2026, „jak wiki”):** Lokalizator NPC ma **każda postać** od początku – bez
+  przedmiotu i bez flagi questowej (`IsActive` = każdy gracz; klient `_HelperIsActive` zawsze prawda). Przedmiot
+  79667 zostaje w danych, ale nie jest potrzebny (użyty tylko o tym mówi i zostaje) i nigdzie się go nie sprzedaje.
+- 5 minut przerwy między teleportami (`npc_location_helper.last_warp_time`).
 - Jak mapa teleportacji pod TAB (`mapa_tab`) i zapisane pozycje: nie martwy, nie na wierzchowcu, nie w pojedynku / na
   arenie, bez otwartego handlu / sklepu / magazynu / kostki (`IsBusy`, `CanWarp`), nie z instancji lochu (≥ 10000), nie
   z wesela, pojedynków, OX, wojny królestw, map GM, areny wojny gildii (gdy gildia walczy). Dolina Cyklopów (360) i
@@ -36,6 +38,11 @@ lochów…), zaznaczenie wybranego NPC na mapie, strzałka pod postacią w jego 
   Płaskowyż Iluzji (397), Grota Wygnańców (72/73), Erebus, Sung Ma, Gnolle, Świątynia Węży – tylko w obrębie tej samej
   mapy (gracz już tam jest). Klient mówi to przed pytaniem (`_WarpBlockedReason`, ta sama lista).
 - Nigdy do portalu (ikona 1 w pliku punktów) – lądowanie obok przeniosłoby przez portal.
+- **V2 – blokady z wiki ponad nasze:** poziom mapy docelowej (`min_level` w `npc_location_helper.txt` = nasze
+  bramy: Grota Wygnańców 75, Smocze ziemie 301–304 i Port 368 – 90, Świątynia Ochao 95, Yohara 120, Teleporter
+  2. strona 60…), ziemie Yohary (kategorie 6 / 7) tylko od 1. Poziomu Czempiona, nigdy do NPC wrogiego królestwa
+  (królestwo mapy). Klient mówi to przed pytaniem (`_WikiBlockedReason`). Reszta naszych zasad bez zmian (lochy i
+  zamknięte mapy tylko w obrębie tej samej mapy, wierzchowiec, loch-instancja, przerwa 5 minut).
 - Pozycja: baza mapy + punkt NPC, 2 m obok NPC na komórce, po której da się chodzić (gdy ten rdzeń hostuje mapę;
   generator sprawdził każdy punkt w `server_attr`).
 - Koszt: 1 kamień na tej samej mapie, 2 w tym samym regionie (indeks mapy / 10), 3 dalej; najpierw Kamień
@@ -59,6 +66,12 @@ flagą questową `npc_location_helper.unlocked_map.<indeks>` (np. z questa) – 
   (te same pliki dostaje klient).
 - `linux-port/docker/mariadb/playerbot/npc_location_helper.sql` (apply.sh): 79667 Lokalizator NPC, 79668 Kamień
   Teleportacji+, 79669 Kamień Teleportacji.
+
+## ItemShop (V2)
+
+`apply.sh` → `ishop_once npcloc_stones_17` (zakładka „Wyposażenie”, obok Pierścienia Teleportacji 8): indeks **17**
+Kamień Teleportacji 79669 – **5 SM** za sztukę (cena właściciela), indeks **18** Kamień Teleportacji+ 79668 –
+**6 SM** (założenie: o monetę drożej, bo można nim handlować). Boty ich nie kupują.
 
 ## Kolejność / uruchomienie
 
