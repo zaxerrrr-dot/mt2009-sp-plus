@@ -19,8 +19,10 @@ członków; w nagrodach księgi 3 nowych umiejętności gildii. Wszystko to daje
      przesunięty na koniec) – nie wzięta;
    - db `GuildManager.cpp` `c_aiScoreByLevel` (punkty rankingu wojen za poziom) do 40: 60 000 + 5 000 za poziom
      (bez tego poziomy 21–40 liczyłyby się jako 0);
-   - limit członków rośnie jak dotąd tylko do poz. 20 (48 + 4 × poziom = 124), poziomy 21–40 nie dodają miejsc
-     (inaczej gildia botów na 40 miałaby 204 miejsca) – decyzja do potwierdzenia przez właściciela;
+   - limit członków rośnie do poz. 40 tak samo jak do 20: 48 + 4 × (poziom − 1), czyli 124 na 20 i **204 na 40**
+     (plus premia budynków do 72) – decyzja właściciela z 29.10.2026 (edycja `members to 40` na `members`; tekst
+     zachowuje znacznik `members`, więc drzewo po wcześniejszym wdrożeniu przyjmuje ją bez zmian). Klient pokazuje
+     limit z pakietu serwera (`max_member_count`, WORD), rdzeń db limitu nie liczy;
    - punkt umiejętności za każdy poziom jak dotąd (do 39 punktów; umiejętności 151–157 potrzebują 49).
 2. **Umiejętności gildii Balathora** na wolnych miejscach 158–160 tablicy umiejętności gildii (to numery GF z jego
    `skilltable.txt`: 진백룡의 가호 / 결의 / 견고 – w naszej bazie były tu puste `PASSIVANONAMEx`; rozmiar tablicy
@@ -40,7 +42,9 @@ członków; w nagrodach księgi 3 nowych umiejętności gildii. Wszystko to daje
      zostają). Księga paczki obniżała **losową** umiejętność o 1 i wymagała nowego typu przedmiotu 37 (u nas 37 to
      zwierzak) – tego nie bierzemy.
    - Księgi Balathora daje skrzynia 83076 Krypty (`game/balathor/special_item_group.balathor.txt`, wiersze 12–14, po
-     10 %). Księgi Zapomnienia nigdzie nie sprzedajemy – miejsce (ItemShop / NPC) wybiera właściciel.
+     20 %; decyzja właściciela z 29.10.2026, wcześniej 10 %).
+   - Księga Zapomnienia Gildii w ItemShopie: zakładka „Zwoje i księgi”, indeks **631**, **79 Smoczych Monet** (cena
+     Zwoju Powrotu Statusu; `apply.sh` `ishop_once guildsys_forget_631`, panel `BOOT_ONCE`).
 4. **Umiejętności gildii w Krypcie Balathora**: na mapie 420 (i `indeks / 10000 == 420`) każda umiejętność gildii
    działa bez wojny i trafia w członków na tej samej kopii mapy (`CGuild::UseSkill` – kontrola areny + nasz hook przed
    `switch`). Exe: `PythonPlayerSkill.cpp` przepuszcza `ONLY_FOR_GUILD_WAR` na `metin2_map_guild_whitedragon_boss`.
@@ -85,18 +89,20 @@ Balathora (jego polimorfia w kryształ lodu): Wola Balathora go chroni, jeśli K
 | `constants.cpp` | tabela doświadczenia 21–40 |
 | `../../db/src/GuildManager.cpp` | `c_aiScoreByLevel` do 40 |
 | `guild.h` | `friend struct GuildSysAccess` (tablica umiejętności, punkty, członkowie online) |
-| `guild.cpp` | limit członków do poz. 20; Krypta jako miejsce umiejętności; hook w `UseSkill`; 158–160 bez punktów |
+| `guild.cpp` | limit członków do poz. 40; Krypta jako miejsce umiejętności; hook w `UseSkill`; 158–160 bez punktów |
 | `char_item.cpp` | `USE_SPECIAL` → 50344–50347 |
 | `char_resist.cpp` | `IsImmune` → efekty 158/159/160 |
 | `char_battle.cpp` | `IsResistPush` → Nieugiętość Balathora |
 | `questlua_guild.cpp` | deklaracje + 7 funkcji w tabeli `guild` |
 
-13 edycji (`edits.json`, generowane przez `gen_edits.py`), każda z własnym znacznikiem. Kolejność: po `npcloc`, przed
+14 edycji (`edits.json`, generowane przez `gen_edits.py`), każda z własnym znacznikiem. Kolejność: po `npcloc`, przed
 `balathor` (`... npcloc guildsys balathor`); sprawdzone, że wszystkie edycje Krypty dalej pasują po tym patchu.
 `guildsys.sql` (apply.sh): kolumny, `skill_proto` 158–160, `item_proto` 50344–50347 (INSERT IGNORE).
 
 Boty: nic z tego nie wysyła pakietów postaci bez połączenia (`GetDesc`); boty gildii wydają punkty jak dotąd na
-152–157, ich gildie po prostu rosną dalej niż 20 (limit członków bez zmian).
+152–157, ich gildie rosną dalej niż 20. Większy limit: gildie botów średnie, zwykłe i Legend biorą limit silnika
+(`GetPlayerBotGuildMemberCap`), elitarne i silne zostają przy 24 / 40; rekrutacja (`playerbot_guild_lfg.h`, Legendy,
+zaproszenia z czatu) sprawdza `GetMaxMemberCount()`, listy członków to kontenery bez stałych rozmiarów.
 
 ## Moduły paczki – co wzięte, co nie
 

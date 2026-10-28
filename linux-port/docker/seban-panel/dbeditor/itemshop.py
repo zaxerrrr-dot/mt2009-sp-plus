@@ -154,6 +154,8 @@ BOOT_ONCE = {
     "npcloc_stones_17": {"adds": (17, 18), "note": "Kamień Teleportacji i Kamień Teleportacji+ (Lokalizator NPC)"},
     "zestawy_60": {"adds": (60, 61, 62, 63, 64, 65),
                    "note": "Zestawy kostiumów: Amulet Nazara, Lizak Magii, Czekoladowy Amulet, Mistrzowski Emblemat, Błogosławieństwo Mocy, Szarfa Serca"},
+    # MT2009_PLUS_GUILDSYS_V1 (shop): Ksiega Zapomnienia Gildii 50347 (79 SM), tab Zwoje i ksiegi
+    "guildsys_forget_631": {"adds": (631,), "note": "Księga Zapomnienia Gildii"},
 }
 
 

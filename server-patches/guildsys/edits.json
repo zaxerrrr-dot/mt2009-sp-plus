@@ -31,6 +31,12 @@
  },
  {
   "file": "guild.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (members to 40)",
+  "old": "\t// MT2009_PLUS_GUILDSYS_V1 (members): levels 21-40 add no member places (guildsys.h GUILDSYS_MAX_MEMBER_LEVEL).\n\treturn 48 + 4 * (MIN((int)m_data.level, 20) - 1) + m_iMemberCountBonus;",
+  "new": "\t// MT2009_PLUS_GUILDSYS_V1 (members), MT2009_PLUS_GUILDSYS_V1 (members to 40): 4 member places a level up to\n\t// GUILD_MAX_LEVEL (40; guildsys.h GUILDSYS_MAX_MEMBER_LEVEL) - 48 at 1, 124 at 20, 204 at 40, plus the\n\t// buildings' bonus (up to 72).\n\treturn 48 + 4 * (MIN((int)m_data.level, (int)GUILD_MAX_LEVEL) - 1) + m_iMemberCountBonus;"
+ },
+ {
+  "file": "guild.cpp",
   "marker": "MT2009_PLUS_GUILDSYS_V1 (arena)",
   "old": "\tif (ch && !CWarMapManager::instance().IsWarMap(ch->GetMapIndex()))\n",
   "new": "\t// MT2009_PLUS_GUILDSYS_V1 (arena): guild skills work in the Balathor lair (map 420 and its copies) as well.\n\tbool GuildSysSkillMapAllowed(long lMapIndex);\n\tif (ch && !CWarMapManager::instance().IsWarMap(ch->GetMapIndex()) && !GuildSysSkillMapAllowed(ch->GetMapIndex()))\n"

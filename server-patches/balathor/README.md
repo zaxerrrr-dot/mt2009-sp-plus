@@ -42,7 +42,7 @@ tak jak Schronienie Meley (356) – nie game3.
 - gildia istnieje ≥ 24 h (`guild.age()`), każdy zgłaszany członek jest w gildii ≥ 24 h (`guild.member_age()` w bloku
   `q.begin_other_pc_block`) – kolumny `player.guild.create_time` / `guild_member.join_time` (`guildsys.sql`),
 - 3 umiejętności gildii Balathora (158–160: Burza / Wola / Nieugiętość Balathora) z ksiąg 50344–50346 – wiersze
-  12–14 skrzyni 83076 (po 10 %); umiejętności gildii działają w Krypcie bez wojny gildii.
+  12–14 skrzyni 83076 (po 20 %); umiejętności gildii działają w Krypcie bez wojny gildii.
 
 ## Czego linia nie ma (pominięte w skrzyniach)
 

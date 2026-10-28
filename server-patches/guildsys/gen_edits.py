@@ -60,6 +60,16 @@ edit(G, 'members',
      '\treturn 48 + 4 * (m_data.level-1) + m_iMemberCountBonus;',
      '\t// MT2009_PLUS_GUILDSYS_V1 (members): levels 21-40 add no member places (guildsys.h GUILDSYS_MAX_MEMBER_LEVEL).\n'
      '\treturn 48 + 4 * (MIN((int)m_data.level, 20) - 1) + m_iMemberCountBonus;')
+# ---- the owner (29 October 2026): levels 21-40 add member places too, the same 4 a level (48 at 1, 124 at 20, 204 at
+# 40, plus the buildings' bonus up to 72). A new edit on top of 'members' (the deploy's accumulated tree has it); its
+# text keeps the 'members' marker, so that one is not applied again.
+edit(G, 'members to 40',
+     '\t// MT2009_PLUS_GUILDSYS_V1 (members): levels 21-40 add no member places (guildsys.h GUILDSYS_MAX_MEMBER_LEVEL).\n'
+     '\treturn 48 + 4 * (MIN((int)m_data.level, 20) - 1) + m_iMemberCountBonus;',
+     '\t// MT2009_PLUS_GUILDSYS_V1 (members), MT2009_PLUS_GUILDSYS_V1 (members to 40): 4 member places a level up to\n'
+     '\t// GUILD_MAX_LEVEL (40; guildsys.h GUILDSYS_MAX_MEMBER_LEVEL) - 48 at 1, 124 at 20, 204 at 40, plus the\n'
+     '\t// buildings\' bonus (up to 72).\n'
+     '\treturn 48 + 4 * (MIN((int)m_data.level, (int)GUILD_MAX_LEVEL) - 1) + m_iMemberCountBonus;')
 
 # ---- UseSkill: the Balathor lair is a place for guild skills too
 edit(G, 'arena',
