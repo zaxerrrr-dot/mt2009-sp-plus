@@ -436,9 +436,24 @@ namespace
 	}
 
 	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a stone of the kind whose basic line is the hunt element's resistance.
+	// MT2009_PLUS_BOT_ELEMENT_PET_V1 (ds kind): with the global table (m2_bonus_global) by the stone's kind too - a stone
+	// below Ancient has one basic line only (ApplyNumSettings basis 1 1 1 2 2 3), so a Normal, Brilliant or Rare stone
+	// of the hunt kind had no resistance line yet and its grade work never went first.
+	int GetPlayerBotDsKindElement(LPITEM stone)
+	{
+		// Diament ice, Rubin fire, Jadeit wind, Szafir earth, Granat lightning, Onyks dark (the element index: lightning 0,
+		// fire 1, ice 2, wind 3, earth 4, dark 5); the Ametyst none
+		static const int s_aiKindElement[6] = { 2, 1, 3, 4, 0, 5 };
+		const int kind = stone ? (int)(stone->GetVnum() / 10000) - 11 : -1;
+		return kind >= 0 && kind < 6 ? s_aiKindElement[kind] : -1;
+	}
+
 	bool IsPlayerBotDsHuntKindStone(LPCHARACTER ch, LPITEM stone)
 	{
 		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
+		if (stone && hunt >= 0 && stone->IsDragonSoul() && GetPlayerBotDsKindElement(stone) == hunt &&
+				quest::CQuestManager::instance().GetEventFlag("m2_bonus_global") != 0)
+			return true;
 		for (int i = 0; stone && hunt >= 0 && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 			if (stone->GetAttributeType(i) != 0 && GetPlayerBotResistLineElement(stone->GetAttributeType(i)) == hunt)
 				return true;
@@ -1439,8 +1454,14 @@ namespace
 			if (seen != 0 && dwNow >= seen && (last == 0 || seen - last < 0x80000000U))
 				last = seen;
 		}
-		const bool fightingNow = last != 0 && dwNow - last < PLAYERBOT_DS_COMBAT_START_MS;
-		const bool foughtLately = last != 0 && dwNow - last < PLAYERBOT_DS_COMBAT_HOLD_MS;
+		// MT2009_PLUS_BOT_ELEMENT_PET_V1 (deck): a Yohara bot with a hunt element holds the deck on while it is on a Sung
+		// Ma map. The clock above is stamped by the bot's own blow or skill only, never by a blow taken, and the tick is
+		// 2 s - the map's monsters come at the bot first, and their opening hits (after a walk, or within the 20 s after a
+		// switch-off) fell on a deck that was off: the hunt kind's resistance line (the global table's 2nd basic line)
+		// was not there when the damage came. On the map the bot is in or near a fight all the time anyway.
+		const bool elementMap = GetPlayerBotHuntElement(ch) > 0 && GetPlayerBotYoharaElementSlot(ch->GetMapIndex()) >= 0;
+		const bool fightingNow = elementMap || (last != 0 && dwNow - last < PLAYERBOT_DS_COMBAT_START_MS);
+		const bool foughtLately = elementMap || (last != 0 && dwNow - last < PLAYERBOT_DS_COMBAT_HOLD_MS);
 		const char* quiet = NULL;
 		if (IsPlayerBotSafeZone(ch->GetMapIndex(), ch->GetX(), ch->GetY()))
 			quiet = "safe_zone";
@@ -1478,8 +1499,9 @@ namespace
 				return;
 			state.dwLastDsDeckToggle = dwNow;
 			++s_kPlayerBotAlchemyStats.deckOn;
-			PlayerBotLogThrottled("ds_deck_on", dwNow, "PLAYERBOT_DS: deck on pid=%u name=%s lv=%d map=%ld worn_live=%d",
-					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), ch->GetMapIndex(), CountPlayerBotWornDs(ch, true));
+			PlayerBotLogThrottled("ds_deck_on", dwNow, "PLAYERBOT_DS: deck on pid=%u name=%s lv=%d map=%ld worn_live=%d why=%s",
+					ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), ch->GetMapIndex(), CountPlayerBotWornDs(ch, true),
+					elementMap ? "element_map" : "fight");
 			return;
 		}
 		if (!quiet && foughtLately)

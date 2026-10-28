@@ -612,9 +612,40 @@ namespace
 	// bracelet and the rest of the worn gear (lines and the proto's applies), the talisman, the costume pieces
 	// (costume, hairstyle, weapon skin...), the active Dragon Stone deck, the elixir's affect; the rest of GetPoint
 	// (skills, buffs, the Will...) is "other".
+	// MT2009_PLUS_BOT_ELEMENT_PET_V1: the pet out (a seal's applies while its pet is out - the Maly Zywiolak's +10, the
+	// element pet pass, playerbot_element_pet.h, defined later in this namespace) is "pet", no longer "other".
 	enum { PLAYERBOT_ELEMENT_SRC_GEAR, PLAYERBOT_ELEMENT_SRC_TALISMAN, PLAYERBOT_ELEMENT_SRC_COSTUME, PLAYERBOT_ELEMENT_SRC_DS,
-		PLAYERBOT_ELEMENT_SRC_ELIXIR, PLAYERBOT_ELEMENT_SRC_OTHER, PLAYERBOT_ELEMENT_SRC_COUNT };
-	const char* const PLAYERBOT_ELEMENT_SRC_NAMES[PLAYERBOT_ELEMENT_SRC_COUNT] = { "gear", "talisman", "costume", "ds", "elixir", "other" };
+		PLAYERBOT_ELEMENT_SRC_ELIXIR, PLAYERBOT_ELEMENT_SRC_PET, PLAYERBOT_ELEMENT_SRC_OTHER, PLAYERBOT_ELEMENT_SRC_COUNT };
+	const char* const PLAYERBOT_ELEMENT_SRC_NAMES[PLAYERBOT_ELEMENT_SRC_COUNT] = { "gear", "talisman", "costume", "ds", "elixir", "pet",
+		"other" };
+	long GetPlayerBotElementPetResist(LPCHARACTER ch, BYTE point);
+
+	// MT2009_PLUS_BOT_ELEMENT_PET_V1 (ds_potential): the deck's resistance to the point - the active deck's stones that
+	// are on, or (activeOnly false) what the better deck's stones with time left would give once it is on (the deck is
+	// on only around a fight, ManagePlayerBotDsDeckTick, so a census between fights read "ds" 0).
+	long GetPlayerBotDsDeckResist(LPCHARACTER ch, BYTE point, bool activeOnly)
+	{
+		long best = 0;
+		const int active = ch ? ch->DragonSoul_GetActiveDeck() : -1;
+		for (int deck = 0; ch && point && deck < DRAGON_SOUL_DECK_MAX_NUM; ++deck)
+		{
+			if (activeOnly && deck != active)
+				continue;
+			long sum = 0;
+			for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+			{
+				LPITEM stone = ch->GetItem(TItemPos(INVENTORY, (WORD)((int)DRAGON_SOUL_EQUIP_SLOT_START + deck * (int)DS_SLOT_MAX + kind)));
+				if (!stone || (activeOnly ? !DSManager::instance().IsActiveDragonSoul(stone)
+						: !DSManager::instance().IsTimeLeftDragonSoul(stone)))
+					continue;
+				for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+					if (stone->GetAttributeType(i) == point)
+						sum += stone->GetAttributeValue(i);
+			}
+			best = std::max(best, sum);
+		}
+		return best;
+	}
 
 	long SumPlayerBotItemPoint(LPITEM item, BYTE point)
 	{
@@ -645,16 +676,8 @@ namespace
 					: (item->GetType() == ITEM_COSTUME ? PLAYERBOT_ELEMENT_SRC_COSTUME : PLAYERBOT_ELEMENT_SRC_GEAR);
 			src[kind] += SumPlayerBotItemPoint(item, point);
 		}
-		const int deck = ch->DragonSoul_GetActiveDeck();
-		if (deck >= 0)
-			for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
-			{
-				LPITEM stone = ch->GetItem(TItemPos(INVENTORY, (WORD)((int)DRAGON_SOUL_EQUIP_SLOT_START + deck * (int)DS_SLOT_MAX + kind)));
-				if (stone && DSManager::instance().IsActiveDragonSoul(stone))
-					for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
-						if (stone->GetAttributeType(i) == point)
-							src[PLAYERBOT_ELEMENT_SRC_DS] += stone->GetAttributeValue(i);
-			}
+		src[PLAYERBOT_ELEMENT_SRC_DS] = GetPlayerBotDsDeckResist(ch, point, true);
+		src[PLAYERBOT_ELEMENT_SRC_PET] = GetPlayerBotElementPetResist(ch, point);	// MT2009_PLUS_BOT_ELEMENT_PET_V1
 		CAffect* elixir = ch->FindAffect(AFFECT_BLEND, point);
 		if (elixir)
 			src[PLAYERBOT_ELEMENT_SRC_ELIXIR] = elixir->lApplyValue;
@@ -690,6 +713,9 @@ namespace
 		int cosWorn[E] = { 0 }, cosLine[E] = { 0 }, cos2l[E] = { 0 }, cosHp[E] = { 0 }, cosBody[E] = { 0 };
 #endif
 		int elixirOn[E] = { 0 }, elixirStock[E] = { 0 }, materials[E] = { 0 }, over60[E] = { 0 }, over40[E] = { 0 };
+		// MT2009_PLUS_BOT_ELEMENT_PET_V1: the deck's potential (on or not) and the decks on at the census
+		long long sumDsPot[E] = { 0 };
+		int dsOn[E] = { 0 };
 		int none = 0, preparing = 0;
 		for (int e = 0; e < E; ++e)
 		{
@@ -732,6 +758,8 @@ namespace
 			GetPlayerBotElementResistSources(ch, point, src);
 			for (int k = 0; k < PLAYERBOT_ELEMENT_SRC_COUNT; ++k)
 				sumSrc[e][k] += src[k];
+			sumDsPot[e] += GetPlayerBotDsDeckResist(ch, point, false);
+			dsOn[e] += ch->DragonSoul_GetActiveDeck() >= 0 ? 1 : 0;
 			for (int i = 0; i < 3; ++i)
 			{
 				LPITEM item = ch->GetWear(PLAYERBOT_ELEMENT_GEAR_WEARS[i]);
@@ -794,6 +822,11 @@ namespace
 			{
 				char one[32];
 				snprintf(one, sizeof(one), "%s%s=%lld", k ? " " : "", PLAYERBOT_ELEMENT_SRC_NAMES[k], sumSrc[e][k] / bots[e]);
+				src += one;
+			}
+			{
+				char one[64];
+				snprintf(one, sizeof(one), " ds_potential=%lld ds_on=%d/%d", sumDsPot[e] / bots[e], dsOn[e], bots[e]);
 				src += one;
 			}
 			snprintf(buf, sizeof(buf), " %s=[bots=%d resist_avg=%lld min=%d max=%d ge60=%d ge40=%d src=[%s] lines=%d/%d "
