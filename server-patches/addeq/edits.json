@@ -1,0 +1,80 @@
+[
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (cells)",
+  "old": "// @fixme199 BEGIN\nstruct PlayerSlotT {\n",
+  "new": "// MT2009_PLUS_ADDEQ_V1 (cells): Druga strona ekwipunku - the inactive page's store, one cell per wear cell after the belt's\n// inventory (window INVENTORY, cells 308-339 in the DB); never a packet, never a client's cell (INVENTORY_AND_EQUIP_SLOT_MAX\n// stays the limit of TItemPos and GetItem) - playerbot_addeq.cpp\nenum EMt2009Addeq\n{\n\tMT2009_ADDEQ_SLOT_START = BELT_INVENTORY_SLOT_END,\n\tMT2009_ADDEQ_SLOT_END = MT2009_ADDEQ_SLOT_START + WEAR_MAX_NUM,\n};\n\n// @fixme199 BEGIN\nstruct PlayerSlotT {\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (slots)",
+  "old": "\tbool bSpecialStorageClient{false};\n",
+  "new": "\tbool bSpecialStorageClient{false};\n\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (methods)",
+  "old": "\t\tvoid\t\t\tMt2009SpecialClearItems();\n",
+  "new": "\t\tvoid\t\t\tMt2009SpecialClearItems();\n\t\t// MT2009_PLUS_ADDEQ_V1 (methods): Druga strona ekwipunku, playerbot_addeq.cpp\n\t\tstatic bool\t\tMt2009AddeqIsCell(WORD wCell) { return wCell >= MT2009_ADDEQ_SLOT_START && wCell < MT2009_ADDEQ_SLOT_END; }\n\t\tLPITEM\t\t\tMt2009AddeqGetItem(BYTE bWear) const;\n\t\tvoid\t\t\tMt2009AddeqSetItem(WORD wCell, LPITEM pItem);\n\t\tvoid\t\t\tMt2009AddeqFlushItems();\n\t\tvoid\t\t\tMt2009AddeqClearItems();\n\t\tbool\t\t\tMt2009AddeqSwitch(int iPage);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (set)",
+  "old": "\tswitch(window_type)\n\t{\n\tcase INVENTORY:\n\tcase EQUIPMENT:\n\t\t{\n\t\t\tif (wCell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\t\t{\n\t\t\t\tsys_err(\"CHARACTER::SetItem: invalid item cell %d\", wCell);\n",
+  "new": "\t// MT2009_PLUS_ADDEQ_V1 (set): a cell of the inactive equipment page's store - no packet, the client never sees it\n\tif (window_type == INVENTORY && Mt2009AddeqIsCell(wCell))\n\t{\n\t\tMt2009AddeqSetItem(wCell, pItem);\n\t\treturn;\n\t}\n\n\tswitch(window_type)\n\t{\n\tcase INVENTORY:\n\tcase EQUIPMENT:\n\t\t{\n\t\t\tif (wCell >= INVENTORY_AND_EQUIP_SLOT_MAX)\n\t\t\t{\n\t\t\t\tsys_err(\"CHARACTER::SetItem: invalid item cell %d\", wCell);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (clear)",
+  "old": "\tMt2009SpecialClearItems(); // MT2009_PLUS_EKWIPUNEK_V1 (clear): the category storages\n",
+  "new": "\tMt2009SpecialClearItems(); // MT2009_PLUS_EKWIPUNEK_V1 (clear): the category storages\n\tMt2009AddeqClearItems(); // MT2009_PLUS_ADDEQ_V1 (clear): the inactive equipment page\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (use)",
+  "old": "\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n",
+  "new": "\t// MT2009_PLUS_ADDEQ_V1 (use): Strona ekwipunku II 38306 / 76055 unlocks the second equipment page (playerbot_addeq.cpp)\n\t{\n\t\tint Mt2009AddeqUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iAddeqUse = Mt2009AddeqUseItem(this, item);\n\t\tif (iAddeqUse >= 0)\n\t\t\treturn iAddeqUse != 0;\n\t}\n\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (flush)",
+  "old": "\tfor (int i = 0; i < INVENTORY_AND_EQUIP_SLOT_MAX; ++i)\n\t\tif ((item = GetInventoryItem(i)))\n\t\t\tITEM_MANAGER::instance().FlushDelayedSave(item);\n}\n",
+  "new": "\tfor (int i = 0; i < INVENTORY_AND_EQUIP_SLOT_MAX; ++i)\n\t\tif ((item = GetInventoryItem(i)))\n\t\t\tITEM_MANAGER::instance().FlushDelayedSave(item);\n\tMt2009AddeqFlushItems(); // MT2009_PLUS_ADDEQ_V1 (flush): the inactive equipment page (before a warp)\n}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (remove)",
+  "old": "\t\t\telse\n\t\t\t{\n\t\t\t\tTItemPos cell(INVENTORY, m_wCell);\n",
+  "new": "\t\t\t// MT2009_PLUS_ADDEQ_V1 (remove): an item of the inactive equipment page's store leaves the store\n\t\t\telse if (m_bWindow == INVENTORY && CHARACTER::Mt2009AddeqIsCell(m_wCell))\n\t\t\t\tpOwner->SetItem(TItemPos(INVENTORY, m_wCell), NULL);\n\t\t\telse\n\t\t\t{\n\t\t\t\tTItemPos cell(INVENTORY, m_wCell);\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (update)",
+  "old": "\tif (IsChangingAttr())\n\t\treturn;\n\n\tTPacketGCItemUpdate pack;\n",
+  "new": "\tif (IsChangingAttr())\n\t\treturn;\n\n\t// MT2009_PLUS_ADDEQ_V1 (update): the inactive equipment page's store is never sent\n\tif (GetWindow() == INVENTORY && CHARACTER::Mt2009AddeqIsCell(m_wCell))\n\t\treturn;\n\n\tTPacketGCItemUpdate pack;\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (skill)",
+  "old": "bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaster)\n{\n",
+  "new": "bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaster)\n{\n\t// MT2009_PLUS_ADDEQ_V1 (skill): the support skill 200 \"Zmiana strony ekwipunku\" switches the page (playerbot_addeq.cpp)\n\t{\n\t\tbool Mt2009AddeqUseSkill(LPCHARACTER ch, DWORD dwVnum, bool& bResult);\n\t\tbool bAddeqResult = false;\n\t\tif (Mt2009AddeqUseSkill(this, dwVnum, bAddeqResult))\n\t\t\treturn bAddeqResult;\n\t}\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (reset)",
+  "old": "\tvec.emplace_back(SKILL_PRECISION, m_pSkillLevels[SKILL_PRECISION]);\n",
+  "new": "\tvec.emplace_back(SKILL_PRECISION, m_pSkillLevels[SKILL_PRECISION]);\n\t// MT2009_PLUS_ADDEQ_V1 (reset): the second equipment page's switch (200) is kept - the item unlocked it, not points\n\tvec.emplace_back(200, m_pSkillLevels[200]);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (declare)",
+  "old": "ACMD(do_switchbot);\t// MT2009_PLUS_SWITCHBOT_V1 (declare): \"/switchbot hello\", root/uiswitchbot.py (playerbot_switchbot.cpp)\n",
+  "new": "ACMD(do_switchbot);\t// MT2009_PLUS_SWITCHBOT_V1 (declare): \"/switchbot hello\", root/uiswitchbot.py (playerbot_switchbot.cpp)\nACMD(do_addeq);\t// MT2009_PLUS_ADDEQ_V1 (declare): Druga strona ekwipunku, root/uiaddeq.py (playerbot_addeq.cpp)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V1 (table)",
+  "old": "\t{ \"switchbot\",\tdo_switchbot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SWITCHBOT_V1 (table)\n",
+  "new": "\t{ \"switchbot\",\tdo_switchbot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SWITCHBOT_V1 (table)\n\t{ \"addeq\",\tdo_addeq,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_ADDEQ_V1 (table)\n"
+ }
+]

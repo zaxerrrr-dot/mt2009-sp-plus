@@ -2714,6 +2714,8 @@ class GameWindow(ui.ScriptWindow):
 				# MT2009_PLUS_SWITCHBOT_V1: "/switchbot hello" - the server sends the switchbot's packets from now on
 				# (only with the 3.0 exe that has the module switchbot; uiswitchbot.py).
 				__import__("uiswitchbot").Start()
+				# MT2009_PLUS_ADDEQ_V1: "/addeq hello" - the second equipment page's state (uiaddeq.py).
+				__import__("uiaddeq").Start()
 
 		constInfo.FIXED_TIME_SINCE_START += FIXED_TIMESTEP_UPDATE
 		self.oneSecondTimer += FIXED_TIMESTEP_UPDATE
@@ -3539,6 +3541,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["BUFFI"] = self.__Buffi # MT2009_PLUS_BUFFI_V1
 		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
 		serverCommandList["ekwipunek_refine"] = self.__EkwipunekRefine # MT2009_PLUS_EKWIPUNEK_REFINE_V1
+		serverCommandList["addeq_page"] = self.__AddeqPage # MT2009_PLUS_ADDEQ_V1
 		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
 		# a Stage A server only refreshes the window (the numbers are points now).
 		serverCommandList["champion_info"] = self.__ChampionInfo
@@ -4289,6 +4292,10 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_EKWIPUNEK_REFINE_V1: the window of the item the next refine window is for (uirefine.py).
 	def __EkwipunekRefine(self, *args):
 		__import__("uiekwipunek").OnRefineWindow(*args)
+
+	# MT2009_PLUS_ADDEQ_V1: the second equipment page's state - unlocked, page (uiaddeq.py).
+	def __AddeqPage(self, *args):
+		__import__("uiaddeq").OnServerPage(*args)
 
 	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
 	def __NewPet(self, *args):

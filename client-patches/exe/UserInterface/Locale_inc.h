@@ -332,5 +332,10 @@
 // window's "Antymagia" line, uiattributelist.py) and app.ANTI_RESIST_MAGIC_BONUS for root. Without the define root
 // names 252 itself (localeinfo_point.py) and the window has no such line.
 #define ENABLE_MT2009_ANTI_RESIST_MAGIC
+// MT2009_PLUS_ADDEQ_V1 (Druga strona ekwipunku - the "Official Additional Equipment Page" package): the support skill 200
+// "Zmiana strony ekwipunku" goes straight to the server as Combo does (PythonPlayerSkill.cpp __CheckSpecialSkill - no
+// motion, no target), app.ENABLE_MT2009_ADDEQ for root's uiaddeq.py / playersettingmodule.py. The page itself is the
+// server's (server-patches/addeq): no packet, window or slot changes. Without the define the exe is as before.
+#define ENABLE_MT2009_ADDEQ
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
