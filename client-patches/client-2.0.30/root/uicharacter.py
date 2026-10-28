@@ -25,6 +25,7 @@ import riposty # MT2009_PLUS_RIPOSTY_V1
 
 SHOW_ONLY_ACTIVE_SKILL = False
 SHOW_LIMIT_SUPPORT_SKILL_LIST = [121, 122, 123, 124, 126, 127, 129, 128, 131, 132, 137, 138, 139, 140, 246] # 246: MT2009_PLUS_PRECISION_SKILL_V1 (Precyzja)
+SHOW_LIMIT_SUPPORT_SKILL_LIST.append(200) # MT2009_PLUS_ADDEQ_V1: Zmiana strony ekwipunku (uiaddeq.py)
 HIDE_SUPPORT_SKILL_POINT = True
 
 # MT2009_PLUS_CHAMPION_V2: Poziom Czempiona and the Sung Ma stats on the status tab's second page (the GF/official
@@ -1365,7 +1366,10 @@ class CharacterWindow(ui.ScriptWindow):
 						if coolTime:
 							skillPage.SetSlotCoolTime(realSlotIndex, coolTime, elapsedTime)
 			else:
-				if not SHOW_LIMIT_SUPPORT_SKILL_LIST or skillIndex in SHOW_LIMIT_SUPPORT_SKILL_LIST:
+				# MT2009_PLUS_ADDEQ_V1: Zmiana strony ekwipunku (200) only once the page is unlocked (level 1)
+				if 200 == skillIndex and 0 == skillLevel:
+					pass
+				elif not SHOW_LIMIT_SUPPORT_SKILL_LIST or skillIndex in SHOW_LIMIT_SUPPORT_SKILL_LIST:
 					realSlotIndex = self.__GetETCSkillRealSlotIndex(slotIndex)
 					skillPage.SetSkillSlot(realSlotIndex, skillIndex, skillLevel)
 					skillPage.SetSlotCountNew(realSlotIndex, skillGrade, skillLevel)

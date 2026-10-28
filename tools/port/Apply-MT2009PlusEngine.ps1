@@ -126,6 +126,9 @@ param(
 #   Bonus Switcher     common length.h, packet.h, packet_info.cpp, input_main.cpp, input_p2p.cpp, char.cpp,
 #                      char_item.cpp, cmd.cpp; takes the old bonus switcher's lines out of cmd.cpp / cmd_general.cpp
 #                      (MT2009_PLUS_SWITCHBOT_V1; server-patches/switchbot, after ekwipunek)
+#   Druga strona EQ    char.h, char.cpp, char_item.cpp, item.cpp, char_skill.cpp, cmd.cpp - the second equipment page,
+#                      its store, unlock items 38306 / 76055, skill 200, "/addeq" (MT2009_PLUS_ADDEQ_V1;
+#                      server-patches/addeq, the last one - after balathor)
 #   Seon-Pyeong        constants.cpp IsEliteRefine (+ refine_proto 39900-39999), char_item.cpp - the guild and Demon
 #                      Tower smiths refuse his steps (MT2009_PLUS_SEONPYEONG_ELITE_V1; server-patches/seonpyeong)
 #   Przypisane do konta item.h, item.cpp, item_attribute.cpp, char_shop.cpp, ikarus_shop_manager.cpp, shop.cpp - an
@@ -1825,6 +1828,21 @@ if ((Test-Path -LiteralPath $balathorApply -PathType Leaf) -and
     if ($balathorResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Krypta Balathora edit(s).' -f $balathorResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Druga strona ekwipunku (server-patches/addeq, MT2009_PLUS_ADDEQ_V1; the "Official Additional Equipment Page" package,
+# the owner, 28 October 2026): the inactive page's store (char.h cells 308-339 of window INVENTORY, never sent), its
+# SetItem / RemoveFromCharacter / ClearItem / flush / item update hooks, the unlock items 38306 / 76055, the support skill
+# 200 and "/addeq". Anchors on the extra inventory's and switchbot's lines, so the last one (after balathor). The logic
+# is playerbot_addeq.cpp.
+$addeqApply = Join-Path $repo 'server-patches/addeq/Apply-AddeqPatch.ps1'
+if ((Test-Path -LiteralPath $addeqApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $addeqResult = & $addeqApply -SourceDir $engineGameSource
+    if ($addeqResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} second equipment page edit(s).' -f $addeqResult.Applied) -ForegroundColor DarkGray
     }
 }
 

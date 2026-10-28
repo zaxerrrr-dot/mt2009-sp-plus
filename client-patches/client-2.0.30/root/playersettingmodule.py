@@ -61,6 +61,11 @@ def DefineSkillIndexDict():
 			"SUPPORT": (122, 123, 121, 124, 132, 129, 0, 0, 130, 131, 246,),
 		},
 	}
+	# MT2009_PLUS_ADDEQ_V1: "SUPPORT" 12th = slot 112 - Zmiana strony ekwipunku (200, uiaddeq.py), with the exe that
+	# sends it (app.ENABLE_MT2009_ADDEQ)
+	if __import__("uiaddeq").IsSkillSupported():
+		for job in SKILL_INDEX_DICT.keys():
+			SKILL_INDEX_DICT[job]["SUPPORT"] = SKILL_INDEX_DICT[job]["SUPPORT"] + (200,)
 
 
 def RegisterSkill(race, group, empire=0):

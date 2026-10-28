@@ -4786,6 +4786,18 @@ if [ -s /opt/playerbot/balathor.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_ADDEQ_V1: Druga strona ekwipunku (server-patches/addeq; the "Official Additional Equipment Page" package,
+# the owner, 28 October 2026) - addeq.sql (tools/addeq/gen_addeq.py): the unlock items 38306 Strona ekwipunku II (bound)
+# and 76055 (tradeable). Idempotent (INSERT IGNORE). The page itself needs no table: the inactive page's items are
+# player.item rows of window INVENTORY, pos 308-339 (playerbot_addeq.cpp), the state quest flags addeq.unlocked / .page.
+if [ -s /opt/playerbot/addeq.sql ]; then
+    if db < /opt/playerbot/addeq.sql; then
+        echo "[playerbot-migrate] addeq: addeq.sql applied (MT2009_PLUS_ADDEQ_V1)"
+    else
+        fail_step "addeq: addeq.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

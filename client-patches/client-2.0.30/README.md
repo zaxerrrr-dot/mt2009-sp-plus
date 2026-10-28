@@ -1058,3 +1058,23 @@ serwera jak i klienta.”* Serwer: `server-patches/switchbot` + `playerbot_switc
 - `game.py` – `RefreshSwitchbotWindow` / `RefreshSwitchbotItem` (wołane przez exe na GC 171), hello, zamknięcie okna przy
   wyjściu; usunięte `serverCommandList["BSW"]`. `interfacemodule.py` – odświeżenie okna przy pakietach przedmiotów.
 - `uibonusswitch.py` usunięty z repo (w starej paczce root zostaje, nic go nie importuje).
+
+## Druga strona ekwipunku (`MT2009_PLUS_ADDEQ_V1`)
+
+Paczka „Official Additional Equipment Page” (prośba właściciela z 28.10.2026: *„Add this too to the client.”*). Serwer:
+`server-patches/addeq` + `playerbot_addeq.cpp` (zasady w README łatki), exe: `client-patches/exe` (`ENABLE_MT2009_ADDEQ`).
+
+- `root/uiaddeq.py` (nowy): ukryte zakładki `Equipment_Tab_01/02` okna ekwipunku stają się zakładkami stron I / II na
+  pasku tytułu (po lewej, tytuł przesunięty w prawo) – widoczne po odblokowaniu, klik wysyła `/addeq 0|1`; `/addeq hello`
+  po wejściu do gry i po teleporcie, odpowiedź `addeq_page <odblokowana> <strona>`. Okno ekwipunku zawsze pokazuje
+  założoną stronę (bez paczkowego `SetSlotChange`).
+- `uiinventory.py` (`BindInventory` po `SetEquipmentPage(0)`), `game.py` (hello, komenda `addeq_page`),
+  `playersettingmodule.py` (200 jako 12. umiejętność pomocnicza = slot 112, tylko z exe `ENABLE_MT2009_ADDEQ`),
+  `uicharacter.py` (200 w `SHOW_LIMIT_SUPPORT_SKILL_LIST`, ukryta przy poziomie 0).
+- `root/icon/item/38306.tga` (GF 26.1.11 = paczka) – ikona obu przedmiotów odblokowujących.
+- `tools/addeq/build_addeq_packs.py` (+ `patch_addeq_client.py`, `verify_addeq.py`): nowa paczka `addeq` (ikona
+  umiejętności `d:/ymir work/ui/skill/common/support/change_equipment.sub` na własnym `addeq_change_equipment.dds` –
+  wycinek 32 × 32 z GF `newskillcommon.dds`), linia w `Index`, w `gamedata`/`dbdata` przedmioty 38306 / 76055
+  (`tools/addeq/addeq.json`) i wiersze umiejętności 200 w `skilldesc.txt` / `skilltable.txt`. W `clientY.sh` po kroku
+  `kamienie` (+ `addeq/verify_addeq.py` w pętli weryfikacji). Zmienia dane przedmiotów (dbdata): w wydaniu ostrzeżenie
+  o nieaktualnych plikach i nowa baza panelu.

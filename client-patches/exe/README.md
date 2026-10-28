@@ -745,3 +745,19 @@ Efekty, których exe szuka: `d:/ymir work/effect/monster2/guild_whitedragon_*.ms
 
 Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` + cały ten
 katalog) – wszystkie 15 zmienionych `.cpp` bez błędów; `/E` potwierdza kod za definicją (28.10.2026). Exe nie budowane.
+
+## Druga strona ekwipunku – `MT2009_PLUS_ADDEQ_V1` (`ENABLE_MT2009_ADDEQ`)
+
+Paczka „Official Additional Equipment Page” na naszej bazie (serwer: `server-patches/addeq`, root `uiaddeq.py`). Stronę
+trzyma serwer (ukryty magazyn nieaktywnej strony, zamiana przy przełączeniu) – bez nowych pakietów, okien przedmiotów,
+pól ekwipunku i stałych `WEAR_*`; paczkowe `WEAR_SECOND_*`, `SetSlotChange`, `net.ChangeEquipment` (CG 208) i
+przenumerowany `EWearPositions` **nie** są przeniesione.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_ADDEQ` |
+| `UserInterface/PythonPlayerSkill.cpp` | `__CheckSpecialSkill`: umiejętność 200 „Zmiana strony ekwipunku” idzie od razu do serwera (`SendUseSkillPacket`, bez animacji i celu – jak Kombo 122); poziom 0 → „NOT_YET_LEARN” |
+| `UserInterface/PythonApplicationModule.cpp` | `app.ENABLE_MT2009_ADDEQ` (1/0) – root pokazuje umiejętność w pomocniczych tylko z tym exe |
+
+Bez nowego exe: zakładki I / II w oknie ekwipunku działają (komenda `/addeq`), umiejętności 200 w oknie postaci nie ma.
+Sprawdzone `clang-cl /Zs` obu plików `.cpp` na kopii źródeł z całą nakładką (29.10.2026).

@@ -593,3 +593,7 @@ linux-port/docker/game/balathor/monster/guild_whitedragon_ice_ghost/*
 linux-port/docker/game/balathor/monster/guild_whitedragon_knight01/*
 linux-port/docker/game/balathor/monster/guild_whitedragon_knight02/*
 linux-port/docker/game/balathor/monster/guild_whitedragon_statue/*
+# MT2009_PLUS_ADDEQ_V1 (server-patches/addeq): Druga strona ekwipunku, the "Official Additional Equipment Page" package - the
+# engine files it changes are above (char.h, char.cpp, char_item.cpp, item.cpp, char_skill.cpp, cmd.cpp); the logic is
+# playerbot_addeq.cpp (the playerbot_* lines); the unlock items 38306 / 76055 addeq.sql (apply.sh, tools/addeq).
+linux-port/docker/mariadb/playerbot/addeq.sql

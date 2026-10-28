@@ -1883,6 +1883,8 @@ class InventoryWindow(ui.ScriptWindow):
 		## Refresh
 		self.SetInventoryPage(0)
 		self.SetEquipmentPage(0)
+		# MT2009_PLUS_ADDEQ_V1: the hidden equipment tabs are the page tabs I / II (uiaddeq.py)
+		__import__("uiaddeq").BindInventory(self)
 		self.RefreshItemSlot()
 		self.RefreshGold()
 

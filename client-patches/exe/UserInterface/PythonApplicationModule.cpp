@@ -1694,6 +1694,12 @@ void initapp()
 #else
 	PyModule_AddIntConstant(poModule, "ENABLE_NPC_LOCATION_HELPER", 0);
 #endif
+// MT2009_PLUS_ADDEQ_V1 (Druga strona ekwipunku): the skill 200 is sent by this exe (root shows it only then)
+#ifdef ENABLE_MT2009_ADDEQ
+	PyModule_AddIntConstant(poModule, "ENABLE_MT2009_ADDEQ", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_MT2009_ADDEQ", 0);
+#endif
 // MT2009_PLUS_BALATHOR_V1 (Balathor, dracaryS)
 #ifdef __BALATHOR__
 	PyModule_AddIntConstant(poModule, "__BALATHOR__", 1);

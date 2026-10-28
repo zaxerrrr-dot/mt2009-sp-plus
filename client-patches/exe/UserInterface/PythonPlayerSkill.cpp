@@ -1022,6 +1022,23 @@ bool CPythonPlayer::__CheckSpecialSkill(DWORD dwSkillIndex)
 		return true;
 	}
 
+#ifdef ENABLE_MT2009_ADDEQ
+	// MT2009_PLUS_ADDEQ_V1: "Zmiana strony ekwipunku" (200) - the server switches the equipment page (server-patches/addeq)
+	else if (200 == dwSkillIndex)
+	{
+		DWORD dwSlotIndex;
+		if (!GetSkillSlotIndex(dwSkillIndex, &dwSlotIndex))
+			return false;
+
+		if (GetSkillLevel(dwSlotIndex) > 0)
+			CPythonNetworkStream::Instance().SendUseSkillPacket(dwSkillIndex);
+		else
+			PyCallClassMemberFunc(m_ppyGameWindow, "OnCannotUseSkill", Py_BuildValue("(is)", GetMainCharacterIndex(), "NOT_YET_LEARN"));
+
+		return true;
+	}
+#endif
+
 	// sprint
 	else if (SKILL_SPRINT == dwSkillIndex)
 	{
