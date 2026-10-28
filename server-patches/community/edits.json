@@ -1,0 +1,104 @@
+[
+ {
+  "file": "../../common/CommonDefines.h",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (define)",
+  "old": "#define ENABLE_CHANNEL_STATUS_CACHE\n",
+  "new": "#define ENABLE_CHANNEL_STATUS_CACHE\n// MT2009_PLUS_COMMUNITY_V1 (define): the Community window - friends / blocked / requests, guild, settings, status\n// message and state (server-patches/community, playerbot_community.cpp; Autor: Best Studio, \"Community System\").\n#define __MESSENGER_RENEWAL__\n#define __COMMUNITY_GUILD_RENEWAL__\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (gg header)",
+  "old": "\tHEADER_GG_HANDSHAKE_VALIDATION = 36,\n",
+  "new": "\tHEADER_GG_HANDSHAKE_VALIDATION = 36,\n\n#ifdef __MESSENGER_RENEWAL__\n\t// MT2009_PLUS_COMMUNITY_V1 (gg header): a character's Community state / privacy / level / status for the other cores\n\tHEADER_GG_COMMUNITY = 40,\n#endif\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (gg struct)",
+  "old": "\tchar        szCompanion[CHARACTER_NAME_MAX_LEN + 1];\n} TPacketGGMessenger;\n",
+  "new": "\tchar        szCompanion[CHARACTER_NAME_MAX_LEN + 1];\n} TPacketGGMessenger;\n\n#ifdef __MESSENGER_RENEWAL__\n// MT2009_PLUS_COMMUNITY_V1 (gg struct): playerbot_community.cpp - sent by a character's core at its login and on each\n// change; the channel and map of a character on another core are its P2P login's (CCI).\nenum { COMMUNITY_STATUS_MAX_LEN = 50 };\ntypedef struct SPacketGGCommunity\n{\n\tBYTE\tbHeader;\n\tchar\tszName[CHARACTER_NAME_MAX_LEN + 1];\n\tBYTE\tbState;\t\t// 0 online, 1 AFK, 2 auto hunt, 3 shop, 4 appears offline\n\tBYTE\tbFlags;\t\t// 8 hide level, 16 hide location\n\tBYTE\tbLevel;\n\tBYTE\tbConqueror;\n\tchar\tszStatus[COMMUNITY_STATUS_MAX_LEN + 1];\n} TPacketGGCommunity;\n#endif\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (gg size)",
+  "old": "\tSet(HEADER_GG_MAINTENANCE, sizeof(TPacketGGMaintenance), \"Maintenance\", false);\n",
+  "new": "#ifdef __MESSENGER_RENEWAL__\n\t// MT2009_PLUS_COMMUNITY_V1 (gg size)\n\tSet(HEADER_GG_COMMUNITY, sizeof(TPacketGGCommunity), \"Community\", false);\n#endif\n\tSet(HEADER_GG_MAINTENANCE, sizeof(TPacketGGMaintenance), \"Maintenance\", false);\n"
+ },
+ {
+  "file": "input_p2p.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (p2p)",
+  "old": "\t\tcase HEADER_GG_MAINTENANCE:\n\t\t\tMaintenance(c_pData);\n\t\t\tbreak;\n",
+  "new": "#ifdef __MESSENGER_RENEWAL__\n\t\t// MT2009_PLUS_COMMUNITY_V1 (p2p): another core's character changed its Community state / message\n\t\tcase HEADER_GG_COMMUNITY:\n\t\t\tMessengerManager::instance().CommunityP2P(c_pData);\n\t\t\tbreak;\n#endif\n\n\t\tcase HEADER_GG_MAINTENANCE:\n\t\t\tMaintenance(c_pData);\n\t\t\tbreak;\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (declare)",
+  "old": "ACMD(do_messenger_auth);\n",
+  "new": "ACMD(do_messenger_auth);\n#ifdef __MESSENGER_RENEWAL__\nACMD(do_community);\t// MT2009_PLUS_COMMUNITY_V1 (declare): the Community window, root/uicommunity.py (playerbot_community.cpp)\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (table)",
+  "old": "\t{ \"messenger_auth\",\tdo_messenger_auth,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n",
+  "new": "\t{ \"messenger_auth\",\tdo_messenger_auth,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\n#ifdef __MESSENGER_RENEWAL__\n\t{ \"community\",\tdo_community,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_COMMUNITY_V1 (table)\n#endif\n"
+ },
+ {
+  "file": "guild.h",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (members)",
+  "old": "\t\tDWORD\t\t\tGetMemberPID(const std::string& strName);\n",
+  "new": "\t\tDWORD\t\t\tGetMemberPID(const std::string& strName);\n#ifdef __COMMUNITY_GUILD_RENEWAL__\n\t\t// MT2009_PLUS_COMMUNITY_V1 (members): the Community window's guild tab - each member's location (playerbot_community.cpp)\n\t\ttemplate <class F> void Mt2009ForEachMemberPID(F f) { for (TGuildMemberContainer::const_iterator it = m_member.begin(); it != m_member.end(); ++it) f(it->first); }\n#endif\n"
+ },
+ {
+  "file": "messenger_manager.h",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (members)",
+  "old": "\tprivate:\n\t\tvoid\tSendBlockList(LPCHARACTER who);\n",
+  "new": "#ifdef __MESSENGER_RENEWAL__\n\t// MT2009_PLUS_COMMUNITY_V1 (members): the Community window (playerbot_community.cpp; Autor: Best Studio)\n\tpublic:\n\t\tstruct SCommunityInfo\n\t\t{\n\t\t\tbool\t\tbLive;\t\t// set by the character's own core (here or a GG packet), not the database\n\t\t\tbool\t\tbAuto;\t\t// Auto Lowy on\n\t\t\tBYTE\t\tbState;\t\t// what the friends see: 0 online, 1 AFK, 2 auto hunt, 3 shop, 4 appears offline\n\t\t\tBYTE\t\tbChosen;\t// what the player chose: 0, 1 or 4 (saved)\n\t\t\tBYTE\t\tbFlags;\t\t// 8 hide level, 16 hide location (saved)\n\t\t\tBYTE\t\tbLevel;\n\t\t\tBYTE\t\tbConqueror;\n\t\t\tstd::string\tstrStatus;\n\t\t\tSCommunityInfo() : bLive(false), bAuto(false), bState(0), bChosen(0), bFlags(0), bLevel(0), bConqueror(0) {}\n\t\t};\n\n\t\tvoid\tCommunityCommand(LPCHARACTER ch, const char* c_szArgument);\n\t\tvoid\tCommunityP2P(const char* c_pData);\n\t\tvoid\tCommunityRequestInfo(LPCHARACTER ch, LPCHARACTER target);\n\t\tbool\tCommunityIsHidden(keyA name);\n\n\tprivate:\n\t\tbool\t__CommunityWants(keyA account, LPCHARACTER* ppkChar);\n\t\tvoid\t__CommunityLogin(keyA account);\n\t\tvoid\t__CommunityLoad(SQLMsg* msg);\n\t\tvoid\t__CommunityLogout(keyA account);\n\t\tvoid\t__CommunitySendMy(LPCHARACTER ch);\n\t\tvoid\t__CommunitySendFriend(keyA account, keyA companion);\n\t\tvoid\t__CommunitySendFriends(keyA account);\n\t\tvoid\t__CommunityNotify(keyA name, BYTE bOldState);\n\t\tvoid\t__CommunityChanged(LPCHARACTER ch, BYTE bOldState, bool bSave);\n\t\tvoid\t__CommunitySendGuild(LPCHARACTER ch);\n\t\tvoid\t__CommunityParty(LPCHARACTER ch, const char* c_szName);\n\n\t\tstd::map<keyT, SCommunityInfo>\tm_CommunityInfo;\n\t\tstd::set<keyT>\t\t\tm_CommunityHello;\t// characters on this core whose window said \"/community hello\"\n#endif\n\n\tprivate:\n\t\tvoid\tSendBlockList(LPCHARACTER who);\n"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (login)",
+  "old": "\tDBManager::instance().FuncQuery(msl::bind1st(std::mem_fn(&MessengerManager::LoadList), this),\n",
+  "new": "#ifdef __MESSENGER_RENEWAL__\n\t// MT2009_PLUS_COMMUNITY_V1 (login): the Community data first - the same SQL queue, so LoadList below already knows\n\t// who \"appears offline\" (playerbot_community.cpp)\n\t__CommunityLogin(account);\n#endif\n\tDBManager::instance().FuncQuery(msl::bind1st(std::mem_fn(&MessengerManager::LoadList), this),\n"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (logout)",
+  "old": "\tm_set_loginAccount.erase(account);\n",
+  "new": "\tm_set_loginAccount.erase(account);\n#ifdef __MESSENGER_RENEWAL__\n\t__CommunityLogout(account);\t// MT2009_PLUS_COMMUNITY_V1 (logout)\n#endif\n"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (request)",
+  "old": "\ttarget->ChatPacket(CHAT_TYPE_COMMAND, \"messenger_auth %s\", ch->GetName());\n",
+  "new": "#ifdef __MESSENGER_RENEWAL__\n\tCommunityRequestInfo(ch, target);\t// MT2009_PLUS_COMMUNITY_V1 (request): level / location for the window's request tab\n#endif\n\ttarget->ChatPacket(CHAT_TYPE_COMMAND, \"messenger_auth %s\", ch->GetName());\n"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (list hidden)",
+  "old": "\t\tif (m_set_loginAccount.find(*it) != m_set_loginAccount.end())\n",
+  "new": "\t\t// MT2009_PLUS_COMMUNITY_V1 (list hidden): a friend who \"appears offline\" is listed offline\n\t\tif (m_set_loginAccount.find(*it) != m_set_loginAccount.end()\n#ifdef __MESSENGER_RENEWAL__\n\t\t\t&& !CommunityIsHidden(*it)\n#endif\n\t\t\t)\n"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (list lines)",
+  "old": "\td->BufferedPacket(&pack, sizeof(TPacketGCMessenger));\n\td->Packet(buf.read_peek(), buf.size());\n}\n",
+  "new": "\td->BufferedPacket(&pack, sizeof(TPacketGCMessenger));\n\td->Packet(buf.read_peek(), buf.size());\n#ifdef __MESSENGER_RENEWAL__\n\t__CommunitySendFriends(account);\t// MT2009_PLUS_COMMUNITY_V1 (list lines): the window's line of each friend\n#endif\n}\n"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (login hidden)",
+  "old": "\tif (!d->GetCharacter())\n\t\treturn;\n\n\tif (ch->GetGMLevel() == GM_PLAYER && gm_get_level(companion.c_str()) != GM_PLAYER)\n\t\treturn;\n",
+  "new": "\tif (!d->GetCharacter())\n\t\treturn;\n\n#ifdef __MESSENGER_RENEWAL__\n\t// MT2009_PLUS_COMMUNITY_V1 (login hidden): a friend who \"appears offline\" stays offline\n\tif (CommunityIsHidden(companion))\n\t{\n\t\tSendLogout(account, companion);\n\t\treturn;\n\t}\n#endif\n\n\tif (ch->GetGMLevel() == GM_PLAYER && gm_get_level(companion.c_str()) != GM_PLAYER)\n\t\treturn;\n"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (login line)",
+  "old": "\td->Packet(companion.c_str(), companion.size());\n}\n\nvoid MessengerManager::SendLogout",
+  "new": "\td->Packet(companion.c_str(), companion.size());\n#ifdef __MESSENGER_RENEWAL__\n\t__CommunitySendFriend(account, companion);\t// MT2009_PLUS_COMMUNITY_V1 (login line)\n#endif\n}\n\nvoid MessengerManager::SendLogout"
+ },
+ {
+  "file": "messenger_manager.cpp",
+  "marker": "MT2009_PLUS_COMMUNITY_V1 (logout line)",
+  "old": "\td->Packet(companion.c_str(), companion.size());\n}\n\n// BLOCK MESSENGER\n",
+  "new": "\td->Packet(companion.c_str(), companion.size());\n#ifdef __MESSENGER_RENEWAL__\n\t__CommunitySendFriend(account, companion);\t// MT2009_PLUS_COMMUNITY_V1 (logout line)\n#endif\n}\n\n// BLOCK MESSENGER\n"
+ }
+]

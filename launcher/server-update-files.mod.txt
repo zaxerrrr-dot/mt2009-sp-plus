@@ -358,6 +358,7 @@ linux-port/docker/game/src/server/db/src/IkarusShopCache.cpp
 # every update from 2.0.74 on failed to build for archonek (18 September).
 # The stock copy puts it back on the next click.
 linux-port/docker/game/src/server/game/src/messenger_manager.cpp
+linux-port/docker/game/src/server/game/src/messenger_manager.h
 linux-port/docker/game/src/server/game/src/mob_manager.h
 linux-port/docker/game/src/server/game/src/p2p.cpp
 linux-port/docker/game/src/server/game/src/p2p.h
@@ -529,3 +530,8 @@ linux-port/docker/mariadb/playerbot/gf_wartosci.sql
 # MT2009_PLUS_GUILD_ROTATE_V1 (server-patches/enginefixes, 2.37.2): the guild buildings' engine files (cmd_gm.cpp above).
 linux-port/docker/game/src/server/game/src/building.cpp
 linux-port/docker/game/src/server/game/src/building.h
+
+# MT2009_PLUS_COMMUNITY_V1 (server-patches/community): the Community window - the engine files it changes are above
+# (CommonDefines.h, packet.h, packet_info.cpp, input_p2p.cpp, cmd.cpp, guild.h, messenger_manager.h/.cpp); the logic is
+# playerbot_community.cpp (the playerbot_* lines); player.status_message / community_flags community.sql.
+linux-port/docker/mariadb/playerbot/community.sql
