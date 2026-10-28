@@ -2521,6 +2521,12 @@ namespace
 	// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: a Yohara bot's body costume wants its hunt element's resistance and a
 	// second good line (Max HP, arrows, magic); after this many changes on the piece the resistance alone will do.
 	const int PLAYERBOT_COSTUME_HUNT_ALONE_AFTER = 30;
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a Yohara bot's costume / hairstyle is changed until its hunt element's
+	// resistance stands at the top (15) - up to this many changes of the piece (37.5M at 250 000 a change; simulated:
+	// a 3-line costume gets there 97% of the time in ~44 changes, a 2-line hairstyle 80% in ~76, a 1-line one 54%),
+	// in stacks of PLAYERBOT_COSTUME_YOHARA_STACKS bought at once.
+	const int PLAYERBOT_COSTUME_HUNT_TOP_CHANGES = 150;
+	const int PLAYERBOT_COSTUME_YOHARA_STACKS = 5;
 	const int PLAYERBOT_COSTUME_ROLLS_PER_PASS = 5;
 	const DWORD PLAYERBOT_COSTUME_BONUS_STEP_MS = 1500;
 	// How long a merchant visit may run on for the costume's rolls.
@@ -10197,10 +10203,15 @@ namespace
 	// PLAYERBOT_YOHARA_ELEMENT_NAMES' order: 1 lightning (RACE_FLAG_ATT_ELEC), 2 fire (RACE_FLAG_ATT_FIRE), 3 ice
 	// (RACE_FLAG_ATT_ICE), 4 wind (RACE_FLAG_ATT_TEMPLE), 5 earth (RACE_FLAG_ATT_EARTH), 6 dark (RACE_FLAG_ATT_DARK).
 #define MT2009_PLUS_BOT_ELEMENT_RESIST_V1 1
+#define MT2009_PLUS_BOT_ELEMENT_RESIST_V2 1
 	BYTE GetPlayerBotHuntElement(LPCHARACTER ch);
 	// The resistance point of the hunt element when the armour, helmet or bracelet can roll it (fire, lightning or
 	// wind in this world's item_attr), else 0.
 	BYTE GetPlayerBotHuntResistPoint(LPCHARACTER ch);
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the hunt element's index (-1 none) and an element's resistance point (the
+	// talisman rolls all six - playerbot_yohara_bonus.h).
+	int GetPlayerBotHuntElementIndex(LPCHARACTER ch);
+	BYTE GetPlayerBotElementResistPoint(int e);
 	// Whether item_attr rolls the line on that attribute set (ATTRIBUTE_SET_*).
 	bool IsPlayerBotApplyOnAttrSet(BYTE type, int set);
 	// A Yohara bot's costume / hairstyle line: 1 worth keeping, 0 not, -1 not a Yohara bot (the old scoring decides).
@@ -10208,6 +10219,8 @@ namespace
 	// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: the costume / hairstyle can roll the hunt element's resistance (fire,
 	// lightning or wind on costume_body / costume_hair) and holds no good line of it - the piece is not finished.
 	bool IsPlayerBotCostumeHuntLineMissing(LPCHARACTER ch, LPITEM costume);
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: that line is there but below its top value (15).
+	bool IsPlayerBotCostumeHuntLineShort(LPCHARACTER ch, LPITEM costume);
 	// The Sung Ma move's preparation (playerbot_yohara_sungma.h): noted when the map changes, asked before the move -
 	// true holds the move (the bot hunts on where it is) while its gear is still being made for the new element.
 	void StartPlayerBotElementPrep(LPCHARACTER ch, long fromMap, long toMap, bool mayWait, DWORD dwNow);

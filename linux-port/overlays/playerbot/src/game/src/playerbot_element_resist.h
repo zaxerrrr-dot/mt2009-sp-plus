@@ -49,6 +49,20 @@
 //    "census" every PLAYERBOT_ELEMENT_CENSUS_MS (per element: bots, the resistance point's average / min / max, the
 //    gear's own resistance average, the pieces carrying the line, elixirs active and in stock).
 //
+// MT2009_PLUS_BOT_ELEMENT_RESIST_V2 (the owner, 28 October 2026, the census 20 minutes after V1 - lightning 34%, wind
+// 33%, fire 22%, ice 18%, earth 8%: "musza znacznie lepiej bonowac EQ pod odpornosci"; the talisman alone gives 25):
+//   * the gear (playerbot_yohara_bonus.h): the talisman is bonused too (71085/71084, all six resistances roll on it to
+//     25 - the one gear line of an ice, earth or dark bot), and the element phase changes talisman, armour, bracelet
+//     and helmet - in that order - until the hunt element's line is at its TOP (25 / 15), Max HP kept, each within an
+//     element budget (80 / 300 / 300 / 100 changes);
+//   * the costume and hairstyle (playerbot_bonus.h): the line to its top (15) within PLAYERBOT_COSTUME_HUNT_TOP_CHANGES,
+//     the reagent bought five stacks at a time, the hairstyle taking two lines first;
+//   * the elixir (playerbot_yohara_shop.h): the materials a hunt bot holds are its elixirs' (kept, first);
+//   * the Dragon Stones (playerbot_alchemy.h): the hunt element's kind is refined and beaned first;
+//   * the move's preparation (5) waits for the same element targets (the talisman's too);
+//   * the census (6) breaks the resistance down by source (gear, talisman, costume, ds, elixir, other) and counts the
+//     pieces at the top.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_yohara_shop.h, in the anonymous
 // namespace; the declarations the earlier fragments use are in playerbot_types.h.
 
@@ -61,6 +75,8 @@ namespace
 	const DWORD PLAYERBOT_ELEMENT_CENSUS_MS = 10 * 60 * 1000;
 	const DWORD PLAYERBOT_ELEMENT_SEEN_MS = 15 * 60 * 1000;
 	const BYTE PLAYERBOT_ELEMENT_GEAR_WEARS[3] = { WEAR_BODY, WEAR_HEAD, WEAR_WRIST };
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase's pieces, in its order
+	const BYTE PLAYERBOT_ELEMENT_TARGET_WEARS[4] = { WEAR_PENDANT, WEAR_BODY, WEAR_WRIST, WEAR_HEAD };
 
 	struct TPlayerBotHuntElement
 	{
@@ -215,6 +231,21 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the hunt element's resistance on a costume / hairstyle whose set rolls it is
+	// below its top value (15 - the set's top level): the costume pass works on (70064) up to
+	// PLAYERBOT_COSTUME_HUNT_TOP_CHANGES changes of the piece (playerbot_bonus.h), then the level-3 floor as before.
+	bool IsPlayerBotCostumeHuntLineShort(LPCHARACTER ch, LPITEM costume)
+	{
+		if (!ch || !costume || costume->GetType() != ITEM_COSTUME || !IsPlayerBotYoharaBonusMember(ch) ||
+				(costume->GetSubType() != COSTUME_BODY && costume->GetSubType() != COSTUME_HAIR))
+			return false;
+		const BYTE point = GetPlayerBotElementResistPoint(GetPlayerBotHuntElementIndex(ch));
+		if (!point || !IsPlayerBotApplyOnAttrSet(point, costume->GetAttributeSetIndex()))
+			return false;
+		const long top = GetPlayerBotYoharaTopLineValue(costume, point);
+		return top > 0 && GetPlayerBotYoharaPieceLine(costume, point) < top;
+	}
+
 	// The worn piece's line of the element's resistance (0 none).
 	long GetPlayerBotWornResistLine(LPCHARACTER ch, BYTE wear, BYTE point)
 	{
@@ -253,18 +284,24 @@ namespace
 	{
 		*noStones = false;
 		const BYTE point = GetPlayerBotElementResistPoint(e);
-		if (!point || !IsPlayerBotElementOnGear(e))
+		if (!point)
 			return true;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the talisman too (every element), and a piece is ready at its element target
+		// (the line at its top) or out of its element budget - the bonus pass's own rule (GetPlayerBotYoharaElementTarget)
 		bool missing = false;
-		for (int i = 0; i < 3; ++i)
+		const std::map<DWORD, int>& spent = s_mapPlayerBotYoharaBonusSpent[ch->GetPlayerID()];
+		for (int i = 0; i < 4; ++i)
 		{
-			LPITEM item = ch->GetWear(PLAYERBOT_ELEMENT_GEAR_WEARS[i]);
+			const BYTE wear = PLAYERBOT_ELEMENT_TARGET_WEARS[i];
+			LPITEM item = ch->GetWear(wear);
 			// the pieces the bonus pass works on (CollectPlayerBotYoharaBonusPieces) - the rest waits for nobody
 			if (!item || item->GetAttributeSetIndex() < 0 || !IsPlayerBotApplyOnAttrSet(point, item->GetAttributeSetIndex()) ||
 					IS_SET(item->GetFlag(), ITEM_FLAG_IRREMOVABLE) || !CanPlayerBotTakeBonusStone(item) ||
 					IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotSidekickPinned(ch, item))
 				continue;
-			if (GetPlayerBotWornResistLine(ch, PLAYERBOT_ELEMENT_GEAR_WEARS[i], point) <= 0)
+			std::map<DWORD, int>::const_iterator sp = spent.find(item->GetID());
+			const int used = sp != spent.end() ? sp->second : 0;
+			if (GetPlayerBotYoharaElementTarget(ch, item, wear, used) == 0 && used < GetPlayerBotYoharaElementCap(wear))
 				missing = true;
 		}
 		if (!missing)
@@ -304,16 +341,22 @@ namespace
 		static const char* const s_aszNames[3] = { "body", "head", "wrist" };
 		std::string out;
 		char buf[64];
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the talisman's line first
+		{
+			LPITEM tal = ch->GetWear(WEAR_PENDANT);
+			snprintf(buf, sizeof(buf), "talisman:%ld ", tal ? GetPlayerBotYoharaPieceLine(tal, point) : -1L);
+			out += buf;
+		}
 		for (int i = 0; i < 3; ++i)
 		{
 			LPITEM item = ch->GetWear(PLAYERBOT_ELEMENT_GEAR_WEARS[i]);
 			const bool rolls = item && item->GetAttributeSetIndex() >= 0 && IsPlayerBotApplyOnAttrSet(point, item->GetAttributeSetIndex());
 			if (!item)
-				snprintf(buf, sizeof(buf), "%s%s:none", out.empty() ? "" : " ", s_aszNames[i]);
+				snprintf(buf, sizeof(buf), "%s%s:none", i == 0 ? "" : " ", s_aszNames[i]);
 			else if (!rolls)
-				snprintf(buf, sizeof(buf), "%s%s:n/a", out.empty() ? "" : " ", s_aszNames[i]);
+				snprintf(buf, sizeof(buf), "%s%s:n/a", i == 0 ? "" : " ", s_aszNames[i]);
 			else
-				snprintf(buf, sizeof(buf), "%s%s:%ld", out.empty() ? "" : " ", s_aszNames[i],
+				snprintf(buf, sizeof(buf), "%s%s:%ld", i == 0 ? "" : " ", s_aszNames[i],
 						GetPlayerBotWornResistLine(ch, PLAYERBOT_ELEMENT_GEAR_WEARS[i], point));
 			out += buf;
 		}
@@ -392,7 +435,7 @@ namespace
 				++s_kPlayerBotElementStats.noStones;
 			else
 				++s_kPlayerBotElementStats.ready;
-			FinishPlayerBotElementPrep(ch, h, noStones ? "no_stones" : (IsPlayerBotElementOnGear(e) ? "ready" : "no_gear_line"), dwNow);
+			FinishPlayerBotElementPrep(ch, h, noStones ? "no_stones" : (IsPlayerBotElementOnGear(e) ? "ready" : "ready_talisman"), dwNow);
 			return false;
 		}
 		if (dwNow - h.dwPrepSince >= PLAYERBOT_ELEMENT_PREP_MAX_MS)
@@ -407,7 +450,66 @@ namespace
 		return true;
 	}
 
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a bot's resistance to one element by where it comes from - the armour, helmet,
+	// bracelet and the rest of the worn gear (lines and the proto's applies), the talisman, the costume pieces
+	// (costume, hairstyle, weapon skin...), the active Dragon Stone deck, the elixir's affect; the rest of GetPoint
+	// (skills, buffs, the Will...) is "other".
+	enum { PLAYERBOT_ELEMENT_SRC_GEAR, PLAYERBOT_ELEMENT_SRC_TALISMAN, PLAYERBOT_ELEMENT_SRC_COSTUME, PLAYERBOT_ELEMENT_SRC_DS,
+		PLAYERBOT_ELEMENT_SRC_ELIXIR, PLAYERBOT_ELEMENT_SRC_OTHER, PLAYERBOT_ELEMENT_SRC_COUNT };
+	const char* const PLAYERBOT_ELEMENT_SRC_NAMES[PLAYERBOT_ELEMENT_SRC_COUNT] = { "gear", "talisman", "costume", "ds", "elixir", "other" };
+
+	long SumPlayerBotItemPoint(LPITEM item, BYTE point)
+	{
+		long total = 0;
+		if (!item || !item->GetProto())
+			return 0;
+		for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
+			if (item->GetProto()->aApplies[i].bType == point)
+				total += item->GetProto()->aApplies[i].lValue;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeType(i) == point)
+				total += item->GetAttributeValue(i);
+		return total;
+	}
+
+	void GetPlayerBotElementResistSources(LPCHARACTER ch, BYTE point, long src[PLAYERBOT_ELEMENT_SRC_COUNT])
+	{
+		for (int i = 0; i < PLAYERBOT_ELEMENT_SRC_COUNT; ++i)
+			src[i] = 0;
+		if (!ch || !point)
+			return;
+		for (int cell = 0; cell < WEAR_MAX_NUM; ++cell)
+		{
+			LPITEM item = ch->GetWear(cell);
+			if (!item)
+				continue;
+			const int kind = cell == WEAR_PENDANT ? PLAYERBOT_ELEMENT_SRC_TALISMAN
+					: (item->GetType() == ITEM_COSTUME ? PLAYERBOT_ELEMENT_SRC_COSTUME : PLAYERBOT_ELEMENT_SRC_GEAR);
+			src[kind] += SumPlayerBotItemPoint(item, point);
+		}
+		const int deck = ch->DragonSoul_GetActiveDeck();
+		if (deck >= 0)
+			for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
+			{
+				LPITEM stone = ch->GetItem(TItemPos(INVENTORY, (WORD)((int)DRAGON_SOUL_EQUIP_SLOT_START + deck * (int)DS_SLOT_MAX + kind)));
+				if (stone && DSManager::instance().IsActiveDragonSoul(stone))
+					for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+						if (stone->GetAttributeType(i) == point)
+							src[PLAYERBOT_ELEMENT_SRC_DS] += stone->GetAttributeValue(i);
+			}
+		CAffect* elixir = ch->FindAffect(AFFECT_BLEND, point);
+		if (elixir)
+			src[PLAYERBOT_ELEMENT_SRC_ELIXIR] = elixir->lApplyValue;
+		long known = 0;
+		for (int i = 0; i < PLAYERBOT_ELEMENT_SRC_OTHER; ++i)
+			known += src[i];
+		src[PLAYERBOT_ELEMENT_SRC_OTHER] = (long)ch->GetPoint(point) - known;
+	}
+
 	// (6) The census: the Yohara bots online with a hunt element, per element.
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: with the sources' averages (src=[...]) and how many pieces hold the line at its
+	// top: the talisman (tal_top), the armour / bracelet / helmet (gear_top), the costume and hairstyle (cos_top) - each
+	// "at the top / able to roll it".
 	void TickPlayerBotElementCensus(DWORD dwNow)
 	{
 		TPlayerBotElementStats& st = s_kPlayerBotElementStats;
@@ -419,13 +521,20 @@ namespace
 		if ((int)(dwNow - st.dwCensusAt) < 0)
 			return;
 		st.dwCensusAt = dwNow + PLAYERBOT_ELEMENT_CENSUS_MS;
-		int bots[PLAYERBOT_YOHARA_ELEMENTS] = { 0 }, minR[PLAYERBOT_YOHARA_ELEMENTS], maxR[PLAYERBOT_YOHARA_ELEMENTS] = { 0 };
-		long long sumR[PLAYERBOT_YOHARA_ELEMENTS] = { 0 }, sumGear[PLAYERBOT_YOHARA_ELEMENTS] = { 0 };
-		int pieces[PLAYERBOT_YOHARA_ELEMENTS] = { 0 }, piecesCan[PLAYERBOT_YOHARA_ELEMENTS] = { 0 };
-		int elixirOn[PLAYERBOT_YOHARA_ELEMENTS] = { 0 }, elixirStock[PLAYERBOT_YOHARA_ELEMENTS] = { 0 };
+		const int E = PLAYERBOT_YOHARA_ELEMENTS;
+		int bots[E] = { 0 }, minR[E], maxR[E] = { 0 };
+		long long sumR[E] = { 0 }, sumSrc[E][PLAYERBOT_ELEMENT_SRC_COUNT];
+		int pieces[E] = { 0 }, piecesCan[E] = { 0 }, piecesTop[E] = { 0 };
+		int talTop[E] = { 0 }, talCan[E] = { 0 }, cosTop[E] = { 0 }, cosCan[E] = { 0 };
+		int elixirOn[E] = { 0 }, elixirStock[E] = { 0 }, materials[E] = { 0 }, over60[E] = { 0 }, over40[E] = { 0 };
 		int none = 0, preparing = 0;
-		for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS; ++e)
+		for (int e = 0; e < E; ++e)
+		{
 			minR[e] = 1 << 30;
+			for (int k = 0; k < PLAYERBOT_ELEMENT_SRC_COUNT; ++k)
+				sumSrc[e][k] = 0;
+		}
+		static const BYTE s_abCostume[2] = { WEAR_COSTUME_BODY, WEAR_COSTUME_HAIR };
 		for (std::map<DWORD, TPlayerBotHuntElement>::iterator it = s_mapPlayerBotHuntElement.begin();
 				it != s_mapPlayerBotHuntElement.end();)
 		{
@@ -454,31 +563,68 @@ namespace
 			sumR[e] += r;
 			minR[e] = std::min(minR[e], r);
 			maxR[e] = std::max(maxR[e], r);
-			sumGear[e] += GetPlayerBotGearResist(ch, point);
+			over60[e] += r >= 60 ? 1 : 0;
+			over40[e] += r >= 40 ? 1 : 0;
+			long src[PLAYERBOT_ELEMENT_SRC_COUNT];
+			GetPlayerBotElementResistSources(ch, point, src);
+			for (int k = 0; k < PLAYERBOT_ELEMENT_SRC_COUNT; ++k)
+				sumSrc[e][k] += src[k];
 			for (int i = 0; i < 3; ++i)
 			{
 				LPITEM item = ch->GetWear(PLAYERBOT_ELEMENT_GEAR_WEARS[i]);
 				if (!item || item->GetAttributeSetIndex() < 0 || !IsPlayerBotApplyOnAttrSet(point, item->GetAttributeSetIndex()))
 					continue;
 				++piecesCan[e];
-				if (GetPlayerBotWornResistLine(ch, PLAYERBOT_ELEMENT_GEAR_WEARS[i], point) > 0)
+				const long line = GetPlayerBotWornResistLine(ch, PLAYERBOT_ELEMENT_GEAR_WEARS[i], point);
+				if (line > 0)
 					++pieces[e];
+				const long top = GetPlayerBotYoharaTopLineValue(item, point);
+				if (top > 0 && line >= top)
+					++piecesTop[e];
+			}
+			LPITEM tal = ch->GetWear(WEAR_PENDANT);
+			if (tal && tal->GetAttributeSetIndex() >= 0 && IsPlayerBotApplyOnAttrSet(point, tal->GetAttributeSetIndex()))
+			{
+				++talCan[e];
+				const long top = GetPlayerBotYoharaTopLineValue(tal, point);
+				if (top > 0 && GetPlayerBotYoharaPieceLine(tal, point) >= top)
+					++talTop[e];
+			}
+			for (int i = 0; i < 2; ++i)
+			{
+				LPITEM item = ch->GetWear(s_abCostume[i]);
+				if (!item || item->GetAttributeSetIndex() < 0 || !IsPlayerBotApplyOnAttrSet(point, item->GetAttributeSetIndex()))
+					continue;
+				++cosCan[e];
+				const long top = GetPlayerBotYoharaTopLineValue(item, point);
+				if (top > 0 && GetPlayerBotYoharaPieceLine(item, point) >= top)
+					++cosTop[e];
 			}
 			elixirOn[e] += ch->FindAffect(AFFECT_BLEND, point) ? 1 : 0;
 			elixirStock[e] += (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]);
+			materials[e] += (int)ch->CountSpecifyItem(PLAYERBOT_YSHOP_MATERIAL_VNUM);
 			++it;
 		}
 		std::string line;
-		char buf[192];
+		char buf[512];
 		int total = 0;
-		for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS; ++e)
+		for (int e = 0; e < E; ++e)
 		{
 			if (bots[e] == 0)
 				continue;
 			total += bots[e];
-			snprintf(buf, sizeof(buf), " %s=[bots=%d resist_avg=%lld min=%d max=%d gear_avg=%lld lines=%d/%d elixir_on=%d stock_avg=%d]",
-					PLAYERBOT_YOHARA_ELEMENT_NAMES[e], bots[e], sumR[e] / bots[e], minR[e], maxR[e], sumGear[e] / bots[e],
-					pieces[e], piecesCan[e], elixirOn[e], elixirStock[e] / bots[e]);
+			std::string src;
+			for (int k = 0; k < PLAYERBOT_ELEMENT_SRC_COUNT; ++k)
+			{
+				char one[32];
+				snprintf(one, sizeof(one), "%s%s=%lld", k ? " " : "", PLAYERBOT_ELEMENT_SRC_NAMES[k], sumSrc[e][k] / bots[e]);
+				src += one;
+			}
+			snprintf(buf, sizeof(buf), " %s=[bots=%d resist_avg=%lld min=%d max=%d ge60=%d ge40=%d src=[%s] lines=%d/%d "
+					"gear_top=%d/%d tal_top=%d/%d cos_top=%d/%d elixir_on=%d stock_avg=%d.%d materials_avg=%d]",
+					PLAYERBOT_YOHARA_ELEMENT_NAMES[e], bots[e], sumR[e] / bots[e], minR[e], maxR[e], over60[e], over40[e],
+					src.c_str(), pieces[e], piecesCan[e], piecesTop[e], piecesCan[e], talTop[e], talCan[e], cosTop[e], cosCan[e],
+					elixirOn[e], elixirStock[e] / bots[e], (elixirStock[e] * 10 / bots[e]) % 10, materials[e] / bots[e]);
 			line += buf;
 		}
 		if (total == 0 && none == 0 && st.prepared == 0)

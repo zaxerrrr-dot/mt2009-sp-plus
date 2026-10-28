@@ -35,6 +35,16 @@
 //
 // The log: PLAYERBOT_SHOP2 (exchange, errand wanted, dust/material bought, worldset swap, census every ten minutes).
 //
+// MT2009_PLUS_BOT_ELEMENT_RESIST_V2 (the census of 28 October: elixir stock_avg 0 for every element, resist_made 0,
+// materials_bought 0 - 721 of the 900 cohort bots held no Materialy Rzemieslnicze at all, no NPC sells them, the
+// counters had none for them, and a bot that held some had them taken by its horse's / saddlebag's keep first):
+//   * a bot with a hunt element keeps PLAYERBOT_YSHOP_HUNT_MATERIAL_KEEP materials as its own (never the merchant's, a
+//     counter's or the Dozorca's - IsPlayerBotKeptCraftMaterial asks here too) - a grant of them is spent on elixirs,
+//     not sold;
+//   * its elixir comes before its horse and saddlebag: the exchange takes every material it holds;
+//   * an exchange at Handlarka that makes nothing while the hunt element's elixirs are low says why ("exchange none",
+//     throttled): no materials, no room, no map.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_yohara_elements_late.h.
 
 namespace
@@ -46,6 +56,8 @@ namespace
 	const int PLAYERBOT_YSHOP_LOW = 4;	// under this the errand is called for it
 	const int PLAYERBOT_YSHOP_KEEP_MAX = 10;	// elixirs of a vnum never sold
 	const int PLAYERBOT_YSHOP_INPUT_MAX = 100;	// materials / dust over the reserves wanted at most
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the materials a bot with a hunt element keeps (300 elixirs, 50 hours of its map)
+	const int PLAYERBOT_YSHOP_HUNT_MATERIAL_KEEP = 3000;
 	const int PLAYERBOT_YSHOP_FREE_CELLS = 4;	// free cells left in the bag after an elixir
 	const DWORD PLAYERBOT_YSHOP_ERRAND_GAP_MS = 30 * 60 * 1000;
 	const DWORD PLAYERBOT_YSHOP_NEED_MS = 30 * 1000;
@@ -242,6 +254,9 @@ namespace
 	int GetPlayerBotYoharaShopMaterialsFree(LPCHARACTER ch)
 	{
 		const int held = (int)ch->CountSpecifyItem(PLAYERBOT_YSHOP_MATERIAL_VNUM);
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a bot with a hunt element - its elixir first
+		if (GetPlayerBotHuntElement(ch) > 0)
+			return held;
 		const int others = std::max(0, GetPlayerBotCraftMaterialsWanted(ch, false) - GetPlayerBotYoharaShopMaterialsWanted(ch));
 		return std::max(0, held - others);
 	}
@@ -320,6 +335,14 @@ namespace
 		for (int i = 0; i < PLAYERBOT_YOHARA_ELEMENTS; ++i)
 			if (power[order[i]])
 				made += ExchangePlayerBotYoharaShopKind(ch, map, order[i], true, npc);
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: why a bot low on its hunt element's elixir got none
+		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
+		if (made == 0 && hunt >= 0 && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[hunt]) < PLAYERBOT_YSHOP_LOW)
+			PlayerBotLogThrottled("yshop_exchange_none", get_dword_time(),
+					"PLAYERBOT_SHOP2: exchange none pid=%u name=%s for_map=%ld element=%s materials=%d materials_free=%d free_cells=%d elixirs=%d",
+					ch->GetPlayerID(), ch->GetName(), map, PLAYERBOT_YOHARA_ELEMENT_NAMES[hunt],
+					(int)ch->CountSpecifyItem(PLAYERBOT_YSHOP_MATERIAL_VNUM), GetPlayerBotYoharaShopMaterialsFree(ch),
+					CountPlayerBotFreeInventoryCells(ch), (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[hunt]));
 		ForgetPlayerBotYoharaShopNeed(ch);
 		if (made > 0)
 			sys_log(0, "PLAYERBOT_SHOP2: exchange done pid=%u name=%s for_map=%ld made=%d materials=%d dust=%d dust_reserve=%d",
@@ -462,7 +485,9 @@ namespace
 			return CountPlayerBotVnumUnitsAhead(ch, item) < PLAYERBOT_YSHOP_KEEP_MAX;
 		if (vnum == PLAYERBOT_YSHOP_MATERIAL_VNUM)
 		{
-			const int keep = GetPlayerBotYoharaShopMaterialsWanted(ch);
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a bot with a hunt element keeps its elixirs' stock
+			const int keep = std::max(GetPlayerBotYoharaShopMaterialsWanted(ch),
+					GetPlayerBotHuntElement(ch) > 0 ? PLAYERBOT_YSHOP_HUNT_MATERIAL_KEEP : 0);
 			return keep > 0 && CountPlayerBotVnumUnitsAhead(ch, item) < keep;
 		}
 		if (item->GetType() != ITEM_ARMOR || (item->GetSubType() != ARMOR_WRIST && item->GetSubType() != ARMOR_NECK &&
