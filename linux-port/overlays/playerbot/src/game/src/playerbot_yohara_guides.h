@@ -572,7 +572,9 @@ namespace
 						ch->GetPlayerID(), ch->GetName(), why, line->dwPrice, state.iDragonCoins);
 				return false;
 			}
-			if (!BuyPlayerBotIshop3Line(ch, state, *line, PLAYERBOT_SUNGMABUFF_PREMIUM_VNUM, false, 1, "sungma_buff", dwNow))
+			// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: the Will alone before the next map is urgent (the daily pool's borrow)
+			if (!BuyPlayerBotIshop3Line(ch, state, *line, PLAYERBOT_SUNGMABUFF_PREMIUM_VNUM, false, 1,
+					strcmp(why, "next_map") == 0 ? "sungma_buff_next" : "sungma_buff", dwNow))
 				return false;
 			++s_kPlayerBotGuides.premium[dayIndex];
 			s_kPlayerBotGuides.premiumCoins += line->dwPrice;

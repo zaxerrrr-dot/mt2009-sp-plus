@@ -3,7 +3,7 @@
 
 // MT2009_PLUS_BOT_ISHOP_V3_V1 - what a bot buys in the ItemShop V3 for its gear (the owner, 28 October 2026).
 //
-// No daily or category cap: a purchase is made because a pass of the bot's own would use it now, a batch at a time,
+// No category cap (the daily pool below is the only one): a purchase is made because a pass of the bot's own would use it now, a batch at a time,
 // and the goal is asked again a few minutes later (PLAYERBOT_ISHOP3_GOAL_STEP_MS) - after the pass has spent what was
 // bought - until it is reached or the Smocze Monety run out. "Reached" is the pass's own answer, never a count here:
 //   * bonus_add / bonus_change / bonus_marble - the ordinary bonus pass (playerbot_bonus.h): its own choice
@@ -38,6 +38,26 @@
 // better scrolls (crafting window 101 at Kowal 20016).
 //
 // The log: PLAYERBOT_ISHOP3 (bought / chest / bag full / not given, playerbot_itemshop.h) and the hourly census.
+//
+// MT2009_PLUS_BOT_SM_DAILY_POOL_V1 (the owner, 28 October 2026): the coins of a week no longer go in hours - every
+// Smocze Monety purchase here (and the wishes', the element stone's and pet's, the Sung Ma premium's, the Loch
+// ticket's) stays within the account's daily pool (playerbot_itemshop.h: a seventh of the weekly grant a day,
+// cumulative). "Really needs it" - IsPlayerBotSmPoolUrgent, below - may take the next day's seventh too; these are the
+// goals that block the bot's progression now:
+//   * the Yohara bonus musts for the move to the next map: bonus_add / bonus_change / bonus_marble of a Yohara bot
+//     while its hunt element's resistance - the must the Sung Ma move waits for (playerbot_element_resist.h, the
+//     move's preparation, IsPlayerBotElementGearReady) - is not on its armour / helmet / bracelet / talisman yet, or a
+//     move's preparation is open;
+//   * the Sung Ma premium buff (72803) when the Will alone stands between the bot and the next map ("next_map",
+//     bought as sungma_buff_next; never the renewal or a struggle's day);
+//   * the element stone (element_stone) and the element pet (element_pet) - bought only when missing;
+//   * the refine scrolls for a gear gate of the progression checklist: smith_scroll (Kamien Kowala, the Blacksmith's
+//     better scroll), refine / blessing_scroll, while the checklist holds the bot for its gear
+//     (GetPlayerBotProgressionNeeds & NEED_GEAR; the Blessing Scroll and Magiczny Metal are Smocze Znaki - outside the
+//     pool anyway).
+// Never urgent: the looks (costumes, hairstyles, skins, pets, mounts, the counter's hairstyle), the set chests, the Cors
+// for the future grades, the beans, the sash, the ordinary bonus stones and the Seon-Hae aids, the boosters and
+// elixirs, the Loch ticket, the wishes of the old needs list.
 //
 // An implementation fragment: include it once, from playerbot_manager.cpp, after playerbot_element_pet.h (the
 // itemshop's purchase, the bonus, alchemy and sash passes are all above).
@@ -88,6 +108,40 @@ namespace
 			return 0;
 		return std::max(0, (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotYoharaShopDustKeep(ch));
 	}
+
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+	// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: a Yohara bot whose move up the Sung Ma maps waits for its gear's must - the hunt
+	// element's resistance not yet at its target on a piece that can still take it, or a move's preparation open.
+	bool IsPlayerBotYoharaMoveWaitingOnBonus(LPCHARACTER ch)
+	{
+		if (!ch || !IsPlayerBotYoharaBonusMember(ch))
+			return false;
+		std::map<DWORD, TPlayerBotHuntElement>::const_iterator h = s_mapPlayerBotHuntElement.find(ch->GetPlayerID());
+		if (h != s_mapPlayerBotHuntElement.end() && h->second.bPrepOpen && h->second.bPrepWait)
+			return true;
+		const int e = GetPlayerBotHuntElementIndex(ch);
+		if (e < 0)
+			return false;
+		bool noStones = false;
+		const bool ready = IsPlayerBotElementGearReady(ch, e, &noStones);
+		return !ready || noStones;	// noStones: the line is missing and the bag has no stones for it
+	}
+
+	// The goals that may borrow the next day's seventh (the list: this file's header).
+	bool IsPlayerBotSmPoolUrgent(LPCHARACTER ch, const char* reason)
+	{
+		if (!ch || !reason)
+			return false;
+		if (strcmp(reason, "element_stone") == 0 || strcmp(reason, "element_pet") == 0 ||
+				strcmp(reason, "sungma_buff_next") == 0)
+			return true;
+		if (strcmp(reason, "bonus_add") == 0 || strcmp(reason, "bonus_change") == 0 || strcmp(reason, "bonus_marble") == 0)
+			return IsPlayerBotYoharaMoveWaitingOnBonus(ch);
+		if (strcmp(reason, "smith_scroll") == 0 || strcmp(reason, "refine") == 0 || strcmp(reason, "blessing_scroll") == 0)
+			return (GetPlayerBotProgressionNeeds(ch->GetPlayerID()) & playerbot_progression::NEED_GEAR) != 0;
+		return false;
+	}
+#endif
 
 	// The ordinary pass's own pieces (worn, held for a slot - never goods) a line can still be added to: the open lines.
 	int CountPlayerBotIshop3OpenLines(LPCHARACTER ch)
@@ -396,12 +450,20 @@ namespace
 		}
 		int bought = 0;
 		bool noCoins = false;
+		bool poolBlock = false;
 		while (bought < goal.iPieces && *purchases < PLAYERBOT_ISHOP3_SESSION_PURCHASES)
 		{
 			const int left = goal.iPieces - bought;
-			const int have = goal.bMarks ? state.iDragonMarks : state.iDragonCoins;
+			const int balance = goal.bMarks ? state.iDragonMarks : state.iDragonCoins;
+			int have = balance;
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+			// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: Smocze Monety only up to what the daily pool leaves the goal
+			if (!goal.bMarks)
+				have = (int)std::max(0LL, std::min((long long)balance, GetPlayerBotSmPoolRoom(ch, state, goal.szReason).Room()));
+#endif
 			const TPlayerBotItemShopEntry* pick = NULL;
 			int qty = 0;
+			bool balanceWould = false;
 			for (size_t i = 0; i < lines.size() && !pick; ++i)
 			{
 				const int count = (int)lines[i]->dwCount;
@@ -410,6 +472,8 @@ namespace
 				const int want = std::max(1, std::min(left / std::max(1, count), PLAYERBOT_ISHOP3_MAX_QTY));
 				const int afford = have / (int)std::max<DWORD>(1, lines[i]->dwPrice);
 				const int q = std::min(lines[i]->bStackable ? want : 1, afford);
+				if (balance >= (int)lines[i]->dwPrice)
+					balanceWould = true;
 				if (q >= 1)
 				{
 					pick = lines[i];
@@ -418,13 +482,20 @@ namespace
 			}
 			if (!pick)
 			{
-				noCoins = true;
+				(balanceWould ? poolBlock : noCoins) = true;
 				break;
 			}
 			++*purchases;
 			if (!BuyPlayerBotIshop3Line(ch, state, *pick, goal.dwVnum, goal.bMarks, qty, goal.szReason, dwNow))
 				break;
 			bought += (int)pick->dwCount * qty;
+		}
+		if (poolBlock)
+		{
+			++GetPlayerBotIshop3Census(goal.szReason).uPoolBlock;
+			PlayerBotLogThrottled("ishop3_pool_goal", dwNow,
+					"PLAYERBOT_ISHOP3: pool block pid=%u name=%s goal=%s vnum=%u wanted=%d bought=%d coins=%d",
+					ch->GetPlayerID(), ch->GetName(), goal.szReason, goal.dwVnum, goal.iPieces, bought, state.iDragonCoins);
 		}
 		if (noCoins)
 		{
@@ -460,6 +531,14 @@ namespace
 		const long long cost = (long long)chest.dwPrice * PLAYERBOT_ISHOP3_CHEST_ROLLS;
 		if ((long long)state.iDragonCoins - cost < PLAYERBOT_ISHOP3_CHEST_MIN_SURPLUS)
 			return false;
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: the week's chest waits for a day whose allowance covers it (the flag unset)
+		if (cost > GetPlayerBotSmPoolRoom(ch, state, "chest").Room())
+		{
+			++GetPlayerBotIshop3Census("chest").uPoolBlock;
+			return false;
+		}
+#endif
 		ch->SetQuestFlag(PLAYERBOT_ISHOP3_CHEST_FLAG, get_global_time());
 		const bool ok = BuyPlayerBotIshop3Chest(ch, state, chest, PLAYERBOT_ISHOP3_CHEST_ROLLS, dwNow);
 		if (ok)

@@ -1220,6 +1220,9 @@ def read_ai_weights():
     # MT2009_PLUS_BOT_ISHOP_V3_V1: where they buy - 2 the ItemShop V3 (the lines
     # and prices the players see; the default), 1 the old in-game catalogue, 0 nowhere.
     vals["ISHOP_SOURCE"] = 2
+    # MT2009_PLUS_BOT_SM_DAILY_POOL_V1: the weekly Smocze Monety split into days
+    # inside the bots (1/7 a day, cumulative; urgent goals may take tomorrow's). On.
+    vals["ISHOP_DAILY_POOL"] = 1
     # Whether a bot's stand may stand in a second village too. Off: the stands
     # belong in the first villages (Iwakura's idea, 22 September).
     vals["SHOP_M2"] = 0
@@ -1330,6 +1333,9 @@ def read_ai_weights():
                             vals["ISHOP_SOURCE"] = max(0, min(2, int(v)))
                         except ValueError:
                             vals["ISHOP_SOURCE"] = 2
+                    continue
+                if name == "ISHOP_DAILY_POOL":
+                    vals["ISHOP_DAILY_POOL"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
                     continue
                 if name == "SHOP_M2":
                     vals["SHOP_M2"] = 0 if parts[1].strip() in ("0", "off", "no") else 1
@@ -1489,6 +1495,8 @@ def write_ai_weights(vals):
     body.append("ISHOP\t%d" % (1 if vals.get("ISHOP", 1) else 0))
     # Not a weight: where the bots buy (2 ItemShop V3, 1 the old in-game catalogue, 0 nowhere).
     body.append("ISHOP_SOURCE\t%d" % max(0, min(2, int(vals.get("ISHOP_SOURCE", 2) if vals.get("ISHOP_SOURCE") is not None else 2))))
+    # Not a weight: the bots' daily pool of the weekly Smocze Monety (1 on, 0 the old behaviour).
+    body.append("ISHOP_DAILY_POOL\t%d" % (1 if vals.get("ISHOP_DAILY_POOL", 1) else 0))
     # Not a weight: whether a bot's stand may stand in a second village too.
     body.append("SHOP_M2\t%d" % (1 if vals.get("SHOP_M2", 0) else 0))
     # Not a weight: Iwakura's personalities, moods and the Grinder's locks.
@@ -4609,6 +4617,8 @@ T.update({
  "ai_ishop_source": {"en":"Source:","pl":"Źródło:","de":"Quelle:","tr":"Kaynak:"},
  "ai_ishop_source_v3": {"en":"ItemShop V3","pl":"ItemShop V3","de":"ItemShop V3","tr":"ItemShop V3"},
  "ai_ishop_source_game": {"en":"old in-game shop","pl":"stary sklep w grze","de":"alter Spielshop","tr":"eski oyun içi mağaza"},
+ "ai_ishop_daily_pool": {"en":"Daily SM pool (1/7 of the weekly grant a day)","pl":"Dzienna pula SM (1/7 tygodniowego przydziału na dzień)","de":"Tägliches SM-Budget (1/7 der Wochenzuteilung pro Tag)","tr":"Günlük SM havuzu (haftalık payın günde 1/7'si)"},
+ "ai_ishop_daily_pool_help": {"en":"On: each bot account spends at most 1/7 of its weekly Smocze Monety a day (unspent days roll over within the week); only a goal that blocks its progression right now may take the next day's share. Smocze Znaki and voucher cashing are not limited. Off: the old behaviour, no daily limit.","pl":"Włączone: każde konto bota wydaje dziennie najwyżej 1/7 swoich tygodniowych Smoczych Monet (niewydane dni przechodzą na kolejne w tym samym tygodniu); tylko cel, który właśnie blokuje jego postęp (bonusy pod następną mapę, buff Sung Ma, kamień/zwierzak żywiołu, zwoje pod bramkę ekwipunku), może pożyczyć pulę następnego dnia. Smocze Znaki i realizacja kuponów bez limitu. Wyłączone: stare zachowanie, bez dziennego limitu.","de":"An: jedes Bot-Konto gibt pro Tag höchstens 1/7 seiner wöchentlichen Smocze Monety aus (Ungenutztes bleibt innerhalb der Woche); nur ein Ziel, das gerade den Fortschritt blockiert, darf den Anteil des nächsten Tages nehmen. Smocze Znaki und Gutscheine sind nicht begrenzt. Aus: altes Verhalten.","tr":"Açık: her bot hesabı haftalık Smocze Monety'sinin günde en fazla 1/7'sini harcar (harcanmayan günler hafta içinde devreder); yalnızca ilerlemeyi şu an engelleyen hedef ertesi günün payını alabilir. Smocze Znaki ve kupon bozdurma sınırsız. Kapalı: eski davranış."},
  "ai_ishop_source_off": {"en":"none (no purchases)","pl":"żadne (bez zakupów)","de":"keine (keine Käufe)","tr":"hiçbiri (alım yok)"},
  "ai_ishop_on":  {"en":"Enabled","pl":"Włączone","de":"Eingeschaltet","tr":"Açık"},
  "ai_haggle":    {"en":"Bots haggle at people's shops","pl":"Boty targują się na sklepach graczy","de":"Bots feilschen an den Läden der Spieler","tr":"Botlar oyuncu dükkânlarında pazarlık yapar"},
@@ -8396,6 +8406,8 @@ TPL_AI = BASE.replace("__BODY__", """
       <option value="0" {% if cur.get('ISHOP_SOURCE', 2) == 0 %}selected{% endif %}>{{t('ai_ishop_source_off')}}</option>
     </select>
   </label>
+  <label style="margin-left:14px"><input type="checkbox" name="ISHOP_DAILY_POOL" value="1" {% if cur.get('ISHOP_DAILY_POOL', 1) %}checked{% endif %}> {{t('ai_ishop_daily_pool')}}</label>
+  <p class="muted" style="margin:4px 0 0">{{t('ai_ishop_daily_pool_help')}}</p>
 </div>
 <div style="margin-bottom:18px">
   <h3 style="margin:0 0 2px">🤝 {{t('ai_haggle')}}</h3>
@@ -20744,6 +20756,7 @@ def ai_weights():
                 vals["ISHOP_SOURCE"] = max(0, min(2, int(request.form.get("ISHOP_SOURCE", old.get("ISHOP_SOURCE", 2)))))
             except (TypeError, ValueError):
                 vals["ISHOP_SOURCE"] = old.get("ISHOP_SOURCE", 2)
+            vals["ISHOP_DAILY_POOL"] = 1 if request.form.get("ISHOP_DAILY_POOL") else 0
             vals["HAGGLE"] = 1 if request.form.get("HAGGLE") else 0
             vals["MATERIAL_MARKET"] = 1 if request.form.get("MATERIAL_MARKET") else 0
         else:
@@ -20751,6 +20764,7 @@ def ai_weights():
             vals["CATACOMB"] = old.get("CATACOMB", 1)
             vals["ISHOP"] = old.get("ISHOP", 1)
             vals["ISHOP_SOURCE"] = old.get("ISHOP_SOURCE", 2)
+            vals["ISHOP_DAILY_POOL"] = old.get("ISHOP_DAILY_POOL", 1)
             vals["HAGGLE"] = old.get("HAGGLE", 1)
             vals["MATERIAL_MARKET"] = old.get("MATERIAL_MARKET", 0)
         vals["SHOP_M2"] = 1 if request.form.get("SHOP_M2") else 0
