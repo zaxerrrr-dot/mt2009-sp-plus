@@ -289,6 +289,13 @@
 // CActorInstance::OnShootDamage) - Auto Lowy and a walk by mouse go on under the archers. Melee blows are as before.
 // Without the define the exe is as before; root's uiautohunt.py restarts a stopped walk at once either way.
 #define ENABLE_MT2009_RUN_THROUGH_ARROWS
+// MT2009_PLUS_BORDERLESS_FULLSCREEN_V1 (the owner, 29 October 2026; round 27.10 item 1): the "Pelny ekran" option (WINDOWED 0
+// in metin2.cfg) runs as a borderless full-screen window - the D3D device is always windowed, the WS_POPUP window covers
+// the monitor it is on (HWND_TOPMOST), and a resolution other than the desktop one is still set by ChangeDisplaySettingsEx
+// (CDS_FULLSCREEN, restored on Alt+Tab / minimise / exit). Exclusive mode bypassed the desktop composition, so the
+// ItemShop V3 browser (a child window) stayed hidden under the game image. "Okno" and "Pelny ekran w oknie" are as
+// before (UserInterface/PythonApplication.cpp, PythonApplicationProcedure.cpp). Without the define the exe is as before.
+#define ENABLE_MT2009_BORDERLESS_FULLSCREEN
 // MT2009_PLUS_AUTOHUNT_TEST_V1 (the owner, 28 October 2026: "add it as a TEST auto hunt, e.g. under Alt+H"): the uploaded
 // package's auto hunt next to our Auto Lowy - the exe picks the target, casts the skills and drinks the potions each frame
 // (UserInterface/Mt2009AutoHuntTest.cpp, player.AutoHuntTest*), the target's name is green (InstanceBaseEffect.cpp), the

@@ -745,3 +745,35 @@ Efekty, których exe szuka: `d:/ymir work/effect/monster2/guild_whitedragon_*.ms
 
 Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` + cały ten
 katalog) – wszystkie 15 zmienionych `.cpp` bez błędów; `/E` potwierdza kod za definicją (28.10.2026). Exe nie budowane.
+
+## „Pełny ekran” jako okno bez ramek – `MT2009_PLUS_BORDERLESS_FULLSCREEN_V1` (`ENABLE_MT2009_BORDERLESS_FULLSCREEN`)
+
+Runda 27.10, poz. 1: ItemShop V3 (przeglądarka – okno-dziecko gry) był niewidoczny w trybie „Pełny ekran”: ekskluzywny
+pełny ekran D3D9 (`Windowed=FALSE`) omija kompozycję pulpitu, więc obraz gry przykrywał przeglądarkę. Teraz ta opcja
+(`WINDOWED 0` w `metin2.cfg`, `CPythonSystem::IsFullscreen`) to okno bez ramek na cały monitor. „Okno” (`WINDOWED 1`) i
+„Pełny ekran w oknie” (`WINDOWED 2`) bez zmian.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_BORDERLESS_FULLSCREEN` |
+| `UserInterface/PythonApplication.cpp` | `CreateDevice`: urządzenie zawsze `Windowed=TRUE` (`FullScreen_RefreshRateInHz` 0, `DISCARD`, 2 bufory, `PresentationInterval` jak dotąd – synchronizacja przez kompozycję pulpitu); `Create`: tylko w „Pełnym ekranie” `SetProcessDPIAware` przed utworzeniem okna (bez tego pulpit ze skalą 125/150% rozmywałby grę i zmniejszał prostokąt monitora); tryb ekranu i okno w rozmiarze bufora (`m_dwWidth`×`m_dwHeight` = `GetWidth`×`GetHeight`, też przy skali interfejsu); po utworzeniu urządzenia okno `HWND_TOPMOST` na monitorze; `Destroy`: przywrócenie rozdzielczości pulpitu |
+| `UserInterface/PythonApplicationProcedure.cpp` | `__SetFullScreenWindow`: monitor okna (`MonitorFromWindow` przy starcie – główny; zapamiętana nazwa urządzenia `\\.\DISPLAYn`), `ChangeDisplaySettingsEx(CDS_FULLSCREEN)` **tylko** gdy wybrana rozdzielczość ≠ rozdzielczość pulpitu (`ENUM_REGISTRY_SETTINGS`), z częstotliwością z `metin2.cfg` (gdy monitor jej nie przyjmie – bez niej); drugi raz nie zmienia trybu, który już jest; potem okno na prostokąt tego monitora (`EnumDisplayMonitors` + `GetMonitorInfo`, także monitor z ujemnymi współrzędnymi). `__MinimizeFullScreenWindow` (Alt+Tab): pulpit z powrotem, zdjęte `TOPMOST`, minimalizacja – jak dotąd. Aktywacja: `SW_RESTORE` z paska zadań, tryb, okno. `WM_SIZE`/`WM_EXITSIZEMOVE`: w tym trybie bez `ResizeBackBuffer` (bufor ma rozmiar okna; `Reset` z żywymi zasobami `D3DPOOL_DEFAULT` zamrażał grę) |
+| `UserInterface/PythonApplication.h` | `__PlaceFullScreenWindow`, `__RestoreFullScreenDisplayMode` |
+
+`GrpDevice.cpp` bez zmian: przy `Windowed=TRUE` jego `SetWindowPos(HWND_TOPMOST)` się nie wykonuje, okno ustawia
+`__PlaceFullScreenWindow`. Utrata urządzenia przy zmianie trybu (Alt+Tab, powrót, blokada ekranu) idzie jak dotąd przez
+`CheckDeviceState` → `DEVICESTATE_NEEDS_RESET` (zwolnienie cieni i render targetów, `Reset`, odtworzenie). Gra nie
+zamyka kursora w oknie (`ClipCursor` nigdzie) – tak zostaje. Gdy zmiana trybu się nie uda, gra ma okno w rozmiarze
+bufora na środku monitora (myszka dalej trafia), w syserr „FullScreen: ChangeDisplaySettingsEx … failed”.
+
+Różnica względem ekskluzywnego trybu: gamma z opcji (`SetGammaRamp`) działa tylko w ekskluzywnym pełnym ekranie, więc
+teraz – jak w „Oknie” – nie zmienia jasności.
+
+Sprawdzone (29.10.2026): `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`) –
+`PythonApplication.cpp`, `PythonApplicationProcedure.cpp` na `exe-src7` + ten katalog, z definicją i bez – bez błędów
+i bez ostrzeżeń w nowym kodzie. Exe nie budowane (budowa na koniec rundy).
+
+Do sprawdzenia w grze („Pełny ekran”): rozdzielczość = pulpit (bez mrugnięcia przy starcie i Alt+Tab) i ≠ pulpit
+(zmiana trybu, powrót pulpitu przy Alt+Tab / minimalizacji / wyjściu); ItemShop V3 (Shift+F12) widoczny i klikalny;
+Alt+Tab tam i z powrotem przy otwartym sklepie i na mapie ze śniegiem; pulpit ze skalą 125/150%; dwa monitory; Win+D;
+„Okno” i „Pełny ekran w oknie” jak dotąd.
