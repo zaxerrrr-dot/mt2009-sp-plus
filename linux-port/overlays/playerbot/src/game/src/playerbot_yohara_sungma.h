@@ -1331,6 +1331,11 @@
 			b.dwErrandSince = dwNow ? dwNow : 1;
 			if (need & 2)
 				b.dwLastBagErrand = b.dwErrandSince;
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V4: the exchange's gap from the errand that goes, not from the look
+			if (need & 4)
+				NotePlayerBotYoharaShopErrandStarted(ch, dwNow);
+#endif
 			const int slot = GetPlayerBotSungmaSlot(res.lMap);
 			if (slot >= 0)
 				++s_aPlayerBotSungmaStats[slot].errands;

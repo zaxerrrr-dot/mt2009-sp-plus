@@ -10291,6 +10291,13 @@ namespace
 	bool IsPlayerBotSungmaElementMoveAllowed(LPCHARACTER ch, long toMap, bool count);
 	// A second equipment / costume set made for the element (1-6) - MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 below.
 	bool HasPlayerBotElementSecondSet(LPCHARACTER ch, BYTE element);
+#define MT2009_PLUS_BOT_ELEMENT_RESIST_V4 1
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V4 (playerbot_yohara_shop.h, the census of 28 October: fire stock_avg 5.4,
+	// elixir_up 73%, no_stock 791 - the Dongan bots with a full bag never got one): the hunt element's resistance
+	// elixir made with a full bag (onto its stack, into the last free cell, or into a cell sold free at Handlarka),
+	// the errand for it asked for with a full bag too, and the errand's 30-minute gap counted from an errand that
+	// started - not from a look that a fight put off.
+	void NotePlayerBotYoharaShopErrandStarted(LPCHARACTER ch, DWORD dwNow);
 #define MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 1
 	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 (playerbot_element_second_set.h, after playerbot_element_resist.h): a Yohara
 	// bot's second set for a second element E2 (armour, helmet, bracelet, talisman, costume, hairstyle - and the second
