@@ -43,7 +43,7 @@
 //    first, the dark ones only for a bot whose hunt element is dark (AdjustPlayerBotYoharaLochHubScore); spots of eight
 //    lines and more a party's. A bot with a ticket keeps it (IsPlayerBotYoharaLochTicketKept - no sale, list, gift,
 //    storage), and a Champion still levelling buys one off a counter under PLAYERBOT_LOCH_TICKET_PRICE_CAP. V3 sells the
-//    ticket itself (29 SM, 20 for 449 SM): bought by the bots only with PLAYERBOT_LOCH_ISHOP=1 (off by default - not in
+//    ticket itself (29 SM, 20 for 449 SM): bought by the bots unless PLAYERBOT_LOCH_ISHOP=0 (on by default - the owner, 28 October: "boty mogą kupować wszystko w itemshopie"; was not in
 //    the owner's list). The map is on game3 of each channel with every Sung Ma map; its 11 060 monsters are spawned
 //    whether bots go there or not.
 // 6. The boss route (PLAYERBOT_SUNGMA: boss_route). The bosses' spawn areas of the Sung Ma maps and the Loch
@@ -364,7 +364,7 @@ namespace
 	{
 		static int s_iOn = -1;
 		if (s_iOn < 0)
-			s_iOn = ReadPlayerBotYoharaEnvInt("PLAYERBOT_LOCH_ISHOP", 0, 0, 1);
+			s_iOn = ReadPlayerBotYoharaEnvInt("PLAYERBOT_LOCH_ISHOP", 1, 0, 1);
 		return s_iOn == 1;
 	}
 
@@ -991,7 +991,7 @@ namespace
 				return -2;
 			if (ch->CountSpecifyItem(PLAYERBOT_LOCH_TICKET_VNUM) == 0)
 			{
-				// V3's own ticket only with PLAYERBOT_LOCH_ISHOP=1 (not in the owner's list)
+				// V3's own ticket unless PLAYERBOT_LOCH_ISHOP=0 (on by default)
 				if (!IsPlayerBotLochIshopOn() || GetPlayerBotItemShopSource() != 2 || !IsPlayerBotItemShopEnabled())
 					return -2;
 				std::vector<const TPlayerBotItemShopEntry*> lines;
