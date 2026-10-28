@@ -2521,6 +2521,9 @@ namespace
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked())
 			return false;
+		// MT2009_PLUS_ELEMENT_STONES_V1: a Kamien Zywiolow in the bag is the next one worn, never the merchant's.
+		if (Mt2009IsElementStone(item->GetVnum()))
+			return false;
 		// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon, and the real weapon prepared behind one in the hand.
 		if (IsPlayerBotMlodziKept(ch, item))
 			return false;

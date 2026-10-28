@@ -1,6 +1,9 @@
 #ifndef __INC_METIN2_PLAYERBOT_GEAR_H__
 #define __INC_METIN2_PLAYERBOT_GEAR_H__
 
+// MT2009_PLUS_ELEMENT_STONES_V1: Kamien Ochrony / Mocy Zywiolow (39120 / 39119) - playerbot_element_stones.cpp
+bool Mt2009IsElementStone(DWORD dwVnum);
+
 // What a bot wears and what it carries: equipment scoring, the progression
 // ladder of weapons and armour, arrows, and the potion supply.
 //
@@ -353,6 +356,10 @@ namespace
 		if (item->GetType() == ITEM_UNIQUE &&
 				(IsPlayerBotNeverWornUnique(item->GetVnum()) || IsPlayerBotTimedUnique(item->GetVnum()) ||
 				 IsPlayerBotRankUnique(item->GetVnum())))
+			return false;
+		// MT2009_PLUS_ELEMENT_STONES_V1: a Kamien Zywiolow is the element stones' pass's to put on (one at a time, the
+		// Yohara bots' protection stone - playerbot_element_stones.h), never this pass's.
+		if (item->GetType() == ITEM_UNIQUE && Mt2009IsElementStone(item->GetVnum()))
 			return false;
 
 		switch (item->GetType())
@@ -2318,6 +2325,10 @@ namespace
 			// Glove or Symbol, which it wears only at a negative rank.
 			if (oldItem && (IsPlayerBotTimedUnique(oldItem->GetVnum()) ||
 					IsPlayerBotRankUnique(oldItem->GetVnum())))
+				continue;
+			// MT2009_PLUS_ELEMENT_STONES_V1: nor does a Kamien Zywiolow - the element stones' pass keeps it on
+			// (playerbot_element_stones.h); its bonuses are extra lines the scoring would weigh against anything.
+			if (oldItem && Mt2009IsElementStone(oldItem->GetVnum()))
 				continue;
 
 			if (!PlayerBotCanEquipNow(ch, item, TItemPos(INVENTORY, cell)))

@@ -53,7 +53,8 @@ namespace
 	bool IsPlayerBotUniqueSlotHeld(LPCHARACTER ch, DWORD vnum)
 	{
 		return IsPlayerBotTimedUnique(vnum) ||
-				(IsPlayerBotRankUnique(vnum) && ch && ch->GetRealAlignment() < 0);
+				(IsPlayerBotRankUnique(vnum) && ch && ch->GetRealAlignment() < 0) ||
+				Mt2009IsElementStone(vnum);	// MT2009_PLUS_ELEMENT_STONES_V1: the element stone stays on
 	}
 
 	const char* GetPlayerBotUniqueIdleReason(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)

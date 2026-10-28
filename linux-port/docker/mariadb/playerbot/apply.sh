@@ -4327,6 +4327,18 @@ if [ -s /opt/playerbot/yohara_eliksiry.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_ELEMENT_STONES_V1: Kamien Ochrony Zywiolow (39120) and Kamien Mocy Zywiolow (39119) - the owner, 28 October
+# 2026 - kamienie_zywiolow.sql (tools/kamienie_zywiolow/gen_kamienie_zywiolow.py): the two unique-slot amulets (7 days of
+# real time) and their six bonus lines each in world.item_extra_apply (made above). Idempotent (INSERT IGNORE). Only one
+# of them is worn at a time (playerbot_element_stones.cpp); the second ItemShop sells them (itemshop3_schema.sql).
+if [ -s /opt/playerbot/kamienie_zywiolow.sql ]; then
+    if db < /opt/playerbot/kamienie_zywiolow.sql; then
+        echo "[playerbot-migrate] element stones: kamienie_zywiolow.sql applied (MT2009_PLUS_ELEMENT_STONES_V1)"
+    else
+        fail_step "element stones: kamienie_zywiolow.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
 # Nazara 71202, Lizak Magii 71188, Czekoladowy Amulet 71199, Mistrzowski Emblemat 70607, Blogoslawienstwo Mocy 72713,

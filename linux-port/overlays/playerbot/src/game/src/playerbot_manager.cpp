@@ -417,6 +417,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 helmets (Jaharr), the body armours 90-115 (Kawuco, Angmur) and the
 // cyanite step (Seon-Pyeong) - the recipes kept, hunted, bought and crafted
 #include "playerbot_yohara_gear2.h"
+// MT2009_PLUS_ELEMENT_STONES_V1: every Yohara bot wears Kamien Ochrony Zywiolow (39120) and gets a new one when it ends -
+// after the cohort (playerbot_yohara_bots.h), the ItemShop (playerbot_itemshop.h) and the unique slots
+#include "playerbot_element_stones.h"
 
 namespace
 {
@@ -6965,6 +6968,7 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotGuildDuties(dwNow);
 WritePlayerBotGuildStatus(dwNow);
 	WritePlayerBotItemShopCensus(dwNow);
+	WritePlayerBotElementStoneCensus(dwNow);	// MT2009_PLUS_ELEMENT_STONES_V1
 	// The ore veins, once a minute for the whole world. A vein deletes itself
 	// after 7-15 minutes and nothing in this world's regen files puts one back -
 	// there are no vein spawns on any of its maps at all - so the sites are
@@ -7643,6 +7647,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// Rings and gloves on the clock while the bot hunts and off in town,
 		// and the uniques a bot never wears off for good.
 		ManagePlayerBotUniqueSlots(ch, state, dwNow);
+		// MT2009_PLUS_ELEMENT_STONES_V1: a Yohara bot's Kamien Ochrony Zywiolow on, renewed when it ends.
+		ManagePlayerBotElementStone(ch, state, dwNow);
 		// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapon taken at its tier and the hand's expiry switch, right
 		// before the gear pass that puts it on (playerbot_mlodzi_bots.h).
 		ManagePlayerBotMlodzi(ch, state, dwNow);
