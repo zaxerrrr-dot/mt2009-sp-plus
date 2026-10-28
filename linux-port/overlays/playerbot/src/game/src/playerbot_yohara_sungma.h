@@ -1379,6 +1379,10 @@
 			int boughtRed = 0, boughtBlue = 0;
 			BuyPlayerBotYoharaBelt(ch, PLAYERBOT_SUNGMA_ERRAND_FILL, PLAYERBOT_SUNGMA_ERRAND_FILL, boughtRed, boughtBlue);
 			RunPlayerBotYoharaShopExchange(ch, m.dwRace);	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the bots' exchange (playerbot_yohara_shop.h)
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: the costume's reagents (70063/70064) off the same counter - rolled from
+			// the bag out of a fight (ManagePlayerBotBonusReroll).
+			if (IsPlayerBotYoharaBonusMember(ch))
+				BuyPlayerBotCostumeReagent(ch, state);
 			sys_log(0, "PLAYERBOT_SUNGMA: errand bought pid=%u name=%s merchant=%u bought_red=%d bought_blue=%d gold=%lld",
 					ch->GetPlayerID(), ch->GetName(), m.dwRace, boughtRed, boughtBlue, (long long)ch->GetGold());
 			// no cell for them even after its junk went (a bag of keepsakes): not the errand's again for a while - the
@@ -1826,6 +1830,9 @@
 					++s_aPlayerBotSungmaStats[z].movesIn;
 					++s_aiPlayerBotSungmaMapCensus[z];
 				}
+				// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: the new map's element prepared before the move - it may wait when it
+				// still fits where it stands and is not stepping down after its deaths (playerbot_element_resist.h).
+				StartPlayerBotElementPrep(ch, res.lMap, pick, fitsNow && !b.bFlee && GetPlayerBotSungmaSlot(base) >= 0, dwNow);
 				res.lMap = pick;
 				b.dwWalkSince = 0;
 				LeavePlayerBotSungmaParty(ch, "map_move", false);	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
@@ -1840,6 +1847,10 @@
 		{
 			if (!IsPlayerBotMapHostedHere(res.lMap))
 				return LeavePlayerBotSungma(ch, state, dwNow, "sungma_not_hosted");
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: its gear for the new element first (at most
+			// PLAYERBOT_ELEMENT_PREP_MAX_MS, fighting on here meanwhile), then the elixir, then the way.
+			if (b.dwWalkSince == 0 && HoldPlayerBotElementPrep(ch, res.lMap, dwNow))
+				return 0;	// the fight where it stands (as a loot run's 0), no frontier travel
 			return MovePlayerBotSungma(ch, state, b, res.lMap, dwNow);
 		}
 		b.dwWalkSince = 0;

@@ -10186,6 +10186,28 @@ namespace
 	bool CanPlayerBotPayForChiOffer(LPCHARACTER ch, LPITEM offer, long long price);
 	void CollectPlayerBotChiMissing(LPCHARACTER ch, std::map<DWORD, int>& missing);
 	void NotePlayerBotChiBought(LPCHARACTER ch, DWORD vnum, long long price);
+
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V1 (playerbot_element_resist.h, after playerbot_yohara_shop.h): a Yohara bot's
+	// one hunt element - chosen from its Sung Ma map (the map's majority element; a near tie goes to the element the
+	// gear can hold, else split between the bots), sticky while the map stays - and what it dresses for it.
+	// GetPlayerBotHuntElement: 0 none (not a Yohara bot / no Sung Ma map yet), else the element index + 1 in
+	// PLAYERBOT_YOHARA_ELEMENT_NAMES' order: 1 lightning (RACE_FLAG_ATT_ELEC), 2 fire (RACE_FLAG_ATT_FIRE), 3 ice
+	// (RACE_FLAG_ATT_ICE), 4 wind (RACE_FLAG_ATT_TEMPLE), 5 earth (RACE_FLAG_ATT_EARTH), 6 dark (RACE_FLAG_ATT_DARK).
+#define MT2009_PLUS_BOT_ELEMENT_RESIST_V1 1
+	BYTE GetPlayerBotHuntElement(LPCHARACTER ch);
+	// The resistance point of the hunt element when the armour, helmet or bracelet can roll it (fire, lightning or
+	// wind in this world's item_attr), else 0.
+	BYTE GetPlayerBotHuntResistPoint(LPCHARACTER ch);
+	// Whether item_attr rolls the line on that attribute set (ATTRIBUTE_SET_*).
+	bool IsPlayerBotApplyOnAttrSet(BYTE type, int set);
+	// A Yohara bot's costume / hairstyle line: 1 worth keeping, 0 not, -1 not a Yohara bot (the old scoring decides).
+	int IsPlayerBotYoharaCostumeLineGood(LPCHARACTER ch, LPITEM costume, BYTE type, long value);
+	// The Sung Ma move's preparation (playerbot_yohara_sungma.h): noted when the map changes, asked before the move -
+	// true holds the move (the bot hunts on where it is) while its gear is still being made for the new element.
+	void StartPlayerBotElementPrep(LPCHARACTER ch, long fromMap, long toMap, bool mayWait, DWORD dwNow);
+	bool HoldPlayerBotElementPrep(LPCHARACTER ch, long toMap, DWORD dwNow);
+	// The census (PLAYERBOT_ELEMENT), on the talisman's light pass's clock.
+	void TickPlayerBotElementCensus(DWORD dwNow);
 }
 
 #endif

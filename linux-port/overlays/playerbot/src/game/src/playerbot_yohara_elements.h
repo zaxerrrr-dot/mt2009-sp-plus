@@ -41,15 +41,28 @@ namespace
 	};
 
 	// plan-boty-yohara.md 2.1 / 8.1 (tools/yohara_lokacje/lokalizacje.tsv and the test's mob_proto flags).
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: the owner's map guide of 28 October 2026 (cache/yohara/mapy-zywioly-forum.md)
+	// is the source now where it names the map; the spawns of the test world (regen.txt with group / group_group,
+	// the elements of zywioly_moby*.sql and the *_zywioly.sql files in global mode, ordinary monsters only) for the
+	// record - where they differ:
+	//   374 Twierdza    guide dark 50 / ice 50           spawns dark 67 / ice 33            (was ice 54 / dark 45)
+	//   373 Dongan      guide fire 70 / dark 30          spawns fire 52 / dark 48           (was fire 58 / dark 41)
+	//   376 Seoganland  guide earth 70 / dark 30         spawns earth 100                   (was earth 100)
+	//   377 Namgan      guide wind 60 / earth 20 / dark 20  spawns wind 82 / dark 8 / fire 5 / earth 4
+	//   385 Yilad       guide earth 60 / wind 20 / dark 20  spawns dark 50 / earth 49       (was dark 54 / earth 46)
+	//   388 Wawoz       guide ice 50 / lightning 50      spawns ice 50 / lightning 50
+	//   389 Rozpadlina  guide ice 50 / lightning 50      spawns ice 56 / lightning 44
+	//   393 Schronienie (not in the guide)               spawns ice 100
+	//   394 Zejscie     (not in the guide)               spawns ice + lightning on every monster (both flags)
 	const TPlayerBotYoharaElementMap PLAYERBOT_YOHARA_ELEMENT_MAPS[] = {
 		//                                    lightning fire ice wind earth dark
-		{ PLAYERBOT_MAP_SUNGMA_TWIERDZA,     {  0,  0,  54,  0,   0, 45 } },
-		{ PLAYERBOT_MAP_SUNGMA_DONGAN,       {  0, 58,   0,  0,   0, 41 } },
-		{ PLAYERBOT_MAP_SUNGMA_SEOGANLAND,   {  0,  0,   0,  0, 100,  0 } },
-		{ PLAYERBOT_MAP_SUNGMA_NAMGAN,       {  0, 21,   0, 34,  16, 27 } },
-		{ PLAYERBOT_MAP_SUNGMA_YILAD,        {  0,  0,   0,  0,  46, 54 } },
-		{ PLAYERBOT_MAP_SUNGMA_WAWOZ,        { 48,  0,  52,  0,   0,  0 } },
-		{ PLAYERBOT_MAP_SUNGMA_ROZPADLINA,   { 48,  0,  51,  0,   0,  0 } },
+		{ PLAYERBOT_MAP_SUNGMA_TWIERDZA,     {  0,  0,  50,  0,   0, 50 } },
+		{ PLAYERBOT_MAP_SUNGMA_DONGAN,       {  0, 70,   0,  0,   0, 30 } },
+		{ PLAYERBOT_MAP_SUNGMA_SEOGANLAND,   {  0,  0,   0,  0,  70, 30 } },
+		{ PLAYERBOT_MAP_SUNGMA_NAMGAN,       {  0,  0,   0, 60,  20, 20 } },
+		{ PLAYERBOT_MAP_SUNGMA_YILAD,        {  0,  0,   0, 20,  60, 20 } },
+		{ PLAYERBOT_MAP_SUNGMA_WAWOZ,        { 50,  0,  50,  0,   0,  0 } },
+		{ PLAYERBOT_MAP_SUNGMA_ROZPADLINA,   { 50,  0,  50,  0,   0,  0 } },
 		{ PLAYERBOT_MAP_SUNGMA_SCHRONIENIE,  {  0,  0, 100,  0,   0,  0 } },
 		{ PLAYERBOT_MAP_SUNGMA_ZEJSCIE,      { 50,  0,  50,  0,   0,  0 } },
 	};
@@ -118,6 +131,10 @@ namespace
 		const int e = GetPlayerBotResistLineElement(type);
 		if (e < 0 || !ch)
 			return 1;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a bot with a hunt element weighs that one element only.
+		const int hunt = (int)GetPlayerBotHuntElement(ch);
+		if (hunt > 0)
+			return e == hunt - 1 ? PLAYERBOT_YOHARA_RESIST_FACTOR : 1;
 		int share[PLAYERBOT_YOHARA_ELEMENTS];
 		if (!GetPlayerBotYoharaMapShares(GetPlayerBotYoharaElementMap(ch), share))
 			return 1;

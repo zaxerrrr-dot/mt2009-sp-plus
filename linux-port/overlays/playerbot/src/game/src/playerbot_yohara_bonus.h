@@ -54,6 +54,16 @@
 //   shield   DEVIL or HUMAN             the class stat, vitality, block, stun immunity,          3: m4 o3    2: m4 o3
 //                                       melee reflection
 //   glove    -                          the class stat, vitality, HP steal                       3: o3       2: o3
+// MT2009_PLUS_BOT_ELEMENT_RESIST_V1 (28 October 2026) changed the table for the owner's Yohara defence: E = the
+// resistance to the bot's hunt element (playerbot_element_resist.h; fire, lightning or wind - the three that roll on
+// gear), none when its element is one the gear cannot hold (ice, earth, dark: no must of it then).
+//   body     max HP + E (two musts)     attack value / casting speed, HP steal, arrow, magic res  E: 2: m4 o3  2: m3 o3
+//   helmet   E (else DEVIL or HUMAN)    race (with E), attack speed, arrow dodge, magic res       E: 2: m4 o3  2: m3 o3
+//   bracelet max HP + E (two musts)     DEVIL/HUMAN, piercing, HP steal, magic resistance         E: 2: m4 o3  2: m3 o3
+//   boots    max HP                     arrow dodge, arrow resistance, attack speed, critical      as above
+//   necklace / earrings: + arrow resistance; shield: must = melee block (race, stat, vitality, stun, reflect wanted).
+// Simulated (global table, 4-5 lines): body E strong 37-60 changes, fair 11-19; bracelet 57-101 / 18-31; helmet
+// 15-24 / 8-13. Other elements' resistances are no line of any list.
 // "3: m4 o3" = three lines of the list, the must line at level 4 or 5 of the table (race 10/20, HP 1500/2000 in the
 // global mode) and the others at level 3 or more. Measured by simulation against the global table and the engine's
 // change odds (lv2-5: 10/40/35/15): the strong tier takes 20-70 changes on average a piece, the fair one 4-20.
@@ -92,19 +102,22 @@ namespace
 		int iWeight;
 		playerbot_yohara_bonus_rules::TTier strong;
 		playerbot_yohara_bonus_rules::TTier fair;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: the tiers while the hunt element's resistance is in the piece's target
+		playerbot_yohara_bonus_rules::TTier strongE;
+		playerbot_yohara_bonus_rules::TTier fairE;
 	};
 
 	// The priority order (weapon, armour, helmet, the jewellery, the earrings, the shield, the glove) and the shares.
 	const TPlayerBotYoharaBonusSlot PLAYERBOT_YOHARA_BONUS_SLOTS[] = {
-		{ WEAR_WEAPON, "weapon", 16, { 3, 4, 3 }, { 2, 4, 3 } },
-		{ WEAR_BODY,   "body",   14, { 3, 4, 3 }, { 2, 4, 3 } },
-		{ WEAR_HEAD,   "head",   11, { 3, 3, 3 }, { 2, 4, 3 } },
-		{ WEAR_NECK,   "neck",   11, { 2, 4, 4 }, { 2, 3, 3 } },
-		{ WEAR_WRIST,  "wrist",  11, { 3, 4, 3 }, { 2, 4, 3 } },
-		{ WEAR_FOOTS,  "foots",  11, { 2, 4, 4 }, { 2, 3, 3 } },
-		{ WEAR_EAR,    "ear",     9, { 2, 4, 4 }, { 2, 3, 3 } },
-		{ WEAR_SHIELD, "shield",  9, { 3, 4, 3 }, { 2, 4, 3 } },
-		{ WEAR_GLOVE,  "glove",   6, { 3, 0, 3 }, { 2, 0, 3 } },
+		{ WEAR_WEAPON, "weapon", 16, { 3, 4, 3 }, { 2, 4, 3 }, { 3, 4, 3 }, { 2, 4, 3 } },
+		{ WEAR_BODY,   "body",   14, { 3, 4, 3 }, { 2, 4, 3 }, { 2, 4, 3 }, { 2, 3, 3 } },
+		{ WEAR_HEAD,   "head",   11, { 3, 3, 3 }, { 2, 4, 3 }, { 2, 4, 3 }, { 2, 3, 3 } },
+		{ WEAR_NECK,   "neck",   11, { 2, 4, 4 }, { 2, 3, 3 }, { 2, 4, 4 }, { 2, 3, 3 } },
+		{ WEAR_WRIST,  "wrist",  11, { 3, 4, 3 }, { 2, 4, 3 }, { 2, 4, 3 }, { 2, 3, 3 } },
+		{ WEAR_FOOTS,  "foots",  11, { 2, 4, 4 }, { 2, 3, 3 }, { 2, 4, 4 }, { 2, 3, 3 } },
+		{ WEAR_EAR,    "ear",     9, { 2, 4, 4 }, { 2, 3, 3 }, { 2, 4, 4 }, { 2, 3, 3 } },
+		{ WEAR_SHIELD, "shield",  9, { 3, 4, 3 }, { 2, 4, 3 }, { 3, 4, 3 }, { 2, 4, 3 } },
+		{ WEAR_GLOVE,  "glove",   6, { 3, 0, 3 }, { 2, 0, 3 }, { 3, 0, 3 }, { 2, 0, 3 } },
 	};
 	const int PLAYERBOT_YOHARA_BONUS_SLOT_COUNT =
 			(int)(sizeof(PLAYERBOT_YOHARA_BONUS_SLOTS) / sizeof(PLAYERBOT_YOHARA_BONUS_SLOTS[0]));
@@ -151,13 +164,23 @@ namespace
 	}
 
 	// A line's role in a slot's target (the table at the head of the file).
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V1 (the owner, 28 October 2026: "na Yoharze najwazniejsze sa odpornosci i PZ"; the
+	// element rules in playerbot_element_resist.h): the resistance to the bot's hunt element (GetPlayerBotHuntResistPoint
+	// - only fire, lightning and wind roll on the armour, the helmet and the bracelet here) is a must of its own
+	// (ROLE_MUST2) next to Max HP on the armour and the bracelet, and the helmet's must (the race line then only
+	// wanted); every other element's resistance is wanted nowhere. The defensive lines the owner's guide asks for on
+	// Yohara are wanted where they roll: arrow dodge (helmet, boots), arrow and magic resistance (armour, bracelet,
+	// helmet, boots, necklace, earrings); the shield's must is the melee block.
 	int GetPlayerBotYoharaBonusRole(LPCHARACTER ch, BYTE wearCell, BYTE type, bool addonWeapon)
 	{
 		using namespace playerbot_yohara_bonus_rules;
 		const bool caster = IsPlayerBotCaster(ch);
 		const BYTE stat = GetPlayerBotYoharaBonusClassStat(ch);
 		const bool race = type == POINT_ATTBONUS_DEVIL || type == POINT_ATTBONUS_HUMAN;
-		const bool elementResist = type == POINT_RESIST_FIRE || type == POINT_RESIST_ELEC || type == POINT_RESIST_WIND;
+		const BYTE hunt = GetPlayerBotHuntResistPoint(ch);
+		const bool huntResist = hunt != 0 && type == hunt;
+		const bool arrow = type == POINT_RESIST_BOW;
+		const bool magicResist = type == POINT_RESIST_MAGIC;
 		// MT2009_PLUS_STEAL_CAP_V1: the rest of the gear already gives the 50% cap - absorption here is wasted.
 		if (type == POINT_STEAL_HP && GetPlayerBotGearStealHp(ch, wearCell) >= 50)
 			return ROLE_OTHER;
@@ -174,34 +197,42 @@ namespace
 			case WEAR_BODY:
 				if (type == POINT_MAX_HP)
 					return ROLE_MUST;
-				if (type == (caster ? POINT_CASTING_SPEED : POINT_ATT_GRADE_BONUS) || type == POINT_STEAL_HP || elementResist)
+				if (huntResist)
+					return ROLE_MUST2;
+				if (type == (caster ? POINT_CASTING_SPEED : POINT_ATT_GRADE_BONUS) || type == POINT_STEAL_HP || arrow ||
+						magicResist)
 					return ROLE_WANTED;
 				return ROLE_OTHER;
 			case WEAR_HEAD:
-				if (race)
+				if (huntResist)
 					return ROLE_MUST;
-				return type == POINT_ATT_SPEED || elementResist ? ROLE_WANTED : ROLE_OTHER;
+				if (race)
+					return hunt != 0 && IsPlayerBotApplyOnAttrSet(hunt, ATTRIBUTE_SET_HEAD) ? ROLE_WANTED : ROLE_MUST;
+				return type == POINT_ATT_SPEED || type == POINT_DODGE || magicResist ? ROLE_WANTED : ROLE_OTHER;
 			case WEAR_NECK:
 				if (type == POINT_MAX_HP)
 					return ROLE_MUST;
-				return type == POINT_CRITICAL_PCT || type == POINT_PENETRATE_PCT ? ROLE_WANTED : ROLE_OTHER;
+				return type == POINT_CRITICAL_PCT || type == POINT_PENETRATE_PCT || arrow ? ROLE_WANTED : ROLE_OTHER;
 			case WEAR_WRIST:
 				if (type == POINT_MAX_HP)
 					return ROLE_MUST;
-				return race || type == POINT_PENETRATE_PCT || type == POINT_STEAL_HP || elementResist
+				if (huntResist)
+					return ROLE_MUST2;
+				return race || type == POINT_PENETRATE_PCT || type == POINT_STEAL_HP || magicResist
 						? ROLE_WANTED : ROLE_OTHER;
 			case WEAR_FOOTS:
 				if (type == POINT_MAX_HP)
 					return ROLE_MUST;
-				return type == POINT_ATT_SPEED || type == POINT_CRITICAL_PCT ? ROLE_WANTED : ROLE_OTHER;
+				return type == POINT_DODGE || arrow || type == POINT_ATT_SPEED || type == POINT_CRITICAL_PCT
+						? ROLE_WANTED : ROLE_OTHER;
 			case WEAR_EAR:
 				if (race)
 					return ROLE_MUST;
-				return type == POINT_MOV_SPEED || type == POINT_ITEM_DROP_BONUS ? ROLE_WANTED : ROLE_OTHER;
+				return type == POINT_MOV_SPEED || type == POINT_ITEM_DROP_BONUS || arrow ? ROLE_WANTED : ROLE_OTHER;
 			case WEAR_SHIELD:
-				if (race)
+				if (type == POINT_BLOCK)
 					return ROLE_MUST;
-				return type == stat || type == POINT_HT || type == POINT_BLOCK || type == POINT_IMMUNE_STUN ||
+				return race || type == stat || type == POINT_HT || type == POINT_IMMUNE_STUN ||
 						type == POINT_REFLECT_MELEE ? ROLE_WANTED : ROLE_OTHER;
 			case WEAR_GLOVE:
 				return type == stat || type == POINT_HT || type == POINT_STEAL_HP ? ROLE_WANTED : ROLE_OTHER;
@@ -251,10 +282,10 @@ namespace
 		return slotMax > 0 && level >= slotMax ? ITEM_ATTRIBUTE_MAX_LEVEL : level;
 	}
 
-	// How many kinds of the slot's list can roll on the piece at all, and whether a must kind can.
-	int CountPlayerBotYoharaBonusAvailable(LPCHARACTER ch, LPITEM item, BYTE wearCell, bool addonWeapon, bool& mustRolls)
+	// How many kinds of the slot's list can roll on the piece at all, and which must kinds can (MUST_ROLLS_1/_2).
+	int CountPlayerBotYoharaBonusAvailable(LPCHARACTER ch, LPITEM item, BYTE wearCell, bool addonWeapon, int& mustRolls)
 	{
-		mustRolls = false;
+		mustRolls = 0;
 		int available = 0;
 		for (TItemAttrMap::const_iterator it = g_map_itemAttr.begin(); it != g_map_itemAttr.end(); ++it)
 		{
@@ -263,7 +294,9 @@ namespace
 				continue;
 			++available;
 			if (role == playerbot_yohara_bonus_rules::ROLE_MUST)
-				mustRolls = true;
+				mustRolls |= playerbot_yohara_bonus_rules::MUST_ROLLS_1;
+			else if (role == playerbot_yohara_bonus_rules::ROLE_MUST2)
+				mustRolls |= playerbot_yohara_bonus_rules::MUST_ROLLS_2;
 		}
 		if (addonWeapon)
 			++available;	// the addon's average (skill) line: not in item_attr
@@ -288,9 +321,16 @@ namespace
 			lines[count].level = GetPlayerBotYoharaBonusLineLevel(item, type, value);
 			++count;
 		}
-		bool mustRolls = false;
+		int mustRolls = 0;
 		const int available = CountPlayerBotYoharaBonusAvailable(ch, item, slot.bWearCell, addonWeapon, mustRolls);
-		return playerbot_yohara_bonus_rules::TierOf(lines, count, slot.strong, slot.fair, mustRolls, available);
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a piece whose target holds the hunt element's resistance takes the
+		// slot's element tiers (two musts at level 4 are some 40-100 changes, at level 3 some 10-30 - simulated
+		// against the global table: armour, bracelet; the helmet's one must the same way).
+		const bool element = GetPlayerBotHuntResistPoint(ch) != 0 &&
+				GetPlayerBotYoharaBonusSlotMaxLevel(item, GetPlayerBotHuntResistPoint(ch)) > 0 &&
+				(slot.bWearCell == WEAR_BODY || slot.bWearCell == WEAR_WRIST || slot.bWearCell == WEAR_HEAD);
+		return playerbot_yohara_bonus_rules::TierOf(lines, count, element ? slot.strongE : slot.strong,
+				element ? slot.fairE : slot.fair, mustRolls, available);
 	}
 
 	// The ordinary stones in the bag: the first cell of each kind and the units.

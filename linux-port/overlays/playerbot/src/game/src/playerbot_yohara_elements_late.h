@@ -152,6 +152,7 @@ namespace
 				LogPlayerBotYoharaElementsCensus(dwNow);
 			s_dwPlayerBotYoharaElementsCensusAt = dwNow + PLAYERBOT_YOHARA_ELEMENTS_CENSUS_MS;
 		}
+		TickPlayerBotElementCensus(dwNow);	// MT2009_PLUS_BOT_ELEMENT_RESIST_V1
 		if (!ch || !ch->IsItemLoaded() || ch->IsDead())
 			return;
 		const long map = GetPlayerBotYoharaElementMap(ch);
@@ -160,6 +161,12 @@ namespace
 			return;	// in a village, or on Dongan's errand: nothing to drink, nothing to count
 		int share[PLAYERBOT_YOHARA_ELEMENTS];
 		GetPlayerBotYoharaMapShares(map, share);
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a bot with a hunt element drinks that element's elixirs only (the owner:
+		// one element, everything for it) - the table's shares stay the census's.
+		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
+		bool drink[PLAYERBOT_YOHARA_ELEMENTS];
+		for (int i = 0; i < PLAYERBOT_YOHARA_ELEMENTS; ++i)
+			drink[i] = hunt >= 0 ? i == hunt : share[i] >= PLAYERBOT_YOHARA_ELEMENT_DEFENCE_PERCENT;
 
 		TPlayerBotYoharaElementsSeen& seen = s_mapPlayerBotYoharaElementsSeen[ch->GetPlayerID()];
 		seen.dwAt = dwNow;
@@ -171,7 +178,7 @@ namespace
 
 		for (int i = 0; i < PLAYERBOT_YOHARA_ELEMENTS; ++i)
 		{
-			if (share[i] < PLAYERBOT_YOHARA_ELEMENT_DEFENCE_PERCENT || ch->FindAffect(AFFECT_BLEND, PLAYERBOT_YOHARA_RESIST_POINTS[i]))
+			if (!drink[i] || ch->FindAffect(AFFECT_BLEND, PLAYERBOT_YOHARA_RESIST_POINTS[i]))
 				continue;
 			LPITEM item = ch->FindSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[i]);
 			if (!item || item->GetSocket(0) == 0)
@@ -190,7 +197,7 @@ namespace
 		for (int i = 0; i < PLAYERBOT_YOHARA_ELEMENTS; ++i)
 		{
 			const BYTE point = (BYTE)(POINT_ENCHANT_ELECT + i);
-			if (share[i] < PLAYERBOT_YOHARA_ELEMENT_DEFENCE_PERCENT || ch->FindAffect(AFFECT_BLEND, point))
+			if (!drink[i] || ch->FindAffect(AFFECT_BLEND, point))
 				continue;
 			LPITEM item = ch->FindSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[i]);
 			if (!item || item->GetSocket(0) == 0)
