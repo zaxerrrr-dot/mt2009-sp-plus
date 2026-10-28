@@ -553,3 +553,8 @@ linux-port/docker/mariadb/playerbot/community.sql
 # copies them to locale/poland/npc_location_helper; tools/npcloc/gen_npcloc_data.py makes them from our maps).
 linux-port/docker/mariadb/playerbot/npc_location_helper.sql
 linux-port/docker/game/npc_location_helper/*
+# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (server-patches/antimagic): Kamien Duszy Antymagii / Bialy Kamien Antymagii
+# 28044/28045 +0..+9 - the engine files it changes are above (length.h, char.cpp, char_skill.cpp, item_manager.cpp,
+# cmd_gm.cpp, db ProtoReader.cpp; playerbot_* lines for the bots' prices and stone rules), the items antymagia.sql and
+# the apply ENUM step (apply.sh; tools/antimagic).
+linux-port/docker/mariadb/playerbot/antymagia.sql

@@ -677,6 +677,10 @@ void initItem()
 #ifdef ENABLE_ACCE_COSTUME_SYSTEM
 	PyModule_AddIntConstant(poModule, "COSTUME_TYPE_ACCE",			COSTUME_ACCE);
 	PyModule_AddIntConstant(poModule, "APPLY_ACCEDRAIN_RATE",		POINT_ACCEDRAIN_RATE);
+#ifdef ENABLE_MT2009_ANTI_RESIST_MAGIC
+	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Antymagii's bonus (server point 252)
+	PyModule_AddIntConstant(poModule, "APPLY_ANTI_RESIST_MAGIC",	POINT_ANTI_RESIST_MAGIC);
+#endif
 #endif
 #ifdef ENABLE_WEAPON_COSTUME_SYSTEM
 	PyModule_AddIntConstant(poModule, "COSTUME_TYPE_WEAPON",		COSTUME_WEAPON);

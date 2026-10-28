@@ -17,8 +17,15 @@
 #include <map>
 #include <vector>
 
+#ifdef MT2009_PLUS_ANTI_RESIST_MAGIC
+// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Antymagii's point follows them (252, server-patches/antimagic)
+static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT == 251 && POINT_ANTI_RESIST_MAGIC == 252
+		&& POINT_MAX_NUM == 253,
+		"the 6th/7th bonus points 198-251 and the anti-magic 252 (item_attr ENUM of apply.sh, root/localeinfo_point.py)");
+#else
 static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT == 251 && POINT_MAX_NUM == 252,
 		"the 6th/7th bonus points 198-251 (item_attr ENUM of apply.sh MT2009_PLUS_BONUS67_V1, root/localeinfo_point.py)");
+#endif
 static_assert(POINT_MAX_NUM <= 256, "an item keeps its bonus type in one byte");
 static_assert(SKILL_ILIPUNGU - SKILL_FINISH == POINT_GLOVE_COOLDOWN_ILIPUNGU - POINT_GLOVE_COOLDOWN_FINISH,
 		"one glove cooldown line a champion skill, in the skills' order");

@@ -299,5 +299,11 @@
 // zoom/pan of the atlas, the selected NPC's mark and the arrow under the character, teleport to the NPC (packets
 // CG/GC 196), module npcLocationHelper (PythonNPCLocationHelper.cpp). Without the define the exe is as before.
 #define ENABLE_NPC_LOCATION_HELPER
+// MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (Kamien Antymagii, the "Anti Magic penetrate stone" package): the stones' bonus,
+// the server's point 252 (POINT_ANTI_RESIST_MAGIC in Server/common/length.h - always, it sizes POINT_MAX_NUM 253), as
+// item.APPLY_ANTI_RESIST_MAGIC, player.POINT_ANTI_RESIST_MAGIC / player.POINT_RESIST_MAGIC_REDUCTION (the character
+// window's "Antymagia" line, uiattributelist.py) and app.ANTI_RESIST_MAGIC_BONUS for root. Without the define root
+// names 252 itself (localeinfo_point.py) and the window has no such line.
+#define ENABLE_MT2009_ANTI_RESIST_MAGIC
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

@@ -1225,17 +1225,19 @@ Group	MT2009_yarkusz_6789
 	18	28439	1	4	-- Kamien Duszy Uniku+4
 	19	28433	1	4	-- Kamien Duszy Wojownika+4
 	20	28441	1	4	-- Kamien Witalnosci+4
-	21	72740	1	2	-- Licencja Najemnika
-	22	2187	1	2	-- Luk Niebieskiego Smoka+7
-	23	2188	1	1	-- Luk Niebieskiego Smoka+8
-	24	177	1	2	-- Miecz Zadlo+7
-	25	178	1	1	-- Miecz Zadlo+8
-	26	1127	1	2	-- Noz Siamese+7
-	27	1128	1	1	-- Noz Siamese+8
-	28	50529	1	3	-- Skrzynia Ksiag (9.skill)
-	29	31257	1	8	-- Wzor Wezowy
-	30	3157	1	2	-- Zlodziej Dusz+7
-	31	3158	1	1	-- Zlodziej Dusz+8
+	21	28444	1	4	-- Kamien Duszy Antymagii+4
+	22	28445	1	4	-- Bialy Kamien Antymagii+4
+	23	72740	1	2	-- Licencja Najemnika
+	24	2187	1	2	-- Luk Niebieskiego Smoka+7
+	25	2188	1	1	-- Luk Niebieskiego Smoka+8
+	26	177	1	2	-- Miecz Zadlo+7
+	27	178	1	1	-- Miecz Zadlo+8
+	28	1127	1	2	-- Noz Siamese+7
+	29	1128	1	1	-- Noz Siamese+8
+	30	50529	1	3	-- Skrzynia Ksiag (9.skill)
+	31	31257	1	8	-- Wzor Wezowy
+	32	3157	1	2	-- Zlodziej Dusz+7
+	33	3158	1	1	-- Zlodziej Dusz+8
 }
 Group	MT2009_yarkusz_6792
 {
@@ -1334,20 +1336,22 @@ Group	MT2009_yarkusz_6797
 	19	28433	1	4	-- Kamien Duszy Wojownika+4
 	20	31244	1	5	-- Kamien Rekawic Pln. W.
 	21	28441	1	4	-- Kamien Witalnosci+4
-	22	83066	1	5	-- Los. Klucz do Skrz. Sk.
-	23	83065	1	5	-- Losowa Skrzynia Skarbow
-	24	2187	1	2	-- Luk Niebieskiego Smoka+7
-	25	2188	1	1	-- Luk Niebieskiego Smoka+8
-	26	177	1	2	-- Miecz Zadlo+7
-	27	178	1	1	-- Miecz Zadlo+8
-	28	1127	1	2	-- Noz Siamese+7
-	29	1128	1	1	-- Noz Siamese+8
-	30	39002	1	5	-- Pierscien Doswiadczenia
-	31	31238	1	8	-- Polyskujaca Muszla
-	32	55009	1	3	-- Skrzynia Ksiag Peta
-	33	31257	1	8	-- Wzor Wezowy
-	34	3157	1	2	-- Zlodziej Dusz+7
-	35	3158	1	1	-- Zlodziej Dusz+8
+	22	28444	1	4	-- Kamien Duszy Antymagii+4
+	23	28445	1	4	-- Bialy Kamien Antymagii+4
+	24	83066	1	5	-- Los. Klucz do Skrz. Sk.
+	25	83065	1	5	-- Losowa Skrzynia Skarbow
+	26	2187	1	2	-- Luk Niebieskiego Smoka+7
+	27	2188	1	1	-- Luk Niebieskiego Smoka+8
+	28	177	1	2	-- Miecz Zadlo+7
+	29	178	1	1	-- Miecz Zadlo+8
+	30	1127	1	2	-- Noz Siamese+7
+	31	1128	1	1	-- Noz Siamese+8
+	32	39002	1	5	-- Pierscien Doswiadczenia
+	33	31238	1	8	-- Polyskujaca Muszla
+	34	55009	1	3	-- Skrzynia Ksiag Peta
+	35	31257	1	8	-- Wzor Wezowy
+	36	3157	1	2	-- Zlodziej Dusz+7
+	37	3158	1	1	-- Zlodziej Dusz+8
 }
 Group	MT2009_yarkusz_6800
 {
@@ -1758,10 +1762,12 @@ Group	MT2009_yarkusz_6870
 	16	28439	1	4	-- Kamien Duszy Uniku+4
 	17	28433	1	4	-- Kamien Duszy Wojownika+4
 	18	28441	1	4	-- Kamien Witalnosci+4
-	19	83066	1	5	-- Los. Klucz do Skrz. Sk.
-	20	83065	1	5	-- Losowa Skrzynia Skarbow
-	21	95734	1	10	-- Mrozny Korzonek (sheet 50734)
-	22	55009	1	3	-- Skrzynia Ksiag Peta
+	19	28444	1	4	-- Kamien Duszy Antymagii+4
+	20	28445	1	4	-- Bialy Kamien Antymagii+4
+	21	83066	1	5	-- Los. Klucz do Skrz. Sk.
+	22	83065	1	5	-- Losowa Skrzynia Skarbow
+	23	95734	1	10	-- Mrozny Korzonek (sheet 50734)
+	24	55009	1	3	-- Skrzynia Ksiag Peta
 }
 Group	MT2009_yarkusz_6871
 {
@@ -1785,10 +1791,12 @@ Group	MT2009_yarkusz_6871
 	16	28439	1	4	-- Kamien Duszy Uniku+4
 	17	28433	1	4	-- Kamien Duszy Wojownika+4
 	18	28441	1	4	-- Kamien Witalnosci+4
-	19	83066	1	5	-- Los. Klucz do Skrz. Sk.
-	20	83065	1	5	-- Losowa Skrzynia Skarbow
-	21	50738	1	0.5	-- Mroczny Ciern
-	22	55009	1	3	-- Skrzynia Ksiag Peta
+	19	28444	1	4	-- Kamien Duszy Antymagii+4
+	20	28445	1	4	-- Bialy Kamien Antymagii+4
+	21	83066	1	5	-- Los. Klucz do Skrz. Sk.
+	22	83065	1	5	-- Losowa Skrzynia Skarbow
+	23	50738	1	0.5	-- Mroczny Ciern
+	24	55009	1	3	-- Skrzynia Ksiag Peta
 }
 Group	MT2009_yarkusz_6877
 {

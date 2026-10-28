@@ -4739,6 +4739,8 @@ namespace
 	int GetPlayerBotSoulStoneKind(DWORD vnum) { const int k = (int)(vnum % 100); return ((vnum / 100) % 10 >= 6 && k < 14) ? k + 30 : k; }
 	bool IsPlayerBotWeaponSoulStoneKind(int kind) { return kind >= 30 && kind <= 37; }
 	bool IsPlayerBotArmorSoulStoneKind(int kind) { return kind >= 38 && kind <= 43; }
+	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Duszy Antymagii (44) / Bialy Kamien Antymagii (45) - never seated
+	bool IsPlayerBotAntiMagicSoulStoneKind(int kind) { return kind == 44 || kind == 45; }
 
 	// What a stone is worth to the hunting set, by Iwakura's list alone: his
 	// PvE tier when he lets it into a socket and rates it neutral or better,
@@ -4752,6 +4754,9 @@ namespace
 	// weapon, which no bot assembles, so they are never seated.
 	int GetPlayerBotSoulStoneSeatTier(DWORD vnum)
 	{
+		// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: the PvP anti-magic stones are no bot's (the owner, 28 October 2026)
+		if (IsPlayerBotAntiMagicSoulStoneKind(GetPlayerBotSoulStoneKind(vnum)))
+			return 0;
 		int tier = GetPlayerBotSoulStoneTier(vnum, false);
 		if (GetPlayerBotSoulStoneGrade(vnum) < PLAYERBOT_SOUL_STONE_MIN_GRADE)
 		{
@@ -4847,10 +4852,16 @@ namespace
 	// Kamien Duszy proper: 28[grade][kind] with a kind of 30 to 43. Other
 	// ITEM_METIN exist, and the Alchemist's own test (grade = vnum / 100 - 280)
 	// would read them as nonsense grades.
+	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (server-patches/antimagic): and 44 / 45,
+	// Kamien Duszy Antymagii / Bialy Kamien Antymagii (28g44 / 28g45 at every
+	// grade) - loot, counter goods and the Alchemist's dust like any kind; no
+	// bot seats them (no tier in playerbot_item_tiers.h, neither a weapon nor
+	// an armour kind - the owner: PvP stones only).
 	bool IsPlayerBotSoulStoneVnum(DWORD vnum)
 	{
 		return vnum >= 28000 && vnum < 29000 && // MT2009_PLUS_SOULSTONE9_V1: +5..+9 too
-				GetPlayerBotSoulStoneKind(vnum) >= 30 && GetPlayerBotSoulStoneKind(vnum) <= 43;
+				((GetPlayerBotSoulStoneKind(vnum) >= 30 && GetPlayerBotSoulStoneKind(vnum) <= 43) ||
+				 IsPlayerBotAntiMagicSoulStoneKind(GetPlayerBotSoulStoneKind(vnum)));
 	}
 
 	// A stone of the Alchemist's rule: a soul stone of a grade Iwakura bans

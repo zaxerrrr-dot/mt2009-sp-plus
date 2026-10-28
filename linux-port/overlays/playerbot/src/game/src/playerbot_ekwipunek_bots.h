@@ -115,7 +115,8 @@ namespace
 				// one it would seat, or one the Ritual of Awakening takes to the next grade (playerbot_awakening.h)
 				int grade = 0, kind = 0;
 				return CanPlayerBotSeatSoulStone(ch, item->GetVnum(), (DWORD)item->GetValue(5)) ||
-						mt2009_awakening::IsRefinableStone(item->GetVnum(), grade, kind);
+						(mt2009_awakening::IsRefinableStone(item->GetVnum(), grade, kind) &&
+						 kind < mt2009_awakening::STONE_KINDS);	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: no step of Kamien Antymagii
 			}
 			case CHANGE_INVENTORY:
 				return true;

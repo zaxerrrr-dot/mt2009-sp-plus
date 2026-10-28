@@ -1345,8 +1345,13 @@ enum EPointTypes
 	POINT_SUNGMA_PER_MOVE,
 	POINT_SUNGMA_PER_IMMUNE,
 	POINT_HIT_PCT,
+	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (Kamien Antymagii 28044/28045 +0..+9; server-patches/antimagic): the server's
+	// POINT_ANTI_RESIST_MAGIC 252 - the stones' applytype, sent as a point change for the character window's "Antymagia"
+	// line (player.POINT_RESIST_MAGIC_REDUCTION). The server's 198-251 (bonusy67) never come, so they have no names here.
+	// Without #ifdef: every file must see the same POINT_MAX_NUM (CPythonPlayer's m_alPoint, the effects' table).
+	POINT_ANTI_RESIST_MAGIC = 252,
 
-	POINT_MAX_NUM,
+	POINT_MAX_NUM,	// 253
 };
 
 enum EDragonSoulRefineWindowSize

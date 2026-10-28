@@ -66,9 +66,15 @@ namespace mt2009_awakening
 
 	// Soul stones: 14 kinds (k = 0..13, Penetracji .. Przyspieszenia); +0..+4 =
 	// 28g30+k, +5 = 28530+k, +6..+9 = 28g00+k (g = the grade).
+	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (server-patches/antimagic): Kamien Duszy Antymagii (k = 14, bron) and Bialy
+	// Kamien Antymagii (k = 15, zbroja) keep the package's 28g44 / 28g45 at every grade, +6..+9 too - the same
+	// Blacksmith's steps 7204-7208 take them. They are no kind of STONE_KINDS: the bots never step them up.
+	const int STONE_KIND_ANTI_MAGIC_WEAPON = 14;
+	const int STONE_KIND_ANTI_MAGIC_ARMOR = 15;
+
 	inline DWORD StoneVnum(int grade, int kind)
 	{
-		if (grade <= 5)
+		if (grade <= 5 || kind >= STONE_KINDS)
 			return 28030 + grade * 100 + kind;
 		return 28000 + grade * 100 + kind;
 	}
@@ -78,6 +84,11 @@ namespace mt2009_awakening
 		if (dwVnum < 28000 || dwVnum > 28999)
 			return false;
 		grade = (int)((dwVnum / 100) % 10);
+		if (dwVnum % 100 == 30 + STONE_KIND_ANTI_MAGIC_WEAPON || dwVnum % 100 == 30 + STONE_KIND_ANTI_MAGIC_ARMOR)
+		{
+			kind = (int)(dwVnum % 100) - 30;
+			return true;
+		}
 		kind = (int)(dwVnum % 100) - (grade <= 5 ? 30 : 0);
 		return kind >= 0 && kind < STONE_KINDS;
 	}
@@ -244,6 +255,7 @@ namespace
 			int grade = 0, kind = 0;
 			if (!item || item->GetCell() != cell || item->IsEquipped() ||
 					!mt2009_awakening::IsRefinableStone(item->GetVnum(), grade, kind) || grade >= bestGrade ||
+					kind >= mt2009_awakening::STONE_KINDS ||	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: never Kamien Antymagii
 					IsPlayerBotSidekickPinned(ch, item))
 				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(

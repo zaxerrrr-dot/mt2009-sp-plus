@@ -321,6 +321,12 @@ for _b67Point, _b67Name in (
 	):
 	AFFECT_DICT.setdefault(_b67Point, _b67Name)
 
+# MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Duszy Antymagii / Bialy Kamien Antymagii (28044/28045 +0..+9) - the server's
+# POINT_ANTI_RESIST_MAGIC 252 (server-patches/antimagic): a player's magic skill ignores x points of another player's
+# magic resistance (a Sura gets half). The new exe has it as player.POINT_ANTI_RESIST_MAGIC (a point change; the
+# character window's line, player.POINT_RESIST_MAGIC_REDUCTION) and item.APPLY_ANTI_RESIST_MAGIC; an older one: 252.
+AFFECT_DICT.setdefault(getattr(player, "POINT_ANTI_RESIST_MAGIC", 252), "Ignoruje %d%% odporno\x9c\xe6 na magi\xea (PvP)")
+
 def Is1000PCT(affectType):
 	return affectType in POINT_1000PCT_Tuple
 

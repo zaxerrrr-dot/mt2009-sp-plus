@@ -356,7 +356,7 @@ namespace
 				boxByKind[it->first] += (unsigned int)std::max(0, it->second.box);
 			}
 		std::string market;
-		for (DWORD vnum = 28430; vnum <= 28443; ++vnum)
+		for (DWORD vnum = 28430; vnum <= 28445; ++vnum)	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Antymagii 28444/28445 too
 		{
 			if (!IsPlayerBotStone4Vnum(vnum))
 				continue;

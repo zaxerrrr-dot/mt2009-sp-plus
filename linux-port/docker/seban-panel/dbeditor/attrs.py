@@ -44,6 +44,9 @@ Zastosuj restarts the cores). apply.sh rewrites (see WARN_* below):
     no longer swaps it. Its apply ENUM is item_attr's (up to
     POINT_GLOVE_BASE_ATTR_PCT, 251 - the 6th/7th bonuses of the wiki,
     server-patches/bonusy67).
+  * MT2009_PLUS_ANTI_RESIST_MAGIC_V1 - both apply ENUMs end with
+    POINT_ANTI_RESIST_MAGIC (252, Kamień Antymagii's bonus - the stones'
+    item_proto applytype; server-patches/antimagic). No pool row uses it.
 """
 import re
 

@@ -3134,6 +3134,12 @@ void initPlayer()
 	PyModule_AddIntConstant(poModule, "POINT_RESIST_DARK", POINT_RESIST_DARK);
 	PyModule_AddIntConstant(poModule, "POINT_RESIST_CRITICAL", POINT_RESIST_CRITICAL);
 	PyModule_AddIntConstant(poModule, "POINT_RESIST_PENETRATE", POINT_RESIST_PENETRATE);
+#ifdef ENABLE_MT2009_ANTI_RESIST_MAGIC
+	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Antymagii (the server's point 252, a point change); the character window
+	// (uiattributelist.py) shows its "Antymagia" line under the name POINT_RESIST_MAGIC_REDUCTION
+	PyModule_AddIntConstant(poModule, "POINT_ANTI_RESIST_MAGIC", POINT_ANTI_RESIST_MAGIC);
+	PyModule_AddIntConstant(poModule, "POINT_RESIST_MAGIC_REDUCTION", POINT_ANTI_RESIST_MAGIC);
+#endif
 	PyModule_AddIntConstant(poModule, "POINT_MAGIC_ATT_BONUS_PER", POINT_MAGIC_ATT_BONUS_PER);
 	PyModule_AddIntConstant(poModule, "POINT_MELEE_MAGIC_ATT_BONUS_PER", POINT_MELEE_MAGIC_ATT_BONUS_PER);
 	PyModule_AddIntConstant(poModule, "POINT_MANASHIELD", POINT_MANASHIELD);
