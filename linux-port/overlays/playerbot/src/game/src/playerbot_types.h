@@ -10374,6 +10374,15 @@ namespace
 	void NotePlayerBotPowerDustMarket(LPCHARACTER ch, int units);
 	void NotePlayerBotPowerElixirLook(int e, int outcome);
 	void LogPlayerBotG0DustRuleCensus(DWORD dwNow);
+#define MT2009_PLUS_BOT_ISHOP_V3_V1 1
+	// MT2009_PLUS_BOT_ISHOP_V3_V1 (the owner, 28 October 2026): the bots buy in the ItemShop V3 only, at the lines and
+	// prices the players see (playerbot_itemshop.h: the catalogue itemshop3.shop, the purchase, the set chests, the
+	// ISHOP_SOURCE switch), driven by what their gear needs (playerbot_ishop3_goals.h, after playerbot_element_pet.h):
+	// the bonus stones and the marble for the bonus passes, raw Cors and beans for the Alchemist, a sash partner; the
+	// look only from what those goals do not need. The goals' session (from ManagePlayerBotItemShop) and the coins the
+	// open goals keep back from the look.
+	bool ManagePlayerBotIshop3Goals(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	long long GetPlayerBotIshop3GoalReserve(LPCHARACTER ch, const TPlayerBotAIState& state);
 }
 
 #endif

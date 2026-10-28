@@ -213,6 +213,13 @@ namespace
 // The bots' ItemShop purchases (the ISHOP key), playerbot_itemshop.h.
 	bool s_bPlayerBotItemShop = true;
 	bool s_bPlayerBotItemShopReported = true;
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+	// MT2009_PLUS_BOT_ISHOP_V3_V1: where the bots buy (the ISHOP_SOURCE key) - 2 the ItemShop V3 (itemshop3.shop, the
+	// lines and prices the players see; the default), 1 the old in-game catalogue (CItemShopManager), 0 nowhere (the
+	// vouchers are still cashed while ISHOP is on).
+	int s_iPlayerBotItemShopSource = 2;
+	int s_iPlayerBotItemShopSourceReported = 2;
+#endif
 	// Whether a bot's stand may stand in a second village too (the SHOP_M2
 	// key). Off by default: Iwakura's idea (Kuszaa's reasoning, 22 September)
 	// is the stands in the first villages alone - "przy obecnych sklepach
@@ -417,6 +424,9 @@ namespace
 		s_bPlayerBotCatacombRaids = true;
 		s_bPlayerBotDungeonRuns = true; // MT2009_PLUS_BOT_DUNGEON_RUNS_V1
 		s_bPlayerBotItemShop = true;
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		s_iPlayerBotItemShopSource = 2;
+#endif
 		s_bPlayerBotShopsInM2 = false;
 		s_bPlayerBotShouters = true;
 		// MT2009_PLUS_BOT_CHAT_V2
@@ -639,6 +649,19 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			s_bPlayerBotItemShop = enabled;
 			return;
 		}
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		if (PlayerBotWeightNameEquals(szKey, "ISHOP_SOURCE"))
+		{
+			const int source = value <= 0 ? 0 : (value >= 2 ? 2 : 1);
+			if (source != s_iPlayerBotItemShopSourceReported)
+			{
+				sys_log(0, "PLAYERBOT_CONFIG: itemshop source %s", source == 2 ? "v3" : (source == 1 ? "game" : "off"));
+				s_iPlayerBotItemShopSourceReported = source;
+			}
+			s_iPlayerBotItemShopSource = source;
+			return;
+		}
+#endif
 		// MT2009_PLUS_BOT_CHAT_V2: the bots' chat. Reported only when moved.
 		if (PlayerBotWeightNameEquals(szKey, "SPOT"))
 		{
@@ -998,6 +1021,10 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_bPlayerBotDungeonRuns ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_bPlayerBotItemShop ? 1 : 0;
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		if (PlayerBotWeightNameEquals(szKey, "ISHOP_SOURCE"))
+			return s_iPlayerBotItemShopSource;
+#endif
 		if (PlayerBotWeightNameEquals(szKey, "SHOP_M2"))
 			return s_bPlayerBotShopsInM2 ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "PERSONA"))
@@ -1150,6 +1177,13 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			value = value < 0 ? 0 : (value > playerbot_life::HOURS_MAX ? playerbot_life::HOURS_MAX : value);
 			return true;
 		}
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		if (PlayerBotWeightNameEquals(szKey, "ISHOP_SOURCE"))
+		{
+			value = value < 0 ? 0 : (value > 2 ? 2 : value);
+			return true;
+		}
+#endif
 		if (PlayerBotWeightNameEquals(szKey, "BATTLEPASS") ||
 				PlayerBotWeightNameEquals(szKey, "SASH") ||
 				PlayerBotWeightNameEquals(szKey, "ALCHEMY"))
@@ -1796,6 +1830,14 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 	{
 		return s_bPlayerBotItemShop;
 	}
+
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+	// MT2009_PLUS_BOT_ISHOP_V3_V1: the ISHOP_SOURCE switch - 2 ItemShop V3, 1 the old in-game catalogue, 0 nothing.
+	int GetPlayerBotItemShopSource()
+	{
+		return s_iPlayerBotItemShopSource;
+	}
+#endif
 
 #if defined(PLAYERBOT_ENGINE_MT2009)
 	// The bots' wait between two books of one skill, in seconds: the world's

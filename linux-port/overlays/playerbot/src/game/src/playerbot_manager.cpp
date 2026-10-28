@@ -426,6 +426,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BOT_ELEMENT_PET_V1: every Yohara bot buys (ItemShop) and calls the Maly Zywiolak of its hunt element -
 // after the element stones (the cohort, the ItemShop and the hunt element are all above)
 #include "playerbot_element_pet.h"
+// MT2009_PLUS_BOT_ISHOP_V3_V1: what a bot buys in the ItemShop V3 for its gear (the bonus stones, raw Cors, beans, a
+// sash partner, refine scrolls; the set chests) - after every pass whose needs it reads
+#include "playerbot_ishop3_goals.h"
 
 namespace
 {
