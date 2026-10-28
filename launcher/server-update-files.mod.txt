@@ -48,6 +48,9 @@ linux-port/overlays/playerbot/src/game/src/ikashop_qol.h
 # MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Autor: Best Studio): Lokalizator NPC, a new engine file pair kept in the overlay.
 linux-port/overlays/playerbot/src/game/src/npc_location_helper.cpp
 linux-port/overlays/playerbot/src/game/src/npc_location_helper.h
+# MT2009_PLUS_GUILDSYS_V1 (on Guild Systems by Nazox): the guild system update, a new engine file pair kept in the overlay.
+linux-port/overlays/playerbot/src/game/src/guildsys.cpp
+linux-port/overlays/playerbot/src/game/src/guildsys.h
 # MT2009_PLUS_BALATHOR_V1 (author: dracaryS): Krypta Balathora - new engine files kept in the overlay (json.hpp:
 # nlohmann/json 3.11.3, MIT).
 linux-port/overlays/playerbot/src/game/src/balathor.cpp
@@ -284,6 +287,7 @@ linux-port/docker/game/src/server/db/src/ClientManager.cpp
 linux-port/docker/game/src/server/db/src/ClientManager.h
 linux-port/docker/game/src/server/db/src/ClientManagerIkarusShop.cpp
 linux-port/docker/game/src/server/db/src/ClientManagerPlayer.cpp
+linux-port/docker/game/src/server/db/src/GuildManager.cpp
 linux-port/docker/game/src/server/db/src/Makefile
 linux-port/docker/game/src/server/db/src/stdafx.h
 linux-port/docker/game/src/server/game/src/ClientPackageCryptInfo.cpp
@@ -382,6 +386,8 @@ linux-port/docker/game/src/server/game/src/auction_house.cpp
 linux-port/docker/game/src/server/game/src/ikashop_qol.h
 linux-port/docker/game/src/server/game/src/npc_location_helper.cpp
 linux-port/docker/game/src/server/game/src/npc_location_helper.h
+linux-port/docker/game/src/server/game/src/guildsys.cpp
+linux-port/docker/game/src/server/game/src/guildsys.h
 linux-port/docker/game/src/server/game/src/balathor.cpp
 linux-port/docker/game/src/server/game/src/balathor.h
 linux-port/docker/game/src/server/game/src/balathor_manager.cpp
@@ -567,6 +573,11 @@ linux-port/docker/mariadb/playerbot/community.sql
 # copies them to locale/poland/npc_location_helper; tools/npcloc/gen_npcloc_data.py makes them from our maps).
 linux-port/docker/mariadb/playerbot/npc_location_helper.sql
 linux-port/docker/game/npc_location_helper/*
+# MT2009_PLUS_GUILDSYS_V1 (server-patches/guildsys; on Guild Systems by Nazox): guild levels to 40, Balathor's guild
+# skills 158-160 and their books, the dates for Balathor - the engine files it changes are above (length.h, constants.cpp,
+# guild.h, guild.cpp, char_item.cpp, char_resist.cpp, char_battle.cpp, questlua_guild.cpp, db GuildManager.cpp); the logic
+# guildsys.{cpp,h} with the overlay; the columns, skills and books guildsys.sql.
+linux-port/docker/mariadb/playerbot/guildsys.sql
 # MT2009_PLUS_BALATHOR_V1 (server-patches/balathor; author: dracaryS): Krypta Balathora - the engine files it changes
 # that no line above lists (the rest - char*.cpp, cmd*.cpp, guild.h, input_*.cpp, main.cpp, questlua.cpp, utils.h - are
 # above; balathor*.cpp/.h, questlua_balathor.cpp and json.hpp with the overlay), the monsters / items / chests

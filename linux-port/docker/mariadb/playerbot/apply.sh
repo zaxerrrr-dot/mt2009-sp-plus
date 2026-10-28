@@ -4784,6 +4784,18 @@ if [ -s /opt/playerbot/community.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_GUILDSYS_V1: the guild system update (server-patches/guildsys/README.md, guildsys.cpp) - guildsys.sql:
+# player.guild.create_time and player.guild_member.join_time (INVISIBLE, filled by the database), Balathor's guild
+# skills 158-160 (world.skill_proto) and their books 50344-50347 (world.item_proto, INSERT IGNORE). Idempotent: ADD
+# COLUMN IF NOT EXISTS, the skill rows written whole. Without it the dates read 0 (old) and the books are unknown.
+if [ -s /opt/playerbot/guildsys.sql ]; then
+    if db < /opt/playerbot/guildsys.sql; then
+        echo "[playerbot-migrate] guild system: guildsys.sql applied (MT2009_PLUS_GUILDSYS_V1)"
+    else
+        fail_step "guild system: guildsys.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_BALATHOR_V1: Krypta Balathora (author: dracaryS; server-patches/balathor, game/balathor) - balathor.sql
 # (tools/balathor/gen_balathor_sql.py): its 17 monsters, NPCs and stones (6896-6900, 20491-20499, 20507, 20868,
 # 20869), their elements (after zywioly_moby.sql above, which clears the bits of every mob it does not list), the Fire

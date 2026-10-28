@@ -894,7 +894,14 @@ void CPythonPlayer::UseGuildSkill(DWORD dwSkillSlotIndex)
 		return;
 	}
 
+#ifdef ENABLE_MT2009_GUILDSYS
+	// MT2009_PLUS_GUILDSYS_V1 (lair): every guild skill works in the guild White Dragon lair (Balathor, map 420
+	// metin2_map_guild_whitedragon_boss) without a guild war - the server checks the same (guildsys.cpp).
+	const bool bMt2009GuildLair = strcmp(CPythonBackground::Instance().GetWarpMapName(), "metin2_map_guild_whitedragon_boss") == 0;
+	if (pSkillData->IsOnlyForGuildWar() && !bMt2009GuildLair)
+#else
 	if (pSkillData->IsOnlyForGuildWar())
+#endif
 	{
 		if (!CPythonGuild::Instance().IsDoingGuildWar())
 		{

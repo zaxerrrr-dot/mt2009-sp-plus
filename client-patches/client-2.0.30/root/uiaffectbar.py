@@ -1230,3 +1230,17 @@ AFFECT_SHOW_DATA[AFFECT_WORLDBOSS_ATTACK] = {
 	"description" : "Boss \x8cwiata: warto\x9c\xe6 ataku +%d%%",
 	"icon" : "mt2009_ui/affect/worldboss.tga",
 }
+# MT2009_PLUS_GUILDSYS_V1: Balathor's guild skills (server-patches/guildsys, guildsys.cpp) - the affect is the skill's vnum,
+# its value the immunity chance (10 % a skill level); the icons are tools/guildsys's (GF's white dragon squares).
+AFFECT_SHOW_DATA[158] = {
+	"description" : "Burza Balathora: odporno\x9c\xe6 na omdlenie i spowolnienie %d%%",
+	"icon" : "d:/ymir work/ui/skill/common/affect/guildsys_burza.sub",
+}
+AFFECT_SHOW_DATA[159] = {
+	"description" : "Wola Balathora: odporno\x9c\xe6 na og\xb3uszenie, kajdany i zamro\xbfenie %d%%",
+	"icon" : "d:/ymir work/ui/skill/common/affect/guildsys_wola.sub",
+}
+AFFECT_SHOW_DATA[160] = {
+	"description" : "Nieugi\xeato\x9c\xe6 Balathora: odporno\x9c\xe6 na odrzucenie i powalenie %d%%",
+	"icon" : "d:/ymir work/ui/skill/common/affect/guildsys_nieugietosc.sub",
+}

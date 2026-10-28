@@ -2,7 +2,8 @@
 # Contents from the pl-wiki ("Mrozna Skrz. Balathora" and "Mrozna Skrz. Balathora+"); the wiki gives no chances or
 # counts - the weights / percentages are ours. Items the line does not have are left out (server-patches/balathor/
 # README.md): Oko / Rog / Sciegno / Skrzydlo / Luska Balathora, the five Runy Wykuwania, Kula
-# Polimorfii Hwachy, Umiejetnosc Balathora (the three guild skill books). Wino z Kwiatu Brzosk. XL is the plain one
+# Polimorfii Hwachy. Umiejetnosc Balathora = the three guild skill books 50344-50346 of the guild system
+# (server-patches/guildsys, guildsys.sql; rows 12-14 of 83076). Wino z Kwiatu Brzosk. XL is the plain one
 # (70020, x5). Kula Blogoslawienstwa is our Marmur Blogoslawienstwa (70024).
 Group	MT2009_balathor_83075
 {
@@ -38,4 +39,7 @@ Group	MT2009_balathor_83076
 	9	50662	1	15 -- Jadeit Nocy
 	10	70024	1	20 -- Marmur Blogoslawienstwa (wiki: Kula Blogoslawienstwa)
 	11	83073	1	25 -- Pudelko Kart Potworow Yohary
+	12	50344	1	10 -- Ksiega: Burza Balathora (Umiejetnosc Balathora; MT2009_PLUS_GUILDSYS_V1, server-patches/guildsys)
+	13	50345	1	10 -- Ksiega: Wola Balathora
+	14	50346	1	10 -- Ksiega: Nieugietosc Balathora
 }

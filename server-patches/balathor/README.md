@@ -31,24 +31,24 @@ tak jak Schronienie Meley (356) – nie game3.
 - Gildia: mistrz rejestruje, 4–16 członków obok (boty się nie liczą), 600 pkt rankingu gildii (pobierane:
   `guild.set_ladder_point(-600)`), skarbiec ≥ 500 000 Yang (sprawdzany), odnowienie 3 h (`register_wait_time` 10800),
   limit 60 min (`waiting_full_time`). Kanał: wejście tylko na kanale rejestracji.
-- `register_min_guild_level` **20** (wiki: 21 – nasze gildie mają dziś najwyżej 20 poziom; po systemie gildii do 40
-  ustawić 21).
+- `register_min_guild_level` **21** (wiki; poziomy gildii do 40 daje system gildii – `server-patches/guildsys`).
 - `fail_rewards` = Mroźna Skrz. Balathora (83075), `success_rewards` = 83075 + Mroźna Skrz. Balathora+ (83076).
 - Ognista Strzała = **30395** (w paczce 30345 = nasze Ezoteryczne Drewno).
 - Ruchy ETC1–ETC3 (`MOTION_ETC_1..3`) mają numery 39–41 = `NAME_ETC_1..3` klienta (klient ma `NAME_SPECIAL_6` = 38).
 
-## Zostawione dla systemu gildii (claude/y-guildsys) – `-- TODO guildsys` w queście
+## Podłączone do systemu gildii (`server-patches/guildsys`, MT2009_PLUS_GUILDSYS_V1)
 
-- bank gildii ≥ 500 000 (dziś skarbiec `guild.get_money()`),
-- gildia istnieje ≥ 24 h, członek w gildii ≥ 24 h (dziś brak danych – przepuszcza),
-- 3 umiejętności gildii Balathora z ksiąg.
+- bank gildii ≥ 500 000: `guild.get_bank()` (skarbiec, który można wydać),
+- gildia istnieje ≥ 24 h (`guild.age()`), każdy zgłaszany członek jest w gildii ≥ 24 h (`guild.member_age()` w bloku
+  `q.begin_other_pc_block`) – kolumny `player.guild.create_time` / `guild_member.join_time` (`guildsys.sql`),
+- 3 umiejętności gildii Balathora (158–160: Burza / Wola / Nieugiętość Balathora) z ksiąg 50344–50346 – wiersze
+  12–14 skrzyni 83076 (po 10 %); umiejętności gildii działają w Krypcie bez wojny gildii.
 
 ## Czego linia nie ma (pominięte w skrzyniach)
 
 Z „Mroźna Skrz. Balathora” / „Mroźna Skrz. Balathora+” (pl-wiki) nie ma w naszym świecie (`world.item_proto`, 28.10.2026):
 
 - materiały na **Wężowy Czepiec**: Oko, Róg, Ścięgno, Skrzydło, Łuska Balathora (i sam hełm),
-- **Umiejętność Balathora** – księgi Burza / Wola / Nieugiętość Balathora (umiejętności gildii),
 - **Runy Wykuwania**: poz. przedmiotu, zestawu broni, przedmiotów do zwierząt, pasów, akcesoriów,
 - **Kula Polimorfii Hwachy**,
 - **Bilet Przejścia (Balathor)** – dlatego `register_ticket_vnum` 0 (tylko punkty rankingu),

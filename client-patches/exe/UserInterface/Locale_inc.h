@@ -321,5 +321,10 @@
 // (d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse, pack "elecglove"), chrmgr.EFFECT_ELEC_ATTACK_HIT.
 // Without the define the exe is as before (54 is "not a special effect number" in syserr).
 #define ENABLE_GLOVE_ELEC_ATTACK_BONUS
+// MT2009_PLUS_GUILDSYS_V1 (the guild system update on Guild Systems by Nazox, server-patches/guildsys): guild levels to 40
+// (Locale.cpp LocaleService_GetLastExp, PythonGuild.cpp guild.GetGuildExperience) and every guild skill usable in the
+// guild White Dragon lair (Balathor, map 420) without a guild war (PythonPlayerSkill.cpp). No packet changes; without
+// the define the exe is as before (the guild window shows no experience past level 20, no guild skill in the lair).
+#define ENABLE_MT2009_GUILDSYS
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
