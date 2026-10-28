@@ -385,7 +385,12 @@ namespace
 			case POINT_NORMAL_HIT_DAMAGE_BONUS: return magic ? 1 : (archer ? 8 : 7);
 			case POINT_MAX_HP_PCT: return 9;
 			case POINT_MAX_HP: return 7;
-			case POINT_STEAL_HP: return 7;
+			case POINT_STEAL_HP:
+			{
+				// MT2009_PLUS_STEAL_CAP_V1: the engine takes at most 50% - the gear near it leaves the stones little room.
+				const int gear = ch ? GetPlayerBotGearStealHp(ch, -1) : 0;
+				return gear >= 50 ? 0 : (gear >= 35 ? 3 : 7);
+			}
 			case POINT_KILL_HP_RECOVERY: return 4;
 			case POINT_HP_REGEN: return 4;
 			case POINT_NORMAL_HIT_DEFEND_BONUS: return 6;

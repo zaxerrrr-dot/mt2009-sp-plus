@@ -682,5 +682,17 @@
   "marker": "MT2009_PLUS_FISHING_FREE_V1 (no card)",
   "old": "\tif (!IsEquipUniqueItem(UNIQUE_ITEM_FISHING_PASS))\n\t{\n\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You need to have a fishing pass.\"));\n\t\treturn;\n\t}\n\n",
   "new": "\t// MT2009_PLUS_FISHING_FREE_V1 (no card): Karta Wedkarska is not asked.\n\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_STEAL_CAP_V1 (GetPoint)",
+  "old": "\tif (val > max_val)\n\t\tsys_err(\"POINT_ERROR: %s type %d val %d (max: %d)\", GetName(), val, max_val);\n\n\treturn (val);\n}\n",
+  "new": "\t// MT2009_PLUS_STEAL_CAP_V1 (GetPoint): HP/SP absorption stacked from gear, alchemy and buffs above 50% is cut to 50% -\n\t// the attack reads GetPoint (char_battle.cpp), which used to log the overflow and still take all of it. The log\n\t// names the point type now (the format had lost its argument).\n\tif (val > max_val)\n\t{\n\t\tif (type == POINT_STEAL_HP || type == POINT_STEAL_SP)\n\t\t\treturn max_val;\n\t\tsys_err(\"POINT_ERROR: %s type %d val %d (max: %d)\", GetName(), type, val, max_val);\n\t}\n\n\treturn (val);\n}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_STEAL_CAP_V1 (GetLimitPoint)",
+  "old": "\tif (val > max_val)\n\t\tsys_err(\"POINT_ERROR: %s type %d val %d (max: %d)\", GetName(), val, max_val);\n\n\tif (val > limit)\n",
+  "new": "\t// MT2009_PLUS_STEAL_CAP_V1 (GetLimitPoint): the absorption above 50% is cut below (limit), not an error.\n\tif (val > max_val && type != POINT_STEAL_HP && type != POINT_STEAL_SP)\n\t\tsys_err(\"POINT_ERROR: %s type %d val %d (max: %d)\", GetName(), type, val, max_val);\n\n\tif (val > limit)\n"
  }
 ]

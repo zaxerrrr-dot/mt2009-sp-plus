@@ -130,6 +130,26 @@ namespace
 		return ch->GetJob() == JOB_ASSASSIN ? POINT_DX : POINT_ST;
 	}
 
+	// MT2009_PLUS_STEAL_CAP_V1: the HP absorption the worn gear (bonuses and the item's own) gives, the piece in
+	// skipCell left out. The engine takes at most 50% (enginefixes, GetPoint): a line past that is wasted.
+	int GetPlayerBotGearStealHp(LPCHARACTER ch, int skipCell)
+	{
+		int total = 0;
+		for (int cell = 0; cell < WEAR_MAX_NUM; ++cell)
+		{
+			LPITEM item = cell == skipCell ? NULL : ch->GetWear(cell);
+			if (!item || !item->GetProto())
+				continue;
+			for (int i = 0; i < ITEM_APPLY_MAX_NUM; ++i)
+				if (item->GetProto()->aApplies[i].bType == APPLY_STEAL_HP)
+					total += item->GetProto()->aApplies[i].lValue;
+			for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+				if (item->GetAttributeType(i) == APPLY_STEAL_HP)
+					total += item->GetAttributeValue(i);
+		}
+		return total;
+	}
+
 	// A line's role in a slot's target (the table at the head of the file).
 	int GetPlayerBotYoharaBonusRole(LPCHARACTER ch, BYTE wearCell, BYTE type, bool addonWeapon)
 	{
@@ -138,6 +158,9 @@ namespace
 		const BYTE stat = GetPlayerBotYoharaBonusClassStat(ch);
 		const bool race = type == POINT_ATTBONUS_DEVIL || type == POINT_ATTBONUS_HUMAN;
 		const bool elementResist = type == POINT_RESIST_FIRE || type == POINT_RESIST_ELEC || type == POINT_RESIST_WIND;
+		// MT2009_PLUS_STEAL_CAP_V1: the rest of the gear already gives the 50% cap - absorption here is wasted.
+		if (type == POINT_STEAL_HP && GetPlayerBotGearStealHp(ch, wearCell) >= 50)
+			return ROLE_OTHER;
 		switch (wearCell)
 		{
 			case WEAR_WEAPON:
