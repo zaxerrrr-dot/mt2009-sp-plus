@@ -340,7 +340,7 @@ bool CNpcLocationHelperManager::IsOpenTargetMap(const SMapInfo& mapInfo) const
 	// lands of the Evil Dragon) and the Port (368). On the target map itself every NPC is a target.
 	switch (mapInfo.category)
 	{
-		case 1: case 2: case 6:
+		case 1: case 2:	// no Yohara (category 6) from another map - the owner, 28 Oct 2026
 			return true;
 	}
 	switch (mapInfo.mapIndex)

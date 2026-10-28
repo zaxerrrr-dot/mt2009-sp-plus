@@ -8477,7 +8477,7 @@ def _SelectNPC(mapIndex, vnum, x, y):
 
 
 # the server's rule (CNpcLocationHelperManager::IsOpenTargetMap / ROLE_PORTAL) - change both together
-_OPEN_TARGET_CATEGORIES = (1, 2, 6)
+_OPEN_TARGET_CATEGORIES = (1, 2)	# no Yohara from another map (the owner, 28 Oct 2026)
 _OPEN_TARGET_MAPS = (104, 209, 301, 302, 303, 304, 368)
 _TXT_PORTAL = "Do portalu nie mo\xbfna si\xea teleportowa\xe6 - wybierz NPC obok niego."
 # MT2009_PLUS_NPC_LOCATION_HELPER_V2 (the wiki): the target map's level, the Champion level for Yohara, no NPC of
