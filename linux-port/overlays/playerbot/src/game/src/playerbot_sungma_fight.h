@@ -33,15 +33,6 @@
 
 namespace
 {
-#ifndef MT2009_PLUS_BOT_ELEMENT_RESIST_V1
-	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a stand-in until the element resistance work (MT2009_PLUS_BOT_ELEMENT_RESIST_V1)
-	// brings the hunt element (playerbot_types.h) - no element, so the fight's element preferences are idle.
-	BYTE GetPlayerBotHuntElement(LPCHARACTER ch)
-	{
-		(void)ch;
-		return 0;
-	}
-#endif
 
 	// ------------------------------------------------------------ the numbers
 	const int PLAYERBOT_SUNGMA_PACK_RADIUS = 900;		// a monster's group round it (the regen's groups spread 300-700)
