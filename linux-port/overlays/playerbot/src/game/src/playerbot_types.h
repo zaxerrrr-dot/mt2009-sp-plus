@@ -2527,6 +2527,44 @@ namespace
 	// in stacks of PLAYERBOT_COSTUME_YOHARA_STACKS bought at once.
 	const int PLAYERBOT_COSTUME_HUNT_TOP_CHANGES = 150;
 	const int PLAYERBOT_COSTUME_YOHARA_STACKS = 5;
+#define MT2009_PLUS_BOT_COSTUME_RESIST_V1 1
+	// MT2009_PLUS_BOT_COSTUME_RESIST_V1 (the census of 28 October: cos_top 0 for every element, 3953 resets against
+	// 273 changes - 3683 of the resets on the weapon skin, the first piece of the pass, chasing a third line a rich bot
+	// "wants" at one roll in a thousand and resetting two lines back to one): a Yohara bot's costume pass
+	// (GetPlayerBotYoharaCostumeBonusNeed, playerbot_bonus.h) works the body costume, then the hairstyle, the weapon
+	// skin last; two lines on each (70063 at most PLAYERBOT_COSTUME_YOHARA_MAX_RESETS times - a second line is one roll
+	// in nine, a third one in five hundred and not worth it), then 70064 until the hunt element's resistance stands at
+	// its top (15) - finished there at once, as a change rolls every line again - within
+	// PLAYERBOT_COSTUME_YOHARA_HUNT_CHANGES changes (simulated with the global pools: a two-line costume 99%, ~68
+	// changes; a two-line hairstyle 96%, ~80). An ice / earth / dark bot (no costume rolls those): the costume's Max HP
+	// and a second defensive line, Max HP alone after PLAYERBOT_COSTUME_YOHARA_HP_ALONE_AFTER changes; a piece already
+	// holding a fire / lightning / wind line at its top is kept.
+	const int PLAYERBOT_COSTUME_YOHARA_LINES = 2;
+	const int PLAYERBOT_COSTUME_YOHARA_MAX_RESETS = 40;
+	const int PLAYERBOT_COSTUME_YOHARA_HUNT_CHANGES = 300;
+	const int PLAYERBOT_COSTUME_YOHARA_HP_ALONE_AFTER = 30;
+	const long long PLAYERBOT_COSTUME_YOHARA_RESERVE_GOLD = 30000000LL;
+	// Why the pass rolled a piece, or why it stopped (the log's reason=, the census' costume line).
+	enum
+	{
+		PLAYERBOT_COSEV_NONE,
+		PLAYERBOT_COSEV_RESET_NO_LINES,		// no line yet: a change has nothing to roll
+		PLAYERBOT_COSEV_RESET_HUNT_LINES,	// a Yohara hunt piece taking its second line
+		PLAYERBOT_COSEV_RESET_YOHARA_LINES,	// another Yohara piece taking its second line
+		PLAYERBOT_COSEV_RESET_OLD_TWO,		// the old rule: two lines
+		PLAYERBOT_COSEV_RESET_OLD_THREE,	// the old rule: a rich bot's third line
+		PLAYERBOT_COSEV_CHANGE_HUNT,		// the hunt element's resistance to its top
+		PLAYERBOT_COSEV_CHANGE_DEFENCE,		// Max HP / the defensive lines (ice, earth, dark), the weapon skin
+		PLAYERBOT_COSEV_CHANGE_ONE_LINE,	// the reset budget spent, the one line changed
+		PLAYERBOT_COSEV_CHANGE_OLD,		// the old rule
+		PLAYERBOT_COSEV_FIN_TOP,		// the hunt element's resistance at its top
+		PLAYERBOT_COSEV_FIN_KEPT,		// a fire / lightning / wind line at its top kept
+		PLAYERBOT_COSEV_FIN_GOOD,		// good lines
+		PLAYERBOT_COSEV_FIN_HP,			// Max HP alone after enough changes
+		PLAYERBOT_COSEV_FIN_BUDGET,		// out of changes
+		PLAYERBOT_COSEV_FIN_OLD,		// the old rule's finish
+		PLAYERBOT_COSEV_COUNT
+	};
 	const int PLAYERBOT_COSTUME_ROLLS_PER_PASS = 5;
 	const DWORD PLAYERBOT_COSTUME_BONUS_STEP_MS = 1500;
 	// How long a merchant visit may run on for the costume's rolls.
@@ -9411,6 +9449,10 @@ namespace
 		DWORD dwNextCostumeBonusTime;
 		DWORD dwCostumeBonusFocusItem;
 		int iCostumeChangesSpent;
+#ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
+		// the resets spent on the focus piece (PLAYERBOT_COSTUME_YOHARA_MAX_RESETS)
+		int iCostumeResetsSpent = 0;
+#endif
 		DWORD dwCostumeBonusVisitEnd;
 		std::vector<DWORD> vecCostumeBonusDone;
 		DWORD dwNextChatTime;
@@ -10221,6 +10263,18 @@ namespace
 	bool IsPlayerBotCostumeHuntLineMissing(LPCHARACTER ch, LPITEM costume);
 	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: that line is there but below its top value (15).
 	bool IsPlayerBotCostumeHuntLineShort(LPCHARACTER ch, LPITEM costume);
+#ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
+	// The costume / hairstyle and the hunt element's resistance: -1 not a hunt piece (not a Yohara bot, the weapon
+	// skin, an element no costume rolls), 0 the line missing or below its top, 1 at its top.
+	int GetPlayerBotCostumeHuntState(LPCHARACTER ch, LPITEM costume);
+	// A bot whose element no costume rolls: the piece holds a fire / lightning / wind line at its top (kept).
+	bool IsPlayerBotCostumeElementTopKept(LPCHARACTER ch, LPITEM costume);
+	// The costume's Max HP line at level 3 of the table or more.
+	bool HasPlayerBotCostumeGoodMaxHp(LPITEM costume);
+	// The costume pass' counters (PLAYERBOT_COSEV_*) for the census, and their names for the log.
+	void NotePlayerBotCostumeEvent(LPITEM costume, int ev);
+	const char* GetPlayerBotCostumeEventName(int ev);
+#endif
 	// The Sung Ma move's preparation (playerbot_yohara_sungma.h): noted when the map changes, asked before the move -
 	// true holds the move (the bot hunts on where it is) while its gear is still being made for the new element.
 	void StartPlayerBotElementPrep(LPCHARACTER ch, long fromMap, long toMap, bool mayWait, DWORD dwNow);

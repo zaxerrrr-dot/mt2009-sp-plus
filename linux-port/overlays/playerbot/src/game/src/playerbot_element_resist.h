@@ -246,6 +246,68 @@ namespace
 		return top > 0 && GetPlayerBotYoharaPieceLine(costume, point) < top;
 	}
 
+#ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
+	// MT2009_PLUS_BOT_COSTUME_RESIST_V1: the costume pass' view of the hunt element (playerbot_bonus.h,
+	// GetPlayerBotYoharaCostumeBonusNeed).
+	int GetPlayerBotCostumeHuntState(LPCHARACTER ch, LPITEM costume)
+	{
+		if (!ch || !costume || costume->GetType() != ITEM_COSTUME || !IsPlayerBotYoharaBonusMember(ch) ||
+				(costume->GetSubType() != COSTUME_BODY && costume->GetSubType() != COSTUME_HAIR))
+			return -1;
+		const BYTE point = GetPlayerBotElementResistPoint(GetPlayerBotHuntElementIndex(ch));
+		if (!point || !IsPlayerBotApplyOnAttrSet(point, costume->GetAttributeSetIndex()))
+			return -1;
+		const long top = GetPlayerBotYoharaTopLineValue(costume, point);
+		if (top <= 0)
+			return -1;
+		return GetPlayerBotYoharaPieceLine(costume, point) >= top ? 1 : 0;
+	}
+
+	bool IsPlayerBotCostumeElementTopKept(LPCHARACTER ch, LPITEM costume)
+	{
+		if (!ch || !costume || costume->GetType() != ITEM_COSTUME ||
+				(costume->GetSubType() != COSTUME_BODY && costume->GetSubType() != COSTUME_HAIR) ||
+				GetPlayerBotCostumeHuntState(ch, costume) >= 0)
+			return false;
+		static const BYTE s_abPoints[3] = { POINT_RESIST_FIRE, POINT_RESIST_ELEC, POINT_RESIST_WIND };
+		for (int i = 0; i < 3; ++i)
+		{
+			const long top = GetPlayerBotYoharaTopLineValue(costume, s_abPoints[i]);
+			if (top > 0 && GetPlayerBotYoharaPieceLine(costume, s_abPoints[i]) >= top)
+				return true;
+		}
+		return false;
+	}
+
+	bool HasPlayerBotCostumeGoodMaxHp(LPITEM costume)
+	{
+		const long hp = GetPlayerBotYoharaPieceLine(costume, POINT_MAX_HP);
+		if (hp <= 0)
+			return false;
+		TItemAttrMap::const_iterator it = g_map_itemAttr.find(POINT_MAX_HP);
+		return it == g_map_itemAttr.end() || hp >= it->second.lValues[2];
+	}
+
+	// The costume pass' counters since the start, by piece (body, hair, weapon skin) - the census' costume line.
+	const char* const PLAYERBOT_COSEV_NAMES[PLAYERBOT_COSEV_COUNT] = { "none", "reset_no_lines", "reset_hunt_2l",
+		"reset_yohara_2l", "reset_old_2l", "reset_old_3l", "change_hunt", "change_defence", "change_one_line", "change_old",
+		"fin_top", "fin_kept", "fin_good", "fin_hp", "fin_budget", "fin_old" };
+	unsigned int s_aPlayerBotCostumeEvents[3][PLAYERBOT_COSEV_COUNT];
+
+	const char* GetPlayerBotCostumeEventName(int ev)
+	{
+		return ev >= 0 && ev < PLAYERBOT_COSEV_COUNT ? PLAYERBOT_COSEV_NAMES[ev] : "?";
+	}
+
+	void NotePlayerBotCostumeEvent(LPITEM costume, int ev)
+	{
+		if (!costume || ev <= PLAYERBOT_COSEV_NONE || ev >= PLAYERBOT_COSEV_COUNT)
+			return;
+		const int kind = costume->GetSubType() == COSTUME_BODY ? 0 : costume->GetSubType() == COSTUME_HAIR ? 1 : 2;
+		++s_aPlayerBotCostumeEvents[kind][ev];
+	}
+#endif
+
 	// The worn piece's line of the element's resistance (0 none).
 	long GetPlayerBotWornResistLine(LPCHARACTER ch, BYTE wear, BYTE point)
 	{
@@ -526,6 +588,11 @@ namespace
 		long long sumR[E] = { 0 }, sumSrc[E][PLAYERBOT_ELEMENT_SRC_COUNT];
 		int pieces[E] = { 0 }, piecesCan[E] = { 0 }, piecesTop[E] = { 0 };
 		int talTop[E] = { 0 }, talCan[E] = { 0 }, cosTop[E] = { 0 }, cosCan[E] = { 0 };
+#ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
+		// MT2009_PLUS_BOT_COSTUME_RESIST_V1: the costume / hairstyle worn (cos_worn), with the hunt line at any value
+		// (cos_line), with two lines or more (cos_2l), the body costume's Max HP at level 3+ (cos_hp of the costumes)
+		int cosWorn[E] = { 0 }, cosLine[E] = { 0 }, cos2l[E] = { 0 }, cosHp[E] = { 0 }, cosBody[E] = { 0 };
+#endif
 		int elixirOn[E] = { 0 }, elixirStock[E] = { 0 }, materials[E] = { 0 }, over60[E] = { 0 }, over40[E] = { 0 };
 		int none = 0, preparing = 0;
 		for (int e = 0; e < E; ++e)
@@ -593,6 +660,19 @@ namespace
 			for (int i = 0; i < 2; ++i)
 			{
 				LPITEM item = ch->GetWear(s_abCostume[i]);
+#ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
+				if (item)
+				{
+					++cosWorn[e];
+					cos2l[e] += item->GetAttributeCount() >= 2 ? 1 : 0;
+					cosLine[e] += GetPlayerBotYoharaPieceLine(item, point) > 0 ? 1 : 0;
+					if (s_abCostume[i] == WEAR_COSTUME_BODY)
+					{
+						++cosBody[e];
+						cosHp[e] += HasPlayerBotCostumeGoodMaxHp(item) ? 1 : 0;
+					}
+				}
+#endif
 				if (!item || item->GetAttributeSetIndex() < 0 || !IsPlayerBotApplyOnAttrSet(point, item->GetAttributeSetIndex()))
 					continue;
 				++cosCan[e];
@@ -606,7 +686,7 @@ namespace
 			++it;
 		}
 		std::string line;
-		char buf[512];
+		char buf[768];
 		int total = 0;
 		for (int e = 0; e < E; ++e)
 		{
@@ -625,8 +705,41 @@ namespace
 					PLAYERBOT_YOHARA_ELEMENT_NAMES[e], bots[e], sumR[e] / bots[e], minR[e], maxR[e], over60[e], over40[e],
 					src.c_str(), pieces[e], piecesCan[e], piecesTop[e], piecesCan[e], talTop[e], talCan[e], cosTop[e], cosCan[e],
 					elixirOn[e], elixirStock[e] / bots[e], (elixirStock[e] * 10 / bots[e]) % 10, materials[e] / bots[e]);
+#ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
+			{
+				std::string one(buf);
+				if (!one.empty() && one[one.size() - 1] == ']')
+					one.erase(one.size() - 1);
+				snprintf(buf, sizeof(buf), "%s cos_worn=%d cos_line=%d cos_2l=%d cos_hp=%d/%d]", one.c_str(), cosWorn[e],
+						cosLine[e], cos2l[e], cosHp[e], cosBody[e]);
+			}
+#endif
 			line += buf;
 		}
+#ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
+		// MT2009_PLUS_BOT_COSTUME_RESIST_V1: the costume pass' rolls and finishes since the start, by reason and piece
+		{
+			static const char* const s_aszKinds[3] = { "body", "hair", "weapon" };
+			std::string cos;
+			for (int k = 0; k < 3; ++k)
+			{
+				std::string one;
+				for (int ev = PLAYERBOT_COSEV_NONE + 1; ev < PLAYERBOT_COSEV_COUNT; ++ev)
+				{
+					if (!s_aPlayerBotCostumeEvents[k][ev])
+						continue;
+					char part[48];
+					snprintf(part, sizeof(part), "%s%s=%u", one.empty() ? "" : " ", PLAYERBOT_COSEV_NAMES[ev],
+							s_aPlayerBotCostumeEvents[k][ev]);
+					one += part;
+				}
+				if (!one.empty())
+					cos += std::string(" ") + s_aszKinds[k] + "=[" + one + "]";
+			}
+			if (!cos.empty())
+				sys_log(0, "PLAYERBOT_COSTUME_BONUS: census%s", cos.c_str());
+		}
+#endif
 		if (total == 0 && none == 0 && st.prepared == 0)
 			return;
 		sys_log(0, "PLAYERBOT_ELEMENT: census bots=%d no_element=%d preparing=%d changes=%u prepared=%u ready=%u no_stones=%u "
