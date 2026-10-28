@@ -25,6 +25,68 @@ Balathor 6896 (jaja, kryształy lodu, wóz Hwacha 20493 strzelający Ognistymi S
 skrzynia 20492 z nagrodą. Konfiguracja bez kompilacji: `server/share/balathor.json`. Klient: okno HP/szału
 bossa (`uiguildwhitedragon.py`), efekty ekranu, kamery cutscenek (`locale/common/camera/...`).
 
+## Cel: zgodność z oficjalną wiki (wersja 24.3, otwarcie 23.10.2024)
+
+Źródła: pl-wiki „Krypta_Balathora”, „Wersja_24.3”, „Mroźna_Skrz._Balathora+” i tr-wiki „Balathor'un_Mahzeni”
+(najdokładniejsza). Poniżej streszczenie, żeby nie pobierać tych stron ponownie. Nazwy PL są z pl-wiki.
+
+**Wejście:** NPC **Strażnik Smoków Dolnarr** na Górze Sohan (61). W paczce jest to 20395 („Ice Land Guardian”,
+Nemere), więc lepiej osobny NPC Dolnarr. Gildia ma poziom ≥21, istnieje ≥24 h, a gracz jest w niej ≥24 h. Koszt
+rejestracji to 600 pkt rangi gildii albo **Bilet Przejścia (Balathor)**, który pomija też cooldown. Skarbiec
+gildii musi mieć ≥500 000 Yang. Grupa 4–16 osób, każda postać musi mieć **Champion 4** (na naszych liniach:
+poziom 120 albo odpowiednik, decyzja właściciela) i ukończony quest wejściowy („Dziwne Znalezisko”, finał z
+Alastorem). Tego questa nie mamy, więc pomiń go albo zastąp prostym wymogiem. Wchodzą tylko zarejestrowani
+członkowie. Cooldown wynosi **3 h**, limit czasu **60 min**. Kto leży martwy 3 min, zostaje wyrzucony, a
+restart w mieście przenosi na start mapy. Umiejętności gildii działają.
+
+→ `balathor.json`: `register_min_guild_level 21`, `register_min_member_count 4`,
+`register_max_member_count 16`, `register_ladder_point 600`, `register_ticket_vnum <Bilet>`,
+`waiting_full_time 3600000`. Cooldown 3 h ustawia quest (`balathor_cooldown`), więc to sprawdź.
+`register_min_level` ustaw na próg zamiast Champion 4. Wymogu 24 h i 500k Yang w kodzie autora nie ma.
+Dopisz go w quest (`guild` ma datę założenia? jeśli nie, pomiń).
+
+**Mechaniki ogólne:** co 15 s dwie losowe postacie dostają lodowe kolce (obrażenia + zamrożenie, kumulują się,
+kajdany zrywa Spacja). Wskrzeszony gracz ma −50% regeneracji PŻ, a w etapie 3 −50% szybkości ataku.
+Pasek **Pieczęci Balathora** rośnie, gdy pękają jaja albo gracz ginie lub zostaje zamrożony. Maleje po zabiciu
+Upiornych Wojowników, Łuczników i Ech, po trafieniu Balathora z Hwachy i po ataku na Zamrożone Jajo. Pełny pasek
+oznacza przelot Balathora przez lewą, środkową albo prawą część mapy: kto jest w tym pasie, ginie natychmiast.
+Kod autora ma te mechaniki (`ground_ice_damage_*`, `boss_raid_*`, rage w `SetBalathor`), więc stroić przez json.
+
+**Etapy:**
+1. Zabić wszystkie potwory i **Pradawny Kryształ Lodu**.
+2. Zniszczyć **Masywne Lodowe Ściany** i **Zamrożone Jaja Smoka**, przywołać Balathora.
+3. Przeciągnąć **Ogniste Jaja Smoka** na oznaczone pola. Na polu jajo dostaje tarczę, a gdy oba są na miejscu,
+   tarczę łamie Hwacha. Jajo zniszczone w trakcie przeciągania od razu odpala Pieczęć. Jest **5 prób**
+   (`fire_egg_fail_max_count 5`).
+4. Bić Balathora z **Hwachy** (amunicja to Ogniste Strzały) do zera PŻ. Po zniszczeniu jednego zamrożonego
+   jaja trzeba w ciągu 10 s zaatakować drugie, inaczej Hwacha znika razem ze strzałami. Każdy Pradawny Kryształ
+   opóźnia ucieczkę Balathora.
+
+**Kontynuacja (ukryty Balathor, 6897):** dostępna od 10. minuty walki. Każdy kryształ poza pierwszym daje
++15 s. Bez Hwachy nie da się jej zacząć, dopóki jaja nie zostaną znów przeciągnięte. Co **1 min 15 s**
+pojawia się Zamrożone Jajo, zgodnie z ruchem wskazówek zegara na 4 polach (`dragon_egg_1..4_pos`). Jeśli w
+10 s nie zadasz wymaganych obrażeń, Balathor odlatuje i kontynuacja przepada. Wymóg obrażeń rośnie o 5% po
+każdej turze.
+
+**Moby (pl / tr):** Upiorny Wojownik (Hayalet Savaşçı, lód) 6898, Upiorny Łucznik (Hayalet Okçu, lód) 6899,
+Upiorne Echo (Hayalet Yankı, ogień) 6900, Balathor (lód) 6896/6897, Strażnik Smoków Dolnarr, Hwacha 20493,
+Skarb Balathora 20492, Masywna Lodowa Ściana 20494, Pradawny Kryształ Lodu 20498, Zamrożone Jajo Smoka
+20495/20496, Ogniste Jajo Smoka 20497. Te nazwy zastępują propozycje z kroku 2.4 niżej.
+
+**Nagrody (dla każdej postaci):** po etapie 1 ramka i **Mroźna Skrzynia Balathora**. Za całość ramki,
+Mroźna Skrzynia i **Mroźna Skrz. Balathora+**. Skrzynia+ daje kilka losowych z: Kula Polimorfii Hwachy,
+Skrzydło / Oko / Łuska / Ścięgno Balathora (materiały na hełm **Wężowy Czepiec**, poz. 120), Umiejętność
+Balathora (księgi 3 nowych umiejętności gildii: **Burza Balathora** – odp. na omdlenie i spowolnienie, **Wola
+Balathora** – na ogłuszenie, kajdany i zamrożenie, **Nieugiętość Balathora** – na odrzuty), Ogniste Buty +0,
+Smakołyk+, Dwutlenek Tytanu, Agat, Niebieski Barwnik, Wzór Kroju, Ciężkie Pasy, Smoczy Płomień (B), Jadeit
+Nocy, Kula Błogosławieństwa, Pudełko Kart Potw. Yohara, Runy Wykuwania (poz. przedm., zest. broni, prz. d. zw.,
+pasów, akcesoriów). Wiki nie podaje ilości ani szans.
+→ Zrób 2 skrzynie jako `special_item_group` (jak `special_item_group.dungeons.txt`) i w `balathor.json` daj
+`fail_rewards = [Mroźna Skrzynia]`, `success_rewards = [Mroźna Skrzynia, Mroźna Skrzynia+]`. Przedmioty,
+których linia nie ma (Wężowy Czepiec i materiały, umiejętności gildii, runy, karty, polimorfia Hwachy),
+**pomiń albo zamień na istniejące odpowiedniki** i zapisz listę w README modułu. Nie dodawaj nowych systemów
+bez zgody właściciela. Wymagana jest odporność na lód (Talizman Lodu działa: `zywioly_talizmany.sql`).
+
 ## Numery (sprawdzone na linii 2.x, 28.10.2026)
 
 | Co | Numer | Stan |
