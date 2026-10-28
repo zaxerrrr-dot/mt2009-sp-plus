@@ -86,3 +86,19 @@ wpisy (własne nazwy, obraz `windows_yohara.dds` = GF `windows.dds`, który już
 `d:/ymir work/ui/worldboss.dds` (380×100, DXT5) i `d:/ymir work/ui/minigame/world_boss/*.sub` (6 plików) – grafika okien
 Bossa Świata z klienta GF 26.1.11, bajt w bajt (układy `root/uiscript/worldbosswindow.py`,
 `worldbossrankingwindow.py`, logika `root/uiworldboss.py`). Nazwy nowe w naszych paczkach.
+
+## Okno wytwarzania jak w kliencie globalnym (`MT2009_PLUS_CUBE_RENEWAL_V1`)
+
+Okno kostki u NPC (`root/uicuberenewal.py`, `CubeRenewalWindow`, w miejsce `uicubeokno.py`) i okna wytwarzania z misji
+(`CraftingRenewalWindow`, w miejsce okna z `uicraft.py`) mają układ i grafikę okna wytwarzania GF 26.1.11
+(`uiscript/cuberenewalwindow.py`): lista przepisów w kategoriach (+/−), wyszukiwarka nad listą, wynik i materiały
+„mam/trzeba”, ilość (−/+), Gaya, Yang, pole „Szansa+”, „Wytwórz”/„Zamknij”. Bez nowych pakietów – te same komendy
+co dotąd (`/cube pick|improve|add|make`, `/ekwipunek kostka`, `/craft create|close`). Kowale zestawów (20475–20479)
+zostają przy starym oknie (`uicube.py`). Narzędzia: `tools/cube` (budowa sprawdza wpisy, weryfikacja paczki).
+
+| Paczka | Wpis | Status | Skąd | Po co |
+|---|---|---|---|---|
+| root | `d:/ymir work/ui/making_001.dds` | nowy | GF 26.1.11 bajt w bajt (320×544 DXT5) | tła, zakładki listy, przyciski ilości, ikona Yang |
+| root | `d:/ymir work/ui/game/cube/*.sub` (19 plików) | nowe | GF 26.1.11 bajt w bajt | wycinki `making_001.dds` / `gemshop_001.dds` (ikona Gaya) |
+| root | `d:/ymir work/ui/game/cube/mt2009_cube_slot_col.sub` | nowy | wycinek `cube_slot_bg` (263,0–309,138) | 6. kolumna materiałów (nasze przepisy biorą do 6) |
+| root | `d:/ymir work/ui/game/cube/mt2009_cube_slot_end.sub` | nowy | wycinek `cube_slot_bg` (309,0–316,138) | prawa krawędź za 6. kolumną |
