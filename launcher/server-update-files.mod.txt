@@ -461,6 +461,10 @@ linux-port/docker/mariadb/playerbot/yohara_eliksiry.sql
 # lines each (apply.sh); the one-at-a-time rule and the Yohara bots' stone are playerbot_element_stones.{h,cpp} (the
 # playerbot_* lines), the ItemShop lines (apply.sh, indexes 70-71) and the web pictures (linux-port/docker/itemshop/* above).
 linux-port/docker/mariadb/playerbot/kamienie_zywiolow.sql
+# MT2009_PLUS_MONSTER_CARD_BOXES_V1: the four Monster Card boxes 83036 / 83037 / 83074 / 83073 (tools/cardbox) - the items
+# (apply.sh), the ItemShop lines (apply.sh, indexes 627-630), the opening in playerbot_monster_card.h (the playerbot_*
+# lines), the web pictures and descriptions (linux-port/docker/itemshop/* above).
+linux-port/docker/mariadb/playerbot/karty_pudelka.sql
 linux-port/docker/mariadb/playerbot/yohara_zaklety.sql
 linux-port/docker/mariadb/playerbot/yohara_items_zaklety.sql
 linux-port/docker/mariadb/playerbot/yohara_zaklety_zywioly.sql

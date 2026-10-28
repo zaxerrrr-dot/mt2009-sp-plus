@@ -114,6 +114,25 @@ Ochao) = nasz **6311** (obrazek karty przez alias w `uimonstercard.py`). Bez 692
   (`monstercard_data.MAPY`); obrazek Królowej Węży Nethis (klucz 6856 → 6756).
 - Teleport do potworów Yohary: brak punktów (paczka ich nie ma) – „Brak informacji o teleporcie”.
 
+## Pudełka kart (`MT2009_PLUS_MONSTER_CARD_BOXES_V1`, 28.10.2026)
+
+Cztery pudełka z serwera globalnego (vnumy i flagi: Owsap v6.2.6; ikony: klient GF 26.1.11), w sklepie w grze
+(„Zwoje i księgi”, indeksy 627–630, ceny z wiki globalnej; drugi ItemShop pokazuje te same linie):
+
+| vnum | Nazwa | Zawartość | Cena | Handel |
+|---|---|---|---|---|
+| 83036 | Srebrne Pudełko Kart Potwora | Karta Potwora (50%) albo 1000 Yang; poziomy misji 1–15 | 25 SM | tak |
+| 83037 | Złote Pudełko Kart Potwora | Karta Potwora na pewno; poziomy 1–15 (bez Yohary) | 35 SM | tak |
+| 83074 | Platynowe Pudełko Kart Potwora | Karta Potwora na pewno; wszystkie 18 poziomów | 45 SM | nie |
+| 83073 | Pudełko Kart Potworów Yohary | Karta Potwora na pewno; poziomy 16–18 (Yohara) | 150 SM | nie |
+
+Otwiera je system kart (`OpenCardBox` w `playerbot_monster_card.h`, przez istniejące wywołanie `MonsterCardUseItem` –
+bez zmiany silnika i bez `special_item_group`): Karta Potwora 50283 z potworem w `socket1`, jak z misji – każdy
+potwór puli (różne potwory wskazanych poziomów, które ma `mob_proto`) z tą samą szansą; potrzebne jedno wolne miejsce.
+Boty ich nie otwierają ani nie kupują (nie mają kart). Szansa karty w srebrnym pudełku nie jest podana na żadnej wiki –
+50% (`SILVER_CARD_PERCENT`). Podgląd zawartości („/chest_preview”) odpowiada „Serwer nie zna zawartości tej skrzynki”.
+Generator: `tools/cardbox/gen_cardbox.py` (SQL, ikony, opisy); klient: `client-patches/client-2.0.30/tools/cardbox`.
+
 ## Gdzie jest reszta
 
 - dane: `linux-port/docker/mariadb/playerbot/apply.sh` (3 tabele, przedmioty 50283, 50284, 72322, 72323 –
