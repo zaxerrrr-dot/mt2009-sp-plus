@@ -12,19 +12,19 @@
 // (monstercard.py, uimonstercard.py).
 //
 //   * A card mission: three monsters drawn from the pool of the mission level
-//     (playerbot_monster_card_data.h, 15 levels, then from 1 again); killing
+//     (playerbot_monster_card_data.h, 18 levels, then from 1 again); killing
 //     all three earns a Monster Card (50283, the monster in socket 1) and the
 //     next level. One reset of the mission a day is free, the next ones take a
-//     Karta Nowego Poczatku (72322); new targets take a Karta Nowego Ukladu
-//     (72323).
+//     Karta Nowego Poczatku (72322) - M2_BONUS_MODE=global: 2/4/6/8/10 of them,
+//     at most 6 resets a day; new targets take a Karta Nowego Ukladu (72323).
 //   * A monster of the pools drops its card at 5% (to the killer, 2 minutes).
 //     Using a card adds it to the account's collection of that monster;
 //     9/21/30/60/90 cards raise it a star (0..5). The stars open the monster's
 //     functions: the drop list (1 star, from the drop wiki), the polymorph (3,
-//     every 3 h), the teleport to it (4, 30 min), the summon (5, 12 h) and the
+//     every 3 h), the teleport to it (4, 30 min; global 12 h), the summon (5, 12 h) and the
 //     recruitment (5, 24 h); 10 collected cards trade for a tradable card
 //     (50284, the monster in socket 0).
-//   * The sets: 17 groups of monsters; a rank N takes N stars of every monster
+//   * The sets: 40 groups of monsters (the global client's, Yohara's too); a rank N takes N stars of every monster
 //     of the set and gives its bonus as AFFECT_COLLECT. The progress is the
 //     ACCOUNT's (account_id = GetAID()); the bonuses are each character's,
 //     brought in line with the account at login and after every change, the
@@ -49,6 +49,8 @@
 // | gm_info.
 
 #include "playerbot_monster_card_data.h"
+
+bool BonusModeGlobal();		// playerbot_bonus_mode.cpp: M2_BONUS_MODE=global (the world event flag m2_bonus_global)
 
 #include <algorithm>
 #include <cctype>
@@ -78,6 +80,27 @@ namespace mt2009_mcard
 	const int WAIT_SUMMON = 12 * 60 * 60;
 	const int WAIT_RECRUIT = 24 * 60 * 60;
 	const int RESET_WINDOW = 24 * 60 * 60;	// one free mission reset a window, the next for a Karta Nowego Poczatku
+
+	// MT2009_PLUS_MONSTER_CARDS_YOHARA_V1 - M2_BONUS_MODE=global: the global server's rules (its wiki,
+	// "Monsterkarten-System"): the 4-star teleport every 12 hours (mt2009: 30 minutes) and at most 6 mission resets
+	// in 24 hours, the 2nd to the 6th for 2/4/6/8/10 Karty Nowego Poczatku (mt2009: 1 a reset, no limit).
+	const int WAIT_TELEPORT_GLOBAL = 12 * 60 * 60;
+	const int RESET_COST_GLOBAL[] = { 0, 2, 4, 6, 8, 10 };	// the n-th reset of the window (from 0)
+
+	int TeleportWait()
+	{
+		return BonusModeGlobal() ? WAIT_TELEPORT_GLOBAL : WAIT_TELEPORT;
+	}
+
+	// The cards the next reset takes (-1: none left in this window).
+	int ResetCost(int done)
+	{
+		if (done <= 0)
+			return 0;
+		if (!BonusModeGlobal())
+			return 1;
+		return done < (int) (sizeof(RESET_COST_GLOBAL) / sizeof(RESET_COST_GLOBAL[0])) ? RESET_COST_GLOBAL[done] : -1;
+	}
 	const int DROP_LIST_GAP = 3;
 	const size_t DROP_LIST_ROWS = 20;		// the rest: the drop wiki window
 	const int SAVE_EVERY = 60;				// seconds: the kill counters alone are saved at most this often
@@ -107,7 +130,8 @@ namespace mt2009_mcard
 	const char* const MSG_MAX = "Ten potw" "\xf3" "r ma ju" "\xbf" " maksymaln" "\xb9" " liczb" "\xea" " gwiazdek.";
 	const char* const MSG_FULL = "Masz ju" "\xbf" " komplet kart tego potwora. Awansuj go w oknie kart, zanim u" "\xbf" "yjesz kolejnej.";
 	const char* const MSG_CARD_USED = "Karta potwora %s: %d/%d.";
-	const char* const MSG_NO_RESET = "Kolejny reset misji w tym oknie czasu wymaga Karty Nowego Pocz" "\xb9" "tku.";
+	const char* const MSG_NO_RESET_N = "Ten reset misji wymaga Kart Nowego Pocz" "\xb9" "tku: %d.";
+	const char* const MSG_RESET_LIMIT = "Wykorzysta" "\xb3" "e" "\x9c" " ju" "\xbf" " 6 reset" "\xf3" "w misji w ci" "\xb9" "gu 24 godzin.";
 	const char* const MSG_NO_SHUFFLE = "Potrzebujesz Karty Nowego Uk" "\xb3" "adu, by wylosowa" "\xe6" " nowe cele misji.";
 	const char* const MSG_NO_TELEPORT = "Brak informacji o teleporcie do tego potwora.";
 	const char* const MSG_NOT_NOW = "Teraz nie mo" "\xbf" "esz tego u" "\xbf" "y" "\xe6" " (zamknij handel, sklep, magazyn; nie w lochu).";
@@ -612,14 +636,22 @@ namespace mt2009_mcard
 			s.windowStart = 0;
 			s.windowCount = 0;
 		}
-		if (s.windowCount >= 1)
+		const int cost = ResetCost(s.windowCount);
+		if (cost < 0)
 		{
-			if (ch->CountSpecifyItem(CARD_RESET) < 1)
+			ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_RESET_LIMIT);
+			return;
+		}
+		if (cost > 0)
+		{
+			if (ch->CountSpecifyItem(CARD_RESET) < cost)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_NO_RESET);
+				if (cost > 1)
+					ch->ChatPacket(CHAT_TYPE_COMMAND, "MONSTERCARDSYSTEM MISSION_FAIL/1/%d", cost);
+				ch->ChatPacket(CHAT_TYPE_INFO, MSG_NO_RESET_N, cost);
 				return;
 			}
-			ch->RemoveSpecifyItem(CARD_RESET, 1);
+			ch->RemoveSpecifyItem(CARD_RESET, cost);
 		}
 		if (!s.windowCount)
 			s.windowStart = now;
@@ -955,7 +987,7 @@ namespace mt2009_mcard
 		switch (fn)
 		{
 			case FN_TELEPORT:
-				if (Waiting(ch, m.teleport, WAIT_TELEPORT) || TooFewStars(ch, m, 4))
+				if (Waiting(ch, m.teleport, TeleportWait()) || TooFewStars(ch, m, 4))
 					return;
 				FnTeleport(ch, m, mob);
 				break;

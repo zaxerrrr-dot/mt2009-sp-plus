@@ -31,18 +31,19 @@ sprawdza znaczniki).
 
 ## Jak działa
 
-- **Misja kart**: 3 cele z puli poziomu misji (15 poziomów, potem od 1; pule z 56 potworów, które mamy
-  w `mob_proto` i które mają obrazek karty), zabicie wszystkich → Karta Potwora (50283, potwór w `socket1`)
-  i kolejny poziom. Pierwszy reset misji w oknie 24 h darmowy, kolejne za Kartę Nowego Początku (72322);
+- **Misja kart**: 3 cele z puli poziomu misji (18 poziomów jak w kliencie globalnym, potem od 1; pule z 96 potworów,
+  w tym Yohara – patrz niżej), zabicie wszystkich → Karta Potwora (50283, potwór w `socket1`)
+  i kolejny poziom. Pierwszy reset misji w oknie 24 h darmowy, kolejne za Kartę Nowego Początku (72322; przy
+  `M2_BONUS_MODE=global` jak na serwerze globalnym: 2/4/6/8/10 kart, najwyżej 6 resetów na dobę);
   nowe cele za Kartę Nowego Układu (72323).
 - **Drop**: potwór z puli daje swoją kartę z szansą 5% (na ziemi, 2 minuty tylko dla zabójcy).
 - **Kolekcja** (na **konto**, `account_id`): użycie karty = +1 karta potwora; 9/21/30/60/90 kart → kolejna
   gwiazdka (0–5, „Ulepsz” w oknie). Funkcje gwiazdek: podgląd dropu (1★, z Drop wiki –
   `ITEM_MANAGER::GetDropWikiRows`, 20 pozycji na czacie), przemiana (3★, co 3 h; nie na OX), teleport
-  w rejon potwora (4★, co 30 min; tylko mapy własnego królestwa i wspólne, nie w lochu), przywołanie
+  w rejon potwora (4★, co 30 min, przy `M2_BONUS_MODE=global` co 12 h; tylko mapy własnego królestwa i wspólne, nie w lochu), przywołanie
   (5★, co 12 h), rekrutacja (5★, co 24 h – potwór atakuje wskazanego gracza; **nigdy bota**), wymiana
   10 zebranych kart → karta handlowa 50284 (potwór w `socket0`).
-- **Zestawy** (17 z 42 paczki – reszta wymaga potworów, których nie mamy): ranga N zużywa N gwiazdek każdego
+- **Zestawy** (40 z 42 klienta globalnego – 41 i 42 wymagają potworów, których nie mamy): ranga N zużywa N gwiazdek każdego
   potwora zestawu i wymaga ich co najmniej tyle; bonus jako `AFFECT_COLLECT`, jeden zestaw polowy naraz.
   Postęp jest na koncie, bonusy na postaci – uzgadniane przy wejściu i po każdej zmianie (flagi questa
   `karty_bonus.p<punkt>` trzymają, ile postać już dostała).
@@ -73,6 +74,46 @@ Serwer → klient: `MONSTERCARDSYSTEM` + `ADD_DATA/Level/<n>`, `ADD_DATA/Cards/<
 `NO_NEW_ORDER/<s>`, `NO_NEED_STAGE/<★>`, `MISSION_FAIL/0/0`, `DISABLED` i komunikaty (`NO_NEW_MISSION`,
 `NOT_ALL_MONSTERS_KILLED`, `NO_PROMOTION`, `NOT_ENOUGH_FOR_TRADE`, `PLAYER_DONT_EXIST`, `MOB_IS_ALREADY_DEAD`).
 
+## Yohara i wartości globalne (`MT2009_PLUS_MONSTER_CARDS_YOHARA_V1`, 28.10.2026)
+
+Dane paczki (`monster_card.txt`, `monster_card_achiev.txt`) są identyczne z klientem globalnym GF 26.1.11
+(`shared/common`) – to one są wzorcem. Nasze vnumy: GF 6405 (Strażnik En-Tai) = nasz **6400**, GF 6392 (Ochroniarz
+Ochao) = nasz **6311** (obrazek karty przez alias w `uimonstercard.py`). Bez 6920/6922 (Dolina Mroku Księżyca) i
+6937–6939 – nie ma ich w `mob_proto`.
+
+- Poziomy 10–12: + 6400, 6311; 13–15: + 6400, 6116, 6407, 6408, 6192 i 4 generałów Zodiaku na poziom (jak GF);
+  16–17: 6699, 6705, 6706, 6723, 6724, 6749, 6764, 6805, 6815, 6820, 6756, 6776, 6783; 18: 6805, 6815, 6820, 6756,
+  7609–7614, 6789, 6797, 6791.
+- Nowe zestawy (wartości globalne, punkty: GF APPLY 239–243 = Sung Ma SIŁA/WIT/ODP/INT i Precyzja):
+
+| # | Zestaw | Potwory | Rangi | Bonus |
+|---|---|---|---|---|
+| 14 | Kłopoty na Zboczu Gautama | 3910, 6311, 3891, 6407 | 4–5 | Zręczność +1/+2 |
+| 18 | Słudzy Sung Mahi | 2493, 6116, 6400 | 4–5 | Silny przeciwko potworom +1/+3% |
+| 20 | Strażnicy Lasu | 6400, 6408, 6192 | 4–5 | Max PE +1/+3% |
+| 21 | Generałowie Sung Mahi | 2493, 6191, 6091, 6192 | 4–5 | Max PŻ +1/+3% |
+| 22–27 | Zodiak Błyskawic/Ognia/Lodu/Wiatru/Ziemi/Mroku | pary generałów | 4–5 | Siła żywiołu +3/+10% |
+| 28 | Strażnicy Równin | 6699, 6705, 6706 | 3–5 | Odporność Sung Ma +1/+3/+10 |
+| 29 | Myr Sung Mahi | 6723, 6724 | 3–5 | Inteligencja Sung Ma +1/+3/+10 |
+| 30 | Półludzcy Władcy | 6749, 6764 | 4–5 | Precyzja +2/+5 |
+| 31 | Lodowi Strażnicy | 6776, 6783 | 3–5 | Witalność Sung Ma +1/+3/+10 |
+| 32 | Trio z Jaskiń | 6805, 6815, 6820 | 3–5 | Blok +1/+3/+10% |
+| 33 | Trująca Królowa | 6756 | 4–5 | Siła Sung Ma +2/+5 |
+| 34–39 | Płonąca/Zamarznięta/Elektryczna/Burzowa/Niewzruszona/Mroczna Wieża | 7609–7614 | 4–5 | Odporność na ogień/lód/błyskawice/wiatr/ziemię/mrok +2/+5% |
+| 40 | Koniec Alastora | 6789, 6797, 6791 | 3–5 | Wartość ataku +150/+175/+250 |
+
+- 17 dotychczasowych zestawów miało już wartości globalne (porównane z klientem GF) – bez zmian w obu trybach.
+- `M2_BONUS_MODE=global` (`BonusModeGlobal()`, klient: `localeinfo_point.BONUS_GLOBAL`) zmienia zasady na globalne:
+
+| Zasada | mt2009 (bez zmian) | global |
+|---|---|---|
+| Teleport 4★ | co 30 min | co 12 h |
+| Reset misji (2.–6. w 24 h) | 1 Karta Nowego Początku, bez limitu | 2/4/6/8/10 kart, najwyżej 6 na dobę |
+
+- Klient: obszar występowania na karcie pokazuje teraz mapę potwora (była pomijana) z nazwami map lochów i Yohary
+  (`monstercard_data.MAPY`); obrazek Królowej Węży Nethis (klucz 6856 → 6756).
+- Teleport do potworów Yohary: brak punktów (paczka ich nie ma) – „Brak informacji o teleporcie”.
+
 ## Gdzie jest reszta
 
 - dane: `linux-port/docker/mariadb/playerbot/apply.sh` (3 tabele, przedmioty 50283, 50284, 72322, 72323 –
@@ -91,7 +132,7 @@ Serwer → klient: `MONSTERCARDSYSTEM` + `ADD_DATA/Level/<n>`, `ADD_DATA/Cards/<
   puli, sklep albo nagroda).
 - Rekrutacja: w świecie botów jedynymi „innymi graczami” są boty – tu nigdy nie są celem; zostawić funkcję
   tylko dla ludzi czy ją zdjąć?
-- 17 z 42 zestawów (reszta potrzebuje potworów spoza bazy); bonusy to wartości oficjalne – do przeglądu po teście.
+- 40 z 42 zestawów (41 i 42 potrzebują potworów spoza bazy); wartości = klient globalny.
 - Teleport tylko do 20 z 56 potworów (punkty z paczki); resztę można dopisać z `regen.txt`.
 - Okno paczki nie ma przycisków podglądu dropu i rekrutacji (serwer je obsługuje: `/cardmonster 8 2 <potwór>`,
   `8 4 <potwór> <nick>`); „Ruch” (2★) bez modelu 3D nic nie robi.

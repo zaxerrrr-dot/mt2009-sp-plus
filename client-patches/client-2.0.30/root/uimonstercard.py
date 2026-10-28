@@ -308,7 +308,7 @@ CARD_IMG_DICT_DUNGEON =  \
 	6805 : CARD_PATH + "6805.sub",
 	6815 : CARD_PATH + "6815.sub",
 	6820 : CARD_PATH + "6820.sub",
-	6856 : CARD_PATH + "6756.sub",
+	6756 : CARD_PATH + "6756.sub",	# MT2009_PLUS_MONSTER_CARDS_YOHARA_V1: the package had 6856 (Krolowa Wezy Nethis is 6756)
 	7609 : CARD_PATH + "7609.sub",
 	7610 : CARD_PATH + "7610.sub",
 	7611 : CARD_PATH + "7611.sub",
@@ -345,6 +345,10 @@ CARD_IMG_DICT[2832] = CARD_PATH + "2832.sub"	## 12zi ??
 CARD_IMG_DICT[2842] = CARD_PATH + "2842.sub"	## 12zi ??
 CARD_IMG_DICT[2852] = CARD_PATH + "2852.sub"	## 12zi ??
 CARD_IMG_DICT[2862] = CARD_PATH + "2862.sub"	## 12zi ??
+# MT2009_PLUS_MONSTER_CARDS_YOHARA_V1: our vnums of two global cards - the En-Tai Guardian (GF 6405) is our 6400,
+# the Ochao Bodyguard (GF 6392) our 6311 (monstercard_data.py)
+CARD_IMG_DICT[6400] = CARD_PATH + "6405.sub"
+CARD_IMG_DICT[6311] = CARD_PATH + "6392.sub"
 	
 
 ## ????

@@ -10,15 +10,21 @@
 // monster_card.txt, its MonstercardCoordinates.txt and monster_card_achiev.txt,
 // filtered to the monsters our world.mob_proto has and the client has a card
 // picture for (56 of 101). The client's twin is root/monstercard_data.py -
-// change both together.
+// change both together. MT2009_PLUS_MONSTER_CARDS_YOHARA_V1 (28 October 2026): the Yohara cards and the
+// global client's 18 levels and 40 sets (below).
 
 namespace mt2009_mcard
 {
 
-const int LEVELS = 15;		// mission levels (the wiki: 15, then from 1 again)
+const int LEVELS = 18;		// mission levels (the global client: 18, then from 1 again; was 15 before Yohara)
 const int DECK_SIZE = 16;	// cards a mission level offers
 
-// The monster pool of every mission level (0 = an empty place).
+// The monster pool of every mission level (0 = an empty place). MT2009_PLUS_MONSTER_CARDS_YOHARA_V1: the global
+// client's monster_card.txt (GF 26.1.11 = the "Official-Monster-Card-System" package's) with our real vnums - its
+// En-Tai Guardian 6405 is our 6400 (trent_officer, the Ochao temple, 209) and its Ochao Bodyguard 6392 our 6311
+// (lemures_boss2); the monsters our world lacks (6920/6922 Dolina Mroku Ksiezyca, 6937-6939) left out. Levels
+// 10-15 got the bosses of the Yohara branch (6116, 6192, 6400, 6311, 6407, 6408, the 12 Zodiac generals),
+// 16-18 are Yohara's.
 const DWORD LEVEL_POOL[LEVELS][DECK_SIZE] =
 {
 	{ 151, 153, 152, 154, 391, 155, 393, 191, 5161, 192, 394, 193, 194, 0, 0, 0 },
@@ -30,12 +36,15 @@ const DWORD LEVEL_POOL[LEVELS][DECK_SIZE] =
 	{ 791, 5163, 2191, 1901, 2206, 1304, 1091, 1093, 2092, 2402, 2306, 0, 0, 0, 0, 0 },
 	{ 791, 5163, 2191, 1901, 2206, 1304, 1091, 1093, 2092, 2402, 2306, 0, 0, 0, 0, 0 },
 	{ 791, 5163, 2191, 1901, 2206, 1304, 1091, 1093, 2092, 2402, 2306, 0, 0, 0, 0, 0 },
-	{ 1192, 2597, 2492, 3910, 3891, 3491, 3591, 3291, 3091, 3191, 3791, 3596, 0, 0, 0, 0 },
-	{ 1192, 2597, 2492, 3910, 3891, 3491, 3591, 3291, 3091, 3191, 3791, 3596, 0, 0, 0, 0 },
-	{ 1192, 2597, 2492, 3910, 3891, 3491, 3591, 3291, 3091, 3191, 3791, 3596, 0, 0, 0, 0 },
-	{ 1192, 2493, 6109, 6191, 6009, 6091, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	{ 1192, 2493, 6109, 6191, 6009, 6091, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	{ 1192, 2493, 6109, 6191, 6009, 6091, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ 1192, 2597, 2492, 3910, 3891, 3491, 3591, 3291, 3091, 6400, 3191, 6311, 3791, 3596, 0, 0 },
+	{ 1192, 2597, 2492, 3910, 3891, 3491, 3591, 3291, 3091, 6400, 3191, 6311, 3791, 3596, 0, 0 },
+	{ 1192, 2597, 2492, 3910, 3891, 3491, 3591, 3291, 3091, 6400, 3191, 6311, 3791, 3596, 0, 0 },
+	{ 1192, 2493, 6400, 6109, 6191, 6116, 6009, 6091, 6407, 6408, 6192, 2752, 2762, 2772, 2782, 0 },
+	{ 1192, 2493, 6400, 6109, 6191, 6116, 6009, 6091, 6407, 6408, 6192, 2792, 2802, 2812, 2822, 0 },
+	{ 1192, 2493, 6400, 6109, 6191, 6116, 6009, 6091, 6407, 6408, 6192, 2832, 2842, 2852, 2862, 0 },
+	{ 6699, 6705, 6706, 6723, 6724, 6749, 6764, 6805, 6815, 6820, 6756, 6776, 6783, 0, 0, 0 },
+	{ 6699, 6705, 6706, 6723, 6724, 6749, 6764, 6805, 6815, 6820, 6756, 6776, 6783, 0, 0, 0 },
+	{ 6805, 6815, 6820, 6756, 7609, 7610, 7611, 7612, 7613, 7614, 6789, 6797, 6791, 0, 0, 0 },
 };
 
 // The 4-star teleport: (monster, map index, x, y in the map's own metres).
@@ -94,13 +103,15 @@ const STeleport TELEPORTS[] =
 	{ 2191, 125, 912, 616 },
 };
 
-// The sets ("Bonusy zestawow"): 17 of the package's 42 - the rest need
-// monsters our world does not have. A set's bonus rank N takes N stars of
-// every monster of the set (and needs at least that many); the bonus goes on
-// as AFFECT_COLLECT. iType 0 = a field set (one at a time), 1 = a dungeon set.
-// iRanks: how many of the last of the five ranks count (2 = ranks 4 and 5).
-// The values are the official ones, the points mapped by meaning onto our
-// POINT_* numbers.
+// The sets ("Bonusy zestawow"): 40 of the global client's 42 (monster_card_achiev.txt of GF 26.1.11 = the
+// package's) - 41 (Nykos, 6920/6922) and 42 (6937-6939) need monsters our world does not have. A set's bonus
+// rank N takes N stars of every monster of the set (and needs at least that many); the bonus goes on as
+// AFFECT_COLLECT. iType 0 = a field set (one at a time), 1 = a dungeon set. iRanks: how many of the last of
+// the five ranks count (2 = ranks 4 and 5). The values are the global ones in both M2_BONUS_MODE modes (the
+// 17 sets of before were already the global values - MT2009_PLUS_MONSTER_CARDS_YOHARA_V1 compared them with the
+// global client); the client's applies mapped onto our POINT_* (GF APPLY 239-243 = SUNGMA_STR/HP/MOVE/IMMUNE,
+// HIT_PCT; 99-104 = the element powers). The client's twin, root/monstercard_data.py, has the same points as
+// numbers - the static_asserts below keep them in line.
 struct SAchievement
 {
 	DWORD dwVnum;
@@ -125,11 +136,44 @@ const SAchievement ACHIEVEMENTS[] =
 	{ 11, 0, 2, { 3091, 3291, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 2 }, { POINT_IQ, 0 } },						// Wieczni Straznicy
 	{ 12, 0, 2, { 3491, 3591, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 2 }, { POINT_ST, 0 } },						// Straznik Nefrytu
 	{ 13, 0, 2, { 3191, 3596, 3791, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 2 }, { POINT_HT, 0 } },					// Wladca Gor Gromu
+	// MT2009_PLUS_MONSTER_CARDS_YOHARA_V1: the sets whose monsters came with the Yohara branch (6400 = GF 6405, 6311 = GF 6392)
+	{ 14, 0, 2, { 3910, 6311, 3891, 6407, 0, 0, 0, 0 }, { 0, 0, 0, 1, 2 }, { POINT_DX, 0 } },				// Klopoty na Zboczu Gautama
 	{ 15, 1, 2, { 5161, 5162, 5163, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 3 }, { POINT_DODGE, 0 } },				// Bractwo Malp
 	{ 16, 1, 2, { 2092, 1192, 2402, 2492, 2597, 0, 0, 0 }, { 0, 0, 0, 1, 3 }, { POINT_MELEE_MAGIC_ATT_BONUS_PER, 0 } },	// Wladca Jaskini
 	{ 17, 1, 2, { 1093, 1091, 2597, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 3 }, { POINT_KILL_HP_RECOVERY, 0 } },		// Diaboliczni
+	{ 18, 1, 2, { 2493, 6116, 6400, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 3 }, { POINT_ATTBONUS_MONSTER, 0 } },		// Sludzy Sung Mahi
 	{ 19, 1, 2, { 6009, 6109, 6191, 6091, 0, 0, 0, 0 }, { 0, 0, 0, 1, 2 }, { POINT_HT, 0 } },				// Cel uswieca srodki
+	{ 20, 1, 2, { 6400, 6408, 6192, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 3 }, { POINT_MAX_SP_PCT, 0 } },			// Straznicy Lasu
+	{ 21, 1, 2, { 2493, 6191, 6091, 6192, 0, 0, 0, 0 }, { 0, 0, 0, 1, 3 }, { POINT_MAX_HP_PCT, 0 } },		// Generalowie Sung Mahi
+	{ 22, 1, 2, { 2822, 2792, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 3, 10 }, { POINT_ENCHANT_ELECT, 0 } },			// Zodiak Blyskawic
+	{ 23, 1, 2, { 2862, 2772, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 3, 10 }, { POINT_ENCHANT_FIRE, 0 } },			// Zodiak Ognia
+	{ 24, 1, 2, { 2802, 2812, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 3, 10 }, { POINT_ENCHANT_ICE, 0 } },			// Zodiak Lodu
+	{ 25, 1, 2, { 2782, 2842, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 3, 10 }, { POINT_ENCHANT_WIND, 0 } },			// Zodiak Wiatru
+	{ 26, 1, 2, { 2762, 2832, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 3, 10 }, { POINT_ENCHANT_EARTH, 0 } },			// Zodiak Ziemi
+	{ 27, 1, 2, { 2852, 2752, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 3, 10 }, { POINT_ENCHANT_DARK, 0 } },			// Zodiak Mroku
+	{ 28, 0, 3, { 6699, 6705, 6706, 0, 0, 0, 0, 0 }, { 0, 0, 1, 3, 10 }, { POINT_SUNGMA_MOVE, 0 } },		// Straznicy Rownin (Odpornosc Sung Ma)
+	{ 29, 0, 3, { 6723, 6724, 0, 0, 0, 0, 0, 0 }, { 0, 0, 1, 3, 10 }, { POINT_SUNGMA_IMMUNE, 0 } },			// Myr Sung Mahi (Inteligencja Sung Ma)
+	{ 30, 0, 2, { 6749, 6764, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_HIT_PCT, 0 } },				// Polludzcy Wladcy (Precyzja)
+	{ 31, 0, 3, { 6776, 6783, 0, 0, 0, 0, 0, 0 }, { 0, 0, 1, 3, 10 }, { POINT_SUNGMA_HP, 0 } },				// Lodowi Straznicy (Witalnosc Sung Ma)
+	{ 32, 1, 3, { 6805, 6815, 6820, 0, 0, 0, 0, 0 }, { 0, 0, 1, 3, 10 }, { POINT_BLOCK, 0 } },				// Trio z Jaskin
+	{ 33, 1, 2, { 6756, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_SUNGMA_STR, 0 } },				// Trujaca Krolowa (Sila Sung Ma)
+	{ 34, 1, 2, { 7609, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_RESIST_FIRE, 0 } },				// Plonaca Wieza
+	{ 35, 1, 2, { 7610, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_RESIST_ICE, 0 } },				// Zamarznieta Wieza
+	{ 36, 1, 2, { 7611, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_RESIST_ELEC, 0 } },				// Elektryczna Wieza
+	{ 37, 1, 2, { 7612, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_RESIST_WIND, 0 } },				// Burzowa Wieza
+	{ 38, 1, 2, { 7613, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_RESIST_EARTH, 0 } },				// Niewzruszona Wieza
+	{ 39, 1, 2, { 7614, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 2, 5 }, { POINT_RESIST_DARK, 0 } },				// Mroczna Wieza
+	{ 40, 1, 3, { 6789, 6797, 6791, 0, 0, 0, 0, 0 }, { 0, 0, 150, 175, 250 }, { POINT_ATT_GRADE_BONUS, 0 } },	// Koniec Alastora
 };
+
+// The client (root/monstercard_data.py, OSIAGNIECIA "apply") names the bonus by these numbers.
+static_assert(POINT_DX == 14 && POINT_ATTBONUS_MONSTER == 53 && POINT_BLOCK == 67 && POINT_RESIST_FIRE == 75 &&
+		POINT_RESIST_ELEC == 76 && POINT_RESIST_WIND == 78 && POINT_ATT_GRADE_BONUS == 95 && POINT_MAX_HP_PCT == 119 &&
+		POINT_MAX_SP_PCT == 120 && POINT_RESIST_ICE == 133 && POINT_RESIST_EARTH == 134 && POINT_RESIST_DARK == 135,
+		"monster cards: a set's point number differs from monstercard_data.py");
+static_assert(POINT_ENCHANT_ELECT == 178 && POINT_ENCHANT_DARK == 183 && POINT_SUNGMA_STR == 184 && POINT_SUNGMA_HP == 185 &&
+		POINT_SUNGMA_MOVE == 186 && POINT_SUNGMA_IMMUNE == 187 && POINT_HIT_PCT == 197,
+		"monster cards: a Yohara set's point number differs from monstercard_data.py");
 
 }
 
