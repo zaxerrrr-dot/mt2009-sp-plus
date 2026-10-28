@@ -1,0 +1,958 @@
+#ifndef __INC_METIN2_PLAYERBOT_SHOP_AIDS_H__
+#define __INC_METIN2_PLAYERBOT_SHOP_AIDS_H__
+
+// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 - the bots use the ItemShop V3's gear aids and buy them there when a pass of theirs
+// wants one now (the owner, 28 October 2026: "Teach the bots to USE all of these, and buy them from ItemShop V3 when
+// needed"). How each works on this server (read in the engine, the overlay and the server patches):
+//
+//   * Seon-Hae's Suplementy 72065 / 72066 / 72067 (V3 5 / 9 / 18 SM; 72064 Maly has no line) - playerbot_seonhae.h
+//     (MT2009_PLUS_SEONHAE_V1, NPC 20095 in the first villages, quest seonhae, event flag m2_seonhae_on). A weapon or an
+//     armour / jewel / glove with all five ordinary bonuses and fewer than two extra ones, 1-10 shards of the item's
+//     level band (MaterialVnum - the Lucent 39078-39080 drop on Yohara for bots too; the other shards only for players)
+//     and 0-5 Suplementy of one kind: chance = 2% a shard + the kind's % x pieces / 5 (Silny 50, Duzy 20, Sredni 10),
+//     rolled at hand-in, everything spent whatever the roll; Seon-Hae keeps the item m2_seonhae_wait_min (0 = 24 h),
+//     then "collect" remakes it and, on a won roll, adds the bonus (AddRareAttribute; a glove: Bonus67GloveRare).
+//     The quest and the chat commands refuse a bot (pc.is_bot(), Eligible). The bot does what the quest does - its
+//     seonhae.npc_vid / npc_time flags at the NPC it stands by - and calls the same core functions the command calls
+//     (mt2009_seonhae::Add / Collect): every check, the chance, the costs and the wait are the players'.
+//   * Blogoslawienstwo Przedmiotu 71052 (V3 100005, 129 SM; a 2% mob drop) - CHARACTER::UseItemEx case 71052:
+//     ChangeRareAttribute(2) - on a glove Bonus67GloveRare(change): every 6th/7th line the glove has is rolled again
+//     from the pool's glove column, never one it had nor two alike. 71051 (the add) exists in item_proto and in the
+//     engine, but nothing gives it (no drop, no shop, no quest - the owner: "ONLY the Seon-Hae version"), so a glove
+//     gets its 6th / 7th line from Seon-Hae alone (MT2009_PLUS_SEONHAE_GLOVE_V1); 71052 then re-rolls them.
+//   * Ksiega Obrobki Kamienia 71083 (V3 604, 20 SM) - USE_CLEAN_SOCKET, value0 3: up to three Pekniete Kamienie
+//     (28960, a failed soul stone or demon stone) out of the item's sockets, the remaining stones shifted forward. It
+//     never takes a good stone out. The bots' seating (ManagePlayerBotSoulStones, SocketPlayerBotChiStone) welds a
+//     cracked stone 7 times in 10 and treated the socket as lost: the book gives it back when a stone waits for it.
+//   * Kamien Kowala 71025 (V3 452, 79 SM) and Magiczny Metal 71026 (V3 451, 59 SM; 710, 350 SZ) - nothing on this
+//     server: no use case in UseItemEx (71025 is USE_SPECIAL with no case of its vnum, 71026 ITEM_SPECIAL), no tuning
+//     value (not USE_TUNING, so DoRefineWithScroll never takes them), no refine_proto material, no cube recipe (their
+//     descriptions name the Blacksmith's Podrecznik Kowala 70039 / Zwoj Smoka 71032 crafts - cube.txt has no recipe at
+//     20016) and no quest. The bots neither use nor buy them: a purchase would only pile up.
+//
+// The bots' logic:
+//   * Seon-Hae (PLAYERBOT_SEONHAE): a bot of PLAYERBOT_SEONHAE_MIN_LEVEL with the system on looks every few minutes at
+//     its worn pieces the core would take (CheckItem's rules, off the body) whose band's shard it holds. The piece: by
+//     need (PLAYERBOT_SEONHAE_SLOTS - the weapon and the armour most, then the glove of a Champion, the helmet, the
+//     jewellery) less what its absence costs (Seon-Hae keeps it a day: a weapon or a body armour only with a wearable
+//     spare in the bag, a Champion's glove a little less), a piece with no extra line yet first. The recipe: the shards
+//     (1-10) and the Suplementy (kind, 0-5) of the lowest yang a won bonus - (pieces x the V3 price a piece x the yang a
+//     coin + shards x their price + the day's wait, PLAYERBOT_SEONHAE_WAIT_SM) / chance - from what it holds and its
+//     Smocze Monety can buy, at PLAYERBOT_SEONHAE_MIN_PCT at least (1 shard + 5 Silne, 52%, at today's prices). What the
+//     recipe lacks is the V3 goal; with it in the bag (or nothing more to buy) the bot goes to the Seon-Hae of its
+//     first village (the workshop's road), takes the piece off, hands it in, and comes back to collect it when it is
+//     ready. One piece at a time (the core's rule).
+//   * Glove 6/7 (PLAYERBOT_GLOVE67): a Sung Ma Champion whose glove has its extra lines: a line is a must (the
+//     Will % of the kind its band's map lacks most - GetPlayerBotChiShortKind -, the glove's "base attribute +x%" of
+//     that kind, or, lacking nothing, the boss damage line of its fighting - skills for a caster, hits else), wanted
+//     (the other boss lines, the other Will %, the base attribute %, the lightning) or other. A glove with a must, or
+//     with only wanted lines, is done; else 71052 re-rolls it (the glove off and on again, as the stones go in), at most
+//     PLAYERBOT_GLOVE67_GIVE_UP times a glove (quest flags playerbot.g67_glove / playerbot.g67_rolls).
+//   * Clean socket (PLAYERBOT_CLEANSOCKET): a worn weapon or body armour with a cracked stone and no open socket while
+//     the bag holds a soul stone the seating pass would put there (its own rules: Iwakura's tier, the grade for the
+//     piece, no second of a kind), or a Champion's glove with a cracked stone, no free socket and a demon stone of
+//     PLAYERBOT_CHI_STONE_MIN_LEVEL: 71083 on the piece (off and on again); the seating passes then go on as before.
+//
+// The shop goals (CollectPlayerBotShopAidGoals, from CollectPlayerBotIshop3Goals - playerbot_ishop3_goals.h):
+// "bonus_67add" the Seon-Hae recipe's Suplementy the bag lacks, "bonus_67change" one 71052 while the glove pass would
+// roll and holds none, "bonus_socket_clean" one 71083 while a piece waits for one and the bag holds none. Logged as the
+// other goals (PLAYERBOT_ISHOP3: bought / session / no coins; the hourly census by these categories).
+//
+// The log: PLAYERBOT_SEONHAE (plan, going, handed in, collected, refused, census), PLAYERBOT_GLOVE67 (roll, done,
+// give up), PLAYERBOT_CLEANSOCKET (cleaned) and their census every PLAYERBOT_SHOP_AIDS_CENSUS_MS. Event flag
+// m2_bot_shop_aids_off stops the three passes and their goals.
+//
+// An implementation fragment: include it once, from playerbot_manager.cpp, right after playerbot_ishop3_goals.h; the
+// tick calls ManagePlayerBotShopAids beside the workshop's errand.
+
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(MT2009_PLUS_BOT_ISHOP_V3_V1) && defined(MT2009_PLUS_BOT_USE_SHOP_AIDS_V1)
+
+namespace
+{
+	const char* const PLAYERBOT_SHOP_AIDS_OFF_FLAG = "m2_bot_shop_aids_off";
+	const DWORD PLAYERBOT_SHOP_AIDS_CENSUS_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_SHOP_AIDS_LIGHT_MIN_MS = 60 * 1000;
+	const DWORD PLAYERBOT_SHOP_AIDS_LIGHT_MAX_MS = 120 * 1000;
+
+	// ---- Seon-Hae
+	const int PLAYERBOT_SEONHAE_MIN_LEVEL = 50;
+	const int PLAYERBOT_SEONHAE_MIN_PCT = 20;
+	const long long PLAYERBOT_SEONHAE_WAIT_SM = 40;		// a day without the piece, in Smocze Monety
+	const long long PLAYERBOT_SEONHAE_SHARD_YANG = 400000;	// a shard the price sheet does not name
+	const DWORD PLAYERBOT_SEONHAE_CHECK_MIN_MS = 5 * 60 * 1000;
+	const DWORD PLAYERBOT_SEONHAE_CHECK_MAX_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_SEONHAE_VISIT_MS = 4 * 60 * 1000;
+	const DWORD PLAYERBOT_SEONHAE_REFUSED_MS = 60 * 60 * 1000;
+	const DWORD PLAYERBOT_SEONHAE_ADDITIVES[4] = { 72064, 72065, 72066, 72067 };
+	// the V3 price a piece where the catalogue has no line (Maly: none) - only for comparing what the bag holds
+	const long long PLAYERBOT_SEONHAE_ADDITIVE_FALLBACK_SM[4] = { 3, 5, 9, 18 };
+
+	struct TPlayerBotSeonHaeSlot
+	{
+		BYTE bWear;
+		int iNeed;		// what a 6th/7th line on the piece is worth
+		int iAbsence;	// what a day without it costs
+		bool bSpare;	// handed in only with a wearable spare in the bag
+	};
+	const TPlayerBotSeonHaeSlot PLAYERBOT_SEONHAE_SLOTS[] = {
+		{ WEAR_WEAPON, 10, 6, true },
+		{ WEAR_BODY, 9, 5, true },
+		{ WEAR_GLOVE, 9, 3, false },
+		{ WEAR_HEAD, 7, 0, false },
+		{ WEAR_PENDANT, 6, 0, false },
+		{ WEAR_WRIST, 6, 0, false },
+		{ WEAR_NECK, 6, 0, false },
+		{ WEAR_SHIELD, 6, 0, false },
+		{ WEAR_FOOTS, 5, 0, false },
+		{ WEAR_EAR, 5, 0, false },
+	};
+
+	// Seon-Hae in the first villages (npc.txt of metin2_map_a1/b1/c1: (698,652), (677,585), (471,576) on the bases
+	// (409600,896000), (0,102400), (921600,204800)).
+	bool GetPlayerBotSeonHaePoint(long mapIndex, long& x, long& y)
+	{
+		switch (mapIndex)
+		{
+			case 1:  x = 479400; y = 961200; return true;
+			case 21: x = 67700;  y = 160900; return true;
+			case 41: x = 968700; y = 262400; return true;
+			default: return false;
+		}
+	}
+
+	// ---- the glove's 6th / 7th lines
+	const DWORD PLAYERBOT_GLOVE67_CHANGE_VNUM = 71052;
+	const int PLAYERBOT_GLOVE67_GIVE_UP = 12;
+	const char* const PLAYERBOT_GLOVE67_FLAG_ID = "playerbot.g67_glove";
+	const char* const PLAYERBOT_GLOVE67_FLAG_ROLLS = "playerbot.g67_rolls";
+	enum { GLOVE67_OTHER = 1, GLOVE67_WANTED = 2, GLOVE67_MUST = 3 };
+
+	// ---- the socket book
+	const DWORD PLAYERBOT_CLEAN_SOCKET_VNUM = 71083;
+	const DWORD PLAYERBOT_CRACKED_STONE_VNUM = 28960;
+
+	struct TPlayerBotSeonHae
+	{
+		BYTE bPhase;	// 0 none, 1 the visit (hand in or collect)
+		DWORD dwNextCheck, dwVisitStart, dwNextAction, dwRefusedUntil;
+		TPlayerBotSeonHae() : bPhase(0), dwNextCheck(0), dwVisitStart(0), dwNextAction(0), dwRefusedUntil(0) {}
+	};
+	std::map<DWORD, TPlayerBotSeonHae> s_mapPlayerBotSeonHae;
+	std::map<DWORD, DWORD> s_mapPlayerBotShopAidsLight;
+	DWORD s_dwPlayerBotShopAidsCensusAt = 0;
+
+	struct TPlayerBotShopAidsStats
+	{
+		unsigned int looks, plans, noPiece, noShard, lowChance, waitBuy, trips, handed, handedWon, refused, collected,
+				added, notAdded, far;
+		unsigned int gloveLooks, gloveDone, gloveRolls, gloveBetter, gloveGiveUp, gloveNoStone;
+		unsigned int cleanWanted, cleaned, cleanNoBook;
+		TPlayerBotShopAidsStats() { memset(this, 0, sizeof(*this)); }
+	};
+	TPlayerBotShopAidsStats s_kPlayerBotShopAidsStats;
+
+	bool ArePlayerBotShopAidsOff()
+	{
+		return quest::CQuestManager::instance().GetEventFlag(PLAYERBOT_SHOP_AIDS_OFF_FLAG) != 0;
+	}
+
+	// A bag item of the vnum (the first cell of a stack, never locked or in a trade); NULL none.
+	LPITEM FindPlayerBotShopAidBagItem(LPCHARACTER ch, DWORD vnum)
+	{
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && item->GetVnum() == vnum && !item->isLocked() && !item->IsExchanging())
+				return item;
+		}
+		return NULL;
+	}
+
+	// The same, brought out of the extra inventory's storages when the bag has none.
+	LPITEM FetchPlayerBotShopAidBagItem(LPCHARACTER ch, DWORD vnum)
+	{
+		LPITEM item = FindPlayerBotShopAidBagItem(ch, vnum);
+		if (!item && ch->CountSpecifyItem(vnum) > 0 && PlayerBotEkwFetchVnum(ch, vnum))
+			item = FindPlayerBotShopAidBagItem(ch, vnum);
+		return item;
+	}
+
+	// The cheapest V3 price a piece in Smocze Monety (0: no line the bot's level may buy).
+	long long GetPlayerBotShopAidUnitCoins(LPCHARACTER ch, DWORD vnum)
+	{
+		std::vector<const TPlayerBotItemShopEntry*> lines;
+		SortPlayerBotIshop3Lines(ch, vnum, false, lines);
+		if (lines.empty())
+			return 0;
+		return std::max<long long>(1, ((long long)lines[0]->dwPrice + lines[0]->dwCount - 1) / std::max<DWORD>(1, lines[0]->dwCount));
+	}
+
+	// A shard's yang, from the bots' price sheet.
+	long long GetPlayerBotSeonHaeShardYang(DWORD vnum)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_MATERIAL_PRICES) / sizeof(PLAYERBOT_MATERIAL_PRICES[0]); ++i)
+			if (PLAYERBOT_MATERIAL_PRICES[i].dwVnum == vnum && PLAYERBOT_MATERIAL_PRICES[i].dwPrice > 0)
+				return (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_MATERIAL_PRICES[i].dwPrice);
+		for (size_t i = 0; i < sizeof(PLAYERBOT_EXTRA_MATERIAL_PRICES) / sizeof(PLAYERBOT_EXTRA_MATERIAL_PRICES[0]); ++i)
+			if (PLAYERBOT_EXTRA_MATERIAL_PRICES[i].dwVnum == vnum && PLAYERBOT_EXTRA_MATERIAL_PRICES[i].dwPrice > 0)
+				return (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_EXTRA_MATERIAL_PRICES[i].dwPrice);
+		return (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_SEONHAE_SHARD_YANG);
+	}
+
+	// ======================================================================== Seon-Hae
+
+	// The core's CheckItem (playerbot_seonhae.h) for a piece still worn: what it would refuse whatever the moment.
+	bool IsPlayerBotSeonHaePiece(LPCHARACTER ch, LPITEM item)
+	{
+		if (!item || (item->GetType() != ITEM_WEAPON && item->GetType() != ITEM_ARMOR) || MlodziIsWeaponVnum(item->GetVnum()))
+			return false;
+		if (item->GetAttributeSetIndex() < 0 || item->GetCount() != 1 || IS_SET(item->GetFlag(), ITEM_FLAG_UNIQUE) ||
+				item->isLocked() || item->IsExchanging() || IsPlayerBotSidekickPinned(ch, item))
+			return false;
+		for (int i = 0; i < ITEM_LIMIT_MAX_NUM; ++i)
+		{
+			const BYTE t = item->GetLimitType(i);
+			if (t == LIMIT_REAL_TIME || t == LIMIT_REAL_TIME_START_FIRST_USE || t == LIMIT_TIMER_BASED_ON_WEAR)
+				return false;
+		}
+		if (item->GetAttributeCount() < ITEM_ATTRIBUTE_NORM_NUM || item->GetRareAttrCount() >= ITEM_ATTRIBUTE_RARE_NUM ||
+				!mt2009_seonhae::RarePoolHasRoom(item))
+			return false;
+		BYTE bReserved;
+		if (Mt2009WillTalismanType(item->GetVnum(), bReserved) || Mt2009JadeBraceletType(item->GetVnum(), bReserved))
+			return false;
+		return true;
+	}
+
+	// A piece of the same kind in the bag the bot could wear while Seon-Hae keeps its own.
+	bool HasPlayerBotSeonHaeSpare(LPCHARACTER ch, LPITEM worn)
+	{
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item == worn || item->GetType() != worn->GetType() ||
+					item->GetSubType() != worn->GetSubType() || item->isLocked() || !IsPlayerBotWearableAtLevel(ch, item->GetVnum()))
+				continue;
+			static const DWORD s_aJobAnti[4] = { ITEM_ANTIFLAG_WARRIOR, ITEM_ANTIFLAG_ASSASSIN, ITEM_ANTIFLAG_SURA,
+				ITEM_ANTIFLAG_SHAMAN };
+			const int job = (int)ch->GetJob();
+			if (job >= 0 && job < 4 && IS_SET(item->GetAntiFlag(), s_aJobAnti[job]))
+				continue;
+			if (IS_SET(item->GetAntiFlag(), GET_SEX(ch) == SEX_MALE ? ITEM_ANTIFLAG_MALE : ITEM_ANTIFLAG_FEMALE))
+				continue;
+			return true;
+		}
+		return false;
+	}
+
+	struct TPlayerBotSeonHaePlan
+	{
+		LPITEM item;
+		BYTE bWear;
+		DWORD dwShard;
+		int iShards;
+		int iGrade;			// PLAYERBOT_SEONHAE_ADDITIVES index, -1 none
+		int iAdditives;
+		int iHeld;			// of the grade in the bag (and the storages)
+		int iPct;
+		long long llYangPerWin;
+		const char* szWhy;	// no plan: why
+		TPlayerBotSeonHaePlan() : item(NULL), bWear(0), dwShard(0), iShards(0), iGrade(-1), iAdditives(0), iHeld(0), iPct(0),
+			llYangPerWin(0), szWhy("") {}
+	};
+
+	// The recipe of the lowest yang a won bonus for one piece: heldOnly - from the bag; else what the coins add.
+	bool PlanPlayerBotSeonHaeRecipe(LPCHARACTER ch, const TPlayerBotAIState& state, int shardsHeld, DWORD shard,
+			bool heldOnly, TPlayerBotSeonHaePlan& plan)
+	{
+		const long long yangPerCoin = GetPlayerBotIshop3YangPerCoin();
+		const long long shardYang = GetPlayerBotSeonHaeShardYang(shard);
+		const int maxShards = std::min(shardsHeld, (int)mt2009_seonhae::MATERIAL_MAX);
+		const long long coinsLeft = std::max(0, state.iDragonCoins);
+		bool found = false;
+		for (int g = -1; g < 4; ++g)
+		{
+			const DWORD vnum = g >= 0 ? PLAYERBOT_SEONHAE_ADDITIVES[g] : 0;
+			const int held = g >= 0 ? (int)ch->CountSpecifyItem(vnum) : 0;
+			const long long unitV3 = g >= 0 ? GetPlayerBotShopAidUnitCoins(ch, vnum) : 0;
+			const long long unit = unitV3 > 0 ? unitV3 : (g >= 0 ? PLAYERBOT_SEONHAE_ADDITIVE_FALLBACK_SM[g] : 0);
+			int maxN = 0;
+			if (g >= 0)
+			{
+				maxN = std::min(held, (int)mt2009_seonhae::SUPPORT_MAX);
+				if (!heldOnly && unitV3 > 0)
+					maxN = (int)std::min<long long>(mt2009_seonhae::SUPPORT_MAX, held + coinsLeft / unitV3);
+			}
+			for (int n = g >= 0 ? 1 : 0; n <= maxN; ++n)
+				for (int s = 1; s <= maxShards; ++s)
+				{
+					const int pct = mt2009_seonhae::ChancePct(s, g >= 0 ? mt2009_seonhae::SupportPct(vnum) : 0, n);
+					if (pct < PLAYERBOT_SEONHAE_MIN_PCT)
+						continue;
+					const long long cost = (long long)n * unit * yangPerCoin + (long long)s * shardYang +
+							PLAYERBOT_SEONHAE_WAIT_SM * yangPerCoin;
+					const long long perWin = cost * 100 / pct;
+					if (!found || perWin < plan.llYangPerWin)
+					{
+						found = true;
+						plan.dwShard = shard;
+						plan.iShards = s;
+						plan.iGrade = g;
+						plan.iAdditives = n;
+						plan.iHeld = held;
+						plan.iPct = pct;
+						plan.llYangPerWin = perWin;
+					}
+				}
+		}
+		return found;
+	}
+
+	// The piece and its recipe (heldOnly: what the bag holds now - the visit's; else with what the coins buy - the goal's).
+	bool PlanPlayerBotSeonHae(LPCHARACTER ch, const TPlayerBotAIState& state, bool heldOnly, TPlayerBotSeonHaePlan& out)
+	{
+		out = TPlayerBotSeonHaePlan();
+		if (!ch || !ch->IsItemLoaded() || ch->GetLevel() < PLAYERBOT_SEONHAE_MIN_LEVEL || !mt2009_seonhae::IsOn() ||
+				mt2009_seonhae::Holding(ch) || IsPlayerBotGearFrozen(ch) || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
+				ArePlayerBotShopAidsOff())
+		{
+			out.szWhy = "off";
+			return false;
+		}
+		bool anyPiece = false, anyShard = false;
+		int bestScore = INT_MIN;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SEONHAE_SLOTS) / sizeof(PLAYERBOT_SEONHAE_SLOTS[0]); ++i)
+		{
+			const TPlayerBotSeonHaeSlot& slot = PLAYERBOT_SEONHAE_SLOTS[i];
+			LPITEM item = ch->GetWear(slot.bWear);
+			if (!IsPlayerBotSeonHaePiece(ch, item))
+				continue;
+			if (slot.bSpare && !HasPlayerBotSeonHaeSpare(ch, item))
+				continue;
+			int absence = slot.iAbsence;
+			if (slot.bWear == WEAR_GLOVE && !IsPlayerBotSungmaWillUser(ch))
+				absence = 0;
+			anyPiece = true;
+			const DWORD shard = mt2009_seonhae::MaterialVnum(item);
+			const int shards = (int)ch->CountSpecifyItem(shard);
+			if (shards <= 0)
+				continue;
+			anyShard = true;
+			// the first extra line before the second; then the need less the absence
+			const int score = (item->GetRareAttrCount() == 0 ? 100 : 0) + (slot.iNeed - absence) * 10;
+			if (score <= bestScore)
+				continue;
+			TPlayerBotSeonHaePlan p;
+			if (!PlanPlayerBotSeonHaeRecipe(ch, state, shards, shard, heldOnly, p))
+				continue;
+			bestScore = score;
+			p.item = item;
+			p.bWear = slot.bWear;
+			out = p;
+		}
+		if (out.item)
+			return true;
+		out.szWhy = !anyPiece ? "no_piece" : (!anyShard ? "no_shard" : "low_chance");
+		return false;
+	}
+
+	// The goal: the recipe's Suplementy the bag lacks.
+	int GetPlayerBotSeonHaeAdditiveNeed(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD& vnum)
+	{
+		TPlayerBotSeonHaePlan plan;
+		if (!PlanPlayerBotSeonHae(ch, state, false, plan) || plan.iGrade < 0)
+			return 0;
+		vnum = PLAYERBOT_SEONHAE_ADDITIVES[plan.iGrade];
+		return std::max(0, plan.iAdditives - plan.iHeld);
+	}
+
+	void EndPlayerBotSeonHaeVisit(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSeonHae& s, DWORD dwNow, const char* why)
+	{
+		if (s.bPhase != 0)
+			sys_log(0, "PLAYERBOT_SEONHAE: visit over pid=%u name=%s why=%s holding=%d", ch->GetPlayerID(), ch->GetName(), why,
+					mt2009_seonhae::Holding(ch) ? 1 : 0);
+		s.bPhase = 0;
+		s.dwNextAction = 0;
+		s.dwNextCheck = dwNow + number(PLAYERBOT_SEONHAE_CHECK_MIN_MS, PLAYERBOT_SEONHAE_CHECK_MAX_MS);
+		ClearPlayerBotRoute(state, true);
+		state.bEquipPending = true;
+		state.dwNextEquipmentCheckTime = 0;
+	}
+
+	LPCHARACTER FindPlayerBotSeonHaeNpc(LPCHARACTER ch)
+	{
+		CharacterVectorInteractor found;
+		if (!CHARACTER_MANAGER::instance().GetCharactersByRaceNum(mt2009_seonhae::NPC_VNUM, found))
+			return NULL;
+		LPCHARACTER best = NULL;
+		int bestDist = mt2009_seonhae::NPC_RANGE + 1;
+		for (CharacterVectorInteractor::iterator it = found.begin(); it != found.end(); ++it)
+		{
+			LPCHARACTER npc = *it;
+			if (!npc || !npc->IsNPC() || npc->GetMapIndex() != ch->GetMapIndex())
+				continue;
+			const int dist = DISTANCE_APPROX(ch->GetX() - npc->GetX(), ch->GetY() - npc->GetY());
+			if (dist < bestDist)
+			{
+				bestDist = dist;
+				best = npc;
+			}
+		}
+		return best;
+	}
+
+	// Collect what Seon-Hae keeps (ready, a free cell): the core's Collect.
+	bool CollectPlayerBotSeonHae(LPCHARACTER ch)
+	{
+		const DWORD vnum = (DWORD)ch->GetQuestFlag(mt2009_seonhae::F_VNUM);
+		const int result = ch->GetQuestFlag(mt2009_seonhae::F_RESULT);
+		const int pct = ch->GetQuestFlag(mt2009_seonhae::F_PCT);
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		if (!proto || ch->GetEmptyInventory(proto->bSize) < 0)
+		{
+			PlayerBotLogThrottled("seonhae_no_room", get_dword_time(),
+					"PLAYERBOT_SEONHAE: no room to collect pid=%u name=%s vnum=%u", ch->GetPlayerID(), ch->GetName(), vnum);
+			return false;
+		}
+		mt2009_seonhae::Collect(ch);
+		if (mt2009_seonhae::Holding(ch))
+		{
+			++s_kPlayerBotShopAidsStats.refused;
+			sys_log(0, "PLAYERBOT_SEONHAE: collect refused pid=%u name=%s vnum=%u", ch->GetPlayerID(), ch->GetName(), vnum);
+			return false;
+		}
+		++s_kPlayerBotShopAidsStats.collected;
+		// the remade piece: the newest of its vnum in the bag
+		LPITEM got = NULL;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && item->GetVnum() == vnum && (!got || item->GetID() > got->GetID()))
+				got = item;
+		}
+		const bool won = result == mt2009_seonhae::RESULT_SUCCESS;
+		if (won)
+			++s_kPlayerBotShopAidsStats.added;
+		else
+			++s_kPlayerBotShopAidsStats.notAdded;
+		char lines[96] = "";
+		if (got)
+		{
+			int len = 0;
+			for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END && len < (int)sizeof(lines) - 16; ++i)
+				len += snprintf(lines + len, sizeof(lines) - len, "%s%u:%d", i == ITEM_ATTRIBUTE_RARE_START ? "" : ",",
+						(unsigned int)got->GetAttributeType(i), (int)got->GetAttributeValue(i));
+		}
+		sys_log(0, "PLAYERBOT_SEONHAE: collected pid=%u name=%s vnum=%u pct=%d result=%s extra=[%s]", ch->GetPlayerID(),
+				ch->GetName(), vnum, pct, won ? "ADDED" : "NONE", lines);
+		return true;
+	}
+
+	// Hand the plan's piece in: off the body, the Suplement into the bag, the core's Add.
+	bool HandPlayerBotSeonHae(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSeonHae& s, DWORD dwNow)
+	{
+		TPlayerBotSeonHaePlan plan;
+		if (!PlanPlayerBotSeonHae(ch, state, true, plan))
+		{
+			sys_log(0, "PLAYERBOT_SEONHAE: nothing to hand in pid=%u name=%s why=%s", ch->GetPlayerID(), ch->GetName(), plan.szWhy);
+			return false;
+		}
+		LPITEM item = plan.item;
+		const DWORD vnum = item->GetVnum();
+		LPITEM additive = NULL;
+		if (plan.iGrade >= 0)
+		{
+			additive = FetchPlayerBotShopAidBagItem(ch, PLAYERBOT_SEONHAE_ADDITIVES[plan.iGrade]);
+			if (!additive)
+				return false;
+		}
+		if (item->IsEquipped() && (ch->GetEmptyInventory(item->GetSize()) < 0 || !ch->UnequipItem(item) || item->IsEquipped()))
+		{
+			PlayerBotLogThrottled("seonhae_unequip", dwNow, "PLAYERBOT_SEONHAE: cannot take off pid=%u name=%s vnum=%u",
+					ch->GetPlayerID(), ch->GetName(), vnum);
+			return false;
+		}
+		if (plan.iGrade >= 0 && additive->GetCell() == item->GetCell())
+			return false;
+		const int rareBefore = item->GetRareAttrCount();
+		char args[64];
+		snprintf(args, sizeof(args), "%d %d %d %d", (int)item->GetCell(), plan.iShards,
+				additive ? (int)additive->GetCell() : -1, plan.iAdditives);
+		mt2009_seonhae::Add(ch, args);
+		if (!mt2009_seonhae::Holding(ch))
+		{
+			// the core's own answer for the piece (the rest - the NPC, the shards, the additive - logs its args)
+			const int check = mt2009_seonhae::CheckItem(ch, item);
+			++s_kPlayerBotShopAidsStats.refused;
+			s.dwRefusedUntil = dwNow + PLAYERBOT_SEONHAE_REFUSED_MS;
+			PlayerBotEquipItem(ch, item);
+			sys_log(0, "PLAYERBOT_SEONHAE: refused pid=%u name=%s vnum=%u args=%s check=%d", ch->GetPlayerID(), ch->GetName(),
+					vnum, args, check);
+			return false;
+		}
+		++s_kPlayerBotShopAidsStats.handed;
+		if (ch->GetQuestFlag(mt2009_seonhae::F_RESULT) == mt2009_seonhae::RESULT_SUCCESS)
+			++s_kPlayerBotShopAidsStats.handedWon;
+		sys_log(0, "PLAYERBOT_SEONHAE: handed in pid=%u name=%s lv=%d vnum=%u wear=%d extra=%d shard=%u x%d additive=%u x%d "
+				"pct=%d yang_per_win=%lld ready_in_min=%d coins=%d", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), vnum,
+				(int)plan.bWear, rareBefore, plan.dwShard, plan.iShards,
+				plan.iGrade >= 0 ? PLAYERBOT_SEONHAE_ADDITIVES[plan.iGrade] : 0, plan.iAdditives, plan.iPct,
+				plan.llYangPerWin, (ch->GetQuestFlag(mt2009_seonhae::F_READY) - (int)get_global_time()) / 60, state.iDragonCoins);
+		return true;
+	}
+
+	// What brings the bot to Seon-Hae now: 1 collect, 2 hand in, 0 nothing.
+	int GetPlayerBotSeonHaeWork(LPCHARACTER ch, const TPlayerBotAIState& state, const TPlayerBotSeonHae& s, DWORD dwNow)
+	{
+		if (mt2009_seonhae::Holding(ch))
+			return ch->GetQuestFlag(mt2009_seonhae::F_READY) <= (int)get_global_time() ? 1 : 0;
+		if (s.dwRefusedUntil != 0 && (int)(dwNow - s.dwRefusedUntil) < 0)
+			return 0;
+		++s_kPlayerBotShopAidsStats.looks;
+		TPlayerBotSeonHaePlan held, full;
+		const bool okHeld = PlanPlayerBotSeonHae(ch, state, true, held);
+		const bool okFull = PlanPlayerBotSeonHae(ch, state, false, full);
+		if (!okHeld && !okFull)
+		{
+			const char* why = held.szWhy;
+			if (!strcmp(why, "no_piece"))
+				++s_kPlayerBotShopAidsStats.noPiece;
+			else if (!strcmp(why, "no_shard"))
+				++s_kPlayerBotShopAidsStats.noShard;
+			else if (!strcmp(why, "low_chance"))
+				++s_kPlayerBotShopAidsStats.lowChance;
+			return 0;
+		}
+		++s_kPlayerBotShopAidsStats.plans;
+		// the goal still buys what the full recipe adds: wait for it (the coins' answer is the full plan's)
+		if (!okHeld || (okFull && full.iAdditives > full.iHeld && (full.item != held.item || full.iPct > held.iPct)))
+		{
+			++s_kPlayerBotShopAidsStats.waitBuy;
+			return 0;
+		}
+		return 2;
+	}
+
+	// The errand: to the Seon-Hae of the first village, hand in or collect; true while it has the bot.
+	bool ManagePlayerBotSeonHae(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		TPlayerBotSeonHae& s = s_mapPlayerBotSeonHae[ch->GetPlayerID()];
+		const bool otherErrand = state.bVisitingShop || state.bVisitingBiologist || state.bVisitingHerbalist ||
+				state.bVisitingStable || state.bVisitingAlchemist || state.bVisitingUriel || state.bFishingSession ||
+				state.bMarketTrip || state.bVisitingYonah;
+		if (otherErrand || (ch->GetParty() && IsPlayerBotHumanLedParty(ch->GetParty())) || IsPlayerBotHeldForCompany(ch) ||
+				ch->GetMyShop() != NULL || ch->GetExchange() || IsPlayerBotArezzoHeldHere(ch) || IsPlayerBotGearFrozen(ch))
+		{
+			if (s.bPhase != 0)
+				EndPlayerBotSeonHaeVisit(ch, state, s, dwNow, "interrupted");
+			return false;
+		}
+		if (s.bPhase == 0)
+		{
+			if ((int)(dwNow - s.dwNextCheck) < 0)
+				return false;
+			s.dwNextCheck = dwNow + number(PLAYERBOT_SEONHAE_CHECK_MIN_MS, PLAYERBOT_SEONHAE_CHECK_MAX_MS);
+			const int work = GetPlayerBotSeonHaeWork(ch, state, s, dwNow);
+			if (work == 0)
+				return false;
+			long x = 0, y = 0;
+			if (!GetPlayerBotSeonHaePoint(ch->GetMapIndex(), x, y))
+			{
+				long homeMap = 0, homeX = 0, homeY = 0;
+				if (!GetPlayerBotVillageReturn(ch, playerbot_empire_rules::MAP_ROLE_M1, homeMap, homeX, homeY) ||
+						!IsPlayerBotMapHostedHere(homeMap) || !GetPlayerBotSeonHaePoint(homeMap, x, y))
+				{
+					++s_kPlayerBotShopAidsStats.far;
+					return false;
+				}
+				if (ch->GetVictim() != NULL || state.dwTargetVID != 0)
+				{
+					s.dwNextCheck = dwNow + number(20000, 60000);
+					return false;
+				}
+				SetPlayerBotAction(state, BOT_ACTION_TRAVEL, dwNow);
+				if (!TransitionPlayerBotMap(ch, state, homeMap, homeX, homeY, dwNow, "seonhae"))
+					return false;
+				s.dwNextCheck = 0;	// straight to Seon-Hae once in the village
+				return true;
+			}
+			s.bPhase = 1;
+			s.dwVisitStart = dwNow;
+			s.dwNextAction = 0;
+			++s_kPlayerBotShopAidsStats.trips;
+			state.dwTargetVID = 0;
+			ch->SetVictim(NULL);
+			ch->Stop();
+			ClearPlayerBotRoute(state, true);
+			sys_log(0, "PLAYERBOT_SEONHAE: going pid=%u name=%s lv=%d work=%s map=%ld coins=%d", ch->GetPlayerID(), ch->GetName(),
+					ch->GetLevel(), work == 1 ? "collect" : "hand_in", ch->GetMapIndex(), state.iDragonCoins);
+		}
+
+		long x = 0, y = 0;
+		if (!GetPlayerBotSeonHaePoint(ch->GetMapIndex(), x, y))
+		{
+			EndPlayerBotSeonHaeVisit(ch, state, s, dwNow, "left_village");
+			return false;
+		}
+		if (dwNow - s.dwVisitStart > PLAYERBOT_SEONHAE_VISIT_MS)
+		{
+			EndPlayerBotSeonHaeVisit(ch, state, s, dwNow, "timeout");
+			return false;
+		}
+		SetPlayerBotAction(state, BOT_ACTION_SHOP, dwNow);
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+
+		long ax = 0, ay = 0;
+		GetPlayerBotNpcApproach(ch->GetPlayerID(), x, y, 0x53454f4eU, ax, ay);
+		if (DISTANCE_APPROX(ch->GetX() - ax, ch->GetY() - ay) > 650)
+		{
+			if (!MovePlayerBot(ch, ax, ay, dwNow, 20, true, true, false, true) && state.bStuckCounter >= 6)
+			{
+				sys_err("PLAYERBOT_SEONHAE: route failed pid=%u name=%s map=%ld from=(%ld,%ld) to=(%ld,%ld)", ch->GetPlayerID(),
+						ch->GetName(), ch->GetMapIndex(), ch->GetX(), ch->GetY(), ax, ay);
+				EndPlayerBotSeonHaeVisit(ch, state, s, dwNow, "route_failed");
+				return false;
+			}
+			return true;
+		}
+		ch->Stop();
+		ch->SetPosition(POS_STANDING);
+		if (s.dwNextAction == 0)
+		{
+			s.dwNextAction = dwNow + number(2000, 5000);
+			return true;
+		}
+		if ((int)(dwNow - s.dwNextAction) < 0)
+			return true;
+
+		LPCHARACTER npc = FindPlayerBotSeonHaeNpc(ch);
+		if (!npc || DISTANCE_APPROX(ch->GetX() - npc->GetX(), ch->GetY() - npc->GetY()) > mt2009_seonhae::NPC_RANGE)
+		{
+			EndPlayerBotSeonHaeVisit(ch, state, s, dwNow, "no_npc");
+			return false;
+		}
+		// what the quest writes when a player talks to him (quest seonhae: pc.setqf("npc_vid") / ("npc_time"))
+		ch->SetQuestFlag(mt2009_seonhae::F_NPC_VID, (int)(DWORD)npc->GetVID());
+		ch->SetQuestFlag(mt2009_seonhae::F_NPC_TIME, (int)get_global_time());
+		if (mt2009_seonhae::Holding(ch))
+		{
+			if (ch->GetQuestFlag(mt2009_seonhae::F_READY) <= (int)get_global_time())
+				CollectPlayerBotSeonHae(ch);
+			EndPlayerBotSeonHaeVisit(ch, state, s, dwNow, "collect");
+			return false;
+		}
+		HandPlayerBotSeonHae(ch, state, s, dwNow);
+		EndPlayerBotSeonHaeVisit(ch, state, s, dwNow, "hand_in");
+		return false;
+	}
+
+	// ======================================================================== the glove's 6th / 7th lines
+
+	int GetPlayerBotGlove67Role(LPCHARACTER ch, LPITEM glove, BYTE type, int shortKind)
+	{
+		BYTE bWill = 0;
+		Mt2009GloveType(glove->GetVnum(), bWill);
+		const BYTE classBoss = IsPlayerBotCaster(ch) ? POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE : POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE;
+		if (shortKind >= 0)
+		{
+			if (type == POINT_SUNGMA_PER_STR + shortKind ||
+					(type == POINT_GLOVE_BASE_ATTR_PCT && bWill == POINT_SUNGMA_STR + shortKind))
+				return GLOVE67_MUST;
+		}
+		else if (type == classBoss)
+			return GLOVE67_MUST;
+		if (type == POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE || type == POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE ||
+				type == POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE || type == POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE ||
+				type == POINT_GLOVE_BASE_ATTR_PCT || type == POINT_GLOVE_LIGHTNING ||
+				(type >= POINT_SUNGMA_PER_STR && type < POINT_SUNGMA_PER_STR + 3))
+			return GLOVE67_WANTED;
+		return GLOVE67_OTHER;
+	}
+
+	// The stopping rule: a must line, or only wanted ones.
+	bool IsPlayerBotGlove67Good(LPCHARACTER ch, LPITEM glove)
+	{
+		const int shortKind = GetPlayerBotChiShortKind(ch);
+		bool must = false, allWanted = true;
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+		{
+			const BYTE type = glove->GetAttributeType(i);
+			if (!type)
+				continue;
+			const int role = GetPlayerBotGlove67Role(ch, glove, type, shortKind);
+			must = must || role == GLOVE67_MUST;
+			allWanted = allWanted && role >= GLOVE67_WANTED;
+		}
+		return must || allWanted;
+	}
+
+	// The worn glove of a Champion whose extra lines the pass would roll again (none: done, gave up, no lines).
+	LPITEM GetPlayerBotGlove67Target(LPCHARACTER ch, bool count)
+	{
+		if (!ch || !IsPlayerBotSungmaWillUser(ch) || IsPlayerBotGearFrozen(ch) || IsPlayerBotSidekickPID(ch->GetPlayerID()) ||
+				ArePlayerBotShopAidsOff())
+			return NULL;
+		LPITEM glove = ch->GetWear(WEAR_GLOVE);
+		BYTE bWill = 0;
+		if (!glove || !Mt2009GloveType(glove->GetVnum(), bWill) || glove->GetRareAttrCount() == 0 || glove->isLocked() ||
+				IsPlayerBotSidekickPinned(ch, glove))
+			return NULL;
+		if (count)
+			++s_kPlayerBotShopAidsStats.gloveLooks;
+		if (IsPlayerBotGlove67Good(ch, glove))
+		{
+			if (count)
+				++s_kPlayerBotShopAidsStats.gloveDone;
+			return NULL;
+		}
+		if ((DWORD)ch->GetQuestFlag(PLAYERBOT_GLOVE67_FLAG_ID) == glove->GetID() &&
+				ch->GetQuestFlag(PLAYERBOT_GLOVE67_FLAG_ROLLS) >= PLAYERBOT_GLOVE67_GIVE_UP)
+		{
+			if (count)
+				++s_kPlayerBotShopAidsStats.gloveGiveUp;
+			return NULL;
+		}
+		return glove;
+	}
+
+	void FormatPlayerBotGlove67Lines(LPITEM glove, char* buf, size_t size)
+	{
+		int len = 0;
+		buf[0] = 0;
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END && len >= 0 && len < (int)size - 16; ++i)
+			len += snprintf(buf + len, size - len, "%s%u:%d", i == ITEM_ATTRIBUTE_RARE_START ? "" : ",",
+					(unsigned int)glove->GetAttributeType(i), (int)glove->GetAttributeValue(i));
+	}
+
+	// One 71052 on the glove (off and on again, as its stones go in).
+	bool ManagePlayerBotGlove67(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		LPITEM glove = GetPlayerBotGlove67Target(ch, true);
+		if (!glove)
+			return false;
+		LPITEM blessing = FetchPlayerBotShopAidBagItem(ch, PLAYERBOT_GLOVE67_CHANGE_VNUM);
+		if (!blessing)
+		{
+			++s_kPlayerBotShopAidsStats.gloveNoStone;
+			return false;
+		}
+		if (ch->GetEmptyInventory(glove->GetSize()) < 0 || !ch->UnequipItem(glove) || glove->IsEquipped())
+			return false;
+		char before[64], after[64];
+		FormatPlayerBotGlove67Lines(glove, before, sizeof(before));
+		const int shortKind = GetPlayerBotChiShortKind(ch);
+		const DWORD gloveId = glove->GetID();
+		ch->UseItemEx(blessing, TItemPos(INVENTORY, glove->GetCell()));
+		FormatPlayerBotGlove67Lines(glove, after, sizeof(after));
+		PlayerBotEquipItem(ch, glove);
+		state.bEquipPending = true;
+		state.dwNextEquipmentCheckTime = 0;
+		const bool rolled = strcmp(before, after) != 0;
+		if (!rolled)
+		{
+			PlayerBotLogThrottled("glove67_refused", dwNow, "PLAYERBOT_GLOVE67: refused pid=%u name=%s glove=%u lines=[%s]",
+					ch->GetPlayerID(), ch->GetName(), glove->GetVnum(), before);
+			return false;
+		}
+		if ((DWORD)ch->GetQuestFlag(PLAYERBOT_GLOVE67_FLAG_ID) != gloveId)
+		{
+			ch->SetQuestFlag(PLAYERBOT_GLOVE67_FLAG_ID, (int)gloveId);
+			ch->SetQuestFlag(PLAYERBOT_GLOVE67_FLAG_ROLLS, 0);
+		}
+		const int rolls = ch->GetQuestFlag(PLAYERBOT_GLOVE67_FLAG_ROLLS) + 1;
+		ch->SetQuestFlag(PLAYERBOT_GLOVE67_FLAG_ROLLS, rolls);
+		++s_kPlayerBotShopAidsStats.gloveRolls;
+		const bool good = IsPlayerBotGlove67Good(ch, glove);
+		if (good)
+			++s_kPlayerBotShopAidsStats.gloveBetter;
+		sys_log(0, "PLAYERBOT_GLOVE67: roll pid=%u name=%s champion=%d glove=%u short=%d lines=[%s]->[%s] rolls=%d %s",
+				ch->GetPlayerID(), ch->GetName(), GetPlayerBotChampionLevel(ch), glove->GetVnum(), shortKind, before, after, rolls,
+				good ? "DONE" : (rolls >= PLAYERBOT_GLOVE67_GIVE_UP ? "GIVE_UP" : "AGAIN"));
+		return true;
+	}
+
+	// ======================================================================== the socket book
+
+	bool HasPlayerBotCrackedSocket(LPITEM item, bool& open)
+	{
+		bool cracked = false;
+		open = false;
+		for (int i = 0; item && i < ITEM_SOCKET_MAX_NUM; ++i)
+		{
+			const long socket = item->GetSocket(i);
+			if (socket == (long)PLAYERBOT_CRACKED_STONE_VNUM)
+				cracked = true;
+			else if (socket == 1)
+				open = true;
+		}
+		return cracked;
+	}
+
+	// A soul stone in the bag the seating pass would put into this worn piece once a socket is open
+	// (ManagePlayerBotSoulStones / FindPlayerBotSoulStoneSocket's rules with the cracked socket counted open).
+	bool HasPlayerBotStoneWaitingFor(LPCHARACTER ch, LPITEM gear, bool weapon)
+	{
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM stone = ch->GetInventoryItem(cell);
+			if (!stone || stone->GetCell() != cell || stone->GetType() != ITEM_METIN || stone->GetSubType() == METIN_SUNGMA ||
+					IsPlayerBotSidekickKeptForOwner(ch, stone))
+				continue;
+			const DWORD vnum = stone->GetVnum();
+			const int kind = GetPlayerBotSoulStoneKind(vnum);
+			if ((weapon ? !IsPlayerBotWeaponSoulStoneKind(kind) : !IsPlayerBotArmorSoulStoneKind(kind)) ||
+					GetPlayerBotSoulStoneSeatTier(vnum) <= 0 || !ShouldPlayerBotSeatSoulStone(gear, GetPlayerBotSoulStoneGrade(vnum)))
+				continue;
+			bool same = false;
+			for (int i = 0; i < ITEM_SOCKET_MAX_NUM && !same; ++i)
+			{
+				const DWORD inSocket = (DWORD)gear->GetSocket(i);
+				if (inSocket <= 2 || inSocket == PLAYERBOT_CRACKED_STONE_VNUM)
+					continue;
+				const TItemTable* seated = ITEM_MANAGER::instance().GetTable(inSocket);
+				same = seated && seated->alValues[5] == stone->GetValue(5);
+			}
+			if (!same)
+				return true;
+		}
+		return false;
+	}
+
+	// The worn piece the book should clean now (NULL none).
+	LPITEM GetPlayerBotCleanSocketTarget(LPCHARACTER ch)
+	{
+		if (!ch || IsPlayerBotGearFrozen(ch) || IsPlayerBotSidekickPID(ch->GetPlayerID()) || ArePlayerBotShopAidsOff())
+			return NULL;
+		static const BYTE s_aWear[2] = { WEAR_WEAPON, WEAR_BODY };
+		for (int w = 0; w < 2; ++w)
+		{
+			LPITEM gear = ch->GetWear(s_aWear[w]);
+			bool open = false;
+			if (!gear || IsPlayerBotSidekickPinned(ch, gear) || gear->isLocked() || !HasPlayerBotCrackedSocket(gear, open) || open)
+				continue;
+			if (HasPlayerBotStoneWaitingFor(ch, gear, w == 0))
+				return gear;
+		}
+		LPITEM glove = ch->GetWear(WEAR_GLOVE);
+		bool open = false;
+		if (glove && IsPlayerBotSungmaWillUser(ch) && IsPlayerBotChiGloveVnum(glove->GetVnum()) && !glove->isLocked() &&
+				!IsPlayerBotSidekickPinned(ch, glove) && HasPlayerBotCrackedSocket(glove, open) &&
+				CountPlayerBotChiFreeSockets(glove) == 0 && CountPlayerBotChiStones(ch, false) > 0)
+			return glove;
+		return NULL;
+	}
+
+	bool ManagePlayerBotCleanSocket(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		LPITEM gear = GetPlayerBotCleanSocketTarget(ch);
+		if (!gear)
+			return false;
+		++s_kPlayerBotShopAidsStats.cleanWanted;
+		LPITEM book = FetchPlayerBotShopAidBagItem(ch, PLAYERBOT_CLEAN_SOCKET_VNUM);
+		if (!book)
+		{
+			++s_kPlayerBotShopAidsStats.cleanNoBook;
+			return false;
+		}
+		if (ch->GetEmptyInventory(gear->GetSize()) < 0 || !ch->UnequipItem(gear) || gear->IsEquipped())
+			return false;
+		long before[3] = { 0, 0, 0 }, after[3] = { 0, 0, 0 };
+		for (int i = 0; i < 3 && i < ITEM_SOCKET_MAX_NUM; ++i)
+			before[i] = gear->GetSocket(i);
+		ch->UseItemEx(book, TItemPos(INVENTORY, gear->GetCell()));
+		for (int i = 0; i < 3 && i < ITEM_SOCKET_MAX_NUM; ++i)
+			after[i] = gear->GetSocket(i);
+		PlayerBotEquipItem(ch, gear);
+		state.bEquipPending = true;
+		state.dwNextEquipmentCheckTime = 0;
+		state.dwNextSoulStoneTime = 0;	// the stone that waited goes in at the seating pass's next look
+		bool open = false;
+		const bool still = HasPlayerBotCrackedSocket(gear, open);
+		if (!still)
+			++s_kPlayerBotShopAidsStats.cleaned;
+		sys_log(0, "PLAYERBOT_CLEANSOCKET: %s pid=%u name=%s gear=%u sockets=%ld,%ld,%ld->%ld,%ld,%ld", still ? "refused" : "cleaned",
+				ch->GetPlayerID(), ch->GetName(), gear->GetVnum(), before[0], before[1], before[2], after[0], after[1], after[2]);
+		return !still;
+	}
+
+	// ======================================================================== the goals, the tick, the census
+
+	// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 (goals): asked by CollectPlayerBotIshop3Goals (playerbot_ishop3_goals.h).
+	void CollectPlayerBotShopAidGoals(LPCHARACTER ch, TPlayerBotIshop3Goal* goals, int& n)
+	{
+		if (!ch || ArePlayerBotShopAidsOff())
+			return;
+		TPlayerBotAIStateMap::const_iterator state = s_mapPlayerBotAIStates.find(ch->GetPlayerID());
+		if (state == s_mapPlayerBotAIStates.end())
+			return;
+		DWORD vnum = 0;
+		const int additives = n < PLAYERBOT_ISHOP3_MAX_GOALS ? GetPlayerBotSeonHaeAdditiveNeed(ch, state->second, vnum) : 0;
+		if (additives > 0)
+		{
+			const TPlayerBotIshop3Goal g = { vnum, false, additives, "bonus_67add" };
+			goals[n++] = g;
+		}
+		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && ch->CountSpecifyItem(PLAYERBOT_GLOVE67_CHANGE_VNUM) == 0 &&
+				GetPlayerBotGlove67Target(ch, false))
+		{
+			const TPlayerBotIshop3Goal g = { PLAYERBOT_GLOVE67_CHANGE_VNUM, false, 1, "bonus_67change" };
+			goals[n++] = g;
+		}
+		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && ch->CountSpecifyItem(PLAYERBOT_CLEAN_SOCKET_VNUM) == 0 &&
+				GetPlayerBotCleanSocketTarget(ch))
+		{
+			const TPlayerBotIshop3Goal g = { PLAYERBOT_CLEAN_SOCKET_VNUM, false, 1, "bonus_socket_clean" };
+			goals[n++] = g;
+		}
+	}
+
+	void LogPlayerBotShopAidsCensus(DWORD dwNow)
+	{
+		if (s_dwPlayerBotShopAidsCensusAt != 0 && (int)(dwNow - s_dwPlayerBotShopAidsCensusAt) < 0)
+			return;
+		const bool first = s_dwPlayerBotShopAidsCensusAt == 0;
+		s_dwPlayerBotShopAidsCensusAt = dwNow + PLAYERBOT_SHOP_AIDS_CENSUS_MS;
+		if (first)
+			return;
+		const TPlayerBotShopAidsStats& t = s_kPlayerBotShopAidsStats;
+		int holding = 0;
+		for (std::map<DWORD, TPlayerBotSeonHae>::const_iterator it = s_mapPlayerBotSeonHae.begin(); it != s_mapPlayerBotSeonHae.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (ch && mt2009_seonhae::Holding(ch))
+				++holding;
+		}
+		sys_log(0, "PLAYERBOT_SEONHAE: census on=%d looks=%u plans=%u no_piece=%u no_shard=%u low_chance=%u wait_buy=%u far=%u "
+				"trips=%u handed=%u rolled_won=%u refused=%u collected=%u added=%u not_added=%u holding_now=%d",
+				mt2009_seonhae::IsOn() ? 1 : 0, t.looks, t.plans, t.noPiece, t.noShard, t.lowChance, t.waitBuy, t.far, t.trips,
+				t.handed, t.handedWon, t.refused, t.collected, t.added, t.notAdded, holding);
+		sys_log(0, "PLAYERBOT_GLOVE67: census looks=%u done=%u rolls=%u better=%u give_up=%u no_blessing=%u",
+				t.gloveLooks, t.gloveDone, t.gloveRolls, t.gloveBetter, t.gloveGiveUp, t.gloveNoStone);
+		sys_log(0, "PLAYERBOT_CLEANSOCKET: census wanted=%u cleaned=%u no_book=%u", t.cleanWanted, t.cleaned, t.cleanNoBook);
+	}
+
+	// The tick (playerbot_manager.cpp, beside the workshop's errand): the glove and the book where the bot stands on a
+	// clock of their own, then Seon-Hae's errand - true while it has the bot.
+	bool ManagePlayerBotShopAids(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || !ch->IsPC() || !ch->IsItemLoaded() || ch->IsDead() || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return false;
+		LogPlayerBotShopAidsCensus(dwNow);
+		if (ArePlayerBotShopAidsOff())
+			return false;
+		DWORD& light = s_mapPlayerBotShopAidsLight[ch->GetPlayerID()];
+		if ((light == 0 || (int)(dwNow - light) >= 0) && ch->GetVictim() == NULL && state.dwTargetVID == 0 &&
+				!ch->GetExchange() && !ch->GetMyShop() && ch->CanHandleItem())
+		{
+			light = dwNow + number(PLAYERBOT_SHOP_AIDS_LIGHT_MIN_MS, PLAYERBOT_SHOP_AIDS_LIGHT_MAX_MS);
+			if (!ManagePlayerBotCleanSocket(ch, state, dwNow))
+				ManagePlayerBotGlove67(ch, state, dwNow);
+		}
+		return ManagePlayerBotSeonHae(ch, state, dwNow);
+	}
+}
+
+#endif
+
+#endif

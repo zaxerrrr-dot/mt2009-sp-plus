@@ -428,7 +428,11 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_element_pet.h"
 // MT2009_PLUS_BOT_ISHOP_V3_V1: what a bot buys in the ItemShop V3 for its gear (the bonus stones, raw Cors, beans, a
 // sash partner, refine scrolls; the set chests) - after every pass whose needs it reads
+// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1: the bots use Seon-Hae's additives, 71052 on a Champion's glove and 71083 on a
+// cracked socket, and buy them in V3 when a pass of theirs wants one (the goals ask playerbot_shop_aids.h)
+#define MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 1
 #include "playerbot_ishop3_goals.h"
+#include "playerbot_shop_aids.h"
 
 namespace
 {
@@ -8022,6 +8026,11 @@ WritePlayerBotGuildStatus(dwNow);
 		// and for its reason.
 		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotGear2(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1: 71083 on a cracked socket and 71052 on a Champion's glove where the bot
+		// stands, and the errand to Seon-Hae (playerbot_shop_aids.h). Beside the workshop and for its reason.
+		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
+				ManagePlayerBotShopAids(ch, state, dwNow))
 			continue;
 
 		// The Dozorca's exchange and the Stajenny's saddlebag rows
