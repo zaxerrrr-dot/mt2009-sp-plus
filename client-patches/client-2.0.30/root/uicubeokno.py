@@ -448,7 +448,7 @@ class CubeOknoWindow(ui.BoardWithTitleBar):
 		self.costLine.SetText(TEXT_COST % localeInfo.NumberToMoneyString(gold))
 		self.costLine.SetPackedFontColor(player.GetElk() >= gold and COLOR_GOLD or COLOR_BAD)
 		if gaya > 0:
-			haveGaya = player.GetItemCountByVnum(GAYA_VNUM)
+			haveGaya = __import__("gayacurrency").Have(GAYA_VNUM)
 			self.gayaLine.SetText(TEXT_GAYA % (gaya, haveGaya))
 			self.gayaLine.SetPackedFontColor(haveGaya >= gaya and COLOR_GAYA or COLOR_BAD)
 		else:
@@ -573,7 +573,7 @@ class CubeOknoWindow(ui.BoardWithTitleBar):
 		if player.GetElk() < gold:
 			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NO_GOLD)
 			return
-		if gaya > 0 and player.GetItemCountByVnum(GAYA_VNUM) < gaya:
+		if gaya > 0 and __import__("gayacurrency").Have(GAYA_VNUM) < gaya:
 			chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_NO_GAYA)
 			return
 		plan = []

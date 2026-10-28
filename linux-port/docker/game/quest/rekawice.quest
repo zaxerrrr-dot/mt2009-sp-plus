@@ -24,7 +24,7 @@ quest rekawice begin
 			say("Demonów. W oknie wytwarzania zobaczysz ka¿dy przepis:")
 			say("materia³y, Yang i szansê (najedŸ na przedmiot).")
 			say("")
-			say_reward("Gaya biorê sam z twojego ekwipunku. Kliknij przepis,")
+			say_reward("Gaya biorê z twojego licznika Gaya. Kliknij przepis,")
 			say_reward("który chcesz wykonaæ - obrêcz, kolia i klipsy")
 			say_reward("jednego jadeitu potrzebuj¹ tych samych materia³ów.")
 			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then

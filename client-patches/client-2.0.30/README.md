@@ -1058,3 +1058,13 @@ serwera jak i klienta.”* Serwer: `server-patches/switchbot` + `playerbot_switc
 - `game.py` – `RefreshSwitchbotWindow` / `RefreshSwitchbotItem` (wołane przez exe na GC 171), hello, zamknięcie okna przy
   wyjściu; usunięte `serverCommandList["BSW"]`. `interfacemodule.py` – odświeżenie okna przy pakietach przedmiotów.
 - `uibonusswitch.py` usunięty z repo (w starej paczce root zostaje, nic go nie importuje).
+
+## Gaya jako waluta – licznik obok Yang (`MT2009_PLUS_GAYA_CURRENCY_V1`, 28.10.2026)
+
+Serwer: `server-patches/gaya2` (linia `GAYA <stan> <zmiana>`). Root: `gayacurrency.py` (nowy), `constinfo.py`
+(`ENABLE_GAYA_CURRENCY`, `ENABLE_WON = 0` – jeden przełącznik Wona), wiersz Gaya nad Yang w `uiscript/inventorywindow.py`
+(okno o 22 px wyższe), pasek walut `uiscript/expandedmoneytaskbar.py` (paczka właściciela „Expanded Money Taskbar”;
+przycisk na pasku zadań na lewo od przycisku postaci), `uiinventory.py`, `interfacemodule.py`, `game.py`, okna
+wytwarzania (`uicuberenewal.py`, `uicubeokno.py`, `uicube.py`) liczą Gaya z licznika. Obrazki: nowa paczka `gaya2`
+(`tools/gaya2/build_gaya2_pack.py`, `verify_gaya2.py`; same nowe nazwy `d:/ymir work/ui/gaya2/…`, wpis `gaya2` na końcu
+`Index`). Exe bez zmian.

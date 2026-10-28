@@ -3,6 +3,9 @@
 -- Potêpienia i BEZ peta Feniks Ocalenia). Wiki: "Gaya", "System Gaya", "Kamyki", "Statua Wojownika", "Portowy Sklep
 -- Gaya", "Wytwarzanie Skrzyñ Zwierzaków"; liczby: Owsap gem_system.quest / gem_shop_table.txt / cube.txt.
 --   * Gaya to przedmiot 95927 (nie do wymiany - wiki), tools/ygaya/gen_ygaya.py;
+--     MT2009_PLUS_GAYA_CURRENCY_V1 (w³aœciciel 28.10.2026, jak na serwerach globalnych): Gaya to waluta postaci
+--     (licznik obok Yang w ekwipunku, player.gaya - server-patches/gaya2): pc.get_gaya() / pc.change_gaya(n);
+--     przedmiot 95927 rdzeñ sam zamienia na walutê (ekwipunek, magazyn, podnoszenie z ziemi);
 --   * szlifowanie Kamyków (95926) u Statuy Wojownika (20433) w Porcie Nowego Kontynentu (368): przeci¹gnij Kamyki
 --     na statuê (albo rozmowa "Szlifowanie Kamyków") - 30 Kamyków, wybrany Kamieñ Duszy +0..+3 (okno wyboru
 --     przedmiotu), 15 000 Yang; szansa 70%, sukces = 3 Gaya; gracz ma najwy¿ej 999 999 Gaya;
@@ -128,7 +131,7 @@ quest ygaya begin
 			if left < 0 then
 				left = 0
 			end
-			cmdchat("YGAYA open "..q.getcurrentquestindex().." "..pc.count_item(c.gaya).." "..left.." "..pc.getqf("u").." "..pc.count_item(c.ext).." "..pc.count_item(c.reset))
+			cmdchat("YGAYA open "..q.getcurrentquestindex().." "..pc.get_gaya().." "..left.." "..pc.getqf("u").." "..pc.count_item(c.ext).." "..pc.count_item(c.reset))
 			for slot = 1, 9 do
 				local o = ygaya.offer(slot)
 				local st = 0
@@ -154,7 +157,7 @@ quest ygaya begin
 				syschat("Ten slot ju¿ kupiono - poczekaj na now¹ ofertê.")
 				return
 			end
-			if pc.count_item(c.gaya) < o[3] then
+			if pc.get_gaya() < o[3] then
 				syschat("Masz za ma³o Gaya (potrzeba "..o[3]..").")
 				return
 			end
@@ -162,7 +165,11 @@ quest ygaya begin
 				syschat("Zrób miejsce w ekwipunku.")
 				return
 			end
-			pc.remove_item(c.gaya, o[3])
+			-- MT2009_PLUS_GAYA_CURRENCY_V1: z licznika Gaya
+			if not pc.change_gaya(-o[3]) then
+				syschat("Masz za ma³o Gaya (potrzeba "..o[3]..").")
+				return
+			end
 			pc.setqf("b"..slot, 1)
 			pc.give_item2(o[1], o[2])
 			syschat("Portowy Sklep Gaya - kupiono: "..ygaya.label(slot)..".")
@@ -246,7 +253,7 @@ quest ygaya begin
 				say("Masz za ma³o Yang.")
 				return
 			end
-			if pc.count_item(c.gaya) + c.give > c.max then
+			if pc.get_gaya() + c.give > c.max then
 				say("Masz ju¿ najwiêcej Gaya, ile mo¿na mieæ (999 999).")
 				return
 			end
@@ -287,7 +294,7 @@ quest ygaya begin
 			pc.change_money(-c.fee)
 			say_title(mob_name(20433)..":")
 			if number(1, 100) <= c.pct then
-				pc.give_item2(c.gaya, c.give)
+				pc.change_gaya(c.give) -- MT2009_PLUS_GAYA_CURRENCY_V1: na licznik Gaya
 				say("Uda³o siê! Otrzymujesz "..c.give.." Gaya.")
 			else
 				say("Szlifowanie siê nie uda³o. Kamyki i Kamieñ Duszy")
@@ -305,7 +312,7 @@ quest ygaya begin
 			say("Z "..c.kamyki_n.." Kamyków, Kamienia Duszy (+0 do +3)")
 			say("i "..c.fee_text.." Yang oszlifujê "..c.give.." drogocenne Gaya.")
 			say("Szansa: "..c.pct.."%. Mo¿esz te¿ przeci¹gn¹æ Kamyki na mnie.")
-			say("Masz "..pc.count_item(c.kamyki).." Kamyków i "..pc.count_item(c.gaya).." Gaya.")
+			say("Masz "..pc.count_item(c.kamyki).." Kamyków i "..pc.get_gaya().." Gaya.")
 			if select("Szlifuj", "Nie teraz") ~= 1 then
 				return
 			end

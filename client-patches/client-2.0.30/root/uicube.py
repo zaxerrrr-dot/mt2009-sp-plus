@@ -423,7 +423,7 @@ class CubeWindow(ui.ScriptWindow):
 
 		for itemVnum, count in materialInfo[col]:
 			item.SelectItem(itemVnum)
-			if player.GetItemCountByVnum(itemVnum) >= count:
+			if __import__("gayacurrency").Have(itemVnum) >= count: # MT2009_PLUS_GAYA_CURRENCY_V1: Gaya is the counter
 				self.tooltipItem.AppendTextLine("%s" % (item.GetItemName()), grp.GenerateColor(0.5411, 0.7254, 0.5568, 1.0)).SetFeather()
 			else:
 				self.tooltipItem.AppendTextLine("%s" % (item.GetItemName()), grp.GenerateColor(0.9, 0.4745, 0.4627, 1.0)).SetFeather()

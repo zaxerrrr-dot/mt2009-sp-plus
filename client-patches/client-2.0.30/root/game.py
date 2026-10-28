@@ -3546,6 +3546,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["RANGA"] = self.__RankPoints # MT2009_PLUS_RANK_POINTS_V1
 		serverCommandList["MISJE"] = self.__ClearMissions # MT2009_PLUS_CLEAR_MISSIONS_V1
 		serverCommandList["YGAYA"] = self.__YGayaShop # MT2009_PLUS_GAYA_SHOP_WINDOW_V1
+		serverCommandList["GAYA"] = self.__GayaPoint # MT2009_PLUS_GAYA_CURRENCY_V1: the Gaya counter (gayacurrency.py)
 		# MT2009_PLUS_EVENT_MANAGER_V1: the event list as lines (an exe without the
 		# packet) and Owsap's "<flag> <value>" commands (ingameevent.py).
 		serverCommandList["IGE"] = self.__InGameEvent
@@ -4385,6 +4386,10 @@ class GameWindow(ui.ScriptWindow):
 			self.interface.RefreshChampionPage()
 
 	# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: Portowy Sklep Gaya's lines from the quest ygaya (uiygaya.py).
+	# MT2009_PLUS_GAYA_CURRENCY_V1: "GAYA <total> <change>" - the counter next to the Yang (server-patches/gaya2)
+	def __GayaPoint(self, total="0", delta="0", *rest):
+		__import__("gayacurrency").OnServer(self, total, delta)
+
 	def __YGayaShop(self, *args):
 		import uiygaya
 		uiygaya.SetInterface(self.interface)

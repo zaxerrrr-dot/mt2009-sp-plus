@@ -1832,6 +1832,7 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndMoneySlot.SetEvent(ui.__mem_func__(self.OpenPickMoneyDialog), 0)
 		else:
 			self.wndMoneySlot.SetEvent(ui.__mem_func__(self.OpenPickMoneyDialog))
+		__import__("gayacurrency").BindInventory(self) # MT2009_PLUS_GAYA_CURRENCY_V1: the Gaya row over the Yang
 
 		for i in xrange(player.INVENTORY_PAGE_COUNT-1):
 			self.inventoryTab[i].SAFE_SetEvent(self.SetInventoryPage, i)
@@ -1924,6 +1925,8 @@ class InventoryWindow(ui.ScriptWindow):
 		self.dlgPickMoney = 0
 		self.wndMoney = 0
 		self.wndMoneySlot = 0
+		self.wndGaya = None # MT2009_PLUS_GAYA_CURRENCY_V1
+		self.wndWon = None
 		if app.ENABLE_CHEQUE_SYSTEM:
 			self.wndCheque = 0
 			self.wndChequeSlot = 0
@@ -2418,6 +2421,7 @@ class InventoryWindow(ui.ScriptWindow):
 			gold = player.GetGold()
 
 		__import__("digiqol").AnimateMoney(self.wndMoney, gold)  # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): ~0.4 s count
+		__import__("gayacurrency").RefreshInventory(self) # MT2009_PLUS_GAYA_CURRENCY_V1
 
 		# if app.ENABLE_CHEQUE_SYSTEM:
 		# 	cheque = player.GetCheque()

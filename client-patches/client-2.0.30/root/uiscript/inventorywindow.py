@@ -601,3 +601,41 @@ if app.ENABLE_CHEQUE_SYSTEM:
 
 	ReplaceElement("Money_Slot", slot, window)
 	AppendChildren("board", children, window)
+
+# MT2009_PLUS_GAYA_CURRENCY_V1: the Gaya counter right over the Yang (the owner, 28 October 2026: "no icon / counter next
+# to the Yang, the Gaya piles up as slots" - Gaya is a currency now, server-patches/gaya2; gayacurrency.py fills it): one
+# more 22-px row at the board's bottom, the window as much taller (the item grid and everything above stay). With
+# constInfo.ENABLE_WON (no Won on the server yet - off) the row is Won + Gaya. A uiscript may not import constInfo (the
+# loader's sandbox) - utils, which may, holds it.
+import utils
+_gayaConst = getattr(utils, "constInfo", None)
+if getattr(_gayaConst, "ENABLE_GAYA_CURRENCY", 0) and not app.ENABLE_CHEQUE_SYSTEM:
+	GAYA_ROW = 22
+	window["height"] += GAYA_ROW
+	window["y"] = max(0, window["y"] - GAYA_ROW)
+	window["children"][0]["height"] += GAYA_ROW
+	_gayaText = {"name" : "Gaya", "type" : "text", "x" : 3, "y" : 3, "horizontal_align" : "right",
+		"text_horizontal_align" : "right", "text" : "0"}
+	if getattr(_gayaConst, "ENABLE_WON", 0):
+		gayaRow = (
+			{"name" : "Won_Icon", "type" : "image", "x" : 10, "y" : 48, "vertical_align" : "bottom",
+				"image" : "d:/ymir work/ui/game/windows/cheque_icon.sub"},
+			{"name" : "Won_Slot", "type" : "image", "x" : 28, "y" : 50, "vertical_align" : "bottom",
+				"image" : "d:/ymir work/ui/gaya2/cheque_slot.sub",
+				"children" : ({"name" : "Won", "type" : "text", "x" : 3, "y" : 3, "horizontal_align" : "right",
+					"text_horizontal_align" : "right", "text" : "0"},)},
+			{"name" : "Gaya_Icon", "type" : "image", "x" : 58, "y" : 47, "vertical_align" : "bottom",
+				"image" : "d:/ymir work/ui/gaya2/gaya_icon.tga"},
+			{"name" : "Gaya_Slot", "type" : "image", "x" : 74, "y" : 50, "vertical_align" : "bottom",
+				"image" : "d:/ymir work/ui/public/parameter_slot_03.sub", "children" : (_gayaText,)},
+		)
+	else:
+		gayaRow = (
+			{"name" : "Gaya_Slot", "type" : "image", "x" : 8, "y" : 50, "horizontal_align" : "center",
+				"vertical_align" : "bottom", "image" : "d:/ymir work/ui/public/parameter_slot_05.sub",
+				"children" : (
+					{"name" : "Gaya_Icon", "type" : "image", "x" : -16, "y" : 4, "image" : "d:/ymir work/ui/gaya2/gaya_icon.tga"},
+					_gayaText,
+				)},
+		)
+	AppendChildren("board", gayaRow, window)

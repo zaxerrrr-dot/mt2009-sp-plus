@@ -340,7 +340,7 @@ quest yohara_mapy3 begin
 			say("Kamieni stworzê Tajemniczy Talizman. W oknie wytwarzania")
 			say("zobaczysz materia³y, Yang i szansê (najedŸ na przedmiot).")
 			say("")
-			say_reward("Gaya biorê sam z twojego ekwipunku.")
+			say_reward("Gaya biorê z twojego licznika Gaya.")
 			if select("Otwórz okno wytwarzania", "Anuluj") == 1 then
 				setskin(NOWINDOW)
 				command("cube open")

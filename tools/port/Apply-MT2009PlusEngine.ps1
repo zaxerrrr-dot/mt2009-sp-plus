@@ -1815,4 +1815,17 @@ if ((Test-Path -LiteralPath $npclocApply -PathType Leaf) -and
     }
 }
 
+# Gaya as a currency (server-patches/gaya2, MT2009_PLUS_GAYA_CURRENCY_V1): player.gaya (gaya2.sql), the counter next to
+# the Yang, the item Gaya changed into it once, pc.get_gaya / pc.change_gaya, the cube's Gaya from the counter. After
+# npcloc (last); it edits common/tables.h and db ClientManagerPlayer.cpp too, after czempion's champion columns.
+$gaya2Apply = Join-Path $repo 'server-patches/gaya2/Apply-Gaya2Patch.ps1'
+if ((Test-Path -LiteralPath $gaya2Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource '../../db/src/ClientManagerPlayer.cpp') -PathType Leaf)) {
+    $gaya2Result = & $gaya2Apply -SourceDir $engineGameSource
+    if ($gaya2Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Gaya currency edit(s).' -f $gaya2Result.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

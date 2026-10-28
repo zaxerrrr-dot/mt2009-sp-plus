@@ -49,3 +49,6 @@ Klient: `client-patches/client-2.0.30/root/game.py`, `uicube.py`, `uicubeokno.py
 
 Linux/VPS: `python3 apply_gaya.py <game/src>`; Windows: `Apply-GayaPatch.ps1 -SourceDir <game/src>` (wołane przez
 `tools/port/Apply-MT2009PlusEngine.ps1`). Pliki silnika: `cube.h`, `cube.cpp`, `cmd_general.cpp`.
+
+`MT2009_PLUS_GAYA_CURRENCY_V1` (28.10.2026, `server-patches/gaya2`): Gaya jest walutą postaci (licznik obok Yang) –
+receptury `gaya N` sprawdzają i pobierają ją z licznika (`GetGaya` / `ChangeGaya`), nie z przedmiotu 95927.

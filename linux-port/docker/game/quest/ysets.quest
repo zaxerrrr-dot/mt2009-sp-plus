@@ -41,7 +41,7 @@ quest ysets begin
 			say("i he³m (przyk³ad dla twojej klasy, +7) i wszystkie")
 			say("materia³y. Pasuje ka¿da broñ, zbroja albo he³m")
 			say("od 75. poziomu, +7 i wy¿ej - po³ó¿ swój przedmiot w oknie.")
-			say("Gaya biorê sam z ekwipunku, nie k³adŸ jej w oknie.")
+			say("Gaya biorê sam z twojego licznika Gaya.")
 			say("Projekty Zestawu i od³amki I wypadaj¹ w Królestwie")
 			say("¯ywio³ów, od³amki II na P³askowy¿u Si³ Natury")
 			say("albo u Statuy Wojownika (z od³amków I).")

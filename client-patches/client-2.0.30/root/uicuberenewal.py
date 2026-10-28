@@ -152,6 +152,10 @@ def _BagCountsCube():
 		vnum = uiCube._ItemIndex(pos)
 		if vnum:
 			counts[vnum] = counts.get(vnum, 0) + uiCube._ItemCount(pos)
+	# MT2009_PLUS_GAYA_CURRENCY_V1: the Gaya is the counter next to the Yang (gayacurrency.py), not a bag item
+	gaya = __import__("gayacurrency")
+	if gaya.Enabled():
+		counts[GAYA_VNUM] = counts.get(GAYA_VNUM, 0) + gaya.Get()
 	return counts
 
 

@@ -4395,6 +4395,17 @@ fi
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (79668, 79669);" 2>/dev/null || echo x)" = "2" ]; then
 ishop_once npcloc_stones_17 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (17, 79669, 1, 5, 'DRAGON_COIN', 0), (18, 79668, 1, 6, 'DRAGON_COIN', 0);" "could not add the teleport stones to the ItemShop"
 fi
+# MT2009_PLUS_GAYA_CURRENCY_V1: Gaya as a currency of the character (the owner, 28 October 2026; server-patches/gaya2) -
+# gaya2.sql, the column player.gaya (and player_deleted.gaya). Idempotent (ADD COLUMN IF NOT EXISTS). The db core of a
+# release with the patch names the column, so it must be here before the cores start. The Gaya items of before are
+# changed into it by the game core (logged), nothing to run by hand.
+if [ -s /opt/playerbot/gaya2.sql ]; then
+    if db < /opt/playerbot/gaya2.sql; then
+        echo "[playerbot-migrate] Gaya currency: gaya2.sql applied (MT2009_PLUS_GAYA_CURRENCY_V1)"
+    else
+        fail_step "Gaya currency: gaya2.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
