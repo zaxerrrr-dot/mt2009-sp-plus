@@ -228,6 +228,10 @@ namespace
 		{ szRetreatWhy[0] = '\0'; }
 	};
 	std::map<DWORD, TPlayerBotSungmaFight> s_mapPlayerBotSungmaFight;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: a map's kills per death x10 of its last fight2 line (0: no line or no deaths yet)
+	int s_aiPlayerBotSungmaF2Kpd10[9] = { 0 };
+#endif
 
 	// The census's fight counters a map (the slot of PLAYERBOT_SUNGMA_MAPS - the same nine, in the same order).
 	enum EPlayerBotSungmaDeathCause
@@ -1071,6 +1075,9 @@ namespace
 					++st->retreatsSafe;
 				++st->retreatsEnded;
 				st->retreatMs += el;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+				NotePlayerBotG0StruggleRetreat(ch, el);	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the bot's own window
+#endif
 				if (turn && attackers > 0)
 					++st->turns;
 			}
@@ -1251,6 +1258,11 @@ namespace
 		const long long killsBot10 = bots10 > 0 ? killsH * 100 / bots10 : 0;
 		const long long kpd10 = deathsH > 0 ? killsH * 10 / deathsH : killsH * 10;
 		const long long retreatPct = bots10 > 0 ? (long long)(st.retreatMs - st.f2RetreatMs) * 1000 / (ms * bots10) : 0;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+		// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the map's last kills per death (x10, with deaths; 0 none) - a bot's own is
+		// judged against it (IsPlayerBotG0Struggling)
+		s_aiPlayerBotSungmaF2Kpd10[slot] = deathsH > 0 ? (int)std::min<long long>(kpd10, 1000000) : 0;
+#endif
 		sys_log(0, "PLAYERBOT_SUNGMA: fight2 channel=%u map=%ld name=%s span_s=%u bots=%lld.%lld kills_h=%lld deaths_h=%lld retreats_h=%lld "
 				"potions_h=%lld turns_h=%lld escapes_h=%lld kills_bot_h=%lld.%lld kills_per_death=%lld.%lld retreat_time_pct=%lld",
 				(unsigned int)g_bChannel, mapIndex, key, (unsigned int)(span / 1000), bots10 / 10, bots10 % 10, killsH, deathsH,

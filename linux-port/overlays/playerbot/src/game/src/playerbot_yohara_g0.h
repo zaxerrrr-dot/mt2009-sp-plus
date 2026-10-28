@@ -67,6 +67,18 @@
 // set (NotePlayerBotSecondSetG0Piece) and are never "replaced" spares for the bot-to-bot sale. Its own flags
 // mt2009_g0.given2 / given2_at; logged PLAYERBOT_G0 with set=2 (the first package's lines say set=1).
 //
+// MT2009_PLUS_BOT_G0_DUST_RULE_V1 (the owner, 28 October 2026: "Po co maja zbierac na G0, skoro juz maja G0? Pyl maja
+// zbierac tylko wtedy, gdy nie radza sobie z obecnym G0 i chca zbierac na drugi zestaw G0"; playerbot_g0_dust_rule.h):
+// a bot with its package (mt2009_g0.given) holds no dust reserve and seeks no dust for G0 - except a second G0 saver,
+// which now needs both: the second-set mode (the second set started, or a step down to another element refused for
+// want of the set in the last PLAYERBOT_G0DR_BLOCKED_MS) and the struggle (IsPlayerBotG0Struggling: a deaths' step
+// down still holding it below its map, or its kills per death on the Sung Ma maps over the last one-two hours under
+// half its map's, or a retreat share over the threshold). Only then the 400 are kept and sought (the keep, the market,
+// the trips); a struggling bot whose set is not started yet saves, and gets the package once the set has its element.
+// The first package's savers (from level 110, not given yet) are as before. Every change of a bot's reason (first_g0,
+// second_g0_struggling, none) is logged (PLAYERBOT_G0DUST: reason); the dust over the reserve goes to the hunt element's
+// power elixir at Handlarka (playerbot_yohara_shop.h).
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_yohara_bots.h (the Sung Ma maps'
 // table and the Champion's helpers come from there), in the anonymous namespace.
 
@@ -134,10 +146,14 @@ namespace
 		bool bSet2;	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the package sought is the second one
 		int iBought, iMade, iTrips;
 		long long llSpent;
+		int iReason;	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: PLAYERBOT_G0_REASON_* of the last look (-1 none yet)
 		TPlayerBotG0() : dwNextLook(0), dwNextManage(0), dwNextWaitLog(0), dwNextSaleLook(0), dwTripRolled(0), dwTripUntil(0), bNeeder(false),
-			bSaver(false), bSet2(false), iBought(0), iMade(0), iTrips(0), llSpent(0) {}
+			bSaver(false), bSet2(false), iBought(0), iMade(0), iTrips(0), llSpent(0), iReason(-1) {}
 	};
 	std::map<DWORD, TPlayerBotG0> s_mapPlayerBotG0;
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V1: why a bot holds dust (the census's and the reason log's names)
+	enum { PLAYERBOT_G0_REASON_NONE, PLAYERBOT_G0_REASON_FIRST, PLAYERBOT_G0_REASON_SECOND, PLAYERBOT_G0_REASONS };
+	const char* const PLAYERBOT_G0_REASON_NAMES[PLAYERBOT_G0_REASONS] = { "none", "first_g0", "second_g0_struggling" };
 	// MT2009_PLUS_BOT_YOHARA_G0_V2: a replaced bound piece's sale looks without a bot buyer, by item id
 	std::map<DWORD, int> s_mapPlayerBotG0NoBuyer;
 
@@ -226,7 +242,13 @@ namespace
 			return false;
 		if (ch->GetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG) == 0 || ch->GetQuestFlag(PLAYERBOT_G0_GIVEN2_FLAG) != 0)
 			return false;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+		// MT2009_PLUS_BOT_G0_DUST_RULE_V1: with its G0 it saves only in the second-set mode and while it cannot cope
+		// with its set (playerbot_g0_dust_rule.h).
+		return IsPlayerBotG0SecondSetMode(ch) && IsPlayerBotG0Struggling(ch, NULL);
+#else
 		return GetPlayerBotSecondSetElement(ch) >= 0;
+#endif
 	}
 #endif
 
@@ -253,6 +275,15 @@ namespace
 				b.bSaver = b.bSet2 = true;
 #endif
 			b.bNeeder = b.bSaver && IsPlayerBotSungmaWillUser(ch);
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+			// MT2009_PLUS_BOT_G0_DUST_RULE_V1: the reason it holds dust, every change logged
+			const int reason = !b.bSaver ? PLAYERBOT_G0_REASON_NONE : (b.bSet2 ? PLAYERBOT_G0_REASON_SECOND : PLAYERBOT_G0_REASON_FIRST);
+			if (reason != b.iReason)
+			{
+				NotePlayerBotG0DustReason(ch, b.iReason, reason);
+				b.iReason = reason;
+			}
+#endif
 		}
 		return &b;
 	}
@@ -936,6 +967,9 @@ namespace
 	{
 		RunPlayerBotG0TestFile(dwNow);
 		LogPlayerBotG0Census(dwNow);
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+		LogPlayerBotG0DustRuleCensus(dwNow);	// MT2009_PLUS_BOT_G0_DUST_RULE_V1
+#endif
 		if (!ch || ch->IsDead() || !ch->IsItemLoaded())
 			return false;
 		TPlayerBotG0* b = LookPlayerBotG0(ch, dwNow);
@@ -963,7 +997,13 @@ namespace
 		{
 			const int have = GetPlayerBotG0DustHeld(ch);
 			const bool banked = IsPlayerBotG0DustBanked(ch);
-			if (b->bNeeder && !banked && have >= PLAYERBOT_G0_DUST && village)
+			if (b->bNeeder && !banked && have >= PLAYERBOT_G0_DUST && village
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
+					// MT2009_PLUS_BOT_G0_DUST_RULE_V1: a second package goes into a started set only (a saver whose
+					// step down was refused before its set began keeps the 400 till then)
+					&& (!b->bSet2 || GetPlayerBotSecondSetElement(ch) >= 0)
+#endif
+					)
 				return GivePlayerBotG0(ch, state, *b, dwNow);
 			if ((int)(b->dwNextWaitLog - dwNow) <= 0)
 			{
