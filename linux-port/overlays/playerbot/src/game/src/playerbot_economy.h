@@ -1503,6 +1503,12 @@ namespace
 		// (16 September). The scroll's keep is the scroll rule's.
 		if (IsPlayerBotSafeRefineScroll(item->GetVnum()))
 			return GetPlayerBotRefineScrollKeep(ch);
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+		// MT2009_PLUS_BOT_SEONHAE_V2: a Seon-Hae shard keeps what the bot's own pieces of its band take (up to ten a
+		// hand-in); the rest is a counter's (playerbot_shop_aids.h).
+		if (mt2009_seonhae::IsShardVnum(item->GetVnum()))
+			return GetPlayerBotSeonHaeShardKeep(ch, item->GetVnum());
+#endif
 		if (IsPlayerBotTradeableMaterial(item))
 			return std::max(1, GetPlayerBotRefineMaterialReserve(ch, item->GetVnum()));
 		if (item->GetType() == ITEM_TREASURE_KEY)
@@ -2549,6 +2555,11 @@ namespace
 		// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon, and the real weapon prepared behind one in the hand.
 		if (IsPlayerBotMlodziKept(ch, item))
 			return false;
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+		// MT2009_PLUS_BOT_SEONHAE_V2: Kamien Kowala / Magiczny Metal wait in the bag for the Blacksmith's craft.
+		if (IsPlayerBotSmithScrollStone(item->GetVnum()))
+			return false;
+#endif
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a piece of the G0 package is never scrap - another bot buys it, or (V2) the
 		// merchant once no bot did (IsPlayerBotG0NpcSaleDue, SellPlayerBotJunkAtMerchant).
 		if (Mt2009AccountBound(item))
@@ -3990,8 +4001,21 @@ namespace
 					rank = stepProb <= PLAYERBOT_NO_REDUCTION_SCROLL_MAX_PROB ? 900 : 100;
 					break;
 				case NORMAL_REFINE_SCROLL:
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+				{
+					// MT2009_PLUS_BOT_SEONHAE_V2: DoRefineWithScroll adds value1 to the step's own odds (Podrecznik Kowala
+					// 70039 / 25043 +15, Zwoj Boga Smokow 71032 / 25045 +10, the Blessing Scroll +0) and hands a failed
+					// piece back a level down. A step already at 100 (or brought there by a smaller bonus) takes the
+					// smallest bonus that is enough - the better scrolls, crafted at the Blacksmith, are kept for the
+					// steps they lift; under that the largest bonus.
+					const int bonus = std::max<int>(0, (int)scroll->GetValue(1));
+					rank = stepProb + bonus >= 100 ? 400 - bonus : 200 + bonus;
+					break;
+				}
+#else
 					rank = 200 + std::max<int>(0, (int)scroll->GetValue(1));
 					break;
+#endif
 				default:
 					break;
 			}

@@ -498,6 +498,28 @@ migrate_sidekick_off() {
     printf 'M2_SIDEKICK_DEFAULTED=1\n' >> "$_env"
 }
 
+# MT2009_PLUS_SEONHAE_DEFAULT_ON_V1 (the owner, 28 October 2026: Seon-Hae's
+# 6th/7th bonus on by default in every world): add_missing_env_keys wrote the
+# old default M2_SEONHAE=0 into every .env, where the new one never reaches,
+# so 0 (or no line) becomes 1 here, once; a world that switches it off again
+# afterwards keeps its 0. apply.sh then sees .env changed and writes
+# m2_seonhae_on=1 at the next start.
+migrate_seonhae_on() {
+    _env="$COMPOSE_DIR/.env"
+    [ -f "$_env" ] || return 0
+    grep -q '^M2_SEONHAE_DEFAULTED=' "$_env" && return 0
+    [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+    if grep -q '^M2_SEONHAE=' "$_env"; then
+        if [ "$(kv "$_env" M2_SEONHAE | tr -d ' \r')" != 1 ]; then
+            sed -i 's|^M2_SEONHAE=.*|M2_SEONHAE=1|' "$_env"
+            note "   Seon-Hae's 6th/7th bonus is on: M2_SEONHAE=1 (the new default; 0 switches it off)"
+        fi
+    else
+        printf 'M2_SEONHAE=1\n' >> "$_env"
+    fi
+    printf 'M2_SEONHAE_DEFAULTED=1\n' >> "$_env"
+}
+
 # MT2009_PLUS_DB_LOG_RETENTION_V1: a world installed before 2.36 has kept its
 # whole log database, and the owner of each decides when old rows go - the
 # first prune of a big log.log rewrites it once. So an .env without the key
@@ -1064,6 +1086,7 @@ migrate_env() {
     migrate_blessing_scroll
     migrate_log_keep_days
     migrate_sidekick_off
+    migrate_seonhae_on
     # Before compose, because a published port range only changes at a recreate.
     sync_channel_ports
 }

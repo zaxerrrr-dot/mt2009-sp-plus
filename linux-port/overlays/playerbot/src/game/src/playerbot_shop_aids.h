@@ -8,7 +8,8 @@
 //   * Seon-Hae's Suplementy 72065 / 72066 / 72067 (V3 5 / 9 / 18 SM; 72064 Maly has no line) - playerbot_seonhae.h
 //     (MT2009_PLUS_SEONHAE_V1, NPC 20095 in the first villages, quest seonhae, event flag m2_seonhae_on). A weapon or an
 //     armour / jewel / glove with all five ordinary bonuses and fewer than two extra ones, 1-10 shards of the item's
-//     level band (MaterialVnum - the Lucent 39078-39080 drop on Yohara for bots too; the other shards only for players)
+//     level band (MaterialVnum - the Lucent 39078-39080 drop on Yohara; since MT2009_PLUS_BOT_SEONHAE_V2 the ordinary
+//     39070-39077 / 39081 drop for bots too, at the players' rules and chances - playerbot_seonhae.h)
 //     and 0-5 Suplementy of one kind: chance = 2% a shard + the kind's % x pieces / 5 (Silny 50, Duzy 20, Sredni 10),
 //     rolled at hand-in, everything spent whatever the roll; Seon-Hae keeps the item m2_seonhae_wait_min (0 = 24 h),
 //     then "collect" remakes it and, on a won roll, adds the bonus (AddRareAttribute; a glove: Bonus67GloveRare).
@@ -24,11 +25,15 @@
 //     (28960, a failed soul stone or demon stone) out of the item's sockets, the remaining stones shifted forward. It
 //     never takes a good stone out. The bots' seating (ManagePlayerBotSoulStones, SocketPlayerBotChiStone) welds a
 //     cracked stone 7 times in 10 and treated the socket as lost: the book gives it back when a stone waits for it.
-//   * Kamien Kowala 71025 (V3 452, 79 SM) and Magiczny Metal 71026 (V3 451, 59 SM; 710, 350 SZ) - nothing on this
-//     server: no use case in UseItemEx (71025 is USE_SPECIAL with no case of its vnum, 71026 ITEM_SPECIAL), no tuning
-//     value (not USE_TUNING, so DoRefineWithScroll never takes them), no refine_proto material, no cube recipe (their
-//     descriptions name the Blacksmith's Podrecznik Kowala 70039 / Zwoj Smoka 71032 crafts - cube.txt has no recipe at
-//     20016) and no quest. The bots neither use nor buy them: a purchase would only pile up.
+//   * Kamien Kowala 71025 (V3 452, 79 SM) and Magiczny Metal 71026 (V3 451, 59 SM; 710, 350 SZ) - V1 read them as
+//     unused: no use case in UseItemEx, no tuning value, no refine_proto material, no cube.txt recipe. They are the
+//     Blacksmith's CRAFTING materials (MT2009_PLUS_BOT_SEONHAE_V2): Kowal 20016's "Wytwarzanie" opens crafting window 101
+//     (quest crafting_manage, crafting.open(CRAFTING_BLACKSMITH)), whose rows 1-6 (crafting_data.lua, world.crafting_proto)
+//     are: 25040 + 71025 -> Podrecznik Kowala 25043 (200 000 yang), 25041 + 71025 -> Podrecznik Kowala 70039 (200 000),
+//     25040 + 71026 -> Zwoj Boga Smokow 25045 (100 000), 25041 + 71026 -> Zwoj Boga Smokow 71032 (100 000), 25040/25041
+//     + 70035 -> Zwoj Wojny 25044 / 71021 (400 000), all 100%. 70039 / 25043 and 71032 / 25045 are USE_TUNING with
+//     value0 0 (NORMAL_REFINE_SCROLL) and value1 15 / 10: DoRefineWithScroll adds value1 to the step's odds and hands a
+//     failed piece back a level down, as the Blessing Scroll (value1 0) does.
 //
 // The bots' logic:
 //   * Seon-Hae (PLAYERBOT_SEONHAE): a bot of PLAYERBOT_SEONHAE_MIN_LEVEL with the system on looks every few minutes at
@@ -48,6 +53,24 @@
 //     (the other boss lines, the other Will %, the base attribute %, the lightning) or other. A glove with a must, or
 //     with only wanted lines, is done; else 71052 re-rolls it (the glove off and on again, as the stones go in), at most
 //     PLAYERBOT_GLOVE67_GIVE_UP times a glove (quest flags playerbot.g67_glove / playerbot.g67_rolls).
+//   * Every other piece's 6/7 (PLAYERBOT_RARE67, MT2009_PLUS_BOT_SEONHAE_V2; the owner: "6/7 bonus re-roll on ALL items").
+//     71052 on a non-glove piece is CItem::ChangeRareAttribute2 (ENABLE_ITEM_RARE_ATTR_LEVEL_PCT in char_item.cpp): the
+//     piece off the body, its rare lines cleared and as many drawn again from world.item_attr_rare's column of its
+//     attribute set (weighted by prob, no line twice, an old one may come back) at the levels 40/50/10 % of lv1/lv2/lv3
+//     (never over the column's max); refused for a costume, no attribute set, no rare line, a young heroes' weapon, a
+//     Will talisman, a Jade piece. Graded per piece by the bot's needs (GetPlayerBotRare67Role: the hunt element's power
+//     % on the weapon and its resistance % on the armour, the Yohara race (devils) or the monsters line, max HP, the
+//     class's attack value, the boss damage line of its fighting on the necklace, the boss defence on the shield, the
+//     Will % it lacks most on a talisman; wanted: the element's hit buffs, the other boss lines, the map's other
+//     elements, the "n-th bonus +x%" where the piece has that line, block ...). The glove's stopping rule (a must, or
+//     only wanted lines) and a cap a slot (PLAYERBOT_RARE67_SLOTS: weapon 12, armour 10, necklace 8, helmet / bracelet /
+//     shield / talisman 6, boots / earrings 5; quest flags playerbot.r67_id_<wear> / playerbot.r67_n_<wear>).
+//   * The Blacksmith's scrolls (PLAYERBOT_SMITHSCROLL, MT2009_PLUS_BOT_SEONHAE_V2): a bot whose worn pieces have refine
+//     steps under 100% (the scroll work's slots) makes up to PLAYERBOT_SMITH_SCROLL_TARGET better scrolls (two a step)
+//     of the Blessing Scrolls it holds at a Kowal within 10 m - the town's blacksmith errand or the light pass by any
+//     Kowal - Kamien Kowala first (+15), then Magiczny Metal (+10). The refining takes them through
+//     FindPlayerBotRefineScrollCell (playerbot_economy.h): the smallest bonus that brings the step to 100, else the
+//     largest - the better scrolls go to the low-odds steps.
 //   * Clean socket (PLAYERBOT_CLEANSOCKET): a worn weapon or body armour with a cracked stone and no open socket while
 //     the bag holds a soul stone the seating pass would put there (its own rules: Iwakura's tier, the grade for the
 //     piece, no second of a kind), or a Champion's glove with a cracked stone, no free socket and a demon stone of
@@ -55,7 +78,9 @@
 //
 // The shop goals (CollectPlayerBotShopAidGoals, from CollectPlayerBotIshop3Goals - playerbot_ishop3_goals.h):
 // "bonus_67add" the Seon-Hae recipe's Suplementy the bag lacks, "bonus_67change" one 71052 while the glove pass would
-// roll and holds none, "bonus_socket_clean" one 71083 while a piece waits for one and the bag holds none. Logged as the
+// roll and holds none (V2: or any other piece the RARE67 pass would roll), "bonus_socket_clean" one 71083 while a piece
+// waits for one and the bag holds none, "smith_scroll" (V2) the stones the craftable Blessing Scrolls lack - Magiczny
+// Metal for Smocze Znaki while the bot has them, else Kamien Kowala for Smocze Monety. Logged as the
 // other goals (PLAYERBOT_ISHOP3: bought / session / no coins; the hourly census by these categories).
 //
 // The log: PLAYERBOT_SEONHAE (plan, going, handed in, collected, refused, census), PLAYERBOT_GLOVE67 (roll, done,
@@ -127,6 +152,43 @@ namespace
 	const char* const PLAYERBOT_GLOVE67_FLAG_ROLLS = "playerbot.g67_rolls";
 	enum { GLOVE67_OTHER = 1, GLOVE67_WANTED = 2, GLOVE67_MUST = 3 };
 
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+	// ---- MT2009_PLUS_BOT_SEONHAE_V2: every other worn piece's 6th / 7th lines (PLAYERBOT_RARE67), in this order, with
+	// the 71052s (129 SM each) a piece may take before the bot settles for what it has
+	struct TPlayerBotRare67Slot
+	{
+		BYTE bWear;
+		int iGiveUp;
+	};
+	const TPlayerBotRare67Slot PLAYERBOT_RARE67_SLOTS[] = {
+		{ WEAR_WEAPON, 12 },
+		{ WEAR_BODY, 10 },
+		{ WEAR_NECK, 8 },
+		{ WEAR_HEAD, 6 },
+		{ WEAR_WRIST, 6 },
+		{ WEAR_SHIELD, 6 },
+		{ WEAR_PENDANT, 6 },
+		{ WEAR_FOOTS, 5 },
+		{ WEAR_EAR, 5 },
+	};
+
+	// ---- MT2009_PLUS_BOT_SEONHAE_V2: the Blacksmith's scrolls (Kowal 20016, crafting window 101)
+	const DWORD PLAYERBOT_SMITH_NPC = 20016;
+	const int PLAYERBOT_SMITH_CRAFT_RANGE = 1000;	// crafting.create: npc.is_near(10), 10 m
+	const DWORD PLAYERBOT_SMITH_ROWS[] = { 1, 2, 3, 4, 5, 6 };	// crafting_data.lua [CRAFTING_BLACKSMITH]
+	const DWORD PLAYERBOT_SMITH_STONE_BOOK = 71025;		// Kamien Kowala -> Podrecznik Kowala (+15)
+	const DWORD PLAYERBOT_SMITH_STONE_METAL = 71026;	// Magiczny Metal -> Zwoj Boga Smokow (+10)
+	const DWORD PLAYERBOT_SMITH_BASE_UNTRADEABLE = 25041;	// Zwoj Blogoslawienstwa (V3, SZ) -> 70039 / 71032
+	const DWORD PLAYERBOT_SMITH_BASE_TRADEABLE = 25040;	// Zwoj Blogoslawienstwa -> 25043 / 25045
+	const DWORD PLAYERBOT_SMITH_BETTER_SCROLLS[] = { 70039, 25043, 71032, 25045 };
+	const int PLAYERBOT_SMITH_SCROLL_TARGET = 4;
+	const int PLAYERBOT_SMITH_CRAFTS_A_VISIT = 4;
+	const int PLAYERBOT_SMITH_STONE_BATCH = 3;
+	const long long PLAYERBOT_SMITH_GOLD_RESERVE = 2000000;
+	const long long PLAYERBOT_SMITH_PRICE_MAX = 200000;	// the dearer row (crafting_proto 3 / 6)
+	const DWORD PLAYERBOT_SMITH_PAUSE_MS = 30 * 60 * 1000;
+#endif
+
 	// ---- the socket book
 	const DWORD PLAYERBOT_CLEAN_SOCKET_VNUM = 71083;
 	const DWORD PLAYERBOT_CRACKED_STONE_VNUM = 28960;
@@ -147,9 +209,14 @@ namespace
 				added, notAdded, far;
 		unsigned int gloveLooks, gloveDone, gloveRolls, gloveBetter, gloveGiveUp, gloveNoStone;
 		unsigned int cleanWanted, cleaned, cleanNoBook;
+		unsigned int rareLooks, rareDone, rareRolls, rareBetter, rareGiveUp, rareNoStone;	// MT2009_PLUS_BOT_SEONHAE_V2
+		unsigned int smithCrafted, smithFar, smithNoGold;	// MT2009_PLUS_BOT_SEONHAE_V2
 		TPlayerBotShopAidsStats() { memset(this, 0, sizeof(*this)); }
 	};
 	TPlayerBotShopAidsStats s_kPlayerBotShopAidsStats;
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+	std::map<DWORD, DWORD> s_mapPlayerBotSmithCraftPause;	// pid -> no town errand for the craft before
+#endif
 
 	bool ArePlayerBotShopAidsOff()
 	{
@@ -772,6 +839,270 @@ namespace
 		return true;
 	}
 
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+	// ======================================================================== every piece's 6th / 7th lines (V2)
+
+	// MT2009_PLUS_BOT_SEONHAE_V2: the bot's needs a 6th/7th line is graded against (read once a look).
+	struct TPlayerBotRare67Need
+	{
+		int iElement;		// the hunt element (0 lightning, 1 fire, 2 ice, 3 wind, 4 earth, 5 dark), -1 none
+		bool bYohara;		// a Yohara bot (the cohorts, a Champion level)
+		bool bCaster;
+		int iWillShort;		// the Will kind the bot lacks most (GetPlayerBotChiShortKind), -1 none / no Will user
+		int aiShare[PLAYERBOT_YOHARA_ELEMENTS];	// its Sung Ma map's element shares (all 0 elsewhere)
+	};
+
+	void ReadPlayerBotRare67Need(LPCHARACTER ch, TPlayerBotRare67Need& n)
+	{
+		n.iElement = GetPlayerBotHuntElementIndex(ch);
+		n.bYohara = IsPlayerBotYoharaBonusMember(ch) || GetPlayerBotChampionLevel(ch) > 0;
+		n.bCaster = IsPlayerBotCaster(ch);
+		n.iWillShort = IsPlayerBotSungmaWillUser(ch) ? GetPlayerBotChiShortKind(ch) : -1;
+		const long map = GetPlayerBotYoharaElementMap(ch);
+		if (!map || !GetPlayerBotYoharaMapShares(map, n.aiShare))
+			for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS; ++e)
+				n.aiShare[e] = 0;
+	}
+
+	// The 6th/7th "+x%" and hit-buff lines of an element, in the hunt element's order (lightning, fire, ice, wind,
+	// earth, dark - playerbot_yohara_elements.h).
+	const BYTE PLAYERBOT_RARE67_ENCHANT_PER[PLAYERBOT_YOHARA_ELEMENTS] = { POINT_ENCHANT_PER_ELECT, POINT_ENCHANT_PER_FIRE,
+		POINT_ENCHANT_PER_ICE, POINT_ENCHANT_PER_WIND, POINT_ENCHANT_PER_EARTH, POINT_ENCHANT_PER_DARK };
+	const BYTE PLAYERBOT_RARE67_RESIST_PER[PLAYERBOT_YOHARA_ELEMENTS] = { POINT_RESIST_PER_ELEC, POINT_RESIST_PER_FIRE,
+		POINT_RESIST_PER_ICE, POINT_RESIST_PER_WIND, POINT_RESIST_PER_EARTH, POINT_RESIST_PER_DARK };
+	const BYTE PLAYERBOT_RARE67_HIT_ENCHANT[PLAYERBOT_YOHARA_ELEMENTS] = { POINT_HIT_BUFF_ENCHANT_ELEC,
+		POINT_HIT_BUFF_ENCHANT_FIRE, POINT_HIT_BUFF_ENCHANT_ICE, POINT_HIT_BUFF_ENCHANT_WIND, POINT_HIT_BUFF_ENCHANT_EARTH,
+		POINT_HIT_BUFF_ENCHANT_DARK };
+	const BYTE PLAYERBOT_RARE67_HIT_RESIST[PLAYERBOT_YOHARA_ELEMENTS] = { POINT_HIT_BUFF_RESIST_ELEC,
+		POINT_HIT_BUFF_RESIST_FIRE, POINT_HIT_BUFF_RESIST_ICE, POINT_HIT_BUFF_RESIST_WIND, POINT_HIT_BUFF_RESIST_EARTH,
+		POINT_HIT_BUFF_RESIST_DARK };
+
+	// The element index of a line of one of the tables above (-1 none).
+	int GetPlayerBotRare67LineElement(const BYTE* table, BYTE type)
+	{
+		for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS; ++e)
+			if (table[e] == type)
+				return e;
+		return -1;
+	}
+
+	// One line of a piece's 6th/7th slots: GLOVE67_MUST / GLOVE67_WANTED / GLOVE67_OTHER, by the piece's attribute set
+	// (the pool's columns, world.item_attr_rare) and the bot's needs.
+	int GetPlayerBotRare67Role(LPITEM item, int set, BYTE type, const TPlayerBotRare67Need& n)
+	{
+		const BYTE classAtt = n.bCaster ? POINT_MAGIC_ATT_GRADE_BONUS : POINT_ATT_GRADE_BONUS;
+		const BYTE classBoss = n.bCaster ? POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE : POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE;
+		const int e = n.iElement;
+		const bool hitOwn = e >= 0 && (type == PLAYERBOT_RARE67_HIT_ENCHANT[e] || type == PLAYERBOT_RARE67_HIT_RESIST[e]);
+		// "the item's own n-th bonus x% more" is worth something only where that line exists
+		const bool nthOwn = type >= POINT_FIRST_ATTRIBUTE_BONUS && type <= POINT_FIFTH_ATTRIBUTE_BONUS &&
+				item->GetAttributeType(type - POINT_FIRST_ATTRIBUTE_BONUS) != 0;
+		switch (set)
+		{
+			case ATTRIBUTE_SET_WEAPON:
+			{
+				// the hunt element's power % and the race of the Yohara maps (devils) - else the monsters line
+				if ((e >= 0 && type == PLAYERBOT_RARE67_ENCHANT_PER[e]) || (n.bYohara && type == POINT_ATTBONUS_PER_DEVIL) ||
+						(!n.bYohara && type == POINT_ATTBONUS_PER_MONSTER))
+					return GLOVE67_MUST;
+				const int pe = GetPlayerBotRare67LineElement(PLAYERBOT_RARE67_ENCHANT_PER, type);
+				if (type == POINT_ATTBONUS_PER_MONSTER || type == POINT_ATTBONUS_PER_DEVIL || type == POINT_ATTBONUS_PER_STONE ||
+						type == POINT_ATTBONUS_STONE || type == classAtt || type == POINT_MAX_HP || hitOwn ||
+						(pe >= 0 && n.aiShare[pe] > 0))
+					return GLOVE67_WANTED;
+				return GLOVE67_OTHER;
+			}
+			case ATTRIBUTE_SET_BODY:
+			{
+				if (type == POINT_MAX_HP || (e >= 0 && type == PLAYERBOT_RARE67_RESIST_PER[e]))
+					return GLOVE67_MUST;
+				const int re = GetPlayerBotRare67LineElement(PLAYERBOT_RARE67_RESIST_PER, type);
+				if (type == POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE || type == POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE ||
+						type == POINT_RESIST_PER_MAGIC || type == POINT_RESIST_PER_HUMAN || type == classAtt || hitOwn ||
+						(re >= 0 && n.aiShare[re] > 0))
+					return GLOVE67_WANTED;
+				return GLOVE67_OTHER;
+			}
+			case ATTRIBUTE_SET_NECK:
+				// the boss damage line of the bot's fighting (skills for a caster, hits else)
+				if (type == classBoss || type == POINT_MAX_HP)
+					return GLOVE67_MUST;
+				if (type == POINT_NORMAL_HIT_DAMAGE_BONUS_BOSS_OR_MORE || type == POINT_SKILL_DAMAGE_BONUS_BOSS_OR_MORE ||
+						type == classAtt || type == POINT_ATTBONUS_STONE || hitOwn)
+					return GLOVE67_WANTED;
+				return GLOVE67_OTHER;
+			case ATTRIBUTE_SET_SHIELD:
+				if (type == POINT_NORMAL_HIT_DEFEND_BONUS_BOSS_OR_MORE || type == POINT_SKILL_DEFEND_BONUS_BOSS_OR_MORE ||
+						type == POINT_MAX_HP)
+					return GLOVE67_MUST;
+				if (type == POINT_BLOCK || type == classAtt || nthOwn || hitOwn)
+					return GLOVE67_WANTED;
+				return GLOVE67_OTHER;
+#ifdef ENABLE_PENDANT_SYSTEM
+			case ATTRIBUTE_SET_PENDANT:
+				// a Will user's talisman: the Will % it lacks most
+				if ((n.iWillShort >= 0 && type == POINT_SUNGMA_PER_STR + n.iWillShort) || type == POINT_MAX_HP)
+					return GLOVE67_MUST;
+				if ((n.iWillShort >= 0 && type >= POINT_SUNGMA_PER_STR && type <= POINT_SUNGMA_PER_IMMUNE) || type == classAtt ||
+						hitOwn)
+					return GLOVE67_WANTED;
+				return GLOVE67_OTHER;
+#endif
+			case ATTRIBUTE_SET_HEAD:
+			case ATTRIBUTE_SET_WRIST:
+			case ATTRIBUTE_SET_FOOTS:
+			case ATTRIBUTE_SET_EAR:
+				if (type == POINT_MAX_HP || type == classAtt)
+					return GLOVE67_MUST;
+				if (nthOwn || hitOwn || type == POINT_POISON_REDUCE)
+					return GLOVE67_WANTED;
+				return GLOVE67_OTHER;
+			default:
+				return GLOVE67_OTHER;
+		}
+	}
+
+	// The stopping rule, the glove's: a must line, or only wanted ones.
+	bool IsPlayerBotRare67Good(LPITEM item, const TPlayerBotRare67Need& n)
+	{
+		const int set = item->GetAttributeSetIndex();
+		bool must = false, allWanted = true;
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+		{
+			const BYTE type = item->GetAttributeType(i);
+			if (!type)
+				continue;
+			const int role = GetPlayerBotRare67Role(item, set, type, n);
+			must = must || role == GLOVE67_MUST;
+			allWanted = allWanted && role >= GLOVE67_WANTED;
+		}
+		return must || allWanted;
+	}
+
+	// The 71052s a piece may take before the bot settles for its lines.
+	int GetPlayerBotRare67GiveUp(BYTE wear)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_RARE67_SLOTS) / sizeof(PLAYERBOT_RARE67_SLOTS[0]); ++i)
+			if (PLAYERBOT_RARE67_SLOTS[i].bWear == wear)
+				return PLAYERBOT_RARE67_SLOTS[i].iGiveUp;
+		return 0;
+	}
+
+	void GetPlayerBotRare67Flags(BYTE wear, char* idFlag, char* rollFlag, size_t size)
+	{
+		snprintf(idFlag, size, "playerbot.r67_id_%u", (unsigned int)wear);
+		snprintf(rollFlag, size, "playerbot.r67_n_%u", (unsigned int)wear);
+	}
+
+	// Whether CItem::ChangeRareAttribute2 would take the piece at all (char_item.cpp case 71052, item_attribute.cpp):
+	// lines to change, an attribute set, not a costume; never a young heroes' weapon, a Will talisman, a Jade piece -
+	// and the glove has its own pass (PLAYERBOT_GLOVE67).
+	bool IsPlayerBotRare67Piece(LPCHARACTER ch, LPITEM item)
+	{
+		if (!item || item->GetRareAttrCount() == 0 || item->GetAttributeSetIndex() < 0 || item->GetType() == ITEM_COSTUME ||
+				item->isLocked() || item->IsExchanging() || IsPlayerBotSidekickPinned(ch, item) ||
+				MlodziIsWeaponVnum(item->GetVnum()))
+			return false;
+		BYTE bReserved = 0;
+		return !Mt2009WillTalismanType(item->GetVnum(), bReserved) && !Mt2009JadeBraceletType(item->GetVnum(), bReserved) &&
+				!Mt2009GloveType(item->GetVnum(), bReserved);
+	}
+
+	// The worn piece the pass would roll again now (the slots' order), NULL none: done, gave up, nothing to roll.
+	LPITEM GetPlayerBotRare67Target(LPCHARACTER ch, bool count, BYTE* wearOut = NULL)
+	{
+		if (!ch || IsPlayerBotGearFrozen(ch) || IsPlayerBotSidekickPID(ch->GetPlayerID()) || ArePlayerBotShopAidsOff())
+			return NULL;
+		TPlayerBotRare67Need need;
+		bool needRead = false;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_RARE67_SLOTS) / sizeof(PLAYERBOT_RARE67_SLOTS[0]); ++i)
+		{
+			const BYTE wear = PLAYERBOT_RARE67_SLOTS[i].bWear;
+			LPITEM item = ch->GetWear(wear);
+			if (!IsPlayerBotRare67Piece(ch, item))
+				continue;
+			if (!needRead)
+			{
+				ReadPlayerBotRare67Need(ch, need);
+				needRead = true;
+			}
+			if (count)
+				++s_kPlayerBotShopAidsStats.rareLooks;
+			if (IsPlayerBotRare67Good(item, need))
+			{
+				if (count)
+					++s_kPlayerBotShopAidsStats.rareDone;
+				continue;
+			}
+			char idFlag[48], rollFlag[48];
+			GetPlayerBotRare67Flags(wear, idFlag, rollFlag, sizeof(idFlag));
+			if ((DWORD)ch->GetQuestFlag(idFlag) == item->GetID() && ch->GetQuestFlag(rollFlag) >= PLAYERBOT_RARE67_SLOTS[i].iGiveUp)
+			{
+				if (count)
+					++s_kPlayerBotShopAidsStats.rareGiveUp;
+				continue;
+			}
+			if (wearOut)
+				*wearOut = wear;
+			return item;
+		}
+		return NULL;
+	}
+
+	// One 71052 on the piece (off and on again: the engine refuses an equipped item).
+	bool ManagePlayerBotRare67(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		BYTE wear = 0;
+		LPITEM item = GetPlayerBotRare67Target(ch, true, &wear);
+		if (!item)
+			return false;
+		LPITEM blessing = FetchPlayerBotShopAidBagItem(ch, PLAYERBOT_GLOVE67_CHANGE_VNUM);
+		if (!blessing)
+		{
+			++s_kPlayerBotShopAidsStats.rareNoStone;
+			return false;
+		}
+		if (ch->GetEmptyInventory(item->GetSize()) < 0 || !ch->UnequipItem(item) || item->IsEquipped())
+			return false;
+		char before[64], after[64];
+		FormatPlayerBotGlove67Lines(item, before, sizeof(before));
+		const DWORD itemId = item->GetID();
+		char idFlag[48], rollFlag[48];
+		GetPlayerBotRare67Flags(wear, idFlag, rollFlag, sizeof(idFlag));
+		ch->UseItemEx(blessing, TItemPos(INVENTORY, item->GetCell()));
+		FormatPlayerBotGlove67Lines(item, after, sizeof(after));
+		PlayerBotEquipItem(ch, item);
+		state.bEquipPending = true;
+		state.dwNextEquipmentCheckTime = 0;
+		if ((DWORD)ch->GetQuestFlag(idFlag) != itemId)
+		{
+			ch->SetQuestFlag(idFlag, (int)itemId);
+			ch->SetQuestFlag(rollFlag, 0);
+		}
+		if (strcmp(before, after) == 0)
+		{
+			// the engine refused it (a reserved piece the rules above missed): no second try on this piece
+			ch->SetQuestFlag(rollFlag, GetPlayerBotRare67GiveUp(wear));
+			PlayerBotLogThrottled("rare67_refused", dwNow, "PLAYERBOT_RARE67: refused pid=%u name=%s wear=%u item=%u lines=[%s]",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)wear, item->GetVnum(), before);
+			return false;
+		}
+		const int rolls = ch->GetQuestFlag(rollFlag) + 1;
+		ch->SetQuestFlag(rollFlag, rolls);
+		++s_kPlayerBotShopAidsStats.rareRolls;
+		TPlayerBotRare67Need need;
+		ReadPlayerBotRare67Need(ch, need);
+		const bool good = IsPlayerBotRare67Good(item, need);
+		if (good)
+			++s_kPlayerBotShopAidsStats.rareBetter;
+		sys_log(0, "PLAYERBOT_RARE67: roll pid=%u name=%s wear=%u item=%u element=%d yohara=%d caster=%d will=%d lines=[%s]->[%s] "
+				"rolls=%d/%d %s", ch->GetPlayerID(), ch->GetName(), (unsigned int)wear, item->GetVnum(), need.iElement,
+				need.bYohara ? 1 : 0, need.bCaster ? 1 : 0, need.iWillShort, before, after, rolls, GetPlayerBotRare67GiveUp(wear),
+				good ? "DONE" : (rolls >= GetPlayerBotRare67GiveUp(wear) ? "GIVE_UP" : "AGAIN"));
+		return true;
+	}
+#endif
+
 	// ======================================================================== the socket book
 
 	bool HasPlayerBotCrackedSocket(LPITEM item, bool& open)
@@ -876,6 +1207,236 @@ namespace
 		return !still;
 	}
 
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+	// ======================================================================== the Blacksmith's scrolls (V2)
+
+	// The Blacksmith's recipe of this stone and this base scroll (Kowal's crafting window 101, world.crafting_proto rows
+	// 1-6: 25040/25041 + 71025 -> 25043/70039, + 71026 -> 25045/71032): one of each, a refine scroll out; NULL none.
+	const TCraftingItem* FindPlayerBotSmithRow(DWORD base, DWORD stone)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SMITH_ROWS) / sizeof(PLAYERBOT_SMITH_ROWS[0]); ++i)
+		{
+			const TCraftingItem* row = CCraftingManager::instance().GetCraftingRecipe(PLAYERBOT_SMITH_ROWS[i]);
+			if (!row || row->itemVnum == 0 || row->count <= 0)
+				continue;
+			bool hasBase = false, hasStone = false, other = false;
+			for (int m = 0; m < CRAFTING_MATERIAL_MAX_NUM; ++m)
+			{
+				const DWORD v = row->materials[m].vnum;
+				if (v == 0 || row->materials[m].count <= 0)
+					continue;
+				if (v == base && row->materials[m].count == 1)
+					hasBase = true;
+				else if (v == stone && row->materials[m].count == 1)
+					hasStone = true;
+				else
+					other = true;
+			}
+			const TItemTable* out = ITEM_MANAGER::instance().GetTable(row->itemVnum);
+			if (hasBase && hasStone && !other && out && out->bType == ITEM_USE && out->bSubType == USE_TUNING &&
+					out->alValues[0] == NORMAL_REFINE_SCROLL)
+				return row;
+		}
+		return NULL;
+	}
+
+	bool IsPlayerBotSmithScrollStone(DWORD vnum)
+	{
+		return vnum == PLAYERBOT_SMITH_STONE_BOOK || vnum == PLAYERBOT_SMITH_STONE_METAL;
+	}
+
+	// The worn pieces whose next step a better scroll lifts: under the scroll work (PlayerBotWearsScrollWork's slots and
+	// rules) and at the refine table's odds under 100.
+	int CountPlayerBotSmithScrollSteps(LPCHARACTER ch)
+	{
+		static const BYTE s_aWear[] = { WEAR_WEAPON, WEAR_BODY, WEAR_HEAD, WEAR_SHIELD, WEAR_FOOTS, WEAR_WRIST, WEAR_NECK, WEAR_EAR };
+		int steps = 0;
+		for (size_t i = 0; i < sizeof(s_aWear) / sizeof(s_aWear[0]); ++i)
+		{
+			LPITEM worn = ch->GetWear(s_aWear[i]);
+			if (!worn || worn->GetRefinedVnum() == 0 || IsPlayerBotScrollFreeGear(worn) ||
+					worn->GetRefineLevel() >= PLAYERBOT_SCROLL_REFINE_MAX_PLUS)
+				continue;
+			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(worn->GetRefineSet());
+			if (recipe && recipe->prob < 100)
+				++steps;
+		}
+		return steps;
+	}
+
+	int CountPlayerBotSmithBetterScrolls(LPCHARACTER ch)
+	{
+		int n = 0;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SMITH_BETTER_SCROLLS) / sizeof(PLAYERBOT_SMITH_BETTER_SCROLLS[0]); ++i)
+			n += (int)ch->CountSpecifyItem(PLAYERBOT_SMITH_BETTER_SCROLLS[i]);
+		return n;
+	}
+
+	int CountPlayerBotSmithBaseScrolls(LPCHARACTER ch)
+	{
+		return (int)ch->CountSpecifyItem(PLAYERBOT_SMITH_BASE_UNTRADEABLE) + (int)ch->CountSpecifyItem(PLAYERBOT_SMITH_BASE_TRADEABLE);
+	}
+
+	int CountPlayerBotSmithStones(LPCHARACTER ch)
+	{
+		return (int)ch->CountSpecifyItem(PLAYERBOT_SMITH_STONE_BOOK) + (int)ch->CountSpecifyItem(PLAYERBOT_SMITH_STONE_METAL);
+	}
+
+	// How many better scrolls the bot would make now: its low-odds steps want two each (up to
+	// PLAYERBOT_SMITH_SCROLL_TARGET held), and each takes one Blessing Scroll it holds (a Blessing Scroll becomes a better
+	// one - the count of safe scrolls stays).
+	int GetPlayerBotSmithCraftable(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotSidekickPID(ch->GetPlayerID()) || ArePlayerBotShopAidsOff() ||
+				quest::CQuestManager::instance().GetEventFlag("block_crafting") > 0)
+			return 0;
+		const int steps = CountPlayerBotSmithScrollSteps(ch);
+		if (steps <= 0)
+			return 0;
+		const int want = std::min(PLAYERBOT_SMITH_SCROLL_TARGET, 2 * steps) - CountPlayerBotSmithBetterScrolls(ch);
+		return std::max(0, std::min(want, CountPlayerBotSmithBaseScrolls(ch)));
+	}
+
+	// The town's errand (playerbot_town.h): a craft is ready - stones, Blessing Scrolls, the price - and the last try did
+	// not fail on the distance a while ago.
+	bool PlayerBotWantsSmithScrollCraft(LPCHARACTER ch)
+	{
+		if (!ch || CountPlayerBotSmithStones(ch) <= 0 || GetPlayerBotSmithCraftable(ch) <= 0 ||
+				(long long)ch->GetGold() < PLAYERBOT_SMITH_GOLD_RESERVE + PLAYERBOT_SMITH_PRICE_MAX)
+			return false;
+		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotSmithCraftPause.find(ch->GetPlayerID());
+		return it == s_mapPlayerBotSmithCraftPause.end() || (int)(get_dword_time() - it->second) >= 0;
+	}
+
+	// The Kowal (20016) of the bot's map within the crafting window's reach (crafting.create: npc.is_near(10)).
+	LPCHARACTER FindPlayerBotSmithNpc(LPCHARACTER ch)
+	{
+		CharacterVectorInteractor found;
+		if (!CHARACTER_MANAGER::instance().GetCharactersByRaceNum(PLAYERBOT_SMITH_NPC, found))
+			return NULL;
+		for (CharacterVectorInteractor::iterator it = found.begin(); it != found.end(); ++it)
+		{
+			LPCHARACTER npc = *it;
+			if (npc && npc->IsNPC() && npc->GetMapIndex() == ch->GetMapIndex() &&
+					DISTANCE_APPROX(ch->GetX() - npc->GetX(), ch->GetY() - npc->GetY()) < PLAYERBOT_SMITH_CRAFT_RANGE)
+				return npc;
+		}
+		return NULL;
+	}
+
+	// The crafts, as crafting.create makes them (crafting.lua: the materials out, the yang out, the row's chance, the
+	// product in) - the bot has no client window to press "Wytworz" in, so the row is worked here against the same
+	// CCraftingManager rows (the herbalist's way, playerbot_herbalism.h). Kamien Kowala first (+15), then Magiczny Metal
+	// (+10); the untradeable Blessing Scroll (25041) before the tradeable one (25040, a counter's goods). Where: "town"
+	// (the blacksmith's phase - a failure on the distance pauses the errand) or "near" (the light pass, quiet when no Kowal
+	// stands by). The crafts made.
+	int CraftPlayerBotSmithScrolls(LPCHARACTER ch, const char* where)
+	{
+		if (!ch || !ch->IsPC() || ch->IsDead() || ch->GetExchange() || ch->GetMyShop())
+			return 0;
+		int craftable = GetPlayerBotSmithCraftable(ch);
+		if (craftable <= 0 || CountPlayerBotSmithStones(ch) <= 0)
+			return 0;
+		const bool town = where && strcmp(where, "town") == 0;
+		if (!FindPlayerBotSmithNpc(ch))
+		{
+			if (town)
+			{
+				++s_kPlayerBotShopAidsStats.smithFar;
+				s_mapPlayerBotSmithCraftPause[ch->GetPlayerID()] = get_dword_time() + PLAYERBOT_SMITH_PAUSE_MS;
+			}
+			return 0;
+		}
+		static const DWORD s_aStones[2] = { PLAYERBOT_SMITH_STONE_BOOK, PLAYERBOT_SMITH_STONE_METAL };
+		static const DWORD s_aBases[2] = { PLAYERBOT_SMITH_BASE_UNTRADEABLE, PLAYERBOT_SMITH_BASE_TRADEABLE };
+		int made = 0;
+		for (int tries = 0; tries < PLAYERBOT_SMITH_CRAFTS_A_VISIT && craftable > 0; ++tries)
+		{
+			const TCraftingItem* row = NULL;
+			LPITEM stone = NULL, base = NULL;
+			for (int s = 0; s < 2 && !row; ++s)
+			{
+				if (ch->CountSpecifyItem(s_aStones[s]) <= 0)
+					continue;
+				for (int b = 0; b < 2 && !row; ++b)
+				{
+					if (ch->CountSpecifyItem(s_aBases[b]) <= 0)
+						continue;
+					const TCraftingItem* r = FindPlayerBotSmithRow(s_aBases[b], s_aStones[s]);
+					if (!r)
+						continue;
+					stone = FetchPlayerBotShopAidBagItem(ch, s_aStones[s]);
+					base = FetchPlayerBotShopAidBagItem(ch, s_aBases[b]);
+					if (stone && base && stone != base)
+						row = r;
+				}
+			}
+			if (!row)
+				break;
+			if ((long long)ch->GetGold() < (long long)row->price + PLAYERBOT_SMITH_GOLD_RESERVE)
+			{
+				++s_kPlayerBotShopAidsStats.smithNoGold;
+				break;
+			}
+			if (CountPlayerBotFreeInventoryCells(ch) < 1)
+				break;
+			const DWORD stoneVnum = stone->GetVnum(), baseVnum = base->GetVnum();
+			stone->SetCount(stone->GetCount() - 1);
+			base->SetCount(base->GetCount() - 1);
+			if (row->price > 0)
+				PlayerBotChangeGold(ch, -(long long)row->price);
+			const bool ok = number(1, 100) <= row->chance;
+			if (ok)
+				ch->AutoGiveItem(row->itemVnum, row->count);
+			++s_kPlayerBotShopAidsStats.smithCrafted;
+			++made;
+			--craftable;
+			sys_log(0, "PLAYERBOT_SMITHSCROLL: craft pid=%u name=%s where=%s row=%u %u+%u->%u x%d price=%d chance=%d %s "
+					"steps=%d better_now=%d", ch->GetPlayerID(), ch->GetName(), where ? where : "-", row->vnum, baseVnum, stoneVnum,
+					row->itemVnum, ok ? (int)row->count : 0, row->price, row->chance, ok ? "OK" : "FAILED",
+					CountPlayerBotSmithScrollSteps(ch), CountPlayerBotSmithBetterScrolls(ch));
+		}
+		return made;
+	}
+
+	// The goal: the stones the craftable Blessing Scrolls lack - Magiczny Metal for Smocze Znaki when the bot has them
+	// (V3 line 710, 350 SZ), else Kamien Kowala for Smocze Monety (452, 79 SM; the better scroll).
+	bool GetPlayerBotSmithStoneGoal(LPCHARACTER ch, const TPlayerBotAIState& state, TPlayerBotIshop3Goal& g)
+	{
+		const int need = std::min(GetPlayerBotSmithCraftable(ch) - CountPlayerBotSmithStones(ch), PLAYERBOT_SMITH_STONE_BATCH);
+		if (need <= 0)
+			return false;
+		std::vector<const TPlayerBotItemShopEntry*> marks;
+		SortPlayerBotIshop3Lines(ch, PLAYERBOT_SMITH_STONE_METAL, true, marks);
+		if (!marks.empty() && state.iDragonMarks >= (int)marks[0]->dwPrice)
+		{
+			const TPlayerBotIshop3Goal m = { PLAYERBOT_SMITH_STONE_METAL, true, need, "smith_scroll" };
+			g = m;
+			return true;
+		}
+		const TPlayerBotIshop3Goal c = { PLAYERBOT_SMITH_STONE_BOOK, false, need, "smith_scroll" };
+		g = c;
+		return true;
+	}
+
+	// ======================================================================== Seon-Hae's shards on the counters (V2)
+
+	// What a bag keeps of a shard (GetPlayerBotStallBaseKeep): a hand-in's worth (MATERIAL_MAX) while a worn piece of
+	// the shard's band is one Seon-Hae would take, none else - the rest goes on the counters.
+	int GetPlayerBotSeonHaeShardKeep(LPCHARACTER ch, DWORD vnum)
+	{
+		if (!ch || ch->GetLevel() < PLAYERBOT_SEONHAE_MIN_LEVEL || !mt2009_seonhae::IsOn())
+			return 0;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SEONHAE_SLOTS) / sizeof(PLAYERBOT_SEONHAE_SLOTS[0]); ++i)
+		{
+			LPITEM item = ch->GetWear(PLAYERBOT_SEONHAE_SLOTS[i].bWear);
+			if (IsPlayerBotSeonHaePiece(ch, item) && mt2009_seonhae::MaterialVnum(item) == vnum)
+				return mt2009_seonhae::MATERIAL_MAX;
+		}
+		return 0;
+	}
+#endif
+
 	// ======================================================================== the goals, the tick, the census
 
 	// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 (goals): asked by CollectPlayerBotIshop3Goals (playerbot_ishop3_goals.h).
@@ -894,7 +1455,11 @@ namespace
 			goals[n++] = g;
 		}
 		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && ch->CountSpecifyItem(PLAYERBOT_GLOVE67_CHANGE_VNUM) == 0 &&
-				GetPlayerBotGlove67Target(ch, false))
+				(GetPlayerBotGlove67Target(ch, false)
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+				|| GetPlayerBotRare67Target(ch, false)	// MT2009_PLUS_BOT_SEONHAE_V2: every piece with 6th/7th lines
+#endif
+				))
 		{
 			const TPlayerBotIshop3Goal g = { PLAYERBOT_GLOVE67_CHANGE_VNUM, false, 1, "bonus_67change" };
 			goals[n++] = g;
@@ -905,6 +1470,12 @@ namespace
 			const TPlayerBotIshop3Goal g = { PLAYERBOT_CLEAN_SOCKET_VNUM, false, 1, "bonus_socket_clean" };
 			goals[n++] = g;
 		}
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+		// MT2009_PLUS_BOT_SEONHAE_V2: Kamien Kowala / Magiczny Metal for the Blacksmith's better scrolls.
+		TPlayerBotIshop3Goal smith;
+		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && GetPlayerBotSmithStoneGoal(ch, state->second, smith))
+			goals[n++] = smith;
+#endif
 	}
 
 	void LogPlayerBotShopAidsCensus(DWORD dwNow)
@@ -930,6 +1501,11 @@ namespace
 		sys_log(0, "PLAYERBOT_GLOVE67: census looks=%u done=%u rolls=%u better=%u give_up=%u no_blessing=%u",
 				t.gloveLooks, t.gloveDone, t.gloveRolls, t.gloveBetter, t.gloveGiveUp, t.gloveNoStone);
 		sys_log(0, "PLAYERBOT_CLEANSOCKET: census wanted=%u cleaned=%u no_book=%u", t.cleanWanted, t.cleaned, t.cleanNoBook);
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+		sys_log(0, "PLAYERBOT_RARE67: census looks=%u done=%u rolls=%u better=%u give_up=%u no_blessing=%u",
+				t.rareLooks, t.rareDone, t.rareRolls, t.rareBetter, t.rareGiveUp, t.rareNoStone);
+		sys_log(0, "PLAYERBOT_SMITHSCROLL: census crafted=%u far=%u no_gold=%u", t.smithCrafted, t.smithFar, t.smithNoGold);
+#endif
 	}
 
 	// The tick (playerbot_manager.cpp, beside the workshop's errand): the glove and the book where the bot stands on a
@@ -946,8 +1522,15 @@ namespace
 				!ch->GetExchange() && !ch->GetMyShop() && ch->CanHandleItem())
 		{
 			light = dwNow + number(PLAYERBOT_SHOP_AIDS_LIGHT_MIN_MS, PLAYERBOT_SHOP_AIDS_LIGHT_MAX_MS);
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+			// MT2009_PLUS_BOT_SEONHAE_V2: then 71052 on the other pieces, and the Blacksmith's craft while one stands by.
+			CraftPlayerBotSmithScrolls(ch, "near");
+			if (!ManagePlayerBotCleanSocket(ch, state, dwNow) && !ManagePlayerBotGlove67(ch, state, dwNow))
+				ManagePlayerBotRare67(ch, state, dwNow);
+#else
 			if (!ManagePlayerBotCleanSocket(ch, state, dwNow))
 				ManagePlayerBotGlove67(ch, state, dwNow);
+#endif
 		}
 		return ManagePlayerBotSeonHae(ch, state, dwNow);
 	}

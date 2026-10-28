@@ -44,7 +44,7 @@ class EnvApplyTest(unittest.TestCase):
         text = text.replace("M2_DB_PASSWORD=\n", "M2_DB_PASSWORD=s3cretDBvalue\n")
         text = text.replace("M2_ADMINPAGE_PASSWORD=\n", "M2_ADMINPAGE_PASSWORD=adminSECRETvalue\n")
         # An .env written before M2_SEONHAE existed: the key is appended.
-        text = text.replace("M2_SEONHAE=0\n", "")
+        text = text.replace("M2_SEONHAE=1\n", "")
         self.env = os.path.join(docker, ".env")
         with open(self.env, "w", encoding="utf-8") as handle:
             handle.write(text)

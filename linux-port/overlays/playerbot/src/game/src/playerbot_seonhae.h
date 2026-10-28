@@ -36,7 +36,7 @@
 //    flags go first and the remade item after them - at worst an item is lost,
 //    never doubled.
 //  - the switch: event flag m2_seonhae_on (1 on; apply.sh from M2_SEONHAE,
-//    default 0; the classic panel's "Seon-Hae" page, web_admin.quest SEONHAE).
+//    default 1 since 28 October 2026; the classic panel's "Seon-Hae" page, web_admin.quest SEONHAE).
 //    Off stops new hand-ins only - an item already with Seon-Hae can always be
 //    collected.
 //  - bots never: every command needs a real descriptor (not IsBot), the quest
@@ -544,9 +544,10 @@ void SeonHaeCommand(LPCHARACTER ch, const char* argument)
 }
 
 // MT2009_PLUS_SEONHAE_V1 (drops): where the Powershards and the Additives come
-// from (the owner, 1 October, revised). Only for a real player - the drop's
-// owner (the killer CreateDropItem is given: the top damage dealer or his
-// party's) must not be a bot - and nothing while m2_seonhae_on is off. The
+// from (the owner, 1 October, revised). The Additives only for a real player -
+// the drop's owner (the killer CreateDropItem is given: the top damage dealer
+// or his party's) must not be a bot; the Powershards for a bot too, at the same
+// chances (MT2009_PLUS_BOT_SEONHAE_V2) - and nothing while m2_seonhae_on is off. The
 // items join the kill's own list, so they fall with its ownership. No shop,
 // no ItemShop.
 //  - Additives: from Metin stones and bosses (rank boss/king) on the maps of
@@ -750,8 +751,17 @@ namespace mt2009_seonhae
 void Mt2009PlusSeonHaeDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<LPITEM>& out)
 {
 	using namespace mt2009_seonhae;
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+	// MT2009_PLUS_BOT_SEONHAE_V2 (the owner, 28 October 2026: the ordinary shards drop for the bots too, as for the
+	// players): a bot's kill rolls the shards by the same rules and chances; the additives stay the players'.
+	if (!victim || victim->IsPC() || !killer || !killer->IsPC() || !killer->GetDesc())
+		return;
+	const bool botKiller = killer->GetDesc()->IsBot();
+#else
 	if (!victim || victim->IsPC() || !killer || !killer->IsPC() || !killer->GetDesc() || killer->GetDesc()->IsBot())
 		return;
+	const bool botKiller = false;
+#endif
 	if (!IsOn())
 		return;
 	const DropRules& r = Drops();
@@ -769,7 +779,7 @@ void Mt2009PlusSeonHaeDrop(LPCHARACTER victim, LPCHARACTER killer, std::vector<L
 		if (m != r.additiveMaps.end())
 			additive = &m->second;
 	}
-	if (additive && r.additivePermille > 0 && number(1, 1000) <= r.additivePermille)
+	if (additive && !botKiller && r.additivePermille > 0 && number(1, 1000) <= r.additivePermille)
 		AddDrop(out, additive->vnum, additive->count);
 
 	// the shards: ordinary monsters on the shard maps
