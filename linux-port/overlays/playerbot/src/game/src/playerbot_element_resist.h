@@ -26,12 +26,13 @@
 //    to Max HP, the helmet's must; no other element's resistance is wanted. The stones are the bot's own 71084/71085,
 //    by the pass's shares - an element change re-bonuses a piece only within its share and the leftover over the
 //    reserve, never the whole stock.
-// 3. The costume and the hairstyle: this world's item_attr rolls no element resistance on a costume or a hairstyle
-//    (costume_body / costume_hair are 0 for all six; the 6th/7th pool none either) and the costume bonus transfer
-//    (70065 at the blacksmith) only moves costume lines between costumes - so there is no resistance to put there.
-//    What the costume sets do roll for Yohara is taken instead (IsPlayerBotYoharaCostumeLineGood): the costume Max HP,
-//    arrow and magic resistance, the hairstyle arrow dodge and magic resistance - at level 3 of the table or more,
-//    and the hunt element's resistance too should an operator ever add it to those columns. The reagents are the
+// 3. The costume and the hairstyle (IsPlayerBotYoharaCostumeLineGood): the costume Max HP, arrow and magic
+//    resistance, the hairstyle arrow dodge and magic resistance - at level 3 of the table or more - and the hunt
+//    element's resistance. MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1 (costume_attr_global.sql: the global costume pools, fire,
+//    lightning and wind resistance on costume_body and costume_hair): that resistance is the first line - a piece
+//    whose set rolls it is not finished without it (IsPlayerBotCostumeHuntLineMissing; the body costume wants a
+//    second good line next to it, Max HP first by its weight, until PLAYERBOT_COSTUME_HUNT_ALONE_AFTER changes; the
+//    hairstyle the resistance alone). Ice, earth and dark roll on no costume: the old rule. The reagents are the
 //    player's: 70063 / 70064 bought at Handlarka Roznosci (9003; the Dongan errand's stop too), rolled from the bag
 //    out of a fight (ManagePlayerBotBonusReroll), the old pass's gold rules and limits.
 // 4. The elixir: the hunt element's resistance elixir (50836-50841, and its power elixir) is the only one a bot with
@@ -198,6 +199,22 @@ namespace
 		return value >= floor ? 1 : 0;
 	}
 
+	// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: the hunt element's resistance as the costume's / hairstyle's first line.
+	bool IsPlayerBotCostumeHuntLineMissing(LPCHARACTER ch, LPITEM costume)
+	{
+		if (!ch || !costume || costume->GetType() != ITEM_COSTUME || !IsPlayerBotYoharaBonusMember(ch) ||
+				(costume->GetSubType() != COSTUME_BODY && costume->GetSubType() != COSTUME_HAIR))
+			return false;
+		const BYTE point = GetPlayerBotElementResistPoint(GetPlayerBotHuntElementIndex(ch));
+		if (!point || !IsPlayerBotApplyOnAttrSet(point, costume->GetAttributeSetIndex()))
+			return false;
+		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (costume->GetAttributeType(i) == point &&
+					IsPlayerBotYoharaCostumeLineGood(ch, costume, point, costume->GetAttributeValue(i)) > 0)
+				return false;
+		return true;
+	}
+
 	// The worn piece's line of the element's resistance (0 none).
 	long GetPlayerBotWornResistLine(LPCHARACTER ch, BYTE wear, BYTE point)
 	{
@@ -308,8 +325,8 @@ namespace
 			if (!item)
 				snprintf(buf, sizeof(buf), " %s:none", s_aszCostume[i]);
 			else
-				snprintf(buf, sizeof(buf), " %s:%d/%d", s_aszCostume[i], CountPlayerBotGoodCostumeLines(ch, item),
-						item->GetAttributeCount());
+				snprintf(buf, sizeof(buf), " %s:%d/%d%s", s_aszCostume[i], CountPlayerBotGoodCostumeLines(ch, item),
+						item->GetAttributeCount(), IsPlayerBotCostumeHuntLineMissing(ch, item) ? "(no_element)" : "");
 			out += buf;
 		}
 		return out;

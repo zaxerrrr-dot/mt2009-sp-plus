@@ -4432,17 +4432,20 @@ fi
 #     the double-item chance in the drop, a talisman's own resistance values) and send it to the client at login
 #     (quest zywioly: the tooltip's maxima, the element icons of global mode).
 case "$(printf '%s' "${M2_BONUS_MODE:-mt2009}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in global|globalny|1) bonus_global=1 ;; *) bonus_global=0 ;; esac
+bonus_switched=0
 if bonus_saved=$(db -N -e "CREATE TABLE IF NOT EXISTS world.item_attr_mt2009 LIKE world.item_attr;
         SELECT COUNT(*) FROM world.item_attr_mt2009;" 2>/dev/null | tr -d ' \r'); then
     if [ "$bonus_global" = 1 ] && [ "$bonus_saved" = 0 ]; then
         if db < /opt/playerbot/bonusy_global.sql; then
             echo "[playerbot-migrate] bonus mode: global - item_attr switched to the global set (the mt2009 rows kept in world.item_attr_mt2009)"
+            bonus_switched=1
         else
             fail_step "bonus mode: bonusy_global.sql failed; item_attr stays as it was" >&2
         fi
     elif [ "$bonus_global" = 0 ] && [ "$bonus_saved" != 0 ]; then
         if db < /opt/playerbot/bonusy_mt2009.sql; then
             echo "[playerbot-migrate] bonus mode: mt2009 - item_attr back to the mt2009 set ($bonus_saved rows)"
+            bonus_switched=1
         else
             fail_step "bonus mode: bonusy_mt2009.sql failed; item_attr stays as it was" >&2
         fi
@@ -4451,6 +4454,21 @@ if bonus_saved=$(db -N -e "CREATE TABLE IF NOT EXISTS world.item_attr_mt2009 LIK
     fi
 else
     fail_step "bonus mode: could not read world.item_attr_mt2009" >&2
+fi
+# MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1 (the owner, 28 October 2026): the bonus pools of weapon skins, hairstyles and
+# costumes (item_attr's costume_weapon / costume_hair / costume_body, rolled by 70063 / 70064) as on the global server,
+# each line up to the highest level the bonus has on the ordinary equipment of this bonus mode (Max HP 2000 as on the
+# armour in global mode) - costume_attr_global.sql. Once per world (marker costume_attr_global_v1) and again after a
+# switch of M2_BONUS_MODE above, which rewrites the rows the levels come from; a panel edit stays until then. Runs
+# after MT2009_PLUS_COSTUME_BONUS_V1's seeding (which never runs again once a costume column is not zero).
+if [ "$bonus_switched" = 1 ] || [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'costume_attr_global_v1'" 2>/dev/null || echo 1)" = 0 ]; then
+    if db < /opt/playerbot/costume_attr_global.sql; then
+        echo "[playerbot-migrate] costume bonuses: the global pools of weapon skins, hairstyles and costumes ($(db -N -e "SELECT CONCAT(SUM(costume_weapon > 0), '/', SUM(costume_hair > 0), '/', SUM(costume_body > 0)) FROM world.item_attr" 2>/dev/null | tr -d ' \r') lines)"
+    else
+        fail_step "costume bonuses: costume_attr_global.sql failed; the costume pools stay as they were" >&2
+    fi
+else
+    echo "[playerbot-migrate] costume bonuses: the global pools already (costume_attr_global_v1)"
 fi
 # MT2009_PLUS_BONUS67_V1 (server-patches/bonusy67/README.md; the owner, 20 October: the 6th/7th bonuses of the wiki
 # the engine lacked added, "Bonusy 6/7 takie same w jednym i drugim trybie"): replaces MT2009_PLUS_RARE_WIKI_V1's swap

@@ -30,6 +30,12 @@ Zastosuj restarts the cores). apply.sh rewrites (see WARN_* below):
   * MT2009_PLUS_COSTUME_BONUS_V1 - item_attr's costume_body/hair/weapon
     are copied from body/head/weapon at every start WHILE all three are zero
     in the whole table;
+  * MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1 - the three costume columns are the
+    global pools (costume_attr_global.sql: each listed bonus up to the
+    highest level it has on the ordinary equipment, every other bonus 0),
+    written once per world (marker costume_attr_global_v1 in
+    world.mt2009_plus_once) and again after a switch of M2_BONUS_MODE;
+    later edits stay until such a switch.
   * MT2009_PLUS_RARE_TABLE_V2 - item_attr_rare is written once per world
     (marker rare_6_7_v2 in world.mt2009_plus_once); later edits stay.
   * MT2009_PLUS_BONUS67_V1 - item_attr_rare is the wiki's pool in BOTH bonus
@@ -111,7 +117,11 @@ POINT_NAMES = (
 
 WARN_NORMAL = ("apply.sh (MT2009_PLUS_COSTUME_BONUS_V1) przy każdym starcie serwera sprawdza kolumny Kostium, "
                "Fryzura i Kostium broni: jeśli w CAŁEJ tabeli wszystkie są zerowe, kopiuje do nich Zbroję, Hełm i "
-               "Broń. Dopóki choć jeden bonus ma kostium większy od zera, Twoje zmiany zostają.")
+               "Broń. Dopóki choć jeden bonus ma kostium większy od zera, Twoje zmiany zostają. "
+               "MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: raz na świat (znacznik costume_attr_global_v1) i po każdej "
+               "zmianie trybu bonusów (M2_BONUS_MODE) apply.sh wpisuje do kolumn Kostium, Fryzura i Kostium broni "
+               "pule jak na globalu (costume_attr_global.sql) – Twoje zmiany tych kolumn zostają do następnej "
+               "zmiany trybu.")
 WARN_RARE = ("apply.sh (MT2009_PLUS_RARE_TABLE_V2) wpisuje tę tabelę tylko raz na świat (znacznik rare_6_7_v2 "
              "w world.mt2009_plus_once) – Twoje zmiany zostają po restartach. Tylko nowa baza bez tego znacznika "
              "dostanie z powrotem tabelę z 1 października. MT2009_PLUS_BONUS67_V1: raz na świat (znacznik "

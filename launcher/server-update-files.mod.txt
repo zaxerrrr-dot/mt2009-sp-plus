@@ -57,6 +57,7 @@ linux-port/docker/mariadb/playerbot/apply.sh
 linux-port/docker/mariadb/playerbot/bonusy_global.sql
 linux-port/docker/mariadb/playerbot/bonusy_mt2009.sql
 linux-port/docker/mariadb/playerbot/bonusy67_wiki.sql
+linux-port/docker/mariadb/playerbot/costume_attr_global.sql
 linux-port/docker/mariadb/playerbot/zywioly_moby_global.sql
 linux-port/docker/mariadb/playerbot/itemshop_schema.sql
 # MT2009_PLUS_ITEMSHOP_V3_V1: the second ItemShop's tables and catalogue views (tools/itemshop3); its app is under linux-port/docker/itemshop/*
