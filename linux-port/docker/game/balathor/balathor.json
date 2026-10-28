@@ -153,7 +153,7 @@
 	"max_regen_mob_count": 30,
 	"revive_hwatcha_request_sp": 100,
 	"register_min_level": 120,
-	"register_min_guild_level": 20,
+	"register_min_guild_level": 21,
 	"register_min_member_count": 4,
 	"register_max_member_count": 16,
 	"register_ladder_point": 600,

@@ -64,6 +64,19 @@ Root `uiitemshopv3.py` pyta co klatkę, gdy sklep jest otwarty: `wheel` → zamy
 Stary exe (bez funkcji) ładuje link – sklep pokazuje wtedy stronę z informacją o klawiszu F12. Sprawdzone `clang-cl /Zs`
 obu plików na kopii źródeł z całą nakładką.
 
+## System gildii – `MT2009_PLUS_GUILDSYS_V1` (`ENABLE_MT2009_GUILDSYS`)
+
+Na paczce Guild Systems (skompilował Nazox), serwer: `server-patches/guildsys`. Bez zmian pakietów.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_GUILDSYS` |
+| `UserInterface/Locale.cpp` | **nowy w nakładce**: `LocaleService_GetLastExp` – tabela doświadczenia gildii do poziomu 40 (ta sama co `guild_exp_table` serwera) |
+| `UserInterface/PythonGuild.cpp` | **nowy w nakładce**: `guild.GetGuildExperience` – ostatni poziom 40 |
+| `UserInterface/PythonPlayerSkill.cpp` | `UseGuildSkill`: umiejętności gildii `ONLY_FOR_GUILD_WAR` działają też w Krypcie Balathora (`metin2_map_guild_whitedragon_boss`) |
+
+Sprawdzone `clang-cl /Zs` trzech plików `.cpp` na kopii `exe-src7` z całą nakładką (29.10.2026).
+
 ## Mini gry Owsapa – `MT2009_PLUS_MINIGAMES_V1`
 
 Rumi (Okey), Yut Nori (3D w render target), Złap Króla i Dzieci Kwiatów + widżety `wndMgr` z `ui.py`

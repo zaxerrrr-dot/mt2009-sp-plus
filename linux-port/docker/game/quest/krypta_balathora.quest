@@ -15,18 +15,19 @@ quest krypta_balathora begin
 			return 500000
 		end
 
-		-- TODO guildsys: wiek gildii >= 24 h i cz³onek gildii >= 24 h (pl-wiki) - gdy system gildii
-		-- (claude/y-guildsys) da swoje funkcje questowe, sprawdziæ je tutaj. Dziœ: brak danych, przepuszcza.
+		-- MT2009_PLUS_GUILDSYS_V1 (server-patches/guildsys, guildsys.cpp): gildia istnieje >= 24 h, cz³onek jest w niej
+		-- >= 24 h (pl-wiki) - player.guild.create_time / guild_member.join_time (gildia i cz³onek sprzed systemu
+		-- gildii maj¹ 0 = dawno); member_age_ok w bloku q.begin_other_pc_block liczy postaæ tego bloku.
 		function guild_age_ok()
-			return true
+			return guild.age() >= 24 * 60 * 60
 		end
 		function member_age_ok()
-			return true
+			return guild.member_age() >= 24 * 60 * 60
 		end
 
 		function guild_money()
-			-- TODO guildsys: bank gildii; dziœ skarbiec gildii (guild.get_money).
-			return guild.get_money()
+			-- skarbiec gildii, który mo¿na wydaæ (guild.get_bank = guild.treasury_available: z³oto bez czekaj¹cych wydatków)
+			return guild.get_bank()
 		end
 
 		-- ludzie z gildii obok mistrza (on pierwszy), bez botów
@@ -97,7 +98,7 @@ quest krypta_balathora begin
 				q.end_other_pc_block()
 			end
 			if table.getn(bad) > 0 then
-				say(string.format("Ka¿dy musi mieæ %d poziom i Champion 4. Nie spe³niaj¹:", min_level))
+				say(string.format("Ka¿dy musi mieæ %d poziom, Champion 4 i byæ w gildii od 24 godzin. Nie spe³niaj¹:", min_level))
 				for i, name in next, bad, nil do
 					say(" " .. name)
 				end
