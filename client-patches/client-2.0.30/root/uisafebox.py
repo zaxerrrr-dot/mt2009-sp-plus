@@ -136,6 +136,10 @@ def OnArrangeResult(code='0', moved='0', merged='0', units='0'):
 	chat.AppendChat(chat.CHAT_TYPE_INFO, ArrangeMessage(_ArrangeInt(code), max(0, _ArrangeInt(moved)),
 		max(0, _ArrangeInt(merged)), _arrangeState['mode']))
 
+# MT2009_PLUS_MALL_PAGES_V1: pages of the item-shop storage window, as the
+# safebox's (SAFEBOX_PAGE_COUNT of the server).
+MALL_PAGE_COUNT = 3
+
 class PasswordDialog(ui.ScriptWindow):
 	def __init__(self):
 		ui.ScriptWindow.__init__(self)
@@ -194,7 +198,13 @@ class PasswordDialog(ui.ScriptWindow):
 		self.Hide()
 
 	def OnAccept(self):
-		net.SendChatPacket(self.sendMessage + self.passwordValue.GetText())
+		msg = self.sendMessage + self.passwordValue.GetText()
+		# MT2009_PLUS_MALL_PAGES_V1: this client shows the item-shop storage's
+		# pages (MallWindow), so its deliveries may fill them all
+		# (server-patches/mall3); an old client sends no page count.
+		if self.sendMessage.startswith("/mall_password"):
+			msg += " %d" % MALL_PAGE_COUNT
+		net.SendChatPacket(msg)
 		self.CloseDialog()
 		return True
 
@@ -765,15 +775,63 @@ class MallWindow(ui.ScriptWindow):
 		self.SetTableSize(size)
 		self.Show()
 
+	# MT2009_PLUS_MALL_PAGES_V1: page buttons I / II / III under the grid, as
+	# the safebox's; the grid shows one page, slot numbers are page-local.
+	def __MakePageButton(self, pageCount):
+		for btn in self.pageButtonList:
+			btn.Hide()
+
+		self.curPageIndex = 0
+		self.pageButtonList = []
+
+		if pageCount <= 1:
+			return
+
+		text = "I"
+		pos = -int(float(pageCount-1)/2 * 52)
+		for i in xrange(pageCount):
+			button = ui.RadioButton()
+			button.SetParent(self)
+			button.SetUpVisual("d:/ymir work/ui/game/windows/tab_button_middle_01.sub")
+			button.SetOverVisual("d:/ymir work/ui/game/windows/tab_button_middle_02.sub")
+			button.SetDownVisual("d:/ymir work/ui/game/windows/tab_button_middle_03.sub")
+			button.SetWindowHorizontalAlignCenter()
+			button.SetWindowVerticalAlignBottom()
+			button.SetPosition(pos, 64)
+			button.SetText(text)
+			button.SetEvent(lambda arg=i: self.SelectPage(arg))
+			button.Show()
+			self.pageButtonList.append(button)
+
+			pos += 52
+			text += "I"
+
+		self.pageButtonList[0].Down()
+
+	def SelectPage(self, index):
+		self.curPageIndex = index
+
+		for btn in self.pageButtonList:
+			btn.SetUp()
+
+		self.pageButtonList[index].Down()
+		self.RefreshMall()
+
+	def __LocalPosToGlobalPos(self, local):
+		return self.curPageIndex*safebox.SAFEBOX_PAGE_SIZE + local
+
 	def SetTableSize(self, pageCount):
 		size = safebox.SAFEBOX_SLOT_Y_COUNT
+		pageCount = max(1, min(pageCount, MALL_PAGE_COUNT))
+		self.__MakePageButton(pageCount)
 
 		self.wndItem.ArrangeSlot(0, safebox.SAFEBOX_SLOT_X_COUNT, size, 32, 32, 0, 0)
 		self.wndItem.RefreshSlot()
 		self.wndItem.SetSlotBaseImage("d:/ymir work/ui/public/Slot_Base.sub", 1.0, 1.0, 1.0, 1.0)
 
-		self.wndBoard.SetSize(self.BOX_WIDTH, 82 + 32*size)
-		self.SetSize(self.BOX_WIDTH, 85 + 32*size)
+		extra = 27 if pageCount > 1 else 0
+		self.wndBoard.SetSize(self.BOX_WIDTH, 82 + extra + 32*size)
+		self.SetSize(self.BOX_WIDTH, 85 + extra + 32*size)
 		self.UpdateRect()
 
 	def RefreshMall(self):
@@ -781,10 +839,15 @@ class MallWindow(ui.ScriptWindow):
 		getItemCount=safebox.GetMallItemCount
 		setItemID=self.wndItem.SetItemSlot
 
-		for i in xrange(safebox.GetMallSize()):
-			itemID = getItemID(i)
-			itemCount = getItemCount(i)
-			socket = tuple(safebox.GetMallItemMetinSocket(i, j) for j in range(player.METIN_SOCKET_MAX_NUM))
+		mallSize = safebox.GetMallSize()
+		for i in xrange(safebox.SAFEBOX_PAGE_SIZE):
+			slotIndex = self.__LocalPosToGlobalPos(i)
+			if slotIndex >= mallSize:
+				setItemID(i, 0, 0)
+				continue
+			itemID = getItemID(slotIndex)
+			itemCount = getItemCount(slotIndex)
+			socket = tuple(safebox.GetMallItemMetinSocket(slotIndex, j) for j in range(player.METIN_SOCKET_MAX_NUM))
 			if itemCount <= 1:
 				itemCount = 0
 			setItemID(i, itemID, itemCount, socket=socket)
@@ -822,12 +885,14 @@ class MallWindow(ui.ScriptWindow):
 		else:
 
 			curCursorNum = app.GetCursor()
+			selectedSlotPos = self.__LocalPosToGlobalPos(selectedSlotPos) # MT2009_PLUS_MALL_PAGES_V1
 			selectedItemID = safebox.GetMallItemID(selectedSlotPos)
 			mouseModule.mouseController.AttachObject(self, player.SLOT_TYPE_MALL, selectedSlotPos, selectedItemID)
 			snd.PlaySound("sound/ui/pick.wav")
 
 	def UseItemSlot(self, slotIndex):
 		mouseModule.mouseController.DeattachObject()
+		slotIndex = self.__LocalPosToGlobalPos(slotIndex) # MT2009_PLUS_MALL_PAGES_V1
 		eventManager.EventManager().send_event(EVENT_QUICK_REMOVE_SAFEBOX_ITEM, "mall", slotIndex)
 
 	def __ShowToolTip(self, slotIndex):
@@ -835,7 +900,7 @@ class MallWindow(ui.ScriptWindow):
 			self.tooltipItem.SetMallItem(slotIndex)
 
 	def OverInItem(self, slotIndex):
-		self.__ShowToolTip(slotIndex)
+		self.__ShowToolTip(self.__LocalPosToGlobalPos(slotIndex)) # MT2009_PLUS_MALL_PAGES_V1
 
 	def OverOutItem(self):
 		self.wndItem.SetUsableItem(False)

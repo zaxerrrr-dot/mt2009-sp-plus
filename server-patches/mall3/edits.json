@@ -1,0 +1,26 @@
+[
+ {
+  "file": "../../common/tables.h",
+  "marker": "MT2009_PLUS_MALL_PAGES_V1 (packet)",
+  "old": "\tchar\tszPassword[SAFEBOX_PASSWORD_MAX_LEN + 1];\n} TSafeboxLoadPacket;\n",
+  "new": "\tchar\tszPassword[SAFEBOX_PASSWORD_MAX_LEN + 1];\n\t// MT2009_PLUS_MALL_PAGES_V1 (packet) (server-patches/mall3): HEADER_GD_MALL_LOAD only -\n\t// how many pages of the item-shop storage the player's client shows (1 = an old\n\t// client, 3 = SAFEBOX_PAGE_COUNT); item_award deliveries fill that many pages.\n\t// HEADER_GD_SAFEBOX_LOAD leaves it unread.\n\tBYTE\tbMallPages;\n} TSafeboxLoadPacket;\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_MALL_PAGES_V1 (command)",
+  "old": "\tdb_clientdesc->DBPacket(HEADER_GD_MALL_LOAD, ch->GetDesc()->GetHandle(), &p, sizeof(p));\n",
+  "new": "\t// MT2009_PLUS_MALL_PAGES_V1 (command) (server-patches/mall3): a client with the paged\n\t// item-shop storage window sends \"/mall_password <password> 3\"; an old one sends no\n\t// second word and shows only the first page, so its deliveries stay there.\n\t{\n\t\tchar szPassword[256], szPages[256];\n\t\ttwo_arguments(argument, szPassword, sizeof(szPassword), szPages, sizeof(szPages));\n\t\tint iPages = 1;\n\t\tif (*szPages)\n\t\t\tstr_to_number(iPages, szPages);\n\t\tp.bMallPages = (BYTE) MINMAX(1, iPages, (int) SAFEBOX_PAGE_COUNT);\n\t}\n\n\tdb_clientdesc->DBPacket(HEADER_GD_MALL_LOAD, ch->GetDesc()->GetHandle(), &p, sizeof(p));\n"
+ },
+ {
+  "file": "../../db/src/ClientManager.cpp",
+  "marker": "MT2009_PLUS_MALL_PAGES_V1 (load)",
+  "old": "\tpi->ip[0] = bMall ? 1 : 0;\n",
+  "new": "\tpi->ip[0] = bMall ? 1 : 0;\n\t// MT2009_PLUS_MALL_PAGES_V1 (load) (server-patches/mall3): the pages of the item-shop\n\t// storage the client shows, for the item_award grid below (ip[1] is free here).\n\tpi->ip[1] = bMall ? (char) MINMAX(1, (int) packet->bMallPages, (int) SAFEBOX_PAGE_COUNT) : 0;\n"
+ },
+ {
+  "file": "../../db/src/ClientManager.cpp",
+  "marker": "MT2009_PLUS_MALL_PAGES_V1 (grid)",
+  "old": "\t\t\tCGrid grid(5, MAX(1, pi->pSafebox->bSize) * 9);\n",
+  "new": "\t\t\t// MT2009_PLUS_MALL_PAGES_V1 (grid) (server-patches/mall3): the item-shop storage's\n\t\t\t// deliveries fill every page the player's client shows (1 or 3); its bSize is\n\t\t\t// 1 (or 0 with no safebox row) and was the only limit before.\n\t\t\tCGrid grid(5, MAX(1, pi->ip[0] == 1 ? (int) pi->ip[1] : (int) pi->pSafebox->bSize) * 9);\n"
+ }
+]
