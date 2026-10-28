@@ -10,27 +10,25 @@
 -- mode: on the talisman only, 5/10/15/20/25) - level 3, 15% as the global maximum.
 -- Not in this engine (no such point): bleeding attack (weapon skin, hairstyle) and resistance to claws (weapon skin,
 -- costume) - the global lists have them for the Lycan, whom this server does not have.
--- The global data (the global server's item_attr as Owsap ships it) also rolls attack speed and the chance of double
--- items on a weapon skin: taken too (the wiki's screenshot of the weapon skin was cut after the fans).
+-- The weapon skin's list is the wiki's full list (the owner's second screenshot, ending with the claws): no attack
+-- speed and no double items there.
 --
 -- apply.sh runs it once per world (marker costume_attr_global_v1 in world.mt2009_plus_once) and again after every
 -- switch of M2_BONUS_MODE (bonusy_global.sql / bonusy_mt2009.sql rewrite the rows the levels are read from); a later
 -- edit of the costume columns in the panel stays until then. Items keep the bonuses they have (player.item is never
 -- touched) - a line the pools no longer have stays on its costume until the costume is rolled again.
 START TRANSACTION;
--- mt2009 mode has no row for the chance of an experience bonus or of double items (bonusy_global.sql adds them in
--- global mode): a row for the weapon skin only, every ordinary kind 0 (bonusy_global.sql gives them their global
--- kinds when the world switches).
+-- mt2009 mode has no row for the chance of an experience bonus (bonusy_global.sql adds it in global mode): a row
+-- for the weapon skin only, every ordinary kind 0 (bonusy_global.sql gives it its global kinds when the world
+-- switches).
 INSERT INTO world.item_attr (apply, prob, lv1, lv2, lv3, lv4, lv5, weapon, body, wrist, foots, neck, head, shield, ear)
 SELECT n.a, n.p, 2, 4, 6, 8, 20, 0, 0, 0, 0, 0, 0, 0, 0 FROM (
-    SELECT 'POINT_EXP_DOUBLE_BONUS' AS a, 10 AS p
-    UNION ALL SELECT 'POINT_ITEM_DROP_BONUS', 7) AS n
+    SELECT 'POINT_EXP_DOUBLE_BONUS' AS a, 10 AS p) AS n
  WHERE NOT EXISTS (SELECT 1 FROM world.item_attr AS x WHERE x.apply = n.a);
 UPDATE world.item_attr SET costume_body = 0, costume_hair = 0, costume_weapon = 0;
 -- Wizerunek broni+: Max HP, Max SP, Vitality, Intelligence, Strength, Dexterity, casting speed, poison, stun, slow,
 -- arrow dodge, movement speed, critical and piercing hit, strong against animals, half-humans, orcs, mystics, undead
--- and devils, double yang, experience bonus, resistance to swords, two-handed weapons, daggers, arrows, bells, fans;
--- attack speed and double items (the global data).
+-- and devils, double yang, experience bonus, resistance to swords, two-handed weapons, daggers, arrows, bells, fans.
 UPDATE world.item_attr
    SET costume_weapon = LEAST(5, IF(GREATEST(weapon, body, wrist, foots, neck, head, shield, ear) > 0,
                                     GREATEST(weapon, body, wrist, foots, neck, head, shield, ear), 5))
@@ -39,7 +37,7 @@ UPDATE world.item_attr
     'POINT_CRITICAL_PCT', 'POINT_PENETRATE_PCT', 'POINT_ATTBONUS_ANIMAL', 'POINT_ATTBONUS_HUMAN', 'POINT_ATTBONUS_ORC',
     'POINT_ATTBONUS_MILGYO', 'POINT_ATTBONUS_UNDEAD', 'POINT_ATTBONUS_DEVIL', 'POINT_GOLD_DOUBLE_BONUS',
     'POINT_EXP_DOUBLE_BONUS', 'POINT_RESIST_SWORD', 'POINT_RESIST_TWOHAND', 'POINT_RESIST_DAGGER', 'POINT_RESIST_BOW',
-    'POINT_RESIST_BELL', 'POINT_RESIST_FAN', 'POINT_ATT_SPEED', 'POINT_ITEM_DROP_BONUS');
+    'POINT_RESIST_BELL', 'POINT_RESIST_FAN');
 -- Fryzura+: resistance to wind, fire, lightning and magic, strong against mystics, animals, undead, half-humans, orcs
 -- and devils, arrow dodge, damage to SP and to HP, poison, HP and SP regeneration, attack speed.
 UPDATE world.item_attr
