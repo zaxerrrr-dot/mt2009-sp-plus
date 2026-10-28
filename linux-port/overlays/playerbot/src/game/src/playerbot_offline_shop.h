@@ -295,6 +295,10 @@ namespace {
         if (!item || item->GetOwner() != ch || item->IsEquipped() || item->isLocked()) return false;
         // MT2009_PLUS_BOT_SHAMAN_INT_SET_V1: never a piece of the Shaman's INT set.
         if (IsPlayerBotBuffSetPiece(ch, item)) return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+        // MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: nor a piece of an element set in the bag.
+        if (IsPlayerBotSecondSetStored(ch, item)) return false;
+#endif
 #ifdef ENABLE_SOULBIND_SYSTEM
         if (item->IsSealed()) return false;
 #endif

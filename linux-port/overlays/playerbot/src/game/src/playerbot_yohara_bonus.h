@@ -97,6 +97,10 @@
 //     average, the 400 extra stones the owner gave on 28 October. A piece whose target is met is strong - never
 //     changed again; one whose budget ran out goes on by the shares and the leftover as before.
 //
+// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: a pass that finds nothing left on the worn set works on the second set's
+// armour, helmet, bracelet and talisman in the bag (playerbot_element_second_set.h - the same pieces' rules for its
+// element E2), and no pass runs while a swap of the sets is due.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_bonus.h, in the anonymous namespace.
 
 // playerbot_bonus_mode.cpp (MT2009_PLUS_GLOBAL_BONUS_V1): the value a line of that level gets on that item.
@@ -658,6 +662,11 @@ namespace
 			return -1;
 		if (IsPlayerBotGearFrozen(ch))
 			return 0;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: a swap of the sets is due - the worn set is not the hunt element's yet
+		if (IsPlayerBotSecondSetSwapPending(ch))
+			return 0;
+#endif
 
 		std::map<DWORD, int>& spent = s_mapPlayerBotYoharaBonusSpent[ch->GetPlayerID()];
 		std::vector<TPlayerBotYoharaBonusPiece> pieces;
@@ -675,6 +684,16 @@ namespace
 		playerbot_yohara_bonus_rules::TChoice choice = PickPlayerBotYoharaBonus(ch, pieces, spent, bag, built);
 		if (choice.piece < 0)
 		{
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: nothing left on the worn set - the second set's pieces in the bag
+			// (playerbot_element_second_set.h), by the same rules for its element
+			const int second = RunPlayerBotSecondSetBonus(ch, state, dwNow);
+			if (second > 0)
+			{
+				state.dwNextBonusCheckTime = dwNow + PLAYERBOT_YOHARA_BONUS_PASS_MS;
+				return second;
+			}
+#endif
 			PlayerBotLogThrottled("yohara_bonus_done", dwNow,
 					"PLAYERBOT_YOHARA_BONUS: done pid=%u name=%s stock_add=%d stock_change=%d marble=%d gear=[%s]",
 					ch->GetPlayerID(), ch->GetName(), bag.addUnits, bag.changeUnits, bag.marbleCell >= 0 ? 1 : 0,

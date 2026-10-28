@@ -1253,6 +1253,10 @@ namespace
 			LPITEM item = ch->GetInventoryItem(cells[i]);
 			if (!item || IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1: never into the box
 				continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			if (IsPlayerBotSecondSetStored(ch, item))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set stays in the bag
+				continue;
+#endif
 			// MT2009_PLUS_237_BOT_CHURN_FIX_V1: not a kind this bot took out a
 			// moment ago while the bag still has room (IsPlayerBotBoxPingPong).
 			if (IsPlayerBotBoxPingPong(ch, item, dwNow))
@@ -5786,6 +5790,10 @@ namespace
 					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP) ||
 					IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1: nor the real weapon prepared behind it
 				continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			if (IsPlayerBotSecondSetStored(ch, item))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: no stall line
+				continue;
+#endif
 			// Not the vendor-trash rule: a stall should carry something a player
 			// might actually want. Materials and spare loot qualify; the bot's own
 			// supplies, weapons and armour do not, so it can never sell the gear
@@ -7016,7 +7024,11 @@ namespace
 			// MT2009_PLUS_BOT_YOHARA_G0_V1: the item's own flags (an account-bound piece's too), not its proto's alone
 			if (!proto || IS_SET(item->GetAntiFlag(),
 					ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP) ||
-					IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1
+					IsPlayerBotMlodziKept(ch, item)	// MT2009_PLUS_BOT_MLODZI_V1
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+					|| IsPlayerBotSecondSetStored(ch, item)	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+#endif
+					)
 			{
 				++uAntiFlag;
 				++explainRefused;
@@ -8514,6 +8526,10 @@ namespace
 		// merchant's visit sells one (IsPlayerBotG0NpcSaleDue), the engine no longer refusing it the merchant.
 		if (Mt2009AccountBound(item))
 			return 0;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (IsPlayerBotSecondSetStored(ch, item))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set in the bag
+			return 0;
+#endif
 		// The hay goes by count at the General Store, the horse's share kept.
 		if (item->GetVnum() == PLAYERBOT_HAY_VNUM)
 			return 0;

@@ -260,7 +260,11 @@ namespace
 	bool IsPlayerBotDealSellable(LPITEM item)
 	{
 		return item && item->GetProto() && !item->IsEquipped() && !item->IsExchanging() && !item->isLocked() &&
-				!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE) && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_MYSHOP);
+				!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE) && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_MYSHOP)
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+				&& !IsPlayerBotSecondSetStored(item->GetOwner(), item)	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+#endif
+				;
 	}
 
 	// The skill books in the bot's bag it would sell, "KU Aura Miecza, KU

@@ -412,6 +412,7 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #include "playerbot_yohara_elements_late.h"
 #include "playerbot_yohara_shop.h" // MT2009_PLUS_BOT_YOHARA_SHOP_V1: the bots' exchange in Dongan (elixirs for materials / dust) and the Champions' world set
 #include "playerbot_element_resist.h" // MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a Yohara bot's hunt element - its gear, costume, elixir, the move's preparation
+#include "playerbot_element_second_set.h" // MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second set for a lower map's element - pieces, bonusing, storage, swap
 // MT2009_PLUS_BOT_YOHARA_CHI_V1: the Champions' orders at Mistrz Chi and the smith of Dongan (gloves, jade, stones, Will talisman)
 #include "playerbot_yohara_chi.h"
 // MT2009_PLUS_BOT_YOHARA_GEAR2_V1: the level-100 helmets (Jaharr), the body armours 90-115 (Kawuco, Angmur) and the
@@ -7982,6 +7983,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// (playerbot_yohara_shop.h); its own clock, never the tick's owner.
 		if (!bServingPerson && !state.bMultiPullActive)
 			ManagePlayerBotYoharaShop(ch, state, dwNow);
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: a Yohara bot's second element set - its look a minute, its swap while
+		// one is due (playerbot_element_second_set.h); its own clocks, never the tick's owner.
+		if (!bServingPerson && !state.bMultiPullActive && d->IsPhase(PHASE_GAME))
+			ManagePlayerBotSecondSet(ch, state, dwNow);
+#endif
 
 		// Uriel (playerbot_sash.h): a keeper's sashes combined, filled and
 		// worn. Beside the Alchemist and for his reason: above the travel pass,

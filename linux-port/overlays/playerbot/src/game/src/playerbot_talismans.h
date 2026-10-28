@@ -275,11 +275,20 @@ namespace
 			best = worn;
 			bestScore = GetPlayerBotTalismanScore(ch, worn);
 		}
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the element set's worn talisman stays, its talisman in the bag waits
+		if (worn && IsPlayerBotSecondSetWornLocked(ch, worn))
+			return worn;
+#endif
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetCell() != cell || !IsPlayerBotTalismanWearable(ch, item))
 				continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			if (IsPlayerBotSecondSetStored(ch, item))
+				continue;
+#endif
 			const long long score = GetPlayerBotTalismanScore(ch, item);
 			if (!best || score > bestScore)
 			{
@@ -305,12 +314,21 @@ namespace
 			best = worn;
 			bestScore = GetPlayerBotEquipmentScore(worn, ch);
 		}
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the element set's worn pendant stays, its pendant in the bag waits
+		if (worn && IsPlayerBotSecondSetWornLocked(ch, worn))
+			return worn;
+#endif
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
 			if (!item || item->GetCell() != cell || !IsPlayerBotPendantChoice(item) ||
 					item->GetLevelLimit() > (int)ch->GetLevel() || !item->CanUsedBy(ch))
 				continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			if (IsPlayerBotSecondSetStored(ch, item))
+				continue;
+#endif
 			const long long score = GetPlayerBotEquipmentScore(item, ch);
 			if (!best || score > bestScore)
 			{
@@ -352,7 +370,11 @@ namespace
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && item->GetCell() == cell && item != project && item->GetVnum() == base)
+			if (item && item->GetCell() == cell && item != project && item->GetVnum() == base
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+					&& !IsPlayerBotSecondSetStored(ch, item)	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+#endif
+					)
 				spares += std::max<int>(1, item->GetCount());
 		}
 		return spares;

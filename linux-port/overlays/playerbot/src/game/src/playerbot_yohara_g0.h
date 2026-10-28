@@ -56,6 +56,17 @@
 // playerbot_g0_test in the core's directory: "dust <n>" fills the bags of up to n bots waiting for the package on this
 // core to 400 dust, "status" logs each such bot.
 //
+// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 (the owner, 28 October 2026: "Moga dostac drugi zestaw G0, aby wybonowac go pod
+// inny zywiol, na tych samych zasadach co pierwszy G0"): a second package for the bot's second element set
+// (playerbot_element_second_set.h) - the same eligibility (a Champion of the top level of the ordinary population, no
+// cohort member) with the first package given (mt2009_g0.given) and the second set started (its element E2 chosen),
+// the same 400 dust sought the same way (the keep, the market, the trips; never the safebox - such a bot is a
+// Champion already), the same five pieces +3 bound to the account, in a village. Its jade and talisman kinds are the
+// second set's: the Will of the set's lower map (GetPlayerBotSecondSetMap) minus the bot's Will without its worn glove,
+// jewellery and talisman (the set replaces them while on), the glove's Sila counted. The pieces go straight into the
+// set (NotePlayerBotSecondSetG0Piece) and are never "replaced" spares for the bot-to-bot sale. Its own flags
+// mt2009_g0.given2 / given2_at; logged PLAYERBOT_G0 with set=2 (the first package's lines say set=1).
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_yohara_bots.h (the Sung Ma maps'
 // table and the Champion's helpers come from there), in the anonymous namespace.
 
@@ -84,6 +95,9 @@ namespace
 	const int PLAYERBOT_G0_NPC_AFTER_LOOKS = 3;
 	const char* const PLAYERBOT_G0_GIVEN_FLAG = "mt2009_g0.given";
 	const char* const PLAYERBOT_G0_GIVEN_AT_FLAG = "mt2009_g0.given_at";
+	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second package's flags
+	const char* const PLAYERBOT_G0_GIVEN2_FLAG = "mt2009_g0.given2";
+	const char* const PLAYERBOT_G0_GIVEN2_AT_FLAG = "mt2009_g0.given2_at";
 	const DWORD PLAYERBOT_G0_LOOK_MS = 60 * 1000;
 	const DWORD PLAYERBOT_G0_WAIT_LOG_MS = 30 * 60 * 1000;
 	const int PLAYERBOT_G0_FREE_CELLS = 6;	// five pieces and a cell to spare
@@ -117,10 +131,11 @@ namespace
 		DWORD dwNextLook, dwNextManage, dwNextWaitLog, dwNextSaleLook, dwTripRolled, dwTripUntil;
 		bool bNeeder;
 		bool bSaver;	// MT2009_PLUS_BOT_YOHARA_G0_V2: from level 110, the package not yet given (a needer is a saver too)
+		bool bSet2;	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the package sought is the second one
 		int iBought, iMade, iTrips;
 		long long llSpent;
 		TPlayerBotG0() : dwNextLook(0), dwNextManage(0), dwNextWaitLog(0), dwNextSaleLook(0), dwTripRolled(0), dwTripUntil(0), bNeeder(false),
-			bSaver(false), iBought(0), iMade(0), iTrips(0), llSpent(0) {}
+			bSaver(false), bSet2(false), iBought(0), iMade(0), iTrips(0), llSpent(0) {}
 	};
 	std::map<DWORD, TPlayerBotG0> s_mapPlayerBotG0;
 	// MT2009_PLUS_BOT_YOHARA_G0_V2: a replaced bound piece's sale looks without a bot buyer, by item id
@@ -130,10 +145,11 @@ namespace
 	{
 		unsigned int given, sold, trips, dustBought, dustMade;
 		unsigned int soldNpc, deposited, withdrawn;	// MT2009_PLUS_BOT_YOHARA_G0_V2
+		unsigned int given2;	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 		long long spent;
 		DWORD dwLastCensus, dwLastTestLook;
-		TPlayerBotG0Stats() : given(0), sold(0), trips(0), dustBought(0), dustMade(0), soldNpc(0), deposited(0), withdrawn(0), spent(0),
-			dwLastCensus(0), dwLastTestLook(0) {}
+		TPlayerBotG0Stats() : given(0), sold(0), trips(0), dustBought(0), dustMade(0), soldNpc(0), deposited(0), withdrawn(0), given2(0),
+			spent(0), dwLastCensus(0), dwLastTestLook(0) {}
 	};
 	TPlayerBotG0Stats s_kPlayerBotG0Stats;
 
@@ -200,6 +216,20 @@ namespace
 		return IsPlayerBotSungmaWillUser(ch) && IsPlayerBotG0Saver(ch);
 	}
 
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second package is for it - the first one's eligibility, the first one
+	// given, the second set started, the second one not given yet.
+	bool IsPlayerBotG0Saver2(LPCHARACTER ch)
+	{
+		if (!IsPlayerBotSungmaWillUser(ch) || !ch->IsItemLoaded() || !IsPlayerBotYoharaEligible(ch) ||
+				IsPlayerBotYoharaCohortPID(ch->GetPlayerID()))
+			return false;
+		if (ch->GetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG) == 0 || ch->GetQuestFlag(PLAYERBOT_G0_GIVEN2_FLAG) != 0)
+			return false;
+		return GetPlayerBotSecondSetElement(ch) >= 0;
+	}
+#endif
+
 	// MT2009_PLUS_BOT_YOHARA_G0_V2: its 400 lie in the safebox (or what of them went down, a box short of room).
 	bool IsPlayerBotG0DustBanked(LPCHARACTER ch)
 	{
@@ -216,6 +246,12 @@ namespace
 		{
 			b.dwNextLook = dwNow + PLAYERBOT_G0_LOOK_MS;
 			b.bSaver = IsPlayerBotG0Saver(ch);	// MT2009_PLUS_BOT_YOHARA_G0_V2
+			b.bSet2 = false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second package sought the same way
+			if (!b.bSaver && IsPlayerBotG0Saver2(ch))
+				b.bSaver = b.bSet2 = true;
+#endif
 			b.bNeeder = b.bSaver && IsPlayerBotSungmaWillUser(ch);
 		}
 		return &b;
@@ -402,17 +438,62 @@ namespace
 		}
 	}
 
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second package's kinds - the Will of the second set's lower map minus the
+	// bot's Will without its worn glove, jewellery and talisman (the set takes their places while on), the glove's Sila
+	// counted; falls back to the first package's rule when the set has no map.
+	void ChoosePlayerBotG0KindsSecond(LPCHARACTER ch, int kinds[4])
+	{
+		const int slot = GetPlayerBotSungmaSlot(GetPlayerBotSecondSetMap(ch));
+		if (slot < 0)
+		{
+			ChoosePlayerBotG0Kinds(ch, kinds);
+			return;
+		}
+		static const BYTE s_aPoint[3] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE };
+		static const BYTE s_aWear[5] = { WEAR_GLOVE, WEAR_WRIST, WEAR_NECK, WEAR_EAR, WEAR_PENDANT };
+		int need[3];
+		for (int i = 0; i < 3; ++i)
+		{
+			long will = GetPlayerBotSungmaWill(ch, i);
+			for (int w = 0; w < 5; ++w)
+			{
+				LPITEM worn = ch->GetWear(s_aWear[w]);
+				if (worn)
+					will -= SumPlayerBotItemLines(worn, s_aPoint[i]);
+			}
+			need[i] = GetPlayerBotSungmaReq(slot, i) - (int)will;
+		}
+		need[0] -= PLAYERBOT_G0_GLOVE_WILL;
+		for (int p = 0; p < 4; ++p)
+		{
+			int best = 0;
+			for (int i = 1; i < 3; ++i)
+				if (need[i] > need[best])
+					best = i;
+			kinds[p] = best;
+			need[best] -= p < 3 ? PLAYERBOT_G0_JADE_WILL : PLAYERBOT_G0_TALISMAN_WILL;
+		}
+	}
+#endif
+
 	bool GivePlayerBotG0(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotG0& b, DWORD dwNow)
 	{
 		const DWORD pid = ch->GetPlayerID();
 		const int dustBefore = GetPlayerBotG0DustHeld(ch);
+		const int set = b.bSet2 ? 2 : 1;	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 		if (CountPlayerBotFreeInventoryCells(ch) < PLAYERBOT_G0_FREE_CELLS)
 		{
-			PlayerBotLogThrottled("g0_bag_full", dwNow, "PLAYERBOT_G0: no room for the package pid=%u name=%s free=%d have=%d",
-					pid, ch->GetName(), CountPlayerBotFreeInventoryCells(ch), dustBefore);
+			PlayerBotLogThrottled("g0_bag_full", dwNow, "PLAYERBOT_G0: no room for the package pid=%u name=%s free=%d have=%d set=%d",
+					pid, ch->GetName(), CountPlayerBotFreeInventoryCells(ch), dustBefore, set);
 			return false;
 		}
 		int kinds[4];
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (set == 2)
+			ChoosePlayerBotG0KindsSecond(ch, kinds);
+		else
+#endif
 		ChoosePlayerBotG0Kinds(ch, kinds);
 		const DWORD vnums[5] = { PLAYERBOT_G0_GLOVE_VNUM, PLAYERBOT_G0_BRACELET_VNUMS[kinds[0]], PLAYERBOT_G0_NECKLACE_VNUMS[kinds[1]],
 				PLAYERBOT_G0_EARRINGS_VNUMS[kinds[2]], PLAYERBOT_G0_TALISMAN_VNUMS[kinds[3]] };
@@ -427,19 +508,33 @@ namespace
 				continue;
 			}
 			Mt2009AccountBoundMark(item, pid, "g0");
-			LogManager::instance().ItemLog(ch, item, "PLAYERBOT_G0", item->GetName());
+			LogManager::instance().ItemLog(ch, item, set == 2 ? "PLAYERBOT_G0_SET2" : "PLAYERBOT_G0", item->GetName());
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			if (set == 2)
+				NotePlayerBotSecondSetG0Piece(ch, item);	// into the second set (playerbot_element_second_set.h)
+#endif
 			++made;
 		}
-		ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG, 1);
-		ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_AT_FLAG, (int)time(0));
+		if (set == 2)
+		{
+			ch->SetQuestFlag(PLAYERBOT_G0_GIVEN2_FLAG, 1);
+			ch->SetQuestFlag(PLAYERBOT_G0_GIVEN2_AT_FLAG, (int)time(0));
+			++s_kPlayerBotG0Stats.given2;
+		}
+		else
+		{
+			ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_FLAG, 1);
+			ch->SetQuestFlag(PLAYERBOT_G0_GIVEN_AT_FLAG, (int)time(0));
+			++s_kPlayerBotG0Stats.given;
+		}
 		b.bNeeder = false;
 		b.bSaver = false;	// MT2009_PLUS_BOT_YOHARA_G0_V2
+		b.bSet2 = false;
 		b.dwTripUntil = 0;
-		++s_kPlayerBotG0Stats.given;
 		state.dwNextEquipmentCheckTime = dwNow;	// the equipment pass puts them on now
-		sys_log(0, "PLAYERBOT_G0: given pid=%u name=%s level=%u champion=%d map=%ld dust=%d->%d pieces=%d glove=%u "
+		sys_log(0, "PLAYERBOT_G0: given pid=%u name=%s set=%d level=%u champion=%d map=%ld dust=%d->%d pieces=%d glove=%u "
 				"bracelet=%u(%s) necklace=%u(%s) earrings=%u(%s) talisman=%u(%s) bought=%d made_at_alchemist=%d trips=%d",
-				pid, ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch), ch->GetMapIndex(), dustBefore,
+				pid, ch->GetName(), set, (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch), ch->GetMapIndex(), dustBefore,
 				GetPlayerBotG0DustHeld(ch), made, vnums[0], vnums[1], PLAYERBOT_G0_KIND_NAMES[kinds[0]], vnums[2],
 				PLAYERBOT_G0_KIND_NAMES[kinds[1]], vnums[3], PLAYERBOT_G0_KIND_NAMES[kinds[2]], vnums[4],
 				PLAYERBOT_G0_KIND_NAMES[kinds[3]], b.iBought, b.iMade, b.iTrips);
@@ -476,6 +571,12 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the jade of a world set's slot is kept, whatever the dress (playerbot_yohara_shop.h).
 		if (IsPlayerBotYoharaWorldSetKeptJade(ch, item))
 			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: nor a piece of an element set (the second package's, or the first set's
+		// waiting while the second is on).
+		if (IsPlayerBotSecondSetStored(ch, item) || IsPlayerBotSecondSetWornLocked(ch, item))
+			return false;
+#endif
 		const int kind = GetPlayerBotWillTalismanKind(item->GetVnum());
 		if (kind >= 0)
 			return GetPlayerBotBestWillTalismanPlus(ch, kind, item) > (int)(item->GetVnum() % 10);
@@ -801,7 +902,7 @@ namespace
 		if (s_kPlayerBotG0Stats.dwLastCensus != 0 && dwNow - s_kPlayerBotG0Stats.dwLastCensus < PLAYERBOT_G0_CENSUS_MS)
 			return;
 		s_kPlayerBotG0Stats.dwLastCensus = dwNow;
-		int needers = 0, ready = 0, savers = 0, banked = 0;
+		int needers = 0, ready = 0, savers = 0, banked = 0, needers2 = 0;
 		for (std::map<DWORD, TPlayerBotG0>::const_iterator it = s_mapPlayerBotG0.begin(); it != s_mapPlayerBotG0.end(); ++it)
 		{
 			if (!it->second.bSaver)	// MT2009_PLUS_BOT_YOHARA_G0_V2
@@ -817,13 +918,14 @@ namespace
 				continue;
 			}
 			++needers;
+			needers2 += it->second.bSet2 ? 1 : 0;	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 			if (GetPlayerBotG0DustHeld(ch) >= PLAYERBOT_G0_DUST)
 				++ready;
 		}
-		sys_log(0, "PLAYERBOT_G0: census waiting=%d with_dust=%d savers=%d banked=%d given=%u sold_to_bot=%u sold_to_npc=%u "
-				"deposited=%u withdrawn=%u trips=%u dust_bought=%u spent=%lld dust_made=%u",
-				needers, ready, savers, banked, s_kPlayerBotG0Stats.given, s_kPlayerBotG0Stats.sold, s_kPlayerBotG0Stats.soldNpc,
-				s_kPlayerBotG0Stats.deposited, s_kPlayerBotG0Stats.withdrawn, s_kPlayerBotG0Stats.trips,
+		sys_log(0, "PLAYERBOT_G0: census waiting=%d waiting_set2=%d with_dust=%d savers=%d banked=%d given=%u given_set2=%u sold_to_bot=%u "
+				"sold_to_npc=%u deposited=%u withdrawn=%u trips=%u dust_bought=%u spent=%lld dust_made=%u",
+				needers, needers2, ready, savers, banked, s_kPlayerBotG0Stats.given, s_kPlayerBotG0Stats.given2, s_kPlayerBotG0Stats.sold,
+				s_kPlayerBotG0Stats.soldNpc, s_kPlayerBotG0Stats.deposited, s_kPlayerBotG0Stats.withdrawn, s_kPlayerBotG0Stats.trips,
 				s_kPlayerBotG0Stats.dustBought, s_kPlayerBotG0Stats.spent, s_kPlayerBotG0Stats.dustMade);
 	}
 
@@ -866,9 +968,9 @@ namespace
 			if ((int)(b->dwNextWaitLog - dwNow) <= 0)
 			{
 				b->dwNextWaitLog = dwNow + PLAYERBOT_G0_WAIT_LOG_MS;
-				sys_log(0, "PLAYERBOT_G0: waiting for dust pid=%u name=%s level=%u champion=%d stage=%s have=%d need=%d banked=%d "
+				sys_log(0, "PLAYERBOT_G0: waiting for dust pid=%u name=%s set=%d level=%u champion=%d stage=%s have=%d need=%d banked=%d "
 						"bought=%d made_at_alchemist=%d trips=%d map=%ld gold=%lld",
-						ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch),
+						ch->GetPlayerID(), ch->GetName(), b->bSet2 ? 2 : 1, (unsigned int)ch->GetLevel(), GetPlayerBotChampionLevel(ch),
 						b->bNeeder ? (banked ? "to_withdraw" : "needer") : (banked ? "banked" : (have >= PLAYERBOT_G0_DUST ? "to_deposit" : "saver")),
 						have, PLAYERBOT_G0_DUST, ch->GetQuestFlag(PLAYERBOT_G0_BANKED_FLAG), b->iBought, b->iMade, b->iTrips,
 						ch->GetMapIndex(), (long long)ch->GetGold());

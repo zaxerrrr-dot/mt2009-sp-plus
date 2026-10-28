@@ -10289,8 +10289,42 @@ namespace
 	// The Sung Ma map pick (playerbot_yohara_sungma.h): false for a map below the one the bot's hunt element was chosen
 	// on whose element differs (the element changes only up the maps, or with a second set for it); counted when count.
 	bool IsPlayerBotSungmaElementMoveAllowed(LPCHARACTER ch, long toMap, bool count);
-	// A second equipment / costume set made for the element (1-6): none yet (a later feature).
+	// A second equipment / costume set made for the element (1-6) - MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 below.
 	bool HasPlayerBotElementSecondSet(LPCHARACTER ch, BYTE element);
+#define MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 1
+	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 (playerbot_element_second_set.h, after playerbot_element_resist.h): a Yohara
+	// bot's second set for a second element E2 (armour, helmet, bracelet, talisman, costume, hairstyle - and the second
+	// G0 package's jewellery and glove), bonused in the bag for E2 once the first set is done, kept off every sale and
+	// gift, and swapped in for a hunt of E2 below the bot's own maps (the only way down to another element).
+	// The set's piece in the bag (or, while the set is worn, the first set's piece waiting there): never sold, listed,
+	// given, deposited, thrown away or worn by the equipment pass.
+	bool IsPlayerBotSecondSetStored(LPCHARACTER ch, LPITEM item);
+	// The set's piece worn now (the set is on): the equipment pass and the light passes leave it on.
+	bool IsPlayerBotSecondSetWornLocked(LPCHARACTER ch, LPITEM item);
+	// A swap is due (the hunt element and the worn set disagree): the bonus passes and the move's preparation wait.
+	bool IsPlayerBotSecondSetSwapPending(LPCHARACTER ch);
+	// The set for the element (1-6) is complete (or worn).
+	bool IsPlayerBotSecondSetComplete(LPCHARACTER ch, BYTE element);
+	// The set's element index (-1 none) and the lower map it was chosen for (0 none).
+	int GetPlayerBotSecondSetElement(LPCHARACTER ch);
+	long GetPlayerBotSecondSetMap(LPCHARACTER ch);
+	// The bag's bonus passes (playerbot_yohara_bonus.h, playerbot_bonus.h): the set's armour, helmet, bracelet and
+	// talisman once the first set's pass has nothing left (stones spent), its costume and hairstyle (a reagent spent),
+	// and the reagent the costume pieces need next (0 none).
+	int RunPlayerBotSecondSetBonus(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	bool RunPlayerBotSecondSetCostumeRoll(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	DWORD GetPlayerBotSecondSetCostumeReagentNeed(LPCHARACTER ch);
+	// The market (playerbot_workshop.h's craft hooks): a piece for an empty slot of the set.
+	bool WantsPlayerBotSecondSetOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForSecondSetOffer(LPCHARACTER ch, LPITEM offer, long long price);
+	void CollectPlayerBotSecondSetMissing(LPCHARACTER ch, std::map<DWORD, int>& missing);
+	void NotePlayerBotSecondSetBought(LPCHARACTER ch, DWORD vnum, long long price);
+	// The ItemShop (playerbot_itemshop.h): a costume / hairstyle for the set (0 none).
+	DWORD PickPlayerBotSecondSetLook(LPCHARACTER ch, int* pLook);
+	// The second G0 package's piece (playerbot_yohara_g0.h): taken into the set.
+	void NotePlayerBotSecondSetG0Piece(LPCHARACTER ch, LPITEM item);
+	// The AI's tick (playerbot_manager.cpp, beside the world set): the set's look, swap and census on its own clocks.
+	void ManagePlayerBotSecondSet(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 }
 
 #endif
