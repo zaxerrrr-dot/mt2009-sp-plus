@@ -3269,6 +3269,24 @@ PyObject * wndMgrDisableSlotHighlightedGreen(PyObject * poSelf, PyObject * poArg
 }
 #endif
 
+#ifdef ENABLE_SLOT_TEXT_SIZE
+// MT2009_PLUS_SLOT_TEXT_SIZE_V1 (Autor: EREMIT STUDIO): the game options' switch for "Ctrl = bigger slot counts".
+PyObject * wndMgrSetSlotTextZoom(PyObject * poSelf, PyObject * poArgs)
+{
+	int iEnable;
+	if (!PyTuple_GetInteger(poArgs, 0, &iEnable))
+		return Py_BuildException();
+
+	UI::CNumberLine::SetZoomEnabled(iEnable != 0);
+	return Py_BuildNone();
+}
+
+PyObject * wndMgrIsSlotTextZoom(PyObject * poSelf, PyObject * poArgs)
+{
+	return Py_BuildValue("i", UI::CNumberLine::IsZoomEnabled() ? 1 : 0);
+}
+#endif
+
 void initwndMgr()
 {
 	static PyMethodDef s_methods[] =
@@ -3551,6 +3569,11 @@ void initwndMgr()
 		{ "SetSlotRealNumber",			wndMgrSetSlotRealNumber,			METH_VARARGS },
 		{ "SetSlotHighlightedGreeen",	wndMgrSetSlotHighlightedGreeen,		METH_VARARGS },
 		{ "DisableSlotHighlightedGreen",	wndMgrDisableSlotHighlightedGreen,	METH_VARARGS },
+#endif
+#ifdef ENABLE_SLOT_TEXT_SIZE
+		// MT2009_PLUS_SLOT_TEXT_SIZE_V1
+		{ "SetSlotTextZoom",			wndMgrSetSlotTextZoom,				METH_VARARGS },
+		{ "IsSlotTextZoom",				wndMgrIsSlotTextZoom,				METH_VARARGS },
 #endif
 
 		{ NULL,							NULL,								NULL },

@@ -22,6 +22,13 @@ AUTO_TARGET_ALWAYS = getattr(uiScriptLocale, "AUTO_TARGET_ALWAYS", "Zawsze")
 AUTO_TARGET_OFF = getattr(uiScriptLocale, "AUTO_TARGET_OFF", "Wy\xb3\xb9czony")
 AUTO_TARGET_TOOLTIP = getattr(uiScriptLocale, "AUTO_TARGET_TOOLTIP", "Po zabiciu: kolejny, kt\xf3rego ju\xbf bi\xb3e\x9c")
 
+# MT2009_PLUS_SLOT_TEXT_SIZE_V1 (Autor: EREMIT STUDIO): "Liczby (Ctrl)" row - Ctrl draws the item counts in the slots
+# twice as big, or not. CP1250 escapes keep the file ASCII.
+SLOT_TEXT_ZOOM_LABEL = getattr(uiScriptLocale, "SLOT_TEXT_ZOOM_LABEL", "Liczby")
+SLOT_TEXT_ZOOM_ON = getattr(uiScriptLocale, "SLOT_TEXT_ZOOM_ON", "Ctrl")
+SLOT_TEXT_ZOOM_OFF = getattr(uiScriptLocale, "SLOT_TEXT_ZOOM_OFF", "Wy\xb3\xb9czone")
+SLOT_TEXT_ZOOM_TOOLTIP = getattr(uiScriptLocale, "SLOT_TEXT_ZOOM_TOOLTIP", "Ctrl: wi\xeaksze liczby przedmiot\xf3w w slotach")
+
 window = {
 	"name" : "GameOptionDialog",
 	"style" : ["movable", "float",],
@@ -30,7 +37,7 @@ window = {
 	"y" : 0,
 
 	"width" : 300,
-	"height" : 25*16+8+21,
+	"height" : 25*17+8+21,
 
 	"children" :
 	[
@@ -42,7 +49,7 @@ window = {
 			"y" : 0,
 
 			"width" : 300,
-			"height" : 25*16+8+21,
+			"height" : 25*17+8+21,
 
 			"children" :
 			[
@@ -718,6 +725,44 @@ window = {
 					"y" : 382,
 
 					"text" : AUTO_TARGET_OFF,
+
+					"default_image" : ROOT_PATH + "middle_button_01.sub",
+					"over_image" : ROOT_PATH + "middle_button_02.sub",
+					"down_image" : ROOT_PATH + "middle_button_03.sub",
+				},
+
+				## SLOT COUNTS UNDER CTRL (MT2009_PLUS_SLOT_TEXT_SIZE_V1, Autor: EREMIT STUDIO)
+				{
+					"name" : "slot_text_zoom_text",
+					"type" : "text",
+
+					"x" : LINE_LABEL_X,
+					"y" : 407+2,
+
+					"text" : SLOT_TEXT_ZOOM_LABEL,
+				},
+				{
+					"name" : "slot_text_zoom_on_button",
+					"type" : "radio_button",
+
+					"x" : LINE_DATA_X,
+					"y" : 407,
+
+					"text" : SLOT_TEXT_ZOOM_ON,
+					"tooltip_text" : SLOT_TEXT_ZOOM_TOOLTIP,
+
+					"default_image" : ROOT_PATH + "middle_button_01.sub",
+					"over_image" : ROOT_PATH + "middle_button_02.sub",
+					"down_image" : ROOT_PATH + "middle_button_03.sub",
+				},
+				{
+					"name" : "slot_text_zoom_off_button",
+					"type" : "radio_button",
+
+					"x" : LINE_DATA_X+MIDDLE_BUTTON_WIDTH,
+					"y" : 407,
+
+					"text" : SLOT_TEXT_ZOOM_OFF,
 
 					"default_image" : ROOT_PATH + "middle_button_01.sub",
 					"over_image" : ROOT_PATH + "middle_button_02.sub",
