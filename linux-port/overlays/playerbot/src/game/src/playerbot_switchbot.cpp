@@ -1399,6 +1399,13 @@ bool Mt2009SwitchbotItemUse(LPCHARACTER ch, const TItemPos& Cell)
 // char_item.cpp CanEquipNow (Ameria's): an item in a slot cannot be put on.
 bool Mt2009SwitchbotRefuseEquip(LPCHARACTER ch, LPITEM item)
 {
+	// MT2009_PLUS_ELEMENT_STONES_V1: CanEquipNow's first hook asks the element stones' rule too - one Kamien Zywiolow
+	// at a time (playerbot_element_stones.cpp).
+	{
+		bool Mt2009ElementStoneRefuseEquip(LPCHARACTER ch, LPITEM item);
+		if (Mt2009ElementStoneRefuseEquip(ch, item))
+			return true;
+	}
 	if (!ch || !item || !item->isLocked())
 		return false;
 

@@ -1,0 +1,140 @@
+{
+"extra_apply": {
+"39119": [
+[
+178,
+10
+],
+[
+179,
+10
+],
+[
+180,
+10
+],
+[
+181,
+10
+],
+[
+182,
+10
+],
+[
+183,
+10
+]
+],
+"39120": [
+[
+76,
+10
+],
+[
+75,
+10
+],
+[
+133,
+10
+],
+[
+78,
+10
+],
+[
+134,
+10
+],
+[
+135,
+10
+]
+]
+},
+"item_list": {
+"39119": "39119\tETC\ticon/item/39119.tga",
+"39120": "39120\tETC\ticon/item/39120.tga"
+},
+"itemdesc": {
+"39119": "39119\tKamień Mocy Żywiołów\tPołyskujący amulet daje ci 10% mocy wszystkich żywiołów: błyskawic, ognia, lodu, wiatru, ziemi i mroku. Czas użytkowania: 7 dni - mija także wtedy, gdy kamień nie jest noszony. Można nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Nie można nim handlować ani go przechować w magazynie.",
+"39120": "39120\tKamień Ochrony Żywiołów\tPołyskujący amulet daje ci +10% odporności na wszystkie żywioły: błyskawice, ogień, lód, wiatr, ziemię i mrok. Czas użytkowania: 7 dni - mija także wtedy, gdy kamień nie jest noszony. Można nosić tylko jeden Kamień Żywiołów naraz (Ochrony albo Mocy). Nie można nim handlować ani go przechować w magazynie."
+},
+"items": [
+{
+"addon_type": 0,
+"antiflag": 254080,
+"applytype0": 0,
+"applytype1": 0,
+"applytype2": 0,
+"applyvalue0": 0,
+"applyvalue1": 0,
+"applyvalue2": 0,
+"flag": 0,
+"gold": 0,
+"limittype0": 7,
+"limittype1": 0,
+"limitvalue0": 604800,
+"limitvalue1": 0,
+"locale_name": "Kamień Ochrony Żywiołów",
+"magic_pct": 0,
+"name": "Elemental Protection Stone",
+"refine_set": 0,
+"refined_vnum": 0,
+"shop_buy_price": 0,
+"size": 1,
+"socket_pct": 0,
+"specular": 0,
+"stack": 1,
+"subtype": 0,
+"type": 16,
+"value0": 0,
+"value1": 0,
+"value2": 0,
+"value3": 0,
+"value4": 0,
+"value5": 0,
+"vnum": 39120,
+"wearflag": 128,
+"weight": 0
+},
+{
+"addon_type": 0,
+"antiflag": 254080,
+"applytype0": 0,
+"applytype1": 0,
+"applytype2": 0,
+"applyvalue0": 0,
+"applyvalue1": 0,
+"applyvalue2": 0,
+"flag": 0,
+"gold": 0,
+"limittype0": 7,
+"limittype1": 0,
+"limitvalue0": 604800,
+"limitvalue1": 0,
+"locale_name": "Kamień Mocy Żywiołów",
+"magic_pct": 0,
+"name": "Elemental Power Stone",
+"refine_set": 0,
+"refined_vnum": 0,
+"shop_buy_price": 0,
+"size": 1,
+"socket_pct": 0,
+"specular": 0,
+"stack": 1,
+"subtype": 0,
+"type": 16,
+"value0": 0,
+"value1": 0,
+"value2": 0,
+"value3": 0,
+"value4": 0,
+"value5": 0,
+"vnum": 39119,
+"wearflag": 128,
+"weight": 0
+}
+]
+}
