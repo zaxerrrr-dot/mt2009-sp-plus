@@ -1,0 +1,93 @@
+@@ game/char.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ #include "balathor.h"
++ #endif
+
+@@ game/char.cpp:13  (kotwica = linie przed #ifdef)
+  	m_dwPlayerID = 0;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	m_bBlockAttack = false;
++ 	m_bBlockRotation = false;
++ 	m_bBalathorEggPhase = 0;
++ 	m_bBalathorMob = false;
++ 	m_bBalathorEgg = false;
++ #endif
+
+@@ game/char.cpp:27  (kotwica = linie przed #ifdef)
+  	sys_log(0, "DISCONNECT: %s (%s)", GetName(), c_pszReason ? c_pszReason : "unset");
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	CBalathorManager::Instance().Logout(this);
++ #endif
+
+@@ game/char.cpp:37  (kotwica = linie przed #ifdef)
+  	m_pointsInstant.fRot = fRot;
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 	if (m_bBlockRotation)
++ 		return;
++ #endif
+
+@@ game/char.cpp:64  (kotwica = linie przed #ifdef)
+  	}
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (GetRaceNum() == 20497)
++ 	{
++ 		if (m_pkMobData)
++ 		{
++ 			m_pkMobInst->m_posLastAttacked.x = x;
++ 			m_pkMobInst->m_posLastAttacked.y = y;
++ 			m_pkMobInst->m_posLastAttacked.z = 0;
++ 		}
++ 		m_posDest.x = x;
++ 		m_posDest.y = y;
++ 		m_posDest.z = 0;
++ 		m_posStart.x = x;
++ 		m_posStart.y = y;
++ 		m_posStart.z = 0;
++ 	}
++ #endif
+
+@@ game/char.cpp:89  (kotwica = linie przed #ifdef)
+  		return false;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))
++ 		return false;
++ #endif
+
+@@ game/char.cpp:101  (kotwica = linie przed #ifdef)
+  		return false;
+  
+  # CHange
+  
++ #ifdef __BALATHOR__
++ 	if (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE) || CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))
++ #else
++ 	if (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))
++ #endif
+
+@@ game/char.cpp:114  (kotwica = linie przed #ifdef)
+  	if (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 	if (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE) || CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))
++ #else
++ 	if (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))
++ #endif

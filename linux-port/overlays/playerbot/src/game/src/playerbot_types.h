@@ -4399,7 +4399,8 @@ namespace
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
 		return base == 208 || (base >= 360 && base <= 366) || base == 158 ||	// MT2009_PLUS_ATLANTYDA_V1 (158)
-				base == 356;	// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley
+				base == 356 ||	// MT2009_PLUS_YOHARA_MELEY_V1: Schronienie Meley
+				base == 420;	// MT2009_PLUS_BALATHOR_V1: Krypta Balathora (a guild's lair, people only)
 	}
 	// MT2009_PLUS_BOT_DUNGEONS_ALL_V1: the dungeons whose guard jumps the
 	// people of a party into a new instance (d.new_jump_pids) and leaves the

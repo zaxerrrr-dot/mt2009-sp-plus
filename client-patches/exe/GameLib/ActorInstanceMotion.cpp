@@ -458,6 +458,12 @@ BOOL CActorInstance::IsUsingSkill()
 		case CRaceMotionData::NAME_SPECIAL_4:
 		case CRaceMotionData::NAME_SPECIAL_5:
 		case CRaceMotionData::NAME_SPECIAL_6:
+		// MT2009_PLUS_BALATHOR_V1 (Balathor, dracaryS)
+#ifdef __BALATHOR__
+		case CRaceMotionData::NAME_ETC_1:
+		case CRaceMotionData::NAME_ETC_2:
+		case CRaceMotionData::NAME_ETC_3:
+#endif
 			return TRUE;
 	}
 

@@ -1,0 +1,14 @@
+@@ game/input_main.cpp:8  (kotwica = linie przed #ifdef)
+  			continue;
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 		if (victim->GetRaceNum() == 20497 && victim->GetMapIndex() > 1000)
++ 		{
++ 			victim->SetLastSyncTime(tvCurTime);
++ 			victim->Sync(e->lX, e->lY);
++ 			buffer_write(lpBuf, e, sizeof(TPacketCGSyncPositionElement));
++ 			continue;
++ 		}
++ #endif

@@ -1,0 +1,10 @@
+@@ GameLib/ActorInstanceMotion.cpp:7  (kotwica = linie przed #ifdef)
+  	case CRaceMotionData::NAME_SPECIAL_6:
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	case CRaceMotionData::NAME_ETC_1:
++ 	case CRaceMotionData::NAME_ETC_2:
++ 	case CRaceMotionData::NAME_ETC_3:
++ #endif

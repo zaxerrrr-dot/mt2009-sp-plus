@@ -1,0 +1,9 @@
+@@ db/ClientManagerEventFlag.cpp:7  (kotwica = linie przed #ifdef)
+  	ForwardPacket(HEADER_DG_SET_EVENT_FLAG, p, sizeof(TPacketSetEventFlag));
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (std::string(p->szFlagName).find("?.balathor_channel") != std::string::npos)
++ 		return;
++ #endif

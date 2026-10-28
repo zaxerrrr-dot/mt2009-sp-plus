@@ -43,6 +43,10 @@ namespace UI
 		m_pRootWindow = new CWindow(NULL);
 		m_pRootWindow->SetName("root");
 		m_pRootWindow->Show();
+// MT2009_PLUS_BALATHOR_V1 (lockinit) (Balathor, dracaryS)
+#ifdef __BALATHOR__
+		m_bLockMouseAndKeyboard = false;
+#endif
 
 		const char * layerTbl[] = {"GAME","UI_BOTTOM","UI","TOP_MOST","CURTAIN"};
 

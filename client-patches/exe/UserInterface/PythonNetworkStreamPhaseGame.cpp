@@ -2496,6 +2496,12 @@ bool CPythonNetworkStream::RecvMotionPacket()
 	if (!pMainInstance)
 		return false;
 
+	// MT2009_PLUS_BALATHOR_V1 (motion) (Balathor, dracaryS): the server plays the boss motions ETC1..3 on victim_vid
+#ifdef __BALATHOR__
+	if (pVictimInstance)
+		pVictimInstance->PushOnceMotion(MotionPacket.motion);
+#endif
+
 	return true;
 }
 

@@ -1,0 +1,7 @@
+[SET_KEYBOARD_MOUSE_LOCK value;1]
+[SET_CAMERA x;26084|y;-19573|z;16517|distance;4126|pitch;22|rot;-56|up;0|view;0|cross;0]
+[FADE_IN speed;0.135]
+[SLEEP value;3500]
+[RESTORE_CAMERA_EXCEPT_POSITION distance;3000|pitch;22|rot;-56|up;0|view;0|cross;0]
+[SET_KEYBOARD_MOUSE_LOCK value;0]
+[CLOSE_CINEMA]

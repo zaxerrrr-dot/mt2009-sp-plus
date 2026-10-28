@@ -3,6 +3,9 @@
 #include "PythonWindow.h"
 #include "PythonSlotWindow.h"
 #include "PythonWindowManager.h"
+#ifdef ENABLE_SLOT_TEXT_SIZE
+#include "../EterLib/GrpExpandedImageInstance.h"
+#endif
 #if defined(RENDER_TARGET)
 #include "../EterLib/RenderTargetManager.h"
 #endif
@@ -1193,17 +1196,29 @@ namespace UI
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef ENABLE_SLOT_TEXT_SIZE
+	// MT2009_PLUS_SLOT_TEXT_SIZE_V1 (Autor: EREMIT STUDIO): holding Ctrl draws the numbers of CNumberLine (item counts
+	// in the slots) twice as big. The game options can switch it off (wndMgr.SetSlotTextZoom).
+	bool CNumberLine::ms_bZoomEnabled = true;
+#endif
+
 	CNumberLine::CNumberLine(PyObject * ppyObject) : CWindow(ppyObject)
 	{
 		m_strPath = "d:/ymir work/ui/game/taskbar/";
 		m_iHorizontalAlign = HORIZONTAL_ALIGN_LEFT;
 		m_dwWidthSummary = 0;
+#ifdef ENABLE_SLOT_TEXT_SIZE
+		m_bIsZoomed = false;
+#endif
 	}
 	CNumberLine::CNumberLine(CWindow * pParent) : CWindow(NULL)
 	{
 		m_strPath = "d:/ymir work/ui/game/taskbar/";
 		m_iHorizontalAlign = HORIZONTAL_ALIGN_LEFT;
 		m_dwWidthSummary = 0;
+#ifdef ENABLE_SLOT_TEXT_SIZE
+		m_bIsZoomed = false;
+#endif
 
 		m_pParent = pParent;
 	}
@@ -1280,16 +1295,32 @@ namespace UI
 
 			CGraphicImage * pImage = (CGraphicImage *)CResourceManager::Instance().GetResourcePointer(strImageFileName.c_str());
 
+#ifdef ENABLE_SLOT_TEXT_SIZE
+			CGraphicExpandedImageInstance * pInstance = CGraphicExpandedImageInstance::New();
+			pInstance->SetImagePointer(pImage);
+			pInstance->SetScale(m_bIsZoomed ? 2.0f : 1.0f, m_bIsZoomed ? 2.0f : 1.0f);
+			m_ImageInstanceVector.push_back(pInstance);
+
+			// unscaled width; OnChangePosition doubles it while zoomed
+			m_dwWidthSummary += pInstance->GetWidth();
+#else
 			CGraphicImageInstance * pInstance = CGraphicImageInstance::New();
 			pInstance->SetImagePointer(pImage);
 			m_ImageInstanceVector.push_back(pInstance);
 
 			m_dwWidthSummary += pInstance->GetWidth();
+#endif
 		}
 	}
 
 	void CNumberLine::ClearNumber()
 	{
+#ifdef ENABLE_SLOT_TEXT_SIZE
+		// the instances come from CGraphicExpandedImageInstance's pool - give them back there (the old code only
+		// cleared the vector and leaked them)
+		for (CGraphicExpandedImageInstance * pInstance : m_ImageInstanceVector)
+			CGraphicExpandedImageInstance::Delete(pInstance);
+#endif
 		m_ImageInstanceVector.clear();
 		m_dwWidthSummary = 0;
 		m_strNumber = "";
@@ -1297,6 +1328,18 @@ namespace UI
 
 	void CNumberLine::OnRender()
 	{
+#ifdef ENABLE_SLOT_TEXT_SIZE
+		const bool bZoom = ms_bZoomEnabled && (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+		if (m_bIsZoomed != bZoom)
+		{
+			m_bIsZoomed = bZoom;
+			const float fScale = m_bIsZoomed ? 2.0f : 1.0f;
+			for (CGraphicExpandedImageInstance * pInstance : m_ImageInstanceVector)
+				pInstance->SetScale(fScale, fScale);
+
+			OnChangePosition();
+		}
+#endif
 		for (DWORD i = 0; i < m_ImageInstanceVector.size(); ++i)
 		{
 			m_ImageInstanceVector[i]->Render();
@@ -1314,22 +1357,39 @@ namespace UI
 			iy = m_rect.top;
 		}
 
+#ifdef ENABLE_SLOT_TEXT_SIZE
+		const int iScale = m_bIsZoomed ? 2 : 1;
+		const int iWidthSummary = int(m_dwWidthSummary) * iScale;
+#else
+		const int iScale = 1;
+		const int iWidthSummary = int(m_dwWidthSummary);
+#endif
+
 		switch (m_iHorizontalAlign)
 		{
 			case HORIZONTAL_ALIGN_LEFT:
 				break;
 			case HORIZONTAL_ALIGN_CENTER:
-				ix -= int(m_dwWidthSummary) / 2;
+				ix -= iWidthSummary / 2;
 				break;
 			case HORIZONTAL_ALIGN_RIGHT:
-				ix -= int(m_dwWidthSummary);
+				ix -= iWidthSummary;
 				break;
 		}
+
+#ifdef ENABLE_SLOT_TEXT_SIZE
+		// the scaled digits grow right/down from their corner: a little up and back into the slot
+		if (m_bIsZoomed)
+		{
+			iy -= 4;
+			ix += 4;
+		}
+#endif
 
 		for (DWORD i = 0; i < m_ImageInstanceVector.size(); ++i)
 		{
 			m_ImageInstanceVector[i]->SetPosition(ix, iy);
-			ix += m_ImageInstanceVector[i]->GetWidth();
+			ix += m_ImageInstanceVector[i]->GetWidth() * iScale;
 		}
 	}
 

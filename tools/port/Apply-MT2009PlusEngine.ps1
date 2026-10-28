@@ -1829,4 +1829,17 @@ if ((Test-Path -LiteralPath $guildsysApply -PathType Leaf) -and
     }
 }
 
+# Krypta Balathora (server-patches/balathor, MT2009_PLUS_BALATHOR_V1; author: dracaryS): the guild dungeon's hooks in
+# game (and common/service.h, db's ClientManagerEventFlag.cpp) - balathor*.cpp/.h, questlua_balathor.cpp and json.hpp
+# come with the overlay's game sources.
+$balathorApply = Join-Path $repo 'server-patches/balathor/Apply-BalathorPatch.ps1'
+if ((Test-Path -LiteralPath $balathorApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $balathorResult = & $balathorApply -SourceDir $engineGameSource
+    if ($balathorResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Krypta Balathora edit(s).' -f $balathorResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

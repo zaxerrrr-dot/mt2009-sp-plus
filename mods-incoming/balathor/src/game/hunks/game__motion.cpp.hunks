@@ -1,0 +1,10 @@
+@@ game/motion.cpp:8  (kotwica = linie przed #ifdef)
+  		case MOTION_SPECIAL_6: field = "SPECIAL5"; break;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 		case MOTION_ETC_1: field = "ETC1"; break;
++ 		case MOTION_ETC_2: field = "ETC2"; break;
++ 		case MOTION_ETC_3: field = "ETC3"; break;
++ #endif

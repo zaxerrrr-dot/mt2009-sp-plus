@@ -22,6 +22,14 @@ enum
 
 class CGraphicObjectInstance : public CGraphicCollisionObject
 {
+	// MT2009_PLUS_BALATHOR_V1 (forceshow) (Balathor, dracaryS)
+#ifdef __BALATHOR__
+	public:
+		bool					IsForceShow() const { return m_bForceShow; }
+		void					SetForceShow(bool bFlag) { m_bForceShow = bFlag; }
+	protected:
+		bool					m_bForceShow = false;
+#endif
 	public:
 		CGraphicObjectInstance();
 		virtual ~CGraphicObjectInstance();

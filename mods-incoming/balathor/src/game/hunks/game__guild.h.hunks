@@ -1,0 +1,10 @@
+@@ game/guild.h:7  (kotwica = linie przed #ifdef)
+  	void		InviteDeny(DWORD dwPID);
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	int			GetFlag(const char* szFlag);
++ 	void		SetFlag(const char* szFlag, int iValue);
++ 	void		GetNearMemberCount(std::vector<DWORD>& vecPlayers, float fDistance, LPCHARACTER chExcept);
++ #endif

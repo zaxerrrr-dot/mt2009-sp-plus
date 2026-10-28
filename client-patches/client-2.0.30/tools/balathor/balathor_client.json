@@ -1,0 +1,146 @@
+{
+ "_about": "MT2009_PLUS_BALATHOR_V1 (Autor: dracaryS) - the client data of Krypta Balathora (420): read by patch_balathor_client.py / stage_balathor.py / verify_balathor_packs.py. Polish texts (cp1250 in the packs).",
+ "map": {
+  "index": 420,
+  "folder": "metin2_map_balathor",
+  "source_folder": "metin2_map_guild_whitedragon_boss",
+  "size": [
+   2,
+   2
+  ],
+  "base": [
+   1152000,
+   921600
+  ],
+  "view_radius": 128,
+  "fog": [
+   5000.0,
+   20000.0
+  ],
+  "fog_on": 1
+ },
+ "atlasinfo": [
+  "metin2_map_balathor\t1152000\t921600\t2\t2"
+ ],
+ "vnums": [
+  6896,
+  6897,
+  6898,
+  6899,
+  6900,
+  20491,
+  20492,
+  20493,
+  20494,
+  20495,
+  20496,
+  20497,
+  20498,
+  20499,
+  20507,
+  20815,
+  20868,
+  20869,
+  8635,
+  8636
+ ],
+ "npclist_expected": {
+  "6896": "guild_whitedragon_boss01",
+  "6897": "guild_whitedragon_boss02",
+  "6898": "guild_whitedragon_knight01",
+  "6899": "guild_whitedragon_knight02",
+  "6900": "guild_whitedragon_ice_ghost",
+  "20491": "guild_whitedragon_statue",
+  "20492": "guild_whitedragon_box",
+  "20493": "guild_whitedragon_arrow",
+  "20494": "guild_whitedragon_door",
+  "20495": "metinstone_whitedragon_egg",
+  "20496": "metinstone_whitedragon_egg",
+  "20497": "metinstone_whitedragon_egg_2",
+  "20498": "metinstone_whitedragon_ice",
+  "20499": "guild_whitedragon_arrow_poly",
+  "20507": "metinstone_whitedragon_ice_2",
+  "20815": "whitedragon_guard",
+  "20868": "guild_whitedragon",
+  "20869": "whitedragon_misa",
+  "8635": "metinstone_egg_whitedragon",
+  "8636": "metinstone_egg_whitedragon"
+ },
+ "effects": [
+  "d:/ymir work/effect/monster2/guild_whitedragon_boss_s2_area.mse",
+  "d:/ymir work/effect/monster2/guild_whitedragon_egg_arrow.mse",
+  "d:/ymir work/effect/monster2/guild_whitedragon_egg_flood.mse",
+  "d:/ymir work/effect/monster2/guild_whitedragon_egg_guard.mse",
+  "d:/ymir work/effect/monster2/guild_whitedragon_egg_moojuk.mse",
+  "d:/ymir work/effect/monster2/guild_whitedragon_ground_drop.mse",
+  "d:/ymir work/effect/monster2/whitedragon_ground_ice.mse",
+  "d:/ymir work/effect/etc/direction/direction_land.mse",
+  "d:/ymir work/effect/etc/npc_location/npc_location_direction.mse",
+  "d:/ymir work/ui/whitedragon_damage_01.dds"
+ ],
+ "ui_dir": "d:/ymir work/ui/game/guild_white_dragon_lair/",
+ "fire_arrow": {
+  "vnum": 30395,
+  "package_vnum": 30345,
+  "name": "Ognista Strzała"
+ },
+ "item_list": {
+  "30395": "30395\tETC\ticon/item/30395.tga",
+  "83075": "83075\tETC\ticon/item/50270.tga\td:/ymir work/item/etc/boss_box.gr2",
+  "83076": "83076\tETC\ticon/item/50271.tga\td:/ymir work/item/etc/boss_box.gr2"
+ },
+ "itemdesc": {
+  "30395": "30395\tOgnista Strzała\tPrzeciągnij strzałę na Hwachę w Krypcie Balathora, aby ją załadować. Strzały dają Pradawne Kryształy Lodu.",
+  "83075": "83075\tMroźna Skrz. Balathora\tSkrzynia z łupami z Krypty Balathora.",
+  "83076": "83076\tMroźna Skrz. Balathora+\tSkrzynia z łupami z Krypty Balathora+ - kilka losowych nagród."
+ },
+ "locale_game": {
+  "GUILD_WHITE_DRAGON_LAIR_ALREADY_USED_BUFF_POTION": "GUILD_WHITE_DRAGON_LAIR_ALREADY_USED_BUFF_POTION\tEfekt jest już aktywny.",
+  "GUILD_WHITE_DRAGON_LAIR_BUFF_POTION_CANNOT_USE_IN_MAP": "GUILD_WHITE_DRAGON_LAIR_BUFF_POTION_CANNOT_USE_IN_MAP\tMożesz tego użyć tylko w Krypcie Balathora.",
+  "GUILD_WHITE_DRAGON_LAIR_CANNOT_ATTACK_EGG": "GUILD_WHITE_DRAGON_LAIR_CANNOT_ATTACK_EGG\tMusisz przesunąć Ogniste Jajo Smoka w drugą stronę.",
+  "GUILD_WHITE_DRAGON_LAIR_CAN_USE_SINGIJEON": "GUILD_WHITE_DRAGON_LAIR_CAN_USE_SINGIJEON\tHwacha jest gotowa do strzału!",
+  "GUILD_WHITE_DRAGON_LAIR_CONCENTRATED_STRIKE_REMAIN_TIME": "GUILD_WHITE_DRAGON_LAIR_CONCENTRATED_STRIKE_REMAIN_TIME\tSkup ataki na Zamrożonym Jaju Smoka, zanim zniknie za %d sek.",
+  "GUILD_WHITE_DRAGON_LAIR_CONCENTRATED_STRIKE_SUCCESS": "GUILD_WHITE_DRAGON_LAIR_CONCENTRATED_STRIKE_SUCCESS\tUdało się odeprzeć lodowy chłód.",
+  "GUILD_WHITE_DRAGON_LAIR_DRAGON_CRY_SOUNDS_LOUDER": "GUILD_WHITE_DRAGON_LAIR_DRAGON_CRY_SOUNDS_LOUDER\tRyk Balathora wstrząsa kryptą.",
+  "GUILD_WHITE_DRAGON_LAIR_DRAGON_STARTS_GOING_CRAZY": "GUILD_WHITE_DRAGON_LAIR_DRAGON_STARTS_GOING_CRAZY\tBalathor stracił z oczu swoje Jaja Smoka. Wpada w szał!",
+  "GUILD_WHITE_DRAGON_LAIR_DRAGON_STARTS_GOING_MILD": "GUILD_WHITE_DRAGON_LAIR_DRAGON_STARTS_GOING_MILD\tBalathor znów ma swoje Jaja Smoka. Uważa, by nie użyć pełni mocy.",
+  "GUILD_WHITE_DRAGON_LAIR_FAIL_1": "GUILD_WHITE_DRAGON_LAIR_FAIL_1\tNie udało się ukończyć Krypty Balathora. Za 5 minut zostaniesz przeniesiony.",
+  "GUILD_WHITE_DRAGON_LAIR_FAIL_2": "GUILD_WHITE_DRAGON_LAIR_FAIL_2\tZa 3 minuty zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.",
+  "GUILD_WHITE_DRAGON_LAIR_FIRE_ARROW_COUNT_FULL": "GUILD_WHITE_DRAGON_LAIR_FIRE_ARROW_COUNT_FULL\tNie możesz załadować więcej strzał.",
+  "GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_DESTROYED_EGG": "GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_DESTROYED_EGG\tZniszczono Jajo Smoka - Pieczęć Balathora mocno osłabła.",
+  "GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_DYING": "GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_DYING\tŚmierć bohatera osłabiła Pieczęć Balathora.",
+  "GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_FREEZING_DEBUFF": "GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_FREEZING_DEBUFF\tKtoś został zamrożony - Pieczęć Balathora osłabła.",
+  "GUILD_WHITE_DRAGON_LAIR_GET_FIRE_ARROW": "GUILD_WHITE_DRAGON_LAIR_GET_FIRE_ARROW\tNiszcz Pradawne Kryształy Lodu, aby zdobyć Ogniste Strzały.",
+  "GUILD_WHITE_DRAGON_LAIR_HIDDEN_CONCENTRATED_STRIKE_START": "GUILD_WHITE_DRAGON_LAIR_HIDDEN_CONCENTRATED_STRIKE_START\tSzybko zniszcz Zamrożone Jajo Smoka!",
+  "GUILD_WHITE_DRAGON_LAIR_HIDDEN_CONCENTRATED_STRIKE_WAIT": "GUILD_WHITE_DRAGON_LAIR_HIDDEN_CONCENTRATED_STRIKE_WAIT\tZa 10 sekund pojawi się Jajo Smoka Balathora - wtedy możesz skupić na nim atak.",
+  "GUILD_WHITE_DRAGON_LAIR_HIDDEN_FAIL_REWARD": "GUILD_WHITE_DRAGON_LAIR_HIDDEN_FAIL_REWARD\tBalathor ucieka i zostawia swój skarb.",
+  "GUILD_WHITE_DRAGON_LAIR_NEXT_CONCENTRATED_STRIKE_NEED_MORE_DAMAGE": "GUILD_WHITE_DRAGON_LAIR_NEXT_CONCENTRATED_STRIKE_NEED_MORE_DAMAGE\tNastępny atak będzie wymagał większych obrażeń.",
+  "GUILD_WHITE_DRAGON_LAIR_NOTICE_CONCENTRATED_STRIKE_START": "GUILD_WHITE_DRAGON_LAIR_NOTICE_CONCENTRATED_STRIKE_START\tJedno z Jaj Smoka Balathora przyzywa lodowy chłód! Skupcie na nim ataki.",
+  "GUILD_WHITE_DRAGON_LAIR_NOTICE_GIVE_UP": "GUILD_WHITE_DRAGON_LAIR_NOTICE_GIVE_UP\tPrzerwano próbę pokonania Krypty Balathora. Za minutę zostaniesz przeniesiony.",
+  "GUILD_WHITE_DRAGON_LAIR_NOTICE_INCREASE_ARROW_COUNT": "GUILD_WHITE_DRAGON_LAIR_NOTICE_INCREASE_ARROW_COUNT\tHwacha ma załadowanych Ognistych Strzał: %d.",
+  "GUILD_WHITE_DRAGON_LAIR_NOTICE_LIMIT_TIME": "GUILD_WHITE_DRAGON_LAIR_NOTICE_LIMIT_TIME\tPozostały czas: %d",
+  "GUILD_WHITE_DRAGON_LAIR_NOTICE_REWARD_STAGE_REMAIN_TIME": "GUILD_WHITE_DRAGON_LAIR_NOTICE_REWARD_STAGE_REMAIN_TIME\tZa %d min zostaniesz przeniesiony. Porozmawiaj ze Strażnikiem Smoków Dolnarrem, aby wyjść od razu.",
+  "GUILD_WHITE_DRAGON_LAIR_NOTICE_REWARD_STATGE": "GUILD_WHITE_DRAGON_LAIR_NOTICE_REWARD_STATGE\tOdbierz nagrodę ze Skarbu Balathora. Za 5 minut zostaniesz przeniesiony.",
+  "GUILD_WHITE_DRAGON_LAIR_NOTICE_SPAWNEED_BROKEN_EGG": "GUILD_WHITE_DRAGON_LAIR_NOTICE_SPAWNEED_BROKEN_EGG\tPojawiło się Ogniste Jajo Smoka.",
+  "GUILD_WHITE_DRAGON_LAIR_NOT_ENOUGH_GUILD_SP": "GUILD_WHITE_DRAGON_LAIR_NOT_ENOUGH_GUILD_SP\tZa mało Mocy Smoczego Boga.",
+  "GUILD_WHITE_DRAGON_LAIR_PROTECTED_EGGS": "GUILD_WHITE_DRAGON_LAIR_PROTECTED_EGGS\tZniszcz jaja, aby zadawać obrażenia!",
+  "GUILD_WHITE_DRAGON_LAIR_PUT_EGGS_BACK_IN_ORIGINAL_PLACE": "GUILD_WHITE_DRAGON_LAIR_PUT_EGGS_BACK_IN_ORIGINAL_PLACE\tJajo Smoka Balathora wraca na swoje miejsce.",
+  "GUILD_WHITE_DRAGON_LAIR_REPAIR_SINGIJEON": "GUILD_WHITE_DRAGON_LAIR_REPAIR_SINGIJEON\tHwachy nie można załadować, zanim nie zostanie naprawiona.",
+  "GUILD_WHITE_DRAGON_LAIR_REPAIR_SINGIJEON_SUCCESS": "GUILD_WHITE_DRAGON_LAIR_REPAIR_SINGIJEON_SUCCESS\tHwacha jest w pełni naprawiona.",
+  "GUILD_WHITE_DRAGON_LAIR_RUN_AWAY_TO_BREATH": "GUILD_WHITE_DRAGON_LAIR_RUN_AWAY_TO_BREATH\tBalathor widział zniszczenie Jaja Smoka. Unikaj jego lodowego oddechu!",
+  "GUILD_WHITE_DRAGON_LAIR_UI_BOSS_NAME_TOOLTIP": "GUILD_WHITE_DRAGON_LAIR_UI_BOSS_NAME_TOOLTIP\tBalathor",
+  "GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_INFO_1": "GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_INFO_1\tPozostałe",
+  "GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_INFO_2": "GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_INFO_2\tpróby: %d",
+  "GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_TOOLTIP": "GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_TOOLTIP\tGdy zostanie zniszczonych %d Ognistych Jaj Smoka, próba się nie powiedzie.",
+  "GUILD_WHITE_DRAGON_LAIR_UI_FLYING_FLMAE_BREATH_TOOLTIP": "GUILD_WHITE_DRAGON_LAIR_UI_FLYING_FLMAE_BREATH_TOOLTIP\tGdy Pieczęć osłabnie do 100%%, Balathor skieruje na was swój zabójczy wzrok. (Osłabienie Pieczęci: %d%%)",
+  "GUILD_WHITE_DRAGON_LAIR_UI_HIDDEN_BOSS_NAME_TOOLTIP": "GUILD_WHITE_DRAGON_LAIR_UI_HIDDEN_BOSS_NAME_TOOLTIP\tBalathor",
+  "GUILD_WHITE_DRAGON_LAIR_UI_SINGIJEON_NAME_TOOLTIP": "GUILD_WHITE_DRAGON_LAIR_UI_SINGIJEON_NAME_TOOLTIP\tHwacha",
+  "GUILD_WHITE_DRAGON_LAIR_UI_SINGIJEON_TOOLTIP": "GUILD_WHITE_DRAGON_LAIR_UI_SINGIJEON_TOOLTIP\tPo załadowaniu 8 strzał Hwacha przebije łuski Balathora. Ogniste Strzały dają Pradawne Kryształy Lodu. Załadowane: %d"
+ },
+ "cameras": "client-2.0.30/balathor/locale/common/camera/guild_white_dragonlair (the six cinema scripts the server runs)",
+ "items": [
+  30395,
+  83075,
+  83076
+ ]
+}

@@ -1,0 +1,2369 @@
+{
+ "etc_pack_names": 5004,
+ "maps": {
+  "420": {
+   "atlas_image": null,
+   "base": [
+    1152000,
+    921600
+   ],
+   "environment": "metin2_map_guild_whitedragon.msenv",
+   "folder": "metin2_map_balathor",
+   "objects": {
+    "crc_used": 8,
+    "dropped": 0,
+    "ours": 1,
+    "staged": 7
+   },
+   "pack": "balathor_map",
+   "removed_objects": {},
+   "size": [
+    2,
+    2
+   ],
+   "source": "package (dracaryS) metin2_map_guild_whitedragon_boss",
+   "textureset": "textureset/metin2_map_guild_whitedragon.txt"
+  }
+ },
+ "new_packs": [
+  "balathor_map",
+  "balathor_obj",
+  "balathor_mobs"
+ ],
+ "packs": {
+  "balathor_map": [
+   {
+    "name": "d:/ymir work/environment/metin2_map_guild_whitedragon.msenv",
+    "sha1": "953da50c752669bc1b37210fbec13430b51aa77a",
+    "size": 2242,
+    "source": "gen"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/guild_whitedragon/guild_whitedragon_field_01.dds",
+    "sha1": "369c8a8d142ce432a83be840ab2899d86eeebc33",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/terrainmaps/guild_whitedragon/guild_whitedragon_field_02.dds",
+    "sha1": "3896f9f9d553043bfd6f5e171091a26146645590",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/areadata.txt",
+    "sha1": "40b2b83dabbffa209246ceaa8f67890d2c14678c",
+    "size": 2344,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/attr.atr",
+    "sha1": "36166298c9e982edbd918a69e5ddc828566c819c",
+    "size": 65542,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/height.raw",
+    "sha1": "de8bdf03efc0afaae8c2996428d74e9ded8f0db2",
+    "size": 34322,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/minimap.dds",
+    "sha1": "9dfb329c0d96f1807072499906d849ce80799d81",
+    "size": 43840,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/tile.raw",
+    "sha1": "d25c452ae0867e9a3591af75b60f69692f9105ff",
+    "size": 66564,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/areadata.txt",
+    "sha1": "e67b8ba31942417cc0e3a8c7ff64e0a042bf0f7a",
+    "size": 3013,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/attr.atr",
+    "sha1": "6232c0df62d64c42f5cc4838808b4f9ead64fdd8",
+    "size": 65542,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/height.raw",
+    "sha1": "3b5563a67e1e28b36edf3ab1a9a5f8b7fc18d271",
+    "size": 34322,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/minimap.dds",
+    "sha1": "dba684cc30fdbbc30a865afbbdce49ae15b4300d",
+    "size": 43840,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/tile.raw",
+    "sha1": "8e4eca0ad8897847bbca9141e2c7fcdd4fab1e46",
+    "size": 66564,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/000001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/areadata.txt",
+    "sha1": "75fe8fb07e547e46fd59b5ea46d1addb71f8ab0c",
+    "size": 2177,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/attr.atr",
+    "sha1": "5aa877ef95de55083ca7f4d4703fafec9c32c927",
+    "size": 65542,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/height.raw",
+    "sha1": "d5f74413345ec6996f2c8a412924ccf62bae2bc4",
+    "size": 34322,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/minimap.dds",
+    "sha1": "63635956dfca6329d4330b90fdcb9a1dfd7d5957",
+    "size": 43840,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/tile.raw",
+    "sha1": "58a22613c5ce55c4cd660d225f3bf9a09daf1b99",
+    "size": 66564,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/areadata.txt",
+    "sha1": "a79561a604b0eccf74d4acfe0a28427cb2b58435",
+    "size": 3671,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/attr.atr",
+    "sha1": "49eafc74a4e7f0d86421af40813647d25294b4ca",
+    "size": 65542,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/height.raw",
+    "sha1": "4953860ab87a5b6422092d8486334c6c6a2ec9a2",
+    "size": 34322,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/minimap.dds",
+    "sha1": "75ae741b312618734e2e1120833f690cb8229579",
+    "size": 43840,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/shadowmap.dds",
+    "sha1": "48c3f68cb3d6f015bf01019f15a0a8b3868a231e",
+    "size": 43832,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/tile.raw",
+    "sha1": "51c2debef9f069425ae1217e279ee8acc10f3b16",
+    "size": 66564,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/001001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "package"
+   },
+   {
+    "name": "maps/metin2_map_balathor/metin2_map_guild_whitedragon.msenv",
+    "sha1": "953da50c752669bc1b37210fbec13430b51aa77a",
+    "size": 2242,
+    "source": "gen"
+   },
+   {
+    "name": "maps/metin2_map_balathor/setting.txt",
+    "sha1": "c99cd4e535a1f7d5b90b83609a852bef6c832a32",
+    "size": 263,
+    "source": "gen"
+   },
+   {
+    "name": "textureset/metin2_map_guild_whitedragon.txt",
+    "sha1": "83d4f9c7b7909ab83f917f56a26c62a0a036168f",
+    "size": 933,
+    "source": "package"
+   }
+  ],
+  "balathor_mobs": [
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_arrow_blow.mse",
+    "sha1": "86060d0742610b8b9512444368367d50194ff40e",
+    "size": 27966,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse",
+    "sha1": "f2fd9ad23c2ef61b4c7301c9139620d5f8bec34b",
+    "size": 9822,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_arrow_na1.mde",
+    "sha1": "69d429cbdd7cb8746cc4e4af10631a127edba8d9",
+    "size": 195231,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_arrow_na1.mse",
+    "sha1": "d7d8db6b0d37c1ccfa06446bf1ce28b7bd6b0434",
+    "size": 10761,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_arrow_na1.msf",
+    "sha1": "20bba42a44c9d2c937a847deaa6b43da6d1d7380",
+    "size": 1355,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_dead.mse",
+    "sha1": "25c157049c8189ac2df971270a9fcc7adb79bf3a",
+    "size": 35775,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_dead02.mse",
+    "sha1": "8033f5e6e1d96d0bf771073821c0986d2d19e6e9",
+    "size": 24580,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_n1_blow.mse",
+    "sha1": "f51f7e7e7e9a8c2860d88e8ab7e3966af9b49e84",
+    "size": 10247,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_n1_spin.mse",
+    "sha1": "2102624560f6493d149d0b8241e2434fa812f944",
+    "size": 16810,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s1_blow.mse",
+    "sha1": "522c975ce17c4c218d6e101cf0f8a90344c6b4e4",
+    "size": 37845,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s2_area.mde",
+    "sha1": "2c98d879b0c60ba2325d24553159f364f9bf6e80",
+    "size": 39623,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s2_area.mse",
+    "sha1": "6ed59d33ccbf60946c9fd378c22d21f7b6537626",
+    "size": 3107,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s2_blow.mse",
+    "sha1": "8f8c1ba5ea8a6c013abff769385092c0494eff9c",
+    "size": 37849,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s2_blow_02.mse",
+    "sha1": "94b4ad404ff8171827bebc2aa887c50ddab89b96",
+    "size": 41385,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s3_blow.mse",
+    "sha1": "fdca4bb729e5268b95a2afa40a2b953d272e36d8",
+    "size": 41114,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s3_blow_02.mse",
+    "sha1": "8bef82817291379ee6ba38e2469568712b9c1a27",
+    "size": 20977,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s4_blow.mse",
+    "sha1": "5e42c7947e7ff416aff5f5719713c9e9beb0a98e",
+    "size": 41392,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_s4_blow_02.mse",
+    "sha1": "a16ae9c8c40d394e242f53572278240041c011f4",
+    "size": 10301,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_spawn_00.mse",
+    "sha1": "6022e7e5638a825e2d0fbb6b3e233a1d01c4efd4",
+    "size": 13261,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_spawn_01.mse",
+    "sha1": "49e5b82ad934e5e638751a22ed7b2fa9ec176679",
+    "size": 39502,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_spawn_02.mse",
+    "sha1": "49e166cf0781a8d0758a55bf21abb2fa47679839",
+    "size": 41392,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_boss_spawn_03.mse",
+    "sha1": "9410dd7caf1f259b5fd131b2669efacc5985e57d",
+    "size": 24580,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_door.mse",
+    "sha1": "9edff4731fdfb4bd73bc9fe7931e2d1b4361fd99",
+    "size": 3409,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_arrow.mse",
+    "sha1": "dfb8ba0a48104289d7a044dd895146d9dba25162",
+    "size": 1084,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_flood.mse",
+    "sha1": "31fc6f3c107433f6f0fbd3e75c0080b67f338c8d",
+    "size": 11059,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_guard.mse",
+    "sha1": "b4a377c3c9f6a20447ec9220c866b83454967646",
+    "size": 17010,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_guard01.mde",
+    "sha1": "656b79aeb1ad7256cbf6da18ee70d001de897dec",
+    "size": 3691515,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_moojuk.mde",
+    "sha1": "1e7f0931fde6c5bac66b29e42b485b83535c5d23",
+    "size": 2538967,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_moojuk.mse",
+    "sha1": "e216cabd761619afe35dee2eb8360f5f37a37264",
+    "size": 15418,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_sheild.mde",
+    "sha1": "d2c37d6d7d452473d09a718c8b4ccd2d70dc5d2d",
+    "size": 36227,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_egg_spawn.mse",
+    "sha1": "3caef0f3d4384f80edd5458b97424bd148a5373d",
+    "size": 40723,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_ground_01.dds",
+    "sha1": "cb971ec5ed1c962286aeadb46a388f9b760eb961",
+    "size": 87552,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_ground_drop.mde",
+    "sha1": "b7921982ee1d6e55336e4fdfaa7bae26756bcd77",
+    "size": 6422415,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_ground_drop.mse",
+    "sha1": "faab02d4da1059d3ca83522cff7b98819403beca",
+    "size": 72780,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_ice_ghost.dds",
+    "sha1": "1dcb0e1dcdc91b023a8ca40c0fefbf8a6ce5f17f",
+    "size": 21984,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_ice_ghost.mse",
+    "sha1": "c6d44a7fec4b7629c2e71e2af5980f9ca1b696f3",
+    "size": 7559,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_knight02_na1.mde",
+    "sha1": "51b4dd31a11e5abae5fd339f5a88da580c5c1a07",
+    "size": 162479,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_knight02_na1.mse",
+    "sha1": "0f4d6447cb62511e4ec3f4ac949191ebd901d6c2",
+    "size": 10765,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/guild_whitedragon_knight02_na1.msf",
+    "sha1": "da6a91cefa84b8896a4b80d88868149aeb1e639e",
+    "size": 1009,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/redd_shield_01.dds",
+    "sha1": "ee8ef898a96efdf019889914e6f20188d78fa208",
+    "size": 22000,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/monster2/whitedragon_misa_ball.mse",
+    "sha1": "d343591b0b31984d20d5d5fa472c78c40b15f0b2",
+    "size": 9954,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/front_damage.gr2",
+    "sha1": "5a68ee73178fd1ee9a471467bb71c74f36277b13",
+    "size": 9850,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/front_damage.msa",
+    "sha1": "6e66512c6fcb36d6833331aa24fd16d38f9c5058",
+    "size": 493,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/front_dead.gr2",
+    "sha1": "73cfa6ca8167f24437fc5b278201c90142efd842",
+    "size": 31284,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/front_dead.msa",
+    "sha1": "e1b4e5a4fa5c1b02912706822c405e01b647b066",
+    "size": 1062,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/guild_whitedragon_arrow_poly.gr2",
+    "sha1": "a44f887256406e88bcbf4cda4f7dd4d5b6e1f0d6",
+    "size": 203920,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/guild_whitedragon_arrow_poly.msm",
+    "sha1": "656eeea1cfd3cd54fde6f50a961d5184d278f06f",
+    "size": 2828,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/motlist.txt",
+    "sha1": "ef176945005c137e0885a1f70d5d120604e98c89",
+    "size": 179,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/normal_attack1.gr2",
+    "sha1": "b94a80443260db6587f507d135eacce91fd6132f",
+    "size": 9854,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/normal_attack1.msa",
+    "sha1": "1ff37fcfd954c1719060f97d5ba52f8aac417560",
+    "size": 611,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/wait.gr2",
+    "sha1": "18b7fc14617f39ae66dd79699996869c1efaf35e",
+    "size": 9586,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/wait.msa",
+    "sha1": "c56e15f425dab396adbc0b2293ca7e8383b810be",
+    "size": 205,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/front_damage.gr2",
+    "sha1": "cc9910d3c06ec09a550e31acc477e56341ea9c62",
+    "size": 36770,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/front_damage.msa",
+    "sha1": "b1a8100199af1ebc968b312ded55484c52bced6d",
+    "size": 209,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/front_dead.gr2",
+    "sha1": "4489c87b44e6ad5ed243d0a99107a30f8d552be3",
+    "size": 59744,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/front_dead.msa",
+    "sha1": "ec15ea084ba05af1a4f8696b96f78efd5c81c18d",
+    "size": 207,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/guild_whitedragon_boss01.dds",
+    "sha1": "44ceb5af2384cc01c2335217d78988456765de82",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/guild_whitedragon_boss01.gr2",
+    "sha1": "e42bb26fee903f78b9b5ed78ac053d0ae663e70e",
+    "size": 161428,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/guild_whitedragon_boss01.msm",
+    "sha1": "1a821c87ae5b5a84ae83e4887130db940fdcaf10",
+    "size": 2847,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/motlist.txt",
+    "sha1": "51d81d7ead58794521e856664290d5ee4fc6cf28",
+    "size": 409,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/normal_attack1.gr2",
+    "sha1": "76308d1d217277381030ec505b786c9ec07f3a31",
+    "size": 75040,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/normal_attack1.msa",
+    "sha1": "9e0f5c1e865358479fa5d129a0024b85398f0e03",
+    "size": 1954,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/normal_attack2.gr2",
+    "sha1": "9befc0fbdf76f71822db45776130a674212e44f0",
+    "size": 57954,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/normal_attack2.msa",
+    "sha1": "339253247ee78ccac073b86fed6fa44d47adb70b",
+    "size": 1314,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/run.gr2",
+    "sha1": "bbf1cb1f3bd8fd5c3cf0517a1123259d8919b8ed",
+    "size": 56492,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/run.msa",
+    "sha1": "de47eb63f346cb31b55883c962f351af620eb28e",
+    "size": 203,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/special_attack1.gr2",
+    "sha1": "e97624c4368dfaa1e451209a464e02edf1e0a6e7",
+    "size": 59706,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/special_attack1.msa",
+    "sha1": "7686eee2de6b23c1a0cf6bc1bac1eada338dfb67",
+    "size": 2354,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/special_attack2.gr2",
+    "sha1": "58840d03316782c635d8b4aa024de71e9c986bf5",
+    "size": 55486,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/special_attack2.msa",
+    "sha1": "57cb7b4e7ee87b7d14bf6738d866e04060effe8c",
+    "size": 4429,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait.gr2",
+    "sha1": "5c71692de85d6ea72fd58049a503c17764cc6508",
+    "size": 36442,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait.msa",
+    "sha1": "8891fdc394002fbafa3ee501687e657dc442a125",
+    "size": 201,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait1.gr2",
+    "sha1": "6f937971f8020a011d55f609538787f09ad38b9d",
+    "size": 36982,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait1.msa",
+    "sha1": "f6c2b2960f2b5f996abacf0023232d33acade7f1",
+    "size": 663,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait2.gr2",
+    "sha1": "e8ab341f3caf3017f11f1ae9f3ee9e69b1262ba6",
+    "size": 96526,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait2.msa",
+    "sha1": "0394c3da45b8cf81638773f44bbc858d32f6296b",
+    "size": 1090,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait3.gr2",
+    "sha1": "be475cf83e13795d64a332b6f9fd989bd5321a8c",
+    "size": 91260,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait3.msa",
+    "sha1": "0defeea912119f66a00ce003371cdfbeaa854a27",
+    "size": 663,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait4.gr2",
+    "sha1": "9dd0ae74d494506523a2d9927d66d141317de3ad",
+    "size": 37736,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait4.msa",
+    "sha1": "a9548e26f76e7546780ba520751455ce1a834f27",
+    "size": 202,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait5.gr2",
+    "sha1": "c17703a3cc86a85af3750fcd32741c403d422069",
+    "size": 59234,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait5.msa",
+    "sha1": "f07b76ea802a46cb66d9f8e2c9237d0d13ccc8aa",
+    "size": 204,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait6.gr2",
+    "sha1": "26a4a406099df8452a5587ef1f83664df9657db8",
+    "size": 137824,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss01/wait6.msa",
+    "sha1": "c5ab928f13540a524f962acfb0bcfef552a62f81",
+    "size": 1259,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/front_damage.gr2",
+    "sha1": "052581af003d73aec7260ddc9443e2c287cefc7e",
+    "size": 36938,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/front_damage.msa",
+    "sha1": "a3ef5bb238444b61aa48074944411fdeacd80209",
+    "size": 209,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/front_dead.gr2",
+    "sha1": "55eff8327a293880c5c0c12108e75643a496b389",
+    "size": 95652,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/front_dead.msa",
+    "sha1": "681d2b7779dab22c4e0a97bc6740bf78e220fa31",
+    "size": 1081,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/guild_whitedragon_boss02.msm",
+    "sha1": "74acb3772d75c1e0c86901a6833278fa328b3b3d",
+    "size": 10711,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/motlist.txt",
+    "sha1": "be34603b35e60913d8c691a1ffc701a3d4c3c7ad",
+    "size": 507,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/normal_attack1.gr2",
+    "sha1": "79f4e3469630a6bc0232cf585445169421585124",
+    "size": 58616,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/normal_attack1.msa",
+    "sha1": "46c40988551bda86d72cefd6a34d2b354e20a553",
+    "size": 1948,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/normal_attack2.gr2",
+    "sha1": "543a920474c53b6b8ca11fb521444e162ec6e4a5",
+    "size": 73500,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/normal_attack2.msa",
+    "sha1": "faec309798668aacfa3427327a8ac2e80db685b7",
+    "size": 1948,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/run.gr2",
+    "sha1": "bbf1cb1f3bd8fd5c3cf0517a1123259d8919b8ed",
+    "size": 56492,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/run.msa",
+    "sha1": "693c25bb13506190985801f458049751d2c5f8f7",
+    "size": 203,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/special_attack1.gr2",
+    "sha1": "d4f5a1f662fbc1d853d36e8b6a912a773ac1bdce",
+    "size": 74636,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/special_attack1.msa",
+    "sha1": "b2e3cae2f8faa428f47bf40fb18d239c0e72712b",
+    "size": 3180,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/special_attack2.gr2",
+    "sha1": "639d07178ac1bbe302067218aa2caf9700bd662b",
+    "size": 74708,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/special_attack2.msa",
+    "sha1": "560f5c3db8e30108a330b05723a2d3e09180407e",
+    "size": 5673,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/special_attack3.gr2",
+    "sha1": "58840d03316782c635d8b4aa024de71e9c986bf5",
+    "size": 55486,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/special_attack3.msa",
+    "sha1": "0cb1c603024968ca86a579cccc6daa2f99aab7c4",
+    "size": 4429,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait.gr2",
+    "sha1": "dbe33475ff641fbb7a268f89896b803079826aaa",
+    "size": 65716,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait.msa",
+    "sha1": "7cd3efde1593a800e20fc8eff6a35f478edc2048",
+    "size": 201,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait1.gr2",
+    "sha1": "1d5cd447e916d1bdc68ccac1baf00634492626df",
+    "size": 73336,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait1.msa",
+    "sha1": "abf3812c9d8aa86c9be292dd22f8fd9b167128fe",
+    "size": 679,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait2.gr2",
+    "sha1": "0dfcb5f1fba62d38b91702aaa92ad395e6d483ef",
+    "size": 73172,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait2.msa",
+    "sha1": "0a9a2c87d4187d5a33cedec30c844481bd167665",
+    "size": 202,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait3.gr2",
+    "sha1": "ec4060e0bc73ac23f20e82d51a2871fcf3158a43",
+    "size": 58952,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait3.msa",
+    "sha1": "e16ab6b945aae70eab6765fbcf8a5d070c1a2f3f",
+    "size": 202,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait4.gr2",
+    "sha1": "cee99655d9f2a81a5785b7be1718811771b83fa2",
+    "size": 112994,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_boss02/wait4.msa",
+    "sha1": "5930a1c8f8a81bf490054cb2dfdec06d822eafe3",
+    "size": 846,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/front_damage.msa",
+    "sha1": "af5da49049b7c5182512eab19a5b92cc8f52046c",
+    "size": 144,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/front_dead.msa",
+    "sha1": "c3491bd900ec2c8d53a2511861628608b748975f",
+    "size": 144,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/front_knockdown.msa",
+    "sha1": "4ea945ea6fdd16326315c5304d7bee47730a3ee5",
+    "size": 144,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/front_standup.msa",
+    "sha1": "4ab2f23f48d78369488b15c0ab16833d7a5830b3",
+    "size": 144,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/guild_whitedragon_ice_ghost.dds",
+    "sha1": "f2edc58c763e27d8ed2b5f284a0aa6e6a7427750",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/guild_whitedragon_ice_ghost.gr2",
+    "sha1": "afd8d6156015b9fb050e93e5f4e0e91eb5c0fc48",
+    "size": 51032,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/guild_whitedragon_ice_ghost.msm",
+    "sha1": "934f80f0abdd04ffd9348772004f8ff1fe7fb17b",
+    "size": 1532,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/motlist.txt",
+    "sha1": "26279b557c4649d84f230f9d93e41ee3f3cff96d",
+    "size": 346,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/normal_attack1.msa",
+    "sha1": "81bdab5f1526cf34dc0d6f08d60e6f3dcbb38b1e",
+    "size": 535,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/normal_attack2.msa",
+    "sha1": "d8a1d20cf7844de68ed326bc5715cc2233f23f43",
+    "size": 539,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/run.msa",
+    "sha1": "e2c9699ec4c11d5709d6ad5cb1d0e2007af65f93",
+    "size": 190,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/wait.msa",
+    "sha1": "e142869ab0310a3f75c56c6294258ceb51fa7ca7",
+    "size": 144,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/wait1.msa",
+    "sha1": "5592da89334315be41eb261a6eaec3ff43f668a5",
+    "size": 146,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_damage.gr2",
+    "sha1": "c6883499a93978d5eda88b9cd5f38603a83f6373",
+    "size": 12890,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_damage.msa",
+    "sha1": "201d011aadca5517496a4925041e83fb2f4db724",
+    "size": 209,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_dead.gr2",
+    "sha1": "a4734629ec97a0281964ef3b742820b56902f8d2",
+    "size": 21776,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_dead.msa",
+    "sha1": "d2e4b5f03344adcffd8b3337fa10b5ed003c66c9",
+    "size": 207,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_knockdown.gr2",
+    "sha1": "c3efba648312002baf4613e0953e0c6c2e0aed1c",
+    "size": 16708,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_knockdown.msa",
+    "sha1": "c6d5ee22fbd23e2dc73feee9a818a54c766b50fd",
+    "size": 212,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_standup.gr2",
+    "sha1": "91f37ae95083eb83f22924996433e169347ef287",
+    "size": 30980,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/front_standup.msa",
+    "sha1": "e38c143e80d74423d9fea4db34b4b9d31884511f",
+    "size": 210,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/guild_whitedragon_knight01.dds",
+    "sha1": "b35b8006cdbf45c9ebbb406c16ca34f682c4a0d3",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/guild_whitedragon_knight01.gr2",
+    "sha1": "017d38ad96ffe64b5f5f4e0247ec4a799baf0559",
+    "size": 118640,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/guild_whitedragon_knight01.msm",
+    "sha1": "bb5768ea12ffaf977c35175bc4c9465f9d9faca8",
+    "size": 1122,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/motlist.txt",
+    "sha1": "e9206904babeab6ae136c43acdb44460d1de8e40",
+    "size": 317,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/normal_attack1.gr2",
+    "sha1": "446c46ec942cd31f856849f1dc6d64e789d9da11",
+    "size": 15930,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/normal_attack1.msa",
+    "sha1": "6656fd0324eb02b2f094b927f8860b9711366cd7",
+    "size": 897,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/normal_attack2.gr2",
+    "sha1": "b62beb194c6da1bff6d2ceafa7e4d2d405ad5e6e",
+    "size": 22026,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/normal_attack2.msa",
+    "sha1": "01e0430372320487c946e1a6759b68b9e3b5a4b4",
+    "size": 1522,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/run.gr2",
+    "sha1": "77d071941493917c0a3e3d7a6c592f68c67f0b5a",
+    "size": 15624,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/run.msa",
+    "sha1": "17b2f9e509c068a529a87ee3f05d9b68fd6338ff",
+    "size": 203,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/wait.gr2",
+    "sha1": "9c11e985c8b0b33bf55a31cf456edf19f1bd25ac",
+    "size": 19360,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight01/wait.msa",
+    "sha1": "55ce6527b7fe87e47480457df279620a6e096b94",
+    "size": 201,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_damage.gr2",
+    "sha1": "d151305459c80c9557d3d7be4594229fdbe27a80",
+    "size": 13318,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_damage.msa",
+    "sha1": "5a3b3ec52fa550ba45f1271367af18fdc3275a1f",
+    "size": 209,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_dead.gr2",
+    "sha1": "d9cd18090c9a9872970f327ec02704214e13271a",
+    "size": 22286,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_dead.msa",
+    "sha1": "378fdad79baf014f771035c5624bd838d4cbc382",
+    "size": 205,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_knockdown.gr2",
+    "sha1": "28faa731a2b47305e0aa4654b7c2de11ecf40840",
+    "size": 16642,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_knockdown.msa",
+    "sha1": "810c809ff4c25df269f88d74cc2d0001bca686f4",
+    "size": 212,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_standup.gr2",
+    "sha1": "0c4d401ef72502eb2d83c92154afdd77d459e500",
+    "size": 21612,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/front_standup.msa",
+    "sha1": "fb25fa902ecb2d1814f2353f687670071eed12b2",
+    "size": 210,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/guild_whitedragon_knight02.dds",
+    "sha1": "5df801264809211f59e0476d25d47ff6893d7c52",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/guild_whitedragon_knight02.gr2",
+    "sha1": "0b86b0b27ba0172bc90f4f6c6337dbba710bf330",
+    "size": 117276,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/guild_whitedragon_knight02.msm",
+    "sha1": "2670c5581af476992a756d6fae97e9b9819d12e1",
+    "size": 1122,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/motlist.txt",
+    "sha1": "e9206904babeab6ae136c43acdb44460d1de8e40",
+    "size": 317,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/normal_attack1.gr2",
+    "sha1": "a7aee16a06ed2026e0de671d8405905877a189fa",
+    "size": 30092,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/normal_attack1.msa",
+    "sha1": "16702f631b2963f1eece33f6f0b1512d1a64be7f",
+    "size": 615,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/normal_attack2.gr2",
+    "sha1": "4154580e22c89d847f582c9bfd7cc0190d2e7104",
+    "size": 32066,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/normal_attack2.msa",
+    "sha1": "52fcfa95c69e3d2e5d0f23c733bf06ba922e04b9",
+    "size": 958,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/run.gr2",
+    "sha1": "ef59597e8ad471d03fe313a15a7348ac98518d56",
+    "size": 15428,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/run.msa",
+    "sha1": "ece8b588fd0f019029b2c0a467c3730a4b9e6142",
+    "size": 203,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/wait.gr2",
+    "sha1": "41d41d7a2b2db68cd03605f6e0086618a5d5d839",
+    "size": 19402,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/guild_whitedragon_knight02/wait.msa",
+    "sha1": "37f7a798e854b09d1d1c3f788a278cb03f827e29",
+    "size": 201,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/attack.gr2",
+    "sha1": "0c8d4347fec581334e28b443b36c7c80eb40db70",
+    "size": 7196,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/attack.msa",
+    "sha1": "a24b6f645d49b5330a3efc8741bf4f7f5f007606",
+    "size": 658,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/blow.gr2",
+    "sha1": "bad1287ff76a49483aed0dd52454b6f2a8a93650",
+    "size": 51918,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/blow.msa",
+    "sha1": "1cd76cb1edaf9cb93829f188270545bbd5547fe1",
+    "size": 1052,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/drop.gr2",
+    "sha1": "7ef098c2ed6545d42490f406ee6430ffa86b5549",
+    "size": 7236,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/drop.msa",
+    "sha1": "35adc89897996d84d24673d18a9fe9b19ec927eb",
+    "size": 673,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/loop.gr2",
+    "sha1": "d15e7c414bad10800c2ac262fe9f79e5625cf8af",
+    "size": 7062,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/loop.msa",
+    "sha1": "f9992d3ebea9e013fd5047683818be95e117cce7",
+    "size": 203,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/metinstone_whitedragon_egg.dds",
+    "sha1": "c45a92b937df992798691a73a5ad2acebe59c3de",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/metinstone_whitedragon_egg.gr2",
+    "sha1": "b08356ec851cf53af44126da0e13458d4108d4be",
+    "size": 121196,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/metinstone_whitedragon_egg.msm",
+    "sha1": "55cb9f3f334dcdc84eec5f68d07104f2e1c8c6e8",
+    "size": 1525,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg/motlist.txt",
+    "sha1": "dd7a77c4bdeeb50bd1c83e4a85504001a4681930",
+    "size": 374,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/front_damage.gr2",
+    "sha1": "0c8d4347fec581334e28b443b36c7c80eb40db70",
+    "size": 7196,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/front_damage.msa",
+    "sha1": "a24b6f645d49b5330a3efc8741bf4f7f5f007606",
+    "size": 658,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/front_dead.gr2",
+    "sha1": "bad1287ff76a49483aed0dd52454b6f2a8a93650",
+    "size": 51918,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/front_dead.msa",
+    "sha1": "1cd76cb1edaf9cb93829f188270545bbd5547fe1",
+    "size": 1052,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/front_knockdown.msa",
+    "sha1": "ce422c2189474619c6b698ad2c24bf71ab8ee2a6",
+    "size": 210,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/front_konckdown.gr2",
+    "sha1": "ef5b89ab4c2e3b43af132ac984213fa499f3d237",
+    "size": 7178,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/metinstone_whitedragon_egg_2.dds",
+    "sha1": "bd6a849c39b15c4b08bc04f47a0fcecbba2a7d1d",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/metinstone_whitedragon_egg_2.gr2",
+    "sha1": "ec161c811e9a880e19c579b33d20f43035f1bbec",
+    "size": 121196,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/metinstone_whitedragon_egg_2.msm",
+    "sha1": "e04536adbd80c6983a7f0ba8f5c42477b8bff45f",
+    "size": 1531,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/motlist.txt",
+    "sha1": "90ff29db87f485f771afaf1bb4dd410a60a1a6d6",
+    "size": 217,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/wait.gr2",
+    "sha1": "d15e7c414bad10800c2ac262fe9f79e5625cf8af",
+    "size": 7062,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/wait.msa",
+    "sha1": "f9992d3ebea9e013fd5047683818be95e117cce7",
+    "size": 203,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/attack.gr2",
+    "sha1": "d2b00b920d88e9d1737b7a973a499b9e3b431e19",
+    "size": 7036,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/attack.msa",
+    "sha1": "36450bf508fffb39819724e10a5d019feb68b0f3",
+    "size": 658,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/blow.gr2",
+    "sha1": "79275b590dd52a41b4a60685d47a8072db6046cf",
+    "size": 49130,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/blow.msa",
+    "sha1": "f198931b560533028c67e40dd777fa317103a76a",
+    "size": 1052,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/drop.gr2",
+    "sha1": "efc60d38de333d096dfed874bba5ad9f6a6f2620",
+    "size": 7072,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/drop.msa",
+    "sha1": "7ba3c48b1f9ccca2cb21b41104ef2d5bee1aad03",
+    "size": 1043,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/loop.gr2",
+    "sha1": "546521172846bf57c61ee7b42940c9c24d5d6bb2",
+    "size": 6926,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/loop.msa",
+    "sha1": "890c4dd07b222e13e31d7ee4e8f99d6b81bc7e4e",
+    "size": 203,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/metinstone_whitedragon_ice.dds",
+    "sha1": "65fa59526183407ae0112a234336c8b111c2ab68",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/metinstone_whitedragon_ice.gr2",
+    "sha1": "32a1e360e34a9f371d85f9cbb33ec5400d5687c2",
+    "size": 104532,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/metinstone_whitedragon_ice.msm",
+    "sha1": "cb797cb04fafb9ab8e6ce1d88637b298c90bab50",
+    "size": 1529,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/metinstone_whitedragon_ice_2.dds",
+    "sha1": "f0c8d41aef16c3baec02fd8afb139a01b7bf2031",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/metinstone_whitedragon_ice_2.msm",
+    "sha1": "e1f2bb4747e6e92344d88cfc8e70b467aa2f44e5",
+    "size": 1766,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/monster2/metinstone_whitedragon_ice/motlist.txt",
+    "sha1": "d7bbb19c93eb337d8dd6b96fb72802091425472b",
+    "size": 400,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon/guild_whitedragon.dds",
+    "sha1": "5e5b5a4ba8fccaad1f5c2ed92d63471dec6ff8b7",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon/guild_whitedragon.gr2",
+    "sha1": "c855ed64c9c7dfb15b8af831f862c95eeeeca107",
+    "size": 68284,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon/guild_whitedragon.msm",
+    "sha1": "b26899d05ca873ce695e6df391e98cd9818e76a3",
+    "size": 1111,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon/motlist.txt",
+    "sha1": "4e1d1b06447ef5a59eb308861888d59722c4fb4c",
+    "size": 25,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon/wait.gr2",
+    "sha1": "396890369ad5ee3585198037abda07df28487a48",
+    "size": 18756,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon/wait.msa",
+    "sha1": "fd1d94b5f8a21ffecb4459c757690f11a48f98fb",
+    "size": 186,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/blow.gr2",
+    "sha1": "6b82f38ee2c08adbe10b2207284ba8015d63734f",
+    "size": 44508,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/blow.msa",
+    "sha1": "698ff0f34a0a51a5403e0e2a02afcf3d8fcc3a87",
+    "size": 1008,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/guild_whitedragon_arrow.dds",
+    "sha1": "500644b4e49da824afde6530bef85c9fe0482d86",
+    "size": 174208,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/guild_whitedragon_arrow.gr2",
+    "sha1": "8d5d0d2bafc5dc5cac95f2f65264ca2a99a037ac",
+    "size": 203112,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/guild_whitedragon_arrow.msm",
+    "sha1": "1eac037faeaa1eaa9bb4c98f6f829e9ab7f5c94b",
+    "size": 2814,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/motlist.txt",
+    "sha1": "9470c58099eddefce97411126ecac86718067502",
+    "size": 127,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/throw.gr2",
+    "sha1": "6b152b44d790ae46648a986fe037db290cd8d1b4",
+    "size": 78340,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/throw.msa",
+    "sha1": "8c70c3b7773820ed18a2427c419f6f7a6a45e2c5",
+    "size": 19827,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/wait.gr2",
+    "sha1": "023d3336e2867d66ea1710a554d18e60196fed86",
+    "size": 9578,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/wait.msa",
+    "sha1": "1c5ebfc34f78158b037f8da9d30ef4a82895bb85",
+    "size": 155,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/wait1.gr2",
+    "sha1": "8892f349744c5b1bae4d580f7de00ce2c4ec8347",
+    "size": 9906,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_arrow/wait1.msa",
+    "sha1": "a9e7b7d1b5ca16354dd6a7b69bd1d26a472b0a8d",
+    "size": 156,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_box/guild_whitedragon_box.dds",
+    "sha1": "ee8b61ebe94bd50660ef0102aba178decc7f4939",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_box/guild_whitedragon_box.gr2",
+    "sha1": "26d50ea6efc1cece9a3ae51b4b3dd15b720043c2",
+    "size": 36772,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_box/guild_whitedragon_box.msm",
+    "sha1": "09b4ebdda02a6cfb333c6fb7e6590745f580476a",
+    "size": 1142,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/attack.gr2",
+    "sha1": "4ac7b0c896b2bdf897cc0cd6d04d82435e030107",
+    "size": 8920,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/attack.msa",
+    "sha1": "0c279f751d3e80b70413e526ab283abad2bc7ce9",
+    "size": 650,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/blow.gr2",
+    "sha1": "1c3752bffaafcd450ffe921d86eb2b57e93043ae",
+    "size": 60012,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/blow.msa",
+    "sha1": "9a68606336aa256a194315aa04af3580ffb618c1",
+    "size": 1046,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/guild_whitedragon_door.dds",
+    "sha1": "1b0fb4ec73170a0ab32995069a3ea8bac9ad85d6",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/guild_whitedragon_door.gr2",
+    "sha1": "00d760e189f3caf84777fa6a6d78d5048bdc06c6",
+    "size": 116960,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/guild_whitedragon_door.msm",
+    "sha1": "0b61abb550a8dde53e7df85294ca6717f953ed2c",
+    "size": 3621,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/loop.gr2",
+    "sha1": "ec2bf0b58acfbb249307fc0c2ecdf1cda02900ce",
+    "size": 8492,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/loop.msa",
+    "sha1": "08aa1e1288c10eea5c0e036b2a4d67e33741c383",
+    "size": 154,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_door/motlist.txt",
+    "sha1": "1849dc29487448060fc50425013935eda4c9e02e",
+    "size": 346,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_statue/guild_whitedragon_statue.dds",
+    "sha1": "d340a6df77508131e450afc79673ae1bc77b5afd",
+    "size": 174208,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_statue/guild_whitedragon_statue.gr2",
+    "sha1": "dfee77fdaa10cecbc1e63744d62f37d8eaa06689",
+    "size": 26536,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_statue/guild_whitedragon_statue.msm",
+    "sha1": "318f60e8263b87894c7565d784deeef24ea638fe",
+    "size": 3212,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_statue/motlist.txt",
+    "sha1": "4e1d1b06447ef5a59eb308861888d59722c4fb4c",
+    "size": 25,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_statue/wait.gr2",
+    "sha1": "fe19333b5d97c194057fa2b89086c1dfc2ea75be",
+    "size": 4172,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/guild_whitedragon_statue/wait.msa",
+    "sha1": "76c2af0cff34534d390750bd0bba003a3c3a3818",
+    "size": 188,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/whitedragon_misa/motlist.txt",
+    "sha1": "54d80d1ac2a16ac4321a92ae32dbd7a2017e6e31",
+    "size": 27,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/whitedragon_misa/wait.gr2",
+    "sha1": "1b3f548d12565217f2986354d2ad7df4a052838d",
+    "size": 66778,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/whitedragon_misa/wait.msa",
+    "sha1": "55d45fd337c6cea84fe3215100fa2c4ae638a47f",
+    "size": 148,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/whitedragon_misa/whitedragon_misa.dds",
+    "sha1": "b99f594fbf6eca798fada39820be0489c66f1818",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/whitedragon_misa/whitedragon_misa.gr2",
+    "sha1": "8f238309a7815fb19588af309faeb1a9f4396986",
+    "size": 119644,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc2/whitedragon_misa/whitedragon_misa.msm",
+    "sha1": "39bbcdbf30e66905a0e1e9b2cdc3a36dcedbc12e",
+    "size": 1502,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/npc_pet/guild_whitedragon_pet/guild_whitedragon_pet.dds",
+    "sha1": "5e5b5a4ba8fccaad1f5c2ed92d63471dec6ff8b7",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/npc_pet/guild_whitedragon_pet/guild_whitedragon_pet.gr2",
+    "sha1": "30d8185ba72f7d35eff97c956f3a6b8472302d95",
+    "size": 67372,
+    "source": "gf"
+   },
+   {
+    "name": "sound/common/spell/spell_fighter_mighty_cast.wav",
+    "sha1": "9ea15d99bb4df3c333784d0311e774c40d104616",
+    "size": 46324,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/magma_crystal/attack_act_1.wav",
+    "sha1": "4e498ae6e0e609d26c141d532848cbebd51714cb",
+    "size": 92202,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster/magma_crystal/attack_act_2.wav",
+    "sha1": "70310c0943d9cd915016b42944f4373eb457ca88",
+    "size": 91178,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_arrow_poly/front_dead.mss",
+    "sha1": "7d4a7f9757b5b5e9aef8bd85e5c7ffbe794e9574",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_arrow_poly/normal_attack1.mss",
+    "sha1": "9e994d5f64e5199653545ce8a53241d6f2e043ac",
+    "size": 143,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/front_dead.mss",
+    "sha1": "553314f848f5806189dc45bf88d62d856e53401b",
+    "size": 383,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/normal_attack1.mss",
+    "sha1": "6f2cb5272775a178f44aa12d0d246efe55c30cc8",
+    "size": 312,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/normal_attack2.mss",
+    "sha1": "335d5ae46075e7b63bf42ac6c03f1cc2bd7053dc",
+    "size": 312,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/special_attack1.mss",
+    "sha1": "3853f027780cfce194cfcccb1cdf9a24a62e9567",
+    "size": 165,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/wait1.mss",
+    "sha1": "7390589027b5e1cc099aa85a8a38a7351a5b85e6",
+    "size": 236,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/wait2.mss",
+    "sha1": "f5c38d1698b1accf934122e707f082541df67342",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/wait3.mss",
+    "sha1": "b938a5b89fa5ed2667c5f934accd6252940406ee",
+    "size": 291,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/wait4.mss",
+    "sha1": "abd30b8a0815a4e402ef330e565036c2b5757050",
+    "size": 312,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/wait5.mss",
+    "sha1": "03a264fe2387903b4e818fe86e2d5f75a49796c9",
+    "size": 368,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss01/wait6.mss",
+    "sha1": "75f8b9be0e1014e3380663f51cb9354c16bf03b0",
+    "size": 526,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/front_dead.mss",
+    "sha1": "2e08b8d4ebbf8f9c4831ccd06aa2f1050c3f1fbd",
+    "size": 325,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/normal_attack1.mss",
+    "sha1": "699b8a43afa50dbadea671024e5fa86c25e7d8f0",
+    "size": 233,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/normal_attack2.mss",
+    "sha1": "08df7492d071a5df3910ddc6b53c675bbce01c85",
+    "size": 294,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/special_attack1.mss",
+    "sha1": "7c85d15b55d50ecd41b027ed4f9881f0b582782c",
+    "size": 851,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/special_attack2.mss",
+    "sha1": "c1bdd1a494e69772e975a5d708f20bd534918b2b",
+    "size": 356,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/wait1.mss",
+    "sha1": "2f2daee327654f25e1fad6c2e0ec21241324934d",
+    "size": 304,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/wait2.mss",
+    "sha1": "ede9013b0d45365d8a4390e1334130daa958a38f",
+    "size": 375,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/wait3.mss",
+    "sha1": "e673b39d10b7ca031c414f3b2994719419403018",
+    "size": 314,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_boss02/wait4.mss",
+    "sha1": "6d2eb268c318633c35711f65acc6a2dfe5940f88",
+    "size": 375,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_ice_ghost/front_damage.mss",
+    "sha1": "a6c80a59de40e9f8600139425b0043ef649cc982",
+    "size": 210,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_ice_ghost/front_dead.mss",
+    "sha1": "6f7653bb5c805dd2451e7c23500dc3d774af4be1",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_ice_ghost/front_knockdown.mss",
+    "sha1": "7095fbf997fe177889233fd5d6935f92fc17ccd3",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_ice_ghost/normal_attack1.mss",
+    "sha1": "9a290abb281c78840118663c9fc183562ac1df9d",
+    "size": 358,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_ice_ghost/normal_attack2.mss",
+    "sha1": "1b06245d8e6939bd18c96a313418219767cbd919",
+    "size": 358,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_ice_ghost/run.mss",
+    "sha1": "c9f08f1cdecfb1a85970793f38fe43d26e1bca40",
+    "size": 206,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_knight01/front_dead.mss",
+    "sha1": "4270ae2bb39afd71ca12571d1240472e6368a953",
+    "size": 208,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_knight01/normal_attack1.mss",
+    "sha1": "f72f4f08aeea5024c21d2a805e50f84268dccba1",
+    "size": 133,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_knight01/normal_attack2.mss",
+    "sha1": "dde8635ff8866f900bc73aa9554972577200d299",
+    "size": 200,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_knight02/front_dead.mss",
+    "sha1": "d45487f5a6f3ba4c31b3bc15cb5210e4f14e1e61",
+    "size": 274,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_knight02/normal_attack1.mss",
+    "sha1": "c991ad700cdf5e7600e3017ae9e9d5fc123bfafd",
+    "size": 244,
+    "source": "gf"
+   },
+   {
+    "name": "sound/monster2/guild_whitedragon_knight02/normal_attack2.mss",
+    "sha1": "024c0aced9367f7a9f2f43840bd51d2b553b1a01",
+    "size": 334,
+    "source": "gf"
+   },
+   {
+    "name": "sound/npc/boar/boar_walk.wav",
+    "sha1": "71dd7f0ee00bbc9d0bb5df36017c1ad0dc8384dc",
+    "size": 28074,
+    "source": "gf"
+   },
+   {
+    "name": "sound/npc2/guild_whitedragon_arrow/blow.mss",
+    "sha1": "7d4a7f9757b5b5e9aef8bd85e5c7ffbe794e9574",
+    "size": 144,
+    "source": "gf"
+   },
+   {
+    "name": "sound/npc2/guild_whitedragon_arrow/throw.mss",
+    "sha1": "d153546662a59810f2ec4e4229f81db1fc69a135",
+    "size": 294,
+    "source": "gf"
+   },
+   {
+    "name": "sound/npc2/guild_whitedragon_door/blow.mss",
+    "sha1": "7d4a7f9757b5b5e9aef8bd85e5c7ffbe794e9574",
+    "size": 144,
+    "source": "gf"
+   }
+  ],
+  "balathor_obj": [
+   {
+    "name": "d:/ymir work/effect/background/guild_wd_fire_01.mse",
+    "sha1": "1fb049bbea2222f3a19bda1f5398c8e1c0d7c0ce",
+    "size": 10062,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/guild_whitedragon_web.dds",
+    "sha1": "866e4c768d9ce26195a5fe27e967be94271017db",
+    "size": 87168,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/guild_whitedragon_web.mde",
+    "sha1": "5b3225d4de05fcd44ca8fc4d7e9b88892ed06cf5",
+    "size": 20543,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/effect/background/guild_whitedragon_web.mse",
+    "sha1": "aea3e9e8786937ddb5f1c26cf4f2f1d0f6b88ab0",
+    "size": 1020,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_wd_lightingmap01.dds",
+    "sha1": "8ac3b2af480a69393d5212f66056167ef3ee5cf4",
+    "size": 699184,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_wd_lightingmap02.dds",
+    "sha1": "0215c5d7c7550b4de321fa700ce91daca17c262e",
+    "size": 699184,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_wd_lightingmap03.dds",
+    "sha1": "55a34fdf11f7e1ab8b0495ff9f11d2a4fd2935f0",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_wd_lightingmap04.dds",
+    "sha1": "3677adb4c00a72817cc4ab91492ad0d640e20303",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_01.dds",
+    "sha1": "bcae2c4b939de4eff3bad87d949b4ae903cdcbef",
+    "size": 699184,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_02.dds",
+    "sha1": "3bd17a6ea6b184f0a88ebe9cfecf0aa3664c0d34",
+    "size": 393368,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_03.dds",
+    "sha1": "f426f5998117b56c08217ff3355da67b88d7ad2d",
+    "size": 699184,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_04.dds",
+    "sha1": "4fa962ada199f347579b1bcbdb3488aa38fa90d8",
+    "size": 699184,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_04_1.dds",
+    "sha1": "8ca3c280979bdc897ab2895b271de17f5873aaf7",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_05.dds",
+    "sha1": "9c5c3cc93df89e5f94d5bb07568f26bc5e7155f3",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_06.dds",
+    "sha1": "e4563c2b0549652ea9020ea6a518ef171fe872c3",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_bg_07.dds",
+    "sha1": "7ac7ac2decb358f44226e81770f1b3219c168577",
+    "size": 174904,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_boss_01.gr2",
+    "sha1": "65b068cb8aaa1859303885780fc2002af2816466",
+    "size": 1047516,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_boss_01.mdatr",
+    "sha1": "3b71f63e60a9cfc0c03eb1f6f8e3eaaf3dfb8881",
+    "size": 209614,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_boss_02.gr2",
+    "sha1": "b8bfbbf6a6506e8bca1d218135a43fd0dc5117a0",
+    "size": 1145792,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_boss_02.mdatr",
+    "sha1": "efcdfc6d50b5ae2722917cde4127604e9981a46c",
+    "size": 130,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_deco01.gr2",
+    "sha1": "a598fd6a29434af6347a5dceffcfb76ac60e6548",
+    "size": 29920,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_deco01.mdatr",
+    "sha1": "51d1029ade981fa58b6cf0decfe6230bd23235f2",
+    "size": 202,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_deco02.gr2",
+    "sha1": "1449db16a7d2a0f6cf6493f2d6776a3c2b282333",
+    "size": 29720,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_deco02.mdatr",
+    "sha1": "51d1029ade981fa58b6cf0decfe6230bd23235f2",
+    "size": 202,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_deco03.gr2",
+    "sha1": "a6b278bb82bd398ebdce90a50db220e0aede6a68",
+    "size": 37024,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_deco03.mdatr",
+    "sha1": "51d1029ade981fa58b6cf0decfe6230bd23235f2",
+    "size": 202,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/zone/guild_whitedragon/guild_whitedragon_fence_01.dds",
+    "sha1": "86ee3f840067808cfbfc5f9063ebbe0be699e307",
+    "size": 174208,
+    "source": "package"
+   }
+  ],
+  "property": [
+   {
+    "name": "property/guild_whitedragon/guild_wd_fire_01.pre",
+    "sha1": "8ecc4fcfa27b6c0b8789d605eea31e0c72d53ee2",
+    "size": 142,
+    "source": "package"
+   },
+   {
+    "name": "property/guild_whitedragon/guild_whitedragon_boss_01.prd",
+    "sha1": "1864c56153e13e5b7c0a8b11401f8ac636bc3a66",
+    "size": 178,
+    "source": "package"
+   },
+   {
+    "name": "property/guild_whitedragon/guild_whitedragon_boss_02.prd",
+    "sha1": "96c5213a34797c6918a40bf7f61963fa66c12dae",
+    "size": 178,
+    "source": "package"
+   },
+   {
+    "name": "property/guild_whitedragon/guild_whitedragon_deco01.prd",
+    "sha1": "499a7952021323ef2dcd89c79be84b617c6238b1",
+    "size": 176,
+    "source": "package"
+   },
+   {
+    "name": "property/guild_whitedragon/guild_whitedragon_deco02.prd",
+    "sha1": "8734ce388a40b6ee367eaec39a68aa74a8520b22",
+    "size": 176,
+    "source": "package"
+   },
+   {
+    "name": "property/guild_whitedragon/guild_whitedragon_deco03.prd",
+    "sha1": "f31cbc3c3713ae216b131009335e8dc2d1ce0eea",
+    "size": 175,
+    "source": "package"
+   },
+   {
+    "name": "property/guild_whitedragon/guild_whitedragon_web.pre",
+    "sha1": "294cc95207a515aa999a43267af561e9e8664915",
+    "size": 152,
+    "source": "package"
+   }
+  ]
+ },
+ "races": {
+  "20491": {
+   "msm": "d:/ymir work/npc2/guild_whitedragon_statue/guild_whitedragon_statue.msm",
+   "race": "guild_whitedragon_statue",
+   "status": "staged"
+  },
+  "20492": {
+   "msm": "d:/ymir work/npc2/guild_whitedragon_box/guild_whitedragon_box.msm",
+   "race": "guild_whitedragon_box",
+   "status": "staged"
+  },
+  "20493": {
+   "msm": "d:/ymir work/npc2/guild_whitedragon_arrow/guild_whitedragon_arrow.msm",
+   "race": "guild_whitedragon_arrow",
+   "status": "staged"
+  },
+  "20494": {
+   "msm": "d:/ymir work/npc2/guild_whitedragon_door/guild_whitedragon_door.msm",
+   "race": "guild_whitedragon_door",
+   "status": "staged"
+  },
+  "20495": {
+   "msm": "d:/ymir work/monster2/metinstone_whitedragon_egg/metinstone_whitedragon_egg.msm",
+   "race": "metinstone_whitedragon_egg",
+   "status": "staged"
+  },
+  "20496": {
+   "msm": "d:/ymir work/monster2/metinstone_whitedragon_egg/metinstone_whitedragon_egg.msm",
+   "race": "metinstone_whitedragon_egg",
+   "status": "staged"
+  },
+  "20497": {
+   "msm": "d:/ymir work/monster2/metinstone_whitedragon_egg_2/metinstone_whitedragon_egg_2.msm",
+   "race": "metinstone_whitedragon_egg_2",
+   "status": "staged"
+  },
+  "20498": {
+   "msm": "d:/ymir work/monster2/metinstone_whitedragon_ice/metinstone_whitedragon_ice.msm",
+   "race": "metinstone_whitedragon_ice",
+   "status": "staged"
+  },
+  "20499": {
+   "msm": "d:/ymir work/monster2/guild_whitedragon_arrow_poly/guild_whitedragon_arrow_poly.msm",
+   "race": "guild_whitedragon_arrow_poly",
+   "status": "staged"
+  },
+  "20507": {
+   "msm": "d:/ymir work/monster2/metinstone_whitedragon_ice/metinstone_whitedragon_ice.msm",
+   "race": "metinstone_whitedragon_ice_2",
+   "status": "staged"
+  },
+  "20815": {
+   "msm": "d:/ymir work/npc2/whitedragon_guard/whitedragon_guard.msm",
+   "race": "whitedragon_guard",
+   "status": "earlier builder"
+  },
+  "20868": {
+   "msm": "d:/ymir work/npc2/guild_whitedragon/guild_whitedragon.msm",
+   "race": "guild_whitedragon",
+   "status": "staged"
+  },
+  "20869": {
+   "msm": "d:/ymir work/npc2/whitedragon_misa/whitedragon_misa.msm",
+   "race": "whitedragon_misa",
+   "status": "staged"
+  },
+  "6896": {
+   "msm": "d:/ymir work/monster2/guild_whitedragon_boss01/guild_whitedragon_boss01.msm",
+   "race": "guild_whitedragon_boss01",
+   "status": "staged"
+  },
+  "6897": {
+   "msm": "d:/ymir work/monster2/guild_whitedragon_boss02/guild_whitedragon_boss02.msm",
+   "race": "guild_whitedragon_boss02",
+   "status": "staged"
+  },
+  "6898": {
+   "msm": "d:/ymir work/monster2/guild_whitedragon_knight01/guild_whitedragon_knight01.msm",
+   "race": "guild_whitedragon_knight01",
+   "status": "staged"
+  },
+  "6899": {
+   "msm": "d:/ymir work/monster2/guild_whitedragon_knight02/guild_whitedragon_knight02.msm",
+   "race": "guild_whitedragon_knight02",
+   "status": "staged"
+  },
+  "6900": {
+   "msm": "d:/ymir work/monster2/guild_whitedragon_ice_ghost/guild_whitedragon_ice_ghost.msm",
+   "race": "guild_whitedragon_ice_ghost",
+   "status": "staged"
+  },
+  "8635": {
+   "msm": "d:/ymir work/monster2/metinstone_egg_whitedragon/metinstone_egg_whitedragon.msm",
+   "race": "metinstone_egg_whitedragon",
+   "status": "earlier builder"
+  },
+  "8636": {
+   "msm": "d:/ymir work/monster2/metinstone_egg_whitedragon/metinstone_egg_whitedragon.msm",
+   "race": "metinstone_egg_whitedragon",
+   "status": "earlier builder"
+  }
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "map": [],
+  "races": {
+   "metinstone_whitedragon_egg_2": [
+    "d:/ymir work/monster2/metinstone_whitedragon_egg/attack_flying.gr2"
+   ]
+  }
+ }
+}

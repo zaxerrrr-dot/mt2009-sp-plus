@@ -252,11 +252,13 @@ RUN set -eux; \
     # mlodzi.* for Bronie dla Mlodych Bohaterow (MT2009_PLUS_MLODZI_BOHATEROWIE_V1, playerbot_mlodzi.cpp; mlodzi_bohaterowie).
     # pc.seonpyeong_cells and pc.seonpyeong_refine for Seon-Pyeong's talk opening his refine window (MT2009_PLUS_SEONPYEONG_FIX_V1,
     # server-patches/seonpyeong; seon_pyeong).
+    # guild.get_near_count/get_near_pids/get_flag/set_flag/get_level, guild.get_money, guild.set_ladder_point and balathor.* for
+    # Krypta Balathora (MT2009_PLUS_BALATHOR_V1, server-patches/balathor, balathor_support.cpp; krypta_balathora).
     # set_summon_lifetime and summon_blocked_here for the 15-minute summoned Metin stones and veins and the dungeon
     # refusal (MT2009_PLUS_SUMMON_STONE_V1, server-patches/enginefixes; yohara_mapy2, yohara_mapy4).
     # guild.get_level, guild.create_time, guild.age, guild.member_join_time, guild.member_age, guild.get_bank and
     # guild.check_requirements for the Balathor port (MT2009_PLUS_GUILDSYS_V1, server-patches/guildsys, guildsys.cpp).
-    for fn in pc.seonpyeong_cells pc.seonpyeong_refine mes.get_message pc.get_special_flag pc.set_special_flag mysql_direct_query pc.equip_slot pc.unequip_slot item.set_attr item.get_max_stack item.use pc.open_special_shop affect.add_new affect.remove_new pc.is_playerbot affect.get_duration pc.has_affect pc.warp_channel game.get_catchking_score game.get_catchking_myscore game.catchking_claim_reward game.catchking_use_item game.catchking_deliver pc.clear_quest_letter guild.treasury_available guild.treasury_spend zodiac_temple.starttemple zodiac_temple.startlogin zodiac_temple.new_floor zodiac_temple.setflag zodiac_temple.getflag pc.set_animasphere pc.get_animasphere pc.delete_animasphere pc.is_flag_cz_ulimit_enter pc.set_flag_cz_ulimit_enter d.zodiac_notice d.zodiac_notice_clear d.zodiac_time d.zodiac_time_clear game.zodiac_temple_table guild.leave_war is_on_war_map dw.cfg dw.map_index dw.count dw.find dw.start dw.is_started dw.wave dw.state dw.mast_hp_pct dw.set_alliance_hp_pct dw.close pc.get_conqueror_level pc.get_conqueror_exp pc.get_conqueror_next_exp pc.get_conqueror_point pc.get_conqueror_unlock_state pc.set_conqueror pc.give_conqueror_exp pc.give_conqueror_exp2 pc.get_sungma_str pc.get_sungma_vit pc.get_sungma_res pc.get_sungma_int pc.reset_sungma_status npc.get_sungma_exp d.zone_attack d.zone_hurt d.unique_damage_pct d.kick_dead game.open_changelook item.get_changelook_vnum game.open_aura game.drop_item_at pc.get_riposte pc.get_boost pc.get_class_boost pc.learn_passive_skill pc.reset_passive_skills mlodzi.enabled mlodzi.offer mlodzi.tier_level mlodzi.weapons mlodzi.claim mlodzi.is_weapon set_summon_lifetime summon_blocked_here guild.get_level guild.create_time guild.age guild.member_join_time guild.member_age guild.get_bank guild.check_requirements; do \
+    for fn in pc.seonpyeong_cells pc.seonpyeong_refine mes.get_message pc.get_special_flag pc.set_special_flag mysql_direct_query pc.equip_slot pc.unequip_slot item.set_attr item.get_max_stack item.use pc.open_special_shop affect.add_new affect.remove_new pc.is_playerbot affect.get_duration pc.has_affect pc.warp_channel game.get_catchking_score game.get_catchking_myscore game.catchking_claim_reward game.catchking_use_item game.catchking_deliver pc.clear_quest_letter guild.treasury_available guild.treasury_spend zodiac_temple.starttemple zodiac_temple.startlogin zodiac_temple.new_floor zodiac_temple.setflag zodiac_temple.getflag pc.set_animasphere pc.get_animasphere pc.delete_animasphere pc.is_flag_cz_ulimit_enter pc.set_flag_cz_ulimit_enter d.zodiac_notice d.zodiac_notice_clear d.zodiac_time d.zodiac_time_clear game.zodiac_temple_table guild.leave_war is_on_war_map dw.cfg dw.map_index dw.count dw.find dw.start dw.is_started dw.wave dw.state dw.mast_hp_pct dw.set_alliance_hp_pct dw.close pc.get_conqueror_level pc.get_conqueror_exp pc.get_conqueror_next_exp pc.get_conqueror_point pc.get_conqueror_unlock_state pc.set_conqueror pc.give_conqueror_exp pc.give_conqueror_exp2 pc.get_sungma_str pc.get_sungma_vit pc.get_sungma_res pc.get_sungma_int pc.reset_sungma_status npc.get_sungma_exp d.zone_attack d.zone_hurt d.unique_damage_pct d.kick_dead game.open_changelook item.get_changelook_vnum game.open_aura game.drop_item_at pc.get_riposte pc.get_boost pc.get_class_boost pc.learn_passive_skill pc.reset_passive_skills mlodzi.enabled mlodzi.offer mlodzi.tier_level mlodzi.weapons mlodzi.claim mlodzi.is_weapon set_summon_lifetime summon_blocked_here guild.get_money guild.set_ladder_point guild.get_near_count guild.get_near_pids guild.get_flag guild.set_flag guild.get_level balathor.is_open balathor.is_in_map balathor.get_stage balathor.set_stage balathor.can_use_hwatcha balathor.use_hwatcha balathor.revive_hwatcha balathor.is_hwatcha_dead balathor.get_register_config balathor.is_guild_dungeon_exist balathor.teleport balathor.warp_enter balathor.can_create balathor.create balathor.give_up balathor.claim_reward guild.create_time guild.age guild.member_join_time guild.member_age guild.get_bank guild.check_requirements; do \
       grep -qx "$fn" /tmp/qc-work/quest_functions || echo "$fn" >> /tmp/qc-work/quest_functions; \
     done; \
     # MT2009_PLUS_HORSE30_V1 (Digi Rasta's horse to level 30): konie is the
@@ -407,9 +409,11 @@ RUN set -eux; \
     # ishop_v3_przedmioty is the second ItemShop's items of the big servers' list: Auto Lowy 7 / 14 days, Szklo Handlu
     # (the Dom Aukcyjny from anywhere, server-patches/szklohandlu), Buff Premium SungMa, Eliksir W. SungMa
     # (MT2009_PLUS_ITEMSHOP_V3_V8, tools/itemshop3/global/owner_decisions.py).
+    # krypta_balathora is Krypta Balathora - Straznik Smokow Dolnarr on Doyyumhwaji, the guild lair of the White Dragon (420)
+    # (MT2009_PLUS_BALATHOR_V1, author dracaryS; offered only while M2_BALATHOR_ON=1 hosts the map).
     # event_halloween_hair is Owsap's Halloween event (MT2009_PLUS_HALLOWEEN_V1, Autor: Owsap) in
     # place of the package's copy, whose handlers the runtime stage removes first.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -2413,6 +2417,42 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-meley-add; D=/opt/
     done \
  && rm -rf "$A" \
  && echo "share: Schronienie Meley (356) - map, Dolnarr on Doyyumhwaji, stages, motions, groups, drops, chests, the dungeon panel"
+
+# MT2009_PLUS_BALATHOR_V1: Krypta Balathora (author: dracaryS; server-patches/balathor, quest krypta_balathora) - the
+# guild lair of the White Dragon: map 420 (metin2_map_guild_whitedragon_boss, 2x2 at 1152000 921600 - free in the
+# atlas; its private copies 4200000+ are made by the engine's CBalathorManager), its line in the map index, the
+# monsters' server motions (data/monster/guild_whitedragon*), balathor.json (the engine reads it from the locale
+# folder: positions, timings, Dolnarr's exit on Doyyumhwaji 84 853, the register rules, the rewards) and the two
+# chests (special_item_group.balathor.txt, items in balathor.sql). Which core hosts 420 is m2-render-config's: game1
+# beside Doyyumhwaji, and only with M2_BALATHOR_ON=1 (MT2009_PLUS_BALATHOR_SWITCH_V1) - the lair is created on the core
+# of the quest's NPC.
+COPY balathor/ /tmp/balathor-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/balathor-add; D=/opt/metin2/share/data/monster \
+ && rm -rf "$L/map/metin2_map_guild_whitedragon_boss" \
+ && cp -a "$A/map/metin2_map_guild_whitedragon_boss" "$L/map/metin2_map_guild_whitedragon_boss" \
+ && test -s "$L/map/metin2_map_guild_whitedragon_boss/server_attr" \
+ && LC_ALL=C sed -i '/^420[[:blank:]]/d' "$L/map/index" \
+ && { [ -z "$(tail -c 1 "$L/map/index")" ] || printf '\r\n' >> "$L/map/index"; } \
+ && printf '420\tmetin2_map_guild_whitedragon_boss\r\n' >> "$L/map/index" \
+ && test "$(grep -c -E '^420[[:blank:]]' "$L/map/index")" = 1 \
+ && for m in "$A"/monster/*; do rm -rf "$D/$(basename "$m")"; cp -a "$m" "$D/"; done \
+ && test -s "$D/guild_whitedragon_boss01/guild_whitedragon_boss01.msm" \
+ && cp "$A/balathor.json" "$L/balathor.json" \
+ && SV='(83075|83076)' \
+ && G="$L/special_item_group.txt" \
+ && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
+ && { [ -z "$(tail -c 1 "$G")" ] || printf '\r\n' >> "$G"; } \
+ && cat "$A/special_item_group.balathor.txt" >> "$G" \
+ && test "$(grep -c -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G")" = 2 \
+ && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
+      [ -f "$f" ] || continue; \
+      LC_ALL=C grep -a -q 'map_names\[420\]' "$f" && continue; \
+      { [ -z "$(tail -c 1 "$f")" ] || printf '\r\n' >> "$f"; }; \
+      printf '\r\n-- MT2009_PLUS_BALATHOR_V1\r\ntranslate.general.map_names[420] = "Krypta Balathora"\r\n' >> "$f"; \
+    done \
+ && chmod -R a+rX "$L/map/metin2_map_guild_whitedragon_boss" "$L/balathor.json" \
+ && rm -rf "$A" \
+ && echo "share: Krypta Balathora (420) - map, motions, balathor.json, chests 83075/83076"
 # MT2009_PLUS_AREZZO_ARGES_SKILL_V1: Arges (9606, Dolina Cyklopow; the folder of the official
 # cyclops boss 3190) uses skill 256, and the server times a monster's skill by the
 # SPECIAL_ATTACKING event (type 4) of its motion - cyclops_boss/special_attack.msa has only

@@ -299,6 +299,16 @@
 // zoom/pan of the atlas, the selected NPC's mark and the arrow under the character, teleport to the NPC (packets
 // CG/GC 196), module npcLocationHelper (PythonNPCLocationHelper.cpp). Without the define the exe is as before.
 #define ENABLE_NPC_LOCATION_HELPER
+// MT2009_PLUS_SLOT_TEXT_SIZE_V1 (Autor: EREMIT STUDIO): holding Ctrl draws the item counts in the slots (CNumberLine)
+// twice as big - expanded image instances scaled 2x, width and alignment corrected (EterPythonLib/PythonWindow.cpp).
+// wndMgr.SetSlotTextZoom(0/1) / IsSlotTextZoom() for the game options' switch (on by default). Without the define the
+// exe is as before.
+#define ENABLE_SLOT_TEXT_SIZE
+// MT2009_PLUS_BALATHOR_V1 (Krypta Balathora, autor: dracaryS): the guild dungeon's client side - boss/egg effects from the
+// server commands BalathorEffectAdd/Remove, motions ETC1..3, pushable fire egg, ice wall as a door, the quest cinema
+// events SET_KEYBOARD_MOUSE_LOCK / RESTORE_CAMERA_EXCEPT_POSITION / CLOSE_CINEMA, app.__BALATHOR__ for root's
+// uiguildwhitedragon.py. Without the define the exe is as before.
+#define __BALATHOR__
 // MT2009_PLUS_GUILDSYS_V1 (the guild system update on Guild Systems by Nazox, server-patches/guildsys): guild levels to 40
 // (Locale.cpp LocaleService_GetLastExp, PythonGuild.cpp guild.GetGuildExperience) and every guild skill usable in the
 // guild White Dragon lair (Balathor, map 420) without a guild war (PythonPlayerSkill.cpp). No packet changes; without

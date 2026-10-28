@@ -626,7 +626,14 @@ void CActorInstance::__ProcessDataAttackSuccess(const NRaceData::TAttackData & c
 
 	InsertDelay(c_rAttackData.fStiffenTime);
 
+// MT2009_PLUS_BALATHOR_V1 (push) (Balathor, dracaryS): hits push the fire egg 20497
+#ifdef __BALATHOR__
+	const float fExternalForce = rVictim.IsBalathorEgg() ? 20.0f : c_rAttackData.fExternalForce;
+	if ((rVictim.IsBalathorEgg() || __CanPushDestActor(rVictim)) && fExternalForce > 0.0f)
+#else
+	const float fExternalForce = c_rAttackData.fExternalForce;
 	if (__CanPushDestActor(rVictim) && c_rAttackData.fExternalForce > 0.0f)
+#endif
 	{
 		__PushCircle(rVictim);
 
@@ -637,7 +644,7 @@ void CActorInstance::__ProcessDataAttackSuccess(const NRaceData::TAttackData & c
 			auto externalForceRatio = 1.0f;
 			if (rVictim.IsResistFallen()) // @fixme033 reduced force with mental strong body almost like before
 				externalForceRatio = 0.8f;
-			rVictim.m_PhysicsObject.IncreaseExternalForce(kVictimPos, c_rAttackData.fExternalForce * externalForceRatio);
+			rVictim.m_PhysicsObject.IncreaseExternalForce(kVictimPos, fExternalForce * externalForceRatio); // MT2009_PLUS_BALATHOR_V1 (force)
 		}
 		// VICTIM_COLLISION_TEST_END
 	}
@@ -695,7 +702,12 @@ void CActorInstance::__ProcessDataAttackSuccess(const NRaceData::TAttackData & c
 	if (rVictim.IsBuilding())
 	{
 	}
+// MT2009_PLUS_BALATHOR_V1 (stone) (Balathor, dracaryS)
+#ifdef __BALATHOR__
+	else if ((!rVictim.IsBalathorEgg() && rVictim.IsStone()) || rVictim.IsDoor())
+#else
 	else if (rVictim.IsStone() || rVictim.IsDoor())
+#endif
 	{
 		__HitStone(rVictim);
 	}

@@ -1,0 +1,31 @@
+@@ game/guild.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ int CGuild::GetFlag(const char* szFlag)
++ {
++ 	return CGuildManager::Instance().GetFlag(GetID(), szFlag);
++ }
++ void CGuild::SetFlag(const char* szFlag, int iValue)
++ {
++ 	CGuildManager::Instance().SetFlag(GetID(), szFlag, iValue);
++ }
++ void CGuild::GetNearMemberCount(std::vector<DWORD>& vecPlayers, float fNeedDistance, LPCHARACTER chExcept)
++ {
++ 	vecPlayers.emplace_back(chExcept->GetVID());
++ 
++ 	DWORD dwMapIndex = chExcept->GetMapIndex();
++ 	long lX = chExcept->GetX();
++ 	long lY = chExcept->GetY();
++ 
++ 	for (auto it = m_memberOnline.begin(); it != m_memberOnline.end(); ++it)
++ 	{
++ 		LPCHARACTER ch = *it;
++ 		if (chExcept == ch || ch->GetMapIndex() != dwMapIndex)
++ 			continue;
++ 		const float fDist = DISTANCE_APPROX(ch->GetX() - lX, ch->GetY() - lY);
++ 		if (fDist < fNeedDistance)
++ 			vecPlayers.emplace_back(ch->GetPlayerID());
++ 	}
++ }
++ #endif

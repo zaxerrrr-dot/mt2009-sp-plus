@@ -1,0 +1,43 @@
+ScriptType               MotionData
+
+MotionFileName           "D:/Ymir Work/monster2/guild_whitedragon_boss01/wait6.GR2"
+MotionDuration           7.133333
+
+Group MotionEventData
+{
+    MotionEventDataCount     4
+    Group Event00
+    {
+        MotionEventType      1
+        StartingTime         5.133333
+        
+        IndependentFlag      0
+        AttachingEnable      0
+        AttachingBoneName    "Bip01 R Finger01"
+        FollowingEnable      0
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_boss_spawn_01.mse"
+        EffectPosition       0.000000 -500.000000 0.000000
+    }
+    Group Event01
+    {
+        MotionEventType      1
+        StartingTime         4.173333
+        
+        IndependentFlag      0
+        AttachingEnable      0
+        AttachingBoneName    "Bip01 R Finger01"
+        FollowingEnable      0
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_boss_spawn_00.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event02
+    {
+        MotionEventType      8
+        StartingTime         0.000000
+    }
+    Group Event03
+    {
+        MotionEventType      7
+        StartingTime         3.000000
+    }
+}

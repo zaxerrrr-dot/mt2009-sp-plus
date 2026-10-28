@@ -944,6 +944,13 @@ bool CInstanceBase::Create(const SCreateData& c_rkCreateData)
 
 	__AttachHorseSaddle();
 
+	// MT2009_PLUS_BALATHOR_V1 (create) (Balathor, dracaryS): Balathor 6896/6897 always drawn, effects that wait for this VID
+#ifdef __BALATHOR__
+	if (c_rkCreateData.m_dwRace == 6896 || c_rkCreateData.m_dwRace == 6897)
+		m_GraphicThingInstance.SetForceShow(true);
+	CPythonPlayer::Instance().CheckBalathorEffect(this);
+#endif
+
 	const int c_iGuildSymbolRace = 14200;
 	if (c_iGuildSymbolRace == GetRace())
 	{
@@ -3510,6 +3517,36 @@ void CInstanceBase::RegisterBoundingSphere()
 	m_GraphicThingInstance.RegisterBoundingSphere();
 }
 
+// MT2009_PLUS_BALATHOR_V1 (funcs) (Balathor, dracaryS)
+#ifdef __BALATHOR__
+void CInstanceBase::RemoveBalathorEffect(const TBalathorEffect* pEffect)
+{
+	const auto it = m_mapBalathorEffects.find(pEffect->dwID);
+	if (it == m_mapBalathorEffects.end())
+		return;
+	__DetachEffect(it->second);
+	m_mapBalathorEffects.erase(it);
+}
+
+void CInstanceBase::AddBalathorEffect(const TBalathorEffect* pEffect)
+{
+	if (m_mapBalathorEffects.find(pEffect->dwID) != m_mapBalathorEffects.end())
+		return;
+
+	const char* szFileName = CPythonPlayer::Instance().GetBalathorEffectFileName(pEffect->bEffIndex);
+	if (!szFileName)
+		return;
+
+	DWORD dwCRC = 0;
+	if (!CEffectManager::Instance().RegisterEffect2(szFileName, &dwCRC, false))
+		return;
+
+	const DWORD dwResult = m_GraphicThingInstance.AttachEffectByID(0, "Bip01", dwCRC);
+	if (dwResult != 0)
+		m_mapBalathorEffects.emplace(pEffect->dwID, dwResult);
+}
+#endif
+
 bool CInstanceBase::CreateDeviceObjects()
 {
 	return m_GraphicThingInstance.CreateDeviceObjects();
@@ -3527,6 +3564,14 @@ void CInstanceBase::Destroy()
 	DismountHorse();
 
 	m_kQue_kCmdNew.clear();
+
+	// MT2009_PLUS_BALATHOR_V1 (destroy) (Balathor, dracaryS)
+#ifdef __BALATHOR__
+	for (const auto& [id, eff_id] : m_mapBalathorEffects)
+		__DetachEffect(eff_id);
+	m_mapBalathorEffects.clear();
+	m_GraphicThingInstance.SetForceShow(false);
+#endif
 
 	__ClearAffects();
 

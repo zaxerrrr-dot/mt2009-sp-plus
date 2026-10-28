@@ -372,6 +372,15 @@ class CInstanceBase
 		void SetAutoHuntTestPass(bool bFlag);
 #endif
 
+		// MT2009_PLUS_BALATHOR_V1 (Balathor, dracaryS)
+#ifdef __BALATHOR__
+		void RemoveBalathorEffect(const TBalathorEffect* pEffect);
+		void AddBalathorEffect(const TBalathorEffect* pEffect);
+	protected:
+		std::map<DWORD, DWORD> m_mapBalathorEffects;
+	public:
+#endif
+
 	protected:
 		bool __IsExistMainInstance();
 		bool __IsMainInstance();

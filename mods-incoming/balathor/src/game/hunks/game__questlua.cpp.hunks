@@ -1,0 +1,8 @@
+@@ game/questlua.cpp:7  (kotwica = linie przed #ifdef)
+  		RegisterDanceEventFunctionTable();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 		RegisterBalathorFunctionTable();
++ #endif

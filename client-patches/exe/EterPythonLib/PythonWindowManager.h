@@ -210,6 +210,14 @@ namespace UI
 #endif
 			TWindowContainer		m_LayerWindowList;
 			TLayerContainer			m_LayerWindowMap;
+			// MT2009_PLUS_BALATHOR_V1 (lock) (Balathor, dracaryS): quest cinema locks mouse and keyboard
+#ifdef __BALATHOR__
+		public:
+			void					SetLockMouseAndKeyboard(bool bLock) { m_bLockMouseAndKeyboard = bLock; }
+			bool					IsMouseAndKeyboardLocked() const { return m_bLockMouseAndKeyboard; }
+		private:
+			bool					m_bLockMouseAndKeyboard = false;
+#endif
 	};
 
 	PyObject * BuildEmptyTuple();
