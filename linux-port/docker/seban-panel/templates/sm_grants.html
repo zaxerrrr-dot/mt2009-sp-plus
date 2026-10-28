@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Smocze Monety – nadawanie · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_SM_GRANTS_V1: pakiety Smoczych Monet dla kont graczy i botów (sm_grants.py) #}
+<style>
+.smg-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.smg-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.smg-table input[type=number]{width:6.5em;padding:7px 8px}
+.smg-table input[type=text]{width:12em;padding:7px 8px}
+.smg-table select{padding:7px 8px}
+.smg-table td{padding:8px 6px;vertical-align:middle}
+.smg-table button{padding:7px 10px;margin:0 4px 0 0}
+.smg-new td{border-top:1px dashed var(--edge)}
+.smg-off{opacity:.55}
+.smg-note{font-size:12px;color:var(--muted)}
+</style>
+<a class="back" href="{{ url_for('manage') }}">← Ustawienia</a>
+<p class="eyebrow">USTAWIENIA · GOSPODARKA</p>
+<h1>💎 Smocze Monety – nadawanie</h1>
+<p class="muted">Prawdziwe SM na konto (ta sama kwota, którą widzi i wydaje ItemShop w grze i na stronie). Każde konto dostaje w danym okresie (dzień / tydzień / miesiąc) jeden, najlepszy pakiet, który spełnia: najwyższy wymagany poziom Czempiona, potem najwyższy wymagany poziom, potem większa kwota. O spełnieniu decyduje najlepsza postać konta. Pakiety graczy i botów są osobne: bot to konto z loginem <code>playerbot_…</code>. Okresy liczone są w strefie {{ tz_name }}; wypłata trafia przy pierwszym uruchomieniu workera w danym okresie (co 5 minut), a każdy okres wypłacany jest najwyżej raz.</p>
+
+<section class="cards compact">
+<article><span>Nadawanie</span><strong>{{ 'Włączone' if config.enabled else 'Wyłączone' }}</strong><small>do {{ config.per_run_limit }} kont na uruchomienie</small></article>
+<article><span>Gracze – 30 dni</span><strong>{{ '{:,}'.format((totals.player.sm if totals.player else 0)|int).replace(',', ' ') }} SM</strong><small>{{ totals.player.n if totals.player else 0 }} wypłat</small></article>
+<article><span>Boty – 30 dni</span><strong>{{ '{:,}'.format((totals.bot.sm if totals.bot else 0)|int).replace(',', ' ') }} SM</strong><small>{{ totals.bot.n if totals.bot else 0 }} wypłat</small></article>
+<article><span>Worker</span><strong>{{ 'Działa' if worker.alive else 'Nie odpowiada' }}</strong><small>{% if worker.last_run_age is not none %}ostatnio {{ worker.last_run_age }} s temu: {{ worker.summary }}{% else %}jeszcze nie uruchomiony{% endif %}</small></article>
+</section>
+{% if not worker.alive %}<p class="muted">⚠️ Wypłaty robi kontener <code>seban-item-grants</code> (ten sam, co nadawanie przedmiotów). Bez niego nic nie zostanie wypłacone: <code>docker compose up -d seban-item-grants</code>.</p>{% endif %}
+{% if worker.error %}<p>Ostatni błąd workera: <code>{{ worker.error }}</code></p>{% endif %}
+
+<section class="panel" id="wlacznik">
+<h2>Włącznik</h2>
+<form method="post" class="smg-form">
+<input type="hidden" name="sm_csrf" value="{{ sm_csrf }}"><input type="hidden" name="action" value="config">
+<label><span><input type="checkbox" name="enabled" value="1" {% if config.enabled %}checked{% endif %}> Nadawaj Smocze Monety według pakietów</span></label>
+<label>Kont na jedno uruchomienie<input type="number" name="per_run_limit" min="1" max="{{ limits.per_run }}" value="{{ config.per_run_limit }}"></label>
+<button>Zapisz</button>
+</form>
+<p class="smg-note">Limit chroni bazę: gdy należy się więcej kont (np. kilka tysięcy botów o północy), worker płaci partiami co ~20 s, najpierw graczom.</p>
+<form method="post" class="smg-form" style="margin-top:10px">
+<input type="hidden" name="sm_csrf" value="{{ sm_csrf }}"><input type="hidden" name="action" value="run_now">
+<button class="secondary" {% if not config.enabled %}disabled title="Najpierw włącz nadawanie"{% endif %}>Wypłać należne teraz</button>
+{% if worker.run_now %}<span class="smg-note">czeka na workera…</span>{% endif %}
+</form>
+</section>
+
+{% for target, target_label in targets %}
+<section class="panel" id="pakiety-{{ target }}">
+<h2>{{ '👤' if target == 'player' else '🤖' }} Pakiety – {{ target_label }}</h2>
+<p class="smg-note">{% if target == 'player' %}Konta graczy ze statusem OK (zbanowane nic nie dostają).{% else %}Konta <code>playerbot_…</code>.{% endif %} „Czempion od” 0 = bez wymogu. „Aktywność” 0 = bez wymogu, inaczej konto musiało grać w ciągu tylu ostatnich dni.</p>
+<div class="table-wrap"><table class="smg-table">
+<thead><tr><th>Wł.</th><th>Nazwa</th><th>Poziom od</th><th>Czempion od</th><th>SM</th><th>Okres</th><th>Aktywność (dni)</th><th>Teraz</th><th></th></tr></thead>
+<tbody>
+{% for t in tiers if t.target == target %}
+{% set st = plan.per_tier.get(t.id) if plan else none %}
+<tr class="{% if not t.enabled %}smg-off{% endif %}">
+<td><form id="tier-{{ t.id }}" method="post"><input type="hidden" name="sm_csrf" value="{{ sm_csrf }}"><input type="hidden" name="id" value="{{ t.id }}"><input type="hidden" name="target" value="{{ target }}"></form><input form="tier-{{ t.id }}" type="checkbox" name="enabled" value="1" {% if t.enabled %}checked{% endif %}></td>
+<td><input form="tier-{{ t.id }}" type="text" name="name" maxlength="64" required value="{{ t.name }}"></td>
+<td><input form="tier-{{ t.id }}" type="number" name="min_level" min="1" max="{{ limits.level }}" required value="{{ t.min_level }}"></td>
+<td><input form="tier-{{ t.id }}" type="number" name="min_champion_level" min="0" max="{{ limits.champion }}" value="{{ t.min_champion_level }}"></td>
+<td><input form="tier-{{ t.id }}" type="number" name="amount" min="1" max="{{ limits.amount }}" required value="{{ t.amount }}"></td>
+<td><select form="tier-{{ t.id }}" name="period">{% for v, l in periods %}<option value="{{ v }}" {% if t.period == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></td>
+<td><input form="tier-{{ t.id }}" type="number" name="active_days" min="0" max="{{ limits.active }}" value="{{ t.active_days }}"></td>
+<td class="smg-note">{% if st %}{{ st.eligible }} kont · wypłacono {{ st.paid }} · czeka {{ st.due }}{% elif not t.enabled %}wyłączony{% else %}—{% endif %}</td>
+<td style="white-space:nowrap"><button form="tier-{{ t.id }}" name="action" value="save_tier">Zapisz</button><button form="tier-{{ t.id }}" name="action" value="delete_tier" class="secondary" style="margin-top:0" onclick="return confirm('Usunąć pakiet {{ t.name|e }}? Historia wypłat zostaje.');">Usuń</button></td>
+</tr>
+{% else %}
+<tr><td colspan="9" class="muted">Brak pakietów. {% if target == 'player' %}Przykład: „Gracz 20+”, poziom od 20, 50 SM codziennie, oraz „Czempion”, poziom od 120, Czempion od 1, 150 SM codziennie.{% else %}Boty mają osobne kwoty – dodaj pakiet poniżej.{% endif %}</td></tr>
+{% endfor %}
+<tr class="smg-new">
+<td><form id="tier-new-{{ target }}" method="post"><input type="hidden" name="sm_csrf" value="{{ sm_csrf }}"><input type="hidden" name="target" value="{{ target }}"></form><input form="tier-new-{{ target }}" type="checkbox" name="enabled" value="1" checked></td>
+<td><input form="tier-new-{{ target }}" type="text" name="name" maxlength="64" required placeholder="Nowy pakiet"></td>
+<td><input form="tier-new-{{ target }}" type="number" name="min_level" min="1" max="{{ limits.level }}" required value="20"></td>
+<td><input form="tier-new-{{ target }}" type="number" name="min_champion_level" min="0" max="{{ limits.champion }}" value="0"></td>
+<td><input form="tier-new-{{ target }}" type="number" name="amount" min="1" max="{{ limits.amount }}" required value="50"></td>
+<td><select form="tier-new-{{ target }}" name="period">{% for v, l in periods %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select></td>
+<td><input form="tier-new-{{ target }}" type="number" name="active_days" min="0" max="{{ limits.active }}" value="0"></td>
+<td></td>
+<td><button form="tier-new-{{ target }}" name="action" value="save_tier">Dodaj</button></td>
+</tr>
+</tbody></table></div>
+</section>
+{% endfor %}
+
+<section class="panel" id="podglad">
+<h2>Podgląd: kto co dostanie</h2>
+{% if preview_error %}<p>⚠️ Nie udało się policzyć podglądu: <code>{{ preview_error }}</code></p>
+{% elif not plan or not plan.tiers %}<p class="muted">Brak włączonych pakietów.</p>
+{% else %}
+<p class="smg-note">Stan na {{ plan.now.strftime('%d.%m.%Y %H:%M') }} ({{ tz_name }}). Bieżące okresy: dzień {{ plan['keys']['day'] }}, tydzień {{ plan['keys']['week'] }}, miesiąc {{ plan['keys']['month'] }}. Następne: dzień od {{ plan.next.day.strftime('%d.%m %H:%M') }}, tydzień od {{ plan.next.week.strftime('%d.%m') }}, miesiąc od {{ plan.next.month.strftime('%d.%m') }}. „Kont” to konta, dla których ten pakiet jest najlepszy – tyle dostanie go w następnym okresie, jeśli nic się nie zmieni.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Dla</th><th>Pakiet</th><th>Okres</th><th>Kont</th><th>SM / okres</th><th>Już wypłacono w tym okresie</th><th>Czeka na wypłatę teraz</th></tr></thead>
+<tbody>{% for st in plan.per_tier.values() %}<tr><td>{{ dict(targets)[st.tier.target] }}</td><td>{{ st.tier.name }} <span class="smg-note">(Lv {{ st.tier.min_level }}+{% if st.tier.min_champion_level %}, C {{ st.tier.min_champion_level }}+{% endif %}, {{ st.tier.amount }} SM)</span></td><td>{{ dict(periods)[st.tier.period] }}</td><td><b>{{ st.eligible }}</b></td><td>{{ '{:,}'.format(st.eligible * st.tier.amount).replace(',', ' ') }}</td><td>{{ st.paid }}</td><td>{{ st.due }} ({{ '{:,}'.format(st.due_sm).replace(',', ' ') }} SM)</td></tr>{% endfor %}</tbody>
+</table></div>
+<p>Razem czeka teraz: <b>{{ plan.due|length }}</b> kont, <b>{{ '{:,}'.format(plan.due_sm).replace(',', ' ') }}</b> SM.{% if not config.enabled %} Nadawanie jest wyłączone – nic nie zostanie wypłacone.{% endif %}</p>
+{% if sample %}<details><summary>Konta graczy czekające na wypłatę ({{ sample|length }}{% if sample|length == 50 %}, pierwsze 50{% endif %})</summary><table><thead><tr><th>Konto</th><th>Najlepsza postać</th><th>Pakiet</th><th>SM</th></tr></thead><tbody>{% for s in sample %}<tr><td><a href="{{ url_for('account_detail', aid=s.account_id) }}">{{ s.login }}</a></td><td>Lv {{ s.level }}{% if s.champion %} · C {{ s.champion }}{% endif %}</td><td>{{ s.tier.name }} · {{ period_noun[s.tier.period] }}</td><td>{{ s.tier.amount }}</td></tr>{% endfor %}</tbody></table></details>{% endif %}
+{% endif %}
+</section>
+
+<section class="panel" id="historia">
+<h2>Ostatnie wypłaty</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Kiedy</th><th>Konto</th><th>Dla</th><th>Pakiet</th><th>SM</th><th>Okres</th></tr></thead>
+<tbody>{% for h in history %}<tr><td>{{ h.granted_at.strftime('%d.%m.%Y %H:%M') if h.granted_at else '' }}</td><td><a href="{{ url_for('account_detail', aid=h.account_id) }}">{{ h.login or ('#' ~ h.account_id) }}</a></td><td>{{ dict(targets).get(h.target, h.target) }}</td><td>{{ h.tier_name }}</td><td>{{ h.amount }}</td><td>{{ h.period_key }}</td></tr>{% else %}<tr><td colspan="6" class="muted">Jeszcze nic nie wypłacono.</td></tr>{% endfor %}</tbody>
+</table></div>
+<p class="smg-note">Ostatnie 200 wypłat. Pełna historia: tabela <code>account.sm_grant_log</code>.</p>
+</section>
+{% endblock %}

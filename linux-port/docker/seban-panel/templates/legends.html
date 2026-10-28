@@ -25,7 +25,7 @@
 <td><a href="{{url_for('player',pid=r.pid)}}">{{r.name or ('#' ~ r.pid)}}</a></td>
 <td>{% set kingdom=empire_info(r.empire) %}{% if empire_flag(r.empire) %}<img class="empire-flag-inline" src="{{empire_flag(r.empire)}}" alt="{{kingdom.name}}">{% endif %}{{kingdom.name}}</td>
 <td>{% if r.guild_id %}<a href="{{url_for('guild',guild_id=r.guild_id)}}">{{r.guild}}</a>{% else %}<span class="muted">—</span>{% endif %}</td>
-<td>{{r.level or ''}}</td><td><b>{{r.reputation}}</b></td><td>{{r.player_kills}}</td><td>{{r.player_deaths}}</td>
+<td>{% if r.level %}{{level_badge(r.pid,r.level)}}{% endif %}</td><td><b>{{r.reputation}}</b></td><td>{{r.player_kills}}</td><td>{{r.player_deaths}}</td>
 <td>{{r.wars_won}} / {{r.wars_lost}}</td><td>{{r.boss_kills}}</td>
 <td>{% for icon, text in r.achievements_list %}<span title="{{text}}">{{icon}}</span> {% endfor %}</td>
 <td class="muted">{{r.tier_since or ''}}</td></tr>

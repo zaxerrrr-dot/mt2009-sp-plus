@@ -415,6 +415,7 @@ def beat(error=""):
 
 if __name__ == "__main__":
     from app import db
+    import sm_grants
     while True:
         error = ""
         try:
@@ -428,4 +429,10 @@ if __name__ == "__main__":
             beat(error)
         except Exception as exc:
             print(f"[item-grants] heartbeat: {type(exc).__name__}: {exc}", flush=True)
+        # MT2009_PLUS_SM_GRANTS_V1: the SM tiers' payments ride on this loop -
+        # worker_step() does nothing until its own five minutes are up.
+        try:
+            sm_grants.worker_step(db)
+        except Exception as exc:
+            print(f"[sm-grants] {type(exc).__name__}: {exc}", flush=True)
         time.sleep(3)

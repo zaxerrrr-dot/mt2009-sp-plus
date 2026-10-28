@@ -3874,6 +3874,30 @@ T = {
  "shopbig_intro":{"pl":"Włączone: okno sklepu offline gracza ma dwie strony obok siebie (160 miejsc, jak sklepy botów); druga strona nie ma blokad ani miejsc premium. Wyłączone: tylko pierwsza strona. Przedmioty, które już stoją na drugiej stronie, zostają w sprzedaży i nadal je widać — po wyłączeniu nie da się tam tylko dokładać nowych. Gracz zobaczy zmianę przy następnym otwarciu okna sklepu.","en":"On: a player's offline shop window has two pages side by side (160 slots, like the bots' shops); the second page has no locked or premium slots. Off: the first page only. Items already on the second page stay for sale and visible - once off, only new ones cannot go there. The player sees the change the next time the shop window opens."},
  "shopbig_enable": {"pl":"Większe sklepy offline graczy (2 strony)","en":"Bigger player offline shops (2 pages)"},
  "shopbig_saved_live": {"pl":"Zapisano i przełączono na żywo. 🏪","en":"Saved and switched live. 🏪"},
+ # MT2009_PLUS_SM_GRANTS_V1: Smocze Monety paid to accounts by tiers (the advanced panel edits the tiers)
+ "smg_nav":      {"pl":"💎 Smocze Monety – nadawanie","en":"💎 Dragon Coins – grants"},
+ "smg_open":     {"pl":"💎 Włącz / wyłącz nadawanie SM","en":"💎 Turn Dragon Coin grants on / off"},
+ "smg_dash_hint":{"pl":"SM na konta graczy i botów co dzień, tydzień albo miesiąc, według pakietów.","en":"Dragon Coins for player and bot accounts every day, week or month, by tiers."},
+ "tip_smg":      {"pl":"Prawdziwe Smocze Monety (account.cash) wypłacane kontom według pakietów. Pakiety ustawia się w zaawansowanym panelu.","en":"Real Dragon Coins (account.cash) paid to accounts by tiers. The tiers are set in the advanced panel."},
+ "smg_intro":    {"pl":"Każde konto dostaje w danym okresie (dzień / tydzień / miesiąc) jeden, najlepszy pakiet, który spełnia jego najlepsza postać. Pakiety graczy i botów są osobne. Pakiety dodaje się i zmienia w zaawansowanym panelu: Ustawienia → Smocze Monety – nadawanie. Tutaj tylko włącznik i podsumowanie.","en":"In each period (day / week / month) an account gets one tier, the best one its best character meets. Players and bots have separate tiers. Tiers are added and changed in the advanced panel: Ustawienia → Smocze Monety – nadawanie. Here: the switch and a summary only."},
+ "smg_enable":   {"pl":"Nadawaj Smocze Monety według pakietów","en":"Pay Dragon Coins by the tiers"},
+ "smg_saved":    {"pl":"Zapisano. Worker wypłaci należne SM przy następnym uruchomieniu (do 5 minut). 💎","en":"Saved. The worker pays what is due on its next run (within 5 minutes). 💎"},
+ "smg_missing":  {"pl":"Tabele nadawania SM jeszcze nie istnieją – powstaną przy następnym starcie serwera.","en":"The Dragon Coin grant tables do not exist yet - they are made at the next server start."},
+ "smg_tiers":    {"pl":"Pakiety","en":"Tiers"},
+ "smg_none":     {"pl":"Brak pakietów – dodaj je w zaawansowanym panelu.","en":"No tiers - add them in the advanced panel."},
+ "smg_col_for":  {"pl":"Dla","en":"For"},
+ "smg_col_name": {"pl":"Pakiet","en":"Tier"},
+ "smg_col_req":  {"pl":"Wymóg","en":"Requirement"},
+ "smg_col_sm":   {"pl":"SM","en":"DC"},
+ "smg_col_per":  {"pl":"Okres","en":"Period"},
+ "smg_players":  {"pl":"Gracze","en":"Players"},
+ "smg_bots":     {"pl":"Boty","en":"Bots"},
+ "smg_day":      {"pl":"codziennie","en":"daily"},
+ "smg_week":     {"pl":"co tydzień","en":"weekly"},
+ "smg_month":    {"pl":"co miesiąc","en":"monthly"},
+ "smg_off_tier": {"pl":"(wyłączony)","en":"(off)"},
+ "smg_last30":   {"pl":"Wypłacono w ostatnich 30 dniach","en":"Paid in the last 30 days"},
+ "smg_last_run": {"pl":"Ostatnie uruchomienie workera","en":"The worker's last run"},
  "az_open":      {"pl":"🗺️ Otwórz moduł Arezzo","en":"🗺️ Open the Arezzo module"},
  "tip_az":       {"pl":"Włącz albo wyłącz nowe mapy i lochy z Arezzo. Działa od razu, bez restartu serwera.","en":"Switch the new Arezzo maps and dungeons on or off. Takes effect immediately, no server restart."},
  "az_dash_hint": {"pl":"Czy na tym świecie są dostępne mapy i lochy z Arezzo (moduł dobrowolny).","en":"Whether the Arezzo maps and dungeons are open in this world (an optional module)."},
@@ -7289,6 +7313,11 @@ TPL_DASH = BASE.replace("__BODY__", """
 <a class="btn" href="{{url_for('shop_big')}}" title="{{t('tip_shopbig')}}">{{t('shopbig_open')}}</a>
 </div>
 <div class="card">
+<h3 class="help" title="{{t('tip_smg')}}">{{t('smg_nav')}}</h3>
+<p class="muted">{{t('smg_dash_hint')}}</p>
+<a class="btn" href="{{url_for('sm_grants')}}" title="{{t('tip_smg')}}">{{t('smg_open')}}</a>
+</div>
+<div class="card">
 <h3 class="help" title="{{t('tip_seon')}}">{{t('seon_nav')}}</h3>
 <p class="muted">{{t('seon_dash_hint')}}</p>
 <a class="btn" href="{{url_for('seonhae')}}" title="{{t('tip_seon')}}">{{t('seon_open')}}</a>
@@ -7908,6 +7937,33 @@ TPL_SHOPBIG = BASE.replace("__BODY__", """
 <label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('shopbig_enable')}}</label>
 <button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
 </form></div>""")
+
+# MT2009_PLUS_SM_GRANTS_V1: the switch and a read-only summary; the tiers are edited in the advanced panel.
+TPL_SMGRANTS = BASE.replace("__BODY__", """
+<p><a href="{{url_for('dash')}}">{{t('back_players')}}</a></p>
+<div class="card">
+<h3>{{t('smg_nav')}}</h3>
+<p class="muted">{{t('smg_intro')}}</p>
+{% if cur['missing'] %}<p class="muted">{{t('smg_missing')}}</p>{% else %}
+<p><span class="badge">💎 {{t('smg_nav')}}: {{t('easter_on') if cur['on'] else t('easter_off')}}</span></p>
+{% endif %}
+</div>
+{% if not cur['missing'] %}
+<div class="card">
+<form method="post">
+<input type="hidden" name="_csrf" value="{{csrf_token}}">
+<label><input type="checkbox" name="on" value="1" {% if cur['on'] %}checked{% endif %}> {{t('smg_enable')}}</label>
+<button class="big" style="margin-top:18px">{{t('easter_save')}}</button>
+</form></div>
+<div class="card">
+<h3>{{t('smg_tiers')}}</h3>
+{% if cur['tiers'] %}<table><tr><th>{{t('smg_col_for')}}</th><th>{{t('smg_col_name')}}</th><th>{{t('smg_col_req')}}</th><th>{{t('smg_col_sm')}}</th><th>{{t('smg_col_per')}}</th></tr>
+{% for r in cur['tiers'] %}<tr><td>{{t('smg_players') if r['target']=='player' else t('smg_bots')}}</td><td>{{r['name']}}{% if not r['enabled'] %} <span class="muted">{{t('smg_off_tier')}}</span>{% endif %}</td><td>Lv {{r['min_level']}}+{% if r['min_champion_level'] %} · C {{r['min_champion_level']}}+{% endif %}</td><td>{{r['amount']}}</td><td>{{t('smg_' ~ r['period'])}}</td></tr>{% endfor %}
+</table>{% else %}<p class="muted">{{t('smg_none')}}</p>{% endif %}
+<p class="muted">{{t('smg_last30')}}: {{t('smg_players')}} {{cur['paid']['player']}} SM · {{t('smg_bots')}} {{cur['paid']['bot']}} SM</p>
+{% if cur['last'] %}<p class="muted">{{t('smg_last_run')}}: {{cur['last']}}</p>{% endif %}
+</div>
+{% endif %}""")
 
 # MT2009_PLUS_SEONHAE_V1: Seon-Hae's page, the Arezzo page's shape plus the time.
 TPL_SEONHAE = BASE.replace("__BODY__", """
@@ -19249,6 +19305,50 @@ def shop_big():
     except Exception:
         flash(t("db_down"), "error")
     return render_template_string(TPL_SHOPBIG, cur=cur_sb)
+
+# MT2009_PLUS_SM_GRANTS_V1: Smocze Monety paid to accounts by tiers - the switch (account.sm_grant_config) and a
+# summary. The tiers, the preview and the history are the advanced panel's (seban-panel sm_grants.py); the payments
+# are its seban-item-grants worker's. Its own utf8mb4 connection: the tier names are Polish text.
+def sm_grants_db():
+    return pymysql.connect(host=CONF.get("db_host", "127.0.0.1"), user=CONF["db_user"],
+                           password=CONF["db_pass"], charset="utf8mb4",
+                           autocommit=True, cursorclass=pymysql.cursors.DictCursor)
+
+@app.route("/sm_grants", methods=["GET", "POST"])
+@login_required
+def sm_grants():
+    if request.method == "POST":
+        on = 1 if request.form.get("on") else 0
+        try:
+            with sm_grants_db() as c, c.cursor() as cur:
+                cur.execute("UPDATE account.sm_grant_config SET enabled=%s WHERE id=1", (on,))
+        except Exception:
+            flash(t("smg_missing"), "error")
+            return redirect(url_for("sm_grants"))
+        flash(t("smg_saved"))
+        return redirect(url_for("sm_grants"))
+    cur_smg = {"on": 0, "missing": False, "tiers": [], "paid": {"player": 0, "bot": 0}, "last": ""}
+    try:
+        with sm_grants_db() as c, c.cursor() as cur:
+            cur.execute("SELECT enabled FROM account.sm_grant_config WHERE id=1")
+            row = cur.fetchone()
+            cur_smg["on"] = 1 if row and int(row["enabled"] or 0) else 0
+            cur.execute("SELECT target,enabled,name,min_level,min_champion_level,amount,period "
+                        "FROM account.sm_grant_tier ORDER BY target, period, min_champion_level, min_level, amount, id")
+            cur_smg["tiers"] = cur.fetchall()
+            cur.execute("SELECT target, COALESCE(SUM(amount),0) AS sm FROM account.sm_grant_log "
+                        "WHERE granted_at >= NOW() - INTERVAL 30 DAY GROUP BY target")
+            for r in cur.fetchall():
+                cur_smg["paid"][r["target"]] = int(r["sm"] or 0)
+            try:
+                cur.execute("SELECT value FROM player.web_seban_settings WHERE name='sm_grants_last_summary'")
+                row = cur.fetchone()
+                cur_smg["last"] = row["value"] if row else ""
+            except Exception:
+                pass
+    except Exception:
+        cur_smg["missing"] = True
+    return render_template_string(TPL_SMGRANTS, cur=cur_smg)
 
 @app.route("/arezzo", methods=["GET", "POST"])
 @login_required
