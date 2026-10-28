@@ -1,0 +1,226 @@
+# -*- coding: utf-8 -*-
+# MT2009_PLUS_SPIDER3_V1 - the client build's part for 3 Loch Pajakow (217):
+#   1) the new packs of spider3_manifest.json "new_packs" - spider3_map (the map folder metin2_map_spiderdungeon3, the
+#      textureset metin2_spider3.txt, the atlas) and spider3_obj (the spider dungeon's object models and their
+#      textures) - staged by stage_spider3.py under <staging>/add/<pack>/<in-pack path> ("d_/" = "d:/");
+#   2) the existing pack "property": nothing to add today (the map's 9 object kinds are all in it), kept for a
+#      later staging;
+#   3) their lines at the end of pack/Index;
+#   4) the existing pack "gamedata" (patch_spider3_client.py): gamedata/atlasinfo.txt - the row
+#      metin2_map_spiderdungeon3 in place of the base client's metin2_map_spiderdungeon_03 row (same square).
+# The map's name on the minimap (localeinfo.py MINIMAP_ZONE_NAME_DICT) and the snow-free maps (game.py) travel in
+# client-2.0.30/root like every root change.
+# BUILD ORDER - it shares pack/Index, property and gamedata with the other builders: after ../wzmaps, before
+# ../yfinal, all on the same OUT (a pack already in OUT - an earlier step changed it - is the one patched):
+#
+#   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 \
+#     <repo>/client-patches/client-2.0.30/tools/spider3/build_spider3_packs.py \
+#     <BASE pack dir> <OUT pack dir> <staging dir> [--data <dir>]
+#   ... build_spider3_packs.py <BASE> <OUT> <staging> --check      # measure only, writes nothing
+#
+# clientY.sh: after the wzmaps line,
+#   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/spider3/build_spider3_packs.py $C/azbase $C/out/pack \
+#     /opt/metin2/cache/yohara/spider3-staging > $C/spider3.json
+# then verify_spider3.py on OUT (spider3/verify_spider3.py in the verify loop). The staging is made first, on the host:
+#   python3 <repo>/client-patches/client-2.0.30/tools/spider3/stage_spider3.py
+# --data: a directory with the build's patched copies (flat: atlasinfo.txt) to start from instead of the pack's entry.
+# Every entry written is read back; an added name must be new to BASE and to the packs already in OUT. Idempotent: a
+# second run gives "in out"/"unchanged".
+import json
+import os
+import re
+import sys
+import zlib
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, '/opt/metin2/cache/tcm/tz')
+sys.path.insert(0, '/opt/metin2/cache/arezzo-work/client/az58')
+sys.path.insert(0, HERE)
+TEXT = ('.txt', '.msa', '.msm', '.mse', '.mss', '.msenv', '.sub', '.prb', '.prd', '.pre', '.prt', '.py', '.ifl', '.pra')
+ZIP_LIMIT = 29 * 1024 * 1024
+def ctype(name):
+    return 2 if name.endswith(TEXT) else 1
+
+
+def main():
+    import m2pack
+    import packlib
+    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    check = '--check' in sys.argv
+    data_from = sys.argv[sys.argv.index('--data') + 1] if '--data' in sys.argv else None
+    if data_from:
+        args.remove(data_from)
+    base, out, staging = args[:3]
+    import patch_spider3_client as pc
+    man = json.load(open(os.path.join(HERE, 'spider3_manifest.json'), encoding='utf-8'))
+    new_packs = man['new_packs']
+    rd = packlib.rd
+    allnames = {}
+    for d in (base, out):
+        if not os.path.isdir(d):
+            continue
+        for p in sorted(f[:-6] for f in os.listdir(d) if f.endswith('.index')):
+            if p in new_packs:
+                continue
+            for e in m2pack.read_index(os.path.join(d, p + '.index'))[2]:
+                allnames.setdefault(e['name'], p)
+    tmpl = m2pack.read_index(os.path.join(base, 'az_mobs.index'))[2][-1]['raw']
+    _packcache = {}
+
+    def existing_entry(pack, name):
+        for d in (out, base):
+            ip = os.path.join(d, pack + '.index')
+            if not os.path.exists(ip):
+                continue
+            if (d, pack) not in _packcache:
+                ents = m2pack.read_index(ip)[2]
+                _packcache[(d, pack)] = (dict((e['name'], e) for e in ents), rd(os.path.join(d, pack + '.data')))
+            idx, dat = _packcache[(d, pack)]
+            if name in idx:
+                return m2pack.read_entry(dat, idx[name])
+        return None
+    replace_ok = set(man.get('replace', []))
+
+    def staged(pack, k):
+        return rd(os.path.join(staging, 'add', pack, k.replace('d:/', 'd_/', 1)))
+
+    def src_of(pack):
+        if os.path.exists(os.path.join(out, pack + '.index')):
+            return out
+        return base
+
+    report = {}
+
+    def write(pack, src, rep, add, ents, dat):
+        tmp_i, tmp_d = os.path.join(out, pack + '.index.sp3'), os.path.join(out, pack + '.data.sp3')
+        exists = src is not None
+        r = packlib.repack_add_typed(os.path.join(src, pack + '.index') if exists else None,
+                                     os.path.join(src, pack + '.data') if exists else None, rep, add, tmp_i, tmp_d,
+                                     ents[-1]['raw'] if ents else tmpl)
+        os.replace(tmp_i, os.path.join(out, pack + '.index'))
+        os.replace(tmp_d, os.path.join(out, pack + '.data'))
+        f, v, nw = m2pack.read_index(os.path.join(out, pack + '.index'))
+        nd = rd(os.path.join(out, pack + '.data'))
+        names = [e['name'] for e in nw]
+        assert len(set(names)) == len(names), pack
+        got = {}
+        for e in nw:
+            assert zlib.crc32(nd[e['pos']:e['pos'] + e['size']]) & 0xffffffff == e['dcrc'], (pack, e['name'])
+            assert e['fcrc'] == zlib.crc32(e['name'].encode('cp1252')) & 0xffffffff, (pack, e['name'])
+            got[e['name']] = m2pack.read_entry(nd, e)
+        for n, b in list(rep.items()) + [(k, b) for k, (b, c) in add.items()]:
+            assert got[n] == b, (pack, n)
+        for e in ents:
+            if e['name'] not in rep:
+                assert got[e['name']] == m2pack.read_entry(dat, e), (pack, e['name'])
+        return dict(old=r[0], added=r[1], replaced=r[2], entries=len(nw), data_mb=round(len(nd) / 1e6, 2),
+                    under_zip_limit=len(nd) < ZIP_LIMIT)
+
+    # 1) the new packs
+    for pack in new_packs:
+        keys = [e['name'] for e in man['packs'].get(pack, [])]
+        items = dict((k, staged(pack, k)) for k in keys)
+        # A file another new pack of this build already carries with the same bytes (e.g. the golem sounds,
+        # in ymeley_mobs too) is left out here; a different file under the same name still stops the build.
+        shared = []
+        for k in list(keys):
+            if k in allnames:
+                other = existing_entry(allnames[k], k)
+                if other is not None and other == items[k]:
+                    shared.append(k)
+                    del items[k]
+        keys = [k for k in keys if k in items]
+        if shared:
+            report.setdefault('shared_left_out', {})[pack] = len(shared)
+        done = [d for d in (base, out) if os.path.exists(os.path.join(d, pack + '.index'))]
+        if done:
+            f, v, ents = m2pack.read_index(os.path.join(done[0], pack + '.index'))
+            dat = rd(os.path.join(done[0], pack + '.data'))
+            have = dict((e['name'], m2pack.read_entry(dat, e)) for e in ents)
+            if have != items:
+                if done[0] == out and not check:
+                    os.remove(os.path.join(out, pack + '.index'))
+                    os.remove(os.path.join(out, pack + '.data'))
+                else:
+                    raise SystemExit('%s is in BASE with other content - stage again or drop it from BASE' % pack)
+            else:
+                report[pack] = 'in base' if done[0] == base else 'in out'
+                continue
+        for k in keys:
+            assert k == k.lower() and k not in allnames, (pack, k, allnames.get(k))
+        if check:
+            size = sum(len(m2pack.encode_entry(b, ctype(k))) for k, b in items.items())
+            report[pack] = dict(files=len(items), raw_mb=round(sum(len(b) for b in items.values()) / 1e6, 2),
+                                data_mb=round(size / 1e6, 2), under_zip_limit=size < ZIP_LIMIT)
+            continue
+        report[pack] = write(pack, None, {}, dict((k, (b, ctype(k))) for k, b in items.items()), [], b'')
+        assert report[pack]['under_zip_limit'], (pack, report[pack])
+
+    # 2) property: new names added, the listed ones replaced when they differ
+    for pack in ('property',):
+        src = src_of(pack)
+        f, v, ents = m2pack.read_index(os.path.join(src, pack + '.index'))
+        dat = rd(os.path.join(src, pack + '.data'))
+        have = dict((e['name'], e) for e in ents)
+        rep, add = {}, {}
+        for e in man['packs'].get(pack, []):
+            k = e['name']
+            b = staged(pack, k)
+            if k in have:
+                if m2pack.read_entry(dat, have[k]) != b:
+                    assert k in replace_ok, (pack, k, 'would replace an entry not listed in "replace"')
+                    rep[k] = b
+            else:
+                assert k == k.lower() and k not in allnames, (pack, k, allnames.get(k))
+                add[k] = (b, ctype(k))
+        if not rep and not add:
+            report[pack] = 'unchanged'
+        elif check:
+            report[pack] = dict(add=len(add), replace=sorted(rep))
+        else:
+            report[pack] = write(pack, src, rep, add, ents, dat)
+            report[pack]['replaced_names'] = sorted(rep)
+
+    # 3) Index: the new packs at the end (after the build's own lines and cape301's)
+    if not check:
+        ix_path = os.path.join(out, 'Index') if os.path.exists(os.path.join(out, 'Index')) else os.path.join(base, 'Index')
+        ix = rd(ix_path)
+        lines = [l.strip() for l in ix.replace(b'\r\n', b'\n').split(b'\n')]
+        for pack in new_packs:
+            if pack.encode() not in lines and (os.path.exists(os.path.join(out, pack + '.index')) or
+                                               os.path.exists(os.path.join(base, pack + '.index'))):
+                ix = ix.rstrip(b'\r\n') + b'\n*\n' + pack.encode() + b'\n'
+        if ix != rd(ix_path) or ix_path != os.path.join(out, 'Index'):
+            open(os.path.join(out, 'Index'), 'wb').write(ix)
+            report['Index'] = 'written'
+    # 4) gamedata (patch_spider3_client.py): the atlasinfo row
+    jobs = {'gamedata': [('gamedata/atlasinfo.txt', pc.atlasinfo)]}
+    for pack, files in jobs.items():
+        src = src_of(pack)
+        f, v, ents = m2pack.read_index(os.path.join(src, pack + '.index'))
+        dat = rd(os.path.join(src, pack + '.data'))
+        have = dict((e['name'], e) for e in ents)
+        rep = {}
+        for n, fn in files:
+            b = m2pack.read_entry(dat, have[n])
+            if data_from:
+                for cand in (os.path.join(data_from, os.path.basename(n)), os.path.join(data_from, n)):
+                    if os.path.exists(cand):
+                        b = rd(cand)
+                        break
+            nb, changed = fn(b)
+            if nb != m2pack.read_entry(dat, have[n]):
+                rep[n] = nb
+        if not rep:
+            report[pack] = 'unchanged'
+        elif check:
+            report[pack] = dict(replace=sorted(rep))
+        else:
+            report[pack] = write(pack, src, rep, {}, ents, dat)
+            report[pack]['replaced_names'] = sorted(rep)
+
+    print(json.dumps(report, indent=1))
+
+
+if __name__ == '__main__':
+    main()

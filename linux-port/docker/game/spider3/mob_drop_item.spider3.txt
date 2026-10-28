@@ -1,0 +1,64 @@
+// MT2009_PLUS_SPIDER3_DROPS_V2: the five Best. poison spiders of 3 Loch Pajakow (217), one limit group each (level_limit
+// 60: a character of 60 and up - the wiki's "od 60 poziomu"), the Dockerfile step "3 Loch Pajakow drops" taking every
+// other group of 2071-2075 out first (the package's limit groups and MT2009_mglobal_2071..2075). The owner, 28 October
+// 2026: the weapons and shields of each monster's pl-wiki page, the helmets of the package's old groups back (their
+// chances, 0.5), no level-65 weapons. Chances are the engine's limit percent: the old groups' 0.5 for a weapon, a helmet
+// or the pentagonal shield, 0.1 for the +0 shields (the old Lwia Tarcza's of 2075).
+
+Group	MT2009_spider3_2071
+{
+	Mob	2071	-- Best. Mlody Truj. Pajak
+	Type	limit
+	Level_limit	60
+	1	114	1	0.5	-- Wielki Miecz+4
+	2	13024	1	0.5	-- Pieciokatna Tarcza+4
+}
+
+Group	MT2009_spider3_2072
+{
+	Mob	2072	-- Best. Smiert. Truj. Paj.
+	Type	limit
+	Level_limit	60
+	1	13024	1	0.5	-- Pieciokatna Tarcza+4
+	2	12626	1	0.5	-- Czapka Mnicha+6
+	3	12645	1	0.5	-- Czapka Feniksa+5
+	4	12664	1	0.5	-- Swietlista Czapka+4
+}
+
+Group	MT2009_spider3_2073
+{
+	Mob	2073	-- Best. Czerw. Truj. Paj.
+	Type	limit
+	Level_limit	60
+	1	2114	1	0.5	-- Luk Jednorozca+4
+	2	2094	1	0.5	-- Luk Kolczastego Lis.+4
+	3	13024	1	0.5	-- Pieciokatna Tarcza+4
+	4	12486	1	0.5	-- Krwawy Helm+6
+	5	12505	1	0.5	-- Wyzywajacy Helm+5
+	6	12524	1	0.5	-- Zamkowy Helm+4
+}
+
+Group	MT2009_spider3_2074
+{
+	Mob	2074	-- Best. Szpon. Truj. Paj.
+	Type	limit
+	Level_limit	60
+	1	12346	1	0.5	-- Skorzana Maska+6
+	2	12365	1	0.5	-- Maska Kolcza+5
+	3	12384	1	0.5	-- Stalowa Maska+4
+}
+
+Group	MT2009_spider3_2075
+{
+	Mob	2075	-- Best. Truj. Pajak Zoln.
+	Type	limit
+	Level_limit	60
+	1	13100	1	0.1	-- Lwia Tarcza+0
+	2	13060	1	0.1	-- Sokola Tarcza+0
+	3	13120	1	0.1	-- Tarcza Smoka+0
+	4	13160	1	0.1	-- Tarcza Trzech Wladcow+0
+	5	13080	1	0.1	-- Tarcza Tygrysa+0
+	6	12206	1	0.5	-- Tradycyjny Helm+6
+	7	12225	1	0.5	-- Zelazny Helm+5
+	8	12244	1	0.5	-- Upiorna Maska+4
+}

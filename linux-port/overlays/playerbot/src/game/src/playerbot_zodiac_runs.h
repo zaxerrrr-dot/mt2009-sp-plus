@@ -473,7 +473,10 @@ namespace
 		LPITEM body = ch->GetWear(WEAR_BODY);
 		if (!weapon || !body || !weapon->GetProto() || !body->GetProto())
 			return 0;
-		const int w = GetPlayerBotProtoLevelLimit(weapon->GetProto()) + weapon->GetRefineLevel();
+		// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: a young heroes' weapon is a +9 weapon of the bot's level.
+		int wl = 0, wp = 0;
+		GetPlayerBotWeaponEffective(ch, &wl, &wp, weapon);
+		const int w = wl + wp;
 		const int b = GetPlayerBotProtoLevelLimit(body->GetProto()) + body->GetRefineLevel();
 		return std::min(w, b);
 	}

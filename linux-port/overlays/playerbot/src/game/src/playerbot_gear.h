@@ -105,6 +105,12 @@ namespace
 	// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapons (playerbot_mlodzi_bots.h, included after this file).
 	bool IsPlayerBotMlodziWeapon(LPITEM item);
 	bool IsPlayerBotMlodziWeaponValid(LPITEM item);
+	// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: the weapon a bot's strength checks read - a young heroes' weapon as +9 of the bot's own level
+	// (defined in playerbot_mlodzi_bots.h).
+	bool GetPlayerBotWeaponEffective(LPCHARACTER ch, int* level, int* plus, LPITEM weapon = NULL);
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: in a young weapon's expiry window the refine decisions read the real weapon.
+	bool IsPlayerBotMlodziRealWeaponView(LPCHARACTER ch);
+	long long GetPlayerBotMlodziRealBestScore(LPCHARACTER ch, LPITEM* bestOut);
 	bool IsPlayerBotWeaponPlanSuspended(LPCHARACTER ch);
 	LPITEM GetPlayerBotMlodziPreparedWeapon(LPCHARACTER ch);
 	int PlayerBotMlodziHandRule(LPITEM item, LPITEM old);
@@ -3724,7 +3730,9 @@ namespace
 			return false;
 		if (ch->GetLevel() >= 20)
 			return true;
-		return ch->GetLevel() >= 15 && weapon->GetRefineLevel() >= 4 &&
+		int weaponPlus = -1;
+		GetPlayerBotWeaponEffective(ch, NULL, &weaponPlus, weapon);	// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1
+		return ch->GetLevel() >= 15 && weaponPlus >= 4 &&
 				armor->GetRefineLevel() >= 4 && shield->GetRefineLevel() >= 4;
 	}
 
@@ -3900,7 +3908,17 @@ namespace
 			return false;
 		LPITEM weapon = GetPlayerBotHandWeapon(ch);
 		LPITEM body = ch->GetWear(WEAR_BODY);
-		if (!weapon || weapon->GetRefineLevel() < plus || !body || body->GetRefineLevel() < plus)
+		int weaponPlus = -1;
+		GetPlayerBotWeaponEffective(ch, NULL, &weaponPlus, weapon);	// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: a young one is +9
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: in a window (4 days before the end with a next tier, 7 for the last one) the real weapon -
+		// worn or the best in the bag - is what counts here: the refine target follows it.
+		if (weapon && IsPlayerBotMlodziWeapon(weapon) && IsPlayerBotMlodziRealWeaponView(ch))
+		{
+			LPITEM real = NULL;
+			GetPlayerBotMlodziRealBestScore(ch, &real);
+			weaponPlus = real ? (int)real->GetRefineLevel() : -1;
+		}
+		if (!weapon || weaponPlus < (int)plus || !body || body->GetRefineLevel() < plus)
 			return false;
 		if (!PlayerBotWantsShield(ch))
 			return true;

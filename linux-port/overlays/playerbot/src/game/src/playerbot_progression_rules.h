@@ -66,6 +66,7 @@ namespace playerbot_progression
 		MAP_RED_FOREST,
 		MAP_GROTTO1,
 		MAP_GROTTO2,
+		MAP_SPIDER3,         // MT2009_PLUS_SPIDER3_BOTS_V1: last, so a file without the key keeps every other row
 		MAP_ROW_COUNT
 	};
 
@@ -104,6 +105,11 @@ namespace playerbot_progression
 		{ "red_forest",  77, 255, false, 71 },
 		{ "grotto1",     78, 255, false, 72 },
 		{ "grotto2",     84, 255, false, 78 },
+		// MT2009_PLUS_SPIDER3_BOTS_V1 (the owner, 28 October 2026: "the bots that do very well on V2 move on
+		// to V3"): the third Spider Dungeon's band - from 66, two under its strongest spider (68) and the upper
+		// half of V2's 60-68; to 80 like the Forest and Doyyumhwaji, past V2's 78. Inside it a bot goes only
+		// once its V2 record says so (playerbot_spider3_bots.h).
+		{ "spider3",     66, 80, true,  60 },
 	};
 
 	struct TMapRow

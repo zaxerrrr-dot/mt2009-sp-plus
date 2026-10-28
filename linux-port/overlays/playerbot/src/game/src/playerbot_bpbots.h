@@ -715,6 +715,7 @@ namespace playerbot_bpbots
 			case PLAYERBOT_MAP_DESERT: return "Pustyni";
 			case PLAYERBOT_MAP_SOHAN: return "Sohanie";
 			case PLAYERBOT_MAP_SPIDER_V1: case PLAYERBOT_MAP_SPIDER_V2: return "Lochu Pajakow";
+			case PLAYERBOT_MAP_SPIDER_V3: return "Lochu Pajakow 3"; // MT2009_PLUS_SPIDER3_BOTS_V1
 			case PLAYERBOT_MAP_HWANG: return "Hwang";
 			case PLAYERBOT_MAP_FOREST: return "Lesie Duchow";
 			case PLAYERBOT_MAP_RED_FOREST: return "Czerwonym Lesie";

@@ -1,0 +1,798 @@
+{
+ "environment": {
+  "key": "d:/ymir work/environment/dark.msenv",
+  "ours": true
+ },
+ "maps": {
+  "217": {
+   "atlas_image": "d:/ymir work/ui/atlas_resize/metin2_map_spiderdungeon_03_atlas.dds",
+   "atlas_row_from": "metin2_map_spiderdungeon_03",
+   "base": [
+    51200,
+    563200
+   ],
+   "environment": "dark.msenv",
+   "folder": "metin2_map_spiderdungeon3",
+   "objects": {
+    "crc_used": 9,
+    "dropped": 0,
+    "ours": 9,
+    "staged": 0
+   },
+   "pack": "spider3_map",
+   "removed_objects": {},
+   "size": [
+    3,
+    3
+   ],
+   "source": "GF 26.1.11 metin2_map_spiderdungeon_03",
+   "textureset": "textureset/metin2_spider3.txt"
+  }
+ },
+ "new_packs": [
+  "spider3_map",
+  "spider3_obj"
+ ],
+ "packs": {
+  "property": [],
+  "spider3_map": [
+   {
+    "name": "d:/ymir work/ui/atlas/metin2_map_spiderdungeon3/atlas.sub",
+    "sha1": "d8db0248e5845c6532e71cf5c77cf082355d31e1",
+    "size": 127,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/ui/atlas_resize/metin2_map_spiderdungeon_03_atlas.dds",
+    "sha1": "796ec900ffd3b4a628f408cdf26322b2314f11ef",
+    "size": 125056,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/areadata.txt",
+    "sha1": "ff8deeac5e0cfeed14d7822039acccc954320056",
+    "size": 577,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/attr.atr",
+    "sha1": "a66c40f7dc62f5711f33a4cec5e71a853288b27e",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/minimap.dds",
+    "sha1": "c006fc906f3ad467eebe00595c25e51496f1fc35",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/shadowmap.dds",
+    "sha1": "8835a67fbe33a142a09ebd530cceb9b83d16a314",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/areadata.txt",
+    "sha1": "246ddc185716305f4b08b0dedda11cf0a0a09129",
+    "size": 4603,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/attr.atr",
+    "sha1": "d3093612de884eceeca717b316ee81ff777cca92",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/minimap.dds",
+    "sha1": "a58ee31c0915c8be66816558ea0a723a38547e9a",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/shadowmap.dds",
+    "sha1": "256fd10ccd7acd958884567371873f12e6180ce0",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/shadowmap.raw",
+    "sha1": "1af4d9b3e8c0ff5da4d2f5e53be8a1a0ad69bb1c",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/minimap.dds",
+    "sha1": "cb37b51e30ee2c4816791fa2ab07472f9e440cdd",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/shadowmap.dds",
+    "sha1": "8835a67fbe33a142a09ebd530cceb9b83d16a314",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/000002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/areadata.txt",
+    "sha1": "5a21f8123030a150f463bbb54c3f60d0c6eab2ef",
+    "size": 853,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/attr.atr",
+    "sha1": "e4640a3ff74482900fdf4adda78ae7a3afb73aac",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/minimap.dds",
+    "sha1": "4758df0f9311204a2d2cdbec16108f1a1a8cf5b1",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/shadowmap.dds",
+    "sha1": "8835a67fbe33a142a09ebd530cceb9b83d16a314",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/areadata.txt",
+    "sha1": "f19e9080569cb5c2243ca44bdd1dfc931f4d362a",
+    "size": 2508,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/attr.atr",
+    "sha1": "5e3672ed87cc39c580b5ae0715a0cd5544d42cc6",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/minimap.dds",
+    "sha1": "5721798bb2adc653f52a668d63c227c50afcd920",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/shadowmap.dds",
+    "sha1": "73c5cbd75d524683aa19abc1fd4f64496c6ceb90",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/shadowmap.raw",
+    "sha1": "a98ecdd8428933bd00a3d6f8000d3e5e7d147f41",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/areadata.txt",
+    "sha1": "9b8c7fc5e541109d3a89a9c4c0e4ea141588d210",
+    "size": 169,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/attr.atr",
+    "sha1": "84b814583e08c1f7bf81678d0bb7ea27c1a9a6bb",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/minimap.dds",
+    "sha1": "aaf8ab05bc5938dedf127dfde50583e8f2d658bd",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/shadowmap.dds",
+    "sha1": "8835a67fbe33a142a09ebd530cceb9b83d16a314",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/001002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/minimap.dds",
+    "sha1": "cb37b51e30ee2c4816791fa2ab07472f9e440cdd",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/shadowmap.dds",
+    "sha1": "8835a67fbe33a142a09ebd530cceb9b83d16a314",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002000/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/minimap.dds",
+    "sha1": "cb37b51e30ee2c4816791fa2ab07472f9e440cdd",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/shadowmap.dds",
+    "sha1": "8835a67fbe33a142a09ebd530cceb9b83d16a314",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002001/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/areaambiencedata.txt",
+    "sha1": "f31e789429b69572cea1ef76da70afe99da96593",
+    "size": 41,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/areadata.txt",
+    "sha1": "8ffab5fa898daef7073252eaa1e8be556893fc7f",
+    "size": 33,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/areaproperty.txt",
+    "sha1": "dd4041b42c3101d920717b6ccb7ca0c164b6f8fe",
+    "size": 56,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/attr.atr",
+    "sha1": "42b63105cf2c354d9ca93573bbe42ac909908276",
+    "size": 65542,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/height.raw",
+    "sha1": "4ba38a2559a4291ccde691a1ef1e11025a3b50cb",
+    "size": 34322,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/minimap.dds",
+    "sha1": "cb37b51e30ee2c4816791fa2ab07472f9e440cdd",
+    "size": 32896,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/shadowmap.dds",
+    "sha1": "8835a67fbe33a142a09ebd530cceb9b83d16a314",
+    "size": 43832,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/shadowmap.raw",
+    "sha1": "919432926a4b03f73b1b74332fa36fbd44042abb",
+    "size": 131072,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/tile.raw",
+    "sha1": "5cfc97ae8ff9bb53c31eee9dc59852c8142170e0",
+    "size": 66564,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/002002/water.wtr",
+    "sha1": "62475414d2a97b4286435bd9921a776a64969342",
+    "size": 16391,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/mapproperty.txt",
+    "sha1": "716004897fcb04c7a83999052597d01700b93b18",
+    "size": 47,
+    "source": "gf"
+   },
+   {
+    "name": "maps/metin2_map_spiderdungeon3/setting.txt",
+    "sha1": "31350c488305eabf06036914eeecd3420468bf13",
+    "size": 188,
+    "source": "gen"
+   },
+   {
+    "name": "textureset/metin2_spider3.txt",
+    "sha1": "a6ed7328207e15079339388072136a161e68ca6c",
+    "size": 365,
+    "source": "gen"
+   }
+  ],
+  "spider3_obj": [
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/booss3_floor_lightingmap.dds",
+    "sha1": "4d626400dfc4ccff13432ccf7d1ebdce3f982802",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/booss3_pillar_lightingmap.dds",
+    "sha1": "216bb9693d57bfa9bbcae061c3bf166e7baed5c9",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/booss3_wall_lightingmap.dds",
+    "sha1": "f340df3427d1c435a51b8a25f9b6ddd553bf6a1a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/booss3_wallsp01_lightingmap.dds",
+    "sha1": "14c385b2fdd7114fc6aea4b30c98a39b33f0f01c",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/booss3_wallsp02_lightingmap.dds",
+    "sha1": "8e6ecfa5298e420dd37242daa24aa6cb566af1dc",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dg_field.dds",
+    "sha1": "ef3fc07c42ed10d74e40279f9f12414e4e5a3787",
+    "size": 688256,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dg_rock00.dds",
+    "sha1": "4df1ce2e8cbe4068377f99e5c53112dcd7e42d7b",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dg_rock01.dds",
+    "sha1": "53a4def85291cb2c4e8bdd98731aea4e4dfd2e7a",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dg_rock02.dds",
+    "sha1": "19410b5177635f5faa3a1003344e29dd65bc3521",
+    "size": 172160,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon01.gr2",
+    "sha1": "7c7735564b68a89359266863759f220856ef78d4",
+    "size": 83340,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon01.mdatr",
+    "sha1": "ca077f799709ea2078d08a00b207cd6d06c987f1",
+    "size": 7042,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon01lightingmap.dds",
+    "sha1": "6bc720c24c2fcb14d8c54ecf9833237256dd471e",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon02.gr2",
+    "sha1": "c97d7622973bc2cd85b51cee1449c7d845fb0eb9",
+    "size": 83768,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon02.mdatr",
+    "sha1": "6c2c9a26f0d8ced9b4a116b5b5b59dfd1fbb85e7",
+    "size": 4234,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon02lightingmap.dds",
+    "sha1": "a68123962ff2c0c6108342b2ebb9f4df1b045c3f",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon03.gr2",
+    "sha1": "526874753659075bb09f36d3238ee387c8c34203",
+    "size": 87336,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon03.mdatr",
+    "sha1": "dbceb5efa7a8d80372d8abde70b01942e6864d51",
+    "size": 9922,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon03lightingmap.dds",
+    "sha1": "2daeaabfd973cbeedea37d9e9925fe97a5a88aab",
+    "size": 174904,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon04.gr2",
+    "sha1": "f303966e3994e51bb130cbb36a99d4f2730b3a2f",
+    "size": 72536,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon04.mdatr",
+    "sha1": "0b49a8a4dfbca7e2c36b916ce4357bbf367f42df",
+    "size": 3370,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon04lightingmap.dds",
+    "sha1": "b5b1ca96a3c9c6b9f6c9a844620e84f91a96a416",
+    "size": 349312,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon06.gr2",
+    "sha1": "4e0699a9c25033c542ba4aa3db0606dd9312bda4",
+    "size": 31040,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon06.mdatr",
+    "sha1": "66eaefa2822ea2758b3ae95a85355e20c416263d",
+    "size": 490,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon06lightingmap.dds",
+    "sha1": "32ec28cc777170138775ae993f706326add105ff",
+    "size": 349312,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon_01.dds",
+    "sha1": "2b48a6daced3a71a2e7272e087752bb4e962350b",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon_02.dds",
+    "sha1": "a98a5ee9b0493e47e9584e210809e1201aea9bcd",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon_03.dds",
+    "sha1": "86e0cbabc46770953ae4f98166d570455ff305fa",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon_04.dds",
+    "sha1": "01c939d3be9a96c69c12f3897931968526697895",
+    "size": 174720,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon_boss03.gr2",
+    "sha1": "03971e34af84ceec0c90ec7b2e748f3d7ebbc9ee",
+    "size": 513427,
+    "source": "gf"
+   },
+   {
+    "name": "d:/ymir work/zone/dungeon/spider_dungeon/spider_dungeon_boss03.mdatr",
+    "sha1": "c8b6a9319a3e7ec30c0caac422b68e83a557946c",
+    "size": 42358,
+    "source": "gf"
+   }
+  ]
+ },
+ "replace": [],
+ "unresolved": {
+  "effects": [],
+  "map": []
+ }
+}

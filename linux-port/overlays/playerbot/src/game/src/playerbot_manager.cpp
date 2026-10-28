@@ -222,6 +222,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_ochao.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the temple's map and clock, before the bots' knowledge of it
 #include "playerbot_ochao_bots.h" // MT2009_PLUS_OCHAO_BOTS_V1 (include): the bots in the Temple of Ochao
 #include "playerbot_arezzo_bots.h" // MT2009_PLUS_AREZZO_BOTS_V1 (include): the test cohorts on the Arezzo maps
+#include "playerbot_spider3_bots.h" // MT2009_PLUS_SPIDER3_BOTS_V1 (include): the bots that did very well in V2 hunt V3
 #include "playerbot_travel.h"
 #include "playerbot_planner.h"
 // Which of Iwakura's personalities claims a bot, the Grinder's lock and the
@@ -597,7 +598,7 @@ namespace
 	// the frontier's party share ("w V2 chetniej lacza sie w druzyny").
 	int GetPlayerBotSpiderV2PartyPerMille(LPCHARACTER ch, int perMille)
 	{
-		if (ch && ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2)
+		if (ch && (ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2 || ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V3)) // MT2009_PLUS_SPIDER3_BOTS_V1
 			return std::min(1000, perMille * 2);
 		return perMille;
 	}
@@ -2188,7 +2189,8 @@ namespace
 		// A stretch of hunting alone, less often where a party is the point.
 		// Iwakura's companion is a phase with its own stretches alone, drawn
 		// above, and does not also roll this one.
-		const int soloPercent = ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2	// MT2009_PLUS_BOT_SPIDER_GROUND_V1
+		const int soloPercent = (ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2 ||	// MT2009_PLUS_BOT_SPIDER_GROUND_V1
+				ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V3)	// MT2009_PLUS_SPIDER3_BOTS_V1
 				? PLAYERBOT_PARTY_SOLO_PERCENT_SPIDER_V2
 				: IsPlayerBotFrontierMapIndex(ch->GetMapIndex())
 				? PLAYERBOT_PARTY_SOLO_PERCENT_FRONTIER : PLAYERBOT_PARTY_SOLO_PERCENT;
@@ -2245,7 +2247,8 @@ namespace
 
 					// MT2009_PLUS_BOT_SPIDER_GROUND_V1: in V2 a partner a little
 					// further apart in level and on the map.
-					const bool bSpiderV2 = m_me->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2;
+					const bool bSpiderV2 = m_me->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V2 ||
+							m_me->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V3; // MT2009_PLUS_SPIDER3_BOTS_V1
 					if (abs((int)candidate->GetLevel() - (int)m_me->GetLevel()) >
 							(bSpiderV2 ? PLAYERBOT_SPIDER_V2_PARTY_LEVEL_DELTA : 3))
 						return true;

@@ -712,6 +712,7 @@ namespace
 			case PLAYERBOT_MAP_SPIDER_V1: return playerbot_progression::MAP_SPIDER1;
 			case PLAYERBOT_MAP_HWANG: return playerbot_progression::MAP_HWANG;
 			case PLAYERBOT_MAP_SPIDER_V2: return playerbot_progression::MAP_SPIDER2;
+			case PLAYERBOT_MAP_SPIDER_V3: return playerbot_progression::MAP_SPIDER3; // MT2009_PLUS_SPIDER3_BOTS_V1
 			case PLAYERBOT_MAP_FOREST: return playerbot_progression::MAP_FOREST;
 			default: return -1;
 		}
@@ -760,16 +761,25 @@ namespace
 		LPITEM armor = ch->GetWear(WEAR_BODY);
 		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: a valid young heroes' weapon is a weapon of its level at +9
 		// (GetPlayerBotReadyWeaponPlus), whatever the real weapon prepared behind it.
+		// MT2009_PLUS_SPIDER3_BOTS_V2 (the owner, 28 October 2026): a young heroes' weapon ALWAYS counts as
+		// better than any weapon a threshold names - whatever its plus, and to its last minute (it was the valid
+		// one only, +9: one about to run out failed the gate).
+		// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: read through GetPlayerBotWeaponEffective - a young one is +9 of the bot's level.
+		const bool young = weapon && IsPlayerBotMlodziWeapon(weapon);
+		int weaponPlus = -1;
+		GetPlayerBotWeaponEffective(ch, NULL, &weaponPlus, weapon);
 		if (!weapon || weapon->GetType() != ITEM_WEAPON || !armor || !ch->GetWear(WEAR_HEAD) ||
-				(!IsPlayerBotMlodziWeaponValid(weapon) && NeedsPlayerBotProperWeapon(ch)))
+				(!young && NeedsPlayerBotProperWeapon(ch)))
 			return false;
 		const bool v2 = map == PLAYERBOT_MAP_SPIDER_V2;
-		if (GetPlayerBotReadyWeaponPlus(weapon) < (v2 ? PLAYERBOT_SPIDER_V2_WEAPON_PLUS : PLAYERBOT_SPIDER_V1_WEAPON_PLUS) ||
-				(int)armor->GetRefineLevel() < (v2 ? PLAYERBOT_SPIDER_V2_ARMOUR_PLUS : PLAYERBOT_SPIDER_V1_ARMOUR_PLUS))
+		// MT2009_PLUS_SPIDER3_BOTS_V1: V3 one grade over V2, and more potions.
+		const bool v3 = map == PLAYERBOT_MAP_SPIDER_V3;
+		if (weaponPlus < (v3 ? PLAYERBOT_SPIDER_V3_WEAPON_PLUS : v2 ? PLAYERBOT_SPIDER_V2_WEAPON_PLUS : PLAYERBOT_SPIDER_V1_WEAPON_PLUS) ||
+				(int)armor->GetRefineLevel() < (v3 ? PLAYERBOT_SPIDER_V3_ARMOUR_PLUS : v2 ? PLAYERBOT_SPIDER_V2_ARMOUR_PLUS : PLAYERBOT_SPIDER_V1_ARMOUR_PLUS))
 			return false;
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
-		return (int)red >= PLAYERBOT_SPIDER_MIN_RED_POTIONS;
+		return (int)red >= (v3 ? PLAYERBOT_SPIDER_V3_MIN_RED_POTIONS : PLAYERBOT_SPIDER_MIN_RED_POTIONS);
 	}
 
 	// The session's Spider Dungeon, or 0. A bot of 48-75 draws again at every
@@ -1268,6 +1278,9 @@ namespace
 					map = hunt70;
 			}
 		}
+		// MT2009_PLUS_SPIDER3_BOTS_V1: V3 in V2's place for a bot that did very well in V2, and V2 back
+		// for one that is not (any longer) fit for V3 (playerbot_spider3_bots.h).
+		map = PlayerBotSpider3Map(ch, map, get_dword_time());
 		// MT2009_PLUS_SIDEKICK_TRIP_V1: a companion that could not get there
 		// takes the next ground down for a while.
 		if (map != 0 && IsPlayerBotSidekickTripBlocked(ch, map))

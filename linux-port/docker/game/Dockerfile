@@ -2855,6 +2855,38 @@ RUN set -eu; S=/opt/metin2/share/locale/poland/special_spawns.txt; A=/tmp/spawn-
  && test "$(grep -c -E '^[[:blank:]]*spawn_vnum[[:blank:]]+2092[[:space:]]*$' "$S")" -eq 1 \
  && echo "share: the Spider Baroness spawns in the second Spider Dungeon"
 
+# MT2009_PLUS_SPIDER3_V1: 3 Loch Pajakow (217, metin2_map_spiderdungeon_03) - an ordinary hunting map again, as
+# the pl-wiki's "3 Loch Pajakow" (the owner, 28 October 2026), hosted by game1 beside V1 / V2 (bin/m2-render-config). The package
+# has the whole map (Setting.txt 3x3 at 51200 563200, Town.txt 478 79, server_attr = GF 26.1.11's attr.atr cell for
+# cell, regen.txt = Owsap's but seven groups, npc.txt: the Nagrobek 30130 at 178 489 and the warp 10097 at 483 79
+# back to the second Spider Dungeon, 7040 5235); its monsters are the five Best. poison spiders 2071-2075 of 60-68
+# in group_group 2701-2707 - no Metin, no ore, no boss (the wiki's). Two changes:
+#  * MT2009_PLUS_SPIDER3_SWITCH_V1: all of it behind M2_SPIDER3_ON (.env, default 0 until the client with the map is
+#    out): 0 - no core hosts 217 and the warp line below stays commented; 1 - game1 hosts it and m2-render-config
+#    uncomments the warp at the container's start. The drops and spawns of 217's own monsters change nothing while
+#    the map is not hosted;
+#  * the way in: the second Spider Dungeon (71) gets the warp 10098 (mob_proto "... 984 5711" -> V3 at 472 79,
+#    beside Town.txt) at 385 893 of its last room, as Owsap's npc.txt has it - the package left it out. Both ends
+#    walkable in server_attr (9x9 cells free around them); no level check, the wiki's "od Lv. 1". Bots never take a
+#    warp NPC (FuncCheckWarp skips them): the bots that did very well in V2 are moved in server-side
+#    (MT2009_PLUS_SPIDER3_BOTS_V1);
+#  * the wiki's "all monsters are NOT aggressive": the 35 "ga" spawns (aggressive groups) become "g".
+# The drops are the package's limit groups (level_limit 60: the level-65 weapons +4, helmets, shields) and the
+# global ones (MT2009_mglobal_2071..2075) - the wiki's "weapons and helmets from level 60". The poison stops at level
+# 78 by itself: the engine's poison_level_adjust (char_resist.cpp) by the level difference to the spiders' 68.
+RUN set -eu; L=/opt/metin2/share/locale/poland/map; V2="$L/metin2_map_spiderdungeon_02/npc.txt"; V3="$L/metin2_map_spiderdungeon_03" \
+ && grep -q -E '^217[[:blank:]]+metin2_map_spiderdungeon_03[[:space:]]*$' "$L/index" \
+ && ! grep -q -E '[[:blank:]]10098[[:space:]]*$' "$V2" \
+ && { [ -z "$(tail -c 1 "$V2")" ] || printf '\r\n' >> "$V2"; } \
+ && printf '// MT2009_PLUS_SPIDER3_V1: the warp to 3 Loch Pajakow (217) - commented while M2_SPIDER3_ON is 0 (bin/m2-render-config)\r\n//m\t385\t893\t0\t0\t0\t1\t1m\t100\t1\t10098\r\n' >> "$V2" \
+ && test "$(grep -c -E '^//m[[:blank:]]+385[[:blank:]]+893[[:blank:]].*[[:blank:]]10098[[:space:]]*$' "$V2")" = 1 \
+ && grep -q -E '^m[[:blank:]]+483[[:blank:]]+79[[:blank:]].*[[:blank:]]10097[[:space:]]*$' "$V3/npc.txt" \
+ && test "$(grep -c -E '^ga[[:blank:]]' "$V3/regen.txt")" = 35 \
+ && sed -i -E 's/^ga([[:blank:]])/g\1/' "$V3/regen.txt" \
+ && ! grep -q -E '^[a-z]a[[:blank:]]' "$V3/regen.txt" \
+ && test "$(grep -c -E '^[rg][[:blank:]]' "$V3/regen.txt")" -ge 660 \
+ && echo "share: 3 Loch Pajakow (217) - the warp from the second Spider Dungeon, no aggressive spawns"
+
 # MT2009_PLUS_DEMON_STONES_V1 (the owner, 14 October 2026; pl-wiki "Kamien Demonow", "Kamien Mocy", "Kamien Mocy
 # Demonow"): Kamien Demonow +1 to +4 had no source. After every share append (the Yohara batches' groups are in):
 # demonstones/mob_drop_item.demonstones.append.txt - the Yohara Metins +1/+2, the chiefs +1 to +3 (own groups,
@@ -3069,6 +3101,29 @@ RUN set -eu; A=/tmp/worldboss-add; L=/opt/metin2/share/locale/poland; f=$L/speci
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+38015([^0-9]|$)' "$f")" = 1 \
  && rm -rf "$A" \
  && echo "share: Boss Swiata - worldboss.txt and Skrzynka Tajemnic (38015)"
+
+# MT2009_PLUS_SPIDER3_DROPS_V2 (the owner, 28 October 2026): the five Best. poison spiders of 3 Loch Pajakow (2071-2075)
+# drop the weapons and shields of their pl-wiki pages and the helmets of the package's old groups, from level 60, no
+# level-65 weapons - spider3/mob_drop_item.spider3.txt, one limit group a monster. After every share append: each group
+# of theirs (the package's limit groups of level 60 - the weapons of 45-60 at +4, helmets, shields - and moby_global's
+# MT2009_mglobal_2071..2075) is taken out whole, then ours go in (a monster has one limit group: the engine keeps the first).
+COPY spider3/ /tmp/spider3-add/
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/spider3-add; F="$L/mob_drop_item.txt" \
+ && ! grep -q -E '^Group[[:blank:]]+MT2009_spider3_' "$F" \
+ && awk ' \
+      function flush(   i) { if (keep) for (i = 1; i <= nb; i++) print B[i]; else cut++; nb = 0; ing = 0 } \
+      /^Group([[:blank:]]|$)/ { if (ing) flush(); ing = 1; keep = 1; nb = 0 } \
+      ing { B[++nb] = $0; t = $0; sub(/\r$/, "", t); split(t, f); if (tolower(f[1]) == "mob" && f[2] + 0 >= 2071 && f[2] + 0 <= 2075) keep = 0; if (t ~ /^}/) flush(); next } \
+      { print } \
+      END { if (ing) flush(); printf "share: %d group(s) of 2071-2075 cut\n", cut > "/dev/stderr"; if (cut < 10) exit 1 }' "$F" > "$F.new" \
+ && mv "$F.new" "$F" \
+ && ! awk '{ t = $0; sub(/\r$/, "", t); split(t, f); if (tolower(f[1]) == "mob" && f[2] + 0 >= 2071 && f[2] + 0 <= 2075) n++ } END { exit n ? 0 : 1 }' "$F" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.spider3.txt" \
+ && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
+ && cat "$A/mob_drop_item.spider3.txt" >> "$F" \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_spider3_207[1-5][[:space:]]*$' "$F")" = 5 \
+ && rm -rf "$A" \
+ && echo "share: 3 Loch Pajakow - the five spiders' drops (5 limit groups of level 60)"
 
 # MT2009_PLUS_ARMOR105_V1 (the owner, 22 October 2026): the level-105 armours' materials (tools/zbroje105) drop from
 # our generators' files, appended by their own steps above - the owner's monster sheet (yohara_arkusz: the En-Tai,

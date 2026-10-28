@@ -3803,6 +3803,12 @@ namespace
 	// (2093, level 97, 2.5 million health) stands by the V3 warp every hour
 	// and is nobody's raid at these levels - no boss hub.
 	const long PLAYERBOT_MAP_SPIDER_V2 = 71;
+	// MT2009_PLUS_SPIDER3_BOTS_V1: the third Spider Dungeon (metin2_map_spiderdungeon_03, 3x3 at
+	// 51200 563200 - MT2009_PLUS_SPIDER3_V1): the five Best. poison spiders of 60-68 (2071-2075) with
+	// twice V2's health, none attacking first, no stones, no boss. People walk in from V2's warp 10098;
+	// a bot is moved in server-side the way V2 is (the desert's Kuahlo gate, or straight from V2), and
+	// only a bot that has done very well in V2 is sent (playerbot_spider3_bots.h).
+	const long PLAYERBOT_MAP_SPIDER_V3 = 217;
 	// The Hwang Temple, metin2_map_milgyo, base (537600,51200), 102400 square.
 	//
 	// Read out of the server's own spawn files rather than off a wiki, with
@@ -4072,6 +4078,14 @@ namespace
 	// Fifty-four is the operator's number: the weakest spider is sixty and
 	// none of them attacks first, so a bot six under is hunting, not hunted.
 	const BYTE PLAYERBOT_SPIDER_V2_MIN_LEVEL = 54;
+	// MT2009_PLUS_SPIDER3_BOTS_V1: V3's Town.txt cell (478,79), beside the warp from V2 (10098 lands at
+	// 472,79), and the exit five metres west on the same ground (473,79): both with eleven by eleven free
+	// cells around them on the map's server_attr, on the piece that holds 95 % of the walkable ground
+	// (tools: the stage of 28 October, the same flood fill as V2's).
+	const long PLAYERBOT_SPIDER_V3_ARRIVAL_X = 99000;
+	const long PLAYERBOT_SPIDER_V3_ARRIVAL_Y = 571100;
+	const long PLAYERBOT_SPIDER_V3_EXIT_X = 98500;
+	const long PLAYERBOT_SPIDER_V3_EXIT_Y = 571100;
 	const BYTE PLAYERBOT_SOHAN_MIN_LEVEL = 48;
 	const BYTE PLAYERBOT_SOHAN_MAX_LEVEL = 75;
 	// The ice creatures of the north (62-66) are for bots that have outgrown
@@ -4101,6 +4115,11 @@ namespace
 	const int PLAYERBOT_SPIDER_V1_ARMOUR_PLUS = 4;
 	const int PLAYERBOT_SPIDER_V2_WEAPON_PLUS = 6;
 	const int PLAYERBOT_SPIDER_V2_ARMOUR_PLUS = 5;
+	// MT2009_PLUS_SPIDER3_BOTS_V1: V3's spiders have about twice V2's health for the same levels -
+	// one grade more on the weapon and the armour, half as many red potions again.
+	const int PLAYERBOT_SPIDER_V3_WEAPON_PLUS = 7;
+	const int PLAYERBOT_SPIDER_V3_ARMOUR_PLUS = 6;
+	const int PLAYERBOT_SPIDER_V3_MIN_RED_POTIONS = 60;
 	const int PLAYERBOT_SPIDER_MIN_RED_POTIONS = 40;
 	// In V2 a bot is seldom alone: the solo stretch is this rare there, the
 	// party cohort twice the frontier's, and a partner up to this many levels
@@ -4442,6 +4461,7 @@ namespace
 			case PLAYERBOT_MAP_SOHAN: outX = PLAYERBOT_SOHAN_ARRIVAL_X; outY = PLAYERBOT_SOHAN_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_SPIDER_V1: outX = PLAYERBOT_SPIDER_ARRIVAL_X; outY = PLAYERBOT_SPIDER_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_SPIDER_V2: outX = PLAYERBOT_SPIDER_V2_ARRIVAL_X; outY = PLAYERBOT_SPIDER_V2_ARRIVAL_Y; return true;
+			case PLAYERBOT_MAP_SPIDER_V3: outX = PLAYERBOT_SPIDER_V3_ARRIVAL_X; outY = PLAYERBOT_SPIDER_V3_ARRIVAL_Y; return true; // MT2009_PLUS_SPIDER3_BOTS_V1
 			case PLAYERBOT_MAP_HWANG: outX = PLAYERBOT_HWANG_ARRIVAL_X; outY = PLAYERBOT_HWANG_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_FOREST: outX = PLAYERBOT_FOREST_ARRIVAL_X; outY = PLAYERBOT_FOREST_ARRIVAL_Y; return true;
 			case PLAYERBOT_MAP_RED_FOREST: outX = PLAYERBOT_RED_FOREST_ARRIVAL_X; outY = PLAYERBOT_RED_FOREST_ARRIVAL_Y; return true;
@@ -4481,6 +4501,7 @@ namespace
 			case PLAYERBOT_MAP_SOHAN: outX = PLAYERBOT_SOHAN_EXIT_X; outY = PLAYERBOT_SOHAN_EXIT_Y; return true;
 			case PLAYERBOT_MAP_SPIDER_V1: outX = PLAYERBOT_SPIDER_EXIT_X; outY = PLAYERBOT_SPIDER_EXIT_Y; return true;
 			case PLAYERBOT_MAP_SPIDER_V2: outX = PLAYERBOT_SPIDER_V2_EXIT_X; outY = PLAYERBOT_SPIDER_V2_EXIT_Y; return true;
+			case PLAYERBOT_MAP_SPIDER_V3: outX = PLAYERBOT_SPIDER_V3_EXIT_X; outY = PLAYERBOT_SPIDER_V3_EXIT_Y; return true; // MT2009_PLUS_SPIDER3_BOTS_V1
 			case PLAYERBOT_MAP_FOREST: outX = PLAYERBOT_FOREST_EXIT_X; outY = PLAYERBOT_FOREST_EXIT_Y; return true;
 			case PLAYERBOT_MAP_RED_FOREST: outX = PLAYERBOT_RED_FOREST_EXIT_X; outY = PLAYERBOT_RED_FOREST_EXIT_Y; return true;
 			case PLAYERBOT_MAP_DEMON_TOWER: outX = PLAYERBOT_DEMON_TOWER_EXIT_X; outY = PLAYERBOT_DEMON_TOWER_EXIT_Y; return true;
@@ -4525,6 +4546,7 @@ namespace
 				mapIndex == PLAYERBOT_MAP_DEMON_TOWER ||
 				mapIndex == PLAYERBOT_MAP_SOHAN || mapIndex == PLAYERBOT_MAP_SPIDER_V1 ||
 				mapIndex == PLAYERBOT_MAP_SPIDER_V2 || mapIndex == PLAYERBOT_MAP_HWANG ||
+				mapIndex == PLAYERBOT_MAP_SPIDER_V3 || // MT2009_PLUS_SPIDER3_BOTS_V1
 				mapIndex == PLAYERBOT_MAP_FOREST || mapIndex == PLAYERBOT_MAP_RED_FOREST ||
 				mapIndex == PLAYERBOT_MAP_FIRE_LAND ||
 				mapIndex == PLAYERBOT_MAP_GROTTO_V1 || mapIndex == PLAYERBOT_MAP_GROTTO_V2 ||
@@ -4540,7 +4562,8 @@ namespace
 	// from the Kuahlo gate, and the ones with no stones.
 	bool IsPlayerBotSpiderMap(long mapIndex)
 	{
-		return mapIndex == PLAYERBOT_MAP_SPIDER_V1 || mapIndex == PLAYERBOT_MAP_SPIDER_V2;
+		return mapIndex == PLAYERBOT_MAP_SPIDER_V1 || mapIndex == PLAYERBOT_MAP_SPIDER_V2 ||
+				mapIndex == PLAYERBOT_MAP_SPIDER_V3; // MT2009_PLUS_SPIDER3_BOTS_V1: the same road in and out, no stones
 	}
 
 	const char* GetPlayerBotFrontierName(long mapIndex)
@@ -4552,6 +4575,7 @@ namespace
 			case PLAYERBOT_MAP_SOHAN: return "sohan";
 			case PLAYERBOT_MAP_SPIDER_V1: return "spider_v1";
 			case PLAYERBOT_MAP_SPIDER_V2: return "spider_v2";
+			case PLAYERBOT_MAP_SPIDER_V3: return "spider_v3"; // MT2009_PLUS_SPIDER3_BOTS_V1
 			case PLAYERBOT_MAP_HWANG: return "hwang";
 			case PLAYERBOT_MAP_FOREST: return "forest";
 			case PLAYERBOT_MAP_RED_FOREST: return "red_forest";

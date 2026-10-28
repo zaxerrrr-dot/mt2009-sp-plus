@@ -205,6 +205,8 @@ namespace
 			return HubLevelShift(MAP_HWANG);
 		if (mapIndex == PLAYERBOT_MAP_SPIDER_V2)
 			return HubLevelShift(MAP_SPIDER2);
+		if (mapIndex == PLAYERBOT_MAP_SPIDER_V3) // MT2009_PLUS_SPIDER3_BOTS_V1
+			return HubLevelShift(MAP_SPIDER3);
 		if (mapIndex == PLAYERBOT_MAP_DEMON_TOWER)
 			return HubLevelShift(MAP_DEMON_TOWER);
 		if (mapIndex == PLAYERBOT_MAP_FOREST)
@@ -1392,6 +1394,17 @@ namespace
 				{ 725500, 501800, 58, 255, false }, { 695700, 503200, 58, 255, false },
 				{ 687400, 502800, 58, 255, false }, { 713900, 501300, 58, 255, false }
 			};
+			// MT2009_PLUS_SPIDER3_BOTS_V1: the third Spider Dungeon, measured as V2's: the 667 spawn lines of
+			// regen.txt binned into 6400-unit cells, the ten richest, each hub on the spawn point nearest its
+			// cell's centre with nine by nine free cells around it on server_attr, all on the arrival's piece
+			// (28 October). The Best. poison spiders of 60-68, none attacking first; the band is V3's own.
+			const TPlayerBotHuntingHub spiderV3Hubs[] = {
+				{ 80300, 591600, 66, 255, false, 0 }, { 86100, 591500, 66, 255, false, 0 },
+				{ 86500, 572000, 66, 255, false, 0 }, { 60700, 579000, 66, 255, false, 0 },
+				{ 67500, 592000, 66, 255, false, 0 }, { 60700, 591600, 66, 255, false, 0 },
+				{ 80000, 578900, 66, 255, false, 0 }, { 67300, 572700, 66, 255, false, 0 },
+				{ 79300, 572400, 66, 255, false, 0 }, { 86700, 579600, 66, 255, false, 0 }
+			};
 			// The Hwang Temple, from the density of its own regen.txt rather than
 			// from the map: every spawn point binned into 6400-unit cells and the
 			// richest taken, which is the same unit the population's own memory
@@ -1463,6 +1476,11 @@ namespace
 			{
 				hubs = spiderV2Hubs;
 				hubCount = sizeof(spiderV2Hubs) / sizeof(spiderV2Hubs[0]);
+			}
+			else if (ch->GetMapIndex() == PLAYERBOT_MAP_SPIDER_V3) // MT2009_PLUS_SPIDER3_BOTS_V1
+			{
+				hubs = spiderV3Hubs;
+				hubCount = sizeof(spiderV3Hubs) / sizeof(spiderV3Hubs[0]);
 			}
 			else if (ch->GetMapIndex() == PLAYERBOT_MAP_DEMON_TOWER)
 			{

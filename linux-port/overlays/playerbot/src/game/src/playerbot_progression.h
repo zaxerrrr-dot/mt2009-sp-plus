@@ -257,6 +257,16 @@ namespace
 			if (!item)
 				continue;
 			s.slot[i].present = true;
+			// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1 (the owner, 28 October 2026): a young heroes' weapon is a +9 weapon of the bot's own
+			// level for the "weapon" and "all worn" rows (GetPlayerBotWeaponEffective).
+			if (i == 0 && IsPlayerBotMlodziWeapon(item))
+			{
+				int l = 0, p = 0;
+				GetPlayerBotWeaponEffective(ch, &l, &p, item);
+				s.slot[i].level = (uint8_t)std::max(0, std::min(255, l));
+				s.slot[i].plus = (uint8_t)std::max(0, std::min(255, p));
+				continue;
+			}
 			s.slot[i].level = GetPlayerBotPersonaLevelLimit(item);
 			s.slot[i].plus = (uint8_t)std::max(0, std::min(255, (int)item->GetRefineLevel()));
 		}
@@ -365,6 +375,9 @@ namespace
 			return false;
 		const playerbot_progression::TConfig& c = playerbot_progression::Config();
 		if (!c.fishWhenHeld && GetPlayerBotProgressionNeeds(ch->GetPlayerID()) != 0)
+			return true;
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: nor while its young heroes' weapon is running out (playerbot_mlodzi_bots.h).
+		if (PlayerBotMlodziBlocksLeisure(ch->GetPlayerID()))
 			return true;
 		if (c.fishCapPct >= 100)
 			return false;

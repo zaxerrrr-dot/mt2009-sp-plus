@@ -337,6 +337,9 @@ services:
       # frontier on game1, so every bot reaches 1..104 (m2-render-config reads
       # this). One core carries every bot then - keep the population modest.
       M2_PLAYERBOT_WORLD_LAYOUT: "${M2_PLAYERBOT_WORLD_LAYOUT:-unified}"
+      # MT2009_PLUS_SPIDER3_SWITCH_V1: 3 Loch Pajakow (217) - 1 only together with the client that has its map
+      # (m2-render-config: game1 hosts it, V2's warp 10098 opens). 0 (default): as before, unreachable.
+      M2_SPIDER3_ON: "${M2_SPIDER3_ON:-0}"
       # Only said in the start log here; the migrate service is what acts on it.
       M2_DIFFICULTY: "${M2_DIFFICULTY:-easy}"
       TZ: "${M2_TZ:-UTC}"

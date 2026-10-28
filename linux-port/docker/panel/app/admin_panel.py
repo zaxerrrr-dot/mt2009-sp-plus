@@ -14037,6 +14037,7 @@ PLAYERBOT_MAP_BOUNDS = {
     61: (358400, 153600, 153600, 153600),   # Mount Sohan (map_n_snowm_01)
     104: (51200, 486400, 76800, 76800),     # Spider Dungeon V1
     71: (665600, 435200, 102400, 102400),   # Spider Dungeon V2 (metin2_map_spiderdungeon_02)
+    217: (51200, 563200, 76800, 76800),     # Spider Dungeon V3 (metin2_map_spiderdungeon_03, MT2009_PLUS_SPIDER3_BOTS_V1)
     65: (537600, 51200, 102400, 102400),    # Hwang Temple (metin2_map_milgyo)
     # Moved onto the bots' own core in 2.0.39. The extents are the server_attr
     # sector counts (8x8, 12x12, 12x12) times a sector's 6400 units, which is

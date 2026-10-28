@@ -130,8 +130,13 @@ namespace
 				weapon && IsPlayerBotSpecialLevel30Weapon(weapon));
 		// MT2009_PLUS_BOT_MLODZI_V1: a valid young heroes' weapon in the hand meets the law's weapon (it cannot be
 		// refined, and it is what the bot levels with), so it never holds the bot's experience.
-		if (IsPlayerBotMlodziWeaponValid(ch->GetWear(WEAR_WEAPON)))
-			gear.weapon = playerbot_persona::TGearPiece(9, GetPlayerBotPersonaLevelLimit(ch->GetWear(WEAR_WEAPON)), true);
+		// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: as a +9 weapon of the bot's own level, while worn (GetPlayerBotWeaponEffective).
+		if (IsPlayerBotMlodziWeapon(ch->GetWear(WEAR_WEAPON)))
+		{
+			int l = 0, p = 0;
+			GetPlayerBotWeaponEffective(ch, &l, &p, ch->GetWear(WEAR_WEAPON));
+			gear.weapon = playerbot_persona::TGearPiece((uint8_t)p, (uint8_t)std::max(0, std::min(255, l)), true);
+		}
 		gear.armour = GetPlayerBotPersonaPiece(ch->GetWear(WEAR_BODY), false);
 		gear.shield = GetPlayerBotPersonaPiece(ch->GetWear(WEAR_SHIELD), false);
 		// The mask or the helmet, which the law asks for from level 35 on.

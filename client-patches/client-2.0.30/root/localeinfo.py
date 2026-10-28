@@ -541,6 +541,8 @@ MINIMAP_ZONE_NAME_DICT = {
 	"metin2_map_n_flame_dragon" : "Schronienie Meley",
 	# MT2009_PLUS_YOHARA_ZAKLETY_V1 (client): Zaklêty Las (353) - the forest past the Temple of Ochao
 	"metin2_map_dawnmist_dungeon_01" : "Zaklêty Las",
+	# MT2009_PLUS_SPIDER3_V1 (client): 3 Loch Paj¹ków (217) - its own folder (tools/spider3)
+	"metin2_map_spiderdungeon3" : "3 Loch Paj¹ków",
 	"metin2_map_a1"  : MAP_A1,
 	"map_a2"         : MAP_A2,
 	"metin2_map_a3"  : MAP_A3,
