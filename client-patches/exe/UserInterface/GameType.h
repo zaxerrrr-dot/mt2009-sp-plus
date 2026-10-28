@@ -287,6 +287,36 @@ typedef struct packet_shop_item
 
 #pragma pack(pop)
 
+// MT2009_PLUS_BALATHOR_V1 (Balathor, dracaryS): effects the server places (BalathorEffectAdd)
+#ifdef __BALATHOR__
+enum
+{
+	BALATHOR_EFF_AREA = 0,
+	BALATHOR_EFF_GROUND_DROP,
+	BALATHOR_EFF_GROUND_ICE,
+	BALATHOR_EFF_EGG_ARROW,
+	BALATHOR_EFF_EGG_FLOOD,
+	BALATHOR_EFF_EGG_GUARD,
+	BALATHOR_EFF_EGG_MOOJUK,
+	BALATHOR_EFF_RED_ARROW,
+	BALATHOR_EFF_POSITION,
+	BALATHOR_EFF_MAX,
+};
+typedef struct SBalathorEffect
+{
+	DWORD dwID;
+	DWORD dwVID;
+	BYTE bEffIndex;
+	float fX;
+	float fY;
+	float fZ;
+	float fRotation;
+	DWORD dwDuration;
+	bool bIsMain;
+	DWORD dwEffectIndex;
+} TBalathorEffect;
+#endif
+
 inline float GetSqrtDistance(int ix1, int iy1, int ix2, int iy2) // By sqrt
 {
 	float dx, dy;

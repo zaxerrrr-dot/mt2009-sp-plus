@@ -1694,6 +1694,12 @@ void initapp()
 #else
 	PyModule_AddIntConstant(poModule, "ENABLE_NPC_LOCATION_HELPER", 0);
 #endif
+// MT2009_PLUS_BALATHOR_V1 (Balathor, dracaryS)
+#ifdef __BALATHOR__
+	PyModule_AddIntConstant(poModule, "__BALATHOR__", 1);
+#else
+	PyModule_AddIntConstant(poModule, "__BALATHOR__", 0);
+#endif
 	// not in this exe (Owsap python checks them)
 	PyModule_AddIntConstant(poModule, "ENABLE_SUMMER_EVENT_ROULETTE", 0);
 	PyModule_AddIntConstant(poModule, "ENABLE_SNOWFLAKE_STICK_EVENT", 0);

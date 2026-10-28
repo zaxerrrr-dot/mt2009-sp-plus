@@ -1,0 +1,302 @@
+[
+ {
+  "file": "../../common/service.h",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (define)",
+  "old": "#define PARTY_POSITION\n",
+  "new": "#define PARTY_POSITION\n// MT2009_PLUS_BALATHOR_V1 (define): Krypta Balathora (dracaryS)\n#define __BALATHOR__\n"
+ },
+ {
+  "file": "../../db/src/ClientManagerEventFlag.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (db channel flag)",
+  "old": "\tForwardPacket(HEADER_DG_SET_EVENT_FLAG, p, sizeof(TPacketSetEventFlag));\n",
+  "new": "\tForwardPacket(HEADER_DG_SET_EVENT_FLAG, p, sizeof(TPacketSetEventFlag));\n// MT2009_PLUS_BALATHOR_V1 (db channel flag): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (std::string(p->szFlagName).find(\"?.balathor_channel\") != std::string::npos)\n\t\treturn;\n#endif\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (char.h members)",
+  "old": "\t\tDWORD\tm_dwDeadCount = 0;\n#endif\n};\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (char.h members): Krypta Balathora (dracaryS)\n\t\tDWORD\tm_dwDeadCount = 0;\n#endif\n#ifdef __BALATHOR__\n\tpublic:\n\t\tbool GetBlockStatus() { return m_bBlockAttack; }\n\t\tvoid SetBlockStatus(bool bValue) { m_bBlockAttack = bValue; }\n\t\tbool GetBlockRotation() { return m_bBlockRotation; }\n\t\tvoid SetBlockRotation(bool bValue) { m_bBlockRotation = bValue; }\n\t\tBYTE GetBalathorEggPhase() { return m_bBalathorEggPhase; }\n\t\tvoid SetBalathorEggPhase(BYTE bValue) { m_bBalathorEggPhase = bValue; }\n\t\tbool IsBalathor() { return m_bBalathorMob; }\n\t\tvoid SetBalathor(bool bFlag) { m_bBalathorMob = bFlag; }\n\t\tbool IsBalathorEgg() { return m_bBalathorEgg; }\n\t\tvoid SetBalathorEgg(bool bFlag) { m_bBalathorEgg = bFlag; }\n\t\tCHARACTER_SET& GetStoneMobs() { return m_set_pkChrSpawnedBy; }\n\tprotected:\n\t\tbool m_bBlockAttack;\n\t\tbool m_bBlockRotation;\n\t\tBYTE m_bBalathorEggPhase;\n\t\tbool m_bBalathorMob;\n\t\tbool m_bBalathorEgg;\n#endif\n};\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"../../common/PulseManager.h\"\n",
+  "new": "#include \"../../common/PulseManager.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (init)",
+  "old": "\tm_dwPlayerID = 0;\n",
+  "new": "\tm_dwPlayerID = 0;\n// MT2009_PLUS_BALATHOR_V1 (init): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tm_bBlockAttack = false;\n\tm_bBlockRotation = false;\n\tm_bBalathorEggPhase = 0;\n\tm_bBalathorMob = false;\n\tm_bBalathorEgg = false;\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (logout)",
+  "old": "\tsys_log(0, \"DISCONNECT: %s (%s)\", GetName(), c_pszReason ? c_pszReason : \"unset\" );\n",
+  "new": "\tsys_log(0, \"DISCONNECT: %s (%s)\", GetName(), c_pszReason ? c_pszReason : \"unset\" );\n// MT2009_PLUS_BALATHOR_V1 (logout): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tCBalathorManager::Instance().Logout(this);\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (rotation)",
+  "old": "\tm_pointsInstant.fRot = fRot;\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (rotation): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (m_bBlockRotation)\n\t\treturn;\n#endif\n\tm_pointsInstant.fRot = fRot;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (fire egg sync)",
+  "old": "\t\tnew_tree->InsertEntity(this);\n\t}\n\n\treturn true;\n}\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (fire egg sync): Krypta Balathora (dracaryS)\n\t\tnew_tree->InsertEntity(this);\n\t}\n\n#ifdef __BALATHOR__\n\tif (GetRaceNum() == 20497)\n\t{\n\t\tif (m_pkMobInst)\n\t\t{\n\t\t\tm_pkMobInst->m_posLastAttacked.x = x;\n\t\t\tm_pkMobInst->m_posLastAttacked.y = y;\n\t\t\tm_pkMobInst->m_posLastAttacked.z = 0;\n\t\t}\n\t\tm_posDest.x = x;\n\t\tm_posDest.y = y;\n\t\tm_posDest.z = 0;\n\t\tm_posStart.x = x;\n\t\tm_posStart.y = y;\n\t\tm_posStart.z = 0;\n\t}\n#endif\n\n\treturn true;\n}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (goto)",
+  "old": "\tif (GetX() == x && GetY() == y)\n\t\treturn false;\n",
+  "new": "\tif (GetX() == x && GetY() == y)\n\t\treturn false;\n// MT2009_PLUS_BALATHOR_V1 (goto): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))\n\t\treturn false;\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (sync owner)",
+  "old": "bool CHARACTER::SetSyncOwner(LPCHARACTER ch, bool bRemoveFromList)\n{\n\t// TRENT_MONSTER\n\tif (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (sync owner): Krypta Balathora (dracaryS)\nbool CHARACTER::SetSyncOwner(LPCHARACTER ch, bool bRemoveFromList)\n{\n\t// TRENT_MONSTER\n#ifdef __BALATHOR__\n\tif (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE) || CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))\n#else\n\tif (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))\n#endif\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (follow)",
+  "old": "\t// TRENT_MONSTER\n\tif (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))\n\t{\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (follow): Krypta Balathora (dracaryS)\n\t// TRENT_MONSTER\n#ifdef __BALATHOR__\n\tif (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE) || CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))\n#else\n\tif (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))\n#endif\n\t{\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "char_affect.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (login)",
+  "old": "\tComputePoints(); // @fixme156\n\tDragonSoul_Initialize();\n",
+  "new": "\tComputePoints(); // @fixme156\n\tDragonSoul_Initialize();\n// MT2009_PLUS_BALATHOR_V1 (login): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tCBalathorManager::Instance().Login(this);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (hwacha no dead event)",
+  "old": "\tch->m_pkDeadEvent = NULL;\n",
+  "new": "\tch->m_pkDeadEvent = NULL;\n// MT2009_PLUS_BALATHOR_V1 (hwacha no dead event): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (!ch->IsPC() && ch->GetMapIndex() > 1000)\n\t{\n\t\tif (CBalathorManager::Instance().IsHwatcha(ch->GetRaceNum()))\n\t\t\treturn 0;\n\t}\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (restart in lair)",
+  "old": "\t\tch->GetDesc()->SetPhase(PHASE_GAME);\n\n\t\tch->SetPosition(POS_STANDING);\n",
+  "new": "\t\tch->GetDesc()->SetPhase(PHASE_GAME);\n\n\t\tch->SetPosition(POS_STANDING);\n// MT2009_PLUS_BALATHOR_V1 (restart in lair): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\tif (ch->GetMapIndex() > 1000)\n\t\t{\n\t\t\tCBalathor* pBalathor = CBalathorManager::Instance().FindByMapIndex(ch->GetMapIndex());\n\t\t\tif (pBalathor)\n\t\t\t{\n\t\t\t\tch->RestartAtSamePos();\n\t\t\t\tch->PointChange(POINT_HP, 50 - ch->GetHP());\n\t\t\t\tch->DeathPenalty(0);\n\t\t\t\tch->ReviveInvisible(5);\n\t\t\t\tch->StartRecoveryEvent();\n\t\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"CloseRestartWindow\");\n\t\t\t\tpBalathor->Teleport(ch);\n\t\t\t\treturn 0;\n\t\t\t}\n\t\t}\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (kill)",
+  "old": "\tbool isUnderGuildWar = false;\n",
+  "new": "\tbool isUnderGuildWar = false;\n// MT2009_PLUS_BALATHOR_V1 (kill): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (GetMapIndex() > 1000)\n\t\tCBalathorManager::Instance().Kill(pkKiller, this);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (block)",
+  "old": "\n\tint iCurHP = GetHP();\n\tint iCurSP = GetSP();\n\n\tbool IsCritical = false;\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (block): Krypta Balathora (dracaryS)\n\n#ifdef __BALATHOR__\n\tif (pAttacker && GetBlockStatus())\n\t{\n\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\treturn false;\n\t}\n#endif\n\tint iCurHP = GetHP();\n\tint iCurSP = GetSP();\n\n\tbool IsCritical = false;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (fire egg damage)",
+  "old": "\t\t\tSendDamagePacket(pAttacker, dam, damageFlag);\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (fire egg damage): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\t\tif (GetRaceNum() == 20497 && !pAttacker->GetWear(WEAR_WEAPON))\n\t\t\t\tdam = 5 * (GetMaxHP() / 100);\n#endif\n\t\t\tSendDamagePacket(pAttacker, dam, damageFlag);\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (damage)",
+  "old": "\t\tPointChange(POINT_HP, -dam, false);\n",
+  "new": "\t\tPointChange(POINT_HP, -dam, false);\n// MT2009_PLUS_BALATHOR_V1 (damage): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\tif ((IsBalathorEgg() || IsBalathor()) && dam > 0 && GetMapIndex() > 1000 && pAttacker)\n\t\t\tCBalathorManager::Instance().Damage(pAttacker, this);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (quest item)",
+  "old": "\t\tcase ITEM_QUEST:\n",
+  "new": "\t\tcase ITEM_QUEST:\n// MT2009_PLUS_BALATHOR_V1 (quest item): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\t\tif (GetMapIndex() > 1000)\n\t\t\t{\n\t\t\t\tCBalathor* pBalathor = CBalathorManager::Instance().FindByMapIndex(GetMapIndex());\n\t\t\t\tif (pBalathor)\n\t\t\t\t\treturn pBalathor->UseItem(this, item);\n\t\t\t}\n#endif\n"
+ },
+ {
+  "file": "char_manager.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "char_manager.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (spawn block)",
+  "old": "\t\tif ( is_set )\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (spawn block): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\tif (is_set && !CBalathorManager::Instance().IsNoMoveMonster(dwVnum))\n#else\n\t\tif ( is_set )\n#endif\n"
+ },
+ {
+  "file": "char_manager.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (spawn banpk)",
+  "old": "\t\tif (IS_SET(dwAttr, ATTR_BANPK))\n\t\t{\n\t\t\tsys_log(0, \"SpawnMob: BAN_PK position",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (spawn banpk): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\tif (IS_SET(dwAttr, ATTR_BANPK) && !CBalathorManager::Instance().IsNoMoveMonster(dwVnum))\n#else\n\t\tif (IS_SET(dwAttr, ATTR_BANPK))\n#endif\n\t\t{\n\t\t\tsys_log(0, \"SpawnMob: BAN_PK position"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (stone)",
+  "old": "\tDWORD dwVnum = number(MIN(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed ), MAX(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed));\n",
+  "new": "\tDWORD dwVnum = number(MIN(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed ), MAX(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed));\n// MT2009_PLUS_BALATHOR_V1 (stone): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (GetMapIndex() > 1000)\n\t{\n\t\tCBalathor* pBalathor = CBalathorManager::Instance().FindByMapIndex(GetMapIndex());\n\t\tif (pBalathor)\n\t\t{\n\t\t\tpBalathor->StoneSpawn(this, iPercent);\n\t\t\treturn;\n\t\t}\n\t}\n#endif\n"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (wander)",
+  "old": "\tif (!no_wander && !IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (wander): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (!no_wander && !IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE) && !CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))\n#else\n\tif (!no_wander && !IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))\n#endif\n"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (goto near)",
+  "old": "\tif (IS_SET(self->GetAIFlag(), AIFLAG_NOMOVE))\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (goto near): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (IS_SET(self->GetAIFlag(), AIFLAG_NOMOVE) || CBalathorManager::Instance().IsNoMoveMonster(self->GetRaceNum()))\n#else\n\tif (IS_SET(self->GetAIFlag(), AIFLAG_NOMOVE))\n#endif\n"
+ },
+ {
+  "file": "char_state.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (battle)",
+  "old": "\t\t\t\tswitch (GetMobBattleType())\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (battle): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\t\t\tif (CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))\n\t\t\t\t\treturn;\n#endif\n\t\t\t\tswitch (GetMobBattleType())\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (decl)",
+  "old": "ACMD(do_user_horse_ride);\n",
+  "new": "ACMD(do_user_horse_ride);\n// MT2009_PLUS_BALATHOR_V1 (decl): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\nACMD(do_balathor);\n#endif\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (table)",
+  "old": "\t{ \"user_horse_ride\",",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (table): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t{ \"balathor\",\tdo_balathor,\t\t0,\t\tPOS_DEAD,\tGM_PLAYER },\n#endif\n\t{ \"user_horse_ride\","
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (restart town)",
+  "old": "\t\tch->GetDungeon()->UseRevive(ch);\n",
+  "new": "\t\tch->GetDungeon()->UseRevive(ch);\n// MT2009_PLUS_BALATHOR_V1 (restart town): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tif (ch->GetMapIndex() > 1000 && subcmd == SCMD_RESTART_TOWN)\n\t{\n\t\tCBalathor* pBalathor = CBalathorManager::Instance().FindByMapIndex(ch->GetMapIndex());\n\t\tif (pBalathor)\n\t\t{\n\t\t\tch->RestartAtSamePos();\n\t\t\tch->PointChange(POINT_HP, 50 - ch->GetHP());\n\t\t\tch->DeathPenalty(0);\n\t\t\tch->ReviveInvisible(5);\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"CloseRestartWindow\");\n\t\t\tpBalathor->Teleport(ch);\n\t\t\treturn;\n\t\t}\n\t}\n#endif\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (purge)",
+  "old": "\t\t{\n\t\t\tM2_DESTROY_CHARACTER(pkChr);\n\t\t}\n\t}\n};\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (purge): Krypta Balathora (dracaryS)\n\t\t{\n#ifdef __BALATHOR__\n\t\t\tif (pkChr->GetMapIndex() > 1000)\n\t\t\t\tCBalathorManager::Instance().Kill(m_pkGM, pkChr);\n#endif\n\t\t\tM2_DESTROY_CHARACTER(pkChr);\n\t\t}\n\t}\n};\n"
+ },
+ {
+  "file": "guild.h",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (decl)",
+  "old": "\t\tvoid\t\tInviteDeny( DWORD dwPID );\n",
+  "new": "\t\tvoid\t\tInviteDeny( DWORD dwPID );\n// MT2009_PLUS_BALATHOR_V1 (decl): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\tint\t\t\tGetFlag(const char* szFlag);\n\t\tvoid\t\tSetFlag(const char* szFlag, int iValue);\n\t\tvoid\t\tGetNearMemberCount(std::vector<DWORD>& vecPlayers, float fDistance, LPCHARACTER chExcept);\n#endif\n"
+ },
+ {
+  "file": "guild_manager.h",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (decl)",
+  "old": "\tvoid\t\tRequestCancelWar(DWORD guild_id1, DWORD guild_id2);\n",
+  "new": "\tvoid\t\tRequestCancelWar(DWORD guild_id1, DWORD guild_id2);\n// MT2009_PLUS_BALATHOR_V1 (decl): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tint\t\t\tGetFlag(DWORD dwID, const char* szFlag);\n\tvoid\t\tSetFlag(DWORD dwID, const char* szFlag, int iValue);\n#endif\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (load)",
+  "old": "\tsignal_timer_enable(30);\n",
+  "new": "\tsignal_timer_enable(30);\n// MT2009_PLUS_BALATHOR_V1 (load): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tCBalathorManager::Instance().Load(true);\n#endif\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (fire egg sync)",
+  "old": "\t\tif (!victim->SetSyncOwner(ch))\n\t\t\tcontinue;\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (fire egg sync): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\tif (victim->GetRaceNum() == 20497 && victim->GetMapIndex() > 1000)\n\t\t{\n\t\t\tvictim->SetLastSyncTime(tvCurTime);\n\t\t\tvictim->Sync(e->lX, e->lY);\n\t\t\tbuffer_write(lpBuf, e, sizeof(TPacketCGSyncPositionElement));\n\t\t\tcontinue;\n\t\t}\n#endif\n\t\tif (!victim->SetSyncOwner(ch))\n\t\t\tcontinue;\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (include)",
+  "old": "#include \"stdafx.h\"\n",
+  "new": "#include \"stdafx.h\"\n// MT2009_PLUS_BALATHOR_V1 (include): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include \"balathor.h\"\n#endif\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (process)",
+  "old": "\tDBManager::instance().Process();\n",
+  "new": "\tDBManager::instance().Process();\n// MT2009_PLUS_BALATHOR_V1 (process): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tCBalathorManager::Instance().Process();\n#endif\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (instance)",
+  "old": "\tquest::CQuestManager quest_manager;\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (instance): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tCBalathorManager balathor_manager;\n#endif\n\tquest::CQuestManager quest_manager;\n"
+ },
+ {
+  "file": "main.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (destroy)",
+  "old": "\tOXEvent_manager.Destroy();\n",
+  "new": "\tOXEvent_manager.Destroy();\n// MT2009_PLUS_BALATHOR_V1 (destroy): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tsys_log(0, \"<shutdown> Destroying CBalathorManager...\");\n\tbalathor_manager.Destroy();\n#endif\n"
+ },
+ {
+  "file": "motion.h",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (enum)",
+  "old": "\tMOTION_SPECIAL_5,\t\t\t// 37\n",
+  "new": "\tMOTION_SPECIAL_5,\t\t\t// 37\n// MT2009_PLUS_BALATHOR_V1 (enum): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\tMOTION_ETC_1 = MOTION_SPECIAL_5 + 2,\t// 39 = the client's NAME_ETC_1 (it has NAME_SPECIAL_6 = 38)\n\tMOTION_ETC_2,\t\t\t\t// 40\n\tMOTION_ETC_3,\t\t\t\t// 41\n#endif\n"
+ },
+ {
+  "file": "motion.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (names)",
+  "old": "\t\t\tcase MOTION_SPECIAL_5\t\t\t: field = \"SPECIAL4\"; break;\n",
+  "new": "\t\t\tcase MOTION_SPECIAL_5\t\t\t: field = \"SPECIAL4\"; break;\n// MT2009_PLUS_BALATHOR_V1 (names): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\t\tcase MOTION_ETC_1\t\t\t\t: field = \"ETC1\"; break;\n\t\t\tcase MOTION_ETC_2\t\t\t\t: field = \"ETC2\"; break;\n\t\t\tcase MOTION_ETC_3\t\t\t\t: field = \"ETC3\"; break;\n#endif\n"
+ },
+ {
+  "file": "questlua.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (register)",
+  "old": "\t\tRegisterDanceEventFunctionTable();\n",
+  "new": "\t\tRegisterDanceEventFunctionTable();\n// MT2009_PLUS_BALATHOR_V1 (register): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\t\tRegisterBalathorFunctionTable();\n\t\t{ void RegisterBalathorGuildFunctions(); RegisterBalathorGuildFunctions(); }\t// guild.get_flag & co. (balathor_support.cpp)\n#endif\n"
+ },
+ {
+  "file": "questlua.h",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (decl)",
+  "old": "\textern void RegisterDanceEventFunctionTable();\n",
+  "new": "\textern void RegisterDanceEventFunctionTable();\n// MT2009_PLUS_BALATHOR_V1 (decl): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n\textern void RegisterBalathorFunctionTable();\n#endif\n"
+ },
+ {
+  "file": "utils.h",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (decl)",
+  "old": "#include \"../../common/length.h\"\n",
+  "new": "#include \"../../common/length.h\"\n// MT2009_PLUS_BALATHOR_V1 (decl): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include <string>\nextern std::string SecToTime(int sec);\n#endif\n"
+ }
+]

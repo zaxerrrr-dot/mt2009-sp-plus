@@ -1,0 +1,41 @@
+# MT2009_PLUS_BALATHOR_V1: Krypta Balathora's chests (balathor.json: fail_rewards 83075, success_rewards 83075 + 83076).
+# Contents from the pl-wiki ("Mrozna Skrz. Balathora" and "Mrozna Skrz. Balathora+"); the wiki gives no chances or
+# counts - the weights / percentages are ours. Items the line does not have are left out (server-patches/balathor/
+# README.md): Oko / Rog / Sciegno / Skrzydlo / Luska Balathora, the five Runy Wykuwania, Kula
+# Polimorfii Hwachy, Umiejetnosc Balathora (the three guild skill books). Wino z Kwiatu Brzosk. XL is the plain one
+# (70020, x5). Kula Blogoslawienstwa is our Marmur Blogoslawienstwa (70024).
+Group	MT2009_balathor_83075
+{
+	Vnum	83075 -- Mrozna Skrz. Balathora (one item an opening)
+	1	71020	3	100 -- Blogoslawienstwo Smoka x3
+	2	71018	3	100 -- Blogoslawienstwo Zycia x3
+	3	70020	5	100 -- Wino z Kwiatu Brzoskwini x5 (wiki: XL)
+	4	30610	1	80 -- Mithril
+	5	30604	1	80 -- Szary Barwnik
+	6	100700	1	60 -- Smoczy Plomien (B)
+	7	30618	1	80 -- Kamien Ksiezycowy
+	8	30616	1	80 -- Dwutlenek Tytanu
+	9	30617	1	80 -- Agat
+	10	83073	1	40 -- Pudelko Kart Potworow Yohary
+	11	15440	1	20 -- Ogniste Buty+0
+	12	gold	10000000	60 -- 10 000 000 yang
+	13	gold	20000000	30 -- 20 000 000 yang
+	14	gold	30000000	15 -- 30 000 000 yang
+	15	gold	60000000	5 -- 60 000 000 yang
+}
+Group	MT2009_balathor_83076
+{
+	Vnum	83076 -- Mrozna Skrz. Balathora+ (every row rolled on its own, %)
+	Type	Pct
+	1	15440	1	10 -- Ogniste Buty+0
+	2	55035	1	30 -- Smakolyk+
+	3	30616	2	40 -- Dwutlenek Tytanu x2
+	4	30617	2	40 -- Agat x2
+	5	30602	1	30 -- Niebieski Barwnik
+	6	95602	1	30 -- Wzor Kroju
+	7	95603	1	30 -- Ciezkie Pasy
+	8	100700	1	25 -- Smoczy Plomien (B)
+	9	50662	1	15 -- Jadeit Nocy
+	10	70024	1	20 -- Marmur Blogoslawienstwa (wiki: Kula Blogoslawienstwa)
+	11	83073	1	25 -- Pudelko Kart Potworow Yohary
+}

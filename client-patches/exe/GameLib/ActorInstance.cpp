@@ -341,10 +341,28 @@ bool CActorInstance::IsBuilding()
 	return false;
 }
 
+// MT2009_PLUS_BALATHOR_V1 (funcs) (Balathor, dracaryS)
+#ifdef __BALATHOR__
+bool CActorInstance::IsBalathorDoor() const
+{
+	return m_eRace == 20494;
+}
+
+bool CActorInstance::IsBalathorEgg() const
+{
+	return m_eRace == 20497;
+}
+#endif
+
 bool CActorInstance::IsDoor()
 {
 	if (TYPE_DOOR==m_eActorType)
 		return true;
+// MT2009_PLUS_BALATHOR_V1 (door) (Balathor, dracaryS)
+#ifdef __BALATHOR__
+	if (IsBalathorDoor())
+		return true;
+#endif
 
 	return false;
 }
@@ -646,7 +664,12 @@ void CActorInstance::AdjustDynamicCollisionMovement(const CActorInstance * c_pAc
 		return;
 
 	UINT uActorType = c_pActorInstance->GetActorType();
+// MT2009_PLUS_BALATHOR_V1 (collision) (Balathor, dracaryS): the fire egg does not block movement
+#ifdef __BALATHOR__
+	if( (uActorType == TYPE_BUILDING) || (uActorType == TYPE_OBJECT) || (uActorType == TYPE_DOOR) || (uActorType == TYPE_STONE && !c_pActorInstance->IsBalathorEgg()))
+#else
 	if( (uActorType == TYPE_BUILDING) || (uActorType == TYPE_OBJECT) || (uActorType == TYPE_DOOR) || (uActorType == TYPE_STONE))
+#endif
 	{
 		BlockMovement();
 

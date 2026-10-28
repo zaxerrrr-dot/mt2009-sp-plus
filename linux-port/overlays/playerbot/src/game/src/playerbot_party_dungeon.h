@@ -206,6 +206,10 @@ namespace
 	{
 		if (!ch)
 			return false;
+		// MT2009_PLUS_BALATHOR_V1: Krypta Balathora (420 and its copies) is a guild's lair for people only - no bot
+		// follows a person of its party in (IsPlayerBotOffLimitsMap keeps a bot on its own out).
+		if ((targetMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? targetMap / 10000 : targetMap) == 420)
+			return false;
 		// MT2009_PLUS_BOT_DUNGEON_RUNS_V1: the bots' own runs - to the
 		// gathering, into the run's instance and home again.
 		if (IsPlayerBotDungeonRunMove(ch, targetMap, reason))

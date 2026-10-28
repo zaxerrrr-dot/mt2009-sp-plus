@@ -1,0 +1,238 @@
+-- MT2009_PLUS_BALATHOR_V1: Krypta Balathora - gildyjne le¿e Bia³ego Smoka (autor modu³u: dracaryS; jego quest
+-- "__balathor__" przepisany na nasze dane i po polsku). Silnik: server-patches/balathor + balathor*.cpp w nak³adce,
+-- ustawienia: share/locale/poland/balathor.json (game/balathor). Mapa 420 (metin2_map_guild_whitedragon_boss,
+-- prywatne kopie 4200000+) na rdzeniu game1 obok Doyyumhwaji (62) - tylko z M2_BALATHOR_ON=1 (bin/m2-render-config);
+-- wy³¹czona: balathor.is_open() = false i Dolnarr nic nie proponuje.
+-- Decyzje w³aœciciela (28.10.2026): wejœcie u Stra¿nika Smoków Dolnarra (20419, Doyyumhwaji 83,851 - ten sam co
+-- Schronienie Meley) zamiast 20395; Champion 4 (pc.get_conqueror_level) przy poziomie 120; quest wejœciowy
+-- ("Dziwne Znalezisko") pominiêty.
+-- Rejestracja (pl-wiki "Krypta Balathora"): mistrz gildii, 4-16 cz³onków gildii obok (ludzie - boty siê nie licz¹),
+-- poziom gildii, 600 pkt rankingu gildii (pobierane), skarbiec gildii >= 500 000 Yang (sprawdzany, nie pobierany),
+-- odnowienie 3 h (register_wait_time), limit 60 minut (waiting_full_time).
+quest krypta_balathora begin
+	state start begin
+		function bank_min()
+			return 500000
+		end
+
+		-- TODO guildsys: wiek gildii >= 24 h i cz³onek gildii >= 24 h (pl-wiki) - gdy system gildii
+		-- (claude/y-guildsys) da swoje funkcje questowe, sprawdziæ je tutaj. Dziœ: brak danych, przepuszcza.
+		function guild_age_ok()
+			return true
+		end
+		function member_age_ok()
+			return true
+		end
+
+		function guild_money()
+			-- TODO guildsys: bank gildii; dziœ skarbiec gildii (guild.get_money).
+			return guild.get_money()
+		end
+
+		-- ludzie z gildii obok mistrza (on pierwszy), bez botów
+		function near_people()
+			local pids = { guild.get_near_pids() }
+			local people = {}
+			for i, pid in next, pids, nil do
+				q.begin_other_pc_block(pid)
+				local bot = pc.is_playerbot()
+				q.end_other_pc_block()
+				if not bot then
+					table.insert(people, pid)
+				end
+			end
+			return people
+		end
+
+		function member_ok(min_level)
+			return pc.get_level() >= min_level and pc.get_conqueror_level() >= 4
+		end
+
+		function register()
+			local c = { balathor.get_register_config() }
+			local min_level, min_guild_level, min_members, max_members = c[1], c[2], c[3], c[4]
+			local ladder_point, wait_time = c[5], c[7]
+
+			if not pc.is_guild_master() then
+				say("Tylko mistrz gildii mo¿e zg³osiæ gildiê do Krypty.")
+				return false
+			end
+			local left = guild.get_flag("balathor_cooldown") - get_global_time()
+			if left > 0 then
+				say(string.format("Gildia mo¿e wejœæ ponownie za %d min.", math.ceil(left / 60)))
+				return false
+			end
+			if guild.get_flag("balathor_channel") != 0 then
+				say("Twoja gildia ma ju¿ otwart¹ Kryptê Balathora.")
+				return false
+			end
+			if guild.get_level() < min_guild_level then
+				say(string.format("Gildia musi mieæ co najmniej %d poziom.", min_guild_level))
+				return false
+			end
+			if not krypta_balathora.guild_age_ok() then
+				say("Gildia musi istnieæ co najmniej 24 godziny.")
+				return false
+			end
+			if guild.get_ladder_point() < ladder_point then
+				say(string.format("Gildia potrzebuje %d pkt rankingu gildii.", ladder_point))
+				return false
+			end
+			if krypta_balathora.guild_money() < krypta_balathora.bank_min() then
+				say("Skarbiec gildii musi mieæ co najmniej 500 000 Yang.")
+				return false
+			end
+
+			local people = krypta_balathora.near_people()
+			if table.getn(people) < min_members or table.getn(people) > max_members then
+				say(string.format("Przy mnie musi staæ od %d do %d cz³onków gildii (teraz: %d).", min_members, max_members, table.getn(people)))
+				return false
+			end
+			local bad = {}
+			for i, pid in next, people, nil do
+				q.begin_other_pc_block(pid)
+				if not krypta_balathora.member_ok(min_level) or not krypta_balathora.member_age_ok() then
+					table.insert(bad, pc.get_name())
+				end
+				q.end_other_pc_block()
+			end
+			if table.getn(bad) > 0 then
+				say(string.format("Ka¿dy musi mieæ %d poziom i Champion 4. Nie spe³niaj¹:", min_level))
+				for i, name in next, bad, nil do
+					say(" " .. name)
+				end
+				return false
+			end
+
+			local result = balathor.can_create()
+			if result == 0 then
+				say("Nie nale¿ysz do gildii.")
+				return false
+			elseif result == 1 then
+				say("Twoja gildia ma ju¿ otwart¹ Kryptê Balathora.")
+				return false
+			elseif result == 2 then
+				say("Krypta Balathora jest teraz zamkniêta.")
+				return false
+			end
+
+			if ladder_point > 0 then
+				guild.set_ladder_point(-ladder_point)
+			end
+			guild.set_flag("balathor_channel", pc.get_channel_id())
+			guild.set_flag("balathor_cooldown", get_global_time() + wait_time)
+			balathor.create()
+			return true
+		end
+
+		when 20419.chat."Krypta Balathora: zg³oszenie gildii" with pc.get_map_index() == 62 and balathor.is_open() and pc.has_guild() begin
+			say_title(mob_name(20419))
+			say("Balathor, Bia³y Smok, œpi w lodowej krypcie.")
+			say("Mistrz gildii mo¿e zg³osiæ tu swoj¹ gildiê:")
+			say("od 4 do 16 cz³onków obok mnie, ka¿dy z poziomem")
+			say("120 i Championem 4, 600 pkt rankingu gildii")
+			say("i co najmniej 500 000 Yang w skarbcu gildii.")
+			say("Na wyprawê jest 60 minut, potem 3 godziny przerwy.")
+			if select("Zg³oœ gildiê teraz", "Nie teraz") == 1 then
+				if krypta_balathora.register() then
+					say_title(mob_name(20419))
+					say("Krypta jest otwarta. Cz³onkowie gildii mog¹ teraz")
+					say("do niej wejœæ przeze mnie.")
+				end
+			end
+		end
+
+		when 20419.chat."Krypta Balathora: wejœcie" with pc.get_map_index() == 62 and balathor.is_open() and pc.has_guild() and guild.get_flag("balathor_channel") != 0 begin
+			say_title(mob_name(20419))
+			local channel = guild.get_flag("balathor_channel")
+			if channel != pc.get_channel_id() then
+				say(string.format("Krypta twojej gildii jest na kanale %d.", channel))
+				return
+			end
+			if not balathor.is_guild_dungeon_exist(pc.get_guild()) then
+				say("Krypta twojej gildii jest ju¿ zamkniêta.")
+				guild.set_flag("balathor_channel", 0)
+				return
+			end
+			local c = { balathor.get_register_config() }
+			if not krypta_balathora.member_ok(c[1]) then
+				say(string.format("Potrzebujesz %d poziomu i Championa 4.", c[1]))
+				return
+			end
+			say("Wejœæ do Krypty Balathora?")
+			if select("WejdŸ do Krypty", "Nie teraz") == 1 then
+				balathor.teleport()
+			end
+		end
+
+		when 20419.chat."GM: Krypta Balathora - zeruj przerwê gildii" with pc.get_map_index() == 62 and pc.is_gm() and pc.has_guild() and guild.get_flag("balathor_cooldown") != 0 begin
+			say_title(mob_name(20419))
+			if guild.get_flag("balathor_channel") != 0 then
+				say("Najpierw trzeba zamkn¹æ otwart¹ Kryptê.")
+				return
+			end
+			guild.set_flag("balathor_cooldown", 0)
+			say("Przerwa gildii wyzerowana.")
+		end
+
+		when 20815.chat."Do walki z Balathorem" with balathor.is_in_map(pc.get_map_index()) and balathor.get_stage(pc.get_map_index()) == 1 begin
+			say_title(mob_name(20815))
+			if not pc.is_guild_master() then
+				say("Walkê zaczyna mistrz gildii.")
+				return
+			end
+			say("Gotowi? Balathor nie zna litoœci.")
+			if select("Zaczynamy", "Jeszcze nie") == 1 then
+				balathor.set_stage(pc.get_map_index(), 2)
+			end
+		end
+
+		when 20815.chat."WyjdŸ z Krypty" with balathor.is_in_map(pc.get_map_index()) begin
+			say_title(mob_name(20815))
+			say("Chcesz opuœciæ Kryptê Balathora?")
+			if select("Tak", "Nie") == 1 then
+				balathor.warp_enter()
+			end
+		end
+
+		when 20815.chat."Poddaj wyprawê gildii" with balathor.is_in_map(pc.get_map_index()) and balathor.get_stage(pc.get_map_index()) >= 2 and balathor.get_stage(pc.get_map_index()) <= 6 begin
+			say_title(mob_name(20815))
+			if not pc.is_guild_master() then
+				say("Poddaæ wyprawê mo¿e tylko mistrz gildii.")
+				return
+			end
+			say("Na pewno poddaæ wyprawê?")
+			if select("Poddaj", "Walczymy dalej") == 1 then
+				balathor.give_up()
+			end
+		end
+
+		when 20492.chat."Odbierz nagrodê gildii" with balathor.is_in_map(pc.get_map_index()) begin
+			say_title(mob_name(20492))
+			local r = balathor.claim_reward(pc.get_map_index())
+			if r == 0 then
+				say("Nagroda zosta³a ju¿ odebrana.")
+			elseif r == 1 then
+				say("Na nagrodê jest jeszcze za wczeœnie.")
+			else
+				say("Nagroda odebrana.")
+			end
+		end
+
+		when 20493.click with balathor.is_in_map(pc.get_map_index()) begin
+			if balathor.is_hwatcha_dead(pc.get_map_index()) then
+				if select("Napraw Hwachê teraz", "Anuluj") == 1 then
+					balathor.revive_hwatcha(pc.get_map_index())
+				end
+			else
+				if select("Strzelaj", "Anuluj") == 1 then
+					if balathor.can_use_hwatcha(pc.get_map_index()) then
+						balathor.use_hwatcha(pc.get_map_index())
+					else
+						say("Hwacha nie jest jeszcze gotowa (potrzeba Ognistych Strza³).")
+					end
+				end
+			end
+		end
+	end
+end
