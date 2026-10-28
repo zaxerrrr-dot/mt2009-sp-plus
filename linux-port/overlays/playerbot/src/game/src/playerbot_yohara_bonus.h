@@ -79,7 +79,28 @@
 // B fair, - neither), "unequip failed", and "done" (throttled) when nothing is left to do. The gear history:
 // PLAYERBOT_YOHARA_BONUS_ADD / _MARBLE / _CHANGE item logs.
 //
+// MT2009_PLUS_BOT_ELEMENT_RESIST_V2 (the owner, 28 October 2026, the census 20 minutes after V1: lightning 34%, wind
+// 33%, fire 22%, ice 18%, earth 8% on average - "musza znacznie lepiej bonowac EQ pod odpornosci"):
+//   * the talisman (WEAR_PENDANT, the item_attr's pendant column) is a slot of the pass: the engine's 71085 / 71084 take
+//     it as any armour (its attribute set is ATTRIBUTE_SET_PENDANT; a change keeps a Talizman Woli's 6th/7th lines -
+//     ClearAttribute clears the five ordinary ones only). It rolls all six element resistances to 25 (ice, earth and
+//     dark by the table; fire, lightning and wind 5 a level in the global mode, BonusModeAttrValue) - the only gear
+//     line an ice, earth or dark bot has. Its must is the hunt element's resistance (any of the six), wanted the
+//     Desert and Human races (Seoganland / Namgan, the Twierdza); nothing else on it pays on Yohara (no Max HP, no
+//     element power roll there);
+//   * the element phase (playerbot_yohara_bonus_rules.h 2a): talisman, armour, bracelet, helmet - each changed until
+//     the hunt element's line stands at its TOP level (25 talisman, 15 the rest - the top of the piece's set, read
+//     through BonusModeAttrValue) with the armour's / bracelet's Max HP at level 4 (1500), or level 3 (1000) once half
+//     of the piece's element budget is gone; budgets GetPlayerBotYoharaElementCap (changes on the piece in all).
+//     Simulated against the global table and the change odds (2000 pieces each): talisman 80 -> 97% reach it, ~22
+//     changes; armour 300 -> 88%, ~146; bracelet 300 -> 73%, ~181; helmet 100 -> 92%, ~37: ~390 changes a bot on
+//     average, the 400 extra stones the owner gave on 28 October. A piece whose target is met is strong - never
+//     changed again; one whose budget ran out goes on by the shares and the leftover as before.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_bonus.h, in the anonymous namespace.
+
+// playerbot_bonus_mode.cpp (MT2009_PLUS_GLOBAL_BONUS_V1): the value a line of that level gets on that item.
+long BonusModeAttrValue(CItem* item, BYTE apply, BYTE level, long value);
 
 namespace
 {
@@ -107,9 +128,12 @@ namespace
 		playerbot_yohara_bonus_rules::TTier fairE;
 	};
 
-	// The priority order (weapon, armour, helmet, the jewellery, the earrings, the shield, the glove) and the shares.
+	// The priority order (weapon, talisman, armour, helmet, the jewellery, the earrings, the shield, the glove) and the
+	// shares.
 	const TPlayerBotYoharaBonusSlot PLAYERBOT_YOHARA_BONUS_SLOTS[] = {
 		{ WEAR_WEAPON, "weapon", 16, { 3, 4, 3 }, { 2, 4, 3 }, { 3, 4, 3 }, { 2, 4, 3 } },
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the talisman - the hunt element's resistance (its must), else a wanted race line
+		{ WEAR_PENDANT, "talisman", 10, { 1, 5, 3 }, { 1, 4, 3 }, { 1, 5, 3 }, { 1, 4, 3 } },
 		{ WEAR_BODY,   "body",   14, { 3, 4, 3 }, { 2, 4, 3 }, { 2, 4, 3 }, { 2, 3, 3 } },
 		{ WEAR_HEAD,   "head",   11, { 3, 3, 3 }, { 2, 4, 3 }, { 2, 4, 3 }, { 2, 3, 3 } },
 		{ WEAR_NECK,   "neck",   11, { 2, 4, 4 }, { 2, 3, 3 }, { 2, 4, 4 }, { 2, 3, 3 } },
@@ -121,6 +145,43 @@ namespace
 	};
 	const int PLAYERBOT_YOHARA_BONUS_SLOT_COUNT =
 			(int)(sizeof(PLAYERBOT_YOHARA_BONUS_SLOTS) / sizeof(PLAYERBOT_YOHARA_BONUS_SLOTS[0]));
+
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase's rank and budget (changes on the piece in all) - talisman,
+	// armour, bracelet, helmet (the owner's order; the costume and the hairstyle are the costume pass's, 70064).
+	int GetPlayerBotYoharaElementRank(BYTE wearCell)
+	{
+		switch (wearCell)
+		{
+			case WEAR_PENDANT: return 0;
+			case WEAR_BODY: return 1;
+			case WEAR_WRIST: return 2;
+			case WEAR_HEAD: return 3;
+			default: return -1;
+		}
+	}
+
+	int GetPlayerBotYoharaElementCap(BYTE wearCell)
+	{
+		switch (wearCell)
+		{
+			case WEAR_PENDANT: return 80;
+			case WEAR_BODY: return 300;
+			case WEAR_WRIST: return 300;
+			case WEAR_HEAD: return 100;
+			default: return 0;
+		}
+	}
+
+	// The hunt element's resistance point a piece in that slot works for: the talisman any of the six (all roll on it),
+	// the armour, bracelet and helmet fire, lightning or wind (GetPlayerBotHuntResistPoint); 0 for none.
+	BYTE GetPlayerBotYoharaSlotHuntPoint(LPCHARACTER ch, BYTE wearCell)
+	{
+		if (wearCell == WEAR_PENDANT)
+			return GetPlayerBotElementResistPoint(GetPlayerBotHuntElementIndex(ch));
+		if (wearCell == WEAR_BODY || wearCell == WEAR_WRIST || wearCell == WEAR_HEAD)
+			return GetPlayerBotHuntResistPoint(ch);
+		return 0;
+	}
 
 	// changes spent per piece (item id), per bot - this core's memory; a restart starts the shares from the stock
 	std::map<DWORD, std::map<DWORD, int> > s_mapPlayerBotYoharaBonusSpent;
@@ -179,6 +240,14 @@ namespace
 		const bool race = type == POINT_ATTBONUS_DEVIL || type == POINT_ATTBONUS_HUMAN;
 		const BYTE hunt = GetPlayerBotHuntResistPoint(ch);
 		const bool huntResist = hunt != 0 && type == hunt;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the talisman's must - the hunt element's resistance, whichever of the six
+		if (wearCell == WEAR_PENDANT)
+		{
+			const BYTE tal = GetPlayerBotYoharaSlotHuntPoint(ch, WEAR_PENDANT);
+			if (tal != 0 && type == tal)
+				return ROLE_MUST;
+			return type == POINT_ATTBONUS_DESERT || type == POINT_ATTBONUS_HUMAN ? ROLE_WANTED : ROLE_OTHER;
+		}
 		const bool arrow = type == POINT_RESIST_BOW;
 		const bool magicResist = type == POINT_RESIST_MAGIC;
 		// MT2009_PLUS_STEAL_CAP_V1: the rest of the gear already gives the 50% cap - absorption here is wasted.
@@ -272,14 +341,62 @@ namespace
 		if (it == g_map_itemAttr.end())
 			return 1;
 		int level = 1;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the value the engine gives the level on this item (a talisman's fire,
+		// lightning and wind are 5 a level in the global mode, not the table's 2-15)
 		for (int l = ITEM_ATTRIBUTE_MAX_LEVEL; l >= 1; --l)
-			if (it->second.lValues[l - 1] > 0 && value >= it->second.lValues[l - 1])
+		{
+			const long step = BonusModeAttrValue(item, type, (BYTE)l, it->second.lValues[l - 1]);
+			if (step > 0 && value >= step)
 			{
 				level = l;
 				break;
 			}
+		}
 		const int slotMax = GetPlayerBotYoharaBonusSlotMaxLevel(item, type);
 		return slotMax > 0 && level >= slotMax ? ITEM_ATTRIBUTE_MAX_LEVEL : level;
+	}
+
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the top value of a line on this piece (its set's top level, the engine's value
+	// for it); 0 when it never rolls there.
+	long GetPlayerBotYoharaTopLineValue(LPITEM item, BYTE type)
+	{
+		const int top = GetPlayerBotYoharaBonusSlotMaxLevel(item, type);
+		if (top <= 0)
+			return 0;
+		TItemAttrMap::const_iterator it = g_map_itemAttr.find(type);
+		return it == g_map_itemAttr.end() ? 0 : BonusModeAttrValue(item, type, (BYTE)top, it->second.lValues[top - 1]);
+	}
+
+	// The piece's line of a type (0 none) - the five ordinary lines.
+	long GetPlayerBotYoharaPieceLine(LPITEM item, BYTE type)
+	{
+		for (int i = 0; item && type && i < PLAYERBOT_BONUS_MARBLE_LINES && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (item->GetAttributeType(i) == type)
+				return item->GetAttributeValue(i);
+		return 0;
+	}
+
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase's target of a piece: 1 met (the hunt element's line at the
+	// top value; the armour's / bracelet's Max HP at level 4, at level 3 once half of the budget is spent), 0 short,
+	// -1 none (no hunt element, or its resistance does not roll on the piece).
+	int GetPlayerBotYoharaElementTarget(LPCHARACTER ch, LPITEM item, BYTE wearCell, int spent)
+	{
+		if (!ch || !item || GetPlayerBotYoharaElementRank(wearCell) < 0)
+			return -1;
+		const BYTE point = GetPlayerBotYoharaSlotHuntPoint(ch, wearCell);
+		const long top = point ? GetPlayerBotYoharaTopLineValue(item, point) : 0;
+		if (top <= 0)
+			return -1;
+		if (GetPlayerBotYoharaPieceLine(item, point) < top)
+			return 0;
+		if ((wearCell == WEAR_BODY || wearCell == WEAR_WRIST) && GetPlayerBotYoharaBonusSlotMaxLevel(item, POINT_MAX_HP) > 0)
+		{
+			const int need = spent * 2 < GetPlayerBotYoharaElementCap(wearCell) ? 4 : 3;
+			const long hp = GetPlayerBotYoharaPieceLine(item, POINT_MAX_HP);
+			if (hp <= 0 || GetPlayerBotYoharaBonusLineLevel(item, POINT_MAX_HP, hp) < need)
+				return 0;
+		}
+		return 1;
 	}
 
 	// How many kinds of the slot's list can roll on the piece at all, and which must kinds can (MUST_ROLLS_1/_2).
@@ -326,9 +443,10 @@ namespace
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: a piece whose target holds the hunt element's resistance takes the
 		// slot's element tiers (two musts at level 4 are some 40-100 changes, at level 3 some 10-30 - simulated
 		// against the global table: armour, bracelet; the helmet's one must the same way).
-		const bool element = GetPlayerBotHuntResistPoint(ch) != 0 &&
-				GetPlayerBotYoharaBonusSlotMaxLevel(item, GetPlayerBotHuntResistPoint(ch)) > 0 &&
-				(slot.bWearCell == WEAR_BODY || slot.bWearCell == WEAR_WRIST || slot.bWearCell == WEAR_HEAD);
+		const bool element = GetPlayerBotYoharaSlotHuntPoint(ch, slot.bWearCell) != 0 &&
+				GetPlayerBotYoharaBonusSlotMaxLevel(item, GetPlayerBotYoharaSlotHuntPoint(ch, slot.bWearCell)) > 0 &&
+				(slot.bWearCell == WEAR_BODY || slot.bWearCell == WEAR_WRIST || slot.bWearCell == WEAR_HEAD ||
+				 slot.bWearCell == WEAR_PENDANT);
 		return playerbot_yohara_bonus_rules::TierOf(lines, count, element ? slot.strongE : slot.strong,
 				element ? slot.fairE : slot.fair, mustRolls, available);
 	}
@@ -422,6 +540,14 @@ namespace
 		std::map<DWORD, int>::const_iterator it = spent.find(p.item->GetID());
 		piece.spent = it != spent.end() ? it->second : 0;
 		piece.weight = PLAYERBOT_YOHARA_BONUS_SLOTS[p.slotIndex].iWeight;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase; a piece at its element target is done (strong)
+		const BYTE wearCell = PLAYERBOT_YOHARA_BONUS_SLOTS[p.slotIndex].bWearCell;
+		const int target = GetPlayerBotYoharaElementTarget(ch, p.item, wearCell, piece.spent);
+		piece.elemRank = target >= 0 ? GetPlayerBotYoharaElementRank(wearCell) : -1;
+		piece.elemShort = target == 0;
+		piece.elemCap = target >= 0 ? GetPlayerBotYoharaElementCap(wearCell) : 0;
+		if (target > 0)
+			piece.tier = playerbot_yohara_bonus_rules::TIER_STRONG;
 		return piece;
 	}
 
@@ -438,7 +564,7 @@ namespace
 		if (built.empty())
 		{
 			const playerbot_yohara_bonus_rules::TChoice none = { -1, playerbot_yohara_bonus_rules::STEP_NONE,
-					playerbot_yohara_bonus_rules::WANT_NONE, false, 0 };
+					playerbot_yohara_bonus_rules::WANT_NONE, false, 0, false };
 			return none;
 		}
 		return playerbot_yohara_bonus_rules::Pick(&built[0], (int)built.size(), kinds,
@@ -520,6 +646,7 @@ namespace
 		const int linesBefore = item->GetAttributeCount();
 		const int tierBefore = built[choice.piece].tier;
 		const bool leftover = choice.leftover;
+		const bool elementPhase = choice.element;	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2
 		const int cap = choice.cap;
 		if (!ch->UnequipItem(item))
 		{
@@ -570,7 +697,7 @@ namespace
 			if (pieces[i].item == item)
 				tierAfter = built[i].tier;
 		sys_log(0, "PLAYERBOT_YOHARA_BONUS: pass pid=%u name=%s cohort=%d champion=%d slot=%s vnum=%u+%d add=%d marble=%d change=%d "
-				"lines=%d->%d tier=%c->%c%s spent=%d share=%d%s stock_add=%d stock_change=%d gear=[%s]",
+				"lines=%d->%d tier=%c->%c%s spent=%d share=%d%s%s stock_add=%d stock_change=%d gear=[%s]",
 				ch->GetPlayerID(), ch->GetName(), IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ? 1 : 0,
 				(int)ch->GetConquerorLevel(), PLAYERBOT_YOHARA_BONUS_SLOTS[target.slotIndex].szName, item->GetVnum(),
 				(int)item->GetRefineLevel(), used[playerbot_yohara_bonus_rules::STEP_ADD],
@@ -579,6 +706,7 @@ namespace
 				PlayerBotYoharaBonusTierChar(tierAfter),
 				tierAfter > tierBefore && tierAfter >= playerbot_yohara_bonus_rules::TIER_STRONG ? " TARGET" : "",
 				spent.count(item->GetID()) ? spent[item->GetID()] : 0, cap, leftover ? " leftover" : "",
+				elementPhase ? " element" : "",
 				bag.addUnits, bag.changeUnits, DescribePlayerBotYoharaBonusGear(pieces, built, bag.changeUnits).c_str());
 		state.dwNextBonusCheckTime = dwNow + PLAYERBOT_YOHARA_BONUS_PASS_MS;
 		return stones;

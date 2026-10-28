@@ -435,6 +435,16 @@ namespace
 		}
 	}
 
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a stone of the kind whose basic line is the hunt element's resistance.
+	bool IsPlayerBotDsHuntKindStone(LPCHARACTER ch, LPITEM stone)
+	{
+		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
+		for (int i = 0; stone && hunt >= 0 && i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
+			if (stone->GetAttributeType(i) != 0 && GetPlayerBotResistLineElement(stone->GetAttributeType(i)) == hunt)
+				return true;
+		return false;
+	}
+
 	struct TPlayerBotAlchemyStats
 	{
 		unsigned shards, cors, opened, equipped, refinesGrade, refinesStep, refinesStrength, refineFails,
@@ -1858,14 +1868,20 @@ namespace
 		}
 		// MT2009_PLUS_BOT_DS_YOHARA800_V1: a bulk alchemist does any kind's grade or step work first, then spreads
 		// its beans - the kind whose final stone has the lowest strength, the better Yohara lines on a tie.
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the kind whose stone carries the hunt element's resistance (its basic line -
+		// Diament ice, Rubin fire, Jadeit wind, Szafir earth, Granat lightning, Onyks dark) goes first: its grades,
+		// steps and beans before any other kind's (pass 0), the rest as before (pass 1).
 		const bool bulk = IsPlayerBotDsBulk(ch);
 		int chosenKind = -1, chosenWork = PLAYERBOT_DS_WORK_NONE;
 		LPITEM chosenA = NULL, chosenB = NULL;
+		for (int pass = bulk && GetPlayerBotHuntElement(ch) > 0 ? 0 : 1; pass < 2 && chosenKind < 0; ++pass)
 		for (int kind = 0; kind < DS_SLOT_MAX; ++kind)
 		{
 			LPITEM a = NULL, b = NULL;
 			const int work = FindPlayerBotDsRefine(ch, kind, a, b);
 			if (work == PLAYERBOT_DS_WORK_NONE)
+				continue;
+			if (pass == 0 && !IsPlayerBotDsHuntKindStone(ch, a))
 				continue;
 			if (!bulk || work != PLAYERBOT_DS_WORK_STRENGTH)
 			{

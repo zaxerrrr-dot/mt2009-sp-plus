@@ -2620,7 +2620,11 @@ namespace
 		// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: a Yohara bot's hunt element's resistance is the first line of a costume
 		// and a hairstyle whose set rolls it (playerbot_element_resist.h) - not finished without it; a body costume
 		// that has it after PLAYERBOT_COSTUME_HUNT_ALONE_AFTER changes is finished with it alone.
-		const bool huntMissing = IsPlayerBotCostumeHuntLineMissing(ch, item);
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: and below its top (15) while the piece has had fewer than
+		// PLAYERBOT_COSTUME_HUNT_TOP_CHANGES changes
+		const bool huntMissing = IsPlayerBotCostumeHuntLineMissing(ch, item) ||
+				(IsPlayerBotCostumeHuntLineShort(ch, item) &&
+				 (state.dwCostumeBonusFocusItem != item->GetID() || state.iCostumeChangesSpent < PLAYERBOT_COSTUME_HUNT_TOP_CHANGES));
 		const BYTE huntPoint = huntMissing || hair ? 0 : GetPlayerBotHuntResistPoint(ch);
 		if (huntPoint && count >= 2 && good >= 1 && IsPlayerBotYoharaBonusMember(ch) &&
 				IsPlayerBotApplyOnAttrSet(huntPoint, item->GetAttributeSetIndex()) &&
@@ -2629,7 +2633,9 @@ namespace
 		// Finished: two lines worth keeping (all of them on a two-line piece).
 		if (!huntMissing && (hair ? (count >= 1 && good >= 1) : (count >= 2 && good >= 2)))
 			return 0;
-		const int wanted = hair ? 1 : ch->GetGold() >= PLAYERBOT_COSTUME_BONUS_THREE_LINES_GOLD ? 3 : 2;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a hairstyle chasing its hunt element's top line takes two lines first (a
+		// change rerolls them all: two lines get there four times in five within the budget, one line one time in two)
+		const int wanted = hair ? (huntMissing ? 2 : 1) : ch->GetGold() >= PLAYERBOT_COSTUME_BONUS_THREE_LINES_GOLD ? 3 : 2;
 		return count < wanted ? PLAYERBOT_COSTUME_RESET_VNUM : PLAYERBOT_COSTUME_CHANGE_VNUM;
 	}
 
@@ -2681,13 +2687,31 @@ namespace
 		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(need);
 		if (!proto || proto->dwGold == 0)
 			return false;
-		const long long price = (long long)proto->dwGold * PLAYERBOT_COSTUME_REAGENT_STACK;
-		if ((long long)ch->GetGold() - price < PLAYERBOT_COSTUME_BONUS_RESERVE_GOLD)
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a Yohara bot working its hunt element's line buys several stacks at once
+		LPITEM target = PickPlayerBotCostumeBonusTarget(ch, state, &need);
+		const int stacks = target && (IsPlayerBotCostumeHuntLineMissing(ch, target) || IsPlayerBotCostumeHuntLineShort(ch, target))
+				? PLAYERBOT_COSTUME_YOHARA_STACKS : 1;
+		int bought = 0;
+		long long paid = 0;
+		for (int i = 0; i < stacks; ++i)
+		{
+			const long long price = (long long)proto->dwGold * PLAYERBOT_COSTUME_REAGENT_STACK;
+			if ((long long)ch->GetGold() - price < PLAYERBOT_COSTUME_BONUS_RESERVE_GOLD ||
+					(i > 0 && ch->GetEmptyInventory(1) < 0 && FindPlayerBotCostumeReagentCell(ch, need) < 0))
+				break;
+			PlayerBotChangeGold(ch, -(int)price);
+			if (!ch->AutoGiveItem(need, PLAYERBOT_COSTUME_REAGENT_STACK))
+			{
+				PlayerBotChangeGold(ch, (int)price);
+				break;
+			}
+			++bought;
+			paid += price;
+		}
+		if (bought == 0)
 			return false;
-		PlayerBotChangeGold(ch, -(int)price);
-		ch->AutoGiveItem(need, PLAYERBOT_COSTUME_REAGENT_STACK);
 		sys_log(0, "PLAYERBOT_COSTUME_BONUS: bought pid=%u name=%s vnum=%u x%u price=%lld gold_left=%lld",
-				ch->GetPlayerID(), ch->GetName(), need, PLAYERBOT_COSTUME_REAGENT_STACK, price,
+				ch->GetPlayerID(), ch->GetName(), need, PLAYERBOT_COSTUME_REAGENT_STACK * bought, paid,
 				(long long)ch->GetGold());
 		return true;
 	}
@@ -2741,7 +2765,11 @@ namespace
 			}
 			ConsumePlayerBotBonusStoneAt(ch, cell);
 			++spent;
-			if (!reset && ++state.iCostumeChangesSpent >= PLAYERBOT_COSTUME_MAX_CHANGES)
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a Yohara bot's piece that rolls its hunt element's line - up to
+			// PLAYERBOT_COSTUME_HUNT_TOP_CHANGES
+			if (!reset && ++state.iCostumeChangesSpent >= (IsPlayerBotYoharaBonusMember(ch) &&
+					(IsPlayerBotCostumeHuntLineMissing(ch, item) || IsPlayerBotCostumeHuntLineShort(ch, item))
+					? PLAYERBOT_COSTUME_HUNT_TOP_CHANGES : PLAYERBOT_COSTUME_MAX_CHANGES))
 				state.vecCostumeBonusDone.push_back(item->GetID());
 			LogManager::instance().ItemLog(ch, item, reset ? "PLAYERBOT_COSTUME_RESET" : "PLAYERBOT_COSTUME_CHANGE",
 					item->GetName());

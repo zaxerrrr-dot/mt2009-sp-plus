@@ -21,6 +21,13 @@
 //      piece below the fair tier, then - only while the bag holds a safety margin over the reserve, since a reroll
 //      can drop a fair piece back below fair - to the fair piece that has had the fewest stones for its weight, up
 //      to three of its shares in all (LEFTOVER_SHARES).
+//
+// MT2009_PLUS_BOT_ELEMENT_RESIST_V2 (the owner, 28 October 2026: the bots' element resistance far too low - "musza
+// znacznie lepiej bonowac EQ pod odpornosci"): 2a. the element phase, before the shares - the pieces that carry the
+// hunt element's resistance (the engine's half ranks them: talisman, armour, bracelet, helmet) are changed, one at a
+// time in that rank, until the line stands at its top level (and the piece's Max HP must at its level), each up to an
+// element budget of its own (elemCap, changes on the piece in all). A piece whose element target is met counts as
+// strong (the engine's half) and is never changed again; one whose budget ran out goes on by the shares as before.
 namespace playerbot_yohara_bonus_rules {
 
 enum ETier { TIER_NONE = 0, TIER_FAIR = 1, TIER_STRONG = 2 };
@@ -122,6 +129,11 @@ struct TPiece
 	int tier;
 	int spent;	// changes spent on it (this world's memory of the pass)
 	int weight;
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase - its rank (-1 not in it), whether its element target is
+	// short, and its budget (changes on the piece in all)
+	int elemRank;
+	bool elemShort;
+	int elemCap;
 };
 
 struct TBag
@@ -138,6 +150,7 @@ struct TChoice
 	EWant want;
 	bool leftover;
 	int cap;
+	bool element;	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase's change
 };
 
 // The pool the shares are cut from: the change stones held, plus those spent on the pieces listed, less the reserve.
@@ -152,7 +165,7 @@ inline int Pool(const TPiece* pieces, int count, int changeUnits, int reserve)
 // The next stone. The pieces come in the priority order.
 inline TChoice Pick(const TPiece* pieces, int count, const TBag& bag, int reserve, int safety)
 {
-	TChoice c = { -1, STEP_NONE, WANT_NONE, false, 0 };
+	TChoice c = { -1, STEP_NONE, WANT_NONE, false, 0, false };
 	// 1. the adds, then the marble's fifth line
 	if (bag.addUnits > 0)
 		for (int i = 0; i < count; ++i)
@@ -173,6 +186,22 @@ inline TChoice Pick(const TPiece* pieces, int count, const TBag& bag, int reserv
 	// the reserve is the next pieces' (a new weapon, a new armour), never spent on these
 	if (bag.changeUnits <= reserve)
 		return c;
+	// 2a. MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase - the best ranked piece short of its element target,
+	// within its element budget
+	int elem = -1;
+	for (int i = 0; i < count; ++i)
+		if (pieces[i].lines > 0 && pieces[i].elemRank >= 0 && pieces[i].elemShort && pieces[i].spent < pieces[i].elemCap &&
+				(elem < 0 || pieces[i].elemRank < pieces[elem].elemRank))
+			elem = i;
+	if (elem >= 0)
+	{
+		c.piece = elem;
+		c.step = STEP_CHANGE;
+		c.want = WANT_STRONG;
+		c.cap = pieces[elem].elemCap;
+		c.element = true;
+		return c;
+	}
 	int sumWeights = 0;
 	for (int i = 0; i < count; ++i)
 		if (pieces[i].lines > 0)

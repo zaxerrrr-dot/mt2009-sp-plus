@@ -389,6 +389,9 @@ namespace
 	{
 		if (!ch || !item || item->GetVnum() != PLAYERBOT_CRAFT_MATERIAL_VNUM)
 			return false;
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a Yohara bot's elixir stock (playerbot_yohara_shop.h)
+		if (IsPlayerBotYoharaShopKept(ch, item))
+			return true;
 		const int wanted = GetPlayerBotCraftMaterialsWanted(ch, false); // MT2009_PLUS_HORSE30_V1
 		if (wanted <= 0)
 			return false;
