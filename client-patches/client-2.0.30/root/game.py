@@ -797,6 +797,8 @@ class GameWindow(ui.ScriptWindow):
 			"autohunt"			: (lambda : self.__ToggleAutoHunt(), None),
 			# MT2009_PLUS_AUTOHUNT_QUICK_V1: Shift+K starts/stops the hunt, no window.
 			"autohunt_quick"	: (lambda : __import__("uiautohunt").QuickToggle(), None),
+			# MT2009_PLUS_AUTOHUNT_TEST_V1: the TEST auto hunt (uiautohunt_test.py), Alt+H.
+			"autohunt_test"		: (lambda : __import__("uiautohunt_test").ToggleWindow(self), None),
 			"garbage_bin"		: (lambda : self.interface.ToggleGarbageBinWindow(), None),
 			"shop_search"		: (lambda : self.__PressF5Key(), None),
 			# F11: the event calendar (uieventcalendar.py).
@@ -3497,6 +3499,8 @@ class GameWindow(ui.ScriptWindow):
 		# MT2009_PLUS_RUMI_V1: the Okey table's "Zagraj w Okey" (minigame_rumi.quest).
 		serverCommandList["MiniGameRumiOpen"] = self.__MiniGameRumiOpen
 		serverCommandList["YutnoriOpen"] = self.__YutnoriOpen # MT2009_PLUS_YUTNORI_V1 (the table NPC)
+		# MT2009_PLUS_AUTOHUNT_TEST_V1: "AutoHuntTest on|off [reason]", the answer to /autohunt_test (uiautohunt_test.py).
+		serverCommandList["AutoHuntTest"] = __import__("uiautohunt_test").OnServerCommand
 
 		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): polecenia serwera
 		if getattr(app, "ENABLE_12ZI", 0):

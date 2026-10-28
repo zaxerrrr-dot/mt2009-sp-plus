@@ -925,6 +925,14 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 	protected:
 		DWORD	m_dwQuiverEffectID{};
 #endif
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+	// MT2009_PLUS_AUTOHUNT_TEST_V1: the test auto hunt runs - no collision with monsters and stones (TestActorCollision)
+	public:
+		void	SetAutoHuntTestPass(bool bFlag) { m_bAutoHuntTestPass = bFlag; }
+		bool	IsAutoHuntTestPass() const { return m_bAutoHuntTestPass; }
+	protected:
+		bool	m_bAutoHuntTestPass{};
+#endif
 };
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 

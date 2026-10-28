@@ -836,6 +836,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 	initguild();
 	initServerStateChecker();
 	initplayersettingsmodule();
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+	{ void Mt2009AutoHuntTest_RegisterPython(); Mt2009AutoHuntTest_RegisterPython(); } // MT2009_PLUS_AUTOHUNT_TEST_V1 (after player)
+#endif
 #ifdef ENABLE_CHANGELOOK_SYSTEM
 	{ void Mt2009ChangeLook_RegisterPython(); Mt2009ChangeLook_RegisterPython(); } // MT2009_PLUS_CHANGE_LOOK_V1 (after player, safebox, exchange)
 #endif

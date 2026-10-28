@@ -1256,6 +1256,18 @@ if ((Test-Path -LiteralPath $autoHuntNoRevengeApply -PathType Leaf) -and
         Write-Host ('Applied {0} Auto Lowy no-revenge edit(s).' -f $autoHuntNoRevengeResult.Applied) -ForegroundColor DarkGray
     }
 }
+# The TEST auto hunt (server-patches/autohunttest, MT2009_PLUS_AUTOHUNT_TEST_V1; the owner, 28 October 2026): /autohunt_test
+# tells root's uiautohunt_test.py (Alt+H) whether the exe's own hunt may run (event flags autohunt_test_off,
+# autohunt_test_ticket) - cmd.cpp and cmd_general.cpp, after autohuntnorevenge (it anchors on /autohunt_stop).
+$autoHuntTestApply = Join-Path $repo 'server-patches/autohunttest/Apply-AutoHuntTestPatch.ps1'
+if ((Test-Path -LiteralPath $autoHuntTestApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $autoHuntTestResult = & $autoHuntTestApply -SourceDir $engineGameSource
+    if ($autoHuntTestResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} test auto hunt edit(s).' -f $autoHuntTestResult.Applied) -ForegroundColor DarkGray
+    }
+}
 
 # Death Ruler wings (85101..85104) use broken assets in this client.
 # Older MT2009 Plus sources added grade 1 to the Metin/boss pool and grade

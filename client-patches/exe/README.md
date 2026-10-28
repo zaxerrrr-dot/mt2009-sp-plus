@@ -625,3 +625,38 @@ Serwer animacji nie widzi, więc nic poza wyglądem się nie zmienia. Ciosy wrę
 
 Sprawdzone: `clang-cl /Zs` pliku `ActorInstanceBattle.cpp` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`)
 z definicją i bez, `/E` potwierdza kod za definicją (28.10.2026). Exe nie budowane.
+
+## Testowe Auto Łowy (Alt+H) – `MT2009_PLUS_AUTOHUNT_TEST_V1` (`ENABLE_MT2009_AUTOHUNT_TEST`)
+
+Auto łowy z paczki „Oto Av” właściciela (28.10.2026) jako **test** obok naszych Auto Łowów (K / Shift+K, bez zmian). Tu
+poluje exe: co klatkę (`CPythonPlayer::Update`, po `__Update_AutoAttack`) wybiera najbliższego potwora, którego klient
+widzi (ranga i poziom z okna, kamienie osobno, zasięg wokół postaci albo – „Zasięg od startu” – wokół miejsca startu,
+wolna linia bez ściany mapy, nie cudzy: poruszający się gracz bliżej niego w 15 m go zabiera), daje go własnemu
+auto-atakowi klienta (podejście i ciosy), rzuca umiejętności z 12 pól co ich czas (ataku tylko w zasięgu celu), pije
+mikstury HP/PE z 12 pól poniżej ich % (do pełna co 0,4 s) i używa wzmocnień / ros co N sekund. Utknięcie (3 s bez ruchu i
+ciosu) albo 15 s bez ciosu – cel porzucony na 10 s. Nazwa celu jest zielona, postać przechodzi przez potwory i kamienie.
+Okno, zapis ustawień, wstawanie po śmierci i zgoda serwera to root `uiautohunt_test.py` (+ `server-patches/autohunttest`).
+**Bez nowych pakietów** – zwykłe pakiety ataku, umiejętności, celu i użycia przedmiotu.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_AUTOHUNT_TEST` |
+| `UserInterface/Mt2009AutoHuntTest.cpp` (**nowy**) | cała logika polowania, efekt zasięgu (`d:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.mse`, skala zasięg/10000), `player.AutoHuntTest*` (13 funkcji) i `player.AUTOHUNT_TEST_SKILL_SLOTS` / `ITEM_SLOTS` |
+| `UserInterface/PythonPlayer.h/.cpp` | stan `m_kAutoHuntTest` (ustawienia, 24 pola, cel, utknięcie), `AutoHuntTest_Update()` w `Update`, `AutoHuntTest_Reset()` w `Clear` |
+| `UserInterface/InstanceBase.h/.cpp`, `InstanceBaseEffect.cpp` | `SetAutoHuntTestTarget` (zielona nazwa w `GetNameColor`), `SetAutoHuntTestPass` |
+| `GameLib/ActorInstance.h`, `ActorInstance.cpp` (**nowy w nakładce**) | `m_bAutoHuntTestPass` (zerowane w inicjalizacji aktora) |
+| `GameLib/ActorInstanceCollisionDetection.cpp` (**nowy w nakładce**) | `TestActorCollision`: z polowaniem testowym bez kolizji z potworami i kamieniami |
+| `UserInterface/UserInterface.cpp`, `UserInterface.vcxproj(.filters)` | `Mt2009AutoHuntTest_RegisterPython()` po module `player`, nowy plik |
+
+Różnice względem paczki: zasięg naprawdę ogranicza (w paczce i tak było maks. 50 m), przełącznik zasięgu („Odak” paczki) kotwiczy
+obszar przy starcie (w paczce nic nie robił), pole 0 ekwipunku może trzymać przedmiot, utknięty cel jest naprawdę pomijany,
+każda mikstura HP/PE (wartość 0 / 1 przedmiotu) się liczy, nie tylko 27001–27008 / 70390–70391; bez afektu premium 814 i
+przedmiotów 20170–20173 (zgoda serwera zamiast nich); bez gwiazdki startu na minimapie i bez przycisku na pasku.
+Nie zmienia `ActorInstanceBattle.cpp` (`ENABLE_MT2009_RUN_THROUGH_ARROWS` bez zmian – działa też dla tego polowania).
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` + ten
+katalog) – `Mt2009AutoHuntTest.cpp`, `PythonPlayer.cpp`, `PythonPlayerSkill.cpp`, `PythonPlayerModule.cpp`, `InstanceBase.cpp`,
+`InstanceBaseEffect.cpp`, `InstanceBaseBattle.cpp`, `UserInterface.cpp`, `PythonCharacterManager.cpp`,
+`PythonNetworkStreamPhaseGame.cpp`, `GameLib/ActorInstance.cpp`, `ActorInstanceCollisionDetection.cpp`,
+`ActorInstanceBattle.cpp`, `ActorInstanceData.cpp` bez błędów, z definicją i bez; `/E` potwierdza kod za definicją
+(28.10.2026). Exe nie budowane.

@@ -1453,6 +1453,11 @@ class Hunter(object):
     def Start(self, startText=None):
         if self.running:
             return
+        # MT2009_PLUS_AUTOHUNT_TEST_V1: never together with the TEST auto hunt (Alt+H, uiautohunt_test.py).
+        try:
+            __import__('uiautohunt_test').StopIfRunning()
+        except Exception:
+            pass
         self.ResetState()
         (x, y, z) = player.GetMainCharacterPosition()
         self.anchor = (int(x), int(y))

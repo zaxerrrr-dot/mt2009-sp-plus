@@ -1,0 +1,20 @@
+[
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TEST_V1 (declare)",
+  "old": "ACMD(do_autohunt_stop);\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (declare) (Autor: mur4s)\n",
+  "new": "ACMD(do_autohunt_stop);\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (declare) (Autor: mur4s)\nACMD(do_autohunt_test);\t// MT2009_PLUS_AUTOHUNT_TEST_V1 (declare)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TEST_V1 (table)",
+  "old": "\t{ \"autohunt_stop\",\tdo_autohunt_stop,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (table) (Autor: mur4s)\n",
+  "new": "\t{ \"autohunt_stop\",\tdo_autohunt_stop,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_AUTOHUNT_NO_REVENGE_V1 (table) (Autor: mur4s)\n\t{ \"autohunt_test\",\tdo_autohunt_test,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_AUTOHUNT_TEST_V1 (table)\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TEST_V1 (command)",
+  "old": "ACMD(do_autohunt_stop)\n{\n\tCPlayerBotManager::instance().OnAutoHunt(ch, false);\n}\n",
+  "new": "ACMD(do_autohunt_stop)\n{\n\tCPlayerBotManager::instance().OnAutoHunt(ch, false);\n}\n\n// MT2009_PLUS_AUTOHUNT_TEST_V1 (command) (server-patches/autohunttest, the owner, 28 October 2026): the TEST auto hunt of root's\n// uiautohunt_test.py (Alt+H). The client exe hunts by itself (the normal attack, skill and item packets); the server only\n// says whether it may: \"/autohunt_test b\" (the start, then once a minute while it runs) -> \"AutoHuntTest on\", or\n// \"AutoHuntTest off flag\" with the event flag autohunt_test_off (\"/e autohunt_test_off 1\" switches it off for everybody),\n// \"AutoHuntTest off item\" with the event flag autohunt_test_ticket and no Auto Lowy ticket (the 8 h affect 560 or the\n// 7 / 14 day items 72800 / 72801, as for Auto Lowy). \"/autohunt_test d\": stopped (log only). A character without a\n// connection (a bot) gets nothing.\nACMD(do_autohunt_test)\n{\n\tif (!ch || !ch->GetDesc())\n\t\treturn;\n\tchar arg1[256];\n\tone_argument(argument, arg1, sizeof(arg1));\n\tif (arg1[0] != 'b')\n\t{\n\t\tsys_log(1, \"AUTOHUNT_TEST: %s stop\", ch->GetName());\n\t\treturn;\n\t}\n\tif (quest::CQuestManager::instance().GetEventFlag(\"autohunt_test_off\"))\n\t{\n\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntTest off flag\");\n\t\treturn;\n\t}\n\tif (quest::CQuestManager::instance().GetEventFlag(\"autohunt_test_ticket\"))\n\t{\n\t\tif (!ch->IsLoadedAffect())\n\t\t\treturn;\n\t\tif (!ch->FindAffect(560) && ch->CountSpecifyItem(72800) + ch->CountSpecifyItem(72801) <= 0)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntTest off item\");\n\t\t\treturn;\n\t\t}\n\t}\n\tsys_log(1, \"AUTOHUNT_TEST: %s start\", ch->GetName());\n\tch->ChatPacket(CHAT_TYPE_COMMAND, \"AutoHuntTest on\");\n}\n"
+ }
+]
