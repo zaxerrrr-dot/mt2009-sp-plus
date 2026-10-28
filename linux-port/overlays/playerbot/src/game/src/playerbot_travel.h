@@ -761,13 +761,17 @@ namespace
 		LPITEM armor = ch->GetWear(WEAR_BODY);
 		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: a valid young heroes' weapon is a weapon of its level at +9
 		// (GetPlayerBotReadyWeaponPlus), whatever the real weapon prepared behind it.
+		// MT2009_PLUS_SPIDER3_BOTS_V2 (the owner, 28 October 2026): a young heroes' weapon ALWAYS counts as
+		// better than any weapon a threshold names - whatever its plus, and to its last minute (it was the valid
+		// one only, +9: one about to run out failed the gate).
+		const bool young = weapon && IsPlayerBotMlodziWeapon(weapon);
 		if (!weapon || weapon->GetType() != ITEM_WEAPON || !armor || !ch->GetWear(WEAR_HEAD) ||
-				(!IsPlayerBotMlodziWeaponValid(weapon) && NeedsPlayerBotProperWeapon(ch)))
+				(!young && NeedsPlayerBotProperWeapon(ch)))
 			return false;
 		const bool v2 = map == PLAYERBOT_MAP_SPIDER_V2;
 		// MT2009_PLUS_SPIDER3_BOTS_V1: V3 one grade over V2, and more potions.
 		const bool v3 = map == PLAYERBOT_MAP_SPIDER_V3;
-		if (GetPlayerBotReadyWeaponPlus(weapon) < (v3 ? PLAYERBOT_SPIDER_V3_WEAPON_PLUS : v2 ? PLAYERBOT_SPIDER_V2_WEAPON_PLUS : PLAYERBOT_SPIDER_V1_WEAPON_PLUS) ||
+		if ((!young && GetPlayerBotReadyWeaponPlus(weapon) < (v3 ? PLAYERBOT_SPIDER_V3_WEAPON_PLUS : v2 ? PLAYERBOT_SPIDER_V2_WEAPON_PLUS : PLAYERBOT_SPIDER_V1_WEAPON_PLUS)) ||
 				(int)armor->GetRefineLevel() < (v3 ? PLAYERBOT_SPIDER_V3_ARMOUR_PLUS : v2 ? PLAYERBOT_SPIDER_V2_ARMOUR_PLUS : PLAYERBOT_SPIDER_V1_ARMOUR_PLUS))
 			return false;
 		size_t red = 0, blue = 0;

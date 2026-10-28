@@ -1,156 +1,64 @@
-// MT2009_PLUS_SPIDER3_DROPS_V1: the five Best. poison spiders of 3 Loch Pajakow (217) drop as the pl-wiki says
-// (28 October 2026; the monster pages and the map page "3 Loch Pajakow"). The Dockerfile step "3 Loch Pajakow drops"
-// takes every other group of 2071-2075 out first (the package's limit groups of level 60 and MT2009_mglobal_2071..2075).
-//  * Type drop: each monster's own list from its page - no level gate (the engine's drop groups have none; the wiki's
-//    "od 60 poziomu" holds in practice: the spiders are 60-68). Chances as the global sheet's rows had them (0.5).
-//  * Type limit, level_limit 75: the map page's "od Lv. 75 wypadaja bronie na Lv. 65 ulepszone maks. +5" - the level-65
-//    weapons +0..+5, the families split by the monster's own weapon on its page (the young one swords, the red one bows
-//    ...); a percent each, +0 0.10 down to +5 0.01. Best. Szpon. drops nothing of its own (its page: no weapon, no armour).
+// MT2009_PLUS_SPIDER3_DROPS_V2: the five Best. poison spiders of 3 Loch Pajakow (217), one limit group each (level_limit
+// 60: a character of 60 and up - the wiki's "od 60 poziomu"), the Dockerfile step "3 Loch Pajakow drops" taking every
+// other group of 2071-2075 out first (the package's limit groups and MT2009_mglobal_2071..2075). The owner, 28 October
+// 2026: the weapons and shields of each monster's pl-wiki page, the helmets of the package's old groups back (their
+// chances, 0.5), no level-65 weapons. Chances are the engine's limit percent: the old groups' 0.5 for a weapon, a helmet
+// or the pentagonal shield, 0.1 for the +0 shields (the old Lwia Tarcza's of 2075).
 
-Group	MT2009_spider3_2071_drop
+Group	MT2009_spider3_2071
 {
 	Mob	2071	-- Best. Mlody Truj. Pajak
-	Type	drop
+	Type	limit
+	Level_limit	60
 	1	114	1	0.5	-- Wielki Miecz+4
 	2	13024	1	0.5	-- Pieciokatna Tarcza+4
 }
 
-Group	MT2009_spider3_2071_lv75
-{
-	Mob	2071	-- Best. Mlody Truj. Pajak
-	Type	limit
-	Level_limit	75
-	1	140	1	0.1	-- Miecz Bojowy+0
-	2	141	1	0.08	-- Miecz Bojowy+1
-	3	142	1	0.06	-- Miecz Bojowy+2
-	4	143	1	0.04	-- Miecz Bojowy+3
-	5	144	1	0.02	-- Miecz Bojowy+4
-	6	145	1	0.01	-- Miecz Bojowy+5
-	7	150	1	0.1	-- Miecz Szponu Ducha+0
-	8	151	1	0.08	-- Miecz Szponu Ducha+1
-	9	152	1	0.06	-- Miecz Szponu Ducha+2
-	10	153	1	0.04	-- Miecz Szponu Ducha+3
-	11	154	1	0.02	-- Miecz Szponu Ducha+4
-	12	155	1	0.01	-- Miecz Szponu Ducha+5
-	13	160	1	0.1	-- Miecz Nimfy+0
-	14	161	1	0.08	-- Miecz Nimfy+1
-	15	162	1	0.06	-- Miecz Nimfy+2
-	16	163	1	0.04	-- Miecz Nimfy+3
-	17	164	1	0.02	-- Miecz Nimfy+4
-	18	165	1	0.01	-- Miecz Nimfy+5
-}
-
-Group	MT2009_spider3_2072_drop
+Group	MT2009_spider3_2072
 {
 	Mob	2072	-- Best. Smiert. Truj. Paj.
-	Type	drop
+	Type	limit
+	Level_limit	60
 	1	13024	1	0.5	-- Pieciokatna Tarcza+4
+	2	12626	1	0.5	-- Czapka Mnicha+6
+	3	12645	1	0.5	-- Czapka Feniksa+5
+	4	12664	1	0.5	-- Swietlista Czapka+4
 }
 
-Group	MT2009_spider3_2072_lv75
-{
-	Mob	2072	-- Best. Smiert. Truj. Paj.
-	Type	limit
-	Level_limit	75
-	1	1100	1	0.1	-- Smoczy Noz+0
-	2	1101	1	0.08	-- Smoczy Noz+1
-	3	1102	1	0.06	-- Smoczy Noz+2
-	4	1103	1	0.04	-- Smoczy Noz+3
-	5	1104	1	0.02	-- Smoczy Noz+4
-	6	1105	1	0.01	-- Smoczy Noz+5
-	7	1110	1	0.1	-- Noz Blyskawicy+0
-	8	1111	1	0.08	-- Noz Blyskawicy+1
-	9	1112	1	0.06	-- Noz Blyskawicy+2
-	10	1113	1	0.04	-- Noz Blyskawicy+3
-	11	1114	1	0.02	-- Noz Blyskawicy+4
-	12	1115	1	0.01	-- Noz Blyskawicy+5
-}
-
-Group	MT2009_spider3_2073_drop
+Group	MT2009_spider3_2073
 {
 	Mob	2073	-- Best. Czerw. Truj. Paj.
-	Type	drop
+	Type	limit
+	Level_limit	60
 	1	2114	1	0.5	-- Luk Jednorozca+4
 	2	2094	1	0.5	-- Luk Kolczastego Lis.+4
 	3	13024	1	0.5	-- Pieciokatna Tarcza+4
+	4	12486	1	0.5	-- Krwawy Helm+6
+	5	12505	1	0.5	-- Wyzywajacy Helm+5
+	6	12524	1	0.5	-- Zamkowy Helm+4
 }
 
-Group	MT2009_spider3_2073_lv75
-{
-	Mob	2073	-- Best. Czerw. Truj. Paj.
-	Type	limit
-	Level_limit	75
-	1	2130	1	0.1	-- Boski Luk Moreli+0
-	2	2131	1	0.08	-- Boski Luk Moreli+1
-	3	2132	1	0.06	-- Boski Luk Moreli+2
-	4	2133	1	0.04	-- Boski Luk Moreli+3
-	5	2134	1	0.02	-- Boski Luk Moreli+4
-	6	2135	1	0.01	-- Boski Luk Moreli+5
-	7	2140	1	0.1	-- Olbrz. Luk Zolt. Smoka+0
-	8	2141	1	0.08	-- Olbrz. Luk Zolt. Smoka+1
-	9	2142	1	0.06	-- Olbrz. Luk Zolt. Smoka+2
-	10	2143	1	0.04	-- Olbrz. Luk Zolt. Smoka+3
-	11	2144	1	0.02	-- Olbrz. Luk Zolt. Smoka+4
-	12	2145	1	0.01	-- Olbrz. Luk Zolt. Smoka+5
-}
-
-Group	MT2009_spider3_2074_lv75
+Group	MT2009_spider3_2074
 {
 	Mob	2074	-- Best. Szpon. Truj. Paj.
 	Type	limit
-	Level_limit	75
-	1	3130	1	0.1	-- Partyzana+0
-	2	3131	1	0.08	-- Partyzana+1
-	3	3132	1	0.06	-- Partyzana+2
-	4	3133	1	0.04	-- Partyzana+3
-	5	3134	1	0.02	-- Partyzana+4
-	6	3135	1	0.01	-- Partyzana+5
-	7	3140	1	0.1	-- Magnetyczne Ostrze+0
-	8	3141	1	0.08	-- Magnetyczne Ostrze+1
-	9	3142	1	0.06	-- Magnetyczne Ostrze+2
-	10	3143	1	0.04	-- Magnetyczne Ostrze+3
-	11	3144	1	0.02	-- Magnetyczne Ostrze+4
-	12	3145	1	0.01	-- Magnetyczne Ostrze+5
+	Level_limit	60
+	1	12346	1	0.5	-- Skorzana Maska+6
+	2	12365	1	0.5	-- Maska Kolcza+5
+	3	12384	1	0.5	-- Stalowa Maska+4
 }
 
-Group	MT2009_spider3_2075_drop
-{
-	Mob	2075	-- Best. Truj. Pajak Zoln.
-	Type	drop
-	1	13100	1	0.5	-- Lwia Tarcza+0
-	2	13060	1	0.5	-- Sokola Tarcza+0
-	3	13120	1	0.5	-- Tarcza Smoka+0
-	4	13160	1	0.5	-- Tarcza Trzech Wladcow+0
-	5	13080	1	0.5	-- Tarcza Tygrysa+0
-}
-
-Group	MT2009_spider3_2075_lv75
+Group	MT2009_spider3_2075
 {
 	Mob	2075	-- Best. Truj. Pajak Zoln.
 	Type	limit
-	Level_limit	75
-	1	5090	1	0.1	-- Dzwon Burzowego Ptaka+0
-	2	5091	1	0.08	-- Dzwon Burzowego Ptaka+1
-	3	5092	1	0.06	-- Dzwon Burzowego Ptaka+2
-	4	5093	1	0.04	-- Dzwon Burzowego Ptaka+3
-	5	5094	1	0.02	-- Dzwon Burzowego Ptaka+4
-	6	5095	1	0.01	-- Dzwon Burzowego Ptaka+5
-	7	5100	1	0.1	-- Dzwon Nieba I Ziemi+0
-	8	5101	1	0.08	-- Dzwon Nieba I Ziemi+1
-	9	5102	1	0.06	-- Dzwon Nieba I Ziemi+2
-	10	5103	1	0.04	-- Dzwon Nieba I Ziemi+3
-	11	5104	1	0.02	-- Dzwon Nieba I Ziemi+4
-	12	5105	1	0.01	-- Dzwon Nieba I Ziemi+5
-	13	7130	1	0.1	-- Niebian. Ptasi Wachl.+0
-	14	7131	1	0.08	-- Niebian. Ptasi Wachl.+1
-	15	7132	1	0.06	-- Niebian. Ptasi Wachl.+2
-	16	7133	1	0.04	-- Niebian. Ptasi Wachl.+3
-	17	7134	1	0.02	-- Niebian. Ptasi Wachl.+4
-	18	7135	1	0.01	-- Niebian. Ptasi Wachl.+5
-	19	7140	1	0.1	-- Wachlarz Zbawienia+0
-	20	7141	1	0.08	-- Wachlarz Zbawienia+1
-	21	7142	1	0.06	-- Wachlarz Zbawienia+2
-	22	7143	1	0.04	-- Wachlarz Zbawienia+3
-	23	7144	1	0.02	-- Wachlarz Zbawienia+4
-	24	7145	1	0.01	-- Wachlarz Zbawienia+5
+	Level_limit	60
+	1	13100	1	0.1	-- Lwia Tarcza+0
+	2	13060	1	0.1	-- Sokola Tarcza+0
+	3	13120	1	0.1	-- Tarcza Smoka+0
+	4	13160	1	0.1	-- Tarcza Trzech Wladcow+0
+	5	13080	1	0.1	-- Tarcza Tygrysa+0
+	6	12206	1	0.5	-- Tradycyjny Helm+6
+	7	12225	1	0.5	-- Zelazny Helm+5
+	8	12244	1	0.5	-- Upiorna Maska+4
 }

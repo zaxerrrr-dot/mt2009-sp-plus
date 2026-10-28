@@ -3098,11 +3098,11 @@ RUN set -eu; A=/tmp/worldboss-add; L=/opt/metin2/share/locale/poland; f=$L/speci
  && rm -rf "$A" \
  && echo "share: Boss Swiata - worldboss.txt and Skrzynka Tajemnic (38015)"
 
-# MT2009_PLUS_SPIDER3_DROPS_V1 (the owner, 28 October 2026: "make our drops match the wiki, including +5 max"): the five
-# Best. poison spiders of 3 Loch Pajakow (2071-2075) drop as their pl-wiki pages and the map page say - spider3/
-# mob_drop_item.spider3.txt. After every share append: each group of theirs (the package's limit groups of level 60 - the
-# weapons of 45-60 at +4, helmets, shields - and moby_global's MT2009_mglobal_2071..2075) is taken out whole, then ours
-# go in (a monster has one limit group: the engine keeps the first).
+# MT2009_PLUS_SPIDER3_DROPS_V2 (the owner, 28 October 2026): the five Best. poison spiders of 3 Loch Pajakow (2071-2075)
+# drop the weapons and shields of their pl-wiki pages and the helmets of the package's old groups, from level 60, no
+# level-65 weapons - spider3/mob_drop_item.spider3.txt, one limit group a monster. After every share append: each group
+# of theirs (the package's limit groups of level 60 - the weapons of 45-60 at +4, helmets, shields - and moby_global's
+# MT2009_mglobal_2071..2075) is taken out whole, then ours go in (a monster has one limit group: the engine keeps the first).
 COPY spider3/ /tmp/spider3-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/spider3-add; F="$L/mob_drop_item.txt" \
  && ! grep -q -E '^Group[[:blank:]]+MT2009_spider3_' "$F" \
@@ -3117,10 +3117,9 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/spider3-add; F="$L/mob_dr
  && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/mob_drop_item.spider3.txt" \
  && { [ -z "$(tail -c 1 "$F")" ] || printf '\r\n' >> "$F"; } \
  && cat "$A/mob_drop_item.spider3.txt" >> "$F" \
- && test "$(grep -c -E '^Group[[:blank:]]+MT2009_spider3_' "$F")" = 9 \
- && test "$(grep -c -E '^Group[[:blank:]]+MT2009_spider3_[0-9]+_lv75' "$F")" = 5 \
+ && test "$(grep -c -E '^Group[[:blank:]]+MT2009_spider3_207[1-5][[:space:]]*$' "$F")" = 5 \
  && rm -rf "$A" \
- && echo "share: 3 Loch Pajakow - the five spiders' drops as the pl-wiki's (9 groups)"
+ && echo "share: 3 Loch Pajakow - the five spiders' drops (5 limit groups of level 60)"
 
 # MT2009_PLUS_ARMOR105_V1 (the owner, 22 October 2026): the level-105 armours' materials (tools/zbroje105) drop from
 # our generators' files, appended by their own steps above - the owner's monster sheet (yohara_arkusz: the En-Tai,

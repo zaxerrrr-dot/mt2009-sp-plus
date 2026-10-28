@@ -257,6 +257,14 @@ namespace
 			if (!item)
 				continue;
 			s.slot[i].present = true;
+			// MT2009_PLUS_SPIDER3_BOTS_V2 (the owner, 28 October 2026): a young heroes' weapon ALWAYS counts as
+			// better than any weapon a gate names - every "weapon" row and "all worn" met, whatever its plus.
+			if (i == 0 && IsPlayerBotMlodziWeapon(item))
+			{
+				s.slot[i].level = 255;
+				s.slot[i].plus = 255;
+				continue;
+			}
 			s.slot[i].level = GetPlayerBotPersonaLevelLimit(item);
 			s.slot[i].plus = (uint8_t)std::max(0, std::min(255, (int)item->GetRefineLevel()));
 		}
