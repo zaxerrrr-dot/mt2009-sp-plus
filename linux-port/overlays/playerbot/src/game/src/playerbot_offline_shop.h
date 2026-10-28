@@ -2975,6 +2975,9 @@ namespace {
             o.visitStarted = now;
             o.visitUntil = now + 90000; // absolute upper bound, including travel
             o.nextStep = 0;
+            // MT2009_PLUS_BOT_EKW_PAGES_V1: the goods of the extra inventory into the bag's spare room, where the
+            // counter's candidates are looked for
+            PlayerBotEkwFetchGoods(ch, "offline_shop");
         }
         if (Due(now, o.visitUntil)) {
             BotOfflineInterruptVisit(ch, state, now, "timeout");

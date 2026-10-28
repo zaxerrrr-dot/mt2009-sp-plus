@@ -183,6 +183,14 @@ namespace
 			SendPlayerBotWhisper(ch, partner, reply);
 			return true;
 		}
+		// MT2009_PLUS_BOT_EKW_PAGES_V1: a full bag lends the extra inventory something first
+		if (wanted > 0 && fits == 0)
+		{
+			for (size_t i = 0; i < offer.size() && fits == 0; ++i)
+				if (IsPlayerBotWantedLootItem(ch, offer[i], choosy, medalDropper) &&
+						PlayerBotEkwMakeBagRoom(ch, offer[i]->GetSize(), NULL) && PlayerBotBagTakesDrop(ch, offer[i]))
+					++fits;
+		}
 		if (wanted > 0 && fits == 0)
 		{
 			sys_log(0, "PLAYERBOT_GIFT: no room pid=%u name=%s partner=%s wanted=%d",

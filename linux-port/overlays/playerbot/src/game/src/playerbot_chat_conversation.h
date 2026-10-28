@@ -1244,13 +1244,19 @@ namespace
 				if (!m_bot || !m_bot->IsItemLoaded())
 					return false;
 				const std::string query = playerbot_conv::FoldName(rawQuery.c_str());
-				for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+				// MT2009_PLUS_BOT_EKW_PAGES_V1: the bag and the extra inventory's pages; the count is the kind's in both
+				std::vector<LPITEM> owned;
+				CollectPlayerBotOwnedItems(m_bot, owned);
+				for (size_t o = 0; o < owned.size(); ++o)
 				{
-					LPITEM item = m_bot->GetInventoryItem(cell);
-					if (item && item->GetProto() && PlayerBotConvNameMatches(item->GetProto()->szLocaleName, query))
+					LPITEM item = owned[o];
+					if (item->GetProto() && PlayerBotConvNameMatches(item->GetProto()->szLocaleName, query))
 					{
 						outName = item->GetProto()->szLocaleName;
-						outCount = (unsigned int)item->GetCount();
+						outCount = 0;
+						for (size_t k = 0; k < owned.size(); ++k)
+							if (owned[k]->GetVnum() == item->GetVnum())
+								outCount += (unsigned int)owned[k]->GetCount();
 						NotePlayerBotConvLink(m_bot->GetPlayerID(), outName, MakePlayerBotItemLink(item, outName.c_str()), true);
 						return true;
 					}
