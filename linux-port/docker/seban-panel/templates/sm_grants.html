@@ -47,7 +47,7 @@
 {% for target, target_label in targets %}
 <section class="panel" id="pakiety-{{ target }}">
 <h2>{{ '👤' if target == 'player' else '🤖' }} Pakiety – {{ target_label }}</h2>
-<p class="smg-note">{% if target == 'player' %}Konta graczy ze statusem OK (zbanowane nic nie dostają).{% else %}Konta <code>playerbot_…</code>.{% endif %} „Czempion od” 0 = bez wymogu. „Aktywność” 0 = bez wymogu, inaczej konto musiało grać w ciągu tylu ostatnich dni.</p>
+<p class="smg-note">{% if target == 'player' %}Konta graczy ze statusem OK (zbanowane nic nie dostają).{% else %}Konta <code>playerbot_…</code>.{% endif %} „Czempion od” 0 = bez wymogu. {% if target == 'player' %}Konto musi grać w ciągu ostatniego okresu (dzień / 7 / 30 dni); „Aktywność” powyżej 0 zastępuje tę liczbę dni.{% else %}„Aktywność” 0 = bez wymogu.{% endif %} Konto dostaje jeden najlepszy pakiet ze wszystkich okresów.</p>
 <div class="table-wrap"><table class="smg-table">
 <thead><tr><th>Wł.</th><th>Nazwa</th><th>Poziom od</th><th>Czempion od</th><th>SM</th><th>Okres</th><th>Aktywność (dni)</th><th>Teraz</th><th></th></tr></thead>
 <tbody>

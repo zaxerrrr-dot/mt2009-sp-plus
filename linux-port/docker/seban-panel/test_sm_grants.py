@@ -35,7 +35,8 @@ class AssignTests(unittest.TestCase):
         best = smg.assign(tiers, {1: [10, 11], 2: [11], 3: [10, 11]})
         self.assertEqual(best[("day", 10)]["id"], 1)
         self.assertEqual(best[("day", 11)]["id"], 2)      # the Champion tier beats the level-20 one
-        self.assertEqual(best[("month", 11)]["id"], 3)    # another interval is paid on its own
+        self.assertNotIn(("month", 11), best)             # one best tier over all intervals
+        self.assertNotIn(("month", 10), best)             # 50 a day beats 500 a month
 
     def test_level_then_amount(self):
         tiers = [tier(1, level=50, amount=10), tier(2, level=75, amount=5), tier(3, level=75, amount=8)]
@@ -48,7 +49,8 @@ class SqlTests(unittest.TestCase):
         self.assertIn("NOT " + smg.BOT_ACCOUNT, sql)
         self.assertIn("a.status = 'OK'", sql)
         self.assertNotIn("conqueror_level >=", sql)
-        self.assertEqual(params, [20])
+        self.assertIn("a.last_play >=", sql)
+        self.assertEqual(params, [20, 1])                # a daily tier: played within the last day
 
     def test_bot_champion_active(self):
         sql, params = smg.qualifying_sql(tier(1, target="bot", level=120, champion=3, active=7))

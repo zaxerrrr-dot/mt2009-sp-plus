@@ -24,11 +24,11 @@ accounts are 'BLOCK' by design, so their status is not read.
 Which tier: an account qualifies for a tier when ONE of its characters has
 level >= min_level and conqueror_level >= min_champion_level (czempion.sql,
 MT2009_PLUS_CHAMPION_V1), so it is judged by its highest qualifying
-character. Per interval (day / week / month) it gets only its best tier - the
-highest Champion requirement, then the highest level requirement, then the
-larger amount. With tiers of one interval only that is simply "the best
-tier"; a daily and a monthly tier can both be paid, by design, so the owner
-can make a small daily and a bigger monthly package.
+character. It gets only its ONE best tier over all intervals (the owner, 28
+Oct 2026) - the highest Champion requirement, then the highest level
+requirement, then the most SM per 30 days. A player account must have
+played within the tier's interval (day / 7 / 30 days; active_days > 0
+overrides it); bots need no login.
 
 When: the current period in Europe/Warsaw time (SM_GRANT_TZ). Whoever
 qualifies at a run and has not been paid in this period is paid now; a
@@ -162,9 +162,23 @@ def read_tiers(cur, enabled_only=False):
     return [dict(row) for row in cur.fetchall()]
 
 
+PERIOD_DAYS = {"day": 1, "week": 7, "month": 30}
+
+
 def tier_rank(tier):
-    """Sort key, best first."""
-    return (-int(tier["min_champion_level"]), -int(tier["min_level"]), -int(tier["amount"]), int(tier["id"]))
+    """Sort key, best first: the highest Champion requirement, then the highest level requirement, then the most SM
+    per 30 days (a daily 10 beats a monthly 200), across all intervals (the owner, 28 Oct 2026: one best tier)."""
+    per_month = int(tier["amount"]) * 30 // PERIOD_DAYS.get(tier["period"], 30)
+    return (-int(tier["min_champion_level"]), -int(tier["min_level"]), -per_month, int(tier["id"]))
+
+
+def login_days(tier):
+    """A player must have played within the tier's interval (the owner, 28 Oct 2026: monthly - the last month,
+    weekly - the last week); active_days > 0 overrides it. Bots: active_days only."""
+    days = int(tier.get("active_days") or 0)
+    if days > 0:
+        return days
+    return PERIOD_DAYS.get(tier["period"], 30) if tier["target"] == "player" else 0
 
 
 def qualifying_sql(tier):
@@ -179,9 +193,9 @@ def qualifying_sql(tier):
     else:
         conditions.append("NOT " + BOT_ACCOUNT)
         conditions.append("a.status = 'OK'")
-    if int(tier.get("active_days") or 0) > 0:
+    if login_days(tier) > 0:
         conditions.append("a.last_play >= NOW() - INTERVAL %s DAY")
-        params.append(int(tier["active_days"]))
+        params.append(login_days(tier))
     champion = "MAX(p.conqueror_level)" if int(tier["min_champion_level"]) > 0 else "0"
     sql = ("SELECT p.account_id, MAX(p.level) AS level, " + champion + " AS champion "
            "FROM player.player p JOIN account.account a ON a.id = p.account_id WHERE "
@@ -190,13 +204,13 @@ def qualifying_sql(tier):
 
 
 def assign(tiers, qualifying):
-    """{(period, account_id): tier} - the best tier of each account per
-    interval. qualifying maps tier id -> iterable of account ids."""
+    """{(period, account_id): tier} - the ONE best tier of each account over
+    all intervals (tier_rank). qualifying maps tier id -> iterable of account ids."""
     best = {}
     for tier in sorted(tiers, key=tier_rank):
         for account_id in qualifying.get(tier["id"], ()):
-            best.setdefault((tier["period"], int(account_id)), tier)
-    return best
+            best.setdefault(int(account_id), tier)
+    return {(tier["period"], account_id): tier for account_id, tier in best.items()}
 
 
 def plan(cur, now=None, tiers=None):
