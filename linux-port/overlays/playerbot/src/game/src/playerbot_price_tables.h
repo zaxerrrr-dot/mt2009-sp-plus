@@ -340,10 +340,10 @@ namespace
 		{ 21350, 0x000, { 4090000, 4620000, 5220000, 5900000, 6660000, 7530000, 8510000, 9610000, 10900000, 12300000 } },	// Zly Plaszcz Wezowy (REF: ref 9 999 999 x 0.409 (median of 3 offers); ladder: geometric to 3x +0 at +9)
 		{ 21370, 0x000, { 20400000, 23100000, 26100000, 29500000, 33300000, 37600000, 42500000, 48100000, 54300000, 61300000 } },	// Zacny Plaszcz Wezowy (REF: ref 50 000 000 x 0.409 (median of 3 offers); ladder: geometric to 3x +0 at +9)
 		// Sung Ma gloves
-		{ 23000, 0x000, { 818000000, 875000000, 936000000, 1001200000, 1071000000, 1145700000, 1225500000, 1310900000, 1402300000, 1500000000 } },	// Rekawice Mocy (REF: ref 2 000 000 000 x 0.409 (median of 3 offers); ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
-		{ 23010, 0x000, { 818000000, 875000000, 936000000, 1001200000, 1071000000, 1145700000, 1225500000, 1310900000, 1402300000, 1500000000 } },	// Zwinne Rekawice (REF: analogia: TEMP 23 800 000 x 34.4, the siblings' median correction (23000); ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
-		{ 23020, 0x000, { 818000000, 875000000, 936000000, 1001200000, 1071000000, 1145700000, 1225500000, 1310900000, 1402300000, 1500000000 } },	// Pancerne Rekawice (REF: analogia: TEMP 23 800 000 x 34.4, the siblings' median correction (23000); ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
-		{ 23030, 0x000, { 818000000, 875000000, 936000000, 1001200000, 1071000000, 1145700000, 1225500000, 1310900000, 1402300000, 1500000000 } },	// Ochronne Rekawice (REF: analogia: TEMP 23 800 000 x 34.4, the siblings' median correction (23000); ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
+		{ 23000, 0x000, { 100000000, 135100000, 182500000, 246600000, 333200000, 450200000, 608200000, 821700000, 1110200000, 1500000000 } },	// Rekawice Mocy (REF: the owner, 28 Oct 2026: +0 at 100 000 000; ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
+		{ 23010, 0x000, { 100000000, 135100000, 182500000, 246600000, 333200000, 450200000, 608200000, 821700000, 1110200000, 1500000000 } },	// Zwinne Rekawice (REF: the owner, 28 Oct 2026: +0 at 100 000 000; ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
+		{ 23020, 0x000, { 100000000, 135100000, 182500000, 246600000, 333200000, 450200000, 608200000, 821700000, 1110200000, 1500000000 } },	// Pancerne Rekawice (REF: the owner, 28 Oct 2026: +0 at 100 000 000; ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
+		{ 23030, 0x000, { 100000000, 135100000, 182500000, 246600000, 333200000, 450200000, 608200000, 821700000, 1110200000, 1500000000 } },	// Ochronne Rekawice (REF: the owner, 28 Oct 2026: +0 at 100 000 000; ladder: the TEMP ladder's shape, +9 capped at 1 500 000 000)
 		// Jade jewellery
 		{ 14580, 0x000, { 4090000, 4590000, 5500000, 7130000, 10200000, 12800000, 16100000, 20200000, 25300000, 31800000 } },	// Obrecz Jadeitu Mgly (REF: ref 9 999 999 x 0.409 (median of 3 offers); ladder: the TEMP ladder's shape)
 		{ 14590, 0x000, { 1180000, 1330000, 1590000, 2060000, 2960000, 3710000, 4660000, 5840000, 7320000, 9180000 } },	// Obrecz Jadeitu Slonca (REF: ref 2 888 888 x 0.409 (median of 3 offers); ladder: the TEMP ladder's shape)
@@ -528,7 +528,7 @@ namespace
 		{ 30627,  2000000 },	// Owoc Bogow (suggested)
 		{ 30629,  1500000 },	// Eliksir Bogow (suggested)
 		{ 50639,   900000 },	// Turmalin (as Rubin / Granat / Szmaragd / Szafir) (suggested)
-		{ 95601,   250000 },	// Stabilne Sznury (suggested)
+		{ 95601,     3000 },	// Stabilne Sznury (the reference market x0.409, the owner 28 Oct 2026)
 		{ 95602,  1000000 },	// Wzor Kroju (suggested)
 		{ 95603,   400000 },	// Ciezkie Pasy (suggested)
 		// MT2009_PLUS_ZODIAC_ITEMS_V1: the Zodiac weapons' / armours' boxes (1, 2, 4 .. 200 a step, refine_proto
@@ -537,9 +537,9 @@ namespace
 		{ 33030,   200000 },	// Niebieskie Pudlo Zodiaku (suggested)
 		// MT2009_PLUS_HELM100_V1: the level-100 helmets' materials (Jaharr) - suggested; no monster of ours drops
 		// the horn, the scale or the plan yet (the wiki's Meley lair), the wings are 26 Gaya in the port's shop.
-		{ 30620,   500000 },	// Czerwony Smoczy Rog (suggested)
-		{ 30621,   500000 },	// Czerwona Smocza Luska (suggested)
-		{ 30622,   300000 },	// Plan Zbroi: Helm (suggested)
+		{ 30620,     4100 },	// Czerwony Smoczy Rog (the reference market x0.409, the owner 28 Oct 2026)
+		{ 30621,     3100 },	// Czerwona Smocza Luska (the reference market x0.409, the owner 28 Oct 2026)
+		{ 30622,     4100 },	// Plan Zbroi: Helm (the reference market x0.409, the owner 28 Oct 2026)
 		{ 30630,   250000 },	// Skrzydla Smoka (suggested)
 	};
 	// MT2009_PLUS_SIDEKICK_ZEN_BEAN_TRAINING_V1: a Fasolka Zen is a third of a

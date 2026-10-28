@@ -83,6 +83,9 @@ CLAMP = {"mat": (60000, 3000000), "herb": (5000, 60000)}
 BULK_FROM = 10          # a recipe asking this many or more of it at once
 BULK_FACTOR = 0.4
 RISK = 0.5              # chance ^ RISK divides a recipe / a refine step
+# The owner's fixed +0 prices (28 Oct 2026, "daj 100mln" for the Sung Ma gloves; the market's 818M was too high);
+# the ladder above +0 keeps its shape.
+OWNER_PLUS0 = {23000: 100000000, 23010: 100000000, 23020: 100000000, 23030: 100000000}
 LADDER_CAP = 600000000  # the TEMP ladders' +9 at most (their shape is what the reference keeps)
 GAYA_YANG = 25000       # PLAYERBOT_CHI_GAYA_YANG (playerbot_yohara_chi.h): what a bot pays a Gaya at Mistrz Chi
 TOPAZ = 20000           # Topaz Woli: no shop or trade (anti-flags), a drop of 103 monsters - the talisman steps' 6..54
@@ -937,6 +940,9 @@ class RefPricer:
 
     def ladder(self, v):
         shape, how = self.ladder_shape(v)
+        if v in OWNER_PLUS0:
+            self.new[v] = OWNER_PLUS0[v]
+            self.how[v] = "the owner, 28 Oct 2026: +0 at %s" % fmt(OWNER_PLUS0[v])
         p0 = self.new[v]
         vals = [p0 * s for s in shape]
         if vals[9] > GEAR_CAP:
