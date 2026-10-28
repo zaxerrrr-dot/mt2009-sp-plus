@@ -1869,4 +1869,17 @@ if ((Test-Path -LiteralPath $gaya2Apply -PathType Leaf) -and
     }
 }
 
+# Kamienie Antymagii (server-patches/antimagic, MT2009_PLUS_ANTI_RESIST_MAGIC_V1; the "Anti Magic penetrate stone"
+# package): POINT_ANTI_RESIST_MAGIC (252) in common/length.h, the PvP magic resistance in char_skill.cpp, the metin
+# stone draw and its preview, /state, db's ProtoReader name. After npcloc (last); bonusy67 comes before it.
+$antimagicApply = Join-Path $repo 'server-patches/antimagic/Apply-AntiMagicPatch.ps1'
+if ((Test-Path -LiteralPath $antimagicApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_skill.cpp') -PathType Leaf)) {
+    $antimagicResult = & $antimagicApply -SourceDir $engineGameSource
+    if ($antimagicResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Kamien Antymagii edit(s).' -f $antimagicResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

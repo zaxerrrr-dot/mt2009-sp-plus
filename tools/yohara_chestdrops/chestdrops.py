@@ -86,10 +86,6 @@ SKIP = {
     # 30615, 30619, 30625, 30628 are ours (tools/zbroje105) - back in the chests
     55004: 'not in our world',
     55005: 'not in our world',
-    28045: 'the engine draws no such stone',
-    28145: 'the engine draws no such stone',
-    28245: 'the engine draws no such stone',
-    28345: 'the engine draws no such stone',
 }
 # MT2009_PLUS_CHEST_DROPS_V2: the Zodiac treasures' rows we lack (as Zlota Skrzynia Zodiaku 33033 leaves them out)
 for _v in (86001, 86011, 86021, 86031, 86041, 86051):              # Szarfa Zi/Yin/Chen/Wu/Shen/Xu (prosta)
@@ -102,6 +98,11 @@ for _v in (6045, 6046, 6047, 6073, 6074, 6093, 6130, 6150, 21073, 21074, 21075, 
     SKIP[_v] = _LYCAN
 # MT2009_PLUS_NO_ROTTEN_CHEST_V1: Sprochniala Skrzynia out of every drop and chest (the owner, 15 October 2026, fix 7)
 SKIP[50124] = 'no Sprochniala Skrzynia in any drop - owner 15.10'
+
+# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (tools/antimagic, 28 October 2026): Kamien Antymagii is ours now. The sheet has two
+# rows of each grade, both "Kamien Antymagii+N" with the armour stone's vnum (28045 + 100*N - the official weapon and
+# armour stones share the name); the second of them is the weapon stone 28044 + 100*N (Kamien Duszy Antymagii).
+TWIN = dict((28045 + 100 * g, 28044 + 100 * g) for g in range(10))
 
 # our chest -> {our vnum: the owner's own weight of SCALE}
 FIXED = {54705: {25042: 4000}}      # Skrzynia Hydry: Magiczny Kamien exactly 4% (the owner, 13 October 2026)
@@ -179,6 +180,12 @@ def table(chest):
         if note:
             nm += ' - ' + note
         key = (str(o), count)
+        if o in TWIN:
+            nm = nm.replace('Kamien Antymagii', 'Bialy Kamien Antymagii')
+        if key in at and o in TWIN and (str(TWIN[o]), count) not in at:
+            o = TWIN[o]                         # MT2009_PLUS_ANTI_RESIST_MAGIC_V1: the second row is the weapon stone
+            nm = nm.replace('Bialy Kamien Antymagii', 'Kamien Duszy Antymagii') + ' - ours %d (the weapon stone)' % o
+            key = (str(o), count)
         if key in at:                           # the same item and count twice: one row, the chances summed
             rows[at[key]][2] += chance
             continue

@@ -1700,6 +1700,12 @@ void initapp()
 #else
 	PyModule_AddIntConstant(poModule, "__BALATHOR__", 0);
 #endif
+#ifdef ENABLE_MT2009_ANTI_RESIST_MAGIC
+	// MT2009_PLUS_ANTI_RESIST_MAGIC_V1: the package's flag (Kamien Antymagii, item.APPLY_ANTI_RESIST_MAGIC)
+	PyModule_AddIntConstant(poModule, "ANTI_RESIST_MAGIC_BONUS", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ANTI_RESIST_MAGIC_BONUS", 0);
+#endif
 	// not in this exe (Owsap python checks them)
 	PyModule_AddIntConstant(poModule, "ENABLE_SUMMER_EVENT_ROULETTE", 0);
 	PyModule_AddIntConstant(poModule, "ENABLE_SNOWFLAKE_STICK_EVENT", 0);

@@ -4406,6 +4406,17 @@ if [ -s /opt/playerbot/gaya2.sql ]; then
         fail_step "Gaya currency: gaya2.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Duszy Antymagii (bron, 28044 + 100*N) and Bialy Kamien Antymagii (zbroja,
+# 28045 + 100*N), +0..+9 - the owner, 28 October 2026 ("Add the new soul stones. Drop like all the other stones.") -
+# antymagia.sql (tools/antimagic/gen_antimagic.py). Idempotent (INSERT IGNORE). Their bonus is point 252
+# (server-patches/antimagic, PvP only); the Metins draw them like every other kind (char.cpp).
+if [ -s /opt/playerbot/antymagia.sql ]; then
+    if db < /opt/playerbot/antymagia.sql; then
+        echo "[playerbot-migrate] anti-magic stones: antymagia.sql applied (MT2009_PLUS_ANTI_RESIST_MAGIC_V1)"
+    else
+        fail_step "anti-magic stones: antymagia.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
@@ -4600,6 +4611,28 @@ if [ "$(db -N -e "SELECT COUNT(*) FROM world.mt2009_plus_once WHERE name = 'rare
 else
     echo "[playerbot-migrate] 6th/7th bonus pool: the wiki's for both bonus modes already (rare_6_7_wiki_v2)"
 fi
+# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (server-patches/antimagic): POINT_ANTI_RESIST_MAGIC (252, Kamien Antymagii's bonus)
+# after POINT_GLOVE_BASE_ATTR_PCT (251) in the apply ENUM of item_attr and item_attr_rare (apply+0 = the POINT_* number;
+# the package's db.player query, our names). No bonus row uses it - the stones' item_proto applytype0 is 252. Only an
+# ENUM that ends with the 251 names gets it (the bonusy67 step above), nullability and default kept; idempotent.
+for m2_am_table in item_attr item_attr_rare; do
+    m2_am_enum=$(m2_b67_type $m2_am_table)
+    case "$m2_am_enum" in
+        *"'POINT_ANTI_RESIST_MAGIC'"*) ;;
+        *"'POINT_GLOVE_BASE_ATTR_PCT')")
+            m2_am_null=$(db -N -e "SELECT IF(IS_NULLABLE = 'YES', 'NULL', 'NOT NULL'), IFNULL(COLUMN_DEFAULT, '') FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'world' AND TABLE_NAME = '$m2_am_table' AND COLUMN_NAME = 'apply'" 2>/dev/null | tr -d '\r')
+            m2_am_def=$(printf '%s' "$m2_am_null" | cut -f2 | tr -d "'")
+            m2_am_null=$(printf '%s' "$m2_am_null" | cut -f1)
+            [ -n "$m2_am_def" ] && m2_am_def=" DEFAULT '$m2_am_def'"
+            if [ "$(printf '%s' "$m2_am_enum" | grep -o "','" | wc -l | tr -d ' ')" = 250 ] &&
+                    db -e "ALTER TABLE world.$m2_am_table MODIFY apply ${m2_am_enum%)},'POINT_ANTI_RESIST_MAGIC') $m2_am_null$m2_am_def;"; then
+                echo "[playerbot-migrate] anti-magic stones: $m2_am_table apply ENUM up to POINT_ANTI_RESIST_MAGIC (252)"
+            else
+                fail_step "anti-magic stones: could not add POINT_ANTI_RESIST_MAGIC to $m2_am_table's apply ENUM (not 251 names?)" >&2
+            fi ;;
+        *) fail_step "anti-magic stones: $m2_am_table's apply ENUM does not end with POINT_GLOVE_BASE_ATTR_PCT - left as it is" >&2 ;;
+    esac
+done
 if [ "$bonus_global" = 1 ] && [ -s /opt/playerbot/zywioly_moby_global.sql ]; then
     if db < /opt/playerbot/zywioly_moby_global.sql; then
         echo "[playerbot-migrate] bonus mode: global - elements on every monster (zywioly_moby_global.sql)"

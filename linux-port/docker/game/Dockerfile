@@ -726,6 +726,25 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && ! grep -q '{72731, 1}' "$L/quest/libs/other/reward_data.lua" \
  && echo "share: Maska Sabaha removed"
 
+# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (server-patches/antimagic; the owner, 28 October 2026: "Drop like all the other
+# stones"): Kamien Duszy Antymagii (28g44) and Bialy Kamien Antymagii (28g45) wherever the package lists the 14 soul
+# stone kinds - the groups Kamien_Duszy_0..4 (10980-10984, one line each at the same weight 1; the Losowy_Kamien_Duszy
+# groups and every chest that names them follow) and Silna Lodowa Wiedzma's ice_witch (the +4 at 1 50 15 like the
+# others; the lines after them renumbered - a group stops reading at the first index it lacks). The Metins draw them in
+# the engine (char.cpp). Once (a file that has them is left alone).
+RUN set -eu; L=/opt/metin2/share/locale/poland; f="$L/special_item_group.txt"; m="$L/mob_drop_item.txt" \
+ && if ! grep -q -E '^[[:blank:]]+15[[:blank:]]+28044[[:blank:]]' "$f"; then \
+      awk '/^Group/{g=$2; sub(/\r$/,"",g)} {print} g ~ /^Kamien_Duszy_[0-4]$/ && $1=="14" && $2 ~ /^28[0-4]43$/ { n=substr($2,3,1); printf "\t15\t28%s44\t1\t1\t-- Kamien Duszy Antymagii+%s\r\n\t16\t28%s45\t1\t1\t-- Bialy Kamien Antymagii+%s\r\n", n, n, n, n }' "$f" > "$f.new" \
+      && mv "$f.new" "$f"; \
+    fi \
+ && test "$(grep -c -E '^[[:blank:]]+1[56][[:blank:]]+28[0-4]4[45][[:blank:]]+1[[:blank:]]+1[[:blank:]]' "$f")" = 10 \
+ && if ! grep -q -E '^[[:blank:]]+[0-9]+[[:blank:]]+28444[[:blank:]]+1[[:blank:]]+50[[:blank:]]' "$m"; then \
+      awk '/^Group/{g=$2; sub(/\r$/,"",g); sh=0} g=="ice_witch" && sh && $1 ~ /^[0-9]+$/ { l=$0; sub(/^[ \t]*[0-9]+/, "\t" ($1+sh), l); print l; next } {print} g=="ice_witch" && $2=="28443" { printf "\t%d\t28444\t1\t50\t15\t-- Kamien Duszy Antymagii+4\r\n\t%d\t28445\t1\t50\t15\t-- Bialy Kamien Antymagii+4\r\n", $1+1, $1+2; sh=2 }' "$m" > "$m.new" \
+      && mv "$m.new" "$m"; \
+    fi \
+ && test "$(grep -c -E '^[[:blank:]]+[0-9]+[[:blank:]]+2844[45][[:blank:]]+1[[:blank:]]+50[[:blank:]]+15' "$m")" = 2 \
+ && echo "share: Kamien Antymagii in Kamien_Duszy_0..4 and ice_witch"
+
 # MT2009_PLUS_TEMPLE_CURSE_REMOVED_V1: what the Hwang curse left behind. The
 # package's temple_map quest put the curse's affect (AFFECT_TEMPLE_CURSE, 306:
 # "Klatwa Swiatyni ... Efekt nigdy sie nie konczy", an icon and nothing else

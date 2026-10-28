@@ -49,77 +49,77 @@ Group	MT2009_shipdef_chest_54705
 # (tools/yohara_chestdrops) - it was drawn as a Metin's own stone before. The DB editor / drop wiki read it as
 # any special group. Appended by the Dockerfile with the chest's.
 
-# MT2009_PLUS_CHEST_DROPS_V1: 72058 - 56 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# MT2009_PLUS_CHEST_DROPS_V1: 72058 - 64 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
-# Left out (renormalised): Kamien Antymagii+0 2.941% - the engine draws no such stone;
-#   Kamien Antymagii+0 2.941% - the engine draws no such stone;
-#   Kamien Duszy Likanow+0 2.941% - the Lycan's (no such class here);
-#   Kamien Antymagii+2 0.980% - the engine draws no such stone;
-#   Kamien Antymagii+3 0.980% - the engine draws no such stone;
+# Left out (renormalised): Kamien Duszy Likanow+0 2.941% - the Lycan's (no such class here);
 #   Kamien Duszy Likanow+1 0.980% - the Lycan's (no such class here);
-#   Kamien Antymagii+1 0.980% - the engine draws no such stone;
-#   Kamien Antymagii+1 0.980% - the engine draws no such stone;
 #   Kamien Duszy Likanow+2 0.980% - the Lycan's (no such class here);
-#   Kamien Antymagii+2 0.980% - the engine draws no such stone;
-#   Kamien Duszy Likanow+3 0.980% - the Lycan's (no such class here);
-#   Kamien Antymagii+3 0.980% - the engine draws no such stone
+#   Kamien Duszy Likanow+3 0.980% - the Lycan's (no such class here)
 Group	MT2009_shipdef_soulstone_pack_72058
 {
 	Vnum	72058 -- Pakiet Kamieni Duszy
-	1	28030	1	3571 -- Kamien Duszy Penetr.+0
-	2	28032	1	3571 -- Kamien Duszy Powtorki+0
-	3	28033	1	3571 -- Kamien Duszy Wojownika+0
-	4	28035	1	3571 -- Kamien Duszy Sury+0
-	5	28036	1	3571 -- Kamien Duszy Szamana+0
-	6	28038	1	3571 -- Kamien Duszy Uchylenia+0
-	7	28039	1	3571 -- Kamien Duszy Uniku+0
-	8	28041	1	3571 -- Kamien Witalnosci+0
-	9	28042	1	3571 -- Kamien Duszy Obrony+0
-	10	28031	1	3571 -- Kamien Duszy Smierci+0
-	11	28034	1	3571 -- Kamien Duszy Ninja+0
-	12	28037	1	3571 -- Kamien Duszy Potwora+0
-	13	28040	1	3571 -- Kamien Duszy Magii+0
-	14	28043	1	3571 -- Kamien Duszy Przysp.+0
-	15	28133	1	1190 -- Kamien Duszy Wojownika+1
-	16	28138	1	1190 -- Kamien Duszy Uchylenia+1
-	17	28142	1	1190 -- Kamien Duszy Obrony+1
-	18	28230	1	1190 -- Kamien Duszy Penetr.+2
-	19	28235	1	1190 -- Kamien Duszy Sury+2
-	20	28239	1	1190 -- Kamien Duszy Uniku+2
-	21	28332	1	1190 -- Kamien Duszy Powtorki+3
-	22	28336	1	1190 -- Kamien Duszy Szamana+3
-	23	28341	1	1190 -- Kamien Witalnosci+3
-	24	28130	1	1190 -- Kamien Duszy Penetr.+1
-	25	28131	1	1190 -- Kamien Duszy Smierci+1
-	26	28132	1	1190 -- Kamien Duszy Powtorki+1
-	27	28134	1	1190 -- Kamien Duszy Ninja+1
-	28	28135	1	1190 -- Kamien Duszy Sury+1
-	29	28136	1	1190 -- Kamien Duszy Szamana+1
-	30	28137	1	1190 -- Kamien Duszy Potwora+1
-	31	28139	1	1190 -- Kamien Duszy Uniku+1
-	32	28140	1	1190 -- Kamien Duszy Magii+1
-	33	28141	1	1190 -- Kamien Witalnosci+1
-	34	28143	1	1190 -- Kamien Duszy Przysp.+1
-	35	28231	1	1190 -- Kamien Duszy Smierci+2
-	36	28232	1	1190 -- Kamien Duszy Powtorki+2
-	37	28233	1	1190 -- Kamien Duszy Wojownika+2
-	38	28234	1	1190 -- Kamien Duszy Ninja+2
-	39	28236	1	1190 -- Kamien Duszy Szamana+2
-	40	28237	1	1190 -- Kamien Duszy Potwora+2
-	41	28238	1	1190 -- Kamien Duszy Uchylenia+2
-	42	28240	1	1190 -- Kamien Duszy Magii+2
-	43	28241	1	1190 -- Kamien Witalnosci+2
-	44	28242	1	1190 -- Kamien Duszy Obrony+2
-	45	28243	1	1190 -- Kamien Duszy Przysp.+2
-	46	28330	1	1190 -- Kamien Duszy Penetr.+3
-	47	28331	1	1190 -- Kamien Duszy Smierci+3
-	48	28333	1	1190 -- Kamien Duszy Wojownika+3
-	49	28334	1	1190 -- Kamien Duszy Ninja+3
-	50	28335	1	1190 -- Kamien Duszy Sury+3
-	51	28337	1	1190 -- Kamien Duszy Potwora+3
-	52	28338	1	1190 -- Kamien Duszy Uchylenia+3
-	53	28339	1	1190 -- Kamien Duszy Uniku+3
-	54	28340	1	1190 -- Kamien Duszy Magii+3
-	55	28342	1	1190 -- Kamien Duszy Obrony+3
-	56	28343	1	1190 -- Kamien Duszy Przysp.+3
+	1	28030	1	3125 -- Kamien Duszy Penetr.+0
+	2	28032	1	3125 -- Kamien Duszy Powtorki+0
+	3	28033	1	3125 -- Kamien Duszy Wojownika+0
+	4	28035	1	3125 -- Kamien Duszy Sury+0
+	5	28036	1	3125 -- Kamien Duszy Szamana+0
+	6	28038	1	3125 -- Kamien Duszy Uchylenia+0
+	7	28039	1	3125 -- Kamien Duszy Uniku+0
+	8	28041	1	3125 -- Kamien Witalnosci+0
+	9	28042	1	3125 -- Kamien Duszy Obrony+0
+	10	28045	1	3125 -- Bialy Kamien Antymagii+0
+	11	28044	1	3125 -- Kamien Duszy Antymagii+0 - ours 28044 (the weapon stone)
+	12	28031	1	3125 -- Kamien Duszy Smierci+0
+	13	28034	1	3125 -- Kamien Duszy Ninja+0
+	14	28037	1	3125 -- Kamien Duszy Potwora+0
+	15	28040	1	3125 -- Kamien Duszy Magii+0
+	16	28043	1	3125 -- Kamien Duszy Przysp.+0
+	17	28133	1	1042 -- Kamien Duszy Wojownika+1
+	18	28138	1	1042 -- Kamien Duszy Uchylenia+1
+	19	28142	1	1042 -- Kamien Duszy Obrony+1
+	20	28230	1	1042 -- Kamien Duszy Penetr.+2
+	21	28235	1	1042 -- Kamien Duszy Sury+2
+	22	28239	1	1042 -- Kamien Duszy Uniku+2
+	23	28245	1	1042 -- Bialy Kamien Antymagii+2
+	24	28332	1	1042 -- Kamien Duszy Powtorki+3
+	25	28336	1	1042 -- Kamien Duszy Szamana+3
+	26	28341	1	1042 -- Kamien Witalnosci+3
+	27	28345	1	1042 -- Bialy Kamien Antymagii+3
+	28	28130	1	1042 -- Kamien Duszy Penetr.+1
+	29	28131	1	1042 -- Kamien Duszy Smierci+1
+	30	28132	1	1042 -- Kamien Duszy Powtorki+1
+	31	28134	1	1042 -- Kamien Duszy Ninja+1
+	32	28135	1	1042 -- Kamien Duszy Sury+1
+	33	28136	1	1042 -- Kamien Duszy Szamana+1
+	34	28137	1	1042 -- Kamien Duszy Potwora+1
+	35	28139	1	1042 -- Kamien Duszy Uniku+1
+	36	28140	1	1042 -- Kamien Duszy Magii+1
+	37	28141	1	1042 -- Kamien Witalnosci+1
+	38	28143	1	1042 -- Kamien Duszy Przysp.+1
+	39	28145	1	1042 -- Bialy Kamien Antymagii+1
+	40	28144	1	1042 -- Kamien Duszy Antymagii+1 - ours 28144 (the weapon stone)
+	41	28231	1	1042 -- Kamien Duszy Smierci+2
+	42	28232	1	1042 -- Kamien Duszy Powtorki+2
+	43	28233	1	1042 -- Kamien Duszy Wojownika+2
+	44	28234	1	1042 -- Kamien Duszy Ninja+2
+	45	28236	1	1042 -- Kamien Duszy Szamana+2
+	46	28237	1	1042 -- Kamien Duszy Potwora+2
+	47	28238	1	1042 -- Kamien Duszy Uchylenia+2
+	48	28240	1	1042 -- Kamien Duszy Magii+2
+	49	28241	1	1042 -- Kamien Witalnosci+2
+	50	28242	1	1042 -- Kamien Duszy Obrony+2
+	51	28243	1	1042 -- Kamien Duszy Przysp.+2
+	52	28244	1	1042 -- Kamien Duszy Antymagii+2 - ours 28244 (the weapon stone)
+	53	28330	1	1042 -- Kamien Duszy Penetr.+3
+	54	28331	1	1042 -- Kamien Duszy Smierci+3
+	55	28333	1	1042 -- Kamien Duszy Wojownika+3
+	56	28334	1	1042 -- Kamien Duszy Ninja+3
+	57	28335	1	1042 -- Kamien Duszy Sury+3
+	58	28337	1	1042 -- Kamien Duszy Potwora+3
+	59	28338	1	1042 -- Kamien Duszy Uchylenia+3
+	60	28339	1	1042 -- Kamien Duszy Uniku+3
+	61	28340	1	1042 -- Kamien Duszy Magii+3
+	62	28342	1	1042 -- Kamien Duszy Obrony+3
+	63	28343	1	1042 -- Kamien Duszy Przysp.+3
+	64	28344	1	1042 -- Kamien Duszy Antymagii+3 - ours 28344 (the weapon stone)
 }

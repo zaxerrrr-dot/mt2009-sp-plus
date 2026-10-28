@@ -604,3 +604,8 @@ linux-port/docker/game/balathor/monster/guild_whitedragon_ice_ghost/*
 linux-port/docker/game/balathor/monster/guild_whitedragon_knight01/*
 linux-port/docker/game/balathor/monster/guild_whitedragon_knight02/*
 linux-port/docker/game/balathor/monster/guild_whitedragon_statue/*
+# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (server-patches/antimagic): Kamien Duszy Antymagii / Bialy Kamien Antymagii
+# 28044/28045 +0..+9 - the engine files it changes are above (length.h, char.cpp, char_skill.cpp, item_manager.cpp,
+# cmd_gm.cpp, db ProtoReader.cpp; playerbot_* lines for the bots' prices and stone rules), the items antymagia.sql and
+# the apply ENUM step (apply.sh; tools/antimagic).
+linux-port/docker/mariadb/playerbot/antymagia.sql

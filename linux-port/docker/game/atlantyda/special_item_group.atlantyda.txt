@@ -192,6 +192,8 @@ Group	MT2009_chest_30921_dusza5
 	16	28541	1	10 -- Kamien Duszy Witalnosci+5
 	17	28542	1	10 -- Kamien Duszy Obrony+5
 	18	28543	1	10 -- Kamien Duszy Przysp.+5
+	19	28544	1	10 -- Kamien Duszy Antymagii+5 (MT2009_PLUS_ANTI_RESIST_MAGIC_V1)
+	20	28545	1	10 -- Bialy Kamien Antymagii+5
 }
 Group	MT2009_chest_30921_talizman
 {

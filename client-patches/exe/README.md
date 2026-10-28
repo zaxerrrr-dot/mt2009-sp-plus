@@ -807,3 +807,25 @@ Do sprawdzenia w grze („Pełny ekran”): rozdzielczość = pulpit (bez mrugni
 (zmiana trybu, powrót pulpitu przy Alt+Tab / minimalizacji / wyjściu); ItemShop V3 (Shift+F12) widoczny i klikalny;
 Alt+Tab tam i z powrotem przy otwartym sklepie i na mapie ze śniegiem; pulpit ze skalą 125/150%; dwa monitory; Win+D;
 „Okno” i „Pełny ekran w oknie” jak dotąd.
+## Kamienie Antymagii – `MT2009_PLUS_ANTI_RESIST_MAGIC_V1` (`ENABLE_MT2009_ANTI_RESIST_MAGIC`)
+
+Paczka „Anti Magic penetrate stone” (serwer: `server-patches/antimagic`). Bonus kamieni to punkt serwera **252**
+(`POINT_ANTI_RESIST_MAGIC`, w tym silniku apply = punkt) – przychodzi jako zmiana punktu, więc exe musi go znać.
+
+| Plik | Zmiana |
+|---|---|
+| `Server/common/length.h` | `POINT_ANTI_RESIST_MAGIC = 252` po `POINT_HIT_PCT`, `POINT_MAX_NUM` 253 – **bez `#ifdef`** (rozmiar `m_alPoint` i tablicy efektów punktów musi być ten sam w każdym pliku); 198–251 serwera nigdy nie przychodzą, nie mają tu nazw; pakiet punktów bez zmian (`POINT_PACKET_NUM` 193) |
+| `UserInterface/Mt2009Champion.cpp` | `static_assert` 252 / 253 zamiast `POINT_MAX_NUM == 198` |
+| `UserInterface/Locale_inc.h` | `#define ENABLE_MT2009_ANTI_RESIST_MAGIC` |
+| `UserInterface/PythonItemModule.cpp` | `item.APPLY_ANTI_RESIST_MAGIC` (252) |
+| `UserInterface/PythonPlayerModule.cpp` | `player.POINT_ANTI_RESIST_MAGIC` i `player.POINT_RESIST_MAGIC_REDUCTION` (252 – pod tą nazwą okno postaci, `uiattributelist.py`, pokazuje linię „Antymagia”) |
+| `UserInterface/PythonApplicationModule.cpp` | `app.ANTI_RESIST_MAGIC_BONUS` (1 / 0) |
+
+`GameLib/ItemData.h` paczki (`CItemData::APPLY_*`) nie ma odpowiednika – nasz exe nie ma tam listy APPLY, nazwy
+bonusów to `POINT_*`. Stary exe pomija zmianę punktu 252 (`SetStatus`: typ ≥ 198), dymek kamienia i tak nazywa 252
+(`root/localeinfo_point.py`).
+
+Sprawdzone: `clang-cl /Zs` (kopia `exebuild/src` + cały ten katalog) – `PythonItemModule.cpp`,
+`PythonApplicationModule.cpp`, `PythonPlayerModule.cpp`, `Mt2009Champion.cpp`, `PythonPlayer.cpp`,
+`PythonCharacterManager.cpp`, `PythonNetworkStreamPhaseGame.cpp`, `GameLib/ItemData.cpp`, `GameLib/ItemManager.cpp` bez
+błędów; preprocesor potwierdza kod za definicją (28.10.2026). Exe nie budowane.

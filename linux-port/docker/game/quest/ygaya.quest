@@ -231,7 +231,8 @@ quest ygaya begin
 			if v < 28000 or v > 28343 then
 				return false
 			end
-			return v - math.floor(v / 100) * 100 <= 43
+			-- MT2009_PLUS_ANTI_RESIST_MAGIC_V1: Kamien Duszy / Bialy Kamien Antymagii (28g44 / 28g45) as every soul stone
+			return v - math.floor(v / 100) * 100 <= 45
 		end
 
 		function grind()
