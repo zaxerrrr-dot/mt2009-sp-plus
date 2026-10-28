@@ -30,8 +30,8 @@ TEMPLATE = 71095    # Przepustka: a plain stackable item
 VNUMS = (79667, 79668, 79669)
 ICON = {79667: '79667', 79668: '79669', 79669: '79669'}
 DESC = {
-    79667: u'Użyty raz, na stałe włącza tej postaci Lokalizator NPC: duża mapa pokazuje NPC '
-           u'każdej mapy, strzałkę pod postacią i potwory z ich łupem. | Na mapie świata '
+    # MT2009_PLUS_NPC_LOCATION_HELPER_V2: every character has the improved map - the item is not needed any more
+    79667: u'Nie jest już potrzebny: Lokalizator NPC jest włączony dla każdej postaci. | Na mapie świata '
            u'przełącz widok przyciskiem w pasku tytułu.',
     79669: u'Teleportuje do NPC wybranego w Lokalizatorze NPC. | Ta sama mapa: 1 kamień, ten sam region: 2, '
            u'inna mapa: 3.',

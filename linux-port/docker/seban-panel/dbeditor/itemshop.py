@@ -150,6 +150,8 @@ BOOT_ONCE = {
     # MT2009_PLUS_ITEMSHOP_V3_V9: the owner's round 5b - Szklo Intuicji and Medal Konny out of the in-game shop
     "ishop5_glass_medal_off": {"adds": (), "remove_vnums": (72161, 50050),
                                "note": "Szkło Intuicji i Medal Konny znikają ze sklepu"},
+    # MT2009_PLUS_NPC_LOCATION_HELPER_V2: Kamien Teleportacji (5 SM) and Kamien Teleportacji+ (6 SM), tab Wyposazenie
+    "npcloc_stones_17": {"adds": (17, 18), "note": "Kamień Teleportacji i Kamień Teleportacji+ (Lokalizator NPC)"},
     "zestawy_60": {"adds": (60, 61, 62, 63, 64, 65),
                    "note": "Zestawy kostiumów: Amulet Nazara, Lizak Magii, Czekoladowy Amulet, Mistrzowski Emblemat, Błogosławieństwo Mocy, Szarfa Serca"},
 }

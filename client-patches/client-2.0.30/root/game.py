@@ -414,6 +414,10 @@ class GameWindow(ui.ScriptWindow):
 		self.partyInviteQuestionDialog = None
 		self.guildInviteQuestionDialog = None
 		self.guildWarQuestionDialog = None
+		# MT2009_PLUS_COMMUNITY_V1 (dialog): an open friend request question goes with the game window (the request
+		# stays in the Community window's tab)
+		if getattr(self, "messengerAddFriendQuestion", None):
+			self.messengerAddFriendQuestion.Close()
 		self.messengerAddFriendQuestion = None
 
 		# UNKNOWN_UPDATE
@@ -2022,8 +2026,16 @@ class GameWindow(ui.ScriptWindow):
 	## Messenger
 	def OnMessengerAddFriendQuestion(self, name):
 		# MT2009_PLUS_COMMUNITY_V1: the request goes to the Community window's request tab (and a chat line)
-		if __import__("uicommunity").OnFriendRequest(name):
-			return
+		community = __import__("uicommunity")
+		community.OnFriendRequest(name)
+		# MT2009_PLUS_COMMUNITY_V1 (dialog): and the classic question dialog as the old messenger had it; an answer
+		# here removes the tab's entry, an answer in the tab closes this dialog (uicommunity.AnswerFromDialog /
+		# SetRequestDialogCloser). A newer request replaces an open dialog - the older one stays in the tab.
+		current = getattr(self, "messengerAddFriendQuestion", None)
+		if current:
+			if getattr(current, "name", "") == name:
+				return
+			self.OnCloseAddFriendQuestionDialog()
 		messengerAddFriendQuestion = uiCommon.QuestionDialog2()
 		messengerAddFriendQuestion.SetText1(localeInfo.MESSENGER_DO_YOU_ACCEPT_ADD_FRIEND_1 % (name))
 		messengerAddFriendQuestion.SetText2(localeInfo.MESSENGER_DO_YOU_ACCEPT_ADD_FRIEND_2)
@@ -2032,21 +2044,30 @@ class GameWindow(ui.ScriptWindow):
 		messengerAddFriendQuestion.Open()
 		messengerAddFriendQuestion.name = name
 		self.messengerAddFriendQuestion = messengerAddFriendQuestion
+		community.SetRequestDialogCloser(ui.__mem_func__(self.OnCloseAddFriendQuestionDialogFor))
 
 	def OnAcceptAddFriend(self):
-		name = self.messengerAddFriendQuestion.name
-		net.SendChatPacket("/messenger_auth y " + name)
-		self.OnCloseAddFriendQuestionDialog()
-		return True
+		return self.__AnswerAddFriend(True)
 
 	def OnDenyAddFriend(self):
+		return self.__AnswerAddFriend(False)
+
+	def __AnswerAddFriend(self, accept):
+		if not getattr(self, "messengerAddFriendQuestion", None):
+			return True
 		name = self.messengerAddFriendQuestion.name
-		net.SendChatPacket("/messenger_auth n " + name)
 		self.OnCloseAddFriendQuestionDialog()
+		__import__("uicommunity").AnswerFromDialog(name, accept) # MT2009_PLUS_COMMUNITY_V1 (dialog)
 		return True
 
+	def OnCloseAddFriendQuestionDialogFor(self, name):
+		current = getattr(self, "messengerAddFriendQuestion", None)
+		if current and getattr(current, "name", "") == name:
+			self.OnCloseAddFriendQuestionDialog()
+
 	def OnCloseAddFriendQuestionDialog(self):
-		self.messengerAddFriendQuestion.Close()
+		if getattr(self, "messengerAddFriendQuestion", None):
+			self.messengerAddFriendQuestion.Close()
 		self.messengerAddFriendQuestion = None
 		return True
 

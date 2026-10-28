@@ -122,7 +122,7 @@ T = {
 	"DELETE_QUESTION": "Usun\xb9\xe6 %s z listy znajomych?",
 	"UNBLOCK_QUESTION": "Odblokowa\xe6 %s?",
 	"KICK_QUESTION": "Wyrzuci\xe6 %s z gildii?",
-	"REQUEST_CHAT": "%s chce doda\xe6 Ci\xea do znajomych - otw\xf3rz Spo\xb3eczno\x9c\xe6 (zak\xb3adka Zaproszenia).",
+	"REQUEST_CHAT": "%s chce doda\xe6 Ci\xea do znajomych - odpowiedz w okienku albo w Spo\xb3eczno\x9cci (zak\xb3adka Zaproszenia).",
 	"FRIEND_LOGIN": "Tw\xf3j znajomy %s jest teraz w grze.",
 	"GUILD_LOGIN": "Cz\xb3onek gildii %s jest teraz w grze.",
 	"SELECT_FIRST": "Najpierw zaznacz gracza na li\x9ccie.",
@@ -1475,11 +1475,16 @@ class CommunityWindow(ui.BoardWithTitleBar):
 		_Chat(_T("REQUEST_CHAT") % name)
 		self.RefreshList()
 
+	def HasRequest(self, name):
+		return name in self.requests
+
 	def AnswerRequest(self, name, accept):
 		if name not in self.requests:
 			return
 		del self.requests[name]
 		_Send("/messenger_auth %s %s" % ("y" if accept else "n", name))
+		# MT2009_PLUS_COMMUNITY_V1 (dialog): answered in the tab - game.py's question dialog of this name closes too
+		_CloseRequestDialog(name)
 		self.HideToolTip()
 		self.RefreshList()
 
@@ -1801,6 +1806,32 @@ def OnFriendRequest(name):
 		return False
 	window.AddFriendRequest(name)
 	return True
+
+
+# MT2009_PLUS_COMMUNITY_V1 (dialog): a friend request also opens the classic question dialog (game.py
+# OnMessengerAddFriendQuestion, as the old messenger did); an answer in either place removes the other.
+def SetRequestDialogCloser(closer):
+	"""game.py: closer(name) closes its question dialog when it is open for that name."""
+	_state["dialog_closer"] = closer
+
+
+def _CloseRequestDialog(name):
+	closer = _state.get("dialog_closer")
+	if not closer:
+		return
+	try:
+		closer(name)
+	except Exception:
+		_state["dialog_closer"] = None
+
+
+def AnswerFromDialog(name, accept):
+	"""game.py's question dialog answered: the request tab loses the entry; the server gets the answer once."""
+	window = GetWindow()
+	if window and window.HasRequest(name):
+		window.AnswerRequest(name, accept)
+		return
+	_Send("/messenger_auth %s %s" % ("y" if accept else "n", name))
 
 
 def OnLover(action, name="", lovePoint=0):

@@ -16,6 +16,12 @@
 //    portal (icon 1 - landing beside it would take the player through);
 //  - the STATUS packet carries the character's map index (the client has none of its own);
 //  - the bound stone (79669) is spent before the tradeable one (79668);
+//  - MT2009_PLUS_NPC_LOCATION_HELPER_V2 (the owner, 28 October 2026 - "as the wiki"): every character has the
+//    improved map from the start - no quest flag, the Lokalizator NPC item (79667) is not needed any more (using
+//    one only says so and keeps it); the wiki's checks on top of ours: the target map's level (min_level of
+//    npc_location_helper.txt = our gates: Port 90, Smocze Ziemie 90, Ochao 95, Grota 75, Yohara 120 ...), the
+//    Champion level 1 for the lands of Yohara (categories 6 / 7, as the wiki and the Teleportation Ring's Dongan)
+//    and no NPC of an enemy kingdom (the map's empire);
 //  - a map piece unlocks nothing yet: a map with show_atlas 2 is a target only with the quest flag
 //    npc_location_helper.unlocked_map.<index> (none of our maps has 2 - the owner decides).
 #include "stdafx.h"
@@ -229,38 +235,20 @@ bool CNpcLocationHelperManager::FindNpc(long mapIndex, DWORD vnum, long x, long 
 
 bool CNpcLocationHelperManager::IsActive(CHARACTER* ch) const
 {
-	quest::PC* pc = NlhPC(ch);
-	return pc && pc->GetFlag(NlhFlag("active")) > 0;
+	// MT2009_PLUS_NPC_LOCATION_HELPER_V2: on for every character (the old quest flag "active" is not read)
+	return ch && ch->IsPC();
 }
 
 bool CNpcLocationHelperManager::UseActivator(CHARACTER* ch, CItem* item)
 {
-	quest::PC* pc = NlhPC(ch);
-	if (!pc || !item || !ch->GetDesc())
+	if (!ch || !item || !ch->GetDesc())
 		return false;
 
-	// an older client cannot show the improved map: the item stays ("... wymaga nowszego klienta gry.")
-	if (m_setClientHandles.find(ch->GetDesc()->GetHandle()) == m_setClientHandles.end())
-	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Lokalizator NPC wymaga nowszego klienta gry.");
-		return false;
-	}
-
-	if (pc->GetFlag(NlhFlag("active")) > 0)
-	{
-		// "Lokalizator NPC jest juz wlaczony." - the item stays
-		ch->ChatPacket(CHAT_TYPE_INFO, "Lokalizator NPC jest ju\xbf w\xb3\xb9" "czony.");
-		SendStatus(ch);
-		return false;
-	}
-
-	pc->SetFlag(NlhFlag("active"), 1);
-	item->SetCount(item->GetCount() - 1);
-	// "Lokalizator NPC wlaczony! Na mapie swiata przelacz widok przyciskiem w pasku tytulu."
-	ch->ChatPacket(CHAT_TYPE_INFO, "Lokalizator NPC w\xb3\xb9" "czony! Na mapie \x9cwiata prze\xb3\xb9" "cz widok przyciskiem w pasku tytu\xb3u.");
-	sys_log(0, "NPC_LOCATION_HELPER: %s (%u) switched the helper on", ch->GetName(), ch->GetPlayerID());
+	// MT2009_PLUS_NPC_LOCATION_HELPER_V2: every character has the improved map - the item is not needed and stays
+	// "Lokalizator NPC jest wlaczony dla kazdej postaci - ten przedmiot nie jest juz potrzebny."
+	ch->ChatPacket(CHAT_TYPE_INFO, "Lokalizator NPC jest w\xb3\xb9" "czony dla ka\xbfdej postaci - ten przedmiot nie jest ju\xbf potrzebny.");
 	SendStatus(ch);
-	return true;
+	return false;
 }
 
 DWORD CNpcLocationHelperManager::GetCooldownRemain(CHARACTER* ch) const
@@ -408,12 +396,6 @@ void CNpcLocationHelperManager::HandlePacket(CHARACTER* ch, const TPacketCGNPCLo
 
 void CNpcLocationHelperManager::WarpToNPC(CHARACTER* ch, const TPacketCGNPCLocationHelper& packet)
 {
-	if (!IsActive(ch))
-	{
-		SendPacket(ch, NPC_LOCATION_HELPER_GC_WARP_RESULT, RESULT_NOT_ACTIVE);
-		return;
-	}
-
 	const long curMap = ch->GetMapIndex();
 	if (!m_bLoaded || ch->IsDead() || ch->IsRiding() || ch->IsPolymorphed() || ch->IsWarping() || !ch->CanWarp()
 		|| ch->IsBusy() || ch->GetArena() || CPVPManager::instance().IsFighting(ch->GetPlayerID())
@@ -471,12 +453,17 @@ void CNpcLocationHelperManager::WarpToNPC(CHARACTER* ch, const TPacketCGNPCLocat
 		return;
 	}
 
-	if (ch->GetLevel() < mapInfo->minLevel || ch->GetConquerorLevel() < mapInfo->minConquerorLevel)
+	// MT2009_PLUS_NPC_LOCATION_HELPER_V2 (the wiki): below the target map's level - and the lands of Yohara
+	// (categories 6 / 7) only for a Champion (Poziom Czempiona 1+)
+	const int minConquerorLevel = (mapInfo->category == 6 || mapInfo->category == 7)
+		? std::max(1, mapInfo->minConquerorLevel) : mapInfo->minConquerorLevel;
+	if (ch->GetLevel() < mapInfo->minLevel || ch->GetConquerorLevel() < minConquerorLevel)
 	{
 		SendPacket(ch, NPC_LOCATION_HELPER_GC_WARP_RESULT, RESULT_LEVEL_LIMIT);
 		return;
 	}
 
+	// the wiki: no NPC of an enemy kingdom (the kingdom maps and their guild lands carry their empire)
 	if (mapInfo->empire != 0 && mapInfo->empire != ch->GetEmpire())
 	{
 		SendPacket(ch, NPC_LOCATION_HELPER_GC_WARP_RESULT, RESULT_EMPIRE_LIMIT);

@@ -4386,6 +4386,15 @@ if [ -s /opt/playerbot/npc_location_helper.sql ]; then
         fail_step "NPC location helper: npc_location_helper.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_NPC_LOCATION_HELPER_V2 (the owner, 28 October 2026): the teleport stones in the in-game ItemShop, tab
+# "Wyposazenie" next to the Teleportation Ring (8): 17 Kamien Teleportacji 79669 (bound) 5 Smoczych Monet a piece (the
+# owner's price), 18 Kamien Teleportacji+ 79668 (tradeable) 6 SM (an assumption: one coin more for the trade). The
+# second ItemShop lists the in-game lines. The Lokalizator NPC 79667 is not sold (every character has the map). Once
+# per install (ishop_once) - the operator may change or remove them in the Seban panel. Only with the items in
+# item_proto. Bots never buy them (no wish of theirs names the stones).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (79668, 79669);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once npcloc_stones_17 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (17, 79669, 1, 5, 'DRAGON_COIN', 0), (18, 79668, 1, 6, 'DRAGON_COIN', 0);" "could not add the teleport stones to the ItemShop"
+fi
 
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
