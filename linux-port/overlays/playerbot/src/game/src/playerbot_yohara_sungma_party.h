@@ -100,7 +100,11 @@
 			return false;
 		const long base = ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? ch->GetMapIndex() / 10000 : ch->GetMapIndex();
 		const DWORD pid = ch->GetPlayerID();
-		return base == r.lMap && IsPlayerBotSungmaBotMap(base) && GetPlayerBotSungmaActivity(pid) == 0 &&
+		return (base == r.lMap
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+				|| IsPlayerBotYoharaLochGuest(pid, base)	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a guest of the Loch
+#endif
+				) && IsPlayerBotSungmaBotMap(base) && GetPlayerBotSungmaActivity(pid) == 0 &&
 				!IsPlayerBotYoharaLeaving(pid) && !IsPlayerBotOnDungeonRun(pid) && !IsPlayerBotOnMercContract(pid);
 	}
 

@@ -1580,7 +1580,11 @@ namespace
 					count = PLAYERBOT_SUNGMA_MAPS[slot].uHubs;
 					return PLAYERBOT_SUNGMA_MAPS[slot].pHubs;
 				}
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+				return GetPlayerBotYoharaLochHubs(mapIndex, count);	// Tajemniczy Loch (playerbot_yohara_guides.h)
+#else
 				return NULL;
+#endif
 			}
 		}
 	}

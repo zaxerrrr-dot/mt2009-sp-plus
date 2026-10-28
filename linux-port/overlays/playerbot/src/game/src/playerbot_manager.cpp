@@ -429,6 +429,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_BOT_ISHOP_V3_V1: what a bot buys in the ItemShop V3 for its gear (the bonus stones, raw Cors, beans, a
 // sash partner, refine scrolls; the set chests) - after every pass whose needs it reads
 #include "playerbot_ishop3_goals.h"
+// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch and the leaders' boss route - after the
+// V3 goals whose purchase it uses
+#include "playerbot_yohara_guides.h"
 
 namespace
 {
