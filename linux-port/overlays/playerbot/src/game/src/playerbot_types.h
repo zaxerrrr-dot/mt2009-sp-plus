@@ -7094,6 +7094,9 @@ namespace
 	int GetPlayerBotSungmaBandFloor(long mapIndex);
 	bool GetPlayerBotSungmaSafePoint(long mapIndex, long& x, long& y);
 	int GetPlayerBotSungmaActivity(DWORD pid);
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the one element a Yohara bot hunts and gears for (its map's majority; 0 none) -
+	// the element resistance work's (MT2009_PLUS_BOT_ELEMENT_RESIST_V1); the fight's spots and targets prefer it.
+	BYTE GetPlayerBotHuntElement(LPCHARACTER ch);
 	// MT2009_PLUS_BOT_YOHARA_G0_V2: the dust saved from level 110 and kept in the safebox (the storekeeper's visit),
 	// and a replaced bound piece no bot bought - to the merchant.
 	bool PlayerBotG0WantsSafebox(LPCHARACTER ch);

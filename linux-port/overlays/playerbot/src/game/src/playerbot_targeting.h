@@ -2071,6 +2071,13 @@ namespace
 			return NULL;
 		const int capacity = GetPlayerBotSungmaCapacity(ch, partyReady);
 		const int bandLevel = GetPlayerBotSungmaBandMobLevel(ch);
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the hunt element (the leader's for a member), and a member's tether to its
+		// leader - the party fights one spot (PLAYERBOT_SUNGMA_F2_TETHER)
+		const int huntElement = GetPlayerBotSungmaHuntElement(ch);
+		LPCHARACTER tetherLeader = party ? party->GetLeaderCharacter() : NULL;
+		if (tetherLeader && (tetherLeader == ch || tetherLeader->IsDead() || tetherLeader->GetMapIndex() != ch->GetMapIndex()))
+			tetherLeader = NULL;
+		bool pickHunt = false;
 		LPCHARACTER pick = NULL, over = NULL, nearest = NULL, defend = NULL;
 		long long pickScore = LLONG_MIN, overScore = LLONG_MIN;
 		int pickWake = 0, overLoad = INT_MAX, nearestWake = 0, nearestDist = INT_MAX;
@@ -2088,6 +2095,10 @@ namespace
 				continue;
 			if (!onMe && IsPlayerBotSungmaSpotAvoided(ch, mob->GetX(), mob->GetY(), dwNow))
 				continue;
+			// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a member takes what is by its leader (or on itself)
+			if (!onMe && tetherLeader && !(mob->GetVictim() && mob->GetVictim()->GetParty() == party) &&
+					DISTANCE_APPROX(mob->GetX() - tetherLeader->GetX(), mob->GetY() - tetherLeader->GetY()) > PLAYERBOT_SUNGMA_F2_TETHER)
+				continue;
 			const int wake = onMe ? 0 : 1 + CountPlayerBotSungmaWake(mobs, mob->GetX(), mob->GetY(), mob);
 			const int load = engaged + wake;
 			int power = 0, resist = 0;
@@ -2097,6 +2108,10 @@ namespace
 					(long long)std::max(0, (int)mob->GetLevel() - bandLevel) * PLAYERBOT_SUNGMA_LEVEL_PENALTY +
 					(long long)std::min(power, 200) * PLAYERBOT_SUNGMA_ELEMENT_POWER_SCORE +
 					(long long)std::min(resist, 50) * PLAYERBOT_SUNGMA_ELEMENT_RESIST_SCORE;
+			// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the element it hunts
+			const bool hunt = IsPlayerBotSungmaMobOfElement(mob, huntElement);
+			if (hunt)
+				score += PLAYERBOT_SUNGMA_F2_ELEMENT_MATCH_SCORE;
 			if (onMe)
 			{
 				score += 500000;
@@ -2119,6 +2134,7 @@ namespace
 					pick = mob;
 					pickWake = wake;
 					pickElement = power > 0;
+					pickHunt = hunt;
 				}
 			}
 			else if (load < overLoad || (load == overLoad && score > overScore))
@@ -2172,6 +2188,8 @@ namespace
 			++st->targetsPicked;
 			if (pickElement)
 				++st->targetsElement;
+			if (pickHunt)
+				++st->huntElementPicks;
 			if (pick != nearest && pickWake < nearestWake)
 				++st->targetsEdge;
 		}

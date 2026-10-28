@@ -8232,7 +8232,9 @@ WritePlayerBotGuildStatus(dwNow);
 		}
 
 		// MT2009_PLUS_AREZZO_BOTS_V1 (las); MT2009_PLUS_BOT_YOHARA_FIGHT_V1: 80% on a Sung Ma map
-		UseHealthPotion(ch, state, dwNow, GetPlayerBotSungmaPotionPercent(ch, GetPlayerBotArezzoPotionPercent(ch)));
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: and counted for the census's fight2 line
+		if (UseHealthPotion(ch, state, dwNow, GetPlayerBotSungmaPotionPercent(ch, GetPlayerBotArezzoPotionPercent(ch))))
+			NotePlayerBotSungmaPotion(ch);
 		UseManaPotion(ch, state, dwNow);
 		UseUtilityPotions(ch, state, dwNow);
 		UsePlayerBotBoosters(ch, state, dwNow);
@@ -8315,7 +8317,7 @@ WritePlayerBotGuildStatus(dwNow);
 				: (state.dwTargetVID != 0 ? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL);
 		if (!state.bTacticalRetreat && retreatThreat && retreatThreat->IsMonster() &&
 				!retreatThreat->IsDead() && ch->GetMaxHP() > 0 &&
-				ch->GetHP() * 100 <= ch->GetMaxHP() * GetPlayerBotArezzoRetreatPercent(ch)) // MT2009_PLUS_AREZZO_BOTS_V1 (las)
+				ch->GetHP() * 100 <= ch->GetMaxHP() * GetPlayerBotSungmaRetreatPercent(ch, GetPlayerBotArezzoRetreatPercent(ch))) // MT2009_PLUS_AREZZO_BOTS_V1 (las); MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a Sung Ma fighter's floor
 			StartPlayerBotTacticalRetreat(ch, state, retreatThreat, dwNow);
 		if (HandlePlayerBotTacticalRetreat(ch, state, dwNow))
 			continue;

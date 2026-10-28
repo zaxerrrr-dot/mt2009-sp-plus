@@ -33,14 +33,65 @@
 	const int PLAYERBOT_SUNGMA_REGROUP_RADIUS = 2500;
 	const DWORD PLAYERBOT_SUNGMA_REGROUP_MS = 45 * 1000;
 	const DWORD PLAYERBOT_SUNGMA_REGROUP_GAP_MS = 90 * 1000;
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a member leaves for "far" only after this long far running (a retreat, an escape
+	// or a revival at the safe point brings it back by the follow): 1 508 of the 2 393 "far" leaves of 28 October 05-06
+	// came within 2 minutes of the member's retreat, 536 of an escape, 191 of a revival - and the member joined another
+	// party at once.
+	const DWORD PLAYERBOT_SUNGMA_PARTY_FAR_GRACE_MS = 90 * 1000;
 
 	struct TPlayerBotSungmaPartyBot
 	{
 		DWORD dwSince;			// in its party since
 		DWORD dwRegroupSince, dwNextRegroup;
-		TPlayerBotSungmaPartyBot() : dwSince(0), dwRegroupSince(0), dwNextRegroup(0) {}
+		DWORD dwFarSince;		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: far from its leader since
+		TPlayerBotSungmaPartyBot() : dwSince(0), dwRegroupSince(0), dwNextRegroup(0), dwFarSince(0) {}
 	};
 	std::map<DWORD, TPlayerBotSungmaPartyBot> s_mapPlayerBotSungmaParty;
+
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: one element a party
+	// The owner, 28 October 2026: a party is made of bots geared for one element (GetPlayerBotHuntElement), so the whole
+	// party hunts that element's spots; a Shaman of another element may join one for its buffs (the Blessing and the
+	// rest) - one such Shaman a party. A bot with no hunt element (0) goes with anyone, as before.
+
+	int GetPlayerBotSungmaOwnElement(LPCHARACTER ch)
+	{
+		return ch ? DecodePlayerBotSungmaHuntElement(GetPlayerBotHuntElement(ch)) : -1;
+	}
+
+	bool ArePlayerBotSungmaElementsAlike(int a, int b)
+	{
+		return a < 0 || b < 0 || a == b;
+	}
+
+	struct FCountPlayerBotSungmaOffShamans
+	{
+		int m_element;
+		LPCHARACTER m_skip;
+		int m_count;
+		FCountPlayerBotSungmaOffShamans(int element, LPCHARACTER skip) : m_element(element), m_skip(skip), m_count(0) {}
+		void operator()(LPCHARACTER member)
+		{
+			if (member && member != m_skip && member->GetJob() == JOB_SHAMAN &&
+					!ArePlayerBotSungmaElementsAlike(GetPlayerBotSungmaOwnElement(member), m_element))
+				++m_count;
+		}
+	};
+
+	// Whether ch may be in the party its leader leads, by the element: the leader's, or the party's one Shaman of
+	// another element.
+	bool CanPlayerBotSungmaJoinByElement(LPCHARACTER ch, LPPARTY party, LPCHARACTER leader)
+	{
+		if (!ch || !leader)
+			return false;
+		const int leaderElement = GetPlayerBotSungmaOwnElement(leader);
+		if (ArePlayerBotSungmaElementsAlike(GetPlayerBotSungmaOwnElement(ch), leaderElement))
+			return true;
+		if (ch->GetJob() != JOB_SHAMAN || !party)
+			return false;
+		FCountPlayerBotSungmaOffShamans f(leaderElement, ch);
+		party->ForEachOnMapMember(f, leader->GetMapIndex());
+		return f.m_count == 0;
+	}
 
 	// A resident that may be in a party now: on its own map, nothing else on its hands.
 	bool IsPlayerBotSungmaPartyFree(LPCHARACTER ch, const TPlayerBotYoharaResident& r)
@@ -107,6 +158,8 @@
 	LPCHARACTER FindPlayerBotSungmaFreePartner(LPCHARACTER ch)
 	{
 		const int champion = GetPlayerBotChampionLevel(ch);
+		const int element = GetPlayerBotSungmaOwnElement(ch);	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1
+		LPPARTY recruiting = ch->GetParty();
 		LPCHARACTER best = NULL;
 		int bestDist = INT_MAX;
 		for (std::map<DWORD, TPlayerBotYoharaResident>::const_iterator r = s_mapPlayerBotYoharaResident.begin();
@@ -121,6 +174,11 @@
 			if (d > PLAYERBOT_SUNGMA_PARTY_FIND_RANGE || d >= bestDist ||
 					abs(GetPlayerBotChampionLevel(other) - champion) > PLAYERBOT_SUNGMA_PARTY_BAND ||
 					!IsPlayerBotSungmaPartyPartner(other) || ArePlayerBotLegendRivalPids(ch->GetPlayerID(), other->GetPlayerID()))
+				continue;
+			// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: its element - a new pair one element; a leader recruiting takes one Shaman of
+			// another
+			if (recruiting ? !CanPlayerBotSungmaJoinByElement(other, recruiting, ch)
+					: !ArePlayerBotSungmaElementsAlike(GetPlayerBotSungmaOwnElement(other), element))
 				continue;
 			best = other;
 			bestDist = d;
@@ -151,7 +209,8 @@
 			if (members < minMembers || members >= PLAYERBOT_SUNGMA_PARTY_MAX || !leader || IsPlayerBotHumanLedParty(party) ||
 					leader->GetMapIndex() != ch->GetMapIndex() || leader->GetEmpire() != ch->GetEmpire() || leader->IsDead() ||
 					abs(GetPlayerBotChampionLevel(leader) - champion) > PLAYERBOT_SUNGMA_PARTY_BAND ||
-					PlayerBotPartyHasLegendRival(ch, party))
+					PlayerBotPartyHasLegendRival(ch, party) ||
+					!CanPlayerBotSungmaJoinByElement(ch, party, leader))	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1
 				continue;
 			const int d = DISTANCE_APPROX(leader->GetX() - ch->GetX(), leader->GetY() - ch->GetY());
 			if (d > PLAYERBOT_SUNGMA_PARTY_FIND_RANGE)
@@ -210,9 +269,20 @@
 					why = "leader_map";
 				else if (abs(GetPlayerBotChampionLevel(leader) - GetPlayerBotChampionLevel(ch)) > PLAYERBOT_SUNGMA_PARTY_BAND)
 					why = "band";
+				// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: geared for another element than its leader (and not the party's Shaman)
+				else if (!CanPlayerBotSungmaJoinByElement(ch, party, leader))
+					why = "element";
 				else if (DISTANCE_APPROX(leader->GetX() - ch->GetX(), leader->GetY() - ch->GetY()) > PLAYERBOT_SUNGMA_PARTY_LEAVE_RANGE ||
 						!IsPlayerBotSungmaPartyReachable(ch, leader))
-					why = "far";
+				{
+					// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: far for PLAYERBOT_SUNGMA_PARTY_FAR_GRACE_MS running
+					if (pb.dwFarSince == 0)
+						pb.dwFarSince = dwNow ? dwNow : 1;
+					else if (dwNow - pb.dwFarSince >= PLAYERBOT_SUNGMA_PARTY_FAR_GRACE_MS)
+						why = "far";
+				}
+				else
+					pb.dwFarSince = 0;
 				if (why)
 				{
 					LeavePlayerBotSungmaParty(ch, why, false);
@@ -296,16 +366,26 @@
 		if (!party || party->GetLeaderPID() != ch->GetPlayerID() || party->GetMemberCount() < 2 || IsPlayerBotHumanLedParty(party))
 			return false;
 		TPlayerBotSungmaPartyBot& pb = s_mapPlayerBotSungmaParty[ch->GetPlayerID()];
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a fight in the middle of a regroup pauses it, not ends it - the leader that
+		// took a monster between two waits started (and counted) a new regroup after every kill: 15 452 an hour on the
+		// Twierdza for 21 parties (28 October, 00-08), and the 90 s gap never came
 		if (state.dwTargetVID != 0 || ch->GetVictim() != NULL || state.bTacticalRetreat || state.bRecoveringAfterDeath ||
 				ch->IsDead())
 		{
-			pb.dwRegroupSince = 0;
+			if (pb.dwRegroupSince != 0 && dwNow - pb.dwRegroupSince >= PLAYERBOT_SUNGMA_REGROUP_MS)
+			{
+				pb.dwRegroupSince = 0;
+				pb.dwNextRegroup = dwNow + PLAYERBOT_SUNGMA_REGROUP_GAP_MS;
+			}
 			return false;
 		}
 		FFindPlayerBotSungmaStraggler f(ch);
 		party->ForEachOnMapMember(f, ch->GetMapIndex());
 		if (f.m_far == 0)
 		{
+			// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: gathered - the next wait not at once
+			if (pb.dwRegroupSince != 0)
+				pb.dwNextRegroup = dwNow + PLAYERBOT_SUNGMA_REGROUP_GAP_MS / 3;
 			pb.dwRegroupSince = 0;
 			return false;
 		}

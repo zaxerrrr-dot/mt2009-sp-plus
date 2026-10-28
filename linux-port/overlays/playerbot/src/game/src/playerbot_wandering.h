@@ -373,7 +373,12 @@ namespace
 				score = PLAYERBOT_RAID_WORTH;
 			}
 			else
+			{
 				score = worth / (1 + others);
+				// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the hunt element's spots, a party's the densest (playerbot_sungma_fight.h)
+				if (IsPlayerBotSungmaBotMap(ch->GetMapIndex()))
+					score = AdjustPlayerBotSungmaHubScore(ch, hub.x, hub.y, score);
+			}
 			// Nearer is better, all else equal: a camp across the delta costs a
 			// route of two hundred milliseconds to plan and three minutes to walk.
 			// MT2009_PLUS_OCHAO_BOTS_V1 (walk): in the Temple of Ochao's labyrinth
