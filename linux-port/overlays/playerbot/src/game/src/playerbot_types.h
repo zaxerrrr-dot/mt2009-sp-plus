@@ -2518,6 +2518,9 @@ namespace
 	// Three stacks of changes on one piece, then it stays as it is until it
 	// runs out: 15M is a costume's worth.
 	const int PLAYERBOT_COSTUME_MAX_CHANGES = 60;
+	// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: a Yohara bot's body costume wants its hunt element's resistance and a
+	// second good line (Max HP, arrows, magic); after this many changes on the piece the resistance alone will do.
+	const int PLAYERBOT_COSTUME_HUNT_ALONE_AFTER = 30;
 	const int PLAYERBOT_COSTUME_ROLLS_PER_PASS = 5;
 	const DWORD PLAYERBOT_COSTUME_BONUS_STEP_MS = 1500;
 	// How long a merchant visit may run on for the costume's rolls.
@@ -10202,6 +10205,9 @@ namespace
 	bool IsPlayerBotApplyOnAttrSet(BYTE type, int set);
 	// A Yohara bot's costume / hairstyle line: 1 worth keeping, 0 not, -1 not a Yohara bot (the old scoring decides).
 	int IsPlayerBotYoharaCostumeLineGood(LPCHARACTER ch, LPITEM costume, BYTE type, long value);
+	// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: the costume / hairstyle can roll the hunt element's resistance (fire,
+	// lightning or wind on costume_body / costume_hair) and holds no good line of it - the piece is not finished.
+	bool IsPlayerBotCostumeHuntLineMissing(LPCHARACTER ch, LPITEM costume);
 	// The Sung Ma move's preparation (playerbot_yohara_sungma.h): noted when the map changes, asked before the move -
 	// true holds the move (the bot hunts on where it is) while its gear is still being made for the new element.
 	void StartPlayerBotElementPrep(LPCHARACTER ch, long fromMap, long toMap, bool mayWait, DWORD dwNow);

@@ -29,6 +29,14 @@ UPDATE world.item_attr SET weapon = 0, body = 0, wrist = 0, foots = 0, neck = 0,
 UPDATE world.item_attr SET prob = 18, lv1 = 2, lv2 = 4, lv3 = 6, lv4 = 10, lv5 = 15, weapon = 0, body = 5, wrist = 5,
        foots = 0, neck = 0, head = 5, shield = 0, ear = 0
  WHERE apply IN ('POINT_RESIST_FIRE', 'POINT_RESIST_ELEC', 'POINT_RESIST_WIND');
+-- MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: mt2009 mode may have the two chances as a weapon skin's row only
+-- (costume_attr_global.sql) - such a row gets its global kinds here; apply.sh writes the costume columns after this.
+UPDATE world.item_attr SET prob = 10, lv1 = 2, lv2 = 4, lv3 = 6, lv4 = 8, lv5 = 20, weapon = 0, body = 0, wrist = 0,
+       foots = 5, neck = 5, head = 0, shield = 5, ear = 0
+ WHERE apply = 'POINT_EXP_DOUBLE_BONUS';
+UPDATE world.item_attr SET prob = 7, lv1 = 2, lv2 = 4, lv3 = 6, lv4 = 8, lv5 = 20, weapon = 0, body = 0, wrist = 5,
+       foots = 0, neck = 0, head = 0, shield = 0, ear = 5
+ WHERE apply = 'POINT_ITEM_DROP_BONUS';
 INSERT INTO world.item_attr (apply, prob, lv1, lv2, lv3, lv4, lv5, weapon, body, wrist, foots, neck, head, shield, ear)
 SELECT n.a, n.p, n.l1, n.l2, n.l3, n.l4, n.l5, n.w, n.b, n.wr, n.f, n.ne, n.h, n.s, n.e FROM (
     SELECT 'POINT_RESIST_FIRE' AS a, 18 AS p, 2 AS l1, 4 AS l2, 6 AS l3, 10 AS l4, 15 AS l5, 0 AS w, 5 AS b, 5 AS wr, 0 AS f, 0 AS ne, 5 AS h, 0 AS s, 0 AS e

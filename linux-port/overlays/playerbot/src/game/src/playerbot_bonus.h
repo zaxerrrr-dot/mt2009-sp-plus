@@ -2617,8 +2617,17 @@ namespace
 		// are HP and SP regeneration, which never score as good, and 47 of 250
 		// hairstyles came to two good lines at some 72 million yang each.
 		const bool hair = item->GetSubType() == COSTUME_HAIR;
+		// MT2009_PLUS_COSTUME_ATTR_GLOBAL_V1: a Yohara bot's hunt element's resistance is the first line of a costume
+		// and a hairstyle whose set rolls it (playerbot_element_resist.h) - not finished without it; a body costume
+		// that has it after PLAYERBOT_COSTUME_HUNT_ALONE_AFTER changes is finished with it alone.
+		const bool huntMissing = IsPlayerBotCostumeHuntLineMissing(ch, item);
+		const BYTE huntPoint = huntMissing || hair ? 0 : GetPlayerBotHuntResistPoint(ch);
+		if (huntPoint && count >= 2 && good >= 1 && IsPlayerBotYoharaBonusMember(ch) &&
+				IsPlayerBotApplyOnAttrSet(huntPoint, item->GetAttributeSetIndex()) &&
+				state.dwCostumeBonusFocusItem == item->GetID() && state.iCostumeChangesSpent >= PLAYERBOT_COSTUME_HUNT_ALONE_AFTER)
+			return 0;
 		// Finished: two lines worth keeping (all of them on a two-line piece).
-		if (hair ? (count >= 1 && good >= 1) : (count >= 2 && good >= 2))
+		if (!huntMissing && (hair ? (count >= 1 && good >= 1) : (count >= 2 && good >= 2)))
 			return 0;
 		const int wanted = hair ? 1 : ch->GetGold() >= PLAYERBOT_COSTUME_BONUS_THREE_LINES_GOLD ? 3 : 2;
 		return count < wanted ? PLAYERBOT_COSTUME_RESET_VNUM : PLAYERBOT_COSTUME_CHANGE_VNUM;
