@@ -11080,8 +11080,12 @@ namespace
 		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
 		if (!weapon)
 			return true;
-		// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: a valid young heroes' weapon counts as +9.
-		return (int)GetPlayerBotPersonaLevelLimit(weapon) + std::max(0, GetPlayerBotReadyWeaponPlus(weapon)) +
+		// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: a young heroes' weapon is a +9 weapon of the bot's level (GetPlayerBotWeaponEffective).
+		int effLevel = 0, effPlus = 0;
+		GetPlayerBotWeaponEffective(ch, &effLevel, &effPlus, weapon);
+		if (!IsPlayerBotMlodziWeapon(weapon))
+			effLevel = (int)GetPlayerBotPersonaLevelLimit(weapon);
+		return effLevel + std::max(0, effPlus) +
 				PLAYERBOT_SIDEKICK_PLAN_WEAK_WEAPON_LEVELS <
 				(int)ch->GetLevel();
 	}

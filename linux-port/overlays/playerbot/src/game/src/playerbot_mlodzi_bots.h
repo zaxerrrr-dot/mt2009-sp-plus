@@ -151,13 +151,48 @@ namespace
 
 	// The valid young heroes' weapon counts as +9 wherever a check asks whether the bot is ready (a dungeon's
 	// gear, the cape pull, the rare personas' weapon); any other weapon its own plus, -1 for none.
+	// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1 (the owner, 28 October 2026: "it must be counted as a +9 weapon for the given level"): a
+	// young heroes' weapon is +9 for as long as it is worn - no "time left" condition beyond the item existing.
 	int GetPlayerBotReadyWeaponPlus(LPITEM weapon)
 	{
 		if (!weapon || weapon->GetType() != ITEM_WEAPON)
 			return -1;
-		if (IsPlayerBotMlodziWeaponValid(weapon))
+		if (IsPlayerBotMlodziWeapon(weapon))
 			return 9;
 		return (int)weapon->GetRefineLevel();
+	}
+
+	// MT2009_PLUS_MLODZI_WEAPON_EFFECTIVE_V1: the one reading of a bot's weapon every strength check uses (the Spider Dungeons' gear,
+	// the progression checklist, the advancement law, the rare personas, the cape pull, the companion's weak
+	// weapon, the big three's plus, the M3 door, the Zodiac runs' gear level). A worn young heroes' weapon
+	// counts as a +9 weapon of the bot's CURRENT level - the weapon a bot of this level would carry - not of its
+	// own tier, for as long as it is worn. Any other weapon: its level limit and its plus. weapon: the piece to
+	// read (NULL: the worn weapon). False (level and plus -1) without a weapon.
+	bool GetPlayerBotWeaponEffective(LPCHARACTER ch, int* level, int* plus, LPITEM weapon)
+	{
+		if (!weapon && ch)
+			weapon = ch->GetWear(WEAR_WEAPON);
+		int l = -1, p = -1;
+		bool ok = false;
+		if (weapon && weapon->GetType() == ITEM_WEAPON && weapon->GetProto())
+		{
+			ok = true;
+			if (IsPlayerBotMlodziWeapon(weapon))
+			{
+				l = ch ? (int)ch->GetLevel() : GetPlayerBotProtoLevelLimit(weapon->GetProto());
+				p = 9;
+			}
+			else
+			{
+				l = GetPlayerBotProtoLevelLimit(weapon->GetProto());
+				p = (int)weapon->GetRefineLevel();
+			}
+		}
+		if (level)
+			*level = l;
+		if (plus)
+			*plus = p;
+		return ok;
 	}
 
 	bool IsPlayerBotMlodziExpLocked(LPCHARACTER ch)
