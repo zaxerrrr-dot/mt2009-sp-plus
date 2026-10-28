@@ -25,7 +25,21 @@ import monstercard_data as D
 import monstercard_text as T
 
 CZAS_TELEPORT = 30 * 60
+CZAS_TELEPORT_GLOBAL = 12 * 60 * 60	# MT2009_PLUS_MONSTER_CARDS_YOHARA_V1: M2_BONUS_MODE=global (playerbot_monster_card.h)
 CZAS_PRZEMIANA = 3 * 60 * 60
+
+
+def _Global():
+	# the server's M2_BONUS_MODE ("BonusMode 0|1" at login, localeinfo_point.SetBonusMode)
+	try:
+		import localeinfo_point
+		return localeinfo_point.BONUS_GLOBAL
+	except:
+		return 0
+
+
+def _CzasTeleport():
+	return CZAS_TELEPORT_GLOBAL if _Global() else CZAS_TELEPORT
 
 _stan = {"stage": 0, "main": [0, 0, 0], "clear": [0, 0, 0], "deck": [0] * 16, "mission": False, "illustration": False}
 _mob = {}			# vnum -> [zebrane, zabicia, potrzeba, gwiazdki, teleport, przemiana, przywolanie]
@@ -53,7 +67,9 @@ def _GetMobEmergenceAreaIndex(vnum):
 	opis = D.OPIS.get(vnum)
 	if not opis:
 		return 0
-	return (opis[2], opis[3], opis[4])
+	# MT2009_PLUS_MONSTER_CARDS_YOHARA_V1: the monster's own map (obszar) first - it was left out, so a card
+	# showed only the other kingdoms' maps and nothing for a dungeon or Yohara monster
+	return (opis[1], opis[2], opis[3])
 
 
 def _GetIllustrationFileLoad():
@@ -99,7 +115,7 @@ def _GetIllustrationData(vnum):
 	if not m:
 		return (0, 0, 0, 0, 0)
 	cool0 = (m[5] + CZAS_PRZEMIANA) if m[5] > 0 else 0
-	cool1 = (m[4] + CZAS_TELEPORT) if m[4] > 0 else 0
+	cool1 = (m[4] + _CzasTeleport()) if m[4] > 0 else 0
 	return (m[0], m[0], m[3], cool0, cool1)
 
 
@@ -261,10 +277,10 @@ def _Install():
 		setattr(localeInfo, name, text)
 	for name, text in T.INTERFEJS.items():
 		setattr(uiScriptLocale, name, text)
-	# obszary wystepowania potworow: numer mapy -> nazwa strefy z localeInfo moda
+	# obszary wystepowania potworow: numer mapy -> nazwa strefy z localeInfo moda, inaczej nazwa zapasowa z danych
 	strefy = {}
-	for index, mapa in D.MAPY.items():
-		strefy[index] = getattr(localeInfo, "MINIMAP_ZONE_NAME_DICT", {}).get(mapa, mapa)
+	for index, (mapa, nazwa) in D.MAPY.items():
+		strefy[index] = getattr(localeInfo, "MINIMAP_ZONE_NAME_DICT", {}).get(mapa, nazwa) if mapa else nazwa
 	localeInfo.MINIMAP_ZONE_NAME_DICT_BY_IDX = strefy
 
 
@@ -289,11 +305,12 @@ def CardTooltip(tip, vnum, slots):
 	if mob:
 		tip.AppendTextLine(nonplayer.GetMonsterName(mob), tip.POSITIVE_COLOR)
 	tip.AppendDescription(item.GetItemDescription(), 26)
-	if mob and mob in D.OPIS:
+	sciezka = __import__("uimonstercard").CARD_IMG_DICT.get(mob) if mob and mob in D.OPIS else None
+	if sciezka:
 		image = ui.ImageBox()
 		image.SetParent(tip)
 		image.Show()
-		image.LoadImage("d:/ymir work/ui/game/monster_card/card/%d.sub" % mob)
+		image.LoadImage(sciezka)
 		image.SetPosition((tip.toolTipWidth / 2) - image.GetWidth() / 2, tip.toolTipHeight)
 		tip.toolTipHeight += image.GetHeight()
 		tip.childrenList.append(image)
@@ -303,6 +320,8 @@ def CardTooltip(tip, vnum, slots):
 # ------------------------------------------------------------------ okno
 
 def Window():
+	# MT2009_PLUS_MONSTER_CARDS_YOHARA_V1: the reset button's tooltip of the server's mode (the window reads it when built)
+	localeInfo.MC_QUESTION_BUTTON_DESC2 = T.GRA["MC_QUESTION_BUTTON_DESC2_GLOBAL" if _Global() else "MC_QUESTION_BUTTON_DESC2"]
 	if not _okno:
 		_okno.append(__import__("uimonstercard").MonsterCardWindow())
 	return _okno[0]

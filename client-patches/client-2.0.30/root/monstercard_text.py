@@ -27,6 +27,7 @@ GRA = {
 	"MC_PROMOTION_QUESTION": "Czy chcesz podnie\x9c\xe6 poziom?",
 	"MC_QUESTION_BUTTON_DESC1": "Pierwszy reset misji w ci\xb9gu 24 godzin jest darmowy.",
 	"MC_QUESTION_BUTTON_DESC2": "Ka\xbfdy kolejny reset wymaga Karty Nowego Pocz\xb9tku.",
+	"MC_QUESTION_BUTTON_DESC2_GLOBAL": "Kolejne (maks. 6 na dob\xea) kosztuj\xb9 2, 4, 6, 8 i 10 Kart Nowego Pocz\xb9tku.",
 	"MC_QUESTION_BUTTON_DESC3": "Kliknij, aby zobaczy\xe6 pozosta\xb3y czas odnowienia.",
 	"MC_REWARD_FAIL": "Brak miejsca w ekwipunku.",
 	"MC_REWARD_MISSION": "Czy chcesz teraz odebra\xe6 Kart\xea Potwora?",
