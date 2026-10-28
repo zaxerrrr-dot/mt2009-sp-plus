@@ -2861,6 +2861,10 @@ RUN set -eu; S=/opt/metin2/share/locale/poland/special_spawns.txt; A=/tmp/spawn-
 # cell, regen.txt = Owsap's but seven groups, npc.txt: the Nagrobek 30130 at 178 489 and the warp 10097 at 483 79
 # back to the second Spider Dungeon, 7040 5235); its monsters are the five Best. poison spiders 2071-2075 of 60-68
 # in group_group 2701-2707 - no Metin, no ore, no boss (the wiki's). Two changes:
+#  * MT2009_PLUS_SPIDER3_SWITCH_V1: all of it behind M2_SPIDER3_ON (.env, default 0 until the client with the map is
+#    out): 0 - no core hosts 217 and the warp line below stays commented; 1 - game1 hosts it and m2-render-config
+#    uncomments the warp at the container's start. The drops and spawns of 217's own monsters change nothing while
+#    the map is not hosted;
 #  * the way in: the second Spider Dungeon (71) gets the warp 10098 (mob_proto "... 984 5711" -> V3 at 472 79,
 #    beside Town.txt) at 385 893 of its last room, as Owsap's npc.txt has it - the package left it out. Both ends
 #    walkable in server_attr (9x9 cells free around them); no level check, the wiki's "od Lv. 1". Bots never take a
@@ -2874,8 +2878,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map; V2="$L/metin2_map_spiderdung
  && grep -q -E '^217[[:blank:]]+metin2_map_spiderdungeon_03[[:space:]]*$' "$L/index" \
  && ! grep -q -E '[[:blank:]]10098[[:space:]]*$' "$V2" \
  && { [ -z "$(tail -c 1 "$V2")" ] || printf '\r\n' >> "$V2"; } \
- && printf '// MT2009_PLUS_SPIDER3_V1: the warp to 3 Loch Pajakow (217)\r\nm\t385\t893\t0\t0\t0\t1\t1m\t100\t1\t10098\r\n' >> "$V2" \
- && test "$(grep -c -E '^m[[:blank:]]+385[[:blank:]]+893[[:blank:]].*[[:blank:]]10098[[:space:]]*$' "$V2")" = 1 \
+ && printf '// MT2009_PLUS_SPIDER3_V1: the warp to 3 Loch Pajakow (217) - commented while M2_SPIDER3_ON is 0 (bin/m2-render-config)\r\n//m\t385\t893\t0\t0\t0\t1\t1m\t100\t1\t10098\r\n' >> "$V2" \
+ && test "$(grep -c -E '^//m[[:blank:]]+385[[:blank:]]+893[[:blank:]].*[[:blank:]]10098[[:space:]]*$' "$V2")" = 1 \
  && grep -q -E '^m[[:blank:]]+483[[:blank:]]+79[[:blank:]].*[[:blank:]]10097[[:space:]]*$' "$V3/npc.txt" \
  && test "$(grep -c -E '^ga[[:blank:]]' "$V3/regen.txt")" = 35 \
  && sed -i -E 's/^ga([[:blank:]])/g\1/' "$V3/regen.txt" \

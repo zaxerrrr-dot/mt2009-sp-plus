@@ -212,7 +212,20 @@ MAPS_game1="$MAPS_game1 356"
 # (V2 is 4x4), 667 spawn lines of three spiders (~2 000 monsters, V2 668), the bots' grid 1536x1536 cells as V1's
 # (~12 MB, built when the first bot arrives); about 30-60 MB on game1 (ch1-game1 1.1-1.3 GB resident on 28 October,
 # the 32-bit limit 4 GB). game1 of the unified layout: 44 maps of MAP_ALLOW_LIMIT 48.
-MAPS_game1="$MAPS_game1 217"
+# MT2009_PLUS_SPIDER3_SWITCH_V1: only with M2_SPIDER3_ON=1 (.env; default 0 - the map's client is not out yet). Off,
+# 217 is what it was before MT2009_PLUS_SPIDER3_V1: no core hosts it, V2's warp 10098 stays commented in its npc.txt
+# (a warp to an unhosted map goes nowhere anyway), no bot is moved there (IsPlayerBotMapHostedHere), and a character
+# saved there goes to its kingdom's start at the next login (ENABLE_GOHOME_IF_MAP_NOT_EXIST).
+case "$(printf '%s' "${M2_SPIDER3_ON:-0}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 1|on|yes|true) M2_SPIDER3_ON=1 ;; *) M2_SPIDER3_ON=0 ;; esac
+SPIDER3_NPC="$SHARE_DIR/locale/poland/map/metin2_map_spiderdungeon_02/npc.txt"
+if [ "$M2_SPIDER3_ON" = "1" ]; then
+  MAPS_game1="$MAPS_game1 217"
+  [ -f "$SPIDER3_NPC" ] && sed -i -E 's#^//(m[[:blank:]]+385[[:blank:]]+893[[:blank:]].*[[:blank:]]10098[[:space:]]*)$#\1#' "$SPIDER3_NPC"
+  log "3 Loch Pajakow (217): ON - hosted by game1, the warp 10098 in V2 open"
+else
+  [ -f "$SPIDER3_NPC" ] && sed -i -E 's#^(m[[:blank:]]+385[[:blank:]]+893[[:blank:]].*[[:blank:]]10098[[:space:]]*)$#//\1#' "$SPIDER3_NPC"
+  log "3 Loch Pajakow (217): off (M2_SPIDER3_ON=0) - not hosted, no warp"
+fi
 # MT2009_PLUS_YOHARA_CORE_V1 (maps): the whole of Yohara on a core of its own in every channel (the owner,
 # 14 October 2026) - game3, "Yohara": Obrona Statku (367, the ship's private copies 3670000+ are made here), Port
 # Nowego Kontynentu (368), Dongan (373), Opuszczona Twierdza (374), Seoganland (376), Namgan (377), Przelecz Yilad

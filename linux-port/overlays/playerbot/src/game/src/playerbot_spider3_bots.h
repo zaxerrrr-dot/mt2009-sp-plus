@@ -189,9 +189,10 @@ namespace
 	{
 		if (!ch || (map != PLAYERBOT_MAP_SPIDER_V2 && map != PLAYERBOT_MAP_SPIDER_V3))
 			return map;
-		LogPlayerBotSpider3Census(dwNow);
+		// MT2009_PLUS_SPIDER3_SWITCH_V1: with M2_SPIDER3_ON=0 no core hosts 217 - V2 stays V2, no census.
 		if (!IsPlayerBotMapHostedHere(PLAYERBOT_MAP_SPIDER_V3))
 			return PLAYERBOT_MAP_SPIDER_V2;
+		LogPlayerBotSpider3Census(dwNow);
 		const DWORD pid = ch->GetPlayerID();
 		std::map<DWORD, TPlayerBotSpider3Record>::iterator it = s_mapPlayerBotSpider3.find(pid);
 		const bool fresh = it == s_mapPlayerBotSpider3.end();
