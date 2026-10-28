@@ -129,6 +129,9 @@ param(
 #   Druga strona EQ    char.h, char.cpp, char_item.cpp, item.cpp, char_skill.cpp, cmd.cpp - the second equipment page,
 #                      its store, unlock items 38306 / 76055, skill 200, "/addeq" (MT2009_PLUS_ADDEQ_V1;
 #                      server-patches/addeq, the last one - after balathor)
+#   Magazyn Item-Shopu common tables.h, cmd_general.cpp, db ClientManager.cpp - item_award deliveries fill the 3
+#                      pages of a new client's paged item-shop storage, an old client's stay on page 1
+#                      (MT2009_PLUS_MALL_PAGES_V1; server-patches/mall3, after addeq)
 #   Seon-Pyeong        constants.cpp IsEliteRefine (+ refine_proto 39900-39999), char_item.cpp - the guild and Demon
 #                      Tower smiths refuse his steps (MT2009_PLUS_SEONPYEONG_ELITE_V1; server-patches/seonpyeong)
 #   Przypisane do konta item.h, item.cpp, item_attribute.cpp, char_shop.cpp, ikarus_shop_manager.cpp, shop.cpp - an
@@ -1897,6 +1900,19 @@ if ((Test-Path -LiteralPath $addeqApply -PathType Leaf) -and
     if ($addeqResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} second equipment page edit(s).' -f $addeqResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Magazyn Item-Shopu: 3 strony (server-patches/mall3, MT2009_PLUS_MALL_PAGES_V1; the owner, 29 October 2026): the
+# client with the paged item-shop storage sends "/mall_password <password> 3", TSafeboxLoadPacket carries the page
+# count to db, and item_award deliveries fill that many pages (an old client: page 1 only, as before). After addeq.
+$mall3Apply = Join-Path $repo 'server-patches/mall3/Apply-Mall3Patch.ps1'
+if ((Test-Path -LiteralPath $mall3Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $mall3Result = & $mall3Apply -SourceDir $engineGameSource
+    if ($mall3Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} item-shop storage page edit(s).' -f $mall3Result.Applied) -ForegroundColor DarkGray
     }
 }
 
