@@ -1852,7 +1852,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-maps3-add \
 # before. sungma_table.txt gets the tower (its first floors, 35/25/35/55 - the quest sets each floor's, d.set_sungma)
 # and the hall (0/0/0/0: a Sung Ma map - no bot goes there); the tower's monsters give no champion experience (the
 # pl-wiki: "Champion-EXP 0" on every one of them - their lines leave sungma_mob_exp.txt); the dungeon panel gets
-# gnolle and wieza_smh; /goto gnolle, wieza. The monsters' rows: mariadb/playerbot/yohara_dung4.sql. The way in from
+# gnolle and wieza_smh (MT2009_PLUS_SMH_TOWER_V3: solo, the boss Tower Tyrant 7610); /goto gnolle, wieza. The
+# monsters' rows: mariadb/playerbot/yohara_dung4.sql. The way in from
 # Seoganland (4019): the late step "Yohara dung4: links".
 COPY yohara_dung4/ /tmp/yohara-dung4-add/
 RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-dung4-add \
@@ -1905,7 +1906,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-dung4-add \
  && { LC_ALL=C grep -a -q -E '^dungeon[[:blank:]]+wieza_smh[[:blank:]]' "$I" \
       || { { [ -z "$(tail -c 1 "$I")" ] || printf '\n' >> "$I"; }; \
            printf 'dungeon\tgnolle\t382\t0\txy\t373\t11486\t5325\t120\t0\t1\t8\t6820\t-\t0\t71095\t1\tJaskinie_Gnolli\tDongan\ndrop\tgnolle\t31256\t1\t100\ndrop\tgnolle\t31255\t3\t100\n' >> "$I"; \
-           printf 'dungeon\twieza_smh\t387\t1\txy\t376\t11596\t5811\t120\t0\t1\t8\t7556\t-\t0\t70401\t1\tWie\277a_Sung_Mahi\tSeoganland\n' >> "$I"; }; } \
+           printf 'dungeon\twieza_smh\t387\t1\txy\t376\t11596\t5811\t120\t0\t1\t1\t7610\t-\t0\t70401\t1\tWie\277a_Sung_Mahi\tSeoganland\n' >> "$I"; }; } \
  && test "$(LC_ALL=C grep -a -c -E '^dungeon[[:blank:]]+(gnolle|wieza_smh)[[:blank:]]' "$I")" = 2 \
  && for f in "$L/translate.lua" "$L/quest/libs/translate/translate.lua"; do \
       [ -f "$f" ] || continue; \
