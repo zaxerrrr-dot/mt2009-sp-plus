@@ -656,6 +656,10 @@ namespace
 			return false;
 		if (IsPlayerBotMlodziWeapon(item))
 			return true;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (IsPlayerBotYoharaLochTicketKept(ch, item))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Champion's Loch ticket
+			return true;
+#endif
 		if (!ch || item->GetType() != ITEM_WEAPON || item->IsEquipped() ||
 				!IsPlayerBotMlodziWeapon(ch->GetWear(WEAR_WEAPON)))
 			return false;

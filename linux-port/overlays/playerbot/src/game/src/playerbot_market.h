@@ -253,6 +253,10 @@ namespace
 		// takes (playerbot_yohara_g0.h).
 		if (WantsPlayerBotG0DustOffer(ch, offer))
 			return true;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (WantsPlayerBotLochTicketOffer(ch, offer))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket, cheap
+			return true;
+#endif
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: and over its reserve, the dust of a Champion's elixirs of power (playerbot_yohara_shop.h).
 		if (WantsPlayerBotYoharaShopDustOffer(ch, offer))
 			return true;
@@ -572,6 +576,10 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: the dust of a Champion's G0 package, while a counter holds some.
 		if (WantsPlayerBotG0DustFromMarket(ch))
 			return true;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (WantsPlayerBotLochTicketFromMarket(ch))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket on a counter
+			return true;
+#endif
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the dust of a Champion's elixirs of power, while a counter holds some.
 		if (PlayerBotYoharaShopWantsDustFromMarket(ch))
 			return true;
@@ -755,6 +763,10 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion's dust for its G0 package - its own cap and share of the purse.
 		if (WantsPlayerBotG0DustOffer(ch, item))
 			return CanPlayerBotPayForG0Dust(ch, item, price);
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (WantsPlayerBotLochTicketOffer(ch, item))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: its own cap and share of the purse
+			return CanPlayerBotPayForLochTicket(ch, item, price);
+#endif
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the elixirs' dust - its own cap and a smaller share of the purse.
 		if (WantsPlayerBotYoharaShopDustOffer(ch, item))
 			return CanPlayerBotPayForYoharaShopDust(ch, item, price);

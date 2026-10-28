@@ -433,6 +433,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 #define MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 1
 #include "playerbot_ishop3_goals.h"
 #include "playerbot_shop_aids.h"
+// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch and the leaders' boss route - after the
+// V3 goals whose purchase it uses
+#include "playerbot_yohara_guides.h"
 
 namespace
 {

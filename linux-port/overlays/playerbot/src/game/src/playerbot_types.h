@@ -4303,6 +4303,13 @@ namespace
 	const long PLAYERBOT_MAP_SUNGMA_ROZPADLINA = 389;	// Rozpadlina Dusz (metin2_map_whitdragonvalley)
 	const long PLAYERBOT_MAP_SUNGMA_SCHRONIENIE = 393;	// Schronienie Polnocnego Wiatru (metin2_map_whitedragoncave_01)
 	const long PLAYERBOT_MAP_SUNGMA_ZEJSCIE = 394;		// Zejscie Polnocnego Wiatru (metin2_map_whitedragoncave_02)
+#if defined(PLAYERBOT_ENGINE_MT2009)
+#define MT2009_PLUS_BOT_YOHARA_GUIDES_V1 1
+#endif
+	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: Tajemniczy Loch (Tajemnicza Instancja, metin2_map_anglar_dungeon_01) - not a map of
+	// the pick's table but a Sung Ma map of the bots all the same (their fight, spots, parties): an excursion from Namgan's
+	// altar with a ticket (playerbot_yohara_guides.h).
+	const long PLAYERBOT_MAP_SUNGMA_LOCH = 396;
 	bool IsPlayerBotSungmaBotMap(long mapIndex)
 	{
 		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
@@ -4310,7 +4317,11 @@ namespace
 				base == PLAYERBOT_MAP_SUNGMA_SEOGANLAND || base == PLAYERBOT_MAP_SUNGMA_NAMGAN ||
 				base == PLAYERBOT_MAP_SUNGMA_YILAD || base == PLAYERBOT_MAP_SUNGMA_WAWOZ ||
 				base == PLAYERBOT_MAP_SUNGMA_ROZPADLINA || base == PLAYERBOT_MAP_SUNGMA_SCHRONIENIE ||
-				base == PLAYERBOT_MAP_SUNGMA_ZEJSCIE;
+				base == PLAYERBOT_MAP_SUNGMA_ZEJSCIE
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+				|| base == PLAYERBOT_MAP_SUNGMA_LOCH
+#endif
+				;
 	}
 	bool GetPlayerBotSungmaArrival(long mapIndex, long& outX, long& outY)
 	{
@@ -10322,6 +10333,18 @@ namespace
 	// the errand for it asked for with a full bag too, and the errand's 30-minute gap counted from an errand that
 	// started - not from a look that a fight put off.
 	void NotePlayerBotYoharaShopErrandStarted(LPCHARACTER ch, DWORD dwNow);
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1 (playerbot_yohara_guides.h, after playerbot_ishop3_goals.h): Tajemniczy Loch's spots
+	// and their element score (the ice rooms first), its guests' parties, the ticket kept by a Champion and bought off
+	// a counter by one still levelling.
+	const TPlayerBotHuntingHub* GetPlayerBotYoharaLochHubs(long mapIndex, size_t& count);
+	int AdjustPlayerBotYoharaLochHubScore(LPCHARACTER ch, long x, long y, int score);
+	bool IsPlayerBotYoharaLochGuest(DWORD pid, long base);
+	bool IsPlayerBotYoharaLochTicketKept(LPCHARACTER ch, LPITEM item);
+	bool WantsPlayerBotLochTicketOffer(LPCHARACTER ch, LPITEM offer);
+	bool CanPlayerBotPayForLochTicket(LPCHARACTER ch, LPITEM item, long long price);
+	bool WantsPlayerBotLochTicketFromMarket(LPCHARACTER ch);
+#endif
 #define MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 1
 	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 (playerbot_element_second_set.h, after playerbot_element_resist.h): a Yohara
 	// bot's second set for a second element E2 (armour, helmet, bracelet, talisman, costume, hairstyle - and the second

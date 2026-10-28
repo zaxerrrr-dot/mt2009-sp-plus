@@ -380,6 +380,9 @@ namespace
 				// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the hunt element's spots, a party's the densest (playerbot_sungma_fight.h)
 				if (IsPlayerBotSungmaBotMap(ch->GetMapIndex()))
 					score = AdjustPlayerBotSungmaHubScore(ch, hub.x, hub.y, score);
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+				score = AdjustPlayerBotYoharaLochHubScore(ch, hub.x, hub.y, score);	// the Loch's ice rooms first
+#endif
 			}
 			// Nearer is better, all else equal: a camp across the delta costs a
 			// route of two hundred milliseconds to plan and three minutes to walk.

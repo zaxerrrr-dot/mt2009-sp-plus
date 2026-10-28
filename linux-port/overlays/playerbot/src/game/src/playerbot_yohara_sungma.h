@@ -644,6 +644,17 @@
 			dwErrandFallbackUntil(0), dwNextErrandLook(0), dwLastBagErrand(0), dwNextTradeLook(0) {}
 	};
 	std::map<DWORD, TPlayerBotSungmaBot> s_mapPlayerBotSungma;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1 (playerbot_yohara_guides.h, after playerbot_ishop3_goals.h): the Sung Ma buffs, the
+	// boosters and the Loch's excursion (-2: the resident's own flow goes on), the leaders' boss route, the kills' memory,
+	// the Loch's gate and the census.
+	int ManagePlayerBotYoharaGuides(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotYoharaResident& res,
+			TPlayerBotSungmaBot& b, long base, DWORD dwNow);
+	int ManagePlayerBotYoharaBossRoute(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
+	void NotePlayerBotYoharaGuidesKill(LPCHARACTER killer, LPCHARACTER victim);
+	bool IsPlayerBotYoharaLochEntry(LPCHARACTER ch, long base);
+	void LogPlayerBotYoharaGuidesCensus(DWORD dwNow);
+#endif
 
 	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: what a resident does beside the hunt - 1 the walk to a portal, 2 Dongan's errand
 	// (a death's cause, NotePlayerBotSungmaFallen).
@@ -813,6 +824,10 @@
 		const long base = targetMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? targetMap / 10000 : targetMap;
 		if (IsPlayerBotSungmaMapOn(base))
 			return true;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (IsPlayerBotYoharaLochEntry(ch, base))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Loch, by its altar and ticket
+			return true;
+#endif
 		// a person of its party took it along (a dungeon's jump, the follow)
 		return IsPlayerBotDungeonPartyMove(ch, targetMap, reason);
 	}
@@ -956,6 +971,9 @@
 	{
 		if (!killer || !victim || victim->IsPC() || !killer->IsPC() || !killer->GetDesc() || !killer->GetDesc()->IsBot())
 			return;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		NotePlayerBotYoharaGuidesKill(killer, victim);	// the bosses' memory, the boosters' kill rate
+#endif
 		const int slot = GetPlayerBotSungmaSlot(killer->GetMapIndex());
 		if (slot >= 0)
 		{
@@ -1515,6 +1533,9 @@
 		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: and a craft's material a counter holds (the helmets' / armours' recipes too).
 		if (gap >= PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS && (IsPlayerBotG0DustHunter(ch) || PlayerBotNeedsAnyRefineMaterial(ch) ||
 				PlayerBotYoharaShopWantsMarket(ch) ||	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: inputs of Dongan's exchange
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+				WantsPlayerBotLochTicketFromMarket(ch) ||	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket on a counter
+#endif
 				PlayerBotWantsCraftFromMarket(ch)))
 			return "buy";
 		// And every PLAYERBOT_SUNGMA_STAY_MIN the round: the counter's sales and stock, whatever it brings.
@@ -1805,6 +1826,14 @@
 		if (IsPlayerBotYoharaFightStopped(ch, res, dwNow))
 			return LeavePlayerBotSungma(ch, state, dwNow, "sungma_blocked");
 		SpendPlayerBotSungmaPoints(ch, b, dwNow);
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch's excursion (its own answer)
+		{
+			const int guides = ManagePlayerBotYoharaGuides(ch, state, res, b, base, dwNow);
+			if (guides != -2)
+				return guides;
+		}
+#endif
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: Dongan's merchants, not home.
 		if (ManagePlayerBotSungmaErrand(ch, state, res, b, base, dwNow) > 0)
 			return 1;
@@ -1907,6 +1936,10 @@
 		// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: a party's leader with nothing to fight waits for its members to come up.
 		if (HoldPlayerBotSungmaRegroup(ch, state, dwNow))
 			return 1;
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		if (ManagePlayerBotYoharaBossRoute(ch, state, dwNow) > 0)	// a strong party's leader: the bosses' route
+			return 1;
+#endif
 		return -1;	// the spots (the frontier's hunting)
 	}
 
@@ -1914,6 +1947,9 @@
 
 	void LogPlayerBotSungmaCensus(DWORD dwNow)
 	{
+#ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
+		LogPlayerBotYoharaGuidesCensus(dwNow);	// its own clock (half an hour)
+#endif
 		int here[9] = { 0 }, champSum[9] = { 0 };
 		int inParty[9] = { 0 }, lone[9] = { 0 };	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
 		std::set<DWORD> leaders[9];
