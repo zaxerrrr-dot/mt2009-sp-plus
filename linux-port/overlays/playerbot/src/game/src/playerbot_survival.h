@@ -429,6 +429,7 @@ namespace
 			state.lDeathY = ch->GetY();
 			++state.bDeathCount;
 			NotePlayerBotStrongMapHardship(ch, 0); // MT2009_PLUS_BOT_GUILD_SHAMAN_V1
+			NotePlayerBotSpider3Death(ch, dwNow); // MT2009_PLUS_SPIDER3_BOTS_V1 (the V2 record, V3's demotion)
 			// A companion's fight goes on with its owner (playerbot_sidekick.h).
 			NotePlayerBotSidekickDown(ch, dwNow);
 			// A Conqueror dying to monsters too often has outgrown its gear

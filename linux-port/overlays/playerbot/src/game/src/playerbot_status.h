@@ -136,6 +136,7 @@ namespace
 			case PLAYERBOT_MAP_SOHAN: return "na Gore Sohan";
 			case PLAYERBOT_MAP_SPIDER_V1: return "do Lochu Pajakow";
 			case PLAYERBOT_MAP_SPIDER_V2: return "do Lochu Pajakow 2";
+			case PLAYERBOT_MAP_SPIDER_V3: return "do Lochu Pajakow 3"; // MT2009_PLUS_SPIDER3_BOTS_V1
 			case PLAYERBOT_MAP_HWANG: return "do Swiatyni Hwang";
 			case PLAYERBOT_MAP_FOREST: return "do Lasu";
 			case PLAYERBOT_MAP_RED_FOREST: return "do Czerwonego Lasu";
@@ -192,6 +193,7 @@ namespace
 			case PLAYERBOT_MAP_SOHAN: return "to Mount Sohan";
 			case PLAYERBOT_MAP_SPIDER_V1: return "to the Spider Dungeon";
 			case PLAYERBOT_MAP_SPIDER_V2: return "to the Spider Dungeon 2";
+			case PLAYERBOT_MAP_SPIDER_V3: return "to the Spider Dungeon 3"; // MT2009_PLUS_SPIDER3_BOTS_V1
 			case PLAYERBOT_MAP_HWANG: return "to the Hwang Temple";
 			case PLAYERBOT_MAP_FOREST: return "to the Ghost Wood";
 			case PLAYERBOT_MAP_RED_FOREST: return "to the Red Wood";

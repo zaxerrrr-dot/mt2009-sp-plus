@@ -895,6 +895,7 @@ namespace mt2009_battlepass
 namespace { void NoteOchaoBotKill(LPCHARACTER killer, LPCHARACTER victim); }
 // MT2009_PLUS_AREZZO_BOTS_V1 (kills): and the Arezzo maps' (playerbot_arezzo_bots.h).
 namespace { void NoteArezzoBotKill(LPCHARACTER killer, LPCHARACTER victim); }
+namespace { void NotePlayerBotSpider3Kill(LPCHARACTER killer, LPCHARACTER victim); } // MT2009_PLUS_SPIDER3_BOTS_V1
 // MT2009_PLUS_BOT_DAY_GOAL_V1 (kills): and a bot's Cel Dnia (playerbot_day_goal.h).
 namespace { void NotePlayerBotDayGoalKill(LPCHARACTER killer, LPCHARACTER victim); }
 namespace { void NotePlayerBotDayGoalSharedKill(LPCHARACTER killer, LPCHARACTER victim, const std::vector<LPCHARACTER>& hurt); }
@@ -913,6 +914,7 @@ void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 	WeeklyRankOnKill(killer, victim); // MT2009_PLUS_WEEKLY_RANKING_V1
 	NoteOchaoBotKill(killer, victim); // MT2009_PLUS_OCHAO_BOTS_V1 (kills)
 	NoteArezzoBotKill(killer, victim); // MT2009_PLUS_AREZZO_BOTS_V1 (kills)
+	NotePlayerBotSpider3Kill(killer, victim); // MT2009_PLUS_SPIDER3_BOTS_V1 (the V2 record, V3's kills)
 	NotePlayerBotDayGoalKill(killer, victim); // MT2009_PLUS_BOT_DAY_GOAL_V1 (kills)
 	NotePlayerBotSungmaKill(killer, victim); // MT2009_PLUS_BOT_YOHARA_MAPS_V1 (kills)
 	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Counts(killer))

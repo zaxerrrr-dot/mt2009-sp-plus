@@ -71,7 +71,7 @@ MAP_NAMES = {
     24: "Chunjo M3 — Waryong", 25: "Loch Małp Chunjo",
     41: "Jinno M1 — Pyongmoo", 43: "Jinno M2 — Bakra",
     61: "Góra Sohan", 62: "Ognista Ziemia", 63: "Pustynia Yongbi", 64: "Dolina Orków", 104: "Loch Pająków V1",
-    65: "Świątynia Hwang", 71: "Loch Pająków V2",
+    65: "Świątynia Hwang", 71: "Loch Pająków V2", 217: "Loch Pająków V3",
     108: "Loch Małp Normalny", 109: "Loch Małp Trudny",
     67: "Las", 68: "Czerwony Las", 66: "Wieża Demonów",
     72: "Grota Wygnańców V1", 73: "Grota Wygnańców V2",
@@ -90,6 +90,7 @@ MAP_BOUNDS = {
     63: (204800, 486400, 153600, 153600),
     64: (256000, 665600, 153600, 153600), 104: (51200, 486400, 76800, 76800),
     65: (537600, 51200, 102400, 102400), 71: (665600, 435200, 102400, 102400),
+    217: (51200, 563200, 76800, 76800),  # MT2009_PLUS_SPIDER3_BOTS_V1: Loch Pająków V3
     108: (128000, 640000, 76800, 76800), 109: (128000, 716800, 76800, 76800),
     # Re-derived 2026-09-15 straight from each map's own Setting.txt
     # (BasePosition + MapSize x 25600, the same formula that reproduces
@@ -5647,6 +5648,8 @@ PROGRESSION_MAPS = [
     ("red_forest", "Czerwony Las", 77, 255, False, 71),
     ("grotto1", "Grota Wygnańców V1", 78, 255, False, 72),
     ("grotto2", "Grota Wygnańców V2", 84, 255, False, 78),
+    # MT2009_PLUS_SPIDER3_BOTS_V1: 3 Loch Pająków - only bots that did very well in V2 (28 October 2026).
+    ("spider3", "Loch Pająków V3 (po dobrym V2)", 66, 80, True, 60),
 ]
 PROGRESSION_REQS = {
     # key: (label, a label, b label)

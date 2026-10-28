@@ -358,6 +358,7 @@ namespace
 						mapIndex != PLAYERBOT_MAP_SOHAN &&
 						mapIndex != PLAYERBOT_MAP_SPIDER_V1 &&
 						mapIndex != PLAYERBOT_MAP_SPIDER_V2 &&
+						mapIndex != PLAYERBOT_MAP_SPIDER_V3 && // MT2009_PLUS_SPIDER3_BOTS_V1 (1536x1536 cells, as V1)
 						mapIndex != PLAYERBOT_MAP_HWANG &&
 						mapIndex != PLAYERBOT_MAP_FOREST &&
 						mapIndex != PLAYERBOT_MAP_RED_FOREST &&
