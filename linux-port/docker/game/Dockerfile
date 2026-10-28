@@ -1563,6 +1563,22 @@ RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-helm100/cub
  && test "$(grep -c -E '^fail_keep[[:blank:]]' "$C")" -eq 20 \
  && rm -rf /tmp/cube-helm100 \
  && echo "share: Jaharr's cube window - $n level-100 helmet recipes (MT2009_PLUS_HELM100_CUBE_V1)"
+# MT2009_PLUS_SERPENT_HOOD_V1 (share; the owner, 29 October 2026: Wezowy Czepiec as on the pl-wiki): Jaharr's recipe of
+# the level-120 helmet - cube.czepiec.txt (tools/czepiec/gen_czepiec.py): 2 Sciegna / 2 Skrzydla Balathora, 7 Zroszonych
+# Mlotow, 10 Jadeitow Nocy, 40 Wzorow Wezowych, 200 Gaya, 20 000 000 Yang, 50%. After his helmet recipes (the same
+# window, quest helm100); the items are mariadb/playerbot/yohara_czepiec.sql's.
+COPY cube.czepiec.txt /tmp/cube-czepiec/
+RUN set -eu; C=/opt/metin2/share/locale/poland/cube.txt; A=/tmp/cube-czepiec/cube.czepiec.txt \
+ && ! grep -q -E '^reward[[:blank:]]+12880[[:blank:]]' "$C" \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A" \
+ && n=$(grep -c -E '^section' "$A") && b=$(grep -c -E '^section' "$C") \
+ && { [ -z "$(tail -c 1 "$C")" ] || printf '\r\n' >> "$C"; } \
+ && cat "$A" >> "$C" \
+ && test "$n" -eq 1 && test "$(grep -c -E '^section' "$C")" -eq "$((b + n))" \
+ && test "$(grep -c -E '^reward[[:blank:]]+12880[[:blank:]]' "$C")" -eq 1 \
+ && test "$(grep -c -E '^npc[[:blank:]]+20421[[:space:]]*$' "$C")" -eq 41 \
+ && rm -rf /tmp/cube-czepiec \
+ && echo "share: Jaharr's cube window - Wezowy Czepiec (MT2009_PLUS_SERPENT_HOOD_V1)"
 
 # MT2009_PLUS_YELIXIRS_V1 (share; the owner, 21 October 2026): the elixirs of Yohara (tools/yohara_eliksiry, the pl-wiki's
 # "Zielarstwo"): Huahn-So (20022) makes 50830-50841 from 10 herbs (95733-95736, 50737, 50738) and 20 empty bottles

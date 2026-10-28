@@ -136,6 +136,8 @@ param(
 #                      Bohaterow 21900-21975 (MT2009_PLUS_MLODZI_BOHATEROWIE_V1; server-patches/mlodzi, last)
 #   Blyskawice rekawic common length.h - SE_ELEC_ATTACK_HIT (54), the hit effect of the gloves' 6/7 lightning
 #                      (POINT_GLOVE_LIGHTNING, playerbot_bonus67.cpp) (MT2009_PLUS_ELEC_GLOVE_V1; server-patches/elecglove)
+#   Wezowy Czepiec item.cpp - the level-120 helmet's one random second bonus (12880-12895, the serpent gear's yextra
+#                      line of server-patches/ysets: kind 2, one line) (MT2009_PLUS_SERPENT_HOOD_V1; server-patches/czepiec)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1839,6 +1841,18 @@ if ((Test-Path -LiteralPath $elecgloveApply -PathType Leaf) -and
     if ($elecgloveResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} glove lightning effect edit(s).' -f $elecgloveResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Wezowy Czepiec (server-patches/czepiec, MT2009_PLUS_SERPENT_HOOD_V1): the level-120 helmet's random second bonus in
+# ysets' functions of item.cpp - after ysets (above).
+$czepiecApply = Join-Path $repo 'server-patches/czepiec/Apply-CzepiecPatch.ps1'
+if ((Test-Path -LiteralPath $czepiecApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $czepiecResult = & $czepiecApply -SourceDir $engineGameSource
+    if ($czepiecResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Wezowy Czepiec edit(s).' -f $czepiecResult.Applied) -ForegroundColor DarkGray
     }
 }
 

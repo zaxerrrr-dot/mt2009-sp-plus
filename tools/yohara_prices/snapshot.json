@@ -666,6 +666,18 @@
 "type": 2,
 "v0": 0
 },
+"12880": {
+"af": 0,
+"gold": 120000,
+"level": 120,
+"name": "Wezowy Czepiec+0",
+"next": 12881,
+"sell": 120000,
+"set": 40500,
+"sub": 1,
+"type": 2,
+"v0": 0
+},
 "1340": {
 "af": 52,
 "gold": 120000,
@@ -6578,6 +6590,66 @@
 "set": 0,
 "sub": 0,
 "type": 5
+},
+"31264": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Sciegno Balathora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5,
+"v0": 0
+},
+"31266": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Skrzydlo Balathora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5,
+"v0": 0
+},
+"31267": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Rog Balathora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5,
+"v0": 0
+},
+"31268": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Oko Balathora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5,
+"v0": 0
+},
+"31269": {
+"af": 0,
+"gold": 1000,
+"level": 0,
+"name": "Luska Balathora",
+"next": 0,
+"sell": 50,
+"set": 0,
+"sub": 0,
+"type": 5,
+"v0": 0
 },
 "31270": {
 "af": 0,

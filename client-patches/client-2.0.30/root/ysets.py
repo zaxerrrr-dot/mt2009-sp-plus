@@ -8,6 +8,13 @@ import player
 import item
 import localeInfo
 import ysets_data as D
+# MT2009_PLUS_SERPENT_HOOD_V1: Wezowy Czepiec's one random line (ysets_hood.py, tools/czepiec) - the family "h"
+try:
+	import ysets_hood as _H
+	D.RANDOM_FAMILIES.update(_H.RANDOM_FAMILIES)
+	D.RANDOM_GROUPS.update(_H.RANDOM_GROUPS)
+except ImportError:
+	pass
 
 _items = {}
 
@@ -118,7 +125,7 @@ def AppendInfo(tooltip, itemVnum, extra):
 			for line in xrange(3):
 				b = (extra >> (8 + 8 * line)) & 0xFF
 				opt, row = (b & 0x0F) - 1, b >> 4
-				if opt < 0 or opt >= len(groups[line]):
+				if opt < 0 or line >= len(groups) or opt >= len(groups[line]):
 					continue
 				point, rows = groups[line][opt]
 				if row >= len(rows):
@@ -127,7 +134,10 @@ def AppendInfo(tooltip, itemVnum, extra):
 				if text:
 					tooltip.AppendTextLine(text, RANDOM_COLOR)
 		else:
-			tooltip.AppendTextLine("3 losowe bonusy podstawowe", INACTIVE_COLOR)
+			if len(groups) == 1: # MT2009_PLUS_SERPENT_HOOD_V1: the hood has one line
+				tooltip.AppendTextLine("Losowy bonus podstawowy", INACTIVE_COLOR)
+			else:
+				tooltip.AppendTextLine("3 losowe bonusy podstawowe", INACTIVE_COLOR)
 			if _lastOwn[0]:
 				_AskServer()
 	s = extra & 0x0F

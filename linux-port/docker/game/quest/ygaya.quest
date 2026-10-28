@@ -30,11 +30,13 @@ quest ygaya begin
 		-- the wiki's three columns ("Sloty 1-3", "4-6", "7-9") as {vnum, count, price}: Owsap's official vnums where
 		-- we have the same item, else ours of the wiki's name; left out (not in our world): B³êkitna Mikstura,
 		-- Rozszerzenie Ekwipunku, Karta Resetu, Szpula Kaszmiru, Œwiadectwo Zmiany, Torba Emocji,
-		-- Zroszony M³ot, Modlitwa Egzorcyzmu, Skrzyneczki Losu, Szk³o Handlu, Buty Wiatru (1d), Lizak Potêgi,
+		-- Modlitwa Egzorcyzmu, Skrzyneczki Losu, Szk³o Handlu, Buty Wiatru (1d), Lizak Potêgi,
 		-- Karta Przetasowania, Anulacja Transmutacji, Zaczarowanie Przedmiotu+, Smoczy P³omieñ, Runy Wykuwania,
 		-- Zaczaruj zwierzaka, Zielona Smocza Fasola
 		-- Skrzyd³a Smoka (30630, 26 Gaya in rows I and II as the wiki) came with the level-100 helmets
 		-- (MT2009_PLUS_HELM100_V1), appended at each pool's end so a stored offer index keeps its item
+		-- Zroszony M³ot (31265, 52 Gaya in rows I, II and III as the wiki) came with Wê¿owy Czepiec
+		-- (MT2009_PLUS_SERPENT_HOOD_V1), appended the same way
 		function pool(row)
 			if row == 1 then
 				return {
@@ -43,6 +45,7 @@ quest ygaya begin
 					{22010, 1, 34}, {71108, 3, 267}, {71001, 1, 392}, {71110, 1, 270}, {38100, 1, 519},
 					{71151, 1, 644}, {76024, 1, 1067}, {76005, 1, 167}, {39038, 1, 237}, {76011, 1, 464},
 					{30630, 1, 26},     -- Skrzyd³a Smoka (MT2009_PLUS_HELM100_V1)
+					{31265, 1, 52},     -- Zroszony M³ot (MT2009_PLUS_SERPENT_HOOD_V1)
 				}
 			elseif row == 2 then
 				return {
@@ -53,6 +56,7 @@ quest ygaya begin
 					{71105, 1, 574}, {71106, 1, 604}, {71003, 1, 806}, {71033, 1, 410}, {85001, 1, 1097},
 					{38101, 1, 1050}, {76010, 1, 171}, {76014, 1, 1263}, {76013, 1, 1963}, {72064, 1, 34},
 					{22010, 1, 34}, {30630, 1, 26},     -- Skrzyd³a Smoka (MT2009_PLUS_HELM100_V1)
+					{31265, 1, 52},     -- Zroszony M³ot (MT2009_PLUS_SERPENT_HOOD_V1)
 				}
 			end
 			return {
@@ -61,6 +65,7 @@ quest ygaya begin
 				{71011, 1, 787}, {38102, 1, 1893}, {76006, 1, 347}, {76015, 1, 996}, {71151, 1, 644},
 				{76024, 1, 1067}, {71108, 10, 890}, {76019, 1, 137}, {39015, 1, 1721}, {85001, 1, 1097},
 				{76013, 1, 1963}, {76014, 1, 1263}, {76010, 1, 171}, {39068, 1, 172},
+				{31265, 1, 52},     -- Zroszony M³ot (MT2009_PLUS_SERPENT_HOOD_V1)
 			}
 		end
 

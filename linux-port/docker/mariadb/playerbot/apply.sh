@@ -4786,6 +4786,19 @@ if [ -s /opt/playerbot/balathor.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_SERPENT_HOOD_V1: Wezowy Czepiec (the owner, 29 October 2026) - yohara_czepiec.sql (tools/czepiec/
+# gen_czepiec.py): the level-120 helmet 12880-12895, its materials 31264-31269 (Sciegno, Skrzydlo, Rog, Oko, Luska
+# Balathora, Zroszony Mlot) and its refine steps refine_proto 40500-40514. Krypta Balathora's chests
+# (game/balathor/special_item_group.balathor.txt), Jaharr's cube (game/cube.czepiec.txt) and the Gaya shop (quest ygaya)
+# name these vnums: a world without them stops the cores at boot. Idempotent (INSERT IGNORE).
+if [ -s /opt/playerbot/yohara_czepiec.sql ]; then
+    if db < /opt/playerbot/yohara_czepiec.sql; then
+        echo "[playerbot-migrate] Wezowy Czepiec: yohara_czepiec.sql applied"
+    else
+        fail_step "Wezowy Czepiec: yohara_czepiec.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
