@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "guildsys_common.dds"
+left 160
+top 608
+right 192
+bottom 640

@@ -1758,6 +1758,10 @@ class GuildWindow(ui.ScriptWindow):
 			else:
 				page.activeSlot.EnableCoverButton(slotIndex)
 
+			# MT2009_PLUS_GUILDSYS_V1: Balathor's guild skills (158-160) rise only by their books - no "+".
+			if skillIndex in getattr(playerSettingModule, "GUILDSYS_BOOK_SKILL_INDEX_LIST", ()):
+				continue
+
 			if skillPoint > 0:
 				if skillLevel < skillMaxLevel:
 					page.activeSlot.ShowSlotButton(slotIndex)
@@ -2019,6 +2023,9 @@ class GuildWindow(ui.ScriptWindow):
 
 	def OnUpGuildSkill(self, slotNumber, type):
 		skillIndex = player.GetSkillIndex(slotNumber)
+		# MT2009_PLUS_GUILDSYS_V1: Balathor's guild skills take no skill point (their books only; the server refuses too).
+		if skillIndex in getattr(playerSettingModule, "GUILDSYS_BOOK_SKILL_INDEX_LIST", ()):
+			return
 		net.SendChatPacket("/gskillup " + str(skillIndex))
 
 	def OnUseSkill(self, slotNumber, coolTime):

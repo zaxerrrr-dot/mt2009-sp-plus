@@ -27,7 +27,10 @@ RACE_SURA_W = 6
 RACE_SHAMAN_M = 7
 
 PASSIVE_GUILD_SKILL_INDEX_LIST = (151,)
-ACTIVE_GUILD_SKILL_INDEX_LIST = (152, 153, 154, 155, 156, 157,)
+# MT2009_PLUS_GUILDSYS_V1: Balathor's guild skills 158-160 (Burza / Wola / Nieugietosc Balathora) on the active row's
+# places 216-218 (the row has 9: 210-218), learned only from their books (server-patches/guildsys).
+ACTIVE_GUILD_SKILL_INDEX_LIST = (152, 153, 154, 155, 156, 157, 158, 159, 160,)
+GUILDSYS_BOOK_SKILL_INDEX_LIST = (158, 159, 160,)
 
 NEW_678TH_SKILL_ENABLE = 0
 SKILL_INDEX_DICT = []

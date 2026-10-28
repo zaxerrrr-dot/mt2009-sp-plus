@@ -1815,4 +1815,18 @@ if ((Test-Path -LiteralPath $npclocApply -PathType Leaf) -and
     }
 }
 
+# Guild system update (server-patches/guildsys, MT2009_PLUS_GUILDSYS_V1; on Guild Systems compiled by Nazox): guild
+# levels to 40, Balathor's guild skills 158-160 and their books, the guild's and the members' dates for the Balathor port
+# (quest guild.check_requirements & co.) - guildsys.cpp/.h come with the overlay's game sources, the columns / skills /
+# books with mariadb/playerbot/guildsys.sql. After npcloc; the Balathor patch comes after this one.
+$guildsysApply = Join-Path $repo 'server-patches/guildsys/Apply-GuildSysPatch.ps1'
+if ((Test-Path -LiteralPath $guildsysApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'guild.cpp') -PathType Leaf)) {
+    $guildsysResult = & $guildsysApply -SourceDir $engineGameSource
+    if ($guildsysResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} guild system edit(s).' -f $guildsysResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

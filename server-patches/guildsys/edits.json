@@ -1,0 +1,80 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (max level)",
+  "old": "\tGUILD_MAX_LEVEL = 20,\n",
+  "new": "\t// MT2009_PLUS_GUILDSYS_V1 (max level): guilds level to 40 (server-patches/guildsys; Guild Systems by Nazox,\n\t// GUILD_NEW_LEVEL_40) - guild_exp_table (constants.cpp) and the db core's c_aiScoreByLevel have 41 rows.\n\tGUILD_MAX_LEVEL = 40,\n"
+ },
+ {
+  "file": "constants.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (exp table)",
+  "old": "\t10000000UL,\n\t42000000UL\n};",
+  "new": "\t10000000UL,\n\t// MT2009_PLUS_GUILDSYS_V1 (exp table): levels 21-40 (GUILD_MAX_LEVEL 40; the client's exe table is the same,\n\t// client-patches/exe UserInterface/Locale.cpp). 10.5 M at 20 -> 21, +0.5 M a level, 20 M at 39 -> 40.\n\t10500000UL,\t// 20 -> 21\n\t11000000UL,\t// 21 -> 22\n\t11500000UL,\t// 22 -> 23\n\t12000000UL,\t// 23 -> 24\n\t12500000UL,\t// 24 -> 25\n\t13000000UL,\t// 25 -> 26\n\t13500000UL,\t// 26 -> 27\n\t14000000UL,\t// 27 -> 28\n\t14500000UL,\t// 28 -> 29\n\t15000000UL,\t// 29 -> 30\n\t15500000UL,\t// 30 -> 31\n\t16000000UL,\t// 31 -> 32\n\t16500000UL,\t// 32 -> 33\n\t17000000UL,\t// 33 -> 34\n\t17500000UL,\t// 34 -> 35\n\t18000000UL,\t// 35 -> 36\n\t18500000UL,\t// 36 -> 37\n\t19000000UL,\t// 37 -> 38\n\t19500000UL,\t// 38 -> 39\n\t20000000UL,\t// 39 -> 40\n\t42000000UL\t// 40: the last level\n};"
+ },
+ {
+  "file": "../../db/src/GuildManager.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (ladder)",
+  "old": "\t50000,\n\t55000,\n};",
+  "new": "\t50000,\n\t55000,\n\t// MT2009_PLUS_GUILDSYS_V1 (ladder): levels 21-40 (GUILD_MAX_LEVEL 40), +5000 a level.\n\t60000,\t// 21\n\t65000,\t// 22\n\t70000,\t// 23\n\t75000,\t// 24\n\t80000,\t// 25\n\t85000,\t// 26\n\t90000,\t// 27\n\t95000,\t// 28\n\t100000,\t// 29\n\t105000,\t// 30\n\t110000,\t// 31\n\t115000,\t// 32\n\t120000,\t// 33\n\t125000,\t// 34\n\t130000,\t// 35\n\t135000,\t// 36\n\t140000,\t// 37\n\t145000,\t// 38\n\t150000,\t// 39\n\t155000,\t// 40\n};"
+ },
+ {
+  "file": "guild.h",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (friend)",
+  "old": "class CGuild\n{\n\tpublic:\n",
+  "new": "class CGuild\n{\n\t// MT2009_PLUS_GUILDSYS_V1 (friend): Balathor's skill books and the forget book change the skills without a\n\t// skill point (guildsys.cpp GuildSysAccess).\n\tfriend struct GuildSysAccess;\n\n\tpublic:\n"
+ },
+ {
+  "file": "guild.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (members)",
+  "old": "\treturn 48 + 4 * (m_data.level-1) + m_iMemberCountBonus;",
+  "new": "\t// MT2009_PLUS_GUILDSYS_V1 (members): levels 21-40 add no member places (guildsys.h GUILDSYS_MAX_MEMBER_LEVEL).\n\treturn 48 + 4 * (MIN((int)m_data.level, 20) - 1) + m_iMemberCountBonus;"
+ },
+ {
+  "file": "guild.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (arena)",
+  "old": "\tif (ch && !CWarMapManager::instance().IsWarMap(ch->GetMapIndex()))\n",
+  "new": "\t// MT2009_PLUS_GUILDSYS_V1 (arena): guild skills work in the Balathor lair (map 420 and its copies) as well.\n\tbool GuildSysSkillMapAllowed(long lMapIndex);\n\tif (ch && !CWarMapManager::instance().IsWarMap(ch->GetMapIndex()) && !GuildSysSkillMapAllowed(ch->GetMapIndex()))\n"
+ },
+ {
+  "file": "guild.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (use)",
+  "old": "\tswitch (dwVnum)\n\t{\n\t\tcase GUILD_SKILL_TELEPORT:",
+  "new": "\t// MT2009_PLUS_GUILDSYS_V1 (use): Balathor's guild skills (158-160: immunities) and every guild skill in the\n\t// Balathor lair (no war needed there; the members on the caster's map) - guildsys.cpp. The rest as before.\n\t{\n\t\tbool GuildSysUseSkill(CGuild*, CHARACTER*, unsigned int, int);\n\t\tif (GuildSysUseSkill(this, ch, dwVnum, iNeededSP))\n\t\t\treturn;\n\t}\n\n\tswitch (dwVnum)\n\t{\n\t\tcase GUILD_SKILL_TELEPORT:"
+ },
+ {
+  "file": "guild.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (points)",
+  "old": "\tif (m_data.abySkill[dwRealVnum] >= pkSk->bMaxLevel)\n\t\treturn;\n\n\tif (m_data.skill_point <= 0)\n\t\treturn;",
+  "new": "\tif (m_data.abySkill[dwRealVnum] >= pkSk->bMaxLevel)\n\t\treturn;\n\n\t// MT2009_PLUS_GUILDSYS_V1 (points): Balathor's guild skills (158-160) rise only by their books (guildsys.cpp).\n\t{\n\t\tbool GuildSysBookOnlySkill(unsigned int);\n\t\tif (GuildSysBookOnlySkill(dwVnum))\n\t\t\treturn;\n\t}\n\n\tif (m_data.skill_point <= 0)\n\t\treturn;"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (books)",
+  "old": "\t\t\t\t\t\t\t// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (use): Lokalizator NPC (79667)",
+  "new": "\t\t\t\t\t\t\t// MT2009_PLUS_GUILDSYS_V1 (books): Ksiega Burzy / Woli / Nieugietosci Balathora (50344-50346, +1 level\n\t\t\t\t\t\t\t// of the guild skill 158-160) and Ksiega Zapomnienia Gildii (50347, the points of 151-157 back) - the\n\t\t\t\t\t\t\t// guild leader's (guildsys.cpp).\n\t\t\t\t\t\t\tcase 50344:\n\t\t\t\t\t\t\tcase 50345:\n\t\t\t\t\t\t\tcase 50346:\n\t\t\t\t\t\t\tcase 50347:\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\tbool GuildSysUseItem(CHARACTER*, CItem*);\n\t\t\t\t\t\t\t\t\tif (!GuildSysUseItem(this, item))\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (use): Lokalizator NPC (79667)"
+ },
+ {
+  "file": "char_resist.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (immune)",
+  "old": "bool CHARACTER::IsImmune(DWORD dwImmuneFlag, LPCHARACTER pkAttacker)\n{\n",
+  "new": "bool CHARACTER::IsImmune(DWORD dwImmuneFlag, LPCHARACTER pkAttacker)\n{\n\t// MT2009_PLUS_GUILDSYS_V1 (immune): Balathor's guild skills' affects - 10 % a skill level (guildsys.cpp).\n\t{\n\t\tbool GuildSysIsImmune(CHARACTER*, unsigned int);\n\t\tif (GuildSysIsImmune(this, dwImmuneFlag))\n\t\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (push)",
+  "old": "bool CHARACTER::IsResistPush()\n{\n",
+  "new": "bool CHARACTER::IsResistPush()\n{\n\t// MT2009_PLUS_GUILDSYS_V1 (push): Nieugietosc Balathora, 10 % a skill level (guildsys.cpp).\n\t{\n\t\tbool GuildSysResistPush(CHARACTER*);\n\t\tif (GuildSysResistPush(this))\n\t\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "questlua_guild.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (declare)",
+  "old": "\tvoid RegisterGuildFunctionTable()\n\t{\n",
+  "new": "\t// MT2009_PLUS_GUILDSYS_V1 (declare): the guild's level, dates, treasury and the Balathor registration check\n\t// (guildsys.cpp; server-patches/guildsys/README.md).\n\tint guildsys_get_level(lua_State* L);\n\tint guildsys_create_time(lua_State* L);\n\tint guildsys_age(lua_State* L);\n\tint guildsys_member_join_time(lua_State* L);\n\tint guildsys_member_age(lua_State* L);\n\tint guildsys_get_bank(lua_State* L);\n\tint guildsys_check_requirements(lua_State* L);\n\n\tvoid RegisterGuildFunctionTable()\n\t{\n"
+ },
+ {
+  "file": "questlua_guild.cpp",
+  "marker": "MT2009_PLUS_GUILDSYS_V1 (list)",
+  "old": "\t\t\t{ \"get_rank\",\t\t\t\tguild_get_rank\t\t\t\t},\n",
+  "new": "\t\t\t{ \"get_rank\",\t\t\t\tguild_get_rank\t\t\t\t},\n\t\t\t// MT2009_PLUS_GUILDSYS_V1 (list): guild.get_level(), guild.create_time(), guild.age(),\n\t\t\t// guild.member_join_time([pid]), guild.member_age([pid]), guild.get_bank(),\n\t\t\t// guild.check_requirements(min_level, min_guild_hours, min_member_hours, min_bank).\n\t\t\t{ \"get_level\",\t\t\t\tguildsys_get_level\t},\n\t\t\t{ \"create_time\",\t\t\t\tguildsys_create_time\t},\n\t\t\t{ \"age\",\t\t\t\t\t\tguildsys_age\t},\n\t\t\t{ \"member_join_time\",\t\t\tguildsys_member_join_time\t},\n\t\t\t{ \"member_age\",\t\t\t\tguildsys_member_age\t},\n\t\t\t{ \"get_bank\",\t\t\t\t\tguildsys_get_bank\t},\n\t\t\t{ \"check_requirements\",\t\tguildsys_check_requirements\t},\n"
+ }
+]

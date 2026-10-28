@@ -299,5 +299,10 @@
 // zoom/pan of the atlas, the selected NPC's mark and the arrow under the character, teleport to the NPC (packets
 // CG/GC 196), module npcLocationHelper (PythonNPCLocationHelper.cpp). Without the define the exe is as before.
 #define ENABLE_NPC_LOCATION_HELPER
+// MT2009_PLUS_GUILDSYS_V1 (the guild system update on Guild Systems by Nazox, server-patches/guildsys): guild levels to 40
+// (Locale.cpp LocaleService_GetLastExp, PythonGuild.cpp guild.GetGuildExperience) and every guild skill usable in the
+// guild White Dragon lair (Balathor, map 420) without a guild war (PythonPlayerSkill.cpp). No packet changes; without
+// the define the exe is as before (the guild window shows no experience past level 20, no guild skill in the lair).
+#define ENABLE_MT2009_GUILDSYS
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
