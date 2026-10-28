@@ -69,6 +69,22 @@ namespace mt2009_mcard
 	const DWORD CARD_RESET = 72322;			// Karta Nowego Poczatku (a mission reset past the free one)
 	const DWORD CARD_SHUFFLE = 72323;		// Karta Nowego Ukladu (new targets)
 
+	// MT2009_PLUS_MONSTER_CARD_BOXES_V1 (the owner, 28 October 2026): the global server's four card boxes (their
+	// vnums, Owsap v6.2.6 item_proto / item_names; tools/cardbox/gen_cardbox.py makes the rows). Opening one gives a
+	// Monster Card (50283, the monster in socket 1, as a mission's) of a monster of the mission pools below - one
+	// monster of the pool at random, each the same chance - and the card goes into the collection the usual way.
+	//   83036 Srebrne Pudelko Kart Potwora: a card at SILVER_CARD_PERCENT, else SILVER_YANG Yang; levels 1-15
+	//   83037 Zlote Pudelko Kart Potwora: a card, levels 1-15 (the global wiki: "no Yohara cards")
+	//   83074 Platynowe Pudelko Kart Potwora: a card of all 18 levels
+	//   83073 Pudelko Kart Potworow Yohary: a card of levels 16-18 (Yohara's)
+	const DWORD BOX_SILVER = 83036;
+	const DWORD BOX_GOLD = 83037;
+	const DWORD BOX_YOHARA = 83073;
+	const DWORD BOX_PLATINUM = 83074;
+	const int BOX_OLD_LEVELS = 15;			// levels 1-15: the old continent; 16-18: Yohara
+	const int SILVER_CARD_PERCENT = 50;		// the global wiki gives no chance - the owner may change it
+	const long long SILVER_YANG = 1000;
+
 	const int TARGETS = 3;
 	const int STARS_MAX = 5;
 	const int NEEDED[STARS_MAX] = { 9, 21, 30, 60, 90 };	// cards for the next star (9/30/60/120/210 in all)
@@ -140,6 +156,9 @@ namespace mt2009_mcard
 	const char* const MSG_NO_SPAWN = "Nie uda" "\xb3" "o si" "\xea" " przywo" "\xb3" "a" "\xe6" " potwora.";
 	const char* const MSG_NO_POLY = "Nie mo" "\xbf" "esz teraz zmieni" "\xe6" " si" "\xea" " w tego potwora.";
 	const char* const MSG_NO_POLY_OX = "Na tej mapie nie mo" "\xbf" "na si" "\xea" " przemieni" "\xe6" ".";
+	const char* const MSG_BOX_CARD = "Z pude" "\xb3" "ka wypad" "\xb3" "a Karta Potwora: %s.";
+	const char* const MSG_BOX_YANG = "Tym razem w pude" "\xb3" "ku nie by" "\xb3" "o karty - dostajesz %lld Yang.";
+	const char* const MSG_BOX_FULL = "Zr" "\xf3" "b miejsce w ekwipunku, zanim otworzysz pude" "\xb3" "ko.";
 	const char* const MSG_DISABLED = "Karty Potwor" "\xf3" "w s" "\xb9" " wy" "\xb3\xb9" "czone na tym serwerze.";
 
 	template <typename T, size_t N> size_t CountOf(const T (&)[N]) { return N; }
@@ -240,6 +259,31 @@ namespace mt2009_mcard
 				if (LEVEL_POOL[l][i] && std::find(v.begin(), v.end(), LEVEL_POOL[l][i]) == v.end())
 					v.push_back(LEVEL_POOL[l][i]);
 		return v.empty() ? 0 : v[number(0, (int) v.size() - 1)];
+	}
+
+	// MT2009_PLUS_MONSTER_CARD_BOXES_V1: whether a vnum is one of the four card boxes.
+	bool IsCardBox(DWORD vnum)
+	{
+		return vnum == BOX_SILVER || vnum == BOX_GOLD || vnum == BOX_YOHARA || vnum == BOX_PLATINUM;
+	}
+
+	// The monsters a box draws from: the distinct monsters of its mission levels that world.mob_proto has.
+	const std::vector<DWORD>& BoxPool(DWORD box)
+	{
+		static std::map<DWORD, std::vector<DWORD> > pools;
+		std::vector<DWORD>& v = pools[box];
+		if (!v.empty())
+			return v;
+		const int first = box == BOX_YOHARA ? BOX_OLD_LEVELS : 0;
+		const int last = box == BOX_SILVER || box == BOX_GOLD ? BOX_OLD_LEVELS : LEVELS;
+		for (int l = first; l < last; ++l)
+			for (int i = 0; i < DECK_SIZE; ++i)
+			{
+				const DWORD mob = LEVEL_POOL[l][i];
+				if (mob && std::find(v.begin(), v.end(), mob) == v.end() && CMobManager::instance().Get(mob))
+					v.push_back(mob);
+			}
+		return v;
 	}
 
 	const SAchievement* Achievement(DWORD vnum)
@@ -696,6 +740,42 @@ namespace mt2009_mcard
 			return;
 		}
 		item->StartDestroyEvent();
+	}
+
+	// MT2009_PLUS_MONSTER_CARD_BOXES_V1: a box opened - a card of its pool (or the silver box's Yang). False: nothing
+	// happened (no room for the card, an empty pool), the box stays.
+	bool OpenCardBox(LPCHARACTER ch, LPITEM box)
+	{
+		if (box->GetVnum() == BOX_SILVER && number(1, 100) > SILVER_CARD_PERCENT)
+		{
+			ch->PointChange(POINT_GOLD, SILVER_YANG, true);
+			ch->ChatPacket(CHAT_TYPE_INFO, MSG_BOX_YANG, SILVER_YANG);
+			return true;
+		}
+		const std::vector<DWORD>& pool = BoxPool(box->GetVnum());
+		if (pool.empty())
+		{
+			sys_err("MONSTER_CARDS: box %u has no monster of its pool in mob_proto", box->GetVnum());
+			return false;
+		}
+		if (ch->GetEmptyInventory(1) < 0)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_BOX_FULL);
+			return false;
+		}
+		LPITEM card = ITEM_MANAGER::instance().CreateItem(CARD_MISSION, 1, 0, true);
+		if (!card)
+		{
+			sys_err("MONSTER_CARDS: no item %u in item_proto", CARD_MISSION);
+			return false;
+		}
+		const DWORD mob = pool[number(0, (int) pool.size() - 1)];
+		card->SetSocket(1, mob);
+		ch->AutoGiveItem(card);
+		const CMob* pkMob = CMobManager::instance().Get(mob);
+		ch->ChatPacket(CHAT_TYPE_INFO, MSG_BOX_CARD, pkMob ? pkMob->m_table.szLocaleName : "?");
+		sys_log(0, "MONSTER_CARDS: %s (aid %u) opened box %u -> card of %u", ch->GetName(), ch->GetAID(), box->GetVnum(), mob);
+		return true;
 	}
 
 	// ---------------------------------------------------------------- cards and stars
@@ -1265,10 +1345,11 @@ void MonsterCardOnKill(LPCHARACTER killer, LPCHARACTER victim)
 }
 
 // char_item.cpp, UseItemEx: -1 = not a card of ours, 0 = ours and not used, 1 = used up.
+// MT2009_PLUS_MONSTER_CARD_BOXES_V1: the four card boxes too (a bot never opens one - it has no cards).
 int MonsterCardUseItem(LPCHARACTER ch, LPITEM item)
 {
 	using namespace mt2009_mcard;
-	if (!item || (item->GetVnum() != CARD_MISSION && item->GetVnum() != CARD_TRADABLE))
+	if (!item || (item->GetVnum() != CARD_MISSION && item->GetVnum() != CARD_TRADABLE && !IsCardBox(item->GetVnum())))
 		return -1;
 	if (!Counts(ch))
 		return 0;
@@ -1276,6 +1357,13 @@ int MonsterCardUseItem(LPCHARACTER ch, LPITEM item)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, "%s", MSG_DISABLED);
 		return 0;
+	}
+	if (IsCardBox(item->GetVnum()))
+	{
+		if (!OpenCardBox(ch, item))
+			return 0;
+		item->SetCount(item->GetCount() - 1);
+		return 1;
 	}
 	if (!UseCard(ch, State(ch), item))
 		return 0;

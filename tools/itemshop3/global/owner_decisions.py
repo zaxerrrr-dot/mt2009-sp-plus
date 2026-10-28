@@ -131,4 +131,9 @@ BRAK_DONE = {
 	150: 'dodane: Zielona Smocza Fasola (100300) za 19 SM',
 	216: 'dodane: Eliksir W. SungMa (SIŁA) 72804 za 300 SZ', 217: 'dodane: Eliksir W. SungMa (INT) 72807 za 300 SZ',
 	218: 'dodane: Eliksir W. SungMa (ODP) 72806 za 300 SZ', 219: 'dodane: Eliksir W. SungMa (WIT) 72805 za 300 SZ',
+	# MT2009_PLUS_MONSTER_CARD_BOXES_V1 (the owner, 28.10.2026): the card boxes are lines of the in-game shop (apply.sh
+	# card_boxes_627, „Zwoje i księgi”), which the second shop lists - no V3-only line (it would show twice)
+	165: 'dodane: Złote Pudełko Kart Potwora (83037) za 35 SM - sklep w grze, indeks 628 (także Platynowe 83074 za 45 SM '
+		'i Pudełko Kart Potworów Yohary 83073 za 150 SM, indeksy 629 / 630)',
+	166: 'dodane: Srebrne Pudełko Kart Potwora (83036) za 25 SM - sklep w grze, indeks 627',
 }

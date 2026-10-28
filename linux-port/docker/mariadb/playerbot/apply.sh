@@ -4358,6 +4358,24 @@ if [ -s /opt/playerbot/wieza_smh_ranking.sql ]; then
         fail_step "Wieza Sung Mahi: wieza_smh_ranking.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_MONSTER_CARD_BOXES_V1: the four Monster Card boxes (the owner, 28 October 2026) - karty_pudelka.sql
+# (tools/cardbox/gen_cardbox.py): 83036 Srebrne / 83037 Zlote / 83074 Platynowe Pudelko Kart Potwora and 83073 Pudelko
+# Kart Potworow Yohary, the global vnums and flags. Idempotent (INSERT IGNORE). Opened by the card system
+# (playerbot_monster_card.h OpenCardBox): a Monster Card 50283 of the mission pools (levels 1-15 / all / 16-18; the
+# silver box a card or 1000 Yang) - no special_item_group. Bots never open or buy them (they have no cards).
+if [ -s /opt/playerbot/karty_pudelka.sql ]; then
+    if db < /opt/playerbot/karty_pudelka.sql; then
+        echo "[playerbot-migrate] card boxes: karty_pudelka.sql applied (MT2009_PLUS_MONSTER_CARD_BOXES_V1)"
+    else
+        fail_step "card boxes: karty_pudelka.sql failed" >&2
+    fi
+fi
+# The boxes in the in-game ItemShop - tab "Zwoje i ksiegi" (indexes 601-699) next to the card scrolls (617/618), at the
+# global prices: 25 / 35 / 45 / 150 Smocze Monety; the second ItemShop lists the in-game lines (its shop view). Once per
+# install (ishop_once) - the operator may change or remove them in the Seban panel. Only with the items in item_proto.
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (83036, 83037, 83073, 83074);" 2>/dev/null || echo x)" = "4" ]; then
+ishop_once card_boxes_627 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (627, 83036, 1, 25, 'DRAGON_COIN', 0), (628, 83037, 1, 35, 'DRAGON_COIN', 0), (629, 83074, 1, 45, 'DRAGON_COIN', 0), (630, 83073, 1, 150, 'DRAGON_COIN', 0);" "could not add the Monster Card boxes to the ItemShop"
+fi
 
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet

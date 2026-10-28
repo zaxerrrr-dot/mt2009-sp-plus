@@ -465,6 +465,10 @@ linux-port/docker/mariadb/playerbot/kamienie_zywiolow.sql
 # MT2009_PLUS_SMH_RANKING_V1: Wieza Sung Mahi's floor ranking and its monthly season (quest wieza_sung_mahi in quest/*;
 # apply.sh creates the tables).
 linux-port/docker/mariadb/playerbot/wieza_smh_ranking.sql
+# MT2009_PLUS_MONSTER_CARD_BOXES_V1: the four Monster Card boxes 83036 / 83037 / 83074 / 83073 (tools/cardbox) - the items
+# (apply.sh), the ItemShop lines (apply.sh, indexes 627-630), the opening in playerbot_monster_card.h (the playerbot_*
+# lines), the web pictures and descriptions (linux-port/docker/itemshop/* above).
+linux-port/docker/mariadb/playerbot/karty_pudelka.sql
 linux-port/docker/mariadb/playerbot/yohara_zaklety.sql
 linux-port/docker/mariadb/playerbot/yohara_items_zaklety.sql
 linux-port/docker/mariadb/playerbot/yohara_zaklety_zywioly.sql
