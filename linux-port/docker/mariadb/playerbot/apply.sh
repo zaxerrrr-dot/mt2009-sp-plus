@@ -4861,6 +4861,11 @@ if [ -s /opt/playerbot/addeq.sql ]; then
         fail_step "addeq: addeq.sql failed" >&2
     fi
 fi
+# The tradeable unlock 76055 in the ItemShop (the owner, 29 October 2026: "76055 w V3") - tab "Wyposazenie", index 19,
+# 199 Smoczych Monet. Once per install (ishop_once); only with the item in item_proto (addeq.sql above).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum = 76055;" 2>/dev/null || echo x)" = "1" ]; then
+ishop_once addeq_unlock_19 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (19, 76055, 1, 199, 'DRAGON_COIN', 0);" "could not add the second equipment page unlock to the ItemShop"
+fi
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then

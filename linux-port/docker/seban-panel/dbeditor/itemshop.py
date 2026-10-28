@@ -156,6 +156,7 @@ BOOT_ONCE = {
                    "note": "Zestawy kostiumów: Amulet Nazara, Lizak Magii, Czekoladowy Amulet, Mistrzowski Emblemat, Błogosławieństwo Mocy, Szarfa Serca"},
     # MT2009_PLUS_GUILDSYS_V1 (shop): Ksiega Zapomnienia Gildii 50347 (79 SM), tab Zwoje i ksiegi
     "guildsys_forget_631": {"adds": (631,), "note": "Księga Zapomnienia Gildii"},
+    "addeq_unlock_19": {"adds": (19,), "note": "Strona ekwipunku II (76055)"},
 }
 
 
