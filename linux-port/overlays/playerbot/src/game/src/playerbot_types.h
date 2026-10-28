@@ -3305,7 +3305,10 @@ namespace
 	// late herbs; herbs go up in lines of 200 (27 on the 2.x line).
 	// 31: MT2009_PLUS_YOHARA_PRICES_TEMP_V1 - the temporary Yohara block (tools/yohara_prices): 152 materials,
 	// ores, jade, herbs and elixirs, and the Sung Ma gloves, Talizmany Woli and jade jewellery +0..+9.
-	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 31;
+	// 32: MT2009_PLUS_YOHARA_PRICES_REF_V1 - the Yohara block from the reference server's market (28.10.2026) x the
+	// exchange ratio 0.409 (tools/yohara_prices): gear ladders, materials, chests and keys, the 9th-skill / Riposta /
+	// Dopalacz books, the demon stones, and Seon-Hae's ordinary shards (the provisional block's rows).
+	const DWORD PLAYERBOT_PRICE_TABLE_VERSION = 32;
 	// Community patch 2, point 8: inflation. Every PLAYERBOT_INFLATION_STEP_YANG
 	// the world's characters hold between them lifts every price his sheet sets
 	// by PLAYERBOT_INFLATION_STEP_PERCENT, on top of the yang-rate curve and in
