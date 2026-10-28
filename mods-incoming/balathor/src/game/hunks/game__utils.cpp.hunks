@@ -1,0 +1,42 @@
+@@ game/utils.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ std::string SecToTime(int sec)
++ {
++ 	if (sec < 0)
++ 		return "0s";
++ 	const int day = floor(sec / 86400);
++ 	const int hour = floor(fmod(sec, 86400) / 3600);
++ 	const int minute = floor(fmod(sec, 3600) / 60);
++ 	const int second = floor(fmod(sec, 60));
++ 	std::string text("");
++ 	if (day > 0)
++ 	{
++ 		text += std::to_string(day);
++ 		text += "d";
++ 	}
++ 	if (hour > 0)
++ 	{
++ 		if (text.length())
++ 			text += " ";
++ 		text += std::to_string(hour);
++ 		text += "h";
++ 	}
++ 	if (minute > 0)
++ 	{
++ 		if (text.length())
++ 			text += " ";
++ 		text += std::to_string(minute);
++ 		text += "m";
++ 	}
++ 	if (second > 0)
++ 	{
++ 		if (text.length())
++ 			text += " ";
++ 		text += std::to_string(second);
++ 		text += "s";
++ 	}
++ 	return text.c_str();
++ }
++ #endif

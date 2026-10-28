@@ -1,0 +1,13 @@
+ScriptType	MapSetting
+
+CellScale	200
+HeightScale	0.500000
+
+ViewRadius	512
+
+MapSize	2	2
+BasePosition	1152000	921600
+TextureSet	textureset\metin2_map_guild_whitedragon.txt
+Environment	metin2_map_guild_whitedragon.msenv
+terrainvisible	1
+NeighborRange	4

@@ -1,0 +1,8 @@
+@@ game/questlua.h:7  (kotwica = linie przed #ifdef)
+  	extern void RegisterDanceEventFunctionTable();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	extern void RegisterBalathorFunctionTable();
++ #endif

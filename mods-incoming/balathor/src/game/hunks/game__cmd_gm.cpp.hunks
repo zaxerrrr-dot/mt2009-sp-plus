@@ -1,0 +1,16 @@
+@@ game/cmd_gm.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ #include "balathor.h"
++ #endif
+
+@@ game/cmd_gm.cpp:13  (kotwica = linie przed #ifdef)
+  				M2_DESTROY_CHARACTER(pkChr);
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 				if (pkChr->GetMapIndex() > 1000)
++ 					CBalathorManager::Instance().Kill(m_pkGM, pkChr);
++ #endif

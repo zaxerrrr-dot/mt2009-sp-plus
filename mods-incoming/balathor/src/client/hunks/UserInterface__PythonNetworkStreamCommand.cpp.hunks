@@ -1,0 +1,40 @@
+@@ UserInterface/PythonNetworkStreamCommand.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ #include "PythonPlayer.h"
++ #endif
+
+@@ UserInterface/PythonNetworkStreamCommand.cpp:13  (kotwica = linie przed #ifdef)
+  	else if (!strcmpi(szCmd, "combo"))
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 	else if (!strcmpi(szCmd, "BalathorEffectRemove"))
++ 	{
++ 		if (2 != TokenVector.size())
++ 		{
++ 			TraceError("CPythonNetworkStream::ServerCommand(c_szCommand=%s) - Strange Parameter Count : %s", c_szCommand);
++ 			return;
++ 		}
++ 		CPythonPlayer::Instance().RemoveBalathorEffect(static_cast<DWORD>(atoi(TokenVector[1].c_str())));
++ 	}
++ 	else if (!strcmpi(szCmd, "BalathorEffectAdd"))
++ 	{
++ 		if (9 != TokenVector.size())
++ 		{
++ 			TraceError("CPythonNetworkStream::ServerCommand(c_szCommand=%s) - Strange Parameter Count : %s", c_szCommand);
++ 			return;
++ 		}
++ 		const DWORD dwID = static_cast<DWORD>(atoi(TokenVector[1].c_str()));
++ 		const DWORD dwVID = static_cast<DWORD>(atoi(TokenVector[2].c_str()));
++ 		const BYTE bEffIndex = static_cast<BYTE>(atoi(TokenVector[3].c_str()));
++ 		const float fX = static_cast<float>(atof(TokenVector[4].c_str()));
++ 		const float fY = static_cast<float>(atof(TokenVector[5].c_str()));
++ 		const float fZ = static_cast<float>(atof(TokenVector[6].c_str()));
++ 		const float fRotation = static_cast<float>(atof(TokenVector[7].c_str()));
++ 		const bool bIsMain = static_cast<bool>(atoi(TokenVector[8].c_str()));
++ 		CPythonPlayer::Instance().AddBalathorEffect(dwID, dwVID, bEffIndex, fX, fY, fZ, fRotation, bIsMain);
++ 	}
++ #endif

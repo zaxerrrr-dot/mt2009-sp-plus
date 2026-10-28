@@ -1,0 +1,57 @@
+@@ UserInterface/PythonEventManager.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ #include "../EterLib/Camera.h"
++ #include "PythonApplication.h"
++ #endif
+
+@@ UserInterface/PythonEventManager.cpp:18  (kotwica = linie przed #ifdef)
+  	}
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	case EVENT_TYPE_SET_KEYBOARD_MOUSE_LOCK:
++ 	{
++ 		int iValue = atoi(GetArgument("value", ScriptCommand.argList));
++ 		//CPythonApplication::Instance().SetCursorVisible(iValue == 1 ? false : true);
++ 		UI::CWindowManager& rkWndMgr = UI::CWindowManager::Instance();
++ 		rkWndMgr.SetLockMouseAndKeyboard(iValue != 0);
++ 		break;
++ 	}
++ 	case EVENT_TYPE_RESTORE_CAMERA_EXCEPT_POSITION:
++ 	{
++ 		IAbstractApplication::SCameraSetting CurrentSetting;
++ 		CCamera* pkCmrCur = CCameraManager::Instance().GetCurrentCamera();
++ 		if (pkCmrCur)
++ 		{
++ 			CurrentSetting.v3CenterPosition = pkCmrCur->GetEye();
++ 			CurrentSetting.fRotation = pkCmrCur->GetRoll();
++ 			CurrentSetting.fPitch = pkCmrCur->GetPitch();
++ 		}
++ 		IAbstractApplication::SCameraSetting NewSetting;
++ 		GetCameraSettingFromArgList(ScriptCommand.argList, &NewSetting);
++ 		NewSetting.v3CenterPosition = CurrentSetting.v3CenterPosition;
++ 
++ 		rApp.SetEventCamera(NewSetting);
++ 		break;
++ 	}
++ 	case EVENT_TYPE_CLOSE_CINEMA:
++ 	{
++ 		rApp.SetDefaultCamera();
++ 		PyCallClassMemberFunc(pEventSet->poEventHandler, "DoneEvent", Py_BuildValue("()"));
++ 		break;
++ 	}
++ #endif
+
+@@ UserInterface/PythonEventManager.cpp:58  (kotwica = linie przed #ifdef)
+  	EventTypeMap["SELECT_ITEM"] = EVENT_TYPE_SELECT_ITEM;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	EventTypeMap["SET_KEYBOARD_MOUSE_LOCK"] = EVENT_TYPE_SET_KEYBOARD_MOUSE_LOCK;
++ 	EventTypeMap["RESTORE_CAMERA_EXCEPT_POSITION"] = EVENT_TYPE_RESTORE_CAMERA_EXCEPT_POSITION;
++ 	EventTypeMap["CLOSE_CINEMA"] = EVENT_TYPE_CLOSE_CINEMA;
++ #endif

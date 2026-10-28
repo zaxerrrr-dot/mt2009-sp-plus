@@ -1,0 +1,8 @@
+@@ UserInterface/PythonApplicationModule.cpp:3  (kotwica = linie przed #ifdef)
+  # Add like other define in end file like other define
+  
++ #if defined(__BALATHOR__)
++ 	PyModule_AddIntConstant(poModule, "__BALATHOR__", true);
++ #else
++ 	PyModule_AddIntConstant(poModule, "__BALATHOR__", false);
++ #endif

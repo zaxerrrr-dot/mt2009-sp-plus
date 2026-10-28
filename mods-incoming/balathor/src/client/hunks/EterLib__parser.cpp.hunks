@@ -1,0 +1,55 @@
+@@ EterLib/parser.cpp:11  (kotwica = linie przed #ifdef)
+  bool Group::GetArg(const char* c_arg_base, int arg_len, TArgList& argList)
+  {
+  	char szName[32 + 1];
+  
++ #ifdef __BALATHOR__
++ 	char szValue[64 * 2 + 1];
++ 	size_t value_size = sizeof(szValue);
++ #else
++ 	char szValue[64 + 1];
++ #endif
+
+@@ EterLib/parser.cpp:38  (kotwica = linie przed #ifdef)
+  		if (iCharLen > 1)
+  		{
+  			if (isValue)
+  			{
++ #ifdef __BALATHOR__
++ 				if (iValueLen >= value_size)
++ #else
++ 				if (iValueLen >= 64)
++ #endif
+
+@@ EterLib/parser.cpp:44  (kotwica = linie przed #ifdef)
+  #else
+  				if (iValueLen >= 64)
+  #endif
+  				{
++ #ifdef __BALATHOR__
++ 					TraceError("argument value overflow: must be shorter than %zu letters", value_size);
++ #else
++ 					TraceError("argument value overflow: must be shorter than 64 letters");
++ #endif
+
+@@ EterLib/parser.cpp:102  (kotwica = linie przed #ifdef)
+  			else
+  			{
+  				if (isValue)
+  				{
++ #ifdef __BALATHOR__
++ 					if (iValueLen >= value_size)
++ #else
++ 					if (iValueLen >= 64)
++ #endif
+
+@@ EterLib/parser.cpp:108  (kotwica = linie przed #ifdef)
+  #else
+  					if (iValueLen >= 64)
+  #endif
+  					{
++ #ifdef __BALATHOR__
++ 						TraceError("argument value overflow: must be shorter than %zu letters", value_size);
++ #else
++ 						TraceError("argument value overflow: must be shorter than 64 letters");
++ #endif

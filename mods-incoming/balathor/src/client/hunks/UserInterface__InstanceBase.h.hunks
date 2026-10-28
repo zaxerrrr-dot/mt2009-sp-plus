@@ -1,0 +1,13 @@
+@@ UserInterface/InstanceBase.h:7  (kotwica = linie przed #ifdef)
+  protected:
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ public:
++ 	CActorInstance* GetActorInstance() { return &m_GraphicThingInstance; }
++ 	void RemoveBalathorEffect(const TBalathorEffect* pEffect);
++ 	void AddBalathorEffect(const TBalathorEffect* pEffect);
++ protected:
++ 	std::map<DWORD, DWORD> m_mapBalathorEffects;
++ #endif

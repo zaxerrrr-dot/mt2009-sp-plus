@@ -1,0 +1,30 @@
+@@ game/char.h:7  (kotwica = linie przed #ifdef)
+  protected:
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ public:
++ 	bool GetBlockStatus() { return m_bBlockAttack; }
++ 	void SetBlockStatus(bool bValue) { m_bBlockAttack = bValue; }
++ 
++ 	bool GetBlockRotation() { return m_bBlockRotation; }
++ 	void SetBlockRotation(bool bValue) { m_bBlockRotation = bValue; }
++ 
++ 	BYTE GetBalathorEggPhase() { return m_bBalathorEggPhase; }
++ 	void SetBalathorEggPhase(BYTE bValue) { m_bBalathorEggPhase = bValue; }
++ 
++ 	bool IsBalathor() { return m_bBalathorMob; }
++ 	void SetBalathor(bool bFlag) { m_bBalathorMob = true; }
++ 
++ 	bool IsBalathorEgg() { return m_bBalathorEgg; }
++ 	void SetBalathorEgg(bool bFlag) { m_bBalathorEgg = true; }
++ 
++ 	CHARACTER_SET& GetStoneMobs() { return m_set_pkChrSpawnedBy; }
++ protected:
++ 	bool m_bBlockAttack;
++ 	bool m_bBlockRotation;
++ 	BYTE m_bBalathorEggPhase;
++ 	bool m_bBalathorMob;
++ 	bool m_bBalathorEgg;
++ #endif

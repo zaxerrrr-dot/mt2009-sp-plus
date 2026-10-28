@@ -1,0 +1,21 @@
+@@ game/char_manager.cpp:7  (kotwica = linie przed #ifdef)
+  		if (is_set)
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 		if (is_set && !CBalathorManager::Instance().IsNoMoveMonster(dwVnum))
++ #else
++ 		if (is_set)
++ #endif
+
+@@ game/char_manager.cpp:19  (kotwica = linie przed #ifdef)
+  		if (IS_SET(dwAttr, ATTR_BANPK))
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 		if (IS_SET(dwAttr, ATTR_BANPK) && !CBalathorManager::Instance().IsNoMoveMonster(dwVnum))
++ #else
++ 		if (IS_SET(dwAttr, ATTR_BANPK))
++ #endif

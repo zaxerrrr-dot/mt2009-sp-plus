@@ -1,0 +1,8 @@
+@@ EterPythonLib/PythonWindowManager.cpp:9  (kotwica = linie przed #ifdef)
+  		m_pRootWindow->Show();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 		m_bLockMouseAndKeyboard = false;
++ #endif

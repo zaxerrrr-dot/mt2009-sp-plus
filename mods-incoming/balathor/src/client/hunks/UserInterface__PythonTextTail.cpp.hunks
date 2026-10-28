@@ -1,0 +1,9 @@
+@@ UserInterface/PythonTextTail.cpp:7  (kotwica = linie przed #ifdef)
+  	TTextTailList::iterator itor;
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 	if (UI::CWindowManager::Instance().IsMouseAndKeyboardLocked())
++ 		return;
++ #endif

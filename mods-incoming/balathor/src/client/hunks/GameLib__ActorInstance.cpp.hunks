@@ -1,0 +1,40 @@
+@@ GameLib/ActorInstance.cpp:8  (kotwica = linie przed #ifdef)
+  		return true;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if(IsBalathorDoor())
++ 		return true;
++ #endif
+
+@@ GameLib/ActorInstance.cpp:17  (kotwica = linie przed #ifdef)
+  
+  # Add
+  
+  
++ #ifdef __BALATHOR__
++ bool CActorInstance::IsBalathorDoor() const
++ {
++ 	if (m_eRace == 20494)
++ 		return true;
++ 	return false;
++ }
++ bool CActorInstance::IsBalathorEgg() const 
++ {
++ 	if (m_eRace == 20497)
++ 		return true;
++ 	return false;
++ }
++ #endif
+
+@@ GameLib/ActorInstance.cpp:38  (kotwica = linie przed #ifdef)
+  	if ((uActorType == TYPE_BUILDING) || (uActorType == TYPE_OBJECT) || (uActorType == TYPE_DOOR) || (uActorType == TYPE_STONE))
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 	if ((uActorType == TYPE_BUILDING) || (uActorType == TYPE_OBJECT) || (uActorType == TYPE_DOOR) || (uActorType == TYPE_STONE && !c_pActorInstance->IsBalathorEgg()))
++ #else
++ 	if ((uActorType == TYPE_BUILDING) || (uActorType == TYPE_OBJECT) || (uActorType == TYPE_DOOR) || (uActorType == TYPE_STONE))
++ #endif

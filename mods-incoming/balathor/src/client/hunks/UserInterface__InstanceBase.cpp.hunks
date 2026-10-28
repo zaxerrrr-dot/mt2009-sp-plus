@@ -1,0 +1,65 @@
+@@ UserInterface/InstanceBase.cpp:7  (kotwica = linie przed #ifdef)
+  	__AttachHorseSaddle();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (c_rkCreateData.m_dwRace == 6896 || c_rkCreateData.m_dwRace == 6897)
++ 		m_GraphicThingInstance.SetForceShow(true);
++ 	CPythonPlayer::Instance().CheckBalathorEffect(this);
++ #endif
+
+@@ UserInterface/InstanceBase.cpp:19  (kotwica = linie przed #ifdef)
+  	m_kQue_kCmdNew.clear();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	for (const auto& [id, eff_id] : m_mapBalathorEffects)
++ 	{
++ 		const TBalathorEffect* balathor_effect = CPythonPlayer::Instance().GetBalathorEffect(id);
++ 		if (balathor_effect)
++ 		{
++ 			if (balathor_effect->dwVID != 0)
++ 				__DetachEffect(eff_id);
++ 			//else
++ 			//	CEffectManager::Instance().DestroyEffectInstance(eff_id);
++ 		}
++ 	}
++ 	m_mapBalathorEffects.clear();
++ #endif
+
+@@ UserInterface/InstanceBase.cpp:36  (kotwica = linie przed #ifdef)
+  #endif
+  
+  # Add
+  
++ #ifdef __BALATHOR__
++ void CInstanceBase::RemoveBalathorEffect(const TBalathorEffect* pEffect)
++ {
++ 	const auto it = m_mapBalathorEffects.find(pEffect->dwID);
++ 	if (it == m_mapBalathorEffects.end())
++ 		return;
++ 	__DetachEffect(it->second);
++ 	m_mapBalathorEffects.erase(it);
++ }
++ 
++ void CInstanceBase::AddBalathorEffect(const TBalathorEffect* pEffect)
++ {
++ 	const auto it = m_mapBalathorEffects.find(pEffect->dwID);
++ 	if (it != m_mapBalathorEffects.end())
++ 		return;
++ 
++ 	const char* szFileName = CPythonPlayer::Instance().GetBalathorEffectFileName(pEffect->bEffIndex);
++ 	if (!szFileName)
++ 		return;
++ 
++ 	DWORD dwCRC = 0;
++ 	if (!CEffectManager::Instance().RegisterEffect2(szFileName, &dwCRC, false))
++ 		return;
++ 
++ 	DWORD dwResult = m_GraphicThingInstance.AttachEffectByID(NULL, "Bip01", dwCRC);
++ 	if (dwResult != 0)
++ 		m_mapBalathorEffects.emplace_hint(it, pEffect->dwID, dwResult);
++ }
++ #endif

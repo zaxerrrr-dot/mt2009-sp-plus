@@ -1,0 +1,16 @@
+@@ UserInterface/PythonPlayer.h:7  (kotwica = linie przed #ifdef)
+  protected:
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ public:
++ 	const char* GetBalathorEffectFileName(const BYTE bEffIndex);
++ 	void CheckBalathorEffect(CInstanceBase* pInstance);
++ 	void AddBalathorEffect(DWORD dwID, DWORD dwVID, BYTE bEffIndex, float fX, float fY, float fZ, float fRotation, bool bIsMain);
++ 	void RemoveBalathorEffect(DWORD dwID = 0);
++ 	void UpdateBalathorEffect();
++ 	const TBalathorEffect* GetBalathorEffect(DWORD dwID);
++ protected:
++ 	std::vector<TBalathorEffect> m_vecEffects;
++ #endif

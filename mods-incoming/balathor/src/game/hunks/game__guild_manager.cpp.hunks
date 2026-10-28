@@ -1,0 +1,19 @@
+@@ game/guild_manager.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ int CGuildManager::GetFlag(DWORD dwID, const char* szFlag)
++ {
++ 	char szBuf[48];
++ 	snprintf(szBuf, sizeof(szBuf), "?.%s_%u", szFlag, dwID);
++ 	return quest::CQuestManager::Instance().GetEventFlag(szBuf);
++ }
++ void CGuildManager::SetFlag(DWORD dwID, const char* szFlag, int iValue)
++ {
++ 	char szBuf[48];
++ 	snprintf(szBuf, sizeof(szBuf), "?.%s_%u", szFlag, dwID);
++ 
++ 	quest::CQuestManager::Instance().RequestSetEventFlag(szBuf, iValue);
++ 	quest::CQuestManager::Instance().SetEventFlag(szBuf, iValue);
++ }
++ #endif

@@ -1,0 +1,20 @@
+6896	Balathor
+6897	Balathor
+6898	Spectral Warrior
+6899	Spectral Archer
+6900	Spectral Echo
+20491	Cursed Stone Tablet
+20492	Balathor's Treasure
+20493	Hwacha
+20494	Solid Ice Wall
+20495	Frozen Dragon Egg
+20496	Frozen Dragon Egg
+20497	Flaming Dragon Egg
+20498	Ancient Ice Crystal
+20499	Hwacha (Transformed)
+20868	Dragonsoul Albira
+20869	Dragonsoul Albira
+20815	Ghostly Guardian
+20507	Eternal Ice Crystal
+8635	White Dragon Egg (easy)
+8636	White Dragon Egg (hard)

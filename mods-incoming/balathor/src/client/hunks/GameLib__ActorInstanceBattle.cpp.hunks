@@ -1,0 +1,38 @@
+@@ GameLib/ActorInstanceBattle.cpp:7  (kotwica = linie przed #ifdef)
+  	if (__CanPushDestActor(rVictim) && c_rAttackData.fExternalForce > 0.0f)
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 	float fExternalForce = c_rAttackData.fExternalForce;
++ 	if (rVictim.IsBalathorEgg())
++ 	{
++ 		fExternalForce = 20.0f;
++ 	}
++ 
++ 	if ((rVictim.IsBalathorEgg() || __CanPushDestActor(rVictim)) && fExternalForce > 0.0f)
++ #else
++ 	if (__CanPushDestActor(rVictim) && c_rAttackData.fExternalForce > 0.0f)
++ #endif
+
+@@ GameLib/ActorInstanceBattle.cpp:25  (kotwica = linie przed #ifdef)
+  		rVictim.m_PhysicsObject.IncreaseExternalForce(kVictimPos, c_rAttackData.fExternalForce);
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 		rVictim.m_PhysicsObject.IncreaseExternalForce(kVictimPos, fExternalForce);
++ #else
++ 		rVictim.m_PhysicsObject.IncreaseExternalForce(kVictimPos, c_rAttackData.fExternalForce);
++ #endif
+
+@@ GameLib/ActorInstanceBattle.cpp:37  (kotwica = linie przed #ifdef)
+  	else if (rVictim.IsStone() || rVictim.IsDoor())
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 	else if ((!rVictim.IsBalathorEgg() && rVictim.IsStone()) || rVictim.IsDoor())
++ #else
++ 	else if (rVictim.IsStone() || rVictim.IsDoor())
++ #endif

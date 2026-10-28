@@ -1,0 +1,6 @@
+@@ game/utils.h:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ extern std::string SecToTime(int sec);
++ #endif

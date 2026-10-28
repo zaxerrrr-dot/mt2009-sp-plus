@@ -1,0 +1,12 @@
+@@ EterLib/GrpObjectInstance.h:7  (kotwica = linie przed #ifdef)
+  protected:
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ public:
++ 	bool IsForceShow() { return m_bForceShow; }
++ 	void SetForceShow(bool bFlag) {  m_bForceShow = bFlag; }
++ protected:
++ 	bool m_bForceShow;
++ #endif

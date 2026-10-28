@@ -1,0 +1,10 @@
+@@ EterLib/CullingManager.cpp:7  (kotwica = linie przed #ifdef)
+  			pInstance->Hide();
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 		if (pInstance->IsForceShow())
++ 			pInstance->Show();
++ 		else
++ #endif

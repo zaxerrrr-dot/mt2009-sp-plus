@@ -1,0 +1,9 @@
+@@ game/guild_manager.h:7  (kotwica = linie przed #ifdef)
+  	void		RequestCancelWar(DWORD guild_id1, DWORD guild_id2);
+  
+  # add after
+  
++ #ifdef __BALATHOR__
++ 	int			GetFlag(DWORD dwID, const char* szFlag);
++ 	void		SetFlag(DWORD dwID, const char* szFlag, int iValue);
++ #endif
