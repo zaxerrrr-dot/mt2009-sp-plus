@@ -134,6 +134,8 @@ param(
 #   Mlodzi Bohaterowie questlua.cpp (the "mlodzi" module), char_item.cpp (nothing used on the weapons), item_attribute.cpp
 #                      (no bonus change / addition, 1-5 and 6/7), char.cpp (no sash absorption) - Bronie dla Mlodych
 #                      Bohaterow 21900-21975 (MT2009_PLUS_MLODZI_BOHATEROWIE_V1; server-patches/mlodzi, last)
+#   Blyskawice rekawic common length.h - SE_ELEC_ATTACK_HIT (54), the hit effect of the gloves' 6/7 lightning
+#                      (POINT_GLOVE_LIGHTNING, playerbot_bonus67.cpp) (MT2009_PLUS_ELEC_GLOVE_V1; server-patches/elecglove)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1812,6 +1814,18 @@ if ((Test-Path -LiteralPath $npclocApply -PathType Leaf) -and
     if ($npclocResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Lokalizator NPC edit(s).' -f $npclocResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Blyskawice rekawic 6/7 (server-patches/elecglove, MT2009_PLUS_ELEC_GLOVE_V1): SE_ELEC_ATTACK_HIT (54) in common
+# length.h - the hit effect playerbot_bonus67.cpp sends to each monster the gloves' lightning strikes.
+$elecgloveApply = Join-Path $repo 'server-patches/elecglove/Apply-ElecGlovePatch.ps1'
+if ((Test-Path -LiteralPath $elecgloveApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource '../../common/length.h') -PathType Leaf)) {
+    $elecgloveResult = & $elecgloveApply -SourceDir $engineGameSource
+    if ($elecgloveResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} glove lightning effect edit(s).' -f $elecgloveResult.Applied) -ForegroundColor DarkGray
     }
 }
 

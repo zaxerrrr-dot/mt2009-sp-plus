@@ -981,6 +981,9 @@ void initchrmgr()
 	PyModule_AddIntConstant(poModule, "EFFECT_FLOWER_EVENT", CInstanceBase::EFFECT_FLOWER_EVENT); // MT2009_PLUS_MINIGAMES_V1
 #endif
 #endif
+#ifdef ENABLE_GLOVE_ELEC_ATTACK_BONUS
+	PyModule_AddIntConstant(poModule, "EFFECT_ELEC_ATTACK_HIT", CInstanceBase::EFFECT_ELEC_ATTACK_HIT); // MT2009_PLUS_ELEC_GLOVE_V1
+#endif
 }
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 

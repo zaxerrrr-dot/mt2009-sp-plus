@@ -714,3 +714,21 @@ Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang
 cały ten katalog) – `PythonWindow.cpp`, `PythonWindowManagerModule.cpp`, `PythonSlotWindow.cpp`,
 `PythonGridSlotWindow.cpp`, `PythonWindowManager.cpp` bez błędów z definicją i bez niej (28.10.2026); pliki root
 sprawdzone parserem Pythona 2.7. Exe nie budowane.
+
+## Błyskawice rękawic 6/7 – `MT2009_PLUS_ELEC_GLOVE_V1` (`ENABLE_GLOVE_ELEC_ATTACK_BONUS`)
+
+Bonus rękawic „Atakuj potwory w pobliżu błyskawicami” (`POINT_GLOVE_LIGHTNING` 242, serwer: `server-patches/bonusy67`)
+dostaje globalny efekt trafienia: serwer (`server-patches/elecglove`) wysyła `SE_ELEC_ATTACK_HIT` (**54**) do każdego
+potwora, w którego uderza błyskawica.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_GLOVE_ELEC_ATTACK_BONUS` |
+| `Server/common/length.h` | `SE_ELEC_ATTACK_HIT` po `SE_SKILL_SAFE_ZONE_SMALL` (54 jak na serwerze) |
+| `UserInterface/InstanceBase.h` | `EFFECT_ELEC_ATTACK_HIT` przed `EFFECT_NUM` |
+| `UserInterface/PythonPlayerSettingsModule.cpp` | rejestracja `d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse` (paczka `elecglove`, `client-2.0.30/tools/elecglove`) |
+| `UserInterface/PythonNetworkStreamPhaseGameItem.cpp` | `case SE_ELEC_ATTACK_HIT` → `EFFECT_ELEC_ATTACK_HIT` (`static_assert` 54) |
+| `UserInterface/PythonCharacterManagerModule.cpp` | `chrmgr.EFFECT_ELEC_ATTACK_HIT` |
+
+Stary exe: efekt 54 to tylko wpis w syserr. Sprawdzone `clang-cl /Zs` czterech plików (`InstanceBase.cpp` też) na kopii
+źródeł z całą nakładką.

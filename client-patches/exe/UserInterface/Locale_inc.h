@@ -304,5 +304,10 @@
 // wndMgr.SetSlotTextZoom(0/1) / IsSlotTextZoom() for the game options' switch (on by default). Without the define the
 // exe is as before.
 #define ENABLE_SLOT_TEXT_SIZE
+// MT2009_PLUS_ELEC_GLOVE_V1 (the gloves' 6th/7th lightning, server-patches/elecglove): the server's SE_ELEC_ATTACK_HIT
+// (54) on each monster the lightning strikes shows the global hit effect EFFECT_ELEC_ATTACK_HIT
+// (d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse, pack "elecglove"), chrmgr.EFFECT_ELEC_ATTACK_HIT.
+// Without the define the exe is as before (54 is "not a special effect number" in syserr).
+#define ENABLE_GLOVE_ELEC_ATTACK_BONUS
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top
