@@ -1,0 +1,10 @@
+@@ GameLib/RaceMotionData.h:7  (kotwica = linie przed #ifdef)
+  		NAME_SPECIAL_6,
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 		NAME_ETC_1,
++ 		NAME_ETC_2,
++ 		NAME_ETC_3,
++ #endif

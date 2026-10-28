@@ -714,3 +714,34 @@ Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang
 cały ten katalog) – `PythonWindow.cpp`, `PythonWindowManagerModule.cpp`, `PythonSlotWindow.cpp`,
 `PythonGridSlotWindow.cpp`, `PythonWindowManager.cpp` bez błędów z definicją i bez niej (28.10.2026); pliki root
 sprawdzone parserem Pythona 2.7. Exe nie budowane.
+## Krypta Balathora – `MT2009_PLUS_BALATHOR_V1` (`__BALATHOR__`, autor: dracaryS)
+
+Strona klienta gildyjnego lochu Balathora (serwer: `server-patches/balathor`, mapa 420). Bez nowych pakietów: efekty
+przychodzą komendami czatu `BalathorEffectAdd <id> <vid> <efekt> <x> <y> <z> <obrót> <główny>` i
+`BalathorEffectRemove <id>` (obsługa w exe), ruchy bossa `ETC1..3` w zwykłym `HEADER_GC_MOTION` (na `victim_vid`).
+Komendy `SetBalathor` / `SetBalathorEffect` obsługuje root (`game.py` → `uiguildwhitedragon.py`).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define __BALATHOR__` |
+| `UserInterface/PythonApplicationModule.cpp` | `app.__BALATHOR__` (1/0) |
+| `UserInterface/GameType.h` | `BALATHOR_EFF_*` (0–8), `TBalathorEffect` |
+| `UserInterface/PythonPlayer.h/.cpp` | lista efektów (`AddBalathorEffect`, `RemoveBalathorEffect`, `CheckBalathorEffect`, `UpdateBalathorEffect` – strzałka do pozycji co klatkę), czyszczona w `NEW_ClearSkillData` |
+| `UserInterface/InstanceBase.h/.cpp` | efekty przypięte do VID (kość `Bip01`), Balathor 6896/6897 zawsze rysowany (`SetForceShow`) |
+| `UserInterface/PythonNetworkStreamCommand.cpp` (**nowy w nakładce**) | komendy `BalathorEffectAdd/Remove` |
+| `UserInterface/PythonNetworkStreamPhaseGame.cpp` | `RecvMotionPacket` gra ruch na `victim_vid` |
+| `UserInterface/PythonEventManager.h/.cpp` (**nowe w nakładce**) | zdarzenia kamer cutscenek `SET_KEYBOARD_MOUSE_LOCK`, `RESTORE_CAMERA_EXCEPT_POSITION`, `CLOSE_CINEMA` (zdejmuje też blokadę) |
+| `UserInterface/PythonApplicationEvent.cpp` (**nowy w nakładce**) | przy blokadzie: bez klawiatury i bez obracania kamery myszą |
+| `UserInterface/PythonTextTail.cpp` (**nowy w nakładce**) | przy blokadzie bez nazw nad postaciami |
+| `EterPythonLib/PythonWindowManager.h/.cpp` | `SetLockMouseAndKeyboard` / `IsMouseAndKeyboardLocked` |
+| `EterLib/GrpObjectInstance.h`, `EterLib/CullingManager.cpp` (**nowy w nakładce**) | `SetForceShow` – obiekt nie znika poza widokiem |
+| `EterLib/parser.cpp` (**nowy w nakładce**) | wartości argumentów skryptu zdarzeń do 128 znaków (foldery kamer) |
+| `GameLib/RaceMotionData.h/.cpp`, `RaceManager.cpp` (**nowe w nakładce**), `ActorInstanceMotion.cpp` | `NAME_ETC_1..3` = 39–41 (`static_assert`), `motlist` `ETC1..3` |
+| `GameLib/ActorInstance.h/.cpp`, `ActorInstanceBattle.cpp` | Lodowa Ściana 20494 jak drzwi, Ogniste Jajo 20497 da się pchać (siła 20) i nie blokuje ruchu |
+
+Pominięte z paczki: `wndMgr.ResetFrame` – nasz exe już go ma (`ENABLE_OWSAP_WNDMGR_EX`).
+Efekty, których exe szuka: `d:/ymir work/effect/monster2/guild_whitedragon_*.mse`, `whitedragon_ground_ice.mse`,
+`d:/ymir work/effect/etc/direction/direction_land.mse`, `d:/ymir work/effect/etc/npc_location/npc_location_direction.mse`.
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` + cały ten
+katalog) – wszystkie 15 zmienionych `.cpp` bez błędów; `/E` potwierdza kod za definicją (28.10.2026). Exe nie budowane.

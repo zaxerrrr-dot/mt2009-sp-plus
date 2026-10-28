@@ -282,6 +282,11 @@ class CActorInstance : public IActorInstance, public IFlyTargetableObject
 		bool IsShop();
 		bool IsAOE();
 		bool IsDoor();
+		// MT2009_PLUS_BALATHOR_V1 (Balathor, dracaryS): ice wall 20494 counts as a door, fire egg 20497 can be pushed
+#ifdef __BALATHOR__
+		bool IsBalathorDoor() const;
+		bool IsBalathorEgg() const;
+#endif
 		bool IsPoly();
 
 		bool IsBuilding();

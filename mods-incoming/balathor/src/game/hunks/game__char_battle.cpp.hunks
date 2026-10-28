@@ -1,0 +1,84 @@
+@@ game/char_battle.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ #include "balathor.h"
++ #endif
+
+@@ game/char_battle.cpp:13  (kotwica = linie przed #ifdef)
+  	ch->m_pkDeadEvent = NULL;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (!ch->IsPC() && ch->GetMapIndex() > 1000)
++ 	{
++ 		if (CBalathorManager::Instance().IsHwatcha(ch->GetRaceNum()))
++ 			return 0;
++ 	}
++ #endif
+
+@@ game/char_battle.cpp:29  (kotwica = linie przed #ifdef)
+  		ch->SetPosition(POS_STANDING);
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 		if (ch->GetMapIndex() > 1000)
++ 		{
++ 			CBalathor* pBalathor = CBalathorManager::Instance().FindByMapIndex(ch->GetMapIndex());
++ 			if (pBalathor)
++ 			{
++ 				ch->RestartAtSamePos();
++ 				ch->PointChange(POINT_HP, 50 - ch->GetHP());
++ 				ch->DeathPenalty(0);
++ 				ch->ReviveInvisible(5);
++ 				ch->StartRecoveryEvent();
++ 				pBalathor->Teleport(ch);
++ 				return 0;
++ 			}
++ 		}
++ #endif
+
+@@ game/char_battle.cpp:52  (kotwica = linie przed #ifdef)
+  	bool isUnderGuildWar = false;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if(GetMapIndex() > 1000)
++ 		CBalathorManager::Instance().Kill(pkKiller, this);
++ #endif
+
+@@ game/char_battle.cpp:64  (kotwica = linie przed #ifdef)
+  	int iCurSP = GetSP();
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 	if (pAttacker && GetBlockStatus())
++ 	{
++ 		SendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);
++ 		return false;
++ 	}
++ #endif
+
+@@ game/char_battle.cpp:79  (kotwica = linie przed #ifdef)
+  		SendDamagePacket(pAttacker, dam, damageFlag);
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 		if (GetRaceNum() == 20497 && !pAttacker->GetWear(WEAR_WEAPON))
++ 			dam = 5 * (GetMaxHP() / 100);
++ #endif
+
+@@ game/char_battle.cpp:91  (kotwica = linie przed #ifdef)
+  		PointChange(POINT_HP, -dam, false);
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 		if ((IsBalathorEgg() || IsBalathor()) && dam > 0 && GetMapIndex() > 1000 && pAttacker)
++ 			CBalathorManager::Instance().Damage(pAttacker, this);
++ #endif

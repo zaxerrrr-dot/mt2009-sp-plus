@@ -1,0 +1,54 @@
+TextureSet
+
+TextureCount 05
+
+Start Texture001
+    "D:\YMIR WORK\terrainmaps\Dungeon\field 01.DDS"
+    5.000000
+    5.000000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture001
+Start Texture002
+    "D:\YMIR WORK\terrainmaps\elemental_01\elemental_01_01.dds"
+    2.000000
+    2.000000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture002
+Start Texture003
+    "D:\YMIR WORK\terrainmaps\guild_whitedragon\guild_whitedragon_field_01.dds"
+    0.700000
+    0.700000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture003
+Start Texture004
+    "D:\YMIR WORK\terrainmaps\guild_whitedragon\guild_whitedragon_field_02.dds"
+    0.700000
+    0.700000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture004
+Start Texture005
+    "D:\YMIR WORK\terrainmaps\elemental_01\elemental_01_03.dds"
+    2.000000
+    2.000000
+    0.000000
+    0.000000
+    0
+    0
+    0
+End Texture005

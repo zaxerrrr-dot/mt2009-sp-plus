@@ -1,0 +1,41 @@
+GUILD_WHITE_DRAGON_LAIR_ALREADY_USED_BUFF_POTION	The effects are already active.
+GUILD_WHITE_DRAGON_LAIR_BUFF_POTION_CANNOT_USE_IN_MAP	You can only use that in Balathor's Crypt.
+GUILD_WHITE_DRAGON_LAIR_CANNOT_ATTACK_EGG	You must move the Flaming Dragon Egg in the other direction.
+GUILD_WHITE_DRAGON_LAIR_CAN_USE_SINGIJEON	The Hwacha is ready to be fired!
+GUILD_WHITE_DRAGON_LAIR_CONCENTRATED_STRIKE_REMAIN_TIME	Concentrate on the Frozen Dragon Egg before it disappears in %d seconds.
+GUILD_WHITE_DRAGON_LAIR_CONCENTRATED_STRIKE_SUCCESS	You have successfully warded off the ice cold.
+GUILD_WHITE_DRAGON_LAIR_DRAGON_CRY_SOUNDS_LOUDER	Balathor's roar shakes the crypt.
+GUILD_WHITE_DRAGON_LAIR_DRAGON_STARTS_GOING_CRAZY	Balathor has lost sight of his Dragon Eggs. Now he's going to get angry!
+GUILD_WHITE_DRAGON_LAIR_DRAGON_STARTS_GOING_MILD	Balathor has his Dragon Eggs again. He will be careful not use his full power.
+GUILD_WHITE_DRAGON_LAIR_FAIL_1	You failed to complete Balathor's Crypt. You will be teleported out in 5 minutes.
+GUILD_WHITE_DRAGON_LAIR_FAIL_2	You will be teleported out in 3 minutes. You can talk to Dragon Watcher Dolnarr to leave the dungeon immediately.
+GUILD_WHITE_DRAGON_LAIR_FIRE_ARROW_COUNT_FULL	You cannot load any more arrows.
+GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_DESTROYED_EGG	Balathor's seal has been greatly weakened as a Dragon Egg has been destroyed.
+GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_DYING	The death of a hero has weakened Balathor's seal.
+GUILD_WHITE_DRAGON_LAIR_GAUGE_INCREASED_BY_FREEZING_DEBUFF	Balathor's seal has been weakened as someone has been frozen.
+GUILD_WHITE_DRAGON_LAIR_GET_FIRE_ARROW	Destroy Ancient Ice Crystals to get Fire Arrows.
+GUILD_WHITE_DRAGON_LAIR_HIDDEN_CONCENTRATED_STRIKE_START	Destroy the Frozen Dragon Egg quickly!
+GUILD_WHITE_DRAGON_LAIR_HIDDEN_CONCENTRATED_STRIKE_WAIT	In 10 seconds, Balathor's Dragon Egg will appear and you can initiate a targetted attack.
+GUILD_WHITE_DRAGON_LAIR_HIDDEN_FAIL_REWARD	Balathor flees and leaves his treasure behind.
+GUILD_WHITE_DRAGON_LAIR_NEXT_CONCENTRATED_STRIKE_NEED_MORE_DAMAGE	More damage will be needed for the next attack.
+GUILD_WHITE_DRAGON_LAIR_NOTICE_CONCENTRATED_STRIKE_START	One of Balathor's Dragon Eggs is summoning ice cold! Focus your attacks to stop it.
+GUILD_WHITE_DRAGON_LAIR_NOTICE_GIVE_UP	You have cancelled your attempt to master Balathor's Crypt. You will be teleported out in 1 minute.
+GUILD_WHITE_DRAGON_LAIR_NOTICE_INCREASE_ARROW_COUNT	The Hwacha is currently loaded with %d Fire Arrows.
+GUILD_WHITE_DRAGON_LAIR_NOTICE_LIMIT_TIME	Time remaining: %d
+GUILD_WHITE_DRAGON_LAIR_NOTICE_REWARD_STAGE_REMAIN_TIME	You will be teleported out in %d minutes. You can talk to Dragon Watcher Dolnarr to leave the dungeon immediately.
+GUILD_WHITE_DRAGON_LAIR_NOTICE_REWARD_STATGE	You can collect your reward from Balathor's Treasure. You will be teleported out in 5 minutes.
+GUILD_WHITE_DRAGON_LAIR_NOTICE_SPAWNEED_BROKEN_EGG	A Flaming Dragon Egg has appeared.
+GUILD_WHITE_DRAGON_LAIR_NOT_ENOUGH_GUILD_SP	You don't have enough Dragon God Power.
+GUILD_WHITE_DRAGON_LAIR_PROTECTED_EGGS	Destroy the eggs to inflict damage!
+GUILD_WHITE_DRAGON_LAIR_PUT_EGGS_BACK_IN_ORIGINAL_PLACE	Balathor's Dragon Egg reappears at its original location.
+GUILD_WHITE_DRAGON_LAIR_REPAIR_SINGIJEON	The Hwacha cannot be loaded before it has been repaired.
+GUILD_WHITE_DRAGON_LAIR_REPAIR_SINGIJEON_SUCCESS	The Hwacha is now fully repaired.
+GUILD_WHITE_DRAGON_LAIR_RUN_AWAY_TO_BREATH	Balathor saw a Dragon Egg being destroyed. Avoid his icy breath!
+GUILD_WHITE_DRAGON_LAIR_UI_BOSS_NAME_TOOLTIP	Balathor
+GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_INFO_1	Remaining
+GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_INFO_2	Chances: %d
+GUILD_WHITE_DRAGON_LAIR_UI_BROKEN_EGG_TOOLTIP	If %d Flaming Dragon Eggs are destroyed, the dungeon attempt is failed.
+GUILD_WHITE_DRAGON_LAIR_UI_FLYING_FLMAE_BREATH_TOOLTIP	If the seal fails 100%%, Balathor will direct his deadly gaze on you. (Current seal weakness: %d%%)
+GUILD_WHITE_DRAGON_LAIR_UI_HIDDEN_BOSS_NAME_TOOLTIP	Balathor
+GUILD_WHITE_DRAGON_LAIR_UI_SINGIJEON_NAME_TOOLTIP	Hwacha
+GUILD_WHITE_DRAGON_LAIR_UI_SINGIJEON_TOOLTIP	Once 8 arrows are loaded, Balathor's scale armour can be destroyed. Fire Arrows can be acquired from Ancient Ice Crystals. Currently loaded: %d

@@ -1,0 +1,15 @@
+@@ game/cmd.cpp:3  (kotwica = linie przed #ifdef)
+  # Add like other command
+  
++ #ifdef __BALATHOR__
++ ACMD(do_balathor);
++ #endif
+
+@@ game/cmd.cpp:7  (kotwica = linie przed #ifdef)
+  #ifdef __BALATHOR__
+  ACMD(do_balathor);
+  #endif
+  
++ #ifdef __BALATHOR__
++ 	{ "balathor",	do_balathor,		0,		POS_DEAD,	GM_PLAYER },
++ #endif

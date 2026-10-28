@@ -1,0 +1,77 @@
+@@ game/questlua_guild.cpp:8  (kotwica = linie przed #ifdef)
+  
+  
+  # ADd before
+  
++ #ifdef __BALATHOR__
++ 	int guild_get_near_count(lua_State* L)
++ 	{
++ 		int iResult = 0;
++ 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
++ 		CGuild* pGuild = ch ? ch->GetGuild() : NULL;
++ 		if (pGuild)
++ 		{
++ 			std::vector<DWORD> vecPlayers;
++ 			pGuild->GetNearMemberCount(vecPlayers, 2500.0f, ch);
++ 			iResult = vecPlayers.size();
++ 		}
++ 		lua_pushnumber(L, iResult);
++ 		return 1;
++ 	}
++ 	int guild_get_near_pids(lua_State* L)
++ 	{
++ 		int iResult = 0;
++ 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
++ 		CGuild* pGuild = ch ? ch->GetGuild() : NULL;
++ 		if (pGuild)
++ 		{
++ 			std::vector<DWORD> vecPlayers;
++ 			pGuild->GetNearMemberCount(vecPlayers, 2500.0f, ch);
++ 			for (const auto& pid : vecPlayers)
++ 				lua_pushnumber(L, pid);
++ 			return vecPlayers.size();
++ 		}
++ 		return 0;
++ 	}
++ 	int guild_get_flag(lua_State* L)
++ 	{
++ 		int iResult = 0;
++ 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
++ 		CGuild* pGuild = ch ? ch->GetGuild() : NULL;
++ 		if (pGuild && lua_isstring(L, 1))
++ 			iResult = pGuild->GetFlag(lua_tostring(L, 1));
++ 		lua_pushnumber(L, iResult);
++ 		return 1;
++ 	}
++ 	int guild_set_flag(lua_State* L)
++ 	{
++ 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
++ 		CGuild* pGuild = ch ? ch->GetGuild() : NULL;
++ 		if (pGuild && lua_isstring(L, 1) && lua_isnumber(L, 2))
++ 			pGuild->SetFlag(lua_tostring(L, 1), lua_tonumber(L, 2));
++ 		return 0;
++ 	}
++ 	int guild_get_level(lua_State* L)
++ 	{
++ 		BYTE bResult = 0;
++ 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
++ 		CGuild* pGuild = ch ? ch->GetGuild() : NULL;
++ 		if (pGuild)
++ 			bResult = pGuild->GetLevel();
++ 		lua_pushnumber(L, bResult);
++ 		return 1;
++ 	}
++ #endif
+
+@@ game/questlua_guild.cpp:74  (kotwica = linie przed #ifdef)
+  			{ NULL,						NULL						}
+  
+  # ADd before
+  
++ #ifdef __BALATHOR__
++ 			{ "get_near_count",			guild_get_near_count},
++ 			{ "get_near_pids",			guild_get_near_pids	},
++ 			{ "get_flag",				guild_get_flag		},
++ 			{ "set_flag",				guild_set_flag		},
++ 			{ "get_level",				guild_get_level		},
++ #endif

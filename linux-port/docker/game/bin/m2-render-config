@@ -226,6 +226,21 @@ else
   [ -f "$SPIDER3_NPC" ] && sed -i -E 's#^(m[[:blank:]]+385[[:blank:]]+893[[:blank:]].*[[:blank:]]10098[[:space:]]*)$#//\1#' "$SPIDER3_NPC"
   log "3 Loch Pajakow (217): off (M2_SPIDER3_ON=0) - not hosted, no warp"
 fi
+# MT2009_PLUS_BALATHOR_SWITCH_V1: Krypta Balathora (420, metin2_map_guild_whitedragon_boss, 2x2 - the guild lair of
+# the White Dragon, server-patches/balathor; author dracaryS) on game1 beside Doyyumhwaji (62), where Straznik Smokow
+# Dolnarr takes the registration: the engine (CBalathorManager) creates a guild's private copy (4200000+) on the core
+# that runs the NPC's quest, so the lair has to sit on the core of 62 - as Schronienie Meley (356) does. No bot goes
+# there (IsPlayerBotOffLimitsMap, IsPlayerBotDungeonPartyMove). Only with M2_BALATHOR_ON=1 (.env; default 0 - the
+# map's client is not out yet); off, no core hosts it and balathor.is_open() is false, so Dolnarr offers nothing. A
+# character saved there goes to its kingdom's start at the next login (ENABLE_GOHOME_IF_MAP_NOT_EXIST; the engine
+# sends it home anyway - CBalathorManager::Login). game1 of the unified layout: 46-47 maps of MAP_ALLOW_LIMIT 48.
+case "$(printf '%s' "${M2_BALATHOR_ON:-0}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 1|on|yes|true) M2_BALATHOR_ON=1 ;; *) M2_BALATHOR_ON=0 ;; esac
+if [ "$M2_BALATHOR_ON" = "1" ]; then
+  MAPS_game1="$MAPS_game1 420"
+  log "Krypta Balathora (420): ON - hosted by game1"
+else
+  log "Krypta Balathora (420): off (M2_BALATHOR_ON=0) - not hosted"
+fi
 # MT2009_PLUS_YOHARA_CORE_V1 (maps): the whole of Yohara on a core of its own in every channel (the owner,
 # 14 October 2026) - game3, "Yohara": Obrona Statku (367, the ship's private copies 3670000+ are made here), Port
 # Nowego Kontynentu (368), Dongan (373), Opuszczona Twierdza (374), Seoganland (376), Namgan (377), Przelecz Yilad

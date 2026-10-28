@@ -4773,6 +4773,19 @@ if [ -s /opt/playerbot/community.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_BALATHOR_V1: Krypta Balathora (author: dracaryS; server-patches/balathor, game/balathor) - balathor.sql
+# (tools/balathor/gen_balathor_sql.py): its 17 monsters, NPCs and stones (6896-6900, 20491-20499, 20507, 20868,
+# 20869), their elements (after zywioly_moby.sql above, which clears the bits of every mob it does not list), the Fire
+# Arrow 30395 and the chests 83075/83076 (game/balathor/special_item_group.balathor.txt names them: a world without
+# them stops the cores at boot). Idempotent (INSERT IGNORE / UPDATE).
+if [ -s /opt/playerbot/balathor.sql ]; then
+    if db < /opt/playerbot/balathor.sql; then
+        echo "[playerbot-migrate] balathor: balathor.sql applied"
+    else
+        fail_step "balathor: balathor.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

@@ -1,0 +1,9 @@
+@@ UserInterface/PythonNetworkStreamPhaseGame.cpp:8  (kotwica = linie przed #ifdef)
+  		return false;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (pVictimInstance)
++ 		pVictimInstance->PushOnceMotion(MotionPacket.motion);
++ #endif

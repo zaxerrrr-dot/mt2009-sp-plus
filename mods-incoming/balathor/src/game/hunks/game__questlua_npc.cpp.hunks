@@ -1,0 +1,22 @@
+@@ game/questlua_npc.cpp:7  (kotwica = linie przed #ifdef)
+  	void RegisterNPCFunctionTable()
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 	int npc_is_dead(lua_State* L)
++ 	{
++ 		LPCHARACTER npc = CQuestManager::instance().GetCurrentNPCCharacterPtr();
++ 		lua_pushboolean(L, npc ? npc->IsDead() : false);
++ 		return 1;
++ 	}
++ #endif
+
+@@ game/questlua_npc.cpp:22  (kotwica = linie przed #ifdef)
+  			{ NULL,				NULL			    	}
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 			{ "is_dead", npc_is_dead },
++ #endif

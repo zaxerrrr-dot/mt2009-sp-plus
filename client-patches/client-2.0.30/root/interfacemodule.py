@@ -4271,6 +4271,9 @@ class Interface(object):
 
 	def __init__(self):
 		systemSetting.SetInterfaceHandler(self)
+		# MT2009_PLUS_BALATHOR_V1 (Autor: dracaryS): Krypta Balathora's windows, made on the first server command
+		self.wndBalathorInfo = None
+		self.wndBalathorScreenEffect = None
 		self.windowOpenPosition = 0
 		self.dlgWhisperWithoutTarget = None
 		self.inputDialog = None
@@ -4920,6 +4923,14 @@ class Interface(object):
 	################################
 
 	def Close(self):
+		# MT2009_PLUS_BALATHOR_V1
+		if self.wndBalathorInfo:
+			self.wndBalathorInfo.Destroy()
+			self.wndBalathorInfo = None
+		if self.wndBalathorScreenEffect:
+			self.wndBalathorScreenEffect.Destroy()
+			self.wndBalathorScreenEffect = None
+
 		if self.popupManager:
 			self.popupManager.Destroy()
 			del self.popupManager
@@ -6915,3 +6926,17 @@ class Interface(object):
 		self.gameMaster_CaptchaDialogs[pid] = dlg
 		return dlg
 
+	# MT2009_PLUS_BALATHOR_V1 (Autor: dracaryS): "SetBalathorEffect <waves>" - the frost over the screen (0 = gone);
+	# "SetBalathor <hp> <max hp> <rage> <max rage> <eggs left> <arrows> <Hwacha hp> <Hwacha max hp>" - the boss window
+	# (hp and max hp 0 = hidden). game.py registers both only with an exe that has app.__BALATHOR__.
+	def SetBalathorEffect(self, wave_count):
+		import uiGuildWhiteDragon
+		if not self.wndBalathorScreenEffect:
+			self.wndBalathorScreenEffect = uiGuildWhiteDragon.ScreenEffect()
+		self.wndBalathorScreenEffect.AddWave(int(wave_count))
+
+	def SetBalathor(self, balathor_hp, balathor_maxhp, balathor_rage, balathor_rage_max, egg_fail_count, hwatcha_count, hwatcha_hp, hwatcha_maxhp):
+		import uiGuildWhiteDragon
+		if not self.wndBalathorInfo:
+			self.wndBalathorInfo = uiGuildWhiteDragon.Window()
+		self.wndBalathorInfo.Set(int(balathor_hp), int(balathor_maxhp), int(balathor_rage), int(balathor_rage_max), int(egg_fail_count), int(hwatcha_count), int(hwatcha_hp), int(hwatcha_maxhp))

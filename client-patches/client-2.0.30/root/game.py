@@ -3571,6 +3571,11 @@ class GameWindow(ui.ScriptWindow):
 			serverCommandList["Bead_time"]					= self.BeadTimeCommand
 			serverCommandList["OpenReviveDialog"]			= self.OpenReviveDialogCommand
 			serverCommandList["NotEnoughPrism"]				= self.NotEnoughPrismCommand
+		# MT2009_PLUS_BALATHOR_V1 (Autor: dracaryS): Krypta Balathora's screen frost and boss window (uiguildwhitedragon.py,
+		# interfacemodule.py) - only with an exe that has them
+		if getattr(app, "__BALATHOR__", 0):
+			serverCommandList["SetBalathorEffect"] = self.interface.SetBalathorEffect
+			serverCommandList["SetBalathor"] = self.interface.SetBalathor
 		self.serverCommander=stringCommander.Analyzer()
 		serverCommandList["DropWiki"] = self.__DropWiki # MT2009_PLUS_DROP_WIKI_V1
 		serverCommandList["BossMark"] = self.__BossMark # MT2009_PLUS_BOSS_SKULL_V1

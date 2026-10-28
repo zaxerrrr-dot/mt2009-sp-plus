@@ -448,6 +448,19 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		__inline		SAutoPotionInfo& GetAutoPotionInfo(int type)		{ return m_kAutoPotionInfo[type]; }
 		__inline void					 SetAutoPotionInfo(int type, const SAutoPotionInfo& info)	{ m_kAutoPotionInfo[type] = info; }
 
+		// MT2009_PLUS_BALATHOR_V1 (Balathor, dracaryS)
+#ifdef __BALATHOR__
+	public:
+		const char*		GetBalathorEffectFileName(BYTE bEffIndex);
+		void			CheckBalathorEffect(CInstanceBase* pInstance);
+		void			AddBalathorEffect(DWORD dwID, DWORD dwVID, BYTE bEffIndex, float fX, float fY, float fZ, float fRotation, bool bIsMain);
+		void			RemoveBalathorEffect(DWORD dwID = 0);
+		void			UpdateBalathorEffect();
+		const TBalathorEffect* GetBalathorEffect(DWORD dwID);
+	protected:
+		std::vector<TBalathorEffect> m_vecBalathorEffects;
+#endif
+
 	protected:
 		TQuickSlot &	__RefLocalQuickSlot(int SlotIndex);
 		TQuickSlot &	__RefGlobalQuickSlot(int SlotIndex);

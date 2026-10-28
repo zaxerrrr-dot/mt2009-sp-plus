@@ -1,0 +1,593 @@
+ScriptType               MotionData
+
+MotionFileName           "D:/Ymir Work/npc2/guild_whitedragon_arrow/throw.GR2"
+MotionDuration           2.500000
+Accumulation           0.00	0.00	0.00
+
+Group MotionEventData
+{
+    MotionEventDataCount     48
+    Group Event00
+    {
+        MotionEventType      1
+        StartingTime         0.000000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0001"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event01
+    {
+        MotionEventType      1
+        StartingTime         0.033333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0002"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event02
+    {
+        MotionEventType      1
+        StartingTime         0.070000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0003"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event03
+    {
+        MotionEventType      1
+        StartingTime         0.100000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0004"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event04
+    {
+        MotionEventType      1
+        StartingTime         0.133333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0005"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event05
+    {
+        MotionEventType      1
+        StartingTime         0.166666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0006"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event06
+    {
+        MotionEventType      1
+        StartingTime         0.200000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0007"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event07
+    {
+        MotionEventType      1
+        StartingTime         0.233333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0008"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event08
+    {
+        MotionEventType      1
+        StartingTime         0.266666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0009"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event09
+    {
+        MotionEventType      1
+        StartingTime         0.300000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0010"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event10
+    {
+        MotionEventType      1
+        StartingTime         0.333333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0011"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event11
+    {
+        MotionEventType      1
+        StartingTime         0.366666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0012"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event12
+    {
+        MotionEventType      1
+        StartingTime         0.400000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0013"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event13
+    {
+        MotionEventType      1
+        StartingTime         0.433333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0014"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event14
+    {
+        MotionEventType      1
+        StartingTime         0.466666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0015"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event15
+    {
+        MotionEventType      1
+        StartingTime         0.500000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0016"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event16
+    {
+        MotionEventType      1
+        StartingTime         0.533333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0017"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event17
+    {
+        MotionEventType      1
+        StartingTime         0.566666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0018"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event18
+    {
+        MotionEventType      1
+        StartingTime         0.600000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0019"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event19
+    {
+        MotionEventType      1
+        StartingTime         0.600000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0020"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event20
+    {
+        MotionEventType      1
+        StartingTime         0.733333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0021"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event21
+    {
+        MotionEventType      1
+        StartingTime         0.733333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0022"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event22
+    {
+        MotionEventType      1
+        StartingTime         0.733333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0023"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event23
+    {
+        MotionEventType      1
+        StartingTime         0.766666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0024"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event24
+    {
+        MotionEventType      1
+        StartingTime         0.800000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0025"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event25
+    {
+        MotionEventType      1
+        StartingTime         0.833333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0026"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event26
+    {
+        MotionEventType      1
+        StartingTime         0.866666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0027"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event27
+    {
+        MotionEventType      1
+        StartingTime         0.900000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0028"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event28
+    {
+        MotionEventType      1
+        StartingTime         0.933333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0029"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event29
+    {
+        MotionEventType      1
+        StartingTime         0.966666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0030"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event30
+    {
+        MotionEventType      1
+        StartingTime         1.000000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0001"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event31
+    {
+        MotionEventType      1
+        StartingTime         1.033333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0002"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event32
+    {
+        MotionEventType      1
+        StartingTime         1.070000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0003"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event33
+    {
+        MotionEventType      1
+        StartingTime         1.100000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0004"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event34
+    {
+        MotionEventType      1
+        StartingTime         1.133333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0005"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event35
+    {
+        MotionEventType      1
+        StartingTime         1.166666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0006"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event36
+    {
+        MotionEventType      1
+        StartingTime         1.200000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0007"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event37
+    {
+        MotionEventType      1
+        StartingTime         1.233333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0008"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event38
+    {
+        MotionEventType      1
+        StartingTime         1.266666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0009"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event39
+    {
+        MotionEventType      1
+        StartingTime         1.300000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0010"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event40
+    {
+        MotionEventType      1
+        StartingTime         1.333333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0011"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event41
+    {
+        MotionEventType      1
+        StartingTime         1.366666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0012"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event42
+    {
+        MotionEventType      1
+        StartingTime         1.400000
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0013"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event43
+    {
+        MotionEventType      1
+        StartingTime         1.433333
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0014"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event44
+    {
+        MotionEventType      1
+        StartingTime         1.466666
+        
+        IndependentFlag      0
+        AttachingEnable      1
+        AttachingBoneName    "eff_arrow_0015"
+        FollowingEnable      1
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_fly.mse"
+        EffectPosition       0.000000 0.000000 0.000000
+    }
+    Group Event45
+    {
+        MotionEventType      1
+        StartingTime         0.670000
+        
+        IndependentFlag      0
+        AttachingEnable      0
+        AttachingBoneName    "arrow_007"
+        FollowingEnable      0
+        EffectFileName       "d:/ymir work/effect/monster2/guild_whitedragon_arrow_blow.mse"
+        EffectPosition       0.000000 -2300.000000 300.000000
+    }
+    Group Event46
+    {
+        MotionEventType      4
+        StartingTime         0.700000
+        DuringTime           0.200000
+        EnableHitProcess     0
+        
+        AttackType           0
+        HittingType          2
+        StiffenTime          0.000000
+        InvisibleTime        0.300000
+        ExternalForce        0.000000
+        HitLimitCount        0
+        CollisionType        4
+        
+        SphereDataCount      1
+        Group SphereData00
+        {
+            Radius           1000.000000
+            Position         0.000000 -3000.000000 0.000000
+        }
+    }
+    Group Event47
+    {
+        MotionEventType      2
+        StartingTime         0.669100
+        
+        DuringTime           1.000000
+        Power                200
+        AffectingRange       500
+    }
+}

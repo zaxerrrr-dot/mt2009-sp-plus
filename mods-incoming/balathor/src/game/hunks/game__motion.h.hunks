@@ -1,0 +1,10 @@
+@@ game/motion.h:8  (kotwica = linie przed #ifdef)
+  	MOTION_SPECIAL_6,
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	MOTION_ETC_1,
++ 	MOTION_ETC_2,
++ 	MOTION_ETC_3,
++ #endif

@@ -304,5 +304,10 @@
 // wndMgr.SetSlotTextZoom(0/1) / IsSlotTextZoom() for the game options' switch (on by default). Without the define the
 // exe is as before.
 #define ENABLE_SLOT_TEXT_SIZE
+// MT2009_PLUS_BALATHOR_V1 (Krypta Balathora, autor: dracaryS): the guild dungeon's client side - boss/egg effects from the
+// server commands BalathorEffectAdd/Remove, motions ETC1..3, pushable fire egg, ice wall as a door, the quest cinema
+// events SET_KEYBOARD_MOUSE_LOCK / RESTORE_CAMERA_EXCEPT_POSITION / CLOSE_CINEMA, app.__BALATHOR__ for root's
+// uiguildwhitedragon.py. Without the define the exe is as before.
+#define __BALATHOR__
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

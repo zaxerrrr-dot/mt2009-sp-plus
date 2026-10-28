@@ -1,0 +1,69 @@
+@@ UserInterface/PythonApplicationEvent.cpp:7  (kotwica = linie przed #ifdef)
+  	UI::CWindowManager& rkWndMgr = UI::CWindowManager::Instance();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (rkWndMgr.IsMouseAndKeyboardLocked())
++ 		return;
++ #endif
+
+@@ UserInterface/PythonApplicationEvent.cpp:16  (kotwica = linie przed #ifdef)
+  # Search in void CPythonApplication::OnKeyUp(int iIndex)
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (rkWndMgr.IsMouseAndKeyboardLocked())
++ 		return;
++ #endif
+
+@@ UserInterface/PythonApplicationEvent.cpp:34  (kotwica = linie przed #ifdef)
+  {
+  	CCameraManager& rkCmrMgr = CCameraManager::Instance();
+  	CCamera* pkCmrCur = rkCmrMgr.GetCurrentCamera();
+  
++ #ifdef __BALATHOR__
++ 	UI::CWindowManager& rkWndMgr = UI::CWindowManager::Instance();
++ 
++ 	if (!rkWndMgr.IsMouseAndKeyboardLocked())
++ 	{
++ 		CCameraManager& rkCmrMgr = CCameraManager::Instance();
++ 		CCamera* pkCmrCur = rkCmrMgr.GetCurrentCamera();
++ 
++ 		POINT Point;
++ 		if (pkCmrCur)
++ 		{
++ 			if (CPythonBackground::Instance().IsMapReady() && pkCmrCur->Drag(x, y, &Point))
++ 			{
++ 				x = Point.x;
++ 				y = Point.y;
++ 				ClientToScreen(m_hWnd, &Point);
++ 				SetCursorPos(Point.x, Point.y);
++ 			}
++ 		}
++ 
++ 		RECT rcWnd;
++ 		GetClientRect(&rcWnd);
++ 
++ 		UI::CWindowManager& rkWndMgr = UI::CWindowManager::Instance();
++ 		rkWndMgr.SetResolution(rcWnd.right - rcWnd.left, rcWnd.bottom - rcWnd.top);
++ }
++ #else
++ 	POINT Point;
++ 	if (pkCmrCur)
++ 	{
++ 		if (CPythonBackground::Instance().IsMapReady() && pkCmrCur->Drag(x, y, &Point))
++ 		{
++ 			x = Point.x;
++ 			y = Point.y;
++ 			ClientToScreen(m_hWnd, &Point);
++ 			SetCursorPos(Point.x, Point.y);
++ 		}
++ 	}
++ 
++ 	RECT rcWnd;
++ 	GetClientRect(&rcWnd);
++ 
++ 	rkWndMgr.SetResolution(rcWnd.right - rcWnd.left, rcWnd.bottom - rcWnd.top);
++ #endif
