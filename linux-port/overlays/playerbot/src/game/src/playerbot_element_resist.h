@@ -63,6 +63,20 @@
 //   * the census (6) breaks the resistance down by source (gear, talisman, costume, ds, elixir, other) and counts the
 //     pieces at the top.
 //
+// MT2009_PLUS_BOT_ELEMENT_RESIST_V3 (the census of 28 October 12:35 - dark 22, ice 34, earth 46 on average; elixir on
+// 6 of 65 dark bots, 23 of 54 ice, while they held 6 elixirs each):
+//   * the elixir (ManagePlayerBotHuntElixirTick): the light pass that drank it (ManagePlayerBotYoharaElements, from the
+//     workshop's light pass) runs only where the full tick gets past its early exits and the workshop's gates (no
+//     Metin fight, no multi-pull, no full bag, no person served) - on the Twierdza it reached 20 of 112 bots. The hunt
+//     element's resistance and power elixirs are now drunk from the top of every tick, on the bot's own 10 s clock,
+//     alive on its element map; the census counts the uptime there and why a bot did not drink;
+//   * the element moves only up the Sung Ma maps (the owner, 28 October: bots change the element only going up; a
+//     step down to another element needs a second set - HasPlayerBotElementSecondSet, none yet): the map pick
+//     (PickPlayerBotSungmaMap) skips a lower map of another element and the element is kept where the old one is in
+//     the new map's tie (no flip for nothing); a map of the bot's element is always open to it;
+//   * the element budget of a piece (playerbot_yohara_bonus.h) counts the changes made for the element it wears now,
+//     the talisman's raised to 160 (the only gear line of an ice, earth or dark bot).
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_yohara_shop.h, in the anonymous
 // namespace; the declarations the earlier fragments use are in playerbot_types.h.
 
@@ -89,8 +103,10 @@ namespace
 		int iPrepFrom;	// the element before the move
 		DWORD dwPrepSince;
 		bool bPrepWait, bPrepOpen;
+		long lBlockedMap;	// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the lower map whose element change was refused (logged once)
+		DWORD dwNextElixir;	// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the elixir tick's clock
 		TPlayerBotHuntElement() : lMap(0), iElement(-1), dwAt(0), dwSeen(0), lPrepFrom(0), lPrepTo(0), iPrepFrom(-1),
-			dwPrepSince(0), bPrepWait(false), bPrepOpen(false) {}
+			dwPrepSince(0), bPrepWait(false), bPrepOpen(false), lBlockedMap(0), dwNextElixir(0) {}
 	};
 	std::map<DWORD, TPlayerBotHuntElement> s_mapPlayerBotHuntElement;
 
@@ -102,6 +118,46 @@ namespace
 			elixirsAtMove(0), dwCensusAt(0) {}
 	};
 	TPlayerBotElementStats s_kPlayerBotElementStats;
+
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+	const DWORD PLAYERBOT_ELEMENT_ELIXIR_TICK_MS = 10 * 1000;
+	// The elixir tick's outcome a look (per hunt element, since the last census): drunk now, already on, and why not.
+	enum { PLAYERBOT_ELIXIR_DRUNK, PLAYERBOT_ELIXIR_ON, PLAYERBOT_ELIXIR_OFF_MAP, PLAYERBOT_ELIXIR_DEAD,
+		PLAYERBOT_ELIXIR_NO_STOCK, PLAYERBOT_ELIXIR_USE_FAILED, PLAYERBOT_ELIXIR_COUNT };
+	const char* const PLAYERBOT_ELIXIR_REASON_NAMES[PLAYERBOT_ELIXIR_COUNT] = { "drunk", "on", "off_map", "dead", "no_stock",
+		"use_failed" };
+	unsigned int s_aPlayerBotElixirLooks[PLAYERBOT_YOHARA_ELEMENTS][PLAYERBOT_ELIXIR_COUNT];
+	// The element's moves (since the start): a flip up the maps, a flip with no map order to judge (a first map, off the
+	// table), the old element kept in the new map's tie, a change refused on a lower map, a lower map of another element
+	// skipped by the map pick, a change down allowed by a second set.
+	struct TPlayerBotElementMoveStats
+	{
+		unsigned int flipsUp, flipsFree, keptTie, blockedDown, pickSkipped, secondSet;
+		TPlayerBotElementMoveStats() : flipsUp(0), flipsFree(0), keptTie(0), blockedDown(0), pickSkipped(0), secondSet(0) {}
+	};
+	TPlayerBotElementMoveStats s_kPlayerBotElementMoves;
+
+	// The owner, 28 October 2026: a step down to a map of another element needs a second equipment and costume set made
+	// for that element (element: GetPlayerBotHuntElement's encoding, 1-6). Not made yet - a later feature fills it in.
+	bool HasPlayerBotElementSecondSet(LPCHARACTER ch, BYTE element)
+	{
+		(void)ch;
+		(void)element;
+		return false;
+	}
+
+	// Whether the element is the map's largest share or within PLAYERBOT_ELEMENT_TIE_PCT of it.
+	bool IsPlayerBotElementInMapTie(long map, int e)
+	{
+		int share[PLAYERBOT_YOHARA_ELEMENTS];
+		if (e < 0 || e >= PLAYERBOT_YOHARA_ELEMENTS || !GetPlayerBotYoharaMapShares(map, share))
+			return false;
+		int top = 0;
+		for (int i = 0; i < PLAYERBOT_YOHARA_ELEMENTS; ++i)
+			top = std::max(top, share[i]);
+		return share[e] > 0 && share[e] + PLAYERBOT_ELEMENT_TIE_PCT >= top;
+	}
+#endif
 
 	bool IsPlayerBotApplyOnAttrSet(BYTE type, int set)
 	{
@@ -165,7 +221,44 @@ namespace
 		const long base = map >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? map / 10000 : map;
 		if (base == h.lMap && h.iElement >= 0)
 			return h.iElement;
-		const int e = ChoosePlayerBotHuntElement(base, ch->GetPlayerID());
+		int e = ChoosePlayerBotHuntElement(base, ch->GetPlayerID());
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the old element stays where the new map's tie holds it; a change only up the
+		// maps (or with a second set for the new element).
+		if (h.iElement >= 0 && e >= 0 && e != h.iElement)
+		{
+			const int fromSlot = GetPlayerBotSungmaSlot(h.lMap), toSlot = GetPlayerBotSungmaSlot(base);
+			if (IsPlayerBotElementInMapTie(base, h.iElement))
+			{
+				++s_kPlayerBotElementMoves.keptTie;
+				e = h.iElement;
+			}
+			else if (fromSlot >= 0 && toSlot >= 0 && toSlot < fromSlot)
+			{
+				if (HasPlayerBotElementSecondSet(ch, (BYTE)(e + 1)))
+					++s_kPlayerBotElementMoves.secondSet;
+				else
+				{
+					// a lower map of another element (the pick refuses it - a trip, a party's follow, a flee got it here):
+					// the element and its map stay; the element's map is still the higher one
+					if (h.lBlockedMap != base)
+					{
+						h.lBlockedMap = base;
+						++s_kPlayerBotElementMoves.blockedDown;
+						sys_log(0, "PLAYERBOT_ELEMENT: change refused pid=%u name=%s from_map=%ld map=%ld element=%s wanted=%s why=down",
+								ch->GetPlayerID(), ch->GetName(), h.lMap, base, PLAYERBOT_YOHARA_ELEMENT_NAMES[h.iElement],
+								PLAYERBOT_YOHARA_ELEMENT_NAMES[e]);
+					}
+					return h.iElement;
+				}
+			}
+			else if (fromSlot >= 0 && toSlot > fromSlot)
+				++s_kPlayerBotElementMoves.flipsUp;
+			else
+				++s_kPlayerBotElementMoves.flipsFree;
+		}
+		h.lBlockedMap = 0;
+#endif
 		if (e != h.iElement)
 		{
 			++s_kPlayerBotElementStats.changes;
@@ -362,7 +455,10 @@ namespace
 					IsPlayerBotSidekickLockedItem(ch, item) || IsPlayerBotSidekickPinned(ch, item))
 				continue;
 			std::map<DWORD, int>::const_iterator sp = spent.find(item->GetID());
-			const int used = sp != spent.end() ? sp->second : 0;
+			int used = sp != spent.end() ? sp->second : 0;
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+			used -= GetPlayerBotYoharaElementSpentBase(ch, item, used);
+#endif
 			if (GetPlayerBotYoharaElementTarget(ch, item, wear, used) == 0 && used < GetPlayerBotYoharaElementCap(wear))
 				missing = true;
 		}
@@ -714,8 +810,41 @@ namespace
 						cosLine[e], cos2l[e], cosHp[e], cosBody[e]);
 			}
 #endif
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the elixir tick's looks since the last census - the uptime on the element's
+			// map (alive: on or drunk of all the looks there) and every outcome by name
+			{
+				const unsigned int* looks = s_aPlayerBotElixirLooks[e];
+				const unsigned int on = looks[PLAYERBOT_ELIXIR_ON] + looks[PLAYERBOT_ELIXIR_DRUNK];
+				const unsigned int alive = on + looks[PLAYERBOT_ELIXIR_NO_STOCK] + looks[PLAYERBOT_ELIXIR_USE_FAILED];
+				std::string one(buf);
+				if (!one.empty() && one[one.size() - 1] == ']')
+					one.erase(one.size() - 1);
+				std::string why;
+				for (int k = 0; k < PLAYERBOT_ELIXIR_COUNT; ++k)
+				{
+					char part[40];
+					snprintf(part, sizeof(part), "%s%s=%u", k ? " " : "", PLAYERBOT_ELIXIR_REASON_NAMES[k], looks[k]);
+					why += part;
+				}
+				snprintf(buf, sizeof(buf), "%s elixir_up=%u%% elixir_looks=[%s]]", one.c_str(), alive ? on * 100 / alive : 0,
+						why.c_str());
+			}
+#endif
 			line += buf;
 		}
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		for (int e = 0; e < E; ++e)
+			for (int k = 0; k < PLAYERBOT_ELIXIR_COUNT; ++k)
+				s_aPlayerBotElixirLooks[e][k] = 0;
+		{
+			const TPlayerBotElementMoveStats& mv = s_kPlayerBotElementMoves;
+			char moves[192];
+			snprintf(moves, sizeof(moves), " moves=[flips_up=%u flips_free=%u kept_tie=%u blocked_down=%u pick_held=%u second_set=%u]",
+					mv.flipsUp, mv.flipsFree, mv.keptTie, mv.blockedDown, mv.pickSkipped, mv.secondSet);
+			line = moves + line;
+		}
+#endif
 #ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
 		// MT2009_PLUS_BOT_COSTUME_RESIST_V1: the costume pass' rolls and finishes since the start, by reason and piece
 		{
@@ -747,6 +876,96 @@ namespace
 				total, none, preparing, st.changes, st.prepared, st.ready, st.noStones, st.timeouts, st.urgent,
 				st.sameElement, st.elixirsAtMove, line.c_str());
 	}
+
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the map pick's element rule (playerbot_yohara_sungma.h). count: only the census's
+	// count of a pick that the rule held (the answer false).
+	bool IsPlayerBotSungmaElementMoveAllowed(LPCHARACTER ch, long toMap, bool count)
+	{
+		if (count)
+		{
+			++s_kPlayerBotElementMoves.pickSkipped;
+			return false;
+		}
+		if (!ch || !IsPlayerBotYoharaBonusMember(ch))
+			return true;
+		std::map<DWORD, TPlayerBotHuntElement>::const_iterator it = s_mapPlayerBotHuntElement.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotHuntElement.end() || it->second.iElement < 0)
+			return true;
+		const long base = toMap >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? toMap / 10000 : toMap;
+		const int toSlot = GetPlayerBotSungmaSlot(base), fromSlot = GetPlayerBotSungmaSlot(it->second.lMap);
+		if (toSlot < 0 || fromSlot < 0 || toSlot >= fromSlot)
+			return true;	// up the maps, the same map, or nothing to judge by
+		if (IsPlayerBotElementInMapTie(base, it->second.iElement))
+			return true;	// a map of its element
+		const int e = ChoosePlayerBotHuntElement(base, ch->GetPlayerID());
+		return e >= 0 && HasPlayerBotElementSecondSet(ch, (BYTE)(e + 1));
+	}
+
+	// One elixir of the vnum drunk when the point's blend effect is gone: the tick's outcome.
+	int DrinkPlayerBotElixirKind(LPCHARACTER ch, DWORD vnum, BYTE point, long map, int e, bool power)
+	{
+		if (ch->FindAffect(AFFECT_BLEND, point))
+			return PLAYERBOT_ELIXIR_ON;
+		LPITEM item = ch->FindSpecifyItem(vnum);
+		if (!item || item->GetSocket(0) == 0)
+			return PLAYERBOT_ELIXIR_NO_STOCK;
+		const int value = (int)item->GetSocket(1), seconds = (int)item->GetSocket(2);
+		if (!ch->UseItem(TItemPos(INVENTORY, item->GetCell())) || !ch->FindAffect(AFFECT_BLEND, point))
+			return PLAYERBOT_ELIXIR_USE_FAILED;
+		++s_uPlayerBotYoharaElixirs;
+		sys_log(0, "PLAYERBOT_ELEMENTS: elixir pid=%u name=%s map=%ld element=%s%s vnum=%u value=%d seconds=%d left=%d via=tick",
+				ch->GetPlayerID(), ch->GetName(), map, PLAYERBOT_YOHARA_ELEMENT_NAMES[e], power ? " kind=power" : "", vnum,
+				value, seconds, (int)ch->CountSpecifyItem(vnum));
+		return PLAYERBOT_ELIXIR_DRUNK;
+	}
+
+	// From the top of the bot's tick (playerbot_manager.cpp, beside the dragon stone deck): a bot with a hunt element,
+	// alive on the Sung Ma map its element is for, drinks that element's resistance elixir (and its power elixir) as
+	// soon as the effect is gone - in a fight too, as a player does. Every PLAYERBOT_ELEMENT_ELIXIR_TICK_MS a bot.
+	void ManagePlayerBotHuntElixirTick(LPCHARACTER ch, DWORD dwNow)
+	{
+		TickPlayerBotElementCensus(dwNow);
+		if (!ch || !ch->IsPC() || !ch->IsItemLoaded())
+			return;
+		std::map<DWORD, TPlayerBotHuntElement>::iterator it = s_mapPlayerBotHuntElement.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotHuntElement.end())
+		{
+			if (!IsPlayerBotYoharaBonusMember(ch))
+				return;
+			GetPlayerBotHuntElementIndex(ch);	// the element's record made
+			it = s_mapPlayerBotHuntElement.find(ch->GetPlayerID());
+			if (it == s_mapPlayerBotHuntElement.end())
+				return;
+		}
+		if (it->second.iElement < 0 && it->second.dwAt != 0 && get_dword_time() - it->second.dwAt < PLAYERBOT_ELEMENT_CACHE_MS)
+			return;	// no hunt element now
+		if (it->second.dwNextElixir != 0 && (int)(dwNow - it->second.dwNextElixir) < 0)
+			return;
+		it->second.dwNextElixir = dwNow + PLAYERBOT_ELEMENT_ELIXIR_TICK_MS;
+		const int e = GetPlayerBotHuntElementIndex(ch);
+		if (e < 0 || e >= PLAYERBOT_YOHARA_ELEMENTS)
+			return;
+		unsigned int* looks = s_aPlayerBotElixirLooks[e];
+		const long map = GetPlayerBotYoharaElementMap(ch);
+		const long here = ch->GetMapIndex();
+		if (map == 0 || GetPlayerBotYoharaElementSlot(here) < 0 ||
+				GetPlayerBotYoharaElementSlot(here) != GetPlayerBotYoharaElementSlot(map))
+		{
+			++looks[PLAYERBOT_ELIXIR_OFF_MAP];	// a village, Dongan's errand, a trip, the way
+			return;
+		}
+		if (ch->IsDead() || ch->GetHP() <= 0)
+		{
+			++looks[PLAYERBOT_ELIXIR_DEAD];
+			return;
+		}
+		++looks[DrinkPlayerBotElixirKind(ch, PLAYERBOT_YOHARA_RESIST_ELIXIRS[e], PLAYERBOT_YOHARA_RESIST_POINTS[e], map, e, false)];
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(MT2009_PLUS_ELEMENTS_V1)
+		DrinkPlayerBotElixirKind(ch, PLAYERBOT_YOHARA_POWER_ELIXIRS[e], (BYTE)(POINT_ENCHANT_ELECT + e), map, e, true);
+#endif
+	}
+#endif
 }
 
 #endif

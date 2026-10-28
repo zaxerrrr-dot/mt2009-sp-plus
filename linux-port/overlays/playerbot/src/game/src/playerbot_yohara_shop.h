@@ -54,7 +54,16 @@ namespace
 	const DWORD PLAYERBOT_YSHOP_NPC = 9003;	// Handlarka Roznosci, Dongan
 	const int PLAYERBOT_YSHOP_TARGET = 8;	// elixirs of a needed kind the exchange fills to
 	const int PLAYERBOT_YSHOP_LOW = 4;	// under this the errand is called for it
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the resistance elixir drunk every 10 minutes all the hunt long (the elixir tick
+	// of playerbot_element_resist.h) - 6 an hour: filled to 16 (some 2.5 hours), the errand under 6; the power elixir's
+	// stock as before. Never sold up to 20 of a vnum.
+	const int PLAYERBOT_YSHOP_KEEP_MAX = 20;	// elixirs of a vnum never sold
+	const int PLAYERBOT_YSHOP_RESIST_TARGET = 16;
+	const int PLAYERBOT_YSHOP_RESIST_LOW = 6;
+#else
 	const int PLAYERBOT_YSHOP_KEEP_MAX = 10;	// elixirs of a vnum never sold
+#endif
 	const int PLAYERBOT_YSHOP_INPUT_MAX = 100;	// materials / dust over the reserves wanted at most
 	// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the materials a bot with a hunt element keeps (300 elixirs, 50 hours of its map)
 	const int PLAYERBOT_YSHOP_HUNT_MATERIAL_KEEP = 3000;
@@ -68,6 +77,25 @@ namespace
 	const int PLAYERBOT_YSHOP_DUST_PURSE_PCT = 25;
 	const int PLAYERBOT_YSHOP_LINE_SLACK = 20;	// a market line at most this much over what is short
 	const BYTE PLAYERBOT_YSHOP_JEWEL_WEARS[3] = { WEAR_WRIST, WEAR_NECK, WEAR_EAR };
+
+	// The stock a kind is filled to, and the mark under which the errand is called for it.
+	int GetPlayerBotYshopTarget(bool power)
+	{
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		if (!power)
+			return PLAYERBOT_YSHOP_RESIST_TARGET;
+#endif
+		return power ? PLAYERBOT_YSHOP_TARGET : PLAYERBOT_YSHOP_TARGET;
+	}
+
+	int GetPlayerBotYshopLow(bool power)
+	{
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		if (!power)
+			return PLAYERBOT_YSHOP_RESIST_LOW;
+#endif
+		return power ? PLAYERBOT_YSHOP_LOW : PLAYERBOT_YSHOP_LOW;
+	}
 
 	struct TPlayerBotYoharaShopNeed
 	{
@@ -146,15 +174,15 @@ namespace
 				continue;
 			n.abResist[e] = true;
 			const int resist = (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]);
-			resistShort += std::max(0, PLAYERBOT_YSHOP_TARGET - resist);
+			resistShort += std::max(0, GetPlayerBotYshopTarget(false) - resist);
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(MT2009_PLUS_ELEMENTS_V1)
 			n.abPower[e] = true;
 			const int power = (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[e]);
-			powerShort += std::max(0, PLAYERBOT_YSHOP_TARGET - power);
-			if (power < PLAYERBOT_YSHOP_LOW)
+			powerShort += std::max(0, GetPlayerBotYshopTarget(true) - power);
+			if (power < GetPlayerBotYshopLow(true))
 				n.bLow = true;
 #endif
-			if (resist < PLAYERBOT_YSHOP_LOW)
+			if (resist < GetPlayerBotYshopLow(false))
 				n.bLow = true;
 		}
 		n.iMaterials = std::min(PLAYERBOT_YSHOP_INPUT_MAX, resistShort * PLAYERBOT_YSHOP_RATE);
@@ -261,16 +289,60 @@ namespace
 		return std::max(0, held - others);
 	}
 
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+	// A bag stack of the elixir at the exchange's values (20% / 600 s) with room for one more, NULL for none.
+	LPITEM FindPlayerBotElixirStack(LPCHARACTER ch, DWORD elixir)
+	{
+		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && item->GetVnum() == elixir && item->GetType() == ITEM_BLEND &&
+					!item->isLocked() && item->GetSocket(1) == 20 && item->GetSocket(2) == 600 &&
+					item->GetCount() > 0 && item->GetCount() < item->GetMaxStack())
+				return item;
+		}
+		return NULL;
+	}
+#endif
+
 	// One kind filled towards the target from one input; the elixirs made.
 	int ExchangePlayerBotYoharaShopKind(LPCHARACTER ch, long map, int e, bool power, DWORD npc)
 	{
 		const DWORD elixir = power ? PLAYERBOT_YOHARA_POWER_ELIXIRS[e] : PLAYERBOT_YOHARA_RESIST_ELIXIRS[e];
 		const DWORD input = power ? PLAYERBOT_MAGIC_DUST_VNUM : PLAYERBOT_YSHOP_MATERIAL_VNUM;
 		int made = 0;
-		while ((int)ch->CountSpecifyItem(elixir) < PLAYERBOT_YSHOP_TARGET &&
+		while ((int)ch->CountSpecifyItem(elixir) < GetPlayerBotYshopTarget(power) &&
 				(power ? GetPlayerBotYoharaShopDustFree(ch) : GetPlayerBotYoharaShopMaterialsFree(ch)) >= PLAYERBOT_YSHOP_RATE &&
 				CountPlayerBotFreeInventoryCells(ch) > PLAYERBOT_YSHOP_FREE_CELLS)
 		{
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: onto a stack of the same elixir at 20% / 10 minutes when the bag holds
+			// one with room (the engine stacks a blend item only of equal sockets, and the new one is set to them after
+			// it is given - every elixir took a cell of its own, and a stock of 16 would be 16 cells).
+			LPITEM stack = FindPlayerBotElixirStack(ch, elixir);
+			if (stack)
+			{
+				ch->RemoveSpecifyItem(input, PLAYERBOT_YSHOP_RATE);
+				stack->SetCount(stack->GetCount() + 1);
+				LPITEM item = stack;
+				++made;
+				if (power)
+				{
+					++s_kPlayerBotYoharaShopStats.powerMade;
+					s_kPlayerBotYoharaShopStats.dustPaid += PLAYERBOT_YSHOP_RATE;
+				}
+				else
+				{
+					++s_kPlayerBotYoharaShopStats.resistMade;
+					s_kPlayerBotYoharaShopStats.materialsPaid += PLAYERBOT_YSHOP_RATE;
+				}
+				sys_log(0, "PLAYERBOT_SHOP2: exchange pid=%u name=%s npc=%u map=%ld for_map=%ld kind=%s element=%s paid=%d paid_vnum=%u got=%u value=%ld seconds=%ld have=%d input_left=%d stacked=1",
+						ch->GetPlayerID(), ch->GetName(), npc, ch->GetMapIndex(), map, power ? "power" : "resist",
+						PLAYERBOT_YOHARA_ELEMENT_NAMES[e], PLAYERBOT_YSHOP_RATE, input, elixir, (long)item->GetSocket(1),
+						(long)item->GetSocket(2), (int)ch->CountSpecifyItem(elixir), (int)ch->CountSpecifyItem(input));
+				continue;
+			}
+#endif
 			ch->RemoveSpecifyItem(input, PLAYERBOT_YSHOP_RATE);
 			LPITEM item = ch->AutoGiveItem(elixir, 1, -1, false);
 			if (!item)
@@ -337,7 +409,7 @@ namespace
 				made += ExchangePlayerBotYoharaShopKind(ch, map, order[i], true, npc);
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: why a bot low on its hunt element's elixir got none
 		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
-		if (made == 0 && hunt >= 0 && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[hunt]) < PLAYERBOT_YSHOP_LOW)
+		if (made == 0 && hunt >= 0 && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[hunt]) < GetPlayerBotYshopLow(false))
 			PlayerBotLogThrottled("yshop_exchange_none", get_dword_time(),
 					"PLAYERBOT_SHOP2: exchange none pid=%u name=%s for_map=%ld element=%s materials=%d materials_free=%d free_cells=%d elixirs=%d",
 					ch->GetPlayerID(), ch->GetName(), map, PLAYERBOT_YOHARA_ELEMENT_NAMES[hunt],
@@ -369,9 +441,9 @@ namespace
 		const char* element = NULL;
 		for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS && !kind; ++e)
 		{
-			if (materials && n->abResist[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]) < PLAYERBOT_YSHOP_LOW)
+			if (materials && n->abResist[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]) < GetPlayerBotYshopLow(false))
 				kind = "resist", element = PLAYERBOT_YOHARA_ELEMENT_NAMES[e];
-			else if (dust && n->abPower[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[e]) < PLAYERBOT_YSHOP_LOW)
+			else if (dust && n->abPower[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[e]) < GetPlayerBotYshopLow(true))
 				kind = "power", element = PLAYERBOT_YOHARA_ELEMENT_NAMES[e];
 		}
 		if (!kind)
