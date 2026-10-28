@@ -807,7 +807,14 @@ bool CPythonApplication::CreateDevice(int width, int height, int Windowed, int b
 	iRet = m_grpDevice.Create(GetWindowHandle(), width, height,
 		CPythonSystem::instance().GetWidth(), 
 		CPythonSystem::instance().GetHeight(),
+#ifdef ENABLE_MT2009_BORDERLESS_FULLSCREEN
+		// MT2009_PLUS_BORDERLESS_FULLSCREEN_V1: "Pelny ekran" is a borderless window too - the device is always windowed
+		// (desktop composition shows the browser child window; FullScreen_RefreshRateInHz stays 0, the refresh rate is
+		// the display mode's, set by __SetFullScreenWindow).
+		true
+#else
 		CPythonSystem::instance().IsWindowed() || CPythonSystem::instance().IsFullscreenWindowed()
+#endif
 		, bit,frequency, CPythonSystem::Instance().GetAntiAliasingLevel());
 
 	switch (iRet)
@@ -1035,6 +1042,19 @@ bool CPythonApplication::Create(PyObject * poSelf, const char * c_szName, int wi
 	// Window
 	UINT WindowMode = __GetWindowMode(m_pySystem.GetWindowMode());
 
+#ifdef ENABLE_MT2009_BORDERLESS_FULLSCREEN
+	// MT2009_PLUS_BORDERLESS_FULLSCREEN_V1: only for "Pelny ekran" - a DPI-unaware windowed game would be scaled by the
+	// desktop (blurred, and the monitor rect in logical pixels smaller than the chosen resolution). Exclusive mode never
+	// saw the DPI scale, so the borderless window must not either. "Okno" and "Pelny ekran w oknie" are as before.
+	if (m_pySystem.IsFullscreen())
+	{
+		typedef BOOL (WINAPI * TSetProcessDPIAware)();
+		if (HMODULE hUser32 = GetModuleHandleA("user32.dll"))
+			if (TSetProcessDPIAware pfnSetProcessDPIAware = (TSetProcessDPIAware) GetProcAddress(hUser32, "SetProcessDPIAware"))
+				pfnSetProcessDPIAware();
+	}
+#endif
+
 	if (!CMSWindow::Create(c_szName, 4, 0, WindowMode, ::LoadIcon( GetInstance(), MAKEINTRESOURCE( IDI_METIN2 ) ), IDC_CURSOR_NORMAL))
 	{
 		TraceError("CMSWindow::Create failed");
@@ -1053,7 +1073,13 @@ bool CPythonApplication::Create(PyObject * poSelf, const char * c_szName, int wi
 	{
 		m_isWindowed = false;
 		m_isWindowFullScreenEnable = TRUE;
+#ifdef ENABLE_MT2009_BORDERLESS_FULLSCREEN
+		// MT2009_PLUS_BORDERLESS_FULLSCREEN_V1: m_dwWidth/m_dwHeight = the resolution of the back buffer (GetWidth/GetHeight,
+		// also in the interface scale mode) - the display mode and the window match it, so mouse = back buffer pixels.
+		__SetFullScreenWindow(GetWindowHandle(), m_dwWidth, m_dwHeight, m_pySystem.GetBPP());
+#else
 		__SetFullScreenWindow(GetWindowHandle(), width, height, m_pySystem.GetBPP());
+#endif
 
 		Windowed = true;
 	}
@@ -1134,7 +1160,11 @@ bool CPythonApplication::Create(PyObject * poSelf, const char * c_szName, int wi
 	SetVisibleMode(true);
 
 	if (m_isWindowFullScreenEnable)
+#ifdef ENABLE_MT2009_BORDERLESS_FULLSCREEN
+		__PlaceFullScreenWindow(GetWindowHandle(), m_dwWidth, m_dwHeight, true); // MT2009_PLUS_BORDERLESS_FULLSCREEN_V1: HWND_TOPMOST over the monitor
+#else
 		SetWindowPos(GetWindowHandle(), HWND_TOP, 0, 0, width, height, SWP_SHOWWINDOW);
+#endif
 	else if (m_pySystem.IsFullscreenWindowed())
 		SetWindowPos(GetWindowHandle(), HWND_TOP, 0, 0, m_dwWidth, m_dwHeight, SW_HIDE);
 
@@ -1365,6 +1395,9 @@ void CPythonApplication::Destroy()
 
 	m_SoundManager.Destroy();
 	m_grpDevice.Destroy();
+#ifdef ENABLE_MT2009_BORDERLESS_FULLSCREEN
+	__RestoreFullScreenDisplayMode(); // MT2009_PLUS_BORDERLESS_FULLSCREEN_V1: the desktop resolution back before the window goes
+#endif
 
 	//CSpeedTreeForestDirectX8::Instance().Clear();
 

@@ -336,6 +336,11 @@ class CPythonApplication : public CMSApplication, public CInputKeyboard, public 
 
 		void __SetFullScreenWindow(HWND hWnd, DWORD dwWidth, DWORD dwHeight, DWORD dwBPP);
 		void __MinimizeFullScreenWindow(HWND hWnd, DWORD dwWidth, DWORD dwHeight);
+#ifdef ENABLE_MT2009_BORDERLESS_FULLSCREEN
+		// MT2009_PLUS_BORDERLESS_FULLSCREEN_V1 (PythonApplicationProcedure.cpp)
+		void __PlaceFullScreenWindow(HWND hWnd, DWORD dwWidth, DWORD dwHeight, bool bShow);
+		void __RestoreFullScreenDisplayMode();
+#endif
 
 	protected:
 		CTimer m_timer;
