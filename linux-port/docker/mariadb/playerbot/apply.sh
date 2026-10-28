@@ -4712,6 +4712,18 @@ else
     fail_step "switchbot: could not create player.switchbot"
 fi
 
+# MT2009_PLUS_COMMUNITY_V1: the Community window (server-patches/community/README.md, playerbot_community.cpp) -
+# community.sql: player.status_message and player.community_flags (and the same two in player_deleted, same order).
+# Idempotent: ADD COLUMN IF NOT EXISTS. Without them only the window's extras are missing - the friend list's own
+# query does not name them.
+if [ -s /opt/playerbot/community.sql ]; then
+    if db < /opt/playerbot/community.sql; then
+        echo "[playerbot-migrate] community: community.sql applied"
+    else
+        fail_step "community: community.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and

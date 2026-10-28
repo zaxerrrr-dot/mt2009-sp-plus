@@ -539,6 +539,8 @@ class GameWindow(ui.ScriptWindow):
 		self.RegisterUpdatable(uicostumehide.CostumeHideSync())
 		import uiautohunt
 		self.RegisterUpdatable(uiautohunt.GetHunter())
+		# MT2009_PLUS_COMMUNITY_V1: "/community hello" in the game, Auto Lowy on / off for the friends (uicommunity.py)
+		self.RegisterUpdatable(__import__("uicommunity").GetKeeper())
 
 	def __AddFloatingText(self, text, is_negative, life_time=1.5):
 		if systemSetting.GetShowFloatingText():
@@ -1991,6 +1993,9 @@ class GameWindow(ui.ScriptWindow):
 
 	## Messenger
 	def OnMessengerAddFriendQuestion(self, name):
+		# MT2009_PLUS_COMMUNITY_V1: the request goes to the Community window's request tab (and a chat line)
+		if __import__("uicommunity").OnFriendRequest(name):
+			return
 		messengerAddFriendQuestion = uiCommon.QuestionDialog2()
 		messengerAddFriendQuestion.SetText1(localeInfo.MESSENGER_DO_YOU_ACCEPT_ADD_FRIEND_1 % (name))
 		messengerAddFriendQuestion.SetText2(localeInfo.MESSENGER_DO_YOU_ACCEPT_ADD_FRIEND_2)
@@ -2841,6 +2846,7 @@ class GameWindow(ui.ScriptWindow):
 	def BINARY_LoverInfo(self, name, lovePoint):
 		if self.interface.wndMessenger:
 			self.interface.wndMessenger.OnAddLover(name, lovePoint)
+		__import__("uicommunity").OnLover("add", name, lovePoint) # MT2009_PLUS_COMMUNITY_V1
 
 		if self.affectBar:
 			self.affectBar.GetItem("love").SetLoverInfo(name, lovePoint)
@@ -2848,6 +2854,7 @@ class GameWindow(ui.ScriptWindow):
 	def BINARY_UpdateLovePoint(self, lovePoint):
 		if self.interface.wndMessenger:
 			self.interface.wndMessenger.OnUpdateLovePoint(lovePoint)
+		__import__("uicommunity").OnLover("point", "", lovePoint) # MT2009_PLUS_COMMUNITY_V1
 
 		if self.affectBar:
 			self.affectBar.GetItem("love").OnUpdateLovePoint(lovePoint)
@@ -3281,6 +3288,11 @@ class GameWindow(ui.ScriptWindow):
 			"ChangeLookClose": self.__ChangeLookClose,
 			"ChangeLookDone": self.__ChangeLookDone,
 			"AURA": self.__Aura, # MT2009_PLUS_AURA_V1 (uiaura.py)
+			# MT2009_PLUS_COMMUNITY_V1: the Community window's lines (uicommunity.py, server playerbot_community.cpp)
+			"community_my": self.__CommunityMy,
+			"community_friend": self.__CommunityFriend,
+			"community_guild": self.__CommunityGuild,
+			"community_request": self.__CommunityRequest,
 			"ConsoleEnable"			: self.__Console_Enable,
 			"GameMaster"			: self.__GameMaster,
 			"DayMode"				: self.__DayMode_Update,
@@ -4512,6 +4524,19 @@ class GameWindow(ui.ScriptWindow):
 		import uichangelook
 		uichangelook.OnDone()
 
+	# MT2009_PLUS_COMMUNITY_V1: the server's Community lines go to the window (uicommunity.py)
+	def __CommunityMy(self, *args):
+		__import__("uicommunity").OnServerCommand("community_my", *args)
+
+	def __CommunityFriend(self, *args):
+		__import__("uicommunity").OnServerCommand("community_friend", *args)
+
+	def __CommunityGuild(self, *args):
+		__import__("uicommunity").OnServerCommand("community_guild", *args)
+
+	def __CommunityRequest(self, *args):
+		__import__("uicommunity").OnServerCommand("community_request", *args)
+
 	# MT2009_PLUS_AURA_V1: Szata Aury - Theowahdan's windows and the outfits of the characters in view (uiaura.py):
 	# "AURA open|set|del|close|done ..." and "AURA view <vid> <vnum>"
 	def __Aura(self, *args):
@@ -4855,6 +4880,7 @@ class GameWindow(ui.ScriptWindow):
 	def __LoginLover(self, is_marriage_premium):
 		if self.interface.wndMessenger:
 			self.interface.wndMessenger.OnLoginLover()
+		__import__("uicommunity").OnLover("login") # MT2009_PLUS_COMMUNITY_V1
 
 		if self.affectBar:
 			self.affectBar.GetItem("love").Show()
@@ -4866,6 +4892,7 @@ class GameWindow(ui.ScriptWindow):
 	def __LogoutLover(self):
 		if self.interface.wndMessenger:
 			self.interface.wndMessenger.OnLogoutLover()
+		__import__("uicommunity").OnLover("logout") # MT2009_PLUS_COMMUNITY_V1
 
 		if self.affectBar:
 			self.affectBar.GetItem("love").Hide()
@@ -4886,6 +4913,7 @@ class GameWindow(ui.ScriptWindow):
 	def __LoverDivorce(self):
 		if self.interface.wndMessenger:
 			self.interface.wndMessenger.ClearLoverInfo()
+		__import__("uicommunity").OnLover("clear") # MT2009_PLUS_COMMUNITY_V1
 		if self.affectBar:
 			self.affectBar.GetItem("love").Hide()
 			self.affectBar.ArrangeAffectImage()

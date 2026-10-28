@@ -4299,6 +4299,7 @@ class Interface(object):
 		self.wndDragonSoulRefine = None
 		self.wndChat = None
 		self.wndMessenger = None
+		self.wndCommunity = None	# MT2009_PLUS_COMMUNITY_V1 (uicommunity.py)
 		self.wndMiniMap = None
 		self.wndGuild = None
 		self.wndGuildBuilding = None
@@ -4358,6 +4359,21 @@ class Interface(object):
 		from _weakref import proxy
 		self.wndMessenger.SetWhisperButtonEvent(lambda n,i=proxy(self):i.OpenWhisperDialog(n))
 		self.wndMessenger.SetGuildButtonEvent(ui.__mem_func__(self.ToggleGuildWindow))
+
+		# MT2009_PLUS_COMMUNITY_V1: the Community window (uicommunity.py; Autor: Best Studio, "Community System")
+		# takes the exe's messenger handler and passes every call on to the window above, which stays for
+		# everything that uses it. If it cannot be made, the button opens the old messenger window.
+		try:
+			self.wndCommunity = __import__("uicommunity").Create(self)
+		except Exception:
+			import dbg
+			import exception
+			dbg.TraceError(exception.GetExceptionString("MT2009_PLUS_COMMUNITY_V1 uicommunity.Create"))
+			try:
+				__import__("messenger").SetMessengerHandler(self.wndMessenger)
+			except Exception:
+				pass
+			self.wndCommunity = None
 
 	def __MakeGuildWindow(self):
 		self.wndGuild = uiGuild.GuildWindow()
@@ -5047,6 +5063,11 @@ class Interface(object):
 				pass
 		self.wndGMPanel = None
 
+		# MT2009_PLUS_COMMUNITY_V1: the Community window lets the messenger handler go first
+		if self.wndCommunity:
+			__import__("uicommunity").Destroy()
+			self.wndCommunity = None
+
 		if self.wndMessenger:
 			self.wndMessenger.Destroy()
 
@@ -5346,6 +5367,8 @@ class Interface(object):
 
 	def DeleteGuild(self):
 		self.wndMessenger.ClearGuildMember()
+		if self.wndCommunity:	# MT2009_PLUS_COMMUNITY_V1
+			self.wndCommunity.ClearGuildMember()
 		self.wndGuild.DeleteGuild()
 
 	def OnBlockMode(self, mode):
@@ -5675,6 +5698,9 @@ class Interface(object):
 		if self.wndMessenger:
 			self.wndMessenger.Hide()
 
+		if self.wndCommunity:	# MT2009_PLUS_COMMUNITY_V1
+			self.wndCommunity.Close()
+
 		if self.wndGuild:
 			self.wndGuild.Hide()
 
@@ -5729,6 +5755,11 @@ class Interface(object):
 		self.dlgSystem.SetTop()
 
 	def ToggleMessenger(self):
+		# MT2009_PLUS_COMMUNITY_V1: the taskbar's messenger button and the messenger key open the Community window
+		if self.wndCommunity:
+			self.wndMessenger.Hide()
+			self.wndCommunity.Toggle()
+			return
 		if self.wndMessenger.IsShow():
 			self.wndMessenger.Hide()
 		else:
@@ -6203,6 +6234,9 @@ class Interface(object):
 
 		if self.wndEnergyBar:
 			hideWindows += self.wndEnergyBar,
+
+		if self.wndCommunity:	# MT2009_PLUS_COMMUNITY_V1
+			hideWindows += self.wndCommunity,
 
 		if self.wndExpandedTaskBar:
 			hideWindows += self.wndExpandedTaskBar,

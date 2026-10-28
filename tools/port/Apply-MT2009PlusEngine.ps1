@@ -1778,4 +1778,17 @@ if ((Test-Path -LiteralPath $kupon100Apply -PathType Leaf) -and
     }
 }
 
+# The Community window (server-patches/community, MT2009_PLUS_COMMUNITY_V1; Autor: Best Studio, "Community System
+# (Messenger Renewal)"): the messenger's hooks, HEADER_GG_COMMUNITY 40, /community, the guild's member list; the logic is
+# playerbot_community.cpp (the playerbot_* lines), the columns community.sql. After kupon100 (last).
+$communityApply = Join-Path $repo 'server-patches/community/Apply-CommunityPatch.ps1'
+if ((Test-Path -LiteralPath $communityApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'messenger_manager.cpp') -PathType Leaf)) {
+    $communityResult = & $communityApply -SourceDir $engineGameSource
+    if ($communityResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Community window edit(s).' -f $communityResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
