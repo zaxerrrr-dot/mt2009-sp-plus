@@ -3969,6 +3969,7 @@ class GameWindow(ui.ScriptWindow):
 			"metin2_map_spider_bossdungeon",
 			"metin2_map_spiderdungeon",
 			"metin2_map_spiderdungeon_02",
+			"metin2_map_spiderdungeon3",	# MT2009_PLUS_SPIDER3_V1: 3 Loch Pajakow (217), the atlas name
 			"metin2_map_studio",
 			"metin2_map_t3",
 			"metin2_map_t4",

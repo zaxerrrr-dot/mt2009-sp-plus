@@ -2855,6 +2855,33 @@ RUN set -eu; S=/opt/metin2/share/locale/poland/special_spawns.txt; A=/tmp/spawn-
  && test "$(grep -c -E '^[[:blank:]]*spawn_vnum[[:blank:]]+2092[[:space:]]*$' "$S")" -eq 1 \
  && echo "share: the Spider Baroness spawns in the second Spider Dungeon"
 
+# MT2009_PLUS_SPIDER3_V1: 3 Loch Pajakow (217, metin2_map_spiderdungeon_03) - an ordinary hunting map again, as
+# the pl-wiki's "3 Loch Pajakow" (the owner, 28 October 2026), hosted by game2 (bin/m2-render-config). The package
+# has the whole map (Setting.txt 3x3 at 51200 563200, Town.txt 478 79, server_attr = GF 26.1.11's attr.atr cell for
+# cell, regen.txt = Owsap's but seven groups, npc.txt: the Nagrobek 30130 at 178 489 and the warp 10097 at 483 79
+# back to the second Spider Dungeon, 7040 5235); its monsters are the five Best. poison spiders 2071-2075 of 60-68
+# in group_group 2701-2707 - no Metin, no ore, no boss (the wiki's). Two changes:
+#  * the way in: the second Spider Dungeon (71) gets the warp 10098 (mob_proto "... 984 5711" -> V3 at 472 79,
+#    beside Town.txt) at 385 893 of its last room, as Owsap's npc.txt has it - the package left it out. Both ends
+#    walkable in server_attr (9x9 cells free around them); no level check, the wiki's "od Lv. 1". Bots never take a
+#    warp NPC (FuncCheckWarp skips them), and no bot is sent to 217;
+#  * the wiki's "all monsters are NOT aggressive": the 35 "ga" spawns (aggressive groups) become "g".
+# The drops are the package's limit groups (level_limit 60: the level-65 weapons +4, helmets, shields) and the
+# global ones (MT2009_mglobal_2071..2075) - the wiki's "weapons and helmets from level 60". The poison stops at level
+# 78 by itself: the engine's poison_level_adjust (char_resist.cpp) by the level difference to the spiders' 68.
+RUN set -eu; L=/opt/metin2/share/locale/poland/map; V2="$L/metin2_map_spiderdungeon_02/npc.txt"; V3="$L/metin2_map_spiderdungeon_03" \
+ && grep -q -E '^217[[:blank:]]+metin2_map_spiderdungeon_03[[:space:]]*$' "$L/index" \
+ && ! grep -q -E '[[:blank:]]10098[[:space:]]*$' "$V2" \
+ && { [ -z "$(tail -c 1 "$V2")" ] || printf '\r\n' >> "$V2"; } \
+ && printf '// MT2009_PLUS_SPIDER3_V1: the warp to 3 Loch Pajakow (217)\r\nm\t385\t893\t0\t0\t0\t1\t1m\t100\t1\t10098\r\n' >> "$V2" \
+ && test "$(grep -c -E '^m[[:blank:]]+385[[:blank:]]+893[[:blank:]].*[[:blank:]]10098[[:space:]]*$' "$V2")" = 1 \
+ && grep -q -E '^m[[:blank:]]+483[[:blank:]]+79[[:blank:]].*[[:blank:]]10097[[:space:]]*$' "$V3/npc.txt" \
+ && test "$(grep -c -E '^ga[[:blank:]]' "$V3/regen.txt")" = 35 \
+ && sed -i -E 's/^ga([[:blank:]])/g\1/' "$V3/regen.txt" \
+ && ! grep -q -E '^[a-z]a[[:blank:]]' "$V3/regen.txt" \
+ && test "$(grep -c -E '^[rg][[:blank:]]' "$V3/regen.txt")" -ge 660 \
+ && echo "share: 3 Loch Pajakow (217) - the warp from the second Spider Dungeon, no aggressive spawns"
+
 # MT2009_PLUS_DEMON_STONES_V1 (the owner, 14 October 2026; pl-wiki "Kamien Demonow", "Kamien Mocy", "Kamien Mocy
 # Demonow"): Kamien Demonow +1 to +4 had no source. After every share append (the Yohara batches' groups are in):
 # demonstones/mob_drop_item.demonstones.append.txt - the Yohara Metins +1/+2, the chiefs +1 to +3 (own groups,
