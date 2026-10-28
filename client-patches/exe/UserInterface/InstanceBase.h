@@ -365,6 +365,12 @@ class CInstanceBase
 		void OnUnselected();
 		void OnTargeted();
 		void OnUntargeted();
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+		// MT2009_PLUS_AUTOHUNT_TEST_V1 (Mt2009AutoHuntTest.cpp): the test auto hunt's target (a green name), its walk through monsters
+		void SetAutoHuntTestTarget(bool bFlag);
+		bool IsAutoHuntTestTarget() const { return m_isAutoHuntTestTarget; }
+		void SetAutoHuntTestPass(bool bFlag);
+#endif
 
 	protected:
 		bool __IsExistMainInstance();
@@ -989,6 +995,9 @@ class CInstanceBase
 		BYTE					m_byPKMode;
 		bool					m_isKiller;
 		bool					m_isPartyMember;
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+		bool					m_isAutoHuntTestTarget;	// MT2009_PLUS_AUTOHUNT_TEST_V1
+#endif
 
 		// Movement
 		int						m_iRotatingDirection;

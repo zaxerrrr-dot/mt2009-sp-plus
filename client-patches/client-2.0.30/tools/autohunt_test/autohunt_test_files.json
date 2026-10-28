@@ -1,0 +1,20 @@
+{
+ "files": {
+  "d:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.dds": {
+   "ctype": 1,
+   "sha256": "4c6ef3c52861ddd6f6b76a8c8421863298995267a2b7dae19a25a61297c8538f",
+   "size": 87516
+  },
+  "d:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.mde": {
+   "ctype": 1,
+   "sha256": "75b9b1607247e32c0c82a66bb6b3bf7e60d209f03920d334e69e2720763966d0",
+   "size": 1372019
+  },
+  "d:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.mse": {
+   "ctype": 1,
+   "sha256": "83a3e0cd822d455bbe142fe264f364183130da81e5009062f673e2f1d947125d",
+   "size": 4571
+  }
+ },
+ "source": "the owner's package \"Oto Av\" (28 Oct 2026), Client/ymir work/effect/etc/auto_hunt - byte for byte the GF 26.1.11 client's and the base client's etc pack files"
+}

@@ -289,5 +289,11 @@
 // CActorInstance::OnShootDamage) - Auto Lowy and a walk by mouse go on under the archers. Melee blows are as before.
 // Without the define the exe is as before; root's uiautohunt.py restarts a stopped walk at once either way.
 #define ENABLE_MT2009_RUN_THROUGH_ARROWS
+// MT2009_PLUS_AUTOHUNT_TEST_V1 (the owner, 28 October 2026: "add it as a TEST auto hunt, e.g. under Alt+H"): the uploaded
+// package's auto hunt next to our Auto Lowy - the exe picks the target, casts the skills and drinks the potions each frame
+// (UserInterface/Mt2009AutoHuntTest.cpp, player.AutoHuntTest*), the target's name is green (InstanceBaseEffect.cpp), the
+// hunter walks through monsters (GameLib/ActorInstanceCollisionDetection.cpp). Root's uiautohunt_test.py (Alt+H) asks for
+// player.AutoHuntTestStart and says "needs the new exe" without it. No packet changes.
+#define ENABLE_MT2009_AUTOHUNT_TEST
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

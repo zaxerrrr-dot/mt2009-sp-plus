@@ -721,6 +721,69 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 	public:
 		void YutnoriNotifyMotionDone();
 #endif
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+	// MT2009_PLUS_AUTOHUNT_TEST_V1: the test auto hunt (Alt+H, root uiautohunt_test.py) - Mt2009AutoHuntTest.cpp
+	public:
+		enum
+		{
+			AUTOHUNT_TEST_SKILL_SLOTS = 12,
+			AUTOHUNT_TEST_ITEM_SLOTS = 12,
+			AUTOHUNT_TEST_SLOTS = AUTOHUNT_TEST_SKILL_SLOTS + AUTOHUNT_TEST_ITEM_SLOTS,
+		};
+		struct SAutoHuntTestSlot
+		{
+			DWORD	dwPos;		// skill slot / inventory cell, 0xffffffff = empty
+			DWORD	dwValue;	// seconds; an HP/SP potion: the % of the bar
+			DWORD	dwNextSec;
+		};
+		struct SAutoHuntTest
+		{
+			bool			bRunning = false;
+			bool			bAttack = true;
+			bool			bSkills = false;
+			bool			bItems = false;
+			bool			bAnchor = false;
+			bool			bStones = false;
+			bool			bHpLow = false;
+			bool			bSpLow = false;
+			BYTE			byRankMask = 0x3f;
+			int				iMinLevel = 1;
+			int				iMaxLevel = 255;
+			float			fRange = 4000.0f;
+			float			fShownRange = 0.0f;
+			DWORD			dwRangeEffect = 0;
+			TPixelPosition	kStart = TPixelPosition(0.0f, 0.0f, 0.0f);
+			TPixelPosition	kStuckPos = TPixelPosition(0.0f, 0.0f, 0.0f);
+			int				iStuck = 0;
+			DWORD			dwTargetVID = 0;
+			DWORD			dwTargetSinceMs = 0;
+			DWORD			dwLastSwingMs = 0;
+			DWORD			dwStuckCheckMs = 0;
+			DWORD			dwSkipVID = 0;
+			DWORD			dwSkipUntilMs = 0;
+			DWORD			dwNextSearchMs = 0;
+			DWORD			dwLastSkillSec = 0;
+			DWORD			dwHpPotionMs = 0;
+			DWORD			dwSpPotionMs = 0;
+			SAutoHuntTestSlot	aSlot[AUTOHUNT_TEST_SLOTS] = {};
+		};
+		SAutoHuntTest	m_kAutoHuntTest;
+
+		void	AutoHuntTest_Reset();
+		void	AutoHuntTest_Update();
+		void	AutoHuntTest_Start(bool bOn);
+		void	AutoHuntTest_ShowRange(float fRange);
+		DWORD	AutoHuntTest_SetSkillSlot(int iSlot, DWORD dwSkillSlotPos);
+		DWORD	AutoHuntTest_SetItemSlot(int iSlot, DWORD dwCell);
+		void	AutoHuntTest_SetSlotValue(int iSlot, DWORD dwValue);
+	protected:
+		DWORD			__AutoHuntTest_SkillTime(DWORD dwSkillSlotPos);
+		CInstanceBase*	__AutoHuntTest_FindTarget(CInstanceBase* pkInstMain);
+		void			__AutoHuntTest_UseSkills(CInstanceBase* pkInstMain);
+		void			__AutoHuntTest_UseItems();
+		void			__AutoHuntTest_DropTarget();
+		void			__AutoHuntTest_UpdateRangeEffect();
+#endif
 };
 
 extern const int c_iFastestSendingCount;

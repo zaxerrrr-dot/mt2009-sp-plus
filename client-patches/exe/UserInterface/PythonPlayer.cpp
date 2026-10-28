@@ -164,6 +164,9 @@ void CPythonPlayer::Update()
 
 	__Update_AutoAttack();
 	__Update_NotifyGuildAreaEvent();
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+	AutoHuntTest_Update();	// MT2009_PLUS_AUTOHUNT_TEST_V1 (Mt2009AutoHuntTest.cpp)
+#endif
 }
 
 bool CPythonPlayer::__IsUsingChargeSkill()
@@ -1868,6 +1871,9 @@ void CPythonPlayer::Clear()
 	m_fCurrentStamina = 0.0f;
 
 	m_inGuildAreaID = 0xffffffff;
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+	AutoHuntTest_Reset();	// MT2009_PLUS_AUTOHUNT_TEST_V1: a new character, no hunt, no circle
+#endif
 
 	__ClearAutoAttackTargetActorID();
 }

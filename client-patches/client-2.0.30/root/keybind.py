@@ -142,6 +142,9 @@ CATEGORIES = (
 		('autohunt', 'Auto\xb3owy', ((0, 'DIK_K'),), False),
 		# MT2009_PLUS_AUTOHUNT_QUICK_V1: start/stop with the saved settings, no window.
 		('autohunt_quick', 'Auto\xb3owy - szybki start/stop', ((SHIFT, 'DIK_K'),), False),
+		# MT2009_PLUS_AUTOHUNT_TEST_V1: the uploaded package's auto hunt as a TEST (uiautohunt_test.py). Alt+H was free:
+		# H alone is the help, Ctrl+H the horse; the exact combination wins over the key alone.
+		('autohunt_test', 'Auto\xb3owy (TEST)', ((ALT, 'DIK_H'),), False),
 		('garbage_bin', 'Kosz', ((0, 'DIK_J'),), False),
 		('shop_search', 'Wyszukiwarka sklep\xf3w', ((0, 'DIK_F5'),), False),
 		('event_calendar', 'Kalendarz event\xf3w', ((0, 'DIK_F11'),), False),

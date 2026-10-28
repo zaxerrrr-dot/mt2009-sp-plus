@@ -607,6 +607,14 @@ bool CInstanceBase::IsPVPInstance(CInstanceBase& rkInstSel)
 
 const D3DXCOLOR& CInstanceBase::GetNameColor()
 {
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+	// MT2009_PLUS_AUTOHUNT_TEST_V1: the test auto hunt's target has a green name (the package)
+	if (m_isAutoHuntTestTarget)
+	{
+		static D3DXCOLOR s_kAutoHuntTestTarget(0xFF00FF00);
+		return s_kAutoHuntTestTarget;
+	}
+#endif
 	return GetIndexedNameColor(GetNameColorIndex());
 }
 

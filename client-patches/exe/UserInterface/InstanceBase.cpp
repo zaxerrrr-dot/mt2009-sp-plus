@@ -3632,6 +3632,9 @@ void CInstanceBase::__Initialize()
 	m_byPKMode = 0;
 	m_isKiller = false;
 	m_isPartyMember = false;
+#ifdef ENABLE_MT2009_AUTOHUNT_TEST
+	m_isAutoHuntTestTarget = false;	// MT2009_PLUS_AUTOHUNT_TEST_V1
+#endif
 
 	m_bEnableTCPState = TRUE;
 
