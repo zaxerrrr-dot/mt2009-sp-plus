@@ -619,6 +619,11 @@ namespace
 			LPITEM best = FindPlayerBotYoharaJewel(ch, wear, 0, 0, &bestScore);
 			if (!best || best == worn)
 				continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the element set's worn jewellery stays until the set swap
+			if (worn && IsPlayerBotSecondSetWornLocked(ch, worn))
+				continue;
+#endif
 			if (worn && (IsPlayerBotSidekickLockedItem(ch, worn) || ch->GetEmptyInventory(worn->GetSize()) < 0 ||
 					!ch->UnequipItem(worn) || worn->IsEquipped()))
 				continue;

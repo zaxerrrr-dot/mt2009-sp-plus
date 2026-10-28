@@ -2059,6 +2059,10 @@ namespace
 				item->GetWindow() != INVENTORY || item->GetRefineLevel() > PLAYERBOT_MERCHANT_MAX_REFINE ||
 				IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1
 			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (IsPlayerBotSecondSetStored(ch, item))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set in the bag
+			return false;
+#endif
 		if (item->GetType() == ITEM_WEAPON)
 		{
 			if (item->GetSubType() == WEAPON_ARROW || IsPlayerBotQuiver(item))
@@ -2301,7 +2305,11 @@ namespace
 	bool IsPlayerBotUnwantedHair(LPCHARACTER ch, LPITEM item)
 	{
 		return IsPlayerBotHairItem(item) && !item->IsEquipped() &&
-				!IsPlayerBotHairToWear(ch, item) && !IsPlayerBotReplacedHair(ch, item);
+				!IsPlayerBotHairToWear(ch, item) && !IsPlayerBotReplacedHair(ch, item)
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+				&& !IsPlayerBotSecondSetStored(ch, item)	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set's hairstyle
+#endif
+				;
 	}
 
 	// MT2009_PLUS_BOT_SMITHY_V1, point 2 ("Boty trzymaja najwyzej dwa helmy
@@ -2324,6 +2332,10 @@ namespace
 				IsPlayerBotSidekickPinned(ch, item) || IsPlayerBotLppKeptItem(ch, item) ||
 				IsPlayerBotGambleForSale(ch, item))
 			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (IsPlayerBotSecondSetStored(ch, item))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			return false;
+#endif
 		const DWORD family = GetPlayerBotItemFamily(item);
 		int ahead = 0;
 		for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
@@ -2389,6 +2401,11 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: a Champion's world set and its jade (playerbot_yohara_shop.h).
 		if (IsPlayerBotYoharaShopKept(ch, item))
 			return true;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set in the bag (playerbot_element_second_set.h).
+		if (IsPlayerBotSecondSetStored(ch, item))
+			return true;
+#endif
 		if (IsPlayerBotUpgradeForSelf(ch, item) || IsPlayerBotHigherTierSpare(ch, item) ||
 				IsPlayerBotWearableUpgrade(ch, item, item->GetCell()) || IsPlayerBotTowerSmithReserve(ch, item) ||
 				(item->GetType() == ITEM_WEAPON ? IsPlayerBotKeptBackupWeapon(ch, item)
@@ -2524,6 +2541,11 @@ namespace
 		// MT2009_PLUS_ELEMENT_STONES_V1: a Kamien Zywiolow in the bag is the next one worn, never the merchant's.
 		if (Mt2009IsElementStone(item->GetVnum()))
 			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set in the bag is never scrap (playerbot_element_second_set.h).
+		if (IsPlayerBotSecondSetStored(ch, item))
+			return false;
+#endif
 		// MT2009_PLUS_BOT_MLODZI_V1: a young heroes' weapon, and the real weapon prepared behind one in the hand.
 		if (IsPlayerBotMlodziKept(ch, item))
 			return false;
@@ -3536,6 +3558,9 @@ namespace
 			if (item && !item->IsEquipped() && !item->isLocked() &&
 					GetPlayerBotItemPolicy(item) == PLAYERBOT_ITEM_POLICY_DROP &&
 					!IsPlayerBotMlodziKept(ch, item) &&	// MT2009_PLUS_BOT_MLODZI_V1
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+					!IsPlayerBotSecondSetStored(ch, item) &&	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+#endif
 					!IsPlayerBotKeptAlchemyGoods(ch, item) &&	// MT2009_PLUS_BOT_DS_YOHARA800_V1
 					!IsPlayerBotSidekickLockedItem(ch, item) &&	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 					// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: nor a companion's

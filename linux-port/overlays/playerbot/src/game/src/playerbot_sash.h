@@ -1410,6 +1410,10 @@ namespace
 					IsPlayerBotSashPieceWorn(ch, item) ||
 					IsPlayerBotMlodziKept(ch, item))	// MT2009_PLUS_BOT_MLODZI_V1: the real weapon prepared behind it
 				continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			if (IsPlayerBotSecondSetStored(ch, item))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: no sash's absorption
+				continue;
+#endif
 			const long long value = GetPlayerBotSashPieceWorth(ch, item, absorption, reference, wornValue);
 			if (value < 0)
 				continue;

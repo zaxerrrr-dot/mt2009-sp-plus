@@ -804,6 +804,21 @@ namespace
 			wishes[n].bMarks = false;
 			wishes[n++].szReason = GetPlayerBotLookReason(look);
 		}
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: a costume / hairstyle for the element set's empty slot
+		// (playerbot_element_second_set.h), its own look first.
+		if (lookVnum == 0 && n < PLAYERBOT_ISHOP_MAX_WISHES)
+		{
+			int ssLook = 0;
+			const DWORD ssVnum = PickPlayerBotSecondSetLook(ch, &ssLook);
+			if (ssVnum != 0 && PlayerBotLookFromSurplus(ch, state, ssVnum, reserve))
+			{
+				wishes[n].dwVnum = ssVnum;
+				wishes[n].bMarks = false;
+				wishes[n++].szReason = ssLook == PLAYERBOT_ISHOP_LOOK_HAIR ? "secondset_hair" : "secondset_costume";
+			}
+		}
+#endif
 		// Its own come first; a head for the counter only when nothing else
 		// is wanted, or the coins saved for a Kamien Duchowy would go on it.
 		if (n == 0)
@@ -892,6 +907,12 @@ namespace
 							!IsPlayerBotOwnLook(ch, item->GetProto(), look) ||
 							IsPlayerBotSidekickUnwanted(ch, item))	// MT2009_PLUS_SIDEKICK_MOUNT_FIX_V1
 						continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+					// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set's hairstyle goes on with its set only, and the
+					// set's worn one stays
+					if (IsPlayerBotSecondSetStored(ch, item) || IsPlayerBotSecondSetWornLocked(ch, ch->GetWear(WEAR_COSTUME_HAIR)))
+						continue;
+#endif
 					const DWORD oldVnum = ch->GetWear(WEAR_COSTUME_HAIR)->GetVnum();
 					if (ch->EquipItem(item))
 						sys_log(0, "PLAYERBOT_ISHOP: hairstyle changed pid=%u name=%s vnum=%u old=%u",
@@ -917,6 +938,10 @@ namespace
 				if (!item || item->isLocked() || item->IsExchanging() || !item->CanUsedBy(ch) ||
 						!IsPlayerBotOwnLook(ch, item->GetProto(), look) || IsPlayerBotSidekickUnwanted(ch, item))
 					continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+				if (IsPlayerBotSecondSetStored(ch, item))	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+					continue;
+#endif
 				if (look == PLAYERBOT_ISHOP_LOOK_HAIR)
 					state.bBoughtHairstyle = true;
 				if (look == PLAYERBOT_ISHOP_LOOK_PET)

@@ -2397,7 +2397,14 @@ namespace
 		// (playerbot_yohara_bonus.h) - none of the categories, the dust's stones or the goods below.
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V1: its costume and hairstyle for Yohara (IsPlayerBotYoharaCostumeLineGood) from
 		// the 70063/70064 it bought at Handlarka Roznosci - out of a fight, as this pass is.
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: and, the worn pieces finished, the second set's costume and hairstyle in
+		// the bag (playerbot_element_second_set.h).
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		const bool costumeRolled = IsPlayerBotYoharaBonusMember(ch) &&
+				(ManagePlayerBotCostumeBonus(ch, state, dwNow) || RunPlayerBotSecondSetCostumeRoll(ch, state, dwNow));
+#else
 		const bool costumeRolled = IsPlayerBotYoharaBonusMember(ch) && ManagePlayerBotCostumeBonus(ch, state, dwNow);
+#endif
 		const int yoharaStones = ManagePlayerBotYoharaBonus(ch, state, dwNow);
 		if (yoharaStones >= 0)
 			return yoharaStones > 0 || costumeRolled;
@@ -2785,15 +2792,24 @@ namespace
 	bool BuyPlayerBotCostumeReagent(LPCHARACTER ch, TPlayerBotAIState& state)
 	{
 		DWORD need = 0;
-		if (!ch || ch->GetGold() < PLAYERBOT_COSTUME_BONUS_START_GOLD ||
-				!PickPlayerBotCostumeBonusTarget(ch, state, &need) || !need ||
-				FindPlayerBotCostumeReagentCell(ch, need) >= 0 || ch->GetEmptyInventory(1) < 0)
+		if (!ch || ch->GetGold() < PLAYERBOT_COSTUME_BONUS_START_GOLD)
+			return false;
+		LPITEM wornTarget = PickPlayerBotCostumeBonusTarget(ch, state, &need);
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the worn pieces finished - the second set's costume pieces' reagent
+		if ((!wornTarget || !need) && IsPlayerBotYoharaBonusMember(ch))
+			need = GetPlayerBotSecondSetCostumeReagentNeed(ch);
+#else
+		if (!wornTarget)
+			need = 0;
+#endif
+		if (!need || FindPlayerBotCostumeReagentCell(ch, need) >= 0 || ch->GetEmptyInventory(1) < 0)
 			return false;
 		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(need);
 		if (!proto || proto->dwGold == 0)
 			return false;
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: a Yohara bot working its hunt element's line buys several stacks at once
-		LPITEM target = PickPlayerBotCostumeBonusTarget(ch, state, &need);
+		LPITEM target = wornTarget;
 #ifdef MT2009_PLUS_BOT_COSTUME_RESIST_V1
 		// MT2009_PLUS_BOT_COSTUME_RESIST_V1: the changes for it (a stack of 70063 makes two lines nine times in ten),
 		// over a reserve of its own
@@ -2841,6 +2857,12 @@ namespace
 		if (!ch || !ch->IsItemLoaded() || ch->IsDead() || dwNow < state.dwNextCostumeBonusTime)
 			return false;
 		state.dwNextCostumeBonusTime = dwNow + PLAYERBOT_COSTUME_BONUS_STEP_MS;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: not while a swap of the sets is due (the worn pieces are not the hunt
+		// element's set yet)
+		if (IsPlayerBotSecondSetSwapPending(ch))
+			return false;
+#endif
 		DWORD need = 0;
 		LPITEM item = PickPlayerBotCostumeBonusTarget(ch, state, &need);
 		if (!item || !need)

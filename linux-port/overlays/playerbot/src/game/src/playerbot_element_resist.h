@@ -77,6 +77,11 @@
 //   * the element budget of a piece (playerbot_yohara_bonus.h) counts the changes made for the element it wears now,
 //     the talisman's raised to 160 (the only gear line of an ice, earth or dark bot).
 //
+// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1 (playerbot_element_second_set.h): HasPlayerBotElementSecondSet answers from the
+// bot's second set (complete for that element, or worn); the hunt element of one bot can be overridden while its second
+// set is judged (s_iPlayerBotElementOverride - the bonus and costume rules then work for E2); a move's preparation is
+// held while the set's swap is due, so the bonus pass never rerolls the wrong set for the new element.
+//
 // An implementation fragment: included by playerbot_manager.cpp after playerbot_yohara_shop.h, in the anonymous
 // namespace; the declarations the earlier fragments use are in playerbot_types.h.
 
@@ -119,6 +124,13 @@ namespace
 	};
 	TPlayerBotElementStats s_kPlayerBotElementStats;
 
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: while a bot's second set is judged (playerbot_element_second_set.h), its hunt
+	// element is the set's (0: no override).
+	DWORD s_dwPlayerBotElementOverridePid = 0;
+	int s_iPlayerBotElementOverride = -1;
+#endif
+
 #ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
 	const DWORD PLAYERBOT_ELEMENT_ELIXIR_TICK_MS = 10 * 1000;
 	// The elixir tick's outcome a look (per hunt element, since the last census): drunk now, already on, and why not.
@@ -138,12 +150,17 @@ namespace
 	TPlayerBotElementMoveStats s_kPlayerBotElementMoves;
 
 	// The owner, 28 October 2026: a step down to a map of another element needs a second equipment and costume set made
-	// for that element (element: GetPlayerBotHuntElement's encoding, 1-6). Not made yet - a later feature fills it in.
+	// for that element (element: GetPlayerBotHuntElement's encoding, 1-6).
+	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the set of playerbot_element_second_set.h, complete or worn.
 	bool HasPlayerBotElementSecondSet(LPCHARACTER ch, BYTE element)
 	{
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		return IsPlayerBotSecondSetComplete(ch, element);
+#else
 		(void)ch;
 		(void)element;
 		return false;
+#endif
 	}
 
 	// Whether the element is the map's largest share or within PLAYERBOT_ELEMENT_TIE_PCT of it.
@@ -207,7 +224,13 @@ namespace
 
 	int GetPlayerBotHuntElementIndex(LPCHARACTER ch)
 	{
-		if (!ch || !ch->IsPC() || !IsPlayerBotYoharaBonusMember(ch))
+		if (!ch || !ch->IsPC())
+			return -1;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		if (s_dwPlayerBotElementOverridePid != 0 && ch->GetPlayerID() == s_dwPlayerBotElementOverridePid)
+			return s_iPlayerBotElementOverride;
+#endif
+		if (!IsPlayerBotYoharaBonusMember(ch))
 			return -1;
 		const DWORD now = get_dword_time();
 		TPlayerBotHuntElement& h = s_mapPlayerBotHuntElement[ch->GetPlayerID()];
@@ -574,6 +597,16 @@ namespace
 			return false;
 		TPlayerBotHuntElement& h = it->second;
 		const int e = GetPlayerBotHuntElementIndex(ch);
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second set (or the first one back) goes on first, where the bot
+		// stands - the gear readiness below is the right set's then
+		if (h.bPrepWait && dwNow - h.dwPrepSince < PLAYERBOT_ELEMENT_PREP_MAX_MS && IsPlayerBotSecondSetSwapPending(ch))
+		{
+			PlayerBotLogThrottled("element_prep_swap", dwNow, "PLAYERBOT_ELEMENT: preparing pid=%u name=%s to=%ld element=%s waited_s=%u for=second_set_swap",
+					ch->GetPlayerID(), ch->GetName(), toMap, e >= 0 ? PLAYERBOT_YOHARA_ELEMENT_NAMES[e] : "-", (dwNow - h.dwPrepSince) / 1000);
+			return true;
+		}
+#endif
 		if (!h.bPrepWait)
 		{
 			++s_kPlayerBotElementStats.urgent;

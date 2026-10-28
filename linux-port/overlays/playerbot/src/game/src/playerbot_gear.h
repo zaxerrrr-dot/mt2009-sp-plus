@@ -331,6 +331,12 @@ namespace
 		// (playerbot_sidekick.h).
 		if (IsPlayerBotSidekickUnwanted(ch, item))
 			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: a set waiting in the bag (the second one, or the first while the second
+		// is on) is the set swap's to put on, never an upgrade or a downgrade here (playerbot_element_second_set.h).
+		if (IsPlayerBotSecondSetStored(ch, item))
+			return false;
+#endif
 
 		// IsEquipable only describes the item type.  The class restrictions live
 		// in the anti flags and were previously checked only for sex, so a Warrior
@@ -2319,6 +2325,11 @@ namespace
 				continue;
 			if (oldItem && IsPlayerBotSidekickPinned(ch, oldItem))
 				continue;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+			// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: the second set worn for its element stays on until the set swap
+			if (oldItem && IsPlayerBotSecondSetWornLocked(ch, oldItem))
+				continue;
+#endif
 			// A ring or a glove on its clock comes off only through the
 			// unique-slot pass, which knows whether the bot is hunting.
 			// MT2009_PLUS_BOT_RANK_GLOVE_V1: and so does the Prophecy King's
@@ -4409,6 +4420,11 @@ namespace
 		// necklace (and, while the set is on, the fighting pieces in the bag).
 		if (ch && item && item->GetType() == ITEM_ARMOR && IsPlayerBotBuffSetPiece(ch, item))
 			return true;
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: and an element set waiting in the bag (playerbot_element_second_set.h)
+		if (ch && item && IsPlayerBotSecondSetStored(ch, item))
+			return true;
+#endif
 		return ch && item && item->GetType() == ITEM_ARMOR && item->GetSubType() == ARMOR_BODY &&
 				item->GetID() != 0 && GetPlayerBotBackupArmourID(ch, fresh) == item->GetID();
 	}
