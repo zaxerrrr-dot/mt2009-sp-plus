@@ -25,6 +25,17 @@ Balathor 6896 (jaja, kryształy lodu, wóz Hwacha 20493 strzelający Ognistymi S
 skrzynia 20492 z nagrodą. Konfiguracja bez kompilacji: `server/share/balathor.json`. Klient: okno HP/szału
 bossa (`uiguildwhitedragon.py`), efekty ekranu, kamery cutscenek (`locale/common/camera/...`).
 
+## Decyzje właściciela (28.10.2026) – mają pierwszeństwo przed wszystkim niżej
+
+1. **Champion 4** – linia Yohara ma poziomy championa. Wymóg = Champion 4 jak na wiki (użyj istniejącej
+   funkcji/pola championa tej linii; `register_min_level` tylko jako zwykły poziom bazowy).
+2. **Quest wejściowy** („Dziwne Znalezisko”/Alastor) – **pomijamy**.
+3. **Wężowy Czepiec + materiały, 3 umiejętności gildii Balathora, Runy Wykuwania, Kula Polimorfii Hwachy** –
+   linia Yohara je ma: **użyj istniejących vnumów** w skrzyniach (nic nie pomijaj, nic nie zamieniaj).
+   Pełna lista skrzyni+ jak na wiki.
+4. **NPC wejścia** – linia Yohara ma osobnego **Strażnika Smoków Dolnarra**: podmień 20395 w questach
+   (`when 20395.chat`) na jego vnum (`grep -rn -i dolnarr` w danych tej linii). Nemere zostaje bez zmian.
+
 ## Cel: zgodność z oficjalną wiki (wersja 24.3, otwarcie 23.10.2024)
 
 Źródła: pl-wiki „Krypta_Balathora”, „Wersja_24.3”, „Mroźna_Skrz._Balathora+” i tr-wiki „Balathor'un_Mahzeni”
