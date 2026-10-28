@@ -1765,4 +1765,17 @@ if ((Test-Path -LiteralPath $autoHuntPassApply -PathType Leaf) -and
     }
 }
 
+# Kupon SM (100) from the Metin / boss coupon roll (server-patches/kupon100, MT2009_PLUS_DROP_COUPON_100_V1; the owner,
+# 28 October 2026): 80014 in place of 80017 in the drop, the auto hunt's pick-up list, the preview and the drop wiki.
+# Last: it anchors on raremobrules', playerqol's and dropwiki's 80017 lines.
+$kupon100Apply = Join-Path $repo 'server-patches/kupon100/Apply-Kupon100Patch.ps1'
+if ((Test-Path -LiteralPath $kupon100Apply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item_manager.cpp') -PathType Leaf)) {
+    $kupon100Result = & $kupon100Apply -SourceDir $engineGameSource
+    if ($kupon100Result.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Kupon SM (100) drop edit(s).' -f $kupon100Result.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

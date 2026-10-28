@@ -16,7 +16,8 @@ them at drop time (server-patches/raremobrules, MT2009_PLUS_RARE_DROP_SWITCHES_V
 item_manager.cpp / char_item.cpp; the drop wiki in server-patches/dropwiki).
 
 What a switch holds back - only the game's own (built-in) sources:
-  * Kupon SM (50), vnum 80017: the engine's roll per kill, CONFIG
+  * Kupon SM (100), vnum 80014 (Kupon SM (50) 80017 until MT2009_PLUS_DROP_COUPON_100_V1,
+    server-patches/kupon100): the engine's roll per kill, CONFIG
     DRAGON_COIN_BOSS_PERMILLE (50 = 5%) / DRAGON_COIN_STONE_PERMILLE (3 = 0.3%);
   * sash: the +0 sash roll (boss 80%, Metin 15%, WuKong 15%, the per-mob rules
     of raremobrules) - since MT2009_PLUS_SASH_CLOTH_V1 (6 October) it gives
@@ -58,15 +59,15 @@ FLAGS = tuple(s[0] for s in SWITCHES)
 LABELS = {s[0]: s[3] for s in SWITCHES}
 
 KINDS = {
-    "sm": {"icon": "🎟️", "title": "Kupony SM", "items": "Kupon SM (50), vnum 80017 – wymienia się na Smocze Monety w ItemShopie"},
+    "sm": {"icon": "🎟️", "title": "Kupony SM", "items": "Kupon SM (100), vnum 80014 – wymienia się na 100 Smoczych Monet w ItemShopie"},
     "sash": {"icon": "🧣", "title": "Delikatne Sukno (szarfy)", "items": "Delikatne Sukno, vnum 80019 (×2 do 49 poz. zabójcy, ×5 od 50, ×10 od 75; 10 sztuk + 80 000 Yang = szarfa u Theowahdana) zamiast szarfy +0; przy bossach także szarfa unikatowa +3 ze skrzyń bossów"},
     "cor": {"icon": "🐉", "title": "Cor Draconis", "items": "Cor Draconis (surowy), vnum 50255 – kamień do alchemii"},
 }
 
 # What each switch turns off (the game's own sources; MT2009_PLUS_RARE_DROP_SWITCHES_V1).
 SOURCES = {
-    "m2_sm_boss_off": ["każdy boss: 5% na zabicie (ustawienie DRAGON_COIN_BOSS_PERMILLE = 50 ‰ w .env serwera)"],
-    "m2_sm_metin_off": ["każdy metin: 0,3% na zabicie (ustawienie DRAGON_COIN_STONE_PERMILLE = 3 ‰ w .env serwera)"],
+    "m2_sm_boss_off": ["każdy boss: Kupon SM (100) na 5% (ustawienie DRAGON_COIN_BOSS_PERMILLE = 50 ‰ w .env serwera)"],
+    "m2_sm_metin_off": ["każdy metin: Kupon SM (100) na 0,3% (ustawienie DRAGON_COIN_STONE_PERMILLE = 3 ‰ w .env serwera)"],
     "m2_sash_boss_off": ["każdy boss: Delikatne Sukno na 80% (WuKong 15%; Płomienny Feniks i Jajo Feniksa – nigdy)",
                          "skrzynia bossa otwierana kluczem: szarfa unikatowa +3 na 6–10% (nie Złota/Srebrna Szkatułka)"],
     "m2_sash_metin_off": ["każdy metin: Delikatne Sukno na 15% (Kamień Wzgórza i Metin Ciemności w Bibliotece – nigdy)"],

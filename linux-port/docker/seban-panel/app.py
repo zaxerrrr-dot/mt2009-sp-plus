@@ -12258,7 +12258,7 @@ def drop_other_sources(mob):
             {"item": None, "chance": "wg tabeli silnika", "note": "Kamienie duchowe (tabela aStoneDrop w silniku, zależnie od Metina)"},
             {"item": 50255, "chance": "50% (bot 5%)", "note": "Cor Draconis – zabójca najwyżej 15 poz. ponad Metina, alchemia włączona"},
             {"item": 50011, "chance": "domyślnie 30%", "note": "Szkatułka Blasku Księżyca (CONFIG MOONLIGHT_CHEST_STONE_PERMILLE, gdy szkatułki włączone)"},
-            {"item": 80017, "chance": "domyślnie 0,3%", "note": "Kupon SM (CONFIG DRAGON_COIN_STONE_PERMILLE)"},
+            {"item": 80014, "chance": "domyślnie 0,3%", "note": "Kupon SM (100) (CONFIG DRAGON_COIN_STONE_PERMILLE)"},
         ]
         if 15 <= mob["level"] <= 99:
             other.append({"item": 25040, "chance": "domyślnie 1%", "note": "Zwój Błogosławieństwa, Metiny 15–99 (CONFIG BLESSING_SCROLL_STONE_PERMILLE)"})
@@ -12266,7 +12266,7 @@ def drop_other_sources(mob):
         other += [
             {"item": 50255, "chance": "80% (bot 5%)", "note": "Cor Draconis – zabójca najwyżej 15 poz. ponad bossa, alchemia włączona"},
             {"item": 85001, "chance": "80%", "note": "Szarfa +0 (jedna z 85001/85005/85011/85015/85021) – zabójca najwyżej 15 poz. ponad bossa"},
-            {"item": 80017, "chance": "domyślnie 5%", "note": "Kupon SM (CONFIG DRAGON_COIN_BOSS_PERMILLE)"},
+            {"item": 80014, "chance": "domyślnie 5%", "note": "Kupon SM (100) (CONFIG DRAGON_COIN_BOSS_PERMILLE)"},
             {"item": 50011, "chance": "domyślnie 1%", "note": "Szkatułka Blasku Księżyca (CONFIG MOONLIGHT_CHEST_PERMILLE, gdy szkatułki włączone)"},
         ]
     else:
