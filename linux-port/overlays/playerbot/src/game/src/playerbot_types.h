@@ -10281,6 +10281,16 @@ namespace
 	bool HoldPlayerBotElementPrep(LPCHARACTER ch, long toMap, DWORD dwNow);
 	// The census (PLAYERBOT_ELEMENT), on the talisman's light pass's clock.
 	void TickPlayerBotElementCensus(DWORD dwNow);
+#define MT2009_PLUS_BOT_ELEMENT_RESIST_V3 1
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V3 (playerbot_element_resist.h): the hunt element's elixirs drunk on the bot's own
+	// clock from the top of every tick (the light pass's gates left most of the Twierdza bots without one), counted for
+	// the census (uptime and the reasons for not drinking).
+	void ManagePlayerBotHuntElixirTick(LPCHARACTER ch, DWORD dwNow);
+	// The Sung Ma map pick (playerbot_yohara_sungma.h): false for a map below the one the bot's hunt element was chosen
+	// on whose element differs (the element changes only up the maps, or with a second set for it); counted when count.
+	bool IsPlayerBotSungmaElementMoveAllowed(LPCHARACTER ch, long toMap, bool count);
+	// A second equipment / costume set made for the element (1-6): none yet (a later feature).
+	bool HasPlayerBotElementSecondSet(LPCHARACTER ch, BYTE element);
 }
 
 #endif

@@ -721,12 +721,26 @@
 		// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a map above the one it stands on (any map, from home) is a step up
 		const int currentSlot = currentMap ? GetPlayerBotSungmaSlot(currentMap) : -1;
 		long lowest = 0;
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: a lower map of another element is no pick (the element changes only up the
+		// maps); with nothing else that fits, the bot stays where it is - or, from home, the lowest map it may take.
+		long lowestAllowed = 0;
+		bool skipped = false;
+#endif
 		for (int i = PLAYERBOT_SUNGMA_MAP_COUNT - 1; i >= 0; --i)
 		{
 			const TPlayerBotSungmaMap& m = PLAYERBOT_SUNGMA_MAPS[i];
 			if (!IsPlayerBotSungmaMapOn(m.lMap))
 				continue;
 			lowest = m.lMap;
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+			if (!IsPlayerBotSungmaElementMoveAllowed(ch, m.lMap, false))
+			{
+				skipped = true;
+				continue;
+			}
+			lowestAllowed = m.lMap;
+#endif
 			if (champion < (int)m.bChampionMin || !IsPlayerBotSungmaWillEnough(ch, i) || !HasPlayerBotSungmaRoom(i, currentMap))
 				continue;
 			if (i > currentSlot && !IsPlayerBotSungmaStepUpReady(ch, i, champion))
@@ -746,6 +760,16 @@
 			}
 			return m.lMap;
 		}
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		if (skipped)
+		{
+			IsPlayerBotSungmaElementMoveAllowed(ch, 0, true);	// the census's count of a pick held by the element
+			if (currentSlot >= 0 && IsPlayerBotSungmaMapOn(currentMap))
+				return currentMap;
+			if (lowestAllowed != 0)
+				return lowestAllowed;
+		}
+#endif
 		return lowest;
 	}
 

@@ -7134,6 +7134,12 @@ WritePlayerBotGuildStatus(dwNow);
 		// before every errand that ends the tick early.
 		if (d->IsPhase(PHASE_GAME))
 			ManagePlayerBotDsDeckTick(ch, state, dwNow);
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the hunt element's elixirs, before every pass that ends the tick early
+		// (playerbot_element_resist.h) - its own clock.
+		if (d->IsPhase(PHASE_GAME))
+			ManagePlayerBotHuntElixirTick(ch, dwNow);
+#endif
 		// MT2009_PLUS_ZODIAC_PETRIFY_END_V1: the temple's statue shape ends off
 		// its floors, and on a floor after a while (playerbot_zodiac_bots.h).
 		if (d->IsPhase(PHASE_GAME))

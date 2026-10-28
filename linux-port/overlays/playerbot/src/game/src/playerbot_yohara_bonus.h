@@ -164,7 +164,14 @@ namespace
 	{
 		switch (wearCell)
 		{
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+			// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the talisman's 25 is the only gear line of an ice, earth or dark bot - 160
+			// changes for it (the census of 28 October: tal_top 43/65 dark, 36/54 ice; 42 talisman passes past 80 went on
+			// by the shares with the line short)
+			case WEAR_PENDANT: return 160;
+#else
 			case WEAR_PENDANT: return 80;
+#endif
 			case WEAR_BODY: return 300;
 			case WEAR_WRIST: return 300;
 			case WEAR_HEAD: return 100;
@@ -185,6 +192,41 @@ namespace
 
 	// changes spent per piece (item id), per bot - this core's memory; a restart starts the shares from the stock
 	std::map<DWORD, std::map<DWORD, int> > s_mapPlayerBotYoharaBonusSpent;
+
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: the changes a piece had when the bot's hunt element became the one it has now -
+	// the element budget counts from there (a talisman that spent its 80 on lightning got nothing for the ice after the
+	// move up; the element now changes only up the maps, so this is a new element's fresh budget once per move).
+	struct TPlayerBotYoharaElementBase
+	{
+		int iElement;
+		int iBase;
+	};
+	std::map<DWORD, std::map<DWORD, TPlayerBotYoharaElementBase> > s_mapPlayerBotYoharaElementBase;
+
+	int GetPlayerBotYoharaElementSpentBase(LPCHARACTER ch, LPITEM item, int spent)
+	{
+		if (!ch || !item)
+			return 0;
+		const int e = GetPlayerBotHuntElementIndex(ch);
+		std::map<DWORD, TPlayerBotYoharaElementBase>& bases = s_mapPlayerBotYoharaElementBase[ch->GetPlayerID()];
+		std::map<DWORD, TPlayerBotYoharaElementBase>::iterator it = bases.find(item->GetID());
+		if (it == bases.end())
+		{
+			if (bases.size() > 64)
+				bases.clear();
+			const TPlayerBotYoharaElementBase fresh = { e, 0 };
+			bases[item->GetID()] = fresh;
+			return 0;
+		}
+		if (it->second.iElement != e)
+		{
+			it->second.iElement = e;
+			it->second.iBase = spent;
+		}
+		return std::max(0, std::min(it->second.iBase, spent));
+	}
+#endif
 
 	bool IsPlayerBotYoharaBonusMember(LPCHARACTER ch)
 	{
@@ -542,10 +584,15 @@ namespace
 		piece.weight = PLAYERBOT_YOHARA_BONUS_SLOTS[p.slotIndex].iWeight;
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: the element phase; a piece at its element target is done (strong)
 		const BYTE wearCell = PLAYERBOT_YOHARA_BONUS_SLOTS[p.slotIndex].bWearCell;
-		const int target = GetPlayerBotYoharaElementTarget(ch, p.item, wearCell, piece.spent);
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
+		const int base = GetPlayerBotYoharaElementRank(wearCell) >= 0 ? GetPlayerBotYoharaElementSpentBase(ch, p.item, piece.spent) : 0;
+#else
+		const int base = 0;
+#endif
+		const int target = GetPlayerBotYoharaElementTarget(ch, p.item, wearCell, piece.spent - base);
 		piece.elemRank = target >= 0 ? GetPlayerBotYoharaElementRank(wearCell) : -1;
 		piece.elemShort = target == 0;
-		piece.elemCap = target >= 0 ? GetPlayerBotYoharaElementCap(wearCell) : 0;
+		piece.elemCap = target >= 0 ? GetPlayerBotYoharaElementCap(wearCell) + base : 0;
 		if (target > 0)
 			piece.tier = playerbot_yohara_bonus_rules::TIER_STRONG;
 		return piece;
