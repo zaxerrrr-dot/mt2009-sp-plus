@@ -27,7 +27,7 @@ class CGuild;
 
 enum EGuildSys
 {
-	GUILDSYS_MAX_MEMBER_LEVEL = 20,		// the member limit grows with the level up to this one (as before level 40)
+	GUILDSYS_MAX_MEMBER_LEVEL = 40,		// the member limit grows with the level up to this one (4 a level; 204 at 40)
 
 	GUILDSYS_SKILL_STORM = 158,			// Burza Balathora - stun and slow
 	GUILDSYS_SKILL_WILL = 159,			// Wola Balathora - stun, chains (root) and Balathor's freeze

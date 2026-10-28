@@ -4828,6 +4828,14 @@ if [ -s /opt/playerbot/guildsys.sql ]; then
         fail_step "guild system: guildsys.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_GUILDSYS_V1 (shop): Ksiega Zapomnienia Gildii 50347 (every point the guild spent on the skills 151-157
+# back) in the in-game ItemShop (the owner, 29 October 2026) - tab "Zwoje i ksiegi" (indexes 601-699) after the card
+# boxes, 631 at 79 Smoczych Monet (the price of Zwoj Powrotu Statusu 602; it resets a whole guild's skills, more than
+# a character's skill reset 603 at 49). The second ItemShop lists the in-game lines. Once per install (ishop_once) -
+# the operator may change or remove it in the Seban panel. Only with the book in item_proto (guildsys.sql above).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum = 50347;" 2>/dev/null || echo x)" = "1" ]; then
+ishop_once guildsys_forget_631 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (631, 50347, 1, 79, 'DRAGON_COIN', 0);" "could not add Ksiega Zapomnienia Gildii to the ItemShop"
+fi
 
 # MT2009_PLUS_BALATHOR_V1: Krypta Balathora (author: dracaryS; server-patches/balathor, game/balathor) - balathor.sql
 # (tools/balathor/gen_balathor_sql.py): its 17 monsters, NPCs and stones (6896-6900, 20491-20499, 20507, 20868,
