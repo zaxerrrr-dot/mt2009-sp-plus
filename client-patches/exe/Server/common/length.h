@@ -849,6 +849,8 @@ enum SPECIAL_EFFECT
 	SE_SKILL_SAFE_ZONE_BIG,
 	SE_SKILL_SAFE_ZONE_MIDDLE,
 	SE_SKILL_SAFE_ZONE_SMALL,
+	// MT2009_PLUS_ELEC_GLOVE_V1: the gloves' 6th/7th lightning hit (server-patches/elecglove, 54 as the server's)
+	SE_ELEC_ATTACK_HIT,
 };
 
 enum BattleRestricts {

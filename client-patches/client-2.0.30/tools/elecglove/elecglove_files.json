@@ -1,0 +1,15 @@
+{
+ "files": {
+  "d:/ymir work/effect/hit/blow_electric/3.dds": {
+   "ctype": 1,
+   "sha256": "53c91350f06b667bb41b720569c08e64a0dcff4ba10f2b981194bf0f6c1036be",
+   "size": 32896
+  },
+  "d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse": {
+   "ctype": 1,
+   "sha256": "c5930ffb82f3a99208232c426c0762bf0e559c5ee5a8d3de12d0492699977013",
+   "size": 13632
+  }
+ },
+ "source": "GF client 26.1.11, d_/ymir work/effect/hit/blow_electric (unchanged bytes)"
+}

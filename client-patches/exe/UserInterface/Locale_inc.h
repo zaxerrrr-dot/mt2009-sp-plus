@@ -309,5 +309,10 @@
 // events SET_KEYBOARD_MOUSE_LOCK / RESTORE_CAMERA_EXCEPT_POSITION / CLOSE_CINEMA, app.__BALATHOR__ for root's
 // uiguildwhitedragon.py. Without the define the exe is as before.
 #define __BALATHOR__
+// MT2009_PLUS_ELEC_GLOVE_V1 (the gloves' 6th/7th lightning, server-patches/elecglove): the server's SE_ELEC_ATTACK_HIT
+// (54) on each monster the lightning strikes shows the global hit effect EFFECT_ELEC_ATTACK_HIT
+// (d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse, pack "elecglove"), chrmgr.EFFECT_ELEC_ATTACK_HIT.
+// Without the define the exe is as before (54 is "not a special effect number" in syserr).
+#define ENABLE_GLOVE_ELEC_ATTACK_BONUS
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

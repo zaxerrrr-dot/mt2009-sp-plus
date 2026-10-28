@@ -1,0 +1,8 @@
+[
+ {
+  "file": "../../common/length.h",
+  "marker": "MT2009_PLUS_ELEC_GLOVE_V1 (SE)",
+  "old": "\tSE_SKILL_SAFE_ZONE_SMALL,\n#endif\n};\n",
+  "new": "\tSE_SKILL_SAFE_ZONE_SMALL,\n#endif\n\t// MT2009_PLUS_ELEC_GLOVE_V1 (SE): the gloves' 6th/7th lightning (POINT_GLOVE_LIGHTNING 242, playerbot_bonus67.cpp) -\n\t// the hit effect on each monster it strikes (54, after the Zodiac's 39-53). The exe: SE_ELEC_ATTACK_HIT in its\n\t// Server/common/length.h, EFFECT_ELEC_ATTACK_HIT (client-patches/exe, ENABLE_GLOVE_ELEC_ATTACK_BONUS).\n\tSE_ELEC_ATTACK_HIT,\n};\n#define MT2009_PLUS_ELEC_GLOVE_SE 1\n"
+ }
+]

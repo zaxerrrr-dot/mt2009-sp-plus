@@ -22,6 +22,10 @@ static_assert(POINT_HIT_BUFF_ENCHANT_FIRE == 198 && POINT_GLOVE_BASE_ATTR_PCT ==
 static_assert(POINT_MAX_NUM <= 256, "an item keeps its bonus type in one byte");
 static_assert(SKILL_ILIPUNGU - SKILL_FINISH == POINT_GLOVE_COOLDOWN_ILIPUNGU - POINT_GLOVE_COOLDOWN_FINISH,
 		"one glove cooldown line a champion skill, in the skills' order");
+#ifdef MT2009_PLUS_ELEC_GLOVE_SE
+// MT2009_PLUS_ELEC_GLOVE_V1: the lightning's hit effect (server-patches/elecglove) - the exe's SE_ELEC_ATTACK_HIT is 54
+static_assert(SE_ELEC_ATTACK_HIT == 54, "SE_ELEC_ATTACK_HIT as the exe's (client-patches/exe/Server/common/length.h)");
+#endif
 
 bool Mt2009GloveType(DWORD dwVnum, BYTE& bWillType); // MT2009_PLUS_GLOVES_V1: playerbot_yohara_gear.cpp
 
@@ -193,7 +197,10 @@ namespace
 	};
 
 	// The gloves' lightning: a normal hit of a character with the line strikes the monsters around it (but the one it
-	// hit) for the same damage, once every 15 seconds.
+	// hit) for the same damage, once every 15 seconds. The wiki: no chance (the line has no value), the auto attack's
+	// damage, 15 s; up to 8 monsters within b67_lightning_range (6 m, at most 30 m). Each one struck gets the chain
+	// lightning's fly and (MT2009_PLUS_ELEC_GLOVE_V1) the global hit effect SE_ELEC_ATTACK_HIT
+	// (d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse, the exe's EFFECT_ELEC_ATTACK_HIT).
 	void GloveLightning(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, int iDam)
 	{
 		static bool s_bInside = false;
@@ -214,6 +221,9 @@ namespace
 			if (tch->IsDead())
 				continue;
 			pkAttacker->CreateFly(FLY_CHAIN_LIGHTNING, tch);
+#ifdef MT2009_PLUS_ELEC_GLOVE_SE
+			tch->EffectPacket(SE_ELEC_ATTACK_HIT);
+#endif
 			tch->Damage(pkAttacker, iDam, DAMAGE_TYPE_SPECIAL);
 		}
 		s_bInside = false;

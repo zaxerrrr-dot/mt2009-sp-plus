@@ -949,6 +949,12 @@ bool CPythonNetworkStream::RecvSpecialEffect()
 			effect = Mt2009Zodiak_EffectFromSE(kSpecialEffect.type);
 			break;
 #endif
+#ifdef ENABLE_GLOVE_ELEC_ATTACK_BONUS
+		case SE_ELEC_ATTACK_HIT: // MT2009_PLUS_ELEC_GLOVE_V1: the gloves' 6/7 lightning on a struck monster
+			static_assert(SE_ELEC_ATTACK_HIT == 54, "SE_ELEC_ATTACK_HIT differs from the server (server-patches/elecglove)");
+			effect = CInstanceBase::EFFECT_ELEC_ATTACK_HIT;
+			break;
+#endif
 
 		default:
 			TraceError("%d is not a special effect number. TPacketGCSpecialEffect",kSpecialEffect.type);

@@ -195,6 +195,10 @@ const bool CPlayerSettingsModule::LoadGameEffect()
         {pkBase.EFFECT_ELECTRIC_ATTACK, "equip_right", "d:/ymir work/effect/hit/blow_electric/light_1_weapon.mse"},
         {pkBase.EFFECT_ELECTRIC_HIT, "", "d:/ymir work/effect/hit/blow_electric/light_1_blow.mse"},
         {pkBase.EFFECT_ELECTRIC_ATTACH, "", "d:/ymir work/effect/hit/blow_electric/light_1_body.mse"},
+#ifdef ENABLE_GLOVE_ELEC_ATTACK_BONUS
+        // MT2009_PLUS_ELEC_GLOVE_V1: the gloves' 6/7 lightning hit (the global effect, pack "elecglove")
+        {pkBase.EFFECT_ELEC_ATTACK_HIT, "", "d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse"},
+#endif
         //{ pkBase.EFFECT_GYEONGGONG_BOOM, "Bip01", "d:/ymir work/effect/hit/gyeonggong_boom.mse" },
 
         {pkBase.EFFECT_LEVELUP, "", "d:/ymir work/effect/etc/levelup_1/level_up.mse"},
