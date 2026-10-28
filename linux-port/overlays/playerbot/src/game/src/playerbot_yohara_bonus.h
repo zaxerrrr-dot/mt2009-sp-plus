@@ -299,6 +299,15 @@ namespace
 		// MT2009_PLUS_STEAL_CAP_V1: the rest of the gear already gives the 50% cap - absorption here is wasted.
 		if (type == POINT_STEAL_HP && GetPlayerBotGearStealHp(ch, wearCell) >= 50)
 			return ROLE_OTHER;
+		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1 (the owner's point 7, 28 October 2026 - the Sung Ma armour of
+		// playerbot_sungma_fight.h counts them): the skill-damage and the average-damage resistance, the defence per cent
+		// and the piercing / critical resistance are wanted on every piece but the weapon. Only where the piece's set
+		// rolls them (the table's own levels decide - a line that never rolls on a set never stands there): in both
+		// modes today none of them is an ordinary line (world.item_attr and item_attr_mt2009, 28 October - they come from
+		// the alchemy, and the bosses' versions are 6th/7th lines), so this is the rule for a table that gives them.
+		if (wearCell != WEAR_WEAPON && (type == POINT_SKILL_DEFEND_BONUS || type == POINT_NORMAL_HIT_DEFEND_BONUS ||
+				type == POINT_DEF_BONUS || type == POINT_RESIST_PENETRATE || type == POINT_RESIST_CRITICAL))
+			return ROLE_WANTED;
 		switch (wearCell)
 		{
 			case WEAR_WEAPON:

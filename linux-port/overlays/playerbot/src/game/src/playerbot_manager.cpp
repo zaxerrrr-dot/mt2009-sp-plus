@@ -8276,7 +8276,8 @@ WritePlayerBotGuildStatus(dwNow);
 		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: and counted for the census's fight2 line
 		if (UseHealthPotion(ch, state, dwNow, GetPlayerBotSungmaPotionPercent(ch, GetPlayerBotArezzoPotionPercent(ch))))
 			NotePlayerBotSungmaPotion(ch);
-		UseManaPotion(ch, state, dwNow);
+		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: a Sung Ma caster's blue at its build's floor (playerbot_sungma_fight.h)
+		UseManaPotion(ch, state, dwNow, GetPlayerBotSungmaManaPercent(ch, PLAYERBOT_POTION_SP_PERCENT));
 		UseUtilityPotions(ch, state, dwNow);
 		UsePlayerBotBoosters(ch, state, dwNow);
 		// A scroll step in the field claims the tick: Iwakura's scroll rule
@@ -8361,6 +8362,10 @@ WritePlayerBotGuildStatus(dwNow);
 				ch->GetHP() * 100 <= ch->GetMaxHP() * GetPlayerBotSungmaRetreatPercent(ch, GetPlayerBotArezzoRetreatPercent(ch))) // MT2009_PLUS_AREZZO_BOTS_V1 (las); MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a Sung Ma fighter's floor
 			StartPlayerBotTacticalRetreat(ch, state, retreatThreat, dwNow);
 		if (HandlePlayerBotTacticalRetreat(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: after a death, an emergency rest or a healed retreat a Sung Ma resident
+		// re-arms - health, mana, its self-buffs - before a new fight (playerbot_sungma_fight.h)
+		if (HoldPlayerBotSungmaRearm(ch, state, dwNow))
 			continue;
 
 		// A shield slot is not a core slot for a bow or a two-handed weapon: the

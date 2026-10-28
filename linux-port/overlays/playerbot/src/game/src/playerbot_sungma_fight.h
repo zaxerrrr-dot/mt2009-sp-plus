@@ -222,9 +222,16 @@ namespace
 		DWORD dwHpSeenAt;
 		DWORD dwLastEscape;			// MT2009_PLUS_BOT_SUNGMA_NEST_V1: its last escape out of a lost retreat
 		DWORD dwTurnHoldUntil;		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: turned to fight - only the floor and the fall till then
+		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the re-arm (HoldPlayerBotSungmaRearm) - 0 none, 1 after a death or an emergency
+		// rest, 2 after a healed retreat; pending until the recovery is over, then held until dwRearmUntil
+		BYTE bRearm;
+		bool bRearmPending;
+		DWORD dwRearmSince, dwRearmUntil, dwRearmNextCast;
+		DWORD dwRetreatCounted;		// the retreat (its start time) the class census has counted
 		TPlayerBotSungmaFight() : bRetreat(false), iRetreatAttackers(0), lAvoidMap(0), lAvoidX(0), lAvoidY(0), dwAvoidUntil(0),
 			dwLastDown(0), dwNextRetreatLook(0), iRefused(0), dwRefusedSince(0), iHpSeen(100), dwHpSeenAt(0), dwLastEscape(0),
-			dwTurnHoldUntil(0)
+			dwTurnHoldUntil(0), bRearm(0), bRearmPending(false), dwRearmSince(0), dwRearmUntil(0), dwRearmNextCast(0),
+			dwRetreatCounted(0)
 		{ szRetreatWhy[0] = '\0'; }
 	};
 	std::map<DWORD, TPlayerBotSungmaFight> s_mapPlayerBotSungmaFight;
@@ -288,6 +295,205 @@ namespace
 	int GetPlayerBotSungmaHpPercent(LPCHARACTER ch)
 	{
 		return ch && ch->GetMaxHP() > 0 ? (int)((long long)ch->GetHP() * 100 / ch->GetMaxHP()) : 100;
+	}
+
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the fighter's build
+	//
+	// The owner, 28 October 2026 (approved points 1 and 7): a Sung Ma fight that knows the bot's build. The game3 syslog
+	// of 28 October (00:00-17:50, the hours 10 and 13 missing): 14 203 "fallen" lines of 440 residents, the build of
+	// each from player.player (job, skill_group). Deaths a bot, and normalised - the deaths over the deaths its time on
+	// each map would bring at the map's average deaths per bot-hour (the bots' map time from PLAYERBOT_WORLD
+	// transitioned / ENTERGAME / DISCONNECT; Dongan 6.0 deaths a bot-hour, Namgan 4.2, Seoganland 2.9, Wawoz 2.1,
+	// Rozpadlina 2.0, the Twierdza 1.4, Schronienie 1.3, Zejscie 1.3, Yilad 0.7):
+	//   build              deaths/bot  normalised  "again"   died in a retreat / retreats begun
+	//   Black-magic Sura      54.0        2.06       71%       11.4%
+	//   Body Warrior          34.3        1.07       43%        3.6%
+	//   Dragon Shaman         32.9        0.89       45%        3.5%
+	//   Blade Ninja           31.7        0.89       45%        3.4%
+	//   Healing Shaman        28.3        0.82       41%        2.8%
+	//   Mental Warrior        28.1        0.79       37%        3.1%
+	//   Weaponry Sura         25.3        0.72       36%        3.0%
+	// The Black-magic Sura's spiral: 1 408 emergency rests in the night (00-08), 1 347 of them begun inside a retreat
+	// (the 20% rest of playerbot_manager.cpp starts under a running retreat), and 661 of them ended in its death, at a
+	// median of 3 s - not one of the 11 771 emergency rests of the other six builds did. The rest is invisible
+	// (ReviveInvisible) and nothing of the bot's own is cast in it (no "used attack skill", no buff); what the Black-magic
+	// Sura alone carries into it is Flame Spirit (Ognisty Duch, skill 78), a toggle aura whose engine event
+	// (char_skill.cpp skill_muyoung_event) strikes the nearest monster within 800 every 3 s - its target or any monster
+	// FFindNearVictim finds, an idle one too - for as long as the affect lasts: through the retreat (4x the deaths of a
+	// retreat of the other builds: it keeps its pack and wakes the next) and through the "invisible" rest (the 3 s of
+	// the median). 22% of its deaths on the Twierdza are its time there (31% of its hours against 18-23% - the deaths'
+	// step down sends it to the easiest map): per bot-hour it dies 2-4x the others on every map. Its mana adds to it:
+	// Dark Protection (79) takes a share of every blow from the mana (char_battle.cpp, damage_convertion_rate) and the
+	// aura's cost runs on, while the blue potion waited for 30% (PLAYERBOT_POTION_SP_PERCENT) - its last mana before an
+	// "again" death was a median 14%, and restart_here gives no mana back.
+	// So (this file and the tick):
+	//   * the aura comes off when a Sung Ma retreat or an emergency rest begins and stays off through them
+	//     (DropPlayerBotSungmaAura); the fight's buff pass puts it back on the next target;
+	//   * after a death or an emergency rest (and, shorter, after a healed retreat) a resident re-arms before it takes a
+	//     new fight (HoldPlayerBotSungmaRearm): health to PLAYERBOT_SUNGMA_CLASS_REARM_HP, mana to its build's floor, its
+	//     self-buffs back up (Dark Protection, the armours, Strong Body, Blessing...), standing still on its clean ground
+	//     - over when it is ready, when a monster is on it, or after _REARM_MAX_MS;
+	//   * a caster's blue potion at its build's mana floor on a Sung Ma map (GetPlayerBotSungmaManaPercent);
+	//   * the lone pull and the danger floor by the build (GetPlayerBotSungmaClassCapacity / _ClassFloor).
+	// The census: PLAYERBOT_SUNGMA: class, once an hour, a line a build (LogPlayerBotSungmaClassCensus).
+#define MT2009_PLUS_BOT_SUNGMA_CLASS_V1 1
+	enum EPlayerBotSungmaClass
+	{
+		SUNGMA_CLASS_BODY_WARRIOR, SUNGMA_CLASS_MENTAL_WARRIOR, SUNGMA_CLASS_BLADE_NINJA, SUNGMA_CLASS_ARCHER_NINJA,
+		SUNGMA_CLASS_WEAPON_SURA, SUNGMA_CLASS_BM_SURA, SUNGMA_CLASS_DRAGON_SHAMAN, SUNGMA_CLASS_HEAL_SHAMAN,
+		SUNGMA_CLASS_LYCAN, SUNGMA_CLASS_NONE, SUNGMA_CLASS_COUNT
+	};
+	const char* const PLAYERBOT_SUNGMA_CLASS_NAMES[SUNGMA_CLASS_COUNT] = {
+		"body_warrior", "mental_warrior", "blade_ninja", "archer_ninja", "weapon_sura", "bm_sura", "dragon_shaman",
+		"heal_shaman", "lycan", "none"
+	};
+	// The lone pull a build (GetPlayerBotSungmaLoneCapacity): the owner's approved steps, tuned by the normalised deaths
+	// above - the Weaponry Sura (0.72) +1; the Mental Warrior (0.79, high defence, no knockback) +1 with Strong Body
+	// up, else 0; the Dragon Shaman +1 with Blessing up on it (0.89 - its deaths came with the Blessing mostly up, so
+	// nothing without it); the Body Warrior (1.07) and the Blade Ninja (0.89, the lightest armour) -1, the Lycan -1;
+	// the Healing Shaman and the Black-magic Sura 0 (the Sura's 2.06 is the aura's, fixed below - its pull is
+	// re-judged on the class census of the next night).
+	const int PLAYERBOT_SUNGMA_CLASS_CAP[SUNGMA_CLASS_COUNT] = { -1, 0, -1, 0, 1, 0, 0, 0, -1, 0 };
+	const int PLAYERBOT_SUNGMA_CLASS_CAP_BUFFED = 1;	// the Mental Warrior's Strong Body, the Dragon Shaman's Blessing
+	// The danger floor a build (GetPlayerBotSungmaFloorHp, per cent of health; the floors are 15-45): small and in the
+	// same spirit - the Body Warrior +3, the Blade Ninja +2, the Lycan +3; the Weaponry Sura -2, the Mental Warrior -2
+	// with Strong Body up; the Dragon Shaman, the Healing Shaman and the Black-magic Sura 0 (the Dragon's normalised
+	// 0.89 is the Blade's - no lower floor for it).
+	const int PLAYERBOT_SUNGMA_CLASS_FLOOR[SUNGMA_CLASS_COUNT] = { 3, 0, 2, 0, -2, 0, 0, 0, 3, 0 };
+	const int PLAYERBOT_SUNGMA_CLASS_FLOOR_BUFFED = -2;	// the Mental Warrior with Strong Body up
+	// The skills of the builds the rules above read (skill.h).
+	const DWORD PLAYERBOT_SUNGMA_SKILL_FLAME_SPIRIT = 78;
+	const DWORD PLAYERBOT_SUNGMA_SKILL_BLESSING = 94;
+	// The blue potion on a Sung Ma map (GetPlayerBotSungmaManaPercent): the Black-magic Sura at 60% (Dark Protection
+	// lives off its mana), the other Suras and the Shamans at 45%, the rest at the caller's 30%.
+	const int PLAYERBOT_SUNGMA_CLASS_MANA_BM = 60;
+	const int PLAYERBOT_SUNGMA_CLASS_MANA_CASTER = 45;
+	// The re-arm (HoldPlayerBotSungmaRearm): after a death or an emergency rest to _REARM_HP health and its build's mana
+	// (_REARM_SP_BM / _REARM_SP_CASTER), its self-buffs up, at most _REARM_MAX_MS; after a healed retreat the mana and
+	// the buffs only, at most _REARM_RETREAT_MS. A cast every _REARM_CAST_MS at most; the rest's heal 3% a second.
+	const int PLAYERBOT_SUNGMA_CLASS_REARM_HP = 85;
+	const int PLAYERBOT_SUNGMA_CLASS_REARM_SP_BM = 70;
+	const int PLAYERBOT_SUNGMA_CLASS_REARM_SP_CASTER = 50;
+	const DWORD PLAYERBOT_SUNGMA_CLASS_REARM_MAX_MS = 25 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_CLASS_REARM_RETREAT_MS = 8 * 1000;
+	const DWORD PLAYERBOT_SUNGMA_CLASS_REARM_CAST_MS = 1500;
+	// The class census once an hour.
+	const DWORD PLAYERBOT_SUNGMA_CLASS_CENSUS_MS = 60 * 60 * 1000;
+
+	int GetPlayerBotSungmaClass(LPCHARACTER ch)
+	{
+		if (!ch)
+			return SUNGMA_CLASS_NONE;
+		const BYTE group = ch->GetSkillGroup();
+		switch (ch->GetJob())
+		{
+			case JOB_WARRIOR: return group == 1 ? SUNGMA_CLASS_BODY_WARRIOR : (group == 2 ? SUNGMA_CLASS_MENTAL_WARRIOR : SUNGMA_CLASS_NONE);
+			case JOB_ASSASSIN: return group == 1 ? SUNGMA_CLASS_BLADE_NINJA : (group == 2 ? SUNGMA_CLASS_ARCHER_NINJA : SUNGMA_CLASS_NONE);
+			case JOB_SURA: return group == 1 ? SUNGMA_CLASS_WEAPON_SURA : (group == 2 ? SUNGMA_CLASS_BM_SURA : SUNGMA_CLASS_NONE);
+			case JOB_SHAMAN: return group == 1 ? SUNGMA_CLASS_DRAGON_SHAMAN : (group == 2 ? SUNGMA_CLASS_HEAL_SHAMAN : SUNGMA_CLASS_NONE);
+#ifdef ENABLE_WOLFMAN_CHARACTER
+			case JOB_WOLFMAN: return SUNGMA_CLASS_LYCAN;
+#endif
+			default: return SUNGMA_CLASS_NONE;
+		}
+	}
+
+	// The build's own buff that earns it the buffed step (Strong Body, Blessing on itself).
+	bool IsPlayerBotSungmaClassBuffed(LPCHARACTER ch, int cls)
+	{
+		if (cls == SUNGMA_CLASS_MENTAL_WARRIOR)
+			return ch->IsAffectFlag(AFF_CHEONGEUN);
+		if (cls == SUNGMA_CLASS_DRAGON_SHAMAN)
+			return IsPlayerBotBuffAffectOn(ch, PLAYERBOT_SUNGMA_SKILL_BLESSING);
+		return false;
+	}
+
+	int GetPlayerBotSungmaClassCapacity(LPCHARACTER ch)
+	{
+		const int cls = GetPlayerBotSungmaClass(ch);
+		int mod = PLAYERBOT_SUNGMA_CLASS_CAP[cls];
+		if ((cls == SUNGMA_CLASS_MENTAL_WARRIOR || cls == SUNGMA_CLASS_DRAGON_SHAMAN) && IsPlayerBotSungmaClassBuffed(ch, cls))
+			mod += PLAYERBOT_SUNGMA_CLASS_CAP_BUFFED;
+		return mod;
+	}
+
+	int GetPlayerBotSungmaClassFloor(LPCHARACTER ch)
+	{
+		const int cls = GetPlayerBotSungmaClass(ch);
+		int mod = PLAYERBOT_SUNGMA_CLASS_FLOOR[cls];
+		if (cls == SUNGMA_CLASS_MENTAL_WARRIOR && IsPlayerBotSungmaClassBuffed(ch, cls))
+			mod += PLAYERBOT_SUNGMA_CLASS_FLOOR_BUFFED;
+		return mod;
+	}
+
+	// The class census's counters (LogPlayerBotSungmaClassCensus); c0*: the last line's snapshot.
+	struct TPlayerBotSungmaClassStats
+	{
+		unsigned int kills, deaths, again, retreats, retreatDeaths, auraDrops, rearms, rearmsReady, rearmsAttacked,
+				rearmsTimeout;
+		unsigned int c0Kills, c0Deaths, c0Again, c0Retreats, c0RetreatDeaths, c0AuraDrops, c0Rearms, c0RearmsReady,
+				c0RearmsAttacked, c0RearmsTimeout;
+		unsigned int samples, botSum;
+		TPlayerBotSungmaClassStats() : kills(0), deaths(0), again(0), retreats(0), retreatDeaths(0), auraDrops(0), rearms(0),
+			rearmsReady(0), rearmsAttacked(0), rearmsTimeout(0), c0Kills(0), c0Deaths(0), c0Again(0), c0Retreats(0),
+			c0RetreatDeaths(0), c0AuraDrops(0), c0Rearms(0), c0RearmsReady(0), c0RearmsAttacked(0), c0RearmsTimeout(0),
+			samples(0), botSum(0) {}
+	};
+	TPlayerBotSungmaClassStats s_aPlayerBotSungmaClassStats[SUNGMA_CLASS_COUNT];
+	DWORD s_dwPlayerBotSungmaClassCensusSince = 0;
+	DWORD s_dwPlayerBotSungmaClassLastSample = 0;
+
+	TPlayerBotSungmaClassStats& GetPlayerBotSungmaClassStats(LPCHARACTER ch)
+	{
+		return s_aPlayerBotSungmaClassStats[GetPlayerBotSungmaClass(ch)];
+	}
+
+	// Flame Spirit off (see above): its aura strikes on through a retreat and an invisible rest. True when it was on.
+	bool DropPlayerBotSungmaAura(LPCHARACTER ch, const char* why)
+	{
+		if (!ch || !ch->IsAffectFlag(AFF_MUYEONG))
+			return false;
+		ch->RemoveAffect(PLAYERBOT_SUNGMA_SKILL_FLAME_SPIRIT);
+		++GetPlayerBotSungmaClassStats(ch).auraDrops;
+		sys_log(0, "PLAYERBOT_SUNGMA: aura off pid=%u name=%s map=%ld why=%s hp=%d/%d sp=%d/%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), why ? why : "-", ch->GetHP(), ch->GetMaxHP(), ch->GetSP(),
+				ch->GetMaxSP());
+		return true;
+	}
+
+	// The blue potion's mana per cent (UseManaPotion): a Sung Ma fighter's build floor, else the caller's.
+	int GetPlayerBotSungmaManaPercent(LPCHARACTER ch, int otherwise)
+	{
+		if (!IsPlayerBotSungmaFighter(ch))
+			return otherwise;
+		const int cls = GetPlayerBotSungmaClass(ch);
+		if (cls == SUNGMA_CLASS_BM_SURA)
+			return std::max(otherwise, PLAYERBOT_SUNGMA_CLASS_MANA_BM);
+		if (cls == SUNGMA_CLASS_WEAPON_SURA || cls == SUNGMA_CLASS_DRAGON_SHAMAN || cls == SUNGMA_CLASS_HEAL_SHAMAN)
+			return std::max(otherwise, PLAYERBOT_SUNGMA_CLASS_MANA_CASTER);
+		return otherwise;
+	}
+
+	// The re-arm's mana target of a build (0: no wait for mana).
+	int GetPlayerBotSungmaRearmSp(LPCHARACTER ch)
+	{
+		const int cls = GetPlayerBotSungmaClass(ch);
+		if (cls == SUNGMA_CLASS_BM_SURA)
+			return PLAYERBOT_SUNGMA_CLASS_REARM_SP_BM;
+		if (cls == SUNGMA_CLASS_WEAPON_SURA || cls == SUNGMA_CLASS_DRAGON_SHAMAN || cls == SUNGMA_CLASS_HEAL_SHAMAN)
+			return PLAYERBOT_SUNGMA_CLASS_REARM_SP_CASTER;
+		return 0;
+	}
+
+	// A re-arm owed (NotePlayerBotSungmaFallen / _Down: after a death or an emergency rest, kind 1; a healed retreat,
+	// kind 2). It begins on the first tick the recovery is over (HoldPlayerBotSungmaRearm).
+	void QueuePlayerBotSungmaRearm(TPlayerBotSungmaFight& f, BYTE kind)
+	{
+		if (kind == 2 && f.bRearmPending && f.bRearm == 1)
+			return;	// a death's re-arm is not shortened by a retreat's
+		f.bRearm = kind;
+		f.bRearmPending = true;
+		f.dwRearmUntil = 0;
 	}
 
 	// ------------------------------------------------------------ the party by the bot
@@ -627,6 +833,7 @@ namespace
 		const int bandFloor = GetPlayerBotSungmaBandFloor(base);
 		if (bandFloor > 0 && champion - bandFloor >= PLAYERBOT_SUNGMA_F2_BAND_HIGH_LEVELS)
 			floorHp -= PLAYERBOT_SUNGMA_F2_FLOOR_BAND_HIGH;
+		floorHp += GetPlayerBotSungmaClassFloor(ch);	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the build's step
 		return std::max(15, std::min(floorHp, PLAYERBOT_SUNGMA_F2_FLOOR_NO_RED));
 	}
 
@@ -682,6 +889,16 @@ namespace
 
 	// The bot's armour against a monster (see PLAYERBOT_SUNGMA_F2_CAP_ARMOUR_*): block + dodge / 2 + the piercing
 	// resistance + its resistance to the monster's element / 2 (to its hunt element's, mob NULL).
+	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1 (the owner's point 7, 28 October 2026): + the average-damage resistance (POINT_
+	// NORMAL_HIT_DEFEND_BONUS: a per cent off every normal blow, char_battle.cpp - a monster's ordinary hit is one) + the
+	// Blessing's damage resistance / 2 (POINT_RESIST_NORMAL_DAMAGE, counted by the engine only under the Blessing) + the
+	// skill-damage resistance / 2 (POINT_SKILL_DEFEND_BONUS: the monsters' skills come seldom) + the defence per cent / 4
+	// (POINT_DEF_BONUS, the per cent on the defence value). Today these come from the alchemy (SKILL_DEFEND 10,
+	// NORMAL_HIT_DEFEND 10, RESIST_PENETRATE 8 a stone, dragon_soul_table.txt), the Blessing and the shop's items - no
+	// ordinary bonus line rolls them (world.item_attr, both modes).
+	const int PLAYERBOT_SUNGMA_CLASS_ARMOUR_SKILL_DIV = 2;
+	const int PLAYERBOT_SUNGMA_CLASS_ARMOUR_BLESSING_DIV = 2;
+	const int PLAYERBOT_SUNGMA_CLASS_ARMOUR_DEF_PCT_DIV = 4;
 	int GetPlayerBotSungmaArmour(LPCHARACTER ch, LPCHARACTER mob)
 	{
 		int resist = 0;
@@ -698,8 +915,15 @@ namespace
 			if (e >= 0)
 				resist = (int)ch->GetPoint(PLAYERBOT_SUNGMA_ELEMENTS[e].bResist);
 		}
-		return std::max(0, (int)ch->GetPoint(POINT_BLOCK)) + std::max(0, (int)ch->GetPoint(POINT_DODGE)) / 2 +
+		int armour = std::max(0, (int)ch->GetPoint(POINT_BLOCK)) + std::max(0, (int)ch->GetPoint(POINT_DODGE)) / 2 +
 				std::max(0, (int)ch->GetPoint(POINT_RESIST_PENETRATE)) + std::max(0, resist) / 2;
+		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the damage resistances and the defence per cent (above)
+		armour += std::max(0, std::min(99, (int)ch->GetPoint(POINT_NORMAL_HIT_DEFEND_BONUS)));
+		armour += std::max(0, std::min(99, (int)ch->GetPoint(POINT_SKILL_DEFEND_BONUS))) / PLAYERBOT_SUNGMA_CLASS_ARMOUR_SKILL_DIV;
+		if (ch->IsAffectFlag(AFF_HOSIN))
+			armour += std::max(0, (int)ch->GetPoint(POINT_RESIST_NORMAL_DAMAGE)) / PLAYERBOT_SUNGMA_CLASS_ARMOUR_BLESSING_DIV;
+		armour += std::max(0, (int)ch->GetPoint(POINT_DEF_BONUS)) / PLAYERBOT_SUNGMA_CLASS_ARMOUR_DEF_PCT_DIV;
+		return armour;
 	}
 
 	// What the bot takes alone at full health (see PLAYERBOT_SUNGMA_F2_CAP_*): its maximum health, the map, its armour.
@@ -714,6 +938,7 @@ namespace
 			cap += 2;
 		else if (armour >= PLAYERBOT_SUNGMA_F2_CAP_ARMOUR_1)
 			++cap;
+		cap += GetPlayerBotSungmaClassCapacity(ch);	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the build's step
 		return std::max(2, std::min(cap, PLAYERBOT_SUNGMA_F2_CAP_LONE_MAX));
 	}
 
@@ -1015,6 +1240,14 @@ namespace
 			return -1;
 		TPlayerBotSungmaFight& f = s_mapPlayerBotSungmaFight[ch->GetPlayerID()];
 		SetPlayerBotAction(state, BOT_ACTION_RECOVER, dwNow);
+		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: a retreat of the class census (once), and no Flame Spirit through it - its aura
+		// strikes the pack the bot runs from every 3 s (see the class section)
+		if (state.dwRetreatStartedTime != 0 && f.dwRetreatCounted != state.dwRetreatStartedTime)
+		{
+			f.dwRetreatCounted = state.dwRetreatStartedTime;
+			++GetPlayerBotSungmaClassStats(ch).retreats;
+		}
+		DropPlayerBotSungmaAura(ch, f.szRetreatWhy[0] ? f.szRetreatWhy : "retreat");
 		std::vector<TPlayerBotSungmaMob> mobs;
 		CollectPlayerBotSungmaMobs(ch, PLAYERBOT_SUNGMA_ATTACKER_RADIUS + PLAYERBOT_SUNGMA_RETREAT_STEP, mobs);
 		long cx = 0, cy = 0;
@@ -1083,6 +1316,9 @@ namespace
 			}
 			if (turn && attackers > 0)
 				f.dwTurnHoldUntil = dwNow + PLAYERBOT_SUNGMA_F2_TURN_HOLD_MS;
+			// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: healed with nobody on it - its mana and its buffs before the next fight
+			else if (attackers == 0)
+				QueuePlayerBotSungmaRearm(f, 2);
 			f.bRetreat = false;
 			f.szRetreatWhy[0] = '\0';
 			state.bTacticalRetreat = false;
@@ -1150,6 +1386,140 @@ namespace
 		return 1;
 	}
 
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the re-arm
+
+	// One missing self-buff of the build cast on the bot itself (the re-arm's): not Flame Spirit (the aura pulls - the
+	// fight's buff pass casts it on a target) nor Cure; a buff still cooling down is not waited for. 1 a cast went (or the
+	// bot climbed down for it), 0 nothing is missing that could go now, -1 a buff waits for the mana.
+	int CastPlayerBotSungmaSelfBuff(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || ch->GetSkillGroup() == 0 || IsPlayerBotFightingAsMonster(ch))
+			return 0;
+		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+		int waiting = 0;
+		for (size_t i = 0; i < sizeof(build.dwBuffSkills) / sizeof(build.dwBuffSkills[0]); ++i)
+		{
+			const DWORD vnum = build.dwBuffSkills[i];
+			if (vnum == 0 || vnum == PLAYERBOT_SUNGMA_SKILL_FLAME_SPIRIT || vnum == 109 || ch->GetSkillLevel(vnum) == 0 ||
+					IsPlayerBotBuffAffectOn(ch, vnum) || !IsPlayerBotSkillReady(state, vnum, dwNow))
+				continue;
+			if (ch->GetSP() < GetPlayerBotSkillSPCost(ch, vnum))
+			{
+				waiting = -1;
+				continue;
+			}
+			if (ch->IsRiding() && !IsPlayerBotOnStandingMount(ch))
+			{
+				SetPlayerBotRidingForTravel(ch, state, false, dwNow, "buff");
+				return 1;
+			}
+			if (!PlayerBotUseSkill(ch, state, vnum, ch, dwNow))
+				continue;
+			SendPlayerBotSkillPacket(ch, vnum);
+			state.dwLastBotSkillTime = dwNow;
+			state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;
+			state.mapBuffActiveUntil[vnum] = dwNow + PLAYERBOT_BUFF_FALLBACK_DURATION;
+			sys_log(0, "PLAYERBOT_SUNGMA: rearm buff pid=%u name=%s map=%ld vnum=%u sp=%d/%d",
+					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), vnum, ch->GetSP(), ch->GetMaxSP());
+			return 1;
+		}
+		return waiting;
+	}
+
+	void EndPlayerBotSungmaRearm(LPCHARACTER ch, TPlayerBotSungmaFight& f, DWORD dwNow, const char* why)
+	{
+		TPlayerBotSungmaClassStats& cs = GetPlayerBotSungmaClassStats(ch);
+		if (why[0] == 'r')
+			++cs.rearmsReady;
+		else if (why[0] == 'a')
+			++cs.rearmsAttacked;
+		else if (why[0] == 't')
+			++cs.rearmsTimeout;
+		sys_log(0, "PLAYERBOT_SUNGMA: rearm over pid=%u name=%s map=%ld class=%s kind=%u why=%s took_ms=%u hp=%d/%d sp=%d/%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), PLAYERBOT_SUNGMA_CLASS_NAMES[GetPlayerBotSungmaClass(ch)],
+				(unsigned int)f.bRearm, why, f.dwRearmSince ? dwNow - f.dwRearmSince : 0, ch->GetHP(), ch->GetMaxHP(), ch->GetSP(),
+				ch->GetMaxSP());
+		f.bRearm = 0;
+		f.bRearmPending = false;
+		f.dwRearmUntil = 0;
+	}
+
+	// The tick, after the recovery and the retreat (playerbot_manager.cpp): a resident that owes a re-arm (see the class
+	// section) stands on its ground, drinks to its build's mana (the belt's red at PLAYERBOT_SUNGMA_POTION_PERCENT is
+	// the tick's), rest-heals and puts its self-buffs back on before a new fight. True: the tick is the re-arm's.
+	bool HoldPlayerBotSungmaRearm(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!ch || ch->IsDead() || state.bTacticalRetreat || state.bRecoveringAfterDeath)
+			return false;
+		std::map<DWORD, TPlayerBotSungmaFight>::iterator it = s_mapPlayerBotSungmaFight.find(ch->GetPlayerID());
+		if (it == s_mapPlayerBotSungmaFight.end() || it->second.bRearm == 0)
+			return false;
+		TPlayerBotSungmaFight& f = it->second;
+		if (!IsPlayerBotSungmaFighter(ch))
+		{
+			f.bRearm = 0;
+			f.bRearmPending = false;
+			return false;
+		}
+		if (f.bRearmPending)
+		{
+			f.bRearmPending = false;
+			f.dwRearmSince = dwNow ? dwNow : 1;
+			f.dwRearmUntil = dwNow + (f.bRearm == 1 ? PLAYERBOT_SUNGMA_CLASS_REARM_MAX_MS : PLAYERBOT_SUNGMA_CLASS_REARM_RETREAT_MS);
+			f.dwRearmNextCast = 0;
+			++GetPlayerBotSungmaClassStats(ch).rearms;
+		}
+		// a monster on it: the hold is a fight now
+		std::vector<TPlayerBotSungmaMob> mobs;
+		CollectPlayerBotSungmaMobs(ch, PLAYERBOT_SUNGMA_ATTACKER_RADIUS, mobs);
+		long cx = 0, cy = 0;
+		if (CountPlayerBotSungmaAttackers(ch, mobs, cx, cy, NULL) > 0)
+		{
+			EndPlayerBotSungmaRearm(ch, f, dwNow, "attacked");
+			return false;
+		}
+		const int hp = GetPlayerBotSungmaHpPercent(ch);
+		const int spTarget = GetPlayerBotSungmaRearmSp(ch);
+		const int sp = ch->GetMaxSP() > 0 ? (int)((long long)ch->GetSP() * 100 / ch->GetMaxSP()) : 100;
+		if (spTarget > 0 && sp < spTarget)
+			UseManaPotion(ch, state, dwNow, spTarget);
+		int buff = 0;
+		if (dwNow >= state.dwNextAttackTime && (int)(dwNow - f.dwRearmNextCast) >= 0)
+		{
+			buff = CastPlayerBotSungmaSelfBuff(ch, state, dwNow);
+			if (buff > 0)
+				f.dwRearmNextCast = dwNow + PLAYERBOT_SUNGMA_CLASS_REARM_CAST_MS;
+		}
+		else
+			buff = 1;	// a cast under way: its result is the next look's
+		const bool hpReady = f.bRearm != 1 || hp >= PLAYERBOT_SUNGMA_CLASS_REARM_HP;
+		const bool spReady = spTarget <= 0 || sp >= spTarget;
+		// a buff short of mana with the build's mana reached (or none asked) is not waited for
+		if (hpReady && spReady && buff <= 0)
+		{
+			EndPlayerBotSungmaRearm(ch, f, dwNow, "ready");
+			return false;
+		}
+		if ((int)(dwNow - f.dwRearmUntil) >= 0)
+		{
+			EndPlayerBotSungmaRearm(ch, f, dwNow, "timeout");
+			return false;
+		}
+		// standing, resting: the retreat's rest heal (3% a second), no target
+		SetPlayerBotAction(state, BOT_ACTION_RECOVER, dwNow);
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		if (hp < 100 && dwNow >= state.dwNextRecoveryHealTime)
+		{
+			const int heal = std::max(1, ch->GetMaxHP() * 3 / 100);
+			ch->PointChange(POINT_HP, std::min(heal, ch->GetMaxHP() - ch->GetHP()));
+			state.dwNextRecoveryHealTime = dwNow + 1000;
+		}
+		if (ch->IsStateMove())
+			ch->Stop();
+		return true;
+	}
+
 	// ------------------------------------------------------------ the deaths
 
 	// HandleDeath, the tick the bot is found dead (its retreat, target and last death not reset yet): the cause.
@@ -1191,6 +1561,16 @@ namespace
 			cause = SUNGMA_DEATH_PACK;
 		f.dwLastDown = dwNow ? dwNow : 1;
 		f.bRetreat = false;
+		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the build's census and the re-arm after the revival
+		{
+			TPlayerBotSungmaClassStats& cs = GetPlayerBotSungmaClassStats(ch);
+			++cs.deaths;
+			if (cause == SUNGMA_DEATH_AGAIN)
+				++cs.again;
+			if (state.bTacticalRetreat)
+				++cs.retreatDeaths;
+			QueuePlayerBotSungmaRearm(f, 1);
+		}
 		if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
 		{
 			++st->deaths[cause];
@@ -1206,19 +1586,108 @@ namespace
 		champion = (int)ch->GetConquerorLevel();
 #endif
 		sys_log(0, "PLAYERBOT_SUNGMA: fallen pid=%u name=%s map=%ld cause=%s champion=%d attackers=%d near=%d boss=%d party=%d party_near=%d "
-				"red=%u retreat=%d retreat_why=%s target=%u pos=(%ld,%ld) max_hp=%d",
+				"red=%u retreat=%d retreat_why=%s target=%u pos=(%ld,%ld) max_hp=%d sp=%d/%d class=%s",
 				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), PLAYERBOT_SUNGMA_DEATH_CAUSE_NAMES[cause], champion, attackers,
 				near, boss, ch->GetParty() ? (int)ch->GetParty()->GetMemberCount() : 0, partyNear, (unsigned int)red,
 				state.bTacticalRetreat ? 1 : 0, f.szRetreatWhy[0] ? f.szRetreatWhy : "-", target ? target->GetRaceNum() : 0,
-				ch->GetX(), ch->GetY(), ch->GetMaxHP());
+				ch->GetX(), ch->GetY(), ch->GetMaxHP(), ch->GetSP(), ch->GetMaxSP(),
+				PLAYERBOT_SUNGMA_CLASS_NAMES[GetPlayerBotSungmaClass(ch)]);	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: sp, class
 		f.szRetreatWhy[0] = '\0';
 	}
 
 	// The emergency rest (20% health, nobody holding it) counts as a fall for the cause "again".
+	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: and the aura off for the invisible rest (the Black-magic Sura's spiral), the
+	// re-arm after it.
 	void NotePlayerBotSungmaDown(LPCHARACTER ch, DWORD dwNow)
 	{
 		if (ch && IsPlayerBotSungmaBotMap(ch->GetMapIndex()) && IsPlayerBotSungmaResidentPID(ch->GetPlayerID()))
-			s_mapPlayerBotSungmaFight[ch->GetPlayerID()].dwLastDown = dwNow ? dwNow : 1;
+		{
+			TPlayerBotSungmaFight& f = s_mapPlayerBotSungmaFight[ch->GetPlayerID()];
+			f.dwLastDown = dwNow ? dwNow : 1;
+			DropPlayerBotSungmaAura(ch, "rest");
+			QueuePlayerBotSungmaRearm(f, 1);
+		}
+	}
+
+	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: a monster killed by a Sung Ma fighter (BattlePassOnKill) - its build's kill.
+	void NotePlayerBotSungmaClassKill(LPCHARACTER killer, LPCHARACTER victim)
+	{
+		if (!killer || !victim || victim->IsPC() || !killer->IsPC() || !killer->GetDesc() || !killer->GetDesc()->IsBot() ||
+				!IsPlayerBotSungmaBotMap(killer->GetMapIndex()) || !IsPlayerBotSungmaResidentPID(killer->GetPlayerID()))
+			return;
+		++GetPlayerBotSungmaClassStats(killer).kills;
+	}
+
+	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the class census - a sample of the fighters by build every census pass, and once
+	// an hour a line a build: the bots (the samples' average), kills and deaths an hour, a bot's kills and deaths an
+	// hour, the share of "again" deaths and of deaths in a retreat, retreats an hour, the aura drops and the re-arms
+	// (ready / attacked / timeout).
+	void LogPlayerBotSungmaClassCensus(DWORD dwNow)
+	{
+		if (s_dwPlayerBotSungmaClassLastSample != 0 && dwNow - s_dwPlayerBotSungmaClassLastSample < 1000)
+			return;	// one sample a census pass (every map's fight line calls this)
+		s_dwPlayerBotSungmaClassLastSample = dwNow ? dwNow : 1;
+		int here[SUNGMA_CLASS_COUNT] = { 0 };
+		for (std::map<DWORD, TPlayerBotSungmaFight>::const_iterator i = s_mapPlayerBotSungmaFight.begin();
+				i != s_mapPlayerBotSungmaFight.end(); ++i)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(i->first);
+			if (ch && IsPlayerBotSungmaBotMap(ch->GetMapIndex()) && IsPlayerBotSungmaResidentPID(ch->GetPlayerID()))
+				++here[GetPlayerBotSungmaClass(ch)];
+		}
+		for (int c = 0; c < SUNGMA_CLASS_COUNT; ++c)
+		{
+			++s_aPlayerBotSungmaClassStats[c].samples;
+			s_aPlayerBotSungmaClassStats[c].botSum += (unsigned int)here[c];
+		}
+		if (s_dwPlayerBotSungmaClassCensusSince == 0)
+		{
+			s_dwPlayerBotSungmaClassCensusSince = dwNow ? dwNow : 1;
+			for (int c = 0; c < SUNGMA_CLASS_COUNT; ++c)
+			{
+				TPlayerBotSungmaClassStats& cs = s_aPlayerBotSungmaClassStats[c];
+				cs.c0Kills = cs.kills; cs.c0Deaths = cs.deaths; cs.c0Again = cs.again; cs.c0Retreats = cs.retreats;
+				cs.c0RetreatDeaths = cs.retreatDeaths; cs.c0AuraDrops = cs.auraDrops; cs.c0Rearms = cs.rearms;
+				cs.c0RearmsReady = cs.rearmsReady; cs.c0RearmsAttacked = cs.rearmsAttacked; cs.c0RearmsTimeout = cs.rearmsTimeout;
+				cs.samples = 1;
+				cs.botSum = (unsigned int)here[c];
+			}
+			return;
+		}
+		const DWORD span = dwNow - s_dwPlayerBotSungmaClassCensusSince;
+		if (span < PLAYERBOT_SUNGMA_CLASS_CENSUS_MS)
+			return;
+		const long long ms = (long long)span;
+		for (int c = 0; c < SUNGMA_CLASS_COUNT; ++c)
+		{
+			TPlayerBotSungmaClassStats& cs = s_aPlayerBotSungmaClassStats[c];
+			const long long bots10 = cs.samples ? (long long)cs.botSum * 10 / cs.samples : 0;
+			const unsigned int deaths = cs.deaths - cs.c0Deaths;
+			if (bots10 > 0 || deaths > 0)
+			{
+				const long long killsH = (long long)(cs.kills - cs.c0Kills) * 3600000LL / ms;
+				const long long deathsH = (long long)deaths * 3600000LL / ms;
+				const long long killsBot10 = bots10 > 0 ? killsH * 100 / bots10 : 0;
+				const long long deathsBot100 = bots10 > 0 ? deathsH * 1000 / bots10 : 0;
+				const unsigned int again = cs.again - cs.c0Again;
+				const unsigned int inRetreat = cs.retreatDeaths - cs.c0RetreatDeaths;
+				sys_log(0, "PLAYERBOT_SUNGMA: class channel=%u name=%s span_s=%u bots=%lld.%lld kills_h=%lld deaths_h=%lld "
+						"kills_bot_h=%lld.%lld deaths_bot_h=%lld.%02lld again_pct=%u retreat_death_pct=%u retreats_h=%lld "
+						"aura_drops=%u rearms=%u rearm_ready=%u rearm_attacked=%u rearm_timeout=%u",
+						(unsigned int)g_bChannel, PLAYERBOT_SUNGMA_CLASS_NAMES[c], (unsigned int)(span / 1000), bots10 / 10, bots10 % 10,
+						killsH, deathsH, killsBot10 / 10, killsBot10 % 10, deathsBot100 / 100, deathsBot100 % 100,
+						deaths ? again * 100 / deaths : 0, deaths ? inRetreat * 100 / deaths : 0,
+						(long long)(cs.retreats - cs.c0Retreats) * 3600000LL / ms, cs.auraDrops - cs.c0AuraDrops,
+						cs.rearms - cs.c0Rearms, cs.rearmsReady - cs.c0RearmsReady, cs.rearmsAttacked - cs.c0RearmsAttacked,
+						cs.rearmsTimeout - cs.c0RearmsTimeout);
+			}
+			cs.c0Kills = cs.kills; cs.c0Deaths = cs.deaths; cs.c0Again = cs.again; cs.c0Retreats = cs.retreats;
+			cs.c0RetreatDeaths = cs.retreatDeaths; cs.c0AuraDrops = cs.auraDrops; cs.c0Rearms = cs.rearms;
+			cs.c0RearmsReady = cs.rearmsReady; cs.c0RearmsAttacked = cs.rearmsAttacked; cs.c0RearmsTimeout = cs.rearmsTimeout;
+			cs.samples = 0;
+			cs.botSum = 0;
+		}
+		s_dwPlayerBotSungmaClassCensusSince = dwNow ? dwNow : 1;
 	}
 
 	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the hourly fight2 line of a map - kills, deaths, retreats, potions, turns and
@@ -1287,6 +1756,7 @@ namespace
 		if (slot < 0 || slot >= 9)
 			return;
 		LogPlayerBotSungmaFight2(slot, mapIndex, key, here, kills, deaths, get_dword_time());
+		LogPlayerBotSungmaClassCensus(get_dword_time());	// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the class line, hourly
 		const TPlayerBotSungmaFightStats& st = s_aPlayerBotSungmaFightStats[slot];
 		char causes[160];
 		int len = 0;

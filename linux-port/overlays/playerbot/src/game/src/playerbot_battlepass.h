@@ -901,6 +901,8 @@ namespace { void NotePlayerBotDayGoalKill(LPCHARACTER killer, LPCHARACTER victim
 namespace { void NotePlayerBotDayGoalSharedKill(LPCHARACTER killer, LPCHARACTER victim, const std::vector<LPCHARACTER>& hurt); }
 // MT2009_PLUS_BOT_YOHARA_MAPS_V1 (kills): and the Sung Ma maps' census (playerbot_yohara_sungma.h).
 namespace { void NotePlayerBotSungmaKill(LPCHARACTER killer, LPCHARACTER victim); }
+// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the build's kills for the class census (playerbot_sungma_fight.h)
+namespace { void NotePlayerBotSungmaClassKill(LPCHARACTER killer, LPCHARACTER victim); }
 
 // MT2009_PLUS_WEEKLY_RANKING_V1: the weekly ranking counts the same deeds
 // (playerbot_weekly_rank.h, included later).
@@ -917,6 +919,7 @@ void BattlePassOnKill(LPCHARACTER killer, LPCHARACTER victim)
 	NotePlayerBotSpider3Kill(killer, victim); // MT2009_PLUS_SPIDER3_BOTS_V1 (the V2 record, V3's kills)
 	NotePlayerBotDayGoalKill(killer, victim); // MT2009_PLUS_BOT_DAY_GOAL_V1 (kills)
 	NotePlayerBotSungmaKill(killer, victim); // MT2009_PLUS_BOT_YOHARA_MAPS_V1 (kills)
+	NotePlayerBotSungmaClassKill(killer, victim); // MT2009_PLUS_BOT_SUNGMA_CLASS_V1 (the build's kills)
 	if (!killer || !victim || victim->IsPC() || !mt2009_battlepass::Counts(killer))
 		return;
 	const DWORD race = victim->GetRaceNum();
