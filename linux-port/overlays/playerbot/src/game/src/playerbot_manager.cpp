@@ -420,6 +420,9 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // MT2009_PLUS_ELEMENT_STONES_V1: every Yohara bot wears Kamien Ochrony Zywiolow (39120) and gets a new one when it ends -
 // after the cohort (playerbot_yohara_bots.h), the ItemShop (playerbot_itemshop.h) and the unique slots
 #include "playerbot_element_stones.h"
+// MT2009_PLUS_BOT_ELEMENT_PET_V1: every Yohara bot buys (ItemShop) and calls the Maly Zywiolak of its hunt element -
+// after the element stones (the cohort, the ItemShop and the hunt element are all above)
+#include "playerbot_element_pet.h"
 
 namespace
 {
@@ -6969,6 +6972,7 @@ void CPlayerBotManager::Update()
 WritePlayerBotGuildStatus(dwNow);
 	WritePlayerBotItemShopCensus(dwNow);
 	WritePlayerBotElementStoneCensus(dwNow);	// MT2009_PLUS_ELEMENT_STONES_V1
+	WritePlayerBotElementPetCensus(dwNow);	// MT2009_PLUS_BOT_ELEMENT_PET_V1
 	// The ore veins, once a minute for the whole world. A vein deletes itself
 	// after 7-15 minutes and nothing in this world's regen files puts one back -
 	// there are no vein spawns on any of its maps at all - so the sites are
@@ -7655,6 +7659,8 @@ WritePlayerBotGuildStatus(dwNow);
 		ManagePlayerBotUniqueSlots(ch, state, dwNow);
 		// MT2009_PLUS_ELEMENT_STONES_V1: a Yohara bot's Kamien Ochrony Zywiolow on, renewed when it ends.
 		ManagePlayerBotElementStone(ch, state, dwNow);
+		// MT2009_PLUS_BOT_ELEMENT_PET_V1: and the Maly Zywiolak of its hunt element out (bought, renewed after its 15 days).
+		ManagePlayerBotElementPet(ch, state, dwNow);
 		// MT2009_PLUS_BOT_MLODZI_V1: the young heroes' weapon taken at its tier and the hand's expiry switch, right
 		// before the gear pass that puts it on (playerbot_mlodzi_bots.h).
 		ManagePlayerBotMlodzi(ch, state, dwNow);
