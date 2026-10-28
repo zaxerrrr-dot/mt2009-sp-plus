@@ -69,6 +69,9 @@ namespace
 	const int PLAYERBOT_YSHOP_HUNT_MATERIAL_KEEP = 3000;
 	const int PLAYERBOT_YSHOP_FREE_CELLS = 4;	// free cells left in the bag after an elixir
 	const DWORD PLAYERBOT_YSHOP_ERRAND_GAP_MS = 30 * 60 * 1000;
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+	const DWORD PLAYERBOT_YSHOP_WANTED_LOG_MS = 5 * 60 * 1000;	// the "errand wanted" line at most this often a bot
+#endif
 	const DWORD PLAYERBOT_YSHOP_NEED_MS = 30 * 1000;
 	const DWORD PLAYERBOT_YSHOP_TICK_MS = 5 * 1000;
 	const DWORD PLAYERBOT_YSHOP_DRESS_LOOK_MS = 60 * 1000;	// the dress looked at again without a change of map
@@ -118,7 +121,9 @@ namespace
 		int iDressed;	// -1 unknown, 0 world, 1 Sung Ma
 		std::set<DWORD> setKept;	// world set and jade kept, item ids
 		int aiWillDelta[4];
-		TPlayerBotYoharaShopBot() : dwNextTick(0), dwLastErrand(0), dwKeptAt(0), dwWillAt(0), dwNextDressLook(0), iDressed(-1)
+		DWORD dwWantedLogAt;	// MT2009_PLUS_BOT_ELEMENT_RESIST_V4: the last "errand wanted" line
+		TPlayerBotYoharaShopBot() : dwNextTick(0), dwLastErrand(0), dwKeptAt(0), dwWillAt(0), dwNextDressLook(0), iDressed(-1),
+			dwWantedLogAt(0)
 		{
 			for (int i = 0; i < 4; ++i)
 				aiWillDelta[i] = 0;
@@ -305,16 +310,110 @@ namespace
 	}
 #endif
 
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V4 (the census of 28 October 14:51: fire stock_avg 5.4, elixir_up 73%, no_stock 791
+	// against 85-95% elsewhere). Not the errand: a bot living on Dongan goes to Handlarka as any other (its potion errands
+	// ran the exchange and filled its stock to 16 - DIABELLEKv3 13:40). The fire bots without elixirs were the older
+	// bots that live on Dongan with a full bag (2090, 2172, 619, 238, ...: "bag full" every few minutes, 0-3 free
+	// cells): the errand for the exchange was never asked for (more than PLAYERBOT_YSHOP_FREE_CELLS free cells wanted),
+	// and their potion errands' exchange made nothing ("exchange none ... free_cells=0 elixirs=0"). The elixir does not
+	// stack (item_proto stack 1 for 50830-50841 - V3's stacking never happened), so every one needs a cell. Now:
+	//   * the hunt element's resistance elixir takes the bag's last free cells, and at Handlarka the cheapest thing in
+	//     the bag is sold for a cell (the rule of the cohort's potion cell, RestockPlayerBotYohara) - at most the
+	//     target's count of things an exchange;
+	//   * the errand for it is asked for with a full bag when such a thing is there;
+	//   * the errand's gap (PLAYERBOT_YSHOP_ERRAND_GAP_MS) runs from an errand that started
+	//     (NotePlayerBotYoharaShopErrandStarted) - the ask set it before, and a bot in a fight at the look (the errand
+	//     put off) waited 30 minutes for the next ask: 60-85% of the asks on every map started no errand.
+	// Other kinds (the power elixirs, a bot's second element) keep the bag's reserve.
+	bool IsPlayerBotYoharaJadeVnum(DWORD vnum);
+	bool IsPlayerBotYoharaShopKept(LPCHARACTER ch, LPITEM item);
+
+	// Room in the bag for one more of an elixir: its stack, or a free cell - the hunt element's resistance down to the
+	// last one, the rest over the reserve.
+	bool HasPlayerBotYshopRoom(LPCHARACTER ch, DWORD elixir, bool hunt)
+	{
+		if (FindPlayerBotElixirStack(ch, elixir))
+			return true;
+		return CountPlayerBotFreeInventoryCells(ch) > (hunt ? 0 : PLAYERBOT_YSHOP_FREE_CELLS);
+	}
+
+	// The cheapest thing in the bag that may be sold for a cell: never worn, locked, a quest item, a potion, the watch,
+	// a kept or policy item, the second set, a sidekick's - nor the exchange's inputs and elixirs, a jade or the world
+	// set, a kept talisman or craft material. NULL for none.
+	LPITEM FindPlayerBotYshopCellToFree(LPCHARACTER ch, long long& price)
+	{
+		LPITEM cheapest = NULL;
+		price = 0;
+		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (!item || item->GetCell() != cell || item->IsEquipped() || item->isLocked() || item->GetType() == ITEM_QUEST ||
+					item->GetVnum() == PLAYERBOT_YOHARA_SZC_WATCH || (item->GetVnum() >= 27001 && item->GetVnum() <= 27008) ||
+					item->GetVnum() == PLAYERBOT_YSHOP_MATERIAL_VNUM || item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM ||
+					IsPlayerBotYoharaElixirVnum(item->GetVnum()) || IsPlayerBotYoharaJadeVnum(item->GetVnum()) ||
+					GetPlayerBotItemPolicy(item) != PLAYERBOT_ITEM_POLICY_NONE || IsPlayerBotMlodziKept(ch, item) ||
+#ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
+					IsPlayerBotSecondSetStored(ch, item) ||
+#endif
+					IsPlayerBotYoharaShopKept(ch, item) || IsPlayerBotKeptTalisman(ch, item) ||
+					IsPlayerBotKeptCraftMaterial(ch, item) || IsPlayerBotSidekickLockedItem(ch, item) ||
+					IsPlayerBotSidekickPinned(ch, item))
+				continue;
+			const long long p = GetPlayerBotJunkSalePrice(item);
+			if (!cheapest || p < price)
+			{
+				cheapest = item;
+				price = p;
+			}
+		}
+		return cheapest;
+	}
+
+	// At Handlarka: the cheapest thing sold for a cell, at the merchant's price. True when a cell is free after.
+	bool FreePlayerBotYshopCell(LPCHARACTER ch, DWORD npc, int e)
+	{
+		for (int tries = 0; tries < 2 && CountPlayerBotFreeInventoryCells(ch) <= 0; ++tries)
+		{
+			long long price = 0;
+			LPITEM item = FindPlayerBotYshopCellToFree(ch, price);
+			if (!item)
+				break;
+			sys_log(0, "PLAYERBOT_SHOP2: cell freed pid=%u name=%s npc=%u element=%s vnum=%u count=%u gold=%lld elixirs=%d",
+					ch->GetPlayerID(), ch->GetName(), npc, PLAYERBOT_YOHARA_ELEMENT_NAMES[e], item->GetVnum(),
+					(unsigned int)item->GetCount(), price, (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]));
+			PlayerBotChangeGold(ch, price);
+			ITEM_MANAGER::instance().RemoveItem(item, "PLAYERBOT_SHOP2_CELL");
+		}
+		return CountPlayerBotFreeInventoryCells(ch) > 0;
+	}
+#endif
+
 	// One kind filled towards the target from one input; the elixirs made.
 	int ExchangePlayerBotYoharaShopKind(LPCHARACTER ch, long map, int e, bool power, DWORD npc)
 	{
 		const DWORD elixir = power ? PLAYERBOT_YOHARA_POWER_ELIXIRS[e] : PLAYERBOT_YOHARA_RESIST_ELIXIRS[e];
 		const DWORD input = power ? PLAYERBOT_MAGIC_DUST_VNUM : PLAYERBOT_YSHOP_MATERIAL_VNUM;
 		int made = 0;
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V4: the hunt element's resistance into the last free cell, and a cell sold free
+		const bool hunt = !power && e == (int)GetPlayerBotHuntElement(ch) - 1;
+		int freed = 0;
+		while ((int)ch->CountSpecifyItem(elixir) < GetPlayerBotYshopTarget(power) &&
+				(power ? GetPlayerBotYoharaShopDustFree(ch) : GetPlayerBotYoharaShopMaterialsFree(ch)) >= PLAYERBOT_YSHOP_RATE)
+		{
+			if (!HasPlayerBotYshopRoom(ch, elixir, hunt))
+			{
+				if (!hunt || freed >= GetPlayerBotYshopTarget(false) || !FreePlayerBotYshopCell(ch, npc, e))
+					break;
+				++freed;
+			}
+#else
 		while ((int)ch->CountSpecifyItem(elixir) < GetPlayerBotYshopTarget(power) &&
 				(power ? GetPlayerBotYoharaShopDustFree(ch) : GetPlayerBotYoharaShopMaterialsFree(ch)) >= PLAYERBOT_YSHOP_RATE &&
 				CountPlayerBotFreeInventoryCells(ch) > PLAYERBOT_YSHOP_FREE_CELLS)
 		{
+#endif
 #ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V3
 			// MT2009_PLUS_BOT_ELEMENT_RESIST_V3: onto a stack of the same elixir at 20% / 10 minutes when the bag holds
 			// one with room (the engine stacks a blend item only of equal sockets, and the new one is set to them after
@@ -430,8 +529,16 @@ namespace
 		if (!ch || GetPlayerBotYoharaElementSlot(ch->GetMapIndex()) < 0)
 			return false;
 		const TPlayerBotYoharaShopNeed* n = GetPlayerBotYoharaShopNeed(ch);
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V4: the room asked for each kind below (a full bag no bar to the hunt element's)
+		if (!n || !n->bLow)
+			return false;
+		const int hunt = (int)GetPlayerBotHuntElement(ch) - 1;
+		long long cellPrice = 0;
+#else
 		if (!n || !n->bLow || CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_YSHOP_FREE_CELLS)
 			return false;
+#endif
 		TPlayerBotYoharaShopBot& b = s_mapPlayerBotYoharaShopBot[ch->GetPlayerID()];
 		if (b.dwLastErrand != 0 && dwNow - b.dwLastErrand < PLAYERBOT_YSHOP_ERRAND_GAP_MS)
 			return false;
@@ -441,20 +548,55 @@ namespace
 		const char* element = NULL;
 		for (int e = 0; e < PLAYERBOT_YOHARA_ELEMENTS && !kind; ++e)
 		{
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+			if (materials && n->abResist[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]) < GetPlayerBotYshopLow(false) &&
+					(HasPlayerBotYshopRoom(ch, PLAYERBOT_YOHARA_RESIST_ELIXIRS[e], e == hunt) ||
+					 (e == hunt && FindPlayerBotYshopCellToFree(ch, cellPrice) != NULL)))
+				kind = "resist", element = PLAYERBOT_YOHARA_ELEMENT_NAMES[e];
+			else if (dust && n->abPower[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[e]) < GetPlayerBotYshopLow(true) &&
+					HasPlayerBotYshopRoom(ch, PLAYERBOT_YOHARA_POWER_ELIXIRS[e], false))
+				kind = "power", element = PLAYERBOT_YOHARA_ELEMENT_NAMES[e];
+#else
 			if (materials && n->abResist[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_RESIST_ELIXIRS[e]) < GetPlayerBotYshopLow(false))
 				kind = "resist", element = PLAYERBOT_YOHARA_ELEMENT_NAMES[e];
 			else if (dust && n->abPower[e] && (int)ch->CountSpecifyItem(PLAYERBOT_YOHARA_POWER_ELIXIRS[e]) < GetPlayerBotYshopLow(true))
 				kind = "power", element = PLAYERBOT_YOHARA_ELEMENT_NAMES[e];
+#endif
 		}
 		if (!kind)
 			return false;
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+		// MT2009_PLUS_BOT_ELEMENT_RESIST_V4: asked again at every look until the errand goes (a fight puts it off); its
+		// line once in PLAYERBOT_YSHOP_WANTED_LOG_MS a bot
+		if (b.dwWantedLogAt != 0 && dwNow - b.dwWantedLogAt < PLAYERBOT_YSHOP_WANTED_LOG_MS)
+			return true;
+		b.dwWantedLogAt = dwNow ? dwNow : 1;
+		sys_log(0, "PLAYERBOT_SHOP2: errand wanted pid=%u name=%s map=%ld for_map=%ld kind=%s element=%s materials=%d dust_free=%d free_cells=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), n->lMap, kind, element,
+				(int)ch->CountSpecifyItem(PLAYERBOT_YSHOP_MATERIAL_VNUM), GetPlayerBotYoharaShopDustFree(ch),
+				CountPlayerBotFreeInventoryCells(ch));
+		return true;
+#else
 		b.dwLastErrand = dwNow ? dwNow : 1;
 		++s_kPlayerBotYoharaShopStats.errands;
 		sys_log(0, "PLAYERBOT_SHOP2: errand wanted pid=%u name=%s map=%ld for_map=%ld kind=%s element=%s materials=%d dust_free=%d",
 				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), n->lMap, kind, element,
 				(int)ch->CountSpecifyItem(PLAYERBOT_YSHOP_MATERIAL_VNUM), GetPlayerBotYoharaShopDustFree(ch));
 		return true;
+#endif
 	}
+
+#ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
+	// MT2009_PLUS_BOT_ELEMENT_RESIST_V4: Dongan's errand started with the exchange in its need (ManagePlayerBotSungmaErrand)
+	// - the errand's gap from now.
+	void NotePlayerBotYoharaShopErrandStarted(LPCHARACTER ch, DWORD dwNow)
+	{
+		if (!ch)
+			return;
+		s_mapPlayerBotYoharaShopBot[ch->GetPlayerID()].dwLastErrand = dwNow ? dwNow : 1;
+		++s_kPlayerBotYoharaShopStats.errands;
+	}
+#endif
 
 	// ------------------------------------------------------------ the world set (item 24)
 
