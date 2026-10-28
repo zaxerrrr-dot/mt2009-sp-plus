@@ -40,7 +40,7 @@ import uiEquipmentDialog
 import uiGameButton
 import uiTip
 import uiCube
-import uiCubeOkno # MT2009_PLUS_NPC_CRAFT_WINDOW_V1
+import uiCubeRenewal # MT2009_PLUS_CUBE_RENEWAL_V1: the global crafting window (was uiCubeOkno, MT2009_PLUS_NPC_CRAFT_WINDOW_V1)
 import miniMap
 # ACCESSORY_REFINE_ADD_METIN_STONE
 import uiSelectItem
@@ -4528,7 +4528,7 @@ class Interface(object):
 		self.wndItemShop = uiItemShop.ItemShopWindow()
 		self.wndItemShop.Hide()
 
-		self.wndCrafting = uiCraft.CraftingWindow()
+		self.wndCrafting = uiCubeRenewal.CraftingRenewalWindow() # MT2009_PLUS_CUBE_RENEWAL_V1 (was uiCraft.CraftingWindow)
 		self.wndCrafting.Hide()
 
 		self.wndHorseInventory = uiHorseInventory.HorseInventoryWindow()
@@ -4683,7 +4683,7 @@ class Interface(object):
 		self.wndCubeClassic = uiCube.CubeWindow()
 		self.wndCubeClassic.LoadWindow()
 		self.wndCubeClassic.Hide()
-		self.wndCubeOkno = uiCubeOkno.CubeOknoWindow()
+		self.wndCubeOkno = uiCubeRenewal.CubeRenewalWindow() # MT2009_PLUS_CUBE_RENEWAL_V1 (was uiCubeOkno.CubeOknoWindow)
 		self.wndCubeOkno.LoadWindow()
 		self.wndCubeOkno.Hide()
 		self.wndCube = self.wndCubeOkno
