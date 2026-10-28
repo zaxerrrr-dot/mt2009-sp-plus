@@ -10406,6 +10406,17 @@ namespace
 	// open goals keep back from the look.
 	bool ManagePlayerBotIshop3Goals(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	long long GetPlayerBotIshop3GoalReserve(LPCHARACTER ch, const TPlayerBotAIState& state);
+#if defined(PLAYERBOT_ENGINE_MT2009)
+#define MT2009_PLUS_BOT_SEONHAE_V2 1
+	// MT2009_PLUS_BOT_SEONHAE_V2 (the owner, 28 October 2026; playerbot_shop_aids.h): 71052 on every worn piece with
+	// 6th/7th lines, the Blacksmith's scrolls (Kamien Kowala 71025 / Magiczny Metal 71026 + a Blessing Scroll at Kowal
+	// 20016 -> Podrecznik Kowala / Zwoj Boga Smokow), Seon-Hae's shards for the bots too. Defined in
+	// playerbot_shop_aids.h; asked by playerbot_town.h (the blacksmith's errand) and playerbot_economy.h (the keeps).
+	bool PlayerBotWantsSmithScrollCraft(LPCHARACTER ch);
+	int CraftPlayerBotSmithScrolls(LPCHARACTER ch, const char* where);
+	int GetPlayerBotSeonHaeShardKeep(LPCHARACTER ch, DWORD vnum);
+	bool IsPlayerBotSmithScrollStone(DWORD vnum);
+#endif
 }
 
 #endif

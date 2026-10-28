@@ -33,8 +33,9 @@
 // once a week, ten rolls from a surplus over PLAYERBOT_ISHOP3_CHEST_MIN_SURPLUS.
 // MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 (playerbot_shop_aids.h, CollectPlayerBotShopAidGoals): the Seon-Hae additives
 // (72065-72067) a bot's Seon-Hae recipe lacks, Blogoslawienstwo Przedmiotu (71052) while a Champion's glove would be
-// rolled again, Ksiega Obrobki Kamienia (71083) while a cracked stone blocks a stone that waits. Not bought - nothing
-// on this server uses them: Kamien Kowala (71025) and Magiczny Metal (71026).
+// rolled again, Ksiega Obrobki Kamienia (71083) while a cracked stone blocks a stone that waits. MT2009_PLUS_BOT_SEONHAE_V2:
+// 71052 for any worn piece with 6th/7th lines, and Kamien Kowala (71025) / Magiczny Metal (71026) for the Blacksmith's
+// better scrolls (crafting window 101 at Kowal 20016).
 //
 // The log: PLAYERBOT_ISHOP3 (bought / chest / bag full / not given, playerbot_itemshop.h) and the hourly census.
 //

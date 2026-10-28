@@ -1412,12 +1412,13 @@ else
 fi
 
 # MT2009_PLUS_SEONHAE_V1: Seon-Hae's 6th/7th bonus (NPC 20095, quest seonhae,
-# playerbot_seonhae.h), voluntary and off unless M2_SEONHAE=1. One world flag,
+# playerbot_seonhae.h), on unless M2_SEONHAE=0 (MT2009_PLUS_SEONHAE_DEFAULT_ON_V1:
+# on by default since 28 October 2026; an absent key means 1). One world flag,
 # m2_seonhae_on (1 = on); the panel switches it live (web_admin.quest SEONHAE,
 # with m2_seonhae_wait_min, the minutes Seon-Hae keeps an item - not in .env),
 # so .env is applied only when it changed since the last start (m2_seonhae_env =
 # what it said + 1). Off stops new hand-ins only; a kept item is always returned.
-case "$(printf '%s' "${M2_SEONHAE:-0}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 1|on|yes|true) seonhae_on=1 ;; *) seonhae_on=0 ;; esac
+case "$(printf '%s' "${M2_SEONHAE:-1}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 0|off|no|false) seonhae_on=0 ;; *) seonhae_on=1 ;; esac
 seonhae_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_seonhae_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
 if [ -n "$seonhae_env" ] && [ "$seonhae_env" = "$((seonhae_on + 1))" ]; then
     echo "[playerbot-migrate] Seon-Hae 6/7 bonus: .env unchanged since the last start - the switch stays as the panel or the last start left it"

@@ -1462,6 +1462,11 @@ namespace
 				PlayerBotWantsMerchantArmourUpgrade(ch);   // MT2009_PLUS_BOT_GEAR_UPGRADE_V2
 		state.bTownNeedBlacksmith = HasPlayerBotRefineOpportunity(ch) ||
 				IsPlayerBotGambling(state, dwNow);
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+		// MT2009_PLUS_BOT_SEONHAE_V2: and a bot whose stones and Blessing Scrolls make the Blacksmith's better scrolls
+		// its refine steps want (playerbot_shop_aids.h, PlayerBotWantsSmithScrollCraft).
+		state.bTownNeedBlacksmith = state.bTownNeedBlacksmith || PlayerBotWantsSmithScrollCraft(ch);
+#endif
 		// The gambler's first stop is the storekeeper, once a session.
 		// MT2009_PLUS_237_BOT_CHURN_FIX_V1: after a visit that moved nothing the
 		// box is off the list for a while (IsPlayerBotSafeboxIdle) - but for
@@ -8358,6 +8363,11 @@ namespace
 		{
 			if (MovePlayerBotTownStand(ch, state, dwNow, blacksmithX, blacksmithY, 500))
 			{
+#ifdef MT2009_PLUS_BOT_SEONHAE_V2
+				// MT2009_PLUS_BOT_SEONHAE_V2: the Blacksmith's crafting window first (Kamien Kowala / Magiczny Metal and a
+				// Blessing Scroll -> Podrecznik Kowala / Zwoj Boga Smokow), so the refining below already has them.
+				CraftPlayerBotSmithScrolls(ch, "town");
+#endif
 				s_mapPlayerBotAnvilRefined[ch->GetPlayerID()] =
 						ManagePlayerBotRefining(ch, state, dwNow);
 				// The gambler's pieces, after the bot's own (playerbot_gambler.h).

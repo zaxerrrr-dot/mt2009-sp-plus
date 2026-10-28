@@ -851,6 +851,24 @@ function Assert-SidekickOffDefault {
     return (Set-DotEnvValue -Content $Content -Name 'M2_SIDEKICK_DEFAULTED' -Value '1')
 }
 
+function Assert-SeonHaeOnDefault {
+    # MT2009_PLUS_SEONHAE_DEFAULT_ON_V1 (the owner, 28 October 2026): Seon-Hae's
+    # 6th/7th bonus is on by default in every world. The old default
+    # M2_SEONHAE=0 is in every .env, where the new one never reaches, so 0 (or
+    # no line) becomes 1 here, once; a world that switches it off again
+    # afterwards keeps its 0.
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content
+    )
+    if ([Regex]::IsMatch($Content, '(?m)^M2_SEONHAE_DEFAULTED=')) { return $Content }
+    $current = [Regex]::Match($Content, '(?m)^M2_SEONHAE=(.*)$')
+    if (-not $current.Success -or $current.Groups[1].Value.Trim() -ne '1') {
+        Write-Host 'Seon-Hae (6/7 bonus) wlaczony (M2_SEONHAE=1): nowe ustawienie domyslne; 0 wylacza go.' -ForegroundColor Cyan
+        $Content = Set-DotEnvValue -Content $Content -Name 'M2_SEONHAE' -Value '1'
+    }
+    return (Set-DotEnvValue -Content $Content -Name 'M2_SEONHAE_DEFAULTED' -Value '1')
+}
+
 function Assert-DbLogRetentionDefault {
     # MT2009_PLUS_DB_LOG_RETENTION_V1: a world made before this setting kept its
     # whole log database; its owner decides when old rows go (the first prune of
@@ -1042,6 +1060,7 @@ function Initialize-InstallationIdentity {
     $content = Assert-BlessingScrollDefault -Content $content -EnvPath $envPath
     $content = Assert-LogKeepDaysDefault -Content $content
     $content = Assert-SidekickOffDefault -Content $content
+    $content = Assert-SeonHaeOnDefault -Content $content
     $content = Assert-DbLogRetentionDefault -Content $content
     # The same shape for the clock's zone: the example's UTC becomes this
     # machine's own, once.

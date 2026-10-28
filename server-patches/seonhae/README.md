@@ -40,7 +40,7 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
   odtwarza przedmiot (nowe id) i przy sukcesie dodaje bonus (`AddRareAttribute2`, jak 71051).
   Kolejność przy awarii: zniszczenie przedmiotu idzie do rdzenia db od razu, flagi zaraz potem
   (`ch->Save()`) – najwyżej strata, nigdy duplikat. Wyłączenie systemu zatrzymuje tylko nowe zlecenia.
-- **Przełącznik**: flaga `m2_seonhae_on` (apply.sh z `M2_SEONHAE`, domyślnie 0; strona „Seon-Hae”
+- **Przełącznik**: flaga `m2_seonhae_on` (apply.sh z `M2_SEONHAE`, domyślnie 1 od 28.10.2026; strona „Seon-Hae”
   w panelu klasycznym na żywo przez `web_admin.quest` SEONHAE, tam też czas w minutach).
 - GM: `/seonhae gm` (stan), `/seonhae gm now` (czas trzymanego przedmiotu na zero).
 
@@ -63,8 +63,9 @@ Lśniące Odłamki (`MT2009_PLUS_SEONHAE_LUCENT_V1`, poprawka 3.0 #9 – tabela 
 
 ## Drop (decyzja właściciela, 1 października, poprawiona)
 
-Tylko dla prawdziwego gracza: właściciel dropu (zabójca, którego dostaje `CreateDropItem` –
-największe obrażenia albo jego drużyna) nie może być botem; przedmioty dołączają do listy dropu, więc
+Suplementy tylko dla prawdziwego gracza: właściciel dropu (zabójca, którego dostaje `CreateDropItem` –
+największe obrażenia albo jego drużyna) nie może być botem. Odłamki od 28.10.2026 także dla botów, z tymi
+samymi regułami i szansami (`MT2009_PLUS_BOT_SEONHAE_V2`). Przedmioty dołączają do listy dropu, więc
 padają z jego zwykłą własnością. Nic, gdy `m2_seonhae_on` = 0. Bez sklepu i ItemShopu. Instancje map
 liczą się jak ich mapa (indeks / 10000).
 

@@ -352,8 +352,8 @@ SCHEMA = [
        "Mapy i lochy z Arezzo: Dolina Cyklopów, Pustkowie Faraona, Biblioteka Wiedzy, Wzgórze Wukonga, Ruiny Skorpiona, Starożytna Dżungla "
        "oraz zestawy kostiumów w ItemShopie. Panel klasyczny przełącza go od razu.",
        "moduly", "bool", "0", GAME),
-    _e("M2_SEONHAE", "Seon-Hae (6/7 bonus)", "NPC Seon-Hae w pierwszych wioskach dodaje 6. i 7. bonus. Panel klasyczny przełącza go od razu i ustawia czas oczekiwania.",
-       "moduly", "bool", "0", GAME),
+    _e("M2_SEONHAE", "Seon-Hae (6/7 bonus)", "NPC Seon-Hae w pierwszych wioskach dodaje 6. i 7. bonus. Domyślnie włączony. Panel klasyczny przełącza go od razu i ustawia czas oczekiwania.",
+       "moduly", "bool", "1", GAME),
     _e("M2_TELEPORT_MAP", "Mapa teleportacji (TAB) – autor: Mur4s",
        "TAB otwiera mapę świata z 18 punktami, kliknięcie teleportuje za darmo (bez pierścienia). Wymaga klienta z mapą (uiteleportmap.py). "
        "Wyłączone: TAB działa jak dawniej (Slot 6), a serwer ignoruje mapę. Przełącza się od razu, bez restartu.",
@@ -658,6 +658,8 @@ SCHEMA = [
     _e("M2_LOG_KEEP_DAYS_DEFAULTED", "Znacznik: dni logów przestawione", "Znacznik jednorazowej migracji – nie ruszaj.",
        "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
     _e("M2_SIDEKICK_DEFAULTED", "Znacznik: towarzysz wyłączony", "Znacznik jednorazowej migracji – nie ruszaj.",
+       "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
+    _e("M2_SEONHAE_DEFAULTED", "Znacznik: Seon-Hae włączony", "Znacznik jednorazowej migracji – nie ruszaj.",
        "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
     _e("M2_TZ_DEFAULTED", "Znacznik: strefa czasowa ustawiona", "Znacznik jednorazowej migracji – nie ruszaj.",
        "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),

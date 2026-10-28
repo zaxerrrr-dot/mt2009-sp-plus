@@ -751,15 +751,21 @@ namespace
 		{ 30774,  1400000 },	// Skrzynia Wukonga (operator)
 		{ 30775,  5000000 },	// Skrzynia Skorpiona (operator)
 		{ 30776, 12000000 },	// Skrzynia Dzungli (operator)
-		{ 39070,   120000 },	// Szary Odlamek (suggested x2)
-		{ 39071,   160000 },	// Bialy Odlamek (suggested x2)
-		{ 39072,   300000 },	// Zielony Odlamek (suggested x3)
-		{ 39073,   450000 },	// Zolty Odlamek (suggested x3)
-		{ 39074,   750000 },	// Niebieski Odlamek (suggested x3)
-		{ 39075,  1600000 },	// Fioletowy Odlamek (suggested x4)
-		{ 39076,  1800000 },	// Czerwony Odlamek (suggested x4)
-		{ 39077,   350000 },	// Teczowy Odlamek (suggested)
-		{ 39081,   300000 },	// Swiety Odlamek (suggested)
+		// ---- BEGIN MT2009_PLUS_SEONHAE_SHARD_PRICES_TEMP_V1 - PROVISIONAL prices of Seon-Hae's ordinary shards (the
+		// owner, 28 October 2026: they drop for the bots too now and go on the counters; the real prices will come from
+		// another server - replace this block then). Kept at the compendium sheet's suggestion (its factor in brackets),
+		// which ranks them by the item level band each serves (MaterialVnum: grey the lowest ... red the highest, the
+		// rainbow and the holy one beside) and sits in the range of the Lucent shards' drop-derived 315 000 - 515 000.
+		{ 39070,   120000 },	// Szary Odlamek (TEMP; suggested x2)
+		{ 39071,   160000 },	// Bialy Odlamek (TEMP; suggested x2)
+		{ 39072,   300000 },	// Zielony Odlamek (TEMP; suggested x3)
+		{ 39073,   450000 },	// Zolty Odlamek (TEMP; suggested x3)
+		{ 39074,   750000 },	// Niebieski Odlamek (TEMP; suggested x3)
+		{ 39075,  1600000 },	// Fioletowy Odlamek (TEMP; suggested x4)
+		{ 39076,  1800000 },	// Czerwony Odlamek (TEMP; suggested x4)
+		{ 39077,   350000 },	// Teczowy Odlamek (TEMP; suggested)
+		{ 39081,   300000 },	// Swiety Odlamek (TEMP; suggested)
+		// ---- END MT2009_PLUS_SEONHAE_SHARD_PRICES_TEMP_V1
 		{ 50023,  5000000 },	// Sakiewka Pieniedzy (suggested)
 		{ 50070,    60000 },	// Szkatulka Wodza Orkow (operator)
 		{ 50071,   150000 },	// Szkatulka Ezot. Wladcy (operator)
