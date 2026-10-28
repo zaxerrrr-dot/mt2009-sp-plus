@@ -4330,13 +4330,20 @@ fi
 # MT2009_PLUS_ELEMENT_STONES_V1: Kamien Ochrony Zywiolow (39120) and Kamien Mocy Zywiolow (39119) - the owner, 28 October
 # 2026 - kamienie_zywiolow.sql (tools/kamienie_zywiolow/gen_kamienie_zywiolow.py): the two unique-slot amulets (7 days of
 # real time) and their six bonus lines each in world.item_extra_apply (made above). Idempotent (INSERT IGNORE). Only one
-# of them is worn at a time (playerbot_element_stones.cpp); the second ItemShop sells them (itemshop3_schema.sql).
+# of them is worn at a time (playerbot_element_stones.cpp); the ItemShop sells them (below).
 if [ -s /opt/playerbot/kamienie_zywiolow.sql ]; then
     if db < /opt/playerbot/kamienie_zywiolow.sql; then
         echo "[playerbot-migrate] element stones: kamienie_zywiolow.sql applied (MT2009_PLUS_ELEMENT_STONES_V1)"
     else
         fail_step "element stones: kamienie_zywiolow.sql failed" >&2
     fi
+fi
+# MT2009_PLUS_ELEMENT_STONES_V1: both stones in the in-game ItemShop - tab Wyposazenie (indexes 1-99), 65 Smocze Monety
+# each as on the wiki; the second ItemShop lists the in-game lines (its shop view), and the Yohara bots renew their
+# protection stone through the same line (playerbot_element_stones.h). Once per install (ishop_once) - the operator may
+# change or remove them in the Seban panel. Only with the items in item_proto (the step above).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (39119, 39120);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once element_stones_70 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (70, 39120, 1, 65, 'DRAGON_COIN', 0), (71, 39119, 1, 65, 'DRAGON_COIN', 0);" "could not add Kamien Ochrony / Mocy Zywiolow to the ItemShop"
 fi
 
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October

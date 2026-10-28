@@ -95,25 +95,7 @@ NEW_LINES = [
 	(55009, 1, 129, 1, 8, 0, '', 'Skrzynia Ksiąg Zwierza = nasza Skrzynia Ksiąg Peta (decyzja: dodaj)'),
 	(55001, 1, 19, 1, 8, 0, '', 'Odżywka = nasza Proteinowa Przekąska (życie peta; decyzja: dodaj)'),
 	(55001, 1, 30, 2, 12, 0, '', 'Odżywka = nasza Proteinowa Przekąska (decyzja: dodaj, za SZ)'),
-	# MT2009_PLUS_ELEMENT_STONES_V1 (the owner, 28 October 2026: "Dodaj do itemshopu Kamień Ochrony Żywiołów oraz Kamień Mocy
-	# Żywiołów"): the pl-wiki's 65 SM each, "Wyposażenie" with the other unique-slot amulets; 7 days of real time from the
-	# item's own proto (tools/kamienie_zywiolow) - the line sets no time.
-	(39120, 1, 65, 1, 2, 0, '', 'Kamień Ochrony Żywiołów (decyzja właściciela 28.10.2026: do itemshopu, 65 SM jak na wiki)'),
-	(39119, 1, 65, 1, 2, 0, '', 'Kamień Mocy Żywiołów (decyzja właściciela 28.10.2026: do itemshopu, 65 SM jak na wiki)'),
 ]
-# MT2009_PLUS_ELEMENT_STONES_V1: a NEW_LINES line's own note and description (the default: the round-5 note, no text)
-NEW_LINE_NOTE = {
-	39120: 'Decyzja właściciela 28.10.2026.',
-	39119: 'Decyzja właściciela 28.10.2026.',
-}
-NEW_LINE_DESC = {
-	39120: 'Połyskujący amulet: +10% odporności na wszystkie żywioły (błyskawice, ogień, lód, wiatr, ziemia, mrok). '
-		'Zakładasz go w slot pierścieni i amuletów; działa 7 dni (czas mija także, gdy go nie nosisz). Można nosić tylko '
-		'jeden Kamień Żywiołów naraz.',
-	39119: 'Połyskujący amulet: +10% mocy wszystkich żywiołów (błyskawic, ognia, lodu, wiatru, ziemi, mroku). Zakładasz '
-		'go w slot pierścieni i amuletów; działa 7 dni (czas mija także, gdy go nie nosisz). Można nosić tylko jeden '
-		'Kamień Żywiołów naraz.',
-}
 # "Dodaj jako szkatułkę tak jak kostiumy, że można losować dowolny amulet na 7 dni": a chest rolled at the purchase,
 # each piece of jewellery of the unique slots equally, 7 days; the list's three offers (1, 10+1, 20+3).
 JEWEL_BOX = dict(name='Szkatuła na Biżuterię', wiki_file='Szkatuła na Biżuterię.png', category=2,

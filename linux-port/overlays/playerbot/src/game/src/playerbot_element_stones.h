@@ -127,10 +127,14 @@ namespace
 		}
 		es.dwNextRenew = dwNow + PLAYERBOT_ELEMSTONE_RENEW_MS;
 #if defined(PLAYERBOT_ENGINE_MT2009)
-		if (IsPlayerBotItemShopEnabled() && !IsPlayerBotSidekickPID(ch->GetPlayerID()) && state.bDragonBalanceKnown &&
+		if (IsPlayerBotItemShopEnabled() && !IsPlayerBotSidekickPID(ch->GetPlayerID()) &&
 				dwNow >= state.dwNextItemShopBuyTime && !ch->IsBusy() && !ch->GetExchange() && !ch->GetMyShop())
 		{
 			RefreshPlayerBotItemShopCatalogue(dwNow);
+			// The in-game line (apply.sh, index 70): the balance read first when the shop pass never needed it (a bot
+			// with its whole look) - once a renewal, at most every PLAYERBOT_ELEMSTONE_RENEW_MS.
+			if (!state.bDragonBalanceKnown && GetPlayerBotItemShopCheapest(ch, PLAYERBOT_ELEMSTONE_PROTECT_VNUM, false) != 0)
+				RefreshPlayerBotDragonBalance(ch, state, dwNow);
 			TPlayerBotItemShopWish wish;
 			wish.dwVnum = PLAYERBOT_ELEMSTONE_PROTECT_VNUM;
 			wish.bMarks = false;

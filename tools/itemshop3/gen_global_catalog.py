@@ -79,8 +79,6 @@ COMMON = {
 	'Błogosławieństwo Życia': 71018, 'Rada Pustelnika': 71094, 'Ognista Runa Aury (10)': 49991, 'Lodowa Runa Aury': 49990,
 	'Magiczny Metal': 71026, 'Przepustka': 71095, 'Magiczna Ruda Miedzi': 70035, 'Agat': 30617, 'Dwutlenek Tytanu': 30616,
 	'Lizak Magii': 71188, 'Lizak Potęgi': 71136, 'Amulet Nazara': 71202,
-	# MT2009_PLUS_ELEMENT_STONES_V1: the stones are ours now (39119 / 39120, tools/kamienie_zywiolow), sold on their own
-	# lines (owner_decisions.NEW_LINES) - the owner asked for the shop, not the chests: a chest keeps them out (None).
 	'Kamień Mocy Żywiołów': None, 'Kamień Ochrony Żywiołów': None, 'Pierścień Doświadczenia': None,
 	'Wino z Kwiatu Brzosk. XL': None, 'Czerw. Skrzyneczka Losu': None,
 	'Skrzynka na Zwierzaka': None, 'Opt. Skrz. Ksiąg Zwierza': None, 'Zaczaruj zwierzaka': None,
@@ -375,10 +373,7 @@ class Build:
 		for vnum, count, price, cur, cat, minutes, suffix, source in owner_decisions.NEW_LINES:
 			if vnum not in self.d.proto:
 				raise SystemExit('round 5: vnum %d not in item_proto (apply.sh ishop_v3_items not run on this DB?)' % vnum)
-			# MT2009_PLUS_ELEMENT_STONES_V1: a line's own note and description, when the decision gives them
-			self.add_line(vnum, count, price, cur, cat, minutes, suffix, source,
-				owner_decisions.NEW_LINE_NOTE.get(vnum, 'Runda 5 - decyzja właściciela.'),
-				desc=owner_decisions.NEW_LINE_DESC.get(vnum, ''))
+			self.add_line(vnum, count, price, cur, cat, minutes, suffix, source, 'Runda 5 - decyzja właściciela.')
 		j = owner_decisions.JEWEL_BOX
 		cid = self.chest_id('jewel_box')
 		image = 'images/chests/%d.png' % cid
