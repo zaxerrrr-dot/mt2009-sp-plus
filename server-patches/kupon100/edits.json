@@ -1,0 +1,26 @@
+[
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP_COUPON_100_V1 (drop)",
+  "old": "\t\t\titem = CreateItem(80017, 1, 0, true);\n",
+  "new": "\t\t\t// MT2009_PLUS_DROP_COUPON_100_V1 (drop): Kupon SM (100) 80014 in place of Kupon SM (50) 80017 (the owner, 28 October 2026).\n\t\t\titem = CreateItem(80014, 1, 0, true);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP_COUPON_100_V1 (autohunt)",
+  "old": "\t\t\tout_vnums.insert(80017);\n",
+  "new": "\t\t{\n\t\t\t// MT2009_PLUS_DROP_COUPON_100_V1 (autohunt): the roll gives Kupon SM (100) 80014; 80017 stays (other sources).\n\t\t\tout_vnums.insert(80014);\n\t\t\tout_vnums.insert(80017);\n\t\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP_COUPON_100_V1 (preview)",
+  "old": "\t\t\tAddMobPreviewItem(lines, 80017, 1);\n",
+  "new": "\t\t\t// MT2009_PLUS_DROP_COUPON_100_V1 (preview)\n\t\t\tAddMobPreviewItem(lines, 80014, 1);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP_COUPON_100_V1 (wiki)",
+  "old": "\t\t\tDropWikiAdd(rows, 80017, 1, coinPermille / 1000.0);\n",
+  "new": "\t\t\t// MT2009_PLUS_DROP_COUPON_100_V1 (wiki)\n\t\t\tDropWikiAdd(rows, 80014, 1, coinPermille / 1000.0);\n"
+ }
+]

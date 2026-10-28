@@ -34,7 +34,7 @@ Znacznik: `MT2009_PLUS_RARE_MOB_RULES_V1`. Arkusz dropu od właściciela, 1 paź
   Seban (strona „Kupony SM, szarfy, Cor”, `dbeditor/raredrop.py`) – flagi świata w `player.quest`
   (dwPID 0, 1 = wyłączony, brak/0 = włączony): `m2_sm_boss_off`, `m2_sm_metin_off`, `m2_sash_boss_off`,
   `m2_sash_metin_off`, `m2_cor_boss_off`, `m2_cor_metin_off`. Wyłączają tylko źródła wbudowane:
-  rzut na Kupon SM (80017, CONFIG `DRAGON_COIN_*_PERMILLE`), rzut na szarfę +0 i na Cor Draconis
+  rzut na Kupon SM (80014 od `kupon100`, wcześniej 80017; CONFIG `DRAGON_COIN_*_PERMILLE`), rzut na szarfę +0 i na Cor Draconis
   (z regułami tej poprawki), szarfę unikatową ze skrzyni bossa (`char_item.cpp`, przełącznik bossów)
   i wiersze tabel dropu z gry (`item_manager_read_tables.cpp` oznacza każdy wiersz grupy „drop”, której
   nazwa nie zaczyna się od `MT2009_panel_`; `item_manager.h`, `SDropItemGroupInfo::bBuiltin`). Grupa zapisana
