@@ -246,6 +246,7 @@ class CharacterWindow(ui.ScriptWindow):
 		self.__LoadWindow()
 
 		ui.ScriptWindow.Show(self)
+		eventManager.EventManager().send_event(uiAttributeList.EVENT_CHARACTER_WINDOW_SHOW, self) # MT2009_PLUS_CHARDETAILS_V1
 
 	def __LoadScript(self, fileName):
 		pyScrLoader = ui.PythonScriptLoader()
@@ -546,7 +547,7 @@ class CharacterWindow(ui.ScriptWindow):
 			self.emotionToolTip.HideToolTip()
 
 	def __OnAttributeListButtonClick(self):
-		eventManager.EventManager().send_event(uiAttributeList.EVENT_OPEN_ATTRIBUTE_LIST)
+		eventManager.EventManager().send_event(uiAttributeList.EVENT_OPEN_ATTRIBUTE_LIST, self) # MT2009_PLUS_CHARDETAILS_V1: docked to this window
 
 	def __BindEvent(self):
 		for i in xrange(len(self.skillGroupButton)):
