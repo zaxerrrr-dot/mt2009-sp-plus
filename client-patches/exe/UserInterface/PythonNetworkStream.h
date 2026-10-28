@@ -715,6 +715,13 @@ class CPythonNetworkStream : public CNetworkStream, public CSingleton<CPythonNet
 		// MT2009_PLUS_EVENT_MANAGER_V1
 		bool RecvInGameEventPacket();
 #endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+		// MT2009_PLUS_NPC_LOCATION_HELPER_V1: Lokalizator NPC (bodies in PythonNPCLocationHelper.cpp)
+		bool RecvNPCLocationHelperPacket();
+	public:
+		bool SendNPCLocationHelperPacket(BYTE bSubHeader, int iMapIndex, DWORD dwVnum, int iX, int iY);
+	protected:
+#endif
 #ifdef ENABLE_SWITCHBOT
 		// MT2009_PLUS_SWITCHBOT_V1: Ameria's switchbot (PythonNetworkStreamPhaseGame.cpp)
 		bool RecvSwitchbotPacket();

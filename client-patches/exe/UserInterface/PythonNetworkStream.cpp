@@ -238,6 +238,10 @@ class CMainPacketHeaderMap : public CNetworkPacketHeaderMap
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 			Set(HEADER_GC_MINI_GAME_CATCH_KING, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCMiniGameCatchKing), DYNAMIC_SIZE_PACKET));
 #endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+			// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (header): Lokalizator NPC, 24 bytes
+			Set(HEADER_GC_NPC_LOCATION_HELPER, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCNPCLocationHelper), STATIC_SIZE_PACKET));
+#endif
 #ifdef ENABLE_FLOWER_EVENT
 			Set(HEADER_GC_FLOWER_EVENT, CNetworkPacketHeaderMap::TPacketType(sizeof(TPacketGCFlowerEvent), STATIC_SIZE_PACKET));
 #endif

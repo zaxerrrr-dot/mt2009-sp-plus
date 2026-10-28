@@ -1292,6 +1292,11 @@ void CPythonNetworkStream::GamePhase()
 				ret = RecvInGameEventPacket();
 				break;
 #endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+			case HEADER_GC_NPC_LOCATION_HELPER: // MT2009_PLUS_NPC_LOCATION_HELPER_V1
+				ret = RecvNPCLocationHelperPacket();
+				break;
+#endif
 			// MT2009_PLUS_MINIGAMES_V1
 #ifdef ENABLE_MINI_GAME_RUMI
 			case HEADER_GC_MINI_GAME_RUMI:

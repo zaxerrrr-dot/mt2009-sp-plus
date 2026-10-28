@@ -289,5 +289,9 @@
 // CActorInstance::OnShootDamage) - Auto Lowy and a walk by mouse go on under the archers. Melee blows are as before.
 // Without the define the exe is as before; root's uiautohunt.py restarts a stopped walk at once either way.
 #define ENABLE_MT2009_RUN_THROUGH_ARROWS
+// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Lokalizator NPC, Autor: Best Studio): the improved world map - NPC list per map,
+// zoom/pan of the atlas, the selected NPC's mark and the arrow under the character, teleport to the NPC (packets
+// CG/GC 196), module npcLocationHelper (PythonNPCLocationHelper.cpp). Without the define the exe is as before.
+#define ENABLE_NPC_LOCATION_HELPER
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

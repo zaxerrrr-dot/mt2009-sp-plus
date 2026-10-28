@@ -817,6 +817,9 @@ bool RunMainScript(CPythonLauncher& pyLauncher, const char* lpCmdLine)
 #ifdef ENABLE_INGAME_EVENT_MANAGER
 	initInGameEventSystem(); // MT2009_PLUS_EVENT_MANAGER_V1
 #endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+	{ void initNPCLocationHelper(); initNPCLocationHelper(); } // MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Autor: Best Studio)
+#endif
 #ifdef ENABLE_SWITCHBOT
 	initSwitchbot(); // MT2009_PLUS_SWITCHBOT_V1
 #endif

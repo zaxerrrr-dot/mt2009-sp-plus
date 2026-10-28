@@ -625,3 +625,36 @@ Serwer animacji nie widzi, więc nic poza wyglądem się nie zmienia. Ciosy wrę
 
 Sprawdzone: `clang-cl /Zs` pliku `ActorInstanceBattle.cpp` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`)
 z definicją i bez, `/E` potwierdza kod za definicją (28.10.2026). Exe nie budowane.
+
+## Lokalizator NPC – `MT2009_PLUS_NPC_LOCATION_HELPER_V1` (`ENABLE_NPC_LOCATION_HELPER`)
+
+Ulepszona mapa świata z paczki „NPC Location Helper” (Autor: Best Studio), przeniesiona na nasz exe: lista NPC każdej
+mapy, powiększanie (1–3) i przesuwanie atlasu w oknie, atlas innej mapy, znacznik wybranego NPC, strzałka pod postacią
+i teleport do NPC (serwer: `server-patches/npcloc`). Pakiety: **CG 196 / GC 196** (`HEADER_CG/GC_NPC_LOCATION_HELPER`),
+CG 18 bajtów (+ bajt sekwencji), GC 24 bajty, pola `int`/`DWORD` (bez `long`), `static_assert` rozmiarów.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_NPC_LOCATION_HELPER` |
+| `UserInterface/Packet.h` | nagłówki 196/196, podnagłówki CG (`REQUEST_STATUS`, `WARP_TO_NPC`, `USE_TICKET`, `REQUEST_GUILD_LAND`) i GC (`STATUS`, `WARP_RESULT`, `GUILD_LAND`), `TPacketCG/GCNPCLocationHelper` |
+| `UserInterface/PythonNPCLocationHelper.h/.cpp` | **nowe**: `CPythonNPCLocationHelper` (aktywny, cooldown odliczany między pakietami, ostatni wynik, numer mapy postaci z pakietu `STATUS`), ciała `SendNPCLocationHelperPacket`/`RecvNPCLocationHelperPacket` (woła w oknie gry `RefreshNPCLocationHelperStatus()`, `OnNPCLocationHelperWarpResult(wynik)`, `RefreshNPCLocationHelperGuildLand(mapa, wynik)`), moduł `npcLocationHelper` |
+| `UserInterface/PythonMiniMapNPCLocationHelper.cpp` | **nowe**: widok atlasu pomocnika – to samo `atlas.sub` (bez tekstur „atlas_resize”, zwykłe przeliczenie pozycji jak na małym atlasie), skala własną macierzą, przycinanie do okna prostokątem nożyc D3D9 (exe nie ma clip mask), atlas innej mapy (miejsce z `atlasinfo.txt`, znaczniki z `locale/pl/map/<mapa>_point.txt`, obszary gildii mapy postaci zachowane), znaczniki pod myszą, wybrany NPC (punkt drogi + pomarańczowy kwadrat), strzałka `d:/ymir work/effect/etc/npc_location/npc_location_direction.mse` aż grot dojdzie do NPC (3 m) |
+| `UserInterface/PythonMiniMap.h/.cpp` | deklaracje i pola pomocnika; `__LoadAtlasMarkInfo` dzieli się na `__LoadAtlasMarkInfoForMap(nazwa)`; `LoadAtlas` zeruje nazwę pokazanej mapy; `RenderAtlas` i `GetAtlasInfo` przy widoku pomocnika idą do jego kodu; kółko pozycji `my_position_01..07.sub` (tylko gdy są w paczkach). Wyłączony widok pomocnika rysuje mały atlas dokładnie jak dotąd |
+| `UserInterface/PythonMiniMapModule.cpp` | 22 funkcje `miniMap` pomocnika, stałe `SQUARED_ATLAS_SIZE`, `ATLAS_TYPE_*`; `SetAtlasScale(s)` z jednym argumentem = skala pomocnika, `SetAtlasScale(x, y)` jak dotąd (pomijane, gdy widok pomocnika jest włączony) |
+| `UserInterface/PythonBackground.h` | `GetMapInfoByName` (miejsce i rozmiar innej mapy z `atlasinfo.txt`) |
+| `UserInterface/PythonPlayer.cpp` | strzałka aktualizowana co klatkę (także przy schowanej minimapie) |
+| `UserInterface/PythonNetworkStream.cpp/.h`, `PythonNetworkStreamPhaseGame.cpp` | rejestracja GC 196 (stały rozmiar), deklaracje, `case` |
+| `UserInterface/PythonApplicationModule.cpp` | `app.ENABLE_NPC_LOCATION_HELPER`; 0 dla `ENABLE_CLIP_MASK`, `ENABLE_ELEMENT_ADD`, `ENABLE_EVENT_BANNER`, `WJ_SHOW_PARTY_ON_MINIMAP` (python paczki o nie pyta) |
+| `UserInterface/PythonNonPlayerModule.cpp` | `nonplayer.GetMonsterRank(vnum)` / `GetRankOnVnum(vnum)`, `GetMonsterLevel(vnum)` |
+| `UserInterface/UserInterface.cpp` | `initNPCLocationHelper()` |
+| `UserInterface/UserInterface.vcxproj(.filters)` | nowe pliki |
+
+Ta sama mapa (strzałka): `miniMap.SelectNPC(mapa, vnum, x, y, nazwa_mapy)` – x/y w pikselach mapy (wartość z pliku
+punktów), `nazwa_mapy` = folder mapy; bez nazwy numer mapy porównywany z `npcLocationHelper.GetCurrentMapIndex()`
+(serwer podaje go w pakiecie `STATUS`), 0 = mapa postaci.
+
+Sprawdzone: `clang-cl /Zs` (obraz `mt2009/exebuild-clang:19`, flagi z `out/clang/build.ninja`, kopia `exebuild/src` + cały
+ten katalog) – `PythonNPCLocationHelper.cpp`, `PythonMiniMap.cpp`, `PythonMiniMapNPCLocationHelper.cpp`,
+`PythonMiniMapModule.cpp`, `PythonNetworkStream.cpp`, `PythonNetworkStreamPhaseGame.cpp`, `UserInterface.cpp`,
+`PythonApplicationModule.cpp`, `PythonNonPlayerModule.cpp`, `PythonPlayer.cpp` bez błędów; próbny błąd potwierdza kod za
+włączoną definicją (28.10.2026). Exe nie budowane.

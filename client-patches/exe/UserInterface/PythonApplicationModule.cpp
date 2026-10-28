@@ -1683,6 +1683,17 @@ void initapp()
 #else
 	PyModule_AddIntConstant(poModule, "ENABLE_MOUSE_WHEEL_TOP_WINDOW", 0);
 #endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+	// MT2009_PLUS_NPC_LOCATION_HELPER_V1: Lokalizator NPC; the flags its python asks of the package's exe, which ours
+	// does not have (0 - no clip mask, no element bonus, no event banner, party marks are PARTY_POSITION's)
+	PyModule_AddIntConstant(poModule, "ENABLE_NPC_LOCATION_HELPER", 1);
+	PyModule_AddIntConstant(poModule, "ENABLE_CLIP_MASK", 0);
+	PyModule_AddIntConstant(poModule, "ENABLE_ELEMENT_ADD", 0);
+	PyModule_AddIntConstant(poModule, "ENABLE_EVENT_BANNER", 0);
+	PyModule_AddIntConstant(poModule, "WJ_SHOW_PARTY_ON_MINIMAP", 0);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_NPC_LOCATION_HELPER", 0);
+#endif
 	// not in this exe (Owsap python checks them)
 	PyModule_AddIntConstant(poModule, "ENABLE_SUMMER_EVENT_ROULETTE", 0);
 	PyModule_AddIntConstant(poModule, "ENABLE_SNOWFLAKE_STICK_EVENT", 0);

@@ -1,0 +1,32 @@
+[
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_NPC_LOCATION_HELPER_V1 (include)",
+  "old": "#include \"packet_info.h\"\n",
+  "new": "#include \"packet_info.h\"\n// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (include): HEADER_CG_NPC_LOCATION_HELPER and its packet (npc_location_helper.h).\n#include \"npc_location_helper.h\"\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_NPC_LOCATION_HELPER_V1 (size)",
+  "old": "\tSet(HEADER_CG_SWITCHBOT, sizeof(TPacketCGSwitchbot), \"Switchbot\", true);\n",
+  "new": "\tSet(HEADER_CG_SWITCHBOT, sizeof(TPacketCGSwitchbot), \"Switchbot\", true);\n\t// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (size): Lokalizator NPC (Autor: Best Studio), header 196, 18 bytes + the sequence byte.\n\tSet(HEADER_CG_NPC_LOCATION_HELPER, sizeof(TPacketCGNPCLocationHelper), \"NPCLocationHelper\", true);\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_NPC_LOCATION_HELPER_V1 (include)",
+  "old": "#include \"input.h\"\n",
+  "new": "#include \"input.h\"\n// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (include): HEADER_CG_NPC_LOCATION_HELPER (npc_location_helper.h).\n#include \"npc_location_helper.h\"\n"
+ },
+ {
+  "file": "input_main.cpp",
+  "marker": "MT2009_PLUS_NPC_LOCATION_HELPER_V1 (input)",
+  "old": "\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n",
+  "new": "\t\t// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (input): Lokalizator NPC - status / teleport to an NPC, every field checked there\n\t\t// (npc_location_helper.cpp; Autor: Best Studio).\n\t\tcase HEADER_CG_NPC_LOCATION_HELPER:\n\t\t\tNpcLocationHelperPacket(ch, c_pData);\n\t\t\tbreak;\n\n\t\tcase HEADER_CG_REQUEST_INFO_RESPONSE:\n\t\t\tRequestInfoResponse(ch, c_pData);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_NPC_LOCATION_HELPER_V1 (use)",
+  "old": "\t\t\t\t\t\t\t// MT2009_PLUS_YUTNORI_V1 (use): the Birch Branch (79507) and the Yut Nori\n",
+  "new": "\t\t\t\t\t\t\t// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (use): Lokalizator NPC (79667) switches the improved map on for this\n\t\t\t\t\t\t\t// character for good; a second one is not used up (npc_location_helper.cpp; Autor: Best Studio).\n\t\t\t\t\t\t\tcase 79667:\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\tbool NpcLocationHelperUseItem(LPCHARACTER ch, LPITEM item);\n\t\t\t\t\t\t\t\t\tif (!NpcLocationHelperUseItem(this, item))\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t// MT2009_PLUS_YUTNORI_V1 (use): the Birch Branch (79507) and the Yut Nori\n"
+ }
+]

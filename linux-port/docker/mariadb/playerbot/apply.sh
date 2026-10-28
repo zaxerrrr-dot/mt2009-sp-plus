@@ -4347,6 +4347,17 @@ if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (39119, 39120
 ishop_once element_stones_70 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (70, 39120, 1, 65, 'DRAGON_COIN', 0), (71, 39119, 1, 65, 'DRAGON_COIN', 0);" "could not add Kamien Ochrony / Mocy Zywiolow to the ItemShop"
 fi
 
+# MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Autor: Best Studio): Lokalizator NPC 79667 (switches the improved map on for the
+# character) and Kamien Teleportacji 79669 / Kamien Teleportacji+ 79668 (the teleport to an NPC; server-patches/npcloc,
+# npc_location_helper.cpp) - npc_location_helper.sql. Idempotent (INSERT IGNORE).
+if [ -s /opt/playerbot/npc_location_helper.sql ]; then
+    if db < /opt/playerbot/npc_location_helper.sql; then
+        echo "[playerbot-migrate] NPC location helper: npc_location_helper.sql applied (MT2009_PLUS_NPC_LOCATION_HELPER_V1)"
+    else
+        fail_step "NPC location helper: npc_location_helper.sql failed" >&2
+    fi
+fi
+
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet
 # Nazara 71202, Lizak Magii 71188, Czekoladowy Amulet 71199, Mistrzowski Emblemat 70607, Blogoslawienstwo Mocy 72713,

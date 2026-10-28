@@ -300,6 +300,8 @@
     </ClCompile>
     <ClCompile Include="PythonAcce.cpp" />
     <ClCompile Include="PythonInGameEventSystemManager.cpp" />
+    <ClCompile Include="PythonNPCLocationHelper.cpp" />
+    <ClCompile Include="PythonMiniMapNPCLocationHelper.cpp" />
     <ClCompile Include="PythonSwitchbot.cpp" />
     <ClCompile Include="PythonYutnoriManager.cpp" />
     <ClCompile Include="Mt2009ClientQol.cpp" />
@@ -411,6 +413,7 @@
     <ClInclude Include="MemoryModule.h" />
     <ClInclude Include="PythonAcce.h" />
     <ClInclude Include="PythonInGameEventSystemManager.h" />
+    <ClInclude Include="PythonNPCLocationHelper.h" />
     <ClInclude Include="PythonSwitchbot.h" />
     <ClInclude Include="PythonYutnoriManager.h" />
     <ClInclude Include="PythonBackground.h" />
