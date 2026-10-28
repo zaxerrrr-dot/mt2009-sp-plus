@@ -1,0 +1,12 @@
+@@ EterPythonLib/PythonWindowManager.h:7  (kotwica = linie przed #ifdef)
+  		TLayerContainer			m_LayerWindowMap;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ public:
++ 	void SetLockMouseAndKeyboard(bool bLock) { m_bLockMouseAndKeyboard = bLock; }
++ 	bool IsMouseAndKeyboardLocked() const { return m_bLockMouseAndKeyboard; }
++ private:
++ 	bool m_bLockMouseAndKeyboard;
++ #endif

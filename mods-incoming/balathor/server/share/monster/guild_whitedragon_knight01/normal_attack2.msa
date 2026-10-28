@@ -1,0 +1,54 @@
+ScriptType               MotionData
+
+MotionFileName           "D:\Ymir Work\monster2\guild_whitedragon_knight01\normal_attack2.GR2"
+MotionDuration           1.333333
+Accumulation           0.00	0.00	0.00
+
+Group MotionEventData
+{
+    MotionEventDataCount     2
+    Group Event00
+    {
+        MotionEventType      4
+        StartingTime         0.528792
+        DuringTime           0.200000
+        EnableHitProcess     1
+        
+        AttackType           0
+        HittingType          2
+        StiffenTime          0.000000
+        InvisibleTime        0.300000
+        ExternalForce        0.000000
+        HitLimitCount        0
+        CollisionType        4
+        
+        SphereDataCount      1
+        Group SphereData00
+        {
+            Radius           70.000000
+            Position         10.000000 -60.000000 120.000000
+        }
+    }
+    Group Event01
+    {
+        MotionEventType      4
+        StartingTime         0.840227
+        DuringTime           0.200000
+        EnableHitProcess     1
+        
+        AttackType           0
+        HittingType          2
+        StiffenTime          0.000000
+        InvisibleTime        0.300000
+        ExternalForce        0.000000
+        HitLimitCount        0
+        CollisionType        4
+        
+        SphereDataCount      1
+        Group SphereData00
+        {
+            Radius           70.000000
+            Position         -10.000000 -210.000000 130.000000
+        }
+    }
+}

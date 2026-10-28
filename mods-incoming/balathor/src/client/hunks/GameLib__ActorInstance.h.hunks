@@ -1,0 +1,9 @@
+@@ GameLib/ActorInstance.h:7  (kotwica = linie przed #ifdef)
+  	bool IsDoor();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	bool IsBalathorDoor() const;
++ 	bool IsBalathorEgg() const;
++ #endif

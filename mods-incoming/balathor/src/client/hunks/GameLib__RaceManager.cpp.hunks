@@ -1,0 +1,10 @@
+@@ GameLib/RaceManager.cpp:7  (kotwica = linie przed #ifdef)
+  		s_kMap_stType_dwIndex.insert(std::map<std::string, DWORD>::value_type("SPECIAL5", CRaceMotionData::NAME_SPECIAL_6));
+  
+  # add after
+  
++ #ifdef __BALATHOR__
++ 		s_kMap_stType_dwIndex.insert(std::map<std::string, DWORD>::value_type("ETC1", CRaceMotionData::NAME_ETC_1));
++ 		s_kMap_stType_dwIndex.insert(std::map<std::string, DWORD>::value_type("ETC2", CRaceMotionData::NAME_ETC_2));
++ 		s_kMap_stType_dwIndex.insert(std::map<std::string, DWORD>::value_type("ETC3", CRaceMotionData::NAME_ETC_3));
++ #endif

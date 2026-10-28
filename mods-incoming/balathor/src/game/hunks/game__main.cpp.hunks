@@ -1,0 +1,34 @@
+@@ game/main.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ #include "balathor.h"
++ #endif
+
+@@ game/main.cpp:13  (kotwica = linie przed #ifdef)
+  	DBManager::instance().Process();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	CBalathorManager::Instance().Process();
++ #endif
+
+@@ game/main.cpp:23  (kotwica = linie przed #ifdef)
+  	quest::CQuestManager quest_manager;
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 	CBalathorManager balathor_manager;
++ #endif
+
+@@ game/main.cpp:34  (kotwica = linie przed #ifdef)
+  	OXEvent_manager.Destroy();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	sys_log(0, "<shutdown> Destroying CBalathorManager...");
++ 	balathor_manager.Destroy();
++ #endif

@@ -1,0 +1,33 @@
+@@ UserInterface/GameType.h:7  (kotwica = linie przed #ifdef)
+  } TItemPos;
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ enum
++ {
++ 	BALATHOR_EFF_AREA = 0,
++ 	BALATHOR_EFF_GROUND_DROP,
++ 	BALATHOR_EFF_GROUND_ICE,
++ 	BALATHOR_EFF_EGG_ARROW,
++ 	BALATHOR_EFF_EGG_FLOOD,
++ 	BALATHOR_EFF_EGG_GUARD,
++ 	BALATHOR_EFF_EGG_MOOJUK,
++ 	BALATHOR_EFF_RED_ARROW,
++ 	BALATHOR_EFF_POSITION,
++ 	BALATHOR_EFF_MAX,
++ };
++ typedef struct SBalathorEffect
++ {
++ 	DWORD dwID;
++ 	DWORD dwVID;
++ 	BYTE bEffIndex;
++ 	float fX;
++ 	float fY;
++ 	float fZ;
++ 	float fRotation;
++ 	DWORD dwDuration;
++ 	bool bIsMain;
++ 	DWORD dwEffectIndex;
++ }TBalathorEffect;
++ #endif

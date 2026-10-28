@@ -1,0 +1,178 @@
+@@ UserInterface/PythonPlayer.cpp:7  (kotwica = linie przed #ifdef)
+  	NEW_RefreshMouseWalkingDirection();
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	UpdateBalathorEffect();
++ #endif
+
+@@ UserInterface/PythonPlayer.cpp:17  (kotwica = linie przed #ifdef)
+  	std::map<DWORD, DWORD>::iterator it;
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 	RemoveBalathorEffect();
++ #endif
+
+@@ UserInterface/PythonPlayer.cpp:23  (kotwica = linie przed #ifdef)
+  #endif
+  
+  # Add
+  
++ #ifdef __BALATHOR__
++ const char* CPythonPlayer::GetBalathorEffectFileName(BYTE bEffIndex)
++ {
++ 	switch (bEffIndex)
++ 	{
++ 	case BALATHOR_EFF_AREA:
++ 		return "d:/ymir work/effect/monster2/guild_whitedragon_boss_s2_area.mse";
++ 	case BALATHOR_EFF_GROUND_ICE:
++ 		return "d:/ymir work/effect/monster2/whitedragon_ground_ice.mse";
++ 	case BALATHOR_EFF_GROUND_DROP:
++ 		return "d:/ymir work/effect/monster2/guild_whitedragon_ground_drop.mse";
++ 	case BALATHOR_EFF_EGG_ARROW:
++ 		return "d:/ymir work/effect/monster2/guild_whitedragon_egg_arrow.mse";
++ 	case BALATHOR_EFF_EGG_FLOOD:
++ 		return "d:/ymir work/effect/monster2/guild_whitedragon_egg_flood.mse";
++ 	case BALATHOR_EFF_EGG_GUARD:
++ 		return "d:/ymir work/effect/monster2/guild_whitedragon_egg_guard.mse";
++ 	case BALATHOR_EFF_EGG_MOOJUK:
++ 		return "d:/ymir work/effect/monster2/guild_whitedragon_egg_moojuk.mse";
++ 	case BALATHOR_EFF_RED_ARROW:
++ 		return "d:/ymir work/effect/etc/direction/direction_land.mse";
++ 	case BALATHOR_EFF_POSITION:
++ 		return "d:/ymir work/effect/etc/npc_location/npc_location_direction.mse";
++ 	}
++ 	return NULL;
++ }
++ const TBalathorEffect* CPythonPlayer::GetBalathorEffect(DWORD dwID)
++ {
++ 	for (const auto& eff : m_vecEffects)
++ 	{
++ 		if (eff.dwID == dwID)
++ 			return &eff;
++ 	}
++ 	return NULL;
++ }
++ void CPythonPlayer::CheckBalathorEffect(CInstanceBase* pInstance)
++ {
++ 	DWORD dwVID = pInstance->GetVirtualID();
++ 	for (const auto& effInfo : m_vecEffects)
++ 	{
++ 		if (effInfo.dwVID == dwVID)
++ 			pInstance->AddBalathorEffect(&effInfo);
++ 	}
++ }
++ 
++ void CPythonPlayer::UpdateBalathorEffect()
++ {
++ 	if (m_vecEffects.empty())
++ 		return;
++ 
++ 	for (const auto& effInfo : m_vecEffects)
++ 	{
++ 		if (effInfo.bEffIndex == BALATHOR_EFF_POSITION && effInfo.dwVID == 0 && effInfo.bIsMain && effInfo.dwEffectIndex != 0)
++ 		{
++ 			CInstanceBase* pInstance = NEW_GetMainActorPtr();
++ 			if (!pInstance)
++ 				return;
++ 
++ 			CEffectManager& effMngr = CEffectManager::Instance();
++ 
++ 			TPixelPosition mainPosition;
++ 			pInstance->NEW_GetPixelPosition(&mainPosition);
++ 
++ 			float fAngle = GetDegreeFromPosition2(effInfo.fX, effInfo.fY, mainPosition.x, mainPosition.y);
++ 
++ 			fAngle = fmod(540.0f - fAngle, 360.0f);
++ 
++ 			fAngle += 180.0f;
++ 
++ 			mainPosition.y *= -1.0f;
++ 
++ 			D3DXMATRIX mat;
++ 			D3DXMatrixIdentity(&mat);
++ 			D3DXMatrixRotationZ(&mat, D3DXToRadian(fAngle));
++ 
++ 			mat._41 = mainPosition.x;
++ 			mat._42 = mainPosition.y;
++ 			mat._43 = mainPosition.z;
++ 
++ 			effMngr.SelectEffectInstance(effInfo.dwEffectIndex);
++ 			effMngr.SetEffectInstanceGlobalMatrix(mat);
++ 		}
++ 	}
++ }
++ 
++ void CPythonPlayer::RemoveBalathorEffect(DWORD dwID)
++ {
++ 	auto it_balathor = m_vecEffects.begin();
++ 	while (it_balathor != m_vecEffects.end())
++ 	{
++ 		if (dwID != 0 && it_balathor->dwID != dwID)
++ 		{
++ 			++it_balathor;
++ 			continue;
++ 		}
++ 
++ 		if (it_balathor->dwVID == 0)
++ 		{
++ 			if (it_balathor->dwEffectIndex != 0)
++ 				CEffectManager::Instance().DestroyEffectInstance(it_balathor->dwEffectIndex);
++ 		}
++ 		else
++ 		{
++ 			CInstanceBase* pInstance = NEW_FindActorPtr(it_balathor->dwVID);
++ 			if (pInstance)
++ 				pInstance->RemoveBalathorEffect(&*it_balathor);
++ 		}
++ 		it_balathor = m_vecEffects.erase(it_balathor);
++ 	}
++ }
++ void CPythonPlayer::AddBalathorEffect(DWORD dwID, DWORD dwVID, BYTE bEffIndex, float fX, float fY, float fZ, float fRotation, bool bIsMain)
++ {
++ 	TBalathorEffect effectInfo;
++ 	effectInfo.dwID = dwID;
++ 	effectInfo.dwVID = dwVID;
++ 	effectInfo.bEffIndex = bEffIndex;
++ 	effectInfo.fX = fX * 100.0f;
++ 	effectInfo.fY = fY * 100.0f;
++ 	effectInfo.fZ = fZ;
++ 	effectInfo.fRotation = fRotation;
++ 	effectInfo.bIsMain = bIsMain;
++ 
++ 	if (effectInfo.dwVID == 0)
++ 	{
++ 		const char* szFileName = CPythonPlayer::Instance().GetBalathorEffectFileName(effectInfo.bEffIndex);
++ 		if (!szFileName)
++ 			return;
++ 
++ 		CInstanceBase* pInstance = NEW_GetMainActorPtr();
++ 		if (!pInstance)
++ 			return;
++ 
++ 		D3DXVECTOR3 mainPosition = pInstance->GetActorInstance()->GetPosition();
++ 
++ 		D3DXVECTOR3 v3Pos(effectInfo.fX, effectInfo.fY, mainPosition.z + effectInfo.fZ);
++ 		v3Pos.y *= -1.0f;
++ 
++ 		D3DXVECTOR3 v3Rot(0.0f, 0.0f, effectInfo.fRotation);
++ 
++ 		CEffectManager& effMngr = CEffectManager::Instance();
++ 		effMngr.RegisterEffect(szFileName, false, false);
++ 		effectInfo.dwEffectIndex = effMngr.CreateEffect(szFileName, v3Pos, v3Rot);
++ 	}
++ 	else
++ 	{
++ 		effectInfo.dwEffectIndex = 0;
++ 
++ 		CInstanceBase* pInstance = NEW_FindActorPtr(effectInfo.dwVID);
++ 		if (pInstance)
++ 			pInstance->AddBalathorEffect(&effectInfo);
++ 	}
++ 
++ 	m_vecEffects.emplace_back(effectInfo);
++ }
++ #endif

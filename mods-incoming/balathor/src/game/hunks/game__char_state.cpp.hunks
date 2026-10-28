@@ -1,0 +1,55 @@
+@@ game/char_state.cpp:3  (kotwica = linie przed #ifdef)
+  # Add
+  
++ #ifdef __BALATHOR__
++ #include "balathor.h"
++ #endif
+
+@@ game/char_state.cpp:16  (kotwica = linie przed #ifdef)
+  	DWORD dwVnum = number(MIN(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed), MAX(GetMobTable().sAttackSpeed, GetMobTable().sMovingSpeed));
+  
+  # Add after
+  
++ #ifdef __BALATHOR__
++ 	if (GetMapIndex() > 1000)
++ 	{
++ 		CBalathor* pBalathor = CBalathorManager::Instance().FindByMapIndex(GetMapIndex());
++ 		if (pBalathor)
++ 		{
++ 			pBalathor->StoneSpawn(this, iPercent);
++ 			return;
++ 		}
++ 	}
++ #endif
+
+@@ game/char_state.cpp:34  (kotwica = linie przed #ifdef)
+  	if (!no_wander && !IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 	if (!no_wander && !IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE) && !CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))
++ #else
++ 	if (!no_wander && !IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))
++ #endif
+
+@@ game/char_state.cpp:46  (kotwica = linie przed #ifdef)
+  	if (IS_SET(self->GetAIFlag(), AIFLAG_NOMOVE))
+  
+  # Change
+  
++ #ifdef __BALATHOR__
++ 	if (IS_SET(self->GetAIFlag(), AIFLAG_NOMOVE) || CBalathorManager::Instance().IsNoMoveMonster(self->GetRaceNum()))
++ #else
++ 	if (IS_SET(self->GetAIFlag(), AIFLAG_NOMOVE))
++ #endif
+
+@@ game/char_state.cpp:58  (kotwica = linie przed #ifdef)
+  				switch (GetMobBattleType())
+  
+  # Add before
+  
++ #ifdef __BALATHOR__
++ 				if (CBalathorManager::Instance().IsNoMoveMonster(GetRaceNum()))
++ 					return;
++ #endif

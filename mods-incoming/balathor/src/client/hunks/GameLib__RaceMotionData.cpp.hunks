@@ -1,0 +1,10 @@
+@@ GameLib/RaceMotionData.cpp:7  (kotwica = linie przed #ifdef)
+  	case NAME_SPECIAL_6:
+  
+  # add after
+  
++ #ifdef __BALATHOR__
++ 	case NAME_ETC_1:
++ 	case NAME_ETC_2:
++ 	case NAME_ETC_3:
++ #endif
