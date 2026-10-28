@@ -1931,7 +1931,7 @@
 					st.tradeTrips, st.tradeBacks);
 			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: the map's parties, retreats and deaths by cause
 			LogPlayerBotSungmaFightCensus(i, PLAYERBOT_SUNGMA_MAPS[i].lMap, PLAYERBOT_SUNGMA_MAPS[i].szKey, (int)leaders[i].size(),
-					inParty[i], lone[i]);
+					inParty[i], lone[i], here[i], st.kills, st.deaths);	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the fight2 line
 			st.killsAtCensus = st.kills;
 			st.expAtCensus = st.exp;
 			st.championExpAtCensus = st.championExp;

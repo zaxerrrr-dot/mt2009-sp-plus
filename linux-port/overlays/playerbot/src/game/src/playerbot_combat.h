@@ -16,6 +16,12 @@
 
 namespace
 {
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1 (playerbot_sungma_fight.h, later in the unit): a Sung Ma fighter (its party's
+	// Blessing first), its shorter skill gap and its area skills first at a monster with company.
+	bool IsPlayerBotSungmaFighter(LPCHARACTER ch);
+	DWORD GetPlayerBotSungmaSkillGap(LPCHARACTER ch, DWORD gap);
+	bool WantsPlayerBotSungmaAreaSkills(LPCHARACTER ch, LPCHARACTER target);
+
 	// MT2009_PLUS_GUILD_WAR_ARENA_V1: the war's count of blows (playerbot_guild_war.h).
 	void NotePlayerBotWarBlow(LPCHARACTER ch, bool skill);
 
@@ -586,7 +592,18 @@ namespace
 	{
 		outTarget = NULL;
 		outVnum = 0;
-		const TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+		TJobSkillBuild build = GetPlayerBotSkillBuild(ch->GetJob(), ch->GetSkillGroup(), ch->GetPlayerID());
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: on a Sung Ma map the Blessing (94, the damage taken down) goes to the party
+		// first - a Yohara monster's piercing blow is the bots' death there
+		if (IsPlayerBotSungmaFighter(ch))
+			for (size_t i = 1; i < sizeof(build.dwBuffSkills) / sizeof(build.dwBuffSkills[0]); ++i)
+				if (build.dwBuffSkills[i] == 94)
+				{
+					for (size_t j = i; j > 0; --j)
+						build.dwBuffSkills[j] = build.dwBuffSkills[j - 1];
+					build.dwBuffSkills[0] = 94;
+					break;
+				}
 		for (size_t i = 0; i < sizeof(build.dwBuffSkills) / sizeof(build.dwBuffSkills[0]); ++i)
 		{
 			const DWORD vnum = build.dwBuffSkills[i];
@@ -1102,6 +1119,25 @@ namespace
 						ch->GetSkillLevel(build.dwOffensiveSkills[skillOrder[j]]) >
 						ch->GetSkillLevel(build.dwOffensiveSkills[skillOrder[j - 1]]); --j)
 					std::swap(skillOrder[j], skillOrder[j - 1]);
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: on a Sung Ma map at a monster with company the skills that strike many first -
+		// a splash, or a melee skill of more than one hit (ApplyPlayerBotSkillHits spreads it), the build's order among them
+		else if (!selectedDuelSkill && WantsPlayerBotSungmaAreaSkills(ch, target))
+		{
+			size_t area = 0;
+			for (size_t i = 0; i < skillSlots; ++i)
+			{
+				const CSkillProto* proto = build.dwOffensiveSkills[skillOrder[i]]
+						? CSkillManager::instance().Get(build.dwOffensiveSkills[skillOrder[i]]) : NULL;
+				if (proto && (IS_SET(proto->dwFlag, SKILL_FLAG_SPLASH) ||
+						(IS_SET(proto->dwFlag, SKILL_FLAG_USE_MELEE_DAMAGE) && proto->lMaxHit != 1)))
+				{
+					const size_t moved = skillOrder[i];
+					for (size_t j = i; j > area; --j)
+						skillOrder[j] = skillOrder[j - 1];
+					skillOrder[area++] = moved;
+				}
+			}
+		}
 		for (size_t k = 0; k < skillSlots; ++k)
 		{
 			const size_t i = skillOrder[k];
@@ -1200,11 +1236,12 @@ namespace
 				// Shamans should weave weapon attacks between spells.  Casting an
 				// offensive spell every global AI tick looks like repeated buffing
 				// in the client and leaves almost no visible normal attacks.
+				// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a Sung Ma fighter's gap is shorter (GetPlayerBotSungmaSkillGap)
 				state.dwNextSkillCastTime = dwNow + (legendPvp ? GetPlayerBotLegendPvpSkillGap(ch,
 						ch->GetJob() == JOB_SHAMAN
 						 ? PLAYERBOT_SHAMAN_ATTACK_SKILL_INTERVAL
 						 : PLAYERBOT_SKILL_ATTACK_INTERVAL) :
-						(ch->GetJob() == JOB_SHAMAN
+						GetPlayerBotSungmaSkillGap(ch, ch->GetJob() == JOB_SHAMAN
 						 ? PLAYERBOT_SHAMAN_ATTACK_SKILL_INTERVAL
 						 : PLAYERBOT_SKILL_ATTACK_INTERVAL));
 				state.dwNextAttackTime = dwNow + PLAYERBOT_SKILL_ANIMATION_LOCK;

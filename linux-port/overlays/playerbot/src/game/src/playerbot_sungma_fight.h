@@ -33,6 +33,16 @@
 
 namespace
 {
+#ifndef MT2009_PLUS_BOT_ELEMENT_RESIST_V1
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a stand-in until the element resistance work (MT2009_PLUS_BOT_ELEMENT_RESIST_V1)
+	// brings the hunt element (playerbot_types.h) - no element, so the fight's element preferences are idle.
+	BYTE GetPlayerBotHuntElement(LPCHARACTER ch)
+	{
+		(void)ch;
+		return 0;
+	}
+#endif
+
 	// ------------------------------------------------------------ the numbers
 	const int PLAYERBOT_SUNGMA_PACK_RADIUS = 900;		// a monster's group round it (the regen's groups spread 300-700)
 	// An aggressive idle monster this near the fight joins it. MT2009_PLUS_BOT_SUNGMA_NEST_V1: 2000, the engine's own
@@ -58,11 +68,14 @@ namespace
 	const size_t PLAYERBOT_SUNGMA_CAPACITY_LOW_RED = 15;
 	// The belt: drunk from this health on a Sung Ma map (elsewhere PLAYERBOT_POTION_HP_PERCENT, 65) - one blow of a
 	// berserk 125 takes 15-25% of a cohort bot's 23-33 k.
-	const int PLAYERBOT_SUNGMA_POTION_PERCENT = 80;
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: 85 - the belt is the fight's, not the retreat's (see the FIGHT2 numbers below).
+	const int PLAYERBOT_SUNGMA_POTION_PERCENT = 85;
 	// The retreat: at this health alone / in a party by it; at PLAYERBOT_SUNGMA_RETREAT_PACK_HP with more attackers
 	// than its capacity; at any health under PLAYERBOT_SUNGMA_RETREAT_PULLED_HP with PLAYERBOT_SUNGMA_PULLED_EXTRA over
 	// its capacity (pulled too much). Over at PLAYERBOT_SUNGMA_RETREAT_END_HP with nobody on it, or after
 	// PLAYERBOT_SUNGMA_RETREAT_MAX_MS.
+	// (MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the fight's own floor and pull replace _LONE_HP, _PARTY_HP, _PULLED_*, _FALL_* and
+	// _END_HP below - PLAYERBOT_SUNGMA_F2_*; _PACK_HP stays the clock's line, kept for the logs' history.)
 	const int PLAYERBOT_SUNGMA_RETREAT_LONE_HP = 45;
 	const int PLAYERBOT_SUNGMA_RETREAT_PARTY_HP = 35;
 	const int PLAYERBOT_SUNGMA_RETREAT_PACK_HP = 60;
@@ -78,17 +91,21 @@ namespace
 	const int PLAYERBOT_SUNGMA_RETREAT_FALL_HP = 70;
 	// A new fight (nothing on it) only from this health: the belt (PLAYERBOT_SUNGMA_POTION_PERCENT) tops it up first. The
 	// same test: 17 of 68 deaths came within 90 s of the last - revived, at 75% "recovered", straight back into a pack.
-	const int PLAYERBOT_SUNGMA_ENGAGE_HP = 75;
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: 60 (was 75) - the belt (85%) tops it up in the fight; the waits for 75 were a
+	// third of the bots' hour.
+	const int PLAYERBOT_SUNGMA_ENGAGE_HP = 60;
 	const DWORD PLAYERBOT_SUNGMA_RETREAT_MAX_MS = 120 * 1000;
 	const DWORD PLAYERBOT_SUNGMA_RETREAT_MOVE_MS = 1500;
 	const DWORD PLAYERBOT_SUNGMA_RETREAT_LOOK_MS = 700;
 	const int PLAYERBOT_SUNGMA_RETREAT_STEP = 1500;
 	const int PLAYERBOT_SUNGMA_SAFE_REACHED = 1500;
 	// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the escape out of a lost retreat (HandlePlayerBotSungmaRetreat).
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the escape at the bot's own danger floor (GetPlayerBotSungmaFloorHp) or
+	// _ESCAPE_HP, whichever is higher, after 1.5 s (was 3 s at 30%) - a step of 1 500 units outruns nothing.
 	const int PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS = 2;
 	const int PLAYERBOT_SUNGMA_ESCAPE_HP = 30;
-	const DWORD PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS = 3000;
-	const DWORD PLAYERBOT_SUNGMA_ESCAPE_GAP_MS = 3 * 60 * 1000;	// a ring's cooldown - not every retreat
+	const DWORD PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS = 1500;
+	const DWORD PLAYERBOT_SUNGMA_ESCAPE_GAP_MS = 2 * 60 * 1000;	// a ring's cooldown - not every retreat
 	const int PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST = 5000;			// past the 4 000 a monster chases to
 	const int PLAYERBOT_SUNGMA_SAFE_MAX = 40000;		// farther than this the safe point is no direction (the way crosses the map)
 	// The spot a lone bot pulled too much on: no target, no hub within PLAYERBOT_SUNGMA_AVOID_RADIUS for this long.
@@ -125,6 +142,78 @@ namespace
 		{ RACE_FLAG_ATT_DARK, POINT_ENCHANT_DARK, POINT_RESIST_DARK },
 	};
 
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the numbers
+	// The owner, 28 October 2026: "mniej ucieczek, walka grupami w gestszych miejscach". The night of 28 October (00-08,
+	// game3, 400 bots of Champion 1-30 in G0 gear): 13 300 retreats an hour on the nine maps (54 a bot an hour on
+	// Seoganland, Wawoz and Rozpadlina), 15-35 s each, ending "healed" 98% of the time - 35-45% of a bot's hour. A retreat
+	// did not shake its pack off: the monsters kept on it while the bot drank a red potion (27003, 1 200 HP) a second and
+	// struck nothing (a bot of 30 k held 22-24 k for 48 s of a "pulled" retreat begun at 85%). The "pulled" retreat began
+	// at a median of 80% health, "pack" and "fall" at 54-55%, "hp" at 34%; 225 000 red potions an hour were drunk on the
+	// core anyway. So the bot fights through on its belt and runs only at a real danger floor:
+	//   * the floor (GetPlayerBotSungmaFloorHp): _FLOOR_LONE alone, _FLOOR_PARTY with a member by it, + the map's
+	//     difficulty (PLAYERBOT_SUNGMA_F2_DIFFICULTY: the night's kills per death 4-9 on Dongan, Namgan, Wawoz,
+	//     Rozpadlina), + _FLOOR_WEAK under _WEAK_MAX_HP maximum health, - _FLOOR_BAND_HIGH _BAND_HIGH_LEVELS Champion levels
+	//     over the band's floor; with fewer than PLAYERBOT_SUNGMA_CAPACITY_LOW_RED reds the old _FLOOR_NO_RED;
+	//   * "pack" (more on it than it takes) at floor + _PACK_OVER, "pulled" (_PULLED_EXTRA over) at floor + _PULLED_OVER,
+	//     "fall" (_FALL_PERCENT lost in 2.5 s with two on it) at floor + _FALL_OVER;
+	//   * a retreat its pack keeps up with is turned into a fight again (_TURN_*): still held after _TURN_AFTER_MS, health
+	//     at floor + _TURN_OVER or more and no more than its capacity + 1 on it - for _TURN_HOLD_MS after it only the floor
+	//     and the fall send it off again;
+	//   * the retreat is over at _END_HP with nobody on it (was 80).
+	const int PLAYERBOT_SUNGMA_F2_FLOOR_LONE = 28;
+	const int PLAYERBOT_SUNGMA_F2_FLOOR_PARTY = 22;
+	const int PLAYERBOT_SUNGMA_F2_FLOOR_NO_RED = 45;
+	const int PLAYERBOT_SUNGMA_F2_FLOOR_WEAK = 5;
+	const int PLAYERBOT_SUNGMA_F2_WEAK_MAX_HP = 20000;
+	const int PLAYERBOT_SUNGMA_F2_FLOOR_BAND_HIGH = 3;
+	const int PLAYERBOT_SUNGMA_F2_BAND_HIGH_LEVELS = 5;
+	const int PLAYERBOT_SUNGMA_F2_PACK_OVER = 15;
+	const int PLAYERBOT_SUNGMA_F2_PULLED_OVER = 30;
+	const int PLAYERBOT_SUNGMA_F2_PULLED_EXTRA = 3;
+	const int PLAYERBOT_SUNGMA_F2_FALL_PERCENT = 30;
+	const int PLAYERBOT_SUNGMA_F2_FALL_OVER = 20;
+	const DWORD PLAYERBOT_SUNGMA_F2_TURN_AFTER_MS = 5000;
+	const int PLAYERBOT_SUNGMA_F2_TURN_OVER = 15;
+	const DWORD PLAYERBOT_SUNGMA_F2_TURN_HOLD_MS = 20 * 1000;
+	const int PLAYERBOT_SUNGMA_F2_END_HP = 65;
+	// The map's difficulty (added to the floor), by the night's kills per death: Dongan 4, Namgan 6, Wawoz 8,
+	// Rozpadlina 9 (+6); Seoganland 11, Schronienie 20, Zejscie 26 (+3); the Twierdza 26, Yilad 87 (0).
+	struct TPlayerBotSungmaDifficulty { long lMap; int iFloorAdd; };
+	const TPlayerBotSungmaDifficulty PLAYERBOT_SUNGMA_F2_DIFFICULTY[] = {
+		{ 374, 0 }, { 373, 6 }, { 376, 3 }, { 377, 6 }, { 385, 0 }, { 388, 6 }, { 389, 6 }, { 393, 3 }, { 394, 3 },
+	};
+	const int PLAYERBOT_SUNGMA_F2_HARD = 6;
+	// The pull (GetPlayerBotSungmaLoneCapacity): what a bot takes alone by its maximum health (_CAP_HP_*), one fewer on a
+	// hard map, more with its defence read live (the owner's word of 28 October: a Yohara monster hits for 400-500 and
+	// ~5 000 with a piercing blow - a pull is safe by block, dodge, the piercing resistance and the element's
+	// resistance, not by the gear of today): armour = block + dodge / 2 + piercing resistance + the element's
+	// resistance / 2; +1 from _CAP_ARMOUR_1, +2 from _CAP_ARMOUR_2. Never under 2 or over _CAP_LONE_MAX.
+	const int PLAYERBOT_SUNGMA_F2_CAP_HP_3 = 18000;
+	const int PLAYERBOT_SUNGMA_F2_CAP_HP_4 = 27000;
+	const int PLAYERBOT_SUNGMA_F2_CAP_ARMOUR_1 = 25;
+	const int PLAYERBOT_SUNGMA_F2_CAP_ARMOUR_2 = 50;
+	const int PLAYERBOT_SUNGMA_F2_CAP_LONE_MAX = 5;
+	// A Sung Ma fighter's skill gap (PLAYERBOT_SKILL_ATTACK_INTERVAL / the Shaman's) times this per cent: the night's
+	// bots cast a skill every 20 s; the skills' own cooldowns still hold (IsPlayerBotSkillReady).
+	const int PLAYERBOT_SUNGMA_F2_SKILL_GAP_PERCENT = 60;
+	// The area skills first with this many monsters by the target (PLAYERBOT_SUNGMA_F2_AREA_RADIUS of it).
+	const int PLAYERBOT_SUNGMA_F2_AREA_MIN = 2;
+	const int PLAYERBOT_SUNGMA_F2_AREA_RADIUS = 500;
+	// The hunt element (the owner, 28 October: one element a bot, its map's majority, the gear for it, the spots of it):
+	// a monster of it is worth this much more as a target; a hub's score + _HUB_ELEMENT_PERCENT x the share of its
+	// monsters of it, and for a party's leader + _HUB_DENSE_PERCENT a monster round it (to _HUB_DENSE_MAX).
+	const int PLAYERBOT_SUNGMA_F2_ELEMENT_MATCH_SCORE = 120000;
+	const int PLAYERBOT_SUNGMA_F2_HUB_RADIUS = 2500;
+	const int PLAYERBOT_SUNGMA_F2_HUB_ELEMENT_PERCENT = 80;
+	const int PLAYERBOT_SUNGMA_F2_HUB_DENSE_PERCENT = 5;
+	const int PLAYERBOT_SUNGMA_F2_HUB_DENSE_MAX = 30;
+	// A member (not the leader) takes no monster farther than this from its leader unless it is on the member - the
+	// party fights one spot (the night: 15 452 regroups an hour on the Twierdza for 21 parties, 400-520 "far" leaves an
+	// hour on Seoganland, Yilad, Wawoz, Rozpadlina).
+	const int PLAYERBOT_SUNGMA_F2_TETHER = 2200;
+	// The census's fight2 line once an hour (LogPlayerBotSungmaFightCensus).
+	const DWORD PLAYERBOT_SUNGMA_F2_CENSUS_MS = 60 * 60 * 1000;
+
 	// ------------------------------------------------------------ the state and the census
 
 	struct TPlayerBotSungmaFight
@@ -141,8 +230,10 @@ namespace
 		int iHpSeen;				// its health (per cent) at the last look, and when (the fall's speed)
 		DWORD dwHpSeenAt;
 		DWORD dwLastEscape;			// MT2009_PLUS_BOT_SUNGMA_NEST_V1: its last escape out of a lost retreat
+		DWORD dwTurnHoldUntil;		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: turned to fight - only the floor and the fall till then
 		TPlayerBotSungmaFight() : bRetreat(false), iRetreatAttackers(0), lAvoidMap(0), lAvoidX(0), lAvoidY(0), dwAvoidUntil(0),
-			dwLastDown(0), dwNextRetreatLook(0), iRefused(0), dwRefusedSince(0), iHpSeen(100), dwHpSeenAt(0), dwLastEscape(0)
+			dwLastDown(0), dwNextRetreatLook(0), iRefused(0), dwRefusedSince(0), iHpSeen(100), dwHpSeenAt(0), dwLastEscape(0),
+			dwTurnHoldUntil(0)
 		{ szRetreatWhy[0] = '\0'; }
 	};
 	std::map<DWORD, TPlayerBotSungmaFight> s_mapPlayerBotSungmaFight;
@@ -166,10 +257,19 @@ namespace
 		// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the escapes out of a lost retreat, the revivals and landings moved off a
 		// crowded safe point, the moves refused for the bot's health (PLAYERBOT_SUNGMA_HP_FLOORS)
 		unsigned int escapes, nestMoves, hpRefused;
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: every retreat ended and its time, the potions drunk, the retreats turned into a
+		// fight, the picks of the hunt element; the fight2 line's last snapshot (kills, deaths, these) and the bots seen
+		unsigned int retreatsEnded, turns, potions, huntElementPicks;
+		unsigned long long retreatMs;
+		DWORD f2Since;
+		unsigned int f2Kills, f2Deaths, f2Retreats, f2Turns, f2Potions, f2Escapes, f2Samples, f2BotSum;
+		unsigned long long f2RetreatMs;
 		TPlayerBotSungmaFightStats() : deathsLone(0), deathsParty(0), retreatsHp(0), retreatsPack(0), retreatsPulled(0),
 			retreatsSafe(0), avoids(0), targetsPicked(0), targetsElement(0), targetsEdge(0), packRefused(0), partyObjectives(0),
 			partyForms(0), partyJoins(0), partyLeaves(0), partyErrandLeaves(0), regroups(0), revivesInParty(0),
-			escapes(0), nestMoves(0), hpRefused(0)
+			escapes(0), nestMoves(0), hpRefused(0), retreatsEnded(0), turns(0), potions(0), huntElementPicks(0), retreatMs(0),
+			f2Since(0), f2Kills(0), f2Deaths(0), f2Retreats(0), f2Turns(0), f2Potions(0), f2Escapes(0), f2Samples(0),
+			f2BotSum(0), f2RetreatMs(0)
 		{
 			for (int i = 0; i < SUNGMA_DEATH_CAUSES; ++i)
 				deaths[i] = 0;
@@ -230,8 +330,12 @@ namespace
 	const int PLAYERBOT_SUNGMA_PARTY_MAX = 5;
 	// A member revived stands up where it fell (its party's fight goes on) with this many of them alive this near and no
 	// more than PLAYERBOT_SUNGMA_REVIVE_PACK_MAX monsters awake on the spot; else at the safe point.
-	const int PLAYERBOT_SUNGMA_REVIVE_PARTY_RADIUS = 1500;
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: one member alive by it is enough (2 with itself, was 3), within 2 000 (was 1 500):
+	// 4 225 of 4 961 revivals of the night of 28 October (00-08, game3) were "at the safe point", 20-40 k units' walk
+	// back to the party, and the walk's leave ("far") followed.
+	const int PLAYERBOT_SUNGMA_REVIVE_PARTY_RADIUS = 2000;
 	const int PLAYERBOT_SUNGMA_REVIVE_PACK_MAX = 3;
+	const int PLAYERBOT_SUNGMA_REVIVE_PARTY_MIN = 2;
 
 	struct FFindPlayerBotSungmaObjective
 	{
@@ -497,11 +601,219 @@ namespace
 		return 0;
 	}
 
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the floor, the pull, the element
+
+	int GetPlayerBotSungmaDifficulty(long mapIndex)
+	{
+		const long base = mapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? mapIndex / 10000 : mapIndex;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SUNGMA_F2_DIFFICULTY) / sizeof(PLAYERBOT_SUNGMA_F2_DIFFICULTY[0]); ++i)
+			if (PLAYERBOT_SUNGMA_F2_DIFFICULTY[i].lMap == base)
+				return PLAYERBOT_SUNGMA_F2_DIFFICULTY[i].iFloorAdd;
+		return 0;
+	}
+
+	// The health (per cent) the bot runs at: its real danger floor (see PLAYERBOT_SUNGMA_F2_FLOOR_*). partyNear: the bot
+	// and its members by it (CountPlayerBotSungmaPartyNear).
+	int GetPlayerBotSungmaFloorHp(LPCHARACTER ch, int partyNear)
+	{
+		size_t red = 0, blue = 0;
+		CountPlayerBotPotions(ch, red, blue);
+		if (red < PLAYERBOT_SUNGMA_CAPACITY_LOW_RED)
+			return PLAYERBOT_SUNGMA_F2_FLOOR_NO_RED;
+		int floorHp = (partyNear >= 2 ? PLAYERBOT_SUNGMA_F2_FLOOR_PARTY : PLAYERBOT_SUNGMA_F2_FLOOR_LONE) +
+				GetPlayerBotSungmaDifficulty(ch->GetMapIndex());
+		if (ch->GetMaxHP() < PLAYERBOT_SUNGMA_F2_WEAK_MAX_HP)
+			floorHp += PLAYERBOT_SUNGMA_F2_FLOOR_WEAK;
+		int champion = 0;
+#ifdef ENABLE_CONQUEROR_LEVEL
+		champion = (int)ch->GetConquerorLevel();
+#endif
+		const long base = ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? ch->GetMapIndex() / 10000 : ch->GetMapIndex();
+		const int bandFloor = GetPlayerBotSungmaBandFloor(base);
+		if (bandFloor > 0 && champion - bandFloor >= PLAYERBOT_SUNGMA_F2_BAND_HIGH_LEVELS)
+			floorHp -= PLAYERBOT_SUNGMA_F2_FLOOR_BAND_HIGH;
+		return std::max(15, std::min(floorHp, PLAYERBOT_SUNGMA_F2_FLOOR_NO_RED));
+	}
+
+	// The generic retreat's health on a Sung Ma map (playerbot_manager.cpp's tick): the fighter's floor, else the caller's.
+	int GetPlayerBotSungmaRetreatPercent(LPCHARACTER ch, int otherwise)
+	{
+		if (!IsPlayerBotSungmaFighter(ch))
+			return otherwise;
+		// over the highest floor there is no retreat to weigh (the bag's potions are not counted every tick)
+		if (GetPlayerBotSungmaHpPercent(ch) > PLAYERBOT_SUNGMA_F2_FLOOR_NO_RED)
+			return 0;
+		return GetPlayerBotSungmaFloorHp(ch, CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR, 30));
+	}
+
+	// The element of a monster, 0-5 in PLAYERBOT_SUNGMA_ELEMENTS' order (lightning, fire, ice, wind, earth, dark -
+	// playerbot_yohara_elements.h's), -1 none.
+	bool IsPlayerBotSungmaMobOfElement(LPCHARACTER mob, int element)
+	{
+		return mob && element >= 0 && element < (int)(sizeof(PLAYERBOT_SUNGMA_ELEMENTS) / sizeof(PLAYERBOT_SUNGMA_ELEMENTS[0])) &&
+				mob->IsRaceFlag(PLAYERBOT_SUNGMA_ELEMENTS[element].dwFlag);
+	}
+
+	// GetPlayerBotHuntElement's answer as an index of PLAYERBOT_SUNGMA_ELEMENTS (-1 none). Its encoding: 1-6 in the order
+	// above (0 none); a POINT_ENCHANT_* or POINT_RESIST_* of an element is read as that element too.
+	int DecodePlayerBotSungmaHuntElement(BYTE element)
+	{
+		if (element == 0)
+			return -1;
+		const int count = (int)(sizeof(PLAYERBOT_SUNGMA_ELEMENTS) / sizeof(PLAYERBOT_SUNGMA_ELEMENTS[0]));
+		if (element <= count)
+			return element - 1;
+		for (int i = 0; i < count; ++i)
+			if (element == PLAYERBOT_SUNGMA_ELEMENTS[i].bEnchant || element == PLAYERBOT_SUNGMA_ELEMENTS[i].bResist)
+				return i;
+		return -1;
+	}
+
+	// The element the bot hunts: a party member its leader's (the party fights one spot), else its own; -1 none.
+	int GetPlayerBotSungmaHuntElement(LPCHARACTER ch)
+	{
+		if (!ch)
+			return -1;
+		LPPARTY party = ch->GetParty();
+		LPCHARACTER leader = party ? party->GetLeaderCharacter() : NULL;
+		if (leader && leader != ch && leader->GetMapIndex() == ch->GetMapIndex() && leader->GetDesc() && leader->GetDesc()->IsBot())
+		{
+			const int e = DecodePlayerBotSungmaHuntElement(GetPlayerBotHuntElement(leader));
+			if (e >= 0)
+				return e;
+		}
+		return DecodePlayerBotSungmaHuntElement(GetPlayerBotHuntElement(ch));
+	}
+
+	// The bot's armour against a monster (see PLAYERBOT_SUNGMA_F2_CAP_ARMOUR_*): block + dodge / 2 + the piercing
+	// resistance + its resistance to the monster's element / 2 (to its hunt element's, mob NULL).
+	int GetPlayerBotSungmaArmour(LPCHARACTER ch, LPCHARACTER mob)
+	{
+		int resist = 0;
+		const int count = (int)(sizeof(PLAYERBOT_SUNGMA_ELEMENTS) / sizeof(PLAYERBOT_SUNGMA_ELEMENTS[0]));
+		if (mob)
+		{
+			for (int i = 0; i < count; ++i)
+				if (mob->IsRaceFlag(PLAYERBOT_SUNGMA_ELEMENTS[i].dwFlag))
+					resist = std::max(resist, (int)ch->GetPoint(PLAYERBOT_SUNGMA_ELEMENTS[i].bResist));
+		}
+		else
+		{
+			const int e = GetPlayerBotSungmaHuntElement(ch);
+			if (e >= 0)
+				resist = (int)ch->GetPoint(PLAYERBOT_SUNGMA_ELEMENTS[e].bResist);
+		}
+		return std::max(0, (int)ch->GetPoint(POINT_BLOCK)) + std::max(0, (int)ch->GetPoint(POINT_DODGE)) / 2 +
+				std::max(0, (int)ch->GetPoint(POINT_RESIST_PENETRATE)) + std::max(0, resist) / 2;
+	}
+
+	// What the bot takes alone at full health (see PLAYERBOT_SUNGMA_F2_CAP_*): its maximum health, the map, its armour.
+	int GetPlayerBotSungmaLoneCapacity(LPCHARACTER ch, LPCHARACTER mob = NULL)
+	{
+		int cap = ch->GetMaxHP() >= PLAYERBOT_SUNGMA_F2_CAP_HP_4 ? 4 : (ch->GetMaxHP() >= PLAYERBOT_SUNGMA_F2_CAP_HP_3 ? 3 : 2);
+		if (GetPlayerBotSungmaDifficulty(ch->GetMapIndex()) >= PLAYERBOT_SUNGMA_F2_HARD ||
+				GetPlayerBotSungmaMobFloor(ch->GetMapIndex()) >= PLAYERBOT_SUNGMA_CAPACITY_HARD_LEVEL)
+			--cap;
+		const int armour = GetPlayerBotSungmaArmour(ch, mob);
+		if (armour >= PLAYERBOT_SUNGMA_F2_CAP_ARMOUR_2)
+			cap += 2;
+		else if (armour >= PLAYERBOT_SUNGMA_F2_CAP_ARMOUR_1)
+			++cap;
+		return std::max(2, std::min(cap, PLAYERBOT_SUNGMA_F2_CAP_LONE_MAX));
+	}
+
+	// A Sung Ma fighter's gap between two skills (ExecutePlayerBotAttackSkill), else the caller's.
+	DWORD GetPlayerBotSungmaSkillGap(LPCHARACTER ch, DWORD gap)
+	{
+		return IsPlayerBotSungmaFighter(ch) ? gap * PLAYERBOT_SUNGMA_F2_SKILL_GAP_PERCENT / 100 : gap;
+	}
+
+	struct FCountPlayerBotSungmaAround
+	{
+		LPCHARACTER m_ch, m_target;
+		int m_count;
+		FCountPlayerBotSungmaAround(LPCHARACTER ch, LPCHARACTER target) : m_ch(ch), m_target(target), m_count(0) {}
+		void operator()(LPENTITY entity)
+		{
+			if (!entity || !entity->IsType(ENTITY_CHARACTER))
+				return;
+			LPCHARACTER mob = static_cast<LPCHARACTER>(entity);
+			if (mob == m_target || !mob->IsMonster() || mob->IsDead() || mob->GetMapIndex() != m_ch->GetMapIndex() ||
+					DISTANCE_APPROX(mob->GetX() - m_target->GetX(), mob->GetY() - m_target->GetY()) > PLAYERBOT_SUNGMA_F2_AREA_RADIUS)
+				return;
+			++m_count;
+		}
+	};
+
+	// The area skills first (ExecutePlayerBotAttackSkill): a Sung Ma fighter at a monster with company.
+	bool WantsPlayerBotSungmaAreaSkills(LPCHARACTER ch, LPCHARACTER target)
+	{
+		if (!target || !target->IsMonster() || !IsPlayerBotSungmaFighter(ch) || !target->GetSectree())
+			return false;
+		FCountPlayerBotSungmaAround f(ch, target);
+		target->GetSectree()->ForEachAround(f);
+		return f.m_count + 1 >= PLAYERBOT_SUNGMA_F2_AREA_MIN;
+	}
+
+	struct FCountPlayerBotSungmaHubMobs
+	{
+		long m_map, m_x, m_y;
+		int m_element, m_count, m_hunt;
+		FCountPlayerBotSungmaHubMobs(long mapIndex, long x, long y, int element) : m_map(mapIndex), m_x(x), m_y(y),
+			m_element(element), m_count(0), m_hunt(0) {}
+		void operator()(LPENTITY entity)
+		{
+			if (!entity || !entity->IsType(ENTITY_CHARACTER))
+				return;
+			LPCHARACTER mob = static_cast<LPCHARACTER>(entity);
+			if (!mob->IsMonster() || mob->IsDead() || mob->IsStone() || mob->GetMapIndex() != m_map ||
+					mob->GetMobRank() >= MOB_RANK_BOSS ||
+					DISTANCE_APPROX(mob->GetX() - m_x, mob->GetY() - m_y) > PLAYERBOT_SUNGMA_F2_HUB_RADIUS)
+				return;
+			++m_count;
+			if (IsPlayerBotSungmaMobOfElement(mob, m_element))
+				++m_hunt;
+		}
+	};
+
+	// ChoosePlayerBotHuntingHub's score of an ordinary Sung Ma spot (playerbot_wandering.h): the monsters standing there
+	// now - those of the bot's hunt element (PLAYERBOT_SUNGMA_F2_HUB_ELEMENT_PERCENT x their share), and for a party's
+	// leader with two members or more the crowd itself (PLAYERBOT_SUNGMA_F2_HUB_DENSE_*): the party goes where it is
+	// densest, a lone bot where its edge-of-the-pack rule has work.
+	int AdjustPlayerBotSungmaHubScore(LPCHARACTER ch, long x, long y, int score)
+	{
+		if (!ch || score <= 0 || !IsPlayerBotSungmaFighter(ch))
+			return score;
+		LPSECTREE tree = SECTREE_MANAGER::instance().Get(ch->GetMapIndex(), x, y);
+		if (!tree)
+			return score;
+		const int element = GetPlayerBotSungmaHuntElement(ch);
+		FCountPlayerBotSungmaHubMobs f(ch->GetMapIndex(), x, y, element);
+		tree->ForEachAround(f);
+		long long adjusted = score;
+		if (element >= 0 && f.m_count > 0)
+			adjusted = adjusted * (100 + PLAYERBOT_SUNGMA_F2_HUB_ELEMENT_PERCENT * f.m_hunt / f.m_count) / 100;
+		LPPARTY party = ch->GetParty();
+		if (party && party->GetLeaderPID() == ch->GetPlayerID() && party->GetMemberCount() >= 3)
+			adjusted = adjusted * (100 + PLAYERBOT_SUNGMA_F2_HUB_DENSE_PERCENT * std::min(f.m_count, PLAYERBOT_SUNGMA_F2_HUB_DENSE_MAX)) / 100;
+		return (int)std::min<long long>(adjusted, INT_MAX / 2);
+	}
+
+	// A red potion drunk by a Sung Ma fighter (the census's potions).
+	void NotePlayerBotSungmaPotion(LPCHARACTER ch)
+	{
+		if (!ch || !IsPlayerBotSungmaBotMap(ch->GetMapIndex()) || !IsPlayerBotSungmaResidentPID(ch->GetPlayerID()))
+			return;
+		if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+			++st->potions;
+	}
+
 	// How many monsters at once the bot takes (see PLAYERBOT_SUNGMA_CAPACITY_*).
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: alone GetPlayerBotSungmaLoneCapacity (2-5, was 3 or 2 on the hard maps).
 	int GetPlayerBotSungmaCapacity(LPCHARACTER ch, int partyNear)
 	{
 		const int hp = GetPlayerBotSungmaHpPercent(ch);
-		const int lone = PLAYERBOT_SUNGMA_CAPACITY_LONE - (GetPlayerBotSungmaMobFloor(ch->GetMapIndex()) >= PLAYERBOT_SUNGMA_CAPACITY_HARD_LEVEL ? 1 : 0);
+		const int lone = GetPlayerBotSungmaLoneCapacity(ch);
 		int cap = hp >= 70 ? lone : (hp >= 50 ? lone - 1 : 1);
 		cap = std::max(cap, 1);
 		size_t red = 0, blue = 0;
@@ -545,7 +857,7 @@ namespace
 	bool IsPlayerBotSungmaRevivedInParty(LPCHARACTER ch)
 	{
 		if (!ch || !ch->GetParty() ||
-				CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_REVIVE_PARTY_RADIUS, 30) < PLAYERBOT_SUNGMA_PARTY_MIN)
+				CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_REVIVE_PARTY_RADIUS, 30) < PLAYERBOT_SUNGMA_REVIVE_PARTY_MIN)
 			return false;
 		std::vector<TPlayerBotSungmaMob> mobs;
 		CollectPlayerBotSungmaMobs(ch, PLAYERBOT_SUNGMA_AGGRO_RADIUS, mobs);
@@ -586,6 +898,8 @@ namespace
 		// looked at every PLAYERBOT_SUNGMA_RETREAT_LOOK_MS (the scan of the sectors round it), each tick once it is low
 		TPlayerBotSungmaFight& f = s_mapPlayerBotSungmaFight[ch->GetPlayerID()];
 		const int hp = GetPlayerBotSungmaHpPercent(ch);
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: over 60% nothing sends it off but a pull of more than it takes - looked at on
+		// the clock; under it every tick
 		if ((int)(dwNow - f.dwNextRetreatLook) < 0 && hp > PLAYERBOT_SUNGMA_RETREAT_PACK_HP)
 			return NULL;
 		f.dwNextRetreatLook = dwNow + PLAYERBOT_SUNGMA_RETREAT_LOOK_MS;
@@ -611,17 +925,20 @@ namespace
 		if (attackers == 0 || !nearest)
 			return NULL;
 		const int partyNear = CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR, 30);
-		const int fullCap = PLAYERBOT_SUNGMA_CAPACITY_LONE -
-				(GetPlayerBotSungmaMobFloor(ch->GetMapIndex()) >= PLAYERBOT_SUNGMA_CAPACITY_HARD_LEVEL ? 1 : 0) +
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the bot's own floor and pull (PLAYERBOT_SUNGMA_F2_*), not the fixed 45/35%,
+		// 60% with a pack, 90% when pulled and 70% on a fall of the first fight rules
+		const int fullCap = GetPlayerBotSungmaLoneCapacity(ch, nearest) +
 				std::max(0, partyNear - 1) * PLAYERBOT_SUNGMA_CAPACITY_MEMBER;
+		const int floorHp = GetPlayerBotSungmaFloorHp(ch, partyNear);
+		const bool turned = f.dwTurnHoldUntil != 0 && (int)(dwNow - f.dwTurnHoldUntil) < 0;
 		const char* why = NULL;
-		if (hp <= (partyNear >= 2 ? PLAYERBOT_SUNGMA_RETREAT_PARTY_HP : PLAYERBOT_SUNGMA_RETREAT_LONE_HP))
+		if (hp <= floorHp)
 			why = "hp";
-		else if (attackers > fullCap && hp <= PLAYERBOT_SUNGMA_RETREAT_PACK_HP)
+		else if (!turned && attackers > fullCap && hp <= floorHp + PLAYERBOT_SUNGMA_F2_PACK_OVER)
 			why = "pack";
-		else if (attackers >= fullCap + PLAYERBOT_SUNGMA_PULLED_EXTRA && hp < PLAYERBOT_SUNGMA_RETREAT_PULLED_HP)
+		else if (!turned && attackers >= fullCap + PLAYERBOT_SUNGMA_F2_PULLED_EXTRA && hp <= floorHp + PLAYERBOT_SUNGMA_F2_PULLED_OVER)
 			why = "pulled";
-		else if (attackers >= 2 && fall >= PLAYERBOT_SUNGMA_RETREAT_FALL_PERCENT && hp <= PLAYERBOT_SUNGMA_RETREAT_FALL_HP)
+		else if (attackers >= 2 && fall >= PLAYERBOT_SUNGMA_F2_FALL_PERCENT && hp <= floorHp + PLAYERBOT_SUNGMA_F2_FALL_OVER)
 			why = "fall";
 		if (!why)
 			return NULL;
@@ -720,8 +1037,12 @@ namespace
 		// test of 27 October: 589 of 2 424 deaths came in a retreat (the cause "retreat"), most of the "again" ones after
 		// a retreat that had led the pack to the safe point; a step of 1 500 units every 1.5 s does not outrun monsters of
 		// move_speed 100 that hit for 25-30% of a cohort bot a second.
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the escape at the bot's floor (or _ESCAPE_HP, the higher)
+		const int partyNear = CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR, 30);
+		const int floorHp = GetPlayerBotSungmaFloorHp(ch, partyNear);
 		long ex = 0, ey = 0;
-		if (attackers >= PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS && hp <= PLAYERBOT_SUNGMA_ESCAPE_HP && el >= PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS &&
+		if (attackers >= PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS && hp <= std::max(PLAYERBOT_SUNGMA_ESCAPE_HP, floorHp) &&
+				el >= PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS &&
 				(f.dwLastEscape == 0 || dwNow - f.dwLastEscape >= PLAYERBOT_SUNGMA_ESCAPE_GAP_MS) &&
 				GetPlayerBotSungmaCleanPoint(ch->GetMapIndex(), ex, ey) &&
 				DISTANCE_APPROX(ch->GetX() - ex, ch->GetY() - ey) >= PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST)
@@ -742,15 +1063,28 @@ namespace
 			state.dwNextRetreatMoveTime = dwNow + PLAYERBOT_SUNGMA_RETREAT_MOVE_MS;
 			return 1;
 		}
-		if ((attackers == 0 && hp >= PLAYERBOT_SUNGMA_RETREAT_END_HP) || el >= PLAYERBOT_SUNGMA_RETREAT_MAX_MS)
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a retreat its pack keeps up with is a fight again (see PLAYERBOT_SUNGMA_F2_TURN_*):
+		// the potions hold it either way, and only a fight kills the pack.
+		const bool turn = attackers > 0 && el >= PLAYERBOT_SUNGMA_F2_TURN_AFTER_MS &&
+				hp >= floorHp + PLAYERBOT_SUNGMA_F2_TURN_OVER &&
+				attackers <= GetPlayerBotSungmaLoneCapacity(ch) + std::max(0, partyNear - 1) * PLAYERBOT_SUNGMA_CAPACITY_MEMBER + 1;
+		if ((attackers == 0 && hp >= PLAYERBOT_SUNGMA_F2_END_HP) || turn || el >= PLAYERBOT_SUNGMA_RETREAT_MAX_MS)
 		{
 			sys_log(0, "PLAYERBOT_SUNGMA: retreat over pid=%u name=%s map=%ld why=%s hp=%d/%d attackers=%d took_s=%u at_safe=%d reason=%s",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), f.szRetreatWhy[0] ? f.szRetreatWhy : "generic", ch->GetHP(),
 					ch->GetMaxHP(), attackers, el / 1000, toSafe <= PLAYERBOT_SUNGMA_SAFE_REACHED ? 1 : 0,
-					attackers == 0 ? "healed" : "timeout");
-			if (toSafe <= PLAYERBOT_SUNGMA_SAFE_REACHED)
-				if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+					attackers == 0 ? "healed" : (turn ? "turn" : "timeout"));
+			if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+			{
+				if (toSafe <= PLAYERBOT_SUNGMA_SAFE_REACHED)
 					++st->retreatsSafe;
+				++st->retreatsEnded;
+				st->retreatMs += el;
+				if (turn && attackers > 0)
+					++st->turns;
+			}
+			if (turn && attackers > 0)
+				f.dwTurnHoldUntil = dwNow + PLAYERBOT_SUNGMA_F2_TURN_HOLD_MS;
 			f.bRetreat = false;
 			f.szRetreatWhy[0] = '\0';
 			state.bTacticalRetreat = false;
@@ -889,11 +1223,67 @@ namespace
 			s_mapPlayerBotSungmaFight[ch->GetPlayerID()].dwLastDown = dwNow ? dwNow : 1;
 	}
 
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the hourly fight2 line of a map - kills, deaths, retreats, potions, turns and
+	// escapes an hour, the bots seen (the census's average), kills a bot an hour, kills per death and the share of the
+	// bots' time spent in a retreat. kills / deaths: the map's census counters (playerbot_yohara_sungma.h).
+	void LogPlayerBotSungmaFight2(int slot, long mapIndex, const char* key, int here, unsigned int kills, unsigned int deaths,
+			DWORD dwNow)
+	{
+		TPlayerBotSungmaFightStats& st = s_aPlayerBotSungmaFightStats[slot];
+		++st.f2Samples;
+		st.f2BotSum += (unsigned int)std::max(0, here);
+		if (st.f2Since == 0)
+		{
+			st.f2Since = dwNow ? dwNow : 1;
+			st.f2Kills = kills;
+			st.f2Deaths = deaths;
+			st.f2Retreats = st.retreatsEnded;
+			st.f2RetreatMs = st.retreatMs;
+			st.f2Turns = st.turns;
+			st.f2Potions = st.potions;
+			st.f2Escapes = st.escapes;
+			st.f2Samples = 1;
+			st.f2BotSum = (unsigned int)std::max(0, here);
+			return;
+		}
+		const DWORD span = dwNow - st.f2Since;
+		if (span < PLAYERBOT_SUNGMA_F2_CENSUS_MS)
+			return;
+		const long long ms = (long long)span;
+		const long long killsH = (long long)(kills - st.f2Kills) * 3600000LL / ms;
+		const long long deathsH = (long long)(deaths - st.f2Deaths) * 3600000LL / ms;
+		const long long retreatsH = (long long)(st.retreatsEnded - st.f2Retreats) * 3600000LL / ms;
+		const long long potionsH = (long long)(st.potions - st.f2Potions) * 3600000LL / ms;
+		const long long turnsH = (long long)(st.turns - st.f2Turns) * 3600000LL / ms;
+		const long long escapesH = (long long)(st.escapes - st.f2Escapes) * 3600000LL / ms;
+		const long long bots10 = st.f2Samples ? (long long)st.f2BotSum * 10 / st.f2Samples : 0;	// the average, x10
+		const long long killsBot10 = bots10 > 0 ? killsH * 100 / bots10 : 0;
+		const long long kpd10 = deathsH > 0 ? killsH * 10 / deathsH : killsH * 10;
+		const long long retreatPct = bots10 > 0 ? (long long)(st.retreatMs - st.f2RetreatMs) * 1000 / (ms * bots10) : 0;
+		sys_log(0, "PLAYERBOT_SUNGMA: fight2 channel=%u map=%ld name=%s span_s=%u bots=%lld.%lld kills_h=%lld deaths_h=%lld retreats_h=%lld "
+				"potions_h=%lld turns_h=%lld escapes_h=%lld kills_bot_h=%lld.%lld kills_per_death=%lld.%lld retreat_time_pct=%lld",
+				(unsigned int)g_bChannel, mapIndex, key, (unsigned int)(span / 1000), bots10 / 10, bots10 % 10, killsH, deathsH,
+				retreatsH, potionsH, turnsH, escapesH, killsBot10 / 10, killsBot10 % 10, kpd10 / 10, kpd10 % 10, retreatPct);
+		st.f2Since = dwNow ? dwNow : 1;
+		st.f2Kills = kills;
+		st.f2Deaths = deaths;
+		st.f2Retreats = st.retreatsEnded;
+		st.f2RetreatMs = st.retreatMs;
+		st.f2Turns = st.turns;
+		st.f2Potions = st.potions;
+		st.f2Escapes = st.escapes;
+		st.f2Samples = 0;
+		st.f2BotSum = 0;
+	}
+
 	// The census's fight line of a map (LogPlayerBotSungmaCensus).
-	void LogPlayerBotSungmaFightCensus(int slot, long mapIndex, const char* key, int parties, int inParty, int lone)
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: here, kills and deaths for the hourly fight2 line.
+	void LogPlayerBotSungmaFightCensus(int slot, long mapIndex, const char* key, int parties, int inParty, int lone,
+			int here, unsigned int kills, unsigned int deaths)
 	{
 		if (slot < 0 || slot >= 9)
 			return;
+		LogPlayerBotSungmaFight2(slot, mapIndex, key, here, kills, deaths, get_dword_time());
 		const TPlayerBotSungmaFightStats& st = s_aPlayerBotSungmaFightStats[slot];
 		char causes[160];
 		int len = 0;
@@ -903,11 +1293,12 @@ namespace
 		sys_log(0, "PLAYERBOT_SUNGMA: fight channel=%u map=%ld name=%s parties=%d in_party=%d lone=%d party_forms=%u party_joins=%u "
 				"party_leaves=%u party_errand_leaves=%u regroups=%u revives_in_party=%u party_objectives=%u picks=%u element_picks=%u "
 				"edge_picks=%u pack_refused=%u retreats_hp=%u retreats_pack=%u retreats_pulled=%u retreats_safe=%u avoids=%u "
-				"deaths_lone=%u deaths_party=%u %s escapes=%u nest_moves=%u hp_refused=%u",
+				"deaths_lone=%u deaths_party=%u %s escapes=%u nest_moves=%u hp_refused=%u turns=%u potions=%u hunt_element_picks=%u",
 				(unsigned int)g_bChannel, mapIndex, key, parties, inParty, lone, st.partyForms, st.partyJoins, st.partyLeaves,
 				st.partyErrandLeaves, st.regroups, st.revivesInParty, st.partyObjectives, st.targetsPicked, st.targetsElement,
 				st.targetsEdge, st.packRefused, st.retreatsHp, st.retreatsPack, st.retreatsPulled, st.retreatsSafe, st.avoids,
-				st.deathsLone, st.deathsParty, causes, st.escapes, st.nestMoves, st.hpRefused);
+				st.deathsLone, st.deathsParty, causes, st.escapes, st.nestMoves, st.hpRefused, st.turns, st.potions,
+				st.huntElementPicks);
 	}
 }
 
