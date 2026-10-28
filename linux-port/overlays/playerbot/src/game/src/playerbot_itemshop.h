@@ -212,6 +212,8 @@ namespace
 	{
 		unsigned int uBuys, uPieces, uNoCoins, uNotListed, uBagFull, uRefunds;
 		long long llCoins, llMarks;
+		// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: refused by the daily pool / urgent purchases from tomorrow's seventh
+		unsigned int uPoolBlock, uPoolBorrow;
 	};
 	std::map<std::string, TPlayerBotIshop3Census> s_mapPlayerBotIshop3Census;
 	std::map<DWORD, DWORD> s_mapPlayerBotIshop3LastCharge;
@@ -238,6 +240,11 @@ namespace
 				return "look";
 		if (strncmp(reason, "element", 7) == 0)
 			return "element";
+		// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: the Sung Ma buys and the Loch tickets apart from the wishes in the census
+		if (strncmp(reason, "sungma", 6) == 0)
+			return "sungma";
+		if (strcmp(reason, "loch_ticket") == 0)
+			return "loch";
 		if (strcmp(reason, "change_stone") == 0)
 			return "bonus_change";
 		if (strcmp(reason, "blessing_scroll") == 0)
@@ -252,6 +259,245 @@ namespace
 	{
 		return row[i] ? atoll(row[i]) : 0;
 	}
+
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+	// ------------------------------------------------- MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+	//
+	// The weekly Smocze Monety split into days inside the bots (the owner, 28 October 2026: "paczki tygodniowe dziel
+	// wewnetrznie na dni - kazdego dnia bot ma do wydania 1/7 tygodniowych SM; jesli NAPRAWDE czegos potrzebuje, moze
+	// wziac z puli nastepnego dnia"). The grant itself stays as it is (seban-panel/sm_grants.py, once a week); only what
+	// a bot account spends in the ItemShop V3 is paced. With no cap the bots spent a week's grant within hours.
+	//
+	// * The week: the ISO week in Europe/Warsaw - read from the database's own clock (its NOW() is Warsaw time, as
+	//   sm_grants.py's period_key and log.itemshop's time): the key (2026-W44) and the Monday 00:00 as a unix time; the
+	//   day d of the week (1..7) is counted from that Monday.
+	// * The weekly base of an account: its account.sm_grant_log row of the week (period 'week', the week's key - one a
+	//   week, the table's unique key). An account with no grant this week: its balance plus what it already spent this
+	//   week, taken at its first look of the week (so a restart mid-week gives the same base).
+	// * The allowance: base * d / 7, cumulative - an unspent day rolls over within the week. A purchase in Smocze Monety
+	//   is allowed while spent + price <= allowance(d); an urgent one (IsPlayerBotSmPoolUrgent, playerbot_ishop3_goals.h:
+	//   what blocks the bot's progression now) while spent + price <= allowance(d + 1) - the next day's seventh. Sunday's
+	//   next day is the next week's grant: never borrowed (allowance(8) = the base).
+	// * The spent: durable - log.itemshop, the bots' own Smocze Monety rows (currency PLAYERBOT_ISHOP3_LOG_CURRENCY_COINS,
+	//   11: the lines and the set chests) since the week's Monday, summed by account in one query a core an hour (and at
+	//   once when the week turns), plus what this core charged since that read. A read never lowers what the core
+	//   already counted (a row still on its way through the log queue is not lost).
+	// * Outside the pool: anything in Smocze Znaki (they come back 1:1 from the coins spent), the cashing of the
+	//   vouchers (Kupon SM - untouched), a companion (its owner's coins and its own switch), the old in-game catalogue.
+	// * The log: PLAYERBOT_ISHOP3 census - pool_block / pool_borrow per category, and a "pool" line: the accounts asked
+	//   today, their average base, allowance and spent, the share of today's allowance used, how many are at it and how
+	//   many borrow from tomorrow; "pool block" (throttled) for a refused purchase.
+	bool IsPlayerBotSmPoolUrgent(LPCHARACTER ch, const char* reason);	// playerbot_ishop3_goals.h
+	bool IsPlayerBotSidekickPID(DWORD pid);
+
+	const long PLAYERBOT_SM_POOL_REFRESH_S = 60 * 60;
+	const long PLAYERBOT_SM_POOL_WEEK_S = 7 * 24 * 60 * 60;
+
+	struct TPlayerBotSmPool
+	{
+		long long llSpentDb;	// log.itemshop at the last read
+		long long llSpentMem;	// charged by this core since
+		long long llFallback;	// no grant: the balance + spent at the first look of the week; -1 not yet
+		long lSeen;		// the last ask (unix)
+		TPlayerBotSmPool() : llSpentDb(0), llSpentMem(0), llFallback(-1), lSeen(0) {}
+	};
+
+	struct TPlayerBotSmPoolRoom
+	{
+		bool bActive;
+		bool bUrgent;
+		long long llToday;	// what is left of today's allowance (negative: over it)
+		long long llTomorrow;	// ... of tomorrow's
+		long long Room() const { return !bActive ? LLONG_MAX : (bUrgent ? llTomorrow : llToday); }
+	};
+
+	std::map<DWORD, TPlayerBotSmPool> s_mapPlayerBotSmPool;	// by account id
+	std::map<DWORD, long long> s_mapPlayerBotSmPoolGrant;
+	std::map<DWORD, long long> s_mapPlayerBotSmPoolSpentDb;
+	std::string s_strPlayerBotSmPoolWeek;
+	long s_lPlayerBotSmPoolWeekStart = 0;
+	long s_lPlayerBotSmPoolNextRead = 0;
+	long s_lPlayerBotSmPoolLastTry = 0;
+
+	void RefreshPlayerBotSmPool()
+	{
+		const long now = (long)get_global_time();
+		// hourly, and at once when the week turns - never twice within a minute (a failed read: five minutes; the
+		// pool works on the last week read meanwhile, or not at all before the first)
+		const bool weekTurned = s_lPlayerBotSmPoolWeekStart != 0 && now >= s_lPlayerBotSmPoolWeekStart + PLAYERBOT_SM_POOL_WEEK_S;
+		if (s_lPlayerBotSmPoolNextRead != 0 && now < s_lPlayerBotSmPoolNextRead &&
+				!(weekTurned && now >= s_lPlayerBotSmPoolLastTry + 60))
+			return;
+		s_lPlayerBotSmPoolLastTry = now;
+		s_lPlayerBotSmPoolNextRead = now + 5 * 60;
+		std::string week;
+		long weekStart = 0;
+		{
+			std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(
+					"SELECT DATE_FORMAT(NOW(), '%x-W%v'), UNIX_TIMESTAMP(CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY)"));
+			if (!msg || !msg->Get() || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row = mysql_fetch_row(msg->Get()->pSQLResult);
+			if (!row || !row[0] || !row[1])
+				return;
+			week = row[0];
+			weekStart = atol(row[1]);
+		}
+		if (week.empty() || week.size() > 10 || weekStart <= 0)
+			return;
+		std::map<DWORD, long long> grant, spent;
+		{
+			char query[256];
+			snprintf(query, sizeof(query), "SELECT account_id, amount FROM account.sm_grant_log WHERE period = 'week' AND "
+					"period_key = '%s' AND target = 'bot'", week.c_str());
+			std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+			if (!msg || !msg->Get() || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row;
+			while ((row = mysql_fetch_row(msg->Get()->pSQLResult)))
+				if (row[0] && row[1])
+					grant[(DWORD)strtoul(row[0], NULL, 10)] = atoll(row[1]);
+		}
+		{
+			char query[256];
+			snprintf(query, sizeof(query), "SELECT aid, SUM(price) FROM log.itemshop WHERE currency = %d AND "
+					"time >= FROM_UNIXTIME(%ld) GROUP BY aid", PLAYERBOT_ISHOP3_LOG_CURRENCY_COINS, weekStart);
+			std::unique_ptr<SQLMsg> msg(AccountDB::instance().DirectQuery(query));
+			if (!msg || !msg->Get() || !msg->Get()->pSQLResult)
+				return;
+			MYSQL_ROW row;
+			while ((row = mysql_fetch_row(msg->Get()->pSQLResult)))
+				if (row[0] && row[1])
+					spent[(DWORD)strtoul(row[0], NULL, 10)] = atoll(row[1]);
+		}
+		const bool newWeek = week != s_strPlayerBotSmPoolWeek;
+		if (newWeek)
+			s_mapPlayerBotSmPool.clear();
+		for (std::map<DWORD, TPlayerBotSmPool>::iterator it = s_mapPlayerBotSmPool.begin(); it != s_mapPlayerBotSmPool.end();
+				++it)
+		{
+			std::map<DWORD, long long>::const_iterator db = spent.find(it->first);
+			const long long fresh = db != spent.end() ? db->second : 0;
+			const long long counted = it->second.llSpentDb + it->second.llSpentMem;
+			it->second.llSpentDb = fresh;
+			it->second.llSpentMem = std::max(0LL, counted - fresh);
+		}
+		sys_log(0, "PLAYERBOT_ISHOP3: pool read week=%s%s monday=%ld grants=%u spenders=%u", week.c_str(),
+				newWeek ? " (new)" : "", weekStart, (unsigned int)grant.size(), (unsigned int)spent.size());
+		s_strPlayerBotSmPoolWeek = week;
+		s_lPlayerBotSmPoolWeekStart = weekStart;
+		s_mapPlayerBotSmPoolGrant.swap(grant);
+		s_mapPlayerBotSmPoolSpentDb.swap(spent);
+		s_lPlayerBotSmPoolNextRead = now + PLAYERBOT_SM_POOL_REFRESH_S;
+	}
+
+	// The day of the week, 1 (Monday) .. 7 (Sunday).
+	int GetPlayerBotSmPoolDay(long now)
+	{
+		const long d = (now - s_lPlayerBotSmPoolWeekStart) / (24 * 60 * 60) + 1;
+		return (int)std::max(1L, std::min(7L, d));
+	}
+
+	// The account's weekly base (-1: not known yet) and its pool entry.
+	long long GetPlayerBotSmPoolBase(DWORD aid, TPlayerBotSmPool& pool, const TPlayerBotAIState* state, int coins)
+	{
+		std::map<DWORD, long long>::const_iterator g = s_mapPlayerBotSmPoolGrant.find(aid);
+		if (g != s_mapPlayerBotSmPoolGrant.end())
+			return std::max(0LL, g->second);
+		if (pool.llFallback < 0 && state && state->bDragonBalanceKnown)
+			pool.llFallback = std::max(0, coins) + pool.llSpentDb + pool.llSpentMem;
+		return pool.llFallback;
+	}
+
+	TPlayerBotSmPool* GetPlayerBotSmPool(DWORD aid)
+	{
+		std::map<DWORD, TPlayerBotSmPool>::iterator it = s_mapPlayerBotSmPool.find(aid);
+		if (it != s_mapPlayerBotSmPool.end())
+			return &it->second;
+		TPlayerBotSmPool fresh;
+		std::map<DWORD, long long>::const_iterator db = s_mapPlayerBotSmPoolSpentDb.find(aid);
+		fresh.llSpentDb = db != s_mapPlayerBotSmPoolSpentDb.end() ? db->second : 0;
+		return &s_mapPlayerBotSmPool.insert(std::make_pair(aid, fresh)).first->second;
+	}
+
+	// What the pool leaves a purchase in Smocze Monety of this reason (inactive: the switch off, a companion, the week
+	// not read, the base not known).
+	TPlayerBotSmPoolRoom GetPlayerBotSmPoolRoom(LPCHARACTER ch, const TPlayerBotAIState& state, const char* reason)
+	{
+		TPlayerBotSmPoolRoom r = { false, false, 0, 0 };
+		if (!IsPlayerBotSmDailyPoolOn() || !ch || !ch->GetDesc() || IsPlayerBotSidekickPID(ch->GetPlayerID()))
+			return r;
+		RefreshPlayerBotSmPool();
+		if (s_lPlayerBotSmPoolWeekStart == 0)
+			return r;
+		const DWORD aid = ch->GetDesc()->GetAccountTable().id;
+		TPlayerBotSmPool& pool = *GetPlayerBotSmPool(aid);
+		const long now = (long)get_global_time();
+		pool.lSeen = now;
+		const long long base = GetPlayerBotSmPoolBase(aid, pool, &state, state.iDragonCoins);
+		if (base < 0)
+			return r;
+		const int d = GetPlayerBotSmPoolDay(now);
+		const long long spent = pool.llSpentDb + pool.llSpentMem;
+		r.bActive = true;
+		r.bUrgent = IsPlayerBotSmPoolUrgent(ch, reason);
+		r.llToday = base * d / 7 - spent;
+		r.llTomorrow = base * std::min(d + 1, 7) / 7 - spent;
+		return r;
+	}
+
+	void NotePlayerBotSmPoolSpent(LPCHARACTER ch, long long paid)
+	{
+		if (paid <= 0 || !ch || !ch->GetDesc() || s_lPlayerBotSmPoolWeekStart == 0)
+			return;
+		GetPlayerBotSmPool(ch->GetDesc()->GetAccountTable().id)->llSpentMem += paid;
+	}
+
+	// The census's pool line: the accounts asked today.
+	void WritePlayerBotSmPoolCensus()
+	{
+		if (!IsPlayerBotSmDailyPoolOn())
+		{
+			sys_log(0, "PLAYERBOT_ISHOP3: pool off (ISHOP_DAILY_POOL=0)");
+			return;
+		}
+		if (s_lPlayerBotSmPoolWeekStart == 0)
+			return;
+		const long now = (long)get_global_time();
+		const int d = GetPlayerBotSmPoolDay(now);
+		const long dayStart = s_lPlayerBotSmPoolWeekStart + (long)(d - 1) * 24 * 60 * 60;
+		unsigned int accounts = 0, fromGrant = 0, atCap = 0, borrowing = 0;
+		long long sumBase = 0, sumAllowance = 0, sumSpent = 0, sumPct = 0;
+		for (std::map<DWORD, TPlayerBotSmPool>::iterator it = s_mapPlayerBotSmPool.begin(); it != s_mapPlayerBotSmPool.end();
+				++it)
+		{
+			if (it->second.lSeen < dayStart)
+				continue;
+			const long long base = GetPlayerBotSmPoolBase(it->first, it->second, NULL, 0);
+			if (base < 0)
+				continue;
+			const long long allowance = base * d / 7;
+			const long long spent = it->second.llSpentDb + it->second.llSpentMem;
+			++accounts;
+			if (s_mapPlayerBotSmPoolGrant.find(it->first) != s_mapPlayerBotSmPoolGrant.end())
+				++fromGrant;
+			sumBase += base;
+			sumAllowance += allowance;
+			sumSpent += spent;
+			sumPct += allowance > 0 ? std::min(999LL, spent * 100 / allowance) : (spent > 0 ? 999 : 0);
+			if (spent >= allowance)
+				++atCap;
+			if (spent > allowance)
+				++borrowing;
+		}
+		if (accounts == 0)
+			return;
+		sys_log(0, "PLAYERBOT_ISHOP3: pool week=%s day=%d accounts=%u from_grant=%u from_balance=%u avg_base=%lld "
+				"avg_allowance=%lld avg_spent=%lld avg_used_pct=%lld at_cap=%u borrowing=%u",
+				s_strPlayerBotSmPoolWeek.c_str(), d, accounts, fromGrant, accounts - fromGrant, sumBase / accounts,
+				sumAllowance / accounts, sumSpent / accounts, sumPct / accounts, atCap, borrowing);
+	}
+#endif
 
 	// The set chests' results, once a catalogue read: the chances must add up to the million (buy_chest.php refuses
 	// a chest whose do not).
@@ -607,6 +853,24 @@ namespace
 			++census.uNoCoins;
 			return false;
 		}
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: a Smocze Monety line within the day's allowance (an urgent one: tomorrow's)
+		bool poolBorrow = false;
+		if (!marks)
+		{
+			const TPlayerBotSmPoolRoom pool = GetPlayerBotSmPoolRoom(ch, state, reason);
+			if (price > pool.Room())
+			{
+				++census.uPoolBlock;
+				PlayerBotLogThrottled("ishop3_pool_block", dwNow,
+						"PLAYERBOT_ISHOP3: pool block pid=%u name=%s line=%u vnum=%u price=%lld reason=%s urgent=%d today=%lld "
+						"tomorrow=%lld coins=%d", ch->GetPlayerID(), ch->GetName(), line.dwIndex, vnum, price,
+						reason ? reason : "-", (int)pool.bUrgent, pool.llToday, pool.llTomorrow, state.iDragonCoins);
+				return false;
+			}
+			poolBorrow = pool.bActive && price > pool.llToday;
+		}
+#endif
 		const DWORD pieces = line.dwCount * (DWORD)qty;
 		const DWORD stack = line.bStackable ? std::max<DWORD>(1, std::min<DWORD>(proto->dwMaxStack, 200)) : 1;
 		const DWORD chunks = (pieces + stack - 1) / stack;
@@ -668,6 +932,12 @@ namespace
 			return false;
 		}
 		LogPlayerBotIshop3(ch, line.dwIndex, vnum, qty, paid, marks, lastId, before);
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		if (!marks)
+			NotePlayerBotSmPoolSpent(ch, paid);
+		if (poolBorrow)
+			++census.uPoolBorrow;
+#endif
 		++census.uBuys;
 		census.uPieces += delivered;
 		(marks ? census.llMarks : census.llCoins) += paid;
@@ -717,6 +987,14 @@ namespace
 			++census.uNoCoins;
 			return false;
 		}
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: a chest is never urgent - today's allowance only
+		if (price > GetPlayerBotSmPoolRoom(ch, state, "chest").Room())
+		{
+			++census.uPoolBlock;
+			return false;
+		}
+#endif
 		ChargePlayerBotIshop3(ch, false, -price);
 		s_mapPlayerBotIshop3LastCharge[ch->GetPlayerID()] = dwNow;
 		char token[40];
@@ -791,6 +1069,9 @@ namespace
 		state.iDragonCoins = (int)std::max<long long>(0, (long long)state.iDragonCoins - price);
 		state.iDragonMarks = (int)std::min<long long>((long long)state.iDragonMarks + price, INT_MAX);
 		LogPlayerBotIshop3(ch, chest.dwLine, 0, qty, price, false, 0, before);
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		NotePlayerBotSmPoolSpent(ch, price);
+#endif
 		++census.uBuys;
 		census.uPieces += (unsigned int)given;
 		census.llCoins += price;
@@ -816,17 +1097,20 @@ namespace
 		if (dwNow < s_dwNextPlayerBotIshop3Census)
 			return;
 		s_dwNextPlayerBotIshop3Census = dwNow + 60 * 60 * 1000;
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		WritePlayerBotSmPoolCensus();
+#endif
 		if (s_mapPlayerBotIshop3Census.empty())
 			return;
 		std::string out;
-		char buf[192];
+		char buf[256];
 		for (std::map<std::string, TPlayerBotIshop3Census>::const_iterator it = s_mapPlayerBotIshop3Census.begin();
 				it != s_mapPlayerBotIshop3Census.end(); ++it)
 		{
 			const TPlayerBotIshop3Census& c = it->second;
 			snprintf(buf, sizeof(buf), "%s%s=spent_sm:%lld,spent_sz:%lld,count:%u,pieces:%u,no_coins:%u,not_listed:%u,"
-					"bag_full:%u,refunds:%u", out.empty() ? "" : " ", it->first.c_str(), c.llCoins, c.llMarks, c.uBuys,
-					c.uPieces, c.uNoCoins, c.uNotListed, c.uBagFull, c.uRefunds);
+					"bag_full:%u,refunds:%u,pool_block:%u,pool_borrow:%u", out.empty() ? "" : " ", it->first.c_str(), c.llCoins,
+					c.llMarks, c.uBuys, c.uPieces, c.uNoCoins, c.uNotListed, c.uBagFull, c.uRefunds, c.uPoolBlock, c.uPoolBorrow);
 			out += buf;
 		}
 		sys_log(0, "PLAYERBOT_ISHOP3: census source=%s %s", GetPlayerBotItemShopSource() == 2 ? "v3" :

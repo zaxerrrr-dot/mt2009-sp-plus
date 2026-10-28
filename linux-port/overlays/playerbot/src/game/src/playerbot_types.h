@@ -10406,6 +10406,11 @@ namespace
 	// open goals keep back from the look.
 	bool ManagePlayerBotIshop3Goals(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
 	long long GetPlayerBotIshop3GoalReserve(LPCHARACTER ch, const TPlayerBotAIState& state);
+#define MT2009_PLUS_BOT_SM_DAILY_POOL_V1 1
+	// MT2009_PLUS_BOT_SM_DAILY_POOL_V1 (the owner, 28 October 2026): the weekly Smocze Monety grant split into days inside
+	// the bots (playerbot_itemshop.h, the pool; the urgent goals in playerbot_ishop3_goals.h). The ISHOP_DAILY_POOL
+	// switch (playerbot_config.h): 1 on (the default), 0 the old behaviour.
+	bool IsPlayerBotSmDailyPoolOn();
 #if defined(PLAYERBOT_ENGINE_MT2009)
 #define MT2009_PLUS_BOT_SEONHAE_V2 1
 	// MT2009_PLUS_BOT_SEONHAE_V2 (the owner, 28 October 2026; playerbot_shop_aids.h): 71052 on every worn piece with

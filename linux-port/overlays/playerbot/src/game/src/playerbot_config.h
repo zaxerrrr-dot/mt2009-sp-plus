@@ -220,6 +220,12 @@ namespace
 	int s_iPlayerBotItemShopSource = 2;
 	int s_iPlayerBotItemShopSourceReported = 2;
 #endif
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+	// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: the ISHOP_DAILY_POOL key - 1 (the default) a bot account spends a seventh of its
+	// weekly Smocze Monety a day (cumulative; an urgent goal may take the next day's seventh), 0 no daily split.
+	bool s_bPlayerBotSmDailyPool = true;
+	bool s_bPlayerBotSmDailyPoolReported = true;
+#endif
 	// Whether a bot's stand may stand in a second village too (the SHOP_M2
 	// key). Off by default: Iwakura's idea (Kuszaa's reasoning, 22 September)
 	// is the stands in the first villages alone - "przy obecnych sklepach
@@ -426,6 +432,9 @@ namespace
 		s_bPlayerBotItemShop = true;
 #ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
 		s_iPlayerBotItemShopSource = 2;
+#endif
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		s_bPlayerBotSmDailyPool = true;
 #endif
 		s_bPlayerBotShopsInM2 = false;
 		s_bPlayerBotShouters = true;
@@ -659,6 +668,19 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 				s_iPlayerBotItemShopSourceReported = source;
 			}
 			s_iPlayerBotItemShopSource = source;
+			return;
+		}
+#endif
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		if (PlayerBotWeightNameEquals(szKey, "ISHOP_DAILY_POOL"))
+		{
+			const bool enabled = value != 0;
+			if (enabled != s_bPlayerBotSmDailyPoolReported)
+			{
+				sys_log(0, "PLAYERBOT_CONFIG: itemshop daily pool %s", enabled ? "on" : "off");
+				s_bPlayerBotSmDailyPoolReported = enabled;
+			}
+			s_bPlayerBotSmDailyPool = enabled;
 			return;
 		}
 #endif
@@ -1025,6 +1047,10 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		if (PlayerBotWeightNameEquals(szKey, "ISHOP_SOURCE"))
 			return s_iPlayerBotItemShopSource;
 #endif
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		if (PlayerBotWeightNameEquals(szKey, "ISHOP_DAILY_POOL"))
+			return s_bPlayerBotSmDailyPool ? 1 : 0;
+#endif
 		if (PlayerBotWeightNameEquals(szKey, "SHOP_M2"))
 			return s_bPlayerBotShopsInM2 ? 1 : 0;
 		if (PlayerBotWeightNameEquals(szKey, "PERSONA"))
@@ -1181,6 +1207,13 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		if (PlayerBotWeightNameEquals(szKey, "ISHOP_SOURCE"))
 		{
 			value = value < 0 ? 0 : (value > 2 ? 2 : value);
+			return true;
+		}
+#endif
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+		if (PlayerBotWeightNameEquals(szKey, "ISHOP_DAILY_POOL"))
+		{
+			value = value != 0 ? 1 : 0;
 			return true;
 		}
 #endif
@@ -1836,6 +1869,13 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 	int GetPlayerBotItemShopSource()
 	{
 		return s_iPlayerBotItemShopSource;
+	}
+#endif
+#ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
+	// MT2009_PLUS_BOT_SM_DAILY_POOL_V1: the ISHOP_DAILY_POOL switch.
+	bool IsPlayerBotSmDailyPoolOn()
+	{
+		return s_bPlayerBotSmDailyPool;
 	}
 #endif
 
