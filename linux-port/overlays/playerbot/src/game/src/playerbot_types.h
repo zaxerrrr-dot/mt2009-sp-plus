@@ -7915,6 +7915,16 @@ namespace
 	LPITEM FindPlayerBotSidekickPinnedInBag(LPCHARACTER ch, int& wearCell, bool askEngine);
 	// MT2009_PLUS_BOT_EKWIPUNEK_V1 (playerbot_ekwipunek_bots.h): a kind back from the extra inventory into the bag.
 	bool PlayerBotEkwFetchVnum(LPCHARACTER ch, DWORD vnum);
+	// MT2009_PLUS_BOT_EKW_PAGES_V1 (playerbot_ekwipunek_bots.h): the extra inventory as more pages of the bag - the
+	// searches for goods see the bag and the storages (CollectPlayerBotOwnedItems); an item is brought into a bag cell
+	// before the engine touches it (PlayerBotEkwBringToBag, PlayerBotEkwFetchMatching), never used from the storage.
+	typedef bool (*TPlayerBotEkwMatch)(LPCHARACTER ch, LPITEM item, const void* ctx);
+	bool IsPlayerBotEkwPagesOn(LPCHARACTER ch);
+	void CollectPlayerBotOwnedItems(LPCHARACTER ch, std::vector<LPITEM>& out);
+	bool PlayerBotEkwMakeBagRoom(LPCHARACTER ch, BYTE bSize, LPITEM keep);
+	bool PlayerBotEkwBringToBag(LPCHARACTER ch, LPITEM item);
+	int PlayerBotEkwFetchMatching(LPCHARACTER ch, TPlayerBotEkwMatch match, const void* ctx, int needUnits);
+	int PlayerBotEkwFetchGoods(LPCHARACTER ch, const char* why);
 	bool IsPlayerBotSidekickManualSkills(LPCHARACTER ch);
 	bool IsPlayerBotSidekickManualStats(LPCHARACTER ch);
 	// The companion has fallen (HandleDeath, on the tick it is seen): what was

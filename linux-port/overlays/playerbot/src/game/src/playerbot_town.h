@@ -1503,6 +1503,8 @@ namespace
 		}
 
 		state.bVisitingShop = true;
+		// MT2009_PLUS_BOT_EKW_PAGES_V1: the goods of the extra inventory into the bag's spare room, for the merchants
+		PlayerBotEkwFetchGoods(ch, "town");
 		// The purse the Perfectionist's share is measured against
 		// (ManagePlayerBotRefining).
 		state.persona.llVisitGoldStart = (long long)ch->GetGold();

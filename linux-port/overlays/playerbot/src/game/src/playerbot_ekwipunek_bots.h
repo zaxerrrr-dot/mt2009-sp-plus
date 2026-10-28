@@ -263,12 +263,271 @@ namespace
 			}
 	}
 
+	// ---- MT2009_PLUS_BOT_EKW_PAGES_V1 (the owner, 28 October 2026): the storages are more pages of the bot's bag.
+	// The searches for goods to sell, give or use (the whispered deals and the meetings, "do you have X", the market's
+	// "holds none of the kind", the alchemy's Cors and beans) look at the bag and the storages together
+	// (CollectPlayerBotOwnedItems). The engine never sees a storage item: what a deal puts in the trade window, what
+	// the alchemy uses, comes into a bag cell first (PlayerBotEkwBringToBag, PlayerBotEkwFetchMatching), and a full
+	// bag first lends the storages something else (PlayerBotEkwMakeBagRoom: a kind's extra stack, then goods - the
+	// pass's own rules). A counter's service visit and a town visit take the stored goods into the bag's spare room
+	// first (PlayerBotEkwFetchGoods), so the counter and the merchants find them where they always looked. What came
+	// back this way is held in the bag for PLAYERBOT_EKW_HOLD_MS (no pass stashes it again before it is sold or used).
+	// The engine's CountSpecifyItem / RemoveSpecifyItem read the storages already (MT2009_PLUS_EKWIPUNEK_V1).
+	// "m2_ekw_bots_off" and a companion serving its owner: the bag alone, as before. Logged: PLAYERBOT_EKW pages.
+	const DWORD PLAYERBOT_EKW_HOLD_MS = 180000;
+	const DWORD PLAYERBOT_EKW_PREFETCH_GAP_MS = 300000;
+	const int PLAYERBOT_EKW_ROOM_MAX_STASH = 6;
+	const DWORD PLAYERBOT_EKW_PAGES_REPORT_MS = 600000;
+
+	struct TPlayerBotEkwPagesStats
+	{
+		int brought = 0;		// a storage item into a bag cell for a deal, a use, a sale
+		int roomStash = 0;		// a bag item lent to the storages to make that room
+		int noRoom = 0;			// a bring that found no room
+		int fetchRuns = 0;		// PlayerBotEkwFetchMatching calls that brought something
+		int prefetchRuns = 0;	// visits that took stored goods into the bag
+		int prefetched = 0;		// the items of those visits
+	};
+	TPlayerBotEkwPagesStats s_kPlayerBotEkwPagesStats;
+	std::map<DWORD, DWORD> s_mapPlayerBotEkwHeld;	// item id -> held in the bag until
+
+	void HoldPlayerBotEkwItem(LPITEM item, DWORD dwNow)
+	{
+		if (!item)
+			return;
+		if (s_mapPlayerBotEkwHeld.size() > 4096)
+			for (std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotEkwHeld.begin(); it != s_mapPlayerBotEkwHeld.end(); )
+				if ((int)(dwNow - it->second) >= 0)
+					s_mapPlayerBotEkwHeld.erase(it++);
+				else
+					++it;
+		s_mapPlayerBotEkwHeld[item->GetID()] = dwNow + PLAYERBOT_EKW_HOLD_MS;
+	}
+
+	bool IsPlayerBotEkwHeld(LPITEM item, DWORD dwNow)
+	{
+		if (!item)
+			return false;
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotEkwHeld.find(item->GetID());
+		if (it == s_mapPlayerBotEkwHeld.end())
+			return false;
+		if ((int)(dwNow - it->second) < 0)
+			return true;
+		s_mapPlayerBotEkwHeld.erase(it);
+		return false;
+	}
+
+	bool IsPlayerBotEkwWindow(BYTE bWindow)
+	{
+		return bWindow >= UPGRADE_INVENTORY && bWindow <= CHEST_INVENTORY;
+	}
+
+	// A bot whose storages count as its bag's pages: not with the kill switch, never a companion serving its owner.
+	bool IsPlayerBotEkwPagesOn(LPCHARACTER ch)
+	{
+		return ch && ch->IsPC() && ch->GetDesc() && ch->GetDesc()->IsBot() && ch->IsItemLoaded() && !ArePlayerBotEkwOff() &&
+				!IsPlayerBotSidekickServing(ch) && !IsPlayerBotSidekickPID(ch->GetPlayerID());
+	}
+
+	// Everything the bot owns to sell, give or use: the bag's four pages (each item once), then the storages.
+	void CollectPlayerBotOwnedItems(LPCHARACTER ch, std::vector<LPITEM>& out)
+	{
+		out.clear();
+		if (!ch || !ch->IsItemLoaded())
+			return;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell)
+				out.push_back(item);
+		}
+		if (!IsPlayerBotEkwPagesOn(ch))
+			return;
+		std::vector<LPITEM> stored;
+		CollectPlayerBotEkwStored(ch, stored);
+		out.insert(out.end(), stored.begin(), stored.end());
+	}
+
+	// A bag cell of bSize for an item coming back: while there is none, the storages take (A) a kind's extra stack
+	// (not its biggest), then (B) a stack of goods - never keep's kind, never what was just brought back (held),
+	// never the working stock. True when the bag has the cell.
+	bool PlayerBotEkwMakeBagRoom(LPCHARACTER ch, BYTE bSize, LPITEM keep)
+	{
+		if (!ch || bSize < 1)
+			return false;
+		if (PlayerBotEkwFindBagCell(ch, bSize) >= 0)
+			return true;
+		if (!IsPlayerBotEkwPagesOn(ch))
+			return false;
+		const DWORD dwNow = get_dword_time();
+		TPlayerBotEkwStats st;
+		int stashed = 0;
+		for (int pass = 0; pass < 2 && stashed < PLAYERBOT_EKW_ROOM_MAX_STASH; ++pass)
+		{
+			for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && stashed < PLAYERBOT_EKW_ROOM_MAX_STASH; ++cell)
+			{
+				LPITEM item = ch->GetInventoryItem((WORD)cell);
+				if (!item || item->GetCell() != cell || item == keep || !IsPlayerBotEkwMovable(ch, item))
+					continue;
+				if ((keep && item->GetVnum() == keep->GetVnum()) || IsPlayerBotEkwHeld(item, dwNow))
+					continue;
+				const BYTE bWindow = Mt2009EkwCategoryOfItem(item);
+				if (!bWindow)
+					continue;
+				if (pass == 0)
+				{
+					// a kind's extra stack: the bag keeps a bigger one of the kind
+					if (!PlayerBotEkwStacks(item))
+						continue;
+					LPITEM bigger = PlayerBotEkwBagStackOf(ch, item);
+					if (!bigger || bigger->GetCount() < item->GetCount())
+						continue;
+				}
+				else if (IsPlayerBotEkwWorkingStock(ch, item, bWindow))
+					continue;
+				bool bGone = false;
+				if (!PlayerBotEkwToStorage(ch, item, bWindow, st, bGone))
+					continue;
+				++stashed;
+				++s_kPlayerBotEkwPagesStats.roomStash;
+				if (PlayerBotEkwFindBagCell(ch, bSize) >= 0)
+					return true;
+			}
+		}
+		return PlayerBotEkwFindBagCell(ch, bSize) >= 0;
+	}
+
+	// A storage item into a bag cell of its own, as it is (no stack joins it, so the caller's pointer and count stay
+	// true), room made first when the bag has none. True when the item is in the bag (or already was).
+	bool PlayerBotEkwBringToBag(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || item->GetOwner() != ch)
+			return false;
+		const BYTE bWindow = item->GetWindow();
+		if (bWindow == INVENTORY)
+			return true;
+		if (!IsPlayerBotEkwWindow(bWindow) || !IsPlayerBotEkwPagesOn(ch) || !IsPlayerBotEkwMovable(ch, item))
+			return false;
+		int cell = PlayerBotEkwFindBagCell(ch, item->GetSize());
+		if (cell < 0 && PlayerBotEkwMakeBagRoom(ch, item->GetSize(), item))
+			cell = PlayerBotEkwFindBagCell(ch, item->GetSize());
+		if (cell < 0)
+		{
+			++s_kPlayerBotEkwPagesStats.noRoom;
+			return false;
+		}
+		const WORD wFrom = item->GetCell();
+		item->RemoveFromCharacter();
+		if (!item->AddToCharacter(ch, TItemPos(INVENTORY, (WORD)cell)))
+		{
+			sys_err("PLAYERBOT_EKW: pages bag refused pid=%u vnum=%u from=%u/%u cell=%d", ch->GetPlayerID(), item->GetVnum(),
+					(unsigned)bWindow, (unsigned)wFrom, cell);
+			ch->AutoGiveItem(item, true);
+			return false;
+		}
+		ITEM_MANAGER::instance().FlushDelayedSave(item);
+		HoldPlayerBotEkwItem(item, get_dword_time());
+		++s_kPlayerBotEkwPagesStats.brought;
+		return true;
+	}
+
+	// The stored items that match, brought into the bag until the bag holds needUnits of them (the bag's own count
+	// first). Returns the units brought.
+	int PlayerBotEkwFetchMatching(LPCHARACTER ch, TPlayerBotEkwMatch match, const void* ctx, int needUnits)
+	{
+		if (!match || needUnits <= 0 || !IsPlayerBotEkwPagesOn(ch))
+			return 0;
+		int have = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && match(ch, item, ctx))
+				have += (int)item->GetCount();
+		}
+		if (have >= needUnits)
+			return 0;
+		std::vector<LPITEM> stored;
+		CollectPlayerBotEkwStored(ch, stored);
+		int brought = 0;
+		for (size_t i = 0; i < stored.size() && have < needUnits; ++i)
+		{
+			LPITEM item = stored[i];
+			if (!match(ch, item, ctx) || !IsPlayerBotEkwMovable(ch, item))
+				continue;
+			const int units = (int)item->GetCount();
+			if (!PlayerBotEkwBringToBag(ch, item))
+				break;	// no room
+			have += units;
+			brought += units;
+		}
+		if (brought > 0)
+			++s_kPlayerBotEkwPagesStats.fetchRuns;
+		return brought;
+	}
+
+	// Before a counter's service visit or a town visit: the stored goods (not the working stock, which comes back on
+	// its own) into the bag's spare room - never below PLAYERBOT_EKW_STASH_BELOW free cells, so no pass stashes them
+	// straight back - once in PLAYERBOT_EKW_PREFETCH_GAP_MS. Returns the items brought.
+	int PlayerBotEkwFetchGoods(LPCHARACTER ch, const char* why)
+	{
+		static std::map<DWORD, DWORD> s_next;
+		if (!IsPlayerBotEkwPagesOn(ch) || ch->GetExchange() || ch->IsOpenSafebox() || ch->IsCubeOpen())
+			return 0;
+		const DWORD dwNow = get_dword_time();
+		std::map<DWORD, DWORD>::iterator next = s_next.find(ch->GetPlayerID());
+		if (next != s_next.end() && (int)(dwNow - next->second) < 0)
+			return 0;
+		s_next[ch->GetPlayerID()] = dwNow + PLAYERBOT_EKW_PREFETCH_GAP_MS;
+		int freeNow = CountPlayerBotFreeInventoryCells(ch);
+		if (freeNow <= PLAYERBOT_EKW_STASH_BELOW)
+			return 0;
+		std::vector<LPITEM> stored;
+		CollectPlayerBotEkwStored(ch, stored);
+		int n = 0;
+		for (size_t i = 0; i < stored.size(); ++i)
+		{
+			LPITEM item = stored[i];
+			if (!IsPlayerBotEkwMovable(ch, item) || IsPlayerBotEkwWorkingStock(ch, item, item->GetWindow()))
+				continue;
+			if (freeNow - (int)item->GetSize() < PLAYERBOT_EKW_STASH_BELOW || PlayerBotEkwFindBagCell(ch, item->GetSize()) < 0)
+				continue;
+			if (!PlayerBotEkwBringToBag(ch, item))
+				continue;
+			++n;
+			freeNow = CountPlayerBotFreeInventoryCells(ch);
+		}
+		if (n > 0)
+		{
+			++s_kPlayerBotEkwPagesStats.prefetchRuns;
+			s_kPlayerBotEkwPagesStats.prefetched += n;
+			sys_log(0, "PLAYERBOT_EKW: pages goods pid=%u name=%s why=%s items=%d free=%d stored_cells=%d", ch->GetPlayerID(),
+					ch->GetName(), why ? why : "-", n, freeNow, CountPlayerBotEkwStoredCells(ch));
+		}
+		return n;
+	}
+
+	void ReportPlayerBotEkwPages(DWORD dwNow)
+	{
+		static DWORD s_next = 0;
+		if (s_next != 0 && (int)(dwNow - s_next) < 0)
+			return;
+		s_next = dwNow + PLAYERBOT_EKW_PAGES_REPORT_MS;
+		TPlayerBotEkwPagesStats& s = s_kPlayerBotEkwPagesStats;
+		if (s.brought || s.roomStash || s.noRoom || s.prefetchRuns)
+			sys_log(0, "PLAYERBOT_EKW: pages report brought=%d room_stash=%d no_room=%d fetch_runs=%d prefetch_runs=%d "
+					"prefetched=%d held=%u", s.brought, s.roomStash, s.noRoom, s.fetchRuns, s.prefetchRuns, s.prefetched,
+					(unsigned)s_mapPlayerBotEkwHeld.size());
+		s = TPlayerBotEkwPagesStats();
+	}
+
 	// One kind back into the bag on the spot, a stack of it (FindPlayerBotBagItem's miss, or any rule that needs it
 	// now). True when the bag now holds some.
 	bool PlayerBotEkwFetchVnum(LPCHARACTER ch, DWORD vnum)
 	{
 		if (!ch || !vnum || !ch->IsPC() || !ch->GetDesc() || !ch->GetDesc()->IsBot() || !ch->IsItemLoaded() ||
 				ch->GetExchange() || ch->IsOpenSafebox() || ch->IsCubeOpen())
+			return false;
+		if (!IsPlayerBotEkwPagesOn(ch))	// MT2009_PLUS_BOT_EKW_PAGES_V1: the kill switch, a serving companion
 			return false;
 		std::vector<LPITEM> stored;
 		CollectPlayerBotEkwStored(ch, stored);
@@ -282,8 +541,17 @@ namespace
 		TPlayerBotEkwStats st;
 		bool bGone = false;
 		const ITEM_COUNT count = best->GetCount();
+		// MT2009_PLUS_BOT_EKW_PAGES_V1: a full bag lends the storages something else first; what came back is held
 		if (!PlayerBotEkwToBag(ch, best, st, bGone))
-			return false;
+		{
+			if (!PlayerBotEkwMakeBagRoom(ch, best->GetSize(), best) || !PlayerBotEkwToBag(ch, best, st, bGone))
+			{
+				++s_kPlayerBotEkwPagesStats.noRoom;
+				return false;
+			}
+		}
+		if (!bGone)
+			HoldPlayerBotEkwItem(best, get_dword_time());
 		sys_log(0, "PLAYERBOT_EKW: fetch pid=%u name=%s vnum=%u count=%u joined=%d free=%d", ch->GetPlayerID(), ch->GetName(),
 				vnum, (unsigned)count, st.joined, CountPlayerBotFreeInventoryCells(ch));
 		return true;
@@ -321,6 +589,7 @@ namespace
 		if ((int)(dwNow - next) < 0)
 			return;
 		next = dwNow + PLAYERBOT_EKW_PASS_MS;
+		ReportPlayerBotEkwPages(dwNow);	// MT2009_PLUS_BOT_EKW_PAGES_V1
 
 		if (ArePlayerBotEkwOff() || IsPlayerBotSidekickServing(ch) || IsPlayerBotSidekickPID(pid))
 			return;
@@ -385,7 +654,8 @@ namespace
 			for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && moves < PLAYERBOT_EKW_MAX_MOVES; ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem((WORD)cell);
-				if (!item || item->GetCell() != cell || !IsPlayerBotEkwMovable(ch, item) || !PlayerBotEkwStacks(item))
+				if (!item || item->GetCell() != cell || !IsPlayerBotEkwMovable(ch, item) || !PlayerBotEkwStacks(item) ||
+						IsPlayerBotEkwHeld(item, dwNow))	// MT2009_PLUS_BOT_EKW_PAGES_V1: just brought back
 					continue;
 				const BYTE bWindow = Mt2009EkwCategoryOfItem(item);
 				if (!bWindow)
@@ -416,7 +686,7 @@ namespace
 				if (!item || item->GetCell() != cell || !IsPlayerBotEkwMovable(ch, item))
 					continue;
 				const BYTE bWindow = Mt2009EkwCategoryOfItem(item);
-				if (!bWindow || IsPlayerBotEkwWorkingStock(ch, item, bWindow))
+				if (!bWindow || IsPlayerBotEkwWorkingStock(ch, item, bWindow) || IsPlayerBotEkwHeld(item, dwNow))
 					continue;
 				bool bGone = false;
 				if (PlayerBotEkwToStorage(ch, item, bWindow, st, bGone))

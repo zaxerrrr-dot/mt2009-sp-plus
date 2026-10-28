@@ -944,16 +944,23 @@ namespace
 		return any || PlayerBotHasRoomForEveryRoughKind(ch);
 	}
 
+	// MT2009_PLUS_BOT_EKW_PAGES_V1: the bag and the extra inventory's pages.
 	int CountPlayerBotOpenableCors(LPCHARACTER ch)
 	{
 		int n = 0;
-		for (int cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
-		{
-			LPITEM item = ch->GetInventoryItem((WORD)cell);
-			if (item && item->GetCell() == cell && IsPlayerBotOpenableCorVnum(item->GetVnum()))
-				n += (int)item->GetCount();
-		}
+		std::vector<LPITEM> owned;
+		CollectPlayerBotOwnedItems(ch, owned);
+		for (size_t i = 0; i < owned.size(); ++i)
+			if (IsPlayerBotOpenableCorVnum(owned[i]->GetVnum()))
+				n += (int)owned[i]->GetCount();
 		return n;
+	}
+
+	// MT2009_PLUS_BOT_EKW_PAGES_V1: a Cor of the extra inventory the pass may open (OpenPlayerBotCors's own tests).
+	bool MatchPlayerBotOpenableCor(LPCHARACTER ch, LPITEM item, const void*)
+	{
+		return IsPlayerBotOpenableCorVnum(item->GetVnum()) && !item->isLocked() && !IsPlayerBotSidekickKeptForOwner(ch, item) &&
+				PlayerBotHasRoomForCor(ch, item->GetVnum());
 	}
 
 	// Its Cors opened while the alchemy bag has room: the Cor's group is one
@@ -973,6 +980,8 @@ namespace
 			sys_log(0, "PLAYERBOT_ALCHEMY: bulk alchemist pid=%u name=%s lv=%d legendary_cors=%d cohort=%d", ch->GetPlayerID(),
 					ch->GetName(), ch->GetLevel(), CountPlayerBotLegendaryCors(ch), IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) ? 1 : 0);
 		}
+		// MT2009_PLUS_BOT_EKW_PAGES_V1: the bag holding none, a stack from the extra inventory (opened from the bag)
+		PlayerBotEkwFetchMatching(ch, MatchPlayerBotOpenableCor, NULL, 1);
 		std::set<DWORD> noRoom;
 		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && opened < perPass; ++cell)
 		{
@@ -1498,13 +1507,22 @@ namespace
 		static const DWORD s_high[3] = { PLAYERBOT_DS_PINK_BEAN_VNUM, PLAYERBOT_DS_BLUE_BEAN_VNUM, PLAYERBOT_DS_GREEN_BEAN_VNUM };
 		static const DWORD s_low[3] = { PLAYERBOT_DS_GREEN_BEAN_VNUM, PLAYERBOT_DS_BLUE_BEAN_VNUM, PLAYERBOT_DS_PINK_BEAN_VNUM };
 		const DWORD* order = strength >= 3 ? s_high : s_low;
-		for (int o = 0; o < 3; ++o)
-			for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
-			{
-				LPITEM item = ch->GetInventoryItem(cell);
-				if (item && item->GetCell() == cell && item->GetVnum() == order[o] && !item->isLocked())
-					return cell;
-			}
+		// MT2009_PLUS_BOT_EKW_PAGES_V1: a second look after the beans came back from the extra inventory
+		for (int pass = 0; pass < 2; ++pass)
+		{
+			for (int o = 0; o < 3; ++o)
+				for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+				{
+					LPITEM item = ch->GetInventoryItem(cell);
+					if (item && item->GetCell() == cell && item->GetVnum() == order[o] && !item->isLocked())
+						return cell;
+				}
+			bool fetched = false;
+			for (int o = 0; pass == 0 && o < 3 && !fetched; ++o)
+				fetched = PlayerBotEkwFetchVnum(ch, order[o]);
+			if (!fetched)
+				break;
+		}
 		return -1;
 	}
 

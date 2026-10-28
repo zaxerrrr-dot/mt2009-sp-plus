@@ -40,6 +40,13 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
   do 16 wolnych pól; zapas roboczy (zwoje ulepszania, zaczarowania, własne księgi, kamienie do osadzenia, Cory) wraca
   do torby od razu, gdy go w niej brak, a towar – gdy torba ma ponad 22 wolne pola. Flaga `m2_ekw_bots_off` wyłącza,
   log `PLAYERBOT_EKW`.
+  Od `MT2009_PLUS_BOT_EKW_PAGES_V1` (28.10.2026) magazyny są dla bota **dalszymi stronami torby**: szukanie towaru
+  (umowy z szeptu i spotkania, „masz X?”, rynek, Cory i fasolki alchemii) widzi torbę i magazyny
+  (`CollectPlayerBotOwnedItems`); zanim silnik czegoś dotknie (okno handlu, użycie), przedmiot wraca do pola torby
+  (`PlayerBotEkwBringToBag` / `PlayerBotEkwFetchMatching`), a pełna torba najpierw oddaje magazynom nadmiar lub towar.
+  Przed wizytą przy ladzie i w mieście towar z magazynów wraca do wolnego miejsca torby (`PlayerBotEkwFetchGoods`,
+  nie poniżej 10 wolnych pól). Silnik bez zmian (`CountSpecifyItem` / `RemoveSpecifyItem` czytały magazyny już
+  wcześniej). Ta sama flaga `m2_ekw_bots_off` i zasada towarzyszy; log `PLAYERBOT_EKW: pages`.
 - **Wyjście**: przeciągnięcie do torby (`MoveItem`: do magazynu tylko jego kategoria, z torby albo z niego samego;
   z magazynu tylko do torby), użycie prosto z magazynu (`UseItem` – księgi, skrzynie, kamień na przedmiot,
   zaczarowanie na przedmiot), `CountSpecifyItem` / `RemoveSpecifyItem` liczą i biorą z magazynów (materiały

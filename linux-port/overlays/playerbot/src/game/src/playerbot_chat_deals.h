@@ -199,10 +199,13 @@ namespace
 		playerbot_conv::ExpandItemQuery(folded, candidates);
 		if (bot->IsItemLoaded())
 		{
-			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			// MT2009_PLUS_BOT_EKW_PAGES_V1: the bag and the extra inventory's pages
+			std::vector<LPITEM> owned;
+			CollectPlayerBotOwnedItems(bot, owned);
+			for (size_t i = 0; i < owned.size(); ++i)
 			{
-				LPITEM item = bot->GetInventoryItem(cell);
-				if (item && item->GetProto() &&
+				LPITEM item = owned[i];
+				if (item->GetProto() &&
 						playerbot_conv::ItemNameMatchesAny(playerbot_conv::FoldName(item->GetProto()->szLocaleName), candidates))
 					return item->GetVnum();
 			}
@@ -268,11 +271,12 @@ namespace
 		std::set<DWORD> seen;
 		if (!bot || !bot->IsItemLoaded())
 			return out;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && seen.size() < 4; ++cell)
+		std::vector<LPITEM> owned;	// MT2009_PLUS_BOT_EKW_PAGES_V1: the bag and the extra inventory's pages
+		CollectPlayerBotOwnedItems(bot, owned);
+		for (size_t i = 0; i < owned.size() && seen.size() < 4; ++i)
 		{
-			LPITEM item = bot->GetInventoryItem(cell);
-			const DWORD skill = item && item->GetCell() == cell && IsPlayerBotDealSellable(item) ?
-					GetPlayerBotSkillBookSkillVnum(item) : 0;
+			LPITEM item = owned[i];
+			const DWORD skill = IsPlayerBotDealSellable(item) ? GetPlayerBotSkillBookSkillVnum(item) : 0;
 			if (!skill || !seen.insert(skill).second)
 				continue;
 			if (!out.empty())
@@ -283,6 +287,7 @@ namespace
 	}
 
 	bool IsPlayerBotDealVillage(long mapIndex);
+	int CountPlayerBotDealBagPieces(LPCHARACTER ch, DWORD vnum, DWORD skill);
 
 	bool QuotePlayerBotDealItem(LPCHARACTER bot, const std::string& query, DWORD vnumHint, DWORD skillHint,
 			playerbot_conv::TDealQuote& out)
@@ -418,12 +423,7 @@ namespace
 		// what it is short of, or what its counter holds.
 		if (!wanted.count(vnum) && !bookNeeded && out.fair > 0 && bot->IsItemLoaded())
 		{
-			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
-			{
-				LPITEM item = bot->GetInventoryItem(cell);
-				if (item && IsPlayerBotDealPiece(item, vnum, skill) && item->GetCell() == cell && IsPlayerBotDealSellable(item))
-					out.botHas += (int)item->GetCount();
-			}
+			out.botHas = CountPlayerBotDealBagPieces(bot, vnum, skill);	// MT2009_PLUS_BOT_EKW_PAGES_V1: with the extra pages
 			out.minSellUnit = out.fair * 85 / 100;
 			out.sellUnit = out.fair * 110 / 100;
 			if (npcUnit > 0)	// MT2009_PLUS_NPC_PRICE_CAP_V1
@@ -518,16 +518,32 @@ namespace
 
 	// MT2009_PLUS_BOT_DEAL_FROM_STALL_V1: the deal's pieces in the bag, as
 	// the window would take them (OfferPlayerBotDealPieces).
+	// MT2009_PLUS_BOT_EKW_PAGES_V1: and in the extra inventory's pages, which
+	// OfferPlayerBotDealPieces brings into the bag first.
 	int CountPlayerBotDealBagPieces(LPCHARACTER ch, DWORD vnum, DWORD skill)
 	{
 		int pieces = 0;
-		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		std::vector<LPITEM> owned;
+		CollectPlayerBotOwnedItems(ch, owned);
+		for (size_t i = 0; i < owned.size(); ++i)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && item->GetCell() == cell && IsPlayerBotDealPiece(item, vnum, skill) && IsPlayerBotDealSellable(item))
+			LPITEM item = owned[i];
+			if (IsPlayerBotDealPiece(item, vnum, skill) && IsPlayerBotDealSellable(item))
 				pieces += (int)item->GetCount();
 		}
 		return pieces;
+	}
+
+	struct TPlayerBotDealPieceKind
+	{
+		DWORD vnum;
+		DWORD skill;
+	};
+
+	bool MatchPlayerBotDealPiece(LPCHARACTER, LPITEM item, const void* ctx)
+	{
+		const TPlayerBotDealPieceKind* k = (const TPlayerBotDealPieceKind*)ctx;
+		return IsPlayerBotDealPiece(item, k->vnum, k->skill) && IsPlayerBotDealSellable(item);
 	}
 
 	void FillPlayerBotDealMeetPlace(const TPlayerBotDeal& d, LPCHARACTER bot, playerbot_conv::TDealMeetPlace& out)
@@ -772,6 +788,10 @@ namespace
 	// and "KU Aura Miecza" agreed must not hand over a KU Berserk.
 	bool OfferPlayerBotDealPieces(LPCHARACTER ch, CExchange* exchange, DWORD vnum, DWORD skill, int count)
 	{
+		// MT2009_PLUS_BOT_EKW_PAGES_V1: the pieces in the extra inventory come into the bag first - the window takes
+		// only the bag's.
+		const TPlayerBotDealPieceKind kind = { vnum, skill };
+		PlayerBotEkwFetchMatching(ch, MatchPlayerBotDealPiece, &kind, count);
 		std::vector<LPITEM> chosen;
 		int pieces = 0;
 		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && pieces < count; ++cell)

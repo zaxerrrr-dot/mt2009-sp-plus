@@ -226,10 +226,12 @@ namespace
 		{
 			if (!PlayerBotCanSpendBonusStoneKind(ch, offer) || offer->GetCount() > 1)
 				return false;
-			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			std::vector<LPITEM> owned;	// MT2009_PLUS_BOT_EKW_PAGES_V1: the bag and the extra inventory's pages
+			CollectPlayerBotOwnedItems(ch, owned);
+			for (size_t i = 0; i < owned.size(); ++i)
 			{
-				LPITEM held = ch->GetInventoryItem(cell);
-				if (held && held->GetType() == ITEM_USE && held->GetSubType() == offer->GetSubType() &&
+				LPITEM held = owned[i];
+				if (held->GetType() == ITEM_USE && held->GetSubType() == offer->GetSubType() &&
 						!IsPlayerBotGreenBonusStone(held->GetVnum()))
 					return false;
 			}
@@ -1829,11 +1831,12 @@ namespace
 				if (!ch || !ch->IsItemLoaded())
 					continue;
 				boxUnits += it->second.persona.wBoxMaterialUnits;
-				for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+				std::vector<LPITEM> owned;	// MT2009_PLUS_BOT_EKW_PAGES_V1: the extra inventory's pages are the bag's
+				CollectPlayerBotOwnedItems(ch, owned);
+				for (size_t i = 0; i < owned.size(); ++i)
 				{
-					LPITEM item = ch->GetInventoryItem(cell);
-					if (item && item->GetCell() == cell && IsPlayerBotTradeableMaterial(item) &&
-							!IsPlayerBotSafeRefineScroll(item->GetVnum()))
+					LPITEM item = owned[i];
+					if (IsPlayerBotTradeableMaterial(item) && !IsPlayerBotSafeRefineScroll(item->GetVnum()))
 						bagUnits += std::max<int>(1, item->GetCount());
 				}
 			}
