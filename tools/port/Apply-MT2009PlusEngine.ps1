@@ -1803,4 +1803,16 @@ if ((Test-Path -LiteralPath $communityApply -PathType Leaf) -and
     }
 }
 
+# Lokalizator NPC (server-patches/npcloc, MT2009_PLUS_NPC_LOCATION_HELPER_V1; Autor: Best Studio): the improved map's
+# packet (header 196) and the activator 79667 - npc_location_helper.cpp/.h come with the overlay's game sources.
+$npclocApply = Join-Path $repo 'server-patches/npcloc/Apply-NpcLocPatch.ps1'
+if ((Test-Path -LiteralPath $npclocApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_main.cpp') -PathType Leaf)) {
+    $npclocResult = & $npclocApply -SourceDir $engineGameSource
+    if ($npclocResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Lokalizator NPC edit(s).' -f $npclocResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

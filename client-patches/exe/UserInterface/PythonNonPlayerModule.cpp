@@ -76,6 +76,34 @@ PyObject * nonplayerGetMonsterName(PyObject * poSelf, PyObject * poArgs)
 	return Py_BuildValue("s", rkNonPlayer.GetMonsterName(iVNum));
 }
 
+#ifdef ENABLE_NPC_LOCATION_HELPER
+// MT2009_PLUS_NPC_LOCATION_HELPER_V1: nonplayer.GetMonsterRank(vnum) / GetRankOnVnum(vnum) - the mob's rank (PAWN 0 ..
+// KING 5) for the helper's monster guide; -1 for a vnum the client does not know.
+PyObject * nonplayerGetMonsterRank(PyObject * poSelf, PyObject * poArgs)
+{
+	int iVNum;
+	if (!PyTuple_GetInteger(poArgs, 0, &iVNum))
+		return Py_BuildException();
+
+	const CPythonNonPlayer::TMobTable * pMobTable = CPythonNonPlayer::Instance().GetTable(iVNum);
+	if (!pMobTable)
+		return Py_BuildValue("i", -1);
+
+	return Py_BuildValue("i", (int)pMobTable->bRank);
+}
+
+// nonplayer.GetMonsterLevel(vnum) - the mob's level, 0 for an unknown vnum
+PyObject * nonplayerGetMonsterLevel(PyObject * poSelf, PyObject * poArgs)
+{
+	int iVNum;
+	if (!PyTuple_GetInteger(poArgs, 0, &iVNum))
+		return Py_BuildException();
+
+	const CPythonNonPlayer::TMobTable * pMobTable = CPythonNonPlayer::Instance().GetTable(iVNum);
+	return Py_BuildValue("i", pMobTable ? (int)pMobTable->bLevel : 0);
+}
+#endif
+
 PyObject * nonplayerLoadNonPlayerData(PyObject * poSelf, PyObject * poArgs)
 {
 	char * szFileName;
@@ -363,6 +391,11 @@ void initNonPlayer()
 		{ "GetLevelByVID",				nonplayerGetLevelByVID,				METH_VARARGS },
 		{ "GetGradeByVID",				nonplayerGetGradeByVID,				METH_VARARGS },
 		{ "GetMonsterName",				nonplayerGetMonsterName,			METH_VARARGS },
+#ifdef ENABLE_NPC_LOCATION_HELPER
+		{ "GetMonsterRank",				nonplayerGetMonsterRank,			METH_VARARGS },	// MT2009_PLUS_NPC_LOCATION_HELPER_V1
+		{ "GetRankOnVnum",				nonplayerGetMonsterRank,			METH_VARARGS },
+		{ "GetMonsterLevel",			nonplayerGetMonsterLevel,			METH_VARARGS },
+#endif
 
 		{ "LoadNonPlayerData",			nonplayerLoadNonPlayerData,			METH_VARARGS },
 

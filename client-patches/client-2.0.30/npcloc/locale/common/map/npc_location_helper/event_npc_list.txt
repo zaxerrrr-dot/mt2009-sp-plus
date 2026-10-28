@@ -1,0 +1,2 @@
+## MT2009_PLUS_NPC_LOCATION_HELPER_V1 - the NPCs an event spawns (none listed)
+#map_index	x	y	vnum	event_flag

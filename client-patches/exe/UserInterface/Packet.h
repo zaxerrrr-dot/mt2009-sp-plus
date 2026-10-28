@@ -155,6 +155,9 @@ enum
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_CG_MINI_GAME_CATCH_KING				= 226,
 #endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+	HEADER_CG_NPC_LOCATION_HELPER				= 196,	// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (cg header)
+#endif
 
 	HEADER_CG_KEY_AGREEMENT						= 0xfb, // _IMPROVED_PACKET_ENCRYPTION_
 	HEADER_CG_TIME_SYNC							= 0xfc,
@@ -368,6 +371,9 @@ enum
 #endif
 #ifdef ENABLE_MINI_GAME_CATCH_KING
 	HEADER_GC_MINI_GAME_CATCH_KING				= 238,
+#endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+	HEADER_GC_NPC_LOCATION_HELPER				= 196,	// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (gc header)
 #endif
 #ifdef ENABLE_12ZI
 	HEADER_GC_SEPCIAL_ZODIAC_EFFECT				= 220, // MT2009_PLUS_ZODIAC_V1: the Zodiac bosses' effects (server packet.h)
@@ -3898,7 +3904,54 @@ typedef struct SSwitchbotUpdateItem
 } TSwitchbotUpdateItem;
 #endif
 
+#ifdef ENABLE_NPC_LOCATION_HELPER
+// MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Lokalizator NPC, Autor: Best Studio): the same layout as the server's packet.h
+// (fixed-size ints - the server is not 32-bit-long). x/y = local position in metres (point file value / 100).
+enum ENPCLocationHelperCGSubHeader
+{
+	NPC_LOCATION_HELPER_CG_REQUEST_STATUS,
+	NPC_LOCATION_HELPER_CG_WARP_TO_NPC,
+	NPC_LOCATION_HELPER_CG_USE_TICKET,
+	NPC_LOCATION_HELPER_CG_REQUEST_GUILD_LAND,
+};
+
+enum ENPCLocationHelperGCSubHeader
+{
+	NPC_LOCATION_HELPER_GC_STATUS,
+	NPC_LOCATION_HELPER_GC_WARP_RESULT,
+	NPC_LOCATION_HELPER_GC_GUILD_LAND,
+};
+
+typedef struct command_npc_location_helper_cg
+{
+	BYTE	header;
+	BYTE	subheader;
+	int		mapIndex;
+	DWORD	vnum;
+	int		x;
+	int		y;
+} TPacketCGNPCLocationHelper;
+
+typedef struct command_npc_location_helper_gc
+{
+	BYTE	header;
+	BYTE	subheader;
+	BYTE	result;
+	BYTE	active;
+	DWORD	cooldownRemain;
+	int		mapIndex;	// STATUS: the character's map index (0 = unknown); WARP_RESULT: the target's
+	DWORD	vnum;
+	int		x;
+	int		y;
+} TPacketGCNPCLocationHelper;
+#endif
+
 #pragma pack(pop)
+
+#ifdef ENABLE_NPC_LOCATION_HELPER
+static_assert(sizeof(TPacketCGNPCLocationHelper) == 18, "CG NPC location helper must be 18 bytes (server packet.h)");
+static_assert(sizeof(TPacketGCNPCLocationHelper) == 24, "GC NPC location helper must be 24 bytes (server packet.h)");
+#endif
 
 #ifdef ENABLE_MINI_GAME_RUMI
 static_assert(sizeof(TPacketCGMiniGameRumi) == 7, "CG Rumi must be 7 bytes (Owsap)");

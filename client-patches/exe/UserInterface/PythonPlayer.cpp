@@ -167,6 +167,11 @@ void CPythonPlayer::Update()
 #ifdef ENABLE_MT2009_AUTOHUNT_TEST
 	AutoHuntTest_Update();	// MT2009_PLUS_AUTOHUNT_TEST_V1 (Mt2009AutoHuntTest.cpp)
 #endif
+#ifdef ENABLE_NPC_LOCATION_HELPER
+	// MT2009_PLUS_NPC_LOCATION_HELPER_V1: the arrow under the character towards the NPC chosen in Lokalizator NPC
+	// (every frame, also while the minimap is hidden)
+	CPythonMiniMap::Instance().TickNPCLocationDirectionEffect();
+#endif
 }
 
 bool CPythonPlayer::__IsUsingChargeSkill()

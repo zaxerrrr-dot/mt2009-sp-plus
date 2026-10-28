@@ -4376,6 +4376,16 @@ fi
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (83036, 83037, 83073, 83074);" 2>/dev/null || echo x)" = "4" ]; then
 ishop_once card_boxes_627 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (627, 83036, 1, 25, 'DRAGON_COIN', 0), (628, 83037, 1, 35, 'DRAGON_COIN', 0), (629, 83074, 1, 45, 'DRAGON_COIN', 0), (630, 83073, 1, 150, 'DRAGON_COIN', 0);" "could not add the Monster Card boxes to the ItemShop"
 fi
+# MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Autor: Best Studio): Lokalizator NPC 79667 (switches the improved map on for the
+# character) and Kamien Teleportacji 79669 / Kamien Teleportacji+ 79668 (the teleport to an NPC; server-patches/npcloc,
+# npc_location_helper.cpp) - npc_location_helper.sql. Idempotent (INSERT IGNORE).
+if [ -s /opt/playerbot/npc_location_helper.sql ]; then
+    if db < /opt/playerbot/npc_location_helper.sql; then
+        echo "[playerbot-migrate] NPC location helper: npc_location_helper.sql applied (MT2009_PLUS_NPC_LOCATION_HELPER_V1)"
+    else
+        fail_step "NPC location helper: npc_location_helper.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_COSTUME_SET_V2: the costume sets as on the global server (server-patches/zestawy; the owner, 20 October
 # 2026) - zestawy_items.sql (tools/zestawy/gen_zestawy.py): the sets' rings, amulets and sash the server lacked (Amulet

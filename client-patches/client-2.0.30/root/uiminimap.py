@@ -16,6 +16,16 @@ from constInfo import TextColor
 import uiItemShop
 import serverInfo as serverInfoModule
 import uiworldboss # MT2009_PLUS_WORLDBOSS_ICON_V1: the World Boss's icon on the atlas and the minimap
+# MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Autor: Best Studio): Lokalizator NPC - the improved atlas (uinpclocationhelper.py);
+# an exe without the module npcLocationHelper keeps the old atlas only.
+try:
+	import uinpclocationhelper
+except ImportError:
+	uinpclocationhelper = None
+except Exception, npcLocErr:
+	import dbg
+	dbg.TraceError("uinpclocationhelper: %s" % str(npcLocErr))
+	uinpclocationhelper = None
 
 EVENT_SET_MINIMAP_HIDE_STATE = "EVENT_SET_MINIMAP_HIDE_STATE" # args | isHidden: boolean
 
@@ -286,6 +296,9 @@ class AtlasWindow(ui.ScriptWindow):
 		self.__RefreshScale()
 		ui.ScriptWindow.Show(self)
 		self.SetTop()
+		# MT2009_PLUS_NPC_LOCATION_HELPER_V1: the title bar's switch to the improved atlas (only once it is switched on)
+		if getattr(self, "npcLocBridge", None):
+			self.npcLocBridge.RefreshSwitchButton()
 
 	def SetCenterPositionAdjust(self, x, y):
 		self.SetPosition((wndMgr.GetScreenWidth() - self.GetWidth()) / 2 + x, (wndMgr.GetScreenHeight() - self.GetHeight()) / 2 + y)
@@ -324,6 +337,10 @@ class MiniMap(ui.ScriptWindow):
 		self.AtlasWindow = AtlasWindow()
 		self.AtlasWindow.LoadWindow()
 		self.AtlasWindow.Hide()
+		# MT2009_PLUS_NPC_LOCATION_HELPER_V1: the small atlas <-> the improved one (uinpclocationhelper.MiniMapBridge)
+		self.npcLocBridge = None
+		if uinpclocationhelper and getattr(app, "ENABLE_NPC_LOCATION_HELPER", 0):
+			self.npcLocBridge = uinpclocationhelper.MiniMapBridge(self)
 
 		self.tooltipMiniMapOpen = MapTextToolTip()
 		self.tooltipMiniMapOpen.SetText(localeInfo.MINIMAP)
@@ -396,6 +413,8 @@ class MiniMap(ui.ScriptWindow):
 	def SetMapName(self, mapName):
 		self.mapName=mapName
 		self.AtlasWindow.SetMapName(mapName)
+		if getattr(self, "npcLocBridge", None): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
+			self.npcLocBridge.SetMapName(mapName)
 
 		if self.CANNOT_SEE_INFO_MAP_DICT.has_key(mapName):
 			self.canSeeInfo = False
@@ -512,6 +531,9 @@ class MiniMap(ui.ScriptWindow):
 	@ui.WindowDestroy
 	def Destroy(self):
 		self.HideMiniMap()
+		if getattr(self, "npcLocBridge", None): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
+			self.npcLocBridge.Destroy()
+			self.npcLocBridge = None
 		if self.AtlasWindow:
 			self.AtlasWindow.Destroy()
 			self.AtlasWindow = None
@@ -662,11 +684,15 @@ class MiniMap(ui.ScriptWindow):
 	def ShowAtlas(self):
 		if not miniMap.IsAtlas():
 			return
+		if getattr(self, "npcLocBridge", None) and self.npcLocBridge.ShowAtlas(): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
+			return
 		if not self.AtlasWindow.IsShow():
 			self.AtlasWindow.Show()
 
 	def ToggleAtlasWindow(self):
 		if not miniMap.IsAtlas():
+			return
+		if getattr(self, "npcLocBridge", None) and self.npcLocBridge.ToggleAtlas(): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
 			return
 		if self.AtlasWindow.IsShow():
 			self.AtlasWindow.Hide()

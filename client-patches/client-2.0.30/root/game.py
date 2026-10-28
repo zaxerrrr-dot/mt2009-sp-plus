@@ -339,6 +339,24 @@ class GameWindow(ui.ScriptWindow):
 		self.__RefreshNightMode()
 		eventManager.EventManager().add_observer(eventManager.ADD_FLOATING_TEXT, self.__AddFloatingText)
 
+		# MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Autor: Best Studio): Lokalizator NPC - the item tooltip for its windows and
+		# the server's state (uinpclocationhelper.py; only with an exe that has it)
+		if getattr(app, "ENABLE_NPC_LOCATION_HELPER", 0):
+			try:
+				__import__("uinpclocationhelper").OnGameOpen(self.interface)
+			except ImportError:
+				pass
+
+	# MT2009_PLUS_NPC_LOCATION_HELPER_V1: the exe's calls when the server answers (PythonNetworkStreamPhaseGame.cpp)
+	def RefreshNPCLocationHelperStatus(self):
+		__import__("uinpclocationhelper").OnServerStatus(self.interface)
+
+	def OnNPCLocationHelperWarpResult(self, result):
+		__import__("uinpclocationhelper").OnServerWarpResult(self.interface, result)
+
+	def RefreshNPCLocationHelperGuildLand(self, mapIndex, result):
+		__import__("uinpclocationhelper").OnServerGuildLand(self.interface, mapIndex, result)
+
 	def Close(self):
 		self.Hide()
 		# MT2009_PLUS_DROP_WIKI_V1: the drop wiki (uidropwiki.py).
