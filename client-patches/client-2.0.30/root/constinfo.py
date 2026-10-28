@@ -506,3 +506,12 @@ def GET_UNIQUE_70LEVEL_WEAPON_APPLY_VALUE(point, refineLevel):
 # gracz i tak nie moglby uzyc; kazda komenda /gmpanel_* jest po stronie
 # serwera sprawdzana wzgledem prawdziwego gm_level (cmd_info w cmd.cpp).
 IsGM = False
+
+# MT2009_PLUS_GAYA_CURRENCY_V1: Gaya is a currency of the character (server-patches/gaya2, gayacurrency.py): the
+# counter next to the Yang in the inventory and the money bar. GAYA / WON are the server's values ("GAYA <total>
+# <change>"). ENABLE_WON is the one switch of the Won slot (inventory row, money bar) - off: no Won on the server yet;
+# on it also needs d:/ymir work/ui/game/windows/cheque_icon.sub in the client and the server's Won line.
+ENABLE_GAYA_CURRENCY = 1
+ENABLE_WON = 0
+GAYA = 0
+WON = 0

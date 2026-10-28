@@ -4404,6 +4404,7 @@ class Interface(object):
 		self.wndTaskBar.SetToggleButtonEvent(uiTaskBar.TaskBar.BUTTON_INVENTORY, ui.__mem_func__(self.ToggleInventoryWindow))
 		self.wndTaskBar.SetToggleButtonEvent(uiTaskBar.TaskBar.BUTTON_MESSENGER, ui.__mem_func__(self.ToggleMessenger))
 		self.wndTaskBar.SetToggleButtonEvent(uiTaskBar.TaskBar.BUTTON_SYSTEM, ui.__mem_func__(self.ToggleSystemDialog))
+		__import__("gayacurrency").MakeMoneyBar(self) # MT2009_PLUS_GAYA_CURRENCY_V1: the money bar (Won / Gaya / Yang) and its button
 		# if uiTaskBar.TaskBar.IS_EXPANDED:
 		# 	self.wndTaskBar.SetToggleButtonEvent(uiTaskBar.TaskBar.BUTTON_EXPAND, ui.__mem_func__(self.ToggleExpandedButton))
 		# 	self.wndExpandedTaskBar = uiTaskBar.ExpandedTaskBar()
@@ -4962,6 +4963,7 @@ class Interface(object):
 		if self.wndChat:
 			self.wndChat.Destroy()
 
+		__import__("gayacurrency").DestroyMoneyBar() # MT2009_PLUS_GAYA_CURRENCY_V1
 		if self.wndTaskBar:
 			self.wndTaskBar.Destroy()
 
@@ -5309,6 +5311,7 @@ class Interface(object):
 		self.wndTaskBar.RefreshStatus()
 		self.wndCharacter.RefreshStatus()
 		self.wndInventory.RefreshGold()
+		__import__("gayacurrency").Refresh(self) # MT2009_PLUS_GAYA_CURRENCY_V1
 		self.wndAttributeList.RefreshStatus()
 		if self.wndEnergyBar:
 			self.wndEnergyBar.RefreshStatus()
@@ -5655,6 +5658,7 @@ class Interface(object):
 			self.wndGarbageBin.Close()
 		if self.wndTaskBar:
 			self.wndTaskBar.Hide()
+		__import__("gayacurrency").HideMoneyBar() # MT2009_PLUS_GAYA_CURRENCY_V1
 
 		if self.wndEnergyBar:
 			self.wndEnergyBar.Hide()

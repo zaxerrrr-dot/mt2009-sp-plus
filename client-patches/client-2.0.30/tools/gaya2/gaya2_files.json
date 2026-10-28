@@ -1,0 +1,53 @@
+{
+ "marker": "MT2009_PLUS_GAYA_CURRENCY_V1",
+ "files": {
+  "d:/ymir work/ui/gaya2/cheque_slot.sub": {
+   "size": 103,
+   "sha256": "08af99bbdfe4ca2bbaa2cc38c68361ad6c20f155a9b33e5da97a69dedbcf025c",
+   "ctype": 2,
+   "source": "ours: the package's public/cheque_slot.sub rectangle on gaya2_public.dds"
+  },
+  "d:/ymir work/ui/gaya2/gaya2_public.dds": {
+   "size": 174976,
+   "sha256": "00de70dec9dc1f932b51ae81caf3123612d3d21b2ad3722b41ae87007c0b2b41",
+   "ctype": 1,
+   "source": "cache/gaya2/emt/__extra__/metin2_patch_gem.rar: ymir work/ui/public.dds"
+  },
+  "d:/ymir work/ui/gaya2/gaya_icon.tga": {
+   "size": 616,
+   "sha256": "4fb502b5e67af8f25061e471ae3b718986f61a6ff6b7b3ab0c3f01f08382d387",
+   "ctype": 1,
+   "source": "cache/gaya2/b/t/Gaya Taskbar/gaya.tga"
+  },
+  "d:/ymir work/ui/gaya2/gaya_slot.sub": {
+   "size": 103,
+   "sha256": "078dd83542fbf4d05b895db365da571abdb56941701d7498bcadc345a5f377df",
+   "ctype": 2,
+   "source": "ours: the package's public/parameter_slot_01.sub rectangle on gaya2_public.dds"
+  },
+  "d:/ymir work/ui/gaya2/gold_slot.sub": {
+   "size": 103,
+   "sha256": "4da156a1e47d2550ff4eeb74cb11e42e95e398d87dcb544f2e7fe07bcaab9dc2",
+   "ctype": 2,
+   "source": "ours: the package's public/gold_slot.sub rectangle on gaya2_public.dds"
+  },
+  "d:/ymir work/ui/gaya2/money_button_01.tga": {
+   "size": 4140,
+   "sha256": "9ba12d6aeb124ce0aea1d97f5a2863ca47d6c324c130ed36508ccdb376723b90",
+   "ctype": 1,
+   "source": "cache/gaya2/emt/__extra__/metin2_patch_gem.rar: ymir work/ui/game/taskbar/ex_gemshop_button_01.tga"
+  },
+  "d:/ymir work/ui/gaya2/money_button_02.tga": {
+   "size": 4140,
+   "sha256": "8bed87eeb91f5e6217402337efbac088f025d963d82dbc72666cc55f5e6adecb",
+   "ctype": 1,
+   "source": "cache/gaya2/emt/__extra__/metin2_patch_gem.rar: ymir work/ui/game/taskbar/ex_gemshop_button_02.tga"
+  },
+  "d:/ymir work/ui/gaya2/money_button_03.tga": {
+   "size": 4140,
+   "sha256": "f149a34b2d4e0aedf5ef579daa72f4ed689d68f510150076d78027ac4fd55a06",
+   "ctype": 1,
+   "source": "cache/gaya2/emt/__extra__/metin2_patch_gem.rar: ymir work/ui/game/taskbar/ex_gemshop_button_03.tga"
+  }
+ }
+}
