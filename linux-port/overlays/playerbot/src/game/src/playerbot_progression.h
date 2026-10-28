@@ -376,6 +376,9 @@ namespace
 		const playerbot_progression::TConfig& c = playerbot_progression::Config();
 		if (!c.fishWhenHeld && GetPlayerBotProgressionNeeds(ch->GetPlayerID()) != 0)
 			return true;
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: nor while its young heroes' weapon is running out (playerbot_mlodzi_bots.h).
+		if (PlayerBotMlodziBlocksLeisure(ch->GetPlayerID()))
+			return true;
 		if (c.fishCapPct >= 100)
 			return false;
 		const int band = std::min(25, (int)ch->GetLevel() / 10);

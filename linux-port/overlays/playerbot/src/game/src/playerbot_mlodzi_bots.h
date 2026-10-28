@@ -47,6 +47,23 @@
 //   - "no_space": said once per tier, the claim waits for a free cell (looked at on the claim's clock, no claim
 //     call), and the bag-room pass is asked at most every PLAYERBOT_MLODZI_NO_SPACE_BACKOFF_MS.
 //
+// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1 (the owner, 28 October 2026 - the young heroes' weapon running out):
+//   - plenty of time left: a +9 weapon of the bot's level everywhere (GetPlayerBotWeaponEffective);
+//   - 4 days or less left and a next tier exists (the system on, the bot under 70 - tiers at 1, 10 ... 70): the bot goes
+//     "200%" for the replacement - "level_up" while its exp/h of the last hours (PLAYERBOT_MLODZI_RATE_*) makes the next
+//     tier's level before the weapon goes (it keeps its weapon plan waiting and levels; the claim's clock takes the new one
+//     the moment it is offered), else "new_weapon" (the hold ends: the weapon goal, the market and the anvil get and raise a
+//     real weapon of its level - the old "last_day_cant_level", now from 4 days and decided once a weapon);
+//   - the last tier (no next one, or the system off): "refine_real" from 7 days - the real weapon's preparation;
+//   - "200%": the existing levers - the ambition (LEVEL for level_up, EQUIPMENT otherwise, as the progression's push does;
+//     not while the progression checklist holds the bot, whose push it is), the weight gates (REFINE / HUNTING / LEVEL /
+//     METIN open, FISHING / MINING / HERB shut - PlayerBotMlodziWeightGate, asked by IsPlayerBotWeightGateOpen) and no
+//     fishing session (PlayerBotProgressionBlocksFishing);
+//   - the refine decisions (IsPlayerBotBigThreeAtPlus, the Perfectionist's target) read the REAL weapon in a window
+//     (IsPlayerBotMlodziRealWeaponView) - outside one the +9 view holds; with the young weapon gone the worn one is real;
+//   - the log: "PLAYERBOT_MLODZI: window plan=... days_left ..." when a bot enters a window or its plan changes, and an
+//     hourly "PLAYERBOT_MLODZI: window census".
+//
 // An implementation fragment in the sense playerbot_types.h describes: included once, from
 // playerbot_manager.cpp, right after playerbot_gear.h (which forward-declares what it asks of this file).
 
@@ -73,6 +90,10 @@ namespace
 	const DWORD PLAYERBOT_MLODZI_NO_SPACE_BACKOFF_MS = 30 * 60 * 1000;
 	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: the last day - the levelling bot's preparation is decided only then.
 	const long PLAYERBOT_MLODZI_LAST_DAY_SECONDS = 24L * 60L * 60L;
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the next tier's window (4 days) and the last tier's (7 days), the census's clock.
+	const long PLAYERBOT_MLODZI_NEXT_TIER_WINDOW_SECONDS = 4L * 24L * 60L * 60L;
+	const long PLAYERBOT_MLODZI_LAST_TIER_WINDOW_SECONDS = 7L * 24L * 60L * 60L;
+	const DWORD PLAYERBOT_MLODZI_WINDOW_CENSUS_MS = 60 * 60 * 1000;
 	// The bot's exp/h: a sample of its total experience every PLAYERBOT_MLODZI_RATE_SAMPLE_SECONDS, the rate over
 	// the oldest kept (at most PLAYERBOT_MLODZI_RATE_SAMPLES, three hours); none said before
 	// PLAYERBOT_MLODZI_RATE_MIN_SECONDS of them (a fresh start keeps levelling until it knows).
@@ -106,7 +127,28 @@ namespace
 		{
 			case PLAYERBOT_MLODZI_PREP_DROPPER_LOCKED: return "dropper_locked";
 			case PLAYERBOT_MLODZI_PREP_LAST_TIER: return "last_tier";
-			case PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL: return "last_day_cant_level";
+			case PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL: return "cant_level_in_time";	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: from 4 days (was the last day)
+			default: return "none";
+		}
+	}
+
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: what a bot does about its young weapon's end.
+	enum EPlayerBotMlodziPlan
+	{
+		PLAYERBOT_MLODZI_PLAN_NONE = 0,
+		PLAYERBOT_MLODZI_PLAN_LEVEL_UP,		// the next tier's level in time: level, take the next weapon
+		PLAYERBOT_MLODZI_PLAN_NEW_WEAPON,	// not in time: earn, get and refine a real weapon of its level
+		PLAYERBOT_MLODZI_PLAN_REFINE_REAL,	// the last tier: materials and refines for the real weapon
+		PLAYERBOT_MLODZI_PLAN_COUNT
+	};
+
+	const char* GetPlayerBotMlodziPlanName(int plan)
+	{
+		switch (plan)
+		{
+			case PLAYERBOT_MLODZI_PLAN_LEVEL_UP: return "level_up";
+			case PLAYERBOT_MLODZI_PLAN_NEW_WEAPON: return "new_weapon";
+			case PLAYERBOT_MLODZI_PLAN_REFINE_REAL: return "refine_real";
 			default: return "none";
 		}
 	}
@@ -133,6 +175,12 @@ namespace
 		long lNeedExp;		// the last day's figures, for the log: the experience to the next tier's level,
 		long lExpPerHour;	// the exp/h (-1 unknown) and that level
 		int iNextLevel;
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1
+		int iPlan;		// EPlayerBotMlodziPlan of the last answer
+		int iLoggedPlan;	// the plan last said in the log, for dwPlanItemID
+		DWORD dwPlanItemID;	// the young weapon the plan is for
+		long lPlanLeft;		// its seconds left at the last answer
+		bool bAmbitionSet;	// the plan set the bot's ambition (given back when it ends)
 		std::deque<TPlayerBotMlodziExpSample> samples;
 		// MT2009_PLUS_MLODZI_BOHATEROWIE_V3
 		int iWeakerTier;	// the tier "weaker than its weapon" was last said for (once a tier)
@@ -141,10 +189,16 @@ namespace
 		DWORD dwRoomAt;		// the bag-room pass's next turn while it waits
 		TPlayerBotMlodziMemo() : dwHoldAt(0), bHold(false), dwPreparedAt(0), dwPreparedID(0), dwNextClaimAt(0),
 				dwWornID(0), bSwitchLogged(false), bHoldSeen(false), iPrep(PLAYERBOT_MLODZI_PREP_NONE),
-				dwCantLevelID(0), lNeedExp(0), lExpPerHour(-1), iNextLevel(0), iWeakerTier(0), iNoSpaceTier(0),
+				dwCantLevelID(0), lNeedExp(0), lExpPerHour(-1), iNextLevel(0),
+				iPlan(0), iLoggedPlan(0), dwPlanItemID(0), lPlanLeft(0), bAmbitionSet(false), iWeakerTier(0), iNoSpaceTier(0),
 				bNoSpaceSize(0), dwRoomAt(0) {}
 	};
 	std::map<DWORD, TPlayerBotMlodziMemo> s_mapPlayerBotMlodzi;
+
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: playerbot_progression.h, included later.
+	bool IsPlayerBotProgressionHeld(DWORD pid);
+	BYTE GetPlayerBotStableAmbition(LPCHARACTER ch, BYTE personality);
+	bool PlayerBotMlodziNextTierExists(LPCHARACTER ch);
 
 	// The level a spot farmer is held at, or 0 (playerbot_farmer_link.h, included later).
 	BYTE GetPlayerBotFarmerSpotLock(DWORD pid);
@@ -258,6 +312,12 @@ namespace
 		return (long long)(gained * 3600ULL / (unsigned long long)span);
 	}
 
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: a young heroes' tier still to come for this bot (the system on, a tier above its level's).
+	bool PlayerBotMlodziNextTierExists(LPCHARACTER ch)
+	{
+		return ch && mlodzi::Enabled() && mlodzi::TierForLevel((int)ch->GetLevel()) < (int)mlodzi::TIER_COUNT;
+	}
+
 	// The owner's rule of 22 October: whether - and why - a bot holding the young heroes' weapon `held` with
 	// `left` seconds gets its real weapon now (PLAYERBOT_MLODZI_PREP_NONE: it keeps levelling, the planning waits).
 	int GetPlayerBotMlodziPrepReason(LPCHARACTER ch, TPlayerBotMlodziMemo& memo, LPITEM held, long left)
@@ -272,11 +332,12 @@ namespace
 		// A tier offered now is taken on the claim's clock, not prepared against.
 		const int offer = mlodzi::CurrentOffer(ch);
 		// (b) 70 and over with the last tier taken: no young heroes' weapon comes after this one.
-		if (offer <= 0 && mlodzi::TierForLevel((int)ch->GetLevel()) >= (int)mlodzi::TIER_COUNT)
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: nor with the system off (no tier is offered any more).
+		if (offer <= 0 && !PlayerBotMlodziNextTierExists(ch))
 			return PLAYERBOT_MLODZI_PREP_LAST_TIER;
-		// (c) everybody else levels to the next tier - and only on the weapon's last day, unable to get there in
-		// time, gets the real one.
-		if (left > PLAYERBOT_MLODZI_LAST_DAY_SECONDS || offer > 0)
+		// (c) everybody else levels to the next tier - and only from 4 days before the end (MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1; was the
+		// last day), unable to get there in time, gets the real one.
+		if (left > PLAYERBOT_MLODZI_NEXT_TIER_WINDOW_SECONDS || offer > 0)
 			return PLAYERBOT_MLODZI_PREP_NONE;
 		if (memo.dwCantLevelID == held->GetID())
 			return PLAYERBOT_MLODZI_PREP_LAST_DAY_CANT_LEVEL;
@@ -428,20 +489,130 @@ namespace
 	// The owner's seven days: the bot's own weapon planning waits while the system is on and the bot holds a
 	// young heroes' weapon with more than PLAYERBOT_MLODZI_PLAN_HOLD_SECONDS left.
 	// MT2009_PLUS_MLODZI_BOHATEROWIE_V2: and below that too, unless GetPlayerBotMlodziPrepReason gives a reason.
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the plan for the young weapon `held` with `left` seconds (memo.iPrep already answered), and the
+	// next tier's figures in the memo for the log (need, exp/h, level).
+	int GetPlayerBotMlodziPlan(LPCHARACTER ch, TPlayerBotMlodziMemo& memo, LPITEM held, long left)
+	{
+		if (!ch || !held)
+			return PLAYERBOT_MLODZI_PLAN_NONE;
+		if (PlayerBotMlodziNextTierExists(ch))
+		{
+			if (left > PLAYERBOT_MLODZI_NEXT_TIER_WINDOW_SECONDS)
+				return PLAYERBOT_MLODZI_PLAN_NONE;
+			if (memo.iPrep != PLAYERBOT_MLODZI_PREP_NONE)
+				return PLAYERBOT_MLODZI_PLAN_NEW_WEAPON;
+			// the estimate, for the log (the decision is GetPlayerBotMlodziPrepReason's)
+			memo.iNextLevel = mlodzi::TierLevel(mlodzi::TierForLevel((int)ch->GetLevel()) + 1);
+			const unsigned long long need = GetPlayerBotMlodziExpToLevel(ch, memo.iNextLevel);
+			const long long rate = GetPlayerBotMlodziExpPerHour(ch, memo);
+			memo.lNeedExp = (long)std::min<unsigned long long>(need, 2000000000ULL);
+			memo.lExpPerHour = (long)std::max<long long>(-1, std::min<long long>(rate, 2000000000LL));
+			return PLAYERBOT_MLODZI_PLAN_LEVEL_UP;
+		}
+		return left <= PLAYERBOT_MLODZI_LAST_TIER_WINDOW_SECONDS ? PLAYERBOT_MLODZI_PLAN_REFINE_REAL
+				: PLAYERBOT_MLODZI_PLAN_NONE;
+	}
+
 	bool IsPlayerBotWeaponPlanSuspended(LPCHARACTER ch)
 	{
-		if (!ch || !ch->IsItemLoaded() || !mlodzi::Enabled())
+		if (!ch || !ch->IsItemLoaded())
 			return false;
-		TPlayerBotMlodziMemo& memo = s_mapPlayerBotMlodzi[ch->GetPlayerID()];
+		const bool enabled = mlodzi::Enabled();
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: with the system off a weapon given earlier still runs out - its plan is the last tier's.
+		std::map<DWORD, TPlayerBotMlodziMemo>::iterator found = s_mapPlayerBotMlodzi.find(ch->GetPlayerID());
+		if (!enabled && found == s_mapPlayerBotMlodzi.end() && !IsPlayerBotMlodziWeapon(ch->GetWear(WEAR_WEAPON)))
+			return false;
+		TPlayerBotMlodziMemo& memo = found != s_mapPlayerBotMlodzi.end() ? found->second : s_mapPlayerBotMlodzi[ch->GetPlayerID()];
 		const DWORD now = get_dword_time();
 		if (memo.dwHoldAt != 0 && now - memo.dwHoldAt < PLAYERBOT_MLODZI_CACHE_MS)
 			return memo.bHold;
 		long left = 0;
 		LPITEM held = FindPlayerBotMlodziHeld(ch, &left);
 		memo.iPrep = held ? GetPlayerBotMlodziPrepReason(ch, memo, held, left) : PLAYERBOT_MLODZI_PREP_NONE;
-		memo.bHold = held != NULL && memo.iPrep == PLAYERBOT_MLODZI_PREP_NONE;
+		memo.iPlan = GetPlayerBotMlodziPlan(ch, memo, held, left);
+		memo.dwPlanItemID = held ? held->GetID() : 0;
+		memo.lPlanLeft = left;
+		memo.bHold = enabled && held != NULL && memo.iPrep == PLAYERBOT_MLODZI_PREP_NONE;
 		memo.dwHoldAt = now != 0 ? now : 1;
 		return memo.bHold;
+	}
+
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the bot's plan now (fresh at most PLAYERBOT_MLODZI_CACHE_MS old), PLAN_NONE outside a window.
+	int GetPlayerBotMlodziWindowPlan(LPCHARACTER ch)
+	{
+		if (!ch)
+			return PLAYERBOT_MLODZI_PLAN_NONE;
+		IsPlayerBotWeaponPlanSuspended(ch);
+		std::map<DWORD, TPlayerBotMlodziMemo>::const_iterator it = s_mapPlayerBotMlodzi.find(ch->GetPlayerID());
+		return it == s_mapPlayerBotMlodzi.end() ? PLAYERBOT_MLODZI_PLAN_NONE : it->second.iPlan;
+	}
+
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the refine decisions read the real weapon while a window is open.
+	bool IsPlayerBotMlodziRealWeaponView(LPCHARACTER ch)
+	{
+		return GetPlayerBotMlodziWindowPlan(ch) != PLAYERBOT_MLODZI_PLAN_NONE;
+	}
+
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the weight gates of a bot in a window (IsPlayerBotWeightGateOpen, by pid - the last answer).
+	bool PlayerBotMlodziWeightGate(DWORD pid, BYTE weight, bool& open)
+	{
+		std::map<DWORD, TPlayerBotMlodziMemo>::const_iterator it = s_mapPlayerBotMlodzi.find(pid);
+		if (it == s_mapPlayerBotMlodzi.end() || it->second.iPlan == PLAYERBOT_MLODZI_PLAN_NONE)
+			return false;
+		const bool levelUp = it->second.iPlan == PLAYERBOT_MLODZI_PLAN_LEVEL_UP;
+		switch (weight)
+		{
+			case PLAYERBOT_WEIGHT_HUNTING:
+			case PLAYERBOT_WEIGHT_LEVEL:
+				open = true;
+				return true;
+			case PLAYERBOT_WEIGHT_REFINE:
+			case PLAYERBOT_WEIGHT_METIN:
+				if (levelUp)
+					return false;
+				open = true;
+				return true;
+			case PLAYERBOT_WEIGHT_FISHING:
+			case PLAYERBOT_WEIGHT_MINING:
+			case PLAYERBOT_WEIGHT_HERB:
+				open = false;
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: no fishing session for a bot in a window (PlayerBotProgressionBlocksFishing).
+	bool PlayerBotMlodziBlocksLeisure(DWORD pid)
+	{
+		std::map<DWORD, TPlayerBotMlodziMemo>::const_iterator it = s_mapPlayerBotMlodzi.find(pid);
+		return it != s_mapPlayerBotMlodzi.end() && it->second.iPlan != PLAYERBOT_MLODZI_PLAN_NONE;
+	}
+
+	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the hourly census of the windows.
+	DWORD s_dwPlayerBotMlodziWindowCensusAt = 0;
+	void LogPlayerBotMlodziWindowCensus(DWORD dwNow)
+	{
+		if (s_dwPlayerBotMlodziWindowCensusAt != 0 && dwNow - s_dwPlayerBotMlodziWindowCensusAt < PLAYERBOT_MLODZI_WINDOW_CENSUS_MS)
+			return;
+		s_dwPlayerBotMlodziWindowCensusAt = dwNow ? dwNow : 1;
+		unsigned int counts[PLAYERBOT_MLODZI_PLAN_COUNT] = { 0 };
+		unsigned int online = 0, minDays = 99;
+		for (std::map<DWORD, TPlayerBotMlodziMemo>::const_iterator it = s_mapPlayerBotMlodzi.begin(); it != s_mapPlayerBotMlodzi.end(); ++it)
+		{
+			if (!CHARACTER_MANAGER::instance().FindByPID(it->first))
+				continue;
+			++online;
+			const int plan = it->second.iPlan;
+			if (plan > 0 && plan < PLAYERBOT_MLODZI_PLAN_COUNT)
+			{
+				++counts[plan];
+				minDays = std::min<unsigned int>(minDays, (unsigned int)(std::max(0L, it->second.lPlanLeft) / 86400L));
+			}
+		}
+		sys_log(0, "PLAYERBOT_MLODZI: window census bots=%u level_up=%u new_weapon=%u refine_real=%u min_days_left=%d",
+				online, counts[PLAYERBOT_MLODZI_PLAN_LEVEL_UP], counts[PLAYERBOT_MLODZI_PLAN_NEW_WEAPON],
+				counts[PLAYERBOT_MLODZI_PLAN_REFINE_REAL], minDays == 99 ? -1 : (int)minDays);
 	}
 
 	// The same hold asked of one piece: a weapon (not an arrow) while the hold holds.
@@ -630,6 +801,41 @@ namespace
 			}
 		}
 		memo.bHoldSeen = hold;
+
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: the window's line (once a plan per weapon), the "200%" ambition, the census.
+		if (memo.iPlan != PLAYERBOT_MLODZI_PLAN_NONE && memo.iLoggedPlan != memo.iPlan)
+		{
+			memo.iLoggedPlan = memo.iPlan;
+			const long long rate = memo.lExpPerHour;
+			const long estH = memo.iPlan == PLAYERBOT_MLODZI_PLAN_LEVEL_UP && rate > 0
+					? (long)((long long)memo.lNeedExp / rate) : -1;
+			sys_log(0, "PLAYERBOT_MLODZI: window plan=%s pid=%u name=%s level=%u young=%u days_left=%.1f next_tier_level=%d "
+					"need_exp=%ld exp_h=%ld est_h=%ld prep=%s",
+					GetPlayerBotMlodziPlanName(memo.iPlan), pid, ch->GetName(), (unsigned int)ch->GetLevel(),
+					memo.dwPlanItemID, (double)memo.lPlanLeft / 86400.0,
+					memo.iPlan == PLAYERBOT_MLODZI_PLAN_REFINE_REAL ? 0 : memo.iNextLevel,
+					memo.iPlan == PLAYERBOT_MLODZI_PLAN_REFINE_REAL ? 0 : memo.lNeedExp,
+					memo.iPlan == PLAYERBOT_MLODZI_PLAN_REFINE_REAL ? -1 : memo.lExpPerHour, estH,
+					GetPlayerBotMlodziPrepName(memo.iPrep));
+		}
+		else if (memo.iPlan == PLAYERBOT_MLODZI_PLAN_NONE)
+			memo.iLoggedPlan = PLAYERBOT_MLODZI_PLAN_NONE;
+		if (memo.iPlan != PLAYERBOT_MLODZI_PLAN_NONE && !IsPlayerBotProgressionHeld(pid))
+		{
+			const BYTE want = memo.iPlan == PLAYERBOT_MLODZI_PLAN_LEVEL_UP ? (BYTE)BOT_AMBITION_LEVEL : (BYTE)BOT_AMBITION_EQUIPMENT;
+			if (state.bAmbition != want)
+			{
+				state.bAmbition = want;
+				memo.bAmbitionSet = true;
+			}
+		}
+		else if (memo.bAmbitionSet)
+		{
+			memo.bAmbitionSet = false;
+			if (!IsPlayerBotProgressionHeld(pid))
+				state.bAmbition = GetPlayerBotStableAmbition(ch, state.bPersonality);
+		}
+		LogPlayerBotMlodziWindowCensus(dwNow);
 
 		// The grant, on its own clock.
 		if (!mlodzi::Enabled() || (memo.dwNextClaimAt != 0 && (int)(dwNow - memo.dwNextClaimAt) < 0))

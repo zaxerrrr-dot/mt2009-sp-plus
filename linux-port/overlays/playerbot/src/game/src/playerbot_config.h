@@ -1972,12 +1972,17 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 	// bot the checklist holds has the gate of what it lacks open, and the
 	// veins' and the board's shut.
 	bool PlayerBotProgressionWeightGate(DWORD pid, BYTE weight, bool& open);
+	bool PlayerBotMlodziWeightGate(DWORD pid, BYTE weight, bool& open);	// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1 (playerbot_mlodzi_bots.h)
 
 	bool IsPlayerBotWeightGateOpen(DWORD dwPid, BYTE bWeight, DWORD dwSalt, DWORD dwNow)
 	{
 		bool progressionOpen = true;
 		if (PlayerBotProgressionWeightGate(dwPid, bWeight, progressionOpen))
 			return progressionOpen;
+		// MT2009_PLUS_MLODZI_WEAPON_EXPIRY_PLAN_V1: a young heroes' weapon running out - the replacement's work open, the leisure shut.
+		bool mlodziOpen = true;
+		if (PlayerBotMlodziWeightGate(dwPid, bWeight, mlodziOpen))
+			return mlodziOpen;
 		const int weight = GetPlayerBotWeight(bWeight);
 		if (weight >= PLAYERBOT_WEIGHT_NEUTRAL || IsPlayerBotSidekickPID(dwPid))
 			return true;
