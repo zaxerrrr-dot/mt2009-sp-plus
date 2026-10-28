@@ -31,9 +31,10 @@
 // Looks: from the coins over the open goals' next batches only (GetPlayerBotIshop3GoalReserve, read by the look's
 // reserve in playerbot_itemshop.h). A set chest ("Sety Bonusowe", phase 2): a quarter of the dressed bots, at most
 // once a week, ten rolls from a surplus over PLAYERBOT_ISHOP3_CHEST_MIN_SURPLUS.
-// Not bought - no pass of the bots would use them (they would only pile up): the Seon-Hae additives (72065-72067; the
-// bots never hand in at Seon-Hae), Blogoslawienstwo Przedmiotu (71052; no bot pass rolls a glove's 6th/7th line),
-// Ksiega Obrobki Kamienia (71083), Kamien Kowala (71025) and Magiczny Metal (71026).
+// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 (playerbot_shop_aids.h, CollectPlayerBotShopAidGoals): the Seon-Hae additives
+// (72065-72067) a bot's Seon-Hae recipe lacks, Blogoslawienstwo Przedmiotu (71052) while a Champion's glove would be
+// rolled again, Ksiega Obrobki Kamienia (71083) while a cracked stone blocks a stone that waits. Not bought - nothing
+// on this server uses them: Kamien Kowala (71025) and Magiczny Metal (71026).
 //
 // The log: PLAYERBOT_ISHOP3 (bought / chest / bag full / not given, playerbot_itemshop.h) and the hourly census.
 //
@@ -293,6 +294,11 @@ namespace
 #endif
 	}
 
+#ifdef MT2009_PLUS_BOT_USE_SHOP_AIDS_V1
+	// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 (goals): the Seon-Hae additives, 71052 and 71083 (playerbot_shop_aids.h, below).
+	void CollectPlayerBotShopAidGoals(LPCHARACTER ch, TPlayerBotIshop3Goal* goals, int& n);
+#endif
+
 	// Every open goal, in the order the coins go: the bonus stones, the marble, the Cors, the beans, the sash, the
 	// scrolls (Smocze Znaki - no coins taken from the rest).
 	int CollectPlayerBotIshop3Goals(LPCHARACTER ch, TPlayerBotIshop3Goal* goals)
@@ -327,6 +333,9 @@ namespace
 			const TPlayerBotIshop3Goal g = { PLAYERBOT_ISHOP_BLESSING_SCROLL_VNUM, true, PLAYERBOT_ISHOP3_REFINE_BATCH, "refine" };
 			goals[n++] = g;
 		}
+#ifdef MT2009_PLUS_BOT_USE_SHOP_AIDS_V1
+		CollectPlayerBotShopAidGoals(ch, goals, n);
+#endif
 		return n;
 	}
 
