@@ -28,6 +28,7 @@ FEATURES = [
     ('gaya2', ['gayacurrency.py', 'uiscript/expandedmoneytaskbar.py']),
     ('addeq', ['uiaddeq.py']),
     ('monstercard', ['uimonstercard.py', 'uiscript/monstercardwindow.py', 'uiscript/monstercardachievdetailwindow.py']),
+    ('questren', ['questrenewal.py', 'uiscript/characterwindow.py']),  # MT2009_PLUS_QUEST_RENEWAL_V1
 ]
 
 OUT = [a for a in sys.argv[1:] if not a.startswith('--')][0]

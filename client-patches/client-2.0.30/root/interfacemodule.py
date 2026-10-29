@@ -34,6 +34,7 @@ import uiParty
 import uiSafebox
 import uiGuild
 import uiQuest
+import questrenewal # MT2009_PLUS_QUEST_RENEWAL_V1
 import uiCommon
 import uiRefine
 import uiEquipmentDialog
@@ -4834,6 +4835,7 @@ class Interface(object):
 		self.gameMaster_CaptchaDialogs = {}
 
 		self.questButtonList = []
+		questrenewal.SetLetterOwner(self.QuestRenewalHasLetter, self.QuestRenewalTakeLetter) # MT2009_PLUS_QUEST_RENEWAL_V1
 		self.whisperButtonList = []
 		self.whisperDialogDict = {}
 		self.privateShopAdvertisementBoardDict = {"player":{}, "offline":{}}
@@ -5184,6 +5186,7 @@ class Interface(object):
 		self.wndChatLog.Destroy()
 		for btn in self.questButtonList:
 			btn.SetEvent(0)
+		questrenewal.ClearLetterOwner(self) # MT2009_PLUS_QUEST_RENEWAL_V1
 		for btn in self.whisperButtonList:
 			btn.SetEvent(0)
 		for dlg in self.whisperDialogDict.itervalues():
@@ -6516,20 +6519,59 @@ class Interface(object):
 		yPos = 170 * screenHeight / 600
 		yCount = (screenHeight - 330) / 63
 
+		# MT2009_PLUS_QUEST_RENEWAL_V1 (QUEST_RENEWAL, Autor: Owsap): one letter - the newest - in the first place, its
+		# tooltip with the number of letters waiting; the others wait under it
+		global IsQBHide
+		if questrenewal.ENABLED:
+			total = len(self.questButtonList)
+			for count in xrange(total):
+				btn = self.questButtonList[count]
+				btn.SetPosition(xPos, yPos)
+				if count == 0 and not IsQBHide:
+					if btn.ToolTipText:
+						if total > 1:
+							btn.ToolTipText.SetText("%s (%d)" % (btn.name, total))
+						else:
+							btn.ToolTipText.SetText(btn.name)
+					btn.Show()
+				else:
+					btn.Hide()
+			wndCharacter = getattr(self, "wndCharacter", None)
+			if wndCharacter and wndCharacter.IsShow():
+				wndCharacter.RefreshQuest()
+			return
+
 		count = 0
 		for btn in self.questButtonList:
 
 			btn.SetPosition(xPos + (int(count/yCount) * 100), yPos + (count%yCount * 63))
 			count += 1
-			global IsQBHide
-			if IsQBHide:
+			if IsQBHide: # global IsQBHide: above (MT2009_PLUS_QUEST_RENEWAL_V1)
 				btn.Hide()
 			else:
 				btn.Show()
 
 	def __StartQuest(self, btn):
+		# MT2009_PLUS_QUEST_RENEWAL_V1: a letter whose quest the list shows opens the quest page at it (its button event
+		# goes with the click on the quest there - QuestRenewalTakeLetter); one without an entry works as before
+		if questrenewal.ENABLED and getattr(self, "wndCharacter", None) and questrenewal.FindQuest(btn.index):
+			self.OpenCharacterWindowQuestPage()
+			self.wndCharacter.QuestRenewalFocus(btn.index)
+			return
 		event.QuestButtonClick(btn.index)
 		self.__DestroyQuestButton(btn)
+
+	# MT2009_PLUS_QUEST_RENEWAL_V1: the letters for questrenewal.py
+	def QuestRenewalHasLetter(self, index):
+		return 0 != self.__FindQuestButton(index)
+
+	def QuestRenewalTakeLetter(self, index):
+		btn = self.__FindQuestButton(index)
+		if 0 == btn:
+			return False
+		event.QuestButtonClick(btn.index)
+		self.__DestroyQuestButton(btn)
+		return True
 
 	def __FindQuestButton(self, index):
 		for btn in self.questButtonList:
@@ -6550,6 +6592,8 @@ class Interface(object):
 	def ShowAllQuestButton(self):
 		for btn in self.questButtonList:
 			btn.Show()
+			if questrenewal.ENABLED: # MT2009_PLUS_QUEST_RENEWAL_V1: only the newest letter
+				break
 	#####################################################################################
 
 	#####################################################################################

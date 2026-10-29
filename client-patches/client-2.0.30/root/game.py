@@ -1010,6 +1010,16 @@ class GameWindow(ui.ScriptWindow):
 	def __YSetsItem(self, *args):
 		__import__("ysets").OnServer(*args)
 
+	# MT2009_PLUS_QUEST_RENEWAL_V1 (QUEST_RENEWAL, Autor: Owsap): the server's quest index -> category map
+	# (playerbot_quest_renewal.cpp), "QuestCategory <part> <index>:<category>,..."
+	def __QuestRenewalCategory(self, part = "0", data = "-", *rest):
+		__import__("questrenewal").OnServerCommand(part, data)
+		try:
+			if self.interface:
+				self.interface.RefreshQuest()
+		except AttributeError:
+			pass	# the windows are not made yet: the page reads the map when it opens
+
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
 		# VID again, because a warp is a new login on the server.
@@ -3511,6 +3521,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
+		serverCommandList["QuestCategory"] = self.__QuestRenewalCategory # MT2009_PLUS_QUEST_RENEWAL_V1
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
