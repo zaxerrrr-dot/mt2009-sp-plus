@@ -102,7 +102,11 @@ METRICS = {
 }
 
 # The source tables a cycle reads, each with its own watermark.
-SOURCES = ("log", "fish_log", "money_log", "ikarusshop_log")
+# MT2009_PLUS_SEBAN_BOT_STATS_V1: "botkill" reads log.log too (its STONE_KILL
+# and BOSS_KILL rows, per monster and map) under a watermark of its own, so an
+# install that counted log.log before this still gets its whole history once.
+SOURCES = ("log", "fish_log", "money_log", "ikarusshop_log", "botkill")
+SOURCE_TABLES = {"botkill": "log"}
 
 # Growing log tables the prune empties of old rows: (table, time column).
 # Not here on purpose: levellog (one row per character and level, the daily
@@ -131,8 +135,8 @@ PRUNE_TABLES = (
     ("speed_hack", "time"),
 )
 # The prune never deletes past these watermarks (table -> source).
-PRUNE_NEEDS = {"log": "log", "fish_log": "fish_log", "money_log": "money_log",
-               "ikarusshop_log": "ikarusshop_log"}
+PRUNE_NEEDS = {"log": ("log", "botkill"), "fish_log": ("fish_log",), "money_log": ("money_log",),
+               "ikarusshop_log": ("ikarusshop_log",)}
 
 
 def _say(message):
@@ -183,6 +187,15 @@ def ensure_tables(cur):
       started_at DATETIME NOT NULL, finished_at DATETIME DEFAULT NULL,
       retention_days INT NOT NULL, cutoff DATETIME NOT NULL, dry_run TINYINT NOT NULL DEFAULT 0,
       status VARCHAR(16) NOT NULL, deleted BIGINT NOT NULL DEFAULT 0, detail TEXT) ENGINE=InnoDB""")
+    # MT2009_PLUS_SEBAN_BOT_STATS_V1: bosses (kind 1, BOSS_KILL: rank BOSS and up)
+    # and Metin stones (kind 2, STONE_KILL) killed, per hour, killer (bot 1 /
+    # player 0), monster and base map - the panel's "Statystyki botow" (an
+    # hour, so its "24 h" is 24 h; a few thousand small rows a day).
+    cur.execute("""CREATE TABLE IF NOT EXISTS player.web_seban_bot_kill_hourly (
+      hour DATETIME NOT NULL, kind TINYINT UNSIGNED NOT NULL, bot TINYINT UNSIGNED NOT NULL,
+      vnum INT UNSIGNED NOT NULL, map_index INT UNSIGNED NOT NULL DEFAULT 0,
+      n INT UNSIGNED NOT NULL DEFAULT 0, last_at DATETIME DEFAULT NULL,
+      PRIMARY KEY (hour, kind, bot, vnum, map_index), KEY kind_bot_hour (kind, bot, hour)) ENGINE=InnoDB""")
 
 
 # ---------------------------------------------------------------- helpers
@@ -342,7 +355,39 @@ def _fold_ikarus(cur, lo, hi):
     return len(counts)
 
 
-FOLDERS = {"log": _fold_log, "fish_log": _fold_fish, "money_log": _fold_money, "ikarusshop_log": _fold_ikarus}
+def _fold_botkill(cur, lo, hi):
+    """MT2009_PLUS_SEBAN_BOT_STATS_V1: log.log's STONE_KILL / BOSS_KILL rows
+    [lo, hi) per hour, killer kind, monster and map. The game writes them in
+    char_battle.cpp (who = the killer's pid, what = the monster's vnum, hint =
+    "<channel> <map index>"); a dungeon's copy of a map (base * 10000 + n)
+    counts as its base map. A bot is a character of a playerbot_ account; a
+    character that is gone by the time it is counted (a retired bot, deleted
+    and started anew) is counted as a bot too - the players' own deleted
+    characters are a rounding error next to the bots' retirements."""
+    cur.execute("""SELECT DATE_FORMAT(l.time,'%%Y-%%m-%%d %%H:00:00'), IF(l.how='STONE_KILL',2,1),
+        IF(p.id IS NULL OR a.login LIKE 'playerbot\\_%%',1,0),
+        COALESCE(l.what,0),
+        IF(CAST(SUBSTRING_INDEX(COALESCE(l.hint,''),' ',-1) AS UNSIGNED) >= 10000,
+           CAST(SUBSTRING_INDEX(COALESCE(l.hint,''),' ',-1) AS UNSIGNED) DIV 10000,
+           CAST(SUBSTRING_INDEX(COALESCE(l.hint,''),' ',-1) AS UNSIGNED)),
+        COUNT(*), MAX(l.time)
+      FROM log.log l
+      LEFT JOIN player.player p ON p.id=l.who
+      LEFT JOIN account.account a ON a.id=p.account_id
+      WHERE l.how IN ('STONE_KILL','BOSS_KILL') AND l.time >= %s AND l.time < %s
+      GROUP BY 1,2,3,4,5""", (lo, hi))
+    items = [(hour, int(kind), int(bot), int(vnum), int(map_index or 0), int(n), last)
+             for hour, kind, bot, vnum, map_index, n, last in cur.fetchall() if hour is not None and n]
+    for start in range(0, len(items), 1000):
+        cur.executemany("""INSERT INTO player.web_seban_bot_kill_hourly (hour,kind,bot,vnum,map_index,n,last_at)
+          VALUES (%s,%s,%s,%s,%s,%s,%s)
+          ON DUPLICATE KEY UPDATE n=n+VALUES(n), last_at=GREATEST(COALESCE(last_at,VALUES(last_at)),VALUES(last_at))""",
+                        items[start:start + 1000])
+    return sum(item[5] for item in items)
+
+
+FOLDERS = {"log": _fold_log, "fish_log": _fold_fish, "money_log": _fold_money, "ikarusshop_log": _fold_ikarus,
+           "botkill": _fold_botkill}
 
 
 def fold_source(con, source, hi):
@@ -350,7 +395,7 @@ def fold_source(con, source, hi):
     (the summaries are InnoDB). Returns (lo, hi) or None when the table is
     missing or already counted."""
     with con.cursor() as cur:
-        if not table_exists(cur, "log", source):
+        if not table_exists(cur, "log", SOURCE_TABLES.get(source, source)):
             return None
         lo = watermark(cur, source) or datetime(1970, 1, 1)
     if lo >= hi:
@@ -591,8 +636,8 @@ def prune(con, days=None, dry_run=False, now=None, say=_say):
                 info = table_exists(cur, "log", table)
                 if not info or not column_exists(cur, "log", table, column):
                     continue
-                needed = PRUNE_NEEDS.get(table)
-                if needed and (marks.get(needed) is None or marks[needed] < cutoff):
+                needed = PRUNE_NEEDS.get(table, ())
+                if any(marks.get(source) is None or marks[source] < cutoff for source in needed):
                     detail["skipped"][table] = "not counted up to the cutoff yet"
                     status = "partial"
                     continue

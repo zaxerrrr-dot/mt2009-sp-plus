@@ -46,6 +46,7 @@ translations = _PolishOnly()
 import decisions
 import event_autogen  # MT2009_PLUS_EVENTS_AUTOGEN_V1
 import log_maintenance  # MT2009_PLUS_DB_LOG_RETENTION_V1
+import bot_stats  # MT2009_PLUS_SEBAN_BOT_STATS_V1
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SEBAN_SESSION_SECRET", "change-this-before-public-use")
@@ -5933,6 +5934,55 @@ def bot_progression():
                            tiers=PROGRESSION_DEFAULT_TIERS, reqs=PROGRESSION_REQS, req_order=PROGRESSION_REQ_ORDER,
                            prog_settings=PROGRESSION_SETTINGS, gate_levels=gate_levels, new_gate_rows=8, new_law_rows=2,
                            status=read_progression_status(), progression_csrf=update_csrf_token())
+
+
+# MT2009_PLUS_SEBAN_BOT_STATS_V1: "Statystyki botow" - the bosses and Metin
+# stones the bots killed and the dungeons they ran (the owner, 29 October).
+# Only the collector's small summaries are read here (bot_stats.py), never
+# log.log: a page view stays cheap whatever the size of the logs.
+def _bot_stats_mobs(vnums):
+    if not vnums:
+        return {}
+    marks = ",".join(["%s"] * len(vnums))
+    found = rows(f"SELECT vnum, locale_name, name, `rank`, level FROM player.mob_proto WHERE vnum IN ({marks})",
+                 tuple(sorted(vnums)))
+    return {int(r["vnum"]): {"name": (game_text(r.get("locale_name")) or game_text(r.get("name"))).strip(),
+                             "rank": MOB_RANK_NAMES.get(int(r.get("rank") or 0), str(r.get("rank"))),
+                             "level": int(r.get("level") or 0)} for r in found}
+
+
+def _bot_stats_map(index):
+    index = int(index or 0)
+    return MAP_NAMES.get(index) or bot_stats.DUNGEON_MAP_NAMES.get(index) or f"Mapa #{index}"
+
+
+@app.route("/players/bot-stats")
+@login_required
+def bot_stats_page():
+    period = bot_stats.period_key(request.args.get("okres", ""))
+    now = datetime.now()
+    empty_kills = ([], {"kills": 0, "kinds": 0, "player_kills": 0})
+    bosses, boss_totals = db_block("bot_stats_bosses", empty_kills, bot_stats.kill_rows, rows,
+                                   bot_stats.KIND_BOSS, period, now, 50)
+    stones, stone_totals = db_block("bot_stats_stones", empty_kills, bot_stats.kill_rows, rows,
+                                    bot_stats.KIND_STONE, period, now, 50)
+    empty_runs = ([], {"runs": 0, "entered": 0, "ok": 0, "fail": 0, "abandon": 0, "disband": 0, "rate": None})
+    dungeons, dungeon_totals = db_block("bot_stats_dungeons", empty_runs, bot_stats.dungeon_rows, rows, period, now)
+    recent = db_block("bot_stats_recent", [], bot_stats.last_runs, rows, 15)
+    mobs = db_block("bot_stats_mobs", {}, _bot_stats_mobs, {e["vnum"] for e in bosses + stones})
+    for entry in bosses + stones:
+        mob = mobs.get(entry["vnum"], {})
+        entry["name"] = mob.get("name") or f"Potwór #{entry['vnum']}"
+        entry["rank"] = mob.get("rank", "")
+        entry["level"] = mob.get("level", 0)
+        entry["map_list"] = [(_bot_stats_map(index), n) for index, n in
+                             sorted(entry["maps"].items(), key=lambda item: -item[1])[:3]]
+    stone_maps = [(_bot_stats_map(index), n) for index, n in bot_stats.kill_maps(stones)[:15]]
+    boss_maps = [(_bot_stats_map(index), n) for index, n in bot_stats.kill_maps(bosses)[:15]]
+    return render_template("bot_stats.html", period=period, periods=bot_stats.PERIODS,
+                           bosses=bosses, boss_totals=boss_totals, stones=stones, stone_totals=stone_totals,
+                           stone_maps=stone_maps, boss_maps=boss_maps, dungeons=dungeons,
+                           dungeon_totals=dungeon_totals, recent=recent, duration=bot_stats.duration)
 
 
 
