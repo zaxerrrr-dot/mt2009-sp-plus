@@ -591,6 +591,51 @@ namespace
 				GetPlayerBotKVPhaseName(t.phase), why, ch->GetMapIndex(), (dwNow - t.startedAt) / 1000U, (long long)ch->GetGold());
 	}
 
+	// MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: a bot this core's trips and raids
+	// hold - on a trip (a shopper or a raider), or a raider or a called
+	// defender of a raid not over. The channel presence reports it pinned
+	// (MOVE_COST_PINNED), so the coordinator's swap out, drain, roam and
+	// balance pass it by while it lasts; the pin goes with the next report
+	// once the trip or the raid is over (and with last_seen once it is gone).
+	// On the night of 29 October 23 of 30 trips ended "why=gone" - the bot
+	// moved to channel 2 halfway - and raid 1 lost every raider so.
+	bool IsPlayerBotKVHeld(DWORD pid)
+	{
+		if (IsPlayerBotOnKingdomVisit(pid))
+			return true;
+		for (std::map<BYTE, TPlayerBotKVRaid>::const_iterator it = s_mapPlayerBotKVRaids.begin(); it != s_mapPlayerBotKVRaids.end(); ++it)
+			if (it->second.phase != KV_RAID_OVER && (it->second.raiders.count(pid) != 0 || it->second.called.count(pid) != 0))
+				return true;
+		return false;
+	}
+
+	// MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: a bot leaving this core anyway (moved
+	// to another channel before its pin was read): its trip ends here with
+	// everything it held (the far line, a meeting), and it is no raid's
+	// raider or defender any more. Not sent home - it is logging out; the
+	// away flag stays on foreign ground and its next spawn sends it home.
+	void ReleasePlayerBotKVOnLeave(LPCHARACTER ch, const char* why, DWORD dwNow)
+	{
+		if (!ch)
+			return;
+		const DWORD pid = ch->GetPlayerID();
+		bool raider = false, defender = false;
+		for (std::map<BYTE, TPlayerBotKVRaid>::iterator it = s_mapPlayerBotKVRaids.begin(); it != s_mapPlayerBotKVRaids.end(); ++it)
+		{
+			raider = it->second.raiders.erase(pid) != 0 || raider;
+			it->second.down.erase(pid);
+			defender = it->second.called.erase(pid) != 0 || defender;
+		}
+		s_mapPlayerBotKVDefMoveAt.erase(pid);
+		s_mapPlayerBotKVDefTarget.erase(pid);
+		const bool trip = IsPlayerBotOnKingdomVisit(pid);
+		if (trip)
+			EndPlayerBotKVTrip(ch, s_mapPlayerBotAIStates[pid], why, false, dwNow);
+		if (trip || raider || defender)
+			sys_log(0, "PLAYERBOT_VISIT: released pid=%u name=%s why=%s trip=%d raider=%d defender=%d",
+					pid, ch->GetName(), why, trip ? 1 : 0, raider ? 1 : 0, defender ? 1 : 0);
+	}
+
 	// Progress on a leg: the distance to its goal shrinking. False once it has
 	// not for PLAYERBOT_KV_STUCK_MS.
 	bool NotePlayerBotKVProgress(TPlayerBotKVTrip& t, long distance, DWORD dwNow)
@@ -2628,6 +2673,15 @@ namespace
 			if (!CHARACTER_MANAGER::instance().FindByPID(it->first))
 			{
 				sys_log(0, "PLAYERBOT_VISIT: end pid=%u why=gone phase=%s", it->first, GetPlayerBotKVPhaseName(it->second.phase));
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+				// MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: the line it went for is
+				// anybody's again (EndPlayerBotKVTrip's release, which a bot
+				// gone never reached).
+				if (it->second.pickItem && !it->second.pickHanded)
+					ReleasePlayerBotFarLine(it->second.pickItem, it->first);
+#endif
+				s_mapPlayerBotKVDefMoveAt.erase(it->first);
+				s_mapPlayerBotKVDefTarget.erase(it->first);
 				s_mapPlayerBotKVTrips.erase(it++);
 			}
 			else

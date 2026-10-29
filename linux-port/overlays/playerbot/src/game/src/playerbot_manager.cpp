@@ -6322,9 +6322,10 @@ void CPlayerBotManager::PublishChannelPresence(DWORD dwNow)
 				ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ||
 				playerbot_pvp::GetDuelOpponent(pid, dwNow) != 0 ||
 				(state && (IsPlayerBotOnTowerBusiness(ch, *state) || state->dwGuildWarEnemyGID != 0 ||
-					state->bWorldEventKind != 0));
+					state->bWorldEventKind != 0)) ||
+				IsPlayerBotKVHeld(pid); // MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: a trip, a raid's raider or called defender
 #if defined(ENABLE_IKASHOP_RENEWAL)
-		auto stand = ikashop::GetManager().GetShopByOwnerID(pid);
+		auto stand =ikashop::GetManager().GetShopByOwnerID(pid);
 		liveStand = stand && stand->GetDuration() != 0;
 		// MT2009_PLUS_BOT_COUNTER_RENEW_V1: on the shop channel an expired
 		// stand with goods on it costs what a running one does - its owner is
@@ -6779,6 +6780,9 @@ void CPlayerBotManager::OnChannelAssignments(void* pvMsg)
 	{
 		sys_log(0, "PLAYERBOT_CHANNEL: pid=%u moved to channel %u, logging out here",
 				leave[i], (unsigned int)m_mapBotAccounts[leave[i]].bChannel);
+		// MT2009_PLUS_BOT_KV_CHANNEL_PIN_V1: moved before its pin was read - its
+		// trip, raid place and defender's call end here, nothing left held.
+		ReleasePlayerBotKVOnLeave(CHARACTER_MANAGER::instance().FindByPID(leave[i]), "channel_move", get_dword_time());
 		Despawn(leave[i], playerbot_session_rules::OUT_CHANNEL); // MT2009_PLUS_BOT_SESSIONS_V1
 	}
 	// Nobody moved away is this channel's to start or to top up any more.
