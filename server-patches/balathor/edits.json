@@ -298,5 +298,11 @@
   "marker": "MT2009_PLUS_BALATHOR_V1 (decl)",
   "old": "#include \"../../common/length.h\"\n",
   "new": "#include \"../../common/length.h\"\n// MT2009_PLUS_BALATHOR_V1 (decl): Krypta Balathora (dracaryS)\n#ifdef __BALATHOR__\n#include <string>\nextern std::string SecToTime(int sec);\n#endif\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_BALATHOR_V1 (no alignment loss)",
+  "old": "\t\t\t\tif (!isAgreedPVP && !isUnderGuildWar && !IsKillerMode() && GetAlignment() >= 0 && !isDuel && !isForked)\n",
+  "new": "// MT2009_PLUS_BALATHOR_V1 (no alignment loss): Krypta Balathora - the module's ground ice / falling ice hit players with\n// themselves as attacker (ch->Damage(ch, ...)), so a death there was a same-empire 'PK' by\n// the victim itself: -20000 alignment (split over the party). No rank loss for a self-kill\n// anywhere, and none at all inside the Krypta (map 420 / instances 4200000+).\n#ifdef __BALATHOR__\n\t\t\t\tconst bool bBalathorNoAlignLoss = (pkKiller == this) || GetMapIndex() == 420 || (GetMapIndex() / 10000) == 420;\n#else\n\t\t\t\tconst bool bBalathorNoAlignLoss = (pkKiller == this);\n#endif\n\t\t\t\tif (!bBalathorNoAlignLoss && !isAgreedPVP && !isUnderGuildWar && !IsKillerMode() && GetAlignment() >= 0 && !isDuel && !isForked)\n"
  }
 ]
