@@ -488,6 +488,25 @@ quest devilcatacomb_zone begin
 		-- Clicking the turtle rock asks whether to go on to floor 3,
 		-- and going on checks for the Reaper's token (the Dried Head).
 		-- Without the Reaper's token a character is warped outside.
+		--
+		-- MT2009_PLUS_CATACOMB_FLOOR3_MOVE_V1 (the owner, 29 October, with a screenshot: "Za chwile zostaniesz
+		-- przeniesiony" at Zolwia Skala and then nothing, a party of people and their bots): the move to floor 3
+		-- began by sending out everybody without a Dried Head (d.exit_all_by_item_group) and only then purged,
+		-- jumped and set the floor up. A person's way out is a client warp, but a bot's is made on the spot
+		-- (WarpSet -> CPlayerBotManager::WarpBot), and WarpBot ends in SyncPlayerBotZodiac, which outside a
+		-- Zodiac floor asks the bot's quest flag "12zi_temple.IsDead" (CHARACTER::GetQuestFlag ->
+		-- CQuestManager::GetPC): that makes the bot - now outside, no dungeon - the quest's current character
+		-- and drops the dungeon the timer had selected (m_pSelectedDungeon = NULL). Every d.* after
+		-- the first bot sent out then found no dungeon - no purge, no jump, no floor 3 - and the rock's flag
+		-- stood at 1, so each later click said only "Za chwile zostaniesz przeniesiony". A party of bots alone
+		-- carries a head each (playerbot_catacomb.h takes none without), so nobody was sent out and it worked;
+		-- a person's party bots carry none.
+		-- Now the floor is moved and set up first (enter_floor3) and the ones without a head are sent out
+		-- last, from floor 3; the heads are taken a second later by a timer of their own, with the dungeon
+		-- selected anew. The timer is armed before the windows that tell who goes on. And a rock clicked
+		-- again ten seconds after "Tak" while the party still stands on floor 2 makes the move itself, from
+		-- the clicker's own dungeon, whatever kept the timer from it. Bots: unchanged (they click the rock
+		-- until the floor changes, so they too get the fallback).
 		when devilcatacomb_floor2_stone.click begin
 			local setting = devilcatacomb_zone.setting()
 			
@@ -510,49 +529,71 @@ quest devilcatacomb_zone begin
 				if s == 1 then
 					if d.getf("devilcatacomb_floor2_stone_clicked") == 0 then
 						d.setf("devilcatacomb_floor2_stone_clicked", 1)
-						d.setqf2("devilcatacomb_zone","last_exit_time", get_global_time())
+						d.setf("floor3_asked_at", get_global_time())
 						d.set_item_group ("reapers_credit", 3, setting.reapers_credit3, 1, setting.reapers_credit2, 1, setting.reapers_credit1, 1)
-						d.say_diff_by_item_group("reapers_credit", gameforge.devilcatacomb_zone._250_say, gameforge.devilcatacomb_zone._260_say)
 						server_timer ("devilcatacomb_floor3_enter_timer", 7, d.get_map_index())
+						d.setqf2("devilcatacomb_zone","last_exit_time", get_global_time())
+						d.say_diff_by_item_group("reapers_credit", gameforge.devilcatacomb_zone._250_say, gameforge.devilcatacomb_zone._260_say)
 					end
 				end
+			elseif d.getf("level") == 2 and get_global_time() - d.getf("floor3_asked_at") >= 10 then
+				devilcatacomb_zone.enter_floor3()
 			elseif not pc.is_playerbot() then
 				say(gameforge.devilcatacomb_zone._270_say)
 			end
 		end
 
 		when devilcatacomb_floor3_enter_timer.server_timer begin
-			if not d.select(get_server_timer_arg()) then
-				return
+			if d.select(get_server_timer_arg()) then
+				devilcatacomb_zone.enter_floor3()
 			end
-			local setting = devilcatacomb_zone.setting()
-			d.set_warp_location (65, 5914, 992)
-			d.exit_all_by_item_group ("reapers_credit")
-			d.delete_item_in_item_group_from_all ("reapers_credit")
-			d.purge ()
-			d.jump_all (setting.floor3_entry.x + setting.base.x , setting.floor3_entry.y + setting.base.y)
-			d.setf("level",3)
-			d.setqf2("devilcatacomb_zone","level", 3)
-			d.regen_file (setting.mob_regen_file_path.."dc_3f_regen.txt")
-			server_timer("devilcatacomb_warp_notice_timer", 3, d.get_map_index())
-			
-			local position = setting.floor3_stone_pos
-		
-			local n = number(1,7)
-			for i = 1, 7 do
-				if (i != n)
-				then
-					d.set_unique("fake"..i, d.spawn_mob( setting.floor3_stone, position[i][1], position[i][2]))
-				end
-			end
-		
-			local vid = d.spawn_mob( setting.floor3_stone, position[n][1], position[n][2])
-			d.set_unique ("real",vid)
-			d.setf("tw_real", n) -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: the real one's place, to bring it back
-			-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the real one watched (devilcatacomb_tw_watch).
-			clear_server_timer("devilcatacomb_tw_watch", get_server_timer_arg())
-			server_timer("devilcatacomb_tw_watch", 15, get_server_timer_arg())
 		end
+
+		-- The Dried Heads of the ones who went on, a second after the move (MT2009_PLUS_CATACOMB_FLOOR3_MOVE_V1).
+		when devilcatacomb_floor3_heads_timer.server_timer begin
+			if d.select(get_server_timer_arg()) then
+				d.delete_item_in_item_group_from_all ("reapers_credit")
+			end
+		end
+
+	-- Floor 2 to floor 3, once (the level flag): the party to the Metins of Revenge, then out with the
+	-- ones without a Dried Head (MT2009_PLUS_CATACOMB_FLOOR3_MOVE_V1 - see the rock above).
+	function enter_floor3()
+		if d.getf("level") ~= 2 then
+			return
+		end
+		local setting = devilcatacomb_zone.setting()
+		local idx = d.get_map_index()
+		d.setf("level",3)
+		d.setqf2("devilcatacomb_zone","level", 3)
+		d.purge ()
+		d.jump_all (setting.floor3_entry.x + setting.base.x , setting.floor3_entry.y + setting.base.y)
+		d.regen_file (setting.mob_regen_file_path.."dc_3f_regen.txt")
+		server_timer("devilcatacomb_warp_notice_timer", 3, idx)
+
+		local position = setting.floor3_stone_pos
+
+		local n = number(1,7)
+		for i = 1, 7 do
+			if (i != n)
+			then
+				d.set_unique("fake"..i, d.spawn_mob( setting.floor3_stone, position[i][1], position[i][2]))
+			end
+		end
+
+		local vid = d.spawn_mob( setting.floor3_stone, position[n][1], position[n][2])
+		d.set_unique ("real",vid)
+		d.setf("tw_real", n) -- MT2009_PLUS_DUNGEON_TARGET_RESPAWN_V1: the real one's place, to bring it back
+		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1: the real one watched (devilcatacomb_tw_watch).
+		clear_server_timer("devilcatacomb_tw_watch", idx)
+		server_timer("devilcatacomb_tw_watch", 15, idx)
+
+		-- Last: out with the ones without a Dried Head (a bot's way out may lose the dungeon - nothing
+		-- of the move is left after it), and their heads taken from the rest a second later.
+		server_timer("devilcatacomb_floor3_heads_timer", 1, idx)
+		d.set_warp_location (65, 5914, 992)
+		d.exit_all_by_item_group ("reapers_credit")
+	end
 
 		-- MT2009_PLUS_DUNGEON_TARGET_WATCH_V1 (the owner, 20 October: "popraw wszystkie dungi"): floor 3 asked
 		-- whether the real Metin of Revenge was dead only when a Metin's kill event came, so a real one that
