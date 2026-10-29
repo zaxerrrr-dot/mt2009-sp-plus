@@ -321,38 +321,102 @@ quest devilcatacomb_zone begin
 			end
 		end
 	end
-		-- The key dragged onto the statue sends the party to floor 2. From floor 2 on it is a dungeon.
-		when devilcatacomb_credit_stone. take  begin
-			local setting = devilcatacomb_zone.setting()
-		
-			if item.vnum == setting.rag then 
-				if not party.is_party() then
-					say(gameforge.devilcatacomb_zone._170_say)
-					return
-				elseif party.is_in_dungeon() then
-					say(gameforge.devilcatacomb_zone._180_say)
-					return
-				end
+	-- The key (30311) on the statue (30101) sends the party to floor 2. From floor 2 on it is a dungeon.
+	--
+	-- MT2009_PLUS_CATACOMB_STATUE_TALK_V1 (the owner, 29 October: "gdy gracze ida zagadac do zaby, nic
+	-- nie da sie zrobic i nie przenosi dalej"): the statue - Statua Kuda, the frog of floor 1 - had only
+	-- the stock 'take' event, the key dragged onto it, and nothing for a click, so a player who walked
+	-- up and clicked it as one clicks every other dungeon NPC got no window at all and nobody was moved.
+	-- A click now opens a window: what the statue wants (the key from floor 1's monsters, a party), and
+	-- with the key in the bag "Tak" opens floor 2 for the party as the drag does. The drag still works;
+	-- a person's key is taken only after the two windows, once it is still there and the party still
+	-- outside (before, it went before them - closed or broken off, the key was lost and nobody moved).
+	-- A bot is let through at once, without a window, as before (playerbot_catacomb.h gives the key
+	-- with CHARACTER::GiveItem).
+	function open_floor2()
+		local setting = devilcatacomb_zone.setting()
+		d.new_jump_party (setting.map_idx, setting.floor2_entry.x + setting.base.x  , setting.floor2_entry.y + setting.base.y )
+		d.setqf2("devilcatacomb_zone","level", 2)
+		d.setf ("level",2)
+		d.regen_file (setting.mob_regen_file_path.."dc_2f_regen.txt")
 
-				item.remove()
-				if not pc.is_playerbot() then
-					say(gameforge.devilcatacomb_zone._190_say)
-					wait()
-					say(gameforge.devilcatacomb_zone._200_say)
-					wait()
+		d.spawn_mob (setting.floor2_merchant_npc, setting.floor2_merchant_npc_pos[1], setting.floor2_merchant_npc_pos[2])
+		d.spawn_mob (setting.floor2_stone, setting.floor2_stone_pos[1], setting.floor2_stone_pos[2])
+
+		devilcatacomb_zone.spawn_doors ()
+		server_timer('devilcatacomb_45m_left_timer',60 * 15, d.get_map_index())
+		d.setf("enter_time", get_global_time())
+	end
+
+	-- nil when the statue may open floor 2 for this character's party, else what to tell the character.
+	function statue_refusal()
+		if not party.is_party() then
+			return gameforge.devilcatacomb_zone._170_say
+		elseif party.is_in_dungeon() then
+			return gameforge.devilcatacomb_zone._180_say
+		end
+		return nil
+	end
+
+	-- The two windows of the stock drag, then the key taken and the party sent down.
+	function use_key()
+		local setting = devilcatacomb_zone.setting()
+		say(gameforge.devilcatacomb_zone._190_say)
+		wait()
+		say(gameforge.devilcatacomb_zone._200_say)
+		wait()
+		local why = devilcatacomb_zone.statue_refusal()
+		if why ~= nil then
+			say(why)
+			return
+		end
+		if pc.count_item(setting.rag) < 1 then
+			return
+		end
+		pc.remove_item(setting.rag, 1)
+		devilcatacomb_zone.open_floor2()
+	end
+
+		when devilcatacomb_credit_stone.take begin
+			local setting = devilcatacomb_zone.setting()
+
+			if item.vnum == setting.rag then
+				local why = devilcatacomb_zone.statue_refusal()
+				if why ~= nil then
+					say(why)
+					return
 				end
-				d.new_jump_party (setting.map_idx, setting.floor2_entry.x + setting.base.x  , setting.floor2_entry.y + setting.base.y )
-				d.setqf2("devilcatacomb_zone","level", 2)
-				d.setf ("level",2)
-				d.regen_file (setting.mob_regen_file_path.."dc_2f_regen.txt")
-				
-				d.spawn_mob (setting.floor2_merchant_npc, setting.floor2_merchant_npc_pos[1], setting.floor2_merchant_npc_pos[2])
-				d.spawn_mob (setting.floor2_stone, setting.floor2_stone_pos[1], setting.floor2_stone_pos[2])
-				
-				devilcatacomb_zone.spawn_doors ()
-				server_timer('devilcatacomb_45m_left_timer',60 * 15, d.get_map_index())
-				d.setf("enter_time", get_global_time())
-			end	
+				if pc.is_playerbot() then
+					item.remove()
+					devilcatacomb_zone.open_floor2()
+					return
+				end
+				devilcatacomb_zone.use_key()
+			end
+		end
+
+		when devilcatacomb_credit_stone.click begin
+			local setting = devilcatacomb_zone.setting()
+			if pc.is_playerbot() then
+				return
+			end
+			say_title("Statua Kuda")
+			if pc.count_item(setting.rag) < 1 then
+				say("Statua Kuda strze¿e wejœcia na 2. poziom[ENTER]Diabelskich Katakumb.")
+				say("Pokonuj potwory na tym poziomie - czasem wypada[ENTER]z nich Klucz Kryszta³u Duszy. Z kluczem w[ENTER]ekwipunku porozmawiaj ze statu¹ albo przeci¹gnij[ENTER]go na ni¹.")
+				say("Wejœæ mo¿na tylko w grupie: statua przenosi[ENTER]wszystkich jej cz³onków, którzy s¹ na tym poziomie.")
+				return
+			end
+			local why = devilcatacomb_zone.statue_refusal()
+			if why ~= nil then
+				say(why)
+				return
+			end
+			say("Masz Klucz Kryszta³u Duszy. Otworzyæ wrota[ENTER]i przenieœæ grupê na 2. poziom?")
+			local s = select(gameforge.devilcatacomb_zone._150_select, gameforge.devilcatacomb_zone._160_select)
+			if s == 1 then
+				devilcatacomb_zone.use_key()
+			end
 		end
 		
 		when devilcatacomb_45m_left_timer.server_timer begin
