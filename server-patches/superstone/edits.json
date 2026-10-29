@@ -22,5 +22,17 @@
   "marker": "MT2009_PLUS_SUPERSTONE_V1 (flag)",
   "old": "\t\tif (name == \"m2_mob_hp\")\n\t\t\t::M2ApplyMobHpPercent(value);\n",
   "new": "\t\tif (name == \"m2_mob_hp\")\n\t\t\t::M2ApplyMobHpPercent(value);\n\n#ifdef ENABLE_SUPERSTONE_EVENT\n\t\t// MT2009_PLUS_SUPERSTONE_V1 (flag): the event Super Kamieni ends - its untouched extra stones go (char_manager.cpp).\n\t\tif (name == \"superstone_event\" && value <= 0 && prev_value > 0)\n\t\t{\n\t\t\textern void SuperStoneEventOff();\n\t\t\tSuperStoneEventOff();\n\t\t}\n#endif\n"
+ },
+ {
+  "file": "questmanager.cpp",
+  "marker": "MT2009_PLUS_SUPERSTONE_V2 (decl)",
+  "old": "#include \"lzo_manager.h\"\n",
+  "new": "#include \"lzo_manager.h\"\n#ifdef ENABLE_SUPERSTONE_EVENT\n// MT2009_PLUS_SUPERSTONE_V2 (decl): char_manager.cpp's SuperStoneEventOff is a global function - declared here at\n// file scope, an extern inside CQuestManager::SetEventFlag named quest::SuperStoneEventOff and did not link.\nvoid SuperStoneEventOff();\n#endif\n"
+ },
+ {
+  "file": "questmanager.cpp",
+  "marker": "MT2009_PLUS_SUPERSTONE_V2 (call)",
+  "old": "\t\t\textern void SuperStoneEventOff();\n\t\t\tSuperStoneEventOff();\n",
+  "new": "\t\t\t// MT2009_PLUS_SUPERSTONE_V2 (call): the global one (see the declaration at the top).\n\t\t\t::SuperStoneEventOff();\n"
  }
 ]
