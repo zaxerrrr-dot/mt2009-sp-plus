@@ -147,6 +147,57 @@ namespace
 		return NULL;
 	}
 
+	// MT2009_PLUS_DROP90_V1 (the owner, 29 October 2026: "boty ich nie kupuja"): the Metins' and bosses' rings
+	// and gloves (70005, 39002, 70043) go on stalls now. A bot keeps PLAYERBOT_TIMED_UNIQUE_KEEP of each kind,
+	// worn and in the bag, off its own counter and off the merchant, and buys up to that many off the others'
+	// counters (playerbot_market.h) - from PLAYERBOT_TIMED_UNIQUE_BUY_MIN_LEVEL, a ring only while it still
+	// levels - near the price table (PLAYERBOT_TIMED_UNIQUE_FAIR_PERCENT) and out of a share of what it can
+	// spare (PLAYERBOT_TIMED_UNIQUE_PURSE_PERCENT). The pass below wears them while it hunts.
+	const int PLAYERBOT_TIMED_UNIQUE_KEEP = 2;
+	const int PLAYERBOT_TIMED_UNIQUE_BUY_MIN_LEVEL = 30;
+	const int PLAYERBOT_TIMED_UNIQUE_FAIR_PERCENT = 150;
+	const int PLAYERBOT_TIMED_UNIQUE_PURSE_PERCENT = 15;
+
+	// The rings (ring) or the gloves a bot holds, worn and in the bag.
+	int CountPlayerBotTimedUniques(LPCHARACTER ch, bool ring)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return 0;
+		int count = 0;
+		for (int wear = WEAR_UNIQUE1; wear <= WEAR_UNIQUE2; ++wear)
+		{
+			LPITEM worn = ch->GetWear(wear);
+			if (worn && (ring ? IsPlayerBotExpRing(worn->GetVnum()) : IsPlayerBotThiefGlove(worn->GetVnum())))
+				++count;
+		}
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell &&
+					(ring ? IsPlayerBotExpRing(item->GetVnum()) : IsPlayerBotThiefGlove(item->GetVnum())))
+				count += (int)item->GetCount();
+		}
+		return count;
+	}
+
+	// Whether the bot would wear a ring (ring) or a glove at all: a glove pays every bot that kills, a ring
+	// only one that still levels.
+	bool PlayerBotUsesTimedUnique(LPCHARACTER ch, bool ring)
+	{
+		if (!ch || (int)ch->GetLevel() < PLAYERBOT_TIMED_UNIQUE_BUY_MIN_LEVEL)
+			return false;
+		return !ring || (!IsPlayerBotExpLocked(ch) && (int)ch->GetLevel() < PLAYER_MAX_LEVEL_CONST);
+	}
+
+	// A ring or glove in the bag the bot keeps for itself: not the counter's, not the merchant's.
+	bool IsPlayerBotKeptTimedUnique(LPCHARACTER ch, LPITEM item)
+	{
+		if (!ch || !item || !IsPlayerBotTimedUnique(item->GetVnum()))
+			return false;
+		const bool ring = IsPlayerBotExpRing(item->GetVnum());
+		return PlayerBotUsesTimedUnique(ch, ring) && CountPlayerBotTimedUniques(ch, ring) <= PLAYERBOT_TIMED_UNIQUE_KEEP;
+	}
+
 	void ManagePlayerBotUniqueSlots(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		static std::map<DWORD, DWORD> s_mapPlayerBotUniqueSlotNext;

@@ -352,6 +352,16 @@ namespace
 			return PlayerBotWantsValourCapes(ch) &&
 					CountPlayerBotValourCapes(ch) + (int)offer->GetCount() <= PLAYERBOT_CAPE_KEEP;
 
+		// MT2009_PLUS_DROP90_V1: a ring of experience or a thief's glove, for a
+		// bot that wears one while it hunts (playerbot_unique_slots.h), up to
+		// PLAYERBOT_TIMED_UNIQUE_KEEP of the kind, worn and in the bag.
+		if (IsPlayerBotTimedUnique(offer->GetVnum()))
+		{
+			const bool ring = IsPlayerBotExpRing(offer->GetVnum());
+			return offer->GetType() == ITEM_UNIQUE && PlayerBotUsesTimedUnique(ch, ring) &&
+					CountPlayerBotTimedUniques(ch, ring) + (int)offer->GetCount() <= PLAYERBOT_TIMED_UNIQUE_KEEP;
+		}
+
 		// A flooded material for the refiners' exchange (playerbot_bonus.h).
 		if (IsPlayerBotExchangeBuyOffer(ch, offer))
 			return true;
@@ -773,6 +783,14 @@ namespace
 		if (IsPlayerBotTradeableBonusVnum(item->GetVnum()))
 			return price <= (long long)GetPlayerBotShopAskingPrice(item) &&
 					price <= spare * PLAYERBOT_TRADEABLE_BONUS_BUY_PURSE_PERCENT / 100;
+		// MT2009_PLUS_DROP90_V1: a ring or a glove near the price table (500 000 /
+		// 750 000 before the sheet's scale), out of a share of the spare.
+		if (IsPlayerBotTimedUnique(item->GetVnum()) && WantsPlayerBotStallItemOwn(ch, item))
+		{
+			const long long fair = GetPlayerBotShopAskingPrice(item);
+			return fair > 0 && price * 100 <= fair * PLAYERBOT_TIMED_UNIQUE_FAIR_PERCENT &&
+					price <= spare * PLAYERBOT_TIMED_UNIQUE_PURSE_PERCENT / 100;
+		}
 		// MT2009_PLUS_RANK_FRUIT_MARKET_V1: a rank fruit near the price table,
 		// out of the fruit's share of the purse.
 		if (IsPlayerBotRankFruit(item->GetVnum()))

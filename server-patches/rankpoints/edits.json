@@ -46,5 +46,11 @@
   "marker": "MT2009_PLUS_RANK_POINTS_V2 (alignment)",
   "old": "\tint i = m_iAlignment / 10;\n\n\tm_iRealAlignment = MINMAX(-200000, m_iRealAlignment + iAmount, 200000);\n\n\tif (bShow)\n\t{\n\t\tm_iAlignment = m_iRealAlignment;\n\n\t\tif (i != m_iAlignment / 10)\n\t\t\tUpdatePacket();\n\t}\n}\n",
   "new": "\tint i = m_iAlignment / 10;\n\n\t// MT2009_PLUS_RANK_POINTS_V2 (alignment): the alignment is the bottom of the one scale of Punkty Rangi -\n\t// its crossing of its cap (20 000 shown) puts the Arezzo points above it on or off (playerbot_rank_points.h).\n\tconst int iRankPointsBefore = m_iRealAlignment;\n\n\tm_iRealAlignment = MINMAX(-200000, m_iRealAlignment + iAmount, 200000);\n\n\tif (bShow)\n\t{\n\t\tm_iAlignment = m_iRealAlignment;\n\n\t\tif (i != m_iAlignment / 10)\n\t\t\tUpdatePacket();\n\t}\n\n\tif (IsPC() && m_iRealAlignment != iRankPointsBefore)\n\t{\n\t\tvoid RankPointsOnAlignment(LPCHARACTER, int);\n\t\tRankPointsOnAlignment(this, iRankPointsBefore);\n\t}\n}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP90_V1 (wiki)",
+  "old": "\t\tDWORD RankPointsWikiFruit(bool metinOrBoss, int level);\n\t\tint RankPointsWikiPercent();\n\t\tconst DWORD fruit = RankPointsWikiFruit(stone || table.bRank >= MOB_RANK_BOSS, level);\n",
+  "new": "\t\t// MT2009_PLUS_DROP90_V1 (wiki): with the monster - a map's own fruit (the level-90 maps' Winogrono,\n\t\t// Zaklety Las' Ananas) over the level bands, as the kill drops it (playerbot_rank_points.h).\n\t\tDWORD RankPointsWikiFruitRace(DWORD race, bool metinOrBoss, int level);\n\t\tint RankPointsWikiPercent();\n\t\tconst DWORD fruit = RankPointsWikiFruitRace(race, stone || table.bRank >= MOB_RANK_BOSS, level);\n"
  }
 ]
