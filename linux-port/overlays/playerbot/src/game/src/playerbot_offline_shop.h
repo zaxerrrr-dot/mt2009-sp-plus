@@ -2841,6 +2841,9 @@ namespace {
         if (o.renewCalledAt && Due(now, o.renewCalledAt + PLAYERBOT_OFFLINE_RENEW_HOLD_MS))
             o.renewCalledAt = 0;
         if (!Due(now, o.nextService)) return false;
+        // MT2009_PLUS_BOT_KINGDOM_VISITS_V1: no warp to its own counter from a
+        // trip to another kingdom; the service waits for the way home.
+        if (!o.visiting && IsPlayerBotOnKingdomVisit(ch->GetPlayerID())) return false;
         // A purchase under way comes first. A service visit opens the board,
         // and the buyer gives its pick up to anybody with the board open: four
         // of the first 155 walks over from a second village lost the line they

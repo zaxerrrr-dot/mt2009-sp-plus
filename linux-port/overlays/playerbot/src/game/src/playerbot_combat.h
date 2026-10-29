@@ -844,6 +844,10 @@ namespace
 		const TPlayerBotAIState& state = it->second;
 		if (state.persona.dwFoeVID != 0 && state.persona.dwFoeVID == (DWORD)target->GetVID())
 			return true;
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V1: a raid on a first village - the
+		// raider's victims, the defenders' raiders (playerbot_kingdom_visits.h).
+		if (IsPlayerBotKingdomRaidFoe(ch, target))
+			return true;
 		CGuild* theirs = target->GetGuild();
 		return state.dwGuildWarEnemyGID != 0 && theirs && theirs->GetID() == state.dwGuildWarEnemyGID;
 	}
