@@ -126,6 +126,11 @@ class CPlayerBotManager : public singleton<CPlayerBotManager>
 		// for one, the route's points in world units.
 		int		GetHumanPathKind(long lMapIndex);
 		int		PlanHumanPath(LPCHARACTER ch, long targetX, long targetY, std::vector<std::pair<long, long> >& out);
+		// MT2009_PLUS_AUTOHUNT_REACH_V1: whether the character can walk to the
+		// point on the bots' grid of its map - 1 yes, 0 no (another component:
+		// an island, a cliff top, the next room), -1 unknown (no grid built for
+		// the map yet, or either end off the grid). Never builds a grid.
+		int		CanHumanReach(LPCHARACTER ch, long targetX, long targetY);
 		// A bot's WarpSet (char.cpp, playerbotify.py): the engine's map change
 		// for a player made server-side for a bot - a dungeon's jump, an exit,
 		// a quest's warp. False when this core does not host the map.

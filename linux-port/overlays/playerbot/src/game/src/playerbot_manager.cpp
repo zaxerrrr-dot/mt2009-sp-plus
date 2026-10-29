@@ -9182,6 +9182,31 @@ int CPlayerBotManager::PlanHumanPath(LPCHARACTER ch, long targetX, long targetY,
 	return 1;
 }
 
+// MT2009_PLUS_AUTOHUNT_REACH_V1 (server-patches/autohuntreach): the target
+// filter of a person's Auto Lowy (do_autohunt_target). Only a grid already
+// built answers - building one costs 4-160 MB and seconds on the 32-bit core,
+// which the target choice must never set off. The hunter's own ground is
+// looked for 4 cells round it, the target's 6 (a stone may stand on the edge
+// of its blocked footprint); either end not found is unknown, so a character
+// the grid does not know stays hunting as before.
+int CPlayerBotManager::CanHumanReach(LPCHARACTER ch, long targetX, long targetY)
+{
+	if (!ch)
+		return -1;
+	const long lMapIndex = ch->GetMapIndex();
+	const long base = lMapIndex >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN ? lMapIndex / 10000 : lMapIndex;
+	CPlayerBotNavigation& navigation = CPlayerBotNavigation::instance(base);
+	if (!navigation.IsInitializedFor(base))
+		return -1;
+	const DWORD own = navigation.GetComponentAtWorld(ch->GetX(), ch->GetY(), 4);
+	if (own == 0)
+		return -1;
+	const DWORD target = navigation.GetComponentAtWorld(targetX, targetY, 6);
+	if (target == 0)
+		return -1;
+	return own == target ? 1 : 0;
+}
+
 bool CPlayerBotManager::TransferBot(LPCHARACTER bot, LPCHARACTER to)
 {
 	if (!bot || !to)

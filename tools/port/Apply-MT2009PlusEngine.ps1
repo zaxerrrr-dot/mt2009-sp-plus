@@ -1787,6 +1787,19 @@ if ((Test-Path -LiteralPath $autoHuntPassApply -PathType Leaf) -and
     }
 }
 
+# Auto Lowy reachability (server-patches/autohuntreach, MT2009_PLUS_AUTOHUNT_REACH_V1; the owner, 29 October 2026): a
+# monster the hunter cannot walk to (another component of the bots' grid, only a grid already built) is never named
+# (cmd_general.cpp, Mt2009PlusOffer of enginefixes' TRUE_NEAREST).
+$autoHuntReachApply = Join-Path $repo 'server-patches/autohuntreach/Apply-AutoHuntReachPatch.ps1'
+if ((Test-Path -LiteralPath $autoHuntReachApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $autoHuntReachResult = & $autoHuntReachApply -SourceDir $engineGameSource
+    if ($autoHuntReachResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Auto Lowy reachability edit(s).' -f $autoHuntReachResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 # Kupon SM (100) from the Metin / boss coupon roll (server-patches/kupon100, MT2009_PLUS_DROP_COUPON_100_V1; the owner,
 # 28 October 2026): 80014 in place of 80017 in the drop, the auto hunt's pick-up list, the preview and the drop wiki.
 # Last: it anchors on raremobrules', playerqol's and dropwiki's 80017 lines.
