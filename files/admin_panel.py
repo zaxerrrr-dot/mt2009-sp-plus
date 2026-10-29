@@ -1209,6 +1209,7 @@ KINGDOM_VISIT_KEYS = [
     ("RAID_MIN_MIN", 10, 1, 120, "number", 1),
     ("RAID_MAX_MIN", 20, 1, 180, "number", 1),
     ("RAID_SIZE", 8, 2, 30, "range", 1),
+    ("RAID_SIZE_MAX", 16, 2, 40, "range", 1),  # MT2009_PLUS_BOT_TOWNRAID_SIZE_V1
     ("RAID_MIN_LEVEL", 40, 15, 120, "number", 1),
     ("RAID_DEFENDERS", 8, 0, 40, "range", 1),
     ("RAID_RETREAT_DEATHS_PCT", 100, 10, 1000, "number", 10),
@@ -4586,7 +4587,8 @@ T.update({
  "ai_kv_raid_every_min":{"en":"Minutes between two raids on one kingdom","pl":"Minut między najazdami na jedno królestwo"},
  "ai_kv_raid_min_min":{"en":"Raid's fight lasts from (min)","pl":"Walka najazdu trwa od (min)"},
  "ai_kv_raid_max_min":{"en":"Raid's fight lasts to (min)","pl":"Walka najazdu trwa do (min)"},
- "ai_kv_raid_size":{"en":"Raiders of one guild (most)","pl":"Najeźdźców z gildii (najwięcej)"},
+ "ai_kv_raid_size":{"en":"Raiders of a raid (a guild topped up from its kingdom)","pl":"Najeźdźców w najeździe (gildia dopełniona botami z królestwa)"},
+ "ai_kv_raid_size_max":{"en":"... more for a crowded village (a third of its bots), at most","pl":"... więcej przy zatłoczonej wiosce (1/3 jej botów), najwięcej"},
  "ai_kv_raid_min_level":{"en":"Raider's lowest level","pl":"Najniższy poziom najeźdźcy"},
  "ai_kv_raid_defenders":{"en":"Defenders called home","pl":"Obrońców wzywanych do wioski"},
  "ai_kv_raid_retreat_deaths_pct":{"en":"Retreat after the raiders' deaths in all (% of the raiders)","pl":"Odwrót po śmierciach najeźdźców łącznie (% liczby najeźdźców)"},

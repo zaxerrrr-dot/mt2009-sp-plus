@@ -47,6 +47,12 @@
 //   - the raiders: one bot guild of one of the other two kingdoms, at most
 //     RAID_SIZE of its free members on this core, the levels nearest to the
 //     village's defenders' (their median and a few);
+//     MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: the guild that can send the most,
+//     topped up to the raid's size from its kingdom's band (other bot guilds'
+//     members first, then the guildless; never a person's guild's member);
+//     the size RAID_SIZE, a third of the village's bots if more, RAID_SIZE_MAX
+//     at most; under max(4, RAID_SIZE*3/4) no raid (why=too_small); levels at
+//     the defenders' median or a little above (8 below it at most);
 //   - the muster at the target's gate in the valley, the crossing together,
 //     the march into the village; the fight lasts RAID_MIN_MIN..RAID_MAX_MIN
 //     from the first raider in the village. A raider strikes every character
@@ -57,8 +63,11 @@
 //   - the village defends itself: its kingdom's bots in the village go for the
 //     raiders, and RAID_DEFENDERS more of its free bots of the raiders' levels
 //     are called home from their maps;
+//     (V1 of the size: the called and the village's own of the raiders'
+//     levels no more than 1.5x the raiders at the start);
 //   - the raiders' deaths: RAID_RETREAT_DEATHS_PCT of their number in all, or
-//     RAID_RETREAT_FAST_PCT within RAID_RETREAT_FAST_MIN minutes, and they fall
+//     RAID_RETREAT_FAST_PCT within RAID_RETREAT_FAST_MIN minutes (V1 of the
+//     size: after a minute's fighting and max(3, raiders/2) deaths at least), and they fall
 //     back into the safe zone; at the clock's end the same. Then they shop like
 //     any visitor and go home the same way. A fallen raider stands up where it
 //     fell (restart_here, invisible for its recovery, as every bot does);
@@ -108,6 +117,10 @@ namespace
 	// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: a war band (no whole guild free) is
 	// this many at least.
 	const int PLAYERBOT_KV_WARBAND_MIN = 4;
+	// MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: a raider this many levels under the
+	// wanted one at most; the fast retreat not before this much fighting.
+	const int PLAYERBOT_KV_RAID_BELOW_WANT = 8;
+	const DWORD PLAYERBOT_KV_RETREAT_FAST_AFTER_MS = 60 * 1000;
 	// A raider's own clock through the gate: well inside the raid's crossing
 	// (PLAYERBOT_KV_CROSSING_MS), so a refused walk is put through before the
 	// raid gives up on it.
@@ -250,6 +263,14 @@ namespace
 		unsigned int raidCalls = 0, raidsGuild = 0, raidsBand = 0, raidNone = 0;
 	};
 	TPlayerBotKVTally s_tPlayerBotKVTally;
+
+	// MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: how far a raider's level is from the
+	// wanted one - an attacker a little above it (up to 8) is right, one
+	// below it three times as wrong as one above.
+	int PlayerBotKVLevelGap(int level, int want)
+	{
+		return level < want ? (want - level) * 3 : std::max(0, level - want - 8);
+	}
 
 	// A clock's moment come (0 is "now"), past the wrap of get_dword_time.
 	bool KVDue(DWORD dwNow, DWORD at)
@@ -2143,34 +2164,53 @@ namespace
 			defMedian = defLevels[defLevels.size() / 2];
 		}
 		const int minLevel = KVSetting(PLAYERBOT_KV_RAID_MIN_LEVEL);
-		const int want = std::max(minLevel, defMedian + 3);
-		// The free members of every bot guild of the other kingdoms.
+		// MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: the attackers at the defenders'
+		// median or a little above it, nobody far below (the 29 October night:
+		// a guild of 43-109 against a village of 16, three of them, felled in
+		// eight seconds).
+		const int want = std::max(minLevel, defMedian + 2);
+		const int floorLevel = std::max(minLevel, want - PLAYERBOT_KV_RAID_BELOW_WANT);
+		// The raid's size: RAID_SIZE, more for a crowded village (a third of
+		// its bots), RAID_SIZE_MAX at most; under the least of it no raid.
+		const int baseSize = KVSetting(PLAYERBOT_KV_RAID_SIZE);
+		const int maxSize = std::max(baseSize, KVSetting(PLAYERBOT_KV_RAID_SIZE_MAX));
+		const int size = std::min(maxSize, std::max(baseSize, (int)defLevels.size() / 3));
+		const int minSize = std::min(size, std::max(PLAYERBOT_KV_WARBAND_MIN, baseSize * 3 / 4));
+		// The free bots of the other kingdoms of a raider's level: every bot
+		// guild's members, and the kingdom's band (the bot guilds' members and
+		// the guildless; a person's guild's member is not the bots' to send).
 		std::map<DWORD, std::vector<LPCHARACTER> > byGuild;
+		std::vector<LPCHARACTER> band[4];
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
 			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
-			if (!c || c->GetEmpire() == target || (int)c->GetLevel() < minLevel || !c->GetGuild() ||
-					!IsPlayerBotGuild(c->GetGuild()) || !IsPlayerBotKVRouteHosted(c->GetEmpire(), target) ||
-					c->GetMapIndex() == map || !IsPlayerBotKVFree(c, it->second, dwNow))
+			if (!c || c->GetEmpire() == target || c->GetEmpire() < 1 || c->GetEmpire() > 3 ||
+					(int)c->GetLevel() < floorLevel || (c->GetGuild() && !IsPlayerBotGuild(c->GetGuild())) ||
+					!IsPlayerBotKVRouteHosted(c->GetEmpire(), target) || c->GetMapIndex() == map ||
+					!IsPlayerBotKVFree(c, it->second, dwNow))
 				continue;
-			byGuild[c->GetGuild()->GetID()].push_back(c);
+			band[c->GetEmpire()].push_back(c);
+			if (c->GetGuild())
+				byGuild[c->GetGuild()->GetID()].push_back(c);
 		}
-		const int size = KVSetting(PLAYERBOT_KV_RAID_SIZE);
-		const int need = std::min(PLAYERBOT_KV_RAID_MIN_RAIDERS, size);
+		// The guild: the most of its members it can send (a whole war band
+		// before three free ones), then the nearest level; only one its
+		// kingdom's band can fill up to the least of a raid.
 		DWORD bestGuild = 0;
 		long bestScore = LONG_MIN;
 		for (std::map<DWORD, std::vector<LPCHARACTER> >::iterator g = byGuild.begin(); g != byGuild.end(); ++g)
 		{
 			std::vector<LPCHARACTER>& members = g->second;
-			if ((int)members.size() < need)
+			if ((int)members.size() < PLAYERBOT_KV_RAID_MIN_RAIDERS ||
+					(int)band[members[0]->GetEmpire()].size() < minSize)
 				continue;
 			std::vector<int> levels;
 			for (size_t i = 0; i < members.size(); ++i)
 				levels.push_back(members[i]->GetLevel());
 			std::nth_element(levels.begin(), levels.begin() + levels.size() / 2, levels.end());
 			const int median = levels[levels.size() / 2];
-			long score = -(long)abs(median - want) * 10 + (long)std::min<size_t>(members.size(), (size_t)size) * 3 +
-					number(0, 15);
+			long score = (long)std::min<size_t>(members.size(), (size_t)size) * 20 -
+					(long)PlayerBotKVLevelGap(median, want) * 3 + number(0, 15);
 			if (score > bestScore)
 			{
 				bestScore = score;
@@ -2178,31 +2218,15 @@ namespace
 			}
 		}
 		++s_tPlayerBotKVTally.raidCalls;
-		std::vector<LPCHARACTER> members;
-		bool warband = false;
+		BYTE from = 0;
 		if (bestGuild != 0)
-			members = byGuild[bestGuild];
+			from = byGuild[bestGuild][0]->GetEmpire();
 		else
 		{
-			// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: no whole guild free - a war
-			// band of one kingdom instead: the bot guilds' members first (a
-			// level near the wanted one), then the guildless of a like level;
-			// RAID_SIZE of them, PLAYERBOT_KV_WARBAND_MIN at least. A person's
-			// guild's member is not the bots' to send.
-			std::vector<LPCHARACTER> band[4];
-			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
-			{
-				LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
-				if (!c || c->GetEmpire() == target || c->GetEmpire() < 1 || c->GetEmpire() > 3 ||
-						(int)c->GetLevel() < minLevel || (c->GetGuild() && !IsPlayerBotGuild(c->GetGuild())) ||
-						!IsPlayerBotKVRouteHosted(c->GetEmpire(), target) || c->GetMapIndex() == map ||
-						!IsPlayerBotKVFree(c, it->second, dwNow))
-					continue;
-				band[c->GetEmpire()].push_back(c);
-			}
-			BYTE from = 0;
+			// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: no guild to lead it - a war
+			// band of one kingdom instead.
 			for (int e = 1; e <= 3; ++e)
-				if (e != target && (int)band[e].size() >= PLAYERBOT_KV_WARBAND_MIN &&
+				if (e != target && (int)band[e].size() >= minSize &&
 						(from == 0 || band[e].size() > band[from].size() ||
 						 (band[e].size() == band[from].size() && number(0, 1))))
 					from = (BYTE)e;
@@ -2212,20 +2236,19 @@ namespace
 				char tag[24];
 				snprintf(tag, sizeof(tag), "kv_raid_none_%u", (unsigned int)target);
 				PlayerBotLogThrottled(tag, dwNow,
-						"PLAYERBOT_TOWNRAID: no raiders target=%u why=%s guilds=%u band_pool=%u/%u/%u need=%d min_level=%d",
+						"PLAYERBOT_TOWNRAID: no raiders target=%u why=%s guilds=%u band_pool=%u/%u/%u need=%d size=%d min_level=%d want_level=%d",
 						(unsigned int)target, why, (unsigned int)byGuild.size(), (unsigned int)band[1].size(),
-						(unsigned int)band[2].size(), (unsigned int)band[3].size(), PLAYERBOT_KV_WARBAND_MIN, minLevel);
+						(unsigned int)band[2].size(), (unsigned int)band[3].size(), minSize, size, floorLevel, want);
 				return false;
 			}
-			members.swap(band[from]);
-			warband = true;
 		}
+		const bool warband = bestGuild == 0;
 		struct FByLevelGap
 		{
 			int want;
 			bool band;
-			// A war band: a bot guild's member within 15 levels of the wanted
-			// one before anybody guildless.
+			// The top-up: another bot guild's member within 15 levels of the
+			// wanted one before anybody guildless.
 			int Rank(LPCHARACTER c) const
 			{
 				return band && !(c->GetGuild() && abs((int)c->GetLevel() - want) <= 15) ? 1 : 0;
@@ -2235,21 +2258,51 @@ namespace
 				const int ra = Rank(a), rb = Rank(b);
 				if (ra != rb)
 					return ra < rb;
-				const int da = abs((int)a->GetLevel() - want), db = abs((int)b->GetLevel() - want);
+				const int da = PlayerBotKVLevelGap(a->GetLevel(), want), db = PlayerBotKVLevelGap(b->GetLevel(), want);
 				return da != db ? da < db : a->GetPlayerID() < b->GetPlayerID();
 			}
 		};
 		FByLevelGap order;
 		order.want = want;
-		order.band = warband;
-		std::sort(members.begin(), members.end(), order);
-		const int take = warband ? std::max(size, PLAYERBOT_KV_WARBAND_MIN) : size;
-		if ((int)members.size() > take)
-			members.resize(take);
-		int inGuild = 0;
-		for (size_t i = 0; i < members.size(); ++i)
-			if (members[i]->GetGuild())
-				++inGuild;
+		order.band = false;
+		std::vector<LPCHARACTER> members;
+		if (!warband)
+		{
+			members = byGuild[bestGuild];
+			std::sort(members.begin(), members.end(), order);
+			if ((int)members.size() > size)
+				members.resize(size);
+		}
+		const int inGuild = (int)members.size();
+		// MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: topped up to RAID_SIZE (scaled)
+		// from the same kingdom's band.
+		if ((int)members.size() < size)
+		{
+			std::vector<LPCHARACTER> extra;
+			for (size_t i = 0; i < band[from].size(); ++i)
+			{
+				LPCHARACTER c = band[from][i];
+				if (!warband && c->GetGuild() && c->GetGuild()->GetID() == bestGuild)
+					continue;
+				extra.push_back(c);
+			}
+			order.band = true;
+			std::sort(extra.begin(), extra.end(), order);
+			for (size_t i = 0; i < extra.size() && (int)members.size() < size; ++i)
+				members.push_back(extra[i]);
+		}
+		const int toppedUp = (int)members.size() - inGuild;
+		if ((int)members.size() < minSize)
+		{
+			++s_tPlayerBotKVTally.raidNone;
+			char tag[24];
+			snprintf(tag, sizeof(tag), "kv_raid_small_%u", (unsigned int)target);
+			PlayerBotLogThrottled(tag, dwNow,
+					"PLAYERBOT_TOWNRAID: skipped target=%u why=too_small via=%s guild=%s raiders=%u in_guild=%d topped_up=%d need=%d size=%d village_bots=%u want_level=%d",
+					(unsigned int)target, why, warband ? "-" : members[0]->GetGuild()->GetName(),
+					(unsigned int)members.size(), inGuild, toppedUp, minSize, size, (unsigned int)defLevels.size(), want);
+			return false;
+		}
 		TPlayerBotKVRaid raid;
 		raid.id = s_dwPlayerBotKVRaidNextId++;
 		raid.target = target;
@@ -2292,10 +2345,11 @@ namespace
 			StartPlayerBotKVTrip(members[i], KV_KIND_RAID, target, dwNow, "raid");
 		}
 		++s_uPlayerBotKVRaids;
-		sys_log(0, "PLAYERBOT_TOWNRAID: called raid=%u target=%u(%s) attacker=%u(%s) guild=%s raiders=%u in_guild=%d levels=%d-%d def_median=%d patrol=%u why=%s via=%s guilds_free=%u",
+		sys_log(0, "PLAYERBOT_TOWNRAID: called raid=%u target=%u(%s) attacker=%u(%s) guild=%s raiders=%u in_guild=%d topped_up=%d size=%d need=%d levels=%d-%d want_level=%d def_median=%d village_bots=%u patrol=%u why=%s via=%s guilds_free=%u",
 				raid.id, (unsigned int)target, PLAYERBOT_KV_KINGDOM[target], (unsigned int)raid.attacker,
-				PLAYERBOT_KV_KINGDOM[raid.attacker], raid.guildName.c_str(), (unsigned int)raid.raiders.size(), inGuild, lo, hi,
-				defMedian, (unsigned int)raid.patrol.size(), warband ? "warband" : "guild", why, (unsigned int)byGuild.size());
+				PLAYERBOT_KV_KINGDOM[raid.attacker], raid.guildName.c_str(), (unsigned int)raid.raiders.size(), inGuild,
+				toppedUp, size, minSize, lo, hi, want, defMedian, (unsigned int)defLevels.size(), (unsigned int)raid.patrol.size(),
+				warband ? "warband" : "guild", why, (unsigned int)byGuild.size());
 		s_mapPlayerBotKVRaids[target] = raid;
 		return true;
 	}
@@ -2361,6 +2415,18 @@ namespace
 		}
 		if (hi == 0)
 			return;
+		// MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: the defenders of the raiders'
+		// levels (the village's own and the called) no more than half as many
+		// again as the raiders at the start; RAID_DEFENDERS stays the cap.
+		int strongHome = 0;
+		for (size_t i = 0; i < raid.homeBots.size(); ++i)
+		{
+			LPCHARACTER d = CHARACTER_MANAGER::instance().FindByPID(raid.homeBots[i]);
+			if (d && (int)d->GetLevel() >= lo - 10)
+				++strongHome;
+		}
+		const int raiders = (int)raid.raiders.size();
+		const int cap = std::min(n, std::max(0, raiders * 3 / 2 - strongHome));
 		std::vector<DWORD> pool;
 		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
@@ -2371,15 +2437,16 @@ namespace
 				continue;
 			pool.push_back(it->first);
 		}
-		while ((int)raid.called.size() < n && !pool.empty())
+		while ((int)raid.called.size() < cap && !pool.empty())
 		{
 			const size_t k = (size_t)number(0, (int)pool.size() - 1);
 			raid.called.insert(pool[k]);
 			pool[k] = pool.back();
 			pool.pop_back();
 		}
-		sys_log(0, "PLAYERBOT_TOWNRAID: defenders called raid=%u target=%u called=%u levels=%d-%d",
-				raid.id, (unsigned int)raid.target, (unsigned int)raid.called.size(), std::max((int)PK_PROTECT_LEVEL, lo - 10), hi + 10);
+		sys_log(0, "PLAYERBOT_TOWNRAID: defenders called raid=%u target=%u called=%u cap=%d raiders=%d strong_home=%d levels=%d-%d",
+				raid.id, (unsigned int)raid.target, (unsigned int)raid.called.size(), cap, raiders, strongHome,
+				std::max((int)PK_PROTECT_LEVEL, lo - 10), hi + 10);
 	}
 
 	// The village's snapshot, once a pass: who a raider may look at, and the
@@ -2603,9 +2670,14 @@ namespace
 				while (!raid.deathTimes.empty() && dwNow - raid.deathTimes.front() > window)
 					raid.deathTimes.pop_front();
 				const int n = std::max<int>(1, (int)raid.raiders.size());
+				// MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: the fast retreat only after a
+				// minute's fighting and max(3, half the raiders) deaths in its
+				// window (two deaths in eight seconds sent a raid of three home).
+				const int fast = (int)raid.deathTimes.size();
 				if (raid.deaths * 100 >= n * KVSetting(PLAYERBOT_KV_RETREAT_DEATHS_PCT))
 					EndPlayerBotKVRaid(raid, "retreat_many", dwNow);
-				else if ((int)raid.deathTimes.size() * 100 >= n * KVSetting(PLAYERBOT_KV_RETREAT_FAST_PCT))
+				else if (dwNow - raid.fightAt >= PLAYERBOT_KV_RETREAT_FAST_AFTER_MS && fast >= std::max(3, n / 2) &&
+						fast * 100 >= n * KVSetting(PLAYERBOT_KV_RETREAT_FAST_PCT))
 					EndPlayerBotKVRaid(raid, "retreat_fast", dwNow);
 				else if ((int)(dwNow - raid.fightUntil) >= 0)
 					EndPlayerBotKVRaid(raid, "time", dwNow);
