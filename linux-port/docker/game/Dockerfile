@@ -3234,6 +3234,22 @@ RUN set -eu; H=/opt/metin2/share/locale/poland/npc_location_helper \
  && test "$(find "$H" -type f -name '*_point.txt' | wc -l)" -ge 40 \
  && echo "share: Lokalizator NPC - $(grep -c -E '^[[:blank:]]+[0-9]+[[:blank:]]' "$H/npc_location_helper.txt") maps, $(find "$H" -type f -name '*_point.txt' | wc -l) point files"
 
+# MT2009_PLUS_WEAPON_ELEMENT_V1 (share): Zaczarowanie Zywiolu Broni (server-patches/zywiolbroni; the owner, 29 October
+# 2026) - weapon_element.txt (THE config: prices, fees, chance, the weighted value tables, guild levels) in
+# locale/poland, where the engine reads it at boot and on "/welem_reload"; Straznik Medali (20650, mariadb/playerbot/
+# zywiol_broni.sql: on_click = his shop 9560) on the three guild lands at the wiki's cells - Jungrang (4,
+# metin2_map_guild_01) 346,171, Waryong (24, guild_02) 253,236, Imha (44, guild_03) 284,240.
+COPY zywiolbroni/weapon_element.txt /opt/metin2/share/locale/poland/weapon_element.txt
+RUN set -eu; L=/opt/metin2/share/locale/poland; sed -i 's/\r$//' "$L/weapon_element.txt" \
+ && grep -q -E '^chance[[:blank:]]' "$L/weapon_element.txt" \
+ && for p in "metin2_map_guild_01 346 171 5" "metin2_map_guild_02 253 236 5" "metin2_map_guild_03 284 240 5"; do \
+      set -- $p; F="$L/map/$1/npc.txt"; test -f "$F"; \
+      [ -z "$(tail -c 1 "$F")" ] || printf '\n' >> "$F"; \
+      grep -q -E '[[:blank:]]20650[[:space:]]*$' "$F" || printf 'm\t%s\t%s\t0\t0\t0\t%s\t60s\t100\t1\t20650\n' "$2" "$3" "$4" >> "$F"; \
+      test "$(grep -c -E '[[:blank:]]20650[[:space:]]*$' "$F")" -eq 1 || exit 1; \
+    done \
+ && echo "share: Straznik Medali (20650) on the three guild lands, weapon_element.txt (MT2009_PLUS_WEAPON_ELEMENT_V1)"
+
 # Seed for a core's mark/ directory (guild symbols): copied into the state
 # volume on first run only.
 COPY src/serverfiles/mark-default /opt/metin2/share/mark-default

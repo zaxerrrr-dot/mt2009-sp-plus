@@ -4889,6 +4889,17 @@ if [ -s /opt/playerbot/yohara_biolog.sql ]; then
         fail_step "Biologist (Yohara): yohara_biolog.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_WEAPON_ELEMENT_V1: Zaczarowanie Zywiolu Broni (the owner, 29 October 2026) - zywiol_broni.sql
+# (tools/zywiolbroni/gen_zywiolbroni.py): the scrolls 56002-56009 (Zwoje Ognia .. Mroku, Klatwy, Zmiany), Straznik Medali
+# 20650 and his shop 9560, player.item_element (each enchanted weapon by item id; server-patches/zywiolbroni). The
+# guild lands' npc.txt (game/Dockerfile) names 20650: a world without him stops the cores at boot. Idempotent.
+if [ -s /opt/playerbot/zywiol_broni.sql ]; then
+    if db < /opt/playerbot/zywiol_broni.sql; then
+        echo "[playerbot-migrate] weapon element: zywiol_broni.sql applied (MT2009_PLUS_WEAPON_ELEMENT_V1)"
+    else
+        fail_step "weapon element: zywiol_broni.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
