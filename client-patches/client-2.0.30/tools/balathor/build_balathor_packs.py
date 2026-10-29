@@ -11,7 +11,7 @@
 #      the boss window's strings; locale/common/camera/guild_white_dragonlair/*.txt: the six cinema scripts the server
 #      runs - client-2.0.30/balathor/locale/...) - patch_balathor_client.py.
 # The python (root/uiguildwhitedragon.py, root/uiscript/guildwhitedragonlairwindow.py, the hooks in game.py /
-# interfacemodule.py, the minimap name in localeinfo.py) and the icons (root/icon/item/30395.tga,
+# interfacemodule.py, the minimap name in localeinfo.py) and the icons (root/icon/item/30395.tga, 83075.tga, 83076.tga,
 # guild_whitedragon_boss.tga, guild_whitedragon_egg.tga) travel in client-2.0.30/root like every root change. The boss
 # window's pictures (the package's whole d:/ymir work/ui/game/guild_white_dragon_lair/, the atlases ui/spacebar_01.dds /
 # spacebar_effect.dds its .sub cut, ui/whitedragon_damage_01.dds) and the named effects go in balathor_mobs

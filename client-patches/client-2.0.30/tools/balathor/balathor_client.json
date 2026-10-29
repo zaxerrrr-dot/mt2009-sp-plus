@@ -93,8 +93,8 @@
  },
  "item_list": {
   "30395": "30395\tETC\ticon/item/30395.tga",
-  "83075": "83075\tETC\ticon/item/50270.tga\td:/ymir work/item/etc/boss_box.gr2",
-  "83076": "83076\tETC\ticon/item/50271.tga\td:/ymir work/item/etc/boss_box.gr2"
+  "83075": "83075\tETC\ticon/item/83075.tga\td:/ymir work/item/etc/boss_box.gr2",
+  "83076": "83076\tETC\ticon/item/83076.tga\td:/ymir work/item/etc/boss_box.gr2"
  },
  "itemdesc": {
   "30395": "30395\tOgnista Strzała\tPrzeciągnij strzałę na Hwachę w Krypcie Balathora, aby ją załadować. Strzały dają Pradawne Kryształy Lodu.",

@@ -14,8 +14,9 @@
 #   gamedata/item_list.txt, gamedata/item_proto (dbdata), locale/pl/itemdesc.txt (dbdata)
 #                            Ognista Strzala 30395 (the package's 30345 is Ezoteryczne Drewno here; icon
 #                            root/icon/item/30395.tga), the chests Mrozna Skrz. Balathora 83075 / Balathora+ 83076
-#                            (GIFTBOX; icons 50270 / 50271 + boss_box.gr2 of our pack "icon", as the Yohara boss
-#                            chests 54706/54707): the SQL's records over ../yohara/patch_yohara_client.py's template,
+#                            (GIFTBOX; icons root/icon/item/83075.tga / 83076.tga = GF 26.1.11 icon/item/70413.tga /
+#                            70414.tga, GF's own Balathor chests - silver-blue and golden frozen chest, as the pl-wiki;
+#                            ground model boss_box.gr2): the SQL's records over ../yohara/patch_yohara_client.py's template,
 #                            their item_list lines and Polish descriptions
 #   locale/pl/locale_game.txt (locale)
 #                            the 41 GUILD_WHITE_DRAGON_LAIR_* strings, in Polish (uiguildwhitedragon.py)
