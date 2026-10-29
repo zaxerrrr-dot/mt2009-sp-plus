@@ -214,5 +214,35 @@
   "marker": "MT2009_PLUS_YSET_ICON_V1 (no save)",
   "old": "(type) == 545 /* MT2009_PLUS_COSTUME_SET_V1 (no save): judged at every equip */)",
   "new": "(type) == 545 /* MT2009_PLUS_COSTUME_SET_V1 (no save): judged at every equip */ || (type) == 546 /* MT2009_PLUS_YSET_ICON_V1 (no save): the Yohara set icon, judged at every equip */)"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_YSET_TELL_V1 (char)",
+  "old": "\t\tBYTE\t\t\tm_bYSetAppliedCount = 0;\n",
+  "new": "\t\tBYTE\t\t\tm_bYSetAppliedCount = 0;\n\t\tWORD\t\t\tm_wYSetTold = 0; // MT2009_PLUS_YSET_TELL_V1 (char): the set message last told (set << 8 | pieces)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_YSET_TELL_V1 (init)",
+  "old": "\tm_bYSetApplied = m_bYSetAppliedCount = 0; // MT2009_PLUS_YOHARA_SETS_V1 (init)\n",
+  "new": "\tm_bYSetApplied = m_bYSetAppliedCount = 0; // MT2009_PLUS_YOHARA_SETS_V1 (init)\n\tm_wYSetTold = 0; // MT2009_PLUS_YSET_TELL_V1 (init)\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_YSET_TELL_V1 (tell)",
+  "old": "// Entergame: every item of the inventory and the equipment with a yextra (SetItem told nothing while loading)\n",
+  "new": "// MT2009_PLUS_YSET_TELL_V1 (tell): the set message once - at the entry to the game and at a real change of the worn\n// set / its pieces, never at a recomputation of the points (ComputePoints: a mount, a dismount, an affect)\nstatic void Mt2009YSetsWorn(LPCHARACTER ch, BYTE& bSet, BYTE& bPieces);\nstatic bool Mt2009YSetsHasTier(BYTE bSet, BYTE bPieces);\n\nstatic void Mt2009YSetsTell(LPCHARACTER ch, BYTE bSet, BYTE bPieces)\n{\n\tif (!ch || !ch->IsPC() || !ch->GetDesc() || !ch->GetDesc()->IsPhase(PHASE_GAME) || ch->GetDesc()->IsBot())\n\t\treturn;\n\tconst WORD wTold = bSet ? (WORD)((bSet << 8) | bPieces) : 0;\n\tif (wTold == ch->m_wYSetTold)\n\t\treturn;\n\tch->m_wYSetTold = wTold;\n\tif (bSet >= 1 && bSet <= 5)\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"%s: %d/3 \" \"cz\\352\\234ci - efekt zestawu aktywny\", s_aszYSetsName[bSet], bPieces);\n}\n\nstatic void Mt2009YSetsTellWorn(LPCHARACTER ch)\n{\n\tif (!ch)\n\t\treturn;\n\tBYTE bSet, bPieces;\n\tMt2009YSetsWorn(ch, bSet, bPieces);\n\tif (bSet && !Mt2009YSetsHasTier(bSet, bPieces))\n\t\tbSet = bPieces = 0;\n\tMt2009YSetsTell(ch, bSet, bPieces);\n}\n\n// Entergame: every item of the inventory and the equipment with a yextra (SetItem told nothing while loading)\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_YSET_TELL_V1 (enter)",
+  "old": "\t\t\t\tSendAffectAddPacket(ch->GetDesc(), *it);\n}\n",
+  "new": "\t\t\t\tSendAffectAddPacket(ch->GetDesc(), *it);\n\tMt2009YSetsTellWorn(ch); // MT2009_PLUS_YSET_TELL_V1 (enter): the worn set told once at the entry to the game\n}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_YSET_TELL_V1 (refresh)",
+  "old": "\tconst bool bTell = bSet != ch->m_bYSetApplied || bPieces != ch->m_bYSetAppliedCount;\n\tch->m_bYSetApplied = bSet;\n\tch->m_bYSetAppliedCount = bPieces;\n\tif (bTell && bSet && ch->GetDesc() && ch->GetDesc()->IsPhase(PHASE_GAME) && !ch->GetDesc()->IsBot())\n\t\tch->ChatPacket(CHAT_TYPE_INFO, \"%s: %d/3 \" \"cz\\352\\234ci - efekt zestawu aktywny\", s_aszYSetsName[bSet], bPieces);\n",
+  "new": "\tch->m_bYSetApplied = bSet;\n\tch->m_bYSetAppliedCount = bPieces;\n\tMt2009YSetsTell(ch, bSet, bPieces); // MT2009_PLUS_YSET_TELL_V1 (refresh): told only when it differs from the last told\n"
  }
 ]

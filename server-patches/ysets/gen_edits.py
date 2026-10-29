@@ -924,6 +924,73 @@ EDITS += [
 ]
 
 
+
+# -- MT2009_PLUS_YSET_TELL_V1: the set message once (poprawki 3.0.4 pt 7) --
+# "<set>: 3/3 czesci - efekt zestawu aktywny" came at every mount / dismount: ComputePoints zeroes the applied set
+# (Mt2009YSetsReset) and Mt2009YSetsRefresh told it again each time. Now the last told set and its pieces are kept
+# per character in memory (m_wYSetTold = set << 8 | pieces); the message comes at the entry to the game
+# (Mt2009YSetsSendAll) and then only when the worn set or the number of its pieces really changes (an equip / unequip
+# of a set piece) - not at a recomputation. A set taken off is remembered silently (0), so putting it on again tells.
+M6 = 'MT2009_PLUS_YSET_TELL_V1'
+
+TELL_FUNCS = '// ' + M6 + r""" (tell): the set message once - at the entry to the game and at a real change of the worn
+// set / its pieces, never at a recomputation of the points (ComputePoints: a mount, a dismount, an affect)
+static void Mt2009YSetsWorn(LPCHARACTER ch, BYTE& bSet, BYTE& bPieces);
+static bool Mt2009YSetsHasTier(BYTE bSet, BYTE bPieces);
+
+static void Mt2009YSetsTell(LPCHARACTER ch, BYTE bSet, BYTE bPieces)
+{
+	if (!ch || !ch->IsPC() || !ch->GetDesc() || !ch->GetDesc()->IsPhase(PHASE_GAME) || ch->GetDesc()->IsBot())
+		return;
+	const WORD wTold = bSet ? (WORD)((bSet << 8) | bPieces) : 0;
+	if (wTold == ch->m_wYSetTold)
+		return;
+	ch->m_wYSetTold = wTold;
+	if (bSet >= 1 && bSet <= 5)
+		ch->ChatPacket(CHAT_TYPE_INFO, "%s: %d/3 " @ACTIVE@, s_aszYSetsName[bSet], bPieces);
+}
+
+static void Mt2009YSetsTellWorn(LPCHARACTER ch)
+{
+	if (!ch)
+		return;
+	BYTE bSet, bPieces;
+	Mt2009YSetsWorn(ch, bSet, bPieces);
+	if (bSet && !Mt2009YSetsHasTier(bSet, bPieces))
+		bSet = bPieces = 0;
+	Mt2009YSetsTell(ch, bSet, bPieces);
+}
+
+"""
+
+ENTERGAME_COMMENT = '// Entergame: every item of the inventory and the equipment with a yextra (SetItem told nothing while loading)\n'
+
+EDITS += [
+    dict(file='char.h', marker=M6 + ' (char)',
+         old='\t\tBYTE\t\t\tm_bYSetAppliedCount = 0;\n',
+         new='\t\tBYTE\t\t\tm_bYSetAppliedCount = 0;\n'
+             '\t\tWORD\t\t\tm_wYSetTold = 0; // ' + M6 + ' (char): the set message last told (set << 8 | pieces)\n'),
+    dict(file='char.cpp', marker=M6 + ' (init)',
+         old='\tm_bYSetApplied = m_bYSetAppliedCount = 0; // ' + M + ' (init)\n',
+         new='\tm_bYSetApplied = m_bYSetAppliedCount = 0; // ' + M + ' (init)\n'
+             '\tm_wYSetTold = 0; // ' + M6 + ' (init)\n'),
+    dict(file='item.cpp', marker=M6 + ' (tell)',
+         old=ENTERGAME_COMMENT,
+         new=sub(TELL_FUNCS) + ENTERGAME_COMMENT),
+    dict(file='item.cpp', marker=M6 + ' (enter)',
+         old='\t\t\t\tSendAffectAddPacket(ch->GetDesc(), *it);\n}\n',
+         new='\t\t\t\tSendAffectAddPacket(ch->GetDesc(), *it);\n'
+             '\tMt2009YSetsTellWorn(ch); // ' + M6 + ' (enter): the worn set told once at the entry to the game\n}\n'),
+    dict(file='item.cpp', marker=M6 + ' (refresh)',
+         old='\tconst bool bTell = bSet != ch->m_bYSetApplied || bPieces != ch->m_bYSetAppliedCount;\n'
+             '\tch->m_bYSetApplied = bSet;\n\tch->m_bYSetAppliedCount = bPieces;\n'
+             '\tif (bTell && bSet && ch->GetDesc() && ch->GetDesc()->IsPhase(PHASE_GAME) && !ch->GetDesc()->IsBot())\n'
+             '\t\tch->ChatPacket(CHAT_TYPE_INFO, "%s: %d/3 " ' + TEXTS['ACTIVE'] + ', s_aszYSetsName[bSet], bPieces);\n',
+         new='\tch->m_bYSetApplied = bSet;\n\tch->m_bYSetAppliedCount = bPieces;\n'
+             '\tMt2009YSetsTell(ch, bSet, bPieces); // ' + M6 + ' (refresh): told only when it differs from the last told\n'),
+]
+
+
 def check(src):
     ok = True
     texts = {}

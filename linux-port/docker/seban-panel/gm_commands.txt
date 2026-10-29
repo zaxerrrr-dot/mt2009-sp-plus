@@ -62,6 +62,19 @@ Komendy typu /SET
 /set <nick> align 200000 - ranga rycerski
 /set_sk <liczba> - zmiana profesji, gdzie <liczba> wpisujecie 1 lub 2
 
+Poziom Czempiona i Sung Ma (/champion, Wysoki GM)
+Bez <nick> komenda działa na Twoją postać, z <nick> - na wskazaną postać (ten sam rdzeń, inny rdzeń/kanał
+albo gracz offline: wtedy zmiana czeka i wchodzi przy jego następnym wejściu do gry).
+/champion [<nick>] - pokazuje stan Czempiona (poziom, exp, punkty, Sung Ma)
+/champion [<nick>] level <0-30> - ustawia Poziom Czempiona (z punktami zdobytymi do tego poziomu)
+/champion [<nick>] exp <ilość> - ustawia exp Czempiona
+/champion [<nick>] give <ilość> - dodaje exp Czempiona (z awansami)
+/champion [<nick>] points <ilość> - ustawia punkty Sung Ma do rozdania
+/champion [<nick>] stat <0-3> <wartość> - ustawia statystykę Sung Ma (0 Siła, 1 Witalność, 2 Odporność, 3 Inteligencja)
+/champion [<nick>] unlock - odblokowuje Poziom Czempiona bez warunków (poziom 1)
+/champion [<nick>] reset - zeruje Poziom Czempiona, exp, punkty i statystyki Sung Ma
+/champion reload - wczytuje ponownie dane Sung Ma (sungma_table.txt, sungma_mob_exp.txt)
+
 /setsk <ID-skilla> 59 - ustawiamy skill na P
 
 Sura BM - skille P
@@ -337,6 +350,7 @@ Niektóre polecenia są techniczne, deweloperskie albo zależą od włączonej f
 /block_flush  — do_block_flush
 /block_hwid  — do_block_hwid
 /block_player  — do_block
+/champion  — do_champion  (/champion [<nick>] level|exp|give|points|stat|unlock|reset)
 /clear_land  — do_clear_land
 /clear_quest  — do_clear_quest
 /cooltime  — do_cooltime

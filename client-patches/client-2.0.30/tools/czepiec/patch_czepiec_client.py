@@ -81,6 +81,9 @@ def item_list(b):
 
 
 def itemdesc(b):
+    # Wężowy Czepiec 12880-12895: no description (poprawki 3.0.4 pt 4) - their rows are "<vnum>\t<name>\t" with an
+    # empty description, which REPLACES a line carrying the old text (a dropped row would keep it); the client pads the
+    # missing columns (CItemManager::LoadItemDesc) and the tooltip draws no description
     d = items_json()
     return base.set_rows(b, [d['itemdesc'][k] for k in sorted(d['itemdesc'], key=int)])
 
