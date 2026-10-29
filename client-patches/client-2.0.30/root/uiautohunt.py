@@ -95,6 +95,7 @@
 
 import app
 import autologin
+import background  # MT2009_PLUS_AUTOHUNT_NAVGRID_V1
 import chat
 import chr
 import clientclock
@@ -299,6 +300,49 @@ PATH_MAX_POINTS = 64
 ESCAPE_TARGET_INTERVAL = 0.8
 RETURN_MOUNTED_TRAIL_REACH = 150.0
 RETURN_MOUNTED_STUCK_SECONDS = 2.0
+# MT2009_PLUS_AUTOHUNT_NAVGRID_V1 (the owner, 29 October 2026; based on
+# Path-Finder V1.0 by @coanitoa97, tutorial by Kolen): the client's own walk
+# grid of the map (the exe's NavGrid.cpp, the "navgrid" pack). Before walking
+# to a target, a drop or the start, background.NavReach says at once whether
+# the goal stands on ground this character can walk to - an island, a cliff
+# top or the next room is left for the minute (BlockTarget) and the next
+# target asked for at once, instead of the 0.8-8 s run into the wall. A goal
+# that can be reached is walked to along background.FindPath's way (the points
+# by WalkPath, as the server's way); a target that moves NAV_REPLAN_DRIFT from
+# the way's end has it planned again (no sooner than NAV_REPLAN_INTERVAL); a
+# way held still (a tree or a prop without attr, a pack of monsters) puts a
+# temporary block (background.NavBlock) in front of the character and plans
+# again - NAV_STUCK_REPLANS times, then today's walk (the server's way, the
+# box, the step off the wall). A way more than NAV_DETOUR_RATIO times the
+# straight line (and NAV_DETOUR_SLACK longer) is "unreachable" for a target or
+# a drop. The steps off a wall take only open ground. An exe without the
+# functions, or a map without a grid: everything as before.
+NAV_REPLAN_DRIFT = 300.0
+NAV_REPLAN_INTERVAL = 0.5
+NAV_STUCK_REPLANS = 2
+NAV_BLOCK_AHEAD = 150.0
+NAV_BLOCK_RADIUS = 100
+NAV_DETOUR_RATIO = 2.5
+NAV_DETOUR_SLACK = 600.0
+NAV_MAX_NODES = 60000
+
+
+def NavExe():
+    """The exe's navigation functions (client exe with ENABLE_MT2009_NAVGRID)."""
+    return all(hasattr(background, name) for name in ('IsNavReady', 'FindPath', 'NavReach', 'NavBlock',
+        'NavBlockClear', 'GetCurrentMapName'))
+
+
+def PathLength(px, py, points):
+    total = 0.0
+    (lx, ly) = (px, py)
+    for (x, y) in points:
+        total += math.sqrt((x - lx) ** 2 + (y - ly) ** 2)
+        (lx, ly) = (x, y)
+    return total
+
+
+NAV_EXE = NavExe()
 
 # MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (Autor: blaki): the target's mode and the
 # order of what is attacked first, both saved for the character (the settings
@@ -1163,6 +1207,10 @@ class Hunter(object):
         
         self.pathKind = PATH_KIND_NONE
         self.pathSeq = 0
+        # MT2009_PLUS_AUTOHUNT_NAVGRID_V1: the map whose grid was asked for.
+        self.navMapName = None
+        self.navOk = False
+        self.navBlocks = False
         self.LoadGlobalConfig()
         self.ResetState()
 
@@ -1590,6 +1638,11 @@ class Hunter(object):
             if not self.TakeNewTarget(new_vid):  # MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1
                 return
 
+        # MT2009_PLUS_AUTOHUNT_NAVGRID_V1 (target): one on ground this
+        # character cannot walk to is left for the minute, another asked for.
+        if new_vid != self.targetVid and self.NavRefuseTarget(now, new_vid):
+            return
+
         if new_vid != self.targetVid:
             self.returning = False
             self.ResetReturnMovement()
@@ -1654,6 +1707,9 @@ class Hunter(object):
     # MT2009_PLUS_AUTOHUNT_BLOCKED_V1 (Autor: blaki)
     def AskBlockedPath(self, now, vid):
         if self.pathPoints and self.pathPurpose == 'target' and self.pathVid == vid:
+            return False
+        # MT2009_PLUS_AUTOHUNT_NAVGRID_V1: the client's own grid plans the way.
+        if self.NavActive():
             return False
         if not self.PathAskable(vid, now):
             return False
@@ -2035,6 +2091,7 @@ class Hunter(object):
         self.pathReturnRetryAt = 0.0
         self.nextPathRequest = 0.0
         self.ResetPath()
+        self.ResetNav()  # MT2009_PLUS_AUTOHUNT_NAVGRID_V1
 
     def ResetPath(self):
         
@@ -2046,6 +2103,10 @@ class Hunter(object):
         self.pathMovePosition = None
         self.pathMoveSince = 0.0
         self.pathPending = None
+        # MT2009_PLUS_AUTOHUNT_NAVGRID_V1: the way is the client's own grid's,
+        # and where the last such way was held (purpose, vid, x, y, waypoint).
+        self.pathNav = False
+        self.pathHeld = None
 
     def ResetReturnMovement(self):
         self.returnGoal = None
@@ -2166,6 +2227,8 @@ class Hunter(object):
             x, y = int(px + vx * length), int(py + vy * length)
             if not self.EscapeStepAllowed(x, y):
                 continue
+            if self.NavStepBlocked(px, py, x, y):  # MT2009_PLUS_AUTOHUNT_NAVGRID_V1
+                continue
             if (x - px) ** 2 + (y - py) ** 2 < ESCAPE_CLEAR_DISTANCE ** 2:
                 continue
             if any((x - sx) ** 2 + (y - sy) ** 2 < 40 ** 2 for sx, sy in self.escapePoints):
@@ -2216,6 +2279,8 @@ class Hunter(object):
             x = int(px - dy * sign * ESCAPE_STEP_DISTANCE)
             y = int(py + dx * sign * ESCAPE_STEP_DISTANCE)
             if not self.EscapeStepAllowed(x, y):
+                continue
+            if self.NavStepBlocked(px, py, x, y):  # MT2009_PLUS_AUTOHUNT_NAVGRID_V1
                 continue
             (ox, oy) = self.escapeOrigin
             if (x - ox) ** 2 + (y - oy) ** 2 < ESCAPE_CLEAR_DISTANCE ** 2:
@@ -2284,6 +2349,224 @@ class Hunter(object):
         self.escapeProgressPosition = (px, py)
         self.escapeStepUntil = now + ESCAPE_STEP_SECONDS
         self.WalkTo(self.escapeGoal[0], self.escapeGoal[1])
+        return True
+
+    # MT2009_PLUS_AUTOHUNT_NAVGRID_V1 ----------------------------------------
+    def ResetNav(self):
+        self.navGoalKey = None
+        self.navPlanAt = -1000.0
+        self.navPlanGoal = None
+        self.navPlanResult = None
+        self.navStuckReplans = 0
+        self.navGaveUp = None
+        self.NavClearBlocks()
+
+    def NavClearBlocks(self):
+        if getattr(self, 'navBlocks', False):
+            self.navBlocks = False
+            try:
+                background.NavBlockClear()
+            except Exception:
+                pass
+
+    def NavActive(self):
+        """Whether this map has the client's walk grid (asked once a map)."""
+        if not NAV_EXE:
+            return False
+        try:
+            name = background.GetCurrentMapName()
+        except Exception:
+            return False
+        if name != self.navMapName:
+            self.navMapName = name
+            self.navBlocks = False
+            try:
+                self.navOk = bool(background.IsNavReady())
+            except Exception:
+                self.navOk = False
+        return self.navOk
+
+    def NavReachTo(self, gx, gy):
+        """1 the goal's ground is this character's, 0 it is not, -1 unknown."""
+        if not self.NavActive():
+            return -1
+        (px, py, pz) = player.GetMainCharacterPosition()
+        try:
+            return int(background.NavReach(int(px), int(py), int(gx), int(gy)))
+        except Exception:
+            return -1
+
+    def NavStepBlocked(self, px, py, x, y):
+        """A step off a wall onto blocked ground (its end or its middle)."""
+        if not self.NavActive() or not hasattr(background, 'IsNavWalkable'):
+            return False
+        try:
+            return not (background.IsNavWalkable(int(x), int(y)) and
+                background.IsNavWalkable(int((px + x) / 2), int((py + y) / 2)))
+        except Exception:
+            return False
+
+    def NavRefuseTarget(self, now, vid):
+        """A new target beyond reach on ground this character cannot walk
+        to: left for the minute and the next one asked for at once."""
+        if not self.NavActive():
+            return False
+        distance = player.GetCharacterDistance(vid)
+        if distance < 0 or distance <= self.Reach():
+            return False
+        (tx, ty, tz) = chr.GetPixelPosition(vid)
+        if self.NavReachTo(tx, ty) != 0:
+            return False
+        self.BlockTarget(vid, now)
+        if not self.targetVid:
+            self.nextRequest = 0.0
+        return True
+
+    def NavPlan(self, now, purpose, vid, gx, gy, short):
+        """The way to (gx, gy) on the grid: 'ok' (in pathPoints, walked by
+        WalkPath), 'direct' (a straight walk will do), 'none' (no way there,
+        or one too long round), 'unknown' (the grid cannot say)."""
+        self.navPlanAt = now
+        self.navPlanGoal = (gx, gy)
+        if not self.NavActive():
+            return 'unknown'
+        (px, py, pz) = player.GetMainCharacterPosition()
+        reach = self.NavReachTo(gx, gy)
+        if reach == 0:
+            return 'unknown' if purpose == 'return' else 'none'
+        if reach < 0:
+            return 'unknown'
+        try:
+            found = background.FindPath(int(px), int(py), int(gx), int(gy), NAV_MAX_NODES)
+        except Exception:
+            return 'unknown'
+        points = [(int(x), int(y)) for (x, y) in found][1:]
+        # With temporary blocks up (NavStuckReplan) a missing or long way may
+        # be the blocks' doing: today's walk then, not "unreachable".
+        sure = purpose != 'return' and not self.navBlocks
+        if not points:
+            # The same ground, but no way within the search's window and
+            # node cap: a long way round.
+            return 'none' if sure else 'unknown'
+        straight = math.sqrt((gx - px) ** 2 + (gy - py) ** 2)
+        length = PathLength(px, py, points[:-1] + [(gx, gy)])
+        if length > NAV_DETOUR_RATIO * straight and length - straight > NAV_DETOUR_SLACK:
+            return 'none' if sure else 'unknown'
+        points = points[:-1]
+        if short > 0:
+            (lx, ly) = points[-1] if points else (px, py)
+            if (gx - lx) ** 2 + (gy - ly) ** 2 > short ** 2:
+                (sx, sy) = StopPoint(lx, ly, gx, gy, short)
+                points.append((int(sx), int(sy)))
+        else:
+            points.append((int(gx), int(gy)))
+        if len(points) <= 1:
+            return 'direct'
+        self.pathPoints = points[:PATH_MAX_POINTS]
+        self.pathNav = True
+        self.pathHeld = None
+        self.pathPurpose = purpose
+        self.pathVid = vid
+        self.pathEnd = (int(gx), int(gy))
+        self.pathMovePosition = None
+        if self.pathPending and self.pathPending['purpose'] == purpose:
+            # The server's answer to an older question of this walk is not waited for.
+            self.pathPending = None
+        self.ResetChaseMovement()
+        if purpose != 'return':
+            self.ResetReturnMovement()
+        self.approachSince = 0.0
+        self.nextMove = 0.0
+        return 'ok'
+
+    def NavStuckReplan(self, now, purpose, vid, px, py, gx, gy):
+        """The walk is held at (px, py) on its way to (gx, gy): a block in
+        front for the grid and the way planned again, NAV_STUCK_REPLANS
+        times a goal; then False for good, and today's walk takes over."""
+        if not self.NavActive() or self.navGoalKey != (purpose, vid) or self.navGaveUp == (purpose, vid):
+            return False
+        if self.navStuckReplans >= NAV_STUCK_REPLANS:
+            self.navGaveUp = (purpose, vid)
+            return False
+        dx, dy = gx - px, gy - py
+        length = math.sqrt(dx * dx + dy * dy)
+        if length < 1.0:
+            return False
+        k = self.navStuckReplans
+        ahead = NAV_BLOCK_AHEAD + 100.0 * k
+        try:
+            background.NavBlock(int(px + dx * ahead / length), int(py + dy * ahead / length),
+                NAV_BLOCK_RADIUS + 100 * k)
+        except Exception:
+            return False
+        self.navBlocks = True
+        self.navStuckReplans += 1
+        self.navPlanAt = -1000.0
+        self.navPlanResult = None
+        self.WalkTo(px, py)
+        return True
+
+    def NavWalk(self, now, purpose, vid, gx, gy, short, distance=None):
+        """One frame of a walk on the grid: 'walk' (this frame's step is
+        taken), 'none' (no way there), 'old' (today's walk does it)."""
+        if not self.NavActive() or self.navGaveUp == (purpose, vid):
+            return 'old'
+        if self.navGoalKey != (purpose, vid):
+            self.navGoalKey = (purpose, vid)
+            self.navStuckReplans = 0
+            self.navPlanAt = -1000.0
+            self.navPlanGoal = None
+            self.navPlanResult = None
+            self.NavClearBlocks()
+        if self.pathNav and self.pathPurpose == purpose and self.pathVid == vid and self.pathPoints:
+            (ex, ey) = self.pathEnd
+            moved = (gx - ex) ** 2 + (gy - ey) ** 2 > NAV_REPLAN_DRIFT ** 2
+            if not (moved and now - self.navPlanAt >= NAV_REPLAN_INTERVAL):
+                if self.WalkPath(now, distance):
+                    return 'walk'
+                held = self.pathHeld
+                self.pathHeld = None
+                if not held:
+                    # Walked to its end: the last steps as today.
+                    self.navPlanResult = 'direct'
+                    self.navPlanGoal = (gx, gy)
+                    self.navPlanAt = now
+                    return 'old'
+                if not self.NavStuckReplan(now, purpose, vid, held[2], held[3], held[4][0], held[4][1]):
+                    return 'old'
+        elif self.navPlanResult in ('direct', 'unknown') and self.navPlanGoal is not None:
+            (ox, oy) = self.navPlanGoal
+            if (gx - ox) ** 2 + (gy - oy) ** 2 <= NAV_REPLAN_DRIFT ** 2 or now - self.navPlanAt < NAV_REPLAN_INTERVAL:
+                return 'old'
+        elif now - self.navPlanAt < NAV_REPLAN_INTERVAL:
+            return 'old'
+        result = self.NavPlan(now, purpose, vid, gx, gy, short)
+        self.navPlanResult = result
+        if result == 'ok':
+            return 'walk' if self.WalkPath(now, distance) else 'old'
+        return result if result == 'none' else 'old'
+
+    def NavChase(self, now, vid, distance):
+        """The walk to a target beyond reach on the grid; True when it took
+        the frame (a step, or the target left as out of reach)."""
+        if not self.NavActive():
+            return False
+        (tx, ty, tz) = chr.GetPixelPosition(vid)
+        result = self.NavWalk(now, 'target', vid, tx, ty, self.Reach() * STOP_SHORT_SHARE, distance)
+        if result == 'walk':
+            return True
+        if result != 'none':
+            return False
+        self.BlockTarget(vid, now)
+        if self.targetVid == vid:
+            self.ReleaseAttack()
+            if player.GetTargetVID() != 0:
+                player.ClearTarget()
+            self.targetVid = 0
+            self.approachSince = 0.0
+            self.ResetChaseMovement()
+            self.ResetPath()
+            self.nextRequest = 0.0
         return True
 
     def NoteChaseWalk(self, now, vid, px, py, distance):
@@ -2363,6 +2646,7 @@ class Hunter(object):
             else:
                 (ox, oy) = pending['origin']
                 self.pathPoints = [(ox + dx, oy + dy) for (dx, dy) in offsets]
+                self.pathNav = False  # MT2009_PLUS_AUTOHUNT_NAVGRID_V1: the server's way
                 self.pathPurpose = purpose
                 self.pathVid = vid
                 self.pathEnd = self.pathPoints[-1]
@@ -2423,7 +2707,9 @@ class Hunter(object):
                 self.pathMoveSince = now
             elif now - self.pathMoveSince >= COMBAT_STUCK_SECONDS:
                 
+                held = (self.pathPurpose, self.pathVid, px, py, self.pathPoints[0]) if self.pathNav else None
                 self.ResetPath()
+                self.pathHeld = held  # MT2009_PLUS_AUTOHUNT_NAVGRID_V1
                 return False
         if now >= self.nextMove:
             self.nextMove = now + MOVE_INTERVAL
@@ -2482,6 +2768,10 @@ class Hunter(object):
         # into the pack the moment it gave way. No step back to the start.
         self.WalkTo(px, py)
         self.ResetChaseMovement()
+        # MT2009_PLUS_AUTOHUNT_NAVGRID_V1 (box): the spot is blocked for the
+        # client's grid and the way planned again round it, twice at most.
+        if self.NavStuckReplan(now, 'target', vid, px, py, tx, ty):
+            return True
         box = (px, py, tx, ty, repeated)
         if self.PathAskable(vid, now) and self.AskPath(now, 'target', vid, tx, ty, box):
             
@@ -2604,6 +2894,8 @@ class Hunter(object):
             pending = self.pathPending
             if pending and pending['box'] and pending['purpose'] == 'target' and pending['vid'] == vid:
                 
+                return
+            if self.NavChase(now, vid, distance):  # MT2009_PLUS_AUTOHUNT_NAVGRID_V1
                 return
             if self.FollowTargetPath(now, vid, distance):
                 return
@@ -2871,6 +3163,18 @@ class Hunter(object):
         dist = self.LootDistance()
         if dist <= LOOT_PICK_DISTANCE:
             return True
+        # MT2009_PLUS_AUTOHUNT_NAVGRID_V1 (loot): round the walls on the
+        # client's grid; a drop on ground out of reach is left.
+        nav = self.NavWalk(now, 'loot', self.lootVid, self.lootPos[0], self.lootPos[1], 0.0)
+        if nav == 'walk':
+            self.lootSince = now
+            self.lootBest = dist
+            return True
+        if nav == 'none':
+            self.lootSkippedVids[self.lootVid] = now + LOOT_SKIP_DURATION
+            self.lootVid = 0
+            self.lootSince = 0.0
+            return False
         if not self.lootSince or dist < self.lootBest - WALK_PROGRESS:
             self.lootSince = now
             self.lootBest = dist
@@ -2927,6 +3231,10 @@ class Hunter(object):
                 self.ResetPath()
             return
         self.returning = True
+        # MT2009_PLUS_AUTOHUNT_NAVGRID_V1 (return): the way back on the
+        # client's grid; without one the trail and the server's way as before.
+        if self.NavWalk(now, 'return', 0, ax, ay, 0.0) == 'walk':
+            return
         if self.pathPurpose == 'return' and self.pathPoints:
             if self.WalkPath(now):
                 return

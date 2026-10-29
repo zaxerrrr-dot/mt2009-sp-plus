@@ -302,6 +302,12 @@
 // hunter walks through monsters (GameLib/ActorInstanceCollisionDetection.cpp). Root's uiautohunt_test.py (Alt+H) asks for
 // player.AutoHuntTestStart and says "needs the new exe" without it. No packet changes.
 #define ENABLE_MT2009_AUTOHUNT_TEST
+// MT2009_PLUS_NAVGRID_V1 (Auto Lowy navigation, the owner, 29 October 2026; based on Path-Finder V1.0 by @coanitoa97,
+// tutorial by Kolen): UserInterface/NavGrid.cpp - the map's walk grid (maps/<map>/navgrid.bin of the "navgrid" pack,
+// client-2.0.30/tools/navgrid), a windowed A* and the components; background.IsNavReady / FindPath / NavReach /
+// IsNavWalkable / NavBlock / NavBlockClear (PythonBackgroundModule.cpp) for root's uiautohunt.py, which keeps its old
+// walking on an exe without them. No packet changes.
+#define ENABLE_MT2009_NAVGRID
 // MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Lokalizator NPC, Autor: Best Studio): the improved world map - NPC list per map,
 // zoom/pan of the atlas, the selected NPC's mark and the arrow under the character, teleport to the NPC (packets
 // CG/GC 196), module npcLocationHelper (PythonNPCLocationHelper.cpp). Without the define the exe is as before.

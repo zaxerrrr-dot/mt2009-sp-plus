@@ -887,3 +887,21 @@ obrazki są już w paczce `etc` (`client-2.0.30/tools/quickslot2/verify_quickslo
 Z paczki **nie** przeniesione: `player.IsQuickSlotExpanded/SetQuickSlotExpanded` (stan trzyma `quickslotstate.py`) i
 `app.AtomicWriteFile` (zwykły zapis pliku `quickslot/<postać>.cfg`). Stary exe: root nie pokazuje przycisku.
 Sprawdzone `clang-cl /Zs` `PythonPlayer.cpp`, `PythonPlayerModule.cpp`, `PythonApplicationModule.cpp` (29.10.2026).
+## Nawigacja Auto Łowów – `MT2009_PLUS_NAVGRID_V1` (`ENABLE_MT2009_NAVGRID`)
+
+Na bazie Path-Finder V1.0 – autor: @coanitoa97, poradnik: Kolen (analiza: `cache/yohara/pathfinder-analiza.md`).
+Siatka mapy `maps/<mapa>/navgrid.bin` z paczki `navgrid` (generator `client-2.0.30/tools/navgrid`), komórka 1 m =
+100 jednostek (rozdzielczość attr klienta). Bez paczki/siatki dla mapy: Auto Łowy chodzą jak dotąd.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_NAVGRID` |
+| `UserInterface/NavGrid.cpp/.h` | **nowe**: wczytanie siatki raz na mapę (brak = zapamiętany, bez ponownych prób i bez wpisów w syserr), A* w oknie wokół startu i celu (+48 komórek, potem +160, bok ≤ 400), pamięć robocza wielokrotnego użytku (znacznik pokolenia zamiast memset), limit węzłów 60000, składowe 4-spójne = ta sama reguła narożników co A* (odpowiedź „nieosiągalny” w O(1)), kara przy ścianie liczona raz przy wczytaniu, blokady tymczasowe jako warstwa bitowa, wygładzanie tylko do przodu (O(n)), punkty w środkach komórek |
+| `UserInterface/PythonBackgroundModule.cpp` | **nowy w nakładce**: `background.IsNavReady()`, `FindPath(sx,sy,dx,dy[,maxNodes])` → `[(x,y),...]`, `NavReach(sx,sy,dx,dy)` → 1/0/-1, `IsNavWalkable(x,y)`, `NavBlock(x,y,r)`, `NavBlockClear()` – wszystko w lokalnych pikselach mapy (jak `player.GetMainCharacterPosition`) |
+| `UserInterface/UserInterface.vcxproj(.filters)` | `NavGrid.cpp`, `NavGrid.h` |
+
+Format pliku: nagłówek „PXNV” wersja 4 (40 bajtów: pola wersji 3 pakietu + CRC32 plików mapy + wersja generatora),
+bity przejścia (1 bit/komórkę), opcjonalnie klasy terenu (2 bity/komórkę). Wersja 3 pakietu też jest czytana.
+Root: `uiautohunt.py` (`MT2009_PLUS_AUTOHUNT_NAVGRID_V1`) sprawdza `hasattr(background, 'FindPath')` – stary exe = stare
+zachowanie. Sprawdzone `clang-cl /Zs` (`NavGrid.cpp`, `PythonBackgroundModule.cpp`) na kopii `exe-src8` z całą nakładką
+(29.10.2026).
