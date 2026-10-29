@@ -111,7 +111,7 @@
 	"first_boss_time": 3600000,
 	"second_boss_time": 3600,
 	"waiting_full_time": 3600000,
-	"sendout_time": 25000,
+	"sendout_time": 60000,
 	"request_kill_group_count": 1,
 	"fire_arrow_vnum": 30395,
 	"fire_arrow_drop_luck": 100,
@@ -168,7 +168,7 @@
 	"success_rewards": [
 		[
 			83075,
-			1
+			2
 		],
 		[
 			83076,
