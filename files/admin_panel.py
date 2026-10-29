@@ -1243,6 +1243,9 @@ def read_ai_weights():
     # The lowest plus a refine under a Blessing or Dragon God scroll may land
     # on; 1 is no floor, which is also what the core starts from.
     vals["SCROLL_FROM"] = 1
+    # MT2009_PLUS_BOT_DROPPER_ROTATION_V1: hours of play time between two
+    # draws of the guild materials dropper (0: fixed by pid, the old rule).
+    vals["GUILD_DROPPER_HOURS"] = 24
     # The bots' guild wars: minutes a war lasts (15 or 30) and hours from the
     # start of one to the next in a kingdom (1-4). DUDU's ask; the defaults are
     # what the core did before there was a choice.
@@ -1347,6 +1350,12 @@ def read_ai_weights():
                 if name == "SCROLL_FROM":
                     try:
                         vals["SCROLL_FROM"] = max(1, min(9, int(parts[1])))
+                    except ValueError:
+                        pass
+                    continue
+                if name == "GUILD_DROPPER_HOURS":
+                    try:
+                        vals["GUILD_DROPPER_HOURS"] = max(0, min(720, int(parts[1])))
                     except ValueError:
                         pass
                     continue
@@ -1456,6 +1465,8 @@ def write_ai_weights(vals):
     # The lowest plus a scroll refine may land on; 1 leaves the bots' own
     # rules alone.
     body.append("SCROLL_FROM\t%d" % max(1, min(9, int(vals.get("SCROLL_FROM", 1)))))
+    # MT2009_PLUS_BOT_DROPPER_ROTATION_V1: the guild materials dropper's draw.
+    body.append("GUILD_DROPPER_HOURS\t%d" % max(0, min(720, int(vals.get("GUILD_DROPPER_HOURS", 24)))))
     # The bots' guild wars: how long (15 or 30 minutes) and how often (every
     # 1-4 hours in each kingdom).
     body.append("WAR_MINUTES\t%d" % (15 if int(vals.get("WAR_MINUTES", 30)) <= 15 else 30))
@@ -4505,6 +4516,10 @@ T.update({
                   "pl":"Najniższy plus, na jaki bot ulepsza pod Zwojem Błogosławieństwa albo Zwojem Boga Smoków. Przy +7 zwój idzie tylko na ulepszenia na +7, +8 i +9, a każde niższe bot robi u kowala bez zwoju, jak gracz, który zwojów nie ma - więc przedmiot może spłonąć. Przy +1 nie ma ograniczenia i boty używają zwojów tak jak dotąd: od +7, a wcześniej na założonym przedmiocie, który mógłby spłonąć, i na przedmiocie z cennymi bonusami. Działa w pięć sekund.",
                   "de":"Das niedrigste Plus, auf das ein Bot unter einer Segens- oder Drachengott-Schriftrolle verbessert. Bei +7 geht eine Schriftrolle nur auf die Verbesserungen auf +7, +8 und +9; jede niedrigere macht der Bot beim Schmied ohne Schriftrolle, wie ein Spieler ohne Schriftrollen - der Gegenstand kann also verbrennen. Bei +1 gibt es keine Einschränkung. Wirkt innerhalb von fünf Sekunden.",
                   "tr":"Botun Kutsama veya Ejderha Tanrısı parşömeniyle yükselttiği en düşük artı. +7'de parşömen yalnızca +7, +8 ve +9 yükseltmelerinde kullanılır; daha düşük her yükseltmeyi bot demircide parşömensiz yapar, parşömeni olmayan bir oyuncu gibi - yani eşya yanabilir. +1'de kısıtlama yoktur. Beş saniye içinde uygulanır."},
+ "ai_gdropper":  {"en":"Guild materials droppers: new draw every","pl":"Dropki surowców: nowe losowanie co"},
+ "ai_gdropper_help":{"en":"Hours of a character's own play time after which it is drawn again for the guild materials dropper (Kamień Węgielny, Pień, Dykta). The number of droppers stays as it was; only who farms changes, so the same character does not stay a dropper for good. 0 = the old rule, the same bots for good. Applies within a minute.",
+                  "pl":"Po ilu godzinach własnego czasu gry postaci bot jest losowany na dropka surowców gildii (Kamień Węgielny, Pień, Dykta) od nowa. Liczba dropków zostaje taka sama, zmienia się tylko, kto farmi - ta sama postać nie zostaje dropkiem na zawsze. 0 = stara zasada, na zawsze te same boty. Działa w ciągu minuty."},
+ "ai_gdropper_off":{"en":"fixed (old rule)","pl":"na stałe (stara zasada)"},
  "ai_scroll_off":{"en":"no restriction","pl":"bez ograniczenia","de":"keine Einschränkung","tr":"kısıtlama yok"},
  "ai_scroll_top":{"en":"only the upgrade to +9","pl":"tylko ulepszenie na +9","de":"nur die Verbesserung auf +9","tr":"yalnızca +9 yükseltmesi"},
  "ai_chest":     {"en":"Moonlight Treasure Chests","pl":"Szkatułki Księżycowe","de":"Mondschein-Schatztruhen","tr":"Ay Işığı Sandıkları"},
@@ -8128,6 +8143,16 @@ TPL_AI = BASE.replace("__BODY__", """
          oninput="document.getElementById('v_SCROLL_FROM').textContent='+'+this.value">
   <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
     <span>+1 — {{t('ai_scroll_off')}}</span><span>+9 — {{t('ai_scroll_top')}}</span>
+  </div>
+</div>
+<div style="margin-bottom:18px">
+  <h3 style="margin:0 0 2px">🪵 {{t('ai_gdropper')}}
+      <span class="badge" id="v_GUILD_DROPPER_HOURS">{{cur.get('GUILD_DROPPER_HOURS', 24)}} h</span></h3>
+  <p class="muted" style="margin:0 0 6px">{{t('ai_gdropper_help')}}</p>
+  <input type="range" name="GUILD_DROPPER_HOURS" id="s_GUILD_DROPPER_HOURS" min="0" max="168" step="1" value="{{cur.get('GUILD_DROPPER_HOURS', 24)}}" style="width:100%"
+         oninput="document.getElementById('v_GUILD_DROPPER_HOURS').textContent=this.value+' h'">
+  <div class="muted" style="display:flex;justify-content:space-between;font-size:12px">
+    <span>0 — {{t('ai_gdropper_off')}}</span><span>168 h</span>
   </div>
 </div>
 <div style="margin-bottom:18px">
@@ -20151,6 +20176,11 @@ def ai_weights():
             vals["SCROLL_FROM"] = max(1, min(9, int(request.form.get("SCROLL_FROM", 1))))
         except (TypeError, ValueError):
             vals["SCROLL_FROM"] = 1
+        # MT2009_PLUS_BOT_DROPPER_ROTATION_V1
+        try:
+            vals["GUILD_DROPPER_HOURS"] = max(0, min(720, int(request.form.get("GUILD_DROPPER_HOURS", old.get("GUILD_DROPPER_HOURS", 24)))))
+        except (TypeError, ValueError):
+            vals["GUILD_DROPPER_HOURS"] = old.get("GUILD_DROPPER_HOURS", 24)
         try:
             vals["WAR_MINUTES"] = 15 if int(request.form.get("WAR_MINUTES", 30)) <= 15 else 30
         except (TypeError, ValueError):

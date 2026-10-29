@@ -7606,6 +7606,15 @@ namespace
 		s_mapPlayerBotDropperShopUntil[dwPID] = dwNow + PLAYERBOT_DROPPER_SHOP_WINDOW_MS;
 	}
 
+	// MT2009_PLUS_BOT_DROPPER_GEAR_V2: a gear pick made in the window keeps it
+	// open for the walk to its stand.
+	void ExtendPlayerBotDropperShopping(DWORD dwPID, DWORD dwNow, DWORD dwFor)
+	{
+		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotDropperShopUntil.find(dwPID);
+		if (it != s_mapPlayerBotDropperShopUntil.end() && (int)(it->second - (dwNow + dwFor)) < 0)
+			it->second = dwNow + dwFor;
+	}
+
 	bool IsPlayerBotDropperShopping(DWORD dwPID, DWORD dwNow)
 	{
 		std::map<DWORD, DWORD>::iterator it = s_mapPlayerBotDropperShopUntil.find(dwPID);
