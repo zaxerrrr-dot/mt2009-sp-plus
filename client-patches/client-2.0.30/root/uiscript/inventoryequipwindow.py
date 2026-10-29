@@ -126,7 +126,7 @@ window = {
 
 			"children" :
 			(
-				# the page tabs: I / II = Druga strona ekwipunku (uiaddeq.py); III / IV stay hidden (two pages on the server)
+				# the page tabs I-IV = the equipment pages (uiaddeq.py; MT2009_PLUS_ADDEQ_V2: a tab per unlocked page)
 				PageTab(0, "I"),
 				PageTab(1, "II"),
 				PageTab(2, "III"),

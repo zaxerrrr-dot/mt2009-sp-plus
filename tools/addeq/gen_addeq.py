@@ -23,11 +23,12 @@ ITEM_USE, USE_SPECIAL = 3, 10
 ANTI_DROP, ANTI_GIVE, ANTI_PKDROP, ANTI_MYSHOP, ANTI_SAFEBOX = 1 << 7, 1 << 13, 1 << 14, 1 << 16, 1 << 17
 FLAG_STACKABLE, FLAG_CONFIRM_WHEN_USE = 1 << 2, 1 << 9
 
-DESC = (u'Odblokowuje drugą stronę ekwipunku: dwa zestawy przedmiotów (zbroja, hełm, buty, '
-        u'bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmieniane jednym '
-        u'kliknięciem - zakładki I / II w oknie ekwipunku albo umiejętność '
+# MT2009_PLUS_ADDEQ_V2: each use the next page (II, III, IV)
+DESC = (u'Odblokowuje kolejną stronę ekwipunku (II, potem III i IV): do czterech zestawów '
+        u'przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) '
+        u'zmienianych jednym kliknięciem - zakładki I-IV w oknie ekwipunku albo umiejętność '
         u'„Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona '
-        u'strona; pierścienie, kostiumy i pas są wspólne. Raz na postać.')
+        u'strona; pierścienie, kostiumy i pas są wspólne. Jedno użycie - jedna strona, najwyżej trzy na postać.')
 
 ITEMS = [
     # vnum, English name (the package's item_names.txt), Polish name, stack, antiflag, flag, last sentence
@@ -43,8 +44,8 @@ ICON = 'icon/item/38306.tga'
 
 SKILL_VNUM = 200
 SKILL_NAME = u'Zmiana strony ekwipunku'
-SKILL_DESC = (u'Przełącza między pierwszą i drugą stroną ekwipunku. Bonusy daje tylko '
-              u'założona strona. Odblokowuje ją przedmiot Strona ekwipunku II.')
+SKILL_DESC = (u'Przełącza na kolejną odblokowaną stronę ekwipunku (I-IV). Bonusy daje tylko '
+              u'założona strona. Każdą kolejną stronę odblokowuje przedmiot Strona ekwipunku II.')
 
 
 def items():

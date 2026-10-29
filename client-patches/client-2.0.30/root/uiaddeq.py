@@ -5,18 +5,25 @@
 # it with the worn items of the paged slots - armour, helmet, shoes, bracelet, weapon,
 # necklace, earrings, arrows, shield, talisman, gloves (rings, costumes and the belt are
 # shared). The equipment window always shows the worn page, as before; here are only the
-# page tabs I / II (the inventory's hidden Equipment_Tab_01/02, moved into the title bar)
-# shown once the page is unlocked (item "Strona ekwipunku II", 38306 / 76055). The support
-# skill 200 "Zmiana strony ekwipunku" (playersettingmodule.py, uicharacter.py) switches as
-# well - with the exe that sends it (app.ENABLE_MT2009_ADDEQ).
+# page tabs (the inventory's hidden Equipment_Tab_01..), shown once a page is unlocked
+# (item "Strona ekwipunku II", 38306 / 76055). The support skill 200 "Zmiana strony
+# ekwipunku" (playersettingmodule.py, uicharacter.py) switches as well - with the exe that
+# sends it (app.ENABLE_MT2009_ADDEQ).
 #
-#   "/addeq hello"   after every load (game.py) -> "addeq_page <unlocked> <page>"
-#   "/addeq <0|1>"   a tab
+# MT2009_PLUS_ADDEQ_V2 - four pages (the owner, 29 October 2026): each use of the item
+# unlocks the next page (II, III, IV); "unlocked" is their number, 0..3 (V1's 1 = page II).
+# The v2 equipment window (inventoryv2.py) shows a tab per unlocked page, I-IV; the old
+# one-window inventory has two tabs only (I / II) - pages III / IV there by the skill 200,
+# which goes to the next unlocked page.
+#
+#   "/addeq hello"   after every load (game.py) -> "addeq_page <unlocked 0..3> <page 0..3>"
+#   "/addeq <0..3>"  a tab
 # Texts CP1250.
 import net
 import app
 
-TEXT_TAB = ("Strona ekwipunku I", "Strona ekwipunku II")
+TEXT_TAB = ("Strona ekwipunku I", "Strona ekwipunku II", "Strona ekwipunku III", "Strona ekwipunku IV")
+PAGES = 4			# MT2009_PLUS_ADDEQ_V2
 TITLE_X_TABS = 92		# the title's centre with the tabs at its left (uiscript/inventorywindow.py: 71)
 TAB_X = (2, 34)
 TAB_Y = 1
@@ -51,6 +58,11 @@ def IsUnlocked():
 	return _state['unlocked'] != 0
 
 
+def GetUnlocked():
+	"""MT2009_PLUS_ADDEQ_V2: the extra pages unlocked, 0..3"""
+	return max(0, min(PAGES - 1, _state['unlocked']))
+
+
 def _OnTab(page):
 	if page != _state['page']:
 		net.SendChatPacket("/addeq %d" % page)
@@ -70,7 +82,14 @@ def BindInventory(wnd):
 		return
 	# MT2009_PLUS_INVENTORY_V2_V1: the v2 inventory's equipment window has the tabs in their own row (inventoryv2.py)
 	v2 = getattr(wnd, "wndEquipWindow", None) is not None
-	for i in xrange(2):
+	tabs = list(tabs[:2])
+	if v2:	# MT2009_PLUS_ADDEQ_V2: its tabs III / IV too (lent to the inventory's dictionary)
+		for i in xrange(2, PAGES):
+			tab = wnd.GetChild2("Equipment_Tab_%02d" % (i + 1))
+			if not tab:
+				break
+			tabs.append(tab)
+	for i in xrange(len(tabs)):
 		tab = tabs[i]
 		if not v2:
 			tab.SetParent(titleBar)
@@ -89,7 +108,7 @@ def Refresh():
 		return
 	try:
 		if getattr(wnd, "wndEquipWindow", None) is not None:	# MT2009_PLUS_INVENTORY_V2_V1
-			__import__("inventoryv2").RefreshPageTabs(wnd, IsUnlocked(), _state['page'])
+			__import__("inventoryv2").RefreshPageTabs(wnd, GetUnlocked(), _state['page'])	# MT2009_PLUS_ADDEQ_V2: a count
 			return
 		tabs = wnd.equipmentTab
 		titleName = wnd.GetChild("TitleName")
