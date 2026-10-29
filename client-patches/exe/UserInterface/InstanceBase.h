@@ -209,6 +209,11 @@ class CInstanceBase
 			DAMAGE_BLOCK	= (1<<3),
 			DAMAGE_PENETRATE= (1<<4),
 			DAMAGE_CRITICAL = (1<<5),
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+			// MT2009_PLUS_DAMAGE_PRINT_V1: server-patches/dmgprint sets them in the packet's flag byte (no packet change)
+			DAMAGE_ATTACKER_PC = (1<<6),	// the hit came from a player
+			DAMAGE_MISS	= (1<<7),	// a hit that did no damage
+#endif
 		};
 
 		enum
@@ -321,6 +326,13 @@ class CInstanceBase
 #endif
 #ifdef ENABLE_GLOVE_ELEC_ATTACK_BONUS
 			EFFECT_ELEC_ATTACK_HIT, // MT2009_PLUS_ELEC_GLOVE_V1: SE_ELEC_ATTACK_HIT (the gloves' 6/7 lightning)
+#endif
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+			// MT2009_PLUS_DAMAGE_PRINT_V1: the damage marks of Damage Print Improve (at the end: no id above moves)
+			EFFECT_DAMAGE_DODGE,
+			EFFECT_DAMAGE_BLOCK,
+			EFFECT_DAMAGE_PENETRATE,
+			EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE,
 #endif
 
 			EFFECT_NUM,
@@ -493,6 +505,12 @@ class CInstanceBase
 		void					SetAura(DWORD dwVnum);
 		DWORD					GetAura() const { return m_dwAuraVnum; }
 		static bool				RegisterAuraEffect(DWORD dwVnum, const char* c_szFileName);
+#endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+		// MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon's element effect (Mt2009WeaponElement.cpp); 0 takes it off
+		void					SetWeaponElement(DWORD dwType);
+		DWORD					GetWeaponElement() const { return m_dwWeaponElement; }
+		static bool				RegisterWeaponElementEffect(DWORD dwType, DWORD dwKind, const char* c_szFileName);
 #endif
 		void					AttachBox(bool isVisible);
 		void					SetBack(DWORD dwItem);
@@ -952,6 +970,12 @@ class CInstanceBase
 		DWORD	m_dwAuraVnum;
 		DWORD	m_dwAuraEffect;
 #endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+		void	__ClearWeaponElementEffect();	// MT2009_PLUS_WEAPON_ELEMENT_V1
+		void	__AttachWeaponElementEffect();	// after the weapon's refine effect (SetWeapon), again after SetRace
+		DWORD	m_dwWeaponElement;				// 0 none, 1 Blyskawica .. 6 Mrok
+		DWORD	m_dwWeaponElementEffect[2];		// right / left hand
+#endif
 
 	protected:
 		void __AttachSelectEffect();
@@ -1084,6 +1108,9 @@ class CInstanceBase
 			BYTE flag;
 			BOOL bSelf;
 			BOOL bTarget;
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+			bool bTargetIsPC; // MT2009_PLUS_DAMAGE_PRINT_V1
+#endif
 		};
 
 		typedef std::queue<SEffectDamage> CommandDamageQueue; // @fixme025 list to queue

@@ -225,6 +225,9 @@ void CPythonApplication::RenderGame()
 		m_pyBackground.EndEnvironment();
 
 		m_pyBackground.RenderAfterLensFlare();
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+		RenderDamageEffect(); // MT2009_PLUS_DAMAGE_PRINT_V1: the damage marks over everything of the world
+#endif
 
 		return;
 	}
@@ -287,6 +290,9 @@ void CPythonApplication::RenderGame()
 	m_pyBackground.EndEnvironment();
 	DWORD t17=ELTimer_GetMSec();
 	m_pyBackground.RenderAfterLensFlare();
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+	RenderDamageEffect(); // MT2009_PLUS_DAMAGE_PRINT_V1
+#endif
 	DWORD t18=ELTimer_GetMSec();
 	DWORD tEnd=ELTimer_GetMSec();
 
@@ -319,6 +325,20 @@ void CPythonApplication::RenderGame()
 
 	fflush(fp);
 }
+
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+// MT2009_PLUS_DAMAGE_PRINT_V1 (Damage Print Improve v26.0.5): the damage marks, called at the end of RenderGame (the package had
+// root's game.py call app.RenderDamageEffect after the name tails - here no root change is needed)
+void CPythonApplication::RenderDamageEffect()
+{
+	m_kEftMgr.UpdateDamageEffect();
+	if (m_kEftMgr.IsDamageEffectSetEmpty())
+		return;
+
+	m_pyGraphic.SetGameRenderState();
+	m_kEftMgr.RenderDamageEffect();
+}
+#endif
 
 void CPythonApplication::UpdateGame()
 {

@@ -11,6 +11,20 @@ import uiScriptLocale
 import app
 import eventManager
 import uiItemShop
+from _weakref import proxy
+
+# MT2009_PLUS_QUICKSLOT_IMPROVE_V1 (the ENABLE_QUICKSLOT_IMPROVE package): the expanded quick slot bar - the button left of the quick slots
+# shows the three other pages (4 x 8) over the taskbar (uiscript/expandedquickslot.py, quickslotstate.py). Needs the
+# exe's player.Request*GlobalQuickSlot (client-patches/exe, ENABLE_QUICKSLOT_IMPROVE); an older exe: no button.
+import quickslotState
+QUICKSLOT_IMPROVE = getattr(app, "ENABLE_QUICKSLOT_IMPROVE", 0) and hasattr(player, "RequestAddGlobalQuickSlot")
+QUICKSLOT_PER_LINE = getattr(player, "QUICKSLOT_COUNT_PER_LINE", 10)	# global index = page * 10 + slot (exe/server)
+QUICKSLOT_PAGES = 4
+QUICKSLOT_SHOWN = 8
+EXPANDED_QUICKSLOT_PATH = "d:/ymir work/ui/game/taskbar/expanded_quickslot_"
+TEXT_QUICKSLOT_EXPAND = getattr(localeInfo, "QUICKSLOT_EXPAND_BUTTON_TOOLTIP", "Rozwi\xf1: wszystkie paski szybkiego dost\xeapu (4 x 8)")
+TEXT_QUICKSLOT_SHRINK = getattr(localeInfo, "QUICKSLOT_SHRINK_BUTTON_TOOLTIP", "Zwi\xf1: tylko jeden pasek szybkiego dost\xeapu (1 x 8)")
+TEXT_QUICKSLOT_SWITCH = "Ustaw ten pasek jako aktywny (%d)"
 
 # MT2009_PLUS_YOHARA_EXE2_V1: the champion's experience bubble and its tooltip
 CONQUEROR_EXP_POINT = "d:/ymir work/ui/game/taskbar/mt2009_conqueror_exp_point.tga"
@@ -379,6 +393,11 @@ class TaskBar(ui.ScriptWindow):
 
 	def __init__(self):
 		#print "NEW TASKBAR  ----------------------------------------------------------------------------"
+		# MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the expanded quick slot bar (set before the window exists: Show / Hide below use them)
+		self.quickPageEvent = None
+		self.expandQuickSlotButton = None
+		self.expandedQuickSlot = None
+		self.expandedRows = []
 
 		ui.ScriptWindow.__init__(self, "TOP_MOST")
 
@@ -469,6 +488,11 @@ class TaskBar(ui.ScriptWindow):
 
 		mouseLeftButtonModeButton = self.GetChild("LeftMouseButton")
 		mouseRightButtonModeButton = self.GetChild("RightMouseButton")
+		if QUICKSLOT_IMPROVE:
+			# MT2009_PLUS_QUICKSLOT_IMPROVE_V1: room for the expand button between the left mouse button and the quick slots
+			(leftX, leftY) = mouseLeftButtonModeButton.GetLocalPosition()
+			mouseLeftButtonModeButton.SetPosition(leftX - 10, leftY)
+			self.__LoadExpandedQuickSlot(pyScrLoader)
 		mouseLeftButtonModeButton.SetEvent(ui.__mem_func__(self.ToggleLeftMouseButtonModeWindow))
 		mouseRightButtonModeButton.SetEvent(ui.__mem_func__(self.ToggleRightMouseButtonModeWindow))
 		self.curMouseModeButton = [ mouseLeftButtonModeButton, mouseRightButtonModeButton ]
@@ -554,6 +578,224 @@ class TaskBar(ui.ScriptWindow):
 		self.RefreshStatus()
 		self.RefreshQuickSlot()
 
+	## MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the expanded quick slot bar
+	def SetQuickPageEvent(self, event):
+		# game.__SelectQuickPage: the page buttons and the rows' switch buttons go through the game window,
+		# which remembers the page (quickslotstate.py)
+		self.quickPageEvent = event
+
+	def __ChangeQuickPage(self, page):
+		if self.quickPageEvent:
+			self.quickPageEvent(page)
+		else:
+			player.SetQuickPage(page)
+
+	def __LoadExpandedQuickSlot(self, loader):
+		try:
+			button = ui.Button()
+			button.SetParent(self)
+			button.SetPosition(wndMgr.GetScreenWidth() / 2 - 104, 3)
+			button.SetUpVisual(EXPANDED_QUICKSLOT_PATH + "show_button_default.sub")
+			button.SetOverVisual(EXPANDED_QUICKSLOT_PATH + "show_button_over.sub")
+			button.SetDownVisual(EXPANDED_QUICKSLOT_PATH + "show_button_down.sub")
+			button.SetToolTipText(TEXT_QUICKSLOT_EXPAND)
+			button.SetEvent(ui.__mem_func__(self.ToggleExpandedQuickSlot))
+			button.Show()
+			self.expandQuickSlotButton = button
+
+			window = ui.ScriptWindow("TOP_MOST")
+			loader.LoadScriptFile(window, "UIScript/expandedquickslot.py")
+			window.SetPosition(wndMgr.GetScreenWidth() / 2 - 113, wndMgr.GetScreenHeight() - 159)
+			self.expandedQuickSlot = window
+		except:
+			import exception
+			exception.Abort("TaskBar.LoadWindow.ExpandedQuickSlot")
+
+		taskBar = proxy(self)
+		self.expandedRows = []
+		for page in xrange(QUICKSLOT_PAGES):
+			row = window.GetChild("quickslot_%d" % page)
+			switch = window.GetChild("switch_button_%d" % page)
+			switch.SetEvent(lambda page=page: taskBar.__ChangeQuickPage(page))
+			switch.SetToolTipText(TEXT_QUICKSLOT_SWITCH % (page + 1))
+			slots = (window.GetChild("expanded_quickslot_line_left_%d" % page),
+				window.GetChild("expanded_quickslot_line_right_%d" % page))
+			for slot in slots:
+				slot.SetSlotStyle(wndMgr.SLOT_STYLE_NONE)
+				slot.SetSelectEmptySlotEvent(lambda index, page=page: taskBar.__SelectExpandedSlot(page, index))
+				slot.SetSelectItemSlotEvent(lambda index, page=page: taskBar.__SelectExpandedSlot(page, index))
+				slot.SetUnselectItemSlotEvent(lambda index, page=page: taskBar.__UnselectExpandedSlot(page, index))
+				slot.SetOverInItemEvent(lambda index, page=page: taskBar.OverInGlobalItem(page * QUICKSLOT_PER_LINE + index))
+				slot.SetOverOutItemEvent(ui.__mem_func__(self.OverOutItem))
+			self.expandedRows.append((row, slots))
+		window.Hide()
+
+	def ApplyQuickSlotState(self):
+		# the button's look and the bar after a toggle or a character's saved state (game.Open)
+		if self.expandQuickSlotButton is None or self.expandedQuickSlot is None:
+			return
+		if quickslotState.IsExpanded():
+			self.expandQuickSlotButton.SetUpVisual(EXPANDED_QUICKSLOT_PATH + "hide_button_default.sub")
+			self.expandQuickSlotButton.SetOverVisual(EXPANDED_QUICKSLOT_PATH + "hide_button_over.sub")
+			self.expandQuickSlotButton.SetDownVisual(EXPANDED_QUICKSLOT_PATH + "hide_button_down.sub")
+			self.expandQuickSlotButton.SetToolTipText(TEXT_QUICKSLOT_SHRINK)
+			if self.IsShow():
+				self.expandedQuickSlot.Show()
+		else:
+			self.expandQuickSlotButton.SetUpVisual(EXPANDED_QUICKSLOT_PATH + "show_button_default.sub")
+			self.expandQuickSlotButton.SetOverVisual(EXPANDED_QUICKSLOT_PATH + "show_button_over.sub")
+			self.expandQuickSlotButton.SetDownVisual(EXPANDED_QUICKSLOT_PATH + "show_button_down.sub")
+			self.expandQuickSlotButton.SetToolTipText(TEXT_QUICKSLOT_EXPAND)
+			self.expandedQuickSlot.Hide()
+		self.RefreshQuickSlot()
+
+	def ToggleExpandedQuickSlot(self):
+		quickslotState.SetExpanded(not quickslotState.IsExpanded())
+		self.ApplyQuickSlotState()
+
+	def Show(self):
+		ui.ScriptWindow.Show(self)
+		if self.expandedQuickSlot is not None and quickslotState.IsExpanded():
+			self.expandedQuickSlot.Show()
+
+	def Hide(self):
+		if self.expandedQuickSlot is not None:
+			self.expandedQuickSlot.Hide()
+		ui.ScriptWindow.Hide(self)
+
+	def __RefreshExpandedQuickSlot(self):
+		if self.expandedQuickSlot is None or not quickslotState.IsExpanded():
+			return
+		currentPage = player.GetQuickPage()
+		if currentPage:
+			# page 1's row takes the place of the active page's row (that one is the taskbar itself)
+			self.expandedRows[0][0].SetPosition(9, 125 - 39 * currentPage)
+		for page, (row, slots) in enumerate(self.expandedRows):
+			if page == currentPage:
+				row.Hide()
+				continue
+			row.Show()
+			for side, slot in enumerate(slots):
+				for index in xrange(side * 4, side * 4 + 4):
+					(Type, Position) = player.GetGlobalQuickSlot(page * QUICKSLOT_PER_LINE + index)
+					self.__RefreshQuickSlotCell(slot, index, Type, Position)
+				slot.RefreshSlot()
+
+	def __RefreshQuickSlotCell(self, slot, index, Type, Position):
+		# one cell as RefreshQuickSlot draws the taskbar's own
+		if player.SLOT_TYPE_INVENTORY == Type:
+			itemIndex = player.GetItemIndex(Position)
+			itemCount = player.GetItemCount(Position)
+			if itemCount <= 1:
+				itemCount = 0
+			if constInfo.IS_AUTO_POTION(itemIndex):
+				metinSocket = [player.GetItemMetinSocket(Position, j) for j in xrange(player.METIN_SOCKET_MAX_NUM)]
+				if 0 != int(metinSocket[0]):
+					slot.ActivateSlot(index)
+				else:
+					slot.DeactivateSlot(index)
+			slot.SetItemSlot(index, itemIndex, itemCount)
+
+		elif player.SLOT_TYPE_SKILL == Type:
+			skillIndex = player.GetSkillIndex(Position)
+			if 0 == skillIndex:
+				slot.ClearSlot(index)
+				return
+			if skill.SKILL_TYPE_GUILD == skill.GetSkillType(skillIndex):
+				import guild
+				skillGrade = 0
+				skillLevel = guild.GetSkillLevel(Position)
+			else:
+				skillGrade = player.GetSkillGrade(Position)
+				skillLevel = player.GetSkillLevel(Position)
+			slot.SetSkillSlotNew(index, skillIndex, skillGrade, skillLevel)
+			slot.SetSlotCountNew(index, skillGrade, skillLevel)
+			slot.SetCoverButton(index)
+			if player.IsSkillCoolTime(Position):
+				(coolTime, elapsedTime) = player.GetSkillCoolTime(Position)
+				slot.SetSlotCoolTime(index, coolTime, elapsedTime)
+			if player.IsSkillActive(Position):
+				slot.ActivateSlot(index)
+
+		elif player.SLOT_TYPE_EMOTION == Type:
+			slot.SetEmotionSlot(index, Position)
+			slot.SetCoverButton(index)
+			slot.SetSlotCount(index, 0)
+
+		else:
+			slot.ClearSlot(index)
+
+	def __AddExpandedQuickSlot(self, page, index):
+		if not 0 <= page < QUICKSLOT_PAGES or not 0 <= index < QUICKSLOT_SHOWN:
+			return
+		globalIndex = page * QUICKSLOT_PER_LINE + index
+		attachedType = mouseModule.mouseController.GetAttachedType()
+		attachedSlot = mouseModule.mouseController.GetAttachedSlotNumber()
+		attachedItem = mouseModule.mouseController.GetAttachedItemIndex()
+		if player.SLOT_TYPE_QUICK_SLOT == attachedType:
+			player.RequestMoveGlobalQuickSlot(attachedSlot, globalIndex)
+		elif player.SLOT_TYPE_EMOTION == attachedType:
+			player.RequestAddGlobalQuickSlot(globalIndex, attachedType, attachedItem)
+		elif self.canAddQuickSlot(attachedType, attachedSlot):
+			player.RequestAddGlobalQuickSlot(globalIndex, attachedType, attachedSlot)
+		mouseModule.mouseController.DeattachObject()
+		self.RefreshQuickSlot()
+
+	def __SelectExpandedSlot(self, page, index):
+		if mouseModule.mouseController.isAttached():
+			self.__AddExpandedQuickSlot(page, index)
+			return
+		(Type, Position) = player.GetGlobalQuickSlot(page * QUICKSLOT_PER_LINE + index)
+		if player.SLOT_TYPE_NONE != Type:
+			globalIndex = page * QUICKSLOT_PER_LINE + index
+			mouseModule.mouseController.AttachObject(self, player.SLOT_TYPE_QUICK_SLOT, globalIndex, globalIndex)
+
+	def __UnselectExpandedSlot(self, page, index):
+		if mouseModule.mouseController.isAttached():
+			mouseModule.mouseController.DeattachObject()
+		else:
+			player.RequestUseGlobalQuickSlot(page * QUICKSLOT_PER_LINE + index)
+
+	def __UpdateExpandedSkill(self, skillPosition, action, coolTime=0):
+		# the skill's cool time / active state in the expanded rows (the taskbar's own are done below)
+		if self.expandedQuickSlot is None or not quickslotState.IsExpanded():
+			return
+		currentPage = player.GetQuickPage()
+		for page, (row, slots) in enumerate(self.expandedRows):
+			if page == currentPage:
+				continue
+			for side, slot in enumerate(slots):
+				for index in xrange(side * 4, side * 4 + 4):
+					(Type, Position) = player.GetGlobalQuickSlot(page * QUICKSLOT_PER_LINE + index)
+					if Type != player.SLOT_TYPE_SKILL or Position != skillPosition:
+						continue
+					if action == "cool":
+						slot.SetSlotCoolTime(index, coolTime)
+					elif action == "activate":
+						slot.ActivateSlot(index)
+					else:
+						slot.DeactivateSlot(index)
+
+	def OverInGlobalItem(self, globalIndex):
+		if mouseModule.mouseController.isAttached():
+			return
+		(Type, Position) = player.GetGlobalQuickSlot(globalIndex)
+		if player.SLOT_TYPE_INVENTORY == Type:
+			self.tooltipItem.SetInventoryItem(Position)
+			self.tooltipSkill.HideToolTip()
+		elif player.SLOT_TYPE_SKILL == Type:
+			skillIndex = player.GetSkillIndex(Position)
+			if skill.SKILL_TYPE_GUILD == skill.GetSkillType(skillIndex):
+				import guild
+				skillGrade = 0
+				skillLevel = guild.GetSkillLevel(Position)
+			else:
+				skillGrade = player.GetSkillGrade(Position)
+				skillLevel = player.GetSkillLevel(Position)
+			self.tooltipSkill.SetSkillNew(Position, skillIndex, skillGrade, skillLevel)
+			self.tooltipItem.HideToolTip()
+	## END_OF_MT2009_PLUS_QUICKSLOT_IMPROVE_V1
+
 	def __RampageGauge_OverIn(self):
 		self.rampageGauge1.Hide()
 
@@ -592,6 +834,15 @@ class TaskBar(ui.ScriptWindow):
 	def Destroy(self):
 		SaveMouseButtonSettings()
 
+		# MT2009_PLUS_QUICKSLOT_IMPROVE_V1
+		if self.expandedQuickSlot is not None:
+			self.expandedQuickSlot.Hide()
+			self.expandedQuickSlot.ClearDictionary()
+		self.expandedQuickSlot = None
+		self.expandQuickSlotButton = None
+		self.expandedRows = []
+		self.quickPageEvent = None
+
 		self.ClearDictionary()
 		if self.mouseModeButtonList:
 			self.mouseModeButtonList[0].ClearDictionary()
@@ -629,9 +880,15 @@ class TaskBar(ui.ScriptWindow):
 		self.mouseImage = None
 
 	def __OnClickQuickPageUpButton(self):
+		if QUICKSLOT_IMPROVE: # MT2009_PLUS_QUICKSLOT_IMPROVE_V1: through the game window (remembered page)
+			self.__ChangeQuickPage((player.GetQuickPage() - 1) % QUICKSLOT_PAGES)
+			return
 		player.SetQuickPage(player.GetQuickPage()-1)
 
 	def __OnClickQuickPageDownButton(self):
+		if QUICKSLOT_IMPROVE: # MT2009_PLUS_QUICKSLOT_IMPROVE_V1
+			self.__ChangeQuickPage((player.GetQuickPage() + 1) % QUICKSLOT_PAGES)
+			return
 		player.SetQuickPage(player.GetQuickPage()+1)
 
 	def SetToggleButtonEvent(self, eButton, kEventFunc):
@@ -878,6 +1135,8 @@ class TaskBar(ui.ScriptWindow):
 			slot.RefreshSlot()
 			startNumber += slot.x_width
 
+		self.__RefreshExpandedQuickSlot() # MT2009_PLUS_QUICKSLOT_IMPROVE_V1
+
 	def canAddQuickSlot(self, Type, slotNumber):
 
 		if player.SLOT_TYPE_INVENTORY == Type:
@@ -933,6 +1192,7 @@ class TaskBar(ui.ScriptWindow):
 
 
 	def OnUseSkill(self, usedSlotIndex, coolTime):
+		self.__UpdateExpandedSkill(usedSlotIndex, "cool", coolTime) # MT2009_PLUS_QUICKSLOT_IMPROVE_V1
 
 		slotIndex = 0
 
@@ -955,6 +1215,7 @@ class TaskBar(ui.ScriptWindow):
 				slotIndex += 1
 
 	def OnActivateSkill(self, usedSlotIndex):
+		self.__UpdateExpandedSkill(usedSlotIndex, "activate") # MT2009_PLUS_QUICKSLOT_IMPROVE_V1
 		slotIndex = 0
 
 		## Current Skill Button
@@ -976,6 +1237,7 @@ class TaskBar(ui.ScriptWindow):
 				slotIndex += 1
 
 	def OnDeactivateSkill(self, usedSlotIndex):
+		self.__UpdateExpandedSkill(usedSlotIndex, "deactivate") # MT2009_PLUS_QUICKSLOT_IMPROVE_V1
 		slotIndex = 0
 
 		## Current Skill Button

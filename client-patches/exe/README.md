@@ -844,3 +844,84 @@ przenumerowany `EWearPositions` **nie** są przeniesione.
 
 Bez nowego exe: zakładki I / II w oknie ekwipunku działają (komenda `/addeq`), umiejętności 200 w oknie postaci nie ma.
 Sprawdzone `clang-cl /Zs` obu plików `.cpp` na kopii źródeł z całą nakładką (29.10.2026).
+
+## Damage Print Improve – `MT2009_PLUS_DAMAGE_PRINT_V1` (`ENABLE_DAMAGE_PRINT_IMPROVE`)
+
+Paczka „Damage Print Improve v26.0.5” (serwer: `server-patches/dmgprint`, paczka klienta `dmgprint` –
+`client-2.0.30/tools/dmgprint`). Liczby obrażeń niżej na postaci, nad całym światem (bez testu głębokości), do 11 cyfr,
+ikona krytyka / przebicia / obu przy potworze, znaki unik / blok / pudło na graczu, efekty z nowego folderu
+`d:/ymir work/effect/affect/damagevalue2/` (stary exe czyta dalej `damagevalue/`). **Bez zmiany pakietu** (paczka
+dokładała `dwAttackerVID`): „czy bił gracz” i „pudło” to bity 6/7 we fladze `TPacketGCDamageInfo`.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_DAMAGE_PRINT_IMPROVE` |
+| `EffectLib/EffectManager.cpp/.h` (**nowe w nakładce**) | `CreateDamageEffect` / `SetSingleParticleTexture` / `UpdateDamageEffect` / `RenderDamageEffect` – osobny `std::set` instancji (Z wyłączone przy rysowaniu); w odróżnieniu od paczki nowa instancja nie zostaje „wybraną” (wisiałby wskaźnik po jej usunięciu), zbiór czyszczony przed danymi efektów (`Destroy`) i w `DeleteAllInstances` |
+| `EffectLib/ParticleProperty.cpp/.h`, `ParticleSystemData.cpp`, `ParticleSystemInstance.h` (**nowe w nakładce**) | token `EnableFrustum` w .mse; **brak tokenu = TRUE** (stary test frustum dla wszystkich innych efektów – paczka go wyłączała wszystkim); `EnableFrustum 0` mają znaki unik/blok/pudło/krytyk |
+| `UserInterface/InstanceBase.h` | `DAMAGE_ATTACKER_PC` (1<<6), `DAMAGE_MISS` (1<<7); `EFFECT_DAMAGE_DODGE/BLOCK/PENETRATE/MIX_CRITICAL_PENETRATE` na końcu enum (przed `EFFECT_NUM` – żaden numer się nie przesuwa); `SEffectDamage::bTargetIsPC` |
+| `UserInterface/InstanceBaseEffect.cpp` | nowe `ProcessDamage` (paczki) z naszą opcją „Pokazuj obrażenia” (brak / tylko cel / wszystkie) i limitem kolejki; `AddDamageEffect` zapisuje `IsPC()` celu |
+| `UserInterface/PythonApplication.cpp/.h` | `RenderDamageEffect()` na końcu `RenderGame` (paczka wołała `app.RenderDamageEffect` z `game.py` po nazwach – tu root bez zmian, `PythonTextTail.cpp` bez zmian) |
+| `UserInterface/PythonPlayerSettingsModule.cpp` | efekty obrażeń z `damagevalue2/` (+ krytyk, unik, blok, przebicie, krytyk+przebicie) |
+| `UserInterface/PythonCharacterManagerModule.cpp` | `chrmgr.EFFECT_DAMAGE_DODGE/BLOCK/PENETRATE/MIX_CRITICAL_PENETRATE` |
+| `UserInterface/PythonApplicationModule.cpp` | `app.ENABLE_DAMAGE_PRINT_IMPROVE` (1/0) |
+
+`PythonNetworkStreamPhaseGame.cpp` i `Packet.h` bez zmian. Sprawdzone `clang-cl /Zs` (EffectLib: EffectManager,
+ParticleProperty, ParticleSystemData, ParticleSystemInstance, EffectInstance; UserInterface: InstanceBaseEffect,
+InstanceBase, PythonApplication, PythonApplicationModule, PythonCharacterManagerModule, PythonPlayerSettingsModule,
+PythonNetworkStreamPhaseGame) na kopii `exe-src8` z całą nakładką (29.10.2026).
+
+## Rozszerzony pasek szybkich slotów – `MT2009_PLUS_QUICKSLOT_IMPROVE_V1` (`ENABLE_QUICKSLOT_IMPROVE`)
+
+Paczka „ENABLE_QUICKSLOT_IMPROVE”: przycisk obok slotów rozwija nad paskiem pozostałe 3 strony (4 x 8). Root:
+`uitaskbar.py`, `quickslotstate.py` (nowy), `uiscript/expandedquickslot.py` (nowy), `game.py`, `interfacemodule.py`;
+obrazki są już w paczce `etc` (`client-2.0.30/tools/quickslot2/verify_quickslot2.py`). Serwer / db bez zmian
+(40 slotów = 4 strony x 10 po obu stronach; globalny indeks = strona * 10 + slot, paczka liczyła * 8).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `#define ENABLE_QUICKSLOT_IMPROVE` |
+| `UserInterface/PythonPlayer.cpp/.h` | `RequestAddGlobalQuickSlot` / `RequestMoveGlobalQuickSlot` / `RequestUseGlobalQuickSlot` (te same pakiety co lokalne; pozycja przedmiotu jako WORD, bez limitu 255 z paczki) |
+| `UserInterface/PythonPlayerModule.cpp` | `player.RequestAddGlobalQuickSlot/RequestMoveGlobalQuickSlot/RequestUseGlobalQuickSlot`, `player.QUICKSLOT_COUNT_PER_LINE` (10), `player.QUICKSLOT_PAGE_COUNT` (4) |
+| `UserInterface/PythonApplicationModule.cpp` | `app.ENABLE_QUICKSLOT_IMPROVE` (1/0) |
+
+Z paczki **nie** przeniesione: `player.IsQuickSlotExpanded/SetQuickSlotExpanded` (stan trzyma `quickslotstate.py`) i
+`app.AtomicWriteFile` (zwykły zapis pliku `quickslot/<postać>.cfg`). Stary exe: root nie pokazuje przycisku.
+Sprawdzone `clang-cl /Zs` `PythonPlayer.cpp`, `PythonPlayerModule.cpp`, `PythonApplicationModule.cpp` (29.10.2026).
+## Nawigacja Auto Łowów – `MT2009_PLUS_NAVGRID_V1` (`ENABLE_MT2009_NAVGRID`)
+
+Na bazie Path-Finder V1.0 – autor: @coanitoa97, poradnik: Kolen (analiza: `cache/yohara/pathfinder-analiza.md`).
+Siatka mapy `maps/<mapa>/navgrid.bin` z paczki `navgrid` (generator `client-2.0.30/tools/navgrid`), komórka 1 m =
+100 jednostek (rozdzielczość attr klienta). Bez paczki/siatki dla mapy: Auto Łowy chodzą jak dotąd.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_NAVGRID` |
+| `UserInterface/NavGrid.cpp/.h` | **nowe**: wczytanie siatki raz na mapę (brak = zapamiętany, bez ponownych prób i bez wpisów w syserr), A* w oknie wokół startu i celu (+48 komórek, potem +160, bok ≤ 400), pamięć robocza wielokrotnego użytku (znacznik pokolenia zamiast memset), limit węzłów 60000, składowe 4-spójne = ta sama reguła narożników co A* (odpowiedź „nieosiągalny” w O(1)), kara przy ścianie liczona raz przy wczytaniu, blokady tymczasowe jako warstwa bitowa, wygładzanie tylko do przodu (O(n)), punkty w środkach komórek |
+| `UserInterface/PythonBackgroundModule.cpp` | **nowy w nakładce**: `background.IsNavReady()`, `FindPath(sx,sy,dx,dy[,maxNodes])` → `[(x,y),...]`, `NavReach(sx,sy,dx,dy)` → 1/0/-1, `IsNavWalkable(x,y)`, `NavBlock(x,y,r)`, `NavBlockClear()` – wszystko w lokalnych pikselach mapy (jak `player.GetMainCharacterPosition`) |
+| `UserInterface/UserInterface.vcxproj(.filters)` | `NavGrid.cpp`, `NavGrid.h` |
+
+Format pliku: nagłówek „PXNV” wersja 4 (40 bajtów: pola wersji 3 pakietu + CRC32 plików mapy + wersja generatora),
+bity przejścia (1 bit/komórkę), opcjonalnie klasy terenu (2 bity/komórkę). Wersja 3 pakietu też jest czytana.
+Root: `uiautohunt.py` (`MT2009_PLUS_AUTOHUNT_NAVGRID_V1`) sprawdza `hasattr(background, 'FindPath')` – stary exe = stare
+zachowanie. Sprawdzone `clang-cl /Zs` (`NavGrid.cpp`, `PythonBackgroundModule.cpp`) na kopii `exe-src8` z całą nakładką
+(29.10.2026).
+## Zaczarowanie Żywiołu Broni – efekt na broni – `MT2009_PLUS_WEAPON_ELEMENT_V1` (`ENABLE_MT2009_WEAPON_ELEMENT`)
+
+Na bazie paczki „[System] Elemental Spell” (WorldArd), przepisane na wzór Szaty Aury: bez nowych pakietów i bez zmian
+w strukturach przedmiotów. Serwer (`server-patches/zywiolbroni`) wysyła komendę czatu `WELEMFX <vid> <typ>` (0 brak,
+1 Błyskawica, 2 Ogień, 3 Lód, 4 Wiatr, 5 Ziemia, 6 Mrok) przy wejściu postaci w widok i przy zmianie broni/żywiołu – tylko
+dla zaczarowania +3 na broni z „gwiazdkami” (reguły wiki i transmutacji liczy serwer). Root `welemfx.py` rejestruje
+efekty i woła `chrmgr.SetWeaponElement`; stare exe nie ma tej funkcji – nic się nie dzieje.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_WEAPON_ELEMENT` (wymaga `ENABLE_MT2009_AURA`) |
+| `UserInterface/Mt2009WeaponElement.cpp` (**nowy**) | `chrmgr.RegisterWeaponElementEffect(typ, rodzaj, plik)`, `chrmgr.SetWeaponElement(vid, typ)`, `chrmgr.GetWeaponElement(vid)`; rodzaje: 0 miecz/dwuręczna, 1 wachlarz (`_f`), 2 łuk (`_b`, lewa ręka), 3 sztylety (obie ręce)/dzwon (`_s`), 4 szpony (obie ręce, `_w`) – jak efekty ulepszenia `sword_7*.mse`; strzała/kołczan nigdy (błąd paczki: strzała dostawała efekt sztyletu) |
+| `UserInterface/InstanceBase.h/.cpp` | `m_dwWeaponElement`, `m_dwWeaponElementEffect[2]`; `SetWeapon` po `__GetRefinedEffect` dokłada efekt żywiołu tylko, gdy broń ma właśnie efekt ulepszenia (kostium broni, polimorfia, strój zwierzęcy, niewidzialność – brak); `ChangeArmor` zeruje uchwyty po `SetRace` (SetWeapon dokłada je znowu); `__Initialize` |
+| `UserInterface/NetworkActorManager.h/.cpp` | `SNetworkActorData::m_dwWeaponElement` + `SetActorWeaponElement` – nowa instancja aktora (wejście w widok, koń, zmiana kształtu) dostaje żywioł z powrotem |
+| `UserInterface/PythonCharacterManagerModule.cpp` | trzy funkcje `chrmgr` |
+| `UserInterface/UserInterface.vcxproj(.filters)` | `Mt2009WeaponElement.cpp` |
+
+Pliki efektów (GF 26.1.11, pakuje `client-2.0.30/tools/zywiolbroni`): `d:/ymir work/pc/common/effect/sword/element0{1..6}_{electric,fire,ice,wind,daeji,dark}{,_f,_b,_s,_w}.mse`.
+Sprawdzone `clang-cl /Zs` (exe-src8 + cała nakładka + `clang-cl-compat.patch`): `Mt2009WeaponElement.cpp`, `InstanceBase.cpp`,
+`NetworkActorManager.cpp`, `PythonCharacterManagerModule.cpp`, `Mt2009Aura.cpp` (29.10.2026).

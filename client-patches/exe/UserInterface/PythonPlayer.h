@@ -318,6 +318,12 @@ class CPythonPlayer : public CSingleton<CPythonPlayer>, public IAbstractPlayer
 		void	RequestMoveGlobalQuickSlotToLocalQuickSlot(DWORD dwGlobalSrcSlotIndex, DWORD dwLocalDstSlotIndex);
 		void	RequestDeleteGlobalQuickSlot(DWORD dwGlobalSlotIndex);
 		void	RequestUseLocalQuickSlot(DWORD dwLocalSlotIndex);
+#ifdef ENABLE_QUICKSLOT_IMPROVE
+		// MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the expanded quick slot bar works on any page, by global index (page * QUICKSLOT_MAX_COUNT_PER_LINE + slot)
+		void	RequestAddGlobalQuickSlot(DWORD dwGlobalSlotIndex, DWORD dwWndType, DWORD dwWndItemPos);
+		void	RequestMoveGlobalQuickSlot(DWORD dwGlobalSrcSlotIndex, DWORD dwGlobalDstSlotIndex);
+		void	RequestUseGlobalQuickSlot(DWORD dwGlobalSlotIndex);
+#endif
 		DWORD	LocalQuickSlotIndexToGlobalQuickSlotIndex(DWORD dwLocalSlotIndex);
 
 		void	GetGlobalQuickSlotData(DWORD dwGlobalSlotIndex, DWORD* pdwWndType, DWORD* pdwWndItemPos);

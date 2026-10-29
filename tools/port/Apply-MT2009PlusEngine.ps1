@@ -144,6 +144,9 @@ param(
 #                      (POINT_GLOVE_LIGHTNING, playerbot_bonus67.cpp) (MT2009_PLUS_ELEC_GLOVE_V1; server-patches/elecglove)
 #   Wezowy Czepiec item.cpp - the level-120 helmet's one random second bonus (12880-12895, the serpent gear's yextra
 #                      line of server-patches/ysets: kind 2, one line) (MT2009_PLUS_SERPENT_HOOD_V1; server-patches/czepiec)
+#   Bonus Reliktu      char.h, char.cpp, char_item.cpp, item.cpp, char_battle.cpp, char_skill.cpp, item_manager.cpp,
+#                      cmd.cpp - the relic pages, their hooks and "/relikt" (MT2009_PLUS_RELIC_V1; server-patches/relikty,
+#                      after dmgprint, last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1787,6 +1790,19 @@ if ((Test-Path -LiteralPath $autoHuntPassApply -PathType Leaf) -and
     }
 }
 
+# Auto Lowy reachability (server-patches/autohuntreach, MT2009_PLUS_AUTOHUNT_REACH_V1; the owner, 29 October 2026): a
+# monster the hunter cannot walk to (another component of the bots' grid, only a grid already built) is never named
+# (cmd_general.cpp, Mt2009PlusOffer of enginefixes' TRUE_NEAREST).
+$autoHuntReachApply = Join-Path $repo 'server-patches/autohuntreach/Apply-AutoHuntReachPatch.ps1'
+if ((Test-Path -LiteralPath $autoHuntReachApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'cmd_general.cpp') -PathType Leaf)) {
+    $autoHuntReachResult = & $autoHuntReachApply -SourceDir $engineGameSource
+    if ($autoHuntReachResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Auto Lowy reachability edit(s).' -f $autoHuntReachResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 # Kupon SM (100) from the Metin / boss coupon roll (server-patches/kupon100, MT2009_PLUS_DROP_COUPON_100_V1; the owner,
 # 28 October 2026): 80014 in place of 80017 in the drop, the auto hunt's pick-up list, the preview and the drop wiki.
 # Last: it anchors on raremobrules', playerqol's and dropwiki's 80017 lines.
@@ -1940,6 +1956,60 @@ if ((Test-Path -LiteralPath $superstoneApply -PathType Leaf) -and
     if ($superstoneResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} Super Kamienie edit(s).' -f $superstoneResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Odnowione okno misji (server-patches/questren, MT2009_PLUS_QUEST_RENEWAL_V1; QUEST_RENEWAL, Autor: Owsap): the quest
+# categories as "QuestCategory" command lines at the login (input_login.cpp after ChampionOnLogin) - the logic is
+# playerbot_quest_renewal.cpp from the overlay's game sources. No packet change.
+$questRenApply = Join-Path $repo 'server-patches/questren/Apply-QuestRenPatch.ps1'
+if ((Test-Path -LiteralPath $questRenApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_login.cpp') -PathType Leaf)) {
+    $questRenResult = & $questRenApply -SourceDir $engineGameSource
+    if ($questRenResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} quest window edit(s).' -f $questRenResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Damage Print Improve (server-patches/dmgprint, MT2009_PLUS_DAMAGE_PRINT_V1; Yohara 3.x): DAMAGE_ATTACKER_PC /
+# DAMAGE_MISS in char.h and the damage packet's flag byte (char_battle.cpp) - no packet change. After superstone.
+$dmgprintApply = Join-Path $repo 'server-patches/dmgprint/Apply-DmgPrintPatch.ps1'
+if ((Test-Path -LiteralPath $dmgprintApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $dmgprintResult = & $dmgprintApply -SourceDir $engineGameSource
+    if ($dmgprintResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Damage Print edit(s).' -f $dmgprintResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Zaczarowanie Zywiolu Broni (server-patches/zywiolbroni, MT2009_PLUS_WEAPON_ELEMENT_V1; the owner, 29 October 2026; based
+# on the "[System] Elemental Spell" package by WorldArd): the hooks of weapon_element.cpp (the overlay) in item_manager /
+# item_attribute / item / battle / char_item / char / input_login / safebox / exchange / shop / cmd. Anchors on ysets',
+# aura's and addeq's lines, so after them (last).
+$zywiolbroniApply = Join-Path $repo 'server-patches/zywiolbroni/Apply-ZywiolBroniPatch.ps1'
+if ((Test-Path -LiteralPath $zywiolbroniApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $zywiolbroniResult = & $zywiolbroniApply -SourceDir $engineGameSource
+    if ($zywiolbroniResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} weapon element edit(s).' -f $zywiolbroniResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Bonus Reliktu (server-patches/relikty, MT2009_PLUS_RELIC_V1; the "Official Passive Attr System" package, Best Studio;
+# the owner, 29 October 2026): the relic pages (char.h cells 436-437 of window INVENTORY after addeq's four-page store, never
+# sent), their SetItem / RemoveFromCharacter / ClearItem / flush / item update hooks, a relic used, the blows / death /
+# skill / boss drop / mount lines and "/relikt". Anchors on addeq's store and bonusy67's lines - after dmgprint (last). The
+# logic is playerbot_relikty.cpp.
+$reliktyApply = Join-Path $repo 'server-patches/relikty/Apply-ReliktyPatch.ps1'
+if ((Test-Path -LiteralPath $reliktyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.h') -PathType Leaf)) {
+    $reliktyResult = & $reliktyApply -SourceDir $engineGameSource
+    if ($reliktyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Bonus Reliktu edit(s).' -f $reliktyResult.Applied) -ForegroundColor DarkGray
     }
 }
 

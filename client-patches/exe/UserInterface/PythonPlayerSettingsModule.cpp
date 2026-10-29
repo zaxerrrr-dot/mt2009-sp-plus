@@ -67,6 +67,22 @@ const bool CPlayerSettingsModule::LoadInitData()
           {pkBase.EFFECT_STUN, "Bip01 Head", "d:/ymir work/effect/etc/stun/stun.mse"},
           {pkBase.EFFECT_CRITICAL, "Bip01 R Hand", "d:/ymir work/effect/hit/critical.mse"},
 
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+          // MT2009_PLUS_DAMAGE_PRINT_V1: Damage Print Improve's marks, a folder of their own (pack "dmgprint") - an old exe
+          // keeps reading damagevalue/ unchanged
+          {pkBase.EFFECT_DAMAGE_TARGET, "", "d:/ymir work/effect/affect/damagevalue2/target.mse"},
+          {pkBase.EFFECT_DAMAGE_NOT_TARGET, "", "d:/ymir work/effect/affect/damagevalue/nontarget.mse"},
+          {pkBase.EFFECT_DAMAGE_SELFDAMAGE, "", "d:/ymir work/effect/affect/damagevalue2/damage.mse"},
+          {pkBase.EFFECT_DAMAGE_SELFDAMAGE2, "", "d:/ymir work/effect/affect/damagevalue2/damage_1.mse"},
+          {pkBase.EFFECT_DAMAGE_POISON, "", "d:/ymir work/effect/affect/damagevalue/poison.mse"},
+          {pkBase.EFFECT_DAMAGE_MISS, "", "d:/ymir work/effect/affect/damagevalue2/miss.mse"},
+          {pkBase.EFFECT_DAMAGE_TARGETMISS, "", "d:/ymir work/effect/affect/damagevalue2/target_miss.mse"},
+          {pkBase.EFFECT_DAMAGE_CRITICAL, "", "d:/ymir work/effect/affect/damagevalue2/damage_critical.mse"},
+          {pkBase.EFFECT_DAMAGE_DODGE, "", "d:/ymir work/effect/affect/damagevalue2/dodge.mse"},
+          {pkBase.EFFECT_DAMAGE_BLOCK, "", "d:/ymir work/effect/affect/damagevalue2/block.mse"},
+          {pkBase.EFFECT_DAMAGE_PENETRATE, "", "d:/ymir work/effect/affect/damagevalue2/damage_penetration.mse"},
+          {pkBase.EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE, "", "d:/ymir work/effect/affect/damagevalue2/damage_mix.mse"},
+#else
           {pkBase.EFFECT_DAMAGE_TARGET, "", "d:/ymir work/effect/affect/damagevalue/target.mse"},
           {pkBase.EFFECT_DAMAGE_NOT_TARGET, "", "d:/ymir work/effect/affect/damagevalue/nontarget.mse"},
           {pkBase.EFFECT_DAMAGE_SELFDAMAGE, "", "d:/ymir work/effect/affect/damagevalue/damage.mse"},
@@ -74,6 +90,7 @@ const bool CPlayerSettingsModule::LoadInitData()
           {pkBase.EFFECT_DAMAGE_POISON, "", "d:/ymir work/effect/affect/damagevalue/poison.mse"},
           {pkBase.EFFECT_DAMAGE_MISS, "", "d:/ymir work/effect/affect/damagevalue/miss.mse"},
           {pkBase.EFFECT_DAMAGE_TARGETMISS, "", "d:/ymir work/effect/affect/damagevalue/target_miss.mse"},
+#endif
           // chrmgr.RegisterCacheEffect(chrmgr.EFFECT_DAMAGE_CRITICAL, "", "d:/ymir work/effect/affect/damagevalue/critical.mse" },
 
           // chrmgr.RegisterCacheEffect(chrmgr.EFFECT_SUCCESS, "",			"season1/effect/success.mse" },

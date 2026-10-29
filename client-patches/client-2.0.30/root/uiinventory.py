@@ -347,8 +347,14 @@ class BeltInventoryWindow(ui.ScriptWindow):
 		x, y = self.wndInventory.GetGlobalPosition()
 		# The icon sidebar stands between the inventory and the belt.
 		wndSideBar = getattr(self.wndInventory, "wndSideBar", None)
+		offset = 0
 		if wndSideBar:
-			x -= wndSideBar.GetLeftOffset()
+			offset = wndSideBar.GetLeftOffset()
+			x -= offset
+		# MT2009_PLUS_INVENTORY_V2_V1: the v2 inventory's belt slot is in the equipment window - the belt window hangs by it
+		pos = __import__("inventoryv2").BeltBasePosition(self.wndInventory, offset)
+		if pos:
+			return pos
 		return x - 148, y + 241
 
 	def AdjustPositionAndSize(self):
@@ -626,6 +632,9 @@ class SidebarWindow(ui.Window):
 
 	def __GetInventoryRect(self):
 		try:
+			# MT2009_PLUS_INVENTORY_V2_V1: the bag and the equipment window docked over it (inventoryv2.SideBarRect)
+			if getattr(self.wndInventory, "wndEquipWindow", None):
+				return __import__("inventoryv2").SideBarRect(self.wndInventory)[:3]
 			x, y = self.wndInventory.GetGlobalPosition()
 			return x, y, self.wndInventory.GetWidth()
 		except (ReferenceError, AttributeError):
@@ -637,6 +646,8 @@ class SidebarWindow(ui.Window):
 	# gaps shrink as buttons are added, never below 2 px).
 	def __InventoryHeight(self):
 		try:
+			if getattr(self.wndInventory, "wndEquipWindow", None):	# MT2009_PLUS_INVENTORY_V2_V1
+				return __import__("inventoryv2").SideBarRect(self.wndInventory)[3]
 			return self.wndInventory.GetHeight()
 		except (ReferenceError, AttributeError):
 			return 0
@@ -701,6 +712,11 @@ class SidebarWindow(ui.Window):
 				self.tab.SetPosition(boardWidth, self.TAB_Y)
 			self.board.Show()
 			frameWidth = self.fullWidth
+
+		# MT2009_PLUS_INVENTORY_V2_V1: the v2 bag alone (the equipment window undocked or closed) is shorter than the
+		# bar - the bar stays on the screen
+		if getattr(self.wndInventory, "wndEquipWindow", None):
+			y = max(0, min(y, wndMgr.GetScreenHeight() - self.GetHeight()))
 
 		if onLeft:
 			self.SetPosition(x - frameWidth, y)
@@ -1660,6 +1676,7 @@ class InventoryWindow(ui.ScriptWindow):
 		self.wndHorseInventory = None
 		self.wndChestPreview = None
 		self.chestPreviewButton = None
+		self.wndEquipWindow = None	# MT2009_PLUS_INVENTORY_V2_V1: the equipment window of the v2 inventory (inventoryv2.py)
 		eventManager.EventManager().add_observer(uiExchange.EVENT_OPEN_EXCHANGE, self.OnExchangeDialogOpen) # handel
 		eventManager.EventManager().add_observer(uiExchange.EVENT_CLOSE_EXCHANGE, self.OnExchangeDialogClose) # handel
 
@@ -1690,6 +1707,10 @@ class InventoryWindow(ui.ScriptWindow):
 
 		ui.ScriptWindow.Show(self)
 
+		# MT2009_PLUS_INVENTORY_V2_V1: the equipment window opens with the bag (before the belt window, which hangs on it)
+		if self.wndEquipWindow:
+			self.wndEquipWindow.OpenWithBag()
+
 		if self.isOpenedCostumeWindowWhenClosingInventory and self.wndCostume:
 			self.wndCostume.Show()
 
@@ -1710,12 +1731,28 @@ class InventoryWindow(ui.ScriptWindow):
 
 		self.isLoaded = 1
 
-		try:
-			pyScrLoader = ui.PythonScriptLoader()
-			pyScrLoader.LoadScriptFile(self, "UIScript/InventoryWindow.py")
-		except:
-			import exception
-			exception.Abort("InventoryWindow.LoadWindow.LoadObject")
+		# MT2009_PLUS_INVENTORY_V2_V1: the official v2 inventory (Autor: dracaryS) - this window is the bag (uiscript/inventorywindowv2.py),
+		# the worn items in their own window (inventoryv2.py, uiscript/inventoryequipwindow.py), whose children are lent
+		# to this window's dictionary: everything below finds "EquipmentSlot", "DSSButton" ... as before. Should the v2
+		# scripts not load, the old one-window inventory (syserr says why).
+		import inventoryv2
+		if inventoryv2.IsEnabled():
+			try:
+				ui.PythonScriptLoader().LoadScriptFile(self, inventoryv2.BagScript())
+				if not inventoryv2.Bind(self):
+					raise RuntimeError("the equipment window did not load")
+			except Exception, e:
+				inventoryv2.Failed(str(e))
+				self.ClearDictionary()
+				self.wndEquipWindow = None
+
+		if not self.wndEquipWindow:
+			try:
+				pyScrLoader = ui.PythonScriptLoader()
+				pyScrLoader.LoadScriptFile(self, "UIScript/InventoryWindow.py")
+			except:
+				import exception
+				exception.Abort("InventoryWindow.LoadWindow.LoadObject")
 
 		try:
 			wndItem = self.GetChild("ItemSlot")
@@ -1893,6 +1930,10 @@ class InventoryWindow(ui.ScriptWindow):
 	def Destroy(self):
 		self.ClearDictionary()
 
+		if self.wndEquipWindow:	# MT2009_PLUS_INVENTORY_V2_V1
+			self.wndEquipWindow.Destroy()
+			self.wndEquipWindow = None
+
 		# MT2009_PLUS_OPEN_ALL_V1
 		if getattr(self, "openAllRunner", None):
 			self.openAllRunner.Hide()
@@ -2000,7 +2041,34 @@ class InventoryWindow(ui.ScriptWindow):
 		if self.wndChestPreview:
 			self.wndChestPreview.Close()
 
+		if self.wndEquipWindow:	# MT2009_PLUS_INVENTORY_V2_V1: closes with the bag
+			self.wndEquipWindow.Hide()
+
 		wndMgr.Hide(self.hWnd)
+
+	# MT2009_PLUS_INVENTORY_V2_V1: the equipment window on its own - its X / Esc close it (the bag stays), the bag's next opening opens it
+	# again (inventoryv2.EquipWindow); the belt window, which hangs on its belt slot, goes and comes with it.
+	def SetEquipShowStatus(self, isShow):
+		wnd = self.wndEquipWindow
+		if not wnd:
+			return
+		if isShow:
+			if not self.IsShow():
+				return
+			wnd.OpenWithBag()
+			wnd.SetTop()
+			if self.wndBelt and not self.wndBelt.IsShow():
+				self.wndBelt.Show(self.isOpenedBeltWindowWhenClosingInventory)
+		else:
+			if self.wndBelt and self.wndBelt.IsShow():
+				self.isOpenedBeltWindowWhenClosingInventory = self.wndBelt.IsOpeningInventory()
+				self.wndBelt.Close()
+			wnd.Hide()
+
+	def SetTop(self):
+		if self.wndEquipWindow and self.wndEquipWindow.IsShow():	# MT2009_PLUS_INVENTORY_V2_V1: both windows come up
+			self.wndEquipWindow.SetTop()
+		ui.ScriptWindow.SetTop(self)
 
 
 	def Close(self):
@@ -2065,8 +2133,11 @@ class InventoryWindow(ui.ScriptWindow):
 		else:
 			self.wndCostume = CostumeWindow(self)
 			# First opened (no place kept for it yet): past the icon sidebar,
-			# not under it.
-			if self.wndSideBar:
+			# not under it. MT2009_PLUS_INVENTORY_V2_V1: left of the equipment window.
+			pos = __import__("inventoryv2").CostumePosition(self, self.wndCostume.GetWidth())
+			if pos:
+				self.wndCostume.SetPosition(pos[0], pos[1])
+			elif self.wndSideBar:
 				x, y = self.GetGlobalPosition()
 				x -= self.wndSideBar.GetLeftOffset() + self.wndCostume.GetWidth()
 				self.wndCostume.SetPosition(max(0, x), y)
@@ -2669,6 +2740,15 @@ class InventoryWindow(ui.ScriptWindow):
 			self.__SendMoveItemPacket(srcItemSlotPos, dstItemSlotPos, 0)
 			return
 
+		# MT2009_PLUS_WEAPON_ELEMENT_V1: Zwoje Zywiolow / Klatwy / Zmiany (56002-56009) dropped on a weapon - the server opens the
+		# window (uiweaponelement.py); on the same scroll they stack
+		if __import__("welem").IsScroll(srcItemVID):
+			if player.GetItemIndex(dstItemSlotPos) == srcItemVID:
+				self.__SendMoveItemPacket(srcItemSlotPos, dstItemSlotPos, 0)
+			else:
+				self.__SendUseItemToItemPacket(srcItemSlotPos, dstItemSlotPos)
+			return
+
 		# cyh itemseal 2013 11 08
 		if app.ENABLE_SOULBIND_SYSTEM and item.IsSealScroll(srcItemVID):
 			self.__SendUseItemToItemPacket(srcItemSlotPos, dstItemSlotPos)
@@ -2864,6 +2944,8 @@ class InventoryWindow(ui.ScriptWindow):
 
 
 	def __IsUsableItemToItem(self, srcItemVNum, srcSlotPos):
+		if __import__("welem").IsScroll(srcItemVNum): # MT2009_PLUS_WEAPON_ELEMENT_V1
+			return True
 		if item.IsRefineScroll(srcItemVNum):
 			return True
 		elif item.IsMetin(srcItemVNum):
@@ -2885,6 +2967,14 @@ class InventoryWindow(ui.ScriptWindow):
 	def __CanUseSrcItemToDstItem(self, srcItemVNum, srcSlotPos, dstSlotPos):
 		if srcSlotPos == dstSlotPos:
 			return False
+
+		# MT2009_PLUS_WEAPON_ELEMENT_V1: an element scroll lights a weapon (the server checks +7, the type, the level, the element)
+		if __import__("welem").IsScroll(srcItemVNum):
+			dstItemVNum = player.GetItemIndex(dstSlotPos)
+			if not dstItemVNum:
+				return False
+			item.SelectItem(dstItemVNum)
+			return item.GetItemType() == item.ITEM_TYPE_WEAPON and item.GetItemSubType() not in (item.WEAPON_ARROW, getattr(item, "WEAPON_QUIVER", -1))
 
 		if item.IsRefineScroll(srcItemVNum):
 			# MT2009_PLUS_KOLA_ITEMS_V1: Kamien Rytualny (25046) only on an item above level 80 (the server checks it too)

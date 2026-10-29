@@ -181,6 +181,9 @@ class CPythonApplication : public CMSApplication, public CInputKeyboard, public 
 
 		void UpdateGame();
 		void RenderGame();
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+		void RenderDamageEffect(); // MT2009_PLUS_DAMAGE_PRINT_V1
+#endif
 
 		bool Process();
 

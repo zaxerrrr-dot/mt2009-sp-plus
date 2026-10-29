@@ -310,9 +310,11 @@
     <ClCompile Include="Mt2009Champion.cpp" />
     <ClCompile Include="Mt2009ChangeLook.cpp" />
     <ClCompile Include="Mt2009Aura.cpp" />
+    <ClCompile Include="Mt2009WeaponElement.cpp" />
     <ClCompile Include="Mt2009AutoHuntTest.cpp" />
     <ClCompile Include="PythonBackground.cpp" />
     <ClCompile Include="PythonBackgroundModule.cpp" />
+    <ClCompile Include="NavGrid.cpp" />
     <ClCompile Include="PythonCaptcha.cpp" />
     <ClCompile Include="PythonCharacterManager.cpp" />
     <ClCompile Include="PythonCharacterManagerModule.cpp" />
@@ -457,6 +459,7 @@
     <ClInclude Include="AccountConnector.h" />
     <ClInclude Include="InsultChecker.h" />
     <ClInclude Include="NetworkActorManager.h" />
+    <ClInclude Include="NavGrid.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="ProcessCRC.h" />
     <ClInclude Include="PythonExceptionSender.h" />

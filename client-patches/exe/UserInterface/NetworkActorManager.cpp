@@ -87,6 +87,9 @@ void SNetworkActorData::__copy__(const SNetworkActorData& src)
 #ifdef ENABLE_MT2009_AURA
 	m_dwAura = src.m_dwAura;	// MT2009_PLUS_AURA_V1
 #endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+	m_dwWeaponElement = src.m_dwWeaponElement;	// MT2009_PLUS_WEAPON_ELEMENT_V1
+#endif
 
 	m_dwOwnerVID = src.m_dwOwnerVID;
 
@@ -125,6 +128,9 @@ SNetworkActorData::SNetworkActorData()
 #endif
 #ifdef ENABLE_MT2009_AURA
 	m_dwAura = 0;	// MT2009_PLUS_AURA_V1
+#endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+	m_dwWeaponElement = 0;	// MT2009_PLUS_WEAPON_ELEMENT_V1
 #endif
 
 	m_dwEmpireID=0;
@@ -429,6 +435,11 @@ CInstanceBase* CNetworkActorManager::__AppendCharacterManagerActor(SNetworkActor
 	// MT2009_PLUS_AURA_V1: the aura outfit the actor wore (the instance is new: an appearance, a mount, a change)
 	if (rkNetActorData.m_dwAura)
 		pNewInstance->SetAura(rkNetActorData.m_dwAura);
+#endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+	// MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon element the actor's weapon had (the instance is new)
+	if (rkNetActorData.m_dwWeaponElement)
+		pNewInstance->SetWeaponElement(rkNetActorData.m_dwWeaponElement);
 #endif
 
 	if (kCreateData.m_isMain)

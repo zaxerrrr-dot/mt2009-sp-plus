@@ -826,6 +826,12 @@ PyObject * chrmgrRegisterAuraEffect(PyObject* poSelf, PyObject* poArgs);
 PyObject * chrmgrSetAura(PyObject* poSelf, PyObject* poArgs);
 PyObject * chrmgrGetAura(PyObject* poSelf, PyObject* poArgs);
 #endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+// MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon's element effect (Mt2009WeaponElement.cpp)
+PyObject * chrmgrRegisterWeaponElementEffect(PyObject* poSelf, PyObject* poArgs);
+PyObject * chrmgrSetWeaponElement(PyObject* poSelf, PyObject* poArgs);
+PyObject * chrmgrGetWeaponElement(PyObject* poSelf, PyObject* poArgs);
+#endif
 
 void initchrmgr()
 {
@@ -891,6 +897,11 @@ void initchrmgr()
 		{ "SetAura",					chrmgrSetAura,							METH_VARARGS },	// MT2009_PLUS_AURA_V1
 		{ "GetAura",					chrmgrGetAura,							METH_VARARGS },	// MT2009_PLUS_AURA_V1
 #endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+		{ "RegisterWeaponElementEffect",	chrmgrRegisterWeaponElementEffect,	METH_VARARGS },	// MT2009_PLUS_WEAPON_ELEMENT_V1
+		{ "SetWeaponElement",			chrmgrSetWeaponElement,					METH_VARARGS },	// MT2009_PLUS_WEAPON_ELEMENT_V1
+		{ "GetWeaponElement",			chrmgrGetWeaponElement,					METH_VARARGS },	// MT2009_PLUS_WEAPON_ELEMENT_V1
+#endif
 
 		{ NULL,							NULL,									NULL },
 	};
@@ -935,6 +946,13 @@ void initchrmgr()
 	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_MISS",			CInstanceBase::EFFECT_DAMAGE_MISS);
 	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_TARGETMISS",	CInstanceBase::EFFECT_DAMAGE_TARGETMISS);
 	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_CRITICAL",		CInstanceBase::EFFECT_DAMAGE_CRITICAL);
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+	// MT2009_PLUS_DAMAGE_PRINT_V1
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_DODGE",		CInstanceBase::EFFECT_DAMAGE_DODGE);
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_BLOCK",		CInstanceBase::EFFECT_DAMAGE_BLOCK);
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_PENETRATE",	CInstanceBase::EFFECT_DAMAGE_PENETRATE);
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE",	CInstanceBase::EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE);
+#endif
 
 	PyModule_AddIntConstant(poModule, "EFFECT_LEVELUP",				CInstanceBase::EFFECT_LEVELUP);
 	PyModule_AddIntConstant(poModule, "EFFECT_SKILLUP",				CInstanceBase::EFFECT_SKILLUP);

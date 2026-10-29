@@ -1,0 +1,8 @@
+[
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_QUEST_RENEWAL_V1 (login)",
+  "old": "\t// MT2009_PLUS_CHAMPION_V1 (login): the Sung Ma penalties of this map and the client's champion_info / sungma_map.\n\t{ void ChampionOnLogin(LPCHARACTER); ChampionOnLogin(ch); }\n",
+  "new": "\t// MT2009_PLUS_CHAMPION_V1 (login): the Sung Ma penalties of this map and the client's champion_info / sungma_map.\n\t{ void ChampionOnLogin(LPCHARACTER); ChampionOnLogin(ch); }\n\t// MT2009_PLUS_QUEST_RENEWAL_V1 (login): the quest window's categories - this core's quest index -> category map as\n\t// \"QuestCategory\" command lines (playerbot_quest_renewal.cpp; QUEST_RENEWAL, Autor: Owsap). No packet change.\n\t{ void QuestRenewalOnLogin(LPCHARACTER); QuestRenewalOnLogin(ch); }\n"
+ }
+]

@@ -264,6 +264,12 @@
 // instance (mount, armour shape) gets it back (UserInterface/Mt2009Aura.cpp). An old exe has no chrmgr.SetAura -
 // root then draws nothing and nothing else changes.
 #define ENABLE_MT2009_AURA
+// MT2009_PLUS_WEAPON_ELEMENT_V1 (Zaczarowanie Zywiolu Broni, server-patches/zywiolbroni): the element's effect on a weapon
+// with enchant +3 and its refine "stars" - the server says "WELEMFX <vid> <type>" (a chat command, no packet), root's
+// welemfx.py calls chrmgr.SetWeaponElement(vid, type) after chrmgr.RegisterWeaponElementEffect(type, kind, file); kept in
+// the actor's data like the aura (needs ENABLE_MT2009_AURA), drawn only while the weapon shows its refine effect
+// (UserInterface/Mt2009WeaponElement.cpp). An old exe has no chrmgr.SetWeaponElement - root then draws nothing.
+#define ENABLE_MT2009_WEAPON_ELEMENT
 // MT2009_PLUS_BUFFI_V2 (Buffi, server-patches/buffi): Ameria's four costume slots of the buffi - WEAR_BUFFI_BODY / HEAD /
 // WEAPON / SASH 28-31 (Server/common/length.h; the free wear cells under WEAR_MAX 32, so no cell layout, packet or
 // database change), c_Buffi_Slot_* (GameType.h), item.BUFFI_SLOT_START/BODY/HEAD/WEAPON/SASH/COUNT
@@ -302,6 +308,12 @@
 // hunter walks through monsters (GameLib/ActorInstanceCollisionDetection.cpp). Root's uiautohunt_test.py (Alt+H) asks for
 // player.AutoHuntTestStart and says "needs the new exe" without it. No packet changes.
 #define ENABLE_MT2009_AUTOHUNT_TEST
+// MT2009_PLUS_NAVGRID_V1 (Auto Lowy navigation, the owner, 29 October 2026; based on Path-Finder V1.0 by @coanitoa97,
+// tutorial by Kolen): UserInterface/NavGrid.cpp - the map's walk grid (maps/<map>/navgrid.bin of the "navgrid" pack,
+// client-2.0.30/tools/navgrid), a windowed A* and the components; background.IsNavReady / FindPath / NavReach /
+// IsNavWalkable / NavBlock / NavBlockClear (PythonBackgroundModule.cpp) for root's uiautohunt.py, which keeps its old
+// walking on an exe without them. No packet changes.
+#define ENABLE_MT2009_NAVGRID
 // MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Lokalizator NPC, Autor: Best Studio): the improved world map - NPC list per map,
 // zoom/pan of the atlas, the selected NPC's mark and the arrow under the character, teleport to the NPC (packets
 // CG/GC 196), module npcLocationHelper (PythonNPCLocationHelper.cpp). Without the define the exe is as before.
@@ -337,5 +349,14 @@
 // motion, no target), app.ENABLE_MT2009_ADDEQ for root's uiaddeq.py / playersettingmodule.py. The page itself is the
 // server's (server-patches/addeq): no packet, window or slot changes. Without the define the exe is as before.
 #define ENABLE_MT2009_ADDEQ
+// MT2009_PLUS_DAMAGE_PRINT_V1 (Damage Print Improve v26.0.5, server-patches/dmgprint, pack "dmgprint"): the floating
+// damage numbers - lower on the body, over the world without the depth test, crit / pierce icon, dodge / block / miss
+// marks, effects from d:/ymir work/effect/affect/damagevalue2/. No packet change (the server adds DAMAGE_ATTACKER_PC /
+// DAMAGE_MISS to the flag byte). Without the define the exe is as before.
+#define ENABLE_DAMAGE_PRINT_IMPROVE
+// MT2009_PLUS_QUICKSLOT_IMPROVE_V1 (ENABLE_QUICKSLOT_IMPROVE package): player.RequestAddGlobalQuickSlot /
+// RequestMoveGlobalQuickSlot / RequestUseGlobalQuickSlot and player.QUICKSLOT_COUNT_PER_LINE for root's expanded
+// quick slot bar (uitaskbar.py, 4 rows x 8). No packet or server change (40 slots on both sides already).
+#define ENABLE_QUICKSLOT_IMPROVE
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

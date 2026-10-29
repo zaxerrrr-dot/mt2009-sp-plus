@@ -1087,6 +1087,11 @@ Paczka „Official Additional Equipment Page” (prośba właściciela z 28.10.2
   (`tools/addeq/addeq.json`) i wiersze umiejętności 200 w `skilldesc.txt` / `skilltable.txt`. W `clientY.sh` po kroku
   `kamienie` (+ `addeq/verify_addeq.py` w pętli weryfikacji). Zmienia dane przedmiotów (dbdata): w wydaniu ostrzeżenie
   o nieaktualnych plikach i nowa baza panelu.
+- `MT2009_PLUS_ADDEQ_V2` (cztery strony, 29.10.2026): `addeq_page <odblokowane 0..3> <strona 0..3>`; `uiaddeq.py` wiąże
+  w oknie ekwipunku v2 zakładki `Equipment_Tab_01..04` (`/addeq 0..3`), `inventoryv2.RefreshPageTabs` pokazuje zakładkę
+  na każdą odblokowaną stronę (I zawsze). Stare okno – dalej I / II. Opis przedmiotów i umiejętności 200
+  (`tools/addeq/addeq.json`, `itemdesc` / `skilldesc`) mówi o kolejnych stronach – wejdzie przy następnym budowaniu
+  klienta (nazwy i rekordy `item_proto` bez zmian).
 
 ## Poprawki 3.0.8: napis Regeneracji PŻ/PE i „Antymagia” w oknie bonusów
 
@@ -1098,3 +1103,23 @@ Paczka „Official Additional Equipment Page” (prośba właściciela z 28.10.2
 - `root/uiattributelist.py`: punkt, którego serwer nie przysłał od zalogowania, exe czyta jako swój klucz XOR
   0xe73ac1da = -415579686 – okno pokazuje 0. Właściwa poprawka jest po stronie serwera (`server-patches/antimagic`,
   `(login points)` / `(enter points)`), działa bez nowego klienta.
+
+## Bonus Reliktu (`MT2009_PLUS_RELIC_V1`)
+
+Paczka „Official Passive Attr System” (Best Studio) na naszym kliencie, zasady z pl-wiki „Bonus Reliktu” – serwer:
+`server-patches/relikty` (tam cały opis). **Bez zmian w exe** – okno rozmawia z serwerem komendami czatu.
+
+- `root/uirelikt.py` – okno (relikt w środku, 4 dusze dookoła z liczbą z torby i dodatkowego ekwipunku, przyciski
+  okienek I / II, Doładuj / Dodaj / Aktywuj / Wyjmij, „?” z zasadami), podpowiedź reliktu (`RelicTooltip`: czas,
+  stan, bonusy z `relikt_data.py`); `"/relikt hello"` po wczytaniu, `relikt_state` / `relikt_open` z serwera.
+- `root/uiscript/reliktwindow.py` – układ GF `uiscript/passiveattr.py`; `root/relikt_data.py` – tabela 16 bonusów
+  (generowana: `tools/relikty/gen_relikty.py`, kopia serwerowej `playerbot_relikty_table.h`).
+- Haki: `game.py` (hello, dwie komendy, `DestroyWindow`, akcja klawisza `relic`), `keybind.py` („Bonus Reliktu”, bez
+  domyślnego klawisza), `uitooltip.py` (relikt w `AddItemData` – nie zwykłe linie bonusów), `uisystem.py` +
+  `uiscript/systemdialog.py` (przycisk „Bonus Reliktu” w menu Esc).
+- `root/icon/item/30255-30258, 30272-30276, 30280-30284.tga` – ikony GF 26.1.11 (Pakiet Dusz 30263: `27999.tga` klienta).
+- `tools/relikty/build_relikty_packs.py` (+ `patch_relikty_client.py`, `verify_relikty.py`, `relikty_files.json`):
+  `gamedata`/`dbdata` – 15 przedmiotów (`tools/relikty/relikty_items.json` = `relikty.sql`), nowa paczka `relikty`
+  (GF: `d:/ymir work/ui/passive_01.dds`, `d:/ymir work/ui/game/passive_attr/*.sub`) i jej linia w `Index` (ostatnia).
+  W `clientY.sh` po kroku `ybiolog` (+ `relikty/verify_relikty.py` w pętli weryfikacji). Zmienia dane przedmiotów
+  (dbdata): w wydaniu ostrzeżenie o nieaktualnych plikach i nowa baza panelu.

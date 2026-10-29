@@ -1,0 +1,51 @@
+# MT2009_PLUS_WEAPON_ELEMENT_V1 - Zaczarowanie Zywiolu Broni (server-patches/zywiolbroni, README.md).
+# THE one place of every number of the system: the game reads it at boot and on "/welem_reload" (GM); the
+# client hears the fees and the value ranges with every window the server opens. tools/zywiolbroni/gen_zywiolbroni.py
+# reads it too (the scrolls' item_proto "gold" = the shop prices below).
+# Lines: <key> <value...>; "#" starts a comment. A key left out keeps the engine's built-in default (the same values).
+
+# 0 = off: no scroll works on a weapon (the shop still sells them)
+enabled 1
+
+# --- the price of one attempt -------------------------------------------------------------------------------------
+# The owner (29 October 2026): an element attempt costs 12 000 000 Yang in all = the scroll 9 000 000 (Straznik Medali)
+# + the window's fee 3 000 000 (as the wiki); Zwoj Klatwy 10 000 000 in all (the scroll, no fee - the window shows no
+# cost line); Zwoj Zmiany 40 000 000 in all = the scroll 30 000 000 + the window's fee 10 000 000 (as the wiki).
+# When the guild system's Medale Mestwa come, the scroll prices change here (and the shop's currency in the engine).
+price_element 9000000
+price_curse 10000000
+price_change 30000000
+fee_element 3000000
+fee_curse 0
+fee_change 10000000
+
+# --- who may buy the scrolls (Straznik Medali 20650; the wiki: a guild of level 21, Klatwa / Zmiana 24; 0 = anyone)
+guild_level_element 21
+guild_level_special 24
+
+# --- the weapon -------------------------------------------------------------------------------------------------
+# refined at least to +<min_refine> (wiki: +7); the enchant goes up to +3
+min_refine 7
+
+# --- the chance of an element scroll, per level reached (+1 +2 +3), in % (the owner: 50%; a failure takes the scroll
+# and the fee, the weapon and its enchant stay as they were)
+chance 50 50 50
+
+# --- the values one successful level adds (the owner: not fixed - a weighted roll per level reached) -------------
+# "power <level> <value>:<weight> ..." - Sila Zywiolu (%, the points POINT_ENCHANT_* 178-183)
+# "attack <level> <value>:<weight> ..." - Wartosc Ataku (added to the weapon's attack like its value5 does)
+# The wiki's values (every level): Sila 1/2/4/6/8 %, Wartosc Ataku 2/4/6/8/12 - so the window shows +1% ~ +8% and
+# (+2~+12) at every level, as the official one. The weights: each level has its own "usual" value (+1: 2% / 4,
+# +2: 4% / 6, +3: 6% / 8), the lower ones are likelier than the higher ones, the top (8% / 12) is a rare roll.
+# A value must be 1..15. Weights are relative (any sum).
+power 1 1:30 2:40 4:18 6:8 8:4
+power 2 1:20 2:25 4:35 6:14 8:6
+power 3 1:12 2:18 4:25 6:35 8:10
+attack 1 2:30 4:40 6:18 8:8 12:4
+attack 2 2:20 4:25 6:35 8:14 12:6
+attack 3 2:12 4:18 6:25 8:35 12:10
+
+# --- the visual effect (wiki): enchant +3 AND the weapon's own "stars" - level 1-29 from +9, 30-44 from +8
+# (Antyczny Dzwon 5110-5129 from +7), 45 and up from +7. A transmuted weapon shows it only when the look's weapon
+# has its stars too (the base weapon's element is the one shown).
+effect_grade 3

@@ -56,6 +56,73 @@ def _ValueBox(labelName, slotName, valueName, x, y, slotFile, textX):
 		),
 	}
 
+# MT2009_PLUS_QUEST_RENEWAL_V1 (QUEST_RENEWAL, Autor: Owsap): the renewed quest page's board (root questrenewal.py) -
+# the package's quest_page_board_window (GF's border_A pattern) and its scroll bar, sized for this window: from the
+# page's top to the tab strip (TAB_Y). The old list's slots stay in the page for questrenewal.ENABLED = False.
+import questrenewal
+QUEST_PATTERN_PATH = "d:/ymir work/ui/pattern/"
+QUEST_BOARD_X = 10
+QUEST_BOARD_Y = 7
+QUEST_BOARD_WIDTH = 231
+QUEST_BOARD_HEIGHT = TAB_Y - 24 - QUEST_BOARD_Y - 6	# Quest_Page stands at y 24
+QUEST_BOARD_PATTERN_X = float(QUEST_BOARD_WIDTH - 32) / 16
+QUEST_BOARD_PATTERN_Y = float(QUEST_BOARD_HEIGHT - 32) / 16
+
+def _QuestBoardImage(name, x, y, image, rect = None):
+	element = { "name" : name, "type" : "expanded_image" if rect else "image", "style" : ("ltr",), "x" : x, "y" : y,
+		"image" : QUEST_PATTERN_PATH + image, }
+	if rect:
+		element["rect"] = rect
+	return element
+
+QUEST_RENEWAL_CHILDREN = ()
+if questrenewal.ENABLED:
+	QUEST_RENEWAL_CHILDREN = (
+		{
+			"name" : "Quest_Renewal_Board",
+			"type" : "window",
+			"style" : ("attach", "ltr",),
+
+			"x" : QUEST_BOARD_X,
+			"y" : QUEST_BOARD_Y,
+
+			"width" : QUEST_BOARD_WIDTH,
+			"height" : QUEST_BOARD_HEIGHT,
+
+			"children" :
+			(
+				_QuestBoardImage("Quest_Renewal_LeftTop", 0, 0, "border_A_left_top.tga"),
+				_QuestBoardImage("Quest_Renewal_RightTop", QUEST_BOARD_WIDTH - 16, 0, "border_A_right_top.tga"),
+				_QuestBoardImage("Quest_Renewal_LeftBottom", 0, QUEST_BOARD_HEIGHT - 16, "border_A_left_bottom.tga"),
+				_QuestBoardImage("Quest_Renewal_RightBottom", QUEST_BOARD_WIDTH - 16, QUEST_BOARD_HEIGHT - 16, "border_A_right_bottom.tga"),
+				_QuestBoardImage("Quest_Renewal_Top", 16, 0, "border_A_top.tga", (0.0, 0.0, QUEST_BOARD_PATTERN_X, 0)),
+				_QuestBoardImage("Quest_Renewal_Left", 0, 16, "border_A_left.tga", (0.0, 0.0, 0, QUEST_BOARD_PATTERN_Y)),
+				_QuestBoardImage("Quest_Renewal_Right", QUEST_BOARD_WIDTH - 16, 16, "border_A_right.tga", (0.0, 0.0, 0, QUEST_BOARD_PATTERN_Y)),
+				_QuestBoardImage("Quest_Renewal_Bottom", 16, QUEST_BOARD_HEIGHT - 16, "border_A_bottom.tga", (0.0, 0.0, QUEST_BOARD_PATTERN_X, 0)),
+				_QuestBoardImage("Quest_Renewal_Center", 16, 16, "border_A_center.tga", (0.0, 0.0, QUEST_BOARD_PATTERN_X, QUEST_BOARD_PATTERN_Y)),
+				{
+					"name" : "Quest_Renewal_List",
+					"type" : "window",
+					"style" : ("attach", "ltr",),
+
+					"x" : 3,
+					"y" : 3,
+
+					"width" : QUEST_BOARD_WIDTH - 6,
+					"height" : QUEST_BOARD_HEIGHT - 6,
+				},
+			),
+		},
+		{
+			"name" : "Quest_Renewal_ScrollBar",
+			"type" : "scrollbar",
+
+			"x" : QUEST_BOARD_X + QUEST_BOARD_WIDTH - 19,
+			"y" : QUEST_BOARD_Y + 3,
+			"size" : QUEST_BOARD_HEIGHT - 6,
+		},
+	)
+
 window = {
 	"name" : "CharacterWindow",
 	"style" : ("movable", "float",),
@@ -625,7 +692,7 @@ window = {
 							"size" : 290,
 							"horizontal_align" : "right",
 						},
-					),
+					) + QUEST_RENEWAL_CHILDREN,
 				},
 			),
 		},

@@ -224,6 +224,16 @@ class GameWindow(ui.ScriptWindow):
 		self.SetSize(wndMgr.GetScreenWidth(), wndMgr.GetScreenHeight())
 
 		self.quickSlotPageIndex = 0
+		# MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the character's expanded quick slot bar and its last page (quickslotstate.py, uitaskbar.py);
+		# the page buttons go through __SelectQuickPage, which remembers the page
+		import uiTaskBar
+		if uiTaskBar.QUICKSLOT_IMPROVE:
+			import quickslotState
+			quickslotState.Activate(player.GetName())
+			self.quickSlotPageIndex = quickslotState.GetPage()
+			if self.interface:
+				self.interface.SetQuickPageEvent(ui.__mem_func__(self.__SelectQuickPage))
+				self.interface.ApplyQuickSlotState()
 		self.PickingCharacterIndex = -1
 		self.PickingItemIndex = -1
 		self.consoleEnable = False
@@ -499,6 +509,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uibuffi").DestroyWindow()
 		# MT2009_PLUS_EKWIPUNEK_V1: the extra inventory's window (uiekwipunek.py).
 		__import__("uiekwipunek").DestroyWindow()
+		# MT2009_PLUS_RELIC_V1: Bonus Reliktu's window (uirelikt.py).
+		__import__("uirelikt").DestroyWindow()
 		# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's windows (uigoblin.py).
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
@@ -843,6 +855,8 @@ class GameWindow(ui.ScriptWindow):
 			"extra_inventory"	: (lambda : Window("uiekwipunek"), None),
 			# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (uiworldboss.py), no key by default.
 			"world_boss"		: (lambda : Window("uiworldboss"), None),
+			# MT2009_PLUS_RELIC_V1: Bonus Reliktu (uirelikt.py), no key by default (the Esc menu's button opens it too).
+			"relic"				: (lambda : Window("uirelikt"), None),
 			# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
 			"new_pet"			: (lambda : Window("uinewpet"), None),
 			# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel ("Wyprawy", uidungeoninfo.py).
@@ -1011,6 +1025,38 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_YOHARA_SETS_V1: "YITEM <window> <cell> <yextra>" - an item's set effect / random base bonuses (ysets.py)
 	def __YSetsItem(self, *args):
 		__import__("ysets").OnServer(*args)
+
+	# MT2009_PLUS_QUEST_RENEWAL_V1 (QUEST_RENEWAL, Autor: Owsap): the server's quest index -> category map
+	# (playerbot_quest_renewal.cpp), "QuestCategory <part> <index>:<category>,..."
+	def __QuestRenewalCategory(self, part = "0", data = "-", *rest):
+		__import__("questrenewal").OnServerCommand(part, data)
+		try:
+			if self.interface:
+				self.interface.RefreshQuest()
+		except AttributeError:
+			pass	# the windows are not made yet: the page reads the map when it opens
+
+	# MT2009_PLUS_WEAPON_ELEMENT_V1: Zaczarowanie Zywiolu Broni (welem.py, uiweaponelement.py; server-patches/zywiolbroni) -
+	# "WELEM <window> <cell> <packed>" an item's element, "WELEMOPEN ..." / "WELEMCLOSE" / "WELEMRESULT ..." the windows,
+	# "WELEMFX <vid> <element>" the weapon's element effect of a character in view (welemfx.py, the 3.x exe)
+	def __WeaponElement(self, *args):
+		__import__("welem").OnServer(*args)
+
+	def __WeaponElementOpen(self, *args):
+		__import__("uiweaponelement").OnOpen(*args)
+
+	def __WeaponElementClose(self, *args):
+		__import__("uiweaponelement").OnClose(*args)
+
+	def __WeaponElementResult(self, *args):
+		__import__("uiweaponelement").OnResult(*args)
+
+	def __WeaponElementEffect(self, *args):
+		try:
+			welemfx = __import__("welemfx")
+		except ImportError:
+			return
+		welemfx.OnServer(*args)
 
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
@@ -1194,6 +1240,11 @@ class GameWindow(ui.ScriptWindow):
 	def __SelectQuickPage(self, pageIndex):
 		self.quickSlotPageIndex = pageIndex
 		player.SetQuickPage(pageIndex)
+		import uiTaskBar
+		if uiTaskBar.QUICKSLOT_IMPROVE: # MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the page the exe settled on, remembered
+			import quickslotState
+			self.quickSlotPageIndex = player.GetQuickPage()
+			quickslotState.SetPage(self.quickSlotPageIndex)
 		self.__SetQuickSlotMode()
 
 	def __HideUserInterface(self):
@@ -2721,6 +2772,8 @@ class GameWindow(ui.ScriptWindow):
 				__import__("uiswitchbot").Start()
 				# MT2009_PLUS_ADDEQ_V1: "/addeq hello" - the second equipment page's state (uiaddeq.py).
 				__import__("uiaddeq").Start()
+				# MT2009_PLUS_RELIC_V1: "/relikt hello" - the relic pages' state (uirelikt.py).
+				__import__("uirelikt").Start()
 
 		constInfo.FIXED_TIME_SINCE_START += FIXED_TIMESTEP_UPDATE
 		self.oneSecondTimer += FIXED_TIMESTEP_UPDATE
@@ -3513,6 +3566,12 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
+		serverCommandList["QuestCategory"] = self.__QuestRenewalCategory # MT2009_PLUS_QUEST_RENEWAL_V1
+		serverCommandList["WELEM"] = self.__WeaponElement # MT2009_PLUS_WEAPON_ELEMENT_V1
+		serverCommandList["WELEMOPEN"] = self.__WeaponElementOpen
+		serverCommandList["WELEMCLOSE"] = self.__WeaponElementClose
+		serverCommandList["WELEMRESULT"] = self.__WeaponElementResult
+		serverCommandList["WELEMFX"] = self.__WeaponElementEffect
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
@@ -3549,6 +3608,8 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["addeq_page"] = self.__AddeqPage # MT2009_PLUS_ADDEQ_V1
 		serverCommandList["konie_rozwoj_info"] = self.__KonieRozwojInfo # MT2009_PLUS_HORSE40_V1
 		serverCommandList["konie_rozwoj_msg"] = self.__KonieRozwojMsg # MT2009_PLUS_HORSE40_V1
+		serverCommandList["relikt_state"] = self.__ReliktState # MT2009_PLUS_RELIC_V1
+		serverCommandList["relikt_open"] = self.__ReliktOpen # MT2009_PLUS_RELIC_V1
 		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
 		# a Stage A server only refreshes the window (the numbers are points now).
 		serverCommandList["champion_info"] = self.__ChampionInfo
@@ -4316,6 +4377,13 @@ class GameWindow(ui.ScriptWindow):
 
 	def __KonieRozwojMsg(self, *args):
 		__import__("uikonierozwoj").OnMessage(*args)
+
+	# MT2009_PLUS_RELIC_V1: Bonus Reliktu - the relic pages' state, the window opened by a relic used (uirelikt.py).
+	def __ReliktState(self, *args):
+		__import__("uirelikt").OnServerState(*args)
+
+	def __ReliktOpen(self, *args):
+		__import__("uirelikt").OnServerOpen(*args)
 
 	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
 	def __NewPet(self, *args):
