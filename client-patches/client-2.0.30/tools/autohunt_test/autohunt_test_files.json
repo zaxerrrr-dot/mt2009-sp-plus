@@ -14,7 +14,132 @@
    "ctype": 1,
    "sha256": "83a3e0cd822d455bbe142fe264f364183130da81e5009062f673e2f1d947125d",
    "size": 4571
+  },
+  "d:/ymir work/ui/game/auto_hunting/auto_attack_check_back_img.sub": {
+   "ctype": 1,
+   "package_sha256": "7ee743c78e19c4675e9e78e3f2e097f9234a6b4265aac2b319420afa4cc18f6b",
+   "sha256": "fa60619cd8d4e2c79fedd7c5ae44d1186f61c51000642cd8d2d312a124539ace",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/auto_hunting/auto_attack_check_box.sub": {
+   "ctype": 1,
+   "package_sha256": "1b9ba3908f7567c65c67cc5f4b5f06c4f0134f96665f3db3ef8ed3f5fac1a95e",
+   "sha256": "56dbb4326548211f44501c86e74579e728affd92ab6910f9d33ac574e2cab363",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/auto_hunting/auto_attack_level_range_back_img.sub": {
+   "ctype": 1,
+   "package_sha256": "4ac7580a989f8852dce5eea9563b7bc006a81a1508e0b638f1d848b9b0c57773",
+   "sha256": "5f6756c529767e17b46a967c1d23cb9f512a645af94b03410a314c88cec65871",
+   "size": 117
+  },
+  "d:/ymir work/ui/game/auto_hunting/auto_attack_level_range_edit_img.sub": {
+   "ctype": 1,
+   "package_sha256": "875b72ac4dca7e8da7f24d3f08d869088afce8a3f11e5d24be4aee1f8eceb3a1",
+   "sha256": "61657b092c222b7f4e760a9282d6a54290802b7da1b077316f7b66e532b2cf62",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/auto_hunting/auto_attack_level_range_max_img.sub": {
+   "ctype": 1,
+   "package_sha256": "17e48b79f4ba141867e643106a044e2f4508502869628b1020527076dfeaa727",
+   "sha256": "b73918f66e655fde128fb95af72b5bcc1a5951bdc2ecc15a12ed6781881e8cf6",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/auto_hunting/auto_attack_level_range_min_img.sub": {
+   "ctype": 1,
+   "package_sha256": "e6251a96724a9aacff305f977b9a097c6fb1550d3a8ab4f56c42b75a01b20d45",
+   "sha256": "c6e3bc20d55b1a6c9a1b9b1e4f45b9e164badc6c8b30188e026d1527d556bbd4",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/auto_hunting/auto_hunt_windows.dds": {
+   "ctype": 1,
+   "sha256": "b50995e1d0fe8d9ded9b99841f8ebde8371da41f1352901cc2f15b1bab6fbf8d",
+   "size": 632448
+  },
+  "d:/ymir work/ui/game/auto_hunting/option_window_open_button_01.sub": {
+   "ctype": 1,
+   "package_sha256": "3b480bb41be51d29da418d25563e36adb19c4bfb6e989b19fb1c02b15bf253e7",
+   "sha256": "491f47f1685d78eed27e6a0a95bc7cdff593e3f04e6a6b1918b8b8516791d236",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/auto_hunting/option_window_open_button_02.sub": {
+   "ctype": 1,
+   "package_sha256": "35e055d41ba1fb6de4da89b9b0f9450327b0fb1e72de3f262984a60610be3865",
+   "sha256": "d99a20070190c2b79d21f89d3f2a93825c6fcd7bff9a703a103028a3fffe765c",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/auto_hunting/option_window_open_button_03.sub": {
+   "ctype": 1,
+   "package_sha256": "502d390d895d12b0054a1df5adb19cb3831b58cfccb74807d4edf2675293ee3b",
+   "sha256": "d77164b4b28dbed485b5ca4028630e423a85050e56334461ff4c7e4dd896e21e",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_bottom_button_01.sub": {
+   "ctype": 1,
+   "package_sha256": "0b9ec5ce13511e8a7bf53bd1a3826479bc3f5f240d3092ce2a31167ef98ff644",
+   "sha256": "76a89afc25efc754a2143c02a41dfac2e60e81c6da559fba8ebcf17829df628f",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_bottom_button_02.sub": {
+   "ctype": 1,
+   "package_sha256": "b62754623a2c60f4acd4c6215da318a866e9ebedf62d04c5278e2986f17d05ab",
+   "sha256": "9f07f11359a4aeca5e12ba1a499bb786bafc15dfbf8d4b988a4a9ca3e8cb212a",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_bottom_button_03.sub": {
+   "ctype": 1,
+   "package_sha256": "9c22b841c8b53f1b936a7a4f97f0c5d121a200a79f8265d71ada7a500f174ca3",
+   "sha256": "5d138d5f7288c08fb0158634960101b95ec48dcdcaa31c90b9e5c5bc1fb58097",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_clear_button_01.sub": {
+   "ctype": 1,
+   "package_sha256": "912ace93aee71bd1991cabf31fed0d774312880b77a749fe82d64c327b3dc702",
+   "sha256": "e2a5383094785662a8ffe741761a14d328a3f902d0f83d11dd78cf5d480ff3a8",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_clear_button_02.sub": {
+   "ctype": 1,
+   "package_sha256": "c9d650b024311ea92747c24672910d92e63a5260936c92dddec7c104eb92eaa9",
+   "sha256": "e13ef9b7115743f44d165f9c6f1abd485a720a542573bb721fbae264979afa12",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_clear_button_03.sub": {
+   "ctype": 1,
+   "package_sha256": "3cb298ade474bdb221cd91ddb0a2c30c3e93862f1ba43e34b5923dadb936e327",
+   "sha256": "a4fbd67944f4ea23ec02c3f56284982fe4376832ab0e42b6fbdce6ea0a33000d",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_edit_line.sub": {
+   "ctype": 1,
+   "package_sha256": "ce75e40e689472b130ff6c2a926b067bfc0c3d01bf4d297525f320e6fd09d045",
+   "sha256": "c2f6b30b1925dadb20ce33ee00bae511199622b140da5c002265caf1a9f5ed5e",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_gauge_bar.sub": {
+   "ctype": 1,
+   "package_sha256": "5efd3c3a6a8d01e502c4f83b70fb26057071be3a51b41175f5fe7c116a1fed20",
+   "sha256": "0e622468acca2702f9c9c31ca0e4ba0900172008add6cc28f4912e990be7b716",
+   "size": 118
+  },
+  "d:/ymir work/ui/game/windows/auto_system_text_bar_01.sub": {
+   "ctype": 1,
+   "package_sha256": "17f2b852593a49eacfe4fcc2575331bcb8e4f12ac68d5372e8aae143b51696c0",
+   "sha256": "cddfbae23c3a13a72015f93f792a562642257869babd2dce089a42d7ae65bc28",
+   "size": 120
+  },
+  "d:/ymir work/ui/game/windows/auto_system_text_bar_02.sub": {
+   "ctype": 1,
+   "package_sha256": "1b9e7d043125e5e517f6aab4cf71a20ad55ad39f9695d1077585fdfc4979febf",
+   "sha256": "11e4cfaa402d264ecf01b4bc545d3e39ee67a6a8bedaa972793316a9cdbcef1e",
+   "size": 118
+  },
+  "d:/ymir work/ui/game/windows/auto_system_title_bar.sub": {
+   "ctype": 1,
+   "package_sha256": "28ac505bbd426954555fedca02b562d842ba529d5464f446431b61a7098295fc",
+   "sha256": "4f3c8624d6e87516ca86fcdf4f61a676feacbc5d3c72b92b3a642d1b053f6947",
+   "size": 120
   }
  },
- "source": "the owner's package \"Oto Av\" (28 Oct 2026), Client/ymir work/effect/etc/auto_hunt - byte for byte the GF 26.1.11 client's and the base client's etc pack files"
+ "source": "the owner's package \"Oto Av\" (28 Oct 2026), Client/ymir work: effect/etc/auto_hunt (byte for byte, = GF 26.1.11), ui/game/windows/auto_system_*.sub and ui/game/auto_hunting/*.sub (the TEST window's pictures; their image line \"windows.dds\" -> \"game/auto_hunting/auto_hunt_windows.dds\", package_sha256 = the package's bytes) and ui/windows.dds as ui/game/auto_hunting/auto_hunt_windows.dds (the package's atlas under its own name: the players' base etc has an older d:/ymir work/ui/windows.dds that the other windows' .sub use - it must not be shadowed nor relied on)"
 }

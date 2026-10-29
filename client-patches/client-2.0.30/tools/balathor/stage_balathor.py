@@ -7,7 +7,9 @@
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 \
 #     <repo>/client-patches/client-2.0.30/tools/balathor/stage_balathor.py [<staging dir>] [<work dir>] [<npclist.txt>]
 #
-# (in the m2pack-lzo image: it reads the full install's base pack "etc" - its names count as ours). Defaults:
+# (in the m2pack-lzo image). The exe smoke client's pack "etc" is NOT the players' etc (3.0.4 counted its names as ours
+# and shipped no boss window pictures: exception.Abort at the cinema) - its names are only counted in the manifest
+# (etc_pack_names_staged), never taken as ours. Defaults:
 # /opt/metin2/cache/yohara/balathor-staging, /opt/metin2/cache/yohara/cape301-work (c58.lst + x/property of the client
 # we build on), the npclist of the chain's OUT (/opt/metin2/cache/cY/npc/npclist.txt, else c61's). Writes
 # <staging>/add/<pack>/<in-pack name> ("d:/" as "d_/") and tools/balathor/balathor_manifest.json.
@@ -105,7 +107,7 @@ ETC_NAMES = set()
 if os.path.exists(ETC_INDEX):
     import m2pack
     ETC_NAMES = set(e['name'] for e in m2pack.read_index(ETC_INDEX)[2])
-OURS |= ETC_NAMES
+# MT2009_PLUS_BALATHOR_UI_V2: ETC_NAMES are NOT ours (see the top) - only reported
 EARLIER = set()
 EARLIER_REPLACED = set()
 for mp in sorted(__import__('glob').glob(os.path.join(HERE, '..', '*', '*_manifest.json'))):
@@ -126,6 +128,9 @@ for k in OURS:
     assert not k.startswith('maps/%s/' % FOLDER), k
 EARLIER_STAGING = sorted(__import__('glob').glob('/opt/metin2/cache/yohara/*-staging/add/property/property')) + \
     sorted(__import__('glob').glob('/opt/metin2/cache/*-staging/add/property/property'))
+# never our own staging (the default dir or another one of ours): its properties are what this run stages
+EARLIER_STAGING = [d for d in EARLIER_STAGING if 'balathor-staging' not in d and
+                   not os.path.abspath(d).startswith(os.path.abspath(STAGING) + os.sep)]
 
 GF = dict(gfres.GF)
 RES = dict(GF)
@@ -316,10 +321,34 @@ for v in DATA['vnums']:
         unres_races[name] = sorted(u)
 
 # ---------------------------------------------------------------- the effects / pictures the exe and python name
-for k in DATA['effects'] + sorted(k for k in RES if k.startswith(DATA['ui_dir'])):
+# the boss window and the frost (root uiscript/guildwhitedragonlairwindow.py, uiguildwhitedragon.py): the package's
+# whole ui/game/guild_white_dragon_lair folder, ui/whitedragon_damage_01.dds and the atlases its .sub cut
+UI_NAMES = sorted(k for k in PK if k.startswith(DATA['ui_dir'])) + list(DATA.get('ui_files', []))
+assert len([k for k in UI_NAMES if k.endswith('.sub')]) >= 18, UI_NAMES
+
+
+def sub_image(key, src):
+    """the picture a .sub cuts (EterLib GrpSubImage: version 1.0 -> "d:/ymir work/ui/" + image)"""
+    b = open(src, 'rb').read()
+    m = re.search(rb'(?im)^\s*image\s+"([^"]+)"', b)
+    assert m, key
+    img = norm(m.group(1).decode('latin1'))
+    if re.search(rb'(?im)^\s*version\s+2\.0', b):
+        return key.rsplit('/', 1)[0] + '/' + img
+    return norm('d:/ymir work/ui/' + img)
+
+
+for k in DATA['effects'] + UI_NAMES:
     if k in OURS:
         continue
     assert k in RES, k
+    if k.endswith('.sub'):
+        add['mobs'][k] = RES[k]
+        t = sub_image(k, RES[k])
+        assert t in RES or t in OURS, (k, t)
+        if t not in OURS:
+            add['mobs'][t] = RES[t]
+        continue
     f, u, o = gfres.closure([k], OURS)
     for kk, ss in f.items():
         if kk in OURS or any(kk in add[p] for p in add):
@@ -375,6 +404,9 @@ for p in packs:
 manifest['races'] = dict((str(v), r) for v, r in races.items())
 manifest['new_packs'] = [p for p in packs if p != 'property' and packs[p]]
 manifest['etc_pack_names'] = len(ETC_NAMES)
+manifest['etc_pack_names_staged'] = sum(1 for p in packs for k in packs[p] if k in ETC_NAMES)
+manifest['ui'] = sorted(set(k for k in UI_NAMES) | set(t for p in packs for t in packs[p]
+                                                      if t.startswith('d:/ymir work/ui/') and p != 'property'))
 for p in packs:
     ents = []
     for k in sorted(packs[p]):
@@ -396,7 +428,7 @@ for p in packs:
     print('%-14s %4d files %6.2f MB' % (p, len(packs[p]), sum(os.path.getsize(v) for v in packs[p].values()) / 1e6))
 m = manifest['maps'][str(M['index'])]
 print(M['index'], m['folder'], 'objects:', m['objects'], 'removed:', m['removed_objects'])
-print('etc names counted as ours:', len(ETC_NAMES))
+print('smoke etc names (not ours) staged:', manifest['etc_pack_names_staged'], 'of', len(ETC_NAMES))
 print('races:', dict((v, r['status']) for v, r in races.items()))
 print('unresolved map:', manifest['unresolved']['map'])
 print('unresolved races:', unres_races)

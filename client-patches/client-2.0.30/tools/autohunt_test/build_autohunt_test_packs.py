@@ -4,12 +4,16 @@
 #   d:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.mse   the effect (3 rings of the mesh below)
 #   d:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.mde   the ring mesh (names the .dds by its full path)
 #   d:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.dds   its texture
+# and the TEST window's pictures (root uiscript/autohunttest*.py, uiautohunt_test.py):
+#   d:/ymir work/ui/game/windows/auto_system_*.sub (11), d:/ymir work/ui/game/auto_hunting/*.sub (9)
+#   d:/ymir work/ui/game/auto_hunting/auto_hunt_windows.dds   the atlas they cut (the package's ui/windows.dds)
 # from the owner's package "Oto Av" (28 October 2026; pliki/ holds them, autohunt_test_files.json their sizes, sha256 and
-# entry types). They are byte for byte GF 26.1.11's - and the players' base pack "etc" (the exe smoke client's etc pack)
-# already carries the same bytes; this pack is the safety net for an install without them. The window's images
-# (d:/ymir work/ui/game/auto_hunting/*.sub, ui/game/windows/auto_system_*.sub on ui/windows.dds) are all in that etc pack
-# too, so they are not packed again (verify_autohunt_test.py checks them when it gets the base install's pack dir).
-# The same bytes in two packs: whichever the exe registers first wins - no difference, so the Index line goes LAST.
+# entry types). The effect is byte for byte GF 26.1.11's. The pictures: 3.0.4 shipped none (it counted the exe smoke
+# client's etc pack, which is NOT the players' etc) and Alt+H died on "Failed to load image .../auto_system_edit_line.sub".
+# The players' base etc has an OLDER d:/ymir work/ui/windows.dds that other windows' .sub cut - so the package's atlas
+# goes in under its own name and every .sub's image line names it ("game/auto_hunting/auto_hunt_windows.dds": a version
+# 1.0 .sub opens "d:/ymir work/ui/" + image); package_sha256 in the json = the package's own .sub bytes.
+# Index line goes LAST (tools/uicheck/check_ui_assets.py checks every picture against the players' packs).
 #
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 \
 #     <repo>/client-patches/client-2.0.30/tools/autohunt_test/build_autohunt_test_packs.py <BASE pack dir> <OUT pack dir> [--check]
@@ -38,6 +42,7 @@ MANIFEST = os.path.join(HERE, 'autohunt_test_files.json')
 EFFECT = 'd:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.mse'
 MESH = 'd:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.mde'
 TEXTURE = 'd:/ymir work/effect/etc/auto_hunt/auto_hunt_range_01.dds'
+ATLAS = 'd:/ymir work/ui/game/auto_hunting/auto_hunt_windows.dds'
 
 
 def manifest():
@@ -65,6 +70,13 @@ def items():
     assert re.search(rb'MeshFileName\s+"auto_hunt_range_01\.mde"', out[EFFECT][0]), EFFECT
     assert b'effect\\etc\\auto_hunt\\auto_hunt_range_01.dds' in out[MESH][0].lower(), MESH
     assert out[TEXTURE][0][:4] == b'DDS ', TEXTURE
+    # the window's .sub cut the renamed atlas, which is in the pack
+    assert out[ATLAS][0][:4] == b'DDS ', ATLAS
+    subs = [k for k in out if k.endswith('.sub')]
+    assert len(subs) == 20, len(subs)
+    for k in subs:
+        assert re.search(rb'(?im)^version\s+1\.0', out[k][0]) and re.search(
+            rb'(?im)^image\s+"game/auto_hunting/auto_hunt_windows\.dds"', out[k][0]), k
     return out
 
 

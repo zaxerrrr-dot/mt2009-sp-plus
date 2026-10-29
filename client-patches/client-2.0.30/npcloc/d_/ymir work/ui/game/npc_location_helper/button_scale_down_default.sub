@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "npc_location_01.dds"
+left 81
+top 141
+right 106
+bottom 166

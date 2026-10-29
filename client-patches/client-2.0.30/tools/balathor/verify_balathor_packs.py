@@ -7,8 +7,9 @@
 #   * gamedata: the atlasinfo row, an npclist row of each of the 20 vnums whose race model (msm) is in OUT/BASE or the
 #     client listing, a mob_proto record of every vnum the SQL has, the item_list lines of 30395/83075/83076 (icon in the repo's
 #     root/icon/item or our packs); dbdata: their item_proto records equal to the SQL's, itemdesc lines;
-#   * locale: the locale_game strings and the six cinema scripts; the boss window's pictures and the named effects are
-#     somewhere (OUT/BASE, the full install's base pack etc, or the client listing).
+#   * locale: the locale_game strings and the six cinema scripts at the names the server's RUN_CINEMA sends; the boss
+#     window's pictures (uiscript/guildwhitedragonlairwindow.py, uiguildwhitedragon.py, the .sub images) and the named
+#     effects on the players' install (2.37 + 3.0.1 zips + OUT, tools/uicheck - not the exe smoke client's etc).
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/balathor/verify_balathor_packs.py \
 #     <OUT pack dir> [<BASE pack dir>]
 import hashlib
@@ -33,7 +34,6 @@ OUT = args[0]
 BASE = args[1] if len(args) > 1 else '/opt/metin2/cache/cY/azbase'
 WORK = '/opt/metin2/cache/yohara/cape301-work'
 PRE_LST = '/opt/metin2/cache/tcm/gf28/ourpacks_pre.txt'
-ETC_INDEX = '/opt/metin2/cache/exebuild/smoke/client/pack/etc.index'
 ROOT_ICONS = os.path.normpath(os.path.join(HERE, '..', '..', 'root', 'icon', 'item'))
 ZIP_LIMIT = 29 * 1024 * 1024
 MAN = json.load(open(os.path.join(HERE, 'balathor_manifest.json'), encoding='utf-8'))
@@ -71,10 +71,8 @@ for l in open(PRE_LST, encoding='utf-8', errors='replace'):
     t = l.rstrip('\n').split(' ', 3)
     if len(t) == 4:
         NAMES.add(norm(t[3]))
-if os.path.exists(ETC_INDEX):
-    NAMES |= set(e['name'] for e in m2pack.read_index(ETC_INDEX)[2])
-else:
-    notes.append('no full-install etc pack at %s - the window pictures are not checked against it' % ETC_INDEX)
+# (the exe smoke client's etc pack is NOT the players' etc: 3.0.4 counted it and shipped no boss window pictures -
+# exception.Abort at the cinema. The pictures are checked against the players' install below, tools/uicheck.)
 
 
 def read(name):
@@ -203,10 +201,28 @@ for n, b in bp.locale_files().items():
 for k in D['effects']:
     if k not in NAMES:
         fails.append('effect %s in no pack or listing' % k)
-for n in ('freezing_keyboard.sub', 'freezing_space_bar_default.sub', 'gauge_empty.sub', 'gauge_full.sub',
-          'gauge_shine_01.sub'):
-    if D['ui_dir'] + n not in NAMES:
-        fails.append('window picture %s%s in no pack or listing' % (D['ui_dir'], n))
+# the cinema scripts at the names the server's RUN_CINEMA sends (linux-port .../balathor.cpp, balathor_manager.cpp)
+SRV = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..', 'linux-port', 'overlays', 'playerbot', 'src', 'game', 'src'))
+for f in ('balathor.cpp', 'balathor_manager.cpp'):
+    path = os.path.join(SRV, f)
+    if not os.path.exists(path):
+        notes.append('server source %s not here - the cinema names not compared' % path)
+        continue
+    for cam in sorted(set(re.findall(r'"(locale/common/camera/[^"]+\.txt)"', open(path, encoding='latin1').read()))):
+        if read(cam.lower()) is None:
+            fails.append('cinema %s (sent by %s) in no pack' % (cam, f))
+        elif CONTENT[cam.lower()][0] != 'locale':
+            notes.append('cinema %s is in pack %s' % (cam, CONTENT[cam.lower()][0]))
+# the boss window / frost pictures on the PLAYERS' install (klient-test-2.37 + yohara-3.0.1 zips + OUT): every name the
+# two root files open, the window folder and the image of every .sub (tools/uicheck/check_ui_assets.py)
+sys.path.insert(0, os.path.join(HERE, '..', 'uicheck'))
+import check_ui_assets as U  # noqa: E402
+ui_names = sorted(set(MAN.get('ui', [])) | set(D.get('ui_files', [])))
+if len([n for n in ui_names if n.startswith(D['ui_dir']) and n.endswith('.sub')]) < 18:
+    fails.append('balathor_manifest.json "ui": the window folder %s is not staged (stage_balathor.py)' % D['ui_dir'])
+probs, inst, nchk = U.feature_problems(OUT, D['ui_python'], names=ui_names + list(D['effects']))
+fails += ['players\' install: ' + p for p in probs]
+notes.append('%d window / frost / effect picture(s) checked on the players\' install' % nchk)
 
 print('balathor: %d new pack(s) %s, %d staged files, %d problem(s), %d note(s)' % (
     len(MAN['new_packs']), MAN['new_packs'], sum(len(p) for p in MAN['packs'].values()), len(fails), len(notes)))

@@ -76,6 +76,24 @@ def Chat(text):
 	chat.AppendChat(chat.CHAT_TYPE_INFO, PREFIX + text)
 
 
+_LOAD_FAILED = {}
+
+
+def LoadFailed(what):
+	"""MT2009_PLUS_AUTOHUNT_TEST_UI_SAFE_V1: a window whose pictures the player's packs lack (3.0.4 shipped none)
+	raised on every Alt+H. Now: the error once to syserr, a chat line on each try, the window stays closed."""
+	if not _LOAD_FAILED.get(what):
+		_LOAD_FAILED[what] = True
+		try:
+			import dbg
+			import sys
+			import traceback
+			dbg.TraceError('uiautohunt_test %s: %s' % (what, ''.join(traceback.format_exception(*sys.exc_info())).strip()))
+		except Exception:
+			pass
+	Chat('nie uda\xb3o si\xea wczyta\xe6 okna (brak plik\xf3w klienta) - zaktualizuj klienta.')
+
+
 def HasExe():
 	return hasattr(player, 'AutoHuntTestStart')
 
@@ -792,7 +810,11 @@ class AutoHuntTestWindow(ui.ScriptWindow):
 		if self.rangeWindow and self.rangeWindow.IsShow():
 			self.rangeWindow.Close()
 		if self.optionWindow is None:
-			self.optionWindow = OptionWindow(self)
+			try:
+				self.optionWindow = OptionWindow(self)
+			except Exception:
+				LoadFailed('OptionWindow')
+				return
 		if self.optionWindow.IsShow():
 			self.optionWindow.Close()
 			return
@@ -805,7 +827,11 @@ class AutoHuntTestWindow(ui.ScriptWindow):
 		if self.optionWindow and self.optionWindow.IsShow():
 			self.optionWindow.Close()
 		if self.rangeWindow is None:
-			self.rangeWindow = RangeWindow(self)
+			try:
+				self.rangeWindow = RangeWindow(self)
+			except Exception:
+				LoadFailed('RangeWindow')
+				return
 		if self.rangeWindow.IsShow():
 			self.rangeWindow.Close()
 			return
@@ -868,7 +894,14 @@ def ToggleWindow(game=None):
 	_EnsureKeeper(game)
 	window = _data['window']
 	if window is None:
-		window = AutoHuntTestWindow()
+		if _LOAD_FAILED.get('AutoHuntTestWindow'):
+			LoadFailed('AutoHuntTestWindow')
+			return
+		try:
+			window = AutoHuntTestWindow()
+		except Exception:
+			LoadFailed('AutoHuntTestWindow')
+			return
 		_data['window'] = window
 	if window.IsShow():
 		window.Close()
