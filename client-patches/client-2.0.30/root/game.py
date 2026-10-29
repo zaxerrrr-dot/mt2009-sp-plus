@@ -344,8 +344,11 @@ class GameWindow(ui.ScriptWindow):
 		if getattr(app, "ENABLE_NPC_LOCATION_HELPER", 0):
 			try:
 				__import__("uinpclocationhelper").OnGameOpen(self.interface)
-			except ImportError:
-				pass
+			except Exception:
+				# MT2009_PLUS_NPC_LOCATION_HELPER_V3: said in syserr with the traceback (an ImportError was swallowed)
+				import dbg
+				import traceback
+				dbg.TraceError("MT2009 NPC location helper (game.Open):\n%s" % traceback.format_exc())
 
 	# MT2009_PLUS_NPC_LOCATION_HELPER_V1: the exe's calls when the server answers (PythonNetworkStreamPhaseGame.cpp)
 	def RefreshNPCLocationHelperStatus(self):

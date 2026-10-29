@@ -18,14 +18,16 @@ import serverInfo as serverInfoModule
 import uiworldboss # MT2009_PLUS_WORLDBOSS_ICON_V1: the World Boss's icon on the atlas and the minimap
 # MT2009_PLUS_NPC_LOCATION_HELPER_V1 (Autor: Best Studio): Lokalizator NPC - the improved atlas (uinpclocationhelper.py);
 # an exe without the module npcLocationHelper keeps the old atlas only.
+# MT2009_PLUS_NPC_LOCATION_HELPER_V3: an exe that has the helper (app.ENABLE_NPC_LOCATION_HELPER) and still cannot import it
+# says why in syserr, with the traceback (an ImportError used to be swallowed - the classic atlas, not a word).
 try:
 	import uinpclocationhelper
-except ImportError:
+except Exception:
 	uinpclocationhelper = None
-except Exception, npcLocErr:
-	import dbg
-	dbg.TraceError("uinpclocationhelper: %s" % str(npcLocErr))
-	uinpclocationhelper = None
+	if getattr(app, "ENABLE_NPC_LOCATION_HELPER", 0):
+		import dbg
+		import traceback
+		dbg.TraceError("uinpclocationhelper import failed - only the classic atlas:\n%s" % traceback.format_exc())
 
 EVENT_SET_MINIMAP_HIDE_STATE = "EVENT_SET_MINIMAP_HIDE_STATE" # args | isHidden: boolean
 
@@ -340,7 +342,11 @@ class MiniMap(ui.ScriptWindow):
 		# MT2009_PLUS_NPC_LOCATION_HELPER_V1: the small atlas <-> the improved one (uinpclocationhelper.MiniMapBridge)
 		self.npcLocBridge = None
 		if uinpclocationhelper and getattr(app, "ENABLE_NPC_LOCATION_HELPER", 0):
-			self.npcLocBridge = uinpclocationhelper.MiniMapBridge(self)
+			try:
+				self.npcLocBridge = uinpclocationhelper.MiniMapBridge(self)
+			except Exception:
+				self.npcLocBridge = None
+				self.__NpcLocTrace("MiniMapBridge")
 
 		self.tooltipMiniMapOpen = MapTextToolTip()
 		self.tooltipMiniMapOpen.SetText(localeInfo.MINIMAP)
@@ -681,10 +687,29 @@ class MiniMap(ui.ScriptWindow):
 		miniMap.ScaleDown()
 		self.worldBossScale = max(0.5, getattr(self, "worldBossScale", 2.0) * 0.5) # MT2009_PLUS_WORLDBOSS_ICON_V1
 
+	# MT2009_PLUS_NPC_LOCATION_HELPER_V3: the improved map is the atlas (uinpclocationhelper.MiniMapBridge); when it
+	# fails, the traceback goes to syserr and the classic atlas opens
+	def __NpcLocTrace(self, where):
+		import dbg
+		import traceback
+		dbg.TraceError("MT2009 NPC location helper (uiminimap %s) - the classic atlas instead:\n%s" % (where, traceback.format_exc()))
+
+	def __NpcLocAtlas(self, toggle):
+		bridge = getattr(self, "npcLocBridge", None)
+		if not bridge:
+			return False
+		try:
+			if toggle:
+				return bridge.ToggleAtlas()
+			return bridge.ShowAtlas()
+		except Exception:
+			self.__NpcLocTrace(toggle and "ToggleAtlas" or "ShowAtlas")
+			return False
+
 	def ShowAtlas(self):
 		if not miniMap.IsAtlas():
 			return
-		if getattr(self, "npcLocBridge", None) and self.npcLocBridge.ShowAtlas(): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
+		if self.__NpcLocAtlas(False): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
 			return
 		if not self.AtlasWindow.IsShow():
 			self.AtlasWindow.Show()
@@ -692,7 +717,7 @@ class MiniMap(ui.ScriptWindow):
 	def ToggleAtlasWindow(self):
 		if not miniMap.IsAtlas():
 			return
-		if getattr(self, "npcLocBridge", None) and self.npcLocBridge.ToggleAtlas(): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
+		if self.__NpcLocAtlas(True): # MT2009_PLUS_NPC_LOCATION_HELPER_V1
 			return
 		if self.AtlasWindow.IsShow():
 			self.AtlasWindow.Hide()
