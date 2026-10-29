@@ -46,6 +46,9 @@ byname = {}
 for i, n, x, y, w, h in rows:
     byname.setdefault(n.lower(), []).append((x, y, w, h))
 GAME = os.path.join(yd.REPO, 'linux-port', 'docker', 'game')
+# a server map whose client folder has another name on purpose (the atlasinfo row names the client's folder):
+# Krypta Balathora - tools/balathor/stage_balathor.py stages GF's metin2_map_guild_whitedragon_boss as metin2_map_balathor
+CLIENT_FOLDER = {'metin2_map_guild_whitedragon_boss': 'metin2_map_balathor'}
 nmaps = 0
 for st in sorted(glob.glob(os.path.join(GAME, '*', 'map', '*', 'Setting.txt'))):
     batch = st[len(GAME) + 1:].split(os.sep)[0]
@@ -59,6 +62,7 @@ for st in sorted(glob.glob(os.path.join(GAME, '*', 'map', '*', 'Setting.txt'))):
         continue
     nmaps += 1
     want = kv['BasePosition'] + kv['MapSize']
+    folder = CLIENT_FOLDER.get(folder.lower(), folder)
     if want not in byname.get(folder.lower(), []):
         fails.append('atlasinfo: %s (%s) has no row %s (has %s)' % (folder, batch, want, byname.get(folder.lower())))
 srv = yd.server_elements()
