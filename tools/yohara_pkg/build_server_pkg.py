@@ -300,6 +300,7 @@ def main():
         src = os.path.join(a.test_tree, rel)
         if not os.path.isdir(src):
             raise SystemExit('missing in the test tree: %s' % src)
+        os.makedirs(os.path.join(root, rel), exist_ok=True)
         excl = ['--exclude=__pycache__'] + ['--exclude=*%s' % s for s in SKIP_SUFFIX]
         run(['rsync', '-a'] + excl + [src + '/', os.path.join(root, rel) + '/'])
     # the overlay's game sources mirrored, as 20_sync_test_tree.sh does
