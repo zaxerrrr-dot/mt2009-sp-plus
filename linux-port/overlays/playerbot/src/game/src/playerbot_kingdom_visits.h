@@ -65,6 +65,10 @@
 //   - the taunts: on the local chat only (SendPlayerBotLocalChat, the talking
 //     packet round the speaker), one line a side every RAID_TAUNT_SEC at most.
 //
+// MT2009_PLUS_BOT_KINGDOM_VISITS_V2: a shopper goes only with a reason - a
+// line there it would buy that its own kingdom does not sell at all, or sells
+// dearer (see "the reason to go" below); VISIT_PER_HOUR and VISIT_MAX are caps.
+//
 // Logs: PLAYERBOT_VISIT: (trips) and PLAYERBOT_TOWNRAID: (raids;
 // PLAYERBOT_RAID: is the world bosses').
 //
@@ -157,8 +161,27 @@ namespace
 		bool browsed = false;
 		long patrolX = 0, patrolY = 0;
 		DWORD patrolUntil = 0;
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V2: a shopper's reason - the line it
+		// goes for, bought first on arrival (owner 0: none, a raider).
+		DWORD pickOwner = 0, pickItem = 0, pickVnum = 0, pickQuantity = 0;
+		bool pickHanded = false;
 	};
 	std::map<DWORD, TPlayerBotKVTrip> s_mapPlayerBotKVTrips;
+
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V2: why a shopper goes - a line of the
+	// other kingdom's first village it would buy, there cheaper than the best
+	// at home (trip included) or not on sale at home at all.
+	struct TPlayerBotKVReason
+	{
+		BYTE target = 0;
+		bool onlyAbroad = false;
+		int priority = -1;          // the buyer's own rank of the line
+		DWORD vnum = 0, owner = 0, item = 0, quantity = 0, pieces = 0;
+		long long abroad = 0;       // what the line costs there (the part bought)
+		long long home = 0;         // the same pieces at the best price at home (0: none on sale)
+		long long fare = 0;         // the Teleporters both ways
+		long long saving = 0;
+	};
 
 	enum EPlayerBotKVRaidPhase { KV_RAID_GATHER = 1, KV_RAID_CROSS, KV_RAID_FIGHT, KV_RAID_OVER };
 	struct TPlayerBotKVRaid
@@ -431,7 +454,8 @@ namespace
 
 	// --------------------------------------------------------- the trips
 
-	void StartPlayerBotKVTrip(LPCHARACTER ch, BYTE kind, BYTE target, DWORD dwNow, const char* why)
+	void StartPlayerBotKVTrip(LPCHARACTER ch, BYTE kind, BYTE target, DWORD dwNow, const char* why,
+			const TPlayerBotKVReason* reason = NULL)
 	{
 		TPlayerBotKVTrip t;
 		t.kind = kind;
@@ -441,12 +465,33 @@ namespace
 		t.startedAt = dwNow;
 		t.phaseSince = dwNow;
 		t.progressAt = dwNow;
+		if (reason)
+		{
+			t.pickOwner = reason->owner;
+			t.pickItem = reason->item;
+			t.pickVnum = reason->vnum;
+			t.pickQuantity = reason->quantity;
+		}
 		s_mapPlayerBotKVTrips[ch->GetPlayerID()] = t;
 		++s_uPlayerBotKVTripsStarted;
 		ch->SetQuestFlag(PLAYERBOT_KV_AWAY_FLAG, 1);
-		sys_log(0, "PLAYERBOT_VISIT: start pid=%u name=%s kind=%s home=%u target=%u level=%u gold=%lld map=%ld why=%s",
-				ch->GetPlayerID(), ch->GetName(), kind == KV_KIND_RAID ? "raid" : "shop", (unsigned int)t.home,
-				(unsigned int)target, (unsigned int)ch->GetLevel(), (long long)ch->GetGold(), ch->GetMapIndex(), why);
+		if (!reason)
+		{
+			sys_log(0, "PLAYERBOT_VISIT: start pid=%u name=%s kind=%s kingdom=%u target=%u level=%u gold=%lld map=%ld why=%s",
+					ch->GetPlayerID(), ch->GetName(), kind == KV_KIND_RAID ? "raid" : "shop", (unsigned int)t.home,
+					(unsigned int)target, (unsigned int)ch->GetLevel(), (long long)ch->GetGold(), ch->GetMapIndex(), why);
+			return;
+		}
+		char homePrice[32];
+		if (reason->onlyAbroad)
+			snprintf(homePrice, sizeof(homePrice), "none");
+		else
+			snprintf(homePrice, sizeof(homePrice), "%lld", reason->home);
+		sys_log(0, "PLAYERBOT_VISIT: start pid=%u name=%s kind=shop kingdom=%u target=%u level=%u gold=%lld map=%ld why=%s item=%u home=%s abroad=%lld pieces=%u fare=%lld saving=%lld owner=%u line=%u rank=%d via=%s",
+				ch->GetPlayerID(), ch->GetName(), (unsigned int)t.home, (unsigned int)target, (unsigned int)ch->GetLevel(),
+				(long long)ch->GetGold(), ch->GetMapIndex(), reason->onlyAbroad ? "only_abroad" : "cheaper", reason->vnum,
+				homePrice, reason->abroad, reason->pieces, reason->fare, reason->onlyAbroad ? 0LL : reason->saving,
+				reason->owner, reason->item, reason->priority, why);
 	}
 
 	void SetPlayerBotKVPhase(LPCHARACTER ch, TPlayerBotKVTrip& t, BYTE phase, DWORD dwNow)
@@ -491,6 +536,12 @@ namespace
 			return;
 		const TPlayerBotKVTrip t = it->second;
 		s_mapPlayerBotKVTrips.erase(it);
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V2: the line the trip was for, never
+		// reached, is anybody's again.
+		if (t.pickItem && !t.pickHanded)
+			ReleasePlayerBotFarLine(t.pickItem, pid);
+#endif
 		// A meeting it planned there ends with it.
 		if (TPlayerBotMeetup* m = FindPlayerBotMeetupOf(pid))
 			EndPlayerBotMeetup(*m, false, "visit_over", ch, "Sorki, musze juz wracac do siebie.");
@@ -988,6 +1039,331 @@ namespace
 		return false;
 	}
 
+	// ------------------------------------------------- the reason to go
+
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V2 (the owner, 29 October, of V1's trips
+	// that set off for a random share of the free bots: "a bot that goes
+	// shopping goes to the foreign kingdom only if something there is cheaper,
+	// or if there is something there that cannot be bought in its own
+	// kingdom"). A shopper sets off for a line it would buy - the buyer's own
+	// test, RatePlayerBotOfflineLine, which the browse of the stands and the
+	// far look from a second village ask too - standing on a stand of the
+	// other kingdom's first village, and only when
+	//   - its kind (the vnum) is on no stand of its own kingdom at all, or
+	//   - the pieces it takes cost there, with the Teleporters both ways, at
+	//     least VISIT_CHEAPER_PCT percent less than the same pieces at the best
+	//     price of its own kingdom's stands, a saving of VISIT_MIN_SAVING yang
+	//     at least.
+	// The kingdom's trade gossip, as it were: the stands are read off the
+	// core's list of every stand (ikashop's, the auction house reads the same)
+	// into an index of the lowest price per kind - a kingdom's every map, and
+	// its first village's cheapest line per kind - once in
+	// PLAYERBOT_KV_INDEX_REFRESH_MS, and the kinds of the other kingdom's
+	// village that pass the price test against the home kingdom are kept per
+	// pair of kingdoms. A bot is weighed on the clock's turn (VISIT_PER_HOUR
+	// turns an hour, PLAYERBOT_KV_WEIGH_BOTS bots a turn at most, the first
+	// with a reason goes); of its both kingdoms the better reason - the
+	// buyer's rank, then a kind not sold at home, then the larger saving -
+	// names the target, the line is claimed for the trip (no other bot walks
+	// for it) and on arrival it is the buyer's pick before any browse.
+	const DWORD PLAYERBOT_KV_INDEX_REFRESH_MS = 4 * 60 * 1000;
+	const int PLAYERBOT_KV_WEIGH_BOTS = 8;       // bots weighed a clock's turn, at most
+	const int PLAYERBOT_KV_WEIGH_LOOKS = 96;     // lines rated for a bot and a kingdom, at most
+	const int PLAYERBOT_KV_WEIGH_PART_TRIES = 4; // of them part purchases of a stack
+	const int PLAYERBOT_KV_WEIGH_LEVEL_OVER = 10;// a kind of a level limit over the bot's by more is not looked at
+	const DWORD PLAYERBOT_KV_PICK_CLAIM_MS = 35 * 60 * 1000;
+	const DWORD PLAYERBOT_KV_PICK_WALK_MS = 3 * 60 * 1000;
+
+	struct TPlayerBotKVOffer
+	{
+		long long unit = 0;
+		DWORD owner = 0, item = 0, count = 0;
+	};
+	struct TPlayerBotKVMarket
+	{
+		std::unordered_map<DWORD, long long> best;         // vnum -> the lowest unit price on the kingdom's stands
+		std::unordered_map<DWORD, TPlayerBotKVOffer> m1;   // vnum -> the cheapest line of its first village
+		unsigned int lines = 0, m1Lines = 0;
+	};
+	struct TPlayerBotKVDeal
+	{
+		DWORD vnum = 0;
+		long long homeUnit = 0;   // 0: not on sale at home
+	};
+	TPlayerBotKVMarket s_aPlayerBotKVMarket[4];
+	std::vector<TPlayerBotKVDeal> s_avecPlayerBotKVDeals[4][4];   // [home][target]
+	DWORD s_dwPlayerBotKVIndexAt = 0;
+	int s_iPlayerBotKVIndexPct = -1;
+
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+	int GetPlayerBotKVShopChannel()
+	{
+		return CPlayerBotManager::instance().IsChannelTableMode()
+				? playerbot_channel_rules::SHOP_CHANNEL : (int)g_bChannel;
+	}
+
+	void RefreshPlayerBotKVMarketIndex(DWORD dwNow)
+	{
+		const int pct = KVSetting(PLAYERBOT_KV_CHEAPER_PCT);
+		if (s_dwPlayerBotKVIndexAt != 0 && dwNow - s_dwPlayerBotKVIndexAt < PLAYERBOT_KV_INDEX_REFRESH_MS &&
+				s_iPlayerBotKVIndexPct == pct)
+			return;
+		s_dwPlayerBotKVIndexAt = dwNow ? dwNow : 1;
+		s_iPlayerBotKVIndexPct = pct;
+		long m1[4] = { 0, 0, 0, 0 };
+		for (int e = 1; e <= 3; ++e)
+		{
+			s_aPlayerBotKVMarket[e] = TPlayerBotKVMarket();
+			m1[e] = GetPlayerBotKVM1(e);
+		}
+		const int shopChannel = GetPlayerBotKVShopChannel();
+		for (const auto& entry : ikashop::GetManager().GetPlayerBotOfflineShops())
+		{
+			const auto& shop = entry.second;
+			if (!shop || shop->GetDuration() == 0)
+				continue;
+			const auto spawn = shop->GetSpawn();
+			if ((int)spawn.channel != shopChannel)
+				continue;
+			const int e = playerbot_empire_rules::GetMapOwnerEmpire(spawn.map);
+			if (e < 1 || e > 3)
+				continue;
+			TPlayerBotKVMarket& market = s_aPlayerBotKVMarket[e];
+			const bool village = (long)spawn.map == m1[e];
+			const DWORD owner = shop->GetOwnerPID();
+			for (const auto& item : shop->GetItems())
+			{
+				const auto& line = item.second;
+				if (!line)
+					continue;
+				const long long total = (long long)line->GetPrice().GetTotalYangAmount();
+				if (total <= 0)
+					continue;
+				const DWORD count = std::max<DWORD>(1, (DWORD)line->GetInfo().count);
+				const long long unit = std::max<long long>(1, total / count);
+				const DWORD vnum = (DWORD)line->GetInfo().vnum;
+				++market.lines;
+				std::unordered_map<DWORD, long long>::iterator b = market.best.find(vnum);
+				if (b == market.best.end())
+					market.best[vnum] = unit;
+				else if (unit < b->second)
+					b->second = unit;
+				if (!village)
+					continue;
+				++market.m1Lines;
+				TPlayerBotKVOffer& o = market.m1[vnum];
+				if (o.unit == 0 || unit < o.unit)
+				{
+					o.unit = unit;
+					o.owner = owner;
+					o.item = (DWORD)item.first;
+					o.count = count;
+				}
+			}
+		}
+		unsigned int deals = 0, onlyAbroad = 0;
+		for (int home = 1; home <= 3; ++home)
+			for (int target = 1; target <= 3; ++target)
+			{
+				std::vector<TPlayerBotKVDeal>& list = s_avecPlayerBotKVDeals[home][target];
+				list.clear();
+				if (home == target)
+					continue;
+				const TPlayerBotKVMarket& here = s_aPlayerBotKVMarket[home];
+				const TPlayerBotKVMarket& there = s_aPlayerBotKVMarket[target];
+				for (std::unordered_map<DWORD, TPlayerBotKVOffer>::const_iterator it = there.m1.begin(); it != there.m1.end(); ++it)
+				{
+					std::unordered_map<DWORD, long long>::const_iterator h = here.best.find(it->first);
+					const long long homeUnit = h == here.best.end() ? 0 : h->second;
+					// The fare and the bot's pieces are its own (FindPlayerBotKVReason);
+					// the unit price alone must already pass.
+					if (homeUnit > 0 && it->second.unit * 100 > homeUnit * (100 - pct))
+						continue;
+					TPlayerBotKVDeal d;
+					d.vnum = it->first;
+					d.homeUnit = homeUnit;
+					list.push_back(d);
+					++deals;
+					if (homeUnit == 0)
+						++onlyAbroad;
+				}
+			}
+		sys_log(0, "PLAYERBOT_VISIT: price index lines=%u/%u/%u m1_lines=%u/%u/%u kinds=%u/%u/%u deals=%u only_abroad=%u cheaper_pct=%d",
+				s_aPlayerBotKVMarket[1].lines, s_aPlayerBotKVMarket[2].lines, s_aPlayerBotKVMarket[3].lines,
+				s_aPlayerBotKVMarket[1].m1Lines, s_aPlayerBotKVMarket[2].m1Lines, s_aPlayerBotKVMarket[3].m1Lines,
+				(unsigned int)s_aPlayerBotKVMarket[1].best.size(), (unsigned int)s_aPlayerBotKVMarket[2].best.size(),
+				(unsigned int)s_aPlayerBotKVMarket[3].best.size(), deals, onlyAbroad, pct);
+	}
+
+	// Whether `a` is a better reason to go than `b` (b.target 0: none yet).
+	bool IsBetterPlayerBotKVReason(const TPlayerBotKVReason& a, const TPlayerBotKVReason& b)
+	{
+		if (b.target == 0)
+			return true;
+		if (a.priority != b.priority)
+			return a.priority > b.priority;
+		if (a.onlyAbroad != b.onlyAbroad)
+			return a.onlyAbroad;
+		return a.saving > b.saving;
+	}
+
+	// The bot's reason to go to one of `targets`, if it has one: the deals of
+	// its kingdom with each (a turn starting at a drawn place of the list),
+	// each line rated by the buyer.
+	bool FindPlayerBotKVReason(LPCHARACTER ch, const int* targets, int nt, DWORD dwNow, TPlayerBotKVReason& out,
+			int& looked)
+	{
+		out = TPlayerBotKVReason();
+		const int home = ch->GetEmpire();
+		if (home < 1 || home > 3)
+			return false;
+		const DWORD pid = ch->GetPlayerID();
+		const long long fare = 2LL * (long long)GetPlayerBotTeleporterFee(ch);
+		const long long budget = (long long)playerbot_offline::Affordable(ch->GetGold(), GetPlayerBotReservedGold(ch),
+				PLAYERBOT_SHOPPING_GOLD_FLOOR) - fare;
+		if (budget <= 0)
+			return false;
+		const int pct = KVSetting(PLAYERBOT_KV_CHEAPER_PCT);
+		const long long minSaving = KVSetting(PLAYERBOT_KV_MIN_SAVING);
+		const int maxLevel = (int)ch->GetLevel() + PLAYERBOT_KV_WEIGH_LEVEL_OVER;
+		auto& manager = ikashop::GetManager();
+		for (int i = 0; i < nt; ++i)
+		{
+			const int target = targets[i];
+			if (target < 1 || target > 3 || target == home)
+				continue;
+			const std::vector<TPlayerBotKVDeal>& deals = s_avecPlayerBotKVDeals[home][target];
+			if (deals.empty())
+				continue;
+			const TPlayerBotKVMarket& market = s_aPlayerBotKVMarket[target];
+			int looks = 0, partTries = PLAYERBOT_KV_WEIGH_PART_TRIES;
+			const size_t n = deals.size();
+			const size_t start = (size_t)number(0, (int)n - 1);
+			for (size_t k = 0; k < n && looks < PLAYERBOT_KV_WEIGH_LOOKS; ++k)
+			{
+				const TPlayerBotKVDeal& d = deals[(start + k) % n];
+				std::unordered_map<DWORD, TPlayerBotKVOffer>::const_iterator o = market.m1.find(d.vnum);
+				if (o == market.m1.end() || o->second.unit > budget || o->second.owner == pid)
+					continue;
+				const TItemTable* table = ITEM_MANAGER::instance().GetTable(d.vnum);
+				if (!table || GetPlayerBotProtoLevelLimit(table) > maxLevel)
+					continue;
+				if (IsPlayerBotLineClaimedByOther(o->second.item, pid, dwNow))
+					continue;
+				auto shop = manager.GetShopByOwnerID(o->second.owner);
+				if (!shop || shop->GetDuration() == 0)
+					continue;
+				auto line = shop->GetItem(o->second.item);
+				if (!line || IsPlayerBotPlainGearLineForPeople(o->second.owner, o->second.item, line->GetTable(),
+						line->GetInfo().aAttr, dwNow))
+					continue;
+				++looks;
+				long long price = 0;
+				int part = 0;
+				const int priority = RatePlayerBotOfflineLine(ch, shop, line, budget, false, price, NULL, NULL, &part,
+						&partTries);
+				// A whim's line (a bargain, an impulse: rank 0) is no reason
+				// for a trip; a line the bot needs is.
+				if (priority <= 0 || price <= 0)
+					continue;
+				TPlayerBotKVReason r;
+				r.target = (BYTE)target;
+				r.priority = priority;
+				r.vnum = d.vnum;
+				r.owner = o->second.owner;
+				r.item = o->second.item;
+				r.quantity = part > 0 ? (DWORD)part : 0;
+				r.pieces = part > 0 ? (DWORD)part : std::max<DWORD>(1, (DWORD)line->GetInfo().count);
+				r.abroad = price;
+				r.fare = fare;
+				if (d.homeUnit <= 0)
+					r.onlyAbroad = true;
+				else
+				{
+					r.home = d.homeUnit * (long long)r.pieces;
+					const long long cost = price + fare;
+					r.saving = r.home - cost;
+					if (cost * 100 > r.home * (100 - pct) || r.saving < minSaving)
+						continue;
+				}
+				if (IsBetterPlayerBotKVReason(r, out))
+					out = r;
+			}
+			looked += looks;
+		}
+		return out.target != 0;
+	}
+
+	// At the square: the line the trip was for is the buyer's pick before
+	// any browse (the market's pass walks it to the stand and buys it). Sold
+	// meanwhile, the cheapest line of the same kind there takes its place,
+	// when one is left.
+	void HandPlayerBotKVPick(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotKVTrip& t, DWORD dwNow)
+	{
+		if (t.kind != KV_KIND_SHOP || !t.pickOwner || t.pickHanded)
+			return;
+		t.pickHanded = true;
+		const DWORD pid = ch->GetPlayerID();
+		auto& manager = ikashop::GetManager();
+		auto& o = state.offlineShop;
+		DWORD owner = t.pickOwner, item = t.pickItem;
+		bool still = false;
+		{
+			auto shop = manager.GetShopByOwnerID(owner);
+			still = shop && shop->GetDuration() != 0 && shop->GetItem(item) && shop->GetSpawn().map == ch->GetMapIndex();
+		}
+		if (!still)
+		{
+			ReleasePlayerBotFarLine(t.pickItem, pid);
+			owner = item = 0;
+			long long bestUnit = 0;
+			const int shopChannel = GetPlayerBotKVShopChannel();
+			for (const auto& entry : manager.GetPlayerBotOfflineShops())
+			{
+				const auto& shop = entry.second;
+				if (!shop || shop->GetDuration() == 0 || shop->GetOwnerPID() == pid)
+					continue;
+				const auto spawn = shop->GetSpawn();
+				if ((long)spawn.map != ch->GetMapIndex() || (int)spawn.channel != shopChannel)
+					continue;
+				for (const auto& line : shop->GetItems())
+				{
+					if (!line.second || (DWORD)line.second->GetInfo().vnum != t.pickVnum ||
+							IsPlayerBotLineClaimedByOther((DWORD)line.first, pid, dwNow))
+						continue;
+					const long long unit = (long long)line.second->GetPrice().GetTotalYangAmount() /
+							std::max<long long>(1, (long long)line.second->GetInfo().count);
+					if (unit > 0 && (bestUnit == 0 || unit < bestUnit))
+					{
+						bestUnit = unit;
+						owner = shop->GetOwnerPID();
+						item = (DWORD)line.first;
+					}
+				}
+			}
+		}
+		sys_log(0, "PLAYERBOT_VISIT: buys first pid=%u name=%s item=%u owner=%u line=%u found=%s",
+				pid, ch->GetName(), t.pickVnum, owner, item, !owner ? "none" : still ? "same" : "other_line");
+		if (!owner)
+			return;
+		DropPlayerBotOfflinePick(ch, state, "kingdom_visit_pick");
+		o.buyOwner = owner;
+		o.buyItem = item;
+		o.buyQuantity = still ? t.pickQuantity : 0;
+		o.buyUntil = dwNow + PLAYERBOT_KV_PICK_WALK_MS;
+		o.farBuy = true;
+		ClaimPlayerBotLineUntil(item, pid, dwNow, o.buyUntil);
+	}
+#else
+	void RefreshPlayerBotKVMarketIndex(DWORD) {}
+	bool FindPlayerBotKVReason(LPCHARACTER, const int*, int, DWORD, TPlayerBotKVReason& out, int&)
+	{
+		out = TPlayerBotKVReason();
+		return false;
+	}
+	void HandPlayerBotKVPick(LPCHARACTER, TPlayerBotAIState&, TPlayerBotKVTrip& t, DWORD) { t.pickHanded = true; }
+#endif
+
 	// ------------------------------------------------------------- the tick
 
 	// The village's square reached: the stay, a word, the stands looked at at
@@ -1011,6 +1387,8 @@ namespace
 		state.offlineShop.nextBrowse = dwNow;
 #endif
 		state.dwNextShoppingTime = dwNow;
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V2: what it came for, first.
+		HandPlayerBotKVPick(ch, state, t, dwNow);
 		if (t.kind == KV_KIND_SHOP && !t.greeted && number(1, 100) <= 40)
 		{
 			t.greeted = true;
@@ -1526,15 +1904,21 @@ namespace
 		s_mapPlayerBotKVRaids.clear();
 	}
 
-	void StartPlayerBotKVShoppers(int n, DWORD dwNow, const char* why)
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V2: up to `n` shoppers, each with its
+	// reason (FindPlayerBotKVReason) - PLAYERBOT_KV_WEIGH_BOTS bots weighed for
+	// each one at most, VISIT_MAX away at once at most. A bot with no reason
+	// stays at home.
+	int StartPlayerBotKVShoppers(int n, DWORD dwNow, const char* why)
 	{
 		if (n <= 0)
-			return;
+			return 0;
 		int active = 0;
 		for (std::map<DWORD, TPlayerBotKVTrip>::const_iterator it = s_mapPlayerBotKVTrips.begin(); it != s_mapPlayerBotKVTrips.end(); ++it)
 			if (it->second.kind == KV_KIND_SHOP)
 				++active;
 		const int cap = KVSetting(PLAYERBOT_KV_MAX);
+		if (active >= cap)
+			return 0;
 		const int minLevel = KVSetting(PLAYERBOT_KV_MIN_LEVEL);
 		const long long minGold = KVSetting(PLAYERBOT_KV_MIN_GOLD);
 		std::vector<LPCHARACTER> pool;
@@ -1550,8 +1934,12 @@ namespace
 				continue;
 			pool.push_back(c);
 		}
-		int started = 0;
-		while (started < n && active < cap && !pool.empty())
+		if (pool.empty())
+			return 0;
+		RefreshPlayerBotKVMarketIndex(dwNow);
+		int started = 0, weighed = 0, looked = 0;
+		const int maxWeighed = n * PLAYERBOT_KV_WEIGH_BOTS;
+		while (started < n && active < cap && weighed < maxWeighed && !pool.empty())
 		{
 			const size_t k = (size_t)number(0, (int)pool.size() - 1);
 			LPCHARACTER c = pool[k];
@@ -1571,10 +1959,23 @@ namespace
 			}
 			if (nt == 0)
 				continue;
-			StartPlayerBotKVTrip(c, KV_KIND_SHOP, (BYTE)targets[number(0, nt - 1)], dwNow, why);
+			++weighed;
+			TPlayerBotKVReason reason;
+			if (!FindPlayerBotKVReason(c, targets, nt, dwNow, reason, looked))
+				continue;
+#if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)
+			// The line is this trip's: no other bot walks for it meanwhile.
+			ClaimPlayerBotLineUntil(reason.item, c->GetPlayerID(), dwNow, dwNow + PLAYERBOT_KV_PICK_CLAIM_MS);
+#endif
+			StartPlayerBotKVTrip(c, KV_KIND_SHOP, reason.target, dwNow, why, &reason);
 			++started;
 			++active;
 		}
+		if (started == 0)
+			PlayerBotLogThrottled("kv_no_reason", dwNow,
+					"PLAYERBOT_VISIT: no reason to go via=%s weighed=%d lines_rated=%d unweighed=%u away=%d",
+					why, weighed, looked, (unsigned int)pool.size(), active);
+		return started;
 	}
 
 	// The raid on a kingdom's village: one bot guild of another kingdom.
