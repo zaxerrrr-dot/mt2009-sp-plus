@@ -726,6 +726,17 @@ void CActorInstance::OnShootDamage()
 	{
 		__Shake(100);
 
+#ifdef ENABLE_MT2009_RUN_THROUGH_ARROWS
+		// MT2009_PLUS_AUTOHUNT_RUN_ON_HIT_V1 (exe): a player's character that runs or walks is
+		// only shaken by an arrow or a spell that reaches it. The flinch (DAMAGE, then WAIT)
+		// ended the run motion the character moves by: a walk by mouse stopped for good,
+		// Auto Lowy's stood until its next step (root uiautohunt.py, WALK_KEEP_SECONDS).
+		// The server never sees the flinch, so nothing else changes; a character standing
+		// still flinches as before, and so does every monster.
+		if (__IsMoveMotion() && (m_isMain || TYPE_PC == m_eActorType))
+			return;
+#endif
+
 		if (!isLock() && !__IsKnockDownMotion() && !__IsStandUpMotion())
 		{
 			if (InterceptOnceMotion(CRaceMotionData::NAME_DAMAGE))
