@@ -516,6 +516,9 @@ ACMD(do_balathor)
 {
 	std::vector<std::string> vecArgs;
 	split_argument(argument, vecArgs);
+	// MT2009_PLUS_BALATHOR_CMD_V1 (29.10.2026): our interpreter passes only the text after "balathor", the module
+	// reads its sub-command at [1] - put the command's name back at [0] ("/balathor next_success", "unpoly").
+	vecArgs.insert(vecArgs.begin(), "balathor");
 	if (vecArgs.size() < 2) { return; }
 	else if (vecArgs[1] == "unpoly")
 	{
