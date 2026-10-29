@@ -424,6 +424,10 @@ namespace
 		CPVP key(victim->GetPlayerID(), attacker->GetPlayerID());
 		if (CPVPManager::instance().Find(key.GetCRC()) != NULL)
 			return true;
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V1: a raid's blow between two bots is
+		// the raid's, which answers it itself (playerbot_kingdom_visits.h).
+		if (IsPlayerBotKingdomRaidBlow(victim, attacker))
+			return true;
 		CGuild* mine = victim->GetGuild();
 		CGuild* theirs = attacker->GetGuild();
 		return mine && theirs && mine != theirs && mine->UnderWar(theirs->GetID());

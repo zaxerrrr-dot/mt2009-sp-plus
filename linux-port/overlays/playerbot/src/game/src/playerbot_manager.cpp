@@ -390,6 +390,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // - Zaklety Las, the loot runs on the 90-level maps - last,
 // after the temple, the dungeon runs and everything they borrow.
 #include "playerbot_yohara_bots.h"
+// MT2009_PLUS_BOT_KINGDOM_VISITS_V1 (include): the bots' shopping trips to
+// another kingdom's first village through Orc Valley and the guilds' raids on
+// one - last, after the meetings, the market and the guild war it borrows.
+#include "playerbot_kingdom_visits.h"
 
 namespace
 {
@@ -7085,6 +7089,10 @@ void CPlayerBotManager::Update()
 	ManagePlayerBotBossRaids(dwNow);
 	// The Devil's Catacomb (playerbot_catacomb.h).
 	ManagePlayerBotCatacombRaids(dwNow);
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V1 (pass): the trips to another kingdom's
+	// first village and the raids on one - their starts and their clocks
+	// (playerbot_kingdom_visits.h).
+	ManagePlayerBotKingdomVisits(dwNow);
 	// MT2009_PLUS_BOT_DUNGEON_RUNS_V1 (pass): the bots' own dungeon runs - the
 	// next call when its time has come, the gatherings, the runs under way
 	// and their ends (playerbot_dungeon_runs.h).
@@ -7472,6 +7480,13 @@ WritePlayerBotGuildStatus(dwNow);
 		if (ManagePlayerBotGuildWar(ch, state, dwNow))
 			continue;
 
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V1 (tick): a trip to another kingdom's
+		// first village - the way there and back, a raid's fight - and a
+		// village's own bots defending it from a raid; at the square the
+		// market's pass below has the tick (playerbot_kingdom_visits.h).
+		if (ManagePlayerBotKingdomVisit(ch, state, dwNow))
+			continue;
+
 		// A broken stone's loot window comes before a player's quarrel: the
 		// drop is the bot's for thirty seconds and then anybody's, and a
 		// player who fought the bot over the stone waited those seconds out
@@ -7542,6 +7557,10 @@ WritePlayerBotGuildStatus(dwNow);
 		// around every couple of minutes - and claims the tick when it buys, so
 		// the purchase is never mixed into the same pass as a fight.
 		if (ManagePlayerBotShopping(ch, state, dwNow))
+			continue;
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V1 (hold): a visitor at the foreign
+		// village's square stays there between its looks at the stands.
+		if (HoldPlayerBotKingdomVisit(ch, state, dwNow))
 			continue;
 
 		if (ch->IsItemLoaded() && dwNow >= state.dwNextInventoryMaintenanceTime)

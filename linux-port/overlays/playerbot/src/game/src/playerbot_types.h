@@ -7640,6 +7640,13 @@ namespace
 	// MT2009_PLUS_SHOUTERS_V1: the three shouters of the first villages
 	// (playerbot_shouters.h), kept out of everything the population does.
 	bool IsPlayerBotShouterPID(DWORD pid);
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V1 (playerbot_kingdom_visits.h, included
+	// last): a bot on a trip to another kingdom's first village (shopping or a
+	// raid), a character a raid lets this bot strike, and a blow between two
+	// bots that a raid explains (the Anti-PK protocol leaves it alone).
+	bool IsPlayerBotOnKingdomVisit(DWORD pid);
+	bool IsPlayerBotKingdomRaidFoe(LPCHARACTER ch, LPCHARACTER target);
+	bool IsPlayerBotKingdomRaidBlow(LPCHARACTER victim, LPCHARACTER attacker);
 	// MT2009_PLUS_MEDAL_SHOUTERS_V1: Tieru's three, medal droppers that shout
 	// (playerbot_shouters.h); not counted by IsPlayerBotShouterPID.
 	bool IsPlayerBotMedalShouterPID(DWORD pid);
