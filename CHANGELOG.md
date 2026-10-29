@@ -17,6 +17,63 @@ every version here.
 
 ---
 
+## 2.40.0 — 2026-10-30 — wyprawy i najazdy botów, dropki surowców, mapy 90, Katakumby
+
+Wymaga nowego klienta **2.0.71** (Auto Łowy, dane przedmiotów). Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
+
+### Wyprawy i najazdy botów na inne królestwa
+**Wyprawy na zakupy.** Boty chodzą teraz na zakupy do M1 innego królestwa – ale tylko wtedy, gdy mają po co: gdy tamtejszy stragan ma coś, czego w ich królestwie nie kupią, albo ma to wyraźnie taniej (domyślnie co najmniej 15% taniej, licząc Teleporter w obie strony, i co najmniej 20 000 Yang oszczędności).
+- Idą przez Dolinę Orków: wchodzą swoim wejściem, wychodzą bramą tamtego królestwa, a do domu wracają Teleporterem tamtej wioski.
+- Na miejscu najpierw kupują to, po co przyszły, potem przeglądają stragany i czasem dogadują się z miejscowymi botami na czacie handlowym (wymiana w oknie handlu przy kowalu).
+- W obcym królestwie są neutralne – nikogo nie atakują.
+
+**Najazdy.** Mniej więcej raz na godzinę na każde królestwo (3 najazdy na godzinę) gildia botów z innego królestwa – a gdy żadna się nie nada, wataha botów 40+ z jednego królestwa – robi 10–20-minutowy najazd na wioskę M1.
+- Najeźdźcy atakują w wiosce wszystkich z innych królestw, boty i graczy – poza strefą bezpieczną i poniżej poziomu ochrony; pokonanego zostawiają na minutę w spokoju.
+- Wioska się broni: miejscowe boty ruszają na najeźdźców, a kolejne wracają do domu na pomoc.
+- Gdy najeźdźcy giną za szybko albo za często, wycofują się do strefy bezpiecznej, robią zakupy i wracają do siebie.
+- W trakcie najazdu obie strony wymieniają się docinkami – tylko na zwykłym czacie, bez wulgaryzmów.
+- Boty w trakcie wyprawy albo najazdu zostają na swoim kanale do końca.
+
+Wszystko ustawisz w panelu (sekcja „Wycieczki i najazdy na inne królestwa”): włączniki, liczby, progi odwrotu i przycisk „Najazd teraz”. GM może też użyć `/eventflag bot_raid_now 1|2|3` albo `/eventflag bot_visit_now N`.
+
+### Dropki surowców gildii
+Poprawiłem dropki surowców gildii (dziękuję graczowi za dokładne zgłoszenie i analizę!):
+- w swoim oknie zakupów kupują teraz najpierw zwoje, potem lepszą broń i zbroję – tak jak inne boty – a materiały dopiero z reszty złota;
+- noszonego ekwipunku nie ulepszają już u Kowala bez zwoju, więc go nie palą;
+- na Sohan, Hwang i Ziemię Ognia idą dopiero w ekwipunku na ten poziom;
+- rola dropka losuje się od nowa co 24 h czasu gry postaci (suwak „GUILD_DROPPER_HOURS” w panelu, 0 = stały wybór jak dawniej), a liczba dropków zostaje taka sama.
+
+### Mapy 90 poz. i Zaklęty Las
+- Podniosłem Yang z bossów i Metinów na czterech mapach 90 poz. oraz z Metinów i bossów Zaklętego Lasu (bossowie od 150 000 Yang, Metiny od 60 000 do 190 000 Yang).
+- Bossowie i Metiny map 90 poz. dają Winogrona, a Zaklętego Lasu – Ananasy.
+- Peleryny Męstwa z dropu można teraz wystawić na straganie, wymienić i sprzedać.
+- Pierścienie Doświadczenia i rękawice z dropu można wystawiać na rynku i wymieniać; pierścień z map 90 poz. wreszcie działa po założeniu, a boty je kupują i zakładają na polowanie.
+- Zbroje 66 poz. od +4 do +9 sprzedasz Handlarce, a wszystkie zbroje 66 poz. mają wyższą cenę skupu.
+
+### Lochy
+- Balans dungeonów.
+
+### Katakumby Diabła
+- Statua Kuda na 1. piętrze reaguje na kliknięcie: bez klucza mówi, co zrobić, z Kluczem Kryształu Duszy pyta, czy otworzyć wrota (przeciąganie klucza na statuę dalej działa, a klucz znika dopiero po oknach dialogu).
+- Żółwia Skała na 2. piętrze znowu przenosi drużynę na 3. piętro – także drużyny z botami (wcześniej po „Za chwilę zostaniesz przeniesiony.” nic się nie działo).
+
+### Auto Łowy
+Poprawiłem Auto Łowy: postać nie staje już pod strzałami łuczników (marsz wznawia się od razu), zawsze wybiera naprawdę najbliższego potwora (potwór za drzewem czy płotem nie przegrywa już z dalekim na otwartej przestrzeni), a buffy odnawia przed ich końcem, nie dopiero po wygaśnięciu.
+
+### Panel
+- Nowa strona „Statystyki botów” (Gracze i boty): jakich bossów zabiły boty i ile razy, jakie lochy robią (wejścia, ukończenia, porażki, czasy) i które kamienie Metin biją najczęściej – za 24 h, 7 dni, 30 dni albo cały czas.
+
+### Klient 2.0.71
+- Nowe exe (Auto Łowy: postać w ruchu nie zatrzymuje się na trafieniu strzałą).
+- Nowe dane przedmiotów (peleryny, pierścienie, rękawice, zbroje 66).
+
+## Klient 2.0.71 — 2026-10-30 — Auto Łowy i dane przedmiotów
+- **Auto Łowy** – nowe exe: postać w biegu nie zatrzymuje się po trafieniu strzałą lub czarem (Auto Łowy i zwykły marsz myszką); wybór „Najbliższy”/„Fokus” z marginesem, mniej skakania między celami; buffy odnawiane przed ich końcem.
+- **Dane przedmiotów** – Peleryna Męstwa, Pierścienie Doświadczenia i Rękawica Złodzieja z dropu do sprzedania, wymiany i wystawienia w sklepie; zbroje 66 poz. z nowymi cenami (od +4 do sprzedania u NPC).
+- Zmieniły się dane przedmiotów – po aktualizacji pobierz ponownie zip z edytora bazy danych (gra przypomni o tym po zalogowaniu; MT2009-Patcher pobierze go sam).
+
+---
+
 ## 2.39.0 — 2026-10-27 — Halloween, kamienie Metin z przedmiotów, broń botów
 
 ### Halloween
