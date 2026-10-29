@@ -496,17 +496,17 @@ STEP_BETWEEN_CATEGORIES = 5
 def IsVIPAffect(affect):
 	return affect in AFFECT_CATEGORIES["vip"]
 
-# MT2009_PLUS_HORSE40_V1: the timed horse skills (server-patches/konie, konie_rozwoj.cpp: 760-768) - GF's horse skill
+# MT2009_PLUS_HORSE40_V1: the timed horse skills (server-patches/konie, konie_rozwoj.cpp: 780-788) - GF's horse skill
 # icons of the pack "konie"; the value is the point's (the speeds in per cent, the Sung Ma wills in points).
-for _konie in ((760, "Jazda (Zwinne Kopyta): pr\xeadko\x9c\xe6 ruchu +%d%%", "nimble"),
-		(761, "Jazda (Gwa\xb3t. Wichura): pr\xeadko\x9c\xe6 ataku +%d%%", "speed"),
-		(762, "Jazda (Bezszelest. Ch\xf3d): Lekki Krok, pr\xeadko\x9c\xe6 ruchu +%d", "gyeonggong"),
-		(763, "Jazda (Nie\x9cmiertelno\x9c\xe6): niewra\xbfliwo\x9c\xe6 na obra\xbfenia", "invisibility"),
-		(764, "Jazda (Brak Odrzutu): brak odrzutu", "knockback"),
-		(765, "Jazda (W. SungMa. SI\xa3A): Wola SungMa (SI\xa3A) +%d", "sungma_str"),
-		(766, "Jazda (W. SungMa. WIT): Wola SungMa (WIT) +%d", "sungma_hp"),
-		(767, "Jazda (W. SungMa. ODP): Wola SungMa (ODP) +%d", "sungma_move"),
-		(768, "Jazda (W. SungMa. INT): Wola SungMa (INT) +%d", "sungma_immune")):
+for _konie in ((780, "Jazda (Zwinne Kopyta): pr\xeadko\x9c\xe6 ruchu +%d%%", "nimble"),
+		(781, "Jazda (Gwa\xb3t. Wichura): pr\xeadko\x9c\xe6 ataku +%d%%", "speed"),
+		(782, "Jazda (Bezszelest. Ch\xf3d): Lekki Krok, pr\xeadko\x9c\xe6 ruchu +%d", "gyeonggong"),
+		(783, "Jazda (Nie\x9cmiertelno\x9c\xe6): niewra\xbfliwo\x9c\xe6 na obra\xbfenia", "invisibility"),
+		(784, "Jazda (Brak Odrzutu): brak odrzutu", "knockback"),
+		(785, "Jazda (W. SungMa. SI\xa3A): Wola SungMa (SI\xa3A) +%d", "sungma_str"),
+		(786, "Jazda (W. SungMa. WIT): Wola SungMa (WIT) +%d", "sungma_hp"),
+		(787, "Jazda (W. SungMa. ODP): Wola SungMa (ODP) +%d", "sungma_move"),
+		(788, "Jazda (W. SungMa. INT): Wola SungMa (INT) +%d", "sungma_immune")):
 	AFFECT_SHOW_DATA[_konie[0]] = {
 		"description" : _konie[1],
 		"icon" : "d:/ymir work/ui/konie/mount_upgrade_skill_%s.sub" % _konie[2],

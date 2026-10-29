@@ -75,18 +75,18 @@ namespace
 		{ 10, 15, 25, 25 }, { 11, 17, 26, 26 }, { 12, 19, 27, 27 }, { 13, 21, 28, 28 }, { 14, 23, 29, 29 },
 		{ 15, 25, 30, 30 }, { 16, 27, 31, 31 }, { 17, 29, 32, 32 }, { 18, 31, 33, 33 }, { 35, 40, 45, 45 } };
 
-	// the timed effects' affects (760-768: free in this engine, 29 October 2026)
+	// the timed effects' affects (780-788: free in this engine - 760-776 are the relics', playerbot_relikty.cpp)
 	enum
 	{
-		AFFECT_KONIE_NIMBLE = 760,          // 285 Zwinne Kopyta - movement speed
-		AFFECT_KONIE_SPEED = 761,           // 287 Gwaltowna Wichura - attack speed
-		AFFECT_KONIE_FEATHER = 762,         // 288 Bezszelestny Chod - Lekki Krok on foot
-		AFFECT_KONIE_INVINCIBLE = 763,      // 289 Niesmiertelnosc
-		AFFECT_KONIE_NO_KNOCKBACK = 764,    // 290 Brak Odrzutu
-		AFFECT_KONIE_SUNGMA_STR = 765,      // 307-310 Wola Sung Ma
-		AFFECT_KONIE_SUNGMA_HP = 766,
-		AFFECT_KONIE_SUNGMA_MOVE = 767,
-		AFFECT_KONIE_SUNGMA_IMMUNE = 768,
+		AFFECT_KONIE_NIMBLE = 780,          // 285 Zwinne Kopyta - movement speed
+		AFFECT_KONIE_SPEED = 781,           // 287 Gwaltowna Wichura - attack speed
+		AFFECT_KONIE_FEATHER = 782,         // 288 Bezszelestny Chod - Lekki Krok on foot
+		AFFECT_KONIE_INVINCIBLE = 783,      // 289 Niesmiertelnosc
+		AFFECT_KONIE_NO_KNOCKBACK = 784,    // 290 Brak Odrzutu
+		AFFECT_KONIE_SUNGMA_STR = 785,      // 307-310 Wola Sung Ma
+		AFFECT_KONIE_SUNGMA_HP = 786,
+		AFFECT_KONIE_SUNGMA_MOVE = 787,
+		AFFECT_KONIE_SUNGMA_IMMUNE = 788,
 	};
 
 	bool KonieIsSkill(DWORD v)
@@ -740,6 +740,12 @@ namespace quest
 }
 
 // ---------------------------------------------------------------- the bots (playerbot_horse30.h)
+
+// the bots never sell these (IsPlayerBotJunkItem, ScorePlayerBotShopStockRules, IsPlayerBotDealSellable)
+bool Mt2009KonieIsKeptVnum(DWORD dwVnum)
+{
+	return (dwVnum >= 50046 && dwVnum <= 50049) || (dwVnum >= 55050 && dwVnum <= 55067);
+}
 
 // the daily feed of quest konie_rozwoj (22-27 Pasza dla Konia once in 24 h) for a bot: a bot hunts anyway
 void Mt2009KonieBotDailyFeed(LPCHARACTER ch)

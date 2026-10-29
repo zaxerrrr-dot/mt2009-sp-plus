@@ -61,7 +61,10 @@ Wartości umiejętności = wielomiany `skill_proto.sql` paczki (zgodne z tabelą
 
 ## Wdrożenie
 
-* `yohara-deploy.sh`: dopisać `konie` do pętli łatek (np. po `czepiec`);
+* afekty czasowych umiejętności konia: **780–788** (760–776 to relikty, MT2009_PLUS_RELIC_V1); ikony w `root/uiaffectbar.py`;
+* boty nigdy nie sprzedają 50046–50049 i ksiąg 55050–55067 (`Mt2009KonieIsKeptVnum`: złom, stragan, handel na czacie);
+
+* `yohara-deploy.sh`: dopisać `konie` na KONIEC pętli łatek (po `relikty`) - kotwice sprawdzone na drzewie z całą listą;
 * `clientY.sh`: po linii `czepiec`
   `docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/konie/build_konie_packs.py $C/azbase $C/out/pack > $C/konie.json`
   i `konie/verify_konie.py` w pętli weryfikacji;
