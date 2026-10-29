@@ -1,18 +1,18 @@
 {
  "schema": 1,
  "channel": "stable",
- "publishedAt": "2026-10-27T14:49:57Z",
- "statusMessage": "MT2009 PLUS 2.39.0: event Halloween (Jack Pumpkin, dynie, maski), przywolane Metiny znikaja po 15 min, poprawki broni botow. Klient 2.0.70.",
+ "publishedAt": "2026-10-30T09:00:00Z",
+ "statusMessage": "MT2009 PLUS 2.40.0: wyprawy i najazdy botow na inne krolestwa, dropki surowcow, mapy 90, Katakumby Diabla, Auto Lowy. Klient 2.0.71.",
  "server": {
-  "version": "2.39.0",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.39.0/metin2-server-update-2.39.0.zip",
-  "sha256": "77EB9FA665445C7EEDCB868199204FC51ECA44675EE1639100222A07294E55AA",
-  "size": 116097938
+  "version": "2.40.0",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/v2.40.0/metin2-server-update-2.40.0.zip",
+  "sha256": "B9FAE7771EFEC18A0536FEFC85F8797021C680837C5722AB392AA4DEF4C45570",
+  "size": 116916699
  },
  "client": {
-  "version": "2.0.70",
-  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.70/metin2-client-update-2.0.70.zip",
-  "sha256": "FBD71F8A89CEE029B7922C54A077D4A51A268916F1A0AE88FE8ED6D042A289FC",
-  "size": 723856629
+  "version": "2.0.71",
+  "url": "https://github.com/zaxerrrr-dot/mt2009-sp-plus/releases/download/klient-v2.0.71/metin2-client-update-2.0.71.zip",
+  "sha256": "8322D138C6FD2C1DABC50A8278857175094712377ADA393199FD75FE02BBEC40",
+  "size": 723654516
  }
 }
