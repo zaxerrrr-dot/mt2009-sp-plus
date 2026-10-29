@@ -55,6 +55,18 @@ const bool CPlayerSettingsModule::LoadInitData()
         {pkBase.EFFECT_HAPPINESS_RING_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item3.mse"},
 
         {pkBase.EFFECT_LOVE_PENDANT_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item4.mse"},
+#ifdef ENABLE_MT2009_RING_EFFECTS
+        // MT2009_PLUS_RING_EFFECTS_V1: the official files of the etc pack (GF 26.1.11 bytes); deadly_ring / green_candy: pack "ringfx"
+        {pkBase.EFFECT_WILL_RING_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item5.mse"}, // 71148
+        {pkBase.EFFECT_DEADLY_RING_EQUIP, "", "d:/ymir work/effect/etc/buff/deadly_ring.mse"}, // 71149
+        {pkBase.EFFECT_HERO_MEDAL_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_symbol1.mse"}, // 71158
+        {pkBase.EFFECT_BLUE_CANDY_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item16.mse"}, // 71180
+        {pkBase.EFFECT_GREEN_CANDY_EQUIP, "", "d:/ymir work/effect/etc/buff/green_candy.mse"}, // 71181
+        {pkBase.EFFECT_YELLOW_CANDY_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item8.mse"}, // 71188
+        {pkBase.EFFECT_CHOCOLATE_PENDANT_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item10.mse"}, // 71199
+        {pkBase.EFFECT_EVIL_PENDANT_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item13.mse"}, // 71202
+        {pkBase.EFFECT_GUARD_PENDANT_EQUIP, "", "d:/ymir work/effect/etc/buff/buff_item14.mse"}, // 72054
+#endif
         {pkBase.EFFECT_FRESH_WATER, "", "d:/ymir work/effect/monster2/impact_fresh_water.mse"},
 
           {pkBase.EFFECT_PENETRATE, "Bip01", "d:/ymir work/effect/hit/gwantong.mse"},

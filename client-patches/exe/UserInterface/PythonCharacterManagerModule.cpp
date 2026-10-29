@@ -1002,6 +1002,18 @@ void initchrmgr()
 #ifdef ENABLE_GLOVE_ELEC_ATTACK_BONUS
 	PyModule_AddIntConstant(poModule, "EFFECT_ELEC_ATTACK_HIT", CInstanceBase::EFFECT_ELEC_ATTACK_HIT); // MT2009_PLUS_ELEC_GLOVE_V1
 #endif
+#ifdef ENABLE_MT2009_RING_EFFECTS
+	// MT2009_PLUS_RING_EFFECTS_V1
+	PyModule_AddIntConstant(poModule, "EFFECT_WILL_RING_EQUIP", CInstanceBase::EFFECT_WILL_RING_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_DEADLY_RING_EQUIP", CInstanceBase::EFFECT_DEADLY_RING_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_HERO_MEDAL_EQUIP", CInstanceBase::EFFECT_HERO_MEDAL_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_BLUE_CANDY_EQUIP", CInstanceBase::EFFECT_BLUE_CANDY_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_GREEN_CANDY_EQUIP", CInstanceBase::EFFECT_GREEN_CANDY_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_YELLOW_CANDY_EQUIP", CInstanceBase::EFFECT_YELLOW_CANDY_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_CHOCOLATE_PENDANT_EQUIP", CInstanceBase::EFFECT_CHOCOLATE_PENDANT_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_EVIL_PENDANT_EQUIP", CInstanceBase::EFFECT_EVIL_PENDANT_EQUIP);
+	PyModule_AddIntConstant(poModule, "EFFECT_GUARD_PENDANT_EQUIP", CInstanceBase::EFFECT_GUARD_PENDANT_EQUIP);
+#endif
 }
 //martysama0134's 4e4e75d8b719b9240e033009cf4d7b0f
 

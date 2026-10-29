@@ -851,6 +851,16 @@ enum SPECIAL_EFFECT
 	SE_SKILL_SAFE_ZONE_SMALL,
 	// MT2009_PLUS_ELEC_GLOVE_V1: the gloves' 6th/7th lightning hit (server-patches/elecglove, 54 as the server's)
 	SE_ELEC_ATTACK_HIT,
+	// MT2009_PLUS_RING_EFFECTS_V1: the rings / medal / candies / pendants equip effects (server-patches/ringfx, 55-63 as the server's)
+	SE_EQUIP_WILL_RING, // 55
+	SE_EQUIP_DEADLY_RING, // 56
+	SE_EQUIP_HERO_MEDAL, // 57
+	SE_EQUIP_BLUE_CANDY, // 58
+	SE_EQUIP_GREEN_CANDY, // 59
+	SE_EQUIP_YELLOW_CANDY, // 60
+	SE_EQUIP_CHOCOLATE_PENDANT, // 61
+	SE_EQUIP_EVIL_PENDANT, // 62
+	SE_EQUIP_GUARD_PENDANT, // 63
 };
 
 enum BattleRestricts {
