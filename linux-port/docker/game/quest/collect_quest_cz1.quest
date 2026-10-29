@@ -1,0 +1,200 @@
+-- MT2009_PLUS_BIOLOGIST_YOHARA_V1: Oczyszczone Rdzenie (poz. 120, Poziom Czempiona 1) - pl-wiki "Misje Biologa" /
+-- "Oczyszczone Rdzenie" (the owner, 29 October 2026: "dodaj kolejne misje Biologa wed³ug wiki"). Opened by the end of
+-- collect_quest_lv94 (Klejnoty dla Seona-Pyeonga) (set_quest_state "run"), from level 120 and Poziom Czempiona 1.
+--   Chaegirab (Dongan, 20810) wants 10 x Oczyszczony Rdzen (31230), one a hand-in, 60% accepted (the wiki), the wait
+--   between hand-ins the Biologist's own (collect_data: the world's M2_BIOLOGIST_WAIT_HOURS; Spirala Czasu / Eliksir
+--   Poszukiwacza as on every row). The specimen (tools/ybiolog, yohara_biolog.sql):
+--   every monster of Yohara (the pl-wiki item page: "Wszystkie potwory Yohara") - any kill on a map of the
+--   new continent (on_yohara: 373-391, 393-396; a dungeon instance by its base map), Metins and players aside,
+--   1 in 150 while the mission waits; Plat. Skrzynia Skarbow (83055) has it too.
+--   Reward: a random Wola SungMa +5 for good (the wiki: "Losowa Wola SungMa +5 na stale") - AFFECT_COLLECT on
+--   POINT_SUNGMA_STR / HP / MOVE / IMMUNE = 184 / 185 / 186 / 187 (common/length.h, MT2009_PLUS_SUNGMA_V1: SILA, WIT,
+--   ODP, INT; the engine counts an affect's Sung Ma in GetPoint, champion::MapRequirement).
+-- Then collect_quest_cz10.
+-- Texts: the official Polish ones (Owsap v6.2.6 client locale_quest 12527-12588). The state names are the package
+-- Biologist's (__complete: /usunmisje, the panel's Biologist page).
+-- cp1250; no string ends with a Polish letter (qc).
+quest collect_quest_cz1 begin
+	state start begin
+		function intro()
+			say_title(mob_name(20810)..":")
+			say("Nawet w trudnych warunkach muszê dalej")
+			say("prowadziæ badania. Pracujê nad czymœ zupe³nie")
+			say("innym... Czegoœ takiego na pewno jeszcze nie")
+			say("widzia³eœ na oczy.")
+			say("")
+			say("Potrzebujê do moich badañ oczyszczonych rdzeni.")
+			say("S¹ one bardzo rzadkie. Czêsto po dok³adniejszym")
+			say("zbadaniu znajduje siê wœród nich sporo")
+			say("zanieczyszczonych. Przynieœ mi tylko ca³kowicie")
+			say("czyste egzemplarze.")
+			say_item_vnum(31230)
+			say_reward("Oczyszczone Rdzenie znajdziesz u potworów")
+			say_reward("na nowym kontynencie.")
+		end
+
+		-- Wola SungMa: the point, its name
+		function stats()
+			return { { 184, "Wola SungMa (SI£A)" }, { 185, "Wola SungMa (WIT)" },
+				 { 186, "Wola SungMa (ODP)" }, { 187, "Wola SungMa (INT)" } }
+		end
+
+		-- a map of the new continent (a dungeon instance is base * 10000 + n)
+		function on_yohara()
+			local idx = pc.get_map_index()
+			if idx >= 10000 then
+				idx = math.floor(idx / 10000)
+			end
+			return table_is_in({ 373, 374, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386,
+				387, 388, 389, 390, 391, 393, 394, 395, 396 },
+				idx)
+		end
+	end
+
+	state run begin
+		when login or levelup with pc.get_level() >= 120 and pc.get_conqueror_level() >= 1 begin
+			set_state(information)
+		end
+
+		when 20810.chat."Oczyszczone Rdzenie" with pc.get_level() >= 120 and pc.get_conqueror_level() >= 1 begin
+			collect_quest_cz1.intro()
+			pc.setqf("collect_count", 0)
+			set_state(go_to_disciple)
+		end
+	end
+
+	state information begin
+		when letter begin
+			local v = find_npc_by_vnum(20810)
+			if v ~= 0 then
+				target.vid("__TARGET__", v, mob_name(20810))
+			end
+			send_letter("Oczyszczone Rdzenie")
+		end
+
+		when button or info begin
+			say_title("Oczyszczone Rdzenie")
+			say("Chaegirab ci¹gle jeszcze zajêty jest swoimi")
+			say("badaniami. SprawdŸ w Dongan, czy potrzebuje")
+			say("pomocy.")
+		end
+
+		when __TARGET__.target.click or 20810.chat."Oczyszczone Rdzenie" begin
+			target.delete("__TARGET__")
+			collect_quest_cz1.intro()
+			pc.setqf("collect_count", 0)
+			set_state(go_to_disciple)
+		end
+	end
+
+	state go_to_disciple begin
+		when letter begin
+			send_letter("Oczyszczone Rdzenie")
+		end
+
+		when button or info begin
+			say_title("Oczyszczone Rdzenie")
+			say("Zbierz dla Chaegiraba 10 sztuk:")
+			say_item_vnum(31230)
+			say("Oczyszczone Rdzenie znajdziesz u potworów")
+			say("na nowym kontynencie.")
+			say_reward(string.format("Przyjête: %d / 10", pc.getqf("collect_count")))
+			collect_data.say_delay()
+		end
+
+		when kill with not npc.is_pc() begin
+			local r = npc.get_race()
+			if r >= 8000 and r < 9000 then
+				return
+			end
+			if collect_quest_cz1.on_yohara() and number(1, 150) == 1 then
+				pc.give_item2(31230, 1)
+			end
+		end
+
+		when 20810.chat."Oddaj rdzeñ do zbadania" with pc.count_item(31230) > 0 begin
+			say_title(mob_name(20810)..":")
+			if collect_data.is_wait() then
+				say("Jestem w trakcie dok³adniejszej analizy")
+				say("poprzedniej próbki. Wróæ do mnie trochê póŸniej!")
+				say("Spirala Czasu mo¿e skróciæ czas oczekiwania.")
+				collect_data.say_delay()
+				return
+			end
+			if pc.count_item(31230) < 1 then
+				say("Nie masz przy sobie Oczyszczonego Rdzenia.")
+				return
+			end
+			pc.remove_item(31230, 1)
+			local show_wait = not collect_data.is_no_time_on_fail()
+			local ok = collect_data.take_chance(60)
+			local n = pc.getqf("collect_count")
+			if ok then
+				n = n + 1
+				pc.setqf("collect_count", n)
+				if n >= 10 then
+					pc.setqf("collect_count", 0)
+					collect_data.reset_time()
+					set_state(__reward)
+				end
+			end
+			say("Masz dla mnie oczyszczone rdzenie? Niech spojrzê...")
+			wait()
+			say_title(mob_name(20810)..":")
+			if not ok then
+				say("Niestety rdzeñ jest lekko zanieczyszczony.")
+				say("Musisz dalej szukaæ.")
+				if show_wait then
+					collect_data.say_delay()
+				end
+				return
+			end
+			if n >= 10 then
+				say("Wreszcie mam tyle oczyszczonych rdzeni, ile")
+				say("potrzebujê. I to zawdziêczam tylko tobie.")
+				say("Wynagrodzê ciê za pomoc.")
+				say("")
+				say_reward("Porozmawiaj ze mn¹: Nagroda za badania")
+				return
+			end
+			say("Wow, co za doskona³y rdzeñ. Œwietnie!")
+			say_reward(string.format("Przynieœ mi jeszcze %d szt.", 10 - n))
+			collect_data.say_delay()
+		end
+	end
+
+	state __reward begin
+		when letter begin
+			local v = find_npc_by_vnum(20810)
+			if v ~= 0 then
+				target.vid("__TARGET__", v, mob_name(20810))
+			end
+			send_letter("Oczyszczone Rdzenie: nagroda")
+		end
+
+		when button or info begin
+			say_title("Oczyszczone Rdzenie")
+			say("Uda³o ci siê zebraæ wszystko. Wróæ szybko")
+			say("do Chaegiraba w Dongan po nagrodê.")
+		end
+
+		when __TARGET__.target.click or 20810.chat."Nagroda za badania" begin
+			target.delete("__TARGET__")
+			local st = collect_quest_cz1.stats()
+			local s = number(1, 4)
+			pc.setqf("reward", s)
+			set_state(__complete)
+			affect.add_collect(st[s][1], 5)
+			say_title(mob_name(20810)..":")
+			say("Jedna z twoich mocy woli SungMa zostanie")
+			say("ulepszona: SI£A, ODP, WIT lub INT.")
+			say("")
+			say_reward("Sta³y bonus: "..st[s][2].." +5")
+			set_quest_state("collect_quest_cz10", "run")
+			clear_letter()
+		end
+	end
+
+	state __complete begin
+	end
+end

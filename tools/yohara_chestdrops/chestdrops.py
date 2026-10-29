@@ -76,9 +76,8 @@ SKIP = {
     27214: 'not in our world',
     27215: 'not in our world',
     27216: 'not in our world',
-    31230: 'not in our world',
-    31231: 'not in our world',
-    31232: 'not in our world',
+    # 31230 / 31231 / 31232 (Oczyszczony Rdzen, Krysztal Metin, Mroczna Paproc) are ours since
+    # MT2009_PLUS_BIOLOGIST_YOHARA_V1 (tools/ybiolog, 29 October 2026) - back in Plat. Skrzynia Skarbow
     39067: 'not in our world',
     72350: 'not in our world',
     # 50514 / 50515 (Podreczniki: Dopalacz / Riposta) are ours since MT2009_PLUS_RIPOSTY_V1 (tools/yohara_items)

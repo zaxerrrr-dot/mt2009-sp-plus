@@ -1,0 +1,183 @@
+-- MT2009_PLUS_BIOLOGIST_YOHARA_V1: Kryszta³y Metin (poz. 120, Poziom Czempiona 10) - pl-wiki "Misje Biologa" /
+-- "Krysztaly Metin" (the owner, 29 October 2026: "dodaj kolejne misje Biologa wed³ug wiki"). Opened by the end of
+-- collect_quest_cz1 (Oczyszczone Rdzenie) (set_quest_state "run"), from level 120 and Poziom Czempiona 10.
+--   Chaegirab (Dongan, 20810) wants 10 x Krysztal Metin (31231), one a hand-in, 60% accepted (the wiki), the wait
+--   between hand-ins the Biologist's own (collect_data: the world's M2_BIOLOGIST_WAIT_HOURS; Spirala Czasu / Eliksir
+--   Poszukiwacza as on every row). The specimen (tools/ybiolog, yohara_biolog.sql):
+--   Metin Szacunku (8063), Metin Uwaznosci (8064), Metin Jin (8065) and Metin Swiadomosc (8067) - the pl-wiki item
+--   page - one in four while the mission waits; Plat. Skrzynia Skarbow (83055) has it too.
+--   Reward: a random Wola SungMa +5 for good (the wiki: "Losowa Wola SungMa +5 na stale") - AFFECT_COLLECT on
+--   POINT_SUNGMA_STR / HP / MOVE / IMMUNE = 184 / 185 / 186 / 187 (common/length.h, MT2009_PLUS_SUNGMA_V1: SILA, WIT,
+--   ODP, INT; the engine counts an affect's Sung Ma in GetPoint, champion::MapRequirement).
+-- Then collect_quest_cz20.
+-- Texts: the official Polish ones (Owsap v6.2.6 client locale_quest 12527-12588). The state names are the package
+-- Biologist's (__complete: /usunmisje, the panel's Biologist page).
+-- cp1250; no string ends with a Polish letter (qc).
+quest collect_quest_cz10 begin
+	state start begin
+		function intro()
+			say_title(mob_name(20810)..":")
+			say("Moje badania wykaza³y, ¿e potwory znajduj¹ce")
+			say("siê w pobli¿u reaguj¹ na kamienie Metin.")
+			say("To fascynuj¹ce! Kamienie Metin s¹ tutaj")
+			say("szczególnie wysokoenergetyczne. Niektóre z nich")
+			say("mog¹ byæ wyj¹tkowo podatne na wp³yw Sunga Mahi.")
+			say("")
+			say("Przynieœ mi kryszta³y Metin - ma³e od³amki")
+			say("pierwotnych kamieni. Przynieœ mi po prostu")
+			say("piêknie lœni¹ce od³amki, dobrze?")
+			say_item_vnum(31231)
+			say_reward("Kryszta³y Metin wypadaj¹ z Metinów Szacunku,")
+			say_reward("Uwa¿noœci, Jin i Œwiadomoœci na Yoharze.")
+		end
+
+		-- Wola SungMa: the point, its name
+		function stats()
+			return { { 184, "Wola SungMa (SI£A)" }, { 185, "Wola SungMa (WIT)" },
+				 { 186, "Wola SungMa (ODP)" }, { 187, "Wola SungMa (INT)" } }
+		end
+	end
+
+	state run begin
+		when login or levelup with pc.get_level() >= 120 and pc.get_conqueror_level() >= 10 begin
+			set_state(information)
+		end
+
+		when 20810.chat."Kryszta³y Metin" with pc.get_level() >= 120 and pc.get_conqueror_level() >= 10 begin
+			collect_quest_cz10.intro()
+			pc.setqf("collect_count", 0)
+			set_state(go_to_disciple)
+		end
+	end
+
+	state information begin
+		when letter begin
+			local v = find_npc_by_vnum(20810)
+			if v ~= 0 then
+				target.vid("__TARGET__", v, mob_name(20810))
+			end
+			send_letter("Kryszta³y Metin")
+		end
+
+		when button or info begin
+			say_title("Kryszta³y Metin")
+			say("Chaegirab ci¹gle jeszcze zajêty jest swoimi")
+			say("badaniami. SprawdŸ w Dongan, czy potrzebuje")
+			say("pomocy.")
+		end
+
+		when __TARGET__.target.click or 20810.chat."Kryszta³y Metin" begin
+			target.delete("__TARGET__")
+			collect_quest_cz10.intro()
+			pc.setqf("collect_count", 0)
+			set_state(go_to_disciple)
+		end
+	end
+
+	state go_to_disciple begin
+		when letter begin
+			send_letter("Kryszta³y Metin")
+		end
+
+		when button or info begin
+			say_title("Kryszta³y Metin")
+			say("Zbierz dla Chaegiraba 10 sztuk:")
+			say_item_vnum(31231)
+			say("Kryszta³y Metin wypadaj¹ z Metinów Szacunku,")
+			say("Uwa¿noœci, Jin i Œwiadomoœci na Yoharze.")
+			say_reward(string.format("Przyjête: %d / 10", pc.getqf("collect_count")))
+			collect_data.say_delay()
+		end
+
+		when 8063.kill or 8064.kill or 8065.kill or 8067.kill begin
+			if number(1, 4) == 1 then
+				pc.give_item2(31231, 1)
+			end
+		end
+
+		when 20810.chat."Oddaj kryszta³ do zbadania" with pc.count_item(31231) > 0 begin
+			say_title(mob_name(20810)..":")
+			if collect_data.is_wait() then
+				say("Jestem w trakcie dok³adniejszej analizy")
+				say("poprzedniej próbki. Wróæ do mnie trochê póŸniej!")
+				say("Spirala Czasu mo¿e skróciæ czas oczekiwania.")
+				collect_data.say_delay()
+				return
+			end
+			if pc.count_item(31231) < 1 then
+				say("Nie masz przy sobie Kryszta³u Metin.")
+				return
+			end
+			pc.remove_item(31231, 1)
+			local show_wait = not collect_data.is_no_time_on_fail()
+			local ok = collect_data.take_chance(60)
+			local n = pc.getqf("collect_count")
+			if ok then
+				n = n + 1
+				pc.setqf("collect_count", n)
+				if n >= 10 then
+					pc.setqf("collect_count", 0)
+					collect_data.reset_time()
+					set_state(__reward)
+				end
+			end
+			say("Uda³o ci siê znaleŸæ kryszta³ Metin? Zerknê na niego.")
+			wait()
+			say_title(mob_name(20810)..":")
+			if not ok then
+				say("Grrr, to nie jest kryszta³ Metin, lecz kawa³ek")
+				say("zwyk³ego kamienia... Przynieœ mi prawdziwy.")
+				if show_wait then
+					collect_data.say_delay()
+				end
+				return
+			end
+			if n >= 10 then
+				say("W koñcu mam wystarczaj¹c¹ iloœæ doskona³ych")
+				say("kryszta³ów Metin do moich badañ!")
+				say("Dziêkujê ci. Wynagrodzê ciê za pomoc.")
+				say("")
+				say_reward("Porozmawiaj ze mn¹: Nagroda za badania")
+				return
+			end
+			say("Ten kolor... ten oddŸwiêk mocy... wspaniale.")
+			say_reward(string.format("Przynieœ mi jeszcze %d szt.", 10 - n))
+			collect_data.say_delay()
+		end
+	end
+
+	state __reward begin
+		when letter begin
+			local v = find_npc_by_vnum(20810)
+			if v ~= 0 then
+				target.vid("__TARGET__", v, mob_name(20810))
+			end
+			send_letter("Kryszta³y Metin: nagroda")
+		end
+
+		when button or info begin
+			say_title("Kryszta³y Metin")
+			say("Uda³o ci siê zebraæ wszystko. Wróæ szybko")
+			say("do Chaegiraba w Dongan po nagrodê.")
+		end
+
+		when __TARGET__.target.click or 20810.chat."Nagroda za badania" begin
+			target.delete("__TARGET__")
+			local st = collect_quest_cz10.stats()
+			local s = number(1, 4)
+			pc.setqf("reward", s)
+			set_state(__complete)
+			affect.add_collect(st[s][1], 5)
+			say_title(mob_name(20810)..":")
+			say("Jedna z twoich mocy woli SungMa zostanie")
+			say("ulepszona: SI£A, ODP, WIT lub INT.")
+			say("")
+			say_reward("Sta³y bonus: "..st[s][2].." +5")
+			set_quest_state("collect_quest_cz20", "run")
+			clear_letter()
+		end
+	end
+
+	state __complete begin
+	end
+end

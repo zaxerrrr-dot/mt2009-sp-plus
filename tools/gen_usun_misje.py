@@ -44,6 +44,7 @@ WHITELIST = [
 	(r'new_quest_lv\d+$', 2),
 	(r'new_quest_premium_lv\d+$', 2),
 	(r'collect_quest_lv\d+$', 3),
+	(r'collect_quest_cz\d+$', 3),   # Chaegirab in Dongan (MT2009_PLUS_BIOLOGIST_YOHARA_V1)
 	(r'make_herb_lv\d+$', 4),
 ]
 # never, whatever the whitelist says: their finish is a reward or a system
