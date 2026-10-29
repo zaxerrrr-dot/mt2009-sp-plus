@@ -333,6 +333,13 @@
 // (d:/ymir work/effect/hit/blow_electric/6th7th_attributes_blow.mse, pack "elecglove"), chrmgr.EFFECT_ELEC_ATTACK_HIT.
 // Without the define the exe is as before (54 is "not a special effect number" in syserr).
 #define ENABLE_GLOVE_ELEC_ATTACK_BONUS
+// MT2009_PLUS_RING_EFFECTS_V1 (server-patches/ringfx, pack "ringfx"): the equip effects of Pierscien Sily Woli 71148, Pierscien Smierc.
+// Mocy 71149, Medal Bohatera 71158, the candies 71180/71181/71188 and the pendants 71199/71202/72054 - the server's
+// SE_EQUIP_WILL_RING..SE_EQUIP_GUARD_PENDANT (55-63, Server/common/length.h - always) show EFFECT_*_EQUIP
+// (PythonPlayerSettingsModule.cpp: the official buff_item5/8/10/13/14/16 + buff_symbol1.mse of the etc pack,
+// deadly_ring.mse / green_candy.mse of the pack "ringfx"), chrmgr.EFFECT_*_EQUIP. Without the define the exe is as
+// before (55-63 are "not a special effect number" in syserr).
+#define ENABLE_MT2009_RING_EFFECTS
 // MT2009_PLUS_GUILDSYS_V1 (the guild system update on Guild Systems by Nazox, server-patches/guildsys): guild levels to 40
 // (Locale.cpp LocaleService_GetLastExp, PythonGuild.cpp guild.GetGuildExperience) and every guild skill usable in the
 // guild White Dragon lair (Balathor, map 420) without a guild war (PythonPlayerSkill.cpp). No packet changes; without

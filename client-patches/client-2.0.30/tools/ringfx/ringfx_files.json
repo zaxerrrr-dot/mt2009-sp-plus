@@ -1,0 +1,25 @@
+{
+ "files": {
+  "d:/ymir work/effect/etc/buff/deadly_ring.mse": {
+   "ctype": 1,
+   "sha256": "43abc9005a1b9e47bb93356ea4329468c3d00efa6760a761d1ec146b75708ae6",
+   "size": 16424
+  },
+  "d:/ymir work/effect/etc/buff/green_candy.dds": {
+   "ctype": 1,
+   "sha256": "de226e0612b1932bdd3b5c2abbb1c58831fc44d6a090f4afd7ccdfcb4e46e9bf",
+   "size": 17670
+  },
+  "d:/ymir work/effect/etc/buff/green_candy.mse": {
+   "ctype": 1,
+   "sha256": "1cf90d766dfb36a6f77396dec84d75124caa372662dad1e0689f4eedda8e96e9",
+   "size": 16424
+  },
+  "d:/ymir work/effect/etc/buff/magic_ring2.dds": {
+   "ctype": 1,
+   "sha256": "ace9ef37028f56d2b518d1f9bb73f3996543800faa738b9e5bf3cb8793ac511a",
+   "size": 65554
+  }
+ },
+ "source": "the uploaded pack offical_ring.eix/.epk (stock EterPack keys), unchanged bytes - the two effects the GF client 26.1.11 has no equivalent of (deadly_ring: magic_ring2.dds, green_candy: green_candy.dds); the other seven are the GF/etc-pack originals"
+}

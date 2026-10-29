@@ -955,6 +955,36 @@ bool CPythonNetworkStream::RecvSpecialEffect()
 			effect = CInstanceBase::EFFECT_ELEC_ATTACK_HIT;
 			break;
 #endif
+#ifdef ENABLE_MT2009_RING_EFFECTS
+		case SE_EQUIP_WILL_RING: // MT2009_PLUS_RING_EFFECTS_V1: a ring / medal / candy / pendant put on
+			static_assert(SE_EQUIP_WILL_RING == 55 && SE_EQUIP_GUARD_PENDANT == 63, "SE_EQUIP_* differ from the server (server-patches/ringfx)");
+			effect = CInstanceBase::EFFECT_WILL_RING_EQUIP;
+			break;
+		case SE_EQUIP_DEADLY_RING:
+			effect = CInstanceBase::EFFECT_DEADLY_RING_EQUIP;
+			break;
+		case SE_EQUIP_HERO_MEDAL:
+			effect = CInstanceBase::EFFECT_HERO_MEDAL_EQUIP;
+			break;
+		case SE_EQUIP_BLUE_CANDY:
+			effect = CInstanceBase::EFFECT_BLUE_CANDY_EQUIP;
+			break;
+		case SE_EQUIP_GREEN_CANDY:
+			effect = CInstanceBase::EFFECT_GREEN_CANDY_EQUIP;
+			break;
+		case SE_EQUIP_YELLOW_CANDY:
+			effect = CInstanceBase::EFFECT_YELLOW_CANDY_EQUIP;
+			break;
+		case SE_EQUIP_CHOCOLATE_PENDANT:
+			effect = CInstanceBase::EFFECT_CHOCOLATE_PENDANT_EQUIP;
+			break;
+		case SE_EQUIP_EVIL_PENDANT:
+			effect = CInstanceBase::EFFECT_EVIL_PENDANT_EQUIP;
+			break;
+		case SE_EQUIP_GUARD_PENDANT:
+			effect = CInstanceBase::EFFECT_GUARD_PENDANT_EQUIP;
+			break;
+#endif
 
 		default:
 			TraceError("%d is not a special effect number. TPacketGCSpecialEffect",kSpecialEffect.type);
