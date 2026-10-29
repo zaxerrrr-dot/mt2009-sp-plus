@@ -60,8 +60,11 @@ POINT_MELEE_MAGIC_ATT_BONUS_PER = 132
 
 HOOD = 12880
 HOOD_NAME = 'Wężowy Czepiec'
-HOOD_DESC = ('Hełm 120. poziomu od Strażnika Smoków Jaharra. Stały bonus: Mag./krótkodys. atak, rośnie z poziomem '
-             'ulepszenia. Drugi bonus jest losowany przy wytworzeniu i zostaje przy ulepszaniu.')
+# no description (the owner, 29 October 2026: "to bez sensu", poprawki 3.0.4 pt 4): the itemdesc line stays with an
+# EMPTY description column - "<vnum>\t<name>\t" - so the client (CItemManager::LoadItemDesc pads the missing columns,
+# SetDescription("")) draws no text in the tooltip, and a dbdata pack that already carries the old text is overwritten
+# by base.set_rows (a dropped line would leave the old text in the player's pack)
+HOOD_DESC = ''
 # pl-wiki "Wężowy Czepiec": Bonus1 (Obrona) and Bonus2 (Magiczny/krótkodystansowy atak %), +0..+15
 WIKI_DEF = [27, 31, 35, 45, 55, 75, 85, 97, 107, 121, 135, 151, 167, 187, 209, 233]
 WIKI_ATT = [1, 1, 2, 3, 4, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 16]

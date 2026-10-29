@@ -26,6 +26,9 @@ Dane (przedmioty, receptury, tabele bonusów) robi `tools/ysets/gen_ysets.py`; t
   (PD = `POINT_MALL_EXPBONUS`, magia/walka wręcz = `POINT_MELEE_MAGIC_ATT_BONUS_PER`, jak Owsap
   `set_item_table.txt`.) Liczone przy założeniu/zdjęciu (`CItem::EquipTo/Unequip`) i w `ComputePoints`.
 - Ulepszenie przedmiotu (`CopyAttributeTo`) przenosi efekt na nowy poziom.
+- Komunikat „<efekt>: N/3 części – efekt zestawu aktywny” (`MT2009_PLUS_YSET_TELL_V1`, poprawki 3.0.4 pkt 7): raz przy
+  wejściu do gry i potem tylko przy realnej zmianie zestawu/liczby części (założenie/zdjęcie), nie przy każdym
+  przeliczeniu punktów (wsiadanie na konia itp.) – ostatnio ogłoszony stan postaci w pamięci (`m_wYSetTold`).
 
 ## Losowe bonusy podstawowe wężowego ekwipunku (pl-wiki „BronieWężoweWartości”, „ZbrojeWężoweWartości”)
 

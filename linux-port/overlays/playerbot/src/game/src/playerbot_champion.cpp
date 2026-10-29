@@ -23,6 +23,9 @@
 #include "dungeon.h"
 #include "sectree_manager.h"
 #include "playerbot_yohara_gear.h"
+#include "p2p.h"
+#include "db.h"
+#include "buffer_manager.h"
 
 #include <cctype>
 #include <cstdio>
@@ -681,12 +684,18 @@ bool ChampionImmuneBlocks(LPCHARACTER pkAttacker, LPCHARACTER pkVictim)
 	return number(1, 2) == 1;
 }
 
+namespace champion
+{
+	static void GmPendingApply(LPCHARACTER ch);	// MT2009_PLUS_CHAMPION_TARGET_V1 (below do_champion)
+}
+
 // input_login.cpp Entergame: the Sung Ma penalties counted on this map, the client told the numbers.
 void ChampionOnLogin(LPCHARACTER ch)
 {
 	// MT2009_PLUS_BOT_CHAMPION_V1: a bot's Sung Ma penalties are counted too (SendInfo/SendMap pass bots by).
 	if (!ch || !ch->IsPC())
 		return;
+	champion::GmPendingApply(ch);	// MT2009_PLUS_CHAMPION_TARGET_V1: a GM's changes left while it was offline
 	if (champion::IsSungmaMap(ch->GetMapIndex()))
 	{
 		ch->ComputePoints();
@@ -814,84 +823,365 @@ ACMD(do_conqueror_stat)
 	champion::SpendPoint(ch, idx);
 }
 
-// GM: "/champion" (state), "/champion level <n>" (with the points earned up to it), "/champion exp|points <n>", "/champion stat <0-3> <n>", "/champion unlock"
-// (no conditions), "/champion reset", "/champion give <exp>", "/champion reload" (the two data files).
+// ---- MT2009_PLUS_CHAMPION_TARGET_V1: "/champion <nick> ..." (poprawki 3.0.4 pt 6) -----------------------------
+// Every subcommand of /champion also takes a character's name before it: "/champion <nick> level 30". Without a
+// name (or with the GM's own) it acts on the GM, as before. The target:
+//   * on this core - changed at once, its window told (champion_info / sungma_map), the GM gets its state line;
+//   * online on another core (P2P_MANAGER's CCI) - HEADER_GG_CHAMPION_CMD (server-patches/czempion,
+//     MT2009_PLUS_CHAMPION_TARGET_V1) to that core, which runs it there and sends the state line back to the GM
+//     (a chat packet relayed through the GM's core, as a whisper is);
+//   * offline - the change waits in quest flags "champion_gm.<what>" (the quest table, which the db core never
+//     caches - player columns would be overwritten by its player cache for 10 minutes after a logout) and
+//     ChampionOnLogin applies them at the character's next entry to the game, then clears them.
+namespace champion
+{
+	static const char* const GM_FLAG = "champion_gm";
+
+	// a subcommand's name (anything else after "/champion" is a character's name)
+	static bool GmIsSub(const char* s)
+	{
+		static const char* const a[] = { "reload", "unlock", "level", "exp", "give", "points", "stat", "reset" };
+		for (size_t i = 0; i < sizeof(a) / sizeof(a[0]); ++i)
+			if (!strcmp(s, a[i]))
+				return true;
+		return false;
+	}
+
+	// one subcommand on a character of this core: false = none (state only) or not understood (nothing changed)
+	static bool GmApply(LPCHARACTER ch, const char* sub, int n, int v)
+	{
+		if (!strcmp(sub, "unlock"))
+		{
+			if (ch->GetConquerorLevel() < 1)
+			{
+				ch->SetConquerorLevel(1);
+				ch->SetConquerorLevelStep(0);
+				ch->SetConquerorExp(0);
+			}
+		}
+		else if (!strcmp(sub, "level"))
+		{
+			// The points a character would have earned on its way to this level (3 per level, level 1 starts
+			// with none), less what it has already spent - "/champion level 30" gives 87 to spend.
+			const int iLevel = MINMAX(0, n, (int)MAX_LEVEL);
+			const int iSpent = ch->GetRealPoint(POINT_SUNGMA_STR) + ch->GetRealPoint(POINT_SUNGMA_HP) +
+				ch->GetRealPoint(POINT_SUNGMA_MOVE) + ch->GetRealPoint(POINT_SUNGMA_IMMUNE);
+			ch->SetConquerorLevel((BYTE)iLevel);
+			ch->SetConquerorLevelStep(0);
+			ch->SetConquerorExp(0);
+			ch->SetConquerorPoint(MAX(0, MAX(0, iLevel - 1) * POINTS_PER_LEVEL - iSpent));
+		}
+		else if (!strcmp(sub, "exp") && n >= 0)
+			ch->SetConquerorExp((DWORD)n);
+		else if (!strcmp(sub, "give") && n > 0)
+			GainExp(ch, (unsigned int)n);
+		else if (!strcmp(sub, "points"))
+			ch->SetConquerorPoint(MAX(0, n));
+		else if (!strcmp(sub, "stat") && n >= 0 && n <= 3)
+		{
+			const BYTE aPoint[4] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE, POINT_SUNGMA_IMMUNE };
+			ch->SetRealPoint(aPoint[n], MINMAX(0, v, 255));
+		}
+		else if (!strcmp(sub, "reset"))
+		{
+			ch->SetConquerorLevel(0);
+			ch->SetConquerorLevelStep(0);
+			ch->SetConquerorExp(0);
+			ch->SetConquerorPoint(0);
+			ch->SetRealPoint(POINT_SUNGMA_STR, 0);
+			ch->SetRealPoint(POINT_SUNGMA_HP, 0);
+			ch->SetRealPoint(POINT_SUNGMA_MOVE, 0);
+			ch->SetRealPoint(POINT_SUNGMA_IMMUNE, 0);
+		}
+		else
+			return false;
+		return true;
+	}
+
+	static void GmRefresh(LPCHARACTER ch)
+	{
+		ch->ComputePoints();
+		ch->PointsPacket();
+		ch->UpdatePacket();
+		SendInfo(ch);
+		SendMap(ch);
+	}
+
+	// the state line of "/champion" (prefix "champion" for the GM's own, "champion <nick>" for another's)
+	static void GmState(LPCHARACTER ch, const char* szPrefix, char* buf, size_t size)
+	{
+		const SungmaRequirement* pReq = MapRequirement(ch->GetMapIndex());
+		snprintf(buf, size, "%s: lv %d step %d exp %u/%u points %d | sungma real %d %d %d %d, now %d %d %d %d | "
+				"map %ld %s (%d %d %d %d hit %d) | precyzja %d, per %d %d %d %d | unlock state %d | rate %d%%", szPrefix,
+				(int)ch->GetConquerorLevel(), (int)ch->GetConquerorLevelStep(), ch->GetConquerorExp(), ch->GetConquerorNextExp(),
+				ch->GetConquerorPoint(), ch->GetRealPoint(POINT_SUNGMA_STR), ch->GetRealPoint(POINT_SUNGMA_HP),
+				ch->GetRealPoint(POINT_SUNGMA_MOVE), ch->GetRealPoint(POINT_SUNGMA_IMMUNE), ch->GetPoint(POINT_SUNGMA_STR),
+				ch->GetPoint(POINT_SUNGMA_HP), ch->GetPoint(POINT_SUNGMA_MOVE), ch->GetPoint(POINT_SUNGMA_IMMUNE),
+				ch->GetMapIndex(), pReq ? "sungma" : "-", pReq ? pReq->str : 0, pReq ? pReq->hp : 0, pReq ? pReq->move : 0,
+				pReq ? pReq->immune : 0, pReq ? pReq->hit : 0, ch->GetPoint(POINT_HIT_PCT), ch->GetPoint(POINT_SUNGMA_PER_STR),
+				ch->GetPoint(POINT_SUNGMA_PER_HP), ch->GetPoint(POINT_SUNGMA_PER_MOVE), ch->GetPoint(POINT_SUNGMA_PER_IMMUNE),
+				UnlockState(ch), ExpRatePct());
+	}
+
+	// a line for the GM by name: here, or relayed to the core that holds the GM (a chat packet, as a whisper goes)
+	static void GmTell(const char* szGM, const char* szText)
+	{
+		LPCHARACTER gm = CHARACTER_MANAGER::instance().FindPC(szGM);
+		if (gm)
+		{
+			gm->ChatPacket(CHAT_TYPE_INFO, "%s", szText);
+			return;
+		}
+		CCI* pkCCI = P2P_MANAGER::instance().Find(szGM);
+		if (!pkCCI || !pkCCI->pkDesc)
+			return;
+		size_t len = strlen(szText);
+		if (len > CHAT_MAX_LEN)
+			len = CHAT_MAX_LEN;
+		TPacketGCChat pack;
+		pack.header = HEADER_GC_CHAT;
+		pack.size = (WORD)(sizeof(pack) + len);
+		pack.type = CHAT_TYPE_INFO;
+		pack.id = 0;
+		pack.bEmpire = pkCCI->bEmpire;
+		TEMP_BUFFER buf;
+		buf.write(&pack, sizeof(pack));
+		buf.write(szText, len);
+		pkCCI->pkDesc->SetRelay(szGM);
+		pkCCI->pkDesc->Packet(buf.read_peek(), buf.size());
+		pkCCI->pkDesc->SetRelay("");
+	}
+
+	// the target is on this core: the change, its window, the GM's state line (szGM: the GM's name, maybe elsewhere)
+	static void GmRunOn(LPCHARACTER tch, const char* sub, int n, int v, const char* szGM)
+	{
+		const bool bKnown = !*sub || GmApply(tch, sub, n, v);
+		if (*sub && bKnown)
+			GmRefresh(tch);
+		char szPrefix[CHARACTER_NAME_MAX_LEN + 16];
+		snprintf(szPrefix, sizeof(szPrefix), "champion %s", tch->GetName());
+		char szLine[CHAT_MAX_LEN + 1];
+		if (!bKnown)
+			snprintf(szLine, sizeof(szLine), "champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono", tch->GetName(), sub);
+		else
+			GmState(tch, szPrefix, szLine, sizeof(szLine));
+		GmTell(szGM, szLine);
+		if (*sub && bKnown)
+			sys_log(0, "CHAMPION_GM: %s -> %s: %s %d %d", szGM, tch->GetName(), sub, n, v);
+	}
+
+	// the target is offline: the change waits in its quest flags (champion_gm.<what>) for its next login
+	static void GmOffline(LPCHARACTER gm, const char* szName, const char* sub, int n, int v)
+	{
+		char szEsc[CHARACTER_NAME_MAX_LEN * 2 + 1];
+		DBManager::instance().EscapeString(szEsc, sizeof(szEsc), szName, strnlen(szName, CHARACTER_NAME_MAX_LEN));
+		std::unique_ptr<SQLMsg> pMsg(DBManager::instance().DirectQuery("SELECT id, name, conqueror_level, conqueror_exp, conqueror_point, "
+				"sungma_str, sungma_hp, sungma_move, sungma_immune FROM player%s WHERE name = '%s'", get_table_postfix(), szEsc));
+		SQLResult* pRes = pMsg ? pMsg->Get() : NULL;
+		MYSQL_ROW row = (pRes && pRes->uiNumRows > 0) ? mysql_fetch_row(pRes->pSQLResult) : NULL;
+		if (!row || !row[0])
+		{
+			gm->ChatPacket(CHAT_TYPE_INFO, "champion: nie ma postaci %s", szName);
+			return;
+		}
+		DWORD dwPID = 0;
+		str_to_number(dwPID, row[0]);
+		const char* szReal = row[1] ? row[1] : szName;
+		if (!*sub)
+		{
+			gm->ChatPacket(CHAT_TYPE_INFO, "champion %s (offline, baza): lv %s exp %s points %s | sungma real %s %s %s %s", szReal,
+					row[2] ? row[2] : "?", row[3] ? row[3] : "?", row[4] ? row[4] : "?", row[5] ? row[5] : "?",
+					row[6] ? row[6] : "?", row[7] ? row[7] : "?", row[8] ? row[8] : "?");
+			return;
+		}
+
+		// the flag and its value (+1: a flag of 0 is no flag)
+		char szState[16];
+		long lValue = 0;
+		if (!strcmp(sub, "unlock") || !strcmp(sub, "reset"))
+		{
+			strlcpy(szState, sub, sizeof(szState));
+			lValue = 1;
+		}
+		else if (!strcmp(sub, "level"))
+		{
+			strlcpy(szState, "level", sizeof(szState));
+			lValue = MINMAX(0, n, (int)MAX_LEVEL) + 1;
+		}
+		else if (!strcmp(sub, "exp") && n >= 0)
+		{
+			strlcpy(szState, "exp", sizeof(szState));
+			lValue = (long)MIN(n, 2000000000) + 1;
+		}
+		else if (!strcmp(sub, "points"))
+		{
+			strlcpy(szState, "points", sizeof(szState));
+			lValue = (long)MINMAX(0, n, 30000) + 1;
+		}
+		else if (!strcmp(sub, "stat") && n >= 0 && n <= 3)
+		{
+			snprintf(szState, sizeof(szState), "stat%d", n);
+			lValue = MINMAX(0, v, 255) + 1;
+		}
+		else if (!strcmp(sub, "give") && n > 0)
+		{
+			// the experience waiting adds up
+			strlcpy(szState, "give", sizeof(szState));
+			long lHave = 0;
+			std::unique_ptr<SQLMsg> pOld(DBManager::instance().DirectQuery("SELECT lValue FROM quest%s WHERE dwPID = %u AND "
+					"szName = '%s' AND szState = 'give'", get_table_postfix(), dwPID, GM_FLAG));
+			SQLResult* pOldRes = pOld ? pOld->Get() : NULL;
+			MYSQL_ROW oldRow = (pOldRes && pOldRes->uiNumRows > 0) ? mysql_fetch_row(pOldRes->pSQLResult) : NULL;
+			if (oldRow && oldRow[0])
+				str_to_number(lHave, oldRow[0]);
+			lValue = MIN((long)2000000000, MAX(0L, lHave) + (long)n);
+		}
+		else
+		{
+			gm->ChatPacket(CHAT_TYPE_INFO, "champion %s: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono", szReal, sub);
+			return;
+		}
+
+		// a reset first takes back whatever else was waiting (it would undo it at the login anyway)
+		if (!strcmp(sub, "reset"))
+			DBManager::instance().DirectQuery("DELETE FROM quest%s WHERE dwPID = %u AND szName = '%s'", get_table_postfix(), dwPID, GM_FLAG);
+		DBManager::instance().DirectQuery("REPLACE INTO quest%s (dwPID, szName, szState, lValue) VALUES (%u, '%s', '%s', %ld)",
+				get_table_postfix(), dwPID, GM_FLAG, szState, lValue);
+		gm->ChatPacket(CHAT_TYPE_INFO, "champion %s: postac offline - zmiana (%s) zapisana, wejdzie przy jej nastepnym wejsciu do gry",
+				szReal, sub);
+		sys_log(0, "CHAMPION_GM: %s -> %s (offline, pid %u): %s.%s = %ld", gm->GetName(), szReal, dwPID, GM_FLAG, szState, lValue);
+	}
+
+	// ChampionOnLogin: the changes a GM left while the character was away (GmOffline), in a fixed order
+	static void GmPendingApply(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsPC())
+			return;
+		static const char* const aState[] = { "reset", "unlock", "level", "stat0", "stat1", "stat2", "stat3", "exp", "points", "give" };
+		bool bAny = false;
+		for (size_t i = 0; i < sizeof(aState) / sizeof(aState[0]); ++i)
+		{
+			const std::string strFlag = std::string(GM_FLAG) + "." + aState[i];
+			const int iValue = ch->GetQuestFlag(strFlag);
+			if (iValue <= 0)
+				continue;
+			ch->SetQuestFlag(strFlag, 0);
+			bAny = true;
+			if (!strncmp(aState[i], "stat", 4))
+				GmApply(ch, "stat", aState[i][4] - '0', iValue - 1);
+			else if (!strcmp(aState[i], "give"))
+				GmApply(ch, "give", iValue, 0);
+			else
+				GmApply(ch, aState[i], iValue - 1, 0);
+			sys_log(0, "CHAMPION_GM: %s at login: %s (%d)", ch->GetName(), aState[i], iValue);
+		}
+		if (bAny)
+			GmRefresh(ch);
+	}
+}
+
+// GM: "/champion [<nick>]" (state), "/champion [<nick>] level <n>" (with the points earned up to it),
+// "/champion [<nick>] exp|points <n>", "/champion [<nick>] stat <0-3> <n>", "/champion [<nick>] unlock" (no
+// conditions), "/champion [<nick>] reset", "/champion [<nick>] give <exp>", "/champion reload" (the two data files).
+// Without <nick> - the GM's own character (MT2009_PLUS_CHAMPION_TARGET_V1 above).
 ACMD(do_champion)
 {
-	char arg1[256], arg2[256], arg3[256];
-	const char* rest = two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
-	one_argument(rest, arg3, sizeof(arg3));
 	if (!ch)
 		return;
+	char arg1[256], arg2[256], arg3[256], arg4[256];
+	const char* rest = two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
+	two_arguments(rest, arg3, sizeof(arg3), arg4, sizeof(arg4));
 
-	int n = 0;
-	str_to_number(n, arg2);
-	if (!strcmp(arg1, "reload"))
+	// "/champion <nick> <sub> <n> <v>": the name first, the rest moves one place on
+	const bool bTarget = *arg1 && !champion::GmIsSub(arg1);
+	char szName[256] = "";
+	const char* sub = arg1;
+	const char* szN = arg2;
+	const char* szV = arg3;
+	if (bTarget)
+	{
+		strlcpy(szName, arg1, sizeof(szName));
+		sub = arg2;
+		szN = arg3;
+		szV = arg4;
+	}
+	int n = 0, v = 0;
+	str_to_number(n, szN);
+	str_to_number(v, szV);
+
+	if (!strcmp(sub, "reload"))
 	{
 		champion::Reload();
 		ch->ChatPacket(CHAT_TYPE_INFO, "champion: data reloaded");
+		return;
 	}
-	else if (!strcmp(arg1, "unlock"))
+
+	if (bTarget && strcasecmp(szName, ch->GetName()))
 	{
-		if (ch->GetConquerorLevel() < 1)
+		if (strlen(szName) > CHARACTER_NAME_MAX_LEN)
 		{
-			ch->SetConquerorLevel(1);
-			ch->SetConquerorLevelStep(0);
-			ch->SetConquerorExp(0);
+			ch->ChatPacket(CHAT_TYPE_INFO, "champion: nie ma postaci %s", szName);
+			return;
 		}
+		LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(szName);
+		if (tch && tch->IsPC())
+		{
+			champion::GmRunOn(tch, sub, n, v, ch->GetName());
+			return;
+		}
+		CCI* pkCCI = P2P_MANAGER::instance().Find(szName);
+		if (pkCCI && pkCCI->pkDesc)
+		{
+			TPacketGGChampionCmd p;
+			memset(&p, 0, sizeof(p));
+			p.bHeader = HEADER_GG_CHAMPION_CMD;
+			strlcpy(p.szTarget, pkCCI->szName, sizeof(p.szTarget));
+			strlcpy(p.szGM, ch->GetName(), sizeof(p.szGM));
+			snprintf(p.szArgs, sizeof(p.szArgs), "%s %s %s", sub, szN, szV);
+			pkCCI->pkDesc->SetRelay("");
+			pkCCI->pkDesc->Packet(&p, sizeof(p));
+			ch->ChatPacket(CHAT_TYPE_INFO, "champion %s: postac na innym rdzeniu (kanal %d) - komenda wyslana", pkCCI->szName,
+					(int)pkCCI->bChannel);
+			return;
+		}
+		champion::GmOffline(ch, szName, sub, n, v);
+		return;
 	}
-	else if (!strcmp(arg1, "level"))
+
+	// the GM's own character, as before
+	if (*sub && !champion::GmApply(ch, sub, n, v))
+		ch->ChatPacket(CHAT_TYPE_INFO, "champion: nieznana komenda lub zle argumenty (%s) - nic nie zmieniono", sub);
+	champion::GmRefresh(ch);
+	char szLine[CHAT_MAX_LEN + 1];
+	champion::GmState(ch, "champion", szLine, sizeof(szLine));
+	ch->ChatPacket(CHAT_TYPE_INFO, "%s", szLine);
+}
+
+// input_p2p.cpp, HEADER_GG_CHAMPION_CMD (MT2009_PLUS_CHAMPION_TARGET_V1): a GM's "/champion <nick> ..." from another
+// core for a character of this one; the state line goes back to the GM.
+void ChampionP2P(const char* c_pData)
+{
+	const TPacketGGChampionCmd* p = reinterpret_cast<const TPacketGGChampionCmd*>(c_pData);
+	char szTarget[CHARACTER_NAME_MAX_LEN + 1], szGM[CHARACTER_NAME_MAX_LEN + 1], szArgs[sizeof(p->szArgs) + 1];
+	strlcpy(szTarget, p->szTarget, sizeof(szTarget));
+	strlcpy(szGM, p->szGM, sizeof(szGM));
+	memcpy(szArgs, p->szArgs, sizeof(p->szArgs));
+	szArgs[sizeof(p->szArgs)] = '\0';
+	LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(szTarget);
+	if (!tch || !tch->IsPC())
 	{
-		// The points a character would have earned on its way to this level (3 per level, level 1 starts
-		// with none), less what it has already spent - "/champion level 30" gives 87 to spend.
-		const int iLevel = MINMAX(0, n, (int)champion::MAX_LEVEL);
-		const int iSpent = ch->GetRealPoint(POINT_SUNGMA_STR) + ch->GetRealPoint(POINT_SUNGMA_HP) +
-			ch->GetRealPoint(POINT_SUNGMA_MOVE) + ch->GetRealPoint(POINT_SUNGMA_IMMUNE);
-		ch->SetConquerorLevel((BYTE)iLevel);
-		ch->SetConquerorLevelStep(0);
-		ch->SetConquerorExp(0);
-		ch->SetConquerorPoint(MAX(0, MAX(0, iLevel - 1) * champion::POINTS_PER_LEVEL - iSpent));
+		char szLine[CHAT_MAX_LEN + 1];
+		snprintf(szLine, sizeof(szLine), "champion %s: postac zmienila rdzen lub wyszla - powtorz komende", szTarget);
+		champion::GmTell(szGM, szLine);
+		return;
 	}
-	else if (!strcmp(arg1, "exp") && n >= 0)
-		ch->SetConquerorExp((DWORD)n);
-	else if (!strcmp(arg1, "give") && n > 0)
-		champion::GainExp(ch, (unsigned int)n);
-	else if (!strcmp(arg1, "points"))
-		ch->SetConquerorPoint(MAX(0, n));
-	else if (!strcmp(arg1, "stat") && n >= 0 && n <= 3)
-	{
-		int v = 0;
-		str_to_number(v, arg3);
-		const BYTE aPoint[4] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE, POINT_SUNGMA_IMMUNE };
-		ch->SetRealPoint(aPoint[n], MINMAX(0, v, 255));
-	}
-	else if (!strcmp(arg1, "reset"))
-	{
-		ch->SetConquerorLevel(0);
-		ch->SetConquerorLevelStep(0);
-		ch->SetConquerorExp(0);
-		ch->SetConquerorPoint(0);
-		ch->SetRealPoint(POINT_SUNGMA_STR, 0);
-		ch->SetRealPoint(POINT_SUNGMA_HP, 0);
-		ch->SetRealPoint(POINT_SUNGMA_MOVE, 0);
-		ch->SetRealPoint(POINT_SUNGMA_IMMUNE, 0);
-	}
-	ch->ComputePoints();
-	ch->PointsPacket();
-	ch->UpdatePacket();
-	const champion::SungmaRequirement* pReq = champion::MapRequirement(ch->GetMapIndex());
-	ch->ChatPacket(CHAT_TYPE_INFO, "champion: lv %d step %d exp %u/%u points %d | sungma real %d %d %d %d, now %d %d %d %d | "
-			"map %ld %s (%d %d %d %d hit %d) | precyzja %d, per %d %d %d %d | unlock state %d | rate %d%%",
-			(int)ch->GetConquerorLevel(), (int)ch->GetConquerorLevelStep(), ch->GetConquerorExp(), ch->GetConquerorNextExp(),
-			ch->GetConquerorPoint(), ch->GetRealPoint(POINT_SUNGMA_STR), ch->GetRealPoint(POINT_SUNGMA_HP),
-			ch->GetRealPoint(POINT_SUNGMA_MOVE), ch->GetRealPoint(POINT_SUNGMA_IMMUNE), ch->GetPoint(POINT_SUNGMA_STR),
-			ch->GetPoint(POINT_SUNGMA_HP), ch->GetPoint(POINT_SUNGMA_MOVE), ch->GetPoint(POINT_SUNGMA_IMMUNE),
-			ch->GetMapIndex(), pReq ? "sungma" : "-", pReq ? pReq->str : 0, pReq ? pReq->hp : 0, pReq ? pReq->move : 0,
-			pReq ? pReq->immune : 0, pReq ? pReq->hit : 0, ch->GetPoint(POINT_HIT_PCT), ch->GetPoint(POINT_SUNGMA_PER_STR),
-			ch->GetPoint(POINT_SUNGMA_PER_HP), ch->GetPoint(POINT_SUNGMA_PER_MOVE), ch->GetPoint(POINT_SUNGMA_PER_IMMUNE),
-			champion::UnlockState(ch), champion::ExpRatePct());
-	champion::SendInfo(ch);
-	champion::SendMap(ch);
+	char sub[256], arg2[256], arg3[256];
+	const char* rest = two_arguments(szArgs, sub, sizeof(sub), arg2, sizeof(arg2));
+	one_argument(rest, arg3, sizeof(arg3));
+	int n = 0, v = 0;
+	str_to_number(n, arg2);
+	str_to_number(v, arg3);
+	champion::GmRunOn(tch, sub, n, v, szGM);
 }
 
 // ---- quest functions (Owsap's names, quest/functions/pc.func and questlua_npc.cpp) -------------------------
@@ -1092,6 +1382,13 @@ void RegisterChampionFunctions()
 }
 
 #endif // ENABLE_CONQUEROR_LEVEL
+
+#ifndef ENABLE_CONQUEROR_LEVEL
+// input_p2p.cpp calls it (MT2009_PLUS_CHAMPION_TARGET_V1); without the champion level there is nothing to do
+void ChampionP2P(const char*)
+{
+}
+#endif
 
 // MT2009_PLUS_RIPOSTY_V1: Riposty i Dopalacze's pc.* functions (playerbot_riposty.cpp) ride on the hook below.
 void RegisterRipostyFunctions();

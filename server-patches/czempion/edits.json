@@ -238,5 +238,29 @@
   "marker": "MT2009_PLUS_SUNGMA_BONUS_V1 (move speed packet)",
   "old": "\t\tcase POINT_SUNGMA_HP:\n\t\tcase POINT_SUNGMA_PER_HP:\n\t\t\tif (amount && IsPC())\n\t\t\t\tPointChange(POINT_MAX_HP, 0);\n\t\t\tbreak;\n\t}\n",
   "new": "\t\tcase POINT_SUNGMA_HP:\n\t\tcase POINT_SUNGMA_PER_HP:\n\t\t\tif (amount && IsPC())\n\t\t\t\tPointChange(POINT_MAX_HP, 0);\n\t\t\tbreak;\n\t\t// MT2009_PLUS_SUNGMA_BONUS_V1 (move speed packet): Odpornosc changes the speed on a Sung Ma map (the penalty below the\n\t\t// requirement, +1 every 100 above it - ChampionMoveSpeed in GetLimitPoint); the client hears the speed again when\n\t\t// an item or affect changes it (the spent points and a map change go through ComputePoints already).\n\t\tcase POINT_SUNGMA_MOVE:\n\t\tcase POINT_SUNGMA_PER_MOVE:\n\t\t\tif (amount && IsPC() && GetDesc())\n\t\t\t\tUpdatePacket();\n\t\t\tbreak;\n\t}\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHAMPION_TARGET_V1 (gg header)",
+  "old": "\tHEADER_GG_CHECK_AWAKENESS\t\t= 29,\n",
+  "new": "\tHEADER_GG_CHECK_AWAKENESS\t\t= 29,\n\t// MT2009_PLUS_CHAMPION_TARGET_V1 (gg header): a GM's \"/champion <nick> ...\" for a character of another core (playerbot_champion.cpp)\n\tHEADER_GG_CHAMPION_CMD\t\t= 41,\n"
+ },
+ {
+  "file": "packet.h",
+  "marker": "MT2009_PLUS_CHAMPION_TARGET_V1 (gg struct)",
+  "old": "\tBYTE bHeader;\n} TPacketGGCheckAwakeness;\n",
+  "new": "\tBYTE bHeader;\n} TPacketGGCheckAwakeness;\n\n// MT2009_PLUS_CHAMPION_TARGET_V1 (gg struct): \"/champion <nick> <sub> <n> <v>\" sent to the core that holds <nick>; it runs it there and\n// sends the state line back to the GM (playerbot_champion.cpp, ChampionP2P)\ntypedef struct SPacketGGChampionCmd\n{\n\tBYTE\tbHeader;\n\tchar\tszTarget[CHARACTER_NAME_MAX_LEN + 1];\n\tchar\tszGM[CHARACTER_NAME_MAX_LEN + 1];\n\tchar\tszArgs[64];\n} TPacketGGChampionCmd;\n"
+ },
+ {
+  "file": "packet_info.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_TARGET_V1 (gg size)",
+  "old": "\tSet(HEADER_GG_CHECK_AWAKENESS,\t\tsizeof(TPacketGGCheckAwakeness),\t\"CheckAwakeness\",\t\tfalse);\n",
+  "new": "\tSet(HEADER_GG_CHECK_AWAKENESS,\t\tsizeof(TPacketGGCheckAwakeness),\t\"CheckAwakeness\",\t\tfalse);\n\tSet(HEADER_GG_CHAMPION_CMD, sizeof(TPacketGGChampionCmd), \"ChampionCmd\", false); // MT2009_PLUS_CHAMPION_TARGET_V1 (gg size)\n"
+ },
+ {
+  "file": "input_p2p.cpp",
+  "marker": "MT2009_PLUS_CHAMPION_TARGET_V1 (p2p)",
+  "old": "\t\tcase HEADER_GG_CHECK_AWAKENESS:\n\t\t\tIamAwake(d, c_pData);\n\t\t\tbreak;\n",
+  "new": "\t\tcase HEADER_GG_CHECK_AWAKENESS:\n\t\t\tIamAwake(d, c_pData);\n\t\t\tbreak;\n\n\t\t// MT2009_PLUS_CHAMPION_TARGET_V1 (p2p): a GM's \"/champion <nick> ...\" from another core (playerbot_champion.cpp)\n\t\tcase HEADER_GG_CHAMPION_CMD:\n\t\t\t{\n\t\t\t\tvoid ChampionP2P(const char* c_pData);\n\t\t\t\tChampionP2P(c_pData);\n\t\t\t}\n\t\t\tbreak;\n"
  }
 ]

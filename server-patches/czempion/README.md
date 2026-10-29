@@ -82,6 +82,11 @@ cokolwiek zostanie zapisane. Pliki zachowują swoje końce linii.
 - gracz: `/conqueror_stat smh_str|smh_hp|smh_move|smh_inmune` (punkt), `/conqueror_stat info` (odśwież okno).
 - GM (`GM_HIGH_WIZARD`): `/champion` (stan), `/champion unlock` (bez warunków), `/champion level <n>`, `exp <n>`,
   `give <exp>`, `points <n>`, `stat <0-3> <n>`, `reset`, `reload` (oba pliki danych).
+- GM na innej postaci (`MT2009_PLUS_CHAMPION_TARGET_V1`, poprawki 3.0.4 pkt 6): `/champion <nick> [podkomenda]` – te
+  same podkomendy (bez `reload`). Postać na tym rdzeniu – od razu; na innym rdzeniu/kanale – pakiet
+  `HEADER_GG_CHAMPION_CMD` (41) do jej rdzenia, odpowiedź (linia stanu) wraca do GM-a; offline – flagi questowe
+  `champion_gm.<co>` w tabeli `quest` (db jej nie cache'uje), nakładane w `ChampionOnLogin` przy następnym wejściu.
+  `/champion level N` bez nicku dalej działa na siebie.
 
 ## Questy (funkcje)
 
