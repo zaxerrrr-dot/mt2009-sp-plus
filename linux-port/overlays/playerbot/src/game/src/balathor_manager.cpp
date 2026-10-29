@@ -564,10 +564,11 @@ ACMD(do_balathor)
 		else if (vecArgs[1] == "skip")
 		{
 			CBalathor* pDungeon = CBalathorManager::Instance().FindByMapIndex(ch->GetMapIndex());
-			if (pDungeon && pDungeon->GmSkipToBoss())
-				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: skip -> Balathor");
+			const char* szSkipped = pDungeon ? pDungeon->GmSkipStage() : NULL;
+			if (szSkipped)
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor skip: %s", szSkipped);
 			else
-				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: skip works in stages 1-4 inside the Krypta");
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor skip: nie ma etapu do pominiecia (tylko w Krypcie, w trakcie rajdu)");
 		}
 		else if (vecArgs[1] == "next_success")
 		{

@@ -275,8 +275,10 @@ public:
 	void Motion(LPCHARACTER mob, BYTE bSkill, WORD wMotion);
 
 	void TakeOff(BYTE bTakeOffType, bool is_dead);
-	// MT2009_PLUS_BALATHOR_CMD_V1: GM "/balathor skip" - from stages 1-4 straight to the first Balathor fight.
-	bool GmSkipToBoss();
+	// MT2009_PLUS_BALATHOR_CMD_V1: GM "/balathor skip" - ends the current stage only (NULL: nothing to skip).
+	const char* GmSkipStage();
+	void StartWaves();
+	void SpawnWallsAndEggs();
 	void StartBossOne(DWORD dwCurTime);
 
 	void UnPoly(LPCHARACTER ch);

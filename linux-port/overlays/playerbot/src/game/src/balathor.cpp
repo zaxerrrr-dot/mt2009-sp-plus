@@ -1101,15 +1101,7 @@ void CBalathor::Kill(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, bool bFromSto
 			if (GetCharacterVIDByFlag("enter_door") == dwVictimVID)
 			{
 				SetCharacterByFlag("enter_door", 0);
-
-				m_bStepIndex = 2;
-
-				SpawnGroup(NULL);
-
-				SetFlag("regen_count", config.bRequestGroupKillCount - 1);
-
-				ChatPacket(CHAT_TYPE_NOTICE, "Pokonajcie wszystkie pobliskie potwory.");
-				QuestSay("Pokonajcie wszystkie pobliskie potwory.");
+				StartWaves();
 			}
 		}
 		else if (m_bStepIndex == 2)
@@ -1135,41 +1127,7 @@ void CBalathor::Kill(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, bool bFromSto
 			if (GetCharacterVIDByFlag("ice_crystal") == dwVictimVID)
 			{
 				SetCharacterByFlag("ice_crystal", 0);
-
-				m_bStepIndex = 4;
-
-				ChatPacket(CHAT_TYPE_NOTICE, "Zniszczcie Masywn\xb9" " Lodow\xb9" " \x8c" "cian\xea" ", kt\xf3" "ra chroni[ENTER]Zamro\xbf" "one Jaja Smoka!");
-				QuestSay("Zniszczcie Masywn\xb9" " Lodow\xb9" " \x8c" "cian\xea" ", kt\xf3" "ra chroni[ENTER]Zamro\xbf" "one Jaja Smoka!");
-
-				for (BYTE i = 1; i <= 2; ++i)
-				{
-					LPCHARACTER egg = NULL;
-
-					if (i == 1)
-						egg = SpawnMob(config.dwFrozenEggVnum1, config.boss_1_egg_pos1.lGX, config.boss_1_egg_pos1.lGY, config.boss_1_egg_pos1.bDirection, false, true);
-					else if (i == 2)
-						egg = SpawnMob(config.dwFrozenEggVnum1, config.boss_1_egg_pos2.lGX, config.boss_1_egg_pos2.lGY, config.boss_1_egg_pos2.bDirection, false, true);
-
-					if (egg)
-						m_dwRegenMobs.emplace_back(egg->GetVID());
-				}
-
-				for (BYTE i = 1; i <= 3; ++i)
-				{
-					LPCHARACTER door = NULL;
-					if (i == 1)
-						door = SpawnMob(config.dwDoorVnum, config.boss_1_door1_pos.lGX, config.boss_1_door1_pos.lGY, config.boss_1_door1_pos.bDirection, false, true);
-					else if (i == 2)
-						door = SpawnMob(config.dwDoorVnum, config.boss_1_door2_pos.lGX, config.boss_1_door2_pos.lGY, config.boss_1_door2_pos.bDirection, false, true);
-					else if (i == 3)
-						door = SpawnMob(config.dwDoorVnum, config.boss_1_door3_pos.lGX, config.boss_1_door3_pos.lGY, config.boss_1_door3_pos.bDirection, false, true);
-
-					if (door)
-					{
-						door->SetBlockRotation(true);
-						m_dwRegenMobs.emplace_back(door->GetVID());
-					}
-				}
+				SpawnWallsAndEggs();
 			}
 		}
 		else if (m_bStepIndex == 4)
@@ -1494,20 +1452,93 @@ void CBalathor::StartBossOne(DWORD dwCurTime)
 	SetFlag("flaming_egg_spawn", dwCurTime + config.dwFlamingEggSpawnTime);
 }
 
-// MT2009_PLUS_BALATHOR_CMD_V1 (29.10.2026): the owner's test shortcut - the door, the waves, the crystal and the ice
-// walls with their frozen eggs are removed and the first Balathor fight starts as after the last wall.
-bool CBalathor::GmSkipToBoss()
+void CBalathor::StartWaves()
 {
-	if (m_bStepIndex < 1 || m_bStepIndex > 4)
-		return false;
+	const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
 
-	RemoveCharacterByFlag("enter_door");
-	RemoveCharacterByFlag("ice_crystal");
+	m_bStepIndex = 2;
+
+	SpawnGroup(NULL);
+
+	SetFlag("regen_count", config.bRequestGroupKillCount - 1);
+
+	ChatPacket(CHAT_TYPE_NOTICE, "Pokonajcie wszystkie pobliskie potwory.");
+	QuestSay("Pokonajcie wszystkie pobliskie potwory.");
+}
+
+void CBalathor::SpawnWallsAndEggs()
+{
+	const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
+
 	m_bStepIndex = 4;
-	KillRegen();
-	if (m_bStepIndex == 4)
-		StartBossOne(get_dword_time());
-	return true;
+
+	ChatPacket(CHAT_TYPE_NOTICE, "Zniszczcie Masywn\xb9" " Lodow\xb9" " \x8c" "cian\xea" ", kt\xf3" "ra chroni[ENTER]Zamro\xbf" "one Jaja Smoka!");
+	QuestSay("Zniszczcie Masywn\xb9" " Lodow\xb9" " \x8c" "cian\xea" ", kt\xf3" "ra chroni[ENTER]Zamro\xbf" "one Jaja Smoka!");
+
+	for (BYTE i = 1; i <= 2; ++i)
+	{
+		LPCHARACTER egg = NULL;
+
+		if (i == 1)
+			egg = SpawnMob(config.dwFrozenEggVnum1, config.boss_1_egg_pos1.lGX, config.boss_1_egg_pos1.lGY, config.boss_1_egg_pos1.bDirection, false, true);
+		else if (i == 2)
+			egg = SpawnMob(config.dwFrozenEggVnum1, config.boss_1_egg_pos2.lGX, config.boss_1_egg_pos2.lGY, config.boss_1_egg_pos2.bDirection, false, true);
+
+		if (egg)
+			m_dwRegenMobs.emplace_back(egg->GetVID());
+	}
+
+	for (BYTE i = 1; i <= 3; ++i)
+	{
+		LPCHARACTER door = NULL;
+		if (i == 1)
+			door = SpawnMob(config.dwDoorVnum, config.boss_1_door1_pos.lGX, config.boss_1_door1_pos.lGY, config.boss_1_door1_pos.bDirection, false, true);
+		else if (i == 2)
+			door = SpawnMob(config.dwDoorVnum, config.boss_1_door2_pos.lGX, config.boss_1_door2_pos.lGY, config.boss_1_door2_pos.bDirection, false, true);
+		else if (i == 3)
+			door = SpawnMob(config.dwDoorVnum, config.boss_1_door3_pos.lGX, config.boss_1_door3_pos.lGY, config.boss_1_door3_pos.bDirection, false, true);
+
+		if (door)
+		{
+			door->SetBlockRotation(true);
+			m_dwRegenMobs.emplace_back(door->GetVID());
+		}
+	}
+}
+
+// MT2009_PLUS_BALATHOR_CMD_V1 (29.10.2026): the owner's test shortcut - "/balathor skip" ends only the current stage
+// (the door, the monster waves, the ice crystal, the ice walls with the frozen eggs, Balathor, hidden Balathor) and
+// the next one starts as if the players had finished it, so every stage can be tested in turn.
+const char* CBalathor::GmSkipStage()
+{
+	switch (m_bStepIndex)
+	{
+		case 1:
+			RemoveCharacterByFlag("enter_door");
+			StartWaves();
+			return "brama -> fale potworow";
+		case 2:
+			KillRegen();
+			SetFlag("regen_count", 0);
+			m_bStepIndex = 3;
+			SpawnCharacterByFlag("ice_crystal");
+			return "fale potworow -> krysztal lodu";
+		case 3:
+			RemoveCharacterByFlag("ice_crystal");
+			SpawnWallsAndEggs();
+			return "krysztal lodu -> lodowe sciany i jaja";
+		case 4:
+			KillRegen();
+			StartBossOne(get_dword_time());
+			return "lodowe sciany i jaja -> Balathor";
+		case 5:
+			TakeOff(BALATHOR_TAKE_OFF_SUCCESS, false);
+			return "Balathor -> ukryty Balathor";
+		case 6:
+			TakeOff(BALATHOR_TAKE_OFF_SUCCESS, false);
+			return "ukryty Balathor -> koniec (sukces)";
+	}
+	return NULL;
 }
 
 void CBalathor::TakeOff(BYTE bTakeOffType, bool is_dead)
