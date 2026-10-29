@@ -661,6 +661,8 @@ SCHEMA = [
        "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
     _e("M2_SEONHAE_DEFAULTED", "Znacznik: Seon-Hae włączony", "Znacznik jednorazowej migracji – nie ruszaj.",
        "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
+    _e("M2_YOHARA_UPDATES_DEFAULTED", "Znacznik: aktualizator Yohary jako edytor .env", "Znacznik jednorazowej migracji – nie ruszaj.",
+       "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
     _e("M2_TZ_DEFAULTED", "Znacznik: strefa czasowa ustawiona", "Znacznik jednorazowej migracji – nie ruszaj.",
        "zaawansowane", "string", "", [], readonly=True, readonly_reason="Znacznik techniczny jednorazowej migracji aktualizacji."),
 ]

@@ -944,6 +944,13 @@ MT2009_PLUS_WEBSITE_URL = "https://metin2sp.pl/"
 _mt2009_changelog_cache = {"at": 0.0, "entries": None}
 
 
+def remote_checks_off():
+    """MT2009_PLUS_YOHARA_UPDATER_ON_V1: M2_UPDATE_CHECK=0 in .env means the
+    panels contact nothing - no release check, no changelog from GitHub (a
+    Yohara 3.x world must not be told about the 2.x releases)."""
+    return os.environ.get("M2_UPDATE_CHECK", "1").strip() == "0"
+
+
 def _clean_changelog_text(text):
     text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
     text = re.sub(r"`([^`]*)`", r"\1", text)
@@ -1002,6 +1009,8 @@ def changelog_entries():
     cached = _mt2009_changelog_cache["entries"]
     if cached is not None and now - _mt2009_changelog_cache["at"] < 900:
         return cached
+    if remote_checks_off():
+        return local_panel_changelog_entries()
     try:
         request_changelog = Request(MT2009_PLUS_CHANGELOG_URL, headers={"User-Agent": "MT2009-Plus-Panel"})
         with urlopen(request_changelog, timeout=4) as response:
@@ -2432,6 +2441,10 @@ def latest_playerbots_release():
     if now - _playerbots_release_cache["checked_at"] < PLAYERBOTS_RELEASE_CACHE_SECONDS:
         return dict(_playerbots_release_cache)
     result = {"checked_at": now, "latest": None, "error": None}
+    if remote_checks_off():
+        _playerbots_release_cache.clear()
+        _playerbots_release_cache.update(result)
+        return dict(result)
     try:
         request_github = Request(PLAYERBOTS_RELEASE_URL, headers={"Accept": "application/vnd.github+json", "User-Agent": "Metin2-Singleplayer-Panel"})
         with urlopen(request_github, timeout=3) as response:

@@ -520,6 +520,32 @@ migrate_seonhae_on() {
     printf 'M2_SEONHAE_DEFAULTED=1\n' >> "$_env"
 }
 
+# MT2009_PLUS_YOHARA_UPDATER_ON_V1 (the owner, 29 October 2026): a Yohara (3.x)
+# world needs the updater only as the advanced panel's .env editor and must
+# never be updated from the 2.x releases. The 3.0.0-test package shipped
+# M2_UPDATE_AUTOSTART=0, so its panel .env page stayed read-only; 3.0.1/3.0.2
+# shipped M2_UPDATE_CHECK=1. Once per world (M2_YOHARA_UPDATES_DEFAULTED), on
+# the 3.x line only (VERSION 3.*): the updater starts by itself (AUTOSTART=1)
+# as the .env editor alone (WATCH_UPDATES=0), and nothing checks or installs
+# updates (CHECK=0, APPLY=0). A value changed afterwards stays.
+migrate_yohara_updates() {
+    _env="$COMPOSE_DIR/.env"
+    [ -f "$_env" ] || return 0
+    case "$(head -n 1 "$ROOT/VERSION" 2>/dev/null | tr -d ' \r')" in 3.*) ;; *) return 0 ;; esac
+    grep -q '^M2_YOHARA_UPDATES_DEFAULTED=' "$_env" && return 0
+    [ -n "$(tail -c 1 "$_env")" ] && printf '\n' >> "$_env"
+    for _kv in M2_UPDATE_AUTOSTART=1 M2_UPDATE_CHECK=0 M2_UPDATE_APPLY=0 M2_UPDATE_WATCH_UPDATES=0; do
+        _k=${_kv%%=*}
+        if grep -q "^$_k=" "$_env"; then
+            sed -i "s|^$_k=.*|$_kv|" "$_env"
+        else
+            printf '%s\n' "$_kv" >> "$_env"
+        fi
+    done
+    note "   Yohara: the updater starts by itself as the panel's .env editor (M2_UPDATE_AUTOSTART=1); update checks and installs are off"
+    printf 'M2_YOHARA_UPDATES_DEFAULTED=1\n' >> "$_env"
+}
+
 # MT2009_PLUS_DB_LOG_RETENTION_V1: a world installed before 2.36 has kept its
 # whole log database, and the owner of each decides when old rows go - the
 # first prune of a big log.log rewrites it once. So an .env without the key
@@ -1087,6 +1113,7 @@ migrate_env() {
     migrate_log_keep_days
     migrate_sidekick_off
     migrate_seonhae_on
+    migrate_yohara_updates
     # Before compose, because a published port range only changes at a recreate.
     sync_channel_ports
 }

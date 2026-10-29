@@ -869,6 +869,29 @@ function Assert-SeonHaeOnDefault {
     return (Set-DotEnvValue -Content $Content -Name 'M2_SEONHAE_DEFAULTED' -Value '1')
 }
 
+function Assert-YoharaUpdatesDefault {
+    # MT2009_PLUS_YOHARA_UPDATER_ON_V1 (the owner, 29 October 2026): a Yohara
+    # (3.x) world needs the updater only as the advanced panel's .env editor
+    # and must never be updated from the 2.x releases. The 3.0.0-test package
+    # shipped M2_UPDATE_AUTOSTART=0 (the panel's .env page stayed read-only),
+    # 3.0.1/3.0.2 M2_UPDATE_CHECK=1. Once per world, on the 3.x line only
+    # (VERSION 3.*): the updater starts by itself, nothing checks or installs
+    # updates. A value changed afterwards stays.
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content
+    )
+    if ([Regex]::IsMatch($Content, '(?m)^M2_YOHARA_UPDATES_DEFAULTED=')) { return $Content }
+    $versionPath = Join-Path $PSScriptRoot 'VERSION'
+    $version = if (Test-Path -LiteralPath $versionPath -PathType Leaf) { ([IO.File]::ReadAllText($versionPath)).Trim() } else { '' }
+    if (-not $version.StartsWith('3.')) { return $Content }
+    Write-Host 'Yohara: aktualizator startuje sam jako edytor .env w panelu (M2_UPDATE_AUTOSTART=1); sprawdzanie i instalowanie aktualizacji wylaczone.' -ForegroundColor Cyan
+    $Content = Set-DotEnvValue -Content $Content -Name 'M2_UPDATE_AUTOSTART' -Value '1'
+    $Content = Set-DotEnvValue -Content $Content -Name 'M2_UPDATE_CHECK' -Value '0'
+    $Content = Set-DotEnvValue -Content $Content -Name 'M2_UPDATE_APPLY' -Value '0'
+    $Content = Set-DotEnvValue -Content $Content -Name 'M2_UPDATE_WATCH_UPDATES' -Value '0'
+    return (Set-DotEnvValue -Content $Content -Name 'M2_YOHARA_UPDATES_DEFAULTED' -Value '1')
+}
+
 function Assert-DbLogRetentionDefault {
     # MT2009_PLUS_DB_LOG_RETENTION_V1: a world made before this setting kept its
     # whole log database; its owner decides when old rows go (the first prune of
@@ -1061,6 +1084,7 @@ function Initialize-InstallationIdentity {
     $content = Assert-LogKeepDaysDefault -Content $content
     $content = Assert-SidekickOffDefault -Content $content
     $content = Assert-SeonHaeOnDefault -Content $content
+    $content = Assert-YoharaUpdatesDefault -Content $content
     $content = Assert-DbLogRetentionDefault -Content $content
     # The same shape for the clock's zone: the example's UTC becomes this
     # machine's own, once.

@@ -338,11 +338,11 @@ services:
       # this). One core carries every bot then - keep the population modest.
       M2_PLAYERBOT_WORLD_LAYOUT: "${M2_PLAYERBOT_WORLD_LAYOUT:-unified}"
       # MT2009_PLUS_SPIDER3_SWITCH_V1: 3 Loch Pajakow (217) - 1 only together with the client that has its map
-      # (m2-render-config: game1 hosts it, V2's warp 10098 opens). 0 (default): as before, unreachable.
-      M2_SPIDER3_ON: "${M2_SPIDER3_ON:-0}"
+      # (m2-render-config: game1 hosts it, V2's warp 10098 opens). 1 (default, Yohara client 3.0.3 has it); 0: unreachable.
+      M2_SPIDER3_ON: "${M2_SPIDER3_ON:-1}"
       # MT2009_PLUS_BALATHOR_SWITCH_V1: Krypta Balathora (420) - 1 only together with the client that has its map
-      # (m2-render-config: game1 hosts it, Dolnarr offers the lair). 0 (default): shut.
-      M2_BALATHOR_ON: "${M2_BALATHOR_ON:-0}"
+      # (m2-render-config: game1 hosts it, Dolnarr offers the lair). 1 (default, Yohara client 3.0.3 has it); 0: shut.
+      M2_BALATHOR_ON: "${M2_BALATHOR_ON:-1}"
       # Only said in the start log here; the migrate service is what acts on it.
       M2_DIFFICULTY: "${M2_DIFFICULTY:-easy}"
       TZ: "${M2_TZ:-UTC}"
@@ -620,6 +620,8 @@ services:
       # The default is bumped with every release, so a world nobody has
       # configured still reports the version it is actually running.
       PLAYERBOTS_VERSION: "${M2_PLAYERBOTS_VERSION:-2.2.38}"
+      # MT2009_PLUS_YOHARA_UPDATER_ON_V1: 0 = no release check and no changelog from GitHub.
+      M2_UPDATE_CHECK: "${M2_UPDATE_CHECK:-1}"
       TZ: "${M2_TZ:-UTC}"
     ports:
       # 7790 outside: 7789 is the browser bridge's port in this stack.
