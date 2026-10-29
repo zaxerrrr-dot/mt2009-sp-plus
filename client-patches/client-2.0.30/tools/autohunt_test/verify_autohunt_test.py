@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_AUTOHUNT_TEST_V1 - checks the pack build_autohunt_test_packs.py wrote (on the OUT of the whole Yohara chain):
-#   autohunttest.index / .data hold exactly the package's 3 names (autohunt_test_files.json: size, sha256, entry type),
-#   every entry's crc and read-back; pack/Index lists "autohunttest" once; the effect names its mesh, the mesh its
-#   texture, all three in the pack. With the players' base pack dir (default: the exe smoke client's packs, which hold the
-#   base install's etc) it also checks that every image the TEST window names (root uiscript/autohunttest*.py,
-#   uiautohunt_test.py) is in a listed pack, and reports whether etc already has the circle with the same bytes.
+#   autohunttest.index / .data hold exactly the package's names (autohunt_test_files.json: size, sha256, entry type -
+#   the circle's 3 and the TEST window's 20 .sub + its atlas), every entry's crc and read-back; pack/Index lists
+#   "autohunttest" once; the effect names its mesh, the mesh its texture, all three in the pack. Then, on the players'
+#   install (klient-test-2.37 + yohara-3.0.1 zips + OUT, tools/uicheck/check_ui_assets.py - NOT the exe smoke client,
+#   whose etc pack is not the players'), every picture the TEST window opens (root uiscript/autohunttest*.py,
+#   uiautohunt_test.py) and the image every .sub of the pack cuts.
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/autohunt_test/verify_autohunt_test.py \
-#     <OUT pack dir> [<base install pack dir>]
+#     <OUT pack dir>
 import hashlib
 import os
 import re
@@ -23,7 +24,6 @@ import build_autohunt_test_packs as B  # noqa: E402
 
 args = [a for a in sys.argv[1:] if not a.startswith('--')]
 OUT = args[0]
-BASE_INSTALL = args[1] if len(args) > 1 else '/opt/metin2/cache/exebuild/smoke/client/pack'
 ROOT = os.path.normpath(os.path.join(HERE, '..', '..', 'root'))
 fails = []
 
@@ -69,48 +69,23 @@ for tex in set(re.findall(rb'[A-Za-z]:\\[^\x00]+?\.dds', got.get(B.MESH, b''), r
     if name not in got:
         fails.append('%s: names %s, not in the pack' % (B.MESH, name))
 
-# the base install: the window's images and the same circle in etc
+# the players' install (klient-test-2.37 + yohara-3.0.1 zips + OUT; tools/uicheck): every picture the TEST window opens
+# - and the image each of its .sub cuts - is in a pack the client lists (3.0.4 counted the exe smoke client's etc,
+# which is not the players' etc, and Alt+H died on auto_system_edit_line.sub)
+sys.path.insert(0, os.path.join(HERE, '..', 'uicheck'))
+import check_ui_assets as U  # noqa: E402
+probs, inst, images = U.feature_problems(OUT, ['uiautohunt_test.py', 'uiscript/autohunttestwindow.py',
+                                              'uiscript/autohunttestoptionwindow.py',
+                                              'uiscript/autohunttestrangewindow.py'],
+                                         names=[n for n in m if n.endswith('.sub')], root=ROOT)
+fails += probs
+for n in sorted(m):
+    w = inst.where(n)
+    if not w or w[0] != B.PACK:
+        fails.append('%s: the install opens it from %s, not %s' % (n, w, B.PACK))
 etc_same = None
-images = 0
-if os.path.isdir(BASE_INSTALL):
-    where = {}
-    for f in os.listdir(BASE_INSTALL):
-        if f.endswith('.index'):
-            for e in m2pack.read_index(os.path.join(BASE_INSTALL, f))[2]:
-                where[e['name']] = f[:-6]
-    if os.path.exists(os.path.join(BASE_INSTALL, 'etc.index')):
-        ents, dat = pack_entries(BASE_INSTALL, 'etc')
-        etc = dict((e['name'], e) for e in ents)
-        etc_same = all(n in etc and m2pack.read_entry(dat, etc[n]) == b for n, b in got.items()) if got else False
-    names = set()
-    sources = [os.path.join(ROOT, 'uiautohunt_test.py')] + [os.path.join(ROOT, 'uiscript', f) for f in
-                                                             ('autohunttestwindow.py', 'autohunttestoptionwindow.py', 'autohunttestrangewindow.py')]
-    for path in sources:
-        text = open(path, 'rb').read().decode('latin-1')
-        consts = dict(re.findall(r'^([A-Z_]+)\s*=\s*"([^"]+/)"', text, re.M))
-        for prefix, rest in re.findall(r'(?:([A-Z_]+)\s*\+\s*)?["\']([^"\']+\.(?:sub|tga|dds))["\']', text):
-            if prefix and prefix not in consts:
-                continue	# SMALL + "1.sub": below
-            full = (consts[prefix] + rest) if prefix else rest
-            if '/' not in full and 'ROOT' in consts:
-                full = consts['ROOT'] + full	# a bare name handed to a helper that adds ROOT (_TextBar)
-            if full.startswith('d:/'):
-                names.add(full.lower())
-        # the images named with a counter ("..._0" + "1.sub")
-        for prefix in re.findall(r'^SMALL\s*=\s*"([^"]+)"', text, re.M):
-            for n in '123':
-                names.add((prefix + n + '.sub').lower())
-    for n in sorted(names):
-        if n.endswith('_0.sub') and 'public/small_button' in n:
-            continue
-        images += 1
-        if n not in where:
-            fails.append('%s: named by the window, in no pack of %s' % (n, BASE_INSTALL))
-else:
-    print('(no base install pack dir %s - the window\'s images not checked)' % BASE_INSTALL)
-
-print('autohunttest: %d files, %d window image(s) found, base etc has the circle with the same bytes: %s, %d problem(s)'
-      % (len(got), images, etc_same, len(fails)))
+print('autohunttest: %d files, %d window picture(s) checked against the players\' install, %d problem(s)'
+      % (len(got), images, len(fails)))
 for f in fails:
     print('  ' + f)
 sys.exit(1 if fails else 0)

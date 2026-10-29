@@ -6,7 +6,9 @@
 #   every .sub's image and the effect's mesh / textures present; the window's python in client-2.0.30/root
 #   (uinpclocationhelper.py, uiscript/npclocationhelper_*.py) and the map list's point files present.
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/npcloc/verify_npcloc.py \
-#     <OUT pack dir> [<BASE pack dir>] [--etc=<dir with the full install's etc.index>]
+#     <OUT pack dir> [<BASE pack dir>]
+#   The pictures: all 92 of ui_assets.txt are ours (root pack) and every name the window opens is checked on the
+#   players' install (tools/uicheck/check_ui_assets.py) - not on the exe smoke client's etc.
 import os
 import sys
 
@@ -66,39 +68,24 @@ for p, fs in sorted(files.items()):
         n += 1
         if entry(p, name) != b:
             fails.append('%s: %s missing or other' % (p, name))
-# every picture / effect file the window uses (ui_assets.txt): ours (just checked) or the full install's base pack etc
-etc_names = bp.etc_names()
-root_names = set(pack('root')[0])
-have = root_names | (etc_names or set())
+# every picture / effect file the window uses (ui_assets.txt) is ours (in client-2.0.30/npcloc/d_, just checked), and
+# on the PLAYERS' install (klient-test-2.37 + yohara-3.0.1 zips + OUT, tools/uicheck - not the exe smoke client's etc):
+# every name the window's python opens, every .sub's image, the effect
 assets = [l.strip() for l in open(os.path.join(HERE, 'ui_assets.txt')) if l.strip()]
 for name in assets:
-    if name in files['root']:
-        continue
-    if etc_names is None:
-        if name not in root_names:
-            fails.append('asset %s: not ours and the base pack etc is not here to check' % name)
-    elif name not in have:
-        fails.append('asset %s: neither ours nor in the base pack etc' % name)
-
-
-def asset_bytes(name):
-    if name in files['root']:
-        return files['root'][name]
-    if etc_names is not None and name in etc_names:
-        if 'etc' not in _packs:
-            f, v, ents = m2pack.read_index(os.path.join(bp.etc_dir(), 'etc.index'))
-            _packs['etc'] = (dict((e['name'], e) for e in ents), packlib.rd(os.path.join(bp.etc_dir(), 'etc.data')))
-        return entry('etc', name)
-    return entry('root', name)
-
-
-for name in assets:
-    if not name.endswith('.sub') or name not in have and name not in files['root']:
-        continue
-    b = asset_bytes(name)
-    img = [l.split('"')[1] for l in b.decode('cp1250').splitlines() if l.strip().lower().startswith('image')][0]
-    if ('d:/ymir work/ui/' + img).lower() not in have:
-        fails.append('%s: image %s neither ours nor in the base pack etc' % (name, img))
+    if name not in files['root']:
+        fails.append('asset %s: not in client-2.0.30/npcloc/d_ (root pack)' % name)
+sys.path.insert(0, os.path.join(HERE, '..', 'uicheck'))
+import check_ui_assets as U  # noqa: E402
+probs, inst, nchk = U.feature_problems(OUT, ['uinpclocationhelper.py', 'uiscript/npclocationhelper_atlaswindow.py',
+                                            'uiscript/npclocationhelper_npcinfowindow.py',
+                                            'uiscript/npclocationhelper_mobinfowindow.py'], names=assets, root=ROOT)
+fails += ['players\' install: ' + x for x in probs]
+eff = files['root'].get('d:/ymir work/effect/etc/npc_location/npc_location_direction.mse', b'')
+for mesh in set(__import__('re').findall(rb'(?i)MeshFileName\s+"([^"]+)"', eff)):
+    nm = 'd:/ymir work/effect/etc/npc_location/' + mesh.decode('latin1').lower()
+    if nm not in inst.names:
+        fails.append('npc_location_direction.mse: mesh %s in no pack' % nm)
 info = files['locale'].get('locale/common/map/npc_location_helper/npc_location_helper.txt', b'').decode('cp1250')
 maps = [l.split('\t') for l in info.replace('\r', '').split('\n') if l.startswith('\t') and l.strip()[:1].isdigit()]
 for m in maps:
@@ -108,8 +95,8 @@ for f in ('uinpclocationhelper.py', 'uiscript/npclocationhelper_atlaswindow.py',
           'uiscript/npclocationhelper_npcinfowindow.py', 'uiscript/npclocationhelper_mobinfowindow.py'):
     if not os.path.isfile(os.path.join(ROOT, f)):
         fails.append('root/%s missing' % f)
-print('npcloc: 3 items, %d maps, %d files of ours checked, %d UI assets (base pack etc %s), %d problem(s)'
-      % (len(maps), n, len(assets), 'checked' if etc_names is not None else 'not here', len(fails)))
+print('npcloc: 3 items, %d maps, %d files of ours checked, %d UI assets, %d picture(s) checked on the players\' install, %d problem(s)'
+      % (len(maps), n, len(assets), nchk, len(fails)))
 for f in fails:
     print('  ' + f)
 sys.exit(1 if fails else 0)

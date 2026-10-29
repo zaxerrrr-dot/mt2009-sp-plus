@@ -75,10 +75,17 @@
   "d:/ymir work/effect/monster2/guild_whitedragon_ground_drop.mse",
   "d:/ymir work/effect/monster2/whitedragon_ground_ice.mse",
   "d:/ymir work/effect/etc/direction/direction_land.mse",
-  "d:/ymir work/effect/etc/npc_location/npc_location_direction.mse",
   "d:/ymir work/ui/whitedragon_damage_01.dds"
  ],
+ "_effects_note": "npc_location_direction.mse (and its mesh/textures) belongs to the Lokalizator NPC pictures (tools/npcloc, root pack) - the package's .mse differs from npcloc's in one byte, two copies would stop the build",
  "ui_dir": "d:/ymir work/ui/game/guild_white_dragon_lair/",
+ "ui_files": [
+  "d:/ymir work/ui/whitedragon_damage_01.dds"
+ ],
+ "ui_python": [
+  "uiguildwhitedragon.py",
+  "uiscript/guildwhitedragonlairwindow.py"
+ ],
  "fire_arrow": {
   "vnum": 30395,
   "package_vnum": 30345,

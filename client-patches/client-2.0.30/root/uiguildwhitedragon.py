@@ -26,12 +26,41 @@ _FALLBACK = {
 def _T(key):
 	return getattr(localeInfo, key, _FALLBACK.get(key, key))
 
+# MT2009_PLUS_BALATHOR_UI_SAFE_V1: a picture missing in the player's packs (3.0.4: ui/game/guild_white_dragon_lair was
+# not shipped) made LoadScriptFile raise and exception.Abort killed the client when the boss window opened (right after
+# the eggs, at the cinema). Now a failed window / frost is logged once to syserr, said once on the chat, and stays off.
+_FAILED = {}
+
+def _LoadFailed(what):
+	if _FAILED.get(what):
+		return
+	_FAILED[what] = True
+	try:
+		import dbg, sys, traceback
+		dbg.TraceError("uiGuildWhiteDragon.%s: %s" % (what, "".join(traceback.format_exception(*sys.exc_info())).strip()))
+	except Exception:
+		pass
+	try:
+		import chat
+		chat.AppendChat(chat.CHAT_TYPE_INFO, "Krypta Balathora: nie uda\xb3o si\xea wczyta\xe6 okna (brak plik\xf3w klienta) - zaktualizuj klienta.")
+	except Exception:
+		pass
+
 class ScreenEffect(ui.Window):
 	def __init__(self):
 		ui.Window.__init__(self)
 		self.AddFlag("float")
+		self.loaded = False
+		self.keyboardSpaceBarEffect = None
 		self.Destroy()
+		try:
+			self.__Build()
+			self.loaded = True
+		except Exception:
+			_LoadFailed("ScreenEffect")
+			self.Hide()
 
+	def __Build(self):
 		screenWidth = wndMgr.GetScreenWidth()
 		screenHeight = wndMgr.GetScreenHeight()
 
@@ -78,9 +107,12 @@ class ScreenEffect(ui.Window):
 		return False
 
 	def __OnEndFrameEffect(self):
-		self.keyboardSpaceBarEffect.Hide()
+		if self.keyboardSpaceBarEffect:
+			self.keyboardSpaceBarEffect.Hide()
 
 	def __ClickSpace(self):
+		if not self.keyboardSpaceBarEffect:
+			return
 		self.keyboardSpaceBarEffect.ResetFrame()
 		self.keyboardSpaceBarEffect.Show()
 
@@ -107,7 +139,7 @@ class ScreenEffect(ui.Window):
 		self.Hide()
 
 	def AddWave(self, waveCount):
-		if waveCount == 0:
+		if waveCount == 0 or not self.loaded:
 			self.Clear()
 			return
 
@@ -130,7 +162,7 @@ class ScreenEffect(ui.Window):
 		self.OnUpdate()
 
 	def OnUpdate(self):
-		if not self.IsShow():
+		if not self.IsShow() or not self.loaded:
 			return
 
 		if self.sleepTime > app.GetTime():
@@ -163,6 +195,10 @@ class ScreenEffect(ui.Window):
 class Window(ui.ScriptWindow):
 	def __init__(self):
 		ui.ScriptWindow.__init__(self)
+		self.loaded = False
+		self.toolTip = None
+		self.egg_fail_count = 0
+		self.hwatcha_count = 0
 		self.__LoadWindow()
 
 	def Destroy(self):
@@ -176,10 +212,13 @@ class Window(ui.ScriptWindow):
 		try:
 			pyScrLoader = ui.PythonScriptLoader()
 			pyScrLoader.LoadScriptFile(self, "uiscript/guildwhitedragonlairwindow.py")
-		except:
-			import exception
-			exception.Abort("uiGuildWhiteDragon.Window.__LoadWindow")
+			self.__BindWindow()
+			self.loaded = True
+		except Exception:
+			_LoadFailed("Window.__LoadWindow")
+			self.Hide()
 
+	def __BindWindow(self):
 		GetChild = self.GetChild
 
 		GetChild("boss_name").SetText(_T("GUILD_WHITE_DRAGON_LAIR_UI_BOSS_NAME_TOOLTIP"))
@@ -227,6 +266,8 @@ class Window(ui.ScriptWindow):
 			self.toolTip.HideToolTip()
 
 	def Set(self, balathor_hp, balathor_maxhp, balathor_rage, balathor_rage_max, egg_fail_count, hwatcha_count, hwatcha_hp, hwatcha_maxhp):
+		if not self.loaded:
+			return
 		GetChild = self.GetChild
 
 		if balathor_hp == 0 and balathor_maxhp == 0:

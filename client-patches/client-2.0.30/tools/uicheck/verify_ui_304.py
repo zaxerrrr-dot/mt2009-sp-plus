@@ -1,0 +1,64 @@
+# -*- coding: utf-8 -*-
+# MT2009_PLUS_UICHECK_V1 - the verify loop's check of the 3.0.4 windows on the PLAYERS' install (klient-test-2.37 +
+# yohara-3.0.1 zips + OUT; check_ui_assets.py): every picture each new / changed window opens (and the image of every
+# .sub among them) is in a pack the client lists, and every item_list row new since 3.0.1 has its icon (Kamienie
+# Zywiolow, Wezowy Czepiec, the boxes...). The players' base packs (etc, item ...) have no listing here: a name counts
+# as theirs only when the base client's own root opens it (/opt/metin2/cache/tcm/ours/root). 3.0.4 crashed on
+# Alt+H and on Balathor's boss window because its builders took the exe smoke client's etc for the players'.
+#   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/uicheck/verify_ui_304.py \
+#     <OUT pack dir>
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import check_ui_assets as U  # noqa: E402
+
+FEATURES = [
+    ('autohunt_test', ['uiautohunt_test.py', 'uiscript/autohunttestwindow.py', 'uiscript/autohunttestoptionwindow.py',
+                       'uiscript/autohunttestrangewindow.py']),
+    ('balathor', ['uiguildwhitedragon.py', 'uiscript/guildwhitedragonlairwindow.py']),
+    ('wieza', ['uiwiezasm.py', 'sungmastate.py', 'uiscript/sungmaheetowerenter.py',
+               'uiscript/sungmaheetowerinformationboard.py']),
+    ('community', ['uicommunity.py']),
+    ('npcloc', ['uinpclocationhelper.py', 'uiscript/npclocationhelper_atlaswindow.py',
+                'uiscript/npclocationhelper_npcinfowindow.py', 'uiscript/npclocationhelper_mobinfowindow.py']),
+    ('cube', ['uicuberenewal.py', 'uiscript/cuberenewalwindow.py']),
+    ('chardetails', ['uiattributelist.py', 'uiscript/characterdetailswindow.py']),
+    ('gaya2', ['gayacurrency.py', 'uiscript/expandedmoneytaskbar.py']),
+    ('addeq', ['uiaddeq.py']),
+    ('monstercard', ['uimonstercard.py', 'uiscript/monstercardwindow.py', 'uiscript/monstercardachievdetailwindow.py']),
+]
+
+OUT = [a for a in sys.argv[1:] if not a.startswith('--')][0]
+fails, total = [], 0
+inst = None
+for name, pys in FEATURES:
+    probs, inst, n = U.feature_problems(OUT, pys)
+    total += n
+    fails += ['%s: %s' % (name, p) for p in probs]
+
+# item_list rows new or changed since 3.0.1: their icons
+prev = set()
+try:
+    pl = U.Layer(U.PREV_LAYER)
+    ents = dict((e['name'].lower(), e) for e in U._index_from_bytes(pl.read('gamedata.index')))
+    prev = set(U.m2pack.read_entry(pl.read('gamedata.data'), ents['gamedata/item_list.txt']).decode('latin1')
+               .replace('\r', '').split('\n'))
+except Exception as ex:
+    fails.append('3.0.1 item_list not readable: %s' % ex)
+rows = 0
+for row in inst.read('gamedata/item_list.txt').decode('latin1').replace('\r', '').split('\n'):
+    t = row.split('\t')
+    if len(t) < 3 or not t[0].strip().isdigit() or row in prev:
+        continue
+    rows += 1
+    icon = U.norm(t[2].strip())
+    if icon not in inst.names:
+        fails.append('item_list %s: icon %s in no pack' % (t[0].strip(), icon))
+
+print('ui 3.0.4: %d feature(s), %d picture(s), %d new item_list row(s) checked on the players\' install, %d problem(s)'
+      % (len(FEATURES), total, rows, len(fails)))
+for f in fails:
+    print('  ' + f)
+sys.exit(1 if fails else 0)

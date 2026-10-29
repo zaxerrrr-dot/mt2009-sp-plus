@@ -13,8 +13,10 @@
 # The python (root/uiguildwhitedragon.py, root/uiscript/guildwhitedragonlairwindow.py, the hooks in game.py /
 # interfacemodule.py, the minimap name in localeinfo.py) and the icons (root/icon/item/30395.tga,
 # guild_whitedragon_boss.tga, guild_whitedragon_egg.tga) travel in client-2.0.30/root like every root change. The boss
-# window's pictures (d:/ymir work/ui/game/guild_white_dragon_lair/*.sub, ui/whitedragon_damage_01.dds) and the direction
-# effects are in the full install's base pack "etc" already (stage_balathor.py counts its names as ours).
+# window's pictures (the package's whole d:/ymir work/ui/game/guild_white_dragon_lair/, the atlases ui/spacebar_01.dds /
+# spacebar_effect.dds its .sub cut, ui/whitedragon_damage_01.dds) and the named effects go in balathor_mobs
+# (balathor_manifest.json "ui"): 3.0.4 took the exe smoke client's etc pack for the players' and shipped none of them -
+# exception.Abort when the boss window opened at the cinema (MT2009_PLUS_BALATHOR_UI_V2).
 # BUILD ORDER - it shares pack/Index, property, gamedata, dbdata and locale with the other builders: after ../spider3,
 # before ../kawuco / ../yfinal, all on the same OUT (a pack already in OUT - an earlier step changed it - is the one
 # patched). It needs linux-port/docker/mariadb/playerbot/balathor.sql (the server's rows the client rows are made of).

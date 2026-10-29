@@ -1,5 +1,6 @@
 {
  "etc_pack_names": 5004,
+ "etc_pack_names_staged": 23,
  "maps": {
   "420": {
    "atlas_image": null,
@@ -316,6 +317,18 @@
    }
   ],
   "balathor_mobs": [
+   {
+    "name": "d:/ymir work/effect/etc/direction/direction_land.mde",
+    "sha1": "7eb15522c112c6db4e06dedd60790ef68b4bba24",
+    "size": 27242,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/effect/etc/direction/direction_land.mse",
+    "sha1": "e85104ab56669a730a4cae3f9717d0a27725ab6c",
+    "size": 998,
+    "source": "package"
+   },
    {
     "name": "d:/ymir work/effect/monster2/guild_whitedragon_arrow_blow.mse",
     "sha1": "86060d0742610b8b9512444368367d50194ff40e",
@@ -1805,6 +1818,132 @@
     "source": "gf"
    },
    {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_keyboard.sub",
+    "sha1": "089ea1d858e89b0d85e9efcea59c51540ae6cfb0",
+    "size": 92,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_default.sub",
+    "sha1": "dd2993011831cc7861aff09b107dbf8420d05a38",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_down.sub",
+    "sha1": "5056cec15edf33471f74d9e93a39f3f484a32951",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_01.sub",
+    "sha1": "563a62d115d1ca73346bb6e5bbe31adb4dbd7b2c",
+    "size": 96,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_02.sub",
+    "sha1": "b7bafad4cb98efca5f6ca19a461a511f7ec8c200",
+    "size": 98,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_03.sub",
+    "sha1": "517098fa8b8ff0ed1adec9890324a924b025a72a",
+    "size": 98,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_04.sub",
+    "sha1": "160a9f344e06d54c9b52e70eae5d79ffe4e5ab77",
+    "size": 99,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_05.sub",
+    "sha1": "17a6715206e71aac852582d761715ab4cb275183",
+    "size": 96,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_06.sub",
+    "sha1": "17a6715206e71aac852582d761715ab4cb275183",
+    "size": 96,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_07.sub",
+    "sha1": "17a6715206e71aac852582d761715ab4cb275183",
+    "size": 96,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_08.sub",
+    "sha1": "17a6715206e71aac852582d761715ab4cb275183",
+    "size": 96,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_over.sub",
+    "sha1": "326be2c2174cabd3df97aee0a9a30e12f8363bcb",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_empty.sub",
+    "sha1": "9f096f8b0c58cae7f2cba7c443887b5fb9a0ca56",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_full.sub",
+    "sha1": "648938a8774b3e30b7febf45aad088212202baf2",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_01.sub",
+    "sha1": "865c9e48fb0e4d3c9e3e9960e9a4dc7862e20617",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_02.sub",
+    "sha1": "97cddc01a4e7b0e16bcdf7e943e38b9782edb9ee",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_03.sub",
+    "sha1": "d1862997aef6a2b010e3b6a43ed0f4834d739c4a",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_04.sub",
+    "sha1": "bc6191e2862359091a0c2c0d06dfae183366dd92",
+    "size": 94,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/spacebar_01.dds",
+    "sha1": "4f6e48a2e041fd869493678877de262eeee78043",
+    "size": 287472,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/spacebar_effect.dds",
+    "sha1": "7788e3054ca09e9b1be33d08db9df10571e38517",
+    "size": 356864,
+    "source": "package"
+   },
+   {
+    "name": "d:/ymir work/ui/whitedragon_damage_01.dds",
+    "sha1": "43b6eaeb88db1fe029d83a4492f4add4420b960e",
+    "size": 640976,
+    "source": "package"
+   },
+   {
     "name": "sound/common/spell/spell_fighter_mighty_cast.wav",
     "sha1": "9ea15d99bb4df3c333784d0311e774c40d104616",
     "size": 46324,
@@ -2357,6 +2496,29 @@
   }
  },
  "replace": [],
+ "ui": [
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_keyboard.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_default.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_down.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_01.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_02.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_03.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_04.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_05.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_06.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_07.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_effect_08.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/freezing_space_bar_over.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_empty.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_full.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_01.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_02.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_03.sub",
+  "d:/ymir work/ui/game/guild_white_dragon_lair/gauge_shine_04.sub",
+  "d:/ymir work/ui/spacebar_01.dds",
+  "d:/ymir work/ui/spacebar_effect.dds",
+  "d:/ymir work/ui/whitedragon_damage_01.dds"
+ ],
  "unresolved": {
   "effects": [],
   "map": [],

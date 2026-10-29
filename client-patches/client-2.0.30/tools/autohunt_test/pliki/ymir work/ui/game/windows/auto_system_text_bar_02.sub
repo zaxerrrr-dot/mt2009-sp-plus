@@ -1,0 +1,7 @@
+title subImage
+version 1.0
+image "game/auto_hunting/auto_hunt_windows.dds"
+left 0
+top 488
+right 177
+bottom 506
