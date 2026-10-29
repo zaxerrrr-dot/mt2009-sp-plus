@@ -307,6 +307,9 @@ namespace {
 			snprintf(body, sizeof(body), "podwojny loot z Metinow");
 		else if (kind == playerbot_events::KIND_GOBLIN)
 			snprintf(body, sizeof(body), "Poszukiwanie skarbow z Goblinem Skarbow - Bilety Skarbow w skrzyniach");
+		// MT2009_PLUS_SUPERSTONE_V1: the level is the extra stones beside every Metin.
+		else if (kind == playerbot_events::KIND_SUPERSTONE)
+			snprintf(body, sizeof(body), "Super Kamienie Metin - przy kazdym Metinie %d dodatkowe", MINMAX(1, value, 4));
 		// MT2009_PLUS_CHEST_DROP_EVENT_V1: the chest by name (the first one, when several run).
 		else if (kind == playerbot_events::KIND_CHESTDROP)
 			snprintf(body, sizeof(body), "%s dropi z potworow", PlayerBotChestDropNames().c_str());
@@ -327,6 +330,8 @@ namespace {
 				snprintf(text, sizeof(text), "Event zakonczony: Poszukiwanie skarbow z Goblinem Skarbow.");
 			else if (kind == playerbot_events::KIND_CHESTDROP)
 				snprintf(text, sizeof(text), "Event zakonczony: drop szkatulek.");
+			else if (kind == playerbot_events::KIND_SUPERSTONE)	// MT2009_PLUS_SUPERSTONE_V1
+				snprintf(text, sizeof(text), "Event zakonczony: Super Kamienie Metin.");
 			// MT2009_PLUS_CATCH_KING_V1: Catch the King's top ten collect too.
 			else if (kind == playerbot_events::KIND_RUMI || kind == playerbot_events::KIND_YUTNORI || kind == playerbot_events::KIND_CATCHKING)
 				snprintf(text, sizeof(text), "Event zakonczony: %s. Nagrody za ranking mozna odebrac przy stole przez 7 dni.",

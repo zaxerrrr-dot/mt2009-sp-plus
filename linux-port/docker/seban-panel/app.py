@@ -2536,7 +2536,11 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                "worldboss",
                # MT2009_PLUS_HALLOWEEN_V1: Halloween - Jack Pumpkin, the pumpkins and
                # the wands (playerbot_halloween.h; Autor: Owsap).
-               "halloween")
+               "halloween",
+               # MT2009_PLUS_SUPERSTONE_V1: Super Kamienie - the value is the level, 1-4
+               # extra stones beside every Metin on a world map (the event flag
+               # superstone_event; server-patches/superstone, playerbot_ingame_events.h).
+               "superstone")
 EVENT_WORLD_KINDS = ("tanaka", "zuo")
 # MT2009_PLUS_CHEST_DROP_EVENT_V1: the kinds whose lines carry a sixth column
 # and whose "now" lines are kept one per that column - Tanaka's and Zuo's map,
@@ -2553,6 +2557,9 @@ EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT200
                     "halloween")  # MT2009_PLUS_HALLOWEEN_V1
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
+# MT2009_PLUS_SUPERSTONE_V1: kinds whose value is a level, not a percent:
+# (lowest, highest, default). The core holds the same bounds.
+EVENT_LEVEL_KINDS = {"superstone": (1, 4, 2)}
 EVENT_BOTS_DEFAULT = 50
 EVENT_MAPS = (
     (0, "Wybiera event"), (64, "Dolina Orków"), (63, "Pustynia Yongbi"),
@@ -2582,13 +2589,15 @@ EVENT_LABELS = {
     "chestdrop": "Drop szkatułek",  # MT2009_PLUS_CHEST_DROP_EVENT_V1
     "worldboss": "Boss Świata",  # MT2009_PLUS_WORLDBOSS_V1
     "halloween": "Halloween (dynie i Jack Pumpkin)",  # MT2009_PLUS_HALLOWEEN_V1
+    "superstone": "Super Kamienie Metin",  # MT2009_PLUS_SUPERSTONE_V1
 }
 EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "tanaka": "🏴‍☠️", "zuo": "☄️", "bossloot": "👹", "metinloot": "🪨",
                "goblin": "🪙",  # goblin: MT2009_PLUS_GOBLIN_V1
                "catchking": "👑", "rumi": "🃏", "yutnori": "🎲", "flower": "🌸", "easter": "🐇",  # MT2009_PLUS_EVENT_MANAGER_V1
                "chestdrop": "🧰",  # MT2009_PLUS_CHEST_DROP_EVENT_V1
                "worldboss": "🐲",  # MT2009_PLUS_WORLDBOSS_V1
-               "halloween": "🎃"}  # MT2009_PLUS_HALLOWEEN_V1
+               "halloween": "🎃",  # MT2009_PLUS_HALLOWEEN_V1
+               "superstone": "💎"}  # MT2009_PLUS_SUPERSTONE_V1
 EVENT_DAY_NAMES = ("Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd")
 EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360, 720, 1440, 2880, 4320, 7200, 10080)  # MT2009_PLUS_EVENTS_7_DAYS_V1: up to 7 days
 
@@ -2622,6 +2631,15 @@ def event_world_value(kind, value):
     if value <= 0:
         return EVENT_WORLD_DEFAULT[kind]
     return min(EVENT_WORLD_MAX[kind], value)
+
+
+def event_level_value(kind, value):
+    """MT2009_PLUS_SUPERSTONE_V1: a level kind's value held to its bounds;
+    nothing (0) is the default, more than the highest is the highest."""
+    low, high, default = EVENT_LEVEL_KINDS[kind]
+    if value < low:
+        return default
+    return min(high, value)
 
 
 def event_now_key(kind, map_id=0):
@@ -10348,6 +10366,8 @@ def events():
                         map_id = 0
                     if map_id not in EVENT_MAP_IDS:
                         map_id = 0
+                elif kind in EVENT_LEVEL_KINDS:  # MT2009_PLUS_SUPERSTONE_V1
+                    value = event_level_value(kind, value)
                 new_rows.append({"kind": kind, "days": days, "start": start, "end": end,
                                  "value": 0 if kind in EVENT_FLAG_KINDS else value, "map": map_id,
                                  "on": bool(request.form.get(f"r{index}_on"))})
@@ -10398,6 +10418,8 @@ def events():
                     map_id = 0
                 if map_id not in EVENT_MAP_IDS:
                     map_id = 0
+            elif kind in EVENT_LEVEL_KINDS:  # MT2009_PLUS_SUPERSTONE_V1
+                value = event_level_value(kind, value)
             started = int(time.time())
             # For Tanaka and Zuo this replaces the line of this map only: a
             # second map is a second event beside the first, the same map again
@@ -10437,6 +10459,7 @@ def events():
                            now_epoch=int(time.time()), event_history=event_history,
                            event_icons=EVENT_ICONS, world_kinds=EVENT_WORLD_KINDS, flag_kinds=EVENT_FLAG_KINDS,
                            world_defaults=EVENT_WORLD_DEFAULT, world_max=EVENT_WORLD_MAX,
+                           level_kinds=EVENT_LEVEL_KINDS,  # MT2009_PLUS_SUPERSTONE_V1
                            event_maps=EVENT_MAPS, event_settings=read_event_settings(),
                            autogen_lengths=event_autogen.LENGTHS,  # MT2009_PLUS_EVENTS_AUTOGEN_V1
                            autogen_excluded=EVENT_AUTOGEN_EXCLUDED, chestdrop_kind=EVENT_CHESTDROP_KIND,
@@ -10500,6 +10523,7 @@ def events_autogen():
     append = data.get("mode") == "append"
     existing = event_autogen_existing(data.get("existing")) if append else []
     values = {kind: (EVENT_WORLD_DEFAULT[kind] if kind in EVENT_WORLD_KINDS else
+                     EVENT_LEVEL_KINDS[kind][2] if kind in EVENT_LEVEL_KINDS else  # MT2009_PLUS_SUPERSTONE_V1
                      0 if kind in EVENT_FLAG_KINDS else bonus) for kind in kinds}
     try:
         result = event_autogen.generate_week(

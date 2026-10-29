@@ -116,6 +116,10 @@ namespace mt2009_ingame_event
 		// 7 more days (halloween_hair_reward) for the Mask Cards still in the bags. No
 		// "<flag> <value>" line: no client python listens for it.
 		{ "halloween",	playerbot_events::KIND_HALLOWEEN,	"halloween_hair",			FLAG_VALUE,		1, NULL,			NULL,						"halloween_hair_reward",	33008, false },
+		// MT2009_PLUS_SUPERSTONE_V1: event Super Kamieni - the flag is the level, 1-4 extra stones beside
+		// every Metin stone on a world map (char_manager.cpp, server-patches/superstone); the scheduler's
+		// value is the level (Value). A GM's /eventflag superstone_event N runs it too.
+		{ "superstone",	playerbot_events::KIND_SUPERSTONE,	"superstone_event",			FLAG_VALUE,		1, NULL,			NULL,						NULL,						0, false },
 	};
 	const int DEFS = sizeof(s_defs) / sizeof(s_defs[0]);
 
@@ -282,6 +286,10 @@ namespace mt2009_ingame_event
 	// value, a rate's percent.
 	int Value(const TEventDef& d)
 	{
+		// MT2009_PLUS_SUPERSTONE_V1: while the scheduler runs Super Kamienie its level is the
+		// panel's (1-4), not whatever the flag held before.
+		if (d.kind == playerbot_events::KIND_SUPERSTONE && s_aPlayerBotEventStatus[d.kind].active)
+			return MINMAX(1, s_aPlayerBotEventStatus[d.kind].value, 4);
 		if (d.dropFlag)
 		{
 			const int v = Flag(d.dropFlag);
