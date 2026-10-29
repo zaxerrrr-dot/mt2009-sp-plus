@@ -457,7 +457,7 @@ RUN set -eux; out=/out-quest/poland/quest; q=konie_rozwoj; \
     if [ ! -d /tmp/qc-work/object ] || [ ! -f "/quest-add/$q.quest" ]; then echo "note: no $q"; exit 0; fi; \
     rm -rf /tmp/qc-konie; mkdir -p /tmp/qc-konie/object; \
     cp /tmp/qc-work/quest_functions /tmp/qc-konie/quest_functions; \
-    for fn in horse.konie_otworz horse.konie_naucz horse.konie_zapomnij horse.konie_slot horse.konie_odswiez horse.set_stat0; do \
+    for fn in horse.konie_otworz horse.konie_naucz horse.konie_zapomnij horse.konie_slot horse.konie_odswiez horse.konie_karm horse.set_stat0; do \
       grep -qx "$fn" /tmp/qc-konie/quest_functions || echo "$fn" >> /tmp/qc-konie/quest_functions; \
     done; \
     sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-konie/$q.quest"; \
@@ -705,6 +705,19 @@ RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/sp
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+30263([^0-9]|$)' "$f.new")" = 1 \
  && mv "$f.new" "$f" && rm -f "$a" \
  && echo "share: Pakiet Dusz 30263"
+
+# MT2009_PLUS_HORSE40_V1: Zestaw Opieki nad Koniem (83050, special_item_group.konie.txt - tools/konie/gen_konie.py):
+# Pasza dla Konia x50, Czer. Zen-szen (premium) x5, Szlachetna Trawa (Type Pct). Appended once, after any group of the
+# same vnum is cut out.
+COPY special_item_group.konie.txt /tmp/special_item_group.konie.txt
+RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/special_item_group.konie.txt \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$a" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+83050([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && { [ -z "$(tail -c 1 "$f.new")" ] || printf '\r\n' >> "$f.new"; } \
+ && cat "$a" >> "$f.new" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+83050([^0-9]|$)' "$f.new")" = 1 \
+ && mv "$f.new" "$f" && rm -f "$a" \
+ && echo "share: Zestaw Opieki nad Koniem 83050"
 
 # MT2009_PLUS_YUTNORI_V1: the Yut Nori trophies and bundles (83030-83034,
 # special_item_group.yutnori.txt; playerbot_yutnori.h hands them out). Appended

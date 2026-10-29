@@ -56,6 +56,47 @@ new = (",\n".join(new_rows[:9]) + ", // 22-30: MT2009_PLUS_HORSE40_V1 (stats) - 
        + ",\n".join(new_rows[9:]) + " // 31-40\n};\n")
 edit("horse_rider.cpp", "stats", old, new)
 
+# 1-21: the wiki's INT column (ours had 0); STR / DEX / VIT as they were (the wiki's level 3 STR 27 and level 20 DEX 63
+# are one under the level before - kept ours, 28 and 64)
+WIKI_IQ = {1: 9, 2: 9, 3: 9, 4: 10, 5: 10, 6: 10, 7: 11, 8: 11, 9: 11, 10: 12, 11: 13, 12: 14, 13: 14, 14: 14, 15: 15,
+           16: 15, 17: 15, 18: 15, 19: 16, 20: 16, 21: 18}
+LOW_ROWS = [
+    (25, 20101, 3, 4, 26, 35, 18, 0, 54, 43, 64, 32), (25, 20101, 4, 4, 27, 36, 18, 0, 55, 44, 66, 33),
+    (25, 20101, 5, 5, 28, 38, 19, 0, 56, 44, 67, 33), (25, 20101, 7, 5, 29, 39, 19, 0, 57, 45, 68, 34),
+    (25, 20101, 8, 6, 30, 40, 20, 0, 58, 46, 69, 34), (25, 20101, 9, 6, 31, 41, 21, 0, 59, 47, 70, 35),
+    (25, 20101, 11, 7, 32, 42, 21, 0, 60, 48, 72, 36), (25, 20101, 12, 7, 33, 44, 22, 0, 61, 48, 73, 36),
+    (25, 20101, 13, 8, 34, 45, 22, 0, 62, 49, 74, 37), (25, 20101, 15, 10, 35, 46, 23, 0, 63, 50, 75, 37),
+    (35, 20104, 18, 30, 40, 53, 27, 0, 69, 55, 82, 41), (35, 20104, 19, 35, 41, 54, 27, 0, 70, 56, 84, 42),
+    (35, 20104, 21, 40, 42, 56, 28, 0, 71, 56, 85, 42), (35, 20104, 22, 50, 43, 57, 28, 0, 72, 57, 86, 43),
+    (35, 20104, 24, 55, 44, 58, 29, 0, 73, 58, 87, 43), (35, 20104, 25, 60, 44, 59, 30, 0, 74, 59, 88, 44),
+    (35, 20104, 27, 65, 45, 60, 30, 0, 75, 60, 90, 45), (35, 20104, 28, 70, 46, 62, 31, 0, 76, 60, 91, 45),
+    (35, 20104, 30, 80, 47, 63, 31, 0, 77, 61, 92, 46), (35, 20104, 32, 100, 48, 64, 32, 0, 78, 62, 93, 46),
+    (50, 20107, 35, 120, 53, 71, 36, 0, 84, 67, 100, 50),
+]
+
+
+def low_row(r, lv, iq):
+    c = list(r)
+    c[7] = iq
+    sep = "\t" if c[3] >= 100 else "\t\t"     # the source's columns (a 3-digit stamina takes one tab)
+    return "\t{ %d,\t%d,\t%d,\t%d,%s%s }" % (c[0], c[1], c[2], c[3], sep, ",\t".join(str(x) for x in c[4:]))
+
+
+def low_text(iqs):
+    out = []
+    for i, r in enumerate(LOW_ROWS):
+        lv = i + 1
+        line = low_row(r, lv, iqs[lv]) + ","
+        if lv in (1, 11, 21):
+            line += " // %d" % lv
+        out.append(line)
+    return "\n".join(out) + "\n"
+
+
+old_low = low_text(dict((lv, 0) for lv in range(1, 22)))
+new_low = low_text(WIKI_IQ).replace(" // 1\n", " // 1 - MT2009_PLUS_HORSE40_V1 (stats 1-21): the pl-wiki's INT\n", 1)
+edit("horse_rider.cpp", "stats 1-21", old_low, new_low)
+
 edit("horse_rider.cpp", "grade",
      "\tif (GetHorseLevel())\n\t\tgrade = (GetHorseLevel() - 1) / 10 + 1;\n",
      "\tif (GetHorseLevel())\n\t\tgrade = (GetHorseLevel() - 1) / 10 + 1;\n"
@@ -78,6 +119,14 @@ edit("char_horse.cpp", "stop riding",
      "\t\tvoid Mt2009KonieStopRiding(LPCHARACTER ch);\n\t\tMt2009KonieStopRiding(this);\n\t}\n")
 
 # ---------------------------------------------------------------- char.cpp: ComputePoints
+edit("char.cpp", "floors",
+     "\t\t{\n\t\t\tif (GetHorseST() > GetPoint(POINT_ST))\n\t\t\t\tPointChange(POINT_ST, GetHorseST() - GetPoint(POINT_ST));\n\n"
+     "\t\t\tif (GetHorseDX() > GetPoint(POINT_DX))\n\t\t\t\tPointChange(POINT_DX, GetHorseDX() - GetPoint(POINT_DX));\n\n"
+     "\t\t\tif (GetHorseHT() > GetPoint(POINT_HT))\n\t\t\t\tPointChange(POINT_HT, GetHorseHT() - GetPoint(POINT_HT));\n\n"
+     "\t\t\tif (GetHorseIQ() > GetPoint(POINT_IQ))\n\t\t\t\tPointChange(POINT_IQ, GetHorseIQ() - GetPoint(POINT_IQ));\n\t\t}\n",
+     "\t\t{\n\t\t\t// MT2009_PLUS_HORSE40_V1 (floors): the wiki's table is the LEAST a rider has of each stat - max(own, table),\n"
+     "\t\t\t// never on top. It is taken after the equipment (Mt2009KonieComputePoints below, konie_rozwoj.cpp), so the\n"
+     "\t\t\t// worn items count as the rider's own; here nothing any more.\n\t\t}\n")
 edit("char.cpp", "compute",
      "\t\tMt2009YSetsRefresh(this);\n\t}\n\n\tComputeBattlePoints();\n",
      "\t\tMt2009YSetsRefresh(this);\n\t}\n\n"
@@ -109,29 +158,43 @@ edit("char_skill.cpp", "mount type",
      "\t\tcase 20107: // normal military horse (no guild)\n")
 
 # ---------------------------------------------------------------- char_item.cpp: feeding the horse of 30+
+MSG_PREMIUM = "Pot\\352\\277ny Ko\\361 Wojskowy je tylko Czer. \\257e\\361-sze\\361 (premium)."
 edit("char_item.cpp", "can feed",
      "\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_3)\n",
-     "\t\t// MT2009_PLUS_HORSE40_V1 (can feed): the Black Steed (30) and Potezny Kon Wojskowy (31+) eat Czerwony\n"
-     "\t\t// Zen-szen and Czer. Zen-szen (premium) 50047 (the wiki)\n"
+     "\t\t// MT2009_PLUS_HORSE40_V1 (can feed): the Black Steed (30) eats Czerwony Zen-szen; Potezny Kon Wojskowy - a horse\n"
+     "\t\t// of 31+, whatever its look - only Czer. Zen-szen (premium) 50047 (the wiki; the owner, 30 October 2026)\n"
      "\t\tcase 20119:\n\t\tcase 20149:\n\t\tcase 20150:\n\t\tcase 20151:\n"
-     "\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_3 || item->GetVnum() == 50047)\n\t\t\t{\n"
-     "\t\t\t\tif (IsDead())\n\t\t\t\t{\n"
-     "\t\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot feed a dead Horse.\"));\n"
-     "\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n"
-     "\t\t\telse if (item->GetVnum() == ITEM_HORSE_FOOD_1 || item->GetVnum() == ITEM_HORSE_FOOD_2)\n"
-     "\t\t\t{\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tbreak;\n"
+     "\t\t\t{\n"
+     "\t\t\t\tconst DWORD dwKonieFood = from->GetHorseLevel() >= 31 ? 50047 : ITEM_HORSE_FOOD_3;\n"
+     "\t\t\t\tif (item->GetVnum() == dwKonieFood)\n\t\t\t\t{\n"
+     "\t\t\t\t\tif (IsDead())\n\t\t\t\t\t{\n"
+     "\t\t\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot feed a dead Horse.\"));\n"
+     "\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n\t\t\t\t\treturn true;\n\t\t\t\t}\n"
+     "\t\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_1 || item->GetVnum() == ITEM_HORSE_FOOD_2 ||\n"
+     "\t\t\t\t\t\titem->GetVnum() == ITEM_HORSE_FOOD_3 || item->GetVnum() == 50047)\n\t\t\t\t{\n"
+     "\t\t\t\t\tif (dwKonieFood == 50047)\n"
+     "\t\t\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, \"" + MSG_PREMIUM + "\");\n"
+     "\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t}\n\t\t\tbreak;\n"
      "\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_3)\n")
 edit("char_item.cpp", "feed",
      "\t\tcase 20101:\n\t\tcase 20102:\n\t\tcase 20103:\n\t\tcase 20104:\n\t\tcase 20105:\n\t\tcase 20106:\n"
      "\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_1 ||\n",
      "\t\t// MT2009_PLUS_HORSE40_V1 (feed): the Black Steed and Potezny Kon Wojskowy (CanReceiveItem above)\n"
      "\t\tcase 20119:\n\t\tcase 20149:\n\t\tcase 20150:\n\t\tcase 20151:\n"
-     "\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_3 || item->GetVnum() == 50047)\n\t\t\t{\n"
+     "\t\t\tif (item->GetVnum() == (from->GetHorseLevel() >= 31 ? 50047 : ITEM_HORSE_FOOD_3))\n\t\t\t{\n"
      "\t\t\t\tfrom->FeedHorse();\n"
      "\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You have fed the Horse.\"));\n"
      "\t\t\t\titem->SetCount(item->GetCount()-1);\n\t\t\t\tEffectPacket(SE_HPUP_RED);\n\t\t\t}\n\t\t\tbreak;\n\n"
      "\t\tcase 20101:\n\t\tcase 20102:\n\t\tcase 20103:\n\t\tcase 20104:\n\t\tcase 20105:\n\t\tcase 20106:\n"
      "\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_1 ||\n")
+edit("questlua_horse.cpp", "feed",
+     "\t\tif (ch->GetHorseLevel() > 0 && ch->GetHorseHealth() > 0)\n\t\t{\n\t\t\tch->FeedHorse();\n\t\t}\n",
+     "\t\t// MT2009_PLUS_HORSE40_V1 (feed): a horse of 31+ eats only Czer. Zen-szen (premium) - horse.konie_karm (quest\n"
+     "\t\t// konie_rozwoj). The stock horse_menu took its Czerwony Zen-szen (the grade's feed) before this: given back.\n"
+     "\t\tif (ch->GetHorseLevel() >= 31)\n\t\t{\n"
+     "\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"" + MSG_PREMIUM + "\");\n"
+     "\t\t\tch->AutoGiveItem(50056, 1); // Czerwony Zen-szen (ITEM_HORSE_FOOD_3)\n\t\t\treturn 0;\n\t\t}\n"
+     "\t\tif (ch->GetHorseLevel() > 0 && ch->GetHorseHealth() > 0)\n\t\t{\n\t\t\tch->FeedHorse();\n\t\t}\n")
 
 # ---------------------------------------------------------------- item_manager.cpp: 50047 / 50046 drops
 edit("item_manager.cpp", "drop",

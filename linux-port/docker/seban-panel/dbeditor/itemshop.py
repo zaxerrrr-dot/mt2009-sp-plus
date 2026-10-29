@@ -157,6 +157,8 @@ BOOT_ONCE = {
     # MT2009_PLUS_GUILDSYS_V1 (shop): Ksiega Zapomnienia Gildii 50347 (79 SM), tab Zwoje i ksiegi
     "guildsys_forget_631": {"adds": (631,), "note": "Księga Zapomnienia Gildii"},
     "addeq_unlock_19": {"adds": (19,), "note": "Strona ekwipunku II (76055)"},
+    # MT2009_PLUS_HORSE40_V1 (tools/konie): Zestaw Opieki nad Koniem 399 SM, Pasza dla Konia x50 / x250, tab Mounty
+    "konie_50901": {"adds": (50901, 50902, 50903), "note": "Zestaw Opieki nad Koniem i Pasza dla Konia (x50, x250)"},
 }
 
 

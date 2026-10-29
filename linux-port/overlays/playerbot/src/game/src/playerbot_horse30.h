@@ -223,7 +223,9 @@ namespace
 		int want[3] = { 0, 0, 0 };
 		for (int i = 0; i < 3; ++i)
 		{
-			want[i] = level >= 21 ? PLAYERBOT_HORSE_BONUS[level - 21][i] : 0;
+			// MT2009_PLUS_HORSE40_V1: the flat horse bonus is gone (the owner, 30 October 2026) - what a bot
+			// was given is taken back here (once a core run, EnsurePlayerBotHorseBonus)
+			want[i] = 0 * (level >= 21 ? PLAYERBOT_HORSE_BONUS[level - 21][i] : 0);
 			const int given = ch->GetQuestFlag(PLAYERBOT_HORSE_BONUS_FLAGS[i]);
 			const int delta = want[i] - given;
 			if (delta == 0)

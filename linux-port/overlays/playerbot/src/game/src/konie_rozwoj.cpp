@@ -11,8 +11,8 @@
 //    level 30) and cannot fail (the package's retry). Character level 75, from horse level 30 Poziom
 //    Czempiona 1 (the wiki). The experience, the failure and the horse skills are quest flags of
 //    "konie_rozwoj" (no new column, no new packet: the client's window speaks chat commands);
-//  * the horse's own stats 22-40 (horse_rider.cpp, the wiki's table) and from 31 the Sung Ma minima of
-//    the wiki (below, applied while riding like the horse's STR/DEX/VIT/INT);
+//  * the horse's stats (horse_rider.cpp, the wiki's table; INT 1-21 too) and from 31 the wiki's Sung Ma - floors,
+//    max(own with the equipment, table), on any mount (Mt2009KonieComputePoints);
 //  * the horse skills of the wiki (the package's skills 285-311 and their skill_proto polynomials; the
 //    player's skill array ends at 265, so they live in the flags s1/s1lv/s2/s2lv and their effects here):
 //    one skill from horse level 21, a second from 31, levels 1-20 (1 000 Gaya and 20 000 000 Yang a level),
@@ -450,21 +450,34 @@ namespace
 
 // ---------------------------------------------------------------- the engine's hooks
 
-// CHARACTER::ComputePoints (char.cpp, before ComputeBattlePoints): the Sung Ma minima of a horse of 31+ and the
-// constant horse skills, while riding
+// CHARACTER::ComputePoints (char.cpp, after the equipment, before ComputeBattlePoints): on any mount the wiki's
+// "Zmiana punktow statusu na roznych poziomach konia" - the LEAST the rider has of a stat, max(own, table), never
+// added on top (the owner, 30 October 2026): STR / DEX / VIT / INT by the horse's level (c_aHorseStat, 1-40) and from
+// 31 the Sung Ma wills; "own" is the base points with the worn items (the stock code took it before the items, so
+// the items stacked on the floor - char.cpp's MT2009_PLUS_HORSE40_V1 (floors)). The affects come after this. Then
+// the constant horse skills while riding. Every mount, dismount and level change recomputes the points.
 void Mt2009KonieComputePoints(LPCHARACTER ch)
 {
-	if (!ch || !ch->IsPC() || ch->GetHorseLevel() < KONIE_FIRST || !ch->IsRiding())
+	if (!ch || !ch->IsPC() || !ch->GetMountVnum())
 		return;
-	const int h = ch->GetHorseLevel();
+	const int h = std::min<int>(ch->GetHorseLevel(), KONIE_MAX);
+	if (h <= 0)
+		return;
+	const int floors[4][2] = { { POINT_ST, ch->GetHorseST() }, { POINT_DX, ch->GetHorseDX() },
+			{ POINT_HT, ch->GetHorseHT() }, { POINT_IQ, ch->GetHorseIQ() } };
+	for (int i = 0; i < 4; ++i)
+		if (ch->GetPoint(floors[i][0]) < floors[i][1])
+			ch->PointChange(floors[i][0], floors[i][1] - ch->GetPoint(floors[i][0]));
 	if (h >= 31)
 	{
 		static const BYTE s_abPoint[4] = { POINT_SUNGMA_STR, POINT_SUNGMA_HP, POINT_SUNGMA_MOVE, POINT_SUNGMA_IMMUNE };
-		const int* row = s_aiKonieSungma[std::min(h, KONIE_MAX) - 31];
+		const int* row = s_aiKonieSungma[h - 31];
 		for (int i = 0; i < 4; ++i)
 			if (ch->GetPoint(s_abPoint[i]) < row[i])
 				ch->PointChange(s_abPoint[i], row[i] - ch->GetPoint(s_abPoint[i]));
 	}
+	if (h < KONIE_FIRST)
+		return;
 	const SKonieSkills k = KonieSkills(ch);
 	for (int i = 0; i < 2; ++i)
 	{
@@ -723,6 +736,20 @@ namespace quest
 		return 0;
 	}
 
+	// horse.konie_karm() - Czer. Zen-szen (premium) feeds a horse of 31+ (horse.feed refuses it - questlua_horse.cpp)
+	ALUA(horse_konie_karm)
+	{
+		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
+		bool fed = false;
+		if (ch && ch->IsPC() && ch->GetHorseLevel() >= 31 && ch->GetHorseHealth() > 0)
+		{
+			ch->FeedHorse();
+			fed = true;
+		}
+		lua_pushboolean(L, fed ? 1 : 0);
+		return 1;
+	}
+
 	// RegisterHorseFunctionTable (questlua_horse.cpp) adds these to the "horse" table
 	void Mt2009KonieRegisterLua()
 	{
@@ -733,6 +760,7 @@ namespace quest
 			{ "konie_zapomnij",	horse_konie_zapomnij	},
 			{ "konie_slot",		horse_konie_slot	},
 			{ "konie_odswiez",	horse_konie_odswiez	},
+			{ "konie_karm",		horse_konie_karm	},
 			{ NULL,			NULL			}
 		};
 		CQuestManager::instance().AddLuaFunctionTable("horse", konie_functions, true);
@@ -744,7 +772,7 @@ namespace quest
 // the bots never sell these (IsPlayerBotJunkItem, ScorePlayerBotShopStockRules, IsPlayerBotDealSellable)
 bool Mt2009KonieIsKeptVnum(DWORD dwVnum)
 {
-	return (dwVnum >= 50046 && dwVnum <= 50049) || (dwVnum >= 55050 && dwVnum <= 55067);
+	return (dwVnum >= 50046 && dwVnum <= 50049) || (dwVnum >= 55050 && dwVnum <= 55067) || dwVnum == 83050;
 }
 
 // the daily feed of quest konie_rozwoj (22-27 Pasza dla Konia once in 24 h) for a bot: a bot hunts anyway

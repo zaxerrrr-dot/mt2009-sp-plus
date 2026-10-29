@@ -2,7 +2,7 @@
 # MT2009_PLUS_HORSE40_V1 (client data) - the horse past level 21 in the client's data (server-patches/konie/README.md),
 # from tools/konie/konie_items.json (= the server's konie.sql, tools/konie/gen_konie.py):
 #
-#   gamedata/item_proto (dbdata)   50046-50049 (Szlachetna Trawa, Czer. Zen-szen (premium), Pasza dla Konia, Zlota
+#   gamedata/item_proto (dbdata)   83050 Zestaw Opieki nad Koniem (over the first ITEM_GIFTBOX record), 50046-50049 (Szlachetna Trawa, Czer. Zen-szen (premium), Pasza dla Konia, Zlota
 #                                  Ksiega Konia): a full record each over Ksiega Wojskowego Konia 50053 (an ITEM_QUEST
 #                                  record, ../yohara/patch_yohara_client.py yitem_record); the horse skill books
 #                                  55050-55067: type ITEM_QUEST and the flag QUEST_USE on their own records
@@ -58,7 +58,9 @@ def want_records(recs):
     d = items_json()
     want = {}
     for w in d['items']:
-        t = recs[TEMPLATE[w['type']]]
+        t = recs.get(TEMPLATE.get(w['type'], -1))
+        if t is None:      # the kit (ITEM_GIFTBOX): the first record of its type
+            t = next(recs[v] for v in sorted(recs) if recs[v][74] == w['type'])
         assert t[74] == w['type'], (w['vnum'], t[74])
         want[w['vnum']] = py.yitem_record(t, w)
     for v in d['books']['vnums']:

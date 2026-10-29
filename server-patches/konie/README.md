@@ -8,12 +8,23 @@ beststudio, https://bestpro.dev) — `/opt/metin2/cache/yohara/konie-src`.
 ## Co było (bez zmian do 21)
 
 * `quest/konie.quest` (Digi Rasta, MT2009_PLUS_HORSE30_V1): szkolenie u Stajennego 1–9 i 11–19 (Medale Konne,
-  Materiały Rzemieślnicze, Yang), stały bonus konia od 21 (Potwory/Bossy/Metiny, do 30 poziomu);
+  Materiały Rzemieślnicze, Yang);
 * `pony_buy` (0→1), `horse_upgrade` (10→11, Koń Bojowy), `horse_upgrade2` (20→21, Koń Wojskowy, 300 Demonicznych
   Łuczników);
 * juki `horse_inventory` (rzędy do 30 poziomu konia), Czarny Rumak (rasa 20119) od 30 poziomu (digirasta).
 
-**Zniesione:** płatne szkolenie 21–28 i „Próba Czarnego Rumaka” 29→30 (gracz w trakcie próby wraca do stanu start).
+**Zniesione:** płatne szkolenie 21–28, „Próba Czarnego Rumaka” 29→30 (gracz w trakcie próby wraca do stanu start)
+oraz stały bonus konia Potwory/Bossy/Metiny 21–30 (właściciel 30.10.2026 — `konie.synchronizuj()` i boty zabierają
+go przy logowaniu / pierwszym przebiegu).
+
+## Statystyki konia = podłogi (wiki „Zmiana punktów statusu…”)
+
+Na każdym wierzchowcu: dla SIŁ/ZRĘ/WIT/INT `max(własne, tabela[poziom konia])`, od 31 to samo dla Woli SungMa —
+nigdy dodawane. „Własne” = punkty bazowe + założony ekwipunek (wcześniej silnik brał podłogę przed ekwipunkiem, więc
+przedmioty dokładały się NA podłogę — to było de facto dodawanie; teraz `char.cpp (floors)` jest puste, a podłogi
+liczy `Mt2009KonieComputePoints` po ekwipunku, przed afektami). Przeliczane przy wsiadaniu, zsiadaniu i zmianie
+poziomu (ComputePoints). Tabela 1–21: dopisana kolumna INT z wiki (u nas było 0); SIŁ/ZRĘ/WIT bez zmian (wiki ma
+literówki: poz. 3 SIŁ 27, poz. 20 ZRĘ 63 — zostają nasze 28 i 64).
 
 ## Powyżej 21 (wiki + paczka)
 
@@ -26,8 +37,9 @@ beststudio, https://bestpro.dev) — `/opt/metin2/cache/yohara/konie-src`.
 | Statystyki konia | 22–30 tabela wiki (WIT/INT/SIŁA/ZRĘ), 31–40 Wola SungMa wiki (10/15/25/25 … 35/40/45/45, minimum na wierzchowcu) |
 | Misja codzienna | „Pasza dla konia”: koń 21+, postać 75+, co 24 h 30 paszy z potworów (15% za potwora), nagroda 22–27× 50048 |
 | Złota Księga Konia (50049) | Poziom Czempiona 1, koń 30+, 100 potworów w Jaskiniach Gnolli (1. poziom, mapa 382) w 30 min, 100 000 000 Yang przy odbiorze, 24 h (gdy świat ma czas oczekiwania, `m2_horse_wait`) → od 31 poziomu wygląd Potężnego Konia Wojskowego (20149–20151), przywołanie księgą (300 PE) |
-| Czer. Żeń-szeń (premium) 50047 | karma (prawy klik / podanie koniowi 30+); drop 0,5% z potworów map Sung Ma (Yohara) |
-| Szlachetna Trawa 50046 | wskrzesza konia 31+; drop 25% z Ahtrin Wielki Mistrz (6820) |
+| Czer. Żeń-szeń (premium) 50047 | JEDYNA karma konia 31+ (prawy klik / podanie koniowi; `horse.feed` i zwykły żeń-szeń odmawiają i oddają go); drop 0,5% z potworów map Sung Ma |
+| Szlachetna Trawa 50046 | jedyne wskrzeszenie konia 31+; drop 25% z Ahtrin Wielki Mistrz (6820) |
+| Zestaw Opieki nad Koniem 83050 | 50× 50048, 5× 50047, 1× 50046 (wiki); ItemShop 399 SM |
 | Umiejętności konia | księgi 55050–55067 (drop jak dotąd z Wodzów Wojennych Schronienia): 1 umiejętność od 21, 2 od 31, poziom 1–20 (1000 Gaya + 20 000 000 Yang), zapomnienie za darmo u Stajennego, działają na każdym wierzchowcu |
 
 Wartości umiejętności = wielomiany `skill_proto.sql` paczki (zgodne z tabelą wiki dla poziomu 20 i koni 21/25/30/35/40;
@@ -42,7 +54,7 @@ Wartości umiejętności = wielomiany `skill_proto.sql` paczki (zgodne z tabelą
 
 ## Pliki
 
-* `edits.json` (z `gen_edits.py`), `apply_konie.py <game/src>` — 16 edycji, każda ze znacznikiem
+* `edits.json` (z `gen_edits.py`), `apply_konie.py <game/src>` — 19 edycji, każda ze znacznikiem
   `MT2009_PLUS_HORSE40_V1 (...)`: `horse_rider.h/.cpp` (40 poziomów, tabela, stopień ≤ 3), `char_horse.cpp`
   (rasa 20149+, koniec jazdy), `char.cpp` (ComputePoints), `char_battle.cpp` (Damage, IsResistPush),
   `char_skill.cpp` (typ wierzchowca 20149–20151), `char_item.cpp` (karmienie 20119/20149–20151), `item_manager.cpp`
@@ -58,6 +70,13 @@ Wartości umiejętności = wielomiany `skill_proto.sql` paczki (zgodne z tabelą
   `root/uiaffectbar.py`, `root/icon/item/50046-50049.tga`; paczka `konie` + dbdata/gamedata:
   `client-patches/client-2.0.30/tools/konie/` (`stage_konie.py`, `build_konie_packs.py`, `verify_konie.py`).
   Exe bez zmian, **bez nowych nagłówków pakietów** (komenda czatu `/konie_rozwoj` i `konie_rozwoj_info/_msg`).
+
+## ItemShop
+
+W sklepie w grze (zakładka Mounty; V3 pokazuje te same linie przez widok `shop`): **50901** Zestaw Opieki nad Koniem
+83050 ×1 — 399 SM (lista wiki), **50902** Pasza dla Konia ×50 — 249 SM, **50903** Pasza dla Konia ×250 — 1099 SM.
+`apply.sh` `ishop_once konie_50901`, panel `BOOT_ONCE["konie_50901"]`, `tools/itemshop3/global/decisions.py` wiersz 367
+→ HAVE(50901) (bez linii V3-only, żeby nie było dubli), ikony `itemshop/app/itemshop/img/item/83050.png, 50048.png`.
 
 ## Wdrożenie
 

@@ -15,8 +15,9 @@
 -- Od 21 poziomu koñ daje sta³y bonus (Potwory / Bossy / Metiny, %): konie.bonus().
 -- MT2009_PLUS_HORSE40_V1 (server-patches/konie): powy¿ej 21 poziomu koñ roœnie wg wiki i paczki
 -- "system_rozwoju_konia" (quest konie_rozwoj, konie_rozwoj.cpp: Pasza dla Konia, próby awansu do 40,
--- umiejêtnoœci konia) - szkolenie 21-28 i Próba Czarnego Rumaka s¹ zniesione; ten quest szkoli 1-19,
--- a sta³y bonus zostaje (do 30 poziomu, jak by³). Koñ 30 to dalej Czarny Rumak.
+-- umiejêtnoœci konia) - szkolenie 21-28 i Próba Czarnego Rumaka s¹ zniesione; ten quest szkoli 1-19.
+-- Sta³y bonus konia zniesiony (w³aœciciel, 30.10.2026): synchronizuj() zabiera go przy logowaniu. Koñ 30 to
+-- dalej Czarny Rumak.
 -- Boty robi¹ to samo w C++ (playerbot_horse30.h) - te same koszty i te same flagi
 -- konie.nm / konie.nb / konie.ns; przy zmianie popraw oba miejsca.
 -- Plik w cp1250, ¿aden litera³ nie koñczy siê polsk¹ liter¹ (qc).
@@ -76,7 +77,12 @@ quest konie begin
 		end
 
 		-- Sta³y bonus konia od 21 poziomu: { Potwory, Bossy, Metiny } w %.
+		-- MT2009_PLUS_HORSE40_V1: zniesiony (w³aœciciel, 30.10.2026) - zawsze { 0, 0, 0 }: synchronizuj() przy
+		-- logowaniu odejmuje to, co postaæ dosta³a wczeœniej (flagi nm/nb/ns), i zeruje flagi.
 		function bonus(l)
+			if true then
+				return { 0, 0, 0 }
+			end
 			local t = {
 				{1, 1, 1}, {2, 1, 1}, {2, 2, 2}, {2, 3, 3}, {3, 3, 3},
 				{4, 3, 3}, {4, 4, 4}, {5, 4, 4}, {5, 5, 4}, {5, 5, 5},
@@ -111,12 +117,12 @@ quest konie begin
 				pc.setqf("ns", b[3])
 			end
 			if dm ~= 0 or db ~= 0 or ds ~= 0 then
-				syschat("Bonus konia: +" .. b[1] .. "% Silny p. Potworom, +" .. b[2] .. "% p. Bossom, +" .. b[3] .. "% p. Metinom.")
+				syschat("Sta³y bonus konia (Potwory / Bossy / Metiny) zosta³ zniesiony - koñ roœnie teraz do 40 poziomu.")
 			end
 		end
 
 		-- Tak¿e dla konia, który awansowa³ inn¹ drog¹ (misja, komenda GM).
-		when login with horse.get_level() >= 21 begin
+		when login with horse.get_level() >= 21 or pc.getqf("nm") ~= 0 or pc.getqf("nb") ~= 0 or pc.getqf("ns") ~= 0 begin
 			konie.synchronizuj()
 		end
 

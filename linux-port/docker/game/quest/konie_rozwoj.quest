@@ -11,7 +11,7 @@
 --     50049; od 31 poziomu koñ wygl¹da jak Potê¿ny Koñ Wojskowy (flaga konie_rozwoj.zloty);
 --   * ksiêgi umiejêtnoœci konnych 55050-55067 (u¿ycie): horse.konie_naucz; "Umiejêtnoœci konia" - podgl¹d
 --     i zapomnienie za darmo (wiki);
---   * 50047 Czer. ¯eñ-szeñ (premium) karmi konia, 50046 Szlachetna Trawa wskrzesza konia 31+.
+--   * koñ 31+ je tylko 50047 Czer. ¯eñ-szeñ (premium), wskrzesza go tylko 50046 Szlachetna Trawa.
 -- Plik w cp1250, ¿aden litera³ nie koñczy siê polsk¹ liter¹ (qc).
 quest konie_rozwoj begin
 	state start begin
@@ -312,23 +312,24 @@ quest konie_rozwoj begin
 			end
 		end
 
-		-- 50047 Czer. ¯eñ-szeñ (premium): karmi konia
+		-- 50047 Czer. ¯eñ-szeñ (premium): jedyna karma Potê¿nego Konia Wojskowego (koñ 31+; w³aœciciel, 30.10.2026)
 		when 50047.use begin
-			if horse.get_level() < 21 then
-				syschat("Ta karma jest dla konia wojskowego (21+).")
+			if horse.get_level() < 31 then
+				syschat("Czer. ¯eñ-szeñ (premium) to karma Potê¿nego Konia Wojskowego (31+).")
 				return
 			end
 			if horse.get_health() <= 0 then
-				syschat("Twój koñ nie ¿yje - najpierw go wskrzesz.")
+				syschat("Twój koñ nie ¿yje - wskrzesi go Szlachetna Trawa.")
 				return
 			end
 			if not horse.is_summon() and not horse.is_riding() then
 				syschat("Przywo³aj konia, aby go nakarmiæ.")
 				return
 			end
-			pc.removeitem(50047, 1)
-			horse.feed()
-			syschat("Nakarmi³eœ konia.")
+			if horse.konie_karm() then
+				pc.removeitem(50047, 1)
+				syschat("Nakarmi³eœ konia.")
+			end
 		end
 
 		-- 50046 Szlachetna Trawa: wskrzesza konia 31+ (wiki)

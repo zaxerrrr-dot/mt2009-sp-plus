@@ -4965,6 +4965,13 @@ DROP TEMPORARY TABLE IF EXISTS world.konie_mob;"; then
 else
     fail_step "horse 21-40: mob_proto 20149-20151 failed" >&2
 fi
+# The ItemShop (the owner, 30 October 2026: "Zestaw Opieki nad Koniem at its official price and Pasza dla Konia packs"),
+# tab Mounty, shown by both shops (V3 reads the in-game lines): 50901 Zestaw Opieki nad Koniem 399 SM (the pl-wiki's
+# Item-Shop list), 50902 Pasza dla Konia x50 249 SM, 50903 Pasza dla Konia x250 1099 SM. Once per install (ishop_once);
+# only with the items in item_proto (konie.sql above).
+if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum IN (83050, 50048);" 2>/dev/null || echo x)" = "2" ]; then
+ishop_once konie_50901 "INSERT IGNORE INTO common.itemshop_items (\`index\`, vnum, count, price, currency, minLevel) VALUES (50901, 83050, 1, 399, 'DRAGON_COIN', 0), (50902, 50048, 50, 249, 'DRAGON_COIN', 0), (50903, 50048, 250, 1099, 'DRAGON_COIN', 0);" "could not add the horse care kit and the horse feed to the ItemShop"
+fi
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then

@@ -86,7 +86,7 @@ ver, recs = pc.records(entry('dbdata', 'gamedata/item_proto'))
 for v, r in sorted(pc.want_records(recs).items()):
     if recs.get(v) != r:
         fails.append('item_proto %d: not the wanted record' % v)
-    elif recs[v][74] != 18:
+    elif recs[v][74] != dict((w['vnum'], w['type']) for w in d['items']).get(v, 18):
         fails.append('item_proto %d: type %d' % (v, recs[v][74]))
 mobs = pc.mob_records(entry('gamedata', 'gamedata/mob_proto'))
 by = dict((struct.unpack_from('<I', r, 0)[0], r) for r in mobs)
