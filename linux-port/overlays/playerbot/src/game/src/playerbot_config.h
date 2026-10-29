@@ -402,7 +402,8 @@ namespace
 		PLAYERBOT_KV_RAID_EVERY_MIN,    // minutes between two raids on one kingdom
 		PLAYERBOT_KV_RAID_MIN_MIN,      // a raid's fight lasts from
 		PLAYERBOT_KV_RAID_MAX_MIN,      // ... to (minutes)
-		PLAYERBOT_KV_RAID_SIZE,         // raiders of one guild, at most
+		PLAYERBOT_KV_RAID_SIZE,         // raiders of a raid (a guild topped up from its kingdom's band)
+		PLAYERBOT_KV_RAID_SIZE_MAX,     // MT2009_PLUS_BOT_TOWNRAID_SIZE_V1: ... a third of the village's bots if more, this at most
 		PLAYERBOT_KV_RAID_MIN_LEVEL,    // a raider's lowest level
 		PLAYERBOT_KV_RAID_DEFENDERS,    // bots of the raided kingdom called home to defend
 		PLAYERBOT_KV_RETREAT_DEATHS_PCT,// raiders' deaths (percent of the raiders) that end the raid
@@ -428,6 +429,7 @@ namespace
 		{ "RAID_MIN_MIN", 10, 1, 120 },
 		{ "RAID_MAX_MIN", 20, 1, 180 },
 		{ "RAID_SIZE", 8, 2, 30 },
+		{ "RAID_SIZE_MAX", 16, 2, 40 },
 		{ "RAID_MIN_LEVEL", 40, 15, 120 },
 		{ "RAID_DEFENDERS", 8, 0, 40 },
 		{ "RAID_RETREAT_DEATHS_PCT", 100, 10, 1000 },
