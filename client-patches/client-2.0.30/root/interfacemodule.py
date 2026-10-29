@@ -6122,13 +6122,10 @@ class Interface(object):
 		self.wndWeb.Close()
 
 	def OpenCubeWindow(self, npcVnum = 0):
-		# MT2009_PLUS_NPC_CRAFT_WINDOW_V1: the set blacksmiths' rows are the player's own pieces - their old window; every other NPC the new one
-		if 20475 <= int(npcVnum) <= 20479:
-			self.wndCube = self.wndCubeClassic
-			self.wndCube.Open()
-		else:
-			self.wndCube = self.wndCubeOkno
-			self.wndCube.Open(int(npcVnum))
+		# MT2009_PLUS_CUBE_RENEWAL_V2 (fix 3.0.4 #5): every NPC the new window - the set blacksmiths (20475-20479) too, as
+		# its "Uszlachetnienie" tree (uicuberenewal.py); uicube.py's window stays made for nothing else
+		self.wndCube = self.wndCubeOkno
+		self.wndCube.Open(int(npcVnum))
 
 		if False == self.wndInventory.IsShow():
 			self.wndInventory.Show()

@@ -2,7 +2,8 @@
 # (the list of recipes by category, the result and its materials on cube_slot_bg, the quantity, the chance-raising
 # slot, Gaya and Yang, OK / Cancel) with three changes of ours: a search line over the list (everything below it 26
 # lower), a sixth material column (some of our recipes take six: mt2009_cube_slot_col.sub / mt2009_cube_slot_end.sub,
-# crops of cube_slot_bg, the window 46 wider) and no uiScriptLocale - uicuberenewal.py writes the Polish texts.
+# crops of cube_slot_bg, the window 46 wider; V2: drawn over cube_slot_bg's right border inside one "item_slot" window
+# of the six columns' width) and no uiScriptLocale - uicuberenewal.py writes the Polish texts.
 # The graphics (d:/ymir work/ui/making_001.dds, d:/ymir work/ui/game/cube/*.sub, GF's) travel in the root pack
 # (client-2.0.30/atlas); gemshop_001.dds (the Gaya icon) is already there for the Gaya shop.
 ROOT_PATH = "d:/ymir work/ui/game/cube/"
@@ -18,6 +19,8 @@ SEARCH_WIDTH = 196
 LIST_WINDOW_HEIGHT = 252
 LIST_WINDOW_PATTERN_X_COUNT = (LIST_WINDOW_WIDTH - 32) / 16.0
 LIST_WINDOW_PATTERN_Y_COUNT = (LIST_WINDOW_HEIGHT - 32) / 16.0
+SLOT_AREA_WIDTH = 362	# cube_slot_bg (316: its right border at 309) + the sixth column (46) + the right edge (7)
+SLOT_AREA_HEIGHT = 138
 
 def _QtyText(index, x):
 	return {
@@ -144,34 +147,45 @@ window = {
 					"horizontal_align" : "right",
 				},
 
-				## the sixth material column and the right edge, beside cube_slot_bg
-				{
-					"name" : "item_slot_col",
-					"type" : "image",
-					"style" : ("ltr", ),
-					"x" : 10 + 309,
-					"y" : 283 + D,
-					"image" : ROOT_PATH + "mt2009_cube_slot_col.sub",
-				},
-				{
-					"name" : "item_slot_end",
-					"type" : "image",
-					"style" : ("ltr", ),
-					"x" : 10 + 355,
-					"y" : 283 + D,
-					"image" : ROOT_PATH + "mt2009_cube_slot_end.sub",
-				},
-
-				## ItemSlot
+				## ItemSlot - MT2009_PLUS_CUBE_RENEWAL_V2 (fix 3.0.4 #3): a window over the six columns' width with GF's
+				## cube_slot_bg (the result and five columns) and our sixth column and right edge drawn over its right border
+				## (V1 drew them under it as siblings before cube_slot_bg: its border stood between the fifth and the sixth
+				## column and the sixth looked outside the frame; the sixth column's slot, a child of the 316-wide image, was
+				## outside its parent and took no mouse)
 				{
 					"name" : "item_slot",
-					"type" : "image",
+					"type" : "window",
 					"style" : ("ltr", "attach"),
 					"x" : 10,
 					"y" : 283 + D,
-					"image" : ROOT_PATH + "cube_slot_bg.sub",
+					"width" : SLOT_AREA_WIDTH,
+					"height" : SLOT_AREA_HEIGHT,
 					"children" :
 					(
+						{
+							"name" : "item_slot_bg",
+							"type" : "image",
+							"style" : ("ltr", "not_pick"),
+							"x" : 0,
+							"y" : 0,
+							"image" : ROOT_PATH + "cube_slot_bg.sub",
+						},
+						{
+							"name" : "item_slot_col",
+							"type" : "image",
+							"style" : ("ltr", "not_pick"),
+							"x" : 309,
+							"y" : 0,
+							"image" : ROOT_PATH + "mt2009_cube_slot_col.sub",
+						},
+						{
+							"name" : "item_slot_end",
+							"type" : "image",
+							"style" : ("ltr", "not_pick"),
+							"x" : 355,
+							"y" : 0,
+							"image" : ROOT_PATH + "mt2009_cube_slot_end.sub",
+						},
 						{
 							"name" : "result_qty_window",
 							"type" : "window",

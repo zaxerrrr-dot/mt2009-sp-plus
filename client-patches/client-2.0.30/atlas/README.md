@@ -93,8 +93,18 @@ Okno kostki u NPC (`root/uicuberenewal.py`, `CubeRenewalWindow`, w miejsce `uicu
 (`CraftingRenewalWindow`, w miejsce okna z `uicraft.py`) mają układ i grafikę okna wytwarzania GF 26.1.11
 (`uiscript/cuberenewalwindow.py`): lista przepisów w kategoriach (+/−), wyszukiwarka nad listą, wynik i materiały
 „mam/trzeba”, ilość (−/+), Gaya, Yang, pole „Szansa+”, „Wytwórz”/„Zamknij”. Bez nowych pakietów – te same komendy
-co dotąd (`/cube pick|improve|add|make`, `/ekwipunek kostka`, `/craft create|close`). Kowale zestawów (20475–20479)
-zostają przy starym oknie (`uicube.py`). Narzędzia: `tools/cube` (budowa sprawdza wpisy, weryfikacja paczki).
+co dotąd (`/cube pick|improve|add|make`, `/ekwipunek kostka`, `/craft create|close`). Narzędzia: `tools/cube` (budowa
+sprawdza wpisy, weryfikacja paczki).
+
+`MT2009_PLUS_CUBE_RENEWAL_V2` (poprawki 3.0.4, pkt 3 i 5): pasek wiersza listy nie zwęża się po najechaniu myszą
+(`LoadImage` w exe tworzy nowy obraz w skali 1,0 – skala ustawiana po każdym wczytaniu), 6. kolumna materiałów i prawa
+krawędź rysowane na tle `cube_slot_bg` w jednym oknie `item_slot` o szerokości sześciu kolumn (wcześniej pod jego
+prawą krawędzią – kolumna wyglądała na wystającą z ramki). Kowale zestawów (20475–20479) też w tym oknie, jak
+„Uszlachetnienie” na globalu: „Wykonaj zestaw broni / zbroi / hełmu” → przedmiot bazowy („[n]” – ile takich bez tego
+efektu w ekwipunku) → +7 / +8 / +9 … z szansą; sloty: przedmiot, materiały „mam/trzeba”, Gaya 500, Yang, „Podwyższ
+szansę”, OK / Anuluj. Lista przedmiotów: `root/cube_setsmith_data.py` (generowany: `tools/cube/gen_setsmith_items.py`
+z item_proto serwera i klienta) plus pasujące przedmioty z ekwipunku. Okno kładzie do kostki komórkę wybranego
+przedmiotu (bez tego efektu), potem materiały, `/cube pick 0` i `/cube make` – serwer bez zmian.
 
 | Paczka | Wpis | Status | Skąd | Po co |
 |---|---|---|---|---|
@@ -102,3 +112,4 @@ zostają przy starym oknie (`uicube.py`). Narzędzia: `tools/cube` (budowa spraw
 | root | `d:/ymir work/ui/game/cube/*.sub` (19 plików) | nowe | GF 26.1.11 bajt w bajt | wycinki `making_001.dds` / `gemshop_001.dds` (ikona Gaya) |
 | root | `d:/ymir work/ui/game/cube/mt2009_cube_slot_col.sub` | nowy | wycinek `cube_slot_bg` (263,0–309,138) | 6. kolumna materiałów (nasze przepisy biorą do 6) |
 | root | `d:/ymir work/ui/game/cube/mt2009_cube_slot_end.sub` | nowy | wycinek `cube_slot_bg` (309,0–316,138) | prawa krawędź za 6. kolumną |
+| root | `cube_setsmith_data.py` | nowy (V2) | `tools/cube/gen_setsmith_items.py` | przedmioty kowali zestawów (486: broń 234, zbroje 171, hełmy 81) |
