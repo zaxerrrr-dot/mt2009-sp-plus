@@ -826,6 +826,12 @@ PyObject * chrmgrRegisterAuraEffect(PyObject* poSelf, PyObject* poArgs);
 PyObject * chrmgrSetAura(PyObject* poSelf, PyObject* poArgs);
 PyObject * chrmgrGetAura(PyObject* poSelf, PyObject* poArgs);
 #endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+// MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon's element effect (Mt2009WeaponElement.cpp)
+PyObject * chrmgrRegisterWeaponElementEffect(PyObject* poSelf, PyObject* poArgs);
+PyObject * chrmgrSetWeaponElement(PyObject* poSelf, PyObject* poArgs);
+PyObject * chrmgrGetWeaponElement(PyObject* poSelf, PyObject* poArgs);
+#endif
 
 void initchrmgr()
 {
@@ -890,6 +896,11 @@ void initchrmgr()
 		{ "RegisterAuraEffect",			chrmgrRegisterAuraEffect,				METH_VARARGS },	// MT2009_PLUS_AURA_V1
 		{ "SetAura",					chrmgrSetAura,							METH_VARARGS },	// MT2009_PLUS_AURA_V1
 		{ "GetAura",					chrmgrGetAura,							METH_VARARGS },	// MT2009_PLUS_AURA_V1
+#endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+		{ "RegisterWeaponElementEffect",	chrmgrRegisterWeaponElementEffect,	METH_VARARGS },	// MT2009_PLUS_WEAPON_ELEMENT_V1
+		{ "SetWeaponElement",			chrmgrSetWeaponElement,					METH_VARARGS },	// MT2009_PLUS_WEAPON_ELEMENT_V1
+		{ "GetWeaponElement",			chrmgrGetWeaponElement,					METH_VARARGS },	// MT2009_PLUS_WEAPON_ELEMENT_V1
 #endif
 
 		{ NULL,							NULL,									NULL },

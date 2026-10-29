@@ -905,3 +905,23 @@ bity przejścia (1 bit/komórkę), opcjonalnie klasy terenu (2 bity/komórkę). 
 Root: `uiautohunt.py` (`MT2009_PLUS_AUTOHUNT_NAVGRID_V1`) sprawdza `hasattr(background, 'FindPath')` – stary exe = stare
 zachowanie. Sprawdzone `clang-cl /Zs` (`NavGrid.cpp`, `PythonBackgroundModule.cpp`) na kopii `exe-src8` z całą nakładką
 (29.10.2026).
+## Zaczarowanie Żywiołu Broni – efekt na broni – `MT2009_PLUS_WEAPON_ELEMENT_V1` (`ENABLE_MT2009_WEAPON_ELEMENT`)
+
+Na bazie paczki „[System] Elemental Spell” (WorldArd), przepisane na wzór Szaty Aury: bez nowych pakietów i bez zmian
+w strukturach przedmiotów. Serwer (`server-patches/zywiolbroni`) wysyła komendę czatu `WELEMFX <vid> <typ>` (0 brak,
+1 Błyskawica, 2 Ogień, 3 Lód, 4 Wiatr, 5 Ziemia, 6 Mrok) przy wejściu postaci w widok i przy zmianie broni/żywiołu – tylko
+dla zaczarowania +3 na broni z „gwiazdkami” (reguły wiki i transmutacji liczy serwer). Root `welemfx.py` rejestruje
+efekty i woła `chrmgr.SetWeaponElement`; stare exe nie ma tej funkcji – nic się nie dzieje.
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_WEAPON_ELEMENT` (wymaga `ENABLE_MT2009_AURA`) |
+| `UserInterface/Mt2009WeaponElement.cpp` (**nowy**) | `chrmgr.RegisterWeaponElementEffect(typ, rodzaj, plik)`, `chrmgr.SetWeaponElement(vid, typ)`, `chrmgr.GetWeaponElement(vid)`; rodzaje: 0 miecz/dwuręczna, 1 wachlarz (`_f`), 2 łuk (`_b`, lewa ręka), 3 sztylety (obie ręce)/dzwon (`_s`), 4 szpony (obie ręce, `_w`) – jak efekty ulepszenia `sword_7*.mse`; strzała/kołczan nigdy (błąd paczki: strzała dostawała efekt sztyletu) |
+| `UserInterface/InstanceBase.h/.cpp` | `m_dwWeaponElement`, `m_dwWeaponElementEffect[2]`; `SetWeapon` po `__GetRefinedEffect` dokłada efekt żywiołu tylko, gdy broń ma właśnie efekt ulepszenia (kostium broni, polimorfia, strój zwierzęcy, niewidzialność – brak); `ChangeArmor` zeruje uchwyty po `SetRace` (SetWeapon dokłada je znowu); `__Initialize` |
+| `UserInterface/NetworkActorManager.h/.cpp` | `SNetworkActorData::m_dwWeaponElement` + `SetActorWeaponElement` – nowa instancja aktora (wejście w widok, koń, zmiana kształtu) dostaje żywioł z powrotem |
+| `UserInterface/PythonCharacterManagerModule.cpp` | trzy funkcje `chrmgr` |
+| `UserInterface/UserInterface.vcxproj(.filters)` | `Mt2009WeaponElement.cpp` |
+
+Pliki efektów (GF 26.1.11, pakuje `client-2.0.30/tools/zywiolbroni`): `d:/ymir work/pc/common/effect/sword/element0{1..6}_{electric,fire,ice,wind,daeji,dark}{,_f,_b,_s,_w}.mse`.
+Sprawdzone `clang-cl /Zs` (exe-src8 + cała nakładka + `clang-cl-compat.patch`): `Mt2009WeaponElement.cpp`, `InstanceBase.cpp`,
+`NetworkActorManager.cpp`, `PythonCharacterManagerModule.cpp`, `Mt2009Aura.cpp` (29.10.2026).

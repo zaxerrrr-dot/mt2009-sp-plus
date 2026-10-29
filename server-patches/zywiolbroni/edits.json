@@ -1,0 +1,122 @@
+[
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (create)",
+  "old": "\tMt2009YSetsCreate(item, bIsNewItem, bSkipSave); // MT2009_PLUS_YOHARA_SETS_V1 (create): its set / random bonuses\n",
+  "new": "\tMt2009YSetsCreate(item, bIsNewItem, bSkipSave); // MT2009_PLUS_YOHARA_SETS_V1 (create): its set / random bonuses\n\t{ void Mt2009WElemCreate(LPITEM, bool); Mt2009WElemCreate(item, bIsNewItem); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (create): its weapon element\n"
+ },
+ {
+  "file": "item_attribute.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (copy)",
+  "old": "\tMt2009YSetsCopy(this, pItem); // MT2009_PLUS_YOHARA_SETS_V1 (copy): the set and the random bonuses\n",
+  "new": "\tMt2009YSetsCopy(this, pItem); // MT2009_PLUS_YOHARA_SETS_V1 (copy): the set and the random bonuses\n\t{ void Mt2009WElemCopy(LPITEM, LPITEM); Mt2009WElemCopy(this, pItem); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (copy): the weapon element\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (points)",
+  "old": "\tMt2009YSetsItemPoints(this, m_pOwner, bAdd); // MT2009_PLUS_YOHARA_SETS_V1 (points): a serpent piece's random base bonuses\n",
+  "new": "\tMt2009YSetsItemPoints(this, m_pOwner, bAdd); // MT2009_PLUS_YOHARA_SETS_V1 (points): a serpent piece's random base bonuses\n\t{ void Mt2009WElemItemPoints(LPITEM, LPCHARACTER, bool); Mt2009WElemItemPoints(this, m_pOwner, bAdd); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (points)\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (add)",
+  "old": "\tif ((window_type == INVENTORY || window_type == EQUIPMENT) && GetYExtra()) // MT2009_PLUS_YOHARA_SETS_V2 (add)\n\t\tMt2009YSetsNotify(ch, 1, pos, GetYExtra());\n",
+  "new": "\tif ((window_type == INVENTORY || window_type == EQUIPMENT) && GetYExtra()) // MT2009_PLUS_YOHARA_SETS_V2 (add)\n\t\tMt2009YSetsNotify(ch, 1, pos, GetYExtra());\n\tif (window_type == INVENTORY || window_type == EQUIPMENT) // MT2009_PLUS_WEAPON_ELEMENT_V1 (add): the weapon element (WELEM)\n\t{ void Mt2009WElemNotifyItem(LPCHARACTER, int, int, LPITEM, bool); Mt2009WElemNotifyItem(ch, 1, pos, this, false); }\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (melee)",
+  "old": "\t\tiAtk += pWeapon->GetValue(5) * 2;\n\n\t\tif (pkVictim->IsNPC())\n",
+  "new": "\t\tiAtk += pWeapon->GetValue(5) * 2;\n\t\t{ int Mt2009WElemAttack(LPITEM); iAtk += Mt2009WElemAttack(pWeapon) * 2; } // MT2009_PLUS_WEAPON_ELEMENT_V1 (melee): the enchant's Wartosc Ataku\n\n\t\tif (pkVictim->IsNPC())\n"
+ },
+ {
+  "file": "battle.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (bow)",
+  "old": "\tiAtk += pkBow->GetValue(5) * 2;\n",
+  "new": "\tiAtk += pkBow->GetValue(5) * 2;\n\t{ int Mt2009WElemAttack(LPITEM); iAtk += Mt2009WElemAttack(pkBow) * 2; } // MT2009_PLUS_WEAPON_ELEMENT_V1 (bow): the enchant's Wartosc Ataku\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (use)",
+  "old": "\t\tconst int iAddeqUse = Mt2009AddeqUseItem(this, item);\n\t\tif (iAddeqUse >= 0)\n\t\t\treturn iAddeqUse != 0;\n\t}\n",
+  "new": "\t\tconst int iAddeqUse = Mt2009AddeqUseItem(this, item);\n\t\tif (iAddeqUse >= 0)\n\t\t\treturn iAddeqUse != 0;\n\t}\n\t// MT2009_PLUS_WEAPON_ELEMENT_V1 (use): Zwoje Zywiolow / Klatwy / Zmiany 56002-56009 dragged onto a weapon (weapon_element.cpp)\n\t{\n\t\tint Mt2009WElemUseItem(LPCHARACTER ch, LPITEM item, TItemPos DestCell);\n\t\tconst int iWElemUse = Mt2009WElemUseItem(this, item, DestCell);\n\t\tif (iWElemUse >= 0)\n\t\t\treturn iWElemUse != 0;\n\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (notify)",
+  "old": "\t\t\tMt2009YSetsNotify(this, 1, wCell, pItem ? pItem->GetYExtra() : 0);\n\t}\n",
+  "new": "\t\t\tMt2009YSetsNotify(this, 1, wCell, pItem ? pItem->GetYExtra() : 0);\n\t\tif (window_type == INVENTORY || window_type == EQUIPMENT) // MT2009_PLUS_WEAPON_ELEMENT_V1 (notify): the weapon element (WELEM)\n\t\t{ void Mt2009WElemCellNotify(LPCHARACTER, int, LPITEM, LPITEM); Mt2009WElemCellNotify(this, wCell, pItem, pYSetsOld); }\n\t}\n"
+ },
+ {
+  "file": "input_login.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (enter)",
+  "old": "\tMt2009YSetsSendAll(ch); // MT2009_PLUS_YOHARA_SETS_V1 (enter): the tooltip's set / random bonuses\n",
+  "new": "\tMt2009YSetsSendAll(ch); // MT2009_PLUS_YOHARA_SETS_V1 (enter): the tooltip's set / random bonuses\n\t{ void Mt2009WElemSendAll(LPCHARACTER); Mt2009WElemSendAll(ch); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (enter): the weapon elements (WELEM)\n"
+ },
+ {
+  "file": "safebox.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (safebox add)",
+  "old": "\t\tMt2009YSetsNotify(m_pkChrOwner, 3, dwPos, pkItem->GetYExtra());\n",
+  "new": "\t\tMt2009YSetsNotify(m_pkChrOwner, 3, dwPos, pkItem->GetYExtra());\n\tif (m_bWindowMode == SAFEBOX) // MT2009_PLUS_WEAPON_ELEMENT_V1 (safebox add)\n\t{ void Mt2009WElemNotifyItem(LPCHARACTER, int, int, LPITEM, bool); Mt2009WElemNotifyItem(m_pkChrOwner, 3, dwPos, pkItem, false); }\n"
+ },
+ {
+  "file": "safebox.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (safebox remove)",
+  "old": "\t\tMt2009YSetsNotify(m_pkChrOwner, 3, dwPos, 0);\n",
+  "new": "\t\tMt2009YSetsNotify(m_pkChrOwner, 3, dwPos, 0);\n\tif (m_bWindowMode == SAFEBOX) // MT2009_PLUS_WEAPON_ELEMENT_V1 (safebox remove)\n\t{ void Mt2009WElemNotifyItem(LPCHARACTER, int, int, LPITEM, bool); Mt2009WElemNotifyItem(m_pkChrOwner, 3, dwPos, pkItem, true); }\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (start)",
+  "old": "\texchange_packet(this, EXCHANGE_SUBHEADER_GC_START, 0, victim->GetVID(), NPOS, 0);\n",
+  "new": "\texchange_packet(this, EXCHANGE_SUBHEADER_GC_START, 0, victim->GetVID(), NPOS, 0);\n\t{ void Mt2009WElemExchangeStart(LPCHARACTER, LPCHARACTER); Mt2009WElemExchangeStart(this, victim); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (start)\n"
+ },
+ {
+  "file": "exchange.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (add)",
+  "old": "\t\tsys_log(0, \"EXCHANGE AddItem success %s pos(%d, %d) %d\", item->GetName(), item_pos.window_type, item_pos.cell, display_pos);\n",
+  "new": "\t\t{ void Mt2009WElemExchangeAdd(LPCHARACTER, LPCHARACTER, int, LPITEM); // MT2009_PLUS_WEAPON_ELEMENT_V1 (add): both sides hear the element\n\t\t\tMt2009WElemExchangeAdd(m_pOwner, GetCompany()->GetOwner(), display_pos, item); }\n\t\tsys_log(0, \"EXCHANGE AddItem success %s pos(%d, %d) %d\", item->GetName(), item_pos.window_type, item_pos.cell, display_pos);\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (buy)",
+  "old": "\t\tdwPrice /= 2;\n\t}\n",
+  "new": "\t\tdwPrice /= 2;\n\t}\n\t// MT2009_PLUS_WEAPON_ELEMENT_V1 (buy): Straznik Medali's scrolls - weapon_element.txt's price (no empire mark-up), the wiki's guild level\n\t{\n\t\tbool Mt2009WElemShopPrice(DWORD, int, YANG&);\n\t\tbool Mt2009WElemShopCanBuy(LPCHARACTER, DWORD);\n\t\tif (!m_pkPC && Mt2009WElemShopPrice(r_item.vnum, r_item.count, dwPrice) && !Mt2009WElemShopCanBuy(ch, r_item.vnum))\n\t\t\treturn SHOP_SUBHEADER_GC_OK; // nothing bought, nothing sent (the reason is in the chat)\n\t}\n"
+ },
+ {
+  "file": "shop.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (list)",
+  "old": "\t\tpack2.items[i].price = price;\n",
+  "new": "\t\t{ bool Mt2009WElemShopPrice(DWORD, int, YANG&); if (!m_pkPC) Mt2009WElemShopPrice(item.vnum, item.count, price); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (list)\n\t\tpack2.items[i].price = price;\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (command declare)",
+  "old": "ACMD(do_yitem)\n{\n\tMt2009YSetsResend(ch);\n}\n",
+  "new": "ACMD(do_yitem)\n{\n\tMt2009YSetsResend(ch);\n}\n// MT2009_PLUS_WEAPON_ELEMENT_V1 (command declare): \"/welem ok|change <element>|close\" (the window), \"/welem_sync\" (WELEM again),\n// \"/welem_reload\" (GM: weapon_element.txt again) - weapon_element.cpp\nvoid Mt2009WElemCommand(LPCHARACTER ch, const char* argument);\nvoid Mt2009WElemResend(LPCHARACTER ch);\nvoid Mt2009WElemReload(LPCHARACTER ch);\nACMD(do_welem)\n{\n\tMt2009WElemCommand(ch, argument);\n}\nACMD(do_welem_sync)\n{\n\tMt2009WElemResend(ch);\n}\nACMD(do_welem_reload)\n{\n\tMt2009WElemReload(ch);\n}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (command table)",
+  "old": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n",
+  "new": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n\t{ \"welem\",\tdo_welem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_WEAPON_ELEMENT_V1 (command table)\n\t{ \"welem_sync\",\tdo_welem_sync,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t},\n\t{ \"welem_reload\",\tdo_welem_reload,\t0,\t\tPOS_DEAD,\tGM_HIGH_WIZARD\t},\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (update)",
+  "old": "\t{ void Mt2009AuraOnUpdatePacket(LPCHARACTER); Mt2009AuraOnUpdatePacket(this); }\n#endif\n",
+  "new": "\t{ void Mt2009AuraOnUpdatePacket(LPCHARACTER); Mt2009AuraOnUpdatePacket(this); }\n#endif\n\t{ void Mt2009WElemOnUpdatePacket(LPCHARACTER); Mt2009WElemOnUpdatePacket(this); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (update): the weapon element effect\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (insert)",
+  "old": "\t\tMt2009AuraOnInsert(this, ch);\n\t}\n#endif\n",
+  "new": "\t\tMt2009AuraOnInsert(this, ch);\n\t}\n#endif\n\t// MT2009_PLUS_WEAPON_ELEMENT_V1 (insert): a character with the weapon element effect coming into a player's view (\"WELEMFX\")\n\tif (IsPC() && ch && ch->IsPC() && !d->IsBot())\n\t{\n\t\tvoid Mt2009WElemOnInsert(LPCHARACTER, LPCHARACTER);\n\t\tMt2009WElemOnInsert(this, ch);\n\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_WEAPON_ELEMENT_V1 (detach)",
+  "old": "\tpkTarget->SetSocket(ACCE_ABSORBED_SOCKET, 0);\n\tfor (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)\n\t\tpkTarget->SetForceAttribute(i, 0, 0);\n",
+  "new": "\tpkTarget->SetSocket(ACCE_ABSORBED_SOCKET, 0);\n\tfor (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)\n\t\tpkTarget->SetForceAttribute(i, 0, 0);\n\t{ void Mt2009WElemClear(LPITEM); Mt2009WElemClear(pkTarget); } // MT2009_PLUS_WEAPON_ELEMENT_V1 (detach): the absorbed weapon's element\n"
+ }
+]

@@ -506,6 +506,12 @@ class CInstanceBase
 		DWORD					GetAura() const { return m_dwAuraVnum; }
 		static bool				RegisterAuraEffect(DWORD dwVnum, const char* c_szFileName);
 #endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+		// MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon's element effect (Mt2009WeaponElement.cpp); 0 takes it off
+		void					SetWeaponElement(DWORD dwType);
+		DWORD					GetWeaponElement() const { return m_dwWeaponElement; }
+		static bool				RegisterWeaponElementEffect(DWORD dwType, DWORD dwKind, const char* c_szFileName);
+#endif
 		void					AttachBox(bool isVisible);
 		void					SetBack(DWORD dwItem);
 		bool					SetWeapon(DWORD eWeapon);
@@ -963,6 +969,12 @@ class CInstanceBase
 		void	__AttachAuraEffect();	// MT2009_PLUS_AURA_V1: m_dwAuraVnum's effect (again after SetRace)
 		DWORD	m_dwAuraVnum;
 		DWORD	m_dwAuraEffect;
+#endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+		void	__ClearWeaponElementEffect();	// MT2009_PLUS_WEAPON_ELEMENT_V1
+		void	__AttachWeaponElementEffect();	// after the weapon's refine effect (SetWeapon), again after SetRace
+		DWORD	m_dwWeaponElement;				// 0 none, 1 Blyskawica .. 6 Mrok
+		DWORD	m_dwWeaponElementEffect[2];		// right / left hand
 #endif
 
 	protected:

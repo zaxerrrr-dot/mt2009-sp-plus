@@ -22,6 +22,7 @@
     <ClCompile Include="Mt2009Champion.cpp" />
     <ClCompile Include="Mt2009ChangeLook.cpp" />
     <ClCompile Include="Mt2009Aura.cpp" />
+    <ClCompile Include="Mt2009WeaponElement.cpp" />
     <ClCompile Include="Mt2009AutoHuntTest.cpp" />
     <ClCompile Include="PythonBackground.cpp" />
     <ClCompile Include="PythonBackgroundModule.cpp" />

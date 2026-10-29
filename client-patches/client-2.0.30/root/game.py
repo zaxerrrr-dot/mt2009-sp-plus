@@ -1030,6 +1030,28 @@ class GameWindow(ui.ScriptWindow):
 		except AttributeError:
 			pass	# the windows are not made yet: the page reads the map when it opens
 
+	# MT2009_PLUS_WEAPON_ELEMENT_V1: Zaczarowanie Zywiolu Broni (welem.py, uiweaponelement.py; server-patches/zywiolbroni) -
+	# "WELEM <window> <cell> <packed>" an item's element, "WELEMOPEN ..." / "WELEMCLOSE" / "WELEMRESULT ..." the windows,
+	# "WELEMFX <vid> <element>" the weapon's element effect of a character in view (welemfx.py, the 3.x exe)
+	def __WeaponElement(self, *args):
+		__import__("welem").OnServer(*args)
+
+	def __WeaponElementOpen(self, *args):
+		__import__("uiweaponelement").OnOpen(*args)
+
+	def __WeaponElementClose(self, *args):
+		__import__("uiweaponelement").OnClose(*args)
+
+	def __WeaponElementResult(self, *args):
+		__import__("uiweaponelement").OnResult(*args)
+
+	def __WeaponElementEffect(self, *args):
+		try:
+			welemfx = __import__("welemfx")
+		except ImportError:
+			return
+		welemfx.OnServer(*args)
+
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
 		# VID again, because a warp is a new login on the server.
@@ -3537,6 +3559,11 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
 		serverCommandList["QuestCategory"] = self.__QuestRenewalCategory # MT2009_PLUS_QUEST_RENEWAL_V1
+		serverCommandList["WELEM"] = self.__WeaponElement # MT2009_PLUS_WEAPON_ELEMENT_V1
+		serverCommandList["WELEMOPEN"] = self.__WeaponElementOpen
+		serverCommandList["WELEMCLOSE"] = self.__WeaponElementClose
+		serverCommandList["WELEMRESULT"] = self.__WeaponElementResult
+		serverCommandList["WELEMFX"] = self.__WeaponElementEffect
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin
