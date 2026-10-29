@@ -220,5 +220,10 @@
 // the 15 Zodiac SE_*/EFFECT_* effects, the mission chat types 13..15, chrmgr.IsDead/IsPC and the scripts'
 // constants (UserInterface/Mt2009Zodiak.cpp). The image cooltime is MT2009_PLUS_MINIGAMES_V1's.
 #define ENABLE_12ZI
+// MT2009_PLUS_AUTOHUNT_RUN_ON_HIT_V1 (the owner, 28 October 2026): an arrow or a spell that reaches a running
+// player's character no longer plays the flinch that ended its run (GameLib/ActorInstanceBattle.cpp,
+// CActorInstance::OnShootDamage) - Auto Lowy and a walk by mouse go on under the archers. Melee blows are as before.
+// Without the define the exe is as before; root's uiautohunt.py restarts a stopped walk at once either way.
+#define ENABLE_MT2009_RUN_THROUGH_ARROWS
 // ------------------------------------------------------------------------------------------------------
 // Files shared by GameCore.top

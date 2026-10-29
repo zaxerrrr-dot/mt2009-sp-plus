@@ -598,5 +598,23 @@
   "marker": "MT2009_PLUS_SUMMON_STONE_V1 (spawn)",
   "old": "\t\tLPCHARACTER ch = CHARACTER_MANAGER::instance().SpawnMob(dwCount, GetMapIndex(), x, y, 0, true, -1);\n\t\tif (ch)\n\t\t{\n\t\t\tch->SetAggressive();\n",
   "new": "\t\t// MT2009_PLUS_SUMMON_STONE_V1 (spawn): a stone or a vein summoned from an\n\t\t// item - never inside a dungeon instance (the box path refuses it before\n\t\t// the item is used; this covers a quest opening such a group there), and\n\t\t// gone 15 minutes after the summon unless destroyed first.\n\t\tconst int iMt2009SummonKind = Mt2009PlusSummonMobKind(dwCount);\n\t\tif (iMt2009SummonKind != MT2009_SUMMON_KIND_NONE && Mt2009PlusInDungeonInstance(this))\n\t\t{\n\t\t\tChatPacket(CHAT_TYPE_INFO, iMt2009SummonKind == MT2009_SUMMON_KIND_VEIN\n\t\t\t\t\t? \"Nie mozesz przywolac zyly w lochu.\"\n\t\t\t\t\t: \"Nie mozesz przywolac kamienia Metin w lochu.\");\n\t\t\tbSuccess = false;\n\t\t\tbreak;\n\t\t}\n\t\tLPCHARACTER ch = CHARACTER_MANAGER::instance().SpawnMob(dwCount, GetMapIndex(), x, y, 0, true, -1);\n\t\tif (ch && iMt2009SummonKind != MT2009_SUMMON_KIND_NONE)\n\t\t{\n\t\t\t// A vein already got the engine's own random 7-15 minute end\n\t\t\t// (kill_ore_load_event, char.cpp); a summoned one keeps\n\t\t\t// exactly the 15 minutes below instead (regen veins keep theirs).\n\t\t\tif (iMt2009SummonKind == MT2009_SUMMON_KIND_VEIN)\n\t\t\t\tevent_cancel(&ch->m_pkMiningEvent);\n\t\t\tMt2009PlusStartSummonLifetime(ch);\n\t\t\tChatPacket(CHAT_TYPE_INFO, iMt2009SummonKind == MT2009_SUMMON_KIND_VEIN\n\t\t\t\t\t? \"Przywolana zyla zniknie po 15 minutach.\"\n\t\t\t\t\t: \"Przywolany kamien Metin zniknie po 15 minutach, jesli go nie zniszczysz.\");\n\t\t}\n\t\tif (ch)\n\t\t{\n\t\t\tch->SetAggressive();\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (detour)",
+  "old": "\t\tconst bool blocked = Mt2009PlusAutoHuntBlocked(m_ch, victim);\n\t\tif (blocked)\n\t\t{\n\t\t\tscore += 250000;\n\t\t\tif (score >= m_iBestScore)\n\t\t\t\treturn;\n\t\t}\n",
+  "new": "\t\tconst bool blocked = Mt2009PlusAutoHuntBlocked(m_ch, victim);\n\t\tif (blocked)\n\t\t{\n\t\t\t// MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (detour) (server-patches/enginefixes, the owner,\n\t\t\t// 28 October 2026: Auto Lowy went for monsters far away while one stood near): a\n\t\t\t// target behind a wall, a rock, a tree or a fence counts as twice its distance and\n\t\t\t// 500 more - the way round it - instead of 250000, which put any monster in the open,\n\t\t\t// however far within the range, before one a few steps away behind a tree. Still far\n\t\t\t// less than the steps between the kinds (500000 and more).\n\t\t\tscore += Mt2009PlusDistance(m_ch, victim) + 500;\n\t\t\tif (score >= m_iBestScore)\n\t\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (score)",
+  "old": "\t\tint score = DISTANCE_APPROX(victim->GetX() - m_ch->GetX(), victim->GetY() - m_ch->GetY());\n\t\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (score)",
+  "new": "\t\t// MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (score): the true distance - DISTANCE_APPROX is off\n\t\t// by up to an eighth, enough to name the farther of two monsters the nearest.\n\t\tint score = Mt2009PlusDistance(m_ch, victim);\n\t\t// MT2009_PLUS_AUTOHUNT_PRIORITY_V1 (score)"
+ },
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (distance)",
+  "old": "\tbool\t\tm_bBestBlocked = false;\n\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n",
+  "new": "\tbool\t\tm_bBestBlocked = false;\n\t// MT2009_PLUS_AUTOHUNT_TRUE_NEAREST_V1 (distance): the straight distance between two\n\t// characters, rounded down.\n\tstatic int Mt2009PlusDistance(LPCHARACTER a, LPCHARACTER b)\n\t{\n\t\tconst double dx = (double) (b->GetX() - a->GetX());\n\t\tconst double dy = (double) (b->GetY() - a->GetY());\n\t\treturn (int) sqrt(dx * dx + dy * dy);\n\t}\n\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n"
  }
 ]
