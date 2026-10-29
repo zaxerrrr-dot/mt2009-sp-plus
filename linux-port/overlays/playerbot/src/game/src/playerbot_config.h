@@ -179,6 +179,14 @@ namespace
 	// guild on a side before its clock runs out (the WAR_KILLS key; 0 is the
 	// clock alone). The default is the operator's hundred.
 	int s_iPlayerBotWarKills = 200; // MT2009_PLUS_GUILD_WAR_ARENA_V1: 200 (the owner, 3 October)
+	// MT2009_PLUS_BOT_DROPPER_ROTATION_V1 (a player's report, 29 October:
+	// "dropki surowcow" of 50-60 in armour of level 18 or 26): the guild
+	// materials dropper is no longer a bot's trade for life. Every this many
+	// hours of the character's own play time (POINT_PLAYTIME) the draw is
+	// made again, at the share that keeps the number of droppers what it was
+	// (GetPlayerBotGuildDropperShare). The GUILD_DROPPER_HOURS key; 0 is the
+	// old rule, the same bots by pid for good.
+	int s_iPlayerBotGuildDropperHours = 24;
 	// Whether a bot reads its books without the engine's day between them.
 	// On by default: the day is what makes a book a month's project, and the
 	// books were rotting in the bags of bots that could not read them yet.
@@ -408,6 +416,7 @@ namespace
 		s_iPlayerBotWarMinutes = 30;
 		s_iPlayerBotWarEveryHours = 1;
 		s_iPlayerBotWarKills = 200;
+		s_iPlayerBotGuildDropperHours = 24; // MT2009_PLUS_BOT_DROPPER_ROTATION_V1
 		s_bPlayerBotFastBooks = true;
 		s_bPlayerBotNight = true;
 		s_bPlayerBotLifeSchedule = false;
@@ -875,6 +884,17 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			s_iPlayerBotWarKills = kills;
 			return;
 		}
+		// MT2009_PLUS_BOT_DROPPER_ROTATION_V1: hours of play time between two
+		// draws of the guild materials dropper, 0 for the old fixed draw.
+		if (PlayerBotWeightNameEquals(szKey, "GUILD_DROPPER_HOURS"))
+		{
+			const int hours = value < 0 ? 0 : (value > 720 ? 720 : (int)value);
+			if (hours != s_iPlayerBotGuildDropperHours)
+				sys_log(0, "PLAYERBOT_CONFIG: guild materials droppers drawn %s%d%s", hours ? "every " : "",
+						hours, hours ? " hours of play time" : " (fixed by pid)");
+			s_iPlayerBotGuildDropperHours = hours;
+			return;
+		}
 		if (PlayerBotWeightNameEquals(szKey, "SCROLL_FROM"))
 		{
 			const int plus = value < 1 ? 1 : (value > PLAYERBOT_SCROLL_REFINE_MAX_PLUS
@@ -1041,6 +1061,8 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 			return s_iPlayerBotWarEveryHours;
 		if (PlayerBotWeightNameEquals(szKey, "WAR_KILLS"))
 			return s_iPlayerBotWarKills;
+		if (PlayerBotWeightNameEquals(szKey, "GUILD_DROPPER_HOURS")) // MT2009_PLUS_BOT_DROPPER_ROTATION_V1
+			return s_iPlayerBotGuildDropperHours;
 		if (PlayerBotWeightNameEquals(szKey, "CHEST"))
 			return !s_bPlayerBotChestFromFile ? -1 :
 					(GetPlayerBotChestWantedPermille(false) >= 0 ? GetPlayerBotChestWantedPermille(false) : g_iMoonlightChestPermille);
@@ -1602,6 +1624,14 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 		if (!s_bPlayerBotWeightsInitialised)
 			ResetPlayerBotWeights();
 		return s_bPlayerBotStone4Off;
+	}
+
+	// MT2009_PLUS_BOT_DROPPER_ROTATION_V1
+	int GetPlayerBotGuildDropperHours()
+	{
+		if (!s_bPlayerBotWeightsInitialised)
+			ResetPlayerBotWeights();
+		return s_iPlayerBotGuildDropperHours;
 	}
 
 	int GetPlayerBotScrollFromPlus()

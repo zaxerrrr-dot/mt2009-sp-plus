@@ -1345,6 +1345,23 @@ namespace
 	}
 #endif
 
+	// MT2009_PLUS_BOT_DROPPER_GEAR_V2: whether a dropper's gear asks for the
+	// market - the same looks every bot shops by (playerbot_gear_upgrade.h,
+	// IsPlayerBotOutdatedGear, NeedsPlayerBotProperWeapon).
+	const DWORD PLAYERBOT_DROPPER_GEAR_WINDOW_GAP_MS = 15 * 60 * 1000;
+	std::map<DWORD, DWORD> s_mapPlayerBotDropperGearWindowNext;
+	bool PlayerBotDropperWantsGear(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotGearFrozen(ch))
+			return false;
+		if (!ch->GetWear(WEAR_WEAPON) || !ch->GetWear(WEAR_BODY) || NeedsPlayerBotProperWeapon(ch))
+			return true;
+		if (IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_BODY)) || IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_HEAD)) ||
+				IsPlayerBotOutdatedGear(ch, ch->GetWear(WEAR_SHIELD)))
+			return true;
+		return PlayerBotWantsWeaponUpgradeFromMarket(ch) || PlayerBotWantsArmourUpgradeFromMarket(ch);
+	}
+
 	bool ManagePlayerBotShopping(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->IsItemLoaded() || ch->IsDead())
@@ -1365,6 +1382,27 @@ namespace
 		// it (KeepPlayerBotNegativeRankInTown).
 		// MT2009_PLUS_DROPPER_INVEST_V1: in the window after its counter's
 		// service it shops at the stands round it - and makes no trip for it.
+		// MT2009_PLUS_BOT_DROPPER_GEAR_V2: a dropper whose gear its level has
+		// left behind - an upgrade its look found on the stands, outdated
+		// armour, helmet or shield, a weapon under the line - has the window
+		// on any town visit with stands, once in
+		// PLAYERBOT_DROPPER_GEAR_WINDOW_GAP_MS, not only after its counter's
+		// service every forty to sixty minutes. No market trip of its own.
+		if (IsPlayerBotDropper(state.bPersonality) && !IsPlayerBotDropperShopping(ch->GetPlayerID(), dwNow))
+		{
+			DWORD& next = s_mapPlayerBotDropperGearWindowNext[ch->GetPlayerID()];
+			long gearX = 0, gearY = 0;
+			if ((next == 0 || (int)(dwNow - next) >= 0) && GetPlayerBotShopCentre(ch->GetMapIndex(), gearX, gearY) &&
+					PlayerBotDropperWantsGear(ch))
+			{
+				next = dwNow + PLAYERBOT_DROPPER_GEAR_WINDOW_GAP_MS;
+				OpenPlayerBotDropperShopping(ch->GetPlayerID(), dwNow);
+				state.offlineShop.nextBrowse = dwNow;
+				sys_log(0, "PLAYERBOT_MARKET: dropper looks for gear pid=%u name=%s level=%u map=%ld gold=%lld",
+						ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), ch->GetMapIndex(),
+						(long long)ch->GetGold());
+			}
+		}
 		const bool dropperRefused = IsPlayerBotDropper(state.bPersonality) &&
 				(ch->GetRealAlignment() >= 0 || IsPlayerBotRankHunting(ch, dwNow)); // MT2009_PLUS_BOT_RANK_GLOVE_V1
 		if (dropperRefused && !IsPlayerBotDropperShopping(ch->GetPlayerID(), dwNow))

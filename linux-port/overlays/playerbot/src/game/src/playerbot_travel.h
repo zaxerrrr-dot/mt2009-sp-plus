@@ -749,6 +749,32 @@ namespace
 	// MT2009_PLUS_FARMER_LINK_V1: a spot farmer's map (playerbot_farmer_link.h).
 	long GetPlayerBotFarmerSpotMap(LPCHARACTER ch);
 
+	// MT2009_PLUS_BOT_DROPPER_GEAR_V1 (a player's report, 29 October: guild
+	// materials droppers of 50-60 in armour of level 18 or 26 "padaly na
+	// mapach typu Sohan"): the ground (Sohan 60-66, the Fireland 67-72, Hwang
+	// 56-61) took a dropper from its first level whatever it wore. Now it
+	// wants a weapon over the line (NeedsPlayerBotProperWeapon), a body armour
+	// that is not outdated and is at most PLAYERBOT_GUILD_DROPPER_ARMOUR_GAP
+	// levels under the ground's first level, and a helmet.
+	const int PLAYERBOT_GUILD_DROPPER_ARMOUR_GAP = 25;
+	bool IsPlayerBotGuildDropperGearReady(LPCHARACTER ch, const TPlayerBotGuildDropperGround& ground)
+	{
+		if (!ch || !ch->IsItemLoaded())
+			return false;
+		LPITEM weapon = ch->GetWear(WEAR_WEAPON);
+		LPITEM armour = ch->GetWear(WEAR_BODY);
+		const bool ready = weapon && weapon->GetType() == ITEM_WEAPON && !NeedsPlayerBotProperWeapon(ch) &&
+				armour && !IsPlayerBotOutdatedGear(ch, armour) && ch->GetWear(WEAR_HEAD) &&
+				(int)armour->GetLevelLimit() + PLAYERBOT_GUILD_DROPPER_ARMOUR_GAP >= (int)ground.minLevel;
+		if (!ready)
+			PlayerBotLogThrottled("guild_dropper_gear", get_dword_time(),
+					"PLAYERBOT_GUILD_DROPPER: gear short of its ground pid=%u name=%s level=%u map=%ld weapon=%u armour=%u armour_level=%d",
+					ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), ground.map,
+					weapon ? weapon->GetVnum() : 0, armour ? armour->GetVnum() : 0,
+					armour ? (int)armour->GetLevelLimit() : -1);
+		return ready;
+	}
+
 	// MT2009_PLUS_BOT_SPIDER_GROUND_V1: geared for this Spider Dungeon -
 	// weapon and body armour at the dungeon's grades, a helmet on, a weapon of
 	// its level, and red potions for the poison and the packs.
@@ -948,8 +974,11 @@ namespace
 			if (self != s_mapPlayerBotAIStates.end() && self->second.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
 			{
 				const TPlayerBotGuildDropperGround& ground = GetPlayerBotGuildDropperGround(ch->GetPlayerID());
+				// MT2009_PLUS_BOT_DROPPER_GEAR_V1: and its gear is fit for the
+				// ground (IsPlayerBotGuildDropperGearReady); until then it hunts
+				// where every bot of its level does, by the draw below.
 				if (ch->GetLevel() >= ground.minLevel && IsPlayerBotFrontierMapIndex(ground.map) &&
-						IsPlayerBotMapHostedHere(ground.map))
+						IsPlayerBotMapHostedHere(ground.map) && IsPlayerBotGuildDropperGearReady(ch, ground))
 					return ground.map;
 			}
 		}

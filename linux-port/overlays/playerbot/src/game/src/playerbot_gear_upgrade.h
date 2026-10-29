@@ -746,6 +746,24 @@ namespace
 		return LookPlayerBotArmourUpgrade(ch, get_dword_time()).vnum != 0;
 	}
 
+	// MT2009_PLUS_BOT_DROPPER_GEAR_V2: the yang the upgrades this bot's looks
+	// found on the stands would take - the weapon's and the armour's - which a
+	// dropper's window keeps from its material lines (playerbot_offline_market.h).
+	long long GetPlayerBotGearUpgradeReserve(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotGearFrozen(ch))
+			return 0;
+		const DWORD now = get_dword_time();
+		long long reserve = 0;
+		const TPlayerBotWeaponUpgradeLook& weapon = LookPlayerBotWeaponUpgrade(ch, now);
+		if (weapon.vnum != 0)
+			reserve += weapon.price;
+		const TPlayerBotArmourUpgradeLook& armour = LookPlayerBotArmourUpgrade(ch, now);
+		if (armour.vnum != 0)
+			reserve += armour.price;
+		return reserve;
+	}
+
 	// Defined in playerbot_economy.h: the slot a burned piece is being
 	// replaced in from the market (Iwakura's Patch 4, point 7).
 	bool IsPlayerBotRebuildingFromMarket(LPCHARACTER ch, BYTE slot);

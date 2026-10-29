@@ -635,12 +635,49 @@ namespace {
             // MT2009_PLUS_DROPPER_INVEST_V1: a dropper's own next steps first -
             // the materials and scrolls of its weapon, armour and shield, up
             // to +9 - on every stand of the map, the gambler's way.
+            // MT2009_PLUS_BOT_DROPPER_GEAR_V2 (a player's report, 29 October:
+            // "w tym oknie kod najpierw kupuje materialy do +9 i to konczy
+            // zakupy - lepszej broni czy zbroi nigdy nie kupuje"): the window
+            // of three minutes went on material lines, one walk each, and the
+            // weapon and armour picks below it never had a turn - droppers of
+            // sixty in the merchant's armour of 18 and 26. Now the scrolls
+            // first (cheap, and its worn piece goes up under one or waits,
+            // IsPlayerBotPlainAnvilBarred), then the gear every bot looks for
+            // - the weapon that hits a tenth harder, the piece over outdated
+            // gear, the armour a tenth better - and the materials last, out of
+            // what is left once the upgrades its look found are set aside.
             if (dropperWindow) {
                 std::map<DWORD, int> missing;
-                CollectPlayerBotDropperInvestMissing(ch, missing);
+                CollectPlayerBotDropperInvestMissing(ch, missing, PLAYERBOT_DROPPER_INVEST_SCROLLS);
                 if (!missing.empty() && FindPlayerBotGambleMaterialPick(ch, state, missing, budget, now)) {
-                    sys_log(0, "PLAYERBOT_MARKET: dropper invests in itself pid=%u name=%s owner=%u item=%u lacking=%u",
+                    sys_log(0, "PLAYERBOT_MARKET: dropper invests in itself pid=%u name=%s owner=%u item=%u lacking=%u what=scrolls",
                         ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+                bool gearPick = FindPlayerBotWeaponUpgradePick(ch, state, now);
+                const char* gearWhat = "weapon";
+                if (!gearPick && FindPlayerBotOutdatedGearPick(ch, state, budget, now)) {
+                    gearPick = true;
+                    gearWhat = "outdated";
+                }
+                if (!gearPick && FindPlayerBotArmourUpgradePick(ch, state, now)) {
+                    gearPick = true;
+                    gearWhat = "armour";
+                }
+                if (gearPick) {
+                    // The walk to the stand may outlast the window.
+                    ExtendPlayerBotDropperShopping(ch->GetPlayerID(), now, PLAYERBOT_MARKET_FAR_PICK_WALK_MS);
+                    sys_log(0, "PLAYERBOT_MARKET: dropper goes for gear pid=%u name=%s level=%u owner=%u item=%u what=%s gold=%lld",
+                        ch->GetPlayerID(), ch->GetName(), (unsigned int)ch->GetLevel(), o.buyOwner, o.buyItem, gearWhat,
+                        (long long)ch->GetGold());
+                    return RunPlayerBotOfflinePick(ch, state, now);
+                }
+                const long long materialCap = budget - GetPlayerBotGearUpgradeReserve(ch);
+                missing.clear();
+                CollectPlayerBotDropperInvestMissing(ch, missing, PLAYERBOT_DROPPER_INVEST_MATERIALS);
+                if (!missing.empty() && materialCap > 0 && FindPlayerBotGambleMaterialPick(ch, state, missing, materialCap, now)) {
+                    sys_log(0, "PLAYERBOT_MARKET: dropper invests in itself pid=%u name=%s owner=%u item=%u lacking=%u what=materials cap=%lld",
+                        ch->GetPlayerID(), ch->GetName(), o.buyOwner, o.buyItem, (unsigned int)missing.size(), materialCap);
                     return RunPlayerBotOfflinePick(ch, state, now);
                 }
             }

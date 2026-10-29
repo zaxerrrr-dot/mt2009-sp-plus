@@ -1056,7 +1056,15 @@ namespace
 	// vnum: the recipes' materials over the Biologist's share, and a safe
 	// scroll for each step the bag has none for. Its shopping window buys
 	// these first (ManagePlayerBotOfflineShopping).
-	void CollectPlayerBotDropperInvestMissing(LPCHARACTER ch, std::map<DWORD, int>& missing)
+	// MT2009_PLUS_BOT_DROPPER_GEAR_V1: `what` asks for the scrolls alone
+	// (PLAYERBOT_DROPPER_INVEST_SCROLLS), the materials alone
+	// (PLAYERBOT_DROPPER_INVEST_MATERIALS) or both; and no step of a piece the
+	// bot is to replace - outdated gear, a mature bot's weakest piece: the
+	// window bought materials for the level-18 armour of a bot of sixty and
+	// never got to the armour that replaces it.
+	enum { PLAYERBOT_DROPPER_INVEST_ALL = 0, PLAYERBOT_DROPPER_INVEST_SCROLLS, PLAYERBOT_DROPPER_INVEST_MATERIALS };
+	void CollectPlayerBotDropperInvestMissing(LPCHARACTER ch, std::map<DWORD, int>& missing,
+			int what = PLAYERBOT_DROPPER_INVEST_ALL)
 	{
 		missing.clear();
 		if (!ch || !ch->IsItemLoaded())
@@ -1069,7 +1077,8 @@ namespace
 			LPITEM piece = ch->GetWear(wears[i]);
 			if (!piece || piece->GetRefinedVnum() == 0 ||
 					(int)piece->GetRefineLevel() >= PLAYERBOT_DROPPER_INVEST_MAX_PLUS ||
-					IsPlayerBotScrollFreeGear(piece))
+					IsPlayerBotScrollFreeGear(piece) ||
+					IsPlayerBotOutdatedGear(ch, piece) || IsPlayerBotMatureLowGear(ch, piece))	// MT2009_PLUS_BOT_DROPPER_GEAR_V1
 				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(piece->GetRefineSet());
 			if (!recipe)
@@ -1079,14 +1088,15 @@ namespace
 				if (recipe->materials[m].vnum != 0 && recipe->materials[m].count > 0)
 					need[recipe->materials[m].vnum] += (int)recipe->materials[m].count;
 		}
-		for (std::map<DWORD, int>::const_iterator it = need.begin(); it != need.end(); ++it)
+		for (std::map<DWORD, int>::const_iterator it = need.begin();
+				what != PLAYERBOT_DROPPER_INVEST_SCROLLS && it != need.end(); ++it)
 		{
 			const int have = (int)ch->CountSpecifyItem(it->first) - GetPlayerBotBiologistReserve(ch, it->first);
 			if (have < it->second)
 				missing[it->first] = it->second - std::max(0, have);
 		}
 		const int scrolls = CountPlayerBotSafeRefineScrolls(ch);
-		if (steps > scrolls)
+		if (steps > scrolls && what != PLAYERBOT_DROPPER_INVEST_MATERIALS)
 		{
 			const DWORD scrollVnums[] = { PLAYERBOT_BLESSING_SCROLL_VNUM, 25041, 25043, 25045, 70039 };
 			for (size_t i = 0; i < sizeof(scrollVnums) / sizeof(scrollVnums[0]); ++i)
@@ -3839,6 +3849,16 @@ namespace
 		if ((int)item->GetRefineLevel() < PLAYERBOT_SAFE_ANVIL_YOUNG_MAX_PLUS &&
 				((int)ch->GetLevel() < PLAYERBOT_SAFE_ANVIL_YOUNG_LEVEL || IsPlayerBotScrollFreeGear(item)))
 			return false;
+		// MT2009_PLUS_BOT_DROPPER_GEAR_V1 (a player's report, 29 October:
+		// "dropki ulepszaja u kowala bez zwoju, wiec czesto pala"): a dropper's
+		// spare is whatever old piece its farm left in the bag - a level-18
+		// armour on a bot of sixty - and the market that replaces a burned
+		// piece for every other bot is open to it a few minutes an hour. The
+		// piece it fights in goes up under a scroll or waits for one; the coin
+		// (PlayerBotRisksPlainAnvil) never sends it to the plain anvil, and no
+		// backup bought from a merchant frees it (NeedsPlayerBotBackupArmour).
+		if (slot >= 0 && IsPlayerBotDropper(GetPlayerBotPersonalityByPID(ch->GetPlayerID())))
+			return true;
 		if (slot >= 0)
 			return !PlayerBotHasSpareForSlot(ch, slot, item);
 		// MT2009_PLUS_BOT_SMITHY_V2 (night test, 9 October: a bot burned the
@@ -5884,6 +5904,10 @@ namespace
 	// to that merchant (StartPlayerBotTownVisit).
 	bool NeedsPlayerBotBackupArmour(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_DROPPER_GEAR_V1: a dropper's worn piece waits for a
+		// scroll, not for a spare (IsPlayerBotPlainAnvilBarred).
+		if (ch && IsPlayerBotDropper(GetPlayerBotPersonalityByPID(ch->GetPlayerID())))
+			return false;
 		LPITEM worn = ch ? ch->GetWear(WEAR_BODY) : NULL;
 		// MT2009_PLUS_BOT_SMITHY_V1: or held by the no-burn rule for want of
 		// a spare (IsPlayerBotPlainAnvilBarred; four lines want a scroll).
@@ -5909,6 +5933,9 @@ namespace
 	// for it (StartPlayerBotTownVisit).
 	bool NeedsPlayerBotBackupWeapon(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_BOT_DROPPER_GEAR_V1: as the armour's, above.
+		if (ch && IsPlayerBotDropper(GetPlayerBotPersonalityByPID(ch->GetPlayerID())))
+			return false;
 		LPITEM worn = ch ? ch->GetWear(WEAR_WEAPON) : NULL;
 		// A weapon for the tenth level or under in the hand of a bot of thirty
 		// is replaced, not backed up (NeedsPlayerBotProperWeapon).

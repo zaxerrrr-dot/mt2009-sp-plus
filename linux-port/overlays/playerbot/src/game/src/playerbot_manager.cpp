@@ -433,6 +433,59 @@ namespace
 				ch->GetLevel() > lockLevel + PLAYERBOT_DROPPER_OUTGROWN_LEVELS;
 	}
 
+	// MT2009_PLUS_BOT_DROPPER_ROTATION_V1 (a player's report, 29 October: the
+	// guild materials droppers of 50-60 walked in armour of level 18 or 26 and
+	// died on Sohan - one in nineteen of the bots, the same ones for good):
+	// with GUILD_DROPPER_HOURS on (the default, 24), the draw is made again
+	// every that many hours of the character's own play time (POINT_PLAYTIME),
+	// so the same character does not stay a dropper for good and the others
+	// come back to the market and their gear. The draw's share is the one that
+	// keeps the number of droppers what it was: one in
+	// PLAYERBOT_GUILD_DROPPER_SHARE of the bots that reach the draw, spread
+	// over those that have not outgrown the ground (the census in
+	// CPlayerBotManager::ManageGuildDropperRotation). Until the first census,
+	// one in PLAYERBOT_GUILD_DROPPER_SHARE.
+	const DWORD PLAYERBOT_GUILD_DROPPER_SHARE_SCALE = 100000;
+	DWORD s_dwPlayerBotGuildDropperShare = PLAYERBOT_GUILD_DROPPER_SHARE_SCALE / PLAYERBOT_GUILD_DROPPER_SHARE;
+
+	// The bot's round of the draw: 0 for the old fixed draw (GUILD_DROPPER_HOURS 0).
+	DWORD GetPlayerBotGuildDropperEpoch(LPCHARACTER ch)
+	{
+		const int hours = GetPlayerBotGuildDropperHours();
+		if (!ch || hours <= 0)
+			return 0;
+		const long long minutes = std::max<long long>(0, (long long)ch->GetRealPoint(POINT_PLAYTIME));
+		return (DWORD)(minutes / ((long long)hours * 60LL)) + 1;
+	}
+
+	bool IsPlayerBotGuildDropperDrawn(LPCHARACTER ch)
+	{
+		if (!ch)
+			return false;
+		const DWORD epoch = GetPlayerBotGuildDropperEpoch(ch);
+		if (epoch == 0)
+			return (PlayerBotNavHash(ch->GetPlayerID() ^ 0x47445250U) % PLAYERBOT_GUILD_DROPPER_SHARE) == 0;
+		return PlayerBotNavHash(ch->GetPlayerID() ^ 0x47445250U ^ (epoch * 0x9e3779b1U)) %
+				PLAYERBOT_GUILD_DROPPER_SHARE_SCALE < s_dwPlayerBotGuildDropperShare;
+	}
+
+	// The extra medal dropper of Iwakura's community patch 2 (below), drawn
+	// before the guild dropper.
+	bool IsPlayerBotExtraMedalDropperDrawn(LPCHARACTER ch)
+	{
+		return ch && IsPlayerBotPersonaEnabled() &&
+				(int)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d444c34U) % 1000U) <
+					PLAYERBOT_MEDAL_DROPPER_EXTRA_PER_MILLE &&
+				!IsPlayerBotPastDropperBand(ch, BOT_PERSONALITY_MEDAL_DROPPER);
+	}
+
+	// Whether the draw below gets as far as the guild dropper for this bot.
+	bool PlayerBotReachesGuildDropperDraw(LPCHARACTER ch, BYTE role)
+	{
+		return ch && role != BOT_ROLE_PARTY_FIGHTER && role != BOT_ROLE_METIN_HUNTER &&
+				!IsPlayerBotExtraMedalDropperDrawn(ch);
+	}
+
 	BYTE GetPlayerBotStablePersonality(LPCHARACTER ch, BYTE role)
 	{
 		if (!ch)
@@ -447,15 +500,14 @@ namespace
 		// Iwakura's community patch 2, point 4: under the personalities more
 		// of the bots farm medals, four and a half times the old share, drawn
 		// before the traders so the extra share is its own.
-		if (IsPlayerBotPersonaEnabled() &&
-				(int)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d444c34U) % 1000U) <
-					PLAYERBOT_MEDAL_DROPPER_EXTRA_PER_MILLE &&
-				!IsPlayerBotPastDropperBand(ch, BOT_PERSONALITY_MEDAL_DROPPER))
+		if (IsPlayerBotExtraMedalDropperDrawn(ch))
 			return BOT_PERSONALITY_MEDAL_DROPPER;
 
 		// The guild materials dropper (the operator, 27 September): one in
-		// PLAYERBOT_GUILD_DROPPER_SHARE of the bots not past their ground.
-		if ((PlayerBotNavHash(ch->GetPlayerID() ^ 0x47445250U) % PLAYERBOT_GUILD_DROPPER_SHARE) == 0 &&
+		// PLAYERBOT_GUILD_DROPPER_SHARE of the bots not past their ground -
+		// drawn again every GUILD_DROPPER_HOURS of play time
+		// (MT2009_PLUS_BOT_DROPPER_ROTATION_V1, IsPlayerBotGuildDropperDrawn).
+		if (IsPlayerBotGuildDropperDrawn(ch) &&
 				!IsPlayerBotPastDropperBand(ch, BOT_PERSONALITY_GUILD_DROPPER))
 			return BOT_PERSONALITY_GUILD_DROPPER;
 
@@ -6903,6 +6955,116 @@ void CPlayerBotManager::Update()
 			sys_log(0, "PLAYERBOT_PERSONA: switch %s, %u characters changed", personaNow ? "on" : "off", changed);
 		}
 		s_iPlayerBotPersonaSwitchSeen = personaNow;
+	}
+	// MT2009_PLUS_BOT_DROPPER_ROTATION_V1: the guild materials dropper's draw
+	// by play time (IsPlayerBotGuildDropperDrawn). Every ten minutes the
+	// census sets the share that keeps the droppers as many as the fixed draw
+	// made them - one in PLAYERBOT_GUILD_DROPPER_SHARE of the bots that reach
+	// the draw, over those still in the ground's band - and every minute a
+	// bot whose round of the draw has changed is drawn again: in or out of
+	// the trade, the rest of its draw as at a login. Not a player's companion,
+	// a shouter, the operator's medal cohort, a level-30 weapon dropper or an
+	// ornament farmer (their own passes own them), and not in a party (the
+	// next minute asks again).
+	{
+		static DWORD s_dwGuildDropperNextPass = 0;
+		static DWORD s_dwGuildDropperNextCensus = 0;
+		static std::map<DWORD, DWORD> s_mapGuildDropperEpoch;
+		const bool rotating = GetPlayerBotGuildDropperHours() > 0;
+		if (rotating && (s_dwGuildDropperNextCensus == 0 || (int)(dwNow - s_dwGuildDropperNextCensus) >= 0))
+		{
+			s_dwGuildDropperNextCensus = dwNow + 10 * 60 * 1000;
+			unsigned int reach = 0, inBand = 0, droppers = 0;
+			for (TPlayerBotMap::iterator it = m_mapBots.begin(); it != m_mapBots.end(); ++it)
+			{
+				LPCHARACTER c = it->second ? it->second->GetCharacter() : NULL;
+				TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(it->first);
+				if (!c || st == s_mapPlayerBotAIStates.end() || IsMedalDropperCohortPID(it->first) ||
+						IsPlayerBotSidekickPID(it->first) || IsPlayerBotShouterPID(it->first) ||
+						IsPlayerBotMedalShouterPID(it->first))
+					continue;
+				if (st->second.bPersonality == BOT_PERSONALITY_GUILD_DROPPER)
+					++droppers;
+				if (!PlayerBotReachesGuildDropperDraw(c, st->second.bBotRole))
+					continue;
+				++reach;
+				if (!IsPlayerBotPastDropperBand(c, BOT_PERSONALITY_GUILD_DROPPER))
+					++inBand;
+			}
+			if (inBand > 0)
+			{
+				const unsigned long long share = (unsigned long long)reach * PLAYERBOT_GUILD_DROPPER_SHARE_SCALE /
+						((unsigned long long)PLAYERBOT_GUILD_DROPPER_SHARE * inBand);
+				s_dwPlayerBotGuildDropperShare = (DWORD)std::max<unsigned long long>(
+						PLAYERBOT_GUILD_DROPPER_SHARE_SCALE / PLAYERBOT_GUILD_DROPPER_SHARE,
+						std::min<unsigned long long>(PLAYERBOT_GUILD_DROPPER_SHARE_SCALE, share));
+			}
+			sys_log(0, "PLAYERBOT_GUILD_DROPPER: census reach=%u in_band=%u droppers=%u share=%u/%u hours=%d",
+					reach, inBand, droppers, s_dwPlayerBotGuildDropperShare, PLAYERBOT_GUILD_DROPPER_SHARE_SCALE,
+					GetPlayerBotGuildDropperHours());
+		}
+		if (!rotating)
+			s_mapGuildDropperEpoch.clear();
+		else if (s_dwGuildDropperNextPass == 0 || (int)(dwNow - s_dwGuildDropperNextPass) >= 0)
+		{
+			s_dwGuildDropperNextPass = dwNow + 60 * 1000;
+			const bool personaNow = IsPlayerBotPersonaEnabled();
+			unsigned int in = 0, out = 0;
+			for (TPlayerBotMap::iterator it = m_mapBots.begin(); it != m_mapBots.end(); ++it)
+			{
+				LPCHARACTER c = it->second ? it->second->GetCharacter() : NULL;
+				TPlayerBotAIStateMap::iterator st = s_mapPlayerBotAIStates.find(it->first);
+				if (!c || st == s_mapPlayerBotAIStates.end() || IsMedalDropperCohortPID(it->first) ||
+						IsPlayerBotSidekickPID(it->first) || IsPlayerBotShouterPID(it->first) ||
+						IsPlayerBotMedalShouterPID(it->first))
+					continue;
+				TPlayerBotAIState& s = st->second;
+				const DWORD epoch = GetPlayerBotGuildDropperEpoch(c);
+				std::map<DWORD, DWORD>::iterator seen = s_mapGuildDropperEpoch.find(it->first);
+				// The first look at a bot: its login drew it in this round.
+				if (seen == s_mapGuildDropperEpoch.end())
+				{
+					s_mapGuildDropperEpoch[it->first] = epoch;
+					continue;
+				}
+				if (seen->second == epoch)
+					continue;
+				if (s.bPersonality == BOT_PERSONALITY_L30_WEAPON_DROPPER ||
+						s.bPersonality == BOT_PERSONALITY_ORNAMENT_FARMER ||
+						s.persona.bDrawnPersonality == BOT_PERSONALITY_L30_WEAPON_DROPPER ||
+						s.persona.bDrawnPersonality == BOT_PERSONALITY_ORNAMENT_FARMER)
+				{
+					seen->second = epoch;
+					continue;
+				}
+				if (c->GetParty())
+					continue;
+				const BYTE drawn = GetPlayerBotStablePersonality(c, s.bBotRole);
+				const bool wasGuild = s.persona.bDrawnPersonality == BOT_PERSONALITY_GUILD_DROPPER;
+				const bool isGuild = drawn == BOT_PERSONALITY_GUILD_DROPPER;
+				seen->second = epoch;
+				if (wasGuild == isGuild)
+					continue;
+				// Something else made it what it plays now (a graduated medal
+				// dropper, a pass of its own): left to that.
+				const BYTE expected = personaNow ? GetPlayerBotCharakter(s.persona.bDrawnPersonality)
+						: s.persona.bDrawnPersonality;
+				if (s.bPersonality != expected)
+					continue;
+				BYTE want = personaNow ? GetPlayerBotCharakter(drawn) : drawn;
+				if (personaNow && s.persona.bMedalGoalDone && want == BOT_PERSONALITY_MEDAL_DROPPER)
+					want = BOT_PERSONALITY_WANDERER;
+				s.persona.bDrawnPersonality = drawn;
+				s.bPersonality = want;
+				s.bAmbition = GetPlayerBotStableAmbition(c, want);
+				++(isGuild ? in : out);
+				sys_log(0, "PLAYERBOT_GUILD_DROPPER: redrawn pid=%u name=%s level=%u playtime=%d round=%u %s personality=%u",
+						it->first, c->GetName(), (unsigned int)c->GetLevel(), (int)c->GetRealPoint(POINT_PLAYTIME),
+						epoch, isGuild ? "becomes a dropper" : "leaves the trade", (unsigned int)want);
+			}
+			if (in || out)
+				sys_log(0, "PLAYERBOT_GUILD_DROPPER: rotation in=%u out=%u", in, out);
+		}
 	}
 	BeginPlayerBotPersonaCensus(dwNow);
 	ManagePlayerBotNight(dwNow);
