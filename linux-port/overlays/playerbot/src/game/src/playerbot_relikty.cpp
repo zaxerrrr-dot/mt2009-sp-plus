@@ -6,7 +6,7 @@
 // item type, no new point: the client talks to it with "/relikt ..." and hears "relikt_state ..." - root/uirelikt.py).
 //
 // The relic: Relikt Duszy 30272-30276 (one a class, ITEM_QUEST). Placed in the window it leaves the bag for a hidden
-// cell of the character - page I or II (MT2009_RELIC_SLOT_START + page, window INVENTORY, cells 340-341 in the DB,
+// cell of the character - page I or II (MT2009_RELIC_SLOT_START + page, window INVENTORY, cells 436-437 in the DB,
 // after the second equipment page's store; never a packet, never a client's cell - as server-patches/addeq's store).
 //   socket 0  the time left (seconds; it runs only while the relic is active on the selected page)
 //   socket 1  its time (rolled once when it is first placed: 1-12 h - the wiki: "od 1 do 12 godzin, w zaleznosci od
@@ -1022,6 +1022,14 @@ void Mt2009RelicBotTick(LPCHARACTER ch, DWORD dwNow)
 	}
 	else
 		StartTick(ch);
+}
+
+// playerbot_economy.h IsPlayerBotJunkItem / playerbot_town.h ScorePlayerBotShopStockRules: a bot never sells or stalls the
+// souls (30255-30258), Pakiet Dusz (30263), relics (30272-30276) and shards (30280-30284)
+bool Mt2009RelicIsKeptVnum(DWORD dwVnum)
+{
+	return (dwVnum >= SOULS[0] && dwVnum <= 30258) || dwVnum == 30263 || IsRelic(dwVnum) ||
+		(dwVnum >= SHARD_FIRST && dwVnum < SHARD_FIRST + 5);
 }
 
 // the ItemShop V3 goal: the first soul missing for the bot's next step (a bonus to add, or a charge) - 1 piece

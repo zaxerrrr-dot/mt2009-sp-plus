@@ -2547,6 +2547,9 @@ namespace
 		// MT2009_PLUS_ELEMENT_STONES_V1: a Kamien Zywiolow in the bag is the next one worn, never the merchant's.
 		if (Mt2009IsElementStone(item->GetVnum()))
 			return false;
+		// MT2009_PLUS_RELIC_V1: the relic's souls, Pakiet Dusz, relics and shards stay (playerbot_relikty.cpp).
+		if (::Mt2009RelicIsKeptVnum(item->GetVnum()))
+			return false;
 #ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 		// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1: an element set in the bag is never scrap (playerbot_element_second_set.h).
 		if (IsPlayerBotSecondSetStored(ch, item))

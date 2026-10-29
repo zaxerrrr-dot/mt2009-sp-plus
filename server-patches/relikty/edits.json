@@ -3,13 +3,13 @@
   "file": "char.h",
   "marker": "MT2009_PLUS_RELIC_V1 (cells)",
   "old": "// @fixme199 BEGIN\nstruct PlayerSlotT {\n",
-  "new": "// MT2009_PLUS_RELIC_V1 (cells): Bonus Reliktu - the two relic pages (I, II), hidden cells after the second equipment page's\n// store (window INVENTORY, cells 340-341 in the DB); never a packet, never a client's cell - playerbot_relikty.cpp\nenum EMt2009Relic\n{\n\tMT2009_RELIC_SLOT_START = MT2009_ADDEQ_SLOT_END,\n\tMT2009_RELIC_PAGE_NUM = 2,\n\tMT2009_RELIC_SLOT_END = MT2009_RELIC_SLOT_START + MT2009_RELIC_PAGE_NUM,\n};\n\n// @fixme199 BEGIN\nstruct PlayerSlotT {\n"
+  "new": "// MT2009_PLUS_RELIC_V1 (cells): Bonus Reliktu - the two relic pages (I, II), hidden cells after the second equipment page's\n// store (window INVENTORY, cells 436-437 in the DB, after\n// the four equipment pages' blocks 308-435 of MT2009_PLUS_ADDEQ_V2); never a packet, never a client's cell - playerbot_relikty.cpp\nenum EMt2009Relic\n{\n\tMT2009_RELIC_SLOT_START = MT2009_ADDEQ_SLOT_END,\n\tMT2009_RELIC_PAGE_NUM = 2,\n\tMT2009_RELIC_SLOT_END = MT2009_RELIC_SLOT_START + MT2009_RELIC_PAGE_NUM,\n};\n\n// @fixme199 BEGIN\nstruct PlayerSlotT {\n"
  },
  {
   "file": "char.h",
   "marker": "MT2009_PLUS_RELIC_V1 (slots)",
-  "old": "\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n",
-  "new": "\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n\tstd::array<LPITEM,MT2009_RELIC_PAGE_NUM> pRelicItems{};\t// MT2009_PLUS_RELIC_V1 (slots): the relics of the pages I / II\n"
+  "old": "\tstd::array<LPITEM,MT2009_ADDEQ_SLOT_END - MT2009_ADDEQ_SLOT_START> pAddeqItems{};",
+  "new": "\tstd::array<LPITEM,MT2009_RELIC_PAGE_NUM> pRelicItems{};\t// MT2009_PLUS_RELIC_V1 (slots): the relics of the pages I / II\n\tstd::array<LPITEM,MT2009_ADDEQ_SLOT_END - MT2009_ADDEQ_SLOT_START> pAddeqItems{};"
  },
  {
   "file": "char.h",
@@ -34,6 +34,12 @@
   "marker": "MT2009_PLUS_RELIC_V1 (use)",
   "old": "\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n",
   "new": "\t// MT2009_PLUS_RELIC_V1 (use): a Relikt Duszy (30272-30276) goes into the relic window (playerbot_relikty.cpp)\n\t{\n\t\tint Mt2009RelicUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iRelicUse = Mt2009RelicUseItem(this, item);\n\t\tif (iRelicUse >= 0)\n\t\t\treturn iRelicUse != 0;\n\t}\n\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (load)",
+  "old": "\t\tif ((p->window == INVENTORY && CHARACTER::Mt2009AddeqIsCell(p->pos) && ch->Mt2009AddeqGetCellItem(p->pos)) ||\n",
+  "new": "\t\t// MT2009_PLUS_RELIC_V1 (load): a relic page's cell already taken - the item to the bag\n\t\tif ((p->window == INVENTORY && CHARACTER::Mt2009RelicIsCell(p->pos) &&\n\t\t\t\tch->Mt2009RelicGetItem(p->pos - MT2009_RELIC_SLOT_START)) ||\n\t\t\t\t(p->window == INVENTORY && CHARACTER::Mt2009AddeqIsCell(p->pos) && ch->Mt2009AddeqGetCellItem(p->pos)) ||\n"
  },
  {
   "file": "char.cpp",

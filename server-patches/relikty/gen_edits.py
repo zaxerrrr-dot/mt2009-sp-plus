@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """gen_edits.py [<game/src>] - writes edits.json of server-patches/relikty (MT2009_PLUS_RELIC_V1, README.md) from the
 code below; the developer's tool (the apply scripts read edits.json only). With a game/src dir it also checks that
-every edit's code is there exactly once (or its marker is). Applied last (after superstone); its anchors are addeq's
-store lines (char.h, char_item.cpp, char.cpp, item.cpp, cmd.cpp) and bonusy67's damage / cooldown lines."""
+every edit's code is there exactly once (or its marker is). Applied last (after dmgprint / autohuntreach); its anchors are addeq's
+(V2) store lines (char.h, char_item.cpp, char.cpp, item.cpp, cmd.cpp) and bonusy67's damage / cooldown lines."""
 import json
 import os
 import sys
@@ -24,7 +24,8 @@ def mk(tag):
 add('char.h', 'cells',
     "// @fixme199 BEGIN\nstruct PlayerSlotT {\n",
     "// %s: Bonus Reliktu - the two relic pages (I, II), hidden cells after the second equipment page's\n"
-    "// store (window INVENTORY, cells 340-341 in the DB); never a packet, never a client's cell - playerbot_relikty.cpp\n"
+    "// store (window INVENTORY, cells 436-437 in the DB, after\n"
+    "// the four equipment pages' blocks 308-435 of MT2009_PLUS_ADDEQ_V2); never a packet, never a client's cell - playerbot_relikty.cpp\n"
     "enum EMt2009Relic\n"
     "{\n"
     "\tMT2009_RELIC_SLOT_START = MT2009_ADDEQ_SLOT_END,\n"
@@ -34,9 +35,9 @@ add('char.h', 'cells',
     "// @fixme199 BEGIN\nstruct PlayerSlotT {\n" % mk('cells'))
 
 add('char.h', 'slots',
-    "\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n",
-    "\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n"
-    "\tstd::array<LPITEM,MT2009_RELIC_PAGE_NUM> pRelicItems{};\t// %s: the relics of the pages I / II\n" % mk('slots'))
+    "\tstd::array<LPITEM,MT2009_ADDEQ_SLOT_END - MT2009_ADDEQ_SLOT_START> pAddeqItems{};",
+    "\tstd::array<LPITEM,MT2009_RELIC_PAGE_NUM> pRelicItems{};\t// %s: the relics of the pages I / II\n"
+    "\tstd::array<LPITEM,MT2009_ADDEQ_SLOT_END - MT2009_ADDEQ_SLOT_START> pAddeqItems{};" % mk('slots'))
 
 add('char.h', 'methods',
     "Mt2009AddeqSwitch(int iPage);\n",
@@ -75,6 +76,14 @@ add('char_item.cpp', 'use',
     "\t\t\treturn iRelicUse != 0;\n"
     "\t}\n"
     "\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n" % mk('use'))
+
+# ---- input_db.cpp: a second row on a relic cell goes to the bag (as addeq V2's store cells)
+add('input_db.cpp', 'load',
+    "\t\tif ((p->window == INVENTORY && CHARACTER::Mt2009AddeqIsCell(p->pos) && ch->Mt2009AddeqGetCellItem(p->pos)) ||\n",
+    "\t\t// %s: a relic page's cell already taken - the item to the bag\n"
+    "\t\tif ((p->window == INVENTORY && CHARACTER::Mt2009RelicIsCell(p->pos) &&\n"
+    "\t\t\t\tch->Mt2009RelicGetItem(p->pos - MT2009_RELIC_SLOT_START)) ||\n"
+    "\t\t\t\t(p->window == INVENTORY && CHARACTER::Mt2009AddeqIsCell(p->pos) && ch->Mt2009AddeqGetCellItem(p->pos)) ||\n" % mk('load'))
 
 # ---- char.cpp: the flush before a warp, the mount
 add('char.cpp', 'flush',

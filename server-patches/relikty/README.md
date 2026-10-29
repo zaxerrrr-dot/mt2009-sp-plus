@@ -13,7 +13,7 @@ zasady i bonusy według wiki, kod nasz (paczkowe `ApplyPoint` przy każdym procu
   (jak `addeq`, `ekwipunek`). Paczkowe `HEADER_CG_PASSIVE_ATTR = 184` / `HEADER_GC_PASSIVE_ATTR = 188` nie są użyte.
 - **Exe**: bez zmian (żadnego `ENABLE_PASSIVE_ATTR`, `ITEM_PASSIVE`, `WEAR_PASSIVE`, `POINT_MAX_NUM` zostaje 253).
 - **Relikt nie jest zakładany**: leży w ukrytym polu postaci – okienko I / II = `MT2009_RELIC_SLOT_START + strona`
-  (`MT2009_ADDEQ_SLOT_END` = 340, 341; okno `INVENTORY`, w bazie zwykłe wiersze `player.item` z `pos` 340/341), nigdy
+  (`MT2009_ADDEQ_SLOT_END` = 436, czyli 436 i 437 – za czterema blokami stron `addeq` V2 308–435; okno `INVENTORY`, w bazie zwykłe wiersze `player.item` z `pos` 436/437), nigdy
   nie idzie do klienta i żaden pakiet klienta go nie dotyka (jak magazyn `addeq`). Jego atrybuty 0-3 to bonusy reliktu
   (typ = id bonusu 1-16, wartość = x z wiki) – czyta je tylko `playerbot_relikty.cpp`, nigdy jako punkty.
 - Efekty używają istniejących punktów przez afekty 761-776 (`760 + id`): `POINT_SUNGMA_STR/HP/MOVE/IMMUNE` (184-187),
@@ -75,13 +75,15 @@ uszlachetnienia”). ItemShop V3: dusze 39 SM, Pakiet Dusz 100 SM (`tools/itemsh
 Yohary „robi” dzienne misje (pierwszy odłamek i dusze 100%, potem 60% dziennie), robi relikt u Chaegiraba, wkłada go na
 okienko I, dodaje bonusy, aktywuje przy 4 bonusach i doładowuje. Brakującą duszę kupuje w ItemShop V3 – cel `relic_soul`
 (`playerbot_shop_aids.h`, 1 sztuka, nigdy pilny). Flaga eventu `m2_bot_relic_off` wyłącza całość.
+Dusze, Pakiet Dusz, relikty i odłamki nigdy nie są złomem bota ani towarem jego straganu
+(`Mt2009RelicIsKeptVnum`: `IsPlayerBotJunkItem` w `playerbot_economy.h`, `ScorePlayerBotShopStockRules` w `playerbot_town.h`).
 
 ## Gdzie co jest
 
 | Część | Miejsce |
 |---|---|
 | Logika serwera | `linux-port/overlays/playerbot/src/game/src/playerbot_relikty.cpp`, tabela `playerbot_relikty_table.h` (generowana) |
-| Haki silnika | `edits.json` (16 zmian: `char.h`, `char_item.cpp`, `char.cpp`, `item.cpp`, `char_battle.cpp`, `char_skill.cpp`, `item_manager.cpp`, `cmd.cpp`); `gen_edits.py` je generuje i sprawdza; `apply_relikty.py` (Linux) / `Apply-ReliktyPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) |
+| Haki silnika | `edits.json` (17 zmian: `char.h`, `char_item.cpp`, `char.cpp`, `item.cpp`, `input_db.cpp` (drugi wiersz na zajętym polu reliktu → torba), `char_battle.cpp`, `char_skill.cpp`, `item_manager.cpp`, `cmd.cpp`); `gen_edits.py` je generuje i sprawdza; `apply_relikty.py` (Linux) / `Apply-ReliktyPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) |
 | Baza | `linux-port/docker/mariadb/playerbot/relikty.sql` (krok w `apply.sh` po `yohara_biolog.sql`), `itemshop3_schema.sql` (linie V3) |
 | Gra | `game/Dockerfile`: lista questów (6 nowych) i `special_item_group.relikty.txt` |
 | Klient (root) | `uirelikt.py`, `uiscript/reliktwindow.py`, `relikt_data.py` (generowany), haki: `game.py` (hello, `relikt_state`, `relikt_open`, klawisz `relic`), `uitooltip.py` (podpowiedź reliktu), `keybind.py`, `uisystem.py` + `uiscript/systemdialog.py` (przycisk w menu Esc); ikony `root/icon/item/302xx.tga` |
@@ -95,6 +97,6 @@ Log: `RELIC: <postać> (<pid>) put / activated / bonus <id> (<x>) added / destro
 
 ## Kolejność / wdrożenie
 
-Ostatni (po `superstone`) – kotwice na liniach `addeq` i `bonusy67`. `yohara-deploy.sh`: dopisać `relikty` na końcu listy
-łatek. Komórki 340-341 leżą za magazynem `addeq` (`MT2009_ADDEQ_SLOT_END`): zmiana `INVENTORY_MAX_NUM` / pasa przesuwa
+Ostatni (po `superstone`, `questren`, `dmgprint`, `autohuntreach`) – kotwice na liniach `addeq` i `bonusy67`. `yohara-deploy.sh`: dopisać `relikty` na końcu listy
+łatek. Komórki 436-437 leżą za magazynem `addeq` (`MT2009_ADDEQ_SLOT_END`): zmiana `INVENTORY_MAX_NUM` / pasa przesuwa
 oba magazyny – zapisane relikty trzeba by wtedy przenumerować (jak przedmioty `addeq`).
