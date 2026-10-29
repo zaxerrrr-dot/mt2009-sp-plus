@@ -4889,6 +4889,18 @@ if [ -s /opt/playerbot/yohara_biolog.sql ]; then
         fail_step "Biologist (Yohara): yohara_biolog.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_RELIC_V1: Bonus Reliktu (the owner, 29 October 2026, pl-wiki "Bonus Reliktu") - relikty.sql
+# (tools/relikty/gen_relikty.py): the souls 30255-30258, Pakiet Dusz 30263, Relikt Duszy 30272-30276 and Odlamek
+# Reliktu 30280-30284 (playerbot_relikty.cpp, server-patches/relikty, quest/relikt_*.quest). Pakiet Dusz's group
+# (game/special_item_group.relikty.txt) names them: a world without them stops the cores at boot. Idempotent
+# (INSERT IGNORE).
+if [ -s /opt/playerbot/relikty.sql ]; then
+    if db < /opt/playerbot/relikty.sql; then
+        echo "[playerbot-migrate] Bonus Reliktu: relikty.sql applied"
+    else
+        fail_step "Bonus Reliktu: relikty.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then

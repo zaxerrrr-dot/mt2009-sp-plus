@@ -1470,6 +1470,14 @@ namespace
 			const TPlayerBotIshop3Goal g = { PLAYERBOT_CLEAN_SOCKET_VNUM, false, 1, "bonus_socket_clean" };
 			goals[n++] = g;
 		}
+		// MT2009_PLUS_RELIC_V1: the soul the bot's relic waits for (a bonus to add or a charge) - one piece, never
+		// urgent (playerbot_relikty.cpp Mt2009RelicBotSoulNeed; the dailies of Dongan give them too)
+		DWORD relicSoul = 0;
+		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && ::Mt2009RelicBotSoulNeed(ch, relicSoul) > 0 && relicSoul)
+		{
+			const TPlayerBotIshop3Goal g = { relicSoul, false, 1, "relic_soul" };
+			goals[n++] = g;
+		}
 #ifdef MT2009_PLUS_BOT_SEONHAE_V2
 		// MT2009_PLUS_BOT_SEONHAE_V2: Kamien Kowala / Magiczny Metal for the Blacksmith's better scrolls.
 		TPlayerBotIshop3Goal smith;

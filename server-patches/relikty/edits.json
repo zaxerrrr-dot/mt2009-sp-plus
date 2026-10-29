@@ -1,0 +1,98 @@
+[
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_RELIC_V1 (cells)",
+  "old": "// @fixme199 BEGIN\nstruct PlayerSlotT {\n",
+  "new": "// MT2009_PLUS_RELIC_V1 (cells): Bonus Reliktu - the two relic pages (I, II), hidden cells after the second equipment page's\n// store (window INVENTORY, cells 340-341 in the DB); never a packet, never a client's cell - playerbot_relikty.cpp\nenum EMt2009Relic\n{\n\tMT2009_RELIC_SLOT_START = MT2009_ADDEQ_SLOT_END,\n\tMT2009_RELIC_PAGE_NUM = 2,\n\tMT2009_RELIC_SLOT_END = MT2009_RELIC_SLOT_START + MT2009_RELIC_PAGE_NUM,\n};\n\n// @fixme199 BEGIN\nstruct PlayerSlotT {\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_RELIC_V1 (slots)",
+  "old": "\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n",
+  "new": "\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n\tstd::array<LPITEM,MT2009_RELIC_PAGE_NUM> pRelicItems{};\t// MT2009_PLUS_RELIC_V1 (slots): the relics of the pages I / II\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_RELIC_V1 (methods)",
+  "old": "Mt2009AddeqSwitch(int iPage);\n",
+  "new": "Mt2009AddeqSwitch(int iPage);\n\t\t// MT2009_PLUS_RELIC_V1 (methods): Bonus Reliktu's relic pages, playerbot_relikty.cpp\n\t\tstatic bool\t\tMt2009RelicIsCell(WORD wCell) { return wCell >= MT2009_RELIC_SLOT_START && wCell < MT2009_RELIC_SLOT_END; }\n\t\tLPITEM\t\t\tMt2009RelicGetItem(int iPage) const;\n\t\tvoid\t\t\tMt2009RelicSetItem(WORD wCell, LPITEM pItem);\n\t\tvoid\t\t\tMt2009RelicFlushItems();\n\t\tvoid\t\t\tMt2009RelicClearItems();\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (set)",
+  "old": "\t// MT2009_PLUS_ADDEQ_V1 (set): a cell of the inactive equipment page's store - no packet, the client never sees it\n",
+  "new": "\t// MT2009_PLUS_RELIC_V1 (set): a relic page's cell - no packet, the client never sees it\n\tif (window_type == INVENTORY && Mt2009RelicIsCell(wCell))\n\t{\n\t\tMt2009RelicSetItem(wCell, pItem);\n\t\treturn;\n\t}\n\n\t// MT2009_PLUS_ADDEQ_V1 (set): a cell of the inactive equipment page's store - no packet, the client never sees it\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (clear)",
+  "old": "\tMt2009AddeqClearItems(); // MT2009_PLUS_ADDEQ_V1 (clear): the inactive equipment page\n",
+  "new": "\tMt2009AddeqClearItems(); // MT2009_PLUS_ADDEQ_V1 (clear): the inactive equipment page\n\tMt2009RelicClearItems(); // MT2009_PLUS_RELIC_V1 (clear): the relic pages\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (use)",
+  "old": "\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n",
+  "new": "\t// MT2009_PLUS_RELIC_V1 (use): a Relikt Duszy (30272-30276) goes into the relic window (playerbot_relikty.cpp)\n\t{\n\t\tint Mt2009RelicUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iRelicUse = Mt2009RelicUseItem(this, item);\n\t\tif (iRelicUse >= 0)\n\t\t\treturn iRelicUse != 0;\n\t}\n\tint iLimitRealtimeStartFirstUseFlagIndex = -1;\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (flush)",
+  "old": "\tMt2009AddeqFlushItems(); // MT2009_PLUS_ADDEQ_V1 (flush): the inactive equipment page (before a warp)\n",
+  "new": "\tMt2009AddeqFlushItems(); // MT2009_PLUS_ADDEQ_V1 (flush): the inactive equipment page (before a warp)\n\tMt2009RelicFlushItems(); // MT2009_PLUS_RELIC_V1 (flush): the relic pages (their time run so far first)\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (mount)",
+  "old": "void CHARACTER::MountVnum(DWORD vnum)\n{\n\tif (m_dwMountVnum == vnum)\n\t\treturn;\n",
+  "new": "void CHARACTER::MountVnum(DWORD vnum)\n{\n\tif (m_dwMountVnum == vnum)\n\t\treturn;\n\n\tif (IsPC()) // MT2009_PLUS_RELIC_V1 (mount): the relic's lines of mounting / dismounting (playerbot_relikty.cpp)\n\t{\n\t\tvoid Mt2009RelicOnMount(LPCHARACTER ch, bool bMount);\n\t\tif (!m_dwMountVnum && vnum)\n\t\t\tMt2009RelicOnMount(this, true);\n\t\telse if (m_dwMountVnum && !vnum)\n\t\t\tMt2009RelicOnMount(this, false);\n\t}\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (remove)",
+  "old": "\t\t\t// MT2009_PLUS_ADDEQ_V1 (remove): an item of the inactive equipment page's store leaves the store\n",
+  "new": "\t\t\t// MT2009_PLUS_RELIC_V1 (remove): a relic leaves its page\n\t\t\telse if (m_bWindow == INVENTORY && CHARACTER::Mt2009RelicIsCell(m_wCell))\n\t\t\t\tpOwner->SetItem(TItemPos(INVENTORY, m_wCell), NULL);\n\t\t\t// MT2009_PLUS_ADDEQ_V1 (remove): an item of the inactive equipment page's store leaves the store\n"
+ },
+ {
+  "file": "item.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (update)",
+  "old": "\t// MT2009_PLUS_ADDEQ_V1 (update): the inactive equipment page's store is never sent\n",
+  "new": "\t// MT2009_PLUS_RELIC_V1 (update): a relic page's item is never sent (\"relikt_state\" tells the client)\n\tif (GetWindow() == INVENTORY && CHARACTER::Mt2009RelicIsCell(m_wCell))\n\t\treturn;\n\n\t// MT2009_PLUS_ADDEQ_V1 (update): the inactive equipment page's store is never sent\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (damage)",
+  "old": "\t\tdam = Bonus67Damage(this, pAttacker, (int) type, dam);\n\t}\n",
+  "new": "\t\tdam = Bonus67Damage(this, pAttacker, (int) type, dam);\n\t}\n\n\tif (pAttacker) // MT2009_PLUS_RELIC_V1 (damage): the relic lines a blow starts (playerbot_relikty.cpp)\n\t{\n\t\tint Mt2009RelicOnDamage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType, int iDam);\n\t\tdam = Mt2009RelicOnDamage(this, pAttacker, (int) type, dam);\n\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (no death)",
+  "old": "\tif (GetHP() <= 0)\n\t{\n\t\tStun();\n",
+  "new": "\tif (GetHP() <= 0 && IsPC()) // MT2009_PLUS_RELIC_V1 (no death): \"Unikniecie smierci\" - 30% HP back instead of the death\n\t{\n\t\tbool Mt2009RelicNoDeath(LPCHARACTER ch, LPCHARACTER pkAttacker);\n\t\tif (Mt2009RelicNoDeath(this, pAttacker))\n\t\t\treturn false;\n\t}\n\n\tif (GetHP() <= 0)\n\t{\n\t\tStun();\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (skill reset)",
+  "old": "\t\tm_SkillUseInfo[dwVnum].dwNextSkillUsableTime = Bonus67SkillCooldown(this, dwVnum, m_SkillUseInfo[dwVnum].dwNextSkillUsableTime);\n\t}\n",
+  "new": "\t\tm_SkillUseInfo[dwVnum].dwNextSkillUsableTime = Bonus67SkillCooldown(this, dwVnum, m_SkillUseInfo[dwVnum].dwNextSkillUsableTime);\n\t}\n\n\tif (false == m_bDisableCooltime) // MT2009_PLUS_RELIC_V1 (skill reset): \"Reset umiejetnosci\" - every skill's cooldown over\n\t{\n\t\tbool Mt2009RelicSkillReset(LPCHARACTER ch, unsigned int dwVnum);\n\t\tvoid Mt2009RelicCooltimeEnd(LPCHARACTER ch, int iSkill);\n\t\tif (Mt2009RelicSkillReset(this, dwVnum))\n\t\t{\n\t\t\tfor (std::map<int, TSkillUseInfo>::iterator itRelic = m_SkillUseInfo.begin(); itRelic != m_SkillUseInfo.end(); ++itRelic)\n\t\t\t{\n\t\t\t\titRelic->second.dwNextSkillUsableTime = 0;\n\t\t\t\tMt2009RelicCooltimeEnd(this, itRelic->first);\n\t\t\t}\n\t\t}\n\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (drop)",
+  "old": "\t//iDeltaPercent = iDeltaPercent * (100 + MIN(item_drop_bonus, 225)) / 100;\n",
+  "new": "\t// MT2009_PLUS_RELIC_V1 (drop): \"Drop z bossow\" - a boss killed: +x% of the killer's active relic (every kill)\n\t{\n\t\tint Mt2009RelicBossDropBonus(LPCHARACTER pkKiller, unsigned char bMobRank, bool bStone);\n\t\tconst int relic_drop = Mt2009RelicBossDropBonus(pkKiller, bMobRank, IsStone);\n\t\tif (relic_drop > 0)\n\t\t\tAddToBonusItemDrop(item_drop_bonus, relic_drop);\n\t}\n\t//iDeltaPercent = iDeltaPercent * (100 + MIN(item_drop_bonus, 225)) / 100;\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (declare)",
+  "old": "ACMD(do_addeq);\t// MT2009_PLUS_ADDEQ_V1 (declare): Druga strona ekwipunku, root/uiaddeq.py (playerbot_addeq.cpp)\n",
+  "new": "ACMD(do_addeq);\t// MT2009_PLUS_ADDEQ_V1 (declare): Druga strona ekwipunku, root/uiaddeq.py (playerbot_addeq.cpp)\nACMD(do_relikt);\t// MT2009_PLUS_RELIC_V1 (declare): Bonus Reliktu, root/uirelikt.py (playerbot_relikty.cpp)\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_RELIC_V1 (table)",
+  "old": "\t{ \"addeq\",\tdo_addeq,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_ADDEQ_V1 (table)\n",
+  "new": "\t{ \"addeq\",\tdo_addeq,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_ADDEQ_V1 (table)\n\t{ \"relikt\",\tdo_relikt,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_RELIC_V1 (table)\n"
+ }
+]
