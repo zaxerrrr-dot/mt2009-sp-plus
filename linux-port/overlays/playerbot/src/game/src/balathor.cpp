@@ -2176,7 +2176,15 @@ void CBalathor::CircleAttackDamage()
 				long tx = (long)(victim_center.x + fx);
 				long ty = (long)(victim_center.y + fy);
 
-				while (victim->GetSectree()->GetAttribute(tx, ty) & (ATTR_BLOCK | ATTR_OBJECT) && fCrushSlidingLength > 0)
+				// MT2009_PLUS_BALATHOR_CMD_V1 (29.10.2026): the slide's cell is looked up on the map - the victim's own
+				// sectree read a cell outside it (game1 crash 29.10 14:59, SECTREE::GetAttribute); off the map = blocked.
+				LPSECTREE_MAP pkSlideMap = SECTREE_MANAGER::instance().GetMap(victim->GetMapIndex());
+				auto IsSlideBlocked = [pkSlideMap](long x, long y) -> bool
+				{
+					LPSECTREE pkCell = pkSlideMap ? pkSlideMap->Find(x, y) : NULL;
+					return !pkCell || (pkCell->GetAttribute(x, y) & (ATTR_BLOCK | ATTR_OBJECT));
+				};
+				while (IsSlideBlocked(tx, ty) && fCrushSlidingLength > 0)
 				{
 					if (fCrushSlidingLength >= 10)
 						fCrushSlidingLength -= 10;
