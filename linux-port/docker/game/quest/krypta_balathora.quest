@@ -3,8 +3,8 @@
 -- ustawienia: share/locale/poland/balathor.json (game/balathor). Mapa 420 (metin2_map_guild_whitedragon_boss,
 -- prywatne kopie 4200000+) na rdzeniu game1 obok Doyyumhwaji (62) - tylko z M2_BALATHOR_ON=1 (bin/m2-render-config);
 -- wy³¹czona: balathor.is_open() = false i Dolnarr nic nie proponuje.
--- Decyzje w³aœciciela (28.10.2026): wejœcie u Stra¿nika Smoków Dolnarra (20419, Doyyumhwaji 83,851 - ten sam co
--- Schronienie Meley) zamiast 20395; Champion 4 (pc.get_conqueror_level) przy poziomie 120; quest wejœciowy
+-- Decyzje w³aœciciela (28.10.2026): wejœcie u Stra¿nika Smoków Dolnarra (20419, Góra Sohan 668,93 - jak na wiki, 29.10.2026; ten sam
+-- Dolnarr stoi te¿ w Doyyumhwaji przy Schronieniu Meley) zamiast 20395; Champion 4 (pc.get_conqueror_level) przy poziomie 120; quest wejœciowy
 -- ("Dziwne Znalezisko") pominiêty.
 -- Rejestracja (pl-wiki "Krypta Balathora"): mistrz gildii, 4-16 cz³onków gildii obok (ludzie - boty siê nie licz¹),
 -- poziom gildii, 600 pkt rankingu gildii (pobierane), skarbiec gildii >= 500 000 Yang (sprawdzany, nie pobierany),
@@ -126,7 +126,7 @@ quest krypta_balathora begin
 			return true
 		end
 
-		when 20419.chat."Krypta Balathora: zg³oszenie gildii" with pc.get_map_index() == 62 and balathor.is_open() and pc.has_guild() begin
+		when 20419.chat."Krypta Balathora: zg³oszenie gildii" with pc.get_map_index() == 61 and balathor.is_open() and pc.has_guild() begin
 			say_title(mob_name(20419))
 			say("Balathor, Bia³y Smok, œpi w lodowej krypcie.")
 			say("Mistrz gildii mo¿e zg³osiæ tu swoj¹ gildiê:")
@@ -143,7 +143,7 @@ quest krypta_balathora begin
 			end
 		end
 
-		when 20419.chat."Krypta Balathora: wejœcie" with pc.get_map_index() == 62 and balathor.is_open() and pc.has_guild() and guild.get_flag("balathor_channel") != 0 begin
+		when 20419.chat."Krypta Balathora: wejœcie" with pc.get_map_index() == 61 and balathor.is_open() and pc.has_guild() and guild.get_flag("balathor_channel") != 0 begin
 			say_title(mob_name(20419))
 			local channel = guild.get_flag("balathor_channel")
 			if channel != pc.get_channel_id() then
@@ -166,7 +166,7 @@ quest krypta_balathora begin
 			end
 		end
 
-		when 20419.chat."GM: Krypta Balathora - zeruj przerwê gildii" with pc.get_map_index() == 62 and pc.is_gm() and pc.has_guild() and guild.get_flag("balathor_cooldown") != 0 begin
+		when 20419.chat."GM: Krypta Balathora - zeruj przerwê gildii" with pc.get_map_index() == 61 and pc.is_gm() and pc.has_guild() and guild.get_flag("balathor_cooldown") != 0 begin
 			say_title(mob_name(20419))
 			if guild.get_flag("balathor_channel") != 0 then
 				say("Najpierw trzeba zamkn¹æ otwart¹ Kryptê.")

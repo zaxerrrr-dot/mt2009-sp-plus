@@ -10,12 +10,8 @@
 	"frozen_egg_vnum2": 20496,
 	"flaming_egg_vnum": 20497,
 	"ice_crystal_vnum": 20498,
-	"enter_map_index": 62,
-	"enter_base_pos": [
-		84,
-		853,
-		0
-	],
+	"enter_map_index": 61,
+	"enter_base_pos": [668, 96, 0],
 	"base_pos": [
 		251,
 		332,

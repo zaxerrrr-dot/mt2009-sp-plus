@@ -2460,6 +2460,7 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/yohara-meley-add; D=/opt/
  && echo "share: Schronienie Meley (356) - map, Dolnarr on Doyyumhwaji, stages, motions, groups, drops, chests, the dungeon panel"
 
 # MT2009_PLUS_BALATHOR_V1: Krypta Balathora (author: dracaryS; server-patches/balathor, quest krypta_balathora) - the
+# entrance: Straznik Smokow Dolnarr (20419) on Gora Sohan (61) at 668,93 as the wiki has it (owner, 29.10.2026) - the
 # guild lair of the White Dragon: map 420 (metin2_map_guild_whitedragon_boss, 2x2 at 1152000 921600 - free in the
 # atlas; its private copies 4200000+ are made by the engine's CBalathorManager), its line in the map index, the
 # monsters' server motions (data/monster/guild_whitedragon*), balathor.json (the engine reads it from the locale
@@ -2479,6 +2480,11 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/balathor-add; D=/opt/meti
  && for m in "$A"/monster/*; do rm -rf "$D/$(basename "$m")"; cp -a "$m" "$D/"; done \
  && test -s "$D/guild_whitedragon_boss01/guild_whitedragon_boss01.msm" \
  && cp "$A/balathor.json" "$L/balathor.json" \
+ && N="$L/map/map_n_snowm_01/npc.txt" \
+ && test -f "$N" \
+ && { [ -z "$(tail -c 1 "$N")" ] || printf '\r\n' >> "$N"; } \
+ && { grep -q -E '^m[[:blank:]]+668[[:blank:]]+93[[:blank:]].*[[:blank:]]20419[[:space:]]*$' "$N" || printf 'm\t668\t93\t0\t0\t0\t3\t1m\t100\t1\t20419\r\n' >> "$N"; } \
+ && test "$(grep -c -E '^m[[:blank:]]+668[[:blank:]]+93[[:blank:]].*[[:blank:]]20419[[:space:]]*$' "$N")" = 1 \
  && SV='(83075|83076)' \
  && G="$L/special_item_group.txt" \
  && ! grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$SV([^0-9]|\$)" "$G" \
