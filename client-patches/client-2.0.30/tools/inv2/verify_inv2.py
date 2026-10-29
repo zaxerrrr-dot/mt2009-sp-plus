@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_INVENTORY_V2_V1 - checks what build_inv2_packs.py wrote (on the OUT of the whole Yohara chain): the inv2_ui
-# pack has the repo's 12 pictures byte for byte, the Index names it once, and every picture the v2 inventory's root
+# pack has the repo's 15 pictures byte for byte, the Index names it once, and every picture the v2 inventory's root
 # files open (inventoryv2.py, uiinventory.py, uiscript/inventoryequipwindow.py, uiscript/inventorywindowv2.py) is in a
 # pack of the PLAYERS' install (tools/uicheck: klient-test-2.37 + yohara-3.0.1 zips + OUT; the base packs count when the
 # base client's own root opens the name) - the tabs' tab_button_large_half_0[1-3].sub included.

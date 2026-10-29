@@ -8,10 +8,8 @@ import flamewindPath
 # Autor: dracaryS; root/inventoryv2.py, uiinventory.py): the worn items in their own window, docked over the bag
 # (uiscript/inventorywindowv2.py) - the page tabs of Druga strona ekwipunku (uiaddeq.py, MT2009_PLUS_ADDEQ_V1) at the
 # top, the package's equipment picture (new_inventory/equip_bg_mt2009.png - its pet frame wiped: no pet slot here, the
-# frame holds the horse bag and chest preview buttons) and under it the two rings and three round buttons
-# (Alchemia, Magazyn przedmiotow, Sklep). No costume button (the owner, 21 October 2026 - MT2009_PLUS_INVENTORY_DSS_V1:
-# Kostiumy opens from the extra inventory, uiekwipunek.py): its icon is painted out of the sub picture
-# (equip_bg_sub_mt2009.png). Pictures: the pack inv2_ui (tools/inv2).
+# frame holds the horse bag and chest preview buttons) and under it the two rings and the four round buttons
+# (Alchemia, Magazyn przedmiotow, Sklep, Kostiumy). Pictures: the pack inv2_ui (tools/inv2).
 #
 # ONE slot window ("EquipmentSlot", as the old inventory had) covers both pictures, so uiinventory.py fills and reads
 # it as before (RefreshEquipSlotWindow, the rings included). Slot places = the package's (EquipmentSlot0); the rings
@@ -22,7 +20,7 @@ BOARD_WIDTH = 176
 BOARD_HEIGHT = 286
 
 EQUIP_BG_X, EQUIP_BG_Y = 10, 56		# equip_bg_mt2009.png 157 x 138
-SUB_BG_X, SUB_BG_Y = 10, 196		# equip_bg_sub_mt2009.png 157 x 82
+SUB_BG_X, SUB_BG_Y = 10, 196		# equip_bg_sub.png 157 x 82
 SLOT_X, SLOT_Y = EQUIP_BG_X + 3, EQUIP_BG_Y + 3
 RING_Y = SUB_BG_Y + 6 - SLOT_Y		# the ring frames of the sub picture, in the slot window
 
@@ -146,12 +144,13 @@ window = {
 					"type" : "image",
 					"x" : SUB_BG_X,
 					"y" : SUB_BG_Y,
-					"image" : ROOT + "equip_bg_sub_mt2009.png",
+					"image" : ROOT + "equip_bg_sub.png",
 					"children" :
 					(
 						RoundButton("DSSButton", 6, 0, uiScriptLocale.TASKBAR_DRAGON_SOUL),
 						RoundButton("DepositButton", 41, 1, uiScriptLocale.POCKET_DEPOSIT),
 						RoundButton("MyShopButton", 79, 2, uiScriptLocale.SHOP_MANAGE),
+						RoundButton("CostumeButton", 120, 3, uiScriptLocale.COSTUME_WINDOW_TITLE),
 					),
 				},
 

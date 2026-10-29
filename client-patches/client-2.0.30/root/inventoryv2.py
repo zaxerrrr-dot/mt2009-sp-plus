@@ -3,7 +3,7 @@
 #
 # What the package does: the inventory splits into two windows as on the official servers - the equipment window
 # (the worn items on the new equipment picture, the rings and four round buttons under it, page tabs I-IV at the
-# top - here three buttons: no costume button, the owner's decision of 21 October 2026, its icon painted out) docked over the bag (four page tabs, the grid, the money). Its server half (four equipment pages: WEAR_*_2..4,
+# top) docked over the bag (four page tabs, the grid, the money). Its server half (four equipment pages: WEAR_*_2..4,
 # a player.inv_idx column, the support skill 132 and the item 38306 used up to three times) is the same official
 # feature our Druga strona ekwipunku already is (server-patches/addeq, MT2009_PLUS_ADDEQ_V1: two pages, the inactive
 # one in a hidden store, item 38306 / 76055, skill 200) - so only the windows come over; the page tabs I / II are
@@ -13,7 +13,8 @@
 # InventoryWindow (which loads uiscript/inventorywindowv2.py as the bag; every hook there is marked
 # MT2009_PLUS_INVENTORY_V2_V1):
 #   - Bind(inventory): loads the equipment window and lends its children to the inventory's dictionary
-#     (GetChild("EquipmentSlot"), "DSSButton", "DepositButton", "MyShopButton", "HorseInventoryWindow", "ChestPreviewButton", "Equipment_Tab_01/02"), so the rest of uiinventory.py works on
+#     (GetChild("EquipmentSlot"), "DSSButton", "DepositButton", "MyShopButton", "CostumeButton",
+#     "HorseInventoryWindow", "ChestPreviewButton", "Equipment_Tab_01/02"), so the rest of uiinventory.py works on
 #     them as on the old one-window inventory;
 #   - docking: the equipment window sits right over the bag and follows it; dragged away (more than DOCK_SNAP px)
 #     it stays where it is put, dragged back near the bag it docks again. Docked or not and its own place are kept

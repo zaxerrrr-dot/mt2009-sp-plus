@@ -2,9 +2,9 @@
 # MT2009_PLUS_INVENTORY_V2_V1 - the pictures of the official v2 inventory (the package "offical_inventory_v2", Autor:
 # dracaryS; root/inventoryv2.py, uiscript/inventoryequipwindow.py) in a new pack, inv2_ui, with its Index line:
 #   d:/ymir work/ui/new_inventory/equip_bg_mt2009.png      the equipment picture (the package's, its pet frame wiped)
-#   d:/ymir work/ui/new_inventory/equip_bg_sub_mt2009.png  the rings + round buttons picture (the costume icon painted out)
+#   d:/ymir work/ui/new_inventory/equip_bg_sub.png         the rings + round buttons picture
 #   d:/ymir work/ui/new_inventory/equip_pagebtn_bg.png     the frame under a page tab
-#   d:/ymir work/ui/new_inventory/btn_[0-2]_[0-2].png      the three round buttons (normal / over / down)
+#   d:/ymir work/ui/new_inventory/btn_[0-3]_[0-2].png      the four round buttons (normal / over / down)
 # They are in client-patches/client-2.0.30/inv2/d_ (d_/ = d:/; tools/inv2/make_inv2_images.py made them from the
 # package) - every name is new, no file of the client is replaced; no other pack may have one of the names.
 # The page / bag tabs (game/windows/tab_button_large_half_0[1-3].sub), the slot and money pictures, the flamewind
@@ -23,8 +23,8 @@ sys.path.insert(0, '/opt/metin2/cache/arezzo-work/client/az58')
 SRC = os.path.normpath(os.path.join(HERE, '..', '..', 'inv2'))
 NEW_PACK = 'inv2_ui'
 PREFIX = 'd:/ymir work/ui/new_inventory/'
-FILES = ['equip_bg_mt2009.png', 'equip_bg_sub_mt2009.png', 'equip_pagebtn_bg.png'] + \
-	['btn_%d_%d.png' % (a, b) for a in range(3) for b in range(3)]
+FILES = ['equip_bg_mt2009.png', 'equip_bg_sub.png', 'equip_pagebtn_bg.png'] + \
+	['btn_%d_%d.png' % (a, b) for a in range(4) for b in range(3)]
 TEXT = ('.txt', '.msa', '.msm', '.mse', '.mss', '.msenv', '.sub', '.prb', '.prd', '.pre', '.prt', '.py', '.ifl', '.pra')
 
 
