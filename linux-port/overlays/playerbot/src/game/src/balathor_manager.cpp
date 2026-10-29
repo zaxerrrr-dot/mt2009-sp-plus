@@ -553,16 +553,30 @@ ACMD(do_balathor)
 		else if (vecArgs[1] == "next_fail")
 		{
 			CBalathor* pDungeon = CBalathorManager::Instance().FindByMapIndex(ch->GetMapIndex());
+			if (!pDungeon)
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: not inside a Krypta");
 			if (pDungeon)
 			{
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: next_fail (works in the Balathor fights)");
 				pDungeon->TakeOff(BALATHOR_TAKE_OFF_FAIL, false);
 			}
+		}
+		else if (vecArgs[1] == "skip")
+		{
+			CBalathor* pDungeon = CBalathorManager::Instance().FindByMapIndex(ch->GetMapIndex());
+			if (pDungeon && pDungeon->GmSkipToBoss())
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: skip -> Balathor");
+			else
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: skip works in stages 1-4 inside the Krypta");
 		}
 		else if (vecArgs[1] == "next_success")
 		{
 			CBalathor* pDungeon = CBalathorManager::Instance().FindByMapIndex(ch->GetMapIndex());
+			if (!pDungeon)
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: not inside a Krypta");
 			if (pDungeon)
 			{
+				ch->ChatPacket(CHAT_TYPE_INFO, "balathor: next_success (works in the Balathor fights)");
 				pDungeon->TakeOff(BALATHOR_TAKE_OFF_SUCCESS, false);
 			}
 

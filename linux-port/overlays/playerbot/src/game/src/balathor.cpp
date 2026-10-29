@@ -1175,21 +1175,7 @@ void CBalathor::Kill(LPCHARACTER pkAttacker, LPCHARACTER pkVictim, bool bFromSto
 		else if (m_bStepIndex == 4)
 		{
 			if (m_dwRegenMobs.empty())
-			{
-				m_bStepIndex = 5;
-
-				SpawnCharacterByFlag("dragon_1");
-				RunCinema(BALATHOR_CINEMA_BOSS_SPAWN);
-				SetFlag("cinema_fake_skill", dwCurTime + config.dwBoss1FakeSkillTime);
-
-				SetFlag("regen_group", get_dword_time() + 25000);
-
-				SetAttackSleepTime(dwCurTime + config.dwBoss1FakeSkillTime);
-				SetFlag("raid_attack", dwCurTime + config.dwBoss1FakeSkillTime + 2000);
-
-				SetFlag("fail_egg_count", config.bFireEggFailMaxCount);
-				SetFlag("flaming_egg_spawn", dwCurTime + config.dwFlamingEggSpawnTime);
-			}
+				StartBossOne(dwCurTime);
 		}
 		else if (m_bStepIndex == 5)
 		{
@@ -1487,6 +1473,41 @@ void CBalathor::StepProgress(DWORD dwCurTime)
 			UpdateUI();
 		}
 	}
+}
+
+void CBalathor::StartBossOne(DWORD dwCurTime)
+{
+	const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
+
+	m_bStepIndex = 5;
+
+	SpawnCharacterByFlag("dragon_1");
+	RunCinema(BALATHOR_CINEMA_BOSS_SPAWN);
+	SetFlag("cinema_fake_skill", dwCurTime + config.dwBoss1FakeSkillTime);
+
+	SetFlag("regen_group", get_dword_time() + 25000);
+
+	SetAttackSleepTime(dwCurTime + config.dwBoss1FakeSkillTime);
+	SetFlag("raid_attack", dwCurTime + config.dwBoss1FakeSkillTime + 2000);
+
+	SetFlag("fail_egg_count", config.bFireEggFailMaxCount);
+	SetFlag("flaming_egg_spawn", dwCurTime + config.dwFlamingEggSpawnTime);
+}
+
+// MT2009_PLUS_BALATHOR_CMD_V1 (29.10.2026): the owner's test shortcut - the door, the waves, the crystal and the ice
+// walls with their frozen eggs are removed and the first Balathor fight starts as after the last wall.
+bool CBalathor::GmSkipToBoss()
+{
+	if (m_bStepIndex < 1 || m_bStepIndex > 4)
+		return false;
+
+	RemoveCharacterByFlag("enter_door");
+	RemoveCharacterByFlag("ice_crystal");
+	m_bStepIndex = 4;
+	KillRegen();
+	if (m_bStepIndex == 4)
+		StartBossOne(get_dword_time());
+	return true;
 }
 
 void CBalathor::TakeOff(BYTE bTakeOffType, bool is_dead)
