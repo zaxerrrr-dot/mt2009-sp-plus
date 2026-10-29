@@ -1806,6 +1806,32 @@ void CBalathor::ProcessEffect(DWORD dwCurTime)
 		TBalathorEffect& eff_info = *it;
 		if (eff_info.bEffIndex == BALATHOR_EFF_EGG_ARROW)
 		{
+			// MT2009_PLUS_BALATHOR_EGG_REACH_V1 (29.10.2026): the arrows stand in two narrow pockets of the wall
+			// under Balathor (arrow 1 200 units, arrow 2 100 units in front of the pocket's back wall). A hit
+			// moves the egg in one ~657-unit slide (client: force 20, friction 0.3) and the client drops the
+			// whole slide when any point of it is on a blocked cell - so an egg 200..657 units before the arrow
+			// can no longer be pushed toward it, only away (the "bounce"). Such an egg counts too: it is within
+			// one slide of the arrow and the slide toward the arrow runs into the wall. The arrow raises the
+			// dragon egg of its own side, whichever fire egg reached it.
+			const SBalathorConfig& egg_config = CBalathorManager::Instance().GetConfig();
+			const BYTE bArrowIndex = (eff_info.lX == egg_config.boss_1_egg_pos2.lX && eff_info.lY == egg_config.boss_1_egg_pos2.lY) ? 2 : 1;
+			LPSECTREE_MAP pkEggMap = SECTREE_MANAGER::instance().GetMap(m_dwMapIndex);
+			auto IsEggSlideBlocked = [pkEggMap, &eff_info](long lEggX, long lEggY) -> bool
+			{
+				const float fDX = (float)(eff_info.lGX - lEggX), fDY = (float)(eff_info.lGY - lEggY);
+				const float fLen = sqrtf(fDX * fDX + fDY * fDY);
+				if (fLen < 1.0f)
+					return true;
+				for (float fStep = 25.0f; fStep <= 660.0f; fStep += 25.0f)
+				{
+					const long x = lEggX + (long)(fDX / fLen * fStep), y = lEggY + (long)(fDY / fLen * fStep);
+					LPSECTREE pkCell = pkEggMap ? pkEggMap->Find(x, y) : NULL;
+					if (!pkCell || (pkCell->GetAttribute(x, y) & ATTR_BLOCK))
+						return true;
+				}
+				return false;
+			};
+
 			for (BYTE i = 1; i <= 2; ++i)
 			{
 				std::string number_str(std::to_string(i));
@@ -1815,10 +1841,10 @@ void CBalathor::ProcessEffect(DWORD dwCurTime)
 					continue;
 				
 				float fDist = DISTANCE_APPROX(eff_info.lGX - flaming_egg->GetX(), eff_info.lGY - flaming_egg->GetY());
-				if (fDist > 200.0f)
+				if (fDist > 200.0f && (fDist > 660.0f || !IsEggSlideBlocked(flaming_egg->GetX(), flaming_egg->GetY())))
 					continue;
 
-				LPCHARACTER dragon_egg = SpawnCharacterByFlag("dragon_egg_" + number_str);
+				LPCHARACTER dragon_egg = SpawnCharacterByFlag("dragon_egg_" + std::to_string(bArrowIndex));
 				if (!dragon_egg)
 					continue;
 
