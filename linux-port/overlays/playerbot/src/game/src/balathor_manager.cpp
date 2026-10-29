@@ -516,8 +516,12 @@ ACMD(do_balathor)
 {
 	std::vector<std::string> vecArgs;
 	split_argument(argument, vecArgs);
-	// MT2009_PLUS_BALATHOR_CMD_V1 (29.10.2026): our interpreter passes only the text after "balathor", the module
-	// reads its sub-command at [1] - put the command's name back at [0] ("/balathor next_success", "unpoly").
+	// MT2009_PLUS_BALATHOR_CMD_V1 (29.10.2026): split_arguments (utils.cpp) leaves every word padded with '\0' to the
+	// whole line's length, so no "skip"/"unpoly"/... ever compared equal - the space-bar escape from the ice (the client's
+	// "/balathor unpoly") and every GM sub-command did nothing. Cut each word at its '\0'; our interpreter also passes
+	// only the text after "balathor" while the module reads its sub-command at [1] - the command's name goes back at [0].
+	for (std::string& stArg : vecArgs)
+		stArg.resize(strlen(stArg.c_str()));
 	vecArgs.insert(vecArgs.begin(), "balathor");
 	if (vecArgs.size() < 2) { return; }
 	else if (vecArgs[1] == "unpoly")
