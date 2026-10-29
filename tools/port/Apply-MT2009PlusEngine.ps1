@@ -1930,4 +1930,17 @@ if ((Test-Path -LiteralPath $czepiecApply -PathType Leaf) -and
     }
 }
 
+# Event Super Kamieni (server-patches/superstone, MT2009_PLUS_SUPERSTONE_V1; the owner, 29 October 2026):
+# superstone_event 1..4 puts that many extra stones beside every Metin stone SpawnMob puts down on a world map
+# (char_manager.cpp, questmanager.cpp, common/service.h ENABLE_SUPERSTONE_EVENT). Last.
+$superstoneApply = Join-Path $repo 'server-patches/superstone/Apply-SuperStonePatch.ps1'
+if ((Test-Path -LiteralPath $superstoneApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_manager.cpp') -PathType Leaf)) {
+    $superstoneResult = & $superstoneApply -SourceDir $engineGameSource
+    if ($superstoneResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Super Kamienie edit(s).' -f $superstoneResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

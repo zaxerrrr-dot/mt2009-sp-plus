@@ -82,7 +82,11 @@ enum Kind
 	// Halloween Pumpkins from monsters and the Magic Wands from Metin stones.
 	// On or off; the manager writes its switch, the event flag halloween_hair.
 	KIND_HALLOWEEN = 16,
-	KIND_MAX = 17
+	// MT2009_PLUS_SUPERSTONE_V1: event Super Kamieni - the value (1-4) is how many extra
+	// stones every Metin stone put down on a world map gets (server-patches/superstone);
+	// the manager writes it to the event flag superstone_event, 0 at the end.
+	KIND_SUPERSTONE = 17,
+	KIND_MAX = 18
 };
 
 inline const char* KindName(int kind)
@@ -106,6 +110,7 @@ inline const char* KindName(int kind)
 		case KIND_CHESTDROP: return "chestdrop";
 		case KIND_WORLDBOSS: return "worldboss";
 		case KIND_HALLOWEEN: return "halloween";
+		case KIND_SUPERSTONE: return "superstone";
 	}
 	return "";
 }

@@ -1532,7 +1532,10 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                # MT2009_PLUS_EVENT_MANAGER_V1: the in-game event manager's mini games and
                # the Easter event (playerbot_ingame_events.h).
                "catchking", "rumi", "yutnori", "flower", "easter",
-               "halloween")  # MT2009_PLUS_HALLOWEEN_V1 (playerbot_halloween.h; Autor: Owsap)
+               "halloween",  # MT2009_PLUS_HALLOWEEN_V1 (playerbot_halloween.h; Autor: Owsap)
+               # MT2009_PLUS_SUPERSTONE_V1: Super Kamienie - the value is the level, 1-4 extra
+               # stones beside every Metin on a world map (event flag superstone_event).
+               "superstone")
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1).
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
@@ -1545,6 +1548,9 @@ EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT200
 EVENT_WORLD_KINDS = ("tanaka", "zuo")
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
+# MT2009_PLUS_SUPERSTONE_V1: kinds whose value is a level, not a percent:
+# (lowest, highest, default). The core holds the same bounds.
+EVENT_LEVEL_KINDS = {"superstone": (1, 4, 2)}
 # The maps the core can run them on (PLAYERBOT_EVENT_MAPS): id, Polish, English.
 EVENT_MAPS = (
     (0, "", ""),
@@ -1611,6 +1617,15 @@ def event_world_value(kind, value):
     if value <= 0:
         return EVENT_WORLD_DEFAULT[kind]
     return min(EVENT_WORLD_MAX[kind], value)
+
+
+def event_level_value(kind, value):
+    """MT2009_PLUS_SUPERSTONE_V1: a level kind's value held to its bounds;
+    nothing (0) is the default, more than the highest is the highest."""
+    low, high, default = EVENT_LEVEL_KINDS[kind]
+    if value < low:
+        return default
+    return min(high, value)
 
 
 def event_now_key(kind, map_id=0):
@@ -4686,6 +4701,9 @@ T.update({
  "ev_kind_flower":{"en":"Flower Event","pl":"Dzieci Kwiaty","de":"Blumen-Event","tr":"\u00c7i\u00e7ek Etkinli\u011fi"},
  "ev_kind_easter":{"en":"Easter event","pl":"Event wielkanocny","de":"Oster-Event","tr":"Paskalya etkinli\u011fi"},
  "ev_kind_halloween":{"en":"Halloween (pumpkins, Jack Pumpkin)","pl":"Halloween (dynie i Jack Pumpkin)","de":"Halloween (K\u00fcrbisse, Jack Pumpkin)","tr":"Cad\u0131lar Bayram\u0131 (bal kaba\u011f\u0131, Jack Pumpkin)"},
+ "ev_kind_superstone":{"en":"Super Metin Stones","pl":"Super Kamienie Metin","de":"Super-Metinsteine","tr":"S\u00fcper Metin Ta\u015flar\u0131"},
+ "ev_now_superstone":{"en":"Extra stones (1-4)","pl":"Dodatkowe kamienie (1-4)","de":"Zus\u00e4tzliche Steine (1-4)","tr":"Ek ta\u015flar (1-4)"},
+ "ev_superstone_value_help":{"en":"For Super Metin Stones the value is how many extra stones stand beside every Metin on the world maps (1-4, 0 = 2); dungeons get none.","pl":"Dla Super Kamieni Metin warto\u015b\u0107 to liczba dodatkowych kamieni przy ka\u017cdym Metinie na mapach \u015bwiata (1-4, 0 = 2); lochy ich nie dostaj\u0105.","de":"Bei Super-Metinsteinen ist der Wert die Zahl der zus\u00e4tzlichen Steine neben jedem Metin auf den Weltkarten (1-4, 0 = 2); Dungeons bekommen keine.","tr":"S\u00fcper Metin Ta\u015flar\u0131 i\u00e7in de\u011fer, d\u00fcnya haritalar\u0131ndaki her Metin'in yan\u0131ndaki ek ta\u015f say\u0131s\u0131d\u0131r (1-4, 0 = 2); zindanlar almaz."},
  "ev_kind_exp":  {"en":"Experience","pl":"Do\u015bwiadczenie","de":"Erfahrung","tr":"Tecr\u00fcbe"},
  "ev_kind_drop": {"en":"Item drop","pl":"Drop przedmiot\u00f3w","de":"Item-Drop","tr":"E\u015fya d\u00fc\u015fmesi"},
  "ev_kind_yang": {"en":"Yang","pl":"Yang","de":"Yang","tr":"Yang"},
@@ -7835,8 +7853,10 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 </div>{% endfor %}
 {% elif s and s.active and k in world_kinds %}<span class="badge">{{t('ev_active')}} {{s.until_text}} ({{map_name(s.map)}})</span>
 {% if s.host %}<br><small>{{t('ev_world_alive')}}: {{s.alive}} &middot; {{t('ev_world_killed')}}: {{s.killed}} &middot; {{t('ev_world_bots')}}: {{s.bots}}{% if s.phase == 'stones' %} &middot; {{t('ev_phase_stones')}}{% elif s.phase == 'bosses' %} &middot; {{t('ev_phase_bosses')}}{% endif %}</small>{% endif %}
+{% elif s and s.active and k == 'superstone' %}<span class="badge">{{t('ev_active')}} {{s.until_text}} (+{{s.value}})</span>
 {% elif s and s.active %}<span class="badge">{{t('ev_active')}} {{s.until_text}}{% if s.value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %} (+{{s.value}}%){% endif %}</span>
 {% elif s and s.next_start and k in world_kinds %}{{t('ev_next')}}: {{s.next_start_text}} ({{map_name(s.next_map)}})
+{% elif s and s.next_start and k == 'superstone' %}{{t('ev_next')}}: {{s.next_start_text}} (+{{s.next_value}})
 {% elif s and s.next_start %}{{t('ev_next')}}: {{s.next_start_text}}{% if s.next_value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %} (+{{s.next_value}}%){% endif %}
 {% elif s and s.scheduled %}{{t('ev_inactive')}}
 {% elif s %}{{t('ev_none')}}
@@ -7851,6 +7871,7 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 <select name="minutes">{% for m in minutes %}<option value="{{m}}" {% if m == 60 %}selected{% endif %}>{{m}}</option>{% endfor %}</select>
 {% if k in world_kinds %}{{t('ev_now_' + k)}} <input type="number" name="value" min="1" max="{{world_max[k]}}" value="{{world_default[k]}}" style="width:60px">
 <select name="map">{% for m in maps %}<option value="{{m[0]}}">{{map_name(m[0])}}</option>{% endfor %}</select>
+{% elif k == 'superstone' %}{{t('ev_now_superstone')}} <input type="number" name="value" min="1" max="4" value="2" style="width:50px">
 {% elif k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %}{{t('ev_now_value')}} <input type="number" name="value" min="1" max="1000" value="50" style="width:70px">{% endif %}
 <button class="btn" type="submit">{{t('ev_now_go')}}</button>
 </form>
@@ -7884,6 +7905,7 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 <h3>{{t('ev_schedule')}}</h3>
 <p class="muted">{{t('ev_value_help')}}</p>
 <p class="muted">{{t('ev_world_value_help')}}</p>
+<p class="muted">{{t('ev_superstone_value_help')}}</p>
 <form method="post">
 <input type="hidden" name="_csrf" value="{{csrf_token}}">
 <input type="hidden" name="action" value="save">
@@ -20036,6 +20058,8 @@ def events_page():
                         map_id = 0
                     if map_id not in EVENT_MAP_IDS:
                         map_id = 0
+                elif kind in EVENT_LEVEL_KINDS:  # MT2009_PLUS_SUPERSTONE_V1
+                    value = event_level_value(kind, value)
                 new_rows.append({"kind": kind, "days": days, "start": start, "end": end,
                                  "value": 0 if kind in EVENT_FLAG_KINDS else value,
                                  "on": bool(request.form.get("r%d_on" % i)), "map": map_id})
@@ -20064,6 +20088,8 @@ def events_page():
                     map_id = 0
                 if map_id not in EVENT_MAP_IDS:
                     map_id = 0
+            elif kind in EVENT_LEVEL_KINDS:  # MT2009_PLUS_SUPERSTONE_V1
+                value = event_level_value(kind, value)
             started = int(time.time())
             # For Tanaka and Zuo this replaces the line of this map only: a
             # second map is a second event beside the first, the same map

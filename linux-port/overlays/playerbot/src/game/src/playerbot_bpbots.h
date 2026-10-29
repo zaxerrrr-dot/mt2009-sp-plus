@@ -1075,6 +1075,13 @@ namespace playerbot_bpbots
 				snprintf(out, size, "%s", PickLine(k));
 				return true;
 			}
+			// MT2009_PLUS_SUPERSTONE_V1: event Super Kamieni.
+			case playerbot_events::KIND_SUPERSTONE:
+			{
+				static const char* const k[] = { "super kamienie trwaja, metiny stoja po kilka naraz", "bije metina a obok jeszcze trzy xd", "event na kamienie, kto idzie bic?" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
 			case playerbot_events::KIND_FLOWER: case playerbot_events::KIND_EASTER:
 			{
 				static const char* const k[] = { "event trwa, zbieram co sie da", "kwiaty dzis wszedzie xd", "kto robi event? ile macie?" };
