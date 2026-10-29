@@ -105,12 +105,152 @@ void CInstanceBase::AddDamageEffect(DWORD damage,BYTE flag,BOOL bSelf,BOOL bTarg
 		sDamage.bTarget = bTarget;
 		sDamage.damage = damage;
 		sDamage.flag = flag;
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+		sDamage.bTargetIsPC = IsPC() ? true : false; // MT2009_PLUS_DAMAGE_PRINT_V1
+#endif
 		m_DamageQueue.push(sDamage);
 		if (m_DamageQueue.size() > 10) // @fixme025
 			m_DamageQueue.pop();
 	}
 }
 
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+// MT2009_PLUS_DAMAGE_PRINT_V1 (Damage Print Improve v26.0.5): the marks from d:/ymir work/effect/affect/damagevalue2/
+// (pack "dmgprint"), lower on the body (a quarter of the height; at the feet when the head is near the top of the
+// screen), drawn after the world without the depth test (CEffectManager::RenderDamageEffect), up to 11 digits, a
+// critical / piercing / both icon beside a monster's numbers, dodge / block / miss marks on the player. Kept from our
+// old code: the "Pokazuj obrazenia" option (none / target only / all), the queue limit (@fixme025). Who struck comes in
+// the flag byte (DAMAGE_ATTACKER_PC, server-patches/dmgprint), not in a bigger packet as in the package.
+void CInstanceBase::ProcessDamage()
+{
+	if (m_DamageQueue.empty())
+		return;
+
+	SEffectDamage sDamage = m_DamageQueue.front();
+	m_DamageQueue.pop();
+
+	DWORD damage = sDamage.damage;
+	const BYTE flag = sDamage.flag & ~DAMAGE_ATTACKER_PC;
+	const bool bAttackerIsPC = (sDamage.flag & DAMAGE_ATTACKER_PC) != 0;
+	const bool bTargetIsPC = sDamage.bTargetIsPC;
+	const BOOL bSelf = sDamage.bSelf;
+
+	if (!bSelf && !sDamage.bTarget && CPythonSystem::Instance().GetShowDamage() == CPythonSystem::EShowDamageFlag::ShowDamageTarget)
+		return;
+
+	CCamera * pCamera = CCameraManager::Instance().GetCurrentCamera();
+	if (!pCamera)
+		return;
+
+	CEffectManager & rkEftMgr = CEffectManager::Instance();
+	const float cameraAngle = GetDegreeFromPosition2(pCamera->GetTarget().x, pCamera->GetTarget().y, pCamera->GetEye().x, pCamera->GetEye().y);
+
+	D3DXVECTOR3 v3Pos = m_GraphicThingInstance.GetPosition();
+	const float fHeight = float(m_GraphicThingInstance.GetHeight());
+	v3Pos.z += fHeight * 0.25f;
+
+	const D3DXVECTOR3 v3Rot(0.0f, 0.0f, cameraAngle);
+	const char * c_szDamagePath = "d:/ymir work/effect/affect/damagevalue2/";
+
+	DWORD dwSpecialEffect = 0;
+	if (flag & DAMAGE_DODGE)
+		dwSpecialEffect = EFFECT_DAMAGE_DODGE;
+	else if (flag & DAMAGE_BLOCK)
+		dwSpecialEffect = EFFECT_DAMAGE_BLOCK;
+	else if (flag & DAMAGE_MISS)
+		dwSpecialEffect = EFFECT_DAMAGE_MISS;
+
+	DWORD dwIconEffect = 0;
+	std::string strDamageType(c_szDamagePath);
+	DWORD dwEffectCRC = 0;
+
+	if (!bSelf)
+	{
+		float fScreenX = 0.0f, fScreenY = 0.0f;
+		CPythonGraphic::Instance().ProjectPosition(v3Pos.x, v3Pos.y, v3Pos.z, &fScreenX, &fScreenY);
+		if (fScreenY < 100.0f)
+			v3Pos.z -= fHeight * 0.25f;
+
+		if (dwSpecialEffect)
+		{
+			rkEftMgr.CreateDamageEffect(ms_adwCRCAffectEffect[EFFECT_DAMAGE_TARGETMISS], v3Pos, v3Rot);
+			return;
+		}
+
+		if (!bTargetIsPC)
+		{
+			const bool bCritical = (flag & DAMAGE_CRITICAL) != 0;
+			const bool bPenetrate = (flag & DAMAGE_PENETRATE) != 0;
+			if (bCritical && bPenetrate)
+				dwIconEffect = EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE;
+			else if (bCritical)
+				dwIconEffect = EFFECT_DAMAGE_CRITICAL;
+			else if (bPenetrate)
+				dwIconEffect = EFFECT_DAMAGE_PENETRATE;
+		}
+
+		strDamageType += "target_";
+		dwEffectCRC = ms_adwCRCAffectEffect[EFFECT_DAMAGE_TARGET];
+	}
+	else
+	{
+		if (dwSpecialEffect)
+		{
+			// a player's dodged / blocked hit shows "miss" (the package's rule)
+			if (bAttackerIsPC)
+				dwSpecialEffect = EFFECT_DAMAGE_MISS;
+
+			rkEftMgr.CreateDamageEffect(ms_adwCRCAffectEffect[dwSpecialEffect], v3Pos, v3Rot);
+			return;
+		}
+
+		strDamageType += "damage_";
+		dwEffectCRC = ms_adwCRCAffectEffect[m_bDamageEffectType == 0 ? EFFECT_DAMAGE_SELFDAMAGE2 : EFFECT_DAMAGE_SELFDAMAGE];
+		m_bDamageEffectType = !m_bDamageEffectType;
+	}
+
+	if (bAttackerIsPC && bTargetIsPC && damage == 0)
+		return;
+
+	D3DXMATRIX matBase;
+	D3DXMatrixTranslation(&matBase, v3Pos.x, v3Pos.y, v3Pos.z);
+	D3DXMatrixMultiply(&matBase, &pCamera->GetInverseViewMatrix(), &matBase);
+
+	const float FONT_WIDTH = 30.0f;
+	int iDigitIndex = 0;
+	for (;;)
+	{
+		const int iDigit = damage % 10;
+		damage /= 10;
+
+		char szDigit[16];
+		_snprintf(szDigit, sizeof(szDigit), "%d.dds", iDigit);
+		rkEftMgr.SetSingleParticleTexture(dwEffectCRC, (strDamageType + szDigit).c_str());
+
+		D3DXMATRIX matOffset, matDigit, matWorld;
+		D3DXMatrixTranslation(&matOffset, (float)iDigitIndex * -FONT_WIDTH, 0.0f, 0.0f);
+		D3DXMatrixMultiply(&matDigit, &matOffset, &matBase);
+		D3DXMatrixMultiply(&matWorld, &pCamera->GetViewMatrix(), &matDigit);
+
+		rkEftMgr.CreateDamageEffect(dwEffectCRC, D3DXVECTOR3(matWorld._41, matWorld._42, matWorld._43), v3Rot);
+
+		if (damage == 0 || iDigitIndex >= 10)
+			break;
+
+		++iDigitIndex;
+	}
+
+	if (dwIconEffect)
+	{
+		D3DXMATRIX matOffset, matIcon, matWorld;
+		D3DXMatrixTranslation(&matOffset, (float)iDigitIndex * -FONT_WIDTH - 45.0f, 0.0f, 0.0f);
+		D3DXMatrixMultiply(&matIcon, &matOffset, &matBase);
+		D3DXMatrixMultiply(&matWorld, &pCamera->GetViewMatrix(), &matIcon);
+
+		rkEftMgr.CreateDamageEffect(ms_adwCRCAffectEffect[dwIconEffect], D3DXVECTOR3(matWorld._41, matWorld._42, matWorld._43), v3Rot);
+	}
+}
+#else
 void CInstanceBase::ProcessDamage()
 {
 	if (m_DamageQueue.empty())
@@ -226,6 +366,7 @@ void CInstanceBase::ProcessDamage()
 		index++;
 	}
 }
+#endif // ENABLE_DAMAGE_PRINT_IMPROVE
 
 void CInstanceBase::AttachSpecialEffect(DWORD effect)
 {

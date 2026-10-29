@@ -1281,6 +1281,44 @@ PyObject * playerRequestUseLocalQuickSlot(PyObject* poSelf, PyObject* poArgs)
 	return Py_BuildNone();
 }
 
+#ifdef ENABLE_QUICKSLOT_IMPROVE
+// MT2009_PLUS_QUICKSLOT_IMPROVE_V1: player.RequestAddGlobalQuickSlot(global, type, pos),
+// player.RequestMoveGlobalQuickSlot(src, dst), player.RequestUseGlobalQuickSlot(global)
+PyObject * playerRequestAddGlobalQuickSlot(PyObject * poSelf, PyObject * poArgs)
+{
+	int nSlotIndex, nWndType, nWndItemPos;
+	if (!PyTuple_GetInteger(poArgs, 0, &nSlotIndex) || !PyTuple_GetInteger(poArgs, 1, &nWndType) ||
+		!PyTuple_GetInteger(poArgs, 2, &nWndItemPos))
+		return Py_BuildException();
+
+	if (nSlotIndex >= 0 && nWndType >= 0 && nWndItemPos >= 0)
+		CPythonPlayer::Instance().RequestAddGlobalQuickSlot(nSlotIndex, nWndType, nWndItemPos);
+	return Py_BuildNone();
+}
+
+PyObject * playerRequestMoveGlobalQuickSlot(PyObject * poSelf, PyObject * poArgs)
+{
+	int nSource, nTarget;
+	if (!PyTuple_GetInteger(poArgs, 0, &nSource) || !PyTuple_GetInteger(poArgs, 1, &nTarget))
+		return Py_BuildException();
+
+	if (nSource >= 0 && nTarget >= 0)
+		CPythonPlayer::Instance().RequestMoveGlobalQuickSlot(nSource, nTarget);
+	return Py_BuildNone();
+}
+
+PyObject * playerRequestUseGlobalQuickSlot(PyObject * poSelf, PyObject * poArgs)
+{
+	int nSlotIndex;
+	if (!PyTuple_GetInteger(poArgs, 0, &nSlotIndex))
+		return Py_BuildException();
+
+	if (nSlotIndex >= 0)
+		CPythonPlayer::Instance().RequestUseGlobalQuickSlot(nSlotIndex);
+	return Py_BuildNone();
+}
+#endif
+
 PyObject * playerRemoveQuickSlotByValue(PyObject* poSelf, PyObject* poArgs)
 {
 	int iType;
@@ -2567,6 +2605,11 @@ void initPlayer()
 		{ "GetLocalQuickSlot",			playerGetLocalQuickSlot,			METH_VARARGS },
 		{ "GetGlobalQuickSlot",			playerGetGlobalQuickSlot,			METH_VARARGS },
 		{ "RemoveQuickSlotByValue",		playerRemoveQuickSlotByValue,		METH_VARARGS },
+#ifdef ENABLE_QUICKSLOT_IMPROVE
+		{ "RequestAddGlobalQuickSlot",	playerRequestAddGlobalQuickSlot,	METH_VARARGS }, // MT2009_PLUS_QUICKSLOT_IMPROVE_V1
+		{ "RequestMoveGlobalQuickSlot",	playerRequestMoveGlobalQuickSlot,	METH_VARARGS },
+		{ "RequestUseGlobalQuickSlot",	playerRequestUseGlobalQuickSlot,	METH_VARARGS },
+#endif
 
 		{ "isItem",						playerisItem,						METH_VARARGS },
 		{ "IsEquipmentSlot",			playerIsEquipmentSlot,				METH_VARARGS },
@@ -2672,6 +2715,11 @@ void initPlayer()
 
 	PyObject* poModule = Py_InitModule("player", s_methods);
 
+#ifdef ENABLE_QUICKSLOT_IMPROVE
+	// MT2009_PLUS_QUICKSLOT_IMPROVE_V1: global quick slot index = page * QUICKSLOT_COUNT_PER_LINE + slot (10 here, the server's too)
+	PyModule_AddIntConstant(poModule, "QUICKSLOT_COUNT_PER_LINE", QUICKSLOT_MAX_COUNT_PER_LINE);
+	PyModule_AddIntConstant(poModule, "QUICKSLOT_PAGE_COUNT", QUICKSLOT_MAX_LINE);
+#endif
 	// MT2009_PLUS_MINIGAMES_V1: Owsap v6.2.6 constants
 	PyModule_AddIntConstant(poModule, "MINIGAME_RUMI", CPythonPlayer::MINIGAME_RUMI);
 	PyModule_AddIntConstant(poModule, "MINIGAME_YUTNORI", CPythonPlayer::MINIGAME_YUTNORI);

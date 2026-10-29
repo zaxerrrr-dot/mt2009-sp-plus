@@ -224,6 +224,16 @@ class GameWindow(ui.ScriptWindow):
 		self.SetSize(wndMgr.GetScreenWidth(), wndMgr.GetScreenHeight())
 
 		self.quickSlotPageIndex = 0
+		# MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the character's expanded quick slot bar and its last page (quickslotstate.py, uitaskbar.py);
+		# the page buttons go through __SelectQuickPage, which remembers the page
+		import uiTaskBar
+		if uiTaskBar.QUICKSLOT_IMPROVE:
+			import quickslotState
+			quickslotState.Activate(player.GetName())
+			self.quickSlotPageIndex = quickslotState.GetPage()
+			if self.interface:
+				self.interface.SetQuickPageEvent(ui.__mem_func__(self.__SelectQuickPage))
+				self.interface.ApplyQuickSlotState()
 		self.PickingCharacterIndex = -1
 		self.PickingItemIndex = -1
 		self.consoleEnable = False
@@ -1202,6 +1212,11 @@ class GameWindow(ui.ScriptWindow):
 	def __SelectQuickPage(self, pageIndex):
 		self.quickSlotPageIndex = pageIndex
 		player.SetQuickPage(pageIndex)
+		import uiTaskBar
+		if uiTaskBar.QUICKSLOT_IMPROVE: # MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the page the exe settled on, remembered
+			import quickslotState
+			self.quickSlotPageIndex = player.GetQuickPage()
+			quickslotState.SetPage(self.quickSlotPageIndex)
 		self.__SetQuickSlotMode()
 
 	def __HideUserInterface(self):
