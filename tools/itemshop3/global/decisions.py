@@ -126,7 +126,7 @@ ROWS = {
 	(105, 'Rybie Wnętrzności'): ADD(L(72141, 1, 42, 1, 4, D30, '(30 dni)'), L(72141, 1, 30, 1, 4, D15, '(15 dni)'), L(72141, 1, 18, 1, 4, D7, '(7 dni)'), note='VIP (czas premium na koncie).'),
 	(106, 'Buff Premium SungMa'): MISS('+10 do woli SungMa - brak przedmiotu.'),
 	# --- Ulepszenie postaci
-	(107, 'Pakiet Dusz'): ADD(L(30263, 1, 100, 1, 2), note='MT2009_PLUS_RELIC_V1: po jednej Duszy Miecza / Ochrony / Ozdoby / Światła (ilość nie podana na wiki).'),
+	(107, 'Pakiet Dusz'): ADD(L(30263, 1, 100, 1, 2), note='MT2009_PLUS_RELIC_V1: zawartość jak na wiki „Pakiet Dusz” - Dusza Miecza, Ochrony, Ozdoby i Światła, po jednej (wiki nie podaje ilości ani szans).'),
 	(108, 'Dusza Światła'): ADD(L(30258, 1, 39, 1, 2), note='MT2009_PLUS_RELIC_V1: Bonus Reliktu.'),
 	(109, 'Dusza Ozdoby'): ADD(L(30257, 1, 39, 1, 2), note='MT2009_PLUS_RELIC_V1: Bonus Reliktu.'),
 	(110, 'Dusza Ochrony'): ADD(L(30256, 1, 39, 1, 2), note='MT2009_PLUS_RELIC_V1: Bonus Reliktu.'),
