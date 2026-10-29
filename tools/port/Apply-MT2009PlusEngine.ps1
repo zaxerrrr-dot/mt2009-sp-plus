@@ -1943,4 +1943,17 @@ if ((Test-Path -LiteralPath $superstoneApply -PathType Leaf) -and
     }
 }
 
+# Odnowione okno misji (server-patches/questren, MT2009_PLUS_QUEST_RENEWAL_V1; QUEST_RENEWAL, Autor: Owsap): the quest
+# categories as "QuestCategory" command lines at the login (input_login.cpp after ChampionOnLogin) - the logic is
+# playerbot_quest_renewal.cpp from the overlay's game sources. No packet change.
+$questRenApply = Join-Path $repo 'server-patches/questren/Apply-QuestRenPatch.ps1'
+if ((Test-Path -LiteralPath $questRenApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'input_login.cpp') -PathType Leaf)) {
+    $questRenResult = & $questRenApply -SourceDir $engineGameSource
+    if ($questRenResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} quest window edit(s).' -f $questRenResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

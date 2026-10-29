@@ -22,6 +22,7 @@ import uiAttributeList
 import utils
 import sungmastate # MT2009_PLUS_YOHARA_EXE2_V1
 import riposty # MT2009_PLUS_RIPOSTY_V1
+import questrenewal # MT2009_PLUS_QUEST_RENEWAL_V1
 
 SHOW_ONLY_ACTIVE_SKILL = False
 SHOW_LIMIT_SUPPORT_SKILL_LIST = [121, 122, 123, 124, 126, 127, 129, 128, 131, 132, 137, 138, 139, 140, 246] # 246: MT2009_PLUS_PRECISION_SKILL_V1 (Precyzja)
@@ -212,6 +213,7 @@ class CharacterWindow(ui.ScriptWindow):
 		self.questNameList = None
 		self.questLastTimeList = None
 		self.questLastCountList = None
+		self.questRenewal = None # MT2009_PLUS_QUEST_RENEWAL_V1
 		self.skillGroupButton = ()
 
 		self.activeSlot = None
@@ -408,6 +410,24 @@ class CharacterWindow(ui.ScriptWindow):
 			# self.questLastTimeList.append(self.GetChild("Quest_LastTime_0" + str(i)))
 			# self.questLastCountList.append(self.GetChild("Quest_LastCount_0" + str(i)))
 
+		# MT2009_PLUS_QUEST_RENEWAL_V1 (QUEST_RENEWAL, Autor: Owsap): the renewed quest page (questrenewal.py) in place of
+		# the five-slot list, whose parts stay hidden
+		if questrenewal.ENABLED:
+			try:
+				self.questRenewal = questrenewal.QuestList(self.GetChild("Quest_Renewal_List"), self.GetChild("Quest_Renewal_ScrollBar"))
+			except:
+				import dbg
+				dbg.TraceError("CharacterWindow: the renewed quest page is missing - the old list stays")
+				self.questRenewal = None
+			if self.questRenewal:
+				self.questSlot.Hide()
+				self.questScrollBar.Hide()
+				self.GetChild("Quest_BG").Hide()
+				for i in xrange(quest.QUEST_MAX_NUM):
+					self.questNameList[i].Hide()
+					self.questLastTimeList[i].Hide()
+					self.questLastCountList[i].Hide()
+
 		self.__HideSprintOnboarding()
 		self.sprintOnboardingIcon.SAFE_SetStringEvent("MOUSE_OVER_IN", self.__HideSprintOnboarding)
 
@@ -599,6 +619,9 @@ class CharacterWindow(ui.ScriptWindow):
 
 	@ui.WindowDestroy
 	def Destroy(self):
+		if self.questRenewal: # MT2009_PLUS_QUEST_RENEWAL_V1
+			self.questRenewal.Destroy()
+			self.questRenewal = None
 		self.ClearDictionary()
 
 		if self.statusInputDialog:
@@ -682,6 +705,8 @@ class CharacterWindow(ui.ScriptWindow):
 		self.titleBarDict[stateKey].Show()
 		self.tabDict[stateKey].Show()
 		self.pageDict[stateKey].Show()
+		if "QUEST" == stateKey and self.questRenewal: # MT2009_PLUS_QUEST_RENEWAL_V1
+			self.questRenewal.Refresh()
 
 		self.GetChild("CSPD_Slot").SAFE_SetStringEvent("MOUSE_OVER_IN", self.__ShowCastingSpeedToolTip)
 		self.GetChild("CSPD_Slot").SAFE_SetStringEvent("MOUSE_OVER_OUT", self.__HideToolTip)
@@ -1162,6 +1187,11 @@ class CharacterWindow(ui.ScriptWindow):
 			self.toolTipSkill.HideToolTip()
 
 	## Quest
+	# MT2009_PLUS_QUEST_RENEWAL_V1: the quest page opened at a quest (the side letter's click, interfacemodule.py)
+	def QuestRenewalFocus(self, questIndex):
+		if self.questRenewal:
+			self.questRenewal.Focus(questIndex)
+
 	def __SelectQuest(self, slotIndex):
 		if quest.IsExist(self.questShowingStartIndex + slotIndex):
 			questIndex = quest.GetQuestIndex(self.questShowingStartIndex+slotIndex)
@@ -1172,6 +1202,10 @@ class CharacterWindow(ui.ScriptWindow):
 	def RefreshQuest(self):
 
 		if self.isLoaded==0:
+			return
+
+		if self.questRenewal: # MT2009_PLUS_QUEST_RENEWAL_V1
+			self.questRenewal.Refresh()
 			return
 
 		questCount = quest.GetQuestCount()
@@ -1219,6 +1253,10 @@ class CharacterWindow(ui.ScriptWindow):
 		self.__UpdateQuestClock()
 
 	def __UpdateQuestClock(self):
+		if self.questRenewal: # MT2009_PLUS_QUEST_RENEWAL_V1
+			if "QUEST" == self.state:
+				self.questRenewal.UpdateClocks()
+			return
 		if "QUEST" == self.state:
 			# QUEST_LIMIT_COUNT_BUG_FIX
 			for i in xrange(min(quest.GetQuestCount(), quest.QUEST_MAX_NUM)):
@@ -1791,6 +1829,8 @@ class CharacterWindow(ui.ScriptWindow):
 		self.__SelectSkillGroup(index)
 
 	def OnQuestScroll(self):
+		if self.questRenewal: # MT2009_PLUS_QUEST_RENEWAL_V1
+			return
 		questCount = quest.GetQuestCount()
 		scrollLineCount = max(0, questCount - quest.QUEST_MAX_NUM)
 		startIndex = int(scrollLineCount * self.questScrollBar.GetPos())
