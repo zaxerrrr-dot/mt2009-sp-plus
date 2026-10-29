@@ -3,14 +3,18 @@
 # counts - the weights / percentages are ours. Items the line does not have are left out (server-patches/balathor/
 # README.md): the five Runy Wykuwania, Kula Polimorfii Hwachy.
 # Umiejetnosc Balathora = the three guild skill books 50344-50346 of the guild system
-# (server-patches/guildsys, guildsys.sql; rows 12-14 of 83076, 20 % each).
+# (server-patches/guildsys, guildsys.sql; rows 12-14 of 83076, weight 20 each).
 # MT2009_PLUS_SERPENT_HOOD_V1 (tools/czepiec, yohara_czepiec.sql): the materials of Wezowy Czepiec as the wiki lists
 # them - the chest Skrzydlo / Oko / Rog / Sciegno, the chest+ Skrzydlo / Oko / Luska / Sciegno (the counts ours: a
 # hood +15 takes 254 Oko, 45 Rog, 21 Luska; the hood itself 2 Sciegna and 2 Skrzydla). Wino z Kwiatu Brzosk. XL is the plain one
 # (70020, x5). Kula Blogoslawienstwa is our Marmur Blogoslawienstwa (70024).
+# MT2009_PLUS_CHEST_PICK_V1 (server-patches/balathor, poprawki 3.0.7 item 5): each chest gives exactly 5 different rows
+# an opening ("Pick 5": drawn one after another by the weights below, a drawn row not put back; a yang row is one of
+# the 5). 83076's former percentages are its weights now.
 Group	MT2009_balathor_83075
 {
-	Vnum	83075 -- Mrozna Skrz. Balathora (one item an opening)
+	Vnum	83075 -- Mrozna Skrz. Balathora (5 different rows an opening, by weight)
+	Pick	5
 	1	71020	3	100 -- Blogoslawienstwo Smoka x3
 	2	71018	3	100 -- Blogoslawienstwo Zycia x3
 	3	70020	5	100 -- Wino z Kwiatu Brzoskwini x5 (wiki: XL)
@@ -33,8 +37,8 @@ Group	MT2009_balathor_83075
 }
 Group	MT2009_balathor_83076
 {
-	Vnum	83076 -- Mrozna Skrz. Balathora+ (every row rolled on its own, %)
-	Type	Pct
+	Vnum	83076 -- Mrozna Skrz. Balathora+ (5 different rows an opening, by weight)
+	Pick	5
 	1	15440	1	10 -- Ogniste Buty+0
 	2	55035	1	30 -- Smakolyk+
 	3	30616	2	40 -- Dwutlenek Tytanu x2

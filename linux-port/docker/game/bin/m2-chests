@@ -102,7 +102,7 @@ cmd_apply() {
     # UTF-8 BOM and line ends: the package's file is CRLF, so is the result.
     sed '1s/^\xEF\xBB\xBF//; s/\r$//' "$CUSTOM" > "$_norm" || return 1
 
-    # Layout: Group <name> / { / Vnum <n> / [Type <t>] / 1 2 3 ... / }.
+    # Layout: Group <name> / { / Vnum <n> / [Type <t>] / [Pick <n>] / 1 2 3 ... / }.
     # Prints "V <vnum>" per group and "I <vnum>" per item line, or "E <why>".
     awk '
     function err(m) { print "E line " NR ": " m; bad = 1; exit }
@@ -125,6 +125,7 @@ cmd_apply() {
         if (key == "vnum") { if (n < 2 || f[2] !~ /^[0-9]+$/) err("bad Vnum"); vnum = f[2]; next }
         if (key == "type") { gtype = tolower(f[2]); if (gtype !~ /^(pct|quest|special|attr|normal)$/) err("bad Type " f[2]); next }
         if (key == "effect") next
+        if (key == "pick") { if (n < 2 || f[2] !~ /^[0-9]+$/) err("bad Pick"); next }  # MT2009_PLUS_CHEST_PICK_V1
         if (f[1] !~ /^[0-9]+$/) err("unexpected \"" f[1] "\"")
         if (f[1] + 0 != next_idx) err("index " f[1] " where " next_idx " belongs")
         if (next_idx > 1023) err("more than 1023 lines in a group")
