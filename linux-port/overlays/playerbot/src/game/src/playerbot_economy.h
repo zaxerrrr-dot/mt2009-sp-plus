@@ -2611,6 +2611,10 @@ namespace
 		// (playerbot_awakening.h).
 		if (IsPlayerBotAwakeningGoods(item->GetVnum()))
 			return false;
+		// MT2009_PLUS_DROP90_V1: nor a ring of experience or a thief's glove - the merchant pays nothing for
+		// one (shop_buy_price 0); the bot's own up to PLAYERBOT_TIMED_UNIQUE_KEEP, the rest a counter's.
+		if (IsPlayerBotTimedUnique(item->GetVnum()))
+			return false;
 
 		// A piece Iwakura's list keeps for the storekeeper is never the
 		// merchant's, whatever the rules below would make of it.

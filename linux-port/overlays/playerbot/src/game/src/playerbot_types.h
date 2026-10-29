@@ -2809,7 +2809,9 @@ namespace
 	// minutes; the bound cape first (FindPlayerBotValourCapeCell), and past
 	// PLAYERBOT_CAPE_BOUND_HOARD of them the rest goes at the merchant's
 	// (SellPlayerBotJunkAtMerchant) - they can be neither sold nor traded.
-	const DWORD PLAYERBOT_CAPE_VNUMS[] = { 76007, 70038, 70138, 70057 };
+	// MT2009_PLUS_DROP90_V1: and 39006, the cape the level-90 maps' bosses and
+	// Metins drop (tradeable since; the bots knew only the four above).
+	const DWORD PLAYERBOT_CAPE_VNUMS[] = { 76007, 70038, 70138, 70057, 39006 };
 	const DWORD PLAYERBOT_CAPE_MARKET_VNUM = 70038;
 	const DWORD PLAYERBOT_CAPE_BOUND_VNUM = 76007;
 	const int PLAYERBOT_CAPE_BOUND_HOARD = 200;
@@ -6093,7 +6095,10 @@ namespace
 	// at the unequip. A bot wears them while it hunts and takes them off in
 	// town ("pierscienie czy rekawice zaklada sie na slot na x czasu ... oby
 	// nie ubierali ich w miescie", Tieru, 15 September).
-	const DWORD PLAYERBOT_EXP_RING_VNUMS[] = { 70005, 72001, 72002, 72003, 72049, 72050 };
+	// MT2009_PLUS_DROP90_V1: 39002 too - the ring the level-90 maps' bosses and
+	// Metins drop (70005's masked twin, in group 10000 since; Dockerfile). The
+	// equipment pass, not knowing it, put it on in town like any unique.
+	const DWORD PLAYERBOT_EXP_RING_VNUMS[] = { 70005, 72001, 72002, 72003, 72049, 72050, 39002 };
 	const DWORD PLAYERBOT_THIEF_GLOVE_VNUMS[] = { 70043, 72004, 72005 };
 	bool IsPlayerBotExpRing(DWORD vnum)
 	{

@@ -5777,6 +5777,9 @@ namespace
 			if (vnum == 27001 || vnum == 27002 || vnum == 27003 || vnum == 27051 ||
 					vnum == 27004 || vnum == 27005 || vnum == 27006 || vnum == 27052)
 				continue;
+			// MT2009_PLUS_DROP90_V1: the rings and gloves the bot keeps to wear (IsPlayerBotKeptTimedUnique).
+			if (IsPlayerBotKeptTimedUnique(ch, item))
+				continue;
 			// Biologist specimens stay: they are quest progress, not goods. Horse
 			// medals used to be excluded here as well, which meant nobody could
 			// ever buy one; whether they are for sale is now the scoring's call.

@@ -884,6 +884,17 @@ RUN set -eu; L=/opt/metin2/share/locale/poland \
  && mv /tmp/mob_drop_item.txt "$L/mob_drop_item.txt" && rm -f /tmp/guildmat.count \
  && echo "share: guild building materials x10 from ordinary monsters (14 lines)"
 
+# MT2009_PLUS_DROP90_V1 (the owner, 29 October 2026: exp rings from drops do not work, bots do not use them): the
+# experience ring the level-90 maps' bosses and Metins drop is 39002 (the package's masked twin of 70005,
+# ori_to_new_table.txt), and it was in no unique group - worn, it gave nothing. It joins the ring group 10000
+# (UNIQUE_GROUP_RING_OF_EXP, CHARACTER::IsEquipUniqueGroup) as its eighth line, beside 70005. Exactly one line.
+RUN set -eu; L=/opt/metin2/share/locale/poland; f="$L/special_item_group.txt" \
+ && awk '/^Group[[:blank:]]/{g=0} /^[[:blank:]]*[Vv]num[[:blank:]]+10000([^0-9]|$)/{g=1} \
+      g && /^}/ && !done {printf "\t8\t39002\t1\t1\t-- Pierscien Doswiadczenia (drop 90)\r\n"; done=1; g=0} {print}' "$f" > "$f.new" \
+ && mv "$f.new" "$f" \
+ && test "$(awk '/^[[:blank:]]*[Vv]num[[:blank:]]+10000([^0-9]|$)/{g=1} g&&/^}/{g=0} g&&/[[:blank:]]39002[[:blank:]]/{n++} END{print n+0}' "$f")" = 1 \
+ && echo "share: 39002 (the level-90 maps' experience ring) in the ring group 10000"
+
 # The costume sets (server-patches/playerqol, MT2009_PLUS_COSTUME_SET_V1): a
 # body and a hair of one line give +800 HP and +15 attack value. The game
 # reads it from its locale at the first equip; the client's tooltip has the

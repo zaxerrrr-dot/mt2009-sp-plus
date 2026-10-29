@@ -3649,6 +3649,50 @@ for wz_sql in maps_wz.sql; do
     fi
 done
 
+# MT2009_PLUS_DROP90_V1 (the owner, 29 October 2026) - the level-90 maps (301-304) and Zaklety Las (353):
+# * Yang. A boss's yang is gold_min..gold_max as it is (CHARACTER::RewardGold: 10-21 piles, no x5), a Metin's x5.
+#   The package left the 90 maps' bosses at 965-2 688 (a level-1 boss's purse) while Lemur Hrabia (3390) and his
+#   Guard (3391) on the same maps carry 150 000-220 000 / 300 000-450 000, and the forest's Metins and bosses at 0.
+#   One curve from those two: a boss (rank 4) 150 000 + 5 000 a level over 103 .. 220 000 + 7 500 a level, a king
+#   (rank 5) 300 000 + 10 000 a level over 105 .. 450 000 + 15 000 a level - the forest's Wladca En-Tai (112) and
+#   Bagjanamu (120) on the boss line; the Metins 12 000-20 000 (95), 14 000-24 000 (100), 16 000-28 000 (105),
+#   22 000-38 000 (Metin Lasu, 120) - 60 000-190 000 a stone after the x5 (the 90 maps' Metins gave 10 000-31 000).
+#   Only over the package's values (a boss under 100 000, a Metin under 10 000), so the panel's edits stay.
+# * Peleryna Mestwa 39006 (the 90 maps' bosses and Metins drop it), Pierscien Doswiadczenia 70005 / 39002 and Rekawica
+#   Zlodzieja 70043 (the Metins' and bosses' drops) lose ANTI_SELL, ANTI_GIVE and ANTI_MYSHOP (256 | 8192 | 65536):
+#   a stall, a trade and the merchant take them, as Peleryna Mestwa 70038 (antiflag 0). The ItemShop's and the
+#   chests' bound ones (72001-72050, 76007) stay bound.
+# * The level-66 body armours +0..+9 (Czarna Stal 11290, Czarny Wiatr 11490, Czarna Magia 11690, Czarna Szata 11890)
+#   had the level-61 armours' prices and ANTI_SELL from +4: the merchant took no +4..+9 and paid the +0..+3 a 61's
+#   price. The merchant pays shop_buy_price / 5 less the tax (shop_manager.cpp: 3-20% by the price, +8% over level
+#   60); the ladder is the 61's x 7/6 (the step 54 -> 61 is 100 000 -> 120 000 at +0): 140 000 .. 600 000.
+#   Only from the package's ladder (120 000 .. 515 000), so an operator's price stays.
+# The client's item_proto carries the same antiflags and prices
+# (client-patches/client-2.0.30/tools/drop90/patch_drop90_client.py). PROTO_FROM_DB. Idempotent.
+db -e "UPDATE world.mob_proto
+          SET gold_min = IF(\`rank\` >= 5, 300000 + (GREATEST(level, 105) - 105) * 10000, 150000 + (GREATEST(level, 103) - 103) * 5000),
+              gold_max = IF(\`rank\` >= 5, 450000 + (GREATEST(level, 105) - 105) * 15000, 220000 + (GREATEST(level, 103) - 103) * 7500)
+        WHERE vnum IN (3090, 3091, 3190, 3191, 3290, 3291, 3390, 3391, 3490, 3491, 3590, 3591, 3595, 3596,
+                       3690, 3691, 3790, 3791, 3890, 3891, 3911, 3912, 3913, 6407, 6408)
+          AND \`rank\` >= 4 AND gold_max < 100000;
+UPDATE world.mob_proto
+          SET gold_min = ELT(FIELD(vnum, 8051, 8052, 8053, 8054, 8055, 8056, 8059, 8061), 12000, 12000, 14000, 14000, 16000, 16000, 14000, 22000),
+              gold_max = ELT(FIELD(vnum, 8051, 8052, 8053, 8054, 8055, 8056, 8059, 8061), 20000, 20000, 24000, 24000, 28000, 28000, 24000, 38000)
+        WHERE vnum IN (8051, 8052, 8053, 8054, 8055, 8056, 8059, 8061) AND gold_max < 10000;
+UPDATE world.item_proto SET antiflag = antiflag & ~(256 | 8192 | 65536)
+        WHERE vnum IN (39006, 70005, 39002, 70043) AND (antiflag & (256 | 8192 | 65536)) <> 0;
+UPDATE world.item_proto SET antiflag = antiflag & ~256
+        WHERE type = 2 AND subtype = 0 AND (vnum BETWEEN 11294 AND 11299 OR vnum BETWEEN 11494 AND 11499
+               OR vnum BETWEEN 11694 AND 11699 OR vnum BETWEEN 11894 AND 11899) AND (antiflag & 256) <> 0;
+UPDATE world.item_proto
+          SET gold = ELT(vnum % 10 + 1, 140000, 150000, 170000, 195000, 220000, 255000, 310000, 380000, 475000, 600000),
+              shop_buy_price = ELT(vnum % 10 + 1, 140000, 150000, 170000, 195000, 220000, 255000, 310000, 380000, 475000, 600000)
+        WHERE type = 2 AND subtype = 0 AND (vnum BETWEEN 11290 AND 11299 OR vnum BETWEEN 11490 AND 11499
+               OR vnum BETWEEN 11690 AND 11699 OR vnum BETWEEN 11890 AND 11899)
+          AND shop_buy_price = ELT(vnum % 10 + 1, 120000, 130000, 145000, 165000, 190000, 220000, 265000, 325000, 405000, 515000);" \
+    && echo "[playerbot-migrate] drop 90: yang of the level-90 maps' and Zaklety Las' bosses and Metins, tradeable capes / rings / gloves, level-66 armours' prices" \
+    || fail_step "drop 90: could not set the level-90 maps' yang, the drop items' antiflags or the level-66 armours' prices (MT2009_PLUS_DROP90_V1)" >&2
+
 # MT2009_PLUS_PASS69_OFF_V1: once - Przelecz (69, metin2_map_wl_pass) is in no map index and on no core any more (the
 # owner on the Yohara line, 15 October 2026; the 2.x line with Wezowe Pole, 26 October 2026). Every character saved
 # there, or whose way out leads there - people and bots - stands at Wezowe Pole's arrival (80, 1059000 726200 - its

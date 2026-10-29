@@ -15,6 +15,7 @@ nazwy rang i kolory z klienta Arezzo) z liczbami właściciela (6 października)
 | `MT2009_PLUS_RANK_POINTS_V1 (insert)` | `char.cpp` | `EncodeInsertPacket`: postać z rangą wchodzi w widok gracza – `RANGA tail <vid> <ranga>` |
 | `MT2009_PLUS_RANK_POINTS_V1 (wiki)` | `item_manager.cpp` | wiki dropu: owoc Metina/bossa (1–2 szt., 30%) |
 | `MT2009_PLUS_RANK_POINTS_V2 (alignment)` | `char_battle.cpp` | `CHARACTER::UpdateAlignment`: `RankPointsOnAlignment` – zwykła ranga przekracza 20 000 (w górę lub w dół): bonus, tytuł, `RANGA self` od razu |
+| `MT2009_PLUS_DROP90_V1 (wiki)` | `item_manager.cpp` | wiki dropu pyta o owoc z numerem potwora (`RankPointsWikiFruitRace`) – owoc mapy jak przy zabiciu |
 
 Stosowanie po `server-patches/monstercard` i `server-patches/dropwiki` (kotwice to ich wiersze):
 `Apply-RankPointsPatch.ps1 -SourceDir <game/src>` (Windows, `tools/port/Apply-MT2009PlusEngine.ps1`) albo
@@ -32,7 +33,7 @@ Stosowanie po `server-patches/monstercard` i `server-patches/dropwiki` (kotwice 
   zapisane, ale się nie liczy – suma to ranga zwykła, bonus i tytuł rangi znikają – aż ranga zwykła wróci do
   20 000 (wtedy `extra` od razu liczy się znowu). Rangi, bonusy, tytuły, `/ranga` i `RANGA self` – wszystko wg sumy.
 - **Owoce** (Metiny i bossowie, 30%, 1–2 szt., wg poziomu **zabitego** potwora): Jabłko (80050) do 53 poz.,
-  Gruszka (80051) 54–74, Winogrono (80052) 75–99, Arbuz (80053) 100–109, Ananas (80054) od 110. Gracz – na ziemi
+  Gruszka (80051) 54–74, Winogrono (80052) 75–99, Arbuz (80053) 100–109, Ananas (80054) od 110. **Owoc mapy** (`MT2009_PLUS_DROP90_V1`, właściciel 29.10.2026) ma pierwszeństwo przed poziomem: bossowie i Metiny czterech map 90 poz. (301–304) – Winogrono, bossowie i Metiny Zaklętego Lasu i Erebu (353: 6407, 6408, 6192, 8059, 8061) – Ananas (`FruitForRace`). Gracz – na ziemi
   dla zabójcy (2 min), bot – do plecaka (pełny plecak: nic). Log `[RANGA_DROP]`.
 - **Zakresy sumy** (owoc działa tylko w swoim; V2: zyski ×4 względem V1): Jabłko 0–20 000 (+200 do **zwykłej
   rangi** – `UpdateAlignment(+2000)`, do maksimum silnika), Gruszka 20 000–40 000 (+200), Winogrono 40 000–80 000

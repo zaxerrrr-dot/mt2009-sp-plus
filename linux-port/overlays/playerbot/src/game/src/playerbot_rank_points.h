@@ -159,7 +159,7 @@ namespace mt2009_rankp
 	const char* const MSG_INFO_NONE = "Ranga: brak (pierwsza ranga - Waleczny - od 21 000 punkt" "\xf3" "w). Punkty Rangi: %d / 200 000.";
 	const char* const MSG_NEXT = "Nast" "\xea" "pna ranga: %s od %d punkt" "\xf3" "w. Teraz jedz: %s (+%d za sztuk" "\xea" ").";
 	const char* const MSG_NEXT_MAX = "To najwy" "\xbf" "sza ranga.";
-	const char* const MSG_FRUITS = "Owoce wypadaj" "\xb9" " z Metin" "\xf3" "w i boss" "\xf3" "w (30%%, 1-2 szt.): Jab" "\xb3" "ko do 53 poz., Gruszka 54-74, Winogrono 75-99, Arbuz 100-109, Ananas od 110.";
+	const char* const MSG_FRUITS = "Owoce wypadaj" "\xb9" " z Metin" "\xf3" "w i boss" "\xf3" "w (30%%, 1-2 szt.): Jab" "\xb3" "ko do 53 poz., Gruszka 54-74, Winogrono 75-99, Arbuz 100-109, Ananas od 110; mapy 90 poz.: Winogrono, Zakl" "\xea" "ty Las: Ananas.";
 	const char* const MSG_BONUS_HEAD = "Bonus rangi:";
 	const char* const MSG_SET_USAGE = "U" "\xbf" "ycie: /ranga ustaw <nick> <punkty>";
 	const char* const MSG_SET_NOBODY = "Nie ma takiej postaci na tym rdzeniu.";
@@ -211,6 +211,33 @@ namespace mt2009_rankp
 			if (level <= FRUITS[i].maxLevel)
 				return &FRUITS[i];
 		return &FRUITS[FRUIT_COUNT - 1];
+	}
+
+	// MT2009_PLUS_DROP90_V1 (the owner, 29 October 2026): a map's own fruit over the level bands - Winogrono
+	// (80052) from every boss and Metin of the four level-90 maps (301-304: their bosses are levels 103-107 and
+	// four of their Metins 100-105, which the bands gave Arbuz), Ananas (80054) from the bosses and Metins of
+	// Zaklety Las and Erebu (353: Metin Drzewnych Stworzen, level 100, gave Arbuz). By the monster, so the drop
+	// wiki shows the same fruit the kill drops (RankPointsWikiFruitRace).
+	const SFruit* FruitForRace(DWORD race)
+	{
+		static const DWORD GRAPES[] = {
+			3090, 3091, 3190, 3191, 3290, 3291, 3390, 3391, 3490, 3491, 3590, 3591, 3595, 3596,
+			3690, 3691, 3790, 3791, 3890, 3891, 3911, 3912, 3913,
+			8051, 8052, 8053, 8054, 8055, 8056 };
+		static const DWORD PINEAPPLES[] = { 6407, 6408, 6192, 8059, 8061 };
+		for (size_t i = 0; i < sizeof(GRAPES) / sizeof(GRAPES[0]); ++i)
+			if (GRAPES[i] == race)
+				return FruitByVnum(80052);
+		for (size_t i = 0; i < sizeof(PINEAPPLES) / sizeof(PINEAPPLES[0]); ++i)
+			if (PINEAPPLES[i] == race)
+				return FruitByVnum(80054);
+		return NULL;
+	}
+
+	const SFruit* FruitForMob(DWORD race, int level)
+	{
+		const SFruit* fruit = FruitForRace(race);
+		return fruit ? fruit : FruitForLevel(level);
 	}
 
 	int TierOf(int points)
@@ -541,7 +568,7 @@ namespace mt2009_rankp
 
 	void Drop(LPCHARACTER killer, LPCHARACTER victim)
 	{
-		const SFruit* fruit = FruitForLevel(victim->GetLevel());
+		const SFruit* fruit = FruitForMob(victim->GetRaceNum(), victim->GetLevel());	// MT2009_PLUS_DROP90_V1
 		const int roll = number(1, 100);
 		const bool win = roll <= DROP_PERCENT;
 		const int count = number(1, 2);
@@ -801,6 +828,15 @@ DWORD RankPointsWikiFruit(bool metinOrBoss, int level)
 	if (!Enabled() || !metinOrBoss)
 		return 0;
 	return FruitForLevel(level)->vnum;
+}
+
+// MT2009_PLUS_DROP90_V1 (wiki): the same with the monster - a map's own fruit (FruitForRace) over the bands.
+DWORD RankPointsWikiFruitRace(DWORD race, bool metinOrBoss, int level)
+{
+	using namespace mt2009_rankp;
+	if (!Enabled() || !metinOrBoss)
+		return 0;
+	return FruitForMob(race, level)->vnum;
 }
 
 int RankPointsWikiPercent()
