@@ -68,10 +68,13 @@ def BindInventory(wnd):
 		return
 	if len(tabs) < 2:
 		return
+	# MT2009_PLUS_INVENTORY_V2_V1: the v2 inventory's equipment window has the tabs in their own row (inventoryv2.py)
+	v2 = getattr(wnd, "wndEquipWindow", None) is not None
 	for i in xrange(2):
 		tab = tabs[i]
-		tab.SetParent(titleBar)
-		tab.SetPosition(TAB_X[i], TAB_Y)
+		if not v2:
+			tab.SetParent(titleBar)
+			tab.SetPosition(TAB_X[i], TAB_Y)
 		tab.SetEvent(_OnTab, i)
 		tab.SetToolTipText(TEXT_TAB[i])
 	if _state['title_x'] is None:
@@ -85,6 +88,9 @@ def Refresh():
 	if wnd is None:
 		return
 	try:
+		if getattr(wnd, "wndEquipWindow", None) is not None:	# MT2009_PLUS_INVENTORY_V2_V1
+			__import__("inventoryv2").RefreshPageTabs(wnd, IsUnlocked(), _state['page'])
+			return
 		tabs = wnd.equipmentTab
 		titleName = wnd.GetChild("TitleName")
 		y = titleName.GetLocalPosition()[1]
