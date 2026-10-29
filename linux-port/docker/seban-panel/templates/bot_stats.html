@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Statystyki botów · {{panel_brand}}{% endblock %}
+{% block content %}
+{#- MT2009_PLUS_SEBAN_BOT_STATS_V1: bosses, Metin stones and dungeons of the bots (bot_stats.py). -#}
+{% macro num(value) %}{{'{:,}'.format(value or 0).replace(',', ' ')}}{% endmacro %}
+{% macro when(value) %}{{ value.strftime('%d.%m %H:%M') if value else '—' }}{% endmacro %}
+<p class="eyebrow">GRACZE I BOTY</p><h1>Statystyki botów</h1>
+<p class="muted">Bossowie i Metiny zabite przez boty oraz dungeony, które boty przechodzą. Zabójstwa pochodzą z logów gry (wpisy <code>BOSS_KILL</code> i <code>STONE_KILL</code> — potwory rangi Boss i wyżej), zliczanych przez kolektor co 5 minut (co godzinę, gdy <code>log.log</code> nie ma indeksu po czasie). Wyprawy do dungeonów kolektor dopisuje co 5 minut z plików rdzeni gry. Liczby zostają, nawet gdy stare logi zostaną usunięte.</p>
+
+<nav class="item-types">{% for key, (label, _days) in periods.items() %}<a class="{% if period == key %}active{% endif %}" href="{{url_for('bot_stats_page', okres=key)}}">{{label}}</a>{% endfor %}</nav>
+
+<section class="cards">
+<article><span>Bossowie zabici przez boty</span><strong>{{num(boss_totals.kills)}}</strong><small>{{boss_totals.kinds}} różnych · gracze: {{num(boss_totals.player_kills)}}</small></article>
+<article><span>Metiny zniszczone przez boty</span><strong>{{num(stone_totals.kills)}}</strong><small>{{stone_totals.kinds}} rodzajów · gracze: {{num(stone_totals.player_kills)}}</small></article>
+<article><span>Wyprawy do dungeonów</span><strong>{{num(dungeon_totals.entered)}}</strong><small>wejść · {{num(dungeon_totals.runs)}} zwołanych drużyn</small></article>
+<article><span>Ukończone dungeony</span><strong>{{num(dungeon_totals.ok)}}</strong><small>{% if dungeon_totals.rate is not none %}{{dungeon_totals.rate}}% wejść{% else %}brak wejść{% endif %}</small></article>
+</section>
+
+<section class="panel">
+<h2>Bossowie zabici przez boty</h2>
+{% if bosses %}
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Boss</th><th>Ranga</th><th>Zabójstwa botów</th><th>Gracze</th><th>Ostatnio</th><th>Gdzie najczęściej</th></tr></thead><tbody>
+{% for b in bosses %}<tr><td>{{loop.index}}</td><td>{{b.name}}<br><small class="muted">VNUM {{b.vnum}}{% if b.level %} · poziom {{b.level}}{% endif %}</small></td><td>{{b.rank}}</td><td><b>{{num(b.kills)}}</b></td><td>{{num(b.player_kills)}}</td><td>{{when(b.last_at)}}</td><td>{% for name, n in b.map_list %}{{name}} <small class="muted">({{num(n)}})</small>{% if not loop.last %}<br>{% endif %}{% endfor %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% if boss_maps %}<p class="muted" style="margin-top:8px">Mapy: {% for name, n in boss_maps %}{{name}} <b>{{num(n)}}</b>{% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+{% else %}<p class="muted">Brak zabitych bossów w tym okresie (albo kolektor jeszcze ich nie zliczył).</p>{% endif %}
+</section>
+
+<section class="panel">
+<h2>Dungeony botów</h2>
+{% if dungeons %}
+<div class="table-wrap"><table><thead><tr><th>Dungeon</th><th>Wejścia</th><th>Ukończone</th><th>Porażki</th><th>Przerwane</th><th>Rozwiązane przed wejściem</th><th>Skuteczność</th><th>Średni czas</th><th>Najszybciej</th><th>Śr. drużyna</th><th>Zgony</th><th>Ostatnio</th></tr></thead><tbody>
+{% for d in dungeons %}<tr><td>{{d.name}}</td><td><b>{{num(d.entered)}}</b></td><td>{{num(d.ok)}}</td><td>{{num(d.fail)}}</td><td>{{num(d.abandon)}}</td><td>{{num(d.disband)}}</td><td>{% if d.rate is not none %}{{d.rate}}%{% else %}—{% endif %}</td><td>{{duration(d.avg_ok_s)}}</td><td>{{duration(d.best_s)}}</td><td>{{d.avg_members if d.avg_members is not none else '—'}}</td><td>{{num(d.deaths)}}</td><td>{{when(d.last_at)}}</td></tr>{% endfor %}
+</tbody></table></div>
+<p class="muted" style="margin-top:8px">Porażki: wybicie drużyny, koniec czasu, zgubiony cel. Przerwane: drużyna się poddała albo wyszła. Średni czas liczony z ukończonych wypraw (Zodiak: od zwołania drużyny do wyjścia).</p>
+{% else %}<p class="muted">Brak wypraw w tym okresie (albo kolektor jeszcze nie odczytał plików rdzeni).</p>{% endif %}
+{% if recent %}<details style="margin-top:8px"><summary class="muted">Ostatnie wyprawy ({{recent|length}})</summary>
+<div class="table-wrap"><table><thead><tr><th>Koniec</th><th>Dungeon</th><th>Wynik</th><th>Czas</th><th>Drużyna</th><th>Poziomy</th><th>Zgony</th><th>Kanał / rdzeń</th></tr></thead><tbody>
+{% set outcome_labels = {'ok': 'ukończony', 'fail': 'porażka', 'abandon': 'przerwany', 'disband': 'nie weszli'} %}
+{% for r in recent %}<tr><td>{{when(r.closed_at)}}</td><td>{{r.name}}</td><td>{{outcome_labels.get(r.outcome, r.outcome)}} <small class="muted">({{r.result}})</small></td><td>{{duration(r.took_s) if r.took_s else '—'}}</td><td>{{r.members or '—'}}</td><td>{% if r.level_max %}{{r.level_min}}–{{r.level_max}}{% else %}—{% endif %}</td><td>{{r.deaths}}</td><td>CH{{r.channel}} · {{r.core}}</td></tr>{% endfor %}
+</tbody></table></div></details>{% endif %}
+</section>
+
+<section class="panel">
+<h2>Metiny niszczone przez boty</h2>
+{% if stones %}
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Metin</th><th>Zniszczone przez boty</th><th>Udział</th><th>Gracze</th><th>Ostatnio</th><th>Gdzie najczęściej</th></tr></thead><tbody>
+{% for s in stones %}<tr><td>{{loop.index}}</td><td>{{s.name}}<br><small class="muted">VNUM {{s.vnum}}{% if s.level %} · poziom {{s.level}}{% endif %}</small></td><td><b>{{num(s.kills)}}</b></td><td>{{ '%.1f'|format(100.0 * s.kills / stone_totals.kills) if stone_totals.kills else '0' }}%</td><td>{{num(s.player_kills)}}</td><td>{{when(s.last_at)}}</td><td>{% for name, n in s.map_list %}{{name}} <small class="muted">({{num(n)}})</small>{% if not loop.last %}<br>{% endif %}{% endfor %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% if stone_maps %}<h3 style="margin-top:14px">Metiny według map</h3>
+<div class="table-wrap"><table><thead><tr><th>Mapa</th><th>Zniszczone przez boty</th></tr></thead><tbody>
+{% for name, n in stone_maps %}<tr><td>{{name}}</td><td>{{num(n)}}</td></tr>{% endfor %}
+</tbody></table></div>{% endif %}
+{% else %}<p class="muted">Brak zniszczonych Metinów w tym okresie (albo kolektor jeszcze ich nie zliczył).</p>{% endif %}
+</section>
+{% endblock %}
