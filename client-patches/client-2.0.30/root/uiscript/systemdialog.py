@@ -217,6 +217,22 @@ ElementAddBefore(MAIN_BOARD["children"], "escape_button",
 					"down_image" : ROOT + "XLarge_Button_03.sub",
 				})
 
+# MT2009_PLUS_RELIC_V1: "Bonus Reliktu" (uirelikt.py), after "Karty Potworow"
+ElementAddBefore(MAIN_BOARD["children"], "escape_button",
+				{
+					"name" : "relic_button",
+					"type" : "button",
+
+					"x" : 10,
+					"y" : -1,
+
+					"text" : "Bonus Reliktu",
+
+					"default_image" : ROOT + "XLarge_Button_01.sub",
+					"over_image" : ROOT + "XLarge_Button_02.sub",
+					"down_image" : ROOT + "XLarge_Button_03.sub",
+				})
+
 # MT2009_PLUS_DIGI_CLIENT_QOL_V1 (Autor: Digi Rasta): "Opcje dodatkowe" (uiopcjedodatkowe.py)
 ElementAddBefore(MAIN_BOARD["children"], "escape_button",
 				{

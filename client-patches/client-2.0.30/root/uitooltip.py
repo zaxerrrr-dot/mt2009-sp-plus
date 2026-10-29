@@ -1237,6 +1237,13 @@ class ItemToolTip(ToolTip):
 			self.AdditionalTips(window_type, itemVnum, metinSlot, slotIndex)
 			self.ShowToolTip()
 			return
+		# MT2009_PLUS_RELIC_V1: a Relikt Duszy - its time, state and relic bonuses (their own ids, not points:
+		# uirelikt.py / relikt_data.py), never the ordinary bonus lines.
+		elif __import__("uirelikt").IsRelic(itemVnum):
+			__import__("uirelikt").RelicTooltip(self, itemVnum, metinSlot, attrSlot)
+			self.AdditionalTips(window_type, itemVnum, metinSlot, slotIndex)
+			self.ShowToolTip()
+			return
 		###########################################################################################
 
 

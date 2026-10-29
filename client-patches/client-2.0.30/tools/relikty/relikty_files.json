@@ -1,0 +1,36 @@
+{
+ "files": {
+  "d:/ymir work/ui/game/passive_attr/bg.sub": {
+   "sha256": "53c56d5566005cedd1cd8e28196caac51148a4c07597a2aef97604b58a35ddcc",
+   "size": 91
+  },
+  "d:/ymir work/ui/game/passive_attr/down_button_default.sub": {
+   "sha256": "ff117c9106f016a5a549ef97fb1f798267bf3f6ed445da6cdd6ca66cd5312b6c",
+   "size": 95
+  },
+  "d:/ymir work/ui/game/passive_attr/down_button_down.sub": {
+   "sha256": "c9e87c57d214261d27b402ad0d0f2880ffe20b1d71ec8bf43fa4875878769007",
+   "size": 93
+  },
+  "d:/ymir work/ui/game/passive_attr/down_button_over.sub": {
+   "sha256": "66ce73bb79812184666ef2dd6ae7c8b5ad13c899dc6c67c0dbff375442510be2",
+   "size": 92
+  },
+  "d:/ymir work/ui/game/passive_attr/up_button_default.sub": {
+   "sha256": "d4ba84bc5e6d90621cce0f7440d369b3b7adf2a97e980ef833dea8a73d913027",
+   "size": 92
+  },
+  "d:/ymir work/ui/game/passive_attr/up_button_down.sub": {
+   "sha256": "2e9183cfc41adce0fda074ee95825f4c1f20e9ec90065907f975201545f1278c",
+   "size": 94
+  },
+  "d:/ymir work/ui/game/passive_attr/up_button_over.sub": {
+   "sha256": "c208a0ba4bd36bc81bf8d3b660833fe2f3392a434865e0780e6dac66570ff408",
+   "size": 93
+  },
+  "d:/ymir work/ui/passive_01.dds": {
+   "sha256": "4d7ed6c298ab8210274483afc26c5e704f144a6b86df2d4ebd09f4f10db3ebfb",
+   "size": 56880
+  }
+ }
+}

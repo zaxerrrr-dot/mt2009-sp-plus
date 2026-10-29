@@ -144,6 +144,9 @@ param(
 #                      (POINT_GLOVE_LIGHTNING, playerbot_bonus67.cpp) (MT2009_PLUS_ELEC_GLOVE_V1; server-patches/elecglove)
 #   Wezowy Czepiec item.cpp - the level-120 helmet's one random second bonus (12880-12895, the serpent gear's yextra
 #                      line of server-patches/ysets: kind 2, one line) (MT2009_PLUS_SERPENT_HOOD_V1; server-patches/czepiec)
+#   Bonus Reliktu      char.h, char.cpp, char_item.cpp, item.cpp, char_battle.cpp, char_skill.cpp, item_manager.cpp,
+#                      cmd.cpp - the relic pages, their hooks and "/relikt" (MT2009_PLUS_RELIC_V1; server-patches/relikty,
+#                      after dmgprint, last)
 #
 # tools\New-M2UpdatePackage.ps1 refuses a server package without these marks.
 
@@ -1992,6 +1995,21 @@ if ((Test-Path -LiteralPath $zywiolbroniApply -PathType Leaf) -and
     if ($zywiolbroniResult.Changed) {
         $syncedFiles++
         Write-Host ('Applied {0} weapon element edit(s).' -f $zywiolbroniResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
+# Bonus Reliktu (server-patches/relikty, MT2009_PLUS_RELIC_V1; the "Official Passive Attr System" package, Best Studio;
+# the owner, 29 October 2026): the relic pages (char.h cells 436-437 of window INVENTORY after addeq's four-page store, never
+# sent), their SetItem / RemoveFromCharacter / ClearItem / flush / item update hooks, a relic used, the blows / death /
+# skill / boss drop / mount lines and "/relikt". Anchors on addeq's store and bonusy67's lines - after dmgprint (last). The
+# logic is playerbot_relikty.cpp.
+$reliktyApply = Join-Path $repo 'server-patches/relikty/Apply-ReliktyPatch.ps1'
+if ((Test-Path -LiteralPath $reliktyApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char.h') -PathType Leaf)) {
+    $reliktyResult = & $reliktyApply -SourceDir $engineGameSource
+    if ($reliktyResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Bonus Reliktu edit(s).' -f $reliktyResult.Applied) -ForegroundColor DarkGray
     }
 }
 

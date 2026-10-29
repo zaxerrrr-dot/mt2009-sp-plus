@@ -509,6 +509,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uibuffi").DestroyWindow()
 		# MT2009_PLUS_EKWIPUNEK_V1: the extra inventory's window (uiekwipunek.py).
 		__import__("uiekwipunek").DestroyWindow()
+		# MT2009_PLUS_RELIC_V1: Bonus Reliktu's window (uirelikt.py).
+		__import__("uirelikt").DestroyWindow()
 		# MT2009_PLUS_GOBLIN_V1: the Treasure Hunt's windows (uigoblin.py).
 		__import__("uigoblin").DestroyWindow()
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
@@ -851,6 +853,8 @@ class GameWindow(ui.ScriptWindow):
 			"extra_inventory"	: (lambda : Window("uiekwipunek"), None),
 			# MT2009_PLUS_WORLDBOSS_V1: Boss Swiata (uiworldboss.py), no key by default.
 			"world_boss"		: (lambda : Window("uiworldboss"), None),
+			# MT2009_PLUS_RELIC_V1: Bonus Reliktu (uirelikt.py), no key by default (the Esc menu's button opens it too).
+			"relic"				: (lambda : Window("uirelikt"), None),
 			# MT2009_PLUS_NEW_PET_V1: the New Pet System's window (uinewpet.py).
 			"new_pet"			: (lambda : Window("uinewpet"), None),
 			# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel ("Wyprawy", uidungeoninfo.py).
@@ -2766,6 +2770,8 @@ class GameWindow(ui.ScriptWindow):
 				__import__("uiswitchbot").Start()
 				# MT2009_PLUS_ADDEQ_V1: "/addeq hello" - the second equipment page's state (uiaddeq.py).
 				__import__("uiaddeq").Start()
+				# MT2009_PLUS_RELIC_V1: "/relikt hello" - the relic pages' state (uirelikt.py).
+				__import__("uirelikt").Start()
 
 		constInfo.FIXED_TIME_SINCE_START += FIXED_TIMESTEP_UPDATE
 		self.oneSecondTimer += FIXED_TIMESTEP_UPDATE
@@ -3598,6 +3604,8 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
 		serverCommandList["ekwipunek_refine"] = self.__EkwipunekRefine # MT2009_PLUS_EKWIPUNEK_REFINE_V1
 		serverCommandList["addeq_page"] = self.__AddeqPage # MT2009_PLUS_ADDEQ_V1
+		serverCommandList["relikt_state"] = self.__ReliktState # MT2009_PLUS_RELIC_V1
+		serverCommandList["relikt_open"] = self.__ReliktOpen # MT2009_PLUS_RELIC_V1
 		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
 		# a Stage A server only refreshes the window (the numbers are points now).
 		serverCommandList["champion_info"] = self.__ChampionInfo
@@ -4355,6 +4363,13 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_ADDEQ_V1: the second equipment page's state - unlocked, page (uiaddeq.py).
 	def __AddeqPage(self, *args):
 		__import__("uiaddeq").OnServerPage(*args)
+
+	# MT2009_PLUS_RELIC_V1: Bonus Reliktu - the relic pages' state, the window opened by a relic used (uirelikt.py).
+	def __ReliktState(self, *args):
+		__import__("uirelikt").OnServerState(*args)
+
+	def __ReliktOpen(self, *args):
+		__import__("uirelikt").OnServerOpen(*args)
 
 	# MT2009_PLUS_NEW_PET_V1: the New Pet System's lines (uinewpet.py).
 	def __NewPet(self, *args):

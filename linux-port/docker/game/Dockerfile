@@ -419,7 +419,7 @@ RUN set -eux; \
     # (MT2009_PLUS_BALATHOR_V1, author dracaryS; offered only while M2_BALATHOR_ON=1 hosts the map).
     # event_halloween_hair is Owsap's Halloween event (MT2009_PLUS_HALLOWEEN_V1, Autor: Owsap) in
     # place of the package's copy, whose handlers the runtime stage removes first.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora relikt_bron relikt_zbroja relikt_alchemik relikt_uriel relikt_chaegirab relikt_uszlachetnianie; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -673,6 +673,18 @@ RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/sp
  && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+50215([^0-9]|$)' "$f.new")" = 1 \
  && mv "$f.new" "$f" && rm -f "$a" \
  && echo "share: Halloween Chest 50215"
+
+# MT2009_PLUS_RELIC_V1: Pakiet Dusz (30263, special_item_group.relikty.txt - tools/relikty/gen_relikty.py): one of
+# each soul of Bonus Reliktu (Type Pct). Appended once, after any group of the same vnum is cut out.
+COPY special_item_group.relikty.txt /tmp/special_item_group.relikty.txt
+RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/special_item_group.relikty.txt \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$a" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+30263([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && { [ -z "$(tail -c 1 "$f.new")" ] || printf '\r\n' >> "$f.new"; } \
+ && cat "$a" >> "$f.new" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+30263([^0-9]|$)' "$f.new")" = 1 \
+ && mv "$f.new" "$f" && rm -f "$a" \
+ && echo "share: Pakiet Dusz 30263"
 
 # MT2009_PLUS_YUTNORI_V1: the Yut Nori trophies and bundles (83030-83034,
 # special_item_group.yutnori.txt; playerbot_yutnori.h hands them out). Appended

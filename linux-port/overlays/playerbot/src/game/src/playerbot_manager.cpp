@@ -214,6 +214,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_ornament_farmers.h" // MT2009_PLUS_ORNAMENT_FARMERS_V1: the ornament farmers of the second villages' Sworn camps
 #include "playerbot_newpet_bots.h" // MT2009_PLUS_NEWPET_BOTS_V1: the bots hatch, feed, raise and evolve New Pet System pets; the pet goods on their counters
 #include "playerbot_energy_shards.h" // MT2009_PLUS_BOT_ENERGY_SHARDS_V1: Odlamki Energii from the merchant's scrap at the Alchemist, their counter caps; the fixed shard and talisman prices
+// MT2009_PLUS_RELIC_V1: Bonus Reliktu's souls, Pakiet Dusz, relics and shards are never a bot's scrap or stall goods
+// (playerbot_relikty.cpp; read by IsPlayerBotJunkItem and ScorePlayerBotShopStockRules)
+bool Mt2009RelicIsKeptVnum(DWORD dwVnum);
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
 #include "playerbot_upstream_botlogic.h" // MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the surplus level-30 weapon to the anvil, the next tier made ready, the own box before the market
@@ -430,6 +433,10 @@ namespace { bool HandlePlayerBotConversationWith(DWORD playerPID, const char* pl
 // sash partner, refine scrolls; the set chests) - after every pass whose needs it reads
 // MT2009_PLUS_BOT_USE_SHOP_AIDS_V1: the bots use Seon-Hae's additives, 71052 on a Champion's glove and 71083 on a
 // cracked socket, and buy them in V3 when a pass of theirs wants one (the goals ask playerbot_shop_aids.h)
+// MT2009_PLUS_RELIC_V1: Bonus Reliktu for the bots (playerbot_relikty.cpp) - the tick beside the shop aids, the soul a
+// V3 goal asks for (playerbot_shop_aids.h CollectPlayerBotShopAidGoals)
+void Mt2009RelicBotTick(LPCHARACTER ch, DWORD dwNow);
+int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 #define MT2009_PLUS_BOT_USE_SHOP_AIDS_V1 1
 #include "playerbot_ishop3_goals.h"
 #include "playerbot_shop_aids.h"
@@ -8030,6 +8037,10 @@ WritePlayerBotGuildStatus(dwNow);
 		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
 				ManagePlayerBotGear2(ch, state, dwNow))
 			continue;
+		// MT2009_PLUS_RELIC_V1: the relic of a level-120 bot - the dailies, Chaegirab's relic, bonuses, activation,
+		// charging (playerbot_relikty.cpp; its own 5-minute clock, never an errand).
+		if (!bServingPerson && !state.bMultiPullActive)
+			::Mt2009RelicBotTick(ch, dwNow);
 		// MT2009_PLUS_BOT_USE_SHOP_AIDS_V1: 71083 on a cracked socket and 71052 on a Champion's glove where the bot
 		// stands, and the errand to Seon-Hae (playerbot_shop_aids.h). Beside the workshop and for its reason.
 		if (!bBagFirst && !bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
