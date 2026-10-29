@@ -264,6 +264,12 @@
 // instance (mount, armour shape) gets it back (UserInterface/Mt2009Aura.cpp). An old exe has no chrmgr.SetAura -
 // root then draws nothing and nothing else changes.
 #define ENABLE_MT2009_AURA
+// MT2009_PLUS_WEAPON_ELEMENT_V1 (Zaczarowanie Zywiolu Broni, server-patches/zywiolbroni): the element's effect on a weapon
+// with enchant +3 and its refine "stars" - the server says "WELEMFX <vid> <type>" (a chat command, no packet), root's
+// welemfx.py calls chrmgr.SetWeaponElement(vid, type) after chrmgr.RegisterWeaponElementEffect(type, kind, file); kept in
+// the actor's data like the aura (needs ENABLE_MT2009_AURA), drawn only while the weapon shows its refine effect
+// (UserInterface/Mt2009WeaponElement.cpp). An old exe has no chrmgr.SetWeaponElement - root then draws nothing.
+#define ENABLE_MT2009_WEAPON_ELEMENT
 // MT2009_PLUS_BUFFI_V2 (Buffi, server-patches/buffi): Ameria's four costume slots of the buffi - WEAR_BUFFI_BODY / HEAD /
 // WEAPON / SASH 28-31 (Server/common/length.h; the free wear cells under WEAR_MAX 32, so no cell layout, packet or
 // database change), c_Buffi_Slot_* (GameType.h), item.BUFFI_SLOT_START/BODY/HEAD/WEAPON/SASH/COUNT

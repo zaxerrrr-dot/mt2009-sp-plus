@@ -39,6 +39,9 @@ struct SNetworkActorData
 #ifdef ENABLE_MT2009_AURA
 	DWORD	m_dwAura;	// MT2009_PLUS_AURA_V1: the outfit's vnum ("AURA view", chrmgr.SetAura), 0 none
 #endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+	DWORD	m_dwWeaponElement;	// MT2009_PLUS_WEAPON_ELEMENT_V1: "WELEMFX", chrmgr.SetWeaponElement (0 none, 1..6)
+#endif
 
 	DWORD	m_dwOwnerVID;
 
@@ -164,6 +167,10 @@ class CNetworkActorManager : public CReferenceObject
 		// MT2009_PLUS_AURA_V1: the aura outfit of an actor (kept for its instance's re-creation), Mt2009Aura.cpp
 		bool SetActorAura(DWORD dwVID, DWORD dwVnum);
 		static CNetworkActorManager* ms_pkAuraInstance;	// the one the network stream owns (python's way in)
+#endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+		// MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon element of an actor (kept for its instance's re-creation)
+		bool SetActorWeaponElement(DWORD dwVID, DWORD dwType);
 #endif
 
 		void Update();

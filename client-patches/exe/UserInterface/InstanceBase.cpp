@@ -3208,6 +3208,9 @@ bool CInstanceBase::SetWeapon(DWORD eWeapon)
 		__GetRefinedEffect(pItemData);
 	else
 		__ClearWeaponRefineEffect();
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+	__AttachWeaponElementEffect();	// MT2009_PLUS_WEAPON_ELEMENT_V1: only beside the refine effect just attached
+#endif
 #ifdef ENABLE_ITEM_SHINING_TABLE
 	__AttachShiningEffect(eWeapon, true);	// MT2009_PLUS_AREZZO_COSTUME_SETS_V1
 #endif
@@ -3328,6 +3331,9 @@ bool CInstanceBase::ChangeArmor(DWORD dwArmor)
 		return false;
 	}
 
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+	m_dwWeaponElementEffect[0] = m_dwWeaponElementEffect[1] = 0;	// MT2009_PLUS_WEAPON_ELEMENT_V1: gone with SetRace (SetWeapon puts it back)
+#endif
 	SetArmor(dwArmor);
 	SetHair(eHair);
 	SetWeapon(eWeapon);
@@ -3668,6 +3674,10 @@ void CInstanceBase::__Initialize()
 #ifdef ENABLE_MT2009_AURA
 	m_dwAuraVnum = 0;	// MT2009_PLUS_AURA_V1 (the effect goes with the actor)
 	m_dwAuraEffect = 0;
+#endif
+#ifdef ENABLE_MT2009_WEAPON_ELEMENT
+	m_dwWeaponElement = 0;	// MT2009_PLUS_WEAPON_ELEMENT_V1 (the effect goes with the actor)
+	m_dwWeaponElementEffect[0] = m_dwWeaponElementEffect[1] = 0;
 #endif
 
 	m_sAlignment = 0;
