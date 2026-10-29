@@ -217,6 +217,9 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 // MT2009_PLUS_RELIC_V1: Bonus Reliktu's souls, Pakiet Dusz, relics and shards are never a bot's scrap or stall goods
 // (playerbot_relikty.cpp; read by IsPlayerBotJunkItem and ScorePlayerBotShopStockRules)
 bool Mt2009RelicIsKeptVnum(DWORD dwVnum);
+// MT2009_PLUS_HORSE40_V1: Pasza dla Konia, 50046 / 50047 / 50049 and the horse skill books 55050-55067 are never a bot's
+// scrap, stall goods or chat deal (konie_rozwoj.cpp; read with the relic's)
+bool Mt2009KonieIsKeptVnum(DWORD dwVnum);
 #include "playerbot_economy.h"
 #include "playerbot_progression_needs.h"
 #include "playerbot_upstream_botlogic.h" // MT2009_PLUS_UPSTREAM_BOTLOGIC_*_V1: the surplus level-30 weapon to the anvil, the next tier made ready, the own box before the market

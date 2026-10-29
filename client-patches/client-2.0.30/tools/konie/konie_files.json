@@ -1,0 +1,311 @@
+{
+ "files": {
+  "d:/ymir work/npc_mount/horse_guild/00.msa": {
+   "ctype": 2,
+   "sha256": "8c30481e377420b8f589b68447036e890b125050a430fc88e717292214e986cb",
+   "size": 156,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/00.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/00_1.msa": {
+   "ctype": 2,
+   "sha256": "93f0f2f0a460363ec59b3cddff818c88a27c55e39445138dc80ded10badca5e2",
+   "size": 165,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/00_1.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/00_2.msa": {
+   "ctype": 2,
+   "sha256": "5d3098e9a4aa51a9ce6c1413f9f33b2f7dfc64fc28603b0d8d7d8fd0df2f5d91",
+   "size": 165,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/00_2.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/02.msa": {
+   "ctype": 2,
+   "sha256": "985d4b7618f8dffaf95c0cbb4f98ac39d51c5c1153c54c67d20672eaac5fb1ac",
+   "size": 163,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/02.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/03.msa": {
+   "ctype": 2,
+   "sha256": "97808750253c92f43b8e8289d56a86431651f77308268bf952df7aa93f85993b",
+   "size": 163,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/03.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/20.msa": {
+   "ctype": 2,
+   "sha256": "0c993f6512208bca6d9a2d5ac2bdd1b8353100d39553ad922a7831e8f962a943",
+   "size": 163,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/20.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/20_1.msa": {
+   "ctype": 2,
+   "sha256": "70af86e53d04aef26c84d2a331737b4db6a8ce9a24c3dd2b28d7d857b594fe62",
+   "size": 165,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/20_1.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/25.msa": {
+   "ctype": 2,
+   "sha256": "9aaf0d9d275026809a796500a7db5dccb3114b132d5bfe0800dc377c83a9957e",
+   "size": 161,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/25.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/30.msa": {
+   "ctype": 2,
+   "sha256": "4c0ec8a869eb37d61cb0db98f8af3cf3157fd2bf047a49a57665f4579b50cec4",
+   "size": 163,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/30.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/31.msa": {
+   "ctype": 2,
+   "sha256": "14f6ee42bc62310bbeb54aa0402bd78c79f10f79fb5b9fc752a976fb44d8ba71",
+   "size": 163,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/31.msa, motion renamed"
+  },
+  "d:/ymir work/npc_mount/horse_guild/horse_guild.gr2": {
+   "ctype": 1,
+   "sha256": "0af9c5241ba03133c41e58f2411e0837da9078eda2536575bc0752e970cac52d",
+   "size": 152944,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/horse_guild.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/horse_guild_01.dds": {
+   "ctype": 1,
+   "sha256": "14ef143d6d0949e4ca52d9f78caca406599c53c29cb4985f586acdd7659a0d3c",
+   "size": 174904,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/horse_guild_01.dds"
+  },
+  "d:/ymir work/npc_mount/horse_guild/horse_guild_01.msm": {
+   "ctype": 2,
+   "sha256": "cc30372d540e738e98f66bda1eb4157002711da12d69a090013d9b1861204094",
+   "size": 1107,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/horse_guild_01.msm"
+  },
+  "d:/ymir work/npc_mount/horse_guild/horse_guild_02.dds": {
+   "ctype": 1,
+   "sha256": "e913c8b401c22c60310e87f3cd87a896d81c6398b1d29fb223a476e534243a56",
+   "size": 174904,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/horse_guild_02.dds"
+  },
+  "d:/ymir work/npc_mount/horse_guild/horse_guild_02.msm": {
+   "ctype": 2,
+   "sha256": "19018fa3a7b2ecf0f4cabb59bf8684ffda3da641c6bc8b6d60f7327075b6914f",
+   "size": 1364,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/horse_guild_02.msm"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_00.gr2": {
+   "ctype": 1,
+   "sha256": "6515df5cb7f9574600963a35f19a5e3c5e04965817709b3de1745db388592f4b",
+   "size": 20784,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse/00.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_00_1.gr2": {
+   "ctype": 1,
+   "sha256": "89ac23425aa3daac02b35ae27fae0ff671a82a50e31358ccb83d15a2dabe8236",
+   "size": 37852,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/00_1.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_00_2.gr2": {
+   "ctype": 1,
+   "sha256": "473b56e14650c287f8bb8b4160be87e54b775b18a7e40933a619dc6e0194f158",
+   "size": 43240,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/00_2.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_02.gr2": {
+   "ctype": 1,
+   "sha256": "d1f2d94db64f2867796ec0cbc03f32529c8e2c8342f50b2712dbb4c9d535d799",
+   "size": 19224,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/02.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_03.gr2": {
+   "ctype": 1,
+   "sha256": "bd686579b10fb6246a044888859b1a15c3dac45949026c4d16a7e5374087da3f",
+   "size": 26492,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/03.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_20.gr2": {
+   "ctype": 1,
+   "sha256": "61de006447cca55275459446e5e226990586004d0fbb4b16789d764ba7aa67d1",
+   "size": 22047,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/20.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_20_1.gr2": {
+   "ctype": 1,
+   "sha256": "b640a3c8b6df7fab802edb85302837d60428075ec5bb8ce3c048c86f1e62bf70",
+   "size": 22069,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/20_1.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_25.gr2": {
+   "ctype": 1,
+   "sha256": "d707c6b56f249bef2ab5e4044453475911afb9f2e06e949296f476ec0c6abebf",
+   "size": 47886,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/25.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_30.gr2": {
+   "ctype": 1,
+   "sha256": "68623940db46830fd9e5756cf94b09952901480fcd169520f762cee031774c38",
+   "size": 19342,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/30.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/mot_horse_event1_31.gr2": {
+   "ctype": 1,
+   "sha256": "c397a3b06d996e3b2b28a34fa3091841e595a47f273cdfff5c4afb06069b31e3",
+   "size": 42859,
+   "source": "GF 26.1.11 d_/ymir work/npc/horse_event1/31.gr2"
+  },
+  "d:/ymir work/npc_mount/horse_guild/motlist.txt": {
+   "ctype": 2,
+   "sha256": "ed2364f4b22309253e904fc5dabf01479a424b89b91b4a37fe04bedaa98a2afe",
+   "size": 347,
+   "source": "GF 26.1.11 d_/ymir work/npc_mount/horse_guild/motlist.txt"
+  },
+  "d:/ymir work/ui/konie/exp_gage_bar.sub": {
+   "ctype": 2,
+   "sha256": "50bc158f7c2a96a4bdb92f6cfb99f0e472254cf7c5b402b3e73b8ca53a118d07",
+   "size": 104,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/exp_gage_bar.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/exp_gage_bg.sub": {
+   "ctype": 2,
+   "sha256": "7b8ef9ffd309253494933a9791c47e7f189b5ecc4a7b5373555d4e32d57b55ec",
+   "size": 103,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/exp_gage_bg.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/feed_btn_1.sub": {
+   "ctype": 2,
+   "sha256": "ee755db8a1451d2d447e6d44ebe9eb9881b5aad3bd18fde85cbfab37a4af0294",
+   "size": 105,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/feed_btn_1.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/gem_icon.sub": {
+   "ctype": 2,
+   "sha256": "6f6463ac9bf97703a7955288a8a0ca30d889fde5f571b2b5549d2df6b4f6719e",
+   "size": 106,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/gem_icon.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/gem_text_bg.sub": {
+   "ctype": 2,
+   "sha256": "06d5924b213228d6d25831ac0d8e7b96f77d7db3443da23ded7c05451b886430",
+   "size": 106,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/gem_text_bg.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/level_cur_bg.sub": {
+   "ctype": 2,
+   "sha256": "717478bb8f56eeb461f39959aa6a623a92cb954bf642d06f2a79381e7d15e41d",
+   "size": 103,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/level_cur_bg.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/level_next_bg.sub": {
+   "ctype": 2,
+   "sha256": "b5e8479cd113575046fd6ca34b76368ac3951b7ec13d8bfafb959d7f9aead94d",
+   "size": 105,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/level_next_bg.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/levelup_arrow.sub": {
+   "ctype": 2,
+   "sha256": "6d690283af55d56ab9b795aee2b242754d6ce77584b432fa0a306174b20a7181",
+   "size": 106,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/levelup_arrow.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_effect_up.sub": {
+   "ctype": 2,
+   "sha256": "20883631e46b91dc838f5b577099bd7b6b2f7140550e3d89b4c6f9d8acdd95d6",
+   "size": 107,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_effect_up.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_exp.sub": {
+   "ctype": 2,
+   "sha256": "9fb65a21c20e629e691258e705f0da3c29215ec2dc456b4548244eb6de763ad5",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_exp.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_gyeonggong.sub": {
+   "ctype": 2,
+   "sha256": "e2002b6e72aec7f860c9da5f2ad4af2e5fd343ae6db6fa774444719ac280f327",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_gyeonggong.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_hit_pct.sub": {
+   "ctype": 2,
+   "sha256": "3da89e531d6a0c492272e3ddbcbd420a884ab02f0eabe516769c01870eed8b71",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_hit_pct.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_invisibility.sub": {
+   "ctype": 2,
+   "sha256": "9b148b20b0e3bcaecffff65e578707beea66b5266dcf510cc6c36aae5cc41e9e",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_invisibility.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_knockback.sub": {
+   "ctype": 2,
+   "sha256": "6a95531eee7b69cedb6e0521f7fd50ccf357201c9ca6d72e4dac71a39746293b",
+   "size": 106,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_knockback.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_nimble.sub": {
+   "ctype": 2,
+   "sha256": "f054f7c38c2dad6bd04c1546fa10b8c58dfe382913baaa5553494c057740f029",
+   "size": 108,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_nimble.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_random_strong.sub": {
+   "ctype": 2,
+   "sha256": "e7f1f957a91be89563456aa912d1d19ac84ca2e8c40ca7392da86adac99b164c",
+   "size": 107,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_random_strong.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_speed.sub": {
+   "ctype": 2,
+   "sha256": "db09eeb70229a4b2e4c33832920452c23b4681c2704fffc2206d6e3ab902691d",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_speed.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_sungma_hp.sub": {
+   "ctype": 2,
+   "sha256": "be6317c5f055e57d662a0a1144831b94348db3a233c33a3c167491a00bec4313",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_sungma_hp.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_sungma_immune.sub": {
+   "ctype": 2,
+   "sha256": "1fac0a614453a281842406a7d2897355cd4bf78de8476859ec34ecf114f8b994",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_sungma_immune.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_sungma_move.sub": {
+   "ctype": 2,
+   "sha256": "eff01f21af2afc50f0deffb7940ee92e7d15b2488490605f39a62305eb896c39",
+   "size": 109,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_sungma_move.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/mount_upgrade_skill_sungma_str.sub": {
+   "ctype": 2,
+   "sha256": "ae1a70ae0591f101535078566d975cc38e0fbb4e10aad1800070311b3f74e183",
+   "size": 108,
+   "source": "GF 26.1.11 d_/ymir work/ui/skill/common/mount_upgrade/mount_upgrade_skill_sungma_str.sub, image konie/newskillcommon_konie.dds"
+  },
+  "d:/ymir work/ui/konie/newskillcommon_konie.dds": {
+   "ctype": 1,
+   "sha256": "78ed05bca0309d4df87e4f8d217aaf1c62278860c3ff013515486a51b3d4bef1",
+   "size": 196736,
+   "source": "GF 26.1.11 d_/ymir work/ui/newskillcommon.dds"
+  },
+  "d:/ymir work/ui/konie/riding_extend_001.dds": {
+   "ctype": 1,
+   "sha256": "217b1f5accd7474e12e7f7bfad38585e22961fb258c766df56f4d82e92084013",
+   "size": 23984,
+   "source": "GF 26.1.11 d_/ymir work/ui/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/yang_icon.sub": {
+   "ctype": 2,
+   "sha256": "ee755db8a1451d2d447e6d44ebe9eb9881b5aad3bd18fde85cbfab37a4af0294",
+   "size": 105,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/yang_icon.sub, image konie/riding_extend_001.dds"
+  },
+  "d:/ymir work/ui/konie/yang_text_bg.sub": {
+   "ctype": 2,
+   "sha256": "0b95a716faadf807b29ab5a029058e21010bc8b6578db7892c66ef9bed48be55",
+   "size": 103,
+   "source": "GF 26.1.11 d_/ymir work/ui/game/mount_upgrade_system/yang_text_bg.sub, image konie/riding_extend_001.dds"
+  }
+ },
+ "marker": "MT2009_PLUS_HORSE40_V1"
+}
