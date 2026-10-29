@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """gen_edits.py [<engine game/src dir>] -- writes edits.json of Druga strona ekwipunku (the "Official Additional
-Equipment Page" package on our engine, MT2009_PLUS_ADDEQ_V1, README.md). With a game/src dir (a tree with every patch
+Equipment Page" package on our engine, MT2009_PLUS_ADDEQ_V1 + V2 four pages, README.md). With a game/src dir (a tree with every patch
 of yohara-deploy.sh up to balathor), also checks that every edit's old code is there exactly once (or its marker
 already is).
 
@@ -122,6 +122,40 @@ edit("cmd.cpp", "table",
 	"\t{ \"switchbot\",\tdo_switchbot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SWITCHBOT_V1 (table)\n",
 	"\t{ \"switchbot\",\tdo_switchbot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SWITCHBOT_V1 (table)\n"
 	"\t{ \"addeq\",\tdo_addeq,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// " + M + " (table)\n")
+
+# ================================================================ MT2009_PLUS_ADDEQ_V2: four pages (the owner, 29 October
+# 2026: "Yes, add them; each next page is unlocked with the same scroll from the ItemShop."). On top of the V1 edits
+# (each old text below is V1's new one, and keeps V1's marker): the store grows to four blocks of WEAR_MAX_NUM cells
+# (308-435, a home block per page - README.md), and the item load sends an item whose store cell is already taken to
+# the bag.
+M2 = "MT2009_PLUS_ADDEQ_V2"
+
+
+def edit2(file, tag, old, new):
+	E.append({"file": file, "marker": "%s (%s)" % (M2, tag), "old": old, "new": new})
+
+
+edit2("char.h", "cells",
+	"\tMT2009_ADDEQ_SLOT_END = MT2009_ADDEQ_SLOT_START + WEAR_MAX_NUM,\n",
+	"\t// " + M2 + " (cells): four equipment pages - a home block of WEAR_MAX_NUM cells per page (II 308-339, III 340-371,\n"
+	"\t// IV 372-403, I 404-435); the worn page's own block stays empty\n"
+	"\tMT2009_ADDEQ_STORE_BLOCKS = 4,\n"
+	"\tMT2009_ADDEQ_SLOT_END = MT2009_ADDEQ_SLOT_START + WEAR_MAX_NUM * MT2009_ADDEQ_STORE_BLOCKS,\n")
+edit2("char.h", "slots",
+	"\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// " + M + " (slots): the inactive equipment page, by wear cell\n",
+	"\tstd::array<LPITEM,MT2009_ADDEQ_SLOT_END - MT2009_ADDEQ_SLOT_START> pAddeqItems{};\t// " + M + " (slots): the inactive "
+	"equipment page, by wear cell - " + M2 + " (slots): every page's block\n")
+edit2("char.h", "methods",
+	"\t\tLPITEM\t\t\tMt2009AddeqGetItem(BYTE bWear) const;\n",
+	"\t\tLPITEM\t\t\tMt2009AddeqGetItem(BYTE bWear) const;\n"
+	"\t\tLPITEM\t\t\tMt2009AddeqGetCellItem(WORD wCell) const;\t// " + M2 + " (methods): a store cell's item\n")
+
+# ---------------------------------------------------------------- input_db.cpp
+edit2("input_db.cpp", "load",
+	"\t\tif ((p->window == INVENTORY && ch->GetInventoryItem(p->pos)) ||\n",
+	"\t\t// " + M2 + " (load): a store cell of the equipment pages already taken (two rows on one cell) - the item to the bag\n"
+	"\t\tif ((p->window == INVENTORY && CHARACTER::Mt2009AddeqIsCell(p->pos) && ch->Mt2009AddeqGetCellItem(p->pos)) ||\n"
+	"\t\t\t\t(p->window == INVENTORY && ch->GetInventoryItem(p->pos)) ||\n")
 
 
 def main():

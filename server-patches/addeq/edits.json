@@ -76,5 +76,29 @@
   "marker": "MT2009_PLUS_ADDEQ_V1 (table)",
   "old": "\t{ \"switchbot\",\tdo_switchbot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SWITCHBOT_V1 (table)\n",
   "new": "\t{ \"switchbot\",\tdo_switchbot,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_SWITCHBOT_V1 (table)\n\t{ \"addeq\",\tdo_addeq,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t},\t// MT2009_PLUS_ADDEQ_V1 (table)\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ADDEQ_V2 (cells)",
+  "old": "\tMT2009_ADDEQ_SLOT_END = MT2009_ADDEQ_SLOT_START + WEAR_MAX_NUM,\n",
+  "new": "\t// MT2009_PLUS_ADDEQ_V2 (cells): four equipment pages - a home block of WEAR_MAX_NUM cells per page (II 308-339, III 340-371,\n\t// IV 372-403, I 404-435); the worn page's own block stays empty\n\tMT2009_ADDEQ_STORE_BLOCKS = 4,\n\tMT2009_ADDEQ_SLOT_END = MT2009_ADDEQ_SLOT_START + WEAR_MAX_NUM * MT2009_ADDEQ_STORE_BLOCKS,\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ADDEQ_V2 (slots)",
+  "old": "\tstd::array<LPITEM,WEAR_MAX_NUM> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell\n",
+  "new": "\tstd::array<LPITEM,MT2009_ADDEQ_SLOT_END - MT2009_ADDEQ_SLOT_START> pAddeqItems{};\t// MT2009_PLUS_ADDEQ_V1 (slots): the inactive equipment page, by wear cell - MT2009_PLUS_ADDEQ_V2 (slots): every page's block\n"
+ },
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_ADDEQ_V2 (methods)",
+  "old": "\t\tLPITEM\t\t\tMt2009AddeqGetItem(BYTE bWear) const;\n",
+  "new": "\t\tLPITEM\t\t\tMt2009AddeqGetItem(BYTE bWear) const;\n\t\tLPITEM\t\t\tMt2009AddeqGetCellItem(WORD wCell) const;\t// MT2009_PLUS_ADDEQ_V2 (methods): a store cell's item\n"
+ },
+ {
+  "file": "input_db.cpp",
+  "marker": "MT2009_PLUS_ADDEQ_V2 (load)",
+  "old": "\t\tif ((p->window == INVENTORY && ch->GetInventoryItem(p->pos)) ||\n",
+  "new": "\t\t// MT2009_PLUS_ADDEQ_V2 (load): a store cell of the equipment pages already taken (two rows on one cell) - the item to the bag\n\t\tif ((p->window == INVENTORY && CHARACTER::Mt2009AddeqIsCell(p->pos) && ch->Mt2009AddeqGetCellItem(p->pos)) ||\n\t\t\t\t(p->window == INVENTORY && ch->GetInventoryItem(p->pos)) ||\n"
  }
 ]

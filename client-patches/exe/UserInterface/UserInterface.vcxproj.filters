@@ -25,6 +25,7 @@
     <ClCompile Include="Mt2009AutoHuntTest.cpp" />
     <ClCompile Include="PythonBackground.cpp" />
     <ClCompile Include="PythonBackgroundModule.cpp" />
+    <ClCompile Include="NavGrid.cpp" />
     <ClCompile Include="PythonCharacterManager.cpp" />
     <ClCompile Include="PythonCharacterManagerModule.cpp" />
     <ClCompile Include="PythonCharacterModule.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="AccountConnector.h" />
     <ClInclude Include="InsultChecker.h" />
     <ClInclude Include="NetworkActorManager.h" />
+    <ClInclude Include="NavGrid.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="ProcessCRC.h" />
     <ClInclude Include="PythonExceptionSender.h" />

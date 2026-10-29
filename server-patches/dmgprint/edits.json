@@ -1,0 +1,20 @@
+[
+ {
+  "file": "char.h",
+  "marker": "MT2009_PLUS_DAMAGE_PRINT_V1 (flags)",
+  "old": "\tDAMAGE_BLEEDING\t= (1 << 6),\n#endif\n};\n",
+  "new": "\tDAMAGE_BLEEDING\t= (1 << 6),\n#endif\n\t// MT2009_PLUS_DAMAGE_PRINT_V1 (flags): Damage Print Improve (client-patches/exe ENABLE_DAMAGE_PRINT_IMPROVE). Both ride in the\n\t// flag byte of the unchanged TPacketGCDamageInfo (no new packet, no size change - an old exe ignores them):\n\t// DAMAGE_ATTACKER_PC - the hit came from a player (bots too); DAMAGE_MISS - a hit that did no damage.\n#if defined(ENABLE_WOLFMAN_CHARACTER) && !defined(USE_MOB_BLEEDING_AS_POISON)\n#error \"MT2009_PLUS_DAMAGE_PRINT_V1: DAMAGE_ATTACKER_PC uses bit 6, the bleeding flag - move it before enabling the wolfman\"\n#endif\n\tDAMAGE_ATTACKER_PC = (1 << 6),\n\tDAMAGE_MISS\t= (1 << 7),\n};\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_DAMAGE_PRINT_V1 (attacker)",
+  "old": "\t\tdamageInfo.flag = DamageFlag;\n",
+  "new": "\t\tdamageInfo.flag = DamageFlag;\n\t\t// MT2009_PLUS_DAMAGE_PRINT_V1 (attacker): the client shows \"miss\" instead of dodge/block when a player struck\n\t\tif (pAttacker && pAttacker->IsPC())\n\t\t\tdamageInfo.flag |= DAMAGE_ATTACKER_PC;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_DAMAGE_PRINT_V1 (miss)",
+  "old": "\t\t\tSendDamagePacket(pAttacker, dam, damageFlag);\n",
+  "new": "\t\t\t// MT2009_PLUS_DAMAGE_PRINT_V1 (miss): a hit that did nothing is sent as DAMAGE_MISS alone (the package's rule)\n\t\t\tSendDamagePacket(pAttacker, dam, dam <= 0 ? (BYTE) DAMAGE_MISS : damageFlag);\n"
+ }
+]

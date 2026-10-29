@@ -224,6 +224,16 @@ class GameWindow(ui.ScriptWindow):
 		self.SetSize(wndMgr.GetScreenWidth(), wndMgr.GetScreenHeight())
 
 		self.quickSlotPageIndex = 0
+		# MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the character's expanded quick slot bar and its last page (quickslotstate.py, uitaskbar.py);
+		# the page buttons go through __SelectQuickPage, which remembers the page
+		import uiTaskBar
+		if uiTaskBar.QUICKSLOT_IMPROVE:
+			import quickslotState
+			quickslotState.Activate(player.GetName())
+			self.quickSlotPageIndex = quickslotState.GetPage()
+			if self.interface:
+				self.interface.SetQuickPageEvent(ui.__mem_func__(self.__SelectQuickPage))
+				self.interface.ApplyQuickSlotState()
 		self.PickingCharacterIndex = -1
 		self.PickingItemIndex = -1
 		self.consoleEnable = False
@@ -1014,6 +1024,16 @@ class GameWindow(ui.ScriptWindow):
 	def __YSetsItem(self, *args):
 		__import__("ysets").OnServer(*args)
 
+	# MT2009_PLUS_QUEST_RENEWAL_V1 (QUEST_RENEWAL, Autor: Owsap): the server's quest index -> category map
+	# (playerbot_quest_renewal.cpp), "QuestCategory <part> <index>:<category>,..."
+	def __QuestRenewalCategory(self, part = "0", data = "-", *rest):
+		__import__("questrenewal").OnServerCommand(part, data)
+		try:
+			if self.interface:
+				self.interface.RefreshQuest()
+		except AttributeError:
+			pass	# the windows are not made yet: the page reads the map when it opens
+
 	def __SidekickVid(self, vid="0", *rest):
 		# The keeper ends with the game window; the next one hears the
 		# VID again, because a warp is a new login on the server.
@@ -1196,6 +1216,11 @@ class GameWindow(ui.ScriptWindow):
 	def __SelectQuickPage(self, pageIndex):
 		self.quickSlotPageIndex = pageIndex
 		player.SetQuickPage(pageIndex)
+		import uiTaskBar
+		if uiTaskBar.QUICKSLOT_IMPROVE: # MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the page the exe settled on, remembered
+			import quickslotState
+			self.quickSlotPageIndex = player.GetQuickPage()
+			quickslotState.SetPage(self.quickSlotPageIndex)
 		self.__SetQuickSlotMode()
 
 	def __HideUserInterface(self):
@@ -3517,6 +3542,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1
+		serverCommandList["QuestCategory"] = self.__QuestRenewalCategory # MT2009_PLUS_QUEST_RENEWAL_V1
 		serverCommandList["GlobalRankingUpdatePacketMyPos"] = self.__Global_Ranking__RecvSelfData
 		serverCommandList["SidekickEqNone"] = self.__SidekickEqNone
 		serverCommandList["SidekickEqBegin"] = self.__SidekickEqBegin

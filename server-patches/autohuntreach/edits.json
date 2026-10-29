@@ -1,0 +1,8 @@
+[
+ {
+  "file": "cmd_general.cpp",
+  "marker": "MT2009_PLUS_AUTOHUNT_REACH_V1 (offer)",
+  "old": "\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n\t{\n\t\tif (score >= m_iBestScore)\n\t\t\treturn;\n\t\tconst bool blocked = Mt2009PlusAutoHuntBlocked(m_ch, victim);\n",
+  "new": "\tvoid Mt2009PlusOffer(LPCHARACTER victim, int score)\n\t{\n\t\tif (score >= m_iBestScore)\n\t\t\treturn;\n\t\t// MT2009_PLUS_AUTOHUNT_REACH_V1 (offer) (server-patches/autohuntreach, the owner, 29 October\n\t\t// 2026: Auto Lowy ran into walls at monsters it could not get to): a monster on ground the\n\t\t// hunter cannot walk to - an island, a cliff top, the next room of a dungeon, another\n\t\t// component of the bots' grid (CPlayerBotManager::CanHumanReach) - is never named. Only a\n\t\t// grid already built answers (never built from here); unknown (-1) keeps the monster, and\n\t\t// one within a blow's reach (400) is kept whatever stands between.\n\t\tif (Mt2009PlusDistance(m_ch, victim) > 400 &&\n\t\t\t\tCPlayerBotManager::instance().CanHumanReach(m_ch, victim->GetX(), victim->GetY()) == 0)\n\t\t\treturn;\n\t\tconst bool blocked = Mt2009PlusAutoHuntBlocked(m_ch, victim);\n"
+ }
+]

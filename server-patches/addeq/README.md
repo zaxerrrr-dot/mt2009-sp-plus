@@ -17,6 +17,35 @@ W paczce obie strony są **założone**: 12 nowych pól `WEAR_SECOND_*`, przenum
 przemapowuje sloty okna (`SetSlotChange`). To nowy układ pól ekwipunku – stary klient (numery pól ekwipunku, Smoczych
 Kamieni i pasa są w nim na sztywno) by go nie przyjął, a każdy nasz system czytający `GetWear` musiałby się zmienić.
 
+## Cztery strony (`MT2009_PLUS_ADDEQ_V2`)
+
+Właściciel, 29.10.2026: *„Yes, add them; each next page is unlocked with the same scroll from the ItemShop.”*
+
+- **Odblokowanie**: każde użycie 38306 / 76055 odblokowuje kolejną stronę (II, III, IV); czwarte użycie odmawia
+  („Masz już odblokowane wszystkie 4 strony ekwipunku.”), przedmiot zostaje. Przedmiot w ItemShopie V3 bez zmian
+  (indeks 19, 199 SM). Flaga `addeq.unlocked` to teraz **liczba** dodatkowych stron 0..3 – jedynka z V1 znaczy to samo
+  (strona II), więc nic się nie przelicza; `addeq.page` 0..3 (I..IV).
+- **Magazyn**: blok `WEAR_MAX_NUM` (32) pól na stronę, „dom” każdej strony – **II 308–339** (jedyny blok V1), **III
+  340–371**, **IV 372–403**, **I 404–435** (`MT2009_ADDEQ_STORE_BLOCKS = 4`, `MT2009_ADDEQ_SLOT_END` = 436). Blok
+  założonej strony jest zawsze pusty: przełączenie z A na B zakłada blok B, a założone przedmioty A idą do bloku A.
+  Okno `INVENTORY`, `pos` do 435 (`smallint`), dalej poza `INVENTORY_AND_EQUIP_SLOT_MAX` (308) – żaden pakiet ani
+  inny system tych pól nie używa (pola Smoczych Kamieni i pasa leżą poniżej 308, magazyny kategorii mają własne okna).
+- **Przejście z V1**: postać z V1 założona na stronie I ma już stronę II w 308–339 = nowy układ. Postać założona na II
+  (`addeq.page = 1`) ma w 308–339 stronę I – krok `apply.sh` (raz, znacznik `addeq_four_pages_v2` w
+  `player.playerbot_migrations`, jedna transakcja, przed rdzeniami) przenosi te wiersze o +96 (do 404–435) i obcina
+  `addeq.unlocked` do 0..3. Rdzeń robi to samo przy `/addeq hello` i przed każdym przełączeniem (`AddeqRepair`), gdyby
+  krok nie przeszedł; cokolwiek innego w bloku założonej strony (przerwane przełączenie) idzie do torby – nic nie ginie.
+- **Wczytanie**: drugi wiersz na zajętym polu magazynu idzie do torby (`input_db.cpp`, `(load)`), zamiast nadpisać
+  wskaźnik pierwszego.
+- **Przełączanie**: umiejętność 200 i `/addeq toggle` – następna odblokowana strona (I → II → … → I); zakładki I–IV
+  okna ekwipunku v2 (`/addeq 0..3`) – widoczna zakładka na każdą odblokowaną stronę. Zablokowana strona: komunikat.
+  Zasady jak w V1 (raz na 5 s, bez okien, „stój spokojnie”, wszystko sprawdzone przed ruchem). Stare okno ekwipunku
+  (bez v2) ma tylko zakładki I / II – strony III / IV tam umiejętnością.
+- **Boty**: bez zmian – nie używają stron (`Mt2009AddeqSwitch` / `Mt2009AddeqUseItem` odmawiają botom, cele ItemShopu
+  V3 nie kupują 76055); ich drugi zestaw żywiołu dalej przez torbę.
+- Haki V2 (`edits.json`, nowe znaczniki na tekście V1): `char.h` `(cells)` / `(slots)` / `(methods)`
+  (`Mt2009AddeqGetCellItem`), `input_db.cpp` `(load)`.
+
 ## Jak to działa u nas
 
 - **Magazyn nieaktywnej strony**: 32 ukryte pola postaci (jedno na pole ekwipunku) zaraz za ekwipunkiem pasa –
