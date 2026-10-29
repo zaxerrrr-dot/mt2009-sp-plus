@@ -322,5 +322,47 @@
   "marker": "MT2009_PLUS_REALTIME_FIRSTUSE_V1 (expire event)",
   "old": "\tconst time_t current = get_global_time();\n\n\tif (current > item->GetSocket(0))\n",
   "new": "\tconst time_t current = get_global_time();\n\n\t// MT2009_PLUS_REALTIME_FIRSTUSE_V1 (expire event), server-patches/balathor: socket0 is an unsigned end time\n\t// (player.item.socket0 is unsigned, CMountActor::Mount reads it as DWORD too). A date past 2038 is a\n\t// negative long here and destroyed the item at once instead of never; compared as DWORD it waits.\n\tif ((DWORD)current > (DWORD)item->GetSocket(0))\n"
+ },
+ {
+  "file": "item_manager.h",
+  "marker": "MT2009_PLUS_CHEST_PICK_V1 (ctor)",
+  "old": "\t\tCSpecialItemGroup(DWORD vnum, BYTE type=0)\n\t\t\t: m_dwVnum(vnum), m_bType(type)\n\t\t\t{}\n",
+  "new": "\t\t// MT2009_PLUS_CHEST_PICK_V1 (ctor), server-patches/balathor: m_iPickCount 0 = the group as before.\n\t\tCSpecialItemGroup(DWORD vnum, BYTE type=0)\n\t\t\t: m_dwVnum(vnum), m_bType(type), m_iPickCount(0)\n\t\t\t{}\n"
+ },
+ {
+  "file": "item_manager.h",
+  "marker": "MT2009_PLUS_CHEST_PICK_V1 (draw)",
+  "old": "\t\tint GetMultiIndex(std::vector <int> &idx_vec) const\n\t\t{\n\t\t\tidx_vec.clear();\n",
+  "new": "\t\tint GetMultiIndex(std::vector <int> &idx_vec) const\n\t\t{\n\t\t\tidx_vec.clear();\n\t\t\t// MT2009_PLUS_CHEST_PICK_V1 (draw), server-patches/balathor: a group with \"Pick N\" (no Type) gives N different\n\t\t\t// rows an opening, drawn one after another by their weights without putting a drawn row back\n\t\t\t// (a gold / exp / sNNN row is one of the N like any other); fewer rows than N = all of them.\n\t\t\tif (m_bType == NORMAL && m_iPickCount > 0 && !m_vecProbs.empty())\n\t\t\t{\n\t\t\t\tstd::vector<int> weights(m_vecProbs.size());\n\t\t\t\tint total = 0;\n\t\t\t\tfor (size_t i = 0; i < m_vecProbs.size(); ++i)\n\t\t\t\t{\n\t\t\t\t\tweights[i] = std::max(0, m_vecProbs[i] - (i ? m_vecProbs[i - 1] : 0));\n\t\t\t\t\ttotal += weights[i];\n\t\t\t\t}\n\t\t\t\tconst int want = std::min(m_iPickCount, (int) weights.size());\n\t\t\t\tfor (int k = 0; k < want && total > 0; ++k)\n\t\t\t\t{\n\t\t\t\t\tint n = number(1, total);\n\t\t\t\t\tsize_t i = 0;\n\t\t\t\t\tfor (; i + 1 < weights.size(); ++i)\n\t\t\t\t\t{\n\t\t\t\t\t\tif (n <= weights[i])\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tn -= weights[i];\n\t\t\t\t\t}\n\t\t\t\t\tidx_vec.emplace_back((int) i);\n\t\t\t\t\ttotal -= weights[i];\n\t\t\t\t\tweights[i] = 0;\n\t\t\t\t}\n\t\t\t\treturn (int) idx_vec.size();\n\t\t\t}\n"
+ },
+ {
+  "file": "item_manager.h",
+  "marker": "MT2009_PLUS_CHEST_PICK_V1 (member)",
+  "old": "\t\tstd::vector<CSpecialItemInfo> m_vecItems; // vnum, count\n};\n\nclass CMobItemGroup\n",
+  "new": "\t\tstd::vector<CSpecialItemInfo> m_vecItems; // vnum, count\n\t\t// MT2009_PLUS_CHEST_PICK_V1 (member), server-patches/balathor: \"Pick N\" of the group (0 = none).\n\t\tint m_iPickCount;\n\t\tint GetPickCount() const { return m_iPickCount; }\n};\n\nclass CMobItemGroup\n"
+ },
+ {
+  "file": "item_manager_read_tables.cpp",
+  "marker": "MT2009_PLUS_CHEST_PICK_V1 (read)",
+  "old": "\t\t\tCSpecialItemGroup * pkGroup = M2_NEW CSpecialItemGroup(iVnum, type);\n",
+  "new": "\t\t\tCSpecialItemGroup * pkGroup = M2_NEW CSpecialItemGroup(iVnum, type);\n\t\t\t// MT2009_PLUS_CHEST_PICK_V1 (read), server-patches/balathor: \"Pick N\" - N different rows an opening by weight\n\t\t\t// (item_manager.h GetMultiIndex); only in a group without Type.\n\t\t\t{\n\t\t\t\tint iPick = 0;\n\t\t\t\tif (loader.GetTokenInteger(\"pick\", &iPick) && iPick > 0)\n\t\t\t\t{\n\t\t\t\t\tif (CSpecialItemGroup::NORMAL == type)\n\t\t\t\t\t\tpkGroup->m_iPickCount = iPick;\n\t\t\t\t\telse\n\t\t\t\t\t\tsys_err(\"ReadSpecialDropItemFile : Pick %d ignored in a group with a Type : node %s\", iPick, stName.c_str());\n\t\t\t\t}\n\t\t\t}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHEST_PICK_V1 (give)",
+  "old": "\t\t\tpkItem = GiveItemToPlayerSpecialGroup(dwVnum, dwCount, iDropRarePct, bSuccess, bCreateItemOnly, !bCreateItemOnly && bNotify);\n\t\tif (!bSuccess)\n\t\t\treturn nullptr;\n\t}\n\treturn pkItem;\n}\n",
+  "new": "\t\t\tpkItem = GiveItemToPlayerSpecialGroup(dwVnum, dwCount, iDropRarePct, bSuccess, bCreateItemOnly, !bCreateItemOnly && bNotify);\n\t\t// MT2009_PLUS_CHEST_PICK_V1 (give), server-patches/balathor: a \"Pick N\" chest whose row could not be given after\n\t\t// another was still counts as opened (the chest goes, no second try at the rows already given).\n\t\tif (!bSuccess && pGroup->GetPickCount() > 0 && bMt2009PickGiven)\n\t\t{\n\t\t\tbSuccess = true;\n\t\t\tcontinue;\n\t\t}\n\t\tif (!bSuccess)\n\t\t\treturn nullptr;\n\t\tbMt2009PickGiven = true;\n\t}\n\treturn pkItem;\n}\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_CHEST_PICK_V1 (give flag)",
+  "old": "\tstd::vector <int> idxes;\n\tint n = pGroup->GetMultiIndex(idxes);\n",
+  "new": "\tstd::vector <int> idxes;\n\tint n = pGroup->GetMultiIndex(idxes);\n\tbool bMt2009PickGiven = false; // MT2009_PLUS_CHEST_PICK_V1 (give flag): a row of a \"Pick N\" chest given already\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_CHEST_PICK_V1 (wiki)",
+  "old": "\tconst bool pct = group->GetGroupType() == CSpecialItemGroup::PCT;\n\tconst double total = (double) probs.back();\n\tif (!pct && total <= 0.0)\n\t\treturn;\n",
+  "new": "\tconst bool pct = group->GetGroupType() == CSpecialItemGroup::PCT;\n\tconst double total = (double) probs.back();\n\tif (!pct && total <= 0.0)\n\t\treturn;\n\t// MT2009_PLUS_CHEST_PICK_V1 (wiki), server-patches/balathor: a \"Pick N\" chest gives N different rows by weight - a row's\n\t// chance to be among them, counted over 20000 fixed draws (the same numbers every time).\n\tif (!pct && group->GetPickCount() > 0)\n\t{\n\t\tconst size_t n = std::min(items.size(), probs.size());\n\t\tstd::vector<double> hits(n, 0.0);\n\t\tstd::vector<int> w(n, 0);\n\t\tunsigned int seed = 2463534242U ^ (unsigned int) group->m_dwVnum;\n\t\tconst int trials = 20000;\n\t\tfor (int t = 0; t < trials; ++t)\n\t\t{\n\t\t\tint left = 0;\n\t\t\tfor (size_t i = 0; i < n; ++i)\n\t\t\t{\n\t\t\t\tw[i] = std::max(0, probs[i] - (i ? probs[i - 1] : 0));\n\t\t\t\tleft += w[i];\n\t\t\t}\n\t\t\tfor (int k = 0; k < group->GetPickCount() && left > 0; ++k)\n\t\t\t{\n\t\t\t\tseed ^= seed << 13;\n\t\t\t\tseed ^= seed >> 17;\n\t\t\t\tseed ^= seed << 5;\n\t\t\t\tint r = (int) (seed % (unsigned int) left) + 1;\n\t\t\t\tsize_t i = 0;\n\t\t\t\tfor (; i + 1 < n; ++i)\n\t\t\t\t{\n\t\t\t\t\tif (r <= w[i])\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tr -= w[i];\n\t\t\t\t}\n\t\t\t\thits[i] += 1.0;\n\t\t\t\tleft -= w[i];\n\t\t\t\tw[i] = 0;\n\t\t\t}\n\t\t}\n\t\tfor (size_t i = 0; i < n; ++i)\n\t\t{\n\t\t\tconst double share = hits[i] / trials;\n\t\t\tif (share <= 0.0)\n\t\t\t\tcontinue;\n\t\t\tif (items[i].isSpecial)\n\t\t\t\tDropWikiAddChestGroup(rows, ITEM_MANAGER::instance().GetSpecialItemGroup(items[i].vnum), chance * share, depth + 1);\n\t\t\telse\n\t\t\t\tDropWikiAdd(rows, items[i].vnum, items[i].count, chance * share);\n\t\t}\n\t\treturn;\n\t}\n"
  }
 ]

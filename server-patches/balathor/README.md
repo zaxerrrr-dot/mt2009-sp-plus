@@ -7,7 +7,7 @@ Gildyjne leże Białego Smoka (pl-wiki „Krypta Balathora”, wersja 24.3) dla 
 
 | Część | Miejsce |
 |---|---|
-| Haki silnika | `edits.json` (53 zmiany: `common/service.h` – `#define __BALATHOR__`, db `ClientManagerEventFlag.cpp`, game: `char*.cpp/h`, `cmd*.cpp`, `guild.h`, `guild_manager.h`, `input_db/main.cpp`, `main.cpp`, `motion.h/.cpp`, `questlua.h/.cpp`, `utils.h`); `apply_balathor.py <game/src>` (Linux, ostatni w kolejce po `npcloc`) i `Apply-BalathorPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) czytają ten sam plik |
+| Haki silnika | `edits.json` (53 zmiany Krypty + REALTIME_FIRSTUSE + CHEST_PICK, niżej: `common/service.h` – `#define __BALATHOR__`, db `ClientManagerEventFlag.cpp`, game: `char*.cpp/h`, `cmd*.cpp`, `guild.h`, `guild_manager.h`, `input_db/main.cpp`, `main.cpp`, `motion.h/.cpp`, `questlua.h/.cpp`, `utils.h`); `apply_balathor.py <game/src>` (Linux, ostatni w kolejce po `npcloc`) i `Apply-BalathorPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) czytają ten sam plik |
 | Logika | nakładka `linux-port/overlays/playerbot/src/game/src/`: `balathor.cpp/.h`, `balathor_manager.cpp`, `questlua_balathor.cpp` (autora, teksty dla graczy po polsku, `std::min`), `balathor_support.cpp` (nasze: pomocnicze funkcje autora z `guild.cpp`, `guild_manager.cpp`, `utils.cpp`, `questlua_guild.cpp` – żeby tamte pliki silnika zostały bez zmian; `guild.get_near_count/get_near_pids/get_flag/set_flag/get_level` dopisane do tabeli `guild`, `balathor.is_open()`), `json.hpp` (nlohmann/json 3.11.3, MIT) |
 | Dane serwera | `linux-port/docker/game/balathor/` (krok Dockerfile „Krypta Balathora”): mapa 420 `metin2_map_guild_whitedragon_boss`, ruchy potworów `data/monster/guild_whitedragon*`, `balathor.json` → `locale/poland/`, skrzynie `special_item_group.balathor.txt` |
 | Baza | `linux-port/docker/mariadb/playerbot/balathor.sql` (generator `tools/balathor/gen_balathor_sql.py`, krok `apply.sh`): 17 potworów/NPC/kamieni, żywioły, Ognista Strzała 30395, skrzynie 83075/83076 |
@@ -79,3 +79,9 @@ Wiki nie podaje szans ani ilości: zwykła skrzynia daje 1 przedmiot (wagi nasze
   przy socket1 = 0 (sklep, panel, zestaw testowy), traciła się 1 s po pierwszym Ctrl+G w Krypcie – silnik dodawał tę
   datę do `time(0)` jak czas trwania, socket0 wychodził ujemny i wpis `REAL_TIME_EXPIRE` niszczył założonego wierzchowca
   (Test1 i test4, 29.10, Smok Samsara 71223). Data zostaje datą; zdarzenie wygaśnięcia porównuje socket0 jako DWORD.
+- `MT2009_PLUS_CHEST_PICK_V1` (7 zmian w `edits.json`: `item_manager.h` CSpecialItemGroup – `m_iPickCount`, losowanie w
+  `GetMultiIndex`; `item_manager_read_tables.cpp` – słowo `Pick N`; `char_item.cpp` DropSpecialItemGroup; `item_manager.cpp`
+  wiki dropu): grupa w `special_item_group.txt` z linią `Pick N` (bez `Type`) daje przy jednym otwarciu N różnych wierszy,
+  losowanych po kolei wg wag bez zwracania (wiersz `gold`/`exp`/`sNNN` liczy się jako jeden z N). Skrzynie 83075 i 83076
+  mają `Pick 5` (poprawki 3.0.7 pkt 5; dawne procenty 83076 są teraz wagami). Inne grupy bez zmian. `bin/m2-chests` i
+  panel (edytor skrzyń) zachowują linię `Pick`; szanse w panelu pokazują nadal jedno losowanie, wiki dropu w grze – udział w 5.

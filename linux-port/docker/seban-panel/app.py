@@ -11792,7 +11792,8 @@ def chest_save(vnum):
         for entry in entries:
             entry["comment"] = chest_entry_label(entry, names, groups)
         custom[vnum] = {"name": group["name"], "vnum": vnum, "type": group_type,
-                        "extras": [x for x in group.get("extras", []) if x.split()[0].lower() == "effect"],
+                        # MT2009_PLUS_CHEST_PICK_V1: a "Pick N" line (N different rows an opening) stays with the group.
+                        "extras": [x for x in group.get("extras", []) if x.split()[0].lower() in ("effect", "pick")],
                         "items": entries}
         chest_write_custom(custom, f"zmieniono grupe {vnum}")
     except ValueError as exc:
