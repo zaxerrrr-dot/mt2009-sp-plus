@@ -2294,6 +2294,17 @@ void initapp()
 #else
 	PyModule_AddIntConstant(poModule, "ENABLE_SET_ATLAS_SCALE", 0);
 #endif
+	// MT2009_PLUS_DAMAGE_PRINT_V1 / MT2009_PLUS_QUICKSLOT_IMPROVE_V1: root reads them with getattr(app, ..., 0)
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+	PyModule_AddIntConstant(poModule, "ENABLE_DAMAGE_PRINT_IMPROVE", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_DAMAGE_PRINT_IMPROVE", 0);
+#endif
+#ifdef ENABLE_QUICKSLOT_IMPROVE
+	PyModule_AddIntConstant(poModule, "ENABLE_QUICKSLOT_IMPROVE", 1);
+#else
+	PyModule_AddIntConstant(poModule, "ENABLE_QUICKSLOT_IMPROVE", 0);
+#endif
 
 #ifdef ENABLE_IKASHOP_RENEWAL
 #ifdef EXTEND_IKASHOP_PRO

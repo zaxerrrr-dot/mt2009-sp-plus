@@ -1943,4 +1943,16 @@ if ((Test-Path -LiteralPath $superstoneApply -PathType Leaf) -and
     }
 }
 
+# Damage Print Improve (server-patches/dmgprint, MT2009_PLUS_DAMAGE_PRINT_V1; Yohara 3.x): DAMAGE_ATTACKER_PC /
+# DAMAGE_MISS in char.h and the damage packet's flag byte (char_battle.cpp) - no packet change. After superstone.
+$dmgprintApply = Join-Path $repo 'server-patches/dmgprint/Apply-DmgPrintPatch.ps1'
+if ((Test-Path -LiteralPath $dmgprintApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_battle.cpp') -PathType Leaf)) {
+    $dmgprintResult = & $dmgprintApply -SourceDir $engineGameSource
+    if ($dmgprintResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} Damage Print edit(s).' -f $dmgprintResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

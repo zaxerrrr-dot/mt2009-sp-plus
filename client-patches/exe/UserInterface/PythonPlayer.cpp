@@ -906,6 +906,54 @@ void CPythonPlayer::RequestDeleteGlobalQuickSlot(DWORD dwGlobalSlotIndex)
 	rkNetStream.SendQuickSlotDelPacket((BYTE)dwGlobalSlotIndex);
 }
 
+#ifdef ENABLE_QUICKSLOT_IMPROVE
+// MT2009_PLUS_QUICKSLOT_IMPROVE_V1 (ENABLE_QUICKSLOT_IMPROVE package): the expanded quick slot bar's rows are the
+// other pages - add / move / use by global index, the same packets as the local functions above.
+void CPythonPlayer::RequestAddGlobalQuickSlot(DWORD dwGlobalSlotIndex, DWORD dwWndType, DWORD dwWndItemPos)
+{
+	if (dwGlobalSlotIndex >= QUICKSLOT_MAX_NUM)
+		return;
+
+	if (dwWndType != SLOT_TYPE_INVENTORY && dwWndType != SLOT_TYPE_SKILL && dwWndType != SLOT_TYPE_EMOTION)
+		return;
+
+	CPythonNetworkStream::Instance().SendQuickSlotAddPacket((BYTE)dwGlobalSlotIndex, (BYTE)dwWndType, (WORD)dwWndItemPos);
+}
+
+void CPythonPlayer::RequestMoveGlobalQuickSlot(DWORD dwGlobalSrcSlotIndex, DWORD dwGlobalDstSlotIndex)
+{
+	if (dwGlobalSrcSlotIndex >= QUICKSLOT_MAX_NUM || dwGlobalDstSlotIndex >= QUICKSLOT_MAX_NUM)
+		return;
+
+	CPythonNetworkStream::Instance().SendQuickSlotMovePacket((BYTE)dwGlobalSrcSlotIndex, (BYTE)dwGlobalDstSlotIndex);
+}
+
+void CPythonPlayer::RequestUseGlobalQuickSlot(DWORD dwGlobalSlotIndex)
+{
+	if (dwGlobalSlotIndex >= QUICKSLOT_MAX_NUM)
+		return;
+
+	DWORD dwRegisteredType;
+	DWORD dwRegisteredItemPos;
+	GetGlobalQuickSlotData(dwGlobalSlotIndex, &dwRegisteredType, &dwRegisteredItemPos);
+
+	switch (dwRegisteredType)
+	{
+		case SLOT_TYPE_INVENTORY:
+			CPythonNetworkStream::Instance().SendItemUsePacket(TItemPos(INVENTORY, (WORD)dwRegisteredItemPos));
+			break;
+
+		case SLOT_TYPE_SKILL:
+			ClickSkillSlot(dwRegisteredItemPos);
+			break;
+
+		case SLOT_TYPE_EMOTION:
+			PyCallClassMemberFunc(m_ppyGameWindow, "BINARY_ActEmotion", Py_BuildValue("(i)", dwRegisteredItemPos));
+			break;
+	}
+}
+#endif
+
 void CPythonPlayer::RequestUseLocalQuickSlot(DWORD dwLocalSlotIndex)
 {
 	if (dwLocalSlotIndex>=QUICKSLOT_MAX_COUNT_PER_LINE)

@@ -935,6 +935,13 @@ void initchrmgr()
 	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_MISS",			CInstanceBase::EFFECT_DAMAGE_MISS);
 	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_TARGETMISS",	CInstanceBase::EFFECT_DAMAGE_TARGETMISS);
 	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_CRITICAL",		CInstanceBase::EFFECT_DAMAGE_CRITICAL);
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+	// MT2009_PLUS_DAMAGE_PRINT_V1
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_DODGE",		CInstanceBase::EFFECT_DAMAGE_DODGE);
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_BLOCK",		CInstanceBase::EFFECT_DAMAGE_BLOCK);
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_PENETRATE",	CInstanceBase::EFFECT_DAMAGE_PENETRATE);
+	PyModule_AddIntConstant(poModule, "EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE",	CInstanceBase::EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE);
+#endif
 
 	PyModule_AddIntConstant(poModule, "EFFECT_LEVELUP",				CInstanceBase::EFFECT_LEVELUP);
 	PyModule_AddIntConstant(poModule, "EFFECT_SKILLUP",				CInstanceBase::EFFECT_SKILLUP);

@@ -1,0 +1,196 @@
+{
+ "files": {
+  "d:/ymir work/effect/affect/damagevalue2/block.mse": {
+   "ctype": 1,
+   "sha256": "834bb35a30e4be75baf95b5cbe1397af65fc0229cde60a3db6c382740fd652c7",
+   "size": 3531
+  },
+  "d:/ymir work/effect/affect/damagevalue2/critical.mse": {
+   "ctype": 1,
+   "sha256": "d705fea76fcdcf864ed6f60fbe8c022dce6e825b68484614e3098aa28757bbe8",
+   "size": 3470
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage.mse": {
+   "ctype": 1,
+   "sha256": "25011a8d423b40a322d4d1d0eceec3b0032b36d8c8485f27d158228e25049d69",
+   "size": 3433
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_0.dds": {
+   "ctype": 1,
+   "sha256": "b7c65ebad1a06ff27333a6f3955f6b4b2e1c26eb53ff96b41234af3fc189140a",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_1.dds": {
+   "ctype": 1,
+   "sha256": "b527cdd541809e6eba2e6f5b87f1fd7e89a51665398535a4d06b36ee0af0f7f5",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_1.mse": {
+   "ctype": 1,
+   "sha256": "2a8a3a9783dc1bbc3cddb5d789403697c9d85f04ecaf97c9d217279923ef1a5a",
+   "size": 3433
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_2.dds": {
+   "ctype": 1,
+   "sha256": "1b47677d48d48f2cc17aabb1fe0466111b53cdc485a5552e5c54959adf9ebcdc",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_3.dds": {
+   "ctype": 1,
+   "sha256": "54e423b9c6a89ecc6bc37eb8255aba65b4430908f6793b493ae90b2b6bd2cad8",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_4.dds": {
+   "ctype": 1,
+   "sha256": "82eb1b73e3788725d67887877b4a4f89ca82dd1b38e578ed357a6da290d9a166",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_5.dds": {
+   "ctype": 1,
+   "sha256": "9d1d261d11725839b9eaece85c4f806734cc383d134ddea0027ea2b7994173de",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_6.dds": {
+   "ctype": 1,
+   "sha256": "f93d04b30ef449e3cfbf0d49b84576099d7dfb0941032265ccec4e0a38c5cef8",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_7.dds": {
+   "ctype": 1,
+   "sha256": "a3dbe4b7b40f26aab4d1c5fd51ae41a88749daf604555cbb8d6e6a39b3a43712",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_8.dds": {
+   "ctype": 1,
+   "sha256": "53c764c3406566eba0dba85cd11b26b0fe204d9a678d2219d80d72c94b3cd5a4",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_9.dds": {
+   "ctype": 1,
+   "sha256": "e7739696b4d49cb0df3e9336c06d2a46691fd207da85651fa100b3533025d355",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_block.dds": {
+   "ctype": 1,
+   "sha256": "06e504f8a26ebdc44cc9a4f9901646ac726eb74094f7348fcfad1ac191d63e5b",
+   "size": 11136
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_critical.dds": {
+   "ctype": 1,
+   "sha256": "4c8a1933091fcafa2978206f4d1531e04b69da3e843fd37ba75eda352e5c6ae0",
+   "size": 7248
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_critical.mse": {
+   "ctype": 1,
+   "sha256": "1d34eb645bb37723e4883f9f8ec60c75f55fe4d89275da9437c95b78bde9a5b5",
+   "size": 3533
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_dodge.dds": {
+   "ctype": 1,
+   "sha256": "e88dbe6d210613fb3cd9e5787fa001843e12d88dbdf3216664c4350e33dc6520",
+   "size": 11136
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_miss.dds": {
+   "ctype": 1,
+   "sha256": "07aca6399952ccd8a9654d6db4117909ba3a09169fbca29dda07b91971004274",
+   "size": 8320
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_mix.dds": {
+   "ctype": 1,
+   "sha256": "02e6dbaad7dc27756499165cea1bcb1fd022a533d7ddd855d34efa3c051f0b80",
+   "size": 7248
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_mix.mse": {
+   "ctype": 1,
+   "sha256": "79f2573131818cf063cfd3a23431663cdcb88f050f38d614d9bf57943a5625be",
+   "size": 3528
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_penetration.dds": {
+   "ctype": 1,
+   "sha256": "c4fbea28caedb6f21f6211a171523621ee37c8be10bdcccd4b8b04e4a2ed373a",
+   "size": 7248
+  },
+  "d:/ymir work/effect/affect/damagevalue2/damage_penetration.mse": {
+   "ctype": 1,
+   "sha256": "ea7002bade942062cf67a2902576c18d3db7332ac8463d2314815d5594c3bbaf",
+   "size": 3536
+  },
+  "d:/ymir work/effect/affect/damagevalue2/dodge.mse": {
+   "ctype": 1,
+   "sha256": "31ffc0859c7e8dd4f365db5e112570c19df81fa3a0594a49949a57b0007a38f7",
+   "size": 3531
+  },
+  "d:/ymir work/effect/affect/damagevalue2/miss.mse": {
+   "ctype": 1,
+   "sha256": "794ffb7daa0d1c97f7d96489bcf77aba7ea95a64d939f09cd436f83fd49a4068",
+   "size": 3530
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target.mse": {
+   "ctype": 1,
+   "sha256": "796d48c8ade01b5b98747f251239770ef3c8cdecc226598fdef9aaf93689fe4f",
+   "size": 3433
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_0.dds": {
+   "ctype": 1,
+   "sha256": "f0f45c6546cde47c9858a301b3daa6b6f98ff107ef82792826bb45342f0b9cee",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_1.dds": {
+   "ctype": 1,
+   "sha256": "cc568ddaf3fcef2a8eb13758a0650271a3e6080de6e51ead9c13233ae05258bd",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_2.dds": {
+   "ctype": 1,
+   "sha256": "580a3f82ebd59e8facd85e4313f2a66eed493d8b91c967f4b6011b814fefc589",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_3.dds": {
+   "ctype": 1,
+   "sha256": "ea3039d8240dba57940f4a9a1feb7a0042e3c28e93161a556022aad8daa990cc",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_4.dds": {
+   "ctype": 1,
+   "sha256": "39d5850de8a09b8a57d42a34cc2b63a7c6f06a86387ca76d6daa254b5ea768ea",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_5.dds": {
+   "ctype": 1,
+   "sha256": "a815f303a50b34fde36c4aca8ef2244801ea7a1e0acb6171c7f3e665cd3ce5d3",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_6.dds": {
+   "ctype": 1,
+   "sha256": "0c21f1123653f647092109f45047b3a81843916b184d263a41ae4c45a7f393c2",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_7.dds": {
+   "ctype": 1,
+   "sha256": "13d9dc5af6ce3a6cfcf0df717e2a570fbdbded97c552bf0d633a19dbd8b495bc",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_8.dds": {
+   "ctype": 1,
+   "sha256": "c251572e9772586de28b1e479664cdcd28e64c0a0891c78092d1b3216fd785f1",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_9.dds": {
+   "ctype": 1,
+   "sha256": "1df3e8c7246db14ba9b7d57d31c1ea25d435437752ca7e08fa8dc3edb2504089",
+   "size": 2896
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_miss.dds": {
+   "ctype": 1,
+   "sha256": "05c3597b5a5db9602fe1372fe9944d1090f042038edb00ec5145b8a353756ac5",
+   "size": 11088
+  },
+  "d:/ymir work/effect/affect/damagevalue2/target_miss.mse": {
+   "ctype": 1,
+   "sha256": "f887b9fcd5c203ff2f42dd8f09cab33642119b404e364a4e694081fda02242e9",
+   "size": 3438
+  }
+ },
+ "marker": "MT2009_PLUS_DAMAGE_PRINT_V1",
+ "source": "Damage Print Improve v26.0.5 (ymir work/effect/affect/damagevalue, 38 files - byte for byte the same as the GF client 26.1.11 d_/ymir work/effect/affect/damagevalue), under the new folder damagevalue2"
+}

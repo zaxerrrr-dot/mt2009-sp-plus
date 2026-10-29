@@ -4421,6 +4421,15 @@ class Interface(object):
 			wndEnergyBar.LoadWindow()
 			self.wndEnergyBar = wndEnergyBar
 
+	# MT2009_PLUS_QUICKSLOT_IMPROVE_V1: the expanded quick slot bar (uitaskbar.py) - game.Open hands its page change and the saved state over
+	def SetQuickPageEvent(self, event):
+		if self.wndTaskBar:
+			self.wndTaskBar.SetQuickPageEvent(event)
+
+	def ApplyQuickSlotState(self):
+		if self.wndTaskBar:
+			self.wndTaskBar.ApplyQuickSlotState()
+
 	def __MakeParty(self):
 		wndParty = uiParty.PartyWindow()
 		wndParty.Hide()

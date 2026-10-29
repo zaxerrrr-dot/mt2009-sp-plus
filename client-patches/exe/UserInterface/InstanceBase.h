@@ -209,6 +209,11 @@ class CInstanceBase
 			DAMAGE_BLOCK	= (1<<3),
 			DAMAGE_PENETRATE= (1<<4),
 			DAMAGE_CRITICAL = (1<<5),
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+			// MT2009_PLUS_DAMAGE_PRINT_V1: server-patches/dmgprint sets them in the packet's flag byte (no packet change)
+			DAMAGE_ATTACKER_PC = (1<<6),	// the hit came from a player
+			DAMAGE_MISS	= (1<<7),	// a hit that did no damage
+#endif
 		};
 
 		enum
@@ -321,6 +326,13 @@ class CInstanceBase
 #endif
 #ifdef ENABLE_GLOVE_ELEC_ATTACK_BONUS
 			EFFECT_ELEC_ATTACK_HIT, // MT2009_PLUS_ELEC_GLOVE_V1: SE_ELEC_ATTACK_HIT (the gloves' 6/7 lightning)
+#endif
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+			// MT2009_PLUS_DAMAGE_PRINT_V1: the damage marks of Damage Print Improve (at the end: no id above moves)
+			EFFECT_DAMAGE_DODGE,
+			EFFECT_DAMAGE_BLOCK,
+			EFFECT_DAMAGE_PENETRATE,
+			EFFECT_DAMAGE_MIX_CRITICAL_PENETRATE,
 #endif
 
 			EFFECT_NUM,
@@ -1084,6 +1096,9 @@ class CInstanceBase
 			BYTE flag;
 			BOOL bSelf;
 			BOOL bTarget;
+#ifdef ENABLE_DAMAGE_PRINT_IMPROVE
+			bool bTargetIsPC; // MT2009_PLUS_DAMAGE_PRINT_V1
+#endif
 		};
 
 		typedef std::queue<SEffectDamage> CommandDamageQueue; // @fixme025 list to queue
