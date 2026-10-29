@@ -1511,6 +1511,14 @@ void CBalathor::SpawnWallsAndEggs()
 // the next one starts as if the players had finished it, so every stage can be tested in turn.
 const char* CBalathor::GmSkipStage()
 {
+	if (m_bStage == BALATHOR_STAGE_WAITING)
+	{
+		SetStage(BALATHOR_STAGE_RUN);
+		return "oczekiwanie -> start rajdu (brama)";
+	}
+	if (m_bStage != BALATHOR_STAGE_RUN)
+		return NULL;
+
 	switch (m_bStepIndex)
 	{
 		case 1:
