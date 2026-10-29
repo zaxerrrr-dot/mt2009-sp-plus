@@ -35,6 +35,11 @@ tak jak Schronienie Meley (356) – nie game3.
 - `fail_rewards` = Mroźna Skrz. Balathora (83075), `success_rewards` = 83075 + Mroźna Skrz. Balathora+ (83076).
 - Ognista Strzała = **30395** (w paczce 30345 = nasze Ezoteryczne Drewno).
 - Ruchy ETC1–ETC3 (`MOTION_ETC_1..3`) mają numery 39–41 = `NAME_ETC_1..3` klienta (klient ma `NAME_SPECIAL_6` = 38).
+- Szybkość biegu (29.10.2026): serwer liczy ją z `Accumulation` w `run.msa`, a klient przesuwa model o `LoopTranslation`
+  ścieżki `Bip01` z `run.gr2`. W paczce/GF `run.msa` Upiornego Wojownika (6898) i Łucznika (6899) ma −600 na 1 s, a ich
+  `run.gr2` (BitKnit2) −360,00 i −371,51 – potwór był na serwerze przy graczu i bił, gdy w kliencie jeszcze biegł.
+  Serwerowe `run.msa` tych dwóch mają teraz wartości z `.gr2` (klient bez zmian). Echo (6900, `fire_ghost/03.gr2`
+  −219,24) i Balathor 6897 (−900) się zgadzały; 6896/6897 i tak stoją (`IsNoMoveMonster`), 6896 nie ma RUN w motlist.
 
 ## Podłączone do systemu gildii (`server-patches/guildsys`, MT2009_PLUS_GUILDSYS_V1)
 
