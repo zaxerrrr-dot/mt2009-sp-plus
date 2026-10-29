@@ -5648,6 +5648,69 @@
 72805	Eliksir W. SungMa (WIT)	Wzmacnia twoj¹ Wolê SungMa (WIT) o +5 na 30 min.
 72806	Eliksir W. SungMa (ODP)	Wzmacnia twoj¹ Wolê SungMa (ODP) o +5 na 30 min.
 72807	Eliksir W. SungMa (INT)	Wzmacnia twoj¹ Wolê SungMa (INT) o +5 na 30 min.
+39119	Kamieñ Mocy ¯ywio³ów	Po³yskuj¹cy amulet daje ci 10% mocy wszystkich ¿ywio³ów: b³yskawic, ognia, lodu, wiatru, ziemi i mroku. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
+39120	Kamieñ Ochrony ¯ywio³ów	Po³yskuj¹cy amulet daje ci +10% odpornoœci na wszystkie ¿ywio³y: b³yskawice, ogieñ, lód, wiatr, ziemiê i mrok. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
+83036	Srebrne Pude³ko Kart Potwora	To srebrne pude³ko zawiera losow¹ Kartê Potwora albo 1000 Yang. Spróbuj szczêœcia! Karty pochodz¹ z poziomów misji 1-15 (bez potworów Yohary). U¿yj karty, by dodaæ j¹ do swojej kolekcji (okno Kart Potworów, klawisz J).
+83037	Z³ote Pude³ko Kart Potwora	To z³ote pude³ko zawsze zawiera jedn¹ losow¹ Kartê Potwora z poziomów misji 1-15 (bez potworów Yohary). U¿yj karty, by dodaæ j¹ do swojej kolekcji (okno Kart Potworów, klawisz J).
+83073	Pude³ko Kart Potworów Yohary	To pude³ko zawsze zawiera jedn¹ losow¹ Kartê Potwora Yohary - z poziomów misji 16-18. U¿yj karty, by dodaæ j¹ do swojej kolekcji (okno Kart Potworów, klawisz J). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
+83074	Platynowe Pude³ko Kart Potwora	Platynowe pude³ko zawsze zawiera jedn¹ losow¹ Kartê Potwora spoœród wszystkich kart - z ka¿dego z 18 poziomów misji, tak¿e potworów Yohary. U¿yj karty, by dodaæ j¹ do swojej kolekcji (okno Kart Potworów, klawisz J). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
+79667	Lokalizator NPC	Nie jest ju¿ potrzebny: Lokalizator NPC jest w³¹czony dla ka¿dej postaci. | Na mapie œwiata prze³¹cz widok przyciskiem w pasku tytu³u.
+79668	Kamieñ Teleportacji+	Teleportuje do NPC wybranego w Lokalizatorze NPC. | Ta sama mapa: 1 kamieñ, ten sam region: 2, inna mapa: 3. | Mo¿na nim handlowaæ.
+79669	Kamieñ Teleportacji	Teleportuje do NPC wybranego w Lokalizatorze NPC. | Ta sama mapa: 1 kamieñ, ten sam region: 2, inna mapa: 3.
+50344	Ksiêga: Burza Balathora	Uczy gildiê umiejêtnoœci Burza Balathora (+1 poziom, najwy¿ej 10). | Odpornoœæ na omdlenie i spowolnienie. | Czyta tylko lider gildii.
+50345	Ksiêga: Wola Balathora	Uczy gildiê umiejêtnoœci Wola Balathora (+1 poziom, najwy¿ej 10). | Odpornoœæ na og³uszenie, kajdany i zamro¿enie. | Czyta tylko lider gildii.
+50346	Ksiêga: Nieugiêtoœæ Balathora	Uczy gildiê umiejêtnoœci Nieugiêtoœæ Balathora (+1 poziom, najwy¿ej 10). | Odpornoœæ na odrzucenie i powalenie. | Czyta tylko lider gildii.
+50347	Ksiêga Zapomnienia Gildii	Zwraca gildii wszystkie punkty rozdane na jej umiejêtnoœci (bez umiejêtnoœci Balathora). | Czyta tylko lider gildii.
+28044	Kamieñ Duszy Antymagii+0	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28045	Bia³y Kamieñ Antymagii+0	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28144	Kamieñ Duszy Antymagii+1	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28145	Bia³y Kamieñ Antymagii+1	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28244	Kamieñ Duszy Antymagii+2	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28245	Bia³y Kamieñ Antymagii+2	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28344	Kamieñ Duszy Antymagii+3	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28345	Bia³y Kamieñ Antymagii+3	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28444	Kamieñ Duszy Antymagii+4	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28445	Bia³y Kamieñ Antymagii+4	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28544	Kamieñ Duszy Antymagii+5	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28545	Bia³y Kamieñ Antymagii+5	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28644	Kamieñ Duszy Antymagii+6	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28645	Bia³y Kamieñ Antymagii+6	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28744	Kamieñ Duszy Antymagii+7	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28745	Bia³y Kamieñ Antymagii+7	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28844	Kamieñ Duszy Antymagii+8	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28845	Bia³y Kamieñ Antymagii+8	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28944	Kamieñ Duszy Antymagii+9	Kamieñ duszy do broni. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+28945	Bia³y Kamieñ Antymagii+9	Kamieñ duszy do zbroi. Twoje umiejêtnoœci magiczne pomijaj¹ czêœæ odpornoœci na magiê innego gracza (tylko w walce z graczami). Sura korzysta z po³owy tej wartoœci.
+38306	Strona ekwipunku II	Odblokowuje drug¹ stronê ekwipunku: dwa zestawy przedmiotów (zbroja, he³m, buty, bransoleta, broñ, naszyjnik, kolczyki, strza³y, tarcza, talizman, rêkawice) zmieniane jednym klikniêciem - zak³adki I / II w oknie ekwipunku albo umiejêtnoœæ „Zmiana strony ekwipunku” (umiejêtnoœci pomocnicze). Bonusy daje tylko za³o¿ona strona; pierœcienie, kostiumy i pas s¹ wspólne. Raz na postaæ. Nie mo¿na nim handlowaæ.
+76055	Strona ekwipunku II (wymienna)	Odblokowuje drug¹ stronê ekwipunku: dwa zestawy przedmiotów (zbroja, he³m, buty, bransoleta, broñ, naszyjnik, kolczyki, strza³y, tarcza, talizman, rêkawice) zmieniane jednym klikniêciem - zak³adki I / II w oknie ekwipunku albo umiejêtnoœæ „Zmiana strony ekwipunku” (umiejêtnoœci pomocnicze). Bonusy daje tylko za³o¿ona strona; pierœcienie, kostiumy i pas s¹ wspólne. Raz na postaæ. Mo¿na nim handlowaæ.
+12880	Wê¿owy Czepiec+0	
+12881	Wê¿owy Czepiec+1	
+12882	Wê¿owy Czepiec+2	
+12883	Wê¿owy Czepiec+3	
+12884	Wê¿owy Czepiec+4	
+12885	Wê¿owy Czepiec+5	
+12886	Wê¿owy Czepiec+6	
+12887	Wê¿owy Czepiec+7	
+12888	Wê¿owy Czepiec+8	
+12889	Wê¿owy Czepiec+9	
+12890	Wê¿owy Czepiec+10	
+12891	Wê¿owy Czepiec+11	
+12892	Wê¿owy Czepiec+12	
+12893	Wê¿owy Czepiec+13	
+12894	Wê¿owy Czepiec+14	
+12895	Wê¿owy Czepiec+15	
+31264	Œciêgno Balathora	Ten materia³ jest wymagany do wytworzenia Wê¿owego Czepca. Mo¿esz go znaleŸæ w MroŸnej Skrzyni Balathora.
+31265	Zroszony M³ot	Ten materia³ jest wymagany do wytworzenia Wê¿owego Czepca. Mo¿esz otrzymaæ go w Sklepie Gaya.
+31266	Skrzyd³o Balathora	Ten materia³ jest wymagany do wytworzenia Wê¿owego Czepca. Mo¿esz go znaleŸæ w MroŸnej Skrzyni Balathora.
+31267	Róg Balathora	Ten materia³ jest wymagany do wytworzenia Wê¿owego Czepca. Mo¿esz go znaleŸæ w MroŸnej Skrzyni Balathora.
+31268	Oko Balathora	Ten materia³ jest wymagany do wytworzenia Wê¿owego Czepca. Mo¿esz go znaleŸæ w MroŸnej Skrzyni Balathora.
+31269	£uska Balathora	Ten materia³ jest potrzebny do ulepszania Wê¿owego Czepca. Mo¿esz go znaleŸæ w MroŸnej Skrzyni Balathora+.
+31230	Oczyszczony Rdzeñ	Chaegirab na pewno siê tym interesuje.
+31231	Kryszta³ Metin	Chaegirab na pewno siê tym interesuje.
+31232	Mroczna Paproæ	Chaegirab na pewno siê tym interesuje.
+30395	Ognista Strza³a	Przeci¹gnij strza³ê na Hwachê w Krypcie Balathora, aby j¹ za³adowaæ. Strza³y daj¹ Pradawne Kryszta³y Lodu.
+83075	MroŸna Skrz. Balathora	Skrzynia z ³upami z Krypty Balathora.
+83076	MroŸna Skrz. Balathora+	Skrzynia z ³upami z Krypty Balathora+ - kilka losowych nagród.
 30625	Padparad¿a	Kryszta³y padparad¿y to rzadkie i niezwykle wykwintne czerwone szafiry. S³u¿¹ do ulepszania ekwipunku.
 30628	Boski Kwiat	Œwiêty kwiat z ogrodu Smoczego Boga. S³u¿y do ulepszania ekwipunku.
 61025	Buffi (7 dni)	Przywo³uje Buffi - szamankê, która chodzi za tob¹ i co 3 sekundy rzuca na ciebie brakuj¹ce wzmocnienie: B³ogos³awieñstwo i Pomoc Smoka, a gdy ma imiê (Zwój Imienia Buffi) tak¿e Szybkoœæ i Zwiêkszenie Ataku. U¿yj ponownie, aby j¹ odwo³aæ. Okno Buffi: klawisz P. Buffi dostêpna od 55 poziomu postaci. Wa¿na 7 dni.
