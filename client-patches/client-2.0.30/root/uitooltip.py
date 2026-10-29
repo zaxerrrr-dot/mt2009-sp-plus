@@ -788,7 +788,9 @@ class ItemToolTip(ToolTip):
 		attrSlot = []
 		for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
 			attrSlot.append(exchange.GetItemAttributeFromSelf(slotIndex, i))
+		self.welemSlot = (4, slotIndex) # MT2009_PLUS_WEAPON_ELEMENT_V1: the exchange's own side (WELEM 4)
 		self.AddItemData(itemVnum, metinSlot, attrSlot)
+		self.welemSlot = None
 		__import__("uichangelook").AppendLookInfo(self, getattr(exchange, "GetChangeLookVnumFromSelf", lambda i: 0)(slotIndex)) # MT2009_PLUS_CHANGE_LOOK_V1
 
 	def SetExchangeTargetItem(self, slotIndex):
@@ -804,7 +806,9 @@ class ItemToolTip(ToolTip):
 		attrSlot = []
 		for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
 			attrSlot.append(exchange.GetItemAttributeFromTarget(slotIndex, i))
+		self.welemSlot = (5, slotIndex) # MT2009_PLUS_WEAPON_ELEMENT_V1: the exchange's other side (WELEM 5)
 		self.AddItemData(itemVnum, metinSlot, attrSlot)
+		self.welemSlot = None
 		__import__("uichangelook").AppendLookInfo(self, getattr(exchange, "GetChangeLookVnumFromTarget", lambda i: 0)(slotIndex)) # MT2009_PLUS_CHANGE_LOOK_V1
 
 	def SetPrivateShopBuilderItem(self, invenType, invenPos, privateShopSlotIndex):
@@ -945,10 +949,11 @@ class ItemToolTip(ToolTip):
 				maxPower = self.CalcAcceValue(maxPower, itemAbsChance)
 				addPower = self.CalcAcceValue(addPower, itemAbsChance)
 
+		welemSuffix = __import__("welem").AttackSuffix(self, itemAbsChance) # MT2009_PLUS_WEAPON_ELEMENT_V1: " (+a)" / the preview's " (+a~+b)"
 		if maxPower > minPower:
-			self.AppendTextLine(localeInfo.TOOLTIP_ITEM_ATT_POWER % (minPower+addPower, maxPower+addPower), self.POSITIVE_COLOR)
+			self.AppendTextLine(localeInfo.TOOLTIP_ITEM_ATT_POWER % (minPower+addPower, maxPower+addPower) + welemSuffix, self.POSITIVE_COLOR)
 		else:
-			self.AppendTextLine(localeInfo.TOOLTIP_ITEM_ATT_POWER_ONE_ARG % (minPower+addPower), self.POSITIVE_COLOR)
+			self.AppendTextLine(localeInfo.TOOLTIP_ITEM_ATT_POWER_ONE_ARG % (minPower+addPower) + welemSuffix, self.POSITIVE_COLOR)
 
 	def __AppendMagicAttackInfo(self, itemAbsChance = 0):
 		minMagicAttackPower = item.GetValue(1)
@@ -1172,6 +1177,7 @@ class ItemToolTip(ToolTip):
 		item.SelectItem(itemVnum)
 		itemType = item.GetItemType()
 		itemSubType = item.GetItemSubType()
+		__import__("welem").Setup(self, window_type, slotIndex) # MT2009_PLUS_WEAPON_ELEMENT_V1: the weapon's / sash's element (welem.py)
 
 		#self.auxiliaryDict = kwargs.get("auxiliaryDict", player.GetAuxiliaryString(window_type, slotIndex))
 
@@ -1271,6 +1277,8 @@ class ItemToolTip(ToolTip):
 		if self.__IsHair(itemVnum):
 			self.__AppendHairIcon(itemVnum)
 
+		__import__("welem").AppendTitle(self) # MT2009_PLUS_WEAPON_ELEMENT_V1: "<Zywiol> +n" under the name, as officially
+
 		### Description ###
 		self.AppendDescription(itemDesc, 26)
 		self.AppendDescription(itemSummary, 26, self.CONDITION_COLOR)
@@ -1306,6 +1314,7 @@ class ItemToolTip(ToolTip):
 			# the five (they were merged into the item's base values here).
 			self.__AppendAffectInformation()
 			self.__AppendYSetsInformation(itemVnum) # MT2009_PLUS_YOHARA_SETS_V1
+			__import__("welem").AppendPower(self) # MT2009_PLUS_WEAPON_ELEMENT_V1: "Sila <zywiolu> +p%" after the base bonuses
 			self.__AppendAttributeInformation(attrSlot, 0, player.ATTRIBUTE_SLOT_MAX_NUM)
 			self.__AppendSeonHaeHint(itemVnum, attrSlot)
 
@@ -1461,6 +1470,7 @@ class ItemToolTip(ToolTip):
 
 						item.SelectItem(itemAbsorbedVnum)
 					# END EFFECT
+					__import__("welem").AppendPower(self, metinSlot[acce.ABSORPTION_SOCKET]) # MT2009_PLUS_WEAPON_ELEMENT_V1: the absorbed weapon's element at the sash's rate
 
 					item.SelectItem(itemVnum)
 					## ATTR

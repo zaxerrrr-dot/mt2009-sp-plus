@@ -2669,6 +2669,15 @@ class InventoryWindow(ui.ScriptWindow):
 			self.__SendMoveItemPacket(srcItemSlotPos, dstItemSlotPos, 0)
 			return
 
+		# MT2009_PLUS_WEAPON_ELEMENT_V1: Zwoje Zywiolow / Klatwy / Zmiany (56002-56009) dropped on a weapon - the server opens the
+		# window (uiweaponelement.py); on the same scroll they stack
+		if __import__("welem").IsScroll(srcItemVID):
+			if player.GetItemIndex(dstItemSlotPos) == srcItemVID:
+				self.__SendMoveItemPacket(srcItemSlotPos, dstItemSlotPos, 0)
+			else:
+				self.__SendUseItemToItemPacket(srcItemSlotPos, dstItemSlotPos)
+			return
+
 		# cyh itemseal 2013 11 08
 		if app.ENABLE_SOULBIND_SYSTEM and item.IsSealScroll(srcItemVID):
 			self.__SendUseItemToItemPacket(srcItemSlotPos, dstItemSlotPos)
@@ -2864,6 +2873,8 @@ class InventoryWindow(ui.ScriptWindow):
 
 
 	def __IsUsableItemToItem(self, srcItemVNum, srcSlotPos):
+		if __import__("welem").IsScroll(srcItemVNum): # MT2009_PLUS_WEAPON_ELEMENT_V1
+			return True
 		if item.IsRefineScroll(srcItemVNum):
 			return True
 		elif item.IsMetin(srcItemVNum):
@@ -2885,6 +2896,14 @@ class InventoryWindow(ui.ScriptWindow):
 	def __CanUseSrcItemToDstItem(self, srcItemVNum, srcSlotPos, dstSlotPos):
 		if srcSlotPos == dstSlotPos:
 			return False
+
+		# MT2009_PLUS_WEAPON_ELEMENT_V1: an element scroll lights a weapon (the server checks +7, the type, the level, the element)
+		if __import__("welem").IsScroll(srcItemVNum):
+			dstItemVNum = player.GetItemIndex(dstSlotPos)
+			if not dstItemVNum:
+				return False
+			item.SelectItem(dstItemVNum)
+			return item.GetItemType() == item.ITEM_TYPE_WEAPON and item.GetItemSubType() not in (item.WEAPON_ARROW, getattr(item, "WEAPON_QUIVER", -1))
 
 		if item.IsRefineScroll(srcItemVNum):
 			# MT2009_PLUS_KOLA_ITEMS_V1: Kamien Rytualny (25046) only on an item above level 80 (the server checks it too)
