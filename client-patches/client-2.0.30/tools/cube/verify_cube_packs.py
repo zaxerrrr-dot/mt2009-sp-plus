@@ -5,7 +5,10 @@
 #   * every .sub of d:/ymir work/ui/game/cube points at making_001.dds or gemshop_001.dds inside the image (DDS size);
 #   * the images it needs from earlier steps are there (gemshop_001.dds) and the old windows stay (uicube.py for the set
 #     blacksmiths, uicraft.py for its category lists);
-#   * the pack's interfacemodule.py makes the new windows (import uiCubeRenewal, CubeRenewalWindow, CraftingRenewalWindow).
+#   * the pack's interfacemodule.py makes the new windows (import uiCubeRenewal, CubeRenewalWindow, CraftingRenewalWindow)
+#     and (V2) sends the set blacksmiths there too;
+#   * (V2) every piece of cube_setsmith_data.py is in the client's item_proto (dbdata pack) and is one the set
+#     blacksmiths take: a weapon (not an arrow), a body armour or a helmet, level 75+, "+7" or more in its name.
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/cube/verify_cube_packs.py \
 #     <OUT pack dir> [<BASE pack dir>]
 import os
@@ -78,8 +81,29 @@ iface = entry('interfacemodule.py') or b''
 for hook in cube_files.INTERFACE_HOOKS:
     if hook.encode('ascii') not in iface:
         fails.append('interfacemodule.py: %r missing' % hook)
+for hook in cube_files.INTERFACE_GONE:
+    if hook.encode('ascii') in iface:
+        fails.append('interfacemodule.py: %r still there' % hook)
 
-print('cube: %d entries, %d problem(s)' % (len(want), len(fails)))
+# MT2009_PLUS_CUBE_RENEWAL_V2: the set blacksmiths' pieces against the client's item_proto
+import gen_setsmith_items  # noqa: E402
+ns = {}
+exec(compile(cube_files.read(os.path.join(cube_files.ROOT, 'cube_setsmith_data.py')), 'cube_setsmith_data.py', 'exec'), ns)
+dd = OUT if os.path.exists(os.path.join(OUT, 'dbdata.index')) else BASE
+proto = gen_setsmith_items.client_proto(dd)
+npieces = 0
+for part, vnums in sorted(ns['PIECES'].items()):
+    for vnum in vnums:
+        npieces += 1
+        if vnum not in proto:
+            fails.append('cube_setsmith_data: %d not in the client item_proto' % vnum)
+            continue
+        (name, typ, sub, lvl) = proto[vnum]
+        if gen_setsmith_items.part_of(typ, sub) != part or lvl < gen_setsmith_items.MIN_LEVEL \
+                or gen_setsmith_items.refine_level(name) < gen_setsmith_items.MIN_REFINE:
+            fails.append('cube_setsmith_data: %d (%s) is not a part-%d piece of level 75+ at +7' % (vnum, name, part))
+
+print('cube: %d entries, %d set blacksmith pieces, %d problem(s)' % (len(want), npieces, len(fails)))
 for x in fails:
     print('  ' + x)
 sys.exit(1 if fails else 0)

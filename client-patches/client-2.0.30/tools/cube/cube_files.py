@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_CUBE_RENEWAL_V1 - the files of the global crafting window (root/uicuberenewal.py) in the "root" pack:
 # the module, its uiscript and GF 26.1.11's graphics (d:/ymir work/ui/making_001.dds, d:/ymir work/ui/game/cube/*.sub
-# plus our two crops mt2009_cube_slot_col.sub / mt2009_cube_slot_end.sub). The build of the root pack (build57.py)
+# plus our two crops mt2009_cube_slot_col.sub / mt2009_cube_slot_end.sub) and, since MT2009_PLUS_CUBE_RENEWAL_V2 (fix
+# 3.0.4 #5: the set blacksmiths in the window), cube_setsmith_data.py (gen_setsmith_items.py). The build of the root pack (build57.py)
 # already takes them from client-2.0.30/root and client-2.0.30/atlas/d_; build_cube_packs.py makes sure of it and
 # verify_cube_packs.py checks it. Shared by both.
 import os
@@ -20,10 +21,13 @@ GF_SUBS = ('cube_gem_icon', 'cube_improve_slot', 'cube_menu_tab1', 'cube_menu_ta
            'cube_yang_textbg')
 OWN_SUBS = ('mt2009_cube_slot_col', 'mt2009_cube_slot_end')
 
-# what the window needs that an earlier step ships (gemshop_001.dds: the Gaya shop, client-2.0.30/atlas)
-NEEDED_ELSEWHERE = ('d:/ymir work/ui/gemshop_001.dds', 'uicube.py', 'uicraft.py')
+# what the window needs that an earlier step ships (gemshop_001.dds: the Gaya shop, client-2.0.30/atlas; uicube.py's
+# bag helpers, uicraft.py's category lists; ysets.py / ysets_data.py: the set of a piece, the sets' prefixes)
+NEEDED_ELSEWHERE = ('d:/ymir work/ui/gemshop_001.dds', 'uicube.py', 'uicraft.py', 'ysets.py', 'ysets_data.py')
 # the hooks in the pack's interfacemodule.py (build57.py takes it from client-2.0.30/root)
 INTERFACE_HOOKS = ('import uiCubeRenewal', 'uiCubeRenewal.CraftingRenewalWindow()', 'uiCubeRenewal.CubeRenewalWindow()')
+# V2: the set blacksmiths no longer switch to uicube.py's window
+INTERFACE_GONE = ('self.wndCube = self.wndCubeClassic', )
 
 
 def entries():
@@ -31,6 +35,7 @@ def entries():
     out = {
         'uicuberenewal.py': (os.path.join(ROOT, 'uicuberenewal.py'), 2),
         'uiscript/cuberenewalwindow.py': (os.path.join(ROOT, 'uiscript', 'cuberenewalwindow.py'), 2),
+        'cube_setsmith_data.py': (os.path.join(ROOT, 'cube_setsmith_data.py'), 2),
         'd:/ymir work/ui/making_001.dds': (os.path.join(ATLAS, 'd_', 'ymir work', 'ui', 'making_001.dds'), 2),
     }
     for name in GF_SUBS + OWN_SUBS:

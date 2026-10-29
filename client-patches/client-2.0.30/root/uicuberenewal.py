@@ -7,8 +7,10 @@
 #    a row), "/cube pick" (the chosen row), "/cube improve" (the chance-raising slot, "CubeImprove" back), "/cube add" /
 #    "/ekwipunek kostka" (the materials from the bag and the extra inventory) and "/cube make". The quantity: the stacks
 #    for N attempts go into the server's window once and "/cube make" is sent N times (each attempt its own chance, the
-#    chance-raising item one piece an attempt, as before); only for a stackable result, as on global. The set
-#    blacksmiths (20475-20479) keep their old window (uicube.py).
+#    chance-raising item one piece an attempt, as before); only for a stackable result, as on global.
+#    MT2009_PLUS_CUBE_RENEWAL_V2 (fix 3.0.4 #5): the set blacksmiths (20475-20479, V1 left them on uicube.py) here
+#    too, as the global "Uszlachetnienie": "Wykonaj zestaw broni / zbroi / helmu" -> every piece of level 75+ (+7 or
+#    more) by its base item -> +7 / +8 / +9 ... (cube_setsmith_data.py and the bag), the chosen piece's own cell put in.
 #  * CraftingRenewalWindow - the quest crafting windows (crafting.open(...), crafting_data.lua, world.crafting_proto:
 #    the blacksmith 20016, Baek-Go, the cook, the alchemists, ...). It takes the place of uicraft.py's CraftingWindow and
 #    keeps its interface (current_crafting_vnum, Open, OnCraftUpdate, Close; game.py's craft_recipe / craft_avail /
@@ -101,6 +103,23 @@ CUBE_CATEGORY_NAMES = {
 CUBE_CATEGORY_ORDER = (1, 0, 12, 2, 3, 7, 8, 9, 11, 10, 13, 6, 4, 5)
 CUBE_CATEGORY_OTHER = 5
 
+# MT2009_PLUS_CUBE_RENEWAL_V2 (fix 3.0.4 #5): the set blacksmiths in this window, as the global "Uszlachetnienie".
+# NPC -> the set it puts on a piece (cube.txt "set_value", tools/ysets/gen_ysets.py; ysets_data.SETS for the prefix)
+SET_SMITHS = {20475 : 1, 20476 : 2, 20477 : 3, 20478 : 4, 20479 : 5}
+SET_PART_CATEGORY = {1 : 7, 2 : 8, 3 : 9}	# set_part (1 weapon, 2 armour, 3 helmet) -> the server's category
+SET_CATEGORY_NAMES = {
+	7 : "Wykonaj zestaw broni",
+	8 : "Wykonaj zestaw zbroi",
+	9 : "Wykonaj zestaw he\xb3mu",
+}
+SET_MIN_LEVEL = 75
+SET_MIN_REFINE = 7
+TEXT_SET_TITLE = "Uszlachetnienie"
+TEXT_SET_OK = "OK"
+TEXT_SET_CANCEL = "Anuluj"
+TEXT_SET_IMPROVE = "Podwy\xbfsz szans\xea"
+TEXT_SET_HAS = "Ten przedmiot ma ju\xbf ten efekt zestawu."
+
 # the search: CP1250 letters folded to plain small ones ("zbroja" finds "Zbroja", "helm" finds "Helm")
 _FOLD = {}
 for _a, _b in (("\xa5\xb9", "a"), ("\xc6\xe6", "c"), ("\xca\xea", "e"), ("\xa3\xb3", "l"), ("\xd1\xf1", "n"), ("\xd3\xf3", "o"),
@@ -176,6 +195,77 @@ def _BagCountsCraft():
 	return counts
 
 
+_SET_PIECE_INFO = {}
+
+
+def _SetPieceInfo(vnum):
+	# (part, base vnum, base name, refine level, level limit) of a piece a set blacksmith works on, else None - the
+	# server's rule (server-patches/ysets, Mt2009YSetsPart + Mt2009YSetsCubeGear): a weapon (not an arrow), a body
+	# armour or a helmet of level 75+, refined to +7 or more (the number after the last "+" of its name)
+	if vnum in _SET_PIECE_INFO:
+		return _SET_PIECE_INFO[vnum]
+	info = None
+	try:
+		item.SelectItem(vnum)
+		itemType = item.GetItemType()
+		subType = item.GetItemSubType()
+		part = 0
+		if itemType == item.ITEM_TYPE_WEAPON and subType != getattr(item, "WEAPON_ARROW", 6):
+			part = 1
+		elif itemType == item.ITEM_TYPE_ARMOR and subType == getattr(item, "ARMOR_BODY", 0):
+			part = 2
+		elif itemType == item.ITEM_TYPE_ARMOR and subType == getattr(item, "ARMOR_HEAD", 1):
+			part = 3
+		level = 0
+		for i in xrange(getattr(item, "LIMIT_MAX_NUM", 2)):
+			(limitType, limitValue) = item.GetLimit(i)
+			if limitType == getattr(item, "LIMIT_LEVEL", 1):
+				level = limitValue
+				break
+		name = item.GetItemName()
+		plus = name.rfind("+")
+		refine = 0
+		if plus >= 0:
+			digits = ""
+			for c in name[plus + 1:]:
+				if not c.isdigit():
+					break
+				digits += c
+			refine = digits and int(digits) or 0
+		if part and level >= SET_MIN_LEVEL and refine >= SET_MIN_REFINE:
+			info = (part, vnum - refine, name[:plus].rstrip(), refine, level)
+	except Exception:
+		info = None
+	_SET_PIECE_INFO[vnum] = info
+	return info
+
+
+def _SetListedPieces():
+	# the generated list (tools/cube/gen_setsmith_items.py) - every piece of the server's item_proto the rule takes
+	try:
+		import cube_setsmith_data
+		return cube_setsmith_data.PIECES
+	except Exception:
+		return {}
+
+
+def _SetOf(cell):
+	# the set effect a piece of the bag has now (ysets.py: the server's "YITEM" lines)
+	try:
+		import ysets
+		return ysets.GetFor(player.INVENTORY, cell) & 0x0F
+	except Exception:
+		return 0
+
+
+def _SetPrefix(setValue):
+	try:
+		import ysets_data
+		return ysets_data.SETS[setValue][0]
+	except Exception:
+		return ""
+
+
 class ListRow(ui.Window):
 	# one line of the list: a category (kind 1), a result with more recipes (kind 2) or a recipe (kind 3)
 	IMAGES = {
@@ -191,6 +281,8 @@ class ListRow(ui.Window):
 		self.kind = 0
 		self.selected = False
 		self.over = False
+		self.scaleX = 1.0
+		self.bgImage = ""
 
 		self.bg = ui.ExpandedImageBox()
 		self.bg.SetParent(self)
@@ -216,6 +308,16 @@ class ListRow(ui.Window):
 	def __del__(self):
 		ui.Window.__del__(self)
 
+	def __SetBg(self, path):
+		# MT2009_PLUS_CUBE_RENEWAL_V2 (fix 3.0.4 #3): ExpandedImageBox.LoadImage makes a new image instance
+		# (CImageBox::LoadImageFromGraphicImage -> OnCreateInstance) - its scale is 1.0 again and the window takes the
+		# image's own size. V1 loaded the "select" bar on the mouse's "over in" without the scale: the row got narrower
+		# (255 instead of 299-319) until the half-second refresh bound it again. Every load sets the scale again now.
+		if path != self.bgImage:
+			self.bg.LoadImage(path)
+			self.bgImage = path
+		self.bg.SetScale(self.scaleX, 1.0)
+
 	def Bind(self, entry, x, y, selected):
 		self.entry = entry
 		self.selected = selected
@@ -225,8 +327,8 @@ class ListRow(ui.Window):
 			self.kind = kind
 			self.over = False
 		(up, down, imgWidth) = self.IMAGES[kind]
-		self.bg.LoadImage((selected or self.over) and down or up)
-		self.bg.SetScale(float(width) / imgWidth, 1.0)
+		self.scaleX = float(width) / imgWidth
+		self.__SetBg((selected or self.over) and down or up)
 		self.SetSize(width, 18)
 		self.SetPosition(x, y)
 
@@ -266,12 +368,12 @@ class ListRow(ui.Window):
 	def OnMouseOverIn(self):
 		self.over = True
 		if self.kind == 3 and not self.selected:
-			self.bg.LoadImage(self.IMAGES[3][1])
+			self.__SetBg(self.IMAGES[3][1])
 
 	def OnMouseOverOut(self):
 		self.over = False
 		if self.kind == 3 and not self.selected:
-			self.bg.LoadImage(self.IMAGES[3][0])
+			self.__SetBg(self.IMAGES[3][0])
 
 	def OnMouseWheel(self, delta):
 		self.owner.OnListWheel(delta)
@@ -288,6 +390,7 @@ class _RenewalBase(ui.ScriptWindow):
 		ui.ScriptWindow.__init__(self)
 		self.tooltipItem = None
 		self.recipes = []
+		self.defaultOpen = True	# a category's +/- before the player clicks it
 		self.selectedKey = None
 		self.openCategories = {}
 		self.openRewards = {}
@@ -552,29 +655,30 @@ class _RenewalBase(ui.ScriptWindow):
 				groups[cat] = ([], {})
 				order.append(cat)
 			(rewards, byReward) = groups[cat]
-			if recipe["reward"] not in byReward:
-				byReward[recipe["reward"]] = []
-				rewards.append(recipe["reward"])
-			byReward[recipe["reward"]].append(recipe)
+			group = recipe.get("group", recipe["reward"])	# MT2009_PLUS_CUBE_RENEWAL_V2: the set blacksmiths' base piece
+			if group not in byReward:
+				byReward[group] = []
+				rewards.append(group)
+			byReward[group].append(recipe)
 		order.sort(key = lambda c: (self.CategoryOrder(c), c))
 
 		entries = []
 		for cat in order:
 			(rewards, byReward) = groups[cat]
-			isOpen = bool(words) or self.openCategories.get(cat, True)
+			isOpen = bool(words) or self.openCategories.get(cat, self.defaultOpen)
 			entries.append({"kind" : 1, "cat" : cat, "open" : isOpen, "text" : self.CategoryName(cat)})
 			if not isOpen:
 				continue
 			for reward in rewards:
 				recipes = byReward[reward]
-				if len(recipes) == 1:
+				if len(recipes) == 1 and not recipes[0].get("alwaysGroup"):
 					entries.append(self.__RecipeEntry(recipes[0], 15))
 					continue
 				rewardKey = (cat, reward)
 				rewardOpen = bool(words) or self.openRewards.get(rewardKey, False)
+				text = recipes[0].get("groupText") or "%s (%s)" % (_ItemName(reward), TEXT_RECIPES % len(recipes))
 				entries.append({"kind" : 2, "rkey" : rewardKey, "open" : rewardOpen, "indent" : 15,
-								"text" : "%s (%s)" % (_ItemName(reward), TEXT_RECIPES % len(recipes)),
-								"count" : sum([self.CanMake(r) for r in recipes])})
+								"text" : text, "count" : self.GroupCount(recipes)})
 				if rewardOpen:
 					for recipe in recipes:
 						entries.append(self.__RecipeEntry(recipe, 35))
@@ -582,8 +686,16 @@ class _RenewalBase(ui.ScriptWindow):
 		self.__UpdateScroll()
 		self.__ShowRows()
 
+	def GroupCount(self, recipes):
+		# "[n]" of a result's own row: how many times the bag makes its recipes
+		return sum([self.CanMake(r) for r in recipes])
+
+	def RecipeCount(self, recipe):
+		# "[n]" of a recipe's row
+		return self.CanMake(recipe)
+
 	def __RecipeEntry(self, recipe, indent):
-		name = _ItemName(recipe["reward"])
+		name = recipe.get("label") or _ItemName(recipe["reward"])
 		if recipe["count"] > 1:
 			name = "%s x%d" % (name, recipe["count"])
 		chance = recipe["chance"]
@@ -592,7 +704,7 @@ class _RenewalBase(ui.ScriptWindow):
 			if bonus > 0 and str(chance).isdigit():
 				chance = str(min(100, int(chance) + bonus))
 			name = "%s (%s%%)" % (name, chance)
-		count = self.CanMake(recipe)
+		count = self.RecipeCount(recipe)
 		color = recipe.get("color") or (count > 0 and COLOR_NORMAL or grp.GenerateColor(0.6, 0.6, 0.6, 1.0))
 		return {"kind" : 3, "recipe" : recipe, "indent" : indent, "text" : name, "count" : count, "color" : color}
 
@@ -941,6 +1053,9 @@ class CubeRenewalWindow(_RenewalBase):
 		self.batchTotal = 0
 		self.batchOk = 0
 		self.batchUntil = 0.0
+		self.setValue = 0		# MT2009_PLUS_CUBE_RENEWAL_V2: a set blacksmith's set (1-5), 0 at every other NPC
+		self.setBagPieces = ()	# the pieces of the bag the list does not have (an item newer than cube_setsmith_data)
+		self.setHeld = {}		# vnum -> pieces in the bag, with this blacksmith's set or not
 
 	def __del__(self):
 		_RenewalBase.__del__(self)
@@ -948,6 +1063,10 @@ class CubeRenewalWindow(_RenewalBase):
 	# ------------------------------------------------------------------ the interface of uicubeokno.CubeOknoWindow
 	def Open(self, npcVnum = 0):
 		self.npcVnum = int(npcVnum)
+		self.setValue = SET_SMITHS.get(self.npcVnum, 0)
+		self.setBagPieces = ()
+		self.setHeld = {}
+		self.defaultOpen = not self.setValue	# global: the three set categories closed
 		self.cubeResultInfos = []
 		self.cubeMaterialInfos = {}
 		self.cubeResultExtra = {}
@@ -963,7 +1082,12 @@ class CubeRenewalWindow(_RenewalBase):
 				title = "%s - %s" % (TEXT_TITLE, name)
 		except Exception:
 			pass
+		if self.setValue:
+			title = TEXT_SET_TITLE
 		self._OpenCommon(title)
+		self.okButton.SetText(self.setValue and TEXT_SET_OK or TEXT_MAKE)
+		self.cancelButton.SetText(self.setValue and TEXT_SET_CANCEL or TEXT_CLOSE)
+		self.improveText.SetText(self.setValue and TEXT_SET_IMPROVE or TEXT_IMPROVE)
 		self.isUsable = True
 
 	def Close(self):
@@ -1044,6 +1168,10 @@ class CubeRenewalWindow(_RenewalBase):
 	# ------------------------------------------------------------------ the rows from the server's lists
 	def __Dirty(self):
 		self.recipes = []
+		if self.setValue:
+			self.recipes = self.__SetRecipes()
+			self.listDirty = True
+			return
 		for i in xrange(len(self.cubeResultInfos)):
 			(vnum, count) = self.cubeResultInfos[i]
 			(gold, chance, gaya, category) = self.cubeResultExtra.get(i, (0, "", 0, -1))
@@ -1056,7 +1184,133 @@ class CubeRenewalWindow(_RenewalBase):
 			})
 		self.listDirty = True
 
+	# ------------------------------------------------------------------ MT2009_PLUS_CUBE_RENEWAL_V2: the set blacksmiths
+	# Why V1 left them on uicube.py: a set recipe makes no new item - it puts the set (yextra, server-patches/ysets
+	# Mt2009YSetsCubeMake) on the piece itself, which stays in place with its stones and bonuses (nothing to copy, unlike
+	# copy_attr's new item) and stays on a failure. Its row (cube.cpp Mt2009YSetsCubeMaterialInfo) is one a part with a
+	# sample +7 piece of the player's class as the result and the first material, the Gaya as a material - V1's window
+	# would have put exactly that sample vnum into the cube, so any other piece (or the +8/+9) could not be used.
+	# Here: the server's three rows give each part's materials, Yang, chance, Gaya and category; the list is every piece
+	# of that part (cube_setsmith_data + the bag's) grouped by its base item, +7/+8/+9... below it with "[n]" - the
+	# pieces of the bag without this set. Making puts the chosen piece's own cell first, then the materials, "/cube pick
+	# 0" (the server's set recipe is found by the piece's part, FN_find_cube) and one "/cube make".
+	def __SetServerRows(self):
+		rows = {}
+		for i in xrange(len(self.cubeResultInfos)):
+			(sample, count) = self.cubeResultInfos[i]
+			(gold, chance, gaya, category) = self.cubeResultExtra.get(i, (0, "", 0, -1))
+			part = 0
+			for (p, cat) in SET_PART_CATEGORY.items():
+				if cat == category:
+					part = p
+			if not part:
+				info = _SetPieceInfo(sample)
+				part = info and info[0] or 0
+			if not part or part in rows:
+				continue
+			gaya = max(0, int(gaya))
+			materials = []
+			for alternatives in self.cubeMaterialInfos.get(i, []):
+				if not alternatives:
+					continue
+				if len(alternatives) == 1 and alternatives[0][0] == sample:
+					continue	# the server's sample piece - the chosen piece takes its place
+				if len(alternatives) == 1 and alternatives[0][0] == GAYA_VNUM:
+					gaya += alternatives[0][1]	# a material on the server's row, the Gaya field here
+					continue
+				materials.append(alternatives)
+			rows[part] = (max(0, int(gold)), chance, gaya, SET_PART_CATEGORY[part], materials)
+		return rows
+
+	def __SetRecipes(self):
+		rows = self.__SetServerRows()
+		listed = _SetListedPieces()
+		prefix = _SetPrefix(self.setValue)
+		recipes = []
+		for part in (1, 2, 3):
+			if part not in rows:
+				continue
+			(gold, chance, gaya, category, materials) = rows[part]
+			vnums = list(listed.get(part, ()))
+			for vnum in self.setBagPieces:
+				if vnum not in vnums:
+					vnums.append(vnum)
+			groups = {}
+			for vnum in vnums:
+				info = _SetPieceInfo(vnum)
+				if not info or info[0] != part:
+					continue
+				(p, base, baseName, refine, level) = info
+				groups.setdefault(base, []).append((refine, vnum, baseName, level))
+			order = []
+			for (base, pieces) in groups.items():
+				pieces.sort()
+				order.append((min([x[3] for x in pieces]), base))
+			order.sort()
+			for (level, base) in order:
+				baseName = groups[base][0][2]
+				groupText = prefix and "%s %s" % (prefix, baseName) or baseName
+				for (refine, vnum, name, lvl) in groups[base]:
+					recipes.append({
+						"key" : ("set", vnum), "reward" : vnum, "count" : 1, "columns" : [[(vnum, 1)]] + materials,
+						"gold" : gold, "chance" : chance, "gaya" : gaya, "category" : category, "realCategory" : category,
+						"available" : True, "group" : ("set", base), "groupText" : groupText, "alwaysGroup" : True,
+						"label" : "%s +%d" % (groupText, refine), "setPiece" : True,
+					})
+		return recipes
+
+	def __SetCounts(self, counts):
+		# a piece counts when it lies in the bag (not worn) without this blacksmith's set - the server refuses the others
+		held = {}
+		usable = {}
+		extra = []
+		listed = _SetListedPieces()
+		for cell in xrange(player.INVENTORY_SLOT_COUNT):
+			vnum = player.GetItemIndex(cell)
+			if not vnum or not _SetPieceInfo(vnum):
+				continue
+			held[vnum] = held.get(vnum, 0) + 1
+			if _SetOf(cell) != self.setValue:
+				usable[vnum] = usable.get(vnum, 0) + 1
+			if vnum not in listed.get(_SetPieceInfo(vnum)[0], ()) and vnum not in extra:
+				extra.append(vnum)
+		for vnum in held.keys():
+			counts[vnum] = usable.get(vnum, 0)
+		self.setHeld = held
+		extra = tuple(sorted(extra))
+		if extra != tuple(sorted(self.setBagPieces)):
+			self.setBagPieces = extra
+			self.recipes = self.__SetRecipes()
+		return counts
+
+	def __SetGearCell(self, vnum):
+		for cell in xrange(player.INVENTORY_SLOT_COUNT):
+			if player.GetItemIndex(cell) == vnum and _SetOf(cell) != self.setValue:
+				return cell
+		return -1
+
+	def GroupCount(self, recipes):
+		if self.setValue:
+			return sum([self.counts.get(r["reward"], 0) for r in recipes])
+		return _RenewalBase.GroupCount(self, recipes)
+
+	def RecipeCount(self, recipe):
+		if self.setValue:
+			return self.counts.get(recipe["reward"], 0)
+		return _RenewalBase.RecipeCount(self, recipe)
+
+	def OnPressMake(self):
+		recipe = self.Selected()
+		if self.setValue and recipe:
+			self.counts = self.GetBagCounts()
+			if self.setHeld.get(recipe["reward"], 0) > 0 and self.counts.get(recipe["reward"], 0) <= 0:
+				chat.AppendChat(chat.CHAT_TYPE_INFO, TEXT_SET_HAS)
+				return
+		_RenewalBase.OnPressMake(self)
+
 	def CategoryName(self, cat):
+		if self.setValue and cat in SET_CATEGORY_NAMES:
+			return SET_CATEGORY_NAMES[cat]
 		return CUBE_CATEGORY_NAMES.get(cat, CUBE_CATEGORY_NAMES[CUBE_CATEGORY_OTHER])
 
 	def CategoryOrder(self, cat):
@@ -1065,6 +1319,8 @@ class CubeRenewalWindow(_RenewalBase):
 		return len(CUBE_CATEGORY_ORDER)
 
 	def GetBagCounts(self):
+		if self.setValue:
+			return self.__SetCounts(_BagCountsCube())
 		return _BagCountsCube()
 
 	def GetImproveBonus(self, recipe):
@@ -1074,12 +1330,13 @@ class CubeRenewalWindow(_RenewalBase):
 		return 0
 
 	def MaxQuantity(self, recipe):
-		if _IsStackable(recipe["reward"]):
+		if not recipe.get("setPiece") and _IsStackable(recipe["reward"]):
 			return CUBE_MAX_QUANTITY
 		return 1
 
 	def OnSelected(self, recipe):
-		net.SendChatPacket("/cube pick %d" % recipe["reward"])
+		# a set row: "pick 0" - the server finds the set recipe by the piece's part (its reward is the Projekt)
+		net.SendChatPacket("/cube pick %d" % (not recipe.get("setPiece") and recipe["reward"] or 0))
 
 	def OnUpdate(self):
 		_RenewalBase.OnUpdate(self)
@@ -1089,7 +1346,18 @@ class CubeRenewalWindow(_RenewalBase):
 	def MakeRecipe(self, recipe, quantity):
 		plan = []
 		used = {}
-		for alternatives in recipe["columns"]:
+		columns = recipe["columns"]
+		if recipe.get("setPiece"):
+			# the chosen piece itself - its own cell (one without this set), the first item of the server's window
+			quantity = 1
+			cell = self.__SetGearCell(recipe["reward"])
+			if cell < 0:
+				chat.AppendChat(chat.CHAT_TYPE_INFO, self.setHeld.get(recipe["reward"], 0) and TEXT_SET_HAS or TEXT_MISSING % _ItemName(recipe["reward"]))
+				return
+			used[cell] = True
+			plan.append(cell)
+			columns = columns[1:]
+		for alternatives in columns:
 			if not alternatives:
 				continue
 			best = self.BestAlternative(alternatives, quantity)
@@ -1112,7 +1380,7 @@ class CubeRenewalWindow(_RenewalBase):
 			uiCube._CubeAdd(slot, plan[slot])
 			self.placed.append(slot)
 		self.SetInfo("", COLOR_NORMAL, 0)
-		net.SendChatPacket("/cube pick %d" % recipe["reward"])
+		net.SendChatPacket("/cube pick %d" % (not recipe.get("setPiece") and recipe["reward"] or 0))
 		if quantity > 1:
 			self.batchTotal = quantity
 			self.batchLeft = quantity
