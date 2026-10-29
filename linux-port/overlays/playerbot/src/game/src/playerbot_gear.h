@@ -4579,7 +4579,10 @@ namespace
 		if (!arrow || arrow->GetType() != ITEM_WEAPON || arrow->GetSubType() != WEAPON_ARROW)
 			return -1;
 #if defined(PLAYERBOT_ENGINE_MT2009)
-		if (arrow->GetValue(2) <= 0)
+		// DR_ARCHER_ARROW_V1 (p-lucznicy-strzaly, 28.10.2026): the fade only where CalcArrowDamage applies it
+		// (value5 > value4) - the GF values (gf_wartosci.sql) zero value2, value4 and value5 of 8000-8005, which then
+		// hit at full damage at any range, and every Archer bot stood unable to shoot.
+		if (arrow->GetValue(5) > arrow->GetValue(4) && arrow->GetValue(2) <= 0)
 			return -1;
 #endif
 		return std::max<int>(0, (int)arrow->GetValue(3));
