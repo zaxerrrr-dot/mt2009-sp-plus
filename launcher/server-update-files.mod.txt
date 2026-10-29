@@ -454,6 +454,9 @@ linux-port/docker/mariadb/playerbot/yohara_helm100.sql
 # MT2009_PLUS_SERPENT_HOOD_V1: Wezowy Czepiec 12880-12895, its materials 31264-31269 and refine_proto 40500-40514
 # (tools/czepiec); Jaharr's recipe cube.czepiec.txt (above), the random second bonus item.cpp (above, server-patches/czepiec).
 linux-port/docker/mariadb/playerbot/yohara_czepiec.sql
+# MT2009_PLUS_BIOLOGIST_YOHARA_V1: Oczyszczony Rdzen, Krysztal Metin, Mroczna Paproc 31230-31232 (tools/ybiolog); the
+# Biologist's quests collect_quest_lv92 / lv94 / cz1 / cz10 / cz20 (quest/*).
+linux-port/docker/mariadb/playerbot/yohara_biolog.sql
 # MT2009_PLUS_MLODZI_BOHATEROWIE_V1: Bronie dla Mlodych Bohaterow - the weapons 21900-21975 (tools/mlodzi); the logic is
 # playerbot_mlodzi.{h,cpp} (the playerbot_* lines), quest mlodzi_bohaterowie (quest/*), the engine files server-patches/mlodzi
 # changes are above.

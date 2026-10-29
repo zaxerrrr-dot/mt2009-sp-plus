@@ -1,0 +1,199 @@
+-- MT2009_PLUS_BIOLOGIST_YOHARA_V1: Klejnoty dla Seona-Pyeonga (poz. 94) - pl-wiki "Misje Biologa" / "Klejnoty dla
+-- Seona-Pyeonga" (the owner, 29 October 2026). Opened by collect_quest_lv92's end (set_quest_state "run").
+--   Seon-Pyeong (20091) wants 20 Klejnotów M¹droœci (30252), one a hand-in, every one accepted (the wiki: "Badacz
+--   zalicza wszystkie Klejnoty"), the wait between hand-ins the Biologist's own (collect_data). The gem: £ucznik
+--   Setaou (2412) and Komendant Setaou (2414) in the Grotto of Exile, 1 in 400 while the mission waits for it
+--   (Owsap's rate), and 5 in Skrzynia Hydry. Then Kamieñ Dusz Beran-Setaou (30228): Beran-Setaou (2493) always,
+--   Genera³ Huashin (2495) 1 in 20 (Owsap's), while the bag holds none.
+--   Reward, chosen (permanent, AFFECT_COLLECT): +60 Wartoœci Ataku (POINT_ATT_GRADE_BONUS), +140 Obrony
+--   (POINT_DEF_GRADE_BONUS) or +1100 P¯ (POINT_MAX_HP). Then the Biologist goes on on the new continent:
+--   collect_quest_cz1 (Chaegirab in Dongan, the wiki: "Ostatnie Badania zanim odkryjesz ... Yohara").
+-- cp1250; no string ends with a Polish letter (qc).
+quest collect_quest_lv94 begin
+	state start begin
+		function intro()
+			say_title(mob_name(20091)..":")
+			say("Klejnoty Zawiœci zdradzi³y mi wiele, ale to")
+			say("dopiero pocz¹tek. Teraz potrzebujê Klejnotów")
+			say("M¹droœci, które nosz¹ przy sobie wojownicy")
+			say("Setaou w Grocie Wygnañców.")
+			say("")
+			say("Przynieœ mi 20 Klejnotów M¹droœci, po jednym.")
+			say_item_vnum(30252)
+			say_reward("Wypadaj¹ z £uczników Setaou i Komendantów")
+			say_reward("Setaou (oraz ze Skrzyni Hydry).")
+		end
+
+		function rewards()
+			return { { POINT_ATT_GRADE_BONUS, 60, "+60 Wartoœci Ataku" },
+				 { POINT_DEF_GRADE_BONUS, 140, "+140 Obrony" },
+				 { POINT_MAX_HP, 1100, "+1100 P¯ (maks.)" } }
+		end
+	end
+
+	state run begin
+		when login or levelup with pc.get_level() >= 94 begin
+			set_state(information)
+		end
+
+		when 20091.chat."Klejnoty dla Seona-Pyeonga" with pc.get_level() >= 94 begin
+			collect_quest_lv94.intro()
+			pc.setqf("collect_count", 0)
+			set_state(go_to_disciple)
+		end
+	end
+
+	state information begin
+		when letter begin
+			local v = find_npc_by_vnum(20091)
+			if v ~= 0 then
+				target.vid("__TARGET__", v, mob_name(20091))
+			end
+			send_letter("Klejnoty dla Seona-Pyeonga")
+		end
+
+		when button or info begin
+			say_title("Klejnoty dla Seona-Pyeonga")
+			say("Seon-Pyeong prowadzi dalej swoje badania.")
+			say("Porozmawiaj z nim przy wejœciu do Groty")
+			say("Wygnañców.")
+		end
+
+		when __TARGET__.target.click or 20091.chat."Klejnoty dla Seona-Pyeonga" begin
+			target.delete("__TARGET__")
+			collect_quest_lv94.intro()
+			pc.setqf("collect_count", 0)
+			set_state(go_to_disciple)
+		end
+	end
+
+	state go_to_disciple begin
+		when letter begin
+			send_letter("Klejnoty dla Seona-Pyeonga")
+		end
+
+		when button or info begin
+			say_title("Klejnoty dla Seona-Pyeonga")
+			say("Przynieœ Seon-Pyeongowi 20 Klejnotów M¹droœci,")
+			say("po jednym. Wypadaj¹ z £uczników i Komendantów")
+			say("Setaou w Grocie Wygnañców.")
+			say_item_vnum(30252)
+			say_reward(string.format("Przyjête klejnoty: %d / 20", pc.getqf("collect_count")))
+			collect_data.say_delay()
+		end
+
+		when 2412.kill or 2414.kill begin
+			if number(1, 400) == 1 then
+				pc.give_item2(30252, 1)
+			end
+		end
+
+		when 20091.chat."Oddaj Klejnot M¹droœci" with pc.count_item(30252) > 0 begin
+			say_title(mob_name(20091)..":")
+			if collect_data.is_wait() then
+				say("Wci¹¿ badam poprzedni klejnot. Wróæ,")
+				say("gdy skoñczê.")
+				collect_data.say_delay()
+				return
+			end
+			if pc.count_item(30252) < 1 then
+				say("Nie masz przy sobie Klejnotu M¹droœci.")
+				return
+			end
+			pc.remove_item(30252, 1)
+			collect_data.take_chance(100)
+			local n = pc.getqf("collect_count") + 1
+			pc.setqf("collect_count", n)
+			if n >= 20 then
+				pc.setqf("collect_count", 0)
+				collect_data.reset_time()
+				set_state(key_item)
+			end
+			say("Poka¿ mi go...")
+			wait()
+			say_title(mob_name(20091)..":")
+			if n >= 20 then
+				say("Mam ju¿ wszystkie 20 Klejnotów M¹droœci!")
+				say("Do zakoñczenia badañ potrzebujê jeszcze")
+				say("Kamienia Dusz Beran-Setaou. Zdobêdziesz go")
+				say("z Beran-Setaou albo z Genera³a Huashin.")
+				say_item_vnum(30228)
+				return
+			end
+			say("Doskona³y okaz! Dziêkujê.")
+			say_reward(string.format("Brakuje jeszcze %d klejnotów.", 20 - n))
+			collect_data.say_delay()
+		end
+	end
+
+	state key_item begin
+		when letter begin
+			send_letter("Klejnoty dla Seona-Pyeonga")
+			if pc.count_item(30228) > 0 then
+				local v = find_npc_by_vnum(20091)
+				if v ~= 0 then
+					target.vid("__TARGET__", v, mob_name(20091))
+				end
+			end
+		end
+
+		when button or info begin
+			say_title("Klejnoty dla Seona-Pyeonga")
+			if pc.count_item(30228) > 0 then
+				say("Masz Kamieñ Dusz Beran-Setaou. Zanieœ go")
+				say("Seon-Pyeongowi.")
+				return
+			end
+			say("Zdob¹dŸ Kamieñ Dusz Beran-Setaou: wypada")
+			say("z Beran-Setaou i Genera³a Huashin.")
+			say_item_vnum(30228)
+		end
+
+		when 2493.kill begin
+			if pc.count_item(30228) == 0 then
+				pc.give_item2(30228, 1)
+			end
+		end
+
+		when 2495.kill begin
+			if number(1, 20) == 1 and pc.count_item(30228) == 0 then
+				pc.give_item2(30228, 1)
+			end
+		end
+
+		when __TARGET__.target.click or 20091.chat."Kamieñ Dusz Beran-Setaou" with pc.count_item(30228) > 0 begin
+			target.delete("__TARGET__")
+			local r = collect_quest_lv94.rewards()
+			say_title(mob_name(20091)..":")
+			if pc.count_item(30228) < 1 then
+				say("Nie masz przy sobie Kamienia Dusz Beran-Setaou.")
+				return
+			end
+			say("Kamieñ Dusz Beran-Setaou! Dziêki niemu moje")
+			say("badania s¹ ukoñczone. Wybierz jeden sta³y bonus:")
+			local s = select(r[1][3], r[2][3], r[3][3], "Wybiorê póŸniej")
+			if s == nil or s < 1 or s > 3 then
+				return
+			end
+			if pc.count_item(30228) < 1 then
+				return
+			end
+			pc.remove_item(30228, 1)
+			pc.setqf("reward", s)
+			set_state(__complete)
+			affect.add_collect(r[s][1], r[s][2])
+			say_title(mob_name(20091)..":")
+			say("Moc klejnotów jest teraz twoja na zawsze.")
+			say_reward("Sta³y bonus: "..r[s][3])
+			say("")
+			say("Mój przyjaciel Chaegirab bada teraz nowy")
+			say("kontynent - Yoharê. OdwiedŸ go w Dongan, gdy")
+			say("zostaniesz Czempionem.")
+			set_quest_state("collect_quest_cz1", "run")
+			clear_letter()
+		end
+	end
+
+	state __complete begin
+	end
+end

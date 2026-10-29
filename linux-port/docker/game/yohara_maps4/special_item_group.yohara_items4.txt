@@ -4,41 +4,42 @@
 # tools/yohara_maps4/gen_yitems4.py.
 # Appended to special_item_group.txt by the Dockerfile (share: Yohara - Rozpadlina Dusz).
 
-# MT2009_PLUS_CHEST_DROPS_V1: 83055 - 24 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
+# MT2009_PLUS_CHEST_DROPS_V1: 83055 - 27 rows from the owner's sheet of 15 October 2026 (tools/yohara_chestdrops),
 # weights of 100000 (/ 1000 = %), one row an opening.
 # Left out (renormalised): Male Blogoslawienstwo 5.459% - not in our world;
 #   Eliksir: W. SungMa (WIT) 3.275% - not in our world; Eliksir: W. SungMa (ODP) 3.275% - not in our world;
 #   Eliksir: W. SungMa (INT) 3.275% - not in our world; Eliksir: W. SungMa(SILA) 3.275% - not in our world;
-#   Oczyszczony Rdzen 2.183% - not in our world; Mroczna Paproc 2.183% - not in our world;
-#   Skrzynia z Odlamkiem 2.183% - not in our world; Krysztal Metin 2.183% - not in our world;
-#   Zwoj Badacza 1.747% - not in our world
+#   Skrzynia z Odlamkiem 2.183% - not in our world; Zwoj Badacza 1.747% - not in our world
 Group	MT2009_yitems4_83055
 {
 	Vnum	83055 -- Plat. Skrzynia Skarbow
-	1	30071	1	6154 -- Zolc Niedzwiedzia+
-	2	30060	1	6154 -- Jezyk Zaby
-	3	30061	1	6154 -- Zabie Udka
-	4	30058	1	6154 -- Worek Z Pajecz. Jajami
-	5	30072	1	6154 -- Niedzwiedzia Skora+
-	6	27987	1	4615 -- Malz
-	7	30031	1	4615 -- Ornament
-	8	30194	1	3692 -- Orkowa Maczuga
-	9	30197	1	3692 -- Magiczne Nasiona
-	10	30193	1	3692 -- Kosc Palca
-	11	31238	1	3692 -- Polyskujaca Muszla
-	12	30006	1	3692 -- Zab Orka
-	13	30015	1	3692 -- Pamiatka Po Demonie
-	14	30050	1	3692 -- Lodowa Kulka
-	15	30165	1	3692 -- Konar Zelkova
-	16	30167	1	3692 -- Cz. Konar Drzewa Duchow
-	17	30168	1	3692 -- Notatka Przywodcy
-	18	30252	1	3692 -- Klejnot Madrosci
-	19	30195	1	3692 -- Piasek Kwarcowy
-	20	30047	1	3692 -- Ksiega Klatw
-	21	30166	1	3692 -- Certyfikat Tugyisa
-	22	30251	1	3692 -- Klejnot Zawisci
-	23	51001	50	3077 -- Odlamek Energii x50
-	24	49991	1	1538 -- Ognista Runa Aury (10)
+	1	30071	1	5634 -- Zolc Niedzwiedzia+
+	2	30060	1	5634 -- Jezyk Zaby
+	3	30061	1	5634 -- Zabie Udka
+	4	30058	1	5634 -- Worek Z Pajecz. Jajami
+	5	30072	1	5634 -- Niedzwiedzia Skora+
+	6	27987	1	4225 -- Malz
+	7	30031	1	4225 -- Ornament
+	8	30194	1	3380 -- Orkowa Maczuga
+	9	30197	1	3380 -- Magiczne Nasiona
+	10	30193	1	3380 -- Kosc Palca
+	11	31238	1	3380 -- Polyskujaca Muszla
+	12	30006	1	3380 -- Zab Orka
+	13	30015	1	3380 -- Pamiatka Po Demonie
+	14	30050	1	3380 -- Lodowa Kulka
+	15	30165	1	3380 -- Konar Zelkova
+	16	30167	1	3380 -- Cz. Konar Drzewa Duchow
+	17	30168	1	3380 -- Notatka Przywodcy
+	18	30252	1	3380 -- Klejnot Madrosci
+	19	30195	1	3380 -- Piasek Kwarcowy
+	20	30047	1	3380 -- Ksiega Klatw
+	21	30166	1	3380 -- Certyfikat Tugyisa
+	22	30251	1	3380 -- Klejnot Zawisci
+	23	51001	50	2817 -- Odlamek Energii x50
+	24	31230	1	2817 -- Oczyszczony Rdzen
+	25	31232	1	2817 -- Mroczna Paproc
+	26	31231	1	2817 -- Krysztal Metin
+	27	49991	1	1408 -- Ognista Runa Aury (10)
 }
 
 Group	MT2009_yitems4_95737

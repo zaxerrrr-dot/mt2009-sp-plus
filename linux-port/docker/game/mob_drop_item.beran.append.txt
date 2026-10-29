@@ -5,7 +5,8 @@
 // Wzmocnienie Przedmiotu - left as they are; MT2009_beltmats_2493 (belt gems, Kamien Duszy +5, Blogoslawienstwo
 // Przedmiotu) and MT2009_zodiak_matboss_2493 (Kamien Ksiezycowy) stay too. Added here what the wiki has and he did not:
 // the other four helmets +4 at the stock helmets' 5% each, and Zielony Lsniacy Odlamek at 10% (the wiki gives no rates).
-// Kamien Dusz Beran-Setaou (30228, the wiki's quest item) is left out: no quest of ours takes it.
+// Kamien Dusz Beran-Setaou (30228, the wiki's quest item) is not in this group: quest collect_quest_lv94 gives it on
+// his death while the mission waits for it (MT2009_PLUS_BIOLOGIST_YOHARA_V1).
 // Type drop: pct / 4 percent at the server's 100% drop. The engine merges this group with his others.
 
 Group	MT2009_beran_2493

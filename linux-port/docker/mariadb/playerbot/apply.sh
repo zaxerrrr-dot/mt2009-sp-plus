@@ -4878,6 +4878,17 @@ if [ -s /opt/playerbot/yohara_czepiec.sql ]; then
         fail_step "Wezowy Czepiec: yohara_czepiec.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_BIOLOGIST_YOHARA_V1: the Biologist on the new continent (the owner, 29 October 2026, pl-wiki "Misje
+# Biologa") - yohara_biolog.sql (tools/ybiolog/gen_ybiolog_items.py): Oczyszczony Rdzen 31230, Krysztal Metin 31231,
+# Mroczna Paproc 31232, Chaegirab's (Dongan) specimens for the quests collect_quest_cz1 / cz10 / cz20. Plat. Skrzynia
+# Skarbow's group (game/yohara_maps4) names them: a world without them stops the cores at boot. Idempotent (INSERT IGNORE).
+if [ -s /opt/playerbot/yohara_biolog.sql ]; then
+    if db < /opt/playerbot/yohara_biolog.sql; then
+        echo "[playerbot-migrate] Biologist (Yohara): yohara_biolog.sql applied"
+    else
+        fail_step "Biologist (Yohara): yohara_biolog.sql failed" >&2
+    fi
+fi
 
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
