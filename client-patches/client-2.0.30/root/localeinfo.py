@@ -203,6 +203,13 @@ if systemSetting.GetLanguage() != "pl":
 	LOCALE_FILE_NAME = "locale/%s/locale_game.txt" % systemSetting.GetLanguage()
 	LoadLocaleFile(LOCALE_FILE_NAME, locals())
 
+# MT2009_PLUS_HP_REGEN_LABEL_V1 (poprawki 3.0.8 #1): the pl locale_game.txt names the HP / SP regeneration bonus
+# (POINT_HP_REGEN 32 / POINT_SP_REGEN 33 - item bonuses, ysets, the switchbot, the bonus window's tooltips) "Regeneracja
+# Mikstur PZ/PE", which reads like the potion bonus (POINT_POTION_BONUS); the bonus is the HP / SP regeneration.
+if systemSetting.GetLanguage() == "pl":
+	TOOLTIP_HP_REGEN = SA("Regeneracja P\xaf: +%d%%")
+	TOOLTIP_SP_REGEN = SA("Regeneracja PE: +%d%%")
+
 if app.ENABLE_LOCALE_COMMON:
 	def TryLoadLocaleFile(filename):
 		if pack.Exist(filename) or os.path.exists(filename):

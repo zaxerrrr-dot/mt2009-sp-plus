@@ -23,6 +23,8 @@ EVENT_CHARACTER_WINDOW_SHOW = "EVENT_CHARACTER_WINDOW_SHOW" # | args: the charac
 
 # The point of the anti-magic bonus (DETAILS_77 "Antymagia"): the line is shown once the player module names it.
 ANTI_MAGIC_POINT_NAME = "POINT_RESIST_MAGIC_REDUCTION"
+# player.GetStatus of a point never set since the login: the exe keeps points XOR 0xe73ac1da, a zeroed slot reads as the key
+NEVER_SET_POINT = -415579686
 
 LABEL_START_X = 0 - 10
 LABEL_START_Y = 39
@@ -452,6 +454,10 @@ class Label(object):
 
 	def Refresh(self):
 		val = player.GetStatus(self.point)
+		# MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (poprawki 3.0.8 #2): a point the server never sent (its slot still zeroed) reads
+		# as the exe's XOR key 0xe73ac1da = -415579686 ("Antymagia -415579686%") - that is 0
+		if val in (NEVER_SET_POINT, NEVER_SET_POINT & 0xffffffff):
+			val = 0
 		if self.isPercent:
 			self.value.SetText("%d%%" % val)
 		else:
