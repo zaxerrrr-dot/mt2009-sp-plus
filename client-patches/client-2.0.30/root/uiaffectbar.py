@@ -496,6 +496,21 @@ STEP_BETWEEN_CATEGORIES = 5
 def IsVIPAffect(affect):
 	return affect in AFFECT_CATEGORIES["vip"]
 
+# MT2009_PLUS_HORSE40_V1: the timed horse skills (server-patches/konie, konie_rozwoj.cpp: 760-768) - GF's horse skill
+# icons of the pack "konie"; the value is the point's (the speeds in per cent, the Sung Ma wills in points).
+for _konie in ((760, "Jazda (Zwinne Kopyta): pr\xeadko\x9c\xe6 ruchu +%d%%", "nimble"),
+		(761, "Jazda (Gwa\xb3t. Wichura): pr\xeadko\x9c\xe6 ataku +%d%%", "speed"),
+		(762, "Jazda (Bezszelest. Ch\xf3d): Lekki Krok, pr\xeadko\x9c\xe6 ruchu +%d", "gyeonggong"),
+		(763, "Jazda (Nie\x9cmiertelno\x9c\xe6): niewra\xbfliwo\x9c\xe6 na obra\xbfenia", "invisibility"),
+		(764, "Jazda (Brak Odrzutu): brak odrzutu", "knockback"),
+		(765, "Jazda (W. SungMa. SI\xa3A): Wola SungMa (SI\xa3A) +%d", "sungma_str"),
+		(766, "Jazda (W. SungMa. WIT): Wola SungMa (WIT) +%d", "sungma_hp"),
+		(767, "Jazda (W. SungMa. ODP): Wola SungMa (ODP) +%d", "sungma_move"),
+		(768, "Jazda (W. SungMa. INT): Wola SungMa (INT) +%d", "sungma_immune")):
+	AFFECT_SHOW_DATA[_konie[0]] = {
+		"description" : _konie[1],
+		"icon" : "d:/ymir work/ui/konie/mount_upgrade_skill_%s.sub" % _konie[2],
+	}
 def GetAffectData(affect, point=0):
 	if not AFFECT_SHOW_DATA.has_key(affect):
 		return None
@@ -611,7 +626,9 @@ class HorseImage(BarItem):
 		if 0 == level:
 			return 0
 
-		return (level-1)/10 + 1
+		# MT2009_PLUS_HORSE40_V1: the horse goes to 40 now - 31-40 are still the military horse (LEVEL_LIST has
+		# grades 0-3); ShowToolTip names Potezny Kon Wojskowy itself
+		return min(3, (level-1)/10 + 1)
 
 	def SetState(self, level, health, battery):
 		if level == 0:
@@ -630,7 +647,10 @@ class HorseImage(BarItem):
 		self.tooltip.ClearToolTip()
 		# self.ResetToolTip()
 		grade = self.__GetHorseGrade(self.level)
-		self.tooltip.AppendTextLine(localeInfo.LEVEL_LIST[grade])
+		if self.level >= 31: # MT2009_PLUS_HORSE40_V1
+			self.tooltip.AppendTextLine("Pot\xea\xbfny Ko\xf1 Wojskowy (poziom %d)" % self.level)
+		else:
+			self.tooltip.AppendTextLine(localeInfo.LEVEL_LIST[grade])
 
 		healthName = localeInfo.HEALTH_LIST[self.health]
 		if len(healthName) > 0:

@@ -449,6 +449,26 @@ RUN set -eux; out=/out-quest/poland/quest; q=mikstura_talentu; \
     chmod -R a+rX "$out"; \
     echo "quest: $q (Mikstura Talentu)"
 
+# MT2009_PLUS_HORSE40_V1: konie_rozwoj - the horse past level 21 (server-patches/konie/README.md: the Stajenny's window,
+# the daily feed, the Zlota Ksiega Konia, the horse skill books 55050-55067, 50046 / 50047 / 50049). Compiled on its own
+# with the engine's horse.konie_* functions (konie_rozwoj.cpp) added to the stage's quest_functions; every object it
+# makes is copied into the objects above (its NPC chats, the item uses, kill and login).
+RUN set -eux; out=/out-quest/poland/quest; q=konie_rozwoj; \
+    if [ ! -d /tmp/qc-work/object ] || [ ! -f "/quest-add/$q.quest" ]; then echo "note: no $q"; exit 0; fi; \
+    rm -rf /tmp/qc-konie; mkdir -p /tmp/qc-konie/object; \
+    cp /tmp/qc-work/quest_functions /tmp/qc-konie/quest_functions; \
+    for fn in horse.konie_otworz horse.konie_naucz horse.konie_zapomnij horse.konie_slot horse.konie_odswiez horse.set_stat0; do \
+      grep -qx "$fn" /tmp/qc-konie/quest_functions || echo "$fn" >> /tmp/qc-konie/quest_functions; \
+    done; \
+    sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-konie/$q.quest"; \
+    ( cd /tmp/qc-konie && /src/Server/game/src/quest/qc "$q.quest" ); \
+    test -s "/tmp/qc-konie/object/state/$q"; \
+    test -s "/tmp/qc-konie/object/50049/use/$q.start"; \
+    cp -a "/tmp/qc-konie/$q.quest" "$out/$q.quest"; \
+    cp -a /tmp/qc-konie/object/. "$out/object/"; \
+    chmod -R a+rX "$out"; \
+    echo "quest: $q (the horse past 21)"
+
 # -----------------------------------------------------------------------------
 FROM ${BASE_IMAGE} AS runtime
 

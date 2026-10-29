@@ -4890,6 +4890,34 @@ if [ -s /opt/playerbot/yohara_biolog.sql ]; then
     fi
 fi
 
+# MT2009_PLUS_HORSE40_V1: the horse past level 21 (server-patches/konie/README.md; the owner, 29 October 2026: "do 21
+# poziomu tak jak teraz, powyzej 21 wedlug wiki i nowego systemu") - konie.sql (tools/konie/gen_konie.py): Szlachetna
+# Trawa 50046, Czer. Zen-szen (premium) 50047, Pasza dla Konia 50048, Zlota Ksiega Konia 50049, the horse skill books
+# 55050-55067 made quest-usable (quest konie_rozwoj teaches them); Potezny Kon Wojskowy 20149-20151 (the horse of 31+
+# with the Zlota Ksiega Konia, konie_rozwoj.cpp) as copies of the military horse 20107. The experience, the failed try
+# and the horse skills are quest flags (konie_rozwoj.*) - no table, no column. Idempotent (INSERT IGNORE / guarded UPDATE).
+if [ -s /opt/playerbot/konie.sql ]; then
+    if db < /opt/playerbot/konie.sql; then
+        echo "[playerbot-migrate] horse 21-40: konie.sql applied"
+    else
+        fail_step "horse 21-40: konie.sql failed" >&2
+    fi
+fi
+if db -e "SET NAMES utf8mb4;
+DROP TEMPORARY TABLE IF EXISTS world.konie_mob;
+CREATE TEMPORARY TABLE world.konie_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20107 LIMIT 1;
+UPDATE world.konie_mob SET vnum = 20149, name = 'Potezny Kon Wojskowy', locale_name = 'Potężny Koń Wojskowy';
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.konie_mob;
+UPDATE world.konie_mob SET vnum = 20150;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.konie_mob;
+UPDATE world.konie_mob SET vnum = 20151;
+INSERT IGNORE INTO world.mob_proto SELECT * FROM world.konie_mob;
+DROP TEMPORARY TABLE IF EXISTS world.konie_mob;"; then
+    echo "[playerbot-migrate] horse 21-40: Potezny Kon Wojskowy 20149-20151"
+else
+    fail_step "horse 21-40: mob_proto 20149-20151 failed" >&2
+fi
+
 # MT2009_PLUS_FRESH_INSTALL_FIX_V1: every row this script makes as a copy of another
 # (CREATE TEMPORARY TABLE ... AS SELECT * FROM world.<item|mob>_proto WHERE vnum = <source>, then
 # SET vnum = <copy>) has to be there now. A copy whose source did not exist yet adds nothing and
