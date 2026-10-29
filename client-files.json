@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "2.0.70",
+  "version": "2.0.71",
   "files": [
     {
       "path": "Dolacz.bat",
@@ -14,8 +14,8 @@
     },
     {
       "path": "metin2client.exe",
-      "size": 13697024,
-      "sha256": "14934516DDD97B398F2A684B369C90B56DA277B4B7022A22929614B4391FFBF0"
+      "size": 13697536,
+      "sha256": "82E3952728D68AA1E4171CFEC433A69786770B33B0077D2C387DF0B9CD945C47"
     },
     {
       "path": "MT2009-Patcher.exe",
@@ -185,7 +185,7 @@
     {
       "path": "pack/gamedata.index",
       "size": 4180,
-      "sha256": "68FD5B5EA740F08931CFC42B2B8E3CF29BB96A8BD3D44C21FF2438387AF36910"
+      "sha256": "0AD4ADBC57093115E9233CD5F23EBA4123BE575B09F05D71F685B9AA53396F85"
     },
     {
       "path": "pack/gautama_map.index",
@@ -274,8 +274,8 @@
     },
     {
       "path": "pack/root.index",
-      "size": 33364,
-      "sha256": "394673FF2A0EA483DF3243044114AD309744C64E5E606120DF11F7E800452621"
+      "size": 33388,
+      "sha256": "389D86D4D424298F819021113A378DBF9714C3D7DA83D1D4BD1794F19B2C0E14"
     },
     {
       "path": "pack/wiki_nowe.index",
