@@ -1087,3 +1087,14 @@ Paczka „Official Additional Equipment Page” (prośba właściciela z 28.10.2
   (`tools/addeq/addeq.json`) i wiersze umiejętności 200 w `skilldesc.txt` / `skilltable.txt`. W `clientY.sh` po kroku
   `kamienie` (+ `addeq/verify_addeq.py` w pętli weryfikacji). Zmienia dane przedmiotów (dbdata): w wydaniu ostrzeżenie
   o nieaktualnych plikach i nowa baza panelu.
+
+## Poprawki 3.0.8: napis Regeneracji PŻ/PE i „Antymagia” w oknie bonusów
+
+- `root/localeinfo.py` (`MT2009_PLUS_HP_REGEN_LABEL_V1`): pl `locale_game.txt` ma `TOOLTIP_HP_REGEN` „Regeneracja
+  Mikstur PŻ: +%d%%” i `TOOLTIP_SP_REGEN` „Regeneracja Mikstur PE”, co wygląda jak bonus mikstur (`POINT_POTION_BONUS`,
+  „Objętość mikstur…”). Bonus to `POINT_HP_REGEN` 32 / `POINT_SP_REGEN` 33 (zapis w `player.item` i działanie serwera są
+  poprawne) – po wczytaniu pl napisy to „Regeneracja PŻ: +%d%%” / „Regeneracja PE: +%d%%” (tooltip przedmiotu, ysets,
+  switchbot, aukcje).
+- `root/uiattributelist.py`: punkt, którego serwer nie przysłał od zalogowania, exe czyta jako swój klucz XOR
+  0xe73ac1da = -415579686 – okno pokazuje 0. Właściwa poprawka jest po stronie serwera (`server-patches/antimagic`,
+  `(login points)` / `(enter points)`), działa bez nowego klienta.

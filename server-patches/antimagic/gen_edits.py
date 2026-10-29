@@ -43,6 +43,35 @@ add('char.cpp', 'point packet',
     "(type >= POINT_SUNGMA_PER_STR && type <= POINT_HIT_PCT)))",
     "(type >= POINT_SUNGMA_PER_STR && type <= POINT_HIT_PCT) || type == POINT_ANTI_RESIST_MAGIC /* MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (point packet): 252 to the client (exe POINT_MAX_NUM 253) */))")
 
+add('char.cpp', 'login points',
+    "\tGetDesc()->Packet(pack);\n}\n\nbool CHARACTER::ChangeSex()",
+    "\tGetDesc()->Packet(pack);\n\n"
+    "\t// MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (login points): the points after the packet's POINT_PACKET_NUM that the client\n"
+    "\t// shows (Sung Ma per cent 193-196, Precyzja 197, Antymagia 252) went to it only as a point change when they changed:\n"
+    "\t// without such an item the client never heard them and its never-set slot read as garbage in the bonus window\n"
+    "\t// (\"Antymagia -415579686%\" = the exe's XOR key 0xe73ac1da over a zeroed slot). Every points packet sends them too\n"
+    "\t// (a change during the loading phase is lost on the client - no main instance yet - so Entergame sends one more).\n"
+    "\tstatic const BYTE abExtraPoints[] = { POINT_SUNGMA_PER_STR, POINT_SUNGMA_PER_HP, POINT_SUNGMA_PER_MOVE,\n"
+    "\t\tPOINT_SUNGMA_PER_IMMUNE, POINT_HIT_PCT, POINT_ANTI_RESIST_MAGIC };\n"
+    "\tfor (BYTE bType : abExtraPoints)\n"
+    "\t{\n"
+    "\t\tstruct packet_point_change ppc;\n"
+    "\t\tppc.header = HEADER_GC_CHARACTER_POINT_CHANGE;\n"
+    "\t\tppc.dwVID = m_vid;\n"
+    "\t\tppc.type = bType;\n"
+    "\t\tppc.amount = 0;\n"
+    "\t\tppc.value = GetPoint(bType);\n"
+    "\t\tGetDesc()->Packet(ppc);\n"
+    "\t}\n"
+    "}\n\nbool CHARACTER::ChangeSex()")
+
+add('input_login.cpp', 'enter points',
+    "\tMt2009YSetsSendAll(ch); // MT2009_PLUS_YOHARA_SETS_V1 (enter): the tooltip's set / random bonuses\n",
+    "\tMt2009YSetsSendAll(ch); // MT2009_PLUS_YOHARA_SETS_V1 (enter): the tooltip's set / random bonuses\n"
+    "\t// MT2009_PLUS_ANTI_RESIST_MAGIC_V1 (enter points): the points once more now that the client has the character - the\n"
+    "\t// point changes of the loading phase (items' Antymagia / Sung Ma % / Precyzja) never reached its status table\n"
+    "\tch->PointsPacket();\n")
+
 add('char.cpp', 'metin stones',
     "\t\t28043,\n#if defined(ENABLE_MAGIC_REDUCTION_SYSTEM) && defined(USE_MAGIC_REDUCTION_STONES)\n\t\t28044,\n",
     "\t\t28043,\n"

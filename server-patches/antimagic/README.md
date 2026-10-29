@@ -31,6 +31,12 @@ dla +0…+5, 0 dla +6…+9; `value5` (rodzaj – dwa kamienie jednego rodzaju ni
   (u nas zwykły cios nie liczy odporności na magię).
 - Punkt idzie do klienta jako zmiana punktu (`char.cpp (point packet)`; nowy exe ma `POINT_MAX_NUM` 253 –
   `client-patches/exe`, okno postaci: linia „Antymagia”, `player.POINT_RESIST_MAGIC_REDUCTION`); stary exe go pomija.
+- Poprawka 3.0.8 (okno bonusów: „Antymagia -415579686%”): zmiana punktu z fazy ładowania (przedmioty liczone przy
+  wczytaniu) nie dochodziła do klienta (exe zapisuje ją tylko, gdy ma już postać gracza), a bez kamienia punkt nigdy
+  nie przychodził – pusty slot exe czyta się jako jego klucz XOR 0xe73ac1da = -415579686. Teraz `PointsPacket`
+  wysyła też punkty spoza pakietu, które klient pokazuje (193-197 Sung Ma %/Precyzja, 252 Antymagia) –
+  `char.cpp (login points)` – a `Entergame` woła `PointsPacket` jeszcze raz po wejściu do gry
+  (`input_login.cpp (enter points)`).
 - GM: `/state` pokazuje `ANTI-MAGIC`.
 
 ## Drop – jak każdy kamień duszy
@@ -65,7 +71,8 @@ nieosadzanego rodzaju, reguła +4).
 | plik | edycja |
 |---|---|
 | `common/length.h` | `(point)` – 252, `#define MT2009_PLUS_ANTI_RESIST_MAGIC` |
-| `char.cpp` | `(point change)` – połowa dla Sury, `(point packet)`, `(metin stones)` |
+| `char.cpp` | `(point change)` – połowa dla Sury, `(point packet)`, `(login points)`, `(metin stones)` |
+| `input_login.cpp` | `(enter points)` – punkty jeszcze raz po wejściu do gry |
 | `char_skill.cpp` | `(magic)` – PvP |
 | `item_manager.cpp` | `(preview stones)` |
 | `cmd_gm.cpp` | `(state)` |
