@@ -1943,4 +1943,18 @@ if ((Test-Path -LiteralPath $superstoneApply -PathType Leaf) -and
     }
 }
 
+# Zaczarowanie Zywiolu Broni (server-patches/zywiolbroni, MT2009_PLUS_WEAPON_ELEMENT_V1; the owner, 29 October 2026; based
+# on the "[System] Elemental Spell" package by WorldArd): the hooks of weapon_element.cpp (the overlay) in item_manager /
+# item_attribute / item / battle / char_item / char / input_login / safebox / exchange / shop / cmd. Anchors on ysets',
+# aura's and addeq's lines, so after them (last).
+$zywiolbroniApply = Join-Path $repo 'server-patches/zywiolbroni/Apply-ZywiolBroniPatch.ps1'
+if ((Test-Path -LiteralPath $zywiolbroniApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'item.cpp') -PathType Leaf)) {
+    $zywiolbroniResult = & $zywiolbroniApply -SourceDir $engineGameSource
+    if ($zywiolbroniResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} weapon element edit(s).' -f $zywiolbroniResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
