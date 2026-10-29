@@ -69,6 +69,12 @@
 // line there it would buy that its own kingdom does not sell at all, or sells
 // dearer (see "the reason to go" below); VISIT_PER_HOUR and VISIT_MAX are caps.
 //
+// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: no whole bot guild free, a raid is a war
+// band of one kingdom (bot guilds' members first, then the guildless of a like
+// level, PLAYERBOT_KV_WARBAND_MIN at least); every ten minutes a census line
+// says who could go and why nobody did (the 2.37 test: no bot of 35+ held the
+// 200k, so the pool was empty and nothing was ever logged).
+//
 // Logs: PLAYERBOT_VISIT: (trips) and PLAYERBOT_TOWNRAID: (raids;
 // PLAYERBOT_RAID: is the world bosses').
 //
@@ -99,6 +105,13 @@ namespace
 	const long PLAYERBOT_KV_PITCH_ARRIVED = 900;
 	const long PLAYERBOT_KV_MUSTER_RANGE = 1800;
 	const int PLAYERBOT_KV_RAID_MIN_RAIDERS = 3;
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: a war band (no whole guild free) is
+	// this many at least.
+	const int PLAYERBOT_KV_WARBAND_MIN = 4;
+	// A raider's own clock through the gate: well inside the raid's crossing
+	// (PLAYERBOT_KV_CROSSING_MS), so a refused walk is put through before the
+	// raid gives up on it.
+	const DWORD PLAYERBOT_KV_LEG_RAID_CROSS_MS = 4 * 60 * 1000;
 	const DWORD PLAYERBOT_KV_SPAWN_GRACE_MS = 90 * 1000;
 	const DWORD PLAYERBOT_KV_MOVE_MS = 900;
 	const DWORD PLAYERBOT_KV_RETARGET_MS = 1500;
@@ -192,6 +205,7 @@ namespace
 		BYTE phase = 0;
 		DWORD guildId = 0;
 		std::string guildName;
+		bool warband = false;            // MT2009_PLUS_BOT_KINGDOM_VISITS_V3: one kingdom's bots, no one guild
 		long map = 0;
 		long pitchX = 0, pitchY = 0;
 		std::set<DWORD> raiders;
@@ -226,6 +240,16 @@ namespace
 	std::map<DWORD, DWORD> s_mapPlayerBotKVAwayChecked; // pid -> the spawn whose flag was read
 	unsigned int s_uPlayerBotKVTripsStarted = 0, s_uPlayerBotKVTripsHome = 0, s_uPlayerBotKVTripsFailed = 0;
 	unsigned int s_uPlayerBotKVRaids = 0;
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: the ten minutes' summary
+	// (PLAYERBOT_VISIT: census eligible=...) - why nobody left, too.
+	const DWORD PLAYERBOT_KV_SUMMARY_MS = 10 * 60 * 1000;
+	DWORD s_dwPlayerBotKVNextSummary = 0;
+	struct TPlayerBotKVTally
+	{
+		unsigned int turns = 0, emptyPool = 0, weighed = 0, linesRated = 0, started = 0, noReason = 0, capped = 0;
+		unsigned int raidCalls = 0, raidsGuild = 0, raidsBand = 0, raidNone = 0;
+	};
+	TPlayerBotKVTally s_tPlayerBotKVTally;
 
 	// A clock's moment come (0 is "now"), past the wrap of get_dword_time.
 	bool KVDue(DWORD dwNow, DWORD at)
@@ -1663,7 +1687,8 @@ namespace
 				}
 				const long ax = PLAYERBOT_KV_M1_ARRIVAL[t.target][0];
 				const long ay = PLAYERBOT_KV_M1_ARRIVAL[t.target][1];
-				if (!PortalPlayerBotKV(ch, state, t, gx, gy, targetM1, ax, ay, PLAYERBOT_KV_LEG_CROSS_MS, dwNow,
+				if (!PortalPlayerBotKV(ch, state, t, gx, gy, targetM1, ax, ay,
+						t.kind == KV_KIND_RAID ? PLAYERBOT_KV_LEG_RAID_CROSS_MS : PLAYERBOT_KV_LEG_CROSS_MS, dwNow,
 						t.kind == KV_KIND_RAID ? "kingdom_raid_cross" : "kingdom_visit_cross"))
 				{
 					EndPlayerBotKVTrip(ch, state, "stuck_crossing", true, dwNow);
@@ -1904,6 +1929,73 @@ namespace
 		s_mapPlayerBotKVRaids.clear();
 	}
 
+	// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: who may set off shopping now, and -
+	// for the census - why each of the others may not, first reason only.
+	struct TPlayerBotKVEligibility
+	{
+		int bots = 0, level = 0, gold = 0, busy = 0, place = 0, noRoute = 0, eligible = 0;
+		int byKingdom[4] = { 0, 0, 0, 0 };
+		long long goldMax = 0;      // the richest bot of the level's
+	};
+	void CollectPlayerBotKVShopperPool(DWORD dwNow, std::vector<LPCHARACTER>& pool, TPlayerBotKVEligibility* why)
+	{
+		const int minLevel = KVSetting(PLAYERBOT_KV_MIN_LEVEL);
+		const long long minGold = KVSetting(PLAYERBOT_KV_MIN_GOLD);
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!c)
+				continue;
+			if (why)
+				++why->bots;
+			if ((int)c->GetLevel() < minLevel)
+			{
+				if (why)
+					++why->level;
+				continue;
+			}
+			if (why)
+				why->goldMax = std::max<long long>(why->goldMax, (long long)c->GetGold());
+			if ((long long)c->GetGold() < minGold)
+			{
+				if (why)
+					++why->gold;
+				continue;
+			}
+			if (!IsPlayerBotKVFree(c, it->second, dwNow))
+			{
+				if (why)
+					++why->busy;
+				continue;
+			}
+			const int e = c->GetEmpire();
+			const long map = c->GetMapIndex();
+			if (map != PLAYERBOT_KV_VALLEY && map != GetPlayerBotKVM1(e) &&
+					map != playerbot_empire_rules::GetHomeMap(e, playerbot_empire_rules::MAP_ROLE_M2))
+			{
+				if (why)
+					++why->place;
+				continue;
+			}
+			bool route = false;
+			for (int t = 1; t <= 3 && !route; ++t)
+				route = t != e && IsPlayerBotKVRouteHosted(e, t);
+			if (!route)
+			{
+				if (why)
+					++why->noRoute;
+				continue;
+			}
+			if (why)
+			{
+				++why->eligible;
+				if (e >= 1 && e <= 3)
+					++why->byKingdom[e];
+			}
+			pool.push_back(c);
+		}
+	}
+
 	// MT2009_PLUS_BOT_KINGDOM_VISITS_V2: up to `n` shoppers, each with its
 	// reason (FindPlayerBotKVReason) - PLAYERBOT_KV_WEIGH_BOTS bots weighed for
 	// each one at most, VISIT_MAX away at once at most. A bot with no reason
@@ -1917,25 +2009,24 @@ namespace
 			if (it->second.kind == KV_KIND_SHOP)
 				++active;
 		const int cap = KVSetting(PLAYERBOT_KV_MAX);
+		++s_tPlayerBotKVTally.turns;
 		if (active >= cap)
-			return 0;
-		const int minLevel = KVSetting(PLAYERBOT_KV_MIN_LEVEL);
-		const long long minGold = KVSetting(PLAYERBOT_KV_MIN_GOLD);
-		std::vector<LPCHARACTER> pool;
-		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
 		{
-			LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
-			if (!c || (int)c->GetLevel() < minLevel || (long long)c->GetGold() < minGold || !IsPlayerBotKVFree(c, it->second, dwNow))
-				continue;
-			const int e = c->GetEmpire();
-			const long map = c->GetMapIndex();
-			if (map != PLAYERBOT_KV_VALLEY && map != GetPlayerBotKVM1(e) &&
-					map != playerbot_empire_rules::GetHomeMap(e, playerbot_empire_rules::MAP_ROLE_M2))
-				continue;
-			pool.push_back(c);
-		}
-		if (pool.empty())
+			++s_tPlayerBotKVTally.capped;
 			return 0;
+		}
+		std::vector<LPCHARACTER> pool;
+		CollectPlayerBotKVShopperPool(dwNow, pool, NULL);
+		if (pool.empty())
+		{
+			// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: said, not silent (the census
+			// line has the reasons).
+			++s_tPlayerBotKVTally.emptyPool;
+			PlayerBotLogThrottled("kv_no_pool", dwNow,
+					"PLAYERBOT_VISIT: nobody eligible via=%s (level %d+, gold %d+, free, on its own M1/M2 or the valley)",
+					why, KVSetting(PLAYERBOT_KV_MIN_LEVEL), KVSetting(PLAYERBOT_KV_MIN_GOLD));
+			return 0;
+		}
 		RefreshPlayerBotKVMarketIndex(dwNow);
 		int started = 0, weighed = 0, looked = 0;
 		const int maxWeighed = n * PLAYERBOT_KV_WEIGH_BOTS;
@@ -1971,6 +2062,11 @@ namespace
 			++started;
 			++active;
 		}
+		s_tPlayerBotKVTally.weighed += (unsigned int)weighed;
+		s_tPlayerBotKVTally.linesRated += (unsigned int)looked;
+		s_tPlayerBotKVTally.started += (unsigned int)started;
+		if (started == 0)
+			++s_tPlayerBotKVTally.noReason;
 		if (started == 0)
 			PlayerBotLogThrottled("kv_no_reason", dwNow,
 					"PLAYERBOT_VISIT: no reason to go via=%s weighed=%d lines_rated=%d unweighed=%u away=%d",
@@ -2036,34 +2132,91 @@ namespace
 				bestGuild = g->first;
 			}
 		}
-		if (bestGuild == 0)
+		++s_tPlayerBotKVTally.raidCalls;
+		std::vector<LPCHARACTER> members;
+		bool warband = false;
+		if (bestGuild != 0)
+			members = byGuild[bestGuild];
+		else
 		{
-			PlayerBotLogThrottled("kv_raid_none", dwNow, "PLAYERBOT_TOWNRAID: no guild to raid target=%u why=%s guilds=%u",
-					(unsigned int)target, why, (unsigned int)byGuild.size());
-			return false;
+			// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: no whole guild free - a war
+			// band of one kingdom instead: the bot guilds' members first (a
+			// level near the wanted one), then the guildless of a like level;
+			// RAID_SIZE of them, PLAYERBOT_KV_WARBAND_MIN at least. A person's
+			// guild's member is not the bots' to send.
+			std::vector<LPCHARACTER> band[4];
+			for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+			{
+				LPCHARACTER c = CHARACTER_MANAGER::instance().FindByPID(it->first);
+				if (!c || c->GetEmpire() == target || c->GetEmpire() < 1 || c->GetEmpire() > 3 ||
+						(int)c->GetLevel() < minLevel || (c->GetGuild() && !IsPlayerBotGuild(c->GetGuild())) ||
+						!IsPlayerBotKVRouteHosted(c->GetEmpire(), target) || c->GetMapIndex() == map ||
+						!IsPlayerBotKVFree(c, it->second, dwNow))
+					continue;
+				band[c->GetEmpire()].push_back(c);
+			}
+			BYTE from = 0;
+			for (int e = 1; e <= 3; ++e)
+				if (e != target && (int)band[e].size() >= PLAYERBOT_KV_WARBAND_MIN &&
+						(from == 0 || band[e].size() > band[from].size() ||
+						 (band[e].size() == band[from].size() && number(0, 1))))
+					from = (BYTE)e;
+			if (from == 0)
+			{
+				++s_tPlayerBotKVTally.raidNone;
+				char tag[24];
+				snprintf(tag, sizeof(tag), "kv_raid_none_%u", (unsigned int)target);
+				PlayerBotLogThrottled(tag, dwNow,
+						"PLAYERBOT_TOWNRAID: no raiders target=%u why=%s guilds=%u band_pool=%u/%u/%u need=%d min_level=%d",
+						(unsigned int)target, why, (unsigned int)byGuild.size(), (unsigned int)band[1].size(),
+						(unsigned int)band[2].size(), (unsigned int)band[3].size(), PLAYERBOT_KV_WARBAND_MIN, minLevel);
+				return false;
+			}
+			members.swap(band[from]);
+			warband = true;
 		}
-		std::vector<LPCHARACTER>& members = byGuild[bestGuild];
 		struct FByLevelGap
 		{
 			int want;
+			bool band;
+			// A war band: a bot guild's member within 15 levels of the wanted
+			// one before anybody guildless.
+			int Rank(LPCHARACTER c) const
+			{
+				return band && !(c->GetGuild() && abs((int)c->GetLevel() - want) <= 15) ? 1 : 0;
+			}
 			bool operator()(LPCHARACTER a, LPCHARACTER b) const
 			{
+				const int ra = Rank(a), rb = Rank(b);
+				if (ra != rb)
+					return ra < rb;
 				const int da = abs((int)a->GetLevel() - want), db = abs((int)b->GetLevel() - want);
 				return da != db ? da < db : a->GetPlayerID() < b->GetPlayerID();
 			}
 		};
 		FByLevelGap order;
 		order.want = want;
+		order.band = warband;
 		std::sort(members.begin(), members.end(), order);
-		if ((int)members.size() > size)
-			members.resize(size);
+		const int take = warband ? std::max(size, PLAYERBOT_KV_WARBAND_MIN) : size;
+		if ((int)members.size() > take)
+			members.resize(take);
+		int inGuild = 0;
+		for (size_t i = 0; i < members.size(); ++i)
+			if (members[i]->GetGuild())
+				++inGuild;
 		TPlayerBotKVRaid raid;
 		raid.id = s_dwPlayerBotKVRaidNextId++;
 		raid.target = target;
 		raid.attacker = members[0]->GetEmpire();
 		raid.phase = KV_RAID_GATHER;
-		raid.guildId = bestGuild;
-		raid.guildName = members[0]->GetGuild()->GetName();
+		raid.guildId = warband ? 0 : bestGuild;
+		raid.guildName = warband ? std::string("banda_") + PLAYERBOT_KV_KINGDOM[raid.attacker] : members[0]->GetGuild()->GetName();
+		raid.warband = warband;
+		if (warband)
+			++s_tPlayerBotKVTally.raidsBand;
+		else
+			++s_tPlayerBotKVTally.raidsGuild;
 		raid.map = map;
 		raid.pitchX = px;
 		raid.pitchY = py;
@@ -2094,10 +2247,10 @@ namespace
 			StartPlayerBotKVTrip(members[i], KV_KIND_RAID, target, dwNow, "raid");
 		}
 		++s_uPlayerBotKVRaids;
-		sys_log(0, "PLAYERBOT_TOWNRAID: called raid=%u target=%u(%s) attacker=%u(%s) guild=%s raiders=%u levels=%d-%d def_median=%d patrol=%u why=%s",
+		sys_log(0, "PLAYERBOT_TOWNRAID: called raid=%u target=%u(%s) attacker=%u(%s) guild=%s raiders=%u in_guild=%d levels=%d-%d def_median=%d patrol=%u why=%s via=%s guilds_free=%u",
 				raid.id, (unsigned int)target, PLAYERBOT_KV_KINGDOM[target], (unsigned int)raid.attacker,
-				PLAYERBOT_KV_KINGDOM[raid.attacker], raid.guildName.c_str(), (unsigned int)raid.raiders.size(), lo, hi,
-				defMedian, (unsigned int)raid.patrol.size(), why);
+				PLAYERBOT_KV_KINGDOM[raid.attacker], raid.guildName.c_str(), (unsigned int)raid.raiders.size(), inGuild, lo, hi,
+				defMedian, (unsigned int)raid.patrol.size(), warband ? "warband" : "guild", why, (unsigned int)byGuild.size());
 		s_mapPlayerBotKVRaids[target] = raid;
 		return true;
 	}
@@ -2273,6 +2426,14 @@ namespace
 						++mustered;
 				}
 				const bool all = alive > 0 && mustered >= alive;
+				// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: nobody left of it - no
+				// twelve minutes' wait for nobody.
+				if (raid.raiders.empty())
+				{
+					EndPlayerBotKVRaid(raid, "no_raiders", dwNow);
+					s_adwPlayerBotKVRaidNext[raid.target] = dwNow + PLAYERBOT_KV_RAID_RETRY_MS;
+					return;
+				}
 				if (all || dwNow - raid.calledAt >= PLAYERBOT_KV_MUSTER_MS)
 				{
 					if (mustered < 2)
@@ -2331,6 +2492,9 @@ namespace
 						if (number(0, 1))
 							FormatPlayerBotKVLine(line, sizeof(line), KV_RAID_START, KVBankSize(KV_RAID_START),
 									PLAYERBOT_KV_KINGDOM[raid.target]);
+						else if (raid.warband)
+							snprintf(line, sizeof(line), "Ekipa z %s melduje sie w %s. Kto pierwszy do odstrzalu?",
+									PLAYERBOT_KV_KINGDOM[raid.attacker], PLAYERBOT_KV_VILLAGE[raid.target]);
 						else
 							snprintf(line, sizeof(line), "Gildia %s melduje sie w %s. Kto pierwszy do odstrzalu?",
 									raid.guildName.c_str(), PLAYERBOT_KV_VILLAGE[raid.target]);
@@ -2597,6 +2761,32 @@ namespace
 						byPhase[KV_TO_GATE] + byPhase[KV_MUSTER] + byPhase[KV_CROSS], byPhase[KV_TO_TOWN], byPhase[KV_FIGHT],
 						byPhase[KV_DWELL], byPhase[KV_LEAVE] + byPhase[KV_HOME_GATE], s_uPlayerBotKVTripsStarted,
 						s_uPlayerBotKVTripsHome, s_uPlayerBotKVTripsFailed, s_uPlayerBotKVRaids);
+		}
+		// MT2009_PLUS_BOT_KINGDOM_VISITS_V3: every ten minutes, whatever
+		// happened - who could go, who was weighed, why nobody went, the
+		// stands the price index saw, the raids' calls.
+		if (s_dwPlayerBotKVNextSummary == 0 || (int)(dwNow - s_dwPlayerBotKVNextSummary) >= 0)
+		{
+			s_dwPlayerBotKVNextSummary = dwNow + PLAYERBOT_KV_SUMMARY_MS;
+			TPlayerBotKVEligibility el;
+			std::vector<LPCHARACTER> pool;
+			CollectPlayerBotKVShopperPool(dwNow, pool, &el);
+			RefreshPlayerBotKVMarketIndex(dwNow);
+			int shoppers = 0, raiders = 0;
+			for (std::map<DWORD, TPlayerBotKVTrip>::const_iterator it = s_mapPlayerBotKVTrips.begin(); it != s_mapPlayerBotKVTrips.end(); ++it)
+				++(it->second.kind == KV_KIND_RAID ? raiders : shoppers);
+			const TPlayerBotKVTally& n = s_tPlayerBotKVTally;
+			sys_log(0, "PLAYERBOT_VISIT: census eligible=%d (k1=%d k2=%d k3=%d) of bots=%d out: level<%d=%d gold<%d=%d busy=%d elsewhere=%d no_route=%d gold_max_lv=%lld | last_10min turns=%u weighed=%u lines_rated=%u started=%u reasons: no_reason=%u nobody_eligible=%u at_cap=%u | index_lines=%u/%u/%u m1_lines=%u/%u/%u index_age_s=%d floor=%u | away shoppers=%d raiders=%d raids=%u | raids last_10min calls=%u guild=%u warband=%u none=%u | totals started=%u home=%u failed=%u raids=%u",
+					el.eligible, el.byKingdom[1], el.byKingdom[2], el.byKingdom[3], el.bots,
+					KVSetting(PLAYERBOT_KV_MIN_LEVEL), el.level, KVSetting(PLAYERBOT_KV_MIN_GOLD), el.gold, el.busy, el.place,
+					el.noRoute, el.goldMax, n.turns, n.weighed, n.linesRated, n.started, n.noReason, n.emptyPool, n.capped,
+					s_aPlayerBotKVMarket[1].lines, s_aPlayerBotKVMarket[2].lines, s_aPlayerBotKVMarket[3].lines,
+					s_aPlayerBotKVMarket[1].m1Lines, s_aPlayerBotKVMarket[2].m1Lines, s_aPlayerBotKVMarket[3].m1Lines,
+					s_dwPlayerBotKVIndexAt ? (int)((dwNow - s_dwPlayerBotKVIndexAt) / 1000U) : -1,
+					(unsigned int)PLAYERBOT_SHOPPING_GOLD_FLOOR, shoppers, raiders,
+					(unsigned int)s_mapPlayerBotKVRaids.size(), n.raidCalls, n.raidsGuild, n.raidsBand, n.raidNone,
+					s_uPlayerBotKVTripsStarted, s_uPlayerBotKVTripsHome, s_uPlayerBotKVTripsFailed, s_uPlayerBotKVRaids);
+			s_tPlayerBotKVTally = TPlayerBotKVTally();
 		}
 	}
 }
