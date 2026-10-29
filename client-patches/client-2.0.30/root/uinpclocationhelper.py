@@ -6180,6 +6180,7 @@ class NPCLocationHelper_Atlas(ui.ScriptWindow):
 			import dbg
 
 			dbg.TraceError("NPCLocationHelper_Atlas.LoadWindow: uiscript load failed")
+			_LogTrace("NPCLocationHelper_Atlas.LoadWindow (uiscript/npclocationhelper_atlaswindow.py)")
 
 			return False
 
@@ -6357,6 +6358,7 @@ class NPCLocationHelper_Atlas(ui.ScriptWindow):
 			import dbg
 
 			dbg.TraceError("NPCLocationHelper_Atlas.LoadWindow: bind children failed")
+			_LogTrace("NPCLocationHelper_Atlas.LoadWindow (bind children)")
 
 			return False
 
@@ -8421,8 +8423,23 @@ class NPCLocationHelper_Atlas(ui.ScriptWindow):
 # package's uiminimap.py hunks did inside its own MiniMap (the switch button on the small atlas' title bar, the
 # active atlas type, which window the exe's atlas talks to). uiminimap.py keeps only a few calls into it.
 # ---------------------------------------------------------------------------------------------------------------------
-_LAST_ATLAS_TYPE = [miniMap.ATLAS_TYPE_SMALL]
+# MT2009_PLUS_NPC_LOCATION_HELPER_V3 (the owner, 29 October 2026): every character has the improved map, so it is the
+# atlas the M key / the minimap's button / the exe open from the start; the classic one is a click away (the window's
+# "Wroc do zwyklej mapy" button) and the choice is kept until the client closes. V1/V2 started on the classic atlas
+# here, and with _HelperIsActive() always true nothing ever switched - the improved map never showed by itself.
+_LAST_ATLAS_TYPE = [miniMap.ATLAS_TYPE_NPC_LOCATION_HELPER]
 _BRIDGES = []
+
+
+def _LogTrace(where):
+	# MT2009_PLUS_NPC_LOCATION_HELPER_V3: a failure on the way to the improved map goes to syserr with its traceback
+	# (it used to be swallowed and the classic atlas opened without a word)
+	try:
+		import dbg
+		import traceback
+		dbg.TraceError("MT2009 NPC location helper: %s\n%s" % (where, traceback.format_exc()))
+	except Exception:
+		pass
 
 BTN_CHANGE_UP = "d:/ymir work/ui/pattern/btn_change_01.tga"
 BTN_CHANGE_OVER = "d:/ymir work/ui/pattern/btn_change_02.tga"
@@ -8555,7 +8572,7 @@ class MiniMapBridge(object):
 		self.tooltipItem = None
 		lastType = _LAST_ATLAS_TYPE[0]
 		if lastType not in (miniMap.ATLAS_TYPE_SMALL, miniMap.ATLAS_TYPE_NPC_LOCATION_HELPER):
-			lastType = miniMap.ATLAS_TYPE_SMALL
+			lastType = miniMap.ATLAS_TYPE_NPC_LOCATION_HELPER # MT2009_PLUS_NPC_LOCATION_HELPER_V3
 		self._activeAtlasType = lastType
 		try:
 			self.owner.AtlasWindow.npcLocBridge = self
@@ -8615,10 +8632,15 @@ class MiniMapBridge(object):
 	def __EnsureHelperWindow(self):
 		if self.helperWnd:
 			return self.helperWnd
-		wnd = NPCLocationHelper_Atlas()
-		if not wnd.LoadWindow():
+		try:
+			wnd = NPCLocationHelper_Atlas()
+			loaded = wnd.LoadWindow()
+		except Exception:
+			_LogTrace("the window did not load (exception) - the classic atlas opens instead")
+			return None
+		if not loaded:
 			import dbg
-			dbg.TraceError("MT2009 NPC location helper: the window did not load")
+			dbg.TraceError("MT2009 NPC location helper: the window did not load - the classic atlas opens instead")
 			return None
 		try:
 			wnd.Hide()
@@ -8672,11 +8694,11 @@ class MiniMapBridge(object):
 		try:
 			miniMap.UnregisterAtlasWindow()
 		except Exception:
-			pass
+			_LogTrace("miniMap.UnregisterAtlasWindow")
 		try:
 			miniMap.RegisterAtlasWindow(target)
 		except Exception:
-			pass
+			_LogTrace("miniMap.RegisterAtlasWindow(%s)" % target.__class__.__name__)
 
 	def __UseHelper(self):
 		return self._activeAtlasType == miniMap.ATLAS_TYPE_NPC_LOCATION_HELPER and _HelperIsActive()
@@ -8726,7 +8748,7 @@ class MiniMapBridge(object):
 			try:
 				miniMap.SetAtlasNpcHelperView(1)
 			except Exception:
-				pass
+				_LogTrace("miniMap.SetAtlasNpcHelperView(1)")
 			if pos:
 				try:
 					target.SetPosition(int(pos[0]), int(pos[1]))
@@ -8737,7 +8759,19 @@ class MiniMapBridge(object):
 					target.SetMapName(self.mapName)
 				except Exception:
 					pass
-			target.Show()
+			try:
+				target.Show()
+			except Exception:
+				# MT2009_PLUS_NPC_LOCATION_HELPER_V3: said in syserr, and the classic atlas opens instead of nothing
+				_LogTrace("the window's Show - back to the classic atlas")
+				try:
+					target.Hide()
+				except Exception:
+					pass
+				self.SetAtlasWindow(miniMap.ATLAS_TYPE_SMALL)
+				if small and not small.IsShow():
+					small.Show()
+				return
 			try:
 				target.SetTop()
 			except Exception:
@@ -8747,7 +8781,7 @@ class MiniMapBridge(object):
 				miniMap.SetAtlasNpcHelperView(0)
 				miniMap.ChangeAtlasRenderPos(0.0, 0.0)
 			except Exception:
-				pass
+				_LogTrace("miniMap.SetAtlasNpcHelperView(0)")
 			if small:
 				self.__Register(small)
 				if pos:
@@ -8845,6 +8879,7 @@ class MiniMapBridge(object):
 			btn.SetPosition(max(0, bx), 0)
 			btn.Show()
 		except Exception:
+			_LogTrace("the classic atlas' switch button")
 			try:
 				btn.Hide()
 			except Exception:
@@ -8903,10 +8938,13 @@ def OnGameOpen(interface):
 	bridge = _BridgeOf(interface)
 	if bridge:
 		bridge.BindInterface(interface)
+	else:
+		import dbg
+		dbg.TraceError("MT2009 NPC location helper: the minimap has no bridge - only the classic atlas (see the errors above)")
 	try:
-		npcLocationHelper.RequestStatus()
+		npcLocationHelper.RequestStatus() # CG 196 REQUEST_STATUS; the server answers GC 196 STATUS
 	except Exception:
-		pass
+		_LogTrace("npcLocationHelper.RequestStatus")
 
 
 def OnServerStatus(interface):
