@@ -388,13 +388,16 @@ namespace
 	enum EPlayerBotVisitKey
 	{
 		PLAYERBOT_KV_VISITS,            // master switch
-		PLAYERBOT_KV_PER_HOUR,          // shopping trips started an hour on a core
+		PLAYERBOT_KV_PER_HOUR,          // shopping trips started an hour on a core, at most (V2: the clock's turns,
+		                                // each weighing a few bots; only one with a reason goes)
 		PLAYERBOT_KV_MAX,               // shoppers away at once on a core
 		PLAYERBOT_KV_MIN_LEVEL,         // a shopper's lowest level (Orc Valley is crossed)
 		PLAYERBOT_KV_MIN_GOLD,          // and its lowest purse
 		PLAYERBOT_KV_STAY_MIN,          // minutes in the foreign village, from
 		PLAYERBOT_KV_STAY_MAX,          // ... to
 		PLAYERBOT_KV_TRADE_PCT,         // percent of shoppers who look for a trade with a local bot
+		PLAYERBOT_KV_CHEAPER_PCT,       // V2: a trip for a line there this many percent cheaper (trip included) than at home
+		PLAYERBOT_KV_MIN_SAVING,        // V2: ... saving this much yang at least (a line not sold at home: always)
 		PLAYERBOT_KV_RAIDS,             // the raids' switch
 		PLAYERBOT_KV_RAID_EVERY_MIN,    // minutes between two raids on one kingdom
 		PLAYERBOT_KV_RAID_MIN_MIN,      // a raid's fight lasts from
@@ -418,6 +421,8 @@ namespace
 		{ "VISIT_STAY_MIN", 8, 1, 120 },
 		{ "VISIT_STAY_MAX", 15, 1, 180 },
 		{ "VISIT_TRADE_PCT", 35, 0, 100 },
+		{ "VISIT_CHEAPER_PCT", 15, 0, 90 },
+		{ "VISIT_MIN_SAVING", 20000, 0, 100000000 },
 		{ "RAIDS", 1, 0, 1 },
 		{ "RAID_EVERY_MIN", 60, 10, 1440 },
 		{ "RAID_MIN_MIN", 10, 1, 120 },
