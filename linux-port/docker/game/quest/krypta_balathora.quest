@@ -196,7 +196,7 @@ quest krypta_balathora begin
 			end
 		end
 
-		when 20815.chat."Poddaj wyprawê gildii" with balathor.is_in_map(pc.get_map_index()) and balathor.get_stage(pc.get_map_index()) >= 2 and balathor.get_stage(pc.get_map_index()) <= 6 begin
+		when 20815.chat."Poddaj wyprawê gildii" with balathor.is_in_map(pc.get_map_index()) and balathor.get_stage(pc.get_map_index()) == 2 begin
 			say_title(mob_name(20815))
 			if not pc.is_guild_master() then
 				say("Poddaæ wyprawê mo¿e tylko mistrz gildii.")
@@ -204,19 +204,24 @@ quest krypta_balathora begin
 			end
 			say("Na pewno poddaæ wyprawê?")
 			if select("Poddaj", "Walczymy dalej") == 1 then
-				balathor.give_up()
+				balathor.give_up(pc.get_map_index())
 			end
 		end
 
 		when 20492.chat."Odbierz nagrodê gildii" with balathor.is_in_map(pc.get_map_index()) begin
 			say_title(mob_name(20492))
+			-- one click rewards every guild member inside the crypt (each character only once)
 			local r = balathor.claim_reward(pc.get_map_index())
 			if r == 0 then
-				say("Nagroda zosta³a ju¿ odebrana.")
+				say("Nagroda zosta³a ju¿ odebrana przez wszystkich")
+				say("cz³onków gildii obecnych w Krypcie.")
 			elseif r == 1 then
 				say("Na nagrodê jest jeszcze za wczeœnie.")
+			elseif r == 2 then
+				say("Balathor zwyciê¿y³ - ta wyprawa nie przynios³a nagrody.")
 			else
-				say("Nagroda odebrana.")
+				say("Skarb otwarty! Ka¿dy cz³onek gildii obecny w Krypcie")
+				say("otrzyma³ swoj¹ nagrodê do ekwipunku.")
 			end
 		end
 

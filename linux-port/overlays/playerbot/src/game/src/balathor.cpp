@@ -68,24 +68,48 @@ void CBalathor::Teleport(LPCHARACTER ch)
 
 void CBalathor::Finish(BYTE bFinishType)
 {
+	// already closing (or closed): a second give-up / GM close must not restart the send-out timer
+	if (m_bStage == BALATHOR_STAGE_CLOSE || m_bStage == BALATHOR_STAGE_NONE)
+		return;
+
 	const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
+	const std::string strSendOut = SecToTime(config.dwSendOutTime / 1000);
+
+	// Give-up / GM close while fighting the hidden Balathor (phase 1 already won) counts like the hidden
+	// Balathor running away: step 88 + the treasure (1x fail_rewards). Earlier steps: no treasure, no reward.
+	bool bSpawnChest = false;
+	if (bFinishType == BALATHOR_FINISH_FAIL_BY_GAMEMASTER && m_bStage == BALATHOR_STAGE_RUN && m_bStepIndex == 6)
+	{
+		KillRegen();
+		RemoveCharacterByFlag("dragon");
+		m_bStepIndex = 88;
+		bSpawnChest = true;
+	}
 
 	switch (bFinishType)
 	{
 		case BALATHOR_FINISH_FAIL_TIME:
-			ChatPacket(CHAT_TYPE_NOTICE, "Czas min\xb9" "\xb3" " - Balathor zwyci\xea" "\xbf" "y\xb3" ". Opu\x9c" "cicie krypt\xea" " za %s.", SecToTime(config.dwSendOutTime / 1000).c_str());
+			ChatPacket(CHAT_TYPE_NOTICE, "Czas min\xb9" "\xb3" " - Balathor zwyci\xea" "\xbf" "y\xb3" ". Opuszczenie krypty za %s.", strSendOut.c_str());
 			break;
 		case BALATHOR_FINISH_SUCCESS:
-			ChatPacket(CHAT_TYPE_NOTICE, "Balathor pokonany! Zostawi\xb3" " po sobie sw\xf3" "j skarb.");
+			ChatPacket(CHAT_TYPE_NOTICE, "Balathor pokonany! Zostawi\xb3" " po sobie sw\xf3" "j skarb - odbierzcie nagrod\xea" ". Opuszczenie krypty za %s.", strSendOut.c_str());
 			break;
 		case BALATHOR_FINISH_FAIL:
-			ChatPacket(CHAT_TYPE_NOTICE, "Balathor uciek\xb3" ", ale zostawi\xb3" " po sobie sw\xf3" "j skarb.");
+			if (m_bStepIndex == 87)
+				ChatPacket(CHAT_TYPE_NOTICE, "Balathor zwyci\xea" "\xbf" "y\xb3" " - wyprawa nieudana, bez nagrody. Opuszczenie krypty za %s.", strSendOut.c_str());
+			else
+				ChatPacket(CHAT_TYPE_NOTICE, "Balathor uciek\xb3" ", ale zostawi\xb3" " po sobie sw\xf3" "j skarb - odbierzcie nagrod\xea" ". Opuszczenie krypty za %s.", strSendOut.c_str());
 			break;
 		case BALATHOR_FINISH_FAIL_BY_GAMEMASTER:
-			ChatPacket(CHAT_TYPE_NOTICE, "Wyprawa przerwana. Opu\x9c" "cicie krypt\xea" " za %s.", SecToTime(config.dwSendOutTime / 1000).c_str());
+			if (bSpawnChest)
+				ChatPacket(CHAT_TYPE_NOTICE, "Wyprawa przerwana - Ukryty Balathor uciek\xb3" ", ale zostawi\xb3" " sw\xf3" "j skarb. Opuszczenie krypty za %s.", strSendOut.c_str());
+			else
+				ChatPacket(CHAT_TYPE_NOTICE, "Wyprawa przerwana. Opuszczenie krypty za %s.", strSendOut.c_str());
 			break;
 	}
 	SetStage(BALATHOR_STAGE_CLOSE);
+	if (bSpawnChest)
+		SpawnCharacterByFlag("chest");
 	CGuildManager::Instance().SetFlag(m_dwGuildID, "balathor_channel", 0);
 }
 
@@ -1203,9 +1227,10 @@ void CBalathor::StepProgress(DWORD dwCurTime)
 	DWORD dwLeftTime = GetFlag("balathor_finish_fail");
 	if (dwLeftTime != 0 && dwLeftTime < dwCurTime)
 	{
-		SetFlag("balathor_fail_finish", 0);
+		SetFlag("balathor_finish_fail", 0);
 		Finish(BALATHOR_FINISH_FAIL);
-		SpawnCharacterByFlag("chest");
+		if (m_bStepIndex != 87) // 87 = first Balathor not beaten: no treasure, no reward
+			SpawnCharacterByFlag("chest");
 	}
 
 	if (m_bStepIndex >= 3 && m_bStepIndex <= 6)
@@ -1576,7 +1601,7 @@ void CBalathor::TakeOff(BYTE bTakeOffType, bool is_dead)
 
 				SetFlag("balathor_finish_fail", get_dword_time() + 3000);
 
-				m_bStepIndex = 88;
+				m_bStepIndex = 87; // phase 1 failed: no reward (wiki)
 			}
 			else // BALATHOR_1_TAKE_OFF_SUCCESS
 			{
@@ -1594,6 +1619,7 @@ void CBalathor::TakeOff(BYTE bTakeOffType, bool is_dead)
 		{
 			m_mapFlags.clear();
 			SetFlag("balathor_finish_fail", get_dword_time() + 3000);
+			m_bStepIndex = 87;
 		}
 	}
 	else if (m_bStepIndex == 6)
@@ -1628,6 +1654,7 @@ void CBalathor::TakeOff(BYTE bTakeOffType, bool is_dead)
 		{
 			m_mapFlags.clear();
 			SetFlag("balathor_finish_fail", get_dword_time() + 3000);
+			m_bStepIndex = 88;
 		}
 	}
 }
@@ -2278,33 +2305,68 @@ void CBalathor::AttackProcess(DWORD dwCurTime)
 	}
 }
 
+// One click on the treasure hands the reward to every guild member present in the crypt (online, on this
+// map), each character only once. Returns 0 = everybody present already got it, 1 = too early,
+// 2 = no reward (first Balathor not beaten), 99 = rewards handed out.
 BYTE CBalathor::ClaimReward(LPCHARACTER ch)
 {
-	if (std::find(m_vecClaimedRewardsPIDs.begin(), m_vecClaimedRewardsPIDs.end(), ch->GetPlayerID()) != m_vecClaimedRewardsPIDs.end())
+	if (!ch)
 		return 0;
-	else if (m_bStepIndex != 88 && m_bStepIndex != 99)
+	if (m_bStepIndex == 87)
+		return 2;
+	if (m_bStepIndex != 88 && m_bStepIndex != 99)
 		return 1;
-	const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
 
-	if (m_bStepIndex == 88)
+	const SBalathorConfig& config = CBalathorManager::Instance().GetConfig();
+	// 88 = hidden Balathor ran away (phase 1 won) -> fail_rewards; 99 = full success -> success_rewards
+	const SBalathorReward* rewards = (m_bStepIndex == 99) ? config.success_rewards : config.fail_rewards;
+
+	std::vector<LPCHARACTER> vecRecipients;
+	auto AddRecipient = [&](LPCHARACTER tch)
+	{
+		if (!tch || !tch->IsPC())
+			return;
+		if (std::find(m_vecClaimedRewardsPIDs.begin(), m_vecClaimedRewardsPIDs.end(), tch->GetPlayerID()) != m_vecClaimedRewardsPIDs.end())
+			return;
+		if (std::find(vecRecipients.begin(), vecRecipients.end(), tch) != vecRecipients.end())
+			return;
+		vecRecipients.emplace_back(tch);
+	};
+
+	// the character at the chest (as before), then every guild member inside the crypt
+	AddRecipient(ch);
+	for (const auto& pid : m_vecPlayers)
+	{
+		LPCHARACTER tch = CHARACTER_MANAGER::Instance().FindByPID(pid);
+		if (!tch || tch->GetMapIndex() != m_dwMapIndex)
+			continue;
+		CGuild* pGuild = tch->GetGuild();
+		if (!pGuild || pGuild->GetID() != m_dwGuildID)
+			continue;
+		AddRecipient(tch);
+	}
+
+	if (vecRecipients.empty())
+		return 0;
+
+	for (LPCHARACTER tch : vecRecipients)
 	{
 		for (BYTE i = 0; i < BALATHOR_MAX_REWARD_COUNT; ++i)
 		{
-			const SBalathorReward& reward = config.fail_rewards[i];
-			if (reward.dwVnum != 0)
-				ch->AutoGiveItem(reward.dwVnum, reward.dwCount);
+			const SBalathorReward& reward = rewards[i];
+			if (reward.dwVnum != 0 && reward.dwCount != 0)
+				tch->AutoGiveItem(reward.dwVnum, reward.dwCount);
 		}
+		m_vecClaimedRewardsPIDs.emplace_back(tch->GetPlayerID());
+
+		if (tch == ch)
+			tch->ChatPacket(CHAT_TYPE_INFO, "Otworzy\xb3" "e\x9c" " Skarb Balathora - nagroda trafi\xb3" "a do twojego ekwipunku.");
+		else
+			tch->ChatPacket(CHAT_TYPE_INFO, "%s otworzy\xb3" " Skarb Balathora - twoja nagroda trafi\xb3" "a do ekwipunku.", ch->GetName());
 	}
-	else if (m_bStepIndex == 99)
-	{
-		for (BYTE i = 0; i < BALATHOR_MAX_REWARD_COUNT; ++i)
-		{
-			const SBalathorReward& reward = config.success_rewards[i];
-			if (reward.dwVnum != 0)
-				ch->AutoGiveItem(reward.dwVnum, reward.dwCount);
-		}
-	}
-	m_vecClaimedRewardsPIDs.emplace_back(ch->GetPlayerID());
+
+	if (vecRecipients.size() > 1)
+		ch->ChatPacket(CHAT_TYPE_INFO, "Nagrod\xea" " z Krypty otrzyma\xb3" "o %d postaci z gildii.", (int)vecRecipients.size());
 	return 99;
 }
 #endif
