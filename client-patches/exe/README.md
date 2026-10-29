@@ -925,3 +925,23 @@ efekty i woła `chrmgr.SetWeaponElement`; stare exe nie ma tej funkcji – nic s
 Pliki efektów (GF 26.1.11, pakuje `client-2.0.30/tools/zywiolbroni`): `d:/ymir work/pc/common/effect/sword/element0{1..6}_{electric,fire,ice,wind,daeji,dark}{,_f,_b,_s,_w}.mse`.
 Sprawdzone `clang-cl /Zs` (exe-src8 + cała nakładka + `clang-cl-compat.patch`): `Mt2009WeaponElement.cpp`, `InstanceBase.cpp`,
 `NetworkActorManager.cpp`, `PythonCharacterManagerModule.cpp`, `Mt2009Aura.cpp` (29.10.2026).
+
+## Efekty zakładania pierścieni / amuletów / lizaków – `MT2009_PLUS_RING_EFFECTS_V1` (`ENABLE_MT2009_RING_EFFECTS`)
+
+Serwer (`server-patches/ringfx`) przy założeniu 71148 / 71149 / 71158 / 71180 / 71181 / 71188 / 71199 / 71202 / 72054
+wysyła `SE_EQUIP_WILL_RING` … `SE_EQUIP_GUARD_PENDANT` = **55–63** (za `SE_ELEC_ATTACK_HIT` 54, ta sama kolejność co
+serwer; `static_assert` po obu stronach).
+
+| Plik | Zmiana |
+|---|---|
+| `UserInterface/Locale_inc.h` | `ENABLE_MT2009_RING_EFFECTS` |
+| `Server/common/length.h` | 9 × `SE_EQUIP_*` na końcu `SPECIAL_EFFECT` (zawsze – numery protokołu) |
+| `UserInterface/InstanceBase.h` | `EFFECT_WILL_RING_EQUIP` … `EFFECT_GUARD_PENDANT_EQUIP` za efektami Damage Print, `EFFECT_NUM` dalej ostatni |
+| `UserInterface/PythonNetworkStreamPhaseGameItem.cpp` | `case SE_EQUIP_*` → `EFFECT_*_EQUIP` |
+| `UserInterface/PythonPlayerSettingsModule.cpp` | rejestracja (cache): `d:/ymir work/effect/etc/buff/` `buff_item5`, `deadly_ring`, `buff_symbol1`, `buff_item16`, `green_candy`, `buff_item8`, `buff_item10`, `buff_item13`, `buff_item14` `.mse` |
+| `UserInterface/PythonCharacterManagerModule.cpp` | `chrmgr.EFFECT_*_EQUIP` |
+
+Siedem plików to oryginały GF 26.1.11 z paczki `etc` instalacji; `deadly_ring.mse` / `green_candy.mse` (+ tekstury) –
+nowa paczka `ringfx` (`client-2.0.30/tools/ringfx`, `verify_ringfx.py` sprawdza też numery SE serwer ↔ exe). Sprawdzone
+`clang-cl /Zs` (exe-src8 + cała nakładka + `clang-cl-compat.patch`): `PythonNetworkStreamPhaseGameItem.cpp`,
+`PythonCharacterManagerModule.cpp`, `PythonPlayerSettingsModule.cpp`, `InstanceBase.cpp` (30.10.2026).

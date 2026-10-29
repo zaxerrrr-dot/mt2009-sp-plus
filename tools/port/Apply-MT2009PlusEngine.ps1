@@ -2013,4 +2013,17 @@ if ((Test-Path -LiteralPath $reliktyApply -PathType Leaf) -and
     }
 }
 
+# Efekty zakladania pierscieni / amuletow / lizakow (server-patches/ringfx, MT2009_PLUS_RING_EFFECTS_V1; the owner, 30 October
+# 2026): SE_EQUIP_WILL_RING..SE_EQUIP_GUARD_PENDANT (55-63, after elecglove's 54) in common/length.h, the vnum helpers in
+# common/VnumHelper.h and the EffectPacket on equipping in char_item.cpp (after the Love Pendant). Last (on Linux after konie).
+$ringfxApply = Join-Path $repo 'server-patches/ringfx/Apply-RingFxPatch.ps1'
+if ((Test-Path -LiteralPath $ringfxApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'char_item.cpp') -PathType Leaf)) {
+    $ringfxResult = & $ringfxApply -SourceDir $engineGameSource
+    if ($ringfxResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} ring equip effect edit(s).' -f $ringfxResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."
