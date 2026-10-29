@@ -129,7 +129,7 @@ def mob_row():
     # the set blacksmiths' row (yohara_sets.sql 20475: an NPC of level 1 that does not move), on_click 1 = the shop
     return ("(%d,'Medal Guardian',_cp1250 X'%s',2,1,0,1,'NONE','NOMOVE',0,'','STUN,SLOW,TERROR',0,'',1,0,0,0,0,0,0,"
             "120,3,1,0,0,10,4,100,100,0,2000,150,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,"
-            "0,0,0,0,0,0,0,0,0,0)" % (NPC, NPC_NAME.encode('cp1250').hex().upper()))
+            "0,0,0,0,0,0,0,0,0)" % (NPC, NPC_NAME.encode('cp1250').hex().upper()))
 
 
 def write_sql(its):
