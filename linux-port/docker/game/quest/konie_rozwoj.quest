@@ -1,0 +1,350 @@
+-- MT2009_PLUS_HORSE40_V1: koñ powy¿ej 21 poziomu - wiki ("Koñ", "Misje konne", "Otrzymujesz paszê dla konia",
+-- "Z³ota Ksiêga Konia") i paczka "system_rozwoju_konia" (Mount Upgrade System, Best Studio; server-patches/konie).
+-- Do 21 poziomu bez zmian (quest konie: szkolenie 1-19; horse_upgrade / horse_upgrade2: awanse 10->11 i 20->21).
+--   * Stajenny (20349): "Rozwój konia" otwiera okno (root/uikonierozwoj.py) - karmienie Pasz¹ dla Konia (50048),
+--     próba awansu (50 paszy + Yang z wiki; nieudana próba = nastêpna kosztuje 50/100 Gaya), umiejêtnoœci konia;
+--     wszystko liczy rdzeñ (konie_rozwoj.cpp, komenda /konie_rozwoj), quest tylko otwiera okno;
+--   * "Pasza dla konia" - misja codzienna z wiki: koñ 21+, postaæ 75+, co 24 h zbierz 30 paszy z potworów
+--     (nie trafia do ekwipunku), nagroda 22-27x Pasza dla Konia;
+--   * "Z³ota Ksiêga Konia" - Potê¿ny Koñ Wojskowy: Poziom Czempiona 1, koñ 30+, 100 potworów w Jaskiniach Gnolli
+--     (pierwszy poziom, mapa 382) w 30 minut, 100 000 000 Yang, po 24 h (trudnoœæ œwiata, m2_horse_wait) ksiêga
+--     50049; od 31 poziomu koñ wygl¹da jak Potê¿ny Koñ Wojskowy (flaga konie_rozwoj.zloty);
+--   * ksiêgi umiejêtnoœci konnych 55050-55067 (u¿ycie): horse.konie_naucz; "Umiejêtnoœci konia" - podgl¹d
+--     i zapomnienie za darmo (wiki);
+--   * koñ 31+ je tylko 50047 Czer. ¯eñ-szeñ (premium), wskrzesza go tylko 50046 Szlachetna Trawa.
+-- Plik w cp1250, ¿aden litera³ nie koñczy siê polsk¹ liter¹ (qc).
+quest konie_rozwoj begin
+	state start begin
+		function nazwa(v)
+			local t = {
+				[285] = "Jazda (Zwinne Kopyta)", [286] = "Jazda Konna (PD)", [287] = "Jazda (Gwa³t. Wichura)",
+				[288] = "Jazda (Bezszelest. Chód)", [289] = "Jazda (Nieœmiertelnoœæ)", [290] = "Jazda (Brak Odrzutu)",
+				[291] = "Jazda Konna (przeciw pó³ludziom)", [292] = "Jazda Konna (przeciw zwierzêtom)",
+				[293] = "Jazda Konna (przeciw orkom)", [294] = "Jazda Konna (przeciw mistykom)",
+				[295] = "Jazda Konna (przeciw nieumar³ym)", [296] = "Jazda Konna (przeciw diab³om)",
+				[298] = "Jazda Konna (przeciw potworom pustyni)", [299] = "Jazda Konna (przeciw insektom)",
+				[300] = "Jazda Konna (przeciw potworom)", [301] = "Jazda (umiej. konne)",
+				[302] = "Jazda Konna (Wojownik)", [303] = "Jazda Konna (Ninja)", [304] = "Jazda Konna (Sura)",
+				[305] = "Jazda Konna (Szaman)", [307] = "Jazda (W. SungMa. SI£A)", [308] = "Jazda (W. SungMa. WIT)",
+				[309] = "Jazda (W. SungMa. ODP)", [310] = "Jazda (W. SungMa. INT)", [311] = "Jazda Konna (Precyzja)",
+			}
+			return t[v] or "?"
+		end
+
+		-- ksiêga -> umiejêtnoœæ (paczka: item_proto socket0); 55056 losowa, 55061 (Likan) - brak Likanów
+		function umiejetnosc(vnum)
+			local t = {
+				[55050] = 285, [55051] = 286, [55052] = 287, [55053] = 288, [55054] = 289, [55055] = 290,
+				[55057] = 302, [55058] = 303, [55059] = 304, [55060] = 305, [55062] = 301, [55063] = 307,
+				[55064] = 308, [55065] = 309, [55066] = 310, [55067] = 311,
+			}
+			if vnum == 55056 then
+				local los = { 291, 292, 293, 294, 295, 296, 298, 299, 300 }
+				return los[number(1, table.getn(los))]
+			end
+			return t[vnum] or 0
+		end
+
+		function pisz(t)
+			local szer = 44
+			while string.len(t) > szer do
+				local ciecie = szer + 1
+				while ciecie > 1 and string.sub(t, ciecie, ciecie) ~= " " do
+					ciecie = ciecie - 1
+				end
+				if ciecie <= 1 then
+					ciecie = szer + 1
+				end
+				say(string.sub(t, 1, ciecie - 1))
+				t = string.sub(t, ciecie + 1)
+			end
+			say(t)
+		end
+
+		function czekanie()
+			if is_test_server() or game.get_event_flag("beta_server") > 0 then
+				return 10
+			end
+			if m2_horse_wait("upgrade") > 0 then
+				return 24 * 60 * 60
+			end
+			return 0
+		end
+
+		when login with horse.get_level() >= 21 begin
+			horse.konie_odswiez()
+		end
+
+		-- okno rozwoju (konie_rozwoj.cpp: /konie_rozwoj karm / awans / umiej)
+		when 20349.chat."Rozwój konia (21-40)" with horse.get_level() >= 21 begin
+			say_title("Stajenny - rozwój konia")
+			konie_rozwoj.pisz("Od 21 poziomu koñ roœnie od Paszy dla Konia. Karm go, a¿ pasek doœwiadczenia siê wype³ni, i spróbuj awansu: 50 paszy i Yang. Nieudana próba zostawia pasek - nastêpna kosztuje dodatkowo Gaya i siê uda.")
+			say_reward("Wymagany poziom postaci: 75")
+			say_reward("Od 30 poziomu konia: Poziom Czempiona 1")
+			if horse.get_level() >= 40 then
+				say("Twój koñ osi¹gn¹³ najwy¿szy, 40 poziom.")
+			end
+			horse.konie_otworz()
+		end
+
+		-- misja codzienna "Otrzymujesz paszê dla konia" (wiki)
+		when 20349.chat."Pasza dla konia" with horse.get_level() >= 21 begin
+			say_title("Stajenny - pasza dla konia")
+			if pc.level < 75 then
+				say("Wróæ, gdy osi¹gniesz 75 poziom.")
+				return
+			end
+			if pc.getqf("pasza_stan") == 1 then
+				local n = pc.getqf("pasza_licznik")
+				if n >= 30 then
+					local ile = number(22, 27)
+					pc.give_item2(50048, ile)
+					pc.setqf("pasza_stan", 0)
+					pc.setqf("pasza_czas", get_time() + 24 * 60 * 60)
+					char_log(0, "KONIE_PASZA", "nagroda " .. ile)
+					say("Œwietnie! Oto twoja pasza: " .. ile .. " sztuk.")
+					say("Wróæ jutro po nastêpn¹.")
+				else
+					say("Zebrana pasza: " .. n .. "/30")
+					konie_rozwoj.pisz("Pokonuj potwory - co jakiœ czas znajdziesz przy nich paszê.")
+				end
+				return
+			end
+			local czas = pc.getqf("pasza_czas") - get_time()
+			if czas > 0 then
+				say("Dziœ ju¿ dosta³eœ paszê. Wróæ za " .. math.ceil(czas / 3600) .. " h.")
+				return
+			end
+			konie_rozwoj.pisz("Potrzebujê 30 porcji paszy. Pokonuj potwory - przy niektórych j¹ znajdziesz. Za pomoc dostaniesz 22-27 Paszy dla Konia.")
+			if select("Zbieram paszê dla konia", "Nie teraz") ~= 1 then
+				return
+			end
+			pc.setqf("pasza_stan", 1)
+			pc.setqf("pasza_licznik", 0)
+			say("Powodzenia!")
+		end
+
+		when kill with not npc.is_pc() and pc.getqf("pasza_stan") == 1 and pc.getqf("pasza_licznik") < 30 begin
+			if number(1, 100) <= 15 then
+				local n = pc.getqf("pasza_licznik") + 1
+				pc.setqf("pasza_licznik", n)
+				if n >= 30 then
+					syschat("Pasza dla konia: 30/30 - wróæ do Stajennego.")
+				else
+					syschat("Pasza dla konia: " .. n .. "/30")
+				end
+			end
+		end
+
+		-- Z³ota Ksiêga Konia (Potê¿ny Koñ Wojskowy)
+		when kill with not npc.is_pc() and pc.getqf("zloty_stan") == 1 and pc.get_map_index() == 382 begin
+			if get_time() > pc.getqf("zloty_koniec") then
+				return
+			end
+			local n = pc.getqf("zloty_zabite") + 1
+			pc.setqf("zloty_zabite", n)
+			if n == 100 then
+				syschat("Z³ota Ksiêga Konia: 100/100 - wróæ do Stajennego.")
+			elseif n < 100 and math.mod(n, 10) == 0 then
+				syschat("Z³ota Ksiêga Konia: " .. n .. "/100")
+			end
+		end
+
+		when 20349.chat."Z³ota Ksiêga Konia" with horse.get_level() >= 30 begin
+			say_title("Stajenny - Z³ota Ksiêga Konia")
+			local stan = pc.getqf("zloty_stan")
+			if stan == 3 or pc.getqf("zloty") > 0 then
+				if pc.countitem(50049) < 1 then
+					pc.give_item2(50049, 1)
+					say("Oto nowa Z³ota Ksiêga Konia.")
+				else
+					konie_rozwoj.pisz("Masz ju¿ Z³ot¹ Ksiêgê Konia. Od 31 poziomu twój koñ to Potê¿ny Koñ Wojskowy.")
+				end
+				return
+			end
+			if stan == 2 then
+				local czas = pc.getqf("zloty_czas") - get_time()
+				if czas > 0 then
+					say("Ksiêga nie jest jeszcze gotowa. Wróæ za " .. math.ceil(czas / 3600) .. " h.")
+					return
+				end
+				pc.give_item2(50049, 1)
+				pc.setqf("zloty", 1)
+				pc.setqf("zloty_stan", 3)
+				horse.konie_odswiez()
+				char_log(0, "KONIE_ZLOTY", "ksiega")
+				say_reward("Otrzymujesz Z³ot¹ Ksiêgê Konia!")
+				konie_rozwoj.pisz("Od 31 poziomu twój koñ bêdzie Potê¿nym Koniem Wojskowym. Przywo³asz go t¹ ksiêg¹ (300 PE).")
+				return
+			end
+			if stan == 1 then
+				if pc.getqf("zloty_zabite") >= 100 and get_time() <= pc.getqf("zloty_koniec") + 15 * 60 then
+					if pc.get_gold() < 100000000 then
+						say("Ksiêga kosztuje 100 000 000 Yang. Wróæ z pieniêdzmi.")
+						return
+					end
+					pc.change_gold(-100000000)
+					pc.setqf("zloty_stan", 2)
+					pc.setqf("zloty_czas", get_time() + konie_rozwoj.czekanie())
+					char_log(0, "KONIE_ZLOTY", "proba zaliczona")
+					if konie_rozwoj.czekanie() > 0 then
+						say("Zadanie wykonane. Przygotujê ksiêgê - wróæ za 24 h.")
+					else
+						say("Zadanie wykonane. Porozmawiaj ze mn¹ jeszcze raz.")
+					end
+					return
+				end
+				if get_time() > pc.getqf("zloty_koniec") then
+					say("Czas min¹³. Mo¿esz spróbowaæ jeszcze raz.")
+					pc.setqf("zloty_stan", 0)
+					return
+				end
+				say("Pokonane potwory: " .. pc.getqf("zloty_zabite") .. "/100")
+				say("Pozosta³y czas: " .. math.floor((pc.getqf("zloty_koniec") - get_time()) / 60) .. " min")
+				return
+			end
+			konie_rozwoj.pisz("Z³ota Ksiêga Konia przywo³uje Potê¿nego Konia Wojskowego. Pokonaj 100 potworów w Jaskiniach Gnolli (pierwszy poziom) w ci¹gu 30 minut.")
+			say_reward("Wymagany Poziom Czempiona: 1")
+			say_reward("Koszt: 100 000 000 Yang (przy odbiorze)")
+			if pc.get_conqueror_level() < 1 then
+				say("Najpierw zdob¹dŸ Poziom Czempiona.")
+				return
+			end
+			if select("Rozpocznij zadanie", "Nie teraz") ~= 1 then
+				return
+			end
+			pc.setqf("zloty_stan", 1)
+			pc.setqf("zloty_zabite", 0)
+			pc.setqf("zloty_koniec", get_time() + 30 * 60)
+			say("Masz 30 minut. Powodzenia!")
+		end
+
+		-- umiejêtnoœci konia (wiki: 1 od 21 poziomu, 2 od 31, poziom 1-20, zapomnienie za darmo u Stajennego)
+		when 20349.chat."Umiejêtnoœci konia" with horse.get_level() >= 21 begin
+			say_title("Stajenny - umiejêtnoœci konia")
+			local v1, l1 = horse.konie_slot(1)
+			local v2, l2 = horse.konie_slot(2)
+			if v1 == 0 and v2 == 0 then
+				konie_rozwoj.pisz("Twój koñ nie zna ¿adnej umiejêtnoœci. Przeczytaj ksiêgê umiejêtnoœci konnej (od 21 poziomu konia jedna, od 31 dwie).")
+				return
+			end
+			if v1 > 0 then
+				say("1. " .. konie_rozwoj.nazwa(v1) .. " - poziom " .. l1)
+			end
+			if v2 > 0 then
+				say("2. " .. konie_rozwoj.nazwa(v2) .. " - poziom " .. l2)
+			end
+			konie_rozwoj.pisz("Ulepszysz je w oknie rozwoju konia (1000 Gaya i 20 000 000 Yang za poziom). Zapomnienie jest darmowe.")
+			local w = select("Zapomnij umiejêtnoœæ 1", "Zapomnij umiejêtnoœæ 2", "Zamknij")
+			if w == 1 or w == 2 then
+				local v = v1
+				if w == 2 then
+					v = v2
+				end
+				if v == 0 then
+					return
+				end
+				say_title("Stajenny - umiejêtnoœci konia")
+				say("Zapomnieæ " .. konie_rozwoj.nazwa(v) .. "?")
+				if select("Tak", "Nie") ~= 1 then
+					return
+				end
+				if horse.konie_zapomnij(w) then
+					char_log(0, "KONIE_UMIEJ", "zapomniana " .. v)
+					say("Twój koñ zapomnia³ tê umiejêtnoœæ.")
+				end
+			end
+		end
+
+		when 55050.use or 55051.use or 55052.use or 55053.use or 55054.use or 55055.use or 55056.use or 55057.use or 55058.use or 55059.use or 55060.use or 55061.use or 55062.use or 55063.use or 55064.use or 55065.use or 55066.use or 55067.use begin
+			local ks = item.get_vnum()
+			if ks == 55061 then
+				syschat("W tym œwiecie nie ma Likanów - tej umiejêtnoœci nie mo¿na siê nauczyæ.")
+				return
+			end
+			local v = konie_rozwoj.umiejetnosc(ks)
+			local r = horse.konie_naucz(v)
+			if r == 0 then
+				pc.removeitem(ks, 1)
+				syschat("Twój koñ nauczy³ siê: " .. konie_rozwoj.nazwa(v) .. " (poziom 1).")
+			elseif r == 1 then
+				syschat("Umiejêtnoœci konne zna dopiero koñ od 21 poziomu.")
+			elseif r == 2 then
+				syschat("Twój koñ nie ma wolnego miejsca (od 21 poziomu jedno, od 31 dwa). Stajenny pomo¿e zapomnieæ.")
+			elseif r == 3 then
+				syschat("Twój koñ zna ju¿ tê umiejêtnoœæ.")
+			else
+				syschat("Tej umiejêtnoœci nie mo¿na siê nauczyæ.")
+			end
+		end
+
+		-- 50049 Z³ota Ksiêga Konia: przywo³anie (300 PE, szansa jak ksiêgi konia: umiejêtnoœæ 131)
+		when 50049.use begin
+			if pc.getqf("zloty") < 1 then
+				syschat("Najpierw ukoñcz zadanie Stajennego (Z³ota Ksiêga Konia).")
+				return
+			end
+			if horse.get_level() < 31 then
+				syschat("Z³ota Ksiêga Konia przywo³uje konia od 31 poziomu.")
+				return
+			end
+			if horse.is_summon() or horse.is_riding() then
+				syschat("Twój koñ jest ju¿ przywo³any.")
+				return
+			end
+			if pc.getsp() < 300 then
+				syschat("Potrzebujesz 300 PE.")
+				return
+			end
+			local proc = { 15, 20, 30, 40, 50, 60, 70, 80, 90, 100 }
+			local lv = pc.get_skill_level(131)
+			local szansa = 10
+			if lv >= 10 then
+				szansa = 100
+			elseif lv >= 1 then
+				szansa = proc[lv]
+			end
+			pc.change_sp(-300)
+			if number(1, 100) <= szansa then
+				horse.summon()
+			else
+				syschat("Nie uda³o siê przywo³aæ konia. Spróbuj jeszcze raz.")
+			end
+		end
+
+		-- 50047 Czer. ¯eñ-szeñ (premium): jedyna karma Potê¿nego Konia Wojskowego (koñ 31+; w³aœciciel, 30.10.2026)
+		when 50047.use begin
+			if horse.get_level() < 31 then
+				syschat("Czer. ¯eñ-szeñ (premium) to karma Potê¿nego Konia Wojskowego (31+).")
+				return
+			end
+			if horse.get_health() <= 0 then
+				syschat("Twój koñ nie ¿yje - wskrzesi go Szlachetna Trawa.")
+				return
+			end
+			if not horse.is_summon() and not horse.is_riding() then
+				syschat("Przywo³aj konia, aby go nakarmiæ.")
+				return
+			end
+			if horse.konie_karm() then
+				pc.removeitem(50047, 1)
+				syschat("Nakarmi³eœ konia.")
+			end
+		end
+
+		-- 50046 Szlachetna Trawa: wskrzesza konia 31+ (wiki)
+		when 50046.use begin
+			if horse.get_level() < 31 then
+				syschat("Szlachetna Trawa wskrzesza Potê¿nego Konia Wojskowego (31+).")
+				return
+			end
+			if horse.get_health() > 0 then
+				syschat("Twój koñ ¿yje.")
+				return
+			end
+			pc.removeitem(50046, 1)
+			horse.set_stat0(50, horse.get_stamina())
+			syschat("Twój koñ wróci³ do ¿ycia. Przywo³aj go ponownie.")
+		end
+	end
+end

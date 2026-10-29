@@ -537,6 +537,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uiusunmisje").DestroyWindow()
 		# MT2009_PLUS_GAYA_SHOP_WINDOW_V1: Portowy Sklep Gaya (uiygaya.py).
 		__import__("uiygaya").DestroyWindow()
+		# MT2009_PLUS_HORSE40_V1: the Stajenny's horse window (uikonierozwoj.py).
+		__import__("uikonierozwoj").DestroyWindow()
 		# MT2009_PLUS_SMH_TOWER_V3: Wieza Sung Mahi's window, floor board and defeat popup (uiwiezasm.py).
 		__import__("uiwiezasm").DestroyWindow()
 		# MT2009_PLUS_MLODZI_BOHATEROWIE_V1: the young heroes' weapon choice (uimlodzibohaterowie.py).
@@ -3604,6 +3606,8 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["ekwipunek_ok"] = self.__Ekwipunek # MT2009_PLUS_EKWIPUNEK_V1
 		serverCommandList["ekwipunek_refine"] = self.__EkwipunekRefine # MT2009_PLUS_EKWIPUNEK_REFINE_V1
 		serverCommandList["addeq_page"] = self.__AddeqPage # MT2009_PLUS_ADDEQ_V1
+		serverCommandList["konie_rozwoj_info"] = self.__KonieRozwojInfo # MT2009_PLUS_HORSE40_V1
+		serverCommandList["konie_rozwoj_msg"] = self.__KonieRozwojMsg # MT2009_PLUS_HORSE40_V1
 		serverCommandList["relikt_state"] = self.__ReliktState # MT2009_PLUS_RELIC_V1
 		serverCommandList["relikt_open"] = self.__ReliktOpen # MT2009_PLUS_RELIC_V1
 		# MT2009_PLUS_CHAMPION_V2: the Sung Ma map's requirements (uicharacter.py's Sung Ma page); "champion_info" of
@@ -4363,6 +4367,16 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_ADDEQ_V1: the second equipment page's state - unlocked, page (uiaddeq.py).
 	def __AddeqPage(self, *args):
 		__import__("uiaddeq").OnServerPage(*args)
+
+	# MT2009_PLUS_HORSE40_V1: the horse past level 21 - the Stajenny's window and its lines (uikonierozwoj.py,
+	# server-patches/konie: konie_rozwoj.cpp).
+	def __KonieRozwojInfo(self, *args):
+		import uikonierozwoj
+		uikonierozwoj.SetInterface(self.interface)
+		uikonierozwoj.OnInfo(*args)
+
+	def __KonieRozwojMsg(self, *args):
+		__import__("uikonierozwoj").OnMessage(*args)
 
 	# MT2009_PLUS_RELIC_V1: Bonus Reliktu - the relic pages' state, the window opened by a relic used (uirelikt.py).
 	def __ReliktState(self, *args):

@@ -33,6 +33,20 @@
 // An implementation fragment in the sense playerbot_types.h describes:
 // include it once, after playerbot_battle_horse.h and playerbot_gear.h, and
 // before playerbot_activities.h, which walks the bot to the stable with it.
+//
+// MT2009_PLUS_HORSE40_V1 (server-patches/konie): past 21 the horse follows the
+// pl-wiki and the Mount Upgrade package (konie_rozwoj.cpp) - no paid training
+// 21-28 and no Black Steed trial any more. A bot of 75+ gets the daily feed
+// quest's 22-27 Pasza dla Konia once in 24 h (Mt2009KonieBotDailyFeed), and at
+// the Stajenny feeds the bar and tries the level (50 feed, its share of the
+// wiki's Yang - PLAYERBOT_HORSE_TRAINING_YANG_PERCENT; a retry's Gaya when it
+// has it) up to 40, as a player does in the window.
+
+void Mt2009KonieBotDailyFeed(LPCHARACTER ch);
+int Mt2009KonieBotFeedWanted(LPCHARACTER ch);
+long long Mt2009KonieBotGold(LPCHARACTER ch, int yangPercent);
+bool Mt2009KonieBotCanTry(LPCHARACTER ch, int yangPercent, long long reserve);
+int Mt2009KonieBotTry(LPCHARACTER ch, int yangPercent);
 
 namespace
 {
@@ -111,7 +125,8 @@ namespace
 			out.yang = (2000000LL + (long long)(level - 11) * 1000000LL) * PLAYERBOT_HORSE_TRAINING_YANG_PERCENT / 100;
 			return true;
 		}
-		if (level >= 21 && level <= 28)
+		// MT2009_PLUS_HORSE40_V1: 21-28 is the feed and the try now (konie_rozwoj.cpp)
+		if (false && level >= 21 && level <= 28)
 		{
 			out.medals = 3;
 			out.feedVnum = PLAYERBOT_HORSE_FEED_GINSENG;
@@ -141,7 +156,9 @@ namespace
 
 	bool IsPlayerBotBlackSteedCandidate(LPCHARACTER ch)
 	{
-		return ch &&
+		// MT2009_PLUS_HORSE40_V1: no Black Steed trial any more - 29 -> 30 is a feed try like the rest
+		return false &&
+				ch &&
 				ch->GetLevel() >= PLAYERBOT_BLACK_STEED_MIN_LEVEL &&
 				ch->GetHorseLevel() == PLAYERBOT_BLACK_STEED_FROM_HORSE_LEVEL &&
 				ch->GetHorseHealth() > 0;
@@ -206,7 +223,9 @@ namespace
 		int want[3] = { 0, 0, 0 };
 		for (int i = 0; i < 3; ++i)
 		{
-			want[i] = level >= 21 ? PLAYERBOT_HORSE_BONUS[level - 21][i] : 0;
+			// MT2009_PLUS_HORSE40_V1: the flat horse bonus is gone (the owner, 30 October 2026) - what a bot
+			// was given is taken back here (once a core run, EnsurePlayerBotHorseBonus)
+			want[i] = 0 * (level >= 21 ? PLAYERBOT_HORSE_BONUS[level - 21][i] : 0);
 			const int given = ch->GetQuestFlag(PLAYERBOT_HORSE_BONUS_FLAGS[i]);
 			const int delta = want[i] - given;
 			if (delta == 0)
@@ -423,6 +442,13 @@ namespace
 	// other spender takes it (GetPlayerBotReservedGold, playerbot_battle_horse.h).
 	long long GetPlayerBotHorseSavingsGold(LPCHARACTER ch)
 	{
+		// MT2009_PLUS_HORSE40_V1: past 21 the next try's Yang, once its feed is in the bag
+		if (ch && ch->IsItemLoaded() && ch->GetHorseLevel() >= 21)
+		{
+			const int wanted = Mt2009KonieBotFeedWanted(ch);
+			return wanted > 0 && (int)ch->CountSpecifyItem(50048) >= wanted
+					? Mt2009KonieBotGold(ch, PLAYERBOT_HORSE_TRAINING_YANG_PERCENT) : 0;
+		}
 		TPlayerBotHorseTraining cost;
 		if (!ch || !ch->IsItemLoaded() || !GetPlayerBotNextHorseTraining(ch, cost) ||
 				!HasPlayerBotHorseTrainingGoods(ch, cost))
@@ -453,7 +479,9 @@ namespace
 		if (IsPlayerBotBattleHorseEarned(ch) && ch->GetGold() >= (int)PLAYERBOT_BATTLE_HORSE_FEE)
 			return true;
 		return IsPlayerBotMilitaryHorseEarned(ch) || IsPlayerBotBlackSteedEarned(ch) ||
-				CanPlayerBotPayHorseTraining(ch);
+				CanPlayerBotPayHorseTraining(ch) ||
+				Mt2009KonieBotCanTry(ch, PLAYERBOT_HORSE_TRAINING_YANG_PERCENT,
+						GetPlayerBotBaseReservedGold(ch)); // MT2009_PLUS_HORSE40_V1
 	}
 
 	// The Stajenny's side of "Szkolenie konia": the feed the bag lacks bought

@@ -289,7 +289,7 @@ ROWS = {
 	(364, 'Świadectwo Lwa'): MISS(NO_HANDLER + ' (52701)'),
 	(365, 'Świadectwo Wilka'): MISS(NO_HANDLER + ' (52704)'),
 	(366, 'Świadectwo Dzika'): MISS(NO_HANDLER + ' (52703)'),
-	(367, 'Zestaw Opieki nad Koniem'): MISS('Pakiet - brak.'),
+	(367, 'Zestaw Opieki nad Koniem'): HAVE(50901, note='MT2009_PLUS_HORSE40_V1: 83050 w sklepie w grze (Mounty, 399 SM = lista); obok Pasza dla Konia x50 249 SM (50902) i x250 1099 SM (50903).'),
 	# --- Wizerunki broni (the owner's rule: skins 299 SM / 30 days)
 	(368, 'Ostrze Wodnika+'): HAVE(30012, note='Nakładka: zasada 299 SM / 30 dni (lista: 5 dni 39 SM).'),
 	(369, 'Glewia Wodnika+'): HAVE(30015, note='Nakładka: zasada 299 SM / 30 dni (lista: 5 dni 39 SM).'),

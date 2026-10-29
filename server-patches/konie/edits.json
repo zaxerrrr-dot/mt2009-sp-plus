@@ -1,0 +1,116 @@
+[
+ {
+  "file": "horse_rider.h",
+  "marker": "MT2009_PLUS_HORSE40_V1 (max level)",
+  "old": "const int HORSE_MAX_LEVEL = 30;",
+  "new": "const int HORSE_MAX_LEVEL = 40; // MT2009_PLUS_HORSE40_V1 (max level): the wiki's 40 (server-patches/konie)"
+ },
+ {
+  "file": "horse_rider.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (stats)",
+  "old": "\t{ 50,\t20107,\t36,\t125,\t55,\t74,\t37,\t0,\t86,\t68,\t103,\t51 },\n\t{ 50,\t20107,\t37,\t130,\t57,\t76,\t38,\t0,\t88,\t70,\t105,\t52 },\n\t{ 50,\t20107,\t38,\t135,\t59,\t78,\t39,\t0,\t90,\t72,\t108,\t54 },\n\t{ 50,\t20107,\t40,\t140,\t60,\t80,\t40,\t0,\t91,\t72,\t109,\t54 },\n\t{ 50,\t20107,\t42,\t145,\t61,\t81,\t40,\t0,\t92,\t73,\t110,\t55 },\n\t{ 50,\t20107,\t44,\t150,\t62,\t83,\t42,\t0,\t94,\t75,\t112,\t56 },\n\t{ 50,\t20107,\t46,\t160,\t63,\t84,\t42,\t0,\t95,\t76,\t114,\t57 },\n\t{ 50,\t20107,\t48,\t170,\t65,\t87,\t43,\t0,\t97,\t77,\t116,\t58 },\n\t{ 50,\t20107,\t50,\t200,\t67,\t89,\t45,\t0,\t99,\t79,\t118,\t59 }\n};\n",
+  "new": "\t{ 50,\t20107,\t36,\t125,\t55,\t74,\t37,\t18,\t86,\t68,\t103,\t51 },\n\t{ 50,\t20107,\t37,\t130,\t57,\t76,\t38,\t19,\t88,\t70,\t105,\t52 },\n\t{ 50,\t20107,\t38,\t135,\t60,\t78,\t39,\t20,\t90,\t72,\t108,\t54 },\n\t{ 50,\t20107,\t40,\t140,\t61,\t80,\t40,\t20,\t91,\t72,\t109,\t54 },\n\t{ 50,\t20107,\t42,\t145,\t61,\t81,\t40,\t20,\t92,\t73,\t110,\t55 },\n\t{ 50,\t20107,\t44,\t150,\t62,\t83,\t42,\t21,\t94,\t75,\t112,\t56 },\n\t{ 50,\t20107,\t46,\t160,\t63,\t84,\t42,\t21,\t95,\t76,\t114,\t57 },\n\t{ 50,\t20107,\t48,\t170,\t65,\t87,\t43,\t22,\t97,\t77,\t116,\t58 },\n\t{ 50,\t20107,\t50,\t200,\t67,\t90,\t63,\t61,\t99,\t79,\t118,\t59 }, // 22-30: MT2009_PLUS_HORSE40_V1 (stats) - the pl-wiki's table\n\t{ 50,\t20107,\t52,\t210,\t68,\t90,\t63,\t61,\t100,\t80,\t120,\t60 },\n\t{ 50,\t20107,\t54,\t220,\t69,\t92,\t63,\t61,\t101,\t81,\t121,\t61 },\n\t{ 50,\t20107,\t56,\t230,\t70,\t94,\t63,\t61,\t102,\t82,\t122,\t62 },\n\t{ 50,\t20107,\t58,\t240,\t71,\t96,\t63,\t61,\t103,\t83,\t123,\t63 },\n\t{ 50,\t20107,\t60,\t250,\t72,\t98,\t63,\t61,\t104,\t84,\t124,\t64 },\n\t{ 50,\t20107,\t62,\t260,\t73,\t100,\t63,\t61,\t105,\t85,\t125,\t65 },\n\t{ 50,\t20107,\t64,\t270,\t74,\t102,\t63,\t61,\t106,\t86,\t126,\t66 },\n\t{ 50,\t20107,\t66,\t280,\t75,\t104,\t63,\t61,\t107,\t87,\t127,\t67 },\n\t{ 50,\t20107,\t68,\t290,\t76,\t106,\t63,\t61,\t108,\t88,\t128,\t68 },\n\t{ 50,\t20107,\t70,\t300,\t77,\t108,\t63,\t61,\t109,\t89,\t129,\t69 } // 31-40\n};\n"
+ },
+ {
+  "file": "horse_rider.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (stats 1-21)",
+  "old": "\t{ 25,\t20101,\t3,\t4,\t\t26,\t35,\t18,\t0,\t54,\t43,\t64,\t32 }, // 1\n\t{ 25,\t20101,\t4,\t4,\t\t27,\t36,\t18,\t0,\t55,\t44,\t66,\t33 },\n\t{ 25,\t20101,\t5,\t5,\t\t28,\t38,\t19,\t0,\t56,\t44,\t67,\t33 },\n\t{ 25,\t20101,\t7,\t5,\t\t29,\t39,\t19,\t0,\t57,\t45,\t68,\t34 },\n\t{ 25,\t20101,\t8,\t6,\t\t30,\t40,\t20,\t0,\t58,\t46,\t69,\t34 },\n\t{ 25,\t20101,\t9,\t6,\t\t31,\t41,\t21,\t0,\t59,\t47,\t70,\t35 },\n\t{ 25,\t20101,\t11,\t7,\t\t32,\t42,\t21,\t0,\t60,\t48,\t72,\t36 },\n\t{ 25,\t20101,\t12,\t7,\t\t33,\t44,\t22,\t0,\t61,\t48,\t73,\t36 },\n\t{ 25,\t20101,\t13,\t8,\t\t34,\t45,\t22,\t0,\t62,\t49,\t74,\t37 },\n\t{ 25,\t20101,\t15,\t10,\t\t35,\t46,\t23,\t0,\t63,\t50,\t75,\t37 },\n\t{ 35,\t20104,\t18,\t30,\t\t40,\t53,\t27,\t0,\t69,\t55,\t82,\t41 }, // 11\n\t{ 35,\t20104,\t19,\t35,\t\t41,\t54,\t27,\t0,\t70,\t56,\t84,\t42 },\n\t{ 35,\t20104,\t21,\t40,\t\t42,\t56,\t28,\t0,\t71,\t56,\t85,\t42 },\n\t{ 35,\t20104,\t22,\t50,\t\t43,\t57,\t28,\t0,\t72,\t57,\t86,\t43 },\n\t{ 35,\t20104,\t24,\t55,\t\t44,\t58,\t29,\t0,\t73,\t58,\t87,\t43 },\n\t{ 35,\t20104,\t25,\t60,\t\t44,\t59,\t30,\t0,\t74,\t59,\t88,\t44 },\n\t{ 35,\t20104,\t27,\t65,\t\t45,\t60,\t30,\t0,\t75,\t60,\t90,\t45 },\n\t{ 35,\t20104,\t28,\t70,\t\t46,\t62,\t31,\t0,\t76,\t60,\t91,\t45 },\n\t{ 35,\t20104,\t30,\t80,\t\t47,\t63,\t31,\t0,\t77,\t61,\t92,\t46 },\n\t{ 35,\t20104,\t32,\t100,\t48,\t64,\t32,\t0,\t78,\t62,\t93,\t46 },\n\t{ 50,\t20107,\t35,\t120,\t53,\t71,\t36,\t0,\t84,\t67,\t100,\t50 }, // 21\n",
+  "new": "\t{ 25,\t20101,\t3,\t4,\t\t26,\t35,\t18,\t9,\t54,\t43,\t64,\t32 }, // 1 - MT2009_PLUS_HORSE40_V1 (stats 1-21): the pl-wiki's INT\n\t{ 25,\t20101,\t4,\t4,\t\t27,\t36,\t18,\t9,\t55,\t44,\t66,\t33 },\n\t{ 25,\t20101,\t5,\t5,\t\t28,\t38,\t19,\t9,\t56,\t44,\t67,\t33 },\n\t{ 25,\t20101,\t7,\t5,\t\t29,\t39,\t19,\t10,\t57,\t45,\t68,\t34 },\n\t{ 25,\t20101,\t8,\t6,\t\t30,\t40,\t20,\t10,\t58,\t46,\t69,\t34 },\n\t{ 25,\t20101,\t9,\t6,\t\t31,\t41,\t21,\t10,\t59,\t47,\t70,\t35 },\n\t{ 25,\t20101,\t11,\t7,\t\t32,\t42,\t21,\t11,\t60,\t48,\t72,\t36 },\n\t{ 25,\t20101,\t12,\t7,\t\t33,\t44,\t22,\t11,\t61,\t48,\t73,\t36 },\n\t{ 25,\t20101,\t13,\t8,\t\t34,\t45,\t22,\t11,\t62,\t49,\t74,\t37 },\n\t{ 25,\t20101,\t15,\t10,\t\t35,\t46,\t23,\t12,\t63,\t50,\t75,\t37 },\n\t{ 35,\t20104,\t18,\t30,\t\t40,\t53,\t27,\t13,\t69,\t55,\t82,\t41 }, // 11\n\t{ 35,\t20104,\t19,\t35,\t\t41,\t54,\t27,\t14,\t70,\t56,\t84,\t42 },\n\t{ 35,\t20104,\t21,\t40,\t\t42,\t56,\t28,\t14,\t71,\t56,\t85,\t42 },\n\t{ 35,\t20104,\t22,\t50,\t\t43,\t57,\t28,\t14,\t72,\t57,\t86,\t43 },\n\t{ 35,\t20104,\t24,\t55,\t\t44,\t58,\t29,\t15,\t73,\t58,\t87,\t43 },\n\t{ 35,\t20104,\t25,\t60,\t\t44,\t59,\t30,\t15,\t74,\t59,\t88,\t44 },\n\t{ 35,\t20104,\t27,\t65,\t\t45,\t60,\t30,\t15,\t75,\t60,\t90,\t45 },\n\t{ 35,\t20104,\t28,\t70,\t\t46,\t62,\t31,\t15,\t76,\t60,\t91,\t45 },\n\t{ 35,\t20104,\t30,\t80,\t\t47,\t63,\t31,\t16,\t77,\t61,\t92,\t46 },\n\t{ 35,\t20104,\t32,\t100,\t48,\t64,\t32,\t16,\t78,\t62,\t93,\t46 },\n\t{ 50,\t20107,\t35,\t120,\t53,\t71,\t36,\t18,\t84,\t67,\t100,\t50 }, // 21\n"
+ },
+ {
+  "file": "horse_rider.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (grade)",
+  "old": "\tif (GetHorseLevel())\n\t\tgrade = (GetHorseLevel() - 1) / 10 + 1;\n",
+  "new": "\tif (GetHorseLevel())\n\t\tgrade = (GetHorseLevel() - 1) / 10 + 1;\n\t// MT2009_PLUS_HORSE40_V1 (grade): 31-40 stay the military horse's grade (its book 50053, its feed and herb,\n\t// its skills) - Potezny Kon Wojskowy is a look (konie_rozwoj.cpp Mt2009KonieHorseVnum), not a fourth grade\n\tif (grade > 3)\n\t\tgrade = 3;\n"
+ },
+ {
+  "file": "char_horse.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (horse vnum)",
+  "old": "\tif (GetHorseLevel() >= 30)\n\t\treturn 20119;\n",
+  "new": "\t// MT2009_PLUS_HORSE40_V1 (horse vnum): Potezny Kon Wojskowy (20149-20151) for a horse of 31+ whose rider has\n\t// the Zlota Ksiega Konia (konie_rozwoj.cpp)\n\t{\n\t\tDWORD Mt2009KonieHorseVnum(const CHARACTER* ch, int delta);\n\t\tconst DWORD dwKonie = Mt2009KonieHorseVnum(this, delta);\n\t\tif (dwKonie)\n\t\t\treturn dwKonie;\n\t}\n\tif (GetHorseLevel() >= 30)\n\t\treturn 20119;\n"
+ },
+ {
+  "file": "char_horse.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (stop riding)",
+  "old": "void CHARACTER::OnStopRiding()\n{\n",
+  "new": "void CHARACTER::OnStopRiding()\n{\n\t{ // MT2009_PLUS_HORSE40_V1 (stop riding): the riding horse skills' timed effects end (konie_rozwoj.cpp)\n\t\tvoid Mt2009KonieStopRiding(LPCHARACTER ch);\n\t\tMt2009KonieStopRiding(this);\n\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (floors)",
+  "old": "\t\t{\n\t\t\tif (GetHorseST() > GetPoint(POINT_ST))\n\t\t\t\tPointChange(POINT_ST, GetHorseST() - GetPoint(POINT_ST));\n\n\t\t\tif (GetHorseDX() > GetPoint(POINT_DX))\n\t\t\t\tPointChange(POINT_DX, GetHorseDX() - GetPoint(POINT_DX));\n\n\t\t\tif (GetHorseHT() > GetPoint(POINT_HT))\n\t\t\t\tPointChange(POINT_HT, GetHorseHT() - GetPoint(POINT_HT));\n\n\t\t\tif (GetHorseIQ() > GetPoint(POINT_IQ))\n\t\t\t\tPointChange(POINT_IQ, GetHorseIQ() - GetPoint(POINT_IQ));\n\t\t}\n",
+  "new": "\t\t{\n\t\t\t// MT2009_PLUS_HORSE40_V1 (floors): the wiki's table is the LEAST a rider has of each stat - max(own, table),\n\t\t\t// never on top. It is taken after the equipment (Mt2009KonieComputePoints below, konie_rozwoj.cpp), so the\n\t\t\t// worn items count as the rider's own; here nothing any more.\n\t\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (compute)",
+  "old": "\t\tMt2009YSetsRefresh(this);\n\t}\n\n\tComputeBattlePoints();\n",
+  "new": "\t\tMt2009YSetsRefresh(this);\n\t}\n\n\t// MT2009_PLUS_HORSE40_V1 (compute): the Sung Ma minima of a horse of 31+ and the constant horse skills while\n\t// riding (konie_rozwoj.cpp)\n\t{ void Mt2009KonieComputePoints(LPCHARACTER ch); Mt2009KonieComputePoints(this); }\n\n\tComputeBattlePoints();\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (damage)",
+  "old": "\t// MT2009_PLUS_SUNGMA_V1 (damage): a person's blow at a monster of a Sung Ma map",
+  "new": "\t// MT2009_PLUS_HORSE40_V1 (damage): the horse skills - Niesmiertelnosc blocks, Jazda (umiej. konne) adds to a\n\t// horse skill's blow, a blow starts the timed ones (konie_rozwoj.cpp)\n\t{\n\t\tint Mt2009KonieDamage(LPCHARACTER, LPCHARACTER, int, DWORD);\n\t\tdam = Mt2009KonieDamage(this, pAttacker, dam, dwUsedSkill);\n\t\tif (dam < 0)\n\t\t{\n\t\t\tif (pAttacker)\n\t\t\t\tSendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);\n\t\t\treturn false;\n\t\t}\n\t}\n\n\t// MT2009_PLUS_SUNGMA_V1 (damage): a person's blow at a monster of a Sung Ma map"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (push)",
+  "old": "\tif (IsAffectFlag(AFF_SKILL_STRONG_BODY))\n\t\treturn true;\n",
+  "new": "\tif (IsAffectFlag(AFF_SKILL_STRONG_BODY))\n\t\treturn true;\n\t{ // MT2009_PLUS_HORSE40_V1 (push): Jazda (Brak Odrzutu) while it lasts (konie_rozwoj.cpp)\n\t\tbool Mt2009KonieResistPush(LPCHARACTER ch);\n\t\tif (Mt2009KonieResistPush(this))\n\t\t\treturn true;\n\t}\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (mount type)",
+  "old": "\t\tcase 20107: // normal military horse (no guild)\n",
+  "new": "\t\tcase 20149: // MT2009_PLUS_HORSE40_V1 (mount type): Potezny Kon Wojskowy (no guild) - the military horse's\n\t\tcase 20150: // (guild member)\n\t\tcase 20151: // (guild master)\n\t\tcase 20107: // normal military horse (no guild)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (can feed)",
+  "old": "\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_3)\n",
+  "new": "\t\t// MT2009_PLUS_HORSE40_V1 (can feed): the Black Steed (30) eats Czerwony Zen-szen; Potezny Kon Wojskowy - a horse\n\t\t// of 31+, whatever its look - only Czer. Zen-szen (premium) 50047 (the wiki; the owner, 30 October 2026)\n\t\tcase 20119:\n\t\tcase 20149:\n\t\tcase 20150:\n\t\tcase 20151:\n\t\t\t{\n\t\t\t\tconst DWORD dwKonieFood = from->GetHorseLevel() >= 31 ? 50047 : ITEM_HORSE_FOOD_3;\n\t\t\t\tif (item->GetVnum() == dwKonieFood)\n\t\t\t\t{\n\t\t\t\t\tif (IsDead())\n\t\t\t\t\t{\n\t\t\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot feed a dead Horse.\"));\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_1 || item->GetVnum() == ITEM_HORSE_FOOD_2 ||\n\t\t\t\t\t\titem->GetVnum() == ITEM_HORSE_FOOD_3 || item->GetVnum() == 50047)\n\t\t\t\t{\n\t\t\t\t\tif (dwKonieFood == 50047)\n\t\t\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, \"Pot\\352\\277ny Ko\\361 Wojskowy je tylko Czer. \\257e\\361-sze\\361 (premium).\");\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t}\n\t\t\tbreak;\n\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_3)\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (feed)",
+  "old": "\t\tcase 20101:\n\t\tcase 20102:\n\t\tcase 20103:\n\t\tcase 20104:\n\t\tcase 20105:\n\t\tcase 20106:\n\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_1 ||\n",
+  "new": "\t\t// MT2009_PLUS_HORSE40_V1 (feed): the Black Steed and Potezny Kon Wojskowy (CanReceiveItem above)\n\t\tcase 20119:\n\t\tcase 20149:\n\t\tcase 20150:\n\t\tcase 20151:\n\t\t\tif (item->GetVnum() == (from->GetHorseLevel() >= 31 ? 50047 : ITEM_HORSE_FOOD_3))\n\t\t\t{\n\t\t\t\tfrom->FeedHorse();\n\t\t\t\tfrom->ChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You have fed the Horse.\"));\n\t\t\t\titem->SetCount(item->GetCount()-1);\n\t\t\t\tEffectPacket(SE_HPUP_RED);\n\t\t\t}\n\t\t\tbreak;\n\n\t\tcase 20101:\n\t\tcase 20102:\n\t\tcase 20103:\n\t\tcase 20104:\n\t\tcase 20105:\n\t\tcase 20106:\n\t\tcase 20107:\n\t\tcase 20108:\n\t\tcase 20109:\n\t\t\tif (item->GetVnum() == ITEM_HORSE_FOOD_1 ||\n"
+ },
+ {
+  "file": "questlua_horse.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (feed)",
+  "old": "\t\tif (ch->GetHorseLevel() > 0 && ch->GetHorseHealth() > 0)\n\t\t{\n\t\t\tch->FeedHorse();\n\t\t}\n",
+  "new": "\t\t// MT2009_PLUS_HORSE40_V1 (feed): a horse of 31+ eats only Czer. Zen-szen (premium) - horse.konie_karm (quest\n\t\t// konie_rozwoj). The stock horse_menu took its Czerwony Zen-szen (the grade's feed) before this: given back.\n\t\tif (ch->GetHorseLevel() >= 31)\n\t\t{\n\t\t\tch->ChatPacket(CHAT_TYPE_INFO, \"Pot\\352\\277ny Ko\\361 Wojskowy je tylko Czer. \\257e\\361-sze\\361 (premium).\");\n\t\t\tch->AutoGiveItem(50056, 1); // Czerwony Zen-szen (ITEM_HORSE_FOOD_3)\n\t\t\treturn 0;\n\t\t}\n\t\tif (ch->GetHorseLevel() > 0 && ch->GetHorseHealth() > 0)\n\t\t{\n\t\t\tch->FeedHorse();\n\t\t}\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (drop)",
+  "old": "\tint iAddRarePct = pkKiller->GetPoint(POINT_DROP_RARE);\n",
+  "new": "\t// MT2009_PLUS_HORSE40_V1 (drop): Czer. Zen-szen (premium) on the Sung Ma maps, Szlachetna Trawa from Ahtrin\n\t// Wielki Mistrz (konie_rozwoj.cpp)\n\t{ void Mt2009KonieDrop(LPCHARACTER, LPCHARACTER, std::vector<LPITEM>&); Mt2009KonieDrop(pkChr, pkKiller, vec_item); }\n\n\tint iAddRarePct = pkKiller->GetPoint(POINT_DROP_RARE);\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (command declare)",
+  "old": "struct command_info cmd_info[] =\n",
+  "new": "// MT2009_PLUS_HORSE40_V1 (command declare): \"/konie_rozwoj\" - the Stajenny's horse window (konie_rozwoj.cpp)\nACMD(do_konie_rozwoj);\nstruct command_info cmd_info[] =\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (command table)",
+  "old": "\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};\n",
+  "new": "\t{ \"konie_rozwoj\",\tdo_konie_rozwoj,\t0,\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_HORSE40_V1 (command table)\n\t{ \"\\n\",\t\tNULL,\t\t\t0,\t\t\tPOS_DEAD,\tGM_IMPLEMENTOR\t}\n};\n"
+ },
+ {
+  "file": "questlua_horse.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (quest functions)",
+  "old": "\t\tCQuestManager::instance().AddLuaFunctionTable(\"horse\", horse_functions);\n",
+  "new": "\t\tCQuestManager::instance().AddLuaFunctionTable(\"horse\", horse_functions);\n\t\t// MT2009_PLUS_HORSE40_V1 (quest functions): horse.konie_otworz / konie_naucz / konie_zapomnij / konie_slot /\n\t\t// konie_odswiez (konie_rozwoj.cpp; quest konie_rozwoj)\n\t\tvoid Mt2009KonieRegisterLua();\n\t\tMt2009KonieRegisterLua();\n"
+ },
+ {
+  "file": "cmd_gm.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (gm panel)",
+  "old": "value = MINMAX(0, value, 30); // HORSE_MAX_LEVEL, horse_rider.h",
+  "new": "value = MINMAX(0, value, HORSE_MAX_LEVEL); // MT2009_PLUS_HORSE40_V1 (gm panel): horse_rider.h"
+ }
+]

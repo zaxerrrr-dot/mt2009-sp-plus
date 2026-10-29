@@ -261,6 +261,7 @@ namespace
 	{
 		return item && item->GetProto() && !item->IsEquipped() && !item->IsExchanging() && !item->isLocked() &&
 				!IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE) && !IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_MYSHOP)
+				&& !::Mt2009KonieIsKeptVnum(item->GetVnum())	// MT2009_PLUS_HORSE40_V1
 #ifdef MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 				&& !IsPlayerBotSecondSetStored(item->GetOwner(), item)	// MT2009_PLUS_BOT_ELEMENT_SECOND_SET_V1
 #endif

@@ -29,10 +29,12 @@ namespace
 	// Black Steed trial's at twenty-nine.
 	BYTE GetPlayerBotNextHorseRequiredLevel(BYTE horseLevel)
 	{
-		if (horseLevel >= PLAYERBOT_BLACK_STEED_LEVEL)
+		// MT2009_PLUS_HORSE40_V1: past 21 the feed tries to 40 from character level 75 (konie_rozwoj.cpp; from
+		// horse level 30 Poziom Czempiona 1 too - the core asks that itself)
+		if (horseLevel >= HORSE_MAX_LEVEL)
 			return 255;
-		if (horseLevel >= PLAYERBOT_BLACK_STEED_FROM_HORSE_LEVEL)
-			return PLAYERBOT_BLACK_STEED_MIN_LEVEL;
+		if (horseLevel >= 21)
+			return 75;
 		if (horseLevel >= 20)
 			return 50; // military horse milestone, and the training 21-28
 		if (horseLevel >= 10)
@@ -51,7 +53,7 @@ namespace
 	// dropper still takes no trial (IsPlayerBotTrialExempt).
 	bool CanPlayerBotAdvanceHorse(LPCHARACTER ch)
 	{
-		if (!ch || ch->GetHorseLevel() >= PLAYERBOT_BLACK_STEED_LEVEL)
+		if (!ch || ch->GetHorseLevel() >= HORSE_MAX_LEVEL) // MT2009_PLUS_HORSE40_V1: to 40
 			return false;
 		// A horse at exactly ten is what the battle horse trial asks for, and
 		// training it would make it eleven - after which no NPC in this world
@@ -103,6 +105,8 @@ namespace
 		// MT2009_PLUS_HORSE30_V1: the horse bonus of a horse past twenty, once
 		// a core run (playerbot_horse30.h); after that on every level.
 		EnsurePlayerBotHorseBonus(ch);
+		// MT2009_PLUS_HORSE40_V1: the daily feed quest's Pasza dla Konia (konie_rozwoj.cpp)
+		Mt2009KonieBotDailyFeed(ch);
 		// The stable keeper stands in all six villages, so the horse errand is a
 		// local one wherever the bot lives.
 		playerbot_empire_rules::TTownServices svc;
@@ -123,7 +127,10 @@ namespace
 		// reserve; the feed is bought at the stable). The old errand - one
 		// medal handed in, one level up, up to twenty - is gone.
 		const bool bTrialWaiting = IsPlayerBotMilitaryHorseEarned(ch) || IsPlayerBotBlackSteedEarned(ch);
-		if (!bBattleHorseWaiting && !bTrialWaiting && !CanPlayerBotPayHorseTraining(ch))
+		// MT2009_PLUS_HORSE40_V1: past 21 a feed try the bag and the purse pay for
+		const bool bKonieWaiting = Mt2009KonieBotCanTry(ch, PLAYERBOT_HORSE_TRAINING_YANG_PERCENT,
+				GetPlayerBotBaseReservedGold(ch));
+		if (!bBattleHorseWaiting && !bTrialWaiting && !bKonieWaiting && !CanPlayerBotPayHorseTraining(ch))
 		{
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;
@@ -245,6 +252,27 @@ namespace
 			sys_log(0, "PLAYERBOT_HORSE: black steed granted pid=%u name=%s horse_level=%u kills=%d",
 					ch->GetPlayerID(), ch->GetName(), ch->GetHorseLevel(),
 					GetPlayerBotBlackSteedKills(ch));
+			state.bVisitingStable = false;
+			state.dwNextHorseActionTime = 0;
+			state.dwNextHorseCheckTime = dwNow + number(30000, 60000);
+			ClearPlayerBotRoute(state, true);
+			return false;
+		}
+
+		// MT2009_PLUS_HORSE40_V1: past 21 the feed and one try at the Stajenny
+		// (konie_rozwoj.cpp - the player's window does the same); the horse is
+		// taken down and back by the core when the bot sits on it.
+		if (ch->GetHorseLevel() >= 21)
+		{
+			const int before = ch->GetHorseLevel();
+			const int r = Mt2009KonieBotTry(ch, PLAYERBOT_HORSE_TRAINING_YANG_PERCENT);
+			if (r > 0)
+			{
+				ch->SetQuestFlag(PLAYERBOT_HORSE_MEDALS_FLAG, r);
+				SyncPlayerBotHorseBonus(ch);
+			}
+			sys_log(0, "PLAYERBOT_HORSE: feed try pid=%u name=%s horse=%d result=%d gold_left=%lld",
+					ch->GetPlayerID(), ch->GetName(), before, r, (long long)ch->GetGold());
 			state.bVisitingStable = false;
 			state.dwNextHorseActionTime = 0;
 			state.dwNextHorseCheckTime = dwNow + number(30000, 60000);
