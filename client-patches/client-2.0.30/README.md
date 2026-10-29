@@ -1087,6 +1087,11 @@ Paczka „Official Additional Equipment Page” (prośba właściciela z 28.10.2
   (`tools/addeq/addeq.json`) i wiersze umiejętności 200 w `skilldesc.txt` / `skilltable.txt`. W `clientY.sh` po kroku
   `kamienie` (+ `addeq/verify_addeq.py` w pętli weryfikacji). Zmienia dane przedmiotów (dbdata): w wydaniu ostrzeżenie
   o nieaktualnych plikach i nowa baza panelu.
+- `MT2009_PLUS_ADDEQ_V2` (cztery strony, 29.10.2026): `addeq_page <odblokowane 0..3> <strona 0..3>`; `uiaddeq.py` wiąże
+  w oknie ekwipunku v2 zakładki `Equipment_Tab_01..04` (`/addeq 0..3`), `inventoryv2.RefreshPageTabs` pokazuje zakładkę
+  na każdą odblokowaną stronę (I zawsze). Stare okno – dalej I / II. Opis przedmiotów i umiejętności 200
+  (`tools/addeq/addeq.json`, `itemdesc` / `skilldesc`) mówi o kolejnych stronach – wejdzie przy następnym budowaniu
+  klienta (nazwy i rekordy `item_proto` bez zmian).
 
 ## Poprawki 3.0.8: napis Regeneracji PŻ/PE i „Antymagia” w oknie bonusów
 

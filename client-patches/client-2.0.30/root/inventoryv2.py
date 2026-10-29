@@ -8,6 +8,7 @@
 # feature our Druga strona ekwipunku already is (server-patches/addeq, MT2009_PLUS_ADDEQ_V1: two pages, the inactive
 # one in a hidden store, item 38306 / 76055, skill 200) - so only the windows come over; the page tabs I / II are
 # addeq's (uiaddeq.py), III / IV stay hidden. No server, exe, packet or database change.
+# MT2009_PLUS_ADDEQ_V2: addeq has four pages now - tabs II-IV show as each page is unlocked (RefreshPageTabs).
 #
 # Here: the equipment window (EquipWindow, uiscript/inventoryequipwindow.py) and the glue for uiinventory.py's
 # InventoryWindow (which loads uiscript/inventorywindowv2.py as the bag; every hook there is marked
@@ -40,7 +41,6 @@ DOCK_SNAP = 12
 DOCK_KEY = "ekwipunek_v2_dok"
 POS_KEY = "ekwipunek_v2"
 PAGE_TABS = 4			# Equipment_PageBg_0..3 / Equipment_Tab_01..04 of the script
-SERVER_PAGES = 2		# Druga strona ekwipunku: I / II
 BELT_Y = 134			# the belt window's top under the window's top: its open button by the belt slot
 
 _state = {'failed': False}
@@ -210,12 +210,12 @@ def Bind(inventory):
 
 
 def RefreshPageTabs(inventory, unlocked, page):
-	"""uiaddeq.py Refresh: tab I always (as the package shows one page), II once the second page is unlocked, the
-	server's page pressed."""
+	"""uiaddeq.py Refresh: tab I always (as the package shows one page), one more per unlocked page
+	(MT2009_PLUS_ADDEQ_V2: unlocked = their number, 0..3), the server's page pressed."""
 	wnd = getattr(inventory, "wndEquipWindow", None)
 	if not wnd:
 		return
-	count = SERVER_PAGES if unlocked else 1
+	count = 1 + max(0, min(PAGE_TABS - 1, int(unlocked)))
 	for i in xrange(PAGE_TABS):
 		bg = wnd.GetChild2("Equipment_PageBg_%d" % i)
 		tab = wnd.GetChild2("Equipment_Tab_%02d" % (i + 1))

@@ -4,8 +4,8 @@
   "76055": "76055\tETC\ticon/item/38306.tga"
  },
  "itemdesc": {
-  "38306": "38306\tStrona ekwipunku II\tOdblokowuje drugą stronę ekwipunku: dwa zestawy przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmieniane jednym kliknięciem - zakładki I / II w oknie ekwipunku albo umiejętność „Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona strona; pierścienie, kostiumy i pas są wspólne. Raz na postać. Nie można nim handlować.",
-  "76055": "76055\tStrona ekwipunku II (wymienna)\tOdblokowuje drugą stronę ekwipunku: dwa zestawy przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmieniane jednym kliknięciem - zakładki I / II w oknie ekwipunku albo umiejętność „Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona strona; pierścienie, kostiumy i pas są wspólne. Raz na postać. Można nim handlować."
+  "38306": "38306\tStrona ekwipunku II\tOdblokowuje kolejną stronę ekwipunku (II, potem III i IV): do czterech zestawów przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmienianych jednym kliknięciem - zakładki I-IV w oknie ekwipunku albo umiejętność „Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona strona; pierścienie, kostiumy i pas są wspólne. Jedno użycie - jedna strona, najwyżej trzy na postać. Nie można nim handlować.",
+  "76055": "76055\tStrona ekwipunku II (wymienna)\tOdblokowuje kolejną stronę ekwipunku (II, potem III i IV): do czterech zestawów przedmiotów (zbroja, hełm, buty, bransoleta, broń, naszyjnik, kolczyki, strzały, tarcza, talizman, rękawice) zmienianych jednym kliknięciem - zakładki I-IV w oknie ekwipunku albo umiejętność „Zmiana strony ekwipunku” (umiejętności pomocnicze). Bonusy daje tylko założona strona; pierścienie, kostiumy i pas są wspólne. Jedno użycie - jedna strona, najwyżej trzy na postać. Można nim handlować."
  },
  "items": [
   {
@@ -83,6 +83,6 @@
    "weight": 0
   }
  ],
- "skilldesc": "200\tSUPPORT\tZmiana strony ekwipunku\t\t\tPrzełącza między pierwszą i drugą stroną ekwipunku. Bonusy daje tylko założona strona. Odblokowuje ją przedmiot Strona ekwipunku II.\t\t\t\t\tCANNOT_LEVEL_UP\t\tchange_equipment\t \t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+ "skilldesc": "200\tSUPPORT\tZmiana strony ekwipunku\t\t\tPrzełącza na kolejną odblokowaną stronę ekwipunku (I-IV). Bonusy daje tylko założona strona. Każdą kolejną stronę odblokowuje przedmiot Strona ekwipunku II.\t\t\t\t\tCANNOT_LEVEL_UP\t\tchange_equipment\t \t\t\t\t\t\t\t\t\t\t\t\t\t\t",
  "skilltable": "200\tADDITIONAL_PAGE\t0\t1\t1\t0\tNONE\t\t\t\t\t\t\t\tDISABLE_BY_POINT_UP\tNONE\tNONE\t\t\tNONE\t0\t0\tNORMAL\t0\t1\t0\t0"
 }

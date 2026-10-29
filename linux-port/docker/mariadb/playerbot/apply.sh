@@ -4861,6 +4861,31 @@ if [ -s /opt/playerbot/addeq.sql ]; then
         fail_step "addeq: addeq.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_ADDEQ_V2: four equipment pages (the owner, 29 October 2026: "Yes, add them; each next page is unlocked
+# with the same scroll from the ItemShop."). Each use of 38306 / 76055 unlocks the next page (II, III, IV): the quest
+# flag addeq.unlocked is now their number, 0..3 - V1's 1 (page II) means the same, nothing to convert; a value out of
+# 0..3 is clamped. The store is a home block per page (playerbot_addeq.cpp: II 308-339, III 340-371, IV 372-403,
+# I 404-435): a V1 character worn on page II (addeq.page = 1) keeps its page I in 308-339, page II's block now - those
+# rows move to page I's block (+96). Once (player.playerbot_migrations 'addeq_four_pages_v2'), in one transaction,
+# before the cores start (the core repairs the same case at the hello - the fallback).
+addeq2_done=$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'addeq_four_pages_v2';" 2>/dev/null || echo x)
+if [ "$addeq2_done" = "0" ]; then
+    if addeq2_out=$(db -e "
+        START TRANSACTION;
+        UPDATE player.item i JOIN player.quest q ON q.dwPID = i.owner_id AND q.szName = 'addeq' AND q.szState = 'page' AND q.lValue = 1
+            SET i.pos = i.pos + 96
+            WHERE i.window = 'INVENTORY' AND i.pos BETWEEN 308 AND 339;
+        SELECT ROW_COUNT();
+        UPDATE player.quest SET lValue = LEAST(GREATEST(lValue, 0), 3)
+            WHERE szName = 'addeq' AND szState = 'unlocked' AND (lValue < 0 OR lValue > 3);
+        INSERT IGNORE INTO player.playerbot_migrations (name, done_at) VALUES ('addeq_four_pages_v2', NOW());
+        COMMIT;
+    "); then
+        echo "[playerbot-migrate] addeq: four equipment pages - $(printf '%s\n' "$addeq2_out" | awk 'NR == 1') page I item(s) of V1 characters on page II moved to 404-435 (MT2009_PLUS_ADDEQ_V2)"
+    else
+        fail_step "addeq: the four-pages migration failed (MT2009_PLUS_ADDEQ_V2)" >&2
+    fi
+fi
 # The tradeable unlock 76055 in the ItemShop (the owner, 29 October 2026: "76055 w V3") - tab "Wyposazenie", index 19,
 # 199 Smoczych Monet. Once per install (ishop_once); only with the item in item_proto (addeq.sql above).
 if [ "$(db -e "SELECT COUNT(*) FROM world.item_proto WHERE vnum = 76055;" 2>/dev/null || echo x)" = "1" ]; then
