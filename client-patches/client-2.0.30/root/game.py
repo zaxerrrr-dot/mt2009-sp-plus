@@ -3563,7 +3563,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["MiniGameRumiOpen"] = self.__MiniGameRumiOpen
 		serverCommandList["YutnoriOpen"] = self.__YutnoriOpen # MT2009_PLUS_YUTNORI_V1 (the table NPC)
 		# MT2009_PLUS_AUTOHUNT_TEST_V1: "AutoHuntTest on|off [reason]", the answer to /autohunt_test (uiautohunt_test.py).
-		serverCommandList["AutoHuntTest"] = __import__("uiautohunt_test").OnServerCommand
+		serverCommandList["AutoHuntTest"] = self.__AutoHuntTestCommand # stringCommander needs a bound method
 
 		# MT2009_PLUS_ZODIAC_V1 (Autor: Digi Rasta, nowy-system 0.35.0): polecenia serwera
 		if getattr(app, "ENABLE_12ZI", 0):
@@ -3592,6 +3592,9 @@ class GameWindow(ui.ScriptWindow):
 		__import__("digiserverqol").Register(self)
 		# MT2009_PLUS_SMH_TOWER_V3: Wieza Sung Mahi's "WSM" lines (uiwiezasm.py).
 		__import__("uiwiezasm").Register(self)
+
+	def __AutoHuntTestCommand(self, *args):
+		__import__("uiautohunt_test").OnServerCommand(*args)
 
 	def BINARY_ServerCommand_Run(self, line):
 		try:
