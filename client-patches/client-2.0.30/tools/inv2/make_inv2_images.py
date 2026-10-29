@@ -3,9 +3,14 @@
 # Autor: dracaryS) for the pack "inv2_ui" (build_inv2_packs.py). Run once by hand (plain python3, no PIL); the result is
 # kept in client-patches/client-2.0.30/inv2/d_ (d_/ = d:/) and the pack builder reads only that folder:
 #
-#   d:/ymir work/ui/new_inventory/equip_bg_sub.png       the package's, as it is (the ring frames + the four round buttons)
+#   d:/ymir work/ui/new_inventory/equip_bg_sub_mt2009.png  the package's equip_bg_sub.png (the ring frames + the round
+#                                                        buttons) with the 4th button's costume icon painted over by the
+#                                                        picture's own background texture: no costume button in the
+#                                                        inventory (the owner, 21 October 2026 - Kostiumy is in the extra
+#                                                        inventory, uiekwipunek.py); patch = SUB_FILL_SRC, the place of
+#                                                        the same texture whose edges fit the hole best
 #   d:/ymir work/ui/new_inventory/equip_pagebtn_bg.png   the package's (the frame under a page tab)
-#   d:/ymir work/ui/new_inventory/btn_[0-3]_[0-2].png    the package's round buttons (Alchemia, Magazyn, Sklep, Kostiumy)
+#   d:/ymir work/ui/new_inventory/btn_[0-2]_[0-2].png    the package's round buttons (Alchemia, Magazyn, Sklep)
 #   d:/ymir work/ui/new_inventory/equip_bg_mt2009.png    the package's equip_bg_0.png with the pet icon of the bottom right
 #                                                        frame wiped (no pet slot here): the inside of the sub picture's
 #                                                        empty ring frame is copied over it - that frame holds our small
@@ -19,10 +24,13 @@ import zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.normpath(os.path.join(HERE, '..', '..', 'inv2', 'd_', 'ymir work', 'ui', 'new_inventory'))
-COPY = ['equip_bg_sub.png', 'equip_pagebtn_bg.png'] + ['btn_%d_%d.png' % (a, b) for a in range(4) for b in range(3)]
+COPY = ['equip_pagebtn_bg.png'] + ['btn_%d_%d.png' % (a, b) for a in range(3) for b in range(3)]
 # the bottom right frame's inside in equip_bg_0.png (157 x 138) and where it is taken from in equip_bg_sub.png
 DST = (119, 103, 28, 29)		# x, y, w, h
 SRC = (8, 8)					# the first ring frame's inside
+# the costume button's icon in equip_bg_sub.png (157 x 82; the button stood at 120,45, 32 x 32) and the texture copied over it
+SUB_FILL = (119, 44, 35, 34)		# x, y, w, h - the whole octagon, the board's right edge (154..) kept
+SUB_FILL_SRC = (79, 6)			# the plain texture right of the ring frames (the best edge fit of every place there)
 
 
 def load(path):
@@ -88,6 +96,13 @@ def build(src):
 			s = srows[SRC[1] + dy]
 			rows[y0 + dy][(x0 + dx) * bpp:(x0 + dx + 1) * bpp] = s[(SRC[0] + dx) * bpp:(SRC[0] + dx + 1) * bpp]
 	out['equip_bg_mt2009.png'] = save(w, h, ct, rows)
+	x0, y0, fw, fh = SUB_FILL
+	sx, sy = SUB_FILL_SRC
+	assert sx + fw <= x0 or sy + fh <= y0, 'the patch overlaps the hole'
+	src_rows = [bytearray(r) for r in srows]
+	for dy in range(fh):
+		srows[y0 + dy][x0 * sbpp:(x0 + fw) * sbpp] = src_rows[sy + dy][sx * sbpp:(sx + fw) * sbpp]
+	out['equip_bg_sub_mt2009.png'] = save(sw, sh, sct, srows)
 	assert load_bytes_ok(out['equip_bg_mt2009.png'])
 	return out
 
