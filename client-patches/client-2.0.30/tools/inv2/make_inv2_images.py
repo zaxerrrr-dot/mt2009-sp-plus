@@ -11,6 +11,9 @@
 #                                                        empty ring frame is copied over it - that frame holds our small
 #                                                        buttons (horse bag, chest preview; uiscript/inventoryequipwindow.py)
 #
+# (tab_half_0[1-3].png of the same folder, MT2009_PLUS_INVENTORY_V2_V2, were cut once by hand from the GF client's
+# windows.dds - build_inv2_packs.py says where; this script leaves them as they are.)
+#
 #   python3 make_inv2_images.py <package dir>/Binary/etc/ymir\ work/ui/new_inventory [--check]
 import os
 import struct

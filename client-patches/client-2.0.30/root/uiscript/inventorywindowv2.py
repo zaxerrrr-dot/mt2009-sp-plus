@@ -23,9 +23,11 @@ def InventoryTab(i, text, tooltip):
 		"x" : 7 + 40 * i,
 		"y" : 33,
 
-		"default_image" : "d:/ymir work/ui/game/windows/tab_button_large_half_01.sub",
-		"over_image" : "d:/ymir work/ui/game/windows/tab_button_large_half_02.sub",
-		"down_image" : "d:/ymir work/ui/game/windows/tab_button_large_half_03.sub",
+		# MT2009_PLUS_INVENTORY_V2_V2: the package's tab as PNGs of the pack inv2_ui (the players' etc has no
+		# game/windows/tab_button_large_half_0N.sub - the tabs had no size and their I-IV stood at the corners)
+		"default_image" : "d:/ymir work/ui/new_inventory/tab_half_01.png",
+		"over_image" : "d:/ymir work/ui/new_inventory/tab_half_02.png",
+		"down_image" : "d:/ymir work/ui/new_inventory/tab_half_03.png",
 		"tooltip_text" : tooltip,
 
 		"children" :

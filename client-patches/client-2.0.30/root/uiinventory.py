@@ -29,7 +29,6 @@ import safebox
 
 import offlineShopManage
 import uiPotionRecharge
-import uiHorseInventory
 import uichangelook # MT2009_PLUS_CHANGE_LOOK_V1
 
 if app.ENABLE_CHEQUE_SYSTEM:
@@ -485,10 +484,13 @@ class SidebarWindow(ui.Window):
 		# (the owner, 5 October) - Shift+K (keybind "autohunt_quick") stays.
 		("pickup", "Sortowanie autopickup", "OnClickPickupFilter", "pickup_filter"),
 		("trash", "Kosz", "OnClickGarbageBin", "garbage_bin"),
-		("shopsearch", "Wyszukiwarka sklep\xf3w", "OnClickShopSearch", "shop_search"),
+		# MT2009_PLUS_INVENTORY_V2_V2 (the owner's 3.0.6 tests): "Sklep" - the own offline shop (a bundle icon) in the
+		# shop search's place (the search stays on its key, F5); "Podglad skrzyn" in the Kolo Fortuny's place (the
+		# wheel stays on F12). Icons: tools/inv2/make_sidebar_icons.py.
+		("offlineshop", "Sklep", "OnClickOfflineShop", None),
 		("battlepass", "Battle Pass", "OnClickBattlePass", None),
 		("calendar", "Kalendarz event\xf3w", "OnClickEventCalendar", "event_calendar"),
-		("wheel", "Ko\xb3o Fortuny", "OnClickWheel", "wheel"),
+		("chestpreview", "Podgl\xb9d skrzy\xf1", "OnClickChestPreview", None),
 		# MT2009_PLUS_DUNGEON_PANEL_V1: the dungeon panel (uidungeoninfo.py).
 		("dungeon", "Wyprawy", "OnClickDungeonInfo", "dungeon_info"),
 		# MT2009_PLUS_TP_BOOKMARKS_V1: the saved teleport positions (uitpbookmarks.py).
@@ -820,16 +822,12 @@ class SidebarWindow(ui.Window):
 		if interface is not None:
 			interface.ToggleGarbageBinWindow()
 
-	# Wyszukiwarka sklepow - opened and closed as F5 does (game.py).
-	def OnClickShopSearch(self):
+	# Sklep - the own offline shop's window (interfacemodule.OpenPrivateShopManage: offlineShopManage.Toggle,
+	# ikashop.SendOpenShopOwner), as the equipment window's shop button opened it before.
+	def OnClickOfflineShop(self):
 		interface = self.__GetInterface()
-		search = getattr(interface, "offlineShopSearch", None) if interface is not None else None
-		if search is None:
-			return
-		if search.IsShow():
-			search.Close()
-		else:
-			search.Open()
+		if interface is not None:
+			interface.OpenPrivateShopManage()
 
 	# Battle Pass - as the taskbar's button.
 	def OnClickBattlePass(self):
@@ -841,10 +839,12 @@ class SidebarWindow(ui.Window):
 		import uieventcalendar
 		uieventcalendar.ToggleWindow()
 
-	# Kolo Fortuny - as the F12 key (uiwheel.py, "/kolo").
-	def OnClickWheel(self):
-		import uiwheel
-		uiwheel.ToggleWindow()
+	# Podglad skrzyn - the chest preview (uichestpreview.py), the button the equipment window had.
+	def OnClickChestPreview(self):
+		try:
+			self.wndInventory.ClickChestPreviewButton()
+		except (ReferenceError, AttributeError):
+			pass
 
 	def OnClickDungeonInfo(self):
 		import uidungeoninfo
@@ -1767,7 +1767,6 @@ class InventoryWindow(ui.ScriptWindow):
 			self.costumeButton = self.GetChild2("CostumeButton")
 
 			# additional buttons
-			self.horseInventoryButton = self.GetChild("HorseInventoryWindow")
 			self.depositButton = self.GetChild("DepositButton")
 			self.myshopButton = self.GetChild("MyShopButton")
 			self.chestPreviewButton = self.GetChild2("ChestPreviewButton")
@@ -1886,9 +1885,6 @@ class InventoryWindow(ui.ScriptWindow):
 		self.dlgPickMoney = dlgPickMoney
 
 		# Additional buttons
-		if self.horseInventoryButton:
-			self.horseInventoryButton.SAFE_SetEvent(self.ClickHorseInventoryButton)
-
 		if self.depositButton:
 			self.depositButton.SetEvent(ui.__mem_func__(self.ClickDepositButton))
 
@@ -2096,9 +2092,6 @@ class InventoryWindow(ui.ScriptWindow):
 		self.inventorySlotStateMgr.SetTab(page)
 		self.RefreshBagSlotWindow()
 
-	def ClickHorseInventoryButton(self):
-		eventManager.EventManager().send_event(uiHorseInventory.EVENT_OPEN_HORSE_INVENTORY)
-
 	def ClickDepositButton(self):
 		print "ClickDepositButton"
 		net.SendChatPacket("/click_mall")
@@ -2109,9 +2102,11 @@ class InventoryWindow(ui.ScriptWindow):
 			self.wndChestPreview = uichestpreview.ChestPreviewWindow(self)
 		self.wndChestPreview.Toggle()
 
+	# MT2009_PLUS_INVENTORY_V2_V2 (the owner's 3.0.6 tests): the round "Sklep" button opens the ItemShop storage
+	# from anywhere (/click_mall - the server answers ShowMeMallPassword, the mall storage); the own offline shop
+	# opens from the side bar's "Sklep" (SidebarWindow.OnClickOfflineShop).
 	def ClickMyShopButton(self):
-		print "ClickMyShopButton"
-		self.interface.OpenPrivateShopManage()
+		net.SendChatPacket("/click_mall")
 
 	def SetEquipmentPage(self, page):
 		self.equipmentPageIndex = page

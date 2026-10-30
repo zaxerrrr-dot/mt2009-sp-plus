@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_INVENTORY_V2_V1 - checks what build_inv2_packs.py wrote (on the OUT of the whole Yohara chain): the inv2_ui
-# pack has the repo's 15 pictures byte for byte, the Index names it once, and every picture the v2 inventory's root
+# pack has the repo's 18 pictures byte for byte, the Index names it once, and every picture the v2 inventory's root
 # files open (inventoryv2.py, uiinventory.py, uiscript/inventoryequipwindow.py, uiscript/inventorywindowv2.py) is in a
 # pack of the PLAYERS' install (tools/uicheck: klient-test-2.37 + yohara-3.0.1 zips + OUT; the base packs count when the
-# base client's own root opens the name) - the tabs' tab_button_large_half_0[1-3].sub included.
+# base client's own root opens the name) - the side bar's offlineshop / chestpreview icons included.
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 <repo>/client-patches/client-2.0.30/tools/inv2/verify_inv2.py \
 #     <OUT pack dir>
 import os
@@ -40,8 +40,10 @@ if [l.strip() for l in ix.replace(b'\r\n', b'\n').split(b'\n')].count(bi.NEW_PAC
 if '--no-install' not in sys.argv:
 	import check_ui_assets as U  # noqa: E402
 	pys = ['inventoryv2.py', 'uiinventory.py', 'uiscript/inventoryequipwindow.py', 'uiscript/inventorywindowv2.py']
-	extra = sorted(want) + ['d:/ymir work/ui/game/windows/tab_button_large_half_0%d.sub' % i for i in (1, 2, 3)] + \
-		['playerbot_ui/chest_button.tga']
+	# MT2009_PLUS_INVENTORY_V2_V2: the tabs are the pack's own tab_half_0N.png now; the side bar's new icons (root files,
+	# tools/inv2/make_sidebar_icons.py) in OUT's root pack
+	extra = sorted(want) + ['mt2009_ui/sidebar/%s_%02d.tga' % (n, i) for n in ('offlineshop', 'chestpreview')
+		for i in (1, 2, 3)]
 	probs, inst, n = U.feature_problems(OUT, pys, extra)
 	fails += ['install: %s' % p for p in probs]
 print('\n'.join(fails) if fails else 'inv2: OK (%d files)' % len(want))

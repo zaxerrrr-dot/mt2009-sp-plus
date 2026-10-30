@@ -15,7 +15,7 @@
 # MT2009_PLUS_INVENTORY_V2_V1):
 #   - Bind(inventory): loads the equipment window and lends its children to the inventory's dictionary
 #     (GetChild("EquipmentSlot"), "DSSButton", "DepositButton", "MyShopButton", "CostumeButton",
-#     "HorseInventoryWindow", "ChestPreviewButton", "Equipment_Tab_01/02"), so the rest of uiinventory.py works on
+#     "Equipment_Tab_01/02"), so the rest of uiinventory.py works on
 #     them as on the old one-window inventory;
 #   - docking: the equipment window sits right over the bag and follows it; dragged away (more than DOCK_SNAP px)
 #     it stays where it is put, dragged back near the bag it docks again. Docked or not and its own place are kept

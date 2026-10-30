@@ -186,18 +186,7 @@ window = {
 
 							"image" : flamewindPath.GetInventory("inventory_buttons_slot"),
 							"children" : (
-								{
-									"name" : "HorseInventoryWindow",
-									"type" : "button",
-
-									"x" : 2,"y" : 2,
-
-									"tooltip_text" : uiScriptLocale.HORSE_INVENTORY,
-
-									"default_image" : flamewindPath.GetInventory("horse_inv_btn1"),
-									"over_image" : flamewindPath.GetInventory("horse_inv_btn2"),
-									"down_image" : flamewindPath.GetInventory("horse_inv_btn3"),
-								},
+								# MT2009_PLUS_INVENTORY_V2_V2: the horse bag button is gone (no horse bags on Yohara)
 								{
 									"name" : "DepositButton",
 									"type" : "button",
@@ -216,7 +205,7 @@ window = {
 
 									"x": 32, "y": 2,
 
-									"tooltip_text" : uiScriptLocale.SHOP_MANAGE,
+									"tooltip_text" : "Magazyn ItemShop",	# MT2009_PLUS_INVENTORY_V2_V2
 
 									"default_image": flamewindPath.GetInventory("myshop_btn1"),
 									"over_image": flamewindPath.GetInventory("myshop_btn2"),
