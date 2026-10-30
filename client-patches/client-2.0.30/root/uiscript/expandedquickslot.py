@@ -17,7 +17,7 @@ window = {
 	"name"		: "expanded_quickslot_window",
 	"style"		: ("float",),
 
-	"x"			: SCREEN_WIDTH / 2 - 113,
+	"x"			: SCREEN_WIDTH / 2 - 129,	# uitaskbar.EXPANDED_QUICKSLOT_WINDOW_X (it sets the place again)
 	"y"			: SCREEN_HEIGHT - 159,
 
 	"width"		: WINDOW_WIDTH,

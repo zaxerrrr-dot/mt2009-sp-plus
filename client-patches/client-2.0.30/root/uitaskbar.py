@@ -27,6 +27,14 @@ EXPANDED_QUICKSLOT_PICTURES = ("bg_top", "bg_middle", "bg_bottom", "list_line", 
 	"switch_button_default", "switch_button_over", "switch_button_down", "show_button_default", "show_button_over",
 	"show_button_down", "hide_button_default", "hide_button_over", "hide_button_down")
 EXPANDED_QUICKSLOT_IMAGE = "d:/ymir work/ui/game/taskbar/expanded_quickslot_taskbar.tga"
+# MT2009_PLUS_QUICKSLOT_IMPROVE_V2 (the owner's 3.0.6 tests: the expand button lay over the first quick slot): our bar's
+# slot 1 starts at SCREEN_WIDTH/2 - 102 (uiscript/taskbar.py quickslot_board: 6 + 4 slots, 16 px left of the package's),
+# so the 16 px expand button goes at - 120 (2 px clear of the slot), the left mouse button 18 px further left (from
+# - 136 to - 154, 2 px clear of the expand button), and the expanded rows' window moves with the button (its switch
+# buttons stay in the button's column: window x + 9 = the button's x).
+EXPANDED_QUICKSLOT_BUTTON_X = -120		# from the screen's middle
+EXPANDED_QUICKSLOT_WINDOW_X = EXPANDED_QUICKSLOT_BUTTON_X - 9
+EXPANDED_QUICKSLOT_MOUSE_SHIFT = 18
 TEXT_QUICKSLOT_EXPAND = getattr(localeInfo, "QUICKSLOT_EXPAND_BUTTON_TOOLTIP", "Rozwi\xf1: wszystkie paski szybkiego dost\xeapu (4 x 8)")
 TEXT_QUICKSLOT_SHRINK = getattr(localeInfo, "QUICKSLOT_SHRINK_BUTTON_TOOLTIP", "Zwi\xf1: tylko jeden pasek szybkiego dost\xeapu (1 x 8)")
 TEXT_QUICKSLOT_SWITCH = "Ustaw ten pasek jako aktywny (%d)"
@@ -498,7 +506,7 @@ class TaskBar(ui.ScriptWindow):
 			# (fail-safe: without its pictures the bar just has no expand button - never an abort)
 			if self.__LoadExpandedQuickSlot(pyScrLoader):
 				(leftX, leftY) = mouseLeftButtonModeButton.GetLocalPosition()
-				mouseLeftButtonModeButton.SetPosition(leftX - 10, leftY)
+				mouseLeftButtonModeButton.SetPosition(leftX - EXPANDED_QUICKSLOT_MOUSE_SHIFT, leftY)
 		mouseLeftButtonModeButton.SetEvent(ui.__mem_func__(self.ToggleLeftMouseButtonModeWindow))
 		mouseRightButtonModeButton.SetEvent(ui.__mem_func__(self.ToggleRightMouseButtonModeWindow))
 		self.curMouseModeButton = [ mouseLeftButtonModeButton, mouseRightButtonModeButton ]
@@ -623,7 +631,7 @@ class TaskBar(ui.ScriptWindow):
 			try:
 				button = ui.Button()
 				button.SetParent(self)
-				button.SetPosition(wndMgr.GetScreenWidth() / 2 - 104, 3)
+				button.SetPosition(wndMgr.GetScreenWidth() / 2 + EXPANDED_QUICKSLOT_BUTTON_X, 3)
 				button.SetUpVisual(EXPANDED_QUICKSLOT_PATH + "show_button_default.sub")
 				button.SetOverVisual(EXPANDED_QUICKSLOT_PATH + "show_button_over.sub")
 				button.SetDownVisual(EXPANDED_QUICKSLOT_PATH + "show_button_down.sub")
@@ -632,7 +640,7 @@ class TaskBar(ui.ScriptWindow):
 
 				window = ui.ScriptWindow("TOP_MOST")
 				loader.LoadScriptFile(window, "UIScript/expandedquickslot.py")
-				window.SetPosition(wndMgr.GetScreenWidth() / 2 - 113, wndMgr.GetScreenHeight() - 159)
+				window.SetPosition(wndMgr.GetScreenWidth() / 2 + EXPANDED_QUICKSLOT_WINDOW_X, wndMgr.GetScreenHeight() - 159)
 
 				taskBar = proxy(self)
 				for page in xrange(QUICKSLOT_PAGES):
