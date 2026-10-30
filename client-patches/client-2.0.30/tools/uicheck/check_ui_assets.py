@@ -2,7 +2,7 @@
 # MT2009_PLUS_UICHECK_V1 - checks that every picture the client's python names is in the packs a PLAYER has.
 #
 # The player's install is a base client (etc, item, icon, ... - no listing of its base packs on the VPS) plus the
-# test-plus layers: klient-test-2.37.zip, klient-test-yohara-3.0.1.zip and the packs of the build being tested
+# test-plus layers: klient-test-2.37.zip, klient-test-yohara-3.0.0.zip, klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip and the packs of the build being tested
 # (default /opt/metin2/cache/cY/out/pack = 3.0.4). A layer's <pack>.index replaces the lower layer's; the top layer's
 # pack/Index says which packs the client opens. Only the .index files are read from the zips (and a .data only for
 # the .sub files and the root .py, straight from the zip into memory - nothing is extracted to disk).
@@ -45,7 +45,10 @@ sys.path.insert(0, '/opt/metin2/cache/arezzo-work/client/az58')
 import m2pack  # noqa: E402
 
 DIST = '/opt/metin2/dist/aktualizacje/test-plus'
-DEFAULT_LAYERS = [os.path.join(DIST, 'klient-test-2.37.zip'), os.path.join(DIST, 'klient-test-yohara-3.0.1.zip')]
+# the players' 3.x install (TESTY-YOHARA-3.0.6.md): the 2.37 client, the full 3.0.0 client, the 3.0.3 update from
+# 3.0.0 - then OUT (the build's packs) / the 3.0.6 patch on top
+DEFAULT_LAYERS = [os.path.join(DIST, 'klient-test-2.37.zip'), os.path.join(DIST, 'klient-test-yohara-3.0.0.zip'),
+                  os.path.join(DIST, 'klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip')]
 DEFAULT_TOP = '/opt/metin2/cache/cY/out/pack'
 DEFAULT_ROOT = os.path.normpath(os.path.join(HERE, '..', '..', 'root'))
 BASE_ROOT = '/opt/metin2/cache/tcm/ours/root'
@@ -75,8 +78,14 @@ class Layer(object):
         self.path = path
         self.zip = zipfile.ZipFile(path) if path.endswith('.zip') else None
         if self.zip:
-            self.members = dict((n.split('/', 1)[1].lower(), n) for n in self.zip.namelist()
-                                if n.lower().startswith('pack/') and '/' in n)
+            # pack/<x> at the top, or <folder>/pack/<x> (the test patch zips: klient-test-yohara-3.0.6-latka/pack/...)
+            self.members = {}
+            for n in self.zip.namelist():
+                p = n.split('/')
+                if len(p) == 2 and p[0].lower() == 'pack' and p[1]:
+                    self.members[p[1].lower()] = n
+                elif len(p) == 3 and p[1].lower() == 'pack' and p[2]:
+                    self.members.setdefault(p[2].lower(), n)
         else:
             self.members = dict((n.lower(), n) for n in os.listdir(path))
         self._data = {}
@@ -429,7 +438,7 @@ _CACHE = {}
 
 
 def feature_problems(out_dir, py_names, names=(), root=DEFAULT_ROOT, layers=None):
-    """for the verifiers: the players' install (2.37 + 3.0.1 zips + OUT) against the pictures the given root .py
+    """for the verifiers: the players' install (2.37 + 3.0.0 + 3.0.3 update zips + OUT) against the pictures the given root .py
     (names relative to root, e.g. 'uiscript/autohunttestwindow.py') and the given in-pack names open. Returns
     (problems, install, count)."""
     key = tuple(list(DEFAULT_LAYERS if layers is None else layers) + [out_dir])
@@ -466,14 +475,15 @@ def feature_problems(out_dir, py_names, names=(), root=DEFAULT_ROOT, layers=None
 
 def main(argv):
     layers, top, root, out_json, changed_only, only = list(DEFAULT_LAYERS), DEFAULT_TOP, DEFAULT_ROOT, None, False, None
+    given_layers = False
     i = 0
     while i < len(argv):
         a = argv[i]
         if a == '--top':
             top = argv[i + 1]; i += 2
         elif a == '--layer':
-            if layers is DEFAULT_LAYERS or layers == DEFAULT_LAYERS:
-                layers = []
+            if not given_layers:                       # the first --layer replaces the defaults
+                layers, given_layers = [], True
             layers.append(argv[i + 1]); i += 2
         elif a == '--root':
             root = argv[i + 1]; i += 2
@@ -491,7 +501,7 @@ def main(argv):
     if root and os.path.isdir(root):
         files.update(repo_root_files(root))
     prev, shipped = {}, set()
-    for lp in DEFAULT_LAYERS:                       # what the players' earlier roots already named
+    for lp in list(DEFAULT_LAYERS) + [PREV_LAYER]:  # what the players' earlier roots already named
         try:
             fs = root_pack_files(Layer(lp))
         except Exception:

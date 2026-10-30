@@ -22,6 +22,11 @@ QUICKSLOT_PER_LINE = getattr(player, "QUICKSLOT_COUNT_PER_LINE", 10)	# global in
 QUICKSLOT_PAGES = 4
 QUICKSLOT_SHOWN = 8
 EXPANDED_QUICKSLOT_PATH = "d:/ymir work/ui/game/taskbar/expanded_quickslot_"
+# the pictures the window and its button open (pack "quickslot2") - __LoadExpandedQuickSlot checks them first
+EXPANDED_QUICKSLOT_PICTURES = ("bg_top", "bg_middle", "bg_bottom", "list_line", "number_box", "slot",
+	"switch_button_default", "switch_button_over", "switch_button_down", "show_button_default", "show_button_over",
+	"show_button_down", "hide_button_default", "hide_button_over", "hide_button_down")
+EXPANDED_QUICKSLOT_IMAGE = "d:/ymir work/ui/game/taskbar/expanded_quickslot_taskbar.tga"
 TEXT_QUICKSLOT_EXPAND = getattr(localeInfo, "QUICKSLOT_EXPAND_BUTTON_TOOLTIP", "Rozwi\xf1: wszystkie paski szybkiego dost\xeapu (4 x 8)")
 TEXT_QUICKSLOT_SHRINK = getattr(localeInfo, "QUICKSLOT_SHRINK_BUTTON_TOOLTIP", "Zwi\xf1: tylko jeden pasek szybkiego dost\xeapu (1 x 8)")
 TEXT_QUICKSLOT_SWITCH = "Ustaw ten pasek jako aktywny (%d)"
@@ -490,9 +495,10 @@ class TaskBar(ui.ScriptWindow):
 		mouseRightButtonModeButton = self.GetChild("RightMouseButton")
 		if QUICKSLOT_IMPROVE:
 			# MT2009_PLUS_QUICKSLOT_IMPROVE_V1: room for the expand button between the left mouse button and the quick slots
-			(leftX, leftY) = mouseLeftButtonModeButton.GetLocalPosition()
-			mouseLeftButtonModeButton.SetPosition(leftX - 10, leftY)
-			self.__LoadExpandedQuickSlot(pyScrLoader)
+			# (fail-safe: without its pictures the bar just has no expand button - never an abort)
+			if self.__LoadExpandedQuickSlot(pyScrLoader):
+				(leftX, leftY) = mouseLeftButtonModeButton.GetLocalPosition()
+				mouseLeftButtonModeButton.SetPosition(leftX - 10, leftY)
 		mouseLeftButtonModeButton.SetEvent(ui.__mem_func__(self.ToggleLeftMouseButtonModeWindow))
 		mouseRightButtonModeButton.SetEvent(ui.__mem_func__(self.ToggleRightMouseButtonModeWindow))
 		self.curMouseModeButton = [ mouseLeftButtonModeButton, mouseRightButtonModeButton ]
@@ -591,44 +597,79 @@ class TaskBar(ui.ScriptWindow):
 			player.SetQuickPage(page)
 
 	def __LoadExpandedQuickSlot(self, loader):
+		# MT2009_PLUS_QUICKSLOT_IMPROVE_V1, fail-safe (3.0.6 hotfix): the pictures are checked in the packs first, and any
+		# error of the window's load is logged - the bar then stays without the expand button. ui.PythonScriptLoader
+		# calls exception.Abort (app.Abort: the client closes) on a missing picture, so it is swapped for a raise here.
+		import dbg
+		import pack
+		import exception
+		need = [EXPANDED_QUICKSLOT_PATH + x + ".sub" for x in EXPANDED_QUICKSLOT_PICTURES] + [EXPANDED_QUICKSLOT_IMAGE]
+		missing = [x for x in need if not pack.Exist(x)]
+		if missing:
+			dbg.TraceError("TaskBar.ExpandedQuickSlot: %d picture(s) not in the packs (%s) - no expand button" % (len(missing), missing[0]))
+			return False
+
+		class ExpandedQuickSlotLoadError(Exception):
+			pass
+		def RaiseInsteadOfAbort(title, *args):
+			raise ExpandedQuickSlotLoadError(title)
+
+		button = None
+		window = None
+		rows = []
+		oldAbort = exception.Abort
+		exception.Abort = RaiseInsteadOfAbort
 		try:
-			button = ui.Button()
-			button.SetParent(self)
-			button.SetPosition(wndMgr.GetScreenWidth() / 2 - 104, 3)
-			button.SetUpVisual(EXPANDED_QUICKSLOT_PATH + "show_button_default.sub")
-			button.SetOverVisual(EXPANDED_QUICKSLOT_PATH + "show_button_over.sub")
-			button.SetDownVisual(EXPANDED_QUICKSLOT_PATH + "show_button_down.sub")
-			button.SetToolTipText(TEXT_QUICKSLOT_EXPAND)
-			button.SetEvent(ui.__mem_func__(self.ToggleExpandedQuickSlot))
-			button.Show()
-			self.expandQuickSlotButton = button
+			try:
+				button = ui.Button()
+				button.SetParent(self)
+				button.SetPosition(wndMgr.GetScreenWidth() / 2 - 104, 3)
+				button.SetUpVisual(EXPANDED_QUICKSLOT_PATH + "show_button_default.sub")
+				button.SetOverVisual(EXPANDED_QUICKSLOT_PATH + "show_button_over.sub")
+				button.SetDownVisual(EXPANDED_QUICKSLOT_PATH + "show_button_down.sub")
+				button.SetToolTipText(TEXT_QUICKSLOT_EXPAND)
+				button.SetEvent(ui.__mem_func__(self.ToggleExpandedQuickSlot))
 
-			window = ui.ScriptWindow("TOP_MOST")
-			loader.LoadScriptFile(window, "UIScript/expandedquickslot.py")
-			window.SetPosition(wndMgr.GetScreenWidth() / 2 - 113, wndMgr.GetScreenHeight() - 159)
-			self.expandedQuickSlot = window
-		except:
-			import exception
-			exception.Abort("TaskBar.LoadWindow.ExpandedQuickSlot")
+				window = ui.ScriptWindow("TOP_MOST")
+				loader.LoadScriptFile(window, "UIScript/expandedquickslot.py")
+				window.SetPosition(wndMgr.GetScreenWidth() / 2 - 113, wndMgr.GetScreenHeight() - 159)
 
-		taskBar = proxy(self)
-		self.expandedRows = []
-		for page in xrange(QUICKSLOT_PAGES):
-			row = window.GetChild("quickslot_%d" % page)
-			switch = window.GetChild("switch_button_%d" % page)
-			switch.SetEvent(lambda page=page: taskBar.__ChangeQuickPage(page))
-			switch.SetToolTipText(TEXT_QUICKSLOT_SWITCH % (page + 1))
-			slots = (window.GetChild("expanded_quickslot_line_left_%d" % page),
-				window.GetChild("expanded_quickslot_line_right_%d" % page))
-			for slot in slots:
-				slot.SetSlotStyle(wndMgr.SLOT_STYLE_NONE)
-				slot.SetSelectEmptySlotEvent(lambda index, page=page: taskBar.__SelectExpandedSlot(page, index))
-				slot.SetSelectItemSlotEvent(lambda index, page=page: taskBar.__SelectExpandedSlot(page, index))
-				slot.SetUnselectItemSlotEvent(lambda index, page=page: taskBar.__UnselectExpandedSlot(page, index))
-				slot.SetOverInItemEvent(lambda index, page=page: taskBar.OverInGlobalItem(page * QUICKSLOT_PER_LINE + index))
-				slot.SetOverOutItemEvent(ui.__mem_func__(self.OverOutItem))
-			self.expandedRows.append((row, slots))
-		window.Hide()
+				taskBar = proxy(self)
+				for page in xrange(QUICKSLOT_PAGES):
+					row = window.GetChild("quickslot_%d" % page)
+					switch = window.GetChild("switch_button_%d" % page)
+					switch.SetEvent(lambda page=page: taskBar.__ChangeQuickPage(page))
+					switch.SetToolTipText(TEXT_QUICKSLOT_SWITCH % (page + 1))
+					slots = (window.GetChild("expanded_quickslot_line_left_%d" % page),
+						window.GetChild("expanded_quickslot_line_right_%d" % page))
+					for slot in slots:
+						slot.SetSlotStyle(wndMgr.SLOT_STYLE_NONE)
+						slot.SetSelectEmptySlotEvent(lambda index, page=page: taskBar.__SelectExpandedSlot(page, index))
+						slot.SetSelectItemSlotEvent(lambda index, page=page: taskBar.__SelectExpandedSlot(page, index))
+						slot.SetUnselectItemSlotEvent(lambda index, page=page: taskBar.__UnselectExpandedSlot(page, index))
+						slot.SetOverInItemEvent(lambda index, page=page: taskBar.OverInGlobalItem(page * QUICKSLOT_PER_LINE + index))
+						slot.SetOverOutItemEvent(ui.__mem_func__(self.OverOutItem))
+					rows.append((row, slots))
+				window.Hide()
+			finally:
+				exception.Abort = oldAbort
+		except Exception, e:
+			dbg.TraceError("TaskBar.ExpandedQuickSlot: not loaded (%s: %s) - no expand button" % (e.__class__.__name__, e))
+			if button is not None:
+				button.Hide()
+			if window is not None:
+				window.Hide()
+				window.ClearDictionary()
+			self.expandQuickSlotButton = None
+			self.expandedQuickSlot = None
+			self.expandedRows = []
+			return False
+
+		button.Show()
+		self.expandQuickSlotButton = button
+		self.expandedQuickSlot = window
+		self.expandedRows = rows
+		return True
 
 	def ApplyQuickSlotState(self):
 		# the button's look and the bar after a toggle or a character's saved state (game.Open)

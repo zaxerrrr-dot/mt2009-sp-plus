@@ -1,7 +1,7 @@
 # MT2009_PLUS_QUICKSLOT_IMPROVE_V1 (the ENABLE_QUICKSLOT_IMPROVE package, uiscript/expandedquickslot.py): the expanded
 # quick slot bar over the taskbar - the three other pages of 8 slots (uitaskbar.TaskBar, quickslotstate.py). Images:
-# d:/ymir work/ui/game/taskbar/expanded_quickslot_*.sub on ui/taskbar.tga - already in the base pack "etc"
-# (client-2.0.30/tools/quickslot2 checks them). Loaded by uitaskbar.py only with the exe's ENABLE_QUICKSLOT_IMPROVE.
+# d:/ymir work/ui/game/taskbar/expanded_quickslot_*.sub on expanded_quickslot_taskbar.tga - pack "quickslot2"
+# (client-2.0.30/tools/quickslot2 builds and checks it; the players' etc has none of them). Loaded by uitaskbar.py only with the exe's ENABLE_QUICKSLOT_IMPROVE.
 ROOT_PATH					= "d:/ymir work/ui/game/taskbar/"
 
 WINDOW_WIDTH				= 318

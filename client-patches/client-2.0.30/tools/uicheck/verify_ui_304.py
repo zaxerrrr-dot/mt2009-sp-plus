@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # MT2009_PLUS_UICHECK_V1 - the verify loop's check of the 3.0.4 windows on the PLAYERS' install (klient-test-2.37 +
-# yohara-3.0.1 zips + OUT; check_ui_assets.py): every picture each new / changed window opens (and the image of every
+# yohara-3.0.0 + 3.0.3 update zips + OUT; check_ui_assets.py): every picture each new / changed window opens (and the image of every
 # .sub among them) is in a pack the client lists, and every item_list row new since 3.0.1 has its icon (Kamienie
 # Zywiolow, Wezowy Czepiec, the boxes...). The players' base packs (etc, item ...) have no listing here: a name counts
 # as theirs only when the base client's own root opens it (/opt/metin2/cache/tcm/ours/root). 3.0.4 crashed on
@@ -28,16 +28,34 @@ FEATURES = [
     ('gaya2', ['gayacurrency.py', 'uiscript/expandedmoneytaskbar.py']),
     ('addeq', ['uiaddeq.py']),
     ('monstercard', ['uimonstercard.py', 'uiscript/monstercardwindow.py', 'uiscript/monstercardachievdetailwindow.py']),
-    ('questren', ['questrenewal.py', 'uiscript/characterwindow.py']),  # MT2009_PLUS_QUEST_RENEWAL_V1
+    ('questren', ['questrenewal.py', 'uicharacter.py', 'uiscript/characterwindow.py']),  # MT2009_PLUS_QUEST_RENEWAL_V1
+    # 3.0.6 (hotfix 30.10: the expanded quick slot's pictures were in no pack of the players' install)
+    ('quickslot2', ['uitaskbar.py', 'quickslotstate.py', 'uiscript/expandedquickslot.py']),
+    ('inv2', ['inventoryv2.py', 'uiinventory.py', 'uiscript/inventorywindowv2.py', 'uiscript/inventoryequipwindow.py',
+              'uiscript/inventorywindow.py']),
+    ('relikty', ['uirelikt.py', 'relikt_data.py', 'uiscript/reliktwindow.py']),
+    ('konie', ['uikonierozwoj.py']),
+    ('zywiolbroni', ['uiweaponelement.py', 'welem.py', 'welemfx.py', 'uiscript/weaponelementdialog.py',
+                     'uiscript/weaponelementchange.py']),
+    ('dmgprint+round306', ['game.py', 'interfacemodule.py', 'uiaffectbar.py', 'uiattributelist.py', 'uiautohunt.py',
+                           'uisystem.py', 'uitooltip.py', 'uiaddeq.py', 'uiingameevent.py', 'keybind.py',
+                           'uiscript/systemdialog.py']),
 ]
 
 OUT = [a for a in sys.argv[1:] if not a.startswith('--')][0]
+# names known to be fine although no listed pack has them (with the reason) - matched on the problem's text
+ACCEPTED = {
+    'game.py:128 MISSING d:/ymir work/pc/common/effect/armor/armor-4-2-2.mse':
+        'costume set aura since 2.x: in the base pc packs (no listing); the 2.37 / 3.0.1 roots named it already',
+    'uiingameevent.py:89 PATTERN-NO-MATCH d:/ymir work/ui/minimap/e_open_*.tga':
+        'pack.Exist() first, FALLBACK_BUTTON otherwise',
+}
 fails, total = [], 0
 inst = None
 for name, pys in FEATURES:
     probs, inst, n = U.feature_problems(OUT, pys)
     total += n
-    fails += ['%s: %s' % (name, p) for p in probs]
+    fails += ['%s: %s' % (name, p) for p in probs if p not in ACCEPTED]
 
 # item_list rows new or changed since 3.0.1: their icons
 prev = set()
