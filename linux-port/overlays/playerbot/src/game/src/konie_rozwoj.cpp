@@ -763,7 +763,25 @@ namespace quest
 			{ "konie_karm",		horse_konie_karm	},
 			{ NULL,			NULL			}
 		};
-		CQuestManager::instance().AddLuaFunctionTable("horse", konie_functions, true);
+		// MT2009_PLUS_HORSE40_V2: added into the existing table by hand - AddLuaFunctionTable(..., true) made a new
+		// "horse" table over questlua_horse.cpp's (horse.get_level etc. gone: LUA_ERROR in the quests konie /
+		// konie_rozwoj at every login, 30.10.2026)
+		lua_State * L = CQuestManager::instance().GetLuaState();
+		const int top = lua_gettop(L);
+		lua_getglobal(L, "horse");
+		if (!lua_istable(L, -1))
+		{
+			lua_settop(L, top);
+			sys_err("konie: no horse table, functions not registered");
+			return;
+		}
+		for (luaL_reg * r = konie_functions; r->name; ++r)
+		{
+			lua_pushstring(L, r->name);
+			lua_pushcfunction(L, r->func);
+			lua_rawset(L, -3);
+		}
+		lua_settop(L, top);
 	}
 }
 
