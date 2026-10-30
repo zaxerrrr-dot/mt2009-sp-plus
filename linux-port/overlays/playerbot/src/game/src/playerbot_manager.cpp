@@ -241,6 +241,7 @@ bool Mt2009KonieIsKeptVnum(DWORD dwVnum);
 // asking price.
 #include "playerbot_shop_name_rules.h"
 #include "playerbot_town.h"
+#include "playerbot_juki.h" // MT2009_PLUS_BOT_JUKI_REVIEW_V1: the horse bags' items the migration put in the storeroom, looked at once
 #include "playerbot_alchemy.h"
 #include "playerbot_rank_fruit_market.h" // MT2009_PLUS_RANK_FRUIT_MARKET_V1: the eaters buy the rank fruit of their total off the counters
 // Iwakura's gambler: the session a town visit turns into at its end.
@@ -7840,6 +7841,9 @@ WritePlayerBotGuildStatus(dwNow);
 		// Which of Iwakura's personalities claims the bot, and whether its
 		// Grinder has met the Law of Advancement.
 		ManagePlayerBotPersona(ch, state, dwNow);
+		// MT2009_PLUS_BOT_JUKI_REVIEW_V1: where the horse bags' items went, read
+		// once per character (playerbot_juki.h).
+		PollPlayerBotJukiReview(ch);
 
 		// Trigger Town Visit (Full inventory, out of potions, or missing weapon)
 		// Only trigger when NOT in the middle of fighting an active Metin stone!
@@ -8198,18 +8202,20 @@ WritePlayerBotGuildStatus(dwNow);
 			// and its shopping over: the visit begins its session
 			// (BeginPlayerBotRareGambleSession in StartPlayerBotTownVisit).
 			const bool bNeedsGambleSession = PlayerBotRareGamblerWantsTown(ch, true);
+			// MT2009_PLUS_BOT_JUKI_REVIEW_V1: the horse bags' items in the storeroom.
+			const bool bNeedsJuki = PlayerBotWantsJukiReview(ch);
 
 			if (bNeedsProfession || bInventoryFull || bNeedsPotions || bWeaponMissing ||
 					bNeedsRefine || bNeedsGearUpgrade || bNeedsSellRun ||
 					bNeedsPotionCleanup || bNeedsGambleSession)
 				StartPlayerBotTownVisit(ch, state, dwNow);
-			else if (bNeedsLppRelease || bNeedsMaterialRelease)
+			else if (bNeedsLppRelease || bNeedsMaterialRelease || bNeedsJuki)
 			{
 				StartPlayerBotTownVisit(ch, state, dwNow);
 				if (state.bVisitingShop)
-					sys_log(0, "PLAYERBOT_TOWN: visit for the box's release pid=%u name=%s map=%ld lpp=%d materials=%d box_units=%u",
+					sys_log(0, "PLAYERBOT_TOWN: visit for the box's release pid=%u name=%s map=%ld lpp=%d materials=%d box_units=%u juki=%d",
 							ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), bNeedsLppRelease ? 1 : 0,
-							bNeedsMaterialRelease ? 1 : 0, (unsigned int)state.persona.wBoxMaterialUnits);
+							bNeedsMaterialRelease ? 1 : 0, (unsigned int)state.persona.wBoxMaterialUnits, bNeedsJuki ? 1 : 0);
 			}
 		}
 

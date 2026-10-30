@@ -116,6 +116,10 @@ namespace
 	// MT2009_PLUS_BOT_STONE4_MARKET_V1 (playerbot_stone4.h, before the list).
 	int GetPlayerBotStone4BoxRelease(LPCHARACTER ch, LPITEM boxItem, int takenOfKind, int takenAll);
 	void NotePlayerBotStone4Released(int units);
+	// MT2009_PLUS_BOT_JUKI_REVIEW_V1 (playerbot_juki.h, right after this file): the
+	// horse bags' items the migration put in the storeroom, looked at once.
+	bool PlayerBotWantsJukiReview(LPCHARACTER ch);
+	int RunPlayerBotJukiSafeboxReview(LPCHARACTER ch, CSafebox* box, const std::set<DWORD>& justDeposited, int* pSell);
 	bool IsPlayerBotStone4HeldBack(LPCHARACTER ch, LPITEM item);
 	// MT2009_PLUS_MARKET_V3: how the counters stand for a kind (-1 missing, 1
 	// too much of it, 0 otherwise), defined with the market index below.
@@ -1482,7 +1486,8 @@ namespace
 				PlayerBotWantsLppRelease(ch, state, dwNow) ||
 				PlayerBotWantsMaterialRelease(ch, state, dwNow) ||
 				PlayerBotSidekickWantsBoxSweep(ch) ||	// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1
-				PlayerBotG0WantsSafebox(ch);	// MT2009_PLUS_BOT_YOHARA_G0_V2: the G0 dust in or out
+				PlayerBotG0WantsSafebox(ch) ||	// MT2009_PLUS_BOT_YOHARA_G0_V2: the G0 dust in or out
+				PlayerBotWantsJukiReview(ch);	// MT2009_PLUS_BOT_JUKI_REVIEW_V1: the horse bags' items, whatever the back-off
 		if (!state.bTownNeedSafebox && !boxIdle &&
 				PlayerBotWantsOwnBoxGear(ch, state, dwNow))	// MT2009_PLUS_UPSTREAM_BOTLOGIC_OWN_BOX_V1
 		{
@@ -7955,7 +7960,7 @@ namespace
 			// companion's sweep go on as before.
 			if (s_setPlayerBotBoxPhaseAsked.insert(ch->GetPlayerID()).second &&
 					!IsPlayerBotGambling(state, dwNow) && !PlayerBotSidekickWantsBoxSweep(ch) &&
-					!PlayerBotG0WantsSafebox(ch) &&
+					!PlayerBotG0WantsSafebox(ch) && !PlayerBotWantsJukiReview(ch) &&
 					s_setPlayerBotBoxGearVisit.find(ch->GetPlayerID()) == s_setPlayerBotBoxGearVisit.end() &&
 					!HasPlayerBotSafeboxDeposit(ch, state) && !PlayerBotWantsLppRelease(ch, state, dwNow) &&
 					!PlayerBotWantsMaterialRelease(ch, state, dwNow))
@@ -8146,9 +8151,17 @@ namespace
 				// withdrawal then needs, so a bot under pressure can still take
 				// back the one material it came for. A gambler also takes its
 				// pieces and their materials, once a session.
-				const int taken = WithdrawPlayerBotSafebox(ch, box, &justDeposited,
+				int taken = WithdrawPlayerBotSafebox(ch, box, &justDeposited,
 						IsPlayerBotGambling(state, dwNow) ? &state.persona : NULL, &state.persona,
 						&released);
+				// MT2009_PLUS_BOT_JUKI_REVIEW_V1: what the horse bags left here, by its
+				// own rules (playerbot_juki.h); the merchant's junk among it calls on
+				// the merchants again, as the release does.
+				{
+					int jukiSell = 0;
+					taken += RunPlayerBotJukiSafeboxReview(ch, box, justDeposited, &jukiSell);
+					released += jukiSell;
+				}
 				// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's sweep done,
 				// or what is left told to its owner.
 				NotePlayerBotSidekickBoxSwept(ch, box);
