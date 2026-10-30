@@ -5443,7 +5443,7 @@ class PythonScriptLoader(object):
 
 		import sys
 		from utils import Sandbox
-		sandbox = Sandbox(True, ["uiScriptLocale", "localeInfo", "sys", "item", "app", "player","utils", "flamewindPath", "shop","grp", "quest", "colorInfo"])
+		sandbox = Sandbox(True, ["uiScriptLocale", "localeInfo", "sys", "item", "app", "player","utils", "flamewindPath", "shop","grp", "quest", "colorInfo", "questrenewal"]) # MT2009_PLUS_QUEST_RENEWAL_V1: characterwindow.py reads questrenewal.ENABLED
 
 		import chr
 		import player
