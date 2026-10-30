@@ -1796,13 +1796,12 @@ namespace
 		// and returning to ordinary experience progression much sooner.
 		// MT2009_PLUS_HORSE30_V1: in medals of the paid training
 		// (playerbot_horse30.h) - two trainings past the battle horse (2 or 3
-		// medals each, never across a trial), the next one or two before it -
-		// and the due saddlebag row's on top.
+		// medals each, never across a trial), the next one or two before it.
 		const bool highPriority = ch->GetJob() == JOB_WARRIOR ||
 				(ch->GetJob() == JOB_SURA && ch->GetSkillGroup() == 1);
 		const int levels = ch->GetHorseLevel() >= 11 ? 2
 				: (highPriority ? 1 + (int)(PlayerBotNavHash(ch->GetPlayerID() ^ 0x4d454441U) % 2U) : 1);
-		return std::max(1, GetPlayerBotHorseTrainingMedals(ch, levels)) + GetPlayerBotSaddlebagMedalReserve(ch);
+		return std::max(1, GetPlayerBotHorseTrainingMedals(ch, levels));
 	}
 
 	// A warp that half worked, and the only kind of damage a bot cannot walk off.
@@ -2046,7 +2045,7 @@ namespace
 		state.bVisitingStable = false;
 		state.bVisitingAlchemist = false;
 		state.bVisitingUriel = false;
-		state.bSaddlebagErrand = 0;
+		state.bCraftErrand = 0;
 		state.bVisitingDsAlchemist = false;
 		if (!ch->Show(targetMap, targetX, targetY, 0))
 		{

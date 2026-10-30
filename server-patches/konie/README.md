@@ -11,7 +11,7 @@ beststudio, https://bestpro.dev) — `/opt/metin2/cache/yohara/konie-src`.
   Materiały Rzemieślnicze, Yang);
 * `pony_buy` (0→1), `horse_upgrade` (10→11, Koń Bojowy), `horse_upgrade2` (20→21, Koń Wojskowy, 300 Demonicznych
   Łuczników);
-* juki `horse_inventory` (rzędy do 30 poziomu konia), Czarny Rumak (rasa 20119) od 30 poziomu (digirasta).
+* Czarny Rumak (rasa 20119) od 30 poziomu (digirasta).
 
 **Zniesione:** płatne szkolenie 21–28, „Próba Czarnego Rumaka” 29→30 (gracz w trakcie próby wraca do stanu start)
 oraz stały bonus konia Potwory/Bossy/Metiny 21–30 (właściciel 30.10.2026 — `konie.synchronizuj()` i boty zabierają
@@ -88,3 +88,33 @@ W sklepie w grze (zakładka Mounty; V3 pokazuje te same linie przez widok `shop`
   `docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 $T/konie/build_konie_packs.py $C/azbase $C/out/pack > $C/konie.json`
   i `konie/verify_konie.py` w pętli weryfikacji;
 * zmiana dbdata (item_proto) → ostrzeżenie „nieaktualne pliki” i nowa baza panelu (jak przy każdej zmianie przedmiotów).
+
+## Poprawki 3.0.6 (MT2009_PLUS_HORSE40_V3, 30.10.2026)
+
+* **Okno rozwoju konia — pasek 30→31 „37 500 / 21 474 836 480 037 500”** (i ten sam błąd na każdym poziomie 21–39):
+  `KonieSendInfo` wysyłał potrzebne doświadczenie (`unsigned int`) formatem `%lld`, a rdzeń jest 32-bitowy (`-m32`):
+  `%lld` brał to int i dolną połowę ceny Yang za nim (37 500 + 5 000 000·2³²), Yang czytał górną połowę (0). Pasek
+  nigdy nie był pełny, więc nie było czerwonego paska ani przycisku awansu. Teraz `%u %u %lld` zgodnie z typami;
+  15. pole to Gaya gracza — okno pisze, czego brakuje do próby („Brakuje: N Paszy dla Konia, X Yang, N Gaya”),
+  a wymóg Czempiona od 30 poziomu konia był już opisany w oknie. Tabela 21→40 zgodna z wiki (12 500 … 308 200).
+* **Umiejętności konia w oknie umiejętności (zakładka Jazda)**: `konie_rozwoj_info` idzie też przy logowaniu, po
+  nauce i po zapomnieniu umiejętności; `root/uicharacter.py` pokazuje nauczone umiejętności konia w prawej połowie
+  zakładki, w pierwszej kolumnie (u góry umiejętność z księgi, pod nią „Jazda (umiejętność konna)” 301), z ikoną
+  z paczki `konie`, poziomem i tooltipem (nazwa, opis / działanie, „Aktualny poziom”, dla 301 „Bonus umiejętności”).
+  Działają same (jazda / cios), więc nie da się ich użyć ani przeciągnąć na pasek.
+* **Juki konne usunięte z Yohary**: `CHARACTER::CanUseHorseInventory` zawsze `false` (edycja `horse bags off` —
+  komórki 180–224 zostają w układzie, bo exe numeruje za nimi pas i ekwipunek założony, ale nic tam nie trafia);
+  quest `horse_inventory` usunięty, stockowe `horse_inventory` / `horse_inventory_init` tracą handlery (Dockerfile);
+  klient bez okna juków (`uihorseinventory.py`, `interfacemodule.py`, `uiinventory.py` — przycisk w oknie ekwipunku
+  usuwa agent UI, tu tylko ukrywany, gdy skrypt go jeszcze ma); boty: `playerbot_saddlebag.h` →
+  `playerbot_craft_exchange.h` (zostaje tylko wymiana u Dozorcy i rynek materiałów), bez rzędów, przenoszenia
+  i liczenia juków jako miejsca.
+* **Migracja przedmiotów z juków** — `mariadb/playerbot/juki_usuniecie.sql` z `apply.sh`, raz (znacznik
+  `horse_bags_gone_v1` w `player.playerbot_migrations`), jedna transakcja: przedmiot idzie na pierwsze wolne miejsce
+  czterech stron ekwipunku (5×9, rozmiar z `item_proto`, przedmiot 2–3 komórkowy w jednej kolumnie strony), gdy brak —
+  do magazynu konta (bot 4 strony, gracz rozmiar z `safebox` 1–2, inaczej 1), gdy i tam brak — do Magazynu ItemShop
+  (`item_award`, z kamieniami i bonusami). Każde przeniesienie w `player.horse_bag_migration_log`. Usuwane flagi:
+  `horse_inventory_slot`, `playerbot.saddlebag_next_row`, stan `horse_inventory_init`. Robione w bazie, a nie przy
+  logowaniu, bo magazyn ładuje się dopiero u Magazyniera (hasło) — rdzeń przy logowaniu nie miałby gdzie odłożyć
+  nadmiaru; `playerbot-migrate` kończy się przed startem rdzeni db/game, więc żaden cache nie trzyma przedmiotów.
+  Próba na kopii bazy testu: 2 213 przedmiotów (467 do ekwipunku, 1 746 do magazynu), bez nakładania się komórek.

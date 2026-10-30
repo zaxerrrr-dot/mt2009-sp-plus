@@ -858,7 +858,7 @@ namespace {
                 M2_DELETE(preview);
                 continue;
             }
-            // MT2009_PLUS_SADDLEBAG_MARKET_V1: a line of materials bigger than
+            // MT2009_PLUS_CRAFT_MATERIAL_MARKET_V1: a line of materials bigger than
             // PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS (the stacks of two hundred of
             // older releases) comes home, a line a visit, to go up again cut.
             // MT2009_PLUS_MARKET_SINK_V1: a Cor line over PLAYERBOT_COR_LINE_MAX_UNITS too.
@@ -916,7 +916,7 @@ namespace {
             // drew "dust"; now a counter's +0 to +2 stays where it is - the
             // bag keeps three of each for it and only the rest goes to the
             // Alchemist (PLAYERBOT_SOUL_STONE_STALL_KEEP).
-            // Refine goods the Dozorca takes (playerbot_saddlebag.h), unsold
+            // Refine goods the Dozorca takes (playerbot_craft_exchange.h), unsold
             // for PLAYERBOT_CRAFT_UNSOLD_RECALL_MS: home, one a visit, for his
             // exchange - Materialy Rzemieslnicze sell where these did not.
             if (ch && IsPlayerBotCraftExchangeVnum(preview->GetVnum()) &&
@@ -1930,7 +1930,7 @@ namespace {
                     ++kindLines;
             if (kindLines >= PLAYERBOT_ALL_GEAR_KIND_LINES) return true;
         }
-        // MT2009_PLUS_SADDLEBAG_MARKET_V1: a few lines of materials a counter.
+        // MT2009_PLUS_CRAFT_MATERIAL_MARKET_V1: a few lines of materials a counter.
         if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED &&
                 BotOfflineLinesOf(shop, item->GetVnum()) >= PLAYERBOT_CRAFT_MATERIAL_COUNTER_LINES) return true;
         // MT2009_PLUS_MARKET_SINK_V1: and of Cors.
@@ -2096,9 +2096,9 @@ namespace {
                 ch->GetPlayerID(), ch->GetName(), item->GetVnum(), take, (unsigned int)item->GetCount());
             return to;
         }
-        // MT2009_PLUS_SADDLEBAG_MARKET_V1: Materialy Rzemieslnicze go up
+        // MT2009_PLUS_CRAFT_MATERIAL_MARKET_V1: Materialy Rzemieslnicze go up
         // PLAYERBOT_CRAFT_MATERIAL_LINE_UNITS at most a line, never the
-        // saddlebag rows' own (IsPlayerBotKeptCraftMaterial: the pieces the
+        // bot's own keep (IsPlayerBotKeptCraftMaterial: the pieces the
         // listing rule lets go are the stack's last).
         // MT2009_PLUS_MARKET_SINK_V1: and a Cor Draconis PLAYERBOT_COR_LINE_MAX_UNITS.
         if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED || IsPlayerBotCorVnum(item->GetVnum())) {

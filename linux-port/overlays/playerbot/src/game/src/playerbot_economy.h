@@ -1600,10 +1600,7 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return false;
-		// The saddlebags' free cells count as room: what lands there comes
-		// back down as the bag empties (playerbot_saddlebag.h).
-		const int occupied = PLAYERBOT_BAG_CELLS - CountPlayerBotFreeInventoryCells(ch) -
-				CountPlayerBotSaddlebagFreeCells(ch);
+		const int occupied = PLAYERBOT_BAG_CELLS - CountPlayerBotFreeInventoryCells(ch);
 		return occupied * 100 >= PLAYERBOT_BAG_CELLS * PLAYERBOT_BAG_FULL_PERCENT;
 	}
 
@@ -1626,8 +1623,7 @@ namespace
 	bool IsPlayerBotBagUnderPressure(LPCHARACTER ch)
 	{
 		return ch && ch->IsItemLoaded() &&
-				CountPlayerBotFreeInventoryCells(ch) + CountPlayerBotSaddlebagFreeCells(ch) <=
-					PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
+				CountPlayerBotFreeInventoryCells(ch) <= PLAYERBOT_BAG_PRESSURE_FREE_CELLS;
 	}
 
 	// A bag piece this bot would put on: its slot is empty or it outscores
@@ -3261,7 +3257,7 @@ namespace
 		// from. The default below sold them all - on the test world some
 		// thousand of each in a day, for a few hundred yang against 40 000 to
 		// 135 000 on the sheet (Tieru, 18 September).
-		// A saddlebag bot's materials for its rows are nobody's scrap.
+		// A bot's materials for its horse training are nobody's scrap.
 		if (IsPlayerBotKeptCraftMaterial(ch, item))
 			return false;
 		// A polymorph book or a Mining Guide it can read is read, not sold.

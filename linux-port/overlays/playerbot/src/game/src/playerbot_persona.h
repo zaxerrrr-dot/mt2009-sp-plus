@@ -746,7 +746,7 @@ namespace
 				? CHARACTER_MANAGER::instance().Find(state.dwTargetVID) : NULL;
 		const bool busy = (target && !target->IsDead()) || ch->GetVictim() != NULL ||
 				state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
-				state.bVisitingHerbalist || state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0 || state.bVisitingDsAlchemist || state.bMarketTrip || state.bFishingSession ||
+				state.bVisitingHerbalist || state.bVisitingAlchemist || state.bVisitingUriel || state.bCraftErrand != 0 || state.bVisitingDsAlchemist || state.bMarketTrip || state.bFishingSession ||
 				state.bRecoveringAfterDeath || state.bTacticalRetreat || ch->GetMyShop() != NULL ||
 				IsPlayerBotMiningNow(ch->GetPlayerID(), dwNow) ||
 				IsPlayerBotHerbPickingNow(ch, dwNow) ||   // MT2009_PLUS_BOT_HERBALIST_FIX_V1

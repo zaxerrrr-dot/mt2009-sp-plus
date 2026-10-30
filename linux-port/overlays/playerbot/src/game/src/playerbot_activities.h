@@ -123,8 +123,7 @@ namespace
 				ch->GetGold() >= (int)PLAYERBOT_BATTLE_HORSE_FEE;
 		// MT2009_PLUS_HORSE30_V1: a trial to collect, or a training the bag
 		// and the purse can pay for in full (CanPlayerBotPayHorseTraining: the
-		// medals over the due saddlebag row's, the materials, the yang over the
-		// reserve; the feed is bought at the stable). The old errand - one
+		// medals, the materials, the yang over the reserve; the feed is bought at the stable). The old errand - one
 		// medal handed in, one level up, up to twenty - is gone.
 		const bool bTrialWaiting = IsPlayerBotMilitaryHorseEarned(ch) || IsPlayerBotBlackSteedEarned(ch);
 		// MT2009_PLUS_HORSE40_V1: past 21 a feed try the bag and the purse pay for

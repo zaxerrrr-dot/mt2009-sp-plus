@@ -498,7 +498,7 @@ namespace {
         NotePlayerBotRecipeBought(ch, boughtVnum, payPrice);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
         if (IsPlayerBotSashVnum(boughtVnum))
             NotePlayerBotSashBought(ch, boughtVnum, payPrice);
-        NotePlayerBotSaddlebagBought(ch, boughtVnum, payPrice, boughtCount);
+        NotePlayerBotCraftMaterialBought(ch, boughtVnum, payPrice, boughtCount);
         NotePlayerBotCorBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_MARKET_SINK_V1
         NotePlayerBotGuildMaterialBought(ch, boughtVnum, payPrice);
         NotePlayerBotCraftBought(ch, boughtVnum, payPrice); // MT2009_PLUS_BOT_WORKSHOP_V1
@@ -762,7 +762,7 @@ namespace {
                     (long long)ch->GetGold());
                 return RunPlayerBotOfflinePick(ch, state, now);
             }
-            // MT2009_PLUS_HORSE_ECONOMY_V1 / MT2009_PLUS_SADDLEBAG_MARKET_V1 /
+            // MT2009_PLUS_HORSE_ECONOMY_V1 / MT2009_PLUS_CRAFT_MATERIAL_MARKET_V1 /
             // MT2009_PLUS_MARKET_SINK_V1: a horse medal, Materialy
             // Rzemieslnicze, a Cor Draconis or a sash, on every stand of the map.
             if (FindPlayerBotSinkGoodsPick(ch, state, now))
@@ -1579,13 +1579,13 @@ namespace {
     const DWORD PLAYERBOT_BUFF_SET_MARKET_LOOK_MS = 15 * 60 * 1000;
     std::map<DWORD, DWORD> s_mapPlayerBotBuffSetNextLook;
 
-    // MT2009_PLUS_HORSE_ECONOMY_V1 (with MT2009_PLUS_SADDLEBAG_MARKET_V1 and
+    // MT2009_PLUS_HORSE_ECONOMY_V1 (with MT2009_PLUS_CRAFT_MATERIAL_MARKET_V1 and
     // MT2009_PLUS_MARKET_SINK_V1): the goods the world's counters were full of
     // while the bots that wanted them never bought them - on the supporters'
     // world 1216 horse medals, 14 205 Materialy Rzemieslnicze, 50 pages of
     // Cors and pages of sashes. The browse reads sixty-four lines a look of
     // some ten thousand on a first village's stands, so a bot short of a
-    // medal for its horse, of materials for its saddlebag rows, of Cors or of
+    // medal for its horse, of materials for its training, of Cors or of
     // a sash met one by chance or never. Like the Stalki's and the books'
     // picks, this reads every stand of the map for those vnums alone - only
     // while the bot wants one of the four (asked without a counter) and
@@ -1615,8 +1615,8 @@ namespace {
         if (next != 0 && !Due(now, next)) return false;
         next = now + PLAYERBOT_SINK_LOOK_MS;
         // MT2009_PLUS_HORSE30_V1: the next paid training's medals.
-        const bool medal = PlayerBotHorseWantsMedal(ch) || PlayerBotSaddlebagWantsMedal(ch);
-        const bool wants = medal || PlayerBotWantsSaddlebagGoods(ch) || PlayerBotWantsAlchemyFromMarket(ch) ||
+        const bool medal = PlayerBotHorseWantsMedal(ch);
+        const bool wants = medal || PlayerBotWantsCraftGoods(ch) || PlayerBotWantsAlchemyFromMarket(ch) ||
                 PlayerBotWantsSashFromMarket(ch);
         if (!wants) return false;
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()

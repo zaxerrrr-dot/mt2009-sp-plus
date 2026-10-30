@@ -90,6 +90,57 @@ ICON_TOOLTIPS = (
 )
 STAT_ICONS = (("HTH_IMG", "HTH"), ("INT_IMG", "INT"), ("STR_IMG", "STR"), ("DEX_IMG", "DEX"))
 
+# MT2009_PLUS_HORSE40_V3 (poprawki-3.0.6 item 7, the owner's picture 255): the horse skills of the books 55050-55067
+# (quest flags konie_rozwoj.s1/s2 - the player's skill array ends at 265, the server sends them with
+# "konie_rozwoj_info", uikonierozwoj.GetInfo) on the riding tab: the three old riding skills keep the left half, the
+# learned horse skills stand in the right half's first column - the book skill on top, "Jazda (umiejetnosc konna)"
+# (301) under it - with their level, their icon of the pack "konie" and a tooltip (name, what it does, the level, for
+# 301 the skill bonus). They work by themselves (riding / a blow, konie_rozwoj.cpp), so there is nothing to use or
+# put on the quick bar: the places only show them.
+HORSE_SKILL_PLACES = (2, 4)	# Skill_Active_Slot: the right half's first column, rows 1 and 2
+HORSE_SKILL_ICON_BASE = 990000	# player.RegisterEmotionIcon's table, past every emotion's and skillbookicon's
+HORSE_SKILL_RIDING = 301
+TEXT_HORSE_SKILL_RIDING = "Jazda (umiej\xeatno\x9c\xe6 konna)"
+TEXT_HORSE_SKILL_RIDING_DESC = "Zwi\xeaksza umiej\xeatno\x9cci twojego wierzchowca"
+TEXT_HORSE_SKILL_LEVEL = "Aktualny poziom: %d"
+TEXT_HORSE_SKILL_BONUS = "Bonus umiej\xeatno\x9cci: +%.2f %%"
+TEXT_HORSE_SKILL_HINT = "Ulepszysz j\xb9 u Stajennego (Rozw\xf3j konia)."
+_horseSkillIcons = {}
+
+def _HorseSkillIcon(v):
+	"""The resource handle of a horse skill's icon (.sub of the pack "konie") for wndMgr.SetSlot, or 0."""
+	if v in _horseSkillIcons:
+		return _horseSkillIcons[v]
+	handle = 0
+	try:
+		import uikonierozwoj
+		path = uikonierozwoj.SkillIcon(v)
+		if app.IsExistFile(path):
+			player.RegisterEmotionIcon(HORSE_SKILL_ICON_BASE + v, path)
+			handle = player.GetEmotionIconImage(HORSE_SKILL_ICON_BASE + v)
+	except Exception:
+		handle = 0
+	_horseSkillIcons[v] = handle
+	return handle
+
+def _HorseSkills():
+	"""[(skill, level)] of the learned horse skills the horse's level opens, the book skill before 301, and the
+	horse's level (21 at least: the values' formula)."""
+	try:
+		import uikonierozwoj
+		info = uikonierozwoj.GetInfo()
+	except Exception:
+		return [], 21
+	if not info:
+		return [], 21
+	out = []
+	for i in xrange(min(2, info.get("slots", 0))):
+		v, lv = info["skills"][i]
+		if v in uikonierozwoj.SKILLS and lv > 0:
+			out.append((v, lv))
+	out.sort(key=lambda x: 1 if x[0] == HORSE_SKILL_RIDING else 0)
+	return out, max(21, info.get("level", 21))
+
 def _Number(n):
 	"""1234567 -> 1.234.567"""
 	s = str(n)
@@ -1132,6 +1183,10 @@ class CharacterWindow(ui.ScriptWindow):
 
 		mouseController = mouseModule.mouseController
 
+		if self.__HorseSkillAt(skillSlotIndex): # MT2009_PLUS_HORSE40_V3: shown only (they work by themselves)
+			mouseController.DeattachObject()
+			return
+
 		if False == mouseController.isAttached():
 
 			srcSlotIndex = self.__RealSkillSlotToSourceSlot(skillSlotIndex)
@@ -1157,6 +1212,9 @@ class CharacterWindow(ui.ScriptWindow):
 	def OverInItem(self, slotNumber):
 
 		if mouseModule.mouseController.isAttached():
+			return
+
+		if self.__ShowHorseSkillToolTip(slotNumber): # MT2009_PLUS_HORSE40_V3
 			return
 
 		if 0 == self.toolTipSkill:
@@ -1185,6 +1243,60 @@ class CharacterWindow(ui.ScriptWindow):
 	def OverOutItem(self):
 		if 0 != self.toolTipSkill:
 			self.toolTipSkill.HideToolTip()
+		if self.toolTip: # MT2009_PLUS_HORSE40_V3: the horse skills' tooltip
+			self.toolTip.HideToolTip()
+
+	# MT2009_PLUS_HORSE40_V3: the horse skills on the riding tab (HORSE_SKILL_PLACES)
+	def __HorseSkillAt(self, slotNumber):
+		"""(skill, level, horse level) shown at this place of the riding tab, or None."""
+		if self.PAGE_HORSE != self.curSelectedSkillGroup or slotNumber not in HORSE_SKILL_PLACES:
+			return None
+		skills, horseLevel = _HorseSkills()
+		i = HORSE_SKILL_PLACES.index(slotNumber)
+		if i >= len(skills):
+			return None
+		return (skills[i][0], skills[i][1], horseLevel)
+
+	def __RefreshHorseSkills(self):
+		if self.PAGE_HORSE != self.curSelectedSkillGroup:
+			return
+		page = self.skillPageDict["ACTIVE"]
+		for place in HORSE_SKILL_PLACES:
+			page.ClearSlot(place)
+			data = self.__HorseSkillAt(place)
+			if not data:
+				continue
+			icon = _HorseSkillIcon(data[0])
+			if not icon:
+				continue
+			page.SetSlot(place, data[0], 1, 1, icon)
+			page.SetSlotCount(place, data[1])
+		page.RefreshSlot()
+
+	def __ShowHorseSkillToolTip(self, slotNumber):
+		data = self.__HorseSkillAt(slotNumber)
+		if not data or not self.toolTip:
+			return False
+		import uikonierozwoj
+		v, lv, horseLevel = data
+		tip = self.toolTip
+		tip.ClearToolTip()
+		if v == HORSE_SKILL_RIDING:
+			tip.AppendTextLine(TEXT_HORSE_SKILL_RIDING, uikonierozwoj.COLOR_GOLD)
+			tip.AppendSpace(5)
+			tip.AppendTextLine(TEXT_HORSE_SKILL_RIDING_DESC)
+			tip.AppendTextLine(TEXT_HORSE_SKILL_LEVEL % lv)
+			tip.AppendTextLine(TEXT_HORSE_SKILL_BONUS % uikonierozwoj.Value(v, lv, horseLevel))
+		else:
+			tip.AppendTextLine(uikonierozwoj.SkillName(v), uikonierozwoj.COLOR_GOLD)
+			tip.AppendSpace(5)
+			tip.AppendTextLine(uikonierozwoj.EffectText(v, lv, horseLevel))
+			tip.AppendTextLine(TEXT_HORSE_SKILL_LEVEL % lv)
+		tip.AppendTextLine(uikonierozwoj.TEXT_TIP_RIDING, uikonierozwoj.COLOR_DIM)
+		if lv < 20:
+			tip.AppendTextLine(TEXT_HORSE_SKILL_HINT, uikonierozwoj.COLOR_DIM)
+		tip.ShowToolTip()
+		return True
 
 	## Quest
 	# MT2009_PLUS_QUEST_RENEWAL_V1: the quest page opened at a quest (the side letter's click, interfacemodule.py)
@@ -1433,6 +1545,7 @@ class CharacterWindow(ui.ScriptWindow):
 		else:
 			self.__RefreshSkillPage("ACTIVE", self.ACTIVE_PAGE_SLOT_COUNT)
 			self.__RefreshSkillPage("SUPPORT", self.SUPPORT_PAGE_SLOT_COUNT)
+		self.__RefreshHorseSkills() # MT2009_PLUS_HORSE40_V3
 
 		self.RefreshSkillPlusButtonList()
 
@@ -1543,6 +1656,9 @@ class CharacterWindow(ui.ScriptWindow):
 
 	## Use Skill
 	def ClickSkillSlot(self, slotIndex):
+
+		if self.__HorseSkillAt(slotIndex): # MT2009_PLUS_HORSE40_V3
+			return
 
 		srcSlotIndex = self.__RealSkillSlotToSourceSlot(slotIndex)
 		skillIndex = player.GetSkillIndex(srcSlotIndex)

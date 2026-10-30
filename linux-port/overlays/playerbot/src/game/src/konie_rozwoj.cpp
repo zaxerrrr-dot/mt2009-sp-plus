@@ -369,16 +369,25 @@ namespace
 		return level + 1;
 	}
 
+	// MT2009_PLUS_HORSE40_V3 (info): one format per argument. The exp needed went out as %lld from an unsigned int:
+	// on the 32-bit core (-m32) %lld took that int and the low half of the Yang after it as one number
+	// (37 500 + 5 000 000 * 2^32 = "21 474 836 480 037 500" at level 30, poprawki-3.0.6 item 6) and the Yang read
+	// the high half (0) - the bar never filled, so the level-up button never came at any level 21-39. The 15th field
+	// is the rider's Gaya (the window tells what a try still lacks). Sent at login too and after every change of
+	// the skills: the skill window's riding tab shows them (root/uicharacter.py).
 	void KonieSendInfo(LPCHARACTER ch, bool bOpen)
 	{
 		if (!KonieClient(ch))
 			return;
 		const int level = ch->GetHorseLevel();
-		ch->ChatPacket(CHAT_TYPE_COMMAND, "konie_rozwoj_info %d %d %u %lld %d %d %d %d %d %d %d %d %d %d", bOpen ? 1 : 0,
-				level, (unsigned int)std::max(0, KonieFlag(ch, "exp")), (unsigned int)KonieNeedExp(level), KoniePrice(level),
+		const unsigned int exp = (unsigned int)std::max(0, KonieFlag(ch, "exp"));
+		const unsigned int need = (unsigned int)KonieNeedExp(level);
+		const long long yang = KoniePrice(level);
+		ch->ChatPacket(CHAT_TYPE_COMMAND, "konie_rozwoj_info %d %d %u %u %lld %d %d %d %d %d %d %d %d %d %d", bOpen ? 1 : 0,
+				level, exp, need, yang,
 				KonieFlag(ch, "fail") > 0 ? 1 : 0, KonieRetryGaya(level), KonieRequirement(ch),
 				KonieFlag(ch, "s1"), KonieFlag(ch, "s1lv"), KonieFlag(ch, "s2"), KonieFlag(ch, "s2lv"),
-				KonieSlots(level), KonieFlag(ch, "zloty") > 0 ? 1 : 0);
+				KonieSlots(level), KonieFlag(ch, "zloty") > 0 ? 1 : 0, ch->GetGaya());
 	}
 
 	bool KonieWindowOpen(LPCHARACTER ch)
@@ -678,8 +687,7 @@ namespace quest
 			{
 				ch->ComputePoints();
 				sys_log(0, "KONIE_ROZWOJ: skill learned pid=%u name=%s skill=%u", ch->GetPlayerID(), ch->GetName(), v);
-				if (KonieFlag(ch, "okno") >= get_global_time())
-					KonieSendInfo(ch, false);
+				KonieSendInfo(ch, false);	// MT2009_PLUS_HORSE40_V3 (info): the skill window's riding tab too
 			}
 		}
 		lua_pushnumber(L, code);
@@ -705,6 +713,7 @@ namespace quest
 			KonieSetFlag(ch, "s2lv", 0);
 			ch->ComputePoints();
 			sys_log(0, "KONIE_ROZWOJ: skill forgotten pid=%u name=%s skill=%u", ch->GetPlayerID(), ch->GetName(), v);
+			KonieSendInfo(ch, false);	// MT2009_PLUS_HORSE40_V3 (info)
 			done = true;
 		}
 		lua_pushboolean(L, done ? 1 : 0);
@@ -727,12 +736,16 @@ namespace quest
 		return 2;
 	}
 
-	// horse.konie_odswiez() - the points again (the Zlota Ksiega, a login)
+	// horse.konie_odswiez() - the points again (the Zlota Ksiega, a login) and the client's horse lines (the skill
+	// window's riding tab, MT2009_PLUS_HORSE40_V3 (info))
 	ALUA(horse_konie_odswiez)
 	{
 		LPCHARACTER ch = CQuestManager::instance().GetCurrentCharacterPtr();
 		if (ch && ch->IsPC())
+		{
 			ch->ComputePoints();
+			KonieSendInfo(ch, false);
+		}
 		return 0;
 	}
 

@@ -265,7 +265,7 @@ bool Mt2009KonieIsKeptVnum(DWORD dwVnum);
 #include "playerbot_belts.h" // MT2009_PLUS_BOT_BELTS_V1: belt makers (Mistrz's recipes), the belt at the anvil, the pouch
 #include "playerbot_talismans.h" // MT2009_PLUS_BOT_TALISMANS_V1: the talisman for the hunting map's elements, refined at the anvil
 #include "playerbot_workshop.h" // MT2009_PLUS_BOT_WORKSHOP_V1: the errand to Mistrz and the Blacksmith, the crafts' keep and market
-#include "playerbot_saddlebag.h"
+#include "playerbot_craft_exchange.h"
 #include "playerbot_awakening.h" // Digi Rasta's Ritual of Awakening and soul stones +5..+9: engine hooks, boss drop, bot prices and ritual (MT2009_PLUS_AWAKENING_V1, MT2009_PLUS_SOULSTONE9_V1)
 #include "playerbot_explain_late.h"
 #include "playerbot_market_life.h" // MT2009_PLUS_MARKET_LIFE_V1: the owner's market list of 9 October - scroll worth, rare goods, whims, barter, the material market's test option
@@ -8050,11 +8050,10 @@ WritePlayerBotGuildStatus(dwNow);
 				ManagePlayerBotShopAids(ch, state, dwNow))
 			continue;
 
-		// The Dozorca's exchange and the Stajenny's saddlebag rows
-		// (playerbot_saddlebag.h), local errands of any village; the page's
-		// move-back runs inside on its own clock.
+		// The Dozorca's exchange (playerbot_craft_exchange.h), a local errand
+		// of any village.
 		if (!bServingPerson && !state.bMultiPullActive && !bFightingMetin &&
-				ManagePlayerBotSaddlebag(ch, state, dwNow))
+				ManagePlayerBotCraftExchange(ch, state, dwNow))
 			continue;
 
 		// Alchemy (playerbot_alchemy.h): Cors opened and stones worn on a

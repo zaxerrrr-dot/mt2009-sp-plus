@@ -431,7 +431,7 @@ namespace
 		const bool horse = (needs & playerbot_progression::NEED_HORSE) != 0 &&
 				CanPlayerBotAdvanceHorse(ch) && GetPlayerBotMonkeyMapFor(ch) != 0 &&
 				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) <
-					GetPlayerBotHorseTrainingMedals(ch, 1) + GetPlayerBotSaddlebagMedalReserve(ch);
+					GetPlayerBotHorseTrainingMedals(ch, 1);
 		const bool metins = (needs & playerbot_progression::NEED_METINS) != 0;
 		if (horse && metins)
 			return ((dwNow / PLAYERBOT_PROGRESS_FARM_WINDOW_MS + ch->GetPlayerID()) & 1U) != 0

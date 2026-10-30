@@ -8300,10 +8300,10 @@ namespace
 	int GetPlayerBotSashGoodsInBag(LPCHARACTER ch);
 	bool IsPlayerBotSashForMerchant(LPCHARACTER ch, LPITEM item);
 
-	// The horse saddlebags and the Dozorca's exchange (playerbot_saddlebag.h).
+	// The Dozorca's exchange and the materials (playerbot_craft_exchange.h).
 	const DWORD PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED = 30378;
 	const DWORD PLAYERBOT_CRAFT_MATERIAL_UNIT_PRICE = 100000;
-	// MT2009_PLUS_SADDLEBAG_MARKET_V1: a counter's line of them is at most
+	// MT2009_PLUS_CRAFT_MATERIAL_MARKET_V1: a counter's line of them is at most
 	// this many pieces (BotOfflinePrepareLine), and a counter shows at most
 	// this many such lines (BotOfflineCounterRefuses) - lines of two hundred
 	// at twenty million filled 775 pages and no bot could pay for one.
@@ -8357,8 +8357,6 @@ namespace
 	const int PLAYERBOT_SPARE_SWAP_COUNTER_LINES = 24;
 	void NotePlayerBotCorBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
 	const DWORD PLAYERBOT_CRAFT_UNSOLD_RECALL_MS_PRE = 12 * 60 * 60 * 1000;
-	bool IsPlayerBotSaddlebagKeeperPID(DWORD pid);
-	int GetPlayerBotSaddlebagMedalReserve(LPCHARACTER ch);
 	bool IsPlayerBotCraftExchangeStock(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotKeptCraftMaterial(LPCHARACTER ch, LPITEM item);
 	bool IsPlayerBotCraftExchangeVnum(DWORD vnum);
@@ -8367,10 +8365,9 @@ namespace
 	bool WantsPlayerBotCraftGoodsOffer(LPCHARACTER ch, LPITEM offer);
 	bool CanPlayerBotPayForCraftMaterial(LPCHARACTER ch, LPITEM item, long long price);
 	bool CanPlayerBotPayForCraftGoods(LPCHARACTER ch, LPITEM item, long long price);
-	bool PlayerBotSaddlebagWantsMedal(LPCHARACTER ch);
-	bool PlayerBotWantsSaddlebagGoods(LPCHARACTER ch);
-	void NotePlayerBotSaddlebagBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
-	void LogPlayerBotSaddlebagCensus();
+	bool PlayerBotWantsCraftGoods(LPCHARACTER ch);
+	void NotePlayerBotCraftMaterialBought(LPCHARACTER ch, DWORD vnum, long long price, DWORD count);
+	void LogPlayerBotCraftCensus();
 
 	// Alchemy and the daily Cors (playerbot_alchemy.h).
 	void NotePlayerBotDragonShardKill(LPCHARACTER ch, LPCHARACTER victim);
@@ -9167,9 +9164,8 @@ namespace
 			dwNextAlchemistActionTime(0),
 			dwNextSashCheckTime(0),
 			dwNextSashActionTime(0),
-			dwNextSaddlebagCheckTime(0),
-			dwNextSaddlebagActionTime(0),
-			dwNextSaddlebagMoveTime(0),
+			dwNextCraftCheckTime(0),
+			dwNextCraftActionTime(0),
 			dwNextDsCheckTime(0),
 			dwNextDsActionTime(0),
 			dwNextDsLocalTime(0),
@@ -9283,7 +9279,7 @@ namespace
 			bVisitingAlchemist(false),
 			bVisitingUriel(false),
 			bSashVisitSteps(0),
-			bSaddlebagErrand(0),
+			bCraftErrand(0),
 			bVisitingDsAlchemist(false),
 			bDsVisitSteps(0),
 			bVisitingStable(false),
@@ -9511,10 +9507,9 @@ namespace
 		// Theowahdan's sash work (ManagePlayerBotSash; bVisitingUriel keeps its name), the same shape again.
 		DWORD dwNextSashCheckTime;
 		DWORD dwNextSashActionTime;
-		// The saddlebags' errands and the page's move-back (playerbot_saddlebag.h).
-		DWORD dwNextSaddlebagCheckTime;
-		DWORD dwNextSaddlebagActionTime;
-		DWORD dwNextSaddlebagMoveTime;
+		// The Dozorca's errand (playerbot_craft_exchange.h).
+		DWORD dwNextCraftCheckTime;
+		DWORD dwNextCraftActionTime;
 		// Alchemy (playerbot_alchemy.h): the Alchemist's visit and the local work.
 		DWORD dwNextDsCheckTime;
 		DWORD dwNextDsActionTime;
@@ -9708,7 +9703,7 @@ namespace
 		bool bVisitingAlchemist;
 		bool bVisitingUriel;
 		BYTE bSashVisitSteps;
-		BYTE bSaddlebagErrand;
+		BYTE bCraftErrand;
 		bool bVisitingDsAlchemist;
 		BYTE bDsVisitSteps;
 		bool bVisitingStable;

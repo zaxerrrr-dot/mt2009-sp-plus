@@ -1328,7 +1328,7 @@ namespace
 		// under way waits it out with the knife put away.
 		const bool busy = state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
 				state.bVisitingHerbalist || state.bVisitingAlchemist || state.bVisitingUriel ||
-				state.bVisitingDsAlchemist || state.bSaddlebagErrand != 0 || state.bMarketTrip ||
+				state.bVisitingDsAlchemist || state.bCraftErrand != 0 || state.bMarketTrip ||
 				state.bRecoveringAfterDeath || state.bTacticalRetreat || state.bMultiPullActive ||
 				state.bFishingSession || state.bWorldEventKind != 0 || ch->GetMyShop() != NULL ||
 				IsPlayerBotMiningNow(pid, dwNow) ||
