@@ -9,7 +9,8 @@
 #   "/relikt take|add|charge|activate <page>"
 #   "relikt_state <page> (<vnum> <left> <time> <flags> <type value> x4) x2", "relikt_open"
 # The souls are taken from the bag and the extra inventory (one of each a bonus / a charge); their slots show how
-# many there are. The tooltip of a relic (bag, window) is RelicTooltip (uitooltip.py AddItemData). Texts CP1250.
+# many there are (a missing soul: the empty slot, the background's placeholder). The tooltip of a relic (bag, window)
+# is RelicTooltip (uitooltip.py AddItemData). Texts CP1250.
 import app
 import chat
 import mouseModule
@@ -178,6 +179,7 @@ class ReliktWindow(ui.ScriptWindow):
 		self.toolTip = None
 		self.helpToolTip = None
 		self.nextRefresh = 0.0
+		self.shown = {}		# slot -> what it shows (the relic's vnum / a soul's count)
 		self.__Load()
 
 	def __del__(self):
@@ -241,6 +243,7 @@ class ReliktWindow(ui.ScriptWindow):
 		self.ClearDictionary()
 
 	def Open(self):
+		self.shown = {}
 		self.Refresh()
 		self.Show()
 		self.SetTop()
@@ -264,18 +267,30 @@ class ReliktWindow(ui.ScriptWindow):
 				self.pageButtons[i].Down()
 			else:
 				self.pageButtons[i].SetUp()
-		if d:
-			self.relicSlot.SetItemSlot(SLOT_RELIC, d['vnum'], 0)
-		else:
+		# A slot is set again only when what it shows changes, and cleared first: the exe's CSlotWindow::SetSlot keeps
+		# the old icon (and its colour) when the same vnum is set again - a soul once shown dimmed stayed dark with its
+		# count after the souls came (3.0.6 tests, 252.webp). As GF's window: a soul you have - its icon and how many;
+		# none - the slot empty, the background's own placeholder (passive_01.dds: sword, armour, ring, element) shows.
+		relic = d['vnum'] if d else 0
+		if self.shown.get(SLOT_RELIC) != relic:
+			self.shown[SLOT_RELIC] = relic
 			self.relicSlot.ClearSlot(SLOT_RELIC)
-		self.relicSlot.RefreshSlot()
+			if relic:
+				self.relicSlot.SetItemSlot(SLOT_RELIC, relic, 0)
+			self.relicSlot.RefreshSlot()
+		changed = False
 		for i, v in enumerate(D.SOULS):
+			slot = SOUL_SLOTS[i]
 			n = SoulCount(v)
+			if self.shown.get(slot) == n:
+				continue
+			self.shown[slot] = n
+			changed = True
+			self.soulSlot.ClearSlot(slot)
 			if n > 0:
-				self.soulSlot.SetItemSlot(SOUL_SLOTS[i], v, n if n > 1 else 0)
-			else:
-				self.soulSlot.SetItemSlot(SOUL_SLOTS[i], v, 0, (0.4, 0.4, 0.4, 0.6))
-		self.soulSlot.RefreshSlot()
+				self.soulSlot.SetItemSlot(slot, v, n)
+		if changed:
+			self.soulSlot.RefreshSlot()
 		self.__RefreshTexts()
 
 	def __RefreshTexts(self):

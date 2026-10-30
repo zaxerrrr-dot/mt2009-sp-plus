@@ -22,7 +22,8 @@
 // The bonuses (x = the line's value; "ready" = its cooldown is over, the cooldown starts at every roll):
 //   1-4  Wola SungMa WIT / SILA / ODP / INT +15 for x s when hit (120 s)       -> affect 760+id on POINT_SUNGMA_*
 //   5    x% when hit: 30 s of picking up the own drops around (300 s)           -> PickupNearbyItems every 2 s
-//   6/7  in combat with HP / SP not full: the elixir of the sun / moon (300 s)   -> the missing HP / SP at once
+//   6/7  in combat (a blow given / taken in 10 s; on the blow and every tick) with HP / SP not full: the elixir
+//        of the sun / moon (300 s, from the refill)                              -> the missing HP / SP at once
 //   8    x% when a skill is used: every skill's cooldown reset (120 s)          -> char_skill.cpp (relic reset)
 //   9    hitting a Metin: +x% damage against Metins for 5 s (120 s)            -> POINT_ATTBONUS_STONE
 //   10   hitting a Metin: +x% defence for 5 s (120 s)                          -> POINT_DEF_BONUS
@@ -35,6 +36,9 @@
 //        not stun-immune) for 2 s; players are never stunned by it
 // Commands (root/uirelikt.py):
 //   /relikt hello | page <0|1> | put <cell> | take <page> | add <page> | charge <page> | activate <page>
+//   /relikt debug [1]   (GM) the selected page's relic, its bonuses and cooldowns (1: the cooldowns cleared)
+// Every proc tells the player in the chat and writes "RELIC_PROC: <name> (<pid>) bonus <id> (<value>)" to the syslog
+// (players only).
 // Answer: "relikt_state <page> (<vnum> <left> <time> <flags> <type value> x4) x2", "relikt_open".
 #include "stdafx.h"
 #include "constants.h"
@@ -74,6 +78,7 @@ namespace
 		RELIC_TRAMPLE_SECONDS = 20,
 		RELIC_TRAMPLE_STUN = 2,
 		RELIC_NO_DEATH_HP_PCT = 30,
+		RELIC_COMBAT_MS = 10000,	// "in combat": a blow given or taken in the last 10 s (the elixirs, 6 / 7)
 		AFFECT_RELIC_FIRST = 760,	// + the bonus id (761-776; free: 720/721 Boss Swiata, 1000+ the quests')
 		HEADER_GC_SKILL_COOLTIME_END_RELIC = 73,	// the exe's HEADER_GC_SKILL_COOLTIME_END (as playerbot_bonus67.cpp)
 	};
@@ -96,10 +101,11 @@ namespace
 		DWORD adwReady[relic_table::BONUS_NUM + 1];
 		DWORD dwPickupUntil;
 		DWORD dwTrampleUntil;
+		DWORD dwCombatUntil;
 		int iPending;		// seconds run, not yet in socket 0
 		int iPage;			// the page whose relic iPending belongs to
 		int iTicks;
-		TRuntime() : dwPickupUntil(0), dwTrampleUntil(0), iPending(0), iPage(0), iTicks(0)
+		TRuntime() : dwPickupUntil(0), dwTrampleUntil(0), dwCombatUntil(0), iPending(0), iPage(0), iTicks(0)
 		{
 			for (int i = 0; i <= relic_table::BONUS_NUM; ++i)
 				adwReady[i] = 0;
@@ -240,6 +246,7 @@ namespace
 	};
 
 	void StopTick(LPCHARACTER ch);
+	void Elixirs(LPCHARACTER ch, LPITEM relic, DWORD dwNow);
 
 	EVENTFUNC(relic_tick_event)
 	{
@@ -281,6 +288,9 @@ namespace
 			if (rt.dwPickupUntil && !Reached(dwNow, rt.dwPickupUntil) && (rt.iTicks & 1) == 0 && !ch->IsDead() &&
 					ch->CanHandleItem(false, false))
 				ch->PickupNearbyItems();
+			// bonuses 6 / 7: also between the blows while in combat (HP / SP spent by a skill, a potion's wait)
+			if (rt.dwCombatUntil && !Reached(dwNow, rt.dwCombatUntil))
+				Elixirs(ch, relic, dwNow);
 		}
 		for (size_t i = 0; i < vecGone.size(); ++i)
 			s_setTick.erase(vecGone[i]);
@@ -333,27 +343,53 @@ namespace
 		return iPct > 0 && number(1, 100) <= iPct;
 	}
 
+	// a bonus that worked: the player's line in the chat (every proc tells it - the 3.0.6 tests: the moon elixir's
+	// refill was not seen and taken as "never works") and the syslog (players only: the bots proc all day)
+	void Proc(LPCHARACTER ch, int id, int iValue, const char* c_pszText)
+	{
+		if (!ch || IsBot(ch))
+			return;
+		if (c_pszText && *c_pszText)
+			Info(ch, c_pszText);
+		sys_log(0, "RELIC_PROC: %s (%u) bonus %d (%d)", ch->GetName(), ch->GetPlayerID(), id, iValue);
+	}
+
 	void Buff(LPCHARACTER ch, int id, int iValue, int iSeconds)
 	{
 		const relic_table::TBonus* b = Bonus(id);
 		if (!b || !b->bPoint || iSeconds <= 0)
 			return;
-		ch->AddAffect(AFFECT_RELIC_FIRST + id, b->bPoint, b->iSize ? b->iSize : iValue, AFF_NONE, iSeconds, 0, true);
+		const int iSize = b->iSize ? b->iSize : iValue;
+		ch->AddAffect(AFFECT_RELIC_FIRST + id, b->bPoint, iSize, AFF_NONE, iSeconds, 0, true);
+		char szText[160];
+		snprintf(szText, sizeof(szText), "Relikt Duszy: %s +%d%s na %d sek.", b->szName, iSize,
+				b->bKind == relic_table::KIND_SIZE ? "%" : "", iSeconds);
+		Proc(ch, id, iValue, szText);
 	}
 
+	// 6 / 7: the elixir of the sun / moon - the missing HP / SP at once, while in combat (a blow given or taken in
+	// the last RELIC_COMBAT_MS; the tick checks between the blows) and not full; the cooldown starts when it works
 	void Elixirs(LPCHARACTER ch, LPITEM relic, DWORD dwNow)
 	{
-		if (ch->IsDead())
+		if (ch->IsDead() || ch->IsStun())
 			return;
 		if (ch->GetHP() < ch->GetMaxHP() && BonusValue(relic, B_SUN) > 0 && Roll(ch, relic, B_SUN, dwNow))
 		{
-			ch->PointChange(POINT_HP, ch->GetMaxHP() - ch->GetHP());
+			const int iAmount = ch->GetMaxHP() - ch->GetHP();
+			ch->PointChange(POINT_HP, iAmount);
 			ch->EffectPacket(SE_AUTO_HPUP);
+			char szText[128];
+			snprintf(szText, sizeof(szText), "Relikt Duszy: efekt Eliksiru S\xb3o\xf1""ca - P\xaf uzupe\xb3nione (+%d).", iAmount);
+			Proc(ch, B_SUN, iAmount, szText);
 		}
 		if (ch->GetSP() < ch->GetMaxSP() && BonusValue(relic, B_MOON) > 0 && Roll(ch, relic, B_MOON, dwNow))
 		{
-			ch->PointChange(POINT_SP, ch->GetMaxSP() - ch->GetSP());
+			const int iAmount = ch->GetMaxSP() - ch->GetSP();
+			ch->PointChange(POINT_SP, iAmount);
 			ch->EffectPacket(SE_AUTO_SPUP);
+			char szText[128];
+			snprintf(szText, sizeof(szText), "Relikt Duszy: efekt Eliksiru Ksi\xea\xbfyca - PE uzupe\xb3nione (+%d).", iAmount);
+			Proc(ch, B_MOON, iAmount, szText);
 		}
 	}
 
@@ -598,6 +634,51 @@ namespace
 		Info(ch, "Relikt Duszy zosta\xb3 aktywowany.");
 	}
 
+	// "/relikt debug [1]" (GM): the selected page's relic, its bonuses and their cooldowns; 1 = the cooldowns cleared
+	void Debug(LPCHARACTER ch, bool bReset)
+	{
+		const DWORD dwNow = get_dword_time();
+		TRuntime& rt = Runtime(ch);
+		if (bReset)
+		{
+			for (int i = 0; i <= relic_table::BONUS_NUM; ++i)
+				rt.adwReady[i] = 0;
+			ch->ChatPacket(CHAT_TYPE_INFO, "Relikt debug: odnowienia wyzerowane.");
+		}
+		const int iPage = Page(ch);
+		LPITEM relic = ch->Mt2009RelicGetItem(iPage);
+		if (!relic)
+		{
+			ch->ChatPacket(CHAT_TYPE_INFO, "Relikt debug: okienko %s puste.", iPage ? "II" : "I");
+			return;
+		}
+		const long lLeft = relic->GetSocket(RELIC_SOCKET_LEFT) - (rt.iPage == iPage ? rt.iPending : 0);
+		ch->ChatPacket(CHAT_TYPE_INFO, "Relikt debug: okienko %s, %s (%u), flagi %ld, czas %ld / %ld s, dzia\xb3""a: %s, tik: %s, "
+				"walka: %d s", iPage ? "II" : "I", relic->GetName(), relic->GetVnum(), Flags(relic), lLeft,
+				relic->GetSocket(RELIC_SOCKET_TIME), ActiveRelic(ch) ? "tak" : "NIE",
+				s_setTick.count(ch->GetPlayerID()) ? "tak" : "nie",
+				rt.dwCombatUntil && !Reached(dwNow, rt.dwCombatUntil) ? (int) ((rt.dwCombatUntil - dwNow) / 1000) : 0);
+		ch->ChatPacket(CHAT_TYPE_INFO, "Relikt debug: P\xaf %d / %d, PE %d / %d, wierzchowiec: %s", (int) ch->GetHP(),
+				(int) ch->GetMaxHP(), (int) ch->GetSP(), (int) ch->GetMaxSP(), ch->IsRiding() ? "tak" : "nie");
+		for (int i = 0; i < RELIC_MAX_BONUS; ++i)
+		{
+			const int id = relic->GetAttributeType(i);
+			if (!id)
+				continue;
+			const relic_table::TBonus* b = Bonus(id);
+			int iWait = 0;
+			if (id <= relic_table::BONUS_NUM && rt.adwReady[id] && !Reached(dwNow, rt.adwReady[id]))
+				iWait = (int) ((rt.adwReady[id] - dwNow + 999) / 1000);
+			char szWait[32];
+			if (iWait)
+				snprintf(szWait, sizeof(szWait), "czeka jeszcze %d s", iWait);
+			else
+				snprintf(szWait, sizeof(szWait), "gotowy");
+			ch->ChatPacket(CHAT_TYPE_INFO, "  #%d %s = %d, odnowienie %d s: %s", id, b ? b->szName : "?",
+					relic->GetAttributeValue(i), b ? b->iCooldown : 0, szWait);
+		}
+	}
+
 	void SetPage(LPCHARACTER ch, int iPage)
 	{
 		iPage = iPage ? 1 : 0;
@@ -715,6 +796,7 @@ int Mt2009RelicOnDamage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType,
 		if (relic)
 		{
 			StartTick(pkVictim);
+			Runtime(pkVictim).dwCombatUntil = dwNow + RELIC_COMBAT_MS;
 			static const int s_aiSungma[4] = { B_SUNGMA_HP, B_SUNGMA_STR, B_SUNGMA_MOVE, B_SUNGMA_IMMUNE };
 			for (int i = 0; i < 4; ++i)
 			{
@@ -726,7 +808,7 @@ int Mt2009RelicOnDamage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType,
 			if (Chance(iPickup))
 			{
 				Runtime(pkVictim).dwPickupUntil = dwNow + RELIC_PICKUP_SECONDS * 1000;
-				Info(pkVictim, "Relikt Duszy: przez 30 sek. zbierasz automatycznie przedmioty w pobli\xbfu.");
+				Proc(pkVictim, B_PICKUP, iPickup, "Relikt Duszy: przez 30 sek. zbierasz automatycznie przedmioty w pobli\xbfu.");
 			}
 			Elixirs(pkVictim, relic, dwNow);
 		}
@@ -739,6 +821,7 @@ int Mt2009RelicOnDamage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType,
 		if (relic)
 		{
 			StartTick(pkAttacker);
+			Runtime(pkAttacker).dwCombatUntil = dwNow + RELIC_COMBAT_MS;
 			Elixirs(pkAttacker, relic, dwNow);
 			if (pkVictim->IsStone())
 			{
@@ -755,7 +838,7 @@ int Mt2009RelicOnDamage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType,
 				if (Chance(iCape))
 				{
 					pkAttacker->AggregateMonster();
-					Info(pkAttacker, "Relikt Duszy: potwory wok\xf3\xb3 ruszaj\xb9 na ciebie.");
+					Proc(pkAttacker, B_CAPE, iCape, "Relikt Duszy: potwory wok\xf3\xb3 ruszaj\xb9 na ciebie.");
 				}
 			}
 			if (pkAttacker->IsRiding())
@@ -765,7 +848,7 @@ int Mt2009RelicOnDamage(LPCHARACTER pkVictim, LPCHARACTER pkAttacker, int iType,
 				if (Chance(iTrample))
 				{
 					rt.dwTrampleUntil = dwNow + RELIC_TRAMPLE_SECONDS * 1000;
-					Info(pkAttacker, "Relikt Duszy: przez 20 sek. tratujesz przeciwnik\xf3w.");
+					Proc(pkAttacker, B_TRAMPLE, iTrample, "Relikt Duszy: przez 20 sek. tratujesz przeciwnik\xf3w.");
 				}
 				if (rt.dwTrampleUntil && !Reached(dwNow, rt.dwTrampleUntil) && pkVictim->IsMonster() &&
 						!IsBossMonster(pkVictim) && !pkVictim->IsDead() && !pkVictim->IsAffectFlag(AFF_STUN) &&
@@ -791,7 +874,7 @@ bool Mt2009RelicNoDeath(LPCHARACTER ch, LPCHARACTER pkAttacker)
 	const int iHp = MAX(1, ch->GetMaxHP() * RELIC_NO_DEATH_HP_PCT / 100);
 	ch->PointChange(POINT_HP, iHp - ch->GetHP());
 	ch->EffectPacket(SE_AUTO_HPUP);
-	Info(ch, "Relikt Duszy uchroni\xb3 ci\xea przed \x9cmierci\xb9.");
+	Proc(ch, B_NO_DEATH, iPct, "Relikt Duszy uchroni\xb3 ci\xea przed \x9cmierci\xb9.");
 	sys_log(0, "RELIC: %s (%u) escaped death (%s)", ch->GetName(), ch->GetPlayerID(), pkAttacker ? pkAttacker->GetName() : "-");
 	return true;
 }
@@ -808,7 +891,7 @@ bool Mt2009RelicSkillReset(LPCHARACTER ch, unsigned int dwVnum)
 	const int iPct = Roll(ch, relic, B_SKILL_RESET, get_dword_time());
 	if (!Chance(iPct))
 		return false;
-	Info(ch, "Relikt Duszy: czas odnowienia umiej\xeatno\x9c""ci zresetowany.");
+	Proc(ch, B_SKILL_RESET, iPct, "Relikt Duszy: czas odnowienia umiej\xeatno\x9c""ci zresetowany.");
 	return true;
 }
 
@@ -884,6 +967,12 @@ ACMD(do_relikt)
 	{
 		SetPage(ch, a);
 		SendState(ch);
+		return;
+	}
+	if (sub == "debug")
+	{
+		if (ch->GetGMLevel() > GM_PLAYER)
+			Debug(ch, a == 1);
 		return;
 	}
 	if (!CanAct(ch))
