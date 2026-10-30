@@ -45,7 +45,7 @@ Sockety reliktu: 0 – pozostały czas (s), 1 – czas reliktu (losowany raz prz
 |---|---|---|---|---|
 | 1-4 | Wola SungMa WIT / SIŁA / ODP / INT +15 na x s | 1-8, 10 s | gdy zostaniesz zaatakowany | 120 s |
 | 5 | x% na 30 s automatycznego zbierania (własny drop wokół, co 2 s `PickupNearbyItems`) | 1-7, 9, 15 % | gdy zaatakowany | 300 s |
-| 6 / 7 | eliksir słońca / księżyca – brakujące PŻ / PE od razu | 100 % | w walce, PŻ / PE niepełne | 300 s |
+| 6 / 7 | eliksir słońca / księżyca – brakujące PŻ / PE od razu (z komunikatem na czacie) | 100 % | w walce (cios zadany / otrzymany w ostatnich 10 s – przy ciosie i co 1 s tiku), PŻ / PE niepełne | 300 s od uzupełnienia |
 | 8 | x%: reset czasu odnowienia wszystkich umiejętności (klient: pakiet 73 jak `bonusy67`) | 1-7, 9, 15 % | użycie umiejętności | 120 s |
 | 9 / 10 | +x% obrażeń przeciw Metinom / +x% obrony na 5 s | 1-10 % | trafienie Kamienia Metin | 120 s |
 | 11 | +x% obrażeń na 10 s | 1-5 % | dosiadanie wierzchowca | 120 s |
@@ -54,6 +54,8 @@ Sockety reliktu: 0 – pozostały czas (s), 1 – czas reliktu (losowany raz prz
 | 14 | x%: śmierć anulowana, 30% PŻ | 5, 7, 11, 15, 20, 30, 50 % | śmierć | 600 s |
 | 15 | x%: wszystkie potwory wokół atakują (Peleryna Męstwa – `AggregateMonster`) | 1-10 % | atak na potwora | 180 s |
 | 16 | x%: 20 s deptania – trafienie z wierzchowca ogłusza potwora na 2 s (nie bossa / Metina / odpornego; graczy nie) | 1-10 % | atak z wierzchowca | 120 s |
+
+Każde zadziałanie bonusu pisze graczowi komunikat na czacie i linię `RELIC_PROC: <postać> (<pid>) bonus <id> (<wartość>)` w syslogu (tylko gracze, nie boty). GM: `/relikt debug` – relikt wybranego okienka, czy działa, tik, walka, PŻ/PE i odnowienie każdego bonusu; `/relikt debug 1` – odnowienia wyzerowane (test).
 
 Odnowienie liczone od każdego losowania (wiki: „co 120 sekund mamy 8% szans”). Interpretacje własne (wiki nie mówi
 dokładnie): eliksir = jednorazowe uzupełnienie, deptanie = ogłuszenie potworów, zbieranie = własny drop w zasięgu.
