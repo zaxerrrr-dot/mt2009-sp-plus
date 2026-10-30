@@ -276,7 +276,7 @@ namespace
 			return GetPlayerBotGuildMaterialWant(ch, offer->GetVnum()) > 0;
 
 		// Materialy Rzemieslnicze and the refine goods that make them, for a
-		// saddlebag bot short of its next row (playerbot_saddlebag.h).
+		// bot short of its horse training's (playerbot_craft_exchange.h).
 		if (offer->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 			return WantsPlayerBotCraftMaterialOffer(ch, offer);
 		if (IsPlayerBotCraftExchangeVnum(offer->GetVnum()) && WantsPlayerBotCraftGoodsOffer(ch, offer) &&
@@ -415,7 +415,7 @@ namespace
 		// MT2009_PLUS_HORSE30_V1: while the next paid training lacks medals
 		// (playerbot_horse30.h).
 		if (offer->GetVnum() == PLAYERBOT_HORSE_MEDAL_VNUM)
-			return PlayerBotHorseWantsMedal(ch) || PlayerBotSaddlebagWantsMedal(ch);
+			return PlayerBotHorseWantsMedal(ch);
 
 		// A Forgetting Scroll, while a skill stands at seventeen unmastered.
 		if (offer->GetVnum() == PLAYERBOT_SKILL_FORGET_SCROLL_VNUM)
@@ -635,8 +635,8 @@ namespace
 		// MT2009_PLUS_BOT_WORKSHOP_V1: a belt's materials, a talisman's spare and Ornament.
 		if (PlayerBotWantsCraftFromMarket(ch))
 			return true;
-		// Medals and materials for a saddlebag row (playerbot_saddlebag.h).
-		if (PlayerBotWantsSaddlebagGoods(ch))
+		// Materials for the horse training (playerbot_craft_exchange.h).
+		if (PlayerBotWantsCraftGoods(ch))
 			return true;
 		// Cors for an alchemy bot (playerbot_alchemy.h).
 		if (PlayerBotWantsAlchemyFromMarket(ch))
@@ -1820,7 +1820,7 @@ namespace
 				auStallsByReason[PLAYERBOT_SHOP_REASON_HOARD],
 				auStallsByReason[PLAYERBOT_SHOP_REASON_MEDALS]);
 		LogPlayerBotSashCensus();
-		LogPlayerBotSaddlebagCensus();
+		LogPlayerBotCraftCensus();
 		LogPlayerBotAlchemyCensus();
 		LogPlayerBotHerbalistCensus(dwNow);   // MT2009_PLUS_BOT_HERBALIST_BREW_V2
 		ReportPlayerBotWeaponGoals(dwNow);

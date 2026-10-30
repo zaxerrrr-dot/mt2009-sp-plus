@@ -49,7 +49,6 @@ import uiSelectItem
 import uiScriptLocale
 import uiMaintenance
 import uiBusyAction
-import uiHorseInventory
 import uiReport
 
 import event
@@ -4561,10 +4560,7 @@ class Interface(object):
 		self.wndCrafting = uiCubeRenewal.CraftingRenewalWindow() # MT2009_PLUS_CUBE_RENEWAL_V1 (was uiCraft.CraftingWindow)
 		self.wndCrafting.Hide()
 
-		self.wndHorseInventory = uiHorseInventory.HorseInventoryWindow()
-		self.wndHorseInventory.Hide()
-		self.wndInventory.SetHorseInventory(self.wndHorseInventory)
-
+		# MT2009_PLUS_HORSE40_V3: no horse bags on Yohara (the owner, 30.10.2026) - their window is gone
 		self.wndAttributeList = uiAttributeList.AttributeListWindow()
 		self.wndAttributeList.Hide()
 
@@ -4886,7 +4882,6 @@ class Interface(object):
 		self.offlineShopBuilder.SetToolTip(self.tooltip, self.tooltipItem)
 		self.offlineShopManage.SetToolTip(self.tooltip, self.tooltipItem)
 		self.offlineShopGuest.SetToolTip(self.tooltip, self.tooltipItem)
-		self.wndHorseInventory.SetToolTip(self.tooltip)
 		self.wndCrafting.SetItemToolTip(self.tooltipItem)
 
 		self.__InitWhisper()
@@ -4999,9 +4994,6 @@ class Interface(object):
 
 		if self.wndCrafting:
 			self.wndCrafting.Destroy()
-
-		if self.wndHorseInventory:
-			self.wndHorseInventory.Destroy()
 
 		if self.wndSpecialShop:
 			self.wndSpecialShop.Destroy()
@@ -5221,7 +5213,6 @@ class Interface(object):
 		del self.wndInventory
 		del self.wndItemShop
 		del self.wndCrafting
-		del self.wndHorseInventory
 		del self.wndSpecialShop
 		del self.wndAttributeList
 		del self.wndPlayerStat

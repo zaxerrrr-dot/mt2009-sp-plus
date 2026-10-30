@@ -3996,7 +3996,7 @@ namespace
 		if (!item)
 			return 1;
 		// Materialy Rzemieslnicze: the operator's price, a piece, as it stands
-		// (playerbot_saddlebag.h).
+		// (playerbot_craft_exchange.h).
 		// MT2009_PLUS_OWNER_PRICES_V2: on the curve above.
 		if (item->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED)
 		{
@@ -4799,15 +4799,6 @@ namespace
 	{
 		if (merchant)
 			return true;
-		// A saddlebag bot's medals are its rows' and its horse's
-		// (playerbot_saddlebag.h): none is goods while either can use one.
-		// MT2009_PLUS_HORSE_GOODS_MARKET_V1: past 35 only - a younger keeper lists
-		// what is over its band's keep like everybody else.
-		if (ch && IsPlayerBotSaddlebagKeeperPID(ch->GetPlayerID()) &&
-				GetPlayerBotHorseGoodsTargetLevel(ch) == 0 &&
-				GetPlayerBotPersonalityByPID(ch->GetPlayerID()) != BOT_PERSONALITY_MEDAL_DROPPER &&
-				(GetPlayerBotSaddlebagMedalReserve(ch) > 0 || CanPlayerBotAdvanceHorse(ch)))
-			return false;
 		// The medal dropper is the medal shop: it farms them to put them up. It
 		// used to hold them while its own horse could use one, and a dropper of
 		// forty on a horse of ten - a battle horse candidate, forbidden to spend
@@ -5049,8 +5040,8 @@ namespace
 		// (playerbot_offline_shop.h), never from the bag's.
 		if (item->IsDragonSoul())
 			return -1;
-		// Nor the materials a saddlebag bot keeps for its rows, nor refine goods
-		// on their way to the Dozorca (playerbot_saddlebag.h).
+		// Nor the materials a bot keeps for its horse training, nor refine goods
+		// on their way to the Dozorca (playerbot_craft_exchange.h).
 		if (ch && (IsPlayerBotKeptCraftMaterial(ch, item) || IsPlayerBotCraftExchangeStock(ch, item)))
 			return -1;
 		// A Cor Draconis or a sash (MT2009 Plus) is a player's goods, high on
@@ -6700,7 +6691,7 @@ namespace
 		// reason, which reads the whole bag: this pass runs on every tick of
 		// every bot without a counter.
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingStable ||
-				state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0 ||
+				state.bVisitingAlchemist || state.bVisitingUriel || state.bCraftErrand != 0 ||
 				state.bVisitingDsAlchemist)
 			return false;
 		if (state.dwNextShopKeepTime != 0 && dwNow < state.dwNextShopKeepTime)

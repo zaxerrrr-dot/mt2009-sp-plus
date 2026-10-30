@@ -787,7 +787,7 @@ namespace
 				else if (state.bVisitingDsAlchemist)
 					snprintf(status, statusSize, PBT(en, "%sUlepszam kamienie alchemii u Alchemika",
 							"%sRefining Dragon Stones at the Alchemist"), prefix);
-				else if (state.bSaddlebagErrand != 0)
+				else if (state.bCraftErrand != 0)
 					snprintf(status, statusSize, PBT(en, "%sPrzerabiam ulepszacze u Dozorcy",
 							"%sExchanging refine goods at the Keeper"), prefix);
 				else if (state.bVisitingUriel)
@@ -840,11 +840,7 @@ namespace
 				const long stableX = haveStable ? svc.stableKeeper.x : ch->GetX();
 				const long stableY = haveStable ? svc.stableKeeper.y : ch->GetY();
 				const bool bFar = DISTANCE_APPROX(ch->GetX() - stableX, ch->GetY() - stableY) > 850;
-				if (state.bSaddlebagErrand != 0)
-					snprintf(status, statusSize, PBT(en, "%sOdblokowuje juki konne (%d/9)",
-							"%sOpening a saddlebag row (%d/9)"), prefix,
-							(int)ch->GetSpecialFlag("horse_inventory_slot") + 1);
-				else if (IsPlayerBotBattleHorseEarned(ch))
+				if (IsPlayerBotBattleHorseEarned(ch))
 					snprintf(status, statusSize, bFar ? PBT(en, "%sIde do Stajennego po konia bojowego", "%sGoing to the Stable Boy for a battle horse")
 							: PBT(en, "%sOdbieram konia bojowego u Stajennego", "%sCollecting a battle horse from the Stable Boy"), prefix);
 				// MT2009_PLUS_HORSE30_V1: the trials to collect and the paid

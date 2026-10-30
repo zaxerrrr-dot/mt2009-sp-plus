@@ -112,5 +112,11 @@
   "marker": "MT2009_PLUS_HORSE40_V1 (gm panel)",
   "old": "value = MINMAX(0, value, 30); // HORSE_MAX_LEVEL, horse_rider.h",
   "new": "value = MINMAX(0, value, HORSE_MAX_LEVEL); // MT2009_PLUS_HORSE40_V1 (gm panel): horse_rider.h"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_HORSE40_V1 (horse bags off)",
+  "old": "bool CHARACTER::CanUseHorseInventory() const\n{\n",
+  "new": "bool CHARACTER::CanUseHorseInventory() const\n{\n\t// MT2009_PLUS_HORSE40_V1 (horse bags off) (server-patches/konie, V3): no horse bags on Yohara (the owner, 30.10.2026).\n\tif (true)\n\t\treturn false;\n"
  }
 ]

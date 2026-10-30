@@ -22,7 +22,7 @@
 //            Never stashed whole: its working stock - the refine scrolls (USE_TUNING), the change stones (71084 and
 //            the like), its own skills' books and the other read books, the soul stones it can seat or take through
 //            the Ritual of Awakening, its alchemy's Cors. Never moved at all: worn, locked, in a trade or on sale
-//            in its shop, in the saddlebag's pages.
+//            in its shop.
 //   refill   the working stock comes back as soon as the bag lacks it (a kind used up, a stack run low) and has
 //            PLAYERBOT_EKW_WORK_REFILL_MIN_FREE free cells; everything else when the bag is roomy again (more than
 //            PLAYERBOT_EKW_REFILL_ABOVE free cells - after the town's sale), so the counter, the merchant and the
@@ -207,8 +207,8 @@ namespace
 		return true;
 	}
 
-	// A storage item back into the bag: the bag's stack of its kind first, then a free bag cell (the four pages, never
-	// the saddlebag's). False: it stayed (no room).
+	// A storage item back into the bag: the bag's stack of its kind first, then a free bag cell (the four pages).
+	// False: it stayed (no room).
 	bool PlayerBotEkwToBag(LPCHARACTER ch, LPITEM item, TPlayerBotEkwStats& st, bool& bGone)
 	{
 		bGone = false;
@@ -565,7 +565,7 @@ namespace
 				ch->IsCubeOpen() || !ch->CanHandleItem())
 			return true;
 		if (state.bVisitingShop || state.bMarketTrip || state.bVisitingBiologist || state.bVisitingHerbalist ||
-				state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0 || state.bVisitingDsAlchemist ||
+				state.bVisitingAlchemist || state.bVisitingUriel || state.bCraftErrand != 0 || state.bVisitingDsAlchemist ||
 				state.bVisitingStable || state.bTownVisitPhase != BOT_TOWN_PHASE_NONE)
 			return true;
 #if defined(PLAYERBOT_ENGINE_MT2009) && defined(ENABLE_IKASHOP_RENEWAL)

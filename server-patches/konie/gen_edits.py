@@ -228,5 +228,18 @@ edit("cmd_gm.cpp", "gm panel",
      "value = MINMAX(0, value, 30); // HORSE_MAX_LEVEL, horse_rider.h",
      "value = MINMAX(0, value, HORSE_MAX_LEVEL); // MT2009_PLUS_HORSE40_V1 (gm panel): horse_rider.h")
 
+# ---------------------------------------------------------------- char.cpp: no horse bags (MT2009_PLUS_HORSE40_V3)
+# The owner, 30 October 2026 (poprawki-3.0.6 item 1): the horse bags ("juki konne", the fifth bag page - INVENTORY cells
+# INVENTORY_DEFAULT_MAX_NUM..INVENTORY_MAX_NUM, rows by the special flag horse_inventory_slot) are gone from Yohara. The
+# cells stay in the layout (the exe's packets number the belt and the wear slots after them), but no character can use
+# them any more: GetInventoryMaxCount is the four pages, IsEmptyItemGrid never reaches the fifth, nothing lands there.
+# What players and bots kept there moved once to the bag / the storeroom / the ItemShop storage before this core started
+# (mariadb/playerbot/juki_usuniecie.sql, apply.sh); the quests are gone (Dockerfile).
+edit("char.cpp", "horse bags off",
+     "bool CHARACTER::CanUseHorseInventory() const\n{\n",
+     "bool CHARACTER::CanUseHorseInventory() const\n{\n"
+     "\t// MT2009_PLUS_HORSE40_V1 (horse bags off) (server-patches/konie, V3): no horse bags on Yohara (the owner, 30.10.2026).\n"
+     "\tif (true)\n\t\treturn false;\n")
+
 json.dump(edits, open(os.path.join(HERE, "edits.json"), "w"), indent=1)
 print("edits.json: %d edits" % len(edits))

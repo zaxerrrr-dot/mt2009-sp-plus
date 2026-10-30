@@ -29,7 +29,6 @@ import safebox
 
 import offlineShopManage
 import uiPotionRecharge
-import uiHorseInventory
 import uichangelook # MT2009_PLUS_CHANGE_LOOK_V1
 
 if app.ENABLE_CHEQUE_SYSTEM:
@@ -82,14 +81,6 @@ def GetGlobalSlotFromLocalSlotAndTab(localSlot, tab):
 		return localSlot
 
 	return localSlot + player.INVENTORY_PAGE_SIZE * tab
-
-def CanAccessHorseInventory():
-	"""Allow horse bags while riding either a horse or a seal mount."""
-	try:
-		horseLevel = player.GetSkillGrade(109) * 20 + player.GetSkillLevel(109)
-		return horseLevel >= 1 and (constInfo.IS_HORSE_SUMMONED or player.IsMountingHorse())
-	except:
-		return False
 
 class CostumeWindow(ui.ScriptWindow):
 
@@ -1673,7 +1664,6 @@ class InventoryWindow(ui.ScriptWindow):
 		self.isSafeboxOpen = False
 		self.isExchangeItemOpen = False
 		self.isRechargePotion = False
-		self.wndHorseInventory = None
 		self.wndChestPreview = None
 		self.chestPreviewButton = None
 		self.wndEquipWindow = None	# MT2009_PLUS_INVENTORY_V2_V1: the equipment window of the v2 inventory (inventoryv2.py)
@@ -1767,7 +1757,8 @@ class InventoryWindow(ui.ScriptWindow):
 			self.costumeButton = self.GetChild2("CostumeButton")
 
 			# additional buttons
-			self.horseInventoryButton = self.GetChild("HorseInventoryWindow")
+			# MT2009_PLUS_HORSE40_V3: no horse bags on Yohara - their button does nothing (hidden while a script has it)
+			self.horseInventoryButton = self.GetChild2("HorseInventoryWindow")
 			self.depositButton = self.GetChild("DepositButton")
 			self.myshopButton = self.GetChild("MyShopButton")
 			self.chestPreviewButton = self.GetChild2("ChestPreviewButton")
@@ -1887,7 +1878,7 @@ class InventoryWindow(ui.ScriptWindow):
 
 		# Additional buttons
 		if self.horseInventoryButton:
-			self.horseInventoryButton.SAFE_SetEvent(self.ClickHorseInventoryButton)
+			self.horseInventoryButton.Hide()
 
 		if self.depositButton:
 			self.depositButton.SetEvent(ui.__mem_func__(self.ClickDepositButton))
@@ -1981,8 +1972,6 @@ class InventoryWindow(ui.ScriptWindow):
 		self.wndDragonSoulRefine = None
 		self.interface = None
 
-		self.wndHorseInventory = None
-
 		if self.wndCostume:
 			self.wndCostume.Destroy()
 			self.wndCostume = None
@@ -2075,18 +2064,6 @@ class InventoryWindow(ui.ScriptWindow):
 		eventManager.EventManager().send_event(EVENT_CLOSE_INVENTORY)
 		self.Hide()
 
-	def SetHorseInventory(self, wndHorseInventory):
-		self.wndHorseInventory = proxy(wndHorseInventory)
-
-		self.wndHorseInventory.itemSlot.SetSelectEmptySlotEvent(ui.__mem_func__(self.SelectEmptySlot))
-		self.wndHorseInventory.itemSlot.SetSelectItemSlotEvent(ui.__mem_func__(self.SelectItemSlot))
-		self.wndHorseInventory.itemSlot.SetUnselectItemSlotEvent(ui.__mem_func__(self.UseItemSlot))
-		self.wndHorseInventory.itemSlot.SetUseSlotEvent(ui.__mem_func__(self.UseItemSlot))
-		self.wndHorseInventory.itemSlot.SetOverInItemEvent(ui.__mem_func__(self.OverInItem))
-		self.wndHorseInventory.itemSlot.SetOverOutItemEvent(ui.__mem_func__(self.OverOutItem))
-
-		self.inventorySlotStateMgr.secondSlotWindow = self.wndHorseInventory.itemSlot
-
 	def SetInventoryPage(self, page):
 		self.inventoryPageIndex = page
 		for i in xrange(player.INVENTORY_PAGE_COUNT-1):
@@ -2095,9 +2072,6 @@ class InventoryWindow(ui.ScriptWindow):
 
 		self.inventorySlotStateMgr.SetTab(page)
 		self.RefreshBagSlotWindow()
-
-	def ClickHorseInventoryButton(self):
-		eventManager.EventManager().send_event(uiHorseInventory.EVENT_OPEN_HORSE_INVENTORY)
 
 	def ClickDepositButton(self):
 		print "ClickDepositButton"
@@ -2486,8 +2460,6 @@ class InventoryWindow(ui.ScriptWindow):
 	def RefreshItemSlot(self):
 		self.RefreshBagSlotWindow()
 		self.RefreshEquipSlotWindow()
-		if self.wndHorseInventory:
-			self.RefreshBagSlotWindow(self.wndHorseInventory.itemSlot)
 
 	def RefreshGold(self, gold=-1):
 		if gold < 0:
@@ -2592,7 +2564,7 @@ class InventoryWindow(ui.ScriptWindow):
 		if constInfo.GET_ITEM_QUESTION_DIALOG_STATUS() == 1:
 			return
 
-		if itemSlotIndex >= player.INVENTORY_DEFAULT_MAX_NUM and itemSlotIndex < player.INVENTORY_MAX_NUM and not CanAccessHorseInventory():
+		if itemSlotIndex >= player.INVENTORY_DEFAULT_MAX_NUM and itemSlotIndex < player.INVENTORY_MAX_NUM: # MT2009_PLUS_HORSE40_V3: no horse bags
 			return
 
 		itemSlotIndex = self.__InventoryLocalSlotPosToGlobalSlotPos(itemSlotIndex)

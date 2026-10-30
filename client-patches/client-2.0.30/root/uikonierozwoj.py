@@ -5,7 +5,9 @@
 # buttons, the Yang and Gaya costs) and its horse skill icons, built in code like uiygaya.py. No new packet: the
 # package's exe module "mount" is replaced by chat commands -
 #   server -> client  "konie_rozwoj_info <open> <horse level> <exp> <exp needed> <yang> <failed> <retry gaya>
-#                      <requirement> <skill 1> <level 1> <skill 2> <level 2> <slots> <golden book>"
+#                      <requirement> <skill 1> <level 1> <skill 2> <level 2> <slots> <golden book> [<gaya held>]"
+#                     (also at login and after a skill changes: the skill window's riding tab shows the horse
+#                      skills - uicharacter.py, MT2009_PLUS_HORSE40_V3)
 #                     "konie_rozwoj_msg <code> <a> <b>"            (konie_rozwoj.cpp KonieSendInfo / KonieMsg)
 #   client -> server  "/konie_rozwoj info|karm|awans|umiej <1|2>"   (ACMD do_konie_rozwoj)
 # The Stajenny opens it (quest konie_rozwoj, "Rozwoj konia (21-40)"); the images are the pack "konie"
@@ -43,6 +45,11 @@ TEXT_FEED_HAVE = "Pasza dla Konia w ekwipunku: %d"
 TEXT_FULL = "Pasek pe\xb3ny - spr\xf3buj awansu (%d paszy i Yang)."
 TEXT_FEED_MORE = "Karm konia Pasz\xb9 dla Konia, a\xbf pasek si\xea wype\xb3ni."
 TEXT_RETRY = "Poprzednia pr\xf3ba nieudana - ta kosztuje te\xbf Gaya i si\xea uda."
+# MT2009_PLUS_HORSE40_V3: what a try still lacks, told in the window (poprawki-3.0.6 item 6)
+TEXT_MISSING = "Brakuje: %s"
+TEXT_MISSING_FEED = "%d Paszy dla Konia"
+TEXT_MISSING_YANG = "%s Yang"
+TEXT_MISSING_GAYA = "%d Gaya"
 TEXT_REQ = {
 	1: "Wymagany poziom postaci: 75",
 	2: "Od 30 poziomu konia: wymagany Poziom Czempiona 1",
@@ -162,6 +169,35 @@ def EffectText(v, s, h):
 	if not data:
 		return ""
 	return data[2] % {"v": ValueText(v, s, h), "d": Duration(v, s, h)}
+
+
+# MT2009_PLUS_HORSE40_V3: what the next try lacks (the feed, the Yang, after a failed try the Gaya) - empty when
+# nothing; the Gaya is the server's number (field 15), unknown (None) from an older core
+def Missing(info):
+	out = []
+	feed = player.GetItemCountByVnum(FEED_VNUM)
+	if feed < FEED_LEVEL_UP:
+		out.append(TEXT_MISSING_FEED % (FEED_LEVEL_UP - feed))
+	if player.GetElk() < info["yang"]:
+		out.append(TEXT_MISSING_YANG % FormatNumber(info["yang"] - player.GetElk()))
+	if info["fail"] and info.get("gaya_have") is not None and info["gaya_have"] < info["gaya"]:
+		out.append(TEXT_MISSING_GAYA % (info["gaya"] - info["gaya_have"]))
+	return out
+
+
+# the horse skill's lines for a tooltip (the Stajenny's window and the skill window's riding tab)
+def SkillName(v):
+	data = SKILLS.get(v)
+	return data[0] if data else ""
+
+
+def SkillIcon(v):
+	data = SKILLS.get(v)
+	return PATH + (data[1] if data else "mount_upgrade_skill_random_strong") + ".sub"
+
+
+def GetInfo():
+	return _state["info"]
 
 
 def ToInt(value, default=0):
@@ -320,6 +356,9 @@ class HorseUpgradeWindow(ui.BoardWithTitleBar):
 		if req:
 			self.statusLine.SetText(TEXT_REQ.get(req, ""))
 			self.statusLine.SetPackedFontColor(COLOR_BAD if req in (1, 2, 4) else COLOR_OK)
+		elif full and Missing(info):
+			self.statusLine.SetText(TEXT_MISSING % ", ".join(Missing(info)))
+			self.statusLine.SetPackedFontColor(COLOR_BAD)
 		elif info["fail"] and full:
 			self.statusLine.SetText(TEXT_RETRY)
 			self.statusLine.SetPackedFontColor(COLOR_GOLD)
@@ -518,8 +557,17 @@ def OnInfo(*args):
 		if len(v) < 14:
 			return
 		info = {"level": v[1], "exp": v[2], "need": v[3], "yang": v[4], "fail": v[5], "gaya": v[6], "req": v[7],
-				"skills": ((v[8], v[9]), (v[10], v[11])), "slots": v[12], "golden": v[13]}
+				"skills": ((v[8], v[9]), (v[10], v[11])), "slots": v[12], "golden": v[13],
+				"gaya_have": v[14] if len(v) > 14 else None}
 		_state["info"] = info
+		# MT2009_PLUS_HORSE40_V3: the skill window's riding tab shows the horse skills (uicharacter.py)
+		interface = _state["interface"]
+		character = getattr(interface, "wndCharacter", None) if interface else None
+		if character:
+			try:
+				character.RefreshSkill()
+			except Exception:
+				pass
 		window = _state["window"]
 		if v[0] == 1:
 			window = __Window()

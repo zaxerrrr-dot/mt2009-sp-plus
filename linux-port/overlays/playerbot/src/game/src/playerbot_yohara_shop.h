@@ -17,7 +17,7 @@
 // The stock: up to PLAYERBOT_YSHOP_TARGET of each kind the map needs; Dongan's errand is called for it when a kind is
 // under PLAYERBOT_YSHOP_LOW and the bot holds the input for one (at most every PLAYERBOT_YSHOP_ERRAND_GAP_MS). The
 // inputs it keeps and buys towards: ten for each elixir short of the target, at most PLAYERBOT_YSHOP_INPUT_MAX of
-// each - the materials through the saddlebag's want (GetPlayerBotCraftMaterialsWanted: kept off the counters, bought
+// each - the materials through the craft want (GetPlayerBotCraftMaterialsWanted: kept off the counters, bought
 // off them at the material's caps, refine goods changed at the Dozorca), the dust through the counters' dust keep
 // (over the G0 reserve) and its own market line (PLAYERBOT_YSHOP_DUST_PRICE_CAP_PCT of the bots' dust price, out of
 // PLAYERBOT_YSHOP_DUST_PURSE_PCT of the spare purse). A trade trip home (reason "buy") also goes for them, when a kind
@@ -37,11 +37,11 @@
 //
 // MT2009_PLUS_BOT_ELEMENT_RESIST_V2 (the census of 28 October: elixir stock_avg 0 for every element, resist_made 0,
 // materials_bought 0 - 721 of the 900 cohort bots held no Materialy Rzemieslnicze at all, no NPC sells them, the
-// counters had none for them, and a bot that held some had them taken by its horse's / saddlebag's keep first):
+// counters had none for them, and a bot that held some had them taken by its horse's keep first):
 //   * a bot with a hunt element keeps PLAYERBOT_YSHOP_HUNT_MATERIAL_KEEP materials as its own (never the merchant's, a
 //     counter's or the Dozorca's - IsPlayerBotKeptCraftMaterial asks here too) - a grant of them is spent on elixirs,
 //     not sold;
-//   * its elixir comes before its horse and saddlebag: the exchange takes every material it holds;
+//   * its elixir comes before its horse: the exchange takes every material it holds;
 //   * an exchange at Handlarka that makes nothing while the hunt element's elixirs are low says why ("exchange none",
 //     throttled): no materials, no room, no map.
 //
@@ -317,7 +317,7 @@ namespace
 
 	// ------------------------------------------------------------ the exchange at Handlarka Roznosci
 
-	// The materials the exchange may take: the bag's, less what the horse and the saddlebag rows still keep.
+	// The materials the exchange may take: the bag's, less what the horse still keeps.
 	int GetPlayerBotYoharaShopMaterialsFree(LPCHARACTER ch)
 	{
 		const int held = (int)ch->CountSpecifyItem(PLAYERBOT_YSHOP_MATERIAL_VNUM);

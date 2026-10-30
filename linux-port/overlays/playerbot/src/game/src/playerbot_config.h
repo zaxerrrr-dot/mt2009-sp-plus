@@ -1906,7 +1906,7 @@ if (PlayerBotWeightNameEquals(szKey, "ISHOP"))
 
 	// MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chance in percent,
 	// for the bots' own side of item_exchange.lua - the Alchemist's dust
-	// (playerbot_town.h) and the Dozorca's materials (playerbot_saddlebag.h).
+	// (playerbot_town.h) and the Dozorca's materials (playerbot_craft_exchange.h).
 	// The world's difficulty, the numbers the players roll
 	// (quest/m2_difficulty.lua, m2_difficulty.exchange_chance - keep the two
 	// tables alike): easy the package's 100 / 100 / 55, medium 90 / 45 / 55,

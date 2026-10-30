@@ -4951,6 +4951,18 @@ if [ -s /opt/playerbot/konie.sql ]; then
         fail_step "horse 21-40: konie.sql failed" >&2
     fi
 fi
+# MT2009_PLUS_HORSE40_V3 (the owner, 30 October 2026, poprawki-3.0.6 item 1): no horse bags ("juki konne") on Yohara -
+# once per world (marker horse_bags_gone_v1), before the cores start: what players and bots kept in the bags moves to
+# their bag, else their storeroom, else the ItemShop storage, in one transaction (juki_usuniecie.sql; every move in
+# player.horse_bag_migration_log). A failure moves nothing and is tried again at the next start.
+if [ "$(db -e "SELECT COUNT(*) FROM player.playerbot_migrations WHERE name = 'horse_bags_gone_v1';" 2>/dev/null || echo x)" = "0" ]; then
+    if [ -s /opt/playerbot/juki_usuniecie.sql ] && horse_bags_out=$(db < /opt/playerbot/juki_usuniecie.sql); then
+        printf '%s\n' "$horse_bags_out" | sed '/^$/d; s/^/[playerbot-migrate] /'
+        echo "[playerbot-migrate] horse bags: removed (moves in player.horse_bag_migration_log)"
+    else
+        fail_step "horse bags: juki_usuniecie.sql failed - nothing moved (one transaction), the next start tries again"
+    fi
+fi
 if db -e "SET NAMES utf8mb4;
 DROP TEMPORARY TABLE IF EXISTS world.konie_mob;
 CREATE TEMPORARY TABLE world.konie_mob AS SELECT * FROM world.mob_proto WHERE vnum = 20107 LIMIT 1;

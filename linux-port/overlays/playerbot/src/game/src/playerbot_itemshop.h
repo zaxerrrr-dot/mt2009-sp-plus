@@ -1119,8 +1119,7 @@ namespace
 	}
 #endif
 
-	// The saddlebag page too (INVENTORY_MAX_NUM, not PLAYERBOT_BAG_CELLS): a
-	// coupon the panel hands a bot with a full bag lands in its open rows.
+	// Every inventory cell (INVENTORY_MAX_NUM, not PLAYERBOT_BAG_CELLS).
 	LPITEM FindPlayerBotVoucher(LPCHARACTER ch)
 	{
 		for (WORD cell = 0; cell < INVENTORY_MAX_NUM; ++cell)

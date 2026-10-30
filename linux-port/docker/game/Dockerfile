@@ -228,8 +228,8 @@ RUN set -eux; \
     # and anti-experience ring (autohunt_time, antiexp_ring; 2.2.26).
     # pc.warp_channel for the panels' teleport to a bot on another channel
     # (web_admin; 2.2.37).
-    # mes.get_message, pc.get_special_flag and pc.set_special_flag for our
-    # horse_inventory (the saddlebag rows to horse level 30, MT2009_PLUS_HORSE30_V1).
+    # mes.get_message, pc.get_special_flag and pc.set_special_flag for the quests' client
+    # messages and web_admin's flags.
     # pc.clear_quest_letter for usun_misje (MT2009_PLUS_CLEAR_MISSIONS_V1,
     # server-patches/clearmissions).
     # guild.treasury_available and guild.treasury_spend for our guild_building
@@ -264,8 +264,8 @@ RUN set -eux; \
     done; \
     # MT2009_PLUS_HORSE30_V1 (Digi Rasta's horse to level 30): konie is the
     # stable keeper's paid training (levels 1-9, 11-19, 21-28) and the Black
-    # Steed's trial (29 -> 30); horse_inventory the saddlebag rows to horse
-    # level 30 over the stock quest of that name. The package's training
+    # Steed's trial (29 -> 30). (MT2009_PLUS_HORSE40_V3: no horse bags on Yohara - our
+    # horse_inventory is gone and the stock one loses its handlers in the runtime stage.) The package's training
     # missions, pony_levelup (1-10) and horse_levelup (11-20), are no longer
     # compiled and lose their stock handlers in the runtime stage.
     # gm_profile brings the admin account's game masters to one profile
@@ -419,7 +419,7 @@ RUN set -eux; \
     # (MT2009_PLUS_BALATHOR_V1, author dracaryS; offered only while M2_BALATHOR_ON=1 hosts the map).
     # event_halloween_hair is Owsap's Halloween event (MT2009_PLUS_HALLOWEEN_V1, Autor: Owsap) in
     # place of the package's copy, whose handlers the runtime stage removes first.
-    for q in web_admin speed_boost starter_chest starter_kit konie horse_inventory gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora relikt_bron relikt_zbroja relikt_alchemik relikt_uriel relikt_chaegirab relikt_uszlachetnianie; do \
+    for q in web_admin speed_boost starter_chest starter_kit konie gm_profile new_quest_lv19 teleport_ring pony_buy horse_upgrade horse_upgrade2 deviltower_zone collect_quest_lv85 collect_quest_lv70 collect_quest_lv92 collect_quest_lv94 collect_quest_cz1 collect_quest_cz10 collect_quest_cz20 towarzysz devilcatacomb_zone check_trans_ticket heavens_cave_keyquest tanaka_ears acce_costume_uriel ah_yu_shop costume_bonus_transfer dragon_soul dragon_soul_refine dragon_soul_shop autohunt_time antiexp_ring seon_pyeong wytwarzanie_jae_seon_kim flea_market temple_of_the_ochao razador_dungeon nemere_dungeon blue_dragon_lair goblin_skarbow biblioteka_wiedzy map_warp dungeon_panel wzgorze_wukonga ruiny_skorpiona starozytna_dzungla ruiny_atlantydy seonhae minigame_rumi minigame_catchking minigame_yutnori tp_bookmarks ksiegi_seonhae usun_misje guild_building kolekcjoner_item mikstury_okno energia_alchemik zywioly mapa_tab zodiac_temples zodiac_milbon zodiac_prism_mission zodiac_emergency_mission guild_war_join obrona_statku czempion czempion_nowa_wola port_yohary yohara_mapy yohara_mapy2 yohara_mapy3 ymaps3_glebie swiatynia_wezy yohara_mapy4 ysets jaskinie_gnolli wieza_sung_mahi transmutacja ygaya przebudzeni_bossowie razador_pb nemere_pb beran_pb jotun_pb szczelina_czasu jotun_szc zaklety_las erebu rekawice helm100 szata_aury kawuco angmur eliksiry_yohary meley_dungeon labirynth black_steel_crafting beran_szc razador_szc nemere_szc riposty worldboss_kupony buffi mlodzi_bohaterowie ishop_v3_przedmioty event_halloween_hair krypta_balathora relikt_bron relikt_zbroja relikt_alchemik relikt_uriel relikt_chaegirab relikt_uszlachetnianie; do \
       [ -f "/quest-add/$q.quest" ] || continue; \
       sed 's/\r$//' "/quest-add/$q.quest" > "/tmp/qc-work/$q.quest"; \
       ( cd /tmp/qc-work && /src/Server/game/src/quest/qc "$q.quest" ); \
@@ -979,6 +979,16 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; O="$L/quest/object"; F="$L/speci
       END { if (z != 4 || b != 1) { print "FATAL: pet box seals " z " (4 expected), brochure lines " b " (1 expected)" > "/dev/stderr"; exit 1 } }' "$F" > "$F.new" \
  && mv "$F.new" "$F" \
  && echo "share: horse training missions removed ($n handlers), black horse seals out of the pet box, Broszura Szermierki in 50121"
+
+# MT2009_PLUS_HORSE40_V3 (the owner, 30 October 2026, poprawki-3.0.6 item 1): no horse bags on Yohara - the stock
+# horse_inventory_init (the Stajenny's first row) and horse_inventory (the window's next rows) lose their handlers
+# (their state tables stay); the engine opens no bag cell any more (server-patches/konie, CanUseHorseInventory) and
+# what was kept there moved to the bag / the storeroom (mariadb/playerbot/juki_usuniecie.sql).
+RUN set -eu; O=/opt/metin2/share/locale/poland/quest/object \
+ && n=$(find "$O" -path "$O/state" -prune -o -type f \( -name 'horse_inventory.*' -o -name 'horse_inventory_init.*' \) -print | wc -l) \
+ && find "$O" -path "$O/state" -prune -o -type f \( -name 'horse_inventory.*' -o -name 'horse_inventory_init.*' \) -exec rm -f {} + \
+ && ! find "$O" -path "$O/state" -prune -o -type f \( -name 'horse_inventory.*' -o -name 'horse_inventory_init.*' \) -print | grep -q . \
+ && echo "share: horse bags removed ($n handlers)"
 
 # MT2009_PLUS_EASTER_METIN_CAP_V1: the package compiles three generations of
 # the Easter event - event_easter, event_easter_2012 and event_easter_2013 -

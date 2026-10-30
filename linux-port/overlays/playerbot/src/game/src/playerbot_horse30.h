@@ -3,10 +3,10 @@
 
 // MT2009_PLUS_HORSE30_V1: the horse to level 30, the bots' side.
 //
-// Autor systemu: Digi Rasta (nowy-system v0.16, karta-kon-30-i-juki.md);
+// Autor systemu: Digi Rasta (nowy-system v0.16, the level-30 horse card);
 // ported to MT2009 PLUS as our own code. The players' side is the quest
 // konie.quest (paid training at the Stajenny, the Black Steed trial, the
-// permanent horse bonus) and horse_inventory.quest (saddlebag rows to 30);
+// permanent horse bonus); MT2009_PLUS_HORSE40_V3: the horse's bag rows are gone;
 // the engine shows race 20119 from horse level 30 (server-patches/digirasta,
 // char_horse.cpp). This file keeps the bots on the same numbers:
 //
@@ -299,12 +299,12 @@ namespace
 	// of the Medale Konne and Materialy Rzemieslnicze, by its own level -
 	//   * under 25: what its horse still needs to reach level 1;
 	//   * 25 to 35: what its horse still needs to reach level 11;
-	//   * past 35: the next training (and the due saddlebag row), the rest
+	//   * past 35: the next training, the rest
 	//     bought on the market as the horse goes (one level, not two - the
 	//     owner, 3 October, after the first count on the test world).
 	// Everything over that is goods. On the test world 15 956 materials and
 	// 1 437 medals stood in the bags and none on the counters: every bot kept
-	// two saddlebag rows and two trainings ahead, from its first level.
+	// two trainings ahead (and goods for the horse's old bag rows), from its first level.
 	const BYTE PLAYERBOT_HORSE_GOODS_YOUNG_BELOW = 25;
 	const BYTE PLAYERBOT_HORSE_GOODS_MID_UNTIL = 35;
 	const int PLAYERBOT_HORSE_GOODS_YOUNG_HORSE = 1;
@@ -373,8 +373,7 @@ namespace
 		return GetPlayerBotHorseTrainingMaterialsWanted(ch);
 	}
 
-	// A medal off a counter for the horse: the next training's, over the due
-	// saddlebag row's.
+	// A medal off a counter for the horse: the next training's.
 	int GetPlayerBotHorseMedalKeep(LPCHARACTER ch);
 
 	bool PlayerBotHorseWantsMedal(LPCHARACTER ch)
@@ -385,13 +384,13 @@ namespace
 		// MT2009_PLUS_HORSE_GOODS_MARKET_V1: never past its band's keep - what it
 		// bought over that would go straight back on its counter.
 		const int have = (int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM);
-		return have < cost.medals + GetPlayerBotSaddlebagMedalReserve(ch) &&
+		return have < cost.medals &&
 				have < GetPlayerBotHorseMedalKeep(ch);
 	}
 
 	// The medals a bot never puts up. MT2009_PLUS_HORSE_GOODS_MARKET_V1: up to
 	// 35 what the horse needs to reach its band's level (1 under 25, 11 to 35);
-	// past 35 the next training and the due row - no floor.
+	// past 35 the next training - no floor.
 	int GetPlayerBotHorseMedalKeep(LPCHARACTER ch)
 	{
 		const int target = GetPlayerBotHorseGoodsTargetLevel(ch);
@@ -401,7 +400,7 @@ namespace
 			SumPlayerBotHorseTrainingTo(ch, target, medals, materials);
 			return medals;
 		}
-		return GetPlayerBotHorseTrainingMedals(ch, 1) + GetPlayerBotSaddlebagMedalReserve(ch);
+		return GetPlayerBotHorseTrainingMedals(ch, 1);
 	}
 
 	// The feed of this kind the next training eats; the bag keeps that much.
@@ -427,13 +426,12 @@ namespace
 		return gold;
 	}
 
-	// The medals (over the due saddlebag row's) and the materials of the next
-	// training are in the bag; the yang aside.
+	// The medals and the materials of the next training are in the bag; the
+	// yang aside.
 	bool HasPlayerBotHorseTrainingGoods(LPCHARACTER ch, const TPlayerBotHorseTraining& cost)
 	{
 		return ch &&
-				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >=
-					cost.medals + GetPlayerBotSaddlebagMedalReserve(ch) &&
+				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_MEDAL_VNUM) >= cost.medals &&
 				(int)ch->CountSpecifyItem(PLAYERBOT_HORSE_TRAINING_MATERIAL_VNUM) >= cost.materials;
 	}
 
@@ -456,8 +454,8 @@ namespace
 		return GetPlayerBotHorseTrainingGold(ch, cost);
 	}
 
-	// Everything the training asks is in the bag and the purse: the medals
-	// over the due saddlebag row's, the materials, the yang over what the bot
+	// Everything the training asks is in the bag and the purse: the medals,
+	// the materials, the yang over what the bot
 	// holds back for everything else (GetPlayerBotBaseReservedGold - the
 	// savings are this training's own).
 	bool CanPlayerBotPayHorseTraining(LPCHARACTER ch)

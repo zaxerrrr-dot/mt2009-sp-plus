@@ -2104,7 +2104,7 @@ namespace
 				LogPlayerBotDsProgress(ch, dwNow, "pass", false);
 		}
 		if (state.bVisitingShop || state.bVisitingBiologist || state.bVisitingHerbalist || state.bVisitingStable ||
-				state.bVisitingAlchemist || state.bVisitingUriel || state.bSaddlebagErrand != 0 ||
+				state.bVisitingAlchemist || state.bVisitingUriel || state.bCraftErrand != 0 ||
 				state.bFishingSession || state.bMarketTrip)
 			return false;
 		if (!state.bVisitingDsAlchemist && dwNow < state.dwNextDsCheckTime)

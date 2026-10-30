@@ -250,9 +250,7 @@ namespace
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return;
-		// MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1: every cell, the saddlebag
-		// page's as well - CountSpecifyItem reads only the cells open now, and
-		// a seal on a shut page stayed in the bag.
+		// MT2009_PLUS_BOT_DUNGEON_ITEM_ANY_CELL_V1: every inventory cell.
 		for (int cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
