@@ -1117,7 +1117,7 @@ Paczka „Official Passive Attr System” (Best Studio) na naszym kliencie, zasa
 - Haki: `game.py` (hello, dwie komendy, `DestroyWindow`, akcja klawisza `relic`), `keybind.py` („Bonus Reliktu”, bez
   domyślnego klawisza), `uitooltip.py` (relikt w `AddItemData` – nie zwykłe linie bonusów), `uisystem.py` +
   `uiscript/systemdialog.py` (przycisk „Bonus Reliktu” w menu Esc).
-- `root/icon/item/30255-30258, 30272-30276, 30280-30284.tga` – ikony GF 26.1.11 (Pakiet Dusz 30263: `27999.tga` klienta).
+- `root/icon/item/30272-30276, 30280-30284.tga` – ikony GF 26.1.11 (Pakiet Dusz 30263: `27999.tga` klienta); `30255-30258.tga` są już w paczce `icon` klienta (inne obrazki) – dlatego leżą w `iconpack/icon/item/` i zastępują tamte (build57.py nie pozwala na nazwę z roota, którą ma inna paczka).
 - `tools/relikty/build_relikty_packs.py` (+ `patch_relikty_client.py`, `verify_relikty.py`, `relikty_files.json`):
   `gamedata`/`dbdata` – 15 przedmiotów (`tools/relikty/relikty_items.json` = `relikty.sql`), nowa paczka `relikty`
   (GF: `d:/ymir work/ui/passive_01.dds`, `d:/ymir work/ui/game/passive_attr/*.sub`) i jej linia w `Index` (ostatnia).
