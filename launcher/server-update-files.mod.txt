@@ -620,3 +620,62 @@ linux-port/docker/mariadb/playerbot/antymagia.sql
 # engine files it changes are above (char.h, char.cpp, char_item.cpp, item.cpp, char_skill.cpp, cmd.cpp); the logic is
 # playerbot_addeq.cpp (the playerbot_* lines); the unlock items 38306 / 76055 addeq.sql (apply.sh, tools/addeq).
 linux-port/docker/mariadb/playerbot/addeq.sql
+
+# ---- Yohara 3.0.6 (MT2009_PLUS_YOHARA_PKG_V1): what the 3.x Dockerfile, apply.sh and engine use that no line above
+# names, found by the package's coverage check (every Dockerfile COPY, every apply.sh SQL, every MT2009_PLUS engine
+# file, every file changed since 3.0.3). A bare "*" takes the folder's whole tree.
+# The Yohara maps, dungeons and places' share files (game/Dockerfile "share:" steps) and their SQL (apply.sh).
+linux-port/docker/game/maps302/*
+linux-port/docker/game/cape301/*
+linux-port/docker/game/yohara_port/*
+linux-port/docker/game/yohara_maps/*
+linux-port/docker/game/yohara_maps2/*
+linux-port/docker/game/yohara_maps3/*
+linux-port/docker/game/yohara_maps4/*
+linux-port/docker/game/yohara_dung4/*
+linux-port/docker/game/yohara_pb/*
+linux-port/docker/game/yohara_iluzja/*
+linux-port/docker/game/yohara_crack/*
+linux-port/docker/game/yohara_crack2/*
+linux-port/docker/game/yohara_meley/*
+linux-port/docker/game/yohara_lokacje/*
+linux-port/docker/game/ymotions/*
+linux-port/docker/game/ysets/*
+linux-port/docker/game/spider3/*
+linux-port/docker/game/demonstones/*
+linux-port/docker/game/mob_drop_item.beran.append.txt
+linux-port/docker/game/mob_drop_item.buty.append.txt
+linux-port/docker/game/cube.buty.txt
+linux-port/docker/mariadb/playerbot/yohara_*.sql
+linux-port/docker/mariadb/playerbot/gaya2.sql
+linux-port/docker/mariadb/playerbot/kawuco.sql
+# The common engine file the Yohara items' vnum helpers change.
+linux-port/docker/game/src/server/common/VnumHelper.h
+linux-port/docker/game/src/server/game/src/ikarus_shop.cpp
+# MT2009_PLUS_INVENTORY_V2_V1 / MT2009_PLUS_ADDEQ_V2 (server-patches/addeq; Ekwipunek v2 by dracaryS): four equipment
+# pages - the engine files are above, the items addeq.sql (above).
+# MT2009_PLUS_QUEST_RENEWAL_V1 (server-patches/questren; Owsap): the quest window's categories - playerbot_quest_renewal.cpp
+# (the playerbot_* lines). MT2009_PLUS_DAMAGE_PRINT_V1 (server-patches/dmgprint), MT2009_PLUS_AUTOHUNT_REACH_V1
+# (server-patches/autohuntreach), MT2009_PLUS_RING_EFFECTS_V1 (server-patches/ringfx): engine files above.
+# MT2009_PLUS_WEAPON_ELEMENT_V1 (server-patches/zywiolbroni): Zaczarowanie Zywiolu Broni - the engine file pair with the
+# overlay, the items zywiol_broni.sql (apply.sh), the settings game/zywiolbroni/weapon_element.txt (game/Dockerfile).
+linux-port/overlays/playerbot/src/game/src/weapon_element.cpp
+linux-port/docker/game/src/server/game/src/weapon_element.cpp
+linux-port/docker/mariadb/playerbot/zywiol_broni.sql
+linux-port/docker/game/zywiolbroni/*
+# MT2009_PLUS_RELIC_V1 (server-patches/relikty): Bonus Reliktu - playerbot_relikty.cpp (the playerbot_* lines), the items
+# relikty.sql (apply.sh), the chests special_item_group.relikty.txt (game/Dockerfile), quests relikt_* (quest/*).
+linux-port/docker/mariadb/playerbot/relikty.sql
+linux-port/docker/game/special_item_group.relikty.txt
+# MT2009_PLUS_HORSE40_V1 (server-patches/konie): the horse to level 40 - the engine files horse_rider.{cpp,h},
+# questlua_horse.cpp and konie_rozwoj.cpp (with the overlay), the items and mobs konie.sql (apply.sh), the chests
+# special_item_group.konie.txt (game/Dockerfile), quests konie / konie_rozwoj (quest/*); the horse bags removed:
+# juki_usuniecie.sql moves their items to the storeroom (apply.sh), playerbot_juki.h (the playerbot_* lines).
+linux-port/overlays/playerbot/src/game/src/konie_rozwoj.cpp
+linux-port/docker/game/src/server/game/src/konie_rozwoj.cpp
+linux-port/docker/game/src/server/game/src/horse_rider.cpp
+linux-port/docker/game/src/server/game/src/horse_rider.h
+linux-port/docker/game/src/server/game/src/questlua_horse.cpp
+linux-port/docker/mariadb/playerbot/konie.sql
+linux-port/docker/mariadb/playerbot/juki_usuniecie.sql
+linux-port/docker/game/special_item_group.konie.txt

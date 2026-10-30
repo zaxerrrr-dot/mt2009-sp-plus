@@ -4,6 +4,10 @@ from the previous full package (MT2009_PLUS_YOHARA_PKG_V1).
 
     python3 tools/yohara_pkg/build_server_pkg.py --version 3.0.3 --prev-version 3.0.2 \
         --client-version 3.0.3 --changelog CHANGELOG-YOHARA-3.0.3.md
+    python3 tools/yohara_pkg/build_server_pkg.py --version 3.0.6 --prev-version 3.0.3 \
+        --client-version 3.0.6 --changelog CHANGELOG-YOHARA-3.0.6.md \
+        --client-chain klient-yohara-3.0.3-aktualizacja-od-3.0.0.zip,klient-test-yohara-3.0.6-latka.zip \
+        --prev-zip /opt/metin2/dist/aktualizacje/test-plus/MT2009-PLUS-Yohara-3.0.3-test-serwer.zip
 
 What goes in (the way 3.0.0-3.0.2 were made, written down):
   * every file git tracks at --ref, without the repository-only trees
@@ -147,7 +151,7 @@ INSTALACJA - WINDOWS
 2. Rozpakuj paczke do NOWEGO, pustego folderu (np. C:\\MT2009-Yohara).
    Nie rozpakowuj jej na istniejacy serwer 2.x. Jesli serwer 2.x jest
    uruchomiony, najpierw go zatrzymaj (stop.bat), bo oba uzywaja tych
-   samych portow. Serwer z poprzedniej paczki Yohara 3.0.2 zaktualizujesz
+   samych portow. Serwer z poprzedniej paczki Yohara {prev} zaktualizujesz
    latka MT2009-PLUS-Yohara-latka-{prev}-do-{v}-test.zip.
 3. Uruchom Metin2-Launcher-GUI.bat i kliknij GRAJ.
    Pierwsze uruchomienie wymusza zbudowanie osobnych obrazow Yohary w
@@ -166,9 +170,9 @@ KLIENT
 Potrzebny jest klient Yohara {client}:
  1. klient 2.0.64,
  2. na niego klient-test-yohara-3.0.0.zip,
- 3. na to klient-yohara-{client}-aktualizacja-od-3.0.0.zip
+ 3. na to, po kolei: {chain_txt}
     (http://141.94.100.53/aktualizacje/test-plus/)
-    - rozpakuj do folderu klienta i zastap pliki.
+    - kazdy rozpakuj do folderu klienta i zastap pliki.
 Ten klient ma 3 Loch Pajakow i Krypte Balathora - w tej paczce sa domyslnie
 wlaczone (M2_SPIDER3_ON=1, M2_BALATHOR_ON=1). Starszy klient zamyka sie
 przy wejsciu na te mapy.
@@ -212,8 +216,8 @@ AKTUALIZACJE I EDYTOR .env
 - 3 Loch Pająków i Krypta Balathora są włączone (M2_SPIDER3_ON=1, M2_BALATHOR_ON=1) – potrzebny klient Yohara {client}.
 
 KLIENT
-- Wgraj klienta klient-yohara-{client}-aktualizacja-od-3.0.0.zip (na klienta Yohara 3.0.0) – bez niego nowe mapy
-  i okna (3 Loch Pająków, Krypta Balathora, Społeczność, Lokalizator NPC, okno wytwarzania) nie zadziałają.
+- Wgraj klienta Yohara {client}: na klienta Yohara 3.0.0 po kolei {chain_txt}
+  (http://141.94.100.53/aktualizacje/test-plus/) – bez niego nowe mapy i okna nie zadziałają.
 - Edytor bazy danych w panelu: po aktualizacji pobierz zip na nowo.
 
 Twój plik .env, hasła, postacie i świat zostają bez zmian.
@@ -258,6 +262,9 @@ def main():
     ap.add_argument('--version', required=True)
     ap.add_argument('--prev-version')
     ap.add_argument('--client-version', required=True)
+    ap.add_argument('--client-chain', default=None,
+                    help='client zips put on the Yohara 3.0.0 client, in order, comma separated '
+                         '(default: klient-yohara-<client>-aktualizacja-od-3.0.0.zip)')
     ap.add_argument('--changelog', required=True)
     ap.add_argument('--ref', default='HEAD')
     ap.add_argument('--repo', default='/opt/metin2/git/wt-yohara')
@@ -269,6 +276,8 @@ def main():
     a = ap.parse_args()
 
     v, tag = a.version, a.version + '-test'
+    chain = (a.client_chain or 'klient-yohara-%s-aktualizacja-od-3.0.0.zip' % a.client_version).split(',')
+    chain_txt = ', '.join(chain)
     stage = a.stage or '/opt/metin2/cache/yohara/pkg-%s' % v.replace('.', '')
     name = 'MT2009-PLUS-Serwer-Yohara-%s' % tag
     root = os.path.join(stage, name)
@@ -313,6 +322,12 @@ def main():
             shutil.copy2(s, os.path.join(gs, fn))
             mirrored.append(fn)
     print('overlay files mirrored into the engine source: %d %s' % (len(mirrored), ' '.join(mirrored[:20])))
+    # a playerbot_* file the overlay no longer has (renamed or removed: playerbot_saddlebag.h -> playerbot_juki.h,
+    # playerbot_bonus_switch.h) stays behind in the test tree's engine source; nothing includes it - leave it out
+    stale = sorted(fn for fn in os.listdir(gs) if fn.startswith('playerbot_') and not os.path.exists(os.path.join(ov, fn)))
+    for fn in stale:
+        os.remove(os.path.join(gs, fn))
+    print('stale playerbot_* files left out of the engine source: %d %s' % (len(stale), ' '.join(stale)))
     # every server patch in the deploy order (an applied edit is skipped)
     for p in deploy_patch_order(a.deploy_script):
         r = subprocess.run(['python3', os.path.join(a.repo, 'server-patches', p, 'apply_%s.py' % p), gs],
@@ -340,7 +355,8 @@ def main():
           '  "server": {\n    "version": "%s"\n  }\n}\n' % (now, tag, tag))
     write(os.path.join(root, '.m2launcher-rebuild-pending'), 'Yohara %s: first build required\n' % tag)
     write(os.path.join(root, 'INSTRUKCJA-YOHARA-TEST.txt'),
-          INSTRUKCJA.format(tag=tag, v=v, prev=a.prev_version or '?', client=a.client_version).replace('\n', '\r\n'))
+          INSTRUKCJA.format(tag=tag, v=v, prev=a.prev_version or '?', client=a.client_version,
+                            chain_txt=chain_txt).replace('\n', '\r\n'))
     shutil.copy2(a.changelog, os.path.join(root, 'CHANGELOG-YOHARA-%s.md' % v))
     for keep in ('linux-port/docker/game/src/serverfiles/share/package', 'linux-port/docker/game/src/serverfiles/mark-default'):
         os.makedirs(os.path.join(root, keep), exist_ok=True)
@@ -374,7 +390,8 @@ def main():
                 if not os.path.exists(os.path.join(root, rel)):
                     removed.append(rel)
         write(os.path.join(lroot, 'LATKA-%s-INSTRUKCJA.txt' % v),
-              LATKA.format(prev=a.prev_version, v=v, name=lname, client=a.client_version, count=count + 1))
+              LATKA.format(prev=a.prev_version, v=v, name=lname, client=a.client_version, count=count + 1,
+                          chain_txt=chain_txt))
         lout = os.path.join(a.out, 'MT2009-PLUS-Yohara-latka-%s-do-%s-test.zip' % (a.prev_version, v))
         ldigest = zip_dir(stage, lname, lout)
         write(os.path.join(stage, 'latka-obsolete-files.txt'), '\n'.join(sorted(removed)) + '\n')
