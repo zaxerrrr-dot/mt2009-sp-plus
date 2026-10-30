@@ -1,4 +1,4 @@
-# -*- coding: cp1250 -*-
+# -*- coding: latin-1 -*-
 # MT2009_PLUS_QUEST_RENEWAL_V1: the renewed quest window - QUEST_RENEWAL 1.0.0.6 ((C) 2019 Owsap Productions), the
 # official client's quest page: the quests under eight folding categories (one open at a time) with a coloured mark on
 # the ones that hold quests, each quest with its counter, its clock and a dot while its letter is still unread, and one
