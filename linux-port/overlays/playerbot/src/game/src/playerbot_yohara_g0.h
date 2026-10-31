@@ -99,6 +99,9 @@ namespace
 	const int PLAYERBOT_G0_KIND_MAP_REQ[3] = { 25, 15, 25 };	// its sungma_table.txt row, if the table has no Namgan
 
 	const int PLAYERBOT_G0_DUST = 400;
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V2: a second-set bot holding this many of the set's required six pieces saves (and
+	// buys) the second package's dust without the struggle - its set is under way (553 pieces in 397 sets on 31 October)
+	const int PLAYERBOT_G0_SET2_SAVE_PIECES = 2;
 	// MT2009_PLUS_BOT_YOHARA_G0_V2: the dust is sought from this level, and the 400 wait in the safebox (the flag
 	// holds how many went down; cleared when they come out)
 	const int PLAYERBOT_G0_SAVE_MIN_LEVEL = 110;
@@ -116,7 +119,8 @@ namespace
 
 	// the dust's market: at most this per cent of the bots' own price of a dust (PLAYERBOT_PRIOR_MAGIC_DUST, scaled),
 	// out of this per cent of the spare purse
-	const int PLAYERBOT_G0_DUST_PRICE_CAP_PCT = 150;
+	// MT2009_PLUS_BOT_DUST_MARKET_V1: 200 (was 150) - a thin market's lines ask the listing's markup over the bots' price
+	const int PLAYERBOT_G0_DUST_PRICE_CAP_PCT = PLAYERBOT_DUST_MARKET_PRICE_CAP_PCT;
 	const int PLAYERBOT_G0_DUST_PURSE_PCT = 50;
 	// the dust's trip: a roll in a village every half hour, one in two to Zaklety Las; the plan holds for the way there
 	const DWORD PLAYERBOT_G0_TRIP_ROLL_MS = 30 * 60 * 1000;
@@ -245,7 +249,21 @@ namespace
 #ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V1
 		// MT2009_PLUS_BOT_G0_DUST_RULE_V1: with its G0 it saves only in the second-set mode and while it cannot cope
 		// with its set (playerbot_g0_dust_rule.h).
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V2
+		// MT2009_PLUS_BOT_G0_DUST_RULE_V2 (the owner's approval of item 4, 31 October 2026): or, softer, its second set
+		// started (E2 chosen) and under way - PLAYERBOT_G0_SET2_SAVE_PIECES of its required pieces held - or the 400 in
+		// the bag already (bought on the market): the struggle alone was proven 9 times in a day of 271-397 second-set
+		// bots, and not one second G0 was given (BOTY-YOHARA-ANALIZA-v2.md, P4 and item 10).
+		if (!IsPlayerBotG0SecondSetMode(ch))
+			return false;
+		if (IsPlayerBotG0Struggling(ch, NULL))
+			return true;
+		return GetPlayerBotSecondSetElement(ch) >= 0 &&
+				(CountPlayerBotSecondSetPieces(ch) >= PLAYERBOT_G0_SET2_SAVE_PIECES ||
+				 (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) >= PLAYERBOT_G0_DUST);
+#else
 		return IsPlayerBotG0SecondSetMode(ch) && IsPlayerBotG0Struggling(ch, NULL);
+#endif
 #else
 		return GetPlayerBotSecondSetElement(ch) >= 0;
 #endif
@@ -320,7 +338,17 @@ namespace
 		const long long units = std::max<long long>(1, (long long)item->GetCount());
 		const long long cap = (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_PRIOR_MAGIC_DUST) * PLAYERBOT_G0_DUST_PRICE_CAP_PCT / 100;
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: the refusals counted for the market census
+		if (price > cap * units || price > spare * PLAYERBOT_G0_DUST_PURSE_PCT / 100)
+		{
+			NotePlayerBotDustMarketRefused(price > cap * units);
+			return false;
+		}
+		return true;
+#else
 		return price <= cap * units && price <= spare * PLAYERBOT_G0_DUST_PURSE_PCT / 100;
+#endif
 	}
 
 	bool WantsPlayerBotG0DustFromMarket(LPCHARACTER ch)

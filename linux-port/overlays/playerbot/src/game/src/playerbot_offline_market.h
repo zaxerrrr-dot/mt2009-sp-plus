@@ -1595,9 +1595,16 @@ namespace {
     const DWORD PLAYERBOT_SINK_LOOK_MS = 2 * 60 * 1000;
     std::map<DWORD, DWORD> s_mapPlayerBotSinkNextLook;
 
+    // MT2009_PLUS_BOT_DUST_MARKET_V1: and Magiczny Pyl, for a Champion short of its G0's 400 or of its power
+    // elixirs' dust - the producers' lines stood among ten thousand others, and a Champion's walk home read sixty-four
+    // a look (dust_bought=0 on every core, 31 October).
     bool IsPlayerBotSinkGoodsVnum(DWORD vnum) {
         return vnum == PLAYERBOT_HORSE_MEDAL_VNUM || vnum == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
-                IsPlayerBotCorVnum(vnum) || IsPlayerBotSashVnum(vnum);
+                IsPlayerBotCorVnum(vnum) || IsPlayerBotSashVnum(vnum)
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+                || vnum == PLAYERBOT_MAGIC_DUST_VNUM
+#endif
+                ;
     }
 
     // MT2009_PLUS_HORSE_ECONOMY_V2: the scan alone, for any map's stands (the
@@ -1616,7 +1623,13 @@ namespace {
         next = now + PLAYERBOT_SINK_LOOK_MS;
         // MT2009_PLUS_HORSE30_V1: the next paid training's medals.
         const bool medal = PlayerBotHorseWantsMedal(ch);
-        const bool wants = medal || PlayerBotWantsCraftGoods(ch) || PlayerBotWantsAlchemyFromMarket(ch) ||
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+        // MT2009_PLUS_BOT_DUST_MARKET_V1: the G0's dust or the power elixirs' (the ledger says a counter holds some).
+        const bool dust = WantsPlayerBotG0DustFromMarket(ch) || PlayerBotYoharaShopWantsDustFromMarket(ch);
+#else
+        const bool dust = false;
+#endif
+        const bool wants = medal || dust || PlayerBotWantsCraftGoods(ch) || PlayerBotWantsAlchemyFromMarket(ch) ||
                 PlayerBotWantsSashFromMarket(ch);
         if (!wants) return false;
         const int shopChannel = CPlayerBotManager::instance().IsChannelTableMode()
@@ -1652,6 +1665,7 @@ namespace {
                 if (!line) continue;
                 const DWORD vnum = line->GetInfo().vnum;
                 if (!IsPlayerBotSinkGoodsVnum(vnum) || (vnum == PLAYERBOT_HORSE_MEDAL_VNUM && !medal) ||
+                        (vnum == PLAYERBOT_MAGIC_DUST_VNUM && !dust) ||   // MT2009_PLUS_BOT_DUST_MARKET_V1
                         IsPlayerBotLineClaimedByOther(id, self, now))
                     continue;
                 const long long price = (long long)line->GetPrice().GetTotalYangAmount();

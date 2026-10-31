@@ -316,6 +316,13 @@ namespace
 			// goods, and goes on the counter or to the merchant.
 			if (GetPlayerBotRareGoodsKind(item->GetVnum()) != PLAYERBOT_RARE_GOODS_NONE)
 				continue;
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+			// MT2009_PLUS_BOT_DUST_MARKET_V1: nor Polyskujaca Muszla (the owner, 31 October: "niech ja sprzedaja, jest
+			// droga") - 95 openings in a hundred are a Kawalek Kamienia of 6 100 yang, the shell is 3 410 000 on a
+			// counter (ScorePlayerBotShopStockRules).
+			if (item->GetVnum() == PLAYERBOT_POLISHED_SHELL_VNUM)
+				continue;
+#endif
 			// A box already on this bot's own counter. UseItem refuses a locked
 			// item, and that refusal is remembered by vnum for every bot in the
 			// world - so opening one that is for sale would stop the whole

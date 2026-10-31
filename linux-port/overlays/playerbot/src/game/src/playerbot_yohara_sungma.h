@@ -1577,7 +1577,16 @@
 			return "shop";
 		// What it buys there: the dust of its G0 package, a refine material its gear waits for.
 		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: and a craft's material a counter holds (the helmets' / armours' recipes too).
-		if (gap >= PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS && (IsPlayerBotG0DustHunter(ch) || PlayerBotNeedsAnyRefineMaterial(ch) ||
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: the G0's dust only while a counter holds some (WantsPlayerBotG0DustFromMarket,
+		// the ledger) - the second G0's savers are more now (MT2009_PLUS_BOT_G0_DUST_RULE_V2), and a trip home to an
+		// empty market is an errand out of the party for nothing.
+		if (gap >= PLAYERBOT_SUNGMA_TRADE_BUY_GAP_MS && (
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+				WantsPlayerBotG0DustFromMarket(ch) ||
+#else
+				IsPlayerBotG0DustHunter(ch) ||
+#endif
+				PlayerBotNeedsAnyRefineMaterial(ch) ||
 				PlayerBotYoharaShopWantsMarket(ch) ||	// MT2009_PLUS_BOT_YOHARA_SHOP_V1: inputs of Dongan's exchange
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 				WantsPlayerBotLochTicketFromMarket(ch) ||	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket on a counter
