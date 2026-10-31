@@ -829,6 +829,154 @@ namespace
 				(unsigned int)std::max(0, before));
 	}
 
+	// MT2009_PLUS_BOT_ISHOP_NEED_V1 (the owner, 31 October 2026 - boty-decyzje-2026-10-31.md, point 4: "ItemShop: boty
+	// kupuja rozne przedmioty, tylko gdy ich potrzebuja - nie na zapas"). The goals (playerbot_ishop3_goals.h, the wishes,
+	// the Sung Ma boosters, the Loch ticket) already buy for a use of their own; what piled up was the batches and what a
+	// bot held anyway. The source of the bags' ~379 000 Zaczarowanie Przedmiotu (71084) is not the shop: the 800 bots'
+	// start (tools/yohara_bot_cohort_800.py, the owner's brief of 27 October: 800 Zaczarowan, 400 Wzmocnien, 400 Cor
+	// Draconis, 400 Smoczych Fasoli a bot - 640 000 change stones handed out) and the Yohara cohort's 800; the V3 sold
+	// 1 579 of them in 30-31 October (the census bought=, log "ISHOP3: bought ... vnum=71084"), the Cors 7 721 (200 a
+	// batch). So every purchase (BuyPlayerBotIshop3Line - the goals', the wishes', the boosters', the tickets') now asks:
+	//   * the hold cap: no purchase of a vnum the bot already holds PLAYERBOT_ISHOP3_HOLD_CAPS' "hold" of (the bag and
+	//     the extra inventory, CountSpecifyItem) - a goal's batch is clamped to it (GetPlayerBotIshop3HoldRoom);
+	//   * the day cap: no more than its "day" pieces of a vnum a bot a day (the shop's day, get_global_time) - what a bot
+	//     buys over the day spreads over the kinds it needs instead of one kind's batches;
+	//   * a stackable vnum the table does not name: hold PLAYERBOT_ISHOP3_HOLD_DEFAULT, day PLAYERBOT_ISHOP3_DAY_DEFAULT;
+	//     a piece that does not stack (a look, a costume, a mount) has no cap - its own rule buys one.
+	// The census (hourly, with the categories): "PLAYERBOT_ISHOP3: variety kinds=<vnums bought> pieces=<all>
+	// hold_cap=<refused> day_cap=<refused> top=<vnum:pieces,...>" - the variety of what the bots bought in the hour.
+	struct TPlayerBotIshop3HoldCap
+	{
+		DWORD dwVnum;
+		int iHold;
+		int iDay;
+	};
+	const TPlayerBotIshop3HoldCap PLAYERBOT_ISHOP3_HOLD_CAPS[] = {
+		{ 71084, 60, 60 },		// Zaczarowanie Przedmiotu: the Yohara plan's reserve (40) and a batch
+		{ 71085, 24, 32 },		// Wzmocnienie Przedmiotu
+		{ 70024, 2, 4 },		// Marmur Blogoslawienstwa
+		{ 51501, 60, 60 },		// Cor Draconis (surowe): PLAYERBOT_ISHOP3_COR_LOW and a batch
+		{ 100300, 24, 40 },		// Zielona Smocza Fasola
+		{ 85001, 3, 4 },		// Szarfa Wladcy +0: the keeper's three
+		{ 25041, 6, 6 },		// Zwoj Blogoslawienstwa
+		{ 71025, 10, 10 },		// Kamien Kowala
+		{ 71026, 10, 10 },		// Magiczny Metal
+		{ 71052, 5, 10 },		// Blogoslawienstwo Przedmiotu
+		{ 72065, 10, 15 },		// the Seon-Hae additives
+		{ 72066, 10, 15 },
+		{ 72067, 10, 15 },
+		{ 70408, 2, 4 },		// the Loch ticket
+		{ 71027, 1, 8 },		// the Sung Ma boosters: one held, the next when it is drunk
+		{ 71028, 1, 8 },
+		{ 71030, 1, 8 },
+		{ 71044, 1, 8 },
+		{ 30255, 2, 4 },		// the relics' souls
+		{ 30256, 2, 4 },
+		{ 30257, 2, 4 },
+		{ 30258, 2, 4 },
+	};
+	const int PLAYERBOT_ISHOP3_HOLD_DEFAULT = 10;
+	const int PLAYERBOT_ISHOP3_DAY_DEFAULT = 20;
+
+	struct TPlayerBotIshop3Variety
+	{
+		std::map<DWORD, unsigned int> pieces;
+		unsigned int uHoldCap = 0, uDayCap = 0;
+	};
+	TPlayerBotIshop3Variety s_kPlayerBotIshop3Variety;
+	// pid -> vnum -> (the shop's day, pieces bought that day)
+	std::map<DWORD, std::map<DWORD, std::pair<long, int> > > s_mapPlayerBotIshop3Day;
+
+	// The vnum's caps (0: none).
+	void GetPlayerBotIshop3Caps(DWORD vnum, int& hold, int& day)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_ISHOP3_HOLD_CAPS) / sizeof(PLAYERBOT_ISHOP3_HOLD_CAPS[0]); ++i)
+			if (PLAYERBOT_ISHOP3_HOLD_CAPS[i].dwVnum == vnum)
+			{
+				hold = PLAYERBOT_ISHOP3_HOLD_CAPS[i].iHold;
+				day = PLAYERBOT_ISHOP3_HOLD_CAPS[i].iDay;
+				return;
+			}
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		const bool stacks = proto && (proto->dwFlags & ITEM_FLAG_STACKABLE) && proto->dwMaxStack > 1;
+		hold = stacks ? PLAYERBOT_ISHOP3_HOLD_DEFAULT : 0;
+		day = stacks ? PLAYERBOT_ISHOP3_DAY_DEFAULT : 0;
+	}
+
+	int GetPlayerBotIshop3BoughtToday(DWORD pid, DWORD vnum)
+	{
+		std::map<DWORD, std::map<DWORD, std::pair<long, int> > >::const_iterator b = s_mapPlayerBotIshop3Day.find(pid);
+		if (b == s_mapPlayerBotIshop3Day.end())
+			return 0;
+		std::map<DWORD, std::pair<long, int> >::const_iterator v = b->second.find(vnum);
+		if (v == b->second.end() || v->second.first != (long)(get_global_time() / 86400))
+			return 0;
+		return v->second.second;
+	}
+
+	// The pieces of vnum the bot may still buy now (INT_MAX: no cap) - the smaller of the hold's and the day's room.
+	int GetPlayerBotIshop3HoldRoom(LPCHARACTER ch, DWORD vnum)
+	{
+		int hold = 0, day = 0;
+		GetPlayerBotIshop3Caps(vnum, hold, day);
+		int room = INT_MAX;
+		if (hold > 0)
+			room = std::min(room, hold - (int)ch->CountSpecifyItem(vnum));
+		if (day > 0)
+			room = std::min(room, day - GetPlayerBotIshop3BoughtToday(ch->GetPlayerID(), vnum));
+		return std::max(0, room);
+	}
+
+	void NotePlayerBotIshop3Bought(LPCHARACTER ch, DWORD vnum, int pieces)
+	{
+		std::pair<long, int>& d = s_mapPlayerBotIshop3Day[ch->GetPlayerID()][vnum];
+		const long today = (long)(get_global_time() / 86400);
+		if (d.first != today)
+			d = std::make_pair(today, 0);
+		d.second += pieces;
+		s_kPlayerBotIshop3Variety.pieces[vnum] += (unsigned int)pieces;
+	}
+
+	void WritePlayerBotIshop3Variety()
+	{
+		TPlayerBotIshop3Variety& v = s_kPlayerBotIshop3Variety;
+		if (v.pieces.empty() && !v.uHoldCap && !v.uDayCap)
+			return;
+		std::vector<std::pair<unsigned int, DWORD> > top;
+		unsigned int all = 0;
+		for (std::map<DWORD, unsigned int>::const_iterator i = v.pieces.begin(); i != v.pieces.end(); ++i)
+		{
+			top.push_back(std::make_pair(i->second, i->first));
+			all += i->second;
+		}
+		std::sort(top.rbegin(), top.rend());
+		std::string list;
+		char buf[32];
+		for (size_t i = 0; i < top.size() && i < 16; ++i)
+		{
+			snprintf(buf, sizeof(buf), "%s%u:%u", list.empty() ? "" : ",", top[i].second, top[i].first);
+			list += buf;
+		}
+		sys_log(0, "PLAYERBOT_ISHOP3: variety kinds=%u pieces=%u hold_cap=%u day_cap=%u top=%s", (unsigned int)v.pieces.size(),
+				all, v.uHoldCap, v.uDayCap, list.empty() ? "-" : list.c_str());
+		v = TPlayerBotIshop3Variety();
+		// a day's counts of bots gone (a core's memory)
+		const long today = (long)(get_global_time() / 86400);
+		for (std::map<DWORD, std::map<DWORD, std::pair<long, int> > >::iterator b = s_mapPlayerBotIshop3Day.begin();
+				b != s_mapPlayerBotIshop3Day.end();)
+		{
+			for (std::map<DWORD, std::pair<long, int> >::iterator d = b->second.begin(); d != b->second.end();)
+				if (d->second.first != today)
+					b->second.erase(d++);
+				else
+					++d;
+			if (b->second.empty())
+				s_mapPlayerBotIshop3Day.erase(b++);
+			else
+				++b;
+		}
+	}
+
 	// One purchase of a V3 line, qty times (1..10; one of what does not stack): the balance fresh, the bag's room for
 	// every piece, the charge, the goods, the log, the money back for what could not be given. The state's balance
 	// follows (a Smocze Monety purchase adds its price in Smocze Znaki).
@@ -872,11 +1020,28 @@ namespace
 		}
 #endif
 		const DWORD pieces = line.dwCount * (DWORD)qty;
+		// MT2009_PLUS_BOT_ISHOP_NEED_V1: not over what the bot may hold of the vnum, nor over the day's pieces of it
+		{
+			int hold = 0, day = 0;
+			GetPlayerBotIshop3Caps(vnum, hold, day);
+			const bool overHold = hold > 0 && (int)ch->CountSpecifyItem(vnum) >= hold;
+			const bool overDay = !overHold && day > 0 &&
+					GetPlayerBotIshop3BoughtToday(ch->GetPlayerID(), vnum) + (int)pieces > std::max(day, (int)line.dwCount);
+			if (overHold || overDay)
+			{
+				++(overHold ? s_kPlayerBotIshop3Variety.uHoldCap : s_kPlayerBotIshop3Variety.uDayCap);
+				PlayerBotLogThrottled("ishop3_need_cap", dwNow,
+						"PLAYERBOT_ISHOP3: need cap pid=%u name=%s vnum=%u pieces=%u reason=%s why=%s held=%d hold=%d today=%d day=%d",
+						ch->GetPlayerID(), ch->GetName(), vnum, pieces, reason ? reason : "-", overHold ? "hold" : "day",
+						(int)ch->CountSpecifyItem(vnum), hold, GetPlayerBotIshop3BoughtToday(ch->GetPlayerID(), vnum), day);
+				return false;
+			}
+		}
 		const DWORD stack = line.bStackable ? std::max<DWORD>(1, std::min<DWORD>(proto->dwMaxStack, 200)) : 1;
 		const DWORD chunks = (pieces + stack - 1) / stack;
-		const int size = std::max<int>(1, proto->bSize);
-		if (chunks == 1 ? ch->GetEmptyInventory((BYTE)size) < 0
-				: CountPlayerBotFreeInventoryCells(ch) < (int)(chunks * size) + 1)
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: the room where the purchase goes - its category's storage for a routing bot
+		// (the Cors, the stones, the scrolls), else the bag as before
+		if (!PlayerBotEkwHasRoomForVnum(ch, vnum, (int)chunks))
 		{
 			++census.uBagFull;
 			PlayerBotLogThrottled("ishop3_bag_full", dwNow,
@@ -940,6 +1105,7 @@ namespace
 #endif
 		++census.uBuys;
 		census.uPieces += delivered;
+		NotePlayerBotIshop3Bought(ch, vnum, (int)delivered);	// MT2009_PLUS_BOT_ISHOP_NEED_V1
 		(marks ? census.llMarks : census.llCoins) += paid;
 		++s_uPlayerBotItemShopBuys;
 		s_mapPlayerBotItemShopBought[vnum] += delivered;
@@ -1116,6 +1282,7 @@ namespace
 		sys_log(0, "PLAYERBOT_ISHOP3: census source=%s %s", GetPlayerBotItemShopSource() == 2 ? "v3" :
 				(GetPlayerBotItemShopSource() == 1 ? "game" : "off"), out.c_str());
 		s_mapPlayerBotIshop3Census.clear();
+		WritePlayerBotIshop3Variety();	// MT2009_PLUS_BOT_ISHOP_NEED_V1
 	}
 #endif
 
