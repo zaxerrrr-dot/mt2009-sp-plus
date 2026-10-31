@@ -2202,6 +2202,55 @@ namespace
 		return itemScore * 100 > oldScore * (100 + margin);
 	}
 
+	// MT2009_PLUS_BOT_EQUIP_REFUSAL_MEMO_V1: a piece EquipItem said no to
+	// is not asked for again on the next pass. The Thief's Glove for bosses
+	// and stones (72006) was 31 664 "failed to equip upgrade" lines a day on
+	// the Yohara test server (31 October, 60 bots, one of them ~5 600): the
+	// unique slot empty (old=0), the glove a stack, and the engine's auto
+	// split (ENABLE_UNIQUE_ITEM_AUTOSPLIT, char_item.cpp) wanting a free
+	// cell a full Sung Ma bag does not have - so CanEquipNow said yes,
+	// EquipItem said no, and the pass picked the same glove every ten
+	// seconds. A refusal is remembered by bot, vnum and wear slot for
+	// PLAYERBOT_EQUIP_REFUSED_MS and the line is written for the first
+	// refusal of that pair only; a later refusal after the wait stays quiet.
+	const DWORD PLAYERBOT_EQUIP_REFUSED_MS = 30 * 60 * 1000;
+	struct TPlayerBotEquipRefusal
+	{
+		DWORD dwAt;
+		bool bLogged;
+		TPlayerBotEquipRefusal() : dwAt(0), bLogged(false) {}
+	};
+	std::map<std::pair<DWORD, std::pair<DWORD, int> >, TPlayerBotEquipRefusal> s_mapPlayerBotEquipRefused;
+
+	bool IsPlayerBotEquipRefused(LPCHARACTER ch, DWORD dwVnum, int wearCell, DWORD dwNow)
+	{
+		std::map<std::pair<DWORD, std::pair<DWORD, int> >, TPlayerBotEquipRefusal>::const_iterator it =
+				s_mapPlayerBotEquipRefused.find(std::make_pair(ch->GetPlayerID(), std::make_pair(dwVnum, wearCell)));
+		return it != s_mapPlayerBotEquipRefused.end() && it->second.dwAt != 0 &&
+				dwNow - it->second.dwAt < PLAYERBOT_EQUIP_REFUSED_MS;
+	}
+
+	// Returns true the first time the pair is refused (the caller logs then).
+	bool NotePlayerBotEquipRefused(LPCHARACTER ch, DWORD dwVnum, int wearCell, DWORD dwNow)
+	{
+		TPlayerBotEquipRefusal& memo =
+				s_mapPlayerBotEquipRefused[std::make_pair(ch->GetPlayerID(), std::make_pair(dwVnum, wearCell))];
+		memo.dwAt = dwNow ? dwNow : 1;
+		const bool first = !memo.bLogged;
+		memo.bLogged = true;
+		return first;
+	}
+
+	// The cause itself, asked before the pass picks a piece: a unique that is
+	// a stack goes on only through the engine's split, and the split needs a
+	// free cell of the bag (GetEmptyInventoryEx), which the engine asks only
+	// inside EquipItem.
+	bool PlayerBotStackedUniqueCannotSplit(LPCHARACTER ch, LPITEM item)
+	{
+		return item && item->GetType() == ITEM_UNIQUE && item->GetCount() > 1 &&
+				ch->GetEmptyInventoryEx(item) == -1;
+	}
+
 	bool ManagePlayerBotEquipment(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
 	{
 		if (!ch || !ch->IsItemLoaded() || IsPlayerBotGearFrozen(ch))
@@ -2328,6 +2377,11 @@ namespace
 
 			const int wearCell = item->FindEquipCell(ch);
 			if (wearCell < 0 || wearCell >= WEAR_MAX_NUM)
+				continue;
+			// MT2009_PLUS_BOT_EQUIP_REFUSAL_MEMO_V1: not the piece the engine just
+			// refused, nor a stacked unique with no cell to split into.
+			if (IsPlayerBotEquipRefused(ch, item->GetVnum(), wearCell, dwNow) ||
+					PlayerBotStackedUniqueCannotSplit(ch, item))
 				continue;
 
 			LPITEM oldItem = ch->GetWear(wearCell);
@@ -2514,9 +2568,16 @@ namespace
 		state.dwNextEquipmentCheckTime = dwNow + PLAYERBOT_GEAR_LOG_INTERVAL;
 		// Never leave the slot empty over a refusal: what came off goes back on.
 		const bool restored = bestOldItem && !bestOldItem->IsEquipped() && PlayerBotEquipItem(ch, bestOldItem);
-		sys_err("PLAYERBOT_AI: failed to equip upgrade pid=%u name=%s wear=%d vnum=%u old=%u restored=%d polymorphed=%d busy=%d",
-				ch->GetPlayerID(), ch->GetName(), bestWearCell, newVnum, oldVnum, restored ? 1 : 0,
-				ch->IsPolymorphed() ? 1 : 0, ch->IsBusy() ? 1 : 0);
+		// MT2009_PLUS_BOT_EQUIP_REFUSAL_MEMO_V1: remembered, and said once per
+		// bot, piece and slot (a pinned piece is the owner's word and is
+		// asked again as before). The polymorph refusal passes by on its own
+		// when the marble ends, so it is not remembered.
+		const bool firstRefusal = !pinned && !ch->IsPolymorphed()
+				? NotePlayerBotEquipRefused(ch, newVnum, bestWearCell, dwNow) : true;
+		if (firstRefusal)
+			sys_err("PLAYERBOT_AI: failed to equip upgrade pid=%u name=%s wear=%d vnum=%u old=%u restored=%d polymorphed=%d busy=%d count=%u",
+					ch->GetPlayerID(), ch->GetName(), bestWearCell, newVnum, oldVnum, restored ? 1 : 0,
+					ch->IsPolymorphed() ? 1 : 0, ch->IsBusy() ? 1 : 0, (unsigned int)bestItem->GetCount());
 		return false;
 	}
 
