@@ -1703,7 +1703,9 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_COHORT_V1: a member never goes to town for its bag (the cohorts' bags are full -
 		// 170 things in some on the test world): its junk is sold at the merchants' price where it stands, by
 		// the town visit's own rule, once in PLAYERBOT_YOHARA_COHORT_TIDY_MS while no column of three is free.
-		if (IsPlayerBotYoharaCohortPID(ch->GetPlayerID()) && (int)(dwNow - r.dwNextTidy) >= 0)
+		// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1 (the owner, 31 October 2026: "Wszystkie boty sprzedaja smieci zdalnie, na
+		// miejscu"): every Yohara resident, a cohort's member or not (the bag and the extra inventory's junk).
+		if ((int)(dwNow - r.dwNextTidy) >= 0)
 		{
 			r.dwNextTidy = dwNow + PLAYERBOT_YOHARA_COHORT_TIDY_MS;
 			if (ch->GetEmptyInventory(3) < 0)

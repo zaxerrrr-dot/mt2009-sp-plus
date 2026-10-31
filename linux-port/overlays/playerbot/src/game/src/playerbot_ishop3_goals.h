@@ -39,6 +39,11 @@
 //
 // The log: PLAYERBOT_ISHOP3 (bought / chest / bag full / not given, playerbot_itemshop.h) and the hourly census.
 //
+// MT2009_PLUS_BOT_ISHOP_NEED_V1 (the owner, 31 October 2026: "tylko gdy ich potrzebuja - nie na zapas"): every goal's
+// batch is clamped to the vnum's hold and day caps (GetPlayerBotIshop3HoldRoom, playerbot_itemshop.h - a bot holding its
+// cap of a kind buys none of it, whatever its goal says), the Yohara change top-up is the plan's reserve plus 20 (was
+// 40), the Cors' batch 40 (was 200); the hourly "variety" line says what kinds the bots bought.
+//
 // MT2009_PLUS_BOT_SM_DAILY_POOL_V1 (the owner, 28 October 2026): the coins of a week no longer go in hours - every
 // Smocze Monety purchase here (and the wishes', the element stone's and pet's, the Sung Ma premium's, the Loch
 // ticket's) stays within the account's daily pool (playerbot_itemshop.h: a seventh of the weekly grant a day,
@@ -72,11 +77,13 @@ namespace
 	const int PLAYERBOT_ISHOP3_ADD_BATCH_MAX = 8;
 	const int PLAYERBOT_ISHOP3_CHANGE_BATCH = 8;
 	const int PLAYERBOT_ISHOP3_YOHARA_ADD_BATCH_MAX = 16;
-	const int PLAYERBOT_ISHOP3_YOHARA_CHANGE_BATCH = 40;
+	// MT2009_PLUS_BOT_ISHOP_NEED_V1: 20 over the plan's reserve (was 40), 40 Cors a batch (was 200) - bought for the next
+	// steps, not for a stock (the hold caps of playerbot_itemshop.h: 60 of each)
+	const int PLAYERBOT_ISHOP3_YOHARA_CHANGE_BATCH = 20;
 	const int PLAYERBOT_ISHOP3_YOHARA_CHANGE_LOW = 10;
 	const int PLAYERBOT_ISHOP3_YOHARA_PIECE_GIVE_UP = 300;
 	const DWORD PLAYERBOT_ISHOP3_COR_VNUM = 51501;
-	const int PLAYERBOT_ISHOP3_COR_BATCH = 200;
+	const int PLAYERBOT_ISHOP3_COR_BATCH = 40;
 	const int PLAYERBOT_ISHOP3_COR_LOW = 20;
 	const int PLAYERBOT_ISHOP3_BEAN_BATCH = 20;
 	const int PLAYERBOT_ISHOP3_BEAN_LOW = 3;
@@ -235,6 +242,11 @@ namespace
 		if (bag.changeUnits >= PLAYERBOT_YOHARA_BONUS_CHANGE_RESERVE + PLAYERBOT_ISHOP3_YOHARA_CHANGE_LOW ||
 				n >= PLAYERBOT_ISHOP3_MAX_GOALS)
 			return;
+		// MT2009_PLUS_BOT_ISHOP_NEED_V1: the bag's stack used up while the extra inventory holds more (the plan counts
+		// those only beside a bag stack; the ekwipunek pass brings one back) - nothing to buy
+		if (bag.changeCell < 0 && (int)ch->CountSpecifyItem(PLAYERBOT_BONUS_CHANGE_VNUM) >=
+				PLAYERBOT_YOHARA_BONUS_CHANGE_RESERVE + PLAYERBOT_ISHOP3_YOHARA_CHANGE_LOW)
+			return;
 		TPlayerBotYoharaBonusBag topped = bag;
 		topped.addCell = -1;
 		topped.addUnits = 0;
@@ -392,7 +404,22 @@ namespace
 #ifdef MT2009_PLUS_BOT_USE_SHOP_AIDS_V1
 		CollectPlayerBotShopAidGoals(ch, goals, n);
 #endif
-		return n;
+		// MT2009_PLUS_BOT_ISHOP_NEED_V1: a goal whose vnum the bot holds its cap of (or bought its day's pieces of) is no
+		// open goal - no batch, no coins held back for it (the looks' reserve); the others clamped to what may come
+		int kept = 0;
+		for (int i = 0; i < n; ++i)
+		{
+			const int room = GetPlayerBotIshop3HoldRoom(ch, goals[i].dwVnum);
+			if (room <= 0)
+			{
+				++s_kPlayerBotIshop3Variety.uHoldCap;
+				continue;
+			}
+			goals[kept] = goals[i];
+			goals[kept].iPieces = std::min(goals[kept].iPieces, room);
+			++kept;
+		}
+		return kept;
 	}
 
 	// The lines of a vnum the bot's level may buy, cheapest a piece first.
@@ -452,9 +479,16 @@ namespace
 		int bought = 0;
 		bool noCoins = false;
 		bool poolBlock = false;
-		while (bought < goal.iPieces && *purchases < PLAYERBOT_ISHOP3_SESSION_PURCHASES)
+		// MT2009_PLUS_BOT_ISHOP_NEED_V1: the batch within what the bot may still hold and buy today of the vnum
+		const int target = std::min(goal.iPieces, GetPlayerBotIshop3HoldRoom(ch, goal.dwVnum));
+		if (target <= 0)
 		{
-			const int left = goal.iPieces - bought;
+			++s_kPlayerBotIshop3Variety.uHoldCap;
+			return 0;
+		}
+		while (bought < target && *purchases < PLAYERBOT_ISHOP3_SESSION_PURCHASES)
+		{
+			const int left = target - bought;
 			const int balance = goal.bMarks ? state.iDragonMarks : state.iDragonCoins;
 			int have = balance;
 #ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1

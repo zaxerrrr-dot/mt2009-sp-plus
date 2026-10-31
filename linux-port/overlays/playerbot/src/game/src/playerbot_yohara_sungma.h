@@ -1269,9 +1269,46 @@
 		return true;
 	}
 
-	// What the bot lacks that Dongan sells: 1 potions, 2 room in the bag (no free column of three, junk to sell).
+	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1 (the owner, 31 October 2026 - boty-decyzje-2026-10-31.md, points 2 and 3: "Wszystkie
+	// boty sprzedaja smieci zdalnie, na miejscu. Do Dongan wracaja tylko: po mikstury, do Dozorcy, ulepszac EQ. Do M1 na
+	// CH1 boty wracaja wylacznie na zakupy na straganach"):
+	//   * a full bag is no reason for any trip: every resident sells its junk where it stands (the merchants' price, the
+	//     town visit's rule - SellPlayerBotJunkAtMerchant, the bag and the extra inventory) once in
+	//     PLAYERBOT_SUNGMA_TIDY_MS while its bag has no free column of three or fewer than PLAYERBOT_SUNGMA_TIDY_FREE cells
+	//     ("bag tidied", was a party member's only); Dongan's "+bag" errand is gone (need 2 never set) and so is the trade
+	//     trip's "bag";
+	//   * Dongan's errand: the potions (1) and Handlarka's elixirs (4 - potions too: the hunt element's resistance and
+	//     power); the glove, jade and talisman refines at Dongan's smith / Mistrz Chi are playerbot_yohara_chi.h's own
+	//     order trips (equipment upgrades). No Dozorca stands in Dongan (it is in the six villages) - no errand of it here;
+	//   * the trip home to the first village (M1 of the first channel - StartPlayerBotSungmaTradeTrip) only to buy at the
+	//     stands ("buy": the G0 dust, a refine or craft material, Handlarka's inputs, a Loch ticket on a counter). Its
+	//     other reasons (bag, craft, goods, shop, routine) are counted ("m1_refused") and make no trip. The counter: a
+	//     Sung Ma bot's offline counter stands in its first village and is served there only (the service walks to the
+	//     stand, BotOfflineService - the core of the stand's channel and map); the shopping trip still serves it on
+	//     arrival (ManagePlayerBotSungmaTradeHomes: the counter's service and the stands' browse nudged at once), its
+	//     goods brought from the extra inventory first (PlayerBotEkwFetchGoods), and a craft that waits for Jaharr or
+	//     Seon-Pyeong is done on such a stay (the gear2 pass asks IsPlayerBotSungmaTradeVisitor).
+	// Census: "PLAYERBOT_SUNGMA: trips" with the summary (errands by need, the tidies and what they freed, the M1 trips
+	// by reason and the reasons refused).
+	const DWORD PLAYERBOT_SUNGMA_TIDY_MS = 5 * 60 * 1000;
+	const int PLAYERBOT_SUNGMA_TIDY_FREE = 20;
+
+	struct TPlayerBotSungmaTripStats
+	{
+		unsigned int errandPotions = 0, errandElixirs = 0;
+		unsigned int tidies = 0, tidySold = 0, tidyStillFull = 0;
+		int tidyFreed = 0;
+		unsigned int m1Buy = 0;
+		unsigned int m1Refused[5] = {};	// bag, craft, goods, shop, routine (looks that would have gone)
+	};
+	TPlayerBotSungmaTripStats s_kPlayerBotSungmaTrips;
+	const char* const PLAYERBOT_SUNGMA_M1_REFUSED[5] = { "bag", "craft", "goods", "shop", "routine" };
+
+	// What the bot lacks that Dongan sells: 1 potions, (2 room in the bag - no more, MT2009_PLUS_BOT_SUNGMA_TRIPS_V1),
+	// 4 Handlarka's elixirs.
 	int GetPlayerBotSungmaErrandNeed(LPCHARACTER ch, const TPlayerBotSungmaBot& b, DWORD dwNow)
 	{
+		(void)b;
 		if (!ch || !ch->IsItemLoaded())
 			return 0;
 		int need = 0;
@@ -1280,14 +1317,47 @@
 		const bool caster = ch->GetJob() == JOB_SHAMAN || ch->GetJob() == JOB_SURA;
 		if (red < PLAYERBOT_SUNGMA_ERRAND_RED || (caster && blue < PLAYERBOT_SUNGMA_ERRAND_BLUE))
 			need |= 1;
-		if (ch->GetEmptyInventory(3) < 0 && (b.dwLastBagErrand == 0 || dwNow - b.dwLastBagErrand >= PLAYERBOT_SUNGMA_ERRAND_BAG_MS) &&
-				(HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) || HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) ||
-				 HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR)))
-			need |= 2;
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: 4 - elixirs at Handlarka Roznosci's exchange (playerbot_yohara_shop.h)
 		if (PlayerBotYoharaShopWantsErrand(ch, dwNow))
 			need |= 4;
 		return need;
+	}
+
+	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: the junk sold where the bot stands. True when it sold something.
+	bool TidyPlayerBotSungmaBag(LPCHARACTER ch, TPlayerBotSungmaBot& b, DWORD dwNow)
+	{
+		if (!ch->IsItemLoaded() || ch->IsDead() || !ch->CanHandleItem() || ch->GetExchange() || ch->GetMyShop())
+			return false;
+		if (b.dwLastBagErrand != 0 && dwNow - b.dwLastBagErrand < PLAYERBOT_SUNGMA_TIDY_MS)
+			return false;
+		const int freeBefore = CountPlayerBotFreeInventoryCells(ch);
+		if (ch->GetEmptyInventory(3) >= 0 && freeBefore >= PLAYERBOT_SUNGMA_TIDY_FREE)
+			return false;
+		b.dwLastBagErrand = dwNow ? dwNow : 1;	// the tidy's clock (the bag errand's, which is gone)
+		if (!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) && !HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) &&
+				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR))
+		{
+			if (ch->GetEmptyInventory(3) < 0)
+				++s_kPlayerBotSungmaTrips.tidyStillFull;
+			return false;
+		}
+		bool sold = SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_MISC, "sungma_tidy_misc");
+		sold = SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_WEAPON, "sungma_tidy_weapon") || sold;
+		sold = SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_ARMOR, "sungma_tidy_armor") || sold;
+		const int freeAfter = CountPlayerBotFreeInventoryCells(ch);
+		++s_kPlayerBotSungmaTrips.tidies;
+		if (sold)
+			++s_kPlayerBotSungmaTrips.tidySold;
+		s_kPlayerBotSungmaTrips.tidyFreed += freeAfter - freeBefore;
+		if (ch->GetEmptyInventory(3) < 0)
+			++s_kPlayerBotSungmaTrips.tidyStillFull;
+		if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+			++st->bagTidied;
+		sys_log(0, "PLAYERBOT_SUNGMA: bag tidied pid=%u name=%s map=%ld members=%u free_cells=%d->%d free3=%d",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(),
+				ch->GetParty() ? (unsigned int)ch->GetParty()->GetMemberCount() : 0,
+				freeBefore, freeAfter, ch->GetEmptyInventory(3) >= 0 ? 1 : 0);
+		return sold;
 	}
 
 	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: where the bot stands to trade with a Dongan merchant - the pid's own place round it
@@ -1349,24 +1419,9 @@
 				return -1;
 			b.dwNextErrandLook = dwNow + PLAYERBOT_SUNGMA_ERRAND_LOOK_MS;
 			// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: a party's member with no free column of three sells its junk where it
-			// stands (the cohort's tidy, RestockPlayerBotYohara: the merchants' price, the town visit's rule) instead of the
-			// bag's errand - at most once a PLAYERBOT_SUNGMA_ERRAND_BAG_MS, the bag errand's own clock
-			if (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 2 && ch->IsItemLoaded() && ch->GetEmptyInventory(3) < 0 &&
-					(b.dwLastBagErrand == 0 || dwNow - b.dwLastBagErrand >= PLAYERBOT_SUNGMA_ERRAND_BAG_MS) &&
-					(HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) || HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) ||
-					 HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR)))
-			{
-				const int freeBefore = CountPlayerBotFreeInventoryCells(ch);
-				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_MISC, "sungma_tidy_misc");
-				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_WEAPON, "sungma_tidy_weapon");
-				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_ARMOR, "sungma_tidy_armor");
-				b.dwLastBagErrand = dwNow ? dwNow : 1;
-				if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
-					++st->bagTidied;
-				sys_log(0, "PLAYERBOT_SUNGMA: bag tidied pid=%u name=%s map=%ld members=%u free_cells=%d->%d free3=%d",
-						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)ch->GetParty()->GetMemberCount(),
-						freeBefore, CountPlayerBotFreeInventoryCells(ch), ch->GetEmptyInventory(3) >= 0 ? 1 : 0);
-			}
+			// stands instead of the bag's errand.
+			// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: every resident, party or not - the bag's errand is gone (see the top).
+			TidyPlayerBotSungmaBag(ch, b, dwNow);
 			const int need = GetPlayerBotSungmaErrandNeed(ch, b, dwNow);
 			if (!need)
 				return -1;
@@ -1408,6 +1463,11 @@
 			b.dwErrandSince = dwNow ? dwNow : 1;
 			if (need & 2)
 				b.dwLastBagErrand = b.dwErrandSince;
+			// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: the errands by what they are for
+			if (need & 1)
+				++s_kPlayerBotSungmaTrips.errandPotions;
+			if (need & 4)
+				++s_kPlayerBotSungmaTrips.errandElixirs;
 #ifdef MT2009_PLUS_BOT_ELEMENT_RESIST_V4
 			// MT2009_PLUS_BOT_ELEMENT_RESIST_V4: the exchange's gap from the errand that goes, not from the look
 			if (need & 4)
@@ -1547,6 +1607,8 @@
 
 	// Why the bot goes home to trade now (NULL: not now). The gaps count from the stay's start or the last trip, whichever
 	// is later (a trip refused by its counter's room does not call the bot round in circles).
+	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: "buy" only - to the stands (see GetPlayerBotSungmaErrandNeed's note); the reasons
+	// that used to send it too (bag, craft, goods, shop, routine) are counted and send it nowhere.
 	const char* GetPlayerBotSungmaTradeReason(LPCHARACTER ch, const TPlayerBotAIState& state, const TPlayerBotYoharaResident& res,
 			DWORD dwNow, int& goods)
 	{
@@ -1557,24 +1619,6 @@
 		const DWORD gap = dwNow - from;
 		if (gap < PLAYERBOT_SUNGMA_TRADE_BAG_GAP_MS)
 			return NULL;
-		goods = CountPlayerBotSungmaTradeGoods(ch, state);
-		// The bag: no free column of three, nothing Dongan's merchants take, and goods a counter would.
-		if (goods >= PLAYERBOT_SUNGMA_TRADE_BAG_GOODS && ch->GetEmptyInventory(3) < 0 &&
-				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) && !HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) &&
-				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR))
-			return "bag";
-		if (gap < PLAYERBOT_SUNGMA_TRADE_GOODS_GAP_MS)
-			return NULL;
-		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: a helmet for Jaharr or a +9 for Seon-Pyeong ready - both on game1
-		// (playerbot_yohara_gear2.h; the errand keeps it at home while it lasts).
-		if (WantsPlayerBotGear2TradeTrip(ch))
-			return "craft";
-		// A counter's worth of Yohara's loot and valuables.
-		if (goods >= PLAYERBOT_SUNGMA_TRADE_GOODS)
-			return "goods";
-		// Its counter gone, run out or nearly empty, and goods for it.
-		if (goods >= PLAYERBOT_SUNGMA_TRADE_SHOP_GOODS && IsPlayerBotSungmaCounterStale(ch))
-			return "shop";
 		// What it buys there: the dust of its G0 package, a refine material its gear waits for.
 		// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: and a craft's material a counter holds (the helmets' / armours' recipes too).
 		// MT2009_PLUS_BOT_DUST_MARKET_V1: the G0's dust only while a counter holds some (WantsPlayerBotG0DustFromMarket,
@@ -1592,11 +1636,31 @@
 				WantsPlayerBotLochTicketFromMarket(ch) ||	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket on a counter
 #endif
 				PlayerBotWantsCraftFromMarket(ch)))
+		{
+			goods = CountPlayerBotSungmaTradeGoods(ch, state);
 			return "buy";
-		// And every PLAYERBOT_SUNGMA_STAY_MIN the round: the counter's sales and stock, whatever it brings.
-		if (gap >= (DWORD)GetPlayerBotYoharaConfig().sungmaStayMin * 60000U &&
+		}
+		// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: the old reasons, in their old order - counted, no trip. The bag's: no free
+		// column of three, nothing Dongan's merchants take, and goods a counter would.
+		goods = CountPlayerBotSungmaTradeGoods(ch, state);
+		int refused = -1;
+		if (goods >= PLAYERBOT_SUNGMA_TRADE_BAG_GOODS && ch->GetEmptyInventory(3) < 0 &&
+				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) && !HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) &&
+				!HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR))
+			refused = 0;
+		else if (gap < PLAYERBOT_SUNGMA_TRADE_GOODS_GAP_MS)
+			refused = -1;
+		else if (WantsPlayerBotGear2TradeTrip(ch))	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1: Jaharr's / Seon-Pyeong's work ready
+			refused = 1;
+		else if (goods >= PLAYERBOT_SUNGMA_TRADE_GOODS)
+			refused = 2;
+		else if (goods >= PLAYERBOT_SUNGMA_TRADE_SHOP_GOODS && IsPlayerBotSungmaCounterStale(ch))
+			refused = 3;
+		else if (gap >= (DWORD)GetPlayerBotYoharaConfig().sungmaStayMin * 60000U &&
 				(goods > 0 || HasPlayerBotSungmaCounter(ch) || ch->GetGold() > 0))
-			return "routine";
+			refused = 4;
+		if (refused >= 0)
+			++s_kPlayerBotSungmaTrips.m1Refused[refused];
 		return NULL;
 	}
 
@@ -1675,6 +1739,8 @@
 			++s_aPlayerBotSungmaStats[slot].tradeTrips;
 			--s_aiPlayerBotSungmaMapCensus[slot];	// the poll counts the rows again
 		}
+		if (!strcmp(why, "buy"))
+			++s_kPlayerBotSungmaTrips.m1Buy;	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1
 		sys_log(0, "PLAYERBOT_SUNGMA: trade trip start pid=%u name=%s map=%ld home=%ld why=%s goods=%d free3=%d gold=%lld "
 				"champion=%d member=%d stay_s=%u away=%d",
 				pid, ch->GetName(), backMap, home, why, goods, free3, gold, GetPlayerBotChampionLevel(ch),
@@ -2059,6 +2125,18 @@
 				0
 #endif
 				);
+		// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1: the trips by what they were for, since the last census
+		{
+			TPlayerBotSungmaTripStats& t = s_kPlayerBotSungmaTrips;
+			sys_log(0, "PLAYERBOT_SUNGMA: trips channel=%u dongan_potions=%u dongan_elixirs=%u tidies=%u tidy_sold=%u "
+					"tidy_freed_cells=%d tidy_still_full=%u m1_buy=%u m1_refused_%s=%u m1_refused_%s=%u m1_refused_%s=%u "
+					"m1_refused_%s=%u m1_refused_%s=%u", (unsigned int)g_bChannel, t.errandPotions, t.errandElixirs, t.tidies,
+					t.tidySold, t.tidyFreed, t.tidyStillFull, t.m1Buy,
+					PLAYERBOT_SUNGMA_M1_REFUSED[0], t.m1Refused[0], PLAYERBOT_SUNGMA_M1_REFUSED[1], t.m1Refused[1],
+					PLAYERBOT_SUNGMA_M1_REFUSED[2], t.m1Refused[2], PLAYERBOT_SUNGMA_M1_REFUSED[3], t.m1Refused[3],
+					PLAYERBOT_SUNGMA_M1_REFUSED[4], t.m1Refused[4]);
+			t = TPlayerBotSungmaTripStats();
+		}
 		for (int i = 0; i < PLAYERBOT_SUNGMA_MAP_COUNT; ++i)
 		{
 			TPlayerBotSungmaStats& st = s_aPlayerBotSungmaStats[i];
