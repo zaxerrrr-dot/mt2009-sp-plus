@@ -8351,8 +8351,11 @@ WritePlayerBotGuildStatus(dwNow);
 			}
 			StartPlayerBotTacticalRetreat(ch, state, heldBy, dwNow);
 		}
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: a Sung Ma retreat with a monster on the bot escapes instead of the invisible rest
+		// beside its pack, when an escape may go (playerbot_sungma_fight.h, EscapePlayerBotSungmaBeforeRest).
 		if (!heldBy && !bFinishingStone && !state.bRecoveringAfterDeath && ch->GetMaxHP() > 0 &&
-				ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT)
+				ch->GetHP() * 100 <= ch->GetMaxHP() * PLAYERBOT_RECOVERY_INITIAL_HP_PERCENT &&
+				!EscapePlayerBotSungmaBeforeRest(ch, state, dwNow))
 		{
 			s_setPlayerBotEmergencyRest.insert(ch->GetPlayerID()); // MT2009_PLUS_BOT_HELD_RETREAT_V1
 			NotePlayerBotLootLeftBehind(ch, state, dwNow); // MT2009_PLUS_BOT_LOOT_PACE_V1

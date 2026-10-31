@@ -2094,9 +2094,12 @@ namespace
 		// into a party dungeon and out of one (playerbot_party_dungeon.h).
 		const bool partyDungeonMove = (reason && strncmp(reason, "party_dungeon", 13) == 0) ||
 				(ch->GetMapIndex() >= PLAYERBOT_INSTANCE_MAP_INDEX_MIN && IsPlayerBotPartyDungeonMap(ch->GetMapIndex()));
+		// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: and a Sung Ma resident's warp to Dongan's merchants and back keeps its party -
+		// the errand is a minute's (12 s a median), its party fights on and takes it back (playerbot_yohara_sungma.h).
 		if (ch->GetParty() && !IsPlayerBotHumanLedParty(ch->GetParty()) &&
 				!(reason && strcmp(reason, "dungeon_jump") == 0) &&
-				!(partyDungeonMove && FindPlayerBotPartyPerson(ch, 0)))
+				!(partyDungeonMove && FindPlayerBotPartyPerson(ch, 0)) &&
+				!IsPlayerBotSungmaErrandKeepingParty(ch->GetPlayerID(), dwNow))
 			LeavePlayerBotParty(ch);
 		state.dwTargetVID = 0;
 		ch->SetVictim(NULL);
