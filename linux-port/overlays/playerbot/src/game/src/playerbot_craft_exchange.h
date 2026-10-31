@@ -190,7 +190,9 @@ namespace
 	int GetPlayerBotCraftExchangeUnits(LPCHARACTER ch, LPITEM item)
 	{
 		if (!ch || !item || item->IsEquipped() || item->isLocked() || item->IsExchanging() ||
-				item->GetCell() >= PLAYERBOT_BAG_CELLS || !IsPlayerBotCraftExchangeVnum(item->GetVnum()) ||
+				(item->GetWindow() == INVENTORY && item->GetCell() >= PLAYERBOT_BAG_CELLS) ||	// MT2009_PLUS_BOT_EKW_ROUTE_V1
+				(item->GetWindow() != INVENTORY && item->GetWindow() != UPGRADE_INVENTORY) ||
+				!IsPlayerBotCraftExchangeVnum(item->GetVnum()) ||
 				!IsPlayerBotTradeableMaterial(item))
 			return 0;
 		// MT2009_PLUS_SIDEKICK_KEEP_VALUABLES_V1: a companion's materials are
@@ -226,9 +228,12 @@ namespace
 	{
 		int units = 0;
 		const long long spendable = (long long)ch->GetGold() - (long long)GetPlayerBotReservedGold(ch);
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bag's refine goods, then the materials' storage's (where a routing bot's go)
+		const int scope = PLAYERBOT_BAG_CELLS + (IsPlayerBotEkwPagesOn(ch) ? SPECIAL_INVENTORY_MAX_NUM : 0);
+		for (int at = 0; at < scope; ++at)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
+			const WORD cell = (WORD)(at < PLAYERBOT_BAG_CELLS ? at : at - PLAYERBOT_BAG_CELLS);
+			LPITEM item = at < PLAYERBOT_BAG_CELLS ? ch->GetInventoryItem(cell) : ch->Mt2009SpecialGetItem(UPGRADE_INVENTORY, cell);
 			if (!item || item->GetCell() != cell ||
 					IsPlayerBotSidekickLockedItem(ch, item))	// MT2009_PLUS_SIDEKICK_EQUIP_LOCK_V1
 				continue;
@@ -260,10 +265,20 @@ namespace
 			return false;
 		// Counted in cell order, like the other stocks: the first `wanted`
 		// pieces are kept.
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bag's cells first, then the materials' storage (UPGRADE_INVENTORY) - an item
+		// there has the whole bag ahead of it
+		const bool stored = item->GetWindow() == UPGRADE_INVENTORY;
 		int ahead = 0;
-		for (WORD cell = 0; cell < item->GetCell() && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS && (stored || cell < item->GetCell()); ++cell)
 		{
 			LPITEM other = ch->GetInventoryItem(cell);
+			if (other && other != item && other->GetCell() == cell &&
+					other->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM)
+				ahead += (int)other->GetCount();
+		}
+		for (WORD cell = 0; stored && cell < item->GetCell() && cell < SPECIAL_INVENTORY_MAX_NUM; ++cell)
+		{
+			LPITEM other = ch->Mt2009SpecialGetItem(UPGRADE_INVENTORY, cell);
 			if (other && other != item && other->GetCell() == cell &&
 					other->GetVnum() == PLAYERBOT_CRAFT_MATERIAL_VNUM)
 				ahead += (int)other->GetCount();

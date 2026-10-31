@@ -251,7 +251,28 @@ namespace
 			return true;
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		// MT2009_PLUS_HORSE40_V3: the four pages only (no horse page past them any more)
-		return ch->GetEmptyInventoryEx(item) != -1;
+		if (ch->GetEmptyInventoryEx(item) != -1)
+			return true;
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: a drop the bot routes goes to its storage (its stacks first) - a full bag is no
+		// reason to leave it (the engine's pickup asks GetEmptyInventoryRouted, playerbot_ekwipunek.cpp)
+		if (const BYTE bEkw = PlayerBotEkwRouteDecide(ch, item, NULL, 0, false))
+		{
+			if (ch->GetEmptySpecialInventory(bEkw, item->GetSize()) >= 0)
+				return true;
+			for (WORD i = 0; i < SPECIAL_INVENTORY_MAX_NUM; ++i)
+			{
+				LPITEM held = ch->Mt2009SpecialGetItem(bEkw, i);
+				if (!held || held->GetCell() != i || held->GetVnum() != item->GetVnum() || !held->IsStackable() ||
+						(long long)held->GetCount() + (long long)item->GetCount() > (long long)held->GetMaxStack())
+					continue;
+				bool sameSockets = true;
+				for (int s = 0; s < ITEM_SOCKET_MAX_NUM && sameSockets; ++s)
+					sameSockets = held->GetSocket(s) == item->GetSocket(s);
+				if (sameSockets)
+					return true;
+			}
+		}
+		return false;
 #else
 		return ch->GetEmptyInventory(item->GetSize()) != -1;
 #endif

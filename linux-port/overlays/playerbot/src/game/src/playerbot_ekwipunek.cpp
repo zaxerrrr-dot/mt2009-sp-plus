@@ -21,8 +21,14 @@
 // an offline shop goes straight into its category's storage (GetEmptyInventoryRouted) and joins the stacks there
 // first (Mt2009EkwAutoStack*). Unlike Ameria, a full storage is no refusal: the item goes into the bag as before.
 // Only a client that said so routes ("/ekwipunek hello", root/uiekwipunek.py with the 3.0 exe that knows the windows)
-// - an old exe would not show these windows, so its player's items stay in the bag. Bots never route: their AI scans
-// INVENTORY only (selling, storing, crafting), so a bot's items stay where it looks for them.
+// - an old exe would not show these windows, so its player's items stay in the bag. Bots never routed: their AI scanned
+// INVENTORY only (selling, storing, crafting), so a bot's items stayed where it looked for them.
+// MT2009_PLUS_BOT_EKW_ROUTE_V1 (the owner, 31 October 2026 - boty-decyzje-2026-10-31.md, point 1: "podnoszone
+// materialy/ksiegi/kamienie/zaczarowania/skrzynie trafiaja do okien jak u gracza"): a bot routes too, by its own rule
+// (PlayerBotEkwRouteWindow, playerbot_ekwipunek_bots.h): its goods of a category straight into the storage, its working
+// stock (the refine scrolls, the change stones, its own books, the soul stones it seats, its alchemy's Cors) into the
+// bag while the bag holds no full stack of the kind - the passes that use those take them from a bag cell. Never a
+// companion serving its owner; "m2_ekw_bots_off" / "m2_ekw_bots_route_off" (event flags) stop it.
 //
 // Back out: a drag into the bag (MoveItem), a use from the storage (UseItem takes any window), the refine materials and
 // quest items counted and taken from the storages too (CountSpecifyItem / RemoveSpecifyItem), the NPC shop's sale
@@ -170,11 +176,17 @@ bool CHARACTER::Mt2009EkwRoutes() const
 	return IsSpecialStorageClient() && GetDesc() && !GetDesc()->IsBot();
 }
 
+// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bots' own rule (playerbot_ekwipunek_bots.h, the playerbot unit): the item's storage
+// window or 0 (the bag); with no item, the proto's (AutoStackItemProto - which stacks a vnum given by count joins).
+BYTE PlayerBotEkwRouteWindow(LPCHARACTER ch, LPITEM item, const TItemTable* proto, DWORD dwVnum);
+
 BYTE CHARACTER::GetSpecialWindowFor(LPITEM item) const
 {
-	if (!Mt2009EkwRoutes())
-		return 0;
-	return Mt2009EkwCategoryOfItem(item);
+	if (Mt2009EkwRoutes())
+		return Mt2009EkwCategoryOfItem(item);
+	if (item && GetDesc() && GetDesc()->IsBot())	// MT2009_PLUS_BOT_EKW_ROUTE_V1
+		return PlayerBotEkwRouteWindow(const_cast<CHARACTER*>(this), item, NULL, 0);
+	return 0;
 }
 
 LPITEM CHARACTER::Mt2009SpecialGetItem(BYTE bWindow, WORD wCell) const
@@ -525,9 +537,13 @@ LPITEM CHARACTER::Mt2009EkwAutoStack(LPITEM item, bool& bSkipBag)
 LPITEM CHARACTER::Mt2009EkwAutoStackProto(const TItemTable* p, DWORD dwItemVnum, ITEM_COUNT& bCount, bool& bSkipBag)
 {
 	bSkipBag = false;
-	if (!p || !Mt2009EkwRoutes())
+	if (!p)
 		return NULL;
-	const BYTE bWindow = Mt2009EkwCategoryOf(p->bType, p->bSubType, dwItemVnum);
+	BYTE bWindow = 0;
+	if (Mt2009EkwRoutes())
+		bWindow = Mt2009EkwCategoryOf(p->bType, p->bSubType, dwItemVnum);
+	else if (GetDesc() && GetDesc()->IsBot())	// MT2009_PLUS_BOT_EKW_ROUTE_V1: a bot's rule for the proto
+		bWindow = PlayerBotEkwRouteWindow(this, NULL, p, dwItemVnum);
 	if (!bWindow || p->bType == ITEM_DS || p->bType == ITEM_SPECIAL_DS)
 		return NULL;
 

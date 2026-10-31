@@ -5,6 +5,9 @@
 // playerbot_ekwipunek.cpp, windows UPGRADE_INVENTORY .. CHEST_INVENTORY, 4 pages x 45 each). The owner, 27 October
 // 2026: "Naucz boty korzystac z dodatkowego EQ aby mialy wiecej miejsca na zlom w swoim eq."
 //
+// MT2009_PLUS_BOT_EKW_ROUTE_V1 (31 October 2026): the engine routes a bot's items now, by the bots' rule - see that
+// section below (PlayerBotEkwRouteWindow); what follows is the lending as it was before, still the bots' way with
+// "m2_ekw_bots_route_off", and its parts the routing keeps (the working stock's refill, the fetches, the stash).
 // The engine still never routes a bot's item (CHARACTER::Mt2009EkwRoutes stays false for a bot): its AI finds, counts,
 // uses, sells, lists, deposits and trades by the bag's cells in some hundred places, and an item that dropped straight
 // into a storage would be lost to all of them. Instead the bot keeps its bag as it was and lends the storages its
@@ -36,6 +39,7 @@
 
 // playerbot_ekwipunek.cpp: the item's storage window, 0 for none.
 BYTE Mt2009EkwCategoryOfItem(LPITEM item);
+BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum);	// MT2009_PLUS_BOT_EKW_ROUTE_V1: a proto's
 
 namespace
 {
@@ -122,6 +126,32 @@ namespace
 				return true;
 			case CHEST_INVENTORY:
 				return IsPlayerBotKeptCor(ch, item);
+		}
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_EKW_ROUTE_V1: the same rule for a vnum given by count (AutoGiveItem's stacks, before an item exists):
+	// a skill book's skill is not known yet - goods here, the item's own rule places what is left of it.
+	bool IsPlayerBotEkwWorkingStockProto(LPCHARACTER ch, const TItemTable* proto, DWORD vnum, BYTE bWindow)
+	{
+		if (!ch || !proto)
+			return true;
+		switch (bWindow)
+		{
+			case UPGRADE_INVENTORY:
+				return proto->bType != ITEM_MATERIAL;
+			case BOOK_INVENTORY:
+				return proto->bType != ITEM_SKILLBOOK;
+			case STONE_INVENTORY:
+			{
+				int grade = 0, kind = 0;
+				return CanPlayerBotSeatSoulStone(ch, vnum, (DWORD)proto->alValues[5]) ||
+						(mt2009_awakening::IsRefinableStone(vnum, grade, kind) && kind < mt2009_awakening::STONE_KINDS);
+			}
+			case CHANGE_INVENTORY:
+				return true;
+			case CHEST_INVENTORY:
+				return IsPlayerBotOpenableCorVnum(vnum) && IsPlayerBotAlchemyUser(ch);
 		}
 		return true;
 	}
@@ -558,6 +588,242 @@ namespace
 		return true;
 	}
 
+	// ---- MT2009_PLUS_BOT_EKW_ROUTE_V1 (the owner, 31 October 2026 - boty-decyzje-2026-10-31.md, point 1: "Dodatkowy
+	// ekwipunek: boty maja z niego korzystac - podnoszone materialy/ksiegi/kamienie/zaczarowania/skrzynie trafiaja do
+	// okien jak u gracza; sprzedaz, stragan, ulepszanie, skrzynie, ksiegi czytaja tez z okien; jednorazowe przeniesienie
+	// tego, co juz lezy w torbach").
+	//
+	// The engine routes a bot's item as a player's (CHARACTER::GetSpecialWindowFor / Mt2009EkwAutoStackProto ask
+	// PlayerBotEkwRouteWindow, below): what it picks up, is given, buys at an NPC, a counter or the ItemShop, takes in a
+	// trade - by its category into its storage, joined to the storage's stacks first. One exception keeps the passes that
+	// use an item by its bag cell whole (the refine scrolls on the anvil, the change stones of the bonus pass, the books
+	// read, the soul stones seated, the Cors the Alchemist opens): the bot's working stock (IsPlayerBotEkwWorkingStock)
+	// goes into the bag while the bag holds none of the kind or a stack of it with room, and into the storage once the
+	// bag's stack is full - the bag keeps one stack of each kind it works with, the pass below tops it up from the storage.
+	// Where the storage is full the engine puts the item into the bag as before (no refusal).
+	//
+	// Read from the storages where they lie: the merchants' junk sale - in a village and the remote one where the bot
+	// stands (SellPlayerBotJunkAtMerchant, HasPlayerBotJunkForMerchant, CountPlayerBotJunkItems), the chest pass
+	// (ManagePlayerBotChests: the storage's chests used in their cell - UseItem takes any window), the loot's room
+	// (PlayerBotBagTakesDrop) and the ItemShop's room (PlayerBotEkwHasRoomForVnum); the counts of every rule
+	// (CountSpecifyItem / RemoveSpecifyItem: the refine materials, the Handlarka's and the Dozorca's inputs, the G0 dust -
+	// the engine's MT2009_PLUS_EKWIPUNEK_V1 count / remove), the Yohara bonus plan's change stones
+	// (ReadPlayerBotYoharaBonusBag), the deals' and the market's searches (CollectPlayerBotOwnedItems). Brought into the
+	// bag before the engine works on them in a bag cell (MT2009_PLUS_BOT_EKW_PAGES_V1, unchanged): the counter's goods at
+	// its service visit and a town visit (PlayerBotEkwFetchGoods), a deal's piece (PlayerBotEkwFetchMatching), a kind a
+	// rule misses in the bag (PlayerBotEkwFetchVnum). The safebox's deposits stay the bag's (books, materials, dead stock
+	// it has no room for) - the storages are room of their own, nothing in them presses on the bag.
+	//
+	// The pass (ManagePlayerBotEkwipunek) with routing on: the goods are no longer brought back into a roomy bag; a
+	// kind's extra stacks and the goods that came into the bag (a full storage, a fetch whose hold ran out) go to the
+	// storages whatever the bag's room; once, the first time a bot's pass runs with routing on, everything of a category
+	// already in its bag is moved (its working stock down to one stack of a kind) - quest flag PLAYERBOT_EKW_MOVED_FLAG,
+	// the log's "PLAYERBOT_EKW: moved once"; at most PLAYERBOT_EKW_MOVE_BOTS_PER_MIN bots a core a minute. Census every
+	// ten minutes: "PLAYERBOT_EKW: route report" (routed by window, the working stock kept in the bag, a full storage's
+	// fallback, the one-time moves). Off: event flag "m2_ekw_bots_route_off" (the old lending only) or "m2_ekw_bots_off"
+	// (nothing).
+	const char* PLAYERBOT_EKW_MOVED_FLAG = "playerbot.ekw_moved";
+	const DWORD PLAYERBOT_EKW_ROUTE_REPORT_MS = 600000;
+	const int PLAYERBOT_EKW_MOVE_BOTS_PER_MIN = 30;
+
+	struct TPlayerBotEkwRouteStats
+	{
+		unsigned int routed[SPECIAL_INVENTORY_WINDOW_COUNT] = {};	// an item (or a count's stacks) to its storage
+		unsigned int workToBag = 0;		// working stock into the bag (no stack of it there, or one with room)
+		unsigned int storageFull = 0;	// routed, but the storage had no cell: the bag took it
+		unsigned int movedBots = 0;		// bots whose one-time move ran
+		unsigned int movedItems = 0;	// stacks of those moves into the storages
+		unsigned int movedLeft = 0;		// what those moves left in the bag (a storage full)
+		unsigned int stashedRouted = 0;	// routed passes' stashes after the move (goods that came into the bag)
+	};
+	TPlayerBotEkwRouteStats s_kPlayerBotEkwRouteStats;
+	DWORD s_dwPlayerBotEkwRouteLastItem = 0, s_dwPlayerBotEkwRouteLastPid = 0;
+
+	bool IsPlayerBotEkwRouteOn(LPCHARACTER ch)
+	{
+		return IsPlayerBotEkwPagesOn(ch) && quest::CQuestManager::instance().GetEventFlag("m2_ekw_bots_route_off") == 0;
+	}
+
+	// The bag's stacks of a kind (the item's vnum and sockets; a vnum alone for a count): any at all, one with room.
+	void PlayerBotEkwBagKindState(LPCHARACTER ch, DWORD vnum, LPITEM item, bool& any, bool& room)
+	{
+		any = room = false;
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && !room; ++cell)
+		{
+			LPITEM other = ch->GetInventoryItem((WORD)cell);
+			if (!other || other == item || other->GetCell() != cell || other->GetVnum() != vnum)
+				continue;
+			if (item && !PlayerBotEkwSameKind(item, other))
+				continue;
+			any = true;
+			if (PlayerBotEkwStacks(other) && other->GetCount() < other->GetMaxStack())
+				room = true;
+		}
+	}
+
+	BYTE PlayerBotEkwRouteDecide(LPCHARACTER ch, LPITEM item, const TItemTable* proto, DWORD vnum, bool census)
+	{
+		if (!ch || (!item && !proto) || !IsPlayerBotEkwRouteOn(ch))
+			return 0;
+		BYTE bWindow = 0;
+		bool work = false;
+		if (item)
+		{
+			if (item->GetOwner() == ch)
+				return 0;	// an item of the bot's own on the move: the engine's call, not one coming in
+			bWindow = Mt2009EkwCategoryOfItem(item);
+			if (!bWindow)
+				return 0;
+			vnum = item->GetVnum();
+			work = IsPlayerBotEkwWorkingStock(ch, item, bWindow);
+		}
+		else
+		{
+			if (proto->bType == ITEM_DS || proto->bType == ITEM_SPECIAL_DS)
+				return 0;
+			bWindow = Mt2009EkwCategoryOf(proto->bType, proto->bSubType, vnum);
+			if (!bWindow)
+				return 0;
+			work = IsPlayerBotEkwWorkingStockProto(ch, proto, vnum, bWindow);
+		}
+		// the census once an item (the engine asks twice for one: its stacks, then its cell); never for a probe
+		const bool fresh = census && (!item || item->GetID() != s_dwPlayerBotEkwRouteLastItem ||
+				ch->GetPlayerID() != s_dwPlayerBotEkwRouteLastPid);
+		if (item && census)
+		{
+			s_dwPlayerBotEkwRouteLastItem = item->GetID();
+			s_dwPlayerBotEkwRouteLastPid = ch->GetPlayerID();
+		}
+		if (work)
+		{
+			bool any = false, room = false;
+			PlayerBotEkwBagKindState(ch, vnum, item, any, room);
+			if (!any || room)
+			{
+				if (fresh)
+					++s_kPlayerBotEkwRouteStats.workToBag;
+				return 0;
+			}
+		}
+		if (fresh)
+		{
+			const int size = item ? (int)item->GetSize() : (int)proto->bSize;
+			if (ch->GetEmptySpecialInventory(bWindow, (BYTE)std::max(1, size)) < 0)
+				++s_kPlayerBotEkwRouteStats.storageFull;
+			else
+				++s_kPlayerBotEkwRouteStats.routed[bWindow - UPGRADE_INVENTORY];
+		}
+		return bWindow;
+	}
+
+	// The room a purchase of chunks stacks of vnum finds: its category's storage when the bot routes it there, else the
+	// bag (the ItemShop's purchase: MT2009_PLUS_BOT_EKW_ROUTE_V1 - a bag short of room no longer refuses a Cor or a stone).
+	bool PlayerBotEkwHasRoomForVnum(LPCHARACTER ch, DWORD vnum, int chunks)
+	{
+		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
+		if (!ch || !proto || chunks < 1)
+			return false;
+		const int size = std::max<int>(1, proto->bSize);
+		BYTE bWindow = 0;
+		if (IsPlayerBotEkwRouteOn(ch) && proto->bType != ITEM_DS && proto->bType != ITEM_SPECIAL_DS)
+		{
+			bWindow = Mt2009EkwCategoryOf(proto->bType, proto->bSubType, vnum);
+			if (bWindow && IsPlayerBotEkwWorkingStockProto(ch, proto, vnum, bWindow))
+			{
+				bool any = false, room = false;
+				PlayerBotEkwBagKindState(ch, vnum, NULL, any, room);
+				if (!any || room)
+					bWindow = 0;
+			}
+		}
+		if (bWindow)
+		{
+			int free = 0;
+			for (WORD i = 0; i < SPECIAL_INVENTORY_MAX_NUM && free < chunks; ++i)
+				if (ch->Mt2009SpecialIsEmptyGrid(bWindow, i, (BYTE)size, -1))
+					++free;
+			if (free >= chunks)
+				return true;
+		}
+		return chunks == 1 ? ch->GetEmptyInventory((BYTE)size) >= 0
+				: CountPlayerBotFreeInventoryCells(ch) >= chunks * size + 1;
+	}
+
+	void ReportPlayerBotEkwRoute(DWORD dwNow)
+	{
+		static DWORD s_next = 0;
+		if (s_next != 0 && (int)(dwNow - s_next) < 0)
+			return;
+		s_next = dwNow + PLAYERBOT_EKW_ROUTE_REPORT_MS;
+		TPlayerBotEkwRouteStats& s = s_kPlayerBotEkwRouteStats;
+		const unsigned int total = s.routed[0] + s.routed[1] + s.routed[2] + s.routed[3] + s.routed[4];
+		if (total || s.workToBag || s.storageFull || s.movedBots || s.stashedRouted)
+			sys_log(0, "PLAYERBOT_EKW: route report routed=%u upgrade=%u book=%u stone=%u change=%u chest=%u work_to_bag=%u "
+					"storage_full=%u moved_bots=%u moved_items=%u moved_left=%u stashed=%u", total, s.routed[0], s.routed[1],
+					s.routed[2], s.routed[3], s.routed[4], s.workToBag, s.storageFull, s.movedBots, s.movedItems, s.movedLeft,
+					s.stashedRouted);
+		s = TPlayerBotEkwRouteStats();
+	}
+
+	// The one-time move: everything of a category in the bag into its storage - a kind's stacks joined into the
+	// storage's, the working stock down to the bag's biggest stack of the kind (topped up from the others first). Not
+	// worn, locked, in a trade or on sale. Returns false while the bot is not ready for it (the flag stays unset).
+	bool MovePlayerBotBagToEkwOnce(LPCHARACTER ch)
+	{
+		TPlayerBotEkwStats st;
+		int moved = 0, left = 0, joined = 0;
+		for (int cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem((WORD)cell);
+			if (!item || item->GetCell() != cell || !IsPlayerBotEkwMovable(ch, item))
+				continue;
+			const BYTE bWindow = Mt2009EkwCategoryOfItem(item);
+			if (!bWindow)
+				continue;
+			if (IsPlayerBotEkwWorkingStock(ch, item, bWindow))
+			{
+				LPITEM keep = PlayerBotEkwStacks(item) ? PlayerBotEkwBagStackOf(ch, item) : NULL;
+				bool kept = false;
+				if (!keep)
+					kept = true;	// the bag's only stack (or piece) of its kind stays
+				else if (keep->GetCount() < item->GetCount() ||
+						(keep->GetCount() == item->GetCount() && keep->GetCell() > item->GetCell()))
+					kept = true;	// this one is the kind's biggest: it stays, the others come to it or go
+				if (!kept && !PlayerBotEkwStacks(item))
+				{
+					// a single piece of working stock (a book that does not stack): one of the kind stays
+					bool another = false;
+					for (int c2 = 0; c2 < cell && !another; ++c2)
+					{
+						LPITEM other = ch->GetInventoryItem((WORD)c2);
+						another = other && other->GetCell() == c2 && PlayerBotEkwSameKind(item, other);
+					}
+					kept = !another;
+				}
+				if (kept)
+					continue;
+				if (keep && PlayerBotEkwJoin(keep, item, st))
+				{
+					++joined;
+					continue;
+				}
+			}
+			bool bGone = false;
+			if (PlayerBotEkwToStorage(ch, item, bWindow, st, bGone))
+				++moved;
+			else
+				++left;
+		}
+		ch->SetQuestFlag(PLAYERBOT_EKW_MOVED_FLAG, 1);
+		++s_kPlayerBotEkwRouteStats.movedBots;
+		s_kPlayerBotEkwRouteStats.movedItems += (unsigned int)moved;
+		s_kPlayerBotEkwRouteStats.movedLeft += (unsigned int)left;
+		sys_log(0, "PLAYERBOT_EKW: moved once pid=%u name=%s lv=%d moved=%d joined=%d left=%d joined_units=%d free=%d "
+				"stored_cells=%d map=%ld", ch->GetPlayerID(), ch->GetName(), ch->GetLevel(), moved, joined, left, st.joined,
+				CountPlayerBotFreeInventoryCells(ch), CountPlayerBotEkwStoredCells(ch), ch->GetMapIndex());
+		return true;
+	}
+
 	// Whether the bot is in the middle of something that works with its bag's cells: no pass then.
 	bool IsPlayerBotEkwBusy(LPCHARACTER ch, const TPlayerBotAIState& state, DWORD dwNow)
 	{
@@ -591,11 +857,34 @@ namespace
 			return;
 		next = dwNow + PLAYERBOT_EKW_PASS_MS;
 		ReportPlayerBotEkwPages(dwNow);	// MT2009_PLUS_BOT_EKW_PAGES_V1
+		ReportPlayerBotEkwRoute(dwNow);	// MT2009_PLUS_BOT_EKW_ROUTE_V1
 
 		if (ArePlayerBotEkwOff() || IsPlayerBotSidekickServing(ch) || IsPlayerBotSidekickPID(pid))
 			return;
 		if (IsPlayerBotEkwBusy(ch, state, dwNow))
 			return;
+
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bot routes - its bag's items of a category moved once, the goods stay in the
+		// storages (no refill into a roomy bag), what comes into the bag goes to them whatever the bag's room
+		const bool routed = IsPlayerBotEkwRouteOn(ch);
+		if (routed && ch->GetQuestFlag(PLAYERBOT_EKW_MOVED_FLAG) == 0)
+		{
+			// a core's moves spread over time (every moved stack is a save to the db core): PLAYERBOT_EKW_MOVE_BOTS_PER_MIN
+			// bots a minute, the others wait for a later pass with their bags as they are
+			static DWORD s_dwMoveMinute = 0;
+			static int s_iMovesThisMinute = 0;
+			if (s_dwMoveMinute == 0 || dwNow - s_dwMoveMinute >= 60000)
+			{
+				s_dwMoveMinute = dwNow ? dwNow : 1;
+				s_iMovesThisMinute = 0;
+			}
+			if (s_iMovesThisMinute < PLAYERBOT_EKW_MOVE_BOTS_PER_MIN)
+			{
+				++s_iMovesThisMinute;
+				MovePlayerBotBagToEkwOnce(ch);
+			}
+			return;
+		}
 
 		TPlayerBotEkwStats st;
 		int moves = 0;
@@ -634,7 +923,7 @@ namespace
 				}
 			}
 			const bool want = work ? (!bagHasKind && freeNow >= PLAYERBOT_EKW_WORK_REFILL_MIN_FREE)
-					: (freeNow - (int)item->GetSize() >= PLAYERBOT_EKW_REFILL_ABOVE);
+					: (!routed && freeNow - (int)item->GetSize() >= PLAYERBOT_EKW_REFILL_ABOVE);
 			if (!want)
 				continue;
 			bool bGone = false;
@@ -649,7 +938,9 @@ namespace
 		}
 
 		// ---- stash: only a bag short of room
-		if (freeNow < PLAYERBOT_EKW_STASH_BELOW)
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: a routing bot's whatever its room (the goods' place is the storage)
+		const int stashBefore = st.stashSurplus + st.stashGoods;
+		if (routed || freeNow < PLAYERBOT_EKW_STASH_BELOW)
 		{
 			// (A) a kind's extra stacks: the biggest stays (topped up), the rest into the storage
 			for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && moves < PLAYERBOT_EKW_MAX_MOVES; ++cell)
@@ -679,9 +970,9 @@ namespace
 			}
 			freeNow = CountPlayerBotFreeInventoryCells(ch);
 
-			// (B) whole stacks of goods until the bag has its target
+			// (B) whole stacks of goods until the bag has its target (a routing bot's: all of them)
 			for (int cell = 0; cell < PLAYERBOT_BAG_CELLS && moves < PLAYERBOT_EKW_MAX_MOVES &&
-					freeNow < PLAYERBOT_EKW_STASH_TARGET; ++cell)
+					(routed || freeNow < PLAYERBOT_EKW_STASH_TARGET); ++cell)
 			{
 				LPITEM item = ch->GetInventoryItem((WORD)cell);
 				if (!item || item->GetCell() != cell || !IsPlayerBotEkwMovable(ch, item))
@@ -699,6 +990,8 @@ namespace
 			}
 		}
 
+		if (routed)
+			s_kPlayerBotEkwRouteStats.stashedRouted += (unsigned int)(st.stashSurplus + st.stashGoods - stashBefore);
 		if (moves == 0)
 			return;
 		const int freeAfter = CountPlayerBotFreeInventoryCells(ch);
@@ -707,6 +1000,14 @@ namespace
 				pid, ch->GetName(), ch->GetLevel(), freeBefore, freeAfter, st.stashSurplus, st.stashGoods, st.joined,
 				st.refillWork, st.topUp, st.refillGoods, CountPlayerBotEkwStoredCells(ch), ch->GetMapIndex());
 	}
+}
+
+// MT2009_PLUS_BOT_EKW_ROUTE_V1: the engine's question (playerbot_ekwipunek.cpp, CHARACTER::GetSpecialWindowFor and
+// Mt2009EkwAutoStackProto, for a bot's descriptor only): the storage window an item - or a vnum given by count - goes
+// to, 0 for the bag. This unit holds the bots' rules; the engine's unit only asks.
+BYTE PlayerBotEkwRouteWindow(LPCHARACTER ch, LPITEM item, const TItemTable* proto, DWORD dwVnum)
+{
+	return PlayerBotEkwRouteDecide(ch, item, proto, dwVnum, true);
 }
 
 #endif

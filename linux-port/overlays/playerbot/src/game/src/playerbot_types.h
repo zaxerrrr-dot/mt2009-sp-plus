@@ -8014,6 +8014,13 @@ namespace
 	bool PlayerBotEkwBringToBag(LPCHARACTER ch, LPITEM item);
 	int PlayerBotEkwFetchMatching(LPCHARACTER ch, TPlayerBotEkwMatch match, const void* ctx, int needUnits);
 	int PlayerBotEkwFetchGoods(LPCHARACTER ch, const char* why);
+	// MT2009_PLUS_BOT_EKW_ROUTE_V1 (playerbot_ekwipunek_bots.h): the bots' items of a category go into the extra
+	// inventory as a player's do; the storages' own items (each once) for the passes that read them where they lie (the
+	// junk sale, the chest pass), the room a vnum would find (the bag or its category's storage).
+	bool IsPlayerBotEkwRouteOn(LPCHARACTER ch);
+	void CollectPlayerBotEkwStored(LPCHARACTER ch, std::vector<LPITEM>& out);
+	bool PlayerBotEkwHasRoomForVnum(LPCHARACTER ch, DWORD vnum, int chunks);
+	BYTE PlayerBotEkwRouteDecide(LPCHARACTER ch, LPITEM item, const TItemTable* proto, DWORD vnum, bool census);
 	bool IsPlayerBotSidekickManualSkills(LPCHARACTER ch);
 	bool IsPlayerBotSidekickManualStats(LPCHARACTER ch);
 	// The companion has fallen (HandleDeath, on the tick it is seen): what was

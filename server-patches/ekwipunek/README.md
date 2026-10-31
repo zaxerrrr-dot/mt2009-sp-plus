@@ -47,6 +47,13 @@ kategorii.”* Znacznik: `MT2009_PLUS_EKWIPUNEK_V1 (…)`.
   Przed wizytą przy ladzie i w mieście towar z magazynów wraca do wolnego miejsca torby (`PlayerBotEkwFetchGoods`,
   nie poniżej 10 wolnych pól). Silnik bez zmian (`CountSpecifyItem` / `RemoveSpecifyItem` czytały magazyny już
   wcześniej). Ta sama flaga `m2_ekw_bots_off` i zasada towarzyszy; log `PLAYERBOT_EKW: pages`.
+  Od `MT2009_PLUS_BOT_EKW_ROUTE_V1` (31.10.2026, decyzja właściciela) **boty kierują przedmioty jak gracz**:
+  `GetSpecialWindowFor` / `Mt2009EkwAutoStackProto` pytają dla deskryptora bota regułę botów
+  (`PlayerBotEkwRouteWindow`, `playerbot_ekwipunek_bots.h`) – towar kategorii od razu do magazynu, zapas roboczy do
+  torby, dopóki torba nie ma pełnego stosu danego rodzaju. Jednorazowe przeniesienie zawartości torby (flaga questowa
+  `playerbot.ekw_moved`, najwyżej 30 botów na minutę na rdzeń), sprzedaż śmieci, skrzynie, wymiana u Dozorcy, miejsce
+  na łup i zakup w ItemShopie czytają magazyny. Flaga `m2_ekw_bots_route_off` wraca do samego pożyczania; log
+  `PLAYERBOT_EKW: route report` / `moved once`. Łatka silnika (`edits.json`) bez zmian – zmiana jest w nakładce.
 - **Wyjście**: przeciągnięcie do torby (`MoveItem`: do magazynu tylko jego kategoria, z torby albo z niego samego;
   z magazynu tylko do torby), użycie prosto z magazynu (`UseItem` – księgi, skrzynie, kamień na przedmiot,
   zaczarowanie na przedmiot), `CountSpecifyItem` / `RemoveSpecifyItem` liczą i biorą z magazynów (materiały

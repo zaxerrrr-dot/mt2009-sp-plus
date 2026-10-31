@@ -304,9 +304,15 @@ namespace
 				break;
 			}
 		}
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bag's chests, then the extra inventory's chest storage (CHEST_INVENTORY - where
+		// a routing bot's chests go, playerbot_ekwipunek_bots.h), each opened in its own cell.
+		const int chestScope = PLAYERBOT_BAG_CELLS + (IsPlayerBotEkwPagesOn(ch) ? SPECIAL_INVENTORY_MAX_NUM : 0);
+		for (int scopeAt = 0; scopeAt < chestScope; ++scopeAt)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
+			LPITEM item = scopeAt < PLAYERBOT_BAG_CELLS ? ch->GetInventoryItem((WORD)scopeAt)
+					: ch->Mt2009SpecialGetItem(CHEST_INVENTORY, (WORD)(scopeAt - PLAYERBOT_BAG_CELLS));
+			if (item && scopeAt >= PLAYERBOT_BAG_CELLS && item->GetCell() != (WORD)(scopeAt - PLAYERBOT_BAG_CELLS))
+				continue;
 			// The Moonlight chest, and every boss casket (ITEM_GIFTBOX: the Orc
 			// Chief's, the Spider Queen's) - the engine opens both the same way.
 			if (!item || (item->GetVnum() != PLAYERBOT_MOONLIGHT_CHEST_VNUM &&
@@ -389,7 +395,8 @@ namespace
 			const int bonusBefore = CountPlayerBotBonusItemUnits(ch);
 			// By the chest's own cell: FreePlayerBotGiftboxColumn may have moved
 			// this very chest out of the column it made.
-			if (ch->UseItem(TItemPos(INVENTORY, item->GetCell())))
+			// MT2009_PLUS_BOT_EKW_ROUTE_V1: and in its own window (the chest storage's cell for one there).
+			if (ch->UseItem(TItemPos(item->GetWindow(), item->GetCell())))
 			{
 				if (IsPlayerBotPersonaEnabled())
 					NotePlayerBotMoodValuableCount(ch,

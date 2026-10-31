@@ -3359,14 +3359,31 @@ namespace
 		return BOT_MERCHANT_MISC;
 	}
 
+	// MT2009_PLUS_BOT_EKW_ROUTE_V1: the junk the merchants take lies in the extra inventory too (the storages' own items,
+	// playerbot_ekwipunek_bots.h) - the bag's and the storages' together, for the sale, its question and its count.
+	void CollectPlayerBotJunkScope(LPCHARACTER ch, std::vector<LPITEM>& out)
+	{
+		out.clear();
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+			if (LPITEM item = ch->GetInventoryItem(cell))
+				out.push_back(item);
+		if (!IsPlayerBotEkwPagesOn(ch))
+			return;
+		std::vector<LPITEM> stored;
+		CollectPlayerBotEkwStored(ch, stored);
+		out.insert(out.end(), stored.begin(), stored.end());
+	}
+
 	bool HasPlayerBotJunkForMerchant(LPCHARACTER ch, EPlayerBotMerchantCategory category)
 	{
 		if (!ch || !ch->IsItemLoaded())
 			return false;
 
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		std::vector<LPITEM> items;
+		CollectPlayerBotJunkScope(ch, items);	// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bag and the storages
+		for (size_t i = 0; i < items.size(); ++i)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
+			LPITEM item = items[i];
 			// MT2009_PLUS_BOT_YOHARA_G0_V2: or a replaced bound G0 piece no bot bought (playerbot_yohara_g0.h).
 			if (item && (IsPlayerBotJunkItem(ch, item) || IsPlayerBotG0NpcSaleDue(ch, item)) &&
 					GetPlayerBotJunkMerchant(item) == category)
@@ -3380,8 +3397,10 @@ namespace
 		if (!ch || !ch->IsItemLoaded())
 			return 0;
 		size_t count = 0;
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
-			if (IsPlayerBotJunkItem(ch, ch->GetInventoryItem(cell)))
+		std::vector<LPITEM> items;
+		CollectPlayerBotJunkScope(ch, items);	// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bag and the storages
+		for (size_t i = 0; i < items.size(); ++i)
+			if (IsPlayerBotJunkItem(ch, items[i]))
 				++count;
 		return count;
 	}
@@ -3578,9 +3597,25 @@ namespace
 		size_t soldCount = 0;
 		long long totalSoldGold = 0;
 		int heldForAlchemist = 0;	// MT2009_PLUS_BOT_ENERGY_SHARDS_V1
-		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		// MT2009_PLUS_BOT_EKW_ROUTE_V1: the bag's cells, then the extra inventory's (sold where they lie - the engine's
+		// RemoveItem takes any window); every cell read again when its turn comes (a sale's rule - the hay's count - may
+		// take a later stack with it)
+		const bool storages = IsPlayerBotEkwPagesOn(ch);
+		const int scopeCells = PLAYERBOT_BAG_CELLS + (storages ? SPECIAL_INVENTORY_WINDOW_COUNT * SPECIAL_INVENTORY_MAX_NUM : 0);
+		for (int scopeAt = 0; scopeAt < scopeCells; ++scopeAt)
 		{
-			LPITEM item = ch->GetInventoryItem(cell);
+			LPITEM item = NULL;
+			if (scopeAt < PLAYERBOT_BAG_CELLS)
+				item = ch->GetInventoryItem((WORD)scopeAt);
+			else
+			{
+				const int at = scopeAt - PLAYERBOT_BAG_CELLS;
+				const BYTE bWindow = (BYTE)(UPGRADE_INVENTORY + at / SPECIAL_INVENTORY_MAX_NUM);
+				const WORD wCell = (WORD)(at % SPECIAL_INVENTORY_MAX_NUM);
+				item = ch->Mt2009SpecialGetItem(bWindow, wCell);
+				if (item && (item->GetCell() != wCell || item->GetWindow() != bWindow))
+					continue;
+			}
 			// The operator said "drop": thrown away here, at the merchant,
 			// without a sale - the one place a bag is emptied on purpose.
 			if (item && !item->IsEquipped() && !item->isLocked() &&
