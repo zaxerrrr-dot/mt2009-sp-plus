@@ -109,15 +109,15 @@ namespace
 	// The samples: the map's most common ordinary monsters (tools: regen.txt + group.txt + group_group.txt of the test
 	// world, 31 October 2026), percent of its spawns - the rest of a map's spawns are rarer kinds of the same mix.
 	const TPlayerBotElementMapRow PLAYERBOT_ELEMENT_MAP_ROWS[] = {
-		{ PLAYERBOT_MAP_SPIDER_V2, "spider_v2", PLAYERBOT_EM_FIRE, 60, 60,
+		{ PLAYERBOT_MAP_SPIDER_V2, "spider_v2", PLAYERBOT_EM_FIRE, 60, 0,
 			{ { 2133, 15 }, { 2061, 14 }, { 2064, 14 }, { 2062, 13 }, { 2132, 10 }, { 2063, 10 }, { 2065, 10 }, { 2134, 9 } } },
-		{ PLAYERBOT_MAP_SPIDER_V3, "spider_v3", PLAYERBOT_EM_FIRE, 60, 60,
+		{ PLAYERBOT_MAP_SPIDER_V3, "spider_v3", PLAYERBOT_EM_FIRE, 60, 0,
 			{ { 2072, 28 }, { 2073, 25 }, { 2074, 20 }, { 2071, 19 } } },
-		{ PLAYERBOT_MAP_ZAKLETY, "zaklety", PLAYERBOT_EM_WIND, 75, 75,
+		{ PLAYERBOT_MAP_ZAKLETY, "zaklety", PLAYERBOT_EM_WIND, 75, 0,
 			{ { 6402, 37 }, { 6401, 29 }, { 6403, 25 } } },
-		{ PLAYERBOT_MAP_GROTTO_V1, "grotto_v1", PLAYERBOT_EM_ELEC, 75, 75,
+		{ PLAYERBOT_MAP_GROTTO_V1, "grotto_v1", PLAYERBOT_EM_ELEC, 75, 0,
 			{ { 2401, 32 }, { 2402, 17 }, { 1136, 9 }, { 1131, 8 }, { 1132, 7 }, { 1137, 6 }, { 1133, 6 }, { 1135, 6 } } },
-		{ PLAYERBOT_MAP_GROTTO_V2, "grotto_v2", PLAYERBOT_EM_ELEC, 75, 75,
+		{ PLAYERBOT_MAP_GROTTO_V2, "grotto_v2", PLAYERBOT_EM_ELEC, 75, 0,
 			{ { 2411, 28 }, { 2401, 23 }, { 2402, 18 }, { 2412, 10 }, { 2413, 10 }, { 2403, 7 } } },
 		{ PLAYERBOT_MAP_FIRE_LAND, "fire_land", PLAYERBOT_EM_FIRE, 50, 0,
 			{ { 2201, 26 }, { 2203, 25 }, { 2202, 20 }, { 2204, 20 } } },
@@ -371,11 +371,13 @@ namespace
 		return line < it->second.lValues[top - 1];
 	}
 
-	// Kamien Ochrony Zywiolow for a bot short of a gated map's resistance (playerbot_element_stones.h: bought only).
+	// The owner, 31 October: no gates yet - the bots hunt there and gather resistance to hunt faster (the wants 60/75
+	// stay as gear goals; the gates come later). Kamien Ochrony Zywiolow for a bot short of a gated map's resistance
+	// or of a big want (60+) (playerbot_element_stones.h: bought only).
 	bool IsPlayerBotElementMapStoneWanted(LPCHARACTER ch)
 	{
 		TPlayerBotElementMapView v;
-		return GetPlayerBotElementMapGoal(ch, v) && v.iGate > 0 && v.iResist < v.iWant;
+		return GetPlayerBotElementMapGoal(ch, v) && (v.iGate > 0 || v.iWant >= 60) && v.iResist < v.iWant;
 	}
 
 	// The gate: may the bot pick (or stay on) the map? true for a map without a gate or whose element is off in this
