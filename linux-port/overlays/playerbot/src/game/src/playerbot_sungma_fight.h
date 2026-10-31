@@ -95,6 +95,8 @@ namespace
 	// _ESCAPE_HP, whichever is higher, after 1.5 s (was 3 s at 30%) - a step of 1 500 units outruns nothing.
 	const int PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS = 2;
 	const int PLAYERBOT_SUNGMA_ESCAPE_HP = 30;
+	// (MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: _ESCAPE_AFTER_MS and _ESCAPE_GAP_MS are PLAYERBOT_SUNGMA_F3_ESCAPE_AFTER_MS and
+	// _F3_ESCAPE_GAP_MS now; kept for the logs' history.)
 	const DWORD PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS = 1500;
 	const DWORD PLAYERBOT_SUNGMA_ESCAPE_GAP_MS = 2 * 60 * 1000;	// a ring's cooldown - not every retreat
 	const int PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST = 5000;			// past the 4 000 a monster chases to
@@ -164,7 +166,7 @@ namespace
 	const int PLAYERBOT_SUNGMA_F2_FALL_PERCENT = 30;
 	const int PLAYERBOT_SUNGMA_F2_FALL_OVER = 20;
 	const DWORD PLAYERBOT_SUNGMA_F2_TURN_AFTER_MS = 5000;
-	const int PLAYERBOT_SUNGMA_F2_TURN_OVER = 15;
+	const int PLAYERBOT_SUNGMA_F2_TURN_OVER = 15;	// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: PLAYERBOT_SUNGMA_F3_TURN_OVER now
 	const DWORD PLAYERBOT_SUNGMA_F2_TURN_HOLD_MS = 20 * 1000;
 	const int PLAYERBOT_SUNGMA_F2_END_HP = 65;
 	// The map's difficulty (added to the floor), by the night's kills per death: Dongan 4, Namgan 6, Wawoz 8,
@@ -205,6 +207,40 @@ namespace
 	// The census's fight2 line once an hour (LogPlayerBotSungmaFightCensus).
 	const DWORD PLAYERBOT_SUNGMA_F2_CENSUS_MS = 60 * 60 * 1000;
 
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: the numbers
+	// The owner, 31 October 2026 (BOTY-YOHARA-ANALIZA-v2.md, Etap 3, approved): fewer deaths and the parties kept. The
+	// game3 syslog of 31 October 00-12 (5 262 "fallen"): a death came a median 3 s after its retreat began (a quarter
+	// within 1 s), 1 008 of the 2 697 deaths in a retreat had 8 or more monsters on the bot when it began, and 727 of them
+	// had escaped less than two minutes before (PLAYERBOT_SUNGMA_ESCAPE_GAP_MS held the next escape back). 2 077 deaths
+	// (40%) came within 30 s of a retreat "turned" into a fight (PLAYERBOT_SUNGMA_F2_TURN_*) and 1 779 within 90 s of an
+	// emergency rest - the chain behind most "again" deaths (1 017 of 1 939 had both): the 20% rest starts inside the
+	// retreat, heals the bot to 80-90% in five invisible seconds, the retreat sees the health back and turns into a fight
+	// with the very pack (5-12 monsters) that had brought it down. So:
+	//   * a swarm (_F2_PULLED_EXTRA or more over what the bot and its members by it take) sends it off at
+	//     floor + _F2_PULLED_OVER even in a turn's hold, and the retreat from a swarm escapes at once - a step of 1 500
+	//     units outruns no pack of eight;
+	//   * the escape otherwise at floor + _F3_ESCAPE_OVER (was the floor) after _F3_ESCAPE_AFTER_MS (was 1.5 s), for a
+	//     retreat still held after _F3_HELD_ESCAPE_MS that may not turn, and at once within PLAYERBOT_SUNGMA_DEATH_AGAIN_MS of
+	//     a death or an emergency rest; one every _F3_ESCAPE_GAP_MS (was two minutes);
+	//   * the turn only at floor + _F3_TURN_OVER (was + 15) with no more on it than it takes (was + 1), and never within
+	//     PLAYERBOT_SUNGMA_DEATH_AGAIN_MS of a death or an emergency rest;
+	//   * an emergency rest due inside a retreat with a monster on the bot is the escape instead, when one may go
+	//     (EscapePlayerBotSungmaBeforeRest, the tick);
+	//   * the retreat's step keeps off any idle monster's group (_F3_STEP_IDLE_PENALTY within PLAYERBOT_SUNGMA_PACK_RADIUS),
+	//     not only the aggressive ones in sight - a step into a group wakes it;
+	//   * the spot a bot died on is left for _F3_DEATH_AVOID_MS (no target, no hub within PLAYERBOT_SUNGMA_AVOID_RADIUS of
+	//     it) - a party's member excepted, its leader picks the spot (a leader's own death moves the party on).
+	// Measured by the same lines: "fallen" (cause, retreat=, retreat_why=), "retreat", "escape" (kind=swarm / low / held /
+	// hp after the retreat's own why), "retreat over ... reason=turn", and the fight line's swarm_escapes / low_escapes /
+	// held_escapes / death_avoids.
+	const int PLAYERBOT_SUNGMA_F3_ESCAPE_OVER = 10;
+	const DWORD PLAYERBOT_SUNGMA_F3_ESCAPE_AFTER_MS = 500;
+	const DWORD PLAYERBOT_SUNGMA_F3_HELD_ESCAPE_MS = 6000;
+	const DWORD PLAYERBOT_SUNGMA_F3_ESCAPE_GAP_MS = 45 * 1000;
+	const int PLAYERBOT_SUNGMA_F3_TURN_OVER = 30;
+	const int PLAYERBOT_SUNGMA_F3_STEP_IDLE_PENALTY = 800;
+	const DWORD PLAYERBOT_SUNGMA_F3_DEATH_AVOID_MS = 5 * 60 * 1000;
+
 	// ------------------------------------------------------------ the state and the census
 
 	struct TPlayerBotSungmaFight
@@ -228,10 +264,13 @@ namespace
 		bool bRearmPending;
 		DWORD dwRearmSince, dwRearmUntil, dwRearmNextCast;
 		DWORD dwRetreatCounted;		// the retreat (its start time) the class census has counted
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: the spot of its last death, left until dwDeathAvoidUntil
+		long lDeathMap, lDeathX, lDeathY;
+		DWORD dwDeathAvoidUntil;
 		TPlayerBotSungmaFight() : bRetreat(false), iRetreatAttackers(0), lAvoidMap(0), lAvoidX(0), lAvoidY(0), dwAvoidUntil(0),
 			dwLastDown(0), dwNextRetreatLook(0), iRefused(0), dwRefusedSince(0), iHpSeen(100), dwHpSeenAt(0), dwLastEscape(0),
 			dwTurnHoldUntil(0), bRearm(0), bRearmPending(false), dwRearmSince(0), dwRearmUntil(0), dwRearmNextCast(0),
-			dwRetreatCounted(0)
+			dwRetreatCounted(0), lDeathMap(0), lDeathX(0), lDeathY(0), dwDeathAvoidUntil(0)
 		{ szRetreatWhy[0] = '\0'; }
 	};
 	std::map<DWORD, TPlayerBotSungmaFight> s_mapPlayerBotSungmaFight;
@@ -266,12 +305,16 @@ namespace
 		DWORD f2Since;
 		unsigned int f2Kills, f2Deaths, f2Retreats, f2Turns, f2Potions, f2Escapes, f2Samples, f2BotSum;
 		unsigned long long f2RetreatMs;
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: the escapes from a swarm, out of an emergency rest, of a held retreat; the deaths'
+		// spots left; MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: the errands that kept their party, the bags tidied in place
+		unsigned int swarmEscapes, lowEscapes, heldEscapes, deathAvoids, errandPartyKept, bagTidied;
 		TPlayerBotSungmaFightStats() : deathsLone(0), deathsParty(0), retreatsHp(0), retreatsPack(0), retreatsPulled(0),
 			retreatsSafe(0), avoids(0), targetsPicked(0), targetsElement(0), targetsEdge(0), packRefused(0), partyObjectives(0),
 			partyForms(0), partyJoins(0), partyLeaves(0), partyErrandLeaves(0), regroups(0), revivesInParty(0),
 			escapes(0), nestMoves(0), hpRefused(0), retreatsEnded(0), turns(0), potions(0), huntElementPicks(0), retreatMs(0),
 			f2Since(0), f2Kills(0), f2Deaths(0), f2Retreats(0), f2Turns(0), f2Potions(0), f2Escapes(0), f2Samples(0),
-			f2BotSum(0), f2RetreatMs(0)
+			f2BotSum(0), f2RetreatMs(0), swarmEscapes(0), lowEscapes(0), heldEscapes(0), deathAvoids(0), errandPartyKept(0),
+			bagTidied(0)
 		{
 			for (int i = 0; i < SUNGMA_DEATH_CAUSES; ++i)
 				deaths[i] = 0;
@@ -1095,7 +1138,20 @@ namespace
 		if (!ch)
 			return false;
 		std::map<DWORD, TPlayerBotSungmaFight>::const_iterator f = s_mapPlayerBotSungmaFight.find(ch->GetPlayerID());
-		if (f == s_mapPlayerBotSungmaFight.end() || f->second.dwAvoidUntil == 0 || (int)(f->second.dwAvoidUntil - dwNow) <= 0 ||
+		if (f == s_mapPlayerBotSungmaFight.end())
+			return false;
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: the spot of its last death for a while - not for a member whose leader stands
+		// on its map (the party fights where the leader takes it; the member's own spot would leave it idle by its party)
+		if (f->second.dwDeathAvoidUntil != 0 && (int)(f->second.dwDeathAvoidUntil - dwNow) > 0 &&
+				f->second.lDeathMap == ch->GetMapIndex() &&
+				DISTANCE_APPROX(x - f->second.lDeathX, y - f->second.lDeathY) <= PLAYERBOT_SUNGMA_AVOID_RADIUS)
+		{
+			LPPARTY party = ch->GetParty();
+			LPCHARACTER leader = party ? party->GetLeaderCharacter() : NULL;
+			if (!leader || leader == ch || leader->IsDead() || leader->GetMapIndex() != ch->GetMapIndex())
+				return true;
+		}
+		if (f->second.dwAvoidUntil == 0 || (int)(f->second.dwAvoidUntil - dwNow) <= 0 ||
 				f->second.lAvoidMap != ch->GetMapIndex())
 			return false;
 		return DISTANCE_APPROX(x - f->second.lAvoidX, y - f->second.lAvoidY) <= PLAYERBOT_SUNGMA_AVOID_RADIUS;
@@ -1156,7 +1212,8 @@ namespace
 			why = "hp";
 		else if (!turned && attackers > fullCap && hp <= floorHp + PLAYERBOT_SUNGMA_F2_PACK_OVER)
 			why = "pack";
-		else if (!turned && attackers >= fullCap + PLAYERBOT_SUNGMA_F2_PULLED_EXTRA && hp <= floorHp + PLAYERBOT_SUNGMA_F2_PULLED_OVER)
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: a swarm sends it off in a turn's hold too (the turn took no swarm)
+		else if (attackers >= fullCap + PLAYERBOT_SUNGMA_F2_PULLED_EXTRA && hp <= floorHp + PLAYERBOT_SUNGMA_F2_PULLED_OVER)
 			why = "pulled";
 		else if (attackers >= 2 && fall >= PLAYERBOT_SUNGMA_F2_FALL_PERCENT && hp <= floorHp + PLAYERBOT_SUNGMA_F2_FALL_OVER)
 			why = "fall";
@@ -1231,6 +1288,63 @@ namespace
 		return best;
 	}
 
+	// MT2009_PLUS_BOT_SUNGMA_NEST_V1: the escape out of a lost retreat - the teleport a person takes (the scroll / the ring
+	// home): onto the clean ground by the map's safe point, out of the pack's chase (StateBattle gives a victim up at
+	// 4 000 units), the pack left where it stood. MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: its own function (the retreat and the
+	// emergency rest's place, EscapePlayerBotSungmaBeforeRest), one every PLAYERBOT_SUNGMA_F3_ESCAPE_GAP_MS; kind: what sent
+	// it (swarm, low, hp, held - the census's and the line's). False: none may go now (the gap, no clean ground, or the
+	// bot within PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST of it).
+	bool EscapePlayerBotSungma(LPCHARACTER ch, TPlayerBotAIState& state, TPlayerBotSungmaFight& f, int attackers, DWORD el,
+			const char* kind, DWORD dwNow)
+	{
+		long ex = 0, ey = 0;
+		if ((f.dwLastEscape != 0 && dwNow - f.dwLastEscape < PLAYERBOT_SUNGMA_F3_ESCAPE_GAP_MS) ||
+				!GetPlayerBotSungmaCleanPoint(ch->GetMapIndex(), ex, ey) ||
+				DISTANCE_APPROX(ch->GetX() - ex, ch->GetY() - ey) < PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST)
+			return false;
+		long ox = 0, oy = 0;
+		GetPlayerBotStableOffset(ch->GetPlayerID(), 0x45534350U, 50, 300, ox, oy);
+		f.dwLastEscape = dwNow ? dwNow : 1;
+		if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+		{
+			++st->escapes;
+			if (kind[0] == 's')
+				++st->swarmEscapes;
+			else if (kind[0] == 'l')
+				++st->lowEscapes;
+			else if (kind[0] == 'h' && kind[1] == 'e')
+				++st->heldEscapes;
+		}
+		sys_log(0, "PLAYERBOT_SUNGMA: escape pid=%u name=%s map=%ld why=%s hp=%d/%d attackers=%d took_s=%u from=(%ld,%ld) to=(%ld,%ld) kind=%s",
+				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), f.szRetreatWhy[0] ? f.szRetreatWhy : "generic", ch->GetHP(),
+				ch->GetMaxHP(), attackers, el / 1000, ch->GetX(), ch->GetY(), ex + ox, ey + oy, kind);
+		state.dwTargetVID = 0;
+		ch->SetVictim(NULL);
+		ch->Stop();
+		ClearPlayerBotRoute(state, true);
+		ch->Show(ch->GetMapIndex(), ex + ox, ey + oy, 0);
+		state.dwNextRetreatMoveTime = dwNow + PLAYERBOT_SUNGMA_RETREAT_MOVE_MS;
+		return true;
+	}
+
+	// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: the tick's emergency rest (20% health) is due while the bot is in a Sung Ma retreat
+	// with a monster on it - the escape instead when one may go (the rest's five invisible seconds and its heal beside the
+	// pack were the "again" chain, see the FIGHT3 numbers). True: escaped, no rest.
+	bool EscapePlayerBotSungmaBeforeRest(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow)
+	{
+		if (!state.bTacticalRetreat || !IsPlayerBotSungmaFighter(ch) || ch->IsDead())
+			return false;
+		std::vector<TPlayerBotSungmaMob> mobs;
+		CollectPlayerBotSungmaMobs(ch, PLAYERBOT_SUNGMA_ATTACKER_RADIUS, mobs);
+		long cx = 0, cy = 0;
+		const int attackers = CountPlayerBotSungmaAttackers(ch, mobs, cx, cy, NULL);
+		if (attackers == 0)
+			return false;
+		TPlayerBotSungmaFight& f = s_mapPlayerBotSungmaFight[ch->GetPlayerID()];
+		const DWORD el = state.dwRetreatStartedTime ? dwNow - state.dwRetreatStartedTime : 0;
+		return EscapePlayerBotSungma(ch, state, f, attackers, el, "low", dwNow);
+	}
+
 	// HandlePlayerBotTacticalRetreat's part for a Sung Ma fighter (any retreat it is in): -1 not its, 0 the retreat over,
 	// 1 the tick is the retreat's. Away from the monsters on it, toward its map's safe point, past no idle aggressive
 	// pack; resting (Stop, the same 3% a second as the generic retreat) once nobody is on it, until healed.
@@ -1266,36 +1380,33 @@ namespace
 		// a retreat that had led the pack to the safe point; a step of 1 500 units every 1.5 s does not outrun monsters of
 		// move_speed 100 that hit for 25-30% of a cohort bot a second.
 		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: the escape at the bot's floor (or _ESCAPE_HP, the higher)
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: and sooner (see the FIGHT3 numbers) - a swarm at once, floor + _F3_ESCAPE_OVER
+		// after _F3_ESCAPE_AFTER_MS, a held retreat that may not turn after _F3_HELD_ESCAPE_MS, at once after a death or an
+		// emergency rest; one every _F3_ESCAPE_GAP_MS
 		const int partyNear = CountPlayerBotSungmaPartyNear(ch, PLAYERBOT_SUNGMA_PARTY_NEAR, 30);
 		const int floorHp = GetPlayerBotSungmaFloorHp(ch, partyNear);
-		long ex = 0, ey = 0;
-		if (attackers >= PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS && hp <= std::max(PLAYERBOT_SUNGMA_ESCAPE_HP, floorHp) &&
-				el >= PLAYERBOT_SUNGMA_ESCAPE_AFTER_MS &&
-				(f.dwLastEscape == 0 || dwNow - f.dwLastEscape >= PLAYERBOT_SUNGMA_ESCAPE_GAP_MS) &&
-				GetPlayerBotSungmaCleanPoint(ch->GetMapIndex(), ex, ey) &&
-				DISTANCE_APPROX(ch->GetX() - ex, ch->GetY() - ey) >= PLAYERBOT_SUNGMA_ESCAPE_MIN_DIST)
-		{
-			long ox = 0, oy = 0;
-			GetPlayerBotStableOffset(ch->GetPlayerID(), 0x45534350U, 50, 300, ox, oy);
-			f.dwLastEscape = dwNow ? dwNow : 1;
-			if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
-				++st->escapes;
-			sys_log(0, "PLAYERBOT_SUNGMA: escape pid=%u name=%s map=%ld why=%s hp=%d/%d attackers=%d took_s=%u from=(%ld,%ld) to=(%ld,%ld)",
-					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), f.szRetreatWhy[0] ? f.szRetreatWhy : "generic", ch->GetHP(),
-					ch->GetMaxHP(), attackers, el / 1000, ch->GetX(), ch->GetY(), ex + ox, ey + oy);
-			state.dwTargetVID = 0;
-			ch->SetVictim(NULL);
-			ch->Stop();
-			ClearPlayerBotRoute(state, true);
-			ch->Show(ch->GetMapIndex(), ex + ox, ey + oy, 0);
-			state.dwNextRetreatMoveTime = dwNow + PLAYERBOT_SUNGMA_RETREAT_MOVE_MS;
-			return 1;
-		}
+		const int fullCap = GetPlayerBotSungmaLoneCapacity(ch) + std::max(0, partyNear - 1) * PLAYERBOT_SUNGMA_CAPACITY_MEMBER;
+		const bool recentDown = f.dwLastDown != 0 && dwNow - f.dwLastDown < PLAYERBOT_SUNGMA_DEATH_AGAIN_MS;
 		// MT2009_PLUS_BOT_SUNGMA_FIGHT2_V1: a retreat its pack keeps up with is a fight again (see PLAYERBOT_SUNGMA_F2_TURN_*):
 		// the potions hold it either way, and only a fight kills the pack.
-		const bool turn = attackers > 0 && el >= PLAYERBOT_SUNGMA_F2_TURN_AFTER_MS &&
-				hp >= floorHp + PLAYERBOT_SUNGMA_F2_TURN_OVER &&
-				attackers <= GetPlayerBotSungmaLoneCapacity(ch) + std::max(0, partyNear - 1) * PLAYERBOT_SUNGMA_CAPACITY_MEMBER + 1;
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: at floor + _F3_TURN_OVER, no more on it than it takes, never just after a fall
+		const bool turn = attackers > 0 && el >= PLAYERBOT_SUNGMA_F2_TURN_AFTER_MS && !recentDown &&
+				hp >= floorHp + PLAYERBOT_SUNGMA_F3_TURN_OVER && attackers <= fullCap;
+		const char* escapeKind = NULL;
+		if (attackers >= PLAYERBOT_SUNGMA_ESCAPE_ATTACKERS)
+		{
+			if (attackers >= fullCap + PLAYERBOT_SUNGMA_F2_PULLED_EXTRA)
+				escapeKind = "swarm";
+			else if (recentDown)
+				escapeKind = "low";
+			else if (hp <= std::max(PLAYERBOT_SUNGMA_ESCAPE_HP, floorHp + PLAYERBOT_SUNGMA_F3_ESCAPE_OVER) &&
+					el >= PLAYERBOT_SUNGMA_F3_ESCAPE_AFTER_MS)
+				escapeKind = "hp";
+			else if (!turn && el >= PLAYERBOT_SUNGMA_F3_HELD_ESCAPE_MS)
+				escapeKind = "held";
+		}
+		if (escapeKind && EscapePlayerBotSungma(ch, state, f, attackers, el, escapeKind, dwNow))
+			return 1;
 		if ((attackers == 0 && hp >= PLAYERBOT_SUNGMA_F2_END_HP) || turn || el >= PLAYERBOT_SUNGMA_RETREAT_MAX_MS)
 		{
 			sys_log(0, "PLAYERBOT_SUNGMA: retreat over pid=%u name=%s map=%ld why=%s hp=%d/%d attackers=%d took_s=%u at_safe=%d reason=%s",
@@ -1368,9 +1479,16 @@ namespace
 			if (safe && attackers == 0)
 				score += (long long)(toSafe - DISTANCE_APPROX(x - sx, y - sy)) * 2;
 			for (size_t m = 0; m < mobs.size(); ++m)
-				if (mobs[m].idle && mobs[m].aggressive &&
-						DISTANCE_APPROX(mobs[m].x - x, mobs[m].y - y) <= PLAYERBOT_SUNGMA_AGGRO_RADIUS)
+			{
+				if (!mobs[m].idle)
+					continue;
+				const int d = DISTANCE_APPROX(mobs[m].x - x, mobs[m].y - y);
+				if (mobs[m].aggressive && d <= PLAYERBOT_SUNGMA_AGGRO_RADIUS)
 					score -= 1500;
+				// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: nor into any idle monster's group
+				if (d <= PLAYERBOT_SUNGMA_PACK_RADIUS)
+					score -= PLAYERBOT_SUNGMA_F3_STEP_IDLE_PENALTY;
+			}
 			score += (long long)(PlayerBotNavHash(ch->GetPlayerID() ^ (DWORD)i) % 100U);
 			if (score > bestScore)
 			{
@@ -1561,6 +1679,12 @@ namespace
 			cause = SUNGMA_DEATH_PACK;
 		f.dwLastDown = dwNow ? dwNow : 1;
 		f.bRetreat = false;
+		// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1: the spot it died on is left for a while (IsPlayerBotSungmaSpotAvoided) - the
+		// revival at the safe point walked it straight back into the same pack
+		f.lDeathMap = ch->GetMapIndex();
+		f.lDeathX = ch->GetX();
+		f.lDeathY = ch->GetY();
+		f.dwDeathAvoidUntil = dwNow + PLAYERBOT_SUNGMA_F3_DEATH_AVOID_MS;
 		// MT2009_PLUS_BOT_SUNGMA_CLASS_V1: the build's census and the re-arm after the revival
 		{
 			TPlayerBotSungmaClassStats& cs = GetPlayerBotSungmaClassStats(ch);
@@ -1578,6 +1702,7 @@ namespace
 				++st->deathsParty;
 			else
 				++st->deathsLone;
+			++st->deathAvoids;	// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1
 		}
 		size_t red = 0, blue = 0;
 		CountPlayerBotPotions(ch, red, blue);
@@ -1766,12 +1891,14 @@ namespace
 		sys_log(0, "PLAYERBOT_SUNGMA: fight channel=%u map=%ld name=%s parties=%d in_party=%d lone=%d party_forms=%u party_joins=%u "
 				"party_leaves=%u party_errand_leaves=%u regroups=%u revives_in_party=%u party_objectives=%u picks=%u element_picks=%u "
 				"edge_picks=%u pack_refused=%u retreats_hp=%u retreats_pack=%u retreats_pulled=%u retreats_safe=%u avoids=%u "
-				"deaths_lone=%u deaths_party=%u %s escapes=%u nest_moves=%u hp_refused=%u turns=%u potions=%u hunt_element_picks=%u",
+				"deaths_lone=%u deaths_party=%u %s escapes=%u nest_moves=%u hp_refused=%u turns=%u potions=%u hunt_element_picks=%u "
+				"swarm_escapes=%u low_escapes=%u held_escapes=%u death_avoids=%u errand_party_kept=%u bag_tidied=%u",
 				(unsigned int)g_bChannel, mapIndex, key, parties, inParty, lone, st.partyForms, st.partyJoins, st.partyLeaves,
 				st.partyErrandLeaves, st.regroups, st.revivesInParty, st.partyObjectives, st.targetsPicked, st.targetsElement,
 				st.targetsEdge, st.packRefused, st.retreatsHp, st.retreatsPack, st.retreatsPulled, st.retreatsSafe, st.avoids,
 				st.deathsLone, st.deathsParty, causes, st.escapes, st.nestMoves, st.hpRefused, st.turns, st.potions,
-				st.huntElementPicks);
+				st.huntElementPicks, st.swarmEscapes, st.lowEscapes, st.heldEscapes, st.deathAvoids,	// MT2009_PLUS_BOT_SUNGMA_FIGHT3_V1
+				st.errandPartyKept, st.bagTidied);	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1
 	}
 }
 

@@ -23,6 +23,9 @@
 //     PLAYERBOT_SUNGMA_PARTY_LEAVE_RANGE; anyone going on Dongan's errand or the trade trip, moving to another map or
 //     leaving the maps (LeavePlayerBotSungmaParty - a leader's going ends the party, the others make a new one at once);
 //     a member revived stands up by its party only with two of them beside it (MovePlayerBotSungmaRevived).
+//   * MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: Dongan's errand is no way out any more - its bot stays in the party over the
+//     warps (IsPlayerBotSungmaErrandKeepingParty, playerbot_yohara_sungma.h), and the members of a leader on its errand
+//     wait for it rather than leave ("leader_map").
 //
 // An implementation fragment: included by playerbot_yohara_bots.h after playerbot_yohara_sungma.h, in its namespace.
 
@@ -210,6 +213,9 @@
 				continue;
 			const int members = (int)party->GetMemberCount();
 			LPCHARACTER leader = party->GetLeaderCharacter();
+			// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: nor a party whose leader is on Dongan's errand (its members are elsewhere)
+			if (leader && IsPlayerBotSungmaErrandKeepingParty(leader->GetPlayerID(), get_dword_time()))
+				continue;
 			if (members < minMembers || members >= PLAYERBOT_SUNGMA_PARTY_MAX || !leader || IsPlayerBotHumanLedParty(party) ||
 					leader->GetMapIndex() != ch->GetMapIndex() || leader->GetEmpire() != ch->GetEmpire() || leader->IsDead() ||
 					abs(GetPlayerBotChampionLevel(leader) - champion) > PLAYERBOT_SUNGMA_PARTY_BAND ||
@@ -250,6 +256,9 @@
 		if (party)
 		{
 			// a member's errand, walk or move: out (the errand and the trade trip leave by themselves too)
+			// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: Dongan's errand and the way back from it are not "busy" (see the top)
+			if (!free && IsPlayerBotSungmaErrandKeepingParty(ch->GetPlayerID(), dwNow))
+				return 0;
 			if (!free)
 			{
 				LeavePlayerBotSungmaParty(ch, "busy", GetPlayerBotSungmaActivity(ch->GetPlayerID()) == 2);
@@ -269,6 +278,9 @@
 			if (leader != ch)
 			{
 				const char* why = NULL;
+				// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: a leader gone on its errand (or coming back from it) is waited for
+				if (leader->GetMapIndex() != ch->GetMapIndex() && IsPlayerBotSungmaErrandKeepingParty(leader->GetPlayerID(), dwNow))
+					return 0;
 				if (leader->GetMapIndex() != ch->GetMapIndex())
 					why = "leader_map";
 				else if (abs(GetPlayerBotChampionLevel(leader) - GetPlayerBotChampionLevel(ch)) > PLAYERBOT_SUNGMA_PARTY_BAND)

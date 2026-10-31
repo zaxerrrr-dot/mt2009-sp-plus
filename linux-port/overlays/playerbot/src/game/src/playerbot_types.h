@@ -7160,6 +7160,9 @@ namespace
 	// MT2009_PLUS_BOT_YOHARA_MAPS_V2: a bot living on the Sung Ma maps (its belt and bag are Dongan's errand, never a way
 	// home) and its revival there - at the safe point by its map's arrival, a person's "restart in town" (playerbot_yohara_sungma.h).
 	bool IsPlayerBotSungmaResidentPID(DWORD pid);
+	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: a resident on Dongan's errand, or on its way back from one, stays in its bots'
+	// party (TransitionPlayerBotMap keeps it over the warps, the party pass does not count it "busy").
+	bool IsPlayerBotSungmaErrandKeepingParty(DWORD pid, DWORD dwNow);
 	// MT2009_PLUS_BOT_YOHARA_GEAR2_V1 (playerbot_yohara_gear2.h, after playerbot_yohara_elements_late.h): the level-100
 	// helmets at Jaharr, the body armours 90-115 at Kawuco / Angmur and the cyanite step at Seon-Pyeong - what their
 	// recipes keep and buy, the hunt's wanted materials, a Sung Ma bot's trip home for them, the cape as a loot map.

@@ -638,10 +638,11 @@
 		int iErrandStop, iErrandNeed;
 		DWORD dwErrandSince, dwErrandFallbackUntil, dwNextErrandLook, dwLastBagErrand;
 		DWORD dwNextTradeLook;	// MT2009_PLUS_BOT_YOHARA_TRADE_TRIP_V1: the trade trip's next look
+		DWORD dwErrandBackSince;	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: on the way back from an errand since (0: not)
 		TPlayerBotSungmaBot() : dwNextPoints(0), dwNextPick(0), dwOnMapSince(0), dwWalkSince(0), dwChamberSince(0), lMapSeen(0),
 			bSeen(false), bStuck(false), iLastLevel(0), iLastChampion(0), dwLastExp(0), dwLastNeed(0), dwLastChampionExp(0),
 			bFlee(false), dwNextHpLook(0), bErrand(false), iErrandStop(0), iErrandNeed(0), dwErrandSince(0),
-			dwErrandFallbackUntil(0), dwNextErrandLook(0), dwLastBagErrand(0), dwNextTradeLook(0) {}
+			dwErrandFallbackUntil(0), dwNextErrandLook(0), dwLastBagErrand(0), dwNextTradeLook(0), dwErrandBackSince(0) {}
 	};
 	std::map<DWORD, TPlayerBotSungmaBot> s_mapPlayerBotSungma;
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
@@ -664,6 +665,24 @@
 		if (b == s_mapPlayerBotSungma.end())
 			return 0;
 		return b->second.bErrand ? 2 : (b->second.dwWalkSince != 0 ? 1 : 0);
+	}
+	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1 (the owner, 31 October 2026 - BOTY-YOHARA-ANALIZA-v2.md, Etap 3: "boty maja sie
+	// trzymac druzyny"): 12 756 of the day's party leaves were Dongan's errand (`party leave why=errand`, 30-31 October),
+	// nearly every errand took its bot out of its party (party_errand_leaves 14 061 since the start), and an errand is
+	// short - 12 s a median from the warp out to "errand done". 53% of the deaths were of bots in a party with fewer than
+	// two of it by them. So the errand keeps the party: the bot warps to Dongan and back as a member (or its leader - the
+	// members wait for it, playerbot_yohara_sungma_party.h), while the errand lasts (PLAYERBOT_SUNGMA_ERRAND_MS at most)
+	// and on its way back for PLAYERBOT_SUNGMA_ERRAND_BACK_MS. The bag's errand (32% of them) is tidied in place for a
+	// party's member instead (ManagePlayerBotSungmaErrand).
+	const DWORD PLAYERBOT_SUNGMA_ERRAND_BACK_MS = 90 * 1000;
+	bool IsPlayerBotSungmaErrandKeepingParty(DWORD pid, DWORD dwNow)
+	{
+		std::map<DWORD, TPlayerBotSungmaBot>::const_iterator b = s_mapPlayerBotSungma.find(pid);
+		if (b == s_mapPlayerBotSungma.end())
+			return false;
+		if (b->second.bErrand)
+			return dwNow - b->second.dwErrandSince < PLAYERBOT_SUNGMA_ERRAND_MS + 15 * 1000;
+		return b->second.dwErrandBackSince != 0 && dwNow - b->second.dwErrandBackSince < PLAYERBOT_SUNGMA_ERRAND_BACK_MS;
 	}
 	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: the party's leader waits for its members (playerbot_yohara_sungma_party.h).
 	bool HoldPlayerBotSungmaRegroup(LPCHARACTER ch, TPlayerBotAIState& state, DWORD dwNow);
@@ -1310,6 +1329,7 @@
 				ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), res.lMap, why,
 				b.dwErrandSince ? (dwNow - b.dwErrandSince) / 1000 : 0);
 		b.bErrand = false;
+		b.dwErrandBackSince = dwNow ? dwNow : 1;	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: the way back keeps the party
 		b.dwErrandFallbackUntil = dwNow + PLAYERBOT_SUNGMA_ERRAND_FALLBACK_MS;
 		res.dwNextRestock = 0;
 		RestockPlayerBotYohara(ch, res, dwNow);
@@ -1328,6 +1348,25 @@
 			if ((int)(dwNow - b.dwNextErrandLook) < 0)
 				return -1;
 			b.dwNextErrandLook = dwNow + PLAYERBOT_SUNGMA_ERRAND_LOOK_MS;
+			// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: a party's member with no free column of three sells its junk where it
+			// stands (the cohort's tidy, RestockPlayerBotYohara: the merchants' price, the town visit's rule) instead of the
+			// bag's errand - at most once a PLAYERBOT_SUNGMA_ERRAND_BAG_MS, the bag errand's own clock
+			if (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 2 && ch->IsItemLoaded() && ch->GetEmptyInventory(3) < 0 &&
+					(b.dwLastBagErrand == 0 || dwNow - b.dwLastBagErrand >= PLAYERBOT_SUNGMA_ERRAND_BAG_MS) &&
+					(HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_MISC) || HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_WEAPON) ||
+					 HasPlayerBotJunkForMerchant(ch, BOT_MERCHANT_ARMOR)))
+			{
+				const int freeBefore = CountPlayerBotFreeInventoryCells(ch);
+				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_MISC, "sungma_tidy_misc");
+				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_WEAPON, "sungma_tidy_weapon");
+				SellPlayerBotJunkAtMerchant(ch, BOT_MERCHANT_ARMOR, "sungma_tidy_armor");
+				b.dwLastBagErrand = dwNow ? dwNow : 1;
+				if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+					++st->bagTidied;
+				sys_log(0, "PLAYERBOT_SUNGMA: bag tidied pid=%u name=%s map=%ld members=%u free_cells=%d->%d free3=%d",
+						ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (unsigned int)ch->GetParty()->GetMemberCount(),
+						freeBefore, CountPlayerBotFreeInventoryCells(ch), ch->GetEmptyInventory(3) >= 0 ? 1 : 0);
+			}
 			const int need = GetPlayerBotSungmaErrandNeed(ch, b, dwNow);
 			if (!need)
 				return -1;
@@ -1357,8 +1396,13 @@
 				}
 				return -1;
 			}
-			LeavePlayerBotSungmaParty(ch, "errand", true);	// MT2009_PLUS_BOT_YOHARA_FIGHT_V1
+			// MT2009_PLUS_BOT_YOHARA_FIGHT_V1: out of its party cleanly first.
+			// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: no more - the errand keeps its party (see IsPlayerBotSungmaErrandKeepingParty).
+			if (ch->GetParty() && ch->GetParty()->GetMemberCount() >= 2 && !IsPlayerBotHumanLedParty(ch->GetParty()))
+				if (TPlayerBotSungmaFightStats* st = GetPlayerBotSungmaFightStats(ch->GetMapIndex()))
+					++st->errandPartyKept;
 			b.bErrand = true;
+			b.dwErrandBackSince = 0;
 			b.iErrandStop = 0;
 			b.iErrandNeed = need;
 			b.dwErrandSince = dwNow ? dwNow : 1;
@@ -1374,10 +1418,11 @@
 				++s_aPlayerBotSungmaStats[slot].errands;
 			size_t red = 0, blue = 0;
 			CountPlayerBotPotions(ch, red, blue);
-			sys_log(0, "PLAYERBOT_SUNGMA: errand to dongan pid=%u name=%s map=%ld need=%s%s%s red=%u blue=%u free3=%d pos=(%ld,%ld)",
+			sys_log(0, "PLAYERBOT_SUNGMA: errand to dongan pid=%u name=%s map=%ld need=%s%s%s red=%u blue=%u free3=%d pos=(%ld,%ld) party=%u",
 					ch->GetPlayerID(), ch->GetName(), ch->GetMapIndex(), (need & 1) ? "potions" : "", (need & 2) ? "+bag" : "",
 					(need & 4) ? "+shop" : "",
-					(unsigned int)red, (unsigned int)blue, ch->GetEmptyInventory(3) >= 0 ? 1 : 0, ch->GetX(), ch->GetY());
+					(unsigned int)red, (unsigned int)blue, ch->GetEmptyInventory(3) >= 0 ? 1 : 0, ch->GetX(), ch->GetY(),
+					ch->GetParty() ? (unsigned int)ch->GetParty()->GetMemberCount() : 0);	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1
 		}
 		if (ch->IsDead() || state.bRecoveringAfterDeath)
 			return -1;
@@ -1403,6 +1448,7 @@
 					ch->GetEmptyInventory(3) >= 0 ? 1 : 0, (long long)ch->GetGold(), (dwNow - b.dwErrandSince) / 1000);
 			b.bErrand = false;
 			b.dwWalkSince = 0;
+			b.dwErrandBackSince = dwNow ? dwNow : 1;	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: the way back keeps the party
 			return -1;	// the map's pick takes it back to its map (the arrival - by the portal when that is near)
 		}
 		const TPlayerBotSungmaMerchant& m = PLAYERBOT_SUNGMA_DONGAN_MERCHANTS[b.iErrandStop];
@@ -1927,6 +1973,7 @@
 			return MovePlayerBotSungma(ch, state, b, res.lMap, dwNow);
 		}
 		b.dwWalkSince = 0;
+		b.dwErrandBackSince = 0;	// MT2009_PLUS_BOT_SUNGMA_PARTY_KEEP_V1: back on its map
 		// Zejscie: the next room now and then.
 		const int slot = GetPlayerBotSungmaSlot(base);
 		if (slot >= 0 && PLAYERBOT_SUNGMA_MAPS[slot].bChambered && !ch->GetParty() &&
