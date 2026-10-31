@@ -178,20 +178,28 @@ namespace
 			case APPLY_RESIST_DAGGER:
 			case APPLY_RESIST_BELL:
 			case APPLY_RESIST_FAN:              return value;
-			// An elemental resistance is applied at thirty percent of its own
-			// number and only against a monster carrying that attack flag, so
-			// the fifteen of a maximum roll is four and a half percent off the
-			// hits of about half of one map. The player's table wanted a
-			// resistance chosen per map; measured, the whole axis is too small
-			// to plan a piece of gear around.
+			// An elemental resistance answers only a monster carrying that
+			// attack flag. It used to be applied at thirty percent of its number;
+			// since 23 October it is the full percent in both bonus modes, capped
+			// at 80 (playerbot_elements.cpp, ElementsAttackBonus) - and in global
+			// mode fire, lightning and wind roll on the armour, the helmet and
+			// the bracelet (2-15). Off an element map the old small weight.
 			// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1 (D14): on a Sung Ma map its own elements' twice that, and the same
 			// for the "+x%" and the hit buff's resistances below (playerbot_yohara_elements.h).
+			// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the element of the map 1-120 the bot hunts or wants - a point worth 1% of
+			// its Max HP by the map's share (playerbot_element_maps.h).
 			case APPLY_RESIST_FIRE:
 			case APPLY_RESIST_ELEC:
 			case APPLY_RESIST_WIND:
 			case APPLY_RESIST_ICE:
 			case APPLY_RESIST_EARTH:
-			case APPLY_RESIST_DARK:             return value * 3 * GetPlayerBotYoharaResistFactor(ch, type);
+			case APPLY_RESIST_DARK:
+			{
+				const int mapElement = GetPlayerBotElementMapLineScore(ch, type, value);
+				if (mapElement >= 0)
+					return mapElement;
+				return value * 3 * GetPlayerBotYoharaResistFactor(ch, type);
+			}
 			case APPLY_RESIST_MAGIC:            return value * 3;
 			case APPLY_REFLECT_MELEE:           return value * 6;
 
@@ -387,6 +395,7 @@ namespace
 		long hp = 0, attGrade = 0, resistBow = 0, crit = 0, penetrate = 0;
 		long average = 0, skill = 0, block = 0, dodge = 0, attSpeed = 0;
 		long steal = 0, drop = 0, mov = 0, race = 0;
+		long expChance = 0;	// MT2009_PLUS_BOT_GLOBAL_BONUS_V1: global mode rolls it on boots, necklace and shield
 		bool immuneStun = false;
 		// The race this bot is being paid for; a line against any other race is
 		// not what a piece is kept for, however high it rolled.
@@ -415,9 +424,18 @@ namespace
 				case APPLY_STEAL_HP:                steal = value; break;
 				case APPLY_ITEM_DROP_BONUS:         drop = value; break;
 				case APPLY_MOV_SPEED:               mov = value; break;
+				case APPLY_EXP_DOUBLE_BONUS:        expChance = value; break;
 				default: break;
 			}
 		}
+
+		// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the armour, helmet and bracelet of a bot short of the resistance its element
+		// map wants are not finished without that line (global mode rolls fire, lightning and wind on them; the live
+		// item_attr says whether this piece can - playerbot_element_maps.h), and the line at the table's level-4 value
+		// is a finishing line of its own (with Max HP on the armour and the bracelet, alone on the helmet).
+		if (IsPlayerBotElementMapLineMissing(ch, item, wearCell))
+			return false;
+		const bool mapElement = HasPlayerBotElementMapLine(ch, item);
 
 		switch (wearCell)
 		{
@@ -476,28 +494,31 @@ namespace
 			case WEAR_BODY:
 				return hp >= PLAYERBOT_BONUS_KEEP_HP &&
 						(attGrade > 0 || resistBow > 0 ||
-						 steal >= PLAYERBOT_BONUS_KEEP_STEAL);
+						 steal >= PLAYERBOT_BONUS_KEEP_STEAL || mapElement);
 			case WEAR_HEAD:
 				// No health, no attack value, no arrow resistance rolls here.
 				return attSpeed >= PLAYERBOT_BONUS_KEEP_ATT_SPEED ||
 						dodge >= PLAYERBOT_BONUS_KEEP_DODGE ||
-						race >= PLAYERBOT_BONUS_KEEP_RACE;
+						race >= PLAYERBOT_BONUS_KEEP_RACE || mapElement;
 			case WEAR_FOOTS:
 				return hp >= PLAYERBOT_BONUS_KEEP_HP &&
 						(attSpeed >= PLAYERBOT_BONUS_KEEP_ATT_SPEED ||
 						 crit >= PLAYERBOT_BONUS_KEEP_CRIT ||
 						 dodge >= PLAYERBOT_BONUS_KEEP_DODGE ||
-						 mov >= PLAYERBOT_BONUS_KEEP_MOV);
+						 mov >= PLAYERBOT_BONUS_KEEP_MOV ||
+						 expChance >= PLAYERBOT_BONUS_KEEP_DROP);	// MT2009_PLUS_BOT_GLOBAL_BONUS_V1
 			case WEAR_WRIST:
 				// Critical does not roll on a wrist; penetration does.
 				return hp >= PLAYERBOT_BONUS_KEEP_HP &&
 						(penetrate >= PLAYERBOT_BONUS_KEEP_CRIT ||
 						 steal >= PLAYERBOT_BONUS_KEEP_STEAL ||
 						 drop >= PLAYERBOT_BONUS_KEEP_DROP ||
-						 race >= PLAYERBOT_BONUS_KEEP_RACE);
+						 race >= PLAYERBOT_BONUS_KEEP_RACE || mapElement);
 			case WEAR_NECK:
+				// MT2009_PLUS_BOT_GLOBAL_BONUS_V1: or, in global mode, the chance of an experience bonus (2-20 on the
+				// necklace, the boots and the shield - bonusy_global.sql) next to the health.
 				return hp >= PLAYERBOT_BONUS_KEEP_HP &&
-						crit >= PLAYERBOT_BONUS_KEEP_CRIT;
+						(crit >= PLAYERBOT_BONUS_KEEP_CRIT || expChance >= PLAYERBOT_BONUS_KEEP_DROP);
 			case WEAR_EAR:
 				// Neither health nor critical rolls on an earring. What does is
 				// the race line, item drop and movement speed.
@@ -2708,9 +2729,14 @@ namespace
 		// that has it after PLAYERBOT_COSTUME_HUNT_ALONE_AFTER changes is finished with it alone.
 		// MT2009_PLUS_BOT_ELEMENT_RESIST_V2: and below its top (15) while the piece has had fewer than
 		// PLAYERBOT_COSTUME_HUNT_TOP_CHANGES changes
+		// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: and for any other bot the resistance its element map wants (1-120, global mode's
+		// costume and hairstyle pools roll fire, lightning and wind) while it is short of it, to the top of the piece's
+		// set within PLAYERBOT_ELEMENT_MAP_COSTUME_CHANGES changes (playerbot_element_maps.h)
 		const bool huntMissing = IsPlayerBotCostumeHuntLineMissing(ch, item) ||
 				(IsPlayerBotCostumeHuntLineShort(ch, item) &&
-				 (state.dwCostumeBonusFocusItem != item->GetID() || state.iCostumeChangesSpent < PLAYERBOT_COSTUME_HUNT_TOP_CHANGES));
+				 (state.dwCostumeBonusFocusItem != item->GetID() || state.iCostumeChangesSpent < PLAYERBOT_COSTUME_HUNT_TOP_CHANGES)) ||
+				(IsPlayerBotElementMapCostumeLineShort(ch, item) &&
+				 (state.dwCostumeBonusFocusItem != item->GetID() || state.iCostumeChangesSpent < PLAYERBOT_ELEMENT_MAP_COSTUME_CHANGES));
 		const BYTE huntPoint = huntMissing || hair ? 0 : GetPlayerBotHuntResistPoint(ch);
 		*pReason = PLAYERBOT_COSEV_FIN_OLD;
 		if (huntPoint && count >= 2 && good >= 1 && IsPlayerBotYoharaBonusMember(ch) &&

@@ -669,6 +669,14 @@ namespace
 			if (willWeight >= 0)
 				return (long long)lValue * willWeight;
 		}
+		// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the resistance to the element of the map a bot without a Yohara hunt element
+		// hunts (or wants to) on the maps 1-120 - a point worth 1% of its Max HP by the map's share, half at its target
+		// (playerbot_element_maps.h): the resist necklaces and bracelets, the stalls' pieces and the market's buy.
+		{
+			const long long mapElement = GetPlayerBotElementMapApplyScore(ch, bType, lValue);
+			if (mapElement >= 0)
+				return mapElement;
+		}
 		// MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1 (D14): a resistance to an element of the bot's Sung Ma map weighs twice the
 		// catch-all's fifty a point there (playerbot_yohara_elements.h); anywhere else, and any other element, as ever.
 		{
@@ -1488,6 +1496,9 @@ namespace
 				continue;
 			lines += ScorePlayerBotApplyTiered(t, item->GetAttributeValue(i), ch);
 		}
+		// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the pair's own resistance to the goal map's element (Bambusowe fire, Drewniane
+		// lightning, Wyszywane Zlotem wind - 10 at +9) - nothing for a bot without such a goal
+		lines += GetPlayerBotElementMapProtoScore(item, ch);
 		score += lines;
 		score += (long long)item->GetLevelLimit() * PLAYERBOT_ARMOR_LEVEL_TIE_BREAK;
 		const bool listed = IsPlayerBotListedJewel(ch, item) && IsPlayerBotJewelListFollower(ch);
