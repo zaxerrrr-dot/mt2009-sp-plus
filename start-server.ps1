@@ -892,6 +892,34 @@ function Assert-YoharaUpdatesDefault {
     return (Set-DotEnvValue -Content $Content -Name 'M2_YOHARA_UPDATES_DEFAULTED' -Value '1')
 }
 
+function Assert-YoharaGamePortRange {
+    # MT2009_PLUS_YOHARA_GAME_PORTS_V1 (30 October 2026, a player's report): the Yohara
+    # core (game3) listens on the channel's 4th port (13003 for channel 1), but a world
+    # installed before 3.x kept M2_GAME_PORT_RANGE=13000-13002, so Docker never published
+    # 13003 - a warp to a Yohara map (Pierscien Hydry, Port Nowego Kontynentu) went black
+    # and back to the login, and a character left on such a map could not log in at all.
+    # update.sh widens the ranges on Linux (migrate_env); this is the same on Windows:
+    # on the 3.x line, a range spanning fewer than 4 ports is widened to first..first+3,
+    # the published and the container side alike (each keeps its own first port).
+    param(
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content
+    )
+    $versionPath = Join-Path $PSScriptRoot 'VERSION'
+    $version = if (Test-Path -LiteralPath $versionPath -PathType Leaf) { ([IO.File]::ReadAllText($versionPath)).Trim() } else { '' }
+    if (-not $version.StartsWith('3.')) { return $Content }
+    foreach ($name in @('M2_GAME_PORT_RANGE', 'M2_GAME_CONTAINER_PORT_RANGE')) {
+        $m = [Regex]::Match($Content, '(?m)^' + $name + '=\s*(\d+)\s*(?:-\s*(\d+))?\s*$')
+        if (-not $m.Success) { continue }
+        $first = [int]$m.Groups[1].Value
+        $last = if ($m.Groups[2].Success) { [int]$m.Groups[2].Value } else { $first }
+        if (($last - $first) -ge 3) { continue }
+        $wanted = '{0}-{1}' -f $first, ($first + 3)
+        Write-Host ('Yohara: porty gry {0} -> {1} (rdzen Yohary na 4. porcie kanalu).' -f $name, $wanted) -ForegroundColor Cyan
+        $Content = Set-DotEnvValue -Content $Content -Name $name -Value $wanted
+    }
+    return $Content
+}
+
 function Assert-DbLogRetentionDefault {
     # MT2009_PLUS_DB_LOG_RETENTION_V1: a world made before this setting kept its
     # whole log database; its owner decides when old rows go (the first prune of
@@ -1085,6 +1113,7 @@ function Initialize-InstallationIdentity {
     $content = Assert-SidekickOffDefault -Content $content
     $content = Assert-SeonHaeOnDefault -Content $content
     $content = Assert-YoharaUpdatesDefault -Content $content
+    $content = Assert-YoharaGamePortRange -Content $content
     $content = Assert-DbLogRetentionDefault -Content $content
     # The same shape for the clock's zone: the example's UTC becomes this
     # machine's own, once.
