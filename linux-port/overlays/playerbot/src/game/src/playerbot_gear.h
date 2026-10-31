@@ -4665,8 +4665,9 @@ namespace
 	// (Mt2009PlusIsQuiver, server-patches/quiver): its arrows never run out, so
 	// one worn is a full quiver for every count below, the equipment pass never
 	// trades it for a stack, and one in the bag is nocked before any stack and
-	// never junk. Bots never buy one (playerbot_itemshop.h has no wish for it);
-	// this is for one a GM hands over.
+	// never junk. MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1: an archer with a bow and
+	// no quiver worn or held buys one in the ItemShop V3 (the catalogue's
+	// QUIVER need, playerbot_ishop3_goals.h); a GM's works the same.
 	bool IsPlayerBotQuiver(LPITEM item)
 	{
 		if (!item || item->GetType() != ITEM_WEAPON || item->GetSubType() != WEAPON_ARROW)
