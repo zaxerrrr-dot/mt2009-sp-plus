@@ -1298,7 +1298,7 @@
 		unsigned int errandPotions = 0, errandElixirs = 0;
 		unsigned int tidies = 0, tidySold = 0, tidyStillFull = 0;
 		int tidyFreed = 0;
-		unsigned int m1Buy = 0;
+		unsigned int m1Buy = 0, m1Counter = 0;
 		unsigned int m1Refused[5] = {};	// bag, craft, goods, shop, routine (looks that would have gone)
 	};
 	TPlayerBotSungmaTripStats s_kPlayerBotSungmaTrips;
@@ -1659,6 +1659,13 @@
 		else if (gap >= (DWORD)GetPlayerBotYoharaConfig().sungmaStayMin * 60000U &&
 				(goods > 0 || HasPlayerBotSungmaCounter(ch) || ch->GetGold() > 0))
 			refused = 4;
+		// MT2009_PLUS_BOT_SUNGMA_TRIPS_V2 (the owner, 31 October 2026: "niech normalnie chodza obslugiwac swoje stragany"):
+		// the counter's reasons send it home again as before - its goods for the counter (bag 0, goods 2), the counter
+		// gone or stale (shop 3) and the round of its sales and stock (routine 4). Only the craft's (1, Jaharr's /
+		// Seon-Pyeong's work) stays counted and refused - it is done on a stay anyway.
+		static const char* const s_apszCounterWhy[] = { "bag", NULL, "goods", "shop", "routine" };
+		if (refused >= 0 && s_apszCounterWhy[refused])
+			return s_apszCounterWhy[refused];
 		if (refused >= 0)
 			++s_kPlayerBotSungmaTrips.m1Refused[refused];
 		return NULL;
@@ -1741,6 +1748,8 @@
 		}
 		if (!strcmp(why, "buy"))
 			++s_kPlayerBotSungmaTrips.m1Buy;	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V1
+		else
+			++s_kPlayerBotSungmaTrips.m1Counter;	// MT2009_PLUS_BOT_SUNGMA_TRIPS_V2: the counter's trips
 		sys_log(0, "PLAYERBOT_SUNGMA: trade trip start pid=%u name=%s map=%ld home=%ld why=%s goods=%d free3=%d gold=%lld "
 				"champion=%d member=%d stay_s=%u away=%d",
 				pid, ch->GetName(), backMap, home, why, goods, free3, gold, GetPlayerBotChampionLevel(ch),
@@ -2129,9 +2138,9 @@
 		{
 			TPlayerBotSungmaTripStats& t = s_kPlayerBotSungmaTrips;
 			sys_log(0, "PLAYERBOT_SUNGMA: trips channel=%u dongan_potions=%u dongan_elixirs=%u tidies=%u tidy_sold=%u "
-					"tidy_freed_cells=%d tidy_still_full=%u m1_buy=%u m1_refused_%s=%u m1_refused_%s=%u m1_refused_%s=%u "
+					"tidy_freed_cells=%d tidy_still_full=%u m1_buy=%u m1_counter=%u m1_refused_%s=%u m1_refused_%s=%u m1_refused_%s=%u "
 					"m1_refused_%s=%u m1_refused_%s=%u", (unsigned int)g_bChannel, t.errandPotions, t.errandElixirs, t.tidies,
-					t.tidySold, t.tidyFreed, t.tidyStillFull, t.m1Buy,
+					t.tidySold, t.tidyFreed, t.tidyStillFull, t.m1Buy, t.m1Counter,
 					PLAYERBOT_SUNGMA_M1_REFUSED[0], t.m1Refused[0], PLAYERBOT_SUNGMA_M1_REFUSED[1], t.m1Refused[1],
 					PLAYERBOT_SUNGMA_M1_REFUSED[2], t.m1Refused[2], PLAYERBOT_SUNGMA_M1_REFUSED[3], t.m1Refused[3],
 					PLAYERBOT_SUNGMA_M1_REFUSED[4], t.m1Refused[4]);
