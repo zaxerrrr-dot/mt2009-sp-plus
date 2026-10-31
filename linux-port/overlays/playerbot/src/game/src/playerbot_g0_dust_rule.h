@@ -56,16 +56,21 @@ namespace
 {
 	const DWORD PLAYERBOT_G0DR_BUCKET_MS = 60 * 60 * 1000;	// the window: this bucket and the last
 	const unsigned int PLAYERBOT_G0DR_MIN_DEATHS = 3;
-	const int PLAYERBOT_G0DR_KPD_PCT = 50;
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V2 (the owner's approval of item 4 of BOTY-YOHARA-ANALIZA-v2.md, 31 October 2026): 75
+	// (was 50) - in 24 hours 9 struggle starts of 271-397 second-set bots, second_g0_struggling=0 in every census
+	const int PLAYERBOT_G0DR_KPD_PCT = 75;
 	const int PLAYERBOT_G0DR_KPD_FALLBACK10 = 50;	// 5.0 kills per death, a map without a fight2 line yet
-	const DWORD PLAYERBOT_G0DR_RETREAT_S = 45 * 60;
+	const DWORD PLAYERBOT_G0DR_RETREAT_S = 30 * 60;	// MT2009_PLUS_BOT_G0_DUST_RULE_V2: 30 (was 45) minutes of the two hours
 	const int PLAYERBOT_G0DR_HOLD_S = 2 * 60 * 60;
 	const int PLAYERBOT_G0DR_HOLD_RENEW_S = 10 * 60;	// the flag rewritten when this much of the hold has passed
 	const int PLAYERBOT_G0DR_BLOCKED_S = 2 * 60 * 60;
 	const int PLAYERBOT_G0DR_BLOCKED_RENEW_S = 10 * 60;
 	const int PLAYERBOT_G0DR_POWER_DUST_DAY = 120;	// twelve power elixirs a day off the market
 	const DWORD PLAYERBOT_G0DR_DAY_MS = 24 * 60 * 60 * 1000;
-	const int PLAYERBOT_G0DR_POWER_DUST_FLOOR = 100;
+	// MT2009_PLUS_BOT_DUST_MARKET_V1: 0 (was 100) - the floor kept the counters' dust for the lower bots' marbles and
+	// bonus stones; the producers of level 100 and under spend none now (they list it for the Champions), and with a
+	// floor of a hundred a thin market never sold one unit for an elixir (power_dust_bought=0 on every core)
+	const int PLAYERBOT_G0DR_POWER_DUST_FLOOR = 0;
 	const DWORD PLAYERBOT_G0DR_CENSUS_MS = 10 * 60 * 1000;
 
 	const char* const PLAYERBOT_G0DR_FLAG_UNTIL = "mt2009_g0.struggle_until";

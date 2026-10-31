@@ -83,7 +83,13 @@ namespace
 	// the armour / helmet / bracelet of an element no gear line rolls: done at the fair tier or after this many changes
 	const int PLAYERBOT_SS_PLAIN_CAP = 60;
 	// a spare armour / helmet / bracelet / talisman is taken when it scores this per cent of the worn piece at least
-	const int PLAYERBOT_SS_MIN_SCORE_PCT = 50;
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V2: 40 (was 50) - 67% of the day's blocks were no_piece (body, head, wrist): a
+	// Champion's worn +9 outscored every own drop and spare of the bag by more than half
+	const int PLAYERBOT_SS_MIN_SCORE_PCT = 40;
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V2: the market's walk list for an empty armour / helmet / bracelet slot - the worn
+	// piece's family from this many pluses under the worn one up to +9 (it was the worn vnum alone, a +9 of one exact
+	// kind that a counter seldom holds)
+	const int PLAYERBOT_SS_MARKET_PLUS_BELOW = 3;
 	// a market piece out of this per cent of the spare purse
 	const int PLAYERBOT_SS_MARKET_PURSE_PCT = 25;
 
@@ -866,8 +872,43 @@ namespace
 			LPITEM worn = s->adwB[slot] ? NULL : ch->GetWear(PLAYERBOT_SS_WEARS[slot]);
 			if (worn && missing[worn->GetVnum()] < 1)
 				missing[worn->GetVnum()] = 1;
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V2
+			// MT2009_PLUS_BOT_G0_DUST_RULE_V2: and its family's lower pluses (an armour, helmet or bracelet of the
+			// ordinary +0..+9 vnums: the plus is the vnum's last digit) - any of them the offer's own rule takes
+			// (GetPlayerBotSecondSetOfferSlot: PLAYERBOT_SS_MIN_SCORE_PCT of the worn piece's score), and the set's
+			// bonusing does the rest. No element line is bought in: ice, earth and dark roll on no armour, helmet or
+			// bracelet (item_attr), the set's own pass rolls E2 where it may.
+			if (!worn || slot == PLAYERBOT_SS_TALISMAN || worn->GetType() != ITEM_ARMOR)
+				continue;
+			const int plus = (int)(worn->GetVnum() % 10);
+			if (plus != (int)worn->GetRefineLevel())
+				continue;
+			const DWORD base = worn->GetVnum() - (DWORD)plus;
+			for (int p = std::max(0, plus - PLAYERBOT_SS_MARKET_PLUS_BELOW); p <= 9; ++p)
+			{
+				const DWORD vnum = base + (DWORD)p;
+				const TItemTable* proto = vnum == worn->GetVnum() ? NULL : ITEM_MANAGER::instance().GetTable(vnum);
+				if (proto && proto->bType == ITEM_ARMOR && proto->bSubType == worn->GetSubType() && missing[vnum] < 1)
+					missing[vnum] = 1;
+			}
+#endif
 		}
 	}
+
+#ifdef MT2009_PLUS_BOT_G0_DUST_RULE_V2
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V2: the set's required pieces held now (0 for a bot without a started set).
+	int CountPlayerBotSecondSetPieces(LPCHARACTER ch)
+	{
+		const TPlayerBotSecondSet* s = s_mapPlayerBotSecondSet.empty() ? NULL : GetPlayerBotSecondSet(ch, false);
+		if (!s || s->iE2 < 0)
+			return 0;
+		int held = 0;
+		for (int slot = 0; slot < PLAYERBOT_SS_REQUIRED; ++slot)
+			if (s->adwB[slot] != 0)
+				++held;
+		return held;
+	}
+#endif
 
 	void NotePlayerBotSecondSetBought(LPCHARACTER ch, DWORD vnum, long long price)
 	{

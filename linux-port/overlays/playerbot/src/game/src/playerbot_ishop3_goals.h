@@ -104,7 +104,8 @@ namespace
 	// The Magiczny Pyl the dust pass may still turn into stones (what the G0 package and the elixirs keep is not).
 	int GetPlayerBotIshop3SpareDust(LPCHARACTER ch)
 	{
-		if (GetPlayerBotG0DustReserve(ch) > 0)
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: nor a producer's - its dust is the counter's, no stone of it is made.
+		if (GetPlayerBotG0DustReserve(ch) > 0 || IsPlayerBotDustProducer(ch))
 			return 0;
 		return std::max(0, (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotYoharaShopDustKeep(ch));
 	}

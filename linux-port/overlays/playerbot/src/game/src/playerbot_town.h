@@ -4956,6 +4956,11 @@ namespace
 			if (policy != PLAYERBOT_ITEM_POLICY_NONE)
 				return -1;
 		}
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: Polyskujaca Muszla is a counter's (the owner, 31 October: "niech ja
+		// sprzedaja, jest droga") - a gift box no other rule here lists, kept shut by the chest pass
+		// (playerbot_consumables.h) and priced off the list's 3 410 000 (GetPlayerBotMaterialAskingBase).
+		if (item->GetVnum() == PLAYERBOT_POLISHED_SHELL_VNUM)
+			return PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS);
 		// MT2009_PLUS_BOT_WORKSHOP_V1: nor what a belt maker or a talisman worker keeps for its
 		// craft (playerbot_workshop.h) - the units over the keep are goods as before.
 		if (ch && IsPlayerBotKeptCraftGoods(ch, item))
@@ -5507,9 +5512,13 @@ namespace
 		{
 			const int dustHeld = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM);
 			const int dustKeep = GetPlayerBotStallBaseKeep(ch, item);
+			// MT2009_PLUS_BOT_DUST_MARKET_V1: a producer's dust (level 100 or under, no Champion) scores the
+			// surplus's 800 from its first unit - the counter is all it is for, and at 400 it stood behind the
+			// horse medal and the cheap stones and never got a cell.
+			const bool producer = IsPlayerBotDustProducer(ch);
 			return dustHeld > dustKeep
-					? PlayerBotGoods(dustHeld > PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT &&
-							dustHeld - dustKeep > PLAYERBOT_MAGIC_DUST_SURPLUS_SPARE
+					? PlayerBotGoods(producer || (dustHeld > PLAYERBOT_MAGIC_DUST_SURPLUS_COUNT &&
+							dustHeld - dustKeep > PLAYERBOT_MAGIC_DUST_SURPLUS_SPARE)
 							? PLAYERBOT_SHOP_MAGIC_DUST_SURPLUS_SCORE : PLAYERBOT_SHOP_LOW_SOUL_STONE_SCORE + 20,
 						per::GOODS_MAGIC_DUST, (long long)dustHeld, dustKeep) : -1;
 		}

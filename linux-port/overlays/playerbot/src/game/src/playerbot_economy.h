@@ -891,6 +891,13 @@ namespace
 		// its stack (the buyers take one off it), not a stone a line.
 		if (IsPlayerBotSoulStoneStackLine(item))
 			return std::max<int>(1, (int)item->GetMaxStack());
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: Magiczny Pyl in lines of twenty - two power elixirs, a twentieth of a G0 -
+		// not the materials' five (a producer's whole bag of it went up five at a time, a counter's cells and a
+		// restock step a line); the shell's pearls one at a time, like the fishing pearls (14-72 million each).
+		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
+			return PLAYERBOT_DUST_LINE_UNITS;
+		if (IsPlayerBotPolishedPearlVnum(item->GetVnum()))
+			return 1;
 		if (item->GetType() == ITEM_USE || item->GetType() == ITEM_METIN ||
 				item->GetType() == ITEM_TREASURE_KEY ||
 				(item->GetVnum() >= 27992 && item->GetVnum() <= 27994))
@@ -1538,6 +1545,10 @@ namespace
 		// counter takes only the dust over that.
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: and a Champion's 400 for its G0 package (playerbot_yohara_g0.h).
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: and over them the dust its elixirs of power still take (playerbot_yohara_shop.h).
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: a producer (level 100 or under, no Champion) keeps none - all of its dust is
+		// the counter's, for the Champions (the owner, 31 October: "Boty 1-100 nie maja z nimi nic do roboty").
+		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM && IsPlayerBotDustProducer(ch))
+			return 0;
 		if (item->GetVnum() == PLAYERBOT_MAGIC_DUST_VNUM)
 			return ch ? std::max(std::max((ch->GetLevel() >= PLAYERBOT_BONUS_MIN_LEVEL || PlayerBotWantsBlessingMarble(ch))
 					? PLAYERBOT_DUST_PER_MARBLE : 0, GetPlayerBotDustBonusKeep(ch)),
@@ -3135,6 +3146,10 @@ namespace
 		if (vnum == PLAYERBOT_FISHING_BAIT_VNUM ||
 				vnum == PLAYERBOT_SHELLFISH_VNUM || vnum == PLAYERBOT_CAMPFIRE_VNUM ||
 				(vnum >= PLAYERBOT_PEARL_FIRST_VNUM && vnum <= PLAYERBOT_PEARL_LAST_VNUM))
+			return false;
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: nor Polyskujaca Muszla and its pearls (31238-31241), whatever the bag's
+		// pressure - a counter's at the price list's 3.41 / 13.6-71.6 million, never the merchant's few yang.
+		if (vnum == PLAYERBOT_POLISHED_SHELL_VNUM || IsPlayerBotPolishedPearlVnum(vnum))
 			return false;
 		// Ore, raw and smelted. A hundred raw make one smelted piece and the
 		// smelted ones are what a player crosses a market for, so neither is

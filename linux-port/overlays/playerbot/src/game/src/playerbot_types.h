@@ -10396,6 +10396,45 @@ namespace
 	void NotePlayerBotPowerDustMarket(LPCHARACTER ch, int units);
 	void NotePlayerBotPowerElixirLook(int e, int outcome);
 	void LogPlayerBotG0DustRuleCensus(DWORD dwNow);
+#define MT2009_PLUS_BOT_G0_DUST_RULE_V2 1
+	// MT2009_PLUS_BOT_G0_DUST_RULE_V2 (the owner's approval of item 4 of BOTY-YOHARA-ANALIZA-v2.md, 31 October 2026: the
+	// second set and the second G0 brought within reach): the second set's pieces held (of the required six,
+	// playerbot_element_second_set.h), for the second G0 saver's softer gate (playerbot_yohara_g0.h).
+	int CountPlayerBotSecondSetPieces(LPCHARACTER ch);
+#define MT2009_PLUS_BOT_DUST_MARKET_V1 1
+	// MT2009_PLUS_BOT_DUST_MARKET_V1 (the owner, 31 October 2026, rejecting the W1/W2 exchanges of
+	// BOTY-YOHARA-ANALIZA-v2.md: "Musimy zachecic wiecej botow do robienia pylu i materialow i wystawiania ich na rynek -
+	// najpierw je robia, potem wystawiaja - jak na serwerze wspierajacych, gdzie jest ich pelno. Boty 1-100 nie maja z
+	// nimi nic do roboty, wiec wystawia je na rynek i zarobia; boty na poziomie Czempiona je kupia"; "Polyskujaca
+	// Muszla - niech ja sprzedaja, jest droga, a perly z niej tez maja byc drogie wedlug cennika").
+	// The producers: a bot of level PLAYERBOT_DUST_PRODUCER_MAX_LEVEL or under without a Champion level keeps no
+	// Magiczny Pyl and spends none (no marble, no add / change stone of dust) - every unit the Alchemist gives it is a
+	// counter's, PLAYERBOT_DUST_LINE_UNITS a line, scored over the other cheap goods (playerbot_economy.h,
+	// playerbot_bonus.h, playerbot_town.h). The buyers: the Champions' G0 / power elixir dust off the counters, read by
+	// the market's sink scan (playerbot_offline_market.h) and paid up to PLAYERBOT_DUST_MARKET_PRICE_CAP_PCT of the
+	// bots' dust price. A counter at the bots' yang cap (PLAYERBOT_GOLD_MAX) that refuses a line of dust, materials,
+	// the shell or its pearls takes home its dearest line unsold for PLAYERBOT_DUST_MARKET_ROOM_STAND_MS and holds
+	// that kind back for PLAYERBOT_DUST_MARKET_ROOM_HOLD_MS (playerbot_offline_shop.h). Polyskujaca Muszla (31238)
+	// is never opened by a bot - it is a counter's at the price list's 3 410 000 - and its pearls (31239-31241), like
+	// the fishing pearls, are never the merchant's. The log: PLAYERBOT_SHOP2: market census (playerbot_yohara_shop.h).
+	const int PLAYERBOT_DUST_PRODUCER_MAX_LEVEL = 100;
+	const int PLAYERBOT_DUST_LINE_UNITS = 20;
+	const int PLAYERBOT_DUST_MARKET_PRICE_CAP_PCT = 200;
+	const DWORD PLAYERBOT_DUST_MARKET_ROOM_STAND_MS = 6 * 60 * 60 * 1000;
+	const DWORD PLAYERBOT_DUST_MARKET_ROOM_HOLD_MS = 12 * 60 * 60 * 1000;
+	const DWORD PLAYERBOT_POLISHED_SHELL_VNUM = 31238;	// Polyskujaca Muszla
+	const DWORD PLAYERBOT_POLISHED_PEARL_FIRST_VNUM = 31239;	// Polyskujaca Biala / Nieb. / Krwawa Perla
+	const DWORD PLAYERBOT_POLISHED_PEARL_LAST_VNUM = 31241;
+	inline bool IsPlayerBotPolishedPearlVnum(DWORD vnum)
+	{
+		return vnum >= PLAYERBOT_POLISHED_PEARL_FIRST_VNUM && vnum <= PLAYERBOT_POLISHED_PEARL_LAST_VNUM;
+	}
+	bool IsPlayerBotDustProducer(LPCHARACTER ch);
+	// The goods the census follows and the yang cap makes room for: the dust, the materials, the shell and its pearls.
+	bool IsPlayerBotDustMarketGoodsVnum(DWORD vnum);
+	void NotePlayerBotDustMarketListed(DWORD vnum, int units);
+	void NotePlayerBotDustMarketYangCap(DWORD vnum, bool room);
+	void NotePlayerBotDustMarketRefused(bool price);
 #define MT2009_PLUS_BOT_ISHOP_V3_V1 1
 	// MT2009_PLUS_BOT_ISHOP_V3_V1 (the owner, 28 October 2026): the bots buy in the ItemShop V3 only, at the lines and
 	// prices the players see (playerbot_itemshop.h: the catalogue itemshop3.shop, the purchase, the set chests, the

@@ -2153,6 +2153,9 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion keeps its dust for its G0 package (playerbot_yohara_g0.h).
 		if (GetPlayerBotG0DustReserve(ch) > 0)
 			return false;
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: a producer's dust is the counter's, never its own marble's.
+		if (IsPlayerBotDustProducer(ch))
+			return false;
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: nor the dust its elixirs of power take (playerbot_yohara_shop.h).
 		if (!PlayerBotWantsBlessingMarble(ch) ||
 				(int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotYoharaShopDustKeep(ch) < PLAYERBOT_DUST_PER_MARBLE ||
@@ -2221,7 +2224,8 @@ namespace
 	// (GetPlayerBotStallBaseKeep).
 	int GetPlayerBotDustBonusKeep(LPCHARACTER ch)
 	{
-		if (!ch || !ch->IsItemLoaded())
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: a producer keeps none (it makes no stone of dust).
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotDustProducer(ch))
 			return 0;
 		int keep = PlayerBotWantsBlessingMarble(ch) ? PLAYERBOT_DUST_PER_MARBLE : 0;
 		if (PlayerBotWouldSpendDustStone(ch, true))
@@ -2242,6 +2246,9 @@ namespace
 			return false;
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion keeps its dust for its G0 package (playerbot_yohara_g0.h).
 		if (GetPlayerBotG0DustReserve(ch) > 0)
+			return false;
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: nor a producer's - its dust is the counter's.
+		if (IsPlayerBotDustProducer(ch))
 			return false;
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the dust its elixirs of power take is not the stones' (playerbot_yohara_shop.h).
 		const int dust = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotYoharaShopDustKeep(ch);

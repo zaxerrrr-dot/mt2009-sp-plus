@@ -159,6 +159,144 @@ namespace
 		return ch && IsPlayerBotSungmaWillUser(ch) && ch->IsItemLoaded() && !IsPlayerBotSidekickPID(ch->GetPlayerID());
 	}
 
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+	// ------------------------------------------------------------ MT2009_PLUS_BOT_DUST_MARKET_V1: producers and the census
+
+	// The census of 31 October (BOTY-YOHARA-ANALIZA-v2.md, item 12; the syslogs of 31.10 10-15h): the Alchemist made 158
+	// dust in five hours in the whole world (59 exchanges; most of his 1 000+ visits were for the energy scrap alone),
+	// every bot of level 30 and up kept a hundred of it for a marble and spent it on marbles and bonus stones, the G0
+	// savers of 110+ kept 400 - not one line of 30360 went up (no "cut a line vnum=30360"), and the Champions'
+	// dust_bought stayed 0. Materialy Rzemieslnicze were made (15 750 out of the Dozorca on channel 1 game1) and cut into
+	// lines 2 115 times an hour, but the ledger's supply of them stayed 0: the cut lines stood at a counter's yang cap and
+	// were poured back (playerbot_offline_shop.h, the room). A producer is a bot of level
+	// PLAYERBOT_DUST_PRODUCER_MAX_LEVEL or under without a Champion level - none of the dust's uses is its own (the G0 is
+	// the 110+ savers', the elixirs the Champions') - and it lists every unit.
+	bool IsPlayerBotDustProducer(LPCHARACTER ch)
+	{
+		return ch && ch->IsPC() && ch->GetDesc() && ch->GetDesc()->IsBot() &&
+				(int)ch->GetLevel() <= PLAYERBOT_DUST_PRODUCER_MAX_LEVEL && GetPlayerBotChampionLevel(ch) < 1 &&
+				!IsPlayerBotSidekickPID(ch->GetPlayerID());
+	}
+
+	bool IsPlayerBotDustMarketGoodsVnum(DWORD vnum)
+	{
+		return vnum == PLAYERBOT_MAGIC_DUST_VNUM || vnum == PLAYERBOT_YSHOP_MATERIAL_VNUM || vnum == PLAYERBOT_POLISHED_SHELL_VNUM ||
+				IsPlayerBotPolishedPearlVnum(vnum);
+	}
+
+	enum { PLAYERBOT_DMK_DUST, PLAYERBOT_DMK_MATERIAL, PLAYERBOT_DMK_SHELL, PLAYERBOT_DMK_PEARL, PLAYERBOT_DMK_KINDS };
+	const char* const PLAYERBOT_DMK_NAMES[PLAYERBOT_DMK_KINDS] = { "dust", "material", "shell", "pearl" };
+
+	int GetPlayerBotDustMarketKind(DWORD vnum)
+	{
+		if (vnum == PLAYERBOT_MAGIC_DUST_VNUM)
+			return PLAYERBOT_DMK_DUST;
+		if (vnum == PLAYERBOT_YSHOP_MATERIAL_VNUM)
+			return PLAYERBOT_DMK_MATERIAL;
+		if (vnum == PLAYERBOT_POLISHED_SHELL_VNUM)
+			return PLAYERBOT_DMK_SHELL;
+		return IsPlayerBotPolishedPearlVnum(vnum) ? PLAYERBOT_DMK_PEARL : -1;
+	}
+
+	struct TPlayerBotDustMarketStats
+	{
+		unsigned int auListedUnits[PLAYERBOT_DMK_KINDS], auListedLines[PLAYERBOT_DMK_KINDS];
+		unsigned int auYangCapped[PLAYERBOT_DMK_KINDS], auYangRoom[PLAYERBOT_DMK_KINDS];
+		unsigned int priceRefused, purseRefused;
+		TPlayerBotDustMarketStats() : priceRefused(0), purseRefused(0)
+		{
+			for (int k = 0; k < PLAYERBOT_DMK_KINDS; ++k)
+				auListedUnits[k] = auListedLines[k] = auYangCapped[k] = auYangRoom[k] = 0;
+		}
+	};
+	TPlayerBotDustMarketStats s_kPlayerBotDustMarketStats;
+
+	// A line of the goods put up on a counter (the offline shop's create and add).
+	void NotePlayerBotDustMarketListed(DWORD vnum, int units)
+	{
+		const int k = GetPlayerBotDustMarketKind(vnum);
+		if (k < 0 || units <= 0)
+			return;
+		s_kPlayerBotDustMarketStats.auListedUnits[k] += (unsigned int)units;
+		++s_kPlayerBotDustMarketStats.auListedLines[k];
+	}
+
+	// A line of the goods refused at a counter's yang cap; room: the counter's dearest line went home for it.
+	void NotePlayerBotDustMarketYangCap(DWORD vnum, bool room)
+	{
+		const int k = GetPlayerBotDustMarketKind(vnum);
+		if (k < 0)
+			return;
+		++s_kPlayerBotDustMarketStats.auYangCapped[k];
+		if (room)
+			++s_kPlayerBotDustMarketStats.auYangRoom[k];
+	}
+
+	// A Champion's look at a dust line refused: over the price cap (price), or over its purse's share.
+	void NotePlayerBotDustMarketRefused(bool price)
+	{
+		if (price)
+			++s_kPlayerBotDustMarketStats.priceRefused;
+		else
+			++s_kPlayerBotDustMarketStats.purseRefused;
+	}
+
+	// PLAYERBOT_SHOP2: market census - since the core's start: the goods' lines and units put up on this core's
+	// counters, refused at the yang cap and the room made for them; the ledger's units on the counters now; the dust
+	// and materials the Champions bought (the G0's and the power elixir's, the G0 / SHOP2 counts) and their refused
+	// looks; this core's producers, those holding dust and their dust (it should go to 0 between two counter visits),
+	// and the shells in the bags.
+	void LogPlayerBotDustMarketCensus()
+	{
+		const TPlayerBotDustMarketStats& m = s_kPlayerBotDustMarketStats;
+		unsigned int producers = 0, holders = 0, held = 0, shells = 0;
+		for (TPlayerBotAIStateMap::const_iterator it = s_mapPlayerBotAIStates.begin(); it != s_mapPlayerBotAIStates.end(); ++it)
+		{
+			LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(it->first);
+			if (!ch || !ch->IsItemLoaded())
+				continue;
+			shells += (unsigned int)ch->CountSpecifyItem(PLAYERBOT_POLISHED_SHELL_VNUM);
+			if (!IsPlayerBotDustProducer(ch))
+				continue;
+			++producers;
+			const int dust = (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM);
+			if (dust > 0)
+			{
+				++holders;
+				held += (unsigned int)dust;
+			}
+		}
+		std::string kinds;
+		for (int k = 0; k < PLAYERBOT_DMK_KINDS; ++k)
+		{
+			DWORD supply = 0;
+			if (k == PLAYERBOT_DMK_PEARL)
+			{
+				for (DWORD v = PLAYERBOT_POLISHED_PEARL_FIRST_VNUM; v <= PLAYERBOT_POLISHED_PEARL_LAST_VNUM; ++v)
+				{
+					const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(v);
+					supply += e ? e->dwSupplyUnits : 0;
+				}
+			}
+			else
+			{
+				const DWORD v = k == PLAYERBOT_DMK_DUST ? PLAYERBOT_MAGIC_DUST_VNUM
+						: (k == PLAYERBOT_DMK_MATERIAL ? PLAYERBOT_YSHOP_MATERIAL_VNUM : PLAYERBOT_POLISHED_SHELL_VNUM);
+				const TPlayerBotMarketLedgerEntry* e = GetPlayerBotMarketLedgerEntry(v);
+				supply = e ? e->dwSupplyUnits : 0;
+			}
+			char one[160];
+			snprintf(one, sizeof(one), " %s=[listed=%u lines=%u on_counters=%u yang_capped=%u yang_room=%u]", PLAYERBOT_DMK_NAMES[k],
+					m.auListedUnits[k], m.auListedLines[k], (unsigned int)supply, m.auYangCapped[k], m.auYangRoom[k]);
+			kinds += one;
+		}
+		sys_log(0, "PLAYERBOT_SHOP2: market census%s champion_dust_bought=[g0=%u power=%u] champion_materials_bought=%u "
+				"dust_refused=[price=%u purse=%u] producers=%u producers_with_dust=%u producers_dust=%u shells_in_bags=%u",
+				kinds.c_str(), s_kPlayerBotG0Stats.dustBought, s_kPlayerBotYoharaShopStats.dustBought,
+				s_kPlayerBotYoharaShopStats.materialsBought, m.priceRefused, m.purseRefused, producers, holders, held, shells);
+	}
+#endif
+
 	int GetPlayerBotYoharaShopDustFree(LPCHARACTER ch)
 	{
 		return ch ? std::max(0, (int)ch->CountSpecifyItem(PLAYERBOT_MAGIC_DUST_VNUM) - GetPlayerBotG0DustReserve(ch)) : 0;
@@ -258,7 +396,22 @@ namespace
 		const long long cap = (long long)ScalePlayerBotIwakuraPrice(PLAYERBOT_PRIOR_MAGIC_DUST) * PLAYERBOT_YSHOP_DUST_PRICE_CAP_PCT / 100;
 #endif
 		const long long spare = (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR;
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+		// MT2009_PLUS_BOT_DUST_MARKET_V1: the refusals counted for the market census
+		if (price > cap * units)
+		{
+			NotePlayerBotDustMarketRefused(true);
+			return false;
+		}
+		if (price > spare * PLAYERBOT_YSHOP_DUST_PURSE_PCT / 100)
+		{
+			NotePlayerBotDustMarketRefused(false);
+			return false;
+		}
+		return true;
+#else
 		return price <= cap * units && price <= spare * PLAYERBOT_YSHOP_DUST_PURSE_PCT / 100;
+#endif
 	}
 
 	bool PlayerBotYoharaShopWantsDustFromMarket(LPCHARACTER ch)
@@ -824,6 +977,9 @@ namespace
 		sys_log(0, "PLAYERBOT_SHOP2: census resist_made=%u power_made=%u materials_paid=%u dust_paid=%u errands=%u dust_bought=%u materials_bought=%u worldset_swaps=%u bots=%u",
 				s.resistMade, s.powerMade, s.materialsPaid, s.dustPaid, s.errands, s.dustBought, s.materialsBought, s.swaps,
 				(unsigned int)s_mapPlayerBotYoharaShopBot.size());
+#ifdef MT2009_PLUS_BOT_DUST_MARKET_V1
+		LogPlayerBotDustMarketCensus();	// MT2009_PLUS_BOT_DUST_MARKET_V1
+#endif
 	}
 
 	// The AI's tick (playerbot_manager.cpp, beside the G0 look; never owns the tick): the world set's dress on the bot's
