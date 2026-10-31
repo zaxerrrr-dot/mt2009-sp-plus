@@ -62,9 +62,17 @@ namespace
 	unsigned int s_uPlayerBotElementStoneReplaced = 0;
 	DWORD s_dwPlayerBotElementStoneCensus = 0;
 
-	bool IsPlayerBotElementStoneMember(LPCHARACTER ch)
+	bool IsPlayerBotElementStoneYohara(LPCHARACTER ch)
 	{
 		return ch && GetPlayerBotYoharaCohortPurpose(ch->GetPlayerID()) == YOHARA_PURPOSE_SUNGMA;
+	}
+
+	// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: and a bot short of the resistance a gated map 1-120 wants (playerbot_element_maps.h)
+	// - for it the stone is bought in the ItemShop only, never given (RenewPlayerBotElementStone); a worn stone is kept
+	// to its end like the Yohara bots'.
+	bool IsPlayerBotElementStoneMember(LPCHARACTER ch)
+	{
+		return IsPlayerBotElementStoneYohara(ch) || IsPlayerBotElementMapStoneWanted(ch);
 	}
 
 	LPITEM FindPlayerBotWornElementStone(LPCHARACTER ch)
@@ -152,6 +160,13 @@ namespace
 #else
 		(void) state;
 #endif
+		if (!IsPlayerBotElementStoneYohara(ch))	// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: an element map's bot buys it or does without
+		{
+			PlayerBotLogThrottled("elemstone_map_nobuy", dwNow,
+					"PLAYERBOT_ELEMSTONE: cannot renew pid=%u name=%s reason=not_bought (element map, never given)",
+					ch->GetPlayerID(), ch->GetName());
+			return;
+		}
 		LPITEM given = ch->AutoGiveItem(PLAYERBOT_ELEMSTONE_PROTECT_VNUM, 1, -1, false);
 		if (!given)
 		{

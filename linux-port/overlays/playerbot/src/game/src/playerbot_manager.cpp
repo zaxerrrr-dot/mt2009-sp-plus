@@ -195,6 +195,7 @@ static void SendPlayerBotShout(const char* szText, BYTE bEmpire)
 #include "playerbot_item_extra_apply.h" // MT2009_PLUS_ITEM_EXTRA_APPLY_V1: bonus lines beyond item_proto's three, counted by the gear scoring
 #include "playerbot_yohara_gear.h" // MT2009_PLUS_GLOVE_BASE_V1: a Sung Ma glove's Will (its base attribute), counted by the gear scoring
 #include "playerbot_yohara_elements.h" // MT2009_PLUS_BOT_YOHARA_ELEMENTS_V1: the Sung Ma maps' elements - the talisman, the resistances, the elixirs
+#include "playerbot_element_maps.h" // MT2009_PLUS_BOT_ELEMENT_MAPS_V1: element resistance on the maps 1-120 - the map gate, the gear's worth, the reroll's stop rule
 #include "playerbot_gear.h"
 #include "playerbot_mlodzi_bots.h" // MT2009_PLUS_BOT_MLODZI_V1: the bots take, wear and keep the young heroes' weapons; their weapon planning waits
 #include "playerbot_horse30.h" // Digi Rasta's horse to level 30: paid training, the Black Steed trial, the horse bonus (MT2009_PLUS_HORSE30_V1)

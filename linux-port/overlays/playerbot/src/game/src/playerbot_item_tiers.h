@@ -231,6 +231,16 @@ namespace
 		{ APPLY_STEAL_SP, 2, 1, 0, 0 }, // x% obrazen dodanych do PE
 		{ APPLY_STR, 5, 5, (1 << JOB_WARRIOR), (1 << JOB_WARRIOR) }, // Sila
 		{ APPLY_STUN_PCT, 5, 5, 0, 0 }, // Szansa na omdlenie
+		// MT2009_PLUS_BOT_GLOBAL_BONUS_V1: the lines only M2_BONUS_MODE=global rolls on the ordinary gear
+		// (bonusy_global.sql) - his list predates them: the chance of an experience bonus (boots, necklace, shield) and
+		// of double items (bracelet, earrings) as the drop and yang lines' kin, and fire / lightning / wind resistance
+		// (armour, helmet, bracelet) at face value - what a map makes of them is ScorePlayerBotBonusLineRaw's
+		// (playerbot_element_maps.h).
+		{ APPLY_EXP_DOUBLE_BONUS, 5, 1, 0, 0 }, // Szansa na bonus DOS
+		{ APPLY_ITEM_DROP_BONUS, 5, 1, 0, 0 }, // Szansa na podwojna ilosc przedmiotow
+		{ APPLY_RESIST_FIRE, 4, 3, 0, 0 }, // Odpornosc na ogien
+		{ APPLY_RESIST_ELEC, 4, 3, 0, 0 }, // Odpornosc na blyskawice
+		{ APPLY_RESIST_WIND, 4, 3, 0, 0 }, // Odpornosc na wiatr
 #if defined(PLAYERBOT_ENGINE_MT2009)
 		{ APPLY_REFLECT_ARROW, 3, 3, 0, 0 }, // Szansa na odbicie pocisku
 #endif

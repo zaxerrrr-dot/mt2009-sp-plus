@@ -1220,6 +1220,76 @@ namespace
 		return 0;
 	}
 
+	// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the ground a bot takes when an element map's gate refuses it (playerbot_element_maps.h)
+	// - the highest map its level opens, under its ceiling, hosted here, not blocked for a companion's trip, and passing
+	// its own gate (the Grotto V1 after a refused V2 is asked the same question); 0 - its village.
+	long GetPlayerBotElementMapFallback(LPCHARACTER ch, long blocked)
+	{
+		if (!ch)
+			return 0;
+		using namespace playerbot_progression;
+		const struct { long map; int minLevel; } rows[] = {
+			{ PLAYERBOT_MAP_OCHAO, (int)PLAYERBOT_OCHAO_MIN_LEVEL },
+			{ PLAYERBOT_MAP_GROTTO_V2, MapFrom(MAP_GROTTO2) },
+			{ PLAYERBOT_MAP_GROTTO_V1, MapFrom(MAP_GROTTO1) },
+			{ PLAYERBOT_MAP_RED_FOREST, MapFrom(MAP_RED_FOREST) },
+			{ PLAYERBOT_MAP_FIRE_LAND, MapFrom(MAP_FIRE_LAND) },
+			{ PLAYERBOT_MAP_FOREST, MapFrom(MAP_FOREST) },
+			{ PLAYERBOT_MAP_SPIDER_V2, MapFrom(MAP_SPIDER2) },
+			{ PLAYERBOT_MAP_HWANG, MapFrom(MAP_HWANG) },
+			{ PLAYERBOT_MAP_SOHAN, MapFrom(MAP_SOHAN) },
+			{ PLAYERBOT_MAP_ORC_VALLEY, MapFrom(MAP_ORC_VALLEY) },
+		};
+		const int level = (int)ch->GetLevel();
+		for (size_t i = 0; i < sizeof(rows) / sizeof(rows[0]); ++i)
+		{
+			const long map = rows[i].map;
+			if (map == blocked || level < rows[i].minLevel || IsPlayerBotMapOverCeiling(map, level) ||
+					!IsPlayerBotMapHostedHere(map) || IsPlayerBotSidekickTripBlocked(ch, map))
+				continue;
+			// the Ochao temple from its level only while it pays (its own draw's rule, without the draw)
+			if (map == PLAYERBOT_MAP_OCHAO && !WantsPlayerBotOchao(ch, 0, false))
+				continue;
+			if (!PassPlayerBotElementMapGate(ch, map, NULL, NULL))
+				continue;
+			return map;
+		}
+		return 0;
+	}
+
+	// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the hunting map's element gate. The map the pick wanted is the bot's goal either way
+	// (its gear works for it); a gated map whose element the bot cannot take yet is swapped for the fallback, and a bot
+	// on it leaves once PLAYERBOT_ELEMENT_MAP_STAY_SLACK under the gate. Errands that name the map (a Biologist's row, a
+	// guild's errand, a trial, an operator's Arezzo / Ochao order) are not asked - the caller passes only the draw's map.
+	long GatePlayerBotElementMap(LPCHARACTER ch, long map)
+	{
+		const DWORD now = get_dword_time();
+		TickPlayerBotElementMapCensus(now);
+		if (!ch || map == 0)
+			return map;
+		NotePlayerBotElementMapWanted(ch, map);
+		TPlayerBotElementMapView v;
+		bool gated = false;
+		const bool pass = PassPlayerBotElementMapGate(ch, map, &v, &gated);
+		if (!gated)
+			return map;
+		const bool here = GetPlayerBotElementMapBase(ch->GetMapIndex()) == GetPlayerBotElementMapBase(map);
+		if (pass)
+		{
+			LogPlayerBotElementMapDecision(ch, map, v, here ? PLAYERBOT_EM_STAY : PLAYERBOT_EM_PICK, 0);
+			return map;
+		}
+		const long fallback = GetPlayerBotElementMapFallback(ch, map);
+		if (fallback == 0)
+		{
+			// no other ground for its level: the map it has rather than its village
+			LogPlayerBotElementMapDecision(ch, map, v, PLAYERBOT_EM_NO_FALLBACK, 0);
+			return map;
+		}
+		LogPlayerBotElementMapDecision(ch, map, v, here ? PLAYERBOT_EM_LEAVE : PLAYERBOT_EM_SKIP, fallback);
+		return fallback;
+	}
+
 	// The map whose ordinary spawns still sit inside this bot's useful level
 	// window, or 0 when its own village is still the right place for it.
 	long GetPlayerBotFrontierMapForLevel(LPCHARACTER ch)
@@ -1281,6 +1351,12 @@ namespace
 		// MT2009_PLUS_SPIDER3_BOTS_V1: V3 in V2's place for a bot that did very well in V2, and V2 back
 		// for one that is not (any longer) fit for V3 (playerbot_spider3_bots.h).
 		map = PlayerBotSpider3Map(ch, map, get_dword_time());
+		// MT2009_PLUS_BOT_ELEMENT_MAPS_V1: the element maps' gate (fire 60 the Spider Dungeons, lightning 75 the Grotto,
+		// wind 75 Zaklety Las, ... - playerbot_element_maps.h) on the draw's map; an errand's map stays as it was named.
+		if (map != 0 && map != GetPlayerBotHuntingMobHome(GetPlayerBotBiologistHuntMob(ch)) &&
+				map != GetPlayerBotGuildErrandMap(ch) && GetPlayerBotArezzoFrontier(ch) == 0 &&
+				!IsPlayerBotOnBlackSteedTrial(ch) && !IsPlayerBotOnMilitaryHorseTrial(ch))
+			map = GatePlayerBotElementMap(ch, map);
 		// MT2009_PLUS_SIDEKICK_TRIP_V1: a companion that could not get there
 		// takes the next ground down for a while.
 		if (map != 0 && IsPlayerBotSidekickTripBlocked(ch, map))
