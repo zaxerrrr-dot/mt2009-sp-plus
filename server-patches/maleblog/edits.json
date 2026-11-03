@@ -1,0 +1,14 @@
+[
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SMALL_BLESSING_V1: Male",
+  "old": "\t\t\t\t\t\t\tcase 71052 :\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\tLPITEM item2;\n",
+  "new": "\t\t\t\t\t\t\t// MT2009_PLUS_SMALL_BLESSING_V1: Male Blogoslawienstwo 72351 (the owner, 3 November 2026 - the SAPPHIRE\n\t\t\t\t\t\t\t// calendar's Tuesday and Thursday drop): Blogoslawienstwo Przedmiotu 71052 with a 10% chance (pl-wiki: \"Ma 10%\n\t\t\t\t\t\t\t// szansy na zmiane 6. oraz 7. bonusu\"; Ameria's SMALL_ORISON). The same checks and the same change (a glove's\n\t\t\t\t\t\t\t// pool, the young heroes' weapons, the talismans - ChangeRareAttribute2); a piece the change refuses keeps the\n\t\t\t\t\t\t\t// blessing, as with 71052, and a failed roll uses it up and says so in the chat.\n\t\t\t\t\t\t\tcase 72351 :\n\t\t\t\t\t\t\tcase 71052 :\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\tLPITEM item2;\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_SMALL_BLESSING_V1 (roll)",
+  "old": "\t\t\t\t\t\t\t\t\tif (item2->GetAttributeSetIndex() == -1)\n\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot change the upgrade of this item.\"));\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\t}\n\n#ifdef ENABLE_ITEM_RARE_ATTR_LEVEL_PCT\n\t\t\t\t\t\t\t\t\tif (item2->ChangeRareAttribute2())\n#else\n\t\t\t\t\t\t\t\t\tif (item2->ChangeRareAttribute())\n#endif\n\t\t\t\t\t\t\t\t\t{\n",
+  "new": "\t\t\t\t\t\t\t\t\tif (item2->GetAttributeSetIndex() == -1)\n\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot change the upgrade of this item.\"));\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\t// MT2009_PLUS_SMALL_BLESSING_V1 (roll): the lines before the change, put back when the 10% roll fails.\n\t\t\t\t\t\t\t\t\tTPlayerItemAttribute aSmallBlessingOld[ITEM_ATTRIBUTE_MAX_NUM];\n\t\t\t\t\t\t\t\t\tthecore_memcpy(aSmallBlessingOld, item2->GetAttributes(), sizeof(aSmallBlessingOld));\n\n#ifdef ENABLE_ITEM_RARE_ATTR_LEVEL_PCT\n\t\t\t\t\t\t\t\t\tif (item2->ChangeRareAttribute2())\n#else\n\t\t\t\t\t\t\t\t\tif (item2->ChangeRareAttribute())\n#endif\n\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\tif (item->GetVnum() == 72351 && number(1, 100) > 10)\n\t\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\t\titem2->SetAttributes(aSmallBlessingOld);\n\t\t\t\t\t\t\t\t\t\t\titem2->UpdatePacket();\n\t\t\t\t\t\t\t\t\t\t\tchar szSmallBlessing[21];\n\t\t\t\t\t\t\t\t\t\t\tsnprintf(szSmallBlessing, sizeof(szSmallBlessing), \"%u\", item2->GetID());\n\t\t\t\t\t\t\t\t\t\t\tLogManager::instance().ItemLog(this, item, \"CHANGE_RARE_ATTR_FAIL\", szSmallBlessing);\n\t\t\t\t\t\t\t\t\t\t\titem->SetCount(item->GetCount() - 1);\n\t\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, \"Male Blogoslawienstwo nie zadzialalo - 6. i 7. bonus bez zmian.\");\n\t\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t\t}\n"
+ }
+]

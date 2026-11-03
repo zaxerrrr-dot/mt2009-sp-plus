@@ -70,7 +70,7 @@ rate yang = 100
 
 [profile sapphire]
 title = SAPPHIRE
-desc = Łatwiejszy świat z bonusami globalnymi: drop 150%, potwory mają 80% życia i zadają 80% obrażeń, bez czekania u Biologa i Stajennego. Kalendarz eventów: Dzieci Kwiaty przez cały tydzień, codziennie cztery pory z nagrodą 7% z Metinów i bossów (Rada Pustelnika, Zielona Smocza Fasola, Zwój Błogosławieństwa, Cor Draconis, Zaczarowanie i Wzmocnienie Przedmiotu, eliksiry Słońca i Księżyca, Marmur Błogosławieństwa, Zwój Egzorcyzmu, Książka Lidera, Robin), w sobotę wieczorem Szkatułki Blasku Księżyca z potworów, w środę i piątek Super Kamienie Metin. Nagroda z kalendarza nie rośnie z ratami dropu ani z podwójnym lootem.
+desc = Łatwiejszy świat z bonusami globalnymi: drop 150%, potwory mają 80% życia i zadają 80% obrażeń, bez czekania u Biologa i Stajennego. Kalendarz eventów jak na serwerze Sapphire: codziennie cztery pory (0-12, 12-16, 16-20, 20-24) z nagrodą 7% z każdego Metina i bossa – Rada Pustelnika, Zielona Smocza Fasola, Zwój Błogosławieństwa, Nugget (zielony), Eliksir Słońca i Księżyca (Ś), Cor Draconis (surowe), Małe Błogosławieństwo, Zaczarowanie i Wzmocnienie Przedmiotu (n), Marmur Błogosławieństwa, Robin (łup), Szkatułka Blasku Księżyca, Zwój Egzorcyzmu, Książka Lidera – a w środę i piątek Super Kamienie Metin. Nagroda z kalendarza nie rośnie z ratami dropu ani z podwójnym lootem.
 env M2_BONUS_MODE = global
 env M2_DIFFICULTY = easy
 env M2_MONSTER_HP = 80
@@ -80,33 +80,42 @@ env M2_MLODZI_BOHATEROWIE = 1
 rate exp = 100
 rate drop = 150
 rate yang = 100
-event flower * 00:00 24:00 0
+# MT2009_PLUS_SERVER_CONFIG_V1 (the owner, 3 November 2026): the calendar is the original Sapphire week (pl-wiki
+# "Eventy") exactly, the fishing puzzle event (Wednesday 0-12, Saturday 12-16) left out; every item row is a 7%
+# (70 per mille) drop from every Metin and boss (target 1). The items by the wiki's names: Rada Pustelnika 71094,
+# Zielona Smocza Fasola 100300 (76029, the untranslated copy, has no record in the client), Zwoj Blogoslawienstwa
+# 25040, Nugget (ziel.) (pieczec) 71187 (8 h), Eliksir Slonca / Ksiezyca (S) 72724 / 72728, Cor Draconis (surowe)
+# 51501, Male Blogoslawienstwo 72351 (male_blogoslawienstwo.sql: 10% to change the 6th and 7th bonus), Zaczarowanie
+# Przedm.(n) 76014, Wzmocnienie Przedmiotu(n) 76013, Kula Blogoslawienstwa 70024 (our Marmur Blogoslawienstwa),
+# Robin (pieczec) (1d) 53235, Szkatulka Blasku Ksiezyca 50011, Zwoj Egzorcyzmu 71001, Ksiega Lidera 71012.
 # Monday
 event chestdrop 1 00:00 12:00 70 71094 1
-event chestdrop 1 12:00 16:00 70 76029 1
+event chestdrop 1 12:00 16:00 70 100300 1
 event chestdrop 1 16:00 20:00 70 25040 1
 event chestdrop 1 20:00 24:00 70 71187 1
-# Tuesday (16:00-20:00 had the Small Blessing, an item this game does not have: left empty)
+# Tuesday
 event chestdrop 2 00:00 12:00 70 72724 1
 event chestdrop 2 12:00 16:00 70 51501 1
+event chestdrop 2 16:00 20:00 70 72351 1
 event chestdrop 2 20:00 24:00 70 76014 1
-# Wednesday (00:00-12:00 was a fishing event: left empty)
+# Wednesday (00:00-12:00 is the fishing puzzle event: left out)
 event chestdrop 3 12:00 16:00 70 70024 1
 event chestdrop 3 16:00 20:00 70 71094 1
 event superstone 3 20:00 24:00 1
-# Thursday (12:00-16:00 had the Small Blessing: left empty)
+# Thursday
 event chestdrop 4 00:00 12:00 70 72728 1
+event chestdrop 4 12:00 16:00 70 72351 1
 event chestdrop 4 16:00 20:00 70 51501 1
 event chestdrop 4 20:00 24:00 70 76013 1
 # Friday
-event chestdrop 5 00:00 12:00 70 76029 1
+event chestdrop 5 00:00 12:00 70 100300 1
 event chestdrop 5 12:00 16:00 70 76014 1
 event superstone 5 16:00 20:00 1
 event chestdrop 5 20:00 24:00 70 51501 1
-# Saturday (12:00-16:00 was a fishing event: left empty)
+# Saturday (12:00-16:00 is the fishing puzzle event: left out)
 event chestdrop 6 00:00 12:00 70 25040 1
 event chestdrop 6 16:00 20:00 70 53235 1
-event chestdrop 6 20:00 24:00 70 50011 2
+event chestdrop 6 20:00 24:00 70 50011 1
 # Sunday
 event chestdrop 7 00:00 12:00 70 71001 1
 event chestdrop 7 12:00 16:00 70 76013 1
