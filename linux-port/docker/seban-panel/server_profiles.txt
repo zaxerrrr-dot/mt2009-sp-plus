@@ -78,6 +78,8 @@ env M2_BONUS_MODE = global
 # MT2009_PLUS_SERVER_CONFIG_V1 (the owner, 3 November 2026): every event server is HARD - the waiting times
 # between skill books, at the Biologist and for the horse as in the original.
 env M2_DIFFICULTY = hard
+# Uriel's Potega madrosci all week (the pl-wiki lists it as permanent; MT2009_PLUS_POTEGA_MADROSCI)
+event potega * 00:00 24:00 0
 env M2_MONSTER_HP = 80
 env M2_MONSTER_ATTACK = 80
 env M2_STARTER_CHEST = 1
@@ -159,6 +161,8 @@ worldboss = always
 # Lidera 71012.
 # All week: Dzieci Kwiaty
 event flower * 00:00 24:00 0
+# Uriel's Potega madrosci all week (the pl-wiki lists it as permanent; MT2009_PLUS_POTEGA_MADROSCI)
+event potega * 00:00 24:00 0
 # Monday
 event chestdrop 1 00:00 12:00 70 71094 1
 event chestdrop 1 12:00 16:00 70 100300 1
