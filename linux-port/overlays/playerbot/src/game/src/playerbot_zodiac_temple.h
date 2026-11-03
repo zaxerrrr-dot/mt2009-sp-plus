@@ -193,6 +193,17 @@ class CZodiac
 		void SetPartyNull();
 };
 
+// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1 (the owner's list of 3 November 2026, the same as his own server's fix of
+// 2 November): the bosses' statue / wild dog (Zi, Mao, Xu, Hai - SetPolymorph(race, false): no affect, no timer) ended
+// only by another player's click (statues only) or by leaving the temple - the floors are jumps inside one map, so the
+// dog stayed for the whole run. Now every petrification of a person ends by itself after ZODIAC_PETRIFY_PERSON_SEC, by
+// another player's click (the dog too, char.cpp OnClick) and at death (char_battle.cpp Dead) - server-patches/zodiak
+// (66), (67).
+const int ZODIAC_PETRIFY_PERSON_SEC = 15;
+bool ZodiacIsPetrifyRace(DWORD dwRace);
+void ZodiacPetrify(LPCHARACTER ch, DWORD dwRace);
+void ZodiacUnpetrify(LPCHARACTER ch, const char* why);
+
 extern bool regen_zodiac(const char* filename, long lMapIndex, int base_x, int base_y, LPZODIAC pZodiac, bool bOnce = true);
 
 class CZodiacManager : public singleton<CZodiacManager>

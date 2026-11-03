@@ -388,5 +388,17 @@
   "marker": "MT2009_PLUS_ZODIAC_V1 (64)",
   "old": "#define ENABLE_FULL_NOTICE",
   "new": "#define ENABLE_FULL_NOTICE\n#define ENABLE_12ZI // MT2009_PLUS_ZODIAC_V1 (64): CommonDefines.h: ENABLE_12ZI\n#ifdef ENABLE_12ZI\n#\tdefine ENABLE_SERVERTIME_PORTAL_SPAWN\n#endif"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (66)",
+  "old": "\t\tif (GetPolymorphVnum() >= 20452 && GetPolymorphVnum() <= 20463)\n\t\t{\n\t\t\tSetPolymorph(0);\n\t\t\treturn;\n\t\t}\n",
+  "new": "\t\t// MT2009_PLUS_ZODIAC_V1 (66) - MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: another player's click takes off the wild dog (101)\n\t\t// too, not only the statues; never a polymorph of the player's own (playerbot_zodiac_temple.cpp)\n\t\tif (ZodiacIsPetrifyRace(GetPolymorphVnum()) && !FindAffect(AFFECT_POLYMORPH))\n\t\t{\n\t\t\tZodiacUnpetrify(this, \"click\");\n\t\t\treturn;\n\t\t}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_ZODIAC_V1 (67)",
+  "old": "\t\t\t\tIncDeadCount();\n\t\t\t\tthis->SetQuestFlag(\"12zi_temple.IsDead\", 1);\n",
+  "new": "\t\t\t\tZodiacUnpetrify(this, \"death\");\t// MT2009_PLUS_ZODIAC_V1 (67) - MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: death ends the statue / dog\n\t\t\t\tIncDeadCount();\n\t\t\t\tthis->SetQuestFlag(\"12zi_temple.IsDead\", 1);\n"
  }
 ]
