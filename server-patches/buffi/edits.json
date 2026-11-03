@@ -88,5 +88,11 @@
   "marker": "MT2009_PLUS_BUFFI_V2 (sex)",
   "old": "static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)\n{\n",
   "new": "static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)\n{\n\t// MT2009_PLUS_BUFFI_V2 (sex): a costume for Buffi - a woman's (playerbot_buffi.cpp)\n\t{\n\t\tint Mt2009BuffiCheckSex(LPCHARACTER, LPITEM);\n\t\tconst int iBuffiSex = Mt2009BuffiCheckSex(ch, item);\n\t\tif (iBuffiSex >= 0)\n\t\t\treturn iBuffiSex != 0;\n\t}\n"
+ },
+ {
+  "file": "char.cpp",
+  "marker": "MT2009_PLUS_BUFFI_PASS_V1 (insert)",
+  "old": "\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"BossMark %u\", (DWORD) m_vid);\n",
+  "new": "\t\tch->ChatPacket(CHAT_TYPE_COMMAND, \"BossMark %u\", (DWORD) m_vid);\n\n\t// MT2009_PLUS_BUFFI_PASS_V1 (insert): a Buffi comes into a player's view with \"BuffiMark <vid>\" - the client walks\n\t// through it as through the old companion (playerbot_buffi.cpp, root/sidekickcollision.py).\n\tif (ch && ch->IsPC() && !d->IsBot())\n\t{\n\t\tvoid BuffiOnInsert(LPCHARACTER, LPCHARACTER);\n\t\tBuffiOnInsert(this, ch);\n\t}\n"
  }
 ]

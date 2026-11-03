@@ -165,6 +165,22 @@ edit2('char_item.cpp', 'sex',
       '\t}\n')
 
 
+# MT2009_PLUS_BUFFI_PASS_V1 (the owner, 3 November 2026: "przez Buffi mozna przechodzic jak przez stara towarzyszke"):
+# a Buffi coming into a player's view is named to that client ("BuffiMark <vid>"), which walks through it as through
+# the old companion (root/sidekickcollision.py) - after the boss skull of server-patches/enginefixes (its anchor).
+EDITS.append(dict(file='char.cpp', marker='MT2009_PLUS_BUFFI_PASS_V1 (insert)',
+     old='\t\tch->ChatPacket(CHAT_TYPE_COMMAND, "BossMark %u", (DWORD) m_vid);\n',
+     new='\t\tch->ChatPacket(CHAT_TYPE_COMMAND, "BossMark %u", (DWORD) m_vid);\n'
+     '\n'
+     '\t// MT2009_PLUS_BUFFI_PASS_V1 (insert): a Buffi comes into a player\'s view with "BuffiMark <vid>" - the client walks\n'
+     '\t// through it as through the old companion (playerbot_buffi.cpp, root/sidekickcollision.py).\n'
+     '\tif (ch && ch->IsPC() && !d->IsBot())\n'
+     '\t{\n'
+     '\t\tvoid BuffiOnInsert(LPCHARACTER, LPCHARACTER);\n'
+     '\t\tBuffiOnInsert(this, ch);\n'
+     '\t}\n'))
+
+
 def main():
     with open(os.path.join(HERE, 'edits.json'), 'w', encoding='utf-8', newline='\n') as f:
         json.dump(EDITS, f, indent=1, ensure_ascii=False)

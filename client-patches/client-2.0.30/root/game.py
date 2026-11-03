@@ -1068,6 +1068,17 @@ class GameWindow(ui.ScriptWindow):
 				return
 		self.RegisterUpdatable(sidekickcollision.GetKeeper())
 
+	# MT2009_PLUS_BUFFI_PASS_V1 (the owner, 3 November: "przez Buffi mozna przechodzic jak przez stara
+	# towarzyszke"): "BuffiMark <vid>" - a Buffi came into view (server-patches/buffi (pass)); the
+	# player walks through it as through the old companion (sidekickcollision.py).
+	def __BuffiMark(self, vid="0", *rest):
+		import sidekickcollision
+		sidekickcollision.AddBuffi(vid)
+		for keeper in self.updateable:
+			if isinstance(keeper, sidekickcollision.Keeper):
+				return
+		self.RegisterUpdatable(sidekickcollision.GetKeeper())
+
 	def	__PressFKey(self):
 		if app.IsPressed(app.DIK_LCONTROL) or app.IsPressed(app.DIK_RCONTROL):
 			net.SendChatPacket("/user_horse_feed")
@@ -3563,6 +3574,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["GlobalRankingWipe"] = self.__Global_Ranking__RecvWipe
 		serverCommandList["GlobalRankingUpdatePacket"] = self.__Global_Ranking__RecvData
 		serverCommandList["SidekickVid"] = self.__SidekickVid
+		serverCommandList["BuffiMark"] = self.__BuffiMark # MT2009_PLUS_BUFFI_PASS_V1
 		serverCommandList["COLL"] = self.__Collector # MT2009_PLUS_COLLECTOR_STORAGE_V1
 		serverCommandList["MONSTERCARDSYSTEM"] = self.__MonsterCardSystem # MT2009_PLUS_MONSTER_CARDS_V1
 		serverCommandList["YITEM"] = self.__YSetsItem # MT2009_PLUS_YOHARA_SETS_V1

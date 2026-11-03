@@ -969,6 +969,17 @@ bool BuffiIsShaman(LPCHARACTER ch)
 	return ch && !ch->IsPC() && !s_setVid.empty() && s_setVid.count((DWORD) ch->GetVID());
 }
 
+// MT2009_PLUS_BUFFI_PASS_V1 (the owner, 3 November 2026: "przez Buffi mozna przechodzic jak przez stara
+// towarzyszke"), char.cpp EncodeInsertPacket (server-patches/buffi (pass)): a buffi coming into a player's view is
+// named to that client - "BuffiMark <vid>"; root/sidekickcollision.py types it as an NPC through the world's update,
+// so the player walks through it (every buffi, not only one's own - a shaman standing in a gate blocked everyone).
+void BuffiOnInsert(LPCHARACTER buffi, LPCHARACTER viewer)
+{
+	if (!viewer || !viewer->IsPC() || !viewer->GetDesc() || !BuffiIsShaman(buffi))
+		return;
+	viewer->ChatPacket(CHAT_TYPE_COMMAND, "BuffiMark %u", (DWORD) buffi->GetVID());
+}
+
 // ---------------------------------------------------------------------- MT2009_PLUS_BUFFI_V2: the costume slots'
 // hooks (server-patches/buffi (cell), (begin), (swap), (job), (sex), (points))
 
