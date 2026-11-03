@@ -1082,6 +1082,40 @@ quest web_admin begin
 				end
 			end
 
+			-- How hard the players hit monsters, the same way (MT2009_PLUS_PC_ATTACK_V1,
+			-- server-patches/mobattack): m2_pc_attack is a percent of the
+			-- damage a player deals to monsters and Metins (never PvP), read
+			-- by every core at the next hit. The panel has written the row; this makes it live without a restart.
+			-- arg1 = the percent, digits only, 10..300. Its own block, so its
+			-- locals end with it.
+			do
+				local prows = wa_query("SELECT id, arg1 FROM player.web_admin_queue WHERE status='pending' AND cmd='PC_ATTACK' ORDER BY id ASC LIMIT 3")
+				if type(prows) == "table" then
+					local pidx
+					for pidx = 1, table.getn(prows) do
+						local pr = prows[pidx]
+						if type(pr) == "table" then
+							local pqid = tonumber(pr.id)
+							local pval = nil
+							if type(pr.arg1) == "string" and string.find(pr.arg1, "^%d+$") then
+								pval = tonumber(pr.arg1)
+							end
+							if pqid ~= nil then
+								local pres = "done"
+								if pval == nil or pval < 10 or pval > 300 then
+									pres = "bad_args"
+								elseif game.set_event_flag == nil then
+									pres = "failed"
+								else
+									game.set_event_flag("m2_pc_attack", pval)
+								end
+								wa_query("UPDATE player.web_admin_queue SET status='" .. pres .. "' WHERE id=" .. pqid .. " AND status='pending' LIMIT 1")
+							end
+						end
+					end
+				end
+			end
+
 			-- The chance of bonus lines on a dropped weapon or piece of armour,
 			-- the same way (MT2009_PLUS_DROP_BONUS_PCT_V1, server-patches/dropbonus):
 			-- m2_drop_bonus_pct is a percent of the game's own chance, which

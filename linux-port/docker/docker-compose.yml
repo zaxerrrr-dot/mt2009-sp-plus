@@ -163,6 +163,10 @@ services:
       # (MT2009_PLUS_MOB_ATTACK_V1; the migrator writes m2_mob_attack when .env
       # changed, the advanced panel's "Konfiguracja serwera" live).
       M2_MONSTER_ATTACK: "${M2_MONSTER_ATTACK:-default}"
+      # How hard the players hit monsters, bosses and Metins: default (100%) or a
+      # percent 10-300, never PvP (MT2009_PLUS_PC_ATTACK_V1, the EMERALD configuration's
+      # +10%; the migrator writes m2_pc_attack when .env changed, the advanced panel live).
+      M2_PLAYER_ATTACK: "${M2_PLAYER_ATTACK:-default}"
       # The item bonuses and the monsters' elements: mt2009 (the default, as it was) or global (the global
       # server's bonus table and every monster's element, MT2009_PLUS_GLOBAL_BONUS_V1). The migrator switches
       # world.item_attr and the elements and writes m2_bonus_global for the cores (apply.sh).

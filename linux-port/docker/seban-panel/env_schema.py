@@ -47,7 +47,8 @@ import re
 #    MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1).
 # 6: M2_MONSTER_ATTACK (MT2009_PLUS_MOB_ATTACK_V1) and M2_SERVER_PROFILE
 #    (MT2009_PLUS_SERVER_CONFIG_V1), Yohara 3.0.7.
-SCHEMA_VERSION = 6
+# 7: M2_PLAYER_ATTACK (MT2009_PLUS_PC_ATTACK_V1, the EMERALD configuration).
+SCHEMA_VERSION = 7
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -329,6 +330,14 @@ SCHEMA = [
        "Obrażenia graczy i botów się nie zmieniają. „Konfiguracja serwera” zmienia to od razu; ta wartość obowiązuje, gdy ją zmienisz.",
        "swiat", "string", "default", GAME, pattern=r"default|easy|[1-9]\d|[12]\d\d|300",
        hint="default, easy albo liczba od 10 do 300", suggestions=["default", "easy", "50", "150", "200"]),
+    # MT2009_PLUS_PC_ATTACK_V1 (server-patches/mobattack): the other way round - how hard the
+    # players hit monsters (the EMERALD configuration's "+10% obrażeń zadawanych przez gracza").
+    _e("M2_PLAYER_ATTACK", "Siła ataku graczy na potwory",
+       "Ile obrażeń zadają gracze (i boty) potworom, bossom i Metinom: default = jak w grze (100%), albo liczba 10–300 (procent; "
+       "110 = +10% jak na serwerach EMERALD). Walka między graczami (PvP) się nie zmienia. „Konfiguracja serwera” zmienia to od razu; "
+       "ta wartość obowiązuje, gdy ją zmienisz.",
+       "swiat", "string", "default", GAME, pattern=r"default|[1-9]\d|[12]\d\d|300",
+       hint="default albo liczba od 10 do 300", suggestions=["default", "110", "120", "150"]),
     # MT2009_PLUS_SERVER_CONFIG_V1: the profile vps-install.sh --profile chose; informational.
     _e("M2_SERVER_PROFILE", "Profil serwera (pierwszy start)",
        "Nazwa profilu z „Konfiguracji serwera” wybranego przy instalacji (instalator VPS --profile). "
@@ -817,11 +826,13 @@ LIVE_KEYS = {
     # (web_admin.quest MOB_HP / MOB_ATTACK set the flags on every core).
     "M2_MONSTER_HP": "MOB_HP",
     "M2_MONSTER_ATTACK": "MOB_ATTACK",
+    # MT2009_PLUS_PC_ATTACK_V1: the players' damage to monsters (web_admin.quest PC_ATTACK).
+    "M2_PLAYER_ATTACK": "PC_ATTACK",
 }
 
 
 def monster_percent(value):
-    """M2_MONSTER_HP / M2_MONSTER_ATTACK as the migrator reads them: default
+    """M2_MONSTER_HP / M2_MONSTER_ATTACK / M2_PLAYER_ATTACK as the migrator reads them: default
     (or empty, 0) = 100, easy = 80, else a percent held to 10..300; None for
     anything else (MT2009_PLUS_SERVER_CONFIG_V1)."""
     text = str(value or "").strip().lower().rstrip("%")

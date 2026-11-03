@@ -16,7 +16,11 @@ trusts -
 * rates: the "Gra i serwer -> Raty" path (queue_rate_restart: the flags and
   one restart of the cores);
 * events: rows added to the events planner's file through its own
-  read_events / write_events - nothing there is removed.
+  read_events / write_events - nothing there is removed;
+* the World Boss's mode (MT2009_PLUS_SERVER_CONFIG_V1, the EMERALD
+  configuration's "Boss Świata" all the time): player.worldboss_config.mode,
+  the very column the panel's "Boss Świata" page saves (the game reads it
+  every 30 seconds, no restart).
 
 Every apply is written to a history in the update spool (who changed what,
 from what to what). The page's "Ustawienia" part shows groups of .env
@@ -49,7 +53,11 @@ RATE_NAMES = ("exp", "drop", "yang")
 EVENT_ROWS_MAX = 64  # the planner's own limit (events.html)
 _ID = re.compile(r"[a-z0-9_]{1,32}")
 _HHMM = re.compile(r"([01]\d|2[0-4]):([0-5]\d)")
-PARTS = ("env", "rates", "events")
+PARTS = ("env", "rates", "events", "worldboss")
+# worldboss = always|schedule|off -> player.worldboss_config.mode (playerbot_worldboss.h:
+# 1 always, 2 only in the events planner's "Boss Świata" windows, 0 off).
+WORLDBOSS_MODES = {"always": 1, "schedule": 2, "off": 0}
+WORLDBOSS_LABELS = {1: "zawsze włączony", 2: "tylko w oknach Planera eventów", 0: "wyłączony"}
 
 
 class ProfileError(ValueError):
@@ -151,6 +159,12 @@ def parse(text):
                     raise ProfileError("linia %d: rate %s poza zakresem" % (line_no, name))
                 current["rates"][name] = value
                 continue
+            match = re.fullmatch(r"worldboss\s*=\s*(\S+)", line)
+            if match:
+                if match.group(1) not in WORLDBOSS_MODES:
+                    raise ProfileError("linia %d: worldboss = always, schedule albo off" % line_no)
+                current["worldboss"] = WORLDBOSS_MODES[match.group(1)]
+                continue
             if line.startswith("event ") or line.startswith("event\t"):
                 current["events"].append(_event(line.split()[1:], line_no))
                 continue
@@ -169,7 +183,7 @@ def parse(text):
                 continue
         raise ProfileError("linia %d: nie rozumiem: %s" % (line_no, line[:60]))
     for profile in profiles:
-        if not (profile["env"] or profile["rates"] or profile["events"]):
+        if not (profile["env"] or profile["rates"] or profile["events"] or "worldboss" in profile):
             raise ProfileError("profil %s niczego nie ustawia" % profile["id"])
     return {"profiles": profiles, "groups": groups}
 
@@ -220,15 +234,16 @@ def _shown(key, value):
     return value if value not in (None, "") else "(puste)"
 
 
-def plan(profile, env_values, rates, event_rows):
-    """What applying the profile would change, part by part (pure)."""
+def plan(profile, env_values, rates, event_rows, worldboss_mode=None):
+    """What applying the profile would change, part by part (pure).
+    worldboss_mode: player.worldboss_config.mode now, None when unknown."""
     env_changes = []
     for key, value in profile["env"].items():
         old = env_values.get(key)
         if old is None:
             old = env_schema.BY_KEY[key].get("default", "")
         same = old == value
-        if key in ("M2_MONSTER_HP", "M2_MONSTER_ATTACK"):
+        if key in ("M2_MONSTER_HP", "M2_MONSTER_ATTACK", "M2_PLAYER_ATTACK"):
             same = env_schema.monster_percent(old) == env_schema.monster_percent(value)
         if not same:
             env_changes.append({"key": key, "label": env_schema.BY_KEY[key]["label"], "old": _shown(key, old),
@@ -236,8 +251,14 @@ def plan(profile, env_values, rates, event_rows):
     rate_changes = [{"name": name, "old": rates.get(name), "new": value}
                     for name, value in profile["rates"].items() if rates.get(name) != value]
     _rows, added = merge_events(event_rows, profile["events"])
+    worldboss = None
+    if "worldboss" in profile and worldboss_mode != profile["worldboss"]:
+        worldboss = {"old": WORLDBOSS_LABELS.get(worldboss_mode, "nieznany"),
+                     "new": WORLDBOSS_LABELS[profile["worldboss"]], "value": profile["worldboss"],
+                     "known": worldboss_mode is not None}
     return {"env": env_changes, "rates": rate_changes, "events": added,
-            "events_total": len(event_rows) + added, "events_fit": len(event_rows) + added <= EVENT_ROWS_MAX}
+            "events_total": len(event_rows) + added, "events_fit": len(event_rows) + added <= EVENT_ROWS_MAX,
+            "worldboss": worldboss}
 
 
 def read_history(spool):
@@ -298,6 +319,22 @@ def install(app, login_required, csrf_token, spool_getter, *, db_connect, read_r
                 values.update(live)
         return values
 
+    def worldboss_mode():
+        """player.worldboss_config.mode, None without the table (no first start yet) or a database."""
+        try:
+            with db_connect() as con, con.cursor() as cur:
+                cur.execute("SELECT mode FROM player.worldboss_config WHERE id = 1")
+                row = cur.fetchone()
+        except Exception:
+            return None
+        if not row:
+            return None
+        value = row["mode"] if isinstance(row, dict) else row[0]
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
     def safe_rates():
         try:
             return read_rates()
@@ -329,7 +366,8 @@ def install(app, login_required, csrf_token, spool_getter, *, db_connect, read_r
             event_rows, _nows = read_events()
         except Exception:
             event_rows = []
-        plans = {profile["id"]: plan(profile, values, rates, event_rows) for profile in data["profiles"]}
+        boss_mode = worldboss_mode()
+        plans = {profile["id"]: plan(profile, values, rates, event_rows, boss_mode) for profile in data["profiles"]}
         state = read_state(spool())
         groups = []
         for group in data["groups"]:
@@ -378,7 +416,7 @@ def install(app, login_required, csrf_token, spool_getter, *, db_connect, read_r
             return redirect(url_for("server_config"))
         parts = [part for part in PARTS if request.form.get("part_" + part) == "1"]
         if not parts:
-            flash("Zaznacz, co zastosować: ustawienia, raty albo kalendarz eventów.", "error")
+            flash("Zaznacz, co zastosować: ustawienia, raty, kalendarz eventów albo Bossa Świata.", "error")
             return redirect(url_for("server_config"))
         if (request.form.get("confirm") or "").strip().upper() != CONFIRM_WORD:
             flash("Wpisz %s, aby potwierdzić zastosowanie konfiguracji „%s”." % (CONFIRM_WORD, profile["title"]), "error")
@@ -391,7 +429,7 @@ def install(app, login_required, csrf_token, spool_getter, *, db_connect, read_r
             event_rows, nows = read_events()
         except Exception:
             event_rows, nows = [], {}
-        todo = plan(profile, values, rates, event_rows)
+        todo = plan(profile, values, rates, event_rows, worldboss_mode())
 
         # Everything is checked before anything is written: a profile is
         # applied whole (the parts ticked) or not at all.
@@ -403,6 +441,7 @@ def install(app, login_required, csrf_token, spool_getter, *, db_connect, read_r
             rate_values = {name: int(rates.get(name) or 100) for name in RATE_NAMES}
             rate_values.update(profile["rates"])
         add_events = "events" in parts and todo["events"] > 0
+        set_worldboss = "worldboss" in parts and todo["worldboss"] is not None
         problems = []
         if queued_changes:
             if not editor["ready"]:
@@ -417,10 +456,13 @@ def install(app, login_required, csrf_token, spool_getter, *, db_connect, read_r
         if add_events and not todo["events_fit"]:
             problems.append("w Planerze eventów zmieści się najwyżej %d wierszy (byłoby %d) – usuń część starych"
                             % (EVENT_ROWS_MAX, todo["events_total"]))
+        if set_worldboss and not todo["worldboss"]["known"]:
+            problems.append("tabel Bossa Świata jeszcze nie ma (uruchom serwer raz) albo brak połączenia z bazą – "
+                            "odznacz „Boss Świata”")
         if problems:
             flash("Nic nie zmieniono: " + "; ".join(problems) + ".", "error")
             return redirect(url_for("server_config"))
-        if not (env_changes or rate_values or add_events):
+        if not (env_changes or rate_values or add_events or set_worldboss):
             flash("Konfiguracja „%s” jest już zastosowana – nic do zmiany." % profile["title"])
             return redirect(url_for("server_config"))
 
@@ -462,10 +504,20 @@ def install(app, login_required, csrf_token, spool_getter, *, db_connect, read_r
                 flash("Nie udało się zapisać Planera eventów.", "error")
                 return redirect(url_for("server_config"))
 
+        if set_worldboss:
+            try:
+                with db_connect() as con, con.cursor() as cur:
+                    cur.execute("UPDATE player.worldboss_config SET mode = %s WHERE id = 1", (todo["worldboss"]["value"],))
+                done.append("Boss Świata: %s (gra stosuje to w ciągu 30 sekund)" % todo["worldboss"]["new"])
+            except Exception:
+                app.logger.exception("server config: the World Boss's mode failed")
+                notes.append("trybu Bossa Świata nie udało się zapisać – ustaw go na stronie „Boss Świata”")
+                set_worldboss = False
         entry = {"id": "cfg-" + uuid.uuid4().hex[:12], "time": int(time.time()), "profile": profile["id"],
                  "title": profile["title"], "parts": parts,
                  "env": [{"key": c["key"], "old": c["old"], "new": c["new"]} for c in todo["env"] if c["key"] in env_changes],
-                 "rates": todo["rates"] if rate_values else [], "events_added": todo["events"] if add_events else 0}
+                 "rates": todo["rates"] if rate_values else [], "events_added": todo["events"] if add_events else 0,
+                 "worldboss": {"old": todo["worldboss"]["old"], "new": todo["worldboss"]["new"]} if set_worldboss else None}
         try:
             append_history(spool(), entry)
             state = read_state(spool())
