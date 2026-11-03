@@ -43,18 +43,35 @@ class ShippedProfiles(unittest.TestCase):
                 self.assertIn(link["endpoint"], panel.app.view_functions)
 
     def test_sapphire_calendar(self):
+        # MT2009_PLUS_SERVER_CONFIG_V1 (the owner, 3 November 2026): the original Sapphire week (pl-wiki "Eventy")
+        # exactly - four slots a day, the fishing puzzle event (Wednesday 0-12, Saturday 12-16) left out, every item
+        # a 7% drop from every Metin and boss.
         sapphire = next(p for p in server_config.load()["profiles"] if p["id"] == "sapphire")
         rows = sapphire["events"]
-        chests = [r for r in rows if r["kind"] == "chestdrop"]
-        self.assertEqual(len(chests), 22)
-        self.assertTrue(all(r["value"] == 70 for r in chests))
-        # 7% from bosses and Metins, the Saturday Moonlight chests from ordinary monsters.
-        self.assertEqual({r["target"] for r in chests if r["map"] != 50011}, {1})
-        self.assertEqual([r["target"] for r in chests if r["map"] == 50011], [2])
-        self.assertEqual(sorted(r["days"][0] for r in rows if r["kind"] == "superstone"), [3, 5])
-        self.assertIn({"kind": "flower", "days": list(range(1, 8)), "start": "00:00", "end": "24:00",
-                       "value": 0, "map": 0, "on": True}, rows)
-        self.assertNotIn(990071, [r["map"] for r in chests])  # no item of its own invented
+        slots = ("00:00", "12:00", "16:00", "20:00", "24:00")
+        week = {
+            1: (71094, 100300, 25040, 71187),       # Rada Pustelnika, Zielona Smocza Fasola, Zwoj Blog., Nugget (ziel.)
+            2: (72724, 51501, 72351, 76014),        # Eliksir Slonca (S), Cor Draconis, Male Blogoslawienstwo, Zaczarowanie (n)
+            3: (None, 70024, 71094, "superstone"),  # fishing, Kula Blogoslawienstwa, Rada Pustelnika, Super Kamienie
+            4: (72728, 72351, 51501, 76013),        # Eliksir Ksiezyca (S), Male Blog., Cor Draconis, Wzmocnienie (n)
+            5: (100300, 76014, "superstone", 51501),
+            6: (25040, None, 53235, 50011),         # Zwoj Blog., fishing, Robin (1d), Szkatulka Blasku Ksiezyca
+            7: (71001, 76013, 71001, 71012),        # Zwoj Egzorcyzmu, Wzmocnienie (n), Zwoj Egzorcyzmu, Ksiazka Lidera
+        }
+        want = []
+        for day, items in sorted(week.items()):
+            for slot, what in enumerate(items):
+                if what is None:
+                    continue
+                row = {"days": [day], "start": slots[slot], "end": slots[slot + 1], "on": True}
+                if what == "superstone":
+                    row.update(kind="superstone", value=1, map=0)
+                else:
+                    row.update(kind="chestdrop", value=70, map=what, target=1)
+                want.append(row)
+        self.assertEqual(rows, want)
+        self.assertEqual(len(rows), 26)
+        self.assertNotIn(990071, [r["map"] for r in rows])  # no item of its own invented
         self.assertLessEqual(len(rows), server_config.EVENT_ROWS_MAX)
         self.assertEqual(sapphire["env"]["M2_MONSTER_ATTACK"], "80")
         self.assertEqual(sapphire["rates"], {"exp": 100, "drop": 150, "yang": 100})
@@ -212,10 +229,11 @@ class Routes(unittest.TestCase):
         self.assertEqual(request["changes"], {"M2_BONUS_MODE": "global"})
         self.assertEqual(self.rates_called, [{"exp": 100, "drop": 150, "yang": 100}])
         rows, _nows = panel.read_events()
-        self.assertEqual(len(rows), 25)
+        self.assertEqual(len(rows), 26)
         text = self.events_file.read_text()
         self.assertIn("chestdrop\t4\t00:00\t12:00\t70\t72728\t1\n", text)
-        self.assertIn("chestdrop\t6\t20:00\t24:00\t70\t50011\t2\n", text)
+        self.assertIn("chestdrop\t6\t20:00\t24:00\t70\t50011\t1\n", text)
+        self.assertIn("chestdrop\t2\t16:00\t20:00\t70\t72351\t1\n", text)
         history = json.loads((self.spool / server_config.HISTORY_FILE).read_text())
         self.assertEqual(history[-1]["profile"], "sapphire")
         self.assertEqual(json.loads((self.spool / server_config.STATE_FILE).read_text())["applied"], "sapphire")
@@ -224,7 +242,7 @@ class Routes(unittest.TestCase):
         (self.spool / "env.request").unlink()
         with patch.object(env_editor, "apply_live", return_value={}):
             self.apply("sapphire", parts=("events",))
-        self.assertEqual(len(panel.read_events()[0]), 25)
+        self.assertEqual(len(panel.read_events()[0]), 26)
 
     def test_without_updater_only_live_parts(self):
         # No watcher: a profile with a queued .env change is refused whole.
@@ -236,7 +254,7 @@ class Routes(unittest.TestCase):
         # Rates and the calendar alone need no updater.
         self.apply("sapphire", parts=("rates", "events"))
         self.assertEqual(self.rates_called, [{"exp": 100, "drop": 150, "yang": 100}])
-        self.assertEqual(len(panel.read_events()[0]), 25)
+        self.assertEqual(len(panel.read_events()[0]), 26)
 
     def test_dismiss_hides_the_reminder(self):
         self.assertIn("Wybierz konfigurację świata", self.client.get("/advanced/server-config").get_data(as_text=True))
