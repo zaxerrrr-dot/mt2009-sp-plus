@@ -29,9 +29,9 @@
 //
 // EXPLAIN in the weights file (s_iPlayerBotExplainDays, playerbot_config.h):
 // 0 records and computes nothing, 1-30 is how many days a row stays, no line
-// in the file a week. Once every PLAYERBOT_EXPLAIN_CLEANUP_MS the rows older
-// than that are deleted - except a line still standing on a counter, whatever
-// its age. The PLAYERBOT_EXPLAIN syslog lines say what was written a minute.
+// in the file a week. The rows older than that are deleted at night by one
+// core in small steps (CleanPlayerBotExplain) - except a line still standing
+// on a counter, whatever its age. The PLAYERBOT_EXPLAIN syslog lines say what was written a minute.
 //
 // Included once, after playerbot_config.h; the parts that need the rest of
 // the AI (the goods, the roles, the equipment rows) are playerbot_explain_late.h.
@@ -46,9 +46,13 @@ namespace
 	const size_t PLAYERBOT_EXPLAIN_STATEMENTS_PER_FLUSH = 40;
 	const size_t PLAYERBOT_EXPLAIN_QUEUE_MAX = 20000;
 	const size_t PLAYERBOT_EXPLAIN_QUERY_BYTES = 3900;   // the engine's buffer is 4096
-	const DWORD PLAYERBOT_EXPLAIN_CLEANUP_MS = 15 * 60 * 1000;
+	// MT2009_PLUS_EXPLAIN_GENTLE_CLEANUP_V1: one core, at night, a step of
+	// PLAYERBOT_EXPLAIN_CLEANUP_ROWS rows every PLAYERBOT_EXPLAIN_CLEANUP_MS.
+	const DWORD PLAYERBOT_EXPLAIN_CLEANUP_MS = 20 * 1000;
 	const DWORD PLAYERBOT_EXPLAIN_CLEANUP_FIRST_MS = 5 * 60 * 1000;
-	const int PLAYERBOT_EXPLAIN_CLEANUP_ROWS = 20000;
+	const int PLAYERBOT_EXPLAIN_CLEANUP_ROWS = 1000;
+	const int PLAYERBOT_EXPLAIN_CLEANUP_HOUR_FROM = 3;   // local time, [from, to)
+	const int PLAYERBOT_EXPLAIN_CLEANUP_HOUR_TO = 6;
 	const DWORD PLAYERBOT_EXPLAIN_REPORT_MS = 60000;
 	const int PLAYERBOT_EXPLAIN_EQUIP_ROWS_PER_HOUR = 30;
 	const DWORD PLAYERBOT_EXPLAIN_PENDING_MS = 10 * 60 * 1000;
@@ -377,6 +381,7 @@ namespace
 	DWORD s_dwPlayerBotExplainFlushAt = 0;
 	DWORD s_dwPlayerBotExplainReportAt = 0;
 	DWORD s_dwPlayerBotExplainCleanupAt = 0;
+	int s_iPlayerBotExplainCleanupSteps = 0;
 	int s_iPlayerBotExplainDaysSeen = -1;
 
 	void QueuePlayerBotExplain(int kind, const std::string& text)
@@ -803,35 +808,98 @@ namespace
 	}
 
 	// The rows older than EXPLAIN's days go, a line still on a counter
-	// excepted however old it is. Every core asks it (they share the tables and
-	// the statement is the same), a few thousand rows a run.
+	// excepted however old it is.
+	//
+	// MT2009_PLUS_EXPLAIN_GENTLE_CLEANUP_V1 (3 November 2026): this used to be
+	// "DELETE FROM playerbot_listing WHERE last_at < NOW() - INTERVAL d DAY AND
+	// item_id NOT IN (SELECT id FROM player.item WHERE window='IKASHOP_
+	// OFFLINESHOP') LIMIT 20000", asked by EVERY core every 15 minutes (the
+	// first a few minutes after the start, so a deploy fired ~12 of them in a
+	// minute). Nearly every old row is a line still standing on a counter (on
+	// the Yohara test server 47 582 of 47 591 rows older than 7 days), so the
+	// LIMIT was never reached: each run walked every old row through
+	// last_at_idx and looked each up in player.item (a million rows, through a
+	// small buffer pool) - with shared locks on those player.item rows, since
+	// InnoDB reads the other tables of a DELETE with locking reads - and the
+	// cores queued on each other's row locks: 30-40 s statements that held up
+	// the item saves and the logins of the game behind them.
+	//
+	// Now:
+	// * one core does it: channel 1's core that hosts a first village (1/21/41);
+	// * only at night, PLAYERBOT_EXPLAIN_CLEANUP_HOUR_FROM..TO local time;
+	// * a step every PLAYERBOT_EXPLAIN_CLEANUP_MS walks the next
+	//   PLAYERBOT_EXPLAIN_CLEANUP_ROWS rows of playerbot_listing by its primary
+	//   key (a cursor in session variables of the log connection; a reconnect
+	//   just starts again from 0, the end of the table wraps to 0): the doomed
+	//   ids are found by a plain SELECT (a consistent read, no locks on
+	//   player.item), then deleted by key inside that same id range - the
+	//   DELETE repeats the age test, so a line that went up again in between
+	//   (its last_at moves) is kept;
+	// * playerbot_equip loses its oldest PLAYERBOT_EXPLAIN_CLEANUP_ROWS rows a
+	//   step through time_idx.
+	// Every statement reads at most a thousand rows by an index, a few ms. Read
+	// committed for the DELETEs: the rows of the range that stay are not kept
+	// locked against the bots' own upserts.
+	bool IsPlayerBotExplainCleanupCore()
+	{
+		if (g_bAuthServer || g_bChannel != 1)
+			return false;
+		return map_allow_find(1) || map_allow_find(21) || map_allow_find(41);
+	}
+
 	void CleanPlayerBotExplain(DWORD now)
 	{
 		const int days = s_iPlayerBotExplainDays;
 		if (s_dwPlayerBotExplainCleanupAt == 0)
 		{
-			// The first run a few minutes after the start, spread by the core's
-			// port so the cores of one world do not all ask in one second.
-			s_dwPlayerBotExplainCleanupAt = now + PLAYERBOT_EXPLAIN_CLEANUP_FIRST_MS +
-					(DWORD)(mother_port % 60) * 1000U;
+			s_dwPlayerBotExplainCleanupAt = now + PLAYERBOT_EXPLAIN_CLEANUP_FIRST_MS;
 			return;
 		}
 		if ((int)(now - s_dwPlayerBotExplainCleanupAt) < 0)
 			return;
 		s_dwPlayerBotExplainCleanupAt = now + PLAYERBOT_EXPLAIN_CLEANUP_MS;
-		if (days <= 0)
+		if (days <= 0 || !IsPlayerBotExplainCleanupCore())
 			return;
-		char sql[512];
+		{
+			time_t wall = time(NULL);
+			struct tm local;
+			localtime_r(&wall, &local);
+			if (local.tm_hour < PLAYERBOT_EXPLAIN_CLEANUP_HOUR_FROM || local.tm_hour >= PLAYERBOT_EXPLAIN_CLEANUP_HOUR_TO)
+				return;
+		}
+		// The previous step's statements are still waiting: no new ones.
+		for (std::deque<TPlayerBotExplainQueued>::const_iterator it = s_dequePlayerBotExplain.begin();
+				it != s_dequePlayerBotExplain.end(); ++it)
+			if (it->kind == PLAYERBOT_EXPLAIN_RAW)
+				return;
+		char sql[1024];
 		snprintf(sql, sizeof(sql),
+				"SET STATEMENT tx_isolation='READ-COMMITTED',innodb_lock_wait_timeout=2 FOR "
 				"DELETE FROM playerbot_equip WHERE `time` < NOW() - INTERVAL %d DAY LIMIT %d",
 				days, PLAYERBOT_EXPLAIN_CLEANUP_ROWS);
 		QueuePlayerBotExplain(PLAYERBOT_EXPLAIN_RAW, sql);
+		QueuePlayerBotExplain(PLAYERBOT_EXPLAIN_RAW, "SET @pbx_from = IFNULL(@pbx_to, 0), @pbx_ids = NULL");
 		snprintf(sql, sizeof(sql),
-				"DELETE FROM playerbot_listing WHERE last_at < NOW() - INTERVAL %d DAY AND item_id NOT IN "
-				"(SELECT id FROM player.item WHERE `window` = 'IKASHOP_OFFLINESHOP') LIMIT %d",
-				days, PLAYERBOT_EXPLAIN_CLEANUP_ROWS);
+				"SELECT MAX(item_id) INTO @pbx_to FROM (SELECT item_id FROM playerbot_listing "
+				"WHERE item_id > @pbx_from ORDER BY item_id LIMIT %d) t",
+				PLAYERBOT_EXPLAIN_CLEANUP_ROWS);
 		QueuePlayerBotExplain(PLAYERBOT_EXPLAIN_RAW, sql);
-		sys_log(0, "PLAYERBOT_EXPLAIN: cleanup asked, rows older than %d days (lines still on a counter kept)", days);
+		snprintf(sql, sizeof(sql),
+				"SELECT GROUP_CONCAT(l.item_id) INTO @pbx_ids FROM playerbot_listing l "
+				"WHERE l.item_id > @pbx_from AND l.item_id <= @pbx_to AND l.last_at < NOW() - INTERVAL %d DAY "
+				"AND NOT EXISTS (SELECT 1 FROM player.item i WHERE i.id = l.item_id AND i.`window` = 'IKASHOP_OFFLINESHOP')",
+				days);
+		QueuePlayerBotExplain(PLAYERBOT_EXPLAIN_RAW, sql);
+		snprintf(sql, sizeof(sql),
+				"SET STATEMENT tx_isolation='READ-COMMITTED',innodb_lock_wait_timeout=2 FOR "
+				"DELETE FROM playerbot_listing WHERE @pbx_ids IS NOT NULL AND item_id > @pbx_from AND item_id <= @pbx_to "
+				"AND last_at < NOW() - INTERVAL %d DAY AND FIND_IN_SET(item_id, @pbx_ids)",
+				days);
+		QueuePlayerBotExplain(PLAYERBOT_EXPLAIN_RAW, sql);
+		++s_iPlayerBotExplainCleanupSteps;
+		if (s_iPlayerBotExplainCleanupSteps % 90 == 1)
+			sys_log(0, "PLAYERBOT_EXPLAIN: night cleanup step %d (rows older than %d days, %d rows a step, lines still on a counter kept)",
+					s_iPlayerBotExplainCleanupSteps, days, PLAYERBOT_EXPLAIN_CLEANUP_ROWS);
 	}
 
 	// Once a manager tick: the queue to the database, the cleanup's clock, and
