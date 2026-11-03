@@ -36,16 +36,19 @@ RESISTS = [f"resist_{k}" for k, _l in mobs.RESISTS]
 MOB_COLS = ["vnum", "name", "locale_name", "rank", "type", "battle_type", "level", "ai_flag", "max_hp", "damage_min",
             "damage_max", "def", "exp", "gold_min", "gold_max", "aggressive_sight", "attack_speed", "move_speed",
             "st", "dx", "ht", "iq", "dam_multiply", "drop_item", "regen_cycle", "regen_percent", "aggressive_hp_pct",
-            "attack_range", "summon", "resurrection_vnum"] + RESISTS
+            "attack_range", "summon", "resurrection_vnum"] + RESISTS + mobs.SKILL_VNUM_COLS + mobs.SKILL_LEVEL_COLS
 
 
-def mob(vnum, name, level, rank=0, type_=0, hp=1000, dmg=(10, 20), exp=100, aggr=False):
+def mob(vnum, name, level, rank=0, type_=0, hp=1000, dmg=(10, 20), exp=100, aggr=False, skills=(), mult=1.0,
+        st=0, dx=0):
     row = {c: 0 for c in MOB_COLS}
     row.update(vnum=vnum, name=name.encode("cp1250"), locale_name=name.encode("cp1250"), rank=rank, type=type_,
                level=level, ai_flag="AGGR" if aggr else "", max_hp=hp, damage_min=dmg[0], damage_max=dmg[1], def_=0,
                exp=exp, gold_min=10, gold_max=20, aggressive_sight=1000 if aggr else 0, attack_speed=100,
-               move_speed=100, dam_multiply=1.0)
+               move_speed=100, dam_multiply=mult, st=st, dx=dx)
     row["def"] = row.pop("def_")
+    for i, (skill, level) in enumerate(skills):  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
+        row[f"skill_vnum{i}"], row[f"skill_level{i}"] = skill, level
     return row
 
 
@@ -56,6 +59,11 @@ MOBS = [
     mob(692, "Orkowy Wojownik", 41, rank=2),
     mob(2091, "Krolowa Pajakow", 65, rank=4, hp=600000, exp=80000),
     mob(1491, "Chegal", 96, rank=4, hp=1000000),
+    # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: Władca Duchów Drzew as in world.mob_proto, plus a second skill
+    # slot with a skill missing from skill_proto and one at level 0
+    mob(2307, "Wladca Duchow Drzew", 86, rank=5, hp=3000000, dmg=(120, 224), mult=4.0, st=121, dx=76,
+        skills=((256, 40), (999, 20), (257, 0))),
+    mob(2306, "Duch Drzewa", 80, rank=4, hp=500000, dmg=(100, 180), mult=0.0, st=90, dx=60, skills=((259, 30),)),
     mob(701, "Kapitan Hwang", 70, rank=3, exp=4000),
     mob(702, "Mnich Hwang", 75, rank=1, exp=3000),
     mob(8001, "Metin Cierpienia", 5, rank=5, type_=2, hp=6000),
@@ -124,6 +132,15 @@ class SqliteDB:
             marks = ",".join("?" * len(MOB_COLS))
             self.con.execute(f"INSERT INTO world.mob_proto ({cols}) VALUES ({marks})", [row[c] for c in MOB_COLS])
         self.con.execute("CREATE TABLE player.quest (dwPID INT, szName TEXT, szState TEXT, lValue INT)")
+        # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: the mob skills as in world.skill_proto (256-263 alike)
+        self.con.execute("CREATE TABLE world.skill_proto (dwVnum INTEGER PRIMARY KEY, szName BLOB, bMaxLevel INTEGER, "
+                         "szPointOn TEXT, szPointPoly TEXT, setFlag TEXT)")
+        for vnum, name, flags in ((256, "EnemyCrush200", "ATTACK,USE_MELEE_DAMAGE,SPLASH"),
+                                  (257, "EnemyGeneral350", "ATTACK,USE_MELEE_DAMAGE,SPLASH"),
+                                  (259, "EnemyNormal200", "ATTACK,USE_MELEE_DAMAGE,SPLASH"),
+                                  (261, "EnemyPoison250", "ATTACK,USE_MELEE_DAMAGE,SPLASH,ATTACK_POISON")):
+            self.con.execute("INSERT INTO world.skill_proto VALUES (?, ?, 1, 'HP', '-5*k*atk', ?)",
+                             (vnum, name.encode(), flags))
 
     @staticmethod
     def translate(sql):
@@ -301,15 +318,15 @@ class MobTests(Base):
     def test_mass_change_preview_apply_and_undo(self):
         query = "/db/mobs/masowo?podglad=1&rodzaj=bossowie&pole=max_hp&operacja=mul&wartosc=2"
         page = self.text(self.client.get(query))
-        self.assertIn("4 potworów", page)                    # 691, 2091, 1491 and the King-rank 6091 - no Metin
+        self.assertIn("6 potworów", page)                    # 691, 2091, 1491, 2306 and the King-rank 6091, 2307 - no Metin
         self.assertIn("50000</span> → <b>100000", page)
         self.assertNotIn("Metin Czerni", page.split("Podgląd")[1])
         self.assertIn("ustawianą przez skrypt startowy", page)  # 6091 (Razador) is put back by apply.sh
         vnums = re.search(r'name="vnums" value="([\d,]+)"', page).group(1)
-        self.assertEqual(set(vnums.split(",")), {"691", "2091", "1491", "6091"})
+        self.assertEqual(set(vnums.split(",")), {"691", "2091", "1491", "6091", "2306", "2307"})
         response = self.post("/db/mobs/masowo", {"rodzaj": "bossowie", "pole": "max_hp", "operacja": "mul",
                                                  "wartosc": "2", "vnums": vnums}, follow_redirects=True)
-        self.assertIn("Zmieniono 4 potworów", self.text(response))
+        self.assertIn("Zmieniono 6 potworów", self.text(response))
         self.assertEqual(self.fake.mob(691)["max_hp"], 100000)
         self.assertEqual(self.fake.mob(1491)["max_hp"], 2000000)
         self.assertEqual(self.fake.mob(8005)["max_hp"], 30000)
@@ -350,6 +367,9 @@ class MobTests(Base):
         for match in re.finditer(r"UPDATE world\.mob_proto\s+SET\s+(.*?)\s+WHERE\s+(.*?)(;|\")", text, re.S):
             cols = set(re.findall(r"(?:^|,\s*)`?(\w+)`?\s*=", match.group(1))) & set(mobs.ALL_SPECS)
             where = match.group(2).strip()
+            # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: "AND skill_vnumN = X" holds always (the editor
+            # never changes a monster's skill), so such a level fix is written at every start too
+            where = re.sub(r"\s+AND\s+skill_vnum\d\s*=\s*\d+$", "", where)
             single = re.fullmatch(r"vnum\s*=\s*(\d+)", where)
             many = re.fullmatch(r"vnum\s+IN\s*\(([\d,\s]+)\)", where)
             if not cols or not (single or many):
@@ -357,6 +377,178 @@ class MobTests(Base):
             vnums = [int(single.group(1))] if single else [int(v) for v in many.group(1).split(",")]
             for vnum in vnums:
                 self.assertLessEqual(cols, mobs.boot_cols(vnum), f"apply.sh sets {cols} of {vnum} at every start")
+
+
+class SkillPowerTests(Base):
+    """MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: dam_multiply, the skills'
+    levels and the estimated hits (Władca Duchów Drzew, 2307: level 86, st
+    121, dx 76, damage 120-224, x4.0, EnemyCrush200 at 40)."""
+
+    def form(self, vnum, **changes):
+        row = self.fake.mob(vnum)
+        form = {c: row[c] for c in mobs.EDIT_COLS if c != "ai_flag"}
+        form["ai_flag_sent"] = "1"
+        form.update(changes)
+        return form
+
+    def test_formula_matches_the_engine(self):
+        row = self.fake.mob(2307)
+        # by hand, battle.cpp CalcMeleeDamage: AR (76*4+86*2)/6 = 79 -> 289/300; a player of level 86:
+        # dex 90 -> e 88, ER 181/183*0.3; dex 10 -> e 35, ER 75/130*0.3
+        f_low = 289 / 300 - (181 / 183) * 0.3
+        f_high = 289 / 300 - (75 / 130) * 0.3
+        low = int(int((242 + 240) * f_low) + 172) * 4
+        high = int(int((242 + 448) * f_high) + 172) * 4
+        estimate = mobs.hit_estimate(row, {256: {"szName": b"EnemyCrush200", "bMaxLevel": 1, "szPointOn": "HP",
+                                                 "szPointPoly": "-5*k*atk", "setFlag": "ATTACK,USE_MELEE_DAMAGE,SPLASH"}})
+        self.assertEqual(estimate["melee"], (low, high))
+        self.assertEqual(estimate["melee"], (1972, 2868))
+        skill = estimate["skills"][0]
+        self.assertEqual((skill["vnum"], skill["level"], skill["k"]), (256, 40, 1.25))
+        self.assertEqual(skill["hit"], (int(5 * 1.25 * low), int(5 * 1.25 * high)))     # 12 325 - 17 925
+        self.assertAlmostEqual(skill["ratio"], 6.25, places=2)
+        self.assertEqual(estimate["skill_max"], skill["hit"])
+        # the hint's ratios: SKILL_POWER_BY_LEVEL 30 = 82, 20 = 50, 10 = 22 (x5)
+        self.assertEqual([mobs.skill_k(level) * 5 for level in (40, 30, 20, 10, 0)], [6.25, 4.1, 2.5, 1.1, 0.0])
+        self.assertEqual(mobs.skill_k(55), 1.25)                                        # clamped at 40
+        # the second slot's skill is not in skill_proto, the third's level is 0
+        self.assertIn("nie ma jej", estimate["skills"][1]["why"])
+        self.assertIsNone(estimate["skills"][1]["hit"])
+        self.assertEqual([s["vnum"] for s in estimate["skills"]], [256, 999, 257])     # every slot with a skill
+        level0 = mobs.skill_hit(row, {"szPointOn": "HP", "szPointPoly": "-5*k*atk", "bMaxLevel": 1,
+                                      "setFlag": "ATTACK,USE_MELEE_DAMAGE,SPLASH"}, 0, 2000)
+        self.assertEqual(level0, (None, "poziom 0 – nie zadaje obrażeń"))
+        # dam_multiply scales the blow, 0 leaves the engine's minimum 1
+        self.assertEqual(mobs.hit_estimate(dict(row, dam_multiply=2.0))["melee"], (low // 2, high // 2))
+        self.assertEqual(mobs.hit_estimate(dict(row, dam_multiply=0))["melee"], (1, 1))
+        self.assertEqual(mobs.fmt_hits((12325, 17925)), "12 325–17 925")
+
+    def test_poly_is_not_eval(self):
+        self.assertEqual(mobs.eval_poly("-5*k*atk", {"k": 1.25, "atk": 100}), -625.0)
+        self.assertEqual(mobs.eval_poly("-(2*lv+atk)/2", {"lv": 10, "atk": 30}), -25.0)
+        self.assertIsNone(mobs.eval_poly("__import__('os').system('x')", {"k": 1}))
+        self.assertIsNone(mobs.eval_poly("k**99999", {"k": 2}))
+        self.assertIsNone(mobs.eval_poly("-5*k*maxhp", {"k": 1, "atk": 1}))
+        self.assertIsNone(mobs.eval_poly("", {}))
+
+    def test_monster_page_shows_hits_and_skill_names(self):
+        page = self.text(self.client.get("/db/mobs/2307"))
+        self.assertIn("Jak mocno bije", page)
+        self.assertIn("EnemyCrush200", page)
+        self.assertIn("1 972–2 868", page)
+        self.assertIn("12 325–17 925", page)
+        self.assertIn("6,2× zwykły cios", page)
+        self.assertIn("Poziom 40 = ok. 6× zwykły cios", page)
+        self.assertIn('name="skill_level0"', page)
+        self.assertIn('name="skill_level2"', page)          # EnemyGeneral350 at level 0: editable
+        self.assertNotIn('name="skill_level3"', page)       # no skill in the slot
+        self.assertIn('name="dam_multiply"', page)
+
+    def test_edit_dam_multiply_and_skill_levels_with_undo(self):
+        page = self.text(self.post("/db/mobs/2307", self.form(2307, dam_multiply="2,5", skill_level0="30",
+                                                             skill_level3="15"), follow_redirects=True))
+        self.assertIn("czekają na zastosowanie", page)
+        row = self.fake.mob(2307)
+        self.assertEqual((row["dam_multiply"], row["skill_level0"], row["skill_level3"]), (2.5, 30, 0))
+        self.assertEqual({p["col"] for p in common_items.pending_changes()}, {"dam_multiply", "skill_level0"})
+        page = self.text(self.client.get("/db/mobs/2307"))
+        self.assertIn("×2,5", page)
+        self.assertIn("4,1× zwykły cios", page)
+        # the history writes the old float back
+        batch = common_items.history_batches(5, "world.mob_proto", 2307)[0]["batch"]
+        self.post("/db/historia/cofnij", {"batch": batch})
+        row = self.fake.mob(2307)
+        self.assertEqual((row["dam_multiply"], row["skill_level0"]), (4.0, 40))
+
+    def test_edit_rejects_bad_values_and_keeps_an_old_zero(self):
+        page = self.text(self.post("/db/mobs/2307", self.form(2307, dam_multiply="25"), follow_redirects=True))
+        self.assertIn("Mnożnik obrażeń: dozwolone 0,1…20", page)
+        page = self.text(self.post("/db/mobs/2307", self.form(2307, skill_level0="41"), follow_redirects=True))
+        self.assertIn("dozwolone 0…40", page)
+        page = self.text(self.post("/db/mobs/2307", self.form(2307, dam_multiply="abc"), follow_redirects=True))
+        self.assertIn("nie jest liczbą", page)
+        self.assertEqual(self.fake.mob(2307)["dam_multiply"], 4.0)
+        # 2306 has dam_multiply 0 (old data, under the form's 0,1): the form still saves the other fields
+        self.post("/db/mobs/2306", self.form(2306, dam_multiply="0", max_hp="600000"))
+        self.assertEqual((self.fake.mob(2306)["max_hp"], self.fake.mob(2306)["dam_multiply"]), (600000, 0.0))
+        self.assertEqual({p["col"] for p in common_items.pending_changes()}, {"max_hp"})
+        self.assertIsNotNone(common_items.validate(mobs.SPECS["dam_multiply"], "0", "x")[1])
+
+    def test_list_shows_boss_hits(self):
+        page = self.text(self.client.get("/db/mobs?rodzaj=bossowie"))
+        self.assertIn("Cios bossa", page)
+        self.assertIn("⚔️ 1 972–2 868", page)
+        self.assertIn("✨ 12 325–17 925", page)
+
+    def test_mass_skill_power(self):
+        query = {"rodzaj": "bossowie", "pole": "skill", "operacja": "add", "wartosc": "-10"}
+        page = self.text(self.client.get("/db/mobs/masowo", query_string=dict(query, podglad=1)))
+        self.assertIn("2 potworów", page)                     # 2307 and 2306 - the bosses without skills are not touched
+        self.assertIn("EnemyCrush200: <span class=\"dbe-old\">40</span> → <b>30</b>", page)
+        self.assertIn("12 325–17 925</span> → <b>8 085–11 758", page)   # the skill blow, before -> after
+        vnums = re.search(r'name="vnums" value="([\d,]+)"', page).group(1)
+        self.assertEqual(set(vnums.split(",")), {"2306", "2307"})
+        self.post("/db/mobs/masowo", dict(query, vnums=vnums))
+        row = self.fake.mob(2307)
+        self.assertEqual([row[c] for c in mobs.SKILL_LEVEL_COLS], [30, 10, 0, 0, 0])   # a 0 stays 0
+        self.assertEqual(self.fake.mob(2306)["skill_level0"], 20)
+        batches = common_items.history_batches(5, "world.mob_proto")
+        self.assertEqual(batches[0]["note"], "Masowo: Siła umiejętności (poziom 1–40) -10")
+        # clamped to 1..40, never to 0
+        rows = [mobs.decorate(self.fake.mob(2307))]
+        plan = mobs.mass_plan(rows, "skill", "set", 55)
+        self.assertEqual(plan[0][1], {"skill_level0": (30, 40), "skill_level1": (10, 40)})
+        self.assertTrue(plan[0][2])
+        plan = mobs.mass_plan(rows, "skill", "add", -50)
+        self.assertEqual(plan[0][1], {"skill_level0": (30, 1), "skill_level1": (10, 1)})
+        plan = mobs.mass_plan(rows, "skill", "mul", 0.5)
+        self.assertEqual(plan[0][1], {"skill_level0": (30, 15), "skill_level1": (10, 5)})
+        # undo
+        self.post("/db/historia/cofnij", {"batch": batches[0]["batch"]})
+        self.assertEqual(self.fake.mob(2307)["skill_level0"], 40)
+        self.assertEqual(self.fake.mob(2306)["skill_level0"], 30)
+
+    def test_mass_dam_multiply(self):
+        query = {"rodzaj": "bossowie", "pole": "dam_multiply", "operacja": "mul", "wartosc": "0,5"}
+        page = self.text(self.client.get("/db/mobs/masowo", query_string=dict(query, podglad=1)))
+        self.assertIn("5 potworów", page)                     # 2306 has 0 - 0 x 0,5 stays 0
+        self.assertIn("<span class=\"dbe-old\">4</span> → <b>2</b>", page)
+        self.assertIn("1 972–2 868</span> → <b>986–1 434", page)
+        vnums = re.search(r'name="vnums" value="([\d,]+)"', page).group(1)
+        self.assertNotIn("2306", vnums.split(","))
+        self.post("/db/mobs/masowo", dict(query, vnums=vnums))
+        self.assertEqual((self.fake.mob(2307)["dam_multiply"], self.fake.mob(691)["dam_multiply"]), (2.0, 0.5))
+        batch = common_items.history_batches(5, "world.mob_proto")[0]
+        self.assertEqual(batch["note"], "Masowo: Mnożnik obrażeń ×0,5")
+        self.post("/db/historia/cofnij", {"batch": batch["batch"]})
+        self.assertEqual((self.fake.mob(2307)["dam_multiply"], self.fake.mob(691)["dam_multiply"]), (4.0, 1.0))
+        # set / add as floats; set out of range is refused, add is clamped
+        self.assertEqual(mobs.parse_mass({"pole": "dam_multiply", "operacja": "set", "wartosc": "2,25"})[2], 2.25)
+        self.assertIn("dozwolone", mobs.parse_mass({"pole": "dam_multiply", "operacja": "set", "wartosc": "25"})[3])
+        rows = [mobs.decorate(self.fake.mob(2307))]
+        self.assertEqual(mobs.mass_plan(rows, "dam_multiply", "add", -0.75)[0][1], {"dam_multiply": (4.0, 3.25)})
+        plan = mobs.mass_plan(rows, "dam_multiply", "add", -10)
+        self.assertEqual(plan[0][1], {"dam_multiply": (4.0, 0.1)})
+        self.assertTrue(plan[0][2])
+        self.assertEqual(mobs.mass_description("dam_multiply", "add", -0.75), "Mnożnik obrażeń -0,75")
+        self.assertEqual(mobs.mass_description("dam_multiply", "set", 2.5), "Mnożnik obrażeń = 2,5")
+
+    def test_boot_rules_cover_skill_levels(self):
+        self.assertIn("dam_multiply", mobs.boot_cols(6091))
+        self.assertTrue({"skill_level0", "skill_level1"} <= mobs.boot_cols(6091))
+        self.assertIn("skill_level0", mobs.boot_cols(2191))
+        self.assertNotIn("skill_level0", mobs.boot_cols(2307))
+        page = self.text(self.post("/db/mobs/6091", self.form(6091, dam_multiply="3"), follow_redirects=True))
+        self.assertIn("zniknie po restarcie", page)
+        self.assertIn("Mnożnik obrażeń", page)
+
+    def test_reapply_writes_a_float(self):
+        from dbeditor import reapply
+        self.assertEqual(reapply._literal(mobs.SPECS["dam_multiply"], "2.5"), "2.5")
+        with self.assertRaises(ValueError):
+            reapply._literal(mobs.SPECS["dam_multiply"], "nan")
+        with self.assertRaises(ValueError):
+            reapply._literal(mobs.SPECS["dam_multiply"], "1; DROP TABLE x")
 
 
 class MeleeTests(Base):

@@ -20,6 +20,16 @@ char_state.cpp):
 The client draws the monster's name and level from its own mob_proto, which
 the editor does not rebuild: a new level shows in the game's fights at once
 after the restart, but the level above a monster's head stays the client's.
+
+MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: dam_multiply and the levels of the
+monster's skills (skill_level0..4) are edited too, one by one and in the mass
+change, and every page shows the estimated hits of the monster - its plain
+blow and the blow of each of its skills - computed by the engine's own
+formula (hit_estimate() below). The db core loads both columns from
+world.mob_proto at boot (ClientManagerBoot.cpp InitializeMobTableFromDB,
+dam_multiply -> fDamMultiply, skill_levelN -> Skills[N].bLevel), so they take
+effect after "Zastosuj". The client's mob_proto has neither any say in the
+damage (the server counts every blow) - nothing to rebuild there.
 """
 import re
 
@@ -78,9 +88,20 @@ SPECS = {
     "aggressive_sight": _int(0, 10000, "Zasięg wzroku agresji"),
     "attack_speed": _int(10, 1000, "Szybkość ataku (100 = zwykła)"),
     "move_speed": _int(10, 1000, "Szybkość ruchu (100 = zwykła)"),
+    # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: a FLOAT column (char.cpp GetMobDamageMultiply, x2 in BERSERK)
+    "dam_multiply": {"kind": "float", "min": 0.1, "max": 20.0, "digits": 2, "label": "Mnożnik obrażeń"},
 }
 for _key, _label in RESISTS:
     SPECS[f"resist_{_key}"] = _int(-100, 100, f"Odporność: {_label} (%)")
+# MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: the level (power) of each of the
+# monster's five skills - 0..40 (SKILL_MAX_LEVEL, GetSkillPowerByLevel clamps
+# there). The skill itself (skill_vnumN) stays read-only: a slot without a
+# skill is never given a level, here or in the mass change.
+SKILL_SLOTS = range(5)
+SKILL_LEVEL_COLS = [f"skill_level{i}" for i in SKILL_SLOTS]
+SKILL_VNUM_COLS = [f"skill_vnum{i}" for i in SKILL_SLOTS]
+for _i in SKILL_SLOTS:
+    SPECS[f"skill_level{_i}"] = _int(0, 40, f"Umiejętność {_i + 1} – poziom (siła)")
 EDIT_COLS = list(SPECS)
 
 # MT2009_PLUS_DB_EDITOR_MOB_MELEE_V1: "Zwykłe potwory: atak z dystansu →
@@ -109,8 +130,8 @@ MELEE_VALUES = {"battle_type": 0, "attack_range": 175}
 MELEE_NOTE = "Zwykłe potwory: atak z dystansu → wręcz"
 # What the history may write for a monster: the form's fields and the two above.
 ALL_SPECS = dict(SPECS, **MELEE_SPECS)
-READ_ONLY = ["type", "battle_type", "st", "dx", "ht", "iq", "dam_multiply", "drop_item", "regen_cycle",
-             "regen_percent", "aggressive_hp_pct", "attack_range", "summon", "resurrection_vnum"]
+READ_ONLY = ["type", "battle_type", "st", "dx", "ht", "iq", "drop_item", "regen_cycle",
+             "regen_percent", "aggressive_hp_pct", "attack_range", "summon", "resurrection_vnum"] + SKILL_VNUM_COLS
 
 # Mass changes: what can be changed, and which columns move together.
 MASS_FIELDS = {
@@ -123,8 +144,14 @@ MASS_FIELDS = {
     "attack_speed": ("Szybkość ataku", ["attack_speed"]),
     "move_speed": ("Szybkość ruchu", ["move_speed"]),
     "aggressive_sight": ("Zasięg wzroku agresji", ["aggressive_sight"]),
+    # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
+    "dam_multiply": ("Mnożnik obrażeń", ["dam_multiply"]),
+    "skill": ("Siła umiejętności (poziom 1–40)", SKILL_LEVEL_COLS),
 }
 MASS_OPS = {"mul": "pomnóż przez", "add": "dodaj (lub odejmij)", "set": "ustaw na"}
+# The mass fields whose change moves the estimated hits (the preview shows them before -> after).
+HIT_FIELDS = ("damage", "dam_multiply", "skill", "level")
+MASS_FLOAT_FIELDS = ("dam_multiply",)
 
 # What linux-port/docker/mariadb/playerbot/apply.sh writes into
 # world.mob_proto at EVERY start of the server (the playerbot-migrate step,
@@ -136,7 +163,7 @@ BOOT_RULES = [
       6107, 6108, 6109, 6151, 6191),
      ("level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max", "resist_sword",
       "resist_twohand", "resist_dagger", "resist_bell", "resist_fan", "resist_bow", "resist_fire", "resist_elect",
-      "resist_magic", "resist_wind", "resist_poison"), "Ognista i Lodowa Kraina (Razador, Nemere)"),
+      "resist_magic", "resist_wind", "resist_poison", "dam_multiply"), "Ognista i Lodowa Kraina (Razador, Nemere)"),
     ((2493, 8057, 9677, 9678, 9696, 9701, 9702, 9710, 9711), ("level", "max_hp", "def", "exp"),
      "potwory i Metiny dodatków MT2009 Plus"),
     # MT2009_PLUS_RZNM_GLOBAL_LEVEL_V1: the two dungeons' monsters on Owsap's (the official) numbers - gold and
@@ -147,21 +174,40 @@ BOOT_RULES = [
     ((9601, 9602, 9603, 9604, 9605, 9606, 9607, 9671, 9672, 9673, 9674, 9675, 9676, 9679, 9680, 9681, 9682,
       9683, 9684, 9690, 9691, 9692, 9693, 9694, 9695, 9697, 9698, 9699, 9700, 9707, 9708, 9709, 9712, 9713,
       9714),
-     ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max", "ai_flag"),
+     ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max", "ai_flag",
+      "dam_multiply"),
      "potwory map Arezzo"),
     ((9611, 9612, 9613, 9614, 9615), ("max_hp", "damage_min", "damage_max", "exp", "gold_min", "gold_max"),
      "Lemury (Arezzo)"),
     ((9703,), ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max",
-               "ai_flag", "resist_poison"), "Loch Pająków (Arezzo)"),
+               "ai_flag", "resist_poison", "dam_multiply"), "Loch Pająków (Arezzo)"),
     ((9704,), ("rank", "level", "max_hp", "def", "exp", "gold_min", "gold_max", "resist_fire", "resist_poison"),
      "Loch Pająków (Arezzo)"),
     ((9705,), ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max",
-               "resist_fire", "resist_poison"), "Loch Pająków (Arezzo)"),
+               "resist_fire", "resist_poison", "dam_multiply", "skill_level0"), "Loch Pająków (Arezzo)"),
     ((9706,), ("rank", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max",
-               "ai_flag", "attack_speed", "move_speed", "attack_range"), "Loch Pająków (Arezzo)"),
+               "ai_flag", "attack_speed", "move_speed", "attack_range", "dam_multiply", "skill_level0"),
+     "Loch Pająków (Arezzo)"),
     # MT2009_PLUS_MAPS_WZ_V1: mariadb/playerbot/maps_wz.sql (run by apply.sh at every start) puts the Giants'
     # and ogres' wiki levels back.
     ((1401, 1402, 1403, 1601, 1602, 1603), ("level",), "Wężowe Pole i Kraina Gigantów"),
+    # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: the bosses' skill levels and yang of MT2009_PLUS_AREZZO_BALANCE_V1
+    # (Arezzo, Razador/Nemere, Azrael, the Grotto's Generals; a "WHERE vnum ... AND skill_vnumN = X" is
+    # unconditional here - the editor never changes the skill itself) and Wukong's dam_multiply.
+    ((9683, 9684, 9695, 9714), ("skill_level0",), "bossowie Arezzo (siła umiejętności)"),
+    ((9694, 6091, 6191), ("skill_level0", "skill_level1"), "bossowie Arezzo, Razador i Nemere (siła umiejętności)"),
+    ((2191, 2192, 8614, 8615, 3790, 3890), ("skill_level0",), "bossowie lochów (siła umiejętności)"),
+    ((3691, 3791, 3391), ("skill_level1",), "bossowie lochów (siła umiejętności)"),
+    ((2598, 2492, 2495, 3390, 3391), ("gold_min", "gold_max"), "bossowie lochów (yang)"),
+    # MT2009_PLUS_ATLANTYDA_V1: Ruiny Atlantydy - its monsters and bosses whole, its stones' numbers.
+    ((4550, 4551, 4552, 4553, 4554, 4555, 4556, 4557, 4558, 4559),
+     ("rank", "battle_type", "level", "max_hp", "damage_min", "damage_max", "def", "exp", "gold_min", "gold_max",
+      "attack_speed", "move_speed", "attack_range", "ai_flag", "aggressive_sight", "resist_sword", "resist_twohand",
+      "resist_dagger", "resist_bell", "resist_fan", "resist_bow", "resist_fire", "resist_elect", "resist_magic",
+      "resist_wind", "resist_poison", "dam_multiply", "skill_level0", "skill_level1", "skill_level2", "skill_level3",
+      "skill_level4"), "Ruiny Atlantydy"),
+    ((8729, 8730, 8731), ("level", "max_hp", "def", "exp", "gold_min", "gold_max", "attack_speed", "move_speed"),
+     "Ruiny Atlantydy (kamienie)"),
 ]
 BOOT_WARNING = "Te pola skrypt startowy bazy ustawia na nowo przy KAŻDYM starcie serwera – Twoja zmiana zniknie po restarcie"
 
@@ -177,6 +223,200 @@ def boot_cols(vnum):
 
 def boot_notes(vnum):
     return [(note, cols) for vnums, cols, note in BOOT_RULES if int(vnum) in vnums]
+
+
+# ---- estimated hits (MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1) ------------------------
+#
+# How hard a monster hits a player, by the engine's own formula (game/src
+# battle.cpp CalcMeleeDamage / CalcAttackRating / CalcAttBonus, char.cpp
+# ComputePoints for an NPC and GetMobDamageMultiply, char_skill.cpp
+# UseMobSkill / ComputeSkillAtPosition / FuncSplashDamage):
+#
+#   plain blow (CalcMeleeDamage, no weapon, an NPC attacker):
+#     ATT_GRADE = 2*level + 2*st                     (ComputePoints, NPC branch)
+#     roll      = random(damage_min, damage_max) * 2
+#     AR        = (min(90, (4*dx + 2*level) / 6) + 210) / 300            the monster's rating
+#     ER        = (2*e + 5) / (e + 95) * 0.3,  e = min(90, (4*dex + 2*lv) / 6)  of the PLAYER
+#     atk       = int((ATT_GRADE + roll - 2*level) * (AR - ER)) + 2*level
+#     atk       = int(atk * dam_multiply)            (x2 more while BERSERK)
+#     CalcAttBonus: x mob damage rate 100/100, "*= 115/100" is integer 1 - no change
+#     hit       = max(1, atk - player's defence)     (then the player's resists, criticals...)
+#   skill blow (skills 256-263 "EnemyCrush200"...: szPointPoly "-5*k*atk",
+#   flags ATTACK, USE_MELEE_DAMAGE, SPLASH, type MELEE):
+#     k         = SKILL_POWER_BY_LEVEL[skill_level] * bMaxLevel / 100   (the mob's table:
+#                 common.locale SKILL_POWER_BY_LEVEL, level 40 = 125 -> k 1.25 with bMaxLevel 1)
+#     atk       = the plain blow above, counted per victim WITHOUT the defence
+#                 (CalcMeleeDamage(mob, victim, bIgnoreDefense=true))
+#     hit       = int(5 * k * atk), then minus the player's defence (FuncSplashDamage, SKILL_ATTR_TYPE_MELEE)
+#   so a skill of level 40 is 6.25x the plain blow before the defence, 30 is
+#   4.1x, 20 is 2.5x, 10 is 1.1x.
+#
+# The page shows the hit BEFORE the player's defence and resists, for a player
+# of the monster's level: the low end with the lowest roll against a nimble
+# player (dex 90, ER near its cap), the high end with the highest roll against
+# a player of little dexterity (dex 10). Not counted: criticals (enchant_
+# critical, x2), BERSERK (x2 dam_multiply), a dungeon's rage bonus, Zodiac's
+# flat bonus, the player's defence / "odporność na potwory" / skill resists.
+MOB_SKILL_POWER = [0, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 50, 52, 54, 56, 58, 60,
+                   63, 66, 69, 72, 82, 85, 88, 91, 94, 98, 102, 106, 110, 115, 125]
+SKILL_MAX_LEVEL = 40
+VICTIM_DEX_NIMBLE = 90
+VICTIM_DEX_CLUMSY = 10
+VICTIM_MAX_LEVEL = 120
+HIT_NOTE = ("szacunek przed obroną i odpornościami gracza (gracz na poziomie potwora; mniej – zręczny gracz i najsłabszy "
+            "rzut, więcej – mało zręczny i najmocniejszy rzut); bez krytyków i szału")
+SKILL_LEVEL_HINT = "Poziom 40 = ok. 6× zwykły cios, 30 = ok. 4×, 20 = ok. 2,5×, 10 = ok. 1×, 0 = umiejętność nie zadaje obrażeń"
+
+
+def _rating_src(dex, level):
+    return min(90, max(0, (4 * int(dex) + 2 * int(level))) // 6)
+
+
+def attack_rating(dex, level):
+    return (_rating_src(dex, level) + 210.0) / 300.0
+
+
+def evasion_rating(dex, level):
+    src = _rating_src(dex, level)
+    return ((src * 2 + 5) / (src + 95)) * 3.0 / 10.0
+
+
+def _trunc(value):
+    return int(value)  # C's (int) cast: towards zero
+
+
+def melee_atk(row, roll, victim_dex, victim_level=None):
+    """CalcMeleeDamage of the monster `row` for one damage roll (damage_min..
+    max), against a player of victim_dex / victim_level, before the defence."""
+    level, st, dex = int(row.get("level") or 0), int(row.get("st") or 0), int(row.get("dx") or 0)
+    mult = float(row.get("dam_multiply") or 0)
+    if victim_level is None:
+        victim_level = min(max(level, 1), VICTIM_MAX_LEVEL)
+    f_ar = attack_rating(dex, level) - evasion_rating(victim_dex, victim_level)
+    att_grade = 2 * level + 2 * st
+    atk = _trunc((att_grade + int(roll) * 2 - 2 * level) * f_ar) + 2 * level
+    atk = _trunc(atk * mult)
+    return max(1, atk)
+
+
+def melee_range(row):
+    low_roll, high_roll = sorted((int(row.get("damage_min") or 0), int(row.get("damage_max") or 0)))
+    return (melee_atk(row, low_roll, VICTIM_DEX_NIMBLE), melee_atk(row, high_roll, VICTIM_DEX_CLUMSY))
+
+
+def skill_k(level, max_level=1, table=None):
+    table = table or MOB_SKILL_POWER
+    level = max(0, min(SKILL_MAX_LEVEL, int(level or 0), len(table) - 1))
+    return table[level] * int(max_level or 0) / 100.0
+
+
+_POLY_NAMES = {"k", "atk", "lv", "str", "dex", "con", "iq"}
+
+
+def eval_poly(text, names):
+    """A skill formula (szPointPoly) with only + - * / ( ) numbers and the
+    given names - None for anything else (no eval() of database text)."""
+    import ast
+    try:
+        tree = ast.parse(str(text or "").strip(), mode="eval")
+    except SyntaxError:
+        return None
+
+    def walk(node):
+        if isinstance(node, ast.Expression):
+            return walk(node.body)
+        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
+            return float(node.value)
+        if isinstance(node, ast.Name) and node.id in names:
+            return float(names[node.id])
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.USub, ast.UAdd)):
+            value = walk(node.operand)
+            return -value if isinstance(node.op, ast.USub) else value
+        if isinstance(node, ast.BinOp) and isinstance(node.op, (ast.Add, ast.Sub, ast.Mult, ast.Div)):
+            left, right = walk(node.left), walk(node.right)
+            if isinstance(node.op, ast.Add):
+                return left + right
+            if isinstance(node.op, ast.Sub):
+                return left - right
+            if isinstance(node.op, ast.Mult):
+                return left * right
+            return left / right if right else 0.0
+        raise ValueError(type(node).__name__)
+
+    try:
+        return walk(tree)
+    except (ValueError, KeyError, OverflowError, RecursionError):
+        return None
+
+
+def skill_flags(info):
+    return {f.strip().upper() for f in str(common.text_of((info or {}).get("setFlag")) or "").split(",") if f.strip()}
+
+
+def skill_hit(row, info, level, atk, table=None):
+    """(hit, why): the skill's blow for one atk (the plain blow before the
+    defence), or (None, the reason it deals no estimated damage)."""
+    if not info:
+        return None, "nie ma jej w tabeli umiejętności – gra jej nie użyje"
+    flags = skill_flags(info)
+    if "SPLASH" not in flags:
+        return None, "bez flagi SPLASH – potwór nią nie uderza"
+    if not flags & {"USE_MELEE_DAMAGE", "USE_MAGIC_DAMAGE"}:
+        return None, "nie liczy obrażeń od ataku potwora"
+    if str(common.text_of(info.get("szPointOn")) or "").strip().upper() != "HP":
+        return None, "nie zadaje obrażeń (działa na inny parametr)"
+    if int(level or 0) <= 0:
+        return None, "poziom 0 – nie zadaje obrażeń"
+    names = {"k": skill_k(level, info.get("bMaxLevel"), table), "atk": atk, "lv": int(row.get("level") or 0),
+             "str": int(row.get("st") or 0), "dex": int(row.get("dx") or 0), "con": int(row.get("ht") or 0),
+             "iq": int(row.get("iq") or 0)}
+    amount = eval_poly(common.text_of(info.get("szPointPoly")), names)
+    if amount is None:
+        return None, "wzoru tej umiejętności panel nie umie policzyć"
+    hit = -_trunc(amount)
+    return (max(1, hit) if hit > 0 else None), (None if hit > 0 else "wzór nie daje obrażeń")
+
+
+def skill_label(vnum, info):
+    if not info:
+        return f"#{vnum}"
+    name = common.text_of(info.get("szName")) or f"#{vnum}"
+    extra = [label for flag, label in (("ATTACK_POISON", "trucizna"), ("ATTACK_SLOW", "spowolnienie"),
+                                       ("ATTACK_STUN", "ogłuszenie")) if flag in skill_flags(info)]
+    return name + (f" ({', '.join(extra)})" if extra else "")
+
+
+def hit_estimate(row, skills=None, table=None):
+    """{"melee": (low, high), "skills": [...], "skill_max": (low, high) or None}
+    - see the formula above. skills = {vnum: skill_proto row} (load_skills)."""
+    skills = skills or {}
+    low_roll, high_roll = sorted((int(row.get("damage_min") or 0), int(row.get("damage_max") or 0)))
+    melee = (melee_atk(row, low_roll, VICTIM_DEX_NIMBLE), melee_atk(row, high_roll, VICTIM_DEX_CLUMSY))
+    found, best = [], None
+    for i in SKILL_SLOTS:
+        vnum = int(row.get(f"skill_vnum{i}") or 0)
+        if not vnum:
+            continue
+        level = int(row.get(f"skill_level{i}") or 0)
+        info = skills.get(vnum)
+        low, why = skill_hit(row, info, level, melee[0], table)
+        high, _why = skill_hit(row, info, level, melee[1], table)
+        hit = (low, high) if low and high else None
+        found.append({"slot": i, "col": f"skill_level{i}", "vnum": vnum, "level": level, "name": skill_label(vnum, info),
+                      "k": skill_k(level, (info or {}).get("bMaxLevel"), table) if info else 0.0,
+                      "hit": hit, "why": None if hit else why,
+                      "ratio": (hit[1] / melee[1]) if hit and melee[1] else None})
+        if hit and (best is None or hit[1] > best[1]):
+            best = hit
+    return {"melee": melee, "skills": found, "skill_max": best}
+
+
+def fmt_hits(pair):
+    """(1968, 2924) -> "1 968–2 924"."""
+    if not pair:
+        return "—"
+    low, high = ("{:,}".format(int(v)).replace(",", " ") for v in pair)
+    return low if low == high else f"{low}–{high}"
 
 
 # ---- rows ------------------------------------------------------------------
@@ -223,6 +463,7 @@ def decorate(row):
     row["kind"], row["kind_icon"], row["kind_name"] = kind_of(row)
     row["rank_name"] = RANKS.get(int(row.get("rank") or 0), str(row.get("rank")))
     row["type_name"] = TYPES.get(int(row.get("type") or 0), str(row.get("type")))
+    row["dam_text"] = _num(row.get("dam_multiply") or 0)  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
     return row
 
 
@@ -233,6 +474,11 @@ def history_formatter(col, value):
         return f"{BATTLE_TYPES.get(int(value), value)} [{value}]"
     if col == "ai_flag":
         return ", ".join(sorted(flags_of(value))) or "(brak flag)"
+    if col == "dam_multiply" and value not in (None, ""):  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
+        try:
+            return f"×{_num(float(value))}"
+        except ValueError:
+            return None
     return None
 
 
@@ -287,13 +533,28 @@ def parse_mass(args):
         return field, op, None, "Wybierz rodzaj zmiany."
     if not raw:
         return field, op, None, None
+    decimal = op == "mul" or field in MASS_FLOAT_FIELDS
     try:
-        value = float(raw) if op == "mul" else int(raw)
+        value = float(raw) if decimal else int(raw)
     except ValueError:
-        return field, op, None, f"„{args.get('wartosc')}” nie jest liczbą" + (" (np. 2 albo 1,5)." if op == "mul" else " całkowitą.")
+        return field, op, None, f"„{args.get('wartosc')}” nie jest liczbą" + (" (np. 2 albo 1,5)." if decimal else " całkowitą.")
+    if value != value or value in (float("inf"), float("-inf")):
+        return field, op, None, f"„{args.get('wartosc')}” nie jest liczbą."
     if op == "mul" and not 0.01 <= value <= 100:
         return field, op, None, "Mnożnik musi być od 0,01 do 100 (np. 2 = dwa razy więcej, 0,5 = o połowę mniej)."
+    if field in MASS_FLOAT_FIELDS and op == "set":  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
+        spec = SPECS[MASS_FIELDS[field][1][0]]
+        if not spec["min"] <= value <= spec["max"]:
+            return field, op, None, (f"{spec['label']}: dozwolone {_num(spec['min'])}…{_num(spec['max'])} "
+                                     "(1 = zwykłe obrażenia, 2 = dwa razy mocniej).")
     return field, op, value, None
+
+
+def _num(value, digits=2):
+    """2.5 -> "2,5", 4.0 -> "4" - a float the Polish way, for the pages."""
+    if value is None:
+        return "—"
+    return ("%g" % round(float(value), digits)).replace(".", ",")
 
 
 def mass_value(op, value, current):
@@ -304,13 +565,53 @@ def mass_value(op, value, current):
     return int(value)
 
 
+def mass_float(op, value, current):
+    """MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: dam_multiply's new value."""
+    current = float(current or 0)
+    if op == "mul":
+        return round(current * value, 2)
+    if op == "add":
+        return round(current + value, 2)
+    return round(float(value), 2)
+
+
 def mass_plan(rows, field, op, value):
     """[(row, {col: (old, new)}, [notes])] - the new values clamped to what
-    the column (and the game) takes; min/max pairs kept in order."""
+    the column (and the game) takes; min/max pairs kept in order.
+    MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: "skill" changes only the slots
+    that have a skill (skill_vnumN and skill_levelN > 0), clamped to 1..40 -
+    a 0 never becomes a skill; dam_multiply is a float, rounded to 0,01 and
+    clamped to its range only when it really changes (a 0 times 2 stays 0)."""
     cols = MASS_FIELDS[field][1]
     plan = []
     for row in rows:
         changes, notes = {}, []
+        if field == "skill":
+            for i in SKILL_SLOTS:
+                col, old = f"skill_level{i}", int(row.get(f"skill_level{i}") or 0)
+                if old <= 0 or not int(row.get(f"skill_vnum{i}") or 0):
+                    continue
+                new = mass_value(op, value, old)
+                if not 1 <= new <= SPECS[col]["max"]:
+                    clamped = max(1, min(SPECS[col]["max"], new))
+                    notes.append(f"umiejętność {i + 1}: {new} poza zakresem 1–40 – ustawiono {clamped}")
+                    new = clamped
+                changes[col] = (old, new)
+            if any(old != new for old, new in changes.values()):
+                plan.append((row, changes, notes))
+            continue
+        if field in MASS_FLOAT_FIELDS:
+            col = cols[0]
+            spec = SPECS[col]
+            old = round(float(row.get(col) or 0), 2)
+            new = mass_float(op, value, old)
+            if new != old and not spec["min"] <= new <= spec["max"]:
+                clamped = max(spec["min"], min(spec["max"], new))
+                notes.append(f"{spec['label']}: {_num(new)} poza zakresem – ustawiono {_num(clamped)}")
+                new = clamped
+            if new != old:
+                plan.append((row, {col: (old, new)}, notes))
+            continue
         for col in cols:
             spec = SPECS[col]
             new = mass_value(op, value, row.get(col))
@@ -358,6 +659,8 @@ def mass_description(field, op, value):
     label = MASS_FIELDS[field][0]
     if op == "mul":
         return f"{label} ×{('%g' % value).replace('.', ',')}"
+    if field in MASS_FLOAT_FIELDS:  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
+        return f"{label} {'+' if op == 'add' and value >= 0 else ''}{_num(value)}" if op == "add" else f"{label} = {_num(value)}"
     if op == "add":
         return f"{label} {int(value):+d}"
     return f"{label} = {int(value)}"
@@ -399,6 +702,32 @@ def install(bp, ctx):
         found = rows(select_sql("vnum=%s"), (vnum,))
         return decorate(found[0]) if found else None
 
+    # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: the skills of the shown monsters and the mob power table
+    def load_skills(mob_rows):
+        vnums = sorted({int(r.get(c) or 0) for r in mob_rows for c in SKILL_VNUM_COLS} - {0})
+        if not vnums:
+            return {}
+        try:
+            found = rows("SELECT dwVnum, CAST(`szName` AS BINARY) AS szName, bMaxLevel, szPointOn, szPointPoly, "
+                         f"CAST(`setFlag` AS CHAR) AS setFlag FROM world.skill_proto WHERE dwVnum IN "
+                         f"({','.join(['%s'] * len(vnums))})", vnums)
+        except Exception:
+            return {}
+        return {int(r["dwVnum"]): r for r in found}
+
+    def power_table():
+        """common.locale SKILL_POWER_BY_LEVEL as the game reads it (config.cpp) - the built-in copy if unreadable."""
+        try:
+            found = rows("SELECT mValue FROM common.locale WHERE mKey='SKILL_POWER_BY_LEVEL'")
+            values = [int(v) for v in str(common.text_of(found[0]["mValue"])).split()][:SKILL_MAX_LEVEL + 1]
+            return values if len(values) == SKILL_MAX_LEVEL + 1 else MOB_SKILL_POWER
+        except Exception:
+            return MOB_SKILL_POWER
+
+    def estimates(mob_rows):
+        skills, table = load_skills(mob_rows), power_table()
+        return {int(r["vnum"]): hit_estimate(r, skills, table) for r in mob_rows}, skills, table
+
     def map_choices(index):
         if not index:
             return []
@@ -428,7 +757,10 @@ def install(bp, ctx):
         if index and results:
             for row in results:
                 where_map[row["vnum"]] = index.maps_of_mob(row["vnum"])[:4]
+        bosses = [r for r in results if r["kind"] == "boss"]
+        hits = estimates(bosses)[0] if bosses else {}
         return render_template("dbeditor/mobs.html", results=results, more=more, limit=LIMIT, f=filters,
+                               hits=hits, fmt_hits=fmt_hits, hit_note=HIT_NOTE,
                                searched=searched, ranks=RANKS, kinds=KINDS, maps=map_choices(index),
                                has_index=bool(index), where_map=where_map,
                                map_title=index.map_title if index else str, **page_context())
@@ -445,6 +777,11 @@ def install(bp, ctx):
                 return redirect(url_for("dbeditor.mob_edit", vnum=vnum))
             new, errors = {}, []
             for col in EDIT_COLS:
+                if col in SKILL_LEVEL_COLS and not int(mob.get(col.replace("level", "vnum")) or 0):
+                    continue  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: no skill in the slot - no level
+                if col == "dam_multiply" and col in request.form and common._same(
+                        SPECS[col], str(request.form.get(col)).strip().replace(",", ".") or None, mob.get(col)):
+                    continue  # unchanged (a 0 from the old data is kept although under the form's minimum)
                 if col == "ai_flag":
                     if "ai_flag_sent" not in request.form:
                         continue
@@ -487,7 +824,10 @@ def install(bp, ctx):
             history = []
         index = spawn_index()
         spawns = index.spawns_of_mob(vnum) if index else []
+        hits, _skills, table = estimates([mob])
         return render_template("dbeditor/mobs_edit.html", mob=mob, raw=raw, specs=ALL_SPECS, ranks=RANKS,
+                               hit=hits[int(mob["vnum"])], fmt_hits=fmt_hits, hit_note=HIT_NOTE,
+                               skill_hint=SKILL_LEVEL_HINT, power=table, num=_num,
                                resists=RESISTS, ai_flags=AI_FLAGS, ai_labels=AI_FLAG_LABELS, history=history,
                                boot_notes=boot_notes(vnum), boot_always=sorted(boot_cols(vnum)),
                                boot_warning=BOOT_WARNING, spawns=spawns[:30], has_index=bool(index),
@@ -537,7 +877,16 @@ def install(bp, ctx):
                   "w historii zmian. Zmiany czekają na zastosowanie (restart gry – „Zastosuj”).", "success")
             return redirect(url_for("dbeditor.proto_history", tbl=TABLE))
         boot_hits = sum(1 for row, changes, _n in plan if set(changes) & boot_cols(row["vnum"]))
-        return render_template("dbeditor/mobs_mass.html", f=filters, field=field, op=op, value=value, error=error,
+        # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: the estimated hits before -> after, for the shown rows
+        shown = plan[:MASS_PREVIEW_ROWS]
+        hit_changes = {}
+        if field in HIT_FIELDS and shown:
+            skills, table = load_skills([row for row, _c, _n in shown]), power_table()
+            for row, changes, _n in shown:
+                after = dict(row, **{col: new for col, (_old, new) in changes.items()})
+                hit_changes[int(row["vnum"])] = (hit_estimate(row, skills, table), hit_estimate(after, skills, table))
+        return render_template("dbeditor/mobs_mass.html", hit_changes=hit_changes, fmt_hits=fmt_hits,
+                               hit_note=HIT_NOTE, skill_hint=SKILL_LEVEL_HINT, num=_num, f=filters, field=field, op=op, value=value, error=error,
                                raw_value=source.get("wartosc", ""), searched=searched, more=more,
                                matched=len(results), plan=plan[:MASS_PREVIEW_ROWS], plan_total=len(plan),
                                plan_vnums=",".join(str(row["vnum"]) for row, _c, _n in plan),
@@ -596,4 +945,5 @@ def install(bp, ctx):
                                dbe_csrf=common.csrf_token(), **page_context())
 
     dbeditor.add_section("dbeditor.mobs", "👹", "Potwory i bossowie",
-                         "PŻ, obrażenia, obrona, poziom, exp i yang, agresja, odporności – także masowo (np. ×2 PŻ bossów)")
+                         "PŻ, obrażenia, mnożnik obrażeń i siła umiejętności (z podglądem ciosów), obrona, poziom, exp i "
+                         "yang, agresja, odporności – także masowo (np. ×2 PŻ bossów)")

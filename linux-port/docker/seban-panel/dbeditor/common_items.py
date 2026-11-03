@@ -44,7 +44,8 @@ _STATE = {"table_ready": False, "history_installed": False}
 # "world.item_proto" -> {"key": "vnum", "cols": {col: spec}, "title": ...}.
 # spec = {"kind": "int", "min": .., "max": ..} | {"kind": "cp1250", "max": n}
 #      | {"kind": "ascii", "max": n} | {"kind": "set", "members": [...]} (a SET
-#      column, mobs.py); "label" is what the history shows.
+#      column, mobs.py) | {"kind": "float", "min": .., "max": .., "digits": n}
+#      (a FLOAT column, mobs.py dam_multiply); "label" is what the history shows.
 TABLES = {}
 
 
@@ -256,6 +257,20 @@ def validate(spec, raw, label):
         if not spec["min"] <= value <= spec["max"]:
             return None, f"{label}: dozwolone {spec['min']}…{spec['max']}, podano {value}."
         return value, None
+    if kind == "float":
+        # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1 (mobs.py dam_multiply): a
+        # FLOAT column - "2,5" or "2.5", rounded to the spec's digits.
+        text = str(raw if raw is not None else "").strip().replace(" ", "").replace(",", ".")
+        if text in ("", "-", "+", "."):
+            return None, f"{label}: podaj liczbę."
+        try:
+            value = round(float(text), spec.get("digits", 2))
+        except ValueError:
+            return None, f"{label}: „{text}” nie jest liczbą (np. 2 albo 1,5)."
+        if value != value or not spec["min"] <= value <= spec["max"]:
+            return None, (f"{label}: dozwolone {str(spec['min']).replace('.', ',')}…"
+                          f"{str(spec['max']).replace('.', ',')}, podano {text.replace('.', ',')}.")
+        return value, None
     if kind == "set":
         # MT2009_PLUS_DB_EDITOR_V1 (mobs.py): a MariaDB SET column (mob_proto
         # ai_flag ...) - a comma list of the spec's members, kept in their order.
@@ -306,6 +321,11 @@ def _same(spec, a, b):
             return int(a) == int(b)
         except (TypeError, ValueError):
             return False
+    if spec["kind"] == "float":  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1: a FLOAT reads back as 2.2000000476...
+        try:
+            return abs(float(a) - float(b)) < 0.5 * 10 ** -spec.get("digits", 2)
+        except (TypeError, ValueError):
+            return a is None and b is None
     if spec["kind"] == "set":  # MT2009_PLUS_DB_EDITOR_V1 (mobs.py): order does not matter
         def members(value):
             return {p.strip().upper() for p in (text_of(value) or "").split(",") if p.strip()}
@@ -494,6 +514,8 @@ def _revert(batch=None, history_id=None, force=False):
                              f"a zapis ustawił „{row['new_value']}”")
         old = row["old_value"]
         value = int(old) if spec["kind"] == "int" and old not in (None, "") else (old or "")
+        if spec["kind"] == "float" and old not in (None, ""):  # MT2009_PLUS_DB_EDITOR_MOB_SKILL_POWER_V1
+            value = float(old)
         # The oldest value wins when one batch touched a field twice.
         updates.setdefault((row["tbl"], row["row_key"]), {})[row["col"]] = value
     if conflicts and not force:
