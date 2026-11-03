@@ -336,15 +336,17 @@ class OfflineShopBuilder(ui.ScriptWindow):
 				delItem(i)
 				continue
 
+			# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: by the item's window (the bag or a storage of the Dodatkowy ekwipunek)
+			window = self.itemStock[i][0]
 			pos = self.itemStock[i][1]
 
-			itemCount = getItemCount(pos)
+			itemCount = getItemCount(window, pos)
 			if itemCount <= 1:
 				itemCount = 0
 
-			socket = tuple(player.GetItemMetinSocket(pos, j) for j in range(player.METIN_SOCKET_MAX_NUM))
+			socket = tuple(player.GetItemMetinSocket(window, pos, j) for j in range(player.METIN_SOCKET_MAX_NUM))
 
-			setitemVNum(i, getitemVNum(pos), itemCount, socket=socket)
+			setitemVNum(i, getitemVNum(window, pos), itemCount, socket=socket)
 
 		self.itemSlot.RefreshSlot()
 
@@ -365,6 +367,13 @@ class OfflineShopBuilder(ui.ScriptWindow):
 			attachedSlotPos = mouseModule.mouseController.GetAttachedSlotNumber()
 			mouseModule.mouseController.DeattachObject()
 
+			# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: an item of the Dodatkowy ekwipunek too
+			ekw = __import__("uiekwipunek")
+			if ekw.IsEkwSlotType(attachedSlotType):
+				ekw.ReleaseIcon()
+				self.CreatePriceInput(ekw.WindowOfSlotType(attachedSlotType), attachedSlotPos, selectedSlotPos)
+				return
+
 			if player.SLOT_TYPE_INVENTORY != attachedSlotType and player.SLOT_TYPE_DRAGON_SOUL_INVENTORY != attachedSlotType:
 				return
 			attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
@@ -375,14 +384,19 @@ class OfflineShopBuilder(ui.ScriptWindow):
 		if type != "myshop":
 			return
 
-		itemVnum = player.GetItemIndex(slotNumber)
+		self.QuickAddFrom(player.INVENTORY, slotNumber)
+
+	# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the right click's way in - the bag's and the Dodatkowy ekwipunek's
+	# (uiekwipunek.QuickAdd, a storage's window): the price window for the first free cell.
+	def QuickAddFrom(self, window, slotNumber):
+		itemVnum = player.GetItemIndex(window, slotNumber)
 		if itemVnum > 0:
 			item.SelectItem(itemVnum)
 			(itemWidth, itemHeight) = item.GetItemSize()
 
 			freeSlot = self.itemSlot.FindEmptySlot(itemHeight)
 			if freeSlot >= 0:
-				self.CreatePriceInput(player.INVENTORY, slotNumber, freeSlot)
+				self.CreatePriceInput(window, slotNumber, freeSlot)
 
 	def CanPlaceOnShopSlot(self, destSlotPos, itemHeight):
 		return offlineshopui.CanPlaceItemOnShopSlot(destSlotPos, itemHeight,
@@ -495,7 +509,7 @@ class OfflineShopBuilder(ui.ScriptWindow):
 		SetPrivateShopItemPrice(self.priceInputBoard.itemVNum, count, price, sockets)
 		eventManager.EventManager().send_event(eventManager.ADD_ITEM_TO_SHOP_BUILDER, sourceSlotPos, attachedInvenType)
 		self.__AddItemToPrivateShop(targetSlotPos, sourceSlotPos, attachedInvenType, price)
-		self.__AddShopConfiguration(targetSlotPos, sourceSlotPos, price)
+		self.__AddShopConfiguration(targetSlotPos, sourceSlotPos, price, attachedInvenType)
 		snd.PlaySound("sound/ui/drop.wav")
 
 		self.__ClosePriceInputBoard()
@@ -570,8 +584,12 @@ class OfflineShopBuilder(ui.ScriptWindow):
 		if self.tooltipItem:
 			self.tooltipItem.HideToolTip()
 
-	def __AddShopConfiguration(self, targetSlotPos, sourceSlotPos, price):
-		self.savedShopConfiguration[str(targetSlotPos)] = (sourceSlotPos, price)
+	def __AddShopConfiguration(self, targetSlotPos, sourceSlotPos, price, window=None):
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the item's window third (a line saved before has two - the bag)
+		if window is None or window == player.INVENTORY:
+			self.savedShopConfiguration[str(targetSlotPos)] = (sourceSlotPos, price)
+		else:
+			self.savedShopConfiguration[str(targetSlotPos)] = (sourceSlotPos, price, window)
 		self.__SaveShopConfigurationToFile()
 
 	def __DelShopConfiguration(self, shopSlotPos):
@@ -599,7 +617,8 @@ class OfflineShopBuilder(ui.ScriptWindow):
 			for targetSlotPos, data in self.savedShopConfiguration.items():
 				sourceSlotPos = data[0]
 				price = data[1]
-				self.__AddItemToPrivateShop(int(targetSlotPos), sourceSlotPos, player.INVENTORY, price)
+				window = data[2] if len(data) > 2 else player.INVENTORY # MT2009_PLUS_EKWIPUNEK_HANDEL_V1
+				self.__AddItemToPrivateShop(int(targetSlotPos), sourceSlotPos, window, price)
 			return True
 		return False
 

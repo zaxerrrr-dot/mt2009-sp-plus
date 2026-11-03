@@ -195,14 +195,19 @@ class ExchangeDialog(ui.ScriptWindow):
 		if type != "exchange":
 			return
 
-		itemVnum = player.GetItemIndex(slotNumber)
+		self.QuickAddFrom(player.INVENTORY, slotNumber)
+
+	# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the right click's way in - the bag's (OnQuickAddInventoryItem) and the
+	# Dodatkowy ekwipunek's (uiekwipunek.QuickAdd, a storage's window): the first free cell of the own side.
+	def QuickAddFrom(self, window, slotNumber):
+		itemVnum = player.GetItemIndex(window, slotNumber)
 		if itemVnum > 0:
 			item.SelectItem(itemVnum)
 			(itemWidth, itemHeight) = item.GetItemSize()
 
 			freeSlot = self.OwnerSlot.FindEmptySlot(itemHeight)
 			if freeSlot >= 0:
-				self.AddToExchange(player.INVENTORY, slotNumber, freeSlot)
+				self.AddToExchange(window, slotNumber, freeSlot)
 
 	def AddToExchange(self, window_type, sourceSlotNumber, destSlotNumber):
 		itemID = player.GetItemIndex(window_type, sourceSlotNumber)

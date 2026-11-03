@@ -38,6 +38,14 @@
 // quest items counted and taken from the storages too (CountSpecifyItem / RemoveSpecifyItem), the NPC shop's sale
 // ("/ekwipunek sprzedaj"), the safebox both ways, a trade, the crafting window ("/ekwipunek kostka"). Items already in
 // a bag stay there - Ameria has no button that moves them (a drag does).
+// MT2009_PLUS_EKWIPUNEK_HANDEL_V1 (the owner, 3 November 2026: "Z dodatkowego EQ mozna dawac przedmioty bezposrednio
+// na handel i na tobol (sklep offline)"): the trade (CExchange - GetItem by the window, SetExchanging, Done routes) and
+// the offline shop (CHARACTER::OpenMyShop -> OpenOfflineShop, the Ikarus shop's add-item: GetItem by the window,
+// CheckItem, the line moved out of the storage at once) take a storage's item straight from its cell; the client offers
+// it now (root/uiekwipunek.py QuickAdd / InUse, uiexchange.py, offlineshopbuilder.py, offlineshopmanage.py,
+// offlineshopui.py). A stack in the trade is not joined by pickups (Mt2009EkwAutoStack*), an old-style stall's sale
+// leaves the bag's quickslot alone and the price hint (/flea_price) reads the storages (server-patches/ekwipunek
+// "HANDEL" edits).
 //
 // Commands (root/uiekwipunek.py):
 //   /ekwipunek hello                              this client knows the windows - route from now on (and the stored
@@ -546,7 +554,9 @@ LPITEM CHARACTER::Mt2009EkwAutoStack(LPITEM item, bool& bSkipBag)
 			LPITEM item2 = Mt2009SpecialGetItem(bWindow, i);
 			if (!item2 || item2 == item || item2->GetVnum() != item->GetVnum() || !EkwSameSockets(item, item2))
 				continue;
-			if (item2->GetCount() >= item2->GetMaxStack())
+			// MT2009_PLUS_EKWIPUNEK_HANDEL_V1: a stack in the trade keeps the count both sides were shown (a pickup
+			// joined it, and the trade handed over more than was offered)
+			if (item2->GetCount() >= item2->GetMaxStack() || item2->IsExchanging())
 				continue;
 
 			const ITEM_COUNT bCount2 = MIN(item2->GetMaxStack() - item2->GetCount(), bCount);
@@ -586,6 +596,8 @@ LPITEM CHARACTER::Mt2009EkwAutoStackProto(const TItemTable* p, DWORD dwItemVnum,
 		{
 			LPITEM item = Mt2009SpecialGetItem(bWindow, i);
 			if (!item || item->GetVnum() != dwItemVnum || !EkwProtoSockets(item))
+				continue;
+			if (item->IsExchanging())	// MT2009_PLUS_EKWIPUNEK_HANDEL_V1: a stack in the trade keeps its count
 				continue;
 
 			if (IS_SET(p->dwFlags, ITEM_FLAG_MAKECOUNT) && bCount < (ITEM_COUNT) p->alValues[1])

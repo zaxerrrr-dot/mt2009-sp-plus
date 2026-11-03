@@ -414,12 +414,14 @@ def RequestDialog(dialog, windowType, slotIndex):
 	}
 	_requests[requestID] = request
 	dialog.fleaPriceRequestID = requestID
-	if windowType == player.INVENTORY:
+	# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: a storage's item of the Dodatkowy ekwipunek is priced too (the server's
+	# do_flea_price reads the storages - server-patches/ekwipunek "HANDEL")
+	if windowType == player.INVENTORY or __import__("uiekwipunek").IsEkwWindow(windowType):
 		dialog.fleaPriceLines = FormatPriceLines(None, None, None)
 		net.SendChatPacket("/flea_price %d %d %d %d" % (
 			requestID, windowType, slotIndex, REQUEST_VERSION))
 	else:
-		# The server prices a cell of the inventory only (do_flea_price).
+		# The server prices a cell of the inventory (and the storages) only (do_flea_price).
 		request["answered"] = True
 		dialog.fleaPriceLines = (T("Brak danych cenowych dla tego przedmiotu.", "No price data for this item."), "", "", "")
 	if _GetPriceWindowOpen():

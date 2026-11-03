@@ -186,6 +186,9 @@ class OfflineShopManage(ui.ScriptWindow):
 		def OnQuickAddInventoryItem(self, owner, type, slotNumber):
 			pass
 
+		def QuickAddFrom(self, owner, window, slotNumber):
+			pass
+
 		def OnFixedUpdate(self, owner):
 			pass
 
@@ -224,16 +227,21 @@ class OfflineShopManage(ui.ScriptWindow):
 			owner.ShowAddItemDialog(inventorySlotIndex, shopSlotIndex, inventoryWindowType, itemVnum, itemCount)
 
 		def OnQuickAddInventoryItem(self, owner, type, slotNumber):
-			itemVnum = player.GetItemIndex(slotNumber)
+			self.QuickAddFrom(owner, player.INVENTORY, slotNumber)
+
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the bag's right click and the Dodatkowy ekwipunek's (uiekwipunek.QuickAdd,
+		# a storage's window)
+		def QuickAddFrom(self, owner, window, slotNumber):
+			itemVnum = player.GetItemIndex(window, slotNumber)
 			if itemVnum > 0:
 				item.SelectItem(itemVnum)
 				(itemWidth, itemHeight) = item.GetItemSize()
 
 				freeSlot = owner.FindFreeCell(itemHeight)  # MT2009_PLUS_SHOP_QOL_V2: both pages
 				if freeSlot >= 0:
-					itemVnum = player.GetItemIndex(slotNumber)
-					itemCount = player.GetItemCount(slotNumber)
-					self.OnSelectEmptySlot(owner, slotNumber, freeSlot, player.INVENTORY, itemVnum, itemCount)
+					itemVnum = player.GetItemIndex(window, slotNumber)
+					itemCount = player.GetItemCount(window, slotNumber)
+					self.OnSelectEmptySlot(owner, slotNumber, freeSlot, window, itemVnum, itemCount)
 
 		def OnFixedUpdate(self, owner):
 			data = constInfo.myshop_data
@@ -513,6 +521,11 @@ class OfflineShopManage(ui.ScriptWindow):
 			return
 
 		self.visualState.OnQuickAddInventoryItem(self, type, slotNumber)
+
+	# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: uiekwipunek.QuickAdd - a storage's item onto the open shop (its state decides)
+	def QuickAddFrom(self, window, slotNumber):
+		if self.visualState:
+			self.visualState.QuickAddFrom(self, window, slotNumber)
 
 	def ShopSearch(self):
 		eventManager.EventManager().send_event(offlineShopSearch.EVENT_OPEN_SHOP_SEARCH)
@@ -1637,9 +1650,15 @@ class OfflineShopManage(ui.ScriptWindow):
 		attachedSlotType = mouseModule.mouseController.GetAttachedType()
 		attachedSlotPos = mouseModule.mouseController.GetAttachedSlotNumber()
 		mouseModule.mouseController.DeattachObject()
-		if player.SLOT_TYPE_INVENTORY != attachedSlotType and player.SLOT_TYPE_DRAGON_SOUL_INVENTORY != attachedSlotType:
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: an item of the Dodatkowy ekwipunek too
+		ekw = __import__("uiekwipunek")
+		if ekw.IsEkwSlotType(attachedSlotType):
+			ekw.ReleaseIcon()
+			attachedInvenType = ekw.WindowOfSlotType(attachedSlotType)
+		elif player.SLOT_TYPE_INVENTORY != attachedSlotType and player.SLOT_TYPE_DRAGON_SOUL_INVENTORY != attachedSlotType:
 			return
-		attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
+		else:
+			attachedInvenType = player.SlotTypeToInvenType(attachedSlotType)
 		count = player.GetItemCount(attachedInvenType, attachedSlotPos)
 		itemVNum = player.GetItemIndex(attachedInvenType, attachedSlotPos)
 		item.SelectItem(itemVNum)
@@ -1650,7 +1669,8 @@ class OfflineShopManage(ui.ScriptWindow):
 		if slot // shop.SHOP_PLAYER_WIDTH + item.GetItemSize()[1] > shop.SHOP_PLAYER_HEIGHT:
 			chat.AppendChat(chat.CHAT_TYPE_INFO, localeInfo.OFFLINE_SHOP_CANNOT_PLACE_ITEM_ON_ITEM)
 			return
-		self.OnSelectEmptySlot(attachedSlotPos, cell, attachedSlotType, itemVNum, count)
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: the item's window (the slot type was passed, the bag's number by chance)
+		self.OnSelectEmptySlot(attachedSlotPos, cell, attachedInvenType, itemVNum, count)
 
 	def __OnWideLeftClick(self, slot):
 		self.OnSelectItemSlotLeftClick(self.__WideCell(slot))
@@ -1950,8 +1970,11 @@ class OfflineShopManage(ui.ScriptWindow):
 		# type, not the window - the same number for the bag (1), another for
 		# the Dragon Soul inventory (11 against window 5), so a Dragon Soul
 		# stone was looked up and sent from a window that does not exist.
-		if inventoryWindowType == player.SLOT_TYPE_DRAGON_SOUL_INVENTORY:
-			inventoryWindowType = player.SlotTypeToInvenType(inventoryWindowType)
+		# MT2009_PLUS_EKWIPUNEK_HANDEL_V1: every grid hands over the window now (offlineshopui.MyShopSlots,
+		# __OnWideEmptySlot, QuickAddFrom) - the Dodatkowy ekwipunek's first storage is window 11, the Dragon Soul
+		# inventory's slot type's number, and must not be turned into the Dragon Soul window.
+		if not self.visualState:
+			return
 		self.visualState.OnSelectEmptySlot(self, inventorySlotIndex, shopSlotIndex, inventoryWindowType, itemVnum, itemCount)
 
 	def ShowRevenueToolTip(self):
