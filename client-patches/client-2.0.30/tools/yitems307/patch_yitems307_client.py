@@ -4,8 +4,8 @@
 # trade, a stall, the merchant, the safebox - so without this the old client still refuses what the server takes.
 #
 #   39002 / 72003 Pierscien Doswiadczenia: STACKABLE on, IRREMOVABLE off, ANTI_STACK / ANTI_SELL / ANTI_GIVE / ANTI_MYSHOP off.
-#   70005 Pierscien Doswiadczenia, 70043 Rekawica Zlodzieja: IRREMOVABLE off, ANTI_SELL / ANTI_GIVE / ANTI_MYSHOP off.
-#   72005 Rekawica Zlodzieja: IRREMOVABLE off.
+#   70005 Pierscien Doswiadczenia, 70043 Rekawica Zlodzieja: IRREMOVABLE kept (owner 3 Nov), ANTI_SELL / ANTI_GIVE / ANTI_MYSHOP off.
+#   72005 Rekawica Zlodzieja: IRREMOVABLE kept (owner 3 Nov).
 #   39006 Peleryna Mestwa: ANTI_STACK / ANTI_SELL / ANTI_GIVE / ANTI_MYSHOP off.
 #   50516-50523 Ksiegi Riposty: STACKABLE on, stack 200.
 #   49990 Lodowa Runa Aury: ANTI_SAFEBOX off.
@@ -42,9 +42,9 @@ TRADE = ANTI_SELL | ANTI_GIVE | ANTI_MYSHOP
 RULES = {
     39002: (FLAG_STACKABLE, FLAG_IRREMOVABLE, TRADE | ANTI_STACK, None),
     72003: (FLAG_STACKABLE, FLAG_IRREMOVABLE, TRADE | ANTI_STACK, None),
-    70005: (0, FLAG_IRREMOVABLE, TRADE, None),
-    70043: (0, FLAG_IRREMOVABLE, TRADE, None),
-    72005: (0, FLAG_IRREMOVABLE, 0, None),
+    70005: (FLAG_IRREMOVABLE, 0, TRADE, None),	# MT2009_PLUS_IRREMOVABLE_KEEP_V1: stays irremovable
+    70043: (FLAG_IRREMOVABLE, 0, TRADE, None),
+    72005: (FLAG_IRREMOVABLE, 0, 0, None),
     39006: (0, 0, TRADE | ANTI_STACK, None),
     49990: (0, 0, ANTI_SAFEBOX, None),
     39015: (FLAG_STACKABLE, 0, TRADE | ANTI_STACK, 200),

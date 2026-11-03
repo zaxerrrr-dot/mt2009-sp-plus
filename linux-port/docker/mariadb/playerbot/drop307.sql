@@ -18,9 +18,11 @@
 --    none): stacks and trades as 39002.
 UPDATE world.item_proto SET flag = (flag | 4) & ~256, antiflag = antiflag & ~(32768 | 256 | 8192 | 65536)
  WHERE vnum IN (39002, 72003);
-UPDATE world.item_proto SET flag = flag & ~256, antiflag = antiflag & ~(256 | 8192 | 65536)
+-- MT2009_PLUS_IRREMOVABLE_KEEP_V1 (the owner, 3 November 2026): 70005 / 70043 / 72005 say "cannot be taken off" and stay so -
+-- a worn one is destroyed through the question (server-patches/irrem); trade stays allowed.
+UPDATE world.item_proto SET flag = flag | 256, antiflag = antiflag & ~(256 | 8192 | 65536)
  WHERE vnum IN (70005, 70043);
-UPDATE world.item_proto SET flag = flag & ~256 WHERE vnum = 72005;
+UPDATE world.item_proto SET flag = flag | 256 WHERE vnum = 72005;
 UPDATE world.item_proto SET antiflag = antiflag & ~(32768 | 256 | 8192 | 65536) WHERE vnum = 39006;
 
 -- 2. Ksiegi Riposty 50516-50523 (Riposta: Wir Miecza .. Przyw. Blysk.): stacks of 200, as every skill book.
