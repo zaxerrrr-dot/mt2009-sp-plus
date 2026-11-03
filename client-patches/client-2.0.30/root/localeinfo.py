@@ -210,6 +210,12 @@ if systemSetting.GetLanguage() == "pl":
 	TOOLTIP_HP_REGEN = SA("Regeneracja P\xaf: +%d%%")
 	TOOLTIP_SP_REGEN = SA("Regeneracja PE: +%d%%")
 
+# MT2009_PLUS_ZODIAC_SCROLL_USE_V1 (the owner, 3 November 2026): the pl locale_game.txt asks "Wymagane Animosfery: %d.
+# Chcesz kontynuowac?" when Pergamin Sfer (72327 / 72329) is used - it reads like a cost; the scroll loads 30 of them
+# (pl-wiki: "Naladuj 30 Animosfer, aby otrzymac wstep do Swiatyni Zodiaku").
+if systemSetting.GetLanguage() == "pl":
+	CHARGE_BEAD_QUESTION = "Czy chcesz na\xb3adowa\xe6 %d Animosfer?"
+
 if app.ENABLE_LOCALE_COMMON:
 	def TryLoadLocaleFile(filename):
 		if pack.Exist(filename) or os.path.exists(filename):

@@ -794,7 +794,8 @@ namespace
 		return ch ? (long long)ch->GetGold() - GetPlayerBotReservedGold(ch) - (long long)PLAYERBOT_SHOPPING_GOLD_FLOOR : 0;
 	}
 
-	// The Kupiec Zodiaku's price: the shop's line, else the item's.
+	// The Kupiec Zodiaku's price of one piece: the shop's line over its count (MT2009_PLUS_ZODIAC_MERCHANT_V1: the line of
+	// Pryzmaty (Q) is x200 for 3 000 000 Yang - a bot buying a few paid the whole line for each), else the item's.
 	long long GetZrunShopPrice(DWORD vnum)
 	{
 		if (LPSHOP shop = CShopManager::instance().Get(ZRUN_MERCHANT_SHOP))
@@ -802,7 +803,7 @@ namespace
 			const std::vector<CShop::SHOP_ITEM>& offers = shop->GetItemVector();
 			for (size_t i = 0; i < offers.size(); ++i)
 				if (offers[i].vnum == vnum && offers[i].price > 0)
-					return (long long)offers[i].price;
+					return std::max<long long>(1, (long long)offers[i].price / std::max<long long>(1, (long long)offers[i].count));
 		}
 		const TItemTable* proto = ITEM_MANAGER::instance().GetTable(vnum);
 		return proto ? (long long)proto->dwGold : 0;

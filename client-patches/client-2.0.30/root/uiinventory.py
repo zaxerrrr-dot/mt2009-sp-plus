@@ -3369,8 +3369,10 @@ class InventoryWindow(ui.ScriptWindow):
 		elif getattr(app, "ENABLE_12ZI", 0) and ItemVNum in (72327, 72329, 72328):
 			self.questionDialog = uiCommon.QuestionDialog()
 			self.questionDialog.SetText(self.GetConfirmQuestion(ItemVNum))
-			(width, height) = self.questionDialog.GetTextSize()
-			self.questionDialog.SetWidth(width+16)
+			# MT2009_PLUS_ZODIAC_SCROLL_USE_V1 (the owner, 3 November 2026: "Pergamin Sfer nie jest klikalny"): our
+			# uiCommon.QuestionDialog has no GetTextSize - the AttributeError ended the click before any packet, so
+			# Pergamin Sfer and Znak Straznika were never used; the text line has it (as offlineshopmanage.py)
+			self.questionDialog.SetWidth(max(self.questionDialog.GetWidth(), self.questionDialog.textLine.GetTextSize()[0] + 40))
 			self.questionDialog.SetAcceptEvent(ui.__mem_func__(self.__UseItemQuestionDialog_OnAccept))
 			self.questionDialog.SetCancelEvent(ui.__mem_func__(self.__UseItemQuestionDialog_OnCancel))
 			self.questionDialog.Open()
