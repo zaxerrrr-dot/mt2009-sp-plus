@@ -4637,6 +4637,17 @@ INSERT IGNORE INTO world.item_proto SELECT * FROM world.skrzynie_klas_item;
 DROP TEMPORARY TABLE world.skrzynie_klas_item;
 UPDATE world.item_proto SET type = 18, subtype = 0, stack = 200, flag = 4, antiflag = IF(vnum >= 71204, 221568, 90496) WHERE vnum IN (39048, 71204, 39050, 71206, 39052, 71208, 39054, 71210, 39056, 71212, 39058, 71214, 39060, 71216, 39062, 71218);" \
     || fail_step "could not add the class chests (39048-39062) and their encyclopedias (71204-71218)"
+# MT2009_PLUS_CLASS_CHESTS_V2 (the owner, 3 November 2026: "skrzynia dla danej postaci powinna byc dostepna tylko na danej
+# postaci"): each chest and its encyclopedia carry the other classes' antiflags (ANTI_MUSA 4, ANTI_ASSASSIN 8, ANTI_SURA 16,
+# ANTI_MUDANG 32, ANTI_WOLFMAN 262144) - the ItemShop's wear filter shows a warrior only the two warrior chests, and another
+# class cannot open one.
+db -e "UPDATE world.item_proto SET antiflag = (antiflag & ~(4|8|16|32|262144)) | CASE
+    WHEN vnum IN (39048, 39050, 71204, 71206) THEN 8|16|32|262144
+    WHEN vnum IN (39052, 39054, 71208, 71210) THEN 4|16|32|262144
+    WHEN vnum IN (39056, 39058, 71212, 71214) THEN 4|8|32|262144
+    ELSE 4|8|16|262144 END
+  WHERE vnum IN (39048, 39050, 39052, 39054, 39056, 39058, 39060, 39062, 71204, 71206, 71208, 71210, 71212, 71214, 71216, 71218);" \
+    || fail_step "could not set the class chests' class antiflags (MT2009_PLUS_CLASS_CHESTS_V2)"
 # MT2009_PLUS_SPIRALA_CZASU_V1 (the owner, 3 November 2026): Spirala Czasu (10%) / (20%) / (30%) for the second ItemShop -
 # GF's vnums 72347 / 72348 / 72349 (pl-wiki "Spirala Czasu (10%)" ..., Owsap's item_proto: value1 = the percent).
 # ITEM_QUEST, stack 200, no drop / sale / trade / private shop, the storeroom allowed (pl-wiki "Magazynowanie: Tak").
