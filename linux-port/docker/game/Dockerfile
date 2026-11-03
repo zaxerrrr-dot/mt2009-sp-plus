@@ -1051,6 +1051,36 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/map; N=$L/map_n_threeway/npc.txt 
     done \
  && echo "share: Grotto of Exile entrance restored in Orc Valley"
 
+# MT2009_PLUS_GROTA2_REGEN_V1: Grota Wygnancow V2 (73, metin2_map_skipia_dungeon_02) had whole rooms without a
+# monster (the owner, 3 November 2026). The package's regen.txt is the old dump of the map: 84 of its 722 lines
+# ("r ... 2410") are commented out because our group_group.txt has no 2410 - the newer dump's skipia1_10 is
+# groups 2417 + 2418, the same as 2409 - and the newer dump (Owsap's uk set) has 598 more points the old file
+# lacks, most of them in the rooms the old file leaves empty, plus Dowodca Yonghan (2491) at five places to our
+# one. Here: the 84 lines come back as "r ... 2409"; grota2/regen.grota2.txt (tools/grota2/gen_grota2.py, which
+# also reports what was where) adds the newer dump's points once each and, where a walkable metre was still more
+# than 40 m of walking from every spawn, a point of the nearest spawn's group_group (the inner 87-90 and the outer
+# 91-97 Setaou stay where they were), every centre on free ground of the map's server_attr, our 90 s; and
+# grota2/boss.grota2.txt the four missing Commanders (our 20 min). 51% of the ground was more than 25 m of walking
+# from any live spawn, 8% is now (the corridors' straight runs, as thin as the package keeps them).
+COPY grota2/ /tmp/grota2-add/
+RUN set -eu; M=/opt/metin2/share/locale/poland/map/metin2_map_skipia_dungeon_02; A=/tmp/grota2-add; L=/opt/metin2/share/locale/poland \
+ && grep -q -E '^73[[:blank:]]+metin2_map_skipia_dungeon_02[[:space:]]*$' "$L/map/index" \
+ && for v in 2408 2409 2411 2412 2413 2414; do grep -q -E "^[[:blank:]]*Vnum[[:blank:]]+$v[[:space:]]*\$" "$L/group_group.txt"; done \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$A/regen.grota2.txt" "$A/boss.grota2.txt" \
+ && test "$(grep -c -E '^//r[[:blank:]].*[[:blank:]]2410[[:space:]]*$' "$M/regen.txt")" = 84 \
+ && n0="$(grep -c -E '^r[[:blank:]]' "$M/regen.txt")" \
+ && sed -i -E 's#^//r([[:blank:]].*[[:blank:]])2410([[:space:]]*)$#r\12409\2#' "$M/regen.txt" \
+ && ! grep -q -E '[[:blank:]]2410[[:space:]]*$' "$M/regen.txt" \
+ && { [ -z "$(tail -c 1 "$M/regen.txt")" ] || printf '\r\n' >> "$M/regen.txt"; } \
+ && cat "$A/regen.grota2.txt" >> "$M/regen.txt" \
+ && test "$(grep -c -E '^r[[:blank:]]' "$M/regen.txt")" = "$((n0 + 84 + $(grep -c -E '^r[[:blank:]]' "$A/regen.grota2.txt")))" \
+ && b0="$(grep -c -E '^m[[:blank:]].*[[:blank:]]2491[[:space:]]*$' "$M/boss.txt")" \
+ && { [ -z "$(tail -c 1 "$M/boss.txt")" ] || printf '\r\n' >> "$M/boss.txt"; } \
+ && cat "$A/boss.grota2.txt" >> "$M/boss.txt" \
+ && test "$(grep -c -E '^m[[:blank:]].*[[:blank:]]2491[[:space:]]*$' "$M/boss.txt")" = "$((b0 + $(grep -c . "$A/boss.grota2.txt")))" \
+ && rm -rf "$A" \
+ && echo "share: Grota Wygnancow V2 - 84 lines of 2410 live, $(grep -c -E '^r[[:blank:]]' "$M/regen.txt") spawn lines, $(grep -c -E '^m[[:blank:]]' "$M/boss.txt") Commanders"
+
 # The Devil's Catacomb (port/shareify.py renders this step; the quest itself is
 # compiled from quest/devilcatacomb_zone.quest above): its Guardian (20367)
 # comes back to Hwang Temple, and the Reaper (1093) drops the Reaper's token -
