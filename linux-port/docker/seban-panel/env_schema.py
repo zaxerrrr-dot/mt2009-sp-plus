@@ -43,7 +43,8 @@ import re
 # 2: M2_SHOP_BIG (2.34) and everything before it.
 # 3: M2_DB_LOG_RETENTION_DAYS, M2_LOG_KEEP_HOURS (2.36).
 # 4: M2_SEBAN_KEEP_* and M2_SEBAN_GEAR_PER_CHARACTER (2.41, MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1).
-SCHEMA_VERSION = 4
+# 5: M2_SEBAN_SNAPSHOT_HEAVY_HOURS (2.41, MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1).
+SCHEMA_VERSION = 5
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -528,6 +529,10 @@ SCHEMA = [
        "Ile ostatnich wpisów historii ekwipunku (karta postaci) zostaje dla każdej postaci; karta pokazuje 60. "
        "Niezależnie od tego nic starszego niż 60 dni. 0 = bez limitu na postać.",
        "baza", "int", "300", SEBAN, min=0, max=100000, step=50),
+    _e("M2_SEBAN_SNAPSHOT_HEAVY_HOURS", "Panel: godziny dużego sprzątania",
+       "W tych godzinach (czas serwera, od-do) panel usuwa zaległe stare migawki; w dzień tylko bieżącą, małą część, "
+       "żeby nie spowalniać logowania i gry. 3-6 = od 3:00 do 6:00, 0-24 = zawsze, 0-0 = tylko ręcznie.",
+       "baza", "string", "3-6", SEBAN, pattern=r"([01]?\d|2[0-4])-([01]?\d|2[0-4])"),
     _e("M2_TABLE_POSTFIX", "Przyrostek nazw tabel", "Przyrostek nazw tabel gry. Zostaw puste.", "baza", "string", "", ["game"], readonly=True,
        readonly_reason="Zmiana przyrostka sprawia, że serwer szuka innych tabel – świat wyglądałby na pusty."),
 
