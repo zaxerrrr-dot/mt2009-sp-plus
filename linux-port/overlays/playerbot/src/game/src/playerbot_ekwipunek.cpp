@@ -17,7 +17,8 @@
 //                      MT2009_PLUS_EKWIPUNEK_CATS_V2 also the Pozwolenia, Marmur Blogoslawienstwa, Blogoslawienstwo
 //                      Przedmiotu, the 6/7 shards and supplements, Wzmocnienie Przedmiotu, Zielona Sila and the costume
 //                      enchant / transform (Mt2009EkwCategoryOf);
-//   CHEST_INVENTORY    ITEM_GIFTBOX (the chests).
+//   CHEST_INVENTORY    ITEM_GIFTBOX (the chests); since MT2009_PLUS_EKWIPUNEK_KEYS_V1 also the boxes opened with a key
+//                      (ITEM_TREASURE_BOX) and their keys (ITEM_TREASURE_KEY).
 // Ameria's sixth window, COSTUME_INVENTORY, is left out: its CItem::IsCostume() returns false before anything else
 // ("when create false for to inv"), so Ameria never fills it.
 //
@@ -189,6 +190,18 @@ BYTE Mt2009EkwCategoryOf(BYTE bType, BYTE bSubType, DWORD dwVnum)
 	if ((dwVnum >= 50187 && dwVnum <= 50196) || dwVnum == 50212 || dwVnum == 50213)
 		return 0;
 	if (bType == ITEM_GIFTBOX)
+		return CHEST_INVENTORY;
+	// MT2009_PLUS_EKWIPUNEK_KEYS_V1 (a player's report on Yohara 3.0.7, 3 November 2026: "Srebrna / Zlota / Platynowa
+	// Skrzynia Skarbow i klucze do nich nie wpadaja do dodatkowego EQ"): the boxes that open only with their key -
+	// ITEM_TREASURE_BOX: Zlota / Srebrna Szkatulka 50006 / 50007 (and the + ones 50012 / 50013), Plat. Skrzynia Skarbow
+	// 83055, the Yohara jewel chests 83051-83053, Skrzynia z Bransoletka 83067 - are chests as well, and their keys -
+	// ITEM_TREASURE_KEY: Zloty / Srebrny Klucz 50008 / 50009 (+ 50014 / 50015), Klucz Nimfy Wodnej 50043, Idealny Klucz
+	// 83054, Plat. Klucz do Skrz. Sk. 83056 - lie next to them, so a key is dropped on its box inside the one window
+	// (root/uiekwipunek.py: a key on a box is a use, CHARACTER::UseItemEx ITEM_TREASURE_KEY takes any window's box).
+	// Ameria's IsChest() knew only ITEM_GIFTBOX - these types it did not have in its storages. Kept with
+	// root/uiekwipunek.py (CategoryOf, TREASURE_TYPES) in step; a bot keeps them in its bag while it has room
+	// (playerbot_ekwipunek_bots.h - its box opening reads the bag).
+	if (bType == ITEM_TREASURE_BOX || bType == ITEM_TREASURE_KEY)
 		return CHEST_INVENTORY;
 	return 0;
 }
