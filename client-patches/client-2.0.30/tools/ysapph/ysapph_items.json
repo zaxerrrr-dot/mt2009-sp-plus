@@ -1,0 +1,37 @@
+{
+"_comment": "MT2009_PLUS_SMALL_BLESSING_V1 / MT2009_PLUS_SERVER_CONFIG_V1: the SAPPHIRE calendar's items the client lacked - the server's world.item_proto rows (72351 male_blogoslawienstwo.sql; 53235 mod/30_costume_pack.sql; 71187 item_proto.mt2009plus.sql), the pet's and the mount's monsters (mod/30_costume_pack.sql) and the GF icons in client-2.0.30/root/icon/item.",
+"items": [
+ {"vnum": 72351, "name": "Male Blogoslawienstwo", "locale_name": "Małe Błogosławieństwo", "type": 3, "subtype": 10,
+  "weight": 0, "size": 1, "stack": 200, "antiflag": 204928, "flag": 24580, "wearflag": 0, "gold": 150000,
+  "shop_buy_price": 0, "limittype0": 0, "limitvalue0": 0, "limittype1": 0, "limitvalue1": 0,
+  "applytype0": 0, "applyvalue0": 0, "applytype1": 0, "applyvalue1": 0, "applytype2": 0, "applyvalue2": 0,
+  "value0": 0, "value1": 0, "value2": 0, "value3": 0, "value4": 0, "value5": 0,
+  "refined_vnum": 0, "refine_set": 0, "magic_pct": 0, "specular": 0, "socket_pct": 0, "template": 71052},
+ {"vnum": 53235, "name": "Robin (łup)", "locale_name": "Robin (łup)", "type": 37, "subtype": 12,
+  "weight": 0, "size": 1, "stack": 1, "antiflag": 123008, "flag": 8192, "wearflag": 0, "gold": 0,
+  "shop_buy_price": 0, "limittype0": 7, "limitvalue0": 86400, "limittype1": 0, "limitvalue1": 0,
+  "applytype0": 0, "applyvalue0": 0, "applytype1": 0, "applyvalue1": 0, "applytype2": 0, "applyvalue2": 0,
+  "value0": 34057, "value1": 0, "value2": 1, "value3": 0, "value4": 0, "value5": 0,
+  "refined_vnum": 0, "refine_set": 0, "magic_pct": 0, "specular": 0, "socket_pct": 0, "template": 53017},
+ {"vnum": 71187, "name": "Nugget (zielony)", "locale_name": "Nugget (zielony)", "type": 28, "subtype": 2,
+  "weight": 0, "size": 1, "stack": 1, "antiflag": 123008, "flag": 8192, "wearflag": 0, "gold": 0,
+  "shop_buy_price": 0, "limittype0": 8, "limitvalue0": 28800, "limittype1": 0, "limitvalue1": 0,
+  "applytype0": 0, "applyvalue0": 0, "applytype1": 19, "applyvalue1": 20, "applytype2": 116, "applyvalue2": 30,
+  "value0": 480, "value1": 20238, "value2": 0, "value3": 0, "value4": 0, "value5": 0,
+  "refined_vnum": 0, "refine_set": 0, "magic_pct": 0, "specular": 0, "socket_pct": 0, "template": 71052}
+],
+"mobs": [
+ {"vnum": 34057, "name": "halloween_bet_pet1", "locale_name": "Robin", "template": 34001},
+ {"vnum": 20238, "name": "chick_white3", "locale_name": "Nugget", "template": 20110}
+],
+"item_list": {
+ "53235": "53235\tETC\ticon/item/53233.tga",
+ "71187": "71187\tETC\ticon/item/71187.tga",
+ "72351": "72351\tETC\ticon/item/72351.tga"
+},
+"itemdesc": {
+ "53235": "53235\tRobin (łup)\tUwaga! Nadchodzi Robin, pocieszny nietoperek! Przywołany zwierzak co sekundę podnosi za ciebie przedmioty i yang leżące w pobliżu (tylko to, co możesz podnieść sam). Pieczęć działa 1 dzień od otrzymania.",
+ "71187": "71187\tNugget (zielony)\tZa pomocą tej pieczęci możesz przywołać Nuggeta, strasznego bojowego kurczaczka. Załóż ją w slot wierzchowca. Szybkość ruchu +20, doświadczenie +30%. Czas: 8 godzin od pierwszego użycia.",
+ "72351": "72351\tMałe Błogosławieństwo\tZmienia z niewielkim prawdopodobieństwem 6. i 7. bonus. Przeciągnij na przedmiot: ma 10% szansy na zmianę 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot się zużywa, a bonusy zostają takie jak były."
+}
+}
