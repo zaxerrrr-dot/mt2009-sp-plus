@@ -42,7 +42,8 @@ import re
 # says "aktualizator działa na starej wersji" instead of "nieznana zmienna".
 # 2: M2_SHOP_BIG (2.34) and everything before it.
 # 3: M2_DB_LOG_RETENTION_DAYS, M2_LOG_KEEP_HOURS (2.36).
-SCHEMA_VERSION = 3
+# 4: M2_SEBAN_KEEP_* and M2_SEBAN_GEAR_PER_CHARACTER (2.41, MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1).
+SCHEMA_VERSION = 4
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -503,6 +504,30 @@ SCHEMA = [
        note="Pierwsze czyszczenie dużej bazy trwa dłużej: tabela log.log bez indeksu po czasie jest wtedy jednorazowo "
             "podmieniana na nową (zachowane dni są przepisywane, stara tabela usuwana – miejsce na dysku wraca od razu). "
             "Stan i wynik ostatniego czyszczenia: Narzędzia → Logi bazy danych."),
+    # MT2009_PLUS_SEBAN_SNAPSHOT_RETENTION_V1
+    _e("M2_SEBAN_KEEP_FULL_DAYS", "Panel: ile dni pełnych migawek",
+       "Panel zaawansowany co 5 minut zapisuje migawki świata (ilość każdego przedmiotu, pozycje botów, oferty na straganach, "
+       "mapy, wskaźniki). Przez tyle dni zostają wszystkie, potem są przerzedzane. Zalecane 2. "
+       "0 = nic nie usuwaj (tabele rosną bez końca, ok. 150 MB dziennie przy 1000 botów).",
+       "baza", "int", "2", SEBAN, min=0, max=30, step=1,
+       note="Sprawdzane co godzinę przez kolektor panelu, usuwane małymi porcjami. Pierwsze czyszczenie dużej bazy trwa "
+            "kilkadziesiąt minut w tle. Plik bazy nie maleje sam (wolne miejsce jest używane ponownie); "
+            "żeby go zmniejszyć, raz ręcznie: OPTIMIZE TABLE."),
+    _e("M2_SEBAN_KEEP_HOURLY_DAYS", "Panel: do ilu dni migawki co godzinę",
+       "Starsze od pełnych migawki zostają po jednej na godzinę (dla każdego przedmiotu, bota, mapy osobno – ostatnia z godziny), "
+       "do tylu dni. Wykres przedmiotu w Ekonomii pokazuje 14 dni. Ilości przedmiotów i mapy są potem usuwane.",
+       "baza", "int", "14", SEBAN, min=1, max=90, step=1),
+    _e("M2_SEBAN_KEEP_HISTORY_DAYS", "Panel: do ilu dni migawki raz dziennie",
+       "Jeszcze starsze migawki ofert na straganach, wskaźników (Yang, poziomy) i sklepów zostają po jednej na dzień "
+       "(„ostatnio widziany na rynku” dalej się zgadza co do dnia), do tylu dni. Pozycje botów najwyżej 30 dni. 0 = bez limitu.",
+       "baza", "int", "180", SEBAN, min=0, max=3650, step=1),
+    _e("M2_SEBAN_KEEP_NEWS_DAYS", "Panel: ile dni kroniki świata",
+       "Wpisy kroniki świata i paska wieści w panelu starsze niż tyle dni są usuwane. Kronika pokazuje 14 dni. 0 = trzymaj wszystko.",
+       "baza", "int", "30", SEBAN, min=0, max=3650, step=1),
+    _e("M2_SEBAN_GEAR_PER_CHARACTER", "Panel: historia ekwipunku na postać",
+       "Ile ostatnich wpisów historii ekwipunku (karta postaci) zostaje dla każdej postaci; karta pokazuje 60. "
+       "Niezależnie od tego nic starszego niż 60 dni. 0 = bez limitu na postać.",
+       "baza", "int", "300", SEBAN, min=0, max=100000, step=50),
     _e("M2_TABLE_POSTFIX", "Przyrostek nazw tabel", "Przyrostek nazw tabel gry. Zostaw puste.", "baza", "string", "", ["game"], readonly=True,
        readonly_reason="Zmiana przyrostka sprawia, że serwer szuka innych tabel – świat wyglądałby na pusty."),
 
