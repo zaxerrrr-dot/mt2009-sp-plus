@@ -568,6 +568,11 @@ namespace
 			if (state.iDragonCoins < (int)line->dwPrice)
 			{
 				++s_kPlayerBotGuides.premiumNoCoins;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+				// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the premium short of coins - the market's Kupon SM
+				NotePlayerBotSmShortfall(ch, state, (long long)line->dwPrice - state.iDragonCoins,
+						strcmp(why, "next_map") == 0 ? "sungma_buff_next" : "sungma_buff", PLAYERBOT_SUNGMABUFF_PREMIUM_VNUM, dwNow);
+#endif
 				PlayerBotLogThrottled("sungmabuff_no_coins", dwNow, "PLAYERBOT_SUNGMABUFF: no coins pid=%u name=%s why=%s price=%u coins=%d",
 						ch->GetPlayerID(), ch->GetName(), why, line->dwPrice, state.iDragonCoins);
 				return false;

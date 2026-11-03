@@ -3635,7 +3635,7 @@ namespace
 			return false;
 		if (IsPlayerBotCorVnum(vnum) || vnum == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
 				IsPlayerBotFixedPriceTalismanVnum(vnum) || IsPlayerBotGuildBuildMaterial(vnum) ||
-				(vnum >= PLAYERBOT_ISHOP_VOUCHER_MIN_VNUM && vnum <= PLAYERBOT_ISHOP_VOUCHER_MAX_VNUM))
+				IsPlayerBotSmCouponVnum(vnum))	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
 			return false;
 		return IsPlayerBotMarketIndexedVnum(vnum) || IsPlayerBotTradeableMaterial(item) ||
 				item->GetType() == ITEM_METIN || IsPlayerBotSafeRefineScroll(vnum);
@@ -5058,7 +5058,9 @@ namespace
 					? PlayerBotGoods(PLAYERBOT_SHOP_SHEET_GOODS_SCORE, per::GOODS_SHEET_GOODS) : -1;
 		// Point 6: a Kupon SM the bot has no use for in the ItemShop is a
 		// counter's (IsPlayerBotVoucherForCounter); any other it cashes.
-		if (item->GetVnum() >= PLAYERBOT_ISHOP_VOUCHER_MIN_VNUM && item->GetVnum() <= PLAYERBOT_ISHOP_VOUCHER_MAX_VNUM)
+		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: every Kupon SM (80031 / 80032 too); none while the bot is short of coins
+		// for a need (IsPlayerBotVoucherForCounter asks HasPlayerBotSmCouponNeed).
+		if (IsPlayerBotSmCouponVnum(item->GetVnum()))
 			return IsPlayerBotVoucherForCounter(ch, item)
 					? PlayerBotGoods(PLAYERBOT_SHOP_RARE_GOODS_SCORE, per::GOODS_RARE_GOODS) : -1;
 		// MT2009_PLUS_BOT_BAG_CLEANUP_V1: nor the fishing table's rings, gloves

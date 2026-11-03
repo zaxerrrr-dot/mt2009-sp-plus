@@ -147,6 +147,16 @@ namespace
 			wish.dwVnum = PLAYERBOT_ELEMSTONE_PROTECT_VNUM;
 			wish.bMarks = false;
 			wish.szReason = "element_stone";
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+			// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the element stone short of coins - the market's Kupon SM
+			if (state.bDragonBalanceKnown && !CanPlayerBotAffordWish(ch, state, wish))
+			{
+				const long long stonePrice = (long long)GetPlayerBotItemShopCheapest(ch, PLAYERBOT_ELEMSTONE_PROTECT_VNUM, false);
+				if (stonePrice > (long long)state.iDragonCoins)
+					NotePlayerBotSmShortfall(ch, state, stonePrice - state.iDragonCoins, "element_stone",
+							PLAYERBOT_ELEMSTONE_PROTECT_VNUM, dwNow);
+			}
+#endif
 			if (CanPlayerBotAffordWish(ch, state, wish) && BuyPlayerBotItemShop(ch, state, wish, dwNow))
 			{
 				// The engine's purchase gives the goods (AutoGiveItem): the next look puts it on.

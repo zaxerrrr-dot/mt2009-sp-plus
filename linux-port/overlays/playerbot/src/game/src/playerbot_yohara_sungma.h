@@ -1635,6 +1635,9 @@
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 				WantsPlayerBotLochTicketFromMarket(ch) ||	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket on a counter
 #endif
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+				WantsPlayerBotSmCouponFromMarket(ch) ||	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM for a need's purchase
+#endif
 				PlayerBotWantsCraftFromMarket(ch)))
 		{
 			goods = CountPlayerBotSungmaTradeGoods(ch, state);

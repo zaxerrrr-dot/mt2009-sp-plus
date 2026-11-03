@@ -293,6 +293,12 @@ namespace
 		// takes (playerbot_yohara_g0.h).
 		if (WantsPlayerBotG0DustOffer(ch, offer))
 			return true;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM for a need's ItemShop purchase short of Smocze Monety (and no other
+		// coupon - they are never a whim's or a reseller's)
+		if (IsPlayerBotSmCouponVnum(offer->GetVnum()))
+			return WantsPlayerBotSmCouponOffer(ch, offer);
+#endif
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 		if (WantsPlayerBotLochTicketOffer(ch, offer))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket, cheap
 			return true;
@@ -635,6 +641,10 @@ namespace
 		if (WantsPlayerBotLochTicketFromMarket(ch))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: a Loch ticket on a counter
 			return true;
 #endif
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		if (WantsPlayerBotSmCouponFromMarket(ch))	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM for a need, on a counter
+			return true;
+#endif
 		// MT2009_PLUS_BOT_YOHARA_SHOP_V1: the dust of a Champion's elixirs of power, while a counter holds some.
 		if (PlayerBotYoharaShopWantsDustFromMarket(ch))
 			return true;
@@ -822,6 +832,11 @@ namespace
 		// MT2009_PLUS_BOT_YOHARA_G0_V1: a Champion's dust for its G0 package - its own cap and share of the purse.
 		if (WantsPlayerBotG0DustOffer(ch, item))
 			return CanPlayerBotPayForG0Dust(ch, item, price);
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM - the coins' yang rate at most, out of a share of the purse
+		if (IsPlayerBotSmCouponVnum(item->GetVnum()))
+			return WantsPlayerBotSmCouponOffer(ch, item) && CanPlayerBotPayForSmCoupon(ch, item, price);
+#endif
 #ifdef MT2009_PLUS_BOT_YOHARA_GUIDES_V1
 		if (WantsPlayerBotLochTicketOffer(ch, item))	// MT2009_PLUS_BOT_YOHARA_GUIDES_V1: its own cap and share of the purse
 			return CanPlayerBotPayForLochTicket(ch, item, price);

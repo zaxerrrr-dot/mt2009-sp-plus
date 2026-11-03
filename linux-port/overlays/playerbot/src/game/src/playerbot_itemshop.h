@@ -306,7 +306,10 @@ namespace
 		long long llSpentMem;	// charged by this core since
 		long long llFallback;	// no grant: the balance + spent at the first look of the week; -1 not yet
 		long lSeen;		// the last ask (unix)
-		TPlayerBotSmPool() : llSpentDb(0), llSpentMem(0), llFallback(-1), lSeen(0) {}
+		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the coins of the Kupon SM the bot bought on the market for a need and cashed
+		// this week - its own yang's, over the grant: added to every day's allowance (this core's memory)
+		long long llBonus;
+		TPlayerBotSmPool() : llSpentDb(0), llSpentMem(0), llFallback(-1), lSeen(0), llBonus(0) {}
 	};
 
 	struct TPlayerBotSmPoolRoom
@@ -448,9 +451,18 @@ namespace
 		const long long spent = pool.llSpentDb + pool.llSpentMem;
 		r.bActive = true;
 		r.bUrgent = IsPlayerBotSmPoolUrgent(ch, reason);
-		r.llToday = base * d / 7 - spent;
-		r.llTomorrow = base * std::min(d + 1, 7) / 7 - spent;
+		r.llToday = base * d / 7 - spent + pool.llBonus;
+		r.llTomorrow = base * std::min(d + 1, 7) / 7 - spent + pool.llBonus;
 		return r;
+	}
+
+	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the coins of a market-bought Kupon SM, over the pool's allowance (a coupon bought
+	// with the bot's own yang for a need the pool would otherwise still refuse).
+	void NotePlayerBotSmPoolBonus(LPCHARACTER ch, long long coins)
+	{
+		if (coins <= 0 || !ch || !ch->GetDesc() || s_lPlayerBotSmPoolWeekStart == 0)
+			return;
+		GetPlayerBotSmPool(ch->GetDesc()->GetAccountTable().id)->llBonus += coins;
 	}
 
 	void NotePlayerBotSmPoolSpent(LPCHARACTER ch, long long paid)
@@ -1077,6 +1089,11 @@ namespace
 		if (price <= 0 || price > INT_MAX || (long long)before < price)
 		{
 			++census.uNoCoins;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+			// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a need's line short of Smocze Monety - the market's Kupon SM
+			if (!marks && price > 0 && price <= INT_MAX)
+				NotePlayerBotSmShortfall(ch, state, price - before, reason, vnum, dwNow);
+#endif
 			return false;
 		}
 #ifdef MT2009_PLUS_BOT_SM_DAILY_POOL_V1
@@ -1184,6 +1201,10 @@ namespace
 #endif
 		++census.uBuys;
 		census.uPieces += delivered;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		if (!marks)
+			NotePlayerBotSmCouponPurchase(ch, reason);	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a purchase a coupon unblocked
+#endif
 		NotePlayerBotIshop3Bought(ch, vnum, (int)delivered);	// MT2009_PLUS_BOT_ISHOP_NEED_V1
 		NotePlayerBotIshop3Line(line.dwIndex, vnum);	// MT2009_PLUS_BOT_ISHOP_CATALOGUE_V1
 		(marks ? census.llMarks : census.llCoins) += paid;
@@ -1373,9 +1394,8 @@ namespace
 		for (WORD cell = 0; cell < INVENTORY_MAX_NUM; ++cell)
 		{
 			LPITEM item = ch->GetInventoryItem(cell);
-			if (item && !item->isLocked() && !item->IsExchanging() &&
-					item->GetVnum() >= PLAYERBOT_ISHOP_VOUCHER_MIN_VNUM &&
-					item->GetVnum() <= PLAYERBOT_ISHOP_VOUCHER_MAX_VNUM)
+			// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: every Kupon SM, Boss Swiata's 80031 / 80032 too
+			if (item && !item->isLocked() && !item->IsExchanging() && IsPlayerBotSmCouponVnum(item->GetVnum()))
 				return item;
 		}
 		return NULL;
@@ -1442,6 +1462,14 @@ namespace
 			return false;
 		sys_log(0, "PLAYERBOT_ISHOP: voucher cashed pid=%u name=%s vouchers=%d coins=%lld balance=%d",
 				ch->GetPlayerID(), ch->GetName(), cashed, total, state.iDragonCoins);
+#ifdef MT2009_PLUS_BOT_ISHOP_V3_V1
+		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the charge is on its way through the db core - no fresh read of the balance
+		// on its heels (it would put the old balance back over the coins just added)
+		s_mapPlayerBotIshop3LastCharge[ch->GetPlayerID()] = dwNow;
+#endif
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		NotePlayerBotSmCouponsCashed(ch, total, dwNow);	// the market's coupons: the census, the pool's bonus
+#endif
 		if (IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			NotePlayerBotSidekickVouchers(ch, total, state.iDragonCoins);
 		return true;
@@ -2379,6 +2407,9 @@ namespace
 		if (s_dwNextPlayerBotItemShopCensus != 0 && dwNow < s_dwNextPlayerBotItemShopCensus)
 			return;
 		s_dwNextPlayerBotItemShopCensus = dwNow + PLAYERBOT_ISHOP_CENSUS_INTERVAL;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		WritePlayerBotSmCouponCensus(dwNow);	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: PLAYERBOT_SMKUPON census
+#endif
 		if (s_uPlayerBotVouchersUsed == 0 && s_uPlayerBotItemShopBuys == 0 && s_uPlayerBotItemShopRefusals == 0 &&
 				s_uPlayerBotItemShopSaving == 0)
 			return;
@@ -2419,6 +2450,12 @@ namespace
 	{
 		if (!ch || !PlayerBotHasCounter(ch) || !IsPlayerBotVoucherSeller(ch))
 			return false;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a bot short of coins for a need (a V3 goal, the Sung Ma premium...) cashes
+		// its coupons - the old wishes below never saw those needs, and a seller listed the coupon a need waited for
+		if (HasPlayerBotSmCouponNeed(ch))
+			return false;
+#endif
 		TPlayerBotItemShopWish wishes[PLAYERBOT_ISHOP_MAX_WISHES];
 		const int n = CollectPlayerBotItemShopNeeds(ch, state, wishes);
 		long long need = 0;
@@ -2443,6 +2480,10 @@ namespace
 	{
 		if (!ch || !item || IsPlayerBotSidekickPID(ch->GetPlayerID()) || !PlayerBotHasCounter(ch))
 			return false;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+		if (IsPlayerBotItemShopEnabled() && HasPlayerBotSmCouponNeed(ch))
+			return false;	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: its own need's, cashed - never on its counter
+#endif
 		if (!IsPlayerBotItemShopEnabled())
 			return true;
 		std::map<DWORD, DWORD>::const_iterator it = s_mapPlayerBotVoucherCounterUntil.find(ch->GetPlayerID());
