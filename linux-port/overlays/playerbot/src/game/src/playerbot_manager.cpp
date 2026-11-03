@@ -18,6 +18,7 @@
 #include "playerbot_bonus_rules.h"
 #include "playerbot_yohara_bonus_rules.h" // MT2009_PLUS_BOT_YOHARA_BONUS_V1: which stone a Yohara bot puts on which piece next
 #include "playerbot_refine_rules.h"
+#include "playerbot_high_gear_refine.h" // MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: gear of level 100+ only under non-destroying scrolls
 #include "playerbot_moonlight_rules.h"
 #include "playerbot_stalki_rules.h"
 #include "playerbot_guild_order_rules.h"

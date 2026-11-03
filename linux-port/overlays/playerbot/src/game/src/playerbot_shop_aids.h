@@ -1298,10 +1298,160 @@ namespace
 		return std::max(0, std::min(want, CountPlayerBotSmithBaseScrolls(ch)));
 	}
 
+	// ---- MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the Zwoj Wojny of the owner's ladder (playerbot_high_gear_refine.h) - Kowal's
+	// rows 1 / 4 (world.crafting_proto): a Blessing Scroll 25040 / 25041 + Magiczna Ruda Miedzi 70035 (ItemShop V3, 420
+	// Smocze Znaki) + 400 000 Yang -> Zwoj Wojny 25044 / 71021, 100%: a level-100+ piece's step under +4 at 100%.
+	const DWORD PLAYERBOT_WAR_ORE_VNUM = 70035;
+	const int PLAYERBOT_WAR_SCROLL_HOLD_MAX = 6;
+	const int PLAYERBOT_WAR_ORE_BATCH = 2;
+	const int PLAYERBOT_HIGH_GEAR_BLESSING_WANT = 3;
+
+	int CountPlayerBotWarScrolls(LPCHARACTER ch)
+	{
+		int n = 0;
+		for (WORD cell = 0; ch && cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM item = ch->GetInventoryItem(cell);
+			if (item && item->GetCell() == cell && GetPlayerBotScrollKind(item) == playerbot_high_gear::KIND_WAR)
+				n += (int)item->GetCount();
+		}
+		return n;
+	}
+
+	// The War scrolls the worn level-100+ pieces' steps under +4 still want: (4 - plus) a piece, at most
+	// PLAYERBOT_WAR_SCROLL_HOLD_MAX held, less what the bag holds.
+	int GetPlayerBotWarScrollWant(LPCHARACTER ch)
+	{
+		if (!ch || !ch->IsItemLoaded() || IsPlayerBotSidekickPID(ch->GetPlayerID()) || IsPlayerBotHighGearOff())
+			return 0;
+		int steps = 0;
+		for (size_t i = 0; i < sizeof(PLAYERBOT_HIGH_GEAR_WEAR) / sizeof(PLAYERBOT_HIGH_GEAR_WEAR[0]); ++i)
+		{
+			LPITEM worn = ch->GetWear(PLAYERBOT_HIGH_GEAR_WEAR[i]);
+			if (!worn || worn->GetRefinedVnum() == 0 || !IsPlayerBotHighGear(worn) ||
+					(int)worn->GetRefineLevel() >= playerbot_high_gear::WAR_BELOW)
+				continue;
+			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(worn->GetRefineSet());
+			if (recipe && playerbot_high_gear::StepNeedsScroll((int)recipe->prob))
+				steps += playerbot_high_gear::WAR_BELOW - (int)worn->GetRefineLevel();
+		}
+		return std::max(0, std::min(steps, PLAYERBOT_WAR_SCROLL_HOLD_MAX) - CountPlayerBotWarScrolls(ch));
+	}
+
+	// Kowal's row of the base scroll with the ore: one of each, a UP_TO_3TH_LEVEL scroll out.
+	const TCraftingItem* FindPlayerBotWarScrollRow(DWORD base)
+	{
+		for (size_t i = 0; i < sizeof(PLAYERBOT_SMITH_ROWS) / sizeof(PLAYERBOT_SMITH_ROWS[0]); ++i)
+		{
+			const TCraftingItem* row = CCraftingManager::instance().GetCraftingRecipe(PLAYERBOT_SMITH_ROWS[i]);
+			if (!row || row->itemVnum == 0 || row->count <= 0)
+				continue;
+			bool hasBase = false, hasOre = false, other = false;
+			for (int m = 0; m < CRAFTING_MATERIAL_MAX_NUM; ++m)
+			{
+				const DWORD v = row->materials[m].vnum;
+				if (v == 0 || row->materials[m].count <= 0)
+					continue;
+				if (v == base && row->materials[m].count == 1)
+					hasBase = true;
+				else if (v == PLAYERBOT_WAR_ORE_VNUM && row->materials[m].count == 1)
+					hasOre = true;
+				else
+					other = true;
+			}
+			const TItemTable* out = ITEM_MANAGER::instance().GetTable(row->itemVnum);
+			if (hasBase && hasOre && !other && out && out->bType == ITEM_USE && out->bSubType == USE_TUNING &&
+					out->alValues[0] == UP_TO_3TH_LEVEL_SCROLL)
+				return row;
+		}
+		return NULL;
+	}
+
+	bool PlayerBotWantsWarScrollCraft(LPCHARACTER ch)
+	{
+		return ch && ch->CountSpecifyItem(PLAYERBOT_WAR_ORE_VNUM) > 0 && CountPlayerBotSmithBaseScrolls(ch) > 0 &&
+				GetPlayerBotWarScrollWant(ch) > 0 && (long long)ch->GetGold() >= PLAYERBOT_SMITH_GOLD_RESERVE + 400000LL &&
+				quest::CQuestManager::instance().GetEventFlag("block_crafting") <= 0;
+	}
+
+	// The War scrolls made at a Kowal within reach (the caller found him): as crafting.create makes them.
+	int CraftPlayerBotWarScrolls(LPCHARACTER ch, const char* where)
+	{
+		int made = 0;
+		static const DWORD s_aBases[2] = { PLAYERBOT_SMITH_BASE_UNTRADEABLE, PLAYERBOT_SMITH_BASE_TRADEABLE };
+		for (int tries = 0; tries < PLAYERBOT_SMITH_CRAFTS_A_VISIT && PlayerBotWantsWarScrollCraft(ch); ++tries)
+		{
+			const TCraftingItem* row = NULL;
+			LPITEM ore = FetchPlayerBotShopAidBagItem(ch, PLAYERBOT_WAR_ORE_VNUM), base = NULL;
+			for (int b = 0; b < 2 && !row && ore; ++b)
+			{
+				if (ch->CountSpecifyItem(s_aBases[b]) <= 0)
+					continue;
+				const TCraftingItem* r = FindPlayerBotWarScrollRow(s_aBases[b]);
+				base = r ? FetchPlayerBotShopAidBagItem(ch, s_aBases[b]) : NULL;
+				if (r && base && base != ore)
+					row = r;
+			}
+			if (!row)
+			{
+				++s_kPlayerBotHighGearStats.warCraftNoOre;
+				break;
+			}
+			if ((long long)ch->GetGold() < (long long)row->price + PLAYERBOT_SMITH_GOLD_RESERVE || CountPlayerBotFreeInventoryCells(ch) < 1)
+				break;
+			const DWORD baseVnum = base->GetVnum();
+			ore->SetCount(ore->GetCount() - 1);
+			base->SetCount(base->GetCount() - 1);
+			if (row->price > 0)
+				PlayerBotChangeGold(ch, -(long long)row->price);
+			const bool ok = number(1, 100) <= row->chance;
+			if (ok)
+				ch->AutoGiveItem(row->itemVnum, row->count);
+			++s_kPlayerBotHighGearStats.warCrafted;
+			++made;
+			sys_log(0, "PLAYERBOT_HIGHGEAR: war scroll craft pid=%u name=%s where=%s row=%u %u+%u->%u x%d price=%d %s want_now=%d",
+					ch->GetPlayerID(), ch->GetName(), where ? where : "-", row->vnum, baseVnum, PLAYERBOT_WAR_ORE_VNUM, row->itemVnum,
+					ok ? (int)row->count : 0, row->price, ok ? "OK" : "FAILED", GetPlayerBotWarScrollWant(ch));
+		}
+		return made;
+	}
+
+	// The ItemShop V3 goals of the ladder: the ore for the War scrolls the bag cannot make yet (Smocze Znaki), and the
+	// Blessing Scrolls (25041, Smocze Znaki) for the ore's base and the +4..+6 steps while the bag holds fewer than
+	// PLAYERBOT_HIGH_GEAR_BLESSING_WANT.
+	bool GetPlayerBotHighGearOreGoal(LPCHARACTER ch, TPlayerBotIshop3Goal& g)
+	{
+		const int want = GetPlayerBotWarScrollWant(ch) - (int)ch->CountSpecifyItem(PLAYERBOT_WAR_ORE_VNUM);
+		if (want <= 0)
+			return false;
+		const TPlayerBotIshop3Goal o = { PLAYERBOT_WAR_ORE_VNUM, true, std::min(want, PLAYERBOT_WAR_ORE_BATCH), "hg_war_ore" };
+		g = o;
+		++s_kPlayerBotHighGearStats.oreGoals;
+		return true;
+	}
+
+	bool GetPlayerBotHighGearBlessingGoal(LPCHARACTER ch, TPlayerBotIshop3Goal& g)
+	{
+		int below = 0;
+		const int work = CountPlayerBotHighGearWork(ch, &below);
+		if (work <= 0)
+			return false;
+		const int have = CountPlayerBotBlessingScrolls(ch);
+		const int want = std::min(PLAYERBOT_HIGH_GEAR_BLESSING_WANT, work + (below > 0 ? 1 : 0));
+		if (have >= want)
+			return false;
+		const TPlayerBotIshop3Goal b = { PLAYERBOT_SMITH_BASE_UNTRADEABLE, true, want - have, "hg_blessing" };
+		g = b;
+		++s_kPlayerBotHighGearStats.blessingGoals;
+		return true;
+	}
+
 	// The town's errand (playerbot_town.h): a craft is ready - stones, Blessing Scrolls, the price - and the last try did
 	// not fail on the distance a while ago.
 	bool PlayerBotWantsSmithScrollCraft(LPCHARACTER ch)
 	{
+		if (PlayerBotWantsWarScrollCraft(ch))	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
+			return true;
 		if (!ch || CountPlayerBotSmithStones(ch) <= 0 || GetPlayerBotSmithCraftable(ch) <= 0 ||
 				(long long)ch->GetGold() < PLAYERBOT_SMITH_GOLD_RESERVE + PLAYERBOT_SMITH_PRICE_MAX)
 			return false;
@@ -1335,9 +1485,13 @@ namespace
 	{
 		if (!ch || !ch->IsPC() || ch->IsDead() || ch->GetExchange() || ch->GetMyShop())
 			return 0;
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the War scrolls of the ladder first, by any Kowal within reach
+		int warMade = 0;
+		if (PlayerBotWantsWarScrollCraft(ch) && FindPlayerBotSmithNpc(ch))
+			warMade = CraftPlayerBotWarScrolls(ch, where);
 		int craftable = GetPlayerBotSmithCraftable(ch);
 		if (craftable <= 0 || CountPlayerBotSmithStones(ch) <= 0)
-			return 0;
+			return warMade;
 		const bool town = where && strcmp(where, "town") == 0;
 		if (!FindPlayerBotSmithNpc(ch))
 		{
@@ -1346,7 +1500,7 @@ namespace
 				++s_kPlayerBotShopAidsStats.smithFar;
 				s_mapPlayerBotSmithCraftPause[ch->GetPlayerID()] = get_dword_time() + PLAYERBOT_SMITH_PAUSE_MS;
 			}
-			return 0;
+			return warMade;
 		}
 		static const DWORD s_aStones[2] = { PLAYERBOT_SMITH_STONE_BOOK, PLAYERBOT_SMITH_STONE_METAL };
 		static const DWORD s_aBases[2] = { PLAYERBOT_SMITH_BASE_UNTRADEABLE, PLAYERBOT_SMITH_BASE_TRADEABLE };
@@ -1397,7 +1551,7 @@ namespace
 					row->itemVnum, ok ? (int)row->count : 0, row->price, row->chance, ok ? "OK" : "FAILED",
 					CountPlayerBotSmithScrollSteps(ch), CountPlayerBotSmithBetterScrolls(ch));
 		}
-		return made;
+		return made + warMade;
 	}
 
 	// The goal: the stones the craftable Blessing Scrolls lack - Magiczny Metal for Smocze Znaki when the bot has them
@@ -1484,6 +1638,12 @@ namespace
 		TPlayerBotIshop3Goal smith;
 		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && GetPlayerBotSmithStoneGoal(ch, state->second, smith))
 			goals[n++] = smith;
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the ladder's ore and Blessing Scrolls
+		TPlayerBotIshop3Goal hg;
+		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && GetPlayerBotHighGearOreGoal(ch, hg))
+			goals[n++] = hg;
+		if (n < PLAYERBOT_ISHOP3_MAX_GOALS && GetPlayerBotHighGearBlessingGoal(ch, hg))
+			goals[n++] = hg;
 #endif
 	}
 
@@ -1524,6 +1684,7 @@ namespace
 		if (!ch || !ch->IsPC() || !ch->IsItemLoaded() || ch->IsDead() || IsPlayerBotSidekickPID(ch->GetPlayerID()))
 			return false;
 		LogPlayerBotShopAidsCensus(dwNow);
+		LogPlayerBotHighGearCensus(dwNow);	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
 		if (ArePlayerBotShopAidsOff())
 			return false;
 		DWORD& light = s_mapPlayerBotShopAidsLight[ch->GetPlayerID()];

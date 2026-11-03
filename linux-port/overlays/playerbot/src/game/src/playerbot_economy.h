@@ -1492,6 +1492,10 @@ namespace
 	// The refine scrolls a bot keeps for its own anvil (defined in
 	// playerbot_town.h beside the rule that asks it).
 	int GetPlayerBotRefineScrollKeep(LPCHARACTER ch);
+#if defined(PLAYERBOT_ENGINE_MT2009)
+	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the scrolls the worn level-100+ pieces' steps keep (defined further down)
+	int GetPlayerBotHighGearScrollKeep(LPCHARACTER ch);
+#endif
 	// A worn piece the marble's fifth line would go on (playerbot_bonus.h).
 	bool PlayerBotWantsBlessingMarble(LPCHARACTER ch);
 	// MT2009_PLUS_BOT_DUST_BONUS_V1: the dust kept for the marble, the add
@@ -1518,6 +1522,15 @@ namespace
 		// larger than most stacks. Measured against that, no cut ever had a
 		// scroll to spare: a bot with twenty-six put a marble up instead
 		// (16 September). The scroll's keep is the scroll rule's.
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the ladder's scrolls (a Zwoj Wojny too) for the level-100+ pieces worn
+		if (IsPlayerBotRefineScroll(item->GetVnum()))
+		{
+			const int highKeep = GetPlayerBotHighGearScrollKeep(ch);
+			if (highKeep > 0)
+				return std::max(highKeep, IsPlayerBotSafeRefineScroll(item->GetVnum()) ? GetPlayerBotRefineScrollKeep(ch) : 0);
+		}
+#endif
 		if (IsPlayerBotSafeRefineScroll(item->GetVnum()))
 			return GetPlayerBotRefineScrollKeep(ch);
 #ifdef MT2009_PLUS_BOT_SEONHAE_V2
@@ -4321,13 +4334,212 @@ namespace
 #endif
 	}
 
+#if defined(PLAYERBOT_ENGINE_MT2009)
+	// ======================================================================== MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
+	// Gear of level 100 and over only under scrolls that never destroy it, by the owner's ladder
+	// (playerbot_high_gear_refine.h): Zwoj Wojny under +4, the Blessing Scroll at +4..+5, the Zwoj Boga Smokow at +6, the
+	// Podrecznik Kowala to +9, the Blessing Scroll past +6 for a rich bot. A step at the table's 100% goes to the plain
+	// anvil (nothing burns); every other step without the ladder's scroll waits. Event flag m2_bot_high_gear_off: the old
+	// rules. The census: PLAYERBOT_HIGHGEAR (the steps taken by scroll kind and outcome, the waits by the kind wanted,
+	// the War scrolls made at Kowal, the ItemShop goals) every ten minutes.
+	struct TPlayerBotHighGearStats
+	{
+		unsigned int steps[playerbot_high_gear::KIND_COUNT], ok[playerbot_high_gear::KIND_COUNT];
+		unsigned int plain100, plainBurnRisk, waits[playerbot_high_gear::KIND_COUNT], richSteps;
+		unsigned int warCrafted, warCraftNoOre, oreGoals, blessingGoals;
+		DWORD dwCensusAt;
+		TPlayerBotHighGearStats() : plain100(0), plainBurnRisk(0), richSteps(0), warCrafted(0), warCraftNoOre(0), oreGoals(0),
+			blessingGoals(0), dwCensusAt(0)
+		{
+			memset(steps, 0, sizeof(steps));
+			memset(ok, 0, sizeof(ok));
+			memset(waits, 0, sizeof(waits));
+		}
+	};
+	TPlayerBotHighGearStats s_kPlayerBotHighGearStats;
+	const DWORD PLAYERBOT_HIGH_GEAR_CENSUS_MS = 10 * 60 * 1000;
+	const DWORD PLAYERBOT_BLESSING_SCROLL_VNUMS[] = { 25040, 25041, 76016 };
+
+	bool IsPlayerBotHighGearOff()
+	{
+		return quest::CQuestManager::instance().GetEventFlag("m2_bot_high_gear_off") != 0;
+	}
+
+	// A weapon (not an arrow) or an armour piece of level 100 or more: the policy's gear.
+	bool IsPlayerBotHighGear(LPITEM item)
+	{
+		if (!item || IsPlayerBotHighGearOff())
+			return false;
+		if (item->GetType() != ITEM_ARMOR && !(item->GetType() == ITEM_WEAPON && item->GetSubType() != WEAPON_ARROW))
+			return false;
+		return (int)item->GetLevelLimit() >= playerbot_high_gear::MIN_LEVEL;
+	}
+
+	int CountPlayerBotBlessingScrolls(LPCHARACTER ch)
+	{
+		int n = 0;
+		for (size_t i = 0; ch && i < sizeof(PLAYERBOT_BLESSING_SCROLL_VNUMS) / sizeof(PLAYERBOT_BLESSING_SCROLL_VNUMS[0]); ++i)
+			n += (int)ch->CountSpecifyItem(PLAYERBOT_BLESSING_SCROLL_VNUMS[i]);
+		return n;
+	}
+
+	bool IsPlayerBotHighGearRich(LPCHARACTER ch)
+	{
+		return ch && playerbot_high_gear::IsRich((long long)ch->GetGold(), CountPlayerBotBlessingScrolls(ch));
+	}
+
+	playerbot_high_gear::EScrollKind GetPlayerBotScrollKind(LPITEM scroll)
+	{
+		if (!scroll || scroll->GetType() != ITEM_USE || scroll->GetSubType() != USE_TUNING)
+			return playerbot_high_gear::KIND_NONE;
+		return playerbot_high_gear::ClassifyScroll(scroll->GetValue(0), scroll->GetValue(1));
+	}
+
+	// The bag cell of the ladder's scroll for the step from plus; -1 none (the step waits unless it is at 100%).
+	int FindPlayerBotHighGearScrollCell(LPCHARACTER ch, BYTE plusLevel)
+	{
+		if (!ch)
+			return -1;
+		const bool rich = IsPlayerBotHighGearRich(ch);
+		int bestCell = -1, bestRank = 0;
+		for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
+		{
+			LPITEM scroll = ch->GetInventoryItem(cell);
+			if (!scroll || scroll->GetCell() != cell)
+				continue;
+			const int rank = playerbot_high_gear::RankScroll((int)plusLevel, GetPlayerBotScrollKind(scroll), rich);
+			if (rank > bestRank)
+			{
+				bestRank = rank;
+				bestCell = cell;
+			}
+		}
+		return bestCell;
+	}
+
+	// The tradeable vnum of the scroll the ladder wants for the step from plus (what the market is asked for):
+	// Zwoj Wojny 25044, the Blessing Scroll 25040, Zwoj Boga Smokow 25045, Podrecznik Kowala 25043.
+	DWORD GetPlayerBotHighGearMarketScroll(BYTE plusLevel)
+	{
+		switch (playerbot_high_gear::WantedKind((int)plusLevel))
+		{
+			case playerbot_high_gear::KIND_WAR: return 25044;
+			case playerbot_high_gear::KIND_DRAGON: return 25045;
+			case playerbot_high_gear::KIND_MANUAL: return 25043;
+			default: return PLAYERBOT_BLESSING_SCROLL_VNUM;
+		}
+	}
+
+	// The worn level-100+ pieces with a step under 100% ahead (the ladder's work), and what their scrolls keep: three a
+	// piece of every kind (a counter never takes the scroll the next step needs).
+	const BYTE PLAYERBOT_HIGH_GEAR_WEAR[] = { WEAR_WEAPON, WEAR_BODY, WEAR_HEAD, WEAR_SHIELD, WEAR_FOOTS, WEAR_WRIST, WEAR_NECK,
+			WEAR_EAR, WEAR_GLOVE, WEAR_PENDANT };
+	const int PLAYERBOT_HIGH_GEAR_SCROLL_KEEP_A_PIECE = 3;
+
+	int CountPlayerBotHighGearWork(LPCHARACTER ch, int* belowWar)
+	{
+		int n = 0, war = 0;
+		for (size_t i = 0; ch && i < sizeof(PLAYERBOT_HIGH_GEAR_WEAR) / sizeof(PLAYERBOT_HIGH_GEAR_WEAR[0]); ++i)
+		{
+			LPITEM worn = ch->GetWear(PLAYERBOT_HIGH_GEAR_WEAR[i]);
+			if (!worn || worn->GetRefinedVnum() == 0 || !IsPlayerBotHighGear(worn))
+				continue;
+			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(worn->GetRefineSet());
+			if (!recipe || !playerbot_high_gear::StepNeedsScroll((int)recipe->prob))
+				continue;
+			++n;
+			if ((int)worn->GetRefineLevel() < playerbot_high_gear::WAR_BELOW)
+				++war;
+		}
+		if (belowWar)
+			*belowWar = war;
+		return n;
+	}
+
+	int GetPlayerBotHighGearScrollKeep(LPCHARACTER ch)
+	{
+		return CountPlayerBotHighGearWork(ch, NULL) * PLAYERBOT_HIGH_GEAR_SCROLL_KEEP_A_PIECE;
+	}
+
+	// A step of a high piece the anvil may not take: under 100% and no ladder scroll in the bag. Counted by the kind
+	// the ladder wants (throttled per bot by the caller's own clock - this only counts).
+	bool IsPlayerBotHighGearStepBarred(LPCHARACTER ch, LPITEM item, int stepProb)
+	{
+		if (!IsPlayerBotHighGear(item) || !playerbot_high_gear::StepNeedsScroll(stepProb))
+			return false;
+		return FindPlayerBotHighGearScrollCell(ch, item->GetRefineLevel()) < 0;
+	}
+
+	void NotePlayerBotHighGearWait(LPCHARACTER ch, LPITEM item, int stepProb, const char* where)
+	{
+		if (!ch || !item)
+			return;
+		const playerbot_high_gear::EScrollKind want = playerbot_high_gear::WantedKind((int)item->GetRefineLevel());
+		++s_kPlayerBotHighGearStats.waits[want];
+		PlayerBotLogThrottled("high_gear_wait", get_dword_time(),
+				"PLAYERBOT_HIGHGEAR: waits pid=%u name=%s vnum=%u level=%d plus=%u prob=%d want=%s where=%s gold=%lld blessings=%d",
+				ch->GetPlayerID(), ch->GetName(), item->GetVnum(), (int)item->GetLevelLimit(), (unsigned int)item->GetRefineLevel(),
+				stepProb, playerbot_high_gear::KindName(want), where ? where : "-", (long long)ch->GetGold(),
+				CountPlayerBotBlessingScrolls(ch));
+	}
+
+	// After an attempt on a high piece: the kind of scroll it went under (KIND_NONE the plain anvil) and the outcome.
+	void NotePlayerBotHighGearStep(LPCHARACTER ch, playerbot_high_gear::EScrollKind kind, int plusBefore, int stepProb,
+			bool success)
+	{
+		if (kind == playerbot_high_gear::KIND_NONE)
+		{
+			if (stepProb >= 100)
+				++s_kPlayerBotHighGearStats.plain100;
+			else
+				++s_kPlayerBotHighGearStats.plainBurnRisk;
+			return;
+		}
+		++s_kPlayerBotHighGearStats.steps[kind];
+		if (success)
+			++s_kPlayerBotHighGearStats.ok[kind];
+		if (plusBefore >= playerbot_high_gear::DRAGON_FROM && (kind == playerbot_high_gear::KIND_BLESSING ||
+				kind == playerbot_high_gear::KIND_KEEP))
+			++s_kPlayerBotHighGearStats.richSteps;
+		(void)ch;
+	}
+
+	void LogPlayerBotHighGearCensus(DWORD dwNow)
+	{
+		TPlayerBotHighGearStats& t = s_kPlayerBotHighGearStats;
+		if (t.dwCensusAt != 0 && (int)(dwNow - t.dwCensusAt) < 0)
+			return;
+		const bool first = t.dwCensusAt == 0;
+		t.dwCensusAt = dwNow + PLAYERBOT_HIGH_GEAR_CENSUS_MS;
+		if (first)
+			return;
+		using namespace playerbot_high_gear;
+		sys_log(0, "PLAYERBOT_HIGHGEAR: census on=%d steps war=%u/%u blessing=%u/%u dragon=%u/%u manual=%u/%u keep=%u/%u "
+				"keep_plus=%u/%u (ok/all) rich_over6=%u plain100=%u plain_risk=%u | waits war=%u blessing=%u dragon=%u manual=%u | "
+				"war_crafted=%u war_no_ore=%u ore_goals=%u blessing_goals=%u",
+				IsPlayerBotHighGearOff() ? 0 : 1,
+				t.ok[KIND_WAR], t.steps[KIND_WAR], t.ok[KIND_BLESSING], t.steps[KIND_BLESSING], t.ok[KIND_DRAGON],
+				t.steps[KIND_DRAGON], t.ok[KIND_MANUAL], t.steps[KIND_MANUAL], t.ok[KIND_KEEP], t.steps[KIND_KEEP],
+				t.ok[KIND_KEEP_PLUS], t.steps[KIND_KEEP_PLUS], t.richSteps, t.plain100, t.plainBurnRisk,
+				t.waits[KIND_WAR], t.waits[KIND_BLESSING], t.waits[KIND_DRAGON], t.waits[KIND_MANUAL],
+				t.warCrafted, t.warCraftNoOre, t.oreGoals, t.blessingGoals);
+	}
+#endif
+
 	// The scroll for this piece's next step, and none for a piece no scroll
 	// goes on (IsPlayerBotScrollFreeGear). Every pass that puts a scroll on
 	// the bot's own gear looks through here, and so does the planner, so a
 	// piece is never held for a scroll that would not be used on it.
 	int FindPlayerBotRefineScrollCellFor(LPCHARACTER ch, LPITEM item, int stepProb = 100)
 	{
-		if (!ch || !item || IsPlayerBotScrollFreeGear(item))
+		if (!ch || !item)
+			return -1;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: level 100+ by the owner's ladder alone (none for a 100% step)
+		if (IsPlayerBotHighGear(item))
+			return playerbot_high_gear::StepNeedsScroll(stepProb) ? FindPlayerBotHighGearScrollCell(ch, item->GetRefineLevel()) : -1;
+#endif
+		if (IsPlayerBotScrollFreeGear(item))
 			return -1;
 		return FindPlayerBotRefineScrollCell(ch, item->GetRefineLevel(), stepProb);
 	}
@@ -5248,6 +5460,21 @@ namespace
 					scrollCell = -1;
 				}
 			}
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: a piece of level 100+ goes by the owner's ladder whatever the rules
+			// above said - the ladder's scroll at any plus, the plain anvil only at 100%, no coin; else it waits.
+			const bool highGear = IsPlayerBotHighGear(item);
+			if (highGear)
+			{
+				coinWhy = NULL;
+				scrollCell = FindPlayerBotRefineScrollCellFor(ch, item, stepProb);
+				if (scrollCell < 0 && playerbot_high_gear::StepNeedsScroll(stepProb))
+				{
+					NotePlayerBotHighGearWait(ch, item, stepProb, "anvil");
+					continue;
+				}
+			}
+#endif
 			// The armour under the scroll rule goes under a scroll at every step
 			// or waits; the bag holds three by the rule's own count, so this is
 			// a scroll kind no step may take (the War God's past +3).
@@ -5312,6 +5539,11 @@ namespace
 			const WORD cellBefore = item->GetCell();
 			const DWORD idBefore = item->GetID();
 			bool attempted = false;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the scroll's kind, read before the step spends it
+			const playerbot_high_gear::EScrollKind hgKind = highGear && scrollCell >= 0
+					? GetPlayerBotScrollKind(ch->GetInventoryItem(scrollCell)) : playerbot_high_gear::KIND_NONE;
+#endif
 			if (scrollCell >= 0)
 			{
 				ch->SetRefineMode(scrollCell);
@@ -5348,6 +5580,10 @@ namespace
 				if (classLevel30 && personaOn)
 					NotePlayerBotLevel30Spend(ch, goldBeforeAttempt - (long long)ch->GetGold());
 				const bool success = ch->CountSpecifyItem(nextVnum) > resultCountBefore;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+				if (highGear)
+					NotePlayerBotHighGearStep(ch, hgKind, (int)plusLevel, stepProb, success);	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
+#endif
 				// Only a refine that landed is news. A scroll's failure hands the
 				// piece back a grade down and a plain one burns it, and both were
 				// shouted as luck ("ulepszylem zbroje +4 na +3", Tieru, 15 September).
@@ -5468,7 +5704,11 @@ namespace
 		// MT2009_PLUS_BOT_SMITHY_V1: and a piece the plain anvil may not take
 		// (IsPlayerBotPlainAnvilBarred) - the scroll is its only way up.
 		const bool atRisk = IsPlayerBotWornWeaponAtRisk(ch, item) || IsPlayerBotWornArmourAtRisk(ch, item) ||
-				IsPlayerBotScrollRulePiece(ch, item) || IsPlayerBotPlainAnvilBarred(ch, item);
+				IsPlayerBotScrollRulePiece(ch, item) || IsPlayerBotPlainAnvilBarred(ch, item)
+#if defined(PLAYERBOT_ENGINE_MT2009)
+				|| IsPlayerBotHighGear(item)	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: the ladder's scroll at any plus
+#endif
+				;
 		const int scrollFrom = scrollOnly || atRisk ? 0
 				: IsPlayerBotAnvilTableWeapon(item)
 					? GetPlayerBotWeaponAnvilCeiling(ch, item) : (int)PLAYERBOT_SCROLL_REFINE_MIN_PLUS;
@@ -5553,6 +5793,11 @@ namespace
 				piece->GetCell() >= PLAYERBOT_BAG_CELLS)
 			return NULL;
 		const WORD cell = piece->GetCell();
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		const bool highGear = IsPlayerBotHighGear(piece);	// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1
+		const playerbot_high_gear::EScrollKind hgKind = highGear ? GetPlayerBotScrollKind(ch->GetInventoryItem(scrollCell))
+				: playerbot_high_gear::KIND_NONE;
+#endif
 		ch->SetRefineMode(scrollCell);
 		attempted = ch->DoRefineWithScroll(piece);
 		ch->ClearRefineMode();
@@ -5566,6 +5811,10 @@ namespace
 			equippedAgain = PlayerBotEquipItem(ch, after) && after->IsEquipped();
 		if (attempted)
 		{
+#if defined(PLAYERBOT_ENGINE_MT2009)
+			if (highGear)
+				NotePlayerBotHighGearStep(ch, hgKind, (int)plus, recipe ? (int)recipe->prob : 100, success);
+#endif
 			if (success)
 			{
 				BroadcastPlayerBotRefineSuccess(ch, nextVnum, (int)plus + 1);
@@ -6162,6 +6411,11 @@ namespace
 				item->GetRefineSet());
 		if (!recipe)
 			return false;
+#if defined(PLAYERBOT_ENGINE_MT2009)
+		// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: a level-100+ step without the ladder's scroll is no errand
+		if (IsPlayerBotHighGearStepBarred(ch, item, (int)recipe->prob))
+			return false;
+#endif
 		// A weapon refined only under a scroll is no errand without one: the
 		// planner asks this before it sends a bot to the blacksmith. The
 		// class's own level-30 weapon under +6 is, scroll or no scroll
