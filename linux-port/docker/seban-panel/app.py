@@ -6727,17 +6727,30 @@ GLOVE_WILL_NAME = {184: "Siła Sung Ma", 185: "Witalność Sung Ma", 186: "Odpor
 POINT_GLOVE_BASE_ATTR_PCT = 251
 
 
-def _glove_base_wills(items):
-    """{item id: the glove's Will value} of the gloves among `items`."""
+# MT2009_PLUS_JADE_BASE_V1 (3.0.7): Obrecze / Kolie / Klipsy Jadeitu (14580-14619, 16580-16619, 17570-17609) keep
+# their two base lines (Precyzja, the Will of the jade) in player.item_yextra too - bits 8-15 the Will, 16-23
+# Precyzja, bit 24 set once they are there (before: the 6th / 7th bonus slots, moved when the item is loaded)
+JADE_WILL_POINT = {1458: 186, 1459: 187, 1460: 185, 1461: 184, 1658: 186, 1659: 187, 1660: 185, 1661: 184,
+                   1757: 186, 1758: 187, 1759: 185, 1760: 184}
+JADE_BASE_KNOWN = 1 << 24
+
+
+def _item_yextras(items, families):
+    """{item id: yextra} of the items among `items` whose vnum // 10 is in `families`."""
     ids = [int(item["id"]) for item in items
-           if item.get("id") and int(item.get("vnum") or 0) // 10 in GLOVE_WILL_POINT]
+           if item.get("id") and int(item.get("vnum") or 0) // 10 in families]
     if not ids:
         return {}
     try:
         found = rows("SELECT id, yextra FROM player.item_yextra WHERE id IN (%s)" % ",".join(["%s"] * len(ids)), tuple(ids))
     except Exception:
         return {}
-    return {int(r["id"]): (int(r["yextra"] or 0) >> 8) & 0xFF for r in found}
+    return {int(r["id"]): int(r["yextra"] or 0) for r in found}
+
+
+def _glove_base_wills(items):
+    """{item id: the glove's Will value} of the gloves among `items`."""
+    return {i: (x >> 8) & 0xFF for i, x in _item_yextras(items, GLOVE_WILL_POINT).items()}
 
 
 def _enrich_items(items):
@@ -6746,6 +6759,7 @@ def _enrich_items(items):
     bot_offline_shop() so the equipment/inventory tooltip and the offline
     shop window read the exact same tooltip data from the exact same logic."""
     glove_wills = _glove_base_wills(items)  # MT2009_PLUS_GLOVE_BASE_V1
+    jade_bases = _item_yextras(items, JADE_WILL_POINT)  # MT2009_PLUS_JADE_BASE_V1
     for item in items:
         item["item_name"] = resolve_item_display_name(item["vnum"], item.get("socket0"), game_text(item["item_name"]))
         item["item_size"] = max(1, min(3, int(item.get("item_size") or 1)))
@@ -6794,6 +6808,14 @@ def _enrich_items(items):
             pct = sum(int(item.get(f"attrvalue{i}") or 0) for i in (5, 6)
                       if int(item.get(f"attrtype{i}") or 0) == POINT_GLOVE_BASE_ATTR_PCT)
             item["bonuses"].append({"text": f"{GLOVE_WILL_NAME[will_point]} {will + will * pct // 100:+d}", "source": "native"})
+        # MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery's Precyzja and Will - its base attribute
+        jade_point = JADE_WILL_POINT.get(int(item.get("vnum") or 0) // 10)
+        jade = jade_bases.get(int(item.get("id") or 0), 0) if jade_point else 0
+        if jade & JADE_BASE_KNOWN:
+            if (jade >> 16) & 0xFF:
+                item["bonuses"].append({"text": f"Precyzja {(jade >> 16) & 0xFF:+d}", "source": "native"})
+            if (jade >> 8) & 0xFF:
+                item["bonuses"].append({"text": f"{GLOVE_WILL_NAME[jade_point]} {(jade >> 8) & 0xFF:+d}", "source": "native"})
         item["bonuses"] += [
             {"text": apply_text(item.get(f"attrtype{i}"), item.get(f"attrvalue{i}")), "source": "added"}
             for i in range(7)

@@ -232,12 +232,22 @@ def ChancePct(materials, supportPct, supports):
 def AttrCounts(window_type, slotIndex):
 	normal = 0
 	rare = 0
+	# MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery's old base lines (Precyzja, its Will) in the 6th/7th slots are
+	# no extra bonuses - the server moves them to the item's base before it counts (playerbot_seonhae.h CheckItem)
+	attrs = []
 	for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
 		try:
-			(attrType, attrValue) = player.GetItemAttribute(window_type, slotIndex, i)
+			attrs.append(player.GetItemAttribute(window_type, slotIndex, i))
 		except Exception:
-			attrType = 0
-		if attrType == 0:
+			attrs.append((0, 0))
+	try:
+		import yoharagear
+		legacy = yoharagear.JadeLegacySlots(player.GetItemIndex(window_type, slotIndex), attrs)
+	except Exception:
+		legacy = []
+	for i in xrange(player.ATTRIBUTE_SLOT_MAX_NUM):
+		attrType = attrs[i][0]
+		if attrType == 0 or i in legacy:
 			continue
 		if i < player.ATTRIBUTE_SLOT_NORM_NUM:
 			normal += 1
@@ -264,8 +274,13 @@ def CanTakeExtraBonus(itemVnum, attrSlot):
 			return False
 		normal = 0
 		rare = 0
+		try:	# MT2009_PLUS_JADE_BASE_V1: the jade's old base lines are no extra bonuses (AttrCounts)
+			import yoharagear
+			legacy = yoharagear.JadeLegacySlots(itemVnum, attrSlot)
+		except Exception:
+			legacy = []
 		for i in xrange(min(len(attrSlot), player.ATTRIBUTE_SLOT_MAX_NUM)):
-			if attrSlot[i][0] == 0:
+			if attrSlot[i][0] == 0 or i in legacy:
 				continue
 			if i < player.ATTRIBUTE_SLOT_NORM_NUM:
 				normal += 1

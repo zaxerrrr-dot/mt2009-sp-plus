@@ -267,9 +267,13 @@ void Mt2009GloveCreate(LPITEM item)
 // MT2009_PLUS_GLOVE_BASE_V1 (load): ITEM_MANAGER::CreateItem, after the ysets' own yextra - a new glove's Will is
 // saved, a loaded glove's read back; a loaded glove without one (made again by a system that copies only the sockets
 // and the bonuses) gets its level's random value, as a new one.
+static void Mt2009JadeBaseLoad(LPITEM item, bool bIsNewItem, bool bSkipSave);	// MT2009_PLUS_JADE_BASE_V1 (below)
+void Mt2009JadeBaseMigrate(LPITEM item);
+
 void Mt2009GloveLoad(LPITEM item, bool bIsNewItem, bool bSkipSave)
 {
 	Mt2009AccountBoundLoad(item, bIsNewItem);	// MT2009_PLUS_ITEM_ACCOUNT_BOUND_V1 (load): a G0 piece's binding (playerbot_yohara_g0.cpp)
+	Mt2009JadeBaseLoad(item, bIsNewItem, bSkipSave);	// MT2009_PLUS_JADE_BASE_V1 (load): a piece of jade jewellery's base lines
 	BYTE bWillType;
 	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
 		return;
@@ -295,6 +299,7 @@ void Mt2009GloveLoad(LPITEM item, bool bIsNewItem, bool bSkipSave)
 // its base attribute.
 void Mt2009GloveAfterCreated(LPITEM item)
 {
+	Mt2009JadeBaseMigrate(item);	// MT2009_PLUS_JADE_BASE_V1 (after created): the jade's old 6th/7th base lines - its base now
 	BYTE bWillType;
 	if (!item || !Mt2009GloveType(item->GetVnum(), bWillType))
 		return;
@@ -448,40 +453,203 @@ bool Mt2009GearSocketPoints(LPCHARACTER owner, long lSocket, bool bAdd)
 
 bool Mt2009JadeBraceletType(DWORD dwVnum, BYTE& bWillType);	// server-patches/obreczjadeitu (item_attribute.cpp)
 
-static void Mt2009JadeBraceletV2Write(LPITEM item, int iPrecision, int iWill)
+// MT2009_PLUS_JADE_BASE_V1 (the owner, 3 Nov, Yohara 3.0.7: "Kolia Jadeitu Nocy+9 with five bonuses - Seon-Hae and
+// 72351 / 71052 say it already has the 6th and 7th bonus, it has none"): the two base lines of the jade (Precyzja, the
+// Will of the jade) were kept in the 6th and 7th bonus slots (V2), so GetRareAttrCount() saw two "extra" bonuses and
+// every 6/7 system refused the piece. The pl-wiki calls them the item's base bonuses ("Bizuteria moze miec 2
+// podstawowe bonusy", drawn as the item's own lines - Owsap's ApplyRandom, not an attribute) and its "6. i 7. bonus"
+// page has the necklaces', earrings' and bracelets' columns, so - as the gloves' Will since MT2009_PLUS_GLOVE_BASE_V1 -
+// they are the item's base attribute now: kept in its yextra (player.item_yextra by item id, server-patches/ysets),
+// bits 8-15 the Will, 16-23 Precyzja (0 = the piece has none: 80% have it), bit 24 "known" (a value set; a piece
+// without it still has its lines in the bonus slots and moves them - JadeBaseMigrate). The 6th and 7th slots are the
+// 6/7 system's (the pool's neck / ear / wrist columns, which never hold Precyzja or a Will - so a line of those kinds
+// in those slots is always an old base line). The client hears the yextra by YITEM (yoharagear.JadeBaseLines).
+namespace
 {
-	BYTE bWillType;
-	if (!Mt2009JadeBraceletType(item->GetVnum(), bWillType))
-		return;
-	int iSlot = ITEM_ATTRIBUTE_RARE_START;
-	if (iPrecision > 0)
-		item->SetForceAttribute(iSlot++, POINT_HIT_PCT, (short) iPrecision);
-	if (iWill > 0)
-		item->SetForceAttribute(iSlot++, bWillType, (short) iWill);
-	for (; iSlot < ITEM_ATTRIBUTE_RARE_END; ++iSlot)
-		if (item->GetAttributeType(iSlot))
-			item->SetForceAttribute(iSlot, 0, 0);
+	const DWORD JADE_WILL_SHIFT = 8;
+	const DWORD JADE_WILL_MASK = 0xFF00;
+	const DWORD JADE_PRECISION_SHIFT = 16;
+	const DWORD JADE_PRECISION_MASK = 0xFF0000;
+	const DWORD JADE_BASE_KNOWN = 0x1000000;
+
+	bool JadeBaseKnown(LPITEM item)
+	{
+		return (item->GetYExtra() & JADE_BASE_KNOWN) != 0;
+	}
+
+	int JadeBaseWill(LPITEM item)
+	{
+		return JadeBaseKnown(item) ? (int) ((item->GetYExtra() & JADE_WILL_MASK) >> JADE_WILL_SHIFT) : 0;
+	}
+
+	int JadeBasePrecision(LPITEM item)
+	{
+		return JadeBaseKnown(item) ? (int) ((item->GetYExtra() & JADE_PRECISION_MASK) >> JADE_PRECISION_SHIFT) : 0;
+	}
+
+	// the values alone (no points, no save, no client)
+	void JadeBaseStore(LPITEM item, int iPrecision, int iWill)
+	{
+		DWORD dwExtra = item->GetYExtra() & ~(JADE_WILL_MASK | JADE_PRECISION_MASK | JADE_BASE_KNOWN);
+		dwExtra |= JADE_BASE_KNOWN | ((DWORD) MINMAX(0, iWill, 255) << JADE_WILL_SHIFT) |
+				((DWORD) MINMAX(0, iPrecision, 255) << JADE_PRECISION_SHIFT);
+		item->SetYExtra(dwExtra);
+	}
+
+	// the old base lines (V2: Precyzja, the Will of the jade) out of the 6th / 7th slots - the 6/7 lines after them
+	// move up; true when there was one. iPrecision / iWill get the old values (left as they are when there was none).
+	bool JadeTakeLegacy(LPITEM item, BYTE bWillType, int& iPrecision, int& iWill)
+	{
+		bool bFound = false;
+		int iTo = ITEM_ATTRIBUTE_RARE_START;
+		TPlayerItemAttribute aKeep[ITEM_ATTRIBUTE_RARE_NUM];
+		memset(aKeep, 0, sizeof(aKeep));
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+		{
+			const BYTE bType = item->GetAttributeType(i);
+			if (bType == POINT_HIT_PCT || bType == bWillType)
+			{
+				(bType == POINT_HIT_PCT ? iPrecision : iWill) = item->GetAttributeValue(i);
+				bFound = true;
+			}
+			else if (bType)
+				aKeep[iTo++ - ITEM_ATTRIBUTE_RARE_START] = item->GetAttribute(i);
+		}
+		if (!bFound)
+			return false;
+		for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
+		{
+			const TPlayerItemAttribute& a = aKeep[i - ITEM_ATTRIBUTE_RARE_START];
+			if (item->GetAttributeType(i) != a.bType || item->GetAttributeValue(i) != a.sValue)
+				item->SetForceAttribute(i, a.bType, a.sValue);
+		}
+		return true;
+	}
+
+	void JadeBaseSaveNotify(LPITEM item)
+	{
+		GloveBaseSave(item);	// the item's whole yextra (by id)
+		GloveBaseNotify(item);
+	}
+
+	// a random base of the piece's level: the Will always (MT2009_PLUS_JADE_BRACELET_V3), Precyzja at
+	// will_tal_line_pct (80)
+	void JadeBaseRoll(LPITEM item, const JadeKind* pKind, int& iPrecision, int& iWill)
+	{
+		const int iLevel = item->GetVnum() % 10;
+		iPrecision = number(1, 100) <= EventPct("will_tal_line_pct", 80) ? RandomIn(s_aJadePrecision[iLevel]) : 0;
+		iWill = RandomIn(pKind->pWill[iLevel]);
+	}
 }
 
-// ITEM_MANAGER::CreateItem: Precyzja at will_tal_line_pct (80), with a random value of the level's range.
-// MT2009_PLUS_JADE_BRACELET_V3 (bug list 15.10 #9): the Will of the jade is the item's base bonus and is always there
-// (like the gloves' and - MT2009_PLUS_WILL_TALISMAN_V2 - the Will talismans'); before, it too was at 80% and a new
-// bracelet / necklace / earrings could come out of a chest, a drop or a shop with no Will.
+// ITEM_MANAGER::CreateItem (a new item): the two lines, random values of the level's range (stored only; saved by
+// Mt2009GloveLoad, which knows whether the item is saved at all). Nothing goes into the bonus slots any more.
 void Mt2009JadeBraceletV2Create(LPITEM item)
 {
 	BYTE bWillType;
 	const JadeKind* pKind = JadeKindOf(item);
 	if (!pKind || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
 		return;
-	const int iLevel = item->GetVnum() % 10;
-	const int iLinePct = EventPct("will_tal_line_pct", 80);
-	const int iPrecision = number(1, 100) <= iLinePct ? RandomIn(s_aJadePrecision[iLevel]) : 0;
-	const int iWill = RandomIn(pKind->pWill[iLevel]);
-	Mt2009JadeBraceletV2Write(item, iPrecision, iWill);
+	int iPrecision, iWill;
+	JadeBaseRoll(item, pKind, iPrecision, iWill);
+	JadeBaseStore(item, iPrecision, iWill);
 }
 
-// CItem::CopyAttributeTo: both lines at the same place of the new level's range (a V1 bracelet's Will - one line,
-// its common/rare value - too); a missing line is added, as the Will talismans do.
+// MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery's base from now on - an old base line in the 6th / 7th slot
+// (V2's place: an item loaded from before, a copy a system made of its bonuses) wins and leaves the bonus slots (an old
+// one-line V1 bracelet keeps its Precyzja-less base, a missing Will is rolled); a piece with neither a known base nor an
+// old line gets its level's random base. A worn piece gives the new lines at once; saved and told to the client.
+// Idempotent - the 6/7 systems call it before they count the extra bonuses (the engine's AddRareAttribute(2) /
+// ChangeRareAttribute(2), Seon-Hae).
+void Mt2009JadeBaseMigrate(LPITEM item)
+{
+	BYTE bWillType;
+	const JadeKind* pKind = JadeKindOf(item);
+	if (!pKind || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
+		return;
+	bool bLegacy = false;
+	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END && !bLegacy; ++i)
+		bLegacy = item->GetAttributeType(i) == POINT_HIT_PCT || item->GetAttributeType(i) == bWillType;
+	if (!bLegacy && JadeBaseKnown(item))
+		return;
+	const bool bWorn = item->IsEquipped() && item->GetOwner();
+	if (bWorn)
+		item->ModifyPoints(false);
+	int iPrecision = 0, iWill = 0;
+	if (bLegacy)
+	{
+		JadeTakeLegacy(item, bWillType, iPrecision, iWill);
+		if (iWill <= 0)
+			iWill = JadeBaseKnown(item) && JadeBaseWill(item) > 0 ? JadeBaseWill(item) : RandomIn(pKind->pWill[item->GetVnum() % 10]);
+	}
+	else
+		JadeBaseRoll(item, pKind, iPrecision, iWill);
+	JadeBaseStore(item, iPrecision, iWill);
+	if (bWorn)
+		item->ModifyPoints(true);
+	JadeBaseSaveNotify(item);
+	sys_log(0, "JADE_BASE: %u (id %u) - base Precyzja %d, Will %d (%s)", item->GetVnum(), item->GetID(), iPrecision, iWill,
+			bLegacy ? "moved out of the 6th/7th bonus slots" : "rolled");
+}
+
+// A piece made again from what a system kept of it (Seon-Hae's hold: its sockets, bonuses and yextra): the kept base
+// back (an old 6th/7th base line - a piece handed in before - moves to it).
+void Mt2009JadeBaseRestore(LPITEM item, DWORD dwYExtra)
+{
+	BYTE bWillType;
+	if (!JadeKindOf(item) || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
+		return;
+	if (dwYExtra & JADE_BASE_KNOWN)
+	{
+		const bool bWorn = item->IsEquipped() && item->GetOwner();
+		if (bWorn)
+			item->ModifyPoints(false);
+		JadeBaseStore(item, (int) ((dwYExtra & JADE_PRECISION_MASK) >> JADE_PRECISION_SHIFT),
+				(int) ((dwYExtra & JADE_WILL_MASK) >> JADE_WILL_SHIFT));
+		if (bWorn)
+			item->ModifyPoints(true);
+		JadeBaseSaveNotify(item);
+	}
+	Mt2009JadeBaseMigrate(item);
+}
+
+// The base lines of a piece of jade jewellery (its Will kind and value, its Precyzja), false for anything else or a
+// piece whose lines are still in its bonus slots (the bots' gear scoring adds them as the proto's lines).
+bool Mt2009JadeBaseLines(LPITEM item, unsigned char& bWillType, int& iWill, int& iPrecision)
+{
+	iWill = iPrecision = 0;
+	if (!item || !JadeKindOf(item) || !Mt2009JadeBraceletType(item->GetVnum(), bWillType) || !JadeBaseKnown(item))
+		return false;
+	iWill = JadeBaseWill(item);
+	iPrecision = JadeBasePrecision(item);
+	return true;
+}
+
+// Mt2009GloveLoad (ITEM_MANAGER::CreateItem, MT2009_PLUS_GLOVE_BASE_V1 (load)): a new piece's base saved, a loaded one's
+// read back (the bonus slots are set after CreateItem - Mt2009GloveAfterCreated moves an old line then).
+static void Mt2009JadeBaseLoad(LPITEM item, bool bIsNewItem, bool bSkipSave)
+{
+	BYTE bWillType;
+	if (!JadeKindOf(item) || !Mt2009JadeBraceletType(item->GetVnum(), bWillType))
+		return;
+	if (!bIsNewItem)
+	{
+		std::unique_ptr<SQLMsg> pMsg(DBManager::instance().DirectQuery("SELECT yextra FROM item_yextra WHERE id = %u", item->GetID()));
+		SQLResult* pRes = pMsg ? pMsg->Get() : NULL;
+		MYSQL_ROW row = pRes && pRes->uiNumRows > 0 ? mysql_fetch_row(pRes->pSQLResult) : NULL;
+		DWORD dwExtra = 0;
+		if (row && row[0])
+			str_to_number(dwExtra, row[0]);
+		item->SetYExtra(dwExtra);
+		return;
+	}
+	if (!bSkipSave)
+		GloveBaseSave(item);
+}
+
+// CItem::CopyAttributeTo (a refine): both lines at the same place of the new level's range (an old piece's lines out
+// of its bonus slots - a V1 bracelet's one Will line too); a missing Will is added, as the Will talismans do. The 6/7
+// lines the engine copied stay; an old base line copied with them leaves the new piece's bonus slots.
 void Mt2009JadeBraceletV2Refine(LPITEM pOld, LPITEM pNew)
 {
 	BYTE bWillType, bNewWillType;
@@ -491,25 +659,26 @@ void Mt2009JadeBraceletV2Refine(LPITEM pOld, LPITEM pNew)
 			JadeKindOf(pNew) != pKind)
 		return;
 	const int iOld = pOld->GetVnum() % 10, iNew = pNew->GetVnum() % 10;
-	int iPrecision = 0, iWill = 0;
+	int iOldPrecision = JadeBasePrecision(pOld), iOldWill = JadeBaseWill(pOld);
 	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 	{
 		const BYTE bType = pOld->GetAttributeType(i);
-		const int iValue = pOld->GetAttributeValue(i);
-		if (bType == POINT_HIT_PCT && !iPrecision)
-			iPrecision = Carry(iValue, s_aJadePrecision[iOld], s_aJadePrecision[iNew]);
-		else if (bType == bWillType && !iWill)
-			iWill = Carry(iValue, pKind->pWill[iOld], pKind->pWill[iNew]);
+		if (bType == POINT_HIT_PCT)
+			iOldPrecision = pOld->GetAttributeValue(i);
+		else if (bType == bWillType)
+			iOldWill = pOld->GetAttributeValue(i);
 	}
-	if (!iPrecision)
-		iPrecision = RandomIn(s_aJadePrecision[iNew]);
-	if (!iWill)
-		iWill = RandomIn(pKind->pWill[iNew]);
-	Mt2009JadeBraceletV2Write(pNew, iPrecision, iWill);
+	int iDummyPrecision = 0, iDummyWill = 0;
+	JadeTakeLegacy(pNew, bWillType, iDummyPrecision, iDummyWill);
+	const int iPrecision = iOldPrecision > 0 ? Carry(iOldPrecision, s_aJadePrecision[iOld], s_aJadePrecision[iNew]) : 0;
+	const int iWill = iOldWill > 0 ? Carry(iOldWill, pKind->pWill[iOld], pKind->pWill[iNew]) : RandomIn(pKind->pWill[iNew]);
+	JadeBaseStore(pNew, iPrecision, iWill);
+	JadeBaseSaveNotify(pNew);
 }
 
-// CItem::ModifyPoints: the jade in the Diamond's sockets (the engine's accessory sockets, socket 0 = how many are
-// filled) adds the wiki's values (of the item's kind) to the lines the bracelet / necklace / earrings have - they add up.
+// CItem::ModifyPoints: the base lines (MT2009_PLUS_JADE_BASE_V1 - no bonus slot gives them any more) and the jade in
+// the Diamond's sockets (the engine's accessory sockets, socket 0 = how many are filled), which adds the wiki's values
+// (of the item's kind) to the lines the bracelet / necklace / earrings have - they add up.
 void Mt2009JadeBraceletSocketPoints(LPITEM item, LPCHARACTER owner, bool bAdd)
 {
 	BYTE bWillType;
@@ -518,7 +687,10 @@ void Mt2009JadeBraceletSocketPoints(LPITEM item, LPCHARACTER owner, bool bAdd)
 		return;
 	const int iLevel = item->GetVnum() % 10;
 	const int iFilled = MINMAX(0, item->GetAccessorySocketGrade(), (int) yohara_gear::JADE_SOCKET_MAX);
+	int iPrecision = 0, iWill = 0;
 	bool bPrecision = false, bWill = false;
+	// a piece not moved yet (or its old lines put back - 72351's failed roll): its lines are still bonuses, the
+	// engine's attribute loop gives them, so its base gives nothing (never twice)
 	for (int i = ITEM_ATTRIBUTE_RARE_START; i < ITEM_ATTRIBUTE_RARE_END; ++i)
 	{
 		if (item->GetAttributeType(i) == POINT_HIT_PCT)
@@ -526,14 +698,22 @@ void Mt2009JadeBraceletSocketPoints(LPITEM item, LPCHARACTER owner, bool bAdd)
 		else if (item->GetAttributeType(i) == bWillType)
 			bWill = true;
 	}
-	int iPrecision = 0, iWill = 0;
+	if (!bPrecision && !bWill && JadeBaseKnown(item))
+	{
+		iPrecision = JadeBasePrecision(item);
+		iWill = JadeBaseWill(item);
+		bPrecision = iPrecision > 0;
+		bWill = iWill > 0;
+	}
 	for (int k = 0; k < iFilled; ++k)
 	{
-		iPrecision += pKind->pSocketPrecision[k][iLevel];
-		iWill += pKind->pSocketWill[k][iLevel];
+		if (bPrecision)
+			iPrecision += pKind->pSocketPrecision[k][iLevel];
+		if (bWill)
+			iWill += pKind->pSocketWill[k][iLevel];
 	}
-	if (bPrecision && iPrecision)
+	if (iPrecision)
 		owner->PointChange(POINT_HIT_PCT, bAdd ? iPrecision : -iPrecision);
-	if (bWill && iWill)
+	if (iWill)
 		owner->PointChange(bWillType, bAdd ? iWill : -iWill);
 }

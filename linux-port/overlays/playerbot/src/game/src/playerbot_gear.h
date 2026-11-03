@@ -847,6 +847,17 @@ namespace
 			if (iWill > 0 && bWillType == applyType)
 				total += iWill;
 		}
+		{	// MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery's Precyzja and Will - its base attribute, no bonus slot
+			unsigned char bWillType = 0;
+			int iWill = 0, iPrecision = 0;
+			if (Mt2009JadeBaseLines(item, bWillType, iWill, iPrecision))
+			{
+				if (bWillType == applyType)
+					total += iWill;
+				if (applyType == POINT_HIT_PCT)
+					total += iPrecision;
+			}
+		}
 		return total;
 	}
 
@@ -1732,6 +1743,17 @@ namespace
 			const int iWill = Mt2009GloveBaseWill(item, bWillType);
 			if (iWill > 0)
 				protoLines += ScorePlayerBotApplyTiered(bWillType, iWill, ch);
+		}
+		{	// MT2009_PLUS_JADE_BASE_V1: a piece of jade jewellery's two lines are its base attribute (the item's yextra) too
+			unsigned char bWillType = 0;
+			int iWill = 0, iPrecision = 0;
+			if (Mt2009JadeBaseLines(item, bWillType, iWill, iPrecision))
+			{
+				if (iWill > 0)
+					protoLines += ScorePlayerBotApplyTiered(bWillType, iWill, ch);
+				if (iPrecision > 0)
+					protoLines += ScorePlayerBotApplyTiered(POINT_HIT_PCT, iPrecision, ch);
+			}
 		}
 		for (int i = 0; i < ITEM_ATTRIBUTE_MAX_NUM; ++i)
 		{

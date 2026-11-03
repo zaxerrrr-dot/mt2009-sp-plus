@@ -24,7 +24,8 @@ poleceń czatu (jak Poszukiwanie skarbów). Logika jest w nakładce
   zapisuje `seonhae.npc_vid` / `seonhae.npc_time` i wysyła `SEONHAE open`. Boty – nigdy (`pc.is_bot()`,
   a rdzeń odrzuca każdy deskryptor bota).
 - **Okno** (`uiseonhae.py` + `uiscript/seonhaewindow.py` w kliencie): przedmiot (broń, zbroja,
-  biżuteria z 5 bonusami i mniej niż 2 dodatkowymi), 1–10 Odłamków poziomu przedmiotu, 0–5
+  biżuteria z 5 bonusami i mniej niż 2 dodatkowymi; biżuteria z jadeitu też – jej Precyzja i Wola to atrybut
+  podstawowy, nie 6./7. bonus, `MT2009_PLUS_JADE_BASE_V1`, `server-patches/obreczjadeitu2`), 1–10 Odłamków poziomu przedmiotu, 0–5
   Suplementów. Szansa jak na wiki (`MT2009_PLUS_SEONHAE_WIKI_V1`, niżej): `odłamki × 2 + % suplementu ×
   sztuki`, najwyżej 100 (10 odłamków = 20%, z 5 Silnymi Suplementami 70%; 1 odłamek + 5 Silnych = 52%).
 - **Rdzeń sprawdza wszystko jeszcze raz** (`/seonhae add <komórka> <odłamki> <komórka suplementu>
