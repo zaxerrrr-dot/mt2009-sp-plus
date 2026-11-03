@@ -451,6 +451,13 @@ namespace mt2009_buffi
 		b.dwNextCast = dwNow + CAST_MS;
 		if (!owner->IsLoadedAffect() || owner->IsDead() || owner->GetSkillGroup() == 0)
 			return;
+		// MT2009_PLUS_BUFFI_DISPEL_V1 (the owner, 3 November 2026: "Rozproszenie magii nie dziala na bufy z buffi"):
+		// the Sura's Rozproszenie Magii (SKILL_DISPEL) did take the buffi's buffs off (RemoveGoodAffect - they are the
+		// shaman's affect types), and the buffi cast them back within CAST_MS. While the dispel's mark lasts
+		// (AFF_SKILL_DISPEL, the time of its kDurationPoly2) no good buff lands - a real shaman's is refused the same
+		// way (ComputeSkill) - so the buffi waits too.
+		if (owner->IsAffectFlag(AFF_SKILL_DISPEL))
+			return;
 		for (int i = 0; i < 4; ++i)
 		{
 			const SBuff& buff = BUFFS[i];
