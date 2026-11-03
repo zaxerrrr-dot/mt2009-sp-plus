@@ -33,3 +33,17 @@ INSERT IGNORE INTO world.item_proto (`vnum`,`name`,`locale_name`,`type`,`subtype
 (83003,'Gold fish chest (D)',_cp1250 X'5AB32E20536B727A796E6961206E61205279627920284429',23,0,1,0,1,32768,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1);
 -- MT2009_PLUS_FISH_PUZZLE_V2: a V1 row (antiflag 82304) takes the package's antiflags; a row the operator changed is kept.
 UPDATE world.item_proto SET antiflag = 73856 WHERE vnum IN (25106, 25107) AND antiflag = 82304;
+-- MT2009_PLUS_FISH_PUZZLE_V3 (the owner's table of the chests, 3 November 2026; special_item_group.fishpuzzle.txt): the
+-- chest items our world.item_proto lacked or named wrong. Client: tools/fishpuzzle/patch_fishpuzzle_client.py (COPIES).
+--   72309 Podrecznik Kowala (the gift one; Owsap's / GF's vnum, not in our proto) - a copy of 70039's row (USE_TUNING,
+--         +15% refine chance, the same antiflags), only the vnum differs; INSERT IGNORE keeps a row already there.
+--   72310 Zwoj Egzorcyzmu - the row is 71001's twin but its Polish name was "NoNAme".
+--   72027 Dlon Przebicia - the piercing hand (apply 41, +10% for 10 minutes) was named "Dlon Krytyka".
+-- A row the operator renamed is kept (the WHERE asks for the old name).
+CREATE TEMPORARY TABLE world.mt2009_fishpuzzle_item AS SELECT * FROM world.item_proto WHERE vnum = 70039;
+UPDATE world.mt2009_fishpuzzle_item SET vnum = 72309;
+INSERT IGNORE INTO world.item_proto SELECT * FROM world.mt2009_fishpuzzle_item;
+DROP TEMPORARY TABLE world.mt2009_fishpuzzle_item;
+UPDATE world.item_proto SET locale_name = _cp1250 X'5A77F36A2045677A6F7263797A6D75' WHERE vnum = 72310 AND locale_name = 'NoNAme';
+UPDATE world.item_proto SET locale_name = _cp1250 X'44B36FF12050727A656269636961'
+	WHERE vnum = 72027 AND value1 = 41 AND locale_name = _cp1250 X'44B36FF1204B727974796B61';
