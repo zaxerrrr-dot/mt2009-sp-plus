@@ -1197,6 +1197,23 @@
    "desc": ""
   },
   {
+   "id": 100194,
+   "vnum": 71035,
+   "count": 1,
+   "price": 12,
+   "cur": 1,
+   "cat": 2,
+   "minutes": 0,
+   "suffix": "",
+   "source": "Eliksir Poszukiwacza (decyzja: dodaj do ItemShopu, 3.11.2026; pl-wiki: Pakiet Biologa 119 SM / 10 szt.)",
+   "note": "Runda 5 - decyzja właściciela.",
+   "sets": [],
+   "chest": 0,
+   "name": "",
+   "image": "",
+   "desc": ""
+  },
+  {
    "id": 100175,
    "vnum": 0,
    "count": 1,

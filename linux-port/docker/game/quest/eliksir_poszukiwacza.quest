@@ -1,0 +1,44 @@
+-- MT2009_PLUS_BIOLOG_ELIKSIR_V1 (w³aœciciel, 3.11.2026): Eliksir Poszukiwacza jak na pl-wiki ("Eliksir Poszukiwacza":
+-- "Poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie. Nie dotyczy
+-- misji na Yohara." / "Poprawia jakoœæ przedmiotów do badañ od Biologa Chaegiraba oraz Seona-Pyeonga").
+--   71035 Eliksir Poszukiwacza (ItemShop V3, Ko³o Losu jak na wiki), 76020 (Skrzynia Mistrza III, zwi¹zany),
+--   39023 (wersja handlowa). Wypicie ustawia collect_quest.eliksir; nastêpne oddanie przedmiotu do badañ
+--   (collect_data.take_chance w m2_mikstury.lua - collect_quest_lv30 ... lv90 u Chaegiraba, lv92 / lv94 u Seona-Pyeonga)
+--   ma szansê o po³owê wiêksz¹: 60% -> 90% (oryginalny quest: pass_percent = 90 z eliksirem). Eliksir znika przy tym
+--   oddaniu bez wzglêdu na wynik; misje Yohary (collect_quest_cz*) go nie ruszaj¹. Jeden naraz - drugi czeka w torbie.
+--   Nie skraca czasu oczekiwania (od tego jest Spirala Czasu). Boty: ich Biolog to kod AI (playerbot_town.h) - zu¿ywaj¹
+--   eliksir z torby tak samo, przy oddaniu.
+-- MT2009_PLUS_MIKSTURY_WYCOFANE_V1: przy logowaniu znika dzia³aj¹cy jeszcze efekt wycofanych mikstur Baek-Go (m2_mikstury.lua):
+--   Mikstura Szybkiej Analizy (AFFECT_COLLECT_NO_FAIL_TIME), Mikstura Determinacji (AFFECT_LEARN_NO_FAIL_TIME),
+--   Mikstura Geniuszu (AFFECT_POTION_GENERAL_USE na POINT_LEARN_CHANCE).
+-- cp1250; ¿aden napis nie koñczy siê polsk¹ liter¹ (qc).
+quest eliksir_poszukiwacza begin
+	state start begin
+		when login begin
+			if pc.has_affect(AFFECT_COLLECT_NO_FAIL_TIME) then
+				affect.remove_new(AFFECT_COLLECT_NO_FAIL_TIME)
+			end
+			if pc.has_affect(AFFECT_LEARN_NO_FAIL_TIME) then
+				affect.remove_new(AFFECT_LEARN_NO_FAIL_TIME)
+			end
+			if pc.has_affect(AFFECT_POTION_GENERAL_USE, POINT_LEARN_CHANCE) then
+				affect.remove_new(AFFECT_POTION_GENERAL_USE, POINT_LEARN_CHANCE)
+			end
+		end
+
+		when 71035.use or 76020.use or 39023.use begin
+			if pc.getf("collect_quest", "eliksir") > 0 then
+				syschat("Eliksir Poszukiwacza ju¿ dzia³a - zostanie zu¿yty przy nastêpnym oddaniu przedmiotu do badañ.")
+				return
+			end
+			if pc.get_level() < 30 then
+				syschat("Eliksir Poszukiwacza dzia³a w badaniach Biologa - od 30 poziomu.")
+				return
+			end
+			pc.remove_item(item.get_vnum(), 1)
+			pc.setf("collect_quest", "eliksir", 1)
+			syschat("Wypi³eœ Eliksir Poszukiwacza: nastêpny przedmiot oddany do badañ Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjêcie (zamiast 60%).")
+			syschat("Eliksir nie dzia³a w misjach na Yohara i nie skraca czasu oczekiwania (od tego jest Spirala Czasu).")
+		end
+	end
+end

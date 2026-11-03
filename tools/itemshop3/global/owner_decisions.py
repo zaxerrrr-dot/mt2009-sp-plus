@@ -100,6 +100,10 @@ NEW_LINES = [
 	(72347, 1, 15, 1, 2, 0, '', 'Spirala Czasu (10%) (decyzja: dodaj do ItemShopu, 3.11.2026)'),
 	(72348, 1, 30, 1, 2, 0, '', 'Spirala Czasu (20%) (decyzja: dodaj do ItemShopu, 3.11.2026)'),
 	(72349, 1, 45, 1, 2, 0, '', 'Spirala Czasu (30%) (decyzja: dodaj do ItemShopu, 3.11.2026)'),
+	# MT2009_PLUS_BIOLOG_ELIKSIR_V1 (the owner, 3.11.2026): Eliksir Poszukiwacza 71035 (quest eliksir_poszukiwacza, the next
+	# research hand-in at 90%) in place of the withdrawn Mikstura Szybkiej Analizy. The pl-wiki sells it only in Pakiet
+	# Biologa (119 SM: 10 elixirs and extras) - one elixir 12 SM, the window's multiples for more
+	(71035, 1, 12, 1, 2, 0, '', 'Eliksir Poszukiwacza (decyzja: dodaj do ItemShopu, 3.11.2026; pl-wiki: Pakiet Biologa 119 SM / 10 szt.)'),
 ]
 # "Dodaj jako szkatułkę tak jak kostiumy, że można losować dowolny amulet na 7 dni": a chest rolled at the purchase,
 # each piece of jewellery of the unique slots equally, 7 days; the list's three offers (1, 10+1, 20+3).
