@@ -937,7 +937,8 @@ RUN set -eu; L=/opt/metin2/share/locale/poland/quest/libs/other/_otherModuleLoad
 # (Eliksir Poszukiwacza: the next research hand-in at half as much again, 60% -> 90%). The three potions leave
 # Baek-Go's board (crafting_data.lua rows 71, 72, 74; apply.sh deletes them from world.crafting_proto) and their
 # recipes (50932, 50933, 50935) leave the "super receptury" group s50902 - zeroed, not deleted (a group stops reading at
-# the first index it lacks), so s50902 now always gives Receptura Mikstura Madrosci (50930).
+# the first index it lacks), so s50902 now always gives Receptura Mikstura Madrosci (50930) - rolled at a quarter of
+# its old rate (MT2009_PLUS_RECEPTURY_SUPER_V1 below), so that recipe drops as often as before.
 COPY quest/m2_mikstury.lua /opt/metin2/share/locale/poland/quest/libs/other/m2_mikstury.lua
 RUN set -eu; L=/opt/metin2/share/locale/poland; O="$L/quest/libs/other/_otherModuleLoader.lua" \
  && LC_ALL=C grep -q 'other/m2_difficulty.lua' "$O" \
@@ -952,6 +953,27 @@ RUN set -eu; L=/opt/metin2/share/locale/poland; O="$L/quest/libs/other/_otherMod
  && LC_ALL=C sed -i -E '/^Group[[:blank:]]+Receptury_Super/,/^}/ s/^([[:blank:]]*[0-9]+[[:blank:]]+5093[235][[:blank:]]+[0-9]+[[:blank:]]+)[0-9.]+/\10/' "$S" \
  && test "$(sed -n '/^Group[[:blank:]]*Receptury_Super/,/^}/p' "$S" | LC_ALL=C grep -c -E '^[[:blank:]]*[0-9]+[[:blank:]]+5093[235][[:blank:]]+[0-9]+[[:blank:]]+0([[:blank:]]|$)')" -eq 3 \
  && echo "share: Eliksir Poszukiwacza and the withdrawn Baek-Go potions (m2_mikstury.lua)"
+
+# MT2009_PLUS_RECEPTURY_SUPER_V1 (the owner, 3 November 2026): with three of its four recipes zeroed (the step above)
+# s50902 gave Receptura Mikstura Madrosci (50930) at every roll - four times as often as before. The group itself cannot
+# give "nothing", so receptury_super.awk cuts it where it is rolled: a mob's "Type drop" row s50902 at a quarter of its
+# chance (RedLas_WorldBoss 3 x 400 -> 100, two Metins 3 -> 0.75 and 8 -> 2), and in the twelve weighted groups of
+# special_item_group.txt holding an s50902 row (boss / mini-boss tiers, LootBox_Dolina / _Gigant, QuestBook_Hard /
+# _Expert, WorldBoss1, PustyniaSkrzynia, the giant spider's chest) every other row's weight x4 - the recipe row at a
+# quarter without fractions, the rest of the group at its own odds. Receptura Mikstura Madrosci drops as before.
+COPY receptury_super.awk /tmp/receptury_super.awk
+RUN set -eu; L=/opt/metin2/share/locale/poland; A=/tmp/receptury_super.awk; M="$L/mob_drop_item.txt"; G="$L/special_item_group.txt" \
+ && awk -v report="$A.m" -f "$A" "$M" > "$M.new" \
+ && awk -v report="$A.g" -f "$A" "$G" > "$G.new" \
+ && cat "$A.m" "$A.g" \
+ && test "$(tr -d '\r' < "$M" | wc -l)" -eq "$(tr -d '\r' < "$M.new" | wc -l)" \
+ && test "$(tr -d '\r' < "$G" | wc -l)" -eq "$(tr -d '\r' < "$G.new" | wc -l)" \
+ && test "$(sed -n 's/^drop //p' "$A.m")" = 5 && test "$(sed -n 's/^other //p' "$A.m")" = 0 \
+ && test "$(sed -n 's/^weighted //p' "$A.g")" = 12 && test "$(sed -n 's/^other //p' "$A.g")" = 0 \
+ && mv "$M.new" "$M" && mv "$G.new" "$G" \
+ && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*[0-9]+[[:blank:]]+s50902[[:blank:]]+1[[:blank:]]+(100|0\.75|2)[[:blank:]]' "$M")" -eq 5 \
+ && rm -f "$A" "$A.m" "$A.g" \
+ && echo "share: s50902 (super receptury) rolled at a quarter - Receptura Mikstura Madrosci as before (MT2009_PLUS_RECEPTURY_SUPER_V1)"
 
 # MT2009_PLUS_EXCHANGE_CHANCE_V1: the NPC exchanges' chances follow the
 # world's difficulty - soul stones to Magiczny Pyl, skill books to Pergamin,
@@ -2752,6 +2774,15 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua 
  && test "$(LC_ALL=C grep -c -E 'set_flag\("learn_delay"\.\.vnum, 0\)' "$F")" -eq 1 \
  && ! LC_ALL=C grep -q 'SKILLBOOK_LEARN_DELAY' "$F" \
  && echo "share: a recipe is read without a wait"
+
+# MT2009_PLUS_RADA_PUSTELNIKA_V1 (the owner, 3 November 2026; server-patches/radapustelnika): Rada Pustelnika helps the
+# skill books and the soul stones (pl-wiki), never a recipe - crafting.learn_recipe took its affect off at every recipe
+# read and gave nothing for it. It stays on for the next book now.
+RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua \
+ && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*affect\.remove_new\(AFFECT_SKILL_BOOK_BONUS\)[[:space:]]*$' "$F")" -eq 1 \
+ && LC_ALL=C sed -i -E 's/^([[:blank:]]*)affect\.remove_new\(AFFECT_SKILL_BOOK_BONUS\)([[:space:]]*)$/\1-- MT2009_PLUS_RADA_PUSTELNIKA_V1: Rada Pustelnika stays for the next book\2/' "$F" \
+ && ! LC_ALL=C grep -q 'remove_new(AFFECT_SKILL_BOOK_BONUS)' "$F" \
+ && echo "share: a recipe read leaves Rada Pustelnika on (MT2009_PLUS_RADA_PUSTELNIKA_V1)"
 
 # Uriel's "Wytwarzanie" window (MT2009_PLUS_SASH_CLOTH_V1, the owner, 6 October):
 # Metins and bosses drop Delikatne Sukno (80019) in place of the +0 sash

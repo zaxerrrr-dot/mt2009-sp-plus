@@ -302,8 +302,10 @@ namespace
 	// players (the Dockerfile's crafting.lua step, upstream 2.2.39) and a bot
 	// reads the same way - the bots' book wait used to stand in for it here,
 	// and a wait flag written before is ignored as the quest ignores it. A Hermit's
-	// Advice waits: the quest takes it off at any recipe read without using it,
-	// and the book pass puts it on for the class book it is about to read.
+	// Advice waits: the quest took it off at any recipe read without using it
+	// (it leaves it on since MT2009_PLUS_RADA_PUSTELNIKA_V1 - the wait is kept as
+	// it costs nothing), and the book pass puts it on for the class book it is
+	// about to read.
 	bool ReadPlayerBotCraftRecipe(LPCHARACTER ch)
 	{
 		if (!ch || !IsPlayerBotHerbalismUnlocked(ch))

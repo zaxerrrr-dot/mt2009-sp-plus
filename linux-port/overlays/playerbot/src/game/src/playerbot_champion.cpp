@@ -713,7 +713,7 @@ void ChampionOnLogin(LPCHARACTER ch)
 // Champion level 1, 0 -> P (40); a successful read is a level (1 -> M1 20 books, M1 -> G1 10, G1 -> P 10 - de wiki:
 // "erfolgreiche"). SKILL_PRECISION is GF's vnum 246 (its client's skilltable row, icon hit_attribute). The read is
 // LearnSkillByBook's passive one (the books' wait m2_book_wait, Zwoj Egzorcyzmu, the learn-chance potions);
-// Rada Pustelnika makes it sure, as with the class books. Its bonus is the wiki's table (GF's 0.4*k+16*k on the skill
+// Rada Pustelnika multiplies its chance by 2.5 (35% -> 87%), as with the class books (MT2009_PLUS_RADA_PUSTELNIKA_V1). Its bonus is the wiki's table (GF's 0.4*k+16*k on the skill
 // power, but the wiki's +4 at level 11), part of POINT_HIT_PCT (char.cpp ComputePoints, server-patches/precyzja).
 // Bots: only a bot Champion (MT2009_PLUS_BOT_CHAMPION_V1: the statue's errand of the Hydra's bots), as a person.
 static const int PRECISION_BOOK_PCT = 35;	// a read's chance - the class books' base (LearnSkillByBook)
@@ -777,7 +777,9 @@ int PrecisionReadBook(CHARACTER* ch)
 		ch->ChatPacket(CHAT_TYPE_INFO, "Twoja Precyzja ma juz najwyzszy poziom (P).");
 		return 0;
 	}
-	const DWORD dwPct = ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) ? 100 : PRECISION_BOOK_PCT;
+	// MT2009_PLUS_RADA_PUSTELNIKA_V1 (precyzja): Rada Pustelnika no longer makes the read certain here - LearnSkillByBook
+	// multiplies this chance by 2.5 under it, at most 100 (server-patches/radapustelnika), as for every passive book.
+	const DWORD dwPct = PRECISION_BOOK_PCT;
 	if (!ch->LearnSkillByBook(SKILL_PRECISION, dwPct))
 		return 0;
 	const int iAfter = ch->GetSkillLevel(SKILL_PRECISION);

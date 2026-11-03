@@ -10002,7 +10002,7 @@ namespace
 			return v;
 		}
 		// A Rada's affect waits for the class book it was taken for, when that
-		// book is read now: the stone's read would take it off for nothing.
+		// book is read now: the stone's read would spend it on the stone.
 		if (sk->FindAffect(AFFECT_SKILL_BOOK_BONUS))
 			for (WORD cell = 0; cell < PLAYERBOT_BAG_CELLS; ++cell)
 			{
