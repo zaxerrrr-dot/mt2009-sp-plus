@@ -1,4 +1,4 @@
-// MT2009_PLUS_FISH_PUZZLE_V1 / MT2009_PLUS_FISH_PUZZLE_V2 - Event Rybacki - Puzzle (Wedkarskie Puzzle; the owner,
+// MT2009_PLUS_FISH_PUZZLE_V1 / V2 / V3 - Event Rybacki - Puzzle (Wedkarskie Puzzle; the owner,
 // 3 November 2026; server-patches/fishpuzzle, README.md). The official event of version 17.3 (pl-wiki "Event Rybacki -
 // Puzzle", "Minigra: Wedkarskie Puzzle", "Pudlo wedkarskich puzzli", "Zl. Skrzynia na Ryby (D)").
 //
@@ -20,10 +20,14 @@
 // its python said "/fishpuzzle hello" (root uifishpuzzle.py, only when app.ENABLE_FISH_EVENT): an old client gets
 // nothing of it - a box used from its inventory says the event needs the new client, its old chat commands the same.
 //
-// The rules are the package's (char.cpp FishEvent*, fishing.cpp): during the event every fish caught (the fishing game
-// won) gives 5 Pudel wedkarskich puzzli 25106 (event flag fish_puzzle_boxes); with Rybie Wnetrznosci (the premium fish
-// mind or the unique group 10009: 71008, 72013-72015 - the package asks UNIQUE_ITEM_FISH_MIND) 10% of the catches give
-// one Luks. pudlo wedk. puzzli 25107 instead (fish_puzzle_deluxe, per mille, 100). A box opened in the window is one
+// The rules are the package's (char.cpp FishEvent*, fishing.cpp) with the drop of the pl-wiki (MT2009_PLUS_FISH_PUZZLE_V3,
+// the owner, 3 November 2026: "exactly as on the pl-wiki"): during the event a catch (the fishing game won - a fish,
+// a dye, anything) brings 5 Pudel wedkarskich puzzli 25106 (event flag fish_puzzle_boxes) with a 30% chance
+// (fish_puzzle_chance, per cent), with Rybie Wnetrznosci (the premium fish mind or the unique group 10009: 71008,
+// 72013-72015 - the package asks UNIQUE_ITEM_FISH_MIND) always; with them a catch also has a 2% chance of one Luks.
+// pudlo wedk. puzzli 25107 on top (fish_puzzle_deluxe, per mille, 20) - the wiki's "100% for the box and a chance of
+// the deluxe one" (the package gave every catch 5 boxes and 10% of the fish-mind catches the deluxe box instead of
+// them). A box opened in the window is one
 // attempt and a random piece of shapes 1-6 (25106) or the 3 x 2 piece 7 (25107); the piece goes onto the 6 x 4 board
 // where it fits (inside, no overlap - the package's own table let an L wrap round the board's right edge, here the
 // cells are checked) or is thrown away in the client (right click; the server keeps it until the next box, as the
@@ -41,10 +45,12 @@
 // after a login, warp or channel change has no piece on the mouse) - the package lost it at the logout.
 //
 // The event (planner kind "fishpuzzle" 19, event flag fish_puzzle_event, playerbot_ingame_events.h; or a GM's
-// "/e enable_fish_event 1", the package's flag) gates the boxes found while fishing; the banner shows while it runs and
-// through its 7-day reward window (fish_puzzle_reward), so the boxes left can still be laid. A change of that state
-// sends ENABLE and the board again to every client that said hello (Mt2009FishEventTick, once a second). Bots never
-// get a box (their catches are skipped) and cannot play.
+// "/e enable_fish_event 1", the package's flag) gates the boxes found while fishing, the banner and the game: V3 (the
+// pl-wiki: "when the event is off its items cannot be found, the banner and the window are off too") - no reward
+// window after it any more (V1 kept the banner 7 days, fish_puzzle_reward); a box used or a piece laid while it is
+// off is refused with a line, the board and its attempts wait for the next run. A change of that state sends ENABLE
+// and the board again to every client that said hello (Mt2009FishEventTick, once a second). Bots never get a box
+// (their catches are skipped) and cannot play.
 #include "stdafx.h"
 #include "constants.h"
 #include "config.h"
@@ -70,7 +76,6 @@
 
 // playerbot_ingame_events.h (MT2009_PLUS_EVENT_MANAGER_V1)
 bool InGameEventIsActive(const char* key);
-DWORD InGameEventRewardEndTime(const char* key);
 
 namespace fishpuzzle
 {
@@ -89,7 +94,8 @@ namespace fishpuzzle
 		REWARD_EXP = 30000,
 		PACKET_GAP_MS = 100,
 		DEFAULT_BOXES = 5,
-		DEFAULT_DELUXE_PERMILLE = 100,
+		DEFAULT_CHANCE_PCT = 30,		// MT2009_PLUS_FISH_PUZZLE_V3: pl-wiki "5 boxes with a 30% chance"
+		DEFAULT_DELUXE_PERMILLE = 20,	// MT2009_PLUS_FISH_PUZZLE_V3: pl-wiki "+2%" with Rybie Wnetrznosci
 	};
 
 	// The seven pieces, as GF's pictures fish_1..fish_7.sub draw them (fishingevnet001.dds, 32 px a cell) and the
@@ -228,12 +234,19 @@ namespace fishpuzzle
 		return q.GetEventFlag("fish_puzzle_event") > 0 || q.GetEventFlag("enable_fish_event") > 0;
 	}
 
-	// The banner shows while it runs and through the scheduled run's reward window.
+	// The banner and the game show while it runs - MT2009_PLUS_FISH_PUZZLE_V3: only then (pl-wiki), no reward window.
 	bool EventShown()
 	{
-		if (EventOn() || InGameEventIsActive("fishpuzzle"))
-			return true;
-		return InGameEventRewardEndTime("fishpuzzle") > (DWORD)time(NULL);
+		return EventOn() || InGameEventIsActive("fishpuzzle");
+	}
+
+	// MT2009_PLUS_FISH_PUZZLE_V3: a box or a piece while the event is off - the window is off (pl-wiki).
+	bool RefuseOff(LPCHARACTER ch)
+	{
+		if (EventShown())
+			return false;
+		ch->ChatPacket(CHAT_TYPE_INFO, "Event Rybacki - Puzzle nie trwa teraz - pude\263ka otworzysz podczas nast\352pnego eventu.");
+		return true;
 	}
 
 	bool Playable(LPCHARACTER ch)
@@ -305,7 +318,7 @@ namespace fishpuzzle
 	// The package's FishEventUseBox.
 	void UseBox(LPCHARACTER ch, BYTE window, WORD cell)
 	{
-		if (window != INVENTORY || !ch->CanHandleItem())
+		if (window != INVENTORY || !ch->CanHandleItem() || RefuseOff(ch))
 			return;
 		const TItemPos pos(window, cell);
 		LPITEM item;
@@ -332,7 +345,7 @@ namespace fishpuzzle
 	{
 		TState st;
 		Load(ch->GetPlayerID(), st);
-		if (!st.pending || cell >= CELLS)
+		if (!st.pending || cell >= CELLS || RefuseOff(ch))
 			return;
 		bool grid[CELLS];
 		if (!Fits(st.pieces, st.pending, cell, grid))
@@ -452,11 +465,15 @@ int Mt2009FishPuzzleUseItem(LPCHARACTER ch, LPITEM item)
 		ch->ChatPacket(CHAT_TYPE_INFO, "W\352dkarskie Puzzle wymagaj\261 nowej wersji klienta - zaktualizuj gr\352.");
 		return 0;
 	}
+	if (RefuseOff(ch))
+		return 0;
 	ch->ChatPacket(CHAT_TYPE_COMMAND, "FP open");
 	return 1;
 }
 
-// fishing::ProcessFishingGameSuccess (fishing.cpp): during the event every catch brings boxes (the package's rule).
+// fishing::ProcessFishingGameSuccess (fishing.cpp): during the event a catch brings boxes. MT2009_PLUS_FISH_PUZZLE_V3
+// (pl-wiki "Event Rybacki - Puzzle", "Pudlo wedkarskich puzzli", "Luks. pudlo wedk. puzzli", "Rybie Wnetrznosci"):
+// 5 boxes with a 30% chance, always with Rybie Wnetrznosci, and with them a 2% chance of one deluxe box on top.
 void Mt2009FishPuzzleOnCatch(LPCHARACTER ch)
 {
 	using namespace fishpuzzle;
@@ -469,13 +486,16 @@ void Mt2009FishPuzzleOnCatch(LPCHARACTER ch)
 		boxes = DEFAULT_BOXES;
 	if (boxes > 200)
 		boxes = 200;
+	int chance = q.GetEventFlag("fish_puzzle_chance");
+	if (chance <= 0)
+		chance = DEFAULT_CHANCE_PCT;
 	int deluxe = q.GetEventFlag("fish_puzzle_deluxe");
 	if (deluxe <= 0)
 		deluxe = DEFAULT_DELUXE_PERMILLE;
+	if (mind || number(1, 100) <= chance)
+		ch->AutoGiveItem(BOX_NORMAL, boxes);
 	if (mind && number(1, 1000) <= deluxe)
 		ch->AutoGiveItem(BOX_DELUXE, 1);
-	else
-		ch->AutoGiveItem(BOX_NORMAL, boxes);
 }
 
 // InGameEventTick (playerbot_ingame_events.h), once a second: the banner on or off for every hello'd client when the
