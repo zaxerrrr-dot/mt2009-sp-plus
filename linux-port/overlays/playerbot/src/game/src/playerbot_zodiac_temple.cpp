@@ -3374,12 +3374,61 @@ struct FPolyMonster
 			{
 				if (DISTANCE_APPROX(ch->GetX() - Mob_X, ch->GetY() - Mob_Y) > 1000)
 				{
-					ch->SetPolymorph(101, false);
+					ZodiacPetrify(ch, 101);	// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: the dog ends by itself after 15 s
 				}
 			}
 		}
 	}
 };
+
+// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1 (playerbot_zodiac_temple.h): the statues 20452-20463 and the wild dog 101.
+bool ZodiacIsPetrifyRace(DWORD dwRace)
+{
+	return (dwRace >= 20452 && dwRace <= 20463) || dwRace == 101;
+}
+
+// The petrification taken off - not a polymorph of the player's own (a Marble's AFFECT_POLYMORPH stays).
+void ZodiacUnpetrify(LPCHARACTER ch, const char* why)
+{
+	if (!ch || !ch->IsPolymorphed() || !ZodiacIsPetrifyRace(ch->GetPolymorphVnum()) || ch->FindAffect(AFFECT_POLYMORPH))
+		return;
+	const DWORD dwRace = ch->GetPolymorphVnum();
+	ch->SetPolymorph(0);
+	sys_log(0, "ZODIAC_PETRIFY: end pid=%u name=%s race=%u map=%ld why=%s", ch->GetPlayerID(), ch->GetName(), dwRace,
+			ch->GetMapIndex(), why ? why : "");
+}
+
+EVENTINFO(zodiac_petrify_person_info)
+{
+	DWORD pid;
+	DWORD race;
+	zodiac_petrify_person_info() : pid(0), race(0) {}
+};
+
+// by the player's id, so a character gone (logout, warp) meanwhile is never touched
+EVENTFUNC(zodiac_petrify_person_event)
+{
+	zodiac_petrify_person_info* info = dynamic_cast<zodiac_petrify_person_info*>(event->info);
+	if (!info)
+		return 0;
+	LPCHARACTER ch = CHARACTER_MANAGER::instance().FindByPID(info->pid);
+	if (ch && ch->GetPolymorphVnum() == info->race)
+		ZodiacUnpetrify(ch, "timer");
+	return 0;
+}
+
+void ZodiacPetrify(LPCHARACTER ch, DWORD dwRace)
+{
+	if (!ch)
+		return;
+	ch->SetPolymorph(dwRace, false);
+	if (!ch->IsPC() || ch->GetPolymorphVnum() != dwRace)
+		return;
+	zodiac_petrify_person_info* info = AllocEventInfo<zodiac_petrify_person_info>();
+	info->pid = ch->GetPlayerID();
+	info->race = dwRace;
+	event_create(zodiac_petrify_person_event, info, PASSES_PER_SEC(ZODIAC_PETRIFY_PERSON_SEC));
+}
 
 void CZodiac::PolyCharacter(LPCHARACTER Mob)
 {

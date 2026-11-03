@@ -672,6 +672,20 @@ class Build:
 			days = ds[0] if short else ds[-1]
 			drops.append(dict(label='%s zestawu (%d dni)' % (use, days), kind=kind, weight=cw[kind],
 				items=[dict(alts=list(parts[use]), count=1, minutes=days * 1440 if any(self.d.timed(v) for v in parts[use]) else 0, label=use)]))
+		# MT2009_PLUS_ITEMSHOP_CHEST_PETS_V1 (the owner's list of 3 November 2026: "skrzynie (np. Skrzynia Zaswiatow) - pet
+		# i wierzchowiec maja tez wypadac osobno, z szansa jak fryzura/kostium (nie tylko w calym pakiecie)"): the set's
+		# pet and mount also on their own, each as the costume - its short and its long time at the costume's chances
+		# (2.5 % + 1.5 %, the package's time when the costume's are unknown). The common items' share shrinks by as much.
+		for lab, kind in (('Zwierzak', 'pet'), ('Wierzchowiec', 'mount')):
+			vs = [v for v in parts.get(lab, []) if v not in OWNER_REMOVED]
+			if not vs:
+				continue
+			timed = any(self.d.timed(v) for v in vs)
+			for short, ck in ((True, 'body15'), (False, 'body30')):
+				days = (d_body[0] if short else d_body[-1]) if dur['Kostium'] else pd
+				drops.append(dict(label='%s zestawu (%d dni)' % (lab, days) if timed else '%s zestawu' % lab,
+					kind='%s%s' % (kind, '15' if short else '30'), weight=cw[ck],
+					items=[dict(alts=list(vs), count=1, minutes=days * 1440 if timed else 0, label=lab)]))
 		# the other items: the chest's (not costumes, pets or mounts of any set - those are the set's own above)
 		common, gone = [], []
 		for n, cnt, days, sub in src['items']:

@@ -9,8 +9,8 @@
 | Część | Miejsce |
 |---|---|
 | Logika (nowe pliki, wszystko w `#ifdef ENABLE_12ZI`) | `linux-port/overlays/playerbot/src/game/src/playerbot_zodiac_*`: `temple.h/.cpp` (klasy `CZodiac`, `CZodiacManager`, wersja 3.0), `ext.cpp` (definicje, które paczka wstawiała do plików silnika), `battle.cpp` (umiejętności bossów), `char.cpp` (tablica nagród), `questlua.cpp` (funkcje Lua), `regen.inc` (regeny mapy, dołączany do `regen.cpp`) |
-| Haki w plikach silnika | `edits.json` (65 zmian w 24 plikach, każda ze znacznikiem `MT2009_PLUS_ZODIAC_V1 (<n>)`); `apply_zodiak.py <game/src>` (Linux/VPS) i `Apply-ZodiakPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) czytają ten sam plik |
-| Generator haków | (zmiana `(65)` dopisana ręcznie – generator jej nie zna) `tools/zodiak/gen_zodiak_edits.py <zodiak_haki.py z paczki> <połatany game/src> <edits.json>` – kotwice paczki rozwiązane na naszym silniku po wszystkich innych łatkach |
+| Haki w plikach silnika | `edits.json` (67 zmian w 24 plikach, każda ze znacznikiem `MT2009_PLUS_ZODIAC_V1 (<n>)`; (66)–(67) – MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: posąg/pies mija po 15 s, klik innego gracza zdejmuje też psa, śmierć zdejmuje); `apply_zodiak.py <game/src>` (Linux/VPS) i `Apply-ZodiakPatch.ps1` (Windows, ostatni krok `tools/port/Apply-MT2009PlusEngine.ps1`) czytają ten sam plik |
+| Generator haków | (zmiany `(65)`–`(67)` dopisane ręcznie – generator ich nie zna) `tools/zodiak/gen_zodiak_edits.py <zodiak_haki.py z paczki> <połatany game/src> <edits.json>` – kotwice paczki rozwiązane na naszym silniku po wszystkich innych łatkach |
 | Baza | `linux-port/docker/mariadb/playerbot/zodiak.sql` (z `96_zodiak.sql` paczki; `apply.sh`, przed żywiołami) |
 | Dane serwera | `linux-port/docker/game/zodiak/` (mapa, `data/dungeon/zodiac`, ruchy 45 potworów, `group.zodiak.txt`, `locale_string.zodiak.txt`) – krok `share: Swiatynia Zodiaku` w `Dockerfile` (+ `map_names[358]`, `/goto zodiac`) |
 | Questy | `linux-port/docker/game/quest/zodiac_{temples,milbon,prism_mission,emergency_mission}.quest` (lista i funkcje `qc` w `Dockerfile`) |

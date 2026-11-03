@@ -263,7 +263,7 @@ struct FAttackSkill2
 					if (!ch->IsPolymorphed() && !tch->IsZodiacOfficer())
 					{
 						DWORD GetPolyNum = PolyDog(tch->GetRaceNum()) == false ? tch->GetStatueVnum() : 101;
-						ch->SetPolymorph(GetPolyNum, false);
+						ZodiacPetrify(ch, GetPolyNum);	// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: ends by itself after 15 s
 					}
 				}
 			}
@@ -388,7 +388,7 @@ struct FAttackSkill3
 					if (!ch->IsPolymorphed() && !tch->IsZodiacOfficer())
 					{
 						DWORD GetPolyNum = PolyDog(tch->GetRaceNum()) == false ? tch->GetStatueVnum() : 101;
-						ch->SetPolymorph(GetPolyNum, false);
+						ZodiacPetrify(ch, GetPolyNum);	// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: ends by itself after 15 s
 					}
 				}
 			}
@@ -580,7 +580,7 @@ struct FAttackSkill5
 					if (!ch->IsPolymorphed() && !tch->IsZodiacOfficer())
 					{
 						DWORD GetPolyNum = PolyDog(tch->GetRaceNum()) == false ? tch->GetStatueVnum() : 101;
-						ch->SetPolymorph(GetPolyNum, false);
+						ZodiacPetrify(ch, GetPolyNum);	// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: ends by itself after 15 s
 					}
 				}
 			}
@@ -705,7 +705,7 @@ struct FAttackSkill6
 					if (!ch->IsPolymorphed() && !tch->IsZodiacOfficer())
 					{
 						DWORD GetPolyNum = PolyDog(tch->GetRaceNum()) == false ? tch->GetStatueVnum() : 101;
-						ch->SetPolymorph(GetPolyNum, false);
+						ZodiacPetrify(ch, GetPolyNum);	// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: ends by itself after 15 s
 					}
 				}
 			}
@@ -892,7 +892,7 @@ struct FAttackSkill8
 					if (!ch->IsPolymorphed() && !tch->IsZodiacOfficer())
 					{
 						DWORD GetPolyNum = PolyDog(tch->GetRaceNum()) == false ? tch->GetStatueVnum() : 101;
-						ch->SetPolymorph(GetPolyNum, false);
+						ZodiacPetrify(ch, GetPolyNum);	// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: ends by itself after 15 s
 					}
 				}
 			}
@@ -1004,7 +1004,7 @@ struct FAttackSkill9
 					if (!ch->IsPolymorphed() && !tch->IsZodiacOfficer())
 					{
 						DWORD GetPolyNum = PolyDog(tch->GetRaceNum()) == false ? tch->GetStatueVnum() : 101;
-						ch->SetPolymorph(GetPolyNum, false);
+						ZodiacPetrify(ch, GetPolyNum);	// MT2009_PLUS_ZODIAC_PETRIFY_PERSON_V1: ends by itself after 15 s
 					}
 				}
 			}

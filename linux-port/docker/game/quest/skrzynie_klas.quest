@@ -1,0 +1,85 @@
+-- MT2009_PLUS_CLASS_CHESTS_V1 (lista wlasciciela z 3.11.2026): osiem skrzyn klas postaci z drugiego ItemShopu (pl-wiki
+-- "Skrzynia Sura Broni (D)" i siedem pozostalych; vnumy GF 39048-39062 parzyste) i ich encyklopedie (71204-71218 parzyste,
+-- "Encyklopedia Urana (D)" ...). Przedmioty: apply.sh (MT2009_PLUS_CLASS_CHESTS_V1), klient: tools/skrzynieklas.
+--   skrzynia     -> 10x Mikstura Madrosci (3h) 71155, 20x Zwoj Egzorcyzmu 71001, 10x Rada Pustelnika 71094,
+--                   5x Pierscien Teleportacji 70058 (bez laczenia w stosy - piec miejsc) i encyklopedia sciezki;
+--   encyklopedia -> 25 losowych instrukcji umiejetnosci tej sciezki (50400 + numer umiejetnosci, stosy do 200).
+-- Otworzyc moze kazda postac (jak u GF - skrzynie mozna kupic dla innej postaci konta). cp1250; zaden napis nie konczy
+-- sie polska litera (qc).
+quest skrzynie_klas begin
+	state start begin
+		function chests()
+			return {
+				[39048] = 71204,	-- Skrz. Woj. M. Cia³a (D) -> Encyklopedia Saturna (D)
+				[39050] = 71206,	-- Skrz. Woj.M. Ducho. (D) -> Encyklopedia Ziemi (D)
+				[39052] = 71208,	-- Skrz. Ninja M.Ostrza (D) -> Encyklopedia Marsa (D)
+				[39054] = 71210,	-- Skrz. Ninja M. £uku (D) -> Encyklop. Jupitera (D)
+				[39056] = 71212,	-- Skrzynia Sura Broni (D) -> Encyklopedia Urana (D)
+				[39058] = 71214,	-- Skrzynia Sura Magii (D) -> Encyklopedia Neptuna (D)
+				[39060] = 71216,	-- Skrz. Szam. M. Smoka (D) -> Encyklop. Merkurego (D)
+				[39062] = 71218,	-- Skrz. Szam. M. Lecz. (D) -> Encyklopedia Wenus (D)
+			}
+		end
+
+		function books()
+			return {
+				[71204] = {1, 2, 3, 4, 5},	-- Encyklopedia Saturna (D): Wojowników Mocy Cia³a
+				[71206] = {16, 17, 18, 19, 20},	-- Encyklopedia Ziemi (D): Wojowników Mocy Duchowej
+				[71208] = {31, 32, 33, 34, 35},	-- Encyklopedia Marsa (D): Ninja Mocy Ostrza
+				[71210] = {46, 47, 48, 49, 50, 51},	-- Encyklop. Jupitera (D): Ninja Mocy £uku
+				[71212] = {61, 62, 63, 64, 65, 66},	-- Encyklopedia Urana (D): Sury Broni
+				[71214] = {76, 77, 78, 79, 80, 81},	-- Encyklopedia Neptuna (D): Sury Magii
+				[71216] = {91, 92, 93, 94, 95, 96},	-- Encyklop. Merkurego (D): Szamanów Mocy Smoka
+				[71218] = {106, 107, 108, 109, 110, 111},	-- Encyklopedia Wenus (D): Szamanów Mocy Leczenia
+			}
+		end
+
+		when 39048.use or 39050.use or 39052.use or 39054.use or 39056.use or 39058.use or 39060.use or 39062.use begin
+			local vnum = item.get_vnum()
+			local enc = skrzynie_klas.chests()[vnum]
+			if enc == nil then
+				return
+			end
+			-- 3 stosy + 5 pierscieni + encyklopedia
+			if pc.get_empty_inventory_count() < 9 then
+				syschat("Skrzynia: potrzebujesz 9 wolnych miejsc w ekwipunku.")
+				return
+			end
+			pc.remove_item(vnum, 1)
+			pc.give_item2(71155, 10)
+			pc.give_item2(71001, 20)
+			pc.give_item2(71094, 10)
+			for i = 1, 5 do
+				pc.give_item2(70058, 1)
+			end
+			pc.give_item2(enc, 1)
+			syschat("Skrzynia otwarta: mikstury, zwoje, rady, pierscienie i encyklopedia sa w ekwipunku.")
+		end
+
+		when 71204.use or 71206.use or 71208.use or 71210.use or 71212.use or 71214.use or 71216.use or 71218.use begin
+			local vnum = item.get_vnum()
+			local skills = skrzynie_klas.books()[vnum]
+			if skills == nil then
+				return
+			end
+			local n = table.getn(skills)
+			if pc.get_empty_inventory_count() < n then
+				syschat(string.format("Encyklopedia: potrzebujesz %d wolnych miejsc w ekwipunku.", n))
+				return
+			end
+			pc.remove_item(vnum, 1)
+			local got = {}
+			for i = 1, 25 do
+				local s = skills[number(1, n)]
+				got[s] = (got[s] or 0) + 1
+			end
+			for i = 1, n do
+				local s = skills[i]
+				if got[s] then
+					pc.give_item2(50400 + s, got[s])
+				end
+			end
+			syschat("Encyklopedia otwarta: 25 instrukcji umiejetnosci jest w ekwipunku.")
+		end
+	end
+end
