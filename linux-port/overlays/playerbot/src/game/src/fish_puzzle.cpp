@@ -506,3 +506,13 @@ void Mt2009FishEventTick()
 		++it;
 	}
 }
+
+// MT2009_PLUS_FISH_PUZZLE_V1 (link): the catch hook in fishing.cpp declares the function at block scope inside
+// namespace fishing, so the call binds to fishing::Mt2009FishPuzzleOnCatch - this forwards it to the one above.
+namespace fishing
+{
+	void Mt2009FishPuzzleOnCatch(LPCHARACTER ch)
+	{
+		::Mt2009FishPuzzleOnCatch(ch);
+	}
+}
