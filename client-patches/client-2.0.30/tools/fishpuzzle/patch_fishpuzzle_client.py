@@ -13,6 +13,9 @@
 # 25107.tga and 25111.tga (GF's item_list gives 83001-83003 the one 25111.tga) - not in the players' install:
 # build_fishpuzzle_packs.py packs them (pack "fishpuzzle", with the window's pictures).
 # Records: copies of 30228's with every value cleared (tools/monstercard's card_record), as tools/spirala.
+# MT2009_PLUS_FISH_PUZZLE_V3 (COPIES): the chests' items the client lacked or named wrong - 72309 Podrecznik Kowala (a
+# copy of 70039's record), 72310 Zwoj Egzorcyzmu (71001's twin, was "NoNAme", no item_list / itemdesc line), 72027 Dlon
+# Przebicia (was "Dlon Krytyka") and 72048's description (it said +20% piercing; the item is +10% critical).
 #   docker run --rm -v /opt/metin2:/opt/metin2 m2pack-lzo python3 \
 #     <repo>/client-patches/client-2.0.30/tools/fishpuzzle/patch_fishpuzzle_client.py <item_proto> <item_list.txt> <itemdesc.txt> [<out dir>]
 import os
@@ -26,11 +29,13 @@ FLAG_STACKABLE = 4
 # V2: the package's ANTI_DROP | ANTI_GIVE | ANTI_MYSHOP (= fish_puzzle.sql 73856); the chests: no stacking only (32768, as 50270)
 ANTI_BOX = 128 | 8192 | 65536
 ANTI_CHEST = 32768
-BOX_DESC = (u'Zawiera losowy element do Wędkarskich Puzzli (Event Rybacki - Puzzle). Kliknij prawym przyciskiem '
-	u'myszy, aby otworzyć okno puzzli - tam otworzysz pudło i ułożysz element.')
-DELUXE_DESC = (u'Zawiera duży element (3 x 2) do Wędkarskich Puzzli (Event Rybacki - Puzzle). Kliknij prawym '
+# MT2009_PLUS_FISH_PUZZLE_V3: the descriptions of the pl-wiki's item pages ("Opis"), then how to use the item
+BOX_DESC = (u'Zawiera losowy element puzzli do zabawy w wędkarskie puzzle. Kliknij prawym przyciskiem myszy, aby '
+	u'otworzyć okno puzzli - tam otworzysz pudło i ułożysz element.')
+DELUXE_DESC = (u'Zawiera duży kawałek układanki do udziału w Evencie Rybackim (element 3 x 2). Kliknij prawym '
 	u'przyciskiem myszy, aby otworzyć okno puzzli.')
-CHEST_DESC = u'Nagroda za ułożenie wędkarskich puzzli w %s. Można otworzyć %s.'
+CHEST_DESC = (u'W skrzyni znajduje się cenna nagroda dla ciebie. Nagroda za ułożenie wędkarskich puzzli w %s. '
+	u'Można otworzyć %s.')
 # (vnum, name, Polish name, type, stack, antiflag, flags, icon, description)
 ITEMS = (
 	(25106, u'Fish box', u'Pudło wędkarskich puzzli', 18, 200, ANTI_BOX, FLAG_STACKABLE, u'icon/item/25106.tga', BOX_DESC),
@@ -44,8 +49,34 @@ ITEMS = (
 )
 
 
+# MT2009_PLUS_FISH_PUZZLE_V3: the chests' items (special_item_group.fishpuzzle.txt) the client lacked or named wrong -
+# = fish_puzzle.sql's V3 part. A copy of another record of the client's proto with the vnum and names set (the
+# values, flags and prices stay the source's); the icons are the base client's.
+# (vnum, source vnum, name or None = the source's, Polish name, item_list icon or None = no line, description)
+COPIES = (
+	(72309, 70039, u'Blacksmith Handbook', u'Podręcznik Kowala', u'icon/item/70039.tga',
+		u'Księga zawiera duszę starego kowala. Jeśli jej użyjesz, zwiększy to szansę na pomyślne ulepszenie przedmiotu '
+		u'o 15%. Przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakość przedmiotu '
+		u'jest redukowana o 1 poziom.'),
+	(72310, 71001, u'Exorcism Scroll', u'Zwój Egzorcyzmu', u'icon/item/71001.tga', u'Uwalnia Cię od klątwy złego ducha.'),
+	(72027, 72027, None, u'Dłoń Przebicia', None,
+		u'Zwiększa szansę na przeszywające uderzenie o 10% przez 10 minut.'),
+	(72048, 72048, None, u'Dłoń Krytyka', None, u'Zwiększa szansę na krytyczne uderzenie o 10% przez 10 minut.'),
+)
+
+
 def items():
 	return ITEMS
+
+
+def copy_record(recs, c):
+	vnum, src, name, pl = c[:4]
+	r = bytearray(recs[src])
+	struct.pack_into('<I', r, 0, vnum)
+	if name is not None:
+		r[8:41] = base.fixed(name, 33)
+	r[41:74] = base.fixed(pl, 33)
+	return bytes(r)
 
 
 def record(template, it):
@@ -68,6 +99,11 @@ def item_proto(b):
 		if recs.get(it[0]) != r:
 			recs[it[0]] = r
 			changed += 1
+	for c in COPIES:
+		r = copy_record(recs, c)
+		if recs.get(c[0]) != r:
+			recs[c[0]] = r
+			changed += 1
 	if not changed:
 		return b, 0
 	out = b''.join(recs[v] for v in sorted(recs))
@@ -76,11 +112,12 @@ def item_proto(b):
 
 
 def list_rows():
-	return [u'%d\tETC\t%s' % (i[0], i[7]) for i in ITEMS]
+	return [u'%d\tETC\t%s' % (i[0], i[7]) for i in ITEMS] + [u'%d\tETC\t%s' % (c[0], c[4]) for c in COPIES if c[4]]
 
 
 def desc_rows():
-	return [u'%d\t%s\t%s' % (i[0], i[2], i[8]) for i in ITEMS]
+	return [u'%d\t%s\t%s' % (i[0], i[2], i[8]) for i in ITEMS] + \
+		[u'%d\t%s\t%s' % (c[0], c[3], c[5]) for c in COPIES]
 
 
 def main():

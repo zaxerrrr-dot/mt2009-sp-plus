@@ -1,82 +1,98 @@
-# MT2009_PLUS_FISH_PUZZLE_V1: Zl. Skrzynia na Ryby (M) / (S) / (D) 83001-83003 - the rewards of Event Rybacki - Puzzle
-# (fish_puzzle.cpp: (D) for a board laid in 10 attempts or fewer, (S) 11-24, (M) 25 or more). The contents are the
-# pl-wiki's list of "Zl. Skrzynia na Ryby (D)" in our items (the wiki gives no chances; the horse seal, the hands and
-# the sash have no item here and are left out); the three share it, the difference is how many times one opens:
-# 1 / 2 / 3 (ShipDefense_ChestKeep, playerbot_ship_defense.cpp). Each opening gives ONE line, by weight (the last
-# column). Appended to special_item_group.txt by the Dockerfile (once, after any group of the same vnum is cut out);
-# the Seban panel's "Szkatulki" page edits it.
+# MT2009_PLUS_FISH_PUZZLE_V1 / V3: Zl. Skrzynia na Ryby (M) / (S) / (D) 83001-83003 - the rewards of Event Rybacki - Puzzle
+# (fish_puzzle.cpp: (D) - the big one - for a board laid in 10 attempts or fewer, (S) 11-24, (M) 25 or more).
+# V3 (the owner, 3 November 2026): the three chests share ONE drop table - the owner's table of the big chest, its
+# vnums, counts and chances (the weights are the per cents x 100, 0.91% = 91; the pl-wiki lists the same items without
+# chances) - and differ only in how many times one opens: (D) 3, (S) 2, (M) 1 (pl-wiki; ShipDefense_ChestKeep,
+# playerbot_ship_defense.cpp). The engine keys a group by the chest's vnum, so the one table is written below three
+# times - change all three together (the Seban panel's "Szkatulki" page edits them). Each opening gives ONE line, by
+# weight (the last column); gold / exp are the yang / experience lines. Two of the owner's vnums have another time
+# here, so their same-name twins with the owner's time stand in: Czarny Kon 15 days = 71132 (our 71134 is 60 days and
+# the in-game shop sells it so), Ksiazka Lidera 3 h = 72045 (our 76011 holds 1 h and is the starter chest's too).
+# Appended to special_item_group.txt by the Dockerfile (once, after any group of the same vnum is cut out).
 Group	MT2009_fishpuzzle_83001
 {
 	Vnum	83001 -- Zl. Skrzynia na Ryby (M) - 1 otwarcie
-	1	50108	5	100 -- Fajerwerki
-	2	100300	1	60 -- Zielona Smocza Fasola
-	3	55401	1	30 -- Jajo Malpki
-	4	50525	1	50 -- Kamien Duchowy+
-	5	70024	1	40 -- Marmur Blogoslawienstwa (Kula Blogoslawienstwa)
-	6	71158	1	30 -- Medal Bohatera
-	7	76008	5	80 -- Medal Smoka
-	8	71014	5	100 -- Mikstura Ataku +10
-	9	71050	5	100 -- Mikstura Szybkosci
-	10	76012	5	100 -- Mikstura Szybkosci (B)
-	11	70038	20	100 -- Peleryna Mestwa
-	12	70005	1	50 -- Pierscien Doswiadczenia
-	13	70039	1	60 -- Podrecznik Kowala
-	14	76013	1	70 -- Wzmocnienie Przedmiot(n)
-	15	76014	1	70 -- Zaczarowanie Przedm.(n)
-	16	25040	1	60 -- Zwoj Blogoslawienstwa
-	17	71001	1	80 -- Zwoj Egzorcyzmu
-	18	gold	50000	100 -- 50 000 yang
-	19	gold	100000	70 -- 100 000 yang
-	20	gold	500000	20 -- 500 000 yang
-	21	exp	100000	80 -- 100 000 PD
+	1	72048	3	910 -- Dlon Krytyka (10 min)
+	2	72027	3	910 -- Dlon Przebicia (10 min)
+	3	50108	3	640 -- Fajerwerki
+	4	76008	5	550 -- Medal Smoka
+	5	70102	1	550 -- Fasolka Zen
+	6	76012	5	450 -- Mikstura Szybkosci (30 min)
+	7	76007	1	450 -- Peleryna Mestwa
+	8	71015	1	450 -- Pierscien Doswiadczenia (30 min)
+	9	55401	1	450 -- Jajo Malpki (pet na 7 dni)
+	10	76017	5	450 -- Mikstura Ataku +15 (30 min)
+	11	gold	50000	450 -- 50 000 yang
+	12	exp	100000	450 -- 100 000 PD
+	13	gold	100000	360 -- 100 000 yang
+	14	76014	1	270 -- Zaczarowanie Przedm.(n)
+	15	72045	1	270 -- Ksiazka Lidera (3 h) - wlasciciel: 76011, u nas 76011 ma 1 h, 72045 to ta sama ksiazka na 3 h
+	16	76015	1	270 -- Kula (Marmur) Blogoslawienstwa
+	17	76016	1	270 -- Zwoj Blogoslawienstwa
+	18	76013	1	270 -- Wzmocnienie Przedmiot(n)
+	19	50525	1	270 -- Kamien Duchowy+
+	20	71132	1	270 -- Czarny Kon (15 dni) - wlasciciel: 71134, u nas 71134 to 60 dni, 71132 to ten sam kon na 15 dni
+	21	71158	1	270 -- Medal Bohatera (1 dzien)
+	22	gold	500000	270 -- 500 000 yang
+	23	85015	1	180 -- Szarfa Krola / Krolewska Szarfa (prosta)
+	24	72310	1	180 -- Zwoj Egzorcyzmu
+	25	72309	1	91 -- Podrecznik Kowala
 }
 Group	MT2009_fishpuzzle_83002
 {
 	Vnum	83002 -- Zl. Skrzynia na Ryby (S) - 2 otwarcia
-	1	50108	5	100 -- Fajerwerki
-	2	100300	1	60 -- Zielona Smocza Fasola
-	3	55401	1	30 -- Jajo Malpki
-	4	50525	1	50 -- Kamien Duchowy+
-	5	70024	1	40 -- Marmur Blogoslawienstwa (Kula Blogoslawienstwa)
-	6	71158	1	30 -- Medal Bohatera
-	7	76008	5	80 -- Medal Smoka
-	8	71014	5	100 -- Mikstura Ataku +10
-	9	71050	5	100 -- Mikstura Szybkosci
-	10	76012	5	100 -- Mikstura Szybkosci (B)
-	11	70038	20	100 -- Peleryna Mestwa
-	12	70005	1	50 -- Pierscien Doswiadczenia
-	13	70039	1	60 -- Podrecznik Kowala
-	14	76013	1	70 -- Wzmocnienie Przedmiot(n)
-	15	76014	1	70 -- Zaczarowanie Przedm.(n)
-	16	25040	1	60 -- Zwoj Blogoslawienstwa
-	17	71001	1	80 -- Zwoj Egzorcyzmu
-	18	gold	50000	100 -- 50 000 yang
-	19	gold	100000	70 -- 100 000 yang
-	20	gold	500000	20 -- 500 000 yang
-	21	exp	100000	80 -- 100 000 PD
+	1	72048	3	910 -- Dlon Krytyka (10 min)
+	2	72027	3	910 -- Dlon Przebicia (10 min)
+	3	50108	3	640 -- Fajerwerki
+	4	76008	5	550 -- Medal Smoka
+	5	70102	1	550 -- Fasolka Zen
+	6	76012	5	450 -- Mikstura Szybkosci (30 min)
+	7	76007	1	450 -- Peleryna Mestwa
+	8	71015	1	450 -- Pierscien Doswiadczenia (30 min)
+	9	55401	1	450 -- Jajo Malpki (pet na 7 dni)
+	10	76017	5	450 -- Mikstura Ataku +15 (30 min)
+	11	gold	50000	450 -- 50 000 yang
+	12	exp	100000	450 -- 100 000 PD
+	13	gold	100000	360 -- 100 000 yang
+	14	76014	1	270 -- Zaczarowanie Przedm.(n)
+	15	72045	1	270 -- Ksiazka Lidera (3 h) - wlasciciel: 76011, u nas 76011 ma 1 h, 72045 to ta sama ksiazka na 3 h
+	16	76015	1	270 -- Kula (Marmur) Blogoslawienstwa
+	17	76016	1	270 -- Zwoj Blogoslawienstwa
+	18	76013	1	270 -- Wzmocnienie Przedmiot(n)
+	19	50525	1	270 -- Kamien Duchowy+
+	20	71132	1	270 -- Czarny Kon (15 dni) - wlasciciel: 71134, u nas 71134 to 60 dni, 71132 to ten sam kon na 15 dni
+	21	71158	1	270 -- Medal Bohatera (1 dzien)
+	22	gold	500000	270 -- 500 000 yang
+	23	85015	1	180 -- Szarfa Krola / Krolewska Szarfa (prosta)
+	24	72310	1	180 -- Zwoj Egzorcyzmu
+	25	72309	1	91 -- Podrecznik Kowala
 }
 Group	MT2009_fishpuzzle_83003
 {
 	Vnum	83003 -- Zl. Skrzynia na Ryby (D) - 3 otwarcia
-	1	50108	5	100 -- Fajerwerki
-	2	100300	1	60 -- Zielona Smocza Fasola
-	3	55401	1	30 -- Jajo Malpki
-	4	50525	1	50 -- Kamien Duchowy+
-	5	70024	1	40 -- Marmur Blogoslawienstwa (Kula Blogoslawienstwa)
-	6	71158	1	30 -- Medal Bohatera
-	7	76008	5	80 -- Medal Smoka
-	8	71014	5	100 -- Mikstura Ataku +10
-	9	71050	5	100 -- Mikstura Szybkosci
-	10	76012	5	100 -- Mikstura Szybkosci (B)
-	11	70038	20	100 -- Peleryna Mestwa
-	12	70005	1	50 -- Pierscien Doswiadczenia
-	13	70039	1	60 -- Podrecznik Kowala
-	14	76013	1	70 -- Wzmocnienie Przedmiot(n)
-	15	76014	1	70 -- Zaczarowanie Przedm.(n)
-	16	25040	1	60 -- Zwoj Blogoslawienstwa
-	17	71001	1	80 -- Zwoj Egzorcyzmu
-	18	gold	50000	100 -- 50 000 yang
-	19	gold	100000	70 -- 100 000 yang
-	20	gold	500000	20 -- 500 000 yang
-	21	exp	100000	80 -- 100 000 PD
+	1	72048	3	910 -- Dlon Krytyka (10 min)
+	2	72027	3	910 -- Dlon Przebicia (10 min)
+	3	50108	3	640 -- Fajerwerki
+	4	76008	5	550 -- Medal Smoka
+	5	70102	1	550 -- Fasolka Zen
+	6	76012	5	450 -- Mikstura Szybkosci (30 min)
+	7	76007	1	450 -- Peleryna Mestwa
+	8	71015	1	450 -- Pierscien Doswiadczenia (30 min)
+	9	55401	1	450 -- Jajo Malpki (pet na 7 dni)
+	10	76017	5	450 -- Mikstura Ataku +15 (30 min)
+	11	gold	50000	450 -- 50 000 yang
+	12	exp	100000	450 -- 100 000 PD
+	13	gold	100000	360 -- 100 000 yang
+	14	76014	1	270 -- Zaczarowanie Przedm.(n)
+	15	72045	1	270 -- Ksiazka Lidera (3 h) - wlasciciel: 76011, u nas 76011 ma 1 h, 72045 to ta sama ksiazka na 3 h
+	16	76015	1	270 -- Kula (Marmur) Blogoslawienstwa
+	17	76016	1	270 -- Zwoj Blogoslawienstwa
+	18	76013	1	270 -- Wzmocnienie Przedmiot(n)
+	19	50525	1	270 -- Kamien Duchowy+
+	20	71132	1	270 -- Czarny Kon (15 dni) - wlasciciel: 71134, u nas 71134 to 60 dni, 71132 to ten sam kon na 15 dni
+	21	71158	1	270 -- Medal Bohatera (1 dzien)
+	22	gold	500000	270 -- 500 000 yang
+	23	85015	1	180 -- Szarfa Krola / Krolewska Szarfa (prosta)
+	24	72310	1	180 -- Zwoj Egzorcyzmu
+	25	72309	1	91 -- Podrecznik Kowala
 }
