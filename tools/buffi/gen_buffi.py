@@ -181,9 +181,9 @@ def write_itemshop(its):
 
 # MT2009_PLUS_BUFFI_V3 (weaker): the server's GradeFactor (playerbot_buffi.cpp) as a client poly - the tooltip
 # (uitooltip.py AppendSkillLevelDescriptionNew) evaluates skilldesc's polys with "sl" = the real skill level and the
-# skilltable's point poly overwrites the first one (PythonSkill.cpp OVERWRITE_SKILLPROTO_POLY): M1-M10 0.5, G1-G4 0.65,
-# G5-G10 0.75, P 0.82. The texts are "%.0f" - the client floors, as the server's (long) does.
-CLIENT_FACTOR = '(0.5*(isgraden+isgradem)+isgradeg*(0.65+0.1*min(1,max(0,sl-33)))+0.82*isgradep)'
+# skilltable's point poly overwrites the first one (PythonSkill.cpp OVERWRITE_SKILLPROTO_POLY): M1-M10 0.35, G1-G4 0.55,
+# G5-G10 0.65, P 0.70 (MT2009_PLUS_BUFFI_V4, the owner 3 November 2026; V3 was 0.5/0.65/0.75/0.82). The texts are "%.0f" - the client floors, as the server's (long) does.
+CLIENT_FACTOR = '(0.35*(isgraden+isgradem)+isgradeg*(0.55+0.1*min(1,max(0,sl-33)))+0.70*isgradep)'
 
 
 def client_poly(poly):
@@ -192,7 +192,7 @@ def client_poly(poly):
 
 def factor(level):
     """The server's GradeFactor (a check of CLIENT_FACTOR)."""
-    return 0.82 if level >= 40 else 0.75 if level >= 34 else 0.65 if level >= 30 else 0.5
+    return 0.70 if level >= 40 else 0.65 if level >= 34 else 0.55 if level >= 30 else 0.35
 
 
 # MT2009_PLUS_BUFFI_V2: the client's skill data of the buffi skills (locale/pl/skilldesc.txt and

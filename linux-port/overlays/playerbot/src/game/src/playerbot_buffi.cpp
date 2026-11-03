@@ -402,13 +402,14 @@ namespace mt2009_buffi
 	// -50%, G1-G4 -35%, G5-G10 -25%, P -18%). The client's tooltip polys say the same (gen_buffi.py, CLIENT_FACTOR).
 	double GradeFactor(BYTE bLevel)
 	{
+		// MT2009_PLUS_BUFFI_V4 (the owner, 3 November 2026): M1-M10 35%, G1-G4 55%, G5-G10 65%, P 70% of Ameria's value
 		if (bLevel >= 40)
-			return 0.82;	// P
+			return 0.70;	// P
 		if (bLevel >= 34)
-			return 0.75;	// G5-G10
+			return 0.65;	// G5-G10
 		if (bLevel >= 30)
-			return 0.65;	// G1-G4
-		return 0.50;		// M1-M10
+			return 0.55;	// G1-G4
+		return 0.35;		// M1-M10
 	}
 
 	// Ameria's skill_proto 164-167 (szPointPoly, iq = 226): the point(s) a level gives; MT2009_PLUS_BUFFI_V3: times
