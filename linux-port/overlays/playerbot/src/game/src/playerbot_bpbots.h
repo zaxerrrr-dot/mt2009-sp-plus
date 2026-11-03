@@ -1082,6 +1082,13 @@ namespace playerbot_bpbots
 				snprintf(out, size, "%s", PickLine(k));
 				return true;
 			}
+			// MT2009_PLUS_FISH_PUZZLE_V1: only talk - a bot never fishes a puzzle box (fish_puzzle.cpp skips bots).
+			case playerbot_events::KIND_FISHPUZZLE:
+			{
+				static const char* const k[] = { "event rybacki trwa, ktos lowi?", "ile prob wam wyszlo w puzzlach?", "z wedka nad wode, puzzle same sie nie ulozo xd" };
+				snprintf(out, size, "%s", PickLine(k));
+				return true;
+			}
 			case playerbot_events::KIND_FLOWER: case playerbot_events::KIND_EASTER:
 			{
 				static const char* const k[] = { "event trwa, zbieram co sie da", "kwiaty dzis wszedzie xd", "kto robi event? ile macie?" };

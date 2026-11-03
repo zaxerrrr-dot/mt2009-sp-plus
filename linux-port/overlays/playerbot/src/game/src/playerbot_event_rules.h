@@ -88,7 +88,10 @@ enum Kind
 	// stones every Metin stone put down on a world map gets (server-patches/superstone);
 	// the manager writes it to the event flag superstone_event, 0 at the end.
 	KIND_SUPERSTONE = 17,
-	KIND_MAX = 18
+	// MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle - on or off; while it runs fishing finds the puzzle
+	// boxes (fish_puzzle.cpp, server-patches/fishpuzzle); the manager writes the event flag fish_puzzle_event.
+	KIND_FISHPUZZLE = 18,
+	KIND_MAX = 19
 };
 
 inline const char* KindName(int kind)
@@ -113,6 +116,7 @@ inline const char* KindName(int kind)
 		case KIND_WORLDBOSS: return "worldboss";
 		case KIND_HALLOWEEN: return "halloween";
 		case KIND_SUPERSTONE: return "superstone";
+		case KIND_FISHPUZZLE: return "fishpuzzle";
 	}
 	return "";
 }

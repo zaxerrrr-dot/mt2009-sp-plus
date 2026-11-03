@@ -46,13 +46,15 @@ KIND_CATCHKING, KIND_RUMI, KIND_YUTNORI, KIND_FLOWER, KIND_EASTER = range(9, 14)
 # vnum, the value the chance a kill in per mille), Boss Swiata, Halloween and the
 # Super Kamienie Metin (the value is the level). They showed as "Event 14".."17".
 KIND_CHESTDROP, KIND_WORLDBOSS, KIND_HALLOWEEN, KIND_SUPERSTONE = range(14, 18)
+# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle (fish_puzzle.cpp, uifishpuzzle.py).
+KIND_FISHPUZZLE = 18
 KIND_KEYS = {KIND_CATCHKING: 'catchking', KIND_RUMI: 'rumi', KIND_YUTNORI: 'yutnori',
 		KIND_FLOWER: 'flower', KIND_EASTER: 'easter',
-		KIND_WORLDBOSS: 'worldboss', KIND_HALLOWEEN: 'halloween'}
+		KIND_WORLDBOSS: 'worldboss', KIND_HALLOWEEN: 'halloween', KIND_FISHPUZZLE: 'fishpuzzle'}
 # Every kind's name, the key the in-game event list knows it by.
 KIND_NAMES = ('chest', 'exp', 'drop', 'yang', 'tanaka', 'zuo', 'bossloot', 'metinloot', 'goblin',
 		'catchking', 'rumi', 'yutnori', 'flower', 'easter',
-		'chestdrop', 'worldboss', 'halloween', 'superstone')
+		'chestdrop', 'worldboss', 'halloween', 'superstone', 'fishpuzzle')
 KIND_ICON = {
 	KIND_CHEST: 'moonlight_event.tga',
 	KIND_EXP: 'exp_event.tga',

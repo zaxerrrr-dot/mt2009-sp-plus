@@ -736,6 +736,18 @@ RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/sp
  && mv "$f.new" "$f" && rm -f "$a" \
  && echo "share: Zestaw Opieki nad Koniem 83050"
 
+# MT2009_PLUS_FISH_PUZZLE_V1: Zl. Skrzynia na Ryby (M) / (S) / (D) (83001-83003, special_item_group.fishpuzzle.txt) - the
+# rewards of Event Rybacki - Puzzle (fish_puzzle.cpp). Appended once, after any group of the same vnums is cut out.
+COPY special_item_group.fishpuzzle.txt /tmp/special_item_group.fishpuzzle.txt
+RUN set -eu; f=/opt/metin2/share/locale/poland/special_item_group.txt; a=/tmp/special_item_group.fishpuzzle.txt \
+ && sed -i '1s/^\xEF\xBB\xBF//; s/\r$//; s/$/\r/' "$a" \
+ && awk 'BEGIN{keep=1} /^Group/{blk=""; keep=1} {blk=blk $0 "\n"} /Vnum[ \t]+(8300[1-3])([^0-9]|$)/{keep=0} /^}/{ if (keep) printf "%s", blk; blk=""; keep=1 }' "$f" > "$f.new" \
+ && { [ -z "$(tail -c 1 "$f.new")" ] || printf '\r\n' >> "$f.new"; } \
+ && cat "$a" >> "$f.new" \
+ && test "$(grep -c -E '^[[:blank:]]*Vnum[[:blank:]]+8300[1-3]([^0-9]|$)' "$f.new")" = 3 \
+ && mv "$f.new" "$f" && rm -f "$a" \
+ && echo "share: Zl. Skrzynie na Ryby 83001-83003"
+
 # MT2009_PLUS_YUTNORI_V1: the Yut Nori trophies and bundles (83030-83034,
 # special_item_group.yutnori.txt; playerbot_yutnori.h hands them out). Appended
 # once, after any stock group of the same vnums is cut out (the reader keeps

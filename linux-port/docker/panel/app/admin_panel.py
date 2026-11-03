@@ -1655,12 +1655,16 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                "halloween",  # MT2009_PLUS_HALLOWEEN_V1 (playerbot_halloween.h; Autor: Owsap)
                # MT2009_PLUS_SUPERSTONE_V1: Super Kamienie - the value is the level, 1-4 extra
                # stones beside every Metin on a world map (event flag superstone_event).
-               "superstone")
+               "superstone",
+               # MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle - on or off (event flag fish_puzzle_event;
+               # server-patches/fishpuzzle, fish_puzzle.cpp).
+               "fishpuzzle")
 # On or off, no figure: the Moonlight chests and the double loot of bosses and
 # Metins (MT2009_PLUS_LOOT_EVENTS_V1).
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
                     "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
-                    "halloween")  # MT2009_PLUS_HALLOWEEN_V1
+                    "halloween",  # MT2009_PLUS_HALLOWEEN_V1
+                    "fishpuzzle")  # MT2009_PLUS_FISH_PUZZLE_V1
 # Tanaka and Zuo put something into the world (playerbot_world_events.h): their
 # value is a count - pirates at once, Metin stones a wave - and they carry a
 # map, 0 letting the event pick. The core holds the same bounds
@@ -4989,6 +4993,7 @@ T.update({
  "ev_kind_easter":{"en":"Easter event","pl":"Event wielkanocny","de":"Oster-Event","tr":"Paskalya etkinli\u011fi"},
  "ev_kind_halloween":{"en":"Halloween (pumpkins, Jack Pumpkin)","pl":"Halloween (dynie i Jack Pumpkin)","de":"Halloween (K\u00fcrbisse, Jack Pumpkin)","tr":"Cad\u0131lar Bayram\u0131 (bal kaba\u011f\u0131, Jack Pumpkin)"},
  "ev_kind_superstone":{"en":"Super Metin Stones","pl":"Super Kamienie Metin","de":"Super-Metinsteine","tr":"S\u00fcper Metin Ta\u015flar\u0131"},
+ "ev_kind_fishpuzzle":{"en":"Fishing Jigsaw","pl":"Event Rybacki - Puzzle","de":"Angel-Puzzle","tr":"Bal\u0131k\u00e7\u0131l\u0131k Yapbozu"},
  "ev_now_superstone":{"en":"Extra stones (1-4)","pl":"Dodatkowe kamienie (1-4)","de":"Zus\u00e4tzliche Steine (1-4)","tr":"Ek ta\u015flar (1-4)"},
  "ev_superstone_value_help":{"en":"For Super Metin Stones the value is how many extra stones stand beside every Metin on the world maps (1-4, 0 = 2); dungeons get none.","pl":"Dla Super Kamieni Metin warto\u015b\u0107 to liczba dodatkowych kamieni przy ka\u017cdym Metinie na mapach \u015bwiata (1-4, 0 = 2); lochy ich nie dostaj\u0105.","de":"Bei Super-Metinsteinen ist der Wert die Zahl der zus\u00e4tzlichen Steine neben jedem Metin auf den Weltkarten (1-4, 0 = 2); Dungeons bekommen keine.","tr":"S\u00fcper Metin Ta\u015flar\u0131 i\u00e7in de\u011fer, d\u00fcnya haritalar\u0131ndaki her Metin'in yan\u0131ndaki ek ta\u015f say\u0131s\u0131d\u0131r (1-4, 0 = 2); zindanlar almaz."},
  "ev_kind_exp":  {"en":"Experience","pl":"Do\u015bwiadczenie","de":"Erfahrung","tr":"Tecr\u00fcbe"},
@@ -8297,10 +8302,10 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 {% elif s and s.active and k in world_kinds %}<span class="badge">{{t('ev_active')}} {{s.until_text}} ({{map_name(s.map)}})</span>
 {% if s.host %}<br><small>{{t('ev_world_alive')}}: {{s.alive}} &middot; {{t('ev_world_killed')}}: {{s.killed}} &middot; {{t('ev_world_bots')}}: {{s.bots}}{% if s.phase == 'stones' %} &middot; {{t('ev_phase_stones')}}{% elif s.phase == 'bosses' %} &middot; {{t('ev_phase_bosses')}}{% endif %}</small>{% endif %}
 {% elif s and s.active and k == 'superstone' %}<span class="badge">{{t('ev_active')}} {{s.until_text}} (+{{s.value}})</span>
-{% elif s and s.active %}<span class="badge">{{t('ev_active')}} {{s.until_text}}{% if s.value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %} (+{{s.value}}%){% endif %}</span>
+{% elif s and s.active %}<span class="badge">{{t('ev_active')}} {{s.until_text}}{% if s.value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter', 'fishpuzzle') %} (+{{s.value}}%){% endif %}</span>
 {% elif s and s.next_start and k in world_kinds %}{{t('ev_next')}}: {{s.next_start_text}} ({{map_name(s.next_map)}})
 {% elif s and s.next_start and k == 'superstone' %}{{t('ev_next')}}: {{s.next_start_text}} (+{{s.next_value}})
-{% elif s and s.next_start %}{{t('ev_next')}}: {{s.next_start_text}}{% if s.next_value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %} (+{{s.next_value}}%){% endif %}
+{% elif s and s.next_start %}{{t('ev_next')}}: {{s.next_start_text}}{% if s.next_value and k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter', 'fishpuzzle') %} (+{{s.next_value}}%){% endif %}
 {% elif s and s.scheduled %}{{t('ev_inactive')}}
 {% elif s %}{{t('ev_none')}}
 {% else %}-{% endif %}
@@ -8315,7 +8320,7 @@ TPL_EVENTS = BASE.replace("__BODY__", """
 {% if k in world_kinds %}{{t('ev_now_' + k)}} <input type="number" name="value" min="1" max="{{world_max[k]}}" value="{{world_default[k]}}" style="width:60px">
 <select name="map">{% for m in maps %}<option value="{{m[0]}}">{{map_name(m[0])}}</option>{% endfor %}</select>
 {% elif k == 'superstone' %}{{t('ev_now_superstone')}} <input type="number" name="value" min="1" max="4" value="2" style="width:50px">
-{% elif k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter') %}{{t('ev_now_value')}} <input type="number" name="value" min="1" max="1000" value="50" style="width:70px">{% endif %}
+{% elif k not in ('chest', 'bossloot', 'metinloot', 'goblin', 'catchking', 'rumi', 'yutnori', 'flower', 'easter', 'fishpuzzle') %}{{t('ev_now_value')}} <input type="number" name="value" min="1" max="1000" value="50" style="width:70px">{% endif %}
 <button class="btn" type="submit">{{t('ev_now_go')}}</button>
 </form>
 {% if k in world_kinds %}<br><small class="muted">{{t('ev_world_many')}}</small>{% endif %}

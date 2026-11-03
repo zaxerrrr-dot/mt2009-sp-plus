@@ -11,6 +11,8 @@ int main(){
   assert(ParseLine("chestdrop\t3\t00:00\t12:00\t70\t51501", w) && w.target==0);
   assert(ParseLine("chestdrop\t3\t00:00\t12:00\t70\t51501\t9", w) && w.target==0);
   assert(ParseLine("zuo\t3\t00:00\t12:00\t8\t63\t1", w) && w.target==0);
+  // MT2009_PLUS_FISH_PUZZLE_V1: the fishing puzzle event's kind is read by its name.
+  assert(ParseLine("fishpuzzle\t3\t00:00\t12:00\t0", w) && w.kind==KIND_FISHPUZZLE);
   assert(ParseLine("now\tchestdrop\t2000000000\t70\t50011\t0\t2", w) && w.now && w.target==2);
   std::vector<Window> v; Window a,b,c;
   ParseLine("chestdrop\t*\t00:00\t24:00\t70\t51501\t1", a);

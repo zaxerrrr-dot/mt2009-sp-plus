@@ -71,10 +71,13 @@ EVENTS = {
 	# MT2009_PLUS_SUPERSTONE_V1: event Super Kamieni - the figure is the extra stones beside every Metin.
 	'superstone': {'name': 'Super Kamienie Metin (+%d)', 'icon': CAL + 'double_metin_loot_event.tga', 'open': 'info',
 			'desc': 'Przy ka\xbfdym Metinie na mapach \x9cwiata stoj\xb9 dodatkowe kamienie - bij je jak zwyk\xb3e Metiny.'},
+	# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle (uifishpuzzle.py registers the window); the three rewards.
+	'fishpuzzle': {'name': 'Event Rybacki - Puzzle', 'icon': CAL + 'bonus_event.tga', 'open': 'game',
+			'rewards': ((83003, 1), (83002, 1), (83001, 1))},
 }
 # The hub's order; keys not listed come after, as the server sends them.
 ORDER = ('worldboss', 'catchking', 'rumi', 'rumi_xmas', 'yutnori', 'flower', 'easter', 'halloween', 'goblin',
-		'chest', 'bossloot', 'metinloot', 'superstone', 'tanaka', 'zuo', 'exp', 'drop', 'yang')
+		'fishpuzzle', 'chest', 'bossloot', 'metinloot', 'superstone', 'tanaka', 'zuo', 'exp', 'drop', 'yang')
 DEFAULT_ICON = CAL + 'bonus_event.tga'
 
 TITLE = 'Wydarzenia w grze'

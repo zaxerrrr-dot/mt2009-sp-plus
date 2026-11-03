@@ -2026,4 +2026,17 @@ if ((Test-Path -LiteralPath $ringfxApply -PathType Leaf) -and
     }
 }
 
+# Event Rybacki - Puzzle (server-patches/fishpuzzle, MT2009_PLUS_FISH_PUZZLE_V1; the owner, 3 November 2026): a catch
+# during the event may bring a puzzle box (fishing.cpp), the boxes open the window (char_item.cpp UseItemEx, under the
+# relic's hook) and "/fishpuzzle" (cmd.cpp). The logic is fish_puzzle.cpp (the overlay). After relikty, e.g. last.
+$fishPuzzleApply = Join-Path $repo 'server-patches/fishpuzzle/Apply-FishPuzzlePatch.ps1'
+if ((Test-Path -LiteralPath $fishPuzzleApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'fishing.cpp') -PathType Leaf)) {
+    $fishPuzzleResult = & $fishPuzzleApply -SourceDir $engineGameSource
+    if ($fishPuzzleResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} fishing puzzle edit(s).' -f $fishPuzzleResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 Write-Host "MT2009 Plus engine: $syncedFiles file(s) changed."

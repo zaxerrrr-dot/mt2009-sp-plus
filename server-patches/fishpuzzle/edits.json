@@ -1,0 +1,26 @@
+[
+ {
+  "file": "fishing.cpp",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V1 (catch)",
+  "old": "\t\tquest::CQuestManager::instance().Fishing(ch->GetPlayerID(), FISHING_QUEST_STATE_SUCCESS);\n\t\tFishingSuccess(ch);\n",
+  "new": "\t\tquest::CQuestManager::instance().Fishing(ch->GetPlayerID(), FISHING_QUEST_STATE_SUCCESS);\n\t\tFishingSuccess(ch);\n\t\t// MT2009_PLUS_FISH_PUZZLE_V1 (catch): Event Rybacki - Puzzle - a Pudlo wedkarskich puzzli now and then (fish_puzzle.cpp)\n\t\t{ void Mt2009FishPuzzleOnCatch(LPCHARACTER); Mt2009FishPuzzleOnCatch(ch); }\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V1 (use)",
+  "old": "\t\tconst int iRelicUse = Mt2009RelicUseItem(this, item);\n\t\tif (iRelicUse >= 0)\n\t\t\treturn iRelicUse != 0;\n\t}\n",
+  "new": "\t\tconst int iRelicUse = Mt2009RelicUseItem(this, item);\n\t\tif (iRelicUse >= 0)\n\t\t\treturn iRelicUse != 0;\n\t}\n\t// MT2009_PLUS_FISH_PUZZLE_V1 (use): Pudlo wedkarskich puzzli 25106 / 25107 opens the puzzle window (fish_puzzle.cpp)\n\t{\n\t\tint Mt2009FishPuzzleUseItem(LPCHARACTER ch, LPITEM item);\n\t\tconst int iFishPuzzleUse = Mt2009FishPuzzleUseItem(this, item);\n\t\tif (iFishPuzzleUse >= 0)\n\t\t\treturn iFishPuzzleUse != 0;\n\t}\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V1 (command declare)",
+  "old": "struct command_info cmd_info[] =\n",
+  "new": "// MT2009_PLUS_FISH_PUZZLE_V1 (command declare): \"/fishpuzzle open|box <1|2>|place <cell>|discard\" - fish_puzzle.cpp\nvoid Mt2009FishPuzzleCommand(LPCHARACTER ch, const char* argument);\nACMD(do_fishpuzzle)\n{\n\tMt2009FishPuzzleCommand(ch, argument);\n}\n\nstruct command_info cmd_info[] =\n"
+ },
+ {
+  "file": "cmd.cpp",
+  "marker": "MT2009_PLUS_FISH_PUZZLE_V1 (command table)",
+  "old": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n",
+  "new": "\t{ \"yitem\",\tdo_yitem,\t0,\t\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_YOHARA_SETS_V2 (command table)\n\t{ \"fishpuzzle\",\tdo_fishpuzzle,\t0,\t\tPOS_DEAD,\tGM_PLAYER\t}, // MT2009_PLUS_FISH_PUZZLE_V1 (command table)\n"
+ }
+]
