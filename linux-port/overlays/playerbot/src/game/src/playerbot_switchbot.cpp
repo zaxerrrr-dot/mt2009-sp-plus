@@ -14,7 +14,7 @@
 //     each - a slot is done when the item has every bonus of one configured alternative (CSwitchbot::CheckItem); the
 //     client offers two alternatives (Ameria's premium switchbot unlocked the other three - left out, see README);
 //   * one change of every running slot every 0.2 s (c_fSpeed), the engine's own CItem::ChangeAttribute();
-//   * a change costs one Zaczarowanie Przedmiotu: 39028, then 71084, 76014, 71151 (c_arSwitchingItems, first one
+//   * a change costs one Zaczarowanie Przedmiotu: 39028, then 71084, 76014, 71284, 71151 (c_arSwitchingItems, first one
 //     the player has; 71151 only on a weapon / body armour up to level 40, as by hand) - out of them, the switchbot stops;
 //   * it stops by itself when an alternative is reached (a whisper from "[Switchbot]" with the slot and the number of
 //     changes), and pauses while the player is busy (dead, trading, shop / safebox / cube open, a quest running, warping);
@@ -55,11 +55,15 @@ namespace
 	const float c_fSpeed = 0.20f;
 
 	// Ameria's c_arSwitchingItems (common/length.h): the first the player has is used.
-	const DWORD c_arSwitchingItems[4] =
+	// MT2009_PLUS_SWITCHBOT_TRADEABLE_V1 (the owner's list of 3 November 2026: "Zmianki z Pozwolenia na Zaczarowanie
+	// nie dzialaja w bonus switcherze"): the tradeable Zaczarowanie Przedmiotu 71284 - the Kowal's from a Pozwolenie na
+	// Zaczarowanie (world.crafting_proto 100: 30370 + 30364 + 30366), the chests' and the market's - after the bound ones.
+	const DWORD c_arSwitchingItems[5] =
 	{
 		39028,
 		71084,
 		76014,
+		71284,
 		71151,
 	};
 

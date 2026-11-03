@@ -1,0 +1,384 @@
+// MT2009_PLUS_DROP307_V1 (the owner's list of 3 November 2026): the bosses of the 90+ maps - Przyladek Smoczego Ognia (301),
+// Zbocze Gautama (302), Nefrytowa Zatoka (303), Gromiste Gory (304) - and of the champion (Sung Ma) field maps - Opuszczona
+// Twierdza (374), Dongan (373), Seoganland (376), Namgan (377), Schronienie (393) / Zejscie (394) Polnocnego Wiatru (Przelecz
+// Yilad, Wawoz and Rozpadlina have no boss) - from the maps' regen.txt / boss.txt. Type drop: 400 = 100% for a killer at
+// the boss's level (item_manager.cpp, iRandRange 4 000 000), the drop wiki shows it so. All: Pozwolenie na Zaczarowanie x2
+// 15%, Pozwolenie na Wzmocnienie x2 8%, Magiczny Metal 5% (the tradeable 39016). The champion maps' also Cor Draconis
+// (szlif.) x2 50% and Blogoslawienstwo Przedmiotu 5% (their Kupon SM 10%: server-patches/drop307). Not Krol Bao (misja)
+// 6692 - it drops nothing (the pl-wiki). A group of its own a boss, merged with its other drop groups by the loader.
+Group	MT2009_drop307_3090
+{
+	Mob	3090	-- Gnoll Lord
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3091
+{
+	Mob	3091	-- Glowny Gnoll Straznik
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3290
+{
+	Mob	3290	-- Rakszas
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3291
+{
+	Mob	3291	-- Martyaxwar
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3590
+{
+	Mob	3590	-- Trupia Twarz
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3390
+{
+	Mob	3390	-- Lemur Hrabia
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3391
+{
+	Mob	3391	-- Straz Przyboczna Lemur
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3890
+{
+	Mob	3890	-- Kapitan Shrack
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3891
+{
+	Mob	3891	-- Ogr Maximus
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3905
+{
+	Mob	3905	-- Se-Rang
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3906
+{
+	Mob	3906	-- Jin-Hee
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3910
+{
+	Mob	3910	-- Trupia Twarz
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3911
+{
+	Mob	3911	-- Aku-Boku
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3912
+{
+	Mob	3912	-- Arboretum
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3913
+{
+	Mob	3913	-- Sycomor
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3490
+{
+	Mob	3490	-- General Kappa
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3491
+{
+	Mob	3491	-- Tryton
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3591
+{
+	Mob	3591	-- Czerwony Wodz
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3690
+{
+	Mob	3690	-- General Lobster
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3691
+{
+	Mob	3691	-- Krol Krabbs
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3190
+{
+	Mob	3190	-- Arges
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3191
+{
+	Mob	3191	-- Polifem
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3595
+{
+	Mob	3595	-- Brutalna Trupia Twarz
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3596
+{
+	Mob	3596	-- Brutalny Czerwony Wodz
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3790
+{
+	Mob	3790	-- Rzygacz
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_3791
+{
+	Mob	3791	-- Krol Wobba
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+}
+
+Group	MT2009_drop307_6691
+{
+	Mob	6691	-- Kao (mrok)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6698
+{
+	Mob	6698	-- Kao (lod)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6699
+{
+	Mob	6699	-- Krol Bao
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6705
+{
+	Mob	6705	-- Natanan (mrok)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6706
+{
+	Mob	6706	-- Argos (mrok)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6716
+{
+	Mob	6716	-- Natanan (ogien)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6717
+{
+	Mob	6717	-- Argos (ogien)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6723
+{
+	Mob	6723	-- Myr Weteran (ziemia)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6724
+{
+	Mob	6724	-- Myr Prymus (ziemia)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6730
+{
+	Mob	6730	-- Myr Weteran (wiatr)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6731
+{
+	Mob	6731	-- Myr Prymus (wiatr)
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6789
+{
+	Mob	6789	-- Wodz Wojenny Schronienia
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}
+
+Group	MT2009_drop307_6797
+{
+	Mob	6797	-- Wodz Wojenny Schronienia
+	Type	drop
+	1	30370	2	60	-- Pozwolenie na Zaczar. Przedmiotu x2 - 15%
+	2	30368	2	32	-- Pozwolenie na Wzmocn. Przedmiotu x2 - 8%
+	3	39016	1	20	-- Magiczny Metal (handlowy) - 5%
+	4	50256	2	200	-- Cor Draconis (szlif.) x2 - 50%
+	5	71052	1	20	-- Blogoslaw. Przedmiotu - 5%
+}

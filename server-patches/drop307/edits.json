@@ -1,0 +1,56 @@
+[
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_CATACOMB_YANG_HALF_V1 (helper)",
+  "old": "#define GetGoldMultipler() (distribution_test_server ? 3 : 1)\n",
+  "new": "#define GetGoldMultipler() (distribution_test_server ? 3 : 1)\n\n// MT2009_PLUS_CATACOMB_YANG_HALF_V1 (helper) (server-patches/drop307; the owner's list of 3 November 2026: \"Katakumby:\n// drop yang z mobow o polowe, jesli resp mobow jest wiekszy niz standardowy\"): a monster below boss rank killed in the\n// Devil's Catacomb (map 216 and its instances) drops half its yang while the panel's monster respawn (\"Respawny\",\n// regen.cpp) is above the standard - a faster time (fastMobSpawn216, else fastMobSpawn: 10-99 = every 10-99 % of the\n// time) or more monsters a line (m2_mob_count over 100 %). The bosses and the Metins keep theirs; with the standard\n// respawn nothing changes.\nstatic bool Mt2009PlusCatacombYangHalf(LPCHARACTER victim)\n{\n\tif (!victim || victim->IsPC() || victim->IsStone() || victim->GetMobRank() >= MOB_RANK_BOSS)\n\t\treturn false;\n\tconst long mapIndex = victim->GetMapIndex();\n\tif ((mapIndex >= 10000 ? mapIndex / 10000 : mapIndex) != 216)\n\t\treturn false;\n\tquest::CQuestManager& q = quest::CQuestManager::instance();\n\tint delay = MINMAX(0, q.GetEventFlag(\"fastMobSpawn216\"), 100);\n\tif (delay == 0)\n\t\tdelay = MINMAX(0, q.GetEventFlag(\"fastMobSpawn\"), 100);\n\treturn (delay > 0 && delay < 100) || q.GetEventFlag(\"m2_mob_count\") > 100;\n}\n\n// MT2009_PLUS_MISSION_NO_DROP_V1 (helper) (server-patches/drop307; the owner's list of 3 November 2026, the pl-wiki's\n// \"Krol Bao (misja)\": no weapons, no armour, no other drop, Champion-EXP 1): the mission version of a Yohara boss\n// drops nothing - no table, none of the world's extras (Kupon SM, Cor Draconis, Delikatne Sukno, talisman), no yang.\n// Its kill still counts (quests, the cards' missions, the Battle Pass) and its experience stays.\nbool Mt2009PlusMissionNoDrop(DWORD race)\n{\n\treturn race == 6692;\t// Krol Bao (misja) - Opuszczona Twierdza (374)\n}\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_CATACOMB_YANG_HALF_V1 (yang)",
+  "old": "\t\tiGold *= 5; // 5x Yang Drop Multiplier for bot economy & blacksmith upgrades\n",
+  "new": "\t\tiGold *= 5; // 5x Yang Drop Multiplier for bot economy & blacksmith upgrades\n\t\t// MT2009_PLUS_CATACOMB_YANG_HALF_V1 (yang): half in the Devil's Catacomb while the respawn is above the standard.\n\t\tif (Mt2009PlusCatacombYangHalf(this))\n\t\t\tiGold /= 2;\n"
+ },
+ {
+  "file": "char_battle.cpp",
+  "marker": "MT2009_PLUS_MISSION_NO_DROP_V1 (no drop)",
+  "old": "\t{ bool WorldBossNoDrop(LPCHARACTER); if (WorldBossNoDrop(this)) return; }\n",
+  "new": "\t{ bool WorldBossNoDrop(LPCHARACTER); if (WorldBossNoDrop(this)) return; }\n\t// MT2009_PLUS_MISSION_NO_DROP_V1 (no drop): Krol Bao (misja) drops nothing, not even yang (the pl-wiki).\n\tif (Mt2009PlusMissionNoDrop(GetRaceNum()))\n\t\treturn;\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP307_V1 (champion boss)",
+  "old": "static bool Mt2009PlusDungeonMob(DWORD race)\n",
+  "new": "bool Mt2009PlusMissionNoDrop(DWORD race); // MT2009_PLUS_MISSION_NO_DROP_V1 (declare): char_battle.cpp\n\n// MT2009_PLUS_DROP307_V1 (champion boss) (server-patches/drop307; the owner's list of 3 November 2026: \"Bossy map\n// championa ... Kupon SM 10% (bylo 5%)\"): the bosses of the Sung Ma field maps - Opuszczona Twierdza (374), Dongan (373),\n// Seoganland (376), Namgan (377), Schronienie (393) and Zejscie (394) Polnocnego Wiatru (Przelecz Yilad, Wawoz and\n// Rozpadlina have none) - roll the Kupon SM at twice the boss permille (CONFIG DRAGON_COIN_BOSS_PERMILLE, 50 = 5% ->\n// 10%). By race, so the drop wiki shows the same. Their other rows (Pozwolenia, Magiczny Metal, Cor Draconis (szlif.),\n// Blogoslawienstwo Przedmiotu) are in the game image's mob_drop_item (Dockerfile, MT2009_PLUS_DROP307_V1).\nstatic bool Mt2009PlusChampionBoss(DWORD race)\n{\n\tswitch (race)\n\t{\n\t\tcase 6691: case 6698: case 6699:\t\t\t// Kao (mrok), Kao (lod), Krol Bao - 374 (not 6692, the mission's)\n\t\tcase 6705: case 6706: case 6716: case 6717:\t// Natanan / Argos (mrok, ogien) - 373, 377\n\t\tcase 6723: case 6724: case 6730: case 6731:\t// Myr Weteran / Prymus (ziemia, wiatr) - 376, 377\n\t\tcase 6789: case 6797:\t\t\t\t\t// Wodz Wojenny Schronienia - 393, 394\n\t\t\treturn true;\n\t}\n\treturn false;\n}\n\nstatic bool Mt2009PlusDungeonMob(DWORD race)\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP307_V1 (kupon)",
+  "old": "\t\tconst int coinPermille = pkChr->IsStone()\n\t\t\t\t? g_iDragonCoinStonePermille\n\t\t\t\t: (pkChr->GetMobRank() >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille : 0);\n",
+  "new": "\t\t// MT2009_PLUS_DROP307_V1 (kupon): a Sung Ma field map's boss at twice the boss permille.\n\t\tconst int coinPermille = pkChr->IsStone()\n\t\t\t\t? g_iDragonCoinStonePermille\n\t\t\t\t: (pkChr->GetMobRank() >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille * (Mt2009PlusChampionBoss(pkChr->GetRaceNum()) ? 2 : 1) : 0);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_DROP307_V1 (wiki kupon)",
+  "old": "\t\tconst int coinPermille = stone ? g_iDragonCoinStonePermille\n\t\t\t\t: (table.bRank >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille : 0);\n",
+  "new": "\t\t// MT2009_PLUS_DROP307_V1 (wiki kupon): a Sung Ma field map's boss at twice the boss permille.\n\t\tconst int coinPermille = stone ? g_iDragonCoinStonePermille\n\t\t\t\t: (table.bRank >= MOB_RANK_BOSS ? g_iDragonCoinBossPermille * (Mt2009PlusChampionBoss(race) ? 2 : 1) : 0);\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_MISSION_NO_DROP_V1 (items)",
+  "old": "\tif (pkChr->GetRaceNum() == 6091 || pkChr->GetRaceNum() == 6191)\n\t\treturn false;\n\tif (!GetDropPct(pkChr, pkKiller, iDeltaPercent, iRandRange))\n",
+  "new": "\tif (pkChr->GetRaceNum() == 6091 || pkChr->GetRaceNum() == 6191)\n\t\treturn false;\n\t// MT2009_PLUS_MISSION_NO_DROP_V1 (items): Krol Bao (misja) - nothing (char_battle.cpp).\n\tif (Mt2009PlusMissionNoDrop(pkChr->GetRaceNum()))\n\t\treturn false;\n\tif (!GetDropPct(pkChr, pkKiller, iDeltaPercent, iRandRange))\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_MISSION_NO_DROP_V1 (preview)",
+  "old": "\tstd::vector<std::pair<DWORD, int> > lines;\n\tif (race == PLAYERBOT_MOB_PREVIEW_TANAKA_VNUM)\n",
+  "new": "\tstd::vector<std::pair<DWORD, int> > lines;\n\t// MT2009_PLUS_MISSION_NO_DROP_V1 (preview): Krol Bao (misja) - an empty list.\n\tif (Mt2009PlusMissionNoDrop(race))\n\t{\n\t}\n\telse if (race == PLAYERBOT_MOB_PREVIEW_TANAKA_VNUM)\n"
+ },
+ {
+  "file": "item_manager.cpp",
+  "marker": "MT2009_PLUS_MISSION_NO_DROP_V1 (wiki)",
+  "old": "\tif (race == 6091 || race == 6191)\n\t\treturn;\n\tif (race == PLAYERBOT_MOB_PREVIEW_TANAKA_VNUM)\n",
+  "new": "\tif (race == 6091 || race == 6191)\n\t\treturn;\n\t// MT2009_PLUS_MISSION_NO_DROP_V1 (wiki): Krol Bao (misja) drops nothing.\n\tif (Mt2009PlusMissionNoDrop(race))\n\t\treturn;\n\tif (race == PLAYERBOT_MOB_PREVIEW_TANAKA_VNUM)\n"
+ }
+]
