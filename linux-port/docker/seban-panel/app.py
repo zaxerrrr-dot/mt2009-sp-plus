@@ -12711,6 +12711,18 @@ import env_editor
 
 env_editor.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL, db_connect=lambda: db())
 
+# MT2009_PLUS_SERVER_CONFIG_V1: "Konfiguracja serwera" - whole configurations
+# (server_profiles.txt) applied through the paths above: the .env editor's
+# live switches and updater queue, the rates' restart, the events planner.
+import server_config
+
+server_config.install(app, login_required, update_csrf_token, lambda: UPDATE_SPOOL,
+                      db_connect=lambda: db(), read_rates=lambda: read_rates(),
+                      queue_rate_restart=lambda values: queue_rate_restart(values),
+                      restart_in_flight=lambda: restart_in_flight(),
+                      read_events=lambda: read_events(), write_events=lambda rows, nows: write_events(rows, nows),
+                      event_kinds=EVENT_KINDS, keyed_kinds=EVENT_KEYED_KINDS)
+
 
 # MT2009_PLUS_MARKET_PREVIEW_V1: "Podgląd rynku" (wersja eksperymentalna) - every
 # offline shop offer of all kingdoms, filters, bargains, teleport to a stall

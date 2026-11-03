@@ -1,0 +1,146 @@
+# MT2009_PLUS_SERVER_CONFIG_V1: the server configurations ("Konfiguracja serwera").
+#
+# One file read by two programs: the advanced panel's page "Konfiguracja
+# serwera" (server_config.py) and the VPS installer (linux-port/tools/
+# vps-install.sh --profile NAME, which reads only the "env" and "rate" lines
+# of one profile, for a world not made yet). A new configuration is a new
+# [profile ...] block here - no code. test_server_config.py fails when a
+# line here is anything the panel would refuse.
+#
+# [profile <id>]             id: a-z, 0-9, _ (1-32)
+#   title = ...              the card's name
+#   desc = ...               one paragraph, Polish
+#   env KEY = value          a .env line, checked by env_schema.py like the
+#                            .env editor checks it; never a password, a port,
+#                            an address or a hidden / read-only setting
+#   rate exp|drop|yang = N   the world's rates in percent (1-10000, yang up
+#                            to 1000); a running world through "Gra i serwer
+#                            -> Raty" (one restart), a new one through M2_RATE_*
+#   event KIND DAYS FROM TO VALUE [MAP [TARGET]]
+#                            a row of the events planner, as the panel writes
+#                            playerbot_events.tsv (DAYS * or 1..7, 1 = Monday;
+#                            chestdrop: VALUE per mille, MAP the item's vnum,
+#                            TARGET 0 every monster and Metin, 1 bosses and
+#                            Metins only, 2 ordinary monsters only). The rows
+#                            are added to the planner; nothing there is removed.
+#
+# [group <id>]               a card of the page's "Ustawienia" part
+#   title = ... / desc = ...
+#   keys = KEY KEY ...       .env settings shown and saved like the .env editor
+#   link = endpoint | text   a page of the panel that holds the rest
+
+[profile mt2009]
+title = MT2009 PLUS (domyślny)
+desc = Świat taki, jak wychodzi z paczki: bonusy i żywioły MT2009 PLUS, bez czekania u Biologa i Stajennego, potwory z pełnym życiem i siłą ataku, rates 100%. Dobry punkt wyjścia, żeby wrócić do ustawień domyślnych.
+env M2_BONUS_MODE = mt2009
+env M2_DIFFICULTY = easy
+env M2_MONSTER_HP = default
+env M2_MONSTER_ATTACK = default
+env M2_STARTER_CHEST = 1
+env M2_MLODZI_BOHATEROWIE = 1
+rate exp = 100
+rate drop = 100
+rate yang = 100
+
+[profile clean_easy]
+title = CLEAN GLOBAL EASY
+desc = Bonusy i żywioły jak na serwerze globalnym, bez czekania u Biologa i Stajennego, potwory z pełnym życiem i siłą ataku, rates 100%. Skrzynia Ucznia i Bronie dla Młodych Bohaterów włączone.
+env M2_BONUS_MODE = global
+env M2_DIFFICULTY = easy
+env M2_MONSTER_HP = default
+env M2_MONSTER_ATTACK = default
+env M2_STARTER_CHEST = 1
+env M2_MLODZI_BOHATEROWIE = 1
+rate exp = 100
+rate drop = 100
+rate yang = 100
+
+[profile clean_hard]
+title = CLEAN GLOBAL HARD
+desc = Bonusy i żywioły jak na serwerze globalnym i czasy oczekiwania jak w oryginale (Biolog 24 h, Stajenny i księgi konia 12 h, księgi umiejętności 21 h), potwory z pełnym życiem i siłą ataku, rates 100%.
+env M2_BONUS_MODE = global
+env M2_DIFFICULTY = hard
+env M2_MONSTER_HP = default
+env M2_MONSTER_ATTACK = default
+env M2_STARTER_CHEST = 1
+env M2_MLODZI_BOHATEROWIE = 1
+rate exp = 100
+rate drop = 100
+rate yang = 100
+
+[profile sapphire]
+title = SAPPHIRE
+desc = Łatwiejszy świat z bonusami globalnymi: drop 150%, potwory mają 80% życia i zadają 80% obrażeń, bez czekania u Biologa i Stajennego. Kalendarz eventów: Dzieci Kwiaty przez cały tydzień, codziennie cztery pory z nagrodą 7% z Metinów i bossów (Rada Pustelnika, Zielona Smocza Fasola, Zwój Błogosławieństwa, Cor Draconis, Zaczarowanie i Wzmocnienie Przedmiotu, eliksiry Słońca i Księżyca, Marmur Błogosławieństwa, Zwój Egzorcyzmu, Książka Lidera, Robin), w sobotę wieczorem Szkatułki Blasku Księżyca z potworów, w środę i piątek Super Kamienie Metin. Nagroda z kalendarza nie rośnie z ratami dropu ani z podwójnym lootem.
+env M2_BONUS_MODE = global
+env M2_DIFFICULTY = easy
+env M2_MONSTER_HP = 80
+env M2_MONSTER_ATTACK = 80
+env M2_STARTER_CHEST = 1
+env M2_MLODZI_BOHATEROWIE = 1
+rate exp = 100
+rate drop = 150
+rate yang = 100
+event flower * 00:00 24:00 0
+# Monday
+event chestdrop 1 00:00 12:00 70 71094 1
+event chestdrop 1 12:00 16:00 70 76029 1
+event chestdrop 1 16:00 20:00 70 25040 1
+event chestdrop 1 20:00 24:00 70 71187 1
+# Tuesday (16:00-20:00 had the Small Blessing, an item this game does not have: left empty)
+event chestdrop 2 00:00 12:00 70 72724 1
+event chestdrop 2 12:00 16:00 70 51501 1
+event chestdrop 2 20:00 24:00 70 76014 1
+# Wednesday (00:00-12:00 was a fishing event: left empty)
+event chestdrop 3 12:00 16:00 70 70024 1
+event chestdrop 3 16:00 20:00 70 71094 1
+event superstone 3 20:00 24:00 1
+# Thursday (12:00-16:00 had the Small Blessing: left empty)
+event chestdrop 4 00:00 12:00 70 72728 1
+event chestdrop 4 16:00 20:00 70 51501 1
+event chestdrop 4 20:00 24:00 70 76013 1
+# Friday
+event chestdrop 5 00:00 12:00 70 76029 1
+event chestdrop 5 12:00 16:00 70 76014 1
+event superstone 5 16:00 20:00 1
+event chestdrop 5 20:00 24:00 70 51501 1
+# Saturday (12:00-16:00 was a fishing event: left empty)
+event chestdrop 6 00:00 12:00 70 25040 1
+event chestdrop 6 16:00 20:00 70 53235 1
+event chestdrop 6 20:00 24:00 70 50011 2
+# Sunday
+event chestdrop 7 00:00 12:00 70 71001 1
+event chestdrop 7 12:00 16:00 70 76013 1
+event chestdrop 7 16:00 20:00 70 71001 1
+event chestdrop 7 20:00 24:00 70 71012 1
+
+[group swiat]
+title = Świat i trudność
+desc = Bonusy, czasy oczekiwania, życie i siła ataku potworów, poziom maksymalny. Życie i siła ataku potworów zmieniają się od razu w działającej grze.
+keys = M2_BONUS_MODE M2_DIFFICULTY M2_MONSTER_HP M2_MONSTER_ATTACK M2_MAX_LEVEL
+link = manage | Raty (doświadczenie, drop, yang) zmienia „Gra i serwer → Raty”.
+
+[group moduly]
+title = Moduły gry
+desc = Systemy, które można włączyć albo wyłączyć dla całego świata.
+keys = M2_STARTER_CHEST M2_MLODZI_BOHATEROWIE M2_SEONHAE M2_AREZZO M2_ALCHEMY M2_SASHES M2_AUTOHUNT M2_BUFFI M2_FLEA_MARKET M2_MONSTER_CARDS M2_TELEPORT_MAP M2_SHOP_BIG
+
+[group boty]
+title = Boty i kanały
+desc = Ilu botów gra i na ilu kanałach.
+keys = PLAYERBOT_AUTOSPAWN_COUNT M2_PLAYERBOT_CH2 M2_PLAYERBOT_CH3 M2_PLAYERBOT_CH4 PLAYERBOT_CH2_SHARE M2_PLAYERBOT_START_HELD
+
+[group drop]
+title = Drop specjalny
+desc = Stałe szanse dropu wybranych przedmiotów (w promilach).
+keys = M2_MOONLIGHT_CHEST_PERMILLE M2_MOONLIGHT_CHEST_STONE_PERMILLE M2_BLESSING_SCROLL_STONE_PERMILLE M2_DRAGON_COIN_STONE_PERMILLE M2_DRAGON_COIN_BOSS_PERMILLE
+
+[group eventy]
+title = Eventy
+desc = Eventy na godziny i dni tygodnia (także kalendarze z profili powyżej) ustawia Planer eventów.
+link = events | Otwórz Planer eventów
+link = worldboss | Boss Świata: tryb, czasy, przywołanie
+
+[group serwer]
+title = Nazwa, adres i strefa czasowa
+desc = Adres, z którym łączy się klient gracza (publiczny IP serwera albo domena), nazwa i strefa czasowa. Zmiana adresu wymaga potwierdzenia.
+keys = M2_PUBLIC_ADDRESS M2_BRAND M2_CLIENT_SERVER_NAME M2_TZ M2_DEFAULT_GAME_LANGUAGE

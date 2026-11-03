@@ -28,6 +28,8 @@
 #    --folder KATALOG gdzie ma stać serwer (domyślnie /opt/mt2009plus)
 #    --address ADRES  publiczny adres serwera (domyślnie: odczytany IPv4 VPS)
 #    --bots N         liczba botów (domyślnie według pamięci)
+#    --profil NAZWA   konfiguracja nowego świata (mt2009, clean_easy, clean_hard,
+#                     sapphire - panel zaawansowany: Konfiguracja serwera)
 #    --bez-aktualizacji  zostaw wersję z pełnej paczki
 #    --force          instaluj mimo małej pamięci albo dysku
 #    --tylko-pliki    tylko kroki 1-3 (pliki gotowe w FOLDER), bez Dockera
@@ -50,6 +52,7 @@ MIRROR_NOTICE='GitHub niedostępny - pobieram z serwera zapasowego'
 
 ADDRESS=''
 BOTS=''
+PROFILE=''
 UPDATE=1
 FORCE=0
 FILES_ONLY=0
@@ -69,10 +72,11 @@ while [ $# -gt 0 ]; do
         --folder) [ $# -ge 2 ] || die "--folder wymaga katalogu"; FOLDER=$2; shift 2 ;;
         --address) [ $# -ge 2 ] || die "--address wymaga adresu"; ADDRESS=$2; shift 2 ;;
         --bots) [ $# -ge 2 ] || die "--bots wymaga liczby"; BOTS=$2; shift 2 ;;
+        --profil|--profile) [ $# -ge 2 ] || die "--profil wymaga nazwy"; PROFILE=$2; shift 2 ;;
         --bez-aktualizacji) UPDATE=0; shift ;;
         --force) FORCE=1; shift ;;
         --tylko-pliki) FILES_ONLY=1; shift ;;
-        -h|--help) sed -n '2,35p' "$0"; exit 0 ;;
+        -h|--help) sed -n '2,37p' "$0"; exit 0 ;;
         *) die "nieznana opcja: $1 (pomoc: sh $0 --help)" ;;
     esac
 done
@@ -202,6 +206,7 @@ info "Postęp później: sh $(installer) status"
 set -- install --follow
 [ -n "$ADDRESS" ] && set -- "$@" --address "$ADDRESS"
 [ -n "$BOTS" ] && set -- "$@" --bots "$BOTS"
+[ -n "$PROFILE" ] && set -- "$@" --profile "$PROFILE"  # MT2009_PLUS_SERVER_CONFIG_V1
 [ "$FORCE" = 1 ] && set -- "$@" --force
 sh "$(installer)" "$@"
 rc=$?
