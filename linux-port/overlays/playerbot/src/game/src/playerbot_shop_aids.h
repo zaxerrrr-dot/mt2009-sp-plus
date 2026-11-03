@@ -1258,6 +1258,10 @@ namespace
 			if (!worn || worn->GetRefinedVnum() == 0 || IsPlayerBotScrollFreeGear(worn) ||
 					worn->GetRefineLevel() >= PLAYERBOT_SCROLL_REFINE_MAX_PLUS)
 				continue;
+			// MT2009_PLUS_BOT_HIGH_GEAR_SCROLLS_V1: a level-100+ piece takes a Boga Smokow / Podrecznik only from +6 (the
+			// ladder) - under it the Blessing Scroll stays one (the +4..+6 steps and the Zwoj Wojny's base)
+			if (IsPlayerBotHighGear(worn) && (int)worn->GetRefineLevel() < playerbot_high_gear::DRAGON_FROM)
+				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(worn->GetRefineSet());
 			if (recipe && recipe->prob < 100)
 				++steps;
