@@ -135,6 +135,7 @@ EXPLICIT = {
     72347: ('NEVER', None, None, 'Spirala Czasu 10% (MT2009_PLUS_SPIRALA_CZASU_V1) - a bot never waits: its Biologist hand-in and stable keeper are the AI\'s own, Seon-Hae and quest spirala_czasu refuse bots'),
     72348: ('NEVER', None, None, 'Spirala Czasu 20% (MT2009_PLUS_SPIRALA_CZASU_V1) - a bot never waits: its Biologist hand-in and stable keeper are the AI\'s own, Seon-Hae and quest spirala_czasu refuse bots'),
     72349: ('NEVER', None, None, 'Spirala Czasu 30% (MT2009_PLUS_SPIRALA_CZASU_V1) - a bot never waits: its Biologist hand-in and stable keeper are the AI\'s own, Seon-Hae and quest spirala_czasu refuse bots'),
+    71035: ('NEVER', None, None, 'Eliksir Poszukiwacza (MT2009_PLUS_BIOLOG_ELIKSIR_V1) - a bot drinks the elixirs its chests and drops give it at its own Biologist hand-in (playerbot_town.h, 60 -> 90%) but never buys one: its Biologist never waits, a spoiled specimen costs it only the next drop'),
     72803: ('SUNGMA', 0, 0, 'the Will alone between the bot and its next map'),
     72804: ('SUNGMA', None, None, 'the Sung Ma Will elixir of its stat'),
     72805: ('SUNGMA', None, None, 'the Sung Ma Will elixir of its stat'),

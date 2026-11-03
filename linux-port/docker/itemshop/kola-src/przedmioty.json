@@ -1624,16 +1624,16 @@
   "expire_rel_sec": null
  },
  "8718": {
-  "vnum": 51785,
+  "vnum": 72349,
   "count_mul": 1,
   "socket0": 0,
   "socket1": 0,
   "socket2": 0,
-  "name": "Mikstura Szybkiej Analizy",
-  "status": "zamiennik",
+  "name": "Spirala Czasu (30%)",
+  "status": "ok",
   "src_name": "Spirala Czasu (30%)",
-  "note": "Brak Spirali Czasu; Mikstura Szybkiej Analizy pozwala oddać kolejny przedmiot Biologowi bez czekania",
-  "icon_vnum": null,
+  "note": "MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (3.11.2026): prawdziwa Spirala Czasu (30%) 72349 zamiast wycofanej Mikstury Szybkiej Analizy (51785)",
+  "icon_vnum": 72349,
   "limit": null,
   "expire_rel_sec": null
  },

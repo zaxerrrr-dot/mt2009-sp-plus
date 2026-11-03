@@ -1817,7 +1817,27 @@ namespace
 		}
 
 		ch->RemoveSpecifyItem(mission->itemVnum, 1);
-		const bool acceptedNow = number(1, 100) <= mission->acceptPercent;
+		// MT2009_PLUS_BIOLOG_ELIKSIR_V1 (the owner, 3 November 2026): Eliksir Poszukiwacza as the player's quest has it
+		// (quest eliksir_poszukiwacza, m2_mikstury.lua) - a research row (collect_quest_*, not the herb analyses) is rolled
+		// at half as much again, 60 -> 90%, and one elixir is spent on the hand-in whatever the roll. The bot drinks it
+		// at the counter: the Biologist's quest flag is the player's and a bot never runs the quest. Its elixirs are the
+		// ones its chests (Skrzynia Mistrza III, 76020) and drops gave it - it never buys one (gen_bot_catalogue.py).
+		int acceptPercent = mission->acceptPercent;
+		if (acceptPercent < 100 && strncmp(mission->questName, "collect_quest_", 14) == 0)
+		{
+			static const DWORD s_adwElixirs[] = { 76020, 71035, 39023 };   // the bound copy first
+			for (size_t e = 0; e < sizeof(s_adwElixirs) / sizeof(s_adwElixirs[0]); ++e)
+			{
+				if (ch->CountSpecifyItem(s_adwElixirs[e]) <= 0)
+					continue;
+				ch->RemoveSpecifyItem(s_adwElixirs[e], 1);
+				acceptPercent = std::min(100, acceptPercent * 150 / 100);
+				sys_log(0, "PLAYERBOT_BIOLOGIST: elixir pid=%u name=%s quest=%s vnum=%u chance=%d",
+						ch->GetPlayerID(), ch->GetName(), mission->questName, s_adwElixirs[e], acceptPercent);
+				break;
+			}
+		}
+		const bool acceptedNow = number(1, 100) <= acceptPercent;
 		int newAccepted = accepted;
 		if (acceptedNow)
 		{

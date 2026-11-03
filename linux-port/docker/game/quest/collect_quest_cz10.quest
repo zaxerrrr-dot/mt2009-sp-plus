@@ -114,7 +114,8 @@ quest collect_quest_cz10 begin
 			end
 			pc.remove_item(31231, 1)
 			local show_wait = not collect_data.is_no_time_on_fail()
-			local ok = collect_data.take_chance(60)
+			-- MT2009_PLUS_BIOLOG_ELIKSIR_V1: no Eliksir Poszukiwacza on Yohara (pl-wiki "Nie dotyczy misji na Yohara")
+			local ok = collect_data.take_chance(60, true)
 			local n = pc.getqf("collect_count")
 			if ok then
 				n = n + 1

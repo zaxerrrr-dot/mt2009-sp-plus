@@ -2797,6 +2797,13 @@ namespace
 				return false;
 		}
 
+		// MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (the owner, 3 November 2026): Mikstura Geniuszu / Determinacji / Szybkiej
+		// Analizy are withdrawn - refused when used (quest lib m2_mikstury.lua), off Baek-Go's board - so a piece a bot
+		// still holds is the merchant's, never a counter's: no player should buy a potion that does nothing - nor
+		// their recipes, which have no row left to learn.
+		if (IsPlayerBotWithdrawnPotion(item->GetVnum()) || IsPlayerBotWithdrawnRecipe(item->GetVnum()))
+			return true;
+
 		// MT2009_PLUS_BOT_BOOK_STACKS_V1: a dear book is never the merchant's.
 		if (IsPlayerBotStallOnlyBook(item))
 			return false;

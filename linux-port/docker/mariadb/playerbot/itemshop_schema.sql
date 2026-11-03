@@ -974,7 +974,7 @@ INSERT INTO itemshop.kola_item (src_id, vnum, count_mul, socket0, socket1, socke
   ('8515', 71136, 1, 0, 0, 0, 2592000, 71136, 'inny_czas', 'Lizak Potęgi (30 dni)', 'Lizak Potęgi', 'proto ma 7 dni; żeby dać 30 dni, socket0 = UNIX_TIMESTAMP()+2592000 przy wydaniu (pole expire_rel_sec)', 0),
   ('8517', 50258, 1, 0, 0, 0, 0, 50258, 'ok', 'Cor Draconis (antyczne)', 'Cor Draconis (antyczne)', '', 0),
   ('8543', 71188, 1, 0, 0, 0, 0, 71188, 'ok', 'Lizak Magii (7 dni)', 'Lizak Magii', 'Ten sam przedmiot (dodany 20.10 z zestawami kostiumow, MT2009_PLUS_COSTUME_SET_V2); proto 7 dni', 0),
-  ('8718', 51785, 1, 0, 0, 0, 0, 0, 'zamiennik', 'Mikstura Szybkiej Analizy', 'Spirala Czasu (30%)', 'Brak Spirali Czasu; Mikstura Szybkiej Analizy pozwala oddać kolejny przedmiot Biologowi bez czekania', 0),
+  ('8718', 72349, 1, 0, 0, 0, 0, 72349, 'ok', 'Spirala Czasu (30%)', 'Spirala Czasu (30%)', 'MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (3.11.2026): prawdziwa Spirala Czasu (30%) 72349 zamiast wycofanej Mikstury Szybkiej Analizy (51785)', 0),
   ('8835', 71052, 1, 0, 0, 0, 0, 71052, 'ok', 'Błogosław. Przedmiotu', 'Błogosławieństwo', 'właściciel 20.10: nasza zmiana 6/7 bonusu (71052 Błogosław. Przedmiotu - losuje 6./7. bonus od nowa)', 0),
   ('8837', 71020, 1, 0, 0, 0, 0, 71020, 'ok', 'Błogosławieństwo Smoka', 'Błogosławieństwo Smoka', '', 0),
   ('8902', 71264, 1, 1296000, 0, 0, 0, 0, 'inny_czas', 'Niebieski Zimowy Wilk (15 dni)', 'Niebieski Zimowy Wilk', 'proto ma 30 dni, socket0=1296000 s daje dokładnie 15 dni (liczone od pierwszego użycia)', 0),

@@ -113,9 +113,25 @@ namespace
 		return PLAYERBOT_HERBALISM_GOLD_RESERVE;
 	}
 
+	// MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (the owner, 3 November 2026): Baek-Go's three potions that did the wiki helpers'
+	// work - 51782 Mikstura Geniuszu, 51783 Mikstura Determinacji, 51785 Mikstura Szybkiej Analizy - are withdrawn: the
+	// quest refuses them (m2_mikstury.lua), apply.sh takes their rows (71, 72, 74) out of world.crafting_proto, so no bot
+	// brews one, and a piece in a bag is the merchant's (IsPlayerBotJunkItem), never a counter's or a drink.
+	bool IsPlayerBotWithdrawnPotion(DWORD vnum)
+	{
+		return vnum == 51782 || vnum == 51783 || vnum == 51785;
+	}
+
+	// ... and their recipes (50932, 50933, 50935 - the "super receptury" group drops them no more): with no row left
+	// to learn they would be a counter's "surplus recipe" (IsPlayerBotSurplusRecipe), sold to a player for nothing.
+	bool IsPlayerBotWithdrawnRecipe(DWORD vnum)
+	{
+		return vnum == 50932 || vnum == 50933 || vnum == 50935;
+	}
+
 	bool IsPlayerBotCraftedPotion(LPITEM item)
 	{
-		return item && item->GetType() == ITEM_POTION;
+		return item && item->GetType() == ITEM_POTION && !IsPlayerBotWithdrawnPotion(item->GetVnum());
 	}
 
 	bool IsPlayerBotCraftRecipeItem(LPITEM item)
@@ -1541,6 +1557,8 @@ namespace
 #else   // r40250 has no crafting board, so none of this exists there.
 
 	bool IsPlayerBotHerbalismHerb(DWORD) { return false; }
+	bool IsPlayerBotWithdrawnPotion(DWORD) { return false; }
+	bool IsPlayerBotWithdrawnRecipe(DWORD) { return false; }
 	bool IsPlayerBotCraftedPotion(LPITEM) { return false; }
 	bool IsPlayerBotCraftRecipeItem(LPITEM) { return false; }
 	bool IsPlayerBotPackedPotion(LPITEM) { return false; }

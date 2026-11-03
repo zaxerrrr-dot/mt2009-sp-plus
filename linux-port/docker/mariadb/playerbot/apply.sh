@@ -536,6 +536,14 @@ db -e "CREATE TABLE IF NOT EXISTS world.item_extra_apply (vnum INT UNSIGNED NOT 
 # so that the world reset's replay of the editor's history finds the table).
 db -e "CREATE TABLE IF NOT EXISTS world.crafting_window (craft_vnum INT UNSIGNED NOT NULL, recipe_vnum INT UNSIGNED NOT NULL, present TINYINT UNSIGNED NOT NULL DEFAULT 1, PRIMARY KEY (craft_vnum, recipe_vnum)) ENGINE=InnoDB;" \
     || fail_step "could not create world.crafting_window (crafting window lists)" >&2
+# MT2009_PLUS_MIKSTURY_WYCOFANE_V1 (the owner, 3 November 2026): Baek-Go's rows of the three withdrawn herbalism potions -
+# 71 Mikstura Geniuszu (51782, +75% to the next book / recipe read), 72 Mikstura Determinacji (51783, no wait after a
+# failed book read) and 74 Mikstura Szybkiej Analizy (51785, no Biologist wait after a spoiled specimen) - leave the
+# crafting table: the quest's board lists them no more (game/Dockerfile, crafting_data.lua) and the bots brew from this
+# table (playerbot_herbalism.h). Using one is refused (quest lib m2_mikstury.lua); a piece in a bag sells to an NPC.
+# The wiki's helpers in their place: Rada Pustelnika, Zwoj Egzorcyzmu, Spirala Czasu, Eliksir Poszukiwacza. Every start.
+db -e "DELETE FROM world.crafting_proto WHERE vnum IN (71, 72, 74) AND item_vnum IN (51782, 51783, 51785);" \
+    || fail_step "could not take the withdrawn potions (51782, 51783, 51785) off Baek-Go's board" >&2
 # Maska Sabaha left the world with the Hwang curse (playerbotify
 # apply_hwang_curse_removed, the share step of the game Dockerfile): the shop
 # that sold one sells it no more. The db core reads the shops at boot, so this
