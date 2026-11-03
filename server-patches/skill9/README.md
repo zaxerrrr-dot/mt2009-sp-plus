@@ -26,7 +26,7 @@ dokładnie tabele wiki. Burza Szponów (183) jest Likana – u nas nie ma Likana
 - Od 0 do M1 **księgami** (punktów umiejętności nie da się użyć: `DISABLE_BY_POINT_UP`, w kliencie `CANNOT_LEVEL_UP`):
   udana próba = +1 poziom, od 17 do 19 klasyczny los na M (de wiki), 20 = M1. M1 → G1 jak każda umiejętność
   (nasza reguła ksiąg: liczba udanych odczytów rośnie z poziomem). Szansa i czas klątwy jak przy innych księgach
-  (`m2_book_wait`, Zwój Egzorcyzmu, Rada Pustelnika = 100 %).
+  (`m2_book_wait`, Zwój Egzorcyzmu, Rada Pustelnika ×2,5 = 87 % – `radapustelnika`).
 - G1 → P: **Mikstura Talentu** (50527, `MT2009_PLUS_SKILL9_TALENT_V1`, quest `linux-port/docker/game/quest/mikstura_talentu.quest`,
   kompilowany osobnym krokiem etapu `quests` Dockerfile'a) – wg pl wiki (Mikstura_Talentu): jedna udana mikstura na
   stopień (G1→G2 … G10→P), szansa 30 % (z Radą Pustelnika ×2,5 = 75 %, jak przy Kamieniu Duchowym na wiki; Rada znika

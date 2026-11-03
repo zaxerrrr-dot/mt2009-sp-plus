@@ -2753,6 +2753,15 @@ RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua 
  && ! LC_ALL=C grep -q 'SKILLBOOK_LEARN_DELAY' "$F" \
  && echo "share: a recipe is read without a wait"
 
+# MT2009_PLUS_RADA_PUSTELNIKA_V1 (the owner, 3 November 2026; server-patches/radapustelnika): Rada Pustelnika helps the
+# skill books and the soul stones (pl-wiki), never a recipe - crafting.learn_recipe took its affect off at every recipe
+# read and gave nothing for it. It stays on for the next book now.
+RUN set -eu; F=/opt/metin2/share/locale/poland/quest/libs/crafting/crafting.lua \
+ && test "$(LC_ALL=C grep -c -E '^[[:blank:]]*affect\.remove_new\(AFFECT_SKILL_BOOK_BONUS\)[[:space:]]*$' "$F")" -eq 1 \
+ && LC_ALL=C sed -i -E 's/^([[:blank:]]*)affect\.remove_new\(AFFECT_SKILL_BOOK_BONUS\)([[:space:]]*)$/\1-- MT2009_PLUS_RADA_PUSTELNIKA_V1: Rada Pustelnika stays for the next book\2/' "$F" \
+ && ! LC_ALL=C grep -q 'remove_new(AFFECT_SKILL_BOOK_BONUS)' "$F" \
+ && echo "share: a recipe read leaves Rada Pustelnika on (MT2009_PLUS_RADA_PUSTELNIKA_V1)"
+
 # Uriel's "Wytwarzanie" window (MT2009_PLUS_SASH_CLOTH_V1, the owner, 6 October):
 # Metins and bosses drop Delikatne Sukno (80019) in place of the +0 sash
 # (server-patches/raremobrules) and Theowahdan (60003; Uriel 20011 until MT2009_PLUS_TEOWADEN_V1) turns ten of them and 80 000

@@ -1,0 +1,32 @@
+[
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RADA_PUSTELNIKA_V1 (stone affect)",
+  "old": "\tint learn_bonus = GetPoint(POINT_LEARN_CHANCE);\n\n\tif (FindAffect(AFFECT_SKILL_BOOK_BONUS))\n\t\tRemoveAffect(AFFECT_SKILL_BOOK_BONUS);\n",
+  "new": "\tint learn_bonus = GetPoint(POINT_LEARN_CHANCE);\n\n\t// MT2009_PLUS_RADA_PUSTELNIKA_V1 (stone affect) (server-patches/radapustelnika): Rada Pustelnika (AFFECT_SKILL_BOOK_BONUS) is spent on this read as\n\t// before and now multiplies its chance by 2.5 (pl-wiki: \"na 250%\" - Kamien Duchowy, Riposta, Dopalacz), see (stone chance).\n\tconst bool bM2Rada = FindAffect(AFFECT_SKILL_BOOK_BONUS) != NULL;\n\tif (bM2Rada)\n\t\tRemoveAffect(AFFECT_SKILL_BOOK_BONUS);\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RADA_PUSTELNIKA_V1 (stone chance)",
+  "old": "\tchance = chance * (100 + learn_bonus) / 100;\n",
+  "new": "\tchance = chance * (100 + learn_bonus) / 100;\n\t// MT2009_PLUS_RADA_PUSTELNIKA_V1 (stone chance) (server-patches/radapustelnika): with Rada Pustelnika x2.5, at most 100 (30% -> 75%, 4% -> 10%).\n\tif (bM2Rada)\n\t\tchance = MIN((DWORD) 100, chance * 5 / 2);\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RADA_PUSTELNIKA_V1 (passive chance)",
+  "old": "\t\tdwProb = dwProb * (100 + dwLearnChanceBonus) / 100;\n",
+  "new": "\t\tdwProb = dwProb * (100 + dwLearnChanceBonus) / 100;\n\t\t// MT2009_PLUS_RADA_PUSTELNIKA_V1 (passive chance) (server-patches/radapustelnika): a passive / general book (Sztuka Combo, Ksiega Polimorfii,\n\t\t// the languages, Instr. Oswajania Konia, the mining guide, Precyzja ...) read under Rada Pustelnika at 2.5 times its\n\t\t// chance, at most 100 - the Rada was taken off here for nothing before.\n\t\tif (is_skill_book_bonus_affect)\n\t\t\tdwProb = MIN((DWORD) 100, dwProb * 5 / 2);\n"
+ },
+ {
+  "file": "char_skill.cpp",
+  "marker": "MT2009_PLUS_RADA_PUSTELNIKA_V1 (class chance)",
+  "old": "\t\t\tpercent = is_skill_book_bonus_affect ? 100 : percent * (100 + dwLearnChanceBonus) / 100;\n",
+  "new": "\t\t\t// MT2009_PLUS_RADA_PUSTELNIKA_V1 (class chance) (server-patches/radapustelnika) - the owner, 3 November 2026, as the pl-wiki's item text\n\t\t\t// (\"Podnosi szanse na pomyslne przeczytanie nastepnej Ksiegi Umiejetnosci ... na 250%\"): Rada Pustelnika\n\t\t\t// multiplies a class book's (riposte's, boost's, 9th skill's, Sztuka Wojny's) chance by 2.5, at most 100 - 35% -> 87% -\n\t\t\t// where it made the read certain (100) before.\n\t\t\tpercent = percent * (100 + dwLearnChanceBonus) / 100;\n\t\t\tif (is_skill_book_bonus_affect)\n\t\t\t\tpercent = MIN(100, percent * 5 / 2);\n"
+ },
+ {
+  "file": "char_item.cpp",
+  "marker": "MT2009_PLUS_RADA_PUSTELNIKA_V1 (horse)",
+  "old": "\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot read any more Riding Guides.\"));\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\tif (number(1, 100) <= iPct)\n",
+  "new": "\t\t\t\t\t\t\t\t\t\tChatPacket(CHAT_TYPE_INFO, LC_TEXT(\"You cannot read any more Riding Guides.\"));\n\t\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\t// MT2009_PLUS_RADA_PUSTELNIKA_V1 (horse) (server-patches/radapustelnika): Instr. Jazdy Konnej / Walki Konno under Rada\n\t\t\t\t\t\t\t\t\t// Pustelnika (pl-wiki: one of the books it helps) - the Rada is spent, the chance x2.5, at most 100.\n\t\t\t\t\t\t\t\t\tif (FindAffect(AFFECT_SKILL_BOOK_BONUS))\n\t\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\tRemoveAffect(AFFECT_SKILL_BOOK_BONUS);\n\t\t\t\t\t\t\t\t\t\tiPct = MIN(100, iPct * 5 / 2);\n\t\t\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t\t\tif (number(1, 100) <= iPct)\n"
+ }
+]

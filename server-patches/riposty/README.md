@@ -33,7 +33,7 @@ Owsapie (`__7AND8TH_SKILLS__`: `skill.h`, `char_skill.cpp`, `cmd_general.cpp`, `
   `tools/yohara_zaklety/gen_yzaklety.py` → `mob_drop_item.yohara_zaklety.txt` (wiki nie podaje szans – domyślne
   `tools/ymoby_arkusz` dla „innego” przedmiotu).
 - **1 → M1**: punkty umiejętności (pewne; od 17 do 20 klasyczny rzut na M jak 9. umiejętność, bez blokady „użyj zwoju
-  resetu”) albo księgi riposty/dopalacza (35 % za odczyt jak księgi klasowe, Rada Pustelnika 100 %, 20 000 PD, odstęp
+  resetu”) albo księgi riposty/dopalacza (35 % za odczyt jak księgi klasowe, Rada Pustelnika ×2,5 = 87 % (`radapustelnika`), 20 000 PD, odstęp
   między księgami). **M1 → G1**: księgi (jak księgi klasowe). **G1 → P**: **Kamień Duchowy+** (50525) – jak Kamień Duchowy
   (`pc.learn_grand_master_skill`: punkty rangi 1000 + 500 za stopień, przy ujemnej podwójnie, nieudana próba 1/3–1/2,
   następna po 12 h, Zwój Egzorcyzmu od razu).

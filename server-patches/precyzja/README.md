@@ -56,7 +56,7 @@ wiki”). pl-wiki „Precyzja” i „Księga Precyzji”, de-wiki „Präzision
 - **Nauka**: tylko **Księga Precyzji** (50325) i tylko od **1. Poziomu Czempiona** (`PrecisionReadBook`,
   `playerbot_champion.cpp`); każda udana lektura = +1 poziom, od 0 do P (40): 1→M1 20 ksiąg, M1→G1 10, G1→P 10
   (de-wiki: „20 erfolgreiche”). Czytanie to pasywna ścieżka `LearnSkillByBook`: szansa **35 %** (podstawa ksiąg
-  klasowych; mikstury nauki ją podnoszą), Rada Pustelnika = 100 %, odstęp między księgami jak przy innych
+  klasowych; mikstury nauki ją podnoszą), Rada Pustelnika ×2,5 = 87 % (`radapustelnika`), odstęp między księgami jak przy innych
   (`m2_book_wait`, klątwa; Zwój Egzorcyzmu ją zdejmuje). Na P i bez Czempiona księga się nie zużywa.
   Stary przypadek silnika (50325 → `SKILL_RESIST_PENETRATE` z wartością0 1 jako minimalnym poziomem – książki nie dało
   się przeczytać) został dla 50325 zastąpiony; 50326 bez zmian.

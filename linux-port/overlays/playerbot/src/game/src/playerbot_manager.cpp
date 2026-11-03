@@ -2782,7 +2782,9 @@ namespace
 		if (bestCell < 0 || bestSkillVnum == 0)
 		{
 			// A Rada already on is kept for the class book it was taken for: a
-			// general book's read takes it off for nothing on this line.
+			// general book's read would spend it there (x2.5 of a passive book's
+			// chance since MT2009_PLUS_RADA_PUSTELNIKA_V1, but the class book is
+			// what it was bought for).
 			if (!ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) || !PlayerBotHoldsReadableClassBook(ch))
 				ReadPlayerBotGeneralSkillBook(ch, state, dwNow);
 			return;
@@ -2842,13 +2844,16 @@ namespace
 		char legendReadFlag[64];
 		snprintf(legendReadFlag, sizeof(legendReadFlag), "traning_master_skill.%u.read_count", bestSkillVnum);
 		const int legendReadsBefore = ch->GetQuestFlag(legendReadFlag);
-		// Rada Pustelnika makes this read certain: while AFFECT_SKILL_BOOK_BONUS
-		// is on, LearnSkillByBook rolls a hundred where it rolls thirty-five
-		// (r40250's english table: nothing against sixty-five), and it takes
-		// the affect off at the next read of any kind - a passive book's or a
-		// Kamien Duchowy's, which gain nothing from it on this line. So it is
-		// used here, the moment before a class book is read and every check
-		// that could refuse the read has passed, and never while one is on.
+		// Rada Pustelnika helps this read: while AFFECT_SKILL_BOOK_BONUS is on,
+		// LearnSkillByBook rolls its chance x2.5 - thirty-five becomes
+		// eighty-seven, not certain (MT2009_PLUS_RADA_PUSTELNIKA_V1, the owner
+		// 3 November 2026: the pl-wiki's "na 250%"; it was a hundred before) -
+		// and it takes the affect off at the next read of any kind, a passive
+		// book's or a Kamien Duchowy's as well (also x2.5 now). So it is used
+		// here, the moment before a class book is read and every check that
+		// could refuse the read has passed, and never while one is on; a read
+		// that fails under it is a failed read like any other (the next one
+		// takes the next Rada).
 		// The pass knew the Rada as a second Exorcism Scroll and used it only
 		// while a wait stood in the way, which with the BOOKS switch on is
 		// never: DUDU gave five to every bot and not one was used ("Rada
@@ -2996,8 +3001,9 @@ namespace
 		if (!stone)
 			return;
 #if defined(PLAYERBOT_ENGINE_MT2009)
-		// LearnGrandMasterSkill takes a Rada's affect off for nothing on this
-		// line; one that is on waits for the class book it was taken for.
+		// LearnGrandMasterSkill would spend a Rada's affect on the stone (x2.5
+		// since MT2009_PLUS_RADA_PUSTELNIKA_V1); one that is on still waits for
+		// the class book it was taken for.
 		if (ch->FindAffect(AFFECT_SKILL_BOOK_BONUS) && PlayerBotHoldsReadableClassBook(ch))
 			return;
 #endif
