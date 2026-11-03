@@ -151,6 +151,12 @@ def connect():
     with con.cursor() as cur:
         # This is the background job: no panel statement limit here.
         cur.execute("SET SESSION max_statement_time=0")
+        # MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1: the folds are INSERT ...
+        # SELECT from the log tables; under REPEATABLE READ InnoDB reads the
+        # source rows of such a statement with shared locks (and gap locks),
+        # READ COMMITTED reads them as a snapshot, locking nothing the game
+        # writes to.
+        cur.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED")
     return con
 
 
@@ -467,37 +473,45 @@ def _record(cur, started, days, cutoff, dry_run, status, deleted, detail):
         "status": status, "deleted": deleted}, default=str))
 
 
-def _delete_indexed(cur, table, column, cutoff, say):
-    total = 0
-    while True:
-        cur.execute(f"DELETE FROM log.`{table}` WHERE `{column}` < %s LIMIT {BATCH}", (cutoff,))
-        total += cur.rowcount
-        if cur.rowcount < BATCH:
-            return total
-        time.sleep(BATCH_SLEEP)
+def _throttle():
+    """MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1: the prune's statements go at
+    snapshot_retention's pace - a batch adapted to the measured time (0.2 s),
+    a pause of three times each statement, a wait while the database is busy.
+    The prune runs at PRUNE_HOUR (05:00), but the game runs then too: 5 000-
+    row deletes of a 128 MB-buffer-pool database take seconds each."""
+    import snapshot_retention  # it imports this module: imported when used
+    return snapshot_retention.Throttle()
 
 
-def _delete_front(cur, table, column, cutoff, pk):
+def _delete_indexed(cur, table, column, cutoff, say, throttle=None):
+    import snapshot_retention
+    return snapshot_retention.delete_older(cur, table, column, cutoff, throttle or _throttle(), schema="log")
+
+
+def _delete_front(cur, table, column, cutoff, pk, throttle=None):
     """No index on the time column. Old rows are at the front of the table
     (an InnoDB clustered index or an auto-increment key keeps the order of
     writing), so each batch first counts the old rows among the first BATCH
     rows and deletes exactly that many - the DELETE then stops near the
     front instead of reading the whole table for a LIMIT it cannot fill."""
     order = f" ORDER BY `{pk}`" if pk else ""
+    throttle = throttle or _throttle()
     total = 0
     while True:
+        window = throttle.batch
         # SELECT *: a covering secondary index (refinelog's (pid, time))
         # would otherwise be read instead, in its own order, not the table's.
-        cur.execute(f"SELECT COUNT(*) FROM (SELECT * FROM log.`{table}`{order} LIMIT {BATCH}) s WHERE s.`{column}` < %s",
+        throttle.wait_quiet(cur)
+        cur.execute(f"SELECT COUNT(*) FROM (SELECT * FROM log.`{table}`{order} LIMIT {window}) s WHERE s.`{column}` < %s",
                     (cutoff,))
         found = int(cur.fetchone()[0])
         if not found:
             return total
-        cur.execute(f"DELETE FROM log.`{table}` WHERE `{column}` < %s{order} LIMIT {found}", (cutoff,))
-        total += cur.rowcount
-        if found < BATCH or cur.rowcount == 0:
+        rows = throttle.execute(cur, f"DELETE FROM log.`{table}` WHERE `{column}` < %s{order} LIMIT {found}",
+                                (cutoff,), found)
+        total += rows
+        if found < window or rows == 0:
             return total
-        time.sleep(BATCH_SLEEP)
 
 
 def _log_columns(cur):
@@ -529,10 +543,13 @@ def _copy_rows(con, source_sql, params, columns, skip_present=False):
                             continue
                     batch.append(row)
                     if len(batch) >= BATCH:
+                        took = time.monotonic()
                         wcur.executemany(insert, batch)
                         copied += len(batch)
                         batch = []
-                        time.sleep(0.02)
+                        # MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1: a pause of
+                        # three times what the batch took (was 0.02 s).
+                        time.sleep(max(0.02, 3 * (time.monotonic() - took)))
                 if batch:
                     wcur.executemany(insert, batch)
                     copied += len(batch)
@@ -672,8 +689,12 @@ def prune(con, days=None, dry_run=False, now=None, say=_say):
                 say(f"{table}: {'would delete' if dry_run else 'deleted'} {count} rows older than {_ts(cutoff)} ({how})")
         if not dry_run:
             with con.cursor() as cur:
-                cur.execute("DELETE FROM player.web_seban_gear_event WHERE time < %s LIMIT 100000",
-                            (started - timedelta(days=GEAR_KEEP_DAYS),))
+                # Small throttled batches (it was one 100 000-row DELETE);
+                # snapshot_retention.py keeps this table short too.
+                if time_indexed(cur, "player", "web_seban_gear_event", "time"):
+                    import snapshot_retention
+                    snapshot_retention.delete_older(cur, "web_seban_gear_event", "time",
+                                                    started - timedelta(days=GEAR_KEEP_DAYS), _throttle())
     except Exception as exc:
         status = "error"
         detail["error"] = str(exc)

@@ -94,6 +94,10 @@ CREATE TABLE IF NOT EXISTS `money_log` (
   `gold` bigint(20) NOT NULL DEFAULT 0,
   KEY `type` (`type`,`vnum`) USING BTREE
 ) ENGINE=InnoDB;
+-- MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1: the panel's log summaries
+-- (log_maintenance.py) read this table by a time window every cycle; without
+-- an index on `time` each cycle read the whole table. Online, idempotent.
+ALTER TABLE `money_log` ADD INDEX IF NOT EXISTS `time_idx` (`time`);
 
 CREATE TABLE IF NOT EXISTS `quest_reward_log` (
   `quest_name` varchar(32) DEFAULT NULL,
@@ -265,6 +269,13 @@ CREATE TABLE IF NOT EXISTS `itemshop` (
   `time` datetime NOT NULL DEFAULT current_timestamp(),
   `money_before` int(10) unsigned NOT NULL DEFAULT 0
 ) ENGINE=InnoDB;
+-- MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1: the bots' weekly Smocze Monety pool
+-- (currency + a week) and the hourly "world_24h" variety line (currency + a
+-- day) of every core, and the panel's 14-day ItemShop page, read this table by
+-- currency and time; it had no index at all, so each read scanned the whole
+-- table synchronously on the game thread. Online (INPLACE), idempotent.
+ALTER TABLE `itemshop` ADD INDEX IF NOT EXISTS `currency_time_idx` (`currency`, `time`);
+ALTER TABLE `itemshop` ADD INDEX IF NOT EXISTS `time_idx` (`time`);
 
 CREATE TABLE IF NOT EXISTS `itemshop_dragon_scroll` (
   `pid` int(10) unsigned NOT NULL DEFAULT 0,
@@ -290,6 +301,10 @@ CREATE TABLE IF NOT EXISTS `ikarusshop_log` (
   KEY `who_idx` (`who`),
   KEY `shop_owner_idx` (`shop_owner`)
 ) ENGINE=InnoDB;
+-- MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1: the panel's log summaries
+-- (log_maintenance.py) read this table by a time window every cycle; without
+-- an index on `time` each cycle read the whole table. Online, idempotent.
+ALTER TABLE `ikarusshop_log` ADD INDEX IF NOT EXISTS `time_idx` (`time`);
 
 CREATE TABLE IF NOT EXISTS `playerbot_listing` (
   `item_id` int(10) unsigned NOT NULL,
