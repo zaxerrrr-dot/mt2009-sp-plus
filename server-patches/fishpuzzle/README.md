@@ -27,10 +27,10 @@ uiscripty GF. Dlatego całość idzie kanałem komend czatu (jak worldboss, wele
 - Boty: nie dostają pudeł (połów bota pomijany), nie mogą grać (komenda i użycie odrzucone).
 
 ## Event
-Rodzaj planera `fishpuzzle` (`KIND_FISHPUZZLE` 18, `KIND_MAX` 19), flaga `fish_puzzle_event` (1/0) +
+Rodzaj planera `fishpuzzle` (`KIND_FISHPUZZLE` 19 – po `potega` 18 –, `KIND_MAX` 20), flaga `fish_puzzle_event` (1/0) +
 7 dni `fish_puzzle_reward` po zaplanowanym evencie (lista eventów dalej otwiera okno). Ręcznie: `/eventflag fish_puzzle_event 1`.
 Kalendarz SAPPHIRE (wiki): środa 00-12, sobota 12-16 – wiersze `event fishpuzzle 3 00:00 12:00 0` i
-`event fishpuzzle 6 12:00 16:00 0` (server_profiles.txt – dodaje koordynator).
+`event fishpuzzle 6 12:00 16:00 0` – są w profilach SAPPHIRE i EMERALD (server_profiles.txt).
 
 ## Kolejność
 Po `relikty` (hak użycia stoi pod blokiem reliktu), np. na końcu listy. Linux: `python3 apply_fishpuzzle.py <game/src>`;

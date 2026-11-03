@@ -2598,8 +2598,8 @@ EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT200
                     "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
                     "worldboss",  # MT2009_PLUS_WORLDBOSS_V1
                     "halloween",  # MT2009_PLUS_HALLOWEEN_V1
-                    "potega",  # MT2009_PLUS_POTEGA_MADROSCI_V1
-                    "fishpuzzle")  # MT2009_PLUS_FISH_PUZZLE_V1
+                    "fishpuzzle",  # MT2009_PLUS_FISH_PUZZLE_V1
+                    "potega")  # MT2009_PLUS_POTEGA_MADROSCI_V1
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
 # MT2009_PLUS_SUPERSTONE_V1: kinds whose value is a level, not a percent:
