@@ -1336,7 +1336,17 @@ namespace
 					(int)worn->GetRefineLevel() >= playerbot_high_gear::WAR_BELOW)
 				continue;
 			const TRefineTable* recipe = CRefineManager::instance().GetRefineRecipe(worn->GetRefineSet());
-			if (recipe && playerbot_high_gear::StepNeedsScroll((int)recipe->prob))
+			if (!recipe || !playerbot_high_gear::StepNeedsScroll((int)recipe->prob))
+				continue;
+			// only a piece whose next step's materials are in hand (the first night's measure: 52 War scrolls made in ten
+			// minutes for jade and gloves short of their plates and hardeners - the Blessing Scrolls they were made of
+			// waited for the +4..+6 steps)
+			bool mats = true;
+			for (int m = 0; m < recipe->material_count && mats; ++m)
+				if (recipe->materials[m].vnum && (int)ElementsRefineMaterialCount(ch, worn, recipe->materials[m].vnum) <
+						(int)recipe->materials[m].count)
+					mats = false;
+			if (mats)
 				steps += playerbot_high_gear::WAR_BELOW - (int)worn->GetRefineLevel();
 		}
 		return std::max(0, std::min(steps, PLAYERBOT_WAR_SCROLL_HOLD_MAX) - CountPlayerBotWarScrolls(ch));
