@@ -1472,6 +1472,24 @@ else
     fail_step "could not write the bigger offline shops switch; it stays as it was" >&2
 fi
 
+# MT2009_PLUS_SKILL_HACK_V1: the other specialisation's skills beside the main path
+# (server-patches/skillhack), off unless M2_SKILL_HACK=1. One world flag,
+# m2_skill_hack (1 = on), read by the cores (playerbot_skillhack.cpp) and the quests
+# training_grandmaster_skill / mikstura_talentu; GMs (/e) and the panel switch it live
+# (web_admin.quest SKILL2), so .env is applied only when it changed since the last
+# start (m2_skill_hack_env = what it said + 1).
+case "$(printf '%s' "${M2_SKILL_HACK:-0}" | tr 'A-Z' 'a-z' | tr -d ' \r')" in 1|on|yes|true) skill2_on=1 ;; *) skill2_on=0 ;; esac
+skill2_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_skill_hack_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ -n "$skill2_env" ] && [ "$skill2_env" = "$((skill2_on + 1))" ]; then
+    echo "[playerbot-migrate] Other-path skills: .env unchanged since the last start - the switch stays as the panel or the last start left it"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_skill_hack', '', $skill2_on),
+        (0, 'm2_skill_hack_env', '', $((skill2_on + 1)));"; then
+    echo "[playerbot-migrate] Other-path skills: $([ "$skill2_on" = 1 ] && echo on || echo off) (from .env)"
+else
+    fail_step "could not write the other-path skills switch; it stays as it was" >&2
+fi
+
 # The world's monster health (the operator, 30 September, for Frelik's
 # proposal): a percent of the max_hp of every monster, boss and Metin
 # stone, which the cores apply at a spawn and to every one standing when

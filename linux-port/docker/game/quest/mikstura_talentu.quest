@@ -23,6 +23,29 @@ quest mikstura_talentu begin
 			return row[group]
 		end
 
+		-- MT2009_PLUS_SKILL_HACK_V1: the other specialisation's 9th skill while the event flag m2_skill_hack is on (the
+		-- owner's P4 / P9; server-patches/skillhack/README.md) - 0 none (the switch off, no path, the Warrior's 176 is both).
+		function other()
+			if game.get_event_flag("m2_skill_hack") == 0 then
+				return 0
+			end
+			local by_job = {
+				[0] = { 176, 176 },
+				[1] = { 177, 178 },
+				[2] = { 179, 180 },
+				[3] = { 181, 182 },
+			}
+			local row = by_job[pc.get_job()]
+			local group = pc.get_skill_group()
+			if row == nil or (group != 1 and group != 2) then
+				return 0
+			end
+			if row[3 - group] == row[group] then
+				return 0
+			end
+			return row[3 - group]
+		end
+
 		function skill_name(vnum)
 			local names = {
 				[176] = "Trzêsienie", [177] = "Œwiat³o Gwiazd", [178] = "Strza³ Wichury", [179] = "Piekielny Cios",
@@ -45,6 +68,22 @@ quest mikstura_talentu begin
 			if vnum == 0 then
 				say("Najpierw wybierz drogê umiejêtnoœci.")
 				return
+			end
+			-- MT2009_PLUS_SKILL_HACK_V1: the other path's 9th skill on G1-G10 too - by itself, or chosen when both are
+			local other = mikstura_talentu.other()
+			if other != 0 and pc.get_skill_level(other) >= 30 and pc.get_skill_level(other) < 40 then
+				local own_level = pc.get_skill_level(vnum)
+				if own_level < 30 or own_level >= 40 then
+					vnum = other
+				else
+					say("Któr¹ umiejêtnoœæ udoskonaliæ?")
+					local which = select(mikstura_talentu.skill_name(vnum), mikstura_talentu.skill_name(other), "Anuluj")
+					if which == 2 then
+						vnum = other
+					elseif which != 1 then
+						return
+					end
+				end
 			end
 			local name = mikstura_talentu.skill_name(vnum)
 			local level = pc.get_skill_level(vnum)

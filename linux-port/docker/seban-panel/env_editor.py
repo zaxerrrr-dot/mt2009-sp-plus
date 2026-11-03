@@ -190,7 +190,8 @@ LIVE_FINAL = ("done", "failed", "bad_args", "cancelled", "player_offline")
 _FLAGS = ("mt2009_arezzo_closed", "m2_seonhae_on", "m2_seonhae_wait_min", "m2_alchemy_off", "m2_sash_off",
           "m2_teleport_map_on", "m2_shop_big_on",
           "m2_mob_hp", "m2_mob_attack",  # MT2009_PLUS_SERVER_CONFIG_V1
-          "m2_pc_attack")  # MT2009_PLUS_PC_ATTACK_V1
+          "m2_pc_attack",  # MT2009_PLUS_PC_ATTACK_V1
+          "m2_skill_hack")  # MT2009_PLUS_SKILL_HACK_V1
 # MT2009_PLUS_SERVER_CONFIG_V1: the percent switches - .env key -> (event flag, queue command).
 _PERCENT_SWITCHES = {"M2_MONSTER_HP": ("m2_mob_hp", "MOB_HP"),
                      "M2_MONSTER_ATTACK": ("m2_mob_attack", "MOB_ATTACK"),
@@ -224,6 +225,8 @@ def live_values_from_flags(flags):
     out["M2_TELEPORT_MAP"] = "1" if flags.get("m2_teleport_map_on") == 1 else "0"
     # MT2009_PLUS_SHOP_QOL_V2: the bigger offline shops; no row = off.
     out["M2_SHOP_BIG"] = "1" if flags.get("m2_shop_big_on") == 1 else "0"
+    # MT2009_PLUS_SKILL_HACK_V1: the other specialisation's skills; no row = off.
+    out["M2_SKILL_HACK"] = "1" if flags.get("m2_skill_hack", 0) != 0 else "0"
     # MT2009_PLUS_SERVER_CONFIG_V1: a percent; no row, 0 or 100 = the game's own.
     for key, (flag, _cmd) in _PERCENT_SWITCHES.items():
         pct = env_schema.monster_percent(flags.get(flag, 0))
@@ -291,6 +294,10 @@ def apply_live(db_connect, changes, wait=LIVE_WAIT, sleep=time.sleep):
             on = 1 if changes["M2_SHOP_BIG"] == "1" else 0
             flag("m2_shop_big_on", on)
             queue("SHOPBIG", str(on))
+        if "M2_SKILL_HACK" in changes:  # MT2009_PLUS_SKILL_HACK_V1
+            on = 1 if changes["M2_SKILL_HACK"] == "1" else 0
+            flag("m2_skill_hack", on)
+            queue("SKILL2", str(on))
         # MT2009_PLUS_SERVER_CONFIG_V1: the monsters' health and damage.
         for key, (flag_name, cmd) in _PERCENT_SWITCHES.items():
             if key in changes:

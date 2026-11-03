@@ -49,7 +49,8 @@ import re
 #    (MT2009_PLUS_SERVER_CONFIG_V1), Yohara 3.0.7.
 # 7: M2_PLAYER_ATTACK (MT2009_PLUS_PC_ATTACK_V1, the EMERALD configuration).
 # 8: M2_SEBAN_SNAPSHOT_HEAVY_HOURS (MT2009_PLUS_SEBAN_SNAPSHOT_GENTLE_V1).
-SCHEMA_VERSION = 8
+# 9: M2_SKILL_HACK (MT2009_PLUS_SKILL_HACK_V1, the other specialisation's skills).
+SCHEMA_VERSION = 9
 
 SECTIONS = [
     {"id": "boty", "label": "Boty", "icon": "🤖",
@@ -388,6 +389,16 @@ SCHEMA = [
        "Włączone: okno sklepu offline gracza ma dwie strony obok siebie (160 miejsc, jak sklepy botów); druga strona bez blokad i miejsc premium. "
        "Wyłączone: tylko pierwsza strona – przedmioty, które już stoją na drugiej, zostają w sprzedaży. "
        "Wymaga klienta i serwera z wydania 2.34.0 lub nowszego. Przełącza się od razu, bez restartu; gracz widzi zmianę przy następnym otwarciu okna sklepu.",
+       "moduly", "bool", "0", GAME),
+    # MT2009_PLUS_SKILL_HACK_V1: the other specialisation's skills beside the main path
+    _e("M2_SKILL_HACK", "Umiejętności drugiej ścieżki",
+       "Włączone: postać gracza po wybraniu ścieżki (od poziomu 5) może uczyć się i używać także umiejętności drugiej ścieżki "
+       "swojej klasy – np. wojownik body Aury Miecza i Duchowego Uderzenia, szaman smok Leczenia. W oknie umiejętności jest "
+       "druga zakładka z nazwą tej ścieżki; ta sama pula punktów, księgi, Kamienie Duchowe i 9. umiejętność drugiej ścieżki; "
+       "dopalacz i wymiana ksiąg u Seon-Hae tylko dla ścieżki głównej. Boty z tego nie korzystają. "
+       "Wyłączone: umiejętności drugiej ścieżki zostają uśpione (poziomy zostają, nie da się ich używać ani rozwijać, "
+       "znikają z paska szybkiego dostępu); reset umiejętności oddaje ich punkty. Wymaga klienta Yohara z drugą zakładką. "
+       "Przełącza się od razu, bez restartu (także komendą GM /e m2_skill_hack 1 lub 0).",
        "moduly", "bool", "0", GAME),
     _e("M2_ALCHEMY", "Alchemia (Cor Draconis)",
        "Wyłączone: nie powstają nowe Cor Draconis (Metiny, bossowie, odłamki i wymiana u Alchemika). To, co gracze mają, zostaje. "
@@ -833,6 +844,8 @@ LIVE_KEYS = {
     "M2_MONSTER_ATTACK": "MOB_ATTACK",
     # MT2009_PLUS_PC_ATTACK_V1: the players' damage to monsters (web_admin.quest PC_ATTACK).
     "M2_PLAYER_ATTACK": "PC_ATTACK",
+    # MT2009_PLUS_SKILL_HACK_V1: the other specialisation's skills (web_admin.quest SKILL2).
+    "M2_SKILL_HACK": "SKILL2",
 }
 
 
