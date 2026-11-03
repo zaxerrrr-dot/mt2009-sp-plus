@@ -968,5 +968,5 @@ poprawkami. Serwer: `server-patches/fishpuzzle` + `fish_puzzle.cpp`; root: `uifi
 
 Pętle paczki „erase w for z ++it” (UB na końcu listy) zastąpione `__MT2009_FishPieceRemoveFreeCells` – te same pola (lista
 kolumnami: L3 bez 3. pola, L4 bez 2., Z6 bez 2. i 5.). Zbudowane `build.sh msvc --smoke` (exe-src10 = exe-src8 + ta
-nakładka, osobny `EXEBUILD_WORK`): `cache/yohara/exe-out10/metin2client.exe`, sha256 `adf06a03…3cb7a0`, smoke do ekranu
+nakładka, osobny `EXEBUILD_WORK`): `cache/yohara/exe-out10/metin2client.exe`, sha256 `34e2a053…12911d` (z `PythonSwitchbot.cpp` z claude/y-switch), smoke do ekranu
 logowania (3.11.2026).
