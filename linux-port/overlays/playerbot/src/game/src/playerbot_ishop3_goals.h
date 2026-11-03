@@ -726,6 +726,7 @@ namespace
 		int bought = 0;
 		bool noCoins = false;
 		bool poolBlock = false;
+		long long shortCoins = 0;	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the coins the rest of the batch lacks
 		// MT2009_PLUS_BOT_ISHOP_NEED_V1: the batch within what the bot may still hold and buy today of the vnum
 		const int holdRoom = GetPlayerBotIshop3HoldRoom(ch, goal.dwVnum);
 		const bool capped = holdRoom != INT_MAX;
@@ -770,6 +771,18 @@ namespace
 			if (!pick)
 			{
 				(balanceWould ? poolBlock : noCoins) = true;
+				// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: what the rest of the batch costs at the cheapest line a piece (one
+				// purchase of the cheapest line at least), less what the bot may spend now
+				if (!balanceWould && !goal.bMarks)
+				{
+					long long cheapest = 0;
+					for (size_t i = 0; i < lines.size(); ++i)
+						if (cheapest == 0 || (long long)lines[i]->dwPrice < cheapest)
+							cheapest = (long long)lines[i]->dwPrice;
+					const long long per = std::max<long long>(1, (long long)lines[0]->dwCount);
+					const long long batch = ((long long)lines[0]->dwPrice * left + per - 1) / per;
+					shortCoins = std::max(cheapest, batch) - have;
+				}
 				break;
 			}
 			++*purchases;
@@ -786,6 +799,10 @@ namespace
 		}
 		if (noCoins)
 		{
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+			if (shortCoins > 0)
+				NotePlayerBotSmShortfall(ch, state, shortCoins, goal.szReason, goal.dwVnum, dwNow);
+#endif
 			++GetPlayerBotIshop3Census(goal.szReason).uNoCoins;
 			PlayerBotLogThrottled("ishop3_no_coins", dwNow,
 					"PLAYERBOT_ISHOP3: no coins pid=%u name=%s goal=%s vnum=%u wanted=%d bought=%d coins=%d marks=%d",

@@ -303,7 +303,7 @@ namespace
 		const DWORD vnum = offer->GetVnum();
 		if (IsPlayerBotCorVnum(vnum) || vnum == PLAYERBOT_CRAFT_MATERIAL_VNUM_PRICED ||
 				IsPlayerBotGuildBuildMaterial(vnum) || IsPlayerBotFixedPriceTalismanVnum(vnum) ||
-				(vnum >= PLAYERBOT_ISHOP_VOUCHER_MIN_VNUM && vnum <= PLAYERBOT_ISHOP_VOUCHER_MAX_VNUM) ||
+				IsPlayerBotSmCouponVnum(vnum) ||	// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a need's, never a whim's
 				vnum == PLAYERBOT_MOONLIGHT_CHEST_VNUM)
 			return false;
 		// MT2009_PLUS_BOT_SOULSTONE_MARKET_V2: a soul stone one at a time (a

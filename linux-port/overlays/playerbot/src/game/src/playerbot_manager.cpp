@@ -457,6 +457,9 @@ int Mt2009RelicBotSoulNeed(LPCHARACTER ch, DWORD& dwVnum);
 // MT2009_PLUS_BOT_YOHARA_GUIDES_V1: the Sung Ma buffs, the boosters, Tajemniczy Loch and the leaders' boss route - after the
 // V3 goals whose purchase it uses
 #include "playerbot_yohara_guides.h"
+// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a Kupon SM off the counters for a need's ItemShop purchase short of Smocze Monety -
+// after the pool, the voucher pass, the goals and the market's picks it hooks into
+#include "playerbot_sm_coupons.h"
 
 namespace
 {

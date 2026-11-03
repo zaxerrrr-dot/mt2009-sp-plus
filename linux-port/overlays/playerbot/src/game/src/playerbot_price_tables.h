@@ -995,6 +995,8 @@ namespace
 		{ 80017,  1000000 },	// Kupon SM (50) (suggested)
 		{ 80018,  5000000 },	// Kupon SM (250) (suggested)
 		{ 80030,   500000 },	// Bilet Kola Fortuny (suggested)
+		{ 80031,   400000 },	// Kupon SM (20) (MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the 50's 20 000 yang a coin)
+		{ 80032,   200000 },	// Kupon SM (10) (MT2009_PLUS_BOT_SM_COUPON_MARKET_V1)
 		{ 83023,    80000 },	// Pudelko z Chryzantema (suggested)
 		{ 83024,    75000 },	// Pudelko z Konwalia (suggested)
 		{ 83025,    75000 },	// Pudelko z Narcyzem (suggested)

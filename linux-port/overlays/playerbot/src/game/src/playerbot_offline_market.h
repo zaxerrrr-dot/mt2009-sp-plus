@@ -504,6 +504,9 @@ namespace {
         NotePlayerBotCraftBought(ch, boughtVnum, payPrice); // MT2009_PLUS_BOT_WORKSHOP_V1
         NotePlayerBotG0DustBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_G0_V1
         NotePlayerBotYoharaShopBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_YOHARA_SHOP_V1
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+        NotePlayerBotSmCouponBought(ch, boughtVnum, payPrice, boughtCount); // MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+#endif
         if (Begin(ch->GetPlayerID(), Buy, o.buyItem, now)) {
             auto& request = requests.at(ch->GetPlayerID());
             request.vnum = line->GetInfo().vnum;
@@ -634,6 +637,12 @@ namespace {
             }
             const long long budget = Affordable(ch->GetGold(), GetPlayerBotReservedGold(ch), PLAYERBOT_SHOPPING_GOLD_FLOOR);
             if (budget <= 0) return false;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+            // MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: a need's ItemShop purchase short of Smocze Monety - a Kupon SM for the
+            // shortfall, on every stand of the map (playerbot_sm_coupons.h: its price cap and share of the purse).
+            if (FindPlayerBotSmCouponPick(ch, state, now))
+                return RunPlayerBotOfflinePick(ch, state, now);
+#endif
             // MT2009_PLUS_DROPPER_INVEST_V1: a dropper's own next steps first -
             // the materials and scrolls of its weapon, armour and shield, up
             // to +9 - on every stand of the map, the gambler's way.

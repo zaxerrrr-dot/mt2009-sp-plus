@@ -161,6 +161,11 @@ namespace
 		if (!CanPlayerBotAffordWish(ch, state, wish))
 		{
 			++s_uPlayerBotElementPetNoCoins;
+#ifdef MT2009_PLUS_BOT_SM_COUPON_MARKET_V1
+			// MT2009_PLUS_BOT_SM_COUPON_MARKET_V1: the element pet short of coins - the market's Kupon SM
+			if (state.bDragonBalanceKnown && (long long)price > (long long)state.iDragonCoins)
+				NotePlayerBotSmShortfall(ch, state, (long long)price - state.iDragonCoins, "element_pet", vnum, dwNow);
+#endif
 			PlayerBotLogThrottled("elempet_no_coins", dwNow,
 					"PLAYERBOT_ELEMPET: cannot buy pid=%u name=%s vnum=%u reason=no_coins coins=%d price=%u",
 					ch->GetPlayerID(), ch->GetName(), vnum, state.iDragonCoins, price);
