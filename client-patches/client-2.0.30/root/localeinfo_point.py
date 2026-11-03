@@ -416,6 +416,16 @@ for _b67Point, _b67Name in (
 # character window's line, player.POINT_RESIST_MAGIC_REDUCTION) and item.APPLY_ANTI_RESIST_MAGIC; an older one: 252.
 AFFECT_DICT.setdefault(getattr(player, "POINT_ANTI_RESIST_MAGIC", 252), "Ignoruje %d%% odporno\x9c\xe6 na magi\xea (PvP)")
 
+# MT2009_PLUS_BONUS67_WIKI_V1: the 6th/7th bonuses of the wiki round 2 (server-patches/bonusy67b, points 253-255 - the
+# last three numbers an item's bonus type has), the wiki's words: the body armour's "+90% PZ" line, the bleeding of
+# every item but the gloves. A new exe names them (player.POINT_RESIST_COMBAT ...); an older one: the numbers.
+for _b67bPoint, _b67bName in (
+	(getattr(player, "POINT_RESIST_COMBAT", 253), "Je\x9cli masz powy\xbfej 90%% P\xaf, doznajesz obra\xbfenia ni\xbfsze o %d%%."),
+	(getattr(player, "POINT_BLEEDING_PCT", 254), "Atak krwawienia +%d%%"),
+	(getattr(player, "POINT_BLEEDING_REDUCE", 255), "Odporno\x9c\xe6 na atak krwawienia +%d%%"),
+	):
+	AFFECT_DICT.setdefault(_b67bPoint, _b67bName)
+
 def Is1000PCT(affectType):
 	return affectType in POINT_1000PCT_Tuple
 

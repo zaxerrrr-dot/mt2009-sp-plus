@@ -114,6 +114,13 @@ PL = {
 	"DETAILS_75": "2x Yang",
 	"DETAILS_76": "Odp. na Magi\xea",
 	"DETAILS_77": "Antymagia",
+	# MT2009_PLUS_BONUS67_WIKI_V1: the 6th/7th bonuses 253-255 (server-patches/bonusy67b)
+	"DETAILS_MT_RESIST_COMBAT": "Obra\xbfenia przy PZ 90%+",
+	"DETAILS_MT_BLEEDING": "Atak krwawienia",
+	"DETAILS_MT_BLEEDING_REDUCE": "Odp. na krwawienie",
+	"DETAILS_TOOLTIP_MT_RESIST_COMBAT": "Je\x9cli masz powy\xbfej 90% P\xaf, doznajesz obra\xbfenia ni\xbfsze o podany procent.",
+	"DETAILS_TOOLTIP_MT_BLEEDING": "Szansa, \xbfe zwyk\xb3y cios wywo\xb3a krwawienie: 5% P\xaf co 3 sek. (potw\xf3r wg stopnia), bez regeneracji P\xaf.",
+	"DETAILS_TOOLTIP_MT_BLEEDING_REDUCE": "Zmniejsza obra\xbfenia od krwawienia o podwojon\xb9 warto\x9c\xe6 (5% = -10%).",
 	"DETAILS_8": "Si\xb3a vs Mistykom",
 	"DETAILS_9": "Si\xb3a vs Diab\xb3om",
 	"DETAILS_CATE_1": "Obra\xbfenia/Obrona",
@@ -231,6 +238,13 @@ def Point(name, number):
 def AntiMagicPoint():
 	return getattr(player, ANTI_MAGIC_POINT_NAME, None)
 
+# MT2009_PLUS_BONUS67_WIKI_V1: the points 253-255 (server-patches/bonusy67b) come as point changes, but only an exe whose
+# POINT_MAX_NUM is 256 keeps them (an older one drops a type >= 253) - so their lines show only with it (player.MAX_NUM).
+def Bonus67bPoint(name, number):
+	if getattr(player, "MAX_NUM", 0) <= number:
+		return None
+	return getattr(player, name, number)
+
 # (title key, [(name key, tooltip key, point), ...]) - the package's order; a point None is left out
 def BuildCategories():
 	return [
@@ -253,6 +267,7 @@ def BuildCategories():
 			("DETAILS_15", "DETAILS_TOOLTIP_15", player.POINT_NORMAL_HIT_DEFEND_BONUS),
 			("DETAILS_16", "DETAILS_TOOLTIP_16", player.POINT_SKILL_DAMAGE_BONUS),
 			("DETAILS_17", "DETAILS_TOOLTIP_17", player.POINT_SKILL_DEFEND_BONUS),
+			("DETAILS_MT_RESIST_COMBAT", "DETAILS_TOOLTIP_MT_RESIST_COMBAT", Bonus67bPoint("POINT_RESIST_COMBAT", 253)),
 			("DETAILS_18", "DETAILS_TOOLTIP_18", player.POINT_MELEE_MAGIC_ATT_BONUS_PER),
 			("DETAILS_19", "DETAILS_TOOLTIP_19", player.POINT_MAGIC_ATT_BONUS_PER),
 			("DETAILS_20", "DETAILS_TOOLTIP_20", player.POINT_CRITICAL_PCT),
@@ -301,6 +316,8 @@ def BuildCategories():
 			("DETAILS_54", "DETAILS_TOOLTIP_54", player.POINT_SLOW_PCT),
 			("DETAILS_55", "DETAILS_TOOLTIP_55", player.POINT_POISON_PCT),
 			("DETAILS_56", "DETAILS_TOOLTIP_56", player.POINT_POISON_REDUCE),
+			("DETAILS_MT_BLEEDING", "DETAILS_TOOLTIP_MT_BLEEDING", Bonus67bPoint("POINT_BLEEDING_PCT", 254)),
+			("DETAILS_MT_BLEEDING_REDUCE", "DETAILS_TOOLTIP_MT_BLEEDING_REDUCE", Bonus67bPoint("POINT_BLEEDING_REDUCE", 255)),
 			("DETAILS_59", "DETAILS_TOOLTIP_59", player.POINT_STEAL_HP),
 			("DETAILS_60", "DETAILS_TOOLTIP_60", player.POINT_STEAL_SP),
 			("DETAILS_MT_MANA_BURN", "DETAILS_TOOLTIP_MT_MANA_BURN", player.POINT_MANA_BURN_PCT),

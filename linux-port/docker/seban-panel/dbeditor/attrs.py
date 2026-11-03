@@ -47,6 +47,11 @@ Zastosuj restarts the cores). apply.sh rewrites (see WARN_* below):
   * MT2009_PLUS_ANTI_RESIST_MAGIC_V1 - both apply ENUMs end with
     POINT_ANTI_RESIST_MAGIC (252, Kamień Antymagii's bonus - the stones'
     item_proto applytype; server-patches/antimagic). No pool row uses it.
+  * MT2009_PLUS_BONUS67_WIKI_V1 - both apply ENUMs end with POINT_RESIST_COMBAT,
+    POINT_BLEEDING_PCT, POINT_BLEEDING_REDUCE (253-255 - every number of the
+    one-byte bonus type taken; server-patches/bonusy67b); the pool's round 2
+    (bonusy67b_wiki.sql) is written once per world (marker rare_6_7_wiki_v3)
+    and changes only its own rows and columns - later edits stay.
 """
 import re
 

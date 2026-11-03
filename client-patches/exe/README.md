@@ -970,3 +970,21 @@ Pętle paczki „erase w for z ++it” (UB na końcu listy) zastąpione `__MT200
 kolumnami: L3 bez 3. pola, L4 bez 2., Z6 bez 2. i 5.). Zbudowane `build.sh msvc --smoke` (exe-src10 = exe-src8 + ta
 nakładka, osobny `EXEBUILD_WORK`): `cache/yohara/exe-out10/metin2client.exe`, sha256 `34e2a053…12911d` (z `PythonSwitchbot.cpp` z claude/y-switch), smoke do ekranu
 logowania (3.11.2026).
+
+## Bonusy 6/7 z wiki, runda 2 – `MT2009_PLUS_BONUS67_WIKI_V1` (bez `#ifdef`)
+
+Serwer (`server-patches/bonusy67b`) dodał ostatnie trzy numery jednobajtowego typu bonusu: `POINT_RESIST_COMBAT` 253
+(„Jeśli masz powyżej 90% PŻ, doznajesz obrażenia niższe o x%”), `POINT_BLEEDING_PCT` 254 („Atak krwawienia”),
+`POINT_BLEEDING_REDUCE` 255 („Odporność na atak krwawienia”) i wysyła je jako zmianę punktu (także przy logowaniu).
+Bez zmian pakietów (pakiet punktów dalej ma `POINT_PACKET_NUM` 193; typ w zmianie punktu to bajt).
+
+| Plik | Zmiana |
+|---|---|
+| `Server/common/length.h` | `POINT_RESIST_COMBAT = 253`, `POINT_BLEEDING_PCT = 254`, `POINT_BLEEDING_REDUCE = 255`, `POINT_MAX_NUM` 256 (rozmiar `m_alPoint`, `m_adwPointEffect`) |
+| `UserInterface/Mt2009Champion.cpp` | `static_assert` numerów 253–255 i `POINT_MAX_NUM` 256 |
+| `UserInterface/PythonPlayerModule.cpp` | `player.POINT_RESIST_COMBAT`, `player.POINT_BLEEDING_PCT`, `player.POINT_BLEEDING_REDUCE` |
+
+Root (`uiattributelist.py`) pokazuje trzy linie okna bonusów tylko, gdy `player.MAX_NUM` > ich numer, więc stary exe
+(`POINT_MAX_NUM` 253 – odrzuca typ ≥ 253 w `CPythonPlayer::SetStatus`) ich nie pokazuje i nic się nie psuje; dymek
+przedmiotu działa na każdym exe (`localeinfo_point.py`, nazwy po numerze). Sprawdzone: `g++ -fsyntax-only` wyliczenia
+`length.h` z `static_assert` 252 / 253–255 / 256.

@@ -1906,6 +1906,20 @@ if ((Test-Path -LiteralPath $antimagicApply -PathType Leaf) -and
     }
 }
 
+# Bonusy 6/7 z wiki, runda 2 (server-patches/bonusy67b, MT2009_PLUS_BONUS67_WIKI_V1; the owner, 3 November 2026): the
+# points 253-255 (POINT_RESIST_COMBAT, POINT_BLEEDING_PCT, POINT_BLEEDING_REDUCE - POINT_MAX_NUM 256) in common/length.h,
+# their point change / point packet / login points in char.cpp, the bleeding in battle.cpp, the bleeding's stopped
+# regeneration in char.cpp. Its anchors are antimagic's lines, so after it; the logic is playerbot_bonus67.cpp.
+$bonusy67bApply = Join-Path $repo 'server-patches/bonusy67b/Apply-Bonusy67bPatch.ps1'
+if ((Test-Path -LiteralPath $bonusy67bApply -PathType Leaf) -and
+    (Test-Path -LiteralPath (Join-Path $engineGameSource 'battle.cpp') -PathType Leaf)) {
+    $bonusy67bResult = & $bonusy67bApply -SourceDir $engineGameSource
+    if ($bonusy67bResult.Changed) {
+        $syncedFiles++
+        Write-Host ('Applied {0} 6th/7th bonus round 2 edit(s).' -f $bonusy67bResult.Applied) -ForegroundColor DarkGray
+    }
+}
+
 # Druga strona ekwipunku (server-patches/addeq, MT2009_PLUS_ADDEQ_V1; the "Official Additional Equipment Page" package,
 # the owner, 28 October 2026): the inactive page's store (char.h cells 308-339 of window INVENTORY, never sent), its
 # SetItem / RemoveFromCharacter / ClearItem / flush / item update hooks, the unlock items 38306 / 76055, the support skill

@@ -285,6 +285,21 @@ namespace
 			case POINT_GLOVE_FALL_RESIST:                   return value * 2;
 			case POINT_GLOVE_LIGHTNING:                     return 150;
 			case POINT_GLOVE_BASE_ATTR_PCT:                 return value * 8;
+#ifdef MT2009_PLUS_BONUS67_WIKI
+			// MT2009_PLUS_BONUS67_WIKI_V1 (bot weights): the wiki's round 2
+			// (playerbot_bonus67.cpp). Less damage taken while the health is
+			// high is a grinder's whole fight against a pack - worth a boss
+			// defence line. The bleeding is the poison's twin on a normal hit
+			// (the same rates, a monster once), so it weighs as the poison does;
+			// its resistance answers players only (no monster bleeds anyone).
+			case POINT_RESIST_COMBAT:                       return value * 10;
+			case POINT_BLEEDING_PCT:                        return value * (ch && (int)ch->GetLevel() >= PLAYERBOT_POISON_BOSS_LEVEL ? 16 : 8);
+			case POINT_BLEEDING_REDUCE:                     return value * 2;
+			// "x% obrazen bedzie dodanych do PE" - now a 6th/7th line on the
+			// weapon, armour, shoes and the jewellery too (the wiki's own
+			// line): the mana a caster's buffs need, a little for the rest.
+			case POINT_STEAL_SP:                            return bCaster ? value * 6 : value * 3;
+#endif
 			// Everything else - stamina, poison reduction, mana burn, the
 			// champion skills' cooldown lines - is real but minor for a bot that
 			// only grinds. Never zero: a line is still a line.
