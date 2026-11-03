@@ -509,6 +509,8 @@ class GameWindow(ui.ScriptWindow):
 		__import__("uifishpuzzle").DestroyWindow()
 		# MT2009_PLUS_FISHING_RENEWAL_V1: the new fishing minigame's window (uifishingrenewal.py).
 		__import__("uifishingrenewal").DestroyWindow()
+		# MT2009_PLUS_IRREMOVABLE_DELETE_V1: the "destroy the worn irremovable item?" question (uiirremovable.py).
+		__import__("uiirremovable").DestroyWindow()
 		# MT2009_PLUS_BUFFI_V1: the Buffi window (uibuffi.py).
 		__import__("uibuffi").DestroyWindow()
 		# MT2009_PLUS_EKWIPUNEK_V1: the extra inventory's window (uiekwipunek.py).
@@ -3608,6 +3610,7 @@ class GameWindow(ui.ScriptWindow):
 		serverCommandList["WB"] = self.__WorldBoss # MT2009_PLUS_WORLDBOSS_V1
 		serverCommandList["FP"] = self.__FishPuzzle # MT2009_PLUS_FISH_PUZZLE_V1
 		serverCommandList["FISHREN"] = self.__FishingRenewal # MT2009_PLUS_FISHING_RENEWAL_V1
+		serverCommandList["IRREM"] = self.__IrremovableDelete # MT2009_PLUS_IRREMOVABLE_DELETE_V1
 		serverCommandList["NewPet"] = self.__NewPet # MT2009_PLUS_NEW_PET_V1
 		serverCommandList["GOB"] = self.__Goblin # MT2009_PLUS_GOBLIN_V1
 		serverCommandList["DungeonInfo"] = self.__DungeonInfo # MT2009_PLUS_DUNGEON_PANEL_V1
@@ -4400,6 +4403,11 @@ class GameWindow(ui.ScriptWindow):
 	# MT2009_PLUS_FISHING_RENEWAL_V1: the new fishing minigame's lines - "start <token> <s> <hits>", "stop".
 	def __FishingRenewal(self, *args):
 		__import__("uifishingrenewal").OnCommand(*args)
+
+	# MT2009_PLUS_IRREMOVABLE_DELETE_V1: a worn item that cannot be taken off - destroy it? (uiirremovable.py,
+	# the server's irremovable_delete.cpp)
+	def __IrremovableDelete(self, *args):
+		__import__("uiirremovable").OnCommand(*args)
 
 	# MT2009_PLUS_BUFFI_V1: Buffi's lines (uibuffi.py).
 	def __Buffi(self, *args):
