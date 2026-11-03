@@ -469,6 +469,8 @@ profile_names() {
 
 check_profile() {
     [ -n "$PROFILE" ] || return 0
+    # The cards say "EMERALD", "SAPPHIRE": --profile EMERALD is the block [profile emerald].
+    PROFILE=$(printf '%s' "$PROFILE" | tr 'A-Z' 'a-z')
     case "$PROFILE" in
         *[!a-z0-9_]*) die "--profile: nazwa z malych liter, cyfr i _ (dostepne: $(profile_names))" ;;
     esac
@@ -951,7 +953,8 @@ opcje:
   --address ADRES   publiczny adres serwera (domyslnie: odczytany IPv4)
   --bots N          liczba botow (domyslnie: wedlug pamieci 150/400/800)
   --profile NAZWA   konfiguracja nowego swiata z panelu (Konfiguracja serwera):
-                    mt2009, clean_easy, clean_hard, sapphire - tylko gdy .env
+                    mt2009, clean_easy, clean_hard, sapphire, emerald (wielkosc
+                    liter bez znaczenia) - tylko gdy .env
                     jeszcze nie ma; pozniej zmienisz ja w panelu zaawansowanym
   --no-follow       nie pokazuj logu na biezaco (tak robi launcher)
   --follow          pokazuj log na biezaco nawet bez terminala

@@ -1519,6 +1519,30 @@ else
     fail_step "could not write the monster damage flag; the cores keep the last one" >&2
 fi
 
+# MT2009_PLUS_PC_ATTACK_V1: how hard the players hit monsters, bosses and Metin
+# stones (the owner, 3 November 2026, the EMERALD configuration's +10%), the
+# same rule again: .env's M2_PLAYER_ATTACK - default (100) or a percent from
+# 10 to 300 - becomes the flag m2_pc_attack only when it changed since the last
+# start (m2_pc_attack_env). PvP never changes (server-patches/mobattack).
+pcatk=$(printf '%s' "${M2_PLAYER_ATTACK:-default}" | tr 'A-Z' 'a-z' | tr -d ' \r%')
+case "$pcatk" in
+    ''|0|default|normal) pcatk=100 ;;
+    *[!0-9]*)
+        echo "[playerbot-migrate] WARNING: M2_PLAYER_ATTACK=$pcatk is not default or a percent; players keep the game's damage" >&2
+        pcatk=100 ;;
+    *) pcatk=$(printf '%s\n' "$pcatk" | awk '{ p = int($1 + 0); if (p < 10) p = 10; if (p > 300) p = 300; printf "%d", p }') ;;
+esac
+pcatk_env=$(db -N -e "SELECT lValue FROM player.quest WHERE dwPID = 0 AND szName = 'm2_pc_attack_env' LIMIT 1;" 2>/dev/null | tr -d ' \r')
+if [ "$pcatk_env" = "$pcatk" ]; then
+    echo "[playerbot-migrate] player damage: .env unchanged since the last start - the flag stays as the panel or the last start left it"
+elif db -e "REPLACE INTO player.quest (dwPID, szName, szState, lValue) VALUES
+        (0, 'm2_pc_attack', '', $pcatk),
+        (0, 'm2_pc_attack_env', '', $pcatk);"; then
+    echo "[playerbot-migrate] player damage: ${pcatk}% of what players deal to monsters and Metins (from .env)"
+else
+    fail_step "could not write the player damage flag; the cores keep the last one" >&2
+fi
+
 # The starter kit (the operator, 30 September, on Iwakura's proposal):
 # what a player's new character and a bot the seed makes from now on start
 # wearing - default nothing past what the game gives, medium the class's
@@ -4914,6 +4938,18 @@ if [ -s /opt/playerbot/worldboss.sql ]; then
         echo "[playerbot-migrate] Boss Swiata: worldboss.sql applied"
     else
         fail_step "Boss Swiata: worldboss.sql failed" >&2
+    fi
+fi
+
+# MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" (the owner, 3 November 2026; potega_madrosci.quest, playerbot_potega.h,
+# seban-panel potega_madrosci.py) - potega_madrosci.sql: player.potega_madrosci_tier (the level / Champion level ranges and
+# their experience bonus, the pl-wiki's table seeded once) and player.potega_madrosci_config (the minutes, the bots).
+# Every start, idempotent.
+if [ -s /opt/playerbot/potega_madrosci.sql ]; then
+    if db < /opt/playerbot/potega_madrosci.sql; then
+        echo "[playerbot-migrate] Potega madrosci: potega_madrosci.sql applied"
+    else
+        fail_step "Potega madrosci: potega_madrosci.sql failed" >&2
     fi
 fi
 

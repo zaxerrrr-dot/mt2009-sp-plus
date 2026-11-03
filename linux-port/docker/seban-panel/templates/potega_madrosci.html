@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Potęga mądrości · {{ panel_brand }}{% endblock %}
+{% block content %}
+{# MT2009_PLUS_POTEGA_MADROSCI_V1: bonus PD od Uriela wg przedziału poziomów (potega_madrosci.py) #}
+<style>
+.pm-form{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.pm-form label{display:grid;gap:5px;color:var(--muted);font-size:13px}
+.pm-table input[type=number]{width:6.5em;padding:7px 8px}
+.pm-table select{padding:7px 8px}
+.pm-table td{padding:8px 6px;vertical-align:middle}
+.pm-table button{padding:7px 10px;margin:0 4px 0 0}
+.pm-new td{border-top:1px dashed var(--edge)}
+.pm-off{opacity:.55}
+.pm-note{font-size:12px;color:var(--muted)}
+</style>
+<a class="back" href="{{ url_for('events') }}">← Planer eventów</a>
+<p class="eyebrow">WYDARZENIA · EVENT</p>
+<h1>📜 Potęga mądrości</h1>
+<p class="muted">„Spytaj Uriela o potęgę mądrości, aby otrzymać bonus PD w zależności od przedziału poziomów.” Gdy event trwa, Uriel (pierwsza wioska każdego królestwa i Dongan) ma opcję „Potęga mądrości” i daje bonus PD na ustawiony czas – według poziomu postaci, a Czempionowi według poziomu Czempiona. Bonus liczy się jak raty serwera (punkt PD przedmiotów), działa też na pasek Czempiona i widać go w oknie bonusów i na pasku efektów. Strażnik Wsi pokazuje tabelę pod opcją „Bonus eventowy PD Uriela wg przedziału poziomów”. Zmiany na tej stronie działają od następnej rozmowy z NPC – bez restartu.</p>
+
+<section class="cards compact">
+<article><span>Event</span><strong>{% if status.active or now %}Trwa{% elif status.scheduled %}Zaplanowany{% else %}Wyłączony{% endif %}</strong><small>{% if status.active %}do {{ status.until_text }}{% elif now %}włączony z tej strony{% elif status.scheduled and status.next_start_text %}następny: {{ status.next_start_text }}{% else %}włącz poniżej albo w Planerze eventów{% endif %}</small></article>
+<article><span>Czas bonusu</span><strong>{{ minutes_text(config.minutes) }}</strong><small>od rozmowy z Urielem</small></article>
+<article><span>Boty</span><strong>{{ 'Biorą bonus' if config.bots else 'Bez bonusu' }}</strong><small>{% if config.bots %}{{ config.bot_share }}% botów w pobliżu Uriela{% else %}tylko gracze{% endif %}</small></article>
+<article><span>Mają bonus teraz</span><strong>{{ holders.n or 0 }}</strong><small>w tym botów: {{ holders.bots or 0 }} (zapisane postacie)</small></article>
+</section>
+
+<section class="panel" id="wlacznik">
+<h2>Włącznik</h2>
+<form method="post" class="pm-form">
+<input type="hidden" name="pm_csrf" value="{{ pm_csrf }}">
+{% if now %}
+<p>Włączony z tej strony do {{ now_text }} – <button name="action" value="stop" class="secondary">Wyłącz teraz</button></p>
+{% else %}
+<label>Włącz na<select name="minutes">{% for m in now_minutes %}<option value="{{ m }}" {% if m == 240 %}selected{% endif %}>{{ minutes_label(m) }}</option>{% endfor %}</select></label>
+<button name="action" value="now">Włącz teraz</button>
+{% endif %}
+</form>
+<p class="pm-note">Harmonogram (dni i godziny) ustawia <a href="{{ url_for('events') }}">Planer eventów</a> – rodzaj „Potęga mądrości (bonus PD od Uriela)”. Na stałe: wiersz codziennie 00:00–24:00. {% if plan %}Wierszy w harmonogramie: {{ plan|length }}{% for r in plan %} · {{ r.days|join(',') if r.days|length < 7 else 'codziennie' }} {{ r.start }}–{{ r.end }}{% if not r.on %} (wyłączony){% endif %}{% endfor %}.{% else %}Brak wierszy w harmonogramie.{% endif %} Po końcu eventu otrzymany bonus trwa do końca swojego czasu.</p>
+</section>
+
+<section class="panel" id="ustawienia">
+<h2>Ustawienia</h2>
+<form method="post" class="pm-form">
+<input type="hidden" name="pm_csrf" value="{{ pm_csrf }}"><input type="hidden" name="action" value="config">
+<label>Czas bonusu (minuty)<input type="number" name="minutes" min="1" max="{{ limits.minutes }}" value="{{ config.minutes }}"></label>
+<label><span><input type="checkbox" name="bots" value="1" {% if config.bots %}checked{% endif %}> Boty też biorą bonus</span></label>
+<label>Udział botów (%)<input type="number" name="bot_share" min="0" max="100" value="{{ config.bot_share }}"></label>
+<button>Zapisz</button>
+</form>
+<p class="pm-note">Boty: tylko te w pobliżu Uriela (w wiosce), bez bonusu, w przedziale poziomów, które zaraz idą polować (nie handlarze, nie wędkarze, nie w drużynie gracza), co kilka minut po kilka naraz – bez tłumu. Udział to stały wybór botów (np. 60% = te same 6 na 10).</p>
+</section>
+
+<section class="panel" id="przedzialy">
+<h2>Przedziały poziomów</h2>
+<p class="pm-note">Czempion (poziom Czempiona 1+) dostaje bonus tylko z przedziałów Czempiona; pozostali z przedziałów poziomu. Gdy przedziały jednego rodzaju się nakładają, wygrywa ten o niższym „od”.</p>
+{% if overlaps %}<p>⚠️ Nakładające się przedziały: {% for a, b in overlaps %}{{ range_text(a) }} i {{ range_text(b) }}{% if not loop.last %}; {% endif %}{% endfor %}.</p>{% endif %}
+<div class="table-wrap"><table class="pm-table">
+<thead><tr><th>Wł.</th><th>Rodzaj</th><th>Od</th><th>Do</th><th>Bonus PD (%)</th><th></th></tr></thead>
+<tbody>
+{% for t in tiers %}
+<tr class="{% if not t.enabled %}pm-off{% endif %}">
+<td><form id="tier-{{ t.id }}" method="post"><input type="hidden" name="pm_csrf" value="{{ pm_csrf }}"><input type="hidden" name="id" value="{{ t.id }}"></form><input form="tier-{{ t.id }}" type="checkbox" name="enabled" value="1" {% if t.enabled %}checked{% endif %}></td>
+<td><select form="tier-{{ t.id }}" name="champion"><option value="0" {% if not t.champion %}selected{% endif %}>Poziom</option><option value="1" {% if t.champion %}selected{% endif %}>Czempion</option></select></td>
+<td><input form="tier-{{ t.id }}" type="number" name="lvl_from" min="1" max="{{ limits.champion }}" required value="{{ t.lvl_from }}"></td>
+<td><input form="tier-{{ t.id }}" type="number" name="lvl_to" min="1" max="{{ limits.champion }}" required value="{{ t.lvl_to }}"></td>
+<td><input form="tier-{{ t.id }}" type="number" name="pct" min="1" max="{{ limits.pct }}" required value="{{ t.pct }}"></td>
+<td style="white-space:nowrap"><button form="tier-{{ t.id }}" name="action" value="save_tier">Zapisz</button><button form="tier-{{ t.id }}" name="action" value="delete_tier" class="secondary" style="margin-top:0" onclick="return confirm('Usunąć przedział {{ range_text(t) }}?');">Usuń</button></td>
+</tr>
+{% else %}
+<tr><td colspan="6" class="muted">Brak przedziałów – Uriel nie da nikomu bonusu. Dodaj przedział albo przywróć tabelę z wiki.</td></tr>
+{% endfor %}
+<tr class="pm-new">
+<td><form id="tier-new" method="post"><input type="hidden" name="pm_csrf" value="{{ pm_csrf }}"></form><input form="tier-new" type="checkbox" name="enabled" value="1" checked></td>
+<td><select form="tier-new" name="champion"><option value="0">Poziom</option><option value="1">Czempion</option></select></td>
+<td><input form="tier-new" type="number" name="lvl_from" min="1" max="{{ limits.champion }}" required value="121"></td>
+<td><input form="tier-new" type="number" name="lvl_to" min="1" max="{{ limits.champion }}" required value="130"></td>
+<td><input form="tier-new" type="number" name="pct" min="1" max="{{ limits.pct }}" required value="50"></td>
+<td><button form="tier-new" name="action" value="save_tier">Dodaj</button></td>
+</tr>
+</tbody></table></div>
+<form method="post" style="margin-top:10px"><input type="hidden" name="pm_csrf" value="{{ pm_csrf }}"><button name="action" value="wiki" class="secondary" onclick="return confirm('Zastąpić wszystkie przedziały tabelą z wiki (41–80 +25%, 81–100 +50%, 101–120 +100%, Czempion 1–10 +125%, 11–30 +100%, 4 godziny)?');">Przywróć tabelę z wiki</button></form>
+</section>
+
+<section class="panel" id="podglad">
+<h2>Podgląd</h2>
+<div class="table-wrap"><table><thead><tr><th>Postać</th><th>Bonus PD</th></tr></thead>
+<tbody>{% for label, pct in examples %}<tr><td>{{ label }}</td><td>{{ ('+' ~ pct ~ '%') if pct else '—' }}</td></tr>{% endfor %}</tbody></table></div>
+</section>
+{% endblock %}

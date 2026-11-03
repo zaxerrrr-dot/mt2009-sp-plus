@@ -2564,6 +2564,10 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                # extra stones beside every Metin on a world map (the event flag
                # superstone_event; server-patches/superstone, playerbot_ingame_events.h).
                "superstone",
+               # MT2009_PLUS_POTEGA_MADROSCI_V1: Potęga mądrości - Uriel's experience bonus by
+               # level range (the event flag potega_madrosci; potega_madrosci.quest,
+               # playerbot_potega.h; the ranges: the page "Potęga mądrości", potega_madrosci.py).
+               "potega",
                # MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle - on or off; fishing finds the puzzle
                # boxes (the event flag fish_puzzle_event; server-patches/fishpuzzle, fish_puzzle.cpp).
                "fishpuzzle")
@@ -2594,6 +2598,7 @@ EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT200
                     "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
                     "worldboss",  # MT2009_PLUS_WORLDBOSS_V1
                     "halloween",  # MT2009_PLUS_HALLOWEEN_V1
+                    "potega",  # MT2009_PLUS_POTEGA_MADROSCI_V1
                     "fishpuzzle")  # MT2009_PLUS_FISH_PUZZLE_V1
 EVENT_WORLD_DEFAULT = {"tanaka": 3, "zuo": 8}
 EVENT_WORLD_MAX = {"tanaka": 20, "zuo": 30}
@@ -2630,6 +2635,7 @@ EVENT_LABELS = {
     "worldboss": "Boss Świata",  # MT2009_PLUS_WORLDBOSS_V1
     "halloween": "Halloween (dynie i Jack Pumpkin)",  # MT2009_PLUS_HALLOWEEN_V1
     "superstone": "Super Kamienie Metin",  # MT2009_PLUS_SUPERSTONE_V1
+    "potega": "Potęga mądrości (bonus PD od Uriela)",  # MT2009_PLUS_POTEGA_MADROSCI_V1
     "fishpuzzle": "Event Rybacki - Puzzle",  # MT2009_PLUS_FISH_PUZZLE_V1
 }
 EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "tanaka": "🏴‍☠️", "zuo": "☄️", "bossloot": "👹", "metinloot": "🪨",
@@ -2639,6 +2645,7 @@ EVENT_ICONS = {"chest": "🎁", "exp": "⚡", "drop": "📦", "yang": "💰", "t
                "worldboss": "🐲",  # MT2009_PLUS_WORLDBOSS_V1
                "halloween": "🎃",  # MT2009_PLUS_HALLOWEEN_V1
                "superstone": "💎",  # MT2009_PLUS_SUPERSTONE_V1
+               "potega": "📜",  # MT2009_PLUS_POTEGA_MADROSCI_V1
                "fishpuzzle": "🎣"}  # MT2009_PLUS_FISH_PUZZLE_V1
 EVENT_DAY_NAMES = ("Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd")
 EVENT_NOW_MINUTES = (15, 30, 60, 120, 180, 360, 720, 1440, 2880, 4320, 7200, 10080)  # MT2009_PLUS_EVENTS_7_DAYS_V1: up to 7 days
@@ -12687,6 +12694,11 @@ install_item_grants(app, db, login_required, game_text)
 # MT2009_PLUS_SM_GRANTS_V1: "Smocze Monety - nadawanie" (sm_grants.py); the payments run in seban-item-grants.
 from sm_grants import install as install_sm_grants
 install_sm_grants(app, db, login_required, update_csrf_token)
+# MT2009_PLUS_POTEGA_MADROSCI_V1: "Potęga mądrości" - Uriel's experience bonus by level range (potega_madrosci.py);
+# the switch is the events planner's kind "potega", the ranges and the time player.potega_madrosci_*.
+from potega_madrosci import install as install_potega_madrosci
+install_potega_madrosci(app, db, login_required, update_csrf_token, read_events, write_events, read_events_status,
+                        event_minutes_label)
 
 # MT2009_PLUS_DB_EDITOR_V1: "Edytor bazy danych" (dbeditor/).
 import dbeditor

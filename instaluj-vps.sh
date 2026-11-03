@@ -29,7 +29,7 @@
 #    --address ADRES  publiczny adres serwera (domyślnie: odczytany IPv4 VPS)
 #    --bots N         liczba botów (domyślnie według pamięci)
 #    --profil NAZWA   konfiguracja nowego świata (mt2009, clean_easy, clean_hard,
-#                     sapphire - panel zaawansowany: Konfiguracja serwera)
+#                     sapphire, emerald - panel zaawansowany: Konfiguracja serwera)
 #    --bez-aktualizacji  zostaw wersję z pełnej paczki
 #    --force          instaluj mimo małej pamięci albo dysku
 #    --tylko-pliki    tylko kroki 1-3 (pliki gotowe w FOLDER), bez Dockera

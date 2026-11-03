@@ -189,10 +189,12 @@ LIVE_WAIT = 6.0
 LIVE_FINAL = ("done", "failed", "bad_args", "cancelled", "player_offline")
 _FLAGS = ("mt2009_arezzo_closed", "m2_seonhae_on", "m2_seonhae_wait_min", "m2_alchemy_off", "m2_sash_off",
           "m2_teleport_map_on", "m2_shop_big_on",
-          "m2_mob_hp", "m2_mob_attack")  # MT2009_PLUS_SERVER_CONFIG_V1
+          "m2_mob_hp", "m2_mob_attack",  # MT2009_PLUS_SERVER_CONFIG_V1
+          "m2_pc_attack")  # MT2009_PLUS_PC_ATTACK_V1
 # MT2009_PLUS_SERVER_CONFIG_V1: the percent switches - .env key -> (event flag, queue command).
 _PERCENT_SWITCHES = {"M2_MONSTER_HP": ("m2_mob_hp", "MOB_HP"),
-                     "M2_MONSTER_ATTACK": ("m2_mob_attack", "MOB_ATTACK")}
+                     "M2_MONSTER_ATTACK": ("m2_mob_attack", "MOB_ATTACK"),
+                     "M2_PLAYER_ATTACK": ("m2_pc_attack", "PC_ATTACK")}  # MT2009_PLUS_PC_ATTACK_V1
 
 
 def _flag_rows(cur):

@@ -69,6 +69,9 @@ EVENTS = {
 	'bossloot': {'name': 'Podw\xf3jny loot z boss\xf3w', 'icon': CAL + 'double_boss_loot_event.tga', 'open': 'calendar'},
 	'metinloot': {'name': 'Podw\xf3jny loot z Metin\xf3w', 'icon': CAL + 'double_metin_loot_event.tga', 'open': 'calendar'},
 	# MT2009_PLUS_SUPERSTONE_V1: event Super Kamieni - the figure is the extra stones beside every Metin.
+	# MT2009_PLUS_POTEGA_MADROSCI_V1: Uriel's experience bonus by level range (potega_madrosci.quest).
+	'potega': {'name': 'Pot\xeaga m\xb9dro\x9cci', 'icon': CAL + 'exp_event.tga', 'open': 'info',
+			'desc': 'Spytaj Uriela w pierwszej wiosce o pot\xeag\xea m\xb9dro\x9cci, aby otrzyma\xe6 bonus PD w zale\xbfno\x9cci od przedzia\xb3u poziom\xf3w. Tabel\xea bonus\xf3w poka\xbfe Stra\xbfnik Wsi.'},
 	'superstone': {'name': 'Super Kamienie Metin (+%d)', 'icon': CAL + 'double_metin_loot_event.tga', 'open': 'info',
 			'desc': 'Przy ka\xbfdym Metinie na mapach \x9cwiata stoj\xb9 dodatkowe kamienie - bij je jak zwyk\xb3e Metiny.'},
 	# MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle (uifishpuzzle.py registers the window); the three rewards.
@@ -77,7 +80,7 @@ EVENTS = {
 }
 # The hub's order; keys not listed come after, as the server sends them.
 ORDER = ('worldboss', 'catchking', 'rumi', 'rumi_xmas', 'yutnori', 'flower', 'easter', 'halloween', 'goblin',
-		'fishpuzzle', 'chest', 'bossloot', 'metinloot', 'superstone', 'tanaka', 'zuo', 'exp', 'drop', 'yang')
+		'fishpuzzle', 'chest', 'bossloot', 'metinloot', 'superstone', 'potega', 'tanaka', 'zuo', 'exp', 'drop', 'yang')
 DEFAULT_ICON = CAL + 'bonus_event.tga'
 
 TITLE = 'Wydarzenia w grze'

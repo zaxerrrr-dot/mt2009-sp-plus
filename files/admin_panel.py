@@ -1594,6 +1594,9 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
                # MT2009_PLUS_SUPERSTONE_V1: Super Kamienie - the value is the level, 1-4 extra
                # stones beside every Metin on a world map (event flag superstone_event).
                "superstone",
+               # MT2009_PLUS_POTEGA_MADROSCI_V1: Potega madrosci - Uriel's experience bonus by level
+               # range (event flag potega_madrosci; potega_madrosci.quest, playerbot_potega.h).
+               "potega",
                # MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle - on or off (event flag fish_puzzle_event;
                # server-patches/fishpuzzle, fish_puzzle.cpp).
                "fishpuzzle")
@@ -1602,6 +1605,7 @@ EVENT_KINDS = ("chest", "exp", "drop", "yang", "tanaka", "zuo", "bossloot", "met
 EVENT_FLAG_KINDS = ("chest", "bossloot", "metinloot", "goblin",  # goblin: MT2009_PLUS_GOBLIN_V1
                     "catchking", "rumi", "yutnori", "flower", "easter",  # MT2009_PLUS_EVENT_MANAGER_V1
                     "halloween",  # MT2009_PLUS_HALLOWEEN_V1
+                    "potega",  # MT2009_PLUS_POTEGA_MADROSCI_V1
                     "fishpuzzle")  # MT2009_PLUS_FISH_PUZZLE_V1
 # Tanaka and Zuo put something into the world (playerbot_world_events.h): their
 # value is a count - pirates at once, Metin stones a wave - and they carry a
@@ -4813,6 +4817,7 @@ T.update({
  "ev_kind_flower":{"en":"Flower Event","pl":"Dzieci Kwiaty","de":"Blumen-Event","tr":"\u00c7i\u00e7ek Etkinli\u011fi"},
  "ev_kind_easter":{"en":"Easter event","pl":"Event wielkanocny","de":"Oster-Event","tr":"Paskalya etkinli\u011fi"},
  "ev_kind_halloween":{"en":"Halloween (pumpkins, Jack Pumpkin)","pl":"Halloween (dynie i Jack Pumpkin)","de":"Halloween (K\u00fcrbisse, Jack Pumpkin)","tr":"Cad\u0131lar Bayram\u0131 (bal kaba\u011f\u0131, Jack Pumpkin)"},
+ "ev_kind_potega":{"en":"Power of Wisdom (Uriel's EXP bonus)","pl":"Pot\u0119ga m\u0105dro\u015bci (bonus PD od Uriela)","de":"Macht der Weisheit (EP-Bonus von Uriel)","tr":"Bilgeli\u011fin G\u00fcc\u00fc (Uriel'in TP bonusu)"},
  "ev_kind_superstone":{"en":"Super Metin Stones","pl":"Super Kamienie Metin","de":"Super-Metinsteine","tr":"S\u00fcper Metin Ta\u015flar\u0131"},
  "ev_kind_fishpuzzle":{"en":"Fishing Jigsaw","pl":"Event Rybacki - Puzzle","de":"Angel-Puzzle","tr":"Bal\u0131k\u00e7\u0131l\u0131k Yapbozu"},
  "ev_now_superstone":{"en":"Extra stones (1-4)","pl":"Dodatkowe kamienie (1-4)","de":"Zus\u00e4tzliche Steine (1-4)","tr":"Ek ta\u015flar (1-4)"},

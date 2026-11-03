@@ -88,10 +88,14 @@ enum Kind
 	// stones every Metin stone put down on a world map gets (server-patches/superstone);
 	// the manager writes it to the event flag superstone_event, 0 at the end.
 	KIND_SUPERSTONE = 17,
+	// MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" - Uriel gives the experience bonus of the character's
+	// level range (potega_madrosci.quest, playerbot_potega.h). On or off; the manager writes its switch, the
+	// event flag potega_madrosci.
+	KIND_POTEGA = 18,
 	// MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle - on or off; while it runs fishing finds the puzzle
 	// boxes (fish_puzzle.cpp, server-patches/fishpuzzle); the manager writes the event flag fish_puzzle_event.
-	KIND_FISHPUZZLE = 18,
-	KIND_MAX = 19
+	KIND_FISHPUZZLE = 19,
+	KIND_MAX = 20
 };
 
 inline const char* KindName(int kind)
@@ -116,6 +120,7 @@ inline const char* KindName(int kind)
 		case KIND_WORLDBOSS: return "worldboss";
 		case KIND_HALLOWEEN: return "halloween";
 		case KIND_SUPERSTONE: return "superstone";
+		case KIND_POTEGA: return "potega";	// MT2009_PLUS_POTEGA_MADROSCI_V1
 		case KIND_FISHPUZZLE: return "fishpuzzle";
 	}
 	return "";

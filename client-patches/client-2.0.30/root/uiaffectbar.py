@@ -797,7 +797,9 @@ class AffectImage(BarItem):
 						self.tooltip.AppendSpace(5)
 					else:
 						self.tooltip.AppendTextLine(text)
-		if len(self.pointsDict) > 0 and self.affect != 545: # MT2009_PLUS_COSTUME_SET_V2: the set lists its own lines
+		# MT2009_PLUS_COSTUME_SET_V2: the set lists its own lines; MT2009_PLUS_POTEGA_MADROSCI_V1: so does Potega madrosci
+		# (its point 127 has no line of its own in the client's apply texts)
+		if len(self.pointsDict) > 0 and self.affect != 545 and self.affect != AFFECT_POTEGA_MADROSCI:
 			self.tooltip.AppendSpace(5)
 			for point in self.pointsDict.keys():
 				try:
@@ -1266,4 +1268,13 @@ AFFECT_SHOW_DATA[159] = {
 AFFECT_SHOW_DATA[160] = {
 	"description" : "Nieugi\xeato\x9c\xe6 Balathora: odporno\x9c\xe6 na odrzucenie i powalenie %d%%",
 	"icon" : "d:/ymir work/ui/skill/common/affect/guildsys_nieugietosc.sub",
+}
+
+# MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" - Uriel's experience bonus (the server's potega_madrosci.quest and
+# playerbot_potega.h): the affect 730 on point 127 (POINT_RAMADAN_CANDY_BONUS_EXP), the value the per cent; the icon is
+# the mall experience bonus's. The bonus window's PD line counts the point already (MT2009_PLUS_PD_BONUS_V1).
+AFFECT_POTEGA_MADROSCI = 730
+AFFECT_SHOW_DATA[AFFECT_POTEGA_MADROSCI] = {
+	"description" : "Pot\xeaga m\xb9dro\x9cci (Uriel);Bonus PD +%d%%",
+	"icon" : "d:/ymir work/ui/skill/common/affect/exp_bonus.sub",
 }

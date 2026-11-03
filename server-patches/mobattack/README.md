@@ -18,3 +18,17 @@ profile EASY / SAPPHIRE „obrażenia od potworów 80%”), bliźniak `server-pa
 Stosowanie: `python3 apply_mobattack.py <game/src>` (po `mobhp`, którego
 hak w `questmanager.cpp` jest kotwicą). Każdy krok nakłada się raz; brak
 oczekiwanego kodu przerywa bez zmian.
+
+## Siła ataku graczy (MT2009_PLUS_PC_ATTACK_V1)
+
+Ta sama poprawka, znacznik `MT2009_PLUS_PC_ATTACK_V1` (konfiguracja serwera
+EMERALD: „+10% obrażeń zadawanych przez gracza”).
+
+- **Obrażenia zadawane przez graczy potworom, bossom i Metinom jako procent**:
+  flaga `m2_pc_attack` (10–300; 0 albo 100 = jak w grze). Ustawia ją migrator
+  z `M2_PLAYER_ATTACK` w `.env` (tylko gdy linia się zmieniła), panel
+  zaawansowany i kolejka `web_admin` (`PC_ATTACK`) – od razu.
+- Skalowane raz w `CHARACTER::Damage`, zaraz po skali potworów, gdy zadający
+  jest postacią gracza (także bot) a trafiony potworem albo Metinem. PvP bez
+  zmian (wiki nie wymienia PvP).
+- W syslogu linia `PC_ATTACK:`.

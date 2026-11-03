@@ -46,15 +46,17 @@ KIND_CATCHKING, KIND_RUMI, KIND_YUTNORI, KIND_FLOWER, KIND_EASTER = range(9, 14)
 # vnum, the value the chance a kill in per mille), Boss Swiata, Halloween and the
 # Super Kamienie Metin (the value is the level). They showed as "Event 14".."17".
 KIND_CHESTDROP, KIND_WORLDBOSS, KIND_HALLOWEEN, KIND_SUPERSTONE = range(14, 18)
+# MT2009_PLUS_POTEGA_MADROSCI_V1: "Potega madrosci" - Uriel's experience bonus (the event hub's name and icon).
+KIND_POTEGA = 18
 # MT2009_PLUS_FISH_PUZZLE_V1: Event Rybacki - Puzzle (fish_puzzle.cpp, uifishpuzzle.py).
-KIND_FISHPUZZLE = 18
+KIND_FISHPUZZLE = 19
 KIND_KEYS = {KIND_CATCHKING: 'catchking', KIND_RUMI: 'rumi', KIND_YUTNORI: 'yutnori',
 		KIND_FLOWER: 'flower', KIND_EASTER: 'easter',
-		KIND_WORLDBOSS: 'worldboss', KIND_HALLOWEEN: 'halloween', KIND_FISHPUZZLE: 'fishpuzzle'}
+		KIND_WORLDBOSS: 'worldboss', KIND_HALLOWEEN: 'halloween', KIND_POTEGA: 'potega', KIND_FISHPUZZLE: 'fishpuzzle'}
 # Every kind's name, the key the in-game event list knows it by.
 KIND_NAMES = ('chest', 'exp', 'drop', 'yang', 'tanaka', 'zuo', 'bossloot', 'metinloot', 'goblin',
 		'catchking', 'rumi', 'yutnori', 'flower', 'easter',
-		'chestdrop', 'worldboss', 'halloween', 'superstone', 'fishpuzzle')
+		'chestdrop', 'worldboss', 'halloween', 'superstone', 'potega', 'fishpuzzle')
 KIND_ICON = {
 	KIND_CHEST: 'moonlight_event.tga',
 	KIND_EXP: 'exp_event.tga',
@@ -65,6 +67,7 @@ KIND_ICON = {
 	KIND_BOSS_LOOT: 'double_boss_loot_event.tga',
 	KIND_METIN_LOOT: 'double_metin_loot_event.tga',
 	KIND_GOBLIN: 'goblin_event.tga',
+	KIND_POTEGA: 'exp_event.tga',	# MT2009_PLUS_POTEGA_MADROSCI_V1
 }
 DEFAULT_ICON = 'bonus_event.tga'
 WORLD_KINDS = (KIND_TANAKA, KIND_ZUO)
