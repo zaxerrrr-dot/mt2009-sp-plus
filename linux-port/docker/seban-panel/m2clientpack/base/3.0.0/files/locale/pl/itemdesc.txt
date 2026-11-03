@@ -682,7 +682,7 @@
 39020	Obrona Boga Smoków	Zmniejsza obra¿enia jakie otrzymujesz podczas walki o 12-15% przez 30 min. Przedmiot ten jest zdatny do handlu.
 39021	Wsparcie Boga Smoków	Witalnoœæ, Si³a, Inteligencja oraz Zrêcznoœæ twojej postaci zostan¹ tymczasowo zwiêkszone piêciokrotnie. Przedmiot ten jest zdatny do handlu.
 39022	Zwój Boga Smoków	Zwiêksza szansê na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakoœæ przedmiotu jest redukowana o 1 poziom. Przedmiot ten jest zdatny do handlu.
-39023	Eliksir Poszukiwacza	Eliksir poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie. Przedmiot ten jest zdatny do handlu.
+39023	Eliksir Poszukiwacza	Poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie. Nastêpny przedmiot oddany do badañ Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjêcie zamiast 60%. Nie dotyczy misji na Yohara. Przedmiot ten jest zdatny do handlu.
 39024	D³oñ Krytyka	Podnosi szansê na zadanie krytycznego uderzenia podczas walki o 20% przez 10 minut. Przedmiot ten jest zdatny do handlu.
 39025	D³oñ Przebicia	Podnosi szansê na zadanie przeszywaj¹cego uderzenia podczas walki o 20% przez 10 minut. Przedmiot ten jest zdatny do handlu.
 39026	Mikstura Szybkoœci	Zwiêksza Szybkoœæ Ruchu o 60 na 30 minut. Przedmiot ten jest zdatny do handlu.
@@ -2117,7 +2117,7 @@
 71032	Zwój Boga Smoków	Zwiêksza szansê na ulepszenie przedmiotu o 10% i przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakoœæ przedmiotu jest redukowana o 1 poziom.
 71033	Maska Uczuæ	Dziêki tej masce wreszcie mo¿esz pokazaæ swoje prawdziwe uczucia.
 71034	Mikstura Ataku +15	Zwiêksza twoj¹ Szybkoœæ Ataku o 15% na okres 30 minut. Efekt utrzymuje siê po œmierci.
-71035	Eliksir Poszukiwacza	Poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie.
+71035	Eliksir Poszukiwacza	Poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie. Nastêpny przedmiot oddany do badañ Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjêcie zamiast 60%. Nie dotyczy misji na Yohara.
 71036	Zwój Przyw. - Wódz Orków	U¿yj, aby przyzwaæ Wodza Orków blisko postaci. B¹dŸ ostro¿ny! To BOSS!
 71037	Zwój Przyw. - Ezot. W³.	U¿yj, aby przyzwaæ Ezoterycznego W³adcê blisko postaci. B¹dŸ ostro¿ny! To BOSS!
 71038	Zwój Przyw. - Król. Paj.	U¿yj, aby przyzwaæ Królow¹ Paj¹ków blisko postaci. B¹dŸ ostro¿ny! To BOSS!
@@ -2293,7 +2293,7 @@
 72024	Medal Szczêœcia	Szansa na zdobycie Yang jest podwojona na 3 godziny.
 72025	D³oñ Przebicia	Szansa na przebicie +10%
 72026	D³oñ Krytyka	Szansa na przebicie +10%
-72027	D³oñ Krytyka	Szansa na przebicie +10%
+72027	D³oñ Przebicia	Zwiêksza szansê na przeszywaj¹ce uderzenie o 10% przez 10 minut.
 72028	Maska Uczuæ	Mo¿esz okazywaæ swoje emocje.
 72029	Maska Uczuæ	Mo¿esz okazywaæ swoje emocje.
 72030	Maska Uczuæ	Mo¿esz okazywaæ swoje emocje.
@@ -2314,7 +2314,7 @@
 72045	Ksi¹¿ka Lidera	Kiedy przedmiot noszony jest przez lidera grupy, punkty zdobywane przez grupê s¹ zwiêkszone o 30%.
 72046	D³oñ Krytyka	Podnosi szansê na zadanie przeszywaj¹cego uderzenia podczas walki o 20% przez 10 minut.
 72047	D³oñ Krytyka	Podnosi szansê na zadanie przeszywaj¹cego uderzenia podczas walki o 20% przez 10 minut.
-72048	D³oñ Krytyka	Podnosi szansê na zadanie przeszywaj¹cego uderzenia podczas walki o 20% przez 10 minut.
+72048	D³oñ Krytyka	Zwiêksza szansê na krytyczne uderzenie o 10% przez 10 minut.
 72301	Zwój B³ogos³awieñstwa	Usuwa ryzyko zniszczenia przedmiotu podczas jego ulepszania. Je¿eli ulepszanie siê nie powiedzie, to jakoœæ przedmiotu jest redukowana o 1 poziom.
 72302		
 72303		
@@ -2323,8 +2323,8 @@
 72306		
 72307		
 72308	Magiczna Ruda Miedzi	Za pomoc¹ tej rudy w po³¹czeniu ze Zwojem B³ogos³awieñstwa mo¿na wytworzyæ u kowala Zwój Wojny.
-72309		
-72310		
+72309	Podrêcznik Kowala	Ksiêga zawiera duszê starego kowala. Jeœli jej u¿yjesz, zwiêkszy to szansê na pomyœlne ulepszenie przedmiotu o 15%. Przedmiot nie ulega zniszczeniu gdy ulepszenie zawiedzie. W przypadku niepowodzenia, jakoœæ przedmiotu jest redukowana o 1 poziom.
+72310	Zwój Egzorcyzmu	Uwalnia Ciê od kl¹twy z³ego ducha.
 72311		
 72312		
 72313		
@@ -2612,7 +2612,7 @@
 76017	Mikstura Ataku +15	Zwiêksza twoj¹ szybkoœæ ataku o 15% na okres 30 minut. Niezdatna do handlu.
 76018	Mikstura Ataku +20	Zwiêksza twoj¹ szybkoœæ ataku o 20% na okres 30 minut. Niezdatna do handlu.
 76019	Przepustka	Bilet ten umo¿liwia dostanie siê na nowy poziom w Lochu Paj¹ków, jak równie¿ w Twierdzy Czerwonego Smoka. Wystarczy pokazaæ go odpowiedniemu stra¿nikowi. Przedmiot ten jest niezdatny do handlu.
-76020	Eliksir Poszukiwacza	Poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie. Przedmiot ten jest niezdatny do handlu.
+76020	Eliksir Poszukiwacza	Poprawia jakoœæ przedmiotów przeznaczonych do badañ, co powoduje zwiêkszenie szansy na ich przyjêcie. Nastêpny przedmiot oddany do badañ Biologowi Chaegirabowi lub Seonowi-Pyeongowi ma 90% szans na przyjêcie zamiast 60%. Nie dotyczy misji na Yohara. Przedmiot ten jest niezdatny do handlu.
 76021	Eliksir S³oñca (M)	Automatycznie regeneruje Twoje P¯. Zawiera 100.000 P¯. Przedmiot ten jest niezdatny do handlu.
 76022	Eliksir S³oñca (Œ)	Automatycznie regeneruje Twoje P¯. Zawiera 3.000.000 P¯. Przedmiot ten jest niezdatny do handlu.
 76023	Zielony Czar	Usuwa wszystkie bonusy w jednym z Twoich przedmiotów, po czym dodaje nowe. Mo¿na go u¿ywaæ tylko przy broniach i zbrojach do poziomu 40. Przedmiot ze skrzyni poziomów, niezdatny do handlu.
@@ -2655,10 +2655,10 @@
 72142	vip	Efekt nie ³¹czy siê z bonusami Konta Premium. Nie jest to przedmiot, po zakupie pakiet jest nadany na konto.	Wymaga przelogowania po zakupie.	
 72151	vip	Efekt nie ³¹czy siê z bonusami Konta Premium. Nie jest to przedmiot, po zakupie pakiet jest nadany na konto.	Wymaga przelogowania po zakupie.	
 72161	Szk³o Intuicji	Pozwala Ci na pokazanie przedmiotu z twojego ekwipunku na czacie.
-51782	Mikstura Geniuszu	Podnosi szansê pomyœlnej nauki o mno¿nik 1,75.
-51783	Mikstura Determinacji	Pozwala na przeczytanie nastêpnej ksiêgi w przypadku niepomyœlnej nauki.
+51782	Mikstura Geniuszu	Mikstura wycofana - nie dzia³a. Mo¿na j¹ sprzedaæ w sklepie NPC.
+51783	Mikstura Determinacji	Mikstura wycofana - nie dzia³a. Mo¿na j¹ sprzedaæ w sklepie NPC.
 51784	Mikstura Stagnacji	Blokuje zdobywane doœwiadczenie. Dotyczy to tak¿e nagród z misji. Zdobyte doœwiadczenie w trakcie trwania efektu przepada na zawsze!
-51785	Mikstura Szybkiej Analizy	W przypadku oddania uszkodzonego przedmiotu do analizy Biologa, bêdziesz móg³ oddaæ nastêpny bez potrzeby odczekania czasu.
+51785	Mikstura Szybkiej Analizy	Mikstura wycofana - nie dzia³a. Mo¿na j¹ sprzedaæ w sklepie NPC.
 30341	Zupa Grzybowa	Aromatyczna zupa grzybowa, przywraca si³y zmêczonym wêdrowcom.
 30342	Silny Wywar z Zió³	Skoncentrowany wywar z rzadkich zió³, dodaje energii i wzmacnia cia³o.
 30343	Miêso Demona	Zmro¿one czarne miêso o niezwyk³ej mocy.
@@ -2770,7 +2770,7 @@
 71184	Pierœcieñ Wielkanocny	Przenika cia³o magi¹ Wielkanocy, obdarzaj¹c jego w³aœciciela niezwyk³¹ moc¹. Nieudane próby ulepszenia Pierœcienia u Kowala nie powoduj¹ utraty przedmiotu.	Wydarzenie Wielkanocne.
 71185	Pierœcieñ Wielkanocny	Przenika cia³o magi¹ Wielkanocy, obdarzaj¹c jego w³aœciciela niezwyk³¹ moc¹. Nieudane próby ulepszenia Pierœcienia u Kowala nie powoduj¹ utraty przedmiotu.	Wydarzenie Wielkanocne.
 71186	Pierœcieñ Wielkanocny	Przenika cia³o magi¹ Wielkanocy, obdarzaj¹c jego w³aœciciela niezwyk³¹ moc¹. Nieudane próby ulepszenia Pierœcienia u Kowala nie powoduj¹ utraty przedmiotu.	Wydarzenie Wielkanocne.
-71187	Pierœcieñ Wielkanocny	Przenika cia³o magi¹ Wielkanocy, obdarzaj¹c jego w³aœciciela niezwyk³¹ moc¹. Nieudane próby ulepszenia Pierœcienia u Kowala nie powoduj¹ utraty przedmiotu.	Wydarzenie Wielkanocne.
+71187	Nugget (zielony)	Za pomoc¹ tej pieczêci mo¿esz przywo³aæ Nuggeta, strasznego bojowego kurczaczka. Za³ó¿ j¹ w slot wierzchowca. Szybkoœæ ruchu +20, doœwiadczenie +30%. Czas: 8 godzin od pierwszego u¿ycia.
 71188	Lizak Magii	Lizak o tajemniczym sk³adzie, pe³en magii. Daje: +50% PD, +20% szybkoœci ataku, +20% szybkoœci zaklêæ, +30% obra¿eñ magicznych, +10% maks. P¯, +10% maks. PE. Dzia³a 7 dni.
 71189	Pierœcieñ Wielkanocny	Przenika cia³o magi¹ Wielkanocy, obdarzaj¹c jego w³aœciciela niezwyk³¹ moc¹. Nieudane próby ulepszenia Pierœcienia u Kowala nie powoduj¹ utraty przedmiotu.	Wydarzenie Wielkanocne.
 71190	Pierœcieñ Wakacyjny	Przenika cia³o magi¹ Wakacji, obdarzaj¹c jego w³aœciciela niezwyk³¹ moc¹. Nieudane próby ulepszenia Pierœcienia u Kowala nie powoduj¹ utraty przedmiotu. Czas trwania 7 dni (max 60 dni).	Wydarzenie Wakacyjne
@@ -4288,9 +4288,9 @@
 33031	Kwiat ¯ywio³u	Klejnot w kszta³cie kwiatu do ulepszenia talizmanów ¿ywio³owych.
 33032	Pryzmat O¿ywienia (Q)	O¿yw ponownie siebie lub jednego z graczy w Œwi¹tynia Zodiaku.
 33033	Z³ota Skrzynia Zodiaku	W tajemniczej skrzyni mog¹ znajdowaæ siê broñ, wyposa¿enie i szarfy Zodiaku.
-72327	Pergamin Sfer (handel)	Za³aduj swoje Animosfery o 30 ¿yæ, by dziêki nim otrzymaæ dostêp do Œwi¹tyni Zodiaku. Przedmiot zdatny do handlu.
+72327	Pergamin Sfer (handel)	Na³aduj 30 Animosfer, aby otrzymaæ wstêp do Œwi¹tyni Zodiaku. Przedmiot zdatny do handlu.
 72328	Znak Stra¿nika	Talizman ten daje ci na trzy godziny dostêp do Œwi¹tyni Zodiaku, bez zu¿ycia Animosfer.
-72329	Pergamin Sfer	Za³aduj swoje Animosfery o 30 ¿yæ, by dziêki nim otrzymaæ dostêp do Œwi¹tyni Zodiaku.
+72329	Pergamin Sfer	Na³aduj 30 Animosfer, aby otrzymaæ wstêp do Œwi¹tyni Zodiaku.
 30610	Mithril	Przedmiot s³u¿y do ulepszania Twojej zbroi.
 30616	Dwutlenek Tytanu	Ten pryzmatyczny kryszta³ s³u¿y do uszlachetnienia przedmiotu wyposa¿enia.
 30617	Agat	Ten tajemniczo po³yskuj¹cy kamyk s³u¿y do uszlachetnienia przedmiotu wyposa¿enia.
@@ -5447,6 +5447,8 @@
 50839	Eliksir Odp. na P³n. W.	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na wiatr. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
 50840	Eliksir Odp. na Ziemiê	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na ziemiê. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
 50841	Eliksir Odp. na Mrok	Ten potê¿ny eliksir obdarza tego, który go wypije + 8-20% odpornoœci na mrok. Sporz¹dza go zielarz Huahn-So (Bokjung, Bakra, Jayang) z 10 zió³ i 20 pustych butelek (szansa 90%). Wartoœæ i czas dzia³ania s¹ losowane przy sporz¹dzaniu; widaæ je w opisie eliksiru.
+53235	Robin (³up)	Uwaga! Nadchodzi Robin, pocieszny nietoperek! Przywo³any zwierzak co sekundê podnosi za ciebie przedmioty i yang le¿¹ce w pobli¿u (tylko to, co mo¿esz podnieœæ sam). Pieczêæ dzia³a 1 dzieñ od otrzymania.
+72351	Ma³e B³ogos³awieñstwo	Zmienia z niewielkim prawdopodobieñstwem 6. i 7. bonus. Przeci¹gnij na przedmiot: ma 10% szansy na zmianê 6. i 7. bonusu, pierwsze 5 bonusów pozostaje bez zmian. Przy niepowodzeniu przedmiot siê zu¿ywa, a bonusy zostaj¹ takie jak by³y.
 23000	Rêkawice Mocy+0	Przepe³nione wol¹ SungMa.
 23001	Rêkawice Mocy+1	Przepe³nione wol¹ SungMa.
 23002	Rêkawice Mocy+2	Przepe³nione wol¹ SungMa.
@@ -5667,6 +5669,11 @@
 72347	Spirala Czasu (10%)	Czekanie nie jest Wasz¹ mocn¹ stron¹? Dziêki Spirali Czasu zaoszczêdzicie drogocenny czas. Skraca o 10% pozosta³y czas oczekiwania wybranej misji: badañ Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badañ reliktów. Mo¿na u¿ywaæ spirala po spirali. Nie dotyczy ksi¹g umiejêtnoœci.
 72348	Spirala Czasu (20%)	Czekanie nie jest Wasz¹ mocn¹ stron¹? Dziêki Spirali Czasu zaoszczêdzicie drogocenny czas. Skraca o 20% pozosta³y czas oczekiwania wybranej misji: badañ Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badañ reliktów. Mo¿na u¿ywaæ spirala po spirali. Nie dotyczy ksi¹g umiejêtnoœci.
 72349	Spirala Czasu (30%)	Czekanie nie jest Wasz¹ mocn¹ stron¹? Dziêki Spirali Czasu zaoszczêdzicie drogocenny czas. Skraca o 30% pozosta³y czas oczekiwania wybranej misji: badañ Biologa, stajennego i konia, 6. i 7. bonusu u Seon-Hae oraz badañ reliktów. Mo¿na u¿ywaæ spirala po spirali. Nie dotyczy ksi¹g umiejêtnoœci.
+25106	Pud³o wêdkarskich puzzli	Zawiera losowy element puzzli do zabawy w wêdkarskie puzzle. Kliknij prawym przyciskiem myszy, aby otworzyæ okno puzzli - tam otworzysz pud³o i u³o¿ysz element.
+25107	Luks. pud³o wêdk. puzzli	Zawiera du¿y kawa³ek uk³adanki do udzia³u w Evencie Rybackim (element 3 x 2). Kliknij prawym przyciskiem myszy, aby otworzyæ okno puzzli.
+83001	Z³. Skrzynia na Ryby (M)	W skrzyni znajduje siê cenna nagroda dla ciebie. Nagroda za u³o¿enie wêdkarskich puzzli w 25 lub wiêcej próbach. Mo¿na otworzyæ jeden raz.
+83002	Z³. Skrzynia na Ryby (Œ)	W skrzyni znajduje siê cenna nagroda dla ciebie. Nagroda za u³o¿enie wêdkarskich puzzli w 11-24 próbach. Mo¿na otworzyæ dwa razy.
+83003	Z³. Skrzynia na Ryby (D)	W skrzyni znajduje siê cenna nagroda dla ciebie. Nagroda za u³o¿enie wêdkarskich puzzli w 10 lub mniej próbach. Mo¿na otworzyæ trzy razy.
 39119	Kamieñ Mocy ¯ywio³ów	Po³yskuj¹cy amulet daje ci 10% mocy wszystkich ¿ywio³ów: b³yskawic, ognia, lodu, wiatru, ziemi i mroku. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
 39120	Kamieñ Ochrony ¯ywio³ów	Po³yskuj¹cy amulet daje ci +10% odpornoœci na wszystkie ¿ywio³y: b³yskawice, ogieñ, lód, wiatr, ziemiê i mrok. Czas u¿ytkowania: 7 dni - mija tak¿e wtedy, gdy kamieñ nie jest noszony. Mo¿na nosiæ tylko jeden Kamieñ ¯ywio³ów naraz (Ochrony albo Mocy). Nie mo¿na nim handlowaæ ani go przechowaæ w magazynie.
 83036	Srebrne Pude³ko Kart Potwora	To srebrne pude³ko zawiera losow¹ Kartê Potwora albo 1000 Yang. Spróbuj szczêœcia! Karty pochodz¹ z poziomów misji 1-15 (bez potworów Yohary). U¿yj karty, by dodaæ j¹ do swojej kolekcji (okno Kart Potworów, klawisz J).
